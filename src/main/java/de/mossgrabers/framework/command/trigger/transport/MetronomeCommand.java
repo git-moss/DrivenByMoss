@@ -37,7 +37,7 @@ public class MetronomeCommand<S extends IControlSurface<C>, C extends Configurat
     @Override
     public void executeNormal (final ButtonEvent event)
     {
-        if (event == ButtonEvent.DOWN)
+        if (event == ButtonEvent.UP)
             this.model.getTransport ().toggleMetronome ();
     }
 
@@ -46,7 +46,7 @@ public class MetronomeCommand<S extends IControlSurface<C>, C extends Configurat
     @Override
     public void executeShifted (final ButtonEvent event)
     {
-        if (event == ButtonEvent.DOWN)
+        if (event == ButtonEvent.UP)
             this.model.getTransport ().toggleMetronomeTicks ();
     }
 }

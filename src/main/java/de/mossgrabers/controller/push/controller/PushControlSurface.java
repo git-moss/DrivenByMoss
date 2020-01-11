@@ -511,6 +511,18 @@ public class PushControlSurface extends AbstractControlSurface<PushConfiguration
 
     /** {@inheritDoc} */
     @Override
+    protected void handleMidi (final int status, final int data1, final int data2)
+    {
+        // Ignore active sensing, which seems to be sent from some Push devices
+        if (status == 254)
+            return;
+
+        super.handleMidi (status, data1, data2);
+    }
+
+
+    /** {@inheritDoc} */
+    @Override
     public void setTrigger (final int channel, final int cc, final int value)
     {
         this.output.sendCCEx (channel, cc, value);

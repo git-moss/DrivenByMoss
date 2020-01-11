@@ -6,21 +6,18 @@ package de.mossgrabers.controller.push.command.trigger;
 
 import de.mossgrabers.controller.push.PushConfiguration;
 import de.mossgrabers.controller.push.controller.PushControlSurface;
-import de.mossgrabers.controller.push.mode.device.DeviceBrowserMode;
-import de.mossgrabers.framework.command.continuous.TempoCommand;
+import de.mossgrabers.framework.command.continuous.PlayPositionCommand;
 import de.mossgrabers.framework.command.core.TriggerCommand;
 import de.mossgrabers.framework.daw.IModel;
-import de.mossgrabers.framework.mode.ModeManager;
-import de.mossgrabers.framework.mode.Modes;
 import de.mossgrabers.framework.utils.ButtonEvent;
 
 
 /**
- * Command to change the tempo and scroll through lists in browser mode.
+ * Command to change the play position in the arranger.
  *
  * @author J&uuml;rgen Mo&szlig;graber
  */
-public class RasteredKnobCommand extends TempoCommand<PushControlSurface, PushConfiguration> implements TriggerCommand
+public class PlayPositionKnobCommand extends PlayPositionCommand<PushControlSurface, PushConfiguration> implements TriggerCommand
 {
     /**
      * Constructor.
@@ -28,7 +25,7 @@ public class RasteredKnobCommand extends TempoCommand<PushControlSurface, PushCo
      * @param model The model
      * @param surface The surface
      */
-    public RasteredKnobCommand (final IModel model, final PushControlSurface surface)
+    public PlayPositionKnobCommand (final IModel model, final PushControlSurface surface)
     {
         super (model, surface);
     }
@@ -38,17 +35,9 @@ public class RasteredKnobCommand extends TempoCommand<PushControlSurface, PushCo
     @Override
     public void execute (final int value)
     {
-        final ModeManager modeManager = this.surface.getModeManager ();
-        if (modeManager.isActiveOrTempMode (Modes.BROWSER))
-        {
-            final DeviceBrowserMode mode = (DeviceBrowserMode) modeManager.getMode (Modes.BROWSER);
-            mode.changeSelectedColumnValue (value);
-            return;
-        }
-
         super.execute (value);
 
-        this.displayTempo ();
+        this.displayPosition ();
     }
 
 
@@ -59,12 +48,12 @@ public class RasteredKnobCommand extends TempoCommand<PushControlSurface, PushCo
         final boolean activate = event != ButtonEvent.UP;
         this.transport.setTempoIndication (activate);
         if (activate)
-            this.displayTempo ();
+            this.displayPosition ();
     }
 
 
-    private void displayTempo ()
+    private void displayPosition ()
     {
-        this.surface.scheduleTask ( () -> this.surface.getDisplay ().notify ("Tempo: " + this.transport.formatTempo (this.transport.getTempo ())), 100);
+        this.surface.getDisplay ().notify (this.transport.getPositionText ());
     }
 }

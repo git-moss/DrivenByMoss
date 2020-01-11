@@ -55,5 +55,8 @@ public class BooleanSettingImpl extends AbstractSetting<Boolean> implements IBoo
     public void addValueObserver (final IValueObserver<Boolean> observer)
     {
         this.booleanValue.addValueObserver (value -> observer.update (Boolean.valueOf (value)));
+
+        // Directly fire the current value
+        observer.update (Boolean.valueOf (this.booleanValue.get ()));
     }
 }

@@ -157,6 +157,8 @@ public class LaunchkeyMiniMk3ControllerSetup extends AbstractControllerSetup<Lau
         modeManager.registerMode (Modes.SEND1, new SendMode<> (0, surface, this.model, true));
         modeManager.registerMode (Modes.SEND2, new SendMode<> (1, surface, this.model, true));
         modeManager.registerMode (Modes.DEVICE_PARAMS, new ParameterMode<> (surface, this.model, true));
+        // This mode is not really used since the Launchkey sends different MIDI CC in Custom mode
+        // and directly maps MIDI CC instead of user controls
         modeManager.registerMode (Modes.USER, new UserMode<> (surface, this.model, true));
     }
 

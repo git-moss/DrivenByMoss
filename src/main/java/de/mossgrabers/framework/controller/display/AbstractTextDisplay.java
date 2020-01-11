@@ -18,7 +18,7 @@ import de.mossgrabers.framework.utils.StringUtils;
 public abstract class AbstractTextDisplay implements ITextDisplay
 {
     /** Time to keep a notification displayed in ms. */
-    public static final int  NOTIFICATION_TIME = 1000;
+    public static final int  NOTIFICATION_TIME    = 1000;
 
     protected IHost          host;
     protected IMidiOutput    output;
@@ -30,7 +30,8 @@ public abstract class AbstractTextDisplay implements ITextDisplay
 
     protected final String   emptyLine;
     protected String         notificationMessage;
-    protected boolean        isNotificationActive;
+    protected int            isNotificationActive = 0;
+    protected final Object   notificationLock     = new Object ();
 
     private final String     emptyCell;
     protected String []      currentMessage;
@@ -66,7 +67,6 @@ public abstract class AbstractTextDisplay implements ITextDisplay
             sb.append (' ');
         this.emptyLine = sb.toString ();
         this.notificationMessage = this.emptyLine;
-        this.isNotificationActive = false;
 
         this.currentMessage = new String [this.noOfLines];
 
@@ -240,12 +240,29 @@ public abstract class AbstractTextDisplay implements ITextDisplay
         final int padLength = (this.noOfCharacters - message.length ()) / 2 + 1;
         final String padding = padLength > 0 ? this.emptyLine.substring (0, padLength) : "";
         this.notificationMessage = (padding + message + padding).substring (0, this.noOfCharacters);
-        this.isNotificationActive = true;
-        this.flush ();
-        this.host.scheduleTask ( () -> {
-            this.isNotificationActive = false;
-            this.forceFlush ();
-        }, AbstractTextDisplay.NOTIFICATION_TIME);
+
+        synchronized (this.notificationLock)
+        {
+            final boolean isRunning = this.isNotificationActive > 0;
+            this.isNotificationActive = AbstractTextDisplay.NOTIFICATION_TIME;
+            this.flush ();
+            if (!isRunning)
+                this.host.scheduleTask (this::watch, 100);
+        }
+    }
+
+
+    protected void watch ()
+    {
+        synchronized (this.notificationLock)
+        {
+            this.isNotificationActive -= 100;
+
+            if (this.isNotificationActive <= 0)
+                this.forceFlush ();
+            else
+                this.host.scheduleTask (this::watch, 100);
+        }
     }
 
 
@@ -253,12 +270,15 @@ public abstract class AbstractTextDisplay implements ITextDisplay
     @Override
     public void flush ()
     {
-        if (this.isNotificationActive)
+        synchronized (this.notificationLock)
         {
-            this.updateLine (0, this.notificationMessage);
-            for (int row = 1; row < this.noOfLines; row++)
-                this.updateLine (row, this.emptyLine);
-            return;
+            if (this.isNotificationActive > 0)
+            {
+                this.updateLine (0, this.notificationMessage);
+                for (int row = 1; row < this.noOfLines; row++)
+                    this.updateLine (row, this.emptyLine);
+                return;
+            }
         }
 
         for (int row = 0; row < this.noOfLines; row++)

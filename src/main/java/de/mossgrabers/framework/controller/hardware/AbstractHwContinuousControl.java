@@ -21,14 +21,16 @@ import java.util.function.IntSupplier;
  */
 public abstract class AbstractHwContinuousControl extends AbstractHwInputControl implements IHwContinuousControl
 {
+    private static final int    BUTTON_STATE_INTERVAL = 400;
+
     protected ContinuousCommand command;
     protected TriggerCommand    touchCommand;
     protected PitchbendCommand  pitchbendCommand;
-    protected boolean           isTouched;
 
+    private ButtonEvent         state;
     private IntSupplier         supplier;
     private IntConsumer         consumer;
-    private int                 outputValue = -1;
+    private int                 outputValue           = -1;
 
 
     /**
@@ -89,8 +91,11 @@ public abstract class AbstractHwContinuousControl extends AbstractHwInputControl
     {
         if (this.touchCommand == null)
             return;
-        this.touchCommand.execute (isDown ? ButtonEvent.DOWN : ButtonEvent.UP, isDown ? 127 : 0);
-        this.isTouched = isDown;
+
+        this.host.scheduleTask (this::checkButtonState, BUTTON_STATE_INTERVAL);
+
+        this.state = isDown ? ButtonEvent.DOWN : ButtonEvent.UP;
+        this.touchCommand.execute (this.state, isDown ? 127 : 0);
     }
 
 
@@ -98,7 +103,15 @@ public abstract class AbstractHwContinuousControl extends AbstractHwInputControl
     @Override
     public boolean isTouched ()
     {
-        return this.isTouched;
+        return this.state == ButtonEvent.DOWN || this.state == ButtonEvent.LONG;
+    }
+
+
+    /** {@inheritDoc} */
+    @Override
+    public boolean isLongTouched ()
+    {
+        return this.state == ButtonEvent.LONG;
     }
 
 
@@ -123,5 +136,19 @@ public abstract class AbstractHwContinuousControl extends AbstractHwInputControl
             return;
         this.outputValue = value;
         this.consumer.accept (this.outputValue);
+    }
+
+
+    /**
+     * If the state of the given button is still down, the state is set to long and an event gets
+     * fired.
+     */
+    private void checkButtonState ()
+    {
+        if (!this.isTouched ())
+            return;
+        this.state = ButtonEvent.LONG;
+        if (this.touchCommand != null)
+            this.touchCommand.execute (ButtonEvent.LONG, 127);
     }
 }

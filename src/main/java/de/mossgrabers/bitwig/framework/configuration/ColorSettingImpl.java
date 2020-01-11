@@ -8,6 +8,7 @@ import de.mossgrabers.framework.configuration.IColorSetting;
 import de.mossgrabers.framework.controller.color.ColorEx;
 import de.mossgrabers.framework.observer.IValueObserver;
 
+import com.bitwig.extension.api.Color;
 import com.bitwig.extension.controller.api.SettableColorValue;
 import com.bitwig.extension.controller.api.Setting;
 
@@ -17,7 +18,7 @@ import com.bitwig.extension.controller.api.Setting;
  *
  * @author J&uuml;rgen Mo&szlig;graber
  */
-public class ColorSettingImpl extends AbstractSetting<double []> implements IColorSetting
+public class ColorSettingImpl extends AbstractSetting<ColorEx> implements IColorSetting
 {
     private SettableColorValue colorValue;
 
@@ -45,9 +46,9 @@ public class ColorSettingImpl extends AbstractSetting<double []> implements ICol
 
     /** {@inheritDoc} */
     @Override
-    public void set (final double [] value)
+    public void set (final double [] rgb)
     {
-        this.set (value[0], value[1], value[2]);
+        this.set (rgb[0], rgb[1], rgb[2]);
     }
 
 
@@ -61,13 +62,12 @@ public class ColorSettingImpl extends AbstractSetting<double []> implements ICol
 
     /** {@inheritDoc} */
     @Override
-    public void addValueObserver (final IValueObserver<double []> observer)
+    public void addValueObserver (final IValueObserver<ColorEx> observer)
     {
-        this.colorValue.addValueObserver ( (red, green, blue) -> observer.update (new double []
-        {
-            red,
-            green,
-            blue
-        }));
+        this.colorValue.addValueObserver ( (red, green, blue) -> observer.update (new ColorEx (red, green, blue)));
+
+        // Directly fire the current value
+        final Color color = this.colorValue.get ();
+        observer.update (new ColorEx (color.getRed (), color.getGreen (), color.getBlue ()));
     }
 }

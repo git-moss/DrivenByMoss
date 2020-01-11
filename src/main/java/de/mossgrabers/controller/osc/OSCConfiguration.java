@@ -89,14 +89,12 @@ public class OSCConfiguration extends AbstractOpenSoundControlConfiguration
             this.sendHost = value;
             this.notifyObservers (OSCConfiguration.SEND_HOST);
         });
-        sendHostSetting.setEnabled (false);
 
         final IIntegerSetting sendPortSetting = globalSettings.getRangeSetting ("Port to send to", CATEGORY_SETUP, 0, 65535, 1, "", 9000);
         sendPortSetting.addValueObserver (value -> {
             this.sendPort = value.intValue ();
             this.notifyObservers (SEND_PORT);
         });
-        sendPortSetting.setEnabled (false);
 
         final IEnumSetting valueResolutionSetting = globalSettings.getEnumSetting ("Value resolution", CATEGORY_SETUP, VALUE_RESOLUTION_OPTIONS, VALUE_RESOLUTION_OPTIONS[0]);
         valueResolutionSetting.addValueObserver (value -> {

@@ -5,15 +5,20 @@
 package de.mossgrabers.bitwig.framework.hardware;
 
 import de.mossgrabers.bitwig.framework.daw.HostImpl;
+import de.mossgrabers.bitwig.framework.daw.data.ParameterImpl;
 import de.mossgrabers.framework.command.core.ContinuousCommand;
 import de.mossgrabers.framework.command.core.TriggerCommand;
 import de.mossgrabers.framework.controller.hardware.AbstractHwContinuousControl;
 import de.mossgrabers.framework.controller.hardware.BindType;
 import de.mossgrabers.framework.controller.hardware.IHwRelativeKnob;
 import de.mossgrabers.framework.controller.valuechanger.RelativeEncoding;
+import de.mossgrabers.framework.daw.data.IParameter;
 import de.mossgrabers.framework.daw.midi.IMidiInput;
 
 import com.bitwig.extension.controller.api.ControllerHost;
+import com.bitwig.extension.controller.api.HardwareBindable;
+import com.bitwig.extension.controller.api.RelativeHardwarControlBindable;
+import com.bitwig.extension.controller.api.RelativeHardwareControlBinding;
 import com.bitwig.extension.controller.api.RelativeHardwareKnob;
 
 
@@ -24,9 +29,11 @@ import com.bitwig.extension.controller.api.RelativeHardwareKnob;
  */
 public class HwRelativeKnobImpl extends AbstractHwContinuousControl implements IHwRelativeKnob
 {
-    private final RelativeHardwareKnob hardwareKnob;
-    private final ControllerHost       controllerHost;
-    private final RelativeEncoding     encoding;
+    private final RelativeHardwareKnob     hardwareKnob;
+    private final ControllerHost           controllerHost;
+    private final RelativeEncoding         encoding;
+    private RelativeHardwarControlBindable defaultAction;
+    private RelativeHardwareControlBinding binding;
 
 
     /**
@@ -67,7 +74,21 @@ public class HwRelativeKnobImpl extends AbstractHwContinuousControl implements I
     public void bind (final ContinuousCommand command)
     {
         super.bind (command);
-        this.hardwareKnob.addBinding (this.controllerHost.createRelativeHardwareControlAdjustmentTarget (this::handleValue));
+
+        this.defaultAction = this.controllerHost.createRelativeHardwareControlAdjustmentTarget (this::handleValue);
+        this.binding = this.hardwareKnob.setBinding (this.defaultAction);
+    }
+
+
+    /** {@inheritDoc} */
+    @Override
+    public void bind (final IParameter parameter)
+    {
+        if (this.binding != null)
+            this.binding.removeBinding ();
+
+        final HardwareBindable target = parameter == null ? this.defaultAction : ((ParameterImpl) parameter).getParameter ();
+        this.binding = this.hardwareKnob.setBinding (target);
     }
 
 

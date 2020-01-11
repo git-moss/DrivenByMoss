@@ -55,5 +55,8 @@ public class DoubleSettingImpl extends AbstractSetting<Double> implements IDoubl
     public void addValueObserver (final IValueObserver<Double> observer)
     {
         this.rangedValue.addValueObserver (value -> observer.update (Double.valueOf (value)));
+
+        // Directly fire the current value
+        observer.update (Double.valueOf (this.rangedValue.get ()));
     }
 }

@@ -7,6 +7,7 @@ package de.mossgrabers.framework.controller.hardware;
 import de.mossgrabers.framework.command.core.ContinuousCommand;
 import de.mossgrabers.framework.command.core.PitchbendCommand;
 import de.mossgrabers.framework.command.core.TriggerCommand;
+import de.mossgrabers.framework.daw.data.IParameter;
 import de.mossgrabers.framework.daw.midi.IMidiInput;
 
 import java.util.function.IntConsumer;
@@ -64,6 +65,14 @@ public interface IHwContinuousControl extends IHwInputControl
 
 
     /**
+     * Test if the control is long touched.
+     *
+     * @return True if long touched
+     */
+    boolean isLongTouched ();
+
+
+    /**
      * Get the touch trigger command, if any.
      *
      * @return The command or null if not bound
@@ -102,4 +111,12 @@ public interface IHwContinuousControl extends IHwInputControl
      * @param consumer Send the value to the hardware
      */
     void addOutput (IntSupplier supplier, IntConsumer consumer);
+
+
+    /**
+     * Directly bind a parameter to a continuous control.
+     *
+     * @param parameter THe parameter to bind
+     */
+    void bind (IParameter parameter);
 }

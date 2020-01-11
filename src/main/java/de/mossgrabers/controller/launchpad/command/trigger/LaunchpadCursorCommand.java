@@ -61,7 +61,10 @@ public class LaunchpadCursorCommand extends CursorCommand<LaunchpadControlSurfac
     {
         final ITrackBank tb = this.model.getCurrentTrackBank ();
         final ViewManager viewManager = this.surface.getViewManager ();
-        switch (viewManager.getActiveViewId ())
+        final Views activeViewId = viewManager.getActiveViewId ();
+        if (activeViewId == null)
+            return;
+        switch (activeViewId)
         {
             case CONTROL:
             case SHIFT:

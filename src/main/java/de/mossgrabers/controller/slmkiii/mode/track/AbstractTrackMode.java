@@ -145,7 +145,7 @@ public abstract class AbstractTrackMode extends BaseMode
 
         final ITrack selTrack = tb.getSelectedItem ();
         if (selTrack != null && selTrack.getIndex () == index)
-            this.surface.getButton (ButtonID.DEVICE).getCommand ().execute (ButtonEvent.DOWN, 127);
+            this.surface.getButton (ButtonID.ARROW_UP).getCommand ().execute (ButtonEvent.DOWN, 127);
         else
             track.select ();
     }

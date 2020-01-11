@@ -6,7 +6,6 @@ package de.mossgrabers.controller.push;
 
 import de.mossgrabers.controller.push.command.continuous.ConfigurePitchbendCommand;
 import de.mossgrabers.controller.push.command.continuous.MastertrackTouchCommand;
-import de.mossgrabers.controller.push.command.continuous.SmallKnobTouchCommand;
 import de.mossgrabers.controller.push.command.pitchbend.TouchstripCommand;
 import de.mossgrabers.controller.push.command.trigger.AccentCommand;
 import de.mossgrabers.controller.push.command.trigger.AutomationCommand;
@@ -20,8 +19,10 @@ import de.mossgrabers.controller.push.command.trigger.OctaveCommand;
 import de.mossgrabers.controller.push.command.trigger.PageLeftCommand;
 import de.mossgrabers.controller.push.command.trigger.PageRightCommand;
 import de.mossgrabers.controller.push.command.trigger.PanSendCommand;
+import de.mossgrabers.controller.push.command.trigger.PlayPositionKnobCommand;
 import de.mossgrabers.controller.push.command.trigger.PushBrowserCommand;
 import de.mossgrabers.controller.push.command.trigger.PushCursorCommand;
+import de.mossgrabers.controller.push.command.trigger.PushMetronomeCommand;
 import de.mossgrabers.controller.push.command.trigger.PushQuantizeCommand;
 import de.mossgrabers.controller.push.command.trigger.RasteredKnobCommand;
 import de.mossgrabers.controller.push.command.trigger.ScalesCommand;
@@ -45,6 +46,7 @@ import de.mossgrabers.controller.push.mode.FrameMode;
 import de.mossgrabers.controller.push.mode.GrooveMode;
 import de.mossgrabers.controller.push.mode.InfoMode;
 import de.mossgrabers.controller.push.mode.MarkersMode;
+import de.mossgrabers.controller.push.mode.MetronomeMode;
 import de.mossgrabers.controller.push.mode.NoteMode;
 import de.mossgrabers.controller.push.mode.NoteRepeatMode;
 import de.mossgrabers.controller.push.mode.NoteViewSelectMode;
@@ -55,7 +57,6 @@ import de.mossgrabers.controller.push.mode.ScalesMode;
 import de.mossgrabers.controller.push.mode.SessionMode;
 import de.mossgrabers.controller.push.mode.SessionViewSelectMode;
 import de.mossgrabers.controller.push.mode.SetupMode;
-import de.mossgrabers.controller.push.mode.TransportMode;
 import de.mossgrabers.controller.push.mode.device.DeviceBrowserMode;
 import de.mossgrabers.controller.push.mode.device.DeviceChainsMode;
 import de.mossgrabers.controller.push.mode.device.DeviceLayerMode;
@@ -91,7 +92,6 @@ import de.mossgrabers.framework.command.aftertouch.AftertouchAbstractViewCommand
 import de.mossgrabers.framework.command.continuous.FootswitchCommand;
 import de.mossgrabers.framework.command.continuous.KnobRowModeCommand;
 import de.mossgrabers.framework.command.continuous.MasterVolumeCommand;
-import de.mossgrabers.framework.command.continuous.PlayPositionCommand;
 import de.mossgrabers.framework.command.core.NopCommand;
 import de.mossgrabers.framework.command.trigger.application.DeleteCommand;
 import de.mossgrabers.framework.command.trigger.application.DuplicateCommand;
@@ -107,7 +107,6 @@ import de.mossgrabers.framework.command.trigger.mode.KnobRowTouchModeCommand;
 import de.mossgrabers.framework.command.trigger.mode.ModeCursorCommand.Direction;
 import de.mossgrabers.framework.command.trigger.mode.ModeSelectCommand;
 import de.mossgrabers.framework.command.trigger.track.AddTrackCommand;
-import de.mossgrabers.framework.command.trigger.transport.MetronomeCommand;
 import de.mossgrabers.framework.command.trigger.transport.PlayCommand;
 import de.mossgrabers.framework.command.trigger.transport.RecordCommand;
 import de.mossgrabers.framework.command.trigger.transport.TapTempoCommand;
@@ -304,7 +303,7 @@ public class PushControllerSetup extends AbstractControllerSetup<PushControlSurf
         modeManager.registerMode (Modes.VIEW_SELECT, new NoteViewSelectMode (surface, this.model));
 
         modeManager.registerMode (Modes.AUTOMATION, new AutomationMode (surface, this.model));
-        modeManager.registerMode (Modes.TRANSPORT, new TransportMode (surface, this.model));
+        modeManager.registerMode (Modes.TRANSPORT, new MetronomeMode (surface, this.model));
 
         modeManager.registerMode (Modes.MARKERS, new MarkersMode (surface, this.model));
 
@@ -480,7 +479,7 @@ public class PushControllerSetup extends AbstractControllerSetup<PushControlSurf
         this.addButton (ButtonID.SHIFT, "Shift", new ShiftCommand (this.model, surface), PushControlSurface.PUSH_BUTTON_SHIFT);
         this.addButton (ButtonID.SELECT, "Select", new SelectCommand (this.model, surface), PushControlSurface.PUSH_BUTTON_SELECT);
         this.addButton (ButtonID.TAP_TEMPO, "Tap Tempo", new TapTempoCommand<> (this.model, surface), PushControlSurface.PUSH_BUTTON_TAP);
-        this.addButton (ButtonID.METRONOME, "Metronome", new MetronomeCommand<> (this.model, surface), PushControlSurface.PUSH_BUTTON_METRONOME, t::isMetronomeOn);
+        this.addButton (ButtonID.METRONOME, "Metronome", new PushMetronomeCommand (this.model, surface), PushControlSurface.PUSH_BUTTON_METRONOME, t::isMetronomeOn);
         this.addButton (ButtonID.MASTERTRACK, "Mastertrack", new MastertrackCommand (this.model, surface), PushControlSurface.PUSH_BUTTON_MASTER, () -> Modes.isMasterMode (modeManager.getActiveOrTempModeId ()));
         this.addButton (ButtonID.PAGE_LEFT, "Page Left", new PageLeftCommand (this.model, surface), PushControlSurface.PUSH_BUTTON_DEVICE_LEFT, () -> {
 
@@ -573,11 +572,13 @@ public class PushControllerSetup extends AbstractControllerSetup<PushControlSurf
         final IHwRelativeKnob knobMaster = this.addRelativeKnob (ContinuousID.MASTER_KNOB, "Master", new MasterVolumeCommand<> (this.model, surface), PushControlSurface.PUSH_KNOB9);
         knobMaster.bindTouch (new MastertrackTouchCommand (this.model, surface), input, BindType.NOTE, PushControlSurface.PUSH_KNOB9_TOUCH);
 
-        final IHwRelativeKnob knobTempo = this.addRelativeKnob (ContinuousID.TEMPO, "Tempo", new RasteredKnobCommand (this.model, surface), PushControlSurface.PUSH_SMALL_KNOB1);
-        knobTempo.bindTouch (new SmallKnobTouchCommand (this.model, surface, true), input, BindType.NOTE, PushControlSurface.PUSH_SMALL_KNOB1_TOUCH);
+        final RasteredKnobCommand tempoCommand = new RasteredKnobCommand (this.model, surface);
+        final IHwRelativeKnob knobTempo = this.addRelativeKnob (ContinuousID.TEMPO, "Tempo", tempoCommand, PushControlSurface.PUSH_SMALL_KNOB1);
+        knobTempo.bindTouch (tempoCommand, input, BindType.NOTE, PushControlSurface.PUSH_SMALL_KNOB1_TOUCH);
 
-        final IHwRelativeKnob knobPlayPosition = this.addRelativeKnob (ContinuousID.PLAY_POSITION, "Play Position", new PlayPositionCommand<> (this.model, surface), PushControlSurface.PUSH_SMALL_KNOB2);
-        knobPlayPosition.bindTouch (new SmallKnobTouchCommand (this.model, surface, false), input, BindType.NOTE, PushControlSurface.PUSH_SMALL_KNOB2_TOUCH);
+        final PlayPositionKnobCommand playPositionCommand = new PlayPositionKnobCommand (this.model, surface);
+        final IHwRelativeKnob knobPlayPosition = this.addRelativeKnob (ContinuousID.PLAY_POSITION, "Play Position", playPositionCommand, PushControlSurface.PUSH_SMALL_KNOB2);
+        knobPlayPosition.bindTouch (playPositionCommand, input, BindType.NOTE, PushControlSurface.PUSH_SMALL_KNOB2_TOUCH);
 
         final ViewManager viewManager = surface.getViewManager ();
 

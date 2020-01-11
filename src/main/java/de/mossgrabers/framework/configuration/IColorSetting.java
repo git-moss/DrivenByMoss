@@ -12,22 +12,22 @@ import de.mossgrabers.framework.controller.color.ColorEx;
  *
  * @author J&uuml;rgen Mo&szlig;graber
  */
-public interface IColorSetting extends ISetting<double []>
+public interface IColorSetting extends ISetting<ColorEx>
 {
     /**
      * Set the RGB color value.
      *
-     * @param red The red component
-     * @param green The green component
-     * @param blue The blue component
+     * @param red The red component (0..1)
+     * @param green The green component (0..1)
+     * @param blue The blue component (0..1)
      */
     void set (double red, double green, double blue);
 
 
     /**
      * Set the color.
-     *
-     * @param color The color
+     * 
+     * @param rgb The 3 rgb values (0..1)
      */
-    void set (ColorEx color);
+    void set (final double [] rgb);
 }

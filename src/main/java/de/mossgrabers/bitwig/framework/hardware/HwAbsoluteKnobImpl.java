@@ -5,15 +5,20 @@
 package de.mossgrabers.bitwig.framework.hardware;
 
 import de.mossgrabers.bitwig.framework.daw.HostImpl;
+import de.mossgrabers.bitwig.framework.daw.data.ParameterImpl;
 import de.mossgrabers.framework.command.core.ContinuousCommand;
 import de.mossgrabers.framework.command.core.TriggerCommand;
 import de.mossgrabers.framework.controller.hardware.AbstractHwContinuousControl;
 import de.mossgrabers.framework.controller.hardware.BindType;
 import de.mossgrabers.framework.controller.hardware.IHwAbsoluteKnob;
+import de.mossgrabers.framework.daw.data.IParameter;
 import de.mossgrabers.framework.daw.midi.IMidiInput;
 
+import com.bitwig.extension.controller.api.AbsoluteHardwarControlBindable;
+import com.bitwig.extension.controller.api.AbsoluteHardwareControlBinding;
 import com.bitwig.extension.controller.api.AbsoluteHardwareKnob;
 import com.bitwig.extension.controller.api.ControllerHost;
+import com.bitwig.extension.controller.api.HardwareBindable;
 
 
 /**
@@ -23,8 +28,10 @@ import com.bitwig.extension.controller.api.ControllerHost;
  */
 public class HwAbsoluteKnobImpl extends AbstractHwContinuousControl implements IHwAbsoluteKnob
 {
-    private final AbsoluteHardwareKnob hardwareKnob;
-    private final ControllerHost       controllerHost;
+    private final AbsoluteHardwareKnob     hardwareKnob;
+    private final ControllerHost           controllerHost;
+    private AbsoluteHardwarControlBindable defaultAction;
+    private AbsoluteHardwareControlBinding binding;
 
 
     /**
@@ -49,7 +56,21 @@ public class HwAbsoluteKnobImpl extends AbstractHwContinuousControl implements I
     public void bind (final ContinuousCommand command)
     {
         super.bind (command);
-        this.hardwareKnob.addBinding (this.controllerHost.createAbsoluteHardwareControlAdjustmentTarget (this::handleValue));
+
+        this.defaultAction = this.controllerHost.createAbsoluteHardwareControlAdjustmentTarget (this::handleValue);
+        this.hardwareKnob.setBinding (this.defaultAction);
+    }
+
+
+    /** {@inheritDoc} */
+    @Override
+    public void bind (final IParameter parameter)
+    {
+        if (this.binding != null)
+            this.binding.removeBinding ();
+
+        final HardwareBindable target = parameter == null ? this.defaultAction : ((ParameterImpl) parameter).getParameter ();
+        this.binding = this.hardwareKnob.setBinding (target);
     }
 
 

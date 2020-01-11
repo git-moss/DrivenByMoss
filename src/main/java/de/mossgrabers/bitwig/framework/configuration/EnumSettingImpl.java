@@ -47,5 +47,8 @@ public class EnumSettingImpl extends AbstractSetting<String> implements IEnumSet
     public void addValueObserver (final IValueObserver<String> observer)
     {
         this.enumValue.addValueObserver (observer::update);
+
+        // Directly fire the current value
+        observer.update (this.enumValue.get ());
     }
 }

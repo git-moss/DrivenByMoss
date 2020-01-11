@@ -183,4 +183,15 @@ public class ParameterImpl extends AbstractItemImpl implements IParameter
     {
         // Parameters cannot be selected but should also not crash
     }
+
+
+    /**
+     * Get the Bitwig parameter.
+     *
+     * @return The parameter
+     */
+    public Parameter getParameter ()
+    {
+        return this.parameter;
+    }
 }

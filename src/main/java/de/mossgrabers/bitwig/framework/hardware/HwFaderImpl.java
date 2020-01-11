@@ -5,16 +5,21 @@
 package de.mossgrabers.bitwig.framework.hardware;
 
 import de.mossgrabers.bitwig.framework.daw.HostImpl;
+import de.mossgrabers.bitwig.framework.daw.data.ParameterImpl;
 import de.mossgrabers.framework.command.core.ContinuousCommand;
 import de.mossgrabers.framework.command.core.PitchbendCommand;
 import de.mossgrabers.framework.command.core.TriggerCommand;
 import de.mossgrabers.framework.controller.hardware.AbstractHwContinuousControl;
 import de.mossgrabers.framework.controller.hardware.BindType;
 import de.mossgrabers.framework.controller.hardware.IHwFader;
+import de.mossgrabers.framework.daw.data.IParameter;
 import de.mossgrabers.framework.daw.midi.IMidiInput;
 import de.mossgrabers.framework.utils.ButtonEvent;
 
+import com.bitwig.extension.controller.api.AbsoluteHardwarControlBindable;
+import com.bitwig.extension.controller.api.AbsoluteHardwareControlBinding;
 import com.bitwig.extension.controller.api.ControllerHost;
+import com.bitwig.extension.controller.api.HardwareBindable;
 import com.bitwig.extension.controller.api.HardwareSlider;
 
 
@@ -25,8 +30,10 @@ import com.bitwig.extension.controller.api.HardwareSlider;
  */
 public class HwFaderImpl extends AbstractHwContinuousControl implements IHwFader
 {
-    private final HardwareSlider hardwareFader;
-    private final ControllerHost controllerHost;
+    private final HardwareSlider           hardwareFader;
+    private final ControllerHost           controllerHost;
+    private AbsoluteHardwarControlBindable defaultAction;
+    private AbsoluteHardwareControlBinding binding;
 
 
     /**
@@ -53,7 +60,9 @@ public class HwFaderImpl extends AbstractHwContinuousControl implements IHwFader
     public void bind (final ContinuousCommand command)
     {
         super.bind (command);
-        this.hardwareFader.addBinding (this.controllerHost.createAbsoluteHardwareControlAdjustmentTarget (this::handleValue));
+
+        this.defaultAction = this.controllerHost.createAbsoluteHardwareControlAdjustmentTarget (this::handleValue);
+        this.hardwareFader.addBinding (this.defaultAction);
     }
 
 
@@ -63,6 +72,18 @@ public class HwFaderImpl extends AbstractHwContinuousControl implements IHwFader
     {
         super.bind (command);
         this.hardwareFader.addBinding (this.controllerHost.createAbsoluteHardwareControlAdjustmentTarget (this::handleValue));
+    }
+
+
+    /** {@inheritDoc} */
+    @Override
+    public void bind (final IParameter parameter)
+    {
+        if (this.binding != null)
+            this.binding.removeBinding ();
+
+        final HardwareBindable target = parameter == null ? this.defaultAction : ((ParameterImpl) parameter).getParameter ();
+        this.binding = this.hardwareFader.setBinding (target);
     }
 
 

@@ -8,6 +8,7 @@ import de.mossgrabers.framework.command.core.AbstractContinuousCommand;
 import de.mossgrabers.framework.configuration.Configuration;
 import de.mossgrabers.framework.controller.IControlSurface;
 import de.mossgrabers.framework.daw.IModel;
+import de.mossgrabers.framework.daw.ITransport;
 
 
 /**
@@ -20,6 +21,9 @@ import de.mossgrabers.framework.daw.IModel;
  */
 public class PlayPositionCommand<S extends IControlSurface<C>, C extends Configuration> extends AbstractContinuousCommand<S, C>
 {
+    protected final ITransport transport;
+
+
     /**
      * Constructor.
      *
@@ -29,6 +33,8 @@ public class PlayPositionCommand<S extends IControlSurface<C>, C extends Configu
     public PlayPositionCommand (final IModel model, final S surface)
     {
         super (model, surface);
+
+        this.transport = this.model.getTransport ();
     }
 
 
@@ -36,6 +42,6 @@ public class PlayPositionCommand<S extends IControlSurface<C>, C extends Configu
     @Override
     public void execute (final int value)
     {
-        this.model.getTransport ().changePosition (this.model.getValueChanger ().calcKnobSpeed (value) > 0);
+        this.transport.changePosition (this.model.getValueChanger ().calcKnobSpeed (value) > 0);
     }
 }

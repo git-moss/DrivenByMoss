@@ -47,5 +47,8 @@ public class StringSettingImpl extends AbstractSetting<String> implements IStrin
     public void addValueObserver (final IValueObserver<String> observer)
     {
         this.stringValue.addValueObserver (observer::update);
+
+        // Directly fire the current value
+        observer.update (this.stringValue.get ());
     }
 }

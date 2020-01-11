@@ -1214,67 +1214,67 @@ public class PushConfiguration extends AbstractConfiguration implements IGraphic
 
         this.colorBackgroundSetting = settingsUI.getColorSetting ("Background", CATEGORY_COLORS, DEFAULT_COLOR_BACKGROUND);
         this.colorBackgroundSetting.addValueObserver (color -> {
-            this.colorBackground = new ColorEx (color[0], color[1], color[2]);
+            this.colorBackground = color;
             this.notifyObservers (COLOR_BACKGROUND);
         });
 
         this.colorBackgroundDarkerSetting = settingsUI.getColorSetting ("Background Darker", CATEGORY_COLORS, DEFAULT_COLOR_BACKGROUND_DARKER);
         this.colorBackgroundDarkerSetting.addValueObserver (color -> {
-            this.colorBackgroundDarker = new ColorEx (color[0], color[1], color[2]);
+            this.colorBackgroundDarker = color;
             this.notifyObservers (COLOR_BACKGROUND_DARKER);
         });
 
         this.colorBackgroundLighterSetting = settingsUI.getColorSetting ("Background Selected", CATEGORY_COLORS, DEFAULT_COLOR_BACKGROUND_LIGHTER);
         this.colorBackgroundLighterSetting.addValueObserver (color -> {
-            this.colorBackgroundLighter = new ColorEx (color[0], color[1], color[2]);
+            this.colorBackgroundLighter = color;
             this.notifyObservers (COLOR_BACKGROUND_LIGHTER);
         });
 
         this.colorBorderSetting = settingsUI.getColorSetting ("Border", CATEGORY_COLORS, DEFAULT_COLOR_BORDER);
         this.colorBorderSetting.addValueObserver (color -> {
-            this.colorBorder = new ColorEx (color[0], color[1], color[2]);
+            this.colorBorder = color;
             this.notifyObservers (COLOR_BORDER);
         });
 
         this.colorTextSetting = settingsUI.getColorSetting ("Text", CATEGORY_COLORS, DEFAULT_COLOR_TEXT);
         this.colorTextSetting.addValueObserver (color -> {
-            this.colorText = new ColorEx (color[0], color[1], color[2]);
+            this.colorText = color;
             this.notifyObservers (COLOR_TEXT);
         });
 
         this.colorFaderSetting = settingsUI.getColorSetting ("Fader", CATEGORY_COLORS, DEFAULT_COLOR_FADER);
         this.colorFaderSetting.addValueObserver (color -> {
-            this.colorFader = new ColorEx (color[0], color[1], color[2]);
+            this.colorFader = color;
             this.notifyObservers (COLOR_FADER);
         });
 
         this.colorVUSetting = settingsUI.getColorSetting ("VU", CATEGORY_COLORS, DEFAULT_COLOR_VU);
         this.colorVUSetting.addValueObserver (color -> {
-            this.colorVU = new ColorEx (color[0], color[1], color[2]);
+            this.colorVU = color;
             this.notifyObservers (COLOR_VU);
         });
 
         this.colorEditSetting = settingsUI.getColorSetting ("Edit", CATEGORY_COLORS, DEFAULT_COLOR_EDIT);
         this.colorEditSetting.addValueObserver (color -> {
-            this.colorEdit = new ColorEx (color[0], color[1], color[2]);
+            this.colorEdit = color;
             this.notifyObservers (COLOR_EDIT);
         });
 
         this.colorRecordSetting = settingsUI.getColorSetting ("Record", CATEGORY_COLORS, DEFAULT_COLOR_RECORD);
         this.colorRecordSetting.addValueObserver (color -> {
-            this.colorRecord = new ColorEx (color[0], color[1], color[2]);
+            this.colorRecord = color;
             this.notifyObservers (COLOR_RECORD);
         });
 
         this.colorSoloSetting = settingsUI.getColorSetting ("Solo", CATEGORY_COLORS, DEFAULT_COLOR_SOLO);
         this.colorSoloSetting.addValueObserver (color -> {
-            this.colorSolo = new ColorEx (color[0], color[1], color[2]);
+            this.colorSolo = color;
             this.notifyObservers (COLOR_SOLO);
         });
 
         this.colorMuteSetting = settingsUI.getColorSetting ("Mute", CATEGORY_COLORS, DEFAULT_COLOR_MUTE);
         this.colorMuteSetting.addValueObserver (color -> {
-            this.colorMute = new ColorEx (color[0], color[1], color[2]);
+            this.colorMute = color;
             this.notifyObservers (COLOR_MUTE);
         });
     }

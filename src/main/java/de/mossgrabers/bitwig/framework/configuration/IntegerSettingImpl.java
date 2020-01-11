@@ -58,5 +58,9 @@ public class IntegerSettingImpl extends AbstractSetting<Integer> implements IInt
     public void addValueObserver (final IValueObserver<Integer> observer)
     {
         this.rangedValue.addValueObserver (this.range, value -> observer.update (Integer.valueOf (value)));
+
+        // Directly fire the current value
+        final int raw = (int) this.rangedValue.getRaw ();
+        observer.update (Integer.valueOf (raw));
     }
 }

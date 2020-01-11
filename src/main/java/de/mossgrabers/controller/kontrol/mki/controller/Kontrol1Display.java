@@ -128,8 +128,11 @@ public class Kontrol1Display extends AbstractTextDisplay
      */
     public void setBar (final int column, final boolean hasBorder, final int value)
     {
-        if (!this.isNotificationActive)
-            this.usbDevice.setBar (column, hasBorder, value, this.maxParameterValue);
+        synchronized (this.notificationLock)
+        {
+            if (this.isNotificationActive <= 0)
+                this.usbDevice.setBar (column, hasBorder, value, this.maxParameterValue);
+        }
     }
 
 
@@ -142,8 +145,11 @@ public class Kontrol1Display extends AbstractTextDisplay
      */
     public void setPanBar (final int column, final boolean hasBorder, final int value)
     {
-        if (!this.isNotificationActive)
-            this.usbDevice.setPanBar (column, hasBorder, value, this.maxParameterValue);
+        synchronized (this.notificationLock)
+        {
+            if (this.isNotificationActive <= 0)
+                this.usbDevice.setPanBar (column, hasBorder, value, this.maxParameterValue);
+        }
     }
 
 
@@ -151,16 +157,20 @@ public class Kontrol1Display extends AbstractTextDisplay
     @Override
     protected void notifyOnDisplay (final String message)
     {
-        this.isNotificationActive = true;
-        this.clear ();
         final int padLength = (this.noOfCharacters - message.length ()) / 2;
         final String padding = padLength > 0 ? this.emptyLine.substring (0, padLength) : "";
         this.notificationMessage = (padding + message + padding + "  ").substring (0, this.noOfCharacters);
-        this.flush ();
-        this.host.scheduleTask ( () -> {
-            this.isNotificationActive = false;
-            this.forceFlush ();
-        }, AbstractTextDisplay.NOTIFICATION_TIME);
+
+        synchronized (this.notificationLock)
+        {
+            final boolean isRunning = this.isNotificationActive > 0;
+            this.isNotificationActive = AbstractTextDisplay.NOTIFICATION_TIME;
+            this.clear ();
+            this.flush ();
+
+            if (!isRunning)
+                this.host.scheduleTask (this::watch, 100);
+        }
     }
 
 

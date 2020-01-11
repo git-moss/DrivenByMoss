@@ -9,6 +9,7 @@ import de.mossgrabers.controller.push.controller.PushColorManager;
 import de.mossgrabers.controller.push.controller.PushControlSurface;
 import de.mossgrabers.controller.push.mode.BaseMode;
 import de.mossgrabers.framework.controller.ButtonID;
+import de.mossgrabers.framework.controller.ContinuousID;
 import de.mossgrabers.framework.controller.color.ColorEx;
 import de.mossgrabers.framework.controller.display.IGraphicDisplay;
 import de.mossgrabers.framework.controller.display.ITextDisplay;
@@ -30,6 +31,9 @@ import de.mossgrabers.framework.utils.StringUtils;
  */
 public class UserParamsMode extends BaseMode
 {
+    private final IParameterBank userParameterBank;
+
+
     /**
      * Constructor.
      *
@@ -41,6 +45,7 @@ public class UserParamsMode extends BaseMode
         super ("User Controls", surface, model);
 
         this.isTemporary = false;
+        this.userParameterBank = this.model.getUserParameterBank ();
     }
 
 
@@ -48,7 +53,7 @@ public class UserParamsMode extends BaseMode
     @Override
     public void onKnobValue (final int index, final int value)
     {
-        this.model.getUserParameterBank ().getItem (index).changeValue (value);
+        this.userParameterBank.getItem (index).changeValue (value);
     }
 
 
@@ -58,7 +63,7 @@ public class UserParamsMode extends BaseMode
     {
         this.isKnobTouched[index] = isTouched;
 
-        final IParameter param = this.model.getUserParameterBank ().getItem (index);
+        final IParameter param = this.userParameterBank.getItem (index);
         if (isTouched && this.surface.isDeletePressed ())
         {
             this.surface.setTriggerConsumed (ButtonID.DELETE);
@@ -75,8 +80,9 @@ public class UserParamsMode extends BaseMode
     {
         if (event != ButtonEvent.UP)
             return;
-        final IParameterBank userParameterBank = this.model.getUserParameterBank ();
-        userParameterBank.scrollTo (index * userParameterBank.getPageSize ());
+        final int position = index * this.userParameterBank.getPageSize ();
+        this.userParameterBank.scrollTo (position);
+        this.bindCurrentPage ();
     }
 
 
@@ -90,16 +96,14 @@ public class UserParamsMode extends BaseMode
             final int selectedColor = this.isPush2 ? PushColorManager.PUSH2_COLOR_ORANGE_HI : PushColorManager.PUSH1_COLOR_ORANGE_HI;
             final int existsColor = this.isPush2 ? PushColorManager.PUSH2_COLOR_YELLOW_LO : PushColorManager.PUSH1_COLOR_YELLOW_LO;
 
-            final IParameterBank bank = this.model.getUserParameterBank ();
-            final int selectedPage = bank.getScrollPosition () / bank.getPageSize ();
+            final int selectedPage = this.userParameterBank.getScrollPosition () / this.userParameterBank.getPageSize ();
             return index == selectedPage ? selectedColor : existsColor;
         }
 
         index = this.isButtonRow (1, buttonID);
         if (index >= 0)
         {
-            final IParameterBank bank = this.model.getUserParameterBank ();
-            final IParameter param = bank.getItem (index);
+            final IParameter param = this.userParameterBank.getItem (index);
             if (!param.doesExist ())
                 return super.getButtonColor (buttonID);
 
@@ -118,7 +122,7 @@ public class UserParamsMode extends BaseMode
         if (event != ButtonEvent.UP)
             return;
 
-        final IParameter param = this.model.getUserParameterBank ().getItem (index);
+        final IParameter param = this.userParameterBank.getItem (index);
         if (!param.doesExist ())
             return;
 
@@ -135,10 +139,9 @@ public class UserParamsMode extends BaseMode
         final String [] userPageNames = this.surface.getConfiguration ().getUserPageNames ();
 
         // Row 1 & 2
-        final IParameterBank bank = this.model.getUserParameterBank ();
         for (int i = 0; i < 8; i++)
         {
-            final IParameter param = bank.getItem (i);
+            final IParameter param = this.userParameterBank.getItem (i);
             display.setCell (0, i, param.doesExist () ? StringUtils.fixASCII (param.getName ()) : "").setCell (1, i, param.getDisplayedValue (8));
         }
 
@@ -146,8 +149,9 @@ public class UserParamsMode extends BaseMode
         display.setBlock (2, 0, "User Parameters");
 
         // Row 4
-        final int selectedPage = bank.getScrollPosition () / bank.getPageSize ();
-        for (int i = 0; i < bank.getPageSize (); i++)
+        final int pageSize = this.userParameterBank.getPageSize ();
+        final int selectedPage = this.userParameterBank.getScrollPosition () / pageSize;
+        for (int i = 0; i < pageSize; i++)
             display.setCell (3, i, (i == selectedPage ? Push1Display.SELECT_ARROW : "") + userPageNames[i]);
     }
 
@@ -156,16 +160,15 @@ public class UserParamsMode extends BaseMode
     @Override
     public void updateDisplay2 (final IGraphicDisplay display)
     {
-        final ColorEx bottomMenuColor = ColorEx.WHITE;
         final IValueChanger valueChanger = this.model.getValueChanger ();
         final String [] userPageNames = this.surface.getConfiguration ().getUserPageNames ();
-        final IParameterBank bank = this.model.getUserParameterBank ();
-        final int selectedPage = bank.getScrollPosition () / bank.getPageSize ();
-        for (int i = 0; i < bank.getPageSize (); i++)
+        final int pageSize = this.userParameterBank.getPageSize ();
+        final int selectedPage = this.userParameterBank.getScrollPosition () / pageSize;
+        for (int i = 0; i < pageSize; i++)
         {
             final boolean isBottomMenuOn = i == selectedPage;
 
-            final IParameter param = bank.getItem (i);
+            final IParameter param = this.userParameterBank.getItem (i);
             final boolean exists = param.doesExist ();
             final String parameterName = exists ? param.getName (9) : "";
             final int parameterValue = valueChanger.toDisplayValue (exists ? param.getValue () : 0);
@@ -173,7 +176,7 @@ public class UserParamsMode extends BaseMode
             final boolean parameterIsActive = this.isKnobTouched[i];
             final int parameterModulatedValue = valueChanger.toDisplayValue (exists ? param.getModulatedValue () : -1);
 
-            display.addParameterElement ("", false, userPageNames[i], "USER", bottomMenuColor, isBottomMenuOn, parameterName, parameterValue, parameterValueStr, parameterIsActive, parameterModulatedValue);
+            display.addParameterElement ("", false, userPageNames[i], "USER", isBottomMenuOn ? ColorEx.WHITE : ColorEx.GRAY, isBottomMenuOn, parameterName, parameterValue, parameterValueStr, parameterIsActive, parameterModulatedValue);
         }
     }
 
@@ -182,6 +185,39 @@ public class UserParamsMode extends BaseMode
     @Override
     protected IBank<? extends IItem> getBank ()
     {
-        return this.model.getUserParameterBank ();
+        return this.userParameterBank;
+    }
+
+
+    /** {@inheritDoc} */
+    @Override
+    public void onActivate ()
+    {
+        this.bindCurrentPage ();
+    }
+
+
+    /**
+     * Update the binding to the current page.
+     */
+    private void bindCurrentPage ()
+    {
+        for (int i = 0; i < 8; i++)
+        {
+            final ContinuousID knobID = ContinuousID.get (ContinuousID.KNOB1, i);
+            this.surface.getContinuous (knobID).bind (this.userParameterBank.getItem (i));
+        }
+    }
+
+
+    /** {@inheritDoc} */
+    @Override
+    public void onDeactivate ()
+    {
+        for (int i = 0; i < 8; i++)
+        {
+            final ContinuousID knobID = ContinuousID.get (ContinuousID.KNOB1, i);
+            this.surface.getContinuous (knobID).bind ((IParameter) null);
+        }
     }
 }

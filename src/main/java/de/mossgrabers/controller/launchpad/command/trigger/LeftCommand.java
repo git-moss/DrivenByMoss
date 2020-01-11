@@ -30,6 +30,8 @@ public class LeftCommand extends MetronomeCommand<LaunchpadControlSurface, Launc
     public LeftCommand (final IModel model, final LaunchpadControlSurface surface)
     {
         super (model, surface);
+
+        // TODO Warum von MetronomeCommand abgeleitet? Docu text falsch
     }
 
 
