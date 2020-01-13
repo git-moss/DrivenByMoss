@@ -411,6 +411,26 @@ public class CursorClipImpl implements INoteClip
 
     /** {@inheritDoc} */
     @Override
+    public void setStep (final int channel, final int step, final int row, final IStepInfo noteStep)
+    {
+        this.setStep (channel, step, row, (int) (noteStep.getVelocity () * 127), 0.25);
+        this.host.scheduleTask ( () -> {
+
+            this.updateStepVelocity (channel, step, row, noteStep.getVelocity ());
+            this.updateStepDuration (channel, step, row, noteStep.getDuration ());
+            this.updateStepGain (channel, step, row, noteStep.getGain ());
+            this.updateStepPan (channel, step, row, noteStep.getPan ());
+            this.updateStepPressure (channel, step, row, noteStep.getPressure ());
+            this.updateStepReleaseVelocity (channel, step, row, noteStep.getReleaseVelocity ());
+            this.updateStepTimbre (channel, step, row, noteStep.getTimbre ());
+            this.updateStepTranspose (channel, step, row, noteStep.getTranspose ());
+
+        }, 100);
+    }
+
+
+    /** {@inheritDoc} */
+    @Override
     public void clearStep (final int channel, final int step, final int row)
     {
         this.getClip ().clearStep (channel, step, row);

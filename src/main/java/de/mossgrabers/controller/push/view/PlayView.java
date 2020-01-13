@@ -65,10 +65,15 @@ public class PlayView extends AbstractPlayView<PushControlSurface, PushConfigura
         final int index = buttonID.ordinal () - ButtonID.SCENE1.ordinal ();
         final IScene scene = this.model.getCurrentTrackBank ().getSceneBank ().getItem (index);
 
-        if (this.surface.isDeletePressed ())
+        if (this.isButtonCombination (ButtonID.DELETE))
         {
-            this.surface.setTriggerConsumed (ButtonID.DELETE);
             scene.remove ();
+            return;
+        }
+
+        if (this.isButtonCombination (ButtonID.DUPLICATE))
+        {
+            scene.duplicate ();
             return;
         }
 
@@ -97,9 +102,8 @@ public class PlayView extends AbstractPlayView<PushControlSurface, PushConfigura
     @Override
     public void onGridNote (final int note, final int velocity)
     {
-        if (this.surface.isDeletePressed ())
+        if (this.isButtonCombination (ButtonID.DELETE))
         {
-            this.surface.setTriggerConsumed (ButtonID.DELETE);
             final int editMidiChannel = this.surface.getConfiguration ().getMidiEditChannel ();
             this.model.getNoteClip (8, 128).clearRow (editMidiChannel, this.keyManager.map (note));
             return;

@@ -55,26 +55,23 @@ public class ClipView extends BaseView
         final ISlot slot = track.getSlotBank ().getItem (padIndex);
 
         final MaschineMikroMk3Configuration configuration = this.surface.getConfiguration ();
-        if (this.surface.isPressed (ButtonID.DUPLICATE))
+        if (this.isButtonCombination (ButtonID.DUPLICATE))
         {
-            this.surface.setTriggerConsumed (ButtonID.DUPLICATE);
             if (track.doesExist ())
                 slot.duplicate ();
             return;
         }
 
         // Stop clip
-        if (this.surface.isPressed (ButtonID.STOP))
+        if (this.isButtonCombination (ButtonID.STOP))
         {
-            this.surface.setTriggerConsumed (ButtonID.STOP);
             track.stop ();
             return;
         }
 
         // Browse for clips
-        if (this.surface.isPressed (ButtonID.BROWSE))
+        if (this.isButtonCombination (ButtonID.BROWSE))
         {
-            this.surface.setTriggerConsumed (ButtonID.BROWSE);
             if (!track.doesExist ())
                 return;
             this.model.getBrowser ().replace (slot);
@@ -85,9 +82,8 @@ public class ClipView extends BaseView
         }
 
         // Delete selected clip
-        if (this.surface.isDeletePressed ())
+        if (this.isButtonCombination (ButtonID.DELETE))
         {
-            this.surface.setTriggerConsumed (ButtonID.DELETE);
             slot.remove ();
             return;
         }

@@ -12,13 +12,8 @@ import de.mossgrabers.framework.command.core.TriggerCommand;
 import de.mossgrabers.framework.controller.ButtonID;
 import de.mossgrabers.framework.daw.IModel;
 import de.mossgrabers.framework.daw.ISceneBank;
-import de.mossgrabers.framework.daw.ITrackBank;
 import de.mossgrabers.framework.daw.data.IScene;
-import de.mossgrabers.framework.daw.data.ITrack;
 import de.mossgrabers.framework.mode.AbstractMode;
-import de.mossgrabers.framework.mode.BrowserActivator;
-import de.mossgrabers.framework.mode.ModeManager;
-import de.mossgrabers.framework.mode.Modes;
 import de.mossgrabers.framework.utils.ButtonEvent;
 import de.mossgrabers.framework.view.AbstractSessionView;
 import de.mossgrabers.framework.view.SessionColor;
@@ -32,9 +27,6 @@ import de.mossgrabers.framework.view.TransposeView;
  */
 public class SessionView extends AbstractSessionView<PushControlSurface, PushConfiguration> implements TransposeView
 {
-    private final BrowserActivator<PushControlSurface, PushConfiguration> browserModeActivator;
-
-
     /**
      * Constructor.
      *
@@ -44,8 +36,6 @@ public class SessionView extends AbstractSessionView<PushControlSurface, PushCon
     public SessionView (final PushControlSurface surface, final IModel model)
     {
         super ("Session", surface, model, 8, 8, true);
-
-        this.browserModeActivator = new BrowserActivator<> (Modes.BROWSER, model, surface);
 
         final boolean isPush2 = this.surface.getConfiguration ().isPush2 ();
         final int redLo = isPush2 ? PushColorManager.PUSH2_COLOR2_RED_LO : PushColorManager.PUSH1_COLOR2_RED_LO;
@@ -78,51 +68,14 @@ public class SessionView extends AbstractSessionView<PushControlSurface, PushCon
             return;
         }
 
-        final int index = note - 36;
-        final int x = index % this.columns;
-        final int y = this.rows - 1 - index / this.columns;
-
-        final boolean flipSession = this.surface.getConfiguration ().isFlipSession ();
-
-        final int t = flipSession ? y : x;
-        final int s = flipSession ? x : y;
-
         // Birds-eye-view navigation
         if (this.surface.isShiftPressed ())
         {
+            final int index = note - 36;
+            final int x = index % this.columns;
+            final int y = this.rows - 1 - index / this.columns;
+
             this.onGridNoteBirdsEyeView (x, y, 0);
-            return;
-        }
-
-        // Duplicate a clip
-        final ITrackBank tb = this.model.getCurrentTrackBank ();
-        final ITrack track = tb.getItem (t);
-        if (this.surface.isPressed (ButtonID.DUPLICATE))
-        {
-            this.surface.setTriggerConsumed (ButtonID.DUPLICATE);
-            if (track.doesExist ())
-                track.getSlotBank ().getItem (s).duplicate ();
-            return;
-        }
-
-        // Stop clip
-        if (this.surface.isPressed (ButtonID.STOP_CLIP))
-        {
-            this.surface.setTriggerConsumed (ButtonID.STOP_CLIP);
-            track.stop ();
-            return;
-        }
-
-        // Browse for clips
-        if (this.surface.isPressed (ButtonID.BROWSE))
-        {
-            this.surface.setTriggerConsumed (ButtonID.BROWSE);
-            if (!track.doesExist ())
-                return;
-            this.model.getBrowser ().replace (track.getSlotBank ().getItem (s));
-            final ModeManager modeManager = this.surface.getModeManager ();
-            if (!modeManager.isActiveOrTempMode (Modes.BROWSER))
-                this.browserModeActivator.activate ();
             return;
         }
 

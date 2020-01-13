@@ -8,8 +8,10 @@ import de.mossgrabers.framework.configuration.Configuration;
 import de.mossgrabers.framework.controller.ButtonID;
 import de.mossgrabers.framework.controller.IControlSurface;
 import de.mossgrabers.framework.controller.grid.IPadGrid;
+import de.mossgrabers.framework.controller.hardware.IHwButton;
 import de.mossgrabers.framework.daw.IModel;
 import de.mossgrabers.framework.daw.INoteClip;
+import de.mossgrabers.framework.daw.IStepInfo;
 import de.mossgrabers.framework.daw.data.ITrack;
 import de.mossgrabers.framework.scale.Scales;
 import de.mossgrabers.framework.utils.ButtonEvent;
@@ -25,13 +27,14 @@ import de.mossgrabers.framework.utils.ButtonEvent;
  */
 public abstract class AbstractNoteSequencerView<S extends IControlSurface<C>, C extends Configuration> extends AbstractSequencerView<S, C> implements TransposeView
 {
-    protected int   numDisplayRows = 8;
-    protected int   numDisplayCols;
-    protected int   startKey       = 36;
-    protected int   loopPadPressed = -1;
-    protected int   offsetY;
+    protected int         numDisplayRows = 8;
+    protected int         numDisplayCols;
+    protected int         startKey       = 36;
+    protected int         loopPadPressed = -1;
+    protected int         offsetY;
+    protected IStepInfo   copyNote;
 
-    private boolean useTrackColor;
+    private final boolean useTrackColor;
 
 
     /**
@@ -96,21 +99,61 @@ public abstract class AbstractNoteSequencerView<S extends IControlSurface<C>, C 
         final int x = index % 8;
         final int y = index / 8;
 
-        final INoteClip clip = this.getClip ();
         if (y < this.numSequencerRows)
         {
-            // Toggle the note on up, so we can intercept the long presses
-            if (velocity == 0)
-            {
-                final int vel = this.configuration.isAccentActive () ? this.configuration.getFixedAccentValue () : this.surface.getButton (ButtonID.get (ButtonID.PAD1, index)).getPressedVelocity ();
-                this.getClip ().toggleStep (this.configuration.getMidiEditChannel (), x, this.keyManager.map (y), vel);
-            }
+            this.handleNoteArea (index, x, y, velocity);
             return;
         }
 
         // Clip length/loop area
-        final int pad = x;
+        this.handleLoopArea (x, velocity);
+    }
 
+
+    /**
+     * Handle button presses in the note area of the note sequencer.
+     *
+     * @param index The index of the pad
+     * @param x The x position of the pad in the sequencer grid
+     * @param y The y position of the pad in the sequencer grid
+     * @param velocity The velocity
+     */
+    protected void handleNoteArea (final int index, final int x, final int y, final int velocity)
+    {
+        // Toggle the note on up, so we can intercept the long presses
+        if (velocity != 0)
+            return;
+
+        final INoteClip clip = this.getClip ();
+        final int channel = this.configuration.getMidiEditChannel ();
+        final int mappedY = this.keyManager.map (y);
+
+        // Handle note duplicate function
+        final IHwButton duplicateButton = this.surface.getButton (ButtonID.DUPLICATE);
+        if (duplicateButton != null && duplicateButton.isPressed ())
+        {
+            duplicateButton.setConsumed ();
+            final IStepInfo noteStep = clip.getStep (channel, x, mappedY);
+            if (noteStep.getState () == IStepInfo.NOTE_START)
+                this.copyNote = noteStep;
+            else if (this.copyNote != null)
+                clip.setStep (channel, x, mappedY, this.copyNote);
+            return;
+        }
+
+        final int vel = this.configuration.isAccentActive () ? this.configuration.getFixedAccentValue () : this.surface.getButton (ButtonID.get (ButtonID.PAD1, index)).getPressedVelocity ();
+        clip.toggleStep (channel, x, mappedY, vel);
+    }
+
+
+    /**
+     * Handle button presses in the loop area of the note sequencer.
+     *
+     * @param pad The pressed pad
+     * @param velocity The velocity
+     */
+    protected void handleLoopArea (final int pad, final int velocity)
+    {
         // Button pressed?
         if (velocity > 0)
         {
@@ -123,6 +166,7 @@ public abstract class AbstractNoteSequencerView<S extends IControlSurface<C>, C 
         if (this.loopPadPressed == -1)
             return;
 
+        final INoteClip clip = this.getClip ();
         if (pad == this.loopPadPressed && pad != clip.getEditPage ())
         {
             // Only single pad pressed -> page selection

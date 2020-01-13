@@ -14,6 +14,7 @@ import de.mossgrabers.controller.kontrol.mkii.mode.SendMode;
 import de.mossgrabers.controller.kontrol.mkii.view.ControlView;
 import de.mossgrabers.framework.command.continuous.KnobRowModeCommand;
 import de.mossgrabers.framework.command.core.NopCommand;
+import de.mossgrabers.framework.command.core.TriggerCommand;
 import de.mossgrabers.framework.command.trigger.application.RedoCommand;
 import de.mossgrabers.framework.command.trigger.application.UndoCommand;
 import de.mossgrabers.framework.command.trigger.clip.NewCommand;
@@ -60,6 +61,8 @@ import de.mossgrabers.framework.utils.FrameworkException;
 import de.mossgrabers.framework.utils.OperatingSystem;
 import de.mossgrabers.framework.view.ViewManager;
 import de.mossgrabers.framework.view.Views;
+
+import java.util.function.IntSupplier;
 
 
 /**
@@ -324,6 +327,24 @@ public class KontrolProtocolControllerSetup extends AbstractControllerSetup<Kont
             }, BindType.CC, 15, KontrolProtocolControlSurface.KONTROL_TRACK_PAN + i);
             knob2.addOutput ( () -> this.getKnobValue (knobMidi2), value -> surface.setTrigger (15, knobMidi2, value));
         }
+    }
+
+
+    /** {@inheritDoc} */
+    @Override
+    protected void addButton (final KontrolProtocolControlSurface surface, final ButtonID buttonID, final String label, final TriggerCommand command, final int midiChannel, final int midiControl, final IntSupplier supplier, final String... colorIds)
+    {
+        super.addButton (surface, buttonID, label, (event, velocity) -> {
+
+            // Since there is only a down event from the device, long has no meaning
+            if (event == ButtonEvent.LONG)
+                return;
+
+            // Add missing UP event
+            command.execute (ButtonEvent.DOWN, velocity);
+            command.execute (ButtonEvent.UP, velocity);
+
+        }, midiChannel, midiControl, supplier, colorIds);
     }
 
 

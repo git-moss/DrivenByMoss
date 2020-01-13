@@ -41,16 +41,14 @@ public class SceneView extends BaseView
     {
         final IScene scene = this.model.getSceneBank ().getItem (padIndex);
 
-        if (this.surface.isPressed (ButtonID.DUPLICATE))
+        if (this.isButtonCombination (ButtonID.DUPLICATE))
         {
-            this.surface.setTriggerConsumed (ButtonID.DUPLICATE);
             scene.duplicate ();
             return;
         }
 
-        if (this.surface.isDeletePressed ())
+        if (this.isButtonCombination (ButtonID.DELETE))
         {
-            this.surface.setTriggerConsumed (ButtonID.DELETE);
             scene.remove ();
             return;
         }

@@ -54,6 +54,7 @@ public class ShiftView extends AbstractView<LaunchpadControlSurface, LaunchpadCo
     public void drawGrid ()
     {
         final IPadGrid padGrid = this.surface.getPadGrid ();
+        final LaunchpadConfiguration configuration = this.surface.getConfiguration ();
 
         padGrid.light (97, LaunchpadColorManager.LAUNCHPAD_COLOR_GREEN);
         padGrid.light (98, LaunchpadColorManager.LAUNCHPAD_COLOR_GREEN_SPRING);
@@ -108,37 +109,51 @@ public class ShiftView extends AbstractView<LaunchpadControlSurface, LaunchpadCo
             return;
         }
 
+        // Record
         padGrid.light (44, LaunchpadColorManager.LAUNCHPAD_COLOR_RED);
         padGrid.light (45, LaunchpadColorManager.LAUNCHPAD_COLOR_ROSE);
 
         for (int i = 46; i < 51; i++)
             padGrid.light (i, LaunchpadColorManager.LAUNCHPAD_COLOR_BLACK);
 
+        // Stop all
         padGrid.light (51, LaunchpadColorManager.LAUNCHPAD_COLOR_RED);
+
+        // Play / New
         padGrid.light (52, LaunchpadColorManager.LAUNCHPAD_COLOR_GREEN);
         padGrid.light (53, LaunchpadColorManager.LAUNCHPAD_COLOR_GREEN_SPRING);
 
         padGrid.light (54, LaunchpadColorManager.LAUNCHPAD_COLOR_BLACK);
         padGrid.light (59, LaunchpadColorManager.LAUNCHPAD_COLOR_BLACK);
 
-        padGrid.light (60, LaunchpadColorManager.LAUNCHPAD_COLOR_BLUE);
+        // Duplicate / Toggle loop
+        if (configuration.isDuplicateModeActive ())
+            padGrid.light (60, LaunchpadColorManager.LAUNCHPAD_COLOR_BLUE, LaunchpadColorManager.LAUNCHPAD_COLOR_OCEAN_BLUE, true);
+        else
+            padGrid.light (60, LaunchpadColorManager.LAUNCHPAD_COLOR_BLUE);
         padGrid.light (61, LaunchpadColorManager.LAUNCHPAD_COLOR_BLUE_ORCHID);
 
         padGrid.light (62, LaunchpadColorManager.LAUNCHPAD_COLOR_BLACK);
         padGrid.light (67, LaunchpadColorManager.LAUNCHPAD_COLOR_BLACK);
 
+        // Quantize
         padGrid.light (68, LaunchpadColorManager.LAUNCHPAD_COLOR_GREEN);
         padGrid.light (69, LaunchpadColorManager.LAUNCHPAD_COLOR_BLACK);
 
         padGrid.light (70, LaunchpadColorManager.LAUNCHPAD_COLOR_BLACK);
         padGrid.light (75, LaunchpadColorManager.LAUNCHPAD_COLOR_BLACK);
 
-        padGrid.light (76, LaunchpadColorManager.LAUNCHPAD_COLOR_MAGENTA);
+        // Delete
+        if (configuration.isDeleteModeActive ())
+            padGrid.light (76, LaunchpadColorManager.LAUNCHPAD_COLOR_MAGENTA, LaunchpadColorManager.LAUNCHPAD_COLOR_MAGENTA_PINK, true);
+        else
+            padGrid.light (76, LaunchpadColorManager.LAUNCHPAD_COLOR_MAGENTA);
         padGrid.light (77, LaunchpadColorManager.LAUNCHPAD_COLOR_BLACK);
 
         padGrid.light (78, LaunchpadColorManager.LAUNCHPAD_COLOR_BLACK);
         padGrid.light (83, LaunchpadColorManager.LAUNCHPAD_COLOR_BLACK);
 
+        // Undo / Redo
         padGrid.light (84, LaunchpadColorManager.LAUNCHPAD_COLOR_AMBER);
         padGrid.light (85, LaunchpadColorManager.LAUNCHPAD_COLOR_AMBER_YELLOW);
 
@@ -147,6 +162,7 @@ public class ShiftView extends AbstractView<LaunchpadControlSurface, LaunchpadCo
         for (int i = 88; i < 92; i++)
             padGrid.light (i, LaunchpadColorManager.LAUNCHPAD_COLOR_BLACK);
 
+        // Metronome / Tap Tempo
         padGrid.light (92, LaunchpadColorManager.LAUNCHPAD_COLOR_GREEN);
         padGrid.light (93, LaunchpadColorManager.LAUNCHPAD_COLOR_GREEN_SPRING);
 
@@ -254,7 +270,7 @@ public class ShiftView extends AbstractView<LaunchpadControlSurface, LaunchpadCo
         switch (note)
         {
             case 92:
-                this.executeNormal (ButtonID.METRONOME, ButtonEvent.DOWN);
+                this.executeNormal (ButtonID.METRONOME, ButtonEvent.UP);
                 this.surface.scheduleTask ( () -> this.surface.getDisplay ().notify ("Metronome: " + (this.model.getTransport ().isMetronomeOn () ? "On" : "Off")), 100);
                 break;
             case 93:
@@ -270,16 +286,16 @@ public class ShiftView extends AbstractView<LaunchpadControlSurface, LaunchpadCo
                 this.surface.getDisplay ().notify ("Redo");
                 break;
             case 76:
-                this.executeNormal (ButtonID.DELETE, ButtonEvent.UP);
-                this.surface.getDisplay ().notify ("Delete");
+                configuration.toggleDeleteModeActive ();
+                this.surface.getDisplay ().notify ("Delete " + (configuration.isDeleteModeActive () ? "Active" : "Off"));
                 break;
             case 68:
                 this.executeNormal (ButtonID.QUANTIZE, ButtonEvent.DOWN);
                 this.surface.getDisplay ().notify ("Quantize");
                 break;
             case 60:
-                this.executeNormal (ButtonID.DUPLICATE, ButtonEvent.UP);
-                this.surface.getDisplay ().notify ("Duplicate");
+                configuration.toggleDuplicateModeActive ();
+                this.surface.getDisplay ().notify ("Duplicate " + (configuration.isDuplicateModeActive () ? "Active" : "Off"));
                 break;
             case 61:
                 this.executeShifted (ButtonID.DUPLICATE, ButtonEvent.DOWN);

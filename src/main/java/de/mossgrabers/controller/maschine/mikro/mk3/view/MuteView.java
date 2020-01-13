@@ -40,16 +40,14 @@ public class MuteView extends BaseView
     {
         final ITrack track = this.model.getCurrentTrackBank ().getItem (padIndex);
 
-        if (this.surface.isPressed (ButtonID.DUPLICATE))
+        if (this.isButtonCombination (ButtonID.DUPLICATE))
         {
-            this.surface.setTriggerConsumed (ButtonID.DUPLICATE);
             track.duplicate ();
             return;
         }
 
-        if (this.surface.isPressed (ButtonID.DELETE))
+        if (this.isButtonCombination (ButtonID.DELETE))
         {
-            this.surface.setTriggerConsumed (ButtonID.DELETE);
             track.remove ();
             return;
         }

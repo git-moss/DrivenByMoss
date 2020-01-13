@@ -26,7 +26,7 @@ public interface IColorSetting extends ISetting<ColorEx>
 
     /**
      * Set the color.
-     * 
+     *
      * @param rgb The 3 rgb values (0..1)
      */
     void set (final double [] rgb);

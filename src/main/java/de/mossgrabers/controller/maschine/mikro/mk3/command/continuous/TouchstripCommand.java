@@ -131,7 +131,7 @@ public class TouchstripCommand extends AbstractContinuousCommand<MaschineMikroMk
     /**
      * Reset the ribbon LED position to its default value depending on the currently selected ribbon
      * mode.
-     * 
+     *
      * @param ribbonMode The mode to reset
      */
     public void resetRibbonValue (final int ribbonMode)

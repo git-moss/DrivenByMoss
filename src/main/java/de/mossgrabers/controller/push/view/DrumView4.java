@@ -8,6 +8,7 @@ import de.mossgrabers.controller.push.controller.PushControlSurface;
 import de.mossgrabers.controller.push.mode.NoteMode;
 import de.mossgrabers.framework.controller.ButtonID;
 import de.mossgrabers.framework.controller.grid.IPadGrid;
+import de.mossgrabers.framework.controller.hardware.IHwButton;
 import de.mossgrabers.framework.daw.IModel;
 import de.mossgrabers.framework.daw.INoteClip;
 import de.mossgrabers.framework.daw.IStepInfo;
@@ -57,12 +58,28 @@ public class DrumView4 extends DrumViewBase
         final int y = index / 8;
 
         final int sound = y % 4 + this.soundOffset;
-        final int col = 8 * (1 - y / 4) + x;
-
         final int offsetY = this.scales.getDrumOffset ();
-        final int editMidiChannel = this.configuration.getMidiEditChannel ();
+        final int col = 8 * (1 - y / 4) + x;
+        final int row = offsetY + this.selectedPad + sound;
+
+        final int channel = this.configuration.getMidiEditChannel ();
         final int vel = this.configuration.isAccentActive () ? this.configuration.getFixedAccentValue () : this.surface.getButton (ButtonID.get (ButtonID.PAD1, index)).getPressedVelocity ();
-        this.getClip ().toggleStep (editMidiChannel, col, offsetY + this.selectedPad + sound, vel);
+        final INoteClip clip = this.getClip ();
+
+        // Handle note duplicate function
+        final IHwButton duplicateButton = this.surface.getButton (ButtonID.DUPLICATE);
+        if (duplicateButton != null && duplicateButton.isPressed ())
+        {
+            duplicateButton.setConsumed ();
+            final IStepInfo noteStep = clip.getStep (channel, col, row);
+            if (noteStep.getState () == IStepInfo.NOTE_START)
+                this.copyNote = noteStep;
+            else if (this.copyNote != null)
+                clip.setStep (channel, col, row, this.copyNote);
+            return;
+        }
+
+        clip.toggleStep (channel, col, row, vel);
     }
 
 

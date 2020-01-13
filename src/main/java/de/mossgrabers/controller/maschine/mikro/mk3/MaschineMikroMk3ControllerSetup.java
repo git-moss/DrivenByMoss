@@ -492,12 +492,12 @@ public class MaschineMikroMk3ControllerSetup extends AbstractControllerSetup<Mas
     }
 
 
-    private boolean isRibbonMode (int... modes)
+    private boolean isRibbonMode (final int... modes)
     {
         final int ribbonMode = this.configuration.getRibbonMode ();
-        for (int i = 0; i < modes.length; i++)
+        for (final int mode: modes)
         {
-            if (ribbonMode == modes[i])
+            if (ribbonMode == mode)
                 return true;
         }
         return false;

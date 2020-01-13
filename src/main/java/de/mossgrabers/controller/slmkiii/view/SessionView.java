@@ -78,9 +78,8 @@ public class SessionView extends AbstractSessionView<SLMkIIIControlSurface, SLMk
 
         // Duplicate a clip
         final ITrack track = tb.getItem (t);
-        if (this.surface.isPressed (ButtonID.DUPLICATE))
+        if (this.isButtonCombination (ButtonID.DUPLICATE))
         {
-            this.surface.setTriggerConsumed (ButtonID.DUPLICATE);
             if (track.doesExist ())
                 track.getSlotBank ().getItem (s).duplicate ();
             return;

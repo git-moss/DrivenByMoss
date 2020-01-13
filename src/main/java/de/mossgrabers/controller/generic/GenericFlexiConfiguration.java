@@ -297,7 +297,6 @@ public class GenericFlexiConfiguration extends AbstractConfiguration
         }
 
         this.slotSelectionSetting = globalSettings.getEnumSetting ("Selected:", category, slotEntries, slotEntries[0]);
-        this.slotSelectionSetting.addValueObserver (this::selectSlot);
 
         ///////////////////////////////////////////////
         // Selected Slot - MIDI trigger
@@ -411,6 +410,8 @@ public class GenericFlexiConfiguration extends AbstractConfiguration
         });
 
         this.activateKnobSpeedSetting (globalSettings, 6);
+
+        this.slotSelectionSetting.addValueObserver (this::selectSlot);
 
         // Load last configuration
 

@@ -76,6 +76,7 @@ public class SessionView extends AbstractSessionView<LaunchpadControlSurface, La
     {
         final ModeManager modeManager = this.surface.getModeManager ();
         final Modes activeModeId = modeManager.getActiveOrTempModeId ();
+
         // Block 1st row if mode is active
         final boolean isNotRow1 = note >= 44;
         if (activeModeId == null || isNotRow1)
@@ -87,22 +88,6 @@ public class SessionView extends AbstractSessionView<LaunchpadControlSurface, La
             }
 
             final int n = note - (activeModeId != null ? 8 : 0);
-            final int index = n - 36;
-            final int t = index % this.columns;
-
-            // Duplicate a clip
-            if (this.surface.isPressed (ButtonID.DUPLICATE))
-            {
-                this.surface.setTriggerConsumed (ButtonID.DUPLICATE);
-                final ITrackBank tb = this.model.getCurrentTrackBank ();
-                final ITrack track = tb.getItem (t);
-                if (track.doesExist ())
-                {
-                    final int s = this.rows - 1 - index / this.columns;
-                    track.getSlotBank ().getItem (s).duplicate ();
-                }
-                return;
-            }
 
             super.onGridNote (n, velocity);
             return;
@@ -239,6 +224,30 @@ public class SessionView extends AbstractSessionView<LaunchpadControlSurface, La
     }
 
 
+    /** {@inheritDoc} */
+    @Override
+    protected boolean isButtonCombination (final ButtonID buttonID)
+    {
+        if (super.isButtonCombination (buttonID))
+            return true;
+
+        final LaunchpadConfiguration configuration = this.surface.getConfiguration ();
+        if (buttonID == ButtonID.DELETE && configuration.isDeleteModeActive ())
+        {
+            configuration.toggleDeleteModeActive ();
+            return true;
+        }
+
+        if (buttonID == ButtonID.DUPLICATE && configuration.isDuplicateModeActive ())
+        {
+            configuration.toggleDuplicateModeActive ();
+            return true;
+        }
+
+        return false;
+    }
+
+
     /**
      * Handle pad presses in the birds eye view.
      *
@@ -268,9 +277,14 @@ public class SessionView extends AbstractSessionView<LaunchpadControlSurface, La
         final int index = note - 36;
         final ITrack track = this.model.getCurrentTrackBank ().getItem (index);
 
-        if (this.surface.isPressed (ButtonID.DUPLICATE))
+        if (this.isButtonCombination (ButtonID.DELETE))
         {
-            this.surface.setTriggerConsumed (ButtonID.DUPLICATE);
+            track.remove ();
+            return;
+        }
+
+        if (this.isButtonCombination (ButtonID.DUPLICATE))
+        {
             track.duplicate ();
             return;
         }

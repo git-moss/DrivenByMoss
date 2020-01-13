@@ -78,6 +78,17 @@ public interface INoteClip extends IClip
 
 
     /**
+     * Set a step and copy all data from the given note step.
+     *
+     * @param channel The MIDI channel
+     * @param step The step
+     * @param row The note row
+     * @param noteStep The note step
+     */
+    void setStep (int channel, int step, int row, IStepInfo noteStep);
+
+
+    /**
      * Clear a note at a step.
      *
      * @param channel The MIDI channel

@@ -49,10 +49,8 @@ public class DrumView extends DrumViewBase
     @Override
     protected void handleButtonCombinations (final int playedPad)
     {
-        if (this.surface.isPressed (ButtonID.BROWSE))
+        if (this.isButtonCombination (ButtonID.BROWSE))
         {
-            this.surface.setTriggerConsumed (ButtonID.BROWSE);
-
             final ICursorDevice primary = this.model.getInstrumentDevice ();
             if (!primary.hasDrumPads ())
                 return;

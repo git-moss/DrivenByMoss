@@ -50,10 +50,8 @@ public class DrumView64 extends AbstractDrumView64<PushControlSurface, PushConfi
     @Override
     protected void handleButtonCombinations (final int playedPad)
     {
-        if (this.surface.isPressed (ButtonID.BROWSE))
+        if (this.isButtonCombination (ButtonID.BROWSE))
         {
-            this.surface.setTriggerConsumed (ButtonID.BROWSE);
-
             final ICursorDevice primary = this.model.getDrumDevice64 ();
             if (!primary.hasDrumPads ())
                 return;
@@ -154,10 +152,15 @@ public class DrumView64 extends AbstractDrumView64<PushControlSurface, PushConfi
         final int index = buttonID.ordinal () - ButtonID.SCENE1.ordinal ();
         final IScene scene = this.model.getCurrentTrackBank ().getSceneBank ().getItem (index);
 
-        if (this.surface.isDeletePressed ())
+        if (this.isButtonCombination (ButtonID.DELETE))
         {
-            this.surface.setTriggerConsumed (ButtonID.DELETE);
             scene.remove ();
+            return;
+        }
+
+        if (this.isButtonCombination (ButtonID.DUPLICATE))
+        {
+            scene.duplicate ();
             return;
         }
 
