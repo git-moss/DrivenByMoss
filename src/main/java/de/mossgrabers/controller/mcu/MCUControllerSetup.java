@@ -132,7 +132,6 @@ public class MCUControllerSetup extends AbstractControllerSetup<MCUControlSurfac
         MODE_ACRONYMS.put (Modes.DEVICE_PARAMS, "DC");
         MODE_ACRONYMS.put (Modes.BROWSER, "BR");
         MODE_ACRONYMS.put (Modes.MARKERS, "MK");
-
     }
 
     private final int [] masterVuValues   = new int [2];
@@ -339,7 +338,7 @@ public class MCUControllerSetup extends AbstractControllerSetup<MCUControlSurfac
         this.addButton (ButtonID.PLAY, "Play", new PlayCommand<> (this.model, surface), MCUControlSurface.MCU_PLAY, t::isPlaying);
         this.addButton (ButtonID.RECORD, "Record", new MCURecordCommand (this.model, surface), MCUControlSurface.MCU_RECORD, () -> {
             final boolean isOn = this.isRecordShifted (surface) ? t.isLauncherOverdub () : t.isRecording ();
-            return isOn ? 1 : 0;
+            return isOn ? MCU_BUTTON_STATE_ON : MCU_BUTTON_STATE_OFF;
         });
 
         this.addButton (ButtonID.SCRUB, "Scrub", new ScrubCommand (this.model, surface), MCUControlSurface.MCU_SCRUB, () -> surface.getModeManager ().isActiveOrTempMode (Modes.DEVICE_PARAMS));
