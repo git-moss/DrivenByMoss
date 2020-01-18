@@ -802,6 +802,14 @@ public abstract class AbstractControlSurface<C extends Configuration> implements
     }
 
 
+    /** {@inheritDoc} */
+    @Override
+    public IHwSurfaceFactory getSurfaceFactory ()
+    {
+        return this.surfaceFactory;
+    }
+
+
     /**
      * Handle a midi note which belongs to the grid.
      *

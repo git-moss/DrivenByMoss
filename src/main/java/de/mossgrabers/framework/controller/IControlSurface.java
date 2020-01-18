@@ -18,6 +18,7 @@ import de.mossgrabers.framework.controller.hardware.IHwFader;
 import de.mossgrabers.framework.controller.hardware.IHwLight;
 import de.mossgrabers.framework.controller.hardware.IHwPianoKeyboard;
 import de.mossgrabers.framework.controller.hardware.IHwRelativeKnob;
+import de.mossgrabers.framework.controller.hardware.IHwSurfaceFactory;
 import de.mossgrabers.framework.controller.valuechanger.RelativeEncoding;
 import de.mossgrabers.framework.daw.midi.IMidiInput;
 import de.mossgrabers.framework.daw.midi.IMidiOutput;
@@ -493,4 +494,12 @@ public interface IControlSurface<C extends Configuration>
      * @param message The message to print
      */
     void errorln (String message);
+
+
+    /**
+     * Get the surface factory.
+     *
+     * @return The surface factory
+     */
+    IHwSurfaceFactory getSurfaceFactory ();
 }

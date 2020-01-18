@@ -27,10 +27,10 @@ public abstract class AbstractHwContinuousControl extends AbstractHwInputControl
     protected TriggerCommand    touchCommand;
     protected PitchbendCommand  pitchbendCommand;
 
-    private ButtonEvent         state;
-    private IntSupplier         supplier;
-    private IntConsumer         consumer;
-    private int                 outputValue           = -1;
+    protected ButtonEvent       state;
+    protected IntSupplier       supplier;
+    protected IntConsumer       consumer;
+    protected int               outputValue           = -1;
 
 
     /**

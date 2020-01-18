@@ -198,10 +198,13 @@ public interface IGraphicsContext
 
     /**
      * Calculates the maximum height of a text which needs to fit into a width.
-     *
+     * 
+     * @param text The text
      * @param maxHeight The maximum height of the text
      * @param maxWidth The maximum width
+     * @param minimumFontSize The minimum font size to return (this might prevent that the text fits
+     *            fully in the given dimensions)
      * @return The text height or -1 if the minimum height of 10 does not fit into the width
      */
-    double calculateFontSize (double maxHeight, double maxWidth);
+    double calculateFontSize (String text, double maxHeight, double maxWidth, double minimumFontSize);
 }

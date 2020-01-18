@@ -163,8 +163,16 @@ public class TrackMode extends AbstractTrackMode
         }
 
         final boolean isEffectTrackBankActive = this.model.isEffectTrackBankActive ();
+        final ISendBank sendBank = t.getSendBank ();
         for (int i = 0; i < end; i++)
-            this.surface.setKnobLED (start + i, MCUControlSurface.KNOB_LED_MODE_WRAP, isEffectTrackBankActive ? 0 : t.getSendBank ().getItem (i).getValue (), upperBound);
+        {
+            final int value;
+            if (!isEffectTrackBankActive && i < sendBank.getItemCount ())
+                value = sendBank.getItem (i).getValue ();
+            else
+                value = 0;
+            this.surface.setKnobLED (start + i, MCUControlSurface.KNOB_LED_MODE_WRAP, value, upperBound);
+        }
     }
 
 

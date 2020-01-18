@@ -126,7 +126,7 @@ public class MidiClipComponent implements IComponent
         final int range = 1 + upperRowWithData - lowerRowWithData;
         final double stepHeight = noteAreaHeight / range;
 
-        final double fontSize = gc.calculateFontSize (stepHeight, stepWidth);
+        final double fontSize = gc.calculateFontSize ("G#5", stepHeight, stepWidth, 12.0);
 
         for (int row = 0; row < range; row++)
         {

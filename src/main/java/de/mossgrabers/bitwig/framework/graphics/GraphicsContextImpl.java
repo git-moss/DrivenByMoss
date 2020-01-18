@@ -235,17 +235,14 @@ public class GraphicsContextImpl implements IGraphicsContext
 
     /** {@inheritDoc} */
     @Override
-    public double calculateFontSize (final double maxHeight, final double maxWidth)
+    public double calculateFontSize (final String text, final double maxHeight, final double maxWidth, final double minimumFontSize)
     {
-        final String maxString = "G#5";
-        final double minSize = 12.0;
-
-        double size = minSize;
+        double size = minimumFontSize;
         double fittingSize = -1;
         while (size < maxHeight)
         {
             this.gc.setFontSize (size);
-            final double width = this.gc.getTextExtents (maxString).getWidth ();
+            final double width = this.gc.getTextExtents (text).getWidth ();
             if (width > maxWidth)
                 break;
             fittingSize = size;

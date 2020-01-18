@@ -7,6 +7,8 @@ package de.mossgrabers.framework.controller;
 import de.mossgrabers.framework.configuration.Configuration;
 import de.mossgrabers.framework.daw.IModel;
 
+import java.util.List;
+
 
 /**
  * Interface to setting up a controller.
@@ -57,6 +59,14 @@ public interface IControllerSetup<S extends IControlSurface<C>, C extends Config
      * @return The surface
      */
     S getSurface (int index);
+
+
+    /**
+     * Get all surfaces of the setup.
+     *
+     * @return The surfaces
+     */
+    List<IControlSurface<?>> getSurfaces ();
 
 
     /**
