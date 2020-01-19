@@ -1,5 +1,5 @@
 // Written by Jürgen Moßgraber - mossgrabers.de
-// (c) 2017-2019
+// (c) 2017-2020
 // Licensed under LGPLv3 - http://www.gnu.org/licenses/lgpl-3.0.txt
 
 package de.mossgrabers.controller.apcmini.view;
@@ -461,6 +461,6 @@ public class ShiftView extends AbstractView<APCminiControlSurface, APCminiConfig
                 return;
             parameterBank.scrollForwards ();
         }
-        this.surface.getDisplay ().notify ("Bank: " + cursorDevice.getParameterPageBank ().getSelectedItem ());
+        this.mvHelper.notifySelectedParameterPage ();
     }
 }

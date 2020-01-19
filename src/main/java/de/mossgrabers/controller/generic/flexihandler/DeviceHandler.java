@@ -1,5 +1,5 @@
 // Written by Jürgen Moßgraber - mossgrabers.de
-// (c) 2017-2019
+// (c) 2017-2020
 // Licensed under LGPLv3 - http://www.gnu.org/licenses/lgpl-3.0.txt
 
 package de.mossgrabers.controller.generic.flexihandler;
@@ -206,7 +206,7 @@ public class DeviceHandler extends AbstractHandler
             parameterBank.scrollForwards ();
         else
             parameterBank.scrollBackwards ();
-        this.surface.getDisplay ().notify (cursorDevice.getParameterPageBank ().getSelectedItem ());
+        this.mvHelper.notifySelectedParameterPage ();
     }
 
 
@@ -224,7 +224,7 @@ public class DeviceHandler extends AbstractHandler
             parameterBank.selectNextPage ();
         else
             parameterBank.selectPreviousPage ();
-        this.surface.getDisplay ().notify (cursorDevice.getParameterPageBank ().getSelectedItem ());
+        this.mvHelper.notifySelectedParameterPage ();
     }
 
 
@@ -251,6 +251,6 @@ public class DeviceHandler extends AbstractHandler
             cursorDevice.selectNext ();
         else
             cursorDevice.selectPrevious ();
-        this.surface.getDisplay ().notify (cursorDevice.getName ());
+        this.mvHelper.notifySelectedDevice ();
     }
 }

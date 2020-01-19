@@ -1,5 +1,5 @@
 // Written by Jürgen Moßgraber - mossgrabers.de
-// (c) 2017-2019
+// (c) 2017-2020
 // Licensed under LGPLv3 - http://www.gnu.org/licenses/lgpl-3.0.txt
 
 package de.mossgrabers.controller.generic.flexihandler;
@@ -176,7 +176,7 @@ public class ModesHandler extends AbstractHandler
                 if (isButtonPressed)
                 {
                     mode.selectItem (command.ordinal () - FlexiCommand.MODES_BUTTON1.ordinal ());
-                    this.notifyName (mode);
+                    this.mvHelper.notifySelectedItem (mode);
                 }
                 break;
 
@@ -184,28 +184,28 @@ public class ModesHandler extends AbstractHandler
                 if (isButtonPressed)
                 {
                     mode.selectNextItem ();
-                    this.notifyName (mode);
+                    this.mvHelper.notifySelectedItem (mode);
                 }
                 break;
             case MODES_PREV_ITEM:
                 if (isButtonPressed)
                 {
                     mode.selectPreviousItem ();
-                    this.notifyName (mode);
+                    this.mvHelper.notifySelectedItem (mode);
                 }
                 break;
             case MODES_NEXT_PAGE:
                 if (isButtonPressed)
                 {
                     mode.selectNextItemPage ();
-                    this.notifyName (mode);
+                    this.mvHelper.notifySelectedItem (mode);
                 }
                 break;
             case MODES_PREV_PAGE:
                 if (isButtonPressed)
                 {
                     mode.selectPreviousItemPage ();
-                    this.notifyName (mode);
+                    this.mvHelper.notifySelectedItem (mode);
                 }
                 break;
             case MODES_SELECT_MODE_TRACK:
@@ -331,11 +331,5 @@ public class ModesHandler extends AbstractHandler
         } while (newModeID >= Modes.SEND1.ordinal () && newModeID <= Modes.SEND8.ordinal () && !trackBank.canEditSend (newModeID - Modes.SEND1.ordinal ()));
 
         this.surface.activateMode (newMode);
-    }
-
-
-    private void notifyName (final Mode mode)
-    {
-        this.host.scheduleTask ( () -> this.surface.getDisplay ().notify (mode.getSelectedItemName ()), 100);
     }
 }

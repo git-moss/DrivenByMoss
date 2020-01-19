@@ -1,5 +1,5 @@
 // Written by Jürgen Moßgraber - mossgrabers.de
-// (c) 2017-2019
+// (c) 2017-2020
 // Licensed under LGPLv3 - http://www.gnu.org/licenses/lgpl-3.0.txt
 
 package de.mossgrabers.controller.generic.flexihandler;
@@ -628,7 +628,7 @@ public class TrackHandler extends AbstractHandler
                 {
                     final ITrack track = trackBank.getItem (command.ordinal () - FlexiCommand.TRACK_1_SELECT.ordinal ());
                     track.select ();
-                    this.surface.getDisplay ().notify (track.getName ());
+                    this.mvHelper.notifySelectedTrack ();
                 }
                 break;
 

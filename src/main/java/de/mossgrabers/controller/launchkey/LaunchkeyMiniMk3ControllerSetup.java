@@ -1,5 +1,5 @@
 // Written by Jürgen Moßgraber - mossgrabers.de
-// (c) 2017-2019
+// (c) 2017-2020
 // Licensed under LGPLv3 - http://www.gnu.org/licenses/lgpl-3.0.txt
 
 package de.mossgrabers.controller.launchkey;
@@ -11,6 +11,7 @@ import de.mossgrabers.controller.launchkey.view.DrumView;
 import de.mossgrabers.controller.launchkey.view.PadModeSelectView;
 import de.mossgrabers.controller.launchkey.view.SessionView;
 import de.mossgrabers.controller.launchkey.view.UserPadView;
+import de.mossgrabers.framework.MVHelper;
 import de.mossgrabers.framework.command.continuous.KnobRowModeCommand;
 import de.mossgrabers.framework.command.core.NopCommand;
 import de.mossgrabers.framework.command.trigger.mode.ModeCursorCommand;
@@ -76,6 +77,8 @@ public class LaunchkeyMiniMk3ControllerSetup extends AbstractControllerSetup<Lau
     };
     // @formatter:on
 
+    private MVHelper<LaunchkeyMiniMk3ControlSurface, LaunchkeyMiniMk3Configuration> mvHelper;
+
 
     /**
      * Constructor.
@@ -131,8 +134,9 @@ public class LaunchkeyMiniMk3ControllerSetup extends AbstractControllerSetup<Lau
 
         final LaunchkeyMiniMk3ControlSurface surface = new LaunchkeyMiniMk3ControlSurface (this.host, this.colorManager, this.configuration, output, input, inputKeys, this::processProgramChangeAction);
         this.surfaces.add (surface);
-
         surface.addPianoKeyboard (25, inputKeys);
+
+        this.mvHelper = new MVHelper<> (this.model, surface);
     }
 
 
@@ -442,12 +446,7 @@ public class LaunchkeyMiniMk3ControllerSetup extends AbstractControllerSetup<Lau
                     currentTrackBank.selectNextPage ();
                 else
                     currentTrackBank.selectPreviousPage ();
-
-                this.host.scheduleTask ( () -> {
-                    final ITrack selectedTrack = currentTrackBank.getSelectedItem ();
-                    if (selectedTrack != null)
-                        this.getSurface ().getDisplay ().notify (selectedTrack.getName ());
-                }, 200);
+                this.mvHelper.notifySelectedTrack ();
                 break;
 
             case DEVICE_PARAMS:
@@ -457,12 +456,7 @@ public class LaunchkeyMiniMk3ControllerSetup extends AbstractControllerSetup<Lau
                     parameterBank.selectNextItem ();
                 else
                     parameterBank.selectPreviousItem ();
-
-                this.host.scheduleTask ( () -> {
-                    final String selectedItem = cursorDevice.getParameterPageBank ().getSelectedItem ();
-                    if (selectedItem != null)
-                        this.getSurface ().getDisplay ().notify (selectedItem);
-                }, 200);
+                this.mvHelper.notifySelectedParameterPage ();
                 break;
 
             default:

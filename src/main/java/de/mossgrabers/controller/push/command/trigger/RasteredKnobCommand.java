@@ -1,5 +1,5 @@
 // Written by Jürgen Moßgraber - mossgrabers.de
-// (c) 2017-2019
+// (c) 2017-2020
 // Licensed under LGPLv3 - http://www.gnu.org/licenses/lgpl-3.0.txt
 
 package de.mossgrabers.controller.push.command.trigger;
@@ -48,7 +48,7 @@ public class RasteredKnobCommand extends TempoCommand<PushControlSurface, PushCo
 
         super.execute (value);
 
-        this.displayTempo ();
+        this.mvHelper.notifyTempo ();
     }
 
 
@@ -59,12 +59,6 @@ public class RasteredKnobCommand extends TempoCommand<PushControlSurface, PushCo
         final boolean activate = event != ButtonEvent.UP;
         this.transport.setTempoIndication (activate);
         if (activate)
-            this.displayTempo ();
-    }
-
-
-    private void displayTempo ()
-    {
-        this.surface.scheduleTask ( () -> this.surface.getDisplay ().notify ("Tempo: " + this.transport.formatTempo (this.transport.getTempo ())), 100);
+            this.mvHelper.notifyTempo ();
     }
 }

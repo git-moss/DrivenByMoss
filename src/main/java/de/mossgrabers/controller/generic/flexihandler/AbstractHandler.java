@@ -1,11 +1,12 @@
 // Written by Jürgen Moßgraber - mossgrabers.de
-// (c) 2017-2019
+// (c) 2017-2020
 // Licensed under LGPLv3 - http://www.gnu.org/licenses/lgpl-3.0.txt
 
 package de.mossgrabers.controller.generic.flexihandler;
 
 import de.mossgrabers.controller.generic.GenericFlexiConfiguration;
 import de.mossgrabers.controller.generic.controller.GenericFlexiControlSurface;
+import de.mossgrabers.framework.MVHelper;
 import de.mossgrabers.framework.controller.valuechanger.IValueChanger;
 import de.mossgrabers.framework.daw.IModel;
 
@@ -17,22 +18,23 @@ import de.mossgrabers.framework.daw.IModel;
  */
 public abstract class AbstractHandler implements IFlexiCommandHandler
 {
-    protected static final int                 KNOB_MODE_ABSOLUTE        = 0;
-    protected static final int                 KNOB_MODE_RELATIVE1       = 1;
-    protected static final int                 KNOB_MODE_RELATIVE2       = 2;
-    protected static final int                 KNOB_MODE_RELATIVE3       = 3;
-    protected static final int                 KNOB_MODE_ABSOLUTE_TOGGLE = 4;
+    protected static final int                                                      KNOB_MODE_ABSOLUTE        = 0;
+    protected static final int                                                      KNOB_MODE_RELATIVE1       = 1;
+    protected static final int                                                      KNOB_MODE_RELATIVE2       = 2;
+    protected static final int                                                      KNOB_MODE_RELATIVE3       = 3;
+    protected static final int                                                      KNOB_MODE_ABSOLUTE_TOGGLE = 4;
 
-    protected static final int                 SCROLL_RATE               = 6;
+    protected static final int                                                      SCROLL_RATE               = 6;
 
-    protected final IValueChanger              relative2ValueChanger;
-    protected final IValueChanger              relative3ValueChanger;
+    protected final IValueChanger                                                   relative2ValueChanger;
+    protected final IValueChanger                                                   relative3ValueChanger;
 
-    protected final IModel                     model;
-    protected final GenericFlexiControlSurface surface;
-    protected final GenericFlexiConfiguration  configuration;
+    protected final IModel                                                          model;
+    protected final MVHelper<GenericFlexiControlSurface, GenericFlexiConfiguration> mvHelper;
+    protected final GenericFlexiControlSurface                                      surface;
+    protected final GenericFlexiConfiguration                                       configuration;
 
-    private int                                movementCounter           = 0;
+    private int                                                                     movementCounter           = 0;
 
 
     /**
@@ -49,6 +51,7 @@ public abstract class AbstractHandler implements IFlexiCommandHandler
         this.model = model;
         this.surface = surface;
         this.configuration = configuration;
+        this.mvHelper = new MVHelper<> (model, surface);
         this.relative2ValueChanger = relative2ValueChanger;
         this.relative3ValueChanger = relative3ValueChanger;
     }

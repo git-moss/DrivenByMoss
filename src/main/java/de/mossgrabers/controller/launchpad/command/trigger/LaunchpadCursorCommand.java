@@ -1,5 +1,5 @@
 // Written by Jürgen Moßgraber - mossgrabers.de
-// (c) 2017-2019
+// (c) 2017-2020
 // Licensed under LGPLv3 - http://www.gnu.org/licenses/lgpl-3.0.txt
 
 package de.mossgrabers.controller.launchpad.command.trigger;
@@ -197,7 +197,7 @@ public class LaunchpadCursorCommand extends CursorCommand<LaunchpadControlSurfac
             case DEVICE:
                 final ICursorDevice cursorDevice = this.model.getCursorDevice ();
                 cursorDevice.getParameterBank ().scrollBackwards ();
-                this.model.getHost ().scheduleTask ( () -> this.surface.getDisplay ().notify (cursorDevice.getParameterPageBank ().getSelectedItem ()), 100);
+                this.mvHelper.notifySelectedParameterPage ();
                 break;
 
             case BROWSER:
@@ -258,7 +258,7 @@ public class LaunchpadCursorCommand extends CursorCommand<LaunchpadControlSurfac
             case DEVICE:
                 final ICursorDevice cursorDevice = this.model.getCursorDevice ();
                 cursorDevice.getParameterBank ().scrollForwards ();
-                this.model.getHost ().scheduleTask ( () -> this.surface.getDisplay ().notify (cursorDevice.getParameterPageBank ().getSelectedItem ()), 100);
+                this.mvHelper.notifySelectedParameterPage ();
                 break;
 
             case BROWSER:
@@ -306,6 +306,7 @@ public class LaunchpadCursorCommand extends CursorCommand<LaunchpadControlSurfac
 
             case DEVICE:
                 this.model.getCursorDevice ().selectPrevious ();
+                this.mvHelper.notifySelectedDevice ();
                 break;
 
             case BROWSER:
@@ -351,6 +352,7 @@ public class LaunchpadCursorCommand extends CursorCommand<LaunchpadControlSurfac
 
             case DEVICE:
                 this.model.getCursorDevice ().selectNext ();
+                this.mvHelper.notifySelectedDevice ();
                 break;
 
             case BROWSER:

@@ -1,5 +1,5 @@
 // Written by Jürgen Moßgraber - mossgrabers.de
-// (c) 2017-2019
+// (c) 2017-2020
 // Licensed under LGPLv3 - http://www.gnu.org/licenses/lgpl-3.0.txt
 
 package de.mossgrabers.controller.maschine.mikro.mk3.view;
@@ -92,11 +92,11 @@ public class ParameterView extends BaseView
         {
             case 0:
                 cursorDevice.getParameterBank ().scrollBackwards ();
-                this.model.getHost ().scheduleTask ( () -> this.surface.getDisplay ().notify (cursorDevice.getParameterPageBank ().getSelectedItem ()), 200);
+                this.mvHelper.notifySelectedParameterPage ();
                 break;
             case 1:
                 cursorDevice.getParameterBank ().scrollForwards ();
-                this.model.getHost ().scheduleTask ( () -> this.surface.getDisplay ().notify (cursorDevice.getParameterPageBank ().getSelectedItem ()), 200);
+                this.mvHelper.notifySelectedParameterPage ();
                 break;
             case 2:
                 cursorDevice.selectPrevious ();

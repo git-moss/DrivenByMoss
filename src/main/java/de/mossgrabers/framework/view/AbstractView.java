@@ -1,9 +1,10 @@
 // Written by Jürgen Moßgraber - mossgrabers.de
-// (c) 2017-2019
+// (c) 2017-2020
 // Licensed under LGPLv3 - http://www.gnu.org/licenses/lgpl-3.0.txt
 
 package de.mossgrabers.framework.view;
 
+import de.mossgrabers.framework.MVHelper;
 import de.mossgrabers.framework.command.core.AftertouchCommand;
 import de.mossgrabers.framework.configuration.Configuration;
 import de.mossgrabers.framework.controller.ButtonID;
@@ -29,22 +30,23 @@ import de.mossgrabers.framework.utils.KeyManager;
  */
 public abstract class AbstractView<S extends IControlSurface<C>, C extends Configuration> implements View
 {
-    protected static final int [] EMPTY_TABLE = Scales.getEmptyMatrix ();
+    protected static final int []  EMPTY_TABLE = Scales.getEmptyMatrix ();
 
-    private final String          name;
+    private final String           name;
 
-    protected final S             surface;
-    protected final IModel        model;
-    protected final ColorManager  colorManager;
-    protected final Scales        scales;
-    protected final KeyManager    keyManager;
+    protected final S              surface;
+    protected final IModel         model;
+    protected final ColorManager   colorManager;
+    protected final Scales         scales;
+    protected final KeyManager     keyManager;
+    protected final MVHelper<S, C> mvHelper;
 
-    private AftertouchCommand     aftertouchCommand;
+    private AftertouchCommand      aftertouchCommand;
 
-    protected boolean             canScrollLeft;
-    protected boolean             canScrollRight;
-    protected boolean             canScrollUp;
-    protected boolean             canScrollDown;
+    protected boolean              canScrollLeft;
+    protected boolean              canScrollRight;
+    protected boolean              canScrollUp;
+    protected boolean              canScrollDown;
 
 
     /**
@@ -62,6 +64,7 @@ public abstract class AbstractView<S extends IControlSurface<C>, C extends Confi
         this.colorManager = this.model.getColorManager ();
         this.scales = model.getScales ();
         this.keyManager = new KeyManager (model, surface.getPadGrid ());
+        this.mvHelper = new MVHelper<> (model, surface);
 
         this.canScrollLeft = true;
         this.canScrollRight = true;
