@@ -134,7 +134,7 @@ public class LaunchkeyMiniMk3ControllerSetup extends AbstractControllerSetup<Lau
 
         final LaunchkeyMiniMk3ControlSurface surface = new LaunchkeyMiniMk3ControlSurface (this.host, this.colorManager, this.configuration, output, input, inputKeys, this::processProgramChangeAction);
         this.surfaces.add (surface);
-        surface.addPianoKeyboard (25, inputKeys);
+        surface.addPianoKeyboard (25, inputKeys, true);
 
         this.mvHelper = new MVHelper<> (this.model, surface);
     }
@@ -359,6 +359,9 @@ public class LaunchkeyMiniMk3ControllerSetup extends AbstractControllerSetup<Lau
         surface.getContinuous (ContinuousID.KNOB6).setBounds (472.25, 25.25, 25.5, 25.0);
         surface.getContinuous (ContinuousID.KNOB7).setBounds (526.25, 25.25, 25.5, 25.0);
         surface.getContinuous (ContinuousID.KNOB8).setBounds (580.0, 25.25, 25.5, 25.0);
+
+        surface.getContinuous (ContinuousID.MODULATION_WHEEL).setBounds (91.25, 77.5, 31.75, 171.25);
+        surface.getContinuous (ContinuousID.PITCHBEND_WHEEL).setBounds (48.0, 77.5, 31.75, 171.25);
 
         surface.getPianoKeyboard ().setBounds (40.0, 422.0, 726.75, 175.75);
     }

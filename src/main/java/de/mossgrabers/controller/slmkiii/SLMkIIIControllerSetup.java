@@ -142,7 +142,7 @@ public class SLMkIIIControllerSetup extends AbstractControllerSetup<SLMkIIIContr
         final SLMkIIIControlSurface surface = new SLMkIIIControlSurface (hostProxy, this.colorManager, this.configuration, output, input);
         this.surfaces.add (surface);
 
-        surface.addPianoKeyboard (49, keyboardInput);
+        surface.addPianoKeyboard (49, keyboardInput, true);
     }
 
 
@@ -381,6 +381,9 @@ public class SLMkIIIControllerSetup extends AbstractControllerSetup<SLMkIIIContr
     protected void layoutControls ()
     {
         final SLMkIIIControlSurface surface = this.getSurface ();
+
+        surface.getContinuous (ContinuousID.MODULATION_WHEEL).setBounds (74.5, 204.0, 26.5, 143.75);
+        surface.getContinuous (ContinuousID.PITCHBEND_WHEEL).setBounds (32.25, 204.0, 26.5, 143.75);
 
         surface.getPianoKeyboard ().setBounds (129.5, 201.0, 834.0, 157.0);
 

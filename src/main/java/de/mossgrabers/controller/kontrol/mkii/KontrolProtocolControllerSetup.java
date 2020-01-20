@@ -179,7 +179,7 @@ public class KontrolProtocolControllerSetup extends AbstractControllerSetup<Kont
         final KontrolProtocolControlSurface surface = new KontrolProtocolControlSurface (this.host, this.colorManager, this.configuration, output, midiAccess.createInput (null), this.version);
         this.surfaces.add (surface);
 
-        surface.addPianoKeyboard (49, pianoInput);
+        surface.addPianoKeyboard (49, pianoInput, true);
     }
 
 
@@ -354,22 +354,19 @@ public class KontrolProtocolControllerSetup extends AbstractControllerSetup<Kont
     {
         final KontrolProtocolControlSurface surface = this.getSurface ();
 
-        surface.getButton (ButtonID.PLAY).setBounds (21.0, 158.5, 31.75, 22.75);
-        surface.getButton (ButtonID.NEW).setBounds (21.0, 188.5, 31.75, 22.75);
-        surface.getButton (ButtonID.RECORD).setBounds (63.75, 158.25, 31.75, 22.75);
-        surface.getButton (ButtonID.REC_ARM).setBounds (63.75, 188.25, 31.75, 22.75);
-        surface.getButton (ButtonID.STOP).setBounds (106.5, 158.5, 31.75, 22.75);
-        surface.getButton (ButtonID.LOOP).setBounds (21.0, 128.75, 31.75, 22.75);
-        surface.getButton (ButtonID.METRONOME).setBounds (63.75, 128.5, 31.75, 22.75);
-        surface.getButton (ButtonID.TAP_TEMPO).setBounds (106.5, 128.75, 31.75, 22.75);
+        surface.getButton (ButtonID.PLAY).setBounds (20.25, 149.5, 31.75, 22.75);
+        surface.getButton (ButtonID.NEW).setBounds (20.25, 179.5, 31.75, 22.75);
+        surface.getButton (ButtonID.RECORD).setBounds (63.0, 149.25, 31.75, 22.75);
+        surface.getButton (ButtonID.REC_ARM).setBounds (63.0, 179.25, 31.75, 22.75);
+        surface.getButton (ButtonID.STOP).setBounds (105.75, 149.5, 31.75, 22.75);
+        surface.getButton (ButtonID.LOOP).setBounds (20.25, 120.5, 31.75, 22.75);
+        surface.getButton (ButtonID.METRONOME).setBounds (63.0, 120.5, 31.75, 22.75);
+        surface.getButton (ButtonID.TAP_TEMPO).setBounds (105.75, 120.5, 31.75, 22.75);
         surface.getButton (ButtonID.UNDO).setBounds (21.0, 43.0, 31.75, 22.75);
         surface.getButton (ButtonID.REDO).setBounds (21.0, 75.5, 31.75, 22.75);
         surface.getButton (ButtonID.QUANTIZE).setBounds (63.75, 43.0, 31.75, 22.75);
         surface.getButton (ButtonID.AUTOMATION).setBounds (106.5, 43.0, 31.75, 22.75);
-        surface.getButton (ButtonID.DELETE).setBounds (212.25, 128.75, 31.75, 22.75);
-        surface.getButton (ButtonID.CLIP).setBounds (530.75, 45.75, 31.75, 22.75);
-        surface.getButton (ButtonID.STOP_CLIP).setBounds (568.25, 45.75, 31.75, 22.75);
-        surface.getButton (ButtonID.SCENE1).setBounds (606.0, 45.75, 31.75, 22.75);
+        surface.getButton (ButtonID.DELETE).setBounds (225.75, 120.5, 31.75, 22.75);
         surface.getButton (ButtonID.MUTE).setBounds (194.0, 43.0, 24.25, 22.75);
         surface.getButton (ButtonID.SOLO).setBounds (226.25, 43.0, 24.25, 22.75);
 
@@ -415,12 +412,12 @@ public class KontrolProtocolControllerSetup extends AbstractControllerSetup<Kont
         surface.getButton (ButtonID.UP).setBounds (705.5, 237.75, 29.75, 20.5);
         surface.getButton (ButtonID.DOWN).setBounds (751.0, 237.75, 29.75, 20.5);
 
-        surface.getButton (ButtonID.CLIP).setBounds (28.0, 258.25, 31.75, 22.75);
-        surface.getButton (ButtonID.STOP_CLIP).setBounds (65.5, 258.25, 31.75, 22.75);
-        surface.getButton (ButtonID.SCENE1).setBounds (103.25, 258.25, 31.75, 22.75);
+        surface.getButton (ButtonID.CLIP).setBounds (512.75, 0.75, 31.75, 22.75);
+        surface.getButton (ButtonID.STOP_CLIP).setBounds (550.25, 0.75, 31.75, 22.75);
+        surface.getButton (ButtonID.SCENE1).setBounds (588.0, 0.75, 31.75, 22.75);
 
-        surface.getButton (ButtonID.F1).setBounds (637.5, 1.25, 31.75, 22.75);
-        surface.getButton (ButtonID.F2).setBounds (675.25, 1.25, 31.75, 22.75);
+        surface.getButton (ButtonID.F1).setBounds (637.5, 0.75, 31.75, 22.75);
+        surface.getButton (ButtonID.F2).setBounds (675.25, 0.75, 31.75, 22.75);
 
         surface.getContinuous (ContinuousID.MOVE_TRANSPORT).setBounds (713.5, 40.75, 27.75, 29.75);
         surface.getContinuous (ContinuousID.MOVE_LOOP).setBounds (752.25, 40.75, 27.75, 29.75);
@@ -443,6 +440,9 @@ public class KontrolProtocolControllerSetup extends AbstractControllerSetup<Kont
         surface.getContinuous (ContinuousID.FADER7).setBounds (610.0, 178.5, 28.0, 29.25);
         surface.getContinuous (ContinuousID.KNOB8).setBounds (664.25, 143.25, 28.0, 29.25);
         surface.getContinuous (ContinuousID.FADER8).setBounds (664.25, 178.5, 28.0, 29.25);
+
+        surface.getContinuous (ContinuousID.MODULATION_WHEEL).setBounds (100.0, 222.75, 22.75, 67.5);
+        surface.getContinuous (ContinuousID.PITCHBEND_WHEEL).setBounds (65.5, 222.75, 22.75, 67.5);
 
         surface.getPianoKeyboard ().setBounds (162.75, 218.5, 531.5, 79.75);
     }

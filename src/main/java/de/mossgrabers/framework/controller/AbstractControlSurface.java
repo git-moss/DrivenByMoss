@@ -287,10 +287,19 @@ public abstract class AbstractControlSurface<C extends Configuration> implements
 
     /** {@inheritDoc} */
     @Override
-    public void addPianoKeyboard (final int numKeys, final IMidiInput keyboardInput)
+    public void addPianoKeyboard (final int numKeys, final IMidiInput keyboardInput, boolean addWheels)
     {
         this.pianoKeyboard = this.surfaceFactory.createPianoKeyboard (this.surfaceID, numKeys);
         this.pianoKeyboard.bind (keyboardInput);
+
+        if (!addWheels)
+            return;
+
+        final IHwFader modulationWheel = this.createFader (ContinuousID.MODULATION_WHEEL, "Modulation", true);
+        modulationWheel.bind (keyboardInput, BindType.CC, 1);
+
+        final IHwFader pitchbendWheel = this.createFader (ContinuousID.PITCHBEND_WHEEL, "Pitchbend", true);
+        pitchbendWheel.bind (keyboardInput, BindType.PITCHBEND, 0);
     }
 
 

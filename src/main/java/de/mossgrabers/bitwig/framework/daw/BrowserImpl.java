@@ -157,7 +157,7 @@ public class BrowserImpl extends AbstractBrowser
     {
         final InsertionPoint insertionPoint;
         if (item instanceof CursorDeviceImpl)
-            insertionPoint = this.cursorDevice.replaceDeviceInsertionPoint ();
+            insertionPoint = ((CursorDeviceImpl) item).getCursorDevice ().replaceDeviceInsertionPoint ();
         else if (item instanceof SlotImpl)
             insertionPoint = ((SlotImpl) item).getSlot ().replaceInsertionPoint ();
         else if (item instanceof DrumPadImpl)

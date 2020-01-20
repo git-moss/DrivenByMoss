@@ -153,7 +153,7 @@ public class SLControllerSetup extends AbstractControllerSetup<SLControlSurface,
         final SLControlSurface surface = new SLControlSurface (hostProxy, this.colorManager, this.configuration, output, input, this.isMkII);
         this.surfaces.add (surface);
 
-        surface.addPianoKeyboard (25, keyboardInput);
+        surface.addPianoKeyboard (25, keyboardInput, true);
     }
 
 
@@ -365,11 +365,14 @@ public class SLControllerSetup extends AbstractControllerSetup<SLControlSurface,
         surface.getContinuous (ContinuousID.FADER8).setBounds (720.75, 55.75, 23.25, 75.75);
 
         surface.getContinuous (ContinuousID.TOUCHPAD_X).setBounds (25.0, 375.25, 49.0, 90.25);
-        surface.getContinuous (ContinuousID.TOUCHPAD_Y).setBounds (86.5, 375.25, 49.0, 90.25);
+        surface.getContinuous (ContinuousID.TOUCHPAD_Y).setBounds (90.75, 375.25, 49.0, 90.25);
 
         final SLDisplay textDisplay = (SLDisplay) surface.getTextDisplay ();
         textDisplay.getHwTextDisplay1 ().setBounds (55.5, 17.5, 316.25, 34.75);
         textDisplay.getHwTextDisplay2 ().setBounds (431.75, 17.5, 317.75, 34.75);
+
+        surface.getContinuous (ContinuousID.PITCHBEND_WHEEL).setBounds (25.0, 262.75, 49.0, 90.25);
+        surface.getContinuous (ContinuousID.MODULATION_WHEEL).setBounds (90.75, 262.75, 49.0, 90.25);
 
         surface.getPianoKeyboard ().setBounds (163.75, 262.0, 593.5, 224.25);
     }

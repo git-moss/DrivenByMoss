@@ -119,7 +119,11 @@ public enum ContinuousID
     VIEW_SELECTION,
 
     /** A touchstrip fader. */
-    TOUCHSTRIP;
+    TOUCHSTRIP,
+    /** The modulation wheel. */
+    MODULATION_WHEEL,
+    /** The modulation wheel. */
+    PITCHBEND_WHEEL;
 
 
     /**

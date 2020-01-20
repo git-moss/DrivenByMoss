@@ -458,7 +458,6 @@ public class HUIControllerSetup extends AbstractControllerSetup<HUIControlSurfac
 
         final IHwRelativeKnob jogKnob = surface.createRelativeKnob (ContinuousID.PLAY_POSITION, "Jog");
         jogKnob.bind (new PlayPositionCommand<> (this.model, surface));
-
     }
 
 

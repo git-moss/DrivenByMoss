@@ -228,7 +228,7 @@ public class Kontrol1ControllerSetup extends AbstractControllerSetup<Kontrol1Con
 
         this.addRelativeKnob (ContinuousID.MASTER_KNOB, "Master", new MainEncoderCommand (this.model, surface), Kontrol1ControlSurface.MAIN_ENCODER);
 
-        surface.addPianoKeyboard (25, input);
+        surface.addPianoKeyboard (25, input, true);
     }
 
 
@@ -376,6 +376,10 @@ public class Kontrol1ControllerSetup extends AbstractControllerSetup<Kontrol1Con
         surface.getLight (OutputID.LIGHT_GUIDE61).setBounds (733.25, 171.75, 20.0, 29.5);
 
         surface.getTextDisplay ().getHardwareDisplay ().setBounds (190.75, 100.25, 422.75, 33.5);
+
+        surface.getContinuous (ContinuousID.PITCHBEND_WHEEL).setBounds (45.0, 219.5, 37.75, 68.5);
+        surface.getContinuous (ContinuousID.MODULATION_WHEEL).setBounds (96.0, 219.5, 37.75, 68.5);
+
         surface.getPianoKeyboard ().setBounds (196.5, 211.0, 558.75, 88.75);
     }
 }

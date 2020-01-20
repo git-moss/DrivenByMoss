@@ -313,8 +313,9 @@ public interface IControlSurface<C extends Configuration>
      *
      * @param numKeys The number of the keys, e.g. 25 or 88
      * @param input The midi input to bind to
+     * @param addWheels If true pitchbend and modulation wheels (CC 1) are added
      */
-    void addPianoKeyboard (int numKeys, IMidiInput input);
+    void addPianoKeyboard (int numKeys, IMidiInput input, boolean addWheels);
 
 
     /**
