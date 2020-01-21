@@ -124,9 +124,13 @@ public class BrowserCommand<S extends IControlSurface<C>, C extends Configuratio
         }
 
         // No cursor device, add to the selected channel, if any
-        final IChannel channel = this.model.getCurrentTrackBank ().getSelectedItem ();
+        IChannel channel = this.model.getCurrentTrackBank ().getSelectedItem ();
         if (channel == null)
-            return false;
+        {
+            channel = this.model.getMasterTrack ();
+            if (!channel.isSelected ())
+                return false;
+        }
         browser.addDevice (channel);
         return true;
     }

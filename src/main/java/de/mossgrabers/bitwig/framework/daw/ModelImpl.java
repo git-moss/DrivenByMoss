@@ -108,12 +108,12 @@ public class ModelImpl extends AbstractModel
         final int numDrumPadLayers = this.modelSetup.getNumDrumPadLayers ();
         final int numDevicesInBank = this.modelSetup.getNumDevicesInBank ();
         this.instrumentDevice = new CursorDeviceImpl (this.host, this.valueChanger, this.cursorTrack.createCursorDevice ("FIRST_INSTRUMENT", "First Instrument", numSends, CursorDeviceFollowMode.FIRST_INSTRUMENT), numSends, numParams, numDevicesInBank, numDeviceLayers, numDrumPadLayers);
-        PinnableCursorDevice cd = this.cursorTrack.createCursorDevice ("CURSOR_DEVICE", "Cursor device", numSends, CursorDeviceFollowMode.FOLLOW_SELECTION);
-        this.cursorDevice = new CursorDeviceImpl (this.host, this.valueChanger, cd, numSends, numParams, numDevicesInBank, numDeviceLayers, numDrumPadLayers);
+        final PinnableCursorDevice mainCursorDevice = this.cursorTrack.createCursorDevice ("CURSOR_DEVICE", "Cursor device", numSends, CursorDeviceFollowMode.FOLLOW_SELECTION);
+        this.cursorDevice = new CursorDeviceImpl (this.host, this.valueChanger, mainCursorDevice, numSends, numParams, numDevicesInBank, numDeviceLayers, numDrumPadLayers);
         if (numDrumPadLayers > 0)
         {
-            cd = this.cursorTrack.createCursorDevice ("64_DRUM_PADS", "64 Drum Pads", 0, CursorDeviceFollowMode.FIRST_INSTRUMENT);
-            this.drumDevice64 = new CursorDeviceImpl (this.host, this.valueChanger, cd, 0, 0, -1, 64, 64);
+            final PinnableCursorDevice drum64CursorDevice = this.cursorTrack.createCursorDevice ("64_DRUM_PADS", "64 Drum Pads", 0, CursorDeviceFollowMode.FIRST_INSTRUMENT);
+            this.drumDevice64 = new CursorDeviceImpl (this.host, this.valueChanger, drum64CursorDevice, 0, 0, -1, 64, 64);
         }
 
         final UserControlBank userControls = this.controllerHost.createUserControls (64);
@@ -121,9 +121,9 @@ public class ModelImpl extends AbstractModel
 
         final int numResults = this.modelSetup.getNumResults ();
         if (numResults > 0)
-            this.browser = new BrowserImpl (controllerHost.createPopupBrowser (), this.cursorTrack, cd, this.modelSetup.getNumFilterColumnEntries (), numResults);
+            this.browser = new BrowserImpl (controllerHost.createPopupBrowser (), this.cursorTrack, mainCursorDevice, this.modelSetup.getNumFilterColumnEntries (), numResults);
 
-        this.masterTrackEqualsValue = cd.channel ().createEqualsValue (master);
+        this.masterTrackEqualsValue = mainCursorDevice.channel ().createEqualsValue (master);
         this.masterTrackEqualsValue.markInterested ();
 
         this.currentTrackBank = this.trackBank;
