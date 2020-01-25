@@ -89,6 +89,8 @@ public class LaunchpadXControllerDefinition extends DefaultControllerDefinition 
     @Override
     public boolean hasFaderSupport ()
     {
+        // If the DAW mode on the X is selected to use faders one cannot use the program mode,
+        // therefore we implement the faders ourselves!
         return false;
     }
 

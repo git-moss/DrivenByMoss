@@ -40,13 +40,12 @@ public abstract class BaseSequencerView extends AbstractSequencerView<BeatstepCo
     }
 
 
-    protected void changeScrollPosition (final int value)
+    protected void changeScrollPosition (final boolean isTurnedRight)
     {
         if (!this.isActive ())
             return;
 
-        final boolean isInc = value >= 65;
-        if (isInc)
+        if (isTurnedRight)
             this.getClip ().scrollStepsPageForward ();
         else
             this.getClip ().scrollStepsPageBackwards ();

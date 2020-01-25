@@ -49,7 +49,7 @@ public class DrumView extends BaseSequencerView
         switch (index)
         {
             case 12:
-                this.changeScrollPosition (value);
+                this.changeScrollPosition (isTurnedRight);
                 break;
 
             case 13:
@@ -76,7 +76,7 @@ public class DrumView extends BaseSequencerView
 
             // Toggle play / sequencer
             case 15:
-                this.isPlayMode = !this.isPlayMode;
+                this.isPlayMode = !isTurnedRight;
                 this.surface.getDisplay ().notify (this.isPlayMode ? "Play/Select" : "Sequence");
                 this.updateNoteMapping ();
                 break;

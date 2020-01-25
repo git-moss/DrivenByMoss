@@ -41,6 +41,18 @@ public class BeatstepPadGrid extends PadGridImpl
     @Override
     protected void sendNoteState (final int channel, final int note, final int color)
     {
+        this.lightPad (note, color);
+    }
+
+
+    /**
+     * Light a pad.
+     *
+     * @param note The note
+     * @param color The color: 0, 1, 16, 17
+     */
+    public void lightPad (final int note, final int color)
+    {
         final int n = note - 36;
         final int pad = n < this.cols ? BeatstepControlSurface.BEATSTEP_PAD_9 + n : BeatstepControlSurface.BEATSTEP_PAD_1 + n - this.cols;
         final String data = BeatstepControlSurface.SYSEX_HEADER + StringUtils.toHexStr (new int []

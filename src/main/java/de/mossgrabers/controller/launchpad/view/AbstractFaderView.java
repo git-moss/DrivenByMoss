@@ -11,6 +11,8 @@ import de.mossgrabers.framework.daw.DAWColor;
 import de.mossgrabers.framework.daw.IModel;
 import de.mossgrabers.framework.daw.data.ITrack;
 
+import java.util.Arrays;
+
 
 /**
  * Abstract base class for views with 8 faders.
@@ -19,11 +21,12 @@ import de.mossgrabers.framework.daw.data.ITrack;
  */
 public abstract class AbstractFaderView extends SessionView
 {
-    private static final int    PAD_VALUE_AMOUNT     = 19;
+    private static final int    PAD_VALUE_AMOUNT     = 16;
 
     protected final int []      trackColors          = new int [8];
 
     private final int []        faderMoveDelay       = new int [8];
+    private final int []        faderMoveTimerDelay  = new int [8];
     private final int []        faderMoveDestination = new int [8];
 
     // @formatter:off
@@ -59,6 +62,8 @@ public abstract class AbstractFaderView extends SessionView
     public AbstractFaderView (final LaunchpadControlSurface surface, final IModel model)
     {
         super (surface, model);
+
+        Arrays.fill (this.trackColors, -1);
     }
 
 
@@ -85,7 +90,8 @@ public abstract class AbstractFaderView extends SessionView
 
         // About 3 seconds on softest velocity
         this.faderMoveDelay[index] = SPEED_SCALE[velocity];
-        this.faderMoveDestination[index] = this.smoothFaderValue (index, row, Math.min (127, row * PAD_VALUE_AMOUNT));
+        this.faderMoveTimerDelay[index] = SPEED_SCALE[SPEED_SCALE.length - 1 - velocity];
+        this.faderMoveDestination[index] = this.smoothFaderValue (index, row, Math.min (127, (row + 1) * PAD_VALUE_AMOUNT - 1));
 
         this.moveFaderToDestination (index);
     }
@@ -101,7 +107,7 @@ public abstract class AbstractFaderView extends SessionView
         else
             return;
 
-        this.model.getHost ().scheduleTask ( () -> this.moveFaderToDestination (index), 0);
+        this.model.getHost ().scheduleTask ( () -> this.moveFaderToDestination (index), this.faderMoveTimerDelay[index]);
     }
 
 
@@ -116,7 +122,9 @@ public abstract class AbstractFaderView extends SessionView
     protected int smoothFaderValue (final int index, final int row, final int value)
     {
         final int oldValue = this.getFaderValue (index);
-        return row == 0 && oldValue == 0 ? 15 : value;
+        if (row == 0)
+            return oldValue == 0 ? PAD_VALUE_AMOUNT - 1 : 0;
+        return value;
     }
 
 
@@ -133,6 +141,8 @@ public abstract class AbstractFaderView extends SessionView
     @Override
     public void onActivate ()
     {
+        Arrays.fill (this.trackColors, -1);
+
         super.onActivate ();
 
         this.surface.clearFaders ();
@@ -165,7 +175,7 @@ public abstract class AbstractFaderView extends SessionView
     public void setupFader (final int index)
     {
         final ITrack track = this.model.getCurrentTrackBank ().getItem (index);
-        final int color = this.model.getColorManager ().getColorIndex (DAWColor.getColorIndex (track.getColor ()));
+        final int color = this.colorManager.getColorIndex (DAWColor.getColorIndex (track.getColor ()));
         this.surface.setupFader (index, color, false);
     }
 }

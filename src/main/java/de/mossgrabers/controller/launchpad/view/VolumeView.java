@@ -7,7 +7,6 @@ package de.mossgrabers.controller.launchpad.view;
 import de.mossgrabers.controller.launchpad.controller.LaunchpadColorManager;
 import de.mossgrabers.controller.launchpad.controller.LaunchpadControlSurface;
 import de.mossgrabers.framework.controller.ButtonID;
-import de.mossgrabers.framework.controller.color.ColorManager;
 import de.mossgrabers.framework.daw.DAWColor;
 import de.mossgrabers.framework.daw.IModel;
 import de.mossgrabers.framework.daw.ITrackBank;
@@ -55,12 +54,11 @@ public class VolumeView extends AbstractFaderView
     @Override
     public void drawGrid ()
     {
-        final ColorManager cm = this.model.getColorManager ();
         final ITrackBank tb = this.model.getCurrentTrackBank ();
         for (int i = 0; i < 8; i++)
         {
             final ITrack track = tb.getItem (i);
-            final int color = cm.getColorIndex (DAWColor.getColorIndex (track.getColor ()));
+            final int color = track.doesExist () ? this.colorManager.getColorIndex (DAWColor.getColorIndex (track.getColor ())) : 0;
             if (this.trackColors[i] != color)
             {
                 this.trackColors[i] = color;
@@ -77,10 +75,9 @@ public class VolumeView extends AbstractFaderView
     {
         final int scene = 7 - (buttonID.ordinal () - ButtonID.SCENE1.ordinal ());
 
-        final ColorManager cm = this.model.getColorManager ();
         final IMasterTrack track = this.model.getMasterTrack ();
         final int sceneMax = 9 * track.getVolume () / this.model.getValueChanger ().getUpperBound ();
-        final int color = cm.getColorIndex (DAWColor.getColorIndex (track.getColor ()));
+        final int color = track.doesExist () ? this.colorManager.getColorIndex (DAWColor.getColorIndex (track.getColor ())) : 0;
         return scene < sceneMax ? color : LaunchpadColorManager.LAUNCHPAD_COLOR_BLACK;
     }
 

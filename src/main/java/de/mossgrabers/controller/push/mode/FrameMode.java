@@ -23,15 +23,28 @@ import de.mossgrabers.framework.utils.ButtonEvent;
  */
 public class FrameMode extends BaseMode
 {
-    private static final String    ROW0          = "Layouts:                  Panels:                                   ";
-    private static final String    ROW1          = "Arrange  Mix     Edit     Notes   Automate Device  Mixer    Inspectr";
-    private static final String    ARRANGER_ROW2 = "Arranger:                                                           ";
-    private static final String    ARRANGER_ROW3 = "ClpLnchr I/O     Markers  TimelineFXTracks Follow  TrckHght Full    ";
-    private static final String    MIXER_ROW2    = "Mixer:                                                              ";
-    private static final String    MIXER_ROW3    = "ClpLnchr I/O     CrossFde Device  Meters   Sends            Full    ";
-    private static final String    EMPTY         = "                                                                    ";
+    private static final String       ROW0             = "Layouts:                  Panels:                                   ";
+    private static final String       ROW1             = "Arrange  Mix     Edit     Notes   Automate Device  Mixer    Inspectr";
 
-    private static final String [] LAYOUTS1      =
+    private static final String []    ARRANGER_ROWS    =
+    {
+        "Arranger:                                                           ",
+        "ClpLnchr I/O     Markers  TimelineFXTracks Follow  TrckHght Full    "
+    };
+
+    private static final String []    MIXER_ROWS       =
+    {
+        "Mixer:                                                              ",
+        "ClpLnchr I/O     CrossFde Device  Meters   Sends            Full    "
+    };
+
+    private static final String []    EMPTY_ROWS       =
+    {
+        "                                                                    ",
+        "                                                                    "
+    };
+
+    private static final String []    LAYOUTS1         =
     {
         "Layouts",
         "",
@@ -42,7 +55,8 @@ public class FrameMode extends BaseMode
         "",
         ""
     };
-    private static final String [] LAYOUTS2      =
+
+    private static final String []    LAYOUTS2         =
     {
         "Arrange",
         "Mix",
@@ -53,49 +67,77 @@ public class FrameMode extends BaseMode
         "Mixer",
         "Inspector"
     };
-    private static final String [] ARRANGER1     =
+
+    private static final String [] [] ARRANGER_OPTIONS =
     {
-        "Arranger",
-        "",
-        "",
-        "",
-        "",
-        "",
-        "",
-        ""
+        {
+            "Arranger",
+            "",
+            "",
+            "",
+            "",
+            "",
+            "",
+            ""
+        },
+        {
+            "Clip Launcher",
+            "I/O",
+            "Markers",
+            "Timeline",
+            "FX Tracks",
+            "Follow",
+            "Track Height",
+            "Fullscreen"
+        }
     };
-    private static final String [] ARRANGER2     =
+
+    private static final String [] [] MIXER_OPTIONS    =
     {
-        "Clip Launcher",
-        "I/O",
-        "Markers",
-        "Timeline",
-        "FX Tracks",
-        "Follow",
-        "Track Height",
-        "Fullscreen"
+        {
+            "Mixer",
+            "",
+            "",
+            "",
+            "",
+            "",
+            "",
+            ""
+        },
+        {
+            "Clip Launcher",
+            "I/O",
+            "Crossfader",
+            "Device",
+            "Meters",
+            "Sends",
+            "",
+            "Fullscreen"
+        }
     };
-    private static final String [] MIXER1        =
+
+    private static final String [] [] EMPTY_OPTIONS    =
     {
-        "Mixer",
-        "",
-        "",
-        "",
-        "",
-        "",
-        "",
-        ""
-    };
-    private static final String [] MIXER2        =
-    {
-        "Clip Launcher",
-        "I/O",
-        "Crossfader",
-        "Device",
-        "Meters",
-        "Sends",
-        "",
-        "Fullscreen"
+        {
+            "",
+            "",
+            "",
+            "",
+            "",
+            "",
+            "",
+            ""
+        },
+        {
+            "",
+            "",
+            "",
+            "",
+            "",
+            "",
+            "",
+            ""
+        }
     };
 
 
@@ -247,7 +289,16 @@ public class FrameMode extends BaseMode
     public void updateDisplay1 (final ITextDisplay display)
     {
         final IApplication app = this.model.getApplication ();
-        display.setRow (0, FrameMode.ROW0).setRow (1, FrameMode.ROW1).setRow (2, app.isArrangeLayout () ? FrameMode.ARRANGER_ROW2 : app.isMixerLayout () ? FrameMode.MIXER_ROW2 : FrameMode.EMPTY).setRow (3, app.isArrangeLayout () ? FrameMode.ARRANGER_ROW3 : app.isMixerLayout () ? FrameMode.MIXER_ROW3 : FrameMode.EMPTY);
+
+        final String [] rows34;
+        if (app.isArrangeLayout ())
+            rows34 = FrameMode.ARRANGER_ROWS;
+        else if (app.isMixerLayout ())
+            rows34 = FrameMode.MIXER_ROWS;
+        else
+            rows34 = FrameMode.EMPTY_ROWS;
+
+        display.setRow (0, FrameMode.ROW0).setRow (1, FrameMode.ROW1).setRow (2, rows34[0]).setRow (3, rows34[1]);
     }
 
 
@@ -256,8 +307,16 @@ public class FrameMode extends BaseMode
     public void updateDisplay2 (final IGraphicDisplay display)
     {
         final IApplication app = this.model.getApplication ();
-        for (int i = 0; i < FrameMode.ARRANGER1.length; i++)
-            display.addOptionElement (app.isArrangeLayout () ? FrameMode.ARRANGER1[i] : app.isMixerLayout () ? FrameMode.MIXER1[i] : "", app.isArrangeLayout () ? FrameMode.ARRANGER2[i] : app.isMixerLayout () ? FrameMode.MIXER2[i] : "", this.getSecondRowButtonState (i) > 0, FrameMode.LAYOUTS1[i], FrameMode.LAYOUTS2[i], this.getFirstRowButtonState (i), false);
+        String [] [] options;
+        if (app.isArrangeLayout ())
+            options = ARRANGER_OPTIONS;
+        else if (app.isMixerLayout ())
+            options = MIXER_OPTIONS;
+        else
+            options = EMPTY_OPTIONS;
+
+        for (int i = 0; i < 8; i++)
+            display.addOptionElement (options[0][i], options[1][i], this.getSecondRowButtonState (i) > 0, FrameMode.LAYOUTS1[i], FrameMode.LAYOUTS2[i], this.getFirstRowButtonState (i), false);
     }
 
 
@@ -272,8 +331,20 @@ public class FrameMode extends BaseMode
         index = this.isButtonRow (1, buttonID);
         if (index >= 0)
         {
-            final int state = this.getSecondRowButtonState (index);
-            return this.colorManager.getColorIndex (state == 1 ? AbstractMode.BUTTON_COLOR2_HI : state == 0 ? AbstractMode.BUTTON_COLOR2_ON : AbstractMode.BUTTON_COLOR_OFF);
+            final String colorID;
+            switch (this.getSecondRowButtonState (index))
+            {
+                case 0:
+                    colorID = AbstractMode.BUTTON_COLOR2_ON;
+                    break;
+                case 1:
+                    colorID = AbstractMode.BUTTON_COLOR2_HI;
+                    break;
+                default:
+                    colorID = AbstractMode.BUTTON_COLOR_OFF;
+                    break;
+            }
+            return this.colorManager.getColorIndex (colorID);
         }
 
         return super.getButtonColor (buttonID);

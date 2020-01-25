@@ -36,6 +36,7 @@ public abstract class AbstractTextDisplay implements ITextDisplay
     private final String     emptyCell;
     protected String []      currentMessage;
     protected String []      message;
+    protected String []      fullRows;
     protected String []      cells;
 
     protected IHwTextDisplay hwDisplay;
@@ -71,6 +72,7 @@ public abstract class AbstractTextDisplay implements ITextDisplay
         this.currentMessage = new String [this.noOfLines];
 
         this.message = new String [this.noOfLines];
+        this.fullRows = new String [this.noOfLines];
         this.cells = new String [this.noOfLines * this.noOfCells];
     }
 
@@ -103,7 +105,7 @@ public abstract class AbstractTextDisplay implements ITextDisplay
     @Override
     public ITextDisplay setRow (final int row, final String str)
     {
-        this.message[row] = str;
+        this.fullRows[row] = str;
         return this;
     }
 
@@ -153,10 +155,19 @@ public abstract class AbstractTextDisplay implements ITextDisplay
     @Override
     public ITextDisplay done (final int row)
     {
-        final int index = row * this.noOfCells;
-        this.message[row] = "";
-        for (int i = 0; i < this.noOfCells; i++)
-            this.message[row] += this.cells[index + i];
+        if (this.fullRows[row] != null)
+        {
+            this.message[row] = this.fullRows[row];
+            this.fullRows[row] = null;
+        }
+        else
+        {
+            final int index = row * this.noOfCells;
+            this.message[row] = "";
+            for (int i = 0; i < this.noOfCells; i++)
+                this.message[row] += this.cells[index + i];
+        }
+
         return this;
     }
 

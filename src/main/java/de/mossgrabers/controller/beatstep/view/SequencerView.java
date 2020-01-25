@@ -53,7 +53,7 @@ public class SequencerView extends BaseSequencerView
         switch (index)
         {
             case 12:
-                this.changeScrollPosition (value);
+                this.changeScrollPosition (isTurnedRight);
                 break;
 
             case 13:
@@ -65,23 +65,16 @@ public class SequencerView extends BaseSequencerView
             case 14:
                 this.keyManager.clearPressedKeys ();
                 if (isTurnedRight)
-                {
-                    this.scales.incDrumOctave ();
-                    this.model.getInstrumentDevice ().getDrumPadBank ().selectNextPage ();
-                }
+                    this.scales.incOctave ();
                 else
-                {
-                    this.scales.decDrumOctave ();
-                    this.model.getInstrumentDevice ().getDrumPadBank ().selectPreviousPage ();
-                }
-                this.offsetY = this.scales.getDrumOffset ();
+                    this.scales.decOctave ();
                 this.updateNoteMapping ();
-                this.surface.getDisplay ().notify (this.scales.getDrumRangeText ());
+                this.surface.getDisplay ().notify (this.scales.getRangeText ());
                 break;
 
             // Toggle play / sequencer
             case 15:
-                this.isPlayMode = !this.isPlayMode;
+                this.isPlayMode = !isTurnedRight;
                 this.surface.getDisplay ().notify (this.isPlayMode ? "Play/Select" : "Sequence");
                 this.updateNoteMapping ();
                 break;
@@ -117,7 +110,13 @@ public class SequencerView extends BaseSequencerView
         else
         {
             if (velocity != 0)
-                this.getClip ().toggleStep (this.configuration.getMidiEditChannel (), index < 8 ? index + 8 : index - 8, this.offsetY + this.selectedPad, this.configuration.isAccentActive () ? this.configuration.getFixedAccentValue () : velocity);
+            {
+                final int step = index < 8 ? index + 8 : index - 8;
+                final int vel = this.configuration.isAccentActive () ? this.configuration.getFixedAccentValue () : velocity;
+                final int y = this.offsetY + this.selectedPad;
+                final int map = this.scales.getNoteMatrix ()[y];
+                this.getClip ().toggleStep (this.configuration.getMidiEditChannel (), step, map, vel);
+            }
         }
     }
 
@@ -145,7 +144,7 @@ public class SequencerView extends BaseSequencerView
         {
             for (int i = 36; i < 52; i++)
             {
-                padGrid.light (i, this.keyManager.isKeyPressed (i) || this.selectedPad == i - 36 ? BeatstepColorManager.BEATSTEP_BUTTON_STATE_PINK : this.model.getColorManager ().getColorIndex (this.keyManager.getColor (i)));
+                padGrid.light (i, this.keyManager.isKeyPressed (i) || this.selectedPad == i - 36 ? BeatstepColorManager.BEATSTEP_BUTTON_STATE_PINK : this.colorManager.getColorIndex (this.keyManager.getColor (i)));
             }
         }
         else
@@ -157,7 +156,9 @@ public class SequencerView extends BaseSequencerView
             final int editMidiChannel = this.configuration.getMidiEditChannel ();
             for (int col = 0; col < SequencerView.NUM_DISPLAY_COLS; col++)
             {
-                final int isSet = clip.getStep (editMidiChannel, col, this.offsetY + this.selectedPad).getState ();
+                final int y = this.offsetY + this.selectedPad;
+                final int map = this.scales.getNoteMatrix ()[y];
+                final int isSet = clip.getStep (editMidiChannel, col, map).getState ();
                 padGrid.lightEx (col % 8, 1 - col / 8, getSequencerColor (isSet, col == hiStep));
             }
         }
@@ -184,7 +185,7 @@ public class SequencerView extends BaseSequencerView
         final ITrack sel = this.model.getCurrentTrackBank ().getSelectedItem ();
         if (sel != null && sel.getIndex () == trackIndex)
         {
-            // Light notes send from the sequencer
+            // Light notes sent from the sequencer
             for (int i = 0; i < 128; i++)
             {
                 if (this.keyManager.map (i) == note)

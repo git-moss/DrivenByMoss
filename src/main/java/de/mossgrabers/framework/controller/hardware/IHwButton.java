@@ -85,6 +85,15 @@ public interface IHwButton extends IHwInputControl
 
 
     /**
+     * Manually triggers a button press and release.
+     *
+     * @param event The button event
+     * @param velocity The press velocity
+     */
+    void trigger (final ButtonEvent event, final double velocity);
+
+
+    /**
      * Set the consumed state, which means the UP event is not fired on button release.
      */
     void setConsumed ();

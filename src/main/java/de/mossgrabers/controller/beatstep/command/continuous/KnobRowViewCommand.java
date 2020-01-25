@@ -45,6 +45,6 @@ public class KnobRowViewCommand extends AbstractContinuousCommand<BeatstepContro
             return;
         // Ignore centered messages of Beatstep Pro, which are sent before each real knob movement
         if (value != 64)
-            ((BeatstepView) v).onKnob (this.index, value, value > 64);
+            ((BeatstepView) v).onKnob (this.index, value, value < 64);
     }
 }

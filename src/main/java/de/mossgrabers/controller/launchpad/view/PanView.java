@@ -5,7 +5,6 @@
 package de.mossgrabers.controller.launchpad.view;
 
 import de.mossgrabers.controller.launchpad.controller.LaunchpadControlSurface;
-import de.mossgrabers.framework.controller.color.ColorManager;
 import de.mossgrabers.framework.daw.DAWColor;
 import de.mossgrabers.framework.daw.IModel;
 import de.mossgrabers.framework.daw.ITrackBank;
@@ -67,18 +66,17 @@ public class PanView extends AbstractFaderView
     @Override
     public void drawGrid ()
     {
-        final ColorManager cm = this.model.getColorManager ();
         final ITrackBank tb = this.model.getCurrentTrackBank ();
         for (int i = 0; i < 8; i++)
         {
             final ITrack track = tb.getItem (i);
-            final int color = cm.getColorIndex (DAWColor.getColorIndex (track.getColor ()));
+            final int color = track.doesExist () ? this.colorManager.getColorIndex (DAWColor.getColorIndex (track.getColor ())) : 0;
             if (this.trackColors[i] != color)
             {
                 this.trackColors[i] = color;
                 this.setupFader (i);
             }
-            this.surface.setFaderValue (i, track.doesExist () ? track.getPan () : 64);
+            this.surface.setFaderValue (i, track.getPan ());
         }
     }
 
@@ -88,6 +86,7 @@ public class PanView extends AbstractFaderView
     public void setupFader (final int index)
     {
         final ITrack track = this.model.getCurrentTrackBank ().getItem (index);
-        this.surface.setupFader (index, this.model.getColorManager ().getColorIndex (DAWColor.getColorIndex (track.getColor ())), true);
+        final int color = track.doesExist () ? this.colorManager.getColorIndex (DAWColor.getColorIndex (track.getColor ())) : 0;
+        this.surface.setupFader (index, color, true);
     }
 }

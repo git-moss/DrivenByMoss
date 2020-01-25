@@ -132,8 +132,8 @@ public class LaunchpadCursorCommand extends CursorCommand<LaunchpadControlSurfac
 
             case BROWSER:
                 final IBrowser browser = this.model.getBrowser ();
-                this.canScrollUp = false;
-                this.canScrollDown = false;
+                this.canScrollUp = true;
+                this.canScrollDown = true;
                 this.canScrollLeft = browser.hasPreviousContentType ();
                 this.canScrollRight = browser.hasNextContentType ();
                 break;
@@ -310,7 +310,9 @@ public class LaunchpadCursorCommand extends CursorCommand<LaunchpadControlSurfac
                 break;
 
             case BROWSER:
-                // Not Used
+                final ICursorDevice cursorDevice = this.model.getCursorDevice ();
+                if (cursorDevice.doesExist ())
+                    this.model.getBrowser ().insertBeforeCursorDevice ();
                 break;
 
             case SESSION:
@@ -356,7 +358,9 @@ public class LaunchpadCursorCommand extends CursorCommand<LaunchpadControlSurfac
                 break;
 
             case BROWSER:
-                // Not Used
+                final ICursorDevice cursorDevice = this.model.getCursorDevice ();
+                if (cursorDevice.doesExist ())
+                    this.model.getBrowser ().insertAfterCursorDevice ();
                 break;
 
             case SESSION:

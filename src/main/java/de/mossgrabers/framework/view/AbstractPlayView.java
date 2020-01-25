@@ -194,7 +194,7 @@ public abstract class AbstractPlayView<S extends IControlSurface<C>, C extends C
     {
         final int [] maxVelocity = new int [128];
         final Configuration config = this.surface.getConfiguration ();
-        Arrays.fill (maxVelocity, config.getFixedAccentValue ());
+        Arrays.fill (maxVelocity, Math.min (127, Math.max (0, config.getFixedAccentValue ())));
         maxVelocity[0] = 0;
         this.surface.setVelocityTranslationTable (config.isAccentActive () ? maxVelocity : this.defaultVelocity);
     }

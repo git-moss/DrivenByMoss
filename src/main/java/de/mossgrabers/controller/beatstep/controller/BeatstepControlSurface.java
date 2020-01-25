@@ -7,9 +7,11 @@ package de.mossgrabers.controller.beatstep.controller;
 import de.mossgrabers.controller.beatstep.BeatstepConfiguration;
 import de.mossgrabers.framework.controller.AbstractControlSurface;
 import de.mossgrabers.framework.controller.color.ColorManager;
+import de.mossgrabers.framework.controller.grid.LightInfo;
 import de.mossgrabers.framework.daw.IHost;
 import de.mossgrabers.framework.daw.midi.IMidiInput;
 import de.mossgrabers.framework.daw.midi.IMidiOutput;
+import de.mossgrabers.framework.utils.ButtonEvent;
 
 
 /**
@@ -77,7 +79,6 @@ public class BeatstepControlSurface extends AbstractControlSurface<BeatstepConfi
     static final String     SYSEX_HEADER        = "F0 00 20 6B 7F 42 02 00 10 ";
     static final String     SYSEX_END           = "F7";
 
-    private boolean         isPro;
     private boolean         isShift;
 
 
@@ -98,34 +99,24 @@ public class BeatstepControlSurface extends AbstractControlSurface<BeatstepConfi
 
     /** {@inheritDoc} */
     @Override
-    public boolean isShiftPressed ()
+    protected void handleGridNote (final ButtonEvent event, final int note, final int velocity)
     {
-        return this.isShift;
-    }
+        super.handleGridNote (event, note, velocity);
 
-
-    /**
-     * Returns true if it is the Beatstep Pro.
-     *
-     * @return True if it is the Beatstep Pro
-     */
-    public boolean isPro ()
-    {
-        return this.isPro;
+        if (event == ButtonEvent.UP)
+        {
+            // Red LED is turned off on button release, restore the correct color
+            final LightInfo lightInfo = this.pads.getLightInfo (note);
+            ((BeatstepPadGrid) this.pads).lightPad (note, lightInfo.getColor ());
+        }
     }
 
 
     /** {@inheritDoc} */
     @Override
-    protected void handleMidi (final int status, final int data1, final int data2)
+    public boolean isShiftPressed ()
     {
-        // Filter all channels except the controller channel
-        final int code = status & 0xF0;
-        final int channel = status & 0xF;
-        if (this.isPro && channel != 2)
-            return;
-
-        super.handleMidi (code, data1, data2);
+        return this.isShift;
     }
 
 

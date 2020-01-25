@@ -7,6 +7,7 @@ package de.mossgrabers.controller.beatstep;
 import de.mossgrabers.controller.beatstep.command.continuous.KnobRowViewCommand;
 import de.mossgrabers.controller.beatstep.controller.BeatstepColorManager;
 import de.mossgrabers.controller.beatstep.controller.BeatstepControlSurface;
+import de.mossgrabers.controller.beatstep.controller.BeatstepPadGrid;
 import de.mossgrabers.controller.beatstep.view.BrowserView;
 import de.mossgrabers.controller.beatstep.view.DeviceView;
 import de.mossgrabers.controller.beatstep.view.DrumView;
@@ -22,6 +23,7 @@ import de.mossgrabers.framework.controller.AbstractControllerSetup;
 import de.mossgrabers.framework.controller.ButtonID;
 import de.mossgrabers.framework.controller.ContinuousID;
 import de.mossgrabers.framework.controller.ISetupFactory;
+import de.mossgrabers.framework.controller.grid.LightInfo;
 import de.mossgrabers.framework.controller.hardware.BindType;
 import de.mossgrabers.framework.controller.valuechanger.DefaultValueChanger;
 import de.mossgrabers.framework.controller.valuechanger.RelativeEncoding;
@@ -178,8 +180,19 @@ public class BeatstepControllerSetup extends AbstractControllerSetup<BeatstepCon
                 return;
             }
 
-            if (event == ButtonEvent.UP && viewManager.isActiveView (Views.SHIFT))
-                viewManager.restoreView ();
+            if (event == ButtonEvent.UP)
+            {
+                if (viewManager.isActiveView (Views.SHIFT))
+                    viewManager.restoreView ();
+
+                // Red LED is turned off on button release, restore the correct color
+                final BeatstepPadGrid beatstepPadGrid = (BeatstepPadGrid) surface.getPadGrid ();
+                for (int note = 36; note < 52; note++)
+                {
+                    final LightInfo lightInfo = beatstepPadGrid.getLightInfo (note);
+                    beatstepPadGrid.lightPad (note, lightInfo.getColor ());
+                }
+            }
 
         }, BeatstepControlSurface.BEATSTEP_SHIFT);
     }
@@ -267,6 +280,7 @@ public class BeatstepControllerSetup extends AbstractControllerSetup<BeatstepCon
     protected void updateIndication (final Modes mode)
     {
         final BeatstepControlSurface surface = this.getSurface ();
+
         final ViewManager viewManager = surface.getViewManager ();
         final boolean isTrack = viewManager.isActiveView (Views.TRACK);
         final boolean isDevice = viewManager.isActiveView (Views.DEVICE);
