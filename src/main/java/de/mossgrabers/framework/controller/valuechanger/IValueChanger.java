@@ -97,6 +97,15 @@ public interface IValueChanger
 
 
     /**
+     * Encode the speed with this encoding.
+     *
+     * @param speed The value to encode (-63 to 63)
+     * @return The encoded value (0-127)
+     */
+    int encode (int speed);
+
+
+    /**
      * Change a value by the amount of the control speed. Uses the default fraction values
      * (depending on the slow setting) and upper bound. The lower bound is 0.
      *

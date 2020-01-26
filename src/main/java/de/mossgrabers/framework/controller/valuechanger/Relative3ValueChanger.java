@@ -30,4 +30,12 @@ public class Relative3ValueChanger extends DefaultValueChanger
     {
         return (control - 64) * fractionValue;
     }
+
+
+    /** {@inheritDoc} */
+    @Override
+    public int encode (int speed)
+    {
+        return speed + 64;
+    }
 }

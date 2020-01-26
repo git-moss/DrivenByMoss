@@ -117,6 +117,14 @@ public class DefaultValueChanger implements IValueChanger
 
     /** {@inheritDoc} */
     @Override
+    public int encode (int speed)
+    {
+        return speed < 0 ? speed + 128 : speed;
+    }
+
+
+    /** {@inheritDoc} */
+    @Override
     public int changeValue (final int control, final int value)
     {
         return this.changeValue (control, value, this.isSlow ? this.slowFractionValue : this.fractionValue, this.upperBound);

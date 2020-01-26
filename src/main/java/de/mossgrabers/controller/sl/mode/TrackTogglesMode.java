@@ -45,7 +45,7 @@ public class TrackTogglesMode extends AbstractTrackMode<SLControlSurface, SLConf
         final ITextDisplay d = this.surface.getTextDisplay ();
         if (t == null)
         {
-            d.setRow (0, "                        Please select a track...                       ").clearRow (2).done (2);
+            d.setRow (0, "                        Please select a track...                       ").done (0).clearRow (2).done (2);
         }
         else
         {

@@ -30,4 +30,12 @@ public class Relative2ValueChanger extends DefaultValueChanger
     {
         return (control < 0x41 ? control : 0x40 - control) * fractionValue;
     }
+
+
+    /** {@inheritDoc} */
+    @Override
+    public int encode (int speed)
+    {
+        return speed < 0 ? 0x40 + speed : speed;
+    }
 }

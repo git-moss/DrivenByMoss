@@ -630,7 +630,7 @@ public class HUIControllerSetup extends AbstractControllerSetup<HUIControlSurfac
         final ITransport t = this.model.getTransport ();
         String positionText = t.getPositionText ();
         positionText = positionText.substring (0, positionText.length () - 3);
-        this.getSurface ().getSegmentDisplay ().setRow (0, positionText);
+        this.getSurface ().getSegmentDisplay ().setRow (0, positionText).allDone ();
     }
 
 

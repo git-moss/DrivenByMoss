@@ -122,7 +122,7 @@ public class DevicePresetsMode extends AbstractMode<SLControlSurface, SLConfigur
 
         if (!this.model.hasSelectedDevice ())
         {
-            d.clearRow (2).done (2).setRow (0, "                       Please select a device...                       ");
+            d.clearRow (2).done (2).setRow (0, "                       Please select a device...                       ").done (0);
             return;
         }
         final IBrowser browser = this.model.getBrowser ();

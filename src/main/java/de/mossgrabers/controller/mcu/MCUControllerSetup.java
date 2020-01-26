@@ -664,7 +664,7 @@ public class MCUControllerSetup extends AbstractControllerSetup<MCUControlSurfac
             positionText = positionText.substring (0, pos + 1) + tempoStr;
         }
 
-        this.getSurface ().getTextDisplay (2).setRow (0, positionText);
+        this.getSurface ().getTextDisplay (2).setRow (0, positionText).allDone ();
     }
 
 
@@ -821,7 +821,7 @@ public class MCUControllerSetup extends AbstractControllerSetup<MCUControlSurfac
 
         this.updateIndication (mode);
         if (this.configuration.hasAssignmentDisplay ())
-            this.getSurface ().getTextDisplay (3).setRow (0, MODE_ACRONYMS.get (mode));
+            this.getSurface ().getTextDisplay (3).setRow (0, MODE_ACRONYMS.get (mode)).allDone ();
     }
 
 

@@ -43,7 +43,7 @@ public class TrackMode extends AbstractTrackMode<SLControlSurface, SLConfigurati
 
         if (t == null)
         {
-            d.setRow (0, "                        Please select a track...                       ").done (2);
+            d.setRow (0, "                        Please select a track...                       ").done (0).done (2);
             return;
         }
 
