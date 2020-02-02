@@ -392,11 +392,18 @@ public class PushControllerSetup extends AbstractControllerSetup<PushControlSurf
                 viewManager.setActiveView (Views.SESSION);
         });
 
-        this.configuration.addSettingObserver (AbstractConfiguration.KNOB_SPEED_NORMAL, () -> this.valueChanger.setFractionValue (this.configuration.getKnobSpeedNormal ()));
-        this.configuration.addSettingObserver (AbstractConfiguration.KNOB_SPEED_SLOW, () -> this.valueChanger.setSlowFractionValue (this.configuration.getKnobSpeedSlow ()));
+        this.configuration.addSettingObserver (AbstractConfiguration.KNOB_SPEED_NORMAL, this::updateKnobSpeeds);
+        this.configuration.addSettingObserver (AbstractConfiguration.KNOB_SPEED_SLOW, this::updateKnobSpeeds);
 
         this.createScaleObservers (this.configuration);
         this.createNoteRepeatObservers (this.configuration, surface);
+    }
+
+
+    private void updateKnobSpeeds ()
+    {
+        this.valueChanger.setFractionValue (this.configuration.getKnobSpeedNormal ());
+        this.valueChanger.setSlowFractionValue (this.configuration.getKnobSpeedSlow ());
     }
 
 
@@ -849,6 +856,8 @@ public class PushControllerSetup extends AbstractControllerSetup<PushControlSurf
     @Override
     public void startup ()
     {
+        this.updateKnobSpeeds ();
+
         final PushControlSurface surface = this.getSurface ();
         surface.getViewManager ().setActiveView (this.configuration.getDefaultNoteView ());
 

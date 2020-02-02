@@ -117,7 +117,7 @@ public class DefaultValueChanger implements IValueChanger
 
     /** {@inheritDoc} */
     @Override
-    public int encode (int speed)
+    public int encode (final int speed)
     {
         return speed < 0 ? speed + 128 : speed;
     }

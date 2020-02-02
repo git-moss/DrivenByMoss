@@ -35,7 +35,6 @@ import de.mossgrabers.framework.configuration.ISettingsUI;
 import de.mossgrabers.framework.controller.AbstractControllerSetup;
 import de.mossgrabers.framework.controller.ButtonID;
 import de.mossgrabers.framework.controller.ContinuousID;
-import de.mossgrabers.framework.controller.IControlSurface;
 import de.mossgrabers.framework.controller.ISetupFactory;
 import de.mossgrabers.framework.controller.hardware.BindType;
 import de.mossgrabers.framework.controller.hardware.IHwRelativeKnob;
@@ -212,8 +211,15 @@ public class KontrolProtocolControllerSetup extends AbstractControllerSetup<Kont
     {
         this.getSurface ().getModeManager ().addModeListener ( (oldMode, newMode) -> this.updateIndication (newMode));
 
-        this.configuration.addSettingObserver (AbstractConfiguration.KNOB_SPEED_NORMAL, () -> this.valueChanger.setFractionValue (this.configuration.getKnobSpeedNormal ()));
-        this.configuration.addSettingObserver (AbstractConfiguration.KNOB_SPEED_SLOW, () -> this.valueChanger.setSlowFractionValue (this.configuration.getKnobSpeedSlow ()));
+        this.configuration.addSettingObserver (AbstractConfiguration.KNOB_SPEED_NORMAL, this::updateKnobSpeeds);
+        this.configuration.addSettingObserver (AbstractConfiguration.KNOB_SPEED_SLOW, this::updateKnobSpeeds);
+    }
+
+
+    private void updateKnobSpeeds ()
+    {
+        this.valueChanger.setFractionValue (this.configuration.getKnobSpeedNormal ());
+        this.valueChanger.setSlowFractionValue (this.configuration.getKnobSpeedSlow ());
     }
 
 
@@ -452,11 +458,12 @@ public class KontrolProtocolControllerSetup extends AbstractControllerSetup<Kont
     @Override
     public void startup ()
     {
-        final IControlSurface<KontrolProtocolConfiguration> surface = this.getSurface ();
+        final KontrolProtocolControlSurface surface = this.getSurface ();
         surface.getViewManager ().setActiveView (Views.CONTROL);
         surface.getModeManager ().setActiveMode (Modes.VOLUME);
 
-        this.getSurface ().initHandshake ();
+        this.updateKnobSpeeds ();
+        surface.initHandshake ();
     }
 
 

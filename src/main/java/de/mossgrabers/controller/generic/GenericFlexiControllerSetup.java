@@ -119,8 +119,8 @@ public class GenericFlexiControllerSetup extends AbstractControllerSetup<Generic
         this.configuration.addSettingObserver (GenericFlexiConfiguration.SLOT_CHANGE, surface::updateKeyTranslation);
         this.configuration.addSettingObserver (GenericFlexiConfiguration.SELECTED_MODE, this::selectMode);
 
-        this.configuration.addSettingObserver (AbstractConfiguration.KNOB_SPEED_NORMAL, this.getSurface ()::updateKnobSpeeds);
-        this.configuration.addSettingObserver (AbstractConfiguration.KNOB_SPEED_SLOW, this.getSurface ()::updateKnobSpeeds);
+        this.configuration.addSettingObserver (AbstractConfiguration.KNOB_SPEED_NORMAL, surface::updateKnobSpeeds);
+        this.configuration.addSettingObserver (AbstractConfiguration.KNOB_SPEED_SLOW, surface::updateKnobSpeeds);
 
         final ITrackBank trackBank = this.model.getTrackBank ();
         trackBank.addSelectionObserver ( (index, selected) -> this.handleTrackChange (selected));
@@ -136,10 +136,11 @@ public class GenericFlexiControllerSetup extends AbstractControllerSetup<Generic
     @Override
     public void startup ()
     {
-        this.host.scheduleTask ( () -> {
-            this.configuration.clearNoteMap ();
-            this.getSurface ().getModeManager ().setActiveMode (Modes.TRACK);
-        }, 2000);
+        this.configuration.clearNoteMap ();
+
+        final GenericFlexiControlSurface surface = this.getSurface ();
+        surface.updateKnobSpeeds ();
+        surface.getModeManager ().setActiveMode (Modes.TRACK);
     }
 
 

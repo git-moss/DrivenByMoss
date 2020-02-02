@@ -34,7 +34,7 @@ public class Relative4ValueChanger extends DefaultValueChanger
 
     /** {@inheritDoc} */
     @Override
-    public int encode (int speed)
+    public int encode (final int speed)
     {
         return speed < 0 ? -speed : speed + 0x40;
     }

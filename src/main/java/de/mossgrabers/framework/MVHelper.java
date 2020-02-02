@@ -38,7 +38,7 @@ public class MVHelper<S extends IControlSurface<C>, C extends Configuration>
 
     /**
      * Constructor.
-     * 
+     *
      * @param model The model
      * @param surface The surface
      */
@@ -102,7 +102,7 @@ public class MVHelper<S extends IControlSurface<C>, C extends Configuration>
 
     /**
      * Display the name of the selected item in the current mode.
-     * 
+     *
      * @param mode The mode
      */
     public void notifySelectedItem (final Mode mode)

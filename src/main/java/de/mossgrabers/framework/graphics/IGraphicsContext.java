@@ -198,7 +198,7 @@ public interface IGraphicsContext
 
     /**
      * Calculates the maximum height of a text which needs to fit into a width.
-     * 
+     *
      * @param text The text
      * @param maxHeight The maximum height of the text
      * @param maxWidth The maximum width
