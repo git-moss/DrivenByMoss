@@ -91,7 +91,18 @@ public abstract class AbstractFaderView extends SessionView
         // About 3 seconds on softest velocity
         this.faderMoveDelay[index] = SPEED_SCALE[velocity];
         this.faderMoveTimerDelay[index] = SPEED_SCALE[SPEED_SCALE.length - 1 - velocity];
-        this.faderMoveDestination[index] = this.smoothFaderValue (index, row, Math.min (127, (row + 1) * PAD_VALUE_AMOUNT - 1));
+
+        int min = row * PAD_VALUE_AMOUNT;
+        int max = Math.min (127, (row + 1) * PAD_VALUE_AMOUNT - 1);
+
+        int newDestination = this.smoothFaderValue (index, row, max);
+        if (min <= this.faderMoveDestination[index] && this.faderMoveDestination[index] <= max)
+        {
+            newDestination = this.faderMoveDestination[index] + 4;
+            if (newDestination > max)
+                newDestination = min;
+        }
+        this.faderMoveDestination[index] = newDestination;
 
         this.moveFaderToDestination (index);
     }
@@ -107,7 +118,7 @@ public abstract class AbstractFaderView extends SessionView
         else
             return;
 
-        this.model.getHost ().scheduleTask ( () -> this.moveFaderToDestination (index), this.faderMoveTimerDelay[index]);
+        this.surface.scheduleTask ( () -> this.moveFaderToDestination (index), this.faderMoveTimerDelay[index]);
     }
 
 

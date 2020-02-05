@@ -6,9 +6,7 @@ package de.mossgrabers.controller.launchpad.definition;
 
 import de.mossgrabers.controller.launchpad.controller.LaunchpadControlSurface;
 import de.mossgrabers.framework.controller.ButtonID;
-import de.mossgrabers.framework.controller.DefaultControllerDefinition;
 import de.mossgrabers.framework.controller.grid.LightInfo;
-import de.mossgrabers.framework.daw.midi.IMidiOutput;
 import de.mossgrabers.framework.utils.OperatingSystem;
 import de.mossgrabers.framework.utils.Pair;
 import de.mossgrabers.framework.utils.StringUtils;
@@ -26,7 +24,7 @@ import java.util.UUID;
  *
  * @author J&uuml;rgen Mo&szlig;graber
  */
-public class LaunchpadMkIIControllerDefinition extends DefaultControllerDefinition implements ILaunchpadControllerDefinition
+public class LaunchpadMkIIControllerDefinition extends AbstractSimpleLaunchpad
 {
     private static final UUID   EXTENSION_ID             = UUID.fromString ("4E01A0B0-67B1-11E5-A837-0800200C9A66");
     private static final String SYSEX_HEADER             = "F0 00 20 29 02 18 ";
@@ -46,7 +44,7 @@ public class LaunchpadMkIIControllerDefinition extends DefaultControllerDefiniti
      */
     public LaunchpadMkIIControllerDefinition ()
     {
-        super (EXTENSION_ID, "Launchpad MkII", "Novation", 1, 1);
+        super (EXTENSION_ID, "Launchpad MkII");
     }
 
 
@@ -57,22 +55,6 @@ public class LaunchpadMkIIControllerDefinition extends DefaultControllerDefiniti
         final List<Pair<String [], String []>> midiDiscoveryPairs = super.getMidiDiscoveryPairs (os);
         midiDiscoveryPairs.addAll (this.createDeviceDiscoveryPairs ("Launchpad MK2"));
         return midiDiscoveryPairs;
-    }
-
-
-    /** {@inheritDoc} */
-    @Override
-    public boolean isPro ()
-    {
-        return false;
-    }
-
-
-    /** {@inheritDoc} */
-    @Override
-    public boolean hasFaderSupport ()
-    {
-        return false;
     }
 
 
@@ -102,26 +84,17 @@ public class LaunchpadMkIIControllerDefinition extends DefaultControllerDefiniti
 
     /** {@inheritDoc} */
     @Override
-    public String getFaderModeCommand ()
+    public void resetMode (final LaunchpadControlSurface surface)
     {
-        return this.getProgramModeCommand ();
+        // No hardware MIDI mode available
     }
 
 
     /** {@inheritDoc} */
     @Override
-    public String getPanModeCommand ()
+    public void setLogoColor (LaunchpadControlSurface surface, int color)
     {
-        return this.getProgramModeCommand ();
-    }
-
-
-    /** {@inheritDoc} */
-    @Override
-    public void sendBlinkState (final IMidiOutput output, final int note, final int blinkColor, final boolean fast)
-    {
-        // Start blinking on channel 2, stop it on channel 1
-        output.sendNoteEx (blinkColor == 0 ? 1 : 2, note, blinkColor);
+        // No logo on the Mk II
     }
 
 

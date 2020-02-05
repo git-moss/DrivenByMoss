@@ -84,7 +84,6 @@ import de.mossgrabers.framework.mode.track.PanMode;
 import de.mossgrabers.framework.mode.track.SoloMode;
 import de.mossgrabers.framework.mode.track.VolumeMode;
 import de.mossgrabers.framework.utils.ButtonEvent;
-import de.mossgrabers.framework.utils.StringUtils;
 import de.mossgrabers.framework.view.AbstractView;
 import de.mossgrabers.framework.view.View;
 import de.mossgrabers.framework.view.ViewManager;
@@ -102,7 +101,6 @@ import java.util.Map.Entry;
 public class LaunchpadControllerSetup extends AbstractControllerSetup<LaunchpadControlSurface, LaunchpadConfiguration>
 {
     private final ILaunchpadControllerDefinition definition;
-    private int                                  frontColor = -1;
 
 
     /**
@@ -165,7 +163,12 @@ public class LaunchpadControllerSetup extends AbstractControllerSetup<LaunchpadC
     {
         final LaunchpadControlSurface surface = this.getSurface ();
 
-        surface.getViewManager ().addViewChangeListener ( (previousViewId, activeViewId) -> this.updateIndication (null));
+        surface.getViewManager ().addViewChangeListener ( (previousViewId, activeViewId) -> {
+
+            surface.getLight (OutputID.LED1).clearCache ();
+            this.updateIndication (null);
+
+        });
 
         this.createScaleObservers (this.configuration);
         this.createNoteRepeatObservers (this.configuration, surface);
@@ -317,25 +320,10 @@ public class LaunchpadControllerSetup extends AbstractControllerSetup<LaunchpadC
 
         surface.createLight (OutputID.LED1, () -> {
 
-            final ITrack selTrack = this.model.getSelectedTrack ();
-            final int index = selTrack == null ? -1 : selTrack.getIndex ();
-            final ITrack track = index == -1 ? null : this.model.getCurrentTrackBank ().getItem (index);
+            final ITrack track = this.model.getSelectedTrack ();
             return track != null && track.doesExist () ? this.colorManager.getColorIndex (DAWColor.getColorIndex (track.getColor ())) : 0;
 
-        }, color -> {
-
-            if (this.definition.isPro ())
-            {
-                if (color != this.frontColor)
-                {
-                    surface.sendLaunchpadSysEx ("0A 63 " + StringUtils.toHexStr (color));
-                    this.frontColor = color;
-                }
-            }
-            else
-                surface.setTrigger (LaunchpadControlSurface.LAUNCHPAD_LOGO, color);
-
-        }, state -> this.colorManager.getColor (state, null), null);
+        }, color -> this.definition.setLogoColor (surface, color), state -> this.colorManager.getColor (state, null), null);
 
         for (final Entry<ButtonID, IHwButton> entry: surface.getButtons ().entrySet ())
         {

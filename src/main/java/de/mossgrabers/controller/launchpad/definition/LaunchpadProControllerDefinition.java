@@ -7,6 +7,7 @@ package de.mossgrabers.controller.launchpad.definition;
 import de.mossgrabers.controller.launchpad.controller.LaunchpadControlSurface;
 import de.mossgrabers.framework.controller.ButtonID;
 import de.mossgrabers.framework.controller.DefaultControllerDefinition;
+import de.mossgrabers.framework.controller.grid.IPadGrid;
 import de.mossgrabers.framework.controller.grid.LightInfo;
 import de.mossgrabers.framework.daw.midi.IMidiOutput;
 import de.mossgrabers.framework.utils.OperatingSystem;
@@ -154,9 +155,45 @@ public class LaunchpadProControllerDefinition extends DefaultControllerDefinitio
 
     /** {@inheritDoc} */
     @Override
+    public void resetMode (final LaunchpadControlSurface surface)
+    {
+        surface.sendLaunchpadSysEx ("2C 00");
+    }
+
+
+    /** {@inheritDoc} */
+    @Override
     public void sendBlinkState (final IMidiOutput output, final int note, final int blinkColor, final boolean fast)
     {
         output.sendSysex (SYSEX_HEADER + "23 " + StringUtils.toHexStr (note) + " " + StringUtils.toHexStr (blinkColor) + " F7");
+    }
+
+
+    /** {@inheritDoc} */
+    @Override
+    public void setLogoColor (final LaunchpadControlSurface surface, final int color)
+    {
+        surface.sendLaunchpadSysEx ("0A 63 " + StringUtils.toHexStr (color));
+    }
+
+
+    /** {@inheritDoc} */
+    @Override
+    public void setupFader (final LaunchpadControlSurface surface, final int index, final int color, final boolean isPan)
+    {
+        if (color < 0)
+            return;
+
+        // Configure the emulated fader if there is native hardware support
+        surface.sendLaunchpadSysEx ("2B 0" + Integer.toString (index) + (isPan ? " 01 " : " 00 ") + StringUtils.toHexStr (color) + " 00");
+    }
+
+
+    /** {@inheritDoc} */
+    @Override
+    public void setFaderValue (final IPadGrid padGrid, final IMidiOutput output, final int index, final int value)
+    {
+        output.sendCC (LaunchpadControlSurface.LAUNCHPAD_FADER_1 + index, value);
     }
 
 

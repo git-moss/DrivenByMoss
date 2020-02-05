@@ -4,7 +4,9 @@
 
 package de.mossgrabers.controller.launchpad.definition;
 
+import de.mossgrabers.controller.launchpad.controller.LaunchpadControlSurface;
 import de.mossgrabers.framework.controller.ButtonID;
+import de.mossgrabers.framework.controller.grid.IPadGrid;
 import de.mossgrabers.framework.controller.grid.LightInfo;
 import de.mossgrabers.framework.daw.midi.IMidiOutput;
 
@@ -76,6 +78,14 @@ public interface ILaunchpadControllerDefinition
 
 
     /**
+     * Reset the mode to use the device without the DAW.
+     *
+     * @param surface The control surface
+     */
+    void resetMode (LaunchpadControlSurface surface);
+
+
+    /**
      * Are Scene buttons using MIDI CC or notes?
      *
      * @return True if CC otherwise false for notes
@@ -91,7 +101,38 @@ public interface ILaunchpadControllerDefinition
      * @param blinkColor The color to use for blinking
      * @param fast Blink fast or slow
      */
-    void sendBlinkState (final IMidiOutput output, final int note, final int blinkColor, final boolean fast);
+    void sendBlinkState (IMidiOutput output, int note, int blinkColor, boolean fast);
+
+
+    /**
+     * Set the logo or front color depending on the model.
+     * 
+     * @param surface The control surface
+     * @param color The color index
+     */
+    void setLogoColor (LaunchpadControlSurface surface, int color);
+
+
+    /**
+     * Set the color of a fader (8 vertical pads).
+     *
+     * @param surface The control surface
+     * @param index The number of the fader (0-7)
+     * @param color The color to set
+     * @param isPan True for panorama layout
+     */
+    void setupFader (LaunchpadControlSurface surface, int index, int color, boolean isPan);
+
+
+    /**
+     * Set the faders value.
+     * 
+     * @param padGrid The pad grid
+     * @param output The output where to send to
+     * @param index The index of the fader (0-7)
+     * @param value The value to set
+     */
+    void setFaderValue (IPadGrid padGrid, IMidiOutput output, int index, int value);
 
 
     /**

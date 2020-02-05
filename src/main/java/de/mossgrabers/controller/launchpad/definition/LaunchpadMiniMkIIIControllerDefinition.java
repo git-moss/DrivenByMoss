@@ -6,18 +6,12 @@ package de.mossgrabers.controller.launchpad.definition;
 
 import de.mossgrabers.controller.launchpad.controller.LaunchpadControlSurface;
 import de.mossgrabers.framework.controller.ButtonID;
-import de.mossgrabers.framework.controller.DefaultControllerDefinition;
-import de.mossgrabers.framework.controller.grid.LightInfo;
-import de.mossgrabers.framework.daw.midi.IMidiOutput;
 import de.mossgrabers.framework.utils.OperatingSystem;
 import de.mossgrabers.framework.utils.Pair;
-import de.mossgrabers.framework.utils.StringUtils;
 
-import java.util.Collections;
 import java.util.EnumMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Map.Entry;
 import java.util.UUID;
 
 
@@ -26,7 +20,7 @@ import java.util.UUID;
  *
  * @author J&uuml;rgen Mo&szlig;graber
  */
-public class LaunchpadMiniMkIIIControllerDefinition extends DefaultControllerDefinition implements ILaunchpadControllerDefinition
+public class LaunchpadMiniMkIIIControllerDefinition extends AbstractSimpleLaunchpad
 {
     private static final UUID   EXTENSION_ID             = UUID.fromString ("A17B269D-2641-452F-B5A2-81BBACDA0D17");
     private static final String SYSEX_HEADER             = "F0 00 20 29 02 0D ";
@@ -46,7 +40,7 @@ public class LaunchpadMiniMkIIIControllerDefinition extends DefaultControllerDef
      */
     public LaunchpadMiniMkIIIControllerDefinition ()
     {
-        super (EXTENSION_ID, "Launchpad Mini MkIII", "Novation", 1, 1);
+        super (EXTENSION_ID, "Launchpad Mini MkIII");
     }
 
 
@@ -79,22 +73,6 @@ public class LaunchpadMiniMkIIIControllerDefinition extends DefaultControllerDef
 
     /** {@inheritDoc} */
     @Override
-    public boolean isPro ()
-    {
-        return false;
-    }
-
-
-    /** {@inheritDoc} */
-    @Override
-    public boolean hasFaderSupport ()
-    {
-        return false;
-    }
-
-
-    /** {@inheritDoc} */
-    @Override
     public String getSysExHeader ()
     {
         return SYSEX_HEADER;
@@ -114,31 +92,6 @@ public class LaunchpadMiniMkIIIControllerDefinition extends DefaultControllerDef
     public String getProgramModeCommand ()
     {
         return "0E 01";
-    }
-
-
-    /** {@inheritDoc} */
-    @Override
-    public String getFaderModeCommand ()
-    {
-        return this.getProgramModeCommand ();
-    }
-
-
-    /** {@inheritDoc} */
-    @Override
-    public String getPanModeCommand ()
-    {
-        return this.getProgramModeCommand ();
-    }
-
-
-    /** {@inheritDoc} */
-    @Override
-    public void sendBlinkState (final IMidiOutput output, final int note, final int blinkColor, final boolean fast)
-    {
-        // Start blinking on channel 2, stop it on channel 1
-        output.sendNoteEx (blinkColor == 0 ? 1 : 2, note, blinkColor);
     }
 
 
@@ -168,48 +121,5 @@ public class LaunchpadMiniMkIIIControllerDefinition extends DefaultControllerDef
         buttonIDs.put (ButtonID.SCENE8, Integer.valueOf (LaunchpadControlSurface.LAUNCHPAD_BUTTON_SCENE8));
 
         return buttonIDs;
-    }
-
-
-    /** {@inheritDoc} */
-    @Override
-    public boolean sceneButtonsUseCC ()
-    {
-        return true;
-    }
-
-
-    /** {@inheritDoc} */
-    @Override
-    public List<String> buildLEDUpdate (final Map<Integer, LightInfo> padInfos)
-    {
-        final StringBuilder sb = new StringBuilder (this.getSysExHeader ()).append ("03 ");
-        for (final Entry<Integer, LightInfo> e: padInfos.entrySet ())
-        {
-            final int note = e.getKey ().intValue ();
-            final LightInfo info = e.getValue ();
-
-            if (info.getBlinkColor () <= 0)
-            {
-                // 00h: Static colour from palette, Lighting data is 1 byte specifying palette
-                // entry.
-                sb.append ("00 ").append (StringUtils.toHexStr (note)).append (' ').append (StringUtils.toHexStr (info.getColor ())).append (' ');
-            }
-            else
-            {
-                if (info.isFast ())
-                {
-                    // 01h: Flashing colour, Lighting data is 2 bytes specifying Colour B and
-                    // Colour A.
-                    sb.append ("01 ").append (StringUtils.toHexStr (note)).append (' ').append (StringUtils.toHexStr (info.getBlinkColor ())).append (' ').append (StringUtils.toHexStr (info.getColor ())).append (' ');
-                }
-                else
-                {
-                    // 02h: Pulsing colour, Lighting data is 1 byte specifying palette entry.
-                    sb.append ("02 ").append (StringUtils.toHexStr (note)).append (' ').append (StringUtils.toHexStr (info.getColor ())).append (' ');
-                }
-            }
-        }
-        return Collections.singletonList (sb.append ("F7").toString ());
     }
 }

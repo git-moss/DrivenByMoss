@@ -9,7 +9,6 @@ import de.mossgrabers.controller.launchpad.definition.ILaunchpadControllerDefini
 import de.mossgrabers.framework.controller.AbstractControlSurface;
 import de.mossgrabers.framework.controller.ButtonID;
 import de.mossgrabers.framework.controller.color.ColorManager;
-import de.mossgrabers.framework.controller.grid.IPadGrid;
 import de.mossgrabers.framework.controller.hardware.IHwButton;
 import de.mossgrabers.framework.daw.IHost;
 import de.mossgrabers.framework.daw.midi.DeviceInquiry;
@@ -28,14 +27,14 @@ import java.util.Map.Entry;
 @SuppressWarnings("javadoc")
 public class LaunchpadControlSurface extends AbstractControlSurface<LaunchpadConfiguration>
 {
-    public static final int                      LAUNCHPAD_BUTTON_SCENE1    = 89;             // 1/4
+    public static final int                      LAUNCHPAD_BUTTON_SCENE1    = 89; // 1/4
     public static final int                      LAUNCHPAD_BUTTON_SCENE2    = 79;
     public static final int                      LAUNCHPAD_BUTTON_SCENE3    = 69;
     public static final int                      LAUNCHPAD_BUTTON_SCENE4    = 59;
-    public static final int                      LAUNCHPAD_BUTTON_SCENE5    = 49;             // ...
+    public static final int                      LAUNCHPAD_BUTTON_SCENE5    = 49; // ...
     public static final int                      LAUNCHPAD_BUTTON_SCENE6    = 39;
     public static final int                      LAUNCHPAD_BUTTON_SCENE7    = 29;
-    public static final int                      LAUNCHPAD_BUTTON_SCENE8    = 19;             // 1/32T
+    public static final int                      LAUNCHPAD_BUTTON_SCENE8    = 19; // 1/32T
 
     public static final int                      LAUNCHPAD_FADER_1          = 21;
     public static final int                      LAUNCHPAD_FADER_2          = 22;
@@ -60,8 +59,6 @@ public class LaunchpadControlSurface extends AbstractControlSurface<LaunchpadCon
     public static final int                      CONTROL_MODE_STOP_CLIP     = 5;
 
     private final ILaunchpadControllerDefinition definition;
-    private final int []                         faderColorCache            = new int [8];
-    private final boolean []                     faderPanCache              = new boolean [8];
 
 
     /**
@@ -155,15 +152,7 @@ public class LaunchpadControlSurface extends AbstractControlSurface<LaunchpadCon
      */
     public void setupFader (final int index, final int color, final boolean isPan)
     {
-        if (this.faderColorCache[index] == color && this.faderPanCache[index] == isPan)
-            return;
-
-        this.faderColorCache[index] = color;
-        this.faderPanCache[index] = isPan;
-
-        // Configure the emulated fader if there is native hardware support
-        if (this.definition.hasFaderSupport ())
-            this.sendLaunchpadSysEx ("2B 0" + Integer.toString (index) + (isPan ? " 01 " : " 00 ") + StringUtils.toHexStr (color) + " 00");
+        this.definition.setupFader (this, index, color, isPan);
     }
 
 
@@ -175,47 +164,7 @@ public class LaunchpadControlSurface extends AbstractControlSurface<LaunchpadCon
      */
     public void setFaderValue (final int index, final int value)
     {
-        if (this.definition.hasFaderSupport ())
-            this.output.sendCC (LAUNCHPAD_FADER_1 + index, value);
-        else
-        {
-            final IPadGrid padGrid = this.getPadGrid ();
-
-            if (this.faderPanCache[index])
-            {
-                // Simulate pan fader
-                if (value == 64)
-                {
-                    for (int i = 0; i < 8; i++)
-                        padGrid.lightEx (index, i, i == 3 || i == 4 ? this.faderColorCache[index] : 0);
-                }
-                else if (value < 64)
-                {
-                    for (int i = 4; i < 8; i++)
-                        padGrid.lightEx (index, 7 - i, 0);
-
-                    final double numPads = 4.0 * value / 64.0 - 1;
-                    for (int i = 0; i < 4; i++)
-                        padGrid.lightEx (index, 7 - i, i > numPads ? this.faderColorCache[index] : 0);
-                }
-                else
-                {
-                    for (int i = 0; i < 4; i++)
-                        padGrid.lightEx (index, 7 - i, 0);
-
-                    final double numPads = 4.0 * (value - 64) / 64.0;
-                    for (int i = 4; i < 8; i++)
-                        padGrid.lightEx (index, 7 - i, i - 4 < numPads ? this.faderColorCache[index] : 0);
-                }
-            }
-            else
-            {
-                // Simulate normal fader
-                final double numPads = 8.0 * value / 127.0;
-                for (int i = 0; i < 8; i++)
-                    padGrid.lightEx (index, 7 - i, i < numPads ? this.faderColorCache[index] : 0);
-            }
-        }
+        this.definition.setFaderValue (this.getPadGrid (), this.output, index, value);
     }
 
 
@@ -225,10 +174,7 @@ public class LaunchpadControlSurface extends AbstractControlSurface<LaunchpadCon
     public void clearFaders ()
     {
         for (int i = 0; i < 8; i++)
-        {
-            this.faderColorCache[i] = -1;
-            this.faderPanCache[i] = false;
-        }
+            setupFader (i, -1, false);
     }
 
 
@@ -236,13 +182,7 @@ public class LaunchpadControlSurface extends AbstractControlSurface<LaunchpadCon
     @Override
     protected void internalShutdown ()
     {
-        if (this.definition.isPro ())
-        {
-            // Turn off front LED
-            this.sendLaunchpadSysEx ("0A 63 00");
-        }
-        else
-            this.setTrigger (LaunchpadControlSurface.LAUNCHPAD_LOGO, LaunchpadColorManager.LAUNCHPAD_COLOR_BLACK);
+        this.definition.setLogoColor (this, LaunchpadColorManager.LAUNCHPAD_COLOR_BLACK);
 
         this.setTrigger (LaunchpadControlSurface.LAUNCHPAD_BUTTON_SCENE1, LaunchpadColorManager.LAUNCHPAD_COLOR_BLACK);
         this.setTrigger (LaunchpadControlSurface.LAUNCHPAD_BUTTON_SCENE2, LaunchpadColorManager.LAUNCHPAD_COLOR_BLACK);
@@ -254,6 +194,8 @@ public class LaunchpadControlSurface extends AbstractControlSurface<LaunchpadCon
         this.setTrigger (LaunchpadControlSurface.LAUNCHPAD_BUTTON_SCENE8, LaunchpadColorManager.LAUNCHPAD_COLOR_BLACK);
 
         super.internalShutdown ();
+
+        this.definition.resetMode (this);
     }
 
 
