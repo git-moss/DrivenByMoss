@@ -109,6 +109,9 @@ public class APCControlSurface extends AbstractControlSurface<APCConfiguration>
     private static final String ID_APC_40                  = "73";
     private static final String ID_APC_40_MKII             = "29";
 
+    public static final int     LED_MODE_VOLUME            = 2;
+    public static final int     LED_MODE_PAN               = 3;
+
     private boolean             isMkII;
 
 

@@ -25,7 +25,7 @@ public class PanMode extends BaseMode
      */
     public PanMode (final APCControlSurface surface, final IModel model)
     {
-        super ("Panorama", surface, model, 3, 64);
+        super ("Panorama", surface, model, APCControlSurface.LED_MODE_PAN, 64);
     }
 
 

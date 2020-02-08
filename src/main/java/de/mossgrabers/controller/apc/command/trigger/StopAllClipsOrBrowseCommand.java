@@ -4,10 +4,9 @@
 
 package de.mossgrabers.controller.apc.command.trigger;
 
+import de.mossgrabers.controller.apc.APCConfiguration;
+import de.mossgrabers.controller.apc.controller.APCControlSurface;
 import de.mossgrabers.framework.command.core.AbstractTriggerCommand;
-import de.mossgrabers.framework.configuration.Configuration;
-import de.mossgrabers.framework.controller.ButtonID;
-import de.mossgrabers.framework.controller.IControlSurface;
 import de.mossgrabers.framework.daw.IModel;
 import de.mossgrabers.framework.utils.ButtonEvent;
 
@@ -15,22 +14,24 @@ import de.mossgrabers.framework.utils.ButtonEvent;
 /**
  * Stop all playing clips. Activate the browser if shifted.
  *
- * @param <S> The type of the control surface
- * @param <C> The type of the configuration
- *
  * @author J&uuml;rgen Mo&szlig;graber
  */
-public class StopAllClipsOrBrowseCommand<S extends IControlSurface<C>, C extends Configuration> extends AbstractTriggerCommand<S, C>
+public class StopAllClipsOrBrowseCommand extends AbstractTriggerCommand<APCControlSurface, APCConfiguration>
 {
+    private final APCBrowserCommand apcBrowserCommand;
+
+
     /**
      * Constructor.
      *
      * @param model The model
      * @param surface The surface
      */
-    public StopAllClipsOrBrowseCommand (final IModel model, final S surface)
+    public StopAllClipsOrBrowseCommand (final IModel model, final APCControlSurface surface)
     {
         super (model, surface);
+
+        this.apcBrowserCommand = new APCBrowserCommand (model, surface);
     }
 
 
@@ -44,10 +45,9 @@ public class StopAllClipsOrBrowseCommand<S extends IControlSurface<C>, C extends
 
 
     /** {@inheritDoc} */
-    @SuppressWarnings("rawtypes")
     @Override
     public void executeShifted (final ButtonEvent event)
     {
-        ((AbstractTriggerCommand) this.surface.getButton (ButtonID.BROWSE).getCommand ()).executeNormal (event);
+        this.apcBrowserCommand.executeNormal (event);
     }
 }
