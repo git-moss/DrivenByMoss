@@ -42,7 +42,9 @@ public class PanView extends AbstractFaderView
     @Override
     protected int smoothFaderValue (final int index, final int row, final int value)
     {
-        return row == 3 || row == 4 ? 64 : value;
+        if (row == 3 || row == 4)
+            return 64;
+        return super.smoothFaderValue (index, row, value);
     }
 
 
@@ -51,14 +53,6 @@ public class PanView extends AbstractFaderView
     protected int getFaderValue (final int index)
     {
         return this.model.getCurrentTrackBank ().getItem (index).getPan ();
-    }
-
-
-    /** {@inheritDoc} */
-    @Override
-    public void switchLaunchpadMode ()
-    {
-        this.surface.setLaunchpadToPanMode ();
     }
 
 

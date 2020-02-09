@@ -24,7 +24,7 @@ import java.util.UUID;
  *
  * @author J&uuml;rgen Mo&szlig;graber
  */
-public class LaunchpadMkIIControllerDefinition extends AbstractSimpleLaunchpad
+public class LaunchpadMkIIControllerDefinition extends SimpleLaunchpadDefinition
 {
     private static final UUID   EXTENSION_ID             = UUID.fromString ("4E01A0B0-67B1-11E5-A837-0800200C9A66");
     private static final String SYSEX_HEADER             = "F0 00 20 29 02 18 ";
@@ -92,7 +92,7 @@ public class LaunchpadMkIIControllerDefinition extends AbstractSimpleLaunchpad
 
     /** {@inheritDoc} */
     @Override
-    public void setLogoColor (LaunchpadControlSurface surface, int color)
+    public void setLogoColor (final LaunchpadControlSurface surface, final int color)
     {
         // No logo on the Mk II
     }
@@ -158,12 +158,13 @@ public class LaunchpadMkIIControllerDefinition extends AbstractSimpleLaunchpad
         }
 
         final List<String> result = new ArrayList<> (3);
+        final String sysExHeader = this.getSysExHeader ();
         if (sbNormal.length () > 0)
-            result.add (new StringBuilder (this.getSysExHeader ()).append ("0A ").append (sbNormal).append ("F7").toString ());
+            result.add (new StringBuilder (sysExHeader).append ("0A ").append (sbNormal).append ("F7").toString ());
         if (sbFlash.length () > 0)
-            result.add (new StringBuilder (this.getSysExHeader ()).append ("23 ").append (sbFlash).append ("F7").toString ());
+            result.add (new StringBuilder (sysExHeader).append ("23 ").append (sbFlash).append ("F7").toString ());
         if (sbPulse.length () > 0)
-            result.add (new StringBuilder (this.getSysExHeader ()).append ("28 ").append (sbPulse).append ("F7").toString ());
+            result.add (new StringBuilder (sysExHeader).append ("28 ").append (sbPulse).append ("F7").toString ());
         return result;
     }
 }

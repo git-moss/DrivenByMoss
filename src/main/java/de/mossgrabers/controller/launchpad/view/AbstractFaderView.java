@@ -80,7 +80,7 @@ public abstract class AbstractFaderView extends SessionView
     @Override
     public void onGridNote (final int note, final int velocity)
     {
-        if (velocity == 0 || this.surface.hasFaderSupport ())
+        if (velocity == 0)
             return;
 
         // Simulate faders
@@ -92,16 +92,23 @@ public abstract class AbstractFaderView extends SessionView
         this.faderMoveDelay[index] = SPEED_SCALE[velocity];
         this.faderMoveTimerDelay[index] = SPEED_SCALE[SPEED_SCALE.length - 1 - velocity];
 
-        int min = row * PAD_VALUE_AMOUNT;
-        int max = Math.min (127, (row + 1) * PAD_VALUE_AMOUNT - 1);
-
+        final int min = row * PAD_VALUE_AMOUNT;
+        final int max = Math.min (127, (row + 1) * PAD_VALUE_AMOUNT - 1);
         int newDestination = this.smoothFaderValue (index, row, max);
+
+        // Support stepping through 4 values
         if (min <= this.faderMoveDestination[index] && this.faderMoveDestination[index] <= max)
         {
-            newDestination = this.faderMoveDestination[index] + 4;
+            final int step = (this.faderMoveDestination[index] - min) / 4;
+            newDestination = min + 4 * (step + 2) - 1;
             if (newDestination > max)
                 newDestination = min;
         }
+        else if (row == 0)
+        {
+            newDestination = 0;
+        }
+
         this.faderMoveDestination[index] = newDestination;
 
         this.moveFaderToDestination (index);
@@ -159,14 +166,6 @@ public abstract class AbstractFaderView extends SessionView
         this.surface.clearFaders ();
         for (int i = 0; i < 8; i++)
             this.setupFader (i);
-    }
-
-
-    /** {@inheritDoc} */
-    @Override
-    public void switchLaunchpadMode ()
-    {
-        this.surface.setLaunchpadToFaderMode ();
     }
 
 

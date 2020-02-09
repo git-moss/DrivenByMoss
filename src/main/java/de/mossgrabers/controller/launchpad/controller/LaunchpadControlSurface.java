@@ -9,6 +9,7 @@ import de.mossgrabers.controller.launchpad.definition.ILaunchpadControllerDefini
 import de.mossgrabers.framework.controller.AbstractControlSurface;
 import de.mossgrabers.framework.controller.ButtonID;
 import de.mossgrabers.framework.controller.color.ColorManager;
+import de.mossgrabers.framework.controller.grid.IVirtualFader;
 import de.mossgrabers.framework.controller.hardware.IHwButton;
 import de.mossgrabers.framework.daw.IHost;
 import de.mossgrabers.framework.daw.midi.DeviceInquiry;
@@ -27,14 +28,14 @@ import java.util.Map.Entry;
 @SuppressWarnings("javadoc")
 public class LaunchpadControlSurface extends AbstractControlSurface<LaunchpadConfiguration>
 {
-    public static final int                      LAUNCHPAD_BUTTON_SCENE1    = 89; // 1/4
+    public static final int                      LAUNCHPAD_BUTTON_SCENE1    = 89;                   // 1/4
     public static final int                      LAUNCHPAD_BUTTON_SCENE2    = 79;
     public static final int                      LAUNCHPAD_BUTTON_SCENE3    = 69;
     public static final int                      LAUNCHPAD_BUTTON_SCENE4    = 59;
-    public static final int                      LAUNCHPAD_BUTTON_SCENE5    = 49; // ...
+    public static final int                      LAUNCHPAD_BUTTON_SCENE5    = 49;                   // ...
     public static final int                      LAUNCHPAD_BUTTON_SCENE6    = 39;
     public static final int                      LAUNCHPAD_BUTTON_SCENE7    = 29;
-    public static final int                      LAUNCHPAD_BUTTON_SCENE8    = 19; // 1/32T
+    public static final int                      LAUNCHPAD_BUTTON_SCENE8    = 19;                   // 1/32T
 
     public static final int                      LAUNCHPAD_FADER_1          = 21;
     public static final int                      LAUNCHPAD_FADER_2          = 22;
@@ -60,6 +61,8 @@ public class LaunchpadControlSurface extends AbstractControlSurface<LaunchpadCon
 
     private final ILaunchpadControllerDefinition definition;
 
+    private final IVirtualFader []               virtualFaders              = new IVirtualFader [8];
+
 
     /**
      * Constructor.
@@ -76,6 +79,9 @@ public class LaunchpadControlSurface extends AbstractControlSurface<LaunchpadCon
         super (host, configuration, colorManager, output, input, new LaunchpadPadGrid (colorManager, output, definition), 800, 800);
 
         this.definition = definition;
+
+        for (int i = 0; i < this.virtualFaders.length; i++)
+            this.virtualFaders[i] = this.definition.createVirtualFader (this.pads, i);
 
         this.input.setSysexCallback (this::handleSysEx);
         this.output.sendSysex (DeviceInquiry.createQuery ());
@@ -111,24 +117,6 @@ public class LaunchpadControlSurface extends AbstractControlSurface<LaunchpadCon
     }
 
 
-    /**
-     * Set the launchpad to panorama mode. 8 groups of 8 vertical pads are used as a fader.
-     */
-    public void setLaunchpadToFaderMode ()
-    {
-        this.setLaunchpadMode (this.definition.getFaderModeCommand ());
-    }
-
-
-    /**
-     * Set the launchpad to panorama mode. 8 groups of 8 vertical pads are used to control panorama.
-     */
-    public void setLaunchpadToPanMode ()
-    {
-        this.setLaunchpadMode (this.definition.getPanModeCommand ());
-    }
-
-
     private void setLaunchpadMode (final String data)
     {
         this.sendLaunchpadSysEx (data);
@@ -152,7 +140,7 @@ public class LaunchpadControlSurface extends AbstractControlSurface<LaunchpadCon
      */
     public void setupFader (final int index, final int color, final boolean isPan)
     {
-        this.definition.setupFader (this, index, color, isPan);
+        this.virtualFaders[index].setup (color, isPan);
     }
 
 
@@ -164,7 +152,7 @@ public class LaunchpadControlSurface extends AbstractControlSurface<LaunchpadCon
      */
     public void setFaderValue (final int index, final int value)
     {
-        this.definition.setFaderValue (this.getPadGrid (), this.output, index, value);
+        this.virtualFaders[index].setValue (value);
     }
 
 
@@ -174,7 +162,7 @@ public class LaunchpadControlSurface extends AbstractControlSurface<LaunchpadCon
     public void clearFaders ()
     {
         for (int i = 0; i < 8; i++)
-            setupFader (i, -1, false);
+            this.setupFader (i, -1, false);
     }
 
 
@@ -239,17 +227,6 @@ public class LaunchpadControlSurface extends AbstractControlSurface<LaunchpadCon
     public boolean isPro ()
     {
         return this.definition.isPro ();
-    }
-
-
-    /**
-     * Does it provide support for fader simulation?
-     *
-     * @return True if supported
-     */
-    public boolean hasFaderSupport ()
-    {
-        return this.definition.hasFaderSupport ();
     }
 
 

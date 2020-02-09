@@ -17,13 +17,13 @@ import java.util.UUID;
 
 /**
  * Definition class for the Novation Launchpad X controller extension.
- * 
+ *
  * Note: If the DAW mode on the X is selected to use faders one cannot use the program mode (and
  * mode buttons cannot be configured), therefore we implement the faders ourselves!
- * 
+ *
  * @author J&uuml;rgen Mo&szlig;graber
  */
-public class LaunchpadXControllerDefinition extends AbstractSimpleLaunchpad
+public class LaunchpadXControllerDefinition extends SimpleLaunchpadDefinition
 {
     private static final UUID   EXTENSION_ID                  = UUID.fromString ("CD196CCF-DF98-4AB0-9ABC-F0F29A60ACED");
     private static final String SYSEX_HEADER                  = "F0 00 20 29 02 0C ";

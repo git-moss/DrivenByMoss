@@ -7,7 +7,9 @@ package de.mossgrabers.controller.launchpad.definition;
 import de.mossgrabers.controller.launchpad.controller.LaunchpadControlSurface;
 import de.mossgrabers.framework.controller.DefaultControllerDefinition;
 import de.mossgrabers.framework.controller.grid.IPadGrid;
+import de.mossgrabers.framework.controller.grid.IVirtualFader;
 import de.mossgrabers.framework.controller.grid.LightInfo;
+import de.mossgrabers.framework.controller.grid.VirtualFaderImpl;
 import de.mossgrabers.framework.daw.midi.IMidiOutput;
 import de.mossgrabers.framework.utils.StringUtils;
 
@@ -23,19 +25,15 @@ import java.util.UUID;
  *
  * @author J&uuml;rgen Mo&szlig;graber
  */
-public abstract class AbstractSimpleLaunchpad extends DefaultControllerDefinition implements ILaunchpadControllerDefinition
+public abstract class SimpleLaunchpadDefinition extends DefaultControllerDefinition implements ILaunchpadControllerDefinition
 {
-    private final int []     faderColorCache = new int [8];
-    private final boolean [] faderPanCache   = new boolean [8];
-
-
     /**
      * Constructor.
      *
      * @param uuid The UUID of the controller implementation
      * @param hardwareModel The hardware model which this controller implementation supports
      */
-    public AbstractSimpleLaunchpad (final UUID uuid, final String hardwareModel)
+    public SimpleLaunchpadDefinition (final UUID uuid, final String hardwareModel)
     {
         super (uuid, hardwareModel, "Novation", 1, 1);
     }
@@ -46,30 +44,6 @@ public abstract class AbstractSimpleLaunchpad extends DefaultControllerDefinitio
     public boolean isPro ()
     {
         return false;
-    }
-
-
-    /** {@inheritDoc} */
-    @Override
-    public boolean hasFaderSupport ()
-    {
-        return false;
-    }
-
-
-    /** {@inheritDoc} */
-    @Override
-    public String getFaderModeCommand ()
-    {
-        return this.getProgramModeCommand ();
-    }
-
-
-    /** {@inheritDoc} */
-    @Override
-    public String getPanModeCommand ()
-    {
-        return this.getProgramModeCommand ();
     }
 
 
@@ -143,50 +117,8 @@ public abstract class AbstractSimpleLaunchpad extends DefaultControllerDefinitio
 
     /** {@inheritDoc} */
     @Override
-    public void setupFader (final LaunchpadControlSurface surface, final int index, final int color, final boolean isPan)
+    public IVirtualFader createVirtualFader (final IPadGrid padGrid, final int index)
     {
-        this.faderColorCache[index] = color;
-        this.faderPanCache[index] = isPan;
-    }
-
-
-    /** {@inheritDoc} */
-    @Override
-    public void setFaderValue (final IPadGrid padGrid, final IMidiOutput output, final int index, final int value)
-    {
-        if (this.faderPanCache[index])
-        {
-            // Simulate pan fader
-            if (value == 64)
-            {
-                for (int i = 0; i < 8; i++)
-                    padGrid.lightEx (index, i, i == 3 || i == 4 ? this.faderColorCache[index] : 0);
-                return;
-            }
-
-            if (value < 64)
-            {
-                for (int i = 4; i < 8; i++)
-                    padGrid.lightEx (index, 7 - i, 0);
-
-                final double numPads = 4.0 * value / 64.0 - 1;
-                for (int i = 0; i < 4; i++)
-                    padGrid.lightEx (index, 7 - i, i > numPads ? this.faderColorCache[index] : 0);
-                return;
-            }
-
-            for (int i = 0; i < 4; i++)
-                padGrid.lightEx (index, 7 - i, 0);
-
-            final double numPads = 4.0 * (value - 64) / 64.0;
-            for (int i = 4; i < 8; i++)
-                padGrid.lightEx (index, 7 - i, i - 4 < numPads ? this.faderColorCache[index] : 0);
-            return;
-        }
-
-        // Simulate normal fader
-        final double numPads = 8.0 * value / 127.0;
-        for (int i = 0; i < 8; i++)
-            padGrid.lightEx (index, 7 - i, i < numPads ? this.faderColorCache[index] : 0);
+        return new VirtualFaderImpl (padGrid, index);
     }
 }

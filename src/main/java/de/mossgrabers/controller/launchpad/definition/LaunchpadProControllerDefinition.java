@@ -6,9 +6,10 @@ package de.mossgrabers.controller.launchpad.definition;
 
 import de.mossgrabers.controller.launchpad.controller.LaunchpadControlSurface;
 import de.mossgrabers.framework.controller.ButtonID;
-import de.mossgrabers.framework.controller.DefaultControllerDefinition;
 import de.mossgrabers.framework.controller.grid.IPadGrid;
+import de.mossgrabers.framework.controller.grid.IVirtualFader;
 import de.mossgrabers.framework.controller.grid.LightInfo;
+import de.mossgrabers.framework.controller.grid.VirtualFaderImpl;
 import de.mossgrabers.framework.daw.midi.IMidiOutput;
 import de.mossgrabers.framework.utils.OperatingSystem;
 import de.mossgrabers.framework.utils.Pair;
@@ -28,7 +29,7 @@ import java.util.UUID;
  * @author J&uuml;rgen Mo&szlig;graber
  */
 @SuppressWarnings("javadoc")
-public class LaunchpadProControllerDefinition extends DefaultControllerDefinition implements ILaunchpadControllerDefinition
+public class LaunchpadProControllerDefinition extends SimpleLaunchpadDefinition
 {
     private static final UUID   EXTENSION_ID               = UUID.fromString ("80B63970-64F1-11E5-A837-0800200C9A66");
     private static final String SYSEX_HEADER               = "F0 00 20 29 02 10 ";
@@ -66,7 +67,7 @@ public class LaunchpadProControllerDefinition extends DefaultControllerDefinitio
      */
     public LaunchpadProControllerDefinition ()
     {
-        super (EXTENSION_ID, "Launchpad Pro", "Novation", 1, 1);
+        super (EXTENSION_ID, "Launchpad Pro");
     }
 
 
@@ -107,14 +108,6 @@ public class LaunchpadProControllerDefinition extends DefaultControllerDefinitio
 
     /** {@inheritDoc} */
     @Override
-    public boolean hasFaderSupport ()
-    {
-        return true;
-    }
-
-
-    /** {@inheritDoc} */
-    @Override
     public String getSysExHeader ()
     {
         return SYSEX_HEADER;
@@ -139,22 +132,6 @@ public class LaunchpadProControllerDefinition extends DefaultControllerDefinitio
 
     /** {@inheritDoc} */
     @Override
-    public String getFaderModeCommand ()
-    {
-        return "2C 02";
-    }
-
-
-    /** {@inheritDoc} */
-    @Override
-    public String getPanModeCommand ()
-    {
-        return this.getFaderModeCommand ();
-    }
-
-
-    /** {@inheritDoc} */
-    @Override
     public void resetMode (final LaunchpadControlSurface surface)
     {
         surface.sendLaunchpadSysEx ("2C 00");
@@ -174,26 +151,6 @@ public class LaunchpadProControllerDefinition extends DefaultControllerDefinitio
     public void setLogoColor (final LaunchpadControlSurface surface, final int color)
     {
         surface.sendLaunchpadSysEx ("0A 63 " + StringUtils.toHexStr (color));
-    }
-
-
-    /** {@inheritDoc} */
-    @Override
-    public void setupFader (final LaunchpadControlSurface surface, final int index, final int color, final boolean isPan)
-    {
-        if (color < 0)
-            return;
-
-        // Configure the emulated fader if there is native hardware support
-        surface.sendLaunchpadSysEx ("2B 0" + Integer.toString (index) + (isPan ? " 01 " : " 00 ") + StringUtils.toHexStr (color) + " 00");
-    }
-
-
-    /** {@inheritDoc} */
-    @Override
-    public void setFaderValue (final IPadGrid padGrid, final IMidiOutput output, final int index, final int value)
-    {
-        output.sendCC (LaunchpadControlSurface.LAUNCHPAD_FADER_1 + index, value);
     }
 
 
@@ -265,12 +222,21 @@ public class LaunchpadProControllerDefinition extends DefaultControllerDefinitio
         }
 
         final List<String> result = new ArrayList<> (3);
+        final String sysExHeader = this.getSysExHeader ();
         if (sbNormal.length () > 0)
-            result.add (new StringBuilder (this.getSysExHeader ()).append ("0A ").append (sbNormal).append ("F7").toString ());
+            result.add (new StringBuilder (sysExHeader).append ("0A ").append (sbNormal).append ("F7").toString ());
         if (sbFlash.length () > 0)
-            result.add (new StringBuilder (this.getSysExHeader ()).append ("23 ").append (sbFlash).append ("F7").toString ());
+            result.add (new StringBuilder (sysExHeader).append ("23 ").append (sbFlash).append ("F7").toString ());
         if (sbPulse.length () > 0)
-            result.add (new StringBuilder (this.getSysExHeader ()).append ("28 ").append (sbPulse).append ("F7").toString ());
+            result.add (new StringBuilder (sysExHeader).append ("28 ").append (sbPulse).append ("F7").toString ());
         return result;
+    }
+
+
+    /** {@inheritDoc} */
+    @Override
+    public IVirtualFader createVirtualFader (final IPadGrid padGrid, final int index)
+    {
+        return new VirtualFaderImpl (padGrid, index);
     }
 }

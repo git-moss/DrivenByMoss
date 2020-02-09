@@ -63,7 +63,6 @@ public class BrowserView extends AbstractView<LaunchpadControlSurface, Launchpad
     @Override
     public void onActivate ()
     {
-        this.surface.setLaunchpadToPrgMode ();
 
         super.onActivate ();
     }

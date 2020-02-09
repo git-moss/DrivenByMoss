@@ -154,6 +154,7 @@ public class LaunchpadControllerSetup extends AbstractControllerSetup<LaunchpadC
         final LaunchpadControlSurface surface = new LaunchpadControlSurface (this.host, this.colorManager, this.configuration, output, input, this.definition);
         this.surfaces.add (surface);
         surface.setLaunchpadToStandalone ();
+        surface.setLaunchpadToPrgMode ();
     }
 
 
