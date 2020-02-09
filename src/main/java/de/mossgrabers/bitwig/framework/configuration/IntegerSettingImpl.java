@@ -57,10 +57,12 @@ public class IntegerSettingImpl extends AbstractSetting<Integer> implements IInt
     @Override
     public void addValueObserver (final IValueObserver<Integer> observer)
     {
-        this.rangedValue.addValueObserver (this.range, value -> observer.update (Integer.valueOf (value)));
+        this.rangedValue.addValueObserver (this.range, value -> {
+            observer.update (Integer.valueOf (value));
+        });
 
         // Directly fire the current value
-        final int value = (int) this.rangedValue.get () * this.range;
+        final int value = (int) (this.rangedValue.get () * this.range);
         observer.update (Integer.valueOf (value));
     }
 }

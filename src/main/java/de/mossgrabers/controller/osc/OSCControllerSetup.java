@@ -107,6 +107,13 @@ public class OSCControllerSetup extends AbstractControllerSetup<IControlSurface<
             try
             {
                 final int receivePort = this.configuration.getReceivePort ();
+                if (receivePort == this.configuration.getSendPort ())
+                {
+                    final String message = "Could not start OSC server. OSC send and receive port must be different! Both are: " + receivePort;
+                    this.host.showNotification (message);
+                    this.host.println (message);
+                    return;
+                }
                 this.oscServer.start (receivePort);
                 this.host.println ("Started OSC server on port " + receivePort + ".");
             }

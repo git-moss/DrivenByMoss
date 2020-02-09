@@ -38,7 +38,7 @@ public class MastertrackTouchCommand extends AbstractTriggerCommand<PushControlS
     @Override
     public void execute (final ButtonEvent event, final int velocity)
     {
-        final boolean isTouched = event == ButtonEvent.DOWN;
+        final boolean isTouched = event != ButtonEvent.UP;
 
         // Avoid accidentally leaving the browser
         final ModeManager modeManager = this.surface.getModeManager ();
