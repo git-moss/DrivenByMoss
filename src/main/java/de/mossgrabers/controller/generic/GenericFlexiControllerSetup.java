@@ -64,7 +64,8 @@ public class GenericFlexiControllerSetup extends AbstractControllerSetup<Generic
     @Override
     protected void createScales ()
     {
-        this.scales = new Scales (this.valueChanger, 36, 100, 8, 8);
+        this.scales = new Scales (this.valueChanger, 0, 128, 128, 1);
+        this.scales.setChromatic (true);
     }
 
 
@@ -129,6 +130,8 @@ public class GenericFlexiControllerSetup extends AbstractControllerSetup<Generic
             effectTrackBank.addSelectionObserver ( (index, selected) -> this.handleTrackChange (selected));
 
         surface.getModeManager ().addModeListener ( (oldMode, newMode) -> this.updateIndication (newMode));
+
+        this.createNoteRepeatObservers (this.configuration, surface);
     }
 
 

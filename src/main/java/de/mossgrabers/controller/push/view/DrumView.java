@@ -47,7 +47,7 @@ public class DrumView extends DrumViewBase
 
     /** {@inheritDoc} */
     @Override
-    protected void handleButtonCombinations (final int playedPad)
+    protected void handleDrumGridButtonCombinations (final int playedPad)
     {
         if (this.isButtonCombination (ButtonID.BROWSE))
         {
@@ -62,7 +62,7 @@ public class DrumView extends DrumViewBase
             return;
         }
 
-        super.handleButtonCombinations (playedPad);
+        super.handleDrumGridButtonCombinations (playedPad);
     }
 
 

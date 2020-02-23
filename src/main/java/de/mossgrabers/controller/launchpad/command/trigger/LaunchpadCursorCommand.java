@@ -6,8 +6,8 @@ package de.mossgrabers.controller.launchpad.command.trigger;
 
 import de.mossgrabers.controller.launchpad.LaunchpadConfiguration;
 import de.mossgrabers.controller.launchpad.controller.LaunchpadControlSurface;
-import de.mossgrabers.controller.launchpad.view.DrumView;
 import de.mossgrabers.controller.launchpad.view.DrumView64;
+import de.mossgrabers.controller.launchpad.view.DrumViewBase;
 import de.mossgrabers.framework.command.trigger.mode.CursorCommand;
 import de.mossgrabers.framework.daw.IBrowser;
 import de.mossgrabers.framework.daw.ICursorDevice;
@@ -114,7 +114,7 @@ public class LaunchpadCursorCommand extends CursorCommand<LaunchpadControlSurfac
             case DRUM:
             case DRUM4:
             case DRUM8:
-                final INoteClip drumClip = ((DrumView) viewManager.getView (Views.DRUM)).getClip ();
+                final INoteClip drumClip = ((DrumViewBase) viewManager.getView (activeViewId)).getClip ();
                 this.canScrollUp = this.scales.canScrollDrumOctaveUp ();
                 this.canScrollDown = this.scales.canScrollDrumOctaveDown ();
                 this.canScrollLeft = drumClip.canScrollStepsBackwards ();

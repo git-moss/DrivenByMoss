@@ -11,6 +11,7 @@ import de.mossgrabers.framework.controller.hardware.IHwButton;
 import de.mossgrabers.framework.daw.IModel;
 import de.mossgrabers.framework.daw.INoteClip;
 import de.mossgrabers.framework.daw.IStepInfo;
+import de.mossgrabers.framework.daw.constants.Resolution;
 import de.mossgrabers.framework.mode.ModeManager;
 import de.mossgrabers.framework.mode.Modes;
 import de.mossgrabers.framework.view.AbstractSequencerView;
@@ -62,20 +63,59 @@ public class DrumView8 extends DrumViewBase
         final int vel = this.configuration.isAccentActive () ? this.configuration.getFixedAccentValue () : this.surface.getButton (ButtonID.get (ButtonID.PAD1, index)).getPressedVelocity ();
         final INoteClip clip = this.getClip ();
 
+        if (this.handleNoteAreaButtonCombinations (clip, channel, col, y, row, vel))
+            return;
+
+        clip.toggleStep (channel, col, row, vel);
+    }
+
+
+    /**
+     * Handle button combinations on the note area of the sequencer.
+     *
+     * @param clip The sequenced midi clip
+     * @param channel The MIDI channel of the note
+     * @param row The row in the current page in the clip
+     * @param note The note in the current page of the pad in the clip
+     * @param step The step in the current page in the clip
+     * @param velocity The velocity
+     * @return True if handled
+     */
+    private boolean handleNoteAreaButtonCombinations (final INoteClip clip, final int channel, final int step, final int row, final int note, final int velocity)
+    {
         // Handle note duplicate function
         final IHwButton duplicateButton = this.surface.getButton (ButtonID.DUPLICATE);
         if (duplicateButton != null && duplicateButton.isPressed ())
         {
             duplicateButton.setConsumed ();
-            final IStepInfo noteStep = clip.getStep (channel, col, row);
+            final IStepInfo noteStep = clip.getStep (channel, step, note);
             if (noteStep.getState () == IStepInfo.NOTE_START)
                 this.copyNote = noteStep;
             else if (this.copyNote != null)
-                clip.setStep (channel, col, row, this.copyNote);
-            return;
+                clip.setStep (channel, step, note, this.copyNote);
+            return true;
         }
 
-        clip.toggleStep (channel, col, row, vel);
+        // Change length of a note or create a new one with a length
+        final int offset = row * clip.getNumSteps ();
+        for (int s = 0; s < step; s++)
+        {
+            final IHwButton button = this.surface.getButton (ButtonID.get (ButtonID.PAD1, offset + s));
+            if (button.isLongPressed ())
+            {
+                button.setConsumed ();
+                final int length = step - s + 1;
+                final double duration = length * Resolution.getValueAt (this.getResolutionIndex ());
+                final int state = note < 0 ? 0 : clip.getStep (channel, s, note).getState ();
+                if (state == IStepInfo.NOTE_START)
+                    clip.updateStepDuration (channel, s, note, duration);
+                else
+                    clip.setStep (channel, s, note, velocity, duration);
+                return true;
+            }
+        }
+
+        return false;
     }
 
 

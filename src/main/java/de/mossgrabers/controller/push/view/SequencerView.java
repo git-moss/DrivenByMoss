@@ -102,6 +102,8 @@ public class SequencerView extends AbstractNoteSequencerView<PushControlSurface,
         if (y >= this.numSequencerRows)
             return;
 
+        // Show edit mode for long pressed note
+
         final int x = index % 8;
         final INoteClip cursorClip = this.getClip ();
         final int mappedNote = this.keyManager.map (y);

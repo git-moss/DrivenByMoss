@@ -33,15 +33,6 @@ public class RaindropsView extends AbstractRaindropsView<LaunchpadControlSurface
 
     /** {@inheritDoc} */
     @Override
-    public void onActivate ()
-    {
-        super.onActivate ();
-        this.surface.setLaunchpadToPrgMode ();
-    }
-
-
-    /** {@inheritDoc} */
-    @Override
     public int getButtonColor (final ButtonID buttonID)
     {
         if (!this.isActive ())

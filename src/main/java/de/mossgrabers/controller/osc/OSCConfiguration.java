@@ -80,7 +80,7 @@ public class OSCConfiguration extends AbstractOpenSoundControlConfiguration
 
         final IIntegerSetting receivePortSetting = globalSettings.getRangeSetting ("Port to receive on", CATEGORY_SETUP, 1024, 65535, 1, "", 8000);
         receivePortSetting.addValueObserver (value -> {
-            this.receivePort = Math.max (1024, Math.min (1024 + value.intValue (), 65535));
+            this.receivePort = value.intValue ();
             this.notifyObservers (OSCConfiguration.RECEIVE_PORT);
         });
 
@@ -92,7 +92,7 @@ public class OSCConfiguration extends AbstractOpenSoundControlConfiguration
 
         final IIntegerSetting sendPortSetting = globalSettings.getRangeSetting ("Port to send to (requires restart)", CATEGORY_SETUP, 1024, 65535, 1, "", 9000);
         sendPortSetting.addValueObserver (value -> {
-            this.sendPort = Math.max (1024, 1024 + Math.min (value.intValue (), 65535));
+            this.sendPort = value.intValue ();
             this.notifyObservers (SEND_PORT);
         });
 

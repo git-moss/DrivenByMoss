@@ -507,6 +507,7 @@ public enum FlexiCommand
     CLIP_STOP(CommandCategory.CLIP, "Clip: Stop", true),
     CLIP_RECORD(CommandCategory.CLIP, "Clip: Record", true),
     CLIP_NEW(CommandCategory.CLIP, "Clip: New", true),
+    CLIP_QUANTIZE(CommandCategory.CLIP, "Clip: Quantize", true),
 
     MARKER_1_LAUNCH_MARKER(CommandCategory.MARKER, "Marker 1: Launch Marker", true),
     MARKER_2_LAUNCH_MARKER(CommandCategory.MARKER, "Marker 2: Launch Marker", true),
@@ -683,6 +684,14 @@ public enum FlexiCommand
     MIDI_CC_125(CommandCategory.MIDI_CC, "MIDI CC: 125 Omni Mode On", false),
     MIDI_CC_126(CommandCategory.MIDI_CC, "MIDI CC: 126 Mono Mode", false),
     MIDI_CC_127(CommandCategory.MIDI_CC, "MIDI CC: 127 Poly Mode", false),
+
+    NOTE_INPUT_REPEAT_ACTIVE(CommandCategory.NOTE_INPUT, "Note Input: Toggle Note Repeat Active", true),
+    NOTE_INPUT_REPEAT_PERIOD(CommandCategory.NOTE_INPUT, "Note Input: Set Note Repeat Period", false),
+    NOTE_INPUT_REPEAT_LENGTH(CommandCategory.NOTE_INPUT, "Note Input: Set Note Repeat Length", false),
+    NOTE_INPUT_REPEAT_MODE(CommandCategory.NOTE_INPUT, "Note Input: Set Note Repeat Mode", false),
+    NOTE_INPUT_REPEAT_OCTAVE(CommandCategory.NOTE_INPUT, "Note Input: Set Note Repeat Octave", false),
+    NOTE_INPUT_TRANSPOSE_OCTAVE_UP(CommandCategory.NOTE_INPUT, "Note Input: Transpose Octave Up", false),
+    NOTE_INPUT_TRANSPOSE_OCTAVE_DOWN(CommandCategory.NOTE_INPUT, "Note Input: Transpose Octave Down", false),
 
     USER_SET_PARAMETER_1(CommandCategory.USER, "User: Set Parameter 1", false),
     USER_SET_PARAMETER_2(CommandCategory.USER, "User: Set Parameter 2", false),

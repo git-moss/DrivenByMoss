@@ -12,6 +12,7 @@ import de.mossgrabers.framework.controller.hardware.IHwButton;
 import de.mossgrabers.framework.daw.IModel;
 import de.mossgrabers.framework.daw.INoteClip;
 import de.mossgrabers.framework.daw.IStepInfo;
+import de.mossgrabers.framework.daw.constants.Resolution;
 import de.mossgrabers.framework.daw.data.ITrack;
 import de.mossgrabers.framework.scale.Scales;
 import de.mossgrabers.framework.utils.ButtonEvent;
@@ -127,22 +128,61 @@ public abstract class AbstractNoteSequencerView<S extends IControlSurface<C>, C 
         final INoteClip clip = this.getClip ();
         final int channel = this.configuration.getMidiEditChannel ();
         final int mappedY = this.keyManager.map (y);
+        final int vel = this.configuration.isAccentActive () ? this.configuration.getFixedAccentValue () : this.surface.getButton (ButtonID.get (ButtonID.PAD1, index)).getPressedVelocity ();
 
+        if (this.handleNoteAreaButtonCombinations (clip, channel, x, y, mappedY, vel))
+            return;
+
+        clip.toggleStep (channel, x, mappedY, vel);
+    }
+
+
+    /**
+     * Handle button combinations on the note area of the sequencer.
+     *
+     * @param clip The sequenced midi clip
+     * @param channel The MIDI channel of the note
+     * @param step The step in the current page in the clip
+     * @param row The row in the current page in the clip
+     * @param note The note in the current page of the pad in the clip
+     * @param velocity The velocity
+     * @return True if handled
+     */
+    private boolean handleNoteAreaButtonCombinations (final INoteClip clip, final int channel, final int step, final int row, final int note, final int velocity)
+    {
         // Handle note duplicate function
         final IHwButton duplicateButton = this.surface.getButton (ButtonID.DUPLICATE);
         if (duplicateButton != null && duplicateButton.isPressed ())
         {
             duplicateButton.setConsumed ();
-            final IStepInfo noteStep = clip.getStep (channel, x, mappedY);
+            final IStepInfo noteStep = clip.getStep (channel, step, note);
             if (noteStep.getState () == IStepInfo.NOTE_START)
                 this.copyNote = noteStep;
             else if (this.copyNote != null)
-                clip.setStep (channel, x, mappedY, this.copyNote);
-            return;
+                clip.setStep (channel, step, note, this.copyNote);
+            return true;
         }
 
-        final int vel = this.configuration.isAccentActive () ? this.configuration.getFixedAccentValue () : this.surface.getButton (ButtonID.get (ButtonID.PAD1, index)).getPressedVelocity ();
-        clip.toggleStep (channel, x, mappedY, vel);
+        // Change length of a note or create a new one with a length
+        final int offset = row * clip.getNumSteps ();
+        for (int s = 0; s < step; s++)
+        {
+            final IHwButton button = this.surface.getButton (ButtonID.get (ButtonID.PAD1, offset + s));
+            if (button.isLongPressed ())
+            {
+                button.setConsumed ();
+                final int length = step - s + 1;
+                final double duration = length * Resolution.getValueAt (this.getResolutionIndex ());
+                final int state = note < 0 ? 0 : clip.getStep (channel, s, note).getState ();
+                if (state == IStepInfo.NOTE_START)
+                    clip.updateStepDuration (channel, s, note, duration);
+                else
+                    clip.setStep (channel, s, note, velocity, duration);
+                return true;
+            }
+        }
+
+        return false;
     }
 
 
@@ -243,13 +283,13 @@ public abstract class AbstractNoteSequencerView<S extends IControlSurface<C>, C 
     {
         switch (isSet)
         {
-            // Note continues
-            case 1:
+            case IStepInfo.NOTE_CONTINUE:
                 return hilite ? COLOR_STEP_HILITE_CONTENT : COLOR_CONTENT_CONT;
-            // Note starts
-            case 2:
+
+            case IStepInfo.NOTE_START:
                 return hilite ? COLOR_STEP_HILITE_CONTENT : COLOR_CONTENT;
-            // Empty
+
+            case IStepInfo.NOTE_OFF:
             default:
                 if (hilite)
                     return COLOR_STEP_HILITE_NO_CONTENT;

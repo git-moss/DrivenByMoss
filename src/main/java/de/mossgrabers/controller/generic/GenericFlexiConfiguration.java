@@ -411,6 +411,8 @@ public class GenericFlexiConfiguration extends AbstractConfiguration
 
         this.activateKnobSpeedSetting (globalSettings, 6);
 
+        this.activateNoteRepeatSetting (documentSettings);
+
         this.slotSelectionSetting.addValueObserver (this::selectSlot);
 
         // Load last configuration

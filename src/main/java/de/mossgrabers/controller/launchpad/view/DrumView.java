@@ -25,14 +25,4 @@ public class DrumView extends DrumViewBase
     {
         super ("Drum", surface, model, 4, 4);
     }
-
-
-    /** {@inheritDoc} */
-    @Override
-    public void onActivate ()
-    {
-        this.surface.setLaunchpadToPrgMode ();
-
-        super.onActivate ();
-    }
 }

@@ -17,6 +17,7 @@ import de.mossgrabers.controller.generic.flexihandler.MarkerHandler;
 import de.mossgrabers.controller.generic.flexihandler.MasterHandler;
 import de.mossgrabers.controller.generic.flexihandler.MidiCCHandler;
 import de.mossgrabers.controller.generic.flexihandler.ModesHandler;
+import de.mossgrabers.controller.generic.flexihandler.NoteInputHandler;
 import de.mossgrabers.controller.generic.flexihandler.SceneHandler;
 import de.mossgrabers.controller.generic.flexihandler.TrackHandler;
 import de.mossgrabers.controller.generic.flexihandler.TransportHandler;
@@ -87,6 +88,7 @@ public class GenericFlexiControlSurface extends AbstractControlSurface<GenericFl
         this.registerHandler (new MarkerHandler (model, this, configuration, this.relative2ValueChanger, this.relative3ValueChanger));
         this.registerHandler (new ModesHandler (model, this, configuration, this.relative2ValueChanger, this.relative3ValueChanger, host));
         this.registerHandler (new MidiCCHandler (model, this, configuration, this.relative2ValueChanger, this.relative3ValueChanger));
+        this.registerHandler (new NoteInputHandler (model, this, configuration, this.relative2ValueChanger, this.relative3ValueChanger));
         if (host.hasUserParameters ())
             this.registerHandler (new UserHandler (model, this, configuration, this.relative2ValueChanger, this.relative3ValueChanger));
 

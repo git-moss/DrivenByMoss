@@ -62,16 +62,6 @@ public class SessionView extends AbstractSessionView<LaunchpadControlSurface, La
 
     /** {@inheritDoc} */
     @Override
-    public void onActivate ()
-    {
-        this.switchLaunchpadMode ();
-
-        super.onActivate ();
-    }
-
-
-    /** {@inheritDoc} */
-    @Override
     public void onGridNote (final int note, final int velocity)
     {
         final ModeManager modeManager = this.surface.getModeManager ();
@@ -130,16 +120,6 @@ public class SessionView extends AbstractSessionView<LaunchpadControlSurface, La
             else if (modeManager.isActiveOrTempMode (Modes.STOP_CLIP))
                 pads.lightEx (x, 7, exists ? LaunchpadColorManager.LAUNCHPAD_COLOR_ROSE : LaunchpadColorManager.LAUNCHPAD_COLOR_BLACK);
         }
-    }
-
-
-    /**
-     * Switch to the appropriate launchpad mode, which supports different features with the pad
-     * grid, e.g. the simulation of faders.
-     */
-    public void switchLaunchpadMode ()
-    {
-        this.surface.setLaunchpadToPrgMode ();
     }
 
 

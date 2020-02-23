@@ -75,7 +75,7 @@ public class SettingsUIImpl implements ISettingsUI
     public IIntegerSetting getRangeSetting (final String label, final String category, final int minValue, final int maxValue, final int stepResolution, final String unit, final int initialValue)
 
     {
-        return new IntegerSettingImpl (this.preferences.getNumberSetting (label, category, minValue, maxValue, stepResolution, unit, initialValue), maxValue - minValue + 1);
+        return new IntegerSettingImpl (this.preferences.getNumberSetting (label, category, minValue, maxValue, stepResolution, unit, initialValue), minValue, maxValue - minValue + 1);
     }
 
 

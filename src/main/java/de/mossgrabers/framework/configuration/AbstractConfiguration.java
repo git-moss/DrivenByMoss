@@ -1050,7 +1050,7 @@ public abstract class AbstractConfiguration implements Configuration
     {
         this.accentValueSetting = settingsUI.getRangeSetting ("Fixed Accent Value", CATEGORY_PLAY_AND_SEQUENCE, 1, 127, 1, "", 127);
         this.accentValueSetting.addValueObserver (value -> {
-            this.fixedAccentValue = value.intValue () + 1;
+            this.fixedAccentValue = value.intValue ();
             this.notifyObservers (AbstractConfiguration.FIXED_ACCENT_VALUE);
         });
     }
@@ -1095,7 +1095,7 @@ public abstract class AbstractConfiguration implements Configuration
     {
         this.quantizeAmountSetting = settingsUI.getRangeSetting ("Quantize Amount", CATEGORY_PLAY_AND_SEQUENCE, 1, 100, 1, "%", 100);
         this.quantizeAmountSetting.addValueObserver (value -> {
-            this.quantizeAmount = value.intValue () + 1;
+            this.quantizeAmount = value.intValue ();
             this.notifyObservers (QUANTIZE_AMOUNT);
         });
     }
@@ -1194,12 +1194,12 @@ public abstract class AbstractConfiguration implements Configuration
     {
         final IIntegerSetting knobSpeedNormalSetting = settingsUI.getRangeSetting ("Knob Speed Normal", CATEGORY_WORKFLOW, 1, 100, 1, "%", defaultFastSpeed);
         knobSpeedNormalSetting.addValueObserver (value -> {
-            this.knobSpeedNormal = value.intValue () + 1;
+            this.knobSpeedNormal = value.intValue ();
             this.notifyObservers (AbstractConfiguration.KNOB_SPEED_NORMAL);
         });
         final IIntegerSetting knobSpeedSlowSetting = settingsUI.getRangeSetting ("Knob Speed Slow", CATEGORY_WORKFLOW, 1, 100, 1, "%", 1);
         knobSpeedSlowSetting.addValueObserver (value -> {
-            this.knobSpeedSlow = value.intValue () + 1;
+            this.knobSpeedSlow = value.intValue ();
             this.notifyObservers (AbstractConfiguration.KNOB_SPEED_SLOW);
         });
     }

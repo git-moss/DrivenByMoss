@@ -55,16 +55,6 @@ public class PlayView extends AbstractPlayView<LaunchpadControlSurface, Launchpa
 
     /** {@inheritDoc} */
     @Override
-    public void onActivate ()
-    {
-        super.onActivate ();
-        this.initMaxVelocity ();
-        this.surface.setLaunchpadToPrgMode ();
-    }
-
-
-    /** {@inheritDoc} */
-    @Override
     public int getButtonColor (final ButtonID buttonID)
     {
         if (this.model.canSelectedTrackHoldNotes ())

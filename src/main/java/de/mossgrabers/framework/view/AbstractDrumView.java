@@ -16,6 +16,7 @@ import de.mossgrabers.framework.daw.IModel;
 import de.mossgrabers.framework.daw.INoteClip;
 import de.mossgrabers.framework.daw.IStepInfo;
 import de.mossgrabers.framework.daw.ITrackBank;
+import de.mossgrabers.framework.daw.constants.Resolution;
 import de.mossgrabers.framework.daw.data.IChannel;
 import de.mossgrabers.framework.daw.data.ITrack;
 import de.mossgrabers.framework.utils.ButtonEvent;
@@ -122,7 +123,8 @@ public abstract class AbstractDrumView<S extends IControlSurface<C>, C extends C
         // Sequencer steps
         if (y >= this.playLines)
         {
-            this.handleNoteArea (index, x, y, velocity, offsetY);
+            if (this.isActive ())
+                this.handleNoteArea (index, x, y, velocity, offsetY);
             return;
         }
 
@@ -139,7 +141,7 @@ public abstract class AbstractDrumView<S extends IControlSurface<C>, C extends C
             if (playedPad < 0)
                 return;
 
-            this.handleButtonCombinations (playedPad);
+            this.handleDrumGridButtonCombinations (playedPad);
             return;
         }
 
@@ -164,30 +166,69 @@ public abstract class AbstractDrumView<S extends IControlSurface<C>, C extends C
     private void handleNoteArea (final int index, final int x, final int y, final int velocity, final int offsetY)
     {
         // Toggle the note on up, so we can intercept the long presses
-        if (!this.isActive () || velocity != 0)
+        if (velocity != 0)
             return;
 
         final INoteClip clip = this.getClip ();
         final int channel = this.configuration.getMidiEditChannel ();
+        final int step = GRID_COLUMNS * (this.allLines - 1 - y) + x;
+        final int note = offsetY + this.selectedPad;
+        final int vel = this.configuration.isAccentActive () ? this.configuration.getFixedAccentValue () : this.surface.getButton (ButtonID.get (ButtonID.PAD1, index)).getPressedVelocity ();
 
-        final int col = GRID_COLUMNS * (this.allLines - 1 - y) + x;
-        final int row = offsetY + this.selectedPad;
+        if (this.handleNoteAreaButtonCombinations (clip, channel, step, note, vel))
+            return;
 
+        clip.toggleStep (channel, step, note, vel);
+    }
+
+
+    /**
+     * Handle button combinations on the note area of the sequencer.
+     *
+     * @param clip The sequenced midi clip
+     * @param channel The MIDI channel of the note
+     * @param step The step in the current page in the clip
+     * @param note The note in the current page of the pad in the clip
+     * @param velocity The velocity
+     * @return True if handled
+     */
+    private boolean handleNoteAreaButtonCombinations (final INoteClip clip, final int channel, final int step, final int note, int velocity)
+    {
         // Handle note duplicate function
         final IHwButton duplicateButton = this.surface.getButton (ButtonID.DUPLICATE);
         if (duplicateButton != null && duplicateButton.isPressed ())
         {
             duplicateButton.setConsumed ();
-            final IStepInfo noteStep = clip.getStep (channel, col, row);
+            final IStepInfo noteStep = clip.getStep (channel, step, note);
             if (noteStep.getState () == IStepInfo.NOTE_START)
                 this.copyNote = noteStep;
             else if (this.copyNote != null)
-                clip.setStep (channel, col, row, this.copyNote);
-            return;
+                clip.setStep (channel, step, note, this.copyNote);
+            return true;
         }
 
-        final int vel = this.configuration.isAccentActive () ? this.configuration.getFixedAccentValue () : this.surface.getButton (ButtonID.get (ButtonID.PAD1, index)).getPressedVelocity ();
-        clip.toggleStep (channel, col, row, vel);
+        // Change length of a note or create a new one with a length
+        for (int s = step - 1; s >= 0; s--)
+        {
+            final int x = s % GRID_COLUMNS;
+            final int y = this.allLines - 1 - s / GRID_COLUMNS;
+            final int pad = y * GRID_COLUMNS + x;
+            final IHwButton button = this.surface.getButton (ButtonID.get (ButtonID.PAD1, pad));
+            if (button.isLongPressed ())
+            {
+                button.setConsumed ();
+                final int length = step - s + 1;
+                final double duration = length * Resolution.getValueAt (this.getResolutionIndex ());
+                final int state = note < 0 ? 0 : clip.getStep (channel, s, note).getState ();
+                if (state == IStepInfo.NOTE_START)
+                    clip.updateStepDuration (channel, s, note, duration);
+                else
+                    clip.setStep (channel, s, note, velocity, duration);
+                return true;
+            }
+        }
+
+        return false;
     }
 
 
@@ -394,7 +435,7 @@ public abstract class AbstractDrumView<S extends IControlSurface<C>, C extends C
     }
 
 
-    protected void handleButtonCombinations (final int playedPad)
+    protected void handleDrumGridButtonCombinations (final int playedPad)
     {
         if (this.surface.isDeletePressed ())
         {

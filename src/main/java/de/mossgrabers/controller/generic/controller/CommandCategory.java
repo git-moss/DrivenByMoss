@@ -22,6 +22,7 @@ public enum CommandCategory
     MASTER("Master"),
     MIDI_CC("MIDI CC"),
     MODES("Modes"),
+    NOTE_INPUT("Note Input"),
     SCENE("Scene"),
     TRACK("Track"),
     TRANSPORT("Transport"),

@@ -18,21 +18,24 @@ import com.bitwig.extension.controller.api.Setting;
  */
 public class IntegerSettingImpl extends AbstractSetting<Integer> implements IIntegerSetting
 {
-    private SettableRangedValue rangedValue;
-    private int                 range;
+    private final SettableRangedValue rangedValue;
+    private final int                 range;
+    private final int                 minimum;
 
 
     /**
      * Constructor.
      *
      * @param rangedValue The ranged value
+     * @param minimum The minimum value
      * @param range The range
      */
-    public IntegerSettingImpl (final SettableRangedValue rangedValue, final int range)
+    public IntegerSettingImpl (final SettableRangedValue rangedValue, final int minimum, final int range)
     {
         super ((Setting) rangedValue);
 
         this.rangedValue = rangedValue;
+        this.minimum = minimum;
         this.range = range;
     }
 
@@ -57,12 +60,10 @@ public class IntegerSettingImpl extends AbstractSetting<Integer> implements IInt
     @Override
     public void addValueObserver (final IValueObserver<Integer> observer)
     {
-        this.rangedValue.addValueObserver (this.range, value -> {
-            observer.update (Integer.valueOf (value));
-        });
+        this.rangedValue.addValueObserver (this.range, value -> observer.update (Integer.valueOf (this.minimum + value)));
 
         // Directly fire the current value
-        final int value = (int) (this.rangedValue.get () * this.range);
+        final int value = (int) this.rangedValue.getRaw ();
         observer.update (Integer.valueOf (value));
     }
 }

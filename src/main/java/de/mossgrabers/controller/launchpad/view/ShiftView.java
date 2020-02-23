@@ -42,15 +42,6 @@ public class ShiftView extends AbstractView<LaunchpadControlSurface, LaunchpadCo
 
     /** {@inheritDoc} */
     @Override
-    public void onActivate ()
-    {
-        this.surface.setLaunchpadToPrgMode ();
-        super.onActivate ();
-    }
-
-
-    /** {@inheritDoc} */
-    @Override
     public void drawGrid ()
     {
         final IPadGrid padGrid = this.surface.getPadGrid ();

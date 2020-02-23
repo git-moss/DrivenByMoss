@@ -90,6 +90,7 @@ public class MidiModule extends AbstractModule
             this.writer.sendOSCColor (noteAddress + i + "/color", color[0], color[1], color[2], dump);
         }
 
+        // Flush note repeat
         final INoteInput noteInput = this.surface.getMidiInput ().getDefaultNoteInput ();
         if (noteInput == null)
             return;

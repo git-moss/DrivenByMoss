@@ -9,6 +9,7 @@ import de.mossgrabers.controller.generic.controller.FlexiCommand;
 import de.mossgrabers.controller.generic.controller.GenericFlexiControlSurface;
 import de.mossgrabers.framework.command.trigger.clip.NewCommand;
 import de.mossgrabers.framework.controller.valuechanger.IValueChanger;
+import de.mossgrabers.framework.daw.IClip;
 import de.mossgrabers.framework.daw.IModel;
 import de.mossgrabers.framework.daw.ISceneBank;
 import de.mossgrabers.framework.daw.ISlotBank;
@@ -57,7 +58,8 @@ public class ClipHandler extends AbstractHandler
             FlexiCommand.CLIP_PLAY,
             FlexiCommand.CLIP_STOP,
             FlexiCommand.CLIP_RECORD,
-            FlexiCommand.CLIP_NEW
+            FlexiCommand.CLIP_NEW,
+            FlexiCommand.CLIP_QUANTIZE
         };
     }
 
@@ -136,6 +138,15 @@ public class ClipHandler extends AbstractHandler
             case CLIP_NEW:
                 if (isButtonPressed)
                     this.newCommand.executeNormal (ButtonEvent.DOWN);
+                break;
+
+            case CLIP_QUANTIZE:
+                if (isButtonPressed)
+                {
+                    final IClip clip = this.model.getClip ();
+                    if (clip.doesExist ())
+                        clip.quantize (1);
+                }
                 break;
 
             default:
