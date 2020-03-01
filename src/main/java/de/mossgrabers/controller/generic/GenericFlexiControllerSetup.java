@@ -7,6 +7,7 @@ package de.mossgrabers.controller.generic;
 import de.mossgrabers.controller.generic.controller.FlexiCommand;
 import de.mossgrabers.controller.generic.controller.GenericFlexiControlSurface;
 import de.mossgrabers.framework.configuration.AbstractConfiguration;
+import de.mossgrabers.framework.configuration.IEnumSetting;
 import de.mossgrabers.framework.configuration.ISettingsUI;
 import de.mossgrabers.framework.controller.AbstractControllerSetup;
 import de.mossgrabers.framework.controller.ISetupFactory;
@@ -32,7 +33,11 @@ import de.mossgrabers.framework.mode.track.TrackMode;
 import de.mossgrabers.framework.mode.track.VolumeMode;
 import de.mossgrabers.framework.observer.IValueObserver;
 import de.mossgrabers.framework.scale.Scales;
+import de.mossgrabers.framework.utils.FileEx;
 
+import java.io.IOException;
+import java.text.ParseException;
+import java.util.List;
 import java.util.Set;
 
 
@@ -43,6 +48,9 @@ import java.util.Set;
  */
 public class GenericFlexiControllerSetup extends AbstractControllerSetup<GenericFlexiControlSurface, GenericFlexiConfiguration> implements IValueObserver<FlexiCommand>
 {
+    private static final String PROGRAM_NONE = "None";
+
+
     /**
      * Constructor.
      *
@@ -54,9 +62,68 @@ public class GenericFlexiControllerSetup extends AbstractControllerSetup<Generic
     public GenericFlexiControllerSetup (final IHost host, final ISetupFactory factory, final ISettingsUI globalSettings, final ISettingsUI documentSettings)
     {
         super (factory, host, globalSettings, documentSettings);
+
         this.colorManager = new ColorManager ();
         this.valueChanger = new DefaultValueChanger (128, 6, 1);
         this.configuration = new GenericFlexiConfiguration (host, this.valueChanger, factory.getArpeggiatorModes ());
+    }
+
+
+    /** {@inheritDoc} */
+    @Override
+    public void init ()
+    {
+        super.init ();
+
+        // Load program name file and create selection list if present
+        final FileEx programsFile = this.configuration.getProgramsFile ();
+        if (programsFile == null)
+            return;
+
+        try
+        {
+            final List<ProgramBank> banks = ProgramBank.parse (programsFile.readUTF8 ());
+            final IEnumSetting [] bankSettings = new IEnumSetting [banks.size ()];
+
+            for (int i = 0; i < banks.size (); i++)
+            {
+                final int bankPos = i;
+                final ProgramBank pb = banks.get (bankPos);
+
+                final String [] programs = pb.getPrograms ();
+                final String [] opts = new String [programs.length + 1];
+                System.arraycopy (programs, 0, opts, 1, programs.length);
+                opts[0] = PROGRAM_NONE;
+                bankSettings[bankPos] = this.documentSettings.getEnumSetting (pb.getName (), "Program Banks", opts, opts[0]);
+                bankSettings[bankPos].addValueObserver (value -> {
+
+                    final int program = pb.lookupProgram (value);
+                    if (program < 0)
+                        return;
+                    final GenericFlexiControlSurface surface = this.getSurface ();
+                    if (surface == null)
+                        return;
+                    final IMidiOutput midiOutput = surface.getMidiOutput ();
+                    if (midiOutput != null)
+                        midiOutput.sendProgramChange (pb.getMidiChannel (), pb.getMSB (), pb.getLSB (), program);
+
+                    for (int b = 0; b < bankSettings.length; b++)
+                    {
+                        if (bankPos != b)
+                            bankSettings[b].set (PROGRAM_NONE);
+                    }
+
+                });
+            }
+        }
+        catch (final IOException ex)
+        {
+            this.host.error ("Could not load programs file.", ex);
+        }
+        catch (final ParseException ex)
+        {
+            this.host.error ("Could not parse programs file.", ex);
+        }
     }
 
 

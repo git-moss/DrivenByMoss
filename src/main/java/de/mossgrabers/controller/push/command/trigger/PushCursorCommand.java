@@ -46,9 +46,9 @@ public class PushCursorCommand extends CursorCommand<PushControlSurface, PushCon
     {
         final ISceneBank sceneBank = this.getSceneBank ();
         if (this.surface.isShiftPressed () || this.isScenePlay ())
-            sceneBank.selectNextPage ();
+            sceneBank.selectPreviousPage ();
         else
-            sceneBank.scrollForwards ();
+            sceneBank.scrollBackwards ();
     }
 
 
@@ -60,9 +60,9 @@ public class PushCursorCommand extends CursorCommand<PushControlSurface, PushCon
     {
         final ISceneBank sceneBank = this.getSceneBank ();
         if (this.surface.isShiftPressed () || this.isScenePlay ())
-            sceneBank.selectPreviousPage ();
+            sceneBank.selectNextPage ();
         else
-            sceneBank.scrollBackwards ();
+            sceneBank.scrollForwards ();
     }
 
 

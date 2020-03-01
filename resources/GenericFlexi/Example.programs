@@ -1,0 +1,51 @@
+$BANK=Bass 1$MSB=0$LSB=0$CHANNEL=0
+01 12 dB Goodness
+02 3 PMC
+03 Acid RE Flux
+04 Aftertouch
+05 AlphaBass
+06 Attacker
+07 Baby Making Bass
+08 BackToTheCore
+09 BasicAlbert
+10 BassAndFX
+11 Bassics
+12 Blazing Blades
+13 Bottom Bumps
+14 Brainfeeder
+15 ClassicFifth
+16 Dark Side Bass
+$BANK=Bass 2$MSB=1$LSB=0$CHANNEL=0
+01 DualfiltersBss
+02 DubMoverBass
+03 ELP Brain BASS
+04 First Rep Bass
+05 Fixed Sync Bass
+06 FunkyBass
+07 LongPlay
+08 MG Fat Bass
+09 MegaRave
+10 NeuroFCK
+11 Neurotic
+12 Noisy Bass
+13 Ollie Open
+14 Sharp Cream
+15 Sharpaf
+16 Sharpy
+$BANK=Pads$MSB=2$LSB=0$CHANNEL=0
+01 Metalizer
+02 JMsPowerChord
+03 Broken
+04 Asian Modwheel
+05 Classic sauce
+06 FallingFifth
+07 LostSync
+08 Orgasines
+09 
+10 
+11 
+12 
+13 Nostalgic String
+14 AlivePad
+15 JMsPad
+16 Major

@@ -207,43 +207,49 @@ public class GenericFlexiControlSurface extends AbstractControlSurface<GenericFl
         final int code = status & 0xF0;
         final int channel = status & 0xF;
 
-        int slotIndex = -1;
-        int value = data2;
-
         switch (code)
         {
             // Note on/off
             case 0x90:
                 this.configuration.setLearnValues (GenericFlexiConfiguration.OPTIONS_TYPE[CommandSlot.TYPE_NOTE + 1], data1, channel);
-                slotIndex = this.configuration.getSlotCommand (CommandSlot.TYPE_NOTE, data1, channel);
+                this.handleCommand (this.configuration.getSlotCommand (CommandSlot.TYPE_NOTE, data1, channel), data2);
                 break;
 
             // Program Change
             case 0xC0:
                 this.configuration.setLearnValues (GenericFlexiConfiguration.OPTIONS_TYPE[CommandSlot.TYPE_PROGRAM_CHANGE + 1], data1, channel);
-                slotIndex = this.configuration.getSlotCommand (CommandSlot.TYPE_PROGRAM_CHANGE, data1, channel);
-                value = 127;
+                final int slotIndex = this.configuration.getSlotCommand (CommandSlot.TYPE_PROGRAM_CHANGE, data1, channel);
+                if (slotIndex < 0)
+                    return;
+                final CommandSlot commandSlot = this.configuration.getCommandSlots ()[slotIndex];
+                if (commandSlot.getCommand ().isTrigger ())
+                {
+                    this.handleCommand (slotIndex, 127);
+                    this.handleCommand (slotIndex, 0);
+                }
+                else
+                {
+                    // Note: there is no data2 value for PC
+                    this.handleCommand (slotIndex, data1);
+                }
                 break;
 
             // CC
             case 0xB0:
                 this.configuration.setLearnValues (GenericFlexiConfiguration.OPTIONS_TYPE[CommandSlot.TYPE_CC + 1], data1, channel);
-                slotIndex = this.configuration.getSlotCommand (CommandSlot.TYPE_CC, data1, channel);
+                this.handleCommand (this.configuration.getSlotCommand (CommandSlot.TYPE_CC, data1, channel), data2);
                 break;
 
             // Pitchbend
             case 0xE0:
                 this.configuration.setLearnValues (GenericFlexiConfiguration.OPTIONS_TYPE[CommandSlot.TYPE_PITCH_BEND + 1], data1, channel);
-                slotIndex = this.configuration.getSlotCommand (CommandSlot.TYPE_PITCH_BEND, data1, channel);
+                this.handleCommand (this.configuration.getSlotCommand (CommandSlot.TYPE_PITCH_BEND, data1, channel), data2);
                 break;
 
             default:
                 // Not used
                 break;
         }
-
-        if (slotIndex != -1)
-            this.handleCommand (slotIndex, value);
     }
 
 
@@ -353,6 +359,9 @@ public class GenericFlexiControlSurface extends AbstractControlSurface<GenericFl
      */
     private void handleCommand (final int slotIndex, final int value)
     {
+        if (slotIndex < 0)
+            return;
+
         final CommandSlot commandSlot = this.configuration.getCommandSlots ()[slotIndex];
         final FlexiCommand command = commandSlot.getCommand ();
         if (command == FlexiCommand.OFF)

@@ -39,8 +39,8 @@ public class CursorCommand<S extends IControlSurface<C>, C extends Configuration
     protected void updateArrowStates ()
     {
         final ISceneBank sceneBank = this.getSceneBank ();
-        this.canScrollUp = sceneBank.canScrollForwards ();
-        this.canScrollDown = sceneBank.canScrollBackwards ();
+        this.canScrollUp = sceneBank.canScrollBackwards ();
+        this.canScrollDown = sceneBank.canScrollForwards ();
 
         final Mode mode = this.surface.getModeManager ().getActiveOrTempMode ();
         final boolean shiftPressed = this.surface.isShiftPressed ();
@@ -57,9 +57,9 @@ public class CursorCommand<S extends IControlSurface<C>, C extends Configuration
     {
         final ISceneBank sceneBank = this.getSceneBank ();
         if (this.surface.isShiftPressed ())
-            sceneBank.selectNextPage ();
+            sceneBank.selectPreviousPage ();
         else
-            sceneBank.scrollForwards ();
+            sceneBank.scrollBackwards ();
     }
 
 
@@ -71,9 +71,9 @@ public class CursorCommand<S extends IControlSurface<C>, C extends Configuration
     {
         final ISceneBank sceneBank = this.getSceneBank ();
         if (this.surface.isShiftPressed ())
-            sceneBank.selectPreviousPage ();
+            sceneBank.selectNextPage ();
         else
-            sceneBank.scrollBackwards ();
+            sceneBank.scrollForwards ();
     }
 
 

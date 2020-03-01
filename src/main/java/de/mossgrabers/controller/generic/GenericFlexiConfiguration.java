@@ -16,6 +16,7 @@ import de.mossgrabers.framework.daw.IHost;
 import de.mossgrabers.framework.daw.midi.ArpeggiatorMode;
 import de.mossgrabers.framework.observer.IValueObserver;
 import de.mossgrabers.framework.scale.Scales;
+import de.mossgrabers.framework.utils.FileEx;
 import de.mossgrabers.nativefiledialogs.FileFilter;
 import de.mossgrabers.nativefiledialogs.NativeFileDialogs;
 import de.mossgrabers.nativefiledialogs.NativeFileDialogsFactory;
@@ -601,6 +602,26 @@ public class GenericFlexiConfiguration extends AbstractConfiguration
     public String getFilename ()
     {
         return this.filename;
+    }
+
+
+    /**
+     * Gets the file with program names, if present. This is the stored properties file name with
+     * the ending "programs".
+     *
+     * @return The file or null if not present
+     */
+    public FileEx getProgramsFile ()
+    {
+        if (this.filename == null || this.filename.isBlank ())
+            return null;
+
+        final FileEx file = new FileEx (this.filename);
+        final String name = file.getNameWithoutType ();
+        final FileEx programsFile = new FileEx (file.getParent (), name + ".programs");
+        final boolean exists = programsFile.exists ();
+        this.host.println ("Scanning for: " + programsFile.getAbsolutePath () + " (" + (exists ? "present" : "not present") + ")");
+        return exists ? programsFile : null;
     }
 
 

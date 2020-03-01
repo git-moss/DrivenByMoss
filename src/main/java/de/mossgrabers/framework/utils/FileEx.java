@@ -1,0 +1,144 @@
+// Written by Jürgen Moßgraber - mossgrabers.de
+// (c) 2017-2020
+// Licensed under LGPLv3 - http://www.gnu.org/licenses/lgpl-3.0.txt
+
+package de.mossgrabers.framework.utils;
+
+import java.io.BufferedReader;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.io.Reader;
+import java.nio.charset.Charset;
+import java.nio.charset.StandardCharsets;
+
+
+/**
+ * Some helper functions for files.
+ *
+ * @author J&uuml;rgen Mo&szlig;graber
+ */
+public class FileEx extends File
+{
+    private static final long serialVersionUID = 2670415170924953154L;
+    /** The size of chunks to use for reading / writing streams. */
+    private static final int  CHUNKSIZE        = 10240;
+
+
+    /**
+     * Encapsulates the given file.
+     *
+     * @param file A file
+     */
+    public FileEx (final File file)
+    {
+        super (file.getAbsolutePath ());
+    }
+
+
+    /**
+     * Creates a new FileEx instance by converting the given pathname string into an abstract
+     * pathname. If the given string is the empty string, then the result is the empty abstract
+     * pathname.
+     *
+     * @param filename A filename string
+     */
+    public FileEx (final String filename)
+    {
+        super (filename);
+    }
+
+
+    /**
+     * Creates a new FileEx instance from a parent file and a child pathname string.<br>
+     * If parent is null then the new FileEx instance is created as if by invoking the
+     * single-argument FileEx constructor on the given child pathname string. Otherwise the parent
+     * pathname string is taken to denote a directory, and the child pathname string is taken to
+     * denote either a directory or a file. If the child pathname string is absolute then it is
+     * converted into a relative pathname in a system-dependent way. If parent is the empty string
+     * then the new File instance is created by converting child into an abstract pathname and
+     * resolving the result against a system-dependent default directory. Otherwise each pathname
+     * string is converted into an abstract pathname and the child abstract pathname is resolved
+     * against the parent.
+     *
+     * @param parent The parent path
+     * @param child The child pathname string
+     */
+    public FileEx (final File parent, final String child)
+    {
+        super (parent, child);
+    }
+
+
+    /**
+     * Creates a new FileEx instance from a parent pathname string and a child pathname string.<br>
+     * If parent is null then the new File instance is created as if by invoking the single-argument
+     * File constructor on the given child pathname string. Otherwise the parent pathname string is
+     * taken to denote a directory, and the child pathname string is taken to denote either a
+     * directory or a file. If the child pathname string is absolute then it is converted into a
+     * relative pathname in a system-dependent way. If parent is the empty string then the new File
+     * instance is created by converting child into an abstract pathname and resolving the result
+     * against a system-dependent default directory. Otherwise each pathname string is converted
+     * into an abstract pathname and the child abstract pathname is resolved against the parent.
+     *
+     * @param parent The parent pathname string
+     * @param child The child pathname string
+     */
+    public FileEx (final String parent, final String child)
+    {
+        super (parent, child);
+    }
+
+
+    /**
+     * Gets the name of the file without the ending. Eg. the filename 'aFile.jpeg' will return
+     * 'aFile'.
+     *
+     * @return The name of the file without the ending
+     */
+    public String getNameWithoutType ()
+    {
+        final String filename = this.getName ();
+        final int pos = filename.lastIndexOf ('.');
+        return pos == -1 ? filename : filename.substring (0, pos);
+    }
+
+
+    /**
+     * Reads a text file in UTF8 encoding into a string.
+     *
+     * @return The content of the file
+     * @throws IOException Something crashed
+     */
+    public String readUTF8 () throws IOException
+    {
+        try (final InputStream input = new FileInputStream (this))
+        {
+            final String text = read (input, StandardCharsets.UTF_8);
+            // UTF-8 BOM is not automatically removed
+            return text.length () > 0 && text.charAt (0) == '\uFEFF' ? text.substring (1) : text;
+        }
+    }
+
+
+    /**
+     * Read all available text from the given InputStream. Note: The input stream is NOT closed!
+     *
+     * @param input The input stream from which to read
+     * @param charset The character encoding to use, if null the default encoding is used
+     * @return The read text
+     * @throws IOException Error reading from the stream
+     */
+    private static String read (final InputStream input, final Charset charset) throws IOException
+    {
+        final StringBuilder builder = new StringBuilder ();
+        final Reader reader = new BufferedReader (new InputStreamReader (input, charset == null ? Charset.defaultCharset () : charset), CHUNKSIZE);
+        final char [] buffer = new char [1024];
+        int size;
+        while ((size = reader.read (buffer)) != -1)
+            builder.append (buffer, 0, size);
+        return builder.toString ();
+    }
+}

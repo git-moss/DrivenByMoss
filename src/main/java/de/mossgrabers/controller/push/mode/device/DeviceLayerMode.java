@@ -177,7 +177,7 @@ public class DeviceLayerMode extends BaseMode
                 return;
             layer.enter ();
             final ModeManager modeManager = this.surface.getModeManager ();
-            modeManager.setActiveMode (Modes.DEVICE_PARAMS);
+            this.setMode (Modes.DEVICE_PARAMS);
             ((DeviceParamsMode) modeManager.getMode (Modes.DEVICE_PARAMS)).setShowDevices (true);
             return;
         }
@@ -201,9 +201,9 @@ public class DeviceLayerMode extends BaseMode
             return;
         }
 
-        final ModeManager modeManager = this.surface.getModeManager ();
-        modeManager.setActiveMode (Modes.DEVICE_PARAMS);
+        this.setMode (Modes.DEVICE_PARAMS);
         cd.selectChannel ();
+        final ModeManager modeManager = this.surface.getModeManager ();
         ((DeviceParamsMode) modeManager.getMode (Modes.DEVICE_PARAMS)).setShowDevices (true);
     }
 
@@ -232,16 +232,16 @@ public class DeviceLayerMode extends BaseMode
         {
             case 0:
                 if (modeManager.isActiveOrTempMode (Modes.DEVICE_LAYER_VOLUME))
-                    modeManager.setActiveMode (Modes.DEVICE_LAYER);
+                    this.setMode (Modes.DEVICE_LAYER);
                 else
-                    modeManager.setActiveMode (Modes.DEVICE_LAYER_VOLUME);
+                    this.setMode (Modes.DEVICE_LAYER_VOLUME);
                 break;
 
             case 1:
                 if (modeManager.isActiveOrTempMode (Modes.DEVICE_LAYER_PAN))
-                    modeManager.setActiveMode (Modes.DEVICE_LAYER);
+                    this.setMode (Modes.DEVICE_LAYER);
                 else
-                    modeManager.setActiveMode (Modes.DEVICE_LAYER_PAN);
+                    this.setMode (Modes.DEVICE_LAYER_PAN);
                 break;
 
             case 2:
@@ -261,7 +261,7 @@ public class DeviceLayerMode extends BaseMode
                 config.setSendsAreToggled (!config.isSendsAreToggled ());
 
                 if (!modeManager.isActiveOrTempMode (Modes.DEVICE_LAYER))
-                    modeManager.setActiveMode (Modes.get (Modes.DEVICE_LAYER_SEND1, config.isSendsAreToggled () ? 4 : 0));
+                    this.setMode (Modes.get (Modes.DEVICE_LAYER_SEND1, config.isSendsAreToggled () ? 4 : 0));
                 break;
 
             case 7:
@@ -275,6 +275,14 @@ public class DeviceLayerMode extends BaseMode
                 this.handleSendEffect (index - (config.isSendsAreToggled () ? 0 : 4));
                 break;
         }
+    }
+
+
+    private void setMode (final Modes layerMode)
+    {
+        this.surface.getModeManager ().setActiveMode (layerMode);
+        if (Modes.isLayerMode (layerMode))
+            this.surface.getConfiguration ().setLayerMixMode (layerMode);
     }
 
 
@@ -292,7 +300,7 @@ public class DeviceLayerMode extends BaseMode
             return;
         final Modes si = Modes.get (Modes.DEVICE_LAYER_SEND1, sendIndex);
         final ModeManager modeManager = this.surface.getModeManager ();
-        modeManager.setActiveMode (modeManager.isActiveOrTempMode (si) ? Modes.DEVICE_LAYER : si);
+        this.setMode (modeManager.isActiveOrTempMode (si) ? Modes.DEVICE_LAYER : si);
     }
 
 

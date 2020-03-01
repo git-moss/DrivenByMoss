@@ -218,6 +218,7 @@ public class PushConfiguration extends AbstractConfiguration implements IGraphic
     private boolean         stopAutomationOnKnobRelease = false;
     private TrackState      trackState                  = TrackState.MUTE;
     private Modes           debugMode                   = Modes.TRACK;
+    private Modes           layerMode                   = null;
     private final String [] userPageNames               = new String [8];
 
     // Only Push 1
@@ -838,6 +839,77 @@ public class PushConfiguration extends AbstractConfiguration implements IGraphic
     public Modes getCurrentMixMode ()
     {
         return Modes.isTrackMode (this.debugMode) ? this.debugMode : null;
+    }
+
+
+    /**
+     * Set the current mode which is selected for layer mixing.
+     *
+     * @param layerMode The ID of a layer mode
+     */
+    public void setLayerMixMode (final Modes layerMode)
+    {
+        this.layerMode = layerMode;
+    }
+
+
+    /**
+     * Get the current mode which is selected for layer mixing.
+     *
+     * @return The ID of the current mode which is selected for layer mixing.
+     */
+    public Modes getCurrentLayerMixMode ()
+    {
+        if (this.layerMode != null)
+            return this.layerMode;
+
+        final Modes currentMixMode = this.getCurrentMixMode ();
+        if (!this.isPush2 || currentMixMode == null)
+            this.layerMode = Modes.DEVICE_LAYER;
+        else
+        {
+            switch (currentMixMode)
+            {
+                case VOLUME:
+                    this.layerMode = Modes.DEVICE_LAYER_VOLUME;
+                    break;
+
+                case PAN:
+                    this.layerMode = Modes.DEVICE_LAYER_PAN;
+                    break;
+
+                case SEND1:
+                    this.layerMode = Modes.DEVICE_LAYER_SEND1;
+                    break;
+                case SEND2:
+                    this.layerMode = Modes.DEVICE_LAYER_SEND2;
+                    break;
+                case SEND3:
+                    this.layerMode = Modes.DEVICE_LAYER_SEND3;
+                    break;
+                case SEND4:
+                    this.layerMode = Modes.DEVICE_LAYER_SEND4;
+                    break;
+                case SEND5:
+                    this.layerMode = Modes.DEVICE_LAYER_SEND5;
+                    break;
+                case SEND6:
+                    this.layerMode = Modes.DEVICE_LAYER_SEND6;
+                    break;
+                case SEND7:
+                    this.layerMode = Modes.DEVICE_LAYER_SEND7;
+                    break;
+                case SEND8:
+                    this.layerMode = Modes.DEVICE_LAYER_SEND8;
+                    break;
+
+                case TRACK:
+                default:
+                    this.layerMode = Modes.DEVICE_LAYER;
+                    break;
+            }
+        }
+        return this.layerMode;
     }
 
 

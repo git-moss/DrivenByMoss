@@ -192,7 +192,7 @@ public abstract class AbstractDrumView<S extends IControlSurface<C>, C extends C
      * @param velocity The velocity
      * @return True if handled
      */
-    private boolean handleNoteAreaButtonCombinations (final INoteClip clip, final int channel, final int step, final int note, int velocity)
+    private boolean handleNoteAreaButtonCombinations (final INoteClip clip, final int channel, final int step, final int note, final int velocity)
     {
         // Handle note duplicate function
         final IHwButton duplicateButton = this.surface.getButton (ButtonID.DUPLICATE);

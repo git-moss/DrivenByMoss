@@ -107,6 +107,27 @@ public interface IMidiOutput
 
 
     /**
+     * Send a program change to the output.
+     *
+     * @param bankMSB The most significant byte of the bank
+     * @param bankLSB The least significant byte of the bank
+     * @param value The program change value
+     */
+    void sendProgramChange (int bankMSB, int bankLSB, int value);
+
+
+    /**
+     * Send a program change to the output.
+     *
+     * @param channel The midi channel
+     * @param bankMSB The most significant byte of the bank
+     * @param bankLSB The least significant byte of the bank
+     * @param value The program change value
+     */
+    void sendProgramChange (int channel, int bankMSB, int bankLSB, int value);
+
+
+    /**
      * Send a system exclusive message to the output.
      *
      * @param data The data to send

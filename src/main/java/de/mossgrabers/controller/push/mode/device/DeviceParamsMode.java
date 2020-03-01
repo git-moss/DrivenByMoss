@@ -137,12 +137,14 @@ public class DeviceParamsMode extends BaseMode
             if (!cd.doesExist ())
                 return;
 
+            // Select parameter bank if parameter banks are visible
             if (!this.showDevices)
             {
                 cd.getParameterPageBank ().selectPage (index);
                 return;
             }
 
+            // Duplicate device
             if (this.surface.isPressed (ButtonID.DUPLICATE))
             {
                 this.surface.setTriggerConsumed (ButtonID.DUPLICATE);
@@ -150,6 +152,7 @@ public class DeviceParamsMode extends BaseMode
                 return;
             }
 
+            // Delete device
             if (this.surface.isPressed (ButtonID.DELETE))
             {
                 this.surface.setTriggerConsumed (ButtonID.DELETE);
@@ -157,12 +160,14 @@ public class DeviceParamsMode extends BaseMode
                 return;
             }
 
+            // Select device
             if (cd.getIndex () != index)
             {
                 cd.getDeviceBank ().getItem (index).select ();
                 return;
             }
 
+            // No layers, show devices
             final ModeManager modeManager = this.surface.getModeManager ();
             if (!cd.hasLayers ())
             {
@@ -170,10 +175,12 @@ public class DeviceParamsMode extends BaseMode
                 return;
             }
 
+            // If there are layers, make sure one is selected
             final IChannel layer = cd.getLayerOrDrumPadBank ().getSelectedItem ();
             if (layer == null)
                 cd.getLayerOrDrumPadBank ().getItem (0).select ();
-            modeManager.setActiveMode (Modes.DEVICE_LAYER);
+            modeManager.setActiveMode (this.surface.getConfiguration ().getCurrentLayerMixMode ());
+
             return;
         }
 
@@ -217,7 +224,7 @@ public class DeviceParamsMode extends BaseMode
             cd.selectParent ();
             this.model.getHost ().scheduleTask ( () -> {
                 if (cd.hasLayers ())
-                    modeManager.setActiveMode (Modes.DEVICE_LAYER);
+                    modeManager.setActiveMode (this.surface.getConfiguration ().getCurrentLayerMixMode ());
                 else
                     modeManager.setActiveMode (Modes.DEVICE_PARAMS);
                 deviceParamsMode.setShowDevices (false);

@@ -91,6 +91,24 @@ public abstract class AbstractMidiOutputImpl implements IMidiOutput
     }
 
 
+    /** {@inheritDoc} */
+    @Override
+    public void sendProgramChange (final int bankMSB, final int bankLSB, final int value)
+    {
+        this.sendProgramChange (0, bankMSB, bankLSB, value);
+    }
+
+
+    /** {@inheritDoc} */
+    @Override
+    public void sendProgramChange (final int channel, final int bankMSB, final int bankLSB, final int value)
+    {
+        this.sendCCEx (channel, 0, bankMSB);
+        this.sendCCEx (channel, 32, bankLSB);
+        this.sendMidiShort (0xC0 + channel, value, 0);
+    }
+
+
     /**
      * Sends a MIDI message to the hardware device.
      *
