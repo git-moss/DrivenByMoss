@@ -124,24 +124,14 @@ public abstract class AbstractDrumView<S extends IControlSurface<C>, C extends C
         if (y >= this.playLines)
         {
             if (this.isActive ())
-                this.handleNoteArea (index, x, y, velocity, offsetY);
+                this.handleSequencerArea (index, x, y, offsetY, velocity);
             return;
         }
 
         // halfColumns x playLines Drum Pad Grid
         if (x < this.halfColumns)
         {
-            this.selectedPad = this.halfColumns * y + x;
-            final int playedPad = velocity == 0 ? -1 : this.selectedPad;
-
-            // Mark selected note
-            this.keyManager.setKeyPressed (offsetY + this.selectedPad, velocity);
-            this.playNote (offsetY + this.selectedPad, velocity);
-
-            if (playedPad < 0)
-                return;
-
-            this.handleDrumGridButtonCombinations (playedPad);
+            this.handleNoteArea (x, y, offsetY, velocity);
             return;
         }
 
@@ -157,13 +147,37 @@ public abstract class AbstractDrumView<S extends IControlSurface<C>, C extends C
     /**
      * Handle button presses in the note area of the note sequencer.
      *
+     * @param x The x position of the pad in the sequencer grid
+     * @param y The y position of the pad in the sequencer grid
+     * @param offsetY The drum offset
+     * @param velocity The velocity
+     */
+    protected void handleNoteArea (final int x, final int y, final int offsetY, final int velocity)
+    {
+        this.selectedPad = this.halfColumns * y + x;
+        final int playedPad = velocity == 0 ? -1 : this.selectedPad;
+
+        // Mark selected note
+        this.keyManager.setKeyPressed (offsetY + this.selectedPad, velocity);
+        this.playNote (offsetY + this.selectedPad, velocity);
+
+        if (playedPad < 0)
+            return;
+
+        this.handleNoteAreaButtonCombinations (playedPad);
+    }
+
+
+    /**
+     * Handle button presses in the sequencer area of the note sequencer.
+     *
      * @param index The index of the pad
      * @param x The x position of the pad in the sequencer grid
      * @param y The y position of the pad in the sequencer grid
+     * @param offsetY The drum offset
      * @param velocity The velocity
-     * @param offsetY
      */
-    private void handleNoteArea (final int index, final int x, final int y, final int velocity, final int offsetY)
+    protected void handleSequencerArea (final int index, final int x, final int y, final int offsetY, final int velocity)
     {
         // Toggle the note on up, so we can intercept the long presses
         if (velocity != 0)
@@ -175,7 +189,7 @@ public abstract class AbstractDrumView<S extends IControlSurface<C>, C extends C
         final int note = offsetY + this.selectedPad;
         final int vel = this.configuration.isAccentActive () ? this.configuration.getFixedAccentValue () : this.surface.getButton (ButtonID.get (ButtonID.PAD1, index)).getPressedVelocity ();
 
-        if (this.handleNoteAreaButtonCombinations (clip, channel, step, note, vel))
+        if (this.handleSequencerAreaButtonCombinations (clip, channel, step, note, vel))
             return;
 
         clip.toggleStep (channel, step, note, vel);
@@ -183,7 +197,7 @@ public abstract class AbstractDrumView<S extends IControlSurface<C>, C extends C
 
 
     /**
-     * Handle button combinations on the note area of the sequencer.
+     * Handle button combinations in the sequencer area.
      *
      * @param clip The sequenced midi clip
      * @param channel The MIDI channel of the note
@@ -192,7 +206,7 @@ public abstract class AbstractDrumView<S extends IControlSurface<C>, C extends C
      * @param velocity The velocity
      * @return True if handled
      */
-    private boolean handleNoteAreaButtonCombinations (final INoteClip clip, final int channel, final int step, final int note, final int velocity)
+    protected boolean handleSequencerAreaButtonCombinations (final INoteClip clip, final int channel, final int step, final int note, final int velocity)
     {
         // Handle note duplicate function
         final IHwButton duplicateButton = this.surface.getButton (ButtonID.DUPLICATE);
@@ -238,7 +252,7 @@ public abstract class AbstractDrumView<S extends IControlSurface<C>, C extends C
      * @param pad The pressed pad
      * @param velocity The velocity
      */
-    private void handleLoopArea (final int pad, final int velocity)
+    protected void handleLoopArea (final int pad, final int velocity)
     {
         // Button pressed?
         if (velocity > 0)
@@ -435,7 +449,7 @@ public abstract class AbstractDrumView<S extends IControlSurface<C>, C extends C
     }
 
 
-    protected void handleDrumGridButtonCombinations (final int playedPad)
+    protected void handleNoteAreaButtonCombinations (final int playedPad)
     {
         if (this.surface.isDeletePressed ())
         {

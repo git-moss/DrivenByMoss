@@ -107,9 +107,10 @@ public class GenericFlexiControllerSetup extends AbstractControllerSetup<Generic
                     if (midiOutput != null)
                         midiOutput.sendProgramChange (pb.getMidiChannel (), pb.getMSB (), pb.getLSB (), program);
 
+                    final int channel = pb.getMidiChannel ();
                     for (int b = 0; b < bankSettings.length; b++)
                     {
-                        if (bankPos != b)
+                        if (bankPos != b && banks.get (b).getMidiChannel () == channel)
                             bankSettings[b].set (PROGRAM_NONE);
                     }
 

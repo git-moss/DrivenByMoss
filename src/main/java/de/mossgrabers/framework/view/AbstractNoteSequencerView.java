@@ -102,7 +102,7 @@ public abstract class AbstractNoteSequencerView<S extends IControlSurface<C>, C 
 
         if (y < this.numSequencerRows)
         {
-            this.handleNoteArea (index, x, y, velocity);
+            this.handleSequencerArea (index, x, y, velocity);
             return;
         }
 
@@ -112,14 +112,14 @@ public abstract class AbstractNoteSequencerView<S extends IControlSurface<C>, C 
 
 
     /**
-     * Handle button presses in the note area of the note sequencer.
+     * Handle button presses in the sequencer area of the note sequencer.
      *
      * @param index The index of the pad
      * @param x The x position of the pad in the sequencer grid
      * @param y The y position of the pad in the sequencer grid
      * @param velocity The velocity
      */
-    protected void handleNoteArea (final int index, final int x, final int y, final int velocity)
+    protected void handleSequencerArea (final int index, final int x, final int y, final int velocity)
     {
         // Toggle the note on up, so we can intercept the long presses
         if (velocity != 0)
@@ -130,7 +130,7 @@ public abstract class AbstractNoteSequencerView<S extends IControlSurface<C>, C 
         final int mappedY = this.keyManager.map (y);
         final int vel = this.configuration.isAccentActive () ? this.configuration.getFixedAccentValue () : this.surface.getButton (ButtonID.get (ButtonID.PAD1, index)).getPressedVelocity ();
 
-        if (this.handleNoteAreaButtonCombinations (clip, channel, x, y, mappedY, vel))
+        if (this.handleSequencerAreaButtonCombinations (clip, channel, x, y, mappedY, vel))
             return;
 
         clip.toggleStep (channel, x, mappedY, vel);
@@ -148,7 +148,7 @@ public abstract class AbstractNoteSequencerView<S extends IControlSurface<C>, C 
      * @param velocity The velocity
      * @return True if handled
      */
-    private boolean handleNoteAreaButtonCombinations (final INoteClip clip, final int channel, final int step, final int row, final int note, final int velocity)
+    private boolean handleSequencerAreaButtonCombinations (final INoteClip clip, final int channel, final int step, final int row, final int note, final int velocity)
     {
         // Handle note duplicate function
         final IHwButton duplicateButton = this.surface.getButton (ButtonID.DUPLICATE);

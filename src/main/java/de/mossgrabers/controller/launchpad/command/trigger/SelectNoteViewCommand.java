@@ -7,15 +7,10 @@ package de.mossgrabers.controller.launchpad.command.trigger;
 import de.mossgrabers.controller.launchpad.LaunchpadConfiguration;
 import de.mossgrabers.controller.launchpad.controller.LaunchpadControlSurface;
 import de.mossgrabers.framework.command.core.AbstractTriggerCommand;
-import de.mossgrabers.framework.command.trigger.view.ViewMultiSelectCommand;
 import de.mossgrabers.framework.daw.IModel;
-import de.mossgrabers.framework.daw.data.ITrack;
 import de.mossgrabers.framework.utils.ButtonEvent;
 import de.mossgrabers.framework.view.ViewManager;
 import de.mossgrabers.framework.view.Views;
-
-import java.util.Collections;
-import java.util.EnumSet;
 
 
 /**
@@ -25,11 +20,6 @@ import java.util.EnumSet;
  */
 public class SelectNoteViewCommand extends AbstractTriggerCommand<LaunchpadControlSurface, LaunchpadConfiguration>
 {
-    private final ViewMultiSelectCommand<LaunchpadControlSurface, LaunchpadConfiguration> playSelect;
-    private final ViewMultiSelectCommand<LaunchpadControlSurface, LaunchpadConfiguration> seqSelect;
-    private final EnumSet<Views>                                                          views = EnumSet.noneOf (Views.class);
-
-
     /**
      * Constructor.
      *
@@ -39,10 +29,6 @@ public class SelectNoteViewCommand extends AbstractTriggerCommand<LaunchpadContr
     public SelectNoteViewCommand (final IModel model, final LaunchpadControlSurface surface)
     {
         super (model, surface);
-
-        this.playSelect = new ViewMultiSelectCommand<> (model, surface, true, Views.PLAY, Views.PIANO, Views.DRUM, Views.DRUM4, Views.DRUM8, Views.DRUM64);
-        this.seqSelect = new ViewMultiSelectCommand<> (model, surface, true, Views.SEQUENCER, Views.POLY_SEQUENCER, Views.RAINDROPS);
-        Collections.addAll (this.views, Views.PLAY, Views.PIANO, Views.DRUM, Views.DRUM4, Views.DRUM8, Views.DRUM64, Views.SEQUENCER, Views.POLY_SEQUENCER, Views.RAINDROPS);
     }
 
 
@@ -50,34 +36,13 @@ public class SelectNoteViewCommand extends AbstractTriggerCommand<LaunchpadContr
     @Override
     public void execute (final ButtonEvent event, final int velocity)
     {
-        if (event != ButtonEvent.DOWN)
+        if (event != ButtonEvent.UP)
             return;
 
         final ViewManager viewManager = this.surface.getViewManager ();
-        final ITrack sel = this.model.getSelectedTrack ();
-        if (sel == null)
-        {
-            viewManager.setActiveView (Views.SESSION);
-            return;
-        }
-
-        final boolean isShifted = this.surface.isShiftPressed ();
-        final Views viewId = isShifted ? viewManager.getPreviousViewId () : viewManager.getActiveViewId ();
-
-        if (this.views.contains (viewId))
-        {
-            if (isShifted)
-                this.seqSelect.executeNormal (event);
-            else
-                this.playSelect.executeNormal (event);
-        }
+        if (viewManager.isActiveView (Views.CONTROL))
+            viewManager.restoreView ();
         else
-        {
-            final Views viewID = viewManager.getPreferredView (sel.getPosition ());
-            viewManager.setActiveView (viewID == null ? Views.PLAY : viewID);
-        }
-
-        viewManager.setPreferredView (sel.getPosition (), viewManager.getActiveViewId ());
-        this.surface.getDisplay ().notify (viewManager.getActiveView ().getName ());
+            viewManager.setActiveView (Views.CONTROL);
     }
 }

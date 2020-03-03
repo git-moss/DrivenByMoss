@@ -61,15 +61,6 @@ public class BrowserView extends AbstractView<LaunchpadControlSurface, Launchpad
 
     /** {@inheritDoc} */
     @Override
-    public void onActivate ()
-    {
-
-        super.onActivate ();
-    }
-
-
-    /** {@inheritDoc} */
-    @Override
     public void drawGrid ()
     {
         final IPadGrid padGrid = this.surface.getPadGrid ();
