@@ -7,6 +7,7 @@ package de.mossgrabers.bitwig.framework.daw;
 import de.mossgrabers.bitwig.framework.daw.data.Util;
 import de.mossgrabers.framework.controller.valuechanger.IValueChanger;
 import de.mossgrabers.framework.daw.ITransport;
+import de.mossgrabers.framework.daw.constants.AutomationMode;
 import de.mossgrabers.framework.daw.constants.TransportConstants;
 import de.mossgrabers.framework.utils.StringUtils;
 
@@ -25,11 +26,18 @@ import java.text.DecimalFormat;
  */
 public class TransportImpl implements ITransport
 {
-    private ControllerHost host;
-    private IValueChanger  valueChanger;
-    private Transport      transport;
+    private static final AutomationMode [] AUTOMATION_MODES = new AutomationMode []
+    {
+        AutomationMode.LATCH,
+        AutomationMode.TOUCH,
+        AutomationMode.WRITE
+    };
 
-    private double         tempo;
+    private ControllerHost                 host;
+    private IValueChanger                  valueChanger;
+    private Transport                      transport;
+
+    private double                         tempo;
 
 
     /**
@@ -332,17 +340,43 @@ public class TransportImpl implements ITransport
 
     /** {@inheritDoc} */
     @Override
-    public String getAutomationWriteMode ()
+    public AutomationMode [] getAutomationWriteModes ()
     {
-        return this.transport.automationWriteMode ().get ();
+        return AUTOMATION_MODES;
     }
 
 
     /** {@inheritDoc} */
     @Override
-    public void setAutomationWriteMode (final String mode)
+    public AutomationMode getAutomationWriteMode ()
     {
-        this.transport.automationWriteMode ().set (mode);
+        return AutomationMode.lookup (this.transport.automationWriteMode ().get ());
+    }
+
+
+    /** {@inheritDoc} */
+    @Override
+    public void setAutomationWriteMode (final AutomationMode mode)
+    {
+        switch (mode)
+        {
+            case TRIM_READ:
+            case READ:
+                this.transport.isArrangerAutomationWriteEnabled ().set (false);
+                break;
+
+            case WRITE:
+            case TOUCH:
+            case LATCH:
+            case LATCH_PREVIEW:
+                this.transport.isArrangerAutomationWriteEnabled ().set (true);
+                this.transport.automationWriteMode ().set (mode.getIdentifier ());
+                break;
+
+            default:
+                // Not used
+                break;
+        }
     }
 
 

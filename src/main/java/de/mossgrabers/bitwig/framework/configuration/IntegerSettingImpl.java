@@ -58,6 +58,14 @@ public class IntegerSettingImpl extends AbstractSetting<Integer> implements IInt
 
     /** {@inheritDoc} */
     @Override
+    public Integer get ()
+    {
+        return Integer.valueOf ((int) this.rangedValue.get ());
+    }
+
+
+    /** {@inheritDoc} */
+    @Override
     public void addValueObserver (final IValueObserver<Integer> observer)
     {
         this.rangedValue.addValueObserver (this.range, value -> observer.update (Integer.valueOf (this.minimum + value)));

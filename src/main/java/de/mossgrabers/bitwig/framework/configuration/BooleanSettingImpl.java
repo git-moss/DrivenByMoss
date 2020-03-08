@@ -52,6 +52,14 @@ public class BooleanSettingImpl extends AbstractSetting<Boolean> implements IBoo
 
     /** {@inheritDoc} */
     @Override
+    public Boolean get ()
+    {
+        return Boolean.valueOf (this.booleanValue.get ());
+    }
+
+
+    /** {@inheritDoc} */
+    @Override
     public void addValueObserver (final IValueObserver<Boolean> observer)
     {
         this.booleanValue.addValueObserver (value -> observer.update (Boolean.valueOf (value)));

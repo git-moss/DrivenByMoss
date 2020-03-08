@@ -44,6 +44,14 @@ public class StringSettingImpl extends AbstractSetting<String> implements IStrin
 
     /** {@inheritDoc} */
     @Override
+    public String get ()
+    {
+        return this.stringValue.get ();
+    }
+
+
+    /** {@inheritDoc} */
+    @Override
     public void addValueObserver (final IValueObserver<String> observer)
     {
         this.stringValue.addValueObserver (observer::update);

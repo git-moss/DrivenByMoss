@@ -44,6 +44,14 @@ public class EnumSettingImpl extends AbstractSetting<String> implements IEnumSet
 
     /** {@inheritDoc} */
     @Override
+    public String get ()
+    {
+        return this.enumValue.get ();
+    }
+
+
+    /** {@inheritDoc} */
+    @Override
     public void addValueObserver (final IValueObserver<String> observer)
     {
         this.enumValue.addValueObserver (observer::update);

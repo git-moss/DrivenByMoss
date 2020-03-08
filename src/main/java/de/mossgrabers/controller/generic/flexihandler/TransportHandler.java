@@ -12,7 +12,7 @@ import de.mossgrabers.framework.command.trigger.transport.WindCommand;
 import de.mossgrabers.framework.controller.valuechanger.IValueChanger;
 import de.mossgrabers.framework.daw.IModel;
 import de.mossgrabers.framework.daw.ITransport;
-import de.mossgrabers.framework.daw.constants.TransportConstants;
+import de.mossgrabers.framework.daw.constants.AutomationMode;
 import de.mossgrabers.framework.utils.ButtonEvent;
 
 
@@ -232,19 +232,19 @@ public class TransportHandler extends AbstractHandler
             // Transport: Set Write Mode: Latch
             case TRANSPORT_SET_WRITE_MODE_LATCH:
                 if (isButtonPressed)
-                    this.model.getTransport ().setAutomationWriteMode (TransportConstants.AUTOMATION_MODES_VALUES[0]);
+                    this.model.getTransport ().setAutomationWriteMode (AutomationMode.LATCH);
                 break;
 
             // Transport: Set Write Mode: Touch
             case TRANSPORT_SET_WRITE_MODE_TOUCH:
                 if (isButtonPressed)
-                    this.model.getTransport ().setAutomationWriteMode (TransportConstants.AUTOMATION_MODES_VALUES[1]);
+                    this.model.getTransport ().setAutomationWriteMode (AutomationMode.TOUCH);
                 break;
 
             // Transport: Set Write Mode: Write
             case TRANSPORT_SET_WRITE_MODE_WRITE:
                 if (isButtonPressed)
-                    this.model.getTransport ().setAutomationWriteMode (TransportConstants.AUTOMATION_MODES_VALUES[2]);
+                    this.model.getTransport ().setAutomationWriteMode (AutomationMode.WRITE);
                 break;
 
             // Transport: Set Tempo

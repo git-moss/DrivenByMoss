@@ -52,6 +52,14 @@ public class DoubleSettingImpl extends AbstractSetting<Double> implements IDoubl
 
     /** {@inheritDoc} */
     @Override
+    public Double get ()
+    {
+        return Double.valueOf (this.rangedValue.get ());
+    }
+
+
+    /** {@inheritDoc} */
+    @Override
     public void addValueObserver (final IValueObserver<Double> observer)
     {
         this.rangedValue.addValueObserver (value -> observer.update (Double.valueOf (value)));

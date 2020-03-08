@@ -4,11 +4,6 @@
 
 package de.mossgrabers.framework.daw.constants;
 
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.List;
-
-
 /**
  * Constants for the transport.
  *
@@ -16,35 +11,24 @@ import java.util.List;
  */
 public final class TransportConstants
 {
-    /** The names for automation modes. */
-    public static final List<String> AUTOMATION_MODES        = Collections.unmodifiableList (Arrays.asList ("Latch", "Touch", "Write"));
-
-    /** The names for automation modes values. */
-    public static final String []    AUTOMATION_MODES_VALUES =
-    {
-        "latch",
-        "touch",
-        "write"
-    };
-
     /** No preroll. */
-    public static final String       PREROLL_NONE            = "none";
+    public static final String PREROLL_NONE           = "none";
     /** 1 bar preroll. */
-    public static final String       PREROLL_1_BAR           = "one_bar";
+    public static final String PREROLL_1_BAR          = "one_bar";
     /** 2 bar preroll. */
-    public static final String       PREROLL_2_BARS          = "two_bars";
+    public static final String PREROLL_2_BARS         = "two_bars";
     /** 4 bar preroll. */
-    public static final String       PREROLL_4_BARS          = "four_bars";
+    public static final String PREROLL_4_BARS         = "four_bars";
 
     /** 1 beat. */
-    public static final double       INC_FRACTION_TIME       = 1.0;
+    public static final double INC_FRACTION_TIME      = 1.0;
     /** 1/20th of a beat. */
-    public static final double       INC_FRACTION_TIME_SLOW  = 1.0 / 16;
+    public static final double INC_FRACTION_TIME_SLOW = 1.0 / 16;
 
     /** The minimum tempo in BPM. */
-    public static final int          MIN_TEMPO               = 20;
+    public static final int    MIN_TEMPO              = 20;
     /** The maximum tempo in BPM. */
-    public static final int          MAX_TEMPO               = 666;
+    public static final int    MAX_TEMPO              = 666;
 
 
     /**

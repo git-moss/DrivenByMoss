@@ -63,6 +63,14 @@ public abstract class AbstractHwContinuousControl extends AbstractHwInputControl
 
     /** {@inheritDoc} */
     @Override
+    public boolean isBound ()
+    {
+        return this.command != null || this.touchCommand != null || this.pitchbendCommand != null;
+    }
+
+
+    /** {@inheritDoc} */
+    @Override
     public ContinuousCommand getCommand ()
     {
         return this.command;

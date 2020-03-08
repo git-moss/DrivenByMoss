@@ -33,4 +33,12 @@ public interface IHwInputControl extends IHwControl
      * @param control The MIDI CC or note to bind
      */
     void bind (IMidiInput input, BindType type, int channel, int control);
+
+
+    /**
+     * Test if the control is bound to a MIDI input.
+     *
+     * @return True if bound
+     */
+    boolean isBound ();
 }

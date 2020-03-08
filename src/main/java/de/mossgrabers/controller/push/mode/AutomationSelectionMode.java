@@ -10,27 +10,32 @@ import de.mossgrabers.framework.controller.ButtonID;
 import de.mossgrabers.framework.controller.display.IGraphicDisplay;
 import de.mossgrabers.framework.controller.display.ITextDisplay;
 import de.mossgrabers.framework.daw.IModel;
-import de.mossgrabers.framework.daw.constants.TransportConstants;
+import de.mossgrabers.framework.daw.constants.AutomationMode;
 import de.mossgrabers.framework.mode.AbstractMode;
 import de.mossgrabers.framework.utils.ButtonEvent;
 
 
 /**
- * Editing of the automation mode.
+ * Selection of the automation mode.
  *
  * @author J&uuml;rgen Mo&szlig;graber
  */
-public class AutomationMode extends BaseMode
+public class AutomationSelectionMode extends BaseMode
 {
+    private final AutomationMode [] automationWriteModes;
+
+
     /**
      * Constructor.
      *
      * @param surface The control surface
      * @param model The model
      */
-    public AutomationMode (final PushControlSurface surface, final IModel model)
+    public AutomationSelectionMode (final PushControlSurface surface, final IModel model)
     {
         super ("Automation", surface, model);
+
+        this.automationWriteModes = this.model.getTransport ().getAutomationWriteModes ();
     }
 
 
@@ -38,10 +43,10 @@ public class AutomationMode extends BaseMode
     @Override
     public void updateDisplay1 (final ITextDisplay display)
     {
-        final String writeMode = this.model.getTransport ().getAutomationWriteMode ();
+        final AutomationMode writeMode = this.model.getTransport ().getAutomationWriteMode ();
         display.setBlock (1, 0, "Automation Mode:");
-        for (int i = 0; i < TransportConstants.AUTOMATION_MODES.size (); i++)
-            display.setCell (3, i, (TransportConstants.AUTOMATION_MODES_VALUES[i].equals (writeMode) ? Push1Display.SELECT_ARROW : "") + TransportConstants.AUTOMATION_MODES.get (i));
+        for (int i = 0; i < this.automationWriteModes.length; i++)
+            display.setCell (3, i, (this.automationWriteModes[i] == writeMode ? Push1Display.SELECT_ARROW : "") + this.automationWriteModes[i].getLabel ());
     }
 
 
@@ -49,9 +54,9 @@ public class AutomationMode extends BaseMode
     @Override
     public void updateDisplay2 (final IGraphicDisplay display)
     {
-        final String writeMode = this.model.getTransport ().getAutomationWriteMode ();
+        final AutomationMode writeMode = this.model.getTransport ().getAutomationWriteMode ();
         for (int i = 0; i < 8; i++)
-            display.addOptionElement ("", "", false, i == 0 ? "Automation Mode" : "", i < TransportConstants.AUTOMATION_MODES.size () ? TransportConstants.AUTOMATION_MODES.get (i) : "", i < TransportConstants.AUTOMATION_MODES.size () && TransportConstants.AUTOMATION_MODES_VALUES[i].equals (writeMode), false);
+            display.addOptionElement ("", "", false, i == 0 ? "Automation Mode" : "", i < this.automationWriteModes.length ? this.automationWriteModes[i].getLabel () : "", i < this.automationWriteModes.length && this.automationWriteModes[i] == writeMode, false);
     }
 
 
@@ -61,8 +66,8 @@ public class AutomationMode extends BaseMode
     {
         if (event != ButtonEvent.UP)
             return;
-        if (index < TransportConstants.AUTOMATION_MODES_VALUES.length)
-            this.model.getTransport ().setAutomationWriteMode (TransportConstants.AUTOMATION_MODES_VALUES[index]);
+        if (index < this.automationWriteModes.length)
+            this.model.getTransport ().setAutomationWriteMode (this.automationWriteModes[index]);
     }
 
 
@@ -73,9 +78,9 @@ public class AutomationMode extends BaseMode
         final int index = this.isButtonRow (0, buttonID);
         if (index >= 0)
         {
-            final String writeMode = this.model.getTransport ().getAutomationWriteMode ();
-            if (index < TransportConstants.AUTOMATION_MODES_VALUES.length)
-                return this.colorManager.getColorIndex (TransportConstants.AUTOMATION_MODES_VALUES[index].equals (writeMode) ? AbstractMode.BUTTON_COLOR_HI : AbstractMode.BUTTON_COLOR_ON);
+            final AutomationMode writeMode = this.model.getTransport ().getAutomationWriteMode ();
+            if (index < this.automationWriteModes.length)
+                return this.colorManager.getColorIndex (this.automationWriteModes[index] == writeMode ? AbstractMode.BUTTON_COLOR_HI : AbstractMode.BUTTON_COLOR_ON);
         }
 
         return super.getButtonColor (buttonID);

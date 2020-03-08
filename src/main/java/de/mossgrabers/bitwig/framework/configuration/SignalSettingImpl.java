@@ -44,6 +44,14 @@ public class SignalSettingImpl extends AbstractSetting<Void> implements ISignalS
 
     /** {@inheritDoc} */
     @Override
+    public Void get ()
+    {
+        return null;
+    }
+
+
+    /** {@inheritDoc} */
+    @Override
     public void addValueObserver (final IValueObserver<Void> observer)
     {
         this.signalValue.addSignalObserver ( () -> observer.update (null));

@@ -351,6 +351,7 @@ public class GenericFlexiConfiguration extends AbstractConfiguration
 
         // The Setlist file to auto-load
         final IStringSetting fileSetting = globalSettings.getStringSetting ("Filename to ex-/import:", category, -1, "");
+        this.filename = fileSetting.get ();
         fileSetting.addValueObserver (value -> this.filename = value);
 
         globalSettings.getSignalSetting (" ", category, "Select").addValueObserver (value -> {
@@ -378,9 +379,7 @@ public class GenericFlexiConfiguration extends AbstractConfiguration
 
         this.learnTypeSetting.set (OPTIONS_TYPE[0]);
 
-        this.typeSetting.addValueObserver (value ->
-
-        {
+        this.typeSetting.addValueObserver (value -> {
             final int index = AbstractConfiguration.lookupIndex (OPTIONS_TYPE, value);
             this.getSelectedSlot ().setType (index - 1);
             this.sendValueSetting.setVisible (index == CommandSlot.TYPE_CC);

@@ -63,7 +63,7 @@ import de.mossgrabers.framework.daw.ISendBank;
 import de.mossgrabers.framework.daw.ITrackBank;
 import de.mossgrabers.framework.daw.ITransport;
 import de.mossgrabers.framework.daw.ModelSetup;
-import de.mossgrabers.framework.daw.constants.TransportConstants;
+import de.mossgrabers.framework.daw.constants.AutomationMode;
 import de.mossgrabers.framework.daw.data.ITrack;
 import de.mossgrabers.framework.daw.midi.IMidiAccess;
 import de.mossgrabers.framework.daw.midi.IMidiInput;
@@ -364,12 +364,12 @@ public class HUIControllerSetup extends AbstractControllerSetup<HUIControlSurfac
         // HUI_AUTO_ENABLE_MUTE, not supported
 
         // Automation modes
-        this.addButtonHUI (ButtonID.AUTOMATION_TRIM, "Trim", new AutomationCommand<> (2, this.model, surface), HUIControlSurface.HUI_AUTO_MODE_TRIM, t::isWritingClipLauncherAutomation);
-        this.addButtonHUI (ButtonID.AUTOMATION_LATCH, "Latch", new AutomationCommand<> (4, this.model, surface), HUIControlSurface.HUI_AUTO_MODE_LATCH, () -> t.isWritingArrangerAutomation () && TransportConstants.AUTOMATION_MODES_VALUES[0].equals (t.getAutomationWriteMode ()));
-        this.addButtonHUI (ButtonID.AUTOMATION_READ, "Read", new AutomationCommand<> (0, this.model, surface), HUIControlSurface.HUI_AUTO_MODE_READ, () -> !t.isWritingArrangerAutomation ());
-        this.addButtonHUI (ButtonID.AUTOMATION_OFF, "Off", new AutomationCommand<> (0, this.model, surface), HUIControlSurface.HUI_AUTO_MODE_OFF, () -> !t.isWritingArrangerAutomation ());
-        this.addButtonHUI (ButtonID.AUTOMATION_WRITE, "Write", new AutomationCommand<> (1, this.model, surface), HUIControlSurface.HUI_AUTO_MODE_WRITE, () -> t.isWritingArrangerAutomation () && TransportConstants.AUTOMATION_MODES_VALUES[2].equals (t.getAutomationWriteMode ()));
-        this.addButtonHUI (ButtonID.AUTOMATION_TOUCH, "Touch", new AutomationCommand<> (3, this.model, surface), HUIControlSurface.HUI_AUTO_MODE_TOUCH, () -> t.isWritingArrangerAutomation () && TransportConstants.AUTOMATION_MODES_VALUES[1].equals (t.getAutomationWriteMode ()));
+        this.addButtonHUI (ButtonID.AUTOMATION_OFF, "Off", new AutomationCommand<> (AutomationMode.TRIM_READ, this.model, surface), HUIControlSurface.HUI_AUTO_MODE_OFF, () -> !t.isWritingArrangerAutomation () && t.getAutomationWriteMode () != AutomationMode.TRIM_READ);
+        this.addButtonHUI (ButtonID.AUTOMATION_TRIM, "Trim", new AutomationCommand<> (AutomationMode.TRIM_READ, this.model, surface), HUIControlSurface.HUI_AUTO_MODE_TRIM, () -> t.isWritingClipLauncherAutomation () && t.getAutomationWriteMode () == AutomationMode.TRIM_READ);
+        this.addButtonHUI (ButtonID.AUTOMATION_LATCH, "Latch", new AutomationCommand<> (AutomationMode.LATCH, this.model, surface), HUIControlSurface.HUI_AUTO_MODE_LATCH, () -> t.isWritingArrangerAutomation () && t.getAutomationWriteMode () == AutomationMode.LATCH);
+        this.addButtonHUI (ButtonID.AUTOMATION_READ, "Read", new AutomationCommand<> (AutomationMode.READ, this.model, surface), HUIControlSurface.HUI_AUTO_MODE_READ, () -> !t.isWritingArrangerAutomation () && t.getAutomationWriteMode () == AutomationMode.READ);
+        this.addButtonHUI (ButtonID.AUTOMATION_WRITE, "Write", new AutomationCommand<> (AutomationMode.WRITE, this.model, surface), HUIControlSurface.HUI_AUTO_MODE_WRITE, () -> t.isWritingArrangerAutomation () && t.getAutomationWriteMode () == AutomationMode.WRITE);
+        this.addButtonHUI (ButtonID.AUTOMATION_TOUCH, "Touch", new AutomationCommand<> (AutomationMode.TOUCH, this.model, surface), HUIControlSurface.HUI_AUTO_MODE_TOUCH, () -> t.isWritingArrangerAutomation () && t.getAutomationWriteMode () == AutomationMode.TOUCH);
 
         // Status
         // HUI_STATUS_PHASE, not supported

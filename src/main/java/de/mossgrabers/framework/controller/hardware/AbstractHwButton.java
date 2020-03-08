@@ -44,6 +44,14 @@ public abstract class AbstractHwButton extends AbstractHwInputControl implements
     }
 
 
+    /** {@inheritDoc} */
+    @Override
+    public boolean isBound ()
+    {
+        return this.command != null;
+    }
+
+
     /**
      * Handle a button press.
      *

@@ -39,7 +39,7 @@ import de.mossgrabers.controller.push.controller.Push2Display;
 import de.mossgrabers.controller.push.controller.PushColorManager;
 import de.mossgrabers.controller.push.controller.PushControlSurface;
 import de.mossgrabers.controller.push.mode.AccentMode;
-import de.mossgrabers.controller.push.mode.AutomationMode;
+import de.mossgrabers.controller.push.mode.AutomationSelectionMode;
 import de.mossgrabers.controller.push.mode.ConfigurationMode;
 import de.mossgrabers.controller.push.mode.FixedMode;
 import de.mossgrabers.controller.push.mode.FrameMode;
@@ -302,7 +302,7 @@ public class PushControllerSetup extends AbstractControllerSetup<PushControlSurf
         modeManager.registerMode (Modes.RIBBON, new RibbonMode (surface, this.model));
         modeManager.registerMode (Modes.VIEW_SELECT, new NoteViewSelectMode (surface, this.model));
 
-        modeManager.registerMode (Modes.AUTOMATION, new AutomationMode (surface, this.model));
+        modeManager.registerMode (Modes.AUTOMATION, new AutomationSelectionMode (surface, this.model));
         modeManager.registerMode (Modes.TRANSPORT, new MetronomeMode (surface, this.model));
 
         modeManager.registerMode (Modes.MARKERS, new MarkersMode (surface, this.model));

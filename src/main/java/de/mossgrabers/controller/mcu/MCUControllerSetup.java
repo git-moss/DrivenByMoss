@@ -84,7 +84,7 @@ import de.mossgrabers.framework.daw.ISendBank;
 import de.mossgrabers.framework.daw.ITrackBank;
 import de.mossgrabers.framework.daw.ITransport;
 import de.mossgrabers.framework.daw.ModelSetup;
-import de.mossgrabers.framework.daw.constants.TransportConstants;
+import de.mossgrabers.framework.daw.constants.AutomationMode;
 import de.mossgrabers.framework.daw.data.IMasterTrack;
 import de.mossgrabers.framework.daw.data.ITrack;
 import de.mossgrabers.framework.daw.midi.IMidiAccess;
@@ -379,12 +379,12 @@ public class MCUControllerSetup extends AbstractControllerSetup<MCUControlSurfac
         this.addButton (ButtonID.MOVE_TRACK_RIGHT, "Right", moveTrackBankRightCommand, MCUControlSurface.MCU_MODE_DYN);
 
         // Automation
-        this.addButton (ButtonID.AUTOMATION_READ, "Read", new AutomationCommand<> (0, this.model, surface), MCUControlSurface.MCU_READ, () -> !t.isWritingArrangerAutomation ());
-        this.addButton (ButtonID.AUTOMATION_WRITE, "Write", new AutomationCommand<> (1, this.model, surface), MCUControlSurface.MCU_WRITE, () -> t.isWritingArrangerAutomation () && TransportConstants.AUTOMATION_MODES_VALUES[2].equals (t.getAutomationWriteMode ()));
-        this.addButton (ButtonID.AUTOMATION_GROUP, "Group/Write", new AutomationCommand<> (1, this.model, surface), MCUControlSurface.MCU_GROUP, () -> t.isWritingArrangerAutomation () && TransportConstants.AUTOMATION_MODES_VALUES[2].equals (t.getAutomationWriteMode ()));
-        this.addButton (ButtonID.AUTOMATION_TRIM, "Trim", new AutomationCommand<> (2, this.model, surface), MCUControlSurface.MCU_TRIM, t::isWritingClipLauncherAutomation);
-        this.addButton (ButtonID.AUTOMATION_TOUCH, "Touch", new AutomationCommand<> (3, this.model, surface), MCUControlSurface.MCU_TOUCH, () -> t.isWritingArrangerAutomation () && TransportConstants.AUTOMATION_MODES_VALUES[1].equals (t.getAutomationWriteMode ()));
-        this.addButton (ButtonID.AUTOMATION_LATCH, "Latch", new AutomationCommand<> (4, this.model, surface), MCUControlSurface.MCU_LATCH, () -> t.isWritingArrangerAutomation () && TransportConstants.AUTOMATION_MODES_VALUES[0].equals (t.getAutomationWriteMode ()));
+        this.addButton (ButtonID.AUTOMATION_TRIM, "Trim", new AutomationCommand<> (AutomationMode.TRIM_READ, this.model, surface), MCUControlSurface.MCU_TRIM, () -> !t.isWritingArrangerAutomation () && t.getAutomationWriteMode () == AutomationMode.TRIM_READ);
+        this.addButton (ButtonID.AUTOMATION_READ, "Read", new AutomationCommand<> (AutomationMode.READ, this.model, surface), MCUControlSurface.MCU_READ, () -> !t.isWritingArrangerAutomation () && t.getAutomationWriteMode () != AutomationMode.TRIM_READ);
+        this.addButton (ButtonID.AUTOMATION_WRITE, "Write", new AutomationCommand<> (AutomationMode.WRITE, this.model, surface), MCUControlSurface.MCU_WRITE, () -> t.isWritingArrangerAutomation () && t.getAutomationWriteMode () == AutomationMode.WRITE);
+        this.addButton (ButtonID.AUTOMATION_GROUP, "Group/Write", new AutomationCommand<> (AutomationMode.LATCH_PREVIEW, this.model, surface), MCUControlSurface.MCU_GROUP, () -> t.isWritingArrangerAutomation () && t.getAutomationWriteMode () == AutomationMode.LATCH_PREVIEW);
+        this.addButton (ButtonID.AUTOMATION_TOUCH, "Touch", new AutomationCommand<> (AutomationMode.TOUCH, this.model, surface), MCUControlSurface.MCU_TOUCH, () -> t.isWritingArrangerAutomation () && t.getAutomationWriteMode () == AutomationMode.TOUCH);
+        this.addButton (ButtonID.AUTOMATION_LATCH, "Latch", new AutomationCommand<> (AutomationMode.LATCH, this.model, surface), MCUControlSurface.MCU_LATCH, () -> t.isWritingArrangerAutomation () && t.getAutomationWriteMode () == AutomationMode.LATCH);
         this.addButton (ButtonID.UNDO, "Undo", new UndoCommand<> (this.model, surface), MCUControlSurface.MCU_UNDO);
 
         // Panes

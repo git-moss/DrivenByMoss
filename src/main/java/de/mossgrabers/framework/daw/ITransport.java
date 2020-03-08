@@ -4,6 +4,7 @@
 
 package de.mossgrabers.framework.daw;
 
+import de.mossgrabers.framework.daw.constants.AutomationMode;
 import de.mossgrabers.framework.observer.ObserverManagement;
 
 
@@ -219,19 +220,27 @@ public interface ITransport extends ObserverManagement
 
 
     /**
+     * Get the supported automation modes.
+     *
+     * @return The supported automation modes
+     */
+    AutomationMode [] getAutomationWriteModes ();
+
+
+    /**
      * Get the automation write mode.
      *
-     * @return The automation write mode (latch , touch, write)
+     * @return The automation write mode
      */
-    String getAutomationWriteMode ();
+    AutomationMode getAutomationWriteMode ();
 
 
     /**
      * Set the automation write mode.
      *
-     * @param mode The automation write mode (latch , touch, write)
+     * @param mode The automation write mode
      */
-    void setAutomationWriteMode (final String mode);
+    void setAutomationWriteMode (final AutomationMode mode);
 
 
     /**

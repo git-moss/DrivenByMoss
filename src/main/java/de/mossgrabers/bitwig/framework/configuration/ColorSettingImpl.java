@@ -62,6 +62,17 @@ public class ColorSettingImpl extends AbstractSetting<ColorEx> implements IColor
 
     /** {@inheritDoc} */
     @Override
+    public ColorEx get ()
+    {
+        final Color color = this.colorValue.get ();
+        if (color == null)
+            return ColorEx.BLACK;
+        return new ColorEx (color.getRed (), color.getGreen (), color.getBlue ());
+    }
+
+
+    /** {@inheritDoc} */
+    @Override
     public void addValueObserver (final IValueObserver<ColorEx> observer)
     {
         this.colorValue.addValueObserver ( (red, green, blue) -> observer.update (new ColorEx (red, green, blue)));

@@ -14,6 +14,7 @@ import de.mossgrabers.framework.daw.IClip;
 import de.mossgrabers.framework.daw.IHost;
 import de.mossgrabers.framework.daw.IModel;
 import de.mossgrabers.framework.daw.ITransport;
+import de.mossgrabers.framework.daw.constants.AutomationMode;
 import de.mossgrabers.framework.osc.IOpenSoundControlWriter;
 import de.mossgrabers.framework.utils.ButtonEvent;
 
@@ -244,7 +245,7 @@ public class TransportModule extends AbstractModule
 
             case "automationWriteMode":
                 if (value != null)
-                    this.transport.setAutomationWriteMode (value.toString ());
+                    this.transport.setAutomationWriteMode (AutomationMode.valueOf (value.toString ()));
                 break;
 
             case "preroll":
@@ -278,7 +279,7 @@ public class TransportModule extends AbstractModule
         this.writer.sendOSC ("/crossfade", this.transport.getCrossfade (), dump);
         this.writer.sendOSC ("/autowrite", this.transport.isWritingArrangerAutomation (), dump);
         this.writer.sendOSC ("/autowrite/launcher", this.transport.isWritingClipLauncherAutomation (), dump);
-        this.writer.sendOSC ("/automationWriteMode", this.transport.getAutomationWriteMode (), dump);
+        this.writer.sendOSC ("/automationWriteMode", this.transport.getAutomationWriteMode ().name (), dump);
         this.writer.sendOSC ("/time/str", this.transport.getPositionText (), dump);
         this.writer.sendOSC ("/time/signature", this.transport.getNumerator () + " / " + this.transport.getDenominator (), dump);
         this.writer.sendOSC ("/beat/str", this.transport.getBeatText (), dump);

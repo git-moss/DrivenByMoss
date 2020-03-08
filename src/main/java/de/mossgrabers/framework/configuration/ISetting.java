@@ -33,6 +33,14 @@ public interface ISetting<T>
 
 
     /**
+     * Get the current value of the setting.
+     *
+     * @return The value
+     */
+    T get ();
+
+
+    /**
      * Dis-/enable the setting.
      *
      * @param enable True to enable
