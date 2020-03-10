@@ -74,6 +74,8 @@ public enum Views
     CONTROL,
     /** View for shift options. */
     SHIFT,
+    /** View for user view. */
+    USER,
     /** View for note repeat options. */
     REPEAT_NOTE;
 

@@ -68,6 +68,7 @@ public class LaunchpadCursorCommand extends CursorCommand<LaunchpadControlSurfac
         {
             case CONTROL:
             case SHIFT:
+            case USER:
                 this.canScrollUp = false;
                 this.canScrollDown = false;
                 this.canScrollLeft = false;
@@ -165,6 +166,7 @@ public class LaunchpadCursorCommand extends CursorCommand<LaunchpadControlSurfac
         final ViewManager viewManager = this.surface.getViewManager ();
         switch (viewManager.getActiveViewId ())
         {
+            case USER:
             case CONTROL:
             case SHIFT:
                 // Not used
@@ -227,6 +229,7 @@ public class LaunchpadCursorCommand extends CursorCommand<LaunchpadControlSurfac
         final ViewManager viewManager = this.surface.getViewManager ();
         switch (viewManager.getActiveViewId ())
         {
+            case USER:
             case CONTROL:
             case SHIFT:
                 // Not used
@@ -287,6 +290,7 @@ public class LaunchpadCursorCommand extends CursorCommand<LaunchpadControlSurfac
         final ViewManager viewManager = this.surface.getViewManager ();
         switch (viewManager.getActiveViewId ())
         {
+            case USER:
             case CONTROL:
             case SHIFT:
                 // Not Used
@@ -335,6 +339,7 @@ public class LaunchpadCursorCommand extends CursorCommand<LaunchpadControlSurfac
         final ViewManager viewManager = this.surface.getViewManager ();
         switch (viewManager.getActiveViewId ())
         {
+            case USER:
             case CONTROL:
             case SHIFT:
                 // Not Used

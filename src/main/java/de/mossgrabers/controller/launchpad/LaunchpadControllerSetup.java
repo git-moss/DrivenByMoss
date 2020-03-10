@@ -218,7 +218,7 @@ public class LaunchpadControllerSetup extends AbstractControllerSetup<LaunchpadC
         viewManager.registerView (Views.SHIFT, new ShiftView (surface, this.model));
         viewManager.registerView (Views.CONTROL, new NoteViewSelectView (surface, this.model));
         if (this.definition.isPro () && this.host.hasUserParameters ())
-            viewManager.registerView (Views.CONTROL, new UserView (surface, this.model));
+            viewManager.registerView (Views.USER, new UserView (surface, this.model));
     }
 
 
@@ -280,7 +280,7 @@ public class LaunchpadControllerSetup extends AbstractControllerSetup<LaunchpadC
         if (this.definition.isPro ())
         {
             if (this.host.hasUserParameters ())
-                this.addButton (ButtonID.USER, "User", new ViewMultiSelectCommand<> (this.model, surface, true, Views.CONTROL), LaunchpadProControllerDefinition.LAUNCHPAD_BUTTON_USER, () -> viewManager.isActiveView (Views.CONTROL) ? LaunchpadColorManager.LAUNCHPAD_COLOR_WHITE : LaunchpadColorManager.LAUNCHPAD_COLOR_GREY_LO);
+                this.addButton (ButtonID.USER, "User", new ViewMultiSelectCommand<> (this.model, surface, true, Views.USER), LaunchpadProControllerDefinition.LAUNCHPAD_BUTTON_USER, () -> viewManager.isActiveView (Views.USER) ? LaunchpadColorManager.LAUNCHPAD_COLOR_WHITE : LaunchpadColorManager.LAUNCHPAD_COLOR_GREY_LO);
             else
                 this.addButton (ButtonID.USER, "User", NopCommand.INSTANCE, LaunchpadProControllerDefinition.LAUNCHPAD_BUTTON_USER, () -> LaunchpadColorManager.LAUNCHPAD_COLOR_BLACK);
         }
