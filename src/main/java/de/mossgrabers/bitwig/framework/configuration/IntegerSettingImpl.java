@@ -60,7 +60,7 @@ public class IntegerSettingImpl extends AbstractSetting<Integer> implements IInt
     @Override
     public Integer get ()
     {
-        return Integer.valueOf ((int) this.rangedValue.get ());
+        return Integer.valueOf ((int) this.rangedValue.getRaw ());
     }
 
 

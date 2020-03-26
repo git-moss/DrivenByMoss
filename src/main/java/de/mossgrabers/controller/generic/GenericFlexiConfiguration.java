@@ -46,17 +46,19 @@ import java.util.concurrent.atomic.AtomicBoolean;
 public class GenericFlexiConfiguration extends AbstractConfiguration
 {
     /** Export signal. */
-    public static final Integer                      BUTTON_EXPORT         = Integer.valueOf (50);
+    public static final Integer                      BUTTON_EXPORT           = Integer.valueOf (50);
     /** Import signal. */
-    public static final Integer                      BUTTON_IMPORT         = Integer.valueOf (51);
+    public static final Integer                      BUTTON_IMPORT           = Integer.valueOf (51);
     /** Enable MMC. */
-    public static final Integer                      ENABLE_MMC            = Integer.valueOf (52);
+    public static final Integer                      ENABLE_MMC              = Integer.valueOf (52);
     /** The selected mode. */
-    public static final Integer                      SELECTED_MODE         = Integer.valueOf (53);
+    public static final Integer                      SELECTED_MODE           = Integer.valueOf (53);
 
-    private static final String []                   NAMES                 = FlexiCommand.getNames ();
+    private static final String                      CATEGORY_KEYBOARD       = "Keyboard / Pads (requires restart)";
 
-    private static final String []                   OPTIONS_KNOBMODE      =
+    private static final String []                   NAMES                   = FlexiCommand.getNames ();
+
+    private static final String []                   OPTIONS_KNOBMODE        =
     {
         "Absolute (push button: Button down > 0, button up = 0)",
         "Relative (1-64 increments, 127-65 decrements)",
@@ -66,7 +68,7 @@ public class GenericFlexiConfiguration extends AbstractConfiguration
     };
 
     /** The types. */
-    public static final String []                    OPTIONS_TYPE          =
+    public static final String []                    OPTIONS_TYPE            =
     {
         "Off",
         "CC",
@@ -76,7 +78,7 @@ public class GenericFlexiConfiguration extends AbstractConfiguration
         "MMC"
     };
 
-    static final String []                           NUMBER_NAMES          =
+    static final String []                           NUMBER_NAMES            =
     {
         "0  CC Bank Select",
         "1  MMC Stop, CC Modulation",
@@ -209,7 +211,7 @@ public class GenericFlexiConfiguration extends AbstractConfiguration
     };
 
     /** The midi channel options. */
-    private static final String []                   MODES                 =
+    private static final String []                   MODES                   =
     {
         "Track",
         "Volume",
@@ -225,11 +227,33 @@ public class GenericFlexiConfiguration extends AbstractConfiguration
         "Parameters"
     };
 
+    private static final String []                   KEYBOARD_CHANNELS       =
+    {
+        "Off",
+        "1",
+        "2",
+        "3",
+        "4",
+        "5",
+        "6",
+        "7",
+        "8",
+        "9",
+        "10",
+        "11",
+        "12",
+        "13",
+        "14",
+        "15",
+        "16",
+        "All"
+    };
+
     /** A setting of a slot has changed. */
-    static final Integer                             SLOT_CHANGE           = Integer.valueOf (1000);
+    static final Integer                             SLOT_CHANGE             = Integer.valueOf (1000);
 
     /** The number of command slots. */
-    public static final int                          NUM_SLOTS             = 200;
+    public static final int                          NUM_SLOTS               = 200;
 
     private IEnumSetting                             slotSelectionSetting;
     private IEnumSetting                             typeSetting;
@@ -237,29 +261,34 @@ public class GenericFlexiConfiguration extends AbstractConfiguration
     private IEnumSetting                             midiChannelSetting;
     private IEnumSetting                             knobModeSetting;
     private IEnumSetting                             sendValueSetting;
-    private final List<IEnumSetting>                 functionSettings      = new ArrayList<> (CommandCategory.values ().length);
-    private final Map<CommandCategory, IEnumSetting> functionSettingsMap   = new EnumMap<> (CommandCategory.class);
+    private final List<IEnumSetting>                 functionSettings        = new ArrayList<> (CommandCategory.values ().length);
+    private final Map<CommandCategory, IEnumSetting> functionSettingsMap     = new EnumMap<> (CommandCategory.class);
     private IEnumSetting                             learnTypeSetting;
     private IEnumSetting                             learnNumberSetting;
     private IEnumSetting                             learnMidiChannelSetting;
     private IEnumSetting                             selectedModeSetting;
 
-    private CommandSlot []                           commandSlots          = new CommandSlot [NUM_SLOTS];
+    private CommandSlot []                           commandSlots            = new CommandSlot [NUM_SLOTS];
 
     private IValueObserver<FlexiCommand>             commandObserver;
     private String                                   filename;
-    private Object                                   syncMapUpdate         = new Object ();
+    private Object                                   syncMapUpdate           = new Object ();
     private int []                                   keyMap;
-    private int                                      seleIndexctedSlot     = 0;
-    private String                                   learnTypeValue        = null;
-    private String                                   learnNumberValue      = null;
-    private String                                   learnMidiChannelValue = null;
-    private AtomicBoolean                            doNotFire             = new AtomicBoolean (false);
-    private AtomicBoolean                            commandIsUpdating     = new AtomicBoolean (false);
+    private int                                      seleIndexctedSlot       = 0;
+    private String                                   learnTypeValue          = null;
+    private String                                   learnNumberValue        = null;
+    private String                                   learnMidiChannelValue   = null;
+    private AtomicBoolean                            doNotFire               = new AtomicBoolean (false);
+    private AtomicBoolean                            commandIsUpdating       = new AtomicBoolean (false);
 
-    private String                                   selectedMode          = MODES[0];
+    private String                                   selectedMode            = MODES[0];
 
     private NativeFileDialogs                        dialogs;
+
+    private int                                      keyboardChannel         = 0;
+    private boolean                                  keyboardRouteModulation = true;
+    private boolean                                  keyboardRouteSustain    = true;
+    private boolean                                  keyboardRoutePitchbend  = true;
 
 
     /**
@@ -401,6 +430,19 @@ public class GenericFlexiConfiguration extends AbstractConfiguration
         this.sendValueSetting.addValueObserver (value -> this.getSelectedSlot ().setSendValue (AbstractConfiguration.lookupIndex (AbstractConfiguration.ON_OFF_OPTIONS, value) > 0));
 
         ///////////////////////////////////////////////
+        // Keyboard / Pads
+
+        final IEnumSetting keyboardMidiChannel = globalSettings.getEnumSetting ("Midi Channel", CATEGORY_KEYBOARD, KEYBOARD_CHANNELS, KEYBOARD_CHANNELS[1]);
+        this.keyboardChannel = AbstractConfiguration.lookupIndex (KEYBOARD_CHANNELS, keyboardMidiChannel.get ()) - 1;
+
+        final IEnumSetting routeModulationSetting = globalSettings.getEnumSetting ("Route Modulation", CATEGORY_KEYBOARD, AbstractConfiguration.ON_OFF_OPTIONS, AbstractConfiguration.ON_OFF_OPTIONS[1]);
+        this.keyboardRouteModulation = "On".equals (routeModulationSetting.get ());
+        final IEnumSetting routeSustainSetting = globalSettings.getEnumSetting ("Route Sustain", CATEGORY_KEYBOARD, AbstractConfiguration.ON_OFF_OPTIONS, AbstractConfiguration.ON_OFF_OPTIONS[1]);
+        this.keyboardRouteSustain = "On".equals (routeSustainSetting.get ());
+        final IEnumSetting routePitchbendSetting = globalSettings.getEnumSetting ("Route Pitchbend", CATEGORY_KEYBOARD, AbstractConfiguration.ON_OFF_OPTIONS, AbstractConfiguration.ON_OFF_OPTIONS[1]);
+        this.keyboardRoutePitchbend = "On".equals (routePitchbendSetting.get ());
+
+        ///////////////////////////////////////////////
         // Options
 
         this.selectedModeSetting = globalSettings.getEnumSetting ("Selected Mode", "Options", MODES, MODES[0]);
@@ -414,25 +456,6 @@ public class GenericFlexiConfiguration extends AbstractConfiguration
         this.activateNoteRepeatSetting (documentSettings);
 
         this.slotSelectionSetting.addValueObserver (this::selectSlot);
-
-        // Load last configuration
-
-        this.host.scheduleTask ( () -> {
-            if (this.filename == null || this.filename.isEmpty ())
-                return;
-            final File file = new File (this.filename);
-            if (!file.exists ())
-                return;
-            try
-            {
-                this.host.println ("Auto loaded: " + this.filename);
-                this.importFrom (file);
-            }
-            catch (final IOException ex)
-            {
-                this.host.showNotification ("Error reading file: " + ex.getMessage ());
-            }
-        }, 2000);
     }
 
 
@@ -529,7 +552,8 @@ public class GenericFlexiConfiguration extends AbstractConfiguration
 
 
     /**
-     * Get a key translation map which blocks the notes that are mapped to a command.
+     * Get a key translation map which blocks the notes that are mapped to a command from the
+     * keyboard note input.
      *
      * @return The key translation map
      */
@@ -542,7 +566,10 @@ public class GenericFlexiConfiguration extends AbstractConfiguration
                 this.keyMap = Scales.getIdentityMatrix ();
                 for (final CommandSlot slot: this.commandSlots)
                 {
-                    if (slot.getCommand () != FlexiCommand.OFF && slot.getType () == CommandSlot.TYPE_NOTE)
+                    if (slot.getCommand () == FlexiCommand.OFF || slot.getType () != CommandSlot.TYPE_NOTE)
+                        continue;
+                    final int midiChannel = slot.getMidiChannel ();
+                    if (midiChannel == this.keyboardChannel || this.keyboardChannel == 16)
                         this.keyMap[slot.getNumber ()] = -1;
                 }
             }
@@ -590,6 +617,50 @@ public class GenericFlexiConfiguration extends AbstractConfiguration
                 commands.add (cmd);
         }
         return commands;
+    }
+
+
+    /**
+     * Get the keyboard channel.
+     *
+     * @return -1 = off, 0-15 the MIDI channel, 16 = omni
+     */
+    public int getKeyboardChannel ()
+    {
+        return this.keyboardChannel;
+    }
+
+
+    /**
+     * Should CC modulation directly routed to the DAW?
+     *
+     * @return True to route
+     */
+    public boolean isKeyboardRouteModulation ()
+    {
+        return this.keyboardRouteModulation;
+    }
+
+
+    /**
+     * Should CC sustain directly routed to the DAW?
+     *
+     * @return True to route
+     */
+    public boolean isKeyboardRouteSustain ()
+    {
+        return this.keyboardRouteSustain;
+    }
+
+
+    /**
+     * Should pitchbend directly routed to the DAW?
+     *
+     * @return True to route
+     */
+    public boolean isKeyboardRoutePitchbend ()
+    {
+        return this.keyboardRoutePitchbend;
     }
 
 

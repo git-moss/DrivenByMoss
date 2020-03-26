@@ -37,6 +37,8 @@ import de.mossgrabers.framework.utils.FileEx;
 
 import java.io.IOException;
 import java.text.ParseException;
+import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.Set;
 
@@ -153,7 +155,30 @@ public class GenericFlexiControllerSetup extends AbstractControllerSetup<Generic
     {
         final IMidiAccess midiAccess = this.factory.createMidiAccess ();
         final IMidiOutput output = midiAccess.createOutput ();
-        final IMidiInput input = midiAccess.createInput ("Generic Flexi");
+
+        final int keyboardChannel = this.configuration.getKeyboardChannel ();
+        final IMidiInput input;
+        if (keyboardChannel < 0)
+            input = midiAccess.createInput (null);
+        else
+        {
+            final String midiChannel;
+            if (keyboardChannel >= 16)
+                midiChannel = "?";
+            else
+                midiChannel = Integer.toHexString (keyboardChannel).toUpperCase ();
+
+            final List<String> filters = new ArrayList<> ();
+            Collections.addAll (filters, "8" + midiChannel + "????", "9" + midiChannel + "????", "A" + midiChannel + "????", "D" + midiChannel + "????");
+            if (this.configuration.isKeyboardRouteModulation ())
+                filters.add ("B" + midiChannel + "01??");
+            if (this.configuration.isKeyboardRouteSustain ())
+                filters.add ("B" + midiChannel + "40??");
+            if (this.configuration.isKeyboardRoutePitchbend ())
+                filters.add ("E" + midiChannel + "????");
+
+            input = midiAccess.createInput ("Generic Flexi", filters.toArray (new String [filters.size ()]));
+        }
 
         final GenericFlexiControlSurface surface = new GenericFlexiControlSurface (this.host, this.model, this.colorManager, this.configuration, output, input);
         this.surfaces.add (surface);
@@ -212,6 +237,9 @@ public class GenericFlexiControllerSetup extends AbstractControllerSetup<Generic
         final GenericFlexiControlSurface surface = this.getSurface ();
         surface.updateKnobSpeeds ();
         surface.getModeManager ().setActiveMode (Modes.TRACK);
+
+        // Load last configuration
+        this.host.scheduleTask ( () -> surface.importFile (false), 2000);
     }
 
 

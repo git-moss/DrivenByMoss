@@ -12,7 +12,7 @@ import de.mossgrabers.framework.daw.IModel;
 
 
 /**
- * The handler for layout commands.
+ * The handler for MIDI CC commands.
  *
  * @author J&uuml;rgen Mo&szlig;graber
  */

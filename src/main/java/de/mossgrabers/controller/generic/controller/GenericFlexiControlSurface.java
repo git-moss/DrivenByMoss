@@ -94,8 +94,8 @@ public class GenericFlexiControlSurface extends AbstractControlSurface<GenericFl
 
         Arrays.fill (this.valueCache, -1);
 
-        this.configuration.addSettingObserver (GenericFlexiConfiguration.BUTTON_EXPORT, this::importFile);
-        this.configuration.addSettingObserver (GenericFlexiConfiguration.BUTTON_IMPORT, this::exportFile);
+        this.configuration.addSettingObserver (GenericFlexiConfiguration.BUTTON_EXPORT, this::exportFile);
+        this.configuration.addSettingObserver (GenericFlexiConfiguration.BUTTON_IMPORT, () -> this.importFile (true));
 
         this.input.setSysexCallback (this::handleSysEx);
     }
@@ -279,8 +279,10 @@ public class GenericFlexiControlSurface extends AbstractControlSurface<GenericFl
 
     /**
      * Export all settings to a file.
+     * 
+     * @param showMessage True to show the success message in a popup window.
      */
-    private void exportFile ()
+    public void importFile (final boolean showMessage)
     {
         final File file = this.getFile ();
         if (file == null)
@@ -293,7 +295,11 @@ public class GenericFlexiControlSurface extends AbstractControlSurface<GenericFl
         try
         {
             this.configuration.importFrom (file);
-            this.host.showNotification ("Imported from: " + file);
+            final String text = "Imported from: " + file;
+            this.host.println (text);
+            if (showMessage)
+                this.host.showNotification (text);
+            this.updateKeyTranslation ();
         }
         catch (final IOException ex)
         {
@@ -305,7 +311,7 @@ public class GenericFlexiControlSurface extends AbstractControlSurface<GenericFl
     /**
      * Import all settings from a file.
      */
-    private void importFile ()
+    private void exportFile ()
     {
         final File file = this.getFile ();
         if (file == null)

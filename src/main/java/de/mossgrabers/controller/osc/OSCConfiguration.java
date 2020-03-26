@@ -25,12 +25,8 @@ public class OSCConfiguration extends AbstractOpenSoundControlConfiguration
 
     /** ID for receive port setting. */
     public static final Integer RECEIVE_PORT     = Integer.valueOf (50);
-    /** ID for send host setting. */
-    public static final Integer SEND_HOST        = Integer.valueOf (51);
-    /** ID for send port setting. */
-    public static final Integer SEND_PORT        = Integer.valueOf (52);
     /** ID for value resolution setting. */
-    public static final Integer VALUE_RESOLUTION = Integer.valueOf (53);
+    public static final Integer VALUE_RESOLUTION = Integer.valueOf (51);
 
 
     /** The resolution for values. */
@@ -85,16 +81,10 @@ public class OSCConfiguration extends AbstractOpenSoundControlConfiguration
         });
 
         final IStringSetting sendHostSetting = globalSettings.getStringSetting ("Host to send to (requires restart)", CATEGORY_SETUP, 15, DEFAULT_SERVER);
-        sendHostSetting.addValueObserver (value -> {
-            this.sendHost = value;
-            this.notifyObservers (OSCConfiguration.SEND_HOST);
-        });
+        this.sendHost = sendHostSetting.get ();
 
         final IIntegerSetting sendPortSetting = globalSettings.getRangeSetting ("Port to send to (requires restart)", CATEGORY_SETUP, 1024, 65535, 1, "", 9000);
-        sendPortSetting.addValueObserver (value -> {
-            this.sendPort = value.intValue ();
-            this.notifyObservers (SEND_PORT);
-        });
+        this.sendPort = sendPortSetting.get ().intValue ();
 
         final IEnumSetting valueResolutionSetting = globalSettings.getEnumSetting ("Value resolution (must match your client!)", CATEGORY_SETUP, VALUE_RESOLUTION_OPTIONS, VALUE_RESOLUTION_OPTIONS[0]);
         valueResolutionSetting.addValueObserver (value -> {

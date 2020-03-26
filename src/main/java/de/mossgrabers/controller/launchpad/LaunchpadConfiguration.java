@@ -6,6 +6,7 @@ package de.mossgrabers.controller.launchpad;
 
 import de.mossgrabers.controller.launchpad.definition.ILaunchpadControllerDefinition;
 import de.mossgrabers.framework.configuration.AbstractConfiguration;
+import de.mossgrabers.framework.configuration.IEnumSetting;
 import de.mossgrabers.framework.configuration.ISettingsUI;
 import de.mossgrabers.framework.controller.valuechanger.IValueChanger;
 import de.mossgrabers.framework.daw.IHost;
@@ -21,8 +22,13 @@ public class LaunchpadConfiguration extends AbstractConfiguration
 {
     private final ILaunchpadControllerDefinition definition;
 
+    /** Setting for including mastertracks. */
+    public static final Integer                  INCLUDE_MASTER    = Integer.valueOf (50);
+
     private boolean                              isDeleteActive    = false;
     private boolean                              isDuplicateActive = false;
+
+    private boolean                              includeMaster     = true;
 
 
     /**
@@ -64,15 +70,33 @@ public class LaunchpadConfiguration extends AbstractConfiguration
         this.activateQuantizeAmountSetting (globalSettings);
 
         ///////////////////////////
-        // Workflow
+        // Transport
 
         this.activateBehaviourOnStopSetting (globalSettings);
-        this.activateSelectClipOnLaunchSetting (globalSettings);
         this.activateFlipSessionSetting (globalSettings);
+
+        ///////////////////////////
+        // Session
+
+        this.activateSelectClipOnLaunchSetting (globalSettings);
         if (this.definition.isPro ())
             this.activateFlipRecordSetting (globalSettings);
+
+        ///////////////////////////
+        // Drum Sequencer
+
         this.activateAutoSelectDrumSetting (globalSettings);
         this.activateTurnOffEmptyDrumPadsSetting (globalSettings);
+
+        ///////////////////////////
+        // Workflow
+
+        final IEnumSetting includeMasterSetting = globalSettings.getEnumSetting ("Include (Group-)Mastertrack (requires restart)", CATEGORY_WORKFLOW, ON_OFF_OPTIONS, ON_OFF_OPTIONS[1]);
+        includeMasterSetting.addValueObserver (value -> {
+            this.includeMaster = "On".equals (value);
+            this.notifyObservers (INCLUDE_MASTER);
+        });
+
         this.activateNewClipLengthSetting (globalSettings);
 
         ///////////////////////////
@@ -123,5 +147,16 @@ public class LaunchpadConfiguration extends AbstractConfiguration
         this.isDuplicateActive = !this.isDuplicateActive;
         if (this.isDuplicateActive)
             this.isDeleteActive = false;
+    }
+
+
+    /**
+     * Should the master track and group-master tracks be included in the track list?
+     *
+     * @return True if they should be included
+     */
+    public boolean areMasterTracksIncluded ()
+    {
+        return this.includeMaster;
     }
 }

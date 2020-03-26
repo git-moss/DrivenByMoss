@@ -50,7 +50,6 @@ import de.mossgrabers.controller.launchpad.view.UserView;
 import de.mossgrabers.controller.launchpad.view.VolumeView;
 import de.mossgrabers.framework.command.aftertouch.AftertouchAbstractViewCommand;
 import de.mossgrabers.framework.command.core.NopCommand;
-import de.mossgrabers.framework.command.trigger.application.DeleteCommand;
 import de.mossgrabers.framework.command.trigger.application.UndoCommand;
 import de.mossgrabers.framework.command.trigger.clip.QuantizeCommand;
 import de.mossgrabers.framework.command.trigger.mode.ModeCursorCommand.Direction;
@@ -137,7 +136,7 @@ public class LaunchpadControllerSetup extends AbstractControllerSetup<LaunchpadC
     protected void createModel ()
     {
         final ModelSetup ms = new ModelSetup ();
-        ms.setHasFullFlatTrackList (true);
+        ms.setHasFullFlatTrackList (this.configuration.areMasterTracksIncluded ());
         this.model = this.factory.createModel (this.colorManager, this.valueChanger, this.scales, ms);
         final ITrackBank trackBank = this.model.getTrackBank ();
         trackBank.addSelectionObserver ( (index, isSelected) -> this.handleTrackChange (isSelected));
@@ -293,7 +292,7 @@ public class LaunchpadControllerSetup extends AbstractControllerSetup<LaunchpadC
             return transport.isMetronomeOn () ? LaunchpadColorManager.LAUNCHPAD_COLOR_GREEN_HI : LaunchpadColorManager.LAUNCHPAD_COLOR_GREEN_LO;
         });
         this.addButton (ButtonID.UNDO, "Undo", new UndoCommand<> (this.model, surface), LaunchpadProControllerDefinition.LAUNCHPAD_BUTTON_UNDO, () -> get2StateColor (surface, ButtonID.UNDO));
-        this.addButton (ButtonID.DELETE, "Delete", new DeleteCommand<> (this.model, surface), LaunchpadProControllerDefinition.LAUNCHPAD_BUTTON_DELETE, () -> getStateColor (surface, ButtonID.DELETE));
+        this.addButton (ButtonID.DELETE, "Delete", NopCommand.INSTANCE, LaunchpadProControllerDefinition.LAUNCHPAD_BUTTON_DELETE, () -> getStateColor (surface, ButtonID.DELETE));
         this.addButton (ButtonID.QUANTIZE, "Quantize", new QuantizeCommand<> (this.model, surface), LaunchpadProControllerDefinition.LAUNCHPAD_BUTTON_QUANTIZE, () -> getStateColor (surface, ButtonID.QUANTIZE));
         this.addButton (ButtonID.DUPLICATE, "Duplicate", new LaunchpadDuplicateCommand (this.model, surface), LaunchpadProControllerDefinition.LAUNCHPAD_BUTTON_DUPLICATE, () -> get2StateColor (surface, ButtonID.DUPLICATE));
         this.addButton (ButtonID.DOUBLE, "Double", new PlayAndNewCommand (this.model, surface), LaunchpadProControllerDefinition.LAUNCHPAD_BUTTON_DOUBLE, () -> get2StateColor (surface, ButtonID.DOUBLE));

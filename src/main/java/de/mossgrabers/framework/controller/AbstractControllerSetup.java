@@ -21,6 +21,7 @@ import de.mossgrabers.framework.controller.valuechanger.RelativeEncoding;
 import de.mossgrabers.framework.daw.IHost;
 import de.mossgrabers.framework.daw.IModel;
 import de.mossgrabers.framework.daw.constants.EditCapability;
+import de.mossgrabers.framework.daw.midi.INoteInput;
 import de.mossgrabers.framework.daw.midi.INoteRepeat;
 import de.mossgrabers.framework.mode.Mode;
 import de.mossgrabers.framework.mode.Modes;
@@ -1075,7 +1076,11 @@ public abstract class AbstractControllerSetup<S extends IControlSurface<C>, C ex
 
     protected void createNoteRepeatObservers (final C conf, final S surface)
     {
-        final INoteRepeat noteRepeat = surface.getMidiInput ().getDefaultNoteInput ().getNoteRepeat ();
+        final INoteInput defaultNoteInput = surface.getMidiInput ().getDefaultNoteInput ();
+        if (defaultNoteInput == null)
+            return;
+
+        final INoteRepeat noteRepeat = defaultNoteInput.getNoteRepeat ();
         conf.addSettingObserver (AbstractConfiguration.NOTEREPEAT_ACTIVE, () -> noteRepeat.setActive (conf.isNoteRepeatActive ()));
         conf.addSettingObserver (AbstractConfiguration.NOTEREPEAT_PERIOD, () -> noteRepeat.setPeriod (conf.getNoteRepeatPeriod ().getValue ()));
         if (this.host.canEdit (EditCapability.NOTE_REPEAT_LENGTH))

@@ -15,5 +15,5 @@ public interface SettingObserver
     /**
      * Will be called when the setting for which this observer was registered has changed.
      */
-    void call ();
+    void eximportFile ();
 }
