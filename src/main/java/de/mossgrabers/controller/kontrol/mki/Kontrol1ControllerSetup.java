@@ -194,7 +194,8 @@ public class Kontrol1ControllerSetup extends AbstractControllerSetup<Kontrol1Con
         this.addButton (ButtonID.PAGE_LEFT, "Left", new ModeMultiSelectCommand<> (this.model, surface, Modes.DEVICE_PARAMS, Modes.VOLUME, Modes.TRACK), Kontrol1ControlSurface.BUTTON_PAGE_LEFT);
         this.addButton (ButtonID.PAGE_RIGHT, "Right", new ModeMultiSelectCommand<> (this.model, surface, Modes.TRACK, Modes.VOLUME, Modes.DEVICE_PARAMS), Kontrol1ControlSurface.BUTTON_PAGE_RIGHT);
 
-        this.addButton (ButtonID.MASTERTRACK, "Encoder", new MainEncoderButtonCommand (this.model, surface), Kontrol1ControlSurface.BUTTON_MAIN_ENCODER);
+        // Put this on channel 16 to not conflict with the modulation wheel
+        this.addButton (ButtonID.MASTERTRACK, "Encoder", new MainEncoderButtonCommand (this.model, surface), 15, Kontrol1ControlSurface.BUTTON_MAIN_ENCODER);
 
         final Kontrol1CursorCommand commandDown = new Kontrol1CursorCommand (Direction.DOWN, this.model, surface);
         this.addButton (ButtonID.ARROW_DOWN, "Down", commandDown, Kontrol1ControlSurface.BUTTON_NAVIGATE_DOWN, commandDown::canScroll);

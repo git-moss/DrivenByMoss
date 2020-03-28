@@ -129,6 +129,8 @@ public abstract class AbstractRaindropsView<S extends IControlSurface<C>, C exte
         for (int x = 0; x < AbstractRaindropsView.NUM_DISPLAY_COLS; x++)
         {
             final int mappedKey = this.keyManager.map (x);
+            if (mappedKey == -1)
+                continue;
             final int left = this.getNoteDistanceToTheLeft (mappedKey, step, length);
             final int right = this.getNoteDistanceToTheRight (mappedKey, step, length);
             final boolean isOn = left >= 0 && right >= 0;
@@ -212,6 +214,8 @@ public abstract class AbstractRaindropsView<S extends IControlSurface<C>, C exte
 
     protected int getNoteDistance (final int row, final int length)
     {
+        if (row < 0)
+            return -1;
         int step;
         final INoteClip clip = this.getClip ();
         final int editMidiChannel = this.configuration.getMidiEditChannel ();
@@ -233,6 +237,8 @@ public abstract class AbstractRaindropsView<S extends IControlSurface<C>, C exte
 
     protected int getNoteDistanceToTheRight (final int row, final int start, final int length)
     {
+        if (row < 0)
+            return -1;
         if (start < 0 || start >= length)
             return -1;
         int step = start;
@@ -254,6 +260,8 @@ public abstract class AbstractRaindropsView<S extends IControlSurface<C>, C exte
 
     protected int getNoteDistanceToTheLeft (final int row, final int start, final int length)
     {
+        if (row < 0)
+            return -1;
         if (start < 0 || start >= length)
             return -1;
         final int s = start == 0 ? length - 1 : start - 1;
