@@ -105,15 +105,16 @@ public class GenericFlexiControlSurface extends AbstractControlSurface<GenericFl
     @Override
     public void flush ()
     {
-        if (this.isUpdatingValue)
-            return;
-
         final CommandSlot [] slots = this.configuration.getCommandSlots ();
         for (int i = 0; i < slots.length; i++)
         {
             final FlexiCommand command = slots[i].getCommand ();
             if (command == FlexiCommand.OFF || !slots[i].isSendValue ())
                 continue;
+
+            if (this.isUpdatingValue && !(slots[i].getCommand ().isTrigger () && slots[i].isSendValueWhenReceived ()))
+                continue;
+
             final int value = this.getCommandValue (command);
             if (this.valueCache[i] == value)
                 continue;
@@ -279,7 +280,7 @@ public class GenericFlexiControlSurface extends AbstractControlSurface<GenericFl
 
     /**
      * Export all settings to a file.
-     * 
+     *
      * @param showMessage True to show the success message in a popup window.
      */
     public void importFile (final boolean showMessage)

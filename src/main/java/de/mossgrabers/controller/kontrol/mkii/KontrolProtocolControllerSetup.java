@@ -238,7 +238,7 @@ public class KontrolProtocolControllerSetup extends AbstractControllerSetup<Kont
 
         this.addButton (ButtonID.LOOP, "Loop", new ToggleLoopCommand<> (this.model, surface), 15, KontrolProtocolControlSurface.KONTROL_LOOP, t::isLoop);
         this.addButton (ButtonID.METRONOME, "Metronome", new MetronomeCommand<> (this.model, surface), 15, KontrolProtocolControlSurface.KONTROL_METRO, t::isMetronomeOn);
-        this.addButton (ButtonID.TAP_TEMPO, "Tempo", new TapTempoCommand<> (this.model, surface), 15, KontrolProtocolControlSurface.KONTROL_TEMPO);
+        this.addButton (ButtonID.TAP_TEMPO, "Tempo", new TapTempoCommand<> (this.model, surface), 15, KontrolProtocolControlSurface.KONTROL_TAP_TEMPO);
 
         // Note: Since there is no pressed-state with this device, in the sim-GUI the following
         // buttons are always on
@@ -306,8 +306,6 @@ public class KontrolProtocolControllerSetup extends AbstractControllerSetup<Kont
         this.addButton (surface, ButtonID.MOVE_TRACK_RIGHT, "Enc Right", (event, velocity) -> this.moveTrack (event, false), 15, KontrolProtocolControlSurface.KONTROL_NAVIGATE_TRACKS, 1, () -> this.getKnobValue (KontrolProtocolControlSurface.KONTROL_NAVIGATE_TRACKS));
         this.addButton (surface, ButtonID.ARROW_UP, "Enc Up", (event, velocity) -> this.moveClips (event, true), 15, KontrolProtocolControlSurface.KONTROL_NAVIGATE_CLIPS, 127, () -> this.getKnobValue (KontrolProtocolControlSurface.KONTROL_NAVIGATE_CLIPS));
         this.addButton (surface, ButtonID.ARROW_DOWN, "Enc Down", (event, velocity) -> this.moveClips (event, false), 15, KontrolProtocolControlSurface.KONTROL_NAVIGATE_CLIPS, 1, () -> this.getKnobValue (KontrolProtocolControlSurface.KONTROL_NAVIGATE_CLIPS));
-        this.addButton (surface, ButtonID.UP, "Scene Prev", (event, velocity) -> this.moveScenes (event, true), 15, KontrolProtocolControlSurface.KONTROL_NAVIGATE_SCENES, 127, () -> this.getKnobValue (KontrolProtocolControlSurface.KONTROL_NAVIGATE_SCENES));
-        this.addButton (surface, ButtonID.DOWN, "Scene Next", (event, velocity) -> this.moveScenes (event, false), 15, KontrolProtocolControlSurface.KONTROL_NAVIGATE_SCENES, 1, () -> this.getKnobValue (KontrolProtocolControlSurface.KONTROL_NAVIGATE_SCENES));
 
         this.addRelativeKnob (ContinuousID.MOVE_TRANSPORT, "Move Transport", value -> this.changeTransportPosition (value, 0), BindType.CC, 15, KontrolProtocolControlSurface.KONTROL_NAVIGATE_MOVE_TRANSPORT);
         this.addRelativeKnob (ContinuousID.MOVE_LOOP, "Move Loop", this::changeLoopPosition, BindType.CC, 15, KontrolProtocolControlSurface.KONTROL_NAVIGATE_MOVE_LOOP);
@@ -415,8 +413,6 @@ public class KontrolProtocolControllerSetup extends AbstractControllerSetup<Kont
         surface.getButton (ButtonID.MOVE_TRACK_RIGHT).setBounds (751.0, 188.5, 29.75, 20.5);
         surface.getButton (ButtonID.ARROW_UP).setBounds (727.25, 163.25, 29.75, 20.5);
         surface.getButton (ButtonID.ARROW_DOWN).setBounds (727.25, 211.5, 29.75, 20.5);
-        surface.getButton (ButtonID.UP).setBounds (705.5, 237.75, 29.75, 20.5);
-        surface.getButton (ButtonID.DOWN).setBounds (751.0, 237.75, 29.75, 20.5);
 
         surface.getButton (ButtonID.CLIP).setBounds (512.75, 0.75, 31.75, 22.75);
         surface.getButton (ButtonID.STOP_CLIP).setBounds (550.25, 0.75, 31.75, 22.75);
@@ -655,24 +651,6 @@ public class KontrolProtocolControllerSetup extends AbstractControllerSetup<Kont
         }
 
         this.moveTrackBank (event, isLeft);
-    }
-
-
-    private void moveScenes (final ButtonEvent event, final boolean isLeft)
-    {
-        if (event != ButtonEvent.DOWN)
-            return;
-
-        if (this.configuration.isFlipTrackClipNavigation ())
-        {
-            this.navigateTracks (isLeft);
-            return;
-        }
-
-        if (this.configuration.isFlipClipSceneNavigation ())
-            this.navigateClips (isLeft);
-        else
-            this.navigateScenes (isLeft);
     }
 
 

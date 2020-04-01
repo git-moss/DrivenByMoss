@@ -84,8 +84,6 @@ public class SendMode extends AbstractTrackMode<KontrolProtocolControlSurface, K
                 return configuration.isFlipTrackClipNavigation () ? scrollScenesState : scrollTracksState;
             case KontrolProtocolControlSurface.KONTROL_NAVIGATE_CLIPS:
                 return configuration.isFlipTrackClipNavigation () ? scrollTracksState : scrollScenesState;
-            case KontrolProtocolControlSurface.KONTROL_NAVIGATE_SCENES:
-                return configuration.isFlipTrackClipNavigation () ? scrollTracksState : scrollScenesState;
             default:
                 return 0;
         }

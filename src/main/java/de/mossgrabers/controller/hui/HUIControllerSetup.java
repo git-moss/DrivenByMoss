@@ -6,6 +6,8 @@ package de.mossgrabers.controller.hui;
 
 import de.mossgrabers.controller.hui.command.trigger.AssignableCommand;
 import de.mossgrabers.controller.hui.command.trigger.FaderTouchCommand;
+import de.mossgrabers.controller.hui.command.trigger.WorkaroundFader;
+import de.mossgrabers.controller.hui.command.trigger.WorkaroundMasterFader;
 import de.mossgrabers.controller.hui.command.trigger.ZoomAndKeysCursorCommand;
 import de.mossgrabers.controller.hui.command.trigger.ZoomCommand;
 import de.mossgrabers.controller.hui.controller.HUIControlSurface;
@@ -15,9 +17,7 @@ import de.mossgrabers.controller.hui.mode.track.AbstractTrackMode;
 import de.mossgrabers.controller.hui.mode.track.PanMode;
 import de.mossgrabers.controller.hui.mode.track.SendMode;
 import de.mossgrabers.controller.hui.mode.track.VolumeMode;
-import de.mossgrabers.framework.command.continuous.FaderAbsoluteCommand;
 import de.mossgrabers.framework.command.continuous.KnobRowModeCommand;
-import de.mossgrabers.framework.command.continuous.MasterFaderAbsoluteCommand;
 import de.mossgrabers.framework.command.continuous.PlayPositionCommand;
 import de.mossgrabers.framework.command.core.NopCommand;
 import de.mossgrabers.framework.command.core.TriggerCommand;
@@ -26,6 +26,7 @@ import de.mossgrabers.framework.command.trigger.application.PaneCommand;
 import de.mossgrabers.framework.command.trigger.application.PanelLayoutCommand;
 import de.mossgrabers.framework.command.trigger.application.SaveCommand;
 import de.mossgrabers.framework.command.trigger.application.UndoCommand;
+import de.mossgrabers.framework.command.trigger.clip.NewCommand;
 import de.mossgrabers.framework.command.trigger.mode.ButtonRowModeCommand;
 import de.mossgrabers.framework.command.trigger.mode.ModeCursorCommand;
 import de.mossgrabers.framework.command.trigger.mode.ModeCursorCommand.Direction;
@@ -54,7 +55,7 @@ import de.mossgrabers.framework.controller.color.ColorManager;
 import de.mossgrabers.framework.controller.hardware.IHwButton;
 import de.mossgrabers.framework.controller.hardware.IHwFader;
 import de.mossgrabers.framework.controller.hardware.IHwRelativeKnob;
-import de.mossgrabers.framework.controller.valuechanger.Relative4ValueChanger;
+import de.mossgrabers.framework.controller.valuechanger.DefaultValueChanger;
 import de.mossgrabers.framework.daw.IApplication;
 import de.mossgrabers.framework.daw.ICursorDevice;
 import de.mossgrabers.framework.daw.IHost;
@@ -120,7 +121,7 @@ public class HUIControllerSetup extends AbstractControllerSetup<HUIControlSurfac
         this.colorManager.registerColorIndex (AbstractMode.BUTTON_COLOR_OFF, 0);
         this.colorManager.registerColorIndex (AbstractMode.BUTTON_COLOR_ON, 127);
 
-        this.valueChanger = new Relative4ValueChanger (16384, 100, 10);
+        this.valueChanger = new DefaultValueChanger (16384, 100, 10);
         this.configuration = new HUIConfiguration (host, this.valueChanger, factory.getArpeggiatorModes ());
     }
 
@@ -191,6 +192,15 @@ public class HUIControllerSetup extends AbstractControllerSetup<HUIControlSurfac
 
     /** {@inheritDoc} */
     @Override
+    protected void createViews ()
+    {
+        final HUIControlSurface surface = this.getSurface ();
+        surface.getViewManager ().registerView (Views.CONTROL, new ControlOnlyView<> (surface, this.model));
+    }
+
+
+    /** {@inheritDoc} */
+    @Override
     protected void createObservers ()
     {
         final HUIControlSurface surface = this.getSurface ();
@@ -211,15 +221,6 @@ public class HUIControllerSetup extends AbstractControllerSetup<HUIControlSurfac
 
     /** {@inheritDoc} */
     @Override
-    protected void createViews ()
-    {
-        final HUIControlSurface surface = this.getSurface ();
-        surface.getViewManager ().registerView (Views.CONTROL, new ControlOnlyView<> (surface, this.model));
-    }
-
-
-    /** {@inheritDoc} */
-    @Override
     protected void registerTriggerCommands ()
     {
         // Assignments to the main device
@@ -232,14 +233,25 @@ public class HUIControllerSetup extends AbstractControllerSetup<HUIControlSurfac
         for (int i = 0; i < 8; i++)
         {
             this.addButtonHUI (ButtonID.get (ButtonID.FADER_TOUCH_1, i), "Fader " + (i + 1), new FaderTouchCommand (i, this.model, surface), HUIControlSurface.HUI_FADER1 + i * 8);
-            this.addButtonHUI (ButtonID.get (ButtonID.ROW_SELECT_1, i), "Select " + (i + 1), new SelectCommand<> (i, this.model, surface), HUIControlSurface.HUI_SELECT1 + i * 8, this.model.getCurrentTrackBank ().getItem (i)::isSelected);
-            this.addButtonHUI (ButtonID.get (ButtonID.ROW4_1, i), "Mute " + (i + 1), new MuteCommand<> (i, this.model, surface), HUIControlSurface.HUI_MUTE1 + i * 8, this.model.getCurrentTrackBank ().getItem (i)::isMute);
-            this.addButtonHUI (ButtonID.get (ButtonID.ROW3_1, i), "Solo " + (i + 1), new SoloCommand<> (i, this.model, surface), HUIControlSurface.HUI_SOLO1 + i * 8, this.model.getCurrentTrackBank ().getItem (i)::isSolo);
-            // HUI_AUTO1, not supported
             this.addButtonHUI (ButtonID.get (ButtonID.ROW1_1, i), "VSelect " + (i + 1), new ButtonRowModeCommand<> (0, i, this.model, surface), HUIControlSurface.HUI_VSELECT1 + i * 8);
+
+            final ButtonID selectButtonID = ButtonID.get (ButtonID.ROW_SELECT_1, i);
+            this.addButtonHUI (selectButtonID, "Select " + (i + 1), new SelectCommand<> (i, this.model, surface), HUIControlSurface.HUI_SELECT1 + i * 8, () -> getButtonColor (surface, selectButtonID));
+
+            final ButtonID muteButtonID = ButtonID.get (ButtonID.ROW4_1, i);
+            this.addButtonHUI (muteButtonID, "Mute " + (i + 1), new MuteCommand<> (i, this.model, surface), HUIControlSurface.HUI_MUTE1 + i * 8, () -> getButtonColor (surface, muteButtonID));
+
+            final ButtonID soloButtonID = ButtonID.get (ButtonID.ROW3_1, i);
+            this.addButtonHUI (soloButtonID, "Solo " + (i + 1), new SoloCommand<> (i, this.model, surface), HUIControlSurface.HUI_SOLO1 + i * 8, () -> getButtonColor (surface, soloButtonID));
+
             // HUI_INSERT1 is used on icon for selection
-            this.addButtonHUI (ButtonID.get (ButtonID.ROW5_1, i), "Insert " + (i + 1), new SelectCommand<> (i, this.model, surface), HUIControlSurface.HUI_INSERT1 + i * 8, this.model.getCurrentTrackBank ().getItem (i)::isSelected);
-            this.addButtonHUI (ButtonID.get (ButtonID.ROW2_1, i), "Arm " + (i + 1), new RecArmCommand<> (i, this.model, surface), HUIControlSurface.HUI_ARM1 + i * 8, this.model.getCurrentTrackBank ().getItem (i)::isRecArm);
+            final ButtonID insertButtonID = ButtonID.get (ButtonID.ROW5_1, i);
+            this.addButtonHUI (insertButtonID, "Insert " + (i + 1), new SelectCommand<> (i, this.model, surface), HUIControlSurface.HUI_INSERT1 + i * 8, () -> getButtonColor (surface, insertButtonID));
+
+            final ButtonID recArmButtonID = ButtonID.get (ButtonID.ROW2_1, i);
+            this.addButtonHUI (recArmButtonID, "Arm " + (i + 1), new RecArmCommand<> (i, this.model, surface), HUIControlSurface.HUI_ARM1 + i * 8, () -> getButtonColor (surface, recArmButtonID));
+
+            // HUI_AUTO1, not supported
         }
 
         // Key commands
@@ -410,6 +422,9 @@ public class HUIControllerSetup extends AbstractControllerSetup<HUIControlSurfac
         // Footswitches
         this.addButtonHUI (ButtonID.FOOTSWITCH1, "Footswitch 1", new AssignableCommand (0, this.model, surface), HUIControlSurface.HUI_FS_RLAY1);
         this.addButtonHUI (ButtonID.FOOTSWITCH2, "Footswitch 2", new AssignableCommand (1, this.model, surface), HUIControlSurface.HUI_FS_RLAY2);
+
+        // Additional command for footcontrollers
+        this.addButton (ButtonID.NEW, "New", new NewCommand<> (this.model, surface), -1);
     }
 
 
@@ -448,13 +463,13 @@ public class HUIControllerSetup extends AbstractControllerSetup<HUIControlSurfac
         for (int i = 0; i < 8; i++)
         {
             final IHwFader fader = surface.createFader (ContinuousID.get (ContinuousID.FADER1, i), "Fader " + (i + 1), true);
-            fader.bind (new FaderAbsoluteCommand<> (i, this.model, surface));
+            fader.bind (new WorkaroundFader (i, this.model, surface));
 
             final IHwRelativeKnob knob = surface.createRelativeKnob (ContinuousID.get (ContinuousID.KNOB1, i), "Knob " + (i + 1));
             knob.bind (new KnobRowModeCommand<> (i, this.model, surface));
         }
         final IHwFader fader = surface.createFader (ContinuousID.FADER_MASTER, "Master", true);
-        fader.bind (new MasterFaderAbsoluteCommand<> (this.model, surface));
+        fader.bind (new WorkaroundMasterFader (this.model, surface));
 
         final IHwRelativeKnob jogKnob = surface.createRelativeKnob (ContinuousID.PLAY_POSITION, "Jog");
         jogKnob.bind (new PlayPositionCommand<> (this.model, surface));
@@ -741,5 +756,12 @@ public class HUIControllerSetup extends AbstractControllerSetup<HUIControlSurfac
         final IParameterBank parameterBank = cursorDevice.getParameterBank ();
         for (int i = 0; i < parameterBank.getPageSize (); i++)
             parameterBank.getItem (i).setIndication (isDevice);
+    }
+
+
+    private static int getButtonColor (final HUIControlSurface surface, final ButtonID buttonID)
+    {
+        final Mode mode = surface.getModeManager ().getActiveOrTempMode ();
+        return mode == null ? 0 : mode.getButtonColor (buttonID);
     }
 }

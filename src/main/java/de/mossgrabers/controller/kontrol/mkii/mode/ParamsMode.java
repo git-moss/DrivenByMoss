@@ -70,7 +70,6 @@ public class ParamsMode extends ParameterMode<KontrolProtocolControlSurface, Kon
                 return configuration.isFlipTrackClipNavigation () ? scrollScenesState : scrollTracksState;
             case KontrolProtocolControlSurface.KONTROL_NAVIGATE_CLIPS:
                 return configuration.isFlipTrackClipNavigation () ? scrollTracksState : scrollScenesState;
-            case KontrolProtocolControlSurface.KONTROL_NAVIGATE_SCENES:
             default:
                 return 0;
         }

@@ -134,19 +134,16 @@ public enum Views
         NOTE_VIEW_NAMES.put (VIEW_NAME_PIANO, PIANO);
         NOTE_VIEW_NAMES.put (VIEW_NAME_DRUM64, DRUM64);
 
-        if (host.hasDrumDevice ())
-        {
-            NOTE_VIEWS.add (DRUM);
-            NOTE_VIEWS.add (DRUM4);
-            NOTE_VIEWS.add (DRUM8);
-            NOTE_VIEW_NAMES.put (VIEW_NAME_DRUM, DRUM);
-            NOTE_VIEW_NAMES.put (VIEW_NAME_DRUM4, DRUM4);
-            NOTE_VIEW_NAMES.put (VIEW_NAME_DRUM8, DRUM8);
+        NOTE_VIEWS.add (DRUM);
+        NOTE_VIEWS.add (DRUM4);
+        NOTE_VIEWS.add (DRUM8);
+        NOTE_VIEW_NAMES.put (VIEW_NAME_DRUM, DRUM);
+        NOTE_VIEW_NAMES.put (VIEW_NAME_DRUM4, DRUM4);
+        NOTE_VIEW_NAMES.put (VIEW_NAME_DRUM8, DRUM8);
 
-            SEQUENCER_VIEWS.add (DRUM);
-            SEQUENCER_VIEWS.add (DRUM4);
-            SEQUENCER_VIEWS.add (DRUM8);
-        }
+        SEQUENCER_VIEWS.add (DRUM);
+        SEQUENCER_VIEWS.add (DRUM4);
+        SEQUENCER_VIEWS.add (DRUM8);
 
         NOTE_VIEWS.add (SEQUENCER);
         NOTE_VIEWS.add (RAINDROPS);

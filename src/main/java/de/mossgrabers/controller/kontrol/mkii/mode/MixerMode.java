@@ -78,8 +78,6 @@ public class MixerMode extends VolumeMode<KontrolProtocolControlSurface, Kontrol
                 return configuration.isFlipTrackClipNavigation () ? configuration.isFlipClipSceneNavigation () ? scrollScenesState : scrollClipsState : scrollTracksState;
             case KontrolProtocolControlSurface.KONTROL_NAVIGATE_CLIPS:
                 return configuration.isFlipTrackClipNavigation () ? scrollTracksState : configuration.isFlipClipSceneNavigation () ? scrollScenesState : scrollClipsState;
-            case KontrolProtocolControlSurface.KONTROL_NAVIGATE_SCENES:
-                return configuration.isFlipTrackClipNavigation () ? scrollTracksState : configuration.isFlipClipSceneNavigation () ? scrollClipsState : scrollScenesState;
             default:
                 return 0;
         }

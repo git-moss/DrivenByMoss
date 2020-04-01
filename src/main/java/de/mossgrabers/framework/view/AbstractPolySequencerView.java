@@ -12,6 +12,7 @@ import de.mossgrabers.framework.controller.hardware.IHwButton;
 import de.mossgrabers.framework.daw.IModel;
 import de.mossgrabers.framework.daw.INoteClip;
 import de.mossgrabers.framework.daw.IStepInfo;
+import de.mossgrabers.framework.daw.ITrackBank;
 import de.mossgrabers.framework.daw.constants.Resolution;
 import de.mossgrabers.framework.daw.data.ITrack;
 import de.mossgrabers.framework.utils.ButtonEvent;
@@ -53,6 +54,10 @@ public abstract class AbstractPolySequencerView<S extends IControlSurface<C>, C 
 
         this.sequencerSteps = NUM_SEQUENCER_LINES * GRID_COLUMNS;
         this.useTrackColor = useTrackColor;
+
+        final ITrackBank tb = model.getTrackBank ();
+        tb.addSelectionObserver ( (index, isSelected) -> this.keyManager.clearPressedKeys ());
+        tb.addNoteObserver (this.keyManager::call);
     }
 
 

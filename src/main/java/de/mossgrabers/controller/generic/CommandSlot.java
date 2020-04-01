@@ -16,24 +16,25 @@ import de.mossgrabers.controller.generic.controller.FlexiCommand;
 public class CommandSlot
 {
     /** The Off type. */
-    public static final int TYPE_OFF            = -1;
+    public static final int TYPE_OFF              = -1;
     /** The CC type. */
-    public static final int TYPE_CC             = 0;
+    public static final int TYPE_CC               = 0;
     /** The note type. */
-    public static final int TYPE_NOTE           = 1;
+    public static final int TYPE_NOTE             = 1;
     /** The program change type. */
-    public static final int TYPE_PROGRAM_CHANGE = 2;
+    public static final int TYPE_PROGRAM_CHANGE   = 2;
     /** The pitch bend type. */
-    public static final int TYPE_PITCH_BEND     = 3;
+    public static final int TYPE_PITCH_BEND       = 3;
     /** The MMC type. */
-    public static final int TYPE_MMC            = 4;
+    public static final int TYPE_MMC              = 4;
 
-    private int             type                = -1;
-    private int             number              = 0;
-    private int             midiChannel         = 0;
-    private int             knobMode            = 0;
-    private boolean         sendValue           = false;
-    private FlexiCommand    command             = FlexiCommand.OFF;
+    private int             type                  = -1;
+    private int             number                = 0;
+    private int             midiChannel           = 0;
+    private int             knobMode              = 0;
+    private boolean         sendValue             = false;
+    private boolean         sendValueWhenReceived = false;
+    private FlexiCommand    command               = FlexiCommand.OFF;
 
 
     /**
@@ -101,17 +102,6 @@ public class CommandSlot
 
 
     /**
-     * Should the value send back to the device?
-     *
-     * @return True to send back
-     */
-    public boolean isSendValue ()
-    {
-        return this.sendValue;
-    }
-
-
-    /**
      * Set the type.
      *
      * @param value The index
@@ -167,6 +157,17 @@ public class CommandSlot
 
 
     /**
+     * Should the value send back to the device?
+     *
+     * @return True to send back
+     */
+    public boolean isSendValue ()
+    {
+        return this.sendValue;
+    }
+
+
+    /**
      * Set the send value.
      *
      * @param value The boolean
@@ -174,5 +175,27 @@ public class CommandSlot
     public void setSendValue (final boolean value)
     {
         this.sendValue = value;
+    }
+
+
+    /**
+     * Should the value send back to the device?
+     *
+     * @return True to send back
+     */
+    public boolean isSendValueWhenReceived ()
+    {
+        return this.sendValueWhenReceived;
+    }
+
+
+    /**
+     * Set the send value.
+     *
+     * @param value The boolean
+     */
+    public void setSendValueWhenReceived (final boolean value)
+    {
+        this.sendValueWhenReceived = value;
     }
 }

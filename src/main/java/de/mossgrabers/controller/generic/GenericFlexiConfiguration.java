@@ -261,6 +261,7 @@ public class GenericFlexiConfiguration extends AbstractConfiguration
     private IEnumSetting                             midiChannelSetting;
     private IEnumSetting                             knobModeSetting;
     private IEnumSetting                             sendValueSetting;
+    private IEnumSetting                             sendValueWhenReceivedSetting;
     private final List<IEnumSetting>                 functionSettings        = new ArrayList<> (CommandCategory.values ().length);
     private final Map<CommandCategory, IEnumSetting> functionSettingsMap     = new EnumMap<> (CommandCategory.class);
     private IEnumSetting                             learnTypeSetting;
@@ -338,6 +339,7 @@ public class GenericFlexiConfiguration extends AbstractConfiguration
         this.midiChannelSetting = globalSettings.getEnumSetting ("Midi Channel:", category, OPTIONS_MIDI_CHANNEL, OPTIONS_MIDI_CHANNEL[0]);
         this.knobModeSetting = globalSettings.getEnumSetting ("Knob Mode:", category, OPTIONS_KNOBMODE, OPTIONS_KNOBMODE[0]);
         this.sendValueSetting = globalSettings.getEnumSetting ("Send value to device:", category, AbstractConfiguration.ON_OFF_OPTIONS, AbstractConfiguration.ON_OFF_OPTIONS[1]);
+        this.sendValueWhenReceivedSetting = globalSettings.getEnumSetting ("Send value to device when received (only buttons):", category, AbstractConfiguration.ON_OFF_OPTIONS, AbstractConfiguration.ON_OFF_OPTIONS[1]);
 
         ///////////////////////////////////////////////
         // Selected Slot - Function
@@ -412,6 +414,7 @@ public class GenericFlexiConfiguration extends AbstractConfiguration
             final int index = AbstractConfiguration.lookupIndex (OPTIONS_TYPE, value);
             this.getSelectedSlot ().setType (index - 1);
             this.sendValueSetting.setVisible (index == CommandSlot.TYPE_CC);
+            this.sendValueWhenReceivedSetting.setVisible (index == CommandSlot.TYPE_CC);
             this.clearNoteMap ();
             this.updateVisibility (!OPTIONS_TYPE[0].equals (value));
         });
@@ -428,6 +431,7 @@ public class GenericFlexiConfiguration extends AbstractConfiguration
             this.fixKnobMode ();
         });
         this.sendValueSetting.addValueObserver (value -> this.getSelectedSlot ().setSendValue (AbstractConfiguration.lookupIndex (AbstractConfiguration.ON_OFF_OPTIONS, value) > 0));
+        this.sendValueWhenReceivedSetting.addValueObserver (value -> this.getSelectedSlot ().setSendValueWhenReceived (AbstractConfiguration.lookupIndex (AbstractConfiguration.ON_OFF_OPTIONS, value) > 0));
 
         ///////////////////////////////////////////////
         // Keyboard / Pads
@@ -714,6 +718,7 @@ public class GenericFlexiConfiguration extends AbstractConfiguration
             props.put (slotName + "KNOB_MODE", Integer.toString (slot.getKnobMode ()));
             props.put (slotName + "COMMAND", slot.getCommand ().getName ());
             props.put (slotName + "SEND_VALUE", Boolean.toString (slot.isSendValue ()));
+            props.put (slotName + "SEND_VALUE_WHEN_RECEIVED", Boolean.toString (slot.isSendValueWhenReceived ()));
         }
         try (final Writer writer = new FileWriter (exportFile))
         {
@@ -756,6 +761,7 @@ public class GenericFlexiConfiguration extends AbstractConfiguration
                 slot.setKnobMode (Integer.parseInt (props.getProperty (slotName + "KNOB_MODE")));
                 slot.setCommand (command);
                 slot.setSendValue (Boolean.parseBoolean (props.getProperty (slotName + "SEND_VALUE")));
+                slot.setSendValueWhenReceived (Boolean.parseBoolean (props.getProperty (slotName + "SEND_VALUE_WHEN_RECEIVED")));
             }
         }
         catch (final IOException | NumberFormatException ex)
@@ -815,6 +821,7 @@ public class GenericFlexiConfiguration extends AbstractConfiguration
         this.setMidiChannel (slot.getMidiChannel ());
         this.setKnobMode (slot.getKnobMode ());
         this.setSendValue (slot.isSendValue ());
+        this.setSendValueWhenReceived (slot.isSendValueWhenReceived ());
         this.setCommand (slot.getCommand ());
     }
 
@@ -825,6 +832,7 @@ public class GenericFlexiConfiguration extends AbstractConfiguration
         this.midiChannelSetting.setVisible (visible);
         this.knobModeSetting.setVisible (visible);
         this.sendValueSetting.setVisible (visible);
+        this.sendValueWhenReceivedSetting.setVisible (visible);
         for (final IEnumSetting fs: this.functionSettings)
             fs.setVisible (visible);
     }
@@ -882,6 +890,17 @@ public class GenericFlexiConfiguration extends AbstractConfiguration
     private void setSendValue (final boolean value)
     {
         this.sendValueSetting.set (AbstractConfiguration.ON_OFF_OPTIONS[value ? 1 : 0]);
+    }
+
+
+    /**
+     * Set the send value when received.
+     *
+     * @param value The boolean
+     */
+    private void setSendValueWhenReceived (final boolean value)
+    {
+        this.sendValueWhenReceivedSetting.set (AbstractConfiguration.ON_OFF_OPTIONS[value ? 1 : 0]);
     }
 
 

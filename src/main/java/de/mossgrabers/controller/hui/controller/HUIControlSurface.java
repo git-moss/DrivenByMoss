@@ -5,6 +5,8 @@
 package de.mossgrabers.controller.hui.controller;
 
 import de.mossgrabers.controller.hui.HUIConfiguration;
+import de.mossgrabers.controller.hui.command.trigger.WorkaroundFader;
+import de.mossgrabers.framework.command.core.ContinuousCommand;
 import de.mossgrabers.framework.controller.AbstractControlSurface;
 import de.mossgrabers.framework.controller.ContinuousID;
 import de.mossgrabers.framework.controller.color.ColorManager;
@@ -386,7 +388,8 @@ public class HUIControlSurface extends AbstractControlSurface<HUIConfiguration>
             case 0x27:
                 final int chnl = data1 - 0x20;
                 final int value = (this.faderHiValues[chnl] << 7) + data2;
-                this.getContinuous (ContinuousID.get (ContinuousID.FADER1, chnl)).getCommand ().execute (value);
+                final ContinuousCommand command = this.getContinuous (ContinuousID.get (ContinuousID.FADER1, chnl)).getCommand ();
+                ((WorkaroundFader) command).executeHiRes (value);
                 break;
             case 0x28:
                 final int masterValue = (this.faderHiValues[8] << 7) + data2;
@@ -413,7 +416,8 @@ public class HUIControlSurface extends AbstractControlSurface<HUIConfiguration>
             case 0x46:
             case 0x47:
                 final int channel = data1 - 0x40;
-                this.getContinuous (ContinuousID.get (ContinuousID.KNOB1, channel)).getCommand ().execute (data2);
+                final int v = data2 > 0x40 ? data2 - 0x40 : 128 - data2;
+                this.getContinuous (ContinuousID.get (ContinuousID.KNOB1, channel)).getCommand ().execute (v);
                 break;
 
             default:

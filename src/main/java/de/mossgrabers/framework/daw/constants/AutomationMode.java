@@ -90,7 +90,7 @@ public enum AutomationMode
      */
     public static AutomationMode lookup (final String identifier)
     {
-        for (AutomationMode mode: values ())
+        for (final AutomationMode mode: values ())
         {
             if (mode.name ().equalsIgnoreCase (identifier))
                 return mode;

@@ -117,9 +117,12 @@ public class NoteViewSelectView extends AbstractView<LaunchpadControlSurface, La
     {
         final ViewManager viewManager = this.surface.getViewManager ();
         viewManager.setActiveView (viewID);
+
         final ITrack sel = this.model.getSelectedTrack ();
-        viewManager.setPreferredView (sel.getPosition (), viewID);
-        this.surface.getDisplay ().notify (viewManager.getActiveView ().getName ());
+        if (sel != null)
+            viewManager.setPreferredView (sel.getPosition (), viewID);
+
+        this.surface.getDisplay ().notify (viewManager.getView (viewID).getName ());
     }
 
 

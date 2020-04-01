@@ -93,14 +93,15 @@ public abstract class BaseMode extends AbstractMode<MCUControlSurface, MCUConfig
         {
             final ITrack track = tb.getItem (extenderOffset + i);
 
+            final boolean exists = track.doesExist ();
             if (buttonID == ButtonID.get (ButtonID.ROW_SELECT_1, i))
-                return track.isSelected () ? MCUControllerSetup.MCU_BUTTON_STATE_ON : MCUControllerSetup.MCU_BUTTON_STATE_OFF;
+                return exists && track.isSelected () ? MCUControllerSetup.MCU_BUTTON_STATE_ON : MCUControllerSetup.MCU_BUTTON_STATE_OFF;
             if (buttonID == ButtonID.get (ButtonID.ROW2_1, i))
-                return track.isRecArm () ? MCUControllerSetup.MCU_BUTTON_STATE_ON : MCUControllerSetup.MCU_BUTTON_STATE_OFF;
+                return exists && track.isRecArm () ? MCUControllerSetup.MCU_BUTTON_STATE_ON : MCUControllerSetup.MCU_BUTTON_STATE_OFF;
             if (buttonID == ButtonID.get (ButtonID.ROW3_1, i))
-                return track.isSolo () ? MCUControllerSetup.MCU_BUTTON_STATE_ON : MCUControllerSetup.MCU_BUTTON_STATE_OFF;
+                return exists && track.isSolo () ? MCUControllerSetup.MCU_BUTTON_STATE_ON : MCUControllerSetup.MCU_BUTTON_STATE_OFF;
             if (buttonID == ButtonID.get (ButtonID.ROW4_1, i))
-                return track.isMute () ? MCUControllerSetup.MCU_BUTTON_STATE_ON : MCUControllerSetup.MCU_BUTTON_STATE_OFF;
+                return exists && track.isMute () ? MCUControllerSetup.MCU_BUTTON_STATE_ON : MCUControllerSetup.MCU_BUTTON_STATE_OFF;
         }
 
         return MCUControllerSetup.MCU_BUTTON_STATE_OFF;

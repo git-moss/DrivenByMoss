@@ -47,7 +47,7 @@ public class KontrolProtocolControlSurface extends AbstractControlSurface<Kontro
     /** The metro button. */
     public static final int KONTROL_METRO                        = 0x17;
     /** The tempo button. No LED. */
-    public static final int KONTROL_TEMPO                        = 0x18;
+    public static final int KONTROL_TAP_TEMPO                    = 0x18;
 
     /** The undo button. */
     public static final int KONTROL_UNDO                         = 0x20;
@@ -64,8 +64,6 @@ public class KontrolProtocolControlSurface extends AbstractControlSurface<Kontro
     public static final int KONTROL_NAVIGATE_BANKS               = 0x31;
     /** Clip navigation. */
     public static final int KONTROL_NAVIGATE_CLIPS               = 0x32;
-    /** Scene navigation. */
-    public static final int KONTROL_NAVIGATE_SCENES              = 0x33;
 
     /** Transport navigation. */
     public static final int KONTROL_NAVIGATE_MOVE_TRANSPORT      = 0x34;
@@ -122,7 +120,7 @@ public class KontrolProtocolControlSurface extends AbstractControlSurface<Kontro
     public static final int KONTROL_SELECTED_TRACK_MUTED_BY_SOLO = 0x69;
 
     private final int       requiredVersion;
-    private int             protocolVersion                      = 1;
+    private int             protocolVersion                      = KontrolProtocol.MAX_VERSION;
     private ValueCache      valueCache                           = new ValueCache ();
     private final Object    cacheLock                            = new Object ();
     private final Object    handshakeLock                        = new Object ();

@@ -63,8 +63,9 @@ public class SelectNoteViewCommand extends AbstractTriggerCommand<LaunchpadContr
         }
 
         viewID = viewManager.getPreferredView (sel.getPosition ());
-        viewManager.setActiveView (viewID == null ? Views.PLAY : viewID);
-        viewManager.setPreferredView (sel.getPosition (), viewManager.getActiveViewId ());
-        this.surface.getDisplay ().notify (viewManager.getActiveView ().getName ());
+        if (viewID == null)
+            viewID = Views.PLAY;
+        viewManager.setActiveView (viewID);
+        this.surface.getDisplay ().notify (viewManager.getView (viewID).getName ());
     }
 }

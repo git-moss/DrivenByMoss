@@ -5,7 +5,9 @@
 package de.mossgrabers.controller.hui.mode.track;
 
 import de.mossgrabers.controller.hui.HUIConfiguration;
+import de.mossgrabers.controller.hui.HUIControllerSetup;
 import de.mossgrabers.controller.hui.controller.HUIControlSurface;
+import de.mossgrabers.framework.controller.ButtonID;
 import de.mossgrabers.framework.controller.display.ITextDisplay;
 import de.mossgrabers.framework.daw.IModel;
 import de.mossgrabers.framework.daw.ITrackBank;
@@ -66,6 +68,33 @@ public abstract class AbstractTrackMode extends AbstractMode<HUIControlSurface, 
     {
         if (row == 0)
             this.resetParameter (index);
+    }
+
+
+    /** {@inheritDoc} */
+    @Override
+    public int getButtonColor (final ButtonID buttonID)
+    {
+        final ITrackBank tb = this.model.getCurrentTrackBank ();
+
+        for (int i = 0; i < 8; i++)
+        {
+            final ITrack track = tb.getItem (i);
+
+            final boolean exists = track.doesExist ();
+
+            // HUI_INSERT1 is used on icon for selection
+            if (buttonID == ButtonID.get (ButtonID.ROW_SELECT_1, i) || buttonID == ButtonID.get (ButtonID.ROW5_1, i))
+                return exists && track.isSelected () ? HUIControllerSetup.HUI_BUTTON_STATE_ON : HUIControllerSetup.HUI_BUTTON_STATE_OFF;
+            if (buttonID == ButtonID.get (ButtonID.ROW2_1, i))
+                return exists && track.isRecArm () ? HUIControllerSetup.HUI_BUTTON_STATE_ON : HUIControllerSetup.HUI_BUTTON_STATE_OFF;
+            if (buttonID == ButtonID.get (ButtonID.ROW3_1, i))
+                return exists && track.isSolo () ? HUIControllerSetup.HUI_BUTTON_STATE_ON : HUIControllerSetup.HUI_BUTTON_STATE_OFF;
+            if (buttonID == ButtonID.get (ButtonID.ROW4_1, i))
+                return exists && track.isMute () ? HUIControllerSetup.HUI_BUTTON_STATE_ON : HUIControllerSetup.HUI_BUTTON_STATE_OFF;
+        }
+
+        return HUIControllerSetup.HUI_BUTTON_STATE_OFF;
     }
 
 

@@ -69,7 +69,7 @@ public abstract class AbstractControllerExtensionDefinition extends ControllerEx
     @Override
     public String getHelpFilePath ()
     {
-        return "docs/Help.html";
+        return "Help.html";
     }
 
 
