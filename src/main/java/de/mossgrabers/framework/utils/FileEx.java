@@ -4,15 +4,9 @@
 
 package de.mossgrabers.framework.utils;
 
-import java.io.BufferedReader;
 import java.io.File;
-import java.io.FileInputStream;
 import java.io.IOException;
-import java.io.InputStream;
-import java.io.InputStreamReader;
-import java.io.Reader;
-import java.nio.charset.Charset;
-import java.nio.charset.StandardCharsets;
+import java.nio.file.Files;
 
 
 /**
@@ -23,8 +17,6 @@ import java.nio.charset.StandardCharsets;
 public class FileEx extends File
 {
     private static final long serialVersionUID = 2670415170924953154L;
-    /** The size of chunks to use for reading / writing streams. */
-    private static final int  CHUNKSIZE        = 10240;
 
 
     /**
@@ -114,31 +106,9 @@ public class FileEx extends File
      */
     public String readUTF8 () throws IOException
     {
-        try (final InputStream input = new FileInputStream (this))
-        {
-            final String text = read (input, StandardCharsets.UTF_8);
-            // UTF-8 BOM is not automatically removed
-            return text.length () > 0 && text.charAt (0) == '\uFEFF' ? text.substring (1) : text;
-        }
-    }
+        final String text = Files.readString (this.toPath ());
 
-
-    /**
-     * Read all available text from the given InputStream. Note: The input stream is NOT closed!
-     *
-     * @param input The input stream from which to read
-     * @param charset The character encoding to use, if null the default encoding is used
-     * @return The read text
-     * @throws IOException Error reading from the stream
-     */
-    private static String read (final InputStream input, final Charset charset) throws IOException
-    {
-        final StringBuilder builder = new StringBuilder ();
-        final Reader reader = new BufferedReader (new InputStreamReader (input, charset == null ? Charset.defaultCharset () : charset), CHUNKSIZE);
-        final char [] buffer = new char [1024];
-        int size;
-        while ((size = reader.read (buffer)) != -1)
-            builder.append (buffer, 0, size);
-        return builder.toString ();
+        // UTF-8 BOM might not be automatically removed
+        return text.length () > 0 && text.charAt (0) == '\uFEFF' ? text.substring (1) : text;
     }
 }

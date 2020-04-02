@@ -15,8 +15,6 @@ import de.mossgrabers.framework.daw.IModel;
 import de.mossgrabers.framework.daw.IParameterBank;
 import de.mossgrabers.framework.daw.data.IParameter;
 
-import java.util.Collections;
-import java.util.HashSet;
 import java.util.Set;
 
 
@@ -27,11 +25,7 @@ import java.util.Set;
  */
 public class ParamsMode extends AbstractKontrol1Mode
 {
-    private static final Set<Character> ILLEGAL_LOWER_CHARS = new HashSet<> ();
-    static
-    {
-        Collections.addAll (ILLEGAL_LOWER_CHARS, Character.valueOf ('a'), Character.valueOf ('e'), Character.valueOf ('g'), Character.valueOf ('j'), Character.valueOf ('k'), Character.valueOf ('p'), Character.valueOf ('q'), Character.valueOf ('r'), Character.valueOf ('s'), Character.valueOf ('x'), Character.valueOf ('y'), Character.valueOf ('z'));
-    }
+    private static final Set<Character> ILLEGAL_LOWER_CHARS = Set.of (Character.valueOf ('a'), Character.valueOf ('e'), Character.valueOf ('g'), Character.valueOf ('j'), Character.valueOf ('k'), Character.valueOf ('p'), Character.valueOf ('q'), Character.valueOf ('r'), Character.valueOf ('s'), Character.valueOf ('x'), Character.valueOf ('y'), Character.valueOf ('z'));
 
 
     /**
