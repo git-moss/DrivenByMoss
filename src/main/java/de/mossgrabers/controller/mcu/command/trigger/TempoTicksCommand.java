@@ -38,7 +38,15 @@ public class TempoTicksCommand extends AbstractTriggerCommand<MCUControlSurface,
             return;
 
         final MCUConfiguration configuration = this.surface.getConfiguration ();
-        configuration.toggleDisplayTicks ();
-        this.surface.getDisplay ().notify (configuration.isDisplayTicks () ? "BEATS" : "SMPTE");
+
+        if (this.surface.isSelectPressed ())
+            configuration.toggleDisplayTime ();
+        else
+            configuration.toggleDisplayTicks ();
+
+        this.model.getHost ().scheduleTask ( () -> {
+            final String message = (configuration.isDisplayTime () ? "TIME - " : "BEATS - ") + (configuration.isDisplayTicks () ? "TICKS" : "TEMPO");
+            this.surface.getDisplay ().notify (message);
+        }, 200);
     }
 }

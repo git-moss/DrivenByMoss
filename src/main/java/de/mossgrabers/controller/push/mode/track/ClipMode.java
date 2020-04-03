@@ -226,6 +226,6 @@ public class ClipMode extends AbstractTrackMode
 
     private String formatMeasures (final double time, final int startOffset)
     {
-        return StringUtils.formatMeasures (this.model.getTransport ().getQuartersPerMeasure (), time, startOffset);
+        return StringUtils.formatMeasures (this.model.getTransport ().getQuartersPerMeasure (), time, startOffset, false);
     }
 }

@@ -621,17 +621,7 @@ public class LaunchpadControllerSetup extends AbstractControllerSetup<LaunchpadC
         if (!isSelected)
             return;
 
-        // Recall last used view (if we are not in session mode)
         final ViewManager viewManager = this.getSurface ().getViewManager ();
-        if (!viewManager.isActiveView (Views.SESSION))
-        {
-            final ITrack selectedTrack = this.model.getSelectedTrack ();
-            if (selectedTrack != null)
-            {
-                final Views preferredView = viewManager.getPreferredView (selectedTrack.getPosition ());
-                viewManager.setActiveView (preferredView == null ? Views.PLAY : preferredView);
-            }
-        }
 
         if (viewManager.isActiveView (Views.PLAY))
             viewManager.getActiveView ().updateNoteMapping ();

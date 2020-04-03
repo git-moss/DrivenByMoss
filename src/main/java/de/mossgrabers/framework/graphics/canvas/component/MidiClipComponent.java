@@ -113,7 +113,7 @@ public class MidiClipComponent implements IComponent
             if (step % 4 == 0)
             {
                 final double time = startPos + step * stepLength;
-                final String measureText = StringUtils.formatMeasures (this.quartersPerMeasure, time, 1);
+                final String measureText = StringUtils.formatMeasures (this.quartersPerMeasure, time, 1, false);
                 gc.drawTextInHeight (measureText, x, 0, top - 1.0, ColorEx.WHITE, top);
             }
         }

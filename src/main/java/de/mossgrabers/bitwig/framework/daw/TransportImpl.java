@@ -416,7 +416,7 @@ public class TransportImpl implements ITransport
     @Override
     public String getPositionText ()
     {
-        return this.transport.getPosition ().getFormatted ();
+        return this.transport.getPosition ().getFormatted ( (beatTime, isAbsolute, timeSignatureNumerator, timeSignatureDenominator, timeSignatureTicks) -> StringUtils.formatTimeLong (this.getTempo (), beatTime, true));
     }
 
 
@@ -426,7 +426,7 @@ public class TransportImpl implements ITransport
     {
         return this.transport.getPosition ().getFormatted ( (beatTime, isAbsolute, timeSignatureNumerator, timeSignatureDenominator, timeSignatureTicks) -> {
             final int quartersPerMeasure = 4 * timeSignatureNumerator / timeSignatureDenominator;
-            return StringUtils.formatMeasures (quartersPerMeasure, beatTime, 1);
+            return StringUtils.formatMeasuresLong (quartersPerMeasure, beatTime, 1, true);
         });
     }
 

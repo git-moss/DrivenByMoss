@@ -652,9 +652,15 @@ public class MCUControllerSetup extends AbstractControllerSetup<MCUControlSurfac
             return;
 
         final ITransport t = this.model.getTransport ();
-        String positionText = t.getPositionText ();
+
+        String positionText = this.configuration.isDisplayTime () ? t.getPositionText () : t.getBeatText ();
+        positionText = positionText.replace ('.', ':');
+
         if (this.configuration.isDisplayTicks ())
-            positionText += " ";
+        {
+            if (!this.configuration.isDisplayTime ())
+                positionText += " ";
+        }
         else
         {
             String tempoStr = t.formatTempoNoFraction (t.getTempo ());

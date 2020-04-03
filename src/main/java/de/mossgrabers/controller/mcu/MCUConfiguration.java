@@ -23,28 +23,30 @@ public class MCUConfiguration extends AbstractConfiguration
 {
     /** Zoom state. */
     public static final Integer    ZOOM_STATE                              = Integer.valueOf (50);
+    /** Display time or beats. */
+    public static final Integer    DISPLAY_MODE_TIME_OR_BEATS              = Integer.valueOf (51);
     /** Display mode tempo or ticks. */
-    public static final Integer    DISPLAY_MODE_TICKS_OR_TEMPO             = Integer.valueOf (51);
+    public static final Integer    DISPLAY_MODE_TICKS_OR_TEMPO             = Integer.valueOf (52);
     /** Has a display. */
-    public static final Integer    HAS_DISPLAY1                            = Integer.valueOf (52);
+    public static final Integer    HAS_DISPLAY1                            = Integer.valueOf (53);
     /** Has a second display. */
-    public static final Integer    HAS_DISPLAY2                            = Integer.valueOf (53);
+    public static final Integer    HAS_DISPLAY2                            = Integer.valueOf (54);
     /** Has a segment display. */
-    public static final Integer    HAS_SEGMENT_DISPLAY                     = Integer.valueOf (54);
+    public static final Integer    HAS_SEGMENT_DISPLAY                     = Integer.valueOf (55);
     /** Has an assignment display. */
-    public static final Integer    HAS_ASSIGNMENT_DISPLAY                  = Integer.valueOf (55);
+    public static final Integer    HAS_ASSIGNMENT_DISPLAY                  = Integer.valueOf (56);
     /** Has motor faders. */
-    public static final Integer    HAS_MOTOR_FADERS                        = Integer.valueOf (56);
+    public static final Integer    HAS_MOTOR_FADERS                        = Integer.valueOf (57);
     /** Has only 1 fader. */
-    public static final Integer    HAS_ONLY_1_FADER                        = Integer.valueOf (57);
+    public static final Integer    HAS_ONLY_1_FADER                        = Integer.valueOf (58);
     /** Display track names in 1st display. */
-    public static final Integer    DISPLAY_TRACK_NAMES                     = Integer.valueOf (58);
+    public static final Integer    DISPLAY_TRACK_NAMES                     = Integer.valueOf (59);
     /** Replace the vertical zoom withmode change. */
-    public static final Integer    USE_VERT_ZOOM_FOR_MODES                 = Integer.valueOf (59);
+    public static final Integer    USE_VERT_ZOOM_FOR_MODES                 = Integer.valueOf (60);
     /** Use the faders like the editing knobs. */
-    public static final Integer    USE_FADERS_AS_KNOBS                     = Integer.valueOf (60);
+    public static final Integer    USE_FADERS_AS_KNOBS                     = Integer.valueOf (61);
     /** Select the channel when touching it's fader. */
-    private static final Integer   TOUCH_CHANNEL                           = Integer.valueOf (61);
+    private static final Integer   TOUCH_CHANNEL                           = Integer.valueOf (62);
 
     /** Use a Function button to switch to previous mode. */
     public static final int        FOOTSWITCH_2_PREV_MODE                  = 15;
@@ -54,6 +56,8 @@ public class MCUConfiguration extends AbstractConfiguration
     public static final int        FOOTSWITCH_2_SHOW_MARKER_MODE           = 17;
     /** Toggle use faders like editing knobs. */
     public static final int        FOOTSWITCH_2_USE_FADERS_LIKE_EDIT_KNOBS = 18;
+
+    private static final String    CATEGORY_SEGMENT_DISPLAY                = "Segment Display";
 
     private static final String    DEVICE_SELECT                           = "<Select a profile>";
     private static final String    DEVICE_BEHRINGER_X_TOUCH_ONE            = "Behringer X-Touch One";
@@ -106,6 +110,12 @@ public class MCUConfiguration extends AbstractConfiguration
         "F5"
     };
 
+    private static final String [] TIME_OR_BEATS_OPTIONS                   =
+    {
+        "Time",
+        "Beats"
+    };
+
     private static final String [] TEMPO_OR_TICKS_OPTIONS                  =
     {
         "Ticks",
@@ -113,6 +123,7 @@ public class MCUConfiguration extends AbstractConfiguration
     };
 
     private IEnumSetting           zoomStateSetting;
+    private IEnumSetting           displayTimeSetting;
     private IEnumSetting           tempoOrTicksSetting;
     private IEnumSetting           hasDisplay1Setting;
     private IEnumSetting           hasDisplay2Setting;
@@ -125,6 +136,7 @@ public class MCUConfiguration extends AbstractConfiguration
     private IEnumSetting           useFadersAsKnobsSetting;
 
     private boolean                zoomState;
+    private boolean                displayTime;
     private boolean                displayTicks;
     private boolean                hasDisplay1;
     private boolean                hasDisplay2;
@@ -165,6 +177,11 @@ public class MCUConfiguration extends AbstractConfiguration
         this.activateEnableVUMetersSetting (globalSettings, CATEGORY_HARDWARE_SETUP);
 
         ///////////////////////////
+        // Segment display
+
+        this.activateSegmentDisplaySetting (globalSettings);
+
+        ///////////////////////////
         // Assignable buttons
 
         this.activateAssignableSettings (globalSettings);
@@ -186,7 +203,6 @@ public class MCUConfiguration extends AbstractConfiguration
         this.activateDisplayCrossfaderSetting (globalSettings);
         this.activateNewClipLengthSetting (globalSettings);
         this.activateZoomStateSetting (globalSettings);
-        this.activateDisplayTempoOrTicksSetting (globalSettings);
         this.activateChannelTouchSetting (globalSettings);
 
         ///////////////////////////
@@ -286,7 +302,7 @@ public class MCUConfiguration extends AbstractConfiguration
             this.notifyObservers (HAS_DISPLAY2);
         });
 
-        this.hasSegmentDisplaySetting = settingsUI.getEnumSetting ("Has a position/tempo display", CATEGORY_HARDWARE_SETUP, ON_OFF_OPTIONS, ON_OFF_OPTIONS[1]);
+        this.hasSegmentDisplaySetting = settingsUI.getEnumSetting ("Has a segment display", CATEGORY_HARDWARE_SETUP, ON_OFF_OPTIONS, ON_OFF_OPTIONS[1]);
         this.hasSegmentDisplaySetting.addValueObserver (value -> {
             this.hasSegmentDisplay = "On".equals (value);
             this.notifyObservers (HAS_SEGMENT_DISPLAY);
@@ -326,6 +342,22 @@ public class MCUConfiguration extends AbstractConfiguration
         this.useFadersAsKnobsSetting.addValueObserver (value -> {
             this.useFadersAsKnobs = "On".equals (value);
             this.notifyObservers (USE_FADERS_AS_KNOBS);
+        });
+    }
+
+
+    private void activateSegmentDisplaySetting (final ISettingsUI settingsUI)
+    {
+        this.displayTimeSetting = settingsUI.getEnumSetting ("Display time or beats", CATEGORY_SEGMENT_DISPLAY, TIME_OR_BEATS_OPTIONS, TIME_OR_BEATS_OPTIONS[0]);
+        this.displayTimeSetting.addValueObserver (value -> {
+            this.displayTime = TIME_OR_BEATS_OPTIONS[0].equals (value);
+            this.notifyObservers (DISPLAY_MODE_TIME_OR_BEATS);
+        });
+
+        this.tempoOrTicksSetting = settingsUI.getEnumSetting ("Display tempo or ticks/milliseconds", CATEGORY_SEGMENT_DISPLAY, TEMPO_OR_TICKS_OPTIONS, TEMPO_OR_TICKS_OPTIONS[0]);
+        this.tempoOrTicksSetting.addValueObserver (value -> {
+            this.displayTicks = TEMPO_OR_TICKS_OPTIONS[0].equals (value);
+            this.notifyObservers (DISPLAY_MODE_TICKS_OR_TEMPO);
         });
     }
 
@@ -372,21 +404,6 @@ public class MCUConfiguration extends AbstractConfiguration
 
 
     /**
-     * Activate the display Tempo or Ticks setting.
-     *
-     * @param settingsUI The settings
-     */
-    protected void activateDisplayTempoOrTicksSetting (final ISettingsUI settingsUI)
-    {
-        this.tempoOrTicksSetting = settingsUI.getEnumSetting ("Display tempo or ticks", CATEGORY_WORKFLOW, TEMPO_OR_TICKS_OPTIONS, TEMPO_OR_TICKS_OPTIONS[0]);
-        this.tempoOrTicksSetting.addValueObserver (value -> {
-            this.displayTicks = TEMPO_OR_TICKS_OPTIONS[0].equals (value);
-            this.notifyObservers (DISPLAY_MODE_TICKS_OR_TEMPO);
-        });
-    }
-
-
-    /**
      * Is zoom active?
      *
      * @return True if zoom is active
@@ -403,6 +420,26 @@ public class MCUConfiguration extends AbstractConfiguration
     public void toggleZoomState ()
     {
         this.zoomStateSetting.set (this.zoomState ? ON_OFF_OPTIONS[0] : ON_OFF_OPTIONS[1]);
+    }
+
+
+    /**
+     * Display time in the segment display? Otherwise beats (measures).
+     *
+     * @return True if the time should be displayed
+     */
+    public boolean isDisplayTime ()
+    {
+        return this.displayTime;
+    }
+
+
+    /**
+     * Toggle to display time or beats.
+     */
+    public void toggleDisplayTime ()
+    {
+        this.displayTimeSetting.set (this.displayTime ? TIME_OR_BEATS_OPTIONS[1] : TIME_OR_BEATS_OPTIONS[0]);
     }
 
 

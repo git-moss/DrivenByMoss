@@ -317,6 +317,6 @@ public class NoteMode extends BaseMode
      */
     private String formatLength (final double duration)
     {
-        return StringUtils.formatMeasuresLong (this.model.getTransport ().getQuartersPerMeasure (), duration, 0);
+        return StringUtils.formatMeasures (this.model.getTransport ().getQuartersPerMeasure (), duration, 0, true);
     }
 }

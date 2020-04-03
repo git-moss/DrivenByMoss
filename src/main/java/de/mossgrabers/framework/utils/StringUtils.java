@@ -282,41 +282,95 @@ public class StringUtils
 
 
     /**
-     * Format the given time as measure.quarters.eights.
+     * Format the given time as measure.quarters.eights / measure.quarters.eights.ticks.
      *
      * @param quartersPerMeasure The number of quarters of a measure
-     * @param time The time to format
+     * @param beats The beats to format
      * @param startOffset An offset that is added to the measure, quarter and eights values
+     * @param includeFrames Add the frames (ticks) if true
      * @return The formatted text
      */
-    public static String formatMeasures (final int quartersPerMeasure, final double time, final int startOffset)
+    public static String formatMeasures (final int quartersPerMeasure, final double beats, final int startOffset, final boolean includeFrames)
     {
-        final int measure = (int) Math.floor (time / quartersPerMeasure);
-        double t = time - measure * quartersPerMeasure;
-        final int quarters = (int) Math.floor (t); // :1
-        t = t - quarters; // *1
-        final int eights = (int) Math.floor (t / 0.25);
-        return String.format ("%d.%d.%d", Integer.valueOf (measure + startOffset), Integer.valueOf (quarters + startOffset), Integer.valueOf (eights + startOffset));
+        return formatMeasures (quartersPerMeasure, beats, startOffset, includeFrames, "%d.%d.%d", "%d.%d.%d:%03d");
     }
 
 
     /**
-     * Format the given time as measure.quarters.eights:frames.
+     * Format the given time as measure.quarters.eights / measure.quarters.eights.ticks. Padded to 3
+     * / 2 digits.
      *
      * @param quartersPerMeasure The number of quarters of a measure
-     * @param time The time to format
+     * @param beats The beats to format
      * @param startOffset An offset that is added to the measure, quarter and eights values
+     * @param includeFrames Add the frames (ticks) if true
      * @return The formatted text
      */
-    public static String formatMeasuresLong (final int quartersPerMeasure, final double time, final int startOffset)
+    public static String formatMeasuresLong (final int quartersPerMeasure, final double beats, final int startOffset, final boolean includeFrames)
     {
-        final int measure = (int) Math.floor (time / quartersPerMeasure);
-        double t = time - measure * quartersPerMeasure;
+        return formatMeasures (quartersPerMeasure, beats, startOffset, includeFrames, "%03d.%d.%d", "%d.%d.%d:%02d");
+    }
+
+
+    /**
+     * Format the given time as hours.minutes.seconds / hours.minutes.seconds.millis.
+     *
+     * @param tempo The tempo
+     * @param beats The beats to format as time
+     * @param includeFrames Add the frames (ticks) if true
+     * @return The formatted text
+     */
+    public static String formatTime (final double tempo, final double beats, final boolean includeFrames)
+    {
+        return formatTime (tempo, beats, includeFrames, "%d.%d.%d", "%d.%d.%d:%03d");
+    }
+
+
+    /**
+     * Format the given time as minutes.seconds / minutes.seconds.millis. Padded to 3 / 2 digits.
+     * 
+     * @param tempo The tempo
+     * @param beats The beats to format as time
+     * @param includeFrames Add the frames (ticks) if true
+     * @return The formatted text
+     */
+    public static String formatTimeLong (final double tempo, final double beats, final boolean includeFrames)
+    {
+        return formatTime (tempo, beats, includeFrames, "%02d.%02d.%02d", "%d.%02d.%02d:%03d");
+    }
+
+
+    private static String formatMeasures (final int quartersPerMeasure, final double beats, final int startOffset, final boolean includeFrames, final String shortFormat, final String longFormat)
+    {
+        final int measure = (int) Math.floor (beats / quartersPerMeasure);
+        double t = beats - measure * quartersPerMeasure;
         final int quarters = (int) Math.floor (t); // :1
         t = t - quarters; // *1
         final int eights = (int) Math.floor (t / 0.25);
+
+        if (!includeFrames)
+            return String.format (shortFormat, Integer.valueOf (measure + startOffset), Integer.valueOf (quarters + startOffset), Integer.valueOf (eights + startOffset));
+
         t = t - eights * 0.25;
         final int frames = (int) Math.floor (t / 0.25 * 100.0);
-        return String.format ("%d.%d.%d:%03d", Integer.valueOf (measure + startOffset), Integer.valueOf (quarters + startOffset), Integer.valueOf (eights + startOffset), Integer.valueOf (frames));
+        return String.format (longFormat, Integer.valueOf (measure + startOffset), Integer.valueOf (quarters + startOffset), Integer.valueOf (eights + startOffset), Integer.valueOf (frames));
+    }
+
+
+    private static String formatTime (final double tempo, final double beats, final boolean includeFrames, final String shortFormat, final String longFormat)
+    {
+        final double time = beats * 60.0 / tempo;
+
+        final int seconds = (int) Math.floor (time % 60);
+        double t = (time - seconds) / 60.0;
+        final int minutes = (int) Math.floor (t % 60);
+        t = (t - minutes) / 60.0;
+        final int hours = (int) Math.floor (t);
+
+        if (!includeFrames)
+            return String.format (shortFormat, Integer.valueOf (minutes), Integer.valueOf (seconds));
+
+        final int millis = (int) ((time - ((hours * 60 + minutes) * 60 + seconds)) * 1000);
+        return String.format (longFormat, Integer.valueOf (hours), Integer.valueOf (minutes), Integer.valueOf (seconds), Integer.valueOf (millis));
     }
 }
