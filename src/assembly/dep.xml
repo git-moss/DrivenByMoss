@@ -11,6 +11,7 @@
             <outputDirectory></outputDirectory>
             <includes>
                 <include>LICENSE*</include>
+                <include>DrivenByMoss-Manual.pdf</include>
             </includes>
         </fileSet>
         <fileSet>
