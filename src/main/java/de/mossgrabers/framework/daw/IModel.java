@@ -9,6 +9,7 @@ import de.mossgrabers.framework.controller.valuechanger.IValueChanger;
 import de.mossgrabers.framework.daw.data.IMasterTrack;
 import de.mossgrabers.framework.daw.data.ISlot;
 import de.mossgrabers.framework.daw.data.ITrack;
+import de.mossgrabers.framework.observer.IValueObserver;
 import de.mossgrabers.framework.scale.Scales;
 
 
@@ -167,6 +168,14 @@ public interface IModel
      * @return The current track bank
      */
     ITrackBank getCurrentTrackBank ();
+
+
+    /**
+     * Add an observer for changes of the current track bank.
+     *
+     * @param observer The new current track bank
+     */
+    void addTrackBankObserver (IValueObserver<ITrackBank> observer);
 
 
     /**

@@ -157,6 +157,8 @@ public class FrameMode extends BaseMode
     @Override
     public void onActivate ()
     {
+        super.onActivate ();
+
         this.setActive (true);
     }
 
@@ -165,6 +167,8 @@ public class FrameMode extends BaseMode
     @Override
     public void onDeactivate ()
     {
+        super.onDeactivate ();
+
         this.setActive (false);
     }
 

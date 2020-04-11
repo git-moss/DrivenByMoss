@@ -102,14 +102,14 @@ public class HwRelativeKnobImpl extends AbstractHwContinuousControl implements I
 
     /** {@inheritDoc} */
     @Override
-    public void bindTouch (final TriggerCommand command, final IMidiInput input, final BindType type, final int control)
+    public void bindTouch (final TriggerCommand command, final IMidiInput input, final BindType type, final int channel, final int control)
     {
         this.touchCommand = command;
 
         this.hardwareKnob.beginTouchAction ().addBinding (this.controllerHost.createAction ( () -> this.triggerTouch (true), () -> ""));
         this.hardwareKnob.endTouchAction ().addBinding (this.controllerHost.createAction ( () -> this.triggerTouch (false), () -> ""));
 
-        input.bindTouch (this, type, 0, control);
+        input.bindTouch (this, type, channel, control);
     }
 
 

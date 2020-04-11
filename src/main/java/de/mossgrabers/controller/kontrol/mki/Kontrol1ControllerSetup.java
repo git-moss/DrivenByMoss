@@ -224,7 +224,7 @@ public class Kontrol1ControllerSetup extends AbstractControllerSetup<Kontrol1Con
         for (int i = 0; i < 8; i++)
         {
             final IHwRelativeKnob knob = this.addRelativeKnob (ContinuousID.get (ContinuousID.KNOB1, i), "Knob " + (i + 1), new KnobRowModeCommand<> (i, this.model, surface), Kontrol1ControlSurface.ENCODER_1 + i);
-            knob.bindTouch (new KnobRowTouchModeCommand<> (i, this.model, surface), input, BindType.CC, Kontrol1ControlSurface.TOUCH_ENCODER_1 + i);
+            knob.bindTouch (new KnobRowTouchModeCommand<> (i, this.model, surface), input, BindType.CC, 0, Kontrol1ControlSurface.TOUCH_ENCODER_1 + i);
         }
 
         this.addRelativeKnob (ContinuousID.MASTER_KNOB, "Master", new MainEncoderCommand (this.model, surface), Kontrol1ControlSurface.MAIN_ENCODER);

@@ -15,12 +15,15 @@ import de.mossgrabers.framework.daw.IHost;
 import de.mossgrabers.framework.daw.ILayerBank;
 import de.mossgrabers.framework.daw.IParameterBank;
 import de.mossgrabers.framework.daw.IParameterPageBank;
+import de.mossgrabers.framework.observer.IValueObserver;
 
 import com.bitwig.extension.controller.api.CursorRemoteControlsPage;
 import com.bitwig.extension.controller.api.DeviceBank;
 import com.bitwig.extension.controller.api.PinnableCursorDevice;
 
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 
@@ -31,16 +34,17 @@ import java.util.Map;
  */
 public class CursorDeviceImpl extends DeviceImpl implements ICursorDevice
 {
-    private final PinnableCursorDevice cursorDevice;
+    private final PinnableCursorDevice          cursorDevice;
 
-    private String []                  directParameterIds;
-    private Map<String, String>        directParameterNames = new HashMap<> ();
+    private String []                           directParameterIds;
+    private Map<String, String>                 directParameterNames = new HashMap<> ();
 
-    private final IDeviceBank          deviceBank;
-    private final IParameterPageBank   parameterPageBank;
-    private final IParameterBank       parameterBank;
-    private final ILayerBank           layerBank;
-    private final IDrumPadBank         drumPadBank;
+    private final IDeviceBank                   deviceBank;
+    private final IParameterPageBank            parameterPageBank;
+    private final IParameterBank                parameterBank;
+    private final ILayerBank                    layerBank;
+    private final IDrumPadBank                  drumPadBank;
+    private final List<IValueObserver<Boolean>> hasDrumPadsObservers = new ArrayList<> ();
 
 
     /**
@@ -107,6 +111,8 @@ public class CursorDeviceImpl extends DeviceImpl implements ICursorDevice
         // Monitor the drum pad layers of a container device (if any)
         this.drumPadBank = new DrumPadBankImpl (host, valueChanger, checkedNumDrumPadLayers > 0 ? this.cursorDevice.createDrumPadBank (checkedNumDrumPadLayers) : null, checkedNumDrumPadLayers, numSends, checkedNumDevices);
         this.drumPadBank.setIndication (false);
+
+        this.cursorDevice.hasDrumPads ().addValueObserver (this::callbackHasDrumPads);
     }
 
 
@@ -215,6 +221,14 @@ public class CursorDeviceImpl extends DeviceImpl implements ICursorDevice
     public boolean hasDrumPads ()
     {
         return this.cursorDevice.hasDrumPads ().get ();
+    }
+
+
+    /** {@inheritDoc} */
+    @Override
+    public void addHasDrumPadsObserver (final IValueObserver<Boolean> observer)
+    {
+        this.hasDrumPadsObservers.add (observer);
     }
 
 
@@ -408,5 +422,12 @@ public class CursorDeviceImpl extends DeviceImpl implements ICursorDevice
     PinnableCursorDevice getCursorDevice ()
     {
         return this.cursorDevice;
+    }
+
+
+    private void callbackHasDrumPads (final boolean hasDrumPads)
+    {
+        final Boolean v = Boolean.valueOf (hasDrumPads);
+        this.hasDrumPadsObservers.forEach (observer -> observer.update (v));
     }
 }

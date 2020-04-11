@@ -36,7 +36,9 @@ public class LayerDetailsMode extends BaseMode
      */
     public LayerDetailsMode (final PushControlSurface surface, final IModel model)
     {
-        super ("Layer details", surface, model);
+        super ("Layer details", surface, model, model.getCursorDevice ().getLayerOrDrumPadBank ());
+
+        model.getCursorDevice ().addHasDrumPadsObserver (hasDrumPads -> this.switchBanks (model.getCursorDevice ().getLayerOrDrumPadBank ()));
     }
 
 
@@ -188,13 +190,5 @@ public class LayerDetailsMode extends BaseMode
         display.addEmptyElement ();
         display.addOptionElement ("", "Clear Mute", false, "", "", false, false);
         display.addOptionElement ("", "Clear Solo", false, "", "Select Color", false, false);
-    }
-
-
-    /** {@inheritDoc} */
-    @Override
-    protected IChannelBank<?> getBank ()
-    {
-        return this.model.getCursorDevice ().getLayerOrDrumPadBank ();
     }
 }

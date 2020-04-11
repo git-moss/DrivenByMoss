@@ -6,10 +6,9 @@ package de.mossgrabers.framework.mode.device;
 
 import de.mossgrabers.framework.configuration.Configuration;
 import de.mossgrabers.framework.controller.ButtonID;
+import de.mossgrabers.framework.controller.ContinuousID;
 import de.mossgrabers.framework.controller.IControlSurface;
-import de.mossgrabers.framework.daw.IBank;
 import de.mossgrabers.framework.daw.IModel;
-import de.mossgrabers.framework.daw.data.IItem;
 import de.mossgrabers.framework.daw.data.IParameter;
 import de.mossgrabers.framework.mode.AbstractMode;
 
@@ -31,26 +30,15 @@ public class UserMode<S extends IControlSurface<C>, C extends Configuration> ext
      * @param model The model
      * @param isAbsolute If true the value change is happending with a setter otherwise relative
      *            change method is used
+     * @param firstKnob The ID of the first knob to control this mode, all other knobs must be
+     *            follow up IDs
+     * @param numberOfKnobs The number of knobs available to control this mode
      */
-    public UserMode (final S surface, final IModel model, final boolean isAbsolute)
+    public UserMode (final S surface, final IModel model, final boolean isAbsolute, final ContinuousID firstKnob, final int numberOfKnobs)
     {
-        super ("User Controls", surface, model);
+        super ("User Controls", surface, model, isAbsolute, model.getUserParameterBank (), firstKnob, numberOfKnobs);
 
         this.isTemporary = false;
-    }
-
-
-    /** {@inheritDoc} */
-    @Override
-    public void onKnobValue (final int index, final int value)
-    {
-        final IParameter item = this.model.getUserParameterBank ().getItem (index);
-        if (item == null || !item.doesExist ())
-            return;
-        if (this.isAbsolute)
-            item.setValue (value);
-        else
-            item.changeValue (value);
     }
 
 
@@ -68,13 +56,5 @@ public class UserMode<S extends IControlSurface<C>, C extends Configuration> ext
             param.resetValue ();
         }
         param.touchValue (isTouched);
-    }
-
-
-    /** {@inheritDoc} */
-    @Override
-    protected IBank<? extends IItem> getBank ()
-    {
-        return this.model.getUserParameterBank ();
     }
 }

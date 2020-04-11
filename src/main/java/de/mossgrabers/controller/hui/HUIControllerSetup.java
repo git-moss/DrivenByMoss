@@ -204,11 +204,7 @@ public class HUIControllerSetup extends AbstractControllerSetup<HUIControlSurfac
     protected void createObservers ()
     {
         final HUIControlSurface surface = this.getSurface ();
-        surface.getModeManager ().addModeListener ( (oldMode, newMode) -> {
-            surface.getModeManager ().setActiveMode (newMode);
-            this.updateMode (null);
-            this.updateMode (newMode);
-        });
+        surface.getModeManager ().addModeListener ( (oldMode, newMode) -> this.updateMode (newMode));
 
         this.configuration.addSettingObserver (AbstractConfiguration.ENABLE_VU_METERS, () -> {
             final Mode activeMode = surface.getModeManager ().getActiveOrTempMode ();

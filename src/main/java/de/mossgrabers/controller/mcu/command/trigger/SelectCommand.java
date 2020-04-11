@@ -50,12 +50,6 @@ public class SelectCommand extends AbstractTriggerCommand<MCUControlSurface, MCU
         if (event != ButtonEvent.DOWN)
             return;
 
-        if (this.index == 8)
-        {
-            this.model.getMasterTrack ().select ();
-            return;
-        }
-
         final ITextDisplay display = this.surface.getTextDisplay ();
 
         // Select Send channels if Send button is pressed
@@ -70,15 +64,6 @@ public class SelectCommand extends AbstractTriggerCommand<MCUControlSurface, MCU
             else
                 display.notify ("Send channel " + (this.channel + 1) + " does not exist.");
             this.surface.setTriggerConsumed (ButtonID.SENDS);
-            return;
-        }
-
-        // Select clip length if Shift is pressed
-        if (this.surface.isShiftPressed ())
-        {
-            final MCUConfiguration configuration = this.surface.getConfiguration ();
-            configuration.setNewClipLength (this.index);
-            display.notify ("New clip length: " + AbstractConfiguration.getNewClipLengthValue (configuration.getNewClipLength ()));
             return;
         }
 

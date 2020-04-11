@@ -9,7 +9,6 @@ import de.mossgrabers.framework.controller.ButtonID;
 import de.mossgrabers.framework.controller.IControlSurface;
 import de.mossgrabers.framework.daw.ICursorDevice;
 import de.mossgrabers.framework.daw.IModel;
-import de.mossgrabers.framework.daw.IParameterBank;
 import de.mossgrabers.framework.daw.data.IParameter;
 import de.mossgrabers.framework.mode.AbstractMode;
 
@@ -36,8 +35,7 @@ public class SelectedDeviceMode<S extends IControlSurface<C>, C extends Configur
      */
     public SelectedDeviceMode (final S surface, final IModel model)
     {
-        super ("Parameters", surface, model, false);
-        this.isTemporary = false;
+        super ("Parameters", surface, model, false, model.getCursorDevice ().getParameterBank (), null, 8);
     }
 
 
@@ -93,14 +91,5 @@ public class SelectedDeviceMode<S extends IControlSurface<C>, C extends Configur
     public int getSelectedParameter ()
     {
         return this.index;
-    }
-
-
-    /** {@inheritDoc} */
-    @Override
-    protected IParameterBank getBank ()
-    {
-        final ICursorDevice cursorDevice = this.model.getCursorDevice ();
-        return cursorDevice == null ? null : cursorDevice.getParameterBank ();
     }
 }

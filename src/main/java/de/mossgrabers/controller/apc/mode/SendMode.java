@@ -6,7 +6,6 @@ package de.mossgrabers.controller.apc.mode;
 
 import de.mossgrabers.controller.apc.controller.APCControlSurface;
 import de.mossgrabers.framework.daw.IModel;
-import de.mossgrabers.framework.daw.ITrackBank;
 import de.mossgrabers.framework.daw.data.ITrack;
 
 
@@ -29,7 +28,10 @@ public class SendMode extends BaseMode
      */
     public SendMode (final APCControlSurface surface, final IModel model, final int sendIndex)
     {
-        super ("Send " + (sendIndex + 1), surface, model, APCControlSurface.LED_MODE_VOLUME, 0);
+        super ("Send", surface, model, APCControlSurface.LED_MODE_VOLUME, 0, model.getCurrentTrackBank ());
+
+        model.addTrackBankObserver (this::switchBanks);
+
         this.sendIndex = sendIndex;
     }
 
@@ -50,13 +52,5 @@ public class SendMode extends BaseMode
             return Integer.valueOf (0);
         final ITrack track = this.model.getCurrentTrackBank ().getItem (index);
         return track.doesExist () ? Integer.valueOf (track.getSendBank ().getItem (this.sendIndex).getValue ()) : null;
-    }
-
-
-    /** {@inheritDoc} */
-    @Override
-    protected ITrackBank getBank ()
-    {
-        return this.model.getCurrentTrackBank ();
     }
 }

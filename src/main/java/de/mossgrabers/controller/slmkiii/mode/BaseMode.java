@@ -9,7 +9,9 @@ import de.mossgrabers.controller.slmkiii.controller.SLMkIIIColorManager;
 import de.mossgrabers.controller.slmkiii.controller.SLMkIIIControlSurface;
 import de.mossgrabers.controller.slmkiii.controller.SLMkIIIDisplay;
 import de.mossgrabers.framework.controller.ButtonID;
+import de.mossgrabers.framework.daw.IBank;
 import de.mossgrabers.framework.daw.IModel;
+import de.mossgrabers.framework.daw.data.IItem;
 import de.mossgrabers.framework.mode.AbstractMode;
 import de.mossgrabers.framework.utils.ButtonEvent;
 
@@ -35,7 +37,23 @@ public abstract class BaseMode extends AbstractMode<SLMkIIIControlSurface, SLMkI
      */
     public BaseMode (final String name, final SLMkIIIControlSurface surface, final IModel model)
     {
-        super (name, surface, model);
+        super (name, surface, model, true, null, null, 0);
+    }
+
+
+    /**
+     * Constructor.
+     *
+     * @param name The name of the mode
+     * @param surface The control surface
+     * @param model The model
+     * @param isAbsolute If true the value change is happending with a setter otherwise relative
+     *            change method is used
+     * @param bank The parameter bank to control with this mode, might be null
+     */
+    public BaseMode (final String name, final SLMkIIIControlSurface surface, final IModel model, final boolean isAbsolute, final IBank<? extends IItem> bank)
+    {
+        super (name, surface, model, isAbsolute, bank, null, 0);
     }
 
 
@@ -43,6 +61,8 @@ public abstract class BaseMode extends AbstractMode<SLMkIIIControlSurface, SLMkI
     @Override
     public void onActivate ()
     {
+        super.onActivate ();
+
         this.surface.getDisplay ().setDisplayLayout (SLMkIIIDisplay.SCREEN_LAYOUT_KNOB);
     }
 

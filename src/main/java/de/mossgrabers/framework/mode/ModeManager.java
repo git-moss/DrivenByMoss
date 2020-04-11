@@ -4,6 +4,8 @@
 
 package de.mossgrabers.framework.mode;
 
+import de.mossgrabers.framework.utils.FrameworkException;
+
 import java.util.ArrayList;
 import java.util.EnumMap;
 import java.util.List;
@@ -18,13 +20,14 @@ import java.util.Map.Entry;
  */
 public class ModeManager
 {
-    private final Map<Modes, Mode>         modes               = new EnumMap<> (Modes.class);
-    private final List<ModeChangeListener> modeChangeListeners = new ArrayList<> ();
+    private final Map<Modes, Mode>         modes                 = new EnumMap<> (Modes.class);
+    private final List<ModeChangeListener> modeChangeListeners   = new ArrayList<> ();
+    private final List<ModeManager>        connectedModeManagers = new ArrayList<> ();
 
-    private Modes                          activeModeId        = null;
-    private Modes                          previousModeId      = null;
-    private Modes                          temporaryModeId     = null;
-    private Modes                          defaultModeId       = null;
+    private Modes                          activeModeId          = null;
+    private Modes                          previousModeId        = null;
+    private Modes                          temporaryModeId       = null;
+    private Modes                          defaultModeId         = null;
 
 
     /**
@@ -74,39 +77,46 @@ public class ModeManager
      */
     public void setActiveMode (final Modes modeId)
     {
+        this.setActiveMode (modeId, true);
+    }
+
+
+    /**
+     * Set the active mode. If the mode to activate is only temporary, calling restoreMode sets back
+     * the previous active one.
+     *
+     * @param modeId The ID of the mode to activate
+     * @param syncSiblings Sync changes to siblings if true
+     */
+    private void setActiveMode (final Modes modeId, final boolean syncSiblings)
+    {
         final Modes id = modeId == null ? this.defaultModeId : modeId;
+        if (id == null)
+            throw new FrameworkException ("Attempt to set the active mode to null and no default mode is registered.");
 
         // Do nothing if already active
         if (this.isActiveOrTempMode (id))
             return;
 
         // Deactivate the current temporary or active mode
-        if (this.temporaryModeId != null)
-        {
-            this.getMode (this.temporaryModeId).onDeactivate ();
-            this.temporaryModeId = null;
-        }
-        else if (this.activeModeId != null)
-            this.getMode (this.activeModeId).onDeactivate ();
+        final Modes deactivate = this.temporaryModeId != null ? this.temporaryModeId : this.activeModeId;
+        if (deactivate != null)
+            this.getMode (deactivate).onDeactivate ();
+        this.temporaryModeId = null;
 
         // Activate the new temporary or active mode
-        if (id == null)
-        {
-            this.previousModeId = this.activeModeId;
-            this.activeModeId = null;
-        }
+        final Mode newMode = this.getMode (id);
+        if (newMode.isTemporary ())
+            this.temporaryModeId = id;
         else
         {
-            final Mode newMode = this.getMode (id);
-            if (newMode.isTemporary ())
-                this.temporaryModeId = id;
-            else
-            {
-                this.previousModeId = this.activeModeId;
-                this.activeModeId = id;
-            }
-            newMode.onActivate ();
+            this.previousModeId = this.activeModeId;
+            this.activeModeId = id;
         }
+        newMode.onActivate ();
+
+        if (syncSiblings)
+            this.connectedModeManagers.forEach (sibling -> sibling.setActiveMode (modeId, false));
 
         this.notifyObservers (this.previousModeId, this.getActiveOrTempModeId ());
     }
@@ -119,7 +129,21 @@ public class ModeManager
      */
     public void setPreviousMode (final Modes mode)
     {
+        this.setPreviousMode (mode, true);
+    }
+
+
+    /**
+     * Set the previous mode. Will be used for restoreMode.
+     *
+     * @param mode The previous mode
+     * @param syncSiblings Sync changes to siblings if true
+     */
+    private void setPreviousMode (final Modes mode, final boolean syncSiblings)
+    {
         this.previousModeId = mode;
+        if (syncSiblings)
+            this.connectedModeManagers.forEach (sibling -> sibling.setPreviousMode (mode, false));
     }
 
 
@@ -213,6 +237,17 @@ public class ModeManager
      */
     public void restoreMode ()
     {
+        this.restoreMode (true);
+    }
+
+
+    /**
+     * Set the previous mode as the active one.
+     * 
+     * @param syncSiblings Sync changes to siblings if true
+     */
+    private void restoreMode (final boolean syncSiblings)
+    {
         // Deactivate the current temporary or active mode
         Modes oldModeId = null;
         if (this.temporaryModeId != null)
@@ -242,6 +277,9 @@ public class ModeManager
             mode.onActivate ();
         }
 
+        if (syncSiblings)
+            this.connectedModeManagers.forEach (sibling -> sibling.restoreMode (false));
+
         if (oldModeId != null)
             this.notifyObservers (oldModeId, this.activeModeId);
     }
@@ -270,6 +308,18 @@ public class ModeManager
 
 
     /**
+     * Register another mode manager. If a mode changes all mode states are synchronized to the
+     * registered sibling.
+     *
+     * @param sibling Another mode manager to keep in sync
+     */
+    public void addConnectedModeManagerListener (final ModeManager sibling)
+    {
+        this.connectedModeManagers.add (sibling);
+    }
+
+
+    /**
      * Notify all mode change observers.
      *
      * @param oldMode The old mode
@@ -277,7 +327,6 @@ public class ModeManager
      */
     private void notifyObservers (final Modes oldMode, final Modes newMode)
     {
-        for (final ModeChangeListener listener: this.modeChangeListeners)
-            listener.call (oldMode, newMode);
+        this.modeChangeListeners.forEach (l -> l.call (oldMode, newMode));
     }
 }

@@ -36,8 +36,33 @@ public class SendMode extends AbstractTrackMode
     @Override
     public void onKnobValue (final int index, final int value)
     {
-        final int extenderOffset = this.surface.getExtenderOffset ();
-        this.model.getCurrentTrackBank ().getItem (extenderOffset + index).getSendBank ().getItem (this.getCurrentSendIndex ()).changeValue (value);
+        final int channel = this.surface.getExtenderOffset () + index;
+        this.model.getCurrentTrackBank ().getItem (channel).getSendBank ().getItem (this.getCurrentSendIndex ()).changeValue (value);
+    }
+
+
+    /** {@inheritDoc} */
+    @Override
+    public void onKnobTouch (final int index, final boolean isTouched)
+    {
+        final int sendIndex = this.getCurrentSendIndex ();
+
+        this.isKnobTouched[index] = isTouched;
+
+        final int channel = this.surface.getExtenderOffset () + index;
+        final ITrack t = this.model.getCurrentTrackBank ().getItem (channel);
+        if (t.doesExist ())
+            t.getSendBank ().getItem (sendIndex).touchValue (isTouched);
+    }
+
+
+    /** {@inheritDoc} */
+    @Override
+    public int getKnobValue (final int index)
+    {
+        final int channel = this.surface.getExtenderOffset () + index;
+        final ITrack track = this.model.getCurrentTrackBank ().getItem (channel);
+        return track.getSendBank ().getItem (this.getCurrentSendIndex ()).getValue ();
     }
 
 

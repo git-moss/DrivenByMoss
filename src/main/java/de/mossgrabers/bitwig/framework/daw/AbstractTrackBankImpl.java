@@ -7,6 +7,7 @@ package de.mossgrabers.bitwig.framework.daw;
 import de.mossgrabers.bitwig.framework.daw.data.TrackImpl;
 import de.mossgrabers.framework.controller.valuechanger.IValueChanger;
 import de.mossgrabers.framework.daw.IHost;
+import de.mossgrabers.framework.daw.ISlotBank;
 import de.mossgrabers.framework.daw.ITrackBank;
 import de.mossgrabers.framework.daw.data.ITrack;
 import de.mossgrabers.framework.observer.IIndexedValueObserver;
@@ -97,9 +98,10 @@ public abstract class AbstractTrackBankImpl extends AbstractChannelBankImpl<Trac
     {
         for (int t = 0; t < this.getPageSize (); t++)
         {
+            final ISlotBank slotBank = this.items.get (t).getSlotBank ();
             for (int s = 0; s < this.numScenes; s++)
             {
-                if (this.items.get (t).getSlotBank ().getItem (s).isRecording ())
+                if (slotBank.getItem (s).isRecording ())
                     return true;
             }
         }

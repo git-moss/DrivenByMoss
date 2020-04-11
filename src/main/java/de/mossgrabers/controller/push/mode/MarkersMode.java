@@ -37,7 +37,6 @@ public class MarkersMode extends BaseMode
         "Launch",
     };
 
-    private final IMarkerBank      markerBank;
     private final boolean          canEditMarkers;
     private boolean                actionModeLaunch = true;
 
@@ -50,10 +49,9 @@ public class MarkersMode extends BaseMode
      */
     public MarkersMode (final PushControlSurface surface, final IModel model)
     {
-        super ("Marker", surface, model);
+        super ("Marker", surface, model, model.getMarkerBank ());
 
         this.canEditMarkers = model.getHost ().canEdit (EditCapability.MARKERS);
-        this.markerBank = model.getMarkerBank ();
     }
 
 
@@ -64,7 +62,7 @@ public class MarkersMode extends BaseMode
         if (event != ButtonEvent.UP)
             return;
 
-        final IMarker marker = this.markerBank.getItem (index);
+        final IMarker marker = (IMarker) this.bank.getItem (index);
         if (!marker.doesExist ())
             return;
 
@@ -85,7 +83,7 @@ public class MarkersMode extends BaseMode
         switch (index)
         {
             case 0:
-                this.markerBank.addMarker ();
+                ((IMarkerBank) this.bank).addMarker ();
                 break;
             case 6:
                 if (this.canEditMarkers)
@@ -116,7 +114,7 @@ public class MarkersMode extends BaseMode
                 display.setCell (0, i, (isMenuTopSelected ? Push1Display.SELECT_ARROW : "") + EDIT_MENU[i]);
             }
 
-            final IMarker marker = this.markerBank.getItem (i);
+            final IMarker marker = (IMarker) this.bank.getItem (i);
             if (marker.doesExist ())
                 display.setCell (3, i, StringUtils.shortenAndFixASCII (marker.getName (), 8));
         }
@@ -132,7 +130,7 @@ public class MarkersMode extends BaseMode
     {
         for (int i = 0; i < 8; i++)
         {
-            final IMarker marker = this.markerBank.getItem (i);
+            final IMarker marker = (IMarker) this.bank.getItem (i);
             final String menuTopName = this.canEditMarkers ? EDIT_MENU[i] : "";
             final String headerBottomName = i == 0 ? "Markers" : "";
             final String headerTopName = this.canEditMarkers && i == 6 ? "Action" : "";
@@ -148,20 +146,12 @@ public class MarkersMode extends BaseMode
     {
         int index = this.isButtonRow (0, buttonID);
         if (index >= 0)
-            return this.markerBank.getItem (index).doesExist () ? AbstractMode.BUTTON_COLOR_ON : AbstractMode.BUTTON_COLOR_OFF;
+            return this.bank.getItem (index).doesExist () ? AbstractMode.BUTTON_COLOR_ON : AbstractMode.BUTTON_COLOR_OFF;
 
         index = this.isButtonRow (1, buttonID);
         if (index >= 0)
             return this.canEditMarkers && !EDIT_MENU[index].isEmpty () ? AbstractMode.BUTTON_COLOR2_ON : AbstractMode.BUTTON_COLOR_OFF;
 
         return AbstractMode.BUTTON_COLOR_OFF;
-    }
-
-
-    /** {@inheritDoc} */
-    @Override
-    protected IMarkerBank getBank ()
-    {
-        return this.markerBank;
     }
 }

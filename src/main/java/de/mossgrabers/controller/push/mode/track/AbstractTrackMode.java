@@ -45,7 +45,10 @@ public abstract class AbstractTrackMode extends BaseMode
      */
     public AbstractTrackMode (final String name, final PushControlSurface surface, final IModel model)
     {
-        super (name, surface, model);
+        super (name, surface, model, model.getCurrentTrackBank ());
+
+        model.addTrackBankObserver (this::switchBanks);
+
         this.isTemporary = false;
 
         for (int i = 0; i < 8; i++)
@@ -443,13 +446,5 @@ public abstract class AbstractTrackMode extends BaseMode
 
         final boolean isUpAvailable = tb.hasParent ();
         this.menu.get (7).set (isUpAvailable ? "Up" : " ", Boolean.valueOf (isUpAvailable));
-    }
-
-
-    /** {@inheritDoc} */
-    @Override
-    protected ITrackBank getBank ()
-    {
-        return this.model.getCurrentTrackBank ();
     }
 }

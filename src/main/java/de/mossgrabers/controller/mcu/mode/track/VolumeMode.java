@@ -41,6 +41,28 @@ public class VolumeMode extends AbstractTrackMode
 
     /** {@inheritDoc} */
     @Override
+    public int getKnobValue (final int index)
+    {
+        final int channel = this.surface.getExtenderOffset () + index;
+        return this.model.getCurrentTrackBank ().getItem (channel).getVolume ();
+    }
+
+
+    /** {@inheritDoc} */
+    @Override
+    public void onKnobTouch (final int index, final boolean isTouched)
+    {
+        this.isKnobTouched[index] = isTouched;
+
+        final int channel = this.surface.getExtenderOffset () + index;
+        final ITrack t = this.model.getCurrentTrackBank ().getItem (channel);
+        if (t.doesExist ())
+            t.touchVolume (isTouched);
+    }
+
+
+    /** {@inheritDoc} */
+    @Override
     public void updateDisplay ()
     {
         if (!this.surface.getConfiguration ().hasDisplay1 ())

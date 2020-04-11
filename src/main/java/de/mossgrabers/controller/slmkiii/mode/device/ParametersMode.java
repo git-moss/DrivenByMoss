@@ -11,14 +11,12 @@ import de.mossgrabers.controller.slmkiii.controller.SLMkIIIDisplay;
 import de.mossgrabers.controller.slmkiii.mode.BaseMode;
 import de.mossgrabers.framework.command.trigger.BrowserCommand;
 import de.mossgrabers.framework.controller.ButtonID;
-import de.mossgrabers.framework.daw.IBank;
 import de.mossgrabers.framework.daw.ICursorDevice;
 import de.mossgrabers.framework.daw.IDeviceBank;
 import de.mossgrabers.framework.daw.IModel;
 import de.mossgrabers.framework.daw.IParameterBank;
 import de.mossgrabers.framework.daw.IParameterPageBank;
 import de.mossgrabers.framework.daw.data.IDevice;
-import de.mossgrabers.framework.daw.data.IItem;
 import de.mossgrabers.framework.daw.data.IParameter;
 import de.mossgrabers.framework.mode.Modes;
 import de.mossgrabers.framework.utils.ButtonEvent;
@@ -48,18 +46,23 @@ public class ParametersMode extends BaseMode
         super ("Parameters", surface, model);
 
         this.isTemporary = false;
-        this.showDevices = true;
+        this.setShowDevices (true);
 
         this.browserCommand = new BrowserCommand<> (Modes.BROWSER, model, surface);
     }
 
 
     /**
-     * Toggle showing devices or the parameter banks of the cursor device for selection.
+     * Show devices or the parameter banks of the cursor device for selection.
+     * 
+     * @param showDevices True to show devices otherwise parameters
      */
-    public void toggleShowDevices ()
+    public final void setShowDevices (final boolean showDevices)
     {
-        this.showDevices = !this.showDevices;
+        this.showDevices = showDevices;
+
+        final ICursorDevice cursorDevice = this.model.getCursorDevice ();
+        this.switchBanks (this.showDevices ? cursorDevice.getDeviceBank () : cursorDevice.getParameterBank ());
     }
 
 
@@ -154,7 +157,7 @@ public class ParametersMode extends BaseMode
         {
             final IParameterPageBank parameterPageBank = cd.getParameterPageBank ();
             if (parameterPageBank.getSelectedItemIndex () == index)
-                this.toggleShowDevices ();
+                this.setShowDevices (!this.isShowDevices ());
             else
                 parameterPageBank.selectPage (index);
             return;
@@ -175,7 +178,7 @@ public class ParametersMode extends BaseMode
         }
 
         if (cd.getIndex () == index)
-            this.toggleShowDevices ();
+            this.setShowDevices (!this.isShowDevices ());
         else
             cd.getDeviceBank ().getItem (index).select ();
     }
@@ -375,17 +378,6 @@ public class ParametersMode extends BaseMode
             d.setPropertyColor (7, 2, SLMkIIIColorManager.SLMKIII_RED);
             d.setPropertyValue (7, 1, 0);
         }
-    }
-
-
-    /** {@inheritDoc} */
-    @Override
-    protected IBank<? extends IItem> getBank ()
-    {
-        final ICursorDevice cursorDevice = this.model.getCursorDevice ();
-        if (cursorDevice == null)
-            return null;
-        return this.showDevices ? cursorDevice.getDeviceBank () : cursorDevice.getParameterBank ();
     }
 
 

@@ -6,14 +6,15 @@ package de.mossgrabers.controller.push.mode;
 
 import de.mossgrabers.controller.push.PushConfiguration;
 import de.mossgrabers.controller.push.controller.PushControlSurface;
+import de.mossgrabers.framework.controller.ContinuousID;
 import de.mossgrabers.framework.controller.display.IGraphicDisplay;
 import de.mossgrabers.framework.controller.display.ITextDisplay;
+import de.mossgrabers.framework.daw.IBank;
 import de.mossgrabers.framework.daw.IModel;
 import de.mossgrabers.framework.daw.ITransport;
+import de.mossgrabers.framework.daw.data.IItem;
 import de.mossgrabers.framework.mode.AbstractMode;
 import de.mossgrabers.framework.utils.ButtonEvent;
-
-import java.util.Arrays;
 
 
 /**
@@ -27,7 +28,6 @@ public abstract class BaseMode extends AbstractMode<PushControlSurface, PushConf
 
     private int                movementCounter = 0;
 
-    protected boolean []       isKnobTouched;
     protected final boolean    isPush2;
 
 
@@ -40,28 +40,23 @@ public abstract class BaseMode extends AbstractMode<PushControlSurface, PushConf
      */
     public BaseMode (final String name, final PushControlSurface surface, final IModel model)
     {
-        super (name, surface, model);
-
-        this.isPush2 = this.surface.getConfiguration ().isPush2 ();
-
-        this.isKnobTouched = new boolean [8];
-        Arrays.fill (this.isKnobTouched, false);
+        this (name, surface, model, null);
     }
 
 
     /**
-     * Check if a knob is touched.
+     * Constructor.
      *
-     * @return True if at least 1 knob is touched
+     * @param name The name of the mode
+     * @param surface The control surface
+     * @param model The model
+     * @param bank The parameter bank to control with this mode, might be null
      */
-    public boolean isAKnobTouched ()
+    public BaseMode (final String name, final PushControlSurface surface, final IModel model, final IBank<? extends IItem> bank)
     {
-        for (final boolean anIsKnobTouched: this.isKnobTouched)
-        {
-            if (anIsKnobTouched)
-                return true;
-        }
-        return false;
+        super (name, surface, model, true, bank, ContinuousID.KNOB1, 8);
+
+        this.isPush2 = this.surface.getConfiguration ().isPush2 ();
     }
 
 

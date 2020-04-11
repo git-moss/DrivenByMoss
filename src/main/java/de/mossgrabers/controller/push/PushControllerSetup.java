@@ -573,19 +573,19 @@ public class PushControllerSetup extends AbstractControllerSetup<PushControlSurf
         for (int i = 0; i < 8; i++)
         {
             final IHwRelativeKnob knob = this.addRelativeKnob (ContinuousID.get (ContinuousID.KNOB1, i), "Knob " + i, new KnobRowModeCommand<> (i, this.model, surface), PushControlSurface.PUSH_KNOB1 + i);
-            knob.bindTouch (new KnobRowTouchModeCommand<> (i, this.model, surface), input, BindType.NOTE, PushControlSurface.PUSH_KNOB1_TOUCH + i);
+            knob.bindTouch (new KnobRowTouchModeCommand<> (i, this.model, surface), input, BindType.NOTE, 0, PushControlSurface.PUSH_KNOB1_TOUCH + i);
         }
 
         final IHwRelativeKnob knobMaster = this.addRelativeKnob (ContinuousID.MASTER_KNOB, "Master", new MasterVolumeCommand<> (this.model, surface), PushControlSurface.PUSH_KNOB9);
-        knobMaster.bindTouch (new MastertrackTouchCommand (this.model, surface), input, BindType.NOTE, PushControlSurface.PUSH_KNOB9_TOUCH);
+        knobMaster.bindTouch (new MastertrackTouchCommand (this.model, surface), input, BindType.NOTE, 0, PushControlSurface.PUSH_KNOB9_TOUCH);
 
         final RasteredKnobCommand tempoCommand = new RasteredKnobCommand (this.model, surface);
         final IHwRelativeKnob knobTempo = this.addRelativeKnob (ContinuousID.TEMPO, "Tempo", tempoCommand, PushControlSurface.PUSH_SMALL_KNOB1);
-        knobTempo.bindTouch (tempoCommand, input, BindType.NOTE, PushControlSurface.PUSH_SMALL_KNOB1_TOUCH);
+        knobTempo.bindTouch (tempoCommand, input, BindType.NOTE, 0, PushControlSurface.PUSH_SMALL_KNOB1_TOUCH);
 
         final PlayPositionKnobCommand playPositionCommand = new PlayPositionKnobCommand (this.model, surface);
         final IHwRelativeKnob knobPlayPosition = this.addRelativeKnob (ContinuousID.PLAY_POSITION, "Play Position", playPositionCommand, PushControlSurface.PUSH_SMALL_KNOB2);
-        knobPlayPosition.bindTouch (playPositionCommand, input, BindType.NOTE, PushControlSurface.PUSH_SMALL_KNOB2_TOUCH);
+        knobPlayPosition.bindTouch (playPositionCommand, input, BindType.NOTE, 0, PushControlSurface.PUSH_SMALL_KNOB2_TOUCH);
 
         final ViewManager viewManager = surface.getViewManager ();
 
@@ -603,7 +603,7 @@ public class PushControllerSetup extends AbstractControllerSetup<PushControlSurf
         }
 
         final IHwFader touchstrip = this.addFader (ContinuousID.TOUCHSTRIP, "Touchstrip", new TouchstripCommand (this.model, surface));
-        touchstrip.bindTouch (new ConfigurePitchbendCommand (this.model, surface), input, BindType.NOTE, PushControlSurface.PUSH_RIBBON_TOUCH);
+        touchstrip.bindTouch (new ConfigurePitchbendCommand (this.model, surface), input, BindType.NOTE, 0, PushControlSurface.PUSH_RIBBON_TOUCH);
     }
 
 
@@ -888,8 +888,10 @@ public class PushControllerSetup extends AbstractControllerSetup<PushControlSurf
 
     private void updateMode (final Modes mode)
     {
-        if (mode != null)
-            this.updateIndication (mode);
+        if (mode == null)
+            return;
+        this.updateIndication (mode);
+        this.getSurface ().getDisplay ().cancelNotification ();
     }
 
 

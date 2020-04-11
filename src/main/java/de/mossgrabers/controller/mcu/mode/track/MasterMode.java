@@ -26,12 +26,12 @@ public class MasterMode extends BaseMode
      *
      * @param surface The control surface
      * @param model The model
-     * @param isTemporary If true treat this mode only as temporary
      */
-    public MasterMode (final MCUControlSurface surface, final IModel model, final boolean isTemporary)
+    public MasterMode (final MCUControlSurface surface, final IModel model)
     {
         super ("Master", surface, model);
-        this.isTemporary = isTemporary;
+
+        this.isTemporary = true;
     }
 
 
@@ -39,6 +39,8 @@ public class MasterMode extends BaseMode
     @Override
     public void onActivate ()
     {
+        super.onActivate ();
+
         this.setActive (true);
     }
 
@@ -47,6 +49,8 @@ public class MasterMode extends BaseMode
     @Override
     public void onDeactivate ()
     {
+        super.onDeactivate ();
+
         this.setActive (false);
     }
 
@@ -59,6 +63,19 @@ public class MasterMode extends BaseMode
             this.model.getMasterTrack ().changeVolume (value);
         else if (index == 1)
             this.model.getMasterTrack ().changePan (value);
+    }
+
+
+    /** {@inheritDoc} */
+    @Override
+    public void onKnobTouch (final int index, final boolean isTouched)
+    {
+        this.isKnobTouched[index] = isTouched;
+
+        if (index == 0)
+            this.model.getMasterTrack ().touchVolume (isTouched);
+        else if (index == 1)
+            this.model.getMasterTrack ().touchPan (isTouched);
     }
 
 

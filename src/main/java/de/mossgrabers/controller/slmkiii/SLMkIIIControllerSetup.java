@@ -250,7 +250,10 @@ public class SLMkIIIControllerSetup extends AbstractControllerSetup<SLMkIIIContr
             if (browser != null && browser.isActive ())
                 browser.stopBrowsing (!this.getSurface ().isShiftPressed ());
             if (modeManager.isActiveMode (Modes.DEVICE_PARAMS))
-                ((ParametersMode) modeManager.getMode (Modes.DEVICE_PARAMS)).toggleShowDevices ();
+            {
+                final ParametersMode parametersMode = (ParametersMode) modeManager.getMode (Modes.DEVICE_PARAMS);
+                parametersMode.setShowDevices (!parametersMode.isShowDevices ());
+            }
             else
                 deviceModeSelectCommand.execute (ButtonEvent.DOWN, 127);
         }, 15, SLMkIIIControlSurface.MKIII_DISPLAY_UP, () -> getDeviceModeColor (modeManager));

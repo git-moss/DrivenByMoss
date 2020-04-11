@@ -58,7 +58,7 @@ public class HwAbsoluteKnobImpl extends AbstractHwContinuousControl implements I
         super.bind (command);
 
         this.defaultAction = this.controllerHost.createAbsoluteHardwareControlAdjustmentTarget (this::handleValue);
-        this.hardwareKnob.setBinding (this.defaultAction);
+        this.binding = this.hardwareKnob.setBinding (this.defaultAction);
     }
 
 
@@ -84,7 +84,7 @@ public class HwAbsoluteKnobImpl extends AbstractHwContinuousControl implements I
 
     /** {@inheritDoc} */
     @Override
-    public void bindTouch (final TriggerCommand command, final IMidiInput input, final BindType type, final int control)
+    public void bindTouch (final TriggerCommand command, final IMidiInput input, final BindType type, final int channel, final int control)
     {
         // No touch on absolute knob
     }

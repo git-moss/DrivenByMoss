@@ -55,6 +55,8 @@ public class DeviceBrowserMode extends BaseMode
     @Override
     public void onDeactivate ()
     {
+        super.onDeactivate ();
+
         this.model.getBrowser ().stopBrowsing (true);
     }
 

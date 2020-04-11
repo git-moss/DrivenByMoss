@@ -57,7 +57,7 @@ public class SendMode extends AbstractTrackMode<KontrolProtocolControlSurface, K
         // Note: Since we need multiple value (more than 8), index is the MIDI CC of the knob
 
         final IValueChanger valueChanger = this.model.getValueChanger ();
-        final ITrack selectedTrack = this.getBank ().getSelectedItem ();
+        final ITrack selectedTrack = (ITrack) this.getBank ().getSelectedItem ();
         final ISendBank sendBank = selectedTrack == null ? null : selectedTrack.getSendBank ();
 
         if (index >= KontrolProtocolControlSurface.KONTROL_TRACK_VOLUME && index < KontrolProtocolControlSurface.KONTROL_TRACK_VOLUME + 8)
@@ -95,7 +95,7 @@ public class SendMode extends AbstractTrackMode<KontrolProtocolControlSurface, K
     public void updateDisplay ()
     {
         final IValueChanger valueChanger = this.model.getValueChanger ();
-        final ITrack selectedTrack = this.getBank ().getSelectedItem ();
+        final ITrack selectedTrack = (ITrack) this.getBank ().getSelectedItem ();
         final ISendBank sendBank = selectedTrack == null ? null : selectedTrack.getSendBank ();
 
         final int [] vuData = new int [16];
@@ -122,7 +122,7 @@ public class SendMode extends AbstractTrackMode<KontrolProtocolControlSurface, K
     @Override
     public void selectPreviousItem ()
     {
-        final ITrack selectedTrack = this.getBank ().getSelectedItem ();
+        final ITrack selectedTrack = (ITrack) this.getBank ().getSelectedItem ();
         if (selectedTrack != null)
             selectedTrack.getSendBank ().selectPreviousPage ();
     }
@@ -132,7 +132,7 @@ public class SendMode extends AbstractTrackMode<KontrolProtocolControlSurface, K
     @Override
     public void selectNextItem ()
     {
-        final ITrack selectedTrack = this.getBank ().getSelectedItem ();
+        final ITrack selectedTrack = (ITrack) this.getBank ().getSelectedItem ();
         if (selectedTrack != null)
             selectedTrack.getSendBank ().selectNextPage ();
     }

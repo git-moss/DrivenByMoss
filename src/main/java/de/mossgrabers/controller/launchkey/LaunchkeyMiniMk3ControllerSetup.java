@@ -114,7 +114,7 @@ public class LaunchkeyMiniMk3ControllerSetup extends AbstractControllerSetup<Lau
     {
         final ModelSetup ms = new ModelSetup ();
         ms.setHasFlatTrackList (true);
-        ms.setHasFullFlatTrackList (true);
+        ms.setHasFullFlatTrackList (this.configuration.areMasterTracksIncluded ());
         ms.setNumScenes (2);
         ms.setNumSends (8);
         this.model = this.factory.createModel (this.colorManager, this.valueChanger, this.scales, ms);
@@ -161,9 +161,7 @@ public class LaunchkeyMiniMk3ControllerSetup extends AbstractControllerSetup<Lau
         modeManager.registerMode (Modes.SEND1, new SendMode<> (0, surface, this.model, true));
         modeManager.registerMode (Modes.SEND2, new SendMode<> (1, surface, this.model, true));
         modeManager.registerMode (Modes.DEVICE_PARAMS, new ParameterMode<> (surface, this.model, true));
-        // This mode is not really used since the Launchkey sends different MIDI CC in Custom mode
-        // and directly maps MIDI CC instead of user controls
-        modeManager.registerMode (Modes.USER, new UserMode<> (surface, this.model, true));
+        modeManager.registerMode (Modes.USER, new UserMode<> (surface, this.model, true, ContinuousID.DEVICE_KNOB1, 8));
     }
 
 
@@ -287,6 +285,10 @@ public class LaunchkeyMiniMk3ControllerSetup extends AbstractControllerSetup<Lau
         {
             final KnobRowModeCommand<LaunchkeyMiniMk3ControlSurface, LaunchkeyMiniMk3Configuration> command = new KnobRowModeCommand<> (i, this.model, surface);
             this.addAbsoluteKnob (ContinuousID.get (ContinuousID.KNOB1, i), "Knob " + (i + 1), command, BindType.CC, 15, LaunchkeyMiniMk3ControlSurface.LAUNCHKEY_KNOB_1 + i);
+
+            // Knobs in user mode send on MIDI channel 1 instead of 16, command is not needed since
+            // it is mapped to IParameter
+            this.addAbsoluteKnob (ContinuousID.get (ContinuousID.DEVICE_KNOB1, i), "User Knob " + (i + 1), NopCommand.INSTANCE, BindType.CC, 0, LaunchkeyMiniMk3ControlSurface.LAUNCHKEY_KNOB_1 + i);
         }
     }
 
@@ -351,14 +353,23 @@ public class LaunchkeyMiniMk3ControllerSetup extends AbstractControllerSetup<Lau
 
         surface.getButton (ButtonID.CONTROL).setBounds (15.5, 26.5, 49.75, 29.0);
 
-        surface.getContinuous (ContinuousID.KNOB1).setBounds (203.0, 25.25, 25.5, 25.0);
-        surface.getContinuous (ContinuousID.KNOB2).setBounds (256.75, 25.25, 25.5, 25.0);
-        surface.getContinuous (ContinuousID.KNOB3).setBounds (310.75, 25.25, 25.5, 25.0);
-        surface.getContinuous (ContinuousID.KNOB4).setBounds (364.5, 25.25, 25.5, 25.0);
-        surface.getContinuous (ContinuousID.KNOB5).setBounds (418.5, 25.25, 25.5, 25.0);
-        surface.getContinuous (ContinuousID.KNOB6).setBounds (472.25, 25.25, 25.5, 25.0);
-        surface.getContinuous (ContinuousID.KNOB7).setBounds (526.25, 25.25, 25.5, 25.0);
-        surface.getContinuous (ContinuousID.KNOB8).setBounds (580.0, 25.25, 25.5, 25.0);
+        surface.getContinuous (ContinuousID.KNOB1).setBounds (203.0, 5, 25.5, 25.0);
+        surface.getContinuous (ContinuousID.KNOB2).setBounds (256.75, 5, 25.5, 25.0);
+        surface.getContinuous (ContinuousID.KNOB3).setBounds (310.75, 5, 25.5, 25.0);
+        surface.getContinuous (ContinuousID.KNOB4).setBounds (364.5, 5, 25.5, 25.0);
+        surface.getContinuous (ContinuousID.KNOB5).setBounds (418.5, 5, 25.5, 25.0);
+        surface.getContinuous (ContinuousID.KNOB6).setBounds (472.25, 5, 25.5, 25.0);
+        surface.getContinuous (ContinuousID.KNOB7).setBounds (526.25, 5, 25.5, 25.0);
+        surface.getContinuous (ContinuousID.KNOB8).setBounds (580.0, 5, 25.5, 25.0);
+
+        surface.getContinuous (ContinuousID.DEVICE_KNOB1).setBounds (203.0, 30, 25.5, 25.0);
+        surface.getContinuous (ContinuousID.DEVICE_KNOB2).setBounds (256.75, 30, 25.5, 25.0);
+        surface.getContinuous (ContinuousID.DEVICE_KNOB3).setBounds (310.75, 30, 25.5, 25.0);
+        surface.getContinuous (ContinuousID.DEVICE_KNOB4).setBounds (364.5, 30, 25.5, 25.0);
+        surface.getContinuous (ContinuousID.DEVICE_KNOB5).setBounds (418.5, 30, 25.5, 25.0);
+        surface.getContinuous (ContinuousID.DEVICE_KNOB6).setBounds (472.25, 30, 25.5, 25.0);
+        surface.getContinuous (ContinuousID.DEVICE_KNOB7).setBounds (526.25, 30, 25.5, 25.0);
+        surface.getContinuous (ContinuousID.DEVICE_KNOB8).setBounds (580.0, 30, 25.5, 25.0);
 
         surface.getContinuous (ContinuousID.MODULATION_WHEEL).setBounds (91.25, 77.5, 31.75, 171.25);
         surface.getContinuous (ContinuousID.PITCHBEND_WHEEL).setBounds (48.0, 77.5, 31.75, 171.25);

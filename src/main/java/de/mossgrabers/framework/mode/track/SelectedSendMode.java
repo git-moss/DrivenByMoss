@@ -8,7 +8,6 @@ import de.mossgrabers.framework.configuration.Configuration;
 import de.mossgrabers.framework.controller.ButtonID;
 import de.mossgrabers.framework.controller.IControlSurface;
 import de.mossgrabers.framework.daw.IModel;
-import de.mossgrabers.framework.daw.ISendBank;
 import de.mossgrabers.framework.daw.data.ISend;
 import de.mossgrabers.framework.daw.data.ITrack;
 import de.mossgrabers.framework.mode.AbstractMode;
@@ -38,8 +37,19 @@ public class SelectedSendMode<S extends IControlSurface<C>, C extends Configurat
     public SelectedSendMode (final int sendIndex, final S surface, final IModel model)
     {
         super ("Send", surface, model, false);
+
         this.sendIndex = sendIndex;
         this.isTemporary = false;
+
+        this.model.getTrackBank ().addSelectionObserver ( (index, isSelected) -> bankSwitcher ());
+        this.model.getEffectTrackBank ().addSelectionObserver ( (index, isSelected) -> bankSwitcher ());
+    }
+
+
+    private void bankSwitcher ()
+    {
+        final ITrack selectedTrack = this.model.getCurrentTrackBank ().getSelectedItem ();
+        this.switchBanks (selectedTrack == null ? null : selectedTrack.getSendBank ());
     }
 
 
@@ -70,14 +80,5 @@ public class SelectedSendMode<S extends IControlSurface<C>, C extends Configurat
             item.resetValue ();
         }
         item.touchValue (isTouched);
-    }
-
-
-    /** {@inheritDoc} */
-    @Override
-    protected ISendBank getBank ()
-    {
-        final ITrack selectedTrack = this.model.getCurrentTrackBank ().getSelectedItem ();
-        return selectedTrack == null ? null : selectedTrack.getSendBank ();
     }
 }

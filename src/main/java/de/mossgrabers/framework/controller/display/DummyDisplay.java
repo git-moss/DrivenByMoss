@@ -136,6 +136,14 @@ public class DummyDisplay implements ITextDisplay
 
     /** {@inheritDoc} */
     @Override
+    public void cancelNotification ()
+    {
+        // Intentionally empty
+    }
+
+
+    /** {@inheritDoc} */
+    @Override
     public void flush ()
     {
         // Intentionally empty

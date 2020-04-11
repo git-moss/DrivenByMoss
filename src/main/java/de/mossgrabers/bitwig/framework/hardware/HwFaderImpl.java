@@ -62,7 +62,7 @@ public class HwFaderImpl extends AbstractHwContinuousControl implements IHwFader
         super.bind (command);
 
         this.defaultAction = this.controllerHost.createAbsoluteHardwareControlAdjustmentTarget (this::handleValue);
-        this.hardwareFader.addBinding (this.defaultAction);
+        this.binding = this.hardwareFader.addBinding (this.defaultAction);
     }
 
 
@@ -71,7 +71,7 @@ public class HwFaderImpl extends AbstractHwContinuousControl implements IHwFader
     public void bind (final PitchbendCommand command)
     {
         super.bind (command);
-        this.hardwareFader.addBinding (this.controllerHost.createAbsoluteHardwareControlAdjustmentTarget (this::handleValue));
+        this.binding = this.hardwareFader.addBinding (this.controllerHost.createAbsoluteHardwareControlAdjustmentTarget (this::handleValue));
     }
 
 
@@ -97,14 +97,14 @@ public class HwFaderImpl extends AbstractHwContinuousControl implements IHwFader
 
     /** {@inheritDoc} */
     @Override
-    public void bindTouch (final TriggerCommand command, final IMidiInput input, final BindType type, final int control)
+    public void bindTouch (final TriggerCommand command, final IMidiInput input, final BindType type, final int channel, final int control)
     {
         this.touchCommand = command;
 
         this.hardwareFader.beginTouchAction ().addBinding (this.controllerHost.createAction ( () -> this.touchCommand.execute (ButtonEvent.DOWN, 127), () -> ""));
         this.hardwareFader.endTouchAction ().addBinding (this.controllerHost.createAction ( () -> this.touchCommand.execute (ButtonEvent.UP, 0), () -> ""));
 
-        input.bindTouch (this, type, 0, control);
+        input.bindTouch (this, type, channel, control);
     }
 
 

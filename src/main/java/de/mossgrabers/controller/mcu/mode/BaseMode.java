@@ -9,9 +9,11 @@ import de.mossgrabers.controller.mcu.MCUControllerSetup;
 import de.mossgrabers.controller.mcu.controller.MCUControlSurface;
 import de.mossgrabers.framework.controller.ButtonID;
 import de.mossgrabers.framework.controller.display.ITextDisplay;
+import de.mossgrabers.framework.daw.IBank;
 import de.mossgrabers.framework.daw.ICursorDevice;
 import de.mossgrabers.framework.daw.IModel;
 import de.mossgrabers.framework.daw.ITrackBank;
+import de.mossgrabers.framework.daw.data.IItem;
 import de.mossgrabers.framework.daw.data.IMasterTrack;
 import de.mossgrabers.framework.daw.data.ITrack;
 import de.mossgrabers.framework.mode.AbstractMode;
@@ -35,7 +37,24 @@ public abstract class BaseMode extends AbstractMode<MCUControlSurface, MCUConfig
      */
     public BaseMode (final String name, final MCUControlSurface surface, final IModel model)
     {
-        super (name, surface, model);
+        super (name, surface, model, true, null, null, 8);
+
+        this.isTemporary = false;
+    }
+
+
+    /**
+     * Constructor.
+     *
+     * @param name The name of the mode
+     * @param surface The control surface
+     * @param model The model
+     * @param bank The bank
+     */
+    public BaseMode (final String name, final MCUControlSurface surface, final IModel model, final IBank<? extends IItem> bank)
+    {
+        super (name, surface, model, true, bank, null, 8);
+
         this.isTemporary = false;
     }
 

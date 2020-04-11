@@ -43,9 +43,10 @@ public interface IHwContinuousControl extends IHwInputControl
      * @param command The command to bind to touch
      * @param input The MIDI input
      * @param type How to bind
+     * @param channel The MIDI channel
      * @param control The MIDI CC or note to bind
      */
-    void bindTouch (TriggerCommand command, IMidiInput input, BindType type, int control);
+    void bindTouch (TriggerCommand command, IMidiInput input, BindType type, int channel, int control);
 
 
     /**

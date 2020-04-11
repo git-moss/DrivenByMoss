@@ -319,11 +319,11 @@ public class MaschineMikroMk3ControllerSetup extends AbstractControllerSetup<Mas
             final Mode mode = modeManager.getActiveOrTempMode ();
             if (mode != null)
                 mode.onKnobTouch (0, event == ButtonEvent.DOWN);
-        }, surface.getMidiInput (), BindType.CC, MaschineMikroMk3ControlSurface.MIKRO_3_ENCODER_TOUCH);
+        }, surface.getMidiInput (), BindType.CC, 0, MaschineMikroMk3ControlSurface.MIKRO_3_ENCODER_TOUCH);
 
         final TouchstripCommand touchstripCommand = new TouchstripCommand (this.model, surface);
         this.addFader (ContinuousID.CROSSFADER, "Touchstrip", touchstripCommand, BindType.CC, MaschineMikroMk3ControlSurface.MIKRO_3_TOUCHSTRIP, false);
-        surface.getContinuous (ContinuousID.CROSSFADER).bindTouch (touchstripCommand, surface.getMidiInput (), BindType.CC, MaschineMikroMk3ControlSurface.MIKRO_3_TOUCHSTRIP_TOUCH);
+        surface.getContinuous (ContinuousID.CROSSFADER).bindTouch (touchstripCommand, surface.getMidiInput (), BindType.CC, 0, MaschineMikroMk3ControlSurface.MIKRO_3_TOUCHSTRIP_TOUCH);
     }
 
 

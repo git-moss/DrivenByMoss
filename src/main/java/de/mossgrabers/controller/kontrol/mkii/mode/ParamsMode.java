@@ -42,7 +42,7 @@ public class ParamsMode extends ParameterMode<KontrolProtocolControlSurface, Kon
         // Note: Since we need multiple value (more than 8), index is the MIDI CC of the knob
 
         final IValueChanger valueChanger = this.model.getValueChanger ();
-        final IParameterBank bank = this.getBank ();
+        final IParameterBank bank = (IParameterBank) this.getBank ();
 
         if (index >= KontrolProtocolControlSurface.KONTROL_TRACK_VOLUME && index < KontrolProtocolControlSurface.KONTROL_TRACK_VOLUME + 8)
         {
@@ -81,7 +81,7 @@ public class ParamsMode extends ParameterMode<KontrolProtocolControlSurface, Kon
     public void updateDisplay ()
     {
         final IValueChanger valueChanger = this.model.getValueChanger ();
-        final IParameterBank bank = this.getBank ();
+        final IParameterBank bank = (IParameterBank) this.getBank ();
 
         final IParameterPageBank parameterPageBank = this.cursorDevice.getParameterPageBank ();
         final String selectedPage = parameterPageBank.getSelectedItem ();

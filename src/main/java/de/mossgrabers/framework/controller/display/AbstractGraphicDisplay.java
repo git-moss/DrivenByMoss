@@ -109,12 +109,20 @@ public abstract class AbstractGraphicDisplay implements IGraphicDisplay
 
         // Manage notification message display time
         this.executor.scheduleAtFixedRate ( () -> {
-            final int c = this.counter.get ();
-            if (c <= 0)
-                return;
-            if (this.counter.decrementAndGet () == 0)
+            int c = this.counter.get ();
+            if (c > 0)
+                c = this.counter.decrementAndGet ();
+            if (c <= 0 && this.notificationMessage.get () != null)
                 this.notificationMessage.set (null);
         }, 1, 1, TimeUnit.SECONDS);
+    }
+
+
+    /** {@inheritDoc} */
+    @Override
+    public void cancelNotification ()
+    {
+        this.counter.set (0);
     }
 
 

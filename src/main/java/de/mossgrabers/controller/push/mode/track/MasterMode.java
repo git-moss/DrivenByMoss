@@ -14,11 +14,9 @@ import de.mossgrabers.framework.controller.display.Format;
 import de.mossgrabers.framework.controller.display.IGraphicDisplay;
 import de.mossgrabers.framework.controller.display.ITextDisplay;
 import de.mossgrabers.framework.controller.valuechanger.IValueChanger;
-import de.mossgrabers.framework.daw.IBank;
 import de.mossgrabers.framework.daw.IModel;
 import de.mossgrabers.framework.daw.IProject;
 import de.mossgrabers.framework.daw.constants.EditCapability;
-import de.mossgrabers.framework.daw.data.IItem;
 import de.mossgrabers.framework.daw.data.IMasterTrack;
 import de.mossgrabers.framework.daw.resource.ChannelType;
 import de.mossgrabers.framework.mode.AbstractMode;
@@ -42,6 +40,7 @@ public class MasterMode extends BaseMode
     public MasterMode (final PushControlSurface surface, final IModel model, final boolean isTemporary)
     {
         super ("Master", surface, model);
+
         this.isTemporary = isTemporary;
     }
 
@@ -50,6 +49,8 @@ public class MasterMode extends BaseMode
     @Override
     public void onActivate ()
     {
+        super.onActivate ();
+
         this.setActive (true);
     }
 
@@ -58,6 +59,8 @@ public class MasterMode extends BaseMode
     @Override
     public void onDeactivate ()
     {
+        super.onDeactivate ();
+
         this.setActive (false);
     }
 
@@ -318,13 +321,5 @@ public class MasterMode extends BaseMode
         final IMasterTrack mt = this.model.getMasterTrack ();
         mt.setVolumeIndication (enable);
         mt.setPanIndication (enable);
-    }
-
-
-    /** {@inheritDoc} */
-    @Override
-    protected IBank<? extends IItem> getBank ()
-    {
-        return null;
     }
 }

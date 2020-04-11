@@ -14,7 +14,6 @@ import de.mossgrabers.framework.controller.display.IGraphicDisplay;
 import de.mossgrabers.framework.controller.display.ITextDisplay;
 import de.mossgrabers.framework.controller.valuechanger.IValueChanger;
 import de.mossgrabers.framework.daw.DAWColor;
-import de.mossgrabers.framework.daw.IBank;
 import de.mossgrabers.framework.daw.ICursorDevice;
 import de.mossgrabers.framework.daw.IDeviceBank;
 import de.mossgrabers.framework.daw.IHost;
@@ -23,7 +22,6 @@ import de.mossgrabers.framework.daw.IParameterBank;
 import de.mossgrabers.framework.daw.IParameterPageBank;
 import de.mossgrabers.framework.daw.data.IChannel;
 import de.mossgrabers.framework.daw.data.IDevice;
-import de.mossgrabers.framework.daw.data.IItem;
 import de.mossgrabers.framework.daw.data.IParameter;
 import de.mossgrabers.framework.mode.ModeManager;
 import de.mossgrabers.framework.mode.Modes;
@@ -65,7 +63,8 @@ public class DeviceParamsMode extends BaseMode
         super ("Parameters", surface, model);
 
         this.isTemporary = false;
-        this.showDevices = true;
+
+        this.setShowDevices (true);
 
         System.arraycopy (MENU, 0, this.hostMenu, 0, MENU.length);
         final IHost host = this.model.getHost ();
@@ -81,9 +80,12 @@ public class DeviceParamsMode extends BaseMode
      *
      * @param enable True to enable
      */
-    public void setShowDevices (final boolean enable)
+    public final void setShowDevices (final boolean enable)
     {
         this.showDevices = enable;
+
+        final ICursorDevice cursorDevice = this.model.getCursorDevice ();
+        this.switchBanks (this.showDevices ? cursorDevice.getDeviceBank () : cursorDevice.getParameterBank ());
     }
 
 
@@ -341,7 +343,7 @@ public class DeviceParamsMode extends BaseMode
                     return;
                 if (!modeManager.isActiveOrTempMode (Modes.DEVICE_PARAMS))
                     modeManager.setActiveMode (Modes.DEVICE_PARAMS);
-                this.showDevices = !this.showDevices;
+                this.setShowDevices (!this.showDevices);
                 break;
             case 5:
                 if (device.doesExist ())
@@ -505,16 +507,5 @@ public class DeviceParamsMode extends BaseMode
                 // Not used
                 return false;
         }
-    }
-
-
-    /** {@inheritDoc} */
-    @Override
-    protected IBank<? extends IItem> getBank ()
-    {
-        final ICursorDevice cursorDevice = this.model.getCursorDevice ();
-        if (cursorDevice == null)
-            return null;
-        return this.showDevices ? cursorDevice.getDeviceBank () : cursorDevice.getParameterBank ();
     }
 }

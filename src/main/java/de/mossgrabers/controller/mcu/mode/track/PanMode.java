@@ -40,6 +40,28 @@ public class PanMode extends AbstractTrackMode
 
     /** {@inheritDoc} */
     @Override
+    public int getKnobValue (final int index)
+    {
+        final int channel = this.surface.getExtenderOffset () + index;
+        return this.model.getCurrentTrackBank ().getItem (channel).getPan ();
+    }
+
+
+    /** {@inheritDoc} */
+    @Override
+    public void onKnobTouch (final int index, final boolean isTouched)
+    {
+        this.isKnobTouched[index] = isTouched;
+
+        final int channel = this.surface.getExtenderOffset () + index;
+        final ITrack t = this.model.getCurrentTrackBank ().getItem (channel);
+        if (t.doesExist ())
+            t.touchPan (isTouched);
+    }
+
+
+    /** {@inheritDoc} */
+    @Override
     public void updateDisplay ()
     {
         if (!this.surface.getConfiguration ().hasDisplay1 ())

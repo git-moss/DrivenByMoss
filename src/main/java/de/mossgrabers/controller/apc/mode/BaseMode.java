@@ -6,7 +6,10 @@ package de.mossgrabers.controller.apc.mode;
 
 import de.mossgrabers.controller.apc.APCConfiguration;
 import de.mossgrabers.controller.apc.controller.APCControlSurface;
+import de.mossgrabers.framework.controller.ContinuousID;
+import de.mossgrabers.framework.daw.IBank;
 import de.mossgrabers.framework.daw.IModel;
+import de.mossgrabers.framework.daw.data.IItem;
 import de.mossgrabers.framework.mode.AbstractMode;
 import de.mossgrabers.framework.utils.ButtonEvent;
 
@@ -34,10 +37,11 @@ public abstract class BaseMode extends AbstractMode<APCControlSurface, APCConfig
      * @param model The model
      * @param ledMode The mode for the knob LEDs
      * @param defaultValue Default value to use
+     * @param bank The parameter bank to control with this mode, might be null
      */
-    public BaseMode (final String name, final APCControlSurface surface, final IModel model, final int ledMode, final int defaultValue)
+    public BaseMode (final String name, final APCControlSurface surface, final IModel model, final int ledMode, final int defaultValue, IBank<? extends IItem> bank)
     {
-        super (name, surface, model);
+        super (name, surface, model, false, bank, ContinuousID.KNOB1, 8);
 
         this.isTemporary = false;
 
@@ -74,6 +78,8 @@ public abstract class BaseMode extends AbstractMode<APCControlSurface, APCConfig
     @Override
     public void onActivate ()
     {
+        super.onActivate ();
+
         for (int i = 0; i < 8; i++)
             this.surface.setLED (APCControlSurface.APC_KNOB_TRACK_KNOB_LED_1 + i, this.ledMode);
     }

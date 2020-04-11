@@ -31,8 +31,8 @@ public class DeviceParamsMode extends AbstractMode<SLControlSurface, SLConfigura
      */
     public DeviceParamsMode (final SLControlSurface surface, final IModel model)
     {
-        super ("Parameters", surface, model);
-        this.isTemporary = false;
+        super ("Parameters", surface, model, false, model.getCursorDevice ().getParameterBank (), null, 0);
+		this.isTemporary = false;
     }
 
 
@@ -89,14 +89,5 @@ public class DeviceParamsMode extends AbstractMode<SLControlSurface, SLConfigura
     public void onButton (final int row, final int index, final ButtonEvent event)
     {
         // Intentionally empty
-    }
-
-
-    /** {@inheritDoc} */
-    @Override
-    protected IParameterBank getBank ()
-    {
-        final ICursorDevice cursorDevice = this.model.getCursorDevice ();
-        return cursorDevice == null ? null : cursorDevice.getParameterBank ();
     }
 }

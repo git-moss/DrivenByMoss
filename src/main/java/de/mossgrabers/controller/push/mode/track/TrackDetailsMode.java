@@ -37,7 +37,9 @@ public class TrackDetailsMode extends BaseMode
      */
     public TrackDetailsMode (final PushControlSurface surface, final IModel model)
     {
-        super ("Track details", surface, model);
+        super ("Track details", surface, model, model.getCurrentTrackBank ());
+
+        model.addTrackBankObserver (this::switchBanks);
     }
 
 
@@ -298,13 +300,5 @@ public class TrackDetailsMode extends BaseMode
             return t;
         final IMasterTrack master = this.model.getMasterTrack ();
         return master.isSelected () ? master : null;
-    }
-
-
-    /** {@inheritDoc} */
-    @Override
-    protected ITrackBank getBank ()
-    {
-        return this.model.getCurrentTrackBank ();
     }
 }

@@ -36,28 +36,40 @@ public class FaderTouchCommand extends SelectCommand
     @Override
     public void executeNormal (final ButtonEvent event)
     {
+        if (event == ButtonEvent.LONG)
+            return;
+        final boolean isTouched = event == ButtonEvent.DOWN;
+
+        if (this.index == 8)
+        {
+            if (isTouched)
+                this.model.getMasterTrack ().select ();
+            return;
+        }
+
         final MCUConfiguration configuration = this.surface.getConfiguration ();
+        if (configuration.isTouchChannel ())
+            super.executeNormal (event);
+
         if (this.index < 8)
         {
             final ModeManager modeManager = this.surface.getModeManager ();
             if (configuration.useFadersAsKnobs ())
             {
-                modeManager.getActiveOrTempMode ().onKnobTouch (this.index, event == ButtonEvent.DOWN);
+                modeManager.getActiveOrTempMode ().onKnobTouch (this.index, isTouched);
                 return;
             }
+            modeManager.getMode (Modes.VOLUME).onKnobTouch (this.index, isTouched);
 
-            if (event == ButtonEvent.DOWN)
+            if (isTouched)
             {
                 if (modeManager.isActiveOrTempMode (Modes.VOLUME))
                     modeManager.setPreviousMode (Modes.VOLUME);
                 else
                     modeManager.setActiveMode (Modes.VOLUME);
             }
-            else if (event == ButtonEvent.UP)
+            else
                 modeManager.restoreMode ();
         }
-
-        if (configuration.isTouchChannel ())
-            super.executeNormal (event);
     }
 }

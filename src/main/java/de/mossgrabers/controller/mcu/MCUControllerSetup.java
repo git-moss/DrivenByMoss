@@ -98,7 +98,9 @@ import de.mossgrabers.framework.view.Views;
 
 import java.util.Arrays;
 import java.util.EnumMap;
+import java.util.EnumSet;
 import java.util.Map;
+import java.util.Set;
 
 
 /**
@@ -134,11 +136,13 @@ public class MCUControllerSetup extends AbstractControllerSetup<MCUControlSurfac
         MODE_ACRONYMS.put (Modes.MARKERS, "MK");
     }
 
-    private final int [] masterVuValues   = new int [2];
-    private int          masterFaderValue = -1;
-    private final int [] vuValues         = new int [36];
-    private final int [] faderValues      = new int [36];
-    private final int    numMCUDevices;
+    private static final Set<Modes> VALUE_MODES      = EnumSet.of (Modes.VOLUME, Modes.PAN, Modes.TRACK, Modes.SEND1, Modes.SEND2, Modes.SEND3, Modes.SEND4, Modes.SEND5, Modes.SEND6, Modes.SEND7, Modes.SEND8, Modes.DEVICE_PARAMS);
+
+    private final int []            masterVuValues   = new int [2];
+    private int                     masterFaderValue = -1;
+    private final int []            vuValues         = new int [36];
+    private final int []            faderValues      = new int [36];
+    private final int               numMCUDevices;
 
 
     /**
@@ -180,7 +184,8 @@ public class MCUControllerSetup extends AbstractControllerSetup<MCUControlSurfac
             if (mode == null)
                 return;
 
-            this.updateVUandFaders (surface.isShiftPressed ());
+            this.updateVUMeters ();
+            this.updateFaders (surface.isShiftPressed ());
             this.updateSegmentDisplay ();
 
             final Mode activeOrTempMode = modeManager.getActiveOrTempMode ();
@@ -210,14 +215,6 @@ public class MCUControllerSetup extends AbstractControllerSetup<MCUControlSurfac
         final ITrackBank trackBank = this.model.getTrackBank ();
         trackBank.setIndication (true);
         trackBank.addSelectionObserver ( (index, isSelected) -> this.handleTrackChange (isSelected));
-
-        this.model.getMasterTrack ().addSelectionObserver ( (index, isSelected) -> {
-            final ModeManager modeManager = this.getSurface ().getModeManager ();
-            if (isSelected)
-                modeManager.setActiveMode (Modes.MASTER);
-            else
-                modeManager.restoreMode ();
-        });
     }
 
 
@@ -257,7 +254,7 @@ public class MCUControllerSetup extends AbstractControllerSetup<MCUControlSurfac
             final SendMode modeSend = new SendMode (surface, this.model);
             for (int i = 0; i < 8; i++)
                 modeManager.registerMode (Modes.get (Modes.SEND1, i), modeSend);
-            modeManager.registerMode (Modes.MASTER, new MasterMode (surface, this.model, false));
+            modeManager.registerMode (Modes.MASTER, new MasterMode (surface, this.model));
 
             modeManager.registerMode (Modes.DEVICE_PARAMS, new DeviceParamsMode (surface, this.model));
             modeManager.registerMode (Modes.BROWSER, new DeviceBrowserMode (surface, this.model));
@@ -270,22 +267,20 @@ public class MCUControllerSetup extends AbstractControllerSetup<MCUControlSurfac
     @Override
     protected void createObservers ()
     {
-        for (int index = 0; index < this.numMCUDevices; index++)
+        for (int i = 0; i < this.numMCUDevices; i++)
         {
-            final MCUControlSurface surface = this.getSurface (index);
-            surface.getModeManager ().addModeListener ( (oldMode, newMode) -> {
-
-                for (int d = 0; d < this.numMCUDevices; d++)
-                {
-                    final MCUControlSurface s = this.getSurface (d);
-                    if (!s.equals (surface))
-                        s.getModeManager ().setActiveMode (newMode);
-                }
-
-                this.updateMode (null);
-                this.updateMode (newMode);
-            });
+            final ModeManager mm = this.getSurface (i).getModeManager ();
+            for (int j = 0; j < this.numMCUDevices; j++)
+            {
+                if (i != j)
+                    this.getSurface (j).getModeManager ().addConnectedModeManagerListener (mm);
+            }
         }
+
+        this.model.getMasterTrack ().addSelectionObserver ( (index, isSelected) -> {
+            if (isSelected)
+                this.getSurface ().getModeManager ().setActiveMode (Modes.MASTER);
+        });
 
         this.configuration.addSettingObserver (AbstractConfiguration.ENABLE_VU_METERS, () -> {
             for (int index = 0; index < this.numMCUDevices; index++)
@@ -473,7 +468,7 @@ public class MCUControllerSetup extends AbstractControllerSetup<MCUControlSurfac
         this.addRelativeKnob (ContinuousID.PLAY_POSITION, "Jog Wheel", new PlayPositionTempoCommand (this.model, surface), MCUControlSurface.MCU_CC_JOG, RelativeEncoding.SIGNED_BIT);
 
         final IHwFader master = this.addFader (ContinuousID.FADER_MASTER, "Master", new PitchbendVolumeCommand (8, this.model, surface), 8);
-        master.bindTouch (new SelectCommand (8, this.model, surface), input, BindType.NOTE, MCUControlSurface.MCU_FADER_MASTER);
+        master.bindTouch (new FaderTouchCommand (8, this.model, surface), input, BindType.NOTE, 0, MCUControlSurface.MCU_FADER_MASTER);
 
         for (int index = 0; index < this.numMCUDevices; index++)
         {
@@ -483,10 +478,11 @@ public class MCUControllerSetup extends AbstractControllerSetup<MCUControlSurfac
             for (int i = 0; i < 8; i++)
             {
                 final IHwRelativeKnob knob = this.addRelativeKnob (surface, ContinuousID.get (ContinuousID.KNOB1, i), "Knob " + i, new KnobRowModeCommand<> (i, this.model, surface), MCUControlSurface.MCU_CC_VPOT1 + i, RelativeEncoding.SIGNED_BIT);
-                knob.bindTouch (new ButtonRowModeCommand<> (0, i, this.model, surface), input, BindType.NOTE, MCUControlSurface.MCU_VSELECT1 + i);
+                // Note: this is pressing the knobs' button not touching it!
+                knob.bindTouch (new ButtonRowModeCommand<> (0, i, this.model, surface), input, BindType.NOTE, 0, MCUControlSurface.MCU_VSELECT1 + i);
 
                 final IHwFader fader = this.addFader (surface, ContinuousID.get (ContinuousID.FADER1, i), "Fader " + (i + 1), new PitchbendVolumeCommand (i, this.model, surface), i);
-                fader.bindTouch (new FaderTouchCommand (i, this.model, surface), input, BindType.NOTE, MCUControlSurface.MCU_FADER_TOUCH1 + i);
+                fader.bindTouch (new FaderTouchCommand (i, this.model, surface), input, BindType.NOTE, 0, MCUControlSurface.MCU_FADER_TOUCH1 + i);
             }
         }
     }
@@ -674,148 +670,91 @@ public class MCUControllerSetup extends AbstractControllerSetup<MCUControlSurfac
     }
 
 
-    private void updateVUandFaders (final boolean isShiftPressed)
+    private void updateVUMeters ()
     {
+        if (!this.configuration.isEnableVUMeters ())
+            return;
+
         final double upperBound = this.valueChanger.getUpperBound ();
-        final boolean enableVUMeters = this.configuration.isEnableVUMeters ();
-        final boolean hasMotorFaders = this.configuration.hasMotorFaders ();
 
         final ITrackBank tb = this.model.getCurrentTrackBank ();
-        IMidiOutput output;
         for (int index = 0; index < this.numMCUDevices; index++)
         {
             final MCUControlSurface surface = this.getSurface (index);
-            output = surface.getMidiOutput ();
+            final IMidiOutput output = surface.getMidiOutput ();
             final int extenderOffset = surface.getExtenderOffset ();
             for (int i = 0; i < 8; i++)
             {
                 final int channel = extenderOffset + i;
                 final ITrack track = tb.getItem (channel);
 
-                // Update VU LEDs of channel
-                if (enableVUMeters)
+                final int vu = track.getVu ();
+                if (vu != this.vuValues[channel])
                 {
-                    final int vu = track.getVu ();
-                    if (vu != this.vuValues[channel])
-                    {
-                        this.vuValues[channel] = vu;
-                        final int scaledValue = (int) Math.round (vu * 12 / upperBound);
-                        output.sendChannelAftertouch (0x10 * i + scaledValue, 0);
-                    }
+                    this.vuValues[channel] = vu;
+                    final int scaledValue = (int) Math.round (vu * 12 / upperBound);
+                    output.sendChannelAftertouch (0x10 * i + scaledValue, 0);
                 }
-
-                // Update motor fader of channel
-                if (hasMotorFaders)
-                    this.updateFaders (output, i, channel, track);
             }
         }
 
         final IMasterTrack masterTrack = this.model.getMasterTrack ();
-
-        final MCUControlSurface surface = this.getSurface ();
-        output = surface.getMidiOutput ();
+        final IMidiOutput output = this.getSurface ().getMidiOutput ();
 
         // Stereo VU of master channel
-        if (enableVUMeters)
+        int vu = masterTrack.getVuLeft ();
+        if (vu != this.masterVuValues[0])
         {
-            int vu = masterTrack.getVuLeft ();
-            if (vu != this.masterVuValues[0])
-            {
-                this.masterVuValues[0] = vu;
-                final int scaledValue = (int) Math.round (vu * 12 / upperBound);
-                output.sendChannelAftertouch (1, scaledValue, 0);
-            }
-
-            vu = masterTrack.getVuRight ();
-            if (vu != this.masterVuValues[1])
-            {
-                this.masterVuValues[1] = vu;
-                final int scaledValue = (int) Math.round (vu * 12 / upperBound);
-                output.sendChannelAftertouch (1, 0x10 + scaledValue, 0);
-            }
+            this.masterVuValues[0] = vu;
+            final int scaledValue = (int) Math.round (vu * 12 / upperBound);
+            output.sendChannelAftertouch (1, scaledValue, 0);
         }
 
-        // Update motor fader of master channel
-        if (hasMotorFaders)
+        vu = masterTrack.getVuRight ();
+        if (vu != this.masterVuValues[1])
         {
-            final int volume = isShiftPressed ? this.model.getTransport ().getMetronomeVolume () : masterTrack.getVolume ();
-            if (volume != this.masterFaderValue)
-            {
-                this.masterFaderValue = volume;
-                output.sendPitchbend (8, volume % 127, volume / 127);
-            }
+            this.masterVuValues[1] = vu;
+            final int scaledValue = (int) Math.round (vu * 12 / upperBound);
+            output.sendChannelAftertouch (1, 0x10 + scaledValue, 0);
         }
     }
 
 
-    private void updateFaders (final IMidiOutput output, final int index, final int channel, final ITrack track)
+    private void updateFaders (final boolean isShiftPressed)
     {
-        int value = track.getVolume ();
+        if (!this.configuration.hasMotorFaders ())
+            return;
 
-        if (this.configuration.useFadersAsKnobs ())
+        final Modes activeMode = this.getSurface ().getModeManager ().getActiveOrTempModeId ();
+        final Modes modeId = this.configuration.useFadersAsKnobs () && VALUE_MODES.contains (activeMode) ? activeMode : Modes.VOLUME;
+
+        for (int surfaceIndex = 0; surfaceIndex < this.numMCUDevices; surfaceIndex++)
         {
-            final ModeManager modeManager = this.getSurface ().getModeManager ();
-            if (modeManager.isActiveOrTempMode (Modes.VOLUME))
-                value = track.getVolume ();
-            else if (modeManager.isActiveOrTempMode (Modes.PAN))
-                value = track.getPan ();
-            else if (modeManager.isActiveOrTempMode (Modes.TRACK))
+            final MCUControlSurface surface = this.getSurface (surfaceIndex);
+            final Mode mode = surface.getModeManager ().getMode (modeId);
+            final IMidiOutput output = surface.getMidiOutput ();
+            for (int channel = 0; channel < 8; channel++)
             {
-                final ITrack selectedTrack = this.model.getSelectedTrack ();
-                if (selectedTrack == null)
-                    value = 0;
-                else
+                // Dont't update fader if the user touches and therefore 'stops' it
+                if (mode.isKnobTouched (channel))
+                    continue;
+
+                final int value = mode.getKnobValue (channel);
+                final int position = surface.getExtenderOffset () + channel;
+                if (value != this.faderValues[position])
                 {
-                    switch (index)
-                    {
-                        case 0:
-                            value = selectedTrack.getVolume ();
-                            break;
-                        case 1:
-                            value = selectedTrack.getPan ();
-                            break;
-                        default:
-                            final boolean effectTrackBankActive = this.model.isEffectTrackBankActive ();
-                            if (index == 2)
-                            {
-                                if (this.configuration.isDisplayCrossfader ())
-                                {
-                                    final int crossfadeMode = selectedTrack.getCrossfadeModeAsNumber ();
-                                    value = crossfadeMode == 2 ? this.valueChanger.getUpperBound () : crossfadeMode == 1 ? this.valueChanger.getUpperBound () / 2 : 0;
-                                }
-                                else if (!effectTrackBankActive)
-                                    value = selectedTrack.getSendBank ().getItem (0).getValue ();
-                            }
-                            else if (!effectTrackBankActive)
-                                value = selectedTrack.getSendBank ().getItem (index - (this.configuration.isDisplayCrossfader () ? 3 : 2)).getValue ();
-                            break;
-                    }
+                    this.faderValues[position] = value;
+                    output.sendPitchbend (channel, value % 127, value / 127);
                 }
             }
-            else if (modeManager.isActiveOrTempMode (Modes.SEND1))
-                value = track.getSendBank ().getItem (0).getValue ();
-            else if (modeManager.isActiveOrTempMode (Modes.SEND2))
-                value = track.getSendBank ().getItem (1).getValue ();
-            else if (modeManager.isActiveOrTempMode (Modes.SEND3))
-                value = track.getSendBank ().getItem (2).getValue ();
-            else if (modeManager.isActiveOrTempMode (Modes.SEND4))
-                value = track.getSendBank ().getItem (3).getValue ();
-            else if (modeManager.isActiveOrTempMode (Modes.SEND5))
-                value = track.getSendBank ().getItem (4).getValue ();
-            else if (modeManager.isActiveOrTempMode (Modes.SEND6))
-                value = track.getSendBank ().getItem (5).getValue ();
-            else if (modeManager.isActiveOrTempMode (Modes.SEND7))
-                value = track.getSendBank ().getItem (6).getValue ();
-            else if (modeManager.isActiveOrTempMode (Modes.SEND8))
-                value = track.getSendBank ().getItem (7).getValue ();
-            else if (modeManager.isActiveOrTempMode (Modes.DEVICE_PARAMS))
-                value = this.model.getCursorDevice ().getParameterBank ().getItem (channel).getValue ();
         }
 
-        if (value != this.faderValues[channel])
+        // Update motor fader of master channel
+        final int volume = isShiftPressed ? this.model.getTransport ().getMetronomeVolume () : this.model.getMasterTrack ().getVolume ();
+        if (volume != this.masterFaderValue)
         {
-            this.faderValues[channel] = value;
-            output.sendPitchbend (index, value % 127, value / 127);
+            this.masterFaderValue = volume;
+            this.getSurface ().getMidiOutput ().sendPitchbend (8, volume % 127, volume / 127);
         }
     }
 

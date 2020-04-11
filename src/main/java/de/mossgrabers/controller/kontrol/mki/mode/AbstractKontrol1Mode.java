@@ -8,8 +8,10 @@ import de.mossgrabers.controller.kontrol.mki.Kontrol1Configuration;
 import de.mossgrabers.controller.kontrol.mki.controller.Kontrol1ControlSurface;
 import de.mossgrabers.framework.controller.ButtonID;
 import de.mossgrabers.framework.controller.color.ColorManager;
+import de.mossgrabers.framework.daw.IBank;
 import de.mossgrabers.framework.daw.IModel;
 import de.mossgrabers.framework.daw.ITrackBank;
+import de.mossgrabers.framework.daw.data.IItem;
 import de.mossgrabers.framework.daw.data.ITrack;
 import de.mossgrabers.framework.mode.AbstractMode;
 
@@ -31,7 +33,22 @@ public abstract class AbstractKontrol1Mode extends AbstractMode<Kontrol1ControlS
     public AbstractKontrol1Mode (final String name, final Kontrol1ControlSurface surface, final IModel model)
     {
         super (name, surface, model);
+        
         this.isTemporary = false;
+    }
+
+
+    /**
+     * Constructor.
+     *
+     * @param name The name of the mode
+     * @param surface The surface
+     * @param model The model
+     * @param bank The bank
+     */
+    public AbstractKontrol1Mode (final String name, final Kontrol1ControlSurface surface, final IModel model, final IBank<? extends IItem> bank)
+    {
+        super (name, surface, model, false, bank, null, 0);
     }
 
 

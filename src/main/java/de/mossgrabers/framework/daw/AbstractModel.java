@@ -9,11 +9,14 @@ import de.mossgrabers.framework.controller.valuechanger.IValueChanger;
 import de.mossgrabers.framework.daw.data.IMasterTrack;
 import de.mossgrabers.framework.daw.data.ISlot;
 import de.mossgrabers.framework.daw.data.ITrack;
+import de.mossgrabers.framework.observer.IValueObserver;
 import de.mossgrabers.framework.scale.Scales;
 
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 
 /**
@@ -23,31 +26,32 @@ import java.util.Map;
  */
 public abstract class AbstractModel implements IModel
 {
-    protected final IHost         host;
-    protected final Scales        scales;
-    protected final ColorManager  colorManager;
-    protected final IValueChanger valueChanger;
-    protected final ModelSetup    modelSetup;
+    protected final IHost                           host;
+    protected final Scales                          scales;
+    protected final ColorManager                    colorManager;
+    protected final IValueChanger                   valueChanger;
+    protected final ModelSetup                      modelSetup;
+    protected final Set<IValueObserver<ITrackBank>> trackBankObservers = new HashSet<> ();
 
-    protected IApplication        application;
-    protected IMixer              mixer;
-    protected ITransport          transport;
-    protected IGroove             groove;
-    protected IProject            project;
-    protected IBrowser            browser;
-    protected IArranger           arranger;
-    protected IMarkerBank         markerBank;
-    protected ITrackBank          currentTrackBank;
-    protected ITrackBank          trackBank;
-    protected ITrackBank          effectTrackBank;
-    protected IMasterTrack        masterTrack;
-    protected ICursorDevice       instrumentDevice;
-    protected ICursorDevice       cursorDevice;
-    protected ICursorDevice       drumDevice64;
-    protected IParameterBank      userParameterBank;
-    protected Map<String, IClip>  cursorClips = new HashMap<> ();
+    protected IApplication                          application;
+    protected IMixer                                mixer;
+    protected ITransport                            transport;
+    protected IGroove                               groove;
+    protected IProject                              project;
+    protected IBrowser                              browser;
+    protected IArranger                             arranger;
+    protected IMarkerBank                           markerBank;
+    protected ITrackBank                            currentTrackBank;
+    protected ITrackBank                            trackBank;
+    protected ITrackBank                            effectTrackBank;
+    protected IMasterTrack                          masterTrack;
+    protected ICursorDevice                         instrumentDevice;
+    protected ICursorDevice                         cursorDevice;
+    protected ICursorDevice                         drumDevice64;
+    protected IParameterBank                        userParameterBank;
+    protected Map<String, IClip>                    cursorClips        = new HashMap<> ();
 
-    private int                   lastSelection;
+    private int                                     lastSelection;
 
 
     /**
@@ -199,6 +203,8 @@ public abstract class AbstractModel implements IModel
         this.currentTrackBank = this.currentTrackBank == this.trackBank ? this.effectTrackBank : this.trackBank;
         this.currentTrackBank.selectItemAtPosition (this.lastSelection);
         this.lastSelection = selPosition;
+
+        this.trackBankObservers.forEach (observer -> observer.update (this.currentTrackBank));
     }
 
 
@@ -215,6 +221,14 @@ public abstract class AbstractModel implements IModel
     public ITrackBank getCurrentTrackBank ()
     {
         return this.currentTrackBank;
+    }
+
+
+    /** {@inheritDoc} */
+    @Override
+    public void addTrackBankObserver (final IValueObserver<ITrackBank> observer)
+    {
+        this.trackBankObservers.add (observer);
     }
 
 

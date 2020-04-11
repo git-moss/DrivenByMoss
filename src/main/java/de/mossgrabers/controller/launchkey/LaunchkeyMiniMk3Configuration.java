@@ -38,6 +38,7 @@ public class LaunchkeyMiniMk3Configuration extends AbstractConfiguration
         ///////////////////////////
         // Workflow
 
+        this.activateIncludeMasterSetting (globalSettings);
         this.activateSelectClipOnLaunchSetting (globalSettings);
     }
 }

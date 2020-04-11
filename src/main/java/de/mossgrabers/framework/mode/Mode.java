@@ -89,6 +89,23 @@ public interface Mode
 
 
     /**
+     * Check if a knob is touched.
+     *
+     * @return True if at least 1 knob is touched
+     */
+    boolean isAnyKnobTouched ();
+
+
+    /**
+     * Check if a knob is touched.
+     * 
+     * @param index The index of the knob
+     * @return True if the knob is touched
+     */
+    boolean isKnobTouched (int index);
+
+
+    /**
      * A row button has been pressed.
      *
      * @param row The number of the button row
@@ -138,6 +155,14 @@ public interface Mode
      * Selects the next item page and selects the first item of the page.
      */
     void selectNextItemPage ();
+
+
+    /**
+     * Select an item page.
+     * 
+     * @param page The index of the page
+     */
+    void selectItemPage (int page);
 
 
     /**

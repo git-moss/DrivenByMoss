@@ -29,7 +29,7 @@ public class DeviceParamsMode extends BaseMode
      */
     public DeviceParamsMode (final MCUControlSurface surface, final IModel model)
     {
-        super ("Parameters", surface, model);
+        super ("Parameters", surface, model, model.getCursorDevice ().getParameterBank ());
     }
 
 
@@ -39,6 +39,28 @@ public class DeviceParamsMode extends BaseMode
     {
         final int extenderOffset = this.surface.getExtenderOffset ();
         this.model.getCursorDevice ().getParameterBank ().getItem (extenderOffset + index).changeValue (value);
+    }
+
+
+    /** {@inheritDoc} */
+    @Override
+    public int getKnobValue (final int index)
+    {
+        final int param = this.surface.getExtenderOffset () + index;
+        return this.model.getCursorDevice ().getParameterBank ().getItem (param).getValue ();
+    }
+
+
+    /** {@inheritDoc} */
+    @Override
+    public void onKnobTouch (final int index, final boolean isTouched)
+    {
+        this.isKnobTouched[index] = isTouched;
+
+        final ICursorDevice cd = this.model.getCursorDevice ();
+        final IParameter param = cd.getParameterBank ().getItem (index);
+        if (param.doesExist ())
+            param.touchValue (isTouched);
     }
 
 
@@ -92,14 +114,5 @@ public class DeviceParamsMode extends BaseMode
     {
         final int extenderOffset = this.surface.getExtenderOffset ();
         this.model.getCursorDevice ().getParameterBank ().getItem (extenderOffset + index).resetValue ();
-    }
-
-
-    /** {@inheritDoc} */
-    @Override
-    protected IParameterBank getBank ()
-    {
-        final ICursorDevice cursorDevice = this.model.getCursorDevice ();
-        return cursorDevice == null ? null : cursorDevice.getParameterBank ();
     }
 }

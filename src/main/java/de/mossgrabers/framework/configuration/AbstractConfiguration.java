@@ -103,6 +103,8 @@ public abstract class AbstractConfiguration implements Configuration
     public static final Integer      NOTEREPEAT_OCTAVE                 = Integer.valueOf (35);
     /** The MIDI channel to use for editing sequencer notes. */
     public static final Integer      MIDI_EDIT_CHANNEL                 = Integer.valueOf (36);
+    /** Setting for including mastertracks. */
+    public static final Integer      INCLUDE_MASTER                    = Integer.valueOf (37);
 
     // Implementation IDs start at 50
 
@@ -330,9 +332,10 @@ public abstract class AbstractConfiguration implements Configuration
     private Resolution                               noteRepeatLength            = Resolution.RES_1_8;
     private ArpeggiatorMode                          noteRepeatMode;
     private int                                      noteRepeatOctave            = 0;
-
     private int                                      midiEditChannel             = 0;
     private final ArpeggiatorMode []                 arpeggiatorModes;
+
+    private boolean                                  includeMaster               = true;
 
 
     /**
@@ -1072,6 +1075,21 @@ public abstract class AbstractConfiguration implements Configuration
 
 
     /**
+     * Activate the include master setting.
+     *
+     * @param settingsUI The settings
+     */
+    protected void activateIncludeMasterSetting (final ISettingsUI settingsUI)
+    {
+        final IEnumSetting includeMasterSetting = settingsUI.getEnumSetting ("Include (Group-)Mastertrack (requires restart)", CATEGORY_WORKFLOW, ON_OFF_OPTIONS, ON_OFF_OPTIONS[1]);
+        includeMasterSetting.addValueObserver (value -> {
+            this.includeMaster = "On".equals (value);
+            this.notifyObservers (INCLUDE_MASTER);
+        });
+    }
+
+
+    /**
      * Activate the accent value setting.
      *
      * @param settingsUI The settings
@@ -1333,5 +1351,16 @@ public abstract class AbstractConfiguration implements Configuration
     public ArpeggiatorMode [] getArpeggiatorModes ()
     {
         return this.arpeggiatorModes;
+    }
+
+
+    /**
+     * Should the master track and group-master tracks be included in the track list?
+     *
+     * @return True if they should be included
+     */
+    public boolean areMasterTracksIncluded ()
+    {
+        return this.includeMaster;
     }
 }

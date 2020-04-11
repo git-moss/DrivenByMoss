@@ -55,11 +55,14 @@ public class DeviceLayerMode extends BaseMode
      */
     public DeviceLayerMode (final String name, final PushControlSurface surface, final IModel model)
     {
-        super (name, surface, model);
+        super (name, surface, model, model.getCursorDevice ().getLayerOrDrumPadBank ());
+
         this.isTemporary = false;
 
         for (int i = 0; i < 8; i++)
             this.menu.add (new Pair<> (" ", Boolean.FALSE));
+
+        model.getCursorDevice ().addHasDrumPadsObserver (hasDrumPads -> this.switchBanks (model.getCursorDevice ().getLayerOrDrumPadBank ()));
     }
 
 
@@ -654,14 +657,5 @@ public class DeviceLayerMode extends BaseMode
                 return 8;
         }
         return 0;
-    }
-
-
-    /** {@inheritDoc} */
-    @Override
-    protected IChannelBank<?> getBank ()
-    {
-        final ICursorDevice cursorDevice = this.model.getCursorDevice ();
-        return cursorDevice == null ? null : cursorDevice.getLayerOrDrumPadBank ();
     }
 }

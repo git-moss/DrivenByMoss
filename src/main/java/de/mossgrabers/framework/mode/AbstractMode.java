@@ -6,12 +6,17 @@ package de.mossgrabers.framework.mode;
 
 import de.mossgrabers.framework.configuration.Configuration;
 import de.mossgrabers.framework.controller.ButtonID;
+import de.mossgrabers.framework.controller.ContinuousID;
 import de.mossgrabers.framework.controller.IControlSurface;
 import de.mossgrabers.framework.controller.color.ColorManager;
+import de.mossgrabers.framework.controller.hardware.IHwContinuousControl;
 import de.mossgrabers.framework.daw.IBank;
 import de.mossgrabers.framework.daw.IModel;
 import de.mossgrabers.framework.daw.data.IItem;
+import de.mossgrabers.framework.daw.data.IParameter;
 import de.mossgrabers.framework.utils.ButtonEvent;
+
+import java.util.Arrays;
 
 
 /**
@@ -25,22 +30,28 @@ import de.mossgrabers.framework.utils.ButtonEvent;
 public abstract class AbstractMode<S extends IControlSurface<C>, C extends Configuration> implements Mode
 {
     /** Color identifier for a mode button which is off. */
-    public static final String   BUTTON_COLOR_OFF = "BUTTON_COLOR_OFF";
+    public static final String       BUTTON_COLOR_OFF = "BUTTON_COLOR_OFF";
     /** Color identifier for a mode button which is on. */
-    public static final String   BUTTON_COLOR_ON  = "BUTTON_COLOR_ON";
+    public static final String       BUTTON_COLOR_ON  = "BUTTON_COLOR_ON";
     /** Color identifier for a mode button which is hilighted. */
-    public static final String   BUTTON_COLOR_HI  = "BUTTON_COLOR_HI";
+    public static final String       BUTTON_COLOR_HI  = "BUTTON_COLOR_HI";
     /** Color identifier for a mode button which is on (second row). */
-    public static final String   BUTTON_COLOR2_ON = "BUTTON_COLOR2_ON";
+    public static final String       BUTTON_COLOR2_ON = "BUTTON_COLOR2_ON";
     /** Color identifier for a mode button which is hilighted (second row). */
-    public static final String   BUTTON_COLOR2_HI = "BUTTON_COLOR2_HI";
+    public static final String       BUTTON_COLOR2_HI = "BUTTON_COLOR2_HI";
 
-    private final String         name;
-    protected final S            surface;
-    protected final IModel       model;
-    protected final ColorManager colorManager;
-    protected boolean            isTemporary;
-    protected boolean            isAbsolute;
+    private final String             name;
+    protected final S                surface;
+    protected final IModel           model;
+    protected final ColorManager     colorManager;
+    protected final ContinuousID     firstKnob;
+    protected final int              numberOfKnobs;
+    protected final boolean []       isKnobTouched;
+
+    protected IBank<? extends IItem> bank;
+    protected boolean                isTemporary;
+    protected boolean                isAbsolute;
+    private boolean                  isActive;
 
 
     /**
@@ -62,18 +73,43 @@ public abstract class AbstractMode<S extends IControlSurface<C>, C extends Confi
      * @param name The name of the mode
      * @param surface The control surface
      * @param model The model
-     * @param isAbsolute If true the value change is happending with a setter otherwise relative
-     *            change method is used
+     * @param isAbsolute If true the value change is using a setter otherwise relative change method
+     *            is used
      */
     public AbstractMode (final String name, final S surface, final IModel model, final boolean isAbsolute)
+    {
+        this (name, surface, model, isAbsolute, null, null, 0);
+    }
+
+
+    /**
+     * Constructor.
+     *
+     * @param name The name of the mode
+     * @param surface The control surface
+     * @param model The model
+     * @param isAbsolute If true the value change is happending with a setter otherwise relative
+     *            change method is used
+     * @param bank The parameter bank to control with this mode, might be null
+     * @param firstKnob The ID of the first knob to control this mode, all other knobs must be
+     *            follow up IDs
+     * @param numberOfKnobs The number of knobs available to control this mode
+     */
+    public AbstractMode (final String name, final S surface, final IModel model, final boolean isAbsolute, final IBank<? extends IItem> bank, final ContinuousID firstKnob, final int numberOfKnobs)
     {
         this.name = name;
         this.surface = surface;
         this.model = model;
         this.colorManager = this.model.getColorManager ();
         this.isAbsolute = isAbsolute;
+        this.bank = bank;
+        this.firstKnob = firstKnob;
+        this.numberOfKnobs = numberOfKnobs;
 
         this.isTemporary = true;
+
+        this.isKnobTouched = new boolean [this.numberOfKnobs];
+        Arrays.fill (this.isKnobTouched, false);
     }
 
 
@@ -87,9 +123,18 @@ public abstract class AbstractMode<S extends IControlSurface<C>, C extends Confi
 
     /** {@inheritDoc} */
     @Override
+    public boolean isTemporary ()
+    {
+        return this.isTemporary;
+    }
+
+
+    /** {@inheritDoc} */
+    @Override
     public void onActivate ()
     {
-        // Intentionally empty
+        this.isActive = true;
+        this.bindKnobs ();
     }
 
 
@@ -97,7 +142,8 @@ public abstract class AbstractMode<S extends IControlSurface<C>, C extends Confi
     @Override
     public void onDeactivate ()
     {
-        // Intentionally empty
+        this.isActive = false;
+        this.unbindKnobs ();
     }
 
 
@@ -146,9 +192,22 @@ public abstract class AbstractMode<S extends IControlSurface<C>, C extends Confi
 
     /** {@inheritDoc} */
     @Override
-    public boolean isTemporary ()
+    public boolean isAnyKnobTouched ()
     {
-        return this.isTemporary;
+        for (final boolean anIsKnobTouched: this.isKnobTouched)
+        {
+            if (anIsKnobTouched)
+                return true;
+        }
+        return false;
+    }
+
+
+    /** {@inheritDoc} */
+    @Override
+    public boolean isKnobTouched (final int index)
+    {
+        return index < this.isKnobTouched.length && this.isKnobTouched[index];
     }
 
 
@@ -184,9 +243,8 @@ public abstract class AbstractMode<S extends IControlSurface<C>, C extends Confi
     @Override
     public void selectItem (final int index)
     {
-        final IBank<? extends IItem> bank = this.getBank ();
-        if (bank != null)
-            bank.getItem (index).select ();
+        if (this.bank != null)
+            this.bank.getItem (index).select ();
     }
 
 
@@ -208,9 +266,10 @@ public abstract class AbstractMode<S extends IControlSurface<C>, C extends Confi
             return;
         }
 
-        final IBank<? extends IItem> bank = this.getBank ();
-        if (bank != null)
-            bank.selectPreviousItem ();
+        if (this.bank == null)
+            return;
+        this.bank.selectPreviousItem ();
+        this.bindKnobs ();
     }
 
 
@@ -224,9 +283,10 @@ public abstract class AbstractMode<S extends IControlSurface<C>, C extends Confi
             return;
         }
 
-        final IBank<? extends IItem> bank = this.getBank ();
-        if (bank != null)
-            bank.selectNextItem ();
+        if (this.bank == null)
+            return;
+        this.bank.selectNextItem ();
+        this.bindKnobs ();
     }
 
 
@@ -234,9 +294,10 @@ public abstract class AbstractMode<S extends IControlSurface<C>, C extends Confi
     @Override
     public void selectPreviousItemPage ()
     {
-        final IBank<? extends IItem> bank = this.getBank ();
-        if (bank != null)
-            bank.selectPreviousPage ();
+        if (this.bank == null)
+            return;
+        this.bank.selectPreviousPage ();
+        this.bindKnobs ();
     }
 
 
@@ -244,9 +305,22 @@ public abstract class AbstractMode<S extends IControlSurface<C>, C extends Confi
     @Override
     public void selectNextItemPage ()
     {
-        final IBank<? extends IItem> bank = this.getBank ();
-        if (bank != null)
-            bank.selectNextPage ();
+        if (this.bank == null)
+            return;
+        this.bank.selectNextPage ();
+        this.bindKnobs ();
+    }
+
+
+    /** {@inheritDoc} */
+    @Override
+    public void selectItemPage (final int page)
+    {
+        if (this.bank == null)
+            return;
+        final int position = page * this.bank.getPageSize ();
+        this.bank.scrollTo (position);
+        this.bindKnobs ();
     }
 
 
@@ -254,8 +328,7 @@ public abstract class AbstractMode<S extends IControlSurface<C>, C extends Confi
     @Override
     public boolean hasPreviousItem ()
     {
-        final IBank<? extends IItem> bank = this.getBank ();
-        return bank != null && bank.canScrollBackwards ();
+        return this.bank != null && this.bank.canScrollBackwards ();
     }
 
 
@@ -263,8 +336,7 @@ public abstract class AbstractMode<S extends IControlSurface<C>, C extends Confi
     @Override
     public boolean hasNextItem ()
     {
-        final IBank<? extends IItem> bank = this.getBank ();
-        return bank != null && bank.canScrollForwards ();
+        return this.bank != null && this.bank.canScrollForwards ();
     }
 
 
@@ -272,8 +344,7 @@ public abstract class AbstractMode<S extends IControlSurface<C>, C extends Confi
     @Override
     public boolean hasPreviousItemPage ()
     {
-        final IBank<? extends IItem> bank = this.getBank ();
-        return bank != null && bank.canScrollPageBackwards ();
+        return this.bank != null && this.bank.canScrollPageBackwards ();
     }
 
 
@@ -281,8 +352,20 @@ public abstract class AbstractMode<S extends IControlSurface<C>, C extends Confi
     @Override
     public boolean hasNextItemPage ()
     {
-        final IBank<? extends IItem> bank = this.getBank ();
-        return bank != null && bank.canScrollPageForwards ();
+        return this.bank != null && this.bank.canScrollPageForwards ();
+    }
+
+
+    /**
+     * Switch the bank object.
+     *
+     * @param bank The new bank to use
+     */
+    protected void switchBanks (final IBank<? extends IItem> bank)
+    {
+        this.bank = bank;
+
+        this.bindKnobs ();
     }
 
 
@@ -291,9 +374,9 @@ public abstract class AbstractMode<S extends IControlSurface<C>, C extends Confi
      *
      * @return The bank or null
      */
-    protected IBank<? extends IItem> getBank ()
+    protected final IBank<? extends IItem> getBank ()
     {
-        return null;
+        return this.bank;
     }
 
 
@@ -320,5 +403,41 @@ public abstract class AbstractMode<S extends IControlSurface<C>, C extends Confi
         if (row == 5 && ordinal >= ButtonID.ROW6_1.ordinal () && ordinal <= ButtonID.ROW6_8.ordinal ())
             return ordinal - ButtonID.ROW6_1.ordinal ();
         return -1;
+    }
+
+
+    /**
+     * Update the binding to the parameter bank controlled by this mode.
+     */
+    protected void bindKnobs ()
+    {
+        if (!this.isActive || this.bank == null || this.firstKnob == null)
+            return;
+
+        for (int i = 0; i < this.numberOfKnobs; i++)
+        {
+            final ContinuousID knobID = ContinuousID.get (this.firstKnob, i);
+            final IItem item = this.bank.getItem (i);
+            if (item instanceof IParameter)
+                this.surface.getContinuous (knobID).bind ((IParameter) item);
+        }
+    }
+
+
+    /**
+     * Set the binding to default handler for the parameter bank controlled by this mode.
+     */
+    private void unbindKnobs ()
+    {
+        if (this.firstKnob == null)
+            return;
+
+        for (int i = 0; i < this.numberOfKnobs; i++)
+        {
+            final ContinuousID knobID = ContinuousID.get (this.firstKnob, i);
+            final IHwContinuousControl continuous = this.surface.getContinuous (knobID);
+            if (continuous != null)
+                continuous.bind ((IParameter) null);
+        }
     }
 }

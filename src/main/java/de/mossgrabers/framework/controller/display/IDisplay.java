@@ -20,6 +20,12 @@ public interface IDisplay
 
 
     /**
+     * Cancels the display of a notification message.
+     */
+    void cancelNotification ();
+
+
+    /**
      * If there is any cleanup necessary.
      */
     void shutdown ();

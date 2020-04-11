@@ -5,6 +5,7 @@
 package de.mossgrabers.framework.daw;
 
 import de.mossgrabers.framework.daw.data.IDevice;
+import de.mossgrabers.framework.observer.IValueObserver;
 
 
 /**
@@ -104,6 +105,14 @@ public interface ICursorDevice extends IDevice
      * @return True if the device has drum pads
      */
     boolean hasDrumPads ();
+
+
+    /**
+     * Add an observer for changes of drum pads support.
+     *
+     * @param observer True if it the selected device provides support
+     */
+    void addHasDrumPadsObserver (IValueObserver<Boolean> observer);
 
 
     /**

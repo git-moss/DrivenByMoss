@@ -29,7 +29,9 @@ public abstract class AbstractTrackMode extends BaseMode
      */
     public AbstractTrackMode (final String name, final MCUControlSurface surface, final IModel model)
     {
-        super (name, surface, model);
+        super (name, surface, model, model.getCurrentTrackBank ());
+
+        model.addTrackBankObserver (this::switchBanks);
     }
 
 
@@ -49,13 +51,5 @@ public abstract class AbstractTrackMode extends BaseMode
         d.done (0);
 
         return true;
-    }
-
-
-    /** {@inheritDoc} */
-    @Override
-    protected ITrackBank getBank ()
-    {
-        return this.model.getCurrentTrackBank ();
     }
 }

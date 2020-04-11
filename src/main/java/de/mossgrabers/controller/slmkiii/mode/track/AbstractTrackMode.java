@@ -67,8 +67,11 @@ public abstract class AbstractTrackMode extends BaseMode
      */
     public AbstractTrackMode (final String name, final SLMkIIIControlSurface surface, final IModel model)
     {
-        super (name, surface, model);
+        super (name, surface, model, false, model.getCurrentTrackBank ());
+        
         this.isTemporary = false;
+
+        model.addTrackBankObserver (this::switchBanks);
 
         for (int i = 0; i < 8; i++)
             this.menu.add (new Pair<> (" ", Boolean.FALSE));
@@ -317,14 +320,6 @@ public abstract class AbstractTrackMode extends BaseMode
         d.setCell (3, 7, "Add FX");
         d.setPropertyColor (7, 2, SLMkIIIColorManager.SLMKIII_RED);
         d.setPropertyValue (7, 1, 0);
-    }
-
-
-    /** {@inheritDoc} */
-    @Override
-    protected ITrackBank getBank ()
-    {
-        return this.model.getCurrentTrackBank ();
     }
 
 

@@ -43,7 +43,7 @@ public class MixerMode extends VolumeMode<KontrolProtocolControlSurface, Kontrol
         // Note: Since we need multiple value (more than 8), index is the MIDI CC of the knob
 
         final IValueChanger valueChanger = this.model.getValueChanger ();
-        final ITrackBank bank = this.getBank ();
+        final ITrackBank bank = (ITrackBank) this.getBank ();
 
         if (index >= KontrolProtocolControlSurface.KONTROL_TRACK_VOLUME && index < KontrolProtocolControlSurface.KONTROL_TRACK_VOLUME + 8)
         {
@@ -89,7 +89,7 @@ public class MixerMode extends VolumeMode<KontrolProtocolControlSurface, Kontrol
     public void updateDisplay ()
     {
         final IValueChanger valueChanger = this.model.getValueChanger ();
-        final ITrackBank bank = this.getBank ();
+        final ITrackBank bank = (ITrackBank) this.getBank ();
 
         final int [] vuData = new int [16];
         for (int i = 0; i < 8; i++)

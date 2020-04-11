@@ -37,7 +37,7 @@ public class BrowserMode extends BaseMode
      */
     public BrowserMode (final APCControlSurface surface, final IModel model)
     {
-        super ("Browser", surface, model, APCControlSurface.LED_MODE_PAN, 64);
+        super ("Browser", surface, model, APCControlSurface.LED_MODE_PAN, 64, null);
     }
 
 

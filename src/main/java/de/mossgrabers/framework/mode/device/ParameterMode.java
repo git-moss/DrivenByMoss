@@ -9,7 +9,6 @@ import de.mossgrabers.framework.controller.ButtonID;
 import de.mossgrabers.framework.controller.IControlSurface;
 import de.mossgrabers.framework.daw.ICursorDevice;
 import de.mossgrabers.framework.daw.IModel;
-import de.mossgrabers.framework.daw.IParameterBank;
 import de.mossgrabers.framework.daw.IParameterPageBank;
 import de.mossgrabers.framework.daw.data.IParameter;
 import de.mossgrabers.framework.mode.AbstractMode;
@@ -39,7 +38,7 @@ public class ParameterMode<S extends IControlSurface<C>, C extends Configuration
      */
     public ParameterMode (final S surface, final IModel model, final boolean isAbsolute)
     {
-        super ("Parameters", surface, model, isAbsolute);
+        super ("Parameters", surface, model, isAbsolute, model.getCursorDevice ().getParameterBank (), null, 8);
 
         this.isTemporary = false;
         this.cursorDevice = this.model.getCursorDevice ();
@@ -146,13 +145,5 @@ public class ParameterMode<S extends IControlSurface<C>, C extends Configuration
     public void selectItem (final int index)
     {
         this.cursorDevice.getParameterBank ().selectItemAtPosition (index);
-    }
-
-
-    /** {@inheritDoc} */
-    @Override
-    protected IParameterBank getBank ()
-    {
-        return this.cursorDevice.getParameterBank ();
     }
 }

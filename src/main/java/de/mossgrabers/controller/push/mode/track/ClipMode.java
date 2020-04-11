@@ -31,7 +31,10 @@ import de.mossgrabers.framework.view.Views;
  */
 public class ClipMode extends AbstractTrackMode
 {
-    private boolean displayMidiNotes = false;
+    private static final String PLEASE_SELECT_A_CLIP_PUSH1 = "      Pleaseselect a clip.";
+    private static final String PLEASE_SELECT_A_CLIP_PUSH2 = "Please select a clip.";
+
+    private boolean             displayMidiNotes           = false;
 
 
     /**
@@ -110,7 +113,7 @@ public class ClipMode extends AbstractTrackMode
         final IClip clip = this.model.getClip ();
         if (!clip.doesExist ())
         {
-            display.notify ("Please select a clip.");
+            display.notify (PLEASE_SELECT_A_CLIP_PUSH1);
             return;
         }
 
@@ -140,7 +143,7 @@ public class ClipMode extends AbstractTrackMode
             if (!clip.doesExist ())
             {
                 display.addEmptyElement ();
-                display.notify ("Please select a clip.");
+                display.notify (PLEASE_SELECT_A_CLIP_PUSH2);
                 return;
             }
 
@@ -152,7 +155,7 @@ public class ClipMode extends AbstractTrackMode
         if (!clip.doesExist ())
         {
             display.addEmptyElement ();
-            display.notify ("Please select a clip.");
+            display.notify (PLEASE_SELECT_A_CLIP_PUSH2);
             return;
         }
 

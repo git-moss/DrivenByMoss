@@ -61,6 +61,8 @@ public class NoteRepeatMode extends BaseMode
     @Override
     public void onActivate ()
     {
+        super.onActivate ();
+
         this.model.getGroove ().enableObservers (true);
     }
 
@@ -69,6 +71,8 @@ public class NoteRepeatMode extends BaseMode
     @Override
     public void onDeactivate ()
     {
+        super.onDeactivate ();
+
         this.model.getGroove ().enableObservers (false);
     }
 

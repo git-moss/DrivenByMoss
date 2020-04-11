@@ -31,7 +31,9 @@ public class TrackMode extends AbstractKontrol1Mode
      */
     public TrackMode (final Kontrol1ControlSurface surface, final IModel model)
     {
-        super ("Track", surface, model);
+        super ("Track", surface, model, model.getCurrentTrackBank ());
+
+        model.addTrackBankObserver (this::switchBanks);
     }
 
 
@@ -95,13 +97,5 @@ public class TrackMode extends AbstractKontrol1Mode
                 selectedTrack.getSendBank ().getItem (index - 2).changeValue (value);
                 break;
         }
-    }
-
-
-    /** {@inheritDoc} */
-    @Override
-    protected ITrackBank getBank ()
-    {
-        return this.model.getCurrentTrackBank ();
     }
 }

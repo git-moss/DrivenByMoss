@@ -246,6 +246,17 @@ public abstract class AbstractTextDisplay implements ITextDisplay
     }
 
 
+    /** {@inheritDoc} */
+    @Override
+    public void cancelNotification ()
+    {
+        synchronized (this.notificationLock)
+        {
+            this.isNotificationActive = 0;
+        }
+    }
+
+
     protected void notifyOnDisplay (final String message)
     {
         final int padLength = (this.noOfCharacters - message.length ()) / 2 + 1;

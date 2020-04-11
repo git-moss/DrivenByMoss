@@ -16,6 +16,7 @@ import de.mossgrabers.controller.apc.controller.APCControlSurface;
 import de.mossgrabers.controller.apc.mode.BrowserMode;
 import de.mossgrabers.controller.apc.mode.PanMode;
 import de.mossgrabers.controller.apc.mode.SendMode;
+import de.mossgrabers.controller.apc.mode.UserMode;
 import de.mossgrabers.controller.apc.view.DrumView;
 import de.mossgrabers.controller.apc.view.PlayView;
 import de.mossgrabers.controller.apc.view.RaindropsView;
@@ -43,6 +44,7 @@ import de.mossgrabers.framework.command.trigger.device.SelectNextDeviceOrParamPa
 import de.mossgrabers.framework.command.trigger.device.SelectPreviousDeviceOrParamPageCommand;
 import de.mossgrabers.framework.command.trigger.mode.CursorCommand;
 import de.mossgrabers.framework.command.trigger.mode.ModeCursorCommand.Direction;
+import de.mossgrabers.framework.command.trigger.mode.ModeMultiSelectCommand;
 import de.mossgrabers.framework.command.trigger.mode.ModeSelectCommand;
 import de.mossgrabers.framework.command.trigger.track.CrossfadeModeCommand;
 import de.mossgrabers.framework.command.trigger.track.MasterCommand;
@@ -105,6 +107,7 @@ public class APCControllerSetup extends AbstractControllerSetup<APCControlSurfac
     public APCControllerSetup (final IHost host, final ISetupFactory factory, final ISettingsUI globalSettings, final ISettingsUI documentSettings, final boolean isMkII)
     {
         super (factory, host, globalSettings, documentSettings);
+
         this.isMkII = isMkII;
         this.colorManager = new APCColorManager (isMkII);
         this.valueChanger = new DefaultValueChanger (128, 1, 0.5);
@@ -170,6 +173,7 @@ public class APCControllerSetup extends AbstractControllerSetup<APCControlSurfac
         modeManager.registerMode (Modes.PAN, new PanMode (surface, this.model));
         for (int i = 0; i < 8; i++)
             modeManager.registerMode (Modes.get (Modes.SEND1, i), new SendMode (surface, this.model, i));
+        modeManager.registerMode (Modes.USER, new UserMode (surface, this.model));
         modeManager.registerMode (Modes.BROWSER, new BrowserMode (surface, this.model));
     }
 
@@ -207,10 +211,18 @@ public class APCControllerSetup extends AbstractControllerSetup<APCControlSurfac
         // Note: the stop-all-clips button has no LED
         this.addButton (ButtonID.STOP_ALL_CLIPS, "STOP CLIPS", new StopAllClipsOrBrowseCommand (this.model, surface), APCControlSurface.APC_BUTTON_STOP_ALL_CLIPS, () -> surface.isPressed (ButtonID.STOP_ALL_CLIPS) ? 1 : 0, ColorManager.BUTTON_STATE_OFF, ColorManager.BUTTON_STATE_ON);
         this.addButton (ButtonID.PAN_SEND, "PAN", new ModeSelectCommand<> (this.model, surface, Modes.PAN), APCControlSurface.APC_BUTTON_PAN, () -> modeManager.isActiveOrTempMode (Modes.PAN), ColorManager.BUTTON_STATE_OFF, ColorManager.BUTTON_STATE_ON);
-        this.addButton (ButtonID.SEND1, "Send A", new SendModeCommand (0, this.model, surface), APCControlSurface.APC_BUTTON_SEND_A, () -> surface.isMkII () ? modeManager.isActiveOrTempMode (Modes.SEND1, Modes.SEND3, Modes.SEND5, Modes.SEND7) : modeManager.isActiveOrTempMode (Modes.SEND1, Modes.SEND4, Modes.SEND7), ColorManager.BUTTON_STATE_OFF, ColorManager.BUTTON_STATE_ON);
-        this.addButton (ButtonID.SEND2, "Send B", new SendModeCommand (1, this.model, surface), APCControlSurface.APC_BUTTON_SEND_B, () -> surface.isMkII () ? modeManager.isActiveOrTempMode (Modes.SEND2, Modes.SEND4, Modes.SEND6, Modes.SEND8) : modeManager.isActiveOrTempMode (Modes.SEND2, Modes.SEND5, Modes.SEND8), ColorManager.BUTTON_STATE_OFF, ColorManager.BUTTON_STATE_ON);
-        if (!this.isMkII)
+
+        if (this.isMkII)
+        {
+            this.addButton (ButtonID.SEND1, "SENDS", new ModeMultiSelectCommand<> (this.model, surface, Modes.SEND1, Modes.SEND2, Modes.SEND3, Modes.SEND4, Modes.SEND5, Modes.SEND6, Modes.SEND7, Modes.SEND8), APCControlSurface.APC_BUTTON_SEND_A, () -> Modes.isSendMode (modeManager.getActiveOrTempModeId ()), ColorManager.BUTTON_STATE_OFF, ColorManager.BUTTON_STATE_ON);
+            this.addButton (ButtonID.SEND2, "USER", new ModeSelectCommand<> (this.model, surface, Modes.USER), APCControlSurface.APC_BUTTON_SEND_B, () -> modeManager.isActiveOrTempMode (Modes.USER), ColorManager.BUTTON_STATE_OFF, ColorManager.BUTTON_STATE_ON);
+        }
+        else
+        {
+            this.addButton (ButtonID.SEND1, "Send A", new SendModeCommand (0, this.model, surface), APCControlSurface.APC_BUTTON_SEND_A, () -> modeManager.isActiveOrTempMode (Modes.SEND1, Modes.SEND4, Modes.SEND7), ColorManager.BUTTON_STATE_OFF, ColorManager.BUTTON_STATE_ON);
+            this.addButton (ButtonID.SEND2, "Send B", new SendModeCommand (1, this.model, surface), APCControlSurface.APC_BUTTON_SEND_B, () -> modeManager.isActiveOrTempMode (Modes.SEND2, Modes.SEND5, Modes.SEND8), ColorManager.BUTTON_STATE_OFF, ColorManager.BUTTON_STATE_ON);
             this.addButton (ButtonID.SEND3, "SEND C", new SendModeCommand (2, this.model, surface), APCControlSurface.APC_BUTTON_SEND_C, () -> modeManager.isActiveOrTempMode (Modes.SEND3, Modes.SEND6), ColorManager.BUTTON_STATE_OFF, ColorManager.BUTTON_STATE_ON);
+        }
 
         for (int i = 0; i < 8; i++)
         {

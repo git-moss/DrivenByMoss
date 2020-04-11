@@ -36,7 +36,7 @@ public class ParamsMode extends AbstractKontrol1Mode
      */
     public ParamsMode (final Kontrol1ControlSurface surface, final IModel model)
     {
-        super ("Parameters", surface, model);
+        super ("Parameters", surface, model, model.getCursorDevice ().getParameterBank ());
     }
 
 
@@ -173,14 +173,5 @@ public class ParamsMode extends AbstractKontrol1Mode
                 return displayedValue.toUpperCase ();
         }
         return displayedValue;
-    }
-
-
-    /** {@inheritDoc} */
-    @Override
-    protected IParameterBank getBank ()
-    {
-        final ICursorDevice cursorDevice = this.model.getCursorDevice ();
-        return cursorDevice == null ? null : cursorDevice.getParameterBank ();
     }
 }
