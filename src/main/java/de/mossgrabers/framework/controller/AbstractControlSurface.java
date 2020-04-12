@@ -160,22 +160,7 @@ public abstract class AbstractControlSurface<C extends Configuration> implements
         if (this.input != null)
             this.input.setMidiCallback (this::handleMidi);
 
-        // Grid notes
-        if (this.pads != null)
-        {
-            final int size = this.pads.getRows () * this.pads.getCols ();
-            for (int i = 0; i < size; i++)
-            {
-                final int note = this.pads.getStartNote () + i;
-
-                final ButtonID buttonID = ButtonID.get (ButtonID.PAD1, i);
-                final IHwButton pad = this.createButton (buttonID, "P " + (i + 1));
-                pad.addLight (this.surfaceFactory.createLight (this.surfaceID, null, () -> this.pads.getLightInfo (note).getEncoded (), state -> this.pads.sendState (note), colorIndex -> this.colorManager.getColor (colorIndex, buttonID), pad));
-                final int [] translated = this.pads.translateToController (note);
-                pad.bind (input, BindType.NOTE, translated[0], translated[1]);
-                pad.bind ( (event, velocity) -> this.handleGridNote (event, note, velocity));
-            }
-        }
+        this.createPads ();
 
         // Light guide
         if (this.lightGuide != null)
@@ -187,6 +172,55 @@ public abstract class AbstractControlSurface<C extends Configuration> implements
                 this.createLight (OutputID.get (OutputID.LIGHT_GUIDE1, i), () -> this.lightGuide.getLightInfo (note).getEncoded (), state -> this.lightGuide.sendState (note), colorIndex -> this.colorManager.getColor (colorIndex, null), null);
             }
         }
+    }
+
+
+    /**
+     * Create all pads for the grid and bind them to the MIDI input.
+     */
+    private void createPads ()
+    {
+        if (this.pads == null)
+            return;
+
+        final int size = this.pads.getRows () * this.pads.getCols ();
+        for (int i = 0; i < size; i++)
+        {
+            final int note = this.pads.getStartNote () + i;
+
+            final ButtonID buttonID = ButtonID.get (ButtonID.PAD1, i);
+            final IHwButton pad = this.createButton (buttonID, "P " + (i + 1));
+            pad.addLight (this.surfaceFactory.createLight (this.surfaceID, null, () -> this.pads.getLightInfo (note).getEncoded (), state -> this.pads.sendState (note), colorIndex -> this.colorManager.getColor (colorIndex, buttonID), pad));
+            final int [] translated = this.pads.translateToController (note);
+            pad.bind (this.input, BindType.NOTE, translated[0], translated[1]);
+            pad.bind ( (event, velocity) -> this.handleGridNote (event, note, velocity));
+        }
+    }
+
+
+    /** {@inheritDoc} */
+    @Override
+    public void rebindGrid ()
+    {
+        final int size = this.pads.getRows () * this.pads.getCols ();
+        for (int i = 0; i < size; i++)
+        {
+            final int note = this.pads.getStartNote () + i;
+
+            final IHwButton pad = this.getButton (ButtonID.get (ButtonID.PAD1, i));
+            final int [] translated = this.pads.translateToController (note);
+            pad.bind (this.input, BindType.NOTE, translated[0], translated[1]);
+        }
+    }
+
+
+    /** {@inheritDoc} */
+    @Override
+    public void unbindGrid ()
+    {
+        final int size = this.pads.getRows () * this.pads.getCols ();
+        for (int i = 0; i < size; i++)
+            this.getButton (ButtonID.get (ButtonID.PAD1, i)).unbind (this.input);
     }
 
 

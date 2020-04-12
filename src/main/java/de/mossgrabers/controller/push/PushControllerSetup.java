@@ -64,7 +64,7 @@ import de.mossgrabers.controller.push.mode.device.DeviceLayerModePan;
 import de.mossgrabers.controller.push.mode.device.DeviceLayerModeSend;
 import de.mossgrabers.controller.push.mode.device.DeviceLayerModeVolume;
 import de.mossgrabers.controller.push.mode.device.DeviceParamsMode;
-import de.mossgrabers.controller.push.mode.device.UserParamsMode;
+import de.mossgrabers.controller.push.mode.device.UserMode;
 import de.mossgrabers.controller.push.mode.track.ClipMode;
 import de.mossgrabers.controller.push.mode.track.CrossfaderMode;
 import de.mossgrabers.controller.push.mode.track.LayerDetailsMode;
@@ -308,7 +308,7 @@ public class PushControllerSetup extends AbstractControllerSetup<PushControlSurf
         modeManager.registerMode (Modes.MARKERS, new MarkersMode (surface, this.model));
 
         if (this.host.hasUserParameters ())
-            modeManager.registerMode (Modes.USER, new UserParamsMode (surface, this.model));
+            modeManager.registerMode (Modes.USER, new UserMode (surface, this.model));
 
         if (this.isPush2)
         {

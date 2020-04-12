@@ -353,8 +353,8 @@ public class ShiftView extends AbstractView<LaunchpadControlSurface, LaunchpadCo
         this.surface.getButton (commandID).getCommand ().execute (ButtonEvent.DOWN, 127);
         final ModeManager modeManager = this.surface.getModeManager ();
         final Modes activeOrTempModeId = modeManager.getActiveOrTempModeId ();
-        if (activeOrTempModeId != null && activeOrTempModeId.equals (modeManager.getPreviousModeId ()))
-            modeManager.setActiveMode (null);
+        if (activeOrTempModeId != Modes.DUMMY && activeOrTempModeId.equals (modeManager.getPreviousModeId ()))
+            modeManager.setActiveMode (Modes.DUMMY);
         return true;
     }
 

@@ -67,8 +67,8 @@ public abstract class AbstractTrackMode extends BaseMode
      */
     public AbstractTrackMode (final String name, final SLMkIIIControlSurface surface, final IModel model)
     {
-        super (name, surface, model, false, model.getCurrentTrackBank ());
-        
+        super (name, surface, model, model.getCurrentTrackBank ());
+
         this.isTemporary = false;
 
         model.addTrackBankObserver (this::switchBanks);
@@ -82,47 +82,17 @@ public abstract class AbstractTrackMode extends BaseMode
     @Override
     public void onButton (final int row, final int index, final ButtonEvent event)
     {
-        if (row != 0)
+        if (event != ButtonEvent.UP || row != 0)
             return;
 
-        if (event != ButtonEvent.UP)
-            return;
-
-        final ITrackBank tb = this.model.getCurrentTrackBank ();
-        final ITrack selectedTrack = tb.getSelectedItem ();
-
+        // Combination with Shift
         if (this.surface.isShiftPressed ())
         {
-            switch (index)
-            {
-                case 0:
-                    if (selectedTrack != null)
-                        selectedTrack.toggleIsActivated ();
-                    break;
-                case 1:
-                    if (selectedTrack != null)
-                        this.model.toggleCursorTrackPinned ();
-                    break;
-                case 2:
-                    if (selectedTrack != null)
-                        this.surface.getViewManager ().setActiveView (Views.COLOR);
-                    break;
-                case 5:
-                    this.model.getApplication ().addInstrumentTrack ();
-                    break;
-                case 6:
-                    this.model.getApplication ().addAudioTrack ();
-                    break;
-                case 7:
-                    this.model.getApplication ().addEffectTrack ();
-                    break;
-                default:
-                    // Not used
-                    break;
-            }
+            onButtonShifted (index);
             return;
         }
 
+        // Combination with Arrow Down
         if (this.surface.isLongPressed (ButtonID.ARROW_DOWN))
         {
             this.surface.getModeManager ().setActiveMode (MODES[index]);
@@ -130,8 +100,10 @@ public abstract class AbstractTrackMode extends BaseMode
             return;
         }
 
+        final ITrackBank tb = this.model.getCurrentTrackBank ();
         final ITrack track = tb.getItem (index);
 
+        // Combination with Duplicate
         if (this.surface.isPressed (ButtonID.DUPLICATE))
         {
             this.surface.setTriggerConsumed (ButtonID.DUPLICATE);
@@ -139,6 +111,7 @@ public abstract class AbstractTrackMode extends BaseMode
             return;
         }
 
+        // Combination with Delete
         if (this.surface.isPressed (ButtonID.DELETE))
         {
             this.surface.setTriggerConsumed (ButtonID.DELETE);
@@ -146,11 +119,50 @@ public abstract class AbstractTrackMode extends BaseMode
             return;
         }
 
+        // Normal behaviour
         final ITrack selTrack = tb.getSelectedItem ();
         if (selTrack != null && selTrack.getIndex () == index)
             this.surface.getButton (ButtonID.ARROW_UP).getCommand ().execute (ButtonEvent.DOWN, 127);
         else
             track.select ();
+    }
+
+
+    /**
+     * Handle button presses in combination with Shift.
+     *
+     * @param index The index of the button
+     */
+    private void onButtonShifted (final int index)
+    {
+        final ITrack selectedTrack = this.model.getCurrentTrackBank ().getSelectedItem ();
+        switch (index)
+        {
+            case 0:
+                if (selectedTrack != null)
+                    selectedTrack.toggleIsActivated ();
+                break;
+            case 1:
+                if (selectedTrack != null)
+                    this.model.toggleCursorTrackPinned ();
+                break;
+            case 2:
+                if (selectedTrack != null)
+                    this.surface.getViewManager ().setActiveView (Views.COLOR);
+                break;
+            case 5:
+                this.model.getApplication ().addInstrumentTrack ();
+                break;
+            case 6:
+                this.model.getApplication ().addAudioTrack ();
+                break;
+            case 7:
+                this.model.getApplication ().addEffectTrack ();
+                break;
+            default:
+                // Not used
+                break;
+        }
     }
 
 

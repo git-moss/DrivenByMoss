@@ -40,9 +40,9 @@ public class PanMode extends BaseMode
 
     /** {@inheritDoc} */
     @Override
-    public Integer getValue (final int index)
+    public int getKnobValue (final int index)
     {
         final ITrack track = this.model.getCurrentTrackBank ().getItem (index);
-        return track.doesExist () ? Integer.valueOf (track.getPan ()) : null;
+        return track.doesExist () ? track.getPan () : -1;
     }
 }

@@ -15,7 +15,9 @@ import de.mossgrabers.framework.daw.IHost;
 import de.mossgrabers.framework.daw.midi.DeviceInquiry;
 import de.mossgrabers.framework.daw.midi.IMidiInput;
 import de.mossgrabers.framework.daw.midi.IMidiOutput;
+import de.mossgrabers.framework.utils.ButtonEvent;
 import de.mossgrabers.framework.utils.StringUtils;
+import de.mossgrabers.framework.view.Views;
 
 import java.util.Map.Entry;
 
@@ -76,7 +78,7 @@ public class LaunchpadControlSurface extends AbstractControlSurface<LaunchpadCon
      */
     public LaunchpadControlSurface (final IHost host, final ColorManager colorManager, final LaunchpadConfiguration configuration, final IMidiOutput output, final IMidiInput input, final ILaunchpadControllerDefinition definition)
     {
-        super (host, configuration, colorManager, output, input, new LaunchpadPadGrid (colorManager, output, definition), 800, 800);
+        super (host, configuration, colorManager, output, input, new LaunchpadPadGrid (colorManager, output, definition), 800, 740);
 
         this.definition = definition;
 
@@ -85,6 +87,27 @@ public class LaunchpadControlSurface extends AbstractControlSurface<LaunchpadCon
 
         this.input.setSysexCallback (this::handleSysEx);
         this.output.sendSysex (DeviceInquiry.createQuery ());
+    }
+
+
+    /** {@inheritDoc} */
+    @Override
+    protected void handleMidi (final int status, final int data1, final int data2)
+    {
+        // Workaround for user parameter mappings
+        if (this.getViewManager ().isActiveView (Views.USER))
+        {
+            final int code = status & 0xF0;
+            // Note off
+            if (code == 0x80 || code == 0x90)
+            {
+                final int translated = this.pads.translateToGrid (data1);
+                this.handleGridNote (code == 0x80 || data2 == 0 ? ButtonEvent.UP : ButtonEvent.DOWN, translated, data2);
+                return;
+            }
+        }
+
+        super.handleMidi (status, data1, data2);
     }
 
 

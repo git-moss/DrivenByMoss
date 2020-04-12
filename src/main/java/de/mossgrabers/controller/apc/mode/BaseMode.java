@@ -62,18 +62,6 @@ public abstract class BaseMode extends AbstractMode<APCControlSurface, APCConfig
     public abstract void setValue (final int index, final int value);
 
 
-    /**
-     * Get a value.
-     *
-     * @param index The index of the knob
-     * @return The value
-     */
-    public Integer getValue (final int index)
-    {
-        return null;
-    }
-
-
     /** {@inheritDoc} */
     @Override
     public void onActivate ()
@@ -108,8 +96,8 @@ public abstract class BaseMode extends AbstractMode<APCControlSurface, APCConfig
             return;
         for (int i = 0; i < 8; i++)
         {
-            final Integer value = this.getValue (i);
-            this.surface.setLED (APCControlSurface.APC_KNOB_TRACK_KNOB_1 + i, value == null ? this.defaultValue : value.intValue ());
+            final int value = this.getKnobValue (i);
+            this.surface.setLED (APCControlSurface.APC_KNOB_TRACK_KNOB_1 + i, value < 0 ? this.defaultValue : value);
         }
     }
 

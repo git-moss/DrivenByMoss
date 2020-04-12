@@ -26,7 +26,7 @@ import de.mossgrabers.framework.utils.StringUtils;
  *
  * @author J&uuml;rgen Mo&szlig;graber
  */
-public class UserParamsMode extends BaseMode
+public class UserMode extends BaseMode
 {
     /**
      * Constructor.
@@ -34,7 +34,7 @@ public class UserParamsMode extends BaseMode
      * @param surface The control surface
      * @param model The model
      */
-    public UserParamsMode (final PushControlSurface surface, final IModel model)
+    public UserMode (final PushControlSurface surface, final IModel model)
     {
         super ("User Controls", surface, model, model.getUserParameterBank ());
 

@@ -4,7 +4,6 @@
 
 package de.mossgrabers.controller.launchpad;
 
-import de.mossgrabers.controller.launchpad.command.continuous.FaderCommand;
 import de.mossgrabers.controller.launchpad.command.trigger.ClickCommand;
 import de.mossgrabers.controller.launchpad.command.trigger.LaunchpadCursorCommand;
 import de.mossgrabers.controller.launchpad.command.trigger.LaunchpadDuplicateCommand;
@@ -59,7 +58,6 @@ import de.mossgrabers.framework.command.trigger.view.ViewMultiSelectCommand;
 import de.mossgrabers.framework.configuration.ISettingsUI;
 import de.mossgrabers.framework.controller.AbstractControllerSetup;
 import de.mossgrabers.framework.controller.ButtonID;
-import de.mossgrabers.framework.controller.ContinuousID;
 import de.mossgrabers.framework.controller.ISetupFactory;
 import de.mossgrabers.framework.controller.OutputID;
 import de.mossgrabers.framework.controller.hardware.BindType;
@@ -77,6 +75,7 @@ import de.mossgrabers.framework.daw.data.ITrack;
 import de.mossgrabers.framework.daw.midi.IMidiAccess;
 import de.mossgrabers.framework.daw.midi.IMidiInput;
 import de.mossgrabers.framework.daw.midi.IMidiOutput;
+import de.mossgrabers.framework.mode.DummyMode;
 import de.mossgrabers.framework.mode.ModeManager;
 import de.mossgrabers.framework.mode.Modes;
 import de.mossgrabers.framework.mode.track.MuteMode;
@@ -190,6 +189,7 @@ public class LaunchpadControllerSetup extends AbstractControllerSetup<LaunchpadC
         modeManager.registerMode (Modes.PAN, new PanMode<> (surface, this.model, true));
         modeManager.registerMode (Modes.SEND, new SendMode (surface, this.model));
         modeManager.registerMode (Modes.STOP_CLIP, new StopClipMode (surface, this.model));
+        modeManager.registerMode (Modes.DUMMY, new DummyMode<> (surface, this.model));
     }
 
 
@@ -422,8 +422,6 @@ public class LaunchpadControllerSetup extends AbstractControllerSetup<LaunchpadC
     protected void registerContinuousCommands ()
     {
         final LaunchpadControlSurface surface = this.getSurface ();
-        for (int i = 0; i < 8; i++)
-            this.addFader (ContinuousID.get (ContinuousID.FADER1, i), "Fader " + (i + 1), new FaderCommand (i, this.model, surface), BindType.CC, LaunchpadControlSurface.LAUNCHPAD_FADER_1 + i);
         final ViewManager viewManager = surface.getViewManager ();
 
         final Views [] views =
@@ -544,15 +542,6 @@ public class LaunchpadControllerSetup extends AbstractControllerSetup<LaunchpadC
         surface.getButton (ButtonID.SCENE6).setBounds (707.0, 450.5, 61.0, 60.0);
         surface.getButton (ButtonID.SCENE7).setBounds (707.0, 596.0, 61.0, 60.0);
         surface.getButton (ButtonID.SCENE8).setBounds (707.0, 522.25, 61.0, 60.0);
-
-        surface.getContinuous (ContinuousID.FADER1).setBounds (113.25, 732.75, 60.0, 57.75);
-        surface.getContinuous (ContinuousID.FADER2).setBounds (188.5, 732.75, 60.0, 57.75);
-        surface.getContinuous (ContinuousID.FADER3).setBounds (262.25, 732.75, 60.0, 57.75);
-        surface.getContinuous (ContinuousID.FADER4).setBounds (335.75, 732.75, 60.0, 57.75);
-        surface.getContinuous (ContinuousID.FADER5).setBounds (410.25, 732.75, 60.0, 57.75);
-        surface.getContinuous (ContinuousID.FADER6).setBounds (483.0, 732.75, 60.0, 57.75);
-        surface.getContinuous (ContinuousID.FADER7).setBounds (559.25, 732.75, 60.0, 57.75);
-        surface.getContinuous (ContinuousID.FADER8).setBounds (632.75, 732.75, 60.0, 57.75);
 
         surface.getLight (OutputID.LED1).setBounds (707.0, 8.5, 61.0, 60.0);
     }

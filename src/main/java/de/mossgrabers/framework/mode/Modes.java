@@ -141,7 +141,9 @@ public enum Modes
     /** Tempo mode. */
     TEMPO,
     /** A user mode. */
-    USER;
+    USER,
+    /** A mode that does nothing. */
+    DUMMY;
 
 
     private static final Set<Modes> TRACK_MODES  = EnumSet.range (Modes.TRACK, Modes.STOP_CLIP);

@@ -69,7 +69,7 @@ public class SessionView extends AbstractSessionView<LaunchpadControlSurface, La
 
         // Block 1st row if mode is active
         final boolean isNotRow1 = note >= 44;
-        if (activeModeId == null || isNotRow1)
+        if (activeModeId == Modes.DUMMY || isNotRow1)
         {
             if (this.isBirdsEyeActive ())
             {
@@ -77,7 +77,7 @@ public class SessionView extends AbstractSessionView<LaunchpadControlSurface, La
                 return;
             }
 
-            final int n = note - (activeModeId != null ? 8 : 0);
+            final int n = note - (activeModeId != Modes.DUMMY ? 8 : 0);
 
             super.onGridNote (n, velocity);
             return;
@@ -93,7 +93,7 @@ public class SessionView extends AbstractSessionView<LaunchpadControlSurface, La
     public void drawGrid ()
     {
         final Modes controlMode = this.surface.getModeManager ().getActiveOrTempModeId ();
-        final boolean controlModeIsOff = controlMode == null;
+        final boolean controlModeIsOff = controlMode == Modes.DUMMY;
         this.rows = controlModeIsOff ? 8 : 7;
         this.columns = 8;
 

@@ -78,6 +78,14 @@ public interface IMidiInput
 
 
     /**
+     * Unbind the button from its MIDI command.
+     *
+     * @param button The button to unbind
+     */
+    void unbind (IHwButton button);
+
+
+    /**
      * Bind a midi command coming from a MIDI input to the button.
      *
      * @param button The button to bind

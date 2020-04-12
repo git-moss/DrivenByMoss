@@ -8,7 +8,6 @@ import de.mossgrabers.controller.slmkiii.SLMkIIIConfiguration;
 import de.mossgrabers.controller.slmkiii.controller.SLMkIIIColorManager;
 import de.mossgrabers.controller.slmkiii.controller.SLMkIIIControlSurface;
 import de.mossgrabers.controller.slmkiii.controller.SLMkIIIDisplay;
-import de.mossgrabers.controller.slmkiii.mode.BaseMode;
 import de.mossgrabers.framework.command.trigger.BrowserCommand;
 import de.mossgrabers.framework.controller.ButtonID;
 import de.mossgrabers.framework.daw.ICursorDevice;
@@ -28,7 +27,7 @@ import de.mossgrabers.framework.utils.StringUtils;
  *
  * @author J&uuml;rgen Mo&szlig;graber
  */
-public class ParametersMode extends BaseMode
+public class ParametersMode extends AbstractParametersMode
 {
     private boolean                                                           showDevices;
 
@@ -43,9 +42,8 @@ public class ParametersMode extends BaseMode
      */
     public ParametersMode (final SLMkIIIControlSurface surface, final IModel model)
     {
-        super ("Parameters", surface, model);
+        super ("Parameters", surface, model, null);
 
-        this.isTemporary = false;
         this.setShowDevices (true);
 
         this.browserCommand = new BrowserCommand<> (Modes.BROWSER, model, surface);
@@ -105,54 +103,25 @@ public class ParametersMode extends BaseMode
         if (event != ButtonEvent.UP)
             return;
 
-        final ICursorDevice cd = this.model.getCursorDevice ();
-
+        // Combination with Shift
         if (this.surface.isShiftPressed ())
         {
-            switch (index)
-            {
-                case 0:
-                    if (cd.doesExist ())
-                        cd.toggleEnabledState ();
-                    break;
-                case 1:
-                    if (cd.doesExist ())
-                        cd.toggleParameterPageSectionVisible ();
-                    break;
-                case 2:
-                    if (cd.doesExist ())
-                        cd.toggleExpanded ();
-                    break;
-                case 3:
-                    if (cd.doesExist ())
-                        cd.toggleWindowOpen ();
-                    break;
-                case 4:
-                    if (cd.doesExist ())
-                        cd.togglePinned ();
-                    break;
-                case 5:
-                    if (cd.doesExist ())
-                        this.browserCommand.startBrowser (true, true);
-                    break;
-                case 6:
-                    if (cd.doesExist ())
-                        this.browserCommand.startBrowser (false, false);
-                    break;
-                case 7:
-                    if (this.model.getSelectedTrack () != null)
-                        this.browserCommand.startBrowser (true, false);
-                    break;
-                default:
-                    // Not used
-                    break;
-            }
+            this.onButtonShifted (index);
             return;
         }
 
+        // Combination with Arrow Up
+        if (this.surface.isLongPressed (ButtonID.ARROW_UP))
+        {
+            this.onButtonArrowUp (index);
+            return;
+        }
+
+        final ICursorDevice cd = this.model.getCursorDevice ();
         if (!cd.doesExist ())
             return;
 
+        // Normal behaviour - parameters
         if (!this.showDevices)
         {
             final IParameterPageBank parameterPageBank = cd.getParameterPageBank ();
@@ -163,6 +132,7 @@ public class ParametersMode extends BaseMode
             return;
         }
 
+        // Combination with Duplicate
         if (this.surface.isPressed (ButtonID.DUPLICATE))
         {
             this.surface.setTriggerConsumed (ButtonID.DUPLICATE);
@@ -170,6 +140,7 @@ public class ParametersMode extends BaseMode
             return;
         }
 
+        // Combination with Delete
         if (this.surface.isPressed (ButtonID.DELETE))
         {
             this.surface.setTriggerConsumed (ButtonID.DELETE);
@@ -177,6 +148,7 @@ public class ParametersMode extends BaseMode
             return;
         }
 
+        // Normal behaviour - devices
         if (cd.getIndex () == index)
             this.setShowDevices (!this.isShowDevices ());
         else
@@ -184,43 +156,72 @@ public class ParametersMode extends BaseMode
     }
 
 
+    /**
+     * Handle button presses in combination with Shift.
+     *
+     * @param index The index of the button
+     */
+    private void onButtonShifted (final int index)
+    {
+        final ICursorDevice cd = this.model.getCursorDevice ();
+        switch (index)
+        {
+            case 0:
+                if (cd.doesExist ())
+                    cd.toggleEnabledState ();
+                break;
+            case 1:
+                if (cd.doesExist ())
+                    cd.toggleParameterPageSectionVisible ();
+                break;
+            case 2:
+                if (cd.doesExist ())
+                    cd.toggleExpanded ();
+                break;
+            case 3:
+                if (cd.doesExist ())
+                    cd.toggleWindowOpen ();
+                break;
+            case 4:
+                if (cd.doesExist ())
+                    cd.togglePinned ();
+                break;
+            case 5:
+                if (cd.doesExist ())
+                    this.browserCommand.startBrowser (true, true);
+                break;
+            case 6:
+                if (cd.doesExist ())
+                    this.browserCommand.startBrowser (false, false);
+                break;
+            case 7:
+                if (this.model.getSelectedTrack () != null)
+                    this.browserCommand.startBrowser (true, false);
+                break;
+            default:
+                // Not used
+                break;
+        }
+    }
+
+
     /** {@inheritDoc} */
     @Override
     public int getButtonColor (final ButtonID buttonID)
     {
-        final ICursorDevice cd = this.model.getCursorDevice ();
+        // Colors in combination with Shift
         if (this.surface.isShiftPressed ())
-        {
-            if (!cd.doesExist ())
-            {
-                if (buttonID == ButtonID.ROW1_8 && this.model.getSelectedTrack () != null)
-                    return SLMkIIIColorManager.SLMKIII_RED_HALF;
-                return SLMkIIIColorManager.SLMKIII_BLACK;
-            }
+            return getButtonColorShifted (buttonID);
 
-            switch (buttonID)
-            {
-                case ROW1_1:
-                    return cd.isEnabled () ? SLMkIIIColorManager.SLMKIII_RED : SLMkIIIColorManager.SLMKIII_RED_HALF;
-                case ROW1_2:
-                    return cd.isParameterPageSectionVisible () ? SLMkIIIColorManager.SLMKIII_RED : SLMkIIIColorManager.SLMKIII_RED_HALF;
-                case ROW1_3:
-                    return cd.isExpanded () ? SLMkIIIColorManager.SLMKIII_RED : SLMkIIIColorManager.SLMKIII_RED_HALF;
-                case ROW1_4:
-                    return cd.isWindowOpen () ? SLMkIIIColorManager.SLMKIII_RED : SLMkIIIColorManager.SLMKIII_RED_HALF;
-                case ROW1_5:
-                    return cd.isPinned () ? SLMkIIIColorManager.SLMKIII_RED : SLMkIIIColorManager.SLMKIII_RED_HALF;
-                case ROW1_6:
-                case ROW1_7:
-                case ROW1_8:
-                default:
-                    return SLMkIIIColorManager.SLMKIII_RED_HALF;
-            }
-        }
+        // Colors in combination with Arrow Up
+        if (this.surface.isLongPressed (ButtonID.ARROW_UP))
+            return this.getButtonColorArrowUp (buttonID);
 
+        final ICursorDevice cd = this.model.getCursorDevice ();
         if (!cd.doesExist ())
             return 0;
 
+        // Colors normal behaviour
         final int index = buttonID.ordinal () - ButtonID.ROW1_1.ordinal ();
         if (this.showDevices)
         {
@@ -236,6 +237,43 @@ public class ParametersMode extends BaseMode
         if (bank.getItem (index).isEmpty ())
             return SLMkIIIColorManager.SLMKIII_BLACK;
         return index == selectedItemIndex ? SLMkIIIColorManager.SLMKIII_PURPLE : SLMkIIIColorManager.SLMKIII_PURPLE_HALF;
+    }
+
+
+    /**
+     * Get the button color if Shift is pressed.
+     * 
+     * @param buttonID The button ID
+     * @return The button color
+     */
+    private int getButtonColorShifted (final ButtonID buttonID)
+    {
+        final ICursorDevice cd = this.model.getCursorDevice ();
+        if (!cd.doesExist ())
+        {
+            if (buttonID == ButtonID.ROW1_8 && this.model.getSelectedTrack () != null)
+                return SLMkIIIColorManager.SLMKIII_RED_HALF;
+            return SLMkIIIColorManager.SLMKIII_BLACK;
+        }
+
+        switch (buttonID)
+        {
+            case ROW1_1:
+                return cd.isEnabled () ? SLMkIIIColorManager.SLMKIII_RED : SLMkIIIColorManager.SLMKIII_RED_HALF;
+            case ROW1_2:
+                return cd.isParameterPageSectionVisible () ? SLMkIIIColorManager.SLMKIII_RED : SLMkIIIColorManager.SLMKIII_RED_HALF;
+            case ROW1_3:
+                return cd.isExpanded () ? SLMkIIIColorManager.SLMKIII_RED : SLMkIIIColorManager.SLMKIII_RED_HALF;
+            case ROW1_4:
+                return cd.isWindowOpen () ? SLMkIIIColorManager.SLMKIII_RED : SLMkIIIColorManager.SLMKIII_RED_HALF;
+            case ROW1_5:
+                return cd.isPinned () ? SLMkIIIColorManager.SLMKIII_RED : SLMkIIIColorManager.SLMKIII_RED_HALF;
+            case ROW1_6:
+            case ROW1_7:
+            case ROW1_8:
+            default:
+                return SLMkIIIColorManager.SLMKIII_RED_HALF;
+        }
     }
 
 
@@ -289,6 +327,12 @@ public class ParametersMode extends BaseMode
         if (this.surface.isShiftPressed ())
         {
             this.drawRow4Shifted (d, cd);
+            return;
+        }
+
+        if (this.surface.isLongPressed (ButtonID.ARROW_UP))
+        {
+            this.drawRow4ArrowUp (d);
             return;
         }
 

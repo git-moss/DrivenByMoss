@@ -503,4 +503,16 @@ public interface IControlSurface<C extends Configuration>
      * @return The surface factory
      */
     IHwSurfaceFactory getSurfaceFactory ();
+
+
+    /**
+     * Bind MIDI commands again to the grid.
+     */
+    void rebindGrid ();
+
+
+    /**
+     * Unbind MIDI commands from the grid.
+     */
+    void unbindGrid ();
 }

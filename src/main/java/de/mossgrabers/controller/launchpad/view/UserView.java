@@ -100,22 +100,11 @@ public class UserView extends AbstractFaderView
     {
         super.onActivate ();
 
+        // Workaround to prevent MIDI notes mapped to user parameter
+        // MIDI notes are handled in handleMidi
+        this.surface.unbindGrid ();
+
         this.bindCurrentPage ();
-    }
-
-
-    /**
-     * Update the binding to the current page.
-     */
-    private void bindCurrentPage ()
-    {
-        for (int i = 0; i < 8; i++)
-        {
-            final ContinuousID faderID = ContinuousID.get (ContinuousID.FADER1, i);
-            final IHwContinuousControl continuous = this.surface.getContinuous (faderID);
-            if (continuous != null)
-                continuous.bind (this.userParameterBank.getItem (i));
-        }
     }
 
 
@@ -131,6 +120,23 @@ public class UserView extends AbstractFaderView
                 continuous.bind ((IParameter) null);
         }
 
+        this.surface.rebindGrid ();
+
         super.onDeactivate ();
+    }
+
+
+    /**
+     * Update the binding to the current page.
+     */
+    private void bindCurrentPage ()
+    {
+        for (int i = 0; i < 8; i++)
+        {
+            final ContinuousID faderID = ContinuousID.get (ContinuousID.FADER1, i);
+            final IHwContinuousControl continuous = this.surface.getContinuous (faderID);
+            if (continuous != null)
+                continuous.bind (this.userParameterBank.getItem (i));
+        }
     }
 }

@@ -54,6 +54,8 @@ public class SLMkIIIConfiguration extends AbstractConfiguration
             this.notifyObservers (ENABLE_FADERS);
         });
 
+        this.activateUserPageNamesSetting (globalSettings);
+
         ///////////////////////////
         // Session
         this.activateSelectClipOnLaunchSetting (globalSettings);

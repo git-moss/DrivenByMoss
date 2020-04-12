@@ -136,6 +136,16 @@ public class MidiInputImpl implements IMidiInput
 
     /** {@inheritDoc} */
     @Override
+    public void unbind (final IHwButton button)
+    {
+        final HardwareButton hardwareButton = ((HwButtonImpl) button).getHardwareButton ();
+        hardwareButton.pressedAction ().setPressureActionMatcher (null);
+        hardwareButton.releasedAction ().setActionMatcher (null);
+    }
+
+
+    /** {@inheritDoc} */
+    @Override
     public void bind (final IHwButton button, final BindType type, final int channel, final int control, final int value)
     {
         final HardwareButton hardwareButton = ((HwButtonImpl) button).getHardwareButton ();

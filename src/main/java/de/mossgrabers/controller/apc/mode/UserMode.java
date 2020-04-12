@@ -40,16 +40,16 @@ public class UserMode extends BaseMode
     @Override
     public void setValue (final int index, final int value)
     {
-        // Not used
+        // Not used - IParameter is directly mapped
     }
 
 
     /** {@inheritDoc} */
     @Override
-    public Integer getValue (final int index)
+    public int getKnobValue (final int index)
     {
         final IParameter item = this.model.getUserParameterBank ().getItem (index);
-        return item != null && item.doesExist () ? Integer.valueOf (item.getValue ()) : null;
+        return item != null && item.doesExist () ? item.getValue () : -1;
     }
 
 

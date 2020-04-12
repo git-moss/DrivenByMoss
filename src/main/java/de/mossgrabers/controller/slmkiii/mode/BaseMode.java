@@ -9,6 +9,7 @@ import de.mossgrabers.controller.slmkiii.controller.SLMkIIIColorManager;
 import de.mossgrabers.controller.slmkiii.controller.SLMkIIIControlSurface;
 import de.mossgrabers.controller.slmkiii.controller.SLMkIIIDisplay;
 import de.mossgrabers.framework.controller.ButtonID;
+import de.mossgrabers.framework.controller.ContinuousID;
 import de.mossgrabers.framework.daw.IBank;
 import de.mossgrabers.framework.daw.IModel;
 import de.mossgrabers.framework.daw.data.IItem;
@@ -47,13 +48,11 @@ public abstract class BaseMode extends AbstractMode<SLMkIIIControlSurface, SLMkI
      * @param name The name of the mode
      * @param surface The control surface
      * @param model The model
-     * @param isAbsolute If true the value change is happending with a setter otherwise relative
-     *            change method is used
      * @param bank The parameter bank to control with this mode, might be null
      */
-    public BaseMode (final String name, final SLMkIIIControlSurface surface, final IModel model, final boolean isAbsolute, final IBank<? extends IItem> bank)
+    public BaseMode (final String name, final SLMkIIIControlSurface surface, final IModel model, final IBank<? extends IItem> bank)
     {
-        super (name, surface, model, isAbsolute, bank, null, 0);
+        super (name, surface, model, false, bank, ContinuousID.KNOB1, 8);
     }
 
 

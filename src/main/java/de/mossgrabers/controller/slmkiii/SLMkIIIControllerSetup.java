@@ -6,6 +6,7 @@ package de.mossgrabers.controller.slmkiii;
 
 import de.mossgrabers.controller.slmkiii.command.continuous.VolumeFaderCommand;
 import de.mossgrabers.controller.slmkiii.command.trigger.ButtonAreaCommand;
+import de.mossgrabers.controller.slmkiii.command.trigger.DeviceModeCommand;
 import de.mossgrabers.controller.slmkiii.command.trigger.TrackModeCommand;
 import de.mossgrabers.controller.slmkiii.controller.SLMkIIIColorManager;
 import de.mossgrabers.controller.slmkiii.controller.SLMkIIIControlSurface;
@@ -16,6 +17,7 @@ import de.mossgrabers.controller.slmkiii.mode.BrowserMode;
 import de.mossgrabers.controller.slmkiii.mode.OptionsMode;
 import de.mossgrabers.controller.slmkiii.mode.SequencerResolutionMode;
 import de.mossgrabers.controller.slmkiii.mode.device.ParametersMode;
+import de.mossgrabers.controller.slmkiii.mode.device.UserMode;
 import de.mossgrabers.controller.slmkiii.mode.track.PanMode;
 import de.mossgrabers.controller.slmkiii.mode.track.SendMode;
 import de.mossgrabers.controller.slmkiii.mode.track.TrackMode;
@@ -45,7 +47,6 @@ import de.mossgrabers.framework.controller.OutputID;
 import de.mossgrabers.framework.controller.color.ColorEx;
 import de.mossgrabers.framework.controller.hardware.BindType;
 import de.mossgrabers.framework.controller.valuechanger.DefaultValueChanger;
-import de.mossgrabers.framework.daw.IBrowser;
 import de.mossgrabers.framework.daw.ICursorDevice;
 import de.mossgrabers.framework.daw.IHost;
 import de.mossgrabers.framework.daw.IParameterBank;
@@ -169,6 +170,7 @@ public class SLMkIIIControllerSetup extends AbstractControllerSetup<SLMkIIIContr
             modeManager.registerMode (Modes.get (Modes.SEND1, i), new SendMode (i, surface, this.model));
         modeManager.registerMode (Modes.DEVICE_PARAMS, new ParametersMode (surface, this.model));
         modeManager.registerMode (Modes.BROWSER, new BrowserMode (surface, this.model));
+        modeManager.registerMode (Modes.USER, new UserMode (surface, this.model));
 
         modeManager.registerMode (Modes.FUNCTIONS, new OptionsMode (surface, this.model));
         modeManager.registerMode (Modes.GROOVE, new SequencerResolutionMode (surface, this.model));
@@ -242,22 +244,7 @@ public class SLMkIIIControllerSetup extends AbstractControllerSetup<SLMkIIIContr
             });
         }
 
-        final ModeSelectCommand<SLMkIIIControlSurface, SLMkIIIConfiguration> deviceModeSelectCommand = new ModeSelectCommand<> (this.model, surface, Modes.DEVICE_PARAMS);
-        this.addButton (ButtonID.ARROW_UP, "Up", (event, value) -> {
-            if (event != ButtonEvent.DOWN)
-                return;
-            final IBrowser browser = this.model.getBrowser ();
-            if (browser != null && browser.isActive ())
-                browser.stopBrowsing (!this.getSurface ().isShiftPressed ());
-            if (modeManager.isActiveMode (Modes.DEVICE_PARAMS))
-            {
-                final ParametersMode parametersMode = (ParametersMode) modeManager.getMode (Modes.DEVICE_PARAMS);
-                parametersMode.setShowDevices (!parametersMode.isShowDevices ());
-            }
-            else
-                deviceModeSelectCommand.execute (ButtonEvent.DOWN, 127);
-        }, 15, SLMkIIIControlSurface.MKIII_DISPLAY_UP, () -> getDeviceModeColor (modeManager));
-
+        this.addButton (ButtonID.ARROW_UP, "Up", new DeviceModeCommand (this.model, surface), 15, SLMkIIIControlSurface.MKIII_DISPLAY_UP, () -> getDeviceModeColor (modeManager));
         this.addButton (ButtonID.ARROW_DOWN, "Down", new TrackModeCommand (this.model, surface), 15, SLMkIIIControlSurface.MKIII_DISPLAY_DOWN, () -> getTrackModeColor (modeManager));
 
         this.addButton (ButtonID.SHIFT, "Shift", new ShiftCommand<> (this.model, surface), 15, SLMkIIIControlSurface.MKIII_SHIFT);

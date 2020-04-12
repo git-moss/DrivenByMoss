@@ -46,11 +46,11 @@ public class SendMode extends BaseMode
 
     /** {@inheritDoc} */
     @Override
-    public Integer getValue (final int index)
+    public int getKnobValue (final int index)
     {
         if (this.model.isEffectTrackBankActive ())
-            return Integer.valueOf (0);
+            return 0;
         final ITrack track = this.model.getCurrentTrackBank ().getItem (index);
-        return track.doesExist () ? Integer.valueOf (track.getSendBank ().getItem (this.sendIndex).getValue ()) : null;
+        return track.doesExist () ? track.getSendBank ().getItem (this.sendIndex).getValue () : -1;
     }
 }

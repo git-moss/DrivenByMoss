@@ -219,7 +219,6 @@ public class PushConfiguration extends AbstractConfiguration implements IGraphic
     private TrackState      trackState                  = TrackState.MUTE;
     private Modes           debugMode                   = Modes.TRACK;
     private Modes           layerMode                   = null;
-    private final String [] userPageNames               = new String [8];
 
     // Only Push 1
     private int             velocityCurve               = 1;
@@ -285,9 +284,6 @@ public class PushConfiguration extends AbstractConfiguration implements IGraphic
         super (host, valueChanger, arpeggiatorModes);
 
         this.isPush2 = isPush2;
-
-        for (int i = 0; i < this.userPageNames.length; i++)
-            this.userPageNames[i] = "Page " + (i + 1);
     }
 
 
@@ -1106,17 +1102,6 @@ public class PushConfiguration extends AbstractConfiguration implements IGraphic
 
 
     /**
-     * Get the user page names.
-     *
-     * @return The user page names
-     */
-    public String [] getUserPageNames ()
-    {
-        return this.userPageNames;
-    }
-
-
-    /**
      * Activate the Push 2 hardware settings.
      *
      * @param settingsUI The settings
@@ -1242,21 +1227,6 @@ public class PushConfiguration extends AbstractConfiguration implements IGraphic
             this.defaultNoteView = Views.getNoteView (value);
             this.notifyObservers (DEFAULT_NOTE_VIEW);
         });
-    }
-
-
-    /**
-     * Activate the settings for naming the user pages.
-     *
-     * @param settingsUI The settings
-     */
-    private void activateUserPageNamesSetting (final ISettingsUI settingsUI)
-    {
-        for (int i = 0; i < 8; i++)
-        {
-            final int index = i;
-            settingsUI.getStringSetting ("User Page " + (i + 1), CATEGORY_WORKFLOW, 10, "Page " + (i + 1)).addValueObserver (value -> this.userPageNames[index] = value);
-        }
     }
 
 
