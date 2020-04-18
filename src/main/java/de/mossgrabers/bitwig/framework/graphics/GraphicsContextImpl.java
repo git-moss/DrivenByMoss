@@ -115,14 +115,27 @@ public class GraphicsContextImpl implements IGraphicsContext
 
     /** {@inheritDoc} */
     @Override
-    public void fillTriangle (final double x1, final double y1, final double x2, final double y2, final double x3, final double y3, final ColorEx lineColor)
+    public void fillTriangle (final double x1, final double y1, final double x2, final double y2, final double x3, final double y3, final ColorEx fillColor)
+    {
+        this.setColor (fillColor);
+        this.gc.moveTo (x1, y1);
+        this.gc.lineTo (x2, y2);
+        this.gc.lineTo (x3, y3);
+        this.gc.lineTo (x1, y1);
+        this.gc.fill ();
+    }
+
+
+    /** {@inheritDoc} */
+    @Override
+    public void strokeTriangle (final double x1, final double y1, final double x2, final double y2, final double x3, final double y3, final ColorEx lineColor)
     {
         this.setColor (lineColor);
         this.gc.moveTo (x1, y1);
         this.gc.lineTo (x2, y2);
         this.gc.lineTo (x3, y3);
         this.gc.lineTo (x1, y1);
-        this.gc.fill ();
+        this.gc.stroke ();
     }
 
 

@@ -45,7 +45,7 @@ import de.mossgrabers.controller.push.mode.FixedMode;
 import de.mossgrabers.controller.push.mode.FrameMode;
 import de.mossgrabers.controller.push.mode.GrooveMode;
 import de.mossgrabers.controller.push.mode.InfoMode;
-import de.mossgrabers.controller.push.mode.MarkersMode;
+import de.mossgrabers.controller.push.mode.MarkerMode;
 import de.mossgrabers.controller.push.mode.MetronomeMode;
 import de.mossgrabers.controller.push.mode.NoteMode;
 import de.mossgrabers.controller.push.mode.NoteRepeatMode;
@@ -137,6 +137,7 @@ import de.mossgrabers.framework.daw.midi.DeviceInquiry;
 import de.mossgrabers.framework.daw.midi.IMidiAccess;
 import de.mossgrabers.framework.daw.midi.IMidiInput;
 import de.mossgrabers.framework.daw.midi.IMidiOutput;
+import de.mossgrabers.framework.mode.Mode;
 import de.mossgrabers.framework.mode.ModeManager;
 import de.mossgrabers.framework.mode.Modes;
 import de.mossgrabers.framework.view.AbstractSequencerView;
@@ -305,7 +306,7 @@ public class PushControllerSetup extends AbstractControllerSetup<PushControlSurf
         modeManager.registerMode (Modes.AUTOMATION, new AutomationSelectionMode (surface, this.model));
         modeManager.registerMode (Modes.TRANSPORT, new MetronomeMode (surface, this.model));
 
-        modeManager.registerMode (Modes.MARKERS, new MarkersMode (surface, this.model));
+        modeManager.registerMode (Modes.MARKERS, new MarkerMode (surface, this.model));
 
         if (this.host.hasUserParameters ())
             modeManager.registerMode (Modes.USER, new UserMode (surface, this.model));
@@ -395,8 +396,34 @@ public class PushControllerSetup extends AbstractControllerSetup<PushControlSurf
         this.configuration.addSettingObserver (AbstractConfiguration.KNOB_SPEED_NORMAL, this::updateKnobSpeeds);
         this.configuration.addSettingObserver (AbstractConfiguration.KNOB_SPEED_SLOW, this::updateKnobSpeeds);
 
+        if (this.isPush2)
+        {
+            this.configuration.addSettingObserver (PushConfiguration.COLOR_BACKGROUND, this::redraw);
+            this.configuration.addSettingObserver (PushConfiguration.COLOR_BORDER, this::redraw);
+            this.configuration.addSettingObserver (PushConfiguration.COLOR_TEXT, this::redraw);
+            this.configuration.addSettingObserver (PushConfiguration.COLOR_FADER, this::redraw);
+            this.configuration.addSettingObserver (PushConfiguration.COLOR_VU, this::redraw);
+            this.configuration.addSettingObserver (PushConfiguration.COLOR_EDIT, this::redraw);
+            this.configuration.addSettingObserver (PushConfiguration.COLOR_RECORD, this::redraw);
+            this.configuration.addSettingObserver (PushConfiguration.COLOR_SOLO, this::redraw);
+            this.configuration.addSettingObserver (PushConfiguration.COLOR_MUTE, this::redraw);
+            this.configuration.addSettingObserver (PushConfiguration.COLOR_BACKGROUND_DARKER, this::redraw);
+            this.configuration.addSettingObserver (PushConfiguration.COLOR_BACKGROUND_LIGHTER, this::redraw);
+        }
+
         this.createScaleObservers (this.configuration);
         this.createNoteRepeatObservers (this.configuration, surface);
+    }
+
+
+    /**
+     * Redraw the Push 2 display.
+     */
+    public void redraw ()
+    {
+        final Mode mode = this.getSurface ().getModeManager ().getActiveOrTempMode ();
+        if (mode != null)
+            mode.updateDisplay ();
     }
 
 

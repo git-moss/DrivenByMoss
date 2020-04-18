@@ -80,7 +80,7 @@ public class LaunchkeyMiniMk3ControlSurface extends AbstractControlSurface<Launc
      * @param input The DAW midi input
      * @param definition The Launchpad definition
      */
-    public LaunchkeyMiniMk3ControlSurface (final IHost host, final ColorManager colorManager, final LaunchkeyMiniMk3Configuration configuration, final IMidiOutput output, final IMidiInput input, final IMidiInput inputKeys, final ContinuousCommand pageAdjuster)
+    public LaunchkeyMiniMk3ControlSurface (final IHost host, final ColorManager colorManager, final LaunchkeyMiniMk3Configuration configuration, final IMidiOutput output, final IMidiInput input, final ContinuousCommand pageAdjuster)
     {
         super (host, configuration, colorManager, output, input, new LaunchkeyPadGrid (colorManager, output), 800, 600);
 
@@ -101,11 +101,6 @@ public class LaunchkeyMiniMk3ControlSurface extends AbstractControlSurface<Launc
 
         this.input.setSysexCallback (this::handleSysEx);
         this.output.sendSysex (DeviceInquiry.createQuery ());
-
-        inputKeys.setMidiCallback ( (status, data1, data2) -> {
-            if (status == 0xB0 && data1 >= 0x15 && data1 <= 0x1C)
-                this.handleMidi (status, data1, data2);
-        });
     }
 
 

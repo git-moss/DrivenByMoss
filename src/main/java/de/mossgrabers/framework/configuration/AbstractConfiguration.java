@@ -1318,7 +1318,7 @@ public abstract class AbstractConfiguration implements Configuration
     {
         final Set<SettingObserver> set = this.observers.get (settingID);
         if (set != null)
-            set.forEach (SettingObserver::eximportFile);
+            set.forEach (SettingObserver::hasChanged);
     }
 
 

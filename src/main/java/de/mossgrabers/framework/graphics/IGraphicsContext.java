@@ -93,6 +93,20 @@ public interface IGraphicsContext
 
 
     /**
+     * Draw a filled triangle.
+     *
+     * @param x1 The X position of the first corner of the triangle
+     * @param y1 The Y position of the first corner of the triangle
+     * @param x2 The X position of the second corner of the triangle
+     * @param y2 The Y position of the second corner of the triangle
+     * @param x3 The X position of the thired corner of the triangle
+     * @param y3 The Y position of the thired corner of the triangle
+     * @param color The border color of the triangle
+     */
+    void strokeTriangle (double x1, double y1, double x2, double y2, double x3, double y3, ColorEx color);
+
+
+    /**
      * Draw a filled circle.
      *
      * @param x The X position of the circles center

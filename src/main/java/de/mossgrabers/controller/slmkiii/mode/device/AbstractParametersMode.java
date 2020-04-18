@@ -107,7 +107,7 @@ public abstract class AbstractParametersMode extends BaseMode
 
     /**
      * Draw the row with the mode selection.
-     * 
+     *
      * @param d The display
      */
     protected void drawRow4ArrowUp (final SLMkIIIDisplay d)

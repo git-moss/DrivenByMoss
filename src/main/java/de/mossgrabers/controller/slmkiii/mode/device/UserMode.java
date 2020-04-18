@@ -77,7 +77,7 @@ public class UserMode extends AbstractParametersMode
         if (this.surface.isLongPressed (ButtonID.ARROW_UP))
             return this.getButtonColorArrowUp (buttonID);
 
-        int index = this.isButtonRow (0, buttonID);
+        final int index = this.isButtonRow (0, buttonID);
         final int selectedPage = this.bank.getScrollPosition () / this.bank.getPageSize ();
         return index == selectedPage ? SLMkIIIColorManager.SLMKIII_WHITE : SLMkIIIColorManager.SLMKIII_WHITE_HALF;
     }

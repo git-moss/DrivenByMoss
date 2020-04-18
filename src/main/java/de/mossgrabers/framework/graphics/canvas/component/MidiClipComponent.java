@@ -7,6 +7,7 @@ package de.mossgrabers.framework.graphics.canvas.component;
 import de.mossgrabers.framework.controller.color.ColorEx;
 import de.mossgrabers.framework.daw.INoteClip;
 import de.mossgrabers.framework.graphics.Align;
+import de.mossgrabers.framework.graphics.IGraphicsConfiguration;
 import de.mossgrabers.framework.graphics.IGraphicsContext;
 import de.mossgrabers.framework.graphics.IGraphicsInfo;
 import de.mossgrabers.framework.scale.Scales;
@@ -20,13 +21,8 @@ import de.mossgrabers.framework.utils.StringUtils;
  */
 public class MidiClipComponent implements IComponent
 {
-    private static final ColorEx DIVIDERS_COLOR    = ColorEx.fromRGB (50, 50, 50);
-    private static final ColorEx NOTE_BACKGROUND   = ColorEx.fromRGB (100, 100, 100);
-    private static final ColorEx LOOP_BACKGROUND   = ColorEx.fromRGB (84, 84, 84);
-    private static final ColorEx HEADER_BACKGROUND = ColorEx.fromRGB (140, 140, 140);
-
-    private final INoteClip      clip;
-    private int                  quartersPerMeasure;
+    private final INoteClip clip;
+    private int             quartersPerMeasure;
 
 
     /**
@@ -46,6 +42,17 @@ public class MidiClipComponent implements IComponent
     @Override
     public void draw (final IGraphicsInfo info)
     {
+        final IGraphicsConfiguration configuration = info.getConfiguration ();
+
+        final ColorEx gridBackground = configuration.getColorBackgroundLighter ();
+        final ColorEx measureTextColor = ColorEx.WHITE;
+
+        final ColorEx dividersColor = configuration.getColorBackgroundDarker ();
+
+        final ColorEx noteColor = this.clip.getColor ();
+        final ColorEx noteGridLoopColor = configuration.getColorBackground ();
+        final ColorEx noteBorderColor = ColorEx.BLACK;
+
         final IGraphicsContext gc = info.getContext ();
         final double left = info.getBounds ().getLeft ();
         final double width = info.getBounds ().getWidth ();
@@ -55,7 +62,7 @@ public class MidiClipComponent implements IComponent
         final double noteAreaHeight = height - top;
 
         // Draw the background
-        gc.fillRectangle (left, top, width, noteAreaHeight, HEADER_BACKGROUND);
+        gc.fillRectangle (left, top, width, noteAreaHeight, gridBackground);
 
         // Draw the loop, if any and ...
         final int numSteps = this.clip.getNumSteps ();
@@ -77,21 +84,20 @@ public class MidiClipComponent implements IComponent
                 final double x = width * start / pageLength;
                 final double w = width * end / pageLength - x;
                 // The header loop
-                gc.fillRectangle (x + 1, 0, w, len, LOOP_BACKGROUND);
+                gc.fillRectangle (x + 1, 0, w, len, noteColor);
 
                 // Background in note area
-                gc.fillRectangle (x + 1, top, w, noteAreaHeight, NOTE_BACKGROUND);
+                gc.fillRectangle (x + 1, top, w, noteAreaHeight, noteGridLoopColor);
             }
         }
         // Draw play start in header
         final double playStart = this.clip.getPlayStart ();
-        final ColorEx noteColor = this.clip.getColor ();
-        final ColorEx lineColor = noteColor;
         if (playStart >= startPos && playStart <= endPos)
         {
             final double start = playStart - startPos;
             final double x = width * start / pageLength;
-            gc.fillTriangle (x + 1, 0, x + 1 + len, len / 2.0, x + 1, len, lineColor);
+            gc.fillTriangle (x + 1, 0, x + 1 + len, len / 2.0, x + 1, len, noteColor);
+            gc.strokeTriangle (x + 1, 0, x + 1 + len, len / 2.0, x + 1, len, ColorEx.evenDarker (noteColor));
         }
         // Draw play end in header
         final double playEnd = this.clip.getPlayEnd ();
@@ -99,7 +105,8 @@ public class MidiClipComponent implements IComponent
         {
             final double end = playEnd - startPos;
             final double x = width * end / pageLength;
-            gc.fillTriangle (x + 1, 0, x + 1, len, x + 1 - top, len / 2.0, lineColor);
+            gc.fillTriangle (x + 1, 0, x + 1, len, x + 1 - top, len / 2.0, noteColor);
+            gc.strokeTriangle (x + 1, 0, x + 1, len, x + 1 - top, len / 2.0, ColorEx.evenDarker (noteColor));
         }
 
         // Draw dividers
@@ -107,14 +114,14 @@ public class MidiClipComponent implements IComponent
         for (int step = 0; step <= numSteps; step++)
         {
             final double x = left + step * stepWidth;
-            gc.fillRectangle (x, top, 1, noteAreaHeight, DIVIDERS_COLOR);
+            gc.fillRectangle (x, top, 1, noteAreaHeight, dividersColor);
 
             // Draw measure texts
             if (step % 4 == 0)
             {
                 final double time = startPos + step * stepLength;
                 final String measureText = StringUtils.formatMeasures (this.quartersPerMeasure, time, 1, false);
-                gc.drawTextInHeight (measureText, x, 0, top - 1.0, ColorEx.WHITE, top);
+                gc.drawTextInHeight (measureText, x, 0, top - 1.0, measureTextColor, top);
             }
         }
 
@@ -123,14 +130,15 @@ public class MidiClipComponent implements IComponent
         if (lowerRowWithData == -1)
             return;
         final int upperRowWithData = this.clip.getUpperRowWithData ();
-        final int range = 1 + upperRowWithData - lowerRowWithData;
+        // Display at least 4 rows
+        final int range = Math.max (4, 1 + upperRowWithData - lowerRowWithData);
         final double stepHeight = noteAreaHeight / range;
 
         final double fontSize = gc.calculateFontSize ("G#5", stepHeight, stepWidth, 12.0);
 
         for (int row = 0; row < range; row++)
         {
-            gc.fillRectangle (left, top + (range - row - 1) * stepHeight, width, 1, DIVIDERS_COLOR);
+            gc.fillRectangle (left, top + (range - row - 1) * stepHeight, width, 1, dividersColor);
 
             for (int step = 0; step < numSteps; step++)
             {
@@ -152,7 +160,7 @@ public class MidiClipComponent implements IComponent
                         w -= 2;
                     }
 
-                    gc.strokeRectangle (x, top + (range - row - 1) * stepHeight + 2, w, stepHeight - 2, ColorEx.BLACK);
+                    gc.strokeRectangle (x, top + (range - row - 1) * stepHeight + 2, w, stepHeight - 2, noteBorderColor);
                     gc.fillRectangle (x + (isStart ? 0 : -2), top + (range - row - 1) * stepHeight + 2, w - 1 + (isStart ? 0 : 2), stepHeight - 3, noteColor);
 
                     if (isStart && fontSize > 0)
@@ -168,6 +176,6 @@ public class MidiClipComponent implements IComponent
         // Draw the play cursor
         final int playStep = this.clip.getCurrentStep ();
         if (playStep >= 0)
-            gc.fillRectangle (left + playStep * stepWidth - 1, 0, 3, height, ColorEx.WHITE);
+            gc.fillRectangle (left + playStep * stepWidth - 1, 0, 3, height, measureTextColor);
     }
 }

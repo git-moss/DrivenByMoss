@@ -98,7 +98,7 @@ public interface Mode
 
     /**
      * Check if a knob is touched.
-     * 
+     *
      * @param index The index of the knob
      * @return True if the knob is touched
      */
@@ -159,7 +159,7 @@ public interface Mode
 
     /**
      * Select an item page.
-     * 
+     *
      * @param page The index of the page
      */
     void selectItemPage (int page);

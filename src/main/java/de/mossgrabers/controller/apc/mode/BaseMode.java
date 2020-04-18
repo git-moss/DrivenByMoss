@@ -39,7 +39,7 @@ public abstract class BaseMode extends AbstractMode<APCControlSurface, APCConfig
      * @param defaultValue Default value to use
      * @param bank The parameter bank to control with this mode, might be null
      */
-    public BaseMode (final String name, final APCControlSurface surface, final IModel model, final int ledMode, final int defaultValue, IBank<? extends IItem> bank)
+    public BaseMode (final String name, final APCControlSurface surface, final IModel model, final int ledMode, final int defaultValue, final IBank<? extends IItem> bank)
     {
         super (name, surface, model, false, bank, ContinuousID.KNOB1, 8);
 

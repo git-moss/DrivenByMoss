@@ -88,7 +88,7 @@ public abstract class AbstractTrackMode extends BaseMode
         // Combination with Shift
         if (this.surface.isShiftPressed ())
         {
-            onButtonShifted (index);
+            this.onButtonShifted (index);
             return;
         }
 

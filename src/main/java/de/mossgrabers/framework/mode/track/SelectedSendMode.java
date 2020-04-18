@@ -41,8 +41,8 @@ public class SelectedSendMode<S extends IControlSurface<C>, C extends Configurat
         this.sendIndex = sendIndex;
         this.isTemporary = false;
 
-        this.model.getTrackBank ().addSelectionObserver ( (index, isSelected) -> bankSwitcher ());
-        this.model.getEffectTrackBank ().addSelectionObserver ( (index, isSelected) -> bankSwitcher ());
+        this.model.getTrackBank ().addSelectionObserver ( (index, isSelected) -> this.bankSwitcher ());
+        this.model.getEffectTrackBank ().addSelectionObserver ( (index, isSelected) -> this.bankSwitcher ());
     }
 
 

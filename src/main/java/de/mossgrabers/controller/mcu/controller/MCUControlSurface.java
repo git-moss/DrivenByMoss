@@ -218,7 +218,7 @@ public class MCUControlSurface extends AbstractControlSurface<MCUConfiguration>
      */
     public MCUControlSurface (final List<MCUControlSurface> surfaces, final IHost host, final ColorManager colorManager, final MCUConfiguration configuration, final IMidiOutput output, final IMidiInput input, final int extenderOffset, final boolean isMainDevice)
     {
-        super (surfaces.size (), host, configuration, colorManager, output, input, null, surfaces.isEmpty () ? 1000 : 600, 1000);
+        super (surfaces.size (), host, configuration, colorManager, output, input, null, isMainDevice ? 1000 : 600, 1000);
 
         this.surfaces = surfaces;
         this.extenderOffset = extenderOffset;

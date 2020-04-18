@@ -243,7 +243,7 @@ public class ModeManager
 
     /**
      * Set the previous mode as the active one.
-     * 
+     *
      * @param syncSiblings Sync changes to siblings if true
      */
     private void restoreMode (final boolean syncSiblings)

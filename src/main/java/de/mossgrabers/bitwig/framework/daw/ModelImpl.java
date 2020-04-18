@@ -68,14 +68,14 @@ public class ModelImpl extends AbstractModel
         this.rootTrackGroup = proj.getRootTrackGroup ();
         this.project = new ProjectImpl (this.valueChanger, proj, app);
 
+        this.transport = new TransportImpl (controllerHost, this.valueChanger);
         final Arranger bwArranger = controllerHost.createArranger ();
         this.arranger = new ArrangerImpl (bwArranger);
         final int numMarkers = modelSetup.getNumMarkers ();
         if (numMarkers > 0)
-            this.markerBank = new MarkerBankImpl (this.host, this.valueChanger, bwArranger.createCueMarkerBank (numMarkers), numMarkers);
+            this.markerBank = new MarkerBankImpl (this.host, this.valueChanger, bwArranger.createCueMarkerBank (numMarkers), numMarkers, this.transport);
 
         this.mixer = new MixerImpl (controllerHost.createMixer ());
-        this.transport = new TransportImpl (controllerHost, this.valueChanger);
         this.groove = new GrooveImpl (controllerHost, this.valueChanger);
 
         this.cursorTrack = controllerHost.createCursorTrack ("MyCursorTrackID", "The Cursor Track", 0, 0, true);

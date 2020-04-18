@@ -19,13 +19,15 @@ import de.mossgrabers.framework.utils.StringUtils;
  */
 public class MCUDisplay extends AbstractTextDisplay
 {
-    private static final String         SYSEX_DISPLAY_HEADER1 = "F0 00 00 66 14 12 ";
-    private static final String         SYSEX_DISPLAY_HEADER2 = "F0 00 00 67 15 13 ";
+    private static final String         SYSEX_DISPLAY_HEADER1_MAIN     = "F0 00 00 66 14 12 ";
+    private static final String         SYSEX_DISPLAY_HEADER1_EXTENDER = "F0 00 00 66 15 12 ";
+    private static final String         SYSEX_DISPLAY_HEADER2          = "F0 00 00 67 15 13 ";
 
-    private boolean                     isFirst;
-    private boolean                     hasMaster;
+    private final boolean               isFirstDisplay;
+    private final boolean               isExtender;
+    private final boolean               hasMaster;
 
-    private final LatestTaskExecutor [] executors             = new LatestTaskExecutor [4];
+    private final LatestTaskExecutor [] executors                      = new LatestTaskExecutor [4];
 
 
     /**
@@ -35,14 +37,16 @@ public class MCUDisplay extends AbstractTextDisplay
      * @param host The host
      * @param output The midi output which addresses the display
      * @param isFirst True if it is the first display, otherwise the second
+     * @param isMCUExtender True if it is an original Mackie extender
      * @param hasMaster True if a 9th master cell should be added
      */
-    public MCUDisplay (final IHost host, final IMidiOutput output, final boolean isFirst, final boolean hasMaster)
+    public MCUDisplay (final IHost host, final IMidiOutput output, final boolean isFirst, final boolean isMCUExtender, final boolean hasMaster)
     {
         super (host, output, 2 /* No of rows */, !isFirst && hasMaster ? 9 : 8 /* No of cells */, 56);
 
-        this.isFirst = isFirst;
+        this.isFirstDisplay = isFirst;
         this.hasMaster = hasMaster;
+        this.isExtender = isMCUExtender;
 
         for (int i = 0; i < 4; i++)
             this.executors[i] = new LatestTaskExecutor ();
@@ -70,7 +74,7 @@ public class MCUDisplay extends AbstractTextDisplay
     protected void updateLine (final int row, final String text)
     {
         String t = text;
-        if (!this.isFirst && this.hasMaster)
+        if (!this.isFirstDisplay && this.hasMaster)
         {
             if (row == 0)
                 t = t.substring (0, t.length () - 1) + 'r';
@@ -85,7 +89,7 @@ public class MCUDisplay extends AbstractTextDisplay
     @Override
     public void writeLine (final int row, final String text)
     {
-        final LatestTaskExecutor executor = this.executors[row + (this.isFirst ? 0 : 2)];
+        final LatestTaskExecutor executor = this.executors[row + (this.isFirstDisplay ? 0 : 2)];
         if (executor.isShutdown ())
             return;
 
@@ -96,13 +100,21 @@ public class MCUDisplay extends AbstractTextDisplay
                 final int [] array = new int [length];
                 for (int i = 0; i < length; i++)
                     array[i] = text.charAt (i);
-                this.output.sendSysex (new StringBuilder (this.isFirst ? SYSEX_DISPLAY_HEADER1 : SYSEX_DISPLAY_HEADER2).append (row == 0 ? "00 " : "38 ").append (StringUtils.toHexStr (array)).append ("F7").toString ());
+                this.output.sendSysex (new StringBuilder (this.getHeader ()).append (row == 0 ? "00 " : "38 ").append (StringUtils.toHexStr (array)).append ("F7").toString ());
             }
             catch (final RuntimeException ex)
             {
                 this.host.error ("Could not send line to MCU display.", ex);
             }
         });
+    }
+
+
+    private String getHeader ()
+    {
+        if (this.isFirstDisplay)
+            return this.isExtender ? SYSEX_DISPLAY_HEADER1_EXTENDER : SYSEX_DISPLAY_HEADER1_MAIN;
+        return SYSEX_DISPLAY_HEADER2;
     }
 
 

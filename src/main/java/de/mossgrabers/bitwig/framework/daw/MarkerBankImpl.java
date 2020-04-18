@@ -8,6 +8,7 @@ import de.mossgrabers.bitwig.framework.daw.data.MarkerImpl;
 import de.mossgrabers.framework.controller.valuechanger.IValueChanger;
 import de.mossgrabers.framework.daw.IHost;
 import de.mossgrabers.framework.daw.IMarkerBank;
+import de.mossgrabers.framework.daw.ITransport;
 import de.mossgrabers.framework.daw.data.IMarker;
 
 import com.bitwig.extension.controller.api.CueMarkerBank;
@@ -20,6 +21,9 @@ import com.bitwig.extension.controller.api.CueMarkerBank;
  */
 public class MarkerBankImpl extends AbstractBankImpl<CueMarkerBank, IMarker> implements IMarkerBank
 {
+    private final ITransport transport;
+
+
     /**
      * Constructor.
      *
@@ -27,10 +31,13 @@ public class MarkerBankImpl extends AbstractBankImpl<CueMarkerBank, IMarker> imp
      * @param valueChanger The value changer
      * @param bank The Bitwig bank to encapsulate
      * @param numMarkers The number of tracks of a bank page
+     * @param transport The transport for marker positioning
      */
-    public MarkerBankImpl (final IHost host, final IValueChanger valueChanger, final CueMarkerBank bank, final int numMarkers)
+    public MarkerBankImpl (final IHost host, final IValueChanger valueChanger, final CueMarkerBank bank, final int numMarkers, final ITransport transport)
     {
         super (host, valueChanger, bank, numMarkers);
+
+        this.transport = transport;
         this.initItems ();
     }
 
@@ -48,6 +55,6 @@ public class MarkerBankImpl extends AbstractBankImpl<CueMarkerBank, IMarker> imp
     protected void initItems ()
     {
         for (int i = 0; i < this.pageSize; i++)
-            this.items.add (new MarkerImpl (this.bank.getItemAt (i), i));
+            this.items.add (new MarkerImpl (this.bank.getItemAt (i), i, this.transport));
     }
 }

@@ -25,6 +25,7 @@ import de.mossgrabers.controller.mcu.command.trigger.ZoomCommand;
 import de.mossgrabers.controller.mcu.controller.MCUAssignmentDisplay;
 import de.mossgrabers.controller.mcu.controller.MCUColorManager;
 import de.mossgrabers.controller.mcu.controller.MCUControlSurface;
+import de.mossgrabers.controller.mcu.controller.MCUDeviceType;
 import de.mossgrabers.controller.mcu.controller.MCUDisplay;
 import de.mossgrabers.controller.mcu.controller.MCUSegmentDisplay;
 import de.mossgrabers.controller.mcu.mode.BaseMode;
@@ -166,7 +167,7 @@ public class MCUControllerSetup extends AbstractControllerSetup<MCUControlSurfac
 
         this.colorManager = new MCUColorManager ();
         this.valueChanger = new DefaultValueChanger (16241 + 1, 500, 20);
-        this.configuration = new MCUConfiguration (host, this.valueChanger, factory.getArpeggiatorModes ());
+        this.configuration = new MCUConfiguration (host, this.valueChanger, numMCUDevices, factory.getArpeggiatorModes ());
     }
 
 
@@ -226,12 +227,15 @@ public class MCUControllerSetup extends AbstractControllerSetup<MCUControlSurfac
 
         for (int i = 0; i < this.numMCUDevices; i++)
         {
+            final MCUDeviceType deviceType = this.configuration.getDeviceType (i);
+            final boolean isMainDevice = deviceType == MCUDeviceType.MAIN;
+
             final IMidiOutput output = midiAccess.createOutput (i);
             final IMidiInput input = midiAccess.createInput (i, null);
-            final MCUControlSurface surface = new MCUControlSurface (this.surfaces, this.host, this.colorManager, this.configuration, output, input, 8 * (this.numMCUDevices - i - 1), i == 0);
+            final MCUControlSurface surface = new MCUControlSurface (this.surfaces, this.host, this.colorManager, this.configuration, output, input, 8 * i, isMainDevice);
             this.surfaces.add (surface);
-            surface.addTextDisplay (new MCUDisplay (this.host, output, true, false));
-            surface.addTextDisplay (new MCUDisplay (this.host, output, false, i == 0));
+            surface.addTextDisplay (new MCUDisplay (this.host, output, true, deviceType == MCUDeviceType.MACKIE_EXTENDER, false));
+            surface.addTextDisplay (new MCUDisplay (this.host, output, false, false, isMainDevice));
             surface.addTextDisplay (new MCUSegmentDisplay (this.host, output));
             surface.addTextDisplay (new MCUAssignmentDisplay (this.host, output));
             surface.getModeManager ().setDefaultMode (Modes.VOLUME);
@@ -312,134 +316,127 @@ public class MCUControllerSetup extends AbstractControllerSetup<MCUControlSurfac
     @Override
     protected void registerTriggerCommands ()
     {
-        // Assignments to the main device
-        final MCUControlSurface surface = this.getSurface ();
-
         final ITransport t = this.model.getTransport ();
         final ICursorDevice cursorDevice = this.model.getCursorDevice ();
 
-        // Footswitches
-        this.addButton (ButtonID.FOOTSWITCH1, "Footswitch 1", new AssignableCommand (0, this.model, surface), MCUControlSurface.MCU_USER_A);
-        this.addButton (ButtonID.FOOTSWITCH2, "Footswitch 2", new AssignableCommand (1, this.model, surface), MCUControlSurface.MCU_USER_B);
-
-        // Navigation
-
-        final WindCommand<MCUControlSurface, MCUConfiguration> rewindCommand = new WindCommand<> (this.model, surface, false);
-        final WindCommand<MCUControlSurface, MCUConfiguration> forwardCommand = new WindCommand<> (this.model, surface, true);
-        this.addButton (ButtonID.REWIND, "<<", rewindCommand, MCUControlSurface.MCU_REWIND, rewindCommand::isRewinding);
-        this.addButton (ButtonID.FORWARD, ">>", forwardCommand, MCUControlSurface.MCU_FORWARD, forwardCommand::isForwarding);
-        this.addButton (ButtonID.LOOP, "Loop", new ToggleLoopCommand<> (this.model, surface), MCUControlSurface.MCU_REPEAT, t::isLoop);
-        this.addButton (ButtonID.STOP, "Stop", new StopCommand<> (this.model, surface), MCUControlSurface.MCU_STOP, () -> !t.isPlaying ());
-        this.addButton (ButtonID.PLAY, "Play", new PlayCommand<> (this.model, surface), MCUControlSurface.MCU_PLAY, t::isPlaying);
-        this.addButton (ButtonID.RECORD, "Record", new MCURecordCommand (this.model, surface), MCUControlSurface.MCU_RECORD, () -> {
-            final boolean isOn = this.isRecordShifted (surface) ? t.isLauncherOverdub () : t.isRecording ();
-            return isOn ? MCU_BUTTON_STATE_ON : MCU_BUTTON_STATE_OFF;
-        });
-
-        this.addButton (ButtonID.SCRUB, "Scrub", new ScrubCommand (this.model, surface), MCUControlSurface.MCU_SCRUB, () -> surface.getModeManager ().isActiveOrTempMode (Modes.DEVICE_PARAMS));
-        this.addButton (ButtonID.ARROW_LEFT, "Left", new MCUCursorCommand (Direction.LEFT, this.model, surface), MCUControlSurface.MCU_ARROW_LEFT);
-        this.addButton (ButtonID.ARROW_RIGHT, "Right", new MCUCursorCommand (Direction.RIGHT, this.model, surface), MCUControlSurface.MCU_ARROW_RIGHT);
-        this.addButton (ButtonID.ARROW_UP, "Up", new MCUCursorCommand (Direction.UP, this.model, surface), MCUControlSurface.MCU_ARROW_UP);
-        this.addButton (ButtonID.ARROW_DOWN, "Down", new MCUCursorCommand (Direction.DOWN, this.model, surface), MCUControlSurface.MCU_ARROW_DOWN);
-        this.addButton (ButtonID.ZOOM, "Zoom", new ZoomCommand (this.model, surface), MCUControlSurface.MCU_ZOOM, surface.getConfiguration ()::isZoomState);
-
-        // Display Mode
-        this.addButton (ButtonID.TOGGLE_DISPLAY, "Toggle Display", new ToggleDisplayCommand (this.model, surface), MCUControlSurface.MCU_NAME_VALUE, surface.getConfiguration ()::isDisplayTrackNames);
-        this.addButton (ButtonID.TEMPO_TICKS, "Tempo Ticks", new TempoTicksCommand (this.model, surface), MCUControlSurface.MCU_SMPTE_BEATS, this.configuration::isDisplayTicks);
-
-        // Functions
-        this.addButton (ButtonID.SHIFT, "Shift", new ShiftCommand<> (this.model, surface), MCUControlSurface.MCU_SHIFT);
-        this.addButton (ButtonID.SELECT, "Option", NopCommand.INSTANCE, MCUControlSurface.MCU_OPTION);
-        this.addButton (ButtonID.PUNCH_IN, "Punch In", new PunchInCommand<> (this.model, surface), MCUControlSurface.MCU_F6, t::isPunchInEnabled);
-        this.addButton (ButtonID.PUNCH_OUT, "Punch Out", new PunchOutCommand<> (this.model, surface), MCUControlSurface.MCU_F7, t::isPunchOutEnabled);
-
-        for (int i = 0; i < 5; i++)
-        {
-            final AssignableCommand command = new AssignableCommand (2 + i, this.model, surface);
-            this.addButton (ButtonID.get (ButtonID.F1, i), "F" + (i + 1), command, MCUControlSurface.MCU_F1 + i, command::isActive);
-        }
-
-        final MoveTrackBankCommand<MCUControlSurface, MCUConfiguration> moveTrackBankLeftCommand = new MoveTrackBankCommand<> (this.model, surface, Modes.DEVICE_PARAMS, true, true);
-        final MoveTrackBankCommand<MCUControlSurface, MCUConfiguration> moveTrackBankRightCommand = new MoveTrackBankCommand<> (this.model, surface, Modes.DEVICE_PARAMS, true, false);
-
-        // Assignment - mode selection
-
-        final ModeManager modeManager = surface.getModeManager ();
-
-        this.addButton (ButtonID.TRACK, "Track", new TracksCommand (this.model, surface), MCUControlSurface.MCU_MODE_IO, () -> surface.getButton (ButtonID.SELECT).isPressed () ? this.model.isCursorTrackPinned () : modeManager.isActiveOrTempMode (Modes.TRACK, Modes.VOLUME));
-        this.addButton (ButtonID.PAN_SEND, "Pan", new ModeSelectCommand<> (this.model, surface, Modes.PAN), MCUControlSurface.MCU_MODE_PAN, () -> modeManager.isActiveOrTempMode (Modes.PAN));
-        this.addButton (ButtonID.SENDS, "Sends", new SendSelectCommand (this.model, surface), MCUControlSurface.MCU_MODE_SENDS, () -> Modes.isSendMode (modeManager.getActiveOrTempModeId ()));
-        this.addButton (ButtonID.DEVICE, "Device", new DevicesCommand (this.model, surface), MCUControlSurface.MCU_MODE_PLUGIN, () -> surface.getButton (ButtonID.SELECT).isPressed () ? cursorDevice.isPinned () : modeManager.isActiveOrTempMode (Modes.DEVICE_PARAMS));
-        this.addButton (ButtonID.MOVE_TRACK_LEFT, "Left", moveTrackBankLeftCommand, MCUControlSurface.MCU_MODE_EQ);
-        this.addButton (ButtonID.MOVE_TRACK_RIGHT, "Right", moveTrackBankRightCommand, MCUControlSurface.MCU_MODE_DYN);
-
-        // Automation
-        this.addButton (ButtonID.AUTOMATION_TRIM, "Trim", new AutomationCommand<> (AutomationMode.TRIM_READ, this.model, surface), MCUControlSurface.MCU_TRIM, () -> !t.isWritingArrangerAutomation () && t.getAutomationWriteMode () == AutomationMode.TRIM_READ);
-        this.addButton (ButtonID.AUTOMATION_READ, "Read", new AutomationCommand<> (AutomationMode.READ, this.model, surface), MCUControlSurface.MCU_READ, () -> !t.isWritingArrangerAutomation () && t.getAutomationWriteMode () != AutomationMode.TRIM_READ);
-        this.addButton (ButtonID.AUTOMATION_WRITE, "Write", new AutomationCommand<> (AutomationMode.WRITE, this.model, surface), MCUControlSurface.MCU_WRITE, () -> t.isWritingArrangerAutomation () && t.getAutomationWriteMode () == AutomationMode.WRITE);
-        this.addButton (ButtonID.AUTOMATION_GROUP, "Group/Write", new AutomationCommand<> (AutomationMode.LATCH_PREVIEW, this.model, surface), MCUControlSurface.MCU_GROUP, () -> t.isWritingArrangerAutomation () && t.getAutomationWriteMode () == AutomationMode.LATCH_PREVIEW);
-        this.addButton (ButtonID.AUTOMATION_TOUCH, "Touch", new AutomationCommand<> (AutomationMode.TOUCH, this.model, surface), MCUControlSurface.MCU_TOUCH, () -> t.isWritingArrangerAutomation () && t.getAutomationWriteMode () == AutomationMode.TOUCH);
-        this.addButton (ButtonID.AUTOMATION_LATCH, "Latch", new AutomationCommand<> (AutomationMode.LATCH, this.model, surface), MCUControlSurface.MCU_LATCH, () -> t.isWritingArrangerAutomation () && t.getAutomationWriteMode () == AutomationMode.LATCH);
-        this.addButton (ButtonID.UNDO, "Undo", new UndoCommand<> (this.model, surface), MCUControlSurface.MCU_UNDO);
-
-        // Panes
-        this.addButton (ButtonID.NOTE_EDITOR, "Note Editor", new PaneCommand<> (PaneCommand.Panels.NOTE, this.model, surface), MCUControlSurface.MCU_MIDI_TRACKS);
-        this.addButton (ButtonID.AUTOMATION_EDITOR, "Automation Editor", new PaneCommand<> (PaneCommand.Panels.AUTOMATION, this.model, surface), MCUControlSurface.MCU_INPUTS);
-        this.addButton (ButtonID.TOGGLE_DEVICE, "Toggle Device", new PanelLayoutCommand<> (this.model, surface), MCUControlSurface.MCU_AUDIO_TRACKS, () -> !surface.isShiftPressed () && cursorDevice.isWindowOpen ());
-        this.addButton (ButtonID.MIXER, "Mixer", new PaneCommand<> (PaneCommand.Panels.MIXER, this.model, surface), MCUControlSurface.MCU_AUDIO_INSTR);
-
-        // Layouts
-        this.addButton (ButtonID.LAYOUT_ARRANGE, "Arrange", new LayoutCommand<> (IApplication.PANEL_LAYOUT_ARRANGE, this.model, surface), MCUControlSurface.MCU_AUX);
-        this.addButton (ButtonID.LAYOUT_MIX, "Mix", new LayoutCommand<> (IApplication.PANEL_LAYOUT_MIX, this.model, surface), MCUControlSurface.MCU_BUSSES);
-        this.addButton (ButtonID.LAYOUT_EDIT, "Edit", new LayoutCommand<> (IApplication.PANEL_LAYOUT_EDIT, this.model, surface), MCUControlSurface.MCU_OUTPUTS);
-
-        // Utilities
-        this.addButton (ButtonID.BROWSE, "Browse", new BrowserCommand<> (Modes.BROWSER, this.model, surface), MCUControlSurface.MCU_USER, () -> modeManager.isActiveOrTempMode (Modes.BROWSER));
-        this.addButton (ButtonID.METRONOME, "Metronome", new MetronomeCommand<> (this.model, surface), MCUControlSurface.MCU_CLICK, () -> surface.getButton (ButtonID.SHIFT).isPressed () ? t.isMetronomeTicksOn () : t.isMetronomeOn ());
-        this.addButton (ButtonID.GROOVE, "Groove", new GrooveCommand (this.model, surface), MCUControlSurface.MCU_SOLO, () -> this.model.getGroove ().getParameters ()[0].getValue () > 0);
-        this.addButton (ButtonID.OVERDUB, "Overdub", new OverdubCommand (this.model, surface), MCUControlSurface.MCU_REPLACE, () -> (surface.getButton (ButtonID.SHIFT).isPressed () ? t.isLauncherOverdub () : t.isArrangerOverdub ()));
-        this.addButton (ButtonID.TAP_TEMPO, "Tap Tempo", new TapTempoCommand<> (this.model, surface), MCUControlSurface.MCU_NUDGE);
-        this.addButton (ButtonID.DUPLICATE, "Duplicate", new DuplicateCommand<> (this.model, surface), MCUControlSurface.MCU_DROP);
-
-        this.addButton (ButtonID.DEVICE_ON_OFF, "Device On/Off", new DeviceOnOffCommand<> (this.model, surface), MCUControlSurface.MCU_F8);
-
-        // Currently not used but prevent error in console
-        this.addButton (ButtonID.CONTROL, "Control", NopCommand.INSTANCE, MCUControlSurface.MCU_CONTROL);
-        this.addButton (ButtonID.ALT, "Alt", NopCommand.INSTANCE, MCUControlSurface.MCU_ALT);
-
-        // Fader Controls
-        this.addButton (ButtonID.FLIP, "Flip", new ToggleTrackBanksCommand<> (this.model, surface), MCUControlSurface.MCU_FLIP, this.model::isEffectTrackBankActive);
-        this.addButton (ButtonID.CANCEL, "Cancel", new KeyCommand (Key.ESCAPE, this.model, surface), MCUControlSurface.MCU_CANCEL);
-        this.addButton (ButtonID.ENTER, "Enter", new KeyCommand (Key.ENTER, this.model, surface), MCUControlSurface.MCU_ENTER);
-
-        this.addButton (ButtonID.MOVE_BANK_LEFT, "Bank Left", new MoveTrackBankCommand<> (this.model, surface, Modes.DEVICE_PARAMS, false, true), MCUControlSurface.MCU_BANK_LEFT);
-        this.addButton (ButtonID.MOVE_BANK_RIGHT, "Bank Right", new MoveTrackBankCommand<> (this.model, surface, Modes.DEVICE_PARAMS, false, false), MCUControlSurface.MCU_BANK_RIGHT);
-        surface.getButton (ButtonID.MOVE_TRACK_LEFT).bind (surface.getMidiInput (), this.getTriggerBindType (null), MCUControlSurface.MCU_TRACK_LEFT);
-        surface.getButton (ButtonID.MOVE_TRACK_RIGHT).bind (surface.getMidiInput (), this.getTriggerBindType (null), MCUControlSurface.MCU_TRACK_RIGHT);
-
-        // Additional command for footcontrollers
-        this.addButton (ButtonID.NEW, "New", new NewCommand<> (this.model, surface), -1);
-
-        // Only MCU
-        this.addButton (ButtonID.SAVE, "Save", new SaveCommand<> (this.model, surface), MCUControlSurface.MCU_SAVE);
-        this.addButton (ButtonID.MARKER, "Marker", new MarkerCommand<> (this.model, surface), MCUControlSurface.MCU_MARKER, () -> surface.getButton (ButtonID.SHIFT).isPressed () ? this.model.getArranger ().areCueMarkersVisible () : modeManager.isActiveOrTempMode (Modes.MARKERS));
-        this.addButton (ButtonID.TOGGLE_VU, "Toggle VU", new ToggleVUCommand<> (this.model, surface), MCUControlSurface.MCU_EDIT, () -> this.configuration.isEnableVUMeters ());
-
-        this.addLight (surface, OutputID.LED1, 0, MCUControlSurface.MCU_SMPTE_LED, () -> this.configuration.isDisplayTicks () ? 2 : 0);
-        this.addLight (surface, OutputID.LED2, 0, MCUControlSurface.MCU_BEATS_LED, () -> !this.configuration.isDisplayTicks () ? 2 : 0);
-
-        this.registerTriggerCommandsToAllDevices ();
-    }
-
-
-    /**
-     * Common track editing - Assignment to all devices
-     */
-    protected void registerTriggerCommandsToAllDevices ()
-    {
         for (int index = 0; index < this.numMCUDevices; index++)
         {
             final MCUControlSurface surface = this.getSurface (index);
+            final IMidiInput input = surface.getMidiInput ();
+
+            if (this.configuration.getDeviceType (index) == MCUDeviceType.MAIN)
+            {
+                // Footswitches
+                this.addButton (surface, ButtonID.FOOTSWITCH1, "Footswitch 1", new AssignableCommand (0, this.model, surface), MCUControlSurface.MCU_USER_A);
+                this.addButton (surface, ButtonID.FOOTSWITCH2, "Footswitch 2", new AssignableCommand (1, this.model, surface), MCUControlSurface.MCU_USER_B);
+
+                // Navigation
+
+                final WindCommand<MCUControlSurface, MCUConfiguration> rewindCommand = new WindCommand<> (this.model, surface, false);
+                final WindCommand<MCUControlSurface, MCUConfiguration> forwardCommand = new WindCommand<> (this.model, surface, true);
+                this.addButton (surface, ButtonID.REWIND, "<<", rewindCommand, 0, MCUControlSurface.MCU_REWIND, rewindCommand::isRewinding);
+                this.addButton (surface, ButtonID.FORWARD, ">>", forwardCommand, 0, MCUControlSurface.MCU_FORWARD, forwardCommand::isForwarding);
+                this.addButton (surface, ButtonID.LOOP, "Loop", new ToggleLoopCommand<> (this.model, surface), 0, MCUControlSurface.MCU_REPEAT, t::isLoop);
+                this.addButton (surface, ButtonID.STOP, "Stop", new StopCommand<> (this.model, surface), 0, MCUControlSurface.MCU_STOP, () -> !t.isPlaying ());
+                this.addButton (surface, ButtonID.PLAY, "Play", new PlayCommand<> (this.model, surface), 0, MCUControlSurface.MCU_PLAY, t::isPlaying);
+                this.addButton (surface, ButtonID.RECORD, "Record", new MCURecordCommand (this.model, surface), 0, MCUControlSurface.MCU_RECORD, () -> {
+                    final boolean isOn = this.isRecordShifted (surface) ? t.isLauncherOverdub () : t.isRecording ();
+                    return isOn ? MCU_BUTTON_STATE_ON : MCU_BUTTON_STATE_OFF;
+                });
+
+                this.addButton (surface, ButtonID.SCRUB, "Scrub", new ScrubCommand (this.model, surface), 0, MCUControlSurface.MCU_SCRUB, () -> surface.getModeManager ().isActiveOrTempMode (Modes.DEVICE_PARAMS));
+                this.addButton (surface, ButtonID.ARROW_LEFT, "Left", new MCUCursorCommand (Direction.LEFT, this.model, surface), 0, MCUControlSurface.MCU_ARROW_LEFT);
+                this.addButton (surface, ButtonID.ARROW_RIGHT, "Right", new MCUCursorCommand (Direction.RIGHT, this.model, surface), 0, MCUControlSurface.MCU_ARROW_RIGHT);
+                this.addButton (surface, ButtonID.ARROW_UP, "Up", new MCUCursorCommand (Direction.UP, this.model, surface), 0, MCUControlSurface.MCU_ARROW_UP);
+                this.addButton (surface, ButtonID.ARROW_DOWN, "Down", new MCUCursorCommand (Direction.DOWN, this.model, surface), 0, MCUControlSurface.MCU_ARROW_DOWN);
+                this.addButton (surface, ButtonID.ZOOM, "Zoom", new ZoomCommand (this.model, surface), 0, MCUControlSurface.MCU_ZOOM, surface.getConfiguration ()::isZoomState);
+
+                // Display Mode
+                this.addButton (surface, ButtonID.TOGGLE_DISPLAY, "Toggle Display", new ToggleDisplayCommand (this.model, surface), 0, MCUControlSurface.MCU_NAME_VALUE, surface.getConfiguration ()::isDisplayTrackNames);
+                this.addButton (surface, ButtonID.TEMPO_TICKS, "Tempo Ticks", new TempoTicksCommand (this.model, surface), 0, MCUControlSurface.MCU_SMPTE_BEATS, this.configuration::isDisplayTicks);
+
+                // Functions
+                this.addButton (surface, ButtonID.SHIFT, "Shift", new ShiftCommand<> (this.model, surface), 0, MCUControlSurface.MCU_SHIFT);
+                this.addButton (surface, ButtonID.SELECT, "Option", NopCommand.INSTANCE, 0, MCUControlSurface.MCU_OPTION);
+                this.addButton (surface, ButtonID.PUNCH_IN, "Punch In", new PunchInCommand<> (this.model, surface), 0, MCUControlSurface.MCU_F6, t::isPunchInEnabled);
+                this.addButton (surface, ButtonID.PUNCH_OUT, "Punch Out", new PunchOutCommand<> (this.model, surface), 0, MCUControlSurface.MCU_F7, t::isPunchOutEnabled);
+
+                for (int i = 0; i < 5; i++)
+                {
+                    final AssignableCommand command = new AssignableCommand (2 + i, this.model, surface);
+                    this.addButton (surface, ButtonID.get (ButtonID.F1, i), "F" + (i + 1), command, 0, MCUControlSurface.MCU_F1 + i, command::isActive);
+                }
+
+                final MoveTrackBankCommand<MCUControlSurface, MCUConfiguration> moveTrackBankLeftCommand = new MoveTrackBankCommand<> (this.model, surface, Modes.DEVICE_PARAMS, true, true);
+                final MoveTrackBankCommand<MCUControlSurface, MCUConfiguration> moveTrackBankRightCommand = new MoveTrackBankCommand<> (this.model, surface, Modes.DEVICE_PARAMS, true, false);
+
+                // Assignment - mode selection
+
+                final ModeManager modeManager = surface.getModeManager ();
+
+                this.addButton (surface, ButtonID.TRACK, "Track", new TracksCommand (this.model, surface), 0, MCUControlSurface.MCU_MODE_IO, () -> surface.getButton (ButtonID.SELECT).isPressed () ? this.model.isCursorTrackPinned () : modeManager.isActiveOrTempMode (Modes.TRACK, Modes.VOLUME));
+                this.addButton (surface, ButtonID.PAN_SEND, "Pan", new ModeSelectCommand<> (this.model, surface, Modes.PAN), 0, MCUControlSurface.MCU_MODE_PAN, () -> modeManager.isActiveOrTempMode (Modes.PAN));
+                this.addButton (surface, ButtonID.SENDS, "Sends", new SendSelectCommand (this.model, surface), 0, MCUControlSurface.MCU_MODE_SENDS, () -> Modes.isSendMode (modeManager.getActiveOrTempModeId ()));
+                this.addButton (surface, ButtonID.DEVICE, "Device", new DevicesCommand (this.model, surface), 0, MCUControlSurface.MCU_MODE_PLUGIN, () -> surface.getButton (ButtonID.SELECT).isPressed () ? cursorDevice.isPinned () : modeManager.isActiveOrTempMode (Modes.DEVICE_PARAMS));
+                this.addButton (surface, ButtonID.MOVE_TRACK_LEFT, "Left", moveTrackBankLeftCommand, 0, MCUControlSurface.MCU_MODE_EQ);
+                this.addButton (surface, ButtonID.MOVE_TRACK_RIGHT, "Right", moveTrackBankRightCommand, 0, MCUControlSurface.MCU_MODE_DYN);
+
+                // Automation
+                this.addButton (surface, ButtonID.AUTOMATION_TRIM, "Trim", new AutomationCommand<> (AutomationMode.TRIM_READ, this.model, surface), 0, MCUControlSurface.MCU_TRIM, () -> !t.isWritingArrangerAutomation () && t.getAutomationWriteMode () == AutomationMode.TRIM_READ);
+                this.addButton (surface, ButtonID.AUTOMATION_READ, "Read", new AutomationCommand<> (AutomationMode.READ, this.model, surface), 0, MCUControlSurface.MCU_READ, () -> !t.isWritingArrangerAutomation () && t.getAutomationWriteMode () != AutomationMode.TRIM_READ);
+                this.addButton (surface, ButtonID.AUTOMATION_WRITE, "Write", new AutomationCommand<> (AutomationMode.WRITE, this.model, surface), 0, MCUControlSurface.MCU_WRITE, () -> t.isWritingArrangerAutomation () && t.getAutomationWriteMode () == AutomationMode.WRITE);
+                this.addButton (surface, ButtonID.AUTOMATION_GROUP, "Group/Write", new AutomationCommand<> (AutomationMode.LATCH_PREVIEW, this.model, surface), 0, MCUControlSurface.MCU_GROUP, () -> t.isWritingArrangerAutomation () && t.getAutomationWriteMode () == AutomationMode.LATCH_PREVIEW);
+                this.addButton (surface, ButtonID.AUTOMATION_TOUCH, "Touch", new AutomationCommand<> (AutomationMode.TOUCH, this.model, surface), 0, MCUControlSurface.MCU_TOUCH, () -> t.isWritingArrangerAutomation () && t.getAutomationWriteMode () == AutomationMode.TOUCH);
+                this.addButton (surface, ButtonID.AUTOMATION_LATCH, "Latch", new AutomationCommand<> (AutomationMode.LATCH, this.model, surface), 0, MCUControlSurface.MCU_LATCH, () -> t.isWritingArrangerAutomation () && t.getAutomationWriteMode () == AutomationMode.LATCH);
+                this.addButton (surface, ButtonID.UNDO, "Undo", new UndoCommand<> (this.model, surface), MCUControlSurface.MCU_UNDO);
+
+                // Panes
+                this.addButton (surface, ButtonID.NOTE_EDITOR, "Note Editor", new PaneCommand<> (PaneCommand.Panels.NOTE, this.model, surface), MCUControlSurface.MCU_MIDI_TRACKS);
+                this.addButton (surface, ButtonID.AUTOMATION_EDITOR, "Automation Editor", new PaneCommand<> (PaneCommand.Panels.AUTOMATION, this.model, surface), MCUControlSurface.MCU_INPUTS);
+                this.addButton (surface, ButtonID.TOGGLE_DEVICE, "Toggle Device", new PanelLayoutCommand<> (this.model, surface), 0, MCUControlSurface.MCU_AUDIO_TRACKS, () -> !surface.isShiftPressed () && cursorDevice.isWindowOpen ());
+                this.addButton (surface, ButtonID.MIXER, "Mixer", new PaneCommand<> (PaneCommand.Panels.MIXER, this.model, surface), MCUControlSurface.MCU_AUDIO_INSTR);
+
+                // Layouts
+                this.addButton (surface, ButtonID.LAYOUT_ARRANGE, "Arrange", new LayoutCommand<> (IApplication.PANEL_LAYOUT_ARRANGE, this.model, surface), MCUControlSurface.MCU_AUX);
+                this.addButton (surface, ButtonID.LAYOUT_MIX, "Mix", new LayoutCommand<> (IApplication.PANEL_LAYOUT_MIX, this.model, surface), MCUControlSurface.MCU_BUSSES);
+                this.addButton (surface, ButtonID.LAYOUT_EDIT, "Edit", new LayoutCommand<> (IApplication.PANEL_LAYOUT_EDIT, this.model, surface), MCUControlSurface.MCU_OUTPUTS);
+
+                // Utilities
+                this.addButton (surface, ButtonID.BROWSE, "Browse", new BrowserCommand<> (Modes.BROWSER, this.model, surface), 0, MCUControlSurface.MCU_USER, () -> modeManager.isActiveOrTempMode (Modes.BROWSER));
+                this.addButton (surface, ButtonID.METRONOME, "Metronome", new MetronomeCommand<> (this.model, surface), 0, MCUControlSurface.MCU_CLICK, () -> surface.getButton (ButtonID.SHIFT).isPressed () ? t.isMetronomeTicksOn () : t.isMetronomeOn ());
+                this.addButton (surface, ButtonID.GROOVE, "Groove", new GrooveCommand (this.model, surface), 0, MCUControlSurface.MCU_SOLO, () -> this.model.getGroove ().getParameters ()[0].getValue () > 0);
+                this.addButton (surface, ButtonID.OVERDUB, "Overdub", new OverdubCommand (this.model, surface), 0, MCUControlSurface.MCU_REPLACE, () -> (surface.getButton (ButtonID.SHIFT).isPressed () ? t.isLauncherOverdub () : t.isArrangerOverdub ()));
+                this.addButton (surface, ButtonID.TAP_TEMPO, "Tap Tempo", new TapTempoCommand<> (this.model, surface), 0, MCUControlSurface.MCU_NUDGE);
+                this.addButton (surface, ButtonID.DUPLICATE, "Duplicate", new DuplicateCommand<> (this.model, surface), 0, MCUControlSurface.MCU_DROP);
+
+                this.addButton (surface, ButtonID.DEVICE_ON_OFF, "Device On/Off", new DeviceOnOffCommand<> (this.model, surface), MCUControlSurface.MCU_F8);
+
+                // Currently not used but prevent error in console
+                this.addButton (surface, ButtonID.CONTROL, "Control", NopCommand.INSTANCE, MCUControlSurface.MCU_CONTROL);
+                this.addButton (surface, ButtonID.ALT, "Alt", NopCommand.INSTANCE, MCUControlSurface.MCU_ALT);
+
+                // Fader Controls
+                this.addButton (surface, ButtonID.FLIP, "Flip", new ToggleTrackBanksCommand<> (this.model, surface), 0, MCUControlSurface.MCU_FLIP, this.model::isEffectTrackBankActive);
+                this.addButton (surface, ButtonID.CANCEL, "Cancel", new KeyCommand (Key.ESCAPE, this.model, surface), MCUControlSurface.MCU_CANCEL);
+                this.addButton (surface, ButtonID.ENTER, "Enter", new KeyCommand (Key.ENTER, this.model, surface), MCUControlSurface.MCU_ENTER);
+
+                this.addButton (surface, ButtonID.MOVE_BANK_LEFT, "Bank Left", new MoveTrackBankCommand<> (this.model, surface, Modes.DEVICE_PARAMS, false, true), MCUControlSurface.MCU_BANK_LEFT);
+                this.addButton (surface, ButtonID.MOVE_BANK_RIGHT, "Bank Right", new MoveTrackBankCommand<> (this.model, surface, Modes.DEVICE_PARAMS, false, false), MCUControlSurface.MCU_BANK_RIGHT);
+                surface.getButton (ButtonID.MOVE_TRACK_LEFT).bind (input, this.getTriggerBindType (null), MCUControlSurface.MCU_TRACK_LEFT);
+                surface.getButton (ButtonID.MOVE_TRACK_RIGHT).bind (input, this.getTriggerBindType (null), MCUControlSurface.MCU_TRACK_RIGHT);
+
+                // Additional command for footcontrollers
+                this.addButton (surface, ButtonID.NEW, "New", new NewCommand<> (this.model, surface), -1);
+
+                // Only MCU
+                this.addButton (surface, ButtonID.SAVE, "Save", new SaveCommand<> (this.model, surface), MCUControlSurface.MCU_SAVE);
+                this.addButton (surface, ButtonID.MARKER, "Marker", new MarkerCommand<> (this.model, surface), 0, MCUControlSurface.MCU_MARKER, () -> surface.getButton (ButtonID.SHIFT).isPressed () ? this.model.getArranger ().areCueMarkersVisible () : modeManager.isActiveOrTempMode (Modes.MARKERS));
+                this.addButton (surface, ButtonID.TOGGLE_VU, "Toggle VU", new ToggleVUCommand<> (this.model, surface), 0, MCUControlSurface.MCU_EDIT, () -> this.configuration.isEnableVUMeters ());
+
+                this.addLight (surface, OutputID.LED1, 0, MCUControlSurface.MCU_SMPTE_LED, () -> this.configuration.isDisplayTicks () ? 2 : 0);
+                this.addLight (surface, OutputID.LED2, 0, MCUControlSurface.MCU_BEATS_LED, () -> !this.configuration.isDisplayTicks () ? 2 : 0);
+            }
+
             for (int i = 0; i < 8; i++)
             {
                 final ButtonID row1ButtonID = ButtonID.get (ButtonID.ROW2_1, i);
@@ -462,18 +459,18 @@ public class MCUControllerSetup extends AbstractControllerSetup<MCUControlSurfac
     @Override
     protected void registerContinuousCommands ()
     {
-        MCUControlSurface surface = this.getSurface ();
-        IMidiInput input = surface.getMidiInput ();
-
-        this.addRelativeKnob (ContinuousID.PLAY_POSITION, "Jog Wheel", new PlayPositionTempoCommand (this.model, surface), MCUControlSurface.MCU_CC_JOG, RelativeEncoding.SIGNED_BIT);
-
-        final IHwFader master = this.addFader (ContinuousID.FADER_MASTER, "Master", new PitchbendVolumeCommand (8, this.model, surface), 8);
-        master.bindTouch (new FaderTouchCommand (8, this.model, surface), input, BindType.NOTE, 0, MCUControlSurface.MCU_FADER_MASTER);
-
         for (int index = 0; index < this.numMCUDevices; index++)
         {
-            surface = this.getSurface (index);
-            input = surface.getMidiInput ();
+            final MCUControlSurface surface = this.getSurface (index);
+            final IMidiInput input = surface.getMidiInput ();
+
+            if (this.configuration.getDeviceType (index) == MCUDeviceType.MAIN)
+            {
+                this.addRelativeKnob (surface, ContinuousID.PLAY_POSITION, "Jog Wheel", new PlayPositionTempoCommand (this.model, surface), MCUControlSurface.MCU_CC_JOG, RelativeEncoding.SIGNED_BIT);
+
+                final IHwFader master = this.addFader (surface, ContinuousID.FADER_MASTER, "Master", new PitchbendVolumeCommand (8, this.model, surface), 8);
+                master.bindTouch (new FaderTouchCommand (8, this.model, surface), input, BindType.NOTE, 0, MCUControlSurface.MCU_FADER_MASTER);
+            }
 
             for (int i = 0; i < 8; i++)
             {
@@ -492,84 +489,85 @@ public class MCUControllerSetup extends AbstractControllerSetup<MCUControlSurfac
     @Override
     protected void layoutControls ()
     {
-        MCUControlSurface surface = this.getSurface ();
-
-        surface.getButton (ButtonID.FOOTSWITCH1).setBounds (12.5, 942.0, 77.75, 39.75);
-        surface.getButton (ButtonID.FOOTSWITCH2).setBounds (102.5, 942.0, 77.75, 39.75);
-        surface.getButton (ButtonID.REWIND).setBounds (556.0, 942.0, 65.0, 39.75);
-        surface.getButton (ButtonID.FORWARD).setBounds (630.0, 942.0, 65.0, 39.75);
-        surface.getButton (ButtonID.LOOP).setBounds (706.25, 942.0, 65.0, 39.75);
-        surface.getButton (ButtonID.STOP).setBounds (779.0, 942.0, 65.0, 39.75);
-        surface.getButton (ButtonID.PLAY).setBounds (850.25, 942.0, 65.0, 39.75);
-        surface.getButton (ButtonID.RECORD).setBounds (923.5, 942.0, 65.0, 39.75);
-        surface.getButton (ButtonID.SCRUB).setBounds (922.25, 697.25, 65.0, 39.75);
-        surface.getButton (ButtonID.ARROW_LEFT).setBounds (705.0, 750.25, 65.0, 39.75);
-        surface.getButton (ButtonID.ARROW_RIGHT).setBounds (849.0, 750.25, 65.0, 39.75);
-        surface.getButton (ButtonID.ARROW_UP).setBounds (777.75, 702.25, 65.0, 39.75);
-        surface.getButton (ButtonID.ARROW_DOWN).setBounds (777.75, 797.0, 65.0, 39.75);
-        surface.getButton (ButtonID.ZOOM).setBounds (777.75, 750.25, 65.0, 39.75);
-        surface.getButton (ButtonID.TOGGLE_DISPLAY).setBounds (701.25, 92.5, 77.75, 39.75);
-        surface.getButton (ButtonID.TEMPO_TICKS).setBounds (879.0, 92.5, 77.75, 39.75);
-        surface.getButton (ButtonID.SHIFT).setBounds (776.5, 637.5, 65.0, 39.75);
-        surface.getButton (ButtonID.SELECT).setBounds (703.75, 637.5, 65.0, 39.75);
-        surface.getButton (ButtonID.PUNCH_IN).setBounds (705.0, 320.25, 65.0, 39.75);
-        surface.getButton (ButtonID.PUNCH_OUT).setBounds (777.75, 320.25, 65.0, 39.75);
-        surface.getButton (ButtonID.F1).setBounds (632.5, 178.25, 65.0, 39.75);
-        surface.getButton (ButtonID.F2).setBounds (705.0, 178.25, 65.0, 39.75);
-        surface.getButton (ButtonID.F3).setBounds (777.75, 178.25, 65.0, 39.75);
-        surface.getButton (ButtonID.F4).setBounds (849.25, 178.25, 65.0, 39.75);
-        surface.getButton (ButtonID.F5).setBounds (921.5, 178.25, 65.0, 39.75);
-        surface.getButton (ButtonID.TRACK).setBounds (705.0, 225.25, 65.0, 39.75);
-        surface.getButton (ButtonID.PAN_SEND).setBounds (777.75, 225.25, 65.0, 39.75);
-        surface.getButton (ButtonID.SENDS).setBounds (849.25, 225.25, 65.0, 39.75);
-        surface.getButton (ButtonID.DEVICE).setBounds (921.5, 225.25, 65.0, 39.75);
-        surface.getButton (ButtonID.MOVE_TRACK_LEFT).setBounds (847.75, 542.0, 65.0, 39.75);
-        surface.getButton (ButtonID.MOVE_TRACK_RIGHT).setBounds (921.0, 542.0, 65.0, 39.75);
-        surface.getButton (ButtonID.AUTOMATION_READ).setBounds (632.5, 272.25, 65.0, 39.75);
-        surface.getButton (ButtonID.AUTOMATION_WRITE).setBounds (705.0, 272.25, 30.0, 39.75);
-        surface.getButton (ButtonID.AUTOMATION_GROUP).setBounds (740.0, 272.25, 30.0, 39.75);
-        surface.getButton (ButtonID.AUTOMATION_TRIM).setBounds (777.75, 272.25, 65.0, 39.75);
-        surface.getButton (ButtonID.AUTOMATION_TOUCH).setBounds (849.25, 272.25, 65.0, 39.75);
-        surface.getButton (ButtonID.AUTOMATION_LATCH).setBounds (921.5, 272.25, 65.0, 39.75);
-        surface.getButton (ButtonID.UNDO).setBounds (849.25, 320.25, 65.0, 39.75);
-        surface.getButton (ButtonID.NOTE_EDITOR).setBounds (705.0, 366.75, 65.0, 39.75);
-        surface.getButton (ButtonID.AUTOMATION_EDITOR).setBounds (777.75, 366.75, 65.0, 39.75);
-        surface.getButton (ButtonID.TOGGLE_DEVICE).setBounds (849.25, 366.75, 65.0, 39.75);
-        surface.getButton (ButtonID.MIXER).setBounds (921.5, 366.75, 65.0, 39.75);
-        surface.getButton (ButtonID.LAYOUT_ARRANGE).setBounds (703.75, 591.0, 65.0, 39.75);
-        surface.getButton (ButtonID.LAYOUT_MIX).setBounds (776.5, 591.0, 65.0, 39.75);
-        surface.getButton (ButtonID.LAYOUT_EDIT).setBounds (847.75, 591.0, 65.0, 39.75);
-        surface.getButton (ButtonID.BROWSE).setBounds (705.0, 416.75, 65.0, 39.75);
-        surface.getButton (ButtonID.METRONOME).setBounds (777.75, 416.75, 65.0, 39.75);
-        surface.getButton (ButtonID.GROOVE).setBounds (849.25, 416.75, 65.0, 39.75);
-        surface.getButton (ButtonID.OVERDUB).setBounds (921.5, 416.75, 65.0, 39.75);
-        surface.getButton (ButtonID.TAP_TEMPO).setBounds (481.25, 942.0, 65.0, 39.75);
-        surface.getButton (ButtonID.DUPLICATE).setBounds (776.5, 492.75, 65.0, 39.75);
-        surface.getButton (ButtonID.DEVICE_ON_OFF).setBounds (921.0, 590.0, 65.0, 39.75);
-        surface.getButton (ButtonID.CONTROL).setBounds (921.0, 637.5, 65.0, 39.75);
-        surface.getButton (ButtonID.ALT).setBounds (847.75, 637.5, 65.0, 39.75);
-        surface.getButton (ButtonID.FLIP).setBounds (703.75, 492.75, 65.0, 39.75);
-        surface.getButton (ButtonID.CANCEL).setBounds (847.75, 492.75, 65.0, 39.75);
-        surface.getButton (ButtonID.ENTER).setBounds (921.0, 492.75, 65.0, 39.75);
-        surface.getButton (ButtonID.MOVE_BANK_LEFT).setBounds (703.75, 542.0, 65.0, 39.75);
-        surface.getButton (ButtonID.MOVE_BANK_RIGHT).setBounds (776.5, 542.0, 65.0, 39.75);
-        surface.getButton (ButtonID.NEW).setBounds (392.0, 942.0, 77.75, 39.75);
-        surface.getButton (ButtonID.SAVE).setBounds (921.5, 320.25, 65.0, 39.75);
-        surface.getButton (ButtonID.MARKER).setBounds (632.5, 225.25, 65.0, 39.75);
-        surface.getButton (ButtonID.TOGGLE_VU).setBounds (790.25, 92.5, 77.75, 39.75);
-
-        surface.getContinuous (ContinuousID.PLAY_POSITION).setBounds (859.5, 806.5, 115.25, 115.75);
-        surface.getContinuous (ContinuousID.FADER_MASTER).setBounds (613.5, 501.5, 65.0, 419.0);
-
-        surface.getTextDisplay (2).getHardwareDisplay ().setBounds (699.0, 27.0, 263.25, 44.25);
-        surface.getTextDisplay (3).getHardwareDisplay ().setBounds (633.5, 92.5, 49.5, 39.75);
-
-        surface.getLight (OutputID.LED1).setBounds (968.5, 92.5, 21.25, 12.75);
-        surface.getLight (OutputID.LED2).setBounds (968.5, 119.5, 21.25, 12.75);
-
         for (int index = 0; index < this.numMCUDevices; index++)
         {
-            surface = this.getSurface (index);
+            final MCUControlSurface surface = this.getSurface (index);
+
+            if (this.configuration.getDeviceType (index) == MCUDeviceType.MAIN)
+            {
+                surface.getButton (ButtonID.FOOTSWITCH1).setBounds (12.5, 942.0, 77.75, 39.75);
+                surface.getButton (ButtonID.FOOTSWITCH2).setBounds (102.5, 942.0, 77.75, 39.75);
+                surface.getButton (ButtonID.REWIND).setBounds (556.0, 942.0, 65.0, 39.75);
+                surface.getButton (ButtonID.FORWARD).setBounds (630.0, 942.0, 65.0, 39.75);
+                surface.getButton (ButtonID.LOOP).setBounds (706.25, 942.0, 65.0, 39.75);
+                surface.getButton (ButtonID.STOP).setBounds (779.0, 942.0, 65.0, 39.75);
+                surface.getButton (ButtonID.PLAY).setBounds (850.25, 942.0, 65.0, 39.75);
+                surface.getButton (ButtonID.RECORD).setBounds (923.5, 942.0, 65.0, 39.75);
+                surface.getButton (ButtonID.SCRUB).setBounds (922.25, 697.25, 65.0, 39.75);
+                surface.getButton (ButtonID.ARROW_LEFT).setBounds (705.0, 750.25, 65.0, 39.75);
+                surface.getButton (ButtonID.ARROW_RIGHT).setBounds (849.0, 750.25, 65.0, 39.75);
+                surface.getButton (ButtonID.ARROW_UP).setBounds (777.75, 702.25, 65.0, 39.75);
+                surface.getButton (ButtonID.ARROW_DOWN).setBounds (777.75, 797.0, 65.0, 39.75);
+                surface.getButton (ButtonID.ZOOM).setBounds (777.75, 750.25, 65.0, 39.75);
+                surface.getButton (ButtonID.TOGGLE_DISPLAY).setBounds (701.25, 92.5, 77.75, 39.75);
+                surface.getButton (ButtonID.TEMPO_TICKS).setBounds (879.0, 92.5, 77.75, 39.75);
+                surface.getButton (ButtonID.SHIFT).setBounds (776.5, 637.5, 65.0, 39.75);
+                surface.getButton (ButtonID.SELECT).setBounds (703.75, 637.5, 65.0, 39.75);
+                surface.getButton (ButtonID.PUNCH_IN).setBounds (705.0, 320.25, 65.0, 39.75);
+                surface.getButton (ButtonID.PUNCH_OUT).setBounds (777.75, 320.25, 65.0, 39.75);
+                surface.getButton (ButtonID.F1).setBounds (632.5, 178.25, 65.0, 39.75);
+                surface.getButton (ButtonID.F2).setBounds (705.0, 178.25, 65.0, 39.75);
+                surface.getButton (ButtonID.F3).setBounds (777.75, 178.25, 65.0, 39.75);
+                surface.getButton (ButtonID.F4).setBounds (849.25, 178.25, 65.0, 39.75);
+                surface.getButton (ButtonID.F5).setBounds (921.5, 178.25, 65.0, 39.75);
+                surface.getButton (ButtonID.TRACK).setBounds (705.0, 225.25, 65.0, 39.75);
+                surface.getButton (ButtonID.PAN_SEND).setBounds (777.75, 225.25, 65.0, 39.75);
+                surface.getButton (ButtonID.SENDS).setBounds (849.25, 225.25, 65.0, 39.75);
+                surface.getButton (ButtonID.DEVICE).setBounds (921.5, 225.25, 65.0, 39.75);
+                surface.getButton (ButtonID.MOVE_TRACK_LEFT).setBounds (847.75, 542.0, 65.0, 39.75);
+                surface.getButton (ButtonID.MOVE_TRACK_RIGHT).setBounds (921.0, 542.0, 65.0, 39.75);
+                surface.getButton (ButtonID.AUTOMATION_READ).setBounds (632.5, 272.25, 65.0, 39.75);
+                surface.getButton (ButtonID.AUTOMATION_WRITE).setBounds (705.0, 272.25, 30.0, 39.75);
+                surface.getButton (ButtonID.AUTOMATION_GROUP).setBounds (740.0, 272.25, 30.0, 39.75);
+                surface.getButton (ButtonID.AUTOMATION_TRIM).setBounds (777.75, 272.25, 65.0, 39.75);
+                surface.getButton (ButtonID.AUTOMATION_TOUCH).setBounds (849.25, 272.25, 65.0, 39.75);
+                surface.getButton (ButtonID.AUTOMATION_LATCH).setBounds (921.5, 272.25, 65.0, 39.75);
+                surface.getButton (ButtonID.UNDO).setBounds (849.25, 320.25, 65.0, 39.75);
+                surface.getButton (ButtonID.NOTE_EDITOR).setBounds (705.0, 366.75, 65.0, 39.75);
+                surface.getButton (ButtonID.AUTOMATION_EDITOR).setBounds (777.75, 366.75, 65.0, 39.75);
+                surface.getButton (ButtonID.TOGGLE_DEVICE).setBounds (849.25, 366.75, 65.0, 39.75);
+                surface.getButton (ButtonID.MIXER).setBounds (921.5, 366.75, 65.0, 39.75);
+                surface.getButton (ButtonID.LAYOUT_ARRANGE).setBounds (703.75, 591.0, 65.0, 39.75);
+                surface.getButton (ButtonID.LAYOUT_MIX).setBounds (776.5, 591.0, 65.0, 39.75);
+                surface.getButton (ButtonID.LAYOUT_EDIT).setBounds (847.75, 591.0, 65.0, 39.75);
+                surface.getButton (ButtonID.BROWSE).setBounds (705.0, 416.75, 65.0, 39.75);
+                surface.getButton (ButtonID.METRONOME).setBounds (777.75, 416.75, 65.0, 39.75);
+                surface.getButton (ButtonID.GROOVE).setBounds (849.25, 416.75, 65.0, 39.75);
+                surface.getButton (ButtonID.OVERDUB).setBounds (921.5, 416.75, 65.0, 39.75);
+                surface.getButton (ButtonID.TAP_TEMPO).setBounds (481.25, 942.0, 65.0, 39.75);
+                surface.getButton (ButtonID.DUPLICATE).setBounds (776.5, 492.75, 65.0, 39.75);
+                surface.getButton (ButtonID.DEVICE_ON_OFF).setBounds (921.0, 590.0, 65.0, 39.75);
+                surface.getButton (ButtonID.CONTROL).setBounds (921.0, 637.5, 65.0, 39.75);
+                surface.getButton (ButtonID.ALT).setBounds (847.75, 637.5, 65.0, 39.75);
+                surface.getButton (ButtonID.FLIP).setBounds (703.75, 492.75, 65.0, 39.75);
+                surface.getButton (ButtonID.CANCEL).setBounds (847.75, 492.75, 65.0, 39.75);
+                surface.getButton (ButtonID.ENTER).setBounds (921.0, 492.75, 65.0, 39.75);
+                surface.getButton (ButtonID.MOVE_BANK_LEFT).setBounds (703.75, 542.0, 65.0, 39.75);
+                surface.getButton (ButtonID.MOVE_BANK_RIGHT).setBounds (776.5, 542.0, 65.0, 39.75);
+                surface.getButton (ButtonID.NEW).setBounds (392.0, 942.0, 77.75, 39.75);
+                surface.getButton (ButtonID.SAVE).setBounds (921.5, 320.25, 65.0, 39.75);
+                surface.getButton (ButtonID.MARKER).setBounds (632.5, 225.25, 65.0, 39.75);
+                surface.getButton (ButtonID.TOGGLE_VU).setBounds (790.25, 92.5, 77.75, 39.75);
+
+                surface.getContinuous (ContinuousID.PLAY_POSITION).setBounds (859.5, 806.5, 115.25, 115.75);
+                surface.getContinuous (ContinuousID.FADER_MASTER).setBounds (613.5, 501.5, 65.0, 419.0);
+
+                surface.getTextDisplay (2).getHardwareDisplay ().setBounds (699.0, 27.0, 263.25, 44.25);
+                surface.getTextDisplay (3).getHardwareDisplay ().setBounds (633.5, 92.5, 49.5, 39.75);
+
+                surface.getLight (OutputID.LED1).setBounds (968.5, 92.5, 21.25, 12.75);
+                surface.getLight (OutputID.LED2).setBounds (968.5, 119.5, 21.25, 12.75);
+            }
 
             surface.getButton (ButtonID.ROW2_1).setBounds (12.75, 178.25, 65.0, 39.75);
             surface.getButton (ButtonID.ROW3_1).setBounds (12.75, 225.25, 65.0, 39.75);
@@ -666,7 +664,11 @@ public class MCUControllerSetup extends AbstractControllerSetup<MCUControlSurfac
             positionText = positionText.substring (0, pos + 1) + tempoStr;
         }
 
-        this.getSurface ().getTextDisplay (2).setRow (0, positionText).allDone ();
+        for (int index = 0; index < this.numMCUDevices; index++)
+        {
+            if (this.configuration.getDeviceType (index) == MCUDeviceType.MAIN)
+                this.getSurface (index).getTextDisplay (2).setRow (0, positionText).allDone ();
+        }
     }
 
 
@@ -696,26 +698,28 @@ public class MCUControllerSetup extends AbstractControllerSetup<MCUControlSurfac
                     output.sendChannelAftertouch (0x10 * i + scaledValue, 0);
                 }
             }
-        }
 
-        final IMasterTrack masterTrack = this.model.getMasterTrack ();
-        final IMidiOutput output = this.getSurface ().getMidiOutput ();
+            if (this.configuration.getDeviceType (index) == MCUDeviceType.MAIN)
+            {
+                final IMasterTrack masterTrack = this.model.getMasterTrack ();
 
-        // Stereo VU of master channel
-        int vu = masterTrack.getVuLeft ();
-        if (vu != this.masterVuValues[0])
-        {
-            this.masterVuValues[0] = vu;
-            final int scaledValue = (int) Math.round (vu * 12 / upperBound);
-            output.sendChannelAftertouch (1, scaledValue, 0);
-        }
+                // Stereo VU of master channel
+                int vu = masterTrack.getVuLeft ();
+                if (vu != this.masterVuValues[0])
+                {
+                    this.masterVuValues[0] = vu;
+                    final int scaledValue = (int) Math.round (vu * 12 / upperBound);
+                    output.sendChannelAftertouch (1, scaledValue, 0);
+                }
 
-        vu = masterTrack.getVuRight ();
-        if (vu != this.masterVuValues[1])
-        {
-            this.masterVuValues[1] = vu;
-            final int scaledValue = (int) Math.round (vu * 12 / upperBound);
-            output.sendChannelAftertouch (1, 0x10 + scaledValue, 0);
+                vu = masterTrack.getVuRight ();
+                if (vu != this.masterVuValues[1])
+                {
+                    this.masterVuValues[1] = vu;
+                    final int scaledValue = (int) Math.round (vu * 12 / upperBound);
+                    output.sendChannelAftertouch (1, 0x10 + scaledValue, 0);
+                }
+            }
         }
     }
 
@@ -728,9 +732,9 @@ public class MCUControllerSetup extends AbstractControllerSetup<MCUControlSurfac
         final Modes activeMode = this.getSurface ().getModeManager ().getActiveOrTempModeId ();
         final Modes modeId = this.configuration.useFadersAsKnobs () && VALUE_MODES.contains (activeMode) ? activeMode : Modes.VOLUME;
 
-        for (int surfaceIndex = 0; surfaceIndex < this.numMCUDevices; surfaceIndex++)
+        for (int index = 0; index < this.numMCUDevices; index++)
         {
-            final MCUControlSurface surface = this.getSurface (surfaceIndex);
+            final MCUControlSurface surface = this.getSurface (index);
             final Mode mode = surface.getModeManager ().getMode (modeId);
             final IMidiOutput output = surface.getMidiOutput ();
             for (int channel = 0; channel < 8; channel++)
@@ -747,14 +751,17 @@ public class MCUControllerSetup extends AbstractControllerSetup<MCUControlSurfac
                     output.sendPitchbend (channel, value % 127, value / 127);
                 }
             }
-        }
 
-        // Update motor fader of master channel
-        final int volume = isShiftPressed ? this.model.getTransport ().getMetronomeVolume () : this.model.getMasterTrack ().getVolume ();
-        if (volume != this.masterFaderValue)
-        {
-            this.masterFaderValue = volume;
-            this.getSurface ().getMidiOutput ().sendPitchbend (8, volume % 127, volume / 127);
+            // Update motor fader of master channel
+            if (this.configuration.getDeviceType (index) == MCUDeviceType.MAIN)
+            {
+                final int volume = isShiftPressed ? this.model.getTransport ().getMetronomeVolume () : this.model.getMasterTrack ().getVolume ();
+                if (volume != this.masterFaderValue)
+                {
+                    this.masterFaderValue = volume;
+                    output.sendPitchbend (8, volume % 127, volume / 127);
+                }
+            }
         }
     }
 
@@ -765,8 +772,15 @@ public class MCUControllerSetup extends AbstractControllerSetup<MCUControlSurfac
             return;
 
         this.updateIndication (mode);
-        if (this.configuration.hasAssignmentDisplay ())
-            this.getSurface ().getTextDisplay (3).setRow (0, MODE_ACRONYMS.get (mode)).allDone ();
+
+        if (!this.configuration.hasAssignmentDisplay ())
+            return;
+
+        for (int index = 0; index < this.numMCUDevices; index++)
+        {
+            if (this.configuration.getDeviceType (index) == MCUDeviceType.MAIN)
+                this.getSurface (index).getTextDisplay (3).setRow (0, MODE_ACRONYMS.get (mode)).allDone ();
+        }
     }
 
 

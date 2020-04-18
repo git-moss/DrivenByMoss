@@ -92,9 +92,19 @@ public class OSCControllerSetup extends AbstractControllerSetup<IControlSurface<
     @Override
     protected void createModel ()
     {
+        final int bankPageSize = this.configuration.getBankPageSize ();
+
         final ModelSetup ms = new ModelSetup ();
         ms.setHasFlatTrackList (false);
-        ms.setNumMarkers (8);
+
+        ms.setNumTracks (bankPageSize);
+        ms.setNumScenes (bankPageSize);
+        ms.setNumSends (bankPageSize);
+        ms.setNumDevicesInBank (bankPageSize);
+        ms.setNumDeviceLayers (bankPageSize);
+        ms.setNumParams (bankPageSize);
+        ms.setNumMarkers (bankPageSize);
+
         this.model = this.factory.createModel (this.colorManager, this.valueChanger, this.scales, ms);
     }
 

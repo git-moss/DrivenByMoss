@@ -52,7 +52,7 @@ public class ParametersMode extends AbstractParametersMode
 
     /**
      * Show devices or the parameter banks of the cursor device for selection.
-     * 
+     *
      * @param showDevices True to show devices otherwise parameters
      */
     public final void setShowDevices (final boolean showDevices)
@@ -211,7 +211,7 @@ public class ParametersMode extends AbstractParametersMode
     {
         // Colors in combination with Shift
         if (this.surface.isShiftPressed ())
-            return getButtonColorShifted (buttonID);
+            return this.getButtonColorShifted (buttonID);
 
         // Colors in combination with Arrow Up
         if (this.surface.isLongPressed (ButtonID.ARROW_UP))
@@ -242,7 +242,7 @@ public class ParametersMode extends AbstractParametersMode
 
     /**
      * Get the button color if Shift is pressed.
-     * 
+     *
      * @param buttonID The button ID
      * @return The button color
      */

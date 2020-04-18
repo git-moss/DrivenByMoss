@@ -37,7 +37,7 @@ public class NopCommand implements TriggerCommand, ContinuousCommand
 
     /** {@inheritDoc} */
     @Override
-    public void execute (int value)
+    public void execute (final int value)
     {
         // Intentionally empty
     }

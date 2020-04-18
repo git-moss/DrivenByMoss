@@ -57,4 +57,24 @@ public class UserMode<S extends IControlSurface<C>, C extends Configuration> ext
         }
         param.touchValue (isTouched);
     }
+
+
+    /** {@inheritDoc} */
+    @Override
+    public void selectPreviousItem ()
+    {
+        super.selectPreviousItem ();
+
+        this.mvHelper.notifySelectedUserPage ();
+    }
+
+
+    /** {@inheritDoc} */
+    @Override
+    public void selectNextItem ()
+    {
+        super.selectNextItem ();
+
+        this.mvHelper.notifySelectedUserPage ();
+    }
 }

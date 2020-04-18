@@ -41,6 +41,8 @@ public class OSCConfiguration extends AbstractOpenSoundControlConfiguration
     }
 
 
+    private static final String    CATEGORY_PROTOCOL        = "Protocol (must match your client template!)";
+
     private static final String [] VALUE_RESOLUTION_OPTIONS =
     {
         "Low (128)",
@@ -52,6 +54,7 @@ public class OSCConfiguration extends AbstractOpenSoundControlConfiguration
     private String                 sendHost                 = DEFAULT_SERVER;
     private int                    sendPort                 = 9000;
     private ValueResolution        valueResolution          = ValueResolution.LOW;
+    private int                    bankPageSize             = 8;
 
 
     /**
@@ -86,7 +89,10 @@ public class OSCConfiguration extends AbstractOpenSoundControlConfiguration
         final IIntegerSetting sendPortSetting = globalSettings.getRangeSetting ("Port to send to (requires restart)", CATEGORY_SETUP, 1024, 65535, 1, "", 9000);
         this.sendPort = sendPortSetting.get ().intValue ();
 
-        final IEnumSetting valueResolutionSetting = globalSettings.getEnumSetting ("Value resolution (must match your client!)", CATEGORY_SETUP, VALUE_RESOLUTION_OPTIONS, VALUE_RESOLUTION_OPTIONS[0]);
+        ///////////////////////////
+        // Protocol
+
+        final IEnumSetting valueResolutionSetting = globalSettings.getEnumSetting ("Value resolution", CATEGORY_PROTOCOL, VALUE_RESOLUTION_OPTIONS, VALUE_RESOLUTION_OPTIONS[0]);
         valueResolutionSetting.addValueObserver (value -> {
             if (VALUE_RESOLUTION_OPTIONS[0].equals (value))
                 this.valueResolution = ValueResolution.LOW;
@@ -97,6 +103,13 @@ public class OSCConfiguration extends AbstractOpenSoundControlConfiguration
 
             this.notifyObservers (VALUE_RESOLUTION);
         });
+
+        final String [] pageSize = new String [200];
+        for (int i = 0; i < pageSize.length; i++)
+            pageSize[i] = Integer.toString (i + 1);
+
+        final IEnumSetting bankPageSizeSetting = globalSettings.getEnumSetting ("Bank Page Size (requires restart)", CATEGORY_PROTOCOL, pageSize, pageSize[7]);
+        bankPageSizeSetting.addValueObserver (value -> this.bankPageSize = Integer.parseInt (value));
 
         ///////////////////////////
         // Transport
@@ -162,5 +175,16 @@ public class OSCConfiguration extends AbstractOpenSoundControlConfiguration
     public ValueResolution getValueResolution ()
     {
         return this.valueResolution;
+    }
+
+
+    /**
+     * Get the bank page size.
+     *
+     * @return The bank page size
+     */
+    public int getBankPageSize ()
+    {
+        return this.bankPageSize;
     }
 }

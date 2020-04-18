@@ -4,6 +4,7 @@
 
 package de.mossgrabers.controller.mcu;
 
+import de.mossgrabers.controller.mcu.controller.MCUDeviceType;
 import de.mossgrabers.framework.configuration.AbstractConfiguration;
 import de.mossgrabers.framework.configuration.IEnumSetting;
 import de.mossgrabers.framework.configuration.ISettingsUI;
@@ -22,51 +23,52 @@ import java.util.Arrays;
 public class MCUConfiguration extends AbstractConfiguration
 {
     /** Zoom state. */
-    public static final Integer    ZOOM_STATE                              = Integer.valueOf (50);
+    public static final Integer       ZOOM_STATE                              = Integer.valueOf (50);
     /** Display time or beats. */
-    public static final Integer    DISPLAY_MODE_TIME_OR_BEATS              = Integer.valueOf (51);
+    public static final Integer       DISPLAY_MODE_TIME_OR_BEATS              = Integer.valueOf (51);
     /** Display mode tempo or ticks. */
-    public static final Integer    DISPLAY_MODE_TICKS_OR_TEMPO             = Integer.valueOf (52);
+    public static final Integer       DISPLAY_MODE_TICKS_OR_TEMPO             = Integer.valueOf (52);
     /** Has a display. */
-    public static final Integer    HAS_DISPLAY1                            = Integer.valueOf (53);
+    public static final Integer       HAS_DISPLAY1                            = Integer.valueOf (53);
     /** Has a second display. */
-    public static final Integer    HAS_DISPLAY2                            = Integer.valueOf (54);
+    public static final Integer       HAS_DISPLAY2                            = Integer.valueOf (54);
     /** Has a segment display. */
-    public static final Integer    HAS_SEGMENT_DISPLAY                     = Integer.valueOf (55);
+    public static final Integer       HAS_SEGMENT_DISPLAY                     = Integer.valueOf (55);
     /** Has an assignment display. */
-    public static final Integer    HAS_ASSIGNMENT_DISPLAY                  = Integer.valueOf (56);
+    public static final Integer       HAS_ASSIGNMENT_DISPLAY                  = Integer.valueOf (56);
     /** Has motor faders. */
-    public static final Integer    HAS_MOTOR_FADERS                        = Integer.valueOf (57);
+    public static final Integer       HAS_MOTOR_FADERS                        = Integer.valueOf (57);
     /** Has only 1 fader. */
-    public static final Integer    HAS_ONLY_1_FADER                        = Integer.valueOf (58);
+    public static final Integer       HAS_ONLY_1_FADER                        = Integer.valueOf (58);
     /** Display track names in 1st display. */
-    public static final Integer    DISPLAY_TRACK_NAMES                     = Integer.valueOf (59);
+    public static final Integer       DISPLAY_TRACK_NAMES                     = Integer.valueOf (59);
     /** Replace the vertical zoom withmode change. */
-    public static final Integer    USE_VERT_ZOOM_FOR_MODES                 = Integer.valueOf (60);
+    public static final Integer       USE_VERT_ZOOM_FOR_MODES                 = Integer.valueOf (60);
     /** Use the faders like the editing knobs. */
-    public static final Integer    USE_FADERS_AS_KNOBS                     = Integer.valueOf (61);
+    public static final Integer       USE_FADERS_AS_KNOBS                     = Integer.valueOf (61);
     /** Select the channel when touching it's fader. */
-    private static final Integer   TOUCH_CHANNEL                           = Integer.valueOf (62);
+    private static final Integer      TOUCH_CHANNEL                           = Integer.valueOf (62);
 
     /** Use a Function button to switch to previous mode. */
-    public static final int        FOOTSWITCH_2_PREV_MODE                  = 15;
+    public static final int           FOOTSWITCH_2_PREV_MODE                  = 15;
     /** Use a Function button to switch to next mode. */
-    public static final int        FOOTSWITCH_2_NEXT_MODE                  = 16;
+    public static final int           FOOTSWITCH_2_NEXT_MODE                  = 16;
     /** Use a Function button to switch to Marker mode. */
-    public static final int        FOOTSWITCH_2_SHOW_MARKER_MODE           = 17;
+    public static final int           FOOTSWITCH_2_SHOW_MARKER_MODE           = 17;
     /** Toggle use faders like editing knobs. */
-    public static final int        FOOTSWITCH_2_USE_FADERS_LIKE_EDIT_KNOBS = 18;
+    public static final int           FOOTSWITCH_2_USE_FADERS_LIKE_EDIT_KNOBS = 18;
 
-    private static final String    CATEGORY_SEGMENT_DISPLAY                = "Segment Display";
+    private static final String       CATEGORY_EXTENDER_SETUP                 = "Extender Setup (requires restart)";
+    private static final String       CATEGORY_SEGMENT_DISPLAY                = "Segment Display";
 
-    private static final String    DEVICE_SELECT                           = "<Select a profile>";
-    private static final String    DEVICE_BEHRINGER_X_TOUCH_ONE            = "Behringer X-Touch One";
-    private static final String    DEVICE_ICON_PLATFORM_M                  = "icon Platform M / M+";
-    private static final String    DEVICE_ICON_QCON_PRO_X                  = "icon QConPro X";
-    private static final String    DEVICE_MACKIE_MCU_PRO                   = "Mackie MCU Pro";
-    private static final String    DEVICE_ZOOM_R16                         = "Zoom R16";
+    private static final String       DEVICE_SELECT                           = "<Select a profile>";
+    private static final String       DEVICE_BEHRINGER_X_TOUCH_ONE            = "Behringer X-Touch One";
+    private static final String       DEVICE_ICON_PLATFORM_M                  = "icon Platform M / M+";
+    private static final String       DEVICE_ICON_QCON_PRO_X                  = "icon QConPro X";
+    private static final String       DEVICE_MACKIE_MCU_PRO                   = "Mackie MCU Pro";
+    private static final String       DEVICE_ZOOM_R16                         = "Zoom R16";
 
-    private static final String [] DEVICE_OPTIONS                          =
+    private static final String []    DEVICE_OPTIONS                          =
     {
         DEVICE_SELECT,
         DEVICE_BEHRINGER_X_TOUCH_ONE,
@@ -76,7 +78,7 @@ public class MCUConfiguration extends AbstractConfiguration
         DEVICE_ZOOM_R16
     };
 
-    private static final String [] ASSIGNABLE_VALUES                       =
+    private static final String []    ASSIGNABLE_VALUES                       =
     {
         "Toggle Play",
         "Toggle Record",
@@ -99,7 +101,7 @@ public class MCUConfiguration extends AbstractConfiguration
         "Toggle use faders like editing knobs"
     };
 
-    private static final String [] ASSIGNABLE_BUTTON_NAMES                 =
+    private static final String []    ASSIGNABLE_BUTTON_NAMES                 =
     {
         "Footswitch 1",
         "Footswitch 2",
@@ -110,45 +112,75 @@ public class MCUConfiguration extends AbstractConfiguration
         "F5"
     };
 
-    private static final String [] TIME_OR_BEATS_OPTIONS                   =
+    private static final String []    TIME_OR_BEATS_OPTIONS                   =
     {
         "Time",
         "Beats"
     };
 
-    private static final String [] TEMPO_OR_TICKS_OPTIONS                  =
+    private static final String []    TEMPO_OR_TICKS_OPTIONS                  =
     {
         "Ticks",
         "Tempo"
     };
 
-    private IEnumSetting           zoomStateSetting;
-    private IEnumSetting           displayTimeSetting;
-    private IEnumSetting           tempoOrTicksSetting;
-    private IEnumSetting           hasDisplay1Setting;
-    private IEnumSetting           hasDisplay2Setting;
-    private IEnumSetting           hasSegmentDisplaySetting;
-    private IEnumSetting           hasAssignmentDisplaySetting;
-    private IEnumSetting           hasMotorFadersSetting;
-    private IEnumSetting           hasOnly1FaderSetting;
-    private IEnumSetting           displayTrackNamesSetting;
-    private IEnumSetting           useVertZoomForModesSetting;
-    private IEnumSetting           useFadersAsKnobsSetting;
+    private static final String []    MCU_DEVICE_TYPE_OPTIONS                 =
+    {
+        "Main",
+        "Extender",
+        "Mackie Extender"
+    };
 
-    private boolean                zoomState;
-    private boolean                displayTime;
-    private boolean                displayTicks;
-    private boolean                hasDisplay1;
-    private boolean                hasDisplay2;
-    private boolean                hasSegmentDisplay;
-    private boolean                hasAssignmentDisplay;
-    private boolean                hasMotorFaders;
-    private boolean                hasOnly1Fader;
-    private boolean                displayTrackNames;
-    private boolean                useVertZoomForModes;
-    private boolean                useFadersAsKnobs;
-    private boolean                touchChannel;
-    private int []                 assignableFunctions                     = new int [7];
+    private static final String [] [] MCU_DEVICE_DESCRIPTORS                  =
+    {
+        {
+            "MCU Device 1"
+        },
+        {
+            "MCU Device 1 - left",
+            "MCU Device 2 - right",
+        },
+        {
+            "MCU Device 1 - left",
+            "MCU Device 2 - center",
+            "MCU Device 3 - right",
+        },
+        {
+            "MCU Device 1 - left",
+            "MCU Device 2",
+            "MCU Device 3",
+            "MCU Device 4 - right",
+        }
+    };
+
+    private IEnumSetting              zoomStateSetting;
+    private IEnumSetting              displayTimeSetting;
+    private IEnumSetting              tempoOrTicksSetting;
+    private IEnumSetting              hasDisplay1Setting;
+    private IEnumSetting              hasDisplay2Setting;
+    private IEnumSetting              hasSegmentDisplaySetting;
+    private IEnumSetting              hasAssignmentDisplaySetting;
+    private IEnumSetting              hasMotorFadersSetting;
+    private IEnumSetting              hasOnly1FaderSetting;
+    private IEnumSetting              displayTrackNamesSetting;
+    private IEnumSetting              useVertZoomForModesSetting;
+    private IEnumSetting              useFadersAsKnobsSetting;
+
+    private boolean                   zoomState;
+    private boolean                   displayTime;
+    private boolean                   displayTicks;
+    private boolean                   hasDisplay1;
+    private boolean                   hasDisplay2;
+    private boolean                   hasSegmentDisplay;
+    private boolean                   hasAssignmentDisplay;
+    private boolean                   hasMotorFaders;
+    private boolean                   hasOnly1Fader;
+    private boolean                   displayTrackNames;
+    private boolean                   useVertZoomForModes;
+    private boolean                   useFadersAsKnobs;
+    private boolean                   touchChannel;
+    private int []                    assignableFunctions                     = new int [7];
+    private final MCUDeviceType []    deviceTyes;
 
 
     /**
@@ -156,13 +188,19 @@ public class MCUConfiguration extends AbstractConfiguration
      *
      * @param host The DAW host
      * @param valueChanger The value changer
+     * @param numMCUDevices The number of MCU device (main device plus extenders) 1-4
      * @param arpeggiatorModes The available arpeggiator modes
      */
-    public MCUConfiguration (final IHost host, final IValueChanger valueChanger, final ArpeggiatorMode [] arpeggiatorModes)
+    public MCUConfiguration (final IHost host, final IValueChanger valueChanger, final int numMCUDevices, final ArpeggiatorMode [] arpeggiatorModes)
     {
         super (host, valueChanger, arpeggiatorModes);
 
         Arrays.fill (this.assignableFunctions, 0);
+
+        this.deviceTyes = new MCUDeviceType [numMCUDevices];
+        this.deviceTyes[this.deviceTyes.length - 1] = MCUDeviceType.MAIN;
+        if (numMCUDevices > 1)
+            Arrays.fill (this.deviceTyes, 0, numMCUDevices - 2, MCUDeviceType.EXTENDER);
     }
 
 
@@ -174,6 +212,7 @@ public class MCUConfiguration extends AbstractConfiguration
         // Hardware
 
         this.activateHardwareSettings (globalSettings);
+        this.activateExtenderSettings (globalSettings);
         this.activateEnableVUMetersSetting (globalSettings, CATEGORY_HARDWARE_SETUP);
 
         ///////////////////////////
@@ -343,6 +382,26 @@ public class MCUConfiguration extends AbstractConfiguration
             this.useFadersAsKnobs = "On".equals (value);
             this.notifyObservers (USE_FADERS_AS_KNOBS);
         });
+    }
+
+
+    private void activateExtenderSettings (final ISettingsUI settingsUI)
+    {
+        for (int i = 0; i < this.deviceTyes.length; i++)
+        {
+            final int index = i;
+            final String label = MCU_DEVICE_DESCRIPTORS[this.deviceTyes.length - 1][i];
+            final IEnumSetting setting = settingsUI.getEnumSetting (label, CATEGORY_EXTENDER_SETUP, MCU_DEVICE_TYPE_OPTIONS, MCU_DEVICE_TYPE_OPTIONS[i == this.deviceTyes.length - 1 ? 0 : 1]);
+            setting.addValueObserver (value -> {
+
+                if (MCU_DEVICE_TYPE_OPTIONS[0].equals (value))
+                    this.deviceTyes[index] = MCUDeviceType.MAIN;
+                else if (MCU_DEVICE_TYPE_OPTIONS[1].equals (value))
+                    this.deviceTyes[index] = MCUDeviceType.EXTENDER;
+                else if (MCU_DEVICE_TYPE_OPTIONS[2].equals (value))
+                    this.deviceTyes[index] = MCUDeviceType.MACKIE_EXTENDER;
+            });
+        }
     }
 
 
@@ -600,5 +659,17 @@ public class MCUConfiguration extends AbstractConfiguration
     public boolean isTouchChannel ()
     {
         return this.touchChannel;
+    }
+
+
+    /**
+     * Get the type of the individual MCU devices.
+     *
+     * @param index The index of the device (0-3)
+     * @return The configured device type
+     */
+    public MCUDeviceType getDeviceType (final int index)
+    {
+        return this.deviceTyes[index];
     }
 }

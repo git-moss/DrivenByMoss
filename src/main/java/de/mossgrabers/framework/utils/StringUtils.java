@@ -328,7 +328,7 @@ public class StringUtils
 
     /**
      * Format the given time as minutes.seconds / minutes.seconds.millis. Padded to 3 / 2 digits.
-     * 
+     *
      * @param tempo The tempo
      * @param beats The beats to format as time
      * @param includeFrames Add the frames (ticks) if true

@@ -4,6 +4,7 @@
 
 package de.mossgrabers.framework.mode;
 
+import de.mossgrabers.framework.MVHelper;
 import de.mossgrabers.framework.configuration.Configuration;
 import de.mossgrabers.framework.controller.ButtonID;
 import de.mossgrabers.framework.controller.ContinuousID;
@@ -49,6 +50,7 @@ public abstract class AbstractMode<S extends IControlSurface<C>, C extends Confi
     protected final boolean []       isKnobTouched;
 
     protected IBank<? extends IItem> bank;
+    protected final MVHelper<S, C>   mvHelper;
     protected boolean                isTemporary;
     protected boolean                isAbsolute;
     private boolean                  isActive;
@@ -107,6 +109,8 @@ public abstract class AbstractMode<S extends IControlSurface<C>, C extends Confi
         this.numberOfKnobs = numberOfKnobs;
 
         this.isTemporary = true;
+
+        this.mvHelper = new MVHelper<> (model, surface);
 
         this.isKnobTouched = new boolean [this.numberOfKnobs];
         Arrays.fill (this.isKnobTouched, false);

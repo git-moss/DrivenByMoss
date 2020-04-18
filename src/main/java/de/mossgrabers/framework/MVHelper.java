@@ -9,6 +9,7 @@ import de.mossgrabers.framework.controller.IControlSurface;
 import de.mossgrabers.framework.controller.display.IDisplay;
 import de.mossgrabers.framework.daw.ICursorDevice;
 import de.mossgrabers.framework.daw.IModel;
+import de.mossgrabers.framework.daw.IParameterBank;
 import de.mossgrabers.framework.daw.ITrackBank;
 import de.mossgrabers.framework.daw.ITransport;
 import de.mossgrabers.framework.daw.data.ITrack;
@@ -95,6 +96,21 @@ public class MVHelper<S extends IControlSurface<C>, C extends Configuration>
                     return "Page: " + selectedItem;
             }
             return "Page: " + NONE;
+
+        });
+    }
+
+
+    /**
+     * Display the name of the selected user parameter page.
+     */
+    public void notifySelectedUserPage ()
+    {
+        this.delayDisplay ( () -> {
+
+            final IParameterBank userBank = this.model.getUserParameterBank ();
+            final int page = userBank.getScrollPosition () / userBank.getPageSize ();
+            return "User Page: " + (page + 1);
 
         });
     }

@@ -70,7 +70,7 @@ public class HwAbsoluteKnobImpl extends AbstractHwContinuousControl implements I
             this.binding.removeBinding ();
 
         final HardwareBindable target = parameter == null ? this.defaultAction : ((ParameterImpl) parameter).getParameter ();
-        this.binding = this.hardwareKnob.setBinding (target);
+        this.binding = target == null ? null : this.hardwareKnob.setBinding (target);
     }
 
 

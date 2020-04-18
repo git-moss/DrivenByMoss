@@ -905,7 +905,8 @@ public abstract class AbstractControllerSetup<S extends IControlSurface<C>, C ex
     protected IHwAbsoluteKnob addAbsoluteKnob (final S surface, final ContinuousID continuousID, final String label, final ContinuousCommand command, final BindType bindType, final int midiChannel, final int midiControl)
     {
         final IHwAbsoluteKnob knob = surface.createAbsoluteKnob (continuousID, label);
-        knob.bind (command);
+        if (command != null)
+            knob.bind (command);
         knob.bind (surface.getMidiInput (), bindType, midiChannel, midiControl);
         return knob;
     }

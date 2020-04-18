@@ -5,6 +5,7 @@
 package de.mossgrabers.bitwig.framework.daw.data;
 
 import de.mossgrabers.framework.controller.color.ColorEx;
+import de.mossgrabers.framework.daw.ITransport;
 import de.mossgrabers.framework.daw.data.AbstractItemImpl;
 import de.mossgrabers.framework.daw.data.IMarker;
 import de.mossgrabers.framework.observer.IValueObserver;
@@ -20,7 +21,8 @@ import com.bitwig.extension.controller.api.CueMarker;
  */
 public class MarkerImpl extends AbstractItemImpl implements IMarker
 {
-    private final CueMarker marker;
+    private final CueMarker  marker;
+    private final ITransport transport;
 
 
     /**
@@ -28,16 +30,19 @@ public class MarkerImpl extends AbstractItemImpl implements IMarker
      *
      * @param marker The marker
      * @param index The index of the marker
+     * @param transport The transport for marker positioning
      */
-    public MarkerImpl (final CueMarker marker, final int index)
+    public MarkerImpl (final CueMarker marker, final int index, final ITransport transport)
     {
         super (index);
 
+        this.transport = transport;
         this.marker = marker;
 
         marker.exists ().markInterested ();
         marker.getName ().markInterested ();
         marker.getColor ().markInterested ();
+        marker.position ().markInterested ();
     }
 
 
@@ -48,6 +53,7 @@ public class MarkerImpl extends AbstractItemImpl implements IMarker
         Util.setIsSubscribed (this.marker.exists (), enable);
         Util.setIsSubscribed (this.marker.getName (), enable);
         Util.setIsSubscribed (this.marker.getColor (), enable);
+        Util.setIsSubscribed (this.marker.position (), enable);
     }
 
 
@@ -112,6 +118,6 @@ public class MarkerImpl extends AbstractItemImpl implements IMarker
     @Override
     public void select ()
     {
-        // Markers cannot be selected but should also not crash
+        this.transport.setPosition (this.marker.position ().get ());
     }
 }

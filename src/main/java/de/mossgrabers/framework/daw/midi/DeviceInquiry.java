@@ -5,7 +5,21 @@
 package de.mossgrabers.framework.daw.midi;
 
 /**
- * A MIDI device inquiry.
+ * A MIDI device inquiry as defined by the MIDI 1.0 specification page 40. The inquiry string is as
+ * follows <pre>F0 7E &lt;device ID&gt; 06 01 F7</pre> The response is
+ * <pre>F0 7E &lt;device ID&gt; 06 02 mm ff ff dd dd ss ss ss ss F7</pre>
+ * <ul>
+ * <li>F0 7E &lt;device ID&gt; - Universal System Exclusive Non-real time header
+ * <li>06 - General Information (sub-ID#1)
+ * <li>02 - Identity Reply (sub-ID#2)
+ * <li>mm - Manufacturers System Exclusive id code
+ * <li>ff ff - Device family code (14 bits, LSB first)
+ * <li>dd dd - Device family member code (14 bits, LSB first)
+ * <li>ss ss ss ss - Software revision level. Format device specific
+ * <li>F7 EOX
+ * </ul>
+ * Note that if the manufacturers id code (mm) begins with 00H then the above message is extended by
+ * two bytes to handle the additional manufacturers id code.
  *
  * @author J&uuml;rgen Mo&szlig;graber
  */

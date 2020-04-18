@@ -78,6 +78,7 @@ public class LaunchkeyMiniMk3ControllerSetup extends AbstractControllerSetup<Lau
     // @formatter:on
 
     private MVHelper<LaunchkeyMiniMk3ControlSurface, LaunchkeyMiniMk3Configuration> mvHelper;
+    private IMidiInput                                                              inputKeys;
 
 
     /**
@@ -128,13 +129,13 @@ public class LaunchkeyMiniMk3ControllerSetup extends AbstractControllerSetup<Lau
         final IMidiAccess midiAccess = this.factory.createMidiAccess ();
         final IMidiOutput output = midiAccess.createOutput ();
         final IMidiInput input = midiAccess.createInput ("Pads", "80????", "90????", "81????", "91????", "82????", "92????", "83????", "93????", "84????", "94????", "85????", "95????", "86????", "96????", "87????", "97????", "88????", "98????", "89????", "99????", "8A????", "9A????", "8B????", "9B????", "8C????", "9C????", "8D????", "9D????", "8E????", "9E????");
-        final IMidiInput inputKeys = midiAccess.createInput (1, "Keyboard", "8?????" /* Note off */,
+        this.inputKeys = midiAccess.createInput (1, "Keyboard", "8?????" /* Note off */,
                 "9?????" /* Note on */, "B?01??" /* Modulation */, "B?40??" /* Sustainpedal */,
                 "E?????" /* Pitchbend */);
 
-        final LaunchkeyMiniMk3ControlSurface surface = new LaunchkeyMiniMk3ControlSurface (this.host, this.colorManager, this.configuration, output, input, inputKeys, this::processProgramChangeAction);
+        final LaunchkeyMiniMk3ControlSurface surface = new LaunchkeyMiniMk3ControlSurface (this.host, this.colorManager, this.configuration, output, input, this::processProgramChangeAction);
         this.surfaces.add (surface);
-        surface.addPianoKeyboard (25, inputKeys, true);
+        surface.addPianoKeyboard (25, this.inputKeys, true);
 
         this.mvHelper = new MVHelper<> (this.model, surface);
     }
@@ -288,7 +289,8 @@ public class LaunchkeyMiniMk3ControllerSetup extends AbstractControllerSetup<Lau
 
             // Knobs in user mode send on MIDI channel 1 instead of 16, command is not needed since
             // it is mapped to IParameter
-            this.addAbsoluteKnob (ContinuousID.get (ContinuousID.DEVICE_KNOB1, i), "User Knob " + (i + 1), NopCommand.INSTANCE, BindType.CC, 0, LaunchkeyMiniMk3ControlSurface.LAUNCHKEY_KNOB_1 + i);
+            final ContinuousID deviceKnobContinuousID = ContinuousID.get (ContinuousID.DEVICE_KNOB1, i);
+            surface.createAbsoluteKnob (deviceKnobContinuousID, "User Knob " + (i + 1)).bind (this.inputKeys, BindType.CC, 0, LaunchkeyMiniMk3ControlSurface.LAUNCHKEY_KNOB_1 + i);
         }
     }
 
