@@ -29,6 +29,8 @@ class NoteInputImpl implements INoteInput
     public NoteInputImpl (final NoteInput noteInput)
     {
         this.noteInput = noteInput;
+        // Still forward MIDI notes to the registered callback handler even if MIDI notes are fed
+        // directly into Bitwig
         noteInput.setShouldConsumeEvents (false);
 
         this.noteRepeat = new NoteRepeatImpl (this.noteInput.arpeggiator ());

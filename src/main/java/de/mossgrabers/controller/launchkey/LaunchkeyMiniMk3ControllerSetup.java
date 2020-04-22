@@ -216,6 +216,7 @@ public class LaunchkeyMiniMk3ControllerSetup extends AbstractControllerSetup<Lau
 
         });
 
+        // Scene buttons
         this.addButton (ButtonID.SCENE1, "Scene 1", new ViewButtonCommand<> (ButtonID.SCENE1, this.model, surface), LaunchkeyMiniMk3ControlSurface.LAUNCHKEY_SCENE1, () -> {
             final View activeView = viewManager.getActiveView ();
             return activeView != null ? activeView.getButtonColor (ButtonID.SCENE1) : 0;
@@ -225,10 +226,10 @@ public class LaunchkeyMiniMk3ControllerSetup extends AbstractControllerSetup<Lau
             return activeView != null ? activeView.getButtonColor (ButtonID.SCENE2) : 0;
         });
 
+        // View and mode selection with Pads in Shift mode
         this.createViewButton (ButtonID.ROW2_1, OutputID.LED_RING1, "Session", Views.SESSION, LaunchkeyMiniMk3ControlSurface.PAD_MODE_SESSION);
         this.createViewButton (ButtonID.ROW2_2, OutputID.LED_RING2, "Drum", Views.DRUM, LaunchkeyMiniMk3ControlSurface.PAD_MODE_DRUM);
         this.createViewButton (ButtonID.ROW2_3, OutputID.LED_RING3, "Custom", Views.PLAY, LaunchkeyMiniMk3ControlSurface.PAD_MODE_CUSTOM);
-
         this.createModeButton (ButtonID.ROW1_1, OutputID.LED1, "Device", Modes.DEVICE_PARAMS, LaunchkeyMiniMk3ControlSurface.KNOB_MODE_PARAMS);
         this.createModeButton (ButtonID.ROW1_2, OutputID.LED2, "Volume", Modes.VOLUME, LaunchkeyMiniMk3ControlSurface.KNOB_MODE_VOLUME);
         this.createModeButton (ButtonID.ROW1_3, OutputID.LED3, "Pan", Modes.PAN, LaunchkeyMiniMk3ControlSurface.KNOB_MODE_PAN);
@@ -236,6 +237,7 @@ public class LaunchkeyMiniMk3ControllerSetup extends AbstractControllerSetup<Lau
         this.createModeButton (ButtonID.ROW1_5, OutputID.LED5, "Send 2", Modes.SEND2, LaunchkeyMiniMk3ControlSurface.KNOB_MODE_SEND2);
         this.createModeButton (ButtonID.ROW1_6, OutputID.LED6, "Custom", Modes.USER, LaunchkeyMiniMk3ControlSurface.KNOB_MODE_CUSTOM);
 
+        // Online state
         this.addButton (ButtonID.CONTROL, "DAW Online", (event, velocity) -> surface.setDAWConnected (velocity > 0), 15, LaunchkeyMiniMk3ControlSurface.LAUNCHKEY_DAW_ONLINE, surface::isDAWConnected);
     }
 
@@ -287,8 +289,8 @@ public class LaunchkeyMiniMk3ControllerSetup extends AbstractControllerSetup<Lau
             final KnobRowModeCommand<LaunchkeyMiniMk3ControlSurface, LaunchkeyMiniMk3Configuration> command = new KnobRowModeCommand<> (i, this.model, surface);
             this.addAbsoluteKnob (ContinuousID.get (ContinuousID.KNOB1, i), "Knob " + (i + 1), command, BindType.CC, 15, LaunchkeyMiniMk3ControlSurface.LAUNCHKEY_KNOB_1 + i);
 
-            // Knobs in user mode send on MIDI channel 1 instead of 16, command is not needed since
-            // it is mapped to IParameter
+            // Knobs in user mode send on the keys input on MIDI channel 1 (instead of 16), command
+            // is not needed since it is mapped to IParameter when user mode is activated
             final ContinuousID deviceKnobContinuousID = ContinuousID.get (ContinuousID.DEVICE_KNOB1, i);
             surface.createAbsoluteKnob (deviceKnobContinuousID, "User Knob " + (i + 1)).bind (this.inputKeys, BindType.CC, 0, LaunchkeyMiniMk3ControlSurface.LAUNCHKEY_KNOB_1 + i);
         }
