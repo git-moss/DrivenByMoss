@@ -24,6 +24,7 @@ import com.bitwig.extension.controller.api.AbsoluteHardwareControl;
 import com.bitwig.extension.controller.api.AbsoluteHardwareValueMatcher;
 import com.bitwig.extension.controller.api.ContinuousHardwareControl;
 import com.bitwig.extension.controller.api.ControllerHost;
+import com.bitwig.extension.controller.api.HardwareAction;
 import com.bitwig.extension.controller.api.HardwareActionMatcher;
 import com.bitwig.extension.controller.api.HardwareButton;
 import com.bitwig.extension.controller.api.HardwareSlider;
@@ -130,7 +131,7 @@ public class MidiInputImpl implements IMidiInput
         }
 
         hardwareButton.pressedAction ().setPressureActionMatcher (pressedMatcher);
-        hardwareButton.releasedAction ().setActionMatcher (releasedMatcher);
+        setAction (hardwareButton.releasedAction (), releasedMatcher);
     }
 
 
@@ -161,7 +162,14 @@ public class MidiInputImpl implements IMidiInput
                 throw new BindException (type);
         }
 
-        hardwareButton.pressedAction ().setActionMatcher (pressedMatcher);
+        setAction (hardwareButton.pressedAction (), pressedMatcher);
+    }
+
+
+    private static void setAction (final HardwareAction action, final HardwareActionMatcher matcher)
+    {
+        action.setActionMatcher (matcher);
+        action.setShouldFireEvenWhenUsedAsNoteInput (true);
     }
 
 
