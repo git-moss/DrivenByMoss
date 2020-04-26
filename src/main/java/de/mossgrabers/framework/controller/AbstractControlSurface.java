@@ -86,6 +86,9 @@ public abstract class AbstractControlSurface<C extends Configuration> implements
     private final DummyDisplay                      dummyDisplay;
     private IHwPianoKeyboard                        pianoKeyboard;
 
+    private final Object                            updateCounterLock     = new Object ();
+    private int                                     updateCounter         = 0;
+
 
     /**
      * Constructor.
@@ -637,10 +640,6 @@ public abstract class AbstractControlSurface<C extends Configuration> implements
         });
         this.surfaceFactory.flush ();
     }
-
-
-    private Object updateCounterLock = new Object ();
-    private int    updateCounter     = 0;
 
 
     /** {@inheritDoc} */
