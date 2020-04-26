@@ -9,7 +9,9 @@ import de.mossgrabers.framework.daw.data.AbstractItemImpl;
 import de.mossgrabers.framework.daw.data.IParameter;
 import de.mossgrabers.framework.observer.IValueObserver;
 
+import com.bitwig.extension.controller.api.DoubleValue;
 import com.bitwig.extension.controller.api.Parameter;
+import com.bitwig.extension.controller.api.StringValue;
 
 
 /**
@@ -21,6 +23,9 @@ public class ParameterImpl extends AbstractItemImpl implements IParameter
 {
     private final IValueChanger valueChanger;
     private final Parameter     parameter;
+    private StringValue         targetName;
+    private StringValue         targetDisplayedValue;
+    private DoubleValue         targetValue;
 
 
     /**
@@ -69,6 +74,8 @@ public class ParameterImpl extends AbstractItemImpl implements IParameter
     @Override
     public boolean doesExist ()
     {
+        if (this.targetName != null)
+            return !this.targetName.get ().isEmpty ();
         return this.parameter.exists ().get ();
     }
 
@@ -77,7 +84,7 @@ public class ParameterImpl extends AbstractItemImpl implements IParameter
     @Override
     public String getName ()
     {
-        return this.parameter.name ().get ();
+        return this.targetName == null ? this.parameter.name ().get () : this.targetName.get ();
     }
 
 
@@ -85,7 +92,7 @@ public class ParameterImpl extends AbstractItemImpl implements IParameter
     @Override
     public String getName (final int limit)
     {
-        return this.parameter.name ().getLimited (limit);
+        return this.targetName == null ? this.parameter.name ().getLimited (limit) : this.targetName.getLimited (limit);
     }
 
 
@@ -101,7 +108,7 @@ public class ParameterImpl extends AbstractItemImpl implements IParameter
     @Override
     public String getDisplayedValue ()
     {
-        return this.parameter.displayedValue ().get ();
+        return this.targetDisplayedValue == null ? this.parameter.displayedValue ().get () : this.targetDisplayedValue.get ();
     }
 
 
@@ -109,7 +116,7 @@ public class ParameterImpl extends AbstractItemImpl implements IParameter
     @Override
     public String getDisplayedValue (final int limit)
     {
-        return this.parameter.displayedValue ().getLimited (limit);
+        return this.targetDisplayedValue == null ? this.parameter.displayedValue ().getLimited (limit) : this.targetDisplayedValue.getLimited (limit);
     }
 
 
@@ -117,7 +124,8 @@ public class ParameterImpl extends AbstractItemImpl implements IParameter
     @Override
     public int getValue ()
     {
-        return this.valueChanger.fromNormalizedValue (this.parameter.value ().get ());
+        final double value = this.targetValue == null ? this.parameter.value ().get () : this.targetValue.get ();
+        return this.valueChanger.fromNormalizedValue (value);
     }
 
 
@@ -193,5 +201,21 @@ public class ParameterImpl extends AbstractItemImpl implements IParameter
     public Parameter getParameter ()
     {
         return this.parameter;
+    }
+
+
+    /**
+     * Workaround for new hardware API to still be able to receive user mode values via the old
+     * interface.
+     *
+     * @param targetName The name of the parameter
+     * @param targetDisplayedValue The formatted value for displaying it
+     * @param targetValue The value of the parameter
+     */
+    public void setTargetInfo (final StringValue targetName, final StringValue targetDisplayedValue, final DoubleValue targetValue)
+    {
+        this.targetName = targetName;
+        this.targetDisplayedValue = targetDisplayedValue;
+        this.targetValue = targetValue;
     }
 }
