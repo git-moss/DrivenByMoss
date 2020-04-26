@@ -122,6 +122,7 @@ public class DeviceModule extends AbstractModule
         writer.sendOSC (deviceAddress + "name", device.getName (), dump);
         writer.sendOSC (deviceAddress + "bypass", !device.isEnabled (), dump);
         writer.sendOSC (deviceAddress + "expand", device.isExpanded (), dump);
+        writer.sendOSC (deviceAddress + "parameters", device.isParameterPageSectionVisible (), dump);
         writer.sendOSC (deviceAddress + "window", device.isWindowOpen (), dump);
         final int positionInBank = device.getIndex ();
         final IDeviceBank deviceBank = device.getDeviceBank ();
@@ -249,12 +250,16 @@ public class DeviceModule extends AbstractModule
                 }
                 break;
 
+            case "bypass":
+                cursorDevice.toggleEnabledState ();
+                break;
+
             case "expand":
                 cursorDevice.toggleExpanded ();
                 break;
 
-            case "bypass":
-                cursorDevice.toggleEnabledState ();
+            case "parameters":
+                cursorDevice.toggleParameterPageSectionVisible ();
                 break;
 
             case "window":

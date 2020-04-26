@@ -30,7 +30,6 @@ import de.mossgrabers.framework.daw.midi.INoteInput;
 import de.mossgrabers.framework.graphics.IBitmap;
 import de.mossgrabers.framework.mode.ModeManager;
 import de.mossgrabers.framework.utils.ButtonEvent;
-import de.mossgrabers.framework.utils.LatestTaskExecutor;
 import de.mossgrabers.framework.view.View;
 import de.mossgrabers.framework.view.ViewManager;
 
@@ -38,7 +37,6 @@ import java.util.ArrayList;
 import java.util.EnumMap;
 import java.util.List;
 import java.util.Map;
-import java.util.concurrent.TimeUnit;
 import java.util.function.Consumer;
 import java.util.function.IntConsumer;
 import java.util.function.IntFunction;
@@ -85,7 +83,6 @@ public abstract class AbstractControlSurface<C extends Configuration> implements
 
     private int []                                  keyTranslationTable;
 
-    private final LatestTaskExecutor                flushExecutor         = new LatestTaskExecutor ();
     private final DummyDisplay                      dummyDisplay;
     private IHwPianoKeyboard                        pianoKeyboard;
 
@@ -642,22 +639,51 @@ public abstract class AbstractControlSurface<C extends Configuration> implements
     }
 
 
+    private Object updateCounterLock = new Object ();
+    private int    updateCounter     = 0;
+
+
     /** {@inheritDoc} */
     @Override
     public void flush ()
     {
-        this.flushExecutor.execute ( () -> {
-            try
+        synchronized (this.updateCounterLock)
+        {
+            this.updateCounter++;
+            this.scheduleTask (this::flushHandler, 1);
+        }
+    }
+
+
+    protected void flushHandler ()
+    {
+        synchronized (this.updateCounterLock)
+        {
+            if (this.updateCounter == 0)
+                return;
+        }
+
+        try
+        {
+            this.updateViewControls ();
+            this.updateGrid ();
+            this.flushHardware ();
+        }
+        catch (final RuntimeException ex)
+        {
+            this.host.error ("Crash during flush.", ex);
+        }
+
+        synchronized (this.updateCounterLock)
+        {
+            if (this.updateCounter > 1)
             {
-                this.updateViewControls ();
-                this.updateGrid ();
-                this.flushHardware ();
+                this.updateCounter = 1;
+                this.scheduleTask (this::flushHandler, 1);
             }
-            catch (final RuntimeException ex)
-            {
-                this.host.error ("Crash during flush.", ex);
-            }
-        });
+            else
+                this.updateCounter = 0;
+        }
     }
 
 
@@ -673,18 +699,6 @@ public abstract class AbstractControlSurface<C extends Configuration> implements
     @Override
     public final synchronized void shutdown ()
     {
-        this.flushExecutor.shutdown ();
-
-        try
-        {
-            this.flushExecutor.awaitTermination (5, TimeUnit.SECONDS);
-        }
-        catch (final InterruptedException ex)
-        {
-            this.host.error ("Executor shutdown interrupted.", ex);
-            Thread.currentThread ().interrupt ();
-        }
-
         this.internalShutdown ();
         this.flushHardware ();
     }
