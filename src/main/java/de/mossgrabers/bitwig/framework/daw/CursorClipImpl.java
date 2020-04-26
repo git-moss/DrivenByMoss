@@ -31,9 +31,7 @@ public class CursorClipImpl implements INoteClip
     private int                      numRows;
 
     private final IStepInfo [] [] [] launcherData;
-    private final IStepInfo [] [] [] arrangerData;
     private Clip                     launcherClip;
-    private Clip                     arrangerClip;
     private int                      editPage = 0;
     private double                   stepLength;
 
@@ -56,7 +54,6 @@ public class CursorClipImpl implements INoteClip
         this.stepLength = 1.0 / 4.0; // 16th
 
         this.launcherData = new IStepInfo [16] [this.numSteps] [];
-        this.arrangerData = new IStepInfo [16] [this.numSteps] [];
 
         // TODO Bugfix required: https://github.com/teotigraphix/Framework4Bitwig/issues/140
         this.launcherClip = host.createLauncherCursorClip (this.numSteps, this.numRows);
@@ -75,23 +72,6 @@ public class CursorClipImpl implements INoteClip
         this.launcherClip.canScrollStepsBackwards ().markInterested ();
         this.launcherClip.canScrollStepsForwards ().markInterested ();
         this.launcherClip.color ().markInterested ();
-
-        this.arrangerClip = host.createLauncherCursorClip (this.numSteps, this.numRows);
-
-        this.arrangerClip.addNoteStepObserver (this::handleStepData);
-
-        this.arrangerClip.exists ().markInterested ();
-        this.arrangerClip.playingStep ().markInterested ();
-        this.arrangerClip.getPlayStart ().markInterested ();
-        this.arrangerClip.getPlayStop ().markInterested ();
-        this.arrangerClip.getLoopStart ().markInterested ();
-        this.arrangerClip.getLoopLength ().markInterested ();
-        this.arrangerClip.isLoopEnabled ().markInterested ();
-        this.arrangerClip.getShuffle ().markInterested ();
-        this.arrangerClip.getAccent ().markInterested ();
-        this.arrangerClip.canScrollStepsBackwards ().markInterested ();
-        this.arrangerClip.canScrollStepsForwards ().markInterested ();
-        this.arrangerClip.color ().markInterested ();
     }
 
 
@@ -111,19 +91,6 @@ public class CursorClipImpl implements INoteClip
         Util.setIsSubscribed (this.launcherClip.canScrollStepsBackwards (), enable);
         Util.setIsSubscribed (this.launcherClip.canScrollStepsForwards (), enable);
         Util.setIsSubscribed (this.launcherClip.color (), enable);
-
-        Util.setIsSubscribed (this.arrangerClip.exists (), enable);
-        Util.setIsSubscribed (this.arrangerClip.playingStep (), enable);
-        Util.setIsSubscribed (this.arrangerClip.getPlayStart (), enable);
-        Util.setIsSubscribed (this.arrangerClip.getPlayStop (), enable);
-        Util.setIsSubscribed (this.arrangerClip.getLoopStart (), enable);
-        Util.setIsSubscribed (this.arrangerClip.getLoopLength (), enable);
-        Util.setIsSubscribed (this.arrangerClip.isLoopEnabled (), enable);
-        Util.setIsSubscribed (this.arrangerClip.getShuffle (), enable);
-        Util.setIsSubscribed (this.arrangerClip.getAccent (), enable);
-        Util.setIsSubscribed (this.arrangerClip.canScrollStepsBackwards (), enable);
-        Util.setIsSubscribed (this.arrangerClip.canScrollStepsForwards (), enable);
-        Util.setIsSubscribed (this.arrangerClip.color (), enable);
     }
 
 
@@ -362,7 +329,6 @@ public class CursorClipImpl implements INoteClip
     {
         this.stepLength = length;
         this.launcherClip.setStepSize (length);
-        this.arrangerClip.setStepSize (length);
     }
 
 
@@ -874,7 +840,7 @@ public class CursorClipImpl implements INoteClip
      */
     private Clip getClip ()
     {
-        return this.launcherClip.exists ().get () ? this.launcherClip : this.arrangerClip;
+        return this.launcherClip;
     }
 
 
@@ -885,6 +851,6 @@ public class CursorClipImpl implements INoteClip
      */
     private IStepInfo [] [] [] getStepInfos ()
     {
-        return this.launcherClip.exists ().get () ? this.launcherData : this.arrangerData;
+        return this.launcherData;
     }
 }
