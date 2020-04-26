@@ -906,7 +906,8 @@
                   "default": "",
                   "left": "auto",
                   "top": "auto",
-                  "height": "auto"
+                  "height": "auto",
+                  "target": ""
                 },
                 {
                   "type": "strip",
@@ -999,7 +1000,8 @@
                   "default": "",
                   "left": "auto",
                   "top": "auto",
-                  "height": "auto"
+                  "height": "auto",
+                  "target": ""
                 },
                 {
                   "type": "push",
@@ -1064,7 +1066,8 @@
                   "default": "4 / 4",
                   "left": "auto",
                   "top": "auto",
-                  "height": "auto"
+                  "height": "auto",
+                  "target": ""
                 }
               ],
               "variables": {},
@@ -1112,7 +1115,8 @@
                       "address": "/track/@{parent.variables.n}/color",
                       "left": "auto",
                       "top": "auto",
-                      "width": "auto"
+                      "width": "auto",
+                      "target": ""
                     },
                     {
                       "type": "strip",
@@ -1491,7 +1495,8 @@
                                       "width": "auto",
                                       "left": "auto",
                                       "top": "auto",
-                                      "height": "auto"
+                                      "height": "auto",
+                                      "target": ""
                                     },
                                     {
                                       "type": "fader",
@@ -1578,7 +1583,8 @@
                                       "width": "auto",
                                       "left": "auto",
                                       "top": "auto",
-                                      "height": "auto"
+                                      "height": "auto",
+                                      "target": ""
                                     },
                                     {
                                       "type": "fader",
@@ -1665,7 +1671,8 @@
                                       "width": "auto",
                                       "left": "auto",
                                       "top": "auto",
-                                      "height": "auto"
+                                      "height": "auto",
+                                      "target": ""
                                     },
                                     {
                                       "type": "fader",
@@ -1752,7 +1759,8 @@
                                       "width": "auto",
                                       "left": "auto",
                                       "top": "auto",
-                                      "height": "auto"
+                                      "height": "auto",
+                                      "target": ""
                                     },
                                     {
                                       "type": "fader",
@@ -1839,7 +1847,8 @@
                                       "width": "auto",
                                       "left": "auto",
                                       "top": "auto",
-                                      "height": "auto"
+                                      "height": "auto",
+                                      "target": ""
                                     },
                                     {
                                       "type": "fader",
@@ -1926,7 +1935,8 @@
                                       "width": "auto",
                                       "left": "auto",
                                       "top": "auto",
-                                      "height": "auto"
+                                      "height": "auto",
+                                      "target": ""
                                     },
                                     {
                                       "type": "fader",
@@ -2013,7 +2023,8 @@
                                       "width": "auto",
                                       "left": "auto",
                                       "top": "auto",
-                                      "height": "auto"
+                                      "height": "auto",
+                                      "target": ""
                                     },
                                     {
                                       "type": "fader",
@@ -2100,7 +2111,8 @@
                                       "width": "auto",
                                       "left": "auto",
                                       "top": "auto",
-                                      "height": "auto"
+                                      "height": "auto",
+                                      "target": ""
                                     },
                                     {
                                       "type": "fader",
@@ -2388,8 +2400,7 @@
                           "left": "auto",
                           "top": "auto",
                           "height": "auto",
-                          "compact": true,
-                          "input": false
+                          "target": ""
                         },
                         {
                           "type": "fader",
@@ -2416,7 +2427,7 @@
                           "spring": false,
                           "value": "",
                           "address": "/track/@{parent.variables.n}/volume",
-                          "touchAddress": "/track/@{parent.variables.n}/volume/indicate",
+                          "touchAddress": "/track/@{parent.variables.n}/volume/touched",
                           "meterAddress": "",
                           "pips": false,
                           "input": false,
@@ -2467,7 +2478,8 @@
                       "default": " ",
                       "left": "auto",
                       "top": "auto",
-                      "width": "auto"
+                      "width": "auto",
+                      "target": ""
                     },
                     {
                       "type": "strip",
@@ -2656,7 +2668,8 @@
                       "address": "/track/@{parent.variables.n}/selected",
                       "left": "auto",
                       "top": "auto",
-                      "width": "auto"
+                      "width": "auto",
+                      "target": ""
                     },
                     {
                       "type": "text",
@@ -2675,7 +2688,8 @@
                       "default": " ",
                       "left": "auto",
                       "top": "auto",
-                      "width": "auto"
+                      "width": "auto",
+                      "target": ""
                     },
                     {
                       "type": "strip",
@@ -2762,7 +2776,8 @@
                       "address": "/track/@{parent.variables.n}/color",
                       "left": "auto",
                       "top": "auto",
-                      "width": "auto"
+                      "width": "auto",
+                      "target": ""
                     }
                   ],
                   "color": "auto",
@@ -3175,7 +3190,8 @@
                   "address": "/master/color",
                   "left": "auto",
                   "top": "auto",
-                  "width": "auto"
+                  "width": "auto",
+                  "target": ""
                 },
                 {
                   "type": "text",
@@ -3194,7 +3210,8 @@
                   "default": "",
                   "left": "auto",
                   "top": "auto",
-                  "width": "auto"
+                  "width": "auto",
+                  "target": ""
                 },
                 {
                   "type": "strip",
@@ -3344,8 +3361,7 @@
                       "left": "auto",
                       "top": "auto",
                       "height": "auto",
-                      "compact": true,
-                      "input": false
+                      "target": ""
                     },
                     {
                       "type": "fader",
@@ -3423,7 +3439,8 @@
                   "default": "",
                   "left": "auto",
                   "top": "auto",
-                  "width": "auto"
+                  "width": "auto",
+                  "target": ""
                 },
                 {
                   "type": "strip",
@@ -3558,7 +3575,8 @@
                   "address": "/master/selected",
                   "left": "auto",
                   "top": "auto",
-                  "width": "auto"
+                  "width": "auto",
+                  "target": ""
                 },
                 {
                   "type": "rgbled",
@@ -3573,7 +3591,8 @@
                   "address": "/master/color",
                   "left": "auto",
                   "top": "auto",
-                  "width": "auto"
+                  "width": "auto",
+                  "target": ""
                 },
                 {
                   "type": "strip",
@@ -3755,7 +3774,8 @@
                   "width": "auto",
                   "left": "auto",
                   "top": "auto",
-                  "height": "auto"
+                  "height": "auto",
+                  "target": ""
                 },
                 {
                   "type": "push",
@@ -3898,6 +3918,7 @@
       "linkId": "",
       "default": "",
       "bypass": false,
+      "detached": true,
       "scroll": true
     },
     {
@@ -3963,7 +3984,8 @@
                   "default": " ",
                   "left": "auto",
                   "top": "auto",
-                  "width": "auto"
+                  "width": "auto",
+                  "target": ""
                 },
                 {
                   "type": "strip",
@@ -3993,7 +4015,7 @@
                       "spring": false,
                       "value": "",
                       "address": "/device/param/@{parent.variables.n}/value",
-                      "touchAddress": "/device/param/@{parent.variables.n}/indicate",
+                      "touchAddress": "/device/param/@{parent.variables.n}/touched",
                       "meterAddress": "",
                       "pips": false,
                       "input": false,
@@ -4050,7 +4072,8 @@
                   "default": " ",
                   "left": "auto",
                   "top": "auto",
-                  "width": "auto"
+                  "width": "auto",
+                  "target": ""
                 },
                 {
                   "type": "strip",
@@ -4074,7 +4097,8 @@
                       "address": "/device/page/@{parent.variables.n}/selected",
                       "left": "auto",
                       "top": "auto",
-                      "width": "auto"
+                      "width": "auto",
+                      "target": ""
                     },
                     {
                       "type": "text",
@@ -4093,7 +4117,8 @@
                       "address": "/device/page/@{parent.variables.n}/",
                       "left": "auto",
                       "top": "auto",
-                      "width": "auto"
+                      "width": "auto",
+                      "target": ""
                     },
                     {
                       "type": "push",
@@ -4164,7 +4189,8 @@
                       "address": "/device/sibling/@{parent.variables.n}/selected",
                       "left": "auto",
                       "top": "auto",
-                      "width": "auto"
+                      "width": "auto",
+                      "target": ""
                     },
                     {
                       "type": "text",
@@ -4183,7 +4209,8 @@
                       "address": "/device/sibling/@{parent.variables.n}/name",
                       "left": "auto",
                       "top": "auto",
-                      "width": "auto"
+                      "width": "auto",
+                      "target": ""
                     },
                     {
                       "type": "push",
@@ -4324,7 +4351,8 @@
                       "default": " ",
                       "left": "auto",
                       "top": "auto",
-                      "width": "auto"
+                      "width": "auto",
+                      "target": ""
                     },
                     {
                       "type": "led",
@@ -4345,7 +4373,8 @@
                       "address": "/track/@{parent.variables.n}/selected",
                       "left": "auto",
                       "top": "auto",
-                      "width": "auto"
+                      "width": "auto",
+                      "target": ""
                     },
                     {
                       "type": "rgbled",
@@ -4360,7 +4389,8 @@
                       "address": "/track/@{parent.variables.n}/color1",
                       "left": "auto",
                       "top": "auto",
-                      "width": "auto"
+                      "width": "auto",
+                      "target": ""
                     }
                   ],
                   "label": false,
@@ -4751,7 +4781,8 @@
                           "address": "/browser/filter/@{parent.variables.n}/name",
                           "left": "auto",
                           "top": "auto",
-                          "width": "auto"
+                          "width": "auto",
+                          "target": ""
                         },
                         {
                           "type": "strip",
@@ -4778,7 +4809,8 @@
                                   "width": 14,
                                   "left": "auto",
                                   "top": "auto",
-                                  "height": "auto"
+                                  "height": "auto",
+                                  "target": ""
                                 },
                                 {
                                   "type": "text",
@@ -4797,7 +4829,8 @@
                                   "width": "auto",
                                   "left": "auto",
                                   "top": "auto",
-                                  "height": "auto"
+                                  "height": "auto",
+                                  "target": ""
                                 }
                               ],
                               "id": "strip_filter_@{parent.variables.n}_text_1",
@@ -4846,7 +4879,8 @@
                                   "width": 14,
                                   "left": "auto",
                                   "top": "auto",
-                                  "height": "auto"
+                                  "height": "auto",
+                                  "target": ""
                                 },
                                 {
                                   "type": "text",
@@ -4865,7 +4899,8 @@
                                   "width": "auto",
                                   "left": "auto",
                                   "top": "auto",
-                                  "height": "auto"
+                                  "height": "auto",
+                                  "target": ""
                                 }
                               ],
                               "id": "strip_filter_@{parent.variables.n}_text_1",
@@ -4914,7 +4949,8 @@
                                   "width": 14,
                                   "left": "auto",
                                   "top": "auto",
-                                  "height": "auto"
+                                  "height": "auto",
+                                  "target": ""
                                 },
                                 {
                                   "type": "text",
@@ -4933,7 +4969,8 @@
                                   "width": "auto",
                                   "left": "auto",
                                   "top": "auto",
-                                  "height": "auto"
+                                  "height": "auto",
+                                  "target": ""
                                 }
                               ],
                               "id": "strip_filter_@{parent.variables.n}_text_1",
@@ -4982,7 +5019,8 @@
                                   "width": 14,
                                   "left": "auto",
                                   "top": "auto",
-                                  "height": "auto"
+                                  "height": "auto",
+                                  "target": ""
                                 },
                                 {
                                   "type": "text",
@@ -5001,7 +5039,8 @@
                                   "width": "auto",
                                   "left": "auto",
                                   "top": "auto",
-                                  "height": "auto"
+                                  "height": "auto",
+                                  "target": ""
                                 }
                               ],
                               "id": "strip_filter_@{parent.variables.n}_text_1",
@@ -5050,7 +5089,8 @@
                                   "width": 14,
                                   "left": "auto",
                                   "top": "auto",
-                                  "height": "auto"
+                                  "height": "auto",
+                                  "target": ""
                                 },
                                 {
                                   "type": "text",
@@ -5069,7 +5109,8 @@
                                   "width": "auto",
                                   "left": "auto",
                                   "top": "auto",
-                                  "height": "auto"
+                                  "height": "auto",
+                                  "target": ""
                                 }
                               ],
                               "id": "strip_filter_@{parent.variables.n}_text_1",
@@ -5118,7 +5159,8 @@
                                   "width": 14,
                                   "left": "auto",
                                   "top": "auto",
-                                  "height": "auto"
+                                  "height": "auto",
+                                  "target": ""
                                 },
                                 {
                                   "type": "text",
@@ -5137,7 +5179,8 @@
                                   "width": "auto",
                                   "left": "auto",
                                   "top": "auto",
-                                  "height": "auto"
+                                  "height": "auto",
+                                  "target": ""
                                 }
                               ],
                               "id": "strip_filter_@{parent.variables.n}_text_1",
@@ -5186,7 +5229,8 @@
                                   "width": 14,
                                   "left": "auto",
                                   "top": "auto",
-                                  "height": "auto"
+                                  "height": "auto",
+                                  "target": ""
                                 },
                                 {
                                   "type": "text",
@@ -5205,7 +5249,8 @@
                                   "width": "auto",
                                   "left": "auto",
                                   "top": "auto",
-                                  "height": "auto"
+                                  "height": "auto",
+                                  "target": ""
                                 }
                               ],
                               "id": "strip_filter_@{parent.variables.n}_text_1",
@@ -5254,7 +5299,8 @@
                                   "width": 14,
                                   "left": "auto",
                                   "top": "auto",
-                                  "height": "auto"
+                                  "height": "auto",
+                                  "target": ""
                                 },
                                 {
                                   "type": "text",
@@ -5273,7 +5319,8 @@
                                   "width": "auto",
                                   "left": "auto",
                                   "top": "auto",
-                                  "height": "auto"
+                                  "height": "auto",
+                                  "target": ""
                                 }
                               ],
                               "id": "strip_filter_@{parent.variables.n}_text_1",
@@ -5322,7 +5369,8 @@
                                   "width": 14,
                                   "left": "auto",
                                   "top": "auto",
-                                  "height": "auto"
+                                  "height": "auto",
+                                  "target": ""
                                 },
                                 {
                                   "type": "text",
@@ -5341,7 +5389,8 @@
                                   "width": "auto",
                                   "left": "auto",
                                   "top": "auto",
-                                  "height": "auto"
+                                  "height": "auto",
+                                  "target": ""
                                 }
                               ],
                               "id": "strip_filter_@{parent.variables.n}_text_1",
@@ -5390,7 +5439,8 @@
                                   "width": 14,
                                   "left": "auto",
                                   "top": "auto",
-                                  "height": "auto"
+                                  "height": "auto",
+                                  "target": ""
                                 },
                                 {
                                   "type": "text",
@@ -5409,7 +5459,8 @@
                                   "width": "auto",
                                   "left": "auto",
                                   "top": "auto",
-                                  "height": "auto"
+                                  "height": "auto",
+                                  "target": ""
                                 }
                               ],
                               "id": "strip_filter_@{parent.variables.n}_text_1",
@@ -5458,7 +5509,8 @@
                                   "width": 14,
                                   "left": "auto",
                                   "top": "auto",
-                                  "height": "auto"
+                                  "height": "auto",
+                                  "target": ""
                                 },
                                 {
                                   "type": "text",
@@ -5477,7 +5529,8 @@
                                   "width": "auto",
                                   "left": "auto",
                                   "top": "auto",
-                                  "height": "auto"
+                                  "height": "auto",
+                                  "target": ""
                                 }
                               ],
                               "id": "strip_filter_@{parent.variables.n}_text_1",
@@ -5526,7 +5579,8 @@
                                   "width": 14,
                                   "left": "auto",
                                   "top": "auto",
-                                  "height": "auto"
+                                  "height": "auto",
+                                  "target": ""
                                 },
                                 {
                                   "type": "text",
@@ -5545,7 +5599,8 @@
                                   "width": "auto",
                                   "left": "auto",
                                   "top": "auto",
-                                  "height": "auto"
+                                  "height": "auto",
+                                  "target": ""
                                 }
                               ],
                               "id": "strip_filter_@{parent.variables.n}_text_1",
@@ -5594,7 +5649,8 @@
                                   "width": 14,
                                   "left": "auto",
                                   "top": "auto",
-                                  "height": "auto"
+                                  "height": "auto",
+                                  "target": ""
                                 },
                                 {
                                   "type": "text",
@@ -5613,7 +5669,8 @@
                                   "width": "auto",
                                   "left": "auto",
                                   "top": "auto",
-                                  "height": "auto"
+                                  "height": "auto",
+                                  "target": ""
                                 }
                               ],
                               "id": "strip_filter_@{parent.variables.n}_text_1",
@@ -5662,7 +5719,8 @@
                                   "width": 14,
                                   "left": "auto",
                                   "top": "auto",
-                                  "height": "auto"
+                                  "height": "auto",
+                                  "target": ""
                                 },
                                 {
                                   "type": "text",
@@ -5681,7 +5739,8 @@
                                   "width": "auto",
                                   "left": "auto",
                                   "top": "auto",
-                                  "height": "auto"
+                                  "height": "auto",
+                                  "target": ""
                                 }
                               ],
                               "id": "strip_filter_@{parent.variables.n}_text_1",
@@ -5730,7 +5789,8 @@
                                   "width": 14,
                                   "left": "auto",
                                   "top": "auto",
-                                  "height": "auto"
+                                  "height": "auto",
+                                  "target": ""
                                 },
                                 {
                                   "type": "text",
@@ -5749,7 +5809,8 @@
                                   "width": "auto",
                                   "left": "auto",
                                   "top": "auto",
-                                  "height": "auto"
+                                  "height": "auto",
+                                  "target": ""
                                 }
                               ],
                               "id": "strip_filter_@{parent.variables.n}_text_1",
@@ -5798,7 +5859,8 @@
                                   "width": 14,
                                   "left": "auto",
                                   "top": "auto",
-                                  "height": "auto"
+                                  "height": "auto",
+                                  "target": ""
                                 },
                                 {
                                   "type": "text",
@@ -5817,7 +5879,8 @@
                                   "width": "auto",
                                   "left": "auto",
                                   "top": "auto",
-                                  "height": "auto"
+                                  "height": "auto",
+                                  "target": ""
                                 }
                               ],
                               "id": "strip_filter_@{parent.variables.n}_text_1",
@@ -6100,7 +6163,8 @@
                           "address": "/result_header",
                           "left": "auto",
                           "top": "auto",
-                          "width": "auto"
+                          "width": "auto",
+                          "target": ""
                         },
                         {
                           "type": "strip",
@@ -6127,7 +6191,8 @@
                                   "width": 14,
                                   "left": "auto",
                                   "top": "auto",
-                                  "height": "auto"
+                                  "height": "auto",
+                                  "target": ""
                                 },
                                 {
                                   "type": "text",
@@ -6146,7 +6211,8 @@
                                   "width": "auto",
                                   "left": "auto",
                                   "top": "auto",
-                                  "height": "auto"
+                                  "height": "auto",
+                                  "target": ""
                                 }
                               ],
                               "id": "strip_4",
@@ -6195,7 +6261,8 @@
                                   "width": 14,
                                   "left": "auto",
                                   "top": "auto",
-                                  "height": "auto"
+                                  "height": "auto",
+                                  "target": ""
                                 },
                                 {
                                   "type": "text",
@@ -6214,7 +6281,8 @@
                                   "width": "auto",
                                   "left": "auto",
                                   "top": "auto",
-                                  "height": "auto"
+                                  "height": "auto",
+                                  "target": ""
                                 }
                               ],
                               "id": "strip_4",
@@ -6263,7 +6331,8 @@
                                   "width": 14,
                                   "left": "auto",
                                   "top": "auto",
-                                  "height": "auto"
+                                  "height": "auto",
+                                  "target": ""
                                 },
                                 {
                                   "type": "text",
@@ -6282,7 +6351,8 @@
                                   "width": "auto",
                                   "left": "auto",
                                   "top": "auto",
-                                  "height": "auto"
+                                  "height": "auto",
+                                  "target": ""
                                 }
                               ],
                               "id": "strip_4",
@@ -6331,7 +6401,8 @@
                                   "width": 14,
                                   "left": "auto",
                                   "top": "auto",
-                                  "height": "auto"
+                                  "height": "auto",
+                                  "target": ""
                                 },
                                 {
                                   "type": "text",
@@ -6350,7 +6421,8 @@
                                   "width": "auto",
                                   "left": "auto",
                                   "top": "auto",
-                                  "height": "auto"
+                                  "height": "auto",
+                                  "target": ""
                                 }
                               ],
                               "id": "strip_4",
@@ -6399,7 +6471,8 @@
                                   "width": 14,
                                   "left": "auto",
                                   "top": "auto",
-                                  "height": "auto"
+                                  "height": "auto",
+                                  "target": ""
                                 },
                                 {
                                   "type": "text",
@@ -6418,7 +6491,8 @@
                                   "width": "auto",
                                   "left": "auto",
                                   "top": "auto",
-                                  "height": "auto"
+                                  "height": "auto",
+                                  "target": ""
                                 }
                               ],
                               "id": "strip_4",
@@ -6467,7 +6541,8 @@
                                   "width": 14,
                                   "left": "auto",
                                   "top": "auto",
-                                  "height": "auto"
+                                  "height": "auto",
+                                  "target": ""
                                 },
                                 {
                                   "type": "text",
@@ -6486,7 +6561,8 @@
                                   "width": "auto",
                                   "left": "auto",
                                   "top": "auto",
-                                  "height": "auto"
+                                  "height": "auto",
+                                  "target": ""
                                 }
                               ],
                               "id": "strip_4",
@@ -6535,7 +6611,8 @@
                                   "width": 14,
                                   "left": "auto",
                                   "top": "auto",
-                                  "height": "auto"
+                                  "height": "auto",
+                                  "target": ""
                                 },
                                 {
                                   "type": "text",
@@ -6554,7 +6631,8 @@
                                   "width": "auto",
                                   "left": "auto",
                                   "top": "auto",
-                                  "height": "auto"
+                                  "height": "auto",
+                                  "target": ""
                                 }
                               ],
                               "id": "strip_4",
@@ -6603,7 +6681,8 @@
                                   "width": 14,
                                   "left": "auto",
                                   "top": "auto",
-                                  "height": "auto"
+                                  "height": "auto",
+                                  "target": ""
                                 },
                                 {
                                   "type": "text",
@@ -6622,7 +6701,8 @@
                                   "width": "auto",
                                   "left": "auto",
                                   "top": "auto",
-                                  "height": "auto"
+                                  "height": "auto",
+                                  "target": ""
                                 }
                               ],
                               "id": "strip_4",
@@ -6671,7 +6751,8 @@
                                   "width": 14,
                                   "left": "auto",
                                   "top": "auto",
-                                  "height": "auto"
+                                  "height": "auto",
+                                  "target": ""
                                 },
                                 {
                                   "type": "text",
@@ -6690,7 +6771,8 @@
                                   "width": "auto",
                                   "left": "auto",
                                   "top": "auto",
-                                  "height": "auto"
+                                  "height": "auto",
+                                  "target": ""
                                 }
                               ],
                               "id": "strip_4",
@@ -6739,7 +6821,8 @@
                                   "width": 14,
                                   "left": "auto",
                                   "top": "auto",
-                                  "height": "auto"
+                                  "height": "auto",
+                                  "target": ""
                                 },
                                 {
                                   "type": "text",
@@ -6758,7 +6841,8 @@
                                   "width": "auto",
                                   "left": "auto",
                                   "top": "auto",
-                                  "height": "auto"
+                                  "height": "auto",
+                                  "target": ""
                                 }
                               ],
                               "id": "strip_4",
@@ -6807,7 +6891,8 @@
                                   "width": 14,
                                   "left": "auto",
                                   "top": "auto",
-                                  "height": "auto"
+                                  "height": "auto",
+                                  "target": ""
                                 },
                                 {
                                   "type": "text",
@@ -6826,7 +6911,8 @@
                                   "width": "auto",
                                   "left": "auto",
                                   "top": "auto",
-                                  "height": "auto"
+                                  "height": "auto",
+                                  "target": ""
                                 }
                               ],
                               "id": "strip_4",
@@ -6875,7 +6961,8 @@
                                   "width": 14,
                                   "left": "auto",
                                   "top": "auto",
-                                  "height": "auto"
+                                  "height": "auto",
+                                  "target": ""
                                 },
                                 {
                                   "type": "text",
@@ -6894,7 +6981,8 @@
                                   "width": "auto",
                                   "left": "auto",
                                   "top": "auto",
-                                  "height": "auto"
+                                  "height": "auto",
+                                  "target": ""
                                 }
                               ],
                               "id": "strip_4",
@@ -6943,7 +7031,8 @@
                                   "width": 14,
                                   "left": "auto",
                                   "top": "auto",
-                                  "height": "auto"
+                                  "height": "auto",
+                                  "target": ""
                                 },
                                 {
                                   "type": "text",
@@ -6962,7 +7051,8 @@
                                   "width": "auto",
                                   "left": "auto",
                                   "top": "auto",
-                                  "height": "auto"
+                                  "height": "auto",
+                                  "target": ""
                                 }
                               ],
                               "id": "strip_4",
@@ -7011,7 +7101,8 @@
                                   "width": 14,
                                   "left": "auto",
                                   "top": "auto",
-                                  "height": "auto"
+                                  "height": "auto",
+                                  "target": ""
                                 },
                                 {
                                   "type": "text",
@@ -7030,7 +7121,8 @@
                                   "width": "auto",
                                   "left": "auto",
                                   "top": "auto",
-                                  "height": "auto"
+                                  "height": "auto",
+                                  "target": ""
                                 }
                               ],
                               "id": "strip_4",
@@ -7079,7 +7171,8 @@
                                   "width": 14,
                                   "left": "auto",
                                   "top": "auto",
-                                  "height": "auto"
+                                  "height": "auto",
+                                  "target": ""
                                 },
                                 {
                                   "type": "text",
@@ -7098,7 +7191,8 @@
                                   "width": "auto",
                                   "left": "auto",
                                   "top": "auto",
-                                  "height": "auto"
+                                  "height": "auto",
+                                  "target": ""
                                 }
                               ],
                               "id": "strip_4",
@@ -7147,7 +7241,8 @@
                                   "width": 14,
                                   "left": "auto",
                                   "top": "auto",
-                                  "height": "auto"
+                                  "height": "auto",
+                                  "target": ""
                                 },
                                 {
                                   "type": "text",
@@ -7166,7 +7261,8 @@
                                   "width": "auto",
                                   "left": "auto",
                                   "top": "auto",
-                                  "height": "auto"
+                                  "height": "auto",
+                                  "target": ""
                                 }
                               ],
                               "id": "strip_4",
@@ -7378,7 +7474,8 @@
                       "default": " ",
                       "value": "",
                       "preArgs": [],
-                      "address": "/browser/tab"
+                      "address": "/browser/tab",
+                      "target": ""
                     },
                     {
                       "type": "push",
@@ -7789,6 +7886,7 @@
         }
       ],
       "tabs": [],
+      "detached": true,
       "scroll": true
     },
     {
@@ -7829,7 +7927,8 @@
                   "address": "/device/layer/@{parent.variables.n}/color",
                   "left": "auto",
                   "top": "auto",
-                  "width": "auto"
+                  "width": "auto",
+                  "target": ""
                 },
                 {
                   "type": "strip",
@@ -8208,7 +8307,8 @@
                                   "width": "auto",
                                   "left": "auto",
                                   "top": "auto",
-                                  "height": "auto"
+                                  "height": "auto",
+                                  "target": ""
                                 },
                                 {
                                   "type": "fader",
@@ -8295,7 +8395,8 @@
                                   "width": "auto",
                                   "left": "auto",
                                   "top": "auto",
-                                  "height": "auto"
+                                  "height": "auto",
+                                  "target": ""
                                 },
                                 {
                                   "type": "fader",
@@ -8382,7 +8483,8 @@
                                   "width": "auto",
                                   "left": "auto",
                                   "top": "auto",
-                                  "height": "auto"
+                                  "height": "auto",
+                                  "target": ""
                                 },
                                 {
                                   "type": "fader",
@@ -8469,7 +8571,8 @@
                                   "width": "auto",
                                   "left": "auto",
                                   "top": "auto",
-                                  "height": "auto"
+                                  "height": "auto",
+                                  "target": ""
                                 },
                                 {
                                   "type": "fader",
@@ -8556,7 +8659,8 @@
                                   "width": "auto",
                                   "left": "auto",
                                   "top": "auto",
-                                  "height": "auto"
+                                  "height": "auto",
+                                  "target": ""
                                 },
                                 {
                                   "type": "fader",
@@ -8643,7 +8747,8 @@
                                   "width": "auto",
                                   "left": "auto",
                                   "top": "auto",
-                                  "height": "auto"
+                                  "height": "auto",
+                                  "target": ""
                                 },
                                 {
                                   "type": "fader",
@@ -8730,7 +8835,8 @@
                                   "width": "auto",
                                   "left": "auto",
                                   "top": "auto",
-                                  "height": "auto"
+                                  "height": "auto",
+                                  "target": ""
                                 },
                                 {
                                   "type": "fader",
@@ -8817,7 +8923,8 @@
                                   "width": "auto",
                                   "left": "auto",
                                   "top": "auto",
-                                  "height": "auto"
+                                  "height": "auto",
+                                  "target": ""
                                 },
                                 {
                                   "type": "fader",
@@ -9021,8 +9128,7 @@
                       "left": "auto",
                       "top": "auto",
                       "height": "auto",
-                      "compact": true,
-                      "input": false
+                      "target": ""
                     },
                     {
                       "type": "fader",
@@ -9049,7 +9155,7 @@
                       "spring": false,
                       "value": "",
                       "address": "/device/layer/@{parent.variables.n}/volume",
-                      "touchAddress": "/device/layer/@{parent.variables.n}/volume/indicate",
+                      "touchAddress": "/device/layer/@{parent.variables.n}/volume/touched",
                       "meterAddress": "",
                       "pips": false,
                       "input": false,
@@ -9087,7 +9193,8 @@
                   "width": "auto",
                   "vertical": false,
                   "wrap": false,
-                  "align": ""
+                  "align": "",
+                  "target": ""
                 },
                 {
                   "type": "strip",
@@ -9182,7 +9289,8 @@
                     "min": 0,
                     "max": 1
                   },
-                  "logScale": false
+                  "logScale": false,
+                  "target": ""
                 },
                 {
                   "type": "text",
@@ -9201,7 +9309,8 @@
                   "address": "/device/layer/@{parent.variables.n}/name",
                   "vertical": false,
                   "wrap": false,
-                  "align": ""
+                  "align": "",
+                  "target": ""
                 },
                 {
                   "type": "strip",
@@ -9266,7 +9375,8 @@
                   "default": "",
                   "left": 10,
                   "top": 1114,
-                  "width": "auto"
+                  "width": "auto",
+                  "target": ""
                 }
               ],
               "color": "auto",
@@ -9581,6 +9691,7 @@
         }
       ],
       "tabs": [],
+      "detached": true,
       "scroll": true
     },
     {
@@ -9672,7 +9783,8 @@
                   "default": " ",
                   "left": "auto",
                   "top": "auto",
-                  "width": "auto"
+                  "width": "auto",
+                  "target": ""
                 },
                 {
                   "type": "strip",
@@ -9702,7 +9814,7 @@
                       "spring": false,
                       "value": "",
                       "address": "/user/@{parent.variables.n}/value",
-                      "touchAddress": "/user/@{parent.variables.n}/indicate",
+                      "touchAddress": "/user/@{parent.variables.n}/touched",
                       "meterAddress": "",
                       "pips": false,
                       "input": false,
@@ -9759,7 +9871,8 @@
                   "default": " ",
                   "left": "auto",
                   "top": "auto",
-                  "width": "auto"
+                  "width": "auto",
+                  "target": ""
                 },
                 {
                   "type": "strip",
@@ -9783,7 +9896,8 @@
                       "address": "/user/page/@{parent.variables.n}/selected",
                       "left": "auto",
                       "top": "auto",
-                      "width": "auto"
+                      "width": "auto",
+                      "target": ""
                     },
                     {
                       "type": "text",
@@ -9802,7 +9916,8 @@
                       "address": "/user/page/@{parent.variables.n}/",
                       "left": "auto",
                       "top": "auto",
-                      "width": "auto"
+                      "width": "auto",
+                      "target": ""
                     },
                     {
                       "type": "push",
@@ -9943,7 +10058,8 @@
                       "default": " ",
                       "left": "auto",
                       "top": "auto",
-                      "width": "auto"
+                      "width": "auto",
+                      "target": ""
                     },
                     {
                       "type": "led",
@@ -9964,7 +10080,8 @@
                       "address": "/track/@{parent.variables.n}/selected1",
                       "left": "auto",
                       "top": "auto",
-                      "width": "auto"
+                      "width": "auto",
+                      "target": ""
                     },
                     {
                       "type": "rgbled",
@@ -9979,7 +10096,8 @@
                       "address": "/track/@{parent.variables.n}/color1",
                       "left": "auto",
                       "top": "auto",
-                      "width": "auto"
+                      "width": "auto",
+                      "target": ""
                     }
                   ],
                   "label": false,
@@ -10470,6 +10588,7 @@
         }
       ],
       "tabs": [],
+      "detached": true,
       "scroll": true
     },
     {
@@ -10621,6 +10740,7 @@
         }
       ],
       "tabs": [],
+      "detached": true,
       "scroll": true
     }
   ],
