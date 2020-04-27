@@ -105,6 +105,8 @@ public abstract class AbstractConfiguration implements Configuration
     public static final Integer      MIDI_EDIT_CHANNEL                 = Integer.valueOf (36);
     /** Setting for including mastertracks. */
     public static final Integer      INCLUDE_MASTER                    = Integer.valueOf (37);
+    /** Setting for excluding deactivated tracks. */
+    public static final Integer      EXCLUDE_DEACTIVATED_TRACKS        = Integer.valueOf (38);
 
     // Implementation IDs start at 50
 
@@ -336,6 +338,7 @@ public abstract class AbstractConfiguration implements Configuration
     private final ArpeggiatorMode []                 arpeggiatorModes;
 
     private boolean                                  includeMaster               = true;
+    private boolean                                  excludeDeactivatedTracks    = false;
     private final String []                          userPageNames               = new String [8];
 
 
@@ -1094,6 +1097,21 @@ public abstract class AbstractConfiguration implements Configuration
 
 
     /**
+     * Activate the exclude deactovated tracks setting.
+     *
+     * @param settingsUI The settings
+     */
+    protected void activateExcludeDeactivatedTracksSetting (final ISettingsUI settingsUI)
+    {
+        final IEnumSetting includeMasterSetting = settingsUI.getEnumSetting ("Exclude deactivated tracks", CATEGORY_WORKFLOW, ON_OFF_OPTIONS, ON_OFF_OPTIONS[0]);
+        includeMasterSetting.addValueObserver (value -> {
+            this.excludeDeactivatedTracks = ON_OFF_OPTIONS[1].equals (value);
+            this.notifyObservers (EXCLUDE_DEACTIVATED_TRACKS);
+        });
+    }
+
+
+    /**
      * Activate the accent value setting.
      *
      * @param settingsUI The settings
@@ -1381,6 +1399,17 @@ public abstract class AbstractConfiguration implements Configuration
     public boolean areMasterTracksIncluded ()
     {
         return this.includeMaster;
+    }
+
+
+    /**
+     * Should deactivated tracks be included in the track list?
+     *
+     * @return False if they should be included
+     */
+    public boolean areDeactivatedTracksExcluded ()
+    {
+        return this.excludeDeactivatedTracks;
     }
 
 

@@ -198,4 +198,12 @@ public abstract class AbstractBank<T extends IItem> implements IBank<T>
         final int selIndex = sel != null ? sel.getIndex () : -1;
         return selIndex >= 0 && selIndex < this.pageSize - 1 && this.getItem (selIndex + 1).doesExist () || this.canScrollPageForwards ();
     }
+
+
+    /** {@inheritDoc} */
+    @Override
+    public void setSkipDisabledItems (boolean shouldSkip)
+    {
+        // Not used, overwrite to support
+    }
 }

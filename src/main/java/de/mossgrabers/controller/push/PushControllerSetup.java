@@ -393,6 +393,14 @@ public class PushControllerSetup extends AbstractControllerSetup<PushControlSurf
                 viewManager.setActiveView (Views.SESSION);
         });
 
+        this.configuration.addSettingObserver (AbstractConfiguration.EXCLUDE_DEACTIVATED_TRACKS, () -> {
+            final boolean exclude = this.configuration.areDeactivatedTracksExcluded ();
+            this.model.getTrackBank ().setSkipDisabledItems (exclude);
+            final ITrackBank effectTrackBank = this.model.getEffectTrackBank ();
+            if (effectTrackBank != null)
+                effectTrackBank.setSkipDisabledItems (exclude);
+        });
+
         this.configuration.addSettingObserver (AbstractConfiguration.KNOB_SPEED_NORMAL, this::updateKnobSpeeds);
         this.configuration.addSettingObserver (AbstractConfiguration.KNOB_SPEED_SLOW, this::updateKnobSpeeds);
 

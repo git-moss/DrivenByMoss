@@ -210,6 +210,14 @@ public abstract class AbstractBankImpl<B extends Bank<?>, T extends IItem> exten
     }
 
 
+    /** {@inheritDoc} */
+    @Override
+    public void setSkipDisabledItems (final boolean shouldSkip)
+    {
+        this.bank.setSkipDisabledItems (shouldSkip);
+    }
+
+
     /**
      * Handles track changes. Notifies all track change observers.
      *
