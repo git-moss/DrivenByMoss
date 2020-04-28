@@ -45,6 +45,7 @@ public class SLMkIIIConfiguration extends AbstractConfiguration
         ///////////////////////////
         // Workflow
 
+        this.activateExcludeDeactivatedItemsSetting (globalSettings);
         this.activateBehaviourOnStopSetting (globalSettings);
         this.activateNewClipLengthSetting (globalSettings);
 
@@ -58,6 +59,7 @@ public class SLMkIIIConfiguration extends AbstractConfiguration
 
         ///////////////////////////
         // Session
+
         this.activateSelectClipOnLaunchSetting (globalSettings);
         this.activateDrawRecordStripeSetting (globalSettings);
         this.activateActionForRecArmedPad (globalSettings);

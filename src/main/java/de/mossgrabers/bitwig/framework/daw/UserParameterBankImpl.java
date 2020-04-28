@@ -234,4 +234,12 @@ public class UserParameterBankImpl implements IParameterBank
     {
         this.scrollBackwards ();
     }
+
+
+    /** {@inheritDoc} */
+    @Override
+    public void setSkipDisabledItems (final boolean shouldSkip)
+    {
+        // Not supported
+    }
 }

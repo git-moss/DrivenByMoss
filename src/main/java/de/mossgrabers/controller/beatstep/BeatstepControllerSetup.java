@@ -135,6 +135,8 @@ public class BeatstepControllerSetup extends AbstractControllerSetup<BeatstepCon
     {
         this.getSurface ().getViewManager ().addViewChangeListener ( (previousViewId, activeViewId) -> this.updateIndication (null));
         this.createScaleObservers (this.configuration);
+
+        this.configuration.registerDeactivatedItemsHandler (this.model);
     }
 
 

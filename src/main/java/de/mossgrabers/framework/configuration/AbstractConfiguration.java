@@ -6,7 +6,12 @@ package de.mossgrabers.framework.configuration;
 
 import de.mossgrabers.framework.controller.color.ColorEx;
 import de.mossgrabers.framework.controller.valuechanger.IValueChanger;
+import de.mossgrabers.framework.daw.ICursorDevice;
+import de.mossgrabers.framework.daw.IDeviceBank;
+import de.mossgrabers.framework.daw.IDrumPadBank;
 import de.mossgrabers.framework.daw.IHost;
+import de.mossgrabers.framework.daw.IModel;
+import de.mossgrabers.framework.daw.ITrackBank;
 import de.mossgrabers.framework.daw.constants.EditCapability;
 import de.mossgrabers.framework.daw.constants.Resolution;
 import de.mossgrabers.framework.daw.midi.ArpeggiatorMode;
@@ -106,7 +111,7 @@ public abstract class AbstractConfiguration implements Configuration
     /** Setting for including mastertracks. */
     public static final Integer      INCLUDE_MASTER                    = Integer.valueOf (37);
     /** Setting for excluding deactivated tracks. */
-    public static final Integer      EXCLUDE_DEACTIVATED_TRACKS        = Integer.valueOf (38);
+    public static final Integer      EXCLUDE_DEACTIVATED_ITEMS         = Integer.valueOf (38);
 
     // Implementation IDs start at 50
 
@@ -338,7 +343,7 @@ public abstract class AbstractConfiguration implements Configuration
     private final ArpeggiatorMode []                 arpeggiatorModes;
 
     private boolean                                  includeMaster               = true;
-    private boolean                                  excludeDeactivatedTracks    = false;
+    private boolean                                  excludeDeactivatedItems     = false;
     private final String []                          userPageNames               = new String [8];
 
 
@@ -1101,12 +1106,12 @@ public abstract class AbstractConfiguration implements Configuration
      *
      * @param settingsUI The settings
      */
-    protected void activateExcludeDeactivatedTracksSetting (final ISettingsUI settingsUI)
+    protected void activateExcludeDeactivatedItemsSetting (final ISettingsUI settingsUI)
     {
-        final IEnumSetting includeMasterSetting = settingsUI.getEnumSetting ("Exclude deactivated tracks", CATEGORY_WORKFLOW, ON_OFF_OPTIONS, ON_OFF_OPTIONS[0]);
+        final IEnumSetting includeMasterSetting = settingsUI.getEnumSetting ("Exclude deactivated items (tracks, sends, devices, layers)", CATEGORY_WORKFLOW, ON_OFF_OPTIONS, ON_OFF_OPTIONS[0]);
         includeMasterSetting.addValueObserver (value -> {
-            this.excludeDeactivatedTracks = ON_OFF_OPTIONS[1].equals (value);
-            this.notifyObservers (EXCLUDE_DEACTIVATED_TRACKS);
+            this.excludeDeactivatedItems = ON_OFF_OPTIONS[1].equals (value);
+            this.notifyObservers (EXCLUDE_DEACTIVATED_ITEMS);
         });
     }
 
@@ -1341,6 +1346,33 @@ public abstract class AbstractConfiguration implements Configuration
 
 
     /**
+     * Register a handler for the 'exclude deactivated items' setting.
+     *
+     * @param model The model for getting the banks to configure
+     */
+    public void registerDeactivatedItemsHandler (final IModel model)
+    {
+        this.addSettingObserver (AbstractConfiguration.EXCLUDE_DEACTIVATED_ITEMS, () -> {
+            final boolean exclude = this.areDeactivatedItemsExcluded ();
+            final ITrackBank trackBank = model.getTrackBank ();
+            trackBank.setSkipDisabledItems (exclude);
+            for (int i = 0; i < trackBank.getPageSize (); i++)
+                trackBank.getItem (i).getSendBank ().setSkipDisabledItems (exclude);
+            final ITrackBank effectTrackBank = model.getEffectTrackBank ();
+            if (effectTrackBank != null)
+                effectTrackBank.setSkipDisabledItems (exclude);
+            final ICursorDevice cursorDevice = model.getCursorDevice ();
+            final IDeviceBank deviceBank = cursorDevice.getDeviceBank ();
+            deviceBank.setSkipDisabledItems (exclude);
+            cursorDevice.getLayerBank ().setSkipDisabledItems (exclude);
+            final IDrumPadBank drumPadBank = cursorDevice.getDrumPadBank ();
+            if (drumPadBank != null)
+                drumPadBank.setSkipDisabledItems (exclude);
+        });
+    }
+
+
+    /**
      * Lookup the index of the value in the given options array.
      *
      * @param options The options in which to search for the value
@@ -1407,9 +1439,9 @@ public abstract class AbstractConfiguration implements Configuration
      *
      * @return False if they should be included
      */
-    public boolean areDeactivatedTracksExcluded ()
+    public boolean areDeactivatedItemsExcluded ()
     {
-        return this.excludeDeactivatedTracks;
+        return this.excludeDeactivatedItems;
     }
 
 

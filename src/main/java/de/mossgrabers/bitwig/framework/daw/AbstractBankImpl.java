@@ -214,7 +214,8 @@ public abstract class AbstractBankImpl<B extends Bank<?>, T extends IItem> exten
     @Override
     public void setSkipDisabledItems (final boolean shouldSkip)
     {
-        this.bank.setSkipDisabledItems (shouldSkip);
+        if (this.bank != null)
+            this.bank.setSkipDisabledItems (shouldSkip);
     }
 
 

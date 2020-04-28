@@ -162,6 +162,7 @@ public class SLControllerSetup extends AbstractControllerSetup<SLControlSurface,
     protected void createObservers ()
     {
         this.createScaleObservers (this.configuration);
+        this.configuration.registerDeactivatedItemsHandler (this.model);
     }
 
 

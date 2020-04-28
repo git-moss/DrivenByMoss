@@ -89,6 +89,7 @@ public class APCminiConfiguration extends AbstractConfiguration
         ///////////////////////////
         // Workflow
 
+        this.activateExcludeDeactivatedItemsSetting (globalSettings);
         this.activateBehaviourOnStopSetting (globalSettings);
         this.activateSelectClipOnLaunchSetting (globalSettings);
         this.activateNewClipLengthSetting (globalSettings);

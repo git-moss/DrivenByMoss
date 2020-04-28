@@ -162,6 +162,7 @@ public class MaschineMikroMk3ControllerSetup extends AbstractControllerSetup<Mas
         surface.getViewManager ().addViewChangeListener ( (previousViewId, activeViewId) -> this.updateMode (null));
         surface.getModeManager ().addModeListener ( (previousModeId, activeModeId) -> this.updateMode (activeModeId));
 
+        this.configuration.registerDeactivatedItemsHandler (this.model);
         this.createScaleObservers (this.configuration);
         this.createNoteRepeatObservers (this.configuration, surface);
     }

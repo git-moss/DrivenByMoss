@@ -116,6 +116,7 @@ public class MaschineMikroMk3Configuration extends AbstractConfiguration
         ///////////////////////////
         // Workflow
 
+        this.activateExcludeDeactivatedItemsSetting (globalSettings);
         this.activateNewClipLengthSetting (globalSettings);
     }
 

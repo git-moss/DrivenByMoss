@@ -171,6 +171,8 @@ public class Kontrol1ControllerSetup extends AbstractControllerSetup<Kontrol1Con
         final ITrackBank effectTrackBank = this.model.getEffectTrackBank ();
         if (effectTrackBank != null)
             effectTrackBank.addSelectionObserver ( (index, isSelected) -> this.handleTrackChange (isSelected));
+
+        this.configuration.registerDeactivatedItemsHandler (this.model);
     }
 
 

@@ -170,6 +170,7 @@ public class LaunchpadControllerSetup extends AbstractControllerSetup<LaunchpadC
 
         });
 
+        this.configuration.registerDeactivatedItemsHandler (this.model);
         this.createScaleObservers (this.configuration);
         this.createNoteRepeatObservers (this.configuration, surface);
     }

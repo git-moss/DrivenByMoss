@@ -161,6 +161,8 @@ public class APCControllerSetup extends AbstractControllerSetup<APCControlSurfac
         surface.getViewManager ().addViewChangeListener ( (previousViewId, activeViewId) -> this.updateMode (null));
         surface.getModeManager ().addModeListener ( (previousModeId, activeModeId) -> this.updateMode (activeModeId));
         this.createScaleObservers (this.configuration);
+
+        this.configuration.registerDeactivatedItemsHandler (this.model);
     }
 
 

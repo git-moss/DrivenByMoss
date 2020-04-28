@@ -239,6 +239,7 @@ public class MCUConfiguration extends AbstractConfiguration
         ///////////////////////////
         // Workflow
 
+        this.activateExcludeDeactivatedItemsSetting (globalSettings);
         this.activateDisplayCrossfaderSetting (globalSettings);
         this.activateNewClipLengthSetting (globalSettings);
         this.activateZoomStateSetting (globalSettings);

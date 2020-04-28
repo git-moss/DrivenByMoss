@@ -172,6 +172,8 @@ public class APCminiControllerSetup extends AbstractControllerSetup<APCminiContr
                     surface.setTrackState (i);
             }
         });
+
+        this.configuration.registerDeactivatedItemsHandler (this.model);
     }
 
 

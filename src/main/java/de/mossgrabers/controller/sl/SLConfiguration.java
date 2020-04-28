@@ -82,6 +82,7 @@ public class SLConfiguration extends AbstractConfiguration
         ///////////////////////////
         // Workflow
 
+        this.activateExcludeDeactivatedItemsSetting (globalSettings);
         this.activateBehaviourOnStopSetting (globalSettings);
         this.activateDisplayCrossfaderSetting (globalSettings);
         this.activateNewClipLengthSetting (globalSettings);

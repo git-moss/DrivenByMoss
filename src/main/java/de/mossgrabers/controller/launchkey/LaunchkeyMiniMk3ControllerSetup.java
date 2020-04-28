@@ -147,6 +147,7 @@ public class LaunchkeyMiniMk3ControllerSetup extends AbstractControllerSetup<Lau
     {
         this.getSurface ().getModeManager ().addModeListener ( (previousViewId, activeViewId) -> this.updateIndication (null));
         this.createScaleObservers (this.configuration);
+        this.configuration.registerDeactivatedItemsHandler (this.model);
     }
 
 

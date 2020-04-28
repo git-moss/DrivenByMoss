@@ -297,6 +297,8 @@ public class MCUControllerSetup extends AbstractControllerSetup<MCUControlSurfac
                 ((MCUDisplay) surface.getDisplay ()).forceFlush ();
             }
         });
+
+        this.configuration.registerDeactivatedItemsHandler (this.model);
     }
 
 

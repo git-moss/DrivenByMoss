@@ -137,6 +137,8 @@ public class OSCControllerSetup extends AbstractControllerSetup<IControlSurface<
         tb.addSelectionObserver ( (final int index, final boolean isSelected) -> this.keyManager.clearPressedKeys ());
         tb.addNoteObserver (this.keyManager);
 
+        this.configuration.registerDeactivatedItemsHandler (this.model);
+
         this.configuration.addSettingObserver (OSCConfiguration.VALUE_RESOLUTION, () -> {
             switch (this.configuration.getValueResolution ())
             {

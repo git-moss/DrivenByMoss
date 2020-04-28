@@ -121,6 +121,7 @@ public class KontrolProtocolConfiguration extends AbstractConfiguration
         ///////////////////////////
         // Workflow
 
+        this.activateExcludeDeactivatedItemsSetting (globalSettings);
         this.activateNewClipLengthSetting (globalSettings);
         this.activateKnobSpeedSetting (globalSettings, 4);
     }

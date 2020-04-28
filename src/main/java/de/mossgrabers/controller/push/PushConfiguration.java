@@ -338,6 +338,7 @@ public class PushConfiguration extends AbstractConfiguration implements IGraphic
         ///////////////////////////
         // Workflow
 
+        this.activateExcludeDeactivatedItemsSetting (globalSettings);
         this.activateEnableVUMetersSetting (globalSettings);
         if (this.host.hasCrossfader ())
             this.activateDisplayCrossfaderSetting (globalSettings);
@@ -349,7 +350,6 @@ public class PushConfiguration extends AbstractConfiguration implements IGraphic
         this.activateNewClipLengthSetting (globalSettings);
         this.activateKnobSpeedSetting (globalSettings, 10);
 
-        this.activateExcludeDeactivatedTracksSetting (documentSettings);
         this.activateUserPageNamesSetting (documentSettings);
 
         ///////////////////////////

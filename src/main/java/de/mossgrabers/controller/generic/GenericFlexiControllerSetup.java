@@ -228,6 +228,8 @@ public class GenericFlexiControllerSetup extends AbstractControllerSetup<Generic
         surface.getModeManager ().addModeListener ( (oldMode, newMode) -> this.updateIndication (newMode));
 
         this.createNoteRepeatObservers (this.configuration, surface);
+
+        this.configuration.registerDeactivatedItemsHandler (this.model);
     }
 
 

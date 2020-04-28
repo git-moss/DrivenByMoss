@@ -152,6 +152,9 @@ public class SLMkIIIControllerSetup extends AbstractControllerSetup<SLMkIIIContr
     protected void createObservers ()
     {
         this.createScaleObservers (this.configuration);
+
+        this.configuration.registerDeactivatedItemsHandler (this.model);
+
         this.getSurface ().getModeManager ().addModeListener ( (oldMode, newMode) -> this.updateIndication (newMode));
     }
 
