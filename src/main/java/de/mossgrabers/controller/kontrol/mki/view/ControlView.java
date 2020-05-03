@@ -9,7 +9,6 @@ import de.mossgrabers.controller.kontrol.mki.controller.Kontrol1ControlSurface;
 import de.mossgrabers.framework.controller.grid.ILightGuide;
 import de.mossgrabers.framework.daw.DAWColor;
 import de.mossgrabers.framework.daw.ICursorDevice;
-import de.mossgrabers.framework.daw.IDrumPadBank;
 import de.mossgrabers.framework.daw.IModel;
 import de.mossgrabers.framework.daw.data.IChannel;
 import de.mossgrabers.framework.scale.Scales;
@@ -59,17 +58,7 @@ public class ControlView extends AbstractPlayView<Kontrol1ControlSurface, Kontro
             final ICursorDevice primary = this.model.getInstrumentDevice ();
             if (primary.hasDrumPads ())
             {
-                boolean isSoloed = false;
-                final IDrumPadBank drumPadBank = primary.getDrumPadBank ();
-                for (int i = 0; i < drumPadBank.getPageSize (); i++)
-                {
-                    if (drumPadBank.getItem (i).isSolo ())
-                    {
-                        isSoloed = true;
-                        break;
-                    }
-                }
-
+                final boolean isSoloed = primary.hasDrumPads () && primary.getDrumPadBank ().hasSoloedPads ();
                 final boolean isRecording = this.model.hasRecordingState ();
                 for (int i = this.scales.getStartNote (); i < this.scales.getEndNote (); i++)
                     lightGuide.light (i, this.getDrumPadColor (i, primary, isSoloed, isRecording));

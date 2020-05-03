@@ -11,7 +11,6 @@ import de.mossgrabers.framework.controller.grid.IPadGrid;
 import de.mossgrabers.framework.controller.hardware.IHwButton;
 import de.mossgrabers.framework.daw.DAWColor;
 import de.mossgrabers.framework.daw.ICursorDevice;
-import de.mossgrabers.framework.daw.IDrumPadBank;
 import de.mossgrabers.framework.daw.IModel;
 import de.mossgrabers.framework.daw.INoteClip;
 import de.mossgrabers.framework.daw.IStepInfo;
@@ -302,20 +301,7 @@ public abstract class AbstractDrumView<S extends IControlSurface<C>, C extends C
 
         // halfColumns x playLines Drum Pad Grid
         final ICursorDevice primary = this.model.getInstrumentDevice ();
-        final boolean hasDrumPads = primary.hasDrumPads ();
-        boolean isSoloed = false;
-        if (hasDrumPads)
-        {
-            final IDrumPadBank drumPadBank = primary.getDrumPadBank ();
-            for (int i = 0; i < this.halfColumns * this.playLines; i++)
-            {
-                if (drumPadBank.getItem (i).isSolo ())
-                {
-                    isSoloed = true;
-                    break;
-                }
-            }
-        }
+        final boolean isSoloed = primary.hasDrumPads () && primary.getDrumPadBank ().hasSoloedPads ();
         final boolean isRecording = this.model.hasRecordingState ();
         for (int y = 0; y < this.playLines; y++)
         {

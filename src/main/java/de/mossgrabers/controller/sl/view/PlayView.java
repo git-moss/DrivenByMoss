@@ -11,7 +11,6 @@ import de.mossgrabers.controller.sl.controller.SLControlSurface;
 import de.mossgrabers.controller.sl.mode.device.DeviceParamsMode;
 import de.mossgrabers.framework.controller.ButtonID;
 import de.mossgrabers.framework.daw.ICursorDevice;
-import de.mossgrabers.framework.daw.IDrumPadBank;
 import de.mossgrabers.framework.daw.IModel;
 import de.mossgrabers.framework.daw.INoteClip;
 import de.mossgrabers.framework.daw.ITrackBank;
@@ -338,20 +337,7 @@ public class PlayView extends AbstractSequencerView<SLControlSurface, SLConfigur
         if (this.isPlayMode)
         {
             final ICursorDevice primary = this.model.getInstrumentDevice ();
-            final boolean hasDrumPads = primary.hasDrumPads ();
-            boolean isSoloed = false;
-            if (hasDrumPads)
-            {
-                final IDrumPadBank drumPadBank = primary.getDrumPadBank ();
-                for (int i = 0; i < 16; i++)
-                {
-                    if (drumPadBank.getItem (i).isSolo ())
-                    {
-                        isSoloed = true;
-                        break;
-                    }
-                }
-            }
+            final boolean isSoloed = primary.hasDrumPads () && primary.getDrumPadBank ().hasSoloedPads ();
             return this.getPadColor (col, primary, isSoloed);
         }
 

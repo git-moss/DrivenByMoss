@@ -5,6 +5,7 @@
 package de.mossgrabers.bitwig.framework.daw;
 
 import de.mossgrabers.bitwig.framework.daw.data.DrumPadImpl;
+import de.mossgrabers.bitwig.framework.daw.data.Util;
 import de.mossgrabers.framework.controller.valuechanger.IValueChanger;
 import de.mossgrabers.framework.daw.DAWColor;
 import de.mossgrabers.framework.daw.IDrumPadBank;
@@ -55,6 +56,8 @@ public class DrumPadBankImpl extends AbstractChannelBankImpl<DrumPadBank, IDrumP
             final DrumPad deviceLayer = this.bank.getItemAt (i);
             this.items.add (new DrumPadImpl (this.host, this.valueChanger, deviceLayer, i, this.numSends, this.numDevices));
         }
+
+        this.bank.hasSoloedPads ().markInterested ();
     }
 
 
@@ -66,6 +69,8 @@ public class DrumPadBankImpl extends AbstractChannelBankImpl<DrumPadBank, IDrumP
 
         for (int i = 0; i < this.getPageSize (); i++)
             this.getItem (i).enableObservers (enable);
+
+        Util.setIsSubscribed (this.bank.hasSoloedPads (), enable);
     }
 
 
@@ -102,5 +107,13 @@ public class DrumPadBankImpl extends AbstractChannelBankImpl<DrumPadBank, IDrumP
     public void clearSolo ()
     {
         this.bank.clearSoloedPads ();
+    }
+
+
+    /** {@inheritDoc} */
+    @Override
+    public boolean hasSoloedPads ()
+    {
+        return this.bank.hasSoloedPads ().get ();
     }
 }

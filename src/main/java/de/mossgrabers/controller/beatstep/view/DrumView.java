@@ -136,19 +136,7 @@ public class DrumView extends BaseSequencerView
         if (this.isPlayMode)
         {
             final ICursorDevice primary = this.model.getInstrumentDevice ();
-            final boolean hasDrumPads = primary.hasDrumPads ();
-            boolean isSoloed = false;
-            if (hasDrumPads)
-            {
-                for (int i = 0; i < 16; i++)
-                {
-                    if (primary.getDrumPadBank ().getItem (i).isSolo ())
-                    {
-                        isSoloed = true;
-                        break;
-                    }
-                }
-            }
+            final boolean isSoloed = primary.hasDrumPads () && primary.getDrumPadBank ().hasSoloedPads ();
             for (int y = 0; y < 2; y++)
             {
                 for (int x = 0; x < 8; x++)
