@@ -84,7 +84,7 @@ public class DrumView extends DrumViewBase
 
         final int x = index % GRID_COLUMNS;
         final int stepX = GRID_COLUMNS * (this.allLines - 1 - y) + x;
-        final int stepY = this.scales.getDrumOffset () + this.selectedPad;
+        final int stepY = this.scales.getDrumOffset () + this.getSelectedPad ();
         final int editMidiChannel = this.configuration.getMidiEditChannel ();
         final INoteClip clip = this.getClip ();
         final int state = clip.getStep (editMidiChannel, stepX, stepY).getState ();

@@ -552,7 +552,9 @@ public class LaunchpadControllerSetup extends AbstractControllerSetup<LaunchpadC
     @Override
     public void startup ()
     {
-        this.getSurface ().getViewManager ().setActiveView (Views.PLAY);
+        final LaunchpadControlSurface surface = this.getSurface ();
+        surface.getViewManager ().setActiveView (Views.PLAY);
+        surface.getModeManager ().setActiveMode (Modes.DUMMY);
     }
 
 

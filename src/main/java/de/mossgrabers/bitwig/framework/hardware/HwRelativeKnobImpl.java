@@ -73,6 +73,7 @@ public class HwRelativeKnobImpl extends AbstractHwContinuousControl implements I
         this.hardwareKnob.targetName ().markInterested ();
         this.hardwareKnob.targetDisplayedValue ().markInterested ();
         this.hardwareKnob.targetValue ().markInterested ();
+        this.hardwareKnob.modulatedTargetValue ().markInterested ();
     }
 
 
@@ -81,6 +82,7 @@ public class HwRelativeKnobImpl extends AbstractHwContinuousControl implements I
         Util.setIsSubscribed (this.hardwareKnob.targetName (), enable);
         Util.setIsSubscribed (this.hardwareKnob.targetDisplayedValue (), enable);
         Util.setIsSubscribed (this.hardwareKnob.targetValue (), enable);
+        Util.setIsSubscribed (this.hardwareKnob.modulatedTargetValue (), enable);
     }
 
 
@@ -108,7 +110,7 @@ public class HwRelativeKnobImpl extends AbstractHwContinuousControl implements I
             if (this.parameterImpl != null)
             {
                 this.enableObservers (false);
-                this.parameterImpl.setTargetInfo (null, null, null);
+                this.parameterImpl.setTargetInfo (null, null, null, null);
             }
             target = this.defaultAction;
         }
@@ -117,7 +119,7 @@ public class HwRelativeKnobImpl extends AbstractHwContinuousControl implements I
             this.parameterImpl = (ParameterImpl) parameter;
             target = this.parameterImpl.getParameter ();
             this.enableObservers (true);
-            this.parameterImpl.setTargetInfo (this.hardwareKnob.targetName (), this.hardwareKnob.targetDisplayedValue (), this.hardwareKnob.targetValue ());
+            this.parameterImpl.setTargetInfo (this.hardwareKnob.targetName (), this.hardwareKnob.targetDisplayedValue (), this.hardwareKnob.targetValue (), this.hardwareKnob.modulatedTargetValue ());
         }
 
         this.binding = target == null ? null : this.hardwareKnob.setBinding (target);

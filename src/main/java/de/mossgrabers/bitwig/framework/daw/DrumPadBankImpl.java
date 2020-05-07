@@ -44,6 +44,13 @@ public class DrumPadBankImpl extends AbstractChannelBankImpl<DrumPadBank, IDrumP
         this.numDevices = numDevices;
 
         this.initItems ();
+
+        for (int i = 0; i < this.getPageSize (); i++)
+        {
+            final int index = i;
+            final DrumPadImpl drumPadImpl = (DrumPadImpl) this.items.get (i);
+            drumPadImpl.getDeviceChain ().addIsSelectedInEditorObserver (isSelected -> this.notifySelectionObservers (index, isSelected));
+        }
     }
 
 
@@ -57,7 +64,8 @@ public class DrumPadBankImpl extends AbstractChannelBankImpl<DrumPadBank, IDrumP
             this.items.add (new DrumPadImpl (this.host, this.valueChanger, deviceLayer, i, this.numSends, this.numDevices));
         }
 
-        this.bank.hasSoloedPads ().markInterested ();
+        if (this.bank != null)
+            this.bank.hasSoloedPads ().markInterested ();
     }
 
 

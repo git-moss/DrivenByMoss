@@ -45,16 +45,6 @@ public abstract class AbstractBankImpl<B extends Bank<?>, T extends IItem> exten
         if (this.bank == null)
             return;
 
-        this.bank.cursorIndex ().addValueObserver (index -> {
-            // Note: Currently only works for track banks
-            for (int i = 0; i < this.getPageSize (); i++)
-            {
-                final boolean isSelected = index == i;
-                if (this.items.get (i).isSelected () != isSelected)
-                    this.handleBankSelection (i, isSelected);
-            }
-        });
-
         this.bank.scrollPosition ().markInterested ();
         this.bank.canScrollBackwards ().markInterested ();
         this.bank.canScrollForwards ().markInterested ();
@@ -216,18 +206,5 @@ public abstract class AbstractBankImpl<B extends Bank<?>, T extends IItem> exten
     {
         if (this.bank != null)
             this.bank.setSkipDisabledItems (shouldSkip);
-    }
-
-
-    /**
-     * Handles track changes. Notifies all track change observers.
-     *
-     * @param index The index of the newly de-/selected track
-     * @param isSelected True if selected
-     */
-    private void handleBankSelection (final int index, final boolean isSelected)
-    {
-        this.getItem (index).setSelected (isSelected);
-        this.notifySelectionObservers (index, isSelected);
     }
 }

@@ -48,4 +48,12 @@ public class DrumPadImpl extends LayerImpl implements IDrumPad
     {
         return this.drumPad;
     }
+
+
+    /** {@inheritDoc} */
+    @Override
+    public void select ()
+    {
+        this.deviceChain.selectInEditor ();
+    }
 }

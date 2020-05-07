@@ -57,7 +57,7 @@ public class DrumView8 extends DrumViewBase
 
         final int sound = y + this.soundOffset;
         final int col = x;
-        final int row = this.scales.getDrumOffset () + this.selectedPad + sound;
+        final int row = this.scales.getDrumOffset () + this.getSelectedPad () + sound;
 
         final int channel = this.configuration.getMidiEditChannel ();
         final int vel = this.configuration.isAccentActive () ? this.configuration.getFixedAccentValue () : this.surface.getButton (ButtonID.get (ButtonID.PAD1, index)).getPressedVelocity ();
@@ -134,7 +134,7 @@ public class DrumView8 extends DrumViewBase
 
         final int sound = y + this.soundOffset;
         final int stepX = x;
-        final int stepY = this.scales.getDrumOffset () + this.selectedPad + sound;
+        final int stepY = this.scales.getDrumOffset () + this.getSelectedPad () + sound;
 
         final int editMidiChannel = this.configuration.getMidiEditChannel ();
         final INoteClip clip = this.getClip ();
@@ -166,11 +166,12 @@ public class DrumView8 extends DrumViewBase
         final int hiStep = this.isInXRange (step) ? step % DrumView8.NUM_DISPLAY_COLS : -1;
         final int offsetY = this.scales.getDrumOffset ();
         final int editMidiChannel = this.configuration.getMidiEditChannel ();
+        final int selPad = this.getSelectedPad ();
         for (int sound = 0; sound < 8; sound++)
         {
             for (int col = 0; col < DrumView8.NUM_DISPLAY_COLS; col++)
             {
-                final int isSet = this.getClip ().getStep (editMidiChannel, col, offsetY + this.selectedPad + sound + this.soundOffset).getState ();
+                final int isSet = this.getClip ().getStep (editMidiChannel, col, offsetY + selPad + sound + this.soundOffset).getState ();
                 final boolean hilite = col == hiStep;
                 final int x = col % 8;
                 int y = col / 8;

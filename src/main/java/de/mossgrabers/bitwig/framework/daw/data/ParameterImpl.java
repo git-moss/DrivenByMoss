@@ -26,6 +26,7 @@ public class ParameterImpl extends AbstractItemImpl implements IParameter
     private StringValue         targetName;
     private StringValue         targetDisplayedValue;
     private DoubleValue         targetValue;
+    private DoubleValue         targetModulatedValue;
 
 
     /**
@@ -157,7 +158,8 @@ public class ParameterImpl extends AbstractItemImpl implements IParameter
     @Override
     public int getModulatedValue ()
     {
-        return this.valueChanger.fromNormalizedValue (this.parameter.modulatedValue ().get ());
+        final double value = this.targetModulatedValue == null ? this.parameter.modulatedValue ().get () : this.targetModulatedValue.get ();
+        return this.valueChanger.fromNormalizedValue (value);
     }
 
 
@@ -211,11 +213,13 @@ public class ParameterImpl extends AbstractItemImpl implements IParameter
      * @param targetName The name of the parameter
      * @param targetDisplayedValue The formatted value for displaying it
      * @param targetValue The value of the parameter
+     * @param targetModulatedValue The modulated value of the parameter
      */
-    public void setTargetInfo (final StringValue targetName, final StringValue targetDisplayedValue, final DoubleValue targetValue)
+    public void setTargetInfo (final StringValue targetName, final StringValue targetDisplayedValue, final DoubleValue targetValue, final DoubleValue targetModulatedValue)
     {
         this.targetName = targetName;
         this.targetDisplayedValue = targetDisplayedValue;
         this.targetValue = targetValue;
+        this.targetModulatedValue = targetModulatedValue;
     }
 }

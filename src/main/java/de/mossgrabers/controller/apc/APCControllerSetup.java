@@ -7,6 +7,7 @@ package de.mossgrabers.controller.apc;
 import de.mossgrabers.controller.apc.command.trigger.APCBrowserCommand;
 import de.mossgrabers.controller.apc.command.trigger.APCQuantizeCommand;
 import de.mossgrabers.controller.apc.command.trigger.APCRecordCommand;
+import de.mossgrabers.controller.apc.command.trigger.APCStopClipCommand;
 import de.mossgrabers.controller.apc.command.trigger.SelectTrackSendOrClipLengthCommand;
 import de.mossgrabers.controller.apc.command.trigger.SendModeCommand;
 import de.mossgrabers.controller.apc.command.trigger.SessionRecordCommand;
@@ -35,7 +36,6 @@ import de.mossgrabers.framework.command.trigger.application.PanelLayoutCommand;
 import de.mossgrabers.framework.command.trigger.application.RedoCommand;
 import de.mossgrabers.framework.command.trigger.application.UndoCommand;
 import de.mossgrabers.framework.command.trigger.clip.NewCommand;
-import de.mossgrabers.framework.command.trigger.clip.StopClipCommand;
 import de.mossgrabers.framework.command.trigger.device.DeviceLayerLeftCommand;
 import de.mossgrabers.framework.command.trigger.device.DeviceLayerRightCommand;
 import de.mossgrabers.framework.command.trigger.device.DeviceOnOffCommand;
@@ -80,6 +80,7 @@ import de.mossgrabers.framework.daw.midi.IMidiOutput;
 import de.mossgrabers.framework.mode.ModeManager;
 import de.mossgrabers.framework.mode.Modes;
 import de.mossgrabers.framework.scale.Scales;
+import de.mossgrabers.framework.view.AbstractSequencerView;
 import de.mossgrabers.framework.view.View;
 import de.mossgrabers.framework.view.ViewManager;
 import de.mossgrabers.framework.view.Views;
@@ -229,19 +230,31 @@ public class APCControllerSetup extends AbstractControllerSetup<APCControlSurfac
         for (int i = 0; i < 8; i++)
         {
             final int index = i;
+
             this.addButton (ButtonID.get (ButtonID.ROW1_1, i), "Select " + (i + 1), new SelectTrackSendOrClipLengthCommand (i, this.model, surface), i, APCControlSurface.APC_BUTTON_TRACK_SELECTION, () -> this.getButtonState (index, APCControlSurface.APC_BUTTON_TRACK_SELECTION) ? 1 : 0, ColorManager.BUTTON_STATE_OFF, ColorManager.BUTTON_STATE_ON);
             this.addButton (ButtonID.get (ButtonID.ROW2_1, i), "Solo " + (i + 1), new SoloCommand<> (i, this.model, surface), i, APCControlSurface.APC_BUTTON_SOLO, () -> this.getButtonState (index, APCControlSurface.APC_BUTTON_SOLO) ? 1 : 0, ColorManager.BUTTON_STATE_OFF, ColorManager.BUTTON_STATE_ON);
             this.addButton (ButtonID.get (ButtonID.ROW3_1, i), (this.isMkII ? "Mute " : "Activator ") + (i + 1), new MuteCommand<> (i, this.model, surface), i, APCControlSurface.APC_BUTTON_ACTIVATOR, () -> this.getButtonState (index, APCControlSurface.APC_BUTTON_ACTIVATOR) ? 1 : 0, ColorManager.BUTTON_STATE_OFF, ColorManager.BUTTON_STATE_ON);
             this.addButton (ButtonID.get (ButtonID.ROW4_1, i), "Arm " + (i + 1), new RecArmCommand<> (i, this.model, surface), i, APCControlSurface.APC_BUTTON_RECORD_ARM, () -> this.getButtonState (index, APCControlSurface.APC_BUTTON_RECORD_ARM) ? 1 : 0, ColorManager.BUTTON_STATE_OFF, ColorManager.BUTTON_STATE_ON);
+
             if (this.isMkII)
+            {
                 this.addButton (ButtonID.get (ButtonID.ROW5_1, i), "X-fade " + (i + 1), new CrossfadeModeCommand<> (i, this.model, surface), i, APCControlSurface.APC_BUTTON_A_B, () -> {
                     final ITrackBank tb = this.model.getCurrentTrackBank ();
                     final ITrack track = tb.getItem (index);
                     final boolean trackExists = track.doesExist ();
                     return getCrossfadeButtonColor (track, trackExists);
                 }, ColorManager.BUTTON_STATE_OFF, ColorManager.BUTTON_STATE_ON, APCColorManager.BUTTON_STATE_BLINK);
+            }
+
             final ButtonID stopButtonID = ButtonID.get (ButtonID.ROW6_1, i);
-            this.addButton (stopButtonID, "Stop " + (i + 1), new StopClipCommand<> (i, this.model, surface), i, APCControlSurface.APC_BUTTON_CLIP_STOP, () -> surface.isPressed (stopButtonID) ? 1 : 0, ColorManager.BUTTON_STATE_OFF, ColorManager.BUTTON_STATE_ON);
+            this.addButton (stopButtonID, "Stop " + (i + 1), new APCStopClipCommand (i, this.model, surface), i, APCControlSurface.APC_BUTTON_CLIP_STOP, () -> {
+
+                final View view = viewManager.getActiveView ();
+                if (view instanceof AbstractSequencerView)
+                    return ((AbstractSequencerView<?, ?>) view).getResolutionIndex () == index ? 1 : 0;
+                return surface.isPressed (stopButtonID) ? 1 : 0;
+
+            }, ColorManager.BUTTON_STATE_OFF, ColorManager.BUTTON_STATE_ON);
         }
 
         if (this.isMkII)

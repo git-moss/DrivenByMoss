@@ -23,7 +23,7 @@ import de.mossgrabers.framework.utils.ButtonEvent;
  */
 public class StopClipCommand<S extends IControlSurface<C>, C extends Configuration> extends AbstractTriggerCommand<S, C>
 {
-    private int index;
+    protected int index;
 
 
     /**
