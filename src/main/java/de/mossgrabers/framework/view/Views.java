@@ -77,7 +77,9 @@ public enum Views
     /** View for user view. */
     USER,
     /** View for note repeat options. */
-    REPEAT_NOTE;
+    REPEAT_NOTE,
+    /** View for mixing. */
+    MIX;
 
 
     /** The name of the play view. */

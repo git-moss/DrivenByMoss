@@ -92,10 +92,19 @@ public class SessionView extends AbstractSessionView<LaunchpadControlSurface, La
     @Override
     public void drawGrid ()
     {
-        final Modes controlMode = this.surface.getModeManager ().getActiveOrTempModeId ();
-        final boolean controlModeIsOff = controlMode == Modes.DUMMY;
-        this.rows = controlModeIsOff ? 8 : 7;
-        this.columns = 8;
+        final Modes mode = this.surface.getModeManager ().getActiveOrTempModeId ();
+        final boolean controlModeIsOff = mode == Modes.DUMMY;
+
+        if (this.surface.getConfiguration ().isFlipSession ())
+        {
+            this.rows = 8;
+            this.columns = controlModeIsOff ? 8 : 7;
+        }
+        else
+        {
+            this.rows = controlModeIsOff ? 8 : 7;
+            this.columns = 8;
+        }
 
         super.drawGrid ();
 
@@ -105,7 +114,7 @@ public class SessionView extends AbstractSessionView<LaunchpadControlSurface, La
         final ITrackBank tb = this.model.getCurrentTrackBank ();
         final IPadGrid pads = this.surface.getPadGrid ();
         final ModeManager modeManager = this.surface.getModeManager ();
-        for (int x = 0; x < this.columns; x++)
+        for (int x = 0; x < 8; x++)
         {
             final ITrack track = tb.getItem (x);
             final boolean exists = track.doesExist ();
@@ -118,7 +127,7 @@ public class SessionView extends AbstractSessionView<LaunchpadControlSurface, La
             else if (modeManager.isActiveOrTempMode (Modes.SOLO))
                 pads.lightEx (x, 7, exists ? track.isSolo () ? LaunchpadColorManager.LAUNCHPAD_COLOR_BLUE_HI : LaunchpadColorManager.LAUNCHPAD_COLOR_BLUE_LO : LaunchpadColorManager.LAUNCHPAD_COLOR_BLACK);
             else if (modeManager.isActiveOrTempMode (Modes.STOP_CLIP))
-                pads.lightEx (x, 7, exists ? LaunchpadColorManager.LAUNCHPAD_COLOR_ROSE : LaunchpadColorManager.LAUNCHPAD_COLOR_BLACK);
+                pads.lightEx (x, 7, exists ? this.surface.isPressed (ButtonID.get (ButtonID.PAD1, x)) ? LaunchpadColorManager.LAUNCHPAD_COLOR_RED : LaunchpadColorManager.LAUNCHPAD_COLOR_ROSE : LaunchpadColorManager.LAUNCHPAD_COLOR_BLACK);
         }
     }
 

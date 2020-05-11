@@ -6,9 +6,14 @@ package de.mossgrabers.controller.apc.view;
 
 import de.mossgrabers.controller.apc.APCConfiguration;
 import de.mossgrabers.controller.apc.controller.APCControlSurface;
+import de.mossgrabers.controller.apc.mode.NoteMode;
 import de.mossgrabers.framework.controller.ButtonID;
 import de.mossgrabers.framework.controller.color.ColorManager;
 import de.mossgrabers.framework.daw.IModel;
+import de.mossgrabers.framework.daw.INoteClip;
+import de.mossgrabers.framework.daw.IStepInfo;
+import de.mossgrabers.framework.mode.ModeManager;
+import de.mossgrabers.framework.mode.Modes;
 import de.mossgrabers.framework.utils.ButtonEvent;
 import de.mossgrabers.framework.view.AbstractNoteSequencerView;
 
@@ -20,6 +25,9 @@ import de.mossgrabers.framework.view.AbstractNoteSequencerView;
  */
 public class SequencerView extends AbstractNoteSequencerView<APCControlSurface, APCConfiguration>
 {
+    private boolean isNoteEdited = false;
+
+
     /**
      * Constructor.
      *
@@ -37,7 +45,47 @@ public class SequencerView extends AbstractNoteSequencerView<APCControlSurface, 
 
     /** {@inheritDoc} */
     @Override
-    public void onButton (final ButtonID buttonID, final ButtonEvent event)
+    protected void handleSequencerArea (final int index, final int x, final int y, final int velocity)
+    {
+        if (!this.isActive ())
+            return;
+
+        final ModeManager modeManager = this.surface.getModeManager ();
+
+        if (velocity > 0)
+        {
+            // Turn on Note mode if an existing note is pressed
+            final INoteClip cursorClip = this.getClip ();
+            final int mappedNote = this.keyManager.map (y);
+            final int editMidiChannel = this.configuration.getMidiEditChannel ();
+            final int state = cursorClip.getStep (editMidiChannel, x, mappedNote).getState ();
+            if (state == IStepInfo.NOTE_START)
+            {
+                final NoteMode noteMode = (NoteMode) modeManager.getMode (Modes.NOTE);
+                noteMode.setValues (cursorClip, editMidiChannel, x, mappedNote);
+                modeManager.setActiveMode (Modes.NOTE);
+            }
+        }
+        else
+        {
+            // Turn off Note mode
+            if (modeManager.isActiveOrTempMode (Modes.NOTE))
+                modeManager.restoreMode ();
+
+            if (this.isNoteEdited)
+            {
+                this.isNoteEdited = false;
+                return;
+            }
+        }
+
+        super.handleSequencerArea (index, x, y, velocity);
+    }
+
+
+    /** {@inheritDoc} */
+    @Override
+    public void onButton (final ButtonID buttonID, final ButtonEvent event, final int velocity)
     {
         if (!ButtonID.isSceneButton (buttonID) || event != ButtonEvent.DOWN || !this.isActive ())
             return;
@@ -101,5 +149,14 @@ public class SequencerView extends AbstractNoteSequencerView<APCControlSurface, 
         final String name = this.scales.getScale ().getName ();
         this.surface.getConfiguration ().setScale (name);
         this.surface.getDisplay ().notify (name);
+    }
+
+
+    /**
+     * Signal that a note has been edited.
+     */
+    public void setNoteEdited ()
+    {
+        this.isNoteEdited = true;
     }
 }

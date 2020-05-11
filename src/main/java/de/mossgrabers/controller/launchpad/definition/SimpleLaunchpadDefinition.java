@@ -6,10 +6,7 @@ package de.mossgrabers.controller.launchpad.definition;
 
 import de.mossgrabers.controller.launchpad.controller.LaunchpadControlSurface;
 import de.mossgrabers.framework.controller.DefaultControllerDefinition;
-import de.mossgrabers.framework.controller.grid.IPadGrid;
-import de.mossgrabers.framework.controller.grid.IVirtualFader;
 import de.mossgrabers.framework.controller.grid.LightInfo;
-import de.mossgrabers.framework.controller.grid.VirtualFaderImpl;
 import de.mossgrabers.framework.daw.midi.IMidiOutput;
 import de.mossgrabers.framework.utils.StringUtils;
 
@@ -112,13 +109,5 @@ public abstract class SimpleLaunchpadDefinition extends DefaultControllerDefinit
             }
         }
         return Collections.singletonList (sb.append ("F7").toString ());
-    }
-
-
-    /** {@inheritDoc} */
-    @Override
-    public IVirtualFader createVirtualFader (final IPadGrid padGrid, final int index)
-    {
-        return new VirtualFaderImpl (padGrid, index);
     }
 }

@@ -15,6 +15,7 @@ import de.mossgrabers.controller.apc.command.trigger.StopAllClipsOrBrowseCommand
 import de.mossgrabers.controller.apc.controller.APCColorManager;
 import de.mossgrabers.controller.apc.controller.APCControlSurface;
 import de.mossgrabers.controller.apc.mode.BrowserMode;
+import de.mossgrabers.controller.apc.mode.NoteMode;
 import de.mossgrabers.controller.apc.mode.PanMode;
 import de.mossgrabers.controller.apc.mode.SendMode;
 import de.mossgrabers.controller.apc.mode.UserMode;
@@ -176,6 +177,7 @@ public class APCControllerSetup extends AbstractControllerSetup<APCControlSurfac
         modeManager.registerMode (Modes.PAN, new PanMode (surface, this.model));
         for (int i = 0; i < 8; i++)
             modeManager.registerMode (Modes.get (Modes.SEND1, i), new SendMode (surface, this.model, i));
+        modeManager.registerMode (Modes.NOTE, new NoteMode (surface, this.model));
         modeManager.registerMode (Modes.USER, new UserMode (surface, this.model));
         modeManager.registerMode (Modes.BROWSER, new BrowserMode (surface, this.model));
     }

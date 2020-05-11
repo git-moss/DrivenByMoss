@@ -35,6 +35,7 @@ import de.mossgrabers.controller.launchpad.view.DrumView;
 import de.mossgrabers.controller.launchpad.view.DrumView4;
 import de.mossgrabers.controller.launchpad.view.DrumView64;
 import de.mossgrabers.controller.launchpad.view.DrumView8;
+import de.mossgrabers.controller.launchpad.view.MixView;
 import de.mossgrabers.controller.launchpad.view.NoteViewSelectView;
 import de.mossgrabers.controller.launchpad.view.PanView;
 import de.mossgrabers.controller.launchpad.view.PianoView;
@@ -216,6 +217,7 @@ public class LaunchpadControllerSetup extends AbstractControllerSetup<LaunchpadC
         viewManager.registerView (Views.SESSION, new SessionView (surface, this.model));
         viewManager.registerView (Views.TRACK_VOLUME, new VolumeView (surface, this.model));
         viewManager.registerView (Views.SHIFT, new ShiftView (surface, this.model));
+        viewManager.registerView (Views.MIX, new MixView (surface, this.model));
         viewManager.registerView (Views.CONTROL, new NoteViewSelectView (surface, this.model));
         if (this.definition.isPro () && this.host.hasUserParameters ())
             viewManager.registerView (Views.USER, new UserView (surface, this.model));

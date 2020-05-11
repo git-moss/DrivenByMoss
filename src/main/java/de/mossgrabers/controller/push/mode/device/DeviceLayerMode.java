@@ -258,7 +258,7 @@ public class DeviceLayerMode extends BaseMode
                 if (!config.isSendsAreToggled ())
                 {
                     fxTrackBank = this.model.getEffectTrackBank ();
-                    if (!fxTrackBank.getItem (4).doesExist ())
+                    if (fxTrackBank == null || !fxTrackBank.getItem (4).doesExist ())
                         return;
                 }
                 config.setSendsAreToggled (!config.isSendsAreToggled ());
@@ -299,7 +299,7 @@ public class DeviceLayerMode extends BaseMode
         if (this.model.isEffectTrackBankActive ())
             return;
         final ITrackBank fxTrackBank = this.model.getEffectTrackBank ();
-        if (!fxTrackBank.getItem (sendIndex).doesExist ())
+        if (fxTrackBank == null || !fxTrackBank.getItem (sendIndex).doesExist ())
             return;
         final Modes si = Modes.get (Modes.DEVICE_LAYER_SEND1, sendIndex);
         final ModeManager modeManager = this.surface.getModeManager ();

@@ -42,7 +42,7 @@ public abstract class DrumViewBase extends AbstractDrumView<LaunchpadControlSurf
 
     /** {@inheritDoc} */
     @Override
-    public void onButton (final ButtonID buttonID, final ButtonEvent event)
+    public void onButton (final ButtonID buttonID, final ButtonEvent event, final int velocity)
     {
         if (!ButtonID.isSceneButton (buttonID))
             return;
@@ -62,7 +62,7 @@ public abstract class DrumViewBase extends AbstractDrumView<LaunchpadControlSurf
             return;
         }
 
-        super.onButton (buttonID, event);
+        super.onButton (buttonID, event, velocity);
     }
 
 

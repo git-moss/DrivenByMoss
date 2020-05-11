@@ -35,7 +35,7 @@ public class RaindropsView extends AbstractRaindropsView<APCControlSurface, APCC
 
     /** {@inheritDoc} */
     @Override
-    public void onButton (final ButtonID buttonID, final ButtonEvent event)
+    public void onButton (final ButtonID buttonID, final ButtonEvent event, final int velocity)
     {
         if (!ButtonID.isSceneButton (buttonID) || event != ButtonEvent.DOWN || !this.isActive ())
             return;

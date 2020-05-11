@@ -59,7 +59,7 @@ public abstract class AbstractDrumView<S extends IControlSurface<C>, C extends C
     protected int              halfColumns;
     protected IStepInfo        copyNote;
 
-    private int                selectedPad;
+    protected int              selectedPad;
 
 
     /**

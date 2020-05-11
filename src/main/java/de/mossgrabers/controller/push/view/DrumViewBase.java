@@ -42,7 +42,7 @@ public abstract class DrumViewBase extends AbstractDrumView<PushControlSurface, 
 
     /** {@inheritDoc} */
     @Override
-    public void onButton (final ButtonID buttonID, final ButtonEvent event)
+    public void onButton (final ButtonID buttonID, final ButtonEvent event, final int velocity)
     {
         if (!ButtonID.isSceneButton (buttonID) || event != ButtonEvent.DOWN || !this.isActive ())
             return;
@@ -58,7 +58,7 @@ public abstract class DrumViewBase extends AbstractDrumView<PushControlSurface, 
             return;
         }
 
-        super.onButton (buttonID, event);
+        super.onButton (buttonID, event, velocity);
     }
 
 

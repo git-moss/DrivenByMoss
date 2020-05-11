@@ -46,6 +46,6 @@ public class ViewButtonCommand<S extends IControlSurface<C>, C extends Configura
     {
         final View view = this.surface.getViewManager ().getActiveView ();
         if (view != null)
-            view.onButton (this.buttonID, event);
+            view.onButton (this.buttonID, event, velocity);
     }
 }

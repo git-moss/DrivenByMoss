@@ -361,7 +361,7 @@ public class ShiftView extends AbstractView<LaunchpadControlSurface, LaunchpadCo
 
     /** {@inheritDoc} */
     @Override
-    public void onButton (final ButtonID buttonID, final ButtonEvent event)
+    public void onButton (final ButtonID buttonID, final ButtonEvent event, final int velocity)
     {
         if (this.surface.isPro () || event != ButtonEvent.DOWN)
             return;

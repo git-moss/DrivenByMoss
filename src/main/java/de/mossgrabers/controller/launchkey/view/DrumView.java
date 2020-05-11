@@ -162,7 +162,7 @@ public class DrumView extends AbstractDrumView<LaunchkeyMiniMk3ControlSurface, L
 
     /** {@inheritDoc} */
     @Override
-    public void onButton (final ButtonID buttonID, final ButtonEvent event)
+    public void onButton (final ButtonID buttonID, final ButtonEvent event, final int velocity)
     {
         if (!ButtonID.isSceneButton (buttonID) || event != ButtonEvent.DOWN)
             return;

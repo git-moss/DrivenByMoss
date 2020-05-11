@@ -155,10 +155,10 @@ public abstract class AbstractRaindropsView<S extends IControlSurface<C>, C exte
 
     /** {@inheritDoc} */
     @Override
-    public void onButton (final ButtonID buttonID, final ButtonEvent event)
+    public void onButton (final ButtonID buttonID, final ButtonEvent event, final int velocity)
     {
         this.ongoingResolutionChange = true;
-        super.onButton (buttonID, event);
+        super.onButton (buttonID, event, velocity);
         this.ongoingResolutionChange = false;
     }
 

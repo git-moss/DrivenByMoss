@@ -6,10 +6,12 @@ package de.mossgrabers.controller.launchpad.controller;
 
 import de.mossgrabers.controller.launchpad.LaunchpadConfiguration;
 import de.mossgrabers.controller.launchpad.definition.ILaunchpadControllerDefinition;
+import de.mossgrabers.controller.launchpad.view.VirtualFaderViewCallback;
 import de.mossgrabers.framework.controller.AbstractControlSurface;
 import de.mossgrabers.framework.controller.ButtonID;
 import de.mossgrabers.framework.controller.color.ColorManager;
 import de.mossgrabers.framework.controller.grid.IVirtualFader;
+import de.mossgrabers.framework.controller.grid.VirtualFaderImpl;
 import de.mossgrabers.framework.controller.hardware.IHwButton;
 import de.mossgrabers.framework.daw.IHost;
 import de.mossgrabers.framework.daw.midi.DeviceInquiry;
@@ -83,7 +85,7 @@ public class LaunchpadControlSurface extends AbstractControlSurface<LaunchpadCon
         this.definition = definition;
 
         for (int i = 0; i < this.virtualFaders.length; i++)
-            this.virtualFaders[i] = this.definition.createVirtualFader (this.pads, i);
+            this.virtualFaders[i] = new VirtualFaderImpl (host, new VirtualFaderViewCallback (i, this.viewManager), this.pads, i);
 
         this.input.setSysexCallback (this::handleSysEx);
         this.output.sendSysex (DeviceInquiry.createQuery ());
@@ -186,6 +188,19 @@ public class LaunchpadControlSurface extends AbstractControlSurface<LaunchpadCon
     {
         for (int i = 0; i < 8; i++)
             this.setupFader (i, -1, false);
+    }
+
+
+    /**
+     * Move the fader to a new position
+     *
+     * @param index The index of the fader (0-7)
+     * @param row The row to move to (0-7)
+     * @param velocity The velocity (for speed)
+     */
+    public void moveFader (final int index, final int row, final int velocity)
+    {
+        this.virtualFaders[index].moveTo (row, velocity);
     }
 
 

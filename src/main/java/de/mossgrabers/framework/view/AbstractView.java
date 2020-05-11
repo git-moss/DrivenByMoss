@@ -166,7 +166,7 @@ public abstract class AbstractView<S extends IControlSurface<C>, C extends Confi
 
     /** {@inheritDoc} */
     @Override
-    public void onButton (final ButtonID buttonID, final ButtonEvent event)
+    public void onButton (final ButtonID buttonID, final ButtonEvent event, final int velocity)
     {
         // Intentionally empty
     }

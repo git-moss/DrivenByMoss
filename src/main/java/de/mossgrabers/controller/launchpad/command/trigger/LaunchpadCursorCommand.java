@@ -143,6 +143,7 @@ public class LaunchpadCursorCommand extends CursorCommand<LaunchpadControlSurfac
             case TRACK_VOLUME:
             case TRACK_PAN:
             case TRACK_SENDS:
+            case MIX:
                 final ITrack sel = tb.getSelectedItem ();
                 final int selIndex = sel != null ? sel.getIndex () : -1;
                 this.canScrollLeft = selIndex > 0 || tb.canScrollPageBackwards ();
@@ -210,6 +211,7 @@ public class LaunchpadCursorCommand extends CursorCommand<LaunchpadControlSurfac
             case TRACK_VOLUME:
             case TRACK_PAN:
             case TRACK_SENDS:
+            case MIX:
                 final Mode mode = this.surface.getModeManager ().getMode (Modes.VOLUME);
                 if (mode != null)
                     mode.selectPreviousItem ();
@@ -272,6 +274,7 @@ public class LaunchpadCursorCommand extends CursorCommand<LaunchpadControlSurfac
             case TRACK_VOLUME:
             case TRACK_PAN:
             case TRACK_SENDS:
+            case MIX:
                 final Mode mode = this.surface.getModeManager ().getMode (Modes.VOLUME);
                 if (mode != null)
                     mode.selectNextItem ();
@@ -323,6 +326,7 @@ public class LaunchpadCursorCommand extends CursorCommand<LaunchpadControlSurfac
             case TRACK_VOLUME:
             case TRACK_PAN:
             case TRACK_SENDS:
+            case MIX:
                 super.scrollUp ();
                 break;
 
@@ -372,6 +376,7 @@ public class LaunchpadCursorCommand extends CursorCommand<LaunchpadControlSurfac
             case TRACK_VOLUME:
             case TRACK_PAN:
             case TRACK_SENDS:
+            case MIX:
                 super.scrollDown ();
                 break;
 

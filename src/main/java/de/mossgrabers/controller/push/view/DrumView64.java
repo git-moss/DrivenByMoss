@@ -144,7 +144,7 @@ public class DrumView64 extends AbstractDrumView64<PushControlSurface, PushConfi
 
     /** {@inheritDoc} */
     @Override
-    public void onButton (final ButtonID buttonID, final ButtonEvent event)
+    public void onButton (final ButtonID buttonID, final ButtonEvent event, final int velocity)
     {
         if (!ButtonID.isSceneButton (buttonID) || event != ButtonEvent.DOWN)
             return;

@@ -202,7 +202,7 @@ public abstract class AbstractBank<T extends IItem> implements IBank<T>
 
     /** {@inheritDoc} */
     @Override
-    public void setSkipDisabledItems (boolean shouldSkip)
+    public void setSkipDisabledItems (final boolean shouldSkip)
     {
         // Not used, overwrite to support
     }

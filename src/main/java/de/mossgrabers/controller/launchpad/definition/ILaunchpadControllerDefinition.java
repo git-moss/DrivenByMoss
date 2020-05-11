@@ -6,8 +6,6 @@ package de.mossgrabers.controller.launchpad.definition;
 
 import de.mossgrabers.controller.launchpad.controller.LaunchpadControlSurface;
 import de.mossgrabers.framework.controller.ButtonID;
-import de.mossgrabers.framework.controller.grid.IPadGrid;
-import de.mossgrabers.framework.controller.grid.IVirtualFader;
 import de.mossgrabers.framework.controller.grid.LightInfo;
 import de.mossgrabers.framework.daw.midi.IMidiOutput;
 
@@ -105,15 +103,4 @@ public interface ILaunchpadControllerDefinition
      * @return The sysex string
      */
     List<String> buildLEDUpdate (Map<Integer, LightInfo> padInfos);
-
-
-    /**
-     * Creates a virtual fader.
-     *
-     * @param padGrid The pad grid
-     * @param index The index of the fader (0-7)
-     *
-     * @return The virtual fader
-     */
-    IVirtualFader createVirtualFader (IPadGrid padGrid, int index);
 }
