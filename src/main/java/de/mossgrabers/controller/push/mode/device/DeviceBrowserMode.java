@@ -279,7 +279,6 @@ public class DeviceBrowserMode extends BaseMode
                 {
                     for (int i = 0; i < 8; i++)
                         display.addOptionElement (i == 3 ? "No results available..." : "", "", false, "", "", false, false);
-                    display.send ();
                     return;
                 }
 
