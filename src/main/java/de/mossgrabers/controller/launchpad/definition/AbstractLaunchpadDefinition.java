@@ -5,12 +5,10 @@
 package de.mossgrabers.controller.launchpad.definition;
 
 import de.mossgrabers.controller.launchpad.controller.LaunchpadControlSurface;
+import de.mossgrabers.controller.launchpad.definition.button.ButtonSetup;
+import de.mossgrabers.controller.launchpad.definition.button.LaunchpadButton;
 import de.mossgrabers.framework.controller.DefaultControllerDefinition;
-import de.mossgrabers.framework.controller.grid.IPadGrid;
-import de.mossgrabers.framework.controller.grid.IVirtualFader;
 import de.mossgrabers.framework.controller.grid.LightInfo;
-import de.mossgrabers.framework.controller.grid.VirtualFaderImpl;
-import de.mossgrabers.framework.daw.midi.IMidiOutput;
 import de.mossgrabers.framework.utils.StringUtils;
 
 import java.util.Collections;
@@ -25,17 +23,40 @@ import java.util.UUID;
  *
  * @author J&uuml;rgen Mo&szlig;graber
  */
-public abstract class SimpleLaunchpadDefinition extends DefaultControllerDefinition implements ILaunchpadControllerDefinition
+public abstract class AbstractLaunchpadDefinition extends DefaultControllerDefinition implements ILaunchpadControllerDefinition
 {
+    protected final ButtonSetup buttonSetup = new ButtonSetup ();
+
+
     /**
      * Constructor.
      *
      * @param uuid The UUID of the controller implementation
      * @param hardwareModel The hardware model which this controller implementation supports
      */
-    public SimpleLaunchpadDefinition (final UUID uuid, final String hardwareModel)
+    public AbstractLaunchpadDefinition (final UUID uuid, final String hardwareModel)
     {
         super (uuid, hardwareModel, "Novation", 1, 1);
+
+        this.buttonSetup.setButton (LaunchpadButton.ARROW_UP, 91);
+        this.buttonSetup.setButton (LaunchpadButton.ARROW_DOWN, 92);
+        this.buttonSetup.setButton (LaunchpadButton.ARROW_LEFT, 93);
+        this.buttonSetup.setButton (LaunchpadButton.ARROW_RIGHT, 94);
+
+        this.buttonSetup.setButton (LaunchpadButton.SESSION, 95);
+        this.buttonSetup.setButton (LaunchpadButton.NOTE, 96);
+        this.buttonSetup.setButton (LaunchpadButton.DEVICE, 97);
+
+        this.buttonSetup.setButton (LaunchpadButton.SHIFT, 98);
+
+        this.buttonSetup.setButton (LaunchpadButton.SCENE1, LaunchpadControlSurface.LAUNCHPAD_BUTTON_SCENE1);
+        this.buttonSetup.setButton (LaunchpadButton.SCENE2, LaunchpadControlSurface.LAUNCHPAD_BUTTON_SCENE2);
+        this.buttonSetup.setButton (LaunchpadButton.SCENE3, LaunchpadControlSurface.LAUNCHPAD_BUTTON_SCENE3);
+        this.buttonSetup.setButton (LaunchpadButton.SCENE4, LaunchpadControlSurface.LAUNCHPAD_BUTTON_SCENE4);
+        this.buttonSetup.setButton (LaunchpadButton.SCENE5, LaunchpadControlSurface.LAUNCHPAD_BUTTON_SCENE5);
+        this.buttonSetup.setButton (LaunchpadButton.SCENE6, LaunchpadControlSurface.LAUNCHPAD_BUTTON_SCENE6);
+        this.buttonSetup.setButton (LaunchpadButton.SCENE7, LaunchpadControlSurface.LAUNCHPAD_BUTTON_SCENE7);
+        this.buttonSetup.setButton (LaunchpadButton.SCENE8, LaunchpadControlSurface.LAUNCHPAD_BUTTON_SCENE8);
     }
 
 
@@ -49,18 +70,17 @@ public abstract class SimpleLaunchpadDefinition extends DefaultControllerDefinit
 
     /** {@inheritDoc} */
     @Override
-    public void resetMode (final LaunchpadControlSurface surface)
+    public boolean hasTrackSelectionButtons ()
     {
-        surface.sendLaunchpadSysEx ("0E 00");
+        return false;
     }
 
 
     /** {@inheritDoc} */
     @Override
-    public void sendBlinkState (final IMidiOutput output, final int note, final int blinkColor, final boolean fast)
+    public void resetMode (final LaunchpadControlSurface surface)
     {
-        // Start blinking on channel 2, stop it on channel 1
-        output.sendNoteEx (blinkColor == 0 ? 1 : 2, note, blinkColor);
+        surface.sendLaunchpadSysEx ("0E 00");
     }
 
 
@@ -77,6 +97,14 @@ public abstract class SimpleLaunchpadDefinition extends DefaultControllerDefinit
     public boolean sceneButtonsUseCC ()
     {
         return true;
+    }
+
+
+    /** {@inheritDoc} */
+    @Override
+    public ButtonSetup getButtonSetup ()
+    {
+        return this.buttonSetup;
     }
 
 
@@ -112,13 +140,5 @@ public abstract class SimpleLaunchpadDefinition extends DefaultControllerDefinit
             }
         }
         return Collections.singletonList (sb.append ("F7").toString ());
-    }
-
-
-    /** {@inheritDoc} */
-    @Override
-    public IVirtualFader createVirtualFader (final IPadGrid padGrid, final int index)
-    {
-        return new VirtualFaderImpl (padGrid, index);
     }
 }

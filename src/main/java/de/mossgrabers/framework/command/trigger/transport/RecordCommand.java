@@ -12,7 +12,7 @@ import de.mossgrabers.framework.utils.ButtonEvent;
 
 
 /**
- * Command handle the record button.
+ * Command to handle the record button.
  *
  * @param <S> The type of the control surface
  * @param <C> The type of the configuration

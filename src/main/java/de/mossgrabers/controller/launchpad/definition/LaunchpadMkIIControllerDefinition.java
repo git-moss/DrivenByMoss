@@ -5,14 +5,13 @@
 package de.mossgrabers.controller.launchpad.definition;
 
 import de.mossgrabers.controller.launchpad.controller.LaunchpadControlSurface;
-import de.mossgrabers.framework.controller.ButtonID;
+import de.mossgrabers.controller.launchpad.definition.button.LaunchpadButton;
 import de.mossgrabers.framework.controller.grid.LightInfo;
 import de.mossgrabers.framework.utils.OperatingSystem;
 import de.mossgrabers.framework.utils.Pair;
 import de.mossgrabers.framework.utils.StringUtils;
 
 import java.util.ArrayList;
-import java.util.EnumMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
@@ -24,19 +23,10 @@ import java.util.UUID;
  *
  * @author J&uuml;rgen Mo&szlig;graber
  */
-public class LaunchpadMkIIControllerDefinition extends SimpleLaunchpadDefinition
+public class LaunchpadMkIIControllerDefinition extends AbstractLaunchpadDefinition
 {
-    private static final UUID   EXTENSION_ID             = UUID.fromString ("4E01A0B0-67B1-11E5-A837-0800200C9A66");
-    private static final String SYSEX_HEADER             = "F0 00 20 29 02 18 ";
-
-    private static final int    LAUNCHPAD_BUTTON_UP      = 104;
-    private static final int    LAUNCHPAD_BUTTON_DOWN    = 105;
-    private static final int    LAUNCHPAD_BUTTON_LEFT    = 106;
-    private static final int    LAUNCHPAD_BUTTON_RIGHT   = 107;
-    private static final int    LAUNCHPAD_BUTTON_SESSION = 108;
-    private static final int    LAUNCHPAD_BUTTON_USER1   = 109;
-    private static final int    LAUNCHPAD_BUTTON_USER2   = 110;
-    private static final int    LAUNCHPAD_BUTTON_MIXER   = 111;
+    private static final UUID   EXTENSION_ID = UUID.fromString ("4E01A0B0-67B1-11E5-A837-0800200C9A66");
+    private static final String SYSEX_HEADER = "F0 00 20 29 02 18 ";
 
 
     /**
@@ -45,6 +35,17 @@ public class LaunchpadMkIIControllerDefinition extends SimpleLaunchpadDefinition
     public LaunchpadMkIIControllerDefinition ()
     {
         super (EXTENSION_ID, "Launchpad MkII");
+
+        this.buttonSetup.setButton (LaunchpadButton.SHIFT, 111);
+
+        this.buttonSetup.setButton (LaunchpadButton.ARROW_UP, 104);
+        this.buttonSetup.setButton (LaunchpadButton.ARROW_DOWN, 105);
+        this.buttonSetup.setButton (LaunchpadButton.ARROW_LEFT, 106);
+        this.buttonSetup.setButton (LaunchpadButton.ARROW_RIGHT, 107);
+
+        this.buttonSetup.setButton (LaunchpadButton.SESSION, 108);
+        this.buttonSetup.setButton (LaunchpadButton.NOTE, 109);
+        this.buttonSetup.setButton (LaunchpadButton.DEVICE, 110);
     }
 
 
@@ -95,32 +96,6 @@ public class LaunchpadMkIIControllerDefinition extends SimpleLaunchpadDefinition
     public void setLogoColor (final LaunchpadControlSurface surface, final int color)
     {
         // No logo on the Mk II
-    }
-
-
-    /** {@inheritDoc} */
-    @Override
-    public Map<ButtonID, Integer> getButtonIDs ()
-    {
-        final Map<ButtonID, Integer> buttonIDs = new EnumMap<> (ButtonID.class);
-        buttonIDs.put (ButtonID.SHIFT, Integer.valueOf (LAUNCHPAD_BUTTON_MIXER));
-        buttonIDs.put (ButtonID.LEFT, Integer.valueOf (LAUNCHPAD_BUTTON_LEFT));
-        buttonIDs.put (ButtonID.RIGHT, Integer.valueOf (LAUNCHPAD_BUTTON_RIGHT));
-        buttonIDs.put (ButtonID.UP, Integer.valueOf (LAUNCHPAD_BUTTON_UP));
-        buttonIDs.put (ButtonID.DOWN, Integer.valueOf (LAUNCHPAD_BUTTON_DOWN));
-        buttonIDs.put (ButtonID.SESSION, Integer.valueOf (LAUNCHPAD_BUTTON_SESSION));
-        buttonIDs.put (ButtonID.DEVICE, Integer.valueOf (LAUNCHPAD_BUTTON_USER2));
-        buttonIDs.put (ButtonID.NOTE, Integer.valueOf (LAUNCHPAD_BUTTON_USER1));
-
-        buttonIDs.put (ButtonID.SCENE1, Integer.valueOf (LaunchpadControlSurface.LAUNCHPAD_BUTTON_SCENE1));
-        buttonIDs.put (ButtonID.SCENE2, Integer.valueOf (LaunchpadControlSurface.LAUNCHPAD_BUTTON_SCENE2));
-        buttonIDs.put (ButtonID.SCENE3, Integer.valueOf (LaunchpadControlSurface.LAUNCHPAD_BUTTON_SCENE3));
-        buttonIDs.put (ButtonID.SCENE4, Integer.valueOf (LaunchpadControlSurface.LAUNCHPAD_BUTTON_SCENE4));
-        buttonIDs.put (ButtonID.SCENE5, Integer.valueOf (LaunchpadControlSurface.LAUNCHPAD_BUTTON_SCENE5));
-        buttonIDs.put (ButtonID.SCENE6, Integer.valueOf (LaunchpadControlSurface.LAUNCHPAD_BUTTON_SCENE6));
-        buttonIDs.put (ButtonID.SCENE7, Integer.valueOf (LaunchpadControlSurface.LAUNCHPAD_BUTTON_SCENE7));
-        buttonIDs.put (ButtonID.SCENE8, Integer.valueOf (LaunchpadControlSurface.LAUNCHPAD_BUTTON_SCENE8));
-        return buttonIDs;
     }
 
 

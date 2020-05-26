@@ -6,7 +6,12 @@ package de.mossgrabers.framework.configuration;
 
 import de.mossgrabers.framework.controller.color.ColorEx;
 import de.mossgrabers.framework.controller.valuechanger.IValueChanger;
+import de.mossgrabers.framework.daw.ICursorDevice;
+import de.mossgrabers.framework.daw.IDeviceBank;
+import de.mossgrabers.framework.daw.IDrumPadBank;
 import de.mossgrabers.framework.daw.IHost;
+import de.mossgrabers.framework.daw.IModel;
+import de.mossgrabers.framework.daw.ITrackBank;
 import de.mossgrabers.framework.daw.constants.EditCapability;
 import de.mossgrabers.framework.daw.constants.Resolution;
 import de.mossgrabers.framework.daw.midi.ArpeggiatorMode;
@@ -105,6 +110,8 @@ public abstract class AbstractConfiguration implements Configuration
     public static final Integer      MIDI_EDIT_CHANNEL                 = Integer.valueOf (36);
     /** Setting for including mastertracks. */
     public static final Integer      INCLUDE_MASTER                    = Integer.valueOf (37);
+    /** Setting for excluding deactivated tracks. */
+    public static final Integer      EXCLUDE_DEACTIVATED_ITEMS         = Integer.valueOf (38);
 
     // Implementation IDs start at 50
 
@@ -336,6 +343,7 @@ public abstract class AbstractConfiguration implements Configuration
     private final ArpeggiatorMode []                 arpeggiatorModes;
 
     private boolean                                  includeMaster               = true;
+    private boolean                                  excludeDeactivatedItems     = false;
     private final String []                          userPageNames               = new String [8];
 
 
@@ -1064,7 +1072,7 @@ public abstract class AbstractConfiguration implements Configuration
 
 
     /**
-     * Activate the accent value setting.
+     * Activate the flip arranger and clip record setting.
      *
      * @param settingsUI The settings
      */
@@ -1089,6 +1097,21 @@ public abstract class AbstractConfiguration implements Configuration
         includeMasterSetting.addValueObserver (value -> {
             this.includeMaster = "On".equals (value);
             this.notifyObservers (INCLUDE_MASTER);
+        });
+    }
+
+
+    /**
+     * Activate the exclude deactovated tracks setting.
+     *
+     * @param settingsUI The settings
+     */
+    protected void activateExcludeDeactivatedItemsSetting (final ISettingsUI settingsUI)
+    {
+        final IEnumSetting includeMasterSetting = settingsUI.getEnumSetting ("Exclude deactivated items (tracks, sends, devices, layers)", CATEGORY_WORKFLOW, ON_OFF_OPTIONS, ON_OFF_OPTIONS[0]);
+        includeMasterSetting.addValueObserver (value -> {
+            this.excludeDeactivatedItems = ON_OFF_OPTIONS[1].equals (value);
+            this.notifyObservers (EXCLUDE_DEACTIVATED_ITEMS);
         });
     }
 
@@ -1323,6 +1346,33 @@ public abstract class AbstractConfiguration implements Configuration
 
 
     /**
+     * Register a handler for the 'exclude deactivated items' setting.
+     *
+     * @param model The model for getting the banks to configure
+     */
+    public void registerDeactivatedItemsHandler (final IModel model)
+    {
+        this.addSettingObserver (AbstractConfiguration.EXCLUDE_DEACTIVATED_ITEMS, () -> {
+            final boolean exclude = this.areDeactivatedItemsExcluded ();
+            final ITrackBank trackBank = model.getTrackBank ();
+            trackBank.setSkipDisabledItems (exclude);
+            for (int i = 0; i < trackBank.getPageSize (); i++)
+                trackBank.getItem (i).getSendBank ().setSkipDisabledItems (exclude);
+            final ITrackBank effectTrackBank = model.getEffectTrackBank ();
+            if (effectTrackBank != null)
+                effectTrackBank.setSkipDisabledItems (exclude);
+            final ICursorDevice cursorDevice = model.getCursorDevice ();
+            final IDeviceBank deviceBank = cursorDevice.getDeviceBank ();
+            deviceBank.setSkipDisabledItems (exclude);
+            cursorDevice.getLayerBank ().setSkipDisabledItems (exclude);
+            final IDrumPadBank drumPadBank = cursorDevice.getDrumPadBank ();
+            if (drumPadBank != null)
+                drumPadBank.setSkipDisabledItems (exclude);
+        });
+    }
+
+
+    /**
      * Lookup the index of the value in the given options array.
      *
      * @param options The options in which to search for the value
@@ -1365,6 +1415,36 @@ public abstract class AbstractConfiguration implements Configuration
     }
 
 
+    /**
+     * Get the next arpeggiator mode.
+     *
+     * @return The next
+     */
+    public ArpeggiatorMode nextArpeggiatorMode ()
+    {
+        final ArpeggiatorMode arpMode = this.getNoteRepeatMode ();
+        int index = this.lookupArpeggiatorModeIndex (arpMode) + 1;
+        if (index >= this.arpeggiatorModes.length)
+            index = 0;
+        return this.arpeggiatorModes[index];
+    }
+
+
+    /**
+     * Get the previous arpeggiator mode.
+     *
+     * @return The previous
+     */
+    public ArpeggiatorMode prevArpeggiatorMode ()
+    {
+        final ArpeggiatorMode arpMode = this.getNoteRepeatMode ();
+        int index = this.lookupArpeggiatorModeIndex (arpMode) - 1;
+        if (index < 0)
+            index = this.arpeggiatorModes.length - 1;
+        return this.arpeggiatorModes[index];
+    }
+
+
     /** {@inheritDoc} */
     @Override
     public ArpeggiatorMode [] getArpeggiatorModes ()
@@ -1381,6 +1461,17 @@ public abstract class AbstractConfiguration implements Configuration
     public boolean areMasterTracksIncluded ()
     {
         return this.includeMaster;
+    }
+
+
+    /**
+     * Should deactivated tracks be included in the track list?
+     *
+     * @return False if they should be included
+     */
+    public boolean areDeactivatedItemsExcluded ()
+    {
+        return this.excludeDeactivatedItems;
     }
 
 

@@ -5,11 +5,8 @@
 package de.mossgrabers.controller.launchpad.definition;
 
 import de.mossgrabers.controller.launchpad.controller.LaunchpadControlSurface;
-import de.mossgrabers.framework.controller.ButtonID;
-import de.mossgrabers.framework.controller.grid.IPadGrid;
-import de.mossgrabers.framework.controller.grid.IVirtualFader;
+import de.mossgrabers.controller.launchpad.definition.button.ButtonSetup;
 import de.mossgrabers.framework.controller.grid.LightInfo;
-import de.mossgrabers.framework.daw.midi.IMidiOutput;
 
 import java.util.List;
 import java.util.Map;
@@ -28,6 +25,14 @@ public interface ILaunchpadControllerDefinition
      * @return True if it is a pro version
      */
     boolean isPro ();
+
+
+    /**
+     * Does the device have dedicated buttons to select the tracks?
+     *
+     * @return True if supported
+     */
+    boolean hasTrackSelectionButtons ();
 
 
     /**
@@ -71,17 +76,6 @@ public interface ILaunchpadControllerDefinition
 
 
     /**
-     * Set the given pad/note to blink.
-     *
-     * @param output The output where to send to
-     * @param note The note
-     * @param blinkColor The color to use for blinking
-     * @param fast Blink fast or slow
-     */
-    void sendBlinkState (IMidiOutput output, int note, int blinkColor, boolean fast);
-
-
-    /**
      * Set the logo or front color depending on the model.
      *
      * @param surface The control surface
@@ -91,11 +85,11 @@ public interface ILaunchpadControllerDefinition
 
 
     /**
-     * Get the IDs of common buttons.
+     * Get the setup information for the non-grid buttons.
      *
-     * @return The CCs
+     * @return The setup
      */
-    Map<ButtonID, Integer> getButtonIDs ();
+    ButtonSetup getButtonSetup ();
 
 
     /**
@@ -105,15 +99,4 @@ public interface ILaunchpadControllerDefinition
      * @return The sysex string
      */
     List<String> buildLEDUpdate (Map<Integer, LightInfo> padInfos);
-
-
-    /**
-     * Creates a virtual fader.
-     *
-     * @param padGrid The pad grid
-     * @param index The index of the fader (0-7)
-     *
-     * @return The virtual fader
-     */
-    IVirtualFader createVirtualFader (IPadGrid padGrid, int index);
 }

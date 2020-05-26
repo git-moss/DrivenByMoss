@@ -63,6 +63,6 @@ public class SetupCommand extends AbstractTriggerCommand<PushControlSurface, Pus
         if (this.surface.isShiftPressed ())
             return Modes.CONFIGURATION;
 
-        return this.model.getHost ().hasUserParameters () ? Modes.USER : Modes.SETUP;
+        return Modes.USER;
     }
 }

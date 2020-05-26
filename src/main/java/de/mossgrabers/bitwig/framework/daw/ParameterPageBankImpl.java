@@ -263,4 +263,12 @@ public class ParameterPageBankImpl implements IParameterPageBank
         this.pageNames.clear ();
         Collections.addAll (this.pageNames, pageNames);
     }
+
+
+    /** {@inheritDoc} */
+    @Override
+    public void setSkipDisabledItems (final boolean shouldSkip)
+    {
+        // Not supported
+    }
 }

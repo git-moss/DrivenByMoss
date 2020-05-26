@@ -33,6 +33,13 @@ public class SoloCommand extends AbstractTrackCommand
     @Override
     public void execute (final ButtonEvent event, final int velocity)
     {
+        if (this.surface.isPro () && this.surface.isShiftPressed ())
+        {
+            if (event == ButtonEvent.DOWN)
+                this.model.getTransport ().toggleMetronome ();
+            return;
+        }
+
         this.onModeButton (event, Modes.SOLO, "Solo");
     }
 }

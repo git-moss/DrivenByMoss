@@ -147,6 +147,7 @@ public class LaunchkeyMiniMk3ControllerSetup extends AbstractControllerSetup<Lau
     {
         this.getSurface ().getModeManager ().addModeListener ( (previousViewId, activeViewId) -> this.updateIndication (null));
         this.createScaleObservers (this.configuration);
+        this.configuration.registerDeactivatedItemsHandler (this.model);
     }
 
 
@@ -217,11 +218,11 @@ public class LaunchkeyMiniMk3ControllerSetup extends AbstractControllerSetup<Lau
         });
 
         // Scene buttons
-        this.addButton (ButtonID.SCENE1, "Scene 1", new ViewButtonCommand<> (ButtonID.SCENE1, this.model, surface), LaunchkeyMiniMk3ControlSurface.LAUNCHKEY_SCENE1, () -> {
+        this.addButton (ButtonID.SCENE1, "Scene 1", new ViewButtonCommand<> (ButtonID.SCENE1, surface), LaunchkeyMiniMk3ControlSurface.LAUNCHKEY_SCENE1, () -> {
             final View activeView = viewManager.getActiveView ();
             return activeView != null ? activeView.getButtonColor (ButtonID.SCENE1) : 0;
         });
-        this.addButton (ButtonID.SCENE2, "Scene 2", new ViewButtonCommand<> (ButtonID.SCENE2, this.model, surface), LaunchkeyMiniMk3ControlSurface.LAUNCHKEY_SCENE2, () -> {
+        this.addButton (ButtonID.SCENE2, "Scene 2", new ViewButtonCommand<> (ButtonID.SCENE2, surface), LaunchkeyMiniMk3ControlSurface.LAUNCHKEY_SCENE2, () -> {
             final View activeView = viewManager.getActiveView ();
             return activeView != null ? activeView.getButtonColor (ButtonID.SCENE2) : 0;
         });
@@ -439,12 +440,9 @@ public class LaunchkeyMiniMk3ControllerSetup extends AbstractControllerSetup<Lau
             parameterBank.getItem (i).setIndication (isDevice);
         }
 
-        if (this.host.hasUserParameters ())
-        {
-            final IParameterBank userParameterBank = this.model.getUserParameterBank ();
-            for (int i = 0; i < userParameterBank.getPageSize (); i++)
-                userParameterBank.getItem (i).setIndication (isUserMode);
-        }
+        final IParameterBank userParameterBank = this.model.getUserParameterBank ();
+        for (int i = 0; i < userParameterBank.getPageSize (); i++)
+            userParameterBank.getItem (i).setIndication (isUserMode);
     }
 
 

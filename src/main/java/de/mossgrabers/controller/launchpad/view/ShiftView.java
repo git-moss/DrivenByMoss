@@ -13,6 +13,7 @@ import de.mossgrabers.framework.controller.ButtonID;
 import de.mossgrabers.framework.controller.grid.IPadGrid;
 import de.mossgrabers.framework.controller.hardware.IHwButton;
 import de.mossgrabers.framework.daw.IModel;
+import de.mossgrabers.framework.daw.ITransport;
 import de.mossgrabers.framework.daw.constants.Resolution;
 import de.mossgrabers.framework.daw.midi.INoteRepeat;
 import de.mossgrabers.framework.mode.ModeManager;
@@ -47,10 +48,14 @@ public class ShiftView extends AbstractView<LaunchpadControlSurface, LaunchpadCo
         final IPadGrid padGrid = this.surface.getPadGrid ();
         final LaunchpadConfiguration configuration = this.surface.getConfiguration ();
 
+        final ITransport transport = this.model.getTransport ();
+
+        // Add tracks
         padGrid.light (97, LaunchpadColorManager.LAUNCHPAD_COLOR_GREEN);
         padGrid.light (98, LaunchpadColorManager.LAUNCHPAD_COLOR_GREEN_SPRING);
         padGrid.light (99, LaunchpadColorManager.LAUNCHPAD_COLOR_TURQUOISE_CYAN);
 
+        // New clip length
         final int clipLengthIndex = this.surface.getConfiguration ().getNewClipLength ();
         for (int i = 0; i < 8; i++)
             padGrid.light (36 + i, i == clipLengthIndex ? LaunchpadColorManager.LAUNCHPAD_COLOR_WHITE : LaunchpadColorManager.LAUNCHPAD_COLOR_GREY_LO);
@@ -101,8 +106,8 @@ public class ShiftView extends AbstractView<LaunchpadControlSurface, LaunchpadCo
         }
 
         // Record
-        padGrid.light (44, LaunchpadColorManager.LAUNCHPAD_COLOR_RED);
-        padGrid.light (45, LaunchpadColorManager.LAUNCHPAD_COLOR_ROSE);
+        padGrid.light (44, transport.isRecording () ? LaunchpadColorManager.LAUNCHPAD_COLOR_RED_HI : LaunchpadColorManager.LAUNCHPAD_COLOR_RED_LO);
+        padGrid.light (45, transport.isLauncherOverdub () ? LaunchpadColorManager.LAUNCHPAD_COLOR_ROSE : LaunchpadColorManager.LAUNCHPAD_COLOR_WHITE);
 
         for (int i = 46; i < 51; i++)
             padGrid.light (i, LaunchpadColorManager.LAUNCHPAD_COLOR_BLACK);
@@ -111,17 +116,18 @@ public class ShiftView extends AbstractView<LaunchpadControlSurface, LaunchpadCo
         padGrid.light (51, LaunchpadColorManager.LAUNCHPAD_COLOR_RED);
 
         // Play / New
-        padGrid.light (52, LaunchpadColorManager.LAUNCHPAD_COLOR_GREEN);
+        padGrid.light (52, transport.isPlaying () ? LaunchpadColorManager.LAUNCHPAD_COLOR_GREEN_HI : LaunchpadColorManager.LAUNCHPAD_COLOR_GREEN_LO);
         padGrid.light (53, LaunchpadColorManager.LAUNCHPAD_COLOR_GREEN_SPRING);
 
         padGrid.light (54, LaunchpadColorManager.LAUNCHPAD_COLOR_BLACK);
         padGrid.light (59, LaunchpadColorManager.LAUNCHPAD_COLOR_BLACK);
 
-        // Duplicate / Toggle loop
+        // Duplicate
         if (configuration.isDuplicateModeActive ())
             padGrid.light (60, LaunchpadColorManager.LAUNCHPAD_COLOR_BLUE, LaunchpadColorManager.LAUNCHPAD_COLOR_OCEAN_BLUE, true);
         else
             padGrid.light (60, LaunchpadColorManager.LAUNCHPAD_COLOR_BLUE);
+        // Double
         padGrid.light (61, LaunchpadColorManager.LAUNCHPAD_COLOR_BLUE_ORCHID);
 
         padGrid.light (62, LaunchpadColorManager.LAUNCHPAD_COLOR_BLACK);
@@ -139,7 +145,7 @@ public class ShiftView extends AbstractView<LaunchpadControlSurface, LaunchpadCo
             padGrid.light (76, LaunchpadColorManager.LAUNCHPAD_COLOR_MAGENTA, LaunchpadColorManager.LAUNCHPAD_COLOR_MAGENTA_PINK, true);
         else
             padGrid.light (76, LaunchpadColorManager.LAUNCHPAD_COLOR_MAGENTA);
-        padGrid.light (77, LaunchpadColorManager.LAUNCHPAD_COLOR_BLACK);
+        padGrid.light (77, transport.isLoop () ? LaunchpadColorManager.LAUNCHPAD_COLOR_BLUE_HI : LaunchpadColorManager.LAUNCHPAD_COLOR_BLUE_LO);
 
         padGrid.light (78, LaunchpadColorManager.LAUNCHPAD_COLOR_BLACK);
         padGrid.light (83, LaunchpadColorManager.LAUNCHPAD_COLOR_BLACK);
@@ -153,8 +159,9 @@ public class ShiftView extends AbstractView<LaunchpadControlSurface, LaunchpadCo
         for (int i = 88; i < 92; i++)
             padGrid.light (i, LaunchpadColorManager.LAUNCHPAD_COLOR_BLACK);
 
-        // Metronome / Tap Tempo
-        padGrid.light (92, LaunchpadColorManager.LAUNCHPAD_COLOR_GREEN);
+        // Metronome
+        padGrid.light (92, transport.isMetronomeOn () ? LaunchpadColorManager.LAUNCHPAD_COLOR_GREEN_HI : LaunchpadColorManager.LAUNCHPAD_COLOR_GREEN_LO);
+        // Tap Tempo
         padGrid.light (93, LaunchpadColorManager.LAUNCHPAD_COLOR_GREEN_SPRING);
 
         for (int i = 94; i < 97; i++)
@@ -188,7 +195,7 @@ public class ShiftView extends AbstractView<LaunchpadControlSurface, LaunchpadCo
 
             case 87:
                 configuration.toggleNoteRepeatActive ();
-                this.model.getHost ().scheduleTask ( () -> this.surface.getDisplay ().notify ("Note Repeat: " + (configuration.isNoteRepeatActive () ? "Active" : "Off")), 100);
+                this.mvHelper.delayDisplay ( () -> "Note Repeat: " + (configuration.isNoteRepeatActive () ? "Active" : "Off"));
                 break;
 
             case 79:
@@ -262,7 +269,7 @@ public class ShiftView extends AbstractView<LaunchpadControlSurface, LaunchpadCo
         {
             case 92:
                 this.executeNormal (ButtonID.METRONOME, ButtonEvent.UP);
-                this.surface.scheduleTask ( () -> this.surface.getDisplay ().notify ("Metronome: " + (this.model.getTransport ().isMetronomeOn () ? "On" : "Off")), 100);
+                this.mvHelper.delayDisplay ( () -> "Metronome: " + (this.model.getTransport ().isMetronomeOn () ? "On" : "Off"));
                 break;
             case 93:
                 this.executeShifted (ButtonID.METRONOME, ButtonEvent.DOWN);
@@ -280,6 +287,10 @@ public class ShiftView extends AbstractView<LaunchpadControlSurface, LaunchpadCo
                 configuration.toggleDeleteModeActive ();
                 this.surface.getDisplay ().notify ("Delete " + (configuration.isDeleteModeActive () ? "Active" : "Off"));
                 break;
+            case 77:
+                this.executeShifted (ButtonID.DELETE, ButtonEvent.DOWN);
+                this.mvHelper.delayDisplay ( () -> "Arrangement Loop: " + (this.model.getTransport ().isLoop () ? "On" : "Off"));
+                break;
             case 68:
                 this.executeNormal (ButtonID.QUANTIZE, ButtonEvent.DOWN);
                 this.surface.getDisplay ().notify ("Quantize");
@@ -290,14 +301,14 @@ public class ShiftView extends AbstractView<LaunchpadControlSurface, LaunchpadCo
                 break;
             case 61:
                 this.executeShifted (ButtonID.DUPLICATE, ButtonEvent.DOWN);
-                this.surface.scheduleTask ( () -> this.surface.getDisplay ().notify ("Arrangement Loop: " + (this.model.getTransport ().isLoop () ? "On" : "Off")), 100);
+                this.surface.getDisplay ().notify ("Double");
                 break;
             case 52:
-                this.executeNormal (ButtonID.DOUBLE, ButtonEvent.DOWN);
+                this.executeNormal (ButtonID.PLAY, ButtonEvent.DOWN);
                 this.surface.getDisplay ().notify ("Play");
                 break;
             case 53:
-                this.executeShifted (ButtonID.DOUBLE, ButtonEvent.DOWN);
+                this.executeShifted (ButtonID.PLAY, ButtonEvent.DOWN);
                 this.surface.getDisplay ().notify ("New");
                 break;
             case 44:
@@ -306,7 +317,7 @@ public class ShiftView extends AbstractView<LaunchpadControlSurface, LaunchpadCo
                 break;
             case 45:
                 this.executeShifted (ButtonID.RECORD, ButtonEvent.UP);
-                this.surface.scheduleTask ( () -> this.surface.getDisplay ().notify ("Overdub launcher clips: " + (this.model.getTransport ().isLauncherOverdub () ? "On" : "Off")), 100);
+                this.mvHelper.delayDisplay ( () -> "Overdub launcher clips: " + (this.model.getTransport ().isLauncherOverdub () ? "On" : "Off"));
                 break;
             case 51:
                 this.model.getCurrentTrackBank ().stop ();
@@ -361,7 +372,7 @@ public class ShiftView extends AbstractView<LaunchpadControlSurface, LaunchpadCo
 
     /** {@inheritDoc} */
     @Override
-    public void onButton (final ButtonID buttonID, final ButtonEvent event)
+    public void onButton (final ButtonID buttonID, final ButtonEvent event, final int velocity)
     {
         if (this.surface.isPro () || event != ButtonEvent.DOWN)
             return;

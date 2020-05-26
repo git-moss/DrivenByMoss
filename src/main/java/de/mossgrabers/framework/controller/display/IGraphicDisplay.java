@@ -12,6 +12,7 @@ import de.mossgrabers.framework.daw.data.ISlot;
 import de.mossgrabers.framework.daw.data.ITrack;
 import de.mossgrabers.framework.daw.resource.ChannelType;
 import de.mossgrabers.framework.graphics.IBitmap;
+import de.mossgrabers.framework.graphics.canvas.component.IComponent;
 import de.mossgrabers.framework.graphics.canvas.utils.SendData;
 import de.mossgrabers.framework.utils.Pair;
 
@@ -310,7 +311,15 @@ public interface IGraphicDisplay extends IDisplay
 
 
     /**
-     * Assign a proxy to the hardware display, which gets filled by this text display.
+     * Add an element (column) to the display.
+     *
+     * @param component The component to add
+     */
+    void addElement (IComponent component);
+
+
+    /**
+     * Assign a proxy to the hardware display, which gets filled by this graphics display.
      *
      * @param display The hardware display
      */

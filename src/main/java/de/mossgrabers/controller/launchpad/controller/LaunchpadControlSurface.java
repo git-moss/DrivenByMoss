@@ -6,10 +6,12 @@ package de.mossgrabers.controller.launchpad.controller;
 
 import de.mossgrabers.controller.launchpad.LaunchpadConfiguration;
 import de.mossgrabers.controller.launchpad.definition.ILaunchpadControllerDefinition;
+import de.mossgrabers.controller.launchpad.view.VirtualFaderViewCallback;
 import de.mossgrabers.framework.controller.AbstractControlSurface;
 import de.mossgrabers.framework.controller.ButtonID;
 import de.mossgrabers.framework.controller.color.ColorManager;
 import de.mossgrabers.framework.controller.grid.IVirtualFader;
+import de.mossgrabers.framework.controller.grid.VirtualFaderImpl;
 import de.mossgrabers.framework.controller.hardware.IHwButton;
 import de.mossgrabers.framework.daw.IHost;
 import de.mossgrabers.framework.daw.midi.DeviceInquiry;
@@ -50,6 +52,15 @@ public class LaunchpadControlSurface extends AbstractControlSurface<LaunchpadCon
 
     public static final int                      LAUNCHPAD_LOGO             = 99;
 
+    public static final int                      LAUNCHPAD_TRACK1           = 101;
+    public static final int                      LAUNCHPAD_TRACK2           = 102;
+    public static final int                      LAUNCHPAD_TRACK3           = 103;
+    public static final int                      LAUNCHPAD_TRACK4           = 104;
+    public static final int                      LAUNCHPAD_TRACK5           = 105;
+    public static final int                      LAUNCHPAD_TRACK6           = 106;
+    public static final int                      LAUNCHPAD_TRACK7           = 107;
+    public static final int                      LAUNCHPAD_TRACK8           = 108;
+
     public static final int                      LAUNCHPAD_BUTTON_STATE_OFF = 0;
     public static final int                      LAUNCHPAD_BUTTON_STATE_ON  = 1;
     public static final int                      LAUNCHPAD_BUTTON_STATE_HI  = 4;
@@ -78,12 +89,12 @@ public class LaunchpadControlSurface extends AbstractControlSurface<LaunchpadCon
      */
     public LaunchpadControlSurface (final IHost host, final ColorManager colorManager, final LaunchpadConfiguration configuration, final IMidiOutput output, final IMidiInput input, final ILaunchpadControllerDefinition definition)
     {
-        super (host, configuration, colorManager, output, input, new LaunchpadPadGrid (colorManager, output, definition), 800, 740);
+        super (host, configuration, colorManager, output, input, new LaunchpadPadGrid (colorManager, output, definition), definition.isPro () ? 800 : 680, definition.isPro () ? 740 : 670);
 
         this.definition = definition;
 
         for (int i = 0; i < this.virtualFaders.length; i++)
-            this.virtualFaders[i] = this.definition.createVirtualFader (this.pads, i);
+            this.virtualFaders[i] = new VirtualFaderImpl (host, new VirtualFaderViewCallback (i, this.viewManager), this.pads, i);
 
         this.input.setSysexCallback (this::handleSysEx);
         this.output.sendSysex (DeviceInquiry.createQuery ());
@@ -189,6 +200,19 @@ public class LaunchpadControlSurface extends AbstractControlSurface<LaunchpadCon
     }
 
 
+    /**
+     * Move the fader to a new position
+     *
+     * @param index The index of the fader (0-7)
+     * @param row The row to move to (0-7)
+     * @param velocity The velocity (for speed)
+     */
+    public void moveFader (final int index, final int row, final int velocity)
+    {
+        this.virtualFaders[index].moveTo (row, velocity);
+    }
+
+
     /** {@inheritDoc} */
     @Override
     protected void internalShutdown ()
@@ -250,6 +274,17 @@ public class LaunchpadControlSurface extends AbstractControlSurface<LaunchpadCon
     public boolean isPro ()
     {
         return this.definition.isPro ();
+    }
+
+
+    /**
+     * Does the device have dedicated buttons to select the tracks?
+     *
+     * @return True if supported
+     */
+    public boolean hasTrackSelectionButtons ()
+    {
+        return this.definition.hasTrackSelectionButtons ();
     }
 
 

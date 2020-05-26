@@ -26,4 +26,22 @@ public interface IVirtualFader
      * @param value The value to set
      */
     void setValue (int value);
+
+
+    /**
+     * Get the state of a color step.
+     *
+     * @param index The index of the step
+     * @return The color state
+     */
+    int getColorState (int index);
+
+
+    /**
+     * Move the fader to a new position
+     *
+     * @param row The row to move to
+     * @param velocity The velocity (for speed)
+     */
+    void moveTo (final int row, final int velocity);
 }

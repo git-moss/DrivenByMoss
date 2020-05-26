@@ -19,6 +19,9 @@ import de.mossgrabers.framework.utils.ButtonEvent;
  */
 public class FaderTouchCommand extends SelectCommand
 {
+    private static final boolean [] isTrackTouched = new boolean [8 * 4];
+
+
     /**
      * Constructor.
      *
@@ -40,6 +43,7 @@ public class FaderTouchCommand extends SelectCommand
             return;
         final boolean isTouched = event == ButtonEvent.DOWN;
 
+        // Master Channel
         if (this.index == 8)
         {
             if (isTouched)
@@ -47,29 +51,50 @@ public class FaderTouchCommand extends SelectCommand
             return;
         }
 
+        // Select channel
         final MCUConfiguration configuration = this.surface.getConfiguration ();
         if (configuration.isTouchChannel ())
             super.executeNormal (event);
 
-        if (this.index < 8)
+        final ModeManager modeManager = this.surface.getModeManager ();
+        if (configuration.useFadersAsKnobs ())
         {
-            final ModeManager modeManager = this.surface.getModeManager ();
-            if (configuration.useFadersAsKnobs ())
-            {
-                modeManager.getActiveOrTempMode ().onKnobTouch (this.index, isTouched);
-                return;
-            }
-            modeManager.getMode (Modes.VOLUME).onKnobTouch (this.index, isTouched);
+            modeManager.getActiveOrTempMode ().onKnobTouch (this.index, isTouched);
+            return;
+        }
+        modeManager.getMode (Modes.VOLUME).onKnobTouch (this.index, isTouched);
 
-            if (isTouched)
+        final int pos = this.surface.getSurfaceID () * 8 + this.index;
+
+        // Temporarily enable volume mode
+        if (isTouched)
+        {
+            if (!hasTouchedFader ())
             {
                 if (modeManager.isActiveOrTempMode (Modes.VOLUME))
                     modeManager.setPreviousMode (Modes.VOLUME);
                 else
                     modeManager.setActiveMode (Modes.VOLUME);
             }
-            else
+            isTrackTouched[pos] = true;
+        }
+        else
+        {
+            isTrackTouched[pos] = false;
+            if (!hasTouchedFader ())
                 modeManager.restoreMode ();
         }
+
+    }
+
+
+    private static boolean hasTouchedFader ()
+    {
+        for (int i = 0; i < isTrackTouched.length; i++)
+        {
+            if (isTrackTouched[i])
+                return true;
+        }
+        return false;
     }
 }

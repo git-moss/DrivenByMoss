@@ -7,6 +7,7 @@ package de.mossgrabers.framework.view;
 import de.mossgrabers.framework.configuration.Configuration;
 import de.mossgrabers.framework.controller.ButtonID;
 import de.mossgrabers.framework.controller.IControlSurface;
+import de.mossgrabers.framework.controller.grid.IPadGrid;
 import de.mossgrabers.framework.daw.DAWColor;
 import de.mossgrabers.framework.daw.ICursorDevice;
 import de.mossgrabers.framework.daw.IDrumPadBank;
@@ -130,34 +131,23 @@ public abstract class AbstractDrumView64<S extends IControlSurface<C>, C extends
     @Override
     public void drawGrid ()
     {
+        final IPadGrid padGrid = this.surface.getPadGrid ();
         if (!this.model.canSelectedTrackHoldNotes ())
         {
-            this.surface.getPadGrid ().turnOff ();
+            padGrid.turnOff ();
             return;
         }
 
         // halfColumns x playLines Drum Pad Grid
         final ICursorDevice drumDevice64 = this.model.getDrumDevice64 ();
-        final boolean hasDrumPads = drumDevice64.hasDrumPads ();
-        boolean isSoloed = false;
+        final boolean isSoloed = drumDevice64.hasDrumPads () && drumDevice64.getDrumPadBank ().hasSoloedPads ();
         final int numPads = this.rows * this.columns;
-        if (hasDrumPads)
-        {
-            for (int i = 0; i < numPads; i++)
-            {
-                if (drumDevice64.getDrumPadBank ().getItem (i).isSolo ())
-                {
-                    isSoloed = true;
-                    break;
-                }
-            }
-        }
         final boolean isRecording = this.model.hasRecordingState ();
         for (int index = 0; index < numPads; index++)
         {
             final int x = index / 32 * 4 + index % 4;
             final int y = index / 4 % 8;
-            this.surface.getPadGrid ().lightEx (x, 7 - y, this.getPadColor (index, drumDevice64, isSoloed, isRecording));
+            padGrid.lightEx (x, 7 - y, this.getPadColor (index, drumDevice64, isSoloed, isRecording));
         }
     }
 

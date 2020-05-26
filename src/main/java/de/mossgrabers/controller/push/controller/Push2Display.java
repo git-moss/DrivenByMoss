@@ -66,6 +66,6 @@ public class Push2Display extends AbstractGraphicDisplay
     protected void send (final IBitmap image)
     {
         if (this.usbDisplay != null)
-            this.usbDisplay.send (this.image);
+            this.usbDisplay.send (image);
     }
 }

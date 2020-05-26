@@ -24,4 +24,12 @@ public interface IDrumPadBank extends IChannelBank<IDrumPad>
      * Clears solo on all drum pads.
      */
     void clearSolo ();
+
+
+    /**
+     * Check if a pad of the drum pad bank is soloed.
+     *
+     * @return True if a pad is soloed
+     */
+    boolean hasSoloedPads ();
 }

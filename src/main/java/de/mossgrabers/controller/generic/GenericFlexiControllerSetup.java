@@ -159,7 +159,10 @@ public class GenericFlexiControllerSetup extends AbstractControllerSetup<Generic
         final int keyboardChannel = this.configuration.getKeyboardChannel ();
         final IMidiInput input;
         if (keyboardChannel < 0)
+        {
+            // Does not create a default note input if set to null
             input = midiAccess.createInput (null);
+        }
         else
         {
             final String midiChannel;
@@ -225,6 +228,8 @@ public class GenericFlexiControllerSetup extends AbstractControllerSetup<Generic
         surface.getModeManager ().addModeListener ( (oldMode, newMode) -> this.updateIndication (newMode));
 
         this.createNoteRepeatObservers (this.configuration, surface);
+
+        this.configuration.registerDeactivatedItemsHandler (this.model);
     }
 
 

@@ -54,6 +54,19 @@ public abstract class AbstractTrackBankImpl extends AbstractChannelBankImpl<Trac
         this.initItems ();
 
         this.sceneBank = new SceneBankImpl (host, valueChanger, this.numScenes == 0 ? null : this.bank.sceneBank (), this.numScenes);
+
+        if (this.bank == null)
+            return;
+
+        // Note: cursorIndex is defined for all banks but currently only works for track banks
+        this.bank.cursorIndex ().addValueObserver (index -> {
+            for (int i = 0; i < this.getPageSize (); i++)
+            {
+                final boolean isSelected = index == i;
+                if (this.items.get (i).isSelected () != isSelected)
+                    this.handleBankSelection (i, isSelected);
+            }
+        });
     }
 
 
@@ -117,5 +130,18 @@ public abstract class AbstractTrackBankImpl extends AbstractChannelBankImpl<Trac
     {
         for (int i = 0; i < this.pageSize; i++)
             this.items.add (new TrackImpl (this.host, this.valueChanger, this.application, this.cursorTrack, this.rootGroup, this.bank.getItemAt (i), i, this.numSends, this.numScenes));
+    }
+
+
+    /**
+     * Handles bank selection changes. Notifies all registered observers.
+     *
+     * @param index The index of the newly de-/selected item
+     * @param isSelected True if selected
+     */
+    private void handleBankSelection (final int index, final boolean isSelected)
+    {
+        this.getItem (index).setSelected (isSelected);
+        this.notifySelectionObservers (index, isSelected);
     }
 }

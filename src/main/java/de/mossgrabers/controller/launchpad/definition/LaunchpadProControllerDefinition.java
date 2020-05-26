@@ -5,18 +5,13 @@
 package de.mossgrabers.controller.launchpad.definition;
 
 import de.mossgrabers.controller.launchpad.controller.LaunchpadControlSurface;
-import de.mossgrabers.framework.controller.ButtonID;
-import de.mossgrabers.framework.controller.grid.IPadGrid;
-import de.mossgrabers.framework.controller.grid.IVirtualFader;
+import de.mossgrabers.controller.launchpad.definition.button.LaunchpadButton;
 import de.mossgrabers.framework.controller.grid.LightInfo;
-import de.mossgrabers.framework.controller.grid.VirtualFaderImpl;
-import de.mossgrabers.framework.daw.midi.IMidiOutput;
 import de.mossgrabers.framework.utils.OperatingSystem;
 import de.mossgrabers.framework.utils.Pair;
 import de.mossgrabers.framework.utils.StringUtils;
 
 import java.util.ArrayList;
-import java.util.EnumMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
@@ -28,38 +23,10 @@ import java.util.UUID;
  *
  * @author J&uuml;rgen Mo&szlig;graber
  */
-@SuppressWarnings("javadoc")
-public class LaunchpadProControllerDefinition extends SimpleLaunchpadDefinition
+public class LaunchpadProControllerDefinition extends AbstractLaunchpadDefinition
 {
-    private static final UUID   EXTENSION_ID               = UUID.fromString ("80B63970-64F1-11E5-A837-0800200C9A66");
-    private static final String SYSEX_HEADER               = "F0 00 20 29 02 10 ";
-
-    public static final int     LAUNCHPAD_BUTTON_SHIFT     = 80;
-    public static final int     LAUNCHPAD_BUTTON_CLICK     = 70;
-    public static final int     LAUNCHPAD_BUTTON_UNDO      = 60;
-    public static final int     LAUNCHPAD_BUTTON_DELETE    = 50;
-    public static final int     LAUNCHPAD_BUTTON_QUANTIZE  = 40;
-    public static final int     LAUNCHPAD_BUTTON_DUPLICATE = 30;
-    public static final int     LAUNCHPAD_BUTTON_DOUBLE    = 20;
-    public static final int     LAUNCHPAD_BUTTON_RECORD    = 10;
-
-    public static final int     LAUNCHPAD_BUTTON_REC_ARM   = 1;
-    public static final int     LAUNCHPAD_BUTTON_TRACK     = 2;
-    public static final int     LAUNCHPAD_BUTTON_MUTE      = 3;
-    public static final int     LAUNCHPAD_BUTTON_SOLO      = 4;
-    public static final int     LAUNCHPAD_BUTTON_VOLUME    = 5;
-    public static final int     LAUNCHPAD_BUTTON_PAN       = 6;
-    public static final int     LAUNCHPAD_BUTTON_SENDS     = 7;
-    public static final int     LAUNCHPAD_BUTTON_STOP_CLIP = 8;
-
-    public static final int     LAUNCHPAD_BUTTON_UP        = 91;
-    public static final int     LAUNCHPAD_BUTTON_DOWN      = 92;
-    public static final int     LAUNCHPAD_BUTTON_LEFT      = 93;
-    public static final int     LAUNCHPAD_BUTTON_RIGHT     = 94;
-    public static final int     LAUNCHPAD_BUTTON_SESSION   = 95;
-    public static final int     LAUNCHPAD_BUTTON_NOTE      = 96;
-    public static final int     LAUNCHPAD_BUTTON_DEVICE    = 97;
-    public static final int     LAUNCHPAD_BUTTON_USER      = 98;
+    private static final UUID   EXTENSION_ID = UUID.fromString ("80B63970-64F1-11E5-A837-0800200C9A66");
+    private static final String SYSEX_HEADER = "F0 00 20 29 02 10 ";
 
 
     /**
@@ -68,6 +35,27 @@ public class LaunchpadProControllerDefinition extends SimpleLaunchpadDefinition
     public LaunchpadProControllerDefinition ()
     {
         super (EXTENSION_ID, "Launchpad Pro");
+
+        this.buttonSetup.setButton (LaunchpadButton.SHIFT, 80);
+        this.buttonSetup.setButton (LaunchpadButton.USER, 98);
+
+        this.buttonSetup.setButton (LaunchpadButton.CLICK, 70);
+        this.buttonSetup.setButton (LaunchpadButton.UNDO, 60);
+        this.buttonSetup.setButton (LaunchpadButton.DELETE, 50);
+        this.buttonSetup.setButton (LaunchpadButton.QUANTIZE, 40);
+        this.buttonSetup.setButton (LaunchpadButton.DUPLICATE, 30);
+        // Uses the Double button
+        this.buttonSetup.setButton (LaunchpadButton.PLAY, 20);
+        this.buttonSetup.setButton (LaunchpadButton.RECORD, 10);
+
+        this.buttonSetup.setButton (LaunchpadButton.REC_ARM, 1);
+        this.buttonSetup.setButton (LaunchpadButton.TRACK_SELECT, 2);
+        this.buttonSetup.setButton (LaunchpadButton.MUTE, 3);
+        this.buttonSetup.setButton (LaunchpadButton.SOLO, 4);
+        this.buttonSetup.setButton (LaunchpadButton.VOLUME, 5);
+        this.buttonSetup.setButton (LaunchpadButton.PAN, 6);
+        this.buttonSetup.setButton (LaunchpadButton.SENDS, 7);
+        this.buttonSetup.setButton (LaunchpadButton.STOP_CLIP, 8);
     }
 
 
@@ -140,52 +128,9 @@ public class LaunchpadProControllerDefinition extends SimpleLaunchpadDefinition
 
     /** {@inheritDoc} */
     @Override
-    public void sendBlinkState (final IMidiOutput output, final int note, final int blinkColor, final boolean fast)
-    {
-        output.sendSysex (SYSEX_HEADER + "23 " + StringUtils.toHexStr (note) + " " + StringUtils.toHexStr (blinkColor) + " F7");
-    }
-
-
-    /** {@inheritDoc} */
-    @Override
     public void setLogoColor (final LaunchpadControlSurface surface, final int color)
     {
         surface.sendLaunchpadSysEx ("0A 63 " + StringUtils.toHexStr (color));
-    }
-
-
-    /** {@inheritDoc} */
-    @Override
-    public Map<ButtonID, Integer> getButtonIDs ()
-    {
-        final Map<ButtonID, Integer> buttonIDs = new EnumMap<> (ButtonID.class);
-        buttonIDs.put (ButtonID.SHIFT, Integer.valueOf (LAUNCHPAD_BUTTON_SHIFT));
-
-        buttonIDs.put (ButtonID.LEFT, Integer.valueOf (LAUNCHPAD_BUTTON_LEFT));
-        buttonIDs.put (ButtonID.RIGHT, Integer.valueOf (LAUNCHPAD_BUTTON_RIGHT));
-        buttonIDs.put (ButtonID.UP, Integer.valueOf (LAUNCHPAD_BUTTON_UP));
-        buttonIDs.put (ButtonID.DOWN, Integer.valueOf (LAUNCHPAD_BUTTON_DOWN));
-
-        buttonIDs.put (ButtonID.DELETE, Integer.valueOf (LAUNCHPAD_BUTTON_DELETE));
-        buttonIDs.put (ButtonID.DUPLICATE, Integer.valueOf (LAUNCHPAD_BUTTON_DUPLICATE));
-
-        buttonIDs.put (ButtonID.SOLO, Integer.valueOf (LAUNCHPAD_BUTTON_SOLO));
-        buttonIDs.put (ButtonID.MUTE, Integer.valueOf (LAUNCHPAD_BUTTON_MUTE));
-
-        buttonIDs.put (ButtonID.SESSION, Integer.valueOf (LAUNCHPAD_BUTTON_SESSION));
-        buttonIDs.put (ButtonID.DEVICE, Integer.valueOf (LAUNCHPAD_BUTTON_DEVICE));
-        buttonIDs.put (ButtonID.USER, Integer.valueOf (LAUNCHPAD_BUTTON_USER));
-        buttonIDs.put (ButtonID.NOTE, Integer.valueOf (LAUNCHPAD_BUTTON_NOTE));
-
-        buttonIDs.put (ButtonID.SCENE1, Integer.valueOf (LaunchpadControlSurface.LAUNCHPAD_BUTTON_SCENE1));
-        buttonIDs.put (ButtonID.SCENE2, Integer.valueOf (LaunchpadControlSurface.LAUNCHPAD_BUTTON_SCENE2));
-        buttonIDs.put (ButtonID.SCENE3, Integer.valueOf (LaunchpadControlSurface.LAUNCHPAD_BUTTON_SCENE3));
-        buttonIDs.put (ButtonID.SCENE4, Integer.valueOf (LaunchpadControlSurface.LAUNCHPAD_BUTTON_SCENE4));
-        buttonIDs.put (ButtonID.SCENE5, Integer.valueOf (LaunchpadControlSurface.LAUNCHPAD_BUTTON_SCENE5));
-        buttonIDs.put (ButtonID.SCENE6, Integer.valueOf (LaunchpadControlSurface.LAUNCHPAD_BUTTON_SCENE6));
-        buttonIDs.put (ButtonID.SCENE7, Integer.valueOf (LaunchpadControlSurface.LAUNCHPAD_BUTTON_SCENE7));
-        buttonIDs.put (ButtonID.SCENE8, Integer.valueOf (LaunchpadControlSurface.LAUNCHPAD_BUTTON_SCENE8));
-        return buttonIDs;
     }
 
 
@@ -230,13 +175,5 @@ public class LaunchpadProControllerDefinition extends SimpleLaunchpadDefinition
         if (sbPulse.length () > 0)
             result.add (new StringBuilder (sysExHeader).append ("28 ").append (sbPulse).append ("F7").toString ());
         return result;
-    }
-
-
-    /** {@inheritDoc} */
-    @Override
-    public IVirtualFader createVirtualFader (final IPadGrid padGrid, final int index)
-    {
-        return new VirtualFaderImpl (padGrid, index);
     }
 }

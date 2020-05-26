@@ -152,6 +152,9 @@ public class SLMkIIIControllerSetup extends AbstractControllerSetup<SLMkIIIContr
     protected void createObservers ()
     {
         this.createScaleObservers (this.configuration);
+
+        this.configuration.registerDeactivatedItemsHandler (this.model);
+
         this.getSurface ().getModeManager ().addModeListener ( (oldMode, newMode) -> this.updateIndication (newMode));
     }
 
@@ -267,7 +270,7 @@ public class SLMkIIIControllerSetup extends AbstractControllerSetup<SLMkIIIContr
         for (int i = 0; i < 2; i++)
         {
             final ButtonID sceneButtonID = ButtonID.get (ButtonID.SCENE1, i);
-            this.addButton (sceneButtonID, "Scene " + (i + 1), new ViewButtonCommand<> (sceneButtonID, this.model, surface), 15, SLMkIIIControlSurface.MKIII_SCENE_1 + i, () -> {
+            this.addButton (sceneButtonID, "Scene " + (i + 1), new ViewButtonCommand<> (sceneButtonID, surface), 15, SLMkIIIControlSurface.MKIII_SCENE_1 + i, () -> {
                 final View activeView = viewManager.getActiveView ();
                 return activeView != null ? activeView.getButtonColor (sceneButtonID) : 0;
             });

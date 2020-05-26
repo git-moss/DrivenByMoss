@@ -92,7 +92,6 @@ import de.mossgrabers.framework.command.aftertouch.AftertouchAbstractViewCommand
 import de.mossgrabers.framework.command.continuous.FootswitchCommand;
 import de.mossgrabers.framework.command.continuous.KnobRowModeCommand;
 import de.mossgrabers.framework.command.continuous.MasterVolumeCommand;
-import de.mossgrabers.framework.command.core.NopCommand;
 import de.mossgrabers.framework.command.trigger.application.DeleteCommand;
 import de.mossgrabers.framework.command.trigger.application.DuplicateCommand;
 import de.mossgrabers.framework.command.trigger.application.UndoCommand;
@@ -305,11 +304,8 @@ public class PushControllerSetup extends AbstractControllerSetup<PushControlSurf
 
         modeManager.registerMode (Modes.AUTOMATION, new AutomationSelectionMode (surface, this.model));
         modeManager.registerMode (Modes.TRANSPORT, new MetronomeMode (surface, this.model));
-
         modeManager.registerMode (Modes.MARKERS, new MarkerMode (surface, this.model));
-
-        if (this.host.hasUserParameters ())
-            modeManager.registerMode (Modes.USER, new UserMode (surface, this.model));
+        modeManager.registerMode (Modes.USER, new UserMode (surface, this.model));
 
         if (this.isPush2)
         {
@@ -392,6 +388,8 @@ public class PushControllerSetup extends AbstractControllerSetup<PushControlSurf
             else
                 viewManager.setActiveView (Views.SESSION);
         });
+
+        this.configuration.registerDeactivatedItemsHandler (this.model);
 
         this.configuration.addSettingObserver (AbstractConfiguration.KNOB_SPEED_NORMAL, this::updateKnobSpeeds);
         this.configuration.addSettingObserver (AbstractConfiguration.KNOB_SPEED_SLOW, this::updateKnobSpeeds);
@@ -507,7 +505,7 @@ public class PushControllerSetup extends AbstractControllerSetup<PushControlSurf
             final ButtonID row2ButtonID = ButtonID.get (ButtonID.ROW2_1, i);
             this.addButton (row2ButtonID, "Row 2: " + (i + 1), new ButtonRowModeCommand<> (1, i, this.model, surface), PushControlSurface.PUSH_BUTTON_ROW2_1 + i, () -> this.getModeColor (row2ButtonID));
             final ButtonID sceneButtonID = ButtonID.get (ButtonID.SCENE1, i);
-            this.addButton (sceneButtonID, "Scene " + (i + 1), new ViewButtonCommand<> (sceneButtonID, this.model, surface), PushControlSurface.PUSH_BUTTON_SCENE1 + 7 - i, () -> this.getViewColor (sceneButtonID));
+            this.addButton (sceneButtonID, "Scene " + (i + 1), new ViewButtonCommand<> (sceneButtonID, surface), PushControlSurface.PUSH_BUTTON_SCENE1 + 7 - i, () -> this.getViewColor (sceneButtonID));
         }
 
         this.addButton (ButtonID.SHIFT, "Shift", new ShiftCommand (this.model, surface), PushControlSurface.PUSH_BUTTON_SHIFT);
@@ -569,7 +567,7 @@ public class PushControllerSetup extends AbstractControllerSetup<PushControlSurf
                     return 0;
                 return surface.getButton (ButtonID.CONVERT).isPressed () ? 2 : 1;
             }, ColorManager.BUTTON_STATE_OFF, ColorManager.BUTTON_STATE_ON, ColorManager.BUTTON_STATE_HI);
-            this.addButton (ButtonID.USER, "User", this.host.hasUserParameters () ? new ModeSelectCommand<> (this.model, surface, Modes.USER) : NopCommand.INSTANCE, PushControlSurface.PUSH_BUTTON_USER_MODE, () -> this.host.hasUserParameters () && modeManager.isActiveOrTempMode (Modes.USER));
+            this.addButton (ButtonID.USER, "User", new ModeSelectCommand<> (this.model, surface, Modes.USER), PushControlSurface.PUSH_BUTTON_USER_MODE, () -> modeManager.isActiveOrTempMode (Modes.USER));
         }
         else
         {
@@ -971,12 +969,9 @@ public class PushControllerSetup extends AbstractControllerSetup<PushControlSurf
             parameterBank.getItem (i).setIndication (isDevice);
         }
 
-        if (this.host.hasUserParameters ())
-        {
-            final IParameterBank userParameterBank = this.model.getUserParameterBank ();
-            for (int i = 0; i < userParameterBank.getPageSize (); i++)
-                userParameterBank.getItem (i).setIndication (isUserMode);
-        }
+        final IParameterBank userParameterBank = this.model.getUserParameterBank ();
+        for (int i = 0; i < userParameterBank.getPageSize (); i++)
+            userParameterBank.getItem (i).setIndication (isUserMode);
     }
 
 

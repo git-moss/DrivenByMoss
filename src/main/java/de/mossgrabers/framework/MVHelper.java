@@ -136,7 +136,12 @@ public class MVHelper<S extends IControlSurface<C>, C extends Configuration>
     }
 
 
-    private void delayDisplay (final Supplier<String> supplier)
+    /**
+     * Notify a text after 200ms.
+     *
+     * @param supplier The supplier to provide the text
+     */
+    public void delayDisplay (final Supplier<String> supplier)
     {
         this.surface.scheduleTask ( () -> this.display.notify (supplier.get ()), DISPLAY_DELAY);
     }

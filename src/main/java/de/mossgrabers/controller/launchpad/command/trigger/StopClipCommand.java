@@ -6,6 +6,7 @@ package de.mossgrabers.controller.launchpad.command.trigger;
 
 import de.mossgrabers.controller.launchpad.controller.LaunchpadControlSurface;
 import de.mossgrabers.framework.daw.IModel;
+import de.mossgrabers.framework.daw.data.IParameter;
 import de.mossgrabers.framework.mode.Modes;
 import de.mossgrabers.framework.utils.ButtonEvent;
 
@@ -35,9 +36,13 @@ public class StopClipCommand extends AbstractTrackCommand
     {
         if (this.surface.isPro () && this.surface.isShiftPressed ())
         {
-            this.model.getCurrentTrackBank ().stop ();
+            if (event != ButtonEvent.DOWN)
+                return;
+            final IParameter parameter = this.model.getGroove ().getParameters ()[0];
+            parameter.setValue (parameter.getValue () > 0 ? 0 : this.model.getValueChanger ().getUpperBound ());
             return;
         }
+
         this.onModeButton (event, Modes.STOP_CLIP, "Stop Clip");
     }
 }

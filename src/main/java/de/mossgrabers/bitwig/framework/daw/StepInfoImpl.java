@@ -5,6 +5,7 @@
 package de.mossgrabers.bitwig.framework.daw;
 
 import de.mossgrabers.framework.daw.IStepInfo;
+import de.mossgrabers.framework.daw.constants.Resolution;
 
 import com.bitwig.extension.controller.api.NoteStep;
 
@@ -17,7 +18,7 @@ import com.bitwig.extension.controller.api.NoteStep;
 public class StepInfoImpl implements IStepInfo
 {
     private int     state;
-    private double  duration = 1.0 / 4.0; // 16th
+    private double  duration = Resolution.RES_1_16.getValue ();
     private double  velocity;
     private double  releaseVelocity;
     private double  pressure;

@@ -6,6 +6,7 @@ package de.mossgrabers.bitwig.framework.hardware;
 
 import de.mossgrabers.bitwig.framework.daw.HostImpl;
 import de.mossgrabers.bitwig.framework.daw.data.ParameterImpl;
+import de.mossgrabers.bitwig.framework.daw.data.Util;
 import de.mossgrabers.framework.command.core.ContinuousCommand;
 import de.mossgrabers.framework.command.core.TriggerCommand;
 import de.mossgrabers.framework.controller.hardware.AbstractHwContinuousControl;
@@ -34,6 +35,8 @@ public class HwRelativeKnobImpl extends AbstractHwContinuousControl implements I
     private final RelativeEncoding         encoding;
     private RelativeHardwarControlBindable defaultAction;
     private RelativeHardwareControlBinding binding;
+
+    private ParameterImpl                  parameterImpl;
 
 
     /**
@@ -66,6 +69,20 @@ public class HwRelativeKnobImpl extends AbstractHwContinuousControl implements I
         this.controllerHost = host.getControllerHost ();
         this.hardwareKnob = hardwareKnob;
         this.hardwareKnob.setLabel (label);
+
+        this.hardwareKnob.targetName ().markInterested ();
+        this.hardwareKnob.targetDisplayedValue ().markInterested ();
+        this.hardwareKnob.targetValue ().markInterested ();
+        this.hardwareKnob.modulatedTargetValue ().markInterested ();
+    }
+
+
+    private void enableObservers (final boolean enable)
+    {
+        Util.setIsSubscribed (this.hardwareKnob.targetName (), enable);
+        Util.setIsSubscribed (this.hardwareKnob.targetDisplayedValue (), enable);
+        Util.setIsSubscribed (this.hardwareKnob.targetValue (), enable);
+        Util.setIsSubscribed (this.hardwareKnob.modulatedTargetValue (), enable);
     }
 
 
@@ -87,7 +104,24 @@ public class HwRelativeKnobImpl extends AbstractHwContinuousControl implements I
         if (this.binding != null)
             this.binding.removeBinding ();
 
-        final HardwareBindable target = parameter == null ? this.defaultAction : ((ParameterImpl) parameter).getParameter ();
+        final HardwareBindable target;
+        if (parameter == null)
+        {
+            if (this.parameterImpl != null)
+            {
+                this.enableObservers (false);
+                this.parameterImpl.setTargetInfo (null, null, null, null);
+            }
+            target = this.defaultAction;
+        }
+        else
+        {
+            this.parameterImpl = (ParameterImpl) parameter;
+            target = this.parameterImpl.getParameter ();
+            this.enableObservers (true);
+            this.parameterImpl.setTargetInfo (this.hardwareKnob.targetName (), this.hardwareKnob.targetDisplayedValue (), this.hardwareKnob.targetValue (), this.hardwareKnob.modulatedTargetValue ());
+        }
+
         this.binding = target == null ? null : this.hardwareKnob.setBinding (target);
     }
 

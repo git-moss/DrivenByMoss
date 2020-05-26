@@ -211,6 +211,8 @@ public class KontrolProtocolControllerSetup extends AbstractControllerSetup<Kont
     {
         this.getSurface ().getModeManager ().addModeListener ( (oldMode, newMode) -> this.updateIndication (newMode));
 
+        this.configuration.registerDeactivatedItemsHandler (this.model);
+
         this.configuration.addSettingObserver (AbstractConfiguration.KNOB_SPEED_NORMAL, this::updateKnobSpeeds);
         this.configuration.addSettingObserver (AbstractConfiguration.KNOB_SPEED_SLOW, this::updateKnobSpeeds);
     }

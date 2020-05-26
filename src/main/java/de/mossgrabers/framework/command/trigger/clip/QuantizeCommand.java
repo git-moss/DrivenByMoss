@@ -43,6 +43,16 @@ public class QuantizeCommand<S extends IControlSurface<C>, C extends Configurati
     }
 
 
+    /** {@inheritDoc} */
+    @Override
+    public void executeShifted (final ButtonEvent event)
+    {
+        // TODO Add record quantization
+        // if (event == ButtonEvent.DOWN)
+        // this.model.getTransport ().toggl
+    }
+
+
     protected void quantize ()
     {
         final IClip clip = this.model.getClip ();

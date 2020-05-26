@@ -48,6 +48,8 @@ public class AddTrackCommand<S extends IControlSurface<C>, C extends Configurati
         {
             application.addEffectTrack ();
             tb = this.model.getEffectTrackBank ();
+            if (tb == null)
+                return;
         }
         else if (this.surface.isSelectPressed ())
             application.addAudioTrack ();

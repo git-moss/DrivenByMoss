@@ -5,10 +5,15 @@
 package de.mossgrabers.controller.launchpad.view;
 
 import de.mossgrabers.controller.launchpad.controller.LaunchpadControlSurface;
+import de.mossgrabers.framework.controller.ButtonID;
+import de.mossgrabers.framework.controller.grid.IVirtualFader;
+import de.mossgrabers.framework.controller.grid.IVirtualFaderCallback;
+import de.mossgrabers.framework.controller.grid.VirtualFaderImpl;
 import de.mossgrabers.framework.daw.DAWColor;
 import de.mossgrabers.framework.daw.IModel;
-import de.mossgrabers.framework.daw.ITrackBank;
+import de.mossgrabers.framework.daw.data.IMasterTrack;
 import de.mossgrabers.framework.daw.data.ITrack;
+import de.mossgrabers.framework.utils.ButtonEvent;
 
 
 /**
@@ -16,8 +21,11 @@ import de.mossgrabers.framework.daw.data.ITrack;
  *
  * @author J&uuml;rgen Mo&szlig;graber
  */
-public class PanView extends AbstractFaderView
+public class PanView extends AbstractFaderView implements IVirtualFaderCallback
 {
+    private final IVirtualFader masterFader;
+
+
     /**
      * Constructor.
      *
@@ -27,6 +35,8 @@ public class PanView extends AbstractFaderView
     public PanView (final LaunchpadControlSurface surface, final IModel model)
     {
         super (surface, model);
+
+        this.masterFader = new VirtualFaderImpl (model.getHost (), this);
     }
 
 
@@ -35,16 +45,6 @@ public class PanView extends AbstractFaderView
     public void onValueKnob (final int index, final int value)
     {
         this.model.getCurrentTrackBank ().getItem (index).setPan (value);
-    }
-
-
-    /** {@inheritDoc} */
-    @Override
-    protected int smoothFaderValue (final int index, final int row, final int value)
-    {
-        if (row == 3 || row == 4)
-            return 64;
-        return super.smoothFaderValue (index, row, value);
     }
 
 
@@ -60,18 +60,8 @@ public class PanView extends AbstractFaderView
     @Override
     public void drawGrid ()
     {
-        final ITrackBank tb = this.model.getCurrentTrackBank ();
         for (int i = 0; i < 8; i++)
-        {
-            final ITrack track = tb.getItem (i);
-            final int color = track.doesExist () ? this.colorManager.getColorIndex (DAWColor.getColorIndex (track.getColor ())) : 0;
-            if (this.trackColors[i] != color)
-            {
-                this.trackColors[i] = color;
-                this.setupFader (i);
-            }
-            this.surface.setFaderValue (i, track.getPan ());
-        }
+            this.setupFader (i);
     }
 
 
@@ -82,5 +72,48 @@ public class PanView extends AbstractFaderView
         final ITrack track = this.model.getCurrentTrackBank ().getItem (index);
         final int color = track.doesExist () ? this.colorManager.getColorIndex (DAWColor.getColorIndex (track.getColor ())) : 0;
         this.surface.setupFader (index, color, true);
+        this.surface.setFaderValue (index, track.getPan ());
+    }
+
+
+    /** {@inheritDoc} */
+    @Override
+    public int getButtonColor (final ButtonID buttonID)
+    {
+        final IMasterTrack track = this.model.getMasterTrack ();
+
+        final int color = track.doesExist () ? this.colorManager.getColorIndex (DAWColor.getColorIndex (track.getColor ())) : 0;
+        this.masterFader.setup (color, true);
+        this.masterFader.setValue (track.getPan ());
+
+        final int index = 7 - (buttonID.ordinal () - ButtonID.SCENE1.ordinal ());
+        return this.masterFader.getColorState (index);
+    }
+
+
+    /** {@inheritDoc} */
+    @Override
+    public void onButton (final ButtonID buttonID, final ButtonEvent event, final int velocity)
+    {
+        if (!ButtonID.isSceneButton (buttonID) || event != ButtonEvent.DOWN)
+            return;
+        final int index = buttonID.ordinal () - ButtonID.SCENE1.ordinal ();
+        this.masterFader.moveTo (7 - index, velocity);
+    }
+
+
+    /** {@inheritDoc} */
+    @Override
+    public int getValue ()
+    {
+        return this.model.getMasterTrack ().getPan ();
+    }
+
+
+    /** {@inheritDoc} */
+    @Override
+    public void setValue (final int value)
+    {
+        this.model.getMasterTrack ().setPan (value);
     }
 }

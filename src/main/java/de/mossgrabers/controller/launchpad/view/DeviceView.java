@@ -72,7 +72,7 @@ public class DeviceView extends AbstractFaderView
 
     /** {@inheritDoc} */
     @Override
-    public void onButton (final ButtonID buttonID, final ButtonEvent event)
+    public void onButton (final ButtonID buttonID, final ButtonEvent event, final int velocity)
     {
         if (event == ButtonEvent.DOWN && buttonID == ButtonID.SCENE1)
             this.model.getCursorDevice ().toggleWindowOpen ();

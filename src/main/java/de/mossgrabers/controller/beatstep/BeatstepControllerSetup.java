@@ -112,10 +112,10 @@ public class BeatstepControllerSetup extends AbstractControllerSetup<BeatstepCon
     {
         final IMidiAccess midiAccess = this.factory.createMidiAccess ();
         final IMidiOutput output = midiAccess.createOutput ();
-        final IMidiInput input = midiAccess.createInput ("Control", "82????", "92????", "A2????", "B2????");
+        final IMidiInput input = midiAccess.createInput ("Control/Pads", "82????", "92????", "A2????");
 
         // Sequencer 1 is on channel 1
-        final INoteInput seqNoteInput = input.createNoteInput ("Seq. 1", "90????", "80????");
+        final INoteInput seqNoteInput = input.createNoteInput ("Hardware Sequencer", "90????", "80????");
 
         final Integer [] table = new Integer [128];
         for (int i = 0; i < 128; i++)
@@ -135,6 +135,8 @@ public class BeatstepControllerSetup extends AbstractControllerSetup<BeatstepCon
     {
         this.getSurface ().getViewManager ().addViewChangeListener ( (previousViewId, activeViewId) -> this.updateIndication (null));
         this.createScaleObservers (this.configuration);
+
+        this.configuration.registerDeactivatedItemsHandler (this.model);
     }
 
 

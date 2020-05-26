@@ -8,7 +8,6 @@ import de.mossgrabers.framework.command.core.AbstractTriggerCommand;
 import de.mossgrabers.framework.configuration.Configuration;
 import de.mossgrabers.framework.controller.ButtonID;
 import de.mossgrabers.framework.controller.IControlSurface;
-import de.mossgrabers.framework.daw.IModel;
 import de.mossgrabers.framework.utils.ButtonEvent;
 import de.mossgrabers.framework.view.View;
 
@@ -30,12 +29,12 @@ public class ViewButtonCommand<S extends IControlSurface<C>, C extends Configura
      * Constructor.
      *
      * @param buttonID The button which events to relay
-     * @param model The model
      * @param surface The surface
      */
-    public ViewButtonCommand (final ButtonID buttonID, final IModel model, final S surface)
+    public ViewButtonCommand (final ButtonID buttonID, final S surface)
     {
-        super (model, surface);
+        super (null, surface);
+
         this.buttonID = buttonID;
     }
 
@@ -46,6 +45,6 @@ public class ViewButtonCommand<S extends IControlSurface<C>, C extends Configura
     {
         final View view = this.surface.getViewManager ().getActiveView ();
         if (view != null)
-            view.onButton (this.buttonID, event);
+            view.onButton (this.buttonID, event, velocity);
     }
 }

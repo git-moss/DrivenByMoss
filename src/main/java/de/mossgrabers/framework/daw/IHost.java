@@ -58,14 +58,6 @@ public interface IHost
 
 
     /**
-     * Returns true if the DAW supports user parameters.
-     *
-     * @return True if the DAW supports Drum Device options
-     */
-    boolean hasUserParameters ();
-
-
-    /**
      * Check if devices have addition slot chains.
      *
      * @return True if supported

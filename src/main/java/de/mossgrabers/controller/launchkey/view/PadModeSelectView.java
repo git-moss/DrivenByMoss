@@ -93,7 +93,7 @@ public class PadModeSelectView extends AbstractView<LaunchkeyMiniMk3ControlSurfa
 
     /** {@inheritDoc} */
     @Override
-    public void onButton (final ButtonID buttonID, final ButtonEvent event)
+    public void onButton (final ButtonID buttonID, final ButtonEvent event, final int velocity)
     {
         if (!ButtonID.isSceneButton (buttonID))
             return;

@@ -212,6 +212,8 @@ public class HUIControllerSetup extends AbstractControllerSetup<HUIControlSurfac
                 activeMode.updateDisplay ();
             ((HUIDisplay) surface.getDisplay ()).forceFlush ();
         });
+
+        this.configuration.registerDeactivatedItemsHandler (this.model);
     }
 
 

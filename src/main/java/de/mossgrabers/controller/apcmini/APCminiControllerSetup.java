@@ -172,6 +172,8 @@ public class APCminiControllerSetup extends AbstractControllerSetup<APCminiContr
                     surface.setTrackState (i);
             }
         });
+
+        this.configuration.registerDeactivatedItemsHandler (this.model);
     }
 
 
@@ -224,7 +226,7 @@ public class APCminiControllerSetup extends AbstractControllerSetup<APCminiContr
             final int index = i;
 
             final ButtonID buttonID = ButtonID.get (ButtonID.SCENE1, i);
-            this.addButton (buttonID, COL_NAMES[i], new ViewButtonCommand<> (buttonID, this.model, surface), APCminiControlSurface.APC_BUTTON_SCENE_BUTTON1 + i, () -> {
+            this.addButton (buttonID, COL_NAMES[i], new ViewButtonCommand<> (buttonID, surface), APCminiControlSurface.APC_BUTTON_SCENE_BUTTON1 + i, () -> {
                 final View view = viewManager.getActiveView ();
                 if (view instanceof SceneView)
                     return view.getButtonColor (ButtonID.get (ButtonID.SCENE1, index));

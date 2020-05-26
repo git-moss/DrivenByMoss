@@ -36,6 +36,6 @@ public class LaunchpadDuplicateCommand extends DuplicateCommand<LaunchpadControl
     public void executeShifted (final ButtonEvent event)
     {
         if (event == ButtonEvent.DOWN)
-            this.model.getTransport ().toggleLoop ();
+            this.model.getClip ().duplicateContent ();
     }
 }

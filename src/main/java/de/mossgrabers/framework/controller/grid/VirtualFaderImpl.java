@@ -4,6 +4,9 @@
 
 package de.mossgrabers.framework.controller.grid;
 
+import de.mossgrabers.framework.daw.IHost;
+
+
 /**
  * Default implementation of a virtual fader.
  *
@@ -11,24 +14,80 @@ package de.mossgrabers.framework.controller.grid;
  */
 public class VirtualFaderImpl implements IVirtualFader
 {
-    protected final IPadGrid padGrid;
-    protected final int      index;
+    private static final int            PAD_VALUE_AMOUNT = 16;
 
-    protected int            color;
-    protected boolean        isPanorama;
-    protected final int []   colorStates = new int [8];
+    // @formatter:off
+    private static final int [] SPEED_SCALE          =
+    {
+        1,   1,  1,  1,  1,  1,  1,  1,
+        1,   1,  1,  1,  1,  1,  1,  1,
+        1,   1,  1,  1,  1,  1,  1,  1,
+        2,   2,  2,  2,  2,  2,  2,  2,
+        2,   2,  2,  2,  2,  2,  2,  2,
+        2,   2,  2,  2,  2,  2,  2,  2,
+        3,   3,  3,  3,  3,  3,  3,  3,
+        3,   3,  3,  3,  3,  3,  3,  3,
+
+        4,   4,  4,  4,  4,  4,  4,  4,
+        5,   5,  5,  5,  5,  5,  5,  5,
+        6,   6,  6,  6,  7,  7,  7,  7,
+        8,   8,  8,  8,  9,  9,  9,  9,
+        10, 10, 10, 10, 11, 11, 11, 11,
+        12, 12, 12, 12, 13, 13, 13, 13,
+        14, 14, 15, 15, 16, 16, 17, 17,
+        18, 19, 20, 21, 22, 23, 24, 25
+    };
+    // @formatter:on
+
+    private final IHost                 host;
+    private final IVirtualFaderCallback callback;
+    private final IPadGrid              padGrid;
+    private final int                   index;
+
+    private int                         color;
+    private boolean                     isPanorama;
+    private final int []                colorStates      = new int [8];
+
+    private int                         moveDelay;
+    private int                         moveTimerDelay;
+    private int                         moveDestination;
+
+
+    /**
+     * Constructor. Does not update a slider on the grid. Use getColorState method to draw the fader
+     * yourself.
+     *
+     * @param host The host
+     * @param callback Callback for getting and setting fader values
+     */
+    public VirtualFaderImpl (final IHost host, final IVirtualFaderCallback callback)
+    {
+        this (host, callback, null, -1);
+    }
 
 
     /**
      * Constructor.
      *
+     * @param host The host
+     * @param callback Callback for getting and setting fader values
      * @param padGrid The pad grid on which the virtual fader is drawn
      * @param index the index of the fader
      */
-    public VirtualFaderImpl (final IPadGrid padGrid, final int index)
+    public VirtualFaderImpl (final IHost host, final IVirtualFaderCallback callback, final IPadGrid padGrid, final int index)
     {
+        this.host = host;
         this.padGrid = padGrid;
         this.index = index;
+        this.callback = callback;
+    }
+
+
+    /** {@inheritDoc} */
+    @Override
+    public int getColorState (final int index)
+    {
+        return this.colorStates[index];
     }
 
 
@@ -54,7 +113,71 @@ public class VirtualFaderImpl implements IVirtualFader
             this.drawFader (value);
 
         for (int i = 0; i < this.colorStates.length; i++)
-            this.lightPad (this.index, i, this.colorStates[7 - i]);
+            this.lightPad (i, this.colorStates[7 - i]);
+    }
+
+
+    /** {@inheritDoc} */
+    @Override
+    public void moveTo (final int row, final int velocity)
+    {
+        // About 3 seconds on softest velocity
+        this.moveDelay = SPEED_SCALE[velocity];
+        this.moveTimerDelay = SPEED_SCALE[SPEED_SCALE.length - 1 - velocity];
+
+        final int min = row * PAD_VALUE_AMOUNT;
+        final int max = Math.min (127, (row + 1) * PAD_VALUE_AMOUNT - 1);
+        int newDestination = this.smoothFaderValue (row, max);
+
+        // Support stepping through 4 values
+        if (min <= this.moveDestination && this.moveDestination <= max)
+        {
+            final int step = (this.moveDestination - min) / 4;
+            newDestination = min + 4 * (step + 2) - 1;
+            if (newDestination > max)
+                newDestination = min;
+        }
+        else if (row == 0)
+        {
+            newDestination = 0;
+        }
+
+        this.moveDestination = newDestination;
+
+        this.moveFaderToDestination ();
+    }
+
+
+    protected void moveFaderToDestination ()
+    {
+        final int current = this.callback.getValue ();
+        if (current < this.moveDestination)
+            this.callback.setValue (Math.min (current + this.moveDelay, this.moveDestination));
+        else if (current > this.moveDestination)
+            this.callback.setValue (Math.max (current - this.moveDelay, this.moveDestination));
+        else
+            return;
+
+        this.host.scheduleTask (this::moveFaderToDestination, this.moveTimerDelay);
+    }
+
+
+    /**
+     * Special handling of pads for smoothing the fader, e.g. special handling of 1st row.
+     *
+     * @param row The row of the pressed pad
+     * @param value The calculated value
+     * @return The smoothed value
+     */
+    private int smoothFaderValue (final int row, final int value)
+    {
+        if (this.isPanorama && (row == 3 || row == 4))
+            return 64;
+
+        final int oldValue = this.callback.getValue ();
+        if (row == 0)
+            return oldValue == 0 ? PAD_VALUE_AMOUNT - 1 : 0;
+        return value;
     }
 
 
@@ -136,12 +259,12 @@ public class VirtualFaderImpl implements IVirtualFader
     /**
      * Set the lighting state of a pad.
      *
-     * @param x The x position of the pad in the grid
      * @param y The y position of the pad in the grid
      * @param color A registered color ID of the color / brightness
      */
-    protected void lightPad (final int x, final int y, final int color)
+    private void lightPad (final int y, final int color)
     {
-        this.padGrid.lightEx (x, y, color);
+        if (this.padGrid != null)
+            this.padGrid.lightEx (this.index, y, color);
     }
 }

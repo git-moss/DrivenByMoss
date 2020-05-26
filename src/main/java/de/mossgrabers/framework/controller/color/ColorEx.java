@@ -35,6 +35,8 @@ public class ColorEx
     public static final ColorEx DARK_BLUE   = ColorEx.fromRGB (0, 0, 128);
     /** Color yellow. */
     public static final ColorEx YELLOW      = ColorEx.fromRGB (255, 255, 0);
+    /** Color dark yellow. */
+    public static final ColorEx DARK_YELLOW = ColorEx.fromRGB (128, 128, 0);
     /** Color orange. */
     public static final ColorEx ORANGE      = ColorEx.fromRGB (255, 130, 0);
     /** Color dark orange. */

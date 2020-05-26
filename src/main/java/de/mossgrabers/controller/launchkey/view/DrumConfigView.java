@@ -119,7 +119,7 @@ public class DrumConfigView extends AbstractView<LaunchkeyMiniMk3ControlSurface,
 
     /** {@inheritDoc} */
     @Override
-    public void onButton (final ButtonID buttonID, final ButtonEvent event)
+    public void onButton (final ButtonID buttonID, final ButtonEvent event, final int velocity)
     {
         if (buttonID == ButtonID.SCENE2 && event == ButtonEvent.UP)
             this.surface.getViewManager ().restoreView ();

@@ -27,11 +27,12 @@ public class GraphicsContextImpl implements IGraphicsContext
     /**
      * Constructor.
      *
+     * @param antialiasMode The antialias mode to apply
      * @param gc The Bitwig graphics context
      */
-    public GraphicsContextImpl (final GraphicsOutput gc)
+    public GraphicsContextImpl (final AntialiasMode antialiasMode, final GraphicsOutput gc)
     {
-        gc.setAntialias (AntialiasMode.BEST);
+        gc.setAntialias (antialiasMode);
         this.gc = gc;
     }
 

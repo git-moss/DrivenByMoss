@@ -89,8 +89,7 @@ public class GenericFlexiControlSurface extends AbstractControlSurface<GenericFl
         this.registerHandler (new ModesHandler (model, this, configuration, this.relative2ValueChanger, this.relative3ValueChanger, host));
         this.registerHandler (new MidiCCHandler (model, this, configuration, this.relative2ValueChanger, this.relative3ValueChanger));
         this.registerHandler (new NoteInputHandler (model, this, configuration, this.relative2ValueChanger, this.relative3ValueChanger));
-        if (host.hasUserParameters ())
-            this.registerHandler (new UserHandler (model, this, configuration, this.relative2ValueChanger, this.relative3ValueChanger));
+        this.registerHandler (new UserHandler (model, this, configuration, this.relative2ValueChanger, this.relative3ValueChanger));
 
         Arrays.fill (this.valueCache, -1);
 

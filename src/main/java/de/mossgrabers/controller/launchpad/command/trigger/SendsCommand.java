@@ -33,6 +33,13 @@ public class SendsCommand extends AbstractTrackCommand
     @Override
     public void execute (final ButtonEvent event, final int velocity)
     {
+        if (this.surface.isPro () && this.surface.isShiftPressed ())
+        {
+            if (event == ButtonEvent.DOWN)
+                this.model.getTransport ().tapTempo ();
+            return;
+        }
+
         this.onFaderModeButton (event, Views.TRACK_SENDS, "Sends");
     }
 }

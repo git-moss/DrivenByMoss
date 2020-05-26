@@ -456,6 +456,7 @@ public class GenericFlexiConfiguration extends AbstractConfiguration
         });
 
         this.activateKnobSpeedSetting (globalSettings, 6);
+        this.activateExcludeDeactivatedItemsSetting (globalSettings);
 
         this.activateNoteRepeatSetting (documentSettings);
 

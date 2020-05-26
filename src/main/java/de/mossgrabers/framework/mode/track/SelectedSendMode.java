@@ -8,6 +8,7 @@ import de.mossgrabers.framework.configuration.Configuration;
 import de.mossgrabers.framework.controller.ButtonID;
 import de.mossgrabers.framework.controller.IControlSurface;
 import de.mossgrabers.framework.daw.IModel;
+import de.mossgrabers.framework.daw.ITrackBank;
 import de.mossgrabers.framework.daw.data.ISend;
 import de.mossgrabers.framework.daw.data.ITrack;
 import de.mossgrabers.framework.mode.AbstractMode;
@@ -42,7 +43,9 @@ public class SelectedSendMode<S extends IControlSurface<C>, C extends Configurat
         this.isTemporary = false;
 
         this.model.getTrackBank ().addSelectionObserver ( (index, isSelected) -> this.bankSwitcher ());
-        this.model.getEffectTrackBank ().addSelectionObserver ( (index, isSelected) -> this.bankSwitcher ());
+        final ITrackBank effectTrackBank = this.model.getEffectTrackBank ();
+        if (effectTrackBank != null)
+            effectTrackBank.addSelectionObserver ( (index, isSelected) -> this.bankSwitcher ());
     }
 
 

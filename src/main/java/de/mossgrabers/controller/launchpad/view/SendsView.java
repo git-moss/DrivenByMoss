@@ -7,7 +7,6 @@ package de.mossgrabers.controller.launchpad.view;
 import de.mossgrabers.controller.launchpad.controller.LaunchpadColorManager;
 import de.mossgrabers.controller.launchpad.controller.LaunchpadControlSurface;
 import de.mossgrabers.framework.controller.ButtonID;
-import de.mossgrabers.framework.controller.color.ColorManager;
 import de.mossgrabers.framework.daw.DAWColor;
 import de.mossgrabers.framework.daw.IModel;
 import de.mossgrabers.framework.daw.ITrackBank;
@@ -59,7 +58,7 @@ public class SendsView extends AbstractFaderView
 
     /** {@inheritDoc} */
     @Override
-    public void onButton (final ButtonID buttonID, final ButtonEvent event)
+    public void onButton (final ButtonID buttonID, final ButtonEvent event, final int velocity)
     {
         if (!ButtonID.isSceneButton (buttonID) || event != ButtonEvent.DOWN)
             return;
@@ -77,20 +76,8 @@ public class SendsView extends AbstractFaderView
     @Override
     public void drawGrid ()
     {
-        final ColorManager cm = this.model.getColorManager ();
-        final ITrackBank tb = this.model.getCurrentTrackBank ();
         for (int i = 0; i < 8; i++)
-        {
-            final ITrack track = tb.getItem (i);
-            final ISend send = track.getSendBank ().getItem (this.selectedSend);
-            final int color = cm.getColorIndex (DAWColor.getColorIndex (track.getColor ()));
-            if (this.trackColors[i] != color)
-            {
-                this.trackColors[i] = color;
-                this.surface.setupFader (i, color, false);
-            }
-            this.surface.setFaderValue (i, send.getValue ());
-        }
+            this.setupFader (i);
     }
 
 
@@ -123,5 +110,18 @@ public class SendsView extends AbstractFaderView
     public int getSelectedSend ()
     {
         return this.selectedSend;
+    }
+
+
+    /** {@inheritDoc} */
+    @Override
+    public void setupFader (final int index)
+    {
+        final ITrack track = this.model.getCurrentTrackBank ().getItem (index);
+        final int color = this.colorManager.getColorIndex (DAWColor.getColorIndex (track.getColor ()));
+        this.surface.setupFader (index, color, false);
+
+        final ISend send = track.getSendBank ().getItem (this.selectedSend);
+        this.surface.setFaderValue (index, send.getValue ());
     }
 }

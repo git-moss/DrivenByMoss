@@ -24,6 +24,7 @@ import com.bitwig.extension.controller.api.AbsoluteHardwareControl;
 import com.bitwig.extension.controller.api.AbsoluteHardwareValueMatcher;
 import com.bitwig.extension.controller.api.ContinuousHardwareControl;
 import com.bitwig.extension.controller.api.ControllerHost;
+import com.bitwig.extension.controller.api.HardwareAction;
 import com.bitwig.extension.controller.api.HardwareActionMatcher;
 import com.bitwig.extension.controller.api.HardwareButton;
 import com.bitwig.extension.controller.api.HardwareSlider;
@@ -129,8 +130,11 @@ public class MidiInputImpl implements IMidiInput
                 throw new BindException (type);
         }
 
-        hardwareButton.pressedAction ().setPressureActionMatcher (pressedMatcher);
-        hardwareButton.releasedAction ().setActionMatcher (releasedMatcher);
+        final HardwareAction pressedAction = hardwareButton.pressedAction ();
+        pressedAction.setPressureActionMatcher (pressedMatcher);
+        pressedAction.setShouldFireEvenWhenUsedAsNoteInput (true);
+
+        setAction (hardwareButton.releasedAction (), releasedMatcher);
     }
 
 
@@ -161,7 +165,7 @@ public class MidiInputImpl implements IMidiInput
                 throw new BindException (type);
         }
 
-        hardwareButton.pressedAction ().setActionMatcher (pressedMatcher);
+        setAction (hardwareButton.pressedAction (), pressedMatcher);
     }
 
 
@@ -268,8 +272,9 @@ public class MidiInputImpl implements IMidiInput
             default:
                 throw new BindException (type);
         }
-        hardwareControl.beginTouchAction ().setActionMatcher (pressedMatcher);
-        hardwareControl.endTouchAction ().setActionMatcher (releasedMatcher);
+
+        setAction (hardwareControl.beginTouchAction (), pressedMatcher);
+        setAction (hardwareControl.endTouchAction (), releasedMatcher);
     }
 
 
@@ -281,5 +286,12 @@ public class MidiInputImpl implements IMidiInput
     public MidiIn getPort ()
     {
         return this.port;
+    }
+
+
+    private static void setAction (final HardwareAction action, final HardwareActionMatcher matcher)
+    {
+        action.setActionMatcher (matcher);
+        action.setShouldFireEvenWhenUsedAsNoteInput (true);
     }
 }

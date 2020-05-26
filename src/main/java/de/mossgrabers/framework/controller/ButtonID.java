@@ -149,6 +149,10 @@ public enum ButtonID
     NOTE,
     /** The select session view button. */
     SESSION,
+    /** The select sequencer view button. */
+    SEQUENCER,
+    /** The select drum sequencer view button. */
+    DRUM,
 
     /** The button to execute scene 1. */
     SCENE1,
@@ -647,7 +651,24 @@ public enum ButtonID
      */
     public static boolean isSceneButton (final ButtonID bid)
     {
+        if (bid == null)
+            return false;
         final int ordinal = bid.ordinal ();
         return ordinal >= SCENE1.ordinal () && ordinal <= SCENE8.ordinal ();
+    }
+
+
+    /**
+     * Test if the given button ID belongs to a pad.
+     *
+     * @param bid The button ID to test
+     * @return True if it is a pad
+     */
+    public static boolean isPad (final ButtonID bid)
+    {
+        if (bid == null)
+            return false;
+        final int ordinal = bid.ordinal ();
+        return ordinal >= PAD1.ordinal () && ordinal <= PAD88.ordinal ();
     }
 }

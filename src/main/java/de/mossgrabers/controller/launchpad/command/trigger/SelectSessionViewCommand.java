@@ -47,7 +47,11 @@ public class SelectSessionViewCommand extends AbstractTriggerCommand<LaunchpadCo
 
         if (event == ButtonEvent.UP)
         {
-            if (viewManager.isActiveView (Views.SESSION))
+            if (this.surface.isShiftPressed ())
+            {
+                viewManager.setActiveView (Views.MIX);
+            }
+            else if (viewManager.isActiveView (Views.SESSION))
             {
                 if (sessionView.isBirdsEyeActive ())
                     sessionView.setBirdsEyeActive (false);

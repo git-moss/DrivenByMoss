@@ -100,4 +100,12 @@ public interface IGraphicsConfiguration
      * @return The border mute of an element.
      */
     ColorEx getColorMute ();
+
+
+    /**
+     * Should antialising be applied?
+     *
+     * @return True if enabled
+     */
+    boolean isAntialiasEnabled ();
 }

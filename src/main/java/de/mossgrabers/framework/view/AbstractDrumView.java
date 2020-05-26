@@ -11,7 +11,6 @@ import de.mossgrabers.framework.controller.grid.IPadGrid;
 import de.mossgrabers.framework.controller.hardware.IHwButton;
 import de.mossgrabers.framework.daw.DAWColor;
 import de.mossgrabers.framework.daw.ICursorDevice;
-import de.mossgrabers.framework.daw.IDrumPadBank;
 import de.mossgrabers.framework.daw.IModel;
 import de.mossgrabers.framework.daw.INoteClip;
 import de.mossgrabers.framework.daw.IStepInfo;
@@ -52,7 +51,6 @@ public abstract class AbstractDrumView<S extends IControlSurface<C>, C extends C
     protected static final int DRUM_START_KEY        = 36;
     protected static final int GRID_COLUMNS          = 8;
 
-    protected int              selectedPad;
     protected int              loopPadPressed        = -1;
     protected int              sequencerLines;
     protected int              playLines;
@@ -60,6 +58,8 @@ public abstract class AbstractDrumView<S extends IControlSurface<C>, C extends C
     protected int              sequencerSteps;
     protected int              halfColumns;
     protected IStepInfo        copyNote;
+
+    protected int              selectedPad;
 
 
     /**
@@ -87,6 +87,11 @@ public abstract class AbstractDrumView<S extends IControlSurface<C>, C extends C
         final ITrackBank tb = model.getTrackBank ();
         tb.addSelectionObserver ( (index, isSelected) -> this.keyManager.clearPressedKeys ());
         tb.addNoteObserver (this::updateNote);
+
+        model.getInstrumentDevice ().getDrumPadBank ().addSelectionObserver ( (index, isSelected) -> {
+            if (isSelected)
+                this.selectedPad = index;
+        });
     }
 
 
@@ -154,13 +159,13 @@ public abstract class AbstractDrumView<S extends IControlSurface<C>, C extends C
      */
     protected void handleNoteArea (final int x, final int y, final int offsetY, final int velocity)
     {
-        this.selectedPad = this.halfColumns * y + x;
-        final int playedPad = velocity == 0 ? -1 : this.selectedPad;
+        this.setSelectedPad (this.halfColumns * y + x, velocity);
 
         // Mark selected note
         this.keyManager.setKeyPressed (offsetY + this.selectedPad, velocity);
         this.playNote (offsetY + this.selectedPad, velocity);
 
+        final int playedPad = velocity == 0 ? -1 : this.selectedPad;
         if (playedPad < 0)
             return;
 
@@ -302,20 +307,7 @@ public abstract class AbstractDrumView<S extends IControlSurface<C>, C extends C
 
         // halfColumns x playLines Drum Pad Grid
         final ICursorDevice primary = this.model.getInstrumentDevice ();
-        final boolean hasDrumPads = primary.hasDrumPads ();
-        boolean isSoloed = false;
-        if (hasDrumPads)
-        {
-            final IDrumPadBank drumPadBank = primary.getDrumPadBank ();
-            for (int i = 0; i < this.halfColumns * this.playLines; i++)
-            {
-                if (drumPadBank.getItem (i).isSolo ())
-                {
-                    isSoloed = true;
-                    break;
-                }
-            }
-        }
+        final boolean isSoloed = primary.hasDrumPads () && primary.getDrumPadBank ().hasSoloedPads ();
         final boolean isRecording = this.model.hasRecordingState ();
         for (int y = 0; y < this.playLines; y++)
         {
@@ -587,5 +579,33 @@ public abstract class AbstractDrumView<S extends IControlSurface<C>, C extends C
         final ITrack sel = this.model.getCurrentTrackBank ().getSelectedItem ();
         if (sel != null && sel.getIndex () == trackIndex)
             this.keyManager.setKeyPressed (note, velocity);
+    }
+
+
+    /**
+     * Set the selected pad.
+     *
+     * @param selectedPad The selected pad
+     * @param velocity The velocity
+     */
+    protected void setSelectedPad (final int selectedPad, final int velocity)
+    {
+        if (this.selectedPad == selectedPad)
+            return;
+
+        this.selectedPad = selectedPad;
+        if (velocity > 0)
+            this.model.getInstrumentDevice ().getDrumPadBank ().getItem (selectedPad).select ();
+    }
+
+
+    /**
+     * Get the selected pad.
+     *
+     * @return The selected pad
+     */
+    protected int getSelectedPad ()
+    {
+        return this.selectedPad;
     }
 }

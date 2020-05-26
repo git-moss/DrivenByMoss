@@ -9,6 +9,7 @@ import de.mossgrabers.framework.graphics.IEncoder;
 import de.mossgrabers.framework.graphics.IRenderer;
 
 import com.bitwig.extension.api.graphics.Bitmap;
+import com.bitwig.extension.api.graphics.GraphicsOutput.AntialiasMode;
 
 import java.nio.ByteBuffer;
 
@@ -52,9 +53,9 @@ public class BitmapImpl implements IBitmap
 
     /** {@inheritDoc} */
     @Override
-    public void render (final IRenderer renderer)
+    public void render (final boolean enableAntialias, final IRenderer renderer)
     {
-        this.bitmap.render (gc -> renderer.render (new GraphicsContextImpl (gc)));
+        this.bitmap.render (gc -> renderer.render (new GraphicsContextImpl (enableAntialias ? AntialiasMode.BEST : AntialiasMode.OFF, gc)));
     }
 
 

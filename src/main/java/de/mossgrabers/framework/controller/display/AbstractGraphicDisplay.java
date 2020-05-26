@@ -83,7 +83,7 @@ public abstract class AbstractGraphicDisplay implements IGraphicDisplay
     protected final IHost                  host;
     protected final IGraphicsConfiguration configuration;
     protected final IGraphicsDimensions    dimensions;
-    protected final IBitmap                image;
+    private final IBitmap                  image;
 
     private IHwGraphicsDisplay             hardwareDisplay;
 
@@ -185,7 +185,7 @@ public abstract class AbstractGraphicDisplay implements IGraphicDisplay
     @Override
     public void setMidiClipElement (final INoteClip clip, final int quartersPerMeasure)
     {
-        this.columns.add (new MidiClipComponent (clip, quartersPerMeasure));
+        this.addElement (new MidiClipComponent (clip, quartersPerMeasure));
     }
 
 
@@ -219,7 +219,7 @@ public abstract class AbstractGraphicDisplay implements IGraphicDisplay
     @Override
     public void addChannelSelectorElement (final String topMenu, final boolean isTopMenuOn, final String bottomMenu, final ChannelType type, final ColorEx bottomMenuColor, final boolean isBottomMenuOn, final boolean isActive)
     {
-        this.columns.add (new ChannelSelectComponent (type, topMenu, isTopMenuOn, bottomMenu, bottomMenuColor, isBottomMenuOn, isActive));
+        this.addElement (new ChannelSelectComponent (type, topMenu, isTopMenuOn, bottomMenu, bottomMenuColor, isBottomMenuOn, isActive));
     }
 
 
@@ -251,7 +251,7 @@ public abstract class AbstractGraphicDisplay implements IGraphicDisplay
                 editType = ChannelComponent.EDIT_TYPE_ALL;
                 break;
         }
-        this.columns.add (new ChannelComponent (editType, topMenu, isTopMenuOn, bottomMenu, bottomMenuColor, isBottomMenuOn, type, volume, modulatedVolume, volumeStr, pan, modulatedPan, panStr, vuLeft, vuRight, mute, solo, recarm, isActive, crossfadeMode));
+        this.addElement (new ChannelComponent (editType, topMenu, isTopMenuOn, bottomMenu, bottomMenuColor, isBottomMenuOn, type, volume, modulatedVolume, volumeStr, pan, modulatedPan, panStr, vuLeft, vuRight, mute, solo, recarm, isActive, crossfadeMode));
     }
 
 
@@ -259,7 +259,7 @@ public abstract class AbstractGraphicDisplay implements IGraphicDisplay
     @Override
     public void addSendsElement (final String topMenu, final boolean isTopMenuOn, final String bottomMenu, final ChannelType type, final ColorEx bottomMenuColor, final boolean isBottomMenuOn, final SendData [] sendData, final boolean isTrackMode, final boolean isSendActive, final boolean isChannelLabelActive)
     {
-        this.columns.add (new SendsComponent (sendData, topMenu, isTopMenuOn, bottomMenu, bottomMenuColor, isBottomMenuOn, type, isTrackMode, isSendActive, isChannelLabelActive));
+        this.addElement (new SendsComponent (sendData, topMenu, isTopMenuOn, bottomMenu, bottomMenuColor, isBottomMenuOn, type, isTrackMode, isSendActive, isChannelLabelActive));
     }
 
 
@@ -275,7 +275,7 @@ public abstract class AbstractGraphicDisplay implements IGraphicDisplay
     @Override
     public void addParameterElement (final String topMenu, final boolean isTopMenuOn, final String bottomMenu, final ChannelType type, final ColorEx bottomMenuColor, final boolean isBottomMenuOn, final String parameterName, final int parameterValue, final String parameterValueStr, final boolean parameterIsActive, final int parameterModulatedValue)
     {
-        this.columns.add (new ParameterComponent (topMenu, isTopMenuOn, bottomMenu, type, bottomMenuColor, isBottomMenuOn, parameterName, parameterValue, parameterModulatedValue, parameterValueStr, parameterIsActive));
+        this.addElement (new ParameterComponent (topMenu, isTopMenuOn, bottomMenu, type, bottomMenuColor, isBottomMenuOn, parameterName, parameterValue, parameterModulatedValue, parameterValueStr, parameterIsActive));
     }
 
 
@@ -283,7 +283,7 @@ public abstract class AbstractGraphicDisplay implements IGraphicDisplay
     @Override
     public void addParameterElementWithPlainMenu (final String topMenu, final boolean isTopMenuOn, final String bottomMenu, final ColorEx bottomMenuColor, final boolean isBottomMenuOn, final String parameterName, final int parameterValue, final String parameterValueStr, final boolean parameterIsActive, final int parameterModulatedValue)
     {
-        this.columns.add (new ParameterComponent (topMenu, isTopMenuOn, bottomMenu, null, bottomMenuColor, isBottomMenuOn, parameterName, parameterValue, parameterModulatedValue, parameterValueStr, parameterIsActive, LabelLayout.PLAIN));
+        this.addElement (new ParameterComponent (topMenu, isTopMenuOn, bottomMenu, null, bottomMenuColor, isBottomMenuOn, parameterName, parameterValue, parameterModulatedValue, parameterValueStr, parameterIsActive, LabelLayout.PLAIN));
     }
 
 
@@ -291,7 +291,7 @@ public abstract class AbstractGraphicDisplay implements IGraphicDisplay
     @Override
     public void addParameterElement (final String topMenu, final boolean isTopMenuOn, final String bottomMenu, final String deviceName, final ColorEx bottomMenuColor, final boolean isBottomMenuOn, final String parameterName, final int parameterValue, final String parameterValueStr, final boolean parameterIsActive, final int parameterModulatedValue)
     {
-        this.columns.add (new ParameterComponent (topMenu, isTopMenuOn, bottomMenu, deviceName, bottomMenuColor, isBottomMenuOn, parameterName, parameterValue, parameterModulatedValue, parameterValueStr, parameterIsActive));
+        this.addElement (new ParameterComponent (topMenu, isTopMenuOn, bottomMenu, deviceName, bottomMenuColor, isBottomMenuOn, parameterName, parameterValue, parameterModulatedValue, parameterValueStr, parameterIsActive));
     }
 
 
@@ -315,7 +315,7 @@ public abstract class AbstractGraphicDisplay implements IGraphicDisplay
     @Override
     public void addOptionElement (final String headerTopName, final String menuTopName, final boolean isMenuTopSelected, final ColorEx menuTopColor, final String headerBottomName, final String menuBottomName, final boolean isMenuBottomSelected, final ColorEx menuBottomColor, final boolean useSmallTopMenu, final boolean isBottomHeaderSelected)
     {
-        this.columns.add (new OptionsComponent (headerTopName, menuTopName, isMenuTopSelected, menuTopColor, headerBottomName, menuBottomName, isMenuBottomSelected, menuBottomColor, useSmallTopMenu, isBottomHeaderSelected));
+        this.addElement (new OptionsComponent (headerTopName, menuTopName, isMenuTopSelected, menuTopColor, headerBottomName, menuBottomName, isMenuBottomSelected, menuBottomColor, useSmallTopMenu, isBottomHeaderSelected));
     }
 
 
@@ -331,7 +331,7 @@ public abstract class AbstractGraphicDisplay implements IGraphicDisplay
             final String itemName = pos < elements.length ? elements[pos] : "";
             menu.add (new Pair<> (itemName, Boolean.valueOf (pos == selectedIndex)));
         }
-        this.columns.add (new ListComponent (menu));
+        this.addElement (new ListComponent (menu));
     }
 
 
@@ -342,7 +342,7 @@ public abstract class AbstractGraphicDisplay implements IGraphicDisplay
         final List<Pair<String, Boolean>> menu = new ArrayList<> ();
         for (int i = 0; i < items.length; i++)
             menu.add (new Pair<> (items[i], Boolean.valueOf (selected[i])));
-        this.columns.add (new ListComponent (menu));
+        this.addElement (new ListComponent (menu));
     }
 
 
@@ -350,7 +350,7 @@ public abstract class AbstractGraphicDisplay implements IGraphicDisplay
     @Override
     public void addSceneListElement (final List<IScene> scenes)
     {
-        this.columns.add (new SceneListGridElement (scenes));
+        this.addElement (new SceneListGridElement (scenes));
     }
 
 
@@ -358,7 +358,15 @@ public abstract class AbstractGraphicDisplay implements IGraphicDisplay
     @Override
     public void addSlotListElement (final List<Pair<ITrack, ISlot>> slots)
     {
-        this.columns.add (new ClipListComponent (slots));
+        this.addElement (new ClipListComponent (slots));
+    }
+
+
+    /** {@inheritDoc} */
+    @Override
+    public void addElement (final IComponent component)
+    {
+        this.columns.add (component);
     }
 
 
@@ -388,7 +396,7 @@ public abstract class AbstractGraphicDisplay implements IGraphicDisplay
 
     private void renderImage ()
     {
-        this.image.render (gc -> {
+        this.image.render (this.configuration.isAntialiasEnabled (), gc -> {
             final int width = this.dimensions.getWidth ();
             final int height = this.dimensions.getHeight ();
             final double separatorSize = this.dimensions.getSeparatorSize ();

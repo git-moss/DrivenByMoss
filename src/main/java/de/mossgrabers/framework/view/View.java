@@ -91,8 +91,9 @@ public interface View
      *
      * @param buttonID The ID of the button
      * @param event The button event
+     * @param velocity The velocity with which the button was pressed (0-127)
      */
-    void onButton (ButtonID buttonID, ButtonEvent event);
+    void onButton (ButtonID buttonID, ButtonEvent event, int velocity);
 
 
     /**

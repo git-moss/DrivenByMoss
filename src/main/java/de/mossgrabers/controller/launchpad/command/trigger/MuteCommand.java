@@ -33,6 +33,13 @@ public class MuteCommand extends AbstractTrackCommand
     @Override
     public void execute (final ButtonEvent event, final int velocity)
     {
+        if (this.surface.isPro () && this.surface.isShiftPressed ())
+        {
+            if (event == ButtonEvent.DOWN)
+                this.model.getApplication ().redo ();
+            return;
+        }
+
         this.onModeButton (event, Modes.MUTE, "Mute");
     }
 }

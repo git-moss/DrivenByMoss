@@ -185,4 +185,12 @@ public interface IBank<T> extends ObserverManagement
      * new page.
      */
     void selectPreviousPage ();
+
+
+    /**
+     * Disabled items will not be accessible via the bank if set to true.
+     *
+     * @param shouldSkip True to exclude disabled items
+     */
+    void setSkipDisabledItems (boolean shouldSkip);
 }

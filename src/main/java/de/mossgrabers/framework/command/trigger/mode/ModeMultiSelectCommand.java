@@ -111,7 +111,12 @@ public class ModeMultiSelectCommand<S extends IControlSurface<C>, C extends Conf
     }
 
 
-    private void activateMode (final Modes modeID)
+    /**
+     * Activate a mode.
+     *
+     * @param modeID The mode to activate
+     */
+    public void activateMode (final Modes modeID)
     {
         this.currentModeID = modeID;
         this.modeManager.setActiveMode (modeID);

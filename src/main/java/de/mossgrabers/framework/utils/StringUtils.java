@@ -282,6 +282,18 @@ public class StringUtils
 
 
     /**
+     * Format a velocity percentage.
+     *
+     * @param noteVelocity The velocity in the range of 0..1.
+     * @return The formatted velocity
+     */
+    public static String formatPercentage (final double noteVelocity)
+    {
+        return String.format ("%.01f%%", Double.valueOf (noteVelocity * 100.0));
+    }
+
+
+    /**
      * Format the given time as measure.quarters.eights / measure.quarters.eights.ticks.
      *
      * @param quartersPerMeasure The number of quarters of a measure

@@ -198,9 +198,6 @@ public class MCUConfiguration extends AbstractConfiguration
         Arrays.fill (this.assignableFunctions, 0);
 
         this.deviceTyes = new MCUDeviceType [numMCUDevices];
-        this.deviceTyes[this.deviceTyes.length - 1] = MCUDeviceType.MAIN;
-        if (numMCUDevices > 1)
-            Arrays.fill (this.deviceTyes, 0, numMCUDevices - 2, MCUDeviceType.EXTENDER);
     }
 
 
@@ -239,6 +236,7 @@ public class MCUConfiguration extends AbstractConfiguration
         ///////////////////////////
         // Workflow
 
+        this.activateExcludeDeactivatedItemsSetting (globalSettings);
         this.activateDisplayCrossfaderSetting (globalSettings);
         this.activateNewClipLengthSetting (globalSettings);
         this.activateZoomStateSetting (globalSettings);
@@ -389,18 +387,15 @@ public class MCUConfiguration extends AbstractConfiguration
     {
         for (int i = 0; i < this.deviceTyes.length; i++)
         {
-            final int index = i;
             final String label = MCU_DEVICE_DESCRIPTORS[this.deviceTyes.length - 1][i];
             final IEnumSetting setting = settingsUI.getEnumSetting (label, CATEGORY_EXTENDER_SETUP, MCU_DEVICE_TYPE_OPTIONS, MCU_DEVICE_TYPE_OPTIONS[i == this.deviceTyes.length - 1 ? 0 : 1]);
-            setting.addValueObserver (value -> {
-
-                if (MCU_DEVICE_TYPE_OPTIONS[0].equals (value))
-                    this.deviceTyes[index] = MCUDeviceType.MAIN;
-                else if (MCU_DEVICE_TYPE_OPTIONS[1].equals (value))
-                    this.deviceTyes[index] = MCUDeviceType.EXTENDER;
-                else if (MCU_DEVICE_TYPE_OPTIONS[2].equals (value))
-                    this.deviceTyes[index] = MCUDeviceType.MACKIE_EXTENDER;
-            });
+            final String value = setting.get ();
+            if (MCU_DEVICE_TYPE_OPTIONS[0].equals (value))
+                this.deviceTyes[i] = MCUDeviceType.MAIN;
+            else if (MCU_DEVICE_TYPE_OPTIONS[1].equals (value))
+                this.deviceTyes[i] = MCUDeviceType.EXTENDER;
+            else if (MCU_DEVICE_TYPE_OPTIONS[2].equals (value))
+                this.deviceTyes[i] = MCUDeviceType.MACKIE_EXTENDER;
         }
     }
 

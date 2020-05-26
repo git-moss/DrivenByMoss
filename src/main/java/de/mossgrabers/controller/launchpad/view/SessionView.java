@@ -64,12 +64,11 @@ public class SessionView extends AbstractSessionView<LaunchpadControlSurface, La
     @Override
     public void onGridNote (final int note, final int velocity)
     {
-        final ModeManager modeManager = this.surface.getModeManager ();
-        final Modes activeModeId = modeManager.getActiveOrTempModeId ();
+        final boolean controlModeIsOff = this.isControlModeOff ();
 
         // Block 1st row if mode is active
         final boolean isNotRow1 = note >= 44;
-        if (activeModeId == Modes.DUMMY || isNotRow1)
+        if (controlModeIsOff || isNotRow1)
         {
             if (this.isBirdsEyeActive ())
             {
@@ -77,14 +76,14 @@ public class SessionView extends AbstractSessionView<LaunchpadControlSurface, La
                 return;
             }
 
-            final int n = note - (activeModeId != Modes.DUMMY ? 8 : 0);
+            final int n = note - (controlModeIsOff ? 0 : 8);
 
             super.onGridNote (n, velocity);
             return;
         }
 
         if (velocity != 0)
-            this.handleFirstRowModes (note, modeManager);
+            this.handleFirstRowModes (note);
     }
 
 
@@ -92,10 +91,18 @@ public class SessionView extends AbstractSessionView<LaunchpadControlSurface, La
     @Override
     public void drawGrid ()
     {
-        final Modes controlMode = this.surface.getModeManager ().getActiveOrTempModeId ();
-        final boolean controlModeIsOff = controlMode == Modes.DUMMY;
-        this.rows = controlModeIsOff ? 8 : 7;
-        this.columns = 8;
+        final boolean controlModeIsOff = this.isControlModeOff ();
+
+        if (this.surface.getConfiguration ().isFlipSession ())
+        {
+            this.rows = 8;
+            this.columns = controlModeIsOff ? 8 : 7;
+        }
+        else
+        {
+            this.rows = controlModeIsOff ? 8 : 7;
+            this.columns = 8;
+        }
 
         super.drawGrid ();
 
@@ -105,7 +112,7 @@ public class SessionView extends AbstractSessionView<LaunchpadControlSurface, La
         final ITrackBank tb = this.model.getCurrentTrackBank ();
         final IPadGrid pads = this.surface.getPadGrid ();
         final ModeManager modeManager = this.surface.getModeManager ();
-        for (int x = 0; x < this.columns; x++)
+        for (int x = 0; x < 8; x++)
         {
             final ITrack track = tb.getItem (x);
             final boolean exists = track.doesExist ();
@@ -118,7 +125,7 @@ public class SessionView extends AbstractSessionView<LaunchpadControlSurface, La
             else if (modeManager.isActiveOrTempMode (Modes.SOLO))
                 pads.lightEx (x, 7, exists ? track.isSolo () ? LaunchpadColorManager.LAUNCHPAD_COLOR_BLUE_HI : LaunchpadColorManager.LAUNCHPAD_COLOR_BLUE_LO : LaunchpadColorManager.LAUNCHPAD_COLOR_BLACK);
             else if (modeManager.isActiveOrTempMode (Modes.STOP_CLIP))
-                pads.lightEx (x, 7, exists ? LaunchpadColorManager.LAUNCHPAD_COLOR_ROSE : LaunchpadColorManager.LAUNCHPAD_COLOR_BLACK);
+                pads.lightEx (x, 7, exists ? this.surface.isPressed (ButtonID.get (ButtonID.PAD1, x)) ? LaunchpadColorManager.LAUNCHPAD_COLOR_RED : LaunchpadColorManager.LAUNCHPAD_COLOR_ROSE : LaunchpadColorManager.LAUNCHPAD_COLOR_BLACK);
         }
     }
 
@@ -249,9 +256,8 @@ public class SessionView extends AbstractSessionView<LaunchpadControlSurface, La
      * Execute the functions of row 1 if active.
      *
      * @param note The pressed note on the first row
-     * @param modeManager The mode manager
      */
-    private void handleFirstRowModes (final int note, final ModeManager modeManager)
+    private void handleFirstRowModes (final int note)
     {
         // First row mode handling
         final int index = note - 36;
@@ -269,15 +275,22 @@ public class SessionView extends AbstractSessionView<LaunchpadControlSurface, La
             return;
         }
 
+        final ModeManager modeManager = this.surface.getModeManager ();
         if (modeManager.isActiveOrTempMode (Modes.REC_ARM))
             track.toggleRecArm ();
         else if (modeManager.isActiveOrTempMode (Modes.TRACK_SELECT))
-            this.selectTrack (index);
+            track.select ();
         else if (modeManager.isActiveOrTempMode (Modes.MUTE))
             track.toggleMute ();
         else if (modeManager.isActiveOrTempMode (Modes.SOLO))
             track.toggleSolo ();
         else if (modeManager.isActiveOrTempMode (Modes.STOP_CLIP))
             track.stop ();
+    }
+
+
+    private boolean isControlModeOff ()
+    {
+        return this.surface.hasTrackSelectionButtons () || this.surface.getModeManager ().getActiveOrTempModeId () == Modes.DUMMY;
     }
 }

@@ -44,6 +44,11 @@ public class BeatstepConfiguration extends AbstractConfiguration
         this.activateScaleLayoutSetting (documentSettings);
 
         ///////////////////////////
+        // Workflow
+
+        this.activateExcludeDeactivatedItemsSetting (globalSettings);
+
+        ///////////////////////////
         // Pad Sensitivity
 
         this.activateConvertAftertouchSetting (globalSettings);

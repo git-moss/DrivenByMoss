@@ -56,15 +56,15 @@ public class DrumView extends AbstractDrumView<SLMkIIIControlSurface, SLMkIIICon
         final int offsetY = this.scales.getDrumOffset ();
         if (this.isPlayMode)
         {
-            this.selectedPad = index; // 0-16
+            this.setSelectedPad (index, velocity); // 0-16
 
             // Mark selected note
-            this.keyManager.setKeyPressed (offsetY + this.selectedPad, velocity);
+            this.keyManager.setKeyPressed (offsetY + this.getSelectedPad (), velocity);
         }
         else
         {
             if (velocity != 0)
-                this.getClip ().toggleStep (this.configuration.getMidiEditChannel (), index < 8 ? index + 8 : index - 8, offsetY + this.selectedPad, this.configuration.isAccentActive () ? this.configuration.getFixedAccentValue () : velocity);
+                this.getClip ().toggleStep (this.configuration.getMidiEditChannel (), index < 8 ? index + 8 : index - 8, offsetY + this.getSelectedPad (), this.configuration.isAccentActive () ? this.configuration.getFixedAccentValue () : velocity);
         }
     }
 
@@ -85,19 +85,7 @@ public class DrumView extends AbstractDrumView<SLMkIIIControlSurface, SLMkIIICon
         final ICursorDevice primary = this.model.getInstrumentDevice ();
         if (this.isPlayMode)
         {
-            final boolean hasDrumPads = primary.hasDrumPads ();
-            boolean isSoloed = false;
-            if (hasDrumPads)
-            {
-                for (int i = 0; i < 16; i++)
-                {
-                    if (primary.getDrumPadBank ().getItem (i).isSolo ())
-                    {
-                        isSoloed = true;
-                        break;
-                    }
-                }
-            }
+            final boolean isSoloed = primary.hasDrumPads () && primary.getDrumPadBank ().hasSoloedPads ();
             for (int y = 0; y < 2; y++)
             {
                 for (int x = 0; x < 8; x++)
@@ -122,9 +110,10 @@ public class DrumView extends AbstractDrumView<SLMkIIIControlSurface, SLMkIIICon
         final int hiStep = this.isInXRange (step) ? step % this.sequencerSteps : -1;
         final int offsetY = this.scales.getDrumOffset ();
         final int editMidiChannel = this.configuration.getMidiEditChannel ();
+        final int selPad = this.getSelectedPad ();
         for (int col = 0; col < DrumView.NUM_DISPLAY_COLS; col++)
         {
-            final int isSet = clip.getStep (editMidiChannel, col, offsetY + this.selectedPad).getState ();
+            final int isSet = clip.getStep (editMidiChannel, col, offsetY + selPad).getState ();
             final boolean hilite = col == hiStep;
             final int x = col % GRID_COLUMNS;
             final int y = col / GRID_COLUMNS;
@@ -135,7 +124,8 @@ public class DrumView extends AbstractDrumView<SLMkIIIControlSurface, SLMkIIICon
 
     private int getStepColor (final ICursorDevice primary)
     {
-        if (this.selectedPad < 0)
+        final int selPad = this.getSelectedPad ();
+        if (selPad < 0)
             return SLMkIIIColorManager.SLMKIII_BLACK;
 
         // If we cannot get the color from the drum pads use a default color
@@ -143,7 +133,7 @@ public class DrumView extends AbstractDrumView<SLMkIIIControlSurface, SLMkIIICon
             return SLMkIIIColorManager.SLMKIII_BLUE;
 
         // Exists and active?
-        final IChannel drumPad = primary.getDrumPadBank ().getItem (this.selectedPad);
+        final IChannel drumPad = primary.getDrumPadBank ().getItem (selPad);
         if (!drumPad.doesExist () || !drumPad.isActivated ())
             return SLMkIIIColorManager.SLMKIII_BLACK;
 
@@ -161,7 +151,7 @@ public class DrumView extends AbstractDrumView<SLMkIIIControlSurface, SLMkIIICon
 
     /** {@inheritDoc} */
     @Override
-    public void onButton (final ButtonID buttonID, final ButtonEvent event)
+    public void onButton (final ButtonID buttonID, final ButtonEvent event, final int velocity)
     {
         if (!ButtonID.isSceneButton (buttonID) || event != ButtonEvent.DOWN)
             return;

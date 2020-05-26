@@ -85,6 +85,7 @@ public class LaunchpadConfiguration extends AbstractConfiguration
         ///////////////////////////
         // Workflow
 
+        this.activateExcludeDeactivatedItemsSetting (globalSettings);
         this.activateIncludeMasterSetting (globalSettings);
         this.activateNewClipLengthSetting (globalSettings);
 

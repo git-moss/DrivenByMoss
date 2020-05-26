@@ -134,9 +134,13 @@ public abstract class AbstractBank<T extends IItem> implements IBank<T>
     {
         for (int i = this.getPageSize () - 1; i >= 0; i--)
         {
-            final int pos = this.getItem (i).getPosition ();
-            if (pos >= 0)
-                return pos;
+            final T item = this.getItem (i);
+            if (item.doesExist ())
+            {
+                final int pos = item.getPosition ();
+                if (pos >= 0)
+                    return pos;
+            }
         }
         return -1;
     }
@@ -197,5 +201,13 @@ public abstract class AbstractBank<T extends IItem> implements IBank<T>
         final IItem sel = this.getSelectedItem ();
         final int selIndex = sel != null ? sel.getIndex () : -1;
         return selIndex >= 0 && selIndex < this.pageSize - 1 && this.getItem (selIndex + 1).doesExist () || this.canScrollPageForwards ();
+    }
+
+
+    /** {@inheritDoc} */
+    @Override
+    public void setSkipDisabledItems (final boolean shouldSkip)
+    {
+        // Not used, overwrite to support
     }
 }
