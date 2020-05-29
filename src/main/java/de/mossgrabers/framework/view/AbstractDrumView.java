@@ -7,6 +7,7 @@ package de.mossgrabers.framework.view;
 import de.mossgrabers.framework.configuration.Configuration;
 import de.mossgrabers.framework.controller.ButtonID;
 import de.mossgrabers.framework.controller.IControlSurface;
+import de.mossgrabers.framework.controller.color.ColorEx;
 import de.mossgrabers.framework.controller.grid.IPadGrid;
 import de.mossgrabers.framework.controller.hardware.IHwButton;
 import de.mossgrabers.framework.daw.DAWColor;
@@ -17,6 +18,7 @@ import de.mossgrabers.framework.daw.IStepInfo;
 import de.mossgrabers.framework.daw.ITrackBank;
 import de.mossgrabers.framework.daw.constants.Resolution;
 import de.mossgrabers.framework.daw.data.IChannel;
+import de.mossgrabers.framework.daw.data.IDrumPad;
 import de.mossgrabers.framework.daw.data.ITrack;
 import de.mossgrabers.framework.utils.ButtonEvent;
 
@@ -319,7 +321,24 @@ public abstract class AbstractDrumView<S extends IControlSurface<C>, C extends C
         }
 
         if (this.sequencerLines > 0)
-            this.drawSequencer ();
+            this.drawSequencer (this.scales.getDrumOffset () + this.selectedPad, this.getDrumPadColor (primary, this.selectedPad));
+    }
+
+
+    /**
+     * Get the color of the drum pad (the drum device layer).
+     *
+     * @param primary The drum instrument (first instrument on the channel)
+     * @param drumPadIndex The index of the drum pad in the current drum pad page
+     * @return The color or null if not a drum device, drum layer is empty, ...
+     */
+    protected ColorEx getDrumPadColor (final ICursorDevice primary, final int drumPadIndex)
+    {
+        if (!primary.hasDrumPads ())
+            return null;
+
+        final IDrumPad item = primary.getDrumPadBank ().getItem (drumPadIndex);
+        return item.doesExist () ? item.getColor () : null;
     }
 
 
@@ -350,27 +369,24 @@ public abstract class AbstractDrumView<S extends IControlSurface<C>, C extends C
     }
 
 
-    protected String getStepColor (final int isSet, final boolean hilite)
+    protected String getStepColor (final int isSet, final boolean hilite, final ColorEx rowColor)
     {
         switch (isSet)
         {
             // Note continues
             case IStepInfo.NOTE_CONTINUE:
-                return hilite ? AbstractSequencerView.COLOR_STEP_HILITE_CONTENT : AbstractSequencerView.COLOR_CONTENT_CONT;
+                if (hilite)
+                    return AbstractSequencerView.COLOR_STEP_HILITE_CONTENT;
+                return rowColor != null ? DAWColor.getColorIndex (ColorEx.darker (rowColor)) : AbstractSequencerView.COLOR_CONTENT_CONT;
             // Note starts
             case IStepInfo.NOTE_START:
-                return hilite ? AbstractSequencerView.COLOR_STEP_HILITE_CONTENT : AbstractSequencerView.COLOR_CONTENT;
+                if (hilite)
+                    return AbstractSequencerView.COLOR_STEP_HILITE_CONTENT;
+                return rowColor != null ? DAWColor.getColorIndex (rowColor) : AbstractSequencerView.COLOR_CONTENT;
             // Empty
             default:
                 return hilite ? AbstractSequencerView.COLOR_STEP_HILITE_NO_CONTENT : AbstractSequencerView.COLOR_NO_CONTENT;
         }
-
-        // TODO get color from drum device
-        // if (track == null)
-        // return Scales.SCALE_COLOR_OCTAVE;
-        // final String c = DAWColor.getColorIndex (track.getColor ());
-        // return c == null ? Scales.SCALE_COLOR_OCTAVE : c;
-
     }
 
 
@@ -535,8 +551,11 @@ public abstract class AbstractDrumView<S extends IControlSurface<C>, C extends C
 
     /**
      * Draw the clip loop and sequencer steps area.
+     * 
+     * @param noteRow The note for which to draw the row
+     * @param rowColor The color to use the notes of the row
      */
-    private void drawSequencer ()
+    private void drawSequencer (final int noteRow, final ColorEx rowColor)
     {
         final boolean isActive = this.isActive ();
 
@@ -565,11 +584,11 @@ public abstract class AbstractDrumView<S extends IControlSurface<C>, C extends C
         final int editMidiChannel = this.configuration.getMidiEditChannel ();
         for (int col = 0; col < this.sequencerSteps; col++)
         {
-            final int isSet = clip.getStep (editMidiChannel, col, this.scales.getDrumOffset () + this.selectedPad).getState ();
+            final int isSet = clip.getStep (editMidiChannel, col, noteRow).getState ();
             final boolean hilite = col == hiStep;
             final int x = col % GRID_COLUMNS;
             final int y = col / GRID_COLUMNS;
-            padGrid.lightEx (x, y, isActive ? this.getStepColor (isSet, hilite) : AbstractSequencerView.COLOR_NO_CONTENT);
+            padGrid.lightEx (x, y, isActive ? this.getStepColor (isSet, hilite, rowColor) : AbstractSequencerView.COLOR_NO_CONTENT);
         }
     }
 

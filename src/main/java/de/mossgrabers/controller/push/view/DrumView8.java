@@ -7,7 +7,9 @@ package de.mossgrabers.controller.push.view;
 import de.mossgrabers.controller.push.controller.PushControlSurface;
 import de.mossgrabers.controller.push.mode.NoteMode;
 import de.mossgrabers.framework.controller.ButtonID;
+import de.mossgrabers.framework.controller.color.ColorEx;
 import de.mossgrabers.framework.controller.hardware.IHwButton;
+import de.mossgrabers.framework.daw.ICursorDevice;
 import de.mossgrabers.framework.daw.IModel;
 import de.mossgrabers.framework.daw.INoteClip;
 import de.mossgrabers.framework.daw.IStepInfo;
@@ -167,16 +169,20 @@ public class DrumView8 extends DrumViewBase
         final int offsetY = this.scales.getDrumOffset ();
         final int editMidiChannel = this.configuration.getMidiEditChannel ();
         final int selPad = this.getSelectedPad ();
+        final ICursorDevice primary = this.model.getInstrumentDevice ();
         for (int sound = 0; sound < 8; sound++)
         {
+            final int padIndex = selPad + sound + this.soundOffset;
+            final int noteRow = offsetY + padIndex;
+            final ColorEx drumPadColor = this.getDrumPadColor (primary, padIndex);
             for (int col = 0; col < DrumView8.NUM_DISPLAY_COLS; col++)
             {
-                final int isSet = this.getClip ().getStep (editMidiChannel, col, offsetY + selPad + sound + this.soundOffset).getState ();
+                final int isSet = this.getClip ().getStep (editMidiChannel, col, noteRow).getState ();
                 final boolean hilite = col == hiStep;
                 final int x = col % 8;
                 int y = col / 8;
                 y += sound;
-                this.surface.getPadGrid ().lightEx (x, 7 - y, this.getStepColor (isSet, hilite));
+                this.surface.getPadGrid ().lightEx (x, 7 - y, this.getStepColor (isSet, hilite, drumPadColor));
             }
         }
     }
