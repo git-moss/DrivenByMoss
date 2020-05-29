@@ -34,6 +34,7 @@ public class LaunchpadProMk3ControllerDefinition extends AbstractLaunchpadDefini
 
         this.buttonSetup.setButton (LaunchpadButton.SHIFT, 90);
         this.buttonSetup.setButton (LaunchpadButton.USER, 96);
+        this.buttonSetup.setButton (LaunchpadButton.PROJECT, 98);
 
         this.buttonSetup.setButton (LaunchpadButton.SESSION, 93);
         this.buttonSetup.setButton (LaunchpadButton.NOTE, 94);
@@ -59,14 +60,6 @@ public class LaunchpadProMk3ControllerDefinition extends AbstractLaunchpadDefini
         this.buttonSetup.setButton (LaunchpadButton.PAN, 5);
         this.buttonSetup.setButton (LaunchpadButton.SENDS, 6);
         this.buttonSetup.setButton (LaunchpadButton.STOP_CLIP, 8);
-
-        // TODO
-        // Record Quantise
-        // Redo
-        // Tap
-        // Tempo
-        // Swing
-        // Fixed Length
     }
 
 

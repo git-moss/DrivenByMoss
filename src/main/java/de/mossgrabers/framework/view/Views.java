@@ -79,7 +79,14 @@ public enum Views
     /** View for note repeat options. */
     REPEAT_NOTE,
     /** View for mixing. */
-    MIX;
+    MIX,
+
+    /** View for changing the tempo. */
+    TEMPO,
+    /** View for changing the shuffle. */
+    SHUFFLE,
+    /** View for changing project settings. */
+    PROJECT;
 
 
     /** The name of the play view. */

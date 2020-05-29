@@ -63,6 +63,8 @@ public enum LaunchpadButton
     DEVICE,
     /** The User button. */
     USER,
+    /** The project button. */
+    PROJECT,
 
     /** The Scene 1 button. */
     SCENE1,

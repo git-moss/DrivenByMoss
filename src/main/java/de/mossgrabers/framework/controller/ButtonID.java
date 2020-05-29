@@ -132,6 +132,8 @@ public enum ButtonID
     USER,
     /** The Setup button. */
     SETUP,
+    /** The Project button. */
+    PROJECT,
 
     /** The Mute button. */
     MUTE,

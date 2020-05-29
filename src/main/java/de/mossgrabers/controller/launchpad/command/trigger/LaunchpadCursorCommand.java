@@ -9,6 +9,7 @@ import de.mossgrabers.controller.launchpad.controller.LaunchpadControlSurface;
 import de.mossgrabers.controller.launchpad.view.DrumView64;
 import de.mossgrabers.controller.launchpad.view.DrumViewBase;
 import de.mossgrabers.framework.command.trigger.mode.CursorCommand;
+import de.mossgrabers.framework.controller.ButtonID;
 import de.mossgrabers.framework.daw.IBrowser;
 import de.mossgrabers.framework.daw.ICursorDevice;
 import de.mossgrabers.framework.daw.IModel;
@@ -16,6 +17,8 @@ import de.mossgrabers.framework.daw.INoteClip;
 import de.mossgrabers.framework.daw.IParameterBank;
 import de.mossgrabers.framework.daw.ISceneBank;
 import de.mossgrabers.framework.daw.ITrackBank;
+import de.mossgrabers.framework.daw.ITransport;
+import de.mossgrabers.framework.daw.data.IParameter;
 import de.mossgrabers.framework.daw.data.ITrack;
 import de.mossgrabers.framework.mode.Mode;
 import de.mossgrabers.framework.mode.Modes;
@@ -37,7 +40,8 @@ import de.mossgrabers.framework.view.Views;
  */
 public class LaunchpadCursorCommand extends CursorCommand<LaunchpadControlSurface, LaunchpadConfiguration>
 {
-    private final Scales scales;
+    private final Scales     scales;
+    private final ITransport transport;
 
 
     /**
@@ -52,6 +56,7 @@ public class LaunchpadCursorCommand extends CursorCommand<LaunchpadControlSurfac
         super (direction, model, surface);
 
         this.scales = this.model.getScales ();
+        this.transport = this.model.getTransport ();
     }
 
 
@@ -153,6 +158,15 @@ public class LaunchpadCursorCommand extends CursorCommand<LaunchpadControlSurfac
                 this.canScrollDown = sceneBank.canScrollPageForwards ();
                 break;
 
+            case SHUFFLE:
+            case TEMPO:
+            case PROJECT:
+                this.canScrollLeft = true;
+                this.canScrollRight = true;
+                this.canScrollUp = true;
+                this.canScrollDown = true;
+                break;
+
             default:
                 throw new FrameworkException ("Missing cursor key state handling for view.");
         }
@@ -215,6 +229,18 @@ public class LaunchpadCursorCommand extends CursorCommand<LaunchpadControlSurfac
                 final Mode mode = this.surface.getModeManager ().getMode (Modes.VOLUME);
                 if (mode != null)
                     mode.selectPreviousItem ();
+                break;
+
+            case SHUFFLE:
+                this.triggerChangeShuffle10 (false);
+                break;
+
+            case TEMPO:
+                this.triggerChangeTempo10 (false);
+                break;
+
+            case PROJECT:
+                this.triggerChangeZoom1 (false);
                 break;
 
             default:
@@ -280,6 +306,18 @@ public class LaunchpadCursorCommand extends CursorCommand<LaunchpadControlSurfac
                     mode.selectNextItem ();
                 break;
 
+            case SHUFFLE:
+                this.triggerChangeShuffle10 (true);
+                break;
+
+            case TEMPO:
+                this.triggerChangeTempo10 (true);
+                break;
+
+            case PROJECT:
+                this.triggerChangeZoom1 (true);
+                break;
+
             default:
                 throw new FrameworkException ("Missing cursor key right handling for view.");
         }
@@ -328,6 +366,18 @@ public class LaunchpadCursorCommand extends CursorCommand<LaunchpadControlSurfac
             case TRACK_SENDS:
             case MIX:
                 super.scrollUp ();
+                break;
+
+            case SHUFFLE:
+                this.triggerChangeShuffle1 (true);
+                break;
+
+            case TEMPO:
+                this.triggerChangeTempo1 (true);
+                break;
+
+            case PROJECT:
+                this.model.getApplication ().incTrackHeight ();
                 break;
 
             default:
@@ -380,8 +430,80 @@ public class LaunchpadCursorCommand extends CursorCommand<LaunchpadControlSurfac
                 super.scrollDown ();
                 break;
 
+            case SHUFFLE:
+                this.triggerChangeShuffle1 (false);
+                break;
+
+            case TEMPO:
+                this.triggerChangeTempo1 (false);
+                break;
+
+            case PROJECT:
+                this.model.getApplication ().decTrackHeight ();
+                break;
+
             default:
                 throw new FrameworkException ("Missing cursor key down handling for view.");
         }
+    }
+
+
+    private void triggerChangeTempo1 (final boolean increase)
+    {
+        if (!this.surface.isPressed (increase ? ButtonID.UP : ButtonID.DOWN))
+            return;
+
+        this.model.getTransport ().changeTempo (increase);
+        this.surface.scheduleTask ( () -> this.triggerChangeTempo1 (increase), 400);
+    }
+
+
+    private void triggerChangeTempo10 (final boolean increase)
+    {
+        if (!this.surface.isPressed (increase ? ButtonID.RIGHT : ButtonID.LEFT))
+            return;
+
+        this.transport.setTempo (this.transport.getTempo () + (increase ? 10 : -10));
+        this.surface.scheduleTask ( () -> this.triggerChangeTempo10 (increase), 400);
+    }
+
+
+    private void triggerChangeShuffle1 (final boolean increase)
+    {
+        if (!this.surface.isPressed (increase ? ButtonID.UP : ButtonID.DOWN))
+            return;
+
+        final IParameter shufflePAram = this.model.getGroove ().getParameters ()[1];
+        final int max = this.model.getValueChanger ().getUpperBound () - 1;
+        shufflePAram.setValue (Math.min (max, shufflePAram.getValue () + (increase ? 1 : -1)));
+
+        this.surface.scheduleTask ( () -> this.triggerChangeShuffle1 (increase), 400);
+    }
+
+
+    private void triggerChangeShuffle10 (final boolean increase)
+    {
+        if (!this.surface.isPressed (increase ? ButtonID.RIGHT : ButtonID.LEFT))
+            return;
+
+        final IParameter shufflePAram = this.model.getGroove ().getParameters ()[1];
+        final int max = this.model.getValueChanger ().getUpperBound () - 1;
+        shufflePAram.setValue (Math.min (max, shufflePAram.getValue () + (increase ? 10 : -10)));
+
+        this.surface.scheduleTask ( () -> this.triggerChangeShuffle10 (increase), 400);
+    }
+
+
+    private void triggerChangeZoom1 (final boolean in)
+    {
+        if (!this.surface.isPressed (in ? ButtonID.RIGHT : ButtonID.LEFT))
+            return;
+
+        if (in)
+            this.model.getApplication ().zoomIn ();
+        else
+            this.model.getApplication ().zoomOut ();
+
+        this.surface.scheduleTask ( () -> this.triggerChangeZoom1 (in), 300);
     }
 }
