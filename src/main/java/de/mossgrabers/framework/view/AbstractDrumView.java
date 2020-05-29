@@ -364,6 +364,13 @@ public abstract class AbstractDrumView<S extends IControlSurface<C>, C extends C
             default:
                 return hilite ? AbstractSequencerView.COLOR_STEP_HILITE_NO_CONTENT : AbstractSequencerView.COLOR_NO_CONTENT;
         }
+
+        // TODO get color from drum device
+        // if (track == null)
+        // return Scales.SCALE_COLOR_OCTAVE;
+        // final String c = DAWColor.getColorIndex (track.getColor ());
+        // return c == null ? Scales.SCALE_COLOR_OCTAVE : c;
+
     }
 
 

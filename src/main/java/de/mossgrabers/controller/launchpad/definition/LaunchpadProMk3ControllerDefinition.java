@@ -136,7 +136,7 @@ public class LaunchpadProMk3ControllerDefinition extends AbstractLaunchpadDefini
     @Override
     public void resetMode (final LaunchpadControlSurface surface)
     {
-        surface.sendLaunchpadSysEx ("10 00");
+        surface.sendLaunchpadSysEx ("0E 00");
     }
 
 

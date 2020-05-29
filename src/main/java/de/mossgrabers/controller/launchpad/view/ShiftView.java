@@ -135,7 +135,8 @@ public class ShiftView extends AbstractView<LaunchpadControlSurface, LaunchpadCo
 
         // Quantize
         padGrid.light (68, LaunchpadColorManager.LAUNCHPAD_COLOR_GREEN);
-        padGrid.light (69, LaunchpadColorManager.LAUNCHPAD_COLOR_BLACK);
+        // Record Quantization
+        padGrid.light (69, LaunchpadColorManager.LAUNCHPAD_COLOR_GREEN_SPRING);
 
         padGrid.light (70, LaunchpadColorManager.LAUNCHPAD_COLOR_BLACK);
         padGrid.light (75, LaunchpadColorManager.LAUNCHPAD_COLOR_BLACK);
@@ -290,6 +291,9 @@ public class ShiftView extends AbstractView<LaunchpadControlSurface, LaunchpadCo
             case 77:
                 this.executeShifted (ButtonID.DELETE, ButtonEvent.DOWN);
                 this.mvHelper.delayDisplay ( () -> "Arrangement Loop: " + (this.model.getTransport ().isLoop () ? "On" : "Off"));
+                break;
+            case 69:
+                this.executeShifted (ButtonID.QUANTIZE, ButtonEvent.DOWN);
                 break;
             case 68:
                 this.executeNormal (ButtonID.QUANTIZE, ButtonEvent.DOWN);

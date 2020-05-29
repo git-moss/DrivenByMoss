@@ -72,12 +72,18 @@ public class LaunchpadCursorCommand extends CursorCommand<LaunchpadControlSurfac
         switch (activeViewId)
         {
             case CONTROL:
-            case SHIFT:
             case USER:
                 this.canScrollUp = false;
                 this.canScrollDown = false;
                 this.canScrollLeft = false;
                 this.canScrollRight = false;
+                break;
+
+            case SHIFT:
+                this.canScrollUp = true;
+                this.canScrollDown = true;
+                this.canScrollLeft = true;
+                this.canScrollRight = true;
                 break;
 
             case PLAY:
@@ -183,8 +189,13 @@ public class LaunchpadCursorCommand extends CursorCommand<LaunchpadControlSurfac
         {
             case USER:
             case CONTROL:
-            case SHIFT:
                 // Not used
+                break;
+
+            case SHIFT:
+                final Views previousViewId = viewManager.getPreviousViewId ();
+                viewManager.setActiveView (Views.SHUFFLE);
+                viewManager.setPreviousView (previousViewId);
                 break;
 
             case PLAY:
@@ -259,8 +270,13 @@ public class LaunchpadCursorCommand extends CursorCommand<LaunchpadControlSurfac
         {
             case USER:
             case CONTROL:
-            case SHIFT:
                 // Not used
+                break;
+
+            case SHIFT:
+                final Views previousViewId = viewManager.getPreviousViewId ();
+                viewManager.setActiveView (Views.SHUFFLE);
+                viewManager.setPreviousView (previousViewId);
                 break;
 
             case PLAY:
@@ -333,8 +349,13 @@ public class LaunchpadCursorCommand extends CursorCommand<LaunchpadControlSurfac
         {
             case USER:
             case CONTROL:
-            case SHIFT:
                 // Not Used
+                break;
+
+            case SHIFT:
+                final Views previousViewId = viewManager.getPreviousViewId ();
+                viewManager.setActiveView (Views.TEMPO);
+                viewManager.setPreviousView (previousViewId);
                 break;
 
             case PLAY:
@@ -395,8 +416,13 @@ public class LaunchpadCursorCommand extends CursorCommand<LaunchpadControlSurfac
         {
             case USER:
             case CONTROL:
-            case SHIFT:
                 // Not Used
+                break;
+
+            case SHIFT:
+                final Views previousViewId = viewManager.getPreviousViewId ();
+                viewManager.setActiveView (Views.TEMPO);
+                viewManager.setPreviousView (previousViewId);
                 break;
 
             case PLAY:
