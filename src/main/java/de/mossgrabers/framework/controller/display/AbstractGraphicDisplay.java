@@ -415,7 +415,11 @@ public abstract class AbstractGraphicDisplay implements IGraphicDisplay
 
             final IGraphicsInfo graphicsInfo = new DefaultGraphicsInfo (gc, this.configuration, this.dimensions);
             for (int i = 0; i < size; i++)
-                elements.get (i).draw (graphicsInfo.withBounds (i * gridWidth + offsetX, 0, paintWidth, height));
+            {
+                final IComponent component = elements.get (i);
+                if (component != null)
+                    component.draw (graphicsInfo.withBounds (i * gridWidth + offsetX, 0, paintWidth, height));
+            }
 
             final String notification = this.info.getNotification ();
             if (notification == null)

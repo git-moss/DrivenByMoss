@@ -58,6 +58,7 @@ import de.mossgrabers.framework.command.trigger.application.UndoCommand;
 import de.mossgrabers.framework.command.trigger.clip.QuantizeCommand;
 import de.mossgrabers.framework.command.trigger.mode.ModeCursorCommand.Direction;
 import de.mossgrabers.framework.command.trigger.transport.RecordCommand;
+import de.mossgrabers.framework.command.trigger.view.SelectPlayViewCommand;
 import de.mossgrabers.framework.command.trigger.view.ViewButtonCommand;
 import de.mossgrabers.framework.command.trigger.view.ViewMultiSelectCommand;
 import de.mossgrabers.framework.configuration.ISettingsUI;
@@ -342,9 +343,9 @@ public class LaunchpadControllerSetup extends AbstractControllerSetup<LaunchpadC
                 this.addButton (ButtonID.get (ButtonID.ROW1_1, i), "Track Select " + (i + 1), (event, velocity) -> this.handleTrackSelection (event, index), LaunchpadControlSurface.LAUNCHPAD_TRACK1 + i, () -> this.getTrackModeColorIndex (index));
             }
 
-            this.addButton (ButtonID.NOTE, "Note", new ViewMultiSelectCommand<> (this.model, surface, true, PLAY_VIEWS), buttonSetup.get (LaunchpadButton.NOTE).getControl (), () -> this.getViewStateColor (LaunchpadColorManager.LAUNCHPAD_COLOR_AMBER_HI, PLAY_VIEWS));
-            this.addButton (ButtonID.DRUM, "Drum Seq", new ViewMultiSelectCommand<> (this.model, surface, true, DRUM_VIEWS), 95, () -> this.getViewStateColor (LaunchpadColorManager.LAUNCHPAD_COLOR_OCEAN_HI, DRUM_VIEWS));
-            this.addButton (ButtonID.SEQUENCER, "Sequencer", new ViewMultiSelectCommand<> (this.model, surface, true, SEQUENCER_VIEWS), 97, () -> this.getViewStateColor (LaunchpadColorManager.LAUNCHPAD_COLOR_YELLOW_HI, SEQUENCER_VIEWS));
+            this.addButton (ButtonID.NOTE, "Note", new SelectPlayViewCommand<> (this.model, surface, true, PLAY_VIEWS), buttonSetup.get (LaunchpadButton.NOTE).getControl (), () -> this.getViewStateColor (LaunchpadColorManager.LAUNCHPAD_COLOR_AMBER_HI, PLAY_VIEWS));
+            this.addButton (ButtonID.DRUM, "Drum Seq", new SelectPlayViewCommand<> (this.model, surface, true, DRUM_VIEWS), 95, () -> this.getViewStateColor (LaunchpadColorManager.LAUNCHPAD_COLOR_OCEAN_HI, DRUM_VIEWS));
+            this.addButton (ButtonID.SEQUENCER, "Sequencer", new SelectPlayViewCommand<> (this.model, surface, true, SEQUENCER_VIEWS), 97, () -> this.getViewStateColor (LaunchpadColorManager.LAUNCHPAD_COLOR_YELLOW_HI, SEQUENCER_VIEWS));
         }
         else
             this.addButton (ButtonID.NOTE, "Note", new SelectNoteViewCommand (this.model, surface), buttonSetup.get (LaunchpadButton.NOTE).getControl (), this::getNoteStateColor);
@@ -805,6 +806,17 @@ public class LaunchpadControllerSetup extends AbstractControllerSetup<LaunchpadC
             return;
 
         final ViewManager viewManager = this.getSurface ().getViewManager ();
+
+        // Recall last used view (if we are not in session mode)
+        if (!viewManager.isActiveView (Views.SESSION))
+        {
+            final ITrack selectedTrack = this.model.getSelectedTrack ();
+            if (selectedTrack != null)
+            {
+                final Views preferredView = viewManager.getPreferredView (selectedTrack.getPosition ());
+                viewManager.setActiveView (preferredView == null ? Views.PLAY : preferredView);
+            }
+        }
 
         if (viewManager.isActiveView (Views.PLAY))
             viewManager.getActiveView ().updateNoteMapping ();

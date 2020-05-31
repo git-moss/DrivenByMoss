@@ -48,9 +48,10 @@ public class SelectDeviceViewCommand extends AbstractTriggerCommand<LaunchpadCon
 
         final ViewManager viewManager = this.surface.getViewManager ();
 
-        if (this.surface.isShiftPressed ())
+        if (this.surface.isPro () && this.surface.isShiftPressed ())
         {
-            viewManager.restoreView ();
+            if (viewManager.isActiveView (Views.SHIFT))
+                viewManager.restoreView ();
             viewManager.setActiveView (Views.TEMPO);
             return;
         }
