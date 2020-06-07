@@ -33,6 +33,8 @@ public class HwAbsoluteKnobImpl extends AbstractHwContinuousControl implements I
     private AbsoluteHardwarControlBindable defaultAction;
     private AbsoluteHardwareControlBinding binding;
 
+    private ParameterImpl                  parameterImpl;
+
 
     /**
      * Constructor.
@@ -48,6 +50,8 @@ public class HwAbsoluteKnobImpl extends AbstractHwContinuousControl implements I
         this.controllerHost = host.getControllerHost ();
         this.hardwareKnob = hardwareKnob;
         this.hardwareKnob.setLabel (label);
+
+        HwUtils.markInterested (this.hardwareKnob);
     }
 
 
@@ -69,7 +73,19 @@ public class HwAbsoluteKnobImpl extends AbstractHwContinuousControl implements I
         if (this.binding != null)
             this.binding.removeBinding ();
 
-        final HardwareBindable target = parameter == null ? this.defaultAction : ((ParameterImpl) parameter).getParameter ();
+        final HardwareBindable target;
+        if (parameter == null)
+        {
+            HwUtils.enableObservers (false, this.hardwareKnob, this.parameterImpl);
+            target = this.defaultAction;
+        }
+        else
+        {
+            this.parameterImpl = (ParameterImpl) parameter;
+            target = this.parameterImpl.getParameter ();
+            HwUtils.enableObservers (true, this.hardwareKnob, this.parameterImpl);
+        }
+
         this.binding = target == null ? null : this.hardwareKnob.setBinding (target);
     }
 

@@ -32,13 +32,15 @@ import java.util.Map;
 public abstract class AbstractPolySequencerView<S extends IControlSurface<C>, C extends Configuration> extends AbstractSequencerView<S, C> implements TransposeView
 {
     protected static final int            GRID_COLUMNS        = 8;
-    protected static final int            NUM_LINES           = 8;
+    protected static final int            GRID_ROWS           = 8;
     protected static final int            NUM_SEQUENCER_LINES = 4;
 
     protected final int                   sequencerSteps;
     protected final boolean               useTrackColor;
     protected final Map<Integer, Integer> noteMemory          = new HashMap<> ();
     protected int                         copyStep            = -1;
+    private int                           numColumns;
+    private int                           numRows;
 
 
     /**
@@ -50,10 +52,31 @@ public abstract class AbstractPolySequencerView<S extends IControlSurface<C>, C 
      */
     public AbstractPolySequencerView (final S surface, final IModel model, final boolean useTrackColor)
     {
-        super (Views.VIEW_NAME_POLY_SEQUENCER, surface, model, 128, NUM_SEQUENCER_LINES * GRID_COLUMNS);
+        this (surface, model, useTrackColor, GRID_COLUMNS, GRID_ROWS, NUM_SEQUENCER_LINES);
+    }
 
-        this.sequencerSteps = NUM_SEQUENCER_LINES * GRID_COLUMNS;
+
+    /**
+     * Constructor.
+     *
+     * @param surface The surface
+     * @param model The model
+     * @param useTrackColor True to use the color of the current track for coloring the octaves
+     * @param numColumns The number of columns of the grid
+     * @param numRows The number of rows of the grid
+     * @param numSequencerRows The number of rows to use for the sequencer (rest is for the play
+     *            area)
+     */
+    public AbstractPolySequencerView (final S surface, final IModel model, final boolean useTrackColor, final int numColumns, final int numRows, final int numSequencerRows)
+    {
+        super (Views.VIEW_NAME_POLY_SEQUENCER, surface, model, 128, numSequencerRows * numColumns);
+
+        this.sequencerSteps = numSequencerRows * numColumns;
         this.useTrackColor = useTrackColor;
+
+        this.numColumns = numColumns;
+        this.numRows = numRows;
+        this.numSequencerRows = numSequencerRows;
 
         final ITrackBank tb = model.getTrackBank ();
         tb.addSelectionObserver ( (index, isSelected) -> this.keyManager.clearPressedKeys ());
@@ -138,10 +161,10 @@ public abstract class AbstractPolySequencerView<S extends IControlSurface<C>, C 
             return;
 
         final int index = note - 36;
-        final int x = index % 8;
-        final int y = index / 8;
+        final int x = index % this.numColumns;
+        final int y = index / this.numColumns;
 
-        if (y < GRID_COLUMNS - NUM_SEQUENCER_LINES)
+        if (y < this.numRows - this.numSequencerRows)
         {
             this.handleNoteArea (note, velocity);
             return;
@@ -191,7 +214,7 @@ public abstract class AbstractPolySequencerView<S extends IControlSurface<C>, C 
     protected void handleSequencerArea (final int x, final int y)
     {
         final INoteClip clip = this.getClip ();
-        final int step = GRID_COLUMNS * (NUM_LINES - 1 - y) + x;
+        final int step = this.numColumns * (this.numRows - 1 - y) + x;
         final int channel = this.configuration.getMidiEditChannel ();
 
         if (this.handleSequencerAreaButtonCombinations (clip, channel, step))
@@ -252,9 +275,9 @@ public abstract class AbstractPolySequencerView<S extends IControlSurface<C>, C 
         // Change length of a note or create a new one with a length
         for (int s = step - 1; s >= 0; s--)
         {
-            final int x = s % GRID_COLUMNS;
-            final int y = NUM_LINES - 1 - s / GRID_COLUMNS;
-            final int pad = y * GRID_COLUMNS + x;
+            final int x = s % this.numColumns;
+            final int y = this.numRows - 1 - s / this.numColumns;
+            final int pad = y * this.numColumns + x;
             final IHwButton button = this.surface.getButton (ButtonID.get (ButtonID.PAD1, pad));
             if (button.isLongPressed ())
             {
@@ -316,8 +339,8 @@ public abstract class AbstractPolySequencerView<S extends IControlSurface<C>, C 
         {
             final int isSet = this.getStep (clip, col);
             final boolean hilite = col == hiStep;
-            final int x = col % GRID_COLUMNS;
-            final int y = col / GRID_COLUMNS;
+            final int x = col % this.numColumns;
+            final int y = col / this.numColumns;
             padGrid.lightEx (x, y, isActive ? this.getStepColor (isSet, hilite) : AbstractSequencerView.COLOR_NO_CONTENT);
         }
 

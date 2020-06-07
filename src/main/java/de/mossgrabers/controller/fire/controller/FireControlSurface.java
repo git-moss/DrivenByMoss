@@ -95,8 +95,7 @@ public class FireControlSurface extends AbstractControlSurface<FireConfiguration
      */
     public FireControlSurface (final IHost host, final ColorManager colorManager, final FireConfiguration configuration, final IMidiOutput output, final IMidiInput input)
     {
-        // TODO Fix window size
-        super (host, configuration, colorManager, output, input, new FirePadGrid (colorManager, output), 400, 200);
+        super (host, configuration, colorManager, output, input, new FirePadGrid (colorManager, output), 306, 154);
     }
 
 
@@ -115,6 +114,14 @@ public class FireControlSurface extends AbstractControlSurface<FireConfiguration
         super.flushHardware ();
 
         ((FirePadGrid) this.pads).flush ();
+    }
+
+
+    /** {@inheritDoc} */
+    @Override
+    public FirePadGrid getPadGrid ()
+    {
+        return (FirePadGrid) this.pads;
     }
 
 

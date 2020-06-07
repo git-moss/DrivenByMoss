@@ -31,7 +31,22 @@ public class TrackMode<S extends IControlSurface<C>, C extends Configuration> ex
      */
     public TrackMode (final S surface, final IModel model, final boolean isAbsolute)
     {
-        super ("Track", surface, model, isAbsolute);
+        this ("Track", surface, model, isAbsolute);
+    }
+
+
+    /**
+     * Constructor.
+     *
+     * @param name The name of the mode
+     * @param surface The control surface
+     * @param model The model
+     * @param isAbsolute If true the value change is happending with a setter otherwise relative
+     *            change method is used
+     */
+    public TrackMode (final String name, final S surface, final IModel model, final boolean isAbsolute)
+    {
+        super (name, surface, model, isAbsolute);
     }
 
 

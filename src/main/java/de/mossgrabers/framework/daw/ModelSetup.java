@@ -23,6 +23,8 @@ public class ModelSetup
     private boolean hasFlatTrackList       = true;
     private boolean hasFullFlatTrackList   = false;
     private int     numMarkers             = 0;
+    private int     numUserPageSize        = 8;
+    private int     numUserPages           = 8;
 
 
     /**
@@ -296,5 +298,49 @@ public class ModelSetup
     public void setNumMarkers (final int numMarkers)
     {
         this.numMarkers = numMarkers;
+    }
+
+
+    /**
+     * Get the number of user pages.
+     *
+     * @return The number of user pages
+     */
+    public int getNumUserPages ()
+    {
+        return this.numUserPages;
+    }
+
+
+    /**
+     * Set the number of user pages.
+     *
+     * @param numUserPages The number of user pages
+     */
+    public void setNumUserPages (final int numUserPages)
+    {
+        this.numUserPages = numUserPages;
+    }
+
+
+    /**
+     * Get the number of the size of a user page.
+     *
+     * @return The number of the size of a user page
+     */
+    public int getNumUserPageSize ()
+    {
+        return this.numUserPageSize;
+    }
+
+
+    /**
+     * Set the number of the size of a user page.
+     *
+     * @param numUserPageSize The number of the size of a user page
+     */
+    public void setNumUserPageSize (final int numUserPageSize)
+    {
+        this.numUserPageSize = numUserPageSize;
     }
 }

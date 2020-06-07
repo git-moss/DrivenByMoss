@@ -11,6 +11,8 @@ import de.mossgrabers.framework.daw.IHost;
 import de.mossgrabers.framework.daw.midi.IMidiInput;
 import de.mossgrabers.framework.daw.midi.IMidiOutput;
 
+import java.util.Arrays;
+
 
 /**
  * The APC 1 and APC 2 control surface.
@@ -39,7 +41,7 @@ public class APCControlSurface extends AbstractControlSurface<APCConfiguration>
     public static final int     APC_BUTTON_REC_QUANT       = 0x3F;
     public static final int     APC_BUTTON_MIDI_OVERDUB    = 0x40;
     public static final int     APC_BUTTON_METRONOME       = 0x41;
-    public static final int     APC_BUTTON_A_B             = 0x42; // mkII
+    public static final int     APC_BUTTON_A_B             = 0x42;         // mkII
     public static final int     APC_BUTTON_MASTER          = 0x50;
     public static final int     APC_BUTTON_STOP_ALL_CLIPS  = 0x51;
     public static final int     APC_BUTTON_SCENE_LAUNCH_1  = 0x52;
@@ -62,12 +64,12 @@ public class APCControlSurface extends AbstractControlSurface<APCConfiguration>
     public static final int     APC_BUTTON_TAP_TEMPO       = 0x63;
     public static final int     APC_BUTTON_NUDGE_PLUS      = 0x64;
     public static final int     APC_BUTTON_NUDGE_MINUS     = 0x65;
-    public static final int     APC_BUTTON_SESSION         = 0x66; // mkII
-    public static final int     APC_BUTTON_BANK            = 0x67; // mkII
+    public static final int     APC_BUTTON_SESSION         = 0x66;         // mkII
+    public static final int     APC_BUTTON_BANK            = 0x67;         // mkII
 
     // Midi CC
     public static final int     APC_KNOB_TRACK_LEVEL       = 0x07;
-    public static final int     APC_KNOB_TEMPO             = 0x0D; // mkII
+    public static final int     APC_KNOB_TEMPO             = 0x0D;         // mkII
     public static final int     APC_KNOB_MASTER_LEVEL      = 0x0E;
     public static final int     APC_KNOB_CROSSFADER        = 0x0F;
     public static final int     APC_KNOB_DEVICE_KNOB_1     = 0x10;
@@ -113,6 +115,7 @@ public class APCControlSurface extends AbstractControlSurface<APCConfiguration>
     public static final int     LED_MODE_PAN               = 3;
 
     private boolean             isMkII;
+    private final int []        knobCache                  = new int [128];
 
 
     /**
@@ -131,11 +134,18 @@ public class APCControlSurface extends AbstractControlSurface<APCConfiguration>
 
         this.isMkII = isMkII;
 
+        Arrays.fill (this.knobCache, -1);
+
         // Set Mode 2
         this.output.sendSysex ("F0 47 7F " + (isMkII ? ID_APC_40_MKII : ID_APC_40) + " 60 00 04 41 08 02 01 F7");
     }
 
 
+    /**
+     * Get if it is the MkII model.
+     *
+     * @return True if it is the MkII model otherwise it is MkI
+     */
     public boolean isMkII ()
     {
         return this.isMkII;
@@ -150,8 +160,22 @@ public class APCControlSurface extends AbstractControlSurface<APCConfiguration>
     }
 
 
+    /**
+     * Set an LED ring on the device. Values are cached and only sent if changed.
+     *
+     * @param knob The knobs CC value
+     * @param value The value for the LED ring
+     */
     public void setLED (final int knob, final int value)
     {
-        this.output.sendCC (knob, value);
+        if (this.knobCache[knob] == value)
+            return;
+        this.knobCache[knob] = value;
+        this.scheduleTask ( () -> {
+
+            if (this.knobCache[knob] == value)
+                this.output.sendCC (knob, value);
+
+        }, 100);
     }
 }

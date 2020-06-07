@@ -33,7 +33,7 @@ public class LaunchpadButtonInfo
 
     /**
      * Get the MIDI control number.
-     * 
+     *
      * @return The MIDI control number
      */
     public int getControl ()

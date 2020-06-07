@@ -34,7 +34,7 @@ public class PianoView extends PlayView
     @Override
     public void drawGrid ()
     {
-        PianoViewHelper.drawGrid (this.surface.getPadGrid (), this.model, this.keyManager);
+        PianoViewHelper.drawGrid (this.surface.getPadGrid (), this.model, this.keyManager, 4, 16);
     }
 
 
@@ -68,7 +68,7 @@ public class PianoView extends PlayView
     @Override
     public void updateNoteMapping ()
     {
-        this.delayedUpdateNoteMapping (this.model.canSelectedTrackHoldNotes () ? this.scales.getPianoMatrix () : EMPTY_TABLE);
+        this.delayedUpdateNoteMapping (this.model.canSelectedTrackHoldNotes () ? this.scales.getPianoMatrix (4, 16) : EMPTY_TABLE);
     }
 
 

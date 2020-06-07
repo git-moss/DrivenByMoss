@@ -26,6 +26,7 @@ import de.mossgrabers.framework.daw.midi.INoteRepeat;
 import de.mossgrabers.framework.mode.Mode;
 import de.mossgrabers.framework.mode.Modes;
 import de.mossgrabers.framework.scale.Scales;
+import de.mossgrabers.framework.utils.ConsoleLogger;
 import de.mossgrabers.framework.utils.IntConsumerSupplier;
 import de.mossgrabers.framework.view.View;
 
@@ -73,6 +74,8 @@ public abstract class AbstractControllerSetup<S extends IControlSurface<C>, C ex
         this.host = host;
         this.globalSettings = globalSettings;
         this.documentSettings = documentSettings;
+
+        ConsoleLogger.init (host);
     }
 
 

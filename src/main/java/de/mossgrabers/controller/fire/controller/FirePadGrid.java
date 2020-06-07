@@ -26,27 +26,27 @@ import java.util.TreeMap;
 public class FirePadGrid extends PadGridImpl
 {
     // @formatter:off
-    static final int [] TRANSLATE_MATRIX =
+    static final int [] TRANSLATE_16x4_MATRIX =
     {
-        102, 103, 104, 105, 106, 107, 108, 109,  
-         86,  87,  88,  89,  90,  91,  92,  93,  
-         70,  71,  72,  73,  74,  75,  76,  77,
-         54,  55,  56,  57,  58,  59,  60,  61,  
-        110, 111, 112, 113, 114, 115, 116, 117,  
-         94,  95,  96,  97,  98,  99, 100, 101,  
-         78,  79,  80,  81,  82,  83,  84,  85, 
-         62,  63,  64,  65,  66,  67,  68,  69  
+        102, 103, 104, 105, 106, 107, 108, 109, 110, 111, 112, 113, 114, 115, 116, 117,
+         86,  87,  88,  89,  90,  91,  92,  93,  94,  95,  96,  97,  98,  99, 100, 101,
+         70,  71,  72,  73,  74,  75,  76,  77,  78,  79,  80,  81,  82,  83,  84,  85,
+         54,  55,  56,  57,  58,  59,  60,  61,  62,  63,  64,  65,  66,  67,  68,  69
     };
     // @formatter:on
 
-    private static final Map<Integer, Integer> INVERSE_TRANSLATE_MATRIX = new HashMap<> (64);
+    private static final Map<Integer, Integer> INVERSE_TRANSLATE_16x4_MATRIX = new HashMap<> (64);
     static
     {
-        for (int i = 0; i < TRANSLATE_MATRIX.length; i++)
-            INVERSE_TRANSLATE_MATRIX.put (Integer.valueOf (TRANSLATE_MATRIX[i]), Integer.valueOf (36 + i));
+        for (int i = 0; i < TRANSLATE_16x4_MATRIX.length; i++)
+            INVERSE_TRANSLATE_16x4_MATRIX.put (Integer.valueOf (TRANSLATE_16x4_MATRIX[i]), Integer.valueOf (36 + i));
     }
 
-    private final Map<Integer, LightInfo> padInfos = new TreeMap<> ();
+    private final Map<Integer, LightInfo> blinkingLights = new HashMap<> ();
+    private final Map<Integer, LightInfo> padInfos       = new TreeMap<> ();
+    private boolean                       isBlink;
+
+    private long                          updateTime     = System.currentTimeMillis ();
 
 
     /**
@@ -57,7 +57,7 @@ public class FirePadGrid extends PadGridImpl
      */
     public FirePadGrid (final ColorManager colorManager, final IMidiOutput output)
     {
-        super (colorManager, output);
+        super (colorManager, output, 4, 16, 36);
     }
 
 
@@ -65,7 +65,7 @@ public class FirePadGrid extends PadGridImpl
     @Override
     public int translateToGrid (final int note)
     {
-        final Integer value = INVERSE_TRANSLATE_MATRIX.get (Integer.valueOf (note));
+        final Integer value = INVERSE_TRANSLATE_16x4_MATRIX.get (Integer.valueOf (note));
         return value == null ? -1 : value.intValue ();
     }
 
@@ -77,7 +77,7 @@ public class FirePadGrid extends PadGridImpl
         return new int []
         {
             0,
-            TRANSLATE_MATRIX[note - 36]
+            TRANSLATE_16x4_MATRIX[note - 36]
         };
     }
 
@@ -89,69 +89,76 @@ public class FirePadGrid extends PadGridImpl
     {
         synchronized (this.padInfos)
         {
-            if (this.padInfos.isEmpty ())
-                return;
-
-            final String update = this.buildLEDUpdate (this.padInfos);
-            this.output.sendSysex (update);
+            final String update = this.buildLEDUpdate ();
+            if (update != null)
+                this.output.sendSysex (update);
 
             this.padInfos.clear ();
         }
     }
 
 
-    private String buildLEDUpdate (final Map<Integer, LightInfo> padInfos)
+    private String buildLEDUpdate ()
     {
-        final StringBuilder sb = new StringBuilder ("F0 47 7F 43 65 ");
+        final StringBuilder sb = new StringBuilder ();
 
-        final int length = this.padInfos.size () * 4;
-        sb.append (StringUtils.toHexStr (length / 128)).append (' ');
-        sb.append (StringUtils.toHexStr (length % 128)).append (' ');
-
-        for (final Entry<Integer, LightInfo> e: padInfos.entrySet ())
+        for (final Entry<Integer, LightInfo> e: this.padInfos.entrySet ())
         {
             final int note = e.getKey ().intValue ();
             final LightInfo info = e.getValue ();
 
             final int index = note - 54;
-            final int translatedIndex = (3 - index / 16) * 16 + index % 16;
-
-            int colorIndex = info.getColor ();
-
-            final ColorEx color = this.colorManager.getColor (colorIndex, ButtonID.get (ButtonID.PAD1, translatedIndex));
+            // Note: The exact PADx is not needed for getting the color
+            final ColorEx color = this.colorManager.getColor (info.getColor (), ButtonID.PAD1);
             final int [] c = color.toIntRGB127 ();
             sb.append (StringUtils.toHexStr (index)).append (' ');
             sb.append (StringUtils.toHexStr (c[0])).append (' ');
             sb.append (StringUtils.toHexStr (c[1])).append (' ');
             sb.append (StringUtils.toHexStr (c[2])).append (' ');
 
-            // TODO Does the hardware support blinking?
-            // if (info.getBlinkColor () <= 0)
-            // {
-            // // 00h: Static colour from palette, Lighting data is 1 byte specifying palette
-            // // entry.
-            // sb.append ("00 ").append (StringUtils.toHexStr (note)).append (' ').append
-            // (StringUtils.toHexStr (info.getColor ())).append (' ');
-            // }
-            // else
-            // {
-            // if (info.isFast ())
-            // {
-            // // 01h: Flashing colour, Lighting data is 2 bytes specifying Colour B and
-            // // Colour A.
-            // sb.append ("01 ").append (StringUtils.toHexStr (note)).append (' ').append
-            // (StringUtils.toHexStr (info.getBlinkColor ())).append (' ').append
-            // (StringUtils.toHexStr (info.getColor ())).append (' ');
-            // }
-            // else
-            // {
-            // // 02h: Pulsing colour, Lighting data is 1 byte specifying palette entry.
-            // sb.append ("02 ").append (StringUtils.toHexStr (note)).append (' ').append
-            // (StringUtils.toHexStr (info.getColor ())).append (' ');
-            // }
-            // }
+            // Hardware does not support blinking, therefore needs to be implemented the hard
+            // way
+            final Integer key = Integer.valueOf (index);
+            if (info.getBlinkColor () > 0)
+                this.blinkingLights.put (key, info);
+            else
+                this.blinkingLights.remove (key);
         }
-        return sb.append ("F7").toString ();
+
+        int length = this.padInfos.size ();
+
+        // Toggle blink colors every 600ms
+        final long now = System.currentTimeMillis ();
+        if (now - this.updateTime > 600)
+        {
+            this.updateTime = now;
+            this.isBlink = !this.isBlink;
+
+            length += this.blinkingLights.size ();
+
+            for (final Entry<Integer, LightInfo> value: this.blinkingLights.entrySet ())
+            {
+                final LightInfo info = value.getValue ();
+
+                final int colorIndex = this.isBlink ? info.getBlinkColor () : info.getColor ();
+                final ColorEx color = this.colorManager.getColor (colorIndex, ButtonID.PAD1);
+                final int [] c = color.toIntRGB127 ();
+                sb.append (StringUtils.toHexStr (value.getKey ().intValue ())).append (' ');
+                sb.append (StringUtils.toHexStr (c[0])).append (' ');
+                sb.append (StringUtils.toHexStr (c[1])).append (' ');
+                sb.append (StringUtils.toHexStr (c[2])).append (' ');
+            }
+        }
+
+        // No update necessary
+        if (sb.length () == 0)
+            return null;
+
+        length *= 4;
+        final StringBuilder msg = new StringBuilder ("F0 47 7F 43 65 ");
+        msg.append (StringUtils.toHexStr (length / 128)).append (' ');
+        msg.append (StringUtils.toHexStr (length % 128)).append (' ');
+        return msg.append (sb).append ("F7").toString ();
     }
 
 

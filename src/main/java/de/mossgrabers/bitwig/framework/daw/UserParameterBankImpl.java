@@ -41,16 +41,16 @@ public class UserParameterBankImpl implements IParameterBank
      * @param host The DAW host
      * @param valueChanger The value changer
      * @param userControlBank The user controls bank
-     * @param numAllParams The number of all user parameters
-     * @param numParams The number of parameters in the page of the bank
+     * @param numPages The number of user parameter pages
+     * @param numParamsPerPage The number of parameters per page
      */
-    public UserParameterBankImpl (final IHost host, final IValueChanger valueChanger, final UserControlBank userControlBank, final int numAllParams, final int numParams)
+    public UserParameterBankImpl (final IHost host, final IValueChanger valueChanger, final UserControlBank userControlBank, final int numPages, final int numParamsPerPage)
     {
         this.valueChanger = valueChanger;
         this.userControlBank = userControlBank;
 
-        this.itemCount = numAllParams;
-        this.pageSize = numParams;
+        this.itemCount = numPages * numParamsPerPage;
+        this.pageSize = numParamsPerPage;
 
         this.items = new ArrayList<> (this.itemCount);
         for (int i = 0; i < this.itemCount; i++)

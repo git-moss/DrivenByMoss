@@ -97,7 +97,7 @@ public class ViewManager
     /**
      * Get the active view.
      *
-     * @return The active view
+     * @return The active view, might be null if not set
      */
     public View getActiveView ()
     {
@@ -125,6 +125,17 @@ public class ViewManager
     public Views getPreviousViewId ()
     {
         return this.previousViewId;
+    }
+
+
+    /**
+     * Get the previous view.
+     *
+     * @return The previous view, might be null if not set
+     */
+    public View getPreviousView ()
+    {
+        return this.previousViewId == null ? null : this.getView (this.previousViewId);
     }
 
 

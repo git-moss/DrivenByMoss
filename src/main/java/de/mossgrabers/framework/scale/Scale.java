@@ -4,7 +4,9 @@
 
 package de.mossgrabers.framework.scale;
 
+import java.util.HashMap;
 import java.util.HashSet;
+import java.util.Map;
 import java.util.Set;
 
 
@@ -133,7 +135,8 @@ public enum Scale
 
     private String                 name;
     private int []                 intervals;
-    private Set<Integer>           scaleKeys = new HashSet<> (7);
+    private Set<Integer>           scaleKeys    = new HashSet<> (7);
+    private Map<Integer, Integer>  indexInScale = new HashMap<> (7);
 
     private static final String [] SCALE_NAMES;
     static
@@ -156,8 +159,12 @@ public enum Scale
         this.name = name;
         this.intervals = intervals;
 
-        for (final int interval: this.intervals)
-            this.scaleKeys.add (Integer.valueOf (interval));
+        for (int i = 0; i < this.intervals.length; i++)
+        {
+            final Integer key = Integer.valueOf (this.intervals[i]);
+            this.scaleKeys.add (key);
+            this.indexInScale.put (key, Integer.valueOf (i));
+        }
     }
 
 
@@ -186,12 +193,25 @@ public enum Scale
     /**
      * Tests if the given note is in the scale.
      *
-     * @param note The note to test (0-11)
+     * @param key The note in the octave to test (0-11)
      * @return True if it is in the scale
      */
-    public boolean isInScale (final int note)
+    public boolean isInScale (final int key)
     {
-        return this.scaleKeys.contains (Integer.valueOf (note));
+        return this.scaleKeys.contains (Integer.valueOf (key));
+    }
+
+
+    /**
+     * Get the index of the note in the scale.
+     *
+     * @param note A note 0-127
+     * @return The index of the note in the scale, returns -1 if it is out of the scale
+     */
+    public int getIndexInScale (final int note)
+    {
+        final Integer index = this.indexInScale.get (Integer.valueOf (note % 12));
+        return index == null ? -1 : index.intValue ();
     }
 
 

@@ -14,6 +14,7 @@ import de.mossgrabers.framework.scale.Scales;
 import de.mossgrabers.framework.view.AbstractDrumView;
 import de.mossgrabers.framework.view.AbstractPlayView;
 import de.mossgrabers.framework.view.AbstractSequencerView;
+import de.mossgrabers.framework.view.AbstractSessionView;
 
 
 /**
@@ -34,19 +35,42 @@ public class FireColorManager extends ColorManager
     private static final int   SCALE_COLOR_NOTE         = 51;
     private static final int   SCALE_COLOR_OUT_OF_SCALE = 52;
 
-    private static final int   FIRE_COLOR_BLACK         = 0;
-    private static final int   FIRE_COLOR_WHITE         = 59;
-    private static final int   FIRE_COLOR_GREEN         = 60;
-    private static final int   FIRE_COLOR_DARK_GREEN    = 61;
-    private static final int   FIRE_COLOR_RED           = 62;
-    private static final int   FIRE_COLOR_BLUE          = 63;
-    private static final int   FIRE_COLOR_DARK_BLUE     = 64;
-    private static final int   FIRE_COLOR_DARK_OCEAN    = 65;
-    private static final int   FIRE_COLOR_ORANGE        = 66;
-    private static final int   FIRE_COLOR_DARK_ORANGE   = 67;
-    private static final int   FIRE_COLOR_DARK_YELLOW   = 68;
-    private static final int   FIRE_COLOR_YELLOW        = 69;
-    private static final int   FIRE_COLOR_BROWN         = 70;
+    /** ID for the color black. */
+    public static final int    FIRE_COLOR_BLACK         = 0;
+    /** ID for the color white. */
+    public static final int    FIRE_COLOR_WHITE         = 59;
+    /** ID for the color green. */
+    public static final int    FIRE_COLOR_GREEN         = 60;
+    /** ID for the color dark green. */
+    public static final int    FIRE_COLOR_DARK_GREEN    = 61;
+    /** ID for the color red. */
+    public static final int    FIRE_COLOR_RED           = 62;
+    /** ID for the color dark red. */
+    public static final int    FIRE_COLOR_DARK_RED      = 63;
+    /** ID for the color darker red. */
+    public static final int    FIRE_COLOR_DARKER_RED    = 64;
+    /** ID for the color blue. */
+    public static final int    FIRE_COLOR_BLUE          = 65;
+    /** ID for the color dark blue. */
+    public static final int    FIRE_COLOR_DARK_BLUE     = 66;
+    /** ID for the color ocean. */
+    public static final int    FIRE_COLOR_DARK_OCEAN    = 67;
+    /** ID for the color orange. */
+    public static final int    FIRE_COLOR_ORANGE        = 68;
+    /** ID for the color dark orange. */
+    public static final int    FIRE_COLOR_DARK_ORANGE   = 69;
+    /** ID for the color darker orange. */
+    public static final int    FIRE_COLOR_DARKER_ORANGE = 70;
+    /** ID for the color yellow. */
+    public static final int    FIRE_COLOR_YELLOW        = 71;
+    /** ID for the color dark yellow. */
+    public static final int    FIRE_COLOR_DARK_YELLOW   = 72;
+    /** ID for the color darker yellow. */
+    public static final int    FIRE_COLOR_DARKER_YELLOW = 73;
+    /** ID for the color brown. */
+    public static final int    FIRE_COLOR_BROWN         = 74;
+    /** ID for the color grey. */
+    public static final int    FIRE_COLOR_GRAY          = 75;
 
 
     /**
@@ -58,6 +82,8 @@ public class FireColorManager extends ColorManager
         this.registerColorIndex (Scales.SCALE_COLOR_OCTAVE, SCALE_COLOR_OCTAVE);
         this.registerColorIndex (Scales.SCALE_COLOR_NOTE, SCALE_COLOR_NOTE);
         this.registerColorIndex (Scales.SCALE_COLOR_OUT_OF_SCALE, SCALE_COLOR_OUT_OF_SCALE);
+
+        this.registerColorIndex (IPadGrid.GRID_OFF, 0);
 
         this.registerColorIndex (AbstractSequencerView.COLOR_STEP_HILITE_NO_CONTENT, FIRE_COLOR_DARK_GREEN);
         this.registerColorIndex (AbstractSequencerView.COLOR_STEP_HILITE_CONTENT, FIRE_COLOR_GREEN);
@@ -85,7 +111,9 @@ public class FireColorManager extends ColorManager
         this.registerColorIndex (AbstractPlayView.COLOR_PLAY, FIRE_COLOR_GREEN);
         this.registerColorIndex (AbstractPlayView.COLOR_RECORD, FIRE_COLOR_RED);
 
-        this.registerColorIndex (IPadGrid.GRID_OFF, 0);
+        this.registerColorIndex (AbstractSessionView.COLOR_SCENE, FIRE_COLOR_DARK_GREEN);
+        this.registerColorIndex (AbstractSessionView.COLOR_SELECTED_SCENE, FIRE_COLOR_GREEN);
+        this.registerColorIndex (AbstractSessionView.COLOR_SCENE_OFF, FIRE_COLOR_BLACK);
 
         this.registerColorIndex (AbstractMode.BUTTON_COLOR_OFF, 0);
 
@@ -100,14 +128,19 @@ public class FireColorManager extends ColorManager
         this.registerColor (FIRE_COLOR_GREEN, ColorEx.GREEN);
         this.registerColor (FIRE_COLOR_DARK_GREEN, ColorEx.DARK_GREEN);
         this.registerColor (FIRE_COLOR_RED, ColorEx.RED);
+        this.registerColor (FIRE_COLOR_DARK_RED, ColorEx.DARK_RED);
+        this.registerColor (FIRE_COLOR_DARKER_RED, ColorEx.fromRGB (20, 0, 0));
         this.registerColor (FIRE_COLOR_BLUE, ColorEx.BLUE);
         this.registerColor (FIRE_COLOR_DARK_BLUE, ColorEx.DARK_BLUE);
         this.registerColor (FIRE_COLOR_DARK_OCEAN, ColorEx.SKY_BLUE);
         this.registerColor (FIRE_COLOR_ORANGE, ColorEx.ORANGE);
         this.registerColor (FIRE_COLOR_DARK_ORANGE, ColorEx.DARK_ORANGE);
+        this.registerColor (FIRE_COLOR_DARKER_ORANGE, ColorEx.fromRGB (32, 14, 0));
         this.registerColor (FIRE_COLOR_DARK_YELLOW, ColorEx.DARK_YELLOW);
         this.registerColor (FIRE_COLOR_YELLOW, ColorEx.YELLOW);
+        this.registerColor (FIRE_COLOR_DARKER_YELLOW, ColorEx.fromRGB (20, 20, 0));
         this.registerColor (FIRE_COLOR_BROWN, ColorEx.BROWN);
+        this.registerColor (FIRE_COLOR_GRAY, ColorEx.GRAY);
 
         this.registerColor (SCALE_COLOR_OCTAVE, ColorEx.BLUE);
         this.registerColor (SCALE_COLOR_NOTE, ColorEx.WHITE);

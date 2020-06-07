@@ -29,30 +29,19 @@ import de.mossgrabers.framework.utils.ButtonEvent;
  */
 public abstract class AbstractDrumView64<S extends IControlSurface<C>, C extends Configuration> extends AbstractView<S, C> implements TransposeView
 {
-    protected static final int    DRUM_START_KEY = 36;
-    protected static final int    GRID_COLUMNS   = 8;
-    protected static final int    BLOCK_SIZE     = 16;
+    protected static final int DRUM_START_KEY = 36;
+    protected static final int GRID_COLUMNS   = 8;
+    protected static final int BLOCK_SIZE     = 16;
 
-    // @formatter:off
-    protected static final int [] DRUM_MATRIX    =
-    {
-        0,  1,  2,  3, 32, 33, 34, 35,      // 1st row
-        4,  5,  6,  7, 36, 37, 38, 39,
-        8,  9, 10, 11, 40, 41, 42, 43,
-       12, 13, 14, 15, 44, 45, 46, 47,
-       16, 17, 18, 19, 48, 49, 50, 51,
-       20, 21, 22, 23, 52, 53, 54, 55,
-       24, 25, 26, 27, 56, 57, 58, 59,
-       28, 29, 30, 31, 60, 61, 62, 63      // 8th row
-    };
-    // @formatter:on
+    protected int              offsetY;
+    protected int              selectedPad    = 0;
+    protected int []           pressedKeys    = new int [128];
+    protected int              columns;
+    protected int              rows;
+    protected int              drumOctave;
 
-    protected int                 offsetY;
-    protected int                 selectedPad    = 0;
-    protected int []              pressedKeys    = new int [128];
-    protected int                 columns;
-    protected int                 rows;
-    protected int                 drumOctave;
+    private final int          xblocks;
+    private final int          yblocks;
 
 
     /**
@@ -63,15 +52,33 @@ public abstract class AbstractDrumView64<S extends IControlSurface<C>, C extends
      */
     public AbstractDrumView64 (final S surface, final IModel model)
     {
+        this (surface, model, 8, 8);
+    }
+
+
+    /**
+     * Constructor.
+     *
+     * @param surface The surface
+     * @param model The model
+     * @param columns The number of columns of the grid
+     * @param rows The number of rows of the grid
+     */
+    public AbstractDrumView64 (final S surface, final IModel model, final int columns, final int rows)
+    {
         super ("Drum 64", surface, model);
+
+        this.columns = columns;
+        this.rows = rows;
+
+        // The number of 4x4 blocks in x and y direction
+        this.xblocks = this.columns / 4;
+        this.yblocks = this.rows / 4;
 
         this.offsetY = DRUM_START_KEY;
 
         this.canScrollUp = false;
         this.canScrollDown = false;
-
-        this.columns = 8;
-        this.rows = 8;
 
         this.drumOctave = 0;
 
@@ -113,7 +120,20 @@ public abstract class AbstractDrumView64<S extends IControlSurface<C>, C extends
         final int index = note - 36;
         final int x = index % this.columns;
         final int y = index / this.columns;
-        this.selectedPad = (x >= 4 ? 32 : 0) + y * 4 + x % 4;
+
+        final int xblockPos = x / 4;
+        final int yblockPos = y / 4;
+
+        int blocks = -16;
+        for (int xblock = 0; xblock <= xblockPos; xblock++)
+        {
+            for (int yblock = 0; yblock <= yblockPos; yblock++)
+            {
+                blocks += 16;
+            }
+        }
+
+        this.selectedPad = blocks + y % 4 * 4 + x % 4;
 
         final int playedPad = velocity == 0 ? -1 : this.selectedPad;
 
@@ -138,16 +158,33 @@ public abstract class AbstractDrumView64<S extends IControlSurface<C>, C extends
             return;
         }
 
-        // halfColumns x playLines Drum Pad Grid
         final ICursorDevice drumDevice64 = this.model.getDrumDevice64 ();
         final boolean isSoloed = drumDevice64.hasDrumPads () && drumDevice64.getDrumPadBank ().hasSoloedPads ();
-        final int numPads = this.rows * this.columns;
         final boolean isRecording = this.model.hasRecordingState ();
-        for (int index = 0; index < numPads; index++)
+
+        int blockOffset = 0;
+
+        // Draw all blocks
+        for (int xblock = 0; xblock < this.xblocks; xblock++)
         {
-            final int x = index / 32 * 4 + index % 4;
-            final int y = index / 4 % 8;
-            padGrid.lightEx (x, 7 - y, this.getPadColor (index, drumDevice64, isSoloed, isRecording));
+            for (int yblock = 0; yblock < this.yblocks; yblock++)
+            {
+                // Draw a 4x4 square
+                for (int blockX = 0; blockX < 4; blockX++)
+                {
+                    for (int blockY = 0; blockY < 4; blockY++)
+                    {
+                        final int index = blockOffset + blockY * 4 + blockX;
+
+                        final int x = xblock * 4 + blockX;
+                        final int y = yblock * 4 + blockY;
+
+                        padGrid.lightEx (x, (this.rows - 1) - y, this.getPadColor (index, drumDevice64, isSoloed, isRecording));
+                    }
+                }
+
+                blockOffset += 16;
+            }
         }
     }
 
@@ -315,13 +352,36 @@ public abstract class AbstractDrumView64<S extends IControlSurface<C>, C extends
 
     private int [] getDrumMatrix ()
     {
-        final int [] matrix = DRUM_MATRIX;
         final int [] noteMap = Scales.getEmptyMatrix ();
-        for (int i = 0; i < 64; i++)
+
+        int blockOffset = 0;
+
+        // All blocks
+        for (int xblock = 0; xblock < this.xblocks; xblock++)
         {
-            final int n = matrix[i] == -1 ? -1 : matrix[i] + this.offsetY;
-            noteMap[DRUM_START_KEY + i] = n < 0 || n > 127 ? -1 : n;
+            for (int yblock = 0; yblock < this.yblocks; yblock++)
+            {
+                // One 4x4 square
+                for (int blockX = 0; blockX < 4; blockX++)
+                {
+                    for (int blockY = 0; blockY < 4; blockY++)
+                    {
+                        final int index = blockOffset + blockY * 4 + blockX;
+
+                        final int x = xblock * 4 + blockX;
+                        final int y = yblock * 4 + blockY;
+
+                        final int note = 36 + y * this.columns + x;
+                        noteMap[note] = index + this.offsetY;
+                        if (noteMap[note] < -1 || noteMap[note] > 127)
+                            noteMap[note] = -1;
+                    }
+                }
+
+                blockOffset += 16;
+            }
         }
+
         return noteMap;
     }
 

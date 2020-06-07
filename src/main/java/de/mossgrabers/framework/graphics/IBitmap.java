@@ -27,7 +27,7 @@ public interface IBitmap
 
     /**
      * Render the content of the bitmap.
-     * 
+     *
      * @param enableAntialias True to enable anti aliasing
      * @param renderer The renderer to draw on the bitmap
      */

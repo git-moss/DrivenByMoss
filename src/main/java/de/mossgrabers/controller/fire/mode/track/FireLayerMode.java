@@ -9,10 +9,12 @@ import de.mossgrabers.controller.fire.controller.FireControlSurface;
 import de.mossgrabers.controller.fire.graphics.canvas.component.TitleValueComponent;
 import de.mossgrabers.framework.controller.ButtonID;
 import de.mossgrabers.framework.controller.display.IGraphicDisplay;
+import de.mossgrabers.framework.daw.ICursorDevice;
 import de.mossgrabers.framework.daw.IModel;
 import de.mossgrabers.framework.daw.ISendBank;
+import de.mossgrabers.framework.daw.data.IChannel;
 import de.mossgrabers.framework.daw.data.ISend;
-import de.mossgrabers.framework.daw.data.ITrack;
+import de.mossgrabers.framework.mode.AbstractMode;
 import de.mossgrabers.framework.mode.Modes;
 
 
@@ -21,7 +23,7 @@ import de.mossgrabers.framework.mode.Modes;
  *
  * @author J&uuml;rgen Mo&szlig;graber
  */
-public class FireTrackMode extends de.mossgrabers.framework.mode.track.TrackMode<FireControlSurface, FireConfiguration>
+public class FireLayerMode extends AbstractMode<FireControlSurface, FireConfiguration>
 {
     private static final Modes [] MODES     =
     {
@@ -48,9 +50,11 @@ public class FireTrackMode extends de.mossgrabers.framework.mode.track.TrackMode
      * @param surface The control surface
      * @param model The model
      */
-    public FireTrackMode (final FireControlSurface surface, final IModel model)
+    public FireLayerMode (final FireControlSurface surface, final IModel model)
     {
-        super ("Mixer", surface, model, false);
+        super ("Channel", surface, model);
+
+        this.isTemporary = false;
     }
 
 
@@ -63,27 +67,28 @@ public class FireTrackMode extends de.mossgrabers.framework.mode.track.TrackMode
         final IGraphicDisplay display = this.surface.getGraphicsDisplay ();
 
         String desc = "Select";
-        String label = "a track";
+        String label = "a channel";
         int value = -1;
         boolean isPan = false;
 
-        final ITrack track = this.model.getCurrentTrackBank ().getSelectedItem ();
-        if (track != null)
+        final ICursorDevice cd = this.model.getCursorDevice ();
+        final IChannel channel = cd.getLayerOrDrumPadBank ().getSelectedItem ();
+        if (channel != null)
         {
-            desc = track.getPosition () + 1 + ": " + track.getName (9);
+            desc = channel.getIndex () + 1 + ": " + channel.getName (9);
 
-            final ISendBank sendBank = track.getSendBank ();
+            final ISendBank sendBank = channel.getSendBank ();
 
             switch (this.mode)
             {
                 case VOLUME:
-                    label = "Vol: " + track.getVolumeStr ();
-                    value = track.getVolume ();
+                    label = "Vol: " + channel.getVolumeStr ();
+                    value = channel.getVolume ();
                     break;
 
                 case PAN:
-                    label = "Pan: " + track.getPanStr ();
-                    value = track.getPan ();
+                    label = "Pan: " + channel.getPanStr ();
+                    value = channel.getPan ();
                     isPan = true;
                     break;
 
@@ -99,7 +104,7 @@ public class FireTrackMode extends de.mossgrabers.framework.mode.track.TrackMode
                     break;
 
                 default:
-                    // Not used
+                    label = "Select a track";
                     break;
             }
         }
@@ -133,7 +138,25 @@ public class FireTrackMode extends de.mossgrabers.framework.mode.track.TrackMode
     @Override
     public void onKnobValue (final int index, final int value)
     {
-        super.onKnobValue (this.surface.isPressed (ButtonID.ALT) ? 4 + index : index, value);
+        final ICursorDevice cd = this.model.getCursorDevice ();
+        final IChannel channel = cd.getLayerOrDrumPadBank ().getSelectedItem ();
+        if (channel == null)
+            return;
+
+        final int what = this.surface.isPressed (ButtonID.ALT) ? 4 + index : index;
+        switch (what)
+        {
+            case 0:
+                channel.changeVolume (value);
+                break;
+            case 1:
+                channel.changePan (value);
+                break;
+            default:
+                final int sendIndex = what - 2;
+                channel.getSendBank ().getItem (sendIndex).changeValue (value);
+                break;
+        }
     }
 
 

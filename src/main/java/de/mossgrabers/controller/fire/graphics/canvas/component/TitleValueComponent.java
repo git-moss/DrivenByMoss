@@ -29,7 +29,7 @@ public class TitleValueComponent implements IComponent
      *
      * @param label1 The first row text
      * @param label2 The second row text
-     * @param value The value
+     * @param value The value, hides the value fader if set to -1
      * @param isPan True if display as panorama bar
      */
     public TitleValueComponent (final String label1, final String label2, final int value, final boolean isPan)
@@ -54,19 +54,22 @@ public class TitleValueComponent implements IComponent
         gc.drawTextInHeight (this.label1, 0, 0, 20, colorText, 20);
         gc.drawTextInHeight (this.label2, 0, 20, 20, colorText, 20);
 
-        final int width = this.value * 128 / 1024;
-        final int barHeight = 20;
-        gc.strokeRectangle (1, 44, 127, barHeight, colorFader);
-        if (this.isPan)
+        if (this.value >= 0)
         {
-            if (width == 64)
-                gc.fillRectangle (65, 44, 1, barHeight, colorFader);
-            else if (width > 64)
-                gc.fillRectangle (65, 44, width - 64.0, barHeight, colorFader);
+            final int width = this.value * 128 / 1024;
+            final int barHeight = 20;
+            gc.strokeRectangle (1, 44, 127, barHeight, colorFader);
+            if (this.isPan)
+            {
+                if (width == 64)
+                    gc.fillRectangle (65, 44, 1, barHeight, colorFader);
+                else if (width > 64)
+                    gc.fillRectangle (65, 44, width - 64.0, barHeight, colorFader);
+                else
+                    gc.fillRectangle (width, 44, 64.0 - width, barHeight, colorFader);
+            }
             else
-                gc.fillRectangle (width, 44, 64.0 - width, barHeight, colorFader);
+                gc.fillRectangle (1, 44, width, barHeight, colorFader);
         }
-        else
-            gc.fillRectangle (1, 44, width, barHeight, colorFader);
     }
 }

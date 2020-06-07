@@ -29,7 +29,7 @@ import java.util.function.Supplier;
 public class MVHelper<S extends IControlSurface<C>, C extends Configuration>
 {
     private static final String NONE          = "None";
-    private static final int    DISPLAY_DELAY = 200;
+    private static final int    DISPLAY_DELAY = 100;
 
     private final IModel        model;
     private final ITransport    transport;

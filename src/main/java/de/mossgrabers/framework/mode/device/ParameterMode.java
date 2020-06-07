@@ -65,8 +65,11 @@ public class ParameterMode<S extends IControlSurface<C>, C extends Configuration
     @Override
     public void onKnobTouch (final int index, final boolean isTouched)
     {
+        this.isKnobTouched[index] = isTouched;
+
         if (this.cursorDevice == null)
             return;
+
         final IParameter item = this.cursorDevice.getParameterBank ().getItem (index);
         if (!item.doesExist ())
             return;

@@ -198,12 +198,25 @@ public abstract class AbstractMode<S extends IControlSurface<C>, C extends Confi
     @Override
     public boolean isAnyKnobTouched ()
     {
-        for (final boolean anIsKnobTouched: this.isKnobTouched)
+        for (final boolean isTouched: this.isKnobTouched)
         {
-            if (anIsKnobTouched)
+            if (isTouched)
                 return true;
         }
         return false;
+    }
+
+
+    /** {@inheritDoc} */
+    @Override
+    public int getTouchedKnob ()
+    {
+        for (int i = 0; i < this.isKnobTouched.length; i++)
+        {
+            if (this.isKnobTouched[i])
+                return i;
+        }
+        return -1;
     }
 
 

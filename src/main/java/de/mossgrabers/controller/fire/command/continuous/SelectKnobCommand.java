@@ -9,9 +9,14 @@ import de.mossgrabers.controller.fire.controller.FireControlSurface;
 import de.mossgrabers.controller.fire.view.IFireView;
 import de.mossgrabers.framework.command.core.AbstractContinuousCommand;
 import de.mossgrabers.framework.controller.ButtonID;
+import de.mossgrabers.framework.daw.ICursorDevice;
 import de.mossgrabers.framework.daw.IModel;
 import de.mossgrabers.framework.daw.ITrackBank;
+import de.mossgrabers.framework.daw.ITransport;
 import de.mossgrabers.framework.daw.data.ITrack;
+import de.mossgrabers.framework.mode.Mode;
+import de.mossgrabers.framework.mode.ModeManager;
+import de.mossgrabers.framework.mode.Modes;
 import de.mossgrabers.framework.view.View;
 
 
@@ -40,7 +45,28 @@ public class SelectKnobCommand extends AbstractContinuousCommand<FireControlSurf
     {
         if (this.surface.isPressed (ButtonID.ALT))
         {
-            this.handleTrackSelection (value);
+            final ModeManager modeManager = this.surface.getModeManager ();
+            final boolean isInc = this.model.getValueChanger ().calcKnobSpeed (value) > 0;
+            if (modeManager.isActiveOrTempMode (Modes.TRACK, Modes.DEVICE_LAYER))
+                handleTrackSelection (this.surface, this.model.getTrackBank (), isInc);
+            else if (modeManager.isActiveOrTempMode (Modes.DEVICE_PARAMS))
+                handleDevicePageSelection (isInc);
+            else if (modeManager.isActiveOrTempMode (Modes.USER))
+                handleUserPageSelection (isInc);
+            return;
+        }
+
+        if (this.surface.isPressed (ButtonID.DRUM))
+        {
+            this.surface.setTriggerConsumed (ButtonID.DRUM);
+            final ITransport transport = this.model.getTransport ();
+            double amount = this.surface.isPressed (ButtonID.SELECT) ? 10 : 1;
+            if (this.surface.isPressed (ButtonID.SHIFT))
+                amount /= 100.0;
+            if (this.model.getValueChanger ().calcKnobSpeed (value) < 0)
+                amount *= -1;
+            transport.setTempo (transport.getTempo () + amount);
+            this.mvHelper.delayDisplay ( () -> String.format ("Tempo: %.02f", Double.valueOf (transport.getTempo ())));
             return;
         }
 
@@ -50,12 +76,50 @@ public class SelectKnobCommand extends AbstractContinuousCommand<FireControlSurf
     }
 
 
-    private void handleTrackSelection (final int value)
+    private void handleDevicePageSelection (final boolean isInc)
     {
-        final ITrackBank trackBank = this.model.getTrackBank ();
-        if (this.model.getValueChanger ().calcKnobSpeed (value) > 0)
+        if (!this.model.hasSelectedDevice ())
+            return;
+        final ICursorDevice cursorDevice = this.model.getCursorDevice ();
+        if (isInc)
         {
-            if (this.surface.isPressed (ButtonID.SELECT))
+            if (this.surface.isShiftPressed ())
+                cursorDevice.getParameterBank ().selectNextItem ();
+            else
+                cursorDevice.selectNext ();
+        }
+        else
+        {
+            if (this.surface.isShiftPressed ())
+                cursorDevice.getParameterBank ().selectPreviousItem ();
+            else
+                cursorDevice.selectPrevious ();
+        }
+    }
+
+
+    private void handleUserPageSelection (final boolean isInc)
+    {
+        final Mode userMode = this.surface.getModeManager ().getMode (Modes.USER);
+        if (isInc)
+            userMode.selectNextItem ();
+        else
+            userMode.selectPreviousItem ();
+    }
+
+
+    /**
+     * Change to the previous/next track or page.
+     *
+     * @param surface The surface
+     * @param trackBank The track bank
+     * @param isInc True to move forward otherwise backwards
+     */
+    public static void handleTrackSelection (final FireControlSurface surface, final ITrackBank trackBank, final boolean isInc)
+    {
+        if (isInc)
+        {
+            if (surface.isPressed (ButtonID.SELECT))
             {
                 if (trackBank.canScrollPageForwards ())
                 {
@@ -77,7 +141,7 @@ public class SelectKnobCommand extends AbstractContinuousCommand<FireControlSurf
             return;
         }
 
-        if (this.surface.isPressed (ButtonID.SELECT))
+        if (surface.isPressed (ButtonID.SELECT))
         {
             if (trackBank.canScrollPageBackwards ())
             {

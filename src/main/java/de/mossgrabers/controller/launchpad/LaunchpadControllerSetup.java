@@ -443,7 +443,7 @@ public class LaunchpadControllerSetup extends AbstractControllerSetup<LaunchpadC
     private int getViewStateColor (final int viewColor, final Views... views)
     {
         final ViewManager viewManager = this.getSurface ().getViewManager ();
-        for (Views view: views)
+        for (final Views view: views)
         {
             if (viewManager.isActiveView (view))
                 return viewColor;

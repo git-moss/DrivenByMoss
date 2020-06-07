@@ -22,10 +22,10 @@ public class PadGridImpl implements IPadGrid
 
     protected LightInfo []       padStates;
 
-    protected final int          rows;
-    protected final int          cols;
-    protected final int          startNote;
-    protected final int          endNote;
+    protected int                rows;
+    protected int                cols;
+    protected int                startNote;
+    protected int                endNote;
 
 
     /**

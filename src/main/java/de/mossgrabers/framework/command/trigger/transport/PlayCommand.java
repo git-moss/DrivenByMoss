@@ -6,6 +6,7 @@ package de.mossgrabers.framework.command.trigger.transport;
 
 import de.mossgrabers.framework.command.core.AbstractTriggerCommand;
 import de.mossgrabers.framework.configuration.Configuration;
+import de.mossgrabers.framework.controller.ButtonID;
 import de.mossgrabers.framework.controller.IControlSurface;
 import de.mossgrabers.framework.daw.IModel;
 import de.mossgrabers.framework.daw.ITransport;
@@ -22,7 +23,8 @@ import de.mossgrabers.framework.utils.ButtonEvent;
  */
 public class PlayCommand<S extends IControlSurface<C>, C extends Configuration> extends AbstractTriggerCommand<S, C>
 {
-    private boolean restartFlag = false;
+    private final ButtonID selectButtonID;
+    private boolean        restartFlag = false;
 
 
     /**
@@ -33,7 +35,23 @@ public class PlayCommand<S extends IControlSurface<C>, C extends Configuration> 
      */
     public PlayCommand (final IModel model, final S surface)
     {
+        this (model, surface, ButtonID.SELECT);
+    }
+
+
+    /**
+     * Constructor.
+     *
+     * @param model The model
+     * @param surface The surface
+     * @param selectButtonID The buttonID to use for the select button which triggers additional
+     *            button combinations
+     */
+    public PlayCommand (final IModel model, final S surface, final ButtonID selectButtonID)
+    {
         super (model, surface);
+
+        this.selectButtonID = selectButtonID;
     }
 
 
@@ -44,7 +62,7 @@ public class PlayCommand<S extends IControlSurface<C>, C extends Configuration> 
         if (event != ButtonEvent.DOWN)
             return;
 
-        if (this.surface.isSelectPressed ())
+        if (this.surface.isPressed (this.selectButtonID))
         {
             this.model.getTransport ().togglePunchIn ();
             return;
@@ -67,7 +85,7 @@ public class PlayCommand<S extends IControlSurface<C>, C extends Configuration> 
     {
         if (event != ButtonEvent.DOWN)
             return;
-        if (this.surface.isSelectPressed ())
+        if (this.surface.isPressed (this.selectButtonID))
             this.model.getTransport ().togglePunchOut ();
         else
             this.model.getTransport ().toggleLoop ();

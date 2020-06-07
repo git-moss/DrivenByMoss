@@ -75,6 +75,22 @@ public abstract class AbstractDrumView<S extends IControlSurface<C>, C extends C
      */
     public AbstractDrumView (final String name, final S surface, final IModel model, final int numSequencerLines, final int numPlayLines)
     {
+        this (name, surface, model, numSequencerLines, numPlayLines, true);
+    }
+
+
+    /**
+     * Constructor.
+     *
+     * @param name The name of the view
+     * @param surface The surface
+     * @param model The model
+     * @param numSequencerLines The number of rows to use for the sequencer
+     * @param numPlayLines The number of rows to use for playing
+     * @param followSelection Follow the drum pad selection if true
+     */
+    public AbstractDrumView (final String name, final S surface, final IModel model, final int numSequencerLines, final int numPlayLines, final boolean followSelection)
+    {
         super (name, surface, model, 128, numSequencerLines * GRID_COLUMNS);
 
         this.sequencerLines = numSequencerLines;
@@ -90,10 +106,13 @@ public abstract class AbstractDrumView<S extends IControlSurface<C>, C extends C
         tb.addSelectionObserver ( (index, isSelected) -> this.keyManager.clearPressedKeys ());
         tb.addNoteObserver (this::updateNote);
 
-        model.getInstrumentDevice ().getDrumPadBank ().addSelectionObserver ( (index, isSelected) -> {
-            if (isSelected)
-                this.selectedPad = index;
-        });
+        if (followSelection)
+        {
+            model.getInstrumentDevice ().getDrumPadBank ().addSelectionObserver ( (index, isSelected) -> {
+                if (isSelected)
+                    this.selectedPad = index;
+            });
+        }
     }
 
 
@@ -439,6 +458,20 @@ public abstract class AbstractDrumView<S extends IControlSurface<C>, C extends C
      */
     protected void changeOctave (final ButtonEvent event, final boolean isUp, final int offset)
     {
+        this.changeOctave (event, isUp, offset, false);
+    }
+
+
+    /**
+     * Switch the drum octave up or down.
+     *
+     * @param event The button press event
+     * @param isUp Move up if true otherwise down
+     * @param offset The offset to move up or down
+     * @param adjustPage
+     */
+    protected void changeOctave (final ButtonEvent event, final boolean isUp, final int offset, final boolean adjustPage)
+    {
         if (event != ButtonEvent.DOWN)
             return;
         this.keyManager.clearPressedKeys ();
@@ -448,7 +481,7 @@ public abstract class AbstractDrumView<S extends IControlSurface<C>, C extends C
             this.scales.decDrumOffset (offset);
         this.updateNoteMapping ();
         this.surface.getDisplay ().notify (this.scales.getDrumRangeText ());
-        this.model.getInstrumentDevice ().getDrumPadBank ().scrollTo (this.scales.getDrumOffset (), false);
+        this.model.getInstrumentDevice ().getDrumPadBank ().scrollTo (this.scales.getDrumOffset (), adjustPage);
     }
 
 
@@ -551,7 +584,7 @@ public abstract class AbstractDrumView<S extends IControlSurface<C>, C extends C
 
     /**
      * Draw the clip loop and sequencer steps area.
-     * 
+     *
      * @param noteRow The note for which to draw the row
      * @param rowColor The color to use the notes of the row
      */

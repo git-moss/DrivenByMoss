@@ -30,7 +30,7 @@ public abstract class AbstractNumberDisplayView<S extends IControlSurface<C>, C 
         { false, false },
         { false, false }
     };
-    
+
     private static final boolean [][] TWO_COLS_1 =
     {
         { true, false },
@@ -39,7 +39,7 @@ public abstract class AbstractNumberDisplayView<S extends IControlSurface<C>, C 
         { true, false },
         { true, false }
     };
-    
+
     private static final boolean [][] TWO_COLS_2 =
     {
         { true,  true  },
@@ -48,7 +48,7 @@ public abstract class AbstractNumberDisplayView<S extends IControlSurface<C>, C 
         { true,  false },
         { true,  true  }
     };
-            
+
     private static final boolean [][] TWO_COLS_3 =
     {
         { true,  true },
@@ -57,16 +57,16 @@ public abstract class AbstractNumberDisplayView<S extends IControlSurface<C>, C 
         { false, true },
         { true,  true }
     };
-    
+
     private static final boolean [][] TWO_COLS_4 =
     {
         { true,  false },
         { true,  false },
         { true,  true  },
         { false, true  },
-        { false, true  } 
+        { false, true  }
     };
-    
+
     private static final boolean [][] TWO_COLS_5 =
     {
         { true,  true  },
@@ -75,7 +75,7 @@ public abstract class AbstractNumberDisplayView<S extends IControlSurface<C>, C 
         { false, true  },
         { true,  true  }
     };
-    
+
     private static final boolean [][] TWO_COLS_6 =
     {
         { true, true  },
@@ -102,7 +102,7 @@ public abstract class AbstractNumberDisplayView<S extends IControlSurface<C>, C 
         { true, true },
         { true, true }
     };
-    
+
     private static final boolean [][] TWO_COLS_9 =
     {
         { true,  true },
@@ -120,7 +120,7 @@ public abstract class AbstractNumberDisplayView<S extends IControlSurface<C>, C 
         { true, false, true },
         { true, true,  true }
     };
-    
+
     private static final boolean [][] THREE_COLS_1 =
     {
         { false, true, false },
@@ -129,7 +129,7 @@ public abstract class AbstractNumberDisplayView<S extends IControlSurface<C>, C 
         { false, true, false },
         { false, true, false }
     };
-    
+
     private static final boolean [][] THREE_COLS_2 =
     {
         { true,  true,  true  },
@@ -138,7 +138,7 @@ public abstract class AbstractNumberDisplayView<S extends IControlSurface<C>, C 
         { true,  false, false },
         { true,  true,  true  }
     };
-            
+
     private static final boolean [][] THREE_COLS_3 =
     {
         { true,  true,  true },
@@ -147,7 +147,7 @@ public abstract class AbstractNumberDisplayView<S extends IControlSurface<C>, C 
         { false, false, true },
         { true,  true,  true }
     };
-    
+
     private static final boolean [][] THREE_COLS_4 =
     {
         { true,  false, false },
@@ -156,7 +156,7 @@ public abstract class AbstractNumberDisplayView<S extends IControlSurface<C>, C 
         { false, true,  false },
         { false, true,  false }
     };
-    
+
     private static final boolean [][] THREE_COLS_5 =
     {
         { true,  true,  true },
@@ -165,7 +165,7 @@ public abstract class AbstractNumberDisplayView<S extends IControlSurface<C>, C 
         { false, false, true },
         { true,  true,  true }
     };
-    
+
     private static final boolean [][] THREE_COLS_6 =
     {
         { true,  true,  true },
@@ -192,7 +192,7 @@ public abstract class AbstractNumberDisplayView<S extends IControlSurface<C>, C 
         { true, false, true },
         { true, true,  true }
     };
-    
+
     private static final boolean [][] THREE_COLS_9 =
     {
         { true,  true,  true },
@@ -201,19 +201,19 @@ public abstract class AbstractNumberDisplayView<S extends IControlSurface<C>, C 
         { false, false, true },
         { true,  true,  true }
     };
-    
+
     private static final boolean [][][] TWO_COLS =
     {
-        TWO_COLS_0, TWO_COLS_1, TWO_COLS_2, TWO_COLS_3, TWO_COLS_4, 
+        TWO_COLS_0, TWO_COLS_1, TWO_COLS_2, TWO_COLS_3, TWO_COLS_4,
         TWO_COLS_5, TWO_COLS_6, TWO_COLS_7, TWO_COLS_8, TWO_COLS_9
     };
-    
+
     private static final boolean [][][] THREE_COLS =
     {
-        THREE_COLS_0, THREE_COLS_1, THREE_COLS_2, THREE_COLS_3, THREE_COLS_4, 
+        THREE_COLS_0, THREE_COLS_1, THREE_COLS_2, THREE_COLS_3, THREE_COLS_4,
         THREE_COLS_5, THREE_COLS_6, THREE_COLS_7, THREE_COLS_8, THREE_COLS_9
     };
-   
+
     // @formatter:on
 
     private final IPadGrid                padGrid;
@@ -250,7 +250,7 @@ public abstract class AbstractNumberDisplayView<S extends IControlSurface<C>, C 
     {
         // Draw the 3 digit number in the upper part of the grid
 
-        int value = Math.min (999, Math.max (0, this.getNumber ()));
+        final int value = Math.min (999, Math.max (0, this.getNumber ()));
 
         // 1st digit (two cols) in color 1
         final int digit1 = value / 100;
@@ -262,7 +262,7 @@ public abstract class AbstractNumberDisplayView<S extends IControlSurface<C>, C 
         }
 
         // 2nd digit (three cols) in color 2
-        final int digit2 = (value % 100) / 10;
+        final int digit2 = value % 100 / 10;
         final boolean [] [] second = THREE_COLS[digit2];
         final boolean show2ndDigit = digit1 > 0 || digit2 > 0;
         for (int x = 0; x < 3; x++)

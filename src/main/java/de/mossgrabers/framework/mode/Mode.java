@@ -97,6 +97,14 @@ public interface Mode
 
 
     /**
+     * Get the index of the touched knob, if any.
+     *
+     * @return The index or -1 if none is touched
+     */
+    int getTouchedKnob ();
+
+
+    /**
      * Check if a knob is touched.
      *
      * @param index The index of the knob

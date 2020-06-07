@@ -90,9 +90,9 @@ public class FaderTouchCommand extends SelectCommand
 
     private static boolean hasTouchedFader ()
     {
-        for (int i = 0; i < isTrackTouched.length; i++)
+        for (final boolean element: isTrackTouched)
         {
-            if (isTrackTouched[i])
+            if (element)
                 return true;
         }
         return false;

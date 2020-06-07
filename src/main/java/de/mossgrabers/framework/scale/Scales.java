@@ -96,16 +96,10 @@ public class Scales
     };
 
     /** The matrix for the piano layout. */
-    private static final int []         PIANO_MATRIX             =
+    private static final int [][]         PIANO_MATRIX             =
     {
-         0,  2,  4,  5,  7,  9, 11, 12,
-        -1,  1,  3, -1,  6,  8, 10, -1,
-        12, 14, 16, 17, 19, 21, 23, 24,
-        -1, 13, 15, -1, 18, 20, 22, -1,
-        24, 26, 28, 29, 31, 33, 35, 36,
-        -1, 25, 27, -1, 30, 32, 34, -1,
-        36, 38, 40, 41, 43, 45, 47, 48,
-        -1, 37, 39, -1, 42, 44, 46, -1
+        {  0,  2,  4,  5,  7,  9, 11 },
+        { -1,  1,  3, -1,  6,  8, 10 }
     };
     // @formatter:on
 
@@ -729,17 +723,34 @@ public class Scales
      * Get the active sequencer matrix.
      *
      * @param length The expected length
-     * @param offset An offset to add to the notes
+     * @param noteOffset An offset to add to the notes
      * @return The matrix
      */
-    public int [] getSequencerMatrix (final int length, final int offset)
+    public int [] getSequencerMatrix (final int length, final int noteOffset)
     {
-        final int [] matrix = this.getActiveMatrix ();
         final int [] noteMap = new int [length];
+        if (this.isChromatic ())
+        {
+            for (int note = 0; note < length; note++)
+                noteMap[note] = noteOffset + note;
+            return noteMap;
+        }
+
+        final int [] intervals = this.selectedScale.getIntervals ();
         Arrays.fill (noteMap, -1);
+
+        final int noteInOctave = noteOffset % 12;
+        final Scale scale = this.getScale ();
+        int so = scale.getIndexInScale (noteInOctave);
+        if (so < 0)
+            so = 0;
+        int no = noteOffset / 12 * 12;
+
         for (int note = 0; note < length; note++)
         {
-            final int n = matrix[note] + Scales.OFFSETS[this.scaleOffset] + offset;
+            final int index = so + note;
+            final int oct = index / intervals.length * 12;
+            final int n = Scales.OFFSETS[this.scaleOffset] + intervals[index % intervals.length] + no + oct;
             noteMap[note] = n < 0 || n > 127 ? -1 : n;
         }
         return noteMap;
@@ -748,19 +759,33 @@ public class Scales
 
     /**
      * Get the piano matrix.
-     *
+     * 
+     * @param rows The number of rows
+     * @param columns The number of columns
      * @return The matrix
      */
-    public int [] getPianoMatrix ()
+    public int [] getPianoMatrix (final int rows, final int columns)
     {
-        final int [] matrix = PIANO_MATRIX;
+        int octaveOffset = 3 + this.pianoOctave;
+        int counter = octaveOffset * 12;
+        final int rowOffset = columns / 7;
+
         final int [] noteMap = Scales.getEmptyMatrix ();
-        for (int note = this.startNote; note < this.endNote; note++)
+
+        for (int row = 0; row < rows; row++)
         {
-            final int ns = matrix[note - this.startNote];
-            final int n = ns == -1 ? -1 : ns + this.startNote + this.pianoOctave * 12;
-            noteMap[note] = n < 0 || n > 127 ? -1 : n;
+            for (int col = 0; col < columns; col++)
+            {
+                final int ns = PIANO_MATRIX[row % 2][col % 7];
+                if (ns >= 0)
+                    noteMap[counter] = Math.min (ns + (octaveOffset + (col / 7)) * 12, 127);
+                counter++;
+            }
+
+            if (row % 2 == 1)
+                octaveOffset += rowOffset;
         }
+
         return noteMap;
     }
 

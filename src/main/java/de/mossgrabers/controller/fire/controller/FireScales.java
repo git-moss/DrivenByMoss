@@ -19,14 +19,10 @@ public class FireScales extends Scales
      * Constructor.
      *
      * @param valueChanger A value changer
-     * @param startNote The first midi note of the pad grid
-     * @param endNote The last midi note of the pad grid
-     * @param numColumns The number of columns of the pad grid
-     * @param numRows The number of rows of the pad grid
      */
-    public FireScales (final IValueChanger valueChanger, final int startNote, final int endNote, final int numColumns, final int numRows)
+    public FireScales (final IValueChanger valueChanger)
     {
-        super (valueChanger, startNote, endNote, numColumns, numRows);
+        super (valueChanger, 36, 100, 16, 4);
     }
 
 
@@ -36,7 +32,7 @@ public class FireScales extends Scales
     {
         final int [] gridMatrix = Scales.getEmptyMatrix ();
         for (int i = 36; i < 100; i++)
-            gridMatrix[FirePadGrid.TRANSLATE_MATRIX[i - 36]] = matrix[i];
+            gridMatrix[FirePadGrid.TRANSLATE_16x4_MATRIX[i - 36]] = matrix[i];
         return gridMatrix;
     }
 }

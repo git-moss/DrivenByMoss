@@ -51,6 +51,7 @@ public class FireConfiguration extends AbstractConfiguration
         ///////////////////////////
         // Session
 
+        this.activateFlipSessionSetting (globalSettings);
         this.activateLockFlipSessionSetting (globalSettings);
         this.activateSelectClipOnLaunchSetting (globalSettings);
         this.activateDrawRecordStripeSetting (globalSettings);
@@ -65,6 +66,8 @@ public class FireConfiguration extends AbstractConfiguration
         ///////////////////////////
         // Play and Sequence
 
+        this.activateAccentActiveSetting (globalSettings);
+        this.activateAccentValueSetting (globalSettings);
         this.activateQuantizeAmountSetting (globalSettings);
         this.activateMidiEditChannelSetting (documentSettings);
 

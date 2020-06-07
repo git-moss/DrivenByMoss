@@ -35,6 +35,8 @@ public class HwFaderImpl extends AbstractHwContinuousControl implements IHwFader
     private AbsoluteHardwarControlBindable defaultAction;
     private AbsoluteHardwareControlBinding binding;
 
+    private ParameterImpl                  parameterImpl;
+
 
     /**
      * Constructor.
@@ -52,6 +54,8 @@ public class HwFaderImpl extends AbstractHwContinuousControl implements IHwFader
         this.hardwareFader = hardwareFader;
         this.hardwareFader.setLabel (label);
         this.hardwareFader.setIsHorizontal (!isVertical);
+
+        HwUtils.markInterested (this.hardwareFader);
     }
 
 
@@ -82,8 +86,20 @@ public class HwFaderImpl extends AbstractHwContinuousControl implements IHwFader
         if (this.binding != null)
             this.binding.removeBinding ();
 
-        final HardwareBindable target = parameter == null ? this.defaultAction : ((ParameterImpl) parameter).getParameter ();
-        this.binding = this.hardwareFader.setBinding (target);
+        final HardwareBindable target;
+        if (parameter == null)
+        {
+            HwUtils.enableObservers (false, this.hardwareFader, this.parameterImpl);
+            target = this.defaultAction;
+        }
+        else
+        {
+            this.parameterImpl = (ParameterImpl) parameter;
+            target = this.parameterImpl.getParameter ();
+            HwUtils.enableObservers (true, this.hardwareFader, this.parameterImpl);
+        }
+
+        this.binding = target == null ? null : this.hardwareFader.setBinding (target);
     }
 
 

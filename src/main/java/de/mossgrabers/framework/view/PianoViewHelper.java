@@ -30,19 +30,36 @@ public class PianoViewHelper
 
 
     /**
-     * Draw the piano view grid.
-     * 
+     * Draw the piano view grid. Uses 8 columns.
+     *
      * @param gridPad The grid to draw
      * @param model The model
      * @param keyManager The key manager
      */
     public static void drawGrid (final IPadGrid gridPad, final IModel model, final KeyManager keyManager)
     {
+        drawGrid (gridPad, model, keyManager, 8, 8);
+    }
+
+
+    /**
+     * Draw the piano view grid.
+     *
+     * @param gridPad The grid to draw
+     * @param model The model
+     * @param keyManager The key manager
+     * @param rows The number of rows of the grid
+     * @param columns The number of columns of the grid
+     */
+    public static void drawGrid (final IPadGrid gridPad, final IModel model, final KeyManager keyManager, final int rows, final int columns)
+    {
         if (!model.canSelectedTrackHoldNotes ())
         {
             gridPad.turnOff ();
             return;
         }
+
+        final int startKey = 36;
 
         final ColorManager colorManager = model.getColorManager ();
         final boolean isRecording = model.hasRecordingState ();
@@ -52,26 +69,27 @@ public class PianoViewHelper
         final int blackKeyColor = colorManager.getColorIndex (AbstractView.replaceOctaveColorWithTrackColor (track, Scales.SCALE_COLOR_OCTAVE));
         final int offKeyColor = colorManager.getColorIndex (Scales.SCALE_COLOR_OFF);
 
-        for (int i = 0; i < 8; i++)
+        for (int row = 0; row < rows; row++)
         {
-            if (i % 2 == 0)
+            for (int column = 0; column < columns; column++)
             {
-                for (int j = 0; j < 8; j++)
+                final int n = startKey + columns * row + column;
+                final int color;
+                if (row % 2 == 0)
                 {
-                    final int n = 36 + 8 * i + j;
-                    gridPad.light (n, keyManager.isKeyPressed (n) ? playKeyColor : whiteKeyColor, -1, false);
+                    // White keys
+                    color = keyManager.isKeyPressed (n) ? playKeyColor : whiteKeyColor;
                 }
-            }
-            else
-            {
-                for (int j = 0; j < 8; j++)
+                else
                 {
-                    final int n = 36 + 8 * i + j;
-                    if (j == 0 || j == 3 || j == 7)
-                        gridPad.light (n, offKeyColor, -1, false);
+                    // Black keys
+                    final int octaveColumn = column % 7;
+                    if (octaveColumn == 0 || octaveColumn == 3 || octaveColumn == 7)
+                        color = offKeyColor;
                     else
-                        gridPad.light (n, keyManager.isKeyPressed (n) ? playKeyColor : blackKeyColor, -1, false);
+                        color = keyManager.isKeyPressed (n) ? playKeyColor : blackKeyColor;
                 }
+                gridPad.light (n, color, -1, false);
             }
         }
     }

@@ -14,6 +14,7 @@ import de.mossgrabers.framework.daw.INoteClip;
 import de.mossgrabers.framework.daw.IStepInfo;
 import de.mossgrabers.framework.daw.constants.Resolution;
 import de.mossgrabers.framework.daw.data.ITrack;
+import de.mossgrabers.framework.scale.Scale;
 import de.mossgrabers.framework.scale.Scales;
 import de.mossgrabers.framework.utils.ButtonEvent;
 
@@ -28,14 +29,16 @@ import de.mossgrabers.framework.utils.ButtonEvent;
  */
 public abstract class AbstractNoteSequencerView<S extends IControlSurface<C>, C extends Configuration> extends AbstractSequencerView<S, C> implements TransposeView
 {
-    protected int         numDisplayRows = 8;
-    protected int         numDisplayCols;
-    protected int         startKey       = 36;
-    protected int         loopPadPressed = -1;
-    protected int         offsetY;
-    protected IStepInfo   copyNote;
+    private static final int OCTAVE         = 12;
 
-    private final boolean useTrackColor;
+    protected int            numDisplayRows = 8;
+    protected int            numDisplayCols;
+    protected int            startKey       = 36;
+    protected int            loopPadPressed = -1;
+    protected int            offsetY;
+    protected IStepInfo      copyNote;
+
+    private final boolean    useTrackColor;
 
 
     /**
@@ -63,7 +66,23 @@ public abstract class AbstractNoteSequencerView<S extends IControlSurface<C>, C 
      */
     public AbstractNoteSequencerView (final String name, final S surface, final IModel model, final int numDisplayCols, final boolean useTrackColor)
     {
-        super (name, surface, model, 128, numDisplayCols, 7);
+        this (name, surface, model, numDisplayCols, 7, useTrackColor);
+    }
+
+
+    /**
+     * Constructor.
+     *
+     * @param name The name of the view
+     * @param surface The surface
+     * @param model The model
+     * @param numDisplayCols The number of grid columns
+     * @param numSequencerRows The number of seuqencer rows
+     * @param useTrackColor True to use the color of the current track for coloring the octaves
+     */
+    public AbstractNoteSequencerView (final String name, final S surface, final IModel model, final int numDisplayCols, final int numSequencerRows, final boolean useTrackColor)
+    {
+        super (name, surface, model, 128, numDisplayCols, numSequencerRows);
 
         this.useTrackColor = useTrackColor;
         this.numDisplayCols = numDisplayCols;
@@ -97,8 +116,8 @@ public abstract class AbstractNoteSequencerView<S extends IControlSurface<C>, C 
             return;
 
         final int index = note - 36;
-        final int x = index % 8;
-        final int y = index / 8;
+        final int x = index % this.numDisplayCols;
+        final int y = index / this.numDisplayCols;
 
         if (y < this.numSequencerRows)
         {
@@ -133,7 +152,8 @@ public abstract class AbstractNoteSequencerView<S extends IControlSurface<C>, C 
         if (this.handleSequencerAreaButtonCombinations (clip, channel, x, y, mappedY, vel))
             return;
 
-        clip.toggleStep (channel, x, mappedY, vel);
+        if (mappedY >= 0)
+            clip.toggleStep (channel, x, mappedY, vel);
     }
 
 
@@ -265,7 +285,7 @@ public abstract class AbstractNoteSequencerView<S extends IControlSurface<C>, C 
         final int loopStartPad = (int) Math.ceil (loopStart / lengthOfOnePad);
         final int loopEndPad = (int) Math.ceil ((loopStart + clip.getLoopLength ()) / lengthOfOnePad);
         final int currentPage = step / this.numDisplayCols;
-        for (int pad = 0; pad < 8; pad++)
+        for (int pad = 0; pad < this.numDisplayCols; pad++)
             gridPad.lightEx (pad, 0, this.getPageColor (loopStartPad, loopEndPad, currentPage, clip.getEditPage (), pad));
     }
 
@@ -325,6 +345,31 @@ public abstract class AbstractNoteSequencerView<S extends IControlSurface<C>, C 
     }
 
 
+    /**
+     * Calculates how many semi-notes are between the first and last 'pad'.
+     *
+     * @return The number of semi-notes
+     */
+    protected int getScrollOffset ()
+    {
+        // In chromatic mode all semi-notes are present
+        if (this.scales.isChromatic ())
+            return this.numSequencerRows;
+
+        final Scale scale = this.scales.getScale ();
+        int lower = scale.getIndexInScale (this.offsetY);
+        if (lower < 0)
+            lower = 0;
+        final int upper = lower + this.numSequencerRows;
+        final int [] intervals = scale.getIntervals ();
+
+        final int lowerNote = intervals[lower];
+        final int upperNote = upper / intervals.length * OCTAVE + intervals[upper % intervals.length];
+
+        return upperNote - lowerNote;
+    }
+
+
     /** {@inheritDoc} */
     @Override
     public boolean isOctaveUpButtonOn ()
@@ -343,7 +388,7 @@ public abstract class AbstractNoteSequencerView<S extends IControlSurface<C>, C 
 
     protected void updateScale ()
     {
-        this.delayedUpdateNoteMapping (this.model.canSelectedTrackHoldNotes () ? this.scales.getSequencerMatrix (8, this.offsetY) : EMPTY_TABLE);
+        this.delayedUpdateNoteMapping (this.model.canSelectedTrackHoldNotes () ? this.scales.getSequencerMatrix (this.numSequencerRows + 1, this.offsetY) : EMPTY_TABLE);
     }
 
 

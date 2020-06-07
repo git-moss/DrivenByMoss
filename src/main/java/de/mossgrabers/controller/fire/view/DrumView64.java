@@ -7,15 +7,15 @@ package de.mossgrabers.controller.fire.view;
 import de.mossgrabers.controller.fire.FireConfiguration;
 import de.mossgrabers.controller.fire.controller.FireControlSurface;
 import de.mossgrabers.framework.daw.IModel;
-import de.mossgrabers.framework.view.AbstractDrumView;
+import de.mossgrabers.framework.view.AbstractDrumView64;
 
 
 /**
- * The drum sequencer.
+ * The Drum 64 view.
  *
  * @author J&uuml;rgen Mo&szlig;graber
  */
-public class DrumView extends AbstractDrumView<FireControlSurface, FireConfiguration>
+public class DrumView64 extends AbstractDrumView64<FireControlSurface, FireConfiguration>
 {
     /**
      * Constructor.
@@ -23,8 +23,8 @@ public class DrumView extends AbstractDrumView<FireControlSurface, FireConfigura
      * @param surface The surface
      * @param model The model
      */
-    public DrumView (final FireControlSurface surface, final IModel model)
+    public DrumView64 (final FireControlSurface surface, final IModel model)
     {
-        super ("Drum", surface, model, 4, 4);
+        super (surface, model, 16, 4);
     }
 }

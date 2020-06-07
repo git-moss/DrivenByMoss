@@ -175,7 +175,7 @@ public abstract class AbstractSequencerView<S extends IControlSurface<C>, C exte
      */
     public void setResolutionIndex (final int selectedResolutionIndex)
     {
-        this.selectedResolutionIndex = selectedResolutionIndex;
+        this.selectedResolutionIndex = Math.min (Math.max (0, selectedResolutionIndex), 7);
         final Resolution resolution = Resolution.values ()[this.selectedResolutionIndex];
         this.getClip ().setStepLength (resolution.getValue ());
         this.surface.getDisplay ().notify (resolution.getName ());
@@ -215,18 +215,6 @@ public abstract class AbstractSequencerView<S extends IControlSurface<C>, C exte
         final int stepSize = clip.getNumSteps ();
         final int start = clip.getEditPage () * stepSize;
         return x >= start && x < start + stepSize;
-    }
-
-
-    /**
-     * Calculates how many semi-notes are between the first and last 'pad'.
-     *
-     * @return The number of semi-notes
-     */
-    protected int getScrollOffset ()
-    {
-        final int pos = this.numSequencerRows;
-        return pos / 7 * 12 + this.keyManager.map (pos % 7) - this.keyManager.map (0);
     }
 
 

@@ -11,10 +11,13 @@ import de.mossgrabers.framework.controller.color.ColorEx;
 import de.mossgrabers.framework.controller.grid.IPadGrid;
 import de.mossgrabers.framework.controller.hardware.IHwButton;
 import de.mossgrabers.framework.daw.ICursorDevice;
+import de.mossgrabers.framework.daw.IDrumPadBank;
 import de.mossgrabers.framework.daw.IModel;
 import de.mossgrabers.framework.daw.INoteClip;
 import de.mossgrabers.framework.daw.IStepInfo;
 import de.mossgrabers.framework.daw.constants.Resolution;
+import de.mossgrabers.framework.daw.data.IDrumPad;
+import de.mossgrabers.framework.utils.ButtonEvent;
 import de.mossgrabers.framework.view.AbstractDrumView;
 
 
@@ -23,11 +26,12 @@ import de.mossgrabers.framework.view.AbstractDrumView;
  *
  * @author J&uuml;rgen Mo&szlig;graber
  */
-public class DrumView4 extends AbstractDrumView<FireControlSurface, FireConfiguration>
+public class DrumView4 extends AbstractDrumView<FireControlSurface, FireConfiguration> implements IFireView
 {
-    private static final int NUM_DISPLAY_COLS = 16;
+    private static final int    NUM_DISPLAY_COLS = 16;
 
-    private int              soundOffset;
+    private final int           columns;
+    private final ICursorDevice primary;
 
 
     /**
@@ -38,7 +42,10 @@ public class DrumView4 extends AbstractDrumView<FireControlSurface, FireConfigur
      */
     public DrumView4 (final FireControlSurface surface, final IModel model)
     {
-        super ("Drum 4", surface, model, 2, 0);
+        super ("Drum 4", surface, model, 2, 0, false);
+
+        this.columns = 16;
+        this.primary = this.model.getInstrumentDevice ();
     }
 
 
@@ -50,21 +57,20 @@ public class DrumView4 extends AbstractDrumView<FireControlSurface, FireConfigur
             return;
 
         final int index = note - DRUM_START_KEY;
-        final int x = index % 8;
-        final int y = index / 8;
+        final int x = index % this.columns;
+        final int y = index / this.columns;
 
-        final int sound = y % 4 + this.soundOffset;
-        final int col = 8 * (y / 4) + x;
-        final int row = this.scales.getDrumOffset () + this.getSelectedPad () + sound;
+        final int sound = y % 4 + this.scales.getDrumOffset ();
+        final int col = this.columns * (y / 4) + x;
 
         final int channel = this.configuration.getMidiEditChannel ();
         final int vel = this.configuration.isAccentActive () ? this.configuration.getFixedAccentValue () : velocity;
         final INoteClip clip = this.getClip ();
 
-        if (this.handleNoteAreaButtonCombinations (clip, channel, col, y, row, vel))
+        if (this.handleNoteAreaButtonCombinations (clip, channel, col, y, sound, vel))
             return;
 
-        clip.toggleStep (channel, col, row, vel);
+        clip.toggleStep (channel, col, sound, vel);
     }
 
 
@@ -84,7 +90,7 @@ public class DrumView4 extends AbstractDrumView<FireControlSurface, FireConfigur
         // Change length of a note or create a new one with a length
         final int lines = 4;
         final boolean isLower = row / lines == 0;
-        final int offset = row * 8;
+        final int offset = row * this.columns;
         for (int s = 0; s < step; s++)
         {
             final IHwButton button = this.surface.getButton (ButtonID.get (ButtonID.PAD1, offset + s));
@@ -92,7 +98,7 @@ public class DrumView4 extends AbstractDrumView<FireControlSurface, FireConfigur
             {
                 int start = s;
                 if (isLower)
-                    start += 8;
+                    start += this.columns;
                 button.setConsumed ();
                 final int length = step - start + 1;
                 final double duration = length * Resolution.getValueAt (this.getResolutionIndex ());
@@ -128,23 +134,20 @@ public class DrumView4 extends AbstractDrumView<FireControlSurface, FireConfigur
         final int hiStep = this.isInXRange (step) ? step % DrumView4.NUM_DISPLAY_COLS : -1;
         final int offsetY = this.scales.getDrumOffset ();
         final int editMidiChannel = this.configuration.getMidiEditChannel ();
-        final int selPad = this.getSelectedPad ();
-        final ICursorDevice primary = this.model.getInstrumentDevice ();
         for (int sound = 0; sound < 4; sound++)
         {
-            final int padIndex = selPad + sound + this.soundOffset;
-            final int noteRow = offsetY + padIndex;
-            final ColorEx drumPadColor = this.getDrumPadColor (primary, padIndex);
+            final int noteRow = offsetY + sound;
+            final ColorEx drumPadColor = this.getDrumPadColor (this.primary, sound);
             for (int col = 0; col < DrumView4.NUM_DISPLAY_COLS; col++)
             {
                 final int isSet = clip.getStep (editMidiChannel, col, noteRow).getState ();
                 final boolean hilite = col == hiStep;
-                final int x = col % 8;
+                final int x = col % this.columns;
                 int y = 0;
-                if (col >= 8)
+                if (col >= this.columns)
                     y += 4;
                 y += sound;
-                padGrid.lightEx (x, 7 - y, this.getStepColor (isSet, hilite, drumPadColor));
+                padGrid.lightEx (x, 3 - y, this.getStepColor (isSet, hilite, drumPadColor));
             }
         }
     }
@@ -155,5 +158,123 @@ public class DrumView4 extends AbstractDrumView<FireControlSurface, FireConfigur
     public void updateNoteMapping ()
     {
         this.surface.setKeyTranslationTable (this.scales.translateMatrixToGrid (EMPTY_TABLE));
+    }
+
+
+    /** {@inheritDoc} */
+    @Override
+    public int getSoloButtonColor (final int index)
+    {
+        if (!this.isActive ())
+            return 0;
+
+        final int pos = 3 - index;
+        final IDrumPadBank drumPadBank = this.primary.getDrumPadBank ();
+        if (this.primary.hasDrumPads ())
+            return drumPadBank.getItem (pos).isSelected () ? 4 : 0;
+        return 0;
+    }
+
+
+    /** {@inheritDoc} */
+    @Override
+    public int getButtonColor (final ButtonID buttonID)
+    {
+        switch (buttonID)
+        {
+            case SCENE1:
+            case SCENE2:
+            case SCENE3:
+            case SCENE4:
+                final int scene = buttonID.ordinal () - ButtonID.SCENE1.ordinal ();
+                if (this.primary.hasDrumPads ())
+                {
+                    final IDrumPad item = this.primary.getDrumPadBank ().getItem (3 - scene);
+                    if (item.doesExist ())
+                    {
+                        if (item.isSolo ())
+                            return 2;
+                        return item.isMute () ? 0 : 1;
+                    }
+                }
+                return 0;
+
+            default:
+                return super.getButtonColor (buttonID);
+        }
+    }
+
+
+    /** {@inheritDoc} */
+    @Override
+    public void onButton (final ButtonID buttonID, final ButtonEvent event, final int velocity)
+    {
+        if (event != ButtonEvent.DOWN || !this.isActive ())
+            return;
+
+        if (buttonID == ButtonID.ARROW_LEFT)
+        {
+            if (this.surface.isPressed (ButtonID.ALT))
+                this.setResolutionIndex (this.selectedResolutionIndex - 1);
+            else
+                this.getClip ().scrollStepsPageBackwards ();
+            return;
+        }
+
+        if (buttonID == ButtonID.ARROW_RIGHT)
+        {
+            if (this.surface.isPressed (ButtonID.ALT))
+                this.setResolutionIndex (this.selectedResolutionIndex + 1);
+            else
+                this.getClip ().scrollStepsPageForward ();
+            return;
+        }
+
+        if (!ButtonID.isSceneButton (buttonID))
+            return;
+        final int index = 3 - (buttonID.ordinal () - ButtonID.SCENE1.ordinal ());
+        if (this.primary.hasDrumPads ())
+        {
+            final IDrumPad item = this.primary.getDrumPadBank ().getItem (index);
+            if (this.surface.isPressed (ButtonID.SHIFT))
+                item.toggleSolo ();
+            else
+                item.toggleMute ();
+        }
+    }
+
+
+    /** {@inheritDoc} */
+    @Override
+    public void onSelectKnobValue (final int value)
+    {
+        final boolean isUp = this.model.getValueChanger ().calcKnobSpeed (value) > 0;
+        final IDrumPadBank drumPadBank = this.primary.getDrumPadBank ();
+
+        final IDrumPad sel = drumPadBank.getSelectedItem ();
+
+        final int index;
+        if (isUp)
+        {
+            index = sel == null ? drumPadBank.getPageSize () : sel.getIndex () + 1;
+            if (index == drumPadBank.getPageSize ())
+            {
+                this.changeOctave (ButtonEvent.DOWN, isUp, 4, true);
+                this.surface.scheduleTask ( () -> drumPadBank.getItem (0).select (), 100);
+            }
+            else
+                drumPadBank.getItem (index).select ();
+        }
+        else
+        {
+            index = sel == null ? -1 : sel.getIndex () - 1;
+            if (index == -1)
+            {
+                this.changeOctave (ButtonEvent.DOWN, isUp, 4, true);
+                this.surface.scheduleTask ( () -> drumPadBank.getItem (drumPadBank.getPageSize () - 1).select (), 100);
+            }
+            else
+                drumPadBank.getItem (index).select ();
+        }
     }
 }

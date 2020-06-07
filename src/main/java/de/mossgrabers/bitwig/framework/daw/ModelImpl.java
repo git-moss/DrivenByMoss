@@ -116,8 +116,10 @@ public class ModelImpl extends AbstractModel
             this.drumDevice64 = new CursorDeviceImpl (this.host, this.valueChanger, drum64CursorDevice, 0, 0, -1, 64, 64);
         }
 
-        final UserControlBank userControls = this.controllerHost.createUserControls (64);
-        this.userParameterBank = new UserParameterBankImpl (this.host, this.valueChanger, userControls, 64, 8);
+        final int numUserPages = modelSetup.getNumUserPages ();
+        final int numUserPageSize = modelSetup.getNumUserPageSize ();
+        final UserControlBank userControls = this.controllerHost.createUserControls (numUserPages * numUserPageSize);
+        this.userParameterBank = new UserParameterBankImpl (this.host, this.valueChanger, userControls, numUserPages, numUserPageSize);
 
         final int numResults = this.modelSetup.getNumResults ();
         if (numResults > 0)

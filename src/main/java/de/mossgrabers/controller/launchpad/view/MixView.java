@@ -14,6 +14,7 @@ import de.mossgrabers.framework.controller.grid.IVirtualFaderCallback;
 import de.mossgrabers.framework.controller.grid.VirtualFaderImpl;
 import de.mossgrabers.framework.daw.DAWColor;
 import de.mossgrabers.framework.daw.IModel;
+import de.mossgrabers.framework.daw.ITrackBank;
 import de.mossgrabers.framework.daw.data.ISend;
 import de.mossgrabers.framework.daw.data.ITrack;
 import de.mossgrabers.framework.utils.ButtonEvent;
@@ -61,9 +62,10 @@ public class MixView extends AbstractView<LaunchpadControlSurface, LaunchpadConf
     public void drawGrid ()
     {
         final IPadGrid padGrid = this.surface.getPadGrid ();
+        final ITrackBank tb = this.model.getCurrentTrackBank ();
         for (int i = 0; i < 8; i++)
         {
-            final ITrack track = this.model.getCurrentTrackBank ().getItem (i);
+            final ITrack track = tb.getItem (i);
             if (track.doesExist ())
             {
                 final boolean isSelected = track.isSelected ();

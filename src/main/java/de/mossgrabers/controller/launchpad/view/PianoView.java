@@ -70,7 +70,7 @@ public class PianoView extends PlayView
     @Override
     public void updateNoteMapping ()
     {
-        this.delayedUpdateNoteMapping (this.model.canSelectedTrackHoldNotes () ? this.scales.getPianoMatrix () : EMPTY_TABLE);
+        this.delayedUpdateNoteMapping (this.model.canSelectedTrackHoldNotes () ? this.scales.getPianoMatrix (8, 8) : EMPTY_TABLE);
     }
 
 

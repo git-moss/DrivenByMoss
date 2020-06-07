@@ -184,9 +184,10 @@ public abstract class AbstractControlSurface<C extends Configuration> implements
             return;
 
         final int size = this.pads.getRows () * this.pads.getCols ();
+        final int startNote = this.pads.getStartNote ();
         for (int i = 0; i < size; i++)
         {
-            final int note = this.pads.getStartNote () + i;
+            final int note = startNote + i;
 
             final ButtonID buttonID = ButtonID.get (ButtonID.PAD1, i);
             final IHwButton pad = this.createButton (buttonID, "P " + (i + 1));
@@ -203,9 +204,10 @@ public abstract class AbstractControlSurface<C extends Configuration> implements
     public void rebindGrid ()
     {
         final int size = this.pads.getRows () * this.pads.getCols ();
+        final int startNote = this.pads.getStartNote ();
         for (int i = 0; i < size; i++)
         {
-            final int note = this.pads.getStartNote () + i;
+            final int note = startNote + i;
 
             final IHwButton pad = this.getButton (ButtonID.get (ButtonID.PAD1, i));
             final int [] translated = this.pads.translateToController (note);
