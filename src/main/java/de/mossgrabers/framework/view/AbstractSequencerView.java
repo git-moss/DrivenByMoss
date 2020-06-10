@@ -53,6 +53,7 @@ public abstract class AbstractSequencerView<S extends IControlSurface<C>, C exte
     protected int                 numSequencerRows;
     protected int                 selectedResolutionIndex;
     protected final Configuration configuration;
+    protected boolean             isNoteEdited                 = false;
 
     protected final int           clipRows;
     protected final int           clipCols;
@@ -200,6 +201,15 @@ public abstract class AbstractSequencerView<S extends IControlSurface<C>, C exte
         if (!this.isActive ())
             return AbstractSequencerView.COLOR_RESOLUTION_OFF;
         return buttonID == ButtonID.get (ButtonID.SCENE1, 7 - this.selectedResolutionIndex) ? AbstractSequencerView.COLOR_RESOLUTION_SELECTED : AbstractSequencerView.COLOR_RESOLUTION;
+    }
+
+
+    /**
+     * Signal that a note has been edited.
+     */
+    public void setNoteEdited ()
+    {
+        this.isNoteEdited = true;
     }
 
 

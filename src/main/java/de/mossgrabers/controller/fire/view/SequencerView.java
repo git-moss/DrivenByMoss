@@ -6,9 +6,14 @@ package de.mossgrabers.controller.fire.view;
 
 import de.mossgrabers.controller.fire.FireConfiguration;
 import de.mossgrabers.controller.fire.controller.FireControlSurface;
+import de.mossgrabers.controller.fire.mode.NoteMode;
 import de.mossgrabers.framework.controller.ButtonID;
 import de.mossgrabers.framework.daw.IModel;
+import de.mossgrabers.framework.daw.INoteClip;
+import de.mossgrabers.framework.daw.IStepInfo;
 import de.mossgrabers.framework.daw.data.ITrack;
+import de.mossgrabers.framework.mode.ModeManager;
+import de.mossgrabers.framework.mode.Modes;
 import de.mossgrabers.framework.utils.ButtonEvent;
 import de.mossgrabers.framework.view.AbstractNoteSequencerView;
 import de.mossgrabers.framework.view.Views;
@@ -32,6 +37,44 @@ public class SequencerView extends AbstractNoteSequencerView<FireControlSurface,
         super (Views.VIEW_NAME_SEQUENCER, surface, model, 16, 4, true);
 
         this.numDisplayRows = 4;
+    }
+
+
+    /** {@inheritDoc} */
+    @Override
+    protected void handleSequencerArea (final int index, final int x, final int y, final int velocity)
+    {
+        final INoteClip clip = this.getClip ();
+        final int channel = this.configuration.getMidiEditChannel ();
+        final int mappedY = this.keyManager.map (y);
+
+        // Handle note editor mode
+        final ModeManager modeManager = this.surface.getModeManager ();
+        if (velocity > 0)
+        {
+            // Turn on Note mode if an existing note is pressed
+            final int state = clip.getStep (channel, x, mappedY).getState ();
+            if (state == IStepInfo.NOTE_START)
+            {
+                final NoteMode noteMode = (NoteMode) modeManager.getMode (Modes.NOTE);
+                noteMode.setValues (clip, channel, x, mappedY);
+                modeManager.setActiveMode (Modes.NOTE);
+            }
+        }
+        else
+        {
+            // Turn off Note mode
+            if (modeManager.isActiveOrTempMode (Modes.NOTE))
+                modeManager.restoreMode ();
+
+            if (this.isNoteEdited)
+            {
+                this.isNoteEdited = false;
+                return;
+            }
+        }
+
+        super.handleSequencerArea (index, x, y, velocity);
     }
 
 

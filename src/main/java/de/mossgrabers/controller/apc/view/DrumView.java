@@ -27,9 +27,6 @@ import de.mossgrabers.framework.view.AbstractDrumView;
  */
 public class DrumView extends AbstractDrumView<APCControlSurface, APCConfiguration>
 {
-    private boolean isNoteEdited = false;
-
-
     /**
      * Constructor.
      *
@@ -134,14 +131,5 @@ public class DrumView extends AbstractDrumView<APCControlSurface, APCConfigurati
         if (buttonID == ButtonID.SCENE3)
             return ColorManager.BUTTON_STATE_OFF;
         return this.isActive () ? ColorManager.BUTTON_STATE_ON : ColorManager.BUTTON_STATE_OFF;
-    }
-
-
-    /**
-     * Signal that a note has been edited.
-     */
-    public void setNoteEdited ()
-    {
-        this.isNoteEdited = true;
     }
 }

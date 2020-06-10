@@ -4,7 +4,6 @@
 
 package de.mossgrabers.controller.push.view;
 
-import de.mossgrabers.controller.push.PushConfiguration;
 import de.mossgrabers.controller.push.controller.PushControlSurface;
 import de.mossgrabers.controller.push.mode.NoteMode;
 import de.mossgrabers.framework.controller.ButtonID;
@@ -14,7 +13,6 @@ import de.mossgrabers.framework.daw.IModel;
 import de.mossgrabers.framework.daw.INoteClip;
 import de.mossgrabers.framework.daw.IStepInfo;
 import de.mossgrabers.framework.daw.data.IDrumPad;
-import de.mossgrabers.framework.mode.BrowserActivator;
 import de.mossgrabers.framework.mode.ModeManager;
 import de.mossgrabers.framework.mode.Modes;
 import de.mossgrabers.framework.view.Views;
@@ -27,10 +25,6 @@ import de.mossgrabers.framework.view.Views;
  */
 public class DrumView extends DrumViewBase
 {
-    private final BrowserActivator<PushControlSurface, PushConfiguration> browserModeActivator;
-    private int                                                           scrollPosition = -1;
-
-
     /**
      * Constructor.
      *
@@ -40,29 +34,6 @@ public class DrumView extends DrumViewBase
     public DrumView (final PushControlSurface surface, final IModel model)
     {
         super (Views.VIEW_NAME_DRUM, surface, model, 4, 4);
-
-        this.browserModeActivator = new BrowserActivator<> (Modes.BROWSER, model, surface);
-    }
-
-
-    /** {@inheritDoc} */
-    @Override
-    protected void handleNoteAreaButtonCombinations (final int playedPad)
-    {
-        if (this.isButtonCombination (ButtonID.BROWSE))
-        {
-            final ICursorDevice primary = this.model.getInstrumentDevice ();
-            if (!primary.hasDrumPads ())
-                return;
-
-            final IDrumPadBank drumPadBank = primary.getDrumPadBank ();
-            this.scrollPosition = drumPadBank.getScrollPosition ();
-            this.model.getBrowser ().replace (drumPadBank.getItem (playedPad));
-            this.browserModeActivator.activate ();
-            return;
-        }
-
-        super.handleNoteAreaButtonCombinations (playedPad);
     }
 
 
@@ -148,16 +119,5 @@ public class DrumView extends DrumViewBase
         drumPad.select ();
 
         this.updateNoteMapping ();
-    }
-
-
-    /**
-     * Filling a slot from the browser moves the bank view to that slot. This function moves it back
-     * to the correct position.
-     */
-    public void repositionBankPage ()
-    {
-        if (this.scrollPosition >= 0)
-            this.model.getInstrumentDevice ().getDrumPadBank ().scrollTo (this.scrollPosition);
     }
 }

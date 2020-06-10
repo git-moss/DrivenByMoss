@@ -65,7 +65,7 @@ public class ListComponent implements IComponent
             final boolean isSelected = item.getValue ().booleanValue ();
             final double itemTop = i * itemHeight;
             gc.fillRectangle (itemLeft, itemTop + separatorSize, itemWidth, itemHeight - 2 * separatorSize, isSelected ? textColor : borderColor);
-            gc.drawTextInBounds (item.getKey (), itemLeft + inset, itemTop, itemWidth - 2 * inset, itemHeight, Align.LEFT, isSelected ? borderColor : textColor, itemHeight / 2);
+            gc.drawTextInBounds (item.getKey (), itemLeft + inset, itemTop, itemWidth - 2 * inset, itemHeight, Align.LEFT, isSelected ? borderColor : textColor, itemHeight * 2.0 / 3.0);
         }
     }
 

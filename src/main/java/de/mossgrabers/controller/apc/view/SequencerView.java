@@ -25,9 +25,6 @@ import de.mossgrabers.framework.view.AbstractNoteSequencerView;
  */
 public class SequencerView extends AbstractNoteSequencerView<APCControlSurface, APCConfiguration>
 {
-    private boolean isNoteEdited = false;
-
-
     /**
      * Constructor.
      *
@@ -149,14 +146,5 @@ public class SequencerView extends AbstractNoteSequencerView<APCControlSurface, 
         final String name = this.scales.getScale ().getName ();
         this.surface.getConfiguration ().setScale (name);
         this.surface.getDisplay ().notify (name);
-    }
-
-
-    /**
-     * Signal that a note has been edited.
-     */
-    public void setNoteEdited ()
-    {
-        this.isNoteEdited = true;
     }
 }

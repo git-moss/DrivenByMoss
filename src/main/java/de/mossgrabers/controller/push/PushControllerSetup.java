@@ -20,7 +20,6 @@ import de.mossgrabers.controller.push.command.trigger.PageLeftCommand;
 import de.mossgrabers.controller.push.command.trigger.PageRightCommand;
 import de.mossgrabers.controller.push.command.trigger.PanSendCommand;
 import de.mossgrabers.controller.push.command.trigger.PlayPositionKnobCommand;
-import de.mossgrabers.controller.push.command.trigger.PushBrowserCommand;
 import de.mossgrabers.controller.push.command.trigger.PushCursorCommand;
 import de.mossgrabers.controller.push.command.trigger.PushMetronomeCommand;
 import de.mossgrabers.controller.push.command.trigger.PushQuantizeCommand;
@@ -92,6 +91,7 @@ import de.mossgrabers.framework.command.aftertouch.AftertouchAbstractViewCommand
 import de.mossgrabers.framework.command.continuous.FootswitchCommand;
 import de.mossgrabers.framework.command.continuous.KnobRowModeCommand;
 import de.mossgrabers.framework.command.continuous.MasterVolumeCommand;
+import de.mossgrabers.framework.command.trigger.BrowserCommand;
 import de.mossgrabers.framework.command.trigger.application.DeleteCommand;
 import de.mossgrabers.framework.command.trigger.application.DuplicateCommand;
 import de.mossgrabers.framework.command.trigger.application.UndoCommand;
@@ -495,7 +495,7 @@ public class PushControllerSetup extends AbstractControllerSetup<PushControlSurf
 
         this.addButton (ButtonID.TRACK, this.isPush2 ? "Mix" : "Track", new TrackCommand (this.model, surface), PushControlSurface.PUSH_BUTTON_TRACK, () -> this.isPush2 ? Modes.isMixMode (modeManager.getActiveOrTempModeId ()) : modeManager.isActiveOrTempMode (Modes.TRACK));
         this.addButton (ButtonID.DEVICE, "Device", new DeviceCommand (this.model, surface), PushControlSurface.PUSH_BUTTON_DEVICE, () -> Modes.isDeviceMode (modeManager.getActiveOrTempModeId ()));
-        this.addButton (ButtonID.BROWSE, "Browse", new PushBrowserCommand (Modes.BROWSER, this.model, surface), PushControlSurface.PUSH_BUTTON_BROWSE, () -> modeManager.isActiveOrTempMode (Modes.BROWSER));
+        this.addButton (ButtonID.BROWSE, "Browse", new BrowserCommand<> (Modes.BROWSER, this.model, surface), PushControlSurface.PUSH_BUTTON_BROWSE, () -> modeManager.isActiveOrTempMode (Modes.BROWSER));
         this.addButton (ButtonID.CLIP, "Clip", new ClipCommand (this.model, surface), PushControlSurface.PUSH_BUTTON_CLIP, () -> modeManager.isActiveOrTempMode (Modes.CLIP));
 
         for (int i = 0; i < 8; i++)

@@ -6,6 +6,7 @@ package de.mossgrabers.framework.command.trigger;
 
 import de.mossgrabers.framework.command.core.AbstractTriggerCommand;
 import de.mossgrabers.framework.configuration.Configuration;
+import de.mossgrabers.framework.controller.ButtonID;
 import de.mossgrabers.framework.controller.IControlSurface;
 import de.mossgrabers.framework.daw.IBrowser;
 import de.mossgrabers.framework.daw.ICursorDevice;
@@ -14,6 +15,9 @@ import de.mossgrabers.framework.daw.data.IChannel;
 import de.mossgrabers.framework.mode.BrowserActivator;
 import de.mossgrabers.framework.mode.Modes;
 import de.mossgrabers.framework.utils.ButtonEvent;
+import de.mossgrabers.framework.view.AbstractDrumView;
+import de.mossgrabers.framework.view.ViewManager;
+import de.mossgrabers.framework.view.Views;
 
 
 /**
@@ -27,6 +31,21 @@ import de.mossgrabers.framework.utils.ButtonEvent;
 public class BrowserCommand<S extends IControlSurface<C>, C extends Configuration> extends AbstractTriggerCommand<S, C>
 {
     private final BrowserActivator<S, C> browserModeActivator;
+    private final ButtonID               firstTrigger;
+    private final ButtonID               secondTrigger;
+
+
+    /**
+     * Constructor. Uses SHIFT as the first trigger and SELECT as the second.
+     *
+     * @param browserMode The ID of the mode to activate for browsing
+     * @param model The model
+     * @param surface The surface
+     */
+    public BrowserCommand (final Modes browserMode, final IModel model, final S surface)
+    {
+        this (browserMode, model, surface, ButtonID.SHIFT, ButtonID.SELECT);
+    }
 
 
     /**
@@ -35,30 +54,32 @@ public class BrowserCommand<S extends IControlSurface<C>, C extends Configuratio
      * @param browserMode The ID of the mode to activate for browsing
      * @param model The model
      * @param surface The surface
+     * @param firstTrigger If this button is pressed when the command is executed a new device is
+     *            inserted before the current one
+     * @param secondTrigger If this button is pressed when the command is executed a new device is
+     *            inserted after the current one
      */
-    public BrowserCommand (final Modes browserMode, final IModel model, final S surface)
+    public BrowserCommand (final Modes browserMode, final IModel model, final S surface, final ButtonID firstTrigger, final ButtonID secondTrigger)
     {
         super (model, surface);
 
+        this.firstTrigger = firstTrigger;
+        this.secondTrigger = secondTrigger;
         this.browserModeActivator = new BrowserActivator<> (browserMode, model, surface);
     }
 
 
     /** {@inheritDoc} */
     @Override
-    public void executeNormal (final ButtonEvent event)
+    public void execute (final ButtonEvent event, final int velocity)
     {
-        if (event == ButtonEvent.UP)
-            this.startBrowser (this.surface.isSelectPressed (), false);
-    }
+        if (event != ButtonEvent.UP)
+            return;
 
-
-    /** {@inheritDoc} */
-    @Override
-    public void executeShifted (final ButtonEvent event)
-    {
-        if (event == ButtonEvent.UP)
+        if (this.surface.isPressed (this.firstTrigger))
             this.startBrowser (true, true);
+        else
+            this.startBrowser (this.surface.isPressed (this.secondTrigger), false);
     }
 
 
@@ -141,10 +162,18 @@ public class BrowserCommand<S extends IControlSurface<C>, C extends Configuratio
      *
      * @param commit True to commit otherwise cancel
      */
-    protected void discardBrowser (final boolean commit)
+    public void discardBrowser (final boolean commit)
     {
         this.model.getBrowser ().stopBrowsing (commit);
         this.surface.getModeManager ().restoreMode ();
+
+        if (!commit)
+            return;
+
+        // Workaround for drum page scroll bug
+        final ViewManager viewManager = this.surface.getViewManager ();
+        if (viewManager.isActiveView (Views.DRUM))
+            AbstractDrumView.class.cast (viewManager.getView (Views.DRUM)).repositionBankPage ();
     }
 
 

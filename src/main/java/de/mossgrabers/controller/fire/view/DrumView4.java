@@ -6,6 +6,7 @@ package de.mossgrabers.controller.fire.view;
 
 import de.mossgrabers.controller.fire.FireConfiguration;
 import de.mossgrabers.controller.fire.controller.FireControlSurface;
+import de.mossgrabers.controller.fire.mode.NoteMode;
 import de.mossgrabers.framework.controller.ButtonID;
 import de.mossgrabers.framework.controller.color.ColorEx;
 import de.mossgrabers.framework.controller.grid.IPadGrid;
@@ -17,6 +18,8 @@ import de.mossgrabers.framework.daw.INoteClip;
 import de.mossgrabers.framework.daw.IStepInfo;
 import de.mossgrabers.framework.daw.constants.Resolution;
 import de.mossgrabers.framework.daw.data.IDrumPad;
+import de.mossgrabers.framework.mode.ModeManager;
+import de.mossgrabers.framework.mode.Modes;
 import de.mossgrabers.framework.utils.ButtonEvent;
 import de.mossgrabers.framework.view.AbstractDrumView;
 
@@ -53,7 +56,7 @@ public class DrumView4 extends AbstractDrumView<FireControlSurface, FireConfigur
     @Override
     public void onGridNote (final int note, final int velocity)
     {
-        if (!this.isActive () || velocity == 0)
+        if (!this.isActive ())
             return;
 
         final int index = note - DRUM_START_KEY;
@@ -61,16 +64,43 @@ public class DrumView4 extends AbstractDrumView<FireControlSurface, FireConfigur
         final int y = index / this.columns;
 
         final int sound = y % 4 + this.scales.getDrumOffset ();
-        final int col = this.columns * (y / 4) + x;
+        final int step = this.columns * (y / 4) + x;
 
         final int channel = this.configuration.getMidiEditChannel ();
         final int vel = this.configuration.isAccentActive () ? this.configuration.getFixedAccentValue () : velocity;
         final INoteClip clip = this.getClip ();
 
-        if (this.handleNoteAreaButtonCombinations (clip, channel, col, y, sound, vel))
+        if (this.handleNoteAreaButtonCombinations (clip, channel, step, y, sound, velocity, vel))
             return;
 
-        clip.toggleStep (channel, col, sound, vel);
+        // Handle note editor mode
+        final ModeManager modeManager = this.surface.getModeManager ();
+        if (velocity > 0)
+        {
+            // Turn on Note mode if an existing note is pressed
+            final int state = clip.getStep (channel, step, sound).getState ();
+            if (state == IStepInfo.NOTE_START)
+            {
+                final NoteMode noteMode = (NoteMode) modeManager.getMode (Modes.NOTE);
+                noteMode.setValues (clip, channel, step, sound);
+                modeManager.setActiveMode (Modes.NOTE);
+            }
+        }
+        else
+        {
+            // Turn off Note mode
+            if (modeManager.isActiveOrTempMode (Modes.NOTE))
+                modeManager.restoreMode ();
+
+            if (this.isNoteEdited)
+            {
+                this.isNoteEdited = false;
+                return;
+            }
+        }
+
+        if (velocity == 0)
+            clip.toggleStep (channel, step, sound, vel);
     }
 
 
@@ -83,10 +113,28 @@ public class DrumView4 extends AbstractDrumView<FireControlSurface, FireConfigur
      * @param note The note in the current page of the pad in the clip
      * @param step The step in the current page in the clip
      * @param velocity The velocity
+     * @param vel The velocity or accent
      * @return True if handled
      */
-    private boolean handleNoteAreaButtonCombinations (final INoteClip clip, final int channel, final int step, final int row, final int note, final int velocity)
+    private boolean handleNoteAreaButtonCombinations (final INoteClip clip, final int channel, final int step, final int row, final int note, final int velocity, final int vel)
     {
+        if (this.isButtonCombination (ButtonID.BROWSE))
+        {
+            if (velocity == 0)
+            {
+                this.surface.setTriggerConsumed (ButtonID.BROWSE);
+
+                if (!this.primary.hasDrumPads ())
+                    return true;
+
+                final IDrumPadBank drumPadBank = this.primary.getDrumPadBank ();
+                this.scrollPosition = drumPadBank.getScrollPosition ();
+                this.model.getBrowser ().replace (drumPadBank.getItem (row));
+                this.browserModeActivator.activate ();
+            }
+            return true;
+        }
+
         // Change length of a note or create a new one with a length
         final int lines = 4;
         final boolean isLower = row / lines == 0;
@@ -106,7 +154,7 @@ public class DrumView4 extends AbstractDrumView<FireControlSurface, FireConfigur
                 if (state == IStepInfo.NOTE_START)
                     clip.updateStepDuration (channel, start, note, duration);
                 else
-                    clip.setStep (channel, start, note, velocity, duration);
+                    clip.setStep (channel, start, note, vel, duration);
                 return true;
             }
         }

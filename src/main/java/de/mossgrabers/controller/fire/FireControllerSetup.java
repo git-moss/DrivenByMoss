@@ -6,7 +6,9 @@ package de.mossgrabers.controller.fire;
 
 import de.mossgrabers.controller.fire.command.continuous.SelectKnobCommand;
 import de.mossgrabers.controller.fire.command.trigger.DrumSequencerSelectCommand;
+import de.mossgrabers.controller.fire.command.trigger.FireBrowserCommand;
 import de.mossgrabers.controller.fire.command.trigger.FireRecordCommand;
+import de.mossgrabers.controller.fire.command.trigger.FireViewButtonCommand;
 import de.mossgrabers.controller.fire.command.trigger.PlaySelectCommand;
 import de.mossgrabers.controller.fire.command.trigger.SessionSelectCommand;
 import de.mossgrabers.controller.fire.command.trigger.StepSequencerSelectCommand;
@@ -14,10 +16,12 @@ import de.mossgrabers.controller.fire.controller.FireColorManager;
 import de.mossgrabers.controller.fire.controller.FireControlSurface;
 import de.mossgrabers.controller.fire.controller.FireDisplay;
 import de.mossgrabers.controller.fire.controller.FireScales;
-import de.mossgrabers.controller.fire.mode.track.FireLayerMode;
-import de.mossgrabers.controller.fire.mode.track.FireParameterMode;
-import de.mossgrabers.controller.fire.mode.track.FireTrackMode;
-import de.mossgrabers.controller.fire.mode.track.FireUserMode;
+import de.mossgrabers.controller.fire.mode.BrowserMode;
+import de.mossgrabers.controller.fire.mode.FireLayerMode;
+import de.mossgrabers.controller.fire.mode.FireParameterMode;
+import de.mossgrabers.controller.fire.mode.FireTrackMode;
+import de.mossgrabers.controller.fire.mode.FireUserMode;
+import de.mossgrabers.controller.fire.mode.NoteMode;
 import de.mossgrabers.controller.fire.view.DrumView4;
 import de.mossgrabers.controller.fire.view.DrumView64;
 import de.mossgrabers.controller.fire.view.IFireView;
@@ -115,6 +119,8 @@ public class FireControllerSetup extends AbstractControllerSetup<FireControlSurf
         ms.setNumDeviceLayers (4);
         ms.setNumUserPages (8);
         ms.setNumUserPageSize (4);
+        ms.setNumFilterColumnEntries (3);
+        ms.setNumResults (3);
         ms.setHasFullFlatTrackList (true);
 
         this.model = this.factory.createModel (this.colorManager, this.valueChanger, this.scales, ms);
@@ -161,6 +167,8 @@ public class FireControllerSetup extends AbstractControllerSetup<FireControlSurf
         modeManager.registerMode (Modes.TRACK, new FireTrackMode (surface, this.model));
         modeManager.registerMode (Modes.DEVICE_PARAMS, new FireParameterMode (surface, this.model));
         modeManager.registerMode (Modes.USER, new FireUserMode (surface, this.model));
+        modeManager.registerMode (Modes.NOTE, new NoteMode (surface, this.model));
+        modeManager.registerMode (Modes.BROWSER, new BrowserMode (surface, this.model));
     }
 
 
@@ -268,15 +276,29 @@ public class FireControllerSetup extends AbstractControllerSetup<FireControlSurf
         this.addButton (ButtonID.SHIFT, "SHIFT", new ToggleShiftViewCommand<> (this.model, surface), FireControlSurface.FIRE_SHIFT, (IntSupplier) null, FireColorManager.BUTTON_STATE_ON2, FireColorManager.BUTTON_STATE_HI2);
         this.addButton (ButtonID.ALT, "ALT", NopCommand.INSTANCE, FireControlSurface.FIRE_ALT);
 
-        this.addButton (ButtonID.SELECT, "SELECT", NopCommand.INSTANCE, FireControlSurface.SELECT);
+        this.addButton (ButtonID.SELECT, "SELECT", (event, velocity) -> {
 
-        // TODO Implement Browser
-        this.addButton (ButtonID.BROWSE, "BROWSER", NopCommand.INSTANCE, FireControlSurface.FIRE_BROWSER);
+            if (velocity > 0)
+                return;
+
+            if (modeManager.isActiveOrTempMode (Modes.NOTE))
+            {
+                final NoteMode mode = (NoteMode) modeManager.getMode (Modes.NOTE);
+                mode.resetTranspose ();
+                return;
+            }
+
+            if (modeManager.isActiveOrTempMode (Modes.BROWSER))
+                ((FireBrowserCommand) surface.getButton (ButtonID.BROWSE).getCommand ()).discardBrowser (true);
+
+        }, FireControlSurface.SELECT);
+
+        this.addButton (ButtonID.BROWSE, "BROWSER", new FireBrowserCommand (Modes.BROWSER, this.model, surface), FireControlSurface.FIRE_BROWSER, () -> modeManager.isActiveOrTempMode (Modes.BROWSER));
 
         // Navigation
 
-        this.addButton (ButtonID.ARROW_LEFT, "GRID\nLEFT", new ViewButtonCommand<> (ButtonID.ARROW_LEFT, surface), FireControlSurface.FIRE_GRID_LEFT);
-        this.addButton (ButtonID.ARROW_RIGHT, "GRID\nRIGHT", new ViewButtonCommand<> (ButtonID.ARROW_RIGHT, surface), FireControlSurface.FIRE_GRID_RIGHT);
+        this.addButton (ButtonID.ARROW_LEFT, "GRID\nLEFT", new FireViewButtonCommand (ButtonID.ARROW_LEFT, this.model, surface), FireControlSurface.FIRE_GRID_LEFT);
+        this.addButton (ButtonID.ARROW_RIGHT, "GRID\nRIGHT", new FireViewButtonCommand (ButtonID.ARROW_RIGHT, this.model, surface), FireControlSurface.FIRE_GRID_RIGHT);
 
         this.addButton (ButtonID.ARROW_UP, "PATTERN\nUP", (event, velocity) -> {
             if (velocity == 0)

@@ -185,7 +185,7 @@ public class DeviceBrowserMode extends BaseMode
                     selectedContentType = Push1Display.SELECT_ARROW + selectedContentType;
 
                 String selectedResult = browser.getSelectedResult ();
-                selectedResult = selectedResult == null || selectedResult.length () == 0 ? "Selection: None" : "Selection: " + selectedResult;
+                selectedResult = selectedResult == null || selectedResult.isBlank () ? "Selection: None" : "Selection: " + selectedResult;
 
                 final String infoText = browser.getInfoText ();
                 final String info1 = infoText.length () > 17 ? infoText.substring (0, 17) : infoText;
@@ -260,7 +260,7 @@ public class DeviceBrowserMode extends BaseMode
         {
             case DeviceBrowserMode.SELECTION_OFF:
                 String selectedResult = browser.getSelectedResult ();
-                selectedResult = selectedResult == null || selectedResult.length () == 0 ? "Selection: None" : "Selection: " + selectedResult;
+                selectedResult = selectedResult == null || selectedResult.isBlank () ? "Selection: None" : "Selection: " + selectedResult;
                 for (int i = 0; i < 7; i++)
                 {
                     final IBrowserColumn column = this.getFilterColumn (i);
@@ -443,26 +443,23 @@ public class DeviceBrowserMode extends BaseMode
     private void selectPrevious (final int index, final int count)
     {
         final IBrowser browser = this.model.getBrowser ();
-        for (int i = 0; i < count; i++)
+        if (index < 7)
         {
-            if (index < 7)
+            final IBrowserColumn fc = this.getFilterColumn (index);
+            if (fc != null && fc.doesExist ())
             {
-                final IBrowserColumn fc = this.getFilterColumn (index);
-                if (fc != null && fc.doesExist ())
-                {
-                    final int fi = fc.getIndex ();
-                    if (fi < 0)
-                        return;
-                    this.filterColumn = fi;
-                    for (int j = 0; j < count; j++)
-                        browser.selectPreviousFilterItem (this.filterColumn);
-                }
-            }
-            else
-            {
+                final int fi = fc.getIndex ();
+                if (fi < 0)
+                    return;
+                this.filterColumn = fi;
                 for (int j = 0; j < count; j++)
-                    browser.selectPreviousResult ();
+                    browser.selectPreviousFilterItem (this.filterColumn);
             }
+        }
+        else
+        {
+            for (int j = 0; j < count; j++)
+                browser.selectPreviousResult ();
         }
     }
 
