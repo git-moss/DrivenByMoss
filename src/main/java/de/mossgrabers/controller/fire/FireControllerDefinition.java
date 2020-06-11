@@ -21,7 +21,6 @@ public class FireControllerDefinition extends DefaultControllerDefinition
 {
     private static final UUID EXTENSION_ID = UUID.fromString ("75CC171F-325C-45B8-B304-DAE96756D5BA");
 
-
     /**
      * Constructor.
      */
@@ -52,6 +51,7 @@ public class FireControllerDefinition extends DefaultControllerDefinition
                     final String name = "FL STUDIO FIRE Jack " + i;
                     midiDiscoveryPairs.add (this.addDeviceDiscoveryPair (name, name));
                 }
+                midiDiscoveryPairs.addAll (this.createDeviceDiscoveryPairs ("FL STUDIO FIRE"));
                 break;
 
             default:
