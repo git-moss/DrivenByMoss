@@ -217,9 +217,8 @@ public class DrumView4 extends AbstractDrumView<FireControlSurface, FireConfigur
             return 0;
 
         final int pos = 3 - index;
-        final IDrumPadBank drumPadBank = this.primary.getDrumPadBank ();
         if (this.primary.hasDrumPads ())
-            return drumPadBank.getItem (pos).isSelected () ? 4 : 0;
+            return this.primary.getDrumPadBank ().getItem (pos).isSelected () ? 4 : 0;
         return 0;
     }
 
@@ -296,6 +295,9 @@ public class DrumView4 extends AbstractDrumView<FireControlSurface, FireConfigur
     @Override
     public void onSelectKnobValue (final int value)
     {
+        if (!this.primary.hasDrumPads ())
+            return;
+
         final boolean isUp = this.model.getValueChanger ().calcKnobSpeed (value) > 0;
         final IDrumPadBank drumPadBank = this.primary.getDrumPadBank ();
 
