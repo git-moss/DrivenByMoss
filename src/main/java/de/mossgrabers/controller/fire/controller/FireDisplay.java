@@ -11,6 +11,8 @@ import de.mossgrabers.framework.graphics.ChromaticGraphicsConfiguration;
 import de.mossgrabers.framework.graphics.DefaultGraphicsDimensions;
 import de.mossgrabers.framework.graphics.IBitmap;
 
+import java.util.Arrays;
+
 
 /**
  * The display of the Akai Fire.
@@ -34,8 +36,11 @@ public class FireDisplay extends AbstractGraphicDisplay
     // @formatter:on
 
     private final IMidiOutput output;
-    private final int []      oledBitmap = new int [1175];
-    private final byte []     data       = new byte [8 + this.oledBitmap.length];
+    private final int []      oledBitmap    = new int [1175];
+    private final byte []     data          = new byte [8 + this.oledBitmap.length];
+    private final int []      oldOledBitmap = new int [this.oledBitmap.length];
+
+    private long              lastSend      = System.currentTimeMillis ();
 
 
     /**
@@ -83,35 +88,48 @@ public class FireDisplay extends AbstractGraphicDisplay
     @Override
     protected void send (final IBitmap image)
     {
-        image.encode ( (imageBuffer, width, height) -> {
+        synchronized (this.data)
+        {
+            image.encode ( (imageBuffer, width, height) -> {
 
-            // Unwind 128x64 arrangement into a 1024x8 arrangement of pixels
-            for (int y = 0; y < height; y++)
-            {
-                for (int x = 0; x < width; x++)
+                // Unwind 128x64 arrangement into a 1024x8 arrangement of pixels
+                for (int y = 0; y < height; y++)
                 {
-                    final int blue = imageBuffer.get ();
-                    final int green = imageBuffer.get ();
-                    final int red = imageBuffer.get ();
-                    imageBuffer.get (); // Drop unused Alpha
+                    for (int x = 0; x < width; x++)
+                    {
+                        final int blue = imageBuffer.get ();
+                        final int green = imageBuffer.get ();
+                        final int red = imageBuffer.get ();
+                        imageBuffer.get (); // Drop unused Alpha
 
-                    final int xpos = x + 128 * (y / 8);
-                    final int ypos = y % 8;
+                        final int xpos = x + 128 * (y / 8);
+                        final int ypos = y % 8;
 
-                    // Remap by tiling 7x8 block of translated pixels
-                    final int remapBit = bitMutate[ypos][xpos % 7];
-                    if (blue + green + red < 0)
-                        this.oledBitmap[4 + xpos / 7 * 8 + remapBit / 7] |= 1 << remapBit % 7;
-                    else
-                        this.oledBitmap[4 + xpos / 7 * 8 + remapBit / 7] &= ~(1 << remapBit % 7);
+                        // Remap by tiling 7x8 block of translated pixels
+                        final int remapBit = bitMutate[ypos][xpos % 7];
+                        if (blue + green + red < 0)
+                            this.oledBitmap[4 + xpos / 7 * 8 + remapBit / 7] |= 1 << remapBit % 7;
+                        else
+                            this.oledBitmap[4 + xpos / 7 * 8 + remapBit / 7] &= ~(1 << remapBit % 7);
+                    }
                 }
-            }
 
-            // Convert to sysex and send to device
-            final int length = this.oledBitmap.length;
-            for (int i = 0; i < length; i++)
-                this.data[7 + i] = (byte) this.oledBitmap[i];
+                // Convert to sysex and send to device
+                final int length = this.oledBitmap.length;
+                for (int i = 0; i < length; i++)
+                    this.data[7 + i] = (byte) this.oledBitmap[i];
+            });
+
+            // Slow down display updates to not flood the device controller
+            // Send if content has change or every 3 seconds if there was no change to keep the
+            // display from going into sleep mode
+            long now = System.currentTimeMillis ();
+            if (Arrays.compare (this.oledBitmap, this.oldOledBitmap) == 0 && now - this.lastSend < 3000)
+                return;
+
             this.output.sendSysex (this.data);
-        });
+            System.arraycopy (this.oledBitmap, 0, this.oldOledBitmap, 0, this.oledBitmap.length);
+            this.lastSend = now;
+        }
     }
 }

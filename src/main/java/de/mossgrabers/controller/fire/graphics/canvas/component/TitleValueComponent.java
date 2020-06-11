@@ -41,7 +41,7 @@ public class TitleValueComponent implements IComponent
     }
 
 
-    /** {@inheritDoc}} */
+    /** {@inheritDoc} */
     @Override
     public void draw (final IGraphicsInfo info)
     {
@@ -71,5 +71,50 @@ public class TitleValueComponent implements IComponent
             else
                 gc.fillRectangle (1, 44, width, barHeight, colorFader);
         }
+    }
+
+
+    /** {@inheritDoc} */
+    @Override
+    public int hashCode ()
+    {
+        final int prime = 31;
+        int result = 1;
+        result = prime * result + (this.isPan ? 1231 : 1237);
+        result = prime * result + (this.label1 == null ? 0 : this.label1.hashCode ());
+        result = prime * result + (this.label2 == null ? 0 : this.label2.hashCode ());
+        result = prime * result + this.value;
+        return result;
+    }
+
+
+    /** {@inheritDoc} */
+    @Override
+    public boolean equals (final Object obj)
+    {
+        if (this == obj)
+            return true;
+        if (obj == null)
+            return false;
+        if (this.getClass () != obj.getClass ())
+            return false;
+        final TitleValueComponent other = (TitleValueComponent) obj;
+        if (this.isPan != other.isPan)
+            return false;
+        if (this.label1 == null)
+        {
+            if (other.label1 != null)
+                return false;
+        }
+        else if (!this.label1.equals (other.label1))
+            return false;
+        if (this.label2 == null)
+        {
+            if (other.label2 != null)
+                return false;
+        }
+        else if (!this.label2.equals (other.label2))
+            return false;
+        return this.value == other.value;
     }
 }

@@ -5,6 +5,7 @@
 package de.mossgrabers.bitwig.framework.midi;
 
 import de.mossgrabers.framework.daw.midi.AbstractMidiOutputImpl;
+import de.mossgrabers.framework.utils.ConsoleLogger;
 
 import com.bitwig.extension.controller.api.ControllerHost;
 import com.bitwig.extension.controller.api.MidiOut;
@@ -47,6 +48,8 @@ class MidiOutputImpl extends AbstractMidiOutputImpl
     @Override
     public void sendSysex (final byte [] data)
     {
+        ConsoleLogger.log ("Bytes: " + data.length);
+
         this.port.sendSysex (data);
     }
 
@@ -55,6 +58,9 @@ class MidiOutputImpl extends AbstractMidiOutputImpl
     @Override
     public void sendSysex (final String data)
     {
+        int len = data.length ();
+        ConsoleLogger.log ("String: " + len + "(" + (len / 3) + ")");
+
         this.port.sendSysex (data);
     }
 

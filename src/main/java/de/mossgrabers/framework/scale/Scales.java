@@ -767,7 +767,7 @@ public class Scales
     public int [] getPianoMatrix (final int rows, final int columns)
     {
         int octaveOffset = 3 + this.pianoOctave;
-        int counter = octaveOffset * 12;
+        int counter = this.startNote;
         final int rowOffset = columns / 7;
 
         final int [] noteMap = Scales.getEmptyMatrix ();
@@ -777,7 +777,7 @@ public class Scales
             for (int col = 0; col < columns; col++)
             {
                 final int ns = PIANO_MATRIX[row % 2][col % 7];
-                if (ns >= 0)
+                if (ns >= 0 && counter < 128)
                     noteMap[counter] = Math.min (ns + (octaveOffset + (col / 7)) * 12, 127);
                 counter++;
             }
