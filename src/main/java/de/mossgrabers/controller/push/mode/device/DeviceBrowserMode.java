@@ -289,7 +289,7 @@ public class DeviceBrowserMode extends BaseMode
                     for (int item = 0; item < 6; item++)
                     {
                         final int pos = i * 6 + item;
-                        items[item] = pos < results.length ? results[pos].getName (16) : "";
+                        items[item] = pos < results.length ? results[pos].getName (14) : "";
                         selected[item] = pos < results.length && results[pos].isSelected ();
                     }
                     display.addListElement (items, selected);
@@ -305,9 +305,10 @@ public class DeviceBrowserMode extends BaseMode
                     for (int itemIndex = 0; itemIndex < 6; itemIndex++)
                     {
                         final int pos = i * 6 + itemIndex;
-                        String text = StringUtils.optimizeName (item[pos].getName (), 10);
+                        final String hitText = " (" + item[pos].getHitCount () + ")";
+                        String text = item[pos].getName (12 - hitText.length ());
                         if (!text.isEmpty ())
-                            text = text + " (" + item[pos].getHitCount () + ")";
+                            text = text + hitText;
                         items[itemIndex] = text;
                         selected[itemIndex] = item[pos].isSelected ();
                     }
