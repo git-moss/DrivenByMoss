@@ -23,7 +23,7 @@ public class FireViewButtonCommand extends ViewButtonCommand<FireControlSurface,
 {
     /**
      * Constructor.
-     * 
+     *
      * @param buttonID The button which events to relay
      * @param model The model
      * @param surface The surface

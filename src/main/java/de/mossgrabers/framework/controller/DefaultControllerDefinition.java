@@ -29,6 +29,7 @@ public abstract class DefaultControllerDefinition implements IControllerDefiniti
     private final int    numMidiInPorts;
     private final int    numMidiOutPorts;
 
+
     /**
      * Constructor.
      *

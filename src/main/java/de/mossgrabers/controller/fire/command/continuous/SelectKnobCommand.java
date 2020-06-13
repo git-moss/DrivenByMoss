@@ -69,9 +69,9 @@ public class SelectKnobCommand extends AbstractContinuousCommand<FireControlSurf
             if (modeManager.isActiveOrTempMode (Modes.TRACK, Modes.DEVICE_LAYER))
                 handleTrackSelection (this.surface, this.model.getTrackBank (), isInc);
             else if (modeManager.isActiveOrTempMode (Modes.DEVICE_PARAMS))
-                handleDevicePageSelection (isInc);
+                this.handleDevicePageSelection (isInc);
             else if (modeManager.isActiveOrTempMode (Modes.USER))
-                handleUserPageSelection (isInc);
+                this.handleUserPageSelection (isInc);
             return;
         }
 

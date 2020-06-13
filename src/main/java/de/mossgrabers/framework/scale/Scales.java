@@ -744,7 +744,7 @@ public class Scales
         int so = scale.getIndexInScale (noteInOctave);
         if (so < 0)
             so = 0;
-        int no = noteOffset / 12 * 12;
+        final int no = noteOffset / 12 * 12;
 
         for (int note = 0; note < length; note++)
         {
@@ -759,7 +759,7 @@ public class Scales
 
     /**
      * Get the piano matrix.
-     * 
+     *
      * @param rows The number of rows
      * @param columns The number of columns
      * @return The matrix
@@ -778,7 +778,7 @@ public class Scales
             {
                 final int ns = PIANO_MATRIX[row % 2][col % 7];
                 if (ns >= 0 && counter < 128)
-                    noteMap[counter] = Math.min (ns + (octaveOffset + (col / 7)) * 12, 127);
+                    noteMap[counter] = Math.min (ns + (octaveOffset + col / 7) * 12, 127);
                 counter++;
             }
 

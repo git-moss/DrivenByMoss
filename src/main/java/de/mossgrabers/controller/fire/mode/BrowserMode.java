@@ -219,7 +219,7 @@ public class BrowserMode extends AbstractMode<FireControlSurface, FireConfigurat
     private void selectNext (final int index, final int count)
     {
         final IBrowser browser = this.model.getBrowser ();
-        int filterColumnCount = Math.min (browser.getFilterColumnCount (), 7);
+        final int filterColumnCount = Math.min (browser.getFilterColumnCount (), 7);
         if (index < filterColumnCount)
         {
             final IBrowserColumn fc = browser.getFilterColumn (index);
@@ -243,7 +243,7 @@ public class BrowserMode extends AbstractMode<FireControlSurface, FireConfigurat
     private void selectPrevious (final int index, final int count)
     {
         final IBrowser browser = this.model.getBrowser ();
-        int filterColumnCount = Math.min (browser.getFilterColumnCount (), 7);
+        final int filterColumnCount = Math.min (browser.getFilterColumnCount (), 7);
         if (index < filterColumnCount)
         {
             final IBrowserColumn fc = browser.getFilterColumn (index);

@@ -70,7 +70,7 @@ public class FireParameterMode extends ParameterMode<FireControlSurface, FireCon
             final ICursorDevice cursorDevice = this.model.getCursorDevice ();
             desc = cursorDevice.getName (5) + ": " + StringUtils.optimizeName (cursorDevice.getParameterPageBank ().getSelectedItem (), 5);
 
-            int touchedKnob = this.getTouchedKnob ();
+            final int touchedKnob = this.getTouchedKnob ();
             if (touchedKnob > -1)
             {
                 final IParameterBank parameterBank = cursorDevice.getParameterBank ();

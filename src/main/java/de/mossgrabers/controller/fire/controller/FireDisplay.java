@@ -123,7 +123,7 @@ public class FireDisplay extends AbstractGraphicDisplay
             // Slow down display updates to not flood the device controller
             // Send if content has change or every 3 seconds if there was no change to keep the
             // display from going into sleep mode
-            long now = System.currentTimeMillis ();
+            final long now = System.currentTimeMillis ();
             if (Arrays.compare (this.oledBitmap, this.oldOledBitmap) == 0 && now - this.lastSend < 3000)
                 return;
 

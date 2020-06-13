@@ -275,7 +275,7 @@ public class ShiftView extends AbstractView<FireControlSurface, FireConfiguratio
 
     /** {@inheritDoc} */
     @Override
-    public void onSelectKnobValue (int value)
+    public void onSelectKnobValue (final int value)
     {
         // Relay to the actually active view
         final View previousView = this.surface.getViewManager ().getPreviousView ();
@@ -286,7 +286,7 @@ public class ShiftView extends AbstractView<FireControlSurface, FireConfiguratio
 
     /** {@inheritDoc} */
     @Override
-    public int getSoloButtonColor (int index)
+    public int getSoloButtonColor (final int index)
     {
         // Relay to the actually active view
         final View previousView = this.surface.getViewManager ().getPreviousView ();

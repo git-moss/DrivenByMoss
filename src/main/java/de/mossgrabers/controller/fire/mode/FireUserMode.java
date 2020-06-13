@@ -43,11 +43,11 @@ public class FireUserMode extends UserMode<FireControlSurface, FireConfiguration
         final IParameterBank userBank = this.model.getUserParameterBank ();
 
         final int page = userBank.getScrollPosition () / userBank.getPageSize ();
-        String desc = "User Page: " + (page + 1);
+        final String desc = "User Page: " + (page + 1);
         String paramLine = "";
         int value = -1;
 
-        int touchedKnob = this.getTouchedKnob ();
+        final int touchedKnob = this.getTouchedKnob ();
         if (touchedKnob > -1)
         {
             final IParameter p = userBank.getItem (touchedKnob);

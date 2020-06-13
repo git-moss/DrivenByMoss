@@ -179,7 +179,7 @@ public abstract class AbstractDrumView64<S extends IControlSurface<C>, C extends
                         final int x = xblock * 4 + blockX;
                         final int y = yblock * 4 + blockY;
 
-                        padGrid.lightEx (x, (this.rows - 1) - y, this.getPadColor (index, drumDevice64, isSoloed, isRecording));
+                        padGrid.lightEx (x, this.rows - 1 - y, this.getPadColor (index, drumDevice64, isSoloed, isRecording));
                     }
                 }
 

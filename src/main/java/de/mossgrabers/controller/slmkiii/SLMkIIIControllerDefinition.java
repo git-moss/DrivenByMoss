@@ -21,6 +21,7 @@ public class SLMkIIIControllerDefinition extends DefaultControllerDefinition
 {
     private static final UUID EXTENSION_ID = UUID.fromString ("20C2BF16-8D2A-4C00-8D55-27FA2E6EAA07");
 
+
     /**
      * Constructor.
      */
