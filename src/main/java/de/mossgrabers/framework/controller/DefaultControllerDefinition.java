@@ -29,7 +29,6 @@ public abstract class DefaultControllerDefinition implements IControllerDefiniti
     private final int    numMidiInPorts;
     private final int    numMidiOutPorts;
 
-
     /**
      * Constructor.
      *
@@ -171,6 +170,24 @@ public abstract class DefaultControllerDefinition implements IControllerDefiniti
         results.add (this.addDeviceDiscoveryPair (String.format (inputNamePattern, ""), String.format (outputNamePattern, "")));
         for (int i = 1; i < 20; i++)
             results.add (this.addDeviceDiscoveryPair (String.format (inputNamePattern, i + "- "), String.format (outputNamePattern, i + "- ")));
+        return results;
+    }
+
+
+    /**
+     * Creates 20 Linux variations from the given device name for auto lookup. It appends '
+     * [hw:x,0,0]' to the given input and output names.
+     *
+     * @param inputName The base name to use
+     * @param outputName The base name to use
+     * @return The created pairs
+     */
+    protected List<Pair<String [], String []>> createLinuxDeviceDiscoveryPairs (final String inputName, final String outputName)
+    {
+        final List<Pair<String [], String []>> results = new ArrayList<> ();
+        results.add (this.addDeviceDiscoveryPair (inputName, outputName));
+        for (int i = 1; i < 20; i++)
+            results.add (this.addDeviceDiscoveryPair (String.format ("%s [hw:%d,0,0]", inputName, Integer.valueOf (i), String.format ("%s [hw:%d,0,0]", outputName, Integer.valueOf (i)))));
         return results;
     }
 

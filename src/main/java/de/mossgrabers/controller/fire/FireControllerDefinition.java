@@ -43,6 +43,7 @@ public class FireControllerDefinition extends DefaultControllerDefinition
 
             case LINUX:
                 midiDiscoveryPairs.addAll (this.createDeviceDiscoveryPairs ("FL STUDIO FIRE"));
+                midiDiscoveryPairs.addAll (this.createLinuxDeviceDiscoveryPairs ("FIRE", "FIRE"));
                 break;
 
             case MAC:
