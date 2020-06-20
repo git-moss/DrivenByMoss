@@ -38,7 +38,7 @@ public class VolumeMode<S extends IControlSurface<C>, C extends Configuration> e
     @Override
     public void onKnobValue (final int index, final int value)
     {
-        final ITrack track = this.model.getCurrentTrackBank ().getItem (index);
+        final ITrack track = this.getTrack (index);
         if (track == null)
             return;
         if (this.isAbsolute)
@@ -52,7 +52,7 @@ public class VolumeMode<S extends IControlSurface<C>, C extends Configuration> e
     @Override
     public void onKnobTouch (final int index, final boolean isTouched)
     {
-        final ITrack track = this.model.getCurrentTrackBank ().getItem (index);
+        final ITrack track = this.getTrack (index);
         if (track == null)
             return;
 
@@ -66,7 +66,7 @@ public class VolumeMode<S extends IControlSurface<C>, C extends Configuration> e
     @Override
     public int getKnobValue (final int index)
     {
-        final ITrack track = this.model.getCurrentTrackBank ().getItem (index);
+        final ITrack track = this.getTrack (index);
         return track == null ? -1 : track.getVolume ();
     }
 }

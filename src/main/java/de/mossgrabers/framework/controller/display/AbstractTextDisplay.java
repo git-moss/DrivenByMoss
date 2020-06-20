@@ -30,6 +30,7 @@ public abstract class AbstractTextDisplay implements ITextDisplay
 
     protected final String   emptyLine;
     protected String         notificationMessage;
+    protected boolean        centerNotification   = true;
     protected int            isNotificationActive = 0;
     protected final Object   notificationLock     = new Object ();
 
@@ -259,9 +260,17 @@ public abstract class AbstractTextDisplay implements ITextDisplay
 
     protected void notifyOnDisplay (final String message)
     {
-        final int padLength = (this.noOfCharacters - message.length ()) / 2 + 1;
-        final String padding = padLength > 0 ? this.emptyLine.substring (0, padLength) : "";
-        this.notificationMessage = (padding + message + padding).substring (0, this.noOfCharacters);
+        final String msg;
+        if (this.centerNotification)
+        {
+            final int padLength = (this.noOfCharacters - message.length ()) / 2 + 1;
+            final String padding = padLength > 0 ? this.emptyLine.substring (0, padLength) : "";
+            msg = padding + message + padding;
+        }
+        else
+            msg = message + this.emptyLine;
+
+        this.notificationMessage = msg.substring (0, Math.min (this.noOfCharacters, msg.length ()));
 
         synchronized (this.notificationLock)
         {
@@ -346,5 +355,16 @@ public abstract class AbstractTextDisplay implements ITextDisplay
     {
         for (int row = 0; row < this.noOfLines; row++)
             this.currentMessage[row] = "";
+    }
+
+
+    /**
+     * Set if notification messages should be centered in the display.
+     *
+     * @param centerNotification True to center
+     */
+    public void setCenterNotification (boolean centerNotification)
+    {
+        this.centerNotification = centerNotification;
     }
 }

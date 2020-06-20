@@ -61,7 +61,9 @@ public class MVHelper<S extends IControlSurface<C>, C extends Configuration>
 
             final ITrackBank currentTrackBank = this.model.getCurrentTrackBank ();
             final ITrack selectedTrack = currentTrackBank.getSelectedItem ();
-            return "Selected track: " + (selectedTrack != null && selectedTrack.doesExist () ? selectedTrack.getName () : NONE);
+            if (selectedTrack == null || !selectedTrack.doesExist ())
+                return "Selected track: None";
+            return (selectedTrack.getPosition () + 1) + ": " + selectedTrack.getName ();
 
         });
     }

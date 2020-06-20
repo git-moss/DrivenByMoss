@@ -127,7 +127,10 @@ public class ModeMultiSelectCommand<S extends IControlSurface<C>, C extends Conf
         {
             final int sendIndex = modeID.ordinal () - this.send1.ordinal ();
             modeName = modeName + " " + (sendIndex + 1);
-            final ITrack selectedTrack = this.model.getTrackBank ().getSelectedItem ();
+            final ITrackBank trackBank = this.model.getTrackBank ();
+            ITrack selectedTrack = trackBank.getSelectedItem ();
+            if (selectedTrack == null)
+                selectedTrack = trackBank.getItem (0);
             if (selectedTrack != null)
                 modeName += ": " + selectedTrack.getSendBank ().getItem (sendIndex).getName ();
         }

@@ -57,7 +57,7 @@ public class RecArmCommand<S extends IControlSurface<C>, C extends Configuration
     @Override
     public void executeNormal (final ButtonEvent event)
     {
-        if (event != ButtonEvent.DOWN)
+        if (event != ButtonEvent.UP)
             return;
         final ITrackBank currentTrackBank = this.model.getCurrentTrackBank ();
         final ITrack track = this.index == -1 ? currentTrackBank.getSelectedItem () : currentTrackBank.getItem (this.index);

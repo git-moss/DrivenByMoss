@@ -7,7 +7,9 @@ package de.mossgrabers.framework.command.trigger.transport;
 import de.mossgrabers.framework.command.core.AbstractTriggerCommand;
 import de.mossgrabers.framework.configuration.Configuration;
 import de.mossgrabers.framework.controller.IControlSurface;
+import de.mossgrabers.framework.controller.display.IDisplay;
 import de.mossgrabers.framework.daw.IModel;
+import de.mossgrabers.framework.daw.ITransport;
 import de.mossgrabers.framework.utils.ButtonEvent;
 
 
@@ -37,7 +39,12 @@ public class TapTempoCommand<S extends IControlSurface<C>, C extends Configurati
     @Override
     public void execute (final ButtonEvent event, final int velocity)
     {
-        if (event == ButtonEvent.DOWN)
-            this.model.getTransport ().tapTempo ();
+        if (event != ButtonEvent.DOWN)
+            return;
+        final ITransport transport = this.model.getTransport ();
+        transport.tapTempo ();
+        final IDisplay display = this.surface.getDisplay ();
+        if (display != null)
+            display.notify (String.format ("Tempo: %.02f", Double.valueOf (transport.getTempo ())));
     }
 }

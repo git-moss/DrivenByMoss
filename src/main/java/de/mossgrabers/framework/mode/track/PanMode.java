@@ -39,7 +39,7 @@ public class PanMode<S extends IControlSurface<C>, C extends Configuration> exte
     @Override
     public void onKnobValue (final int index, final int value)
     {
-        final ITrack track = this.model.getCurrentTrackBank ().getItem (index);
+        final ITrack track = this.getTrack (index);
         if (track == null)
             return;
         if (this.isAbsolute)
@@ -53,7 +53,7 @@ public class PanMode<S extends IControlSurface<C>, C extends Configuration> exte
     @Override
     public void onKnobTouch (final int index, final boolean isTouched)
     {
-        final ITrack track = this.model.getCurrentTrackBank ().getItem (index);
+        final ITrack track = this.getTrack (index);
         if (!track.doesExist ())
             return;
 
@@ -70,7 +70,7 @@ public class PanMode<S extends IControlSurface<C>, C extends Configuration> exte
     @Override
     public int getKnobValue (final int index)
     {
-        final ITrack track = this.model.getCurrentTrackBank ().getItem (index);
+        final ITrack track = this.getTrack (index);
         return track == null ? -1 : track.getPan ();
     }
 }

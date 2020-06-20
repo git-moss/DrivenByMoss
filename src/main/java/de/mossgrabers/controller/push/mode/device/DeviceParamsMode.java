@@ -83,9 +83,6 @@ public class DeviceParamsMode extends BaseMode
     public final void setShowDevices (final boolean enable)
     {
         this.showDevices = enable;
-
-        final ICursorDevice cursorDevice = this.model.getCursorDevice ();
-        this.switchBanks (this.showDevices ? cursorDevice.getDeviceBank () : cursorDevice.getParameterBank ());
     }
 
 

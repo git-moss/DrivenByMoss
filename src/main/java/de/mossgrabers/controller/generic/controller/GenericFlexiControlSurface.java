@@ -289,7 +289,8 @@ public class GenericFlexiControlSurface extends AbstractControlSurface<GenericFl
             return;
         if (!file.exists ())
         {
-            this.host.showNotification ("The entered file does not exist.");
+            if (showMessage)
+                this.host.showNotification ("The entered file does not exist.");
             return;
         }
         try
@@ -336,7 +337,7 @@ public class GenericFlexiControlSurface extends AbstractControlSurface<GenericFl
     private File getFile ()
     {
         final String filename = this.configuration.getFilename ();
-        if (filename == null || filename.trim ().isEmpty ())
+        if (filename == null || filename.isBlank ())
         {
             this.host.showNotification ("Please enter a filename first.");
             return null;

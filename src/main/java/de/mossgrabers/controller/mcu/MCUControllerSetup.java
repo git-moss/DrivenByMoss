@@ -14,7 +14,6 @@ import de.mossgrabers.controller.mcu.command.trigger.KeyCommand;
 import de.mossgrabers.controller.mcu.command.trigger.KeyCommand.Key;
 import de.mossgrabers.controller.mcu.command.trigger.MCUCursorCommand;
 import de.mossgrabers.controller.mcu.command.trigger.MCURecordCommand;
-import de.mossgrabers.controller.mcu.command.trigger.OverdubCommand;
 import de.mossgrabers.controller.mcu.command.trigger.ScrubCommand;
 import de.mossgrabers.controller.mcu.command.trigger.SelectCommand;
 import de.mossgrabers.controller.mcu.command.trigger.SendSelectCommand;
@@ -45,6 +44,7 @@ import de.mossgrabers.framework.command.trigger.MarkerCommand;
 import de.mossgrabers.framework.command.trigger.ShiftCommand;
 import de.mossgrabers.framework.command.trigger.application.DuplicateCommand;
 import de.mossgrabers.framework.command.trigger.application.LayoutCommand;
+import de.mossgrabers.framework.command.trigger.application.OverdubCommand;
 import de.mossgrabers.framework.command.trigger.application.PaneCommand;
 import de.mossgrabers.framework.command.trigger.application.PanelLayoutCommand;
 import de.mossgrabers.framework.command.trigger.application.SaveCommand;
@@ -407,7 +407,7 @@ public class MCUControllerSetup extends AbstractControllerSetup<MCUControlSurfac
                 this.addButton (surface, ButtonID.BROWSE, "Browse", new BrowserCommand<> (Modes.BROWSER, this.model, surface), 0, MCUControlSurface.MCU_USER, () -> modeManager.isActiveOrTempMode (Modes.BROWSER));
                 this.addButton (surface, ButtonID.METRONOME, "Metronome", new MetronomeCommand<> (this.model, surface), 0, MCUControlSurface.MCU_CLICK, () -> surface.getButton (ButtonID.SHIFT).isPressed () ? t.isMetronomeTicksOn () : t.isMetronomeOn ());
                 this.addButton (surface, ButtonID.GROOVE, "Groove", new GrooveCommand (this.model, surface), 0, MCUControlSurface.MCU_SOLO, () -> this.model.getGroove ().getParameters ()[0].getValue () > 0);
-                this.addButton (surface, ButtonID.OVERDUB, "Overdub", new OverdubCommand (this.model, surface), 0, MCUControlSurface.MCU_REPLACE, () -> (surface.getButton (ButtonID.SHIFT).isPressed () ? t.isLauncherOverdub () : t.isArrangerOverdub ()));
+                this.addButton (surface, ButtonID.OVERDUB, "Overdub", new OverdubCommand<> (this.model, surface), 0, MCUControlSurface.MCU_REPLACE, () -> (surface.getButton (ButtonID.SHIFT).isPressed () ? t.isLauncherOverdub () : t.isArrangerOverdub ()));
                 this.addButton (surface, ButtonID.TAP_TEMPO, "Tap Tempo", new TapTempoCommand<> (this.model, surface), 0, MCUControlSurface.MCU_NUDGE);
                 this.addButton (surface, ButtonID.DUPLICATE, "Duplicate", new DuplicateCommand<> (this.model, surface), 0, MCUControlSurface.MCU_DROP);
 

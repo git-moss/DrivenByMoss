@@ -24,7 +24,7 @@ import de.mossgrabers.framework.mode.AbstractMode;
  */
 public class SelectedDeviceMode<S extends IControlSurface<C>, C extends Configuration> extends AbstractMode<S, C>
 {
-    int index = 0;
+    private int selParam = 0;
 
 
     /**
@@ -36,6 +36,8 @@ public class SelectedDeviceMode<S extends IControlSurface<C>, C extends Configur
     public SelectedDeviceMode (final S surface, final IModel model)
     {
         super ("Parameters", surface, model, false, model.getCursorDevice ().getParameterBank (), null, 8);
+
+        this.isTemporary = false;
     }
 
 
@@ -46,7 +48,7 @@ public class SelectedDeviceMode<S extends IControlSurface<C>, C extends Configur
         final ICursorDevice cursorDevice = this.model.getCursorDevice ();
         if (cursorDevice == null)
             return;
-        final IParameter item = cursorDevice.getParameterBank ().getItem (this.index);
+        final IParameter item = cursorDevice.getParameterBank ().getItem (index < 0 ? this.selParam : index);
         if (item.doesExist ())
             item.changeValue (value);
     }
@@ -59,7 +61,7 @@ public class SelectedDeviceMode<S extends IControlSurface<C>, C extends Configur
         final ICursorDevice cursorDevice = this.model.getCursorDevice ();
         if (cursorDevice == null)
             return;
-        final IParameter item = cursorDevice.getParameterBank ().getItem (this.index);
+        final IParameter item = cursorDevice.getParameterBank ().getItem (index < 0 ? this.selParam : index);
         if (!item.doesExist ())
             return;
 
@@ -79,7 +81,7 @@ public class SelectedDeviceMode<S extends IControlSurface<C>, C extends Configur
      */
     public void selectParameter (final int index)
     {
-        this.index = index;
+        this.selParam = index;
     }
 
 
@@ -90,6 +92,6 @@ public class SelectedDeviceMode<S extends IControlSurface<C>, C extends Configur
      */
     public int getSelectedParameter ()
     {
-        return this.index;
+        return this.selParam == -1 ? 0 : this.selParam;
     }
 }

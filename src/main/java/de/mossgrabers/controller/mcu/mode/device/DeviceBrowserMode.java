@@ -26,8 +26,8 @@ public class DeviceBrowserMode extends BaseMode
     private static final int SELECTION_PRESET = 1;
     private static final int SELECTION_FILTER = 2;
 
-    private int              selectionMode;
-    private int              filterColumn;
+    private int              selectionMode    = SELECTION_OFF;
+    private int              filterColumn     = -1;
 
 
     /**
@@ -41,9 +41,6 @@ public class DeviceBrowserMode extends BaseMode
         super ("Browser", surface, model);
 
         this.isTemporary = false;
-
-        this.selectionMode = SELECTION_OFF;
-        this.filterColumn = -1;
     }
 
 

@@ -34,6 +34,20 @@ public class CursorCommand<S extends IControlSurface<C>, C extends Configuration
     }
 
 
+    /**
+     * Constructor.
+     *
+     * @param direction The direction of the pushed cursor arrow
+     * @param model The model
+     * @param surface The surface
+     * @param notifySelection Set to true to show a notification message if an item is selected
+     */
+    public CursorCommand (final Direction direction, final IModel model, final S surface, final boolean notifySelection)
+    {
+        super (direction, model, surface, notifySelection);
+    }
+
+
     /** {@inheritDoc} */
     @Override
     protected void updateArrowStates ()

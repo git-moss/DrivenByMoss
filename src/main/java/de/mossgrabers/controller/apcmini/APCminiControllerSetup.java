@@ -17,7 +17,7 @@ import de.mossgrabers.controller.apcmini.view.SequencerView;
 import de.mossgrabers.controller.apcmini.view.SessionView;
 import de.mossgrabers.controller.apcmini.view.ShiftView;
 import de.mossgrabers.controller.apcmini.view.TrackButtons;
-import de.mossgrabers.controller.maschine.mikro.mk3.view.SceneView;
+import de.mossgrabers.controller.maschine.view.SceneView;
 import de.mossgrabers.framework.command.continuous.KnobRowModeCommand;
 import de.mossgrabers.framework.command.continuous.MasterFaderAbsoluteCommand;
 import de.mossgrabers.framework.command.trigger.view.ToggleShiftViewCommand;

@@ -737,13 +737,13 @@ public abstract class AbstractControlSurface<C extends Configuration> implements
             // Note off
             case 0x80:
                 // Handled by bind framework
-                this.host.error ("Midi Note off should be handled in framework...");
+                this.host.error ("Midi Note off " + data1 + " should be handled in framework...");
                 break;
 
             // Note on
             case 0x90:
                 // Handled by bind framework
-                this.host.error ("Midi Note on should be handled in framework...");
+                this.host.error ("Midi Note on " + data1 + " should be handled in framework...");
                 break;
 
             // Polyphonic Aftertouch
@@ -754,7 +754,7 @@ public abstract class AbstractControlSurface<C extends Configuration> implements
             // CC
             case 0xB0:
                 // Handled by bind framework
-                this.host.error ("CC should be handled in framework...");
+                this.host.error ("CC " + data1 + " should be handled in framework...");
                 break;
 
             // Program Change

@@ -7,6 +7,7 @@ package de.mossgrabers.framework.mode.track;
 import de.mossgrabers.framework.configuration.Configuration;
 import de.mossgrabers.framework.controller.IControlSurface;
 import de.mossgrabers.framework.daw.IModel;
+import de.mossgrabers.framework.daw.ITrackBank;
 import de.mossgrabers.framework.daw.data.ITrack;
 import de.mossgrabers.framework.mode.AbstractMode;
 
@@ -48,5 +49,18 @@ public class AbstractTrackMode<S extends IControlSurface<C>, C extends Configura
         if (selectedItem == null || !selectedItem.doesExist ())
             return null;
         return selectedItem.getPosition () + 1 + ": " + selectedItem.getName ();
+    }
+
+
+    /**
+     * Get the track for which to change the volume.
+     *
+     * @param index The index of the track. If set to -1 the selected track is used.
+     * @return The selected track
+     */
+    protected ITrack getTrack (final int index)
+    {
+        final ITrackBank tb = this.model.getCurrentTrackBank ();
+        return index < 0 ? tb.getSelectedItem () : tb.getItem (index);
     }
 }

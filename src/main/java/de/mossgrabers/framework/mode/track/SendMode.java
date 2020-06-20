@@ -23,7 +23,7 @@ import de.mossgrabers.framework.daw.data.ITrack;
  */
 public class SendMode<S extends IControlSurface<C>, C extends Configuration> extends AbstractTrackMode<S, C>
 {
-    private int sendIndex;
+    protected int sendIndex;
 
 
     /**
@@ -37,7 +37,7 @@ public class SendMode<S extends IControlSurface<C>, C extends Configuration> ext
      */
     public SendMode (final int sendIndex, final S surface, final IModel model, final boolean isAbsolute)
     {
-        super ("Send " + (sendIndex + 1), surface, model, isAbsolute);
+        super ("Send", surface, model, isAbsolute);
         this.sendIndex = sendIndex;
     }
 
@@ -46,7 +46,7 @@ public class SendMode<S extends IControlSurface<C>, C extends Configuration> ext
     @Override
     public void onKnobValue (final int index, final int value)
     {
-        final ITrack track = this.model.getCurrentTrackBank ().getItem (index);
+        final ITrack track = this.getTrack (index);
         if (track == null)
             return;
         final ISend item = track.getSendBank ().getItem (this.sendIndex);
@@ -61,7 +61,7 @@ public class SendMode<S extends IControlSurface<C>, C extends Configuration> ext
     @Override
     public void onKnobTouch (final int index, final boolean isTouched)
     {
-        final ITrack track = this.model.getCurrentTrackBank ().getItem (index);
+        final ITrack track = this.getTrack (index);
         if (track == null)
             return;
         final ISend item = track.getSendBank ().getItem (this.sendIndex);
@@ -81,7 +81,7 @@ public class SendMode<S extends IControlSurface<C>, C extends Configuration> ext
     @Override
     public int getKnobValue (final int index)
     {
-        final ITrack track = this.model.getCurrentTrackBank ().getItem (index);
+        final ITrack track = this.getTrack (index);
         return track == null ? -1 : track.getSendBank ().getItem (this.sendIndex).getValue ();
     }
 }

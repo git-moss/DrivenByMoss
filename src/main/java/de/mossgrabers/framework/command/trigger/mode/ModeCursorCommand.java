@@ -36,11 +36,12 @@ public class ModeCursorCommand<S extends IControlSurface<C>, C extends Configura
     }
 
 
-    protected Direction direction;
-    protected boolean   canScrollLeft;
-    protected boolean   canScrollRight;
-    protected boolean   canScrollUp;
-    protected boolean   canScrollDown;
+    protected Direction     direction;
+    protected boolean       canScrollLeft;
+    protected boolean       canScrollRight;
+    protected boolean       canScrollUp;
+    protected boolean       canScrollDown;
+    protected final boolean notifySelection;
 
 
     /**
@@ -52,8 +53,24 @@ public class ModeCursorCommand<S extends IControlSurface<C>, C extends Configura
      */
     public ModeCursorCommand (final Direction direction, final IModel model, final S surface)
     {
+        this (direction, model, surface, true);
+    }
+
+
+    /**
+     * Constructor.
+     *
+     * @param direction The direction of the pushed cursor arrow
+     * @param model The model
+     * @param surface The surface
+     * @param notifySelection Set to true to show a notification message if an item is selected
+     */
+    public ModeCursorCommand (final Direction direction, final IModel model, final S surface, final boolean notifySelection)
+    {
         super (model, surface);
+
         this.direction = direction;
+        this.notifySelection = notifySelection;
     }
 
 
@@ -80,11 +97,12 @@ public class ModeCursorCommand<S extends IControlSurface<C>, C extends Configura
                 break;
         }
 
-        this.model.getHost ().scheduleTask ( () -> {
+        if (this.notifySelection)
+        {
             final Mode activeMode = this.surface.getModeManager ().getActiveOrTempMode ();
             if (activeMode != null)
-                this.surface.getDisplay ().notify (activeMode.getSelectedItemName ());
-        }, 200);
+                this.mvHelper.notifySelectedItem (activeMode);
+        }
     }
 
 
