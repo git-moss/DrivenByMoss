@@ -8,6 +8,7 @@ import de.mossgrabers.framework.controller.DefaultControllerDefinition;
 import de.mossgrabers.framework.utils.OperatingSystem;
 import de.mossgrabers.framework.utils.Pair;
 
+import java.util.Collections;
 import java.util.List;
 import java.util.UUID;
 
@@ -20,7 +21,6 @@ import java.util.UUID;
 public class MaschineMk3ControllerDefinition extends DefaultControllerDefinition
 {
     private static final UUID EXTENSION_ID = UUID.fromString ("9055C36B-0A41-48AD-8675-4D3F133E53AC");
-
 
     /**
      * Constructor.
@@ -35,6 +35,14 @@ public class MaschineMk3ControllerDefinition extends DefaultControllerDefinition
     @Override
     public List<Pair<String [], String []>> getMidiDiscoveryPairs (final OperatingSystem os)
     {
-        return this.createDeviceDiscoveryPairs ("Maschine MK3 Ctrl MIDI");
+        switch (os)
+        {
+            case MAC:
+                return Collections.singletonList (this.addDeviceDiscoveryPair ("Maschine MK3 Virtual Input", "Maschine MK3 Virtual Output"));
+
+            case WINDOWS:
+            default:
+                return this.createDeviceDiscoveryPairs ("Maschine MK3 Ctrl MIDI");
+        }
     }
 }
