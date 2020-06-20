@@ -83,21 +83,21 @@ public class NoteMode extends AbstractMode<FireControlSurface, FireConfiguration
         switch (index)
         {
             case 0:
-                this.clip.changeStepDuration (this.channel, this.step, this.note, value);
-                break;
-
-            case 1:
-                this.clip.changeStepVelocity (this.channel, this.step, this.note, value);
-                break;
-
-            case 2:
                 if (this.host.canEdit (EditCapability.NOTE_EDIT_GAIN))
                     this.clip.changeStepGain (this.channel, this.step, this.note, value);
                 break;
 
-            case 3:
+            case 1:
                 if (this.host.canEdit (EditCapability.NOTE_EDIT_PANORAMA))
                     this.clip.changeStepPan (this.channel, this.step, this.note, value);
+                break;
+
+            case 2:
+                this.clip.changeStepDuration (this.channel, this.step, this.note, value);
+                break;
+
+            case 3:
+                this.clip.changeStepVelocity (this.channel, this.step, this.note, value);
                 break;
 
             // This is the select knob
@@ -134,16 +134,6 @@ public class NoteMode extends AbstractMode<FireControlSurface, FireConfiguration
         switch (this.getTouchedKnob ())
         {
             case 0:
-                paramLine = this.formatLength (stepInfo.getDuration ());
-                break;
-
-            case 1:
-                final double noteVelocity = stepInfo.getVelocity ();
-                value = valueChanger.fromNormalizedValue (noteVelocity);
-                paramLine = "Vel.: " + StringUtils.formatPercentage (noteVelocity);
-                break;
-
-            case 2:
                 if (this.host.canEdit (EditCapability.NOTE_EDIT_GAIN))
                 {
                     final double noteGain = stepInfo.getGain ();
@@ -152,13 +142,23 @@ public class NoteMode extends AbstractMode<FireControlSurface, FireConfiguration
                 }
                 break;
 
-            case 3:
+            case 1:
                 if (this.host.canEdit (EditCapability.NOTE_EDIT_PANORAMA))
                 {
                     final double notePan = stepInfo.getPan ();
                     value = valueChanger.fromNormalizedValue ((notePan + 1.0) / 2.0);
                     paramLine = "Pan: " + StringUtils.formatPercentage (notePan);
                 }
+                break;
+
+            case 2:
+                paramLine = this.formatLength (stepInfo.getDuration ());
+                break;
+
+            case 3:
+                final double noteVelocity = stepInfo.getVelocity ();
+                value = valueChanger.fromNormalizedValue (noteVelocity);
+                paramLine = "Vel.: " + StringUtils.formatPercentage (noteVelocity);
                 break;
 
             // This is the select knob

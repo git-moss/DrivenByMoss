@@ -22,6 +22,7 @@ public class MaschineMk3ControllerDefinition extends DefaultControllerDefinition
 {
     private static final UUID EXTENSION_ID = UUID.fromString ("9055C36B-0A41-48AD-8675-4D3F133E53AC");
 
+
     /**
      * Constructor.
      */

@@ -87,6 +87,8 @@ import de.mossgrabers.framework.mode.ModeManager;
 import de.mossgrabers.framework.mode.Modes;
 import de.mossgrabers.framework.scale.Scales;
 import de.mossgrabers.framework.utils.ButtonEvent;
+import de.mossgrabers.framework.utils.FrameworkException;
+import de.mossgrabers.framework.utils.OperatingSystem;
 import de.mossgrabers.framework.view.ViewManager;
 import de.mossgrabers.framework.view.Views;
 
@@ -133,6 +135,17 @@ public class MaschineControllerSetup extends AbstractControllerSetup<MaschineCon
         this.colorManager = new MaschineColorManager ();
         this.valueChanger = new DefaultValueChanger (128, 8, 1);
         this.configuration = new MaschineConfiguration (host, this.valueChanger, factory.getArpeggiatorModes ());
+    }
+
+
+    /** {@inheritDoc} */
+    @Override
+    public void init ()
+    {
+        if (OperatingSystem.get () == OperatingSystem.LINUX)
+            throw new FrameworkException ("Maschine is not supported on Linux since there is no Native Instruments DAW Integration Host.");
+
+        super.init ();
     }
 
 
