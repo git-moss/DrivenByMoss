@@ -9,7 +9,6 @@ import de.mossgrabers.controller.maschine.controller.MaschineControlSurface;
 import de.mossgrabers.framework.controller.ContinuousID;
 import de.mossgrabers.framework.controller.display.ITextDisplay;
 import de.mossgrabers.framework.daw.IModel;
-import de.mossgrabers.framework.daw.data.IItem;
 import de.mossgrabers.framework.daw.data.IParameter;
 import de.mossgrabers.framework.mode.AbstractMode;
 import de.mossgrabers.framework.utils.StringUtils;
@@ -34,26 +33,6 @@ public class MaschineUserMode extends AbstractMode<MaschineControlSurface, Masch
     public MaschineUserMode (final MaschineControlSurface surface, final IModel model)
     {
         super ("User", surface, model, false, model.getUserParameterBank (), ContinuousID.KNOB1, 8);
-    }
-
-
-    /** {@inheritDoc} */
-    @Override
-    public void onActivate ()
-    {
-        super.onActivate ();
-
-        this.bindSelectedParameterToEncoder ();
-    }
-
-
-    /** {@inheritDoc} */
-    @Override
-    public void onDeactivate ()
-    {
-        super.onDeactivate ();
-
-        this.surface.getContinuous (ContinuousID.MASTER_KNOB).bind ((IParameter) null);
     }
 
 
@@ -85,16 +64,6 @@ public class MaschineUserMode extends AbstractMode<MaschineControlSurface, Masch
     public void selectParameter (final int index)
     {
         this.selParam = index;
-
-        this.bindSelectedParameterToEncoder ();
-    }
-
-
-    private void bindSelectedParameterToEncoder ()
-    {
-        // TODO Make this work
-        final IItem item = this.bank.getItem (this.getSelectedParameter ());
-        this.surface.getContinuous (ContinuousID.MASTER_KNOB).bind ((IParameter) item);
     }
 
 
@@ -186,5 +155,13 @@ public class MaschineUserMode extends AbstractMode<MaschineControlSurface, Masch
     public boolean hasNextItemPage ()
     {
         return super.hasNextItem ();
+    }
+
+
+    @Override
+    public void onKnobValue (int index, int value)
+    {
+        final IParameter item = (IParameter) this.bank.getItem (this.getSelectedParameter ());
+        item.changeValue (value);
     }
 }
