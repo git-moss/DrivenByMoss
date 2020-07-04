@@ -14,6 +14,7 @@ import de.mossgrabers.framework.daw.ICursorDevice;
 import de.mossgrabers.framework.daw.IModel;
 import de.mossgrabers.framework.daw.IParameterBank;
 import de.mossgrabers.framework.daw.data.IParameter;
+import de.mossgrabers.framework.utils.StringUtils;
 
 import java.util.Set;
 
@@ -56,9 +57,9 @@ public class ParamsMode extends AbstractKontrol1Mode
             for (int i = 0; i < 8; i++)
             {
                 final IParameter p = parameterBank.getItem (i);
-                final String name = p.getName (8).toUpperCase ();
+                final String name = StringUtils.shortenAndFixASCII (p.getName (8), 8).toUpperCase ();
                 if (!name.isEmpty ())
-                    d.setCell (0, 1 + i, name).setCell (1, 1 + i, checkForUpperCase (p.getDisplayedValue (8)));
+                    d.setCell (0, 1 + i, name).setCell (1, 1 + i, checkForUpperCase (StringUtils.shortenAndFixASCII (p.getDisplayedValue (8), 8)));
 
                 d.setBar (1 + i, this.surface.getContinuous (ContinuousID.get (ContinuousID.KNOB1, i)).isTouched () && p.doesExist (), p.getValue ());
             }

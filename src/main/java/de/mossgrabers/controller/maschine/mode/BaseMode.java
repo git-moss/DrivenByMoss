@@ -17,6 +17,9 @@ import de.mossgrabers.framework.mode.AbstractMode;
  */
 public abstract class BaseMode extends AbstractMode<MaschineControlSurface, MaschineConfiguration>
 {
+    protected int selectedParam = 0;
+
+
     /**
      * Constructor.
      *
@@ -27,5 +30,55 @@ public abstract class BaseMode extends AbstractMode<MaschineControlSurface, Masc
     public BaseMode (final String name, final MaschineControlSurface surface, final IModel model)
     {
         super (name, surface, model, false);
+    }
+
+
+    /**
+     * Add a marker (>) if the index equals the selected pareameter.
+     *
+     * @param label The label to eventually add the marker
+     * @param index The index
+     * @return The formatted text
+     */
+    protected String mark (final String label, final int index)
+    {
+        if (this.selectedParam == index)
+            return ">" + label;
+        return label;
+    }
+
+
+    /** {@inheritDoc} */
+    @Override
+    public void selectPreviousItem ()
+    {
+        this.selectedParam = Math.max (0, this.selectedParam - 1);
+    }
+
+
+    /** {@inheritDoc} */
+    @Override
+    public void selectNextItem ()
+    {
+        this.selectedParam = Math.min (7, this.selectedParam + 1);
+    }
+
+
+    /** {@inheritDoc} */
+    @Override
+    public void selectItem (final int index)
+    {
+        this.selectedParam = index;
+    }
+
+
+    /**
+     * Get the selected item (edit index).
+     *
+     * @return THe edit index
+     */
+    public int getSelectedItem ()
+    {
+        return this.selectedParam;
     }
 }

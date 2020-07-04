@@ -6,16 +6,15 @@ package de.mossgrabers.controller.maschine.view;
 
 import de.mossgrabers.controller.maschine.controller.MaschineColorManager;
 import de.mossgrabers.controller.maschine.controller.MaschineControlSurface;
-import de.mossgrabers.framework.controller.display.ITextDisplay;
 import de.mossgrabers.framework.controller.grid.IPadGrid;
 import de.mossgrabers.framework.daw.ICursorDevice;
+import de.mossgrabers.framework.daw.IHost;
 import de.mossgrabers.framework.daw.IModel;
 import de.mossgrabers.framework.daw.IParameterBank;
 import de.mossgrabers.framework.daw.data.IParameter;
 import de.mossgrabers.framework.mode.AbstractMode;
 import de.mossgrabers.framework.mode.Modes;
 import de.mossgrabers.framework.mode.device.SelectedDeviceMode;
-import de.mossgrabers.framework.utils.ButtonEvent;
 
 
 /**
@@ -25,6 +24,19 @@ import de.mossgrabers.framework.utils.ButtonEvent;
  */
 public class ParameterView extends BaseView
 {
+    private static final int [] PARAM_COLORS =
+    {
+        MaschineColorManager.COLOR_RED,
+        MaschineColorManager.COLOR_AMBER,
+        MaschineColorManager.COLOR_YELLOW,
+        MaschineColorManager.COLOR_GREEN,
+        MaschineColorManager.COLOR_LIME,
+        MaschineColorManager.COLOR_SKY,
+        MaschineColorManager.COLOR_PURPLE,
+        MaschineColorManager.COLOR_PINK
+    };
+
+
     /**
      * Constructor.
      *
@@ -42,11 +54,32 @@ public class ParameterView extends BaseView
     protected void executeFunction (final int padIndex)
     {
         final ICursorDevice cursorDevice = this.model.getCursorDevice ();
-        final ITextDisplay display = this.surface.getTextDisplay ();
+        final IHost host = this.model.getHost ();
         if (!cursorDevice.doesExist ())
         {
-            display.notify ("No device selected.");
+            host.showNotification ("No device selected.");
             return;
+        }
+
+        switch (padIndex)
+        {
+            case 12:
+                cursorDevice.selectPrevious ();
+                break;
+            case 13:
+                cursorDevice.selectNext ();
+                break;
+            case 14:
+                cursorDevice.getParameterBank ().scrollBackwards ();
+                this.mvHelper.notifySelectedParameterPage ();
+                break;
+            case 15:
+                cursorDevice.getParameterBank ().scrollForwards ();
+                this.mvHelper.notifySelectedParameterPage ();
+                break;
+            default:
+                // Not used
+                break;
         }
 
         if (padIndex >= 8)
@@ -71,43 +104,9 @@ public class ParameterView extends BaseView
                 else
                     message.append ("None");
             }
-            display.notify (message.toString ());
+            host.showNotification (message.toString ());
 
         }, 200);
-    }
-
-
-    /** {@inheritDoc} */
-    @Override
-    public void onButton (final int index, final ButtonEvent event)
-    {
-        if (event != ButtonEvent.DOWN)
-            return;
-
-        final ICursorDevice cursorDevice = this.model.getCursorDevice ();
-        if (!cursorDevice.doesExist ())
-            return;
-
-        switch (index)
-        {
-            case 0:
-                cursorDevice.getParameterBank ().scrollBackwards ();
-                this.mvHelper.notifySelectedParameterPage ();
-                break;
-            case 1:
-                cursorDevice.getParameterBank ().scrollForwards ();
-                this.mvHelper.notifySelectedParameterPage ();
-                break;
-            case 2:
-                cursorDevice.selectPrevious ();
-                break;
-            case 3:
-                cursorDevice.selectNext ();
-                break;
-            default:
-                // Not used
-                break;
-        }
     }
 
 
@@ -117,10 +116,19 @@ public class ParameterView extends BaseView
     {
         final IPadGrid padGrid = this.surface.getPadGrid ();
 
-        for (int i = 8; i < 16; i++)
+        for (int i = 8; i < 12; i++)
             padGrid.lightEx (i % 4, 3 - i / 4, AbstractMode.BUTTON_COLOR_OFF);
 
-        final IParameterBank parameterBank = this.model.getCursorDevice ().getParameterBank ();
+        final ICursorDevice cursorDevice = this.model.getCursorDevice ();
+        final boolean doesExist = cursorDevice.doesExist ();
+        padGrid.lightEx (0, 0, doesExist && cursorDevice.canSelectPreviousFX () ? MaschineColorManager.COLOR_ROSE : MaschineColorManager.COLOR_BLACK);
+        padGrid.lightEx (1, 0, doesExist && cursorDevice.canSelectNextFX () ? MaschineColorManager.COLOR_ROSE : MaschineColorManager.COLOR_BLACK);
+
+        final IParameterBank parameterBank = cursorDevice.getParameterBank ();
+        padGrid.lightEx (2, 0, doesExist && parameterBank.canScrollBackwards () ? MaschineColorManager.COLOR_SKIN : MaschineColorManager.COLOR_BLACK);
+        padGrid.lightEx (3, 0, doesExist && parameterBank.canScrollForwards () ? MaschineColorManager.COLOR_SKIN : MaschineColorManager.COLOR_BLACK);
+
+        final SelectedDeviceMode<?, ?> deviceMode = (SelectedDeviceMode<?, ?>) this.surface.getModeManager ().getMode (Modes.DEVICE_PARAMS);
         for (int i = 0; i < 8; i++)
         {
             final int x = i % 4;
@@ -129,11 +137,10 @@ public class ParameterView extends BaseView
             final IParameter item = parameterBank.getItem (i);
             if (item.doesExist ())
             {
-                final int selectedIndex = ((SelectedDeviceMode<?, ?>) this.surface.getModeManager ().getMode (Modes.DEVICE_PARAMS)).getSelectedParameter ();
-                if (selectedIndex == i)
-                    padGrid.lightEx (x, y, MaschineColorManager.COLOR_PINK);
+                if (i == deviceMode.getSelectedParameter ())
+                    padGrid.lightEx (x, y, PARAM_COLORS[i], MaschineColorManager.COLOR_WHITE, false);
                 else
-                    padGrid.lightEx (x, y, MaschineColorManager.COLOR_PURPLE);
+                    padGrid.lightEx (x, y, PARAM_COLORS[i]);
             }
             else
                 padGrid.lightEx (x, y, AbstractMode.BUTTON_COLOR_OFF);

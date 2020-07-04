@@ -29,7 +29,7 @@ public class MaschinePanMode extends PanMode<MaschineControlSurface, MaschineCon
      */
     public MaschinePanMode (final MaschineControlSurface surface, final IModel model)
     {
-        super (surface, model, false);
+        super (surface, model, false, null, 9);
     }
 
 
@@ -49,5 +49,16 @@ public class MaschinePanMode extends PanMode<MaschineControlSurface, MaschineCon
             d.setCell (1, i, t.getPanStr (6));
         }
         d.allDone ();
+    }
+
+
+    /** {@inheritDoc} */
+    @Override
+    public void onKnobTouch (final int index, final boolean isTouched)
+    {
+        this.isKnobTouched[index] = isTouched;
+
+        if (index < 8)
+            super.onKnobTouch (index, isTouched);
     }
 }

@@ -124,7 +124,7 @@ public class MidiModule extends AbstractModule
                 final int numValue = toInteger (value);
                 conf.setAccentEnabled (numValue > 0);
                 if (numValue > 0)
-                    conf.setAccentValue (numValue);
+                    conf.setFixedAccentValue (numValue);
                 return;
 
             case "noterepeat":

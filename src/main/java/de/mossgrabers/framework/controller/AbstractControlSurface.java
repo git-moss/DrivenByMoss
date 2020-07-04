@@ -79,7 +79,7 @@ public abstract class AbstractControlSurface<C extends Configuration> implements
     protected List<IGraphicDisplay>                 graphicsDisplays      = new ArrayList<> (1);
 
     protected final IPadGrid                        pads;
-    protected final ILightGuide                     lightGuide;
+    protected ILightGuide                           lightGuide;
 
     private int []                                  keyTranslationTable;
 
@@ -161,24 +161,14 @@ public abstract class AbstractControlSurface<C extends Configuration> implements
             this.input.setMidiCallback (this::handleMidi);
 
         this.createPads ();
-
-        // Light guide
-        if (this.lightGuide != null)
-        {
-            final int size = this.lightGuide.getCols ();
-            for (int i = 0; i < size; i++)
-            {
-                final int note = this.lightGuide.getStartNote () + i;
-                this.createLight (OutputID.get (OutputID.LIGHT_GUIDE1, i), () -> this.lightGuide.getLightInfo (note).getEncoded (), state -> this.lightGuide.sendState (note), colorIndex -> this.colorManager.getColor (colorIndex, null), null);
-            }
-        }
+        this.createLightGuide ();
     }
 
 
     /**
      * Create all pads for the grid and bind them to the MIDI input.
      */
-    private void createPads ()
+    protected void createPads ()
     {
         if (this.pads == null)
             return;
@@ -195,6 +185,23 @@ public abstract class AbstractControlSurface<C extends Configuration> implements
             final int [] translated = this.pads.translateToController (note);
             pad.bind (this.input, BindType.NOTE, translated[0], translated[1]);
             pad.bind ( (event, velocity) -> this.handleGridNote (event, note, velocity));
+        }
+    }
+
+
+    /**
+     * Create all lights for the light guide.
+     */
+    protected void createLightGuide ()
+    {
+        if (this.lightGuide == null)
+            return;
+
+        final int size = this.lightGuide.getCols ();
+        for (int i = 0; i < size; i++)
+        {
+            final int note = this.lightGuide.getStartNote () + i;
+            this.createLight (OutputID.get (OutputID.LIGHT_GUIDE1, i), () -> this.lightGuide.getLightInfo (note).getEncoded (), state -> this.lightGuide.sendState (note), colorIndex -> this.colorManager.getColor (colorIndex, null), null);
         }
     }
 
@@ -736,14 +743,12 @@ public abstract class AbstractControlSurface<C extends Configuration> implements
         {
             // Note off
             case 0x80:
-                // Handled by bind framework
-                this.host.error ("Midi Note off " + data1 + " should be handled in framework...");
+                this.handleNoteOff (data1, data2);
                 break;
 
             // Note on
             case 0x90:
-                // Handled by bind framework
-                this.host.error ("Midi Note on " + data1 + " should be handled in framework...");
+                this.handleNoteOn (data1, data2);
                 break;
 
             // Polyphonic Aftertouch
@@ -753,8 +758,7 @@ public abstract class AbstractControlSurface<C extends Configuration> implements
 
             // CC
             case 0xB0:
-                // Handled by bind framework
-                this.host.error ("CC " + data1 + " should be handled in framework...");
+                this.handleCC (data1, data2);
                 break;
 
             // Program Change
@@ -769,13 +773,64 @@ public abstract class AbstractControlSurface<C extends Configuration> implements
 
             // Pitch Bend
             case 0xE0:
-                this.host.error ("Pitchbend should be handled in framework...");
+                this.handlePitchbend (data1, data2);
                 break;
 
             default:
                 this.host.error ("Unhandled midi status: " + status);
                 break;
         }
+    }
+
+
+    /**
+     * Handle CC command.
+     *
+     * @param data1 First data byte
+     * @param data2 Second data byte
+     */
+    protected void handleCC (final int data1, final int data2)
+    {
+        // Handled by bind framework
+        this.host.error ("CC " + data1 + " should be handled in framework...");
+    }
+
+
+    /**
+     * Handle pitchbend command.
+     *
+     * @param data1 First data byte
+     * @param data2 Second data byte
+     */
+    protected void handlePitchbend (final int data1, final int data2)
+    {
+        this.host.error ("Pitchbend should be handled in framework...");
+    }
+
+
+    /**
+     * Handle a note off command.
+     *
+     * @param data1 First data byte
+     * @param data2 Second data byte
+     */
+    protected void handleNoteOff (final int data1, final int data2)
+    {
+        // Handled by bind framework
+        this.host.error ("Midi Note off " + data1 + " should be handled in framework...");
+    }
+
+
+    /**
+     * Handle a note on command.
+     *
+     * @param data1 First data byte
+     * @param data2 Second data byte
+     */
+    protected void handleNoteOn (final int data1, final int data2)
+    {
+        // Handled by bind framework
+        this.host.error ("Midi Note on " + data1 + " should be handled in framework...");
     }
 
 

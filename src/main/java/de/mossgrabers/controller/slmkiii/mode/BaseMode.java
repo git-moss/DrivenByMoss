@@ -49,10 +49,12 @@ public abstract class BaseMode extends AbstractMode<SLMkIIIControlSurface, SLMkI
      * @param surface The control surface
      * @param model The model
      * @param bank The parameter bank to control with this mode, might be null
+     * @param firstKnob The ID of the first knob to control this mode, all other knobs must be
+     *            follow up IDs
      */
-    public BaseMode (final String name, final SLMkIIIControlSurface surface, final IModel model, final IBank<? extends IItem> bank)
+    public BaseMode (final String name, final SLMkIIIControlSurface surface, final IModel model, final IBank<? extends IItem> bank, final ContinuousID firstKnob)
     {
-        super (name, surface, model, false, bank, ContinuousID.KNOB1, 8);
+        super (name, surface, model, false, bank, firstKnob, 8);
     }
 
 

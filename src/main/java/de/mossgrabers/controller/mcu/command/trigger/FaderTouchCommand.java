@@ -39,8 +39,9 @@ public class FaderTouchCommand extends SelectCommand
     @Override
     public void executeNormal (final ButtonEvent event)
     {
-        if (event == ButtonEvent.LONG)
+        if (event == ButtonEvent.LONG || this.surface.getConfiguration ().useFadersAsKnobs ())
             return;
+
         final boolean isTouched = event == ButtonEvent.DOWN;
 
         // Master Channel
@@ -84,7 +85,6 @@ public class FaderTouchCommand extends SelectCommand
             if (!hasTouchedFader ())
                 modeManager.restoreMode ();
         }
-
     }
 
 

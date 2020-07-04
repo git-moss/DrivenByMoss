@@ -36,7 +36,6 @@ public abstract class AbstractPolySequencerView<S extends IControlSurface<C>, C 
     protected static final int            NUM_SEQUENCER_LINES = 4;
 
     protected final int                   sequencerSteps;
-    protected final boolean               useTrackColor;
     protected final Map<Integer, Integer> noteMemory          = new HashMap<> ();
     protected int                         copyStep            = -1;
     private int                           numColumns;
@@ -48,11 +47,11 @@ public abstract class AbstractPolySequencerView<S extends IControlSurface<C>, C 
      *
      * @param surface The surface
      * @param model The model
-     * @param useTrackColor True to use the color of the current track for coloring the octaves
+     * @param useDawColors True to use the color of the current track for coloring the octaves
      */
-    public AbstractPolySequencerView (final S surface, final IModel model, final boolean useTrackColor)
+    public AbstractPolySequencerView (final S surface, final IModel model, final boolean useDawColors)
     {
-        this (surface, model, useTrackColor, GRID_COLUMNS, GRID_ROWS, NUM_SEQUENCER_LINES);
+        this (surface, model, useDawColors, GRID_COLUMNS, GRID_ROWS, NUM_SEQUENCER_LINES);
     }
 
 
@@ -61,18 +60,17 @@ public abstract class AbstractPolySequencerView<S extends IControlSurface<C>, C 
      *
      * @param surface The surface
      * @param model The model
-     * @param useTrackColor True to use the color of the current track for coloring the octaves
+     * @param useDawColors True to use the color of the current track for coloring the octaves
      * @param numColumns The number of columns of the grid
      * @param numRows The number of rows of the grid
      * @param numSequencerRows The number of rows to use for the sequencer (rest is for the play
      *            area)
      */
-    public AbstractPolySequencerView (final S surface, final IModel model, final boolean useTrackColor, final int numColumns, final int numRows, final int numSequencerRows)
+    public AbstractPolySequencerView (final S surface, final IModel model, final boolean useDawColors, final int numColumns, final int numRows, final int numSequencerRows)
     {
-        super (Views.VIEW_NAME_POLY_SEQUENCER, surface, model, 128, numSequencerRows * numColumns);
+        super (Views.VIEW_NAME_POLY_SEQUENCER, surface, model, 128, numSequencerRows * numColumns, useDawColors);
 
         this.sequencerSteps = numSequencerRows * numColumns;
-        this.useTrackColor = useTrackColor;
 
         this.numColumns = numColumns;
         this.numRows = numRows;
@@ -429,7 +427,7 @@ public abstract class AbstractPolySequencerView<S extends IControlSurface<C>, C 
         {
             if (this.keyManager.isKeyPressed (note))
                 return isRecording ? AbstractPlayView.COLOR_RECORD : AbstractPlayView.COLOR_PLAY;
-            return this.getPadColor (note, this.useTrackColor ? track : null);
+            return this.getPadColor (note, this.useDawColors ? track : null);
         }
         return AbstractPlayView.COLOR_OFF;
     }

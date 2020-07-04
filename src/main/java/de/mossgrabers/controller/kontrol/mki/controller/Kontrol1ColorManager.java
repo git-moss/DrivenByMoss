@@ -26,8 +26,11 @@ public class Kontrol1ColorManager extends ColorManager
     private static final int SCALE_COLOR_OCTAVE       = 50;
     private static final int SCALE_COLOR_NOTE         = 51;
     private static final int SCALE_COLOR_OUT_OF_SCALE = 52;
+
+    private static final int COLOR_BLACK              = 0;
     private static final int COLOR_PLAY               = 53;
     private static final int COLOR_RECORD             = 54;
+    private static final int COLOR_WHITE              = 255;
 
 
     /**
@@ -35,19 +38,26 @@ public class Kontrol1ColorManager extends ColorManager
      */
     public Kontrol1ColorManager ()
     {
-        this.registerColorIndex (ColorManager.BUTTON_STATE_OFF, 0);
+        this.registerColorIndex (ColorManager.BUTTON_STATE_OFF, COLOR_BLACK);
         this.registerColorIndex (ColorManager.BUTTON_STATE_ON, 6);
         this.registerColorIndex (ColorManager.BUTTON_STATE_HI, 255);
 
-        this.registerColorIndex (Scales.SCALE_COLOR_OFF, 0);
+        this.registerColorIndex (Scales.SCALE_COLOR_OFF, COLOR_BLACK);
         this.registerColorIndex (Scales.SCALE_COLOR_OCTAVE, SCALE_COLOR_OCTAVE);
         this.registerColorIndex (Scales.SCALE_COLOR_NOTE, SCALE_COLOR_NOTE);
         this.registerColorIndex (Scales.SCALE_COLOR_OUT_OF_SCALE, SCALE_COLOR_OUT_OF_SCALE);
 
-        this.registerColorIndex (AbstractPlayView.COLOR_OFF, 0);
-
+        this.registerColorIndex (AbstractDrumView.COLOR_PAD_OFF, COLOR_BLACK);
+        this.registerColorIndex (AbstractDrumView.COLOR_PAD_NO_CONTENT, COLOR_BLACK);
+        this.registerColorIndex (AbstractDrumView.COLOR_PAD_HAS_CONTENT, 50);
         this.registerColorIndex (AbstractDrumView.COLOR_PAD_PLAY, COLOR_PLAY);
         this.registerColorIndex (AbstractDrumView.COLOR_PAD_RECORD, COLOR_RECORD);
+        this.registerColorIndex (AbstractDrumView.COLOR_PAD_MUTED, COLOR_BLACK);
+        this.registerColorIndex (AbstractDrumView.COLOR_PAD_SELECTED, COLOR_WHITE);
+
+        this.registerColorIndex (AbstractPlayView.COLOR_OFF, COLOR_BLACK);
+        this.registerColorIndex (AbstractPlayView.COLOR_PLAY, COLOR_PLAY);
+        this.registerColorIndex (AbstractPlayView.COLOR_RECORD, COLOR_RECORD);
 
         this.registerColorIndex (IPadGrid.GRID_OFF, 0);
 

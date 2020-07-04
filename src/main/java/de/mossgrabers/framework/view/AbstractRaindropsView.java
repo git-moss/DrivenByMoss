@@ -32,7 +32,6 @@ public abstract class AbstractRaindropsView<S extends IControlSurface<C>, C exte
 
     protected int              numDisplayRows   = 8;
     protected boolean          ongoingResolutionChange;
-    private boolean            useTrackColor;
     protected int              offsetY;
 
 
@@ -42,13 +41,11 @@ public abstract class AbstractRaindropsView<S extends IControlSurface<C>, C exte
      * @param name The name of the view
      * @param surface The surface
      * @param model The model
-     * @param useTrackColor True to use the color of the current track for coloring the octaves
+     * @param useDawColors True to use the color of the current track for coloring the octaves
      */
-    public AbstractRaindropsView (final String name, final S surface, final IModel model, final boolean useTrackColor)
+    public AbstractRaindropsView (final String name, final S surface, final IModel model, final boolean useDawColors)
     {
-        super (name, surface, model, 128, 32 * 16 /* Biggest number in Fixed Length */);
-
-        this.useTrackColor = useTrackColor;
+        super (name, surface, model, 128, 32 * 16 /* Biggest number in Fixed Length */, useDawColors);
 
         this.offsetY = AbstractRaindropsView.START_KEY;
 
@@ -121,7 +118,7 @@ public abstract class AbstractRaindropsView<S extends IControlSurface<C>, C exte
         if (this.ongoingResolutionChange)
             return;
 
-        final ITrack selectedTrack = this.useTrackColor ? this.model.getSelectedTrack () : null;
+        final ITrack selectedTrack = this.useDawColors ? this.model.getSelectedTrack () : null;
 
         final INoteClip clip = this.getClip ();
         final int length = (int) Math.floor (clip.getLoopLength () / Resolution.getValueAt (this.selectedResolutionIndex));

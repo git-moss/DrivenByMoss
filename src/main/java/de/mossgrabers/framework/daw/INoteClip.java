@@ -287,6 +287,12 @@ public interface INoteClip extends IClip
 
 
     /**
+     * Clear all notes on all channels.
+     */
+    void clearAll ();
+
+
+    /**
      * Clear a row (note).
      *
      * @param channel The MIDI channel

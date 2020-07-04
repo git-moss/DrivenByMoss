@@ -378,8 +378,10 @@ public class Scales
                 this.setPlayShift (2);
                 break;
             case SEQUENT_UP:
+                this.setPlayShift (this.numRows);
+                break;
             case SEQUENT_RIGHT:
-                this.setPlayShift (8);
+                this.setPlayShift (this.numColumns);
                 break;
             case EIGHT_UP:
             case EIGHT_RIGHT:
@@ -674,30 +676,92 @@ public class Scales
         final int midiNote = noteMap[note];
         if (midiNote == -1)
             return Scales.SCALE_COLOR_OFF;
-        // Add 12 to prevent negative values
-        final int n = (12 + midiNote - Scales.OFFSETS[this.scaleOffset]) % 12;
-        if (n == 0)
+        final int noteInOctave = this.toNoteInOctave (midiNote);
+        if (noteInOctave == 0)
             return Scales.SCALE_COLOR_OCTAVE;
         if (!this.isChromatic ())
             return Scales.SCALE_COLOR_NOTE;
-        return this.isInScale (n) ? Scales.SCALE_COLOR_NOTE : Scales.SCALE_COLOR_OUT_OF_SCALE;
+        return this.isInScale (noteInOctave) ? Scales.SCALE_COLOR_NOTE : Scales.SCALE_COLOR_OUT_OF_SCALE;
+    }
+
+
+    /**
+     * Convert the MIDI note (0-127) to the note in an octave (0-11). Respect the currently active
+     * base note.
+     *
+     * @param midiNote The MIDI note to convert
+     * @return The note in the octave
+     */
+    private int toNoteInOctave (final int midiNote)
+    {
+        // Add 12 to prevent negative values
+        return (12 + midiNote - Scales.OFFSETS[this.scaleOffset]) % 12;
     }
 
 
     /**
      * Test if the note is part of the selected scale.
      *
-     * @param note The note to test (0-11)
+     * @param noteInOctave The note to test (0-11)
      * @return True if it is part of the scale
      */
-    public boolean isInScale (final int note)
+    public boolean isInScale (final int noteInOctave)
     {
         for (final int interval: this.selectedScale.getIntervals ())
         {
-            if (interval == note)
+            if (interval == noteInOctave)
                 return true;
         }
         return false;
+    }
+
+
+    /**
+     * Get the index of the note in the scale.
+     *
+     * @param midiNote The note for which to get the index
+     * @return The index of the note or -1 if the note is out of scale
+     */
+    public int getScaleIndex (final int midiNote)
+    {
+        final int noteInOctave = this.toNoteInOctave (midiNote);
+
+        final int [] intervals = this.selectedScale.getIntervals ();
+        for (int i = 0; i < intervals.length; i++)
+        {
+            if (intervals[i] == noteInOctave)
+                return i;
+        }
+        return -1;
+    }
+
+
+    /**
+     * Calculate the thirds on top of the given midi note. Respects the current octave, scale and
+     * scale base.
+     *
+     * @param midiNote The base note of the chord
+     * @return The additional 2 thirds
+     */
+    public int [] getThirdChord (final int midiNote)
+    {
+        final int scaleIndex = this.getScaleIndex (midiNote);
+        if (scaleIndex < 0)
+            return new int [0];
+
+        final int [] intervals = this.selectedScale.getIntervals ();
+
+        final int secondNoteIndex = scaleIndex + 2;
+        final int thirdNoteIndex = scaleIndex + 4;
+
+        final int secondOctaveNote = intervals[secondNoteIndex % intervals.length];
+        final int thirdOctaveNote = intervals[thirdNoteIndex % intervals.length];
+
+        return new int []
+        {
+            this.startNote + Scales.OFFSETS[this.scaleOffset] + (this.octave + secondNoteIndex / intervals.length) * 12 + secondOctaveNote,
+            this.startNote + Scales.OFFSETS[this.scaleOffset] + (this.octave + thirdNoteIndex / intervals.length) * 12 + thirdOctaveNote
+        };
     }
 
 

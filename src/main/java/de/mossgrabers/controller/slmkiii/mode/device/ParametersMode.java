@@ -42,7 +42,7 @@ public class ParametersMode extends AbstractParametersMode
      */
     public ParametersMode (final SLMkIIIControlSurface surface, final IModel model)
     {
-        super ("Parameters", surface, model, null);
+        super ("Parameters", surface, model, null, null);
 
         this.setShowDevices (true);
 

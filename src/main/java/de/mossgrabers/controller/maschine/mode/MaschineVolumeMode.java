@@ -21,6 +21,9 @@ import de.mossgrabers.framework.utils.StringUtils;
  */
 public class MaschineVolumeMode extends VolumeMode<MaschineControlSurface, MaschineConfiguration>
 {
+    private boolean displayVU = false;
+
+
     /**
      * Constructor.
      *
@@ -29,7 +32,7 @@ public class MaschineVolumeMode extends VolumeMode<MaschineControlSurface, Masch
      */
     public MaschineVolumeMode (final MaschineControlSurface surface, final IModel model)
     {
-        super (surface, model, false);
+        super (surface, model, false, null, 9);
     }
 
 
@@ -46,8 +49,35 @@ public class MaschineVolumeMode extends VolumeMode<MaschineControlSurface, Masch
             if (t.isSelected ())
                 name = ">" + name;
             d.setCell (0, i, name);
-            d.setCell (1, i, t.getVolumeStr (6));
+
+            if (this.displayVU && !this.isKnobTouched[i] && !(this.isKnobTouched[8] && t.isSelected ()))
+            {
+                final int steps = (int) Math.round (this.model.getValueChanger ().toNormalizedValue (t.getVu ()) * 6);
+                d.setCell (1, i, StringUtils.pad ("", steps, '>'));
+            }
+            else
+                d.setCell (1, i, t.getVolumeStr (6));
         }
         d.allDone ();
+    }
+
+
+    /** {@inheritDoc} */
+    @Override
+    public void onKnobTouch (final int index, final boolean isTouched)
+    {
+        this.isKnobTouched[index] = isTouched;
+
+        if (index < 8)
+            super.onKnobTouch (index, isTouched);
+    }
+
+
+    /**
+     * De-/activate to display VU meters.
+     */
+    public void toggleDisplayVU ()
+    {
+        this.displayVU = !this.displayVU;
     }
 }

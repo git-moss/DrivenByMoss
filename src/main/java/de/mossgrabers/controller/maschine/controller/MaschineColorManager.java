@@ -12,6 +12,7 @@ import de.mossgrabers.framework.mode.AbstractMode;
 import de.mossgrabers.framework.scale.Scales;
 import de.mossgrabers.framework.view.AbstractDrumView;
 import de.mossgrabers.framework.view.AbstractPlayView;
+import de.mossgrabers.framework.view.AbstractSequencerView;
 
 
 /**
@@ -75,6 +76,19 @@ public class MaschineColorManager extends ColorManager
         this.registerColorIndex (AbstractPlayView.COLOR_PLAY, COLOR_GREEN);
         this.registerColorIndex (AbstractPlayView.COLOR_RECORD, COLOR_RED);
         this.registerColorIndex (AbstractPlayView.COLOR_OFF, COLOR_BLACK);
+
+        this.registerColorIndex (AbstractSequencerView.COLOR_STEP_HILITE_NO_CONTENT, COLOR_GREEN_LO);
+        this.registerColorIndex (AbstractSequencerView.COLOR_STEP_HILITE_CONTENT, COLOR_GREEN);
+        this.registerColorIndex (AbstractSequencerView.COLOR_NO_CONTENT, COLOR_BLACK);
+        this.registerColorIndex (AbstractSequencerView.COLOR_CONTENT, COLOR_BLUE);
+        this.registerColorIndex (AbstractSequencerView.COLOR_CONTENT_CONT, COLOR_BLUE_LO);
+
+        this.registerColorIndex (AbstractSequencerView.COLOR_PAGE, COLOR_WHITE);
+        this.registerColorIndex (AbstractSequencerView.COLOR_ACTIVE_PAGE, COLOR_GREEN);
+        this.registerColorIndex (AbstractSequencerView.COLOR_SELECTED_PAGE, COLOR_BLUE);
+        this.registerColorIndex (AbstractSequencerView.COLOR_RESOLUTION, COLOR_ORANGE);
+        this.registerColorIndex (AbstractSequencerView.COLOR_RESOLUTION_SELECTED, COLOR_RED);
+        this.registerColorIndex (AbstractSequencerView.COLOR_RESOLUTION_OFF, COLOR_BLACK);
 
         this.registerColorIndex (AbstractDrumView.COLOR_PAD_OFF, COLOR_BLACK);
         this.registerColorIndex (AbstractDrumView.COLOR_PAD_RECORD, COLOR_RED);

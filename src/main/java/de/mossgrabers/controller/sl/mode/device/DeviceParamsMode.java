@@ -49,7 +49,7 @@ public class DeviceParamsMode extends AbstractMode<SLControlSurface, SLConfigura
             for (int i = 0; i < 8; i++)
             {
                 final IParameter param = parameterBank.getItem (i);
-                d.setCell (0, i, param.doesExist () ? StringUtils.shortenAndFixASCII (param.getName (), 8) : "").setCell (2, i, param.getDisplayedValue (8));
+                d.setCell (0, i, param.doesExist () ? StringUtils.shortenAndFixASCII (param.getName (), 8) : "").setCell (2, i, StringUtils.shortenAndFixASCII (param.getDisplayedValue (8), 8));
             }
         }
         else

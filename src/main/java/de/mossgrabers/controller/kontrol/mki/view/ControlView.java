@@ -62,7 +62,6 @@ public class ControlView extends AbstractPlayView<Kontrol1ControlSurface, Kontro
                 final boolean isRecording = this.model.hasRecordingState ();
                 for (int i = this.scales.getStartNote (); i < this.scales.getEndNote (); i++)
                     lightGuide.light (i, this.getDrumPadColor (i, primary, isSoloed, isRecording));
-
                 return;
             }
         }
@@ -73,6 +72,10 @@ public class ControlView extends AbstractPlayView<Kontrol1ControlSurface, Kontro
 
     protected String getDrumPadColor (final int index, final ICursorDevice primary, final boolean isSoloed, final boolean isRecording)
     {
+        final int midiNote = this.keyManager.map (index);
+        if (midiNote == -1)
+            return Scales.SCALE_COLOR_OFF;
+
         // Playing note?
         if (this.keyManager.isKeyPressed (index))
             return isRecording ? AbstractDrumView.COLOR_PAD_RECORD : AbstractDrumView.COLOR_PAD_PLAY;

@@ -67,7 +67,7 @@ public abstract class AbstractTrackMode extends BaseMode
      */
     public AbstractTrackMode (final String name, final SLMkIIIControlSurface surface, final IModel model)
     {
-        super (name, surface, model, model.getCurrentTrackBank ());
+        super (name, surface, model, model.getCurrentTrackBank (), null);
 
         this.isTemporary = false;
 

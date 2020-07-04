@@ -134,10 +134,19 @@ public abstract class AbstractPlayView<S extends IControlSurface<C>, C extends C
     {
         if (event != ButtonEvent.DOWN)
             return;
+        this.octaveDown ();
+        this.surface.getDisplay ().notify (this.scales.getRangeText ());
+    }
+
+
+    /**
+     * Executes octave down.
+     */
+    public void octaveDown ()
+    {
         this.keyManager.clearPressedKeys ();
         this.scales.decOctave ();
         this.updateNoteMapping ();
-        this.surface.getDisplay ().notify (this.scales.getRangeText ());
     }
 
 
@@ -147,10 +156,30 @@ public abstract class AbstractPlayView<S extends IControlSurface<C>, C extends C
     {
         if (event != ButtonEvent.DOWN)
             return;
+        this.octaveUp ();
+        this.surface.getDisplay ().notify (this.scales.getRangeText ());
+    }
+
+
+    /**
+     * Execute octave up.
+     */
+    public void octaveUp ()
+    {
         this.keyManager.clearPressedKeys ();
         this.scales.incOctave ();
         this.updateNoteMapping ();
-        this.surface.getDisplay ().notify (this.scales.getRangeText ());
+    }
+
+
+    /**
+     * Reset octave.
+     */
+    public void resetOctave ()
+    {
+        this.keyManager.clearPressedKeys ();
+        this.scales.setOctave (0);
+        this.updateNoteMapping ();
     }
 
 

@@ -30,7 +30,7 @@ public class DrumView extends AbstractDrumView<APCminiControlSurface, APCminiCon
      */
     public DrumView (final APCminiControlSurface surface, final IModel model)
     {
-        super ("Drum", surface, model, 4, 4);
+        super ("Drum", surface, model, 4, 4, false);
     }
 
 

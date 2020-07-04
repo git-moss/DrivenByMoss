@@ -42,5 +42,5 @@ public interface UIChangeCallback
      *
      * @param firstNote The left most note that the keyboard sends now
      */
-    void keyboardChanged (int firstNote);
+    void octaveChanged (int firstNote);
 }

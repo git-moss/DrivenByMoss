@@ -18,7 +18,6 @@ import de.mossgrabers.framework.mode.AbstractMode;
 import de.mossgrabers.framework.mode.BrowserActivator;
 import de.mossgrabers.framework.mode.ModeManager;
 import de.mossgrabers.framework.mode.Modes;
-import de.mossgrabers.framework.utils.ButtonEvent;
 
 
 /**
@@ -117,40 +116,6 @@ public class ClipView extends BaseView
             case 2:
             default:
                 // Do nothing
-                break;
-        }
-    }
-
-
-    /** {@inheritDoc} */
-    @Override
-    public void onButton (final int index, final ButtonEvent event)
-    {
-        if (event != ButtonEvent.DOWN)
-            return;
-
-        final ITrack selectedTrack = this.model.getCurrentTrackBank ().getSelectedItem ();
-        if (selectedTrack == null)
-            return;
-
-        final ISlotBank slotBank = selectedTrack.getSlotBank ();
-
-        switch (index)
-        {
-            case 0:
-                this.model.getCurrentTrackBank ().selectPreviousItem ();
-                break;
-            case 1:
-                this.model.getCurrentTrackBank ().selectNextItem ();
-                break;
-            case 2:
-                slotBank.selectPreviousPage ();
-                break;
-            case 3:
-                slotBank.selectNextPage ();
-                break;
-            default:
-                // Not used
                 break;
         }
     }

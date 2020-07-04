@@ -36,7 +36,7 @@ public abstract class DrumViewBase extends AbstractDrumView<LaunchpadControlSurf
      */
     public DrumViewBase (final String name, final LaunchpadControlSurface surface, final IModel model, final int numSequencerLines, final int numPlayLines)
     {
-        super (name, surface, model, numSequencerLines, numPlayLines);
+        super (name, surface, model, numSequencerLines, numPlayLines, true);
     }
 
 

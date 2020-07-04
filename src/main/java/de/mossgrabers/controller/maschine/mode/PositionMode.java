@@ -27,6 +27,8 @@ public class PositionMode extends BaseMode
     public PositionMode (final MaschineControlSurface surface, final IModel model)
     {
         super ("Position", surface, model);
+
+        this.isTemporary = false;
     }
 
 

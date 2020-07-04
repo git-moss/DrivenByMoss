@@ -6,6 +6,7 @@ package de.mossgrabers.framework.command.trigger.track;
 
 import de.mossgrabers.framework.command.core.AbstractTriggerCommand;
 import de.mossgrabers.framework.configuration.Configuration;
+import de.mossgrabers.framework.controller.ButtonID;
 import de.mossgrabers.framework.controller.IControlSurface;
 import de.mossgrabers.framework.daw.IApplication;
 import de.mossgrabers.framework.daw.IModel;
@@ -23,6 +24,10 @@ import de.mossgrabers.framework.utils.ButtonEvent;
  */
 public class AddTrackCommand<S extends IControlSurface<C>, C extends Configuration> extends AbstractTriggerCommand<S, C>
 {
+    private final ButtonID combi1;
+    private final ButtonID combi2;
+
+
     /**
      * Constructor.
      *
@@ -31,7 +36,26 @@ public class AddTrackCommand<S extends IControlSurface<C>, C extends Configurati
      */
     public AddTrackCommand (final IModel model, final S surface)
     {
+        this (model, surface, ButtonID.SHIFT, ButtonID.SELECT);
+    }
+
+
+    /**
+     * Constructor.
+     *
+     * @param model The model
+     * @param surface The surface
+     * @param combi1 The button to be pressed for the first button combination to trigger inserting
+     *            an effect track
+     * @param combi2 The button to be pressed for the second button combination to trigger inserting
+     *            an audio track
+     */
+    public AddTrackCommand (final IModel model, final S surface, final ButtonID combi1, final ButtonID combi2)
+    {
         super (model, surface);
+
+        this.combi1 = combi1;
+        this.combi2 = combi2;
     }
 
 
@@ -44,14 +68,14 @@ public class AddTrackCommand<S extends IControlSurface<C>, C extends Configurati
 
         ITrackBank tb = this.model.getTrackBank ();
         final IApplication application = this.model.getApplication ();
-        if (this.surface.isShiftPressed ())
+        if (this.combi1 != null && this.surface.isPressed (this.combi1))
         {
             application.addEffectTrack ();
             tb = this.model.getEffectTrackBank ();
             if (tb == null)
                 return;
         }
-        else if (this.surface.isSelectPressed ())
+        else if (this.combi2 != null && this.surface.isPressed (this.combi2))
             application.addAudioTrack ();
         else
             application.addInstrumentTrack ();

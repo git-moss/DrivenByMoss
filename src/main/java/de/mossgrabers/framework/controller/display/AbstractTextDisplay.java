@@ -363,7 +363,7 @@ public abstract class AbstractTextDisplay implements ITextDisplay
      *
      * @param centerNotification True to center
      */
-    public void setCenterNotification (boolean centerNotification)
+    public void setCenterNotification (final boolean centerNotification)
     {
         this.centerNotification = centerNotification;
     }

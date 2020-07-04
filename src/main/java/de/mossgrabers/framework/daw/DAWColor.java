@@ -16,12 +16,12 @@ public enum DAWColor
 {
     /** Color off. */
     COLOR_OFF("Off", new ColorEx (0.5, 0.5, 0.5)),
-    /** Color half grey. */
-    DAW_COLOR_GRAY_HALF("Gray half", new ColorEx (0.5, 0.5, 0.5)),
     /** Color dark grey. */
     DAW_COLOR_DARK_GRAY("Dark Gray", new ColorEx (0.3294117748737335, 0.3294117748737335, 0.3294117748737335)),
     /** Color gray. */
     DAW_COLOR_GRAY("Gray", new ColorEx (0.47843137383461, 0.47843137383461, 0.47843137383461)),
+    /** Color half grey. */
+    DAW_COLOR_GRAY_HALF("Gray half", new ColorEx (0.5, 0.5, 0.5)),
     /** Color light grey. */
     DAW_COLOR_LIGHT_GRAY("Light Gray", new ColorEx (0.7882353067398071, 0.7882353067398071, 0.7882353067398071)),
     /** Color silver. */

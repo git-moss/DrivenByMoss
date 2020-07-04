@@ -35,7 +35,7 @@ public class DrumView extends AbstractDrumView<APCControlSurface, APCConfigurati
      */
     public DrumView (final APCControlSurface surface, final IModel model)
     {
-        super ("Drum", surface, model, 2, 3);
+        super ("Drum", surface, model, 2, 3, true);
     }
 
 
@@ -53,7 +53,7 @@ public class DrumView extends AbstractDrumView<APCControlSurface, APCConfigurati
             // Turn on Note mode if an existing note is pressed
             final INoteClip cursorClip = this.getClip ();
             final int channel = this.configuration.getMidiEditChannel ();
-            final int step = GRID_COLUMNS * (this.allLines - 1 - y) + x;
+            final int step = GRID_COLUMNS * (this.allRows - 1 - y) + x;
             final int note = offsetY + this.selectedPad;
             final int state = cursorClip.getStep (channel, step, note).getState ();
             if (state == IStepInfo.NOTE_START)

@@ -34,7 +34,7 @@ public abstract class BaseSequencerView extends AbstractSequencerView<BeatstepCo
      */
     public BaseSequencerView (final String name, final BeatstepControlSurface surface, final IModel model, final int rows, final int cols)
     {
-        super (name, surface, model, rows, cols);
+        super (name, surface, model, rows, cols, false);
 
         this.extensions = new TrackEditing (surface, model);
     }

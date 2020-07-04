@@ -72,6 +72,8 @@ public class CursorClipImpl implements INoteClip
         this.launcherClip.canScrollStepsBackwards ().markInterested ();
         this.launcherClip.canScrollStepsForwards ().markInterested ();
         this.launcherClip.color ().markInterested ();
+
+        this.launcherClip.getTrack ().canHoldNoteData ().markInterested ();
     }
 
 
@@ -91,6 +93,8 @@ public class CursorClipImpl implements INoteClip
         Util.setIsSubscribed (this.launcherClip.canScrollStepsBackwards (), enable);
         Util.setIsSubscribed (this.launcherClip.canScrollStepsForwards (), enable);
         Util.setIsSubscribed (this.launcherClip.color (), enable);
+
+        Util.setIsSubscribed (this.launcherClip.getTrack ().canHoldNoteData (), enable);
     }
 
 
@@ -573,6 +577,14 @@ public class CursorClipImpl implements INoteClip
 
     /** {@inheritDoc} */
     @Override
+    public void clearAll ()
+    {
+        this.getClip ().clearSteps ();
+    }
+
+
+    /** {@inheritDoc} */
+    @Override
     public void clearRow (final int channel, final int row)
     {
         this.getClip ().clearStepsAtY (channel, row);
@@ -732,7 +744,10 @@ public class CursorClipImpl implements INoteClip
     @Override
     public void transpose (final int semitones)
     {
-        this.getClip ().transpose (semitones);
+        final Clip clip = this.getClip ();
+        // Workaround Bitwig crashing when it is not a MIDI clip
+        if (clip.getTrack ().canHoldNoteData ().get ())
+            clip.transpose (semitones);
     }
 
 

@@ -8,6 +8,7 @@ import de.mossgrabers.framework.controller.color.ColorEx;
 import de.mossgrabers.framework.graphics.Align;
 import de.mossgrabers.framework.graphics.IGraphicsContext;
 import de.mossgrabers.framework.graphics.IImage;
+import de.mossgrabers.framework.utils.StringUtils;
 
 import com.bitwig.extension.api.graphics.GradientPattern;
 import com.bitwig.extension.api.graphics.GraphicsOutput;
@@ -165,13 +166,15 @@ public class GraphicsContextImpl implements IGraphicsContext
         if (text == null || text.length () == 0)
             return;
 
+        final String txt = StringUtils.fixFontCharacters (text);
+
         this.gc.save ();
         this.gc.setFontSize (fontSize);
 
         // We need to calculate the text height from a character which has no ascent, since showText
         // always draws the text on the baseline of the font!
         final double h = this.gc.getTextExtents ("T").getHeight ();
-        final double w = this.gc.getTextExtents (text).getWidth ();
+        final double w = this.gc.getTextExtents (txt).getWidth ();
         final double posX = alignment == Align.CENTER ? x + (width - w) / 2.0 : x;
         final double posY = y + (height + h) / 2;
 
@@ -186,7 +189,7 @@ public class GraphicsContextImpl implements IGraphicsContext
 
         this.setColor (color);
         this.gc.moveTo (posX, posY);
-        this.gc.showText (text);
+        this.gc.showText (txt);
         this.gc.resetClip ();
         this.gc.restore ();
     }
@@ -207,6 +210,8 @@ public class GraphicsContextImpl implements IGraphicsContext
         if (text == null || text.length () == 0)
             return;
 
+        final String txt = StringUtils.fixFontCharacters (text);
+
         this.gc.save ();
         this.gc.setFontSize (fontSize);
 
@@ -217,14 +222,14 @@ public class GraphicsContextImpl implements IGraphicsContext
 
         if (backgroundColor != null)
         {
-            final double w = this.gc.getTextExtents (text).getWidth ();
+            final double w = this.gc.getTextExtents (txt).getWidth ();
             final double inset = 12.0;
             this.fillRoundedRectangle (x - inset, posY - h - inset, w + 2 * inset, h + 2 * inset, inset, backgroundColor);
         }
 
         this.setColor (color);
         this.gc.moveTo (x, posY);
-        this.gc.showText (text);
+        this.gc.showText (txt);
         this.gc.restore ();
     }
 

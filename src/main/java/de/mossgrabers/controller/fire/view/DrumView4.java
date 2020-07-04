@@ -309,7 +309,7 @@ public class DrumView4 extends AbstractDrumView<FireControlSurface, FireConfigur
             index = sel == null ? drumPadBank.getPageSize () : sel.getIndex () + 1;
             if (index == drumPadBank.getPageSize ())
             {
-                this.changeOctave (ButtonEvent.DOWN, isUp, 4, true);
+                this.changeOctave (ButtonEvent.DOWN, isUp, 4, true, true);
                 this.surface.scheduleTask ( () -> drumPadBank.getItem (0).select (), 100);
             }
             else
@@ -320,7 +320,7 @@ public class DrumView4 extends AbstractDrumView<FireControlSurface, FireConfigur
             index = sel == null ? -1 : sel.getIndex () - 1;
             if (index == -1)
             {
-                this.changeOctave (ButtonEvent.DOWN, isUp, 4, true);
+                this.changeOctave (ButtonEvent.DOWN, isUp, 4, true, true);
                 this.surface.scheduleTask ( () -> drumPadBank.getItem (drumPadBank.getPageSize () - 1).select (), 100);
             }
             else

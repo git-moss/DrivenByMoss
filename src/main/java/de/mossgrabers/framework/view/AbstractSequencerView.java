@@ -54,6 +54,7 @@ public abstract class AbstractSequencerView<S extends IControlSurface<C>, C exte
     protected int                 selectedResolutionIndex;
     protected final Configuration configuration;
     protected boolean             isNoteEdited                 = false;
+    protected final boolean       useDawColors;
 
     protected final int           clipRows;
     protected final int           clipCols;
@@ -69,10 +70,11 @@ public abstract class AbstractSequencerView<S extends IControlSurface<C>, C exte
      * @param model The model
      * @param clipRows The rows of the monitored clip
      * @param clipCols The cols of the monitored clip
+     * @param useDawColors True to use the DAW color of items for coloring (for full RGB devices)
      */
-    public AbstractSequencerView (final String name, final S surface, final IModel model, final int clipRows, final int clipCols)
+    public AbstractSequencerView (final String name, final S surface, final IModel model, final int clipRows, final int clipCols, final boolean useDawColors)
     {
-        this (name, surface, model, clipRows, clipCols, clipRows);
+        this (name, surface, model, clipRows, clipCols, clipRows, useDawColors);
     }
 
 
@@ -85,13 +87,15 @@ public abstract class AbstractSequencerView<S extends IControlSurface<C>, C exte
      * @param clipRows The rows of the monitored clip
      * @param clipCols The cols of the monitored clip
      * @param numSequencerRows The number of displayed rows of the sequencer
+     * @param useDawColors True to use the DAW color of items for coloring (for full RGB devices)
      */
-    public AbstractSequencerView (final String name, final S surface, final IModel model, final int clipRows, final int clipCols, final int numSequencerRows)
+    public AbstractSequencerView (final String name, final S surface, final IModel model, final int clipRows, final int clipCols, final int numSequencerRows, final boolean useDawColors)
     {
         super (name, surface, model);
 
         this.clipRows = clipRows;
         this.clipCols = clipCols;
+        this.useDawColors = useDawColors;
 
         this.configuration = this.surface.getConfiguration ();
 
@@ -117,7 +121,7 @@ public abstract class AbstractSequencerView<S extends IControlSurface<C>, C exte
     @Override
     public void updateControlSurface ()
     {
-        this.isSequencerActive = this.model.canSelectedTrackHoldNotes () && this.getClip ().doesExist ();
+        this.setSequencerActive (this.model.canSelectedTrackHoldNotes () && this.getClip ().doesExist ());
 
         super.updateControlSurface ();
     }
@@ -271,8 +275,19 @@ public abstract class AbstractSequencerView<S extends IControlSurface<C>, C exte
      *
      * @return Returns true if the selected track can hold notes and the selected clip exists
      */
-    protected boolean isActive ()
+    public boolean isActive ()
     {
         return this.isSequencerActive;
+    }
+
+
+    /**
+     * Set the sequencer active.
+     *
+     * @param isSequencerActive True to set active
+     */
+    public void setSequencerActive (final boolean isSequencerActive)
+    {
+        this.isSequencerActive = isSequencerActive;
     }
 }

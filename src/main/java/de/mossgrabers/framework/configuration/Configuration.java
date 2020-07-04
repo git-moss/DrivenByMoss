@@ -247,7 +247,7 @@ public interface Configuration
      *
      * @param value The accent value
      */
-    void setAccentValue (int value);
+    void setFixedAccentValue (int value);
 
 
     /**

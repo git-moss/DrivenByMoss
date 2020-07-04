@@ -31,7 +31,7 @@ public class MaschineSendMode extends SendMode<MaschineControlSurface, MaschineC
      */
     public MaschineSendMode (final int sendIndex, final MaschineControlSurface surface, final IModel model)
     {
-        super (sendIndex, surface, model, false);
+        super (sendIndex, surface, model, false, null, 9);
     }
 
 
@@ -52,5 +52,16 @@ public class MaschineSendMode extends SendMode<MaschineControlSurface, MaschineC
             d.setCell (1, i, send.getDisplayedValue (6));
         }
         d.allDone ();
+    }
+
+
+    /** {@inheritDoc} */
+    @Override
+    public void onKnobTouch (final int index, final boolean isTouched)
+    {
+        this.isKnobTouched[index] = isTouched;
+
+        if (index < 8)
+            super.onKnobTouch (index, isTouched);
     }
 }

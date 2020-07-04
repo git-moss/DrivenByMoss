@@ -364,7 +364,7 @@ public abstract class AbstractConfiguration implements Configuration
         for (int i = 0; i < this.userPageNames.length; i++)
             this.userPageNames[i] = "Page " + (i + 1);
 
-        Views.init (host);
+        Views.init ();
     }
 
 
@@ -505,7 +505,7 @@ public abstract class AbstractConfiguration implements Configuration
 
     /** {@inheritDoc} */
     @Override
-    public void setAccentValue (final int value)
+    public void setFixedAccentValue (final int value)
     {
         this.accentValueSetting.set (value);
     }
@@ -885,8 +885,20 @@ public abstract class AbstractConfiguration implements Configuration
      */
     protected void activateScaleLayoutSetting (final ISettingsUI settingsUI)
     {
+        this.activateScaleLayoutSetting (settingsUI, ScaleLayout.FOURTH_UP.getName ());
+    }
+
+
+    /**
+     * Activate the scale layout setting.
+     *
+     * @param settingsUI The settings
+     * @param defaultScale The name of the default scale to set
+     */
+    protected void activateScaleLayoutSetting (final ISettingsUI settingsUI, final String defaultScale)
+    {
         final String [] names = ScaleLayout.getNames ();
-        this.scaleLayoutSetting = settingsUI.getEnumSetting ("Layout", CATEGORY_SCALES, names, names[0]);
+        this.scaleLayoutSetting = settingsUI.getEnumSetting ("Layout", CATEGORY_SCALES, names, defaultScale);
         this.scaleLayoutSetting.addValueObserver (value -> {
             this.scaleLayout = value;
             this.notifyObservers (AbstractConfiguration.SCALES_LAYOUT);

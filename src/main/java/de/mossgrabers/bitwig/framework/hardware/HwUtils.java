@@ -20,6 +20,15 @@ import com.bitwig.extension.controller.api.StringValue;
 public class HwUtils
 {
     /**
+     * Private due to utility class.
+     */
+    private HwUtils ()
+    {
+        // Intentionally empty
+    }
+
+
+    /**
      * Mark all target value parameters of a continuous hardware control.
      *
      * @param control The control to mark

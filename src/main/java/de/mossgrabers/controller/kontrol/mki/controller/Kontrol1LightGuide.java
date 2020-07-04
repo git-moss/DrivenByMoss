@@ -27,7 +27,7 @@ public class Kontrol1LightGuide extends LightGuideImpl
      */
     public Kontrol1LightGuide (final ColorManager colorManager, final Kontrol1UsbDevice usbDevice)
     {
-        super (0, 88, colorManager, null);
+        super (0, 128, colorManager, null);
 
         this.usbDevice = usbDevice;
     }
@@ -35,11 +35,28 @@ public class Kontrol1LightGuide extends LightGuideImpl
 
     /** {@inheritDoc} */
     @Override
+    public int [] translateToController (final int note)
+    {
+        final int [] translated = super.translateToController (note);
+
+        final int firstNote = this.usbDevice.getFirstNote ();
+        if (note < firstNote || note >= firstNote + this.usbDevice.getNumKeys ())
+            translated[1] = -1;
+        else
+            translated[1] = note - firstNote;
+        return translated;
+    }
+
+
+    /** {@inheritDoc} */
+    @Override
     protected void sendNoteState (final int channel, final int note, final int color)
     {
-        final int n = note - this.usbDevice.getFirstNote ();
+        if (note < 0 || note >= 88)
+            return;
         final ColorEx colorEx = this.colorManager.getColor (color, null);
         final int [] rgb = colorEx.toIntRGB127 ();
-        this.usbDevice.setKeyLED (n, rgb[0], rgb[1], rgb[2]);
+        // After previous translation to controller, note is only the index into the 0..N LEDs
+        this.usbDevice.setKeyLED (note, rgb[0], rgb[1], rgb[2]);
     }
 }

@@ -63,7 +63,7 @@ public class MVHelper<S extends IControlSurface<C>, C extends Configuration>
             final ITrack selectedTrack = currentTrackBank.getSelectedItem ();
             if (selectedTrack == null || !selectedTrack.doesExist ())
                 return "Selected track: None";
-            return (selectedTrack.getPosition () + 1) + ": " + selectedTrack.getName ();
+            return selectedTrack.getPosition () + 1 + ": " + selectedTrack.getName ();
 
         });
     }

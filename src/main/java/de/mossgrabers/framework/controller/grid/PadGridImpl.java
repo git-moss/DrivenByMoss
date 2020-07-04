@@ -174,7 +174,7 @@ public class PadGridImpl implements IPadGrid
     @Override
     public void sendState (final int note)
     {
-        final LightInfo state = this.padStates[note];
+        final LightInfo state = note < this.padStates.length ? this.padStates[note] : new LightInfo ();
         final int [] translated = this.translateToController (note);
         final int color = state.getColor ();
         this.sendNoteState (translated[0], translated[1], color < 0 ? 0 : color);

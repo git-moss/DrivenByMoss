@@ -37,7 +37,7 @@ public class MaschineSendSelectCommand extends ModeMultiSelectCommand<MaschineCo
 
     /** {@inheritDoc} */
     @Override
-    public void executeShifted (ButtonEvent event)
+    public void executeShifted (final ButtonEvent event)
     {
         final ModeManager modeManager = this.surface.getModeManager ();
         final Modes activeMode = modeManager.getActiveModeId ();
@@ -62,7 +62,7 @@ public class MaschineSendSelectCommand extends ModeMultiSelectCommand<MaschineCo
 
     /** {@inheritDoc} */
     @Override
-    public void executeNormal (ButtonEvent event)
+    public void executeNormal (final ButtonEvent event)
     {
         final ModeManager modeManager = this.surface.getModeManager ();
         final Modes activeMode = modeManager.getActiveModeId ();

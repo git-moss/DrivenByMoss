@@ -7,15 +7,14 @@ package de.mossgrabers.controller.fire.controller;
 import de.mossgrabers.framework.controller.ButtonID;
 import de.mossgrabers.framework.controller.color.ColorEx;
 import de.mossgrabers.framework.controller.color.ColorManager;
+import de.mossgrabers.framework.controller.grid.BlinkingPadGrid;
 import de.mossgrabers.framework.controller.grid.LightInfo;
-import de.mossgrabers.framework.controller.grid.PadGridImpl;
 import de.mossgrabers.framework.daw.midi.IMidiOutput;
 import de.mossgrabers.framework.utils.StringUtils;
 
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Map.Entry;
-import java.util.TreeMap;
 
 
 /**
@@ -23,7 +22,7 @@ import java.util.TreeMap;
  *
  * @author J&uuml;rgen Mo&szlig;graber
  */
-public class FirePadGrid extends PadGridImpl
+public class FirePadGrid extends BlinkingPadGrid
 {
     // @formatter:off
     static final int [] TRANSLATE_16x4_MATRIX =
@@ -41,12 +40,6 @@ public class FirePadGrid extends PadGridImpl
         for (int i = 0; i < TRANSLATE_16x4_MATRIX.length; i++)
             INVERSE_TRANSLATE_16x4_MATRIX.put (Integer.valueOf (TRANSLATE_16x4_MATRIX[i]), Integer.valueOf (36 + i));
     }
-
-    private final Map<Integer, LightInfo> blinkingLights = new HashMap<> ();
-    private final Map<Integer, LightInfo> padInfos       = new TreeMap<> ();
-    private boolean                       isBlink;
-
-    private long                          updateTime     = System.currentTimeMillis ();
 
 
     /**
@@ -82,19 +75,13 @@ public class FirePadGrid extends PadGridImpl
     }
 
 
-    /**
-     * Flush the changed pad LEDs using sysex.
-     */
-    public void flush ()
+    /** {@inheritDoc} */
+    @Override
+    protected void updateController ()
     {
-        synchronized (this.padInfos)
-        {
-            final String update = this.buildLEDUpdate ();
-            if (update != null)
-                this.output.sendSysex (update);
-
-            this.padInfos.clear ();
-        }
+        final String update = this.buildLEDUpdate ();
+        if (update != null)
+            this.output.sendSysex (update);
     }
 
 
@@ -159,29 +146,5 @@ public class FirePadGrid extends PadGridImpl
         msg.append (StringUtils.toHexStr (length / 128)).append (' ');
         msg.append (StringUtils.toHexStr (length % 128)).append (' ');
         return msg.append (sb).append ("F7").toString ();
-    }
-
-
-    /** {@inheritDoc} */
-    @Override
-    protected void sendNoteState (final int channel, final int note, final int color)
-    {
-        synchronized (this.padInfos)
-        {
-            this.padInfos.computeIfAbsent (Integer.valueOf (note), key -> new LightInfo ()).setColor (color);
-        }
-    }
-
-
-    /** {@inheritDoc} */
-    @Override
-    protected void sendBlinkState (final int channel, final int note, final int blinkColor, final boolean fast)
-    {
-        synchronized (this.padInfos)
-        {
-            final LightInfo info = this.padInfos.computeIfAbsent (Integer.valueOf (note), key -> new LightInfo ());
-            info.setBlinkColor (blinkColor);
-            info.setFast (fast);
-        }
     }
 }

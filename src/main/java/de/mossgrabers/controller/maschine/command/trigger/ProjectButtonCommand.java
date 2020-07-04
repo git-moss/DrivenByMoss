@@ -40,7 +40,7 @@ public class ProjectButtonCommand extends AddTrackCommand<MaschineControlSurface
         if (event != ButtonEvent.DOWN)
             return;
 
-        if (this.surface.isPressed (ButtonID.STOP))
+        if (this.surface.getMaschine ().hasMCUDisplay () || this.surface.isPressed (ButtonID.STOP))
         {
             this.model.getProject ().save ();
             return;

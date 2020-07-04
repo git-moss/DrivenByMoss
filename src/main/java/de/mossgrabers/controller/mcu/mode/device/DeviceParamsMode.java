@@ -85,7 +85,7 @@ public class DeviceParamsMode extends BaseMode
         for (int i = 0; i < 8; i++)
         {
             final IParameter param = parameterBank.getItem (extenderOffset + i);
-            d.setCell (0, i, param.doesExist () ? StringUtils.fixASCII (param.getName ()) : "").setCell (1, i, param.getDisplayedValue (8));
+            d.setCell (0, i, param.doesExist () ? StringUtils.shortenAndFixASCII (param.getName (6), 6) : "").setCell (1, i, StringUtils.shortenAndFixASCII (param.getDisplayedValue (6), 6));
         }
 
         d.allDone ();

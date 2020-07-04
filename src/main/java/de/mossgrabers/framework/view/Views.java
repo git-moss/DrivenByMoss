@@ -4,8 +4,6 @@
 
 package de.mossgrabers.framework.view;
 
-import de.mossgrabers.framework.daw.IHost;
-
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
@@ -127,10 +125,8 @@ public enum Views
 
     /**
      * Initialise.
-     *
-     * @param host The DAW host
      */
-    public static void init (final IHost host)
+    public static void init ()
     {
         if (isInitialised)
             return;

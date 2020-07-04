@@ -13,7 +13,6 @@ import de.mossgrabers.framework.daw.IModel;
 import de.mossgrabers.framework.daw.ISceneBank;
 import de.mossgrabers.framework.daw.data.IScene;
 import de.mossgrabers.framework.mode.AbstractMode;
-import de.mossgrabers.framework.utils.ButtonEvent;
 
 
 /**
@@ -56,34 +55,6 @@ public class SceneView extends BaseView
         if (this.surface.getConfiguration ().isSelectClipOnLaunch ())
             scene.select ();
         scene.launch ();
-    }
-
-
-    /** {@inheritDoc} */
-    @Override
-    public void onButton (final int index, final ButtonEvent event)
-    {
-        if (event != ButtonEvent.DOWN)
-            return;
-
-        switch (index)
-        {
-            case 0:
-                this.model.getCurrentTrackBank ().selectPreviousItem ();
-                break;
-            case 1:
-                this.model.getCurrentTrackBank ().selectNextItem ();
-                break;
-            case 2:
-                this.model.getSceneBank ().selectPreviousPage ();
-                break;
-            case 3:
-                this.model.getSceneBank ().selectNextPage ();
-                break;
-            default:
-                // Not used
-                break;
-        }
     }
 
 

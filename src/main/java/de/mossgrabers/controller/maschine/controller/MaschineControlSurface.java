@@ -6,9 +6,10 @@ package de.mossgrabers.controller.maschine.controller;
 
 import de.mossgrabers.controller.maschine.Maschine;
 import de.mossgrabers.controller.maschine.MaschineConfiguration;
+import de.mossgrabers.controller.maschine.command.trigger.MaschineStopCommand;
 import de.mossgrabers.framework.controller.AbstractControlSurface;
+import de.mossgrabers.framework.controller.ButtonID;
 import de.mossgrabers.framework.controller.color.ColorManager;
-import de.mossgrabers.framework.controller.grid.PadGridImpl;
 import de.mossgrabers.framework.daw.IHost;
 import de.mossgrabers.framework.daw.midi.IMidiInput;
 import de.mossgrabers.framework.daw.midi.IMidiOutput;
@@ -103,6 +104,7 @@ public class MaschineControlSurface extends AbstractControlSurface<MaschineConfi
     public static final int PAGE_LEFT         = 110;
     public static final int PAGE_RIGHT        = 111;
 
+    private final Maschine  maschine;
     private int             ribbonValue       = -1;
 
 
@@ -118,7 +120,28 @@ public class MaschineControlSurface extends AbstractControlSurface<MaschineConfi
      */
     public MaschineControlSurface (final IHost host, final ColorManager colorManager, final Maschine maschine, final MaschineConfiguration configuration, final IMidiOutput output, final IMidiInput input)
     {
-        super (host, configuration, colorManager, output, input, new PadGridImpl (colorManager, output, 4, 4, 36), 800, maschine.getHeight ());
+        super (host, configuration, colorManager, output, input, new MaschinePadGrid (colorManager, output), 800, maschine.getHeight ());
+
+        this.maschine = maschine;
+    }
+
+
+    /**
+     * Signal that the stop function should not be called on button release.
+     */
+    public void setStopConsumed ()
+    {
+        ((MaschineStopCommand) this.getButton (ButtonID.STOP).getCommand ()).setConsumed ();
+    }
+
+
+    /** {@inheritDoc} */
+    @Override
+    protected void flushHardware ()
+    {
+        super.flushHardware ();
+
+        ((MaschinePadGrid) this.pads).flush ();
     }
 
 
@@ -144,5 +167,16 @@ public class MaschineControlSurface extends AbstractControlSurface<MaschineConfi
             return;
         this.ribbonValue = value;
         this.output.sendCC (1, value);
+    }
+
+
+    /**
+     * Get the Maschine object.
+     *
+     * @return The Maschine object
+     */
+    public Maschine getMaschine ()
+    {
+        return this.maschine;
     }
 }

@@ -118,6 +118,23 @@ public class ViewManager
 
 
     /**
+     * Checks if one of the view IDs is the active view.
+     *
+     * @param viewIds Several IDs
+     * @return True if active
+     */
+    public boolean isActiveView (final Views... viewIds)
+    {
+        for (final Views viewID: viewIds)
+        {
+            if (this.isActiveView (viewID))
+                return true;
+        }
+        return false;
+    }
+
+
+    /**
      * Get the previous view ID.
      *
      * @return The ID of the previous view

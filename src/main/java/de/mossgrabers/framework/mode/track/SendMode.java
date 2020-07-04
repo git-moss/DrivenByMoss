@@ -6,6 +6,7 @@ package de.mossgrabers.framework.mode.track;
 
 import de.mossgrabers.framework.configuration.Configuration;
 import de.mossgrabers.framework.controller.ButtonID;
+import de.mossgrabers.framework.controller.ContinuousID;
 import de.mossgrabers.framework.controller.IControlSurface;
 import de.mossgrabers.framework.daw.IModel;
 import de.mossgrabers.framework.daw.data.ISend;
@@ -37,7 +38,26 @@ public class SendMode<S extends IControlSurface<C>, C extends Configuration> ext
      */
     public SendMode (final int sendIndex, final S surface, final IModel model, final boolean isAbsolute)
     {
-        super ("Send", surface, model, isAbsolute);
+        this (sendIndex, surface, model, isAbsolute, null, 0);
+    }
+
+
+    /**
+     * Constructor.
+     *
+     * @param sendIndex The send index
+     * @param surface The control surface
+     * @param model The model
+     * @param isAbsolute If true the value change is happending with a setter otherwise relative
+     *            change method is used
+     * @param firstKnob The ID of the first knob to control this mode, all other knobs must be
+     *            follow up IDs
+     * @param numberOfKnobs The number of knobs available to control this mode
+     */
+    public SendMode (final int sendIndex, final S surface, final IModel model, final boolean isAbsolute, final ContinuousID firstKnob, final int numberOfKnobs)
+    {
+        super ("Send", surface, model, isAbsolute, firstKnob, numberOfKnobs);
+
         this.sendIndex = sendIndex;
     }
 

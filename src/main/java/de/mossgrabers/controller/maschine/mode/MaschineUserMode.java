@@ -156,12 +156,4 @@ public class MaschineUserMode extends AbstractMode<MaschineControlSurface, Masch
     {
         return super.hasNextItem ();
     }
-
-
-    @Override
-    public void onKnobValue (int index, int value)
-    {
-        final IParameter item = (IParameter) this.bank.getItem (this.getSelectedParameter ());
-        item.changeValue (value);
-    }
 }

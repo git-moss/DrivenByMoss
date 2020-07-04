@@ -188,7 +188,7 @@ public abstract class DefaultControllerDefinition implements IControllerDefiniti
         final List<Pair<String [], String []>> results = new ArrayList<> ();
         results.add (this.addDeviceDiscoveryPair (inputName, outputName));
         for (int i = 1; i < 20; i++)
-            results.add (this.addDeviceDiscoveryPair (String.format ("%s [hw:%d,0,0]", inputName, Integer.valueOf (i), String.format ("%s [hw:%d,0,0]", outputName, Integer.valueOf (i)))));
+            results.add (this.addDeviceDiscoveryPair (String.format ("%s [hw:%d,0,0]", inputName, Integer.valueOf (i)), String.format ("%s [hw:%d,0,0]", outputName, Integer.valueOf (i))));
         return results;
     }
 

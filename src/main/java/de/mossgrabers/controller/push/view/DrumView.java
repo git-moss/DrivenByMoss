@@ -50,11 +50,11 @@ public class DrumView extends DrumViewBase
         final int y = index / GRID_COLUMNS;
 
         // Sequencer steps?
-        if (y < this.playLines)
+        if (y < this.playRows)
             return;
 
         final int x = index % GRID_COLUMNS;
-        final int stepX = GRID_COLUMNS * (this.allLines - 1 - y) + x;
+        final int stepX = GRID_COLUMNS * (this.allRows - 1 - y) + x;
         final int stepY = this.scales.getDrumOffset () + this.getSelectedPad ();
         final int editMidiChannel = this.configuration.getMidiEditChannel ();
         final INoteClip clip = this.getClip ();

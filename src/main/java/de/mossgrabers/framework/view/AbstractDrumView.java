@@ -25,6 +25,8 @@ import de.mossgrabers.framework.mode.BrowserActivator;
 import de.mossgrabers.framework.mode.Modes;
 import de.mossgrabers.framework.utils.ButtonEvent;
 
+import java.util.function.IntUnaryOperator;
+
 
 /**
  * Abstract implementation for a drum sequencer. The grid is split into 3 areas: The sequencer area
@@ -58,10 +60,11 @@ public abstract class AbstractDrumView<S extends IControlSurface<C>, C extends C
 
     protected int                          loopPadPressed        = -1;
     protected int                          sequencerLines;
-    protected int                          playLines;
-    protected int                          allLines;
+    protected int                          playRows;
+    protected int                          numColumns;
+    protected int                          allRows;
     protected int                          sequencerSteps;
-    protected int                          halfColumns;
+    protected int                          playColumns;
     protected IStepInfo                    copyNote;
 
     protected int                          selectedPad;
@@ -77,10 +80,11 @@ public abstract class AbstractDrumView<S extends IControlSurface<C>, C extends C
      * @param model The model
      * @param numSequencerLines The number of rows to use for the sequencer
      * @param numPlayLines The number of rows to use for playing
+     * @param useDawColors True to use the drum machine pad colors for coloring the octaves
      */
-    public AbstractDrumView (final String name, final S surface, final IModel model, final int numSequencerLines, final int numPlayLines)
+    public AbstractDrumView (final String name, final S surface, final IModel model, final int numSequencerLines, final int numPlayLines, final boolean useDawColors)
     {
-        this (name, surface, model, numSequencerLines, numPlayLines, true);
+        this (name, surface, model, numSequencerLines, numPlayLines, true, useDawColors);
     }
 
 
@@ -93,16 +97,56 @@ public abstract class AbstractDrumView<S extends IControlSurface<C>, C extends C
      * @param numSequencerLines The number of rows to use for the sequencer
      * @param numPlayLines The number of rows to use for playing
      * @param followSelection Follow the drum pad selection if true
+     * @param useDawColors True to use the drum machine pad colors for coloring the octaves
      */
-    public AbstractDrumView (final String name, final S surface, final IModel model, final int numSequencerLines, final int numPlayLines, final boolean followSelection)
+    public AbstractDrumView (final String name, final S surface, final IModel model, final int numSequencerLines, final int numPlayLines, final boolean followSelection, final boolean useDawColors)
     {
-        super (name, surface, model, 128, numSequencerLines * GRID_COLUMNS);
+        this (name, surface, model, numSequencerLines, numPlayLines, GRID_COLUMNS, followSelection, useDawColors);
+    }
+
+
+    /**
+     * Constructor.
+     *
+     * @param name The name of the view
+     * @param surface The surface
+     * @param model The model
+     * @param numSequencerLines The number of rows to use for the sequencer
+     * @param numPlayRows The number of rows to use for playing
+     * @param numColumns The number of available columns
+     * @param followSelection Follow the drum pad selection if true
+     * @param useDawColors True to use the drum machine pad colors for coloring the octaves
+     */
+    public AbstractDrumView (final String name, final S surface, final IModel model, final int numSequencerLines, final int numPlayRows, final int numColumns, final boolean followSelection, final boolean useDawColors)
+    {
+        this (name, surface, model, numSequencerLines, numPlayRows, numColumns, 128, numSequencerLines * numColumns, followSelection, useDawColors);
+    }
+
+
+    /**
+     * Constructor.
+     *
+     * @param name The name of the view
+     * @param surface The surface
+     * @param model The model
+     * @param numSequencerLines The number of rows to use for the sequencer
+     * @param numPlayRows The number of rows to use for playing
+     * @param numColumns The number of available columns
+     * @param clipRows The rows of the clip
+     * @param clipCols The columns of the clip
+     * @param followSelection Follow the drum pad selection if true
+     * @param useDawColors True to use the drum machine pad colors for coloring the octaves
+     */
+    public AbstractDrumView (final String name, final S surface, final IModel model, final int numSequencerLines, final int numPlayRows, final int numColumns, final int clipRows, final int clipCols, final boolean followSelection, final boolean useDawColors)
+    {
+        super (name, surface, model, clipRows, clipCols, useDawColors);
 
         this.sequencerLines = numSequencerLines;
-        this.playLines = numPlayLines;
-        this.allLines = this.sequencerLines + this.playLines;
+        this.playRows = numPlayRows;
+        this.allRows = this.sequencerLines + this.playRows;
         this.sequencerSteps = numSequencerLines * GRID_COLUMNS;
-        this.halfColumns = GRID_COLUMNS / 2;
+        this.numColumns = numColumns;
+        this.playColumns = 4; // This layout is currently fixed to a 4 width
 
         this.canScrollUp = false;
         this.canScrollDown = false;
@@ -149,12 +193,12 @@ public abstract class AbstractDrumView<S extends IControlSurface<C>, C extends C
             return;
 
         final int index = note - DRUM_START_KEY;
-        final int x = index % GRID_COLUMNS;
-        final int y = index / GRID_COLUMNS;
+        final int x = index % this.numColumns;
+        final int y = index / this.numColumns;
         final int offsetY = this.scales.getDrumOffset ();
 
         // Sequencer steps
-        if (y >= this.playLines)
+        if (y >= this.playRows)
         {
             if (this.isActive ())
                 this.handleSequencerArea (index, x, y, offsetY, velocity);
@@ -162,7 +206,7 @@ public abstract class AbstractDrumView<S extends IControlSurface<C>, C extends C
         }
 
         // halfColumns x playLines Drum Pad Grid
-        if (x < this.halfColumns)
+        if (x < this.playColumns)
         {
             this.handleNoteArea (x, y, offsetY, velocity);
             return;
@@ -172,7 +216,7 @@ public abstract class AbstractDrumView<S extends IControlSurface<C>, C extends C
             return;
 
         // Clip length/loop area
-        final int pad = (this.playLines - 1 - y) * this.halfColumns + x - this.halfColumns;
+        final int pad = (this.playRows - 1 - y) * this.playColumns + x - this.playColumns;
         this.handleLoopArea (pad, velocity);
     }
 
@@ -187,7 +231,7 @@ public abstract class AbstractDrumView<S extends IControlSurface<C>, C extends C
      */
     protected void handleNoteArea (final int x, final int y, final int offsetY, final int velocity)
     {
-        this.setSelectedPad (this.halfColumns * y + x, velocity);
+        this.setSelectedPad (this.playColumns * y + x, velocity);
 
         // Mark selected note
         this.keyManager.setKeyPressed (offsetY + this.selectedPad, velocity);
@@ -218,7 +262,7 @@ public abstract class AbstractDrumView<S extends IControlSurface<C>, C extends C
 
         final INoteClip clip = this.getClip ();
         final int channel = this.configuration.getMidiEditChannel ();
-        final int step = GRID_COLUMNS * (this.allLines - 1 - y) + x;
+        final int step = this.numColumns * (this.allRows - 1 - y) + x;
         final int note = offsetY + this.selectedPad;
         final int vel = this.configuration.isAccentActive () ? this.configuration.getFixedAccentValue () : this.surface.getButton (ButtonID.get (ButtonID.PAD1, index)).getPressedVelocity ();
 
@@ -257,9 +301,9 @@ public abstract class AbstractDrumView<S extends IControlSurface<C>, C extends C
         // Change length of a note or create a new one with a length
         for (int s = step - 1; s >= 0; s--)
         {
-            final int x = s % GRID_COLUMNS;
-            final int y = this.allLines - 1 - s / GRID_COLUMNS;
-            final int pad = y * GRID_COLUMNS + x;
+            final int x = s % this.numColumns;
+            final int y = this.allRows - 1 - s / this.numColumns;
+            final int pad = y * this.numColumns + x;
             final IHwButton button = this.surface.getButton (ButtonID.get (ButtonID.PAD1, pad));
             if (button.isLongPressed ())
             {
@@ -337,17 +381,22 @@ public abstract class AbstractDrumView<S extends IControlSurface<C>, C extends C
         final ICursorDevice primary = this.model.getInstrumentDevice ();
         final boolean isSoloed = primary.hasDrumPads () && primary.getDrumPadBank ().hasSoloedPads ();
         final boolean isRecording = this.model.hasRecordingState ();
-        for (int y = 0; y < this.playLines; y++)
+        for (int y = 0; y < this.playRows; y++)
         {
-            for (int x = 0; x < this.halfColumns; x++)
+            for (int x = 0; x < this.playColumns; x++)
             {
-                final int index = this.halfColumns * y + x;
-                padGrid.lightEx (x, this.allLines - 1 - y, this.getPadColor (index, primary, isSoloed, isRecording));
+                final int index = this.playColumns * y + x;
+                padGrid.lightEx (x, this.allRows - 1 - y, this.getPadColor (index, primary, isSoloed, isRecording));
             }
         }
 
         if (this.sequencerLines > 0)
-            this.drawSequencer (this.scales.getDrumOffset () + this.selectedPad, this.getDrumPadColor (primary, this.selectedPad));
+        {
+            final INoteClip clip = this.getClip ();
+            final boolean isActive = this.isActive ();
+            this.drawPages (clip, isActive);
+            this.drawSequencerSteps (clip, isActive, this.scales.getDrumOffset () + this.selectedPad, this.getDrumPadColor (primary, this.selectedPad));
+        }
     }
 
 
@@ -391,7 +440,7 @@ public abstract class AbstractDrumView<S extends IControlSurface<C>, C extends C
 
     protected String getPadContentColor (final IChannel drumPad)
     {
-        return DAWColor.getColorIndex (drumPad.getColor ());
+        return this.useDawColors ? DAWColor.getColorIndex (drumPad.getColor ()) : AbstractDrumView.COLOR_PAD_HAS_CONTENT;
     }
 
 
@@ -403,12 +452,12 @@ public abstract class AbstractDrumView<S extends IControlSurface<C>, C extends C
             case IStepInfo.NOTE_CONTINUE:
                 if (hilite)
                     return AbstractSequencerView.COLOR_STEP_HILITE_CONTENT;
-                return rowColor != null ? DAWColor.getColorIndex (ColorEx.darker (rowColor)) : AbstractSequencerView.COLOR_CONTENT_CONT;
+                return rowColor != null && this.useDawColors ? DAWColor.getColorIndex (ColorEx.darker (rowColor)) : AbstractSequencerView.COLOR_CONTENT_CONT;
             // Note starts
             case IStepInfo.NOTE_START:
                 if (hilite)
                     return AbstractSequencerView.COLOR_STEP_HILITE_CONTENT;
-                return rowColor != null ? DAWColor.getColorIndex (rowColor) : AbstractSequencerView.COLOR_CONTENT;
+                return rowColor != null && this.useDawColors ? DAWColor.getColorIndex (rowColor) : AbstractSequencerView.COLOR_CONTENT;
             // Empty
             default:
                 return hilite ? AbstractSequencerView.COLOR_STEP_HILITE_NO_CONTENT : AbstractSequencerView.COLOR_NO_CONTENT;
@@ -465,7 +514,7 @@ public abstract class AbstractDrumView<S extends IControlSurface<C>, C extends C
      */
     protected void changeOctave (final ButtonEvent event, final boolean isUp, final int offset)
     {
-        this.changeOctave (event, isUp, offset, false);
+        this.changeOctave (event, isUp, offset, false, true);
     }
 
 
@@ -475,9 +524,10 @@ public abstract class AbstractDrumView<S extends IControlSurface<C>, C extends C
      * @param event The button press event
      * @param isUp Move up if true otherwise down
      * @param offset The offset to move up or down
-     * @param adjustPage
+     * @param adjustPage True to adjust the drum machine page to display the pads of the octave
+     * @param notify True to display an on-screen notification
      */
-    protected void changeOctave (final ButtonEvent event, final boolean isUp, final int offset, final boolean adjustPage)
+    public void changeOctave (final ButtonEvent event, final boolean isUp, final int offset, final boolean adjustPage, final boolean notify)
     {
         if (event != ButtonEvent.DOWN)
             return;
@@ -487,8 +537,21 @@ public abstract class AbstractDrumView<S extends IControlSurface<C>, C extends C
         else
             this.scales.decDrumOffset (offset);
         this.updateNoteMapping ();
-        this.surface.getDisplay ().notify (this.scales.getDrumRangeText ());
+        if (notify)
+            this.surface.getDisplay ().notify (this.scales.getDrumRangeText ());
         this.model.getInstrumentDevice ().getDrumPadBank ().scrollTo (this.scales.getDrumOffset (), adjustPage);
+    }
+
+
+    /**
+     * Reset the drum octave tpo 0.
+     */
+    public void resetOctave ()
+    {
+        this.keyManager.clearPressedKeys ();
+        this.scales.resetDrumOctave ();
+        this.updateNoteMapping ();
+        this.model.getInstrumentDevice ().getDrumPadBank ().scrollTo (this.scales.getDrumOffset (), true);
     }
 
 
@@ -605,45 +668,68 @@ public abstract class AbstractDrumView<S extends IControlSurface<C>, C extends C
 
 
     /**
-     * Draw the clip loop and sequencer steps area.
+     * Draw the sequencer steps.
      *
+     * @param clip The clip
+     * @param isActive Is there an active clip?
      * @param noteRow The note for which to draw the row
      * @param rowColor The color to use the notes of the row
      */
-    private void drawSequencer (final int noteRow, final ColorEx rowColor)
+    protected void drawSequencerSteps (final INoteClip clip, final boolean isActive, final int noteRow, final ColorEx rowColor)
     {
-        final boolean isActive = this.isActive ();
+        this.drawSequencerSteps (clip, isActive, noteRow, rowColor, null);
+    }
 
-        final INoteClip clip = this.getClip ();
 
-        // Clip length/loop area
+    /**
+     * Draw the sequencer steps.
+     *
+     * @param clip The clip
+     * @param isActive Is there an active clip?
+     * @param noteRow The note for which to draw the row
+     * @param rowColor The color to use the notes of the row
+     * @param yModifier Flips the Y order if true
+     */
+    protected void drawSequencerSteps (final INoteClip clip, final boolean isActive, final int noteRow, final ColorEx rowColor, final IntUnaryOperator yModifier)
+    {
         final int step = clip.getCurrentStep ();
+        final int hiStep = this.isInXRange (step) ? step % this.sequencerSteps : -1;
+        final int editMidiChannel = this.configuration.getMidiEditChannel ();
+        final IPadGrid padGrid = this.surface.getPadGrid ();
+        for (int col = 0; col < this.sequencerSteps; col++)
+        {
+            final int isSet = clip.getStep (editMidiChannel, col, noteRow).getState ();
+            final boolean hilite = col == hiStep;
+            final int x = col % this.numColumns;
+            int y = col / this.numColumns;
+            if (yModifier != null)
+                y = yModifier.applyAsInt (y);
+            padGrid.lightEx (x, y, isActive ? this.getStepColor (isSet, hilite, rowColor) : AbstractSequencerView.COLOR_NO_CONTENT);
+        }
+    }
 
+
+    /**
+     * Draw the edit pages / loop area of the sequencer.
+     *
+     * @param clip The clip
+     * @param isActive Is there an active clip?
+     */
+    protected void drawPages (final INoteClip clip, final boolean isActive)
+    {
+        final int step = clip.getCurrentStep ();
         final int lengthOfOnePad = this.getLengthOfOnePage (this.sequencerSteps);
         final double loopStart = clip.getLoopStart ();
         final int loopStartPad = (int) Math.ceil (loopStart / lengthOfOnePad);
         final int loopEndPad = (int) Math.ceil ((loopStart + clip.getLoopLength ()) / lengthOfOnePad);
         final int currentPage = step / this.sequencerSteps;
-
-        final int numOfPages = this.halfColumns * this.playLines;
+        final int numOfPages = this.playColumns * this.playRows;
         final IPadGrid padGrid = this.surface.getPadGrid ();
         for (int pad = 0; pad < numOfPages; pad++)
         {
-            final int x = this.halfColumns + pad % this.halfColumns;
-            final int y = this.sequencerLines + pad / this.halfColumns;
+            final int x = this.playColumns + pad % this.playColumns;
+            final int y = this.sequencerLines + pad / this.playColumns;
             padGrid.lightEx (x, y, isActive ? this.getPageColor (loopStartPad, loopEndPad, currentPage, clip.getEditPage (), pad) : AbstractSequencerView.COLOR_NO_CONTENT);
-        }
-
-        // Paint the sequencer steps
-        final int hiStep = this.isInXRange (step) ? step % this.sequencerSteps : -1;
-        final int editMidiChannel = this.configuration.getMidiEditChannel ();
-        for (int col = 0; col < this.sequencerSteps; col++)
-        {
-            final int isSet = clip.getStep (editMidiChannel, col, noteRow).getState ();
-            final boolean hilite = col == hiStep;
-            final int x = col % GRID_COLUMNS;
-            final int y = col / GRID_COLUMNS;
-            padGrid.lightEx (x, y, isActive ? this.getStepColor (isSet, hilite, rowColor) : AbstractSequencerView.COLOR_NO_CONTENT);
         }
     }
 

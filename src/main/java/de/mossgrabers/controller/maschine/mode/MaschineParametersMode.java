@@ -55,7 +55,7 @@ public class MaschineParametersMode extends SelectedDeviceMode<MaschineControlSu
             String name = param.doesExist () ? StringUtils.shortenAndFixASCII (param.getName (), 6) : "";
             if (i == this.getSelectedParameter ())
                 name = ">" + name;
-            d.setCell (0, i, name).setCell (1, i, param.getDisplayedValue (8));
+            d.setCell (0, i, name).setCell (1, i, StringUtils.shortenAndFixASCII (param.getDisplayedValue (8), 8));
         }
 
         d.allDone ();

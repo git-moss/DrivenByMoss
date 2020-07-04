@@ -40,7 +40,7 @@ public class DrumView extends AbstractDrumView<SLMkIIIControlSurface, SLMkIIICon
      */
     public DrumView (final SLMkIIIControlSurface surface, final IModel model)
     {
-        super ("Drum", surface, model, 2, DrumView.NUM_DISPLAY_COLS);
+        super ("Drum", surface, model, 2, DrumView.NUM_DISPLAY_COLS, true);
     }
 
 

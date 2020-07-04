@@ -42,7 +42,7 @@ public class ClipView extends AbstractSequencerView<PushControlSurface, PushConf
      */
     public ClipView (final PushControlSurface surface, final IModel model)
     {
-        super ("Clip", surface, model, 0, 0);
+        super ("Clip", surface, model, 0, 0, true);
     }
 
 

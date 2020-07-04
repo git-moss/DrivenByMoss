@@ -92,7 +92,7 @@ public class Kontrol1ControllerSetup extends AbstractControllerSetup<Kontrol1Con
     @Override
     protected void createScales ()
     {
-        this.scales = new Scales (this.valueChanger, 0, 88, 88, 1);
+        this.scales = new Scales (this.valueChanger, 0, 127, 128, 1);
         this.scales.setChromatic (true);
     }
 
@@ -260,7 +260,10 @@ public class Kontrol1ControllerSetup extends AbstractControllerSetup<Kontrol1Con
             this.updateIndication (surface.getModeManager ().getActiveModeId ());
             final View activeView = surface.getViewManager ().getActiveView ();
             if (activeView != null)
+            {
                 activeView.updateNoteMapping ();
+                activeView.drawGrid ();
+            }
 
             if (this.model.canSelectedTrackHoldNotes ())
             {
@@ -352,31 +355,31 @@ public class Kontrol1ControllerSetup extends AbstractControllerSetup<Kontrol1Con
         surface.getContinuous (ContinuousID.KNOB7).setBounds (524.5, 59.5, 35.0, 30.0);
         surface.getContinuous (ContinuousID.KNOB8).setBounds (571.75, 59.5, 35.0, 30.0);
 
-        surface.getLight (OutputID.LIGHT_GUIDE37).setBounds (196.75, 171.75, 20.0, 29.5);
-        surface.getLight (OutputID.LIGHT_GUIDE38).setBounds (219.0, 171.75, 20.0, 29.5);
-        surface.getLight (OutputID.LIGHT_GUIDE39).setBounds (241.5, 171.75, 20.0, 29.5);
-        surface.getLight (OutputID.LIGHT_GUIDE40).setBounds (263.75, 171.75, 20.0, 29.5);
-        surface.getLight (OutputID.LIGHT_GUIDE41).setBounds (286.25, 171.75, 20.0, 29.5);
-        surface.getLight (OutputID.LIGHT_GUIDE42).setBounds (308.5, 171.75, 20.0, 29.5);
-        surface.getLight (OutputID.LIGHT_GUIDE43).setBounds (330.75, 171.75, 20.0, 29.5);
-        surface.getLight (OutputID.LIGHT_GUIDE44).setBounds (353.25, 171.75, 20.0, 29.5);
-        surface.getLight (OutputID.LIGHT_GUIDE45).setBounds (375.5, 171.75, 20.0, 29.5);
-        surface.getLight (OutputID.LIGHT_GUIDE46).setBounds (398.0, 171.75, 20.0, 29.5);
-        surface.getLight (OutputID.LIGHT_GUIDE47).setBounds (420.25, 171.75, 20.0, 29.5);
-        surface.getLight (OutputID.LIGHT_GUIDE48).setBounds (442.75, 171.75, 20.0, 29.5);
-        surface.getLight (OutputID.LIGHT_GUIDE49).setBounds (465.0, 171.75, 20.0, 29.5);
-        surface.getLight (OutputID.LIGHT_GUIDE50).setBounds (487.25, 171.75, 20.0, 29.5);
-        surface.getLight (OutputID.LIGHT_GUIDE51).setBounds (509.75, 171.75, 20.0, 29.5);
-        surface.getLight (OutputID.LIGHT_GUIDE52).setBounds (532.0, 171.75, 20.0, 29.5);
-        surface.getLight (OutputID.LIGHT_GUIDE53).setBounds (554.5, 171.75, 20.0, 29.5);
-        surface.getLight (OutputID.LIGHT_GUIDE54).setBounds (576.75, 171.75, 20.0, 29.5);
-        surface.getLight (OutputID.LIGHT_GUIDE55).setBounds (599.0, 171.75, 20.0, 29.5);
-        surface.getLight (OutputID.LIGHT_GUIDE56).setBounds (621.5, 171.75, 20.0, 29.5);
-        surface.getLight (OutputID.LIGHT_GUIDE57).setBounds (643.75, 171.75, 20.0, 29.5);
-        surface.getLight (OutputID.LIGHT_GUIDE58).setBounds (666.25, 171.75, 20.0, 29.5);
-        surface.getLight (OutputID.LIGHT_GUIDE59).setBounds (688.5, 171.75, 20.0, 29.5);
-        surface.getLight (OutputID.LIGHT_GUIDE60).setBounds (710.75, 171.75, 20.0, 29.5);
-        surface.getLight (OutputID.LIGHT_GUIDE61).setBounds (733.25, 171.75, 20.0, 29.5);
+        surface.getLight (OutputID.LIGHT_GUIDE1).setBounds (203.25, 172.5, 15.5, 29.5);
+        surface.getLight (OutputID.LIGHT_GUIDE2).setBounds (225.75, 172.5, 15.5, 29.5);
+        surface.getLight (OutputID.LIGHT_GUIDE3).setBounds (244.0, 172.5, 15.5, 29.5);
+        surface.getLight (OutputID.LIGHT_GUIDE4).setBounds (263.25, 172.5, 15.5, 29.5);
+        surface.getLight (OutputID.LIGHT_GUIDE5).setBounds (285.5, 172.5, 15.5, 29.5);
+        surface.getLight (OutputID.LIGHT_GUIDE6).setBounds (311.5, 172.5, 15.5, 29.5);
+        surface.getLight (OutputID.LIGHT_GUIDE7).setBounds (336.0, 172.5, 15.5, 29.5);
+        surface.getLight (OutputID.LIGHT_GUIDE8).setBounds (355.25, 172.5, 15.5, 29.5);
+        surface.getLight (OutputID.LIGHT_GUIDE9).setBounds (376.5, 172.5, 15.5, 29.5);
+        surface.getLight (OutputID.LIGHT_GUIDE10).setBounds (394.0, 172.5, 15.5, 29.5);
+        surface.getLight (OutputID.LIGHT_GUIDE11).setBounds (413.25, 172.5, 15.5, 29.5);
+        surface.getLight (OutputID.LIGHT_GUIDE12).setBounds (436.25, 172.5, 15.5, 29.5);
+        surface.getLight (OutputID.LIGHT_GUIDE13).setBounds (463.0, 172.5, 15.5, 29.5);
+        surface.getLight (OutputID.LIGHT_GUIDE14).setBounds (487.25, 172.5, 15.5, 29.5);
+        surface.getLight (OutputID.LIGHT_GUIDE15).setBounds (505.75, 172.5, 15.5, 29.5);
+        surface.getLight (OutputID.LIGHT_GUIDE16).setBounds (522.75, 172.5, 15.5, 29.5);
+        surface.getLight (OutputID.LIGHT_GUIDE17).setBounds (547.0, 172.5, 15.5, 29.5);
+        surface.getLight (OutputID.LIGHT_GUIDE18).setBounds (573.0, 172.5, 15.5, 29.5);
+        surface.getLight (OutputID.LIGHT_GUIDE19).setBounds (596.0, 172.5, 15.5, 29.5);
+        surface.getLight (OutputID.LIGHT_GUIDE20).setBounds (617.5, 172.5, 15.5, 29.5);
+        surface.getLight (OutputID.LIGHT_GUIDE21).setBounds (634.25, 172.5, 15.5, 29.5);
+        surface.getLight (OutputID.LIGHT_GUIDE22).setBounds (653.5, 172.5, 15.5, 29.5);
+        surface.getLight (OutputID.LIGHT_GUIDE23).setBounds (671.25, 172.5, 15.5, 29.5);
+        surface.getLight (OutputID.LIGHT_GUIDE24).setBounds (696.25, 172.5, 15.5, 29.5);
+        surface.getLight (OutputID.LIGHT_GUIDE25).setBounds (726.75, 172.5, 15.5, 29.5);
 
         surface.getTextDisplay ().getHardwareDisplay ().setBounds (190.75, 100.25, 422.75, 33.5);
 

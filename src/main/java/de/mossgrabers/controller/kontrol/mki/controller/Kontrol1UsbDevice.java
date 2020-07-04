@@ -885,10 +885,12 @@ public class Kontrol1UsbDevice
             this.testByteForButtons (data[4], BYTE_4);
         }
 
+        // Changes the octave on the keyboard
         if (this.firstNote != data[36])
         {
+            // Store the new start note
             this.firstNote = data[36];
-            this.host.scheduleTask ( () -> this.callback.keyboardChanged (this.firstNote), 0);
+            this.host.scheduleTask ( () -> this.callback.octaveChanged (this.firstNote), 0);
         }
     }
 

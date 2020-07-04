@@ -38,8 +38,6 @@ public abstract class AbstractNoteSequencerView<S extends IControlSurface<C>, C 
     protected int            offsetY;
     protected IStepInfo      copyNote;
 
-    private final boolean    useTrackColor;
-
 
     /**
      * Constructor.
@@ -47,11 +45,11 @@ public abstract class AbstractNoteSequencerView<S extends IControlSurface<C>, C 
      * @param name The name of the view
      * @param surface The surface
      * @param model The model
-     * @param useTrackColor True to use the color of the current track for coloring the octaves
+     * @param useDawColors True to use the color of the current track for coloring the octaves
      */
-    public AbstractNoteSequencerView (final String name, final S surface, final IModel model, final boolean useTrackColor)
+    public AbstractNoteSequencerView (final String name, final S surface, final IModel model, final boolean useDawColors)
     {
-        this (name, surface, model, 8, useTrackColor);
+        this (name, surface, model, 8, useDawColors);
     }
 
 
@@ -62,11 +60,11 @@ public abstract class AbstractNoteSequencerView<S extends IControlSurface<C>, C 
      * @param surface The surface
      * @param model The model
      * @param numDisplayCols The number of grid columns
-     * @param useTrackColor True to use the color of the current track for coloring the octaves
+     * @param useDawColors True to use the color of the current track for coloring the octaves
      */
-    public AbstractNoteSequencerView (final String name, final S surface, final IModel model, final int numDisplayCols, final boolean useTrackColor)
+    public AbstractNoteSequencerView (final String name, final S surface, final IModel model, final int numDisplayCols, final boolean useDawColors)
     {
-        this (name, surface, model, numDisplayCols, 7, useTrackColor);
+        this (name, surface, model, numDisplayCols, 7, useDawColors);
     }
 
 
@@ -78,13 +76,12 @@ public abstract class AbstractNoteSequencerView<S extends IControlSurface<C>, C 
      * @param model The model
      * @param numDisplayCols The number of grid columns
      * @param numSequencerRows The number of seuqencer rows
-     * @param useTrackColor True to use the color of the current track for coloring the octaves
+     * @param useDawColors True to use the color of the current track for coloring the octaves
      */
-    public AbstractNoteSequencerView (final String name, final S surface, final IModel model, final int numDisplayCols, final int numSequencerRows, final boolean useTrackColor)
+    public AbstractNoteSequencerView (final String name, final S surface, final IModel model, final int numDisplayCols, final int numSequencerRows, final boolean useDawColors)
     {
-        super (name, surface, model, 128, numDisplayCols, numSequencerRows);
+        super (name, surface, model, 128, numDisplayCols, numSequencerRows, useDawColors);
 
-        this.useTrackColor = useTrackColor;
         this.numDisplayCols = numDisplayCols;
         this.offsetY = this.startKey;
     }
@@ -313,7 +310,7 @@ public abstract class AbstractNoteSequencerView<S extends IControlSurface<C>, C 
             default:
                 if (hilite)
                     return COLOR_STEP_HILITE_NO_CONTENT;
-                return this.getPadColor (note, this.useTrackColor ? track : null);
+                return this.getPadColor (note, this.useDawColors ? track : null);
         }
     }
 

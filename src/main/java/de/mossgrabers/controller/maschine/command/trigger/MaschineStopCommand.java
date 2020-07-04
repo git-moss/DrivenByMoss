@@ -10,6 +10,8 @@ import de.mossgrabers.framework.command.trigger.transport.StopCommand;
 import de.mossgrabers.framework.daw.IModel;
 import de.mossgrabers.framework.daw.ITransport;
 import de.mossgrabers.framework.utils.ButtonEvent;
+import de.mossgrabers.framework.view.ViewManager;
+import de.mossgrabers.framework.view.Views;
 
 
 /**
@@ -19,6 +21,9 @@ import de.mossgrabers.framework.utils.ButtonEvent;
  */
 public class MaschineStopCommand extends StopCommand<MaschineControlSurface, MaschineConfiguration>
 {
+    private boolean consumed;
+
+
     /**
      * Constructor.
      *
@@ -35,12 +40,39 @@ public class MaschineStopCommand extends StopCommand<MaschineControlSurface, Mas
     @Override
     public void executeNormal (final ButtonEvent event)
     {
+        final ViewManager viewManager = this.surface.getViewManager ();
+
+        if (event == ButtonEvent.DOWN)
+        {
+            if (!viewManager.isActiveView (Views.SHIFT))
+                viewManager.setActiveView (Views.SHIFT);
+            return;
+        }
+
         if (event != ButtonEvent.UP)
             return;
+
+        if (viewManager.isActiveView (Views.SHIFT))
+            viewManager.restoreView ();
+
+        if (this.consumed)
+        {
+            this.consumed = false;
+            return;
+        }
         final ITransport transport = this.model.getTransport ();
         if (transport.isPlaying ())
             this.handleStopOptions ();
         else
             transport.stopAndRewind ();
+    }
+
+
+    /**
+     * Signal that the stop function should not be called on button release.
+     */
+    public void setConsumed ()
+    {
+        this.consumed = true;
     }
 }

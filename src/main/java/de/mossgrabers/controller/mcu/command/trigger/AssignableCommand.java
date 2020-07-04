@@ -10,6 +10,7 @@ import de.mossgrabers.framework.command.continuous.FootswitchCommand;
 import de.mossgrabers.framework.configuration.AbstractConfiguration;
 import de.mossgrabers.framework.daw.IApplication;
 import de.mossgrabers.framework.daw.IModel;
+import de.mossgrabers.framework.mode.Mode;
 import de.mossgrabers.framework.mode.ModeManager;
 import de.mossgrabers.framework.mode.Modes;
 import de.mossgrabers.framework.utils.ButtonEvent;
@@ -65,11 +66,18 @@ public class AssignableCommand extends FootswitchCommand<MCUControlSurface, MCUC
                     modeManager.restoreMode ();
                 else
                     modeManager.setActiveMode (Modes.MARKERS);
+                final Mode mode = modeManager.getActiveOrTempMode ();
+                if (mode != null)
+                    this.surface.getDisplay ().notify (mode.getName ());
                 break;
 
             case MCUConfiguration.FOOTSWITCH_2_USE_FADERS_LIKE_EDIT_KNOBS:
                 if (event == ButtonEvent.DOWN)
-                    this.surface.getConfiguration ().toggleUseFadersAsKnobs ();
+                {
+                    final MCUConfiguration configuration = this.surface.getConfiguration ();
+                    configuration.toggleUseFadersAsKnobs ();
+                    this.mvHelper.delayDisplay ( () -> "Use faders as knobs: " + (configuration.useFadersAsKnobs () ? "On" : "Off"));
+                }
                 break;
 
             default:

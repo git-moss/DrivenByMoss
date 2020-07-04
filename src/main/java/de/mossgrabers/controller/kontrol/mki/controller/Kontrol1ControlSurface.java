@@ -8,6 +8,7 @@ import de.mossgrabers.controller.kontrol.mki.Kontrol1Configuration;
 import de.mossgrabers.framework.controller.AbstractControlSurface;
 import de.mossgrabers.framework.controller.ButtonID;
 import de.mossgrabers.framework.controller.ContinuousID;
+import de.mossgrabers.framework.controller.OutputID;
 import de.mossgrabers.framework.controller.color.ColorManager;
 import de.mossgrabers.framework.controller.hardware.IHwContinuousControl;
 import de.mossgrabers.framework.daw.IHost;
@@ -150,7 +151,7 @@ public class Kontrol1ControlSurface extends AbstractControlSurface<Kontrol1Confi
         CONTINUOUS_MAP.put (Integer.valueOf (Kontrol1ControlSurface.TOUCH_ENCODER_MAIN), ContinuousID.MASTER_KNOB);
     }
 
-    private Kontrol1UsbDevice usbDevice;
+    private final Kontrol1UsbDevice usbDevice;
 
 
     /**
@@ -164,9 +165,45 @@ public class Kontrol1ControlSurface extends AbstractControlSurface<Kontrol1Confi
      */
     public Kontrol1ControlSurface (final IHost host, final ColorManager colorManager, final Kontrol1Configuration configuration, final IMidiInput input, final Kontrol1UsbDevice usbDevice)
     {
-        super (0, host, configuration, colorManager, null, input, null, new Kontrol1LightGuide (colorManager, usbDevice), 800, 300);
+        super (0, host, configuration, colorManager, null, input, null, null, 800, 300);
 
         this.usbDevice = usbDevice;
+
+        this.lightGuide = new Kontrol1LightGuide (colorManager, usbDevice);
+        this.createLightGuide ();
+    }
+
+
+    /** {@inheritDoc} */
+    @Override
+    protected void createLightGuide ()
+    {
+        if (this.lightGuide == null)
+            return;
+
+        for (int i = 0; i < this.usbDevice.getNumKeys (); i++)
+        {
+            final int index = i;
+
+            this.createLight (OutputID.get (OutputID.LIGHT_GUIDE1, i), () -> {
+
+                // The lights on the device are always addressed from 0..N, therefore the currently
+                // selected first note of the keyboard (depending on octave transpose) needs to be
+                // added
+                final int firstNote = this.usbDevice.getFirstNote ();
+                final int note = firstNote + index;
+                if (note >= 128)
+                    return -1;
+                return this.lightGuide.getLightInfo (note).getEncoded ();
+
+            }, state -> {
+
+                final int firstNote = this.usbDevice.getFirstNote ();
+                final int note = firstNote + index;
+                this.lightGuide.sendState (note);
+
+            }, colorIndex -> this.colorManager.getColor (colorIndex, null), null);
+        }
     }
 
 
@@ -261,7 +298,7 @@ public class Kontrol1ControlSurface extends AbstractControlSurface<Kontrol1Confi
 
     /** {@inheritDoc} */
     @Override
-    public void keyboardChanged (final int firstNote)
+    public void octaveChanged (final int firstNote)
     {
         final int endNote = firstNote + this.usbDevice.getNumKeys () - 1;
         this.getDisplay ().notify (Scales.formatDrumNote (firstNote) + " to " + Scales.formatDrumNote (endNote));
@@ -292,5 +329,38 @@ public class Kontrol1ControlSurface extends AbstractControlSurface<Kontrol1Confi
     {
         super.updateViewControls ();
         this.updateButtonLEDs ();
+    }
+
+
+    /** {@inheritDoc} */
+    @Override
+    protected void handleCC (final int data1, final int data2)
+    {
+        if (data1 != 1)
+            super.handleCC (data1, data2);
+    }
+
+
+    /** {@inheritDoc} */
+    @Override
+    protected void handlePitchbend (final int data1, final int data2)
+    {
+        // Intentionally empty
+    }
+
+
+    /** {@inheritDoc} */
+    @Override
+    protected void handleNoteOff (final int data1, final int data2)
+    {
+        // Intentionally empty
+    }
+
+
+    /** {@inheritDoc} */
+    @Override
+    protected void handleNoteOn (final int data1, final int data2)
+    {
+        // Intentionally empty
     }
 }

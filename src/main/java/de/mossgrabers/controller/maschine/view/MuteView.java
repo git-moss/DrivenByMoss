@@ -70,10 +70,11 @@ public class MuteView extends BaseView
             final int y = 3 - i / 4;
             if (item.doesExist ())
             {
+                final int colorIndex = this.colorManager.getColorIndex (DAWColor.getColorIndex (item.getColor ()));
                 if (item.isMute ())
-                    padGrid.lightEx (x, y, MaschineColorManager.COLOR_GREY);
+                    padGrid.lightEx (x, y, colorIndex, MaschineColorManager.COLOR_GREY, false);
                 else
-                    padGrid.lightEx (x, y, DAWColor.getColorIndex (item.getColor ()));
+                    padGrid.lightEx (x, y, colorIndex);
             }
             else
                 padGrid.lightEx (x, y, AbstractMode.BUTTON_COLOR_OFF);

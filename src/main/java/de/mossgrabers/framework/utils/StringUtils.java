@@ -84,19 +84,19 @@ public class StringUtils
 
 
     /**
-     * Replace umlauts with alternative writing.
+     * Replace umlauts and other non-ASCII characters with alternative writing.
      *
-     * @param name The string to check
-     * @return The string with replaced umlauts
+     * @param text The string to check
+     * @return The string with replaced characters, might be longer than the original!
      */
-    public static String fixASCII (final String name)
+    public static String fixASCII (final String text)
     {
-        if (name == null)
+        if (text == null)
             return null;
         final StringBuilder str = new StringBuilder ();
-        for (int i = 0; i < name.length (); i++)
+        for (int i = 0; i < text.length (); i++)
         {
-            final char c = name.charAt (i);
+            final char c = text.charAt (i);
             if (c > 127)
             {
                 switch (c)
@@ -130,8 +130,45 @@ public class StringUtils
                     case '→':
                         str.append ("->");
                         break;
+                    case '♯':
+                        str.append ("#");
+                        break;
                     default:
                         str.append ("?");
+                        break;
+                }
+            }
+            else
+                str.append (c);
+        }
+        return str.toString ();
+    }
+
+
+    /**
+     * Replaces some non-ASCII characters which are not in the default font which is used for
+     * drawing text on graphics displays.
+     *
+     * @param text The string to check
+     * @return The string with replaced characters
+     */
+    public static String fixFontCharacters (final String text)
+    {
+        if (text == null)
+            return null;
+        final StringBuilder str = new StringBuilder ();
+        for (int i = 0; i < text.length (); i++)
+        {
+            final char c = text.charAt (i);
+            if (c > 127)
+            {
+                switch (c)
+                {
+                    case '♯':
+                        str.append ("#");
+                        break;
+                    default:
+                        str.append (c);
                         break;
                 }
             }

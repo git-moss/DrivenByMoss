@@ -10,6 +10,7 @@ import de.mossgrabers.framework.configuration.ISettingsUI;
 import de.mossgrabers.framework.controller.valuechanger.IValueChanger;
 import de.mossgrabers.framework.daw.IHost;
 import de.mossgrabers.framework.daw.midi.ArpeggiatorMode;
+import de.mossgrabers.framework.scale.ScaleLayout;
 
 
 /**
@@ -81,7 +82,7 @@ public class MaschineConfiguration extends AbstractConfiguration
         this.activateScaleSetting (documentSettings);
         this.activateScaleBaseSetting (documentSettings);
         this.activateScaleInScaleSetting (documentSettings);
-        this.activateScaleLayoutSetting (documentSettings);
+        this.activateScaleLayoutSetting (documentSettings, ScaleLayout.SEQUENT_UP.getName ());
 
         ///////////////////////////
         // Note Repeat

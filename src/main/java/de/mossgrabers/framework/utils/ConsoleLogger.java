@@ -18,6 +18,15 @@ public class ConsoleLogger
 
 
     /**
+     * Constructor.
+     */
+    private ConsoleLogger ()
+    {
+        // Intentionally empty
+    }
+
+
+    /**
      * Init the host for logging.
      *
      * @param host The host

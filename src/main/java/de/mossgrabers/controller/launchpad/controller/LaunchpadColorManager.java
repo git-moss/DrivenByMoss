@@ -25,7 +25,9 @@ public class LaunchpadColorManager extends ColorManager
 {
     public static final int    LAUNCHPAD_COLOR_BLACK            = 0;
     public static final int    LAUNCHPAD_COLOR_GREY_LO          = 1;
-    public static final int    LAUNCHPAD_COLOR_GREY_MD          = 2;
+    public static final int    LAUNCHPAD_COLOR_GREY_MD          = 117;
+    public static final int    LAUNCHPAD_COLOR_GREY_HALF        = 118;
+    public static final int    LAUNCHPAD_COLOR_GREY_HI          = 2;
     public static final int    LAUNCHPAD_COLOR_WHITE            = 3;
     public static final int    LAUNCHPAD_COLOR_ROSE             = 4;
     public static final int    LAUNCHPAD_COLOR_RED_HI           = 5;
@@ -138,10 +140,10 @@ public class LaunchpadColorManager extends ColorManager
         this.registerColorIndex (IPadGrid.GRID_OFF, LAUNCHPAD_COLOR_BLACK);
 
         this.registerColorIndex (DAWColor.COLOR_OFF, LAUNCHPAD_COLOR_BLACK);
-        this.registerColorIndex (DAWColor.DAW_COLOR_GRAY_HALF, LAUNCHPAD_COLOR_GREY_MD);
         this.registerColorIndex (DAWColor.DAW_COLOR_DARK_GRAY, LAUNCHPAD_COLOR_GREY_LO);
         this.registerColorIndex (DAWColor.DAW_COLOR_GRAY, LAUNCHPAD_COLOR_GREY_MD);
-        this.registerColorIndex (DAWColor.DAW_COLOR_LIGHT_GRAY, LAUNCHPAD_COLOR_GREY_LO);
+        this.registerColorIndex (DAWColor.DAW_COLOR_GRAY_HALF, LAUNCHPAD_COLOR_GREY_HALF);
+        this.registerColorIndex (DAWColor.DAW_COLOR_LIGHT_GRAY, LAUNCHPAD_COLOR_GREY_HI);
         this.registerColorIndex (DAWColor.DAW_COLOR_SILVER, LAUNCHPAD_COLOR_SKY_OCEAN);
         this.registerColorIndex (DAWColor.DAW_COLOR_DARK_BROWN, LAUNCHPAD_COLOR_AMBER_LO);
         this.registerColorIndex (DAWColor.DAW_COLOR_BROWN, LAUNCHPAD_COLOR_AMBER_YELLOW);
@@ -171,8 +173,10 @@ public class LaunchpadColorManager extends ColorManager
         this.registerColorIndex (ColorManager.BUTTON_STATE_HI, LAUNCHPAD_COLOR_YELLOW_HI);
 
         this.registerColor (LAUNCHPAD_COLOR_BLACK, ColorEx.BLACK);
-        this.registerColor (LAUNCHPAD_COLOR_GREY_LO, DAWColor.DAW_COLOR_LIGHT_GRAY.getColor ());
-        this.registerColor (LAUNCHPAD_COLOR_GREY_MD, DAWColor.DAW_COLOR_GRAY_HALF.getColor ());
+        this.registerColor (LAUNCHPAD_COLOR_GREY_LO, DAWColor.DAW_COLOR_DARK_GRAY.getColor ());
+        this.registerColor (LAUNCHPAD_COLOR_GREY_MD, DAWColor.DAW_COLOR_GRAY.getColor ());
+        this.registerColor (LAUNCHPAD_COLOR_GREY_HALF, DAWColor.DAW_COLOR_GRAY_HALF.getColor ());
+        this.registerColor (LAUNCHPAD_COLOR_GREY_HI, DAWColor.DAW_COLOR_LIGHT_GRAY.getColor ());
         this.registerColor (LAUNCHPAD_COLOR_WHITE, ColorEx.WHITE);
         this.registerColor (LAUNCHPAD_COLOR_ROSE, DAWColor.DAW_COLOR_SKIN.getColor ());
         this.registerColor (LAUNCHPAD_COLOR_RED_HI, DAWColor.DAW_COLOR_RED.getColor ());

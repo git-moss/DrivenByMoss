@@ -7,7 +7,6 @@ package de.mossgrabers.controller.maschine.view;
 import de.mossgrabers.controller.maschine.MaschineConfiguration;
 import de.mossgrabers.controller.maschine.controller.MaschineControlSurface;
 import de.mossgrabers.framework.daw.IModel;
-import de.mossgrabers.framework.utils.ButtonEvent;
 import de.mossgrabers.framework.view.AbstractView;
 
 
@@ -16,7 +15,7 @@ import de.mossgrabers.framework.view.AbstractView;
  *
  * @author J&uuml;rgen Mo&szlig;graber
  */
-public abstract class BaseView extends AbstractView<MaschineControlSurface, MaschineConfiguration> implements PadButtons
+public abstract class BaseView extends AbstractView<MaschineControlSurface, MaschineConfiguration>
 {
     /**
      * Constructor.
@@ -46,32 +45,4 @@ public abstract class BaseView extends AbstractView<MaschineControlSurface, Masc
      * @param padIndex The index of the pressed pad (0-15)
      */
     protected abstract void executeFunction (int padIndex);
-
-
-    /** {@inheritDoc} */
-    @Override
-    public void onButton (final int index, final ButtonEvent event)
-    {
-        if (event != ButtonEvent.DOWN)
-            return;
-
-        switch (index)
-        {
-            case 0:
-                this.model.getCurrentTrackBank ().selectPreviousItem ();
-                break;
-            case 1:
-                this.model.getCurrentTrackBank ().selectNextItem ();
-                break;
-            case 2:
-                this.model.getCurrentTrackBank ().selectPreviousPage ();
-                break;
-            case 3:
-                this.model.getCurrentTrackBank ().selectNextPage ();
-                break;
-            default:
-                // Not used
-                break;
-        }
-    }
 }

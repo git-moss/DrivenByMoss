@@ -40,7 +40,7 @@ public class DrumView extends AbstractDrumView<LaunchkeyMiniMk3ControlSurface, L
      */
     public DrumView (final LaunchkeyMiniMk3ControlSurface surface, final IModel model)
     {
-        super ("Drum", surface, model, 2, DrumView.NUM_DISPLAY_COLS);
+        super ("Drum", surface, model, 2, DrumView.NUM_DISPLAY_COLS, true);
     }
 
 
