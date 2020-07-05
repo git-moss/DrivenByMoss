@@ -7,6 +7,7 @@ package de.mossgrabers.controller.maschine.command.trigger;
 import de.mossgrabers.controller.maschine.MaschineConfiguration;
 import de.mossgrabers.controller.maschine.controller.MaschineControlSurface;
 import de.mossgrabers.framework.command.trigger.transport.StopCommand;
+import de.mossgrabers.framework.controller.display.ITextDisplay;
 import de.mossgrabers.framework.daw.IModel;
 import de.mossgrabers.framework.daw.ITransport;
 import de.mossgrabers.framework.utils.ButtonEvent;
@@ -65,6 +66,9 @@ public class MaschineStopCommand extends StopCommand<MaschineControlSurface, Mas
             this.handleStopOptions ();
         else
             transport.stopAndRewind ();
+
+        this.surface.clearCache ();
+        ((ITextDisplay) this.surface.getDisplay ()).forceFlush ();
     }
 
 

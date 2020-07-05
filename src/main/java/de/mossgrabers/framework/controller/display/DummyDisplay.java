@@ -16,6 +16,7 @@ import de.mossgrabers.framework.daw.IHost;
 public class DummyDisplay implements ITextDisplay
 {
     private final IHost host;
+    private String      lastMessage;
 
 
     /**
@@ -129,8 +130,10 @@ public class DummyDisplay implements ITextDisplay
     @Override
     public void notify (final String message)
     {
-        if (message != null)
+        if (message != null && !message.equals (this.lastMessage))
             this.host.showNotification (message);
+
+        this.lastMessage = message;
     }
 
 

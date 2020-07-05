@@ -240,10 +240,8 @@ public abstract class AbstractTextDisplay implements ITextDisplay
     @Override
     public void notify (final String message)
     {
-        if (message == null)
-            return;
-        this.host.showNotification (message);
-        this.notifyOnDisplay (message);
+        if (message != null)
+            this.notifyOnDisplay (message);
     }
 
 

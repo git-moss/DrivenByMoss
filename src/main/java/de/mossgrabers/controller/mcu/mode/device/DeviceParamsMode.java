@@ -75,7 +75,7 @@ public class DeviceParamsMode extends BaseMode
         final ICursorDevice cd = this.model.getCursorDevice ();
         if (!cd.doesExist ())
         {
-            d.notify ("Please select a Device...");
+            d.notify ("Please select a device...");
             return;
         }
 
