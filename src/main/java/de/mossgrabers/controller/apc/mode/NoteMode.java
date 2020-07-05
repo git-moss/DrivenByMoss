@@ -5,6 +5,7 @@
 package de.mossgrabers.controller.apc.mode;
 
 import de.mossgrabers.controller.apc.controller.APCControlSurface;
+import de.mossgrabers.framework.controller.display.IDisplay;
 import de.mossgrabers.framework.controller.valuechanger.IValueChanger;
 import de.mossgrabers.framework.daw.IHost;
 import de.mossgrabers.framework.daw.IModel;
@@ -71,6 +72,7 @@ public class NoteMode extends BaseMode
         final double normalizedValue = valueChanger.toNormalizedValue (value);
         final IStepInfo stepInfo = this.clip.getStep (this.channel, this.step, this.note);
 
+        final IDisplay display = this.surface.getDisplay ();
         switch (index)
         {
             case 0:
@@ -78,19 +80,19 @@ public class NoteMode extends BaseMode
                 // bars (128 x 32th). Furthermore, make sure that the length is exactly on a 32th
                 final double duration = Math.round (normalizedValue * 16.0 / 0.125) * 0.125;
                 this.clip.updateStepDuration (this.channel, this.step, this.note, duration);
-                this.surface.getDisplay ().notify ("Duration: " + StringUtils.formatMeasures (this.model.getTransport ().getQuartersPerMeasure (), normalizedValue, 0, true));
+                display.notify ("Duration: " + StringUtils.formatMeasures (this.model.getTransport ().getQuartersPerMeasure (), normalizedValue, 0, true));
                 break;
 
             case 1:
                 this.clip.updateStepVelocity (this.channel, this.step, this.note, normalizedValue);
-                this.surface.getDisplay ().notify ("Velocity: " + StringUtils.formatPercentage (normalizedValue));
+                display.notify ("Velocity: " + StringUtils.formatPercentage (normalizedValue));
                 break;
 
             case 2:
                 if (this.host.canEdit (EditCapability.NOTE_EDIT_RELEASE_VELOCITY))
                 {
                     this.clip.updateStepReleaseVelocity (this.channel, this.step, this.note, normalizedValue);
-                    this.surface.getDisplay ().notify ("Release Velocity: " + StringUtils.formatPercentage (normalizedValue));
+                    display.notify ("Release Velocity: " + StringUtils.formatPercentage (normalizedValue));
                 }
                 break;
 
@@ -98,7 +100,7 @@ public class NoteMode extends BaseMode
                 if (this.host.canEdit (EditCapability.NOTE_EDIT_GAIN))
                 {
                     this.clip.updateStepGain (this.channel, this.step, this.note, normalizedValue);
-                    this.surface.getDisplay ().notify ("Gain: " + StringUtils.formatPercentage (normalizedValue));
+                    display.notify ("Gain: " + StringUtils.formatPercentage (normalizedValue));
                 }
                 break;
 
@@ -107,7 +109,7 @@ public class NoteMode extends BaseMode
                 {
                     final double pan = normalizedValue * 2.0 - 1.0;
                     this.clip.updateStepPan (this.channel, this.step, this.note, pan);
-                    this.surface.getDisplay ().notify ("Panorama: " + StringUtils.formatPercentage (pan));
+                    display.notify ("Panorama: " + StringUtils.formatPercentage (pan));
                 }
                 break;
 
@@ -116,7 +118,7 @@ public class NoteMode extends BaseMode
                 {
                     final double pitch = normalizedValue * 48.0 - 24.0;
                     this.clip.updateStepTranspose (this.channel, this.step, this.note, pitch);
-                    this.surface.getDisplay ().notify ("Pitch: " + String.format ("%.1f", Double.valueOf (pitch)));
+                    display.notify ("Pitch: " + String.format ("%.1f", Double.valueOf (pitch)));
                 }
                 break;
 
@@ -125,7 +127,7 @@ public class NoteMode extends BaseMode
                 {
                     final double timbre = normalizedValue * 2.0 - 1.0;
                     this.clip.updateStepTimbre (this.channel, this.step, this.note, timbre);
-                    this.surface.getDisplay ().notify ("Timbre: " + StringUtils.formatPercentage (timbre));
+                    display.notify ("Timbre: " + StringUtils.formatPercentage (timbre));
                 }
                 break;
 
@@ -133,7 +135,7 @@ public class NoteMode extends BaseMode
                 if (this.host.canEdit (EditCapability.NOTE_EDIT_PRESSURE))
                 {
                     this.clip.updateStepPressure (this.channel, this.step, this.note, normalizedValue);
-                    this.surface.getDisplay ().notify ("Pressure: " + StringUtils.formatPercentage (stepInfo.getPressure ()));
+                    display.notify ("Pressure: " + StringUtils.formatPercentage (stepInfo.getPressure ()));
                 }
                 break;
 

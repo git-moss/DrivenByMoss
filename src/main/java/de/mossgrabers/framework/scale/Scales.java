@@ -673,6 +673,8 @@ public class Scales
      */
     public String getColor (final int [] noteMap, final int note)
     {
+        if (note == -1)
+            return Scales.SCALE_COLOR_OFF;
         final int midiNote = noteMap[note];
         if (midiNote == -1)
             return Scales.SCALE_COLOR_OFF;

@@ -85,34 +85,57 @@ public class EditNoteMode extends BaseMode
 
         final int idx = index < 0 ? this.selectedParam : index;
 
+        final boolean hasMCUDisplay = this.surface.getMaschine ().hasMCUDisplay ();
+        final IStepInfo stepInfo = this.clip.getStep (this.channel, this.step, this.note);
+
         switch (idx)
         {
             case DURATION:
                 this.clip.changeStepDuration (this.channel, this.step, this.note, value);
+                if (!hasMCUDisplay)
+                    this.mvHelper.delayDisplay ( () -> "Duration: " + StringUtils.formatMeasures (this.model.getTransport ().getQuartersPerMeasure (), stepInfo.getDuration (), 0, true));
                 break;
 
             case VELOCITY:
                 this.clip.changeStepVelocity (this.channel, this.step, this.note, value);
+                if (!hasMCUDisplay)
+                    this.mvHelper.delayDisplay ( () -> "Velocity: " + StringUtils.formatPercentage (stepInfo.getVelocity ()));
                 break;
 
             case GAIN:
                 if (this.host.canEdit (EditCapability.NOTE_EDIT_GAIN))
+                {
                     this.clip.changeStepGain (this.channel, this.step, this.note, value);
+                    if (!hasMCUDisplay)
+                        this.mvHelper.delayDisplay ( () -> "Gain: " + StringUtils.formatPercentage (stepInfo.getGain ()));
+                }
                 break;
 
             case PANORAMA:
                 if (this.host.canEdit (EditCapability.NOTE_EDIT_PANORAMA))
+                {
                     this.clip.changeStepPan (this.channel, this.step, this.note, value);
+                    if (!hasMCUDisplay)
+                        this.mvHelper.delayDisplay ( () -> "Panorama: " + StringUtils.formatPercentage (stepInfo.getPan () * 2.0 - 1.0));
+                }
                 break;
 
             case TRANSPOSE:
                 if (this.host.canEdit (EditCapability.NOTE_EDIT_TRANSPOSE))
+                {
                     this.clip.changeStepTranspose (this.channel, this.step, this.note, value);
+                    if (!hasMCUDisplay)
+                        this.mvHelper.delayDisplay ( () -> "Pitch: " + String.format ("%.1f", Double.valueOf (stepInfo.getTranspose () * 48.0 - 24.0)));
+                }
                 break;
 
             case PRESSURE:
                 if (this.host.canEdit (EditCapability.NOTE_EDIT_PRESSURE))
+                {
                     this.clip.changeStepPressure (this.channel, this.step, this.note, value);
+                    if (!hasMCUDisplay)
+                        this.mvHelper.delayDisplay ( () -> "Pressure: " + StringUtils.formatPercentage (stepInfo.getPressure ()));
+                }
                 break;
 
             default:

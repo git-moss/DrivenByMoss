@@ -159,12 +159,19 @@ public class PlayView extends AbstractPlayView<MaschineControlSurface, MaschineC
         final IPadGrid padGrid = this.surface.getPadGrid ();
         for (int col = 0; col < this.sequencerSteps; col++)
         {
-            final int isSet = clip.getStep (editMidiChannel, col, noteRow).getState ();
-            final boolean hilite = col == hiStep;
             final int x = col % this.numColumns;
             int y = col / this.numColumns;
             if (yModifier != null)
                 y = yModifier.applyAsInt (y);
+
+            if (noteRow == -1)
+            {
+                padGrid.lightEx (x, y, AbstractSequencerView.COLOR_NO_CONTENT);
+                continue;
+            }
+
+            final int isSet = clip.getStep (editMidiChannel, col, noteRow).getState ();
+            final boolean hilite = col == hiStep;
             padGrid.lightEx (x, y, isActive ? this.getStepColor (isSet, hilite, noteRow) : AbstractSequencerView.COLOR_NO_CONTENT);
         }
     }
@@ -361,6 +368,9 @@ public class PlayView extends AbstractPlayView<MaschineControlSurface, MaschineC
      */
     protected void handleSequencerArea (final int index, final int x, final int y, final int velocity)
     {
+        if (this.selectedNote == -1)
+            return;
+
         // Toggle the note on up, so we can intercept the long presses
         if (velocity != 0)
             return;
