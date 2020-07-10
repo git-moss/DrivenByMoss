@@ -100,8 +100,10 @@ public class ModelImpl extends AbstractModel
             tb = this.cursorTrack.createSiblingsTrackBank (numTracks, numSends, numScenes, false, false);
 
         this.trackBank = new TrackBankImpl (this.host, this.valueChanger, tb, this.cursorTrack, this.rootTrackGroup, (ApplicationImpl) this.application, numTracks, numScenes, numSends);
-        final TrackBank effectTrackBank = controllerHost.createEffectTrackBank (numTracks, numScenes);
-        this.effectTrackBank = new EffectTrackBankImpl (this.host, this.valueChanger, effectTrackBank, this.cursorTrack, this.rootTrackGroup, (ApplicationImpl) this.application, numTracks, numScenes, this.trackBank);
+
+        final int numFxTracks = this.modelSetup.getNumFxTracks ();
+        final TrackBank effectTrackBank = controllerHost.createEffectTrackBank (numFxTracks, numScenes);
+        this.effectTrackBank = new EffectTrackBankImpl (this.host, this.valueChanger, effectTrackBank, this.cursorTrack, this.rootTrackGroup, (ApplicationImpl) this.application, numFxTracks, numScenes, this.trackBank);
 
         final int numParams = this.modelSetup.getNumParams ();
         final int numDeviceLayers = this.modelSetup.getNumDeviceLayers ();

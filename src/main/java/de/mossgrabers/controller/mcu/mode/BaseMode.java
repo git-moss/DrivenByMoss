@@ -28,6 +28,9 @@ import de.mossgrabers.framework.utils.StringUtils;
  */
 public abstract class BaseMode extends AbstractMode<MCUControlSurface, MCUConfiguration>
 {
+    private final boolean useFxBank;
+
+
     /**
      * Constructor.
      *
@@ -37,9 +40,7 @@ public abstract class BaseMode extends AbstractMode<MCUControlSurface, MCUConfig
      */
     public BaseMode (final String name, final MCUControlSurface surface, final IModel model)
     {
-        super (name, surface, model, true, null, null, 8);
-
-        this.isTemporary = false;
+        this (name, surface, model, null);
     }
 
 
@@ -56,6 +57,9 @@ public abstract class BaseMode extends AbstractMode<MCUControlSurface, MCUConfig
         super (name, surface, model, true, bank, null, 8);
 
         this.isTemporary = false;
+
+        final MCUConfiguration configuration = this.surface.getConfiguration ();
+        this.useFxBank = configuration.shouldPinFXTracksToLastController () && this.surface.getSurfaceID () == configuration.getNumMCUDevices () - 1;
     }
 
 
@@ -66,7 +70,7 @@ public abstract class BaseMode extends AbstractMode<MCUControlSurface, MCUConfig
         if (event != ButtonEvent.DOWN)
             return;
 
-        final int channel = this.surface.getExtenderOffset () + index;
+        final int channel = this.getExtenderOffset () + index;
 
         if (row == 0)
         {
@@ -106,8 +110,8 @@ public abstract class BaseMode extends AbstractMode<MCUControlSurface, MCUConfig
     @Override
     public int getButtonColor (final ButtonID buttonID)
     {
-        final ITrackBank tb = this.model.getCurrentTrackBank ();
-        final int extenderOffset = this.surface.getExtenderOffset ();
+        final ITrackBank tb = this.getTrackBank ();
+        final int extenderOffset = this.getExtenderOffset ();
         for (int i = 0; i < 8; i++)
         {
             final ITrack track = tb.getItem (extenderOffset + i);
@@ -138,11 +142,11 @@ public abstract class BaseMode extends AbstractMode<MCUControlSurface, MCUConfig
         if (!this.surface.getConfiguration ().hasDisplay2 ())
             return;
 
-        final ITrackBank tb = this.model.getCurrentTrackBank ();
+        final ITrackBank tb = this.getTrackBank ();
 
         // Format track names
         final ITextDisplay d2 = this.surface.getTextDisplay (1);
-        final int extenderOffset = this.surface.getExtenderOffset ();
+        final int extenderOffset = this.getExtenderOffset ();
 
         final boolean isMainDevice = this.surface.isMainDevice ();
 
@@ -168,5 +172,17 @@ public abstract class BaseMode extends AbstractMode<MCUControlSurface, MCUConfig
         }
 
         d2.done (1);
+    }
+
+
+    protected ITrackBank getTrackBank ()
+    {
+        return this.useFxBank ? this.model.getEffectTrackBank () : this.model.getCurrentTrackBank ();
+    }
+
+
+    protected int getExtenderOffset ()
+    {
+        return this.useFxBank ? 0 : this.surface.getExtenderOffset ();
     }
 }

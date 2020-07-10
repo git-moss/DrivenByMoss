@@ -13,6 +13,7 @@ import de.mossgrabers.framework.controller.display.ITextDisplay;
 import de.mossgrabers.framework.daw.ICursorDevice;
 import de.mossgrabers.framework.daw.IModel;
 import de.mossgrabers.framework.daw.ITrackBank;
+import de.mossgrabers.framework.mode.ModeManager;
 import de.mossgrabers.framework.mode.Modes;
 import de.mossgrabers.framework.utils.ButtonEvent;
 
@@ -24,8 +25,10 @@ import de.mossgrabers.framework.utils.ButtonEvent;
  */
 public class SelectCommand extends AbstractTriggerCommand<MCUControlSurface, MCUConfiguration>
 {
-    protected int index;
-    protected int channel;
+    private final boolean useFxBank;
+
+    protected final int   index;
+    protected final int   channel;
 
 
     /**
@@ -38,8 +41,12 @@ public class SelectCommand extends AbstractTriggerCommand<MCUControlSurface, MCU
     public SelectCommand (final int index, final IModel model, final MCUControlSurface surface)
     {
         super (model, surface);
+
+        final MCUConfiguration configuration = this.surface.getConfiguration ();
+        this.useFxBank = configuration.shouldPinFXTracksToLastController () && this.surface.getSurfaceID () == configuration.getNumMCUDevices () - 1;
+
         this.index = index;
-        this.channel = this.surface.getExtenderOffset () + this.index;
+        this.channel = this.useFxBank ? this.index : this.surface.getExtenderOffset () + this.index;
     }
 
 
@@ -51,6 +58,7 @@ public class SelectCommand extends AbstractTriggerCommand<MCUControlSurface, MCU
             return;
 
         final ITextDisplay display = this.surface.getTextDisplay ();
+        final ModeManager modeManager = this.surface.getModeManager ();
 
         // Select Send channels if Send button is pressed
         if (this.surface.isPressed (ButtonID.SENDS))
@@ -58,7 +66,7 @@ public class SelectCommand extends AbstractTriggerCommand<MCUControlSurface, MCU
             final ITrackBank effectTrackBank = this.model.getEffectTrackBank ();
             if (effectTrackBank != null && effectTrackBank.getItem (this.channel).doesExist ())
             {
-                this.surface.getModeManager ().setActiveMode (Modes.get (Modes.SEND1, this.index));
+                modeManager.setActiveMode (Modes.get (Modes.SEND1, this.index));
                 display.notify ("Send channel " + (this.channel + 1) + " selected.");
             }
             else
@@ -70,21 +78,21 @@ public class SelectCommand extends AbstractTriggerCommand<MCUControlSurface, MCU
         // Execute stop if Select is pressed
         if (this.surface.isSelectPressed ())
         {
-            this.model.getCurrentTrackBank ().getItem (this.channel).stop ();
+            this.getTrackBank ().getItem (this.channel).stop ();
             return;
         }
 
         if (this.surface.getConfiguration ().hasOnly1Fader ())
         {
             // Select marker if marker mode is active
-            if (this.surface.getModeManager ().isActiveOrTempMode (Modes.MARKERS))
+            if (modeManager.isActiveOrTempMode (Modes.MARKERS))
             {
                 this.model.getMarkerBank ().getItem (this.channel).select ();
                 return;
             }
 
             // Select parameter if device mode is active
-            if (this.surface.getModeManager ().isActiveOrTempMode (Modes.DEVICE_PARAMS))
+            if (modeManager.isActiveOrTempMode (Modes.DEVICE_PARAMS))
             {
                 final ICursorDevice cursorDevice = this.model.getCursorDevice ();
                 if (cursorDevice.doesExist ())
@@ -93,7 +101,7 @@ public class SelectCommand extends AbstractTriggerCommand<MCUControlSurface, MCU
             }
         }
 
-        this.model.getCurrentTrackBank ().getItem (this.channel).select ();
+        this.getTrackBank ().getItem (this.channel).select ();
     }
 
 
@@ -105,5 +113,17 @@ public class SelectCommand extends AbstractTriggerCommand<MCUControlSurface, MCU
             return;
         this.surface.getDisplay ().notify (AbstractConfiguration.getNewClipLengthValue (this.index));
         this.surface.getConfiguration ().setNewClipLength (this.index);
+    }
+
+
+    protected ITrackBank getTrackBank ()
+    {
+        return this.useFxBank ? this.model.getEffectTrackBank () : this.model.getCurrentTrackBank ();
+    }
+
+
+    protected int getExtenderOffset ()
+    {
+        return this.useFxBank ? 0 : this.surface.getExtenderOffset ();
     }
 }

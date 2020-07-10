@@ -33,13 +33,13 @@ public class EffectTrackBankImpl extends AbstractTrackBankImpl
      * @param cursorTrack The cursor track assigned to this track bank
      * @param rootGroup The root track
      * @param application The application
-     * @param numTracks The number of track of a bank page
+     * @param numFxTracks The number of FX track of a bank page
      * @param numScenes The number of scenes of a bank page
      * @param audioInstrumentTrackBank The trackbank which monitors the audio and instrument tracks
      */
-    public EffectTrackBankImpl (final IHost host, final IValueChanger valueChanger, final TrackBank effectTrackBank, final CursorTrack cursorTrack, final Track rootGroup, final ApplicationImpl application, final int numTracks, final int numScenes, final ITrackBank audioInstrumentTrackBank)
+    public EffectTrackBankImpl (final IHost host, final IValueChanger valueChanger, final TrackBank effectTrackBank, final CursorTrack cursorTrack, final Track rootGroup, final ApplicationImpl application, final int numFxTracks, final int numScenes, final ITrackBank audioInstrumentTrackBank)
     {
-        super (host, valueChanger, effectTrackBank, cursorTrack, rootGroup, application, numTracks, numScenes, 0);
+        super (host, valueChanger, effectTrackBank, cursorTrack, rootGroup, application, numFxTracks, numScenes, 0);
 
         this.bank.followCursorTrack (cursorTrack);
         this.audioInstrumentTrackBank = audioInstrumentTrackBank;

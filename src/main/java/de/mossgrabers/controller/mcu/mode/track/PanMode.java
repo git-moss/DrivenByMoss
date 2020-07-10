@@ -34,7 +34,7 @@ public class PanMode extends AbstractTrackMode
     @Override
     public void onKnobValue (final int index, final int value)
     {
-        this.model.getCurrentTrackBank ().getItem (this.surface.getExtenderOffset () + index).changePan (value);
+        this.getTrackBank ().getItem (this.getExtenderOffset () + index).changePan (value);
     }
 
 
@@ -42,8 +42,8 @@ public class PanMode extends AbstractTrackMode
     @Override
     public int getKnobValue (final int index)
     {
-        final int channel = this.surface.getExtenderOffset () + index;
-        return this.model.getCurrentTrackBank ().getItem (channel).getPan ();
+        final int channel = this.getExtenderOffset () + index;
+        return this.getTrackBank ().getItem (channel).getPan ();
     }
 
 
@@ -53,8 +53,8 @@ public class PanMode extends AbstractTrackMode
     {
         this.isKnobTouched[index] = isTouched;
 
-        final int channel = this.surface.getExtenderOffset () + index;
-        final ITrack t = this.model.getCurrentTrackBank ().getItem (channel);
+        final int channel = this.getExtenderOffset () + index;
+        final ITrack t = this.getTrackBank ().getItem (channel);
         if (t.doesExist ())
             t.touchPan (isTouched);
     }
@@ -72,8 +72,8 @@ public class PanMode extends AbstractTrackMode
             return;
 
         final ITextDisplay d = this.surface.getTextDisplay ();
-        final ITrackBank tb = this.model.getCurrentTrackBank ();
-        final int extenderOffset = this.surface.getExtenderOffset ();
+        final ITrackBank tb = this.getTrackBank ();
+        final int extenderOffset = this.getExtenderOffset ();
         for (int i = 0; i < 8; i++)
         {
             final ITrack t = tb.getItem (extenderOffset + i);
@@ -93,9 +93,9 @@ public class PanMode extends AbstractTrackMode
         if (this.surface.getConfiguration ().isDisplayTrackNames ())
             return true;
 
-        final ITrackBank tb = this.model.getCurrentTrackBank ();
+        final ITrackBank tb = this.getTrackBank ();
         final ITextDisplay d = this.surface.getTextDisplay ();
-        final int extenderOffset = this.surface.getExtenderOffset ();
+        final int extenderOffset = this.getExtenderOffset ();
         for (int i = 0; i < 8; i++)
         {
             if (tb.getItem (extenderOffset + i).doesExist ())
@@ -113,9 +113,9 @@ public class PanMode extends AbstractTrackMode
     @Override
     public void updateKnobLEDs ()
     {
-        final ITrackBank tb = this.model.getCurrentTrackBank ();
+        final ITrackBank tb = this.getTrackBank ();
         final int upperBound = this.model.getValueChanger ().getUpperBound ();
-        final int extenderOffset = this.surface.getExtenderOffset ();
+        final int extenderOffset = this.getExtenderOffset ();
         for (int i = 0; i < 8; i++)
         {
             final ITrack t = tb.getItem (extenderOffset + i);
@@ -131,7 +131,7 @@ public class PanMode extends AbstractTrackMode
     @Override
     protected void resetParameter (final int index)
     {
-        final int extenderOffset = this.surface.getExtenderOffset ();
-        this.model.getCurrentTrackBank ().getItem (extenderOffset + index).resetPan ();
+        final int extenderOffset = this.getExtenderOffset ();
+        this.getTrackBank ().getItem (extenderOffset + index).resetPan ();
     }
 }

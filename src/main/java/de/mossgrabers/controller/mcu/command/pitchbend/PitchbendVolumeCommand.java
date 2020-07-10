@@ -21,7 +21,8 @@ import de.mossgrabers.framework.mode.Modes;
  */
 public class PitchbendVolumeCommand extends AbstractPitchbendCommand<MCUControlSurface, MCUConfiguration>
 {
-    private int channel;
+    private final boolean useFxBank;
+    private final int     channel;
 
 
     /**
@@ -34,6 +35,9 @@ public class PitchbendVolumeCommand extends AbstractPitchbendCommand<MCUControlS
     public PitchbendVolumeCommand (final int channel, final IModel model, final MCUControlSurface surface)
     {
         super (model, surface);
+
+        final MCUConfiguration configuration = this.surface.getConfiguration ();
+        this.useFxBank = configuration.shouldPinFXTracksToLastController () && this.surface.getSurfaceID () == configuration.getNumMCUDevices () - 1;
 
         this.channel = channel;
     }
@@ -53,8 +57,8 @@ public class PitchbendVolumeCommand extends AbstractPitchbendCommand<MCUControlS
             return;
         }
 
-        final int extenderOffset = this.surface.getExtenderOffset ();
-        final ITrackBank tb = this.model.getCurrentTrackBank ();
+        final int extenderOffset = this.getExtenderOffset ();
+        final ITrackBank tb = this.getTrackBank ();
         final ITrack track = tb.getItem (extenderOffset + this.channel);
         if (this.surface.getConfiguration ().useFadersAsKnobs ())
         {
@@ -118,5 +122,17 @@ public class PitchbendVolumeCommand extends AbstractPitchbendCommand<MCUControlS
                     selectedTrack.getSendBank ().getItem (index - (this.surface.getConfiguration ().isDisplayCrossfader () ? 3 : 2)).setValue (value);
                 break;
         }
+    }
+
+
+    protected ITrackBank getTrackBank ()
+    {
+        return this.useFxBank ? this.model.getEffectTrackBank () : this.model.getCurrentTrackBank ();
+    }
+
+
+    protected int getExtenderOffset ()
+    {
+        return this.useFxBank ? 0 : this.surface.getExtenderOffset ();
     }
 }

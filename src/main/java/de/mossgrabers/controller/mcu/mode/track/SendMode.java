@@ -7,6 +7,7 @@ package de.mossgrabers.controller.mcu.mode.track;
 import de.mossgrabers.controller.mcu.controller.MCUControlSurface;
 import de.mossgrabers.framework.controller.display.ITextDisplay;
 import de.mossgrabers.framework.daw.IModel;
+import de.mossgrabers.framework.daw.ISendBank;
 import de.mossgrabers.framework.daw.ITrackBank;
 import de.mossgrabers.framework.daw.data.ITrack;
 import de.mossgrabers.framework.mode.Modes;
@@ -36,8 +37,11 @@ public class SendMode extends AbstractTrackMode
     @Override
     public void onKnobValue (final int index, final int value)
     {
-        final int channel = this.surface.getExtenderOffset () + index;
-        this.model.getCurrentTrackBank ().getItem (channel).getSendBank ().getItem (this.getCurrentSendIndex ()).changeValue (value);
+        final int channel = this.getExtenderOffset () + index;
+        final ISendBank sendBank = this.getTrackBank ().getItem (channel).getSendBank ();
+        final int sendIndex = this.getCurrentSendIndex ();
+        if (sendIndex < sendBank.getPageSize ())
+            sendBank.getItem (sendIndex).changeValue (value);
     }
 
 
@@ -49,10 +53,13 @@ public class SendMode extends AbstractTrackMode
 
         this.isKnobTouched[index] = isTouched;
 
-        final int channel = this.surface.getExtenderOffset () + index;
-        final ITrack t = this.model.getCurrentTrackBank ().getItem (channel);
-        if (t.doesExist ())
-            t.getSendBank ().getItem (sendIndex).touchValue (isTouched);
+        final int channel = this.getExtenderOffset () + index;
+        final ITrack t = this.getTrackBank ().getItem (channel);
+        if (!t.doesExist ())
+            return;
+        final ISendBank sendBank = t.getSendBank ();
+        if (sendIndex < sendBank.getPageSize ())
+            sendBank.getItem (sendIndex).touchValue (isTouched);
     }
 
 
@@ -60,9 +67,15 @@ public class SendMode extends AbstractTrackMode
     @Override
     public int getKnobValue (final int index)
     {
-        final int channel = this.surface.getExtenderOffset () + index;
-        final ITrack track = this.model.getCurrentTrackBank ().getItem (channel);
-        return track.getSendBank ().getItem (this.getCurrentSendIndex ()).getValue ();
+        final int channel = this.getExtenderOffset () + index;
+        final ITrack track = this.getTrackBank ().getItem (channel);
+        if (!track.doesExist ())
+            return 0;
+        final ISendBank sendBank = track.getSendBank ();
+        final int sendIndex = this.getCurrentSendIndex ();
+        if (sendIndex < sendBank.getPageSize ())
+            return sendBank.getItem (sendIndex).getValue ();
+        return 0;
     }
 
 
@@ -85,17 +98,18 @@ public class SendMode extends AbstractTrackMode
 
         final ITextDisplay d = this.surface.getTextDisplay ();
         final int sendIndex = this.getCurrentSendIndex ();
-        final ITrackBank tb = this.model.getCurrentTrackBank ();
+        final ITrackBank tb = this.getTrackBank ();
         if (!tb.canEditSend (sendIndex))
         {
             d.notify ("Send channel " + (sendIndex + 1) + " does not exist.");
             return;
         }
-        final int extenderOffset = this.surface.getExtenderOffset ();
+        final int extenderOffset = this.getExtenderOffset ();
         for (int i = 0; i < 8; i++)
         {
             final ITrack t = tb.getItem (extenderOffset + i);
-            d.setCell (1, i, t.getSendBank ().getItem (sendIndex).getDisplayedValue (6));
+            final ISendBank sendBank = t.getSendBank ();
+            d.setCell (1, i, sendIndex < sendBank.getPageSize () ? sendBank.getItem (sendIndex).getDisplayedValue (6) : "");
         }
         d.done (1);
 
@@ -119,14 +133,17 @@ public class SendMode extends AbstractTrackMode
             return true;
 
         final ITextDisplay d = this.surface.getTextDisplay ();
-        final ITrackBank tb = this.model.getCurrentTrackBank ();
+        final ITrackBank tb = this.getTrackBank ();
         final int sendIndex = this.getCurrentSendIndex ();
-        final int extenderOffset = this.surface.getExtenderOffset ();
+        final int extenderOffset = this.getExtenderOffset ();
         for (int i = 0; i < 8; i++)
         {
             final ITrack t = tb.getItem (extenderOffset + i);
             if (t.doesExist ())
-                d.setCell (0, i, StringUtils.shortenAndFixASCII (t.getSendBank ().getItem (sendIndex).getName (6), 6));
+            {
+                final ISendBank sendBank = t.getSendBank ();
+                d.setCell (0, i, StringUtils.shortenAndFixASCII (sendIndex < sendBank.getPageSize () ? sendBank.getItem (sendIndex).getName (6) : "", 6));
+            }
             else
                 d.clearCell (0, i);
         }
@@ -139,20 +156,22 @@ public class SendMode extends AbstractTrackMode
     @Override
     public void updateKnobLEDs ()
     {
+        final ITrackBank tb = this.getTrackBank ();
+
         if (this.model.isEffectTrackBankActive ())
         {
             this.surface.getModeManager ().setActiveMode (Modes.TRACK);
             return;
         }
 
-        final ITrackBank tb = this.model.getCurrentTrackBank ();
         final int upperBound = this.model.getValueChanger ().getUpperBound ();
         final int sendIndex = this.getCurrentSendIndex ();
-        final int extenderOffset = this.surface.getExtenderOffset ();
+        final int extenderOffset = this.getExtenderOffset ();
         for (int i = 0; i < 8; i++)
         {
             final ITrack t = tb.getItem (extenderOffset + i);
-            this.surface.setKnobLED (i, MCUControlSurface.KNOB_LED_MODE_WRAP, t.getSendBank ().getItem (sendIndex).getValue (), upperBound);
+            final ISendBank sendBank = t.getSendBank ();
+            this.surface.setKnobLED (i, MCUControlSurface.KNOB_LED_MODE_WRAP, sendIndex < sendBank.getPageSize () ? sendBank.getItem (sendIndex).getValue () : 0, upperBound);
         }
     }
 
@@ -161,8 +180,11 @@ public class SendMode extends AbstractTrackMode
     @Override
     protected void resetParameter (final int index)
     {
-        final int extenderOffset = this.surface.getExtenderOffset ();
-        this.model.getCurrentTrackBank ().getItem (extenderOffset + index).getSendBank ().getItem (this.getCurrentSendIndex ()).resetValue ();
+        final int extenderOffset = this.getExtenderOffset ();
+        final ISendBank sendBank = this.getTrackBank ().getItem (extenderOffset + index).getSendBank ();
+        final int sendIndex = this.getCurrentSendIndex ();
+        if (sendIndex < sendBank.getPageSize ())
+            sendBank.getItem (sendIndex).resetValue ();
     }
 
 

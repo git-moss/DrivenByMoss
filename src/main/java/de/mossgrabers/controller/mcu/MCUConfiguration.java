@@ -60,6 +60,7 @@ public class MCUConfiguration extends AbstractConfiguration
 
     private static final String       CATEGORY_EXTENDER_SETUP                 = "Extender Setup (requires restart)";
     private static final String       CATEGORY_SEGMENT_DISPLAY                = "Segment Display";
+    private static final String       CATEGORY_TRACKS                         = "Tracks (requires restart)";
 
     private static final String       DEVICE_SELECT                           = "<Select a profile>";
     private static final String       DEVICE_BEHRINGER_X_TOUCH_ONE            = "Behringer X-Touch One";
@@ -181,6 +182,8 @@ public class MCUConfiguration extends AbstractConfiguration
     private boolean                   touchChannel;
     private int []                    assignableFunctions                     = new int [7];
     private final MCUDeviceType []    deviceTyes;
+    private boolean                   includeFXTracksInTrackBank;
+    private boolean                   pinFXTracksToLastController;
 
 
     /**
@@ -215,7 +218,12 @@ public class MCUConfiguration extends AbstractConfiguration
         ///////////////////////////
         // Segment display
 
-        this.activateSegmentDisplaySetting (globalSettings);
+        this.activateSegmentDisplaySettings (globalSettings);
+
+        ///////////////////////////
+        // Tracks setup
+
+        this.activateTracksSettings (globalSettings);
 
         ///////////////////////////
         // Assignable buttons
@@ -400,7 +408,7 @@ public class MCUConfiguration extends AbstractConfiguration
     }
 
 
-    private void activateSegmentDisplaySetting (final ISettingsUI settingsUI)
+    private void activateSegmentDisplaySettings (final ISettingsUI settingsUI)
     {
         this.displayTimeSetting = settingsUI.getEnumSetting ("Display time or beats", CATEGORY_SEGMENT_DISPLAY, TIME_OR_BEATS_OPTIONS, TIME_OR_BEATS_OPTIONS[0]);
         this.displayTimeSetting.addValueObserver (value -> {
@@ -413,6 +421,19 @@ public class MCUConfiguration extends AbstractConfiguration
             this.displayTicks = TEMPO_OR_TICKS_OPTIONS[0].equals (value);
             this.notifyObservers (DISPLAY_MODE_TICKS_OR_TEMPO);
         });
+    }
+
+
+    private void activateTracksSettings (final ISettingsUI settingsUI)
+    {
+        final IEnumSetting includeFXTracksSetting = settingsUI.getEnumSetting ("Include FX and master tracks in track bank", CATEGORY_TRACKS, ON_OFF_OPTIONS, ON_OFF_OPTIONS[0]);
+        includeFXTracksSetting.addValueObserver (value -> this.includeFXTracksInTrackBank = "On".equals (value));
+
+        if (this.deviceTyes.length > 1)
+        {
+            final IEnumSetting pinFXTracksToLastControllerSetting = settingsUI.getEnumSetting ("Pin FX tracks to last device", CATEGORY_TRACKS, ON_OFF_OPTIONS, ON_OFF_OPTIONS[0]);
+            pinFXTracksToLastControllerSetting.addValueObserver (value -> this.pinFXTracksToLastController = "On".equals (value));
+        }
     }
 
 
@@ -658,6 +679,28 @@ public class MCUConfiguration extends AbstractConfiguration
 
 
     /**
+     * Should FX and the master track included in the track bank?
+     *
+     * @return True to include
+     */
+    public boolean shouldIncludeFXTracksInTrackBank ()
+    {
+        return this.includeFXTracksInTrackBank;
+    }
+
+
+    /**
+     * Should the FX tracks always be displayed on the last device.
+     *
+     * @return True to display FX tracks on last device
+     */
+    public boolean shouldPinFXTracksToLastController ()
+    {
+        return this.pinFXTracksToLastController;
+    }
+
+
+    /**
      * Get the type of the individual MCU devices.
      *
      * @param index The index of the device (0-3)
@@ -666,5 +709,16 @@ public class MCUConfiguration extends AbstractConfiguration
     public MCUDeviceType getDeviceType (final int index)
     {
         return this.deviceTyes[index];
+    }
+
+
+    /**
+     * Get the number of MCU devices.
+     *
+     * @return The number of configured MCU devices (1..N)
+     */
+    public int getNumMCUDevices ()
+    {
+        return this.deviceTyes.length;
     }
 }

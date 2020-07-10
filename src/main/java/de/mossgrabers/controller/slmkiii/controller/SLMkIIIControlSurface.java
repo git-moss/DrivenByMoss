@@ -113,7 +113,7 @@ public class SLMkIIIControlSurface extends AbstractControlSurface<SLMkIIIConfigu
      */
     public SLMkIIIControlSurface (final IHost host, final ColorManager colorManager, final SLMkIIIConfiguration configuration, final IMidiOutput output, final IMidiInput input)
     {
-        super (host, configuration, colorManager, output, input, new SLMkIIIPadGrid (colorManager, output), 1000, 360);
+        super (0, host, configuration, colorManager, output, input, new SLMkIIIPadGrid (colorManager, output), new SLMkIIILightGuide (colorManager, output), 1000, 360);
 
         this.defaultMidiChannel = 15;
 

@@ -37,12 +37,12 @@ public abstract class AbstractTrackMode extends BaseMode
 
     protected boolean drawTrackHeader ()
     {
-        final ITrackBank tb = this.model.getCurrentTrackBank ();
+        final ITrackBank tb = this.getTrackBank ();
+        final int extenderOffset = this.getExtenderOffset ();
 
         final ITextDisplay d = this.surface.getTextDisplay ().clear ();
 
         // Format track names
-        final int extenderOffset = this.surface.getExtenderOffset ();
         for (int i = 0; i < 8; i++)
         {
             final ITrack t = tb.getItem (extenderOffset + i);

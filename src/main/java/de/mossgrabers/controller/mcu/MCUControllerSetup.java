@@ -54,7 +54,6 @@ import de.mossgrabers.framework.command.trigger.device.DeviceOnOffCommand;
 import de.mossgrabers.framework.command.trigger.mode.ButtonRowModeCommand;
 import de.mossgrabers.framework.command.trigger.mode.ModeCursorCommand.Direction;
 import de.mossgrabers.framework.command.trigger.mode.ModeSelectCommand;
-import de.mossgrabers.framework.command.trigger.track.MoveTrackBankCommand;
 import de.mossgrabers.framework.command.trigger.track.ToggleTrackBanksCommand;
 import de.mossgrabers.framework.command.trigger.track.ToggleVUCommand;
 import de.mossgrabers.framework.command.trigger.transport.MetronomeCommand;
@@ -200,17 +199,27 @@ public class MCUControllerSetup extends AbstractControllerSetup<MCUControlSurfac
     @Override
     protected void createModel ()
     {
-        final int adjustedNum = 8 * this.numMCUDevices;
-
         final ModelSetup ms = new ModelSetup ();
-        ms.setNumTracks (adjustedNum);
+
+        int numMackieDevices = this.numMCUDevices;
+        if (this.configuration.shouldPinFXTracksToLastController ())
+        {
+            ms.setNumTracks (8 * (numMackieDevices - 1));
+            ms.setNumFxTracks (8);
+        }
+        else
+        {
+            ms.setNumTracks (8 * numMackieDevices);
+        }
+
+        ms.setHasFullFlatTrackList (this.configuration.shouldIncludeFXTracksInTrackBank ());
         ms.setNumScenes (0);
         ms.setNumFilterColumnEntries (8);
         ms.setNumResults (8);
-        ms.setNumParams (adjustedNum);
+        ms.setNumParams (8 * numMackieDevices);
         ms.setNumDeviceLayers (0);
         ms.setNumDrumPadLayers (0);
-        ms.setNumMarkers (adjustedNum);
+        ms.setNumMarkers (8 * numMackieDevices);
         this.model = this.factory.createModel (this.colorManager, this.valueChanger, this.scales, ms);
 
         final ITrackBank trackBank = this.model.getTrackBank ();
@@ -369,9 +378,6 @@ public class MCUControllerSetup extends AbstractControllerSetup<MCUControlSurfac
                     this.addButton (surface, ButtonID.get (ButtonID.F1, i), "F" + (i + 1), command, 0, MCUControlSurface.MCU_F1 + i, command::isActive);
                 }
 
-                final MoveTrackBankCommand<MCUControlSurface, MCUConfiguration> moveTrackBankLeftCommand = new MoveTrackBankCommand<> (this.model, surface, Modes.DEVICE_PARAMS, true, true);
-                final MoveTrackBankCommand<MCUControlSurface, MCUConfiguration> moveTrackBankRightCommand = new MoveTrackBankCommand<> (this.model, surface, Modes.DEVICE_PARAMS, true, false);
-
                 // Assignment - mode selection
 
                 final ModeManager modeManager = surface.getModeManager ();
@@ -380,8 +386,8 @@ public class MCUControllerSetup extends AbstractControllerSetup<MCUControlSurfac
                 this.addButton (surface, ButtonID.PAN_SEND, "Pan", new ModeSelectCommand<> (this.model, surface, Modes.PAN), 0, MCUControlSurface.MCU_MODE_PAN, () -> modeManager.isActiveOrTempMode (Modes.PAN));
                 this.addButton (surface, ButtonID.SENDS, "Sends", new SendSelectCommand (this.model, surface), 0, MCUControlSurface.MCU_MODE_SENDS, () -> Modes.isSendMode (modeManager.getActiveOrTempModeId ()));
                 this.addButton (surface, ButtonID.DEVICE, "Device", new DevicesCommand (this.model, surface), 0, MCUControlSurface.MCU_MODE_PLUGIN, () -> surface.getButton (ButtonID.SELECT).isPressed () ? cursorDevice.isPinned () : modeManager.isActiveOrTempMode (Modes.DEVICE_PARAMS));
-                this.addButton (surface, ButtonID.MOVE_TRACK_LEFT, "Left", moveTrackBankLeftCommand, 0, MCUControlSurface.MCU_MODE_EQ);
-                this.addButton (surface, ButtonID.MOVE_TRACK_RIGHT, "Right", moveTrackBankRightCommand, 0, MCUControlSurface.MCU_MODE_DYN);
+                this.addButton (surface, ButtonID.MOVE_TRACK_LEFT, "Left", new MCUMoveTrackBankCommand (this.model, surface, true, true), 0, MCUControlSurface.MCU_MODE_EQ);
+                this.addButton (surface, ButtonID.MOVE_TRACK_RIGHT, "Right", new MCUMoveTrackBankCommand (this.model, surface, true, false), 0, MCUControlSurface.MCU_MODE_DYN);
 
                 // Automation
                 this.addButton (surface, ButtonID.AUTOMATION_TRIM, "Trim", new AutomationCommand<> (AutomationMode.TRIM_READ, this.model, surface), 0, MCUControlSurface.MCU_TRIM, () -> !t.isWritingArrangerAutomation () && t.getAutomationWriteMode () == AutomationMode.TRIM_READ);
@@ -422,8 +428,8 @@ public class MCUControllerSetup extends AbstractControllerSetup<MCUControlSurfac
                 this.addButton (surface, ButtonID.CANCEL, "Cancel", new KeyCommand (Key.ESCAPE, this.model, surface), MCUControlSurface.MCU_CANCEL);
                 this.addButton (surface, ButtonID.ENTER, "Enter", new KeyCommand (Key.ENTER, this.model, surface), MCUControlSurface.MCU_ENTER);
 
-                this.addButton (surface, ButtonID.MOVE_BANK_LEFT, "Bank Left", new MoveTrackBankCommand<> (this.model, surface, Modes.DEVICE_PARAMS, false, true), MCUControlSurface.MCU_BANK_LEFT);
-                this.addButton (surface, ButtonID.MOVE_BANK_RIGHT, "Bank Right", new MoveTrackBankCommand<> (this.model, surface, Modes.DEVICE_PARAMS, false, false), MCUControlSurface.MCU_BANK_RIGHT);
+                this.addButton (surface, ButtonID.MOVE_BANK_LEFT, "Bank Left", new MCUMoveTrackBankCommand (this.model, surface, false, true), MCUControlSurface.MCU_BANK_LEFT);
+                this.addButton (surface, ButtonID.MOVE_BANK_RIGHT, "Bank Right", new MCUMoveTrackBankCommand (this.model, surface, false, false), MCUControlSurface.MCU_BANK_RIGHT);
                 surface.getButton (ButtonID.MOVE_TRACK_LEFT).bind (input, this.getTriggerBindType (null), MCUControlSurface.MCU_TRACK_LEFT);
                 surface.getButton (ButtonID.MOVE_TRACK_RIGHT).bind (input, this.getTriggerBindType (null), MCUControlSurface.MCU_TRACK_RIGHT);
 
@@ -682,15 +688,19 @@ public class MCUControllerSetup extends AbstractControllerSetup<MCUControlSurfac
         final double upperBound = this.valueChanger.getUpperBound ();
 
         final ITrackBank tb = this.model.getCurrentTrackBank ();
+        final boolean shouldPinFXTracksToLastController = this.configuration.shouldPinFXTracksToLastController ();
+
         for (int index = 0; index < this.numMCUDevices; index++)
         {
             final MCUControlSurface surface = this.getSurface (index);
             final IMidiOutput output = surface.getMidiOutput ();
-            final int extenderOffset = surface.getExtenderOffset ();
+            final boolean pinLastDevice = shouldPinFXTracksToLastController && index == this.numMCUDevices - 1;
+            final ITrackBank trackBank = pinLastDevice ? this.model.getEffectTrackBank () : tb;
+            final int extenderOffset = pinLastDevice ? 0 : surface.getExtenderOffset ();
             for (int i = 0; i < 8; i++)
             {
                 final int channel = extenderOffset + i;
-                final ITrack track = tb.getItem (channel);
+                final ITrack track = trackBank.getItem (channel);
 
                 final int vu = track.getVu ();
                 if (vu != this.vuValues[channel])
@@ -701,11 +711,11 @@ public class MCUControllerSetup extends AbstractControllerSetup<MCUControlSurfac
                 }
             }
 
+            // Stereo VU of master channel
             if (this.configuration.getDeviceType (index) == MCUDeviceType.MAIN)
             {
                 final IMasterTrack masterTrack = this.model.getMasterTrack ();
 
-                // Stereo VU of master channel
                 int vu = masterTrack.getVuLeft ();
                 if (vu != this.masterVuValues[0])
                 {
@@ -795,7 +805,7 @@ public class MCUControllerSetup extends AbstractControllerSetup<MCUControlSurfac
         this.currentMode = mode;
 
         final ITrackBank tb = this.model.getTrackBank ();
-        final ITrackBank tbe = this.model.getEffectTrackBank ();
+        final boolean shouldPinFXTracksToLastController = this.configuration.shouldPinFXTracksToLastController ();
         final boolean isEffect = this.model.isEffectTrackBankActive ();
         final boolean isPan = Modes.PAN.equals (mode);
         final boolean isTrack = Modes.TRACK.equals (mode);
@@ -803,27 +813,30 @@ public class MCUControllerSetup extends AbstractControllerSetup<MCUControlSurfac
         final boolean isDevice = Modes.DEVICE_PARAMS.equals (mode);
 
         tb.setIndication (!isEffect);
-        if (tbe != null)
-            tbe.setIndication (isEffect);
 
         final ICursorDevice cursorDevice = this.model.getCursorDevice ();
-        final ITrack selectedTrack = tb.getSelectedItem ();
         for (int i = 0; i < tb.getPageSize (); i++)
         {
-            final boolean hasTrackSel = selectedTrack != null && selectedTrack.getIndex () == i && isTrack;
             final ITrack track = tb.getItem (i);
+            final boolean hasTrackSel = isTrack && track.isSelected ();
             track.setVolumeIndication (!isEffect && (isVolume || hasTrackSel));
             track.setPanIndication (!isEffect && (isPan || hasTrackSel));
 
             final ISendBank sendBank = track.getSendBank ();
             for (int j = 0; j < sendBank.getPageSize (); j++)
                 sendBank.getItem (j).setIndication (!isEffect && (mode.ordinal () - Modes.SEND1.ordinal () == j || hasTrackSel));
+        }
 
-            if (tbe != null)
+        final ITrackBank tbe = this.model.getEffectTrackBank ();
+        if (tbe != null)
+        {
+            tbe.setIndication (isEffect || shouldPinFXTracksToLastController);
+
+            for (int i = 0; i < tbe.getPageSize (); i++)
             {
                 final ITrack fxTrack = tbe.getItem (i);
-                fxTrack.setVolumeIndication (isEffect);
-                fxTrack.setPanIndication (isEffect && isPan);
+                fxTrack.setVolumeIndication (isEffect || shouldPinFXTracksToLastController);
+                fxTrack.setPanIndication ((isEffect || shouldPinFXTracksToLastController) && isPan);
             }
         }
 

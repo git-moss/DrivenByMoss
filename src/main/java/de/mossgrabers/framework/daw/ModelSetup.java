@@ -25,6 +25,7 @@ public class ModelSetup
     private int     numMarkers             = 0;
     private int     numUserPageSize        = 8;
     private int     numUserPages           = 8;
+    private int     numFxTracks            = -1;
 
 
     /**
@@ -37,9 +38,9 @@ public class ModelSetup
 
 
     /**
-     * Get the number of track to monitor (per track bank).
+     * Get the number of tracks to monitor (size of a track bank page).
      *
-     * @return The number of track to monitor (per track bank)
+     * @return The number of tracks to monitor (size of a track bank page).
      */
     public int getNumTracks ()
     {
@@ -48,13 +49,36 @@ public class ModelSetup
 
 
     /**
-     * Set the number of track to monitor (per track bank).
+     * Set the number of tracks to monitor (per track bank page).
      *
-     * @param numTracks The number of track to monitor (per track bank)
+     * @param numTracks The number of track to monitor (per track bank page)
      */
     public void setNumTracks (final int numTracks)
     {
         this.numTracks = numTracks;
+    }
+
+
+    /**
+     * Get the number of FX tracks to monitor (size of a track FX bank page). If not explicitly set,
+     * returns the same as getNumTracks().
+     *
+     * @return The number of FX tracks to monitor (size of a track FX bank page)
+     */
+    public int getNumFxTracks ()
+    {
+        return this.numFxTracks == -1 ? this.numTracks : this.numFxTracks;
+    }
+
+
+    /**
+     * Set the number of Fx tracks to monitor (per track bank page).
+     *
+     * @param numFxTracks The number of Fx tracks to monitor (per track bank page)
+     */
+    public void setNumFxTracks (final int numFxTracks)
+    {
+        this.numFxTracks = numFxTracks;
     }
 
 
