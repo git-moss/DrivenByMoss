@@ -60,7 +60,7 @@ public class DeviceParamsMode extends BaseMode
      */
     public DeviceParamsMode (final PushControlSurface surface, final IModel model)
     {
-        super ("Parameters", surface, model);
+        super ("Parameters", surface, model, model.getCursorDevice ().getParameterBank ());
 
         this.isTemporary = false;
 
@@ -458,6 +458,86 @@ public class DeviceParamsMode extends BaseMode
 
             display.addParameterElement (this.hostMenu[i], isTopMenuOn, bottomMenu, bottomMenuIcon, bottomMenuColor, isBottomMenuOn, parameterName, parameterValue, parameterValueStr, parameterIsActive, parameterModulatedValue);
         }
+    }
+
+
+    /** {@inheritDoc} */
+    @Override
+    public void selectPreviousItem ()
+    {
+        if (this.showDevices)
+            this.model.getCursorDevice ().getDeviceBank ().selectPreviousItem ();
+        super.selectPreviousItem ();
+    }
+
+
+    /** {@inheritDoc} */
+    @Override
+    public void selectNextItem ()
+    {
+        if (this.showDevices)
+            this.model.getCursorDevice ().getDeviceBank ().selectNextItem ();
+        super.selectNextItem ();
+    }
+
+
+    /** {@inheritDoc} */
+    @Override
+    public void selectPreviousItemPage ()
+    {
+        if (this.showDevices)
+            this.model.getCursorDevice ().getDeviceBank ().selectPreviousPage ();
+        super.selectPreviousItemPage ();
+    }
+
+
+    /** {@inheritDoc} */
+    @Override
+    public void selectNextItemPage ()
+    {
+        if (this.showDevices)
+            this.model.getCursorDevice ().getDeviceBank ().selectNextPage ();
+        super.selectNextItemPage ();
+    }
+
+
+    /** {@inheritDoc} */
+    @Override
+    public boolean hasPreviousItem ()
+    {
+        if (this.showDevices)
+            return this.model.getCursorDevice ().getDeviceBank ().canScrollBackwards ();
+        return super.hasPreviousItem ();
+    }
+
+
+    /** {@inheritDoc} */
+    @Override
+    public boolean hasNextItem ()
+    {
+        if (this.showDevices)
+            return this.model.getCursorDevice ().getDeviceBank ().canScrollForwards ();
+        return super.hasNextItem ();
+    }
+
+
+    /** {@inheritDoc} */
+    @Override
+    public boolean hasPreviousItemPage ()
+    {
+        if (this.showDevices)
+            return this.model.getCursorDevice ().getDeviceBank ().canScrollPageBackwards ();
+        return super.hasPreviousItemPage ();
+    }
+
+
+    /** {@inheritDoc} */
+    @Override
+    public boolean hasNextItemPage ()
+    {
+        if (this.showDevices)
+            return this.model.getCursorDevice ().getDeviceBank ().canScrollPageForwards ();
+        return super.hasNextItemPage ();
     }
 
 
