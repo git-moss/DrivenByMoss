@@ -152,6 +152,15 @@ public class MidiModule extends AbstractModule
         switch (subCommand)
         {
             case "note":
+                if (path.isEmpty ())
+                {
+                    final Object [] array = (Object []) value;
+                    final int note = ((Number) array[0]).intValue ();
+                    final int velocity = ((Number) array[1]).intValue ();
+                    this.sendNote (conf, midiChannel, input, note, velocity);
+                    return;
+                }
+
                 final String n = getSubCommand (path);
                 switch (n)
                 {
@@ -174,21 +183,8 @@ public class MidiModule extends AbstractModule
                         break;
 
                     default:
-                        final int note = Integer.parseInt (n);
-                        int numValue = toInteger (value);
-                        if (numValue > 0)
-                            numValue = conf.isAccentActive () ? conf.getFixedAccentValue () : numValue;
-                        final int [] keyTranslationMatrix = this.surface.getKeyTranslationTable ();
-                        final int data0 = keyTranslationMatrix[note];
-                        if (data0 >= 0)
-                            input.sendRawMidiEvent (0x90 + midiChannel, data0, numValue);
-
-                        // Mark selected notes
-                        for (int i = 0; i < 128; i++)
-                        {
-                            if (keyTranslationMatrix[note] == keyTranslationMatrix[i])
-                                this.keyManager.setKeyPressed (i, numValue);
-                        }
+                        this.sendNote (conf, midiChannel, input, Integer.parseInt (n), toInteger (value));
+                        break;
                 }
                 break;
 
@@ -253,6 +249,32 @@ public class MidiModule extends AbstractModule
 
             default:
                 throw new UnknownCommandException (command);
+        }
+    }
+
+
+    /**
+     * Send the note.
+     *
+     * @param conf The configuration
+     * @param midiChannel THe midi channel
+     * @param input Where to send
+     * @param note The note
+     * @param numValue The note velocity
+     */
+    private void sendNote (final OSCConfiguration conf, int midiChannel, final IMidiInput input, final int note, final int numValue)
+    {
+        final int value = numValue > 0 && conf.isAccentActive () ? conf.getFixedAccentValue () : numValue;
+        final int [] keyTranslationMatrix = this.surface.getKeyTranslationTable ();
+        final int data0 = keyTranslationMatrix[note];
+        if (data0 >= 0)
+            input.sendRawMidiEvent (0x90 + midiChannel, data0, value);
+
+        // Mark selected notes
+        for (int i = 0; i < 128; i++)
+        {
+            if (keyTranslationMatrix[note] == keyTranslationMatrix[i])
+                this.keyManager.setKeyPressed (i, value);
         }
     }
 

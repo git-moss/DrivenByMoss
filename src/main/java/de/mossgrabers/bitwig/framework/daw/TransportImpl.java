@@ -252,6 +252,14 @@ public class TransportImpl implements ITransport
 
     /** {@inheritDoc} */
     @Override
+    public void setMetronomeTicks (final boolean on)
+    {
+        this.transport.isMetronomeTickPlaybackEnabled ().set (on);
+    }
+
+
+    /** {@inheritDoc} */
+    @Override
     public String getMetronomeVolumeStr ()
     {
         return this.transport.metronomeVolume ().displayedValue ().getLimited (6) + " dB";

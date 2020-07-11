@@ -289,7 +289,12 @@ public class FireControllerSetup extends AbstractControllerSetup<FireControlSurf
             }
 
             if (modeManager.isActiveOrTempMode (Modes.BROWSER))
+            {
                 ((FireBrowserCommand) surface.getButton (ButtonID.BROWSE).getCommand ()).discardBrowser (true);
+                return;
+            }
+
+            this.model.getCursorDevice ().toggleWindowOpen ();
 
         }, FireControlSurface.SELECT);
 

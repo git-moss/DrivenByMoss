@@ -127,7 +127,13 @@ public class PitchbendVolumeCommand extends AbstractPitchbendCommand<MCUControlS
 
     protected ITrackBank getTrackBank ()
     {
-        return this.useFxBank ? this.model.getEffectTrackBank () : this.model.getCurrentTrackBank ();
+        if (this.useFxBank)
+        {
+            final ITrackBank effectTrackBank = this.model.getEffectTrackBank ();
+            if (effectTrackBank != null)
+                return effectTrackBank;
+        }
+        return this.model.getCurrentTrackBank ();
     }
 
 

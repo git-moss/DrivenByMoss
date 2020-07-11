@@ -695,7 +695,8 @@ public class MCUControllerSetup extends AbstractControllerSetup<MCUControlSurfac
             final MCUControlSurface surface = this.getSurface (index);
             final IMidiOutput output = surface.getMidiOutput ();
             final boolean pinLastDevice = shouldPinFXTracksToLastController && index == this.numMCUDevices - 1;
-            final ITrackBank trackBank = pinLastDevice ? this.model.getEffectTrackBank () : tb;
+            final ITrackBank effectTrackBank = this.model.getEffectTrackBank ();
+            final ITrackBank trackBank = pinLastDevice && effectTrackBank != null ? effectTrackBank : tb;
             final int extenderOffset = pinLastDevice ? 0 : surface.getExtenderOffset ();
             for (int i = 0; i < 8; i++)
             {

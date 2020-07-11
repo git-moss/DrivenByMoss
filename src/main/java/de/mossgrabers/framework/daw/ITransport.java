@@ -90,21 +90,13 @@ public interface ITransport extends ObserverManagement
      *
      * @param on True if clip launcher overdub is enabled
      */
-    void setLauncherOverdub (final boolean on);
+    void setLauncherOverdub (boolean on);
 
 
     /**
      * Toggle if the clip launcher overdub is enabled.
      */
     void toggleLauncherOverdub ();
-
-
-    /**
-     * Dis-/enables the metronome.
-     *
-     * @param on Turn on if true
-     */
-    void setMetronome (final boolean on);
 
 
     /**
@@ -122,6 +114,14 @@ public interface ITransport extends ObserverManagement
 
 
     /**
+     * Dis-/enables the metronome.
+     *
+     * @param on Turn on if true
+     */
+    void setMetronome (boolean on);
+
+
+    /**
      * Returns true if the metronome ticks option is on.
      *
      * @return True if the metronome ticks option is on
@@ -133,6 +133,14 @@ public interface ITransport extends ObserverManagement
      * Toggles if the metronome has tick playback enabled.
      */
     void toggleMetronomeTicks ();
+
+
+    /**
+     * Dis-/enables the metronome ticks.
+     *
+     * @param on Turn on if true
+     */
+    void setMetronomeTicks (boolean on);
 
 
     /**
@@ -148,7 +156,7 @@ public interface ITransport extends ObserverManagement
      *
      * @param control The control value
      */
-    void changeMetronomeVolume (final int control);
+    void changeMetronomeVolume (int control);
 
 
     /**
@@ -156,7 +164,7 @@ public interface ITransport extends ObserverManagement
      *
      * @param value The value
      */
-    void setMetronomeVolume (final int value);
+    void setMetronomeVolume (int value);
 
 
     /**
@@ -186,7 +194,7 @@ public interface ITransport extends ObserverManagement
      *
      * @param on True if on
      */
-    void setLoop (final boolean on);
+    void setLoop (boolean on);
 
 
     /**
@@ -240,7 +248,7 @@ public interface ITransport extends ObserverManagement
      *
      * @param mode The automation write mode
      */
-    void setAutomationWriteMode (final AutomationMode mode);
+    void setAutomationWriteMode (AutomationMode mode);
 
 
     /**
@@ -288,7 +296,7 @@ public interface ITransport extends ObserverManagement
      *
      * @param beats The new playback position in beats
      */
-    void setPosition (final double beats);
+    void setPosition (double beats);
 
 
     /**
@@ -296,7 +304,7 @@ public interface ITransport extends ObserverManagement
      *
      * @param increase If true move to the right otherwise left
      */
-    void changePosition (final boolean increase);
+    void changePosition (boolean increase);
 
 
     /**
@@ -305,7 +313,7 @@ public interface ITransport extends ObserverManagement
      * @param increase If true move to the right otherwise left
      * @param slow Change slowly
      */
-    void changePosition (final boolean increase, final boolean slow);
+    void changePosition (boolean increase, boolean slow);
 
 
     /**
@@ -363,7 +371,7 @@ public interface ITransport extends ObserverManagement
      *
      * @param increase True to increase otherwise decrease
      */
-    void changeTempo (final boolean increase);
+    void changeTempo (boolean increase);
 
 
     /**
@@ -371,7 +379,7 @@ public interface ITransport extends ObserverManagement
      *
      * @param tempo The tempo in BPM
      */
-    void setTempo (final double tempo);
+    void setTempo (double tempo);
 
 
     /**
@@ -388,7 +396,7 @@ public interface ITransport extends ObserverManagement
      * @param tempo The tempo to format
      * @return The formatted tempo
      */
-    String formatTempo (final double tempo);
+    String formatTempo (double tempo);
 
 
     /**
@@ -397,7 +405,7 @@ public interface ITransport extends ObserverManagement
      * @param tempo The tempo to format
      * @return The formatted tempo
      */
-    String formatTempoNoFraction (final double tempo);
+    String formatTempoNoFraction (double tempo);
 
 
     /**
@@ -407,7 +415,7 @@ public interface ITransport extends ObserverManagement
      * @param maxValue The upper bound
      * @return The rescaled tempo
      */
-    double rescaleTempo (final double tempo, final int maxValue);
+    double rescaleTempo (double tempo, int maxValue);
 
 
     /**
@@ -415,7 +423,7 @@ public interface ITransport extends ObserverManagement
      *
      * @param isTouched True if touched
      */
-    void setTempoIndication (final boolean isTouched);
+    void setTempoIndication (boolean isTouched);
 
 
     /**
@@ -423,7 +431,7 @@ public interface ITransport extends ObserverManagement
      *
      * @param value The value
      */
-    void setCrossfade (final int value);
+    void setCrossfade (int value);
 
 
     /**
@@ -439,7 +447,7 @@ public interface ITransport extends ObserverManagement
      *
      * @param control The control value
      */
-    void changeCrossfade (final int control);
+    void changeCrossfade (int control);
 
 
     /**
@@ -464,7 +472,7 @@ public interface ITransport extends ObserverManagement
      *
      * @param preroll Possible values are `"none"`, `"one_bar"`, `"two_bars"`, or `"four_bars"`.
      */
-    void setPreroll (final String preroll);
+    void setPreroll (String preroll);
 
 
     /**
@@ -472,7 +480,7 @@ public interface ITransport extends ObserverManagement
      *
      * @param preroll Possible values are 0, 1, 2, 4.
      */
-    void setPrerollAsBars (final int preroll);
+    void setPrerollAsBars (int preroll);
 
 
     /**

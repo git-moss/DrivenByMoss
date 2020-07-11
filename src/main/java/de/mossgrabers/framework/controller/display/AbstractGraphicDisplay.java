@@ -149,16 +149,21 @@ public abstract class AbstractGraphicDisplay implements IGraphicDisplay
         if (this.executor.isShutdown ())
             return;
 
-        final ModelInfo newInfo = new ModelInfo (this.notificationMessage.get (), this.columns);
-
-        // Only render image if there is a change in the data
-        if (!this.info.equals (newInfo))
+        try
         {
-            this.info = newInfo;
-            this.renderImage ();
-        }
+            final ModelInfo newInfo = new ModelInfo (this.notificationMessage.get (), this.columns);
 
-        this.columns.clear ();
+            // Only render image if there is a change in the data
+            if (!this.info.equals (newInfo))
+            {
+                this.info = newInfo;
+                this.renderImage ();
+            }
+        }
+        finally
+        {
+            this.columns.clear ();
+        }
 
         this.send (this.image);
     }

@@ -76,13 +76,15 @@ public class OSCParser extends AbstractOpenSoundControlParser
         }
 
         final Object [] values = message.getValues ();
-        final Object value = values == null || values.length == 0 ? null : values[0];
         try
         {
             final IModule module = this.modules.get (command);
             if (module == null)
                 throw new UnknownCommandException (command);
-            module.execute (command, oscParts, value);
+            if (values != null && values.length > 1)
+                module.execute (command, oscParts, values);
+            else
+                module.execute (command, oscParts, values == null || values.length == 0 ? null : values[0]);
         }
         catch (final IllegalParameterException ex)
         {

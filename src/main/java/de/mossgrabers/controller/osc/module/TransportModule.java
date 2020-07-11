@@ -81,62 +81,63 @@ public class TransportModule extends AbstractModule
     @Override
     public void execute (final String command, final LinkedList<String> path, final Object value) throws IllegalParameterException, UnknownCommandException, MissingCommandException
     {
+        final boolean isTrigger = isTrigger (value);
+
         switch (command)
         {
             case "play":
-                if (isTrigger (value) && !this.transport.isPlaying ())
+                final boolean isPlaying = this.transport.isPlaying ();
+                if (isTrigger && !isPlaying || !isTrigger && isPlaying)
                     this.transport.play ();
                 break;
 
             case "playbutton":
-                if (isTrigger (value))
+                if (isTrigger)
                     this.playCommand.execute (ButtonEvent.DOWN, 127);
                 break;
 
             case "stop":
-                if (isTrigger (value) && this.transport.isPlaying ())
-                    this.transport.play ();
+                if (this.transport.isPlaying ())
+                    this.transport.stop ();
+                else
+                    this.transport.stopAndRewind ();
                 break;
 
             case "restart":
-                if (isTrigger (value))
+                if (isTrigger)
                     this.transport.restart ();
                 break;
 
             case "record":
-                if (isTrigger (value))
-                    this.transport.record ();
+                this.transport.record ();
                 break;
 
             case "overdub":
-                if (isTrigger (value))
-                {
-                    if (!path.isEmpty () && "launcher".equals (path.get (0)))
-                        this.transport.toggleLauncherOverdub ();
-                    else
-                        this.transport.toggleOverdub ();
-                }
+                if (!path.isEmpty () && "launcher".equals (path.get (0)))
+                    this.transport.toggleLauncherOverdub ();
+                else
+                    this.transport.toggleOverdub ();
                 break;
 
             case "repeat":
                 if (value == null)
                     this.transport.toggleLoop ();
                 else
-                    this.transport.setLoop (isTrigger (value));
+                    this.transport.setLoop (isTrigger);
                 break;
 
             case "punchIn":
                 if (value == null)
                     this.transport.togglePunchIn ();
                 else
-                    this.transport.setPunchIn (isTrigger (value));
+                    this.transport.setPunchIn (isTrigger);
                 break;
 
             case "punchOut":
                 if (value == null)
                     this.transport.togglePunchOut ();
                 else
-                    this.transport.setPunchOut (isTrigger (value));
+                    this.transport.setPunchOut (isTrigger);
                 break;
 
             case "click":
@@ -145,7 +146,7 @@ public class TransportModule extends AbstractModule
                     if (value == null)
                         this.transport.toggleMetronome ();
                     else
-                        this.transport.setMetronome (isTrigger (value));
+                        this.transport.setMetronome (isTrigger);
                     break;
                 }
                 final String subCommand = getSubCommand (path);
@@ -155,11 +156,13 @@ public class TransportModule extends AbstractModule
                         this.transport.setMetronomeVolume (toInteger (value));
                         break;
                     case "ticks":
-                        if (isTrigger (value))
+                        if (value == null)
                             this.transport.toggleMetronomeTicks ();
+                        else
+                            this.transport.setMetronomeTicks (isTrigger);
                         break;
                     case "preroll":
-                        if (isTrigger (value))
+                        if (isTrigger)
                             this.transport.togglePrerollMetronome ();
                         break;
                     default:
@@ -181,7 +184,7 @@ public class TransportModule extends AbstractModule
                         this.transport.setTempo (toNumber (value));
                         break;
                     case "tap":
-                        if (isTrigger (value))
+                        if (isTrigger)
                             this.transport.tapTempo ();
                         break;
                     case "+":
@@ -234,18 +237,15 @@ public class TransportModule extends AbstractModule
                 break;
 
             case "autowrite":
-                if (isTrigger (value))
-                {
-                    if (!path.isEmpty () && "launcher".equals (path.get (0)))
-                        this.transport.toggleWriteClipLauncherAutomation ();
-                    else
-                        this.transport.toggleWriteArrangerAutomation ();
-                }
+                if (!path.isEmpty () && "launcher".equals (path.get (0)))
+                    this.transport.toggleWriteClipLauncherAutomation ();
+                else
+                    this.transport.toggleWriteArrangerAutomation ();
                 break;
 
             case "automationWriteMode":
                 if (value != null)
-                    this.transport.setAutomationWriteMode (AutomationMode.valueOf (value.toString ()));
+                    this.transport.setAutomationWriteMode (AutomationMode.valueOf (value.toString ().toUpperCase ()));
                 break;
 
             case "preroll":
@@ -279,7 +279,7 @@ public class TransportModule extends AbstractModule
         this.writer.sendOSC ("/crossfade", this.transport.getCrossfade (), dump);
         this.writer.sendOSC ("/autowrite", this.transport.isWritingArrangerAutomation (), dump);
         this.writer.sendOSC ("/autowrite/launcher", this.transport.isWritingClipLauncherAutomation (), dump);
-        this.writer.sendOSC ("/automationWriteMode", this.transport.getAutomationWriteMode ().name (), dump);
+        this.writer.sendOSC ("/automationWriteMode", this.transport.getAutomationWriteMode ().getIdentifier (), dump);
         this.writer.sendOSC ("/time/str", this.transport.getPositionText (), dump);
         this.writer.sendOSC ("/time/signature", this.transport.getNumerator () + " / " + this.transport.getDenominator (), dump);
         this.writer.sendOSC ("/beat/str", this.transport.getBeatText (), dump);
