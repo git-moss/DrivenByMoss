@@ -35,6 +35,6 @@ public class APCminiControllerExtensionDefinition extends AbstractControllerExte
     @Override
     protected IControllerSetup<?, ?> getControllerSetup (final ControllerHost host)
     {
-        return new APCminiControllerSetup (new HostImpl (host), new BitwigSetupFactory (host), new SettingsUIImpl (host.getPreferences ()), new SettingsUIImpl (host.getDocumentState ()));
+        return new APCminiControllerSetup (new HostImpl (host), new BitwigSetupFactory (host), new SettingsUIImpl (host, host.getPreferences ()), new SettingsUIImpl (host, host.getDocumentState ()));
     }
 }

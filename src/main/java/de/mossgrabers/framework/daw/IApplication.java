@@ -266,4 +266,12 @@ public interface IApplication extends ObserverManagement
      * Slices the currently selected audio clip to a new drum machine instance.
      */
     void sliceToDrumMachine ();
+
+
+    /**
+     * Invokes the action for the given action identifier.
+     *
+     * @param id the action identifier string, must not be `null`
+     */
+    void invokeAction (String id);
 }

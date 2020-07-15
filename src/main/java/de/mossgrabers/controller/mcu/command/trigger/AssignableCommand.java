@@ -80,6 +80,14 @@ public class AssignableCommand extends FootswitchCommand<MCUControlSurface, MCUC
                 }
                 break;
 
+            case MCUConfiguration.FOOTSWITCH_2_ACTION:
+                if (event != ButtonEvent.DOWN)
+                    return;
+                final String assignableActionID = this.surface.getConfiguration ().getAssignableAction (this.index);
+                if (assignableActionID != null)
+                    this.model.getApplication ().invokeAction (assignableActionID);
+                break;
+
             default:
                 super.execute (event, velocity);
                 break;

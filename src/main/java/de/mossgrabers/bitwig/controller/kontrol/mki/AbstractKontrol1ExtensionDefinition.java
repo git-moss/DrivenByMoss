@@ -49,6 +49,6 @@ public abstract class AbstractKontrol1ExtensionDefinition extends AbstractContro
     @Override
     protected IControllerSetup<?, ?> getControllerSetup (final ControllerHost host)
     {
-        return new Kontrol1ControllerSetup (this.modelIndex, new HostImpl (host), new BitwigSetupFactory (host), new SettingsUIImpl (host.getPreferences ()), new SettingsUIImpl (host.getDocumentState ()));
+        return new Kontrol1ControllerSetup (this.modelIndex, new HostImpl (host), new BitwigSetupFactory (host), new SettingsUIImpl (host, host.getPreferences ()), new SettingsUIImpl (host, host.getDocumentState ()));
     }
 }

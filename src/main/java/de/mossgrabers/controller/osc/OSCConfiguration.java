@@ -4,6 +4,7 @@
 
 package de.mossgrabers.controller.osc;
 
+import de.mossgrabers.framework.configuration.IActionSetting;
 import de.mossgrabers.framework.configuration.IEnumSetting;
 import de.mossgrabers.framework.configuration.IIntegerSetting;
 import de.mossgrabers.framework.configuration.ISettingsUI;
@@ -12,6 +13,8 @@ import de.mossgrabers.framework.controller.valuechanger.IValueChanger;
 import de.mossgrabers.framework.daw.IHost;
 import de.mossgrabers.framework.daw.midi.ArpeggiatorMode;
 import de.mossgrabers.framework.osc.AbstractOpenSoundControlConfiguration;
+
+import java.util.Arrays;
 
 
 /**
@@ -41,20 +44,21 @@ public class OSCConfiguration extends AbstractOpenSoundControlConfiguration
     }
 
 
-    private static final String    CATEGORY_PROTOCOL        = "Protocol (must match your client template!)";
+    private static final String    CATEGORY_PROTOCOL         = "Protocol (must match your client template!)";
 
-    private static final String [] VALUE_RESOLUTION_OPTIONS =
+    private static final String [] VALUE_RESOLUTION_OPTIONS  =
     {
         "Low (128)",
         "Medium (1024)",
         "High (16384)"
     };
 
-    private int                    receivePort              = 8000;
-    private String                 sendHost                 = DEFAULT_SERVER;
-    private int                    sendPort                 = 9000;
-    private ValueResolution        valueResolution          = ValueResolution.LOW;
-    private int                    bankPageSize             = 8;
+    private int                    receivePort               = 8000;
+    private String                 sendHost                  = DEFAULT_SERVER;
+    private int                    sendPort                  = 9000;
+    private ValueResolution        valueResolution           = ValueResolution.LOW;
+    private int                    bankPageSize              = 8;
+    private String []              assignableFunctionActions = new String [8];
 
 
     /**
@@ -67,6 +71,8 @@ public class OSCConfiguration extends AbstractOpenSoundControlConfiguration
     public OSCConfiguration (final IHost host, final IValueChanger valueChanger, final ArpeggiatorMode [] arpeggiatorModes)
     {
         super (host, valueChanger, arpeggiatorModes);
+
+        Arrays.fill (this.assignableFunctionActions, "");
     }
 
 
@@ -117,7 +123,7 @@ public class OSCConfiguration extends AbstractOpenSoundControlConfiguration
         this.activateBehaviourOnStopSetting (globalSettings);
 
         ///////////////////////////
-        // Accent
+        // Play and Sequence
 
         this.activateAccentActiveSetting (globalSettings);
         this.activateAccentValueSetting (globalSettings);
@@ -127,6 +133,16 @@ public class OSCConfiguration extends AbstractOpenSoundControlConfiguration
 
         this.activateExcludeDeactivatedItemsSetting (globalSettings);
         this.activateEnableVUMetersSetting (globalSettings);
+
+        ///////////////////////////
+        // Actions
+
+        for (int i = 0; i < this.assignableFunctionActions.length; i++)
+        {
+            final int pos = i;
+            final IActionSetting actionSetting = globalSettings.getActionSetting ("Action " + (i + 1), "Actions");
+            actionSetting.addValueObserver (value -> this.assignableFunctionActions[pos] = actionSetting.get ());
+        }
 
         ///////////////////////////
         // Debug
@@ -187,5 +203,17 @@ public class OSCConfiguration extends AbstractOpenSoundControlConfiguration
     public int getBankPageSize ()
     {
         return this.bankPageSize;
+    }
+
+
+    /**
+     * If the assignable function is set to Action this method gets the selected action to execute.
+     *
+     * @param index The index of the assignable
+     * @return The ID of the action to execute
+     */
+    public String getAssignableAction (final int index)
+    {
+        return this.assignableFunctionActions[index];
     }
 }

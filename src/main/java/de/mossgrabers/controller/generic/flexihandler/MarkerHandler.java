@@ -66,6 +66,9 @@ public class MarkerHandler extends AbstractHandler
     @Override
     public void handle (final FlexiCommand command, final int knobMode, final int value)
     {
+        if (!this.isButtonPressed (knobMode, value))
+            return;
+
         final IMarkerBank markerBank = this.model.getMarkerBank ();
 
         switch (command)

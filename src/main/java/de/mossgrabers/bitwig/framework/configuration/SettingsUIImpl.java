@@ -4,6 +4,7 @@
 
 package de.mossgrabers.bitwig.framework.configuration;
 
+import de.mossgrabers.framework.configuration.IActionSetting;
 import de.mossgrabers.framework.configuration.IBooleanSetting;
 import de.mossgrabers.framework.configuration.IColorSetting;
 import de.mossgrabers.framework.configuration.IDoubleSetting;
@@ -14,7 +15,13 @@ import de.mossgrabers.framework.configuration.ISignalSetting;
 import de.mossgrabers.framework.configuration.IStringSetting;
 import de.mossgrabers.framework.controller.color.ColorEx;
 
+import com.bitwig.extension.controller.api.Action;
+import com.bitwig.extension.controller.api.Application;
+import com.bitwig.extension.controller.api.ControllerHost;
 import com.bitwig.extension.controller.api.Settings;
+
+import java.util.HashMap;
+import java.util.Map;
 
 
 /**
@@ -24,17 +31,22 @@ import com.bitwig.extension.controller.api.Settings;
  */
 public class SettingsUIImpl implements ISettingsUI
 {
-    private Settings preferences;
+    private final ControllerHost      host;
+    private final Settings            preferences;
+    private final Map<String, String> actionsList = new HashMap<> ();
+    private String []                 formattedActions;
 
 
     /**
      * Constructor.
      *
-     * @param preferences The Bitwig preferences
+     * @param host The Bitwig controller host
+     * @param settings The Bitwig preferences
      */
-    public SettingsUIImpl (final Settings preferences)
+    public SettingsUIImpl (final ControllerHost host, final Settings settings)
     {
-        this.preferences = preferences;
+        this.host = host;
+        this.preferences = settings;
     }
 
 
@@ -93,5 +105,26 @@ public class SettingsUIImpl implements ISettingsUI
     {
         final com.bitwig.extension.api.Color color = com.bitwig.extension.api.Color.fromRGB (defaultColor.getRed (), defaultColor.getGreen (), defaultColor.getBlue ());
         return new ColorSettingImpl (this.preferences.getColorSetting (label, category, color));
+    }
+
+
+    /** {@inheritDoc} */
+    @Override
+    public IActionSetting getActionSetting (final String label, final String category)
+    {
+        // Has to be here since it must be execute in init()!
+        if (this.formattedActions == null)
+        {
+            final Application application = this.host.createApplication ();
+            final Action [] actions = application.getActions ();
+            this.formattedActions = new String [actions.length];
+            for (var i = 0; i < actions.length; i++)
+            {
+                this.formattedActions[i] = actions[i].getCategory ().getName () + ": " + actions[i].getName ();
+                this.actionsList.put (this.formattedActions[i], actions[i].getId ());
+            }
+        }
+
+        return new ActionSettingImpl (this.preferences.getEnumSetting (label, category, this.formattedActions, this.formattedActions[0]), this.actionsList);
     }
 }

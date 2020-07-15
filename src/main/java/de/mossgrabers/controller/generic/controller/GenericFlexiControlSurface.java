@@ -6,6 +6,7 @@ package de.mossgrabers.controller.generic.controller;
 
 import de.mossgrabers.controller.generic.CommandSlot;
 import de.mossgrabers.controller.generic.GenericFlexiConfiguration;
+import de.mossgrabers.controller.generic.flexihandler.ActionHandler;
 import de.mossgrabers.controller.generic.flexihandler.BrowserHandler;
 import de.mossgrabers.controller.generic.flexihandler.ClipHandler;
 import de.mossgrabers.controller.generic.flexihandler.DeviceHandler;
@@ -90,6 +91,7 @@ public class GenericFlexiControlSurface extends AbstractControlSurface<GenericFl
         this.registerHandler (new MidiCCHandler (model, this, configuration, this.relative2ValueChanger, this.relative3ValueChanger));
         this.registerHandler (new NoteInputHandler (model, this, configuration, this.relative2ValueChanger, this.relative3ValueChanger));
         this.registerHandler (new UserHandler (model, this, configuration, this.relative2ValueChanger, this.relative3ValueChanger));
+        this.registerHandler (new ActionHandler (model, this, configuration, this.relative2ValueChanger, this.relative3ValueChanger));
 
         Arrays.fill (this.valueCache, -1);
 

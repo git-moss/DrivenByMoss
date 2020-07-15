@@ -702,7 +702,16 @@ public enum FlexiCommand
     USER_SET_PARAMETER_7(CommandCategory.USER, "User: Set Parameter 7", false),
     USER_SET_PARAMETER_8(CommandCategory.USER, "User: Set Parameter 8", false),
     USER_SELECT_PREVIOUS_PAGE(CommandCategory.USER, "User: Select Previous Page", true),
-    USER_SELECT_NEXT_PAGE(CommandCategory.USER, "User: Select Next Page", true);
+    USER_SELECT_NEXT_PAGE(CommandCategory.USER, "User: Select Next Page", true),
+
+    ACTION_1(CommandCategory.ACTION, "Action: Execute Action 1", true),
+    ACTION_2(CommandCategory.ACTION, "Action: Execute Action 2", true),
+    ACTION_3(CommandCategory.ACTION, "Action: Execute Action 3", true),
+    ACTION_4(CommandCategory.ACTION, "Action: Execute Action 4", true),
+    ACTION_5(CommandCategory.ACTION, "Action: Execute Action 5", true),
+    ACTION_6(CommandCategory.ACTION, "Action: Execute Action 6", true),
+    ACTION_7(CommandCategory.ACTION, "Action: Execute Action 7", true),
+    ACTION_8(CommandCategory.ACTION, "Action: Execute Action 8", true);
 
 
     private static final String []                 NAMES            = new String [FlexiCommand.values ().length];

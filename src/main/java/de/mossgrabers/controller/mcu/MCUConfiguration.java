@@ -6,6 +6,7 @@ package de.mossgrabers.controller.mcu;
 
 import de.mossgrabers.controller.mcu.controller.MCUDeviceType;
 import de.mossgrabers.framework.configuration.AbstractConfiguration;
+import de.mossgrabers.framework.configuration.IActionSetting;
 import de.mossgrabers.framework.configuration.IEnumSetting;
 import de.mossgrabers.framework.configuration.ISettingsUI;
 import de.mossgrabers.framework.controller.valuechanger.IValueChanger;
@@ -48,6 +49,8 @@ public class MCUConfiguration extends AbstractConfiguration
     public static final Integer       USE_FADERS_AS_KNOBS                     = Integer.valueOf (61);
     /** Select the channel when touching it's fader. */
     private static final Integer      TOUCH_CHANNEL                           = Integer.valueOf (62);
+    /** iCON specific Master VU meter. */
+    private static final Integer      MASTER_VU_METER                         = Integer.valueOf (63);
 
     /** Use a Function button to switch to previous mode. */
     public static final int           FOOTSWITCH_2_PREV_MODE                  = 15;
@@ -57,10 +60,13 @@ public class MCUConfiguration extends AbstractConfiguration
     public static final int           FOOTSWITCH_2_SHOW_MARKER_MODE           = 17;
     /** Toggle use faders like editing knobs. */
     public static final int           FOOTSWITCH_2_USE_FADERS_LIKE_EDIT_KNOBS = 18;
+    /** Use a Function button to execute an action. */
+    public static final int           FOOTSWITCH_2_ACTION                     = 19;
 
     private static final String       CATEGORY_EXTENDER_SETUP                 = "Extender Setup (requires restart)";
     private static final String       CATEGORY_SEGMENT_DISPLAY                = "Segment Display";
     private static final String       CATEGORY_TRACKS                         = "Tracks (requires restart)";
+    private static final String       CATEGORY_ASSIGNABLE_BUTTONS             = "Assignable buttons";
 
     private static final String       DEVICE_SELECT                           = "<Select a profile>";
     private static final String       DEVICE_BEHRINGER_X_TOUCH_ONE            = "Behringer X-Touch One";
@@ -99,7 +105,8 @@ public class MCUConfiguration extends AbstractConfiguration
         "Previous mode",
         "Next mode",
         "Marker mode",
-        "Toggle use faders like editing knobs"
+        "Toggle use faders like editing knobs",
+        "Action"
     };
 
     private static final String []    ASSIGNABLE_BUTTON_NAMES                 =
@@ -166,6 +173,7 @@ public class MCUConfiguration extends AbstractConfiguration
     private IEnumSetting              displayTrackNamesSetting;
     private IEnumSetting              useVertZoomForModesSetting;
     private IEnumSetting              useFadersAsKnobsSetting;
+    private IEnumSetting              masterVuMeterSetting;
 
     private boolean                   zoomState;
     private boolean                   displayTime;
@@ -179,8 +187,10 @@ public class MCUConfiguration extends AbstractConfiguration
     private boolean                   displayTrackNames;
     private boolean                   useVertZoomForModes;
     private boolean                   useFadersAsKnobs;
+    private boolean                   masterVuMeter;
     private boolean                   touchChannel;
     private int []                    assignableFunctions                     = new int [7];
+    private String []                 assignableFunctionActions               = new String [7];
     private final MCUDeviceType []    deviceTyes;
     private boolean                   includeFXTracksInTrackBank;
     private boolean                   pinFXTracksToLastController;
@@ -199,6 +209,7 @@ public class MCUConfiguration extends AbstractConfiguration
         super (host, valueChanger, arpeggiatorModes);
 
         Arrays.fill (this.assignableFunctions, 0);
+        Arrays.fill (this.assignableFunctionActions, "");
 
         this.deviceTyes = new MCUDeviceType [numMCUDevices];
     }
@@ -213,7 +224,6 @@ public class MCUConfiguration extends AbstractConfiguration
 
         this.activateHardwareSettings (globalSettings);
         this.activateExtenderSettings (globalSettings);
-        this.activateEnableVUMetersSetting (globalSettings, CATEGORY_HARDWARE_SETUP);
 
         ///////////////////////////
         // Segment display
@@ -274,6 +284,7 @@ public class MCUConfiguration extends AbstractConfiguration
                     this.useVertZoomForModesSetting.set (ON_OFF_OPTIONS[0]);
                     this.useFadersAsKnobsSetting.set (ON_OFF_OPTIONS[0]);
                     this.setVUMetersEnabled (true);
+                    this.masterVuMeterSetting.set (ON_OFF_OPTIONS[0]);
                     break;
 
                 case DEVICE_BEHRINGER_X_TOUCH_ONE:
@@ -287,6 +298,7 @@ public class MCUConfiguration extends AbstractConfiguration
                     this.useVertZoomForModesSetting.set (ON_OFF_OPTIONS[0]);
                     this.useFadersAsKnobsSetting.set (ON_OFF_OPTIONS[0]);
                     this.setVUMetersEnabled (true);
+                    this.masterVuMeterSetting.set (ON_OFF_OPTIONS[0]);
                     break;
 
                 case DEVICE_ICON_PLATFORM_M:
@@ -300,6 +312,7 @@ public class MCUConfiguration extends AbstractConfiguration
                     this.useVertZoomForModesSetting.set (ON_OFF_OPTIONS[1]);
                     this.useFadersAsKnobsSetting.set (ON_OFF_OPTIONS[0]);
                     this.setVUMetersEnabled (false);
+                    this.masterVuMeterSetting.set (ON_OFF_OPTIONS[0]);
                     break;
 
                 case DEVICE_ICON_QCON_PRO_X:
@@ -313,6 +326,7 @@ public class MCUConfiguration extends AbstractConfiguration
                     this.useVertZoomForModesSetting.set (ON_OFF_OPTIONS[0]);
                     this.useFadersAsKnobsSetting.set (ON_OFF_OPTIONS[0]);
                     this.setVUMetersEnabled (true);
+                    this.masterVuMeterSetting.set (ON_OFF_OPTIONS[1]);
                     break;
 
                 case DEVICE_ZOOM_R16:
@@ -326,6 +340,7 @@ public class MCUConfiguration extends AbstractConfiguration
                     this.useVertZoomForModesSetting.set (ON_OFF_OPTIONS[0]);
                     this.useFadersAsKnobsSetting.set (ON_OFF_OPTIONS[1]);
                     this.setVUMetersEnabled (false);
+                    this.masterVuMeterSetting.set (ON_OFF_OPTIONS[0]);
                     break;
 
                 default:
@@ -388,6 +403,14 @@ public class MCUConfiguration extends AbstractConfiguration
             this.useFadersAsKnobs = "On".equals (value);
             this.notifyObservers (USE_FADERS_AS_KNOBS);
         });
+
+        this.activateEnableVUMetersSetting (settingsUI, CATEGORY_HARDWARE_SETUP);
+
+        this.masterVuMeterSetting = settingsUI.getEnumSetting ("Master VU Meter (iCON extension)", CATEGORY_HARDWARE_SETUP, ON_OFF_OPTIONS, ON_OFF_OPTIONS[0]);
+        this.masterVuMeterSetting.addValueObserver (value -> {
+            this.masterVuMeter = "On".equals (value);
+            this.notifyObservers (MASTER_VU_METER);
+        });
     }
 
 
@@ -442,8 +465,11 @@ public class MCUConfiguration extends AbstractConfiguration
         for (int i = 0; i < this.assignableFunctions.length; i++)
         {
             final int pos = i;
-            final IEnumSetting setting = settingsUI.getEnumSetting (ASSIGNABLE_BUTTON_NAMES[i], "Assignable buttons", ASSIGNABLE_VALUES, ASSIGNABLE_VALUES[6]);
-            setting.addValueObserver (value -> this.assignableFunctions[pos] = lookupIndex (ASSIGNABLE_VALUES, value));
+            final IEnumSetting assignableSetting = settingsUI.getEnumSetting (ASSIGNABLE_BUTTON_NAMES[i], CATEGORY_ASSIGNABLE_BUTTONS, ASSIGNABLE_VALUES, ASSIGNABLE_VALUES[6]);
+            assignableSetting.addValueObserver (value -> this.assignableFunctions[pos] = lookupIndex (ASSIGNABLE_VALUES, value));
+
+            final IActionSetting actionSetting = settingsUI.getActionSetting (ASSIGNABLE_BUTTON_NAMES[i] + " - Action", CATEGORY_ASSIGNABLE_BUTTONS);
+            actionSetting.addValueObserver (value -> this.assignableFunctionActions[pos] = actionSetting.get ());
         }
     }
 
@@ -636,6 +662,17 @@ public class MCUConfiguration extends AbstractConfiguration
 
 
     /**
+     * Returns true if master VU should be enabled.
+     *
+     * @return True if master VU should be enabled
+     */
+    public boolean hasMasterVU ()
+    {
+        return this.masterVuMeter;
+    }
+
+
+    /**
      * Returns true if faders should be used like the editing knobs.
      *
      * @return True if faders should be used like the editing knobs
@@ -664,6 +701,18 @@ public class MCUConfiguration extends AbstractConfiguration
     public int getAssignable (final int index)
     {
         return this.assignableFunctions[index];
+    }
+
+
+    /**
+     * If the assignable function is set to Action this method gets the selected action to execute.
+     *
+     * @param index The index of the assignable
+     * @return The ID of the action to execute
+     */
+    public String getAssignableAction (final int index)
+    {
+        return this.assignableFunctionActions[index];
     }
 
 

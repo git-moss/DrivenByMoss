@@ -103,4 +103,14 @@ public interface ISettingsUI
      * @return The object that encapsulates the requested setting
      */
     IColorSetting getColorSetting (final String label, final String category, final ColorEx defaultColor);
+
+
+    /**
+     * Returns an action setting.
+     *
+     * @param label The name of the setting, must not be null
+     * @param category The name of the category, may not be null
+     * @return The object that encapsulates the requested action setting
+     */
+    IActionSetting getActionSetting (final String label, final String category);
 }

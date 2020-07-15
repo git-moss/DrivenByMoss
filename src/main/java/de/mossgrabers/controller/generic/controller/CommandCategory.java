@@ -26,7 +26,8 @@ public enum CommandCategory
     SCENE("Scene"),
     TRACK("Track"),
     TRANSPORT("Transport"),
-    USER("User");
+    USER("User"),
+    ACTION("Action");
 
 
     private final String name;

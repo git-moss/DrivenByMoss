@@ -8,6 +8,7 @@ import de.mossgrabers.controller.generic.controller.CommandCategory;
 import de.mossgrabers.controller.generic.controller.FlexiCommand;
 import de.mossgrabers.controller.generic.flexihandler.AbstractHandler;
 import de.mossgrabers.framework.configuration.AbstractConfiguration;
+import de.mossgrabers.framework.configuration.IActionSetting;
 import de.mossgrabers.framework.configuration.IEnumSetting;
 import de.mossgrabers.framework.configuration.ISettingsUI;
 import de.mossgrabers.framework.configuration.IStringSetting;
@@ -29,6 +30,7 @@ import java.io.IOException;
 import java.io.Reader;
 import java.io.Writer;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.EnumMap;
 import java.util.HashSet;
 import java.util.List;
@@ -46,19 +48,20 @@ import java.util.concurrent.atomic.AtomicBoolean;
 public class GenericFlexiConfiguration extends AbstractConfiguration
 {
     /** Export signal. */
-    public static final Integer                      BUTTON_EXPORT           = Integer.valueOf (50);
+    public static final Integer                      BUTTON_EXPORT             = Integer.valueOf (50);
     /** Import signal. */
-    public static final Integer                      BUTTON_IMPORT           = Integer.valueOf (51);
+    public static final Integer                      BUTTON_IMPORT             = Integer.valueOf (51);
     /** Enable MMC. */
-    public static final Integer                      ENABLE_MMC              = Integer.valueOf (52);
+    public static final Integer                      ENABLE_MMC                = Integer.valueOf (52);
     /** The selected mode. */
-    public static final Integer                      SELECTED_MODE           = Integer.valueOf (53);
+    public static final Integer                      SELECTED_MODE             = Integer.valueOf (53);
 
-    private static final String                      CATEGORY_KEYBOARD       = "Keyboard / Pads (requires restart)";
+    private static final String                      CATEGORY_KEYBOARD         = "Keyboard / Pads (requires restart)";
+    private static final String                      CATEGORY_OPTIONS          = "Options";
 
-    private static final String []                   NAMES                   = FlexiCommand.getNames ();
+    private static final String []                   NAMES                     = FlexiCommand.getNames ();
 
-    private static final String []                   OPTIONS_KNOBMODE        =
+    private static final String []                   OPTIONS_KNOBMODE          =
     {
         "Absolute (push button: Button down > 0, button up = 0)",
         "Relative (1-64 increments, 127-65 decrements)",
@@ -68,7 +71,7 @@ public class GenericFlexiConfiguration extends AbstractConfiguration
     };
 
     /** The types. */
-    public static final String []                    OPTIONS_TYPE            =
+    public static final String []                    OPTIONS_TYPE              =
     {
         "Off",
         "CC",
@@ -78,7 +81,7 @@ public class GenericFlexiConfiguration extends AbstractConfiguration
         "MMC"
     };
 
-    static final String []                           NUMBER_NAMES            =
+    static final String []                           NUMBER_NAMES              =
     {
         "0  CC Bank Select",
         "1  MMC Stop, CC Modulation",
@@ -211,7 +214,7 @@ public class GenericFlexiConfiguration extends AbstractConfiguration
     };
 
     /** The midi channel options. */
-    private static final String []                   MODES                   =
+    private static final String []                   MODES                     =
     {
         "Track",
         "Volume",
@@ -227,7 +230,7 @@ public class GenericFlexiConfiguration extends AbstractConfiguration
         "Parameters"
     };
 
-    private static final String []                   KEYBOARD_CHANNELS       =
+    private static final String []                   KEYBOARD_CHANNELS         =
     {
         "Off",
         "1",
@@ -250,10 +253,10 @@ public class GenericFlexiConfiguration extends AbstractConfiguration
     };
 
     /** A setting of a slot has changed. */
-    static final Integer                             SLOT_CHANGE             = Integer.valueOf (1000);
+    static final Integer                             SLOT_CHANGE               = Integer.valueOf (1000);
 
     /** The number of command slots. */
-    public static final int                          NUM_SLOTS               = 200;
+    public static final int                          NUM_SLOTS                 = 200;
 
     private IEnumSetting                             slotSelectionSetting;
     private IEnumSetting                             typeSetting;
@@ -262,34 +265,35 @@ public class GenericFlexiConfiguration extends AbstractConfiguration
     private IEnumSetting                             knobModeSetting;
     private IEnumSetting                             sendValueSetting;
     private IEnumSetting                             sendValueWhenReceivedSetting;
-    private final List<IEnumSetting>                 functionSettings        = new ArrayList<> (CommandCategory.values ().length);
-    private final Map<CommandCategory, IEnumSetting> functionSettingsMap     = new EnumMap<> (CommandCategory.class);
+    private final List<IEnumSetting>                 functionSettings          = new ArrayList<> (CommandCategory.values ().length);
+    private final Map<CommandCategory, IEnumSetting> functionSettingsMap       = new EnumMap<> (CommandCategory.class);
     private IEnumSetting                             learnTypeSetting;
     private IEnumSetting                             learnNumberSetting;
     private IEnumSetting                             learnMidiChannelSetting;
     private IEnumSetting                             selectedModeSetting;
 
-    private CommandSlot []                           commandSlots            = new CommandSlot [NUM_SLOTS];
+    private CommandSlot []                           commandSlots              = new CommandSlot [NUM_SLOTS];
 
     private IValueObserver<FlexiCommand>             commandObserver;
     private String                                   filename;
-    private Object                                   syncMapUpdate           = new Object ();
+    private Object                                   syncMapUpdate             = new Object ();
     private int []                                   keyMap;
-    private int                                      seleIndexctedSlot       = 0;
-    private String                                   learnTypeValue          = null;
-    private String                                   learnNumberValue        = null;
-    private String                                   learnMidiChannelValue   = null;
-    private AtomicBoolean                            doNotFire               = new AtomicBoolean (false);
-    private AtomicBoolean                            commandIsUpdating       = new AtomicBoolean (false);
+    private int                                      seleIndexctedSlot         = 0;
+    private String                                   learnTypeValue            = null;
+    private String                                   learnNumberValue          = null;
+    private String                                   learnMidiChannelValue     = null;
+    private AtomicBoolean                            doNotFire                 = new AtomicBoolean (false);
+    private AtomicBoolean                            commandIsUpdating         = new AtomicBoolean (false);
+    private String []                                assignableFunctionActions = new String [8];
 
-    private String                                   selectedMode            = MODES[0];
+    private String                                   selectedMode              = MODES[0];
 
     private NativeFileDialogs                        dialogs;
 
-    private int                                      keyboardChannel         = 0;
-    private boolean                                  keyboardRouteModulation = true;
-    private boolean                                  keyboardRouteSustain    = true;
-    private boolean                                  keyboardRoutePitchbend  = true;
+    private int                                      keyboardChannel           = 0;
+    private boolean                                  keyboardRouteModulation   = true;
+    private boolean                                  keyboardRouteSustain      = true;
+    private boolean                                  keyboardRoutePitchbend    = true;
 
 
     /**
@@ -302,6 +306,8 @@ public class GenericFlexiConfiguration extends AbstractConfiguration
     public GenericFlexiConfiguration (final IHost host, final IValueChanger valueChanger, final ArpeggiatorMode [] arpeggiatorModes)
     {
         super (host, valueChanger, arpeggiatorModes);
+
+        Arrays.fill (this.assignableFunctionActions, "");
     }
 
 
@@ -449,11 +455,21 @@ public class GenericFlexiConfiguration extends AbstractConfiguration
         ///////////////////////////////////////////////
         // Options
 
-        this.selectedModeSetting = globalSettings.getEnumSetting ("Selected Mode", "Options", MODES, MODES[0]);
+        this.selectedModeSetting = globalSettings.getEnumSetting ("Selected Mode", CATEGORY_OPTIONS, MODES, MODES[0]);
         this.selectedModeSetting.addValueObserver (value -> {
             this.selectedMode = value;
             this.notifyObservers (SELECTED_MODE);
         });
+
+        for (int i = 0; i < this.assignableFunctionActions.length; i++)
+        {
+            final int pos = i;
+            final IActionSetting actionSetting = globalSettings.getActionSetting ("Action " + (i + 1), CATEGORY_OPTIONS);
+            actionSetting.addValueObserver (value -> this.assignableFunctionActions[pos] = actionSetting.get ());
+        }
+
+        ///////////////////////////////////////////////
+        // Workflow
 
         this.activateKnobSpeedSetting (globalSettings, 6);
         this.activateExcludeDeactivatedItemsSetting (globalSettings);
@@ -809,6 +825,18 @@ public class GenericFlexiConfiguration extends AbstractConfiguration
     public void setSelectedMode (final String selectedModeName)
     {
         this.selectedModeSetting.set (selectedModeName);
+    }
+
+
+    /**
+     * If the assignable function is set to Action this method gets the selected action to execute.
+     *
+     * @param index The index of the assignable
+     * @return The ID of the action to execute
+     */
+    public String getAssignableAction (final int index)
+    {
+        return this.assignableFunctionActions[index];
     }
 
 

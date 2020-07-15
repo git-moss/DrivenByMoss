@@ -262,7 +262,7 @@ public class MidiModule extends AbstractModule
      * @param note The note
      * @param numValue The note velocity
      */
-    private void sendNote (final OSCConfiguration conf, int midiChannel, final IMidiInput input, final int note, final int numValue)
+    private void sendNote (final OSCConfiguration conf, final int midiChannel, final IMidiInput input, final int note, final int numValue)
     {
         final int value = numValue > 0 && conf.isAccentActive () ? conf.getFixedAccentValue () : numValue;
         final int [] keyTranslationMatrix = this.surface.getKeyTranslationTable ();

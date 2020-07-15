@@ -396,14 +396,13 @@ public class ApplicationImpl implements IApplication
     }
 
 
-    /**
-     * Invokes the action for the given action identifier.
-     *
-     * @param id the action identifier string, must not be `null`
-     */
+    /** {@inheritDoc} */
+    @Override
     public void invokeAction (final String id)
     {
-        this.getAction (id).invoke ();
+        final Action action = this.getAction (id);
+        if (action != null)
+            action.invoke ();
     }
 
 

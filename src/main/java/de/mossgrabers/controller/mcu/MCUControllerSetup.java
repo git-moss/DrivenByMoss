@@ -201,7 +201,7 @@ public class MCUControllerSetup extends AbstractControllerSetup<MCUControlSurfac
     {
         final ModelSetup ms = new ModelSetup ();
 
-        int numMackieDevices = this.numMCUDevices;
+        final int numMackieDevices = this.numMCUDevices;
         if (this.configuration.shouldPinFXTracksToLastController ())
         {
             ms.setNumTracks (8 * (numMackieDevices - 1));
@@ -213,7 +213,8 @@ public class MCUControllerSetup extends AbstractControllerSetup<MCUControlSurfac
         }
 
         ms.setHasFullFlatTrackList (this.configuration.shouldIncludeFXTracksInTrackBank ());
-        ms.setNumScenes (0);
+        // This is required to make the new clip function work!
+        ms.setNumScenes (8);
         ms.setNumFilterColumnEntries (8);
         ms.setNumResults (8);
         ms.setNumParams (8 * numMackieDevices);
@@ -713,7 +714,7 @@ public class MCUControllerSetup extends AbstractControllerSetup<MCUControlSurfac
             }
 
             // Stereo VU of master channel
-            if (this.configuration.getDeviceType (index) == MCUDeviceType.MAIN)
+            if (this.configuration.getDeviceType (index) == MCUDeviceType.MAIN && this.configuration.hasMasterVU ())
             {
                 final IMasterTrack masterTrack = this.model.getMasterTrack ();
 
