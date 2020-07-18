@@ -80,4 +80,52 @@ public class BrowserMode extends BaseMode
                 break;
         }
     }
+
+
+    /** {@inheritDoc} */
+    @Override
+    public void selectPreviousItem ()
+    {
+        this.model.getBrowser ().previousContentType ();
+    }
+
+
+    /** {@inheritDoc} */
+    @Override
+    public void selectNextItem ()
+    {
+        this.model.getBrowser ().nextContentType ();
+    }
+
+
+    /** {@inheritDoc} */
+    @Override
+    public boolean hasPreviousItem ()
+    {
+        return this.model.getBrowser ().hasPreviousContentType ();
+    }
+
+
+    /** {@inheritDoc} */
+    @Override
+    public boolean hasNextItem ()
+    {
+        return this.model.getBrowser ().hasNextContentType ();
+    }
+
+
+    /** {@inheritDoc} */
+    @Override
+    public boolean hasPreviousItemPage ()
+    {
+        return this.hasPreviousItem ();
+    }
+
+
+    /** {@inheritDoc} */
+    @Override
+    public boolean hasNextItemPage ()
+    {
+        return this.hasNextItem ();
+    }
 }

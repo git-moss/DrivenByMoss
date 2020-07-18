@@ -5,6 +5,7 @@
 package de.mossgrabers.controller.apc;
 
 import de.mossgrabers.controller.apc.command.trigger.APCBrowserCommand;
+import de.mossgrabers.controller.apc.command.trigger.APCCursorCommand;
 import de.mossgrabers.controller.apc.command.trigger.APCQuantizeCommand;
 import de.mossgrabers.controller.apc.command.trigger.APCRecordCommand;
 import de.mossgrabers.controller.apc.command.trigger.APCStopClipCommand;
@@ -43,7 +44,6 @@ import de.mossgrabers.framework.command.trigger.device.DeviceOnOffCommand;
 import de.mossgrabers.framework.command.trigger.device.DeviceParamsKnobRowCommand;
 import de.mossgrabers.framework.command.trigger.device.SelectNextDeviceOrParamPageCommand;
 import de.mossgrabers.framework.command.trigger.device.SelectPreviousDeviceOrParamPageCommand;
-import de.mossgrabers.framework.command.trigger.mode.CursorCommand;
 import de.mossgrabers.framework.command.trigger.mode.ModeCursorCommand.Direction;
 import de.mossgrabers.framework.command.trigger.mode.ModeMultiSelectCommand;
 import de.mossgrabers.framework.command.trigger.mode.ModeSelectCommand;
@@ -282,10 +282,10 @@ public class APCControllerSetup extends AbstractControllerSetup<APCControlSurfac
         this.addButton (ButtonID.BANK_LEFT, "<- BANK", new SelectPreviousDeviceOrParamPageCommand<> (this.model, surface), APCControlSurface.APC_BUTTON_DEVICE_LEFT, () -> surface.isPressed (ButtonID.BANK_LEFT) ? 1 : 0, ColorManager.BUTTON_STATE_OFF, ColorManager.BUTTON_STATE_ON);
         this.addButton (ButtonID.BANK_RIGHT, "BANK ->", new SelectNextDeviceOrParamPageCommand<> (this.model, surface), APCControlSurface.APC_BUTTON_DEVICE_RIGHT, () -> surface.isPressed (ButtonID.BANK_RIGHT) ? 1 : 0, ColorManager.BUTTON_STATE_OFF, ColorManager.BUTTON_STATE_ON);
 
-        this.addButton (ButtonID.ARROW_DOWN, "Arrow Down", new CursorCommand<> (Direction.DOWN, this.model, surface), APCControlSurface.APC_BUTTON_DOWN);
-        this.addButton (ButtonID.ARROW_UP, "Arrow Up", new CursorCommand<> (Direction.UP, this.model, surface), APCControlSurface.APC_BUTTON_UP);
-        this.addButton (ButtonID.ARROW_LEFT, "Arrow Left", new CursorCommand<> (Direction.LEFT, this.model, surface), APCControlSurface.APC_BUTTON_LEFT);
-        this.addButton (ButtonID.ARROW_RIGHT, "Arrow Right", new CursorCommand<> (Direction.RIGHT, this.model, surface), APCControlSurface.APC_BUTTON_RIGHT);
+        this.addButton (ButtonID.ARROW_DOWN, "Arrow Down", new APCCursorCommand (Direction.DOWN, this.model, surface), APCControlSurface.APC_BUTTON_DOWN);
+        this.addButton (ButtonID.ARROW_UP, "Arrow Up", new APCCursorCommand (Direction.UP, this.model, surface), APCControlSurface.APC_BUTTON_UP);
+        this.addButton (ButtonID.ARROW_LEFT, "Arrow Left", new APCCursorCommand (Direction.LEFT, this.model, surface), APCControlSurface.APC_BUTTON_LEFT);
+        this.addButton (ButtonID.ARROW_RIGHT, "Arrow Right", new APCCursorCommand (Direction.RIGHT, this.model, surface), APCControlSurface.APC_BUTTON_RIGHT);
 
         for (int i = 0; i < 5; i++)
         {

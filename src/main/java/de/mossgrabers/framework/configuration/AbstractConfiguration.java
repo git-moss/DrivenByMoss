@@ -50,68 +50,66 @@ public abstract class AbstractConfiguration implements Configuration
     public static final Integer      DISPLAY_CROSSFADER                = Integer.valueOf (6);
     /** ID for flipping the session grid setting. */
     public static final Integer      FLIP_SESSION                      = Integer.valueOf (7);
-    /** ID for locking the flip the session grid setting. */
-    public static final Integer      LOCK_FLIP_SESSION                 = Integer.valueOf (8);
     /** ID for selecting the clip on launch setting. */
-    public static final Integer      SELECT_CLIP_ON_LAUNCH             = Integer.valueOf (9);
+    public static final Integer      SELECT_CLIP_ON_LAUNCH             = Integer.valueOf (8);
     /** ID for drawing record stripes setting. */
-    public static final Integer      DRAW_RECORD_STRIPE                = Integer.valueOf (10);
+    public static final Integer      DRAW_RECORD_STRIPE                = Integer.valueOf (9);
     /** ID for converting the aftertouch data setting. */
-    public static final Integer      CONVERT_AFTERTOUCH                = Integer.valueOf (11);
+    public static final Integer      CONVERT_AFTERTOUCH                = Integer.valueOf (10);
     /** ID for activating the fixed accent setting. */
-    public static final Integer      ACTIVATE_FIXED_ACCENT             = Integer.valueOf (12);
+    public static final Integer      ACTIVATE_FIXED_ACCENT             = Integer.valueOf (11);
     /** ID for the value of the fixed accent setting. */
-    public static final Integer      FIXED_ACCENT_VALUE                = Integer.valueOf (13);
+    public static final Integer      FIXED_ACCENT_VALUE                = Integer.valueOf (12);
     /** ID for the quantize amount setting. */
-    public static final Integer      QUANTIZE_AMOUNT                   = Integer.valueOf (14);
+    public static final Integer      QUANTIZE_AMOUNT                   = Integer.valueOf (13);
     /** ID for the flip recording setting. */
-    public static final Integer      FLIP_RECORD                       = Integer.valueOf (15);
+    public static final Integer      FLIP_RECORD                       = Integer.valueOf (14);
     /** Setting for automatic selecting the drum channel. */
-    public static final Integer      AUTO_SELECT_DRUM                  = Integer.valueOf (16);
+    public static final Integer      AUTO_SELECT_DRUM                  = Integer.valueOf (15);
     /** Setting for new clip length. */
-    public static final Integer      NEW_CLIP_LENGTH                   = Integer.valueOf (17);
+    public static final Integer      NEW_CLIP_LENGTH                   = Integer.valueOf (16);
     /** Setting for turning off empty drum pads (otherwise orange). */
-    public static final Integer      TURN_OFF_EMPTY_DRUM_PADS          = Integer.valueOf (18);
+    public static final Integer      TURN_OFF_EMPTY_DRUM_PADS          = Integer.valueOf (17);
     /** Setting for action for rec armed pad. */
-    public static final Integer      ACTION_FOR_REC_ARMED_PAD          = Integer.valueOf (19);
+    public static final Integer      ACTION_FOR_REC_ARMED_PAD          = Integer.valueOf (18);
     /** Setting for the footswitch functionality. */
-    public static final Integer      FOOTSWITCH_2                      = Integer.valueOf (20);
+    public static final Integer      FOOTSWITCH_2                      = Integer.valueOf (19);
     /** Setting for displaying browser column 1. */
-    public static final Integer      BROWSER_DISPLAY_FILTER1           = Integer.valueOf (21);
+    public static final Integer      BROWSER_DISPLAY_FILTER1           = Integer.valueOf (20);
     /** Setting for displaying browser column 2. */
-    public static final Integer      BROWSER_DISPLAY_FILTER2           = Integer.valueOf (22);
+    public static final Integer      BROWSER_DISPLAY_FILTER2           = Integer.valueOf (21);
     /** Setting for displaying browser column 3. */
-    public static final Integer      BROWSER_DISPLAY_FILTER3           = Integer.valueOf (23);
+    public static final Integer      BROWSER_DISPLAY_FILTER3           = Integer.valueOf (22);
     /** Setting for displaying browser column 4. */
-    public static final Integer      BROWSER_DISPLAY_FILTER4           = Integer.valueOf (24);
+    public static final Integer      BROWSER_DISPLAY_FILTER4           = Integer.valueOf (23);
     /** Setting for displaying browser column 5. */
-    public static final Integer      BROWSER_DISPLAY_FILTER5           = Integer.valueOf (25);
+    public static final Integer      BROWSER_DISPLAY_FILTER5           = Integer.valueOf (24);
     /** Setting for displaying browser column 6. */
-    public static final Integer      BROWSER_DISPLAY_FILTER6           = Integer.valueOf (26);
+    public static final Integer      BROWSER_DISPLAY_FILTER6           = Integer.valueOf (25);
     /** Setting for displaying browser column 7. */
-    public static final Integer      BROWSER_DISPLAY_FILTER7           = Integer.valueOf (27);
+    public static final Integer      BROWSER_DISPLAY_FILTER7           = Integer.valueOf (26);
     /** Setting for displaying browser column 8. */
-    public static final Integer      BROWSER_DISPLAY_FILTER8           = Integer.valueOf (28);
+    public static final Integer      BROWSER_DISPLAY_FILTER8           = Integer.valueOf (27);
     /** The speed of a knob. */
-    public static final Integer      KNOB_SPEED_NORMAL                 = Integer.valueOf (29);
+    public static final Integer      KNOB_SPEED_NORMAL                 = Integer.valueOf (28);
     /** The speed of a knob in slow mode. */
-    public static final Integer      KNOB_SPEED_SLOW                   = Integer.valueOf (30);
+    public static final Integer      KNOB_SPEED_SLOW                   = Integer.valueOf (29);
     /** Turn noterepeat on/off. */
-    public static final Integer      NOTEREPEAT_ACTIVE                 = Integer.valueOf (31);
+    public static final Integer      NOTEREPEAT_ACTIVE                 = Integer.valueOf (30);
     /** The note repeat period. */
-    public static final Integer      NOTEREPEAT_PERIOD                 = Integer.valueOf (32);
+    public static final Integer      NOTEREPEAT_PERIOD                 = Integer.valueOf (31);
     /** The note repeat length. */
-    public static final Integer      NOTEREPEAT_LENGTH                 = Integer.valueOf (33);
+    public static final Integer      NOTEREPEAT_LENGTH                 = Integer.valueOf (32);
     /** The note repeat mode. */
-    public static final Integer      NOTEREPEAT_MODE                   = Integer.valueOf (34);
+    public static final Integer      NOTEREPEAT_MODE                   = Integer.valueOf (33);
     /** The note repeat octave. */
-    public static final Integer      NOTEREPEAT_OCTAVE                 = Integer.valueOf (35);
+    public static final Integer      NOTEREPEAT_OCTAVE                 = Integer.valueOf (34);
     /** The MIDI channel to use for editing sequencer notes. */
-    public static final Integer      MIDI_EDIT_CHANNEL                 = Integer.valueOf (36);
+    public static final Integer      MIDI_EDIT_CHANNEL                 = Integer.valueOf (35);
     /** Setting for including mastertracks. */
-    public static final Integer      INCLUDE_MASTER                    = Integer.valueOf (37);
+    public static final Integer      INCLUDE_MASTER                    = Integer.valueOf (36);
     /** Setting for excluding deactivated tracks. */
-    public static final Integer      EXCLUDE_DEACTIVATED_ITEMS         = Integer.valueOf (38);
+    public static final Integer      EXCLUDE_DEACTIVATED_ITEMS         = Integer.valueOf (37);
 
     // Implementation IDs start at 50
 
@@ -305,7 +303,6 @@ public abstract class AbstractConfiguration implements Configuration
     private BehaviourOnStop                          behaviourOnStop             = BehaviourOnStop.MOVE_PLAY_CURSOR;
     protected boolean                                displayCrossfader           = true;
     protected boolean                                flipSession                 = false;
-    private boolean                                  lockFlipSession             = false;
     private boolean                                  selectClipOnLaunch          = true;
     private boolean                                  drawRecordStripe            = true;
     private int                                      convertAftertouch           = 0;
@@ -665,14 +662,6 @@ public abstract class AbstractConfiguration implements Configuration
 
     /** {@inheritDoc} */
     @Override
-    public boolean isLockFlipSession ()
-    {
-        return this.lockFlipSession;
-    }
-
-
-    /** {@inheritDoc} */
-    @Override
     public boolean isDrawRecordStripe ()
     {
         return this.drawRecordStripe;
@@ -974,21 +963,6 @@ public abstract class AbstractConfiguration implements Configuration
         this.flipSessionSetting.addValueObserver (value -> {
             this.flipSession = "On".equals (value);
             this.notifyObservers (AbstractConfiguration.FLIP_SESSION);
-        });
-    }
-
-
-    /**
-     * Activate the lock flip session setting.
-     *
-     * @param settingsUI The settings
-     */
-    protected void activateLockFlipSessionSetting (final ISettingsUI settingsUI)
-    {
-        final IEnumSetting lockFlipSessionSetting = settingsUI.getEnumSetting ("Lock flip Session", CATEGORY_SESSION, ON_OFF_OPTIONS, ON_OFF_OPTIONS[0]);
-        lockFlipSessionSetting.addValueObserver (value -> {
-            this.lockFlipSession = "On".equals (value);
-            this.notifyObservers (AbstractConfiguration.LOCK_FLIP_SESSION);
         });
     }
 

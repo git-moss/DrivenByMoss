@@ -307,7 +307,6 @@ public class PushConfiguration extends AbstractConfiguration implements IGraphic
         ///////////////////////////
         // Session
         this.activateSessionView (globalSettings);
-        this.activateLockFlipSessionSetting (globalSettings);
         this.activateSelectClipOnLaunchSetting (globalSettings);
         this.activateDrawRecordStripeSetting (globalSettings);
         this.activateActionForRecArmedPad (globalSettings);

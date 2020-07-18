@@ -52,7 +52,6 @@ public class FireConfiguration extends AbstractConfiguration
         // Session
 
         this.activateFlipSessionSetting (globalSettings);
-        this.activateLockFlipSessionSetting (globalSettings);
         this.activateSelectClipOnLaunchSetting (globalSettings);
         this.activateDrawRecordStripeSetting (globalSettings);
         this.activateActionForRecArmedPad (globalSettings);

@@ -194,14 +194,6 @@ public interface Configuration
 
 
     /**
-     * Returns true if lock flip session is enabled.
-     *
-     * @return True if lock flip session is enabled.
-     */
-    boolean isLockFlipSession ();
-
-
-    /**
      * Returns true if draw record stripe is enabled.
      *
      * @return True if draw record stripe is enabled.
