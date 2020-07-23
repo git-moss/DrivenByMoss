@@ -39,15 +39,16 @@ import de.mossgrabers.framework.controller.ISetupFactory;
 import de.mossgrabers.framework.controller.hardware.BindType;
 import de.mossgrabers.framework.controller.hardware.IHwRelativeKnob;
 import de.mossgrabers.framework.controller.valuechanger.DefaultValueChanger;
-import de.mossgrabers.framework.daw.ICursorDevice;
 import de.mossgrabers.framework.daw.IHost;
-import de.mossgrabers.framework.daw.IParameterBank;
-import de.mossgrabers.framework.daw.ISceneBank;
-import de.mossgrabers.framework.daw.ISendBank;
-import de.mossgrabers.framework.daw.ITrackBank;
 import de.mossgrabers.framework.daw.ITransport;
 import de.mossgrabers.framework.daw.ModelSetup;
+import de.mossgrabers.framework.daw.data.ICursorDevice;
+import de.mossgrabers.framework.daw.data.ISpecificDevice;
 import de.mossgrabers.framework.daw.data.ITrack;
+import de.mossgrabers.framework.daw.data.bank.IParameterBank;
+import de.mossgrabers.framework.daw.data.bank.ISceneBank;
+import de.mossgrabers.framework.daw.data.bank.ISendBank;
+import de.mossgrabers.framework.daw.data.bank.ITrackBank;
 import de.mossgrabers.framework.daw.midi.IMidiAccess;
 import de.mossgrabers.framework.daw.midi.IMidiInput;
 import de.mossgrabers.framework.daw.midi.IMidiOutput;
@@ -512,13 +513,13 @@ public class KontrolProtocolControllerSetup extends AbstractControllerSetup<Kont
      */
     private String getKompleteInstance ()
     {
-        ICursorDevice device = this.model.getCursorDevice ();
+        final ICursorDevice device = this.model.getCursorDevice ();
         if (device.doesExist () && device.getName ().startsWith ("Komplete Kontrol"))
             return device.getID ();
 
-        device = this.model.getInstrumentDevice ();
-        if (device.doesExist () && device.getName ().startsWith ("Komplete Kontrol"))
-            return device.getID ();
+        final ISpecificDevice instrumentDevice = this.model.getInstrumentDevice ();
+        if (instrumentDevice.doesExist () && instrumentDevice.getName ().startsWith ("Komplete Kontrol"))
+            return instrumentDevice.getID ();
 
         return "";
     }

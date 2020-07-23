@@ -4,8 +4,8 @@
 
 package de.mossgrabers.framework.daw.data;
 
-import de.mossgrabers.framework.daw.ISlotBank;
 import de.mossgrabers.framework.daw.constants.RecordQuantization;
+import de.mossgrabers.framework.daw.data.bank.ISlotBank;
 
 
 /**

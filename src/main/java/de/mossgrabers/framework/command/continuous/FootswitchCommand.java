@@ -12,9 +12,9 @@ import de.mossgrabers.framework.controller.IControlSurface;
 import de.mossgrabers.framework.daw.IApplication;
 import de.mossgrabers.framework.daw.IClip;
 import de.mossgrabers.framework.daw.IModel;
-import de.mossgrabers.framework.daw.ISlotBank;
 import de.mossgrabers.framework.daw.data.ISlot;
 import de.mossgrabers.framework.daw.data.ITrack;
+import de.mossgrabers.framework.daw.data.bank.ISlotBank;
 import de.mossgrabers.framework.utils.ButtonEvent;
 
 

@@ -9,8 +9,8 @@ import de.mossgrabers.controller.generic.controller.FlexiCommand;
 import de.mossgrabers.controller.generic.controller.GenericFlexiControlSurface;
 import de.mossgrabers.framework.controller.valuechanger.IValueChanger;
 import de.mossgrabers.framework.daw.IModel;
-import de.mossgrabers.framework.daw.ITrackBank;
 import de.mossgrabers.framework.daw.data.ITrack;
+import de.mossgrabers.framework.daw.data.bank.ITrackBank;
 
 
 /**

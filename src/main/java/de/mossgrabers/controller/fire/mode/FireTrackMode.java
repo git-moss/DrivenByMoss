@@ -10,9 +10,9 @@ import de.mossgrabers.controller.fire.graphics.canvas.component.TitleValueCompon
 import de.mossgrabers.framework.controller.ButtonID;
 import de.mossgrabers.framework.controller.display.IGraphicDisplay;
 import de.mossgrabers.framework.daw.IModel;
-import de.mossgrabers.framework.daw.ISendBank;
 import de.mossgrabers.framework.daw.data.ISend;
 import de.mossgrabers.framework.daw.data.ITrack;
+import de.mossgrabers.framework.daw.data.bank.ISendBank;
 import de.mossgrabers.framework.mode.Modes;
 
 

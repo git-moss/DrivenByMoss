@@ -9,9 +9,9 @@ import de.mossgrabers.controller.kontrol.mkii.TrackType;
 import de.mossgrabers.controller.kontrol.mkii.controller.KontrolProtocolControlSurface;
 import de.mossgrabers.framework.controller.valuechanger.IValueChanger;
 import de.mossgrabers.framework.daw.IModel;
-import de.mossgrabers.framework.daw.ISendBank;
 import de.mossgrabers.framework.daw.data.ISend;
 import de.mossgrabers.framework.daw.data.ITrack;
+import de.mossgrabers.framework.daw.data.bank.ISendBank;
 import de.mossgrabers.framework.daw.data.empty.EmptySend;
 import de.mossgrabers.framework.mode.track.AbstractTrackMode;
 

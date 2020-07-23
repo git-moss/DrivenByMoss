@@ -6,14 +6,14 @@ package de.mossgrabers.framework.configuration;
 
 import de.mossgrabers.framework.controller.color.ColorEx;
 import de.mossgrabers.framework.controller.valuechanger.IValueChanger;
-import de.mossgrabers.framework.daw.ICursorDevice;
-import de.mossgrabers.framework.daw.IDeviceBank;
-import de.mossgrabers.framework.daw.IDrumPadBank;
 import de.mossgrabers.framework.daw.IHost;
 import de.mossgrabers.framework.daw.IModel;
-import de.mossgrabers.framework.daw.ITrackBank;
 import de.mossgrabers.framework.daw.constants.EditCapability;
 import de.mossgrabers.framework.daw.constants.Resolution;
+import de.mossgrabers.framework.daw.data.ICursorDevice;
+import de.mossgrabers.framework.daw.data.bank.IDeviceBank;
+import de.mossgrabers.framework.daw.data.bank.IDrumPadBank;
+import de.mossgrabers.framework.daw.data.bank.ITrackBank;
 import de.mossgrabers.framework.daw.midi.ArpeggiatorMode;
 import de.mossgrabers.framework.observer.SettingObserver;
 import de.mossgrabers.framework.scale.Scale;

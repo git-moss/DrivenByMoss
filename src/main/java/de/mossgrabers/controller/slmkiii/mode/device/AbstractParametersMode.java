@@ -10,9 +10,9 @@ import de.mossgrabers.controller.slmkiii.controller.SLMkIIIDisplay;
 import de.mossgrabers.controller.slmkiii.mode.BaseMode;
 import de.mossgrabers.framework.controller.ButtonID;
 import de.mossgrabers.framework.controller.ContinuousID;
-import de.mossgrabers.framework.daw.IBank;
 import de.mossgrabers.framework.daw.IModel;
 import de.mossgrabers.framework.daw.data.IItem;
+import de.mossgrabers.framework.daw.data.bank.IBank;
 import de.mossgrabers.framework.mode.ModeManager;
 import de.mossgrabers.framework.mode.Modes;
 

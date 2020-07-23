@@ -8,11 +8,11 @@ import de.mossgrabers.controller.kontrol.mki.Kontrol1Configuration;
 import de.mossgrabers.controller.kontrol.mki.controller.Kontrol1ControlSurface;
 import de.mossgrabers.framework.controller.ButtonID;
 import de.mossgrabers.framework.controller.color.ColorManager;
-import de.mossgrabers.framework.daw.IBank;
 import de.mossgrabers.framework.daw.IModel;
-import de.mossgrabers.framework.daw.ITrackBank;
 import de.mossgrabers.framework.daw.data.IItem;
 import de.mossgrabers.framework.daw.data.ITrack;
+import de.mossgrabers.framework.daw.data.bank.IBank;
+import de.mossgrabers.framework.daw.data.bank.ITrackBank;
 import de.mossgrabers.framework.mode.AbstractMode;
 
 

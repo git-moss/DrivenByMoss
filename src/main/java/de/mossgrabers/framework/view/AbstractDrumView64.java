@@ -9,12 +9,12 @@ import de.mossgrabers.framework.controller.ButtonID;
 import de.mossgrabers.framework.controller.IControlSurface;
 import de.mossgrabers.framework.controller.grid.IPadGrid;
 import de.mossgrabers.framework.daw.DAWColor;
-import de.mossgrabers.framework.daw.ICursorDevice;
-import de.mossgrabers.framework.daw.IDrumPadBank;
 import de.mossgrabers.framework.daw.IModel;
-import de.mossgrabers.framework.daw.ITrackBank;
 import de.mossgrabers.framework.daw.data.IChannel;
+import de.mossgrabers.framework.daw.data.IDrumDevice;
 import de.mossgrabers.framework.daw.data.ITrack;
+import de.mossgrabers.framework.daw.data.bank.IDrumPadBank;
+import de.mossgrabers.framework.daw.data.bank.ITrackBank;
 import de.mossgrabers.framework.scale.Scales;
 import de.mossgrabers.framework.utils.ButtonEvent;
 
@@ -94,7 +94,7 @@ public abstract class AbstractDrumView64<S extends IControlSurface<C>, C extends
     {
         super.onActivate ();
 
-        final ICursorDevice drumDevice64 = this.model.getDrumDevice64 ();
+        final IDrumDevice drumDevice64 = this.model.getDrumDevice64 ();
         drumDevice64.getDrumPadBank ().setIndication (true);
     }
 
@@ -105,7 +105,7 @@ public abstract class AbstractDrumView64<S extends IControlSurface<C>, C extends
     {
         super.onDeactivate ();
 
-        final ICursorDevice drumDevice64 = this.model.getDrumDevice64 ();
+        final IDrumDevice drumDevice64 = this.model.getDrumDevice64 ();
         drumDevice64.getDrumPadBank ().setIndication (false);
     }
 
@@ -158,8 +158,7 @@ public abstract class AbstractDrumView64<S extends IControlSurface<C>, C extends
             return;
         }
 
-        final ICursorDevice drumDevice64 = this.model.getDrumDevice64 ();
-        final boolean isSoloed = drumDevice64.hasDrumPads () && drumDevice64.getDrumPadBank ().hasSoloedPads ();
+        final IDrumDevice drumDevice64 = this.model.getDrumDevice64 ();
         final boolean isRecording = this.model.hasRecordingState ();
 
         int blockOffset = 0;
@@ -179,7 +178,7 @@ public abstract class AbstractDrumView64<S extends IControlSurface<C>, C extends
                         final int x = xblock * 4 + blockX;
                         final int y = yblock * 4 + blockY;
 
-                        padGrid.lightEx (x, this.rows - 1 - y, this.getPadColor (index, drumDevice64, isSoloed, isRecording));
+                        padGrid.lightEx (x, this.rows - 1 - y, this.getDrumPadColor (index, drumDevice64, isRecording));
                     }
                 }
 
@@ -189,7 +188,7 @@ public abstract class AbstractDrumView64<S extends IControlSurface<C>, C extends
     }
 
 
-    private String getPadColor (final int index, final ICursorDevice primary, final boolean isSoloed, final boolean isRecording)
+    private String getDrumPadColor (final int index, final IDrumDevice primary, final boolean isRecording)
     {
         // Playing note?
         if (this.pressedKeys[this.offsetY + index] > 0)
@@ -199,11 +198,13 @@ public abstract class AbstractDrumView64<S extends IControlSurface<C>, C extends
             return AbstractDrumView.COLOR_PAD_SELECTED;
 
         // Exists and active?
-        final IChannel drumPad = primary.getDrumPadBank ().getItem (index);
+        final IDrumPadBank drumPadBank = primary.getDrumPadBank ();
+        final IChannel drumPad = drumPadBank.getItem (index);
         if (!drumPad.doesExist () || !drumPad.isActivated ())
             return this.surface.getConfiguration ().isTurnOffEmptyDrumPads () ? AbstractDrumView.COLOR_PAD_OFF : AbstractDrumView.COLOR_PAD_NO_CONTENT;
+
         // Muted or soloed?
-        if (drumPad.isMute () || isSoloed && !drumPad.isSolo ())
+        if (drumPad.isMute () || drumPadBank.hasSoloedPads () && !drumPad.isSolo ())
             return AbstractDrumView.COLOR_PAD_MUTED;
 
         return this.getPadContentColor (drumPad);
@@ -248,7 +249,7 @@ public abstract class AbstractDrumView64<S extends IControlSurface<C>, C extends
 
         if (oldDrumOctave != this.drumOctave)
         {
-            final ICursorDevice drumDevice64 = this.model.getDrumDevice64 ();
+            final IDrumDevice drumDevice64 = this.model.getDrumDevice64 ();
             final IDrumPadBank drumPadBank = drumDevice64.getDrumPadBank ();
             for (int i = 0; i < BLOCK_SIZE; i++)
                 drumPadBank.scrollBackwards ();
@@ -271,7 +272,7 @@ public abstract class AbstractDrumView64<S extends IControlSurface<C>, C extends
         this.surface.getDisplay ().notify (this.getDrumRangeText ());
         if (oldDrumOctave != this.drumOctave)
         {
-            final ICursorDevice drumDevice64 = this.model.getDrumDevice64 ();
+            final IDrumDevice drumDevice64 = this.model.getDrumDevice64 ();
             final IDrumPadBank drumPadBank = drumDevice64.getDrumPadBank ();
             for (int i = 0; i < BLOCK_SIZE; i++)
                 drumPadBank.scrollForwards ();

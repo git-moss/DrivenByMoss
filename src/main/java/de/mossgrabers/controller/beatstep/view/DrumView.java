@@ -7,13 +7,14 @@ package de.mossgrabers.controller.beatstep.view;
 import de.mossgrabers.controller.beatstep.controller.BeatstepColorManager;
 import de.mossgrabers.controller.beatstep.controller.BeatstepControlSurface;
 import de.mossgrabers.framework.controller.grid.IPadGrid;
-import de.mossgrabers.framework.daw.ICursorDevice;
 import de.mossgrabers.framework.daw.IModel;
 import de.mossgrabers.framework.daw.INoteClip;
-import de.mossgrabers.framework.daw.ITrackBank;
 import de.mossgrabers.framework.daw.constants.Resolution;
 import de.mossgrabers.framework.daw.data.IChannel;
+import de.mossgrabers.framework.daw.data.IDrumDevice;
 import de.mossgrabers.framework.daw.data.ITrack;
+import de.mossgrabers.framework.daw.data.bank.IDrumPadBank;
+import de.mossgrabers.framework.daw.data.bank.ITrackBank;
 
 
 /**
@@ -63,12 +64,12 @@ public class DrumView extends BaseSequencerView
                 if (isTurnedRight)
                 {
                     this.scales.incDrumOctave ();
-                    this.model.getInstrumentDevice ().getDrumPadBank ().selectNextPage ();
+                    this.model.getDrumDevice ().getDrumPadBank ().selectNextPage ();
                 }
                 else
                 {
                     this.scales.decDrumOctave ();
-                    this.model.getInstrumentDevice ().getDrumPadBank ().selectPreviousPage ();
+                    this.model.getDrumDevice ().getDrumPadBank ().selectPreviousPage ();
                 }
                 this.updateNoteMapping ();
                 this.surface.getDisplay ().notify (this.scales.getDrumRangeText ());
@@ -135,14 +136,13 @@ public class DrumView extends BaseSequencerView
 
         if (this.isPlayMode)
         {
-            final ICursorDevice primary = this.model.getInstrumentDevice ();
-            final boolean isSoloed = primary.hasDrumPads () && primary.getDrumPadBank ().hasSoloedPads ();
+            final IDrumDevice primary = this.model.getDrumDevice ();
             for (int y = 0; y < 2; y++)
             {
                 for (int x = 0; x < 8; x++)
                 {
                     final int index = 8 * y + x;
-                    padGrid.lightEx (x, y, this.getPadColor (index, primary, isSoloed));
+                    padGrid.lightEx (x, y, this.getDrumPadColor (index, primary));
                 }
             }
             return;
@@ -173,21 +173,26 @@ public class DrumView extends BaseSequencerView
     }
 
 
-    private int getPadColor (final int index, final ICursorDevice primary, final boolean isSoloed)
+    private int getDrumPadColor (final int index, final IDrumDevice primary)
     {
         final int offsetY = this.scales.getDrumOffset ();
+
         // Playing note?
         if (this.keyManager.isKeyPressed (offsetY + index))
             return BeatstepColorManager.BEATSTEP_BUTTON_STATE_PINK;
+
         // Selected?
         if (this.selectedPad == index)
             return BeatstepColorManager.BEATSTEP_BUTTON_STATE_RED;
+
         // Exists and active?
-        final IChannel drumPad = primary.getDrumPadBank ().getItem (index);
+        final IDrumPadBank drumPadBank = primary.getDrumPadBank ();
+        final IChannel drumPad = drumPadBank.getItem (index);
         if (!drumPad.doesExist () || !drumPad.isActivated ())
             return BeatstepColorManager.BEATSTEP_BUTTON_STATE_OFF;
+
         // Muted or soloed?
-        if (drumPad.isMute () || isSoloed && !drumPad.isSolo ())
+        if (drumPad.isMute () || drumPadBank.hasSoloedPads () && !drumPad.isSolo ())
             return BeatstepColorManager.BEATSTEP_BUTTON_STATE_OFF;
         return BeatstepColorManager.BEATSTEP_BUTTON_STATE_BLUE;
     }

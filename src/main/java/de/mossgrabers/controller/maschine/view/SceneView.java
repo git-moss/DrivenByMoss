@@ -10,8 +10,8 @@ import de.mossgrabers.framework.controller.ButtonID;
 import de.mossgrabers.framework.controller.grid.IPadGrid;
 import de.mossgrabers.framework.daw.DAWColor;
 import de.mossgrabers.framework.daw.IModel;
-import de.mossgrabers.framework.daw.ISceneBank;
 import de.mossgrabers.framework.daw.data.IScene;
+import de.mossgrabers.framework.daw.data.bank.ISceneBank;
 import de.mossgrabers.framework.mode.AbstractMode;
 
 

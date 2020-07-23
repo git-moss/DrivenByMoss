@@ -7,8 +7,8 @@ package de.mossgrabers.framework.command.trigger.device;
 import de.mossgrabers.framework.command.core.AbstractContinuousCommand;
 import de.mossgrabers.framework.configuration.Configuration;
 import de.mossgrabers.framework.controller.IControlSurface;
-import de.mossgrabers.framework.daw.ICursorDevice;
 import de.mossgrabers.framework.daw.IModel;
+import de.mossgrabers.framework.daw.data.ICursorDevice;
 
 import java.util.Date;
 

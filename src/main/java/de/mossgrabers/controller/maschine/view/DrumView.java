@@ -10,10 +10,10 @@ import de.mossgrabers.controller.maschine.controller.MaschineControlSurface;
 import de.mossgrabers.controller.maschine.mode.EditNoteMode;
 import de.mossgrabers.framework.controller.ButtonID;
 import de.mossgrabers.framework.controller.grid.IPadGrid;
-import de.mossgrabers.framework.daw.ICursorDevice;
 import de.mossgrabers.framework.daw.IModel;
 import de.mossgrabers.framework.daw.INoteClip;
 import de.mossgrabers.framework.daw.IStepInfo;
+import de.mossgrabers.framework.daw.data.IDrumDevice;
 import de.mossgrabers.framework.mode.ModeManager;
 import de.mossgrabers.framework.mode.Modes;
 import de.mossgrabers.framework.scale.Scales;
@@ -133,7 +133,7 @@ public class DrumView extends AbstractDrumView<MaschineControlSurface, MaschineC
         {
             final INoteClip clip = this.getClip ();
             final boolean isActive = this.isActive ();
-            final ICursorDevice primary = this.model.getInstrumentDevice ();
+            final IDrumDevice primary = this.model.getDrumDevice ();
             this.drawSequencerSteps (clip, isActive, this.scales.getDrumOffset () + this.selectedPad, this.getDrumPadColor (primary, this.selectedPad), y -> 3 - y);
             return;
         }

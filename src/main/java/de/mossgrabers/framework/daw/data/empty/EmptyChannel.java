@@ -5,10 +5,9 @@
 package de.mossgrabers.framework.daw.data.empty;
 
 import de.mossgrabers.framework.controller.color.ColorEx;
-import de.mossgrabers.framework.daw.EmptyBank;
-import de.mossgrabers.framework.daw.ISendBank;
 import de.mossgrabers.framework.daw.data.IChannel;
 import de.mossgrabers.framework.daw.data.ISend;
+import de.mossgrabers.framework.daw.data.bank.ISendBank;
 import de.mossgrabers.framework.daw.resource.ChannelType;
 import de.mossgrabers.framework.observer.IValueObserver;
 

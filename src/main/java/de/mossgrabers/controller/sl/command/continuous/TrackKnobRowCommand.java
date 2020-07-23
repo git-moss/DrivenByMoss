@@ -8,8 +8,8 @@ import de.mossgrabers.controller.sl.SLConfiguration;
 import de.mossgrabers.controller.sl.controller.SLControlSurface;
 import de.mossgrabers.framework.command.core.AbstractContinuousCommand;
 import de.mossgrabers.framework.daw.IModel;
-import de.mossgrabers.framework.daw.ITrackBank;
 import de.mossgrabers.framework.daw.data.ITrack;
+import de.mossgrabers.framework.daw.data.bank.ITrackBank;
 import de.mossgrabers.framework.mode.ModeManager;
 import de.mossgrabers.framework.mode.Modes;
 

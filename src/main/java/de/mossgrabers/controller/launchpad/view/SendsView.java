@@ -9,9 +9,9 @@ import de.mossgrabers.controller.launchpad.controller.LaunchpadControlSurface;
 import de.mossgrabers.framework.controller.ButtonID;
 import de.mossgrabers.framework.daw.DAWColor;
 import de.mossgrabers.framework.daw.IModel;
-import de.mossgrabers.framework.daw.ITrackBank;
 import de.mossgrabers.framework.daw.data.ISend;
 import de.mossgrabers.framework.daw.data.ITrack;
+import de.mossgrabers.framework.daw.data.bank.ITrackBank;
 import de.mossgrabers.framework.utils.ButtonEvent;
 
 

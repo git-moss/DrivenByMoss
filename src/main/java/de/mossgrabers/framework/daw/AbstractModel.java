@@ -6,9 +6,16 @@ package de.mossgrabers.framework.daw;
 
 import de.mossgrabers.framework.controller.color.ColorManager;
 import de.mossgrabers.framework.controller.valuechanger.IValueChanger;
+import de.mossgrabers.framework.daw.data.ICursorDevice;
+import de.mossgrabers.framework.daw.data.IDrumDevice;
 import de.mossgrabers.framework.daw.data.IMasterTrack;
 import de.mossgrabers.framework.daw.data.ISlot;
+import de.mossgrabers.framework.daw.data.ISpecificDevice;
 import de.mossgrabers.framework.daw.data.ITrack;
+import de.mossgrabers.framework.daw.data.bank.IMarkerBank;
+import de.mossgrabers.framework.daw.data.bank.IParameterBank;
+import de.mossgrabers.framework.daw.data.bank.ISceneBank;
+import de.mossgrabers.framework.daw.data.bank.ITrackBank;
 import de.mossgrabers.framework.observer.IValueObserver;
 import de.mossgrabers.framework.scale.Scales;
 
@@ -45,9 +52,10 @@ public abstract class AbstractModel implements IModel
     protected ITrackBank                            trackBank;
     protected ITrackBank                            effectTrackBank;
     protected IMasterTrack                          masterTrack;
-    protected ICursorDevice                         instrumentDevice;
     protected ICursorDevice                         cursorDevice;
-    protected ICursorDevice                         drumDevice64;
+    protected ISpecificDevice                       instrumentDevice;
+    protected IDrumDevice                           drumDevice;
+    protected IDrumDevice                           drumDevice64;
     protected IParameterBank                        userParameterBank;
     protected Map<String, IClip>                    cursorClips        = new HashMap<> ();
 
@@ -169,7 +177,7 @@ public abstract class AbstractModel implements IModel
 
     /** {@inheritDoc} */
     @Override
-    public ICursorDevice getInstrumentDevice ()
+    public ISpecificDevice getInstrumentDevice ()
     {
         return this.instrumentDevice;
     }
@@ -177,7 +185,15 @@ public abstract class AbstractModel implements IModel
 
     /** {@inheritDoc} */
     @Override
-    public ICursorDevice getDrumDevice64 ()
+    public IDrumDevice getDrumDevice ()
+    {
+        return this.drumDevice;
+    }
+
+
+    /** {@inheritDoc} */
+    @Override
+    public IDrumDevice getDrumDevice64 ()
     {
         return this.drumDevice64;
     }

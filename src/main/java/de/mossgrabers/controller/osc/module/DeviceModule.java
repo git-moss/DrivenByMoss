@@ -9,19 +9,20 @@ import de.mossgrabers.controller.osc.exception.IllegalParameterException;
 import de.mossgrabers.controller.osc.exception.MissingCommandException;
 import de.mossgrabers.controller.osc.exception.UnknownCommandException;
 import de.mossgrabers.framework.controller.color.ColorEx;
-import de.mossgrabers.framework.daw.IChannelBank;
-import de.mossgrabers.framework.daw.ICursorDevice;
-import de.mossgrabers.framework.daw.IDeviceBank;
-import de.mossgrabers.framework.daw.IDrumPadBank;
 import de.mossgrabers.framework.daw.IHost;
-import de.mossgrabers.framework.daw.ILayerBank;
 import de.mossgrabers.framework.daw.IModel;
-import de.mossgrabers.framework.daw.IParameterBank;
-import de.mossgrabers.framework.daw.IParameterPageBank;
-import de.mossgrabers.framework.daw.ISendBank;
 import de.mossgrabers.framework.daw.data.IChannel;
+import de.mossgrabers.framework.daw.data.ICursorDevice;
 import de.mossgrabers.framework.daw.data.ILayer;
 import de.mossgrabers.framework.daw.data.ISend;
+import de.mossgrabers.framework.daw.data.ISpecificDevice;
+import de.mossgrabers.framework.daw.data.bank.IChannelBank;
+import de.mossgrabers.framework.daw.data.bank.IDeviceBank;
+import de.mossgrabers.framework.daw.data.bank.IDrumPadBank;
+import de.mossgrabers.framework.daw.data.bank.ILayerBank;
+import de.mossgrabers.framework.daw.data.bank.IParameterBank;
+import de.mossgrabers.framework.daw.data.bank.IParameterPageBank;
+import de.mossgrabers.framework.daw.data.bank.ISendBank;
 import de.mossgrabers.framework.daw.data.empty.EmptyLayer;
 import de.mossgrabers.framework.osc.IOpenSoundControlWriter;
 
@@ -73,7 +74,7 @@ public class DeviceModule extends AbstractModule
         switch (command)
         {
             case "device":
-                this.parseDeviceValue (this.model.getCursorDevice (), path, value);
+                this.parseCursorDeviceValue (this.model.getCursorDevice (), path, value);
                 break;
 
             case "primary":
@@ -116,7 +117,7 @@ public class DeviceModule extends AbstractModule
      * @param device The device
      * @param dump Forces a flush if true otherwise only changed values are flushed
      */
-    private void flushDevice (final IOpenSoundControlWriter writer, final String deviceAddress, final ICursorDevice device, final boolean dump)
+    private void flushDevice (final IOpenSoundControlWriter writer, final String deviceAddress, final ISpecificDevice device, final boolean dump)
     {
         writer.sendOSC (deviceAddress + "exists", device.doesExist (), dump);
         writer.sendOSC (deviceAddress + "name", device.getName (), dump);
@@ -124,15 +125,20 @@ public class DeviceModule extends AbstractModule
         writer.sendOSC (deviceAddress + "expand", device.isExpanded (), dump);
         writer.sendOSC (deviceAddress + "parameters", device.isParameterPageSectionVisible (), dump);
         writer.sendOSC (deviceAddress + "window", device.isWindowOpen (), dump);
-        final int positionInBank = device.getIndex ();
-        final IDeviceBank deviceBank = device.getDeviceBank ();
-        for (int i = 0; i < deviceBank.getPageSize (); i++)
-        {
-            final int oneplus = i + 1;
-            writer.sendOSC (deviceAddress + "sibling/" + oneplus + "/name", deviceBank.getItem (i).getName (), dump);
-            writer.sendOSC (deviceAddress + "sibling/" + oneplus + "/selected", i == positionInBank, dump);
 
+        if (device instanceof ICursorDevice)
+        {
+            final int positionInBank = device.getIndex ();
+            final IDeviceBank deviceBank = ((ICursorDevice) device).getDeviceBank ();
+            for (int i = 0; i < deviceBank.getPageSize (); i++)
+            {
+                final int oneplus = i + 1;
+                writer.sendOSC (deviceAddress + "sibling/" + oneplus + "/name", deviceBank.getItem (i).getName (), dump);
+                writer.sendOSC (deviceAddress + "sibling/" + oneplus + "/selected", i == positionInBank, dump);
+
+            }
         }
+
         final IParameterBank parameterBank = device.getParameterBank ();
         for (int i = 0; i < parameterBank.getPageSize (); i++)
         {
@@ -188,35 +194,11 @@ public class DeviceModule extends AbstractModule
     }
 
 
-    private void parseDeviceValue (final ICursorDevice cursorDevice, final LinkedList<String> path, final Object value) throws UnknownCommandException, MissingCommandException, IllegalParameterException
+    private void parseCursorDeviceValue (final ICursorDevice cursorDevice, final LinkedList<String> path, final Object value) throws UnknownCommandException, MissingCommandException, IllegalParameterException
     {
         final String command = getSubCommand (path);
-        final IDeviceBank deviceBank = cursorDevice.getDeviceBank ();
         switch (command)
         {
-            case "page":
-                final String subCommand = getSubCommand (path);
-                switch (subCommand)
-                {
-                    case "select":
-                    case "selected":
-                        cursorDevice.getParameterPageBank ().selectPage (toInteger (value) - 1);
-                        break;
-
-                    default:
-                        try
-                        {
-                            final int index = Integer.parseInt (subCommand) - 1;
-                            cursorDevice.getParameterPageBank ().selectPage (index);
-                        }
-                        catch (final NumberFormatException ex)
-                        {
-                            throw new UnknownCommandException (subCommand);
-                        }
-                        break;
-                }
-                break;
-
             case "sibling":
                 final String siblingIndex = getSubCommand (path);
                 final int siblingNo = Integer.parseInt (siblingIndex);
@@ -225,8 +207,8 @@ public class DeviceModule extends AbstractModule
                 {
                     case "select":
                     case "selected":
-                        if (isTrigger (value))
-                            deviceBank.getItem (siblingNo - 1).select ();
+                        if (isTrigger (value) && cursorDevice != null)
+                            cursorDevice.getDeviceBank ().getItem (siblingNo - 1).select ();
                         break;
 
                     default:
@@ -235,90 +217,20 @@ public class DeviceModule extends AbstractModule
                 break;
 
             case "bank":
-                final String subCommand3 = getSubCommand (path);
-                switch (subCommand3)
+                if (cursorDevice != null)
                 {
-                    case "page":
-                        final String directionCommand = getSubCommand (path);
-                        if ("+".equals (directionCommand))
-                            deviceBank.selectNextPage ();
-                        else // "-"
-                            deviceBank.selectPreviousPage ();
-                        break;
-                    default:
-                        throw new UnknownCommandException (subCommand3);
-                }
-                break;
-
-            case "bypass":
-                cursorDevice.toggleEnabledState ();
-                break;
-
-            case "expand":
-                cursorDevice.toggleExpanded ();
-                break;
-
-            case "parameters":
-                cursorDevice.toggleParameterPageSectionVisible ();
-                break;
-
-            case "window":
-                cursorDevice.toggleWindowOpen ();
-                break;
-
-            case "indicate":
-                final String subCommand4 = getSubCommand (path);
-                switch (subCommand4)
-                {
-                    case "param":
-                        final IParameterBank parameterBank = cursorDevice.getParameterBank ();
-                        for (int i = 0; i < parameterBank.getPageSize (); i++)
-                            parameterBank.getItem (i).setIndication (isTrigger (value));
-                        break;
-                    default:
-                        throw new UnknownCommandException (subCommand4);
-                }
-                break;
-
-            case "param":
-                final String subCommand5 = getSubCommand (path);
-                try
-                {
-                    final int paramNo = Integer.parseInt (subCommand5) - 1;
-                    parseFXParamValue (cursorDevice, paramNo, path, value);
-                }
-                catch (final NumberFormatException ex)
-                {
-                    if (isTrigger (value))
+                    final String subCommand3 = getSubCommand (path);
+                    switch (subCommand3)
                     {
-                        switch (subCommand5)
-                        {
-                            case "+":
-                                cursorDevice.getParameterBank ().selectNextPage ();
-                                break;
-                            case "-":
-                                cursorDevice.getParameterBank ().selectPreviousPage ();
-                                break;
-
-                            case "bank":
-                                final String subCommand6 = getSubCommand (path);
-                                switch (subCommand6)
-                                {
-                                    case "page":
-                                        final String subCommand7 = getSubCommand (path);
-                                        if ("+".equals (subCommand7))
-                                            cursorDevice.getParameterPageBank ().scrollForwards ();
-                                        else // "-"
-                                            cursorDevice.getParameterPageBank ().scrollBackwards ();
-                                        break;
-                                    default:
-                                        throw new UnknownCommandException (subCommand6);
-                                }
-                                break;
-
-                            default:
-                                throw new UnknownCommandException (subCommand5);
-                        }
+                        case "page":
+                            final String directionCommand = getSubCommand (path);
+                            if ("+".equals (directionCommand))
+                                cursorDevice.getDeviceBank ().selectNextPage ();
+                            else // "-"
+                                cursorDevice.getDeviceBank ().selectPreviousPage ();
+                            break;
+                        default:
+                            throw new UnknownCommandException (subCommand3);
                     }
                 }
                 break;
@@ -333,13 +245,122 @@ public class DeviceModule extends AbstractModule
                     cursorDevice.selectPrevious ();
                 break;
 
+            default:
+                path.add (0, command);
+                this.parseDeviceValue (cursorDevice, path, value);
+                break;
+        }
+    }
+
+
+    private void parseDeviceValue (final ISpecificDevice device, final LinkedList<String> path, final Object value) throws UnknownCommandException, MissingCommandException, IllegalParameterException
+    {
+        final String command = getSubCommand (path);
+        switch (command)
+        {
+            case "page":
+                final String subCommand = getSubCommand (path);
+                switch (subCommand)
+                {
+                    case "select":
+                    case "selected":
+                        device.getParameterPageBank ().selectPage (toInteger (value) - 1);
+                        break;
+
+                    default:
+                        try
+                        {
+                            final int index = Integer.parseInt (subCommand) - 1;
+                            device.getParameterPageBank ().selectPage (index);
+                        }
+                        catch (final NumberFormatException ex)
+                        {
+                            throw new UnknownCommandException (subCommand);
+                        }
+                        break;
+                }
+                break;
+
+            case "bypass":
+                device.toggleEnabledState ();
+                break;
+
+            case "expand":
+                device.toggleExpanded ();
+                break;
+
+            case "parameters":
+                device.toggleParameterPageSectionVisible ();
+                break;
+
+            case "window":
+                device.toggleWindowOpen ();
+                break;
+
+            case "indicate":
+                final String subCommand4 = getSubCommand (path);
+                switch (subCommand4)
+                {
+                    case "param":
+                        final IParameterBank parameterBank = device.getParameterBank ();
+                        for (int i = 0; i < parameterBank.getPageSize (); i++)
+                            parameterBank.getItem (i).setIndication (isTrigger (value));
+                        break;
+                    default:
+                        throw new UnknownCommandException (subCommand4);
+                }
+                break;
+
+            case "param":
+                final String subCommand5 = getSubCommand (path);
+                try
+                {
+                    final int paramNo = Integer.parseInt (subCommand5) - 1;
+                    parseFXParamValue (device, paramNo, path, value);
+                }
+                catch (final NumberFormatException ex)
+                {
+                    if (isTrigger (value))
+                    {
+                        switch (subCommand5)
+                        {
+                            case "+":
+                                device.getParameterBank ().selectNextPage ();
+                                break;
+                            case "-":
+                                device.getParameterBank ().selectPreviousPage ();
+                                break;
+
+                            case "bank":
+                                final String subCommand6 = getSubCommand (path);
+                                switch (subCommand6)
+                                {
+                                    case "page":
+                                        final String subCommand7 = getSubCommand (path);
+                                        if ("+".equals (subCommand7))
+                                            device.getParameterPageBank ().scrollForwards ();
+                                        else // "-"
+                                            device.getParameterPageBank ().scrollBackwards ();
+                                        break;
+                                    default:
+                                        throw new UnknownCommandException (subCommand6);
+                                }
+                                break;
+
+                            default:
+                                throw new UnknownCommandException (subCommand5);
+                        }
+                    }
+                }
+                break;
+
             case "drumpad":
-                if (cursorDevice.hasDrumPads ())
-                    this.parseLayerOrDrumpad (cursorDevice, path, value);
+                if (device.hasDrumPads ())
+                    this.parseLayerOrDrumpad (device, path, value);
                 break;
 
             case "layer":
-                this.parseLayerOrDrumpad (cursorDevice, path, value);
+                this.parseLayerOrDrumpad (device, path, value);
                 break;
 
             default:
@@ -349,7 +370,7 @@ public class DeviceModule extends AbstractModule
     }
 
 
-    private void parseLayerOrDrumpad (final ICursorDevice cursorDevice, final LinkedList<String> path, final Object value) throws MissingCommandException, UnknownCommandException, IllegalParameterException
+    private void parseLayerOrDrumpad (final ISpecificDevice device, final LinkedList<String> path, final Object value) throws MissingCommandException, UnknownCommandException, IllegalParameterException
     {
         final String command = getSubCommand (path);
         try
@@ -357,33 +378,34 @@ public class DeviceModule extends AbstractModule
             final int layerNo;
             if ("selected".equals (command) || "select".equals (command))
             {
-                final IChannel selectedLayerOrDrumPad = cursorDevice.getLayerOrDrumPadBank ().getSelectedItem ();
+                final IChannel selectedLayerOrDrumPad = device.getLayerOrDrumPadBank ().getSelectedItem ();
                 layerNo = selectedLayerOrDrumPad == null ? -1 : selectedLayerOrDrumPad.getIndex ();
             }
             else
             {
                 layerNo = Integer.parseInt (command) - 1;
             }
-            this.parseDeviceLayerValue (cursorDevice, layerNo, path, value);
+            this.parseDeviceLayerValue (device, layerNo, path, value);
         }
         catch (final NumberFormatException ex)
         {
             switch (command)
             {
                 case "parent":
-                    if (cursorDevice.doesExist ())
+                    if (device.doesExist () && device instanceof ICursorDevice)
                     {
+                        final ICursorDevice cursorDevice = (ICursorDevice) device;
                         cursorDevice.selectParent ();
                         cursorDevice.selectChannel ();
                     }
                     break;
 
                 case "+":
-                    cursorDevice.getLayerOrDrumPadBank ().selectNextItem ();
+                    device.getLayerOrDrumPadBank ().selectNextItem ();
                     break;
 
                 case "-":
-                    cursorDevice.getLayerOrDrumPadBank ().selectPreviousItem ();
+                    device.getLayerOrDrumPadBank ().selectPreviousItem ();
                     break;
 
                 case "page":
@@ -393,9 +415,9 @@ public class DeviceModule extends AbstractModule
                         return;
                     }
                     if ("+".equals (path.get (0)))
-                        cursorDevice.getLayerOrDrumPadBank ().selectNextPage ();
+                        device.getLayerOrDrumPadBank ().selectNextPage ();
                     else
-                        cursorDevice.getLayerOrDrumPadBank ().selectPreviousPage ();
+                        device.getLayerOrDrumPadBank ().selectPreviousPage ();
                     break;
 
                 default:
@@ -405,7 +427,7 @@ public class DeviceModule extends AbstractModule
     }
 
 
-    private void parseDeviceLayerValue (final ICursorDevice cursorDevice, final int layerIndex, final LinkedList<String> path, final Object value) throws UnknownCommandException, IllegalParameterException, MissingCommandException
+    private void parseDeviceLayerValue (final ISpecificDevice cursorDevice, final int layerIndex, final LinkedList<String> path, final Object value) throws UnknownCommandException, IllegalParameterException, MissingCommandException
     {
         final String command = getSubCommand (path);
         final IChannelBank<?> layerOrDrumPadBank = cursorDevice.getLayerOrDrumPadBank ();
@@ -480,7 +502,7 @@ public class DeviceModule extends AbstractModule
     }
 
 
-    private static void parseFXParamValue (final ICursorDevice cursorDevice, final int fxparamIndex, final LinkedList<String> path, final Object value) throws MissingCommandException, IllegalParameterException, UnknownCommandException
+    private static void parseFXParamValue (final ISpecificDevice cursorDevice, final int fxparamIndex, final LinkedList<String> path, final Object value) throws MissingCommandException, IllegalParameterException, UnknownCommandException
     {
         final String command = getSubCommand (path);
         switch (command)

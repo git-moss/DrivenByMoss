@@ -5,8 +5,8 @@
 package de.mossgrabers.bitwig.framework.daw.data;
 
 import de.mossgrabers.framework.controller.valuechanger.IValueChanger;
-import de.mossgrabers.framework.daw.ISendBank;
 import de.mossgrabers.framework.daw.data.ISend;
+import de.mossgrabers.framework.daw.data.bank.ISendBank;
 
 import com.bitwig.extension.controller.api.Send;
 

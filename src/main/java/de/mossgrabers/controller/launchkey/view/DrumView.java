@@ -10,11 +10,11 @@ import de.mossgrabers.controller.launchkey.controller.LaunchkeyMiniMk3ControlSur
 import de.mossgrabers.framework.controller.ButtonID;
 import de.mossgrabers.framework.controller.grid.IPadGrid;
 import de.mossgrabers.framework.daw.DAWColor;
-import de.mossgrabers.framework.daw.ICursorDevice;
 import de.mossgrabers.framework.daw.IModel;
 import de.mossgrabers.framework.daw.INoteClip;
 import de.mossgrabers.framework.daw.IStepInfo;
 import de.mossgrabers.framework.daw.data.IChannel;
+import de.mossgrabers.framework.daw.data.IDrumDevice;
 import de.mossgrabers.framework.utils.ButtonEvent;
 import de.mossgrabers.framework.view.AbstractDrumView;
 import de.mossgrabers.framework.view.Views;
@@ -82,16 +82,15 @@ public class DrumView extends AbstractDrumView<LaunchkeyMiniMk3ControlSurface, L
     public void drawGrid ()
     {
         final IPadGrid padGrid = this.surface.getPadGrid ();
-        final ICursorDevice primary = this.model.getInstrumentDevice ();
+        final IDrumDevice primary = this.model.getDrumDevice ();
         if (this.isPlayMode)
         {
-            final boolean isSoloed = primary.hasDrumPads () && primary.getDrumPadBank ().hasSoloedPads ();
             for (int y = 0; y < 2; y++)
             {
                 for (int x = 0; x < 8; x++)
                 {
                     final int index = 8 * y + x;
-                    padGrid.lightEx (x, 1 - y, this.getPadColor (index, primary, isSoloed, false));
+                    padGrid.lightEx (x, 1 - y, this.getDrumPadColor (index, primary, false));
                 }
             }
             return;
@@ -123,7 +122,7 @@ public class DrumView extends AbstractDrumView<LaunchkeyMiniMk3ControlSurface, L
     }
 
 
-    private int getStepColor (final ICursorDevice primary)
+    private int getStepColor (final IDrumDevice primary)
     {
         final int selPad = this.getSelectedPad ();
         if (selPad < 0)

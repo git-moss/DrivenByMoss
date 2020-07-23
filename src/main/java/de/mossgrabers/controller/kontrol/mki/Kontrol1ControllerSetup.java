@@ -41,14 +41,15 @@ import de.mossgrabers.framework.controller.OutputID;
 import de.mossgrabers.framework.controller.hardware.BindType;
 import de.mossgrabers.framework.controller.hardware.IHwRelativeKnob;
 import de.mossgrabers.framework.controller.valuechanger.DefaultValueChanger;
-import de.mossgrabers.framework.daw.ICursorDevice;
 import de.mossgrabers.framework.daw.IHost;
-import de.mossgrabers.framework.daw.IParameterBank;
-import de.mossgrabers.framework.daw.ISendBank;
-import de.mossgrabers.framework.daw.ITrackBank;
 import de.mossgrabers.framework.daw.ITransport;
 import de.mossgrabers.framework.daw.ModelSetup;
+import de.mossgrabers.framework.daw.data.ICursorDevice;
+import de.mossgrabers.framework.daw.data.IDrumDevice;
 import de.mossgrabers.framework.daw.data.ITrack;
+import de.mossgrabers.framework.daw.data.bank.IParameterBank;
+import de.mossgrabers.framework.daw.data.bank.ISendBank;
+import de.mossgrabers.framework.daw.data.bank.ITrackBank;
 import de.mossgrabers.framework.daw.midi.IMidiAccess;
 import de.mossgrabers.framework.daw.midi.IMidiInput;
 import de.mossgrabers.framework.mode.ModeManager;
@@ -104,7 +105,7 @@ public class Kontrol1ControllerSetup extends AbstractControllerSetup<Kontrol1Con
         final ModelSetup ms = new ModelSetup ();
         ms.setNumDrumPadLayers (128);
         this.model = this.factory.createModel (this.colorManager, this.valueChanger, this.scales, ms);
-        this.model.getInstrumentDevice ().getDrumPadBank ().setIndication (true);
+        this.model.getDrumDevice ().getDrumPadBank ().setIndication (true);
     }
 
 
@@ -267,7 +268,7 @@ public class Kontrol1ControllerSetup extends AbstractControllerSetup<Kontrol1Con
 
             if (this.model.canSelectedTrackHoldNotes ())
             {
-                final ICursorDevice primary = this.model.getInstrumentDevice ();
+                final IDrumDevice primary = this.model.getDrumDevice ();
                 if (primary.hasDrumPads ())
                     primary.getDrumPadBank ().scrollTo (0);
             }

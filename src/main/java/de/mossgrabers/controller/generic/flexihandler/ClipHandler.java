@@ -11,11 +11,11 @@ import de.mossgrabers.framework.command.trigger.clip.NewCommand;
 import de.mossgrabers.framework.controller.valuechanger.IValueChanger;
 import de.mossgrabers.framework.daw.IClip;
 import de.mossgrabers.framework.daw.IModel;
-import de.mossgrabers.framework.daw.ISceneBank;
-import de.mossgrabers.framework.daw.ISlotBank;
-import de.mossgrabers.framework.daw.ITrackBank;
 import de.mossgrabers.framework.daw.data.ISlot;
 import de.mossgrabers.framework.daw.data.ITrack;
+import de.mossgrabers.framework.daw.data.bank.ISceneBank;
+import de.mossgrabers.framework.daw.data.bank.ISlotBank;
+import de.mossgrabers.framework.daw.data.bank.ITrackBank;
 import de.mossgrabers.framework.utils.ButtonEvent;
 
 

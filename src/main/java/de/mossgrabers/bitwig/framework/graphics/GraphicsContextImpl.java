@@ -246,9 +246,17 @@ public class GraphicsContextImpl implements IGraphicsContext
     @Override
     public void maskImage (final IImage icon, final double x, final double y, final ColorEx maskColor)
     {
-        this.setColor (maskColor);
-        this.gc.mask (((ImageImpl) icon).getImage (), x, y);
-        this.gc.fill ();
+        final ImageImpl imageImpl = (ImageImpl) icon;
+        try
+        {
+            this.setColor (maskColor);
+            this.gc.mask (imageImpl.getImage (), x, y);
+            this.gc.fill ();
+        }
+        catch (RuntimeException ex)
+        {
+            ex.printStackTrace ();
+        }
     }
 
 

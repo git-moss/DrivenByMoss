@@ -7,8 +7,8 @@ package de.mossgrabers.controller.apcmini.view;
 import de.mossgrabers.controller.apcmini.controller.APCminiControlSurface;
 import de.mossgrabers.framework.controller.ButtonID;
 import de.mossgrabers.framework.daw.IModel;
-import de.mossgrabers.framework.daw.ITrackBank;
 import de.mossgrabers.framework.daw.data.ITrack;
+import de.mossgrabers.framework.daw.data.bank.ITrackBank;
 import de.mossgrabers.framework.utils.ButtonEvent;
 
 

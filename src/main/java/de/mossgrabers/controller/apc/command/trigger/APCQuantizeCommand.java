@@ -7,8 +7,8 @@ package de.mossgrabers.controller.apc.command.trigger;
 import de.mossgrabers.controller.apc.APCConfiguration;
 import de.mossgrabers.controller.apc.controller.APCControlSurface;
 import de.mossgrabers.framework.command.trigger.clip.QuantizeCommand;
-import de.mossgrabers.framework.daw.ICursorDevice;
 import de.mossgrabers.framework.daw.IModel;
+import de.mossgrabers.framework.daw.data.ICursorDevice;
 import de.mossgrabers.framework.utils.ButtonEvent;
 
 

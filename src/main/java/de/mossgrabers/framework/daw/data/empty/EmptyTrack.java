@@ -4,11 +4,10 @@
 
 package de.mossgrabers.framework.daw.data.empty;
 
-import de.mossgrabers.framework.daw.EmptyBank;
-import de.mossgrabers.framework.daw.ISlotBank;
 import de.mossgrabers.framework.daw.constants.RecordQuantization;
 import de.mossgrabers.framework.daw.data.ISlot;
 import de.mossgrabers.framework.daw.data.ITrack;
+import de.mossgrabers.framework.daw.data.bank.ISlotBank;
 
 
 /**

@@ -7,10 +7,10 @@ package de.mossgrabers.framework.command.trigger.device;
 import de.mossgrabers.framework.command.core.AbstractTriggerCommand;
 import de.mossgrabers.framework.configuration.Configuration;
 import de.mossgrabers.framework.controller.IControlSurface;
-import de.mossgrabers.framework.daw.IChannelBank;
-import de.mossgrabers.framework.daw.ICursorDevice;
 import de.mossgrabers.framework.daw.IModel;
 import de.mossgrabers.framework.daw.data.IChannel;
+import de.mossgrabers.framework.daw.data.ICursorDevice;
+import de.mossgrabers.framework.daw.data.bank.IChannelBank;
 import de.mossgrabers.framework.utils.ButtonEvent;
 
 

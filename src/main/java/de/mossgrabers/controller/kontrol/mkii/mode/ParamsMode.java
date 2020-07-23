@@ -8,11 +8,11 @@ import de.mossgrabers.controller.kontrol.mkii.KontrolProtocolConfiguration;
 import de.mossgrabers.controller.kontrol.mkii.TrackType;
 import de.mossgrabers.controller.kontrol.mkii.controller.KontrolProtocolControlSurface;
 import de.mossgrabers.framework.controller.valuechanger.IValueChanger;
-import de.mossgrabers.framework.daw.IDeviceBank;
 import de.mossgrabers.framework.daw.IModel;
-import de.mossgrabers.framework.daw.IParameterBank;
-import de.mossgrabers.framework.daw.IParameterPageBank;
 import de.mossgrabers.framework.daw.data.IParameter;
+import de.mossgrabers.framework.daw.data.bank.IDeviceBank;
+import de.mossgrabers.framework.daw.data.bank.IParameterBank;
+import de.mossgrabers.framework.daw.data.bank.IParameterPageBank;
 import de.mossgrabers.framework.mode.device.ParameterMode;
 
 

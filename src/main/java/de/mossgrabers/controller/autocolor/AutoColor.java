@@ -5,8 +5,8 @@
 package de.mossgrabers.controller.autocolor;
 
 import de.mossgrabers.framework.daw.DAWColor;
-import de.mossgrabers.framework.daw.ITrackBank;
 import de.mossgrabers.framework.daw.data.ITrack;
+import de.mossgrabers.framework.daw.data.bank.ITrackBank;
 
 import java.util.ArrayList;
 import java.util.EnumMap;

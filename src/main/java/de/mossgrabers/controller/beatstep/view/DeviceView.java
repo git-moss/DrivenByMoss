@@ -8,11 +8,11 @@ import de.mossgrabers.controller.beatstep.BeatstepConfiguration;
 import de.mossgrabers.controller.beatstep.controller.BeatstepColorManager;
 import de.mossgrabers.controller.beatstep.controller.BeatstepControlSurface;
 import de.mossgrabers.framework.controller.grid.IPadGrid;
-import de.mossgrabers.framework.daw.IChannelBank;
-import de.mossgrabers.framework.daw.ICursorDevice;
 import de.mossgrabers.framework.daw.IModel;
-import de.mossgrabers.framework.daw.IParameterPageBank;
 import de.mossgrabers.framework.daw.data.IChannel;
+import de.mossgrabers.framework.daw.data.ICursorDevice;
+import de.mossgrabers.framework.daw.data.bank.IChannelBank;
+import de.mossgrabers.framework.daw.data.bank.IParameterPageBank;
 import de.mossgrabers.framework.view.AbstractView;
 
 

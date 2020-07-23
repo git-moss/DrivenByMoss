@@ -7,9 +7,9 @@ package de.mossgrabers.controller.launchpad.view;
 import de.mossgrabers.controller.launchpad.controller.LaunchpadColorManager;
 import de.mossgrabers.controller.launchpad.controller.LaunchpadControlSurface;
 import de.mossgrabers.framework.controller.ButtonID;
-import de.mossgrabers.framework.daw.ICursorDevice;
 import de.mossgrabers.framework.daw.IModel;
-import de.mossgrabers.framework.daw.IParameterBank;
+import de.mossgrabers.framework.daw.data.ICursorDevice;
+import de.mossgrabers.framework.daw.data.bank.IParameterBank;
 import de.mossgrabers.framework.utils.ButtonEvent;
 
 

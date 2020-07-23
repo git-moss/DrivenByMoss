@@ -7,7 +7,7 @@ package de.mossgrabers.controller.mcu;
 import de.mossgrabers.controller.mcu.controller.MCUControlSurface;
 import de.mossgrabers.framework.command.trigger.track.MoveTrackBankCommand;
 import de.mossgrabers.framework.daw.IModel;
-import de.mossgrabers.framework.daw.ITrackBank;
+import de.mossgrabers.framework.daw.data.bank.ITrackBank;
 import de.mossgrabers.framework.mode.Modes;
 import de.mossgrabers.framework.utils.ButtonEvent;
 

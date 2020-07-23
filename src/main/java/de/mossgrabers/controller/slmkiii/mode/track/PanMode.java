@@ -8,8 +8,8 @@ import de.mossgrabers.controller.slmkiii.controller.SLMkIIIColorManager;
 import de.mossgrabers.controller.slmkiii.controller.SLMkIIIControlSurface;
 import de.mossgrabers.controller.slmkiii.controller.SLMkIIIDisplay;
 import de.mossgrabers.framework.daw.IModel;
-import de.mossgrabers.framework.daw.ITrackBank;
 import de.mossgrabers.framework.daw.data.ITrack;
+import de.mossgrabers.framework.daw.data.bank.ITrackBank;
 import de.mossgrabers.framework.utils.StringUtils;
 
 

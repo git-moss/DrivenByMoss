@@ -11,10 +11,10 @@ import de.mossgrabers.framework.controller.ContinuousID;
 import de.mossgrabers.framework.controller.IControlSurface;
 import de.mossgrabers.framework.controller.color.ColorManager;
 import de.mossgrabers.framework.controller.hardware.IHwContinuousControl;
-import de.mossgrabers.framework.daw.IBank;
 import de.mossgrabers.framework.daw.IModel;
 import de.mossgrabers.framework.daw.data.IItem;
 import de.mossgrabers.framework.daw.data.IParameter;
+import de.mossgrabers.framework.daw.data.bank.IBank;
 import de.mossgrabers.framework.utils.ButtonEvent;
 
 import java.util.Arrays;

@@ -9,8 +9,8 @@ import de.mossgrabers.controller.beatstep.controller.BeatstepColorManager;
 import de.mossgrabers.controller.beatstep.controller.BeatstepControlSurface;
 import de.mossgrabers.framework.controller.grid.IPadGrid;
 import de.mossgrabers.framework.daw.IModel;
-import de.mossgrabers.framework.daw.ITrackBank;
 import de.mossgrabers.framework.daw.data.ITrack;
+import de.mossgrabers.framework.daw.data.bank.ITrackBank;
 import de.mossgrabers.framework.view.AbstractView;
 
 

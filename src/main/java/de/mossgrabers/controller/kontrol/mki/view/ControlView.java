@@ -8,9 +8,10 @@ import de.mossgrabers.controller.kontrol.mki.Kontrol1Configuration;
 import de.mossgrabers.controller.kontrol.mki.controller.Kontrol1ControlSurface;
 import de.mossgrabers.framework.controller.grid.ILightGuide;
 import de.mossgrabers.framework.daw.DAWColor;
-import de.mossgrabers.framework.daw.ICursorDevice;
 import de.mossgrabers.framework.daw.IModel;
 import de.mossgrabers.framework.daw.data.IChannel;
+import de.mossgrabers.framework.daw.data.IDrumDevice;
+import de.mossgrabers.framework.daw.data.bank.IDrumPadBank;
 import de.mossgrabers.framework.scale.Scales;
 import de.mossgrabers.framework.view.AbstractDrumView;
 import de.mossgrabers.framework.view.AbstractPlayView;
@@ -55,13 +56,12 @@ public class ControlView extends AbstractPlayView<Kontrol1ControlSurface, Kontro
 
         if (this.model.canSelectedTrackHoldNotes ())
         {
-            final ICursorDevice primary = this.model.getInstrumentDevice ();
+            final IDrumDevice primary = this.model.getDrumDevice ();
             if (primary.hasDrumPads ())
             {
-                final boolean isSoloed = primary.hasDrumPads () && primary.getDrumPadBank ().hasSoloedPads ();
                 final boolean isRecording = this.model.hasRecordingState ();
                 for (int i = this.scales.getStartNote (); i < this.scales.getEndNote (); i++)
-                    lightGuide.light (i, this.getDrumPadColor (i, primary, isSoloed, isRecording));
+                    lightGuide.light (i, this.getDrumPadColor (i, primary, isRecording));
                 return;
             }
         }
@@ -70,7 +70,7 @@ public class ControlView extends AbstractPlayView<Kontrol1ControlSurface, Kontro
     }
 
 
-    protected String getDrumPadColor (final int index, final ICursorDevice primary, final boolean isSoloed, final boolean isRecording)
+    protected String getDrumPadColor (final int index, final IDrumDevice primary, final boolean isRecording)
     {
         final int midiNote = this.keyManager.map (index);
         if (midiNote == -1)
@@ -79,12 +79,15 @@ public class ControlView extends AbstractPlayView<Kontrol1ControlSurface, Kontro
         // Playing note?
         if (this.keyManager.isKeyPressed (index))
             return isRecording ? AbstractDrumView.COLOR_PAD_RECORD : AbstractDrumView.COLOR_PAD_PLAY;
+
         // Exists and active?
-        final IChannel drumPad = primary.getDrumPadBank ().getItem (index);
+        final IDrumPadBank drumPadBank = primary.getDrumPadBank ();
+        final IChannel drumPad = drumPadBank.getItem (index);
         if (!drumPad.doesExist () || !drumPad.isActivated ())
             return this.surface.getConfiguration ().isTurnOffEmptyDrumPads () ? AbstractDrumView.COLOR_PAD_OFF : AbstractDrumView.COLOR_PAD_NO_CONTENT;
+
         // Muted or soloed?
-        if (drumPad.isMute () || isSoloed && !drumPad.isSolo ())
+        if (drumPad.isMute () || drumPadBank.hasSoloedPads () && !drumPad.isSolo ())
             return AbstractDrumView.COLOR_PAD_MUTED;
         return DAWColor.getColorIndex (drumPad.getColor ());
     }

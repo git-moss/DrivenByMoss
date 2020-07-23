@@ -8,10 +8,10 @@ import de.mossgrabers.controller.mcu.controller.MCUControlSurface;
 import de.mossgrabers.controller.mcu.mode.BaseMode;
 import de.mossgrabers.framework.controller.display.ITextDisplay;
 import de.mossgrabers.framework.daw.IBrowser;
-import de.mossgrabers.framework.daw.ICursorDevice;
 import de.mossgrabers.framework.daw.IModel;
 import de.mossgrabers.framework.daw.data.IBrowserColumn;
 import de.mossgrabers.framework.daw.data.IBrowserColumnItem;
+import de.mossgrabers.framework.daw.data.ICursorDevice;
 import de.mossgrabers.framework.utils.StringUtils;
 
 

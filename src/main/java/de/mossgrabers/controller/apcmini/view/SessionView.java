@@ -10,10 +10,10 @@ import de.mossgrabers.controller.apcmini.controller.APCminiControlSurface;
 import de.mossgrabers.framework.controller.ButtonID;
 import de.mossgrabers.framework.controller.color.ColorManager;
 import de.mossgrabers.framework.daw.IModel;
-import de.mossgrabers.framework.daw.ISlotBank;
-import de.mossgrabers.framework.daw.ITrackBank;
 import de.mossgrabers.framework.daw.data.ISlot;
 import de.mossgrabers.framework.daw.data.ITrack;
+import de.mossgrabers.framework.daw.data.bank.ISlotBank;
+import de.mossgrabers.framework.daw.data.bank.ITrackBank;
 import de.mossgrabers.framework.utils.ButtonEvent;
 import de.mossgrabers.framework.view.AbstractSessionView;
 

@@ -18,7 +18,7 @@ import com.bitwig.extension.controller.api.Device;
  */
 public class DeviceImpl extends AbstractItemImpl implements IDevice
 {
-    private final Device device;
+    protected final Device device;
 
 
     /**

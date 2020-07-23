@@ -5,12 +5,12 @@
 package de.mossgrabers.bitwig.framework.daw.data;
 
 import de.mossgrabers.bitwig.framework.daw.ApplicationImpl;
-import de.mossgrabers.bitwig.framework.daw.SlotBankImpl;
+import de.mossgrabers.bitwig.framework.daw.data.bank.SlotBankImpl;
 import de.mossgrabers.framework.controller.valuechanger.IValueChanger;
 import de.mossgrabers.framework.daw.IHost;
-import de.mossgrabers.framework.daw.ISlotBank;
 import de.mossgrabers.framework.daw.constants.RecordQuantization;
 import de.mossgrabers.framework.daw.data.ITrack;
+import de.mossgrabers.framework.daw.data.bank.ISlotBank;
 import de.mossgrabers.framework.daw.resource.ChannelType;
 import de.mossgrabers.framework.observer.NoteObserver;
 

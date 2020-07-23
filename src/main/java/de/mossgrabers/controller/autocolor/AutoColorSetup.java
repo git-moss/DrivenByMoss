@@ -12,9 +12,9 @@ import de.mossgrabers.framework.controller.color.ColorManager;
 import de.mossgrabers.framework.controller.valuechanger.DefaultValueChanger;
 import de.mossgrabers.framework.daw.DAWColor;
 import de.mossgrabers.framework.daw.IHost;
-import de.mossgrabers.framework.daw.ITrackBank;
 import de.mossgrabers.framework.daw.ModelSetup;
 import de.mossgrabers.framework.daw.data.ITrack;
+import de.mossgrabers.framework.daw.data.bank.ITrackBank;
 import de.mossgrabers.framework.mode.Modes;
 import de.mossgrabers.framework.scale.Scales;
 

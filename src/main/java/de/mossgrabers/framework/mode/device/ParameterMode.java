@@ -7,10 +7,10 @@ package de.mossgrabers.framework.mode.device;
 import de.mossgrabers.framework.configuration.Configuration;
 import de.mossgrabers.framework.controller.ButtonID;
 import de.mossgrabers.framework.controller.IControlSurface;
-import de.mossgrabers.framework.daw.ICursorDevice;
 import de.mossgrabers.framework.daw.IModel;
-import de.mossgrabers.framework.daw.IParameterPageBank;
+import de.mossgrabers.framework.daw.data.ICursorDevice;
 import de.mossgrabers.framework.daw.data.IParameter;
+import de.mossgrabers.framework.daw.data.bank.IParameterPageBank;
 import de.mossgrabers.framework.mode.AbstractMode;
 
 

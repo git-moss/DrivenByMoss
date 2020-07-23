@@ -10,14 +10,15 @@ import de.mossgrabers.controller.sl.command.trigger.P2ButtonCommand;
 import de.mossgrabers.controller.sl.controller.SLControlSurface;
 import de.mossgrabers.controller.sl.mode.device.DeviceParamsMode;
 import de.mossgrabers.framework.controller.ButtonID;
-import de.mossgrabers.framework.daw.ICursorDevice;
 import de.mossgrabers.framework.daw.IModel;
 import de.mossgrabers.framework.daw.INoteClip;
-import de.mossgrabers.framework.daw.ITrackBank;
 import de.mossgrabers.framework.daw.ITransport;
 import de.mossgrabers.framework.daw.constants.Resolution;
 import de.mossgrabers.framework.daw.data.IChannel;
+import de.mossgrabers.framework.daw.data.IDrumDevice;
 import de.mossgrabers.framework.daw.data.ITrack;
+import de.mossgrabers.framework.daw.data.bank.IDrumPadBank;
+import de.mossgrabers.framework.daw.data.bank.ITrackBank;
 import de.mossgrabers.framework.mode.ModeManager;
 import de.mossgrabers.framework.mode.Modes;
 import de.mossgrabers.framework.utils.ButtonEvent;
@@ -118,7 +119,7 @@ public class PlayView extends AbstractSequencerView<SLControlSurface, SLConfigur
             case 0:
                 this.clearPressedKeys ();
                 this.scales.decDrumOctave ();
-                this.model.getInstrumentDevice ().getDrumPadBank ().selectPreviousPage ();
+                this.model.getDrumDevice ().getDrumPadBank ().selectPreviousPage ();
                 this.updateNoteMapping ();
                 this.surface.getDisplay ().notify (this.scales.getDrumRangeText ());
                 break;
@@ -127,7 +128,7 @@ public class PlayView extends AbstractSequencerView<SLControlSurface, SLConfigur
             case 1:
                 this.clearPressedKeys ();
                 this.scales.incDrumOctave ();
-                this.model.getInstrumentDevice ().getDrumPadBank ().selectNextPage ();
+                this.model.getDrumDevice ().getDrumPadBank ().selectNextPage ();
                 this.updateNoteMapping ();
                 this.surface.getDisplay ().notify (this.scales.getDrumRangeText ());
                 break;
@@ -335,11 +336,7 @@ public class PlayView extends AbstractSequencerView<SLControlSurface, SLConfigur
         final int col = 8 * y + x;
 
         if (this.isPlayMode)
-        {
-            final ICursorDevice primary = this.model.getInstrumentDevice ();
-            final boolean isSoloed = primary.hasDrumPads () && primary.getDrumPadBank ().hasSoloedPads ();
-            return this.getPadColor (col, primary, isSoloed);
-        }
+            return this.getDrumPadColor (col);
 
         if (!this.isActive ())
             return SLControlSurface.MKII_BUTTON_STATE_OFF;
@@ -410,19 +407,26 @@ public class PlayView extends AbstractSequencerView<SLControlSurface, SLConfigur
     }
 
 
-    private int getPadColor (final int index, final ICursorDevice primary, final boolean isSoloed)
+    private int getDrumPadColor (final int index)
     {
         final int offsetY = this.scales.getDrumOffset ();
+
         // Playing note?
         if (this.pressedKeys[offsetY + index] > 0)
             return SLControlSurface.MKII_BUTTON_STATE_ON;
+
         // Selected?
         if (this.selectedPad == index)
             return SLControlSurface.MKII_BUTTON_STATE_ON;
+
         // Exists and active?
-        final IChannel drumPad = primary.getDrumPadBank ().getItem (index);
+        final IDrumDevice primary = this.model.getDrumDevice ();
+        final IDrumPadBank drumPadBank = primary.getDrumPadBank ();
+        final boolean isSoloed = primary.hasDrumPads () && drumPadBank.hasSoloedPads ();
+        final IChannel drumPad = drumPadBank.getItem (index);
         if (!drumPad.doesExist () || !drumPad.isActivated ())
             return SLControlSurface.MKII_BUTTON_STATE_OFF;
+
         // Muted or soloed?
         if (drumPad.isMute () || isSoloed && !drumPad.isSolo ())
             return SLControlSurface.MKII_BUTTON_STATE_OFF;

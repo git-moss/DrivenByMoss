@@ -4,13 +4,13 @@
 
 package de.mossgrabers.bitwig.framework.daw.data;
 
-import de.mossgrabers.bitwig.framework.daw.SendBankImpl;
+import de.mossgrabers.bitwig.framework.daw.data.bank.SendBankImpl;
 import de.mossgrabers.framework.controller.color.ColorEx;
 import de.mossgrabers.framework.controller.valuechanger.IValueChanger;
 import de.mossgrabers.framework.daw.IHost;
-import de.mossgrabers.framework.daw.ISendBank;
 import de.mossgrabers.framework.daw.data.IChannel;
 import de.mossgrabers.framework.daw.data.IParameter;
+import de.mossgrabers.framework.daw.data.bank.ISendBank;
 import de.mossgrabers.framework.daw.resource.ChannelType;
 import de.mossgrabers.framework.observer.IValueObserver;
 

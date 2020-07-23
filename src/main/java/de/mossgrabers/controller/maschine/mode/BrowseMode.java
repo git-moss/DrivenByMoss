@@ -7,9 +7,9 @@ package de.mossgrabers.controller.maschine.mode;
 import de.mossgrabers.controller.maschine.controller.MaschineControlSurface;
 import de.mossgrabers.framework.controller.display.ITextDisplay;
 import de.mossgrabers.framework.daw.IBrowser;
-import de.mossgrabers.framework.daw.ICursorDevice;
 import de.mossgrabers.framework.daw.IModel;
 import de.mossgrabers.framework.daw.data.IBrowserColumn;
+import de.mossgrabers.framework.daw.data.ICursorDevice;
 import de.mossgrabers.framework.utils.StringUtils;
 
 

@@ -9,10 +9,10 @@ import de.mossgrabers.controller.fire.controller.FireControlSurface;
 import de.mossgrabers.controller.fire.graphics.canvas.component.TitleValueComponent;
 import de.mossgrabers.framework.controller.ButtonID;
 import de.mossgrabers.framework.controller.display.IGraphicDisplay;
-import de.mossgrabers.framework.daw.ICursorDevice;
 import de.mossgrabers.framework.daw.IModel;
-import de.mossgrabers.framework.daw.IParameterBank;
+import de.mossgrabers.framework.daw.data.ICursorDevice;
 import de.mossgrabers.framework.daw.data.IParameter;
+import de.mossgrabers.framework.daw.data.bank.IParameterBank;
 import de.mossgrabers.framework.mode.device.ParameterMode;
 import de.mossgrabers.framework.utils.StringUtils;
 

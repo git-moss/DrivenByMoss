@@ -4,9 +4,9 @@ import de.mossgrabers.controller.maschine.MaschineConfiguration;
 import de.mossgrabers.controller.maschine.controller.MaschineControlSurface;
 import de.mossgrabers.framework.command.continuous.KnobRowModeCommand;
 import de.mossgrabers.framework.controller.ButtonID;
-import de.mossgrabers.framework.daw.IBank;
 import de.mossgrabers.framework.daw.IModel;
 import de.mossgrabers.framework.daw.data.ITrack;
+import de.mossgrabers.framework.daw.data.bank.IBank;
 
 
 /**

@@ -7,6 +7,7 @@ package de.mossgrabers.bitwig.framework.daw;
 import de.mossgrabers.bitwig.framework.daw.data.BrowserColumnImpl;
 import de.mossgrabers.bitwig.framework.daw.data.BrowserColumnItemImpl;
 import de.mossgrabers.bitwig.framework.daw.data.ChannelImpl;
+import de.mossgrabers.bitwig.framework.daw.data.CursorDeviceImpl;
 import de.mossgrabers.bitwig.framework.daw.data.DrumPadImpl;
 import de.mossgrabers.bitwig.framework.daw.data.SlotImpl;
 import de.mossgrabers.bitwig.framework.daw.data.Util;

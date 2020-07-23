@@ -10,10 +10,10 @@ import de.mossgrabers.controller.slmkiii.controller.SLMkIIIControlSurface;
 import de.mossgrabers.framework.controller.ButtonID;
 import de.mossgrabers.framework.controller.color.ColorManager;
 import de.mossgrabers.framework.daw.IModel;
-import de.mossgrabers.framework.daw.ISceneBank;
-import de.mossgrabers.framework.daw.ITrackBank;
 import de.mossgrabers.framework.daw.data.IScene;
 import de.mossgrabers.framework.daw.data.ITrack;
+import de.mossgrabers.framework.daw.data.bank.ISceneBank;
+import de.mossgrabers.framework.daw.data.bank.ITrackBank;
 import de.mossgrabers.framework.view.AbstractSessionView;
 import de.mossgrabers.framework.view.SessionColor;
 

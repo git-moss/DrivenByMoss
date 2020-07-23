@@ -9,11 +9,11 @@ import de.mossgrabers.controller.push.mode.NoteMode;
 import de.mossgrabers.framework.controller.ButtonID;
 import de.mossgrabers.framework.controller.color.ColorEx;
 import de.mossgrabers.framework.controller.hardware.IHwButton;
-import de.mossgrabers.framework.daw.ICursorDevice;
 import de.mossgrabers.framework.daw.IModel;
 import de.mossgrabers.framework.daw.INoteClip;
 import de.mossgrabers.framework.daw.IStepInfo;
 import de.mossgrabers.framework.daw.constants.Resolution;
+import de.mossgrabers.framework.daw.data.IDrumDevice;
 import de.mossgrabers.framework.mode.ModeManager;
 import de.mossgrabers.framework.mode.Modes;
 import de.mossgrabers.framework.view.AbstractSequencerView;
@@ -169,7 +169,7 @@ public class DrumView8 extends DrumViewBase
         final int offsetY = this.scales.getDrumOffset ();
         final int editMidiChannel = this.configuration.getMidiEditChannel ();
         final int selPad = this.getSelectedPad ();
-        final ICursorDevice primary = this.model.getInstrumentDevice ();
+        final IDrumDevice primary = this.model.getDrumDevice ();
         for (int sound = 0; sound < 8; sound++)
         {
             final int padIndex = selPad + sound + this.soundOffset;

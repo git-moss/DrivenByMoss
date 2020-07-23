@@ -7,9 +7,9 @@ package de.mossgrabers.controller.apc.mode;
 import de.mossgrabers.controller.apc.APCConfiguration;
 import de.mossgrabers.controller.apc.controller.APCControlSurface;
 import de.mossgrabers.framework.controller.ContinuousID;
-import de.mossgrabers.framework.daw.IBank;
 import de.mossgrabers.framework.daw.IModel;
 import de.mossgrabers.framework.daw.data.IItem;
+import de.mossgrabers.framework.daw.data.bank.IBank;
 import de.mossgrabers.framework.mode.AbstractMode;
 import de.mossgrabers.framework.utils.ButtonEvent;
 

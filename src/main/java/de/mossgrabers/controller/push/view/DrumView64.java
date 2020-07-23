@@ -7,12 +7,13 @@ package de.mossgrabers.controller.push.view;
 import de.mossgrabers.controller.push.PushConfiguration;
 import de.mossgrabers.controller.push.controller.PushControlSurface;
 import de.mossgrabers.framework.controller.ButtonID;
-import de.mossgrabers.framework.daw.ICursorDevice;
-import de.mossgrabers.framework.daw.IDrumPadBank;
 import de.mossgrabers.framework.daw.IModel;
-import de.mossgrabers.framework.daw.ISceneBank;
+import de.mossgrabers.framework.daw.data.ICursorDevice;
+import de.mossgrabers.framework.daw.data.IDrumDevice;
 import de.mossgrabers.framework.daw.data.IDrumPad;
 import de.mossgrabers.framework.daw.data.IScene;
+import de.mossgrabers.framework.daw.data.bank.IDrumPadBank;
+import de.mossgrabers.framework.daw.data.bank.ISceneBank;
 import de.mossgrabers.framework.mode.AbstractMode;
 import de.mossgrabers.framework.mode.BrowserActivator;
 import de.mossgrabers.framework.mode.ModeManager;
@@ -52,7 +53,7 @@ public class DrumView64 extends AbstractDrumView64<PushControlSurface, PushConfi
     {
         if (this.isButtonCombination (ButtonID.BROWSE))
         {
-            final ICursorDevice primary = this.model.getDrumDevice64 ();
+            final IDrumDevice primary = this.model.getDrumDevice64 ();
             if (!primary.hasDrumPads ())
                 return;
 
@@ -80,7 +81,7 @@ public class DrumView64 extends AbstractDrumView64<PushControlSurface, PushConfi
     protected void handleSelectButton (final int playedPad)
     {
         // Do we have drum pads?
-        final ICursorDevice primary = this.model.getDrumDevice64 ();
+        final IDrumDevice primary = this.model.getDrumDevice64 ();
         if (!primary.hasDrumPads ())
             return;
         final ICursorDevice cd = this.model.getCursorDevice ();

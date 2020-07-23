@@ -6,8 +6,8 @@ package de.mossgrabers.controller.hui.mode.track;
 
 import de.mossgrabers.controller.hui.controller.HUIControlSurface;
 import de.mossgrabers.framework.daw.IModel;
-import de.mossgrabers.framework.daw.ITrackBank;
 import de.mossgrabers.framework.daw.data.ITrack;
+import de.mossgrabers.framework.daw.data.bank.ITrackBank;
 
 
 /**

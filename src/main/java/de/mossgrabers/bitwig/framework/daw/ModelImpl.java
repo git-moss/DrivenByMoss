@@ -4,15 +4,22 @@
 
 package de.mossgrabers.bitwig.framework.daw;
 
+import de.mossgrabers.bitwig.framework.daw.data.CursorDeviceImpl;
+import de.mossgrabers.bitwig.framework.daw.data.DrumDeviceImpl;
 import de.mossgrabers.bitwig.framework.daw.data.MasterTrackImpl;
+import de.mossgrabers.bitwig.framework.daw.data.SpecificDeviceImpl;
+import de.mossgrabers.bitwig.framework.daw.data.bank.EffectTrackBankImpl;
+import de.mossgrabers.bitwig.framework.daw.data.bank.MarkerBankImpl;
+import de.mossgrabers.bitwig.framework.daw.data.bank.TrackBankImpl;
+import de.mossgrabers.bitwig.framework.daw.data.bank.UserParameterBankImpl;
 import de.mossgrabers.framework.daw.AbstractModel;
 import de.mossgrabers.framework.daw.DataSetup;
 import de.mossgrabers.framework.daw.IClip;
 import de.mossgrabers.framework.daw.INoteClip;
-import de.mossgrabers.framework.daw.ISceneBank;
 import de.mossgrabers.framework.daw.ModelSetup;
 import de.mossgrabers.framework.daw.data.ISlot;
 import de.mossgrabers.framework.daw.data.ITrack;
+import de.mossgrabers.framework.daw.data.bank.ISceneBank;
 import de.mossgrabers.framework.scale.Scales;
 import de.mossgrabers.framework.utils.FrameworkException;
 
@@ -22,6 +29,9 @@ import com.bitwig.extension.controller.api.BooleanValue;
 import com.bitwig.extension.controller.api.ControllerHost;
 import com.bitwig.extension.controller.api.CursorDeviceFollowMode;
 import com.bitwig.extension.controller.api.CursorTrack;
+import com.bitwig.extension.controller.api.Device;
+import com.bitwig.extension.controller.api.DeviceBank;
+import com.bitwig.extension.controller.api.DeviceMatcher;
 import com.bitwig.extension.controller.api.MasterTrack;
 import com.bitwig.extension.controller.api.PinnableCursorDevice;
 import com.bitwig.extension.controller.api.Project;
@@ -31,6 +41,7 @@ import com.bitwig.extension.controller.api.UserControlBank;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.UUID;
 
 
 /**
@@ -40,10 +51,12 @@ import java.util.Map;
  */
 public class ModelImpl extends AbstractModel
 {
+    private static final UUID              INSTRUMENT_DRUM_MACHINE = UUID.fromString ("8ea97e45-0255-40fd-bc7e-94419741e9d1");
+
     private final ControllerHost           controllerHost;
     private final CursorTrack              cursorTrack;
     private final BooleanValue             masterTrackEqualsValue;
-    private final Map<Integer, ISceneBank> sceneBanks = new HashMap<> (1);
+    private final Map<Integer, ISceneBank> sceneBanks              = new HashMap<> (1);
 
     private Track                          rootTrackGroup;
 
@@ -78,7 +91,10 @@ public class ModelImpl extends AbstractModel
         this.mixer = new MixerImpl (controllerHost.createMixer ());
         this.groove = new GrooveImpl (controllerHost, this.valueChanger);
 
-        this.cursorTrack = controllerHost.createCursorTrack ("MyCursorTrackID", "The Cursor Track", 0, 0, true);
+        final int numSends = this.modelSetup.getNumSends ();
+        final int numScenes = this.modelSetup.getNumScenes ();
+
+        this.cursorTrack = controllerHost.createCursorTrack ("MyCursorTrackID", "The Cursor Track", numSends, numScenes, true);
         this.cursorTrack.isPinned ().markInterested ();
 
         final MasterTrack master = controllerHost.createMasterTrack (0);
@@ -86,8 +102,6 @@ public class ModelImpl extends AbstractModel
 
         final TrackBank tb;
         final int numTracks = this.modelSetup.getNumTracks ();
-        final int numSends = this.modelSetup.getNumSends ();
-        final int numScenes = this.modelSetup.getNumScenes ();
         if (this.modelSetup.hasFlatTrackList ())
         {
             if (this.modelSetup.hasFullFlatTrackList ())
@@ -109,15 +123,28 @@ public class ModelImpl extends AbstractModel
         final int numDeviceLayers = this.modelSetup.getNumDeviceLayers ();
         final int numDrumPadLayers = this.modelSetup.getNumDrumPadLayers ();
         final int numDevicesInBank = this.modelSetup.getNumDevicesInBank ();
-        this.instrumentDevice = new CursorDeviceImpl (this.host, this.valueChanger, this.cursorTrack.createCursorDevice ("FIRST_INSTRUMENT", "First Instrument", numSends, CursorDeviceFollowMode.FIRST_INSTRUMENT), numSends, numParams, numDevicesInBank, numDeviceLayers, numDrumPadLayers);
+
+        // 1st instrument device
+        final DeviceMatcher instrumentDeviceMatcher = controllerHost.createInstrumentMatcher ();
+        final DeviceBank instrumentDeviceBank = this.cursorTrack.createDeviceBank (1);
+        instrumentDeviceBank.setDeviceMatcher (instrumentDeviceMatcher);
+        final Device instrumentDevice = instrumentDeviceBank.getItemAt (0);
+        this.instrumentDevice = new SpecificDeviceImpl (this.host, this.valueChanger, instrumentDevice, numSends, numParams, numDevicesInBank, numDeviceLayers, numDrumPadLayers);
+
+        // Drum Machine
+        final DeviceMatcher drumMachineDeviceMatcher = controllerHost.createBitwigDeviceMatcher (INSTRUMENT_DRUM_MACHINE);
+        final DeviceBank drumDeviceBank = this.cursorTrack.createDeviceBank (1);
+        drumDeviceBank.setDeviceMatcher (drumMachineDeviceMatcher);
+        final Device drumMachineDevice = drumDeviceBank.getItemAt (0);
+        this.drumDevice = new DrumDeviceImpl (this.host, this.valueChanger, drumMachineDevice, numSends, numParams, numDevicesInBank, numDeviceLayers, numDrumPadLayers);
+
+        // Drum Machine 64 pads
         final PinnableCursorDevice mainCursorDevice = this.cursorTrack.createCursorDevice ("CURSOR_DEVICE", "Cursor device", numSends, CursorDeviceFollowMode.FOLLOW_SELECTION);
         this.cursorDevice = new CursorDeviceImpl (this.host, this.valueChanger, mainCursorDevice, numSends, numParams, numDevicesInBank, numDeviceLayers, numDrumPadLayers);
         if (numDrumPadLayers > 0)
-        {
-            final PinnableCursorDevice drum64CursorDevice = this.cursorTrack.createCursorDevice ("64_DRUM_PADS", "64 Drum Pads", 0, CursorDeviceFollowMode.FIRST_INSTRUMENT);
-            this.drumDevice64 = new CursorDeviceImpl (this.host, this.valueChanger, drum64CursorDevice, 0, 0, -1, 64, 64);
-        }
+            this.drumDevice64 = new DrumDeviceImpl (this.host, this.valueChanger, drumMachineDevice, 0, 0, -1, 64, 64);
 
+        // User bank
         final int numUserPages = modelSetup.getNumUserPages ();
         final int numUserPageSize = modelSetup.getNumUserPageSize ();
         final UserControlBank userControls = this.controllerHost.createUserControls (numUserPages * numUserPageSize);

@@ -7,7 +7,7 @@ package de.mossgrabers.framework.command.trigger.mode;
 import de.mossgrabers.framework.configuration.Configuration;
 import de.mossgrabers.framework.controller.IControlSurface;
 import de.mossgrabers.framework.daw.IModel;
-import de.mossgrabers.framework.daw.ISceneBank;
+import de.mossgrabers.framework.daw.data.bank.ISceneBank;
 import de.mossgrabers.framework.mode.Mode;
 
 

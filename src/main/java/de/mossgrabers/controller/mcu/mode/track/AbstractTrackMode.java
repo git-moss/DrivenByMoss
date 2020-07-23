@@ -8,8 +8,8 @@ import de.mossgrabers.controller.mcu.controller.MCUControlSurface;
 import de.mossgrabers.controller.mcu.mode.BaseMode;
 import de.mossgrabers.framework.controller.display.ITextDisplay;
 import de.mossgrabers.framework.daw.IModel;
-import de.mossgrabers.framework.daw.ITrackBank;
 import de.mossgrabers.framework.daw.data.ITrack;
+import de.mossgrabers.framework.daw.data.bank.ITrackBank;
 import de.mossgrabers.framework.utils.StringUtils;
 
 

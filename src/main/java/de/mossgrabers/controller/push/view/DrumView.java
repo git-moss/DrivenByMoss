@@ -7,12 +7,13 @@ package de.mossgrabers.controller.push.view;
 import de.mossgrabers.controller.push.controller.PushControlSurface;
 import de.mossgrabers.controller.push.mode.NoteMode;
 import de.mossgrabers.framework.controller.ButtonID;
-import de.mossgrabers.framework.daw.ICursorDevice;
-import de.mossgrabers.framework.daw.IDrumPadBank;
 import de.mossgrabers.framework.daw.IModel;
 import de.mossgrabers.framework.daw.INoteClip;
 import de.mossgrabers.framework.daw.IStepInfo;
+import de.mossgrabers.framework.daw.data.ICursorDevice;
+import de.mossgrabers.framework.daw.data.IDrumDevice;
 import de.mossgrabers.framework.daw.data.IDrumPad;
+import de.mossgrabers.framework.daw.data.bank.IDrumPadBank;
 import de.mossgrabers.framework.mode.ModeManager;
 import de.mossgrabers.framework.mode.Modes;
 import de.mossgrabers.framework.view.Views;
@@ -74,7 +75,7 @@ public class DrumView extends DrumViewBase
     public synchronized void handleSelectButton (final int playedPad)
     {
         // Do we have drum pads?
-        final ICursorDevice primary = this.model.getInstrumentDevice ();
+        final IDrumDevice primary = this.model.getDrumDevice ();
         if (!primary.hasDrumPads ())
             return;
         final ICursorDevice cd = this.model.getCursorDevice ();
