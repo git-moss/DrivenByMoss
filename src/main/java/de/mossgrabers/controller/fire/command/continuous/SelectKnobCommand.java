@@ -17,6 +17,7 @@ import de.mossgrabers.framework.daw.data.bank.ITrackBank;
 import de.mossgrabers.framework.mode.Mode;
 import de.mossgrabers.framework.mode.ModeManager;
 import de.mossgrabers.framework.mode.Modes;
+import de.mossgrabers.framework.utils.Timeout;
 import de.mossgrabers.framework.view.View;
 
 
@@ -27,6 +28,9 @@ import de.mossgrabers.framework.view.View;
  */
 public class SelectKnobCommand extends AbstractContinuousCommand<FireControlSurface, FireConfiguration>
 {
+    private final Timeout timeout;
+
+
     /**
      * Constructor.
      *
@@ -36,6 +40,8 @@ public class SelectKnobCommand extends AbstractContinuousCommand<FireControlSurf
     public SelectKnobCommand (final IModel model, final FireControlSurface surface)
     {
         super (model, surface);
+
+        this.timeout = new Timeout (model.getHost (), 500);
     }
 
 
@@ -51,6 +57,7 @@ public class SelectKnobCommand extends AbstractContinuousCommand<FireControlSurf
             final Mode mode = modeManager.getMode (Modes.NOTE);
             mode.onKnobTouch (4, true);
             mode.onKnobValue (4, value);
+            this.checkUntouch (4);
             return;
         }
 
@@ -59,6 +66,7 @@ public class SelectKnobCommand extends AbstractContinuousCommand<FireControlSurf
             final Mode mode = modeManager.getMode (Modes.BROWSER);
             mode.onKnobTouch (8, true);
             mode.onKnobValue (8, value);
+            this.checkUntouch (8);
             return;
         }
 
@@ -93,6 +101,17 @@ public class SelectKnobCommand extends AbstractContinuousCommand<FireControlSurf
         final View activeView = this.surface.getViewManager ().getActiveView ();
         if (activeView instanceof IFireView)
             ((IFireView) activeView).onSelectKnobValue (value);
+    }
+
+
+    /**
+     * The Select knob does not send touch data. Therefore, it must be simulated.
+     * 
+     * @param index The Select index 4 or 8
+     */
+    private void checkUntouch (final int index)
+    {
+        this.timeout.delay ( () -> this.surface.getModeManager ().getMode (Modes.NOTE).onKnobTouch (index, false));
     }
 
 

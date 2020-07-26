@@ -68,6 +68,9 @@ public class NoteMode extends BaseMode
     @Override
     public void setValue (final int index, final int value)
     {
+        if (this.clip == null)
+            return;
+
         final IValueChanger valueChanger = this.model.getValueChanger ();
         final double normalizedValue = valueChanger.toNormalizedValue (value);
         final IStepInfo stepInfo = this.clip.getStep (this.channel, this.step, this.note);
@@ -154,6 +157,9 @@ public class NoteMode extends BaseMode
     @Override
     public int getKnobValue (final int index)
     {
+        if (this.clip == null)
+            return -1;
+
         final IStepInfo stepInfo = this.clip.getStep (this.channel, this.step, this.note);
         final IValueChanger valueChanger = this.model.getValueChanger ();
 

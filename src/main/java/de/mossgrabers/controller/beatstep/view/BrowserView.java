@@ -11,8 +11,6 @@ import de.mossgrabers.framework.controller.grid.IPadGrid;
 import de.mossgrabers.framework.daw.IBrowser;
 import de.mossgrabers.framework.daw.IModel;
 import de.mossgrabers.framework.view.AbstractView;
-import de.mossgrabers.framework.view.ViewManager;
-import de.mossgrabers.framework.view.Views;
 
 
 /**
@@ -40,12 +38,7 @@ public class BrowserView extends AbstractView<BeatstepControlSurface, BeatstepCo
     {
         final IBrowser browser = this.model.getBrowser ();
         if (!browser.isActive ())
-        {
-            final ViewManager viewManager = this.surface.getViewManager ();
-            if (viewManager.isActiveView (Views.BROWSER))
-                viewManager.restoreView ();
             return;
-        }
 
         final int steps = (int) Math.abs (this.model.getValueChanger ().calcKnobSpeed (value, 1));
 

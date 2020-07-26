@@ -174,6 +174,8 @@ public class Kontrol1ControllerSetup extends AbstractControllerSetup<Kontrol1Con
             effectTrackBank.addSelectionObserver ( (index, isSelected) -> this.handleTrackChange (isSelected));
 
         this.configuration.registerDeactivatedItemsHandler (this.model);
+
+        this.activateBrowserObserver (Modes.BROWSER);
     }
 
 
@@ -212,7 +214,7 @@ public class Kontrol1ControllerSetup extends AbstractControllerSetup<Kontrol1Con
         this.addButton (ButtonID.MUTE, "Back", new BackButtonCommand (this.model, surface), Kontrol1ControlSurface.BUTTON_BACK, () -> this.getModeColor (ButtonID.MUTE));
         this.addButton (ButtonID.SOLO, "Enter", new EnterButtonCommand (this.model, surface), Kontrol1ControlSurface.BUTTON_ENTER, () -> this.getModeColor (ButtonID.SOLO));
 
-        this.addButton (ButtonID.BROWSE, "Browse", new BrowserCommand<> (Modes.BROWSER, this.model, surface), Kontrol1ControlSurface.BUTTON_BROWSE, () -> this.getModeColor (ButtonID.BROWSE));
+        this.addButton (ButtonID.BROWSE, "Browse", new BrowserCommand<> (this.model, surface), Kontrol1ControlSurface.BUTTON_BROWSE, () -> this.getModeColor (ButtonID.BROWSE));
         this.addButton (ButtonID.SHIFT, "Shift", NopCommand.INSTANCE, Kontrol1ControlSurface.BUTTON_SHIFT);
     }
 

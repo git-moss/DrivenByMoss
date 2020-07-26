@@ -159,15 +159,6 @@ public class SLControllerSetup extends AbstractControllerSetup<SLControlSurface,
 
     /** {@inheritDoc} */
     @Override
-    protected void createObservers ()
-    {
-        this.createScaleObservers (this.configuration);
-        this.configuration.registerDeactivatedItemsHandler (this.model);
-    }
-
-
-    /** {@inheritDoc} */
-    @Override
     protected void createModes ()
     {
         final SLControlSurface surface = this.getSurface ();
@@ -195,6 +186,17 @@ public class SLControllerSetup extends AbstractControllerSetup<SLControlSurface,
         final ViewManager viewManager = surface.getViewManager ();
         viewManager.registerView (Views.PLAY, new PlayView (surface, this.model));
         viewManager.registerView (Views.CONTROL, new ControlView (surface, this.model));
+    }
+
+
+    /** {@inheritDoc} */
+    @Override
+    protected void createObservers ()
+    {
+        this.createScaleObservers (this.configuration);
+        this.configuration.registerDeactivatedItemsHandler (this.model);
+
+        this.activateBrowserObserver (Modes.BROWSER);
     }
 
 

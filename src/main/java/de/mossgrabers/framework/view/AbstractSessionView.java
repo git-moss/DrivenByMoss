@@ -17,8 +17,6 @@ import de.mossgrabers.framework.daw.data.ITrack;
 import de.mossgrabers.framework.daw.data.bank.ISceneBank;
 import de.mossgrabers.framework.daw.data.bank.ISlotBank;
 import de.mossgrabers.framework.daw.data.bank.ITrackBank;
-import de.mossgrabers.framework.mode.BrowserActivator;
-import de.mossgrabers.framework.mode.Modes;
 import de.mossgrabers.framework.utils.ButtonEvent;
 import de.mossgrabers.framework.utils.Pair;
 
@@ -34,29 +32,27 @@ import de.mossgrabers.framework.utils.Pair;
 public abstract class AbstractSessionView<S extends IControlSurface<C>, C extends Configuration> extends AbstractView<S, C>
 {
     /** The color for a scene. */
-    public static final String             COLOR_SCENE                = "COLOR_SCENE";
+    public static final String COLOR_SCENE                = "COLOR_SCENE";
     /** The color for a selected scene. */
-    public static final String             COLOR_SELECTED_SCENE       = "COLOR_SELECTED_SCENE";
+    public static final String COLOR_SELECTED_SCENE       = "COLOR_SELECTED_SCENE";
     /** The color for no scene. */
-    public static final String             COLOR_SCENE_OFF            = "COLOR_SELECTED_OFF";
+    public static final String COLOR_SCENE_OFF            = "COLOR_SELECTED_OFF";
 
     // Needs to be overwritten with device specific colors
-    protected SessionColor                 clipColorIsRecording       = new SessionColor (0, -1, false);
-    protected SessionColor                 clipColorIsRecordingQueued = new SessionColor (1, -1, false);
-    protected SessionColor                 clipColorIsPlaying         = new SessionColor (2, -1, false);
-    protected SessionColor                 clipColorIsPlayingQueued   = new SessionColor (3, -1, false);
-    protected SessionColor                 clipColorHasContent        = new SessionColor (4, -1, false);
-    protected SessionColor                 clipColorHasNoContent      = new SessionColor (5, -1, false);
-    protected SessionColor                 clipColorIsRecArmed        = new SessionColor (6, -1, false);
+    protected SessionColor     clipColorIsRecording       = new SessionColor (0, -1, false);
+    protected SessionColor     clipColorIsRecordingQueued = new SessionColor (1, -1, false);
+    protected SessionColor     clipColorIsPlaying         = new SessionColor (2, -1, false);
+    protected SessionColor     clipColorIsPlayingQueued   = new SessionColor (3, -1, false);
+    protected SessionColor     clipColorHasContent        = new SessionColor (4, -1, false);
+    protected SessionColor     clipColorHasNoContent      = new SessionColor (5, -1, false);
+    protected SessionColor     clipColorIsRecArmed        = new SessionColor (6, -1, false);
 
-    protected SessionColor                 birdColorHasContent        = new SessionColor (4, -1, false);
-    protected SessionColor                 birdColorSelected          = new SessionColor (2, -1, false);
+    protected SessionColor     birdColorHasContent        = new SessionColor (4, -1, false);
+    protected SessionColor     birdColorSelected          = new SessionColor (2, -1, false);
 
-    protected final BrowserActivator<S, C> browserModeActivator;
-
-    protected int                          rows;
-    protected int                          columns;
-    protected boolean                      useClipColor;
+    protected int              rows;
+    protected int              columns;
+    protected boolean          useClipColor;
 
 
     /**
@@ -77,8 +73,6 @@ public abstract class AbstractSessionView<S extends IControlSurface<C>, C extend
         this.rows = rows;
         this.columns = columns;
         this.useClipColor = useClipColor;
-
-        this.browserModeActivator = new BrowserActivator<> (Modes.BROWSER, model, surface);
     }
 
 
@@ -203,8 +197,6 @@ public abstract class AbstractSessionView<S extends IControlSurface<C>, C extend
         if (this.isButtonCombination (ButtonID.BROWSE))
         {
             this.model.getBrowser ().replace (slot);
-            if (!this.surface.getModeManager ().isActiveOrTempMode (Modes.BROWSER))
-                this.browserModeActivator.activate ();
             return true;
         }
 

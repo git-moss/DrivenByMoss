@@ -4,11 +4,14 @@
 
 package de.mossgrabers.controller.apc;
 
+import de.mossgrabers.controller.apc.command.continuous.APCPlayPositionCommand;
+import de.mossgrabers.controller.apc.command.continuous.APCTempoCommand;
 import de.mossgrabers.controller.apc.command.trigger.APCBrowserCommand;
 import de.mossgrabers.controller.apc.command.trigger.APCCursorCommand;
 import de.mossgrabers.controller.apc.command.trigger.APCQuantizeCommand;
 import de.mossgrabers.controller.apc.command.trigger.APCRecordCommand;
 import de.mossgrabers.controller.apc.command.trigger.APCStopClipCommand;
+import de.mossgrabers.controller.apc.command.trigger.APCTapTempoCommand;
 import de.mossgrabers.controller.apc.command.trigger.SelectTrackSendOrClipLengthCommand;
 import de.mossgrabers.controller.apc.command.trigger.SendModeCommand;
 import de.mossgrabers.controller.apc.command.trigger.SessionRecordCommand;
@@ -30,8 +33,6 @@ import de.mossgrabers.framework.command.continuous.CrossfaderCommand;
 import de.mossgrabers.framework.command.continuous.FaderAbsoluteCommand;
 import de.mossgrabers.framework.command.continuous.KnobRowModeCommand;
 import de.mossgrabers.framework.command.continuous.MasterFaderAbsoluteCommand;
-import de.mossgrabers.framework.command.continuous.PlayPositionCommand;
-import de.mossgrabers.framework.command.continuous.TempoCommand;
 import de.mossgrabers.framework.command.trigger.application.PaneCommand;
 import de.mossgrabers.framework.command.trigger.application.PaneCommand.Panels;
 import de.mossgrabers.framework.command.trigger.application.PanelLayoutCommand;
@@ -55,7 +56,6 @@ import de.mossgrabers.framework.command.trigger.track.SoloCommand;
 import de.mossgrabers.framework.command.trigger.transport.MetronomeCommand;
 import de.mossgrabers.framework.command.trigger.transport.PlayCommand;
 import de.mossgrabers.framework.command.trigger.transport.StopCommand;
-import de.mossgrabers.framework.command.trigger.transport.TapTempoCommand;
 import de.mossgrabers.framework.command.trigger.view.ToggleShiftViewCommand;
 import de.mossgrabers.framework.command.trigger.view.ViewButtonCommand;
 import de.mossgrabers.framework.configuration.ISettingsUI;
@@ -81,7 +81,9 @@ import de.mossgrabers.framework.daw.midi.IMidiOutput;
 import de.mossgrabers.framework.mode.ModeManager;
 import de.mossgrabers.framework.mode.Modes;
 import de.mossgrabers.framework.scale.Scales;
+import de.mossgrabers.framework.utils.Timeout;
 import de.mossgrabers.framework.view.AbstractSequencerView;
+import de.mossgrabers.framework.view.TempoView;
 import de.mossgrabers.framework.view.View;
 import de.mossgrabers.framework.view.ViewManager;
 import de.mossgrabers.framework.view.Views;
@@ -165,6 +167,8 @@ public class APCControllerSetup extends AbstractControllerSetup<APCControlSurfac
         this.createScaleObservers (this.configuration);
 
         this.configuration.registerDeactivatedItemsHandler (this.model);
+
+        this.activateBrowserObserver (Modes.BROWSER);
     }
 
 
@@ -195,6 +199,7 @@ public class APCControllerSetup extends AbstractControllerSetup<APCControlSurfac
         viewManager.registerView (Views.DRUM, new DrumView (surface, this.model));
         viewManager.registerView (Views.RAINDROPS, new RaindropsView (surface, this.model));
         viewManager.registerView (Views.SHIFT, new ShiftView (surface, this.model));
+        viewManager.registerView (Views.TEMPO, new TempoView<> (surface, this.model, this.isMkII ? APCColorManager.APC_MKII_COLOR_BLUE : APCColorManager.APC_COLOR_GREEN, this.isMkII ? APCColorManager.APC_MKII_COLOR_WHITE : APCColorManager.APC_COLOR_YELLOW, APCColorManager.APC_COLOR_BLACK));
     }
 
 
@@ -210,7 +215,7 @@ public class APCControllerSetup extends AbstractControllerSetup<APCControlSurfac
         this.addButton (ButtonID.SHIFT, "SHIFT", new ToggleShiftViewCommand<> (this.model, surface), APCControlSurface.APC_BUTTON_SHIFT);
         this.addButton (ButtonID.PLAY, "PLAY", new PlayCommand<> (this.model, surface), APCControlSurface.APC_BUTTON_PLAY, t::isPlaying, ColorManager.BUTTON_STATE_OFF, ColorManager.BUTTON_STATE_ON);
         this.addButton (ButtonID.RECORD, "RECORD", new APCRecordCommand (this.model, surface), APCControlSurface.APC_BUTTON_RECORD, t::isRecording, ColorManager.BUTTON_STATE_OFF, ColorManager.BUTTON_STATE_ON);
-        this.addButton (ButtonID.TAP_TEMPO, "Tempo", new TapTempoCommand<> (this.model, surface), APCControlSurface.APC_BUTTON_TAP_TEMPO);
+        this.addButton (ButtonID.TAP_TEMPO, "Tempo", new APCTapTempoCommand (this.model, surface), APCControlSurface.APC_BUTTON_TAP_TEMPO);
         this.addButton (ButtonID.QUANTIZE, this.isMkII ? "DEV.LOCK" : "REC QUANTIZATION", new APCQuantizeCommand (this.model, surface), APCControlSurface.APC_BUTTON_REC_QUANT, () -> surface.isPressed (ButtonID.QUANTIZE) ? 1 : 0, ColorManager.BUTTON_STATE_OFF, ColorManager.BUTTON_STATE_ON);
         this.addButton (ButtonID.MASTERTRACK, "Master", new MasterCommand<> (this.model, surface), APCControlSurface.APC_BUTTON_MASTER, this.model.getMasterTrack ()::isSelected, ColorManager.BUTTON_STATE_OFF, ColorManager.BUTTON_STATE_ON);
         // Note: the stop-all-clips button has no LED
@@ -305,7 +310,9 @@ public class APCControllerSetup extends AbstractControllerSetup<APCControlSurfac
         final APCControlSurface surface = this.getSurface ();
 
         this.addFader (ContinuousID.MASTER_KNOB, "Master", new MasterFaderAbsoluteCommand<> (this.model, surface), BindType.CC, APCControlSurface.APC_KNOB_MASTER_LEVEL);
-        this.addRelativeKnob (ContinuousID.PLAY_POSITION, "Play Position", new PlayPositionCommand<> (this.model, surface), APCControlSurface.APC_KNOB_CUE_LEVEL);
+
+        final Timeout timeout = ((APCTapTempoCommand) surface.getButton (ButtonID.TAP_TEMPO).getCommand ()).getTimeout ();
+        this.addRelativeKnob (ContinuousID.PLAY_POSITION, "Play Position", new APCPlayPositionCommand (this.model, surface, timeout), APCControlSurface.APC_KNOB_CUE_LEVEL);
         this.addFader (ContinuousID.CROSSFADER, "Crossfader", new CrossfaderCommand<> (this.model, surface), BindType.CC, APCControlSurface.APC_KNOB_CROSSFADER, false);
 
         for (int i = 0; i < 8; i++)
@@ -316,7 +323,7 @@ public class APCControllerSetup extends AbstractControllerSetup<APCControlSurfac
         }
 
         if (this.isMkII)
-            this.addRelativeKnob (ContinuousID.TEMPO, "Tempo", new TempoCommand<> (this.model, surface), APCControlSurface.APC_KNOB_TEMPO);
+            this.addRelativeKnob (ContinuousID.TEMPO, "Tempo", new APCTempoCommand (this.model, surface, timeout), APCControlSurface.APC_KNOB_TEMPO);
     }
 
 

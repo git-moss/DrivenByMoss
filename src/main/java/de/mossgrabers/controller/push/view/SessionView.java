@@ -131,4 +131,18 @@ public class SessionView extends AbstractSessionView<PushControlSurface, PushCon
     {
         return this.model.getCurrentTrackBank ().getSceneBank ().canScrollPageBackwards ();
     }
+
+
+    /** {@inheritDoc} */
+    @Override
+    public void onButton (final ButtonID buttonID, final ButtonEvent event, final int velocity)
+    {
+        super.onButton (buttonID, event, velocity);
+
+        if (ButtonID.isSceneButton (buttonID) && event == ButtonEvent.UP)
+        {
+            final TriggerCommand triggerCommand = this.surface.getButton (ButtonID.SESSION).getCommand ();
+            ((SelectSessionViewCommand) triggerCommand).setTemporary ();
+        }
+    }
 }

@@ -71,6 +71,12 @@ public class NoteMode extends AbstractMode<FireControlSurface, FireConfiguration
     @Override
     public void onKnobTouch (final int index, final boolean isTouched)
     {
+        if (this.clip == null)
+            return;
+
+        if (this.isKnobTouched[index] == isTouched)
+            return;
+
         this.isKnobTouched[index] = isTouched;
         this.clip.edit (this.channel, this.step, this.note, isTouched);
     }
@@ -80,6 +86,9 @@ public class NoteMode extends AbstractMode<FireControlSurface, FireConfiguration
     @Override
     public void onKnobValue (final int index, final int value)
     {
+        if (this.clip == null)
+            return;
+
         switch (index)
         {
             case 0:
@@ -121,6 +130,9 @@ public class NoteMode extends AbstractMode<FireControlSurface, FireConfiguration
     @Override
     public void updateDisplay ()
     {
+        if (this.clip == null)
+            return;
+
         final IGraphicDisplay display = this.surface.getGraphicsDisplay ();
 
         final String desc = "Step: " + (this.step + 1) + " - " + Scales.formatNoteAndOctave (this.note, -3);

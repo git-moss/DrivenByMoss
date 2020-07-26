@@ -19,6 +19,8 @@ import java.util.TreeMap;
  */
 public abstract class BlinkingPadGrid extends PadGridImpl
 {
+    protected static final int              BLINK_SPEED    = 600;
+
     protected final Map<Integer, LightInfo> blinkingLights = new HashMap<> ();
     protected final Map<Integer, LightInfo> padInfos       = new TreeMap<> ();
     protected boolean                       isBlink;
@@ -92,5 +94,18 @@ public abstract class BlinkingPadGrid extends PadGridImpl
             info.setBlinkColor (blinkColor);
             info.setFast (fast);
         }
+    }
+
+
+    protected boolean checkBlinking ()
+    {
+        final long now = System.currentTimeMillis ();
+        if (now - this.updateTime > BLINK_SPEED)
+        {
+            this.updateTime = now;
+            this.isBlink = !this.isBlink;
+            return true;
+        }
+        return false;
     }
 }

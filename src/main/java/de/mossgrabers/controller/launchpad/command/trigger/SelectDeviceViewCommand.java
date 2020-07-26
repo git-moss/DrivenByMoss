@@ -9,7 +9,6 @@ import de.mossgrabers.controller.launchpad.controller.LaunchpadControlSurface;
 import de.mossgrabers.framework.command.core.AbstractTriggerCommand;
 import de.mossgrabers.framework.daw.IModel;
 import de.mossgrabers.framework.daw.data.ICursorDevice;
-import de.mossgrabers.framework.mode.BrowserActivator;
 import de.mossgrabers.framework.utils.ButtonEvent;
 import de.mossgrabers.framework.view.ViewManager;
 import de.mossgrabers.framework.view.Views;
@@ -22,9 +21,6 @@ import de.mossgrabers.framework.view.Views;
  */
 public class SelectDeviceViewCommand extends AbstractTriggerCommand<LaunchpadControlSurface, LaunchpadConfiguration>
 {
-    private final BrowserActivator<LaunchpadControlSurface, LaunchpadConfiguration> browserModeActivator;
-
-
     /**
      * Constructor.
      *
@@ -34,8 +30,6 @@ public class SelectDeviceViewCommand extends AbstractTriggerCommand<LaunchpadCon
     public SelectDeviceViewCommand (final IModel model, final LaunchpadControlSurface surface)
     {
         super (model, surface);
-
-        this.browserModeActivator = new BrowserActivator<> (Views.BROWSER, model, surface);
     }
 
 
@@ -70,8 +64,6 @@ public class SelectDeviceViewCommand extends AbstractTriggerCommand<LaunchpadCon
                 this.model.getBrowser ().insertAfterCursorDevice ();
             else
                 this.model.getBrowser ().replace (cursorDevice);
-
-            this.browserModeActivator.activate ();
             return;
         }
 

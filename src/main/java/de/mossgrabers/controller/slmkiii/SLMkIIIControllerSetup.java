@@ -149,18 +149,6 @@ public class SLMkIIIControllerSetup extends AbstractControllerSetup<SLMkIIIContr
 
     /** {@inheritDoc} */
     @Override
-    protected void createObservers ()
-    {
-        this.createScaleObservers (this.configuration);
-
-        this.configuration.registerDeactivatedItemsHandler (this.model);
-
-        this.getSurface ().getModeManager ().addModeListener ( (oldMode, newMode) -> this.updateIndication (newMode));
-    }
-
-
-    /** {@inheritDoc} */
-    @Override
     protected void createModes ()
     {
         final SLMkIIIControlSurface surface = this.getSurface ();
@@ -190,6 +178,20 @@ public class SLMkIIIControllerSetup extends AbstractControllerSetup<SLMkIIIContr
         viewManager.registerView (Views.SESSION, new SessionView (surface, this.model));
         viewManager.registerView (Views.DRUM, new DrumView (surface, this.model));
         viewManager.registerView (Views.COLOR, new ColorView (surface, this.model));
+    }
+
+
+    /** {@inheritDoc} */
+    @Override
+    protected void createObservers ()
+    {
+        this.createScaleObservers (this.configuration);
+
+        this.configuration.registerDeactivatedItemsHandler (this.model);
+
+        this.getSurface ().getModeManager ().addModeListener ( (oldMode, newMode) -> this.updateIndication (newMode));
+
+        this.activateBrowserObserver (Modes.BROWSER);
     }
 
 

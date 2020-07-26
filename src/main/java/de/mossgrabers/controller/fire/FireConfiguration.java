@@ -5,6 +5,7 @@
 package de.mossgrabers.controller.fire;
 
 import de.mossgrabers.framework.configuration.AbstractConfiguration;
+import de.mossgrabers.framework.configuration.IEnumSetting;
 import de.mossgrabers.framework.configuration.ISettingsUI;
 import de.mossgrabers.framework.controller.valuechanger.IValueChanger;
 import de.mossgrabers.framework.daw.IHost;
@@ -60,7 +61,13 @@ public class FireConfiguration extends AbstractConfiguration
         // Transport
 
         this.activateBehaviourOnStopSetting (globalSettings);
-        this.activateFlipRecordSetting (globalSettings);
+
+        // Corrected label (removed automation)
+        final IEnumSetting flipRecordSetting = globalSettings.getEnumSetting ("Flip arranger and clip record", CATEGORY_TRANSPORT, ON_OFF_OPTIONS, ON_OFF_OPTIONS[0]);
+        flipRecordSetting.addValueObserver (value -> {
+            this.flipRecord = "On".equals (value);
+            this.notifyObservers (FLIP_RECORD);
+        });
 
         ///////////////////////////
         // Play and Sequence
@@ -72,10 +79,9 @@ public class FireConfiguration extends AbstractConfiguration
 
         ///////////////////////////
         // Drum Sequencer
+
         if (this.host.hasDrumDevice ())
-        {
             this.activateTurnOffEmptyDrumPadsSetting (globalSettings);
-        }
 
         ///////////////////////////
         // Workflow

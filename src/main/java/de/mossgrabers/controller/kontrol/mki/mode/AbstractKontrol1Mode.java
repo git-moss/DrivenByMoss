@@ -33,8 +33,6 @@ public abstract class AbstractKontrol1Mode extends AbstractMode<Kontrol1ControlS
     public AbstractKontrol1Mode (final String name, final Kontrol1ControlSurface surface, final IModel model)
     {
         super (name, surface, model);
-
-        this.isTemporary = false;
     }
 
 
@@ -49,6 +47,8 @@ public abstract class AbstractKontrol1Mode extends AbstractMode<Kontrol1ControlS
     public AbstractKontrol1Mode (final String name, final Kontrol1ControlSurface surface, final IModel model, final IBank<? extends IItem> bank)
     {
         super (name, surface, model, false, bank, null, 0);
+
+        this.isTemporary = false;
     }
 
 

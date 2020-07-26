@@ -168,11 +168,8 @@ public class BrowserMode extends BaseMode
     public void updateDisplay ()
     {
         final IBrowser browser = this.model.getBrowser ();
-        if (browser == null || !browser.isActive ())
-        {
-            this.surface.getModeManager ().restoreMode ();
+        if (!browser.isActive ())
             return;
-        }
 
         final SLMkIIIDisplay d = this.surface.getDisplay ();
         d.clear ();

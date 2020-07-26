@@ -15,7 +15,6 @@ import de.mossgrabers.framework.daw.IModel;
 import de.mossgrabers.framework.utils.ButtonEvent;
 import de.mossgrabers.framework.view.AbstractView;
 import de.mossgrabers.framework.view.ViewManager;
-import de.mossgrabers.framework.view.Views;
 
 
 /**
@@ -85,11 +84,7 @@ public class BrowserView extends AbstractView<APCminiControlSurface, APCminiConf
         final IBrowser browser = this.model.getBrowser ();
         final ViewManager viewManager = this.surface.getViewManager ();
         if (!browser.isActive ())
-        {
-            if (viewManager.isActiveView (Views.BROWSER))
-                viewManager.restoreView ();
             return;
-        }
 
         int n = this.surface.getPadGrid ().translateToController (note)[1];
         switch (n)

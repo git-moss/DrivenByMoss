@@ -172,10 +172,7 @@ public class DeviceBrowserMode extends BaseMode
     {
         final IBrowser browser = this.model.getBrowser ();
         if (!browser.isActive ())
-        {
-            this.surface.getModeManager ().restoreMode ();
             return;
-        }
 
         switch (this.selectionMode)
         {
@@ -251,10 +248,7 @@ public class DeviceBrowserMode extends BaseMode
     {
         final IBrowser browser = this.model.getBrowser ();
         if (!browser.isActive ())
-        {
-            this.surface.getModeManager ().restoreMode ();
             return;
-        }
 
         switch (this.selectionMode)
         {

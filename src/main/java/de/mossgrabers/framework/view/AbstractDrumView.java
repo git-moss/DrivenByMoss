@@ -21,8 +21,6 @@ import de.mossgrabers.framework.daw.data.IDrumPad;
 import de.mossgrabers.framework.daw.data.ITrack;
 import de.mossgrabers.framework.daw.data.bank.IDrumPadBank;
 import de.mossgrabers.framework.daw.data.bank.ITrackBank;
-import de.mossgrabers.framework.mode.BrowserActivator;
-import de.mossgrabers.framework.mode.Modes;
 import de.mossgrabers.framework.utils.ButtonEvent;
 
 import java.util.function.IntUnaryOperator;
@@ -41,35 +39,34 @@ import java.util.function.IntUnaryOperator;
 public abstract class AbstractDrumView<S extends IControlSurface<C>, C extends Configuration> extends AbstractSequencerView<S, C> implements TransposeView
 {
     /** The color ID for the recording state. */
-    public static final String             COLOR_PAD_RECORD      = "COLOR_PAD_RECORD";
+    public static final String COLOR_PAD_RECORD      = "COLOR_PAD_RECORD";
     /** The color ID for the play state. */
-    public static final String             COLOR_PAD_PLAY        = "COLOR_PAD_PLAY";
+    public static final String COLOR_PAD_PLAY        = "COLOR_PAD_PLAY";
     /** The color ID for the selected state. */
-    public static final String             COLOR_PAD_SELECTED    = "COLOR_PAD_SELECTED";
+    public static final String COLOR_PAD_SELECTED    = "COLOR_PAD_SELECTED";
     /** The color ID for the mute state. */
-    public static final String             COLOR_PAD_MUTED       = "COLOR_PAD_MUTED";
+    public static final String COLOR_PAD_MUTED       = "COLOR_PAD_MUTED";
     /** The color ID for the has-content state. */
-    public static final String             COLOR_PAD_HAS_CONTENT = "COLOR_PAD_HAS_CONTENT";
+    public static final String COLOR_PAD_HAS_CONTENT = "COLOR_PAD_HAS_CONTENT";
     /** The color ID for the no-content state. */
-    public static final String             COLOR_PAD_NO_CONTENT  = "COLOR_PAD_NO_CONTENT";
+    public static final String COLOR_PAD_NO_CONTENT  = "COLOR_PAD_NO_CONTENT";
     /** The color ID for the off state. */
-    public static final String             COLOR_PAD_OFF         = "COLOR_PAD_OFF";
+    public static final String COLOR_PAD_OFF         = "COLOR_PAD_OFF";
 
-    protected static final int             DRUM_START_KEY        = 36;
-    protected static final int             GRID_COLUMNS          = 8;
+    protected static final int DRUM_START_KEY        = 36;
+    protected static final int GRID_COLUMNS          = 8;
 
-    protected int                          loopPadPressed        = -1;
-    protected int                          sequencerLines;
-    protected int                          playRows;
-    protected int                          numColumns;
-    protected int                          allRows;
-    protected int                          sequencerSteps;
-    protected int                          playColumns;
-    protected IStepInfo                    copyNote;
+    protected int              loopPadPressed        = -1;
+    protected int              sequencerLines;
+    protected int              playRows;
+    protected int              numColumns;
+    protected int              allRows;
+    protected int              sequencerSteps;
+    protected int              playColumns;
+    protected IStepInfo        copyNote;
 
-    protected int                          selectedPad;
-    protected final BrowserActivator<S, C> browserModeActivator;
-    protected int                          scrollPosition        = -1;
+    protected int              selectedPad;
+    protected int              scrollPosition        = -1;
 
 
     /**
@@ -119,8 +116,6 @@ public abstract class AbstractDrumView<S extends IControlSurface<C>, C extends C
         final ITrackBank tb = model.getTrackBank ();
         tb.addSelectionObserver ( (index, isSelected) -> this.keyManager.clearPressedKeys ());
         tb.addNoteObserver (this::updateNote);
-
-        this.browserModeActivator = new BrowserActivator<> (Modes.BROWSER, model, surface);
 
         if (followSelection)
         {
@@ -569,7 +564,6 @@ public abstract class AbstractDrumView<S extends IControlSurface<C>, C extends C
             final IDrumPadBank drumPadBank = primary.getDrumPadBank ();
             this.scrollPosition = drumPadBank.getScrollPosition ();
             this.model.getBrowser ().replace (drumPadBank.getItem (playedPad));
-            this.browserModeActivator.activate ();
             return;
         }
 

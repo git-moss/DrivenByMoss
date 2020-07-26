@@ -11,7 +11,6 @@ import de.mossgrabers.framework.daw.IBrowser;
 import de.mossgrabers.framework.daw.IModel;
 import de.mossgrabers.framework.daw.data.IBrowserColumn;
 import de.mossgrabers.framework.daw.data.IBrowserColumnItem;
-import de.mossgrabers.framework.mode.Modes;
 import de.mossgrabers.framework.utils.ButtonEvent;
 
 
@@ -30,7 +29,7 @@ public class AddDeviceCommand extends AddEffectCommand<MaschineControlSurface, M
      */
     public AddDeviceCommand (final IModel model, final MaschineControlSurface surface)
     {
-        super (Modes.BROWSER, model, surface);
+        super (model, surface);
     }
 
 

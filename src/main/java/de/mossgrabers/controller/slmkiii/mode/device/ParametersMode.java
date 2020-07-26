@@ -17,7 +17,6 @@ import de.mossgrabers.framework.daw.data.IParameter;
 import de.mossgrabers.framework.daw.data.bank.IDeviceBank;
 import de.mossgrabers.framework.daw.data.bank.IParameterBank;
 import de.mossgrabers.framework.daw.data.bank.IParameterPageBank;
-import de.mossgrabers.framework.mode.Modes;
 import de.mossgrabers.framework.utils.ButtonEvent;
 import de.mossgrabers.framework.utils.StringUtils;
 
@@ -46,7 +45,7 @@ public class ParametersMode extends AbstractParametersMode
 
         this.setShowDevices (true);
 
-        this.browserCommand = new BrowserCommand<> (Modes.BROWSER, model, surface);
+        this.browserCommand = new BrowserCommand<> (model, surface);
     }
 
 

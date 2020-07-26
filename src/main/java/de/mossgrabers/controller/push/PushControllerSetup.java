@@ -326,6 +326,9 @@ public class PushControllerSetup extends AbstractControllerSetup<PushControlSurf
     @Override
     protected void createObservers ()
     {
+        ////////////////////////////////////////////////////////////////////
+        // Configuration observers
+
         final PushControlSurface surface = this.getSurface ();
         if (this.configuration.isPush2 ())
         {
@@ -349,9 +352,6 @@ public class PushControllerSetup extends AbstractControllerSetup<PushControlSurf
             this.configuration.addSettingObserver (PushConfiguration.VELOCITY_CURVE, surface::sendPadSensitivity);
             this.configuration.addSettingObserver (PushConfiguration.PAD_THRESHOLD, surface::sendPadSensitivity);
         }
-
-        surface.getModeManager ().addModeListener ( (oldMode, newMode) -> this.updateMode (newMode));
-        surface.getViewManager ().addViewChangeListener ( (previousViewId, activeViewId) -> this.onViewChange ());
 
         this.configuration.addSettingObserver (PushConfiguration.RIBBON_MODE, this::updateRibbonMode);
         this.configuration.addSettingObserver (PushConfiguration.RIBBON_MODE_NOTE_REPEAT, this::updateRibbonMode);
@@ -411,6 +411,14 @@ public class PushControllerSetup extends AbstractControllerSetup<PushControlSurf
 
         this.createScaleObservers (this.configuration);
         this.createNoteRepeatObservers (this.configuration, surface);
+
+        ////////////////////////////////////////////////////////////////////
+        // Other observers
+
+        surface.getModeManager ().addModeListener ( (oldMode, newMode) -> this.updateMode (newMode));
+        surface.getViewManager ().addViewChangeListener ( (previousViewId, activeViewId) -> this.onViewChange ());
+
+        this.activateBrowserObserver (Modes.BROWSER);
     }
 
 
@@ -495,7 +503,7 @@ public class PushControllerSetup extends AbstractControllerSetup<PushControlSurf
 
         this.addButton (ButtonID.TRACK, this.isPush2 ? "Mix" : "Track", new TrackCommand (this.model, surface), PushControlSurface.PUSH_BUTTON_TRACK, () -> this.isPush2 ? Modes.isMixMode (modeManager.getActiveOrTempModeId ()) : modeManager.isActiveOrTempMode (Modes.TRACK));
         this.addButton (ButtonID.DEVICE, "Device", new DeviceCommand (this.model, surface), PushControlSurface.PUSH_BUTTON_DEVICE, () -> Modes.isDeviceMode (modeManager.getActiveOrTempModeId ()));
-        this.addButton (ButtonID.BROWSE, "Browse", new BrowserCommand<> (Modes.BROWSER, this.model, surface), PushControlSurface.PUSH_BUTTON_BROWSE, () -> modeManager.isActiveOrTempMode (Modes.BROWSER));
+        this.addButton (ButtonID.BROWSE, "Browse", new BrowserCommand<> (this.model, surface), PushControlSurface.PUSH_BUTTON_BROWSE, () -> modeManager.isActiveOrTempMode (Modes.BROWSER));
         this.addButton (ButtonID.CLIP, "Clip", new ClipCommand (this.model, surface), PushControlSurface.PUSH_BUTTON_CLIP, () -> modeManager.isActiveOrTempMode (Modes.CLIP));
 
         for (int i = 0; i < 8; i++)
@@ -536,7 +544,7 @@ public class PushControllerSetup extends AbstractControllerSetup<PushControlSurf
         this.addButton (ButtonID.SOLO, "Solo", new SoloCommand (this.model, surface), PushControlSurface.PUSH_BUTTON_SOLO, this::getSoloState, PushColorManager.PUSH_BUTTON_STATE_SOLO_ON, PushColorManager.PUSH_BUTTON_STATE_SOLO_HI);
         this.addButton (ButtonID.SCALES, "Scale", new ScalesCommand (this.model, surface), PushControlSurface.PUSH_BUTTON_SCALES, () -> modeManager.isActiveOrTempMode (Modes.SCALES));
         this.addButton (ButtonID.ACCENT, "Accent", new AccentCommand (this.model, surface), PushControlSurface.PUSH_BUTTON_ACCENT, this.configuration::isAccentActive);
-        this.addButton (ButtonID.ADD_EFFECT, "Add Device", new AddEffectCommand<> (Modes.BROWSER, this.model, surface), PushControlSurface.PUSH_BUTTON_ADD_EFFECT);
+        this.addButton (ButtonID.ADD_EFFECT, "Add Device", new AddEffectCommand<> (this.model, surface, ButtonID.SHIFT, null), PushControlSurface.PUSH_BUTTON_ADD_EFFECT);
         this.addButton (ButtonID.ADD_TRACK, "Add Track", new AddTrackCommand<> (this.model, surface), PushControlSurface.PUSH_BUTTON_ADD_TRACK);
         this.addButton (ButtonID.NOTE, "Note", new SelectPlayViewCommand (this.model, surface), PushControlSurface.PUSH_BUTTON_NOTE, () -> !Views.isSessionView (viewManager.getActiveViewId ()));
 

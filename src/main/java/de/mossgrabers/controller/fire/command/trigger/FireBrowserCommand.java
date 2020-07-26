@@ -9,7 +9,6 @@ import de.mossgrabers.controller.fire.controller.FireControlSurface;
 import de.mossgrabers.framework.command.trigger.BrowserCommand;
 import de.mossgrabers.framework.controller.ButtonID;
 import de.mossgrabers.framework.daw.IModel;
-import de.mossgrabers.framework.mode.Modes;
 
 
 /**
@@ -22,13 +21,12 @@ public class FireBrowserCommand extends BrowserCommand<FireControlSurface, FireC
     /**
      * Constructor.
      *
-     * @param browserMode The ID of the mode to activate for browsing
      * @param model The model
      * @param surface The surface
      */
-    public FireBrowserCommand (final Modes browserMode, final IModel model, final FireControlSurface surface)
+    public FireBrowserCommand (final IModel model, final FireControlSurface surface)
     {
-        super (browserMode, model, surface, ButtonID.SHIFT, ButtonID.ALT);
+        super (model, surface, ButtonID.SHIFT, ButtonID.ALT);
     }
 
 

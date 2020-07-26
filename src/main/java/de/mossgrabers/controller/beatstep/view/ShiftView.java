@@ -117,19 +117,16 @@ public class ShiftView extends AbstractView<BeatstepControlSurface, BeatstepConf
             // Insert device before current
             case 5:
                 this.model.getBrowser ().insertBeforeCursorDevice ();
-                this.activateBrowserView ();
                 break;
 
             // Insert device after current
             case 6:
                 this.model.getBrowser ().insertAfterCursorDevice ();
-                this.activateBrowserView ();
                 break;
 
             // Open the browser
             case 7:
                 this.model.getBrowser ().replace (cursorDevice);
-                this.activateBrowserView ();
                 break;
 
             // Toggle window of VSTs
@@ -157,14 +154,5 @@ public class ShiftView extends AbstractView<BeatstepControlSurface, BeatstepConf
     public void onKnob (final int index, final int value, final boolean isTurnedRight)
     {
         // Knobs not used in Shift view
-    }
-
-
-    private void activateBrowserView ()
-    {
-        final ViewManager viewManager = this.surface.getViewManager ();
-        final Views previousViewId = viewManager.getPreviousViewId ();
-        viewManager.setActiveView (Views.BROWSER);
-        viewManager.setPreviousView (previousViewId);
     }
 }

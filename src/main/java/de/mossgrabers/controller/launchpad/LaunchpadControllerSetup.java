@@ -188,25 +188,6 @@ public class LaunchpadControllerSetup extends AbstractControllerSetup<LaunchpadC
 
     /** {@inheritDoc} */
     @Override
-    protected void createObservers ()
-    {
-        final LaunchpadControlSurface surface = this.getSurface ();
-
-        surface.getViewManager ().addViewChangeListener ( (previousViewId, activeViewId) -> {
-
-            surface.getLight (OutputID.LED1).clearCache ();
-            this.updateIndication (null);
-
-        });
-
-        this.configuration.registerDeactivatedItemsHandler (this.model);
-        this.createScaleObservers (this.configuration);
-        this.createNoteRepeatObservers (this.configuration, surface);
-    }
-
-
-    /** {@inheritDoc} */
-    @Override
     protected void createModes ()
     {
         final LaunchpadControlSurface surface = this.getSurface ();
@@ -254,6 +235,27 @@ public class LaunchpadControllerSetup extends AbstractControllerSetup<LaunchpadC
         viewManager.registerView (Views.TEMPO, new TempoView<> (surface, this.model, LaunchpadColorManager.LAUNCHPAD_COLOR_BLUE_HI, LaunchpadColorManager.LAUNCHPAD_COLOR_WHITE, LaunchpadColorManager.LAUNCHPAD_COLOR_BLACK));
         viewManager.registerView (Views.SHUFFLE, new ShuffleView<> (surface, this.model, LaunchpadColorManager.LAUNCHPAD_COLOR_PINK_HI, LaunchpadColorManager.LAUNCHPAD_COLOR_WHITE, LaunchpadColorManager.LAUNCHPAD_COLOR_BLACK));
         viewManager.registerView (Views.PROJECT, new ProjectView (surface, this.model));
+    }
+
+
+    /** {@inheritDoc} */
+    @Override
+    protected void createObservers ()
+    {
+        final LaunchpadControlSurface surface = this.getSurface ();
+
+        surface.getViewManager ().addViewChangeListener ( (previousViewId, activeViewId) -> {
+
+            surface.getLight (OutputID.LED1).clearCache ();
+            this.updateIndication (null);
+
+        });
+
+        this.configuration.registerDeactivatedItemsHandler (this.model);
+        this.createScaleObservers (this.configuration);
+        this.createNoteRepeatObservers (this.configuration, surface);
+
+        this.activateBrowserObserver (Views.BROWSER);
     }
 
 

@@ -58,7 +58,8 @@ public class BrowserImpl extends AbstractBrowser
         this.cursorDevice = cursorDevice;
 
         this.browser = browser;
-        this.browser.exists ().markInterested ();
+
+        this.browser.exists ().addValueObserver (this::fireActiveObserver);
         this.browser.selectedContentTypeIndex ().markInterested ();
         this.browser.selectedContentTypeName ().markInterested ();
         this.browser.contentTypeNames ().markInterested ();

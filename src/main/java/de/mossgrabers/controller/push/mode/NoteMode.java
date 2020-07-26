@@ -69,6 +69,9 @@ public class NoteMode extends BaseMode
     @Override
     public void onKnobTouch (final int index, final boolean isTouched)
     {
+        if (this.clip == null)
+            return;
+
         if (isTouched && this.surface.isDeletePressed ())
         {
             this.surface.setTriggerConsumed (ButtonID.DELETE);
@@ -126,6 +129,9 @@ public class NoteMode extends BaseMode
     @Override
     public void onKnobValue (final int index, final int value)
     {
+        if (this.clip == null)
+            return;
+
         switch (index)
         {
             case 0:
@@ -176,6 +182,9 @@ public class NoteMode extends BaseMode
     @Override
     public void updateDisplay1 (final ITextDisplay display)
     {
+        if (this.clip == null)
+            return;
+
         final IStepInfo stepInfo = this.clip.getStep (this.channel, this.step, this.note);
         final IValueChanger valueChanger = this.model.getValueChanger ();
 
@@ -231,6 +240,9 @@ public class NoteMode extends BaseMode
     @Override
     public void updateDisplay2 (final IGraphicDisplay display)
     {
+        if (this.clip == null)
+            return;
+
         final IStepInfo stepInfo = this.clip.getStep (this.channel, this.step, this.note);
         final double noteVelocity = stepInfo.getVelocity ();
 

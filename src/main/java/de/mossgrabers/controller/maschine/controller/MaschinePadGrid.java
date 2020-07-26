@@ -19,9 +19,6 @@ import java.util.Map.Entry;
  */
 public class MaschinePadGrid extends BlinkingPadGrid
 {
-    private static final int BLINK_SPEED = 600;
-
-
     /**
      * Constructor.
      *
@@ -58,19 +55,14 @@ public class MaschinePadGrid extends BlinkingPadGrid
         }
 
         // Toggle blink colors every 600ms
-        final long now = System.currentTimeMillis ();
-        if (now - this.updateTime > BLINK_SPEED)
+        if (!this.checkBlinking ())
+            return;
+        for (final Entry<Integer, LightInfo> value: this.blinkingLights.entrySet ())
         {
-            this.updateTime = now;
-            this.isBlink = !this.isBlink;
-
-            for (final Entry<Integer, LightInfo> value: this.blinkingLights.entrySet ())
-            {
-                final LightInfo info = value.getValue ();
-                final int colorIndex = this.isBlink ? info.getBlinkColor () : info.getColor ();
-                final int note = value.getKey ().intValue ();
-                this.output.sendNoteEx (channel, note, colorIndex);
-            }
+            final LightInfo info = value.getValue ();
+            final int colorIndex = this.isBlink ? info.getBlinkColor () : info.getColor ();
+            final int note = value.getKey ().intValue ();
+            this.output.sendNoteEx (channel, note, colorIndex);
         }
     }
 }

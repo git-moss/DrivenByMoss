@@ -6,9 +6,9 @@ package de.mossgrabers.framework.command.trigger.device;
 
 import de.mossgrabers.framework.command.trigger.BrowserCommand;
 import de.mossgrabers.framework.configuration.Configuration;
+import de.mossgrabers.framework.controller.ButtonID;
 import de.mossgrabers.framework.controller.IControlSurface;
 import de.mossgrabers.framework.daw.IModel;
-import de.mossgrabers.framework.mode.Modes;
 import de.mossgrabers.framework.utils.ButtonEvent;
 
 
@@ -25,13 +25,28 @@ public class AddEffectCommand<S extends IControlSurface<C>, C extends Configurat
     /**
      * Constructor.
      *
-     * @param browserMode The ID of the mode to activate for browsing
      * @param model The model
      * @param surface The surface
      */
-    public AddEffectCommand (final Modes browserMode, final IModel model, final S surface)
+    public AddEffectCommand (final IModel model, final S surface)
     {
-        super (browserMode, model, surface);
+        super (model, surface);
+    }
+
+
+    /**
+     * Constructor.
+     *
+     * @param model The model
+     * @param surface The surface
+     * @param firstTrigger If this button is pressed when the command is executed a new device is
+     *            inserted before the current one
+     * @param secondTrigger If this button is pressed when the command is executed a new device is
+     *            inserted after the current one
+     */
+    public AddEffectCommand (final IModel model, final S surface, final ButtonID firstTrigger, final ButtonID secondTrigger)
+    {
+        super (model, surface, firstTrigger, secondTrigger);
     }
 
 

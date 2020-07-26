@@ -115,12 +115,8 @@ public class FirePadGrid extends BlinkingPadGrid
         int length = this.padInfos.size ();
 
         // Toggle blink colors every 600ms
-        final long now = System.currentTimeMillis ();
-        if (now - this.updateTime > 600)
+        if (this.checkBlinking ())
         {
-            this.updateTime = now;
-            this.isBlink = !this.isBlink;
-
             length += this.blinkingLights.size ();
 
             for (final Entry<Integer, LightInfo> value: this.blinkingLights.entrySet ())

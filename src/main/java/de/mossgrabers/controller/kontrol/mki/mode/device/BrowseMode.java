@@ -43,6 +43,7 @@ public class BrowseMode extends AbstractKontrol1Mode
     public BrowseMode (final Kontrol1ControlSurface surface, final IModel model)
     {
         super ("Browse", surface, model);
+
         this.selectionMode = SELECTION_OFF;
         this.filterColumn = 0;
     }
@@ -94,10 +95,7 @@ public class BrowseMode extends AbstractKontrol1Mode
         final ITextDisplay d = this.surface.getTextDisplay ();
         final IBrowser browser = this.model.getBrowser ();
         if (!browser.isActive ())
-        {
-            this.surface.getModeManager ().restoreMode ();
             return;
-        }
 
         d.clear ();
 

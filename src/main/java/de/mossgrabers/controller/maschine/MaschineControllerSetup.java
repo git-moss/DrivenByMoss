@@ -207,21 +207,6 @@ public class MaschineControllerSetup extends AbstractControllerSetup<MaschineCon
 
     /** {@inheritDoc} */
     @Override
-    protected void createObservers ()
-    {
-        final MaschineControlSurface surface = this.getSurface ();
-
-        surface.getViewManager ().addViewChangeListener ( (previousViewId, activeViewId) -> this.updateMode (null));
-        surface.getModeManager ().addModeListener ( (previousModeId, activeModeId) -> this.updateMode (activeModeId));
-
-        this.configuration.registerDeactivatedItemsHandler (this.model);
-        this.createScaleObservers (this.configuration);
-        this.createNoteRepeatObservers (this.configuration, surface);
-    }
-
-
-    /** {@inheritDoc} */
-    @Override
     protected void createModes ()
     {
         final MaschineControlSurface surface = this.getSurface ();
@@ -275,6 +260,23 @@ public class MaschineControllerSetup extends AbstractControllerSetup<MaschineCon
 
         viewManager.registerView (Views.REPEAT_NOTE, new NoteRepeatView (surface, this.model));
         viewManager.registerView (Views.SHIFT, new ShiftView (surface, this.model));
+    }
+
+
+    /** {@inheritDoc} */
+    @Override
+    protected void createObservers ()
+    {
+        final MaschineControlSurface surface = this.getSurface ();
+
+        surface.getViewManager ().addViewChangeListener ( (previousViewId, activeViewId) -> this.updateMode (null));
+        surface.getModeManager ().addModeListener ( (previousModeId, activeModeId) -> this.updateMode (activeModeId));
+
+        this.configuration.registerDeactivatedItemsHandler (this.model);
+        this.createScaleObservers (this.configuration);
+        this.createNoteRepeatObservers (this.configuration, surface);
+
+        this.activateBrowserObserver (Modes.BROWSER);
     }
 
 
@@ -427,7 +429,7 @@ public class MaschineControllerSetup extends AbstractControllerSetup<MaschineCon
         // Browser
         this.addButton (ButtonID.ADD_TRACK, this.maschine.hasCursorKeys () ? "File" : "Project", new ProjectButtonCommand (this.model, surface), MaschineControlSurface.PROJECT);
         this.addButton (ButtonID.ADD_EFFECT, this.maschine.hasCursorKeys () ? "Settings" : "Favorites", new AddDeviceCommand (this.model, surface), MaschineControlSurface.FAVORITES);
-        this.addButton (ButtonID.BROWSE, "Browser", new BrowserCommand<> (Modes.BROWSER, this.model, surface)
+        this.addButton (ButtonID.BROWSE, "Browser", new BrowserCommand<> (this.model, surface)
         {
             /** {@inheritDoc} */
             @Override

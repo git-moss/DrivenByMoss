@@ -230,6 +230,8 @@ public class GenericFlexiControllerSetup extends AbstractControllerSetup<Generic
         this.createNoteRepeatObservers (this.configuration, surface);
 
         this.configuration.registerDeactivatedItemsHandler (this.model);
+
+        this.activateBrowserObserver (Modes.BROWSER);
     }
 
 

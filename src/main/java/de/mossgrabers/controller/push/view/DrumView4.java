@@ -49,7 +49,7 @@ public class DrumView4 extends DrumViewBase
     @Override
     public void onGridNote (final int note, final int velocity)
     {
-        if (!this.isActive () || velocity == 0)
+        if (!this.isActive () || velocity != 0)
             return;
 
         final int index = note - DRUM_START_KEY;
@@ -61,7 +61,7 @@ public class DrumView4 extends DrumViewBase
         final int row = this.scales.getDrumOffset () + this.getSelectedPad () + sound;
 
         final int channel = this.configuration.getMidiEditChannel ();
-        final int vel = this.configuration.isAccentActive () ? this.configuration.getFixedAccentValue () : velocity;
+        final int vel = this.configuration.isAccentActive () ? this.configuration.getFixedAccentValue () : this.surface.getButton (ButtonID.get (ButtonID.PAD1, index)).getPressedVelocity ();
         final INoteClip clip = this.getClip ();
 
         if (this.handleNoteAreaButtonCombinations (clip, channel, col, y, row, vel))

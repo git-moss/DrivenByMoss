@@ -131,7 +131,6 @@ public class DrumView4 extends AbstractDrumView<FireControlSurface, FireConfigur
                 final IDrumPadBank drumPadBank = this.primary.getDrumPadBank ();
                 this.scrollPosition = drumPadBank.getScrollPosition ();
                 this.model.getBrowser ().replace (drumPadBank.getItem (row));
-                this.browserModeActivator.activate ();
             }
             return true;
         }

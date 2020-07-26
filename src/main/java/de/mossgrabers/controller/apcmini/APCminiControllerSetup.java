@@ -150,34 +150,6 @@ public class APCminiControllerSetup extends AbstractControllerSetup<APCminiContr
 
     /** {@inheritDoc} */
     @Override
-    protected void createObservers ()
-    {
-        final APCminiControlSurface surface = this.getSurface ();
-        surface.getViewManager ().addViewChangeListener ( (previousViewId, activeViewId) -> this.updateMode (null));
-        surface.getModeManager ().addModeListener ( (previousModeId, activeModeId) -> this.updateMode (activeModeId));
-        this.createScaleObservers (this.configuration);
-
-        this.configuration.addSettingObserver (APCminiConfiguration.FADER_CTRL, () -> {
-            final Modes modeID = FADER_CTRL_MODES.get (this.configuration.getFaderCtrl ());
-            if (modeID != null)
-                surface.getModeManager ().setActiveMode (modeID);
-        });
-
-        this.configuration.addSettingObserver (APCminiConfiguration.SOFT_KEYS, () -> {
-            final String softKeys = this.configuration.getSoftKeys ();
-            for (int i = 0; i < APCminiConfiguration.SOFT_KEYS_OPTIONS.length; i++)
-            {
-                if (APCminiConfiguration.SOFT_KEYS_OPTIONS[i].equals (softKeys))
-                    surface.setTrackState (i);
-            }
-        });
-
-        this.configuration.registerDeactivatedItemsHandler (this.model);
-    }
-
-
-    /** {@inheritDoc} */
-    @Override
     protected void createModes ()
     {
         final APCminiControlSurface surface = this.getSurface ();
@@ -208,6 +180,36 @@ public class APCminiControllerSetup extends AbstractControllerSetup<APCminiContr
         viewManager.registerView (Views.SEQUENCER, new SequencerView (surface, this.model));
         viewManager.registerView (Views.DRUM, new DrumView (surface, this.model));
         viewManager.registerView (Views.RAINDROPS, new RaindropsView (surface, this.model));
+    }
+
+
+    /** {@inheritDoc} */
+    @Override
+    protected void createObservers ()
+    {
+        final APCminiControlSurface surface = this.getSurface ();
+        surface.getViewManager ().addViewChangeListener ( (previousViewId, activeViewId) -> this.updateMode (null));
+        surface.getModeManager ().addModeListener ( (previousModeId, activeModeId) -> this.updateMode (activeModeId));
+        this.createScaleObservers (this.configuration);
+
+        this.configuration.addSettingObserver (APCminiConfiguration.FADER_CTRL, () -> {
+            final Modes modeID = FADER_CTRL_MODES.get (this.configuration.getFaderCtrl ());
+            if (modeID != null)
+                surface.getModeManager ().setActiveMode (modeID);
+        });
+
+        this.configuration.addSettingObserver (APCminiConfiguration.SOFT_KEYS, () -> {
+            final String softKeys = this.configuration.getSoftKeys ();
+            for (int i = 0; i < APCminiConfiguration.SOFT_KEYS_OPTIONS.length; i++)
+            {
+                if (APCminiConfiguration.SOFT_KEYS_OPTIONS[i].equals (softKeys))
+                    surface.setTrackState (i);
+            }
+        });
+
+        this.configuration.registerDeactivatedItemsHandler (this.model);
+
+        this.activateBrowserObserver (Views.BROWSER);
     }
 
 

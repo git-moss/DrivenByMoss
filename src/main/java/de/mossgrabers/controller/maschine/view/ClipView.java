@@ -15,9 +15,6 @@ import de.mossgrabers.framework.daw.data.ISlot;
 import de.mossgrabers.framework.daw.data.ITrack;
 import de.mossgrabers.framework.daw.data.bank.ISlotBank;
 import de.mossgrabers.framework.mode.AbstractMode;
-import de.mossgrabers.framework.mode.BrowserActivator;
-import de.mossgrabers.framework.mode.ModeManager;
-import de.mossgrabers.framework.mode.Modes;
 
 
 /**
@@ -27,9 +24,6 @@ import de.mossgrabers.framework.mode.Modes;
  */
 public class ClipView extends BaseView
 {
-    private final BrowserActivator<MaschineControlSurface, MaschineConfiguration> browserModeActivator;
-
-
     /**
      * Constructor.
      *
@@ -39,8 +33,6 @@ public class ClipView extends BaseView
     public ClipView (final MaschineControlSurface surface, final IModel model)
     {
         super ("Clip", surface, model);
-
-        this.browserModeActivator = new BrowserActivator<> (Modes.BROWSER, model, surface);
     }
 
 
@@ -71,12 +63,8 @@ public class ClipView extends BaseView
         // Browse for clips
         if (this.isButtonCombination (ButtonID.BROWSE))
         {
-            if (!track.doesExist ())
-                return;
-            this.model.getBrowser ().replace (slot);
-            final ModeManager modeManager = this.surface.getModeManager ();
-            if (!modeManager.isActiveOrTempMode (Modes.BROWSER))
-                this.browserModeActivator.activate ();
+            if (track.doesExist ())
+                this.model.getBrowser ().replace (slot);
             return;
         }
 

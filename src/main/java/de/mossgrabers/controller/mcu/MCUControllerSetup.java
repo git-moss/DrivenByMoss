@@ -309,6 +309,8 @@ public class MCUControllerSetup extends AbstractControllerSetup<MCUControlSurfac
         });
 
         this.configuration.registerDeactivatedItemsHandler (this.model);
+
+        this.activateBrowserObserver (Modes.BROWSER);
     }
 
 
@@ -411,7 +413,7 @@ public class MCUControllerSetup extends AbstractControllerSetup<MCUControlSurfac
                 this.addButton (surface, ButtonID.LAYOUT_EDIT, "Edit", new LayoutCommand<> (IApplication.PANEL_LAYOUT_EDIT, this.model, surface), MCUControlSurface.MCU_OUTPUTS);
 
                 // Utilities
-                this.addButton (surface, ButtonID.BROWSE, "Browse", new BrowserCommand<> (Modes.BROWSER, this.model, surface), 0, MCUControlSurface.MCU_USER, () -> modeManager.isActiveOrTempMode (Modes.BROWSER));
+                this.addButton (surface, ButtonID.BROWSE, "Browse", new BrowserCommand<> (this.model, surface), 0, MCUControlSurface.MCU_USER, () -> modeManager.isActiveOrTempMode (Modes.BROWSER));
                 this.addButton (surface, ButtonID.METRONOME, "Metronome", new MetronomeCommand<> (this.model, surface), 0, MCUControlSurface.MCU_CLICK, () -> surface.getButton (ButtonID.SHIFT).isPressed () ? t.isMetronomeTicksOn () : t.isMetronomeOn ());
                 this.addButton (surface, ButtonID.GROOVE, "Groove", new GrooveCommand (this.model, surface), 0, MCUControlSurface.MCU_SOLO, () -> this.model.getGroove ().getParameters ()[0].getValue () > 0);
                 this.addButton (surface, ButtonID.OVERDUB, "Overdub", new OverdubCommand<> (this.model, surface), 0, MCUControlSurface.MCU_REPLACE, () -> (surface.getButton (ButtonID.SHIFT).isPressed () ? t.isLauncherOverdub () : t.isArrangerOverdub ()));

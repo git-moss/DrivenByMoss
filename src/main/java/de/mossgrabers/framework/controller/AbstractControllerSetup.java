@@ -24,11 +24,16 @@ import de.mossgrabers.framework.daw.constants.EditCapability;
 import de.mossgrabers.framework.daw.midi.INoteInput;
 import de.mossgrabers.framework.daw.midi.INoteRepeat;
 import de.mossgrabers.framework.mode.Mode;
+import de.mossgrabers.framework.mode.ModeManager;
 import de.mossgrabers.framework.mode.Modes;
 import de.mossgrabers.framework.scale.Scales;
+import de.mossgrabers.framework.utils.ButtonEvent;
 import de.mossgrabers.framework.utils.ConsoleLogger;
 import de.mossgrabers.framework.utils.IntConsumerSupplier;
+import de.mossgrabers.framework.utils.TestFramework;
 import de.mossgrabers.framework.view.View;
+import de.mossgrabers.framework.view.ViewManager;
+import de.mossgrabers.framework.view.Views;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -155,6 +160,100 @@ public abstract class AbstractControllerSetup<S extends IControlSurface<C>, C ex
     {
         for (final S surface: this.surfaces)
             surface.flush ();
+    }
+
+
+    /** {@inheritDoc} */
+    @Override
+    public void test ()
+    {
+        final TestFramework framework = new TestFramework (this.host);
+
+        this.getSurfaces ().forEach (surface -> {
+
+            framework.scheduleFunction ( () -> this.host.println ("Testing controller: " + this.getClass ().getName ()));
+
+            final ViewManager viewManager = surface.getViewManager ();
+            final ModeManager modeManager = surface.getModeManager ();
+
+            for (final Views viewID: Views.values ())
+            {
+                if (viewManager.getView (viewID) == null)
+                    continue;
+
+                for (final Modes modeID: Modes.values ())
+                {
+                    if (modeManager.getMode (modeID) == null)
+                        continue;
+
+                    framework.scheduleFunction ( () -> {
+
+                        this.host.println ("- View " + viewID + " Mode " + modeID);
+
+                        viewManager.setActiveView (viewID);
+                        modeManager.setActiveMode (modeID);
+
+                        for (final ButtonID buttonID: ButtonID.values ())
+                        {
+                            final IHwButton button = surface.getButton (buttonID);
+                            if (button == null)
+                                continue;
+
+                            button.trigger (ButtonEvent.DOWN);
+                            button.trigger (ButtonEvent.LONG);
+                            button.trigger (ButtonEvent.UP);
+                        }
+
+                    });
+                }
+            }
+
+        });
+
+        framework.executeScheduler ();
+    }
+
+
+    /**
+     * De-/Activate the browser mode depending on the browsers' active state.
+     *
+     * @param browserMode The mode to hide/show when the browser becomes de-/active
+     */
+    protected void activateBrowserObserver (final Modes browserMode)
+    {
+        this.model.getBrowser ().addActiveObserver (isActive -> {
+
+            final ModeManager modeManager = this.getSurface ().getModeManager ();
+            if (isActive.booleanValue ())
+                modeManager.setActiveMode (browserMode);
+            else if (modeManager.isActiveOrTempMode (browserMode))
+                modeManager.restoreMode ();
+
+        });
+    }
+
+
+    /**
+     * De-/Activate the browser view depending on the browsers' active state.
+     *
+     * @param browserView The view to hide/show when the browser becomes de-/active
+     */
+    protected void activateBrowserObserver (final Views browserView)
+    {
+        this.model.getBrowser ().addActiveObserver (isActive -> {
+
+            final ViewManager viewManager = this.getSurface ().getViewManager ();
+            if (isActive.booleanValue ())
+            {
+                final Views previousViewId = viewManager.getPreviousViewId ();
+                viewManager.setActiveView (browserView);
+                if (viewManager.getPreviousViewId () == Views.SHIFT)
+                    viewManager.setPreviousView (previousViewId);
+            }
+            else if (viewManager.isActiveView (browserView))
+                viewManager.restoreView ();
+
+        });
     }
 
 

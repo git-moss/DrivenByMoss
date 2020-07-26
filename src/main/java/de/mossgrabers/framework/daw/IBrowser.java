@@ -8,6 +8,7 @@ import de.mossgrabers.framework.daw.data.IBrowserColumn;
 import de.mossgrabers.framework.daw.data.IBrowserColumnItem;
 import de.mossgrabers.framework.daw.data.IChannel;
 import de.mossgrabers.framework.daw.data.IItem;
+import de.mossgrabers.framework.observer.IValueObserver;
 import de.mossgrabers.framework.observer.ObserverManagement;
 
 
@@ -18,6 +19,14 @@ import de.mossgrabers.framework.observer.ObserverManagement;
  */
 public interface IBrowser extends ObserverManagement
 {
+    /**
+     * Add an observer for the activation state. Called when the state changes.
+     *
+     * @param activeObserver The observer to register
+     */
+    void addActiveObserver (IValueObserver<Boolean> activeObserver);
+
+
     /**
      * Returns true of the browser displays presets.
      *

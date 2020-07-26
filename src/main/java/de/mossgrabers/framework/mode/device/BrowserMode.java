@@ -109,7 +109,6 @@ public class BrowserMode<S extends IControlSurface<C>, C extends Configuration> 
         final IBrowser browser = this.model.getBrowser ();
         if (browser != null && browser.isActive ())
             browser.stopBrowsing (false);
-        this.surface.getModeManager ().restoreMode ();
     }
 
 
@@ -120,7 +119,6 @@ public class BrowserMode<S extends IControlSurface<C>, C extends Configuration> 
         final IBrowser browser = this.model.getBrowser ();
         if (browser != null && browser.isActive ())
             browser.stopBrowsing (true);
-        this.surface.getModeManager ().restoreMode ();
     }
 
 

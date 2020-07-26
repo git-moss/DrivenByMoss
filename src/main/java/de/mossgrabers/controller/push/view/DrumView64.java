@@ -15,7 +15,6 @@ import de.mossgrabers.framework.daw.data.IScene;
 import de.mossgrabers.framework.daw.data.bank.IDrumPadBank;
 import de.mossgrabers.framework.daw.data.bank.ISceneBank;
 import de.mossgrabers.framework.mode.AbstractMode;
-import de.mossgrabers.framework.mode.BrowserActivator;
 import de.mossgrabers.framework.mode.ModeManager;
 import de.mossgrabers.framework.mode.Modes;
 import de.mossgrabers.framework.utils.ButtonEvent;
@@ -30,9 +29,6 @@ import de.mossgrabers.framework.view.AbstractSessionView;
  */
 public class DrumView64 extends AbstractDrumView64<PushControlSurface, PushConfiguration>
 {
-    private final BrowserActivator<PushControlSurface, PushConfiguration> browserModeActivator;
-
-
     /**
      * Constructor.
      *
@@ -42,8 +38,6 @@ public class DrumView64 extends AbstractDrumView64<PushControlSurface, PushConfi
     public DrumView64 (final PushControlSurface surface, final IModel model)
     {
         super (surface, model);
-
-        this.browserModeActivator = new BrowserActivator<> (Modes.BROWSER, model, surface);
     }
 
 
@@ -54,11 +48,8 @@ public class DrumView64 extends AbstractDrumView64<PushControlSurface, PushConfi
         if (this.isButtonCombination (ButtonID.BROWSE))
         {
             final IDrumDevice primary = this.model.getDrumDevice64 ();
-            if (!primary.hasDrumPads ())
-                return;
-
-            this.model.getBrowser ().replace (primary.getDrumPadBank ().getItem (playedPad));
-            this.browserModeActivator.activate ();
+            if (primary.hasDrumPads ())
+                this.model.getBrowser ().replace (primary.getDrumPadBank ().getItem (playedPad));
             return;
         }
 

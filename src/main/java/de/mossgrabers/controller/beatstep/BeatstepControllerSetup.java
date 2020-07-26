@@ -131,17 +131,6 @@ public class BeatstepControllerSetup extends AbstractControllerSetup<BeatstepCon
 
     /** {@inheritDoc} */
     @Override
-    protected void createObservers ()
-    {
-        this.getSurface ().getViewManager ().addViewChangeListener ( (previousViewId, activeViewId) -> this.updateIndication (null));
-        this.createScaleObservers (this.configuration);
-
-        this.configuration.registerDeactivatedItemsHandler (this.model);
-    }
-
-
-    /** {@inheritDoc} */
-    @Override
     protected void createViews ()
     {
         final BeatstepControlSurface surface = this.getSurface ();
@@ -156,6 +145,19 @@ public class BeatstepControllerSetup extends AbstractControllerSetup<BeatstepCon
 
         viewManager.registerView (Views.BROWSER, new BrowserView (surface, this.model));
         viewManager.registerView (Views.SHIFT, new ShiftView (surface, this.model));
+    }
+
+
+    /** {@inheritDoc} */
+    @Override
+    protected void createObservers ()
+    {
+        this.getSurface ().getViewManager ().addViewChangeListener ( (previousViewId, activeViewId) -> this.updateIndication (null));
+        this.createScaleObservers (this.configuration);
+
+        this.configuration.registerDeactivatedItemsHandler (this.model);
+
+        this.activateBrowserObserver (Views.BROWSER);
     }
 
 

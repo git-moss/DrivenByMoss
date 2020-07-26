@@ -6,6 +6,10 @@ package de.mossgrabers.framework.daw;
 
 import de.mossgrabers.framework.daw.data.IBrowserColumn;
 import de.mossgrabers.framework.daw.data.IBrowserColumnItem;
+import de.mossgrabers.framework.observer.IValueObserver;
+
+import java.util.ArrayList;
+import java.util.List;
 
 
 /**
@@ -15,12 +19,14 @@ import de.mossgrabers.framework.daw.data.IBrowserColumnItem;
  */
 public abstract class AbstractBrowser implements IBrowser
 {
-    protected final int             numResults;
-    protected final int             numFilterColumnEntries;
-    protected IBrowserColumnItem [] resultData;
-    protected IBrowserColumn []     columnData;
-    protected int                   selectedFilterColumn = 0;
-    protected String                infoText             = "";
+    protected final int                         numResults;
+    protected final int                         numFilterColumnEntries;
+    protected IBrowserColumnItem []             resultData;
+    protected IBrowserColumn []                 columnData;
+    protected int                               selectedFilterColumn = 0;
+    protected String                            infoText             = "";
+
+    private final List<IValueObserver<Boolean>> activeObservers      = new ArrayList<> ();
 
 
     /**
@@ -33,6 +39,14 @@ public abstract class AbstractBrowser implements IBrowser
     {
         this.numFilterColumnEntries = numFilterColumnEntries;
         this.numResults = numResults;
+    }
+
+
+    /** {@inheritDoc} */
+    @Override
+    public void addActiveObserver (final IValueObserver<Boolean> activeObserver)
+    {
+        this.activeObservers.add (activeObserver);
     }
 
 
@@ -217,5 +231,17 @@ public abstract class AbstractBrowser implements IBrowser
     public String getInfoText ()
     {
         return this.infoText;
+    }
+
+
+    /**
+     * Inform all registered observers about the active state change of the browser.
+     *
+     * @param isActive True if active otherwise false
+     */
+    protected void fireActiveObserver (final boolean isActive)
+    {
+        final Boolean isActiveObject = Boolean.valueOf (isActive);
+        this.activeObservers.forEach (observer -> observer.update (isActiveObject));
     }
 }

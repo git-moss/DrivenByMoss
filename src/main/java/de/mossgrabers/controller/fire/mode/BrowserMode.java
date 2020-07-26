@@ -98,10 +98,7 @@ public class BrowserMode extends AbstractMode<FireControlSurface, FireConfigurat
     {
         final IBrowser browser = this.model.getBrowser ();
         if (!browser.isActive ())
-        {
-            this.surface.getModeManager ().restoreMode ();
             return;
-        }
 
         final String [] rows = new String [3];
         final boolean [] sels = new boolean []

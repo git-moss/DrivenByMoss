@@ -298,7 +298,7 @@ public class FireControllerSetup extends AbstractControllerSetup<FireControlSurf
 
         }, FireControlSurface.SELECT);
 
-        this.addButton (ButtonID.BROWSE, "BROWSER", new FireBrowserCommand (Modes.BROWSER, this.model, surface), FireControlSurface.FIRE_BROWSER, () -> modeManager.isActiveOrTempMode (Modes.BROWSER));
+        this.addButton (ButtonID.BROWSE, "BROWSER", new FireBrowserCommand (this.model, surface), FireControlSurface.FIRE_BROWSER, () -> modeManager.isActiveOrTempMode (Modes.BROWSER));
 
         // Navigation
 
@@ -512,6 +512,8 @@ public class FireControllerSetup extends AbstractControllerSetup<FireControlSurf
 
         this.createScaleObservers (this.configuration);
         this.createNoteRepeatObservers (this.configuration, surface);
+
+        this.activateBrowserObserver (Modes.BROWSER);
     }
 
 

@@ -83,4 +83,10 @@ public interface IControllerSetup<S extends IControlSurface<C>, C extends Config
      * @return The configuration
      */
     Configuration getConfiguration ();
+
+
+    /**
+     * Test the user interface.
+     */
+    void test ();
 }

@@ -8,7 +8,6 @@ import de.mossgrabers.controller.apc.APCConfiguration;
 import de.mossgrabers.controller.apc.controller.APCControlSurface;
 import de.mossgrabers.framework.command.trigger.BrowserCommand;
 import de.mossgrabers.framework.daw.IModel;
-import de.mossgrabers.framework.mode.Modes;
 
 
 /**
@@ -26,7 +25,7 @@ public class APCBrowserCommand extends BrowserCommand<APCControlSurface, APCConf
      */
     public APCBrowserCommand (final IModel model, final APCControlSurface surface)
     {
-        super (Modes.BROWSER, model, surface);
+        super (model, surface);
     }
 
 
