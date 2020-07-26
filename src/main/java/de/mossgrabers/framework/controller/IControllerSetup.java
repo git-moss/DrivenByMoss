@@ -6,6 +6,7 @@ package de.mossgrabers.framework.controller;
 
 import de.mossgrabers.framework.configuration.Configuration;
 import de.mossgrabers.framework.daw.IModel;
+import de.mossgrabers.framework.utils.TestCallback;
 
 import java.util.List;
 
@@ -87,6 +88,8 @@ public interface IControllerSetup<S extends IControlSurface<C>, C extends Config
 
     /**
      * Test the user interface.
+     * 
+     * @param callback Callback for signalling the start and end of the tests
      */
-    void test ();
+    void test (TestCallback callback);
 }

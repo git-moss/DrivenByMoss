@@ -35,12 +35,14 @@ public class TestFramework
 
     /**
      * Execute all scheduled test functions.
+     * 
+     * @param callback
      */
-    public void executeScheduler ()
+    public void executeScheduler (final TestCallback callback)
     {
         if (this.scheduler.isEmpty ())
         {
-            this.host.println ("Tests finished.");
+            callback.endTesting ();
             return;
         }
 
@@ -56,7 +58,7 @@ public class TestFramework
             this.host.error (ex.getLocalizedMessage (), ex);
         }
 
-        this.host.scheduleTask (this::executeScheduler, delay);
+        this.host.scheduleTask ( () -> this.executeScheduler (callback), delay);
     }
 
 
