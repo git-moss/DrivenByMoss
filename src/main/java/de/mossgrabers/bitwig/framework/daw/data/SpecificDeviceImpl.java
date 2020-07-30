@@ -22,9 +22,7 @@ import com.bitwig.extension.controller.api.CursorRemoteControlsPage;
 import com.bitwig.extension.controller.api.Device;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 
 /**
@@ -39,9 +37,6 @@ public class SpecificDeviceImpl extends DeviceImpl implements ISpecificDevice
     private final ILayerBank                    layerBank;
     private final IDrumPadBank                  drumPadBank;
     private final List<IValueObserver<Boolean>> hasDrumPadsObservers = new ArrayList<> ();
-
-    private String []                           directParameterIds;
-    private Map<String, String>                 directParameterNames = new HashMap<> ();
 
 
     /**
@@ -98,9 +93,6 @@ public class SpecificDeviceImpl extends DeviceImpl implements ISpecificDevice
         this.drumPadBank.setIndication (false);
 
         this.device.hasDrumPads ().addValueObserver (this::callbackHasDrumPads);
-
-        this.device.addDirectParameterIdObserver (value -> this.directParameterIds = value);
-        this.device.addDirectParameterNameObserver (1024, (final String id, final String name) -> this.directParameterNames.put (id, name));
     }
 
 
@@ -135,11 +127,7 @@ public class SpecificDeviceImpl extends DeviceImpl implements ISpecificDevice
     @Override
     public String getID ()
     {
-        if (this.directParameterIds.length == 0)
-            return "";
-        // Get the name of the first parameter. Currently, only works for Komplete Kontrol plugin
-        final String id = this.directParameterNames.get (this.directParameterIds[0]);
-        return id == null ? "" : id;
+        return "";
     }
 
 

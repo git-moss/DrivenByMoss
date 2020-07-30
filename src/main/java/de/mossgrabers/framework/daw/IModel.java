@@ -134,7 +134,7 @@ public interface IModel
 
     /**
      * Get a specific device.
-     * 
+     *
      * @param deviceID The ID of the device
      * @return The device
      */

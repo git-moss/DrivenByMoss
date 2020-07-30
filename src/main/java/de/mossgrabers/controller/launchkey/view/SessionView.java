@@ -152,7 +152,7 @@ public class SessionView extends AbstractSessionView<LaunchkeyMiniMk3ControlSurf
     @Override
     public void onGridNote (final int note, final int velocity)
     {
-        if (velocity == 0)
+        if (velocity != 0)
             return;
 
         final Pair<Integer, Integer> padPos = this.getPad (note);

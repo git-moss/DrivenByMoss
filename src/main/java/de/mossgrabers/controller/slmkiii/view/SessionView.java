@@ -53,7 +53,7 @@ public class SessionView extends AbstractSessionView<SLMkIIIControlSurface, SLMk
         final SessionColor recArmed = new SessionColor (SLMkIIIColorManager.SLMKIII_RED_HALF, -1, false);
         this.setColors (isRecording, isRecordingQueued, isPlaying, isPlayingQueued, hasContent, noContent, recArmed);
 
-        IPadGrid lightGuide = (IPadGrid) this.surface.getLightGuide ();
+        final IPadGrid lightGuide = (IPadGrid) this.surface.getLightGuide ();
         this.keyboardScales = new Scales (model.getValueChanger (), 36, 36 + 61, 61, 1);
         this.keyboardScales.setChromatic (true);
         this.keyboardManager = new KeyManager (this.model, this.keyboardScales, lightGuide);
@@ -71,7 +71,7 @@ public class SessionView extends AbstractSessionView<SLMkIIIControlSurface, SLMk
         final ITrackBank tb = this.model.getCurrentTrackBank ();
 
         // Birds-eye-view navigation
-        if (this.surface.isShiftPressed ())
+        if (this.isBirdsEyeActive ())
         {
             final ISceneBank sceneBank = tb.getSceneBank ();
 

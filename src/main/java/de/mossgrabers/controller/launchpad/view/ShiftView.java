@@ -16,8 +16,6 @@ import de.mossgrabers.framework.daw.IModel;
 import de.mossgrabers.framework.daw.ITransport;
 import de.mossgrabers.framework.daw.constants.Resolution;
 import de.mossgrabers.framework.daw.midi.INoteRepeat;
-import de.mossgrabers.framework.mode.ModeManager;
-import de.mossgrabers.framework.mode.Modes;
 import de.mossgrabers.framework.utils.ButtonEvent;
 import de.mossgrabers.framework.view.AbstractView;
 
@@ -363,14 +361,9 @@ public class ShiftView extends AbstractView<LaunchpadControlSurface, LaunchpadCo
     }
 
 
-    private boolean handleControlModes (final ButtonID commandID)
+    private void handleControlModes (final ButtonID commandID)
     {
         this.surface.getButton (commandID).getCommand ().execute (ButtonEvent.DOWN, 127);
-        final ModeManager modeManager = this.surface.getModeManager ();
-        final Modes activeOrTempModeId = modeManager.getActiveOrTempModeId ();
-        if (activeOrTempModeId != Modes.DUMMY && activeOrTempModeId.equals (modeManager.getPreviousModeId ()))
-            modeManager.setActiveMode (Modes.DUMMY);
-        return true;
     }
 
 

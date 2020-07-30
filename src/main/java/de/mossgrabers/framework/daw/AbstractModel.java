@@ -179,7 +179,7 @@ public abstract class AbstractModel implements IModel
 
     /** {@inheritDoc} */
     @Override
-    public ISpecificDevice getSpecificDevice (DeviceID deviceID)
+    public ISpecificDevice getSpecificDevice (final DeviceID deviceID)
     {
         return this.specificDevices.get (deviceID);
     }

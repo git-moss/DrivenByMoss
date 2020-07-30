@@ -12,6 +12,7 @@ import de.mossgrabers.framework.daw.DAWColor;
 import de.mossgrabers.framework.mode.AbstractMode;
 import de.mossgrabers.framework.scale.Scales;
 import de.mossgrabers.framework.view.AbstractDrumView;
+import de.mossgrabers.framework.view.AbstractPlayView;
 import de.mossgrabers.framework.view.AbstractSequencerView;
 import de.mossgrabers.framework.view.AbstractSessionView;
 
@@ -113,6 +114,10 @@ public class SLMkIIIColorManager extends ColorManager
         this.registerColorIndex (AbstractSequencerView.COLOR_RESOLUTION, SLMkIIIColorManager.SLMKIII_ORANGE_HALF);
         this.registerColorIndex (AbstractSequencerView.COLOR_RESOLUTION_SELECTED, SLMkIIIColorManager.SLMKIII_ORANGE);
         this.registerColorIndex (AbstractSequencerView.COLOR_RESOLUTION_OFF, SLMKIII_BLACK);
+
+        this.registerColorIndex (AbstractPlayView.COLOR_OFF, SLMKIII_BLACK);
+        this.registerColorIndex (AbstractPlayView.COLOR_PLAY, SLMKIII_GREEN);
+        this.registerColorIndex (AbstractPlayView.COLOR_RECORD, SLMKIII_RED);
 
         this.registerColorIndex (AbstractDrumView.COLOR_PAD_OFF, SLMKIII_BLACK);
         this.registerColorIndex (AbstractDrumView.COLOR_PAD_RECORD, SLMKIII_RED);

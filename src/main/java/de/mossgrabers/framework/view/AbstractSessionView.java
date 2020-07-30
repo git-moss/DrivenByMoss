@@ -107,7 +107,8 @@ public abstract class AbstractSessionView<S extends IControlSurface<C>, C extend
     @Override
     public void onGridNote (final int note, final int velocity)
     {
-        if (velocity == 0)
+        // Trigger on pad release to intercept long presses
+        if (velocity != 0)
             return;
 
         final Pair<Integer, Integer> padPos = this.getPad (note);
@@ -155,6 +156,20 @@ public abstract class AbstractSessionView<S extends IControlSurface<C>, C extend
                 // Do nothing
                 break;
         }
+    }
+
+
+    /** {@inheritDoc} */
+    @Override
+    public void onGridNoteLongPress (final int note)
+    {
+        final Pair<Integer, Integer> padPos = this.getPad (note);
+        final ITrack track = this.model.getCurrentTrackBank ().getItem (padPos.getKey ().intValue ());
+        final ISlot slot = track.getSlotBank ().getItem (padPos.getValue ().intValue ());
+        slot.select ();
+
+        final int index = note - 36;
+        this.surface.getButton (ButtonID.get (ButtonID.PAD1, index)).setConsumed ();
     }
 
 

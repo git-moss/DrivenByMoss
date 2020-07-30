@@ -88,7 +88,7 @@ public interface IControllerSetup<S extends IControlSurface<C>, C extends Config
 
     /**
      * Test the user interface.
-     * 
+     *
      * @param callback Callback for signalling the start and end of the tests
      */
     void test (TestCallback callback);

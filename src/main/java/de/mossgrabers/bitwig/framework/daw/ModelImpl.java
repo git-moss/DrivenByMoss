@@ -6,6 +6,7 @@ package de.mossgrabers.bitwig.framework.daw;
 
 import de.mossgrabers.bitwig.framework.daw.data.CursorDeviceImpl;
 import de.mossgrabers.bitwig.framework.daw.data.DrumDeviceImpl;
+import de.mossgrabers.bitwig.framework.daw.data.KompleteDevice;
 import de.mossgrabers.bitwig.framework.daw.data.MasterTrackImpl;
 import de.mossgrabers.bitwig.framework.daw.data.SpecificDeviceImpl;
 import de.mossgrabers.bitwig.framework.daw.data.bank.EffectTrackBankImpl;
@@ -19,6 +20,7 @@ import de.mossgrabers.framework.daw.INoteClip;
 import de.mossgrabers.framework.daw.ModelSetup;
 import de.mossgrabers.framework.daw.constants.DeviceID;
 import de.mossgrabers.framework.daw.data.ISlot;
+import de.mossgrabers.framework.daw.data.ISpecificDevice;
 import de.mossgrabers.framework.daw.data.ITrack;
 import de.mossgrabers.framework.daw.data.bank.ISceneBank;
 import de.mossgrabers.framework.scale.Scales;
@@ -169,7 +171,12 @@ public class ModelImpl extends AbstractModel
             final DeviceBank deviceBank = this.cursorTrack.createDeviceBank (1);
             deviceBank.setDeviceMatcher (deviceMatcher);
             final Device device = deviceBank.getItemAt (0);
-            this.specificDevices.put (deviceID, new SpecificDeviceImpl (this.host, this.valueChanger, device, numSends, numParams, numDevicesInBank, numDeviceLayers, numDrumPadLayers));
+            final ISpecificDevice specificDevice;
+            if (deviceID == DeviceID.NI_KOMPLETE)
+                specificDevice = new KompleteDevice (this.host, this.valueChanger, device);
+            else
+                specificDevice = new SpecificDeviceImpl (this.host, this.valueChanger, device, numSends, numParams, numDevicesInBank, numDeviceLayers, numDrumPadLayers);
+            this.specificDevices.put (deviceID, specificDevice);
         }
 
         // User bank

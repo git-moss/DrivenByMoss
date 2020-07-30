@@ -106,7 +106,7 @@ public class SelectKnobCommand extends AbstractContinuousCommand<FireControlSurf
 
     /**
      * The Select knob does not send touch data. Therefore, it must be simulated.
-     * 
+     *
      * @param index The Select index 4 or 8
      */
     private void checkUntouch (final int index)

@@ -13,6 +13,7 @@ import de.mossgrabers.framework.utils.StringUtils;
 import com.bitwig.extension.api.graphics.GradientPattern;
 import com.bitwig.extension.api.graphics.GraphicsOutput;
 import com.bitwig.extension.api.graphics.GraphicsOutput.AntialiasMode;
+import com.bitwig.extension.api.graphics.Image;
 
 
 /**
@@ -250,10 +251,11 @@ public class GraphicsContextImpl implements IGraphicsContext
         try
         {
             this.setColor (maskColor);
-            this.gc.mask (imageImpl.getImage (), x, y);
+            final Image image = imageImpl.getImage ();
+            this.gc.mask (image, x, y);
             this.gc.fill ();
         }
-        catch (RuntimeException ex)
+        catch (final RuntimeException ex)
         {
             ex.printStackTrace ();
         }

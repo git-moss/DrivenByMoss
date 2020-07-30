@@ -143,7 +143,7 @@ public class DrumView4 extends AbstractDrumView<FireControlSurface, FireConfigur
             final IHwButton button = this.surface.getButton (ButtonID.get (ButtonID.PAD1, offset + s));
             if (button.isLongPressed ())
             {
-                int start = s + (this.sequencerLines - laneOffset - 1) * this.columns;
+                final int start = s + (this.sequencerLines - laneOffset - 1) * this.columns;
                 button.setConsumed ();
                 final int length = step - start + 1;
                 final double duration = length * Resolution.getValueAt (this.getResolutionIndex ());

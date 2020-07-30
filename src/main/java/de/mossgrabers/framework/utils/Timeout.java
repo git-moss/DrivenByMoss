@@ -22,7 +22,7 @@ public class Timeout
 
     /**
      * Constructor.
-     * 
+     *
      * @param host The host for scheduling
      * @param timeoutMillis The delay in milliseconds
      */

@@ -35,7 +35,7 @@ public class TestFramework
 
     /**
      * Execute all scheduled test functions.
-     * 
+     *
      * @param callback
      */
     public void executeScheduler (final TestCallback callback)
@@ -46,7 +46,7 @@ public class TestFramework
             return;
         }
 
-        int delay = ANSWER_DELAY;
+        final int delay = ANSWER_DELAY;
 
         final Runnable exec = this.scheduler.remove ();
         try

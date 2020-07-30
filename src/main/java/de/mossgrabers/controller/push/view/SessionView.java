@@ -65,11 +65,10 @@ public class SessionView extends AbstractSessionView<PushControlSurface, PushCon
         {
             final TriggerCommand triggerCommand = this.surface.getButton (ButtonID.SESSION).getCommand ();
             ((SelectSessionViewCommand) triggerCommand).setTemporary ();
-            return;
         }
 
         // Birds-eye-view navigation
-        if (this.surface.isShiftPressed ())
+        if (this.isBirdsEyeActive ())
         {
             final int index = note - 36;
             final int x = index % this.columns;
