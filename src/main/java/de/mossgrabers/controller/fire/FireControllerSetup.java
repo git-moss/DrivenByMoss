@@ -112,6 +112,7 @@ public class FireControllerSetup extends AbstractControllerSetup<FireControlSurf
     protected void createModel ()
     {
         final ModelSetup ms = new ModelSetup ();
+        ms.enableDrum64Device (true);
         ms.setNumTracks (16);
         ms.setNumScenes (4);
         ms.setNumSends (6);

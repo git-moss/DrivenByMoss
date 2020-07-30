@@ -42,6 +42,7 @@ import de.mossgrabers.framework.controller.valuechanger.DefaultValueChanger;
 import de.mossgrabers.framework.daw.IHost;
 import de.mossgrabers.framework.daw.ITransport;
 import de.mossgrabers.framework.daw.ModelSetup;
+import de.mossgrabers.framework.daw.constants.DeviceID;
 import de.mossgrabers.framework.daw.data.ICursorDevice;
 import de.mossgrabers.framework.daw.data.ISpecificDevice;
 import de.mossgrabers.framework.daw.data.ITrack;
@@ -157,6 +158,8 @@ public class KontrolProtocolControllerSetup extends AbstractControllerSetup<Kont
     protected void createModel ()
     {
         final ModelSetup ms = new ModelSetup ();
+        ms.enableDrumDevice (false);
+        ms.enableDevice (DeviceID.NI_KOMPLETE);
         ms.setHasFullFlatTrackList (true);
         ms.setNumFilterColumnEntries (0);
         ms.setNumResults (0);
@@ -502,26 +505,15 @@ public class KontrolProtocolControllerSetup extends AbstractControllerSetup<Kont
 
 
     /**
-     * Get the name of an Komplete Kontrol instance on the current track, or an empty string
-     * otherwise. A track contains a Komplete Kontrol instance if: There is an instance of a plugin
-     * whose name starts with Komplete Kontrol and the first parameter label exposed by the plugin
-     * is NIKBxx, where xx is a number between 00 and 99 If the conditions are satisfied. First
-     * checks the selected device, if that is no KK device, the first instrument device is checked.
+     * Get the name of an Komplete Kontrol instance on the current track.
      *
      * @return The instance name, which is the actual label of the first parameter (e.g. NIKB01). An
      *         empty string if none is present
      */
     private String getKompleteInstance ()
     {
-        final ICursorDevice device = this.model.getCursorDevice ();
-        if (device.doesExist () && device.getName ().startsWith ("Komplete Kontrol"))
-            return device.getID ();
-
-        final ISpecificDevice instrumentDevice = this.model.getInstrumentDevice ();
-        if (instrumentDevice.doesExist () && instrumentDevice.getName ().startsWith ("Komplete Kontrol"))
-            return instrumentDevice.getID ();
-
-        return "";
+        final ISpecificDevice kkDevice = this.model.getSpecificDevice (DeviceID.NI_KOMPLETE);
+        return kkDevice.doesExist () ? kkDevice.getID () : "";
     }
 
 

@@ -164,6 +164,7 @@ public class LaunchpadControllerSetup extends AbstractControllerSetup<LaunchpadC
     protected void createModel ()
     {
         final ModelSetup ms = new ModelSetup ();
+        ms.enableDrum64Device (true);
         ms.setHasFullFlatTrackList (this.configuration.areMasterTracksIncluded ());
         this.model = this.factory.createModel (this.colorManager, this.valueChanger, this.scales, ms);
         final ITrackBank trackBank = this.model.getTrackBank ();

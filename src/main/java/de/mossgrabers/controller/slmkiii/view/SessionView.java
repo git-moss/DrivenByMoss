@@ -9,11 +9,16 @@ import de.mossgrabers.controller.slmkiii.controller.SLMkIIIColorManager;
 import de.mossgrabers.controller.slmkiii.controller.SLMkIIIControlSurface;
 import de.mossgrabers.framework.controller.ButtonID;
 import de.mossgrabers.framework.controller.color.ColorManager;
+import de.mossgrabers.framework.controller.grid.ILightGuide;
+import de.mossgrabers.framework.controller.grid.IPadGrid;
 import de.mossgrabers.framework.daw.IModel;
 import de.mossgrabers.framework.daw.data.IScene;
 import de.mossgrabers.framework.daw.data.ITrack;
 import de.mossgrabers.framework.daw.data.bank.ISceneBank;
 import de.mossgrabers.framework.daw.data.bank.ITrackBank;
+import de.mossgrabers.framework.scale.Scales;
+import de.mossgrabers.framework.utils.KeyManager;
+import de.mossgrabers.framework.view.AbstractPlayView;
 import de.mossgrabers.framework.view.AbstractSessionView;
 import de.mossgrabers.framework.view.SessionColor;
 
@@ -25,6 +30,10 @@ import de.mossgrabers.framework.view.SessionColor;
  */
 public class SessionView extends AbstractSessionView<SLMkIIIControlSurface, SLMkIIIConfiguration>
 {
+    final Scales     keyboardScales;
+    final KeyManager keyboardManager;
+
+
     /**
      * Constructor.
      *
@@ -43,6 +52,12 @@ public class SessionView extends AbstractSessionView<SLMkIIIControlSurface, SLMk
         final SessionColor noContent = new SessionColor (SLMkIIIColorManager.SLMKIII_BLACK, -1, false);
         final SessionColor recArmed = new SessionColor (SLMkIIIColorManager.SLMKIII_RED_HALF, -1, false);
         this.setColors (isRecording, isRecordingQueued, isPlaying, isPlayingQueued, hasContent, noContent, recArmed);
+
+        IPadGrid lightGuide = (IPadGrid) this.surface.getLightGuide ();
+        this.keyboardScales = new Scales (model.getValueChanger (), 36, 36 + 61, 61, 1);
+        this.keyboardScales.setChromatic (true);
+        this.keyboardManager = new KeyManager (this.model, this.keyboardScales, lightGuide);
+        this.keyboardManager.setNoteMatrix (this.keyboardScales.getNoteMatrix ());
     }
 
 
@@ -101,5 +116,38 @@ public class SessionView extends AbstractSessionView<SLMkIIIControlSurface, SLMk
         if (!s.doesExist ())
             return colorManager.getColorIndex (AbstractSessionView.COLOR_SCENE_OFF);
         return colorManager.getColorIndex (s.isSelected () ? AbstractSessionView.COLOR_SELECTED_SCENE : AbstractSessionView.COLOR_SCENE);
+    }
+
+
+    /** {@inheritDoc} */
+    @Override
+    public void drawGrid ()
+    {
+        super.drawGrid ();
+
+        this.drawLightGuide (this.surface.getLightGuide ());
+    }
+
+
+    protected void drawLightGuide (final ILightGuide lightGuide)
+    {
+        final boolean isKeyboardEnabled = this.model.canSelectedTrackHoldNotes ();
+        final boolean isRecording = this.model.hasRecordingState ();
+
+        final ITrack selectedTrack = this.model.getSelectedTrack ();
+        for (int i = this.keyboardScales.getStartNote (); i < this.keyboardScales.getEndNote (); i++)
+            lightGuide.light (i - 36, this.getGridColor (isKeyboardEnabled, isRecording, selectedTrack, i));
+    }
+
+
+    protected String getGridColor (final boolean isKeyboardEnabled, final boolean isRecording, final ITrack track, final int note)
+    {
+        if (isKeyboardEnabled)
+        {
+            if (this.keyboardManager.isKeyPressed (note))
+                return isRecording ? AbstractPlayView.COLOR_RECORD : AbstractPlayView.COLOR_PLAY;
+            return replaceOctaveColorWithTrackColor (track, this.keyboardManager.getColor (note));
+        }
+        return AbstractPlayView.COLOR_OFF;
     }
 }

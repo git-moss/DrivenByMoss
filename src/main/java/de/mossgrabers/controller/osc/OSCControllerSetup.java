@@ -28,6 +28,7 @@ import de.mossgrabers.framework.controller.display.DummyDisplay;
 import de.mossgrabers.framework.controller.valuechanger.DefaultValueChanger;
 import de.mossgrabers.framework.daw.IHost;
 import de.mossgrabers.framework.daw.ModelSetup;
+import de.mossgrabers.framework.daw.constants.DeviceID;
 import de.mossgrabers.framework.daw.data.bank.ITrackBank;
 import de.mossgrabers.framework.daw.midi.IMidiAccess;
 import de.mossgrabers.framework.daw.midi.IMidiInput;
@@ -96,8 +97,8 @@ public class OSCControllerSetup extends AbstractControllerSetup<IControlSurface<
         final int bankPageSize = this.configuration.getBankPageSize ();
 
         final ModelSetup ms = new ModelSetup ();
+        ms.enableDevice (DeviceID.FIRST_INSTRUMENT);
         ms.setHasFlatTrackList (false);
-
         ms.setNumTracks (bankPageSize);
         ms.setNumScenes (bankPageSize);
         ms.setNumSends (bankPageSize);
@@ -174,7 +175,7 @@ public class OSCControllerSetup extends AbstractControllerSetup<IControlSurface<
         surface.addTextDisplay (new DummyDisplay (this.host));
 
         this.surfaces.add (surface);
-        this.keyManager = new KeyManager (this.model, surface.getPadGrid ());
+        this.keyManager = new KeyManager (this.model, this.model.getScales (), surface.getPadGrid ());
 
         // Send OSC messages
         final String sendHost = this.configuration.getSendHost ();

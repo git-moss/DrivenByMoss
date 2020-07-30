@@ -198,6 +198,7 @@ public class PushControllerSetup extends AbstractControllerSetup<PushControlSurf
     protected void createModel ()
     {
         final ModelSetup ms = new ModelSetup ();
+        ms.enableDrum64Device (true);
         if (this.isPush2)
         {
             ms.setNumFilterColumnEntries (48);

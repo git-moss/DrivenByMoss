@@ -63,7 +63,7 @@ public abstract class AbstractView<S extends IControlSurface<C>, C extends Confi
         this.model = model;
         this.colorManager = this.model.getColorManager ();
         this.scales = model.getScales ();
-        this.keyManager = new KeyManager (model, surface.getPadGrid ());
+        this.keyManager = new KeyManager (model, model.getScales (), surface.getPadGrid ());
         this.mvHelper = new MVHelper<> (model, surface);
 
         this.canScrollLeft = true;

@@ -6,6 +6,7 @@ package de.mossgrabers.framework.daw;
 
 import de.mossgrabers.framework.controller.color.ColorManager;
 import de.mossgrabers.framework.controller.valuechanger.IValueChanger;
+import de.mossgrabers.framework.daw.constants.DeviceID;
 import de.mossgrabers.framework.daw.data.ICursorDevice;
 import de.mossgrabers.framework.daw.data.IDrumDevice;
 import de.mossgrabers.framework.daw.data.IMasterTrack;
@@ -19,6 +20,7 @@ import de.mossgrabers.framework.daw.data.bank.ITrackBank;
 import de.mossgrabers.framework.observer.IValueObserver;
 import de.mossgrabers.framework.scale.Scales;
 
+import java.util.EnumMap;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
@@ -53,11 +55,11 @@ public abstract class AbstractModel implements IModel
     protected ITrackBank                            effectTrackBank;
     protected IMasterTrack                          masterTrack;
     protected ICursorDevice                         cursorDevice;
-    protected ISpecificDevice                       instrumentDevice;
     protected IDrumDevice                           drumDevice;
     protected IDrumDevice                           drumDevice64;
     protected IParameterBank                        userParameterBank;
     protected Map<String, IClip>                    cursorClips        = new HashMap<> ();
+    protected final Map<DeviceID, ISpecificDevice>  specificDevices    = new EnumMap<> (DeviceID.class);
 
     private int                                     lastSelection;
 
@@ -177,9 +179,9 @@ public abstract class AbstractModel implements IModel
 
     /** {@inheritDoc} */
     @Override
-    public ISpecificDevice getInstrumentDevice ()
+    public ISpecificDevice getSpecificDevice (DeviceID deviceID)
     {
-        return this.instrumentDevice;
+        return this.specificDevices.get (deviceID);
     }
 
 

@@ -24,7 +24,7 @@ public class SLMkIIILightGuide extends LightGuideImpl
      */
     public SLMkIIILightGuide (final ColorManager colorManager, final IMidiOutput output)
     {
-        super (54, 61, colorManager, output);
+        super (0, 61, colorManager, output);
     }
 
 

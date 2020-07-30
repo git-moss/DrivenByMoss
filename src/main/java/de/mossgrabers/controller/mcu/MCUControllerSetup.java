@@ -201,6 +201,8 @@ public class MCUControllerSetup extends AbstractControllerSetup<MCUControlSurfac
     {
         final ModelSetup ms = new ModelSetup ();
 
+        ms.enableDrumDevice (false);
+
         final int numMackieDevices = this.numMCUDevices;
         if (this.configuration.shouldPinFXTracksToLastController ())
         {

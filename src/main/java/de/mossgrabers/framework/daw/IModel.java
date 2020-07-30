@@ -6,6 +6,7 @@ package de.mossgrabers.framework.daw;
 
 import de.mossgrabers.framework.controller.color.ColorManager;
 import de.mossgrabers.framework.controller.valuechanger.IValueChanger;
+import de.mossgrabers.framework.daw.constants.DeviceID;
 import de.mossgrabers.framework.daw.data.ICursorDevice;
 import de.mossgrabers.framework.daw.data.IDrumDevice;
 import de.mossgrabers.framework.daw.data.IMasterTrack;
@@ -132,11 +133,12 @@ public interface IModel
 
 
     /**
-     * Get the first instrument device of the track.
-     *
-     * @return The device, never null but needs to checked fore existance
+     * Get a specific device.
+     * 
+     * @param deviceID The ID of the device
+     * @return The device
      */
-    ISpecificDevice getInstrumentDevice ();
+    ISpecificDevice getSpecificDevice (DeviceID deviceID);
 
 
     /**

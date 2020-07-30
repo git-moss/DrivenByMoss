@@ -4,6 +4,12 @@
 
 package de.mossgrabers.framework.daw;
 
+import de.mossgrabers.framework.daw.constants.DeviceID;
+
+import java.util.ArrayList;
+import java.util.List;
+
+
 /**
  * All configuration parameters for the model.
  *
@@ -11,21 +17,31 @@ package de.mossgrabers.framework.daw;
  */
 public class ModelSetup
 {
-    private int     numTracks              = 8;
-    private int     numScenes              = 8;
-    private int     numSends               = 8;
-    private int     numDevicesInBank       = 8;
-    private int     numDeviceLayers        = 8;
-    private int     numDrumPadLayers       = 16;
-    private int     numParams              = 8;
-    private int     numFilterColumnEntries = 16;
-    private int     numResults             = 16;
-    private boolean hasFlatTrackList       = true;
-    private boolean hasFullFlatTrackList   = false;
-    private int     numMarkers             = 0;
-    private int     numUserPageSize        = 8;
-    private int     numUserPages           = 8;
-    private int     numFxTracks            = -1;
+    private boolean              hasFlatTrackList       = true;
+    private boolean              hasFullFlatTrackList   = false;
+
+    private int                  numTracks              = 8;
+    private int                  numFxTracks            = -1;
+    private int                  numScenes              = 8;
+    private int                  numSends               = 8;
+
+    private boolean              wantsDrumDevice        = true;
+    private boolean              wantsDrum64Device      = false;
+
+    private int                  numDevicesInBank       = 8;
+    private int                  numDeviceLayers        = 8;
+
+    private int                  numParams              = 8;
+    private int                  numDrumPadLayers       = 16;
+
+    private int                  numFilterColumnEntries = 16;
+    private int                  numResults             = 16;
+
+    private int                  numMarkers             = 0;
+    private int                  numUserPageSize        = 8;
+    private int                  numUserPages           = 8;
+
+    private final List<DeviceID> deviceIDs              = new ArrayList<> ();
 
 
     /**
@@ -34,6 +50,39 @@ public class ModelSetup
     public ModelSetup ()
     {
         // Intentionally empty
+    }
+
+
+    /**
+     * Dis-/enable the drum device (enabled by default).
+     *
+     * @param wantsDrumDevice True to enable
+     */
+    public void enableDrumDevice (final boolean wantsDrumDevice)
+    {
+        this.wantsDrumDevice = wantsDrumDevice;
+    }
+
+
+    /**
+     * Dis-/enable the drum 64 device (disabled by default).
+     *
+     * @param wantsDrum64Device True to enable, requires drum device to be enabled as well
+     */
+    public void enableDrum64Device (final boolean wantsDrum64Device)
+    {
+        this.wantsDrum64Device = wantsDrum64Device;
+    }
+
+
+    /**
+     * Enable a specific device monitor.
+     *
+     * @param deviceID The ID of the device to monitor
+     */
+    public void enableDevice (final DeviceID deviceID)
+    {
+        this.deviceIDs.add (deviceID);
     }
 
 
@@ -366,5 +415,38 @@ public class ModelSetup
     public void setNumUserPageSize (final int numUserPageSize)
     {
         this.numUserPageSize = numUserPageSize;
+    }
+
+
+    /**
+     * Get if a drum device should be created.
+     *
+     * @return True if a drum device should be created
+     */
+    public boolean wantsDrumDevice ()
+    {
+        return this.wantsDrumDevice;
+    }
+
+
+    /**
+     * Get if a drum 64 device should be created.
+     *
+     * @return True if a drum 64 device should be created
+     */
+    public boolean wantsDrum64Device ()
+    {
+        return this.wantsDrum64Device;
+    }
+
+
+    /**
+     * Get the device IDs of additional devices to monitor.
+     *
+     * @return The device IDs
+     */
+    public List<DeviceID> getDeviceIDs ()
+    {
+        return new ArrayList<> (this.deviceIDs);
     }
 }

@@ -144,6 +144,7 @@ public class HUIControllerSetup extends AbstractControllerSetup<HUIControlSurfac
     protected void createModel ()
     {
         final ModelSetup ms = new ModelSetup ();
+        ms.enableDrumDevice (false);
         ms.setHasFullFlatTrackList (true);
         ms.setNumTracks (8);
         ms.setNumSends (5);

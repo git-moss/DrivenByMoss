@@ -11,6 +11,7 @@ import de.mossgrabers.controller.osc.exception.UnknownCommandException;
 import de.mossgrabers.framework.controller.color.ColorEx;
 import de.mossgrabers.framework.daw.IHost;
 import de.mossgrabers.framework.daw.IModel;
+import de.mossgrabers.framework.daw.constants.DeviceID;
 import de.mossgrabers.framework.daw.data.IChannel;
 import de.mossgrabers.framework.daw.data.ICursorDevice;
 import de.mossgrabers.framework.daw.data.ILayer;
@@ -78,7 +79,7 @@ public class DeviceModule extends AbstractModule
                 break;
 
             case "primary":
-                this.parseDeviceValue (this.model.getInstrumentDevice (), path, value);
+                this.parseDeviceValue (this.model.getSpecificDevice (DeviceID.FIRST_INSTRUMENT), path, value);
                 break;
 
             default:
@@ -105,7 +106,7 @@ public class DeviceModule extends AbstractModule
         final ILayer selectedLayer = layerBank.getSelectedItem ();
         this.flushDeviceLayer (this.writer, "/device/layer/selected/", selectedLayer == null ? EmptyLayer.INSTANCE : selectedLayer, dump);
 
-        this.flushDevice (this.writer, "/primary/", this.model.getInstrumentDevice (), dump);
+        this.flushDevice (this.writer, "/primary/", this.model.getSpecificDevice (DeviceID.FIRST_INSTRUMENT), dump);
     }
 
 

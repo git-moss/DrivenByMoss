@@ -17,6 +17,7 @@ import de.mossgrabers.framework.daw.DataSetup;
 import de.mossgrabers.framework.daw.IClip;
 import de.mossgrabers.framework.daw.INoteClip;
 import de.mossgrabers.framework.daw.ModelSetup;
+import de.mossgrabers.framework.daw.constants.DeviceID;
 import de.mossgrabers.framework.daw.data.ISlot;
 import de.mossgrabers.framework.daw.data.ITrack;
 import de.mossgrabers.framework.daw.data.bank.ISceneBank;
@@ -94,6 +95,9 @@ public class ModelImpl extends AbstractModel
         final int numSends = this.modelSetup.getNumSends ();
         final int numScenes = this.modelSetup.getNumScenes ();
 
+        //////////////////////////////////////////////////////////////////////////////
+        // Create track banks
+
         this.cursorTrack = controllerHost.createCursorTrack ("MyCursorTrackID", "The Cursor Track", numSends, numScenes, true);
         this.cursorTrack.isPinned ().markInterested ();
 
@@ -119,30 +123,54 @@ public class ModelImpl extends AbstractModel
         final TrackBank effectTrackBank = controllerHost.createEffectTrackBank (numFxTracks, numScenes);
         this.effectTrackBank = new EffectTrackBankImpl (this.host, this.valueChanger, effectTrackBank, this.cursorTrack, this.rootTrackGroup, (ApplicationImpl) this.application, numFxTracks, numScenes, this.trackBank);
 
+        //////////////////////////////////////////////////////////////////////////////
+        // Create devices
+
+        final int numDevicesInBank = this.modelSetup.getNumDevicesInBank ();
         final int numParams = this.modelSetup.getNumParams ();
         final int numDeviceLayers = this.modelSetup.getNumDeviceLayers ();
         final int numDrumPadLayers = this.modelSetup.getNumDrumPadLayers ();
-        final int numDevicesInBank = this.modelSetup.getNumDevicesInBank ();
 
-        // 1st instrument device
-        final DeviceMatcher instrumentDeviceMatcher = controllerHost.createInstrumentMatcher ();
-        final DeviceBank instrumentDeviceBank = this.cursorTrack.createDeviceBank (1);
-        instrumentDeviceBank.setDeviceMatcher (instrumentDeviceMatcher);
-        final Device instrumentDevice = instrumentDeviceBank.getItemAt (0);
-        this.instrumentDevice = new SpecificDeviceImpl (this.host, this.valueChanger, instrumentDevice, numSends, numParams, numDevicesInBank, numDeviceLayers, numDrumPadLayers);
-
-        // Drum Machine
-        final DeviceMatcher drumMachineDeviceMatcher = controllerHost.createBitwigDeviceMatcher (INSTRUMENT_DRUM_MACHINE);
-        final DeviceBank drumDeviceBank = this.cursorTrack.createDeviceBank (1);
-        drumDeviceBank.setDeviceMatcher (drumMachineDeviceMatcher);
-        final Device drumMachineDevice = drumDeviceBank.getItemAt (0);
-        this.drumDevice = new DrumDeviceImpl (this.host, this.valueChanger, drumMachineDevice, numSends, numParams, numDevicesInBank, numDeviceLayers, numDrumPadLayers);
-
-        // Drum Machine 64 pads
+        // Cursor device
         final PinnableCursorDevice mainCursorDevice = this.cursorTrack.createCursorDevice ("CURSOR_DEVICE", "Cursor device", numSends, CursorDeviceFollowMode.FOLLOW_SELECTION);
         this.cursorDevice = new CursorDeviceImpl (this.host, this.valueChanger, mainCursorDevice, numSends, numParams, numDevicesInBank, numDeviceLayers, numDrumPadLayers);
-        if (numDrumPadLayers > 0)
-            this.drumDevice64 = new DrumDeviceImpl (this.host, this.valueChanger, drumMachineDevice, 0, 0, -1, 64, 64);
+
+        // Drum Machine
+        if (modelSetup.wantsDrumDevice ())
+        {
+            final DeviceMatcher drumMachineDeviceMatcher = controllerHost.createBitwigDeviceMatcher (INSTRUMENT_DRUM_MACHINE);
+            final DeviceBank drumDeviceBank = this.cursorTrack.createDeviceBank (1);
+            drumDeviceBank.setDeviceMatcher (drumMachineDeviceMatcher);
+            final Device drumMachineDevice = drumDeviceBank.getItemAt (0);
+            this.drumDevice = new DrumDeviceImpl (this.host, this.valueChanger, drumMachineDevice, numSends, numParams, numDevicesInBank, numDeviceLayers, numDrumPadLayers);
+
+            // Drum Machine 64 pads
+            if (modelSetup.wantsDrum64Device ())
+                this.drumDevice64 = new DrumDeviceImpl (this.host, this.valueChanger, drumMachineDevice, 0, 0, -1, 64, 64);
+        }
+
+        for (final DeviceID deviceID: modelSetup.getDeviceIDs ())
+        {
+            final DeviceMatcher deviceMatcher;
+            switch (deviceID)
+            {
+                case FIRST_INSTRUMENT:
+                    deviceMatcher = controllerHost.createInstrumentMatcher ();
+                    break;
+
+                case NI_KOMPLETE:
+                    deviceMatcher = controllerHost.createVST2DeviceMatcher (1315523403);
+                    break;
+
+                default:
+                    // Impossible to reach
+                    throw new FrameworkException ("Unknown device ID.");
+            }
+            final DeviceBank deviceBank = this.cursorTrack.createDeviceBank (1);
+            deviceBank.setDeviceMatcher (deviceMatcher);
+            final Device device = deviceBank.getItemAt (0);
+            this.specificDevices.put (deviceID, new SpecificDeviceImpl (this.host, this.valueChanger, device, numSends, numParams, numDevicesInBank, numDeviceLayers, numDrumPadLayers));
+        }
 
         // User bank
         final int numUserPages = modelSetup.getNumUserPages ();

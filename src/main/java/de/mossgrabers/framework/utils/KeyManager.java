@@ -33,12 +33,13 @@ public class KeyManager implements NoteObserver
      * Constructor.
      *
      * @param model The model
+     * @param scales The scales
      * @param padGrid A pad grid, can be null
      */
-    public KeyManager (final IModel model, final IPadGrid padGrid)
+    public KeyManager (final IModel model, final Scales scales, final IPadGrid padGrid)
     {
         this.model = model;
-        this.scales = this.model.getScales ();
+        this.scales = scales;
         this.padGrid = padGrid;
         Arrays.fill (this.pressedKeys, 0);
     }
