@@ -20,9 +20,12 @@ import de.mossgrabers.framework.daw.midi.ArpeggiatorMode;
 public class SLMkIIIConfiguration extends AbstractConfiguration
 {
     /** Setting for the ribbon mode. */
-    public static final Integer ENABLE_FADERS = Integer.valueOf (50);
+    public static final Integer ENABLE_FADERS     = Integer.valueOf (50);
+    /** Setting for dis-/enabling the lightguide. */
+    public static final Integer ENABLE_LIGHTGUIDE = Integer.valueOf (51);
 
-    private boolean             enableFaders  = true;
+    private boolean             enableFaders      = true;
+    private boolean             enableLightguide  = true;
 
 
     /**
@@ -43,6 +46,12 @@ public class SLMkIIIConfiguration extends AbstractConfiguration
     public void init (final ISettingsUI globalSettings, final ISettingsUI documentSettings)
     {
         ///////////////////////////
+        // Scale for light guide
+
+        this.activateScaleBaseSetting (documentSettings);
+        this.activateScaleSetting (documentSettings);
+
+        ///////////////////////////
         // Workflow
 
         this.activateExcludeDeactivatedItemsSetting (globalSettings);
@@ -53,6 +62,12 @@ public class SLMkIIIConfiguration extends AbstractConfiguration
         enableFadersSetting.addValueObserver (value -> {
             this.enableFaders = "On".equals (value);
             this.notifyObservers (ENABLE_FADERS);
+        });
+
+        final IEnumSetting enableLightguideSetting = globalSettings.getEnumSetting ("Enable Lightguide", CATEGORY_WORKFLOW, ON_OFF_OPTIONS, ON_OFF_OPTIONS[1]);
+        enableLightguideSetting.addValueObserver (value -> {
+            this.enableLightguide = "On".equals (value);
+            this.notifyObservers (ENABLE_LIGHTGUIDE);
         });
 
         this.activateUserPageNamesSetting (globalSettings);
@@ -74,5 +89,16 @@ public class SLMkIIIConfiguration extends AbstractConfiguration
     public boolean areFadersEnabled ()
     {
         return this.enableFaders;
+    }
+
+
+    /**
+     * Check if the lightguide should be active.
+     *
+     * @return True if lightguide is active
+     */
+    public boolean isLightEnabled ()
+    {
+        return this.enableLightguide;
     }
 }

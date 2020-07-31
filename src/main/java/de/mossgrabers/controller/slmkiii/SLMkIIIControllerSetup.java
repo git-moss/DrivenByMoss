@@ -144,6 +144,12 @@ public class SLMkIIIControllerSetup extends AbstractControllerSetup<SLMkIIIContr
         this.surfaces.add (surface);
 
         surface.addPianoKeyboard (61, keyboardInput, true);
+
+        keyboardInput.setMidiCallback ( (status, data1, data2) -> {
+            final int code = status & 0xF0;
+            if (code == 0x80 || code == 0x90)
+                ((SessionView) this.getSurface ().getViewManager ().getView (Views.SESSION)).updateKeyboardNote (data1, data2);
+        });
     }
 
 
@@ -189,7 +195,8 @@ public class SLMkIIIControllerSetup extends AbstractControllerSetup<SLMkIIIContr
 
         this.configuration.registerDeactivatedItemsHandler (this.model);
 
-        this.getSurface ().getModeManager ().addModeListener ( (oldMode, newMode) -> this.updateIndication (newMode));
+        final SLMkIIIControlSurface surface = this.getSurface ();
+        surface.getModeManager ().addModeListener ( (oldMode, newMode) -> this.updateIndication (newMode));
 
         this.activateBrowserObserver (Modes.BROWSER);
     }

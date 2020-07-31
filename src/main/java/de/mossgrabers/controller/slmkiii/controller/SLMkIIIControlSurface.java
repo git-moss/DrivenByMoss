@@ -120,6 +120,8 @@ public class SLMkIIIControlSurface extends AbstractControlSurface<SLMkIIIConfigu
         this.addTextDisplay (new SLMkIIIDisplay (host, output));
 
         this.input.setSysexCallback (this::handleSysEx);
+
+        ((SLMkIIILightGuide) this.lightGuide).setActive (true);
     }
 
 

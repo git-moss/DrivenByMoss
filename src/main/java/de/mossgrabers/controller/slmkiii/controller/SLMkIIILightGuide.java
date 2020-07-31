@@ -34,4 +34,15 @@ public class SLMkIIILightGuide extends LightGuideImpl
     {
         this.output.sendNoteEx (15, note, color);
     }
+
+
+    /**
+     * Dis-/enable the light guide.
+     *
+     * @param enable True to enable
+     */
+    public void setActive (final boolean enable)
+    {
+        this.output.sendSysex (new StringBuilder ("F0 00 20 29 02 0A 01 05 0").append (enable ? '1' : '0').append (" F7").toString ());
+    }
 }

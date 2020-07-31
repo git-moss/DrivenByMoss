@@ -58,6 +58,10 @@ public class SessionView extends AbstractSessionView<SLMkIIIControlSurface, SLMk
         this.keyboardScales.setChromatic (true);
         this.keyboardManager = new KeyManager (this.model, this.keyboardScales, lightGuide);
         this.keyboardManager.setNoteMatrix (this.keyboardScales.getNoteMatrix ());
+
+        final ITrackBank tb = model.getTrackBank ();
+        tb.addSelectionObserver ( (index, isSelected) -> this.keyboardManager.clearPressedKeys ());
+        tb.addNoteObserver (this.keyboardManager::call);
     }
 
 
@@ -129,10 +133,27 @@ public class SessionView extends AbstractSessionView<SLMkIIIControlSurface, SLMk
     }
 
 
+    /**
+     * Mark selected notes immediately for better performance.
+     * 
+     * @param key The pressed/released key
+     * @param velocity The velocity
+     */
+    public void updateKeyboardNote (final int key, final int velocity)
+    {
+        final int note = this.keyboardManager.map (key);
+        if (note != -1)
+            this.keyboardManager.setAllKeysPressed (note, velocity);
+    }
+
+
     protected void drawLightGuide (final ILightGuide lightGuide)
     {
         final boolean isKeyboardEnabled = this.model.canSelectedTrackHoldNotes ();
         final boolean isRecording = this.model.hasRecordingState ();
+
+        this.keyboardScales.setScaleOffset (this.scales.getScaleOffset ());
+        this.keyboardScales.setScale (this.scales.getScale ());
 
         final ITrack selectedTrack = this.model.getSelectedTrack ();
         for (int i = this.keyboardScales.getStartNote (); i < this.keyboardScales.getEndNote (); i++)
@@ -142,7 +163,7 @@ public class SessionView extends AbstractSessionView<SLMkIIIControlSurface, SLMk
 
     protected String getGridColor (final boolean isKeyboardEnabled, final boolean isRecording, final ITrack track, final int note)
     {
-        if (isKeyboardEnabled)
+        if (isKeyboardEnabled && this.surface.getConfiguration ().isLightEnabled ())
         {
             if (this.keyboardManager.isKeyPressed (note))
                 return isRecording ? AbstractPlayView.COLOR_RECORD : AbstractPlayView.COLOR_PLAY;
