@@ -23,6 +23,18 @@ import java.util.LinkedList;
  */
 public abstract class AbstractModule implements IModule
 {
+    protected static final String     TAG_EXISTS   = "exists";
+    protected static final String     TAG_SELECTED = "selected";
+    protected static final String     TAG_SELECT   = "select";
+    protected static final String     TAG_VOLUME   = "volume";
+    protected static final String     TAG_PAGE     = "page";
+    protected static final String     TAG_INDICATE = "indicate";
+    protected static final String     TAG_TOUCHED  = "touched";
+    protected static final String     TAG_COLOR    = "color";
+    protected static final String     TAG_PARAM    = "param";
+    protected static final String     TAG_MIXER    = "mixer";
+    protected static final String     TAG_PREROLL  = "preroll";
+
     protected final IHost             host;
     protected final IModel            model;
     protected IOpenSoundControlWriter writer;
@@ -167,7 +179,7 @@ public abstract class AbstractModule implements IModule
 
         writer.sendOSC (fxAddress + "name", fxParam.getName (), dump);
         writer.sendOSC (fxAddress + (isSend ? "volumeStr" : "valueStr"), fxParam.getDisplayedValue (), dump);
-        writer.sendOSC (fxAddress + (isSend ? "volume" : "value"), fxParam.getValue (), dump);
+        writer.sendOSC (fxAddress + (isSend ? TAG_VOLUME : "value"), fxParam.getValue (), dump);
         writer.sendOSC (fxAddress + "modulatedValue", fxParam.getModulatedValue (), dump);
     }
 }

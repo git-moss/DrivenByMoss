@@ -27,7 +27,7 @@ import de.mossgrabers.framework.view.Views;
  */
 public class ShiftView extends AbstractView<APCControlSurface, APCConfiguration>
 {
-    private static final Views [] VIEW_IDS  =
+    private static final Views []   VIEW_IDS  =
     {
         Views.SESSION,
         Views.PLAY,
@@ -36,7 +36,7 @@ public class ShiftView extends AbstractView<APCControlSurface, APCConfiguration>
         Views.RAINDROPS
     };
 
-    private static final int []   TRANSLATE =
+    private static final int []     TRANSLATE =
     {
         0,
         2,
@@ -56,6 +56,8 @@ public class ShiftView extends AbstractView<APCControlSurface, APCConfiguration>
         -1
     };
 
+    private final APCBrowserCommand browserCommand;
+
 
     /**
      * Constructor.
@@ -66,6 +68,8 @@ public class ShiftView extends AbstractView<APCControlSurface, APCConfiguration>
     public ShiftView (final APCControlSurface surface, final IModel model)
     {
         super ("Shift", surface, model);
+
+        this.browserCommand = new APCBrowserCommand (model, surface);
     }
 
 
@@ -126,8 +130,7 @@ public class ShiftView extends AbstractView<APCControlSurface, APCConfiguration>
                     break;
                 case 35:
                 case 36:
-                    final APCBrowserCommand browseCommand = (APCBrowserCommand) this.surface.getButton (ButtonID.BROWSE).getCommand ();
-                    browseCommand.startBrowser (true, index == 35);
+                    this.browserCommand.startBrowser (true, index == 35);
                     break;
                 case 38:
                     this.model.getApplication ().undo ();

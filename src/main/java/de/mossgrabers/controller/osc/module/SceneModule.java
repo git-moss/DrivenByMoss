@@ -51,62 +51,52 @@ public class SceneModule extends AbstractModule
     @Override
     public void execute (final String command, final LinkedList<String> path, final Object value) throws IllegalParameterException, UnknownCommandException, MissingCommandException
     {
-        switch (command)
-        {
-            case "scene":
-                final String sceneCommand = getSubCommand (path);
-                final ISceneBank sceneBank = this.model.getCurrentTrackBank ().getSceneBank ();
-                switch (sceneCommand)
-                {
-                    case "bank":
-                        final String subCommand2 = getSubCommand (path);
-                        switch (subCommand2)
-                        {
-                            case "+":
-                                if (isTrigger (value))
-                                    sceneBank.selectNextPage ();
-                                break;
-                            case "-":
-                                if (isTrigger (value))
-                                    sceneBank.selectPreviousPage ();
-                                break;
-                            default:
-                                throw new UnknownCommandException (subCommand2);
-                        }
-                        break;
+        if (!"scene".equals (command))
+            throw new UnknownCommandException (command);
 
+        final String sceneCommand = getSubCommand (path);
+        final ISceneBank sceneBank = this.model.getCurrentTrackBank ().getSceneBank ();
+        switch (sceneCommand)
+        {
+            case "bank":
+                final String subCommand2 = getSubCommand (path);
+                switch (subCommand2)
+                {
                     case "+":
                         if (isTrigger (value))
-                            sceneBank.scrollForwards ();
+                            sceneBank.selectNextPage ();
                         break;
-
                     case "-":
                         if (isTrigger (value))
-                            sceneBank.scrollBackwards ();
+                            sceneBank.selectPreviousPage ();
                         break;
-
-                    case "create":
-                        if (isTrigger (value))
-                            this.model.getProject ().createSceneFromPlayingLauncherClips ();
-                        break;
-
                     default:
-                        final int scene = Integer.parseInt (sceneCommand);
-                        final String sceneCommand2 = getSubCommand (path);
-                        switch (sceneCommand2)
-                        {
-                            case "launch":
-                                sceneBank.getItem (scene - 1).launch ();
-                                break;
-                            default:
-                                throw new UnknownCommandException (sceneCommand2);
-                        }
-                        break;
+                        throw new UnknownCommandException (subCommand2);
                 }
                 break;
 
+            case "+":
+                if (isTrigger (value))
+                    sceneBank.scrollForwards ();
+                break;
+
+            case "-":
+                if (isTrigger (value))
+                    sceneBank.scrollBackwards ();
+                break;
+
+            case "create":
+                if (isTrigger (value))
+                    this.model.getProject ().createSceneFromPlayingLauncherClips ();
+                break;
+
             default:
-                throw new UnknownCommandException (command);
+                final int scene = Integer.parseInt (sceneCommand);
+                final String sceneCommand2 = getSubCommand (path);
+                if ("launch".equals (sceneCommand2))
+                    sceneBank.getItem (scene - 1).launch ();
+                else
+                    throw new UnknownCommandException (sceneCommand2);
         }
     }
 
@@ -120,9 +110,9 @@ public class SceneModule extends AbstractModule
         {
             final IScene scene = sceneBank.getItem (i);
             final String sceneAddress = "/scene/" + (i + 1) + "/";
-            this.writer.sendOSC (sceneAddress + "exists", scene.doesExist (), dump);
+            this.writer.sendOSC (sceneAddress + TAG_EXISTS, scene.doesExist (), dump);
             this.writer.sendOSC (sceneAddress + "name", scene.getName (), dump);
-            this.writer.sendOSC (sceneAddress + "selected", scene.isSelected (), dump);
+            this.writer.sendOSC (sceneAddress + TAG_SELECTED, scene.isSelected (), dump);
         }
     }
 }

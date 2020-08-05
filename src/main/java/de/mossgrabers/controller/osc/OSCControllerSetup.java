@@ -98,6 +98,7 @@ public class OSCControllerSetup extends AbstractControllerSetup<IControlSurface<
 
         final ModelSetup ms = new ModelSetup ();
         ms.enableDevice (DeviceID.FIRST_INSTRUMENT);
+        ms.enableDevice (DeviceID.EQ);
         ms.setHasFlatTrackList (false);
         ms.setNumTracks (bankPageSize);
         ms.setNumScenes (bankPageSize);

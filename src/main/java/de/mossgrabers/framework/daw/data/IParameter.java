@@ -53,7 +53,7 @@ public interface IParameter extends IItem
 
 
     /**
-     * Sets the value. Ignores scaling.
+     * Sets the value. Ignores takeover.
      *
      * @param value The new value to set
      */

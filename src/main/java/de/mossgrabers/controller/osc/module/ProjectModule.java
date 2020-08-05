@@ -50,39 +50,34 @@ public class ProjectModule extends AbstractModule
     @Override
     public void execute (final String command, final LinkedList<String> path, final Object value) throws IllegalParameterException, UnknownCommandException, MissingCommandException
     {
-        switch (command)
+        if (!"project".equals (command))
+            throw new UnknownCommandException (command);
+
+        final String subCommand = getSubCommand (path);
+        final IProject project = this.model.getProject ();
+        switch (subCommand)
         {
-            case "project":
-                final String subCommand = getSubCommand (path);
-                final IProject project = this.model.getProject ();
-                switch (subCommand)
-                {
-                    case "+":
-                        project.next ();
-                        break;
+            case "+":
+                project.next ();
+                break;
 
-                    case "-":
-                        project.previous ();
-                        break;
+            case "-":
+                project.previous ();
+                break;
 
-                    case "engine":
-                        if (value == null)
-                            this.model.getApplication ().toggleEngineActive ();
-                        else
-                            this.model.getApplication ().setEngineActive (isTrigger (value));
-                        break;
+            case "engine":
+                if (value == null)
+                    this.model.getApplication ().toggleEngineActive ();
+                else
+                    this.model.getApplication ().setEngineActive (isTrigger (value));
+                break;
 
-                    case "save":
-                        project.save ();
-                        break;
-
-                    default:
-                        throw new UnknownCommandException (subCommand);
-                }
+            case "save":
+                project.save ();
                 break;
 
             default:
-                throw new UnknownCommandException (command);
+                throw new UnknownCommandException (subCommand);
         }
     }
 

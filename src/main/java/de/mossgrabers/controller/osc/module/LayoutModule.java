@@ -46,7 +46,7 @@ public class LayoutModule extends AbstractModule
             "layout",
             "panel",
             "arranger",
-            "mixer"
+            TAG_MIXER
         };
     }
 
@@ -75,7 +75,7 @@ public class LayoutModule extends AbstractModule
                     case "devices":
                         app.toggleDevices ();
                         break;
-                    case "mixer":
+                    case TAG_MIXER:
                         app.toggleMixer ();
                         break;
                     case "fullscreen":
@@ -117,7 +117,7 @@ public class LayoutModule extends AbstractModule
                 }
                 break;
 
-            case "mixer":
+            case TAG_MIXER:
                 final String subCommand3 = getSubCommand (path);
                 final IMixer mix = this.model.getMixer ();
                 switch (subCommand3)

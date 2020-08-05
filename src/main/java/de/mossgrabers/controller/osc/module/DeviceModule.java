@@ -14,9 +14,11 @@ import de.mossgrabers.framework.daw.IModel;
 import de.mossgrabers.framework.daw.constants.DeviceID;
 import de.mossgrabers.framework.daw.data.IChannel;
 import de.mossgrabers.framework.daw.data.ICursorDevice;
+import de.mossgrabers.framework.daw.data.IEqualizerDevice;
 import de.mossgrabers.framework.daw.data.ILayer;
 import de.mossgrabers.framework.daw.data.ISend;
 import de.mossgrabers.framework.daw.data.ISpecificDevice;
+import de.mossgrabers.framework.daw.data.ITrack;
 import de.mossgrabers.framework.daw.data.bank.IChannelBank;
 import de.mossgrabers.framework.daw.data.bank.IDeviceBank;
 import de.mossgrabers.framework.daw.data.bank.IDrumPadBank;
@@ -63,7 +65,8 @@ public class DeviceModule extends AbstractModule
         return new String []
         {
             "device",
-            "primary"
+            "primary",
+            "eq"
         };
     }
 
@@ -80,6 +83,12 @@ public class DeviceModule extends AbstractModule
 
             case "primary":
                 this.parseDeviceValue (this.model.getSpecificDevice (DeviceID.FIRST_INSTRUMENT), path, value);
+                break;
+
+            case "eq":
+                final IEqualizerDevice specificDevice = (IEqualizerDevice) this.model.getSpecificDevice (DeviceID.EQ);
+                if (!this.parseEqValue (specificDevice, path, value))
+                    this.parseDeviceValue (specificDevice, path, value);
                 break;
 
             default:
@@ -107,6 +116,7 @@ public class DeviceModule extends AbstractModule
         this.flushDeviceLayer (this.writer, "/device/layer/selected/", selectedLayer == null ? EmptyLayer.INSTANCE : selectedLayer, dump);
 
         this.flushDevice (this.writer, "/primary/", this.model.getSpecificDevice (DeviceID.FIRST_INSTRUMENT), dump);
+        this.flushDevice (this.writer, "/eq/", this.model.getSpecificDevice (DeviceID.EQ), dump);
     }
 
 
@@ -120,12 +130,27 @@ public class DeviceModule extends AbstractModule
      */
     private void flushDevice (final IOpenSoundControlWriter writer, final String deviceAddress, final ISpecificDevice device, final boolean dump)
     {
-        writer.sendOSC (deviceAddress + "exists", device.doesExist (), dump);
+        writer.sendOSC (deviceAddress + TAG_EXISTS, device.doesExist (), dump);
         writer.sendOSC (deviceAddress + "name", device.getName (), dump);
         writer.sendOSC (deviceAddress + "bypass", !device.isEnabled (), dump);
         writer.sendOSC (deviceAddress + "expand", device.isExpanded (), dump);
         writer.sendOSC (deviceAddress + "parameters", device.isParameterPageSectionVisible (), dump);
         writer.sendOSC (deviceAddress + "window", device.isWindowOpen (), dump);
+
+        if (device instanceof IEqualizerDevice)
+        {
+            final IEqualizerDevice eqDevice = (IEqualizerDevice) device;
+            for (int i = 0; i < eqDevice.getBandCount (); i++)
+            {
+                final int oneplus = i + 1;
+
+                writer.sendOSC (deviceAddress + "type/" + oneplus + "/value", eqDevice.getType (i), dump);
+                this.flushParameterData (writer, deviceAddress + "gain/" + oneplus + "/", eqDevice.getGain (i), dump);
+                this.flushParameterData (writer, deviceAddress + "freq/" + oneplus + "/", eqDevice.getFrequency (i), dump);
+                this.flushParameterData (writer, deviceAddress + "q/" + oneplus + "/", eqDevice.getQ (i), dump);
+            }
+            return;
+        }
 
         if (device instanceof ICursorDevice)
         {
@@ -136,7 +161,6 @@ public class DeviceModule extends AbstractModule
                 final int oneplus = i + 1;
                 writer.sendOSC (deviceAddress + "sibling/" + oneplus + "/name", deviceBank.getItem (i).getName (), dump);
                 writer.sendOSC (deviceAddress + "sibling/" + oneplus + "/selected", i == positionInBank, dump);
-
             }
         }
 
@@ -172,12 +196,12 @@ public class DeviceModule extends AbstractModule
         if (channel == null)
             return;
 
-        writer.sendOSC (deviceAddress + "exists", channel.doesExist (), dump);
+        writer.sendOSC (deviceAddress + TAG_EXISTS, channel.doesExist (), dump);
         writer.sendOSC (deviceAddress + "activated", channel.isActivated (), dump);
-        writer.sendOSC (deviceAddress + "selected", channel.isSelected (), dump);
+        writer.sendOSC (deviceAddress + TAG_SELECTED, channel.isSelected (), dump);
         writer.sendOSC (deviceAddress + "name", channel.getName (), dump);
         writer.sendOSC (deviceAddress + "volumeStr", channel.getVolumeStr (), dump);
-        writer.sendOSC (deviceAddress + "volume", channel.getVolume (), dump);
+        writer.sendOSC (deviceAddress + TAG_VOLUME, channel.getVolume (), dump);
         writer.sendOSC (deviceAddress + "panStr", channel.getPanStr (), dump);
         writer.sendOSC (deviceAddress + "pan", channel.getPan (), dump);
         writer.sendOSC (deviceAddress + "mute", channel.isMute (), dump);
@@ -191,7 +215,7 @@ public class DeviceModule extends AbstractModule
             writer.sendOSC (deviceAddress + "vu", channel.getVu (), dump);
 
         final ColorEx color = channel.getColor ();
-        writer.sendOSCColor (deviceAddress + "color", color.getRed (), color.getGreen (), color.getBlue (), dump);
+        writer.sendOSCColor (deviceAddress + TAG_COLOR, color.getRed (), color.getGreen (), color.getBlue (), dump);
     }
 
 
@@ -206,8 +230,8 @@ public class DeviceModule extends AbstractModule
                 final String subCommand2 = getSubCommand (path);
                 switch (subCommand2)
                 {
-                    case "select":
-                    case "selected":
+                    case TAG_SELECT:
+                    case TAG_SELECTED:
                         if (isTrigger (value) && cursorDevice != null)
                             cursorDevice.getDeviceBank ().getItem (siblingNo - 1).select ();
                         break;
@@ -221,18 +245,16 @@ public class DeviceModule extends AbstractModule
                 if (cursorDevice != null)
                 {
                     final String subCommand3 = getSubCommand (path);
-                    switch (subCommand3)
+                    if (TAG_PAGE.equals (subCommand3))
                     {
-                        case "page":
-                            final String directionCommand = getSubCommand (path);
-                            if ("+".equals (directionCommand))
-                                cursorDevice.getDeviceBank ().selectNextPage ();
-                            else // "-"
-                                cursorDevice.getDeviceBank ().selectPreviousPage ();
-                            break;
-                        default:
-                            throw new UnknownCommandException (subCommand3);
+                        final String directionCommand = getSubCommand (path);
+                        if ("+".equals (directionCommand))
+                            cursorDevice.getDeviceBank ().selectNextPage ();
+                        else // "-"
+                            cursorDevice.getDeviceBank ().selectPreviousPage ();
                     }
+                    else
+                        throw new UnknownCommandException (subCommand3);
                 }
                 break;
 
@@ -259,12 +281,12 @@ public class DeviceModule extends AbstractModule
         final String command = getSubCommand (path);
         switch (command)
         {
-            case "page":
+            case TAG_PAGE:
                 final String subCommand = getSubCommand (path);
                 switch (subCommand)
                 {
-                    case "select":
-                    case "selected":
+                    case TAG_SELECT:
+                    case TAG_SELECTED:
                         device.getParameterPageBank ().selectPage (toInteger (value) - 1);
                         break;
 
@@ -298,21 +320,19 @@ public class DeviceModule extends AbstractModule
                 device.toggleWindowOpen ();
                 break;
 
-            case "indicate":
+            case TAG_INDICATE:
                 final String subCommand4 = getSubCommand (path);
-                switch (subCommand4)
+                if (TAG_PARAM.equals (subCommand4))
                 {
-                    case "param":
-                        final IParameterBank parameterBank = device.getParameterBank ();
-                        for (int i = 0; i < parameterBank.getPageSize (); i++)
-                            parameterBank.getItem (i).setIndication (isTrigger (value));
-                        break;
-                    default:
-                        throw new UnknownCommandException (subCommand4);
+                    final IParameterBank parameterBank = device.getParameterBank ();
+                    for (int i = 0; i < parameterBank.getPageSize (); i++)
+                        parameterBank.getItem (i).setIndication (isTrigger (value));
                 }
+                else
+                    throw new UnknownCommandException (subCommand4);
                 break;
 
-            case "param":
+            case TAG_PARAM:
                 final String subCommand5 = getSubCommand (path);
                 try
                 {
@@ -334,18 +354,16 @@ public class DeviceModule extends AbstractModule
 
                             case "bank":
                                 final String subCommand6 = getSubCommand (path);
-                                switch (subCommand6)
+                                if (TAG_PAGE.equals (subCommand6))
                                 {
-                                    case "page":
-                                        final String subCommand7 = getSubCommand (path);
-                                        if ("+".equals (subCommand7))
-                                            device.getParameterPageBank ().scrollForwards ();
-                                        else // "-"
-                                            device.getParameterPageBank ().scrollBackwards ();
-                                        break;
-                                    default:
-                                        throw new UnknownCommandException (subCommand6);
+                                    final String subCommand7 = getSubCommand (path);
+                                    if ("+".equals (subCommand7))
+                                        device.getParameterPageBank ().scrollForwards ();
+                                    else // "-"
+                                        device.getParameterPageBank ().scrollBackwards ();
                                 }
+                                else
+                                    throw new UnknownCommandException (subCommand6);
                                 break;
 
                             default:
@@ -371,13 +389,84 @@ public class DeviceModule extends AbstractModule
     }
 
 
+    private boolean parseEqValue (final IEqualizerDevice equalizerDevice, final LinkedList<String> path, final Object value) throws MissingCommandException, UnknownCommandException, IllegalParameterException
+    {
+        final String command = getSubCommand (path);
+        switch (command)
+        {
+            case "type":
+                final String subCommand1 = getSubCommand (path);
+                try
+                {
+                    final int bandNo = Integer.parseInt (subCommand1) - 1;
+                    equalizerDevice.setType (bandNo, toString (value));
+                }
+                catch (final NumberFormatException ex)
+                {
+                    throw new UnknownCommandException (subCommand1);
+                }
+                return true;
+
+            case "gain":
+                final String subCommand2 = getSubCommand (path);
+                try
+                {
+                    final int bandNo = Integer.parseInt (subCommand2) - 1;
+                    equalizerDevice.getGain (bandNo).setValue (toInteger (value));
+                }
+                catch (final NumberFormatException ex)
+                {
+                    throw new UnknownCommandException (subCommand2);
+                }
+                return true;
+
+            case "freq":
+                final String subCommand3 = getSubCommand (path);
+                try
+                {
+                    final int bandNo = Integer.parseInt (subCommand3) - 1;
+                    equalizerDevice.getFrequency (bandNo).setValue (toInteger (value));
+                }
+                catch (final NumberFormatException ex)
+                {
+                    throw new UnknownCommandException (subCommand3);
+                }
+                return true;
+
+            case "q":
+                final String subCommand4 = getSubCommand (path);
+                try
+                {
+                    final int bandNo = Integer.parseInt (subCommand4) - 1;
+                    equalizerDevice.getQ (bandNo).setValue (toInteger (value));
+                }
+                catch (final NumberFormatException ex)
+                {
+                    throw new UnknownCommandException (subCommand4);
+                }
+                return true;
+
+            case "add":
+                final ITrack selectedTrack = this.model.getSelectedTrack ();
+                if (selectedTrack != null && isTrigger (value))
+                    selectedTrack.addEqualizerDevice ();
+                return true;
+
+            default:
+                // Let this be handled by the normal device parser
+                path.add (0, command);
+                return false;
+        }
+    }
+
+
     private void parseLayerOrDrumpad (final ISpecificDevice device, final LinkedList<String> path, final Object value) throws MissingCommandException, UnknownCommandException, IllegalParameterException
     {
         final String command = getSubCommand (path);
         try
         {
             final int layerNo;
-            if ("selected".equals (command) || "select".equals (command))
+            if (TAG_SELECTED.equals (command) || TAG_SELECT.equals (command))
             {
                 final IChannel selectedLayerOrDrumPad = device.getLayerOrDrumPadBank ().getSelectedItem ();
                 layerNo = selectedLayerOrDrumPad == null ? -1 : selectedLayerOrDrumPad.getIndex ();
@@ -409,7 +498,7 @@ public class DeviceModule extends AbstractModule
                     device.getLayerOrDrumPadBank ().selectPreviousItem ();
                     break;
 
-                case "page":
+                case TAG_PAGE:
                     if (path.isEmpty ())
                     {
                         this.host.println ("Missing Layer/Drumpad Page subcommand: " + command);
@@ -441,26 +530,26 @@ public class DeviceModule extends AbstractModule
         final IChannel layer = layerOrDrumPadBank.getItem (layerIndex);
         switch (command)
         {
-            case "select":
-            case "selected":
+            case TAG_SELECT:
+            case TAG_SELECTED:
                 layerOrDrumPadBank.getItem (layerIndex).select ();
                 break;
 
-            case "volume":
+            case TAG_VOLUME:
                 if (path.isEmpty ())
                     layer.setVolume (toInteger (value));
-                else if ("indicate".equals (path.get (0)))
+                else if (TAG_INDICATE.equals (path.get (0)))
                     layer.setVolumeIndication (isTrigger (value));
-                else if ("touched".equals (path.get (0)))
+                else if (TAG_TOUCHED.equals (path.get (0)))
                     layer.touchVolume (isTrigger (value));
                 break;
 
             case "pan":
                 if (path.isEmpty ())
                     layer.setPan (toInteger (value));
-                else if ("indicate".equals (path.get (0)))
+                else if (TAG_INDICATE.equals (path.get (0)))
                     layer.setPanIndication (isTrigger (value));
-                else if ("touched".equals (path.get (0)))
+                else if (TAG_TOUCHED.equals (path.get (0)))
                     layer.touchPan (isTrigger (value));
                 break;
 
@@ -482,14 +571,14 @@ public class DeviceModule extends AbstractModule
                 final int sendNo = Integer.parseInt (path.removeFirst ()) - 1;
                 if (path.isEmpty ())
                     return;
-                if (!"volume".equals (path.removeFirst ()))
+                if (!TAG_VOLUME.equals (path.removeFirst ()))
                     return;
                 final ISend send = layer.getSendBank ().getItem (sendNo);
                 if (path.isEmpty ())
                     send.setValue (toInteger (value));
-                else if ("indicate".equals (path.get (0)))
+                else if (TAG_INDICATE.equals (path.get (0)))
                     send.setIndication (isTrigger (value));
-                else if ("touched".equals (path.get (0)))
+                else if (TAG_TOUCHED.equals (path.get (0)))
                     send.touchValue (isTrigger (value));
                 break;
 
@@ -512,7 +601,7 @@ public class DeviceModule extends AbstractModule
                 cursorDevice.getParameterBank ().getItem (fxparamIndex).setValue (toInteger (value));
                 break;
 
-            case "indicate":
+            case TAG_INDICATE:
                 cursorDevice.getParameterBank ().getItem (fxparamIndex).setIndication (isTrigger (value));
                 break;
 
@@ -520,7 +609,7 @@ public class DeviceModule extends AbstractModule
                 cursorDevice.getParameterBank ().getItem (fxparamIndex).resetValue ();
                 break;
 
-            case "touched":
+            case TAG_TOUCHED:
                 cursorDevice.getParameterBank ().getItem (fxparamIndex).touchValue (isTrigger (value));
                 break;
 

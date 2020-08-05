@@ -48,6 +48,7 @@ public class StopAllClipsOrBrowseCommand extends AbstractTriggerCommand<APCContr
     @Override
     public void executeShifted (final ButtonEvent event)
     {
-        this.apcBrowserCommand.execute (event, event == ButtonEvent.DOWN ? 127 : 0);
+        if (event == ButtonEvent.DOWN)
+            this.apcBrowserCommand.startBrowser (false, false);
     }
 }

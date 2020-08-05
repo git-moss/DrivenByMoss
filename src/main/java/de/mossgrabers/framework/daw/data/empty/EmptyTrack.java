@@ -258,6 +258,14 @@ public class EmptyTrack extends EmptyChannel implements ITrack
     }
 
 
+    /** {@inheritDoc} */
+    @Override
+    public void addEqualizerDevice ()
+    {
+        // Intentionally empty
+    }
+
+
     class EmptySlotBank extends EmptyBank<ISlot> implements ISlotBank
     {
         /** {@inheritDoc} */

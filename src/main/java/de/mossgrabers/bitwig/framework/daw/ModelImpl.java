@@ -6,6 +6,7 @@ package de.mossgrabers.bitwig.framework.daw;
 
 import de.mossgrabers.bitwig.framework.daw.data.CursorDeviceImpl;
 import de.mossgrabers.bitwig.framework.daw.data.DrumDeviceImpl;
+import de.mossgrabers.bitwig.framework.daw.data.EqualizerDeviceImpl;
 import de.mossgrabers.bitwig.framework.daw.data.KompleteDevice;
 import de.mossgrabers.bitwig.framework.daw.data.MasterTrackImpl;
 import de.mossgrabers.bitwig.framework.daw.data.SpecificDeviceImpl;
@@ -160,8 +161,12 @@ public class ModelImpl extends AbstractModel
                     deviceMatcher = controllerHost.createInstrumentMatcher ();
                     break;
 
+                case EQ:
+                    deviceMatcher = controllerHost.createBitwigDeviceMatcher (UUID.fromString ("e4815188-ba6f-4d14-bcfc-2dcb8f778ccb"));
+                    break;
+
                 case NI_KOMPLETE:
-                    deviceMatcher = controllerHost.createVST2DeviceMatcher (1315523403);
+                    deviceMatcher = controllerHost.createVST2DeviceMatcher (KompleteDevice.VST2_KOMPLETE_ID);
                     break;
 
                 default:
@@ -171,11 +176,21 @@ public class ModelImpl extends AbstractModel
             final DeviceBank deviceBank = this.cursorTrack.createDeviceBank (1);
             deviceBank.setDeviceMatcher (deviceMatcher);
             final Device device = deviceBank.getItemAt (0);
+
             final ISpecificDevice specificDevice;
-            if (deviceID == DeviceID.NI_KOMPLETE)
-                specificDevice = new KompleteDevice (this.host, this.valueChanger, device);
-            else
-                specificDevice = new SpecificDeviceImpl (this.host, this.valueChanger, device, numSends, numParams, numDevicesInBank, numDeviceLayers, numDrumPadLayers);
+            switch (deviceID)
+            {
+                case NI_KOMPLETE:
+                    specificDevice = new KompleteDevice (this.host, this.valueChanger, device);
+                    break;
+                case EQ:
+                    specificDevice = new EqualizerDeviceImpl (this.host, this.valueChanger, device);
+                    break;
+                default:
+                    specificDevice = new SpecificDeviceImpl (this.host, this.valueChanger, device, numSends, numParams, numDevicesInBank, numDeviceLayers, numDrumPadLayers);
+                    break;
+            }
+
             this.specificDevices.put (deviceID, specificDevice);
         }
 

@@ -72,7 +72,7 @@ public class TransportModule extends AbstractModule
             "crossfade",
             "autowrite",
             "automationWriteMode",
-            "preroll"
+            TAG_PREROLL
         };
     }
 
@@ -161,7 +161,7 @@ public class TransportModule extends AbstractModule
                         else
                             this.transport.setMetronomeTicks (isTrigger);
                         break;
-                    case "preroll":
+                    case TAG_PREROLL:
                         if (isTrigger)
                             this.transport.togglePrerollMetronome ();
                         break;
@@ -248,7 +248,7 @@ public class TransportModule extends AbstractModule
                     this.transport.setAutomationWriteMode (AutomationMode.valueOf (value.toString ().toUpperCase ()));
                 break;
 
-            case "preroll":
+            case TAG_PREROLL:
                 this.transport.setPrerollAsBars (toInteger (value));
                 break;
 

@@ -60,37 +60,31 @@ public class MarkerModule extends AbstractModule
         {
             final int markerNo = Integer.parseInt (subCommand) - 1;
             final String subCommand2 = getSubCommand (path);
-            switch (subCommand2)
-            {
-                case "launch":
-                    this.model.getMarkerBank ().getItem (markerNo).launch (true);
-                    break;
-                default:
-                    throw new UnknownCommandException (subCommand2);
-            }
+            if ("launch".equals (subCommand2))
+                this.model.getMarkerBank ().getItem (markerNo).launch (true);
+            else
+                throw new UnknownCommandException (subCommand2);
         }
         catch (final NumberFormatException ex)
         {
             final IMarkerBank markerBank = this.model.getMarkerBank ();
-            switch (subCommand)
+            if ("bank".equals (subCommand))
             {
-                case "bank":
-                    final String subCommand2 = getSubCommand (path);
-                    switch (subCommand2)
-                    {
-                        case "+":
-                            markerBank.selectNextPage ();
-                            break;
-                        case "-":
-                            markerBank.selectPreviousPage ();
-                            break;
-                        default:
-                            throw new UnknownCommandException (subCommand2);
-                    }
-                    break;
-                default:
-                    throw new UnknownCommandException (subCommand);
+                final String subCommand2 = getSubCommand (path);
+                switch (subCommand2)
+                {
+                    case "+":
+                        markerBank.selectNextPage ();
+                        break;
+                    case "-":
+                        markerBank.selectPreviousPage ();
+                        break;
+                    default:
+                        throw new UnknownCommandException (subCommand2);
+                }
             }
+            else
+                throw new UnknownCommandException (subCommand);
         }
     }
 

@@ -8,6 +8,7 @@ import de.mossgrabers.controller.fire.command.continuous.SelectKnobCommand;
 import de.mossgrabers.controller.fire.command.trigger.DrumSequencerSelectCommand;
 import de.mossgrabers.controller.fire.command.trigger.FireBrowserCommand;
 import de.mossgrabers.controller.fire.command.trigger.FireRecordCommand;
+import de.mossgrabers.controller.fire.command.trigger.FireStopCommand;
 import de.mossgrabers.controller.fire.command.trigger.FireViewButtonCommand;
 import de.mossgrabers.controller.fire.command.trigger.PlaySelectCommand;
 import de.mossgrabers.controller.fire.command.trigger.SessionSelectCommand;
@@ -38,7 +39,6 @@ import de.mossgrabers.framework.command.trigger.mode.KnobRowTouchModeCommand;
 import de.mossgrabers.framework.command.trigger.mode.ModeMultiSelectCommand;
 import de.mossgrabers.framework.command.trigger.transport.MetronomeCommand;
 import de.mossgrabers.framework.command.trigger.transport.PlayCommand;
-import de.mossgrabers.framework.command.trigger.transport.StopCommand;
 import de.mossgrabers.framework.command.trigger.view.ToggleShiftViewCommand;
 import de.mossgrabers.framework.command.trigger.view.ViewButtonCommand;
 import de.mossgrabers.framework.configuration.ISettingsUI;
@@ -223,7 +223,7 @@ public class FireControllerSetup extends AbstractControllerSetup<FireControlSurf
 
         final ITransport t = this.model.getTransport ();
         this.addButton (ButtonID.PLAY, "PLAY", new PlayCommand<> (this.model, surface, ButtonID.ALT), FireControlSurface.FIRE_PLAY, t::isPlaying, ColorManager.BUTTON_STATE_ON, ColorManager.BUTTON_STATE_HI);
-        this.addButton (ButtonID.STOP, "STOP", new StopCommand<> (this.model, surface), FireControlSurface.FIRE_STOP, () -> !t.isPlaying (), ColorManager.BUTTON_STATE_ON, ColorManager.BUTTON_STATE_HI);
+        this.addButton (ButtonID.STOP, "STOP", new FireStopCommand (this.model, surface), FireControlSurface.FIRE_STOP, () -> !t.isPlaying (), ColorManager.BUTTON_STATE_ON, ColorManager.BUTTON_STATE_HI);
         this.addButton (ButtonID.RECORD, "REC", new FireRecordCommand (this.model, surface), FireControlSurface.FIRE_REC, () -> {
 
             if (this.isRecordShifted (surface))

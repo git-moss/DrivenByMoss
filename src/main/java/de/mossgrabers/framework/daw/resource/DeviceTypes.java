@@ -65,6 +65,7 @@ public class DeviceTypes
         DEVICES.put ("E-Kick", TypeIcon.ICON_DRUM);
         DEVICES.put ("E-Snare", TypeIcon.ICON_DRUM);
         DEVICES.put ("E-Tom", TypeIcon.ICON_DRUM);
+        DEVICES.put ("EQ+", TypeIcon.ICON_WAVE);
         DEVICES.put ("EQ-2", TypeIcon.ICON_WAVE);
         DEVICES.put ("EQ-5", TypeIcon.ICON_WAVE);
         DEVICES.put ("EQ-DJ", TypeIcon.ICON_WAVE);
@@ -72,6 +73,7 @@ public class DeviceTypes
         DEVICES.put ("Flanger", TypeIcon.ICON_WAVE);
         DEVICES.put ("FM-4", TypeIcon.ICON_INSTRUMENT);
         DEVICES.put ("Freq Shifter", TypeIcon.ICON_WAVE);
+        DEVICES.put ("FX Grid", TypeIcon.ICON_WAVE);
         DEVICES.put ("FX Layer", TypeIcon.ICON_FOLDER);
         DEVICES.put ("FX Selector", TypeIcon.ICON_FOLDER);
         DEVICES.put ("Gate", TypeIcon.ICON_WAVE);
@@ -94,6 +96,7 @@ public class DeviceTypes
         DEVICES.put ("Note Echo", TypeIcon.ICON_NOTE);
         DEVICES.put ("Note Filter", TypeIcon.ICON_NOTE);
         DEVICES.put ("Note FX Layer", TypeIcon.ICON_FOLDER);
+        DEVICES.put ("Note FX Selector", TypeIcon.ICON_FOLDER);
         DEVICES.put ("Note Harmonizer", TypeIcon.ICON_NOTE);
         DEVICES.put ("Note Latch", TypeIcon.ICON_NOTE);
         DEVICES.put ("Note Length", TypeIcon.ICON_NOTE);
@@ -107,6 +110,7 @@ public class DeviceTypes
         DEVICES.put ("Phase-4", TypeIcon.ICON_INSTRUMENT);
         DEVICES.put ("Phaser", TypeIcon.ICON_WAVE);
         DEVICES.put ("Pitch Shifter", TypeIcon.ICON_WAVE);
+        DEVICES.put ("Poly Grid", TypeIcon.ICON_INSTRUMENT);
         DEVICES.put ("Polysynth", TypeIcon.ICON_INSTRUMENT);
         DEVICES.put ("Replacer", TypeIcon.ICON_FOLDER);
         DEVICES.put ("Resonator Bank", TypeIcon.ICON_WAVE);
@@ -114,8 +118,9 @@ public class DeviceTypes
         DEVICES.put ("Ring-Mod", TypeIcon.ICON_WAVE);
         DEVICES.put ("Rotary", TypeIcon.ICON_WAVE);
         DEVICES.put ("Sampler", TypeIcon.ICON_INSTRUMENT);
-        DEVICES.put ("Spectrum Analyzer", TypeIcon.ICON_ANALYSIS);
+        DEVICES.put ("Spectrum", TypeIcon.ICON_ANALYSIS);
         DEVICES.put ("Step MOD", TypeIcon.ICON_FOLDER);
+        DEVICES.put ("Stereo Split", TypeIcon.ICON_FOLDER);
         DEVICES.put ("Test Tone", TypeIcon.ICON_WAVE);
         DEVICES.put ("Time Shift", TypeIcon.ICON_WAVE);
         DEVICES.put ("Tool", TypeIcon.ICON_WAVE);
@@ -123,6 +128,7 @@ public class DeviceTypes
         DEVICES.put ("Transposition Map", TypeIcon.ICON_NOTE);
         DEVICES.put ("Treemonster", TypeIcon.ICON_WAVE);
         DEVICES.put ("Tremolo", TypeIcon.ICON_WAVE);
+        DEVICES.put ("Vocoder", TypeIcon.ICON_WAVE);
         DEVICES.put ("XY Effect", TypeIcon.ICON_FOLDER);
         DEVICES.put ("XY Instrument", TypeIcon.ICON_FOLDER);
         DEVICES.put ("USER", TypeIcon.ICON_USER);

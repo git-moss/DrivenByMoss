@@ -13,6 +13,8 @@ public enum DeviceID
 {
     /** The first instrument device on the track. */
     FIRST_INSTRUMENT,
+    /** The equalizer device. */
+    EQ,
     /** The first Native Instruments Komplete Kontrol device on the track. */
     NI_KOMPLETE
 }

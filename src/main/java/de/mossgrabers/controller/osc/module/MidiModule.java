@@ -67,15 +67,10 @@ public class MidiModule extends AbstractModule
     @Override
     public void execute (final String command, final LinkedList<String> path, final Object value) throws IllegalParameterException, UnknownCommandException, MissingCommandException
     {
-        switch (command)
-        {
-            case "vkb_midi":
-                this.parseMidi (path, value);
-                break;
-
-            default:
-                throw new UnknownCommandException (command);
-        }
+        if ("vkb_midi".equals (command))
+            this.parseMidi (path, value);
+        else
+            throw new UnknownCommandException (command);
     }
 
 

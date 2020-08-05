@@ -19,7 +19,9 @@ import java.util.UUID;
  */
 public class MCUControllerDefinition extends DefaultControllerDefinition
 {
-    private static final UUID []   EXTENSION_ID   =
+    private static final String    I_CON_QCON_PRO_X_V1_15 = "iCON QCON Pro X V1.15";
+
+    private static final UUID []   EXTENSION_ID           =
     {
         UUID.fromString ("5F10A0CD-F866-41C0-B16A-AEA16282B657"),
         UUID.fromString ("7FF808DD-45DB-4026-AA6E-844ED8C05B55"),
@@ -27,7 +29,7 @@ public class MCUControllerDefinition extends DefaultControllerDefinition
         UUID.fromString ("4923C47A-B1DC-48C8-AE89-A332AA26BA87")
     };
 
-    private static final String [] HARDWARE_MODEL =
+    private static final String [] HARDWARE_MODEL         =
     {
         "MCU - Control Universal",
         "MCU - Control Universal + 1 Extender",
@@ -56,7 +58,7 @@ public class MCUControllerDefinition extends DefaultControllerDefinition
         switch (this.getNumMidiInPorts ())
         {
             case 1:
-                pairs.addAll (this.createDeviceDiscoveryPairs ("iCON QCON Pro X V1.15"));
+                pairs.addAll (this.createDeviceDiscoveryPairs (I_CON_QCON_PRO_X_V1_15));
                 pairs.addAll (this.createDeviceDiscoveryPairs ("Platform M V1.14"));
                 pairs.addAll (this.createDeviceDiscoveryPairs ("Platform M+ V1.07"));
                 pairs.addAll (this.createDeviceDiscoveryPairs ("X-Touch One"));
@@ -67,11 +69,11 @@ public class MCUControllerDefinition extends DefaultControllerDefinition
             case 2:
                 this.addDeviceDiscoveryPair (new String []
                 {
-                    "iCON QCON Pro X V1.15",
+                    I_CON_QCON_PRO_X_V1_15,
                     "iCON QCON Pro XS1 V1.08"
                 }, new String []
                 {
-                    "iCON QCON Pro X V1.15",
+                    I_CON_QCON_PRO_X_V1_15,
                     "iCON QCON Pro XS1 V1.08"
                 });
                 break;

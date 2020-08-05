@@ -121,15 +121,15 @@ public class TrackModule extends AbstractModule
      */
     private void flushTrack (final IOpenSoundControlWriter writer, final String trackAddress, final ITrack track, final boolean dump)
     {
-        writer.sendOSC (trackAddress + "exists", track.doesExist (), dump);
+        writer.sendOSC (trackAddress + TAG_EXISTS, track.doesExist (), dump);
         final ChannelType type = track.getType ();
         writer.sendOSC (trackAddress + "type", type == null ? null : type.name ().toLowerCase (), dump);
         writer.sendOSC (trackAddress + "activated", track.isActivated (), dump);
-        writer.sendOSC (trackAddress + "selected", track.isSelected (), dump);
+        writer.sendOSC (trackAddress + TAG_SELECTED, track.isSelected (), dump);
         writer.sendOSC (trackAddress + "isGroup", track.isGroup (), dump);
         writer.sendOSC (trackAddress + "name", track.getName (), dump);
         writer.sendOSC (trackAddress + "volumeStr", track.getVolumeStr (), dump);
-        writer.sendOSC (trackAddress + "volume", track.getVolume (), dump);
+        writer.sendOSC (trackAddress + TAG_VOLUME, track.getVolume (), dump);
         writer.sendOSC (trackAddress + "panStr", track.getPanStr (), dump);
         writer.sendOSC (trackAddress + "pan", track.getPan (), dump);
         writer.sendOSC (trackAddress + "mute", track.isMute (), dump);
@@ -160,11 +160,11 @@ public class TrackModule extends AbstractModule
             writer.sendOSC (clipAddress + "isStopQueued", slot.isStopQueued (), dump);
 
             final ColorEx color = slot.getColor ();
-            writer.sendOSCColor (clipAddress + "color", color.getRed (), color.getGreen (), color.getBlue (), dump);
+            writer.sendOSCColor (clipAddress + TAG_COLOR, color.getRed (), color.getGreen (), color.getBlue (), dump);
         }
 
         final ColorEx color = track.getColor ();
-        writer.sendOSCColor (trackAddress + "color", color.getRed (), color.getGreen (), color.getBlue (), dump);
+        writer.sendOSCColor (trackAddress + TAG_COLOR, color.getRed (), color.getGreen (), color.getBlue (), dump);
 
         final String crossfadeMode = track.getCrossfadeMode ();
         writer.sendOSC (trackAddress + "crossfadeMode/A", "A".equals (crossfadeMode), dump);
@@ -180,13 +180,12 @@ public class TrackModule extends AbstractModule
         final ITrackBank tb = this.model.getCurrentTrackBank ();
         switch (command)
         {
-            case "indicate":
-            {
-                final String subCommand = getSubCommand (path);
+            case TAG_INDICATE:
+                final String indicateCommand = getSubCommand (path);
                 final boolean isTrue = isTrigger (value);
-                switch (subCommand)
+                switch (indicateCommand)
                 {
-                    case "volume":
+                    case TAG_VOLUME:
                         for (int i = 0; i < tb.getPageSize (); i++)
                             tb.getItem (i).setVolumeIndication (isTrue);
                         break;
@@ -202,18 +201,16 @@ public class TrackModule extends AbstractModule
                             tb.getItem (i).getSendBank ().getItem (sendIndex).setIndication (isTrue);
                         break;
                     default:
-                        throw new UnknownCommandException (subCommand);
+                        throw new UnknownCommandException (indicateCommand);
                 }
                 break;
-            }
 
             case "bank":
-                final String subCommand = getSubCommand (path);
-                switch (subCommand)
+                final String bankCommand = getSubCommand (path);
+                switch (bankCommand)
                 {
-                    case "page":
-                        final String subCommand2 = getSubCommand (path);
-                        if ("+".equals (subCommand2))
+                    case TAG_PAGE:
+                        if ("+".equals (getSubCommand (path)))
                             tb.selectNextPage ();
                         else // "-"
                             tb.selectPreviousPage ();
@@ -225,35 +222,31 @@ public class TrackModule extends AbstractModule
                         tb.scrollBackwards ();
                         break;
                     default:
-                        throw new UnknownCommandException (subCommand);
+                        throw new UnknownCommandException (bankCommand);
                 }
                 break;
 
             case "+":
-            {
-                final ITrack sel = tb.getSelectedItem ();
-                final int index = sel == null ? 0 : sel.getIndex () + 1;
-                if (index == tb.getPageSize ())
+                final ITrack selTrack1 = tb.getSelectedItem ();
+                final int index1 = selTrack1 == null ? 0 : selTrack1.getIndex () + 1;
+                if (index1 == tb.getPageSize ())
                 {
                     tb.selectNextPage ();
                     return;
                 }
-                tb.getItem (index).select ();
+                tb.getItem (index1).select ();
                 break;
-            }
 
             case "-":
-            {
-                final ITrack sel = tb.getSelectedItem ();
-                final int index = sel == null ? 0 : sel.getIndex () - 1;
-                if (index == -1)
+                final ITrack selTrack2 = tb.getSelectedItem ();
+                final int index2 = selTrack2 == null ? 0 : selTrack2.getIndex () - 1;
+                if (index2 == -1)
                 {
                     tb.selectPreviousPage ();
                     return;
                 }
-                tb.getItem (index).select ();
+                tb.getItem (index2).select ();
                 break;
-            }
 
             case "add":
                 final String subCommand2 = getSubCommand (path);
@@ -283,7 +276,6 @@ public class TrackModule extends AbstractModule
                 break;
 
             case "toggleBank":
-            {
                 if (this.model.getEffectTrackBank () == null)
                     return;
                 this.model.toggleCurrentTrackBank ();
@@ -304,19 +296,16 @@ public class TrackModule extends AbstractModule
                     track.setPanIndication (true);
                 }
                 break;
-            }
 
             case "parent":
-            {
                 tb.selectParent ();
                 break;
-            }
 
-            case "select":
-            case "selected":
-                final ITrack selectedTrack = tb.getSelectedItem ();
-                if (selectedTrack != null)
-                    parseTrackValue (selectedTrack, path, value);
+            case TAG_SELECT:
+            case TAG_SELECTED:
+                final ITrack selectedTrack2 = tb.getSelectedItem ();
+                if (selectedTrack2 != null)
+                    parseTrackValue (selectedTrack2, path, value);
                 break;
 
             default:
@@ -338,31 +327,31 @@ public class TrackModule extends AbstractModule
                 track.setCrossfadeMode (getSubCommand (path));
                 break;
 
-            case "select":
-            case "selected":
+            case TAG_SELECT:
+            case TAG_SELECTED:
                 if (isTrigger (value))
                     track.select ();
                 break;
 
-            case "volume":
+            case TAG_VOLUME:
                 if (path.isEmpty ())
                     track.setVolume (toInteger (value));
-                else if ("indicate".equals (path.get (0)))
+                else if (TAG_INDICATE.equals (path.get (0)))
                     track.setVolumeIndication (isTrigger (value));
                 else if ("reset".equals (path.get (0)))
                     track.resetVolume ();
-                else if ("touched".equals (path.get (0)))
+                else if (TAG_TOUCHED.equals (path.get (0)))
                     track.touchVolume (isTrigger (value));
                 break;
 
             case "pan":
                 if (path.isEmpty ())
                     track.setPan (toInteger (value));
-                else if ("indicate".equals (path.get (0)))
+                else if (TAG_INDICATE.equals (path.get (0)))
                     track.setPanIndication (isTrigger (value));
                 else if ("reset".equals (path.get (0)))
                     track.resetPan ();
-                else if ("touched".equals (path.get (0)))
+                else if (TAG_TOUCHED.equals (path.get (0)))
                     track.touchPan (isTrigger (value));
                 break;
 
@@ -414,7 +403,7 @@ public class TrackModule extends AbstractModule
                 track.enter ();
                 break;
 
-            case "color":
+            case TAG_COLOR:
                 final Matcher matcher = RGB_COLOR_PATTERN.matcher (toString (value));
                 if (!matcher.matches ())
                     return;
@@ -440,8 +429,8 @@ public class TrackModule extends AbstractModule
             final ISlot slot = track.getSlotBank ().getItem (clipNo);
             switch (clipCommand)
             {
-                case "select":
-                case "selected":
+                case TAG_SELECT:
+                case TAG_SELECTED:
                     slot.select ();
                     break;
                 case "launch":
@@ -453,7 +442,7 @@ public class TrackModule extends AbstractModule
                 case "remove":
                     slot.remove ();
                     break;
-                case "color":
+                case TAG_COLOR:
                     final Matcher matcher = RGB_COLOR_PATTERN.matcher (value.toString ());
                     if (!matcher.matches ())
                         return;
@@ -486,23 +475,18 @@ public class TrackModule extends AbstractModule
     private static void parseSendValue (final ITrack track, final int sendIndex, final LinkedList<String> path, final Object value) throws UnknownCommandException, MissingCommandException, IllegalParameterException
     {
         final String command = getSubCommand (path);
-        switch (command)
-        {
-            case "volume":
-                final ISend send = track.getSendBank ().getItem (sendIndex);
-                if (send != null)
-                {
-                    if (path.isEmpty ())
-                        send.setValue (toInteger (value));
-                    else if ("indicate".equals (path.get (0)))
-                        send.setIndication (isTrigger (value));
-                    else if ("touched".equals (path.get (0)))
-                        send.touchValue (isTrigger (value));
-                }
-                break;
+        if (!TAG_VOLUME.equals (command))
+            throw new UnknownCommandException (command);
 
-            default:
-                throw new UnknownCommandException (command);
-        }
+        final ISend send = track.getSendBank ().getItem (sendIndex);
+        if (send == null)
+            return;
+
+        if (path.isEmpty ())
+            send.setValue (toInteger (value));
+        else if (TAG_INDICATE.equals (path.get (0)))
+            send.setIndication (isTrigger (value));
+        else if (TAG_TOUCHED.equals (path.get (0)))
+            send.touchValue (isTrigger (value));
     }
 }

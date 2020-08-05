@@ -406,6 +406,15 @@ public class TrackImpl extends ChannelImpl implements ITrack
     }
 
 
+    /** {@inheritDoc} */
+    @Override
+    public void addEqualizerDevice ()
+    {
+        if (this.doesExist ())
+            this.track.endOfDeviceChainInsertionPoint ().insertBitwigDevice (EqualizerDeviceImpl.ID_BITWIG_EQ_PLUS);
+    }
+
+
     /**
      * Add a note observer.
      *

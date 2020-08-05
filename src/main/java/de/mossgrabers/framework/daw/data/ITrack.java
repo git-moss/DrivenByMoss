@@ -224,4 +224,10 @@ public interface ITrack extends IChannel
      * @param recordQuantization The record quantization grid resolution
      */
     void setRecordQuantizationGrid (RecordQuantization recordQuantization);
+
+
+    /**
+     * Add an equalizer device to this track.
+     */
+    void addEqualizerDevice ();
 }

@@ -135,7 +135,7 @@ public class SessionView extends AbstractSessionView<SLMkIIIControlSurface, SLMk
 
     /**
      * Mark selected notes immediately for better performance.
-     * 
+     *
      * @param key The pressed/released key
      * @param velocity The velocity
      */

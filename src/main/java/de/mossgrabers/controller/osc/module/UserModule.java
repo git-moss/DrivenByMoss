@@ -51,15 +51,10 @@ public class UserModule extends AbstractModule
     @Override
     public void execute (final String command, final LinkedList<String> path, final Object value) throws IllegalParameterException, UnknownCommandException, MissingCommandException
     {
-        switch (command)
-        {
-            case "user":
-                this.parseUserValue (path, value);
-                break;
-
-            default:
-                throw new UnknownCommandException (command);
-        }
+        if ("user".equals (command))
+            this.parseUserValue (path, value);
+        else
+            throw new UnknownCommandException (command);
     }
 
 
