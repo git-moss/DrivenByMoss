@@ -324,12 +324,12 @@
                         "align": "left",
                         "values": {
                           "Off": "off",
-                          "Highcut": "highcut",
                           "Lowshelf": "lowshelf",
                           "Lowcut": "lowcut",
-                          "Highshelf": "highshelf",
                           "Bell": "bell",
-                          "Notch": "notch"
+                          "Notch": "notch",
+                          "Highcut": "highcut",
+                          "Highshelf": "highshelf"
                         }
                       },
                       {
