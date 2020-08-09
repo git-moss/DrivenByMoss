@@ -191,7 +191,10 @@ public class EditNoteMode extends BaseMode
             return;
         }
 
-        this.clip.edit (this.channel, this.step, this.note, isTouched);
+        if (isTouched)
+            this.clip.startEdit (this.channel, this.step, this.note);
+        else
+            this.clip.stopEdit ();
     }
 
 

@@ -97,12 +97,4 @@ public class EmptyStepInfo implements IStepInfo
     {
         return 0;
     }
-
-
-    /** {@inheritDoc} */
-    @Override
-    public boolean isEditing ()
-    {
-        return false;
-    }
 }

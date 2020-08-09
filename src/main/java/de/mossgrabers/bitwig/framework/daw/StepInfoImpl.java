@@ -17,17 +17,15 @@ import com.bitwig.extension.controller.api.NoteStep;
  */
 public class StepInfoImpl implements IStepInfo
 {
-    private int     state;
-    private double  duration = Resolution.RES_1_16.getValue ();
-    private double  velocity;
-    private double  releaseVelocity;
-    private double  pressure;
-    private double  timbre;
-    private double  pan;
-    private double  transpose;
-    private double  gain;
-
-    private boolean isEditing;
+    private int    state;
+    private double duration = Resolution.RES_1_16.getValue ();
+    private double velocity;
+    private double releaseVelocity;
+    private double pressure;
+    private double timbre;
+    private double pan;
+    private double transpose;
+    private double gain;
 
 
     /**
@@ -108,25 +106,6 @@ public class StepInfoImpl implements IStepInfo
     public double getGain ()
     {
         return this.gain;
-    }
-
-
-    /** {@inheritDoc} */
-    @Override
-    public boolean isEditing ()
-    {
-        return this.isEditing;
-    }
-
-
-    /**
-     * Set that the note is currently edited.
-     *
-     * @param isEditing True if editing is happening
-     */
-    public void setEditing (final boolean isEditing)
-    {
-        this.isEditing = isEditing;
     }
 
 

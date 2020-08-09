@@ -89,12 +89,4 @@ public interface IStepInfo
      * @return The gain of the note
      */
     double getGain ();
-
-
-    /**
-     * Check if the note is currently edited.
-     *
-     * @return True if editing is happening
-     */
-    boolean isEditing ();
 }

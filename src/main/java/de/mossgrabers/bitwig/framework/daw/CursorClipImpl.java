@@ -10,6 +10,7 @@ import de.mossgrabers.framework.controller.valuechanger.IValueChanger;
 import de.mossgrabers.framework.daw.INoteClip;
 import de.mossgrabers.framework.daw.IStepInfo;
 import de.mossgrabers.framework.daw.constants.TransportConstants;
+import de.mossgrabers.framework.daw.data.GridStep;
 import de.mossgrabers.framework.daw.data.empty.EmptyStepInfo;
 
 import com.bitwig.extension.controller.api.Clip;
@@ -34,6 +35,7 @@ public class CursorClipImpl implements INoteClip
     private Clip                     launcherClip;
     private int                      editPage = 0;
     private double                   stepLength;
+    private final GridStep           editStep = new GridStep ();
 
 
     /**
@@ -423,7 +425,7 @@ public class CursorClipImpl implements INoteClip
     {
         final StepInfoImpl stepInfo = this.getUpdateableStep (channel, step, row);
         stepInfo.setDuration (duration);
-        if (!stepInfo.isEditing ())
+        if (!this.editStep.isSet ())
             this.getClip ().getStep (channel, step, row).setDuration (duration);
     }
 
@@ -444,7 +446,7 @@ public class CursorClipImpl implements INoteClip
     {
         final StepInfoImpl stepInfo = this.getUpdateableStep (channel, step, row);
         stepInfo.setVelocity (velocity);
-        if (!stepInfo.isEditing ())
+        if (!this.editStep.isSet ())
             this.getClip ().getStep (channel, step, row).setVelocity (velocity);
     }
 
@@ -465,7 +467,7 @@ public class CursorClipImpl implements INoteClip
     {
         final StepInfoImpl stepInfo = this.getUpdateableStep (channel, step, row);
         stepInfo.setReleaseVelocity (releaseVelocity);
-        if (!stepInfo.isEditing ())
+        if (!this.editStep.isSet ())
             this.getClip ().getStep (channel, step, row).setReleaseVelocity (releaseVelocity);
     }
 
@@ -486,7 +488,7 @@ public class CursorClipImpl implements INoteClip
     {
         final StepInfoImpl stepInfo = this.getUpdateableStep (channel, step, row);
         stepInfo.setPressure (pressure);
-        if (!stepInfo.isEditing ())
+        if (!this.editStep.isSet ())
             this.getClip ().getStep (channel, step, row).setPressure (pressure);
     }
 
@@ -507,7 +509,7 @@ public class CursorClipImpl implements INoteClip
     {
         final StepInfoImpl stepInfo = this.getUpdateableStep (channel, step, row);
         stepInfo.setTimbre (timbre);
-        if (!stepInfo.isEditing ())
+        if (!this.editStep.isSet ())
             this.getClip ().getStep (channel, step, row).setTimbre (timbre);
     }
 
@@ -528,7 +530,7 @@ public class CursorClipImpl implements INoteClip
     {
         final StepInfoImpl stepInfo = this.getUpdateableStep (channel, step, row);
         stepInfo.setPan (pan);
-        if (!stepInfo.isEditing ())
+        if (!this.editStep.isSet ())
             this.getClip ().getStep (channel, step, row).setPan (pan);
     }
 
@@ -549,7 +551,7 @@ public class CursorClipImpl implements INoteClip
     {
         final StepInfoImpl stepInfo = this.getUpdateableStep (channel, step, row);
         stepInfo.setTranspose (transpose);
-        if (!stepInfo.isEditing ())
+        if (!this.editStep.isSet ())
             this.getClip ().getStep (channel, step, row).setTranspose (transpose);
     }
 
@@ -570,7 +572,7 @@ public class CursorClipImpl implements INoteClip
     {
         final StepInfoImpl stepInfo = this.getUpdateableStep (channel, step, row);
         stepInfo.setGain (gain);
-        if (!stepInfo.isEditing ())
+        if (!this.editStep.isSet ())
             this.getClip ().getStep (channel, step, row).setGain (gain);
     }
 
@@ -753,25 +755,30 @@ public class CursorClipImpl implements INoteClip
 
     /** {@inheritDoc} */
     @Override
-    public void edit (final int channel, final int step, final int row, final boolean enable)
+    public void startEdit (final int channel, final int step, final int row)
     {
-        final StepInfoImpl stepInfo = this.getUpdateableStep (channel, step, row);
-        if (enable)
-        {
-            stepInfo.setEditing (true);
-            this.delayedUpdate (channel, step, row);
-            return;
-        }
+        // Is there a previous edit, which is not stopped yet?
+        this.stopEdit ();
 
-        this.sendClipData (channel, step, row);
-        stepInfo.setEditing (false);
+        this.editStep.set (this, channel, step, row);
+        this.delayedUpdate (channel, step, row);
+    }
+
+
+    /** {@inheritDoc} */
+    @Override
+    public void stopEdit ()
+    {
+        if (!this.editStep.isSet ())
+            return;
+        this.sendClipData (this.editStep.getChannel (), this.editStep.getStep (), this.editStep.getNote ());
+        this.editStep.reset ();
     }
 
 
     private void delayedUpdate (final int channel, final int step, final int row)
     {
-        final IStepInfo stepInfo = this.getStep (channel, step, row);
-        if (!stepInfo.isEditing ())
+        if (!this.editStep.isSet ())
             return;
         this.sendClipData (channel, step, row);
         this.host.scheduleTask ( () -> this.delayedUpdate (channel, step, row), 100);
@@ -810,8 +817,11 @@ public class CursorClipImpl implements INoteClip
      */
     private void handleStepData (final NoteStep noteStep)
     {
-        final StepInfoImpl sinfo = this.getUpdateableStep (noteStep.channel (), noteStep.x (), noteStep.y ());
-        if (!sinfo.isEditing ())
+        final int channel = noteStep.channel ();
+        final int step = noteStep.x ();
+        final int note = noteStep.y ();
+        final StepInfoImpl sinfo = this.getUpdateableStep (channel, step, note);
+        if (!this.editStep.isSet () || this.editStep.getChannel () != channel || this.editStep.getStep () != step || this.editStep.getNote () != note)
             sinfo.updateData (noteStep);
     }
 

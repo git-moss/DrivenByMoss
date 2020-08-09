@@ -8,6 +8,7 @@ import de.mossgrabers.controller.apc.APCConfiguration;
 import de.mossgrabers.controller.apc.controller.APCColorManager;
 import de.mossgrabers.controller.apc.controller.APCControlSurface;
 import de.mossgrabers.framework.controller.ButtonID;
+import de.mossgrabers.framework.daw.DAWColor;
 import de.mossgrabers.framework.daw.IModel;
 import de.mossgrabers.framework.daw.data.IScene;
 import de.mossgrabers.framework.daw.data.bank.ISceneBank;
@@ -68,9 +69,13 @@ public class SessionView extends AbstractSessionView<APCControlSurface, APCConfi
 
         final ISceneBank sceneBank = this.model.getSceneBank ();
         final IScene s = sceneBank.getItem (scene);
-        if (s.doesExist ())
-            return s.isSelected () ? AbstractSessionView.COLOR_SELECTED_SCENE : AbstractSessionView.COLOR_SCENE;
-        return AbstractSessionView.COLOR_SCENE_OFF;
+        if (!s.doesExist ())
+            return AbstractSessionView.COLOR_SCENE_OFF;
+
+        if (s.isSelected ())
+            return AbstractSessionView.COLOR_SELECTED_SCENE;
+
+        return this.useClipColor ? DAWColor.getColorIndex (s.getColor ()) : AbstractSessionView.COLOR_SCENE;
     }
 
 

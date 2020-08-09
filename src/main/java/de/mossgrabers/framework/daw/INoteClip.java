@@ -275,15 +275,20 @@ public interface INoteClip extends IClip
 
 
     /**
-     * Start / stop editing the note. Signals to prevent round-trip error by quickly changing values
-     * to the DAW, which are not set at the same time.
+     * Start editing a note. Signals to prevent round-trip error by quickly changing values to the
+     * DAW, which are not set at the same time.
      *
      * @param channel The MIDI channel
      * @param step The step
-     * @param row The note row
-     * @param enable Enable editing
+     * @param note The note to edit
      */
-    void edit (int channel, int step, int row, boolean enable);
+    void startEdit (int channel, int step, int note);
+
+
+    /**
+     * Stop editing the note step, which was started with startEdit.
+     */
+    void stopEdit ();
 
 
     /**
