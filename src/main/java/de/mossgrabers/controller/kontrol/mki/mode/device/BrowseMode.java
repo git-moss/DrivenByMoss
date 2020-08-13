@@ -86,12 +86,6 @@ public class BrowseMode extends AbstractKontrol1Mode
     @Override
     public void updateDisplay ()
     {
-        if (!this.model.hasSelectedDevice ())
-        {
-            this.surface.getModeManager ().restoreMode ();
-            return;
-        }
-
         final ITextDisplay d = this.surface.getTextDisplay ();
         final IBrowser browser = this.model.getBrowser ();
         if (!browser.isActive ())

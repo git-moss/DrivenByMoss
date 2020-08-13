@@ -79,7 +79,10 @@ public class NoteMode extends AbstractMode<FireControlSurface, FireConfiguration
 
         this.isKnobTouched[index] = isTouched;
         if (isTouched)
+        {
             this.clip.startEdit (this.channel, this.step, this.note);
+            this.preventNoteDeletion ();
+        }
         else
             this.clip.stopEdit ();
     }
@@ -115,14 +118,23 @@ public class NoteMode extends AbstractMode<FireControlSurface, FireConfiguration
             // This is the select knob
             case 4:
                 if (this.host.canEdit (EditCapability.NOTE_EDIT_TRANSPOSE))
+                {
                     this.clip.changeStepTranspose (this.channel, this.step, this.note, value);
+                    this.preventNoteDeletion ();
+                }
                 break;
 
             default:
                 return;
         }
+    }
 
-        // Note was modified, prevent deletion of note on button up
+
+    /**
+     * Note was modified, prevent deletion of note on button up.
+     */
+    private void preventNoteDeletion ()
+    {
         final View activeView = this.surface.getViewManager ().getActiveView ();
         if (activeView instanceof AbstractSequencerView)
             AbstractSequencerView.class.cast (activeView).setNoteEdited ();

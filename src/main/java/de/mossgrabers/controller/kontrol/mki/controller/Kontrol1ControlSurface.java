@@ -284,14 +284,13 @@ public class Kontrol1ControlSurface extends AbstractControlSurface<Kontrol1Confi
 
     /** {@inheritDoc} */
     @Override
-    public void encoderChanged (final int encIndex, final boolean valueIncreased)
+    public void encoderChanged (final int encIndex, final int change)
     {
         final int v;
         if (this.isShiftPressed ())
-            v = valueIncreased ? 1 : 127;
+            v = change < 0 ? 127 : 1;
         else
-            v = valueIncreased ? 3 : 125;
-
+            v = change < 0 ? 127 + change : change;
         this.getContinuous (ContinuousID.get (ContinuousID.KNOB1, encIndex)).getCommand ().execute (v);
     }
 

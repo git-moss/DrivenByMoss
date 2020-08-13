@@ -32,9 +32,9 @@ public interface UIChangeCallback
      * An encoder was turned.
      *
      * @param encIndex The index of the encoder (0-7)
-     * @param valueIncreased The change value
+     * @param change The change value
      */
-    void encoderChanged (int encIndex, boolean valueIncreased);
+    void encoderChanged (int encIndex, int change);
 
 
     /**

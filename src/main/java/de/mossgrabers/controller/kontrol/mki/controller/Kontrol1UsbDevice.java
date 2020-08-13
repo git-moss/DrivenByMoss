@@ -857,16 +857,28 @@ public class Kontrol1UsbDevice
             final int pos = start + 2 * encIndex;
 
             final int value = Byte.toUnsignedInt (data[pos]) | Byte.toUnsignedInt (data[pos + 1]) << 8;
-            final int hValue = Byte.toUnsignedInt (data[pos + 1]);
             if (this.encoderValues[encIndex] != value)
             {
-                final int prevHValue = (this.encoderValues[encIndex] & 0xF00) >> 8;
-                final boolean valueIncreased = (this.encoderValues[encIndex] < value || prevHValue == 3 && hValue == 0) && !(prevHValue == 0 && hValue == 3);
+                // Value is between 0 and 999. It increases or descrease and wraps around if it goes
+                // below 0 or above 999
+
+                int diff = value - this.encoderValues[encIndex];
+                // Check for wrap around from 999 to 0 when increasing
+                if (diff < -500)
+                    diff = 999 + diff;
+                // Check for wrap around from 0 to 999 when decreasing
+                else if (diff > 500)
+                    diff = diff - 999;
+
                 this.encoderValues[encIndex] = value;
                 if (!this.isFirstStateMsg)
                 {
                     final int ei = encIndex;
-                    this.host.scheduleTask ( () -> this.callback.encoderChanged (ei, valueIncreased), 0);
+
+                    // Slow down, minimum value seems to be 4
+                    final int control = diff / 4;
+
+                    this.host.scheduleTask ( () -> this.callback.encoderChanged (ei, control), 0);
                 }
                 encoderChange = true;
             }

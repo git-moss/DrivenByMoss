@@ -18,6 +18,7 @@ import de.mossgrabers.framework.daw.data.bank.ISceneBank;
 import de.mossgrabers.framework.daw.data.bank.ISlotBank;
 import de.mossgrabers.framework.daw.data.bank.ITrackBank;
 import de.mossgrabers.framework.utils.ButtonEvent;
+import de.mossgrabers.framework.utils.FrameworkException;
 import de.mossgrabers.framework.utils.Pair;
 
 
@@ -276,8 +277,12 @@ public abstract class AbstractSessionView<S extends IControlSurface<C>, C extend
      */
     protected void drawSessionGrid ()
     {
-        final ITrackBank tb = this.model.getCurrentTrackBank ();
         final boolean flipSession = this.surface.getConfiguration ().isFlipSession ();
+
+        if (flipSession && this.columns != this.rows)
+            throw new FrameworkException ("Session flip is only supported for same size of rows and columns!");
+
+        final ITrackBank tb = this.model.getCurrentTrackBank ();
         for (int x = 0; x < this.columns; x++)
         {
             final ITrack t = tb.getItem (x);
