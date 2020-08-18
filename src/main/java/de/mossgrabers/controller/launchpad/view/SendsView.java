@@ -33,7 +33,7 @@ public class SendsView extends AbstractFaderView
      */
     public SendsView (final LaunchpadControlSurface surface, final IModel model)
     {
-        super (surface, model);
+        super ("Sends", surface, model);
     }
 
 

@@ -44,14 +44,15 @@ public class SelectPlayViewCommand<S extends IControlSurface<C>, C extends Confi
     {
         super.executeNormal (event);
 
+        if (event != ButtonEvent.DOWN)
+            return;
+
+        final ITrack selectedTrack = this.model.getSelectedTrack ();
+        if (selectedTrack == null)
+            return;
+
         // Store the newly selected view for the current track
-        if (event == ButtonEvent.DOWN)
-        {
-            final ITrack selectedTrack = this.model.getSelectedTrack ();
-            if (selectedTrack == null)
-                return;
-            final ViewManager viewManager = this.surface.getViewManager ();
-            viewManager.setPreferredView (selectedTrack.getPosition (), viewManager.getActiveViewId ());
-        }
+        final ViewManager viewManager = this.surface.getViewManager ();
+        viewManager.setPreferredView (selectedTrack.getPosition (), viewManager.getActiveViewId ());
     }
 }

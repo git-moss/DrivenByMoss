@@ -7,6 +7,7 @@ package de.mossgrabers.controller.launchpad.command.trigger;
 import de.mossgrabers.controller.launchpad.LaunchpadConfiguration;
 import de.mossgrabers.controller.launchpad.controller.LaunchpadControlSurface;
 import de.mossgrabers.framework.command.core.AbstractTriggerCommand;
+import de.mossgrabers.framework.daw.IBrowser;
 import de.mossgrabers.framework.daw.IModel;
 import de.mossgrabers.framework.daw.data.ICursorDevice;
 import de.mossgrabers.framework.utils.ButtonEvent;
@@ -47,13 +48,16 @@ public class SelectDeviceViewCommand extends AbstractTriggerCommand<LaunchpadCon
             if (viewManager.isActiveView (Views.SHIFT))
                 viewManager.restoreView ();
             viewManager.setActiveView (Views.TEMPO);
+            this.surface.getDisplay ().notify (viewManager.getActiveView ().getName ());
             return;
         }
 
+        final IBrowser browser = this.model.getBrowser ();
         if (viewManager.isActiveView (Views.BROWSER))
         {
-            this.model.getBrowser ().stopBrowsing (false);
+            browser.stopBrowsing (false);
             viewManager.setActiveView (Views.DEVICE);
+            this.surface.getDisplay ().notify (viewManager.getActiveView ().getName ());
             return;
         }
 
@@ -61,12 +65,13 @@ public class SelectDeviceViewCommand extends AbstractTriggerCommand<LaunchpadCon
         {
             final ICursorDevice cursorDevice = this.model.getCursorDevice ();
             if (this.surface.isShiftPressed () || !cursorDevice.doesExist ())
-                this.model.getBrowser ().insertAfterCursorDevice ();
+                browser.insertAfterCursorDevice ();
             else
-                this.model.getBrowser ().replace (cursorDevice);
+                browser.replace (cursorDevice);
             return;
         }
 
         viewManager.setActiveView (Views.DEVICE);
+        this.surface.getDisplay ().notify (viewManager.getActiveView ().getName ());
     }
 }

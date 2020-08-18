@@ -45,6 +45,7 @@ public class SelectNoteViewCommand extends AbstractTriggerCommand<LaunchpadContr
         if (viewManager.isActiveView (Views.CONTROL))
         {
             viewManager.restoreView ();
+            this.surface.getDisplay ().notify (viewManager.getActiveView ().getName ());
             return;
         }
 
@@ -52,6 +53,7 @@ public class SelectNoteViewCommand extends AbstractTriggerCommand<LaunchpadContr
         if (Views.isNoteView (viewID) || Views.isSequencerView (viewID))
         {
             viewManager.setActiveView (Views.CONTROL);
+            this.surface.getDisplay ().notify ("Note / sequencer mode selection");
             return;
         }
 
@@ -59,6 +61,7 @@ public class SelectNoteViewCommand extends AbstractTriggerCommand<LaunchpadContr
         if (sel == null)
         {
             viewManager.setActiveView (Views.SESSION);
+            this.surface.getDisplay ().notify ("Session");
             return;
         }
 

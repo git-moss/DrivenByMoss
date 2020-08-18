@@ -34,7 +34,7 @@ public class VolumeView extends AbstractFaderView implements IVirtualFaderCallba
      */
     public VolumeView (final LaunchpadControlSurface surface, final IModel model)
     {
-        super (surface, model);
+        super ("Volume", surface, model);
 
         this.masterFader = new VirtualFaderImpl (model.getHost (), this);
     }

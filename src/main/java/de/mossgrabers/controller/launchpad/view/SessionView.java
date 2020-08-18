@@ -39,12 +39,13 @@ public class SessionView extends AbstractSessionView<LaunchpadControlSurface, La
     /**
      * Constructor.
      *
+     * @param name The name of the view
      * @param surface The surface
      * @param model The model
      */
-    public SessionView (final LaunchpadControlSurface surface, final IModel model)
+    public SessionView (final String name, final LaunchpadControlSurface surface, final IModel model)
     {
-        super ("Session", surface, model, 8, 8, true);
+        super (name, surface, model, 8, 8, true);
 
         final SessionColor isRecording = new SessionColor (LaunchpadColorManager.LAUNCHPAD_COLOR_RED_HI, LaunchpadColorManager.LAUNCHPAD_COLOR_RED_HI, false);
         final SessionColor isRecordingQueued = new SessionColor (LaunchpadColorManager.LAUNCHPAD_COLOR_RED_HI, LaunchpadColorManager.LAUNCHPAD_COLOR_BLACK, true);
@@ -279,7 +280,10 @@ public class SessionView extends AbstractSessionView<LaunchpadControlSurface, La
         if (modeManager.isActiveOrTempMode (Modes.REC_ARM))
             track.toggleRecArm ();
         else if (modeManager.isActiveOrTempMode (Modes.TRACK_SELECT))
+        {
             track.select ();
+            this.surface.getDisplay ().notify ((track.getPosition () + 1) + ": " + track.getName ());
+        }
         else if (modeManager.isActiveOrTempMode (Modes.MUTE))
             track.toggleMute ();
         else if (modeManager.isActiveOrTempMode (Modes.SOLO))

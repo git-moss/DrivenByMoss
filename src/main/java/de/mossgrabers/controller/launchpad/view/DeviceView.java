@@ -31,7 +31,8 @@ public class DeviceView extends AbstractFaderView
      */
     public DeviceView (final LaunchpadControlSurface surface, final IModel model)
     {
-        super (surface, model);
+        super ("Device", surface, model);
+
         this.cursorDevice = this.model.getCursorDevice ();
     }
 

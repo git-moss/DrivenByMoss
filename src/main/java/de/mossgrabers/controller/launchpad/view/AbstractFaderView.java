@@ -20,12 +20,13 @@ public abstract class AbstractFaderView extends SessionView
     /**
      * Constructor.
      *
+     * @param name The name of the view
      * @param surface The surface
      * @param model The model
      */
-    public AbstractFaderView (final LaunchpadControlSurface surface, final IModel model)
+    public AbstractFaderView (final String name, final LaunchpadControlSurface surface, final IModel model)
     {
-        super (surface, model);
+        super (name, surface, model);
     }
 
 
@@ -51,6 +52,14 @@ public abstract class AbstractFaderView extends SessionView
         final int row = num / 8;
 
         this.surface.moveFader (index, row, velocity);
+    }
+
+
+    /** {@inheritDoc} */
+    @Override
+    public void onGridNoteLongPress (final int note)
+    {
+        // Prevent clip selection
     }
 
 

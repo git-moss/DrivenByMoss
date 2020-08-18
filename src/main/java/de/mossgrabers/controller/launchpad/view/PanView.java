@@ -34,7 +34,7 @@ public class PanView extends AbstractFaderView implements IVirtualFaderCallback
      */
     public PanView (final LaunchpadControlSurface surface, final IModel model)
     {
-        super (surface, model);
+        super ("Panorama", surface, model);
 
         this.masterFader = new VirtualFaderImpl (model.getHost (), this);
     }

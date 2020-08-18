@@ -33,7 +33,7 @@ public class UserView extends AbstractFaderView
      */
     public UserView (final LaunchpadControlSurface surface, final IModel model)
     {
-        super (surface, model);
+        super ("User", surface, model);
 
         this.userParameterBank = this.model.getUserParameterBank ();
     }

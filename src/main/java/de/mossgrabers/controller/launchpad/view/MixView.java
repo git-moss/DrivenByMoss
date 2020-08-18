@@ -8,6 +8,7 @@ import de.mossgrabers.controller.launchpad.LaunchpadConfiguration;
 import de.mossgrabers.controller.launchpad.controller.LaunchpadColorManager;
 import de.mossgrabers.controller.launchpad.controller.LaunchpadControlSurface;
 import de.mossgrabers.framework.controller.ButtonID;
+import de.mossgrabers.framework.controller.display.IDisplay;
 import de.mossgrabers.framework.controller.grid.IPadGrid;
 import de.mossgrabers.framework.controller.grid.IVirtualFader;
 import de.mossgrabers.framework.controller.grid.IVirtualFaderCallback;
@@ -115,43 +116,54 @@ public class MixView extends AbstractView<LaunchpadControlSurface, LaunchpadConf
         final int what = n / 8;
 
         final ITrack track = this.model.getCurrentTrackBank ().getItem (index);
+        final IDisplay display = this.surface.getDisplay ();
 
         switch (what)
         {
             case 7:
                 this.faderMode = FaderMode.VOLUME;
-                track.select ();
+                display.notify ("Volume");
+                this.selectTrack (track);
                 break;
 
             case 6:
                 this.faderMode = FaderMode.PAN;
-                track.select ();
+                display.notify ("Panorama");
+                this.selectTrack (track);
                 break;
 
             case 5:
                 this.faderMode = FaderMode.SEND1;
-                track.select ();
+                final ISend send1 = track.getSendBank ().getItem (0);
+                display.notify ("Send 1: " + (send1.doesExist () ? send1.getName () : "None"));
+                this.selectTrack (track);
                 break;
 
             case 4:
                 this.faderMode = FaderMode.SEND2;
-                track.select ();
+                final ISend send2 = track.getSendBank ().getItem (1);
+                display.notify ("Send 2: " + (send2.doesExist () ? send2.getName () : "None"));
+                this.selectTrack (track);
                 break;
 
             case 3:
                 track.stop ();
+                display.notify ("Stop clip");
                 break;
 
             case 2:
                 track.toggleMute ();
+                display.notify ("Mute");
                 break;
 
             case 1:
                 track.toggleSolo ();
+                display.notify ("Solo");
                 break;
 
             case 0:
                 track.toggleRecArm ();
+                display.notify ("Rec Arm");
                 break;
 
             default:
@@ -270,5 +282,14 @@ public class MixView extends AbstractView<LaunchpadControlSurface, LaunchpadConf
                     send2.setValue (value);
                 break;
         }
+    }
+
+
+    private void selectTrack (final ITrack track)
+    {
+        if (track.isSelected ())
+            return;
+        track.select ();
+        this.surface.getDisplay ().notify ((track.getPosition () + 1) + ": " + track.getName ());
     }
 }
