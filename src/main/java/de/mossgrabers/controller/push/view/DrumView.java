@@ -4,6 +4,7 @@
 
 package de.mossgrabers.controller.push.view;
 
+import de.mossgrabers.controller.push.PushConfiguration;
 import de.mossgrabers.controller.push.controller.PushControlSurface;
 import de.mossgrabers.controller.push.mode.NoteMode;
 import de.mossgrabers.framework.controller.ButtonID;
@@ -16,6 +17,8 @@ import de.mossgrabers.framework.daw.data.IDrumPad;
 import de.mossgrabers.framework.daw.data.bank.IDrumPadBank;
 import de.mossgrabers.framework.mode.ModeManager;
 import de.mossgrabers.framework.mode.Modes;
+import de.mossgrabers.framework.utils.ButtonEvent;
+import de.mossgrabers.framework.view.AbstractDrumView;
 import de.mossgrabers.framework.view.Views;
 
 
@@ -24,7 +27,7 @@ import de.mossgrabers.framework.view.Views;
  *
  * @author J&uuml;rgen Mo&szlig;graber
  */
-public class DrumView extends DrumViewBase
+public class DrumView extends AbstractDrumView<PushControlSurface, PushConfiguration>
 {
     /**
      * Constructor.
@@ -34,7 +37,7 @@ public class DrumView extends DrumViewBase
      */
     public DrumView (final PushControlSurface surface, final IModel model)
     {
-        super (Views.VIEW_NAME_DRUM, surface, model, 4, 4);
+        super (Views.VIEW_NAME_DRUM, surface, model, 4, 4, true);
     }
 
 
@@ -120,5 +123,28 @@ public class DrumView extends DrumViewBase
         drumPad.select ();
 
         this.updateNoteMapping ();
+    }
+
+
+    /** {@inheritDoc} */
+    @Override
+    public String getButtonColorID (final ButtonID buttonID)
+    {
+        if (ButtonID.isSceneButton (buttonID) && this.surface.isPressed (ButtonID.REPEAT))
+            return NoteRepeatSceneHelper.getButtonColorID (this.surface, buttonID);
+        return super.getButtonColorID (buttonID);
+    }
+
+
+    /** {@inheritDoc} */
+    @Override
+    public void onButton (final ButtonID buttonID, final ButtonEvent event, final int velocity)
+    {
+        if (!ButtonID.isSceneButton (buttonID) || event != ButtonEvent.DOWN)
+            return;
+
+        final int index = buttonID.ordinal () - ButtonID.SCENE1.ordinal ();
+        if (this.surface.isPressed (ButtonID.REPEAT))
+            NoteRepeatSceneHelper.handleNoteRepeatSelection (this.surface, 7 - index);
     }
 }

@@ -8,20 +8,15 @@ import de.mossgrabers.controller.fire.FireConfiguration;
 import de.mossgrabers.controller.fire.controller.FireControlSurface;
 import de.mossgrabers.controller.fire.mode.NoteMode;
 import de.mossgrabers.framework.controller.ButtonID;
-import de.mossgrabers.framework.controller.color.ColorEx;
-import de.mossgrabers.framework.controller.grid.IPadGrid;
-import de.mossgrabers.framework.controller.hardware.IHwButton;
 import de.mossgrabers.framework.daw.IModel;
 import de.mossgrabers.framework.daw.INoteClip;
 import de.mossgrabers.framework.daw.IStepInfo;
-import de.mossgrabers.framework.daw.constants.Resolution;
-import de.mossgrabers.framework.daw.data.IDrumDevice;
 import de.mossgrabers.framework.daw.data.IDrumPad;
 import de.mossgrabers.framework.daw.data.bank.IDrumPadBank;
 import de.mossgrabers.framework.mode.ModeManager;
 import de.mossgrabers.framework.mode.Modes;
 import de.mossgrabers.framework.utils.ButtonEvent;
-import de.mossgrabers.framework.view.AbstractDrumView;
+import de.mossgrabers.framework.view.AbstractDrum4View;
 
 
 /**
@@ -29,27 +24,17 @@ import de.mossgrabers.framework.view.AbstractDrumView;
  *
  * @author J&uuml;rgen Mo&szlig;graber
  */
-public class DrumView4 extends AbstractDrumView<FireControlSurface, FireConfiguration> implements IFireView
+public class Drum4View extends AbstractDrum4View<FireControlSurface, FireConfiguration> implements IFireView
 {
-    private static final int  NUM_DISPLAY_COLS = 16;
-    private static final int  LANES            = 4;
-
-    private final int         columns;
-    private final IDrumDevice primary;
-
-
     /**
      * Constructor.
      *
      * @param surface The surface
      * @param model The model
      */
-    public DrumView4 (final FireControlSurface surface, final IModel model)
+    public Drum4View (final FireControlSurface surface, final IModel model)
     {
-        super ("Drum 4", surface, model, 1, 0, 16, 128, 16, true, false);
-
-        this.columns = NUM_DISPLAY_COLS;
-        this.primary = this.model.getDrumDevice ();
+        super (surface, model, 4, 4, 16, 16, true, false);
     }
 
 
@@ -61,11 +46,11 @@ public class DrumView4 extends AbstractDrumView<FireControlSurface, FireConfigur
             return;
 
         final int index = note - DRUM_START_KEY;
-        final int x = index % this.columns;
-        final int y = index / this.columns;
+        final int x = index % this.numColumns;
+        final int y = index / this.numColumns;
 
-        final int sound = y % LANES + this.scales.getDrumOffset ();
-        final int step = this.columns * (y / LANES) + x;
+        final int sound = y % this.lanes + this.scales.getDrumOffset ();
+        final int step = this.numColumns * (y / this.lanes) + x;
 
         final int channel = this.configuration.getMidiEditChannel ();
         final int vel = this.configuration.isAccentActive () ? this.configuration.getFixedAccentValue () : velocity;
@@ -105,19 +90,9 @@ public class DrumView4 extends AbstractDrumView<FireControlSurface, FireConfigur
     }
 
 
-    /**
-     * Handle button combinations on the note area of the sequencer.
-     *
-     * @param clip The sequenced midi clip
-     * @param channel The MIDI channel of the note
-     * @param row The row in the current page in the clip
-     * @param note The note in the current page of the pad in the clip
-     * @param step The step in the current page in the clip
-     * @param velocity The velocity
-     * @param vel The velocity or accent
-     * @return True if handled
-     */
-    private boolean handleNoteAreaButtonCombinations (final INoteClip clip, final int channel, final int step, final int row, final int note, final int velocity, final int vel)
+    /** {@inheritDoc} */
+    @Override
+    protected boolean handleNoteAreaButtonCombinations (final INoteClip clip, final int channel, final int step, final int row, final int note, final int velocity, final int accentVelocity)
     {
         if (this.isButtonCombination (ButtonID.BROWSE))
         {
@@ -135,74 +110,7 @@ public class DrumView4 extends AbstractDrumView<FireControlSurface, FireConfigur
             return true;
         }
 
-        // Change length of a note or create a new one with a length
-        final int laneOffset = row / LANES;
-        final int offset = row * this.columns;
-        for (int s = 0; s < step; s++)
-        {
-            final IHwButton button = this.surface.getButton (ButtonID.get (ButtonID.PAD1, offset + s));
-            if (button.isLongPressed ())
-            {
-                final int start = s + (this.sequencerLines - laneOffset - 1) * this.columns;
-                button.setConsumed ();
-                final int length = step - start + 1;
-                final double duration = length * Resolution.getValueAt (this.getResolutionIndex ());
-                final int state = note < 0 ? 0 : clip.getStep (channel, start, note).getState ();
-                if (state == IStepInfo.NOTE_START)
-                    clip.updateStepDuration (channel, start, note, duration);
-                else
-                    clip.setStep (channel, start, note, vel, duration);
-                return true;
-            }
-        }
-
-        return false;
-    }
-
-
-    /** {@inheritDoc} */
-    @Override
-    public void drawGrid ()
-    {
-        final IPadGrid padGrid = this.surface.getPadGrid ();
-        if (!this.isActive ())
-        {
-            padGrid.turnOff ();
-            return;
-        }
-
-        // Clip length/loop area
-        final INoteClip clip = this.getClip ();
-        final int step = clip.getCurrentStep ();
-
-        // Paint the sequencer steps
-        final int hiStep = this.isInXRange (step) ? step % this.columns : -1;
-        final int offsetY = this.scales.getDrumOffset ();
-        final int editMidiChannel = this.configuration.getMidiEditChannel ();
-        for (int sound = 0; sound < LANES; sound++)
-        {
-            final int noteRow = offsetY + sound;
-            final ColorEx drumPadColor = this.getDrumPadColor (this.primary, sound);
-            for (int col = 0; col < this.numColumns; col++)
-            {
-                final int isSet = clip.getStep (editMidiChannel, col, noteRow).getState ();
-                final boolean hilite = col == hiStep;
-                final int x = col % this.columns;
-                int y = 0;
-                if (col >= this.columns)
-                    y += LANES;
-                y += sound;
-                padGrid.lightEx (x, 3 - y, this.getStepColor (isSet, hilite, drumPadColor));
-            }
-        }
-    }
-
-
-    /** {@inheritDoc} */
-    @Override
-    public void updateNoteMapping ()
-    {
-        this.surface.setKeyTranslationTable (this.scales.translateMatrixToGrid (EMPTY_TABLE));
+        return super.handleNoteAreaButtonCombinations (clip, channel, step, row, note, velocity, accentVelocity);
     }
 
 
@@ -210,7 +118,7 @@ public class DrumView4 extends AbstractDrumView<FireControlSurface, FireConfigur
     @Override
     public int getSoloButtonColor (final int index)
     {
-        return this.isActive () && this.primary.hasDrumPads () && this.primary.getDrumPadBank ().getItem (3 - index).isSelected () ? LANES : 0;
+        return this.isActive () && this.primary.hasDrumPads () && this.primary.getDrumPadBank ().getItem (3 - index).isSelected () ? this.lanes : 0;
     }
 
 

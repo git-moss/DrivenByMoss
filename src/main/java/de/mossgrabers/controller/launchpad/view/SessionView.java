@@ -282,7 +282,7 @@ public class SessionView extends AbstractSessionView<LaunchpadControlSurface, La
         else if (modeManager.isActiveOrTempMode (Modes.TRACK_SELECT))
         {
             track.select ();
-            this.surface.getDisplay ().notify ((track.getPosition () + 1) + ": " + track.getName ());
+            this.surface.getDisplay ().notify (track.getPosition () + 1 + ": " + track.getName ());
         }
         else if (modeManager.isActiveOrTempMode (Modes.MUTE))
             track.toggleMute ();

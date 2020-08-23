@@ -290,6 +290,6 @@ public class MixView extends AbstractView<LaunchpadControlSurface, LaunchpadConf
         if (track.isSelected ())
             return;
         track.select ();
-        this.surface.getDisplay ().notify ((track.getPosition () + 1) + ": " + track.getName ());
+        this.surface.getDisplay ().notify (track.getPosition () + 1 + ": " + track.getName ());
     }
 }

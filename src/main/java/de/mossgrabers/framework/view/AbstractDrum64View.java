@@ -27,7 +27,7 @@ import de.mossgrabers.framework.utils.ButtonEvent;
  *
  * @author J&uuml;rgen Mo&szlig;graber
  */
-public abstract class AbstractDrumView64<S extends IControlSurface<C>, C extends Configuration> extends AbstractView<S, C> implements TransposeView
+public abstract class AbstractDrum64View<S extends IControlSurface<C>, C extends Configuration> extends AbstractView<S, C> implements TransposeView
 {
     protected static final int DRUM_START_KEY = 36;
     protected static final int GRID_COLUMNS   = 8;
@@ -50,7 +50,7 @@ public abstract class AbstractDrumView64<S extends IControlSurface<C>, C extends
      * @param surface The surface
      * @param model The model
      */
-    public AbstractDrumView64 (final S surface, final IModel model)
+    public AbstractDrum64View (final S surface, final IModel model)
     {
         this (surface, model, 8, 8);
     }
@@ -64,7 +64,7 @@ public abstract class AbstractDrumView64<S extends IControlSurface<C>, C extends
      * @param columns The number of columns of the grid
      * @param rows The number of rows of the grid
      */
-    public AbstractDrumView64 (final S surface, final IModel model, final int columns, final int rows)
+    public AbstractDrum64View (final S surface, final IModel model, final int columns, final int rows)
     {
         super ("Drum 64", surface, model);
 

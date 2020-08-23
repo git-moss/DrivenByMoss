@@ -75,10 +75,10 @@ import de.mossgrabers.controller.push.mode.track.TrackMode;
 import de.mossgrabers.controller.push.mode.track.VolumeMode;
 import de.mossgrabers.controller.push.view.ClipView;
 import de.mossgrabers.controller.push.view.ColorView;
+import de.mossgrabers.controller.push.view.Drum4View;
+import de.mossgrabers.controller.push.view.Drum64View;
+import de.mossgrabers.controller.push.view.Drum8View;
 import de.mossgrabers.controller.push.view.DrumView;
-import de.mossgrabers.controller.push.view.DrumView4;
-import de.mossgrabers.controller.push.view.DrumView64;
-import de.mossgrabers.controller.push.view.DrumView8;
 import de.mossgrabers.controller.push.view.PianoView;
 import de.mossgrabers.controller.push.view.PlayView;
 import de.mossgrabers.controller.push.view.PolySequencerView;
@@ -457,12 +457,12 @@ public class PushControllerSetup extends AbstractControllerSetup<PushControlSurf
         viewManager.registerView (Views.SEQUENCER, new SequencerView (surface, this.model));
         viewManager.registerView (Views.POLY_SEQUENCER, new PolySequencerView (surface, this.model, true));
         viewManager.registerView (Views.DRUM, new DrumView (surface, this.model));
-        viewManager.registerView (Views.DRUM4, new DrumView4 (surface, this.model));
-        viewManager.registerView (Views.DRUM8, new DrumView8 (surface, this.model));
+        viewManager.registerView (Views.DRUM4, new Drum4View (surface, this.model));
+        viewManager.registerView (Views.DRUM8, new Drum8View (surface, this.model));
         viewManager.registerView (Views.RAINDROPS, new RaindropsView (surface, this.model));
         viewManager.registerView (Views.SCENE_PLAY, new ScenePlayView (surface, this.model, this.sceneBank64));
 
-        viewManager.registerView (Views.DRUM64, new DrumView64 (surface, this.model));
+        viewManager.registerView (Views.DRUM64, new Drum64View (surface, this.model));
     }
 
 

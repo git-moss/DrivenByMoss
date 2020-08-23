@@ -23,7 +23,7 @@ import de.mossgrabers.controller.fire.mode.FireParameterMode;
 import de.mossgrabers.controller.fire.mode.FireTrackMode;
 import de.mossgrabers.controller.fire.mode.FireUserMode;
 import de.mossgrabers.controller.fire.mode.NoteMode;
-import de.mossgrabers.controller.fire.view.DrumView4;
+import de.mossgrabers.controller.fire.view.Drum4View;
 import de.mossgrabers.controller.fire.view.DrumView64;
 import de.mossgrabers.controller.fire.view.IFireView;
 import de.mossgrabers.controller.fire.view.MixView;
@@ -186,7 +186,7 @@ public class FireControllerSetup extends AbstractControllerSetup<FireControlSurf
         viewManager.registerView (Views.PLAY, new PlayView (surface, this.model));
         viewManager.registerView (Views.PIANO, new PianoView (surface, this.model));
 
-        viewManager.registerView (Views.DRUM4, new DrumView4 (surface, this.model));
+        viewManager.registerView (Views.DRUM4, new Drum4View (surface, this.model));
         viewManager.registerView (Views.DRUM64, new DrumView64 (surface, this.model));
 
         viewManager.registerView (Views.SESSION, new SessionView (surface, this.model));

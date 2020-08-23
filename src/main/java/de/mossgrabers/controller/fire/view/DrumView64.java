@@ -7,7 +7,7 @@ package de.mossgrabers.controller.fire.view;
 import de.mossgrabers.controller.fire.FireConfiguration;
 import de.mossgrabers.controller.fire.controller.FireControlSurface;
 import de.mossgrabers.framework.daw.IModel;
-import de.mossgrabers.framework.view.AbstractDrumView64;
+import de.mossgrabers.framework.view.AbstractDrum64View;
 
 
 /**
@@ -15,7 +15,7 @@ import de.mossgrabers.framework.view.AbstractDrumView64;
  *
  * @author J&uuml;rgen Mo&szlig;graber
  */
-public class DrumView64 extends AbstractDrumView64<FireControlSurface, FireConfiguration>
+public class DrumView64 extends AbstractDrum64View<FireControlSurface, FireConfiguration>
 {
     /**
      * Constructor.

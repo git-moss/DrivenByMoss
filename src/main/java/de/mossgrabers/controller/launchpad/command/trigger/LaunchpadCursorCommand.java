@@ -6,8 +6,7 @@ package de.mossgrabers.controller.launchpad.command.trigger;
 
 import de.mossgrabers.controller.launchpad.LaunchpadConfiguration;
 import de.mossgrabers.controller.launchpad.controller.LaunchpadControlSurface;
-import de.mossgrabers.controller.launchpad.view.DrumView64;
-import de.mossgrabers.controller.launchpad.view.DrumViewBase;
+import de.mossgrabers.controller.launchpad.view.Drum64View;
 import de.mossgrabers.framework.command.trigger.mode.CursorCommand;
 import de.mossgrabers.framework.controller.ButtonID;
 import de.mossgrabers.framework.daw.IBrowser;
@@ -26,6 +25,7 @@ import de.mossgrabers.framework.scale.Scale;
 import de.mossgrabers.framework.scale.Scales;
 import de.mossgrabers.framework.utils.ButtonEvent;
 import de.mossgrabers.framework.utils.FrameworkException;
+import de.mossgrabers.framework.view.AbstractDrumView;
 import de.mossgrabers.framework.view.AbstractSequencerView;
 import de.mossgrabers.framework.view.TransposeView;
 import de.mossgrabers.framework.view.View;
@@ -104,7 +104,7 @@ public class LaunchpadCursorCommand extends CursorCommand<LaunchpadControlSurfac
                 break;
 
             case DRUM64:
-                final DrumView64 drumView64 = (DrumView64) viewManager.getView (Views.DRUM64);
+                final Drum64View drumView64 = (Drum64View) viewManager.getView (Views.DRUM64);
                 final int drumOctave = drumView64.getDrumOctave ();
                 this.canScrollUp = drumOctave < 1;
                 this.canScrollDown = drumOctave > -2;
@@ -115,7 +115,7 @@ public class LaunchpadCursorCommand extends CursorCommand<LaunchpadControlSurfac
             case SEQUENCER:
             case RAINDROPS:
             case POLY_SEQUENCER:
-                final INoteClip clip = ((AbstractSequencerView<?, ?>) viewManager.getActiveView ()).getClip ();
+                final INoteClip clip = AbstractSequencerView.class.cast (viewManager.getActiveView ()).getClip ();
                 final int seqOctave = this.scales.getOctave ();
                 this.canScrollUp = seqOctave < Scales.OCTAVE_RANGE;
                 this.canScrollDown = seqOctave > -Scales.OCTAVE_RANGE;
@@ -126,7 +126,7 @@ public class LaunchpadCursorCommand extends CursorCommand<LaunchpadControlSurfac
             case DRUM:
             case DRUM4:
             case DRUM8:
-                final INoteClip drumClip = ((DrumViewBase) viewManager.getView (activeViewId)).getClip ();
+                final INoteClip drumClip = AbstractDrumView.class.cast (viewManager.getView (activeViewId)).getClip ();
                 this.canScrollUp = this.scales.canScrollDrumOctaveUp ();
                 this.canScrollDown = this.scales.canScrollDrumOctaveDown ();
                 this.canScrollLeft = drumClip.canScrollStepsBackwards ();

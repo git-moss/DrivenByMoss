@@ -51,6 +51,15 @@ public class PushColorManager extends ColorManager
     /** ID for color when button signals an activated stop clip state. */
     public static final String       PUSH_BUTTON_STATE_STOP_HI              = "PUSH_BUTTON_STATE_STOP_HI";
 
+    /** ID for the color to use for note repeat resolution. */
+    public static final String       NOTE_REPEAT_PERIOD_OFF                 = "NOTE_REPEAT_PERIOD_OFF";
+    /** ID for the color to use for note repeat resolution selected. */
+    public static final String       NOTE_REPEAT_PERIOD_HI                  = "NOTE_REPEAT_PERIOD_HI";
+    /** ID for the color to use for note repeat length. */
+    public static final String       NOTE_REPEAT_LENGTH_OFF                 = "NOTE_REPEAT_LENGTH_OFF";
+    /** ID for the color to use for note repeat length selected. */
+    public static final String       NOTE_REPEAT_LENGTH_HI                  = "NOTE_REPEAT_LENGTH_HI";
+
     // @formatter:off
     /** The default color palette (like fixed on Push 1) */
     protected static final int [] [] DEFAULT_PALETTE                        =
@@ -481,6 +490,11 @@ public class PushColorManager extends ColorManager
         this.registerColorIndex (AbstractSessionView.COLOR_SCENE_OFF, isPush2 ? PUSH2_COLOR2_BLACK : PUSH1_COLOR2_BLACK);
 
         this.registerColorIndex (IPadGrid.GRID_OFF, isPush2 ? PUSH2_COLOR2_BLACK : PUSH1_COLOR2_BLACK);
+
+        this.registerColorIndex (NOTE_REPEAT_PERIOD_OFF, isPush2 ? PUSH2_COLOR_SCENE_YELLOW : PUSH1_COLOR_SCENE_YELLOW);
+        this.registerColorIndex (NOTE_REPEAT_PERIOD_HI, isPush2 ? PUSH2_COLOR_SCENE_YELLOW_HI : PUSH1_COLOR_SCENE_YELLOW_HI);
+        this.registerColorIndex (NOTE_REPEAT_LENGTH_OFF, isPush2 ? PUSH2_COLOR_SCENE_RED : PUSH1_COLOR_SCENE_RED);
+        this.registerColorIndex (NOTE_REPEAT_LENGTH_HI, isPush2 ? PUSH2_COLOR_SCENE_RED_HI : PUSH1_COLOR_SCENE_RED_HI);
 
         // Push 2 DAW colors are set in the color palette from indices 70 to 96
         this.registerColorIndex (DAWColor.COLOR_OFF, isPush2 ? PUSH2_COLOR2_BLACK : PUSH1_COLOR2_BLACK);

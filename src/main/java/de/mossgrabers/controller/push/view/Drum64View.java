@@ -18,7 +18,7 @@ import de.mossgrabers.framework.mode.AbstractMode;
 import de.mossgrabers.framework.mode.ModeManager;
 import de.mossgrabers.framework.mode.Modes;
 import de.mossgrabers.framework.utils.ButtonEvent;
-import de.mossgrabers.framework.view.AbstractDrumView64;
+import de.mossgrabers.framework.view.AbstractDrum64View;
 import de.mossgrabers.framework.view.AbstractSessionView;
 
 
@@ -27,7 +27,7 @@ import de.mossgrabers.framework.view.AbstractSessionView;
  *
  * @author J&uuml;rgen Mo&szlig;graber
  */
-public class DrumView64 extends AbstractDrumView64<PushControlSurface, PushConfiguration>
+public class Drum64View extends AbstractDrum64View<PushControlSurface, PushConfiguration>
 {
     /**
      * Constructor.
@@ -35,7 +35,7 @@ public class DrumView64 extends AbstractDrumView64<PushControlSurface, PushConfi
      * @param surface The surface
      * @param model The model
      */
-    public DrumView64 (final PushControlSurface surface, final IModel model)
+    public Drum64View (final PushControlSurface surface, final IModel model)
     {
         super (surface, model);
     }
@@ -122,14 +122,18 @@ public class DrumView64 extends AbstractDrumView64<PushControlSurface, PushConfi
     @Override
     public String getButtonColorID (final ButtonID buttonID)
     {
-        final int scene = buttonID.ordinal () - ButtonID.SCENE1.ordinal ();
-        if (scene < 0 || scene >= 8)
+        if (!ButtonID.isSceneButton (buttonID))
             return AbstractMode.BUTTON_COLOR_OFF;
 
+        if (this.surface.isPressed (ButtonID.REPEAT))
+            return NoteRepeatSceneHelper.getButtonColorID (this.surface, buttonID);
+
         final ISceneBank sceneBank = this.model.getSceneBank ();
+        final int scene = buttonID.ordinal () - ButtonID.SCENE1.ordinal ();
         final IScene s = sceneBank.getItem (scene);
         if (s.doesExist ())
             return s.isSelected () ? AbstractSessionView.COLOR_SELECTED_SCENE : AbstractSessionView.COLOR_SCENE;
+
         return AbstractSessionView.COLOR_SCENE_OFF;
     }
 
@@ -142,6 +146,13 @@ public class DrumView64 extends AbstractDrumView64<PushControlSurface, PushConfi
             return;
 
         final int index = buttonID.ordinal () - ButtonID.SCENE1.ordinal ();
+
+        if (this.surface.isPressed (ButtonID.REPEAT))
+        {
+            NoteRepeatSceneHelper.handleNoteRepeatSelection (this.surface, 7 - index);
+            return;
+        }
+
         final IScene scene = this.model.getCurrentTrackBank ().getSceneBank ().getItem (index);
 
         if (this.isButtonCombination (ButtonID.DELETE))

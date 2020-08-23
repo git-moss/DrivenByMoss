@@ -4,8 +4,12 @@
 
 package de.mossgrabers.controller.launchpad.view;
 
+import de.mossgrabers.controller.launchpad.LaunchpadConfiguration;
+import de.mossgrabers.controller.launchpad.controller.LaunchpadColorManager;
 import de.mossgrabers.controller.launchpad.controller.LaunchpadControlSurface;
+import de.mossgrabers.framework.controller.ButtonID;
 import de.mossgrabers.framework.daw.IModel;
+import de.mossgrabers.framework.view.AbstractDrumView;
 
 
 /**
@@ -13,7 +17,7 @@ import de.mossgrabers.framework.daw.IModel;
  *
  * @author J&uuml;rgen Mo&szlig;graber
  */
-public class DrumView extends DrumViewBase
+public class DrumView extends AbstractDrumView<LaunchpadControlSurface, LaunchpadConfiguration>
 {
     /**
      * Constructor.
@@ -23,6 +27,22 @@ public class DrumView extends DrumViewBase
      */
     public DrumView (final LaunchpadControlSurface surface, final IModel model)
     {
-        super ("Drum", surface, model, 4, 4);
+        super ("Drum", surface, model, 4, 4, true);
+    }
+
+
+    /** {@inheritDoc} */
+    @Override
+    public int getButtonColor (final ButtonID buttonID)
+    {
+        final int ordinal = buttonID.ordinal ();
+        if (ordinal < ButtonID.SCENE1.ordinal () || ordinal > ButtonID.SCENE8.ordinal ())
+            return 0;
+
+        final int scene = ordinal - ButtonID.SCENE1.ordinal ();
+
+        if (!this.isActive ())
+            return LaunchpadColorManager.LAUNCHPAD_COLOR_BLACK;
+        return scene == 7 - this.selectedResolutionIndex ? LaunchpadColorManager.LAUNCHPAD_COLOR_YELLOW : LaunchpadColorManager.LAUNCHPAD_COLOR_GREEN;
     }
 }

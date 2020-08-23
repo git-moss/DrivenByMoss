@@ -9,7 +9,7 @@ import de.mossgrabers.controller.launchpad.controller.LaunchpadControlSurface;
 import de.mossgrabers.framework.controller.ButtonID;
 import de.mossgrabers.framework.controller.color.ColorManager;
 import de.mossgrabers.framework.daw.IModel;
-import de.mossgrabers.framework.view.AbstractDrumView64;
+import de.mossgrabers.framework.view.AbstractDrum64View;
 
 
 /**
@@ -17,7 +17,7 @@ import de.mossgrabers.framework.view.AbstractDrumView64;
  *
  * @author J&uuml;rgen Mo&szlig;graber
  */
-public class DrumView64 extends AbstractDrumView64<LaunchpadControlSurface, LaunchpadConfiguration>
+public class Drum64View extends AbstractDrum64View<LaunchpadControlSurface, LaunchpadConfiguration>
 {
     /**
      * Constructor.
@@ -25,7 +25,7 @@ public class DrumView64 extends AbstractDrumView64<LaunchpadControlSurface, Laun
      * @param surface The surface
      * @param model The model
      */
-    public DrumView64 (final LaunchpadControlSurface surface, final IModel model)
+    public Drum64View (final LaunchpadControlSurface surface, final IModel model)
     {
         super (surface, model);
     }

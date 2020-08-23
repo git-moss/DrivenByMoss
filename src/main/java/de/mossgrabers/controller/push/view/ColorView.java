@@ -15,7 +15,6 @@ import de.mossgrabers.framework.daw.IModel;
 import de.mossgrabers.framework.daw.data.IMasterTrack;
 import de.mossgrabers.framework.daw.data.ITrack;
 import de.mossgrabers.framework.mode.AbstractMode;
-import de.mossgrabers.framework.view.AbstractSequencerView;
 import de.mossgrabers.framework.view.AbstractView;
 
 
@@ -121,10 +120,6 @@ public class ColorView extends AbstractView<PushControlSurface, PushConfiguratio
     @Override
     public String getButtonColorID (final ButtonID buttonID)
     {
-        final int scene = buttonID.ordinal () - ButtonID.SCENE1.ordinal ();
-        if (scene < 0 || scene >= 8)
-            return AbstractMode.BUTTON_COLOR_OFF;
-
-        return AbstractSequencerView.COLOR_RESOLUTION_OFF;
+        return AbstractMode.BUTTON_COLOR_OFF;
     }
 }
