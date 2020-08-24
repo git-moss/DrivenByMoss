@@ -85,8 +85,17 @@ public abstract class AbstractSessionView<S extends IControlSurface<C>, C extend
             return;
 
         final int sceneIndex = buttonID.ordinal () - ButtonID.SCENE1.ordinal ();
-        final IScene scene = this.model.getCurrentTrackBank ().getSceneBank ().getItem (sceneIndex);
+        this.handleSceneButtonCombinations (this.model.getCurrentTrackBank ().getSceneBank ().getItem (sceneIndex));
+    }
 
+
+    /**
+     * Handle a scene command depending on button combinations.
+     *
+     * @param scene The scene
+     */
+    protected void handleSceneButtonCombinations (final IScene scene)
+    {
         if (this.isButtonCombination (ButtonID.DELETE))
         {
             scene.remove ();
@@ -99,6 +108,17 @@ public abstract class AbstractSessionView<S extends IControlSurface<C>, C extend
             return;
         }
 
+        this.launchScene (scene);
+    }
+
+
+    /**
+     * Select and launch a scene.
+     *
+     * @param scene The scene to launch
+     */
+    protected void launchScene (final IScene scene)
+    {
         scene.select ();
         scene.launch ();
     }

@@ -224,4 +224,20 @@ public class SessionView extends AbstractSessionView<FireControlSurface, FireCon
 
         sceneBank.scrollBackwards ();
     }
+
+
+    /** {@inheritDoc} */
+    @Override
+    protected void launchScene (final IScene scene)
+    {
+        if (!scene.doesExist ())
+            return;
+
+        scene.select ();
+
+        if (!this.surface.isPressed (ButtonID.SHIFT))
+            scene.launch ();
+
+        this.surface.getDisplay ().notify (scene.getName ());
+    }
 }
