@@ -133,7 +133,7 @@ public abstract class AbstractDrumLaneView<S extends IControlSurface<C>, C exten
         }
 
         // Change length of a note or create a new one with a length
-        final int laneOffset = (this.allRows - row) / this.lanes * this.numColumns;
+        final int laneOffset = (this.allRows - row - 1) / this.lanes * this.numColumns;
         final int offset = row * this.numColumns;
         for (int s = 0; s < step; s++)
         {

@@ -30,6 +30,9 @@ public abstract class AbstractRaindropsView<S extends IControlSurface<C>, C exte
     protected static final int NUM_OCTAVE       = 12;
     protected static final int START_KEY        = 36;
 
+    // 32 = biggest number of measures in Fixed Length
+    protected static final int MAX_STEPS        = (int) Math.floor ((32 * 4) / Resolution.RES_1_32T.getValue ());
+
     protected int              numDisplayRows   = 8;
     protected boolean          ongoingResolutionChange;
     protected int              offsetY;
@@ -45,7 +48,7 @@ public abstract class AbstractRaindropsView<S extends IControlSurface<C>, C exte
      */
     public AbstractRaindropsView (final String name, final S surface, final IModel model, final boolean useDawColors)
     {
-        super (name, surface, model, 128, 32 * 16 /* Biggest number in Fixed Length */, useDawColors);
+        super (name, surface, model, 128, MAX_STEPS, useDawColors);
 
         this.offsetY = AbstractRaindropsView.START_KEY;
 
@@ -99,7 +102,11 @@ public abstract class AbstractRaindropsView<S extends IControlSurface<C>, C exte
             if (offset < 0)
                 return;
             for (int i = offset; i < length; i += stepSize)
-                clip.setStep (editMidiChannel, i, this.keyManager.map (x), this.configuration.isAccentActive () ? this.configuration.getFixedAccentValue () : velocity, Resolution.getValueAt (this.selectedResolutionIndex));
+            {
+                // Only support 32 measures at 1/32t
+                if (i < MAX_STEPS)
+                    clip.setStep (editMidiChannel, i, this.keyManager.map (x), this.configuration.isAccentActive () ? this.configuration.getFixedAccentValue () : velocity, Resolution.getValueAt (this.selectedResolutionIndex));
+            }
         }
     }
 

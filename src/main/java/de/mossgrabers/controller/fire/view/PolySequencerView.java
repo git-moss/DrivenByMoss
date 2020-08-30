@@ -8,6 +8,7 @@ import de.mossgrabers.controller.fire.FireConfiguration;
 import de.mossgrabers.controller.fire.controller.FireControlSurface;
 import de.mossgrabers.framework.controller.ButtonID;
 import de.mossgrabers.framework.daw.IModel;
+import de.mossgrabers.framework.daw.INoteClip;
 import de.mossgrabers.framework.daw.data.ITrack;
 import de.mossgrabers.framework.utils.ButtonEvent;
 import de.mossgrabers.framework.view.AbstractPolySequencerView;
@@ -88,20 +89,27 @@ public class PolySequencerView extends AbstractPolySequencerView<FireControlSurf
 
         ITrack selectedTrack;
 
+        final INoteClip clip = this.getClip ();
         switch (buttonID)
         {
             case ARROW_LEFT:
                 if (this.surface.isPressed (ButtonID.ALT))
                     this.setResolutionIndex (this.selectedResolutionIndex - 1);
                 else
-                    this.getClip ().scrollStepsPageBackwards ();
+                {
+                    clip.scrollStepsPageBackwards ();
+                    this.surface.getDisplay ().notify ("Page: " + (clip.getEditPage () + 1));
+                }
                 break;
 
             case ARROW_RIGHT:
                 if (this.surface.isPressed (ButtonID.ALT))
                     this.setResolutionIndex (this.selectedResolutionIndex + 1);
                 else
-                    this.getClip ().scrollStepsPageForward ();
+                {
+                    clip.scrollStepsPageForward ();
+                    this.surface.getDisplay ().notify ("Page: " + (clip.getEditPage () + 1));
+                }
                 break;
 
             case SCENE1:

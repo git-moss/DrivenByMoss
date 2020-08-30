@@ -632,7 +632,7 @@ public class PushControllerSetup extends AbstractControllerSetup<PushControlSurf
         };
         for (final Views viewID: views)
         {
-            final AbstractView view = (AbstractView) viewManager.getView (viewID);
+            final AbstractView view = AbstractView.class.cast (viewManager.getView (viewID));
             view.registerAftertouchCommand (new AftertouchAbstractViewCommand<> (view, this.model, surface));
         }
 

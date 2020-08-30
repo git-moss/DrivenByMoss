@@ -61,6 +61,8 @@ public class LaunchpadConfiguration extends AbstractConfiguration
         ///////////////////////////
         // Play and Sequence
 
+        this.activateAccentActiveSetting (globalSettings);
+        this.activateAccentValueSetting (globalSettings);
         this.activateQuantizeAmountSetting (globalSettings);
 
         ///////////////////////////

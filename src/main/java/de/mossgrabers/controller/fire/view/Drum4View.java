@@ -158,12 +158,16 @@ public class Drum4View extends AbstractDrum4View<FireControlSurface, FireConfigu
         if (event != ButtonEvent.DOWN || !this.isActive ())
             return;
 
+        final INoteClip clip = this.getClip ();
         if (buttonID == ButtonID.ARROW_LEFT)
         {
             if (this.surface.isPressed (ButtonID.ALT))
                 this.setResolutionIndex (this.selectedResolutionIndex - 1);
             else
-                this.getClip ().scrollStepsPageBackwards ();
+            {
+                clip.scrollStepsPageBackwards ();
+                this.surface.getDisplay ().notify ("Page: " + (clip.getEditPage () + 1));
+            }
             return;
         }
 
@@ -172,7 +176,10 @@ public class Drum4View extends AbstractDrum4View<FireControlSurface, FireConfigu
             if (this.surface.isPressed (ButtonID.ALT))
                 this.setResolutionIndex (this.selectedResolutionIndex + 1);
             else
-                this.getClip ().scrollStepsPageForward ();
+            {
+                clip.scrollStepsPageForward ();
+                this.surface.getDisplay ().notify ("Page: " + (clip.getEditPage () + 1));
+            }
             return;
         }
 

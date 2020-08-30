@@ -64,6 +64,7 @@ public abstract class AbstractHwButton extends AbstractHwInputControl implements
 
         this.state = ButtonEvent.DOWN;
         this.isConsumed = false;
+
         this.host.scheduleTask (this::checkButtonState, BUTTON_STATE_INTERVAL);
         this.pressedVelocity = (int) (value * 127.0);
         this.command.execute (ButtonEvent.DOWN, this.pressedVelocity);
@@ -188,6 +189,7 @@ public abstract class AbstractHwButton extends AbstractHwInputControl implements
         if (!this.isPressed ())
             return;
         this.state = ButtonEvent.LONG;
+
         if (this.command != null)
             this.command.execute (ButtonEvent.LONG, this.pressedVelocity);
     }

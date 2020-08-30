@@ -53,6 +53,9 @@ public class ShiftView extends AbstractView<LaunchpadControlSurface, LaunchpadCo
         padGrid.light (98, LaunchpadColorManager.LAUNCHPAD_COLOR_GREEN_SPRING);
         padGrid.light (99, LaunchpadColorManager.LAUNCHPAD_COLOR_TURQUOISE_CYAN);
 
+        // Accent on/off
+        padGrid.light (91, configuration.isAccentActive () ? LaunchpadColorManager.LAUNCHPAD_COLOR_YELLOW_HI : LaunchpadColorManager.LAUNCHPAD_COLOR_YELLOW_LO);
+
         // New clip length
         final int clipLengthIndex = this.surface.getConfiguration ().getNewClipLength ();
         for (int i = 0; i < 8; i++)
@@ -98,7 +101,9 @@ public class ShiftView extends AbstractView<LaunchpadControlSurface, LaunchpadCo
                 padGrid.light (i, LaunchpadColorManager.LAUNCHPAD_COLOR_BLACK);
             for (int i = 83; i < 87; i++)
                 padGrid.light (i, LaunchpadColorManager.LAUNCHPAD_COLOR_BLACK);
-            for (int i = 88; i < 97; i++)
+            for (int i = 88; i < 91; i++)
+                padGrid.light (i, LaunchpadColorManager.LAUNCHPAD_COLOR_BLACK);
+            for (int i = 92; i < 97; i++)
                 padGrid.light (i, LaunchpadColorManager.LAUNCHPAD_COLOR_BLACK);
             return;
         }
@@ -155,7 +160,7 @@ public class ShiftView extends AbstractView<LaunchpadControlSurface, LaunchpadCo
 
         padGrid.light (86, LaunchpadColorManager.LAUNCHPAD_COLOR_BLACK);
 
-        for (int i = 88; i < 92; i++)
+        for (int i = 88; i < 91; i++)
             padGrid.light (i, LaunchpadColorManager.LAUNCHPAD_COLOR_BLACK);
 
         // Metronome
@@ -190,62 +195,68 @@ public class ShiftView extends AbstractView<LaunchpadControlSurface, LaunchpadCo
                 final int newClipLength = note - 36;
                 configuration.setNewClipLength (newClipLength);
                 this.surface.getDisplay ().notify ("New clip length: " + AbstractConfiguration.getNewClipLengthValue (newClipLength));
-                break;
+                return;
 
             case 87:
                 configuration.toggleNoteRepeatActive ();
                 this.mvHelper.delayDisplay ( () -> "Note Repeat: " + (configuration.isNoteRepeatActive () ? "Active" : "Off"));
-                break;
+                return;
 
             case 79:
                 this.setPeriod (0);
-                break;
+                return;
             case 80:
                 this.setPeriod (1);
-                break;
+                return;
             case 71:
                 this.setPeriod (2);
-                break;
+                return;
             case 72:
                 this.setPeriod (3);
-                break;
+                return;
             case 63:
                 this.setPeriod (4);
-                break;
+                return;
             case 64:
                 this.setPeriod (5);
-                break;
+                return;
             case 55:
                 this.setPeriod (6);
-                break;
+                return;
             case 56:
                 this.setPeriod (7);
-                break;
+                return;
 
             case 81:
                 this.setNoteLength (0);
-                break;
+                return;
             case 82:
                 this.setNoteLength (1);
-                break;
+                return;
             case 73:
                 this.setNoteLength (2);
-                break;
+                return;
             case 74:
                 this.setNoteLength (3);
-                break;
+                return;
             case 65:
                 this.setNoteLength (4);
-                break;
+                return;
             case 66:
                 this.setNoteLength (5);
-                break;
+                return;
             case 57:
                 this.setNoteLength (6);
-                break;
+                return;
             case 58:
                 this.setNoteLength (7);
-                break;
+                return;
+
+            case 91:
+                final boolean enabled = !configuration.isAccentActive ();
+                configuration.setAccentEnabled (enabled);
+                this.surface.getDisplay ().notify ("Fixed Accent: " + (enabled ? "On" : "Off"));
+                return;
 
             case 97:
                 this.model.getApplication ().addInstrumentTrack ();
@@ -257,7 +268,7 @@ public class ShiftView extends AbstractView<LaunchpadControlSurface, LaunchpadCo
                 this.model.getApplication ().addEffectTrack ();
                 return;
             default:
-                // Not used
+                // Fall through to be handled below
                 break;
         }
 

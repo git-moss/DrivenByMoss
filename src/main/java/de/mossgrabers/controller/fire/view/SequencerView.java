@@ -133,20 +133,27 @@ public class SequencerView extends AbstractNoteSequencerView<FireControlSurface,
 
         ITrack selectedTrack;
 
+        final INoteClip clip = this.getClip ();
         switch (buttonID)
         {
             case ARROW_LEFT:
                 if (this.surface.isPressed (ButtonID.ALT))
                     this.setResolutionIndex (this.selectedResolutionIndex - 1);
                 else
-                    this.getClip ().scrollStepsPageBackwards ();
+                {
+                    clip.scrollStepsPageBackwards ();
+                    this.surface.getDisplay ().notify ("Page: " + (clip.getEditPage () + 1));
+                }
                 return;
 
             case ARROW_RIGHT:
                 if (this.surface.isPressed (ButtonID.ALT))
                     this.setResolutionIndex (this.selectedResolutionIndex + 1);
                 else
-                    this.getClip ().scrollStepsPageForward ();
+                {
+                    clip.scrollStepsPageForward ();
+                    this.surface.getDisplay ().notify ("Page: " + (clip.getEditPage () + 1));
+                }
                 return;
 
             case SCENE1:

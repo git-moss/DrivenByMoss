@@ -12,7 +12,8 @@ import de.mossgrabers.framework.usb.IUsbEndpoint;
 import de.mossgrabers.framework.usb.UsbException;
 
 import java.nio.ByteBuffer;
-import java.util.concurrent.atomic.AtomicBoolean;
+import java.util.concurrent.Executors;
+import java.util.concurrent.ScheduledExecutorService;
 
 
 /**
@@ -23,11 +24,11 @@ import java.util.concurrent.atomic.AtomicBoolean;
 public class PushUsbDisplay
 {
     /** The size of the display content. */
-    private static final int     DATA_SZ        = 20 * 0x4000;
+    private static final int               DATA_SZ          = 20 * 0x4000;
 
-    private static final int     TIMEOUT        = 1000;
+    private static final int               TIMEOUT          = 1000;
 
-    private static final byte [] DISPLAY_HEADER =
+    private static final byte []           DISPLAY_HEADER   =
     {
         (byte) 0xef,
         (byte) 0xcd,
@@ -47,11 +48,15 @@ public class PushUsbDisplay
         0
     };
 
-    private IUsbDevice           usbDevice;
-    private IUsbEndpoint         usbEndpoint;
-    private final IMemoryBlock   headerBlock;
-    private final IMemoryBlock   imageBlock;
-    private AtomicBoolean        isSending      = new AtomicBoolean (false);
+    private IUsbDevice                     usbDevice;
+    private IUsbEndpoint                   usbEndpoint;
+    private final IMemoryBlock             headerBlock;
+    private final IMemoryBlock             imageBlock;
+    private final byte []                  byteStore        = new byte [DATA_SZ];
+
+    private Object                         sendLock         = new Object ();
+    private Object                         bufferUpdateLock = new Object ();
+    private final ScheduledExecutorService sendExecutor     = Executors.newSingleThreadScheduledExecutor ();
 
 
     /**
@@ -86,19 +91,13 @@ public class PushUsbDisplay
      */
     public void send (final IBitmap image)
     {
-        synchronized (this.isSending)
+        // Copy to the buffer
+        synchronized (this.bufferUpdateLock)
         {
-            if (this.usbDevice == null || this.usbEndpoint == null || this.isSending.get ())
-                return;
-
-            this.isSending.set (true);
-
-            final ByteBuffer buffer = this.imageBlock.createByteBuffer ();
-
             image.encode ( (imageBuffer, width, height) -> {
-                buffer.clear ();
 
-                final int padding = (buffer.capacity () - height * width * 2) / height;
+                int counter = 0;
+                final int padding = (DATA_SZ - height * width * 2) / height;
 
                 for (int y = 0; y < height; y++)
                 {
@@ -110,20 +109,48 @@ public class PushUsbDisplay
                         imageBuffer.get (); // Drop unused Alpha
 
                         final int pixel = sPixelFromRGB (red, green, blue);
-                        buffer.put ((byte) (pixel & 0x00FF));
-                        buffer.put ((byte) ((pixel & 0xFF00) >> 8));
+
+                        this.byteStore[counter] = (byte) (pixel & 0x00FF);
+                        this.byteStore[counter + 1] = (byte) ((pixel & 0xFF00) >> 8);
+
+                        counter += 2;
                     }
 
                     for (int x = 0; x < padding; x++)
-                        buffer.put ((byte) 0x00);
+                    {
+                        this.byteStore[counter] = (byte) 0x00;
+                        counter++;
+                    }
                 }
 
                 imageBuffer.rewind ();
             });
+        }
+
+        if (!this.sendExecutor.isShutdown ())
+            this.sendExecutor.submit (this::sendData);
+    }
+
+
+    private void sendData ()
+    {
+        // Copy the data from the buffer to the USB block
+        synchronized (this.bufferUpdateLock)
+        {
+            final ByteBuffer buffer = this.imageBlock.createByteBuffer ();
+            buffer.clear ();
+            for (int i = 0; i < DATA_SZ; i++)
+                buffer.put (this.byteStore[i]);
+        }
+
+        // Send the data
+        synchronized (this.sendLock)
+        {
+            if (this.usbDevice == null || this.usbEndpoint == null)
+                return;
 
             this.usbEndpoint.send (this.headerBlock, TIMEOUT);
             this.usbEndpoint.send (this.imageBlock, TIMEOUT);
-            this.isSending.set (false);
         }
     }
 
@@ -133,8 +160,10 @@ public class PushUsbDisplay
      */
     public void shutdown ()
     {
-        synchronized (this.isSending)
+        synchronized (this.sendLock)
         {
+            this.sendExecutor.shutdown ();
+
             this.usbDevice = null;
             this.usbEndpoint = null;
         }
