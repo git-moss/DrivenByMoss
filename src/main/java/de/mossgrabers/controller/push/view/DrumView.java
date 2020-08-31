@@ -145,6 +145,11 @@ public class DrumView extends AbstractDrumView<PushControlSurface, PushConfigura
 
         final int index = buttonID.ordinal () - ButtonID.SCENE1.ordinal ();
         if (this.surface.isPressed (ButtonID.REPEAT))
+        {
             NoteRepeatSceneHelper.handleNoteRepeatSelection (this.surface, 7 - index);
+            return;
+        }
+
+        super.onButton (buttonID, event, velocity);
     }
 }
