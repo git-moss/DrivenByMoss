@@ -214,16 +214,16 @@ public class LaunchpadControllerSetup extends AbstractControllerSetup<LaunchpadC
         viewManager.registerView (Views.DRUM, new DrumView (surface, this.model));
         viewManager.registerView (Views.DRUM4, new Drum4View (surface, this.model));
         viewManager.registerView (Views.DRUM8, new Drum8View (surface, this.model));
-        viewManager.registerView (Views.TRACK_PAN, new PanView (surface, this.model));
         viewManager.registerView (Views.DRUM64, new Drum64View (surface, this.model));
         viewManager.registerView (Views.PLAY, new PlayView (surface, this.model));
         viewManager.registerView (Views.PIANO, new PianoView (surface, this.model));
         viewManager.registerView (Views.RAINDROPS, new RaindropsView (surface, this.model));
-        viewManager.registerView (Views.TRACK_SENDS, new SendsView (surface, this.model));
         viewManager.registerView (Views.SEQUENCER, new SequencerView (surface, this.model));
         viewManager.registerView (Views.POLY_SEQUENCER, new PolySequencerView (surface, this.model, true));
         viewManager.registerView (Views.SESSION, new SessionView ("Session", surface, this.model));
+        viewManager.registerView (Views.TRACK_PAN, new PanView (surface, this.model));
         viewManager.registerView (Views.TRACK_VOLUME, new VolumeView (surface, this.model));
+        viewManager.registerView (Views.TRACK_SENDS, new SendsView (surface, this.model));
         viewManager.registerView (Views.SHIFT, new ShiftView (surface, this.model));
         viewManager.registerView (Views.MIX, new MixView (surface, this.model));
         viewManager.registerView (Views.CONTROL, new NoteViewSelectView (surface, this.model));
@@ -812,7 +812,7 @@ public class LaunchpadControllerSetup extends AbstractControllerSetup<LaunchpadC
         final ViewManager viewManager = this.getSurface ().getViewManager ();
 
         // Do not leave Mix view if track selection changes
-        if (viewManager.isActiveView (Views.MIX))
+        if (viewManager.isActiveView (Views.MIX, Views.TRACK_PAN, Views.TRACK_VOLUME, Views.TRACK_SENDS))
             return;
 
         // Recall last used view (if we are not in session mode)

@@ -14,6 +14,7 @@ import de.mossgrabers.framework.usb.UsbException;
 import java.nio.ByteBuffer;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
+import java.util.concurrent.TimeUnit;
 
 
 /**
@@ -50,6 +51,7 @@ public class PushUsbDisplay
 
     private IUsbDevice                     usbDevice;
     private IUsbEndpoint                   usbEndpoint;
+    private final IHost                    host;
     private final IMemoryBlock             headerBlock;
     private final IMemoryBlock             imageBlock;
     private final byte []                  byteStore        = new byte [DATA_SZ];
@@ -66,6 +68,8 @@ public class PushUsbDisplay
      */
     public PushUsbDisplay (final IHost host)
     {
+        this.host = host;
+
         try
         {
             this.usbDevice = host.getUsbDevice (0);
@@ -162,10 +166,18 @@ public class PushUsbDisplay
     {
         synchronized (this.sendLock)
         {
-            this.sendExecutor.shutdown ();
-
             this.usbDevice = null;
             this.usbEndpoint = null;
+
+            this.sendExecutor.shutdown ();
+            try
+            {
+                this.sendExecutor.awaitTermination (1, TimeUnit.MINUTES);
+            }
+            catch (final InterruptedException ex)
+            {
+                this.host.error ("USB Send executor interrupted on shutdown.", ex);
+            }
         }
     }
 

@@ -34,6 +34,14 @@ public interface IChannel extends IItem
 
 
     /**
+     * Get the volume parameter.
+     *
+     * @return The volume parameter
+     */
+    IParameter getVolumeParameter ();
+
+
+    /**
      * Get the volume as a formatted text.
      *
      * @return The volume text
@@ -102,6 +110,14 @@ public interface IChannel extends IItem
      * @return The modulated volume
      */
     int getModulatedVolume ();
+
+
+    /**
+     * Get the panorama parameter.
+     *
+     * @return The panorama parameter
+     */
+    IParameter getPanParameter ();
 
 
     /**

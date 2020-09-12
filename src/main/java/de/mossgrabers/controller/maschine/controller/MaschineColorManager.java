@@ -119,7 +119,7 @@ public class MaschineColorManager extends ColorManager
         this.registerColorIndex (DAWColor.DAW_COLOR_BLUE, COLOR_BLUE);
         this.registerColorIndex (DAWColor.DAW_COLOR_LIGHT_PURPLE, COLOR_MAGENTA);
         this.registerColorIndex (DAWColor.DAW_COLOR_LIGHT_PINK, COLOR_PINK);
-        this.registerColorIndex (DAWColor.DAW_COLOR_SKIN, COLOR_SKIN);
+        this.registerColorIndex (DAWColor.DAW_COLOR_ROSE, COLOR_SKIN);
         this.registerColorIndex (DAWColor.DAW_COLOR_REDDISH_BROWN, COLOR_AMBER);
         this.registerColorIndex (DAWColor.DAW_COLOR_LIGHT_BROWN, COLOR_AMBER_LO);
         this.registerColorIndex (DAWColor.DAW_COLOR_LIGHT_GREEN, COLOR_SPRING);
@@ -130,7 +130,7 @@ public class MaschineColorManager extends ColorManager
         this.registerColor (COLOR_BLACK, ColorEx.BLACK);
         this.registerColor (COLOR_GREY, ColorEx.GRAY);
         this.registerColor (COLOR_WHITE, ColorEx.WHITE);
-        this.registerColor (COLOR_ROSE, DAWColor.DAW_COLOR_SKIN.getColor ());
+        this.registerColor (COLOR_ROSE, DAWColor.DAW_COLOR_ROSE.getColor ());
         this.registerColor (COLOR_RED, DAWColor.DAW_COLOR_REDDISH_BROWN.getColor ());
         this.registerColor (COLOR_RED_LO, ColorEx.fromRGB (39, 4, 1));
         this.registerColor (COLOR_AMBER, DAWColor.DAW_COLOR_REDDISH_BROWN.getColor ());

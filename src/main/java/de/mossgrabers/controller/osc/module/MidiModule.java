@@ -4,21 +4,24 @@
 
 package de.mossgrabers.controller.osc.module;
 
-import de.mossgrabers.controller.osc.OSCColors;
 import de.mossgrabers.controller.osc.OSCConfiguration;
 import de.mossgrabers.controller.osc.exception.IllegalParameterException;
 import de.mossgrabers.controller.osc.exception.MissingCommandException;
 import de.mossgrabers.controller.osc.exception.UnknownCommandException;
 import de.mossgrabers.framework.controller.IControlSurface;
+import de.mossgrabers.framework.controller.color.ColorEx;
+import de.mossgrabers.framework.controller.color.ColorManager;
 import de.mossgrabers.framework.daw.IHost;
 import de.mossgrabers.framework.daw.IModel;
 import de.mossgrabers.framework.daw.constants.Resolution;
+import de.mossgrabers.framework.daw.data.ITrack;
 import de.mossgrabers.framework.daw.midi.IMidiInput;
 import de.mossgrabers.framework.daw.midi.INoteInput;
 import de.mossgrabers.framework.daw.midi.INoteRepeat;
 import de.mossgrabers.framework.osc.IOpenSoundControlWriter;
 import de.mossgrabers.framework.scale.Scales;
 import de.mossgrabers.framework.utils.KeyManager;
+import de.mossgrabers.framework.view.AbstractView;
 
 import java.util.LinkedList;
 
@@ -49,6 +52,8 @@ public class MidiModule extends AbstractModule
 
         this.surface = surface;
         this.keyManager = keyManager;
+
+        this.updateNoteMatrix (model.getScales ());
     }
 
 
@@ -81,7 +86,7 @@ public class MidiModule extends AbstractModule
         final String noteAddress = "/vkb_midi/note/";
         for (int i = 0; i < 127; i++)
         {
-            final double [] color = this.getNoteColor (i);
+            final double [] color = this.getNoteColor (i).toDoubleRGB ();
             this.writer.sendOSCColor (noteAddress + i + "/color", color[0], color[1], color[2], dump);
         }
 
@@ -163,8 +168,7 @@ public class MidiModule extends AbstractModule
                         if (isTrigger (value))
                         {
                             scales.incOctave ();
-                            this.surface.setKeyTranslationTable (this.model.getScales ().getNoteMatrix ());
-                            this.surface.getDisplay ().notify (scales.getRangeText ());
+                            this.updateNoteMatrix (scales);
                         }
                         break;
 
@@ -172,8 +176,7 @@ public class MidiModule extends AbstractModule
                         if (isTrigger (value))
                         {
                             scales.decOctave ();
-                            this.surface.setKeyTranslationTable (this.model.getScales ().getNoteMatrix ());
-                            this.surface.getDisplay ().notify (scales.getRangeText ());
+                            this.updateNoteMatrix (scales);
                         }
                         break;
 
@@ -245,6 +248,15 @@ public class MidiModule extends AbstractModule
             default:
                 throw new UnknownCommandException (command);
         }
+    }
+
+
+    private void updateNoteMatrix (final Scales scales)
+    {
+        final int [] matrix = scales.getNoteMatrix ();
+        this.keyManager.setNoteMatrix (matrix);
+        this.surface.setKeyTranslationTable (matrix);
+        this.surface.getDisplay ().notify (scales.getRangeText ());
     }
 
 
@@ -328,16 +340,20 @@ public class MidiModule extends AbstractModule
      * @param note The note
      * @return The color
      */
-    private double [] getNoteColor (final int note)
+    private ColorEx getNoteColor (final int note)
     {
+        final ColorManager colorManager = this.model.getColorManager ();
+
         final boolean isKeyboardEnabled = this.model.canSelectedTrackHoldNotes ();
         if (!isKeyboardEnabled)
-            return OSCColors.getColor (Scales.SCALE_COLOR_OFF);
+            return ColorEx.BLACK;
 
-        if (!this.keyManager.isKeyPressed (note))
-            return OSCColors.getColor (this.keyManager.getColor (note));
+        if (this.keyManager.isKeyPressed (note))
+            return this.model.hasRecordingState () ? ColorEx.RED : ColorEx.GREEN;
 
-        final boolean isRecording = this.model.hasRecordingState ();
-        return isRecording ? OSCColors.COLOR_RED : OSCColors.COLOR_GREEN;
+        final ITrack track = this.model.getSelectedTrack ();
+        final String colorID = AbstractView.replaceOctaveColorWithTrackColor (track, this.keyManager.getColor (note));
+        final int colorIndex = colorManager.getColorIndex (colorID);
+        return colorManager.getColor (colorIndex, null);
     }
 }

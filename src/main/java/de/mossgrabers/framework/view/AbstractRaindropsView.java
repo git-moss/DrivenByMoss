@@ -31,7 +31,7 @@ public abstract class AbstractRaindropsView<S extends IControlSurface<C>, C exte
     protected static final int START_KEY        = 36;
 
     // 32 = biggest number of measures in Fixed Length
-    protected static final int MAX_STEPS        = (int) Math.floor ((32 * 4) / Resolution.RES_1_32T.getValue ());
+    protected static final int MAX_STEPS        = (int) Math.floor (32 * 4 / Resolution.RES_1_32T.getValue ());
 
     protected int              numDisplayRows   = 8;
     protected boolean          ongoingResolutionChange;

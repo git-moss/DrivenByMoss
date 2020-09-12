@@ -27,8 +27,8 @@ import java.util.List;
  */
 public class ViewMultiSelectCommand<S extends IControlSurface<C>, C extends Configuration> extends AbstractTriggerCommand<S, C>
 {
-    private final List<Views> viewIds = new ArrayList<> ();
-    private final boolean     displayName;
+    protected final List<Views> viewIds = new ArrayList<> ();
+    private final boolean       displayName;
 
 
     /**

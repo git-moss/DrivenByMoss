@@ -160,8 +160,8 @@ public class LaunchpadCursorCommand extends CursorCommand<LaunchpadControlSurfac
                 this.canScrollLeft = selIndex > 0 || tb.canScrollPageBackwards ();
                 this.canScrollRight = selIndex >= 0 && selIndex < 7 && tb.getItem (selIndex + 1).doesExist () || tb.canScrollPageForwards ();
                 final ISceneBank sceneBank = tb.getSceneBank ();
-                this.canScrollUp = sceneBank.canScrollPageBackwards ();
-                this.canScrollDown = sceneBank.canScrollPageForwards ();
+                this.canScrollUp = sceneBank.canScrollBackwards ();
+                this.canScrollDown = sceneBank.canScrollForwards ();
                 break;
 
             case SHUFFLE:

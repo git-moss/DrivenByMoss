@@ -518,7 +518,7 @@ public class PushColorManager extends ColorManager
         this.registerColorIndex (DAWColor.DAW_COLOR_BLUE, isPush2 ? 87 : 37);
         this.registerColorIndex (DAWColor.DAW_COLOR_LIGHT_PURPLE, isPush2 ? 88 : 48);
         this.registerColorIndex (DAWColor.DAW_COLOR_LIGHT_PINK, isPush2 ? 89 : 56);
-        this.registerColorIndex (DAWColor.DAW_COLOR_SKIN, isPush2 ? 90 : 4);
+        this.registerColorIndex (DAWColor.DAW_COLOR_ROSE, isPush2 ? 90 : 4);
         this.registerColorIndex (DAWColor.DAW_COLOR_REDDISH_BROWN, isPush2 ? 91 : 10);
         this.registerColorIndex (DAWColor.DAW_COLOR_LIGHT_BROWN, isPush2 ? 92 : 61);
         this.registerColorIndex (DAWColor.DAW_COLOR_LIGHT_GREEN, isPush2 ? 93 : 18);

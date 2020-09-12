@@ -6,6 +6,7 @@ package de.mossgrabers.framework.daw.data.empty;
 
 import de.mossgrabers.framework.controller.color.ColorEx;
 import de.mossgrabers.framework.daw.data.IChannel;
+import de.mossgrabers.framework.daw.data.IParameter;
 import de.mossgrabers.framework.daw.data.ISend;
 import de.mossgrabers.framework.daw.data.bank.ISendBank;
 import de.mossgrabers.framework.daw.resource.ChannelType;
@@ -48,6 +49,14 @@ public class EmptyChannel extends EmptyItem implements IChannel
 
     /** {@inheritDoc} */
     @Override
+    public IParameter getVolumeParameter ()
+    {
+        return EmptyParameter.INSTANCE;
+    }
+
+
+    /** {@inheritDoc} */
+    @Override
     public String getVolumeStr ()
     {
         return "";
@@ -67,6 +76,14 @@ public class EmptyChannel extends EmptyItem implements IChannel
     public String getVolumeStr (final int limit)
     {
         return "";
+    }
+
+
+    /** {@inheritDoc} */
+    @Override
+    public IParameter getPanParameter ()
+    {
+        return EmptyParameter.INSTANCE;
     }
 
 

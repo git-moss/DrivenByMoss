@@ -29,7 +29,7 @@ public class NoteRepeatSceneHelper
 
     /**
      * Get the color ID for a scene button, which is controlled by the view.
-     * 
+     *
      * @param surface The surface
      * @param buttonID The ID of the button
      * @return A color ID

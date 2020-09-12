@@ -160,7 +160,7 @@ public class LaunchpadColorManager extends ColorManager
         this.registerColorIndex (DAWColor.DAW_COLOR_BLUE, LAUNCHPAD_COLOR_SKY_HI);
         this.registerColorIndex (DAWColor.DAW_COLOR_LIGHT_PURPLE, LAUNCHPAD_COLOR_BLUE_ORCHID);
         this.registerColorIndex (DAWColor.DAW_COLOR_LIGHT_PINK, LAUNCHPAD_COLOR_MAGENTA_PINK);
-        this.registerColorIndex (DAWColor.DAW_COLOR_SKIN, LAUNCHPAD_COLOR_ROSE);
+        this.registerColorIndex (DAWColor.DAW_COLOR_ROSE, LAUNCHPAD_COLOR_ROSE);
         this.registerColorIndex (DAWColor.DAW_COLOR_REDDISH_BROWN, LAUNCHPAD_COLOR_AMBER);
         this.registerColorIndex (DAWColor.DAW_COLOR_LIGHT_BROWN, LAUNCHPAD_COLOR_AMBER_YELLOW);
         this.registerColorIndex (DAWColor.DAW_COLOR_LIGHT_GREEN, LAUNCHPAD_COLOR_LIME);
@@ -178,7 +178,7 @@ public class LaunchpadColorManager extends ColorManager
         this.registerColor (LAUNCHPAD_COLOR_GREY_HALF, DAWColor.DAW_COLOR_GRAY_HALF.getColor ());
         this.registerColor (LAUNCHPAD_COLOR_GREY_HI, DAWColor.DAW_COLOR_LIGHT_GRAY.getColor ());
         this.registerColor (LAUNCHPAD_COLOR_WHITE, ColorEx.WHITE);
-        this.registerColor (LAUNCHPAD_COLOR_ROSE, DAWColor.DAW_COLOR_SKIN.getColor ());
+        this.registerColor (LAUNCHPAD_COLOR_ROSE, DAWColor.DAW_COLOR_ROSE.getColor ());
         this.registerColor (LAUNCHPAD_COLOR_RED_HI, DAWColor.DAW_COLOR_RED.getColor ());
         this.registerColor (LAUNCHPAD_COLOR_RED, DAWColor.DAW_COLOR_REDDISH_BROWN.getColor ());
         this.registerColor (LAUNCHPAD_COLOR_RED_LO, ColorEx.fromRGB (39, 4, 1));

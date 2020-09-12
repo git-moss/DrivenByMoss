@@ -158,7 +158,7 @@ public class SLMkIIIColorManager extends ColorManager
         this.registerColorIndex (DAWColor.DAW_COLOR_LIGHT_PURPLE, SLMKIII_PURPLE);
 
         this.registerColorIndex (DAWColor.DAW_COLOR_LIGHT_PINK, SLMKIII_PINK_LIGHT);
-        this.registerColorIndex (DAWColor.DAW_COLOR_SKIN, SLMKIII_SKIN);
+        this.registerColorIndex (DAWColor.DAW_COLOR_ROSE, SLMKIII_SKIN);
         this.registerColorIndex (DAWColor.DAW_COLOR_REDDISH_BROWN, SLMKIII_DARK_RED);
         this.registerColorIndex (DAWColor.DAW_COLOR_LIGHT_BROWN, SLMKIII_AMBER_HALF);
         this.registerColorIndex (DAWColor.DAW_COLOR_LIGHT_GREEN, SLMKIII_GREEN_LIGHT);

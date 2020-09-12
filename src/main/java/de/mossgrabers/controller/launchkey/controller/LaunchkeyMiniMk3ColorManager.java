@@ -158,7 +158,7 @@ public class LaunchkeyMiniMk3ColorManager extends ColorManager
         this.registerColorIndex (DAWColor.DAW_COLOR_BLUE, LAUNCHKEY_COLOR_SKY_HI);
         this.registerColorIndex (DAWColor.DAW_COLOR_LIGHT_PURPLE, LAUNCHKEY_COLOR_BLUE_ORCHID);
         this.registerColorIndex (DAWColor.DAW_COLOR_LIGHT_PINK, LAUNCHKEY_COLOR_MAGENTA_PINK);
-        this.registerColorIndex (DAWColor.DAW_COLOR_SKIN, LAUNCHKEY_COLOR_ROSE);
+        this.registerColorIndex (DAWColor.DAW_COLOR_ROSE, LAUNCHKEY_COLOR_ROSE);
         this.registerColorIndex (DAWColor.DAW_COLOR_REDDISH_BROWN, LAUNCHKEY_COLOR_AMBER);
         this.registerColorIndex (DAWColor.DAW_COLOR_LIGHT_BROWN, LAUNCHKEY_COLOR_AMBER_YELLOW);
         this.registerColorIndex (DAWColor.DAW_COLOR_LIGHT_GREEN, LAUNCHKEY_COLOR_LIME);
@@ -177,7 +177,7 @@ public class LaunchkeyMiniMk3ColorManager extends ColorManager
         this.registerColor (LAUNCHKEY_COLOR_GREY_LO, DAWColor.DAW_COLOR_LIGHT_GRAY.getColor ());
         this.registerColor (LAUNCHKEY_COLOR_GREY_MD, DAWColor.DAW_COLOR_GRAY_HALF.getColor ());
         this.registerColor (LAUNCHKEY_COLOR_WHITE, ColorEx.WHITE);
-        this.registerColor (LAUNCHKEY_COLOR_ROSE, DAWColor.DAW_COLOR_SKIN.getColor ());
+        this.registerColor (LAUNCHKEY_COLOR_ROSE, DAWColor.DAW_COLOR_ROSE.getColor ());
         this.registerColor (LAUNCHKEY_COLOR_RED_HI, DAWColor.DAW_COLOR_RED.getColor ());
         this.registerColor (LAUNCHKEY_COLOR_RED, DAWColor.DAW_COLOR_REDDISH_BROWN.getColor ());
         this.registerColor (LAUNCHKEY_COLOR_RED_LO, ColorEx.fromRGB (39, 4, 1));

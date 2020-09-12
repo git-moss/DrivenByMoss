@@ -23,7 +23,6 @@ import de.mossgrabers.framework.configuration.ISettingsUI;
 import de.mossgrabers.framework.controller.AbstractControllerSetup;
 import de.mossgrabers.framework.controller.IControlSurface;
 import de.mossgrabers.framework.controller.ISetupFactory;
-import de.mossgrabers.framework.controller.color.ColorManager;
 import de.mossgrabers.framework.controller.display.DummyDisplay;
 import de.mossgrabers.framework.controller.valuechanger.DefaultValueChanger;
 import de.mossgrabers.framework.daw.IHost;
@@ -67,7 +66,7 @@ public class OSCControllerSetup extends AbstractControllerSetup<IControlSurface<
     {
         super (factory, host, globalSettings, documentSettings);
 
-        this.colorManager = new ColorManager ();
+        this.colorManager = new OSCColorManager ();
         this.valueChanger = new DefaultValueChanger (128, 1, 0.5);
         this.configuration = new OSCConfiguration (host, this.valueChanger, factory.getArpeggiatorModes ());
     }

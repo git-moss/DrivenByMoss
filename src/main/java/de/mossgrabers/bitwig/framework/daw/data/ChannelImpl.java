@@ -132,6 +132,14 @@ public class ChannelImpl extends AbstractDeviceChainImpl<Channel> implements ICh
 
     /** {@inheritDoc} */
     @Override
+    public IParameter getVolumeParameter ()
+    {
+        return this.volumeParameter;
+    }
+
+
+    /** {@inheritDoc} */
+    @Override
     public String getVolumeStr ()
     {
         return this.volumeParameter.getDisplayedValue ();
@@ -199,6 +207,14 @@ public class ChannelImpl extends AbstractDeviceChainImpl<Channel> implements ICh
     public int getModulatedVolume ()
     {
         return this.volumeParameter.getModulatedValue ();
+    }
+
+
+    /** {@inheritDoc} */
+    @Override
+    public IParameter getPanParameter ()
+    {
+        return this.panParameter;
     }
 
 

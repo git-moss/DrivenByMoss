@@ -57,7 +57,7 @@ public enum DAWColor
     /** Color light pink. */
     DAW_COLOR_LIGHT_PINK("Light Pink", new ColorEx (0.8823529481887817, 0.4000000059604645, 0.5686274766921997)),
     /** Color skin. */
-    DAW_COLOR_SKIN("Skin", new ColorEx (0.9254902005195618, 0.3803921639919281, 0.34117648005485535)),
+    DAW_COLOR_ROSE("Rose", new ColorEx (0.9254902005195618, 0.3803921639919281, 0.34117648005485535)),
     /** Color reddish brown. */
     DAW_COLOR_REDDISH_BROWN("Redish Brown", new ColorEx (1, 0.5137255191802979, 0.24313725531101227)),
     /** Color light brown. */

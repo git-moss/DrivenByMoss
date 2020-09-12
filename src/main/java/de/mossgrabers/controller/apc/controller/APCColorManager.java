@@ -182,7 +182,7 @@ public class APCColorManager extends ColorManager
             this.registerColorIndex (DAWColor.DAW_COLOR_BLUE, APC_MKII_COLOR_SKY_HI);
             this.registerColorIndex (DAWColor.DAW_COLOR_LIGHT_PURPLE, APC_MKII_COLOR_BLUE_ORCHID);
             this.registerColorIndex (DAWColor.DAW_COLOR_LIGHT_PINK, APC_MKII_COLOR_MAGENTA_PINK);
-            this.registerColorIndex (DAWColor.DAW_COLOR_SKIN, APC_MKII_COLOR_ROSE);
+            this.registerColorIndex (DAWColor.DAW_COLOR_ROSE, APC_MKII_COLOR_ROSE);
             this.registerColorIndex (DAWColor.DAW_COLOR_REDDISH_BROWN, APC_MKII_COLOR_AMBER);
             this.registerColorIndex (DAWColor.DAW_COLOR_LIGHT_BROWN, APC_MKII_COLOR_AMBER_HI);
             this.registerColorIndex (DAWColor.DAW_COLOR_LIGHT_GREEN, APC_MKII_COLOR_LIME);
