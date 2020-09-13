@@ -11,6 +11,8 @@ import de.mossgrabers.framework.daw.midi.IMidiOutput;
 import de.mossgrabers.framework.utils.LatestTaskExecutor;
 import de.mossgrabers.framework.utils.StringUtils;
 
+import java.util.concurrent.TimeUnit;
+
 
 /**
  * The MCU main display.
@@ -126,6 +128,16 @@ public class MCUDisplay extends AbstractTextDisplay
 
         // Prevent further sends
         for (int i = 0; i < 4; i++)
+        {
             this.executors[i].shutdown ();
+            try
+            {
+                this.executors[i].awaitTermination (5, TimeUnit.SECONDS);
+            }
+            catch (final InterruptedException ex)
+            {
+                this.host.error ("USB display send executor did not end in 10 seconds. Interrupted.", ex);
+            }
+        }
     }
 }

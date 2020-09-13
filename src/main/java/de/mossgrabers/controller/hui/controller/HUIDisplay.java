@@ -10,6 +10,8 @@ import de.mossgrabers.framework.daw.midi.IMidiOutput;
 import de.mossgrabers.framework.utils.LatestTaskExecutor;
 import de.mossgrabers.framework.utils.StringUtils;
 
+import java.util.concurrent.TimeUnit;
+
 
 /**
  * The HUI main display. Note that the original HUI display uses a modified ASCII set (e.g. it
@@ -85,5 +87,13 @@ public class HUIDisplay extends AbstractTextDisplay
 
         // Prevent further sends
         this.executor.shutdown ();
+        try
+        {
+            this.executor.awaitTermination (5, TimeUnit.SECONDS);
+        }
+        catch (final InterruptedException ex)
+        {
+            this.host.error ("HUI display send executor did not end in 10 seconds. Interrupted.", ex);
+        }
     }
 }

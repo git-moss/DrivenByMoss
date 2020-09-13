@@ -131,8 +131,11 @@ public class PushUsbDisplay
             });
         }
 
-        if (!this.sendExecutor.isShutdown ())
-            this.sendExecutor.submit (this::sendData);
+        synchronized (this.sendLock)
+        {
+            if (!this.sendExecutor.isShutdown ())
+                this.sendExecutor.submit (this::sendData);
+        }
     }
 
 
@@ -172,11 +175,11 @@ public class PushUsbDisplay
             this.sendExecutor.shutdown ();
             try
             {
-                this.sendExecutor.awaitTermination (1, TimeUnit.MINUTES);
+                this.sendExecutor.awaitTermination (5, TimeUnit.SECONDS);
             }
             catch (final InterruptedException ex)
             {
-                this.host.error ("USB Send executor interrupted on shutdown.", ex);
+                this.host.error ("USB Send executor did not end in 10 seconds. Interrupted.", ex);
             }
         }
     }
