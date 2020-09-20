@@ -103,7 +103,7 @@ public class SLMkIIIControllerSetup extends AbstractControllerSetup<SLMkIIIContr
         super (factory, host, globalSettings, documentSettings);
 
         this.colorManager = new SLMkIIIColorManager ();
-        this.valueChanger = new DefaultValueChanger (1024, 8, 1);
+        this.valueChanger = new DefaultValueChanger (1024, 8);
         this.configuration = new SLMkIIIConfiguration (host, this.valueChanger, factory.getArpeggiatorModes ());
     }
 
@@ -191,6 +191,8 @@ public class SLMkIIIControllerSetup extends AbstractControllerSetup<SLMkIIIContr
     @Override
     protected void createObservers ()
     {
+        super.createObservers ();
+
         this.createScaleObservers (this.configuration);
 
         this.configuration.registerDeactivatedItemsHandler (this.model);

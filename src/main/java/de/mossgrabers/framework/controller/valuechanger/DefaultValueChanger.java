@@ -14,24 +14,37 @@ package de.mossgrabers.framework.controller.valuechanger;
  */
 public class DefaultValueChanger implements IValueChanger
 {
-    private int     upperBound;
-    private double  fractionValue;
-    private double  slowFractionValue;
-    private boolean isSlow;
+    private int    upperBound;
+    protected int  stepSize;
+    private double sensitivity = 1.0;
 
 
     /**
      * Constructor.
      *
      * @param upperBound The range of the parameter values (0 to upperBound - 1)
-     * @param fractionValue Amount by which values are incremented / decremented
-     * @param slowFractionValue Amount by which values are slowly incremented / decremented
+     * @param stepSize The value for de-/increasing the value by '1' without any scaling
      */
-    public DefaultValueChanger (final int upperBound, final double fractionValue, final double slowFractionValue)
+    public DefaultValueChanger (final int upperBound, final int stepSize)
     {
         this.upperBound = upperBound;
-        this.fractionValue = fractionValue;
-        this.slowFractionValue = slowFractionValue;
+        this.stepSize = stepSize;
+    }
+
+
+    /** {@inheritDoc} */
+    @Override
+    public void setStepSize (final int stepSize)
+    {
+        this.stepSize = stepSize;
+    }
+
+
+    /** {@inheritDoc} */
+    @Override
+    public void setSensitivity (final double sensitivity)
+    {
+        this.sensitivity = sensitivity;
     }
 
 
@@ -53,65 +66,17 @@ public class DefaultValueChanger implements IValueChanger
 
     /** {@inheritDoc} */
     @Override
-    public double getFractionValue ()
+    public double calcKnobChange (final int control)
     {
-        return this.fractionValue;
+        return this.calcKnobChange (control, this.sensitivity);
     }
 
 
     /** {@inheritDoc} */
     @Override
-    public void setFractionValue (final double fractionValue)
+    public double calcKnobChange (final int control, final double sensitivity)
     {
-        this.fractionValue = fractionValue;
-    }
-
-
-    /** {@inheritDoc} */
-    @Override
-    public double getSlowFractionValue ()
-    {
-        return this.slowFractionValue;
-    }
-
-
-    /** {@inheritDoc} */
-    @Override
-    public void setSlowFractionValue (final double slowFractionValue)
-    {
-        this.slowFractionValue = slowFractionValue;
-    }
-
-
-    /** {@inheritDoc} */
-    @Override
-    public void setSpeed (final boolean isSlow)
-    {
-        this.isSlow = isSlow;
-    }
-
-
-    /** {@inheritDoc} */
-    @Override
-    public boolean isSlow ()
-    {
-        return this.isSlow;
-    }
-
-
-    /** {@inheritDoc} */
-    @Override
-    public double calcKnobSpeed (final int control)
-    {
-        return this.calcKnobSpeed (control, this.isSlow ? this.slowFractionValue : this.fractionValue);
-    }
-
-
-    /** {@inheritDoc} */
-    @Override
-    public double calcKnobSpeed (final int control, final double fractionValue)
-    {
-        return (control <= 61 ? control : control - 128) * fractionValue;
+        return this.decode (control) * this.stepSize * rescale (sensitivity);
     }
 
 
@@ -125,26 +90,40 @@ public class DefaultValueChanger implements IValueChanger
 
     /** {@inheritDoc} */
     @Override
+    public int decode (final int control)
+    {
+        return control <= 61 ? control : control - 128;
+    }
+
+
+    /** {@inheritDoc} */
+    @Override
     public int changeValue (final int control, final int value)
     {
-        return this.changeValue (control, value, this.isSlow ? this.slowFractionValue : this.fractionValue, this.upperBound);
+        return this.changeValue (control, value, this.sensitivity, this.upperBound);
     }
 
 
     /** {@inheritDoc} */
     @Override
-    public int changeValue (final int control, final int value, final double fractionValue, final int upperBound)
+    public int changeValue (final int control, final int value, final double sensitivity, final int upperBound)
     {
-        return this.changeValue (control, value, fractionValue, upperBound, 0);
+        return this.changeValue (control, value, sensitivity, upperBound, 0);
     }
 
 
-    /** {@inheritDoc} */
-    @Override
-    public int changeValue (final int control, final int value, final double fractionValue, final int maxParameterValue, final int minParameterValue)
+    private int changeValue (final int control, final int value, final double sensitivity, final int maxParameterValue, final int minParameterValue)
     {
-        final double speed = this.calcKnobSpeed (control, fractionValue);
+        final double speed = this.calcKnobChange (control, sensitivity);
         return (int) Math.max (Math.min (value + speed, maxParameterValue - 1.0), minParameterValue);
+    }
+
+
+    /** {@inheritDoc} */
+    @Override
+    public boolean isIncrease (final int control)
+    {
+        return this.calcKnobChange (control) > 0;
     }
 
 
@@ -187,5 +166,20 @@ public class DefaultValueChanger implements IValueChanger
     public int fromNormalizedValue (final double value)
     {
         return (int) Math.round (value * (this.getUpperBound () - 1));
+    }
+
+
+    /**
+     * Set the sensitivity of the relative knob.
+     *
+     * @param sensitivity The sensitivity in the range [-100..100], 0 is the default, negative
+     *            values are slower, positive faster
+     * @return The sensitivity scaled to the range of [0.1, 10], the default value is 1
+     */
+    public static double rescale (final double sensitivity)
+    {
+        if (sensitivity < 0)
+            return Math.max (0.1, (100.0 + sensitivity) / 100.0);
+        return 1 + sensitivity / 100.0 * 9.0;
     }
 }

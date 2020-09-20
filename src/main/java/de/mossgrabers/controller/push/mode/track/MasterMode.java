@@ -18,8 +18,10 @@ import de.mossgrabers.framework.daw.IModel;
 import de.mossgrabers.framework.daw.IProject;
 import de.mossgrabers.framework.daw.constants.EditCapability;
 import de.mossgrabers.framework.daw.data.IMasterTrack;
+import de.mossgrabers.framework.daw.data.empty.EmptyParameter;
 import de.mossgrabers.framework.daw.resource.ChannelType;
 import de.mossgrabers.framework.mode.AbstractMode;
+import de.mossgrabers.framework.parameterprovider.FixedParameterProvider;
 import de.mossgrabers.framework.utils.ButtonEvent;
 
 
@@ -42,6 +44,10 @@ public class MasterMode extends BaseMode
         super ("Master", surface, model);
 
         this.isTemporary = isTemporary;
+
+        final IMasterTrack masterTrack = this.model.getMasterTrack ();
+        final IProject project = this.model.getProject ();
+        this.setParameters (new FixedParameterProvider (masterTrack.getVolumeParameter (), masterTrack.getPanParameter (), project.getCueVolumeParameter (), project.getCueMixParameter (), EmptyParameter.INSTANCE, EmptyParameter.INSTANCE, EmptyParameter.INSTANCE, EmptyParameter.INSTANCE));
     }
 
 
@@ -62,31 +68,6 @@ public class MasterMode extends BaseMode
         super.onDeactivate ();
 
         this.setActive (false);
-    }
-
-
-    /** {@inheritDoc} */
-    @Override
-    public void onKnobValue (final int index, final int value)
-    {
-        switch (index)
-        {
-            case 0:
-                this.model.getMasterTrack ().changeVolume (value);
-                break;
-            case 1:
-                this.model.getMasterTrack ().changePan (value);
-                break;
-            case 2:
-                this.model.getProject ().changeCueVolume (value);
-                break;
-            case 3:
-                this.model.getProject ().changeCueMix (value);
-                break;
-            default:
-                // Not used
-                break;
-        }
     }
 
 

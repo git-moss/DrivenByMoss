@@ -343,7 +343,10 @@ public abstract class AbstractControllerSetup<S extends IControlSurface<C>, C ex
      */
     protected void createObservers ()
     {
-        // Intentionally empty
+        this.configuration.addSettingObserver (AbstractConfiguration.KNOB_SENSITIVITY_DEFAULT, this::updateRelativeKnobSensitivity);
+        this.configuration.addSettingObserver (AbstractConfiguration.KNOB_SENSITIVITY_SLOW, this::updateRelativeKnobSensitivity);
+
+        this.surfaces.forEach (surface -> surface.addKnobSensitivityObserver (this::updateRelativeKnobSensitivity));
     }
 
 
@@ -1280,5 +1283,20 @@ public abstract class AbstractControllerSetup<S extends IControlSurface<C>, C ex
     {
         final View view = this.getSurface ().getViewManager ().getActiveView ();
         return view == null ? 0 : view.getButtonColor (buttonID);
+    }
+
+
+    /**
+     * Updates the knob sensitivities from the configuration settings.
+     */
+    protected void updateRelativeKnobSensitivity ()
+    {
+        this.surfaces.forEach (surface -> {
+
+            final int knobSensitivity = surface.isKnobSensitivitySlow () ? this.configuration.getKnobSensitivitySlow () : this.configuration.getKnobSensitivityDefault ();
+            this.valueChanger.setSensitivity (knobSensitivity);
+            surface.getRelativeKnobs ().forEach (knob -> knob.setSensitivity (knobSensitivity));
+
+        });
     }
 }

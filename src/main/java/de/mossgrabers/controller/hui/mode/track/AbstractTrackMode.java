@@ -33,7 +33,7 @@ public abstract class AbstractTrackMode extends AbstractMode<HUIControlSurface, 
      */
     public AbstractTrackMode (final String name, final HUIControlSurface surface, final IModel model)
     {
-        super (name, surface, model, false, model.getCurrentTrackBank (), null, 0);
+        super (name, surface, model, false, model.getCurrentTrackBank ());
 
         this.isTemporary = false;
 

@@ -150,7 +150,7 @@ public class ParameterImpl extends AbstractItemImpl implements IParameter
     @Override
     public void changeValue (final int value)
     {
-        this.inc (this.valueChanger.calcKnobSpeed (value));
+        this.inc (this.valueChanger.calcKnobChange (value));
     }
 
 

@@ -13,10 +13,16 @@ import de.mossgrabers.framework.controller.display.ITextDisplay;
 import de.mossgrabers.framework.daw.IGroove;
 import de.mossgrabers.framework.daw.IModel;
 import de.mossgrabers.framework.daw.data.IParameter;
+import de.mossgrabers.framework.daw.data.empty.EmptyParameter;
 import de.mossgrabers.framework.daw.resource.ChannelType;
 import de.mossgrabers.framework.mode.AbstractMode;
 import de.mossgrabers.framework.mode.Modes;
+import de.mossgrabers.framework.parameterprovider.FixedParameterProvider;
 import de.mossgrabers.framework.utils.ButtonEvent;
+
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
 
 
 /**
@@ -48,6 +54,14 @@ public class GrooveMode extends BaseMode
     public GrooveMode (final PushControlSurface surface, final IModel model)
     {
         super ("Groove", surface, model);
+
+        final List<IParameter> params = new ArrayList<> (8);
+        params.add (EmptyParameter.INSTANCE);
+        params.add (EmptyParameter.INSTANCE);
+        Collections.addAll (params, this.model.getGroove ().getParameters ());
+        final IParameter [] parameters = new IParameter [8];
+        params.toArray (parameters);
+        this.setParameters (new FixedParameterProvider (parameters));
     }
 
 
@@ -68,16 +82,6 @@ public class GrooveMode extends BaseMode
         super.onDeactivate ();
 
         this.setActive (false);
-    }
-
-
-    /** {@inheritDoc} */
-    @Override
-    public void onKnobValue (final int index, final int value)
-    {
-        final IParameter [] parameters = this.model.getGroove ().getParameters ();
-        if (index > 1)
-            parameters[index - 2].changeValue (value);
     }
 
 

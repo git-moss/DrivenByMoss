@@ -173,7 +173,7 @@ public class PushControllerSetup extends AbstractControllerSetup<PushControlSurf
 
         this.isPush2 = isPush2;
         this.colorManager = new PushColorManager (isPush2);
-        this.valueChanger = new DefaultValueChanger (1024, 10, 1);
+        this.valueChanger = new DefaultValueChanger (1024, 10);
         this.configuration = new PushConfiguration (host, this.valueChanger, factory.getArpeggiatorModes (), isPush2);
     }
 
@@ -259,15 +259,8 @@ public class PushControllerSetup extends AbstractControllerSetup<PushControlSurf
         modeManager.registerMode (Modes.PAN, new PanMode (surface, this.model));
         modeManager.registerMode (Modes.CROSSFADER, new CrossfaderMode (surface, this.model));
 
-        final SendMode modeSend = new SendMode (surface, this.model);
-        modeManager.registerMode (Modes.SEND1, modeSend);
-        modeManager.registerMode (Modes.SEND2, modeSend);
-        modeManager.registerMode (Modes.SEND3, modeSend);
-        modeManager.registerMode (Modes.SEND4, modeSend);
-        modeManager.registerMode (Modes.SEND5, modeSend);
-        modeManager.registerMode (Modes.SEND6, modeSend);
-        modeManager.registerMode (Modes.SEND7, modeSend);
-        modeManager.registerMode (Modes.SEND8, modeSend);
+        for (int i = 0; i < 8; i++)
+            modeManager.registerMode (Modes.get (Modes.SEND1, i), new SendMode (surface, this.model, i));
 
         modeManager.registerMode (Modes.MASTER, new MasterMode (surface, this.model, false));
         modeManager.registerMode (Modes.MASTER_TEMP, new MasterMode (surface, this.model, true));
@@ -277,15 +270,10 @@ public class PushControllerSetup extends AbstractControllerSetup<PushControlSurf
         modeManager.registerMode (Modes.DEVICE_LAYER, new DeviceLayerMode ("Layer", surface, this.model));
         modeManager.registerMode (Modes.DEVICE_LAYER_VOLUME, new DeviceLayerModeVolume (surface, this.model));
         modeManager.registerMode (Modes.DEVICE_LAYER_PAN, new DeviceLayerModePan (surface, this.model));
-        final DeviceLayerModeSend modeLayerSend = new DeviceLayerModeSend (surface, this.model);
-        modeManager.registerMode (Modes.DEVICE_LAYER_SEND1, modeLayerSend);
-        modeManager.registerMode (Modes.DEVICE_LAYER_SEND2, modeLayerSend);
-        modeManager.registerMode (Modes.DEVICE_LAYER_SEND3, modeLayerSend);
-        modeManager.registerMode (Modes.DEVICE_LAYER_SEND4, modeLayerSend);
-        modeManager.registerMode (Modes.DEVICE_LAYER_SEND5, modeLayerSend);
-        modeManager.registerMode (Modes.DEVICE_LAYER_SEND6, modeLayerSend);
-        modeManager.registerMode (Modes.DEVICE_LAYER_SEND7, modeLayerSend);
-        modeManager.registerMode (Modes.DEVICE_LAYER_SEND8, modeLayerSend);
+
+        for (int i = 0; i < 8; i++)
+            modeManager.registerMode (Modes.get (Modes.DEVICE_LAYER_SEND1, i), new DeviceLayerModeSend (surface, this.model, i));
+
         modeManager.registerMode (Modes.DEVICE_LAYER_DETAILS, new LayerDetailsMode (surface, this.model));
         modeManager.registerMode (Modes.BROWSER, new DeviceBrowserMode (surface, this.model));
 
@@ -329,6 +317,8 @@ public class PushControllerSetup extends AbstractControllerSetup<PushControlSurf
     {
         ////////////////////////////////////////////////////////////////////
         // Configuration observers
+
+        super.createObservers ();
 
         final PushControlSurface surface = this.getSurface ();
         if (this.configuration.isPush2 ())
@@ -392,9 +382,6 @@ public class PushControllerSetup extends AbstractControllerSetup<PushControlSurf
 
         this.configuration.registerDeactivatedItemsHandler (this.model);
 
-        this.configuration.addSettingObserver (AbstractConfiguration.KNOB_SPEED_NORMAL, this::updateKnobSpeeds);
-        this.configuration.addSettingObserver (AbstractConfiguration.KNOB_SPEED_SLOW, this::updateKnobSpeeds);
-
         if (this.isPush2)
         {
             this.configuration.addSettingObserver (PushConfiguration.COLOR_BACKGROUND, this::redraw);
@@ -431,13 +418,6 @@ public class PushControllerSetup extends AbstractControllerSetup<PushControlSurf
         final Mode mode = this.getSurface ().getModeManager ().getActiveOrTempMode ();
         if (mode != null)
             mode.updateDisplay ();
-    }
-
-
-    private void updateKnobSpeeds ()
-    {
-        this.valueChanger.setFractionValue (this.configuration.getKnobSpeedNormal ());
-        this.valueChanger.setSlowFractionValue (this.configuration.getKnobSpeedSlow ());
     }
 
 
@@ -890,8 +870,6 @@ public class PushControllerSetup extends AbstractControllerSetup<PushControlSurf
     @Override
     public void startup ()
     {
-        this.updateKnobSpeeds ();
-
         final PushControlSurface surface = this.getSurface ();
         surface.getViewManager ().setActiveView (this.configuration.getDefaultNoteView ());
 

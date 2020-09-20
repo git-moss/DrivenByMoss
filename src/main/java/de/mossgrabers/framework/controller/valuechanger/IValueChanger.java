@@ -12,7 +12,7 @@ package de.mossgrabers.framework.controller.valuechanger;
 public interface IValueChanger
 {
     /**
-     * Get the limit for the maximum value for parameters. The value is in the range of 0 to
+     * Get the limit for the upper bound (maximum) for parameters. The value is in the range of 0 to
      * upperbound-1.
      *
      * @return The upper bound value
@@ -29,75 +29,55 @@ public interface IValueChanger
 
 
     /**
-     * Get the value for de-/incrementing values.
+     * The value for de-/increasing the value by '1' without any scaling.
      *
-     * @return The value
+     * @param stepSize The satep size
      */
-    double getFractionValue ();
+    void setStepSize (int stepSize);
 
 
     /**
-     * Set the fraction value for relative change.
+     * Set the sensitivity of the relative knob.
      *
-     * @param fractionValue The fraction value
+     * @param sensitivity The sensitivity in the range [-100..100], 0 is the default, negative
+     *            values are slower, positive faster
      */
-    void setFractionValue (double fractionValue);
+    void setSensitivity (double sensitivity);
 
 
     /**
-     * Get the value for de-/incrementing values slowly.
+     * Calculate the amount by which to change a value from the control value, depending on the step
+     * size and the sensitivity.
      *
-     * @return The value
+     * @param control The control value, depending on the specific encoding
+     * @return The amount to change the value
      */
-    double getSlowFractionValue ();
+    double calcKnobChange (int control);
 
 
     /**
-     * Set the slow fraction value for relative change.
+     * Calculate the amount by which to change a value from the control value, depending on the step
+     * size and the given sensitivity.
      *
-     * @param slowFractionValue The slow fraction value
+     * @param control The control value, depending on the specific encoding
+     * @param sensitivity The sensitivity in the range [-100..100], 0 is the default, negative
+     *            values are slower, positive faster
+     * @return The amount to change the value
      */
-    void setSlowFractionValue (double slowFractionValue);
+    double calcKnobChange (int control, double sensitivity);
 
 
     /**
-     * Sets the speed of the value changes.
+     * Returns true if the change is positive (increase).
      *
-     * @param isSlow If true the slowFractionValue is used, otherwise the fractionValue
+     * @param control The control value, depending on the specific encoding
+     * @return True if the change is positive
      */
-    void setSpeed (boolean isSlow);
+    boolean isIncrease (int control);
 
 
     /**
-     * Returns true if slow speed is enabled.
-     *
-     * @return True if slow speed is enabled.
-     */
-    boolean isSlow ();
-
-
-    /**
-     * Calculate the amount by which to change a value from the control speed, depending on the slow
-     * setting.
-     *
-     * @param control The control speed, depending on the specific hardware controller
-     * @return The speed
-     */
-    double calcKnobSpeed (int control);
-
-
-    /**
-     * Calculate the amount by which to change a value from the control speed.
-     *
-     * @param control The control speed, depending on the specific hardware controller
-     * @param fractionValue The value for de-/incrementing values
-     * @return The speed
-     */
-    double calcKnobSpeed (int control, double fractionValue);
-
-
-    /**
-     * Encode the speed with this encoding.
+     * Encode the control value with this encoding.
      *
      * @param speed The value to encode (-63 to 63)
      * @return The encoded value (0-127)
@@ -106,10 +86,19 @@ public interface IValueChanger
 
 
     /**
-     * Change a value by the amount of the control speed. Uses the default fraction values
-     * (depending on the slow setting) and upper bound. The lower bound is 0.
+     * Encode the control value with this encoding.
      *
-     * @param control The control speed, depending on the specific hardware controller
+     * @param control The encoded value (0-127)
+     * @return The decoded value (-63 to 63)
+     */
+    int decode (int control);
+
+
+    /**
+     * Change a value by the amount of the control value, step size and sensitivity. The result is
+     * in the range of 0 and upperBound - 1.
+     *
+     * @param control The control value, depending on the specific encoding
      * @param value The current value
      * @return The new value
      */
@@ -117,28 +106,17 @@ public interface IValueChanger
 
 
     /**
-     * Change a value by the amount of the control speed. The lower bound is 0.
+     * Change a value by the amount of the control value, step size and given sensitivity. The
+     * result is in the range of 0 and upperBound - 1.
      *
      * @param control The control speed, depending on the specific hardware controller
      * @param value The current value
-     * @param fractionValue The value for de-/incrementing values
+     * @param sensitivity The sensitivity in the range [-100..100], 0 is the default, negative
+     *            values are slower, positive faster
      * @param upperBound The maximum value for parameters plus 1
      * @return The new value
      */
-    int changeValue (int control, int value, double fractionValue, int upperBound);
-
-
-    /**
-     * Change an integer value by the amount of the control speed.
-     *
-     * @param control The control speed, depending on the specific hardware controller
-     * @param value The current value
-     * @param fractionValue The value for de-/incrementing values
-     * @param upperBound The maximum value for parameters plus 1
-     * @param lowerBound A lower bound for the value
-     * @return The new value
-     */
-    int changeValue (int control, int value, double fractionValue, int upperBound, int lowerBound);
+    int changeValue (int control, int value, double sensitivity, int upperBound);
 
 
     /**

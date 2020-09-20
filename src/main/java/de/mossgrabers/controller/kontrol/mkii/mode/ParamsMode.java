@@ -31,7 +31,7 @@ public class ParamsMode extends ParameterMode<KontrolProtocolControlSurface, Kon
      */
     public ParamsMode (final KontrolProtocolControlSurface surface, final IModel model)
     {
-        super (surface, model, false);
+        super (surface, model, false, DEFAULT_KNOB_IDS);
     }
 
 

@@ -70,7 +70,7 @@ public class TrackEditing
                 break;
 
             case 5:
-                this.model.getTransport ().changeTempo (isTurnedRight);
+                this.model.getTransport ().changeTempo (isTurnedRight, this.surface.isShiftPressed ());
                 break;
 
             case 6:

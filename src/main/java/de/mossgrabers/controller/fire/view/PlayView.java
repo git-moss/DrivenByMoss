@@ -213,7 +213,7 @@ public class PlayView extends AbstractPlayView<FireControlSurface, FireConfigura
     @Override
     public void onSelectKnobValue (final int value)
     {
-        if (this.model.getValueChanger ().calcKnobSpeed (value) > 0)
+        if (this.model.getValueChanger ().isIncrease (value))
             this.scales.incOctave ();
         else
             this.scales.decOctave ();

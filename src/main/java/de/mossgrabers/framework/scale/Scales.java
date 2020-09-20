@@ -209,7 +209,7 @@ public class Scales
     public void changeScale (final int control)
     {
         final Scale [] values = Scale.values ();
-        final int index = this.valueChanger.changeValue (control, this.selectedScale.ordinal (), 1, values.length);
+        final int index = this.valueChanger.changeValue (control, this.selectedScale.ordinal (), -100, values.length);
         this.selectedScale = values[index];
     }
 
@@ -325,7 +325,7 @@ public class Scales
      */
     public void changeScaleOffset (final int control)
     {
-        this.scaleOffset = this.valueChanger.changeValue (control, this.scaleOffset, 1, Scales.OFFSETS.length);
+        this.scaleOffset = this.valueChanger.changeValue (control, this.scaleOffset, -100, Scales.OFFSETS.length);
     }
 
 

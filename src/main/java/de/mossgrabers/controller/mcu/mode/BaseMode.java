@@ -54,7 +54,7 @@ public abstract class BaseMode extends AbstractMode<MCUControlSurface, MCUConfig
      */
     public BaseMode (final String name, final MCUControlSurface surface, final IModel model, final IBank<? extends IItem> bank)
     {
-        super (name, surface, model, true, bank, null, 8);
+        super (name, surface, model, true, bank, DEFAULT_KNOB_IDS);
 
         this.isTemporary = false;
 

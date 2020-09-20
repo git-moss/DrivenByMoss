@@ -18,7 +18,6 @@ import de.mossgrabers.controller.apcmini.view.SessionView;
 import de.mossgrabers.controller.apcmini.view.ShiftView;
 import de.mossgrabers.controller.apcmini.view.TrackButtons;
 import de.mossgrabers.framework.command.continuous.KnobRowModeCommand;
-import de.mossgrabers.framework.command.continuous.MasterFaderAbsoluteCommand;
 import de.mossgrabers.framework.command.trigger.view.ToggleShiftViewCommand;
 import de.mossgrabers.framework.command.trigger.view.ViewButtonCommand;
 import de.mossgrabers.framework.configuration.ISettingsUI;
@@ -48,6 +47,7 @@ import de.mossgrabers.framework.view.ViewManager;
 import de.mossgrabers.framework.view.Views;
 
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 
@@ -58,6 +58,8 @@ import java.util.Map;
  */
 public class APCminiControllerSetup extends AbstractControllerSetup<APCminiControlSurface, APCminiConfiguration>
 {
+    private static final List<ContinuousID> FADER_IDS        = ContinuousID.createSequentialList (ContinuousID.FADER1, 8);
+
     private static final String []          ROW_NAMES        =
     {
         "Track 1\nUp",
@@ -112,7 +114,7 @@ public class APCminiControllerSetup extends AbstractControllerSetup<APCminiContr
         super (factory, host, globalSettings, documentSettings);
 
         this.colorManager = new APCminiColorManager ();
-        this.valueChanger = new DefaultValueChanger (128, 1, 0.5);
+        this.valueChanger = new DefaultValueChanger (128, 1);
         this.configuration = new APCminiConfiguration (host, this.valueChanger, factory.getArpeggiatorModes ());
     }
 
@@ -154,11 +156,11 @@ public class APCminiControllerSetup extends AbstractControllerSetup<APCminiContr
     {
         final APCminiControlSurface surface = this.getSurface ();
         final ModeManager modeManager = surface.getModeManager ();
-        modeManager.registerMode (Modes.VOLUME, new VolumeMode<> (surface, this.model, true));
-        modeManager.registerMode (Modes.PAN, new PanMode<> (surface, this.model, true));
+        modeManager.registerMode (Modes.VOLUME, new VolumeMode<> (surface, this.model, true, FADER_IDS));
+        modeManager.registerMode (Modes.PAN, new PanMode<> (surface, this.model, true, FADER_IDS));
         for (int i = 0; i < 8; i++)
-            modeManager.registerMode (Modes.get (Modes.SEND1, i), new SendMode<> (i, surface, this.model, true));
-        modeManager.registerMode (Modes.DEVICE_PARAMS, new ParameterMode<> (surface, this.model, true));
+            modeManager.registerMode (Modes.get (Modes.SEND1, i), new SendMode<> (i, surface, this.model, true, FADER_IDS));
+        modeManager.registerMode (Modes.DEVICE_PARAMS, new ParameterMode<> (surface, this.model, true, FADER_IDS));
 
         modeManager.setDefaultMode (Modes.VOLUME);
     }
@@ -187,6 +189,8 @@ public class APCminiControllerSetup extends AbstractControllerSetup<APCminiContr
     @Override
     protected void createObservers ()
     {
+        super.createObservers ();
+
         final APCminiControlSurface surface = this.getSurface ();
         surface.getViewManager ().addViewChangeListener ( (previousViewId, activeViewId) -> this.updateMode (null));
         surface.getModeManager ().addModeListener ( (previousModeId, activeModeId) -> this.updateMode (activeModeId));
@@ -256,7 +260,10 @@ public class APCminiControllerSetup extends AbstractControllerSetup<APCminiContr
     protected void registerContinuousCommands ()
     {
         final APCminiControlSurface surface = this.getSurface ();
-        this.addFader (ContinuousID.FADER_MASTER, "Master", new MasterFaderAbsoluteCommand<> (this.model, surface), BindType.CC, APCminiControlSurface.APC_KNOB_MASTER_LEVEL);
+
+        this.addFader (ContinuousID.FADER_MASTER, "Master", null, BindType.CC, APCminiControlSurface.APC_KNOB_MASTER_LEVEL);
+        surface.getContinuous (ContinuousID.FADER_MASTER).bind (this.model.getMasterTrack ().getVolumeParameter ());
+
         for (int i = 0; i < 8; i++)
             this.addFader (ContinuousID.get (ContinuousID.FADER1, i), "Fader " + (i + 1), new KnobRowModeCommand<> (i, this.model, surface), BindType.CC, APCminiControlSurface.APC_KNOB_TRACK_LEVEL1 + i);
     }

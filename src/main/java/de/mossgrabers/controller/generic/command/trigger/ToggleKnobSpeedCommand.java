@@ -4,7 +4,6 @@
 
 package de.mossgrabers.controller.generic.command.trigger;
 
-import de.mossgrabers.controller.generic.controller.GenericFlexiControlSurface;
 import de.mossgrabers.framework.command.core.AbstractTriggerCommand;
 import de.mossgrabers.framework.configuration.Configuration;
 import de.mossgrabers.framework.controller.IControlSurface;
@@ -39,6 +38,6 @@ public class ToggleKnobSpeedCommand<S extends IControlSurface<C>, C extends Conf
     public void execute (final ButtonEvent event, final int velocity)
     {
         if (event != ButtonEvent.LONG)
-            ((GenericFlexiControlSurface) this.surface).setKnobSpeed (this.surface.isShiftPressed ());
+            this.surface.setKnobSensitivityIsSlow (this.surface.isShiftPressed ());
     }
 }

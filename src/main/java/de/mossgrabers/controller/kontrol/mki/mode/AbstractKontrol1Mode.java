@@ -46,7 +46,7 @@ public abstract class AbstractKontrol1Mode extends AbstractMode<Kontrol1ControlS
      */
     public AbstractKontrol1Mode (final String name, final Kontrol1ControlSurface surface, final IModel model, final IBank<? extends IItem> bank)
     {
-        super (name, surface, model, false, bank, null, 0);
+        super (name, surface, model, false, bank, DEFAULT_KNOB_IDS);
 
         this.isTemporary = false;
     }
@@ -76,7 +76,7 @@ public abstract class AbstractKontrol1Mode extends AbstractMode<Kontrol1ControlS
     @Override
     public void onMainKnob (final int value)
     {
-        if (this.model.getValueChanger ().calcKnobSpeed (value) > 0)
+        if (this.model.getValueChanger ().isIncrease (value))
             this.selectNextItem ();
         else
             this.selectPreviousItem ();

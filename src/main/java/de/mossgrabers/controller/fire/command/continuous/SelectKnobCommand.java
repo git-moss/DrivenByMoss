@@ -73,7 +73,7 @@ public class SelectKnobCommand extends AbstractContinuousCommand<FireControlSurf
         // Bank scrolling with ALT button is always active
         if (this.surface.isPressed (ButtonID.ALT))
         {
-            final boolean isInc = this.model.getValueChanger ().calcKnobSpeed (value) > 0;
+            final boolean isInc = this.model.getValueChanger ().isIncrease (value);
             if (modeManager.isActiveOrTempMode (Modes.TRACK, Modes.DEVICE_LAYER))
                 handleTrackSelection (this.surface, this.model.getTrackBank (), isInc);
             else if (modeManager.isActiveOrTempMode (Modes.DEVICE_PARAMS))
@@ -91,7 +91,7 @@ public class SelectKnobCommand extends AbstractContinuousCommand<FireControlSurf
             double amount = this.surface.isPressed (ButtonID.SELECT) ? 10 : 1;
             if (this.surface.isPressed (ButtonID.SHIFT))
                 amount /= 100.0;
-            if (this.model.getValueChanger ().calcKnobSpeed (value) < 0)
+            if (this.model.getValueChanger ().calcKnobChange (value) < 0)
                 amount *= -1;
             transport.setTempo (transport.getTempo () + amount);
             this.mvHelper.delayDisplay ( () -> String.format ("Tempo: %.02f", Double.valueOf (transport.getTempo ())));

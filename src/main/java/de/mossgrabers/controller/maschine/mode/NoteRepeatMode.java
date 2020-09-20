@@ -60,7 +60,7 @@ public class NoteRepeatMode extends BaseMode
         {
             case 0:
             case 1:
-                final int sel = Resolution.change (Resolution.getMatch (configuration.getNoteRepeatPeriod ().getValue ()), valueChanger.calcKnobSpeed (value) > 0);
+                final int sel = Resolution.change (Resolution.getMatch (configuration.getNoteRepeatPeriod ().getValue ()), valueChanger.isIncrease (value));
                 configuration.setNoteRepeatPeriod (Resolution.values ()[sel]);
                 break;
 
@@ -68,7 +68,7 @@ public class NoteRepeatMode extends BaseMode
             case 3:
                 if (this.host.canEdit (EditCapability.NOTE_REPEAT_LENGTH))
                 {
-                    final int sel2 = Resolution.change (Resolution.getMatch (configuration.getNoteRepeatLength ().getValue ()), valueChanger.calcKnobSpeed (value) > 0);
+                    final int sel2 = Resolution.change (Resolution.getMatch (configuration.getNoteRepeatLength ().getValue ()), valueChanger.calcKnobChange (value) > 0);
                     configuration.setNoteRepeatLength (Resolution.values ()[sel2]);
                 }
                 break;
@@ -79,7 +79,7 @@ public class NoteRepeatMode extends BaseMode
                 {
                     final ArpeggiatorMode arpMode = configuration.getNoteRepeatMode ();
                     final int modeIndex = configuration.lookupArpeggiatorModeIndex (arpMode);
-                    final boolean increase = valueChanger.calcKnobSpeed (value) > 0;
+                    final boolean increase = valueChanger.calcKnobChange (value) > 0;
                     final ArpeggiatorMode [] modes = configuration.getArpeggiatorModes ();
                     final int newIndex = Math.max (0, Math.min (modes.length - 1, modeIndex + (increase ? 1 : -1)));
                     configuration.setNoteRepeatMode (modes[newIndex]);
@@ -89,7 +89,7 @@ public class NoteRepeatMode extends BaseMode
             case 6:
             case 7:
                 if (this.host.canEdit (EditCapability.NOTE_REPEAT_OCTAVES))
-                    configuration.setNoteRepeatOctave (configuration.getNoteRepeatOctave () + (valueChanger.calcKnobSpeed (value) > 0 ? 1 : -1));
+                    configuration.setNoteRepeatOctave (configuration.getNoteRepeatOctave () + (valueChanger.calcKnobChange (value) > 0 ? 1 : -1));
                 break;
 
             default:

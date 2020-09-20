@@ -30,7 +30,7 @@ public class FireUserMode extends UserMode<FireControlSurface, FireConfiguration
      */
     public FireUserMode (final FireControlSurface surface, final IModel model)
     {
-        super (surface, model, false, ContinuousID.KNOB1, 4);
+        super (surface, model, false, ContinuousID.createSequentialList (ContinuousID.KNOB1, 4));
     }
 
 

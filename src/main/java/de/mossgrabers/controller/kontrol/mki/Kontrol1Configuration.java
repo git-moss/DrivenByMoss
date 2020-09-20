@@ -66,6 +66,7 @@ public class Kontrol1Configuration extends AbstractConfiguration
 
         this.activateExcludeDeactivatedItemsSetting (globalSettings);
         this.activateEnableVUMetersSetting (globalSettings);
+        this.activateKnobSpeedSetting (globalSettings);
     }
 
 

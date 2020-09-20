@@ -44,7 +44,7 @@ public class AutoColorSetup extends AbstractControllerSetup<IControlSurface<Auto
         super (factory, host, globalSettings, documentSettings);
 
         this.colorManager = new ColorManager ();
-        this.valueChanger = new DefaultValueChanger (128, 1, 0.5);
+        this.valueChanger = new DefaultValueChanger (128, 1);
         this.configuration = new AutoColorConfiguration (host, this.valueChanger);
         this.autoColor = new AutoColor (this.configuration);
     }
@@ -100,6 +100,8 @@ public class AutoColorSetup extends AbstractControllerSetup<IControlSurface<Auto
     @Override
     protected void createObservers ()
     {
+        super.createObservers ();
+
         // Update track colors if Auto Color is enabled in the settings
         this.configuration.addSettingObserver (AutoColorConfiguration.ENABLE_AUTO_COLOR, () -> {
             if (!this.configuration.isEnableAutoColor ())

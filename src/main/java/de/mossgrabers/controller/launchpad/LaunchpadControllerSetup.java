@@ -146,7 +146,7 @@ public class LaunchpadControllerSetup extends AbstractControllerSetup<LaunchpadC
 
         this.definition = definition;
         this.colorManager = new LaunchpadColorManager ();
-        this.valueChanger = new DefaultValueChanger (128, 1, 0.5);
+        this.valueChanger = new DefaultValueChanger (128, 1);
         this.configuration = new LaunchpadConfiguration (host, this.valueChanger, factory.getArpeggiatorModes (), definition);
     }
 
@@ -241,6 +241,8 @@ public class LaunchpadControllerSetup extends AbstractControllerSetup<LaunchpadC
     @Override
     protected void createObservers ()
     {
+        super.createObservers ();
+
         final LaunchpadControlSurface surface = this.getSurface ();
 
         surface.getViewManager ().addViewChangeListener ( (previousViewId, activeViewId) -> {

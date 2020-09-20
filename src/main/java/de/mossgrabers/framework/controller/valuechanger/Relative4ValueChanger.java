@@ -15,20 +15,19 @@ public class Relative4ValueChanger extends DefaultValueChanger
      * Constructor.
      *
      * @param upperBound The range of the parameter values (0 to upperBound - 1)
-     * @param fractionValue Amount by which values are incremented / decremented
-     * @param slowFractionValue Amount by which values are slowly incremented / decremented
+     * @param stepSize The value for de-/increasing the value by '1' without any scaling
      */
-    public Relative4ValueChanger (final int upperBound, final int fractionValue, final double slowFractionValue)
+    public Relative4ValueChanger (final int upperBound, final int stepSize)
     {
-        super (upperBound, fractionValue, slowFractionValue);
+        super (upperBound, stepSize);
     }
 
 
     /** {@inheritDoc} */
     @Override
-    public double calcKnobSpeed (final int control, final double fractionValue)
+    public int decode (final int control)
     {
-        return (control > 0x40 ? control - 0x40 : -control) * fractionValue;
+        return control > 0x40 ? control - 0x40 : -control;
     }
 
 

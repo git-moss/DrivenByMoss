@@ -42,6 +42,6 @@ public class PlayPositionCommand<S extends IControlSurface<C>, C extends Configu
     @Override
     public void execute (final int value)
     {
-        this.transport.changePosition (this.model.getValueChanger ().calcKnobSpeed (value) > 0);
+        this.transport.changePosition (this.model.getValueChanger ().isIncrease (value), this.surface.isKnobSensitivitySlow ());
     }
 }

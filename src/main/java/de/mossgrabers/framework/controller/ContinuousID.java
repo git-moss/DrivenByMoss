@@ -4,6 +4,10 @@
 
 package de.mossgrabers.framework.controller;
 
+import java.util.ArrayList;
+import java.util.List;
+
+
 /**
  * IDs for common continuous controls.
  *
@@ -136,5 +140,21 @@ public enum ContinuousID
     public static ContinuousID get (final ContinuousID cid, final int offset)
     {
         return ContinuousID.values ()[cid.ordinal () + offset];
+    }
+
+
+    /**
+     * Creates a list of ContinuousIDs which are increasing sequentially.
+     *
+     * @param firstID The ID to start with
+     * @param size The number of IDs to iterate
+     * @return The list of size IDs starting with the firstID
+     */
+    public static List<ContinuousID> createSequentialList (final ContinuousID firstID, final int size)
+    {
+        final List<ContinuousID> ids = new ArrayList<> ();
+        for (int i = 0; i < size; i++)
+            ids.add (get (firstID, i));
+        return ids;
     }
 }

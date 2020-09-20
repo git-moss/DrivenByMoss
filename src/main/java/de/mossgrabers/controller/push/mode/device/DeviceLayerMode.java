@@ -19,15 +19,18 @@ import de.mossgrabers.framework.daw.IModel;
 import de.mossgrabers.framework.daw.data.IChannel;
 import de.mossgrabers.framework.daw.data.ICursorDevice;
 import de.mossgrabers.framework.daw.data.ILayer;
+import de.mossgrabers.framework.daw.data.IParameter;
 import de.mossgrabers.framework.daw.data.ISend;
 import de.mossgrabers.framework.daw.data.ITrack;
 import de.mossgrabers.framework.daw.data.bank.IChannelBank;
 import de.mossgrabers.framework.daw.data.bank.ISendBank;
 import de.mossgrabers.framework.daw.data.bank.ITrackBank;
+import de.mossgrabers.framework.daw.data.empty.EmptyParameter;
 import de.mossgrabers.framework.daw.resource.ChannelType;
 import de.mossgrabers.framework.graphics.canvas.utils.SendData;
 import de.mossgrabers.framework.mode.ModeManager;
 import de.mossgrabers.framework.mode.Modes;
+import de.mossgrabers.framework.parameterprovider.IParameterProvider;
 import de.mossgrabers.framework.utils.ButtonEvent;
 import de.mossgrabers.framework.utils.Pair;
 import de.mossgrabers.framework.utils.StringUtils;
@@ -41,7 +44,7 @@ import java.util.List;
  *
  * @author J&uuml;rgen Mo&szlig;graber
  */
-public class DeviceLayerMode extends BaseMode
+public class DeviceLayerMode extends BaseMode implements IParameterProvider
 {
     protected final List<Pair<String, Boolean>> menu = new ArrayList<> ();
 
@@ -59,6 +62,8 @@ public class DeviceLayerMode extends BaseMode
 
         this.isTemporary = false;
 
+        this.setParameters (this);
+
         for (int i = 0; i < 8; i++)
             this.menu.add (new Pair<> (" ", Boolean.FALSE));
 
@@ -68,26 +73,35 @@ public class DeviceLayerMode extends BaseMode
 
     /** {@inheritDoc} */
     @Override
-    public void onKnobValue (final int index, final int value)
+    public int size ()
+    {
+        return 8;
+    }
+
+
+    /** {@inheritDoc} */
+    @Override
+    public IParameter get (final int index)
     {
         final ICursorDevice cd = this.model.getCursorDevice ();
         final IChannel channel = cd.getLayerOrDrumPadBank ().getSelectedItem ();
         if (channel == null)
-            return;
+            return EmptyParameter.INSTANCE;
+
         switch (index)
         {
             case 0:
-                channel.changeVolume (value);
-                break;
+                return channel.getVolumeParameter ();
+
             case 1:
-                channel.changePan (value);
-                break;
+                return channel.getPanParameter ();
+
             default:
                 if (this.isPush2 && index < 4)
-                    break;
+                    return EmptyParameter.INSTANCE;
+
                 final int sendIndex = index - (this.isPush2 ? this.surface.getConfiguration ().isSendsAreToggled () ? 0 : 4 : 2);
-                channel.getSendBank ().getItem (sendIndex).changeValue (value);
-                break;
+                return channel.getSendBank ().getItem (sendIndex);
         }
     }
 
@@ -262,6 +276,7 @@ public class DeviceLayerMode extends BaseMode
                         return;
                 }
                 config.setSendsAreToggled (!config.isSendsAreToggled ());
+                this.bindControls ();
 
                 if (!modeManager.isActiveOrTempMode (Modes.DEVICE_LAYER))
                     this.setMode (Modes.get (Modes.DEVICE_LAYER_SEND1, config.isSendsAreToggled () ? 4 : 0));

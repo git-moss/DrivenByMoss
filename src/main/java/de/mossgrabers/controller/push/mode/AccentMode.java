@@ -40,7 +40,7 @@ public class AccentMode extends BaseMode
         final IValueChanger valueChanger = this.model.getValueChanger ();
         final PushConfiguration config = this.surface.getConfiguration ();
         final int fixedAccentValue = config.getFixedAccentValue ();
-        config.setFixedAccentValue (Math.max (1, valueChanger.changeValue (value, fixedAccentValue, 1, 128)));
+        config.setFixedAccentValue (Math.max (1, valueChanger.changeValue (value, fixedAccentValue, -100, 128)));
     }
 
 

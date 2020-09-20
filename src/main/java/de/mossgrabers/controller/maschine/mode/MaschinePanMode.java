@@ -13,6 +13,8 @@ import de.mossgrabers.framework.daw.data.bank.ITrackBank;
 import de.mossgrabers.framework.mode.track.PanMode;
 import de.mossgrabers.framework.utils.StringUtils;
 
+import java.util.Arrays;
+
 
 /**
  * Mode for editing a pan parameter of all tracks.
@@ -29,7 +31,10 @@ public class MaschinePanMode extends PanMode<MaschineControlSurface, MaschineCon
      */
     public MaschinePanMode (final MaschineControlSurface surface, final IModel model)
     {
-        super (surface, model, false, null, 9);
+        super (surface, model, false);
+
+        this.isKnobTouched = new boolean [9];
+        Arrays.fill (this.isKnobTouched, false);
     }
 
 

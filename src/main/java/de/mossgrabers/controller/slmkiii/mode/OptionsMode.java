@@ -50,7 +50,7 @@ public class OptionsMode extends BaseMode
                 this.model.getMasterTrack ().changePan (value);
                 break;
             case 4:
-                this.model.getTransport ().changeTempo (this.model.getValueChanger ().calcKnobSpeed (value) > 0);
+                this.model.getTransport ().changeTempo (this.model.getValueChanger ().isIncrease (value), this.surface.isKnobSensitivitySlow ());
                 break;
             case 5:
                 this.model.getTransport ().changeMetronomeVolume (value);

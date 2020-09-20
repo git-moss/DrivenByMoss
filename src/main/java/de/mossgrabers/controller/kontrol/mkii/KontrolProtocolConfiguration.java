@@ -123,7 +123,7 @@ public class KontrolProtocolConfiguration extends AbstractConfiguration
 
         this.activateExcludeDeactivatedItemsSetting (globalSettings);
         this.activateNewClipLengthSetting (globalSettings);
-        this.activateKnobSpeedSetting (globalSettings, 4);
+        this.activateKnobSpeedSetting (globalSettings);
     }
 
 

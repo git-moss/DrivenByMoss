@@ -185,7 +185,7 @@ public class MixView extends AbstractView<FireControlSurface, FireConfiguration>
     @Override
     public void onSelectKnobValue (final int value)
     {
-        final boolean isInc = this.model.getValueChanger ().calcKnobSpeed (value) > 0;
+        final boolean isInc = this.model.getValueChanger ().isIncrease (value);
         SelectKnobCommand.handleTrackSelection (this.surface, this.model.getTrackBank (), isInc);
     }
 }

@@ -9,7 +9,6 @@ import de.mossgrabers.controller.slmkiii.controller.SLMkIIIColorManager;
 import de.mossgrabers.controller.slmkiii.controller.SLMkIIIControlSurface;
 import de.mossgrabers.controller.slmkiii.controller.SLMkIIIDisplay;
 import de.mossgrabers.framework.controller.ButtonID;
-import de.mossgrabers.framework.controller.ContinuousID;
 import de.mossgrabers.framework.daw.IModel;
 import de.mossgrabers.framework.daw.data.IItem;
 import de.mossgrabers.framework.daw.data.bank.IBank;
@@ -38,7 +37,7 @@ public abstract class BaseMode extends AbstractMode<SLMkIIIControlSurface, SLMkI
      */
     public BaseMode (final String name, final SLMkIIIControlSurface surface, final IModel model)
     {
-        super (name, surface, model, true, null, null, 0);
+        super (name, surface, model, true);
     }
 
 
@@ -49,12 +48,10 @@ public abstract class BaseMode extends AbstractMode<SLMkIIIControlSurface, SLMkI
      * @param surface The control surface
      * @param model The model
      * @param bank The parameter bank to control with this mode, might be null
-     * @param firstKnob The ID of the first knob to control this mode, all other knobs must be
-     *            follow up IDs
      */
-    public BaseMode (final String name, final SLMkIIIControlSurface surface, final IModel model, final IBank<? extends IItem> bank, final ContinuousID firstKnob)
+    public BaseMode (final String name, final SLMkIIIControlSurface surface, final IModel model, final IBank<? extends IItem> bank)
     {
-        super (name, surface, model, false, bank, firstKnob, 8);
+        super (name, surface, model, false, bank, DEFAULT_KNOB_IDS);
     }
 
 

@@ -4,6 +4,7 @@
 
 package de.mossgrabers.framework.daw;
 
+import de.mossgrabers.framework.daw.data.IParameter;
 import de.mossgrabers.framework.observer.ObserverManagement;
 
 
@@ -45,6 +46,14 @@ public interface IProject extends ObserverManagement
      * Save the current project.
      */
     void save ();
+
+
+    /**
+     * Get the cue mix parameter.
+     *
+     * @return The cue mix parameter
+     */
+    IParameter getCueMixParameter ();
 
 
     /**
@@ -100,6 +109,14 @@ public interface IProject extends ObserverManagement
      * @param isBeingTouched True if touched
      */
     void touchCueVolume (boolean isBeingTouched);
+
+
+    /**
+     * Get the cue volume parameter.
+     *
+     * @return The cue volume parameter
+     */
+    IParameter getCueVolumeParameter ();
 
 
     /**

@@ -27,6 +27,6 @@ public class DummyMode<S extends IControlSurface<C>, C extends Configuration> ex
      */
     public DummyMode (final S surface, final IModel model)
     {
-        super ("Dummy", surface, model, true, null, null, 0);
+        super ("Dummy", surface, model, true, null, null);
     }
 }

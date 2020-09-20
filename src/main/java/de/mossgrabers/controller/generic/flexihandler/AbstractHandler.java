@@ -62,11 +62,11 @@ public abstract class AbstractHandler implements IFlexiCommandHandler
         switch (knobMode)
         {
             case KNOB_MODE_RELATIVE1:
-                return this.model.getValueChanger ().calcKnobSpeed (value);
+                return this.model.getValueChanger ().calcKnobChange (value);
             case KNOB_MODE_RELATIVE2:
-                return this.relative2ValueChanger.calcKnobSpeed (value);
+                return this.relative2ValueChanger.calcKnobChange (value);
             case KNOB_MODE_RELATIVE3:
-                return this.relative3ValueChanger.calcKnobSpeed (value);
+                return this.relative3ValueChanger.calcKnobChange (value);
             default:
                 return 0;
         }

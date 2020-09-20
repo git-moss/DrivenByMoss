@@ -204,7 +204,7 @@ public class Drum4View extends AbstractDrum4View<FireControlSurface, FireConfigu
         if (!this.primary.hasDrumPads ())
             return;
 
-        final boolean isUp = this.model.getValueChanger ().calcKnobSpeed (value) > 0;
+        final boolean isUp = this.model.getValueChanger ().isIncrease (value);
         final IDrumPadBank drumPadBank = this.primary.getDrumPadBank ();
 
         final IDrumPad sel = drumPadBank.getSelectedItem ();

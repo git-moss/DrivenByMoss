@@ -32,7 +32,6 @@ import de.mossgrabers.controller.apc.view.ShiftView;
 import de.mossgrabers.framework.command.continuous.CrossfaderCommand;
 import de.mossgrabers.framework.command.continuous.FaderAbsoluteCommand;
 import de.mossgrabers.framework.command.continuous.KnobRowModeCommand;
-import de.mossgrabers.framework.command.continuous.MasterFaderAbsoluteCommand;
 import de.mossgrabers.framework.command.trigger.application.PaneCommand;
 import de.mossgrabers.framework.command.trigger.application.PaneCommand.Panels;
 import de.mossgrabers.framework.command.trigger.application.PanelLayoutCommand;
@@ -114,7 +113,7 @@ public class APCControllerSetup extends AbstractControllerSetup<APCControlSurfac
 
         this.isMkII = isMkII;
         this.colorManager = new APCColorManager (isMkII);
-        this.valueChanger = new DefaultValueChanger (128, 1, 0.5);
+        this.valueChanger = new DefaultValueChanger (128, 1);
         this.configuration = new APCConfiguration (host, this.valueChanger, factory.getArpeggiatorModes ());
     }
 
@@ -161,6 +160,8 @@ public class APCControllerSetup extends AbstractControllerSetup<APCControlSurfac
     @Override
     protected void createObservers ()
     {
+        super.createObservers ();
+
         final APCControlSurface surface = this.getSurface ();
         surface.getViewManager ().addViewChangeListener ( (previousViewId, activeViewId) -> this.updateMode (null));
         surface.getModeManager ().addModeListener ( (previousModeId, activeModeId) -> this.updateMode (activeModeId));
@@ -309,10 +310,12 @@ public class APCControllerSetup extends AbstractControllerSetup<APCControlSurfac
     {
         final APCControlSurface surface = this.getSurface ();
 
-        this.addFader (ContinuousID.MASTER_KNOB, "Master", new MasterFaderAbsoluteCommand<> (this.model, surface), BindType.CC, APCControlSurface.APC_KNOB_MASTER_LEVEL);
+        this.addFader (ContinuousID.FADER_MASTER, "Master", null, BindType.CC, APCControlSurface.APC_KNOB_MASTER_LEVEL);
+        surface.getContinuous (ContinuousID.FADER_MASTER).bind (this.model.getMasterTrack ().getVolumeParameter ());
 
         final Timeout timeout = ((APCTapTempoCommand) surface.getButton (ButtonID.TAP_TEMPO).getCommand ()).getTimeout ();
         this.addRelativeKnob (ContinuousID.PLAY_POSITION, "Play Position", new APCPlayPositionCommand (this.model, surface, timeout), APCControlSurface.APC_KNOB_CUE_LEVEL);
+
         this.addFader (ContinuousID.CROSSFADER, "Crossfader", new CrossfaderCommand<> (this.model, surface), BindType.CC, APCControlSurface.APC_KNOB_CROSSFADER, false);
 
         for (int i = 0; i < 8; i++)
@@ -465,7 +468,7 @@ public class APCControllerSetup extends AbstractControllerSetup<APCControlSurfac
             surface.getButton (ButtonID.DEVICE_RIGHT).setBounds (624.0, 289.75, 33.25, 15.25);
             surface.getButton (ButtonID.BROWSE).setBounds (747.75, 359.75, 33.25, 15.25);
 
-            surface.getContinuous (ContinuousID.MASTER_KNOB).setBounds (500.25, 348.5, 40.5, 115.0);
+            surface.getContinuous (ContinuousID.FADER_MASTER).setBounds (500.25, 348.5, 40.5, 115.0);
             surface.getContinuous (ContinuousID.PLAY_POSITION).setBounds (497.75, 293.75, 40.25, 37.75);
             surface.getContinuous (ContinuousID.CROSSFADER).setBounds (651.25, 419.5, 104.0, 50.0);
             surface.getContinuous (ContinuousID.FADER1).setBounds (19.75, 348.5, 40.5, 115.0);
@@ -613,7 +616,7 @@ public class APCControllerSetup extends AbstractControllerSetup<APCControlSurfac
             surface.getButton (ButtonID.SEND2).setBounds (651.75, 183.25, 33.25, 15.25);
             surface.getButton (ButtonID.SEND3).setBounds (723.5, 183.25, 33.25, 15.25);
 
-            surface.getContinuous (ContinuousID.MASTER_KNOB).setBounds (428.25, 497.25, 38.25, 124.0);
+            surface.getContinuous (ContinuousID.FADER_MASTER).setBounds (428.25, 497.25, 38.25, 124.0);
             surface.getContinuous (ContinuousID.PLAY_POSITION).setBounds (428.25, 412.0, 40.25, 37.75);
             surface.getContinuous (ContinuousID.CROSSFADER).setBounds (564.5, 572.75, 135.25, 50.0);
             surface.getContinuous (ContinuousID.FADER1).setBounds (33.5, 497.25, 38.25, 124.0);

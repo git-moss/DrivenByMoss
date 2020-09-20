@@ -19,12 +19,14 @@ import de.mossgrabers.framework.controller.hardware.IHwLight;
 import de.mossgrabers.framework.controller.hardware.IHwPianoKeyboard;
 import de.mossgrabers.framework.controller.hardware.IHwRelativeKnob;
 import de.mossgrabers.framework.controller.hardware.IHwSurfaceFactory;
+import de.mossgrabers.framework.controller.valuechanger.ISensitivityCallback;
 import de.mossgrabers.framework.controller.valuechanger.RelativeEncoding;
 import de.mossgrabers.framework.daw.midi.IMidiInput;
 import de.mossgrabers.framework.daw.midi.IMidiOutput;
 import de.mossgrabers.framework.mode.ModeManager;
 import de.mossgrabers.framework.view.ViewManager;
 
+import java.util.List;
 import java.util.Map;
 import java.util.function.Consumer;
 import java.util.function.IntConsumer;
@@ -439,6 +441,30 @@ public interface IControlSurface<C extends Configuration>
 
 
     /**
+     * Get all created relative knobs.
+     *
+     * @return The relative knobs
+     */
+    List<IHwRelativeKnob> getRelativeKnobs ();
+
+
+    /**
+     * Returns true if slow mode is enabled.
+     *
+     * @return True if slow mode is enabled
+     */
+    boolean isKnobSensitivitySlow ();
+
+
+    /**
+     * Set the knob sensitivity to slow mode.
+     *
+     * @param knobSensitivityIsSlow True for slow mode, false for default
+     */
+    void setKnobSensitivityIsSlow (boolean knobSensitivityIsSlow);
+
+
+    /**
      * Turn off all triggers.
      */
     void turnOffTriggers ();
@@ -515,4 +541,12 @@ public interface IControlSurface<C extends Configuration>
      * Unbind MIDI commands from the grid.
      */
     void unbindGrid ();
+
+
+    /**
+     * Register a knob sensitivity observer.
+     *
+     * @param observer The observer to register
+     */
+    void addKnobSensitivityObserver (ISensitivityCallback observer);
 }

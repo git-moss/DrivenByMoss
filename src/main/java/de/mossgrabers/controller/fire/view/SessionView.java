@@ -184,7 +184,7 @@ public class SessionView extends AbstractSessionView<FireControlSurface, FireCon
     {
         final ISceneBank sceneBank = this.model.getSceneBank ();
 
-        if (this.model.getValueChanger ().calcKnobSpeed (value) > 0)
+        if (this.model.getValueChanger ().isIncrease (value))
         {
             if (this.surface.isPressed (ButtonID.SELECT))
             {

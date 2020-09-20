@@ -6,7 +6,6 @@ package de.mossgrabers.controller.push.mode;
 
 import de.mossgrabers.controller.push.PushConfiguration;
 import de.mossgrabers.controller.push.controller.PushControlSurface;
-import de.mossgrabers.framework.controller.ContinuousID;
 import de.mossgrabers.framework.controller.display.IGraphicDisplay;
 import de.mossgrabers.framework.controller.display.ITextDisplay;
 import de.mossgrabers.framework.daw.IModel;
@@ -26,9 +25,8 @@ public abstract class BaseMode extends AbstractMode<PushControlSurface, PushConf
 {
     protected static final int SCROLL_RATE     = 8;
 
-    private int                movementCounter = 0;
-
     protected final boolean    isPush2;
+    private int                movementCounter = 0;
 
 
     /**
@@ -54,25 +52,7 @@ public abstract class BaseMode extends AbstractMode<PushControlSurface, PushConf
      */
     public BaseMode (final String name, final PushControlSurface surface, final IModel model, final IBank<? extends IItem> bank)
     {
-        super (name, surface, model, true, bank, null, 8);
-
-        this.isPush2 = this.surface.getConfiguration ().isPush2 ();
-    }
-
-
-    /**
-     * Constructor.
-     *
-     * @param name The name of the mode
-     * @param surface The control surface
-     * @param model The model
-     * @param bank The parameter bank to control with this mode, might be null
-     * @param firstKnob The ID of the first knob to control this mode, all other knobs must be
-     *            follow up IDs
-     */
-    public BaseMode (final String name, final PushControlSurface surface, final IModel model, final IBank<? extends IItem> bank, final ContinuousID firstKnob)
-    {
-        super (name, surface, model, true, bank, firstKnob, 8);
+        super (name, surface, model, true, bank, DEFAULT_KNOB_IDS);
 
         this.isPush2 = this.surface.getConfiguration ().isPush2 ();
     }

@@ -15,6 +15,8 @@ import de.mossgrabers.framework.daw.data.IBrowserColumnItem;
 import de.mossgrabers.framework.mode.AbstractMode;
 import de.mossgrabers.framework.utils.StringUtils;
 
+import java.util.Arrays;
+
 
 /**
  * Mode for navigating the browser.
@@ -31,7 +33,10 @@ public class BrowserMode extends AbstractMode<FireControlSurface, FireConfigurat
      */
     public BrowserMode (final FireControlSurface surface, final IModel model)
     {
-        super ("Browser", surface, model, false, null, null, 9);
+        super ("Browser", surface, model, false);
+
+        this.isKnobTouched = new boolean [9];
+        Arrays.fill (this.isKnobTouched, false);
 
         this.isTemporary = false;
     }
@@ -52,7 +57,7 @@ public class BrowserMode extends AbstractMode<FireControlSurface, FireConfigurat
     public void onKnobValue (final int index, final int value)
     {
         final int idx = this.getKnobIndex (index);
-        int speed = (int) this.model.getValueChanger ().calcKnobSpeed (value, 1);
+        int speed = (int) this.model.getValueChanger ().calcKnobChange (value, -100);
 
         if (index == 8 && this.surface.isPressed (ButtonID.SELECT))
         {

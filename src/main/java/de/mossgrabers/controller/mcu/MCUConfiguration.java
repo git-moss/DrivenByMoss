@@ -259,6 +259,7 @@ public class MCUConfiguration extends AbstractConfiguration
         this.activateNewClipLengthSetting (globalSettings);
         this.activateZoomStateSetting (globalSettings);
         this.activateChannelTouchSetting (globalSettings);
+        this.activateKnobSpeedSetting (globalSettings);
 
         ///////////////////////////
         // Browser

@@ -55,7 +55,7 @@ public class ChangeTempoCommand<S extends IControlSurface<C>, C extends Configur
     {
         if (!this.isTempoChange)
             return;
-        this.model.getTransport ().changeTempo (this.isPlus);
+        this.model.getTransport ().changeTempo (this.isPlus, this.surface.isKnobSensitivitySlow ());
         this.surface.scheduleTask (this::doChangeTempo, 200);
     }
 }

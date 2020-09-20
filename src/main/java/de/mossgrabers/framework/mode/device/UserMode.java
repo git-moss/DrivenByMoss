@@ -12,6 +12,8 @@ import de.mossgrabers.framework.daw.IModel;
 import de.mossgrabers.framework.daw.data.IParameter;
 import de.mossgrabers.framework.mode.AbstractMode;
 
+import java.util.List;
+
 
 /**
  * Mode for editing user control parameters.
@@ -30,13 +32,13 @@ public class UserMode<S extends IControlSurface<C>, C extends Configuration> ext
      * @param model The model
      * @param isAbsolute If true the value change is happending with a setter otherwise relative
      *            change method is used
-     * @param firstKnob The ID of the first knob to control this mode, all other knobs must be
-     *            follow up IDs
-     * @param numberOfKnobs The number of knobs available to control this mode
+     * @param knobs The IDs of the knob to control this mode
      */
-    public UserMode (final S surface, final IModel model, final boolean isAbsolute, final ContinuousID firstKnob, final int numberOfKnobs)
+    public UserMode (final S surface, final IModel model, final boolean isAbsolute, final List<ContinuousID> knobs)
     {
-        super ("User Controls", surface, model, isAbsolute, model.getUserParameterBank (), firstKnob, numberOfKnobs);
+        super ("User Controls", surface, model, isAbsolute, model.getUserParameterBank (), knobs);
+
+        this.setParametersFromBank ();
 
         this.isTemporary = false;
     }

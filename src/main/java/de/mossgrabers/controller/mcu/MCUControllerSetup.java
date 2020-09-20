@@ -165,7 +165,7 @@ public class MCUControllerSetup extends AbstractControllerSetup<MCUControlSurfac
         Arrays.fill (this.masterVuValues, -1);
 
         this.colorManager = new MCUColorManager ();
-        this.valueChanger = new DefaultValueChanger (16241 + 1, 500, 20);
+        this.valueChanger = new DefaultValueChanger (16241 + 1, 500);
         this.configuration = new MCUConfiguration (host, this.valueChanger, numMCUDevices, factory.getArpeggiatorModes ());
     }
 
@@ -283,6 +283,8 @@ public class MCUControllerSetup extends AbstractControllerSetup<MCUControlSurfac
     @Override
     protected void createObservers ()
     {
+        super.createObservers ();
+
         for (int i = 0; i < this.numMCUDevices; i++)
         {
             final ModeManager mm = this.getSurface (i).getModeManager ();

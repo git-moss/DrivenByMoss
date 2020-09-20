@@ -41,7 +41,7 @@ public class ParametersMode extends AbstractParametersMode
      */
     public ParametersMode (final SLMkIIIControlSurface surface, final IModel model)
     {
-        super ("Parameters", surface, model, null, null);
+        super ("Parameters", surface, model, null);
 
         this.setShowDevices (true);
 
@@ -127,7 +127,10 @@ public class ParametersMode extends AbstractParametersMode
             if (parameterPageBank.getSelectedItemIndex () == index)
                 this.setShowDevices (!this.isShowDevices ());
             else
+            {
                 parameterPageBank.selectPage (index);
+                this.bindControls ();
+            }
             return;
         }
 

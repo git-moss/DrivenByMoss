@@ -15,7 +15,7 @@ import de.mossgrabers.framework.daw.data.ISend;
 import de.mossgrabers.framework.daw.data.ITrack;
 import de.mossgrabers.framework.daw.data.bank.ITrackBank;
 import de.mossgrabers.framework.graphics.canvas.utils.SendData;
-import de.mossgrabers.framework.mode.Modes;
+import de.mossgrabers.framework.parameterprovider.SendParameterProvider;
 import de.mossgrabers.framework.utils.Pair;
 
 
@@ -26,23 +26,23 @@ import de.mossgrabers.framework.utils.Pair;
  */
 public class SendMode extends AbstractTrackMode
 {
+    private final int sendIndex;
+
+
     /**
      * Constructor.
      *
      * @param surface The control surface
      * @param model The model
+     * @param sendIndex The index of the send
      */
-    public SendMode (final PushControlSurface surface, final IModel model)
+    public SendMode (final PushControlSurface surface, final IModel model, final int sendIndex)
     {
         super ("Send", surface, model);
-    }
 
+        this.sendIndex = sendIndex;
 
-    /** {@inheritDoc} */
-    @Override
-    public void onKnobValue (final int index, final int value)
-    {
-        this.model.getCurrentTrackBank ().getItem (index).getSendBank ().getItem (this.getCurrentSendIndex ()).changeValue (value);
+        this.setParameters (new SendParameterProvider (model, this.sendIndex));
     }
 
 
@@ -50,12 +50,10 @@ public class SendMode extends AbstractTrackMode
     @Override
     public void onKnobTouch (final int index, final boolean isTouched)
     {
-        final int sendIndex = this.getCurrentSendIndex ();
-
         this.isKnobTouched[index] = isTouched;
 
         final ITrack t = this.model.getCurrentTrackBank ().getItem (index);
-        final ISend send = t.getSendBank ().getItem (sendIndex);
+        final ISend send = t.getSendBank ().getItem (this.sendIndex);
         if (isTouched && this.surface.isDeletePressed ())
         {
             this.surface.setTriggerConsumed (ButtonID.DELETE);
@@ -71,14 +69,13 @@ public class SendMode extends AbstractTrackMode
     @Override
     public void updateDisplay1 (final ITextDisplay display)
     {
-        final int sendIndex = this.getCurrentSendIndex ();
         final ITrackBank tb = this.model.getCurrentTrackBank ();
         for (int i = 0; i < 8; i++)
         {
             final ITrack t = tb.getItem (i);
             if (t.doesExist ())
             {
-                final ISend send = t.getSendBank ().getItem (sendIndex);
+                final ISend send = t.getSendBank ().getItem (this.sendIndex);
                 display.setCell (0, i, send.getName ());
                 display.setCell (1, i, send.getDisplayedValue (8));
                 display.setCell (2, i, send.getValue (), Format.FORMAT_VALUE);
@@ -93,8 +90,7 @@ public class SendMode extends AbstractTrackMode
     @Override
     public void updateDisplay2 (final IGraphicDisplay display)
     {
-        final int sendIndex = this.getCurrentSendIndex ();
-        this.updateTrackMenu (5 + sendIndex % 4);
+        this.updateTrackMenu (5 + this.sendIndex % 4);
 
         final ITrackBank tb = this.model.getCurrentTrackBank ();
         final IValueChanger valueChanger = this.model.getValueChanger ();
@@ -109,16 +105,10 @@ public class SendMode extends AbstractTrackMode
                 final int sendPos = sendOffset + j;
                 final ISend send = t.getSendBank ().getItem (sendPos);
                 final boolean exists = send != null && send.doesExist ();
-                sendData[j] = new SendData (exists ? send.getName () : " ", exists && sendIndex == sendPos && this.isKnobTouched[i] ? send.getDisplayedValue (8) : "", valueChanger.toDisplayValue (exists ? send.getValue () : -1), valueChanger.toDisplayValue (exists ? send.getModulatedValue () : -1), sendIndex == sendPos);
+                sendData[j] = new SendData (exists ? send.getName () : " ", exists && this.sendIndex == sendPos && this.isKnobTouched[i] ? send.getDisplayedValue (8) : "", valueChanger.toDisplayValue (exists ? send.getValue () : -1), valueChanger.toDisplayValue (exists ? send.getModulatedValue () : -1), this.sendIndex == sendPos);
             }
             final Pair<String, Boolean> pair = this.menu.get (i);
             display.addSendsElement (pair.getKey (), pair.getValue ().booleanValue (), t.doesExist () ? t.getName () : "", t.getType (), t.getColor (), t.isSelected (), sendData, false, t.isActivated (), t.isActivated ());
         }
-    }
-
-
-    private int getCurrentSendIndex ()
-    {
-        return this.surface.getModeManager ().getActiveOrTempModeId ().ordinal () - Modes.SEND1.ordinal ();
     }
 }

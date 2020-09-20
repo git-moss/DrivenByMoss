@@ -12,6 +12,8 @@ import de.mossgrabers.framework.daw.data.ITrack;
 import de.mossgrabers.framework.daw.data.bank.ITrackBank;
 import de.mossgrabers.framework.mode.AbstractMode;
 
+import java.util.List;
+
 
 /**
  * Base mode for track related modes.
@@ -34,7 +36,7 @@ public class AbstractTrackMode<S extends IControlSurface<C>, C extends Configura
      */
     public AbstractTrackMode (final String name, final S surface, final IModel model, final boolean isAbsolute)
     {
-        this (name, surface, model, isAbsolute, null, 0);
+        this (name, surface, model, isAbsolute, null);
 
         model.addTrackBankObserver (this::switchBanks);
 
@@ -50,13 +52,11 @@ public class AbstractTrackMode<S extends IControlSurface<C>, C extends Configura
      * @param model The model
      * @param isAbsolute If true the value change is happending with a setter otherwise relative
      *            change method is used
-     * @param firstKnob The ID of the first knob to control this mode, all other knobs must be
-     *            follow up IDs
-     * @param numberOfKnobs The number of knobs available to control this mode
+     * @param controls The IDs of the knobs or faders to control this mode
      */
-    public AbstractTrackMode (final String name, final S surface, final IModel model, final boolean isAbsolute, final ContinuousID firstKnob, final int numberOfKnobs)
+    public AbstractTrackMode (final String name, final S surface, final IModel model, final boolean isAbsolute, final List<ContinuousID> controls)
     {
-        super (name, surface, model, isAbsolute, model.getCurrentTrackBank (), firstKnob, numberOfKnobs);
+        super (name, surface, model, isAbsolute, model.getCurrentTrackBank (), controls);
 
         model.addTrackBankObserver (this::switchBanks);
 

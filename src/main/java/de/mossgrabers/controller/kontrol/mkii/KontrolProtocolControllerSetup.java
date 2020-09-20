@@ -30,7 +30,6 @@ import de.mossgrabers.framework.command.trigger.transport.StopCommand;
 import de.mossgrabers.framework.command.trigger.transport.TapTempoCommand;
 import de.mossgrabers.framework.command.trigger.transport.ToggleLoopCommand;
 import de.mossgrabers.framework.command.trigger.transport.WriteArrangerAutomationCommand;
-import de.mossgrabers.framework.configuration.AbstractConfiguration;
 import de.mossgrabers.framework.configuration.ISettingsUI;
 import de.mossgrabers.framework.controller.AbstractControllerSetup;
 import de.mossgrabers.framework.controller.ButtonID;
@@ -92,7 +91,7 @@ public class KontrolProtocolControllerSetup extends AbstractControllerSetup<Kont
 
         this.version = version;
         this.colorManager = new KontrolProtocolColorManager ();
-        this.valueChanger = new DefaultValueChanger (1024, 4, 1);
+        this.valueChanger = new DefaultValueChanger (1024, 4);
         this.configuration = new KontrolProtocolConfiguration (host, this.valueChanger, factory.getArpeggiatorModes ());
     }
 
@@ -213,19 +212,11 @@ public class KontrolProtocolControllerSetup extends AbstractControllerSetup<Kont
     @Override
     protected void createObservers ()
     {
+        super.createObservers ();
+
         this.getSurface ().getModeManager ().addModeListener ( (oldMode, newMode) -> this.updateIndication (newMode));
 
         this.configuration.registerDeactivatedItemsHandler (this.model);
-
-        this.configuration.addSettingObserver (AbstractConfiguration.KNOB_SPEED_NORMAL, this::updateKnobSpeeds);
-        this.configuration.addSettingObserver (AbstractConfiguration.KNOB_SPEED_SLOW, this::updateKnobSpeeds);
-    }
-
-
-    private void updateKnobSpeeds ()
-    {
-        this.valueChanger.setFractionValue (this.configuration.getKnobSpeedNormal ());
-        this.valueChanger.setSlowFractionValue (this.configuration.getKnobSpeedSlow ());
     }
 
 
@@ -463,8 +454,6 @@ public class KontrolProtocolControllerSetup extends AbstractControllerSetup<Kont
         final KontrolProtocolControlSurface surface = this.getSurface ();
         surface.getViewManager ().setActiveView (Views.CONTROL);
         surface.getModeManager ().setActiveMode (Modes.VOLUME);
-
-        this.updateKnobSpeeds ();
         surface.initHandshake ();
     }
 
@@ -568,7 +557,7 @@ public class KontrolProtocolControllerSetup extends AbstractControllerSetup<Kont
     private void changeTransportPosition (final int value, final int mode)
     {
         final boolean increase = mode == 0 ? value == 1 : value <= 63;
-        this.model.getTransport ().changePosition (increase);
+        this.model.getTransport ().changePosition (increase, false);
     }
 
 

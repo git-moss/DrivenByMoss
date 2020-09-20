@@ -40,7 +40,7 @@ public class BrowserView extends AbstractView<BeatstepControlSurface, BeatstepCo
         if (!browser.isActive ())
             return;
 
-        final int steps = (int) Math.abs (this.model.getValueChanger ().calcKnobSpeed (value, 1));
+        final int steps = (int) Math.abs (this.model.getValueChanger ().calcKnobChange (value, -100));
 
         int column;
         switch (index)

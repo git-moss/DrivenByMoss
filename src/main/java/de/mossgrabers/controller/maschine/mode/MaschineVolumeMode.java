@@ -13,6 +13,8 @@ import de.mossgrabers.framework.daw.data.bank.ITrackBank;
 import de.mossgrabers.framework.mode.track.VolumeMode;
 import de.mossgrabers.framework.utils.StringUtils;
 
+import java.util.Arrays;
+
 
 /**
  * Mode for editing a volume parameter of all tracks.
@@ -32,7 +34,10 @@ public class MaschineVolumeMode extends VolumeMode<MaschineControlSurface, Masch
      */
     public MaschineVolumeMode (final MaschineControlSurface surface, final IModel model)
     {
-        super (surface, model, false, null, 9);
+        super (surface, model, false);
+
+        this.isKnobTouched = new boolean [9];
+        Arrays.fill (this.isKnobTouched, false);
     }
 
 

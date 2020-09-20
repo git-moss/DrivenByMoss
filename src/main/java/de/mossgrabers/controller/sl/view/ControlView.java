@@ -299,7 +299,7 @@ public class ControlView extends ControlOnlyView<SLControlSurface, SLConfigurati
     {
         if (!this.isTempoInc && !this.isTempoDec)
             return;
-        this.model.getTransport ().changeTempo (this.isTempoInc);
+        this.model.getTransport ().changeTempo (this.isTempoInc, this.surface.isKnobSensitivitySlow ());
         this.surface.scheduleTask (this::doChangeTempo, 200);
     }
 

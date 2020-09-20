@@ -14,6 +14,7 @@ import de.mossgrabers.framework.controller.display.ITextDisplay;
 import de.mossgrabers.framework.daw.IModel;
 import de.mossgrabers.framework.daw.data.ITrack;
 import de.mossgrabers.framework.daw.data.bank.ITrackBank;
+import de.mossgrabers.framework.parameterprovider.VolumeParameterProvider;
 
 
 /**
@@ -32,14 +33,8 @@ public class VolumeMode extends AbstractTrackMode
     public VolumeMode (final PushControlSurface surface, final IModel model)
     {
         super ("Volume", surface, model);
-    }
 
-
-    /** {@inheritDoc} */
-    @Override
-    public void onKnobValue (final int index, final int value)
-    {
-        this.model.getCurrentTrackBank ().getItem (index).changeVolume (value);
+        this.setParameters (new VolumeParameterProvider (model));
     }
 
 

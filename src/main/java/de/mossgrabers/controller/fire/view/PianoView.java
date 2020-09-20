@@ -76,7 +76,7 @@ public class PianoView extends PlayView
     @Override
     public void onSelectKnobValue (final int value)
     {
-        if (this.model.getValueChanger ().calcKnobSpeed (value) > 0)
+        if (this.model.getValueChanger ().isIncrease (value))
             this.scales.incPianoOctave ();
         else
             this.scales.decPianoOctave ();

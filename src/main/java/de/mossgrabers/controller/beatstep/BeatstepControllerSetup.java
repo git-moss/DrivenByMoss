@@ -81,7 +81,7 @@ public class BeatstepControllerSetup extends AbstractControllerSetup<BeatstepCon
         super (factory, host, globalSettings, documentSettings);
 
         this.colorManager = new BeatstepColorManager ();
-        this.valueChanger = new DefaultValueChanger (128, 1, 0.5);
+        this.valueChanger = new DefaultValueChanger (128, 1);
         this.configuration = new BeatstepConfiguration (host, this.valueChanger, factory.getArpeggiatorModes ());
     }
 
@@ -152,6 +152,8 @@ public class BeatstepControllerSetup extends AbstractControllerSetup<BeatstepCon
     @Override
     protected void createObservers ()
     {
+        super.createObservers ();
+
         this.getSurface ().getViewManager ().addViewChangeListener ( (previousViewId, activeViewId) -> this.updateIndication (null));
         this.createScaleObservers (this.configuration);
 

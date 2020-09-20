@@ -83,7 +83,7 @@ public class Kontrol1ControllerSetup extends AbstractControllerSetup<Kontrol1Con
     {
         super (factory, host, globalSettings, documentSettings);
         this.modelIndex = modelIndex;
-        this.valueChanger = new DefaultValueChanger (1024, 10, 1);
+        this.valueChanger = new DefaultValueChanger (1024, 10);
         this.colorManager = new Kontrol1ColorManager ();
         this.configuration = new Kontrol1Configuration (host, this.valueChanger, factory.getArpeggiatorModes ());
     }
@@ -162,6 +162,8 @@ public class Kontrol1ControllerSetup extends AbstractControllerSetup<Kontrol1Con
     @Override
     protected void createObservers ()
     {
+        super.createObservers ();
+
         this.createScaleObservers (this.configuration);
         this.configuration.addSettingObserver (Kontrol1Configuration.SCALE_IS_ACTIVE, this::updateViewNoteMapping);
 

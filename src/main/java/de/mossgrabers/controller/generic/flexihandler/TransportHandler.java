@@ -274,7 +274,7 @@ public class TransportHandler extends AbstractHandler
         final ITransport transport = this.model.getTransport ();
         // Only relative modes are supported
         if (knobMode != KNOB_MODE_ABSOLUTE)
-            transport.changePosition (this.getRelativeSpeed (knobMode, value) > 0);
+            transport.changePosition (this.getRelativeSpeed (knobMode, value) > 0, this.surface.isKnobSensitivitySlow ());
     }
 
 
@@ -284,7 +284,7 @@ public class TransportHandler extends AbstractHandler
         if (isAbsolute (knobMode))
             transport.setTempo (value);
         else
-            transport.changeTempo (this.getRelativeSpeed (knobMode, value) > 0);
+            transport.changeTempo (this.getRelativeSpeed (knobMode, value) > 0, this.surface.isKnobSensitivitySlow ());
     }
 
 

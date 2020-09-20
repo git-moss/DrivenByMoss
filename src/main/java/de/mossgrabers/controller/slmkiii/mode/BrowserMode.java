@@ -40,7 +40,7 @@ public class BrowserMode extends BaseMode
     @Override
     public void onKnobValue (final int index, final int value)
     {
-        final boolean isInc = this.model.getValueChanger ().calcKnobSpeed (value) > 0;
+        final boolean isInc = this.model.getValueChanger ().isIncrease (value);
 
         final IBrowser browser = this.model.getBrowser ();
         if (browser == null)

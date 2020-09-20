@@ -278,7 +278,7 @@ public class TransportImpl implements ITransport
     @Override
     public void changeMetronomeVolume (final int control)
     {
-        this.transport.metronomeVolume ().inc (Double.valueOf (this.valueChanger.calcKnobSpeed (control)), Integer.valueOf (this.valueChanger.getUpperBound ()));
+        this.transport.metronomeVolume ().inc (Double.valueOf (this.valueChanger.calcKnobChange (control)), Integer.valueOf (this.valueChanger.getUpperBound ()));
     }
 
 
@@ -449,14 +449,6 @@ public class TransportImpl implements ITransport
 
     /** {@inheritDoc} */
     @Override
-    public void changePosition (final boolean increase)
-    {
-        this.changePosition (increase, this.valueChanger.isSlow ());
-    }
-
-
-    /** {@inheritDoc} */
-    @Override
     public void changePosition (final boolean increase, final boolean slow)
     {
         final double frac = slow ? TransportConstants.INC_FRACTION_TIME_SLOW : TransportConstants.INC_FRACTION_TIME;
@@ -522,9 +514,9 @@ public class TransportImpl implements ITransport
 
     /** {@inheritDoc} */
     @Override
-    public void changeTempo (final boolean increase)
+    public void changeTempo (final boolean increase, final boolean slow)
     {
-        final double offset = this.valueChanger.isSlow () ? 0.01 : 1;
+        final double offset = slow ? 0.01 : 1;
         this.transport.tempo ().incRaw (increase ? offset : -offset);
     }
 
@@ -598,7 +590,7 @@ public class TransportImpl implements ITransport
     @Override
     public void changeCrossfade (final int control)
     {
-        this.transport.crossfade ().inc (Double.valueOf (this.valueChanger.calcKnobSpeed (control)), Integer.valueOf (this.valueChanger.getUpperBound ()));
+        this.transport.crossfade ().inc (Double.valueOf (this.valueChanger.calcKnobChange (control)), Integer.valueOf (this.valueChanger.getUpperBound ()));
     }
 
 

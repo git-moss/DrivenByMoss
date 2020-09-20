@@ -67,7 +67,7 @@ public class OSCControllerSetup extends AbstractControllerSetup<IControlSurface<
         super (factory, host, globalSettings, documentSettings);
 
         this.colorManager = new OSCColorManager ();
-        this.valueChanger = new DefaultValueChanger (128, 1, 0.5);
+        this.valueChanger = new DefaultValueChanger (128, 1);
         this.configuration = new OSCConfiguration (host, this.valueChanger, factory.getArpeggiatorModes ());
     }
 
@@ -105,6 +105,7 @@ public class OSCControllerSetup extends AbstractControllerSetup<IControlSurface<
         ms.setNumDevicesInBank (bankPageSize);
         ms.setNumDeviceLayers (bankPageSize);
         ms.setNumParams (bankPageSize);
+        ms.setNumUserPageSize (bankPageSize);
         ms.setNumMarkers (bankPageSize);
 
         this.model = this.factory.createModel (this.colorManager, this.valueChanger, this.scales, ms);
@@ -115,6 +116,8 @@ public class OSCControllerSetup extends AbstractControllerSetup<IControlSurface<
     @Override
     protected void createObservers ()
     {
+        super.createObservers ();
+
         this.configuration.addSettingObserver (OSCConfiguration.RECEIVE_PORT, () -> {
             try
             {
@@ -146,18 +149,15 @@ public class OSCControllerSetup extends AbstractControllerSetup<IControlSurface<
             {
                 case LOW:
                     this.valueChanger.setUpperBound (128);
-                    this.valueChanger.setFractionValue (1);
-                    this.valueChanger.setSlowFractionValue (0.5);
+                    this.valueChanger.setStepSize (1);
                     break;
                 case MEDIUM:
                     this.valueChanger.setUpperBound (1024);
-                    this.valueChanger.setFractionValue (8);
-                    this.valueChanger.setSlowFractionValue (4);
+                    this.valueChanger.setStepSize (8);
                     break;
                 case HIGH:
                     this.valueChanger.setUpperBound (16384);
-                    this.valueChanger.setFractionValue (128);
-                    this.valueChanger.setSlowFractionValue (64);
+                    this.valueChanger.setStepSize (128);
                     break;
             }
         });

@@ -121,7 +121,7 @@ public class HUIControllerSetup extends AbstractControllerSetup<HUIControlSurfac
         this.colorManager.registerColorIndex (AbstractMode.BUTTON_COLOR_OFF, 0);
         this.colorManager.registerColorIndex (AbstractMode.BUTTON_COLOR_ON, 127);
 
-        this.valueChanger = new DefaultValueChanger (16384, 100, 10);
+        this.valueChanger = new DefaultValueChanger (16384, 100);
         this.configuration = new HUIConfiguration (host, this.valueChanger, factory.getArpeggiatorModes ());
     }
 
@@ -204,6 +204,8 @@ public class HUIControllerSetup extends AbstractControllerSetup<HUIControlSurfac
     @Override
     protected void createObservers ()
     {
+        super.createObservers ();
+
         final HUIControlSurface surface = this.getSurface ();
         surface.getModeManager ().addModeListener ( (oldMode, newMode) -> this.updateMode (newMode));
 

@@ -14,6 +14,8 @@ import de.mossgrabers.framework.daw.data.bank.ITrackBank;
 import de.mossgrabers.framework.mode.track.SendMode;
 import de.mossgrabers.framework.utils.StringUtils;
 
+import java.util.Arrays;
+
 
 /**
  * Mode for editing a send volume parameter of all tracks.
@@ -31,7 +33,10 @@ public class MaschineSendMode extends SendMode<MaschineControlSurface, MaschineC
      */
     public MaschineSendMode (final int sendIndex, final MaschineControlSurface surface, final IModel model)
     {
-        super (sendIndex, surface, model, false, null, 9);
+        super (sendIndex, surface, model, false);
+
+        this.isKnobTouched = new boolean [9];
+        Arrays.fill (this.isKnobTouched, false);
     }
 
 

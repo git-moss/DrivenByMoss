@@ -37,6 +37,6 @@ public class ShiftCommand<S extends IControlSurface<C>, C extends Configuration>
     @Override
     public void execute (final ButtonEvent event, final int velocity)
     {
-        this.model.getValueChanger ().setSpeed (this.surface.isShiftPressed ());
+        this.surface.setKnobSensitivityIsSlow (this.surface.isShiftPressed ());
     }
 }

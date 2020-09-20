@@ -303,14 +303,6 @@ public interface ITransport extends ObserverManagement
      * Changes the play position.
      *
      * @param increase If true move to the right otherwise left
-     */
-    void changePosition (boolean increase);
-
-
-    /**
-     * Changes the play position.
-     *
-     * @param increase If true move to the right otherwise left
      * @param slow Change slowly
      */
     void changePosition (boolean increase, boolean slow);
@@ -370,8 +362,9 @@ public interface ITransport extends ObserverManagement
      * Changes the tempo.
      *
      * @param increase True to increase otherwise decrease
+     * @param slow Change slowly
      */
-    void changeTempo (boolean increase);
+    void changeTempo (boolean increase, boolean slow);
 
 
     /**

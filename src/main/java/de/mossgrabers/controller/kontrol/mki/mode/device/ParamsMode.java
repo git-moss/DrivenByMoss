@@ -14,6 +14,7 @@ import de.mossgrabers.framework.daw.IModel;
 import de.mossgrabers.framework.daw.data.ICursorDevice;
 import de.mossgrabers.framework.daw.data.IParameter;
 import de.mossgrabers.framework.daw.data.bank.IParameterBank;
+import de.mossgrabers.framework.parameterprovider.BankParameterProvider;
 import de.mossgrabers.framework.utils.StringUtils;
 
 import java.util.Set;
@@ -38,6 +39,8 @@ public class ParamsMode extends AbstractKontrol1Mode
     public ParamsMode (final Kontrol1ControlSurface surface, final IModel model)
     {
         super ("Parameters", surface, model, model.getCursorDevice ().getParameterBank ());
+
+        this.setParameters (new BankParameterProvider (this.bank));
     }
 
 

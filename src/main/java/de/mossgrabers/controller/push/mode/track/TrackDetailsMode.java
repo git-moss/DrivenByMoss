@@ -51,10 +51,8 @@ public class TrackDetailsMode extends BaseMode
             return;
 
         final PushConfiguration configuration = this.surface.getConfiguration ();
-
-        final int speed = (int) this.model.getValueChanger ().calcKnobSpeed (value, 1);
+        final int speed = this.model.getValueChanger ().isIncrease (value) ? 1 : -1;
         configuration.setMidiEditChannel (configuration.getMidiEditChannel () + speed);
-
     }
 
 

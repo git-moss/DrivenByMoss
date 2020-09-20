@@ -7,6 +7,7 @@ package de.mossgrabers.controller.fire.mode;
 import de.mossgrabers.controller.fire.FireConfiguration;
 import de.mossgrabers.controller.fire.controller.FireControlSurface;
 import de.mossgrabers.controller.fire.graphics.canvas.component.TitleValueComponent;
+import de.mossgrabers.framework.controller.ContinuousID;
 import de.mossgrabers.framework.controller.display.IGraphicDisplay;
 import de.mossgrabers.framework.controller.valuechanger.IValueChanger;
 import de.mossgrabers.framework.daw.IHost;
@@ -20,6 +21,8 @@ import de.mossgrabers.framework.utils.StringUtils;
 import de.mossgrabers.framework.view.AbstractSequencerView;
 import de.mossgrabers.framework.view.View;
 
+import java.util.List;
+
 
 /**
  * Note edit knob mode.
@@ -28,6 +31,12 @@ import de.mossgrabers.framework.view.View;
  */
 public class NoteMode extends AbstractMode<FireControlSurface, FireConfiguration>
 {
+    protected static final List<ContinuousID> KNOB_IDS = ContinuousID.createSequentialList (ContinuousID.KNOB1, 4);
+    static
+    {
+        KNOB_IDS.add (ContinuousID.VIEW_SELECTION);
+    }
+
     private final IHost host;
 
     private INoteClip   clip    = null;
@@ -44,7 +53,7 @@ public class NoteMode extends AbstractMode<FireControlSurface, FireConfiguration
      */
     public NoteMode (final FireControlSurface surface, final IModel model)
     {
-        super ("Note Edit", surface, model, false, null, null, 5);
+        super ("Note Edit", surface, model, false, null, KNOB_IDS);
 
         this.host = this.model.getHost ();
     }

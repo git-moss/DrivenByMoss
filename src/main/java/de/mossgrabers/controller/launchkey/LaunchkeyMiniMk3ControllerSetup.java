@@ -12,7 +12,6 @@ import de.mossgrabers.controller.launchkey.view.PadModeSelectView;
 import de.mossgrabers.controller.launchkey.view.SessionView;
 import de.mossgrabers.controller.launchkey.view.UserPadView;
 import de.mossgrabers.framework.MVHelper;
-import de.mossgrabers.framework.command.continuous.KnobRowModeCommand;
 import de.mossgrabers.framework.command.core.NopCommand;
 import de.mossgrabers.framework.command.trigger.mode.ModeCursorCommand;
 import de.mossgrabers.framework.command.trigger.mode.ModeCursorCommand.Direction;
@@ -42,6 +41,7 @@ import de.mossgrabers.framework.daw.data.bank.ITrackBank;
 import de.mossgrabers.framework.daw.midi.IMidiAccess;
 import de.mossgrabers.framework.daw.midi.IMidiInput;
 import de.mossgrabers.framework.daw.midi.IMidiOutput;
+import de.mossgrabers.framework.mode.AbstractMode;
 import de.mossgrabers.framework.mode.Mode;
 import de.mossgrabers.framework.mode.ModeManager;
 import de.mossgrabers.framework.mode.Modes;
@@ -94,7 +94,7 @@ public class LaunchkeyMiniMk3ControllerSetup extends AbstractControllerSetup<Lau
         super (factory, host, globalSettings, documentSettings);
 
         this.colorManager = new LaunchkeyMiniMk3ColorManager ();
-        this.valueChanger = new DefaultValueChanger (128, 1, 0.5);
+        this.valueChanger = new DefaultValueChanger (128, 1);
         this.configuration = new LaunchkeyMiniMk3Configuration (host, this.valueChanger, factory.getArpeggiatorModes ());
     }
 
@@ -145,6 +145,8 @@ public class LaunchkeyMiniMk3ControllerSetup extends AbstractControllerSetup<Lau
     @Override
     protected void createObservers ()
     {
+        super.createObservers ();
+
         this.getSurface ().getModeManager ().addModeListener ( (previousViewId, activeViewId) -> this.updateIndication (null));
         this.createScaleObservers (this.configuration);
         this.configuration.registerDeactivatedItemsHandler (this.model);
@@ -158,12 +160,12 @@ public class LaunchkeyMiniMk3ControllerSetup extends AbstractControllerSetup<Lau
         final LaunchkeyMiniMk3ControlSurface surface = this.getSurface ();
         final ModeManager modeManager = surface.getModeManager ();
 
-        modeManager.registerMode (Modes.VOLUME, new VolumeMode<> (surface, this.model, true));
-        modeManager.registerMode (Modes.PAN, new PanMode<> (surface, this.model, true));
-        modeManager.registerMode (Modes.SEND1, new SendMode<> (0, surface, this.model, true));
-        modeManager.registerMode (Modes.SEND2, new SendMode<> (1, surface, this.model, true));
-        modeManager.registerMode (Modes.DEVICE_PARAMS, new ParameterMode<> (surface, this.model, true));
-        modeManager.registerMode (Modes.USER, new UserMode<> (surface, this.model, true, ContinuousID.DEVICE_KNOB1, 8));
+        modeManager.registerMode (Modes.VOLUME, new VolumeMode<> (surface, this.model, true, AbstractMode.DEFAULT_KNOB_IDS));
+        modeManager.registerMode (Modes.PAN, new PanMode<> (surface, this.model, true, AbstractMode.DEFAULT_KNOB_IDS));
+        modeManager.registerMode (Modes.SEND1, new SendMode<> (0, surface, this.model, true, AbstractMode.DEFAULT_KNOB_IDS));
+        modeManager.registerMode (Modes.SEND2, new SendMode<> (1, surface, this.model, true, AbstractMode.DEFAULT_KNOB_IDS));
+        modeManager.registerMode (Modes.DEVICE_PARAMS, new ParameterMode<> (surface, this.model, true, AbstractMode.DEFAULT_KNOB_IDS));
+        modeManager.registerMode (Modes.USER, new UserMode<> (surface, this.model, true, ContinuousID.createSequentialList (ContinuousID.DEVICE_KNOB1, 8)));
     }
 
 
@@ -287,8 +289,7 @@ public class LaunchkeyMiniMk3ControllerSetup extends AbstractControllerSetup<Lau
         final LaunchkeyMiniMk3ControlSurface surface = this.getSurface ();
         for (int i = 0; i < 8; i++)
         {
-            final KnobRowModeCommand<LaunchkeyMiniMk3ControlSurface, LaunchkeyMiniMk3Configuration> command = new KnobRowModeCommand<> (i, this.model, surface);
-            this.addAbsoluteKnob (ContinuousID.get (ContinuousID.KNOB1, i), "Knob " + (i + 1), command, BindType.CC, 15, LaunchkeyMiniMk3ControlSurface.LAUNCHKEY_KNOB_1 + i);
+            this.addAbsoluteKnob (ContinuousID.get (ContinuousID.KNOB1, i), "Knob " + (i + 1), null, BindType.CC, 15, LaunchkeyMiniMk3ControlSurface.LAUNCHKEY_KNOB_1 + i);
 
             // Knobs in user mode send on the keys input on MIDI channel 1 (instead of 16), command
             // is not needed since it is mapped to IParameter when user mode is activated

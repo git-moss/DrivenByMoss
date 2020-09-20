@@ -91,9 +91,9 @@ public abstract class AbstractConfiguration implements Configuration
     /** Setting for displaying browser column 8. */
     public static final Integer      BROWSER_DISPLAY_FILTER8           = Integer.valueOf (27);
     /** The speed of a knob. */
-    public static final Integer      KNOB_SPEED_NORMAL                 = Integer.valueOf (28);
+    public static final Integer      KNOB_SENSITIVITY_DEFAULT          = Integer.valueOf (28);
     /** The speed of a knob in slow mode. */
-    public static final Integer      KNOB_SPEED_SLOW                   = Integer.valueOf (29);
+    public static final Integer      KNOB_SENSITIVITY_SLOW             = Integer.valueOf (29);
     /** Turn noterepeat on/off. */
     public static final Integer      NOTEREPEAT_ACTIVE                 = Integer.valueOf (30);
     /** The note repeat period. */
@@ -160,10 +160,18 @@ public abstract class AbstractConfiguration implements Configuration
     // Note: There are controllers who extend this list!
 
     protected static final String [] OPTIONS_MIDI_CHANNEL              = new String [16];
+    protected static final String [] KNOB_SENSITIVITY                  = new String [201];
     static
     {
         for (int i = 0; i < OPTIONS_MIDI_CHANNEL.length; i++)
             OPTIONS_MIDI_CHANNEL[i] = Integer.toString (i + 1);
+
+        for (int i = 0; i < 100; i++)
+        {
+            KNOB_SENSITIVITY[i] = "-" + (100 - i);
+            KNOB_SENSITIVITY[101 + i] = "+" + (i + 1);
+        }
+        KNOB_SENSITIVITY[100] = "Normal";
     }
 
     protected static final ColorEx DEFAULT_COLOR_BACKGROUND         = ColorEx.fromRGB (83, 83, 83);
@@ -328,8 +336,8 @@ public abstract class AbstractConfiguration implements Configuration
         true,
         true
     };
-    private int                                      knobSpeedNormal             = 10;
-    private int                                      knobSpeedSlow               = 1;
+    private int                                      knobSpeedDefault            = 0;
+    private int                                      knobSpeedSlow               = -40;
 
     private boolean                                  noteRepeatActive            = false;
     private Resolution                               noteRepeatPeriod            = Resolution.RES_1_8;
@@ -513,7 +521,7 @@ public abstract class AbstractConfiguration implements Configuration
     public void changeQuantizeAmount (final int control)
     {
         if (this.quantizeAmountSetting != null)
-            this.quantizeAmountSetting.set (this.valueChanger.changeValue (control, this.quantizeAmount, 1, 101));
+            this.quantizeAmountSetting.set (this.valueChanger.changeValue (control, this.quantizeAmount, -100, 101));
     }
 
 
@@ -697,15 +705,15 @@ public abstract class AbstractConfiguration implements Configuration
 
     /** {@inheritDoc} */
     @Override
-    public int getKnobSpeedNormal ()
+    public int getKnobSensitivityDefault ()
     {
-        return this.knobSpeedNormal;
+        return this.knobSpeedDefault;
     }
 
 
     /** {@inheritDoc} */
     @Override
-    public int getKnobSpeedSlow ()
+    public int getKnobSensitivitySlow ()
     {
         return this.knobSpeedSlow;
     }
@@ -1219,19 +1227,18 @@ public abstract class AbstractConfiguration implements Configuration
      * Activate the knob speed settings.
      *
      * @param settingsUI The settings
-     * @param defaultFastSpeed The default value for the fast speed (1-100)
      */
-    protected void activateKnobSpeedSetting (final ISettingsUI settingsUI, final int defaultFastSpeed)
+    protected void activateKnobSpeedSetting (final ISettingsUI settingsUI)
     {
-        final IIntegerSetting knobSpeedNormalSetting = settingsUI.getRangeSetting ("Knob Speed Normal", CATEGORY_WORKFLOW, 1, 100, 1, "%", defaultFastSpeed);
+        final IEnumSetting knobSpeedNormalSetting = settingsUI.getEnumSetting ("Knob Sensitivity Default", CATEGORY_WORKFLOW, KNOB_SENSITIVITY, KNOB_SENSITIVITY[100]);
         knobSpeedNormalSetting.addValueObserver (value -> {
-            this.knobSpeedNormal = value.intValue ();
-            this.notifyObservers (AbstractConfiguration.KNOB_SPEED_NORMAL);
+            this.knobSpeedDefault = lookupIndex (KNOB_SENSITIVITY, value) - 100;
+            this.notifyObservers (AbstractConfiguration.KNOB_SENSITIVITY_DEFAULT);
         });
-        final IIntegerSetting knobSpeedSlowSetting = settingsUI.getRangeSetting ("Knob Speed Slow", CATEGORY_WORKFLOW, 1, 100, 1, "%", 1);
+        final IEnumSetting knobSpeedSlowSetting = settingsUI.getEnumSetting ("Knob Sensitivity Slow", CATEGORY_WORKFLOW, KNOB_SENSITIVITY, KNOB_SENSITIVITY[60]);
         knobSpeedSlowSetting.addValueObserver (value -> {
-            this.knobSpeedSlow = value.intValue ();
-            this.notifyObservers (AbstractConfiguration.KNOB_SPEED_SLOW);
+            this.knobSpeedSlow = lookupIndex (KNOB_SENSITIVITY, value) - 100;
+            this.notifyObservers (AbstractConfiguration.KNOB_SENSITIVITY_SLOW);
         });
     }
 

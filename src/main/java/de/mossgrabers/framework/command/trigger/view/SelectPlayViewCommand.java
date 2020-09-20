@@ -53,7 +53,7 @@ public class SelectPlayViewCommand<S extends IControlSurface<C>, C extends Confi
             final ITrack selectedTrack = this.model.getSelectedTrack ();
             if (selectedTrack != null)
             {
-                Views viewID = viewManager.getPreferredView (selectedTrack.getPosition ());
+                final Views viewID = viewManager.getPreferredView (selectedTrack.getPosition ());
                 if (viewID != null)
                 {
                     viewManager.setActiveView (viewID);

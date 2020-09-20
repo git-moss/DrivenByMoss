@@ -11,6 +11,7 @@ import de.mossgrabers.framework.controller.ContinuousID;
 import de.mossgrabers.framework.daw.IModel;
 import de.mossgrabers.framework.daw.data.ITrack;
 import de.mossgrabers.framework.daw.data.bank.ITrackBank;
+import de.mossgrabers.framework.parameterprovider.VolumeParameterProvider;
 import de.mossgrabers.framework.utils.StringUtils;
 
 
@@ -32,6 +33,8 @@ public class VolumeMode extends AbstractKontrol1Mode
         super ("Volume", surface, model, model.getCurrentTrackBank ());
 
         model.addTrackBankObserver (this::switchBanks);
+
+        this.setParameters (new VolumeParameterProvider (model));
     }
 
 

@@ -22,6 +22,7 @@ import de.mossgrabers.framework.controller.hardware.IHwLight;
 import de.mossgrabers.framework.controller.hardware.IHwPianoKeyboard;
 import de.mossgrabers.framework.controller.hardware.IHwRelativeKnob;
 import de.mossgrabers.framework.controller.hardware.IHwSurfaceFactory;
+import de.mossgrabers.framework.controller.valuechanger.ISensitivityCallback;
 import de.mossgrabers.framework.controller.valuechanger.RelativeEncoding;
 import de.mossgrabers.framework.daw.IHost;
 import de.mossgrabers.framework.daw.midi.IMidiInput;
@@ -53,9 +54,9 @@ import java.util.function.Supplier;
  */
 public abstract class AbstractControlSurface<C extends Configuration> implements IControlSurface<C>
 {
-    protected static final int                      BUTTON_STATE_INTERVAL = 400;
-    protected static final int                      NUM_NOTES             = 128;
-    protected static final int                      NUM_INFOS             = 256;
+    protected static final int                      BUTTON_STATE_INTERVAL    = 400;
+    protected static final int                      NUM_NOTES                = 128;
+    protected static final int                      NUM_INFOS                = 256;
 
     protected final IHost                           host;
     protected final IHwSurfaceFactory               surfaceFactory;
@@ -66,17 +67,17 @@ public abstract class AbstractControlSurface<C extends Configuration> implements
 
     protected final int                             surfaceID;
 
-    protected final ViewManager                     viewManager           = new ViewManager ();
-    protected final ModeManager                     modeManager           = new ModeManager ();
+    protected final ViewManager                     viewManager              = new ViewManager ();
+    protected final ModeManager                     modeManager              = new ModeManager ();
 
-    protected int                                   defaultMidiChannel    = 0;
+    protected int                                   defaultMidiChannel       = 0;
 
-    private Map<ButtonID, IHwButton>                buttons               = new EnumMap<> (ButtonID.class);
-    private Map<OutputID, IHwLight>                 lights                = new EnumMap<> (OutputID.class);
-    private Map<ContinuousID, IHwContinuousControl> continuous            = new EnumMap<> (ContinuousID.class);
+    private Map<ButtonID, IHwButton>                buttons                  = new EnumMap<> (ButtonID.class);
+    private Map<OutputID, IHwLight>                 lights                   = new EnumMap<> (OutputID.class);
+    private Map<ContinuousID, IHwContinuousControl> continuous               = new EnumMap<> (ContinuousID.class);
 
-    protected List<ITextDisplay>                    textDisplays          = new ArrayList<> (1);
-    protected List<IGraphicDisplay>                 graphicsDisplays      = new ArrayList<> (1);
+    protected List<ITextDisplay>                    textDisplays             = new ArrayList<> (1);
+    protected List<IGraphicDisplay>                 graphicsDisplays         = new ArrayList<> (1);
 
     protected final IPadGrid                        pads;
     protected ILightGuide                           lightGuide;
@@ -86,8 +87,11 @@ public abstract class AbstractControlSurface<C extends Configuration> implements
     private final DummyDisplay                      dummyDisplay;
     private IHwPianoKeyboard                        pianoKeyboard;
 
-    private final Object                            updateCounterLock     = new Object ();
-    private int                                     updateCounter         = 0;
+    private final Object                            updateCounterLock        = new Object ();
+    private int                                     updateCounter            = 0;
+
+    private boolean                                 knobSensitivityIsSlow    = false;
+    private final List<ISensitivityCallback>        knobSensitivityObservers = new ArrayList<> ();
 
 
     /**
@@ -446,6 +450,21 @@ public abstract class AbstractControlSurface<C extends Configuration> implements
     public IHwContinuousControl getContinuous (final ContinuousID continuousID)
     {
         return this.continuous.get (continuousID);
+    }
+
+
+    /** {@inheritDoc} */
+    @Override
+    public List<IHwRelativeKnob> getRelativeKnobs ()
+    {
+        final List<IHwRelativeKnob> relativeKnobs = new ArrayList<> ();
+
+        this.continuous.forEach ( (id, control) -> {
+            if (control instanceof IHwRelativeKnob)
+                relativeKnobs.add ((IHwRelativeKnob) control);
+        });
+
+        return relativeKnobs;
     }
 
 
@@ -920,6 +939,32 @@ public abstract class AbstractControlSurface<C extends Configuration> implements
     public IHwSurfaceFactory getSurfaceFactory ()
     {
         return this.surfaceFactory;
+    }
+
+
+    /** {@inheritDoc} */
+    @Override
+    public boolean isKnobSensitivitySlow ()
+    {
+        return this.knobSensitivityIsSlow;
+    }
+
+
+    /** {@inheritDoc} */
+    @Override
+    public void setKnobSensitivityIsSlow (final boolean knobSensitivityIsSlow)
+    {
+        this.knobSensitivityIsSlow = knobSensitivityIsSlow;
+
+        this.knobSensitivityObservers.forEach (ISensitivityCallback::knobSensitivityHasChanged);
+    }
+
+
+    /** {@inheritDoc} */
+    @Override
+    public void addKnobSensitivityObserver (final ISensitivityCallback observer)
+    {
+        this.knobSensitivityObservers.add (observer);
     }
 
 

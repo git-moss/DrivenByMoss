@@ -48,6 +48,6 @@ public class ToggleShiftViewCommand<S extends IControlSurface<C>, C extends Conf
         else if (event == ButtonEvent.UP && viewManager.isActiveView (Views.SHIFT))
             viewManager.restoreView ();
 
-        this.model.getValueChanger ().setSpeed (this.surface.isShiftPressed ());
+        this.surface.setKnobSensitivityIsSlow (this.surface.isShiftPressed ());
     }
 }

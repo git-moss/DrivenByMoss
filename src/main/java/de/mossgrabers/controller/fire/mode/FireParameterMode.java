@@ -16,6 +16,8 @@ import de.mossgrabers.framework.daw.data.bank.IParameterBank;
 import de.mossgrabers.framework.mode.device.ParameterMode;
 import de.mossgrabers.framework.utils.StringUtils;
 
+import java.util.Arrays;
+
 
 /**
  * The device parameter mode. The knobs control the value of the parameter on the parameter page.
@@ -34,6 +36,9 @@ public class FireParameterMode extends ParameterMode<FireControlSurface, FireCon
     public FireParameterMode (final FireControlSurface surface, final IModel model)
     {
         super (surface, model, false);
+
+        this.isKnobTouched = new boolean [8];
+        Arrays.fill (this.isKnobTouched, false);
     }
 
 

@@ -471,7 +471,7 @@ public class GenericFlexiConfiguration extends AbstractConfiguration
         ///////////////////////////////////////////////
         // Workflow
 
-        this.activateKnobSpeedSetting (globalSettings, 6);
+        this.activateKnobSpeedSetting (globalSettings);
         this.activateExcludeDeactivatedItemsSetting (globalSettings);
 
         this.activateNoteRepeatSetting (documentSettings);

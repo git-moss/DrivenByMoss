@@ -135,53 +135,6 @@ public class BrowseMode extends AbstractKontrol1Mode
 
 
     /**
-     * Navigate to the next or previous result item.
-     *
-     * @param moveUp True to move up
-     */
-    public void navigatePresets (final boolean moveUp)
-    {
-        this.selectionMode = BrowseMode.SELECTION_PRESET;
-        final IBrowser browser = this.model.getBrowser ();
-        if (!browser.isActive ())
-            return;
-        if (moveUp)
-            browser.selectNextResult ();
-        else
-            browser.selectPreviousResult ();
-    }
-
-
-    /**
-     * Navigate to the next or previous filter item.
-     *
-     * @param filterNumber The number of the filter column
-     * @param moveUp True to move up
-     */
-    public void navigateFilters (final int filterNumber, final boolean moveUp)
-    {
-        final IBrowser browser = this.model.getBrowser ();
-        if (!browser.isActive ())
-            return;
-        if (moveUp)
-            browser.selectNextFilterItem (this.filterColumn);
-        else
-            browser.selectPreviousFilterItem (this.filterColumn);
-    }
-
-
-    /**
-     * Get the current selection mode.
-     *
-     * @return The current selection mode
-     */
-    public int getSelectionMode ()
-    {
-        return this.selectionMode;
-    }
-
-
-    /**
      * Select the next filter or preset.
      *
      * @param count The number of items to increase

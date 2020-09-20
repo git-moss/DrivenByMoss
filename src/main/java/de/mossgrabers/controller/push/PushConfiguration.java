@@ -347,7 +347,7 @@ public class PushConfiguration extends AbstractConfiguration implements IGraphic
         this.activateFootswitchSetting (globalSettings);
         this.activateStopAutomationOnKnobReleaseSetting (globalSettings);
         this.activateNewClipLengthSetting (globalSettings);
-        this.activateKnobSpeedSetting (globalSettings, 10);
+        this.activateKnobSpeedSetting (globalSettings);
 
         this.activateUserPageNamesSetting (documentSettings);
 
@@ -457,7 +457,7 @@ public class PushConfiguration extends AbstractConfiguration implements IGraphic
      */
     public void changePadThreshold (final int control)
     {
-        final int value = this.valueChanger.changeValue (control, this.padThreshold, 1, PushControlSurface.PUSH_PAD_THRESHOLDS_NAME.length);
+        final int value = this.valueChanger.changeValue (control, this.padThreshold, -100, PushControlSurface.PUSH_PAD_THRESHOLDS_NAME.length);
         this.padThreshold = Math.max (0, Math.min (value, PushControlSurface.PUSH_PAD_THRESHOLDS_NAME.length - 1));
         this.padThresholdSetting.set (PushControlSurface.PUSH_PAD_THRESHOLDS_NAME[this.padThreshold]);
     }
@@ -470,7 +470,7 @@ public class PushConfiguration extends AbstractConfiguration implements IGraphic
      */
     public void changeVelocityCurve (final int control)
     {
-        final int value = this.valueChanger.changeValue (control, this.velocityCurve, 1, PushControlSurface.PUSH_PAD_CURVES_NAME.length);
+        final int value = this.valueChanger.changeValue (control, this.velocityCurve, -100, PushControlSurface.PUSH_PAD_CURVES_NAME.length);
         this.velocityCurve = Math.max (0, Math.min (value, PushControlSurface.PUSH_PAD_CURVES_NAME.length - 1));
         this.velocityCurveSetting.set (PushControlSurface.PUSH_PAD_CURVES_NAME[this.velocityCurve]);
     }
@@ -483,7 +483,7 @@ public class PushConfiguration extends AbstractConfiguration implements IGraphic
      */
     public void changeDisplayBrightness (final int control)
     {
-        this.displayBrightnessSetting.set (this.valueChanger.changeValue (control, this.displayBrightness, 1, 101));
+        this.displayBrightnessSetting.set (this.valueChanger.changeValue (control, this.displayBrightness, -100, 101));
     }
 
 
@@ -494,7 +494,7 @@ public class PushConfiguration extends AbstractConfiguration implements IGraphic
      */
     public void changeLEDBrightness (final int control)
     {
-        this.ledBrightnessSetting.set (this.valueChanger.changeValue (control, this.ledBrightness, 1, 101));
+        this.ledBrightnessSetting.set (this.valueChanger.changeValue (control, this.ledBrightness, -100, 101));
     }
 
 
@@ -505,7 +505,7 @@ public class PushConfiguration extends AbstractConfiguration implements IGraphic
      */
     public void changePadSensitivity (final int control)
     {
-        this.padSensitivitySetting.set (this.valueChanger.changeValue (control, this.padSensitivity, 1, 11));
+        this.padSensitivitySetting.set (this.valueChanger.changeValue (control, this.padSensitivity, -100, 11));
     }
 
 
@@ -516,7 +516,7 @@ public class PushConfiguration extends AbstractConfiguration implements IGraphic
      */
     public void changePadGain (final int control)
     {
-        this.padGainSetting.set (this.valueChanger.changeValue (control, this.padGain, 1, 11));
+        this.padGainSetting.set (this.valueChanger.changeValue (control, this.padGain, -100, 11));
     }
 
 
@@ -527,7 +527,7 @@ public class PushConfiguration extends AbstractConfiguration implements IGraphic
      */
     public void changePadDynamics (final int control)
     {
-        this.padDynamicsSetting.set (this.valueChanger.changeValue (control, this.padDynamics, 1, 11));
+        this.padDynamicsSetting.set (this.valueChanger.changeValue (control, this.padDynamics, -100, 11));
     }
 
 

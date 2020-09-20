@@ -45,7 +45,7 @@ public class DrumConfigurationMode extends BaseMode
         final int idx = index < 0 ? this.selectedParam : index;
 
         final Scales scales = this.model.getScales ();
-        final boolean inc = this.model.getValueChanger ().calcKnobSpeed (value) > 0;
+        final boolean inc = this.model.getValueChanger ().isIncrease (value);
 
         switch (idx)
         {

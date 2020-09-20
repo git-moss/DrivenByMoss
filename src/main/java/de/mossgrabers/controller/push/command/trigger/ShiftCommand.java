@@ -43,6 +43,6 @@ public class ShiftCommand extends AbstractTriggerCommand<PushControlSurface, Pus
         else if (event == ButtonEvent.UP && Modes.SCALE_LAYOUT.equals (cm))
             modeManager.restoreMode ();
 
-        this.model.getValueChanger ().setSpeed (this.surface.isShiftPressed ());
+        this.surface.setKnobSensitivityIsSlow (this.surface.isShiftPressed ());
     }
 }

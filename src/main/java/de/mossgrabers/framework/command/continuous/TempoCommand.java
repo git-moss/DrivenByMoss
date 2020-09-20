@@ -42,6 +42,6 @@ public class TempoCommand<S extends IControlSurface<C>, C extends Configuration>
     @Override
     public void execute (final int value)
     {
-        this.transport.changeTempo (value == 1);
+        this.transport.changeTempo (value == 1, this.surface.isKnobSensitivitySlow ());
     }
 }

@@ -102,7 +102,7 @@ public class FireControllerSetup extends AbstractControllerSetup<FireControlSurf
         super (factory, host, globalSettings, documentSettings);
 
         this.colorManager = new FireColorManager ();
-        this.valueChanger = new DefaultValueChanger (1024, 10, 1);
+        this.valueChanger = new DefaultValueChanger (1024, 10);
         this.configuration = new FireConfiguration (host, this.valueChanger, factory.getArpeggiatorModes ());
     }
 
@@ -504,6 +504,8 @@ public class FireControllerSetup extends AbstractControllerSetup<FireControlSurf
     @Override
     protected void createObservers ()
     {
+        super.createObservers ();
+
         final FireControlSurface surface = this.getSurface ();
 
         surface.getModeManager ().addModeListener ( (oldMode, newMode) -> this.updateMode (newMode));

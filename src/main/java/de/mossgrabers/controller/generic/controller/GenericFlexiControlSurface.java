@@ -6,30 +6,10 @@ package de.mossgrabers.controller.generic.controller;
 
 import de.mossgrabers.controller.generic.CommandSlot;
 import de.mossgrabers.controller.generic.GenericFlexiConfiguration;
-import de.mossgrabers.controller.generic.flexihandler.ActionHandler;
-import de.mossgrabers.controller.generic.flexihandler.BrowserHandler;
-import de.mossgrabers.controller.generic.flexihandler.ClipHandler;
-import de.mossgrabers.controller.generic.flexihandler.DeviceHandler;
-import de.mossgrabers.controller.generic.flexihandler.FxTrackHandler;
-import de.mossgrabers.controller.generic.flexihandler.GlobalHandler;
 import de.mossgrabers.controller.generic.flexihandler.IFlexiCommandHandler;
-import de.mossgrabers.controller.generic.flexihandler.LayoutHandler;
-import de.mossgrabers.controller.generic.flexihandler.MarkerHandler;
-import de.mossgrabers.controller.generic.flexihandler.MasterHandler;
-import de.mossgrabers.controller.generic.flexihandler.MidiCCHandler;
-import de.mossgrabers.controller.generic.flexihandler.ModesHandler;
-import de.mossgrabers.controller.generic.flexihandler.NoteInputHandler;
-import de.mossgrabers.controller.generic.flexihandler.SceneHandler;
-import de.mossgrabers.controller.generic.flexihandler.TrackHandler;
-import de.mossgrabers.controller.generic.flexihandler.TransportHandler;
-import de.mossgrabers.controller.generic.flexihandler.UserHandler;
 import de.mossgrabers.framework.controller.AbstractControlSurface;
 import de.mossgrabers.framework.controller.color.ColorManager;
-import de.mossgrabers.framework.controller.valuechanger.IValueChanger;
-import de.mossgrabers.framework.controller.valuechanger.Relative2ValueChanger;
-import de.mossgrabers.framework.controller.valuechanger.Relative3ValueChanger;
 import de.mossgrabers.framework.daw.IHost;
-import de.mossgrabers.framework.daw.IModel;
 import de.mossgrabers.framework.daw.midi.IMidiInput;
 import de.mossgrabers.framework.daw.midi.IMidiOutput;
 import de.mossgrabers.framework.mode.Modes;
@@ -49,49 +29,25 @@ import java.util.Map;
  */
 public class GenericFlexiControlSurface extends AbstractControlSurface<GenericFlexiConfiguration>
 {
-    private final IValueChanger                           relative2ValueChanger = new Relative2ValueChanger (128, 6, 1);
-    private final IValueChanger                           relative3ValueChanger = new Relative3ValueChanger (128, 6, 1);
+    private final int []                                  valueCache      = new int [GenericFlexiConfiguration.NUM_SLOTS];
+    private final Map<FlexiCommand, IFlexiCommandHandler> handlers        = new EnumMap<> (FlexiCommand.class);
 
-    private final IModel                                  model;
-    private final int []                                  valueCache            = new int [GenericFlexiConfiguration.NUM_SLOTS];
-    private final Map<FlexiCommand, IFlexiCommandHandler> handlers              = new EnumMap<> (FlexiCommand.class);
-
-    private boolean                                       isShiftPressed        = false;
-    private boolean                                       isUpdatingValue       = false;
+    private boolean                                       isShiftPressed  = false;
+    private boolean                                       isUpdatingValue = false;
 
 
     /**
      * Constructor.
      *
      * @param host The host
-     * @param model The model
      * @param colorManager The color manager
      * @param configuration The configuration
      * @param output The midi output
      * @param input The midi input
      */
-    public GenericFlexiControlSurface (final IHost host, final IModel model, final ColorManager colorManager, final GenericFlexiConfiguration configuration, final IMidiOutput output, final IMidiInput input)
+    public GenericFlexiControlSurface (final IHost host, final GenericFlexiConfiguration configuration, final ColorManager colorManager, final IMidiOutput output, final IMidiInput input)
     {
         super (host, configuration, colorManager, output, input, null, 10, 10);
-
-        this.model = model;
-
-        this.registerHandler (new GlobalHandler (model, this, configuration, this.relative2ValueChanger, this.relative3ValueChanger));
-        this.registerHandler (new TransportHandler (model, this, configuration, this.relative2ValueChanger, this.relative3ValueChanger));
-        this.registerHandler (new LayoutHandler (model, this, configuration, this.relative2ValueChanger, this.relative3ValueChanger));
-        this.registerHandler (new TrackHandler (model, this, configuration, this.relative2ValueChanger, this.relative3ValueChanger));
-        this.registerHandler (new FxTrackHandler (model, this, configuration, this.relative2ValueChanger, this.relative3ValueChanger));
-        this.registerHandler (new MasterHandler (model, this, configuration, this.relative2ValueChanger, this.relative3ValueChanger));
-        this.registerHandler (new DeviceHandler (model, this, configuration, this.relative2ValueChanger, this.relative3ValueChanger));
-        this.registerHandler (new BrowserHandler (model, this, configuration, this.relative2ValueChanger, this.relative3ValueChanger));
-        this.registerHandler (new SceneHandler (model, this, configuration, this.relative2ValueChanger, this.relative3ValueChanger));
-        this.registerHandler (new ClipHandler (model, this, configuration, this.relative2ValueChanger, this.relative3ValueChanger));
-        this.registerHandler (new MarkerHandler (model, this, configuration, this.relative2ValueChanger, this.relative3ValueChanger));
-        this.registerHandler (new ModesHandler (model, this, configuration, this.relative2ValueChanger, this.relative3ValueChanger, host));
-        this.registerHandler (new MidiCCHandler (model, this, configuration, this.relative2ValueChanger, this.relative3ValueChanger));
-        this.registerHandler (new NoteInputHandler (model, this, configuration, this.relative2ValueChanger, this.relative3ValueChanger));
-        this.registerHandler (new UserHandler (model, this, configuration, this.relative2ValueChanger, this.relative3ValueChanger));
-        this.registerHandler (new ActionHandler (model, this, configuration, this.relative2ValueChanger, this.relative3ValueChanger));
 
         Arrays.fill (this.valueCache, -1);
 
@@ -99,6 +55,17 @@ public class GenericFlexiControlSurface extends AbstractControlSurface<GenericFl
         this.configuration.addSettingObserver (GenericFlexiConfiguration.BUTTON_IMPORT, () -> this.importFile (true));
 
         this.input.setSysexCallback (this::handleSysEx);
+    }
+
+
+    /**
+     * Register a flexi command handler.
+     *
+     * @param handler The handler to register
+     */
+    public void registerHandler (final IFlexiCommandHandler handler)
+    {
+        Arrays.asList (handler.getSupportedCommands ()).forEach (command -> this.handlers.put (command, handler));
     }
 
 
@@ -130,36 +97,6 @@ public class GenericFlexiControlSurface extends AbstractControlSurface<GenericFl
     public boolean isShiftPressed ()
     {
         return this.isShiftPressed;
-    }
-
-
-    /**
-     * Set the knob speed on all value changers.
-     *
-     * @param isSlow True to set to slow otherwise fast
-     */
-    public void setKnobSpeed (final boolean isSlow)
-    {
-        this.model.getValueChanger ().setSpeed (isSlow);
-        this.relative2ValueChanger.setSpeed (isSlow);
-        this.relative3ValueChanger.setSpeed (isSlow);
-    }
-
-
-    /**
-     * Update all knob speeds from the configuration settings.
-     */
-    public void updateKnobSpeeds ()
-    {
-        final double fraction = 128 * this.configuration.getKnobSpeedNormal () / 100.0;
-        this.model.getValueChanger ().setFractionValue (fraction);
-        this.relative2ValueChanger.setFractionValue (fraction);
-        this.relative3ValueChanger.setFractionValue (fraction);
-
-        final double slowFraction = 128 * this.configuration.getKnobSpeedSlow () / 100.0;
-        this.model.getValueChanger ().setSlowFractionValue (slowFraction);
-        this.relative2ValueChanger.setSlowFractionValue (slowFraction);
-        this.relative3ValueChanger.setSlowFractionValue (slowFraction);
     }
 
 
@@ -410,16 +347,5 @@ public class GenericFlexiControlSurface extends AbstractControlSurface<GenericFl
                 // Other types not supported
                 break;
         }
-    }
-
-
-    /**
-     * Register a flexi command handler.
-     *
-     * @param handler The handler to register
-     */
-    private void registerHandler (final IFlexiCommandHandler handler)
-    {
-        Arrays.asList (handler.getSupportedCommands ()).forEach (command -> this.handlers.put (command, handler));
     }
 }

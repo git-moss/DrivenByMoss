@@ -119,6 +119,7 @@ public class MaschineConfiguration extends AbstractConfiguration
 
         this.activateExcludeDeactivatedItemsSetting (globalSettings);
         this.activateNewClipLengthSetting (globalSettings);
+        this.activateKnobSpeedSetting (globalSettings);
     }
 
 

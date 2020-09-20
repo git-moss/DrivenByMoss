@@ -6,7 +6,6 @@ package de.mossgrabers.controller.maschine.mode;
 
 import de.mossgrabers.controller.maschine.controller.MaschineControlSurface;
 import de.mossgrabers.framework.controller.display.ITextDisplay;
-import de.mossgrabers.framework.controller.valuechanger.IValueChanger;
 import de.mossgrabers.framework.daw.IModel;
 import de.mossgrabers.framework.daw.ITransport;
 
@@ -36,9 +35,8 @@ public class PositionMode extends BaseMode
     @Override
     public void onKnobValue (final int index, final int value)
     {
-        final IValueChanger valueChanger = this.model.getValueChanger ();
-        final double speed = valueChanger.calcKnobSpeed (value);
-        this.model.getTransport ().changePosition (speed > 0, valueChanger.isSlow ());
+        final double speed = this.model.getValueChanger ().calcKnobChange (value);
+        this.model.getTransport ().changePosition (speed > 0, this.surface.isKnobSensitivitySlow ());
     }
 
 

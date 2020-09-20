@@ -9,7 +9,6 @@ import de.mossgrabers.controller.push.controller.PushColorManager;
 import de.mossgrabers.controller.push.controller.PushControlSurface;
 import de.mossgrabers.controller.push.mode.BaseMode;
 import de.mossgrabers.framework.controller.ButtonID;
-import de.mossgrabers.framework.controller.ContinuousID;
 import de.mossgrabers.framework.controller.color.ColorEx;
 import de.mossgrabers.framework.controller.display.IGraphicDisplay;
 import de.mossgrabers.framework.controller.display.ITextDisplay;
@@ -37,7 +36,9 @@ public class UserMode extends BaseMode
      */
     public UserMode (final PushControlSurface surface, final IModel model)
     {
-        super ("User Controls", surface, model, model.getUserParameterBank (), ContinuousID.KNOB1);
+        super ("User Controls", surface, model, model.getUserParameterBank ());
+
+        this.setParametersFromBank ();
 
         this.isTemporary = false;
     }

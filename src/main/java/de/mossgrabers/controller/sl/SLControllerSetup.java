@@ -98,7 +98,7 @@ public class SLControllerSetup extends AbstractControllerSetup<SLControlSurface,
         super (factory, host, globalSettings, documentSettings);
         this.isMkII = isMkII;
         this.colorManager = new SLColorManager ();
-        this.valueChanger = new DefaultValueChanger (128, 1, 0.5);
+        this.valueChanger = new DefaultValueChanger (128, 1);
         this.configuration = new SLConfiguration (host, this.valueChanger, factory.getArpeggiatorModes (), isMkII);
     }
 
@@ -193,6 +193,8 @@ public class SLControllerSetup extends AbstractControllerSetup<SLControlSurface,
     @Override
     protected void createObservers ()
     {
+        super.createObservers ();
+
         this.createScaleObservers (this.configuration);
         this.configuration.registerDeactivatedItemsHandler (this.model);
 

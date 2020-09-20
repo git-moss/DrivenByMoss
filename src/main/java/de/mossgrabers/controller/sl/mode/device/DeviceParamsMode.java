@@ -31,7 +31,8 @@ public class DeviceParamsMode extends AbstractMode<SLControlSurface, SLConfigura
      */
     public DeviceParamsMode (final SLControlSurface surface, final IModel model)
     {
-        super ("Parameters", surface, model, false, model.getCursorDevice ().getParameterBank (), null, 0);
+        super ("Parameters", surface, model, false, model.getCursorDevice ().getParameterBank (), null);
+
         this.isTemporary = false;
     }
 

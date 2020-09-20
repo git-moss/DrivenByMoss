@@ -14,6 +14,7 @@ import de.mossgrabers.framework.controller.display.ITextDisplay;
 import de.mossgrabers.framework.daw.IModel;
 import de.mossgrabers.framework.daw.data.IChannel;
 import de.mossgrabers.framework.daw.data.ICursorDevice;
+import de.mossgrabers.framework.daw.data.IParameter;
 
 
 /**
@@ -37,15 +38,13 @@ public class DeviceLayerModeVolume extends DeviceLayerMode
 
     /** {@inheritDoc} */
     @Override
-    public void onKnobValue (final int index, final int value)
+    public IParameter get (final int index)
     {
         final ICursorDevice cd = this.model.getCursorDevice ();
 
         // Drum Pad Bank has size of 16, layers only 8
         final int offset = getDrumPadIndex (cd);
-        final IChannel layer = cd.getLayerOrDrumPadBank ().getItem (offset + index);
-        if (layer.doesExist ())
-            layer.changeVolume (value);
+        return cd.getLayerOrDrumPadBank ().getItem (offset + index).getVolumeParameter ();
     }
 
 

@@ -116,7 +116,7 @@ public class RibbonMode extends BaseMode
     public void onKnobValue (final int index, final int value)
     {
         if (index == 0)
-            this.configuration.setRibbonModeCC (this.model.getValueChanger ().changeValue (value, this.configuration.getRibbonModeCCVal (), 1, 128));
+            this.configuration.setRibbonModeCC (this.model.getValueChanger ().changeValue (value, this.configuration.getRibbonModeCCVal (), -100, 128));
     }
 
 

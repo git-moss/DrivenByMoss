@@ -147,7 +147,7 @@ public class PolySequencerView extends AbstractPolySequencerView<FireControlSurf
     @Override
     public void onSelectKnobValue (final int value)
     {
-        if (this.model.getValueChanger ().calcKnobSpeed (value) > 0)
+        if (this.model.getValueChanger ().isIncrease (value))
             this.onOctaveUp (ButtonEvent.DOWN);
         else
             this.onOctaveDown (ButtonEvent.DOWN);

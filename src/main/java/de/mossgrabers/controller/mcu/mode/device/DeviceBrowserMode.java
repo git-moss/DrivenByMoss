@@ -58,7 +58,7 @@ public class DeviceBrowserMode extends BaseMode
     @Override
     public void onKnobValue (final int index, final int value)
     {
-        int speed = (int) this.model.getValueChanger ().calcKnobSpeed (value, 1);
+        int speed = (int) this.model.getValueChanger ().calcKnobChange (value, -100);
         final boolean direction = speed > 0;
         if (this.surface.isShiftPressed ())
             speed = speed * 4;

@@ -8,7 +8,6 @@ import de.mossgrabers.controller.slmkiii.controller.SLMkIIIColorManager;
 import de.mossgrabers.controller.slmkiii.controller.SLMkIIIControlSurface;
 import de.mossgrabers.controller.slmkiii.controller.SLMkIIIDisplay;
 import de.mossgrabers.framework.controller.ButtonID;
-import de.mossgrabers.framework.controller.ContinuousID;
 import de.mossgrabers.framework.daw.IModel;
 import de.mossgrabers.framework.daw.data.IParameter;
 import de.mossgrabers.framework.utils.ButtonEvent;
@@ -30,7 +29,9 @@ public class UserMode extends AbstractParametersMode
      */
     public UserMode (final SLMkIIIControlSurface surface, final IModel model)
     {
-        super ("User Parameters", surface, model, model.getUserParameterBank (), ContinuousID.KNOB1);
+        super ("User Parameters", surface, model, model.getUserParameterBank ());
+
+        this.setParametersFromBank ();
     }
 
 

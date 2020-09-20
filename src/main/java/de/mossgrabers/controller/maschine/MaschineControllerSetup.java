@@ -141,7 +141,7 @@ public class MaschineControllerSetup extends AbstractControllerSetup<MaschineCon
 
         this.maschine = maschine;
         this.colorManager = new MaschineColorManager ();
-        this.valueChanger = new DefaultValueChanger (128, 8, 1);
+        this.valueChanger = new DefaultValueChanger (128, 8);
         this.configuration = new MaschineConfiguration (host, this.valueChanger, factory.getArpeggiatorModes ());
     }
 
@@ -267,6 +267,8 @@ public class MaschineControllerSetup extends AbstractControllerSetup<MaschineCon
     @Override
     protected void createObservers ()
     {
+        super.createObservers ();
+
         final MaschineControlSurface surface = this.getSurface ();
 
         surface.getViewManager ().addViewChangeListener ( (previousViewId, activeViewId) -> this.updateMode (null));
@@ -396,8 +398,8 @@ public class MaschineControllerSetup extends AbstractControllerSetup<MaschineCon
             }
             else
             {
-                final boolean isSlow = !this.valueChanger.isSlow ();
-                this.valueChanger.setSpeed (isSlow);
+                final boolean isSlow = !surface.isKnobSensitivitySlow ();
+                surface.setKnobSensitivityIsSlow (isSlow);
                 surface.getDisplay ().notify ("Value change speed: " + (isSlow ? "Slow" : "Fast"));
             }
 

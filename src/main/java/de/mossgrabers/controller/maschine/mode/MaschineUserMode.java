@@ -6,7 +6,6 @@ package de.mossgrabers.controller.maschine.mode;
 
 import de.mossgrabers.controller.maschine.MaschineConfiguration;
 import de.mossgrabers.controller.maschine.controller.MaschineControlSurface;
-import de.mossgrabers.framework.controller.ContinuousID;
 import de.mossgrabers.framework.controller.display.ITextDisplay;
 import de.mossgrabers.framework.daw.IModel;
 import de.mossgrabers.framework.daw.data.IParameter;
@@ -32,7 +31,7 @@ public class MaschineUserMode extends AbstractMode<MaschineControlSurface, Masch
      */
     public MaschineUserMode (final MaschineControlSurface surface, final IModel model)
     {
-        super ("User", surface, model, false, model.getUserParameterBank (), ContinuousID.KNOB1, 8);
+        super ("User", surface, model, false, model.getUserParameterBank (), DEFAULT_KNOB_IDS);
     }
 
 

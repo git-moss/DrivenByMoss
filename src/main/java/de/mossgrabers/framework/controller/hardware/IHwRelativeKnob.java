@@ -11,5 +11,11 @@ package de.mossgrabers.framework.controller.hardware;
  */
 public interface IHwRelativeKnob extends IHwContinuousControl
 {
-    // Intentionally empty
+    /**
+     * Set the sensitivity of the relative knob.
+     *
+     * @param sensitivity The sensitivity in the range [-100..100], 0 is the default, negative
+     *            values are slower, positive faster
+     */
+    void setSensitivity (double sensitivity);
 }

@@ -6,7 +6,6 @@ package de.mossgrabers.controller.apc.mode;
 
 import de.mossgrabers.controller.apc.APCConfiguration;
 import de.mossgrabers.controller.apc.controller.APCControlSurface;
-import de.mossgrabers.framework.controller.ContinuousID;
 import de.mossgrabers.framework.daw.IModel;
 import de.mossgrabers.framework.daw.data.IItem;
 import de.mossgrabers.framework.daw.data.bank.IBank;
@@ -41,7 +40,7 @@ public abstract class BaseMode extends AbstractMode<APCControlSurface, APCConfig
      */
     public BaseMode (final String name, final APCControlSurface surface, final IModel model, final int ledMode, final int defaultValue, final IBank<? extends IItem> bank)
     {
-        super (name, surface, model, false, bank, ContinuousID.KNOB1, 8);
+        super (name, surface, model, false, bank, DEFAULT_KNOB_IDS);
 
         this.isTemporary = false;
 

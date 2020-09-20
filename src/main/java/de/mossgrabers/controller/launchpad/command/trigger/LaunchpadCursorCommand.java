@@ -479,7 +479,7 @@ public class LaunchpadCursorCommand extends CursorCommand<LaunchpadControlSurfac
         if (!this.surface.isPressed (increase ? ButtonID.UP : ButtonID.DOWN))
             return;
 
-        this.model.getTransport ().changeTempo (increase);
+        this.model.getTransport ().changeTempo (increase, this.surface.isKnobSensitivitySlow ());
         this.surface.scheduleTask ( () -> this.triggerChangeTempo1 (increase), 400);
     }
 

@@ -13,6 +13,7 @@ import de.mossgrabers.framework.controller.display.ITextDisplay;
 import de.mossgrabers.framework.daw.IModel;
 import de.mossgrabers.framework.daw.data.ITrack;
 import de.mossgrabers.framework.daw.data.bank.ITrackBank;
+import de.mossgrabers.framework.parameterprovider.PanParameterProvider;
 
 
 /**
@@ -31,14 +32,8 @@ public class PanMode extends AbstractTrackMode
     public PanMode (final PushControlSurface surface, final IModel model)
     {
         super ("Panorama", surface, model);
-    }
 
-
-    /** {@inheritDoc} */
-    @Override
-    public void onKnobValue (final int index, final int value)
-    {
-        this.model.getCurrentTrackBank ().getItem (index).changePan (value);
+        this.setParameters (new PanParameterProvider (model));
     }
 
 

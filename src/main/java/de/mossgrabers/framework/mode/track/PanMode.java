@@ -10,6 +10,9 @@ import de.mossgrabers.framework.controller.ContinuousID;
 import de.mossgrabers.framework.controller.IControlSurface;
 import de.mossgrabers.framework.daw.IModel;
 import de.mossgrabers.framework.daw.data.ITrack;
+import de.mossgrabers.framework.parameterprovider.PanParameterProvider;
+
+import java.util.List;
 
 
 /**
@@ -32,7 +35,7 @@ public class PanMode<S extends IControlSurface<C>, C extends Configuration> exte
      */
     public PanMode (final S surface, final IModel model, final boolean isAbsolute)
     {
-        this (surface, model, isAbsolute, null, 0);
+        this (surface, model, isAbsolute, null);
     }
 
 
@@ -43,13 +46,14 @@ public class PanMode<S extends IControlSurface<C>, C extends Configuration> exte
      * @param model The model
      * @param isAbsolute If true the value change is happending with a setter otherwise relative
      *            change method is used
-     * @param firstKnob The ID of the first knob to control this mode, all other knobs must be
-     *            follow up IDs
-     * @param numberOfKnobs The number of knobs available to control this mode
+     * @param controls The IDs of the knobs or faders to control this mode
      */
-    public PanMode (final S surface, final IModel model, final boolean isAbsolute, final ContinuousID firstKnob, final int numberOfKnobs)
+    public PanMode (final S surface, final IModel model, final boolean isAbsolute, final List<ContinuousID> controls)
     {
-        super ("Panorama", surface, model, isAbsolute, firstKnob, numberOfKnobs);
+        super ("Panorama", surface, model, isAbsolute, controls);
+
+        if (controls != null)
+            this.setParameters (new PanParameterProvider (model));
     }
 
 

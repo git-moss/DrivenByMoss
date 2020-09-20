@@ -9,6 +9,9 @@ import de.mossgrabers.framework.controller.ContinuousID;
 import de.mossgrabers.framework.controller.IControlSurface;
 import de.mossgrabers.framework.daw.IModel;
 import de.mossgrabers.framework.daw.data.ITrack;
+import de.mossgrabers.framework.parameterprovider.VolumeParameterProvider;
+
+import java.util.List;
 
 
 /**
@@ -31,7 +34,7 @@ public class VolumeMode<S extends IControlSurface<C>, C extends Configuration> e
      */
     public VolumeMode (final S surface, final IModel model, final boolean isAbsolute)
     {
-        this (surface, model, isAbsolute, null, 0);
+        this (surface, model, isAbsolute, null);
     }
 
 
@@ -42,13 +45,14 @@ public class VolumeMode<S extends IControlSurface<C>, C extends Configuration> e
      * @param model The model
      * @param isAbsolute If true the value change is happending with a setter otherwise relative
      *            change method is used
-     * @param firstKnob The ID of the first knob to control this mode, all other knobs must be
-     *            follow up IDs
-     * @param numberOfKnobs The number of knobs available to control this mode
+     * @param controls The IDs of the knobs or faders to control this mode
      */
-    public VolumeMode (final S surface, final IModel model, final boolean isAbsolute, final ContinuousID firstKnob, final int numberOfKnobs)
+    public VolumeMode (final S surface, final IModel model, final boolean isAbsolute, final List<ContinuousID> controls)
     {
-        super ("Volume", surface, model, isAbsolute, firstKnob, numberOfKnobs);
+        super ("Volume", surface, model, isAbsolute, controls);
+
+        if (controls != null)
+            this.setParameters (new VolumeParameterProvider (model));
     }
 
 

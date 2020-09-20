@@ -30,7 +30,7 @@ public class MaschineParametersMode extends SelectedDeviceMode<MaschineControlSu
      */
     public MaschineParametersMode (final MaschineControlSurface surface, final IModel model)
     {
-        super (surface, model);
+        super (surface, model, null);
     }
 
 

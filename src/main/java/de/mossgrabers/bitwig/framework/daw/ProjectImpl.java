@@ -108,6 +108,14 @@ public class ProjectImpl implements IProject
 
     /** {@inheritDoc} */
     @Override
+    public IParameter getCueVolumeParameter ()
+    {
+        return this.cueVolumeParameter;
+    }
+
+
+    /** {@inheritDoc} */
+    @Override
     public String getCueVolumeStr ()
     {
         return this.cueVolumeParameter.getDisplayedValue ();
@@ -159,6 +167,14 @@ public class ProjectImpl implements IProject
     public void touchCueVolume (final boolean isBeingTouched)
     {
         this.cueVolumeParameter.touchValue (isBeingTouched);
+    }
+
+
+    /** {@inheritDoc} */
+    @Override
+    public IParameter getCueMixParameter ()
+    {
+        return this.cueMixParameter;
     }
 
 

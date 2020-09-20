@@ -275,7 +275,7 @@ public class TrackImpl extends ChannelImpl implements ITrack
     @Override
     public void changeCrossfadeModeAsNumber (final int control)
     {
-        this.setCrossfadeModeAsNumber (this.valueChanger.changeValue (control, this.getCrossfadeModeAsNumber (), 1, 3));
+        this.setCrossfadeModeAsNumber (this.valueChanger.changeValue (control, this.getCrossfadeModeAsNumber (), -100, 3));
     }
 
 

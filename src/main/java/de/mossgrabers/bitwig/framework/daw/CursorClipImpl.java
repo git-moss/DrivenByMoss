@@ -9,7 +9,7 @@ import de.mossgrabers.framework.controller.color.ColorEx;
 import de.mossgrabers.framework.controller.valuechanger.IValueChanger;
 import de.mossgrabers.framework.daw.INoteClip;
 import de.mossgrabers.framework.daw.IStepInfo;
-import de.mossgrabers.framework.daw.constants.TransportConstants;
+import de.mossgrabers.framework.daw.constants.Resolution;
 import de.mossgrabers.framework.daw.data.GridStep;
 import de.mossgrabers.framework.daw.data.empty.EmptyStepInfo;
 
@@ -145,7 +145,7 @@ public class CursorClipImpl implements INoteClip
     @Override
     public void changePlayStart (final int control)
     {
-        this.getClip ().getPlayStart ().inc (this.valueChanger.calcKnobSpeed (control, this.valueChanger.isSlow () ? 0.1 : 1));
+        this.getClip ().getPlayStart ().inc (this.valueChanger.calcKnobChange (control, -100));
     }
 
 
@@ -169,7 +169,7 @@ public class CursorClipImpl implements INoteClip
     @Override
     public void changePlayEnd (final int control)
     {
-        this.getClip ().getPlayStop ().inc (this.valueChanger.calcKnobSpeed (control, this.valueChanger.isSlow () ? 0.1 : 1));
+        this.getClip ().getPlayStop ().inc (this.valueChanger.calcKnobChange (control, -100));
     }
 
 
@@ -212,7 +212,7 @@ public class CursorClipImpl implements INoteClip
     @Override
     public void changeLoopStart (final int control)
     {
-        this.getClip ().getLoopStart ().inc (this.valueChanger.calcKnobSpeed (control, this.valueChanger.isSlow () ? 0.1 : 1));
+        this.getClip ().getLoopStart ().inc (this.valueChanger.calcKnobChange (control, -100));
     }
 
 
@@ -236,7 +236,7 @@ public class CursorClipImpl implements INoteClip
     @Override
     public void changeLoopLength (final int control)
     {
-        this.getClip ().getLoopLength ().inc (this.valueChanger.calcKnobSpeed (control, this.valueChanger.isSlow () ? 0.1 : 1));
+        this.getClip ().getLoopLength ().inc (this.valueChanger.calcKnobChange (control, -100));
     }
 
 
@@ -300,8 +300,7 @@ public class CursorClipImpl implements INoteClip
     @Override
     public void changeAccent (final int control)
     {
-        final double speed = this.valueChanger.calcKnobSpeed (control, this.valueChanger.getFractionValue () / 100.0);
-        this.getClip ().getAccent ().inc (speed);
+        this.getClip ().getAccent ().inc (this.valueChanger.calcKnobChange (control, -100));
     }
 
 
@@ -414,8 +413,9 @@ public class CursorClipImpl implements INoteClip
     public void changeStepDuration (final int channel, final int step, final int row, final int control)
     {
         final IStepInfo info = this.getStep (channel, step, row);
-        final double frac = this.valueChanger.isSlow () ? TransportConstants.INC_FRACTION_TIME_SLOW / 16.0 : TransportConstants.INC_FRACTION_TIME_SLOW;
-        this.updateStepDuration (channel, step, row, Math.max (0, info.getDuration () + this.valueChanger.calcKnobSpeed (control, frac)));
+        final boolean increase = this.valueChanger.isIncrease (control);
+        final double res = Resolution.RES_1_32.getValue ();
+        this.updateStepDuration (channel, step, row, Math.max (0, info.getDuration () + (increase ? res : -res)));
     }
 
 
@@ -435,7 +435,7 @@ public class CursorClipImpl implements INoteClip
     public void changeStepVelocity (final int channel, final int step, final int row, final int control)
     {
         final IStepInfo info = this.getStep (channel, step, row);
-        final double velocity = info.getVelocity () + this.valueChanger.toNormalizedValue ((int) this.valueChanger.calcKnobSpeed (control));
+        final double velocity = info.getVelocity () + this.valueChanger.toNormalizedValue ((int) this.valueChanger.calcKnobChange (control));
         this.updateStepVelocity (channel, step, row, Math.min (1.0, Math.max (0, velocity)));
     }
 
@@ -456,7 +456,7 @@ public class CursorClipImpl implements INoteClip
     public void changeStepReleaseVelocity (final int channel, final int step, final int row, final int control)
     {
         final IStepInfo info = this.getStep (channel, step, row);
-        final double velocity = info.getReleaseVelocity () + this.valueChanger.toNormalizedValue ((int) this.valueChanger.calcKnobSpeed (control));
+        final double velocity = info.getReleaseVelocity () + this.valueChanger.toNormalizedValue ((int) this.valueChanger.calcKnobChange (control));
         this.updateStepReleaseVelocity (channel, step, row, Math.min (1.0, Math.max (0, velocity)));
     }
 
@@ -477,7 +477,7 @@ public class CursorClipImpl implements INoteClip
     public void changeStepPressure (final int channel, final int step, final int row, final int control)
     {
         final IStepInfo info = this.getStep (channel, step, row);
-        final double pressure = info.getPressure () + this.valueChanger.toNormalizedValue ((int) this.valueChanger.calcKnobSpeed (control));
+        final double pressure = info.getPressure () + this.valueChanger.toNormalizedValue ((int) this.valueChanger.calcKnobChange (control));
         this.updateStepPressure (channel, step, row, Math.min (1.0, Math.max (0, pressure)));
     }
 
@@ -498,7 +498,7 @@ public class CursorClipImpl implements INoteClip
     public void changeStepTimbre (final int channel, final int step, final int row, final int control)
     {
         final IStepInfo info = this.getStep (channel, step, row);
-        final double timbre = info.getTimbre () + 2.0 * this.valueChanger.toNormalizedValue ((int) this.valueChanger.calcKnobSpeed (control));
+        final double timbre = info.getTimbre () + 2.0 * this.valueChanger.toNormalizedValue ((int) this.valueChanger.calcKnobChange (control));
         this.updateStepTimbre (channel, step, row, Math.min (1.0, Math.max (-1.0, timbre)));
     }
 
@@ -519,7 +519,7 @@ public class CursorClipImpl implements INoteClip
     public void changeStepPan (final int channel, final int step, final int row, final int control)
     {
         final IStepInfo info = this.getStep (channel, step, row);
-        final double pan = info.getPan () + 2.0 * this.valueChanger.toNormalizedValue ((int) this.valueChanger.calcKnobSpeed (control));
+        final double pan = info.getPan () + 2.0 * this.valueChanger.toNormalizedValue ((int) this.valueChanger.calcKnobChange (control));
         this.updateStepPan (channel, step, row, Math.min (1.0, Math.max (-1.0, pan)));
     }
 
@@ -540,7 +540,7 @@ public class CursorClipImpl implements INoteClip
     public void changeStepTranspose (final int channel, final int step, final int row, final int control)
     {
         final IStepInfo info = this.getStep (channel, step, row);
-        final double transpose = info.getTranspose () + this.valueChanger.calcKnobSpeed (control) / 8.0;
+        final double transpose = info.getTranspose () + this.valueChanger.calcKnobChange (control) / 8.0;
         this.updateStepTranspose (channel, step, row, Math.min (24.0, Math.max (-24.0, transpose)));
     }
 
@@ -561,7 +561,7 @@ public class CursorClipImpl implements INoteClip
     public void changeStepGain (final int channel, final int step, final int row, final int control)
     {
         final IStepInfo info = this.getStep (channel, step, row);
-        final double gain = info.getGain () + this.valueChanger.toNormalizedValue ((int) this.valueChanger.calcKnobSpeed (control));
+        final double gain = info.getGain () + this.valueChanger.toNormalizedValue ((int) this.valueChanger.calcKnobChange (control));
         this.updateStepGain (channel, step, row, Math.min (1.0, Math.max (0, gain)));
     }
 

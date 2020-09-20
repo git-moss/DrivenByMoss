@@ -25,6 +25,7 @@ import de.mossgrabers.framework.daw.data.bank.IParameterBank;
 import de.mossgrabers.framework.daw.data.bank.IParameterPageBank;
 import de.mossgrabers.framework.mode.ModeManager;
 import de.mossgrabers.framework.mode.Modes;
+import de.mossgrabers.framework.parameterprovider.BankParameterProvider;
 import de.mossgrabers.framework.utils.ButtonEvent;
 import de.mossgrabers.framework.utils.StringUtils;
 
@@ -64,6 +65,8 @@ public class DeviceParamsMode extends BaseMode
 
         this.isTemporary = false;
 
+        this.setParameters (new BankParameterProvider (this.model.getCursorDevice ().getParameterBank ()));
+
         this.setShowDevices (true);
 
         System.arraycopy (MENU, 0, this.hostMenu, 0, MENU.length);
@@ -94,14 +97,6 @@ public class DeviceParamsMode extends BaseMode
     public boolean isShowDevices ()
     {
         return this.showDevices;
-    }
-
-
-    /** {@inheritDoc} */
-    @Override
-    public void onKnobValue (final int index, final int value)
-    {
-        this.model.getCursorDevice ().getParameterBank ().getItem (index).changeValue (value);
     }
 
 
@@ -140,6 +135,7 @@ public class DeviceParamsMode extends BaseMode
             if (!this.showDevices)
             {
                 cd.getParameterPageBank ().selectPage (index);
+                this.bindControls ();
                 return;
             }
 
