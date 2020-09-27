@@ -339,11 +339,6 @@ public class PushConfiguration extends AbstractConfiguration implements IGraphic
 
         this.activateExcludeDeactivatedItemsSetting (globalSettings);
         this.activateEnableVUMetersSetting (globalSettings);
-        if (this.host.hasCrossfader ())
-            this.activateDisplayCrossfaderSetting (globalSettings);
-        else
-            this.displayCrossfader = false;
-
         this.activateFootswitchSetting (globalSettings);
         this.activateStopAutomationOnKnobReleaseSetting (globalSettings);
         this.activateNewClipLengthSetting (globalSettings);

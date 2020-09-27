@@ -8,8 +8,8 @@ import de.mossgrabers.framework.daw.data.IBrowserColumn;
 import de.mossgrabers.framework.daw.data.IBrowserColumnItem;
 import de.mossgrabers.framework.daw.data.IChannel;
 import de.mossgrabers.framework.daw.data.IItem;
+import de.mossgrabers.framework.observer.IObserverManagement;
 import de.mossgrabers.framework.observer.IValueObserver;
-import de.mossgrabers.framework.observer.ObserverManagement;
 
 
 /**
@@ -17,7 +17,7 @@ import de.mossgrabers.framework.observer.ObserverManagement;
  *
  * @author J&uuml;rgen Mo&szlig;graber
  */
-public interface IBrowser extends ObserverManagement
+public interface IBrowser extends IObserverManagement
 {
     /**
      * Add an observer for the activation state. Called when the state changes.

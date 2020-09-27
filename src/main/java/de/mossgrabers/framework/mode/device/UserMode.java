@@ -11,6 +11,7 @@ import de.mossgrabers.framework.controller.IControlSurface;
 import de.mossgrabers.framework.daw.IModel;
 import de.mossgrabers.framework.daw.data.IParameter;
 import de.mossgrabers.framework.mode.AbstractMode;
+import de.mossgrabers.framework.parameterprovider.BankParameterProvider;
 
 import java.util.List;
 
@@ -38,7 +39,7 @@ public class UserMode<S extends IControlSurface<C>, C extends Configuration> ext
     {
         super ("User Controls", surface, model, isAbsolute, model.getUserParameterBank (), knobs);
 
-        this.setParametersFromBank ();
+        this.setParameters (new BankParameterProvider (model.getUserParameterBank ()));
 
         this.isTemporary = false;
     }

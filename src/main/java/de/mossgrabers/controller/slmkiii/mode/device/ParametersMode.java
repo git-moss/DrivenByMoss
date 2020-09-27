@@ -127,10 +127,7 @@ public class ParametersMode extends AbstractParametersMode
             if (parameterPageBank.getSelectedItemIndex () == index)
                 this.setShowDevices (!this.isShowDevices ());
             else
-            {
                 parameterPageBank.selectPage (index);
-                this.bindControls ();
-            }
             return;
         }
 

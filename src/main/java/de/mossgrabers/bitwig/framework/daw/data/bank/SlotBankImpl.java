@@ -19,7 +19,7 @@ import com.bitwig.extension.controller.api.ClipLauncherSlotBank;
  *
  * @author J&uuml;rgen Mo&szlig;graber
  */
-public class SlotBankImpl extends AbstractBankImpl<ClipLauncherSlotBank, ISlot> implements ISlotBank
+public class SlotBankImpl extends AbstractItemBankImpl<ClipLauncherSlotBank, ISlot> implements ISlotBank
 {
     private final ITrack track;
 
@@ -36,8 +36,11 @@ public class SlotBankImpl extends AbstractBankImpl<ClipLauncherSlotBank, ISlot> 
     public SlotBankImpl (final IHost host, final IValueChanger valueChanger, final ITrack track, final ClipLauncherSlotBank clipLauncherSlotBank, final int numSlots)
     {
         super (host, valueChanger, clipLauncherSlotBank, numSlots);
+
         this.track = track;
-        this.initItems ();
+
+        for (int i = 0; i < this.getPageSize (); i++)
+            this.items.add (new SlotImpl (this.track, this.bank.getItemAt (i), i));
     }
 
 
@@ -54,14 +57,5 @@ public class SlotBankImpl extends AbstractBankImpl<ClipLauncherSlotBank, ISlot> 
                 return item;
         }
         return null;
-    }
-
-
-    /** {@inheritDoc} */
-    @Override
-    protected void initItems ()
-    {
-        for (int i = 0; i < this.pageSize; i++)
-            this.items.add (new SlotImpl (this.track, this.bank.getItemAt (i), i));
     }
 }

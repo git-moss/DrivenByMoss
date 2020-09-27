@@ -5,7 +5,7 @@
 package de.mossgrabers.framework.daw;
 
 import de.mossgrabers.framework.daw.data.IParameter;
-import de.mossgrabers.framework.observer.ObserverManagement;
+import de.mossgrabers.framework.observer.IObserverManagement;
 
 
 /**
@@ -13,7 +13,7 @@ import de.mossgrabers.framework.observer.ObserverManagement;
  *
  * @author J&uuml;rgen Mo&szlig;graber
  */
-public interface IProject extends ObserverManagement
+public interface IProject extends IObserverManagement
 {
     /**
      * Get the name of the active project.

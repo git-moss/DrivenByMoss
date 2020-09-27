@@ -53,13 +53,13 @@ public class DrumView extends AbstractDrumView<APCControlSurface, APCConfigurati
             // Turn on Note mode if an existing note is pressed
             final INoteClip cursorClip = this.getClip ();
             final int channel = this.configuration.getMidiEditChannel ();
-            final int step = GRID_COLUMNS * (this.allRows - 1 - y) + x;
+            final int step = this.numColumns * (this.allRows - 1 - y) + x;
             final int note = offsetY + this.selectedPad;
             final int state = cursorClip.getStep (channel, step, note).getState ();
             if (state == IStepInfo.NOTE_START)
             {
                 final NoteMode noteMode = (NoteMode) modeManager.getMode (Modes.NOTE);
-                noteMode.setValues (cursorClip, channel, x, note);
+                noteMode.setValues (cursorClip, channel, step, note);
                 modeManager.setActiveMode (Modes.NOTE);
             }
         }

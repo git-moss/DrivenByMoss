@@ -10,6 +10,7 @@ import de.mossgrabers.controller.slmkiii.controller.SLMkIIIDisplay;
 import de.mossgrabers.framework.controller.ButtonID;
 import de.mossgrabers.framework.daw.IModel;
 import de.mossgrabers.framework.daw.data.IParameter;
+import de.mossgrabers.framework.parameterprovider.BankParameterProvider;
 import de.mossgrabers.framework.utils.ButtonEvent;
 import de.mossgrabers.framework.utils.StringUtils;
 
@@ -31,7 +32,7 @@ public class UserMode extends AbstractParametersMode
     {
         super ("User Parameters", surface, model, model.getUserParameterBank ());
 
-        this.setParametersFromBank ();
+        this.setParameters (new BankParameterProvider (model.getUserParameterBank ()));
     }
 
 

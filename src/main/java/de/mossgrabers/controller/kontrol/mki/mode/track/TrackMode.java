@@ -13,7 +13,7 @@ import de.mossgrabers.framework.daw.data.ISend;
 import de.mossgrabers.framework.daw.data.ITrack;
 import de.mossgrabers.framework.daw.data.bank.ISendBank;
 import de.mossgrabers.framework.daw.data.bank.ITrackBank;
-import de.mossgrabers.framework.parameterprovider.TrackParameterProvider;
+import de.mossgrabers.framework.parameterprovider.ChannelParameterProvider;
 import de.mossgrabers.framework.utils.StringUtils;
 
 
@@ -35,12 +35,12 @@ public class TrackMode extends AbstractKontrol1Mode
         super ("Track", surface, model, model.getCurrentTrackBank ());
 
         model.addTrackBankObserver (this::switchBanks);
-        model.getTrackBank ().addSelectionObserver ( (index, isSelected) -> switchBanks (this.bank));
+        model.getTrackBank ().addSelectionObserver ( (index, isSelected) -> this.switchBanks (this.bank));
         final ITrackBank effectTrackBank = model.getEffectTrackBank ();
         if (effectTrackBank != null)
-            effectTrackBank.addSelectionObserver ( (index, isSelected) -> switchBanks (this.bank));
+            effectTrackBank.addSelectionObserver ( (index, isSelected) -> this.switchBanks (this.bank));
 
-        this.setParameters (new TrackParameterProvider (model));
+        this.setParameters (new ChannelParameterProvider (model));
     }
 
 

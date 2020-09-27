@@ -4,10 +4,8 @@
 
 package de.mossgrabers.controller.mcu.mode.track;
 
-import de.mossgrabers.controller.mcu.MCUConfiguration;
 import de.mossgrabers.controller.mcu.controller.MCUControlSurface;
 import de.mossgrabers.framework.controller.display.ITextDisplay;
-import de.mossgrabers.framework.controller.valuechanger.IValueChanger;
 import de.mossgrabers.framework.daw.IModel;
 import de.mossgrabers.framework.daw.data.ISend;
 import de.mossgrabers.framework.daw.data.ITrack;
@@ -22,10 +20,6 @@ import de.mossgrabers.framework.utils.StringUtils;
  */
 public class TrackMode extends AbstractTrackMode
 {
-    private final MCUConfiguration configuration;
-    private final IValueChanger    valueChanger;
-
-
     /**
      * Constructor.
      *
@@ -35,9 +29,6 @@ public class TrackMode extends AbstractTrackMode
     public TrackMode (final MCUControlSurface surface, final IModel model)
     {
         super ("Track", surface, model);
-
-        this.configuration = this.surface.getConfiguration ();
-        this.valueChanger = this.model.getValueChanger ();
     }
 
 
@@ -49,32 +40,19 @@ public class TrackMode extends AbstractTrackMode
         if (selectedTrack == null)
             return;
 
-        final boolean effectTrackBankActive = this.model.isEffectTrackBankActive ();
-
         switch (index)
         {
             case 0:
                 selectedTrack.changeVolume (value);
-                return;
+                break;
             case 1:
                 selectedTrack.changePan (value);
-                return;
+                break;
             default:
-                // Not used
+                if (!this.model.isEffectTrackBankActive ())
+                    selectedTrack.getSendBank ().getItem (index - 2).changeValue (value);
                 break;
         }
-
-        final MCUConfiguration config = this.surface.getConfiguration ();
-
-        if (index == 2)
-        {
-            if (config.isDisplayCrossfader ())
-                selectedTrack.changeCrossfadeModeAsNumber (value);
-            else if (!effectTrackBankActive)
-                selectedTrack.getSendBank ().getItem (0).changeValue (value);
-        }
-        else if (!effectTrackBankActive)
-            selectedTrack.getSendBank ().getItem (index - (config.isDisplayCrossfader () ? 3 : 2)).changeValue (value);
     }
 
 
@@ -86,8 +64,6 @@ public class TrackMode extends AbstractTrackMode
         if (selectedTrack == null)
             return 0;
 
-        final boolean effectTrackBankActive = this.model.isEffectTrackBankActive ();
-
         switch (index)
         {
             case 0:
@@ -96,16 +72,8 @@ public class TrackMode extends AbstractTrackMode
             case 1:
                 return selectedTrack.getPan ();
 
-            case 2:
-                if (this.configuration.isDisplayCrossfader ())
-                {
-                    final int crossfadeMode = selectedTrack.getCrossfadeModeAsNumber ();
-                    return crossfadeMode == 2 ? this.valueChanger.getUpperBound () : crossfadeMode == 1 ? this.valueChanger.getUpperBound () / 2 : 0;
-                }
-                return effectTrackBankActive ? 0 : selectedTrack.getSendBank ().getItem (0).getValue ();
-
             default:
-                return effectTrackBankActive ? 0 : selectedTrack.getSendBank ().getItem (index - (this.configuration.isDisplayCrossfader () ? 3 : 2)).getValue ();
+                return this.model.isEffectTrackBankActive () ? 0 : selectedTrack.getSendBank ().getItem (index - 2).getValue ();
         }
     }
 
@@ -120,9 +88,6 @@ public class TrackMode extends AbstractTrackMode
 
         this.isKnobTouched[index] = isTouched;
 
-        final MCUConfiguration config = this.surface.getConfiguration ();
-        final ISendBank sendBank = selectedTrack.getSendBank ();
-
         switch (index)
         {
             case 0:
@@ -131,13 +96,8 @@ public class TrackMode extends AbstractTrackMode
             case 1:
                 selectedTrack.touchPan (isTouched);
                 break;
-            case 2:
-                if (!config.isDisplayCrossfader ())
-                    sendBank.getItem (0).touchValue (isTouched);
-                break;
             default:
-                final int sendIndex = index - (config.isDisplayCrossfader () ? 3 : 2);
-                sendBank.getItem (sendIndex).touchValue (isTouched);
+                selectedTrack.getSendBank ().getItem (index - 2).touchValue (isTouched);
                 break;
         }
     }
@@ -163,8 +123,6 @@ public class TrackMode extends AbstractTrackMode
             return;
         }
 
-        final MCUConfiguration config = this.surface.getConfiguration ();
-
         final boolean displayTrackNames = this.surface.getConfiguration ().isDisplayTrackNames ();
         if (!displayTrackNames)
         {
@@ -177,15 +135,6 @@ public class TrackMode extends AbstractTrackMode
 
         int sendStart = 2;
         int sendCount = 6;
-        if (config.isDisplayCrossfader ())
-        {
-            sendStart = 3;
-            sendCount = 5;
-            final String crossfadeMode = selectedTrack.getCrossfadeMode ();
-            if (!displayTrackNames)
-                d.setCell (0, 2, "Crossfade");
-            d.setCell (1, 2, "A".equals (crossfadeMode) ? "A" : "B".equals (crossfadeMode) ? "     B" : "  <>  ");
-        }
         final boolean isEffectTrackBankActive = this.model.isEffectTrackBankActive ();
         final ISendBank sendBank = selectedTrack.getSendBank ();
         for (int i = 0; i < sendCount; i++)
@@ -226,14 +175,8 @@ public class TrackMode extends AbstractTrackMode
         this.surface.setKnobLED (0, MCUControlSurface.KNOB_LED_MODE_WRAP, t.getVolume (), upperBound);
         this.surface.setKnobLED (1, MCUControlSurface.KNOB_LED_MODE_BOOST_CUT, t.getPan (), upperBound);
 
-        final boolean displayCrossfader = this.surface.getConfiguration ().isDisplayCrossfader ();
-        final int start = displayCrossfader ? 3 : 2;
-        final int end = displayCrossfader ? 5 : 6;
-        if (displayCrossfader)
-        {
-            final String crossfadeMode = t.getCrossfadeMode ();
-            this.surface.setKnobLED (2, MCUControlSurface.KNOB_LED_MODE_SINGLE_DOT, "A".equals (crossfadeMode) ? 1 : "B".equals (crossfadeMode) ? 127 : 64, upperBound);
-        }
+        final int start = 2;
+        final int end = 6;
 
         final boolean isEffectTrackBankActive = this.model.isEffectTrackBankActive ();
         final ISendBank sendBank = t.getSendBank ();
@@ -264,15 +207,9 @@ public class TrackMode extends AbstractTrackMode
             case 1:
                 selectedTrack.resetPan ();
                 break;
-            case 2:
-                if (this.surface.getConfiguration ().isDisplayCrossfader ())
-                    selectedTrack.setCrossfadeMode ("AB");
-                else if (!this.model.isEffectTrackBankActive ())
-                    selectedTrack.getSendBank ().getItem (0).resetValue ();
-                break;
             default:
                 if (!this.model.isEffectTrackBankActive ())
-                    selectedTrack.getSendBank ().getItem (index - (this.surface.getConfiguration ().isDisplayCrossfader () ? 3 : 2)).resetValue ();
+                    selectedTrack.getSendBank ().getItem (index - 2).resetValue ();
                 break;
         }
     }

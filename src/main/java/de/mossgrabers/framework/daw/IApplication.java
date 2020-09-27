@@ -4,7 +4,7 @@
 
 package de.mossgrabers.framework.daw;
 
-import de.mossgrabers.framework.observer.ObserverManagement;
+import de.mossgrabers.framework.observer.IObserverManagement;
 
 
 /**
@@ -12,7 +12,7 @@ import de.mossgrabers.framework.observer.ObserverManagement;
  *
  * @author J&uuml;rgen Mo&szlig;graber
  */
-public interface IApplication extends ObserverManagement
+public interface IApplication extends IObserverManagement
 {
     /** The panel layout Arrange. */
     String PANEL_LAYOUT_ARRANGE = "ARRANGE";

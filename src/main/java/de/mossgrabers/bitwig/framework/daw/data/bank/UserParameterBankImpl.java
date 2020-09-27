@@ -7,14 +7,13 @@ package de.mossgrabers.bitwig.framework.daw.data.bank;
 import de.mossgrabers.bitwig.framework.daw.data.ParameterImpl;
 import de.mossgrabers.framework.controller.valuechanger.IValueChanger;
 import de.mossgrabers.framework.daw.IHost;
-import de.mossgrabers.framework.daw.data.IItem;
 import de.mossgrabers.framework.daw.data.IParameter;
+import de.mossgrabers.framework.daw.data.bank.AbstractBank;
 import de.mossgrabers.framework.daw.data.bank.IParameterBank;
-import de.mossgrabers.framework.observer.ItemSelectionObserver;
+import de.mossgrabers.framework.observer.IItemSelectionObserver;
 
 import com.bitwig.extension.controller.api.UserControlBank;
 
-import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
@@ -24,15 +23,12 @@ import java.util.List;
  *
  * @author J&uuml;rgen Mo&szlig;graber
  */
-public class UserParameterBankImpl implements IParameterBank
+public class UserParameterBankImpl extends AbstractBank<IParameter> implements IParameterBank
 {
-    private final UserControlBank  userControlBank;
-    private final IValueChanger    valueChanger;
-    private final int              itemCount;
-    private final int              pageSize;
-    private final List<IParameter> items;
+    private final UserControlBank userControlBank;
+    private final IValueChanger   valueChanger;
 
-    private int                    page = 0;
+    private int                   page = 0;
 
 
     /**
@@ -46,14 +42,13 @@ public class UserParameterBankImpl implements IParameterBank
      */
     public UserParameterBankImpl (final IHost host, final IValueChanger valueChanger, final UserControlBank userControlBank, final int numPages, final int numParamsPerPage)
     {
+        super (host, numParamsPerPage);
+
         this.valueChanger = valueChanger;
         this.userControlBank = userControlBank;
 
-        this.itemCount = numPages * numParamsPerPage;
-        this.pageSize = numParamsPerPage;
-
-        this.items = new ArrayList<> (this.itemCount);
-        for (int i = 0; i < this.itemCount; i++)
+        final int itemCount = numPages * numParamsPerPage;
+        for (int i = 0; i < itemCount; i++)
             this.items.add (new ParameterImpl (this.valueChanger, this.userControlBank.getControl (i), i));
     }
 
@@ -62,24 +57,7 @@ public class UserParameterBankImpl implements IParameterBank
     @Override
     public void enableObservers (final boolean enable)
     {
-        for (final IItem item: this.items)
-            item.enableObservers (enable);
-    }
-
-
-    /** {@inheritDoc} */
-    @Override
-    public int getPageSize ()
-    {
-        return this.pageSize;
-    }
-
-
-    /** {@inheritDoc} */
-    @Override
-    public int getItemCount ()
-    {
-        return this.itemCount;
+        this.items.forEach (item -> item.enableObservers (enable));
     }
 
 
@@ -87,7 +65,7 @@ public class UserParameterBankImpl implements IParameterBank
     @Override
     public IParameter getItem (final int index)
     {
-        final int position = this.page * this.pageSize + index;
+        final int position = this.page * this.getPageSize () + index;
         return this.items.get (position);
     }
 
@@ -110,7 +88,7 @@ public class UserParameterBankImpl implements IParameterBank
 
     /** {@inheritDoc} */
     @Override
-    public void addSelectionObserver (final ItemSelectionObserver observer)
+    public void addSelectionObserver (final IItemSelectionObserver observer)
     {
         // Intentionally empty
     }
@@ -128,7 +106,7 @@ public class UserParameterBankImpl implements IParameterBank
     @Override
     public boolean canScrollForwards ()
     {
-        return this.page < this.itemCount / this.pageSize - 1;
+        return this.page < this.getItemCount () / this.getPageSize () - 1;
     }
 
 
@@ -152,7 +130,7 @@ public class UserParameterBankImpl implements IParameterBank
     @Override
     public void scrollBackwards ()
     {
-        this.page = Math.max (0, this.page - 1);
+        this.setPage (this.page - 1);
     }
 
 
@@ -160,7 +138,7 @@ public class UserParameterBankImpl implements IParameterBank
     @Override
     public void scrollForwards ()
     {
-        this.page = Math.min (this.itemCount / this.pageSize - 1, this.page + 1);
+        this.setPage (this.page + 1);
     }
 
 
@@ -176,7 +154,14 @@ public class UserParameterBankImpl implements IParameterBank
     @Override
     public void scrollTo (final int position, final boolean adjustPage)
     {
-        this.page = position / this.pageSize;
+        this.setPage (position / this.getPageSize ());
+    }
+
+
+    private void setPage (final int page)
+    {
+        this.page = Math.min (this.getItemCount () / this.getPageSize () - 1, Math.max (0, page));
+        this.firePageObserver ();
     }
 
 
@@ -184,7 +169,7 @@ public class UserParameterBankImpl implements IParameterBank
     @Override
     public int getScrollPosition ()
     {
-        return this.page * this.pageSize;
+        return this.page * this.getPageSize ();
     }
 
 
@@ -233,13 +218,5 @@ public class UserParameterBankImpl implements IParameterBank
     public void selectPreviousPage ()
     {
         this.scrollBackwards ();
-    }
-
-
-    /** {@inheritDoc} */
-    @Override
-    public void setSkipDisabledItems (final boolean shouldSkip)
-    {
-        // Not supported
     }
 }

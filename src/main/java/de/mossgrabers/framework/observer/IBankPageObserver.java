@@ -5,15 +5,15 @@
 package de.mossgrabers.framework.observer;
 
 /**
- * An observer interface for settings.
+ * Callback interface for observing the adjustment of the current bank page.
  *
  * @author J&uuml;rgen Mo&szlig;graber
  */
 @FunctionalInterface
-public interface SettingObserver
+public interface IBankPageObserver
 {
     /**
-     * Will be called when the setting for which this observer was registered has changed.
+     * The callback function.
      */
-    void hasChanged ();
+    void pageAdjusted ();
 }

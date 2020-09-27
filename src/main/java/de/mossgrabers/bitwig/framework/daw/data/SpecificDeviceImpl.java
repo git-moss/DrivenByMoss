@@ -229,6 +229,14 @@ public class SpecificDeviceImpl extends DeviceImpl implements ISpecificDevice
 
     /** {@inheritDoc} */
     @Override
+    public void removeHasDrumPadsObserver (final IValueObserver<Boolean> observer)
+    {
+        this.hasDrumPadsObservers.remove (observer);
+    }
+
+
+    /** {@inheritDoc} */
+    @Override
     public boolean hasLayers ()
     {
         return this.device.hasLayers ().get ();

@@ -7,6 +7,7 @@ package de.mossgrabers.controller.apc.mode;
 import de.mossgrabers.controller.apc.controller.APCControlSurface;
 import de.mossgrabers.framework.daw.IModel;
 import de.mossgrabers.framework.daw.data.ITrack;
+import de.mossgrabers.framework.parameterprovider.PanParameterProvider;
 
 
 /**
@@ -26,15 +27,7 @@ public class PanMode extends BaseMode
     {
         super ("Panorama", surface, model, APCControlSurface.LED_MODE_PAN, 64, model.getCurrentTrackBank ());
 
-        model.addTrackBankObserver (this::switchBanks);
-    }
-
-
-    /** {@inheritDoc} */
-    @Override
-    public void setValue (final int index, final int value)
-    {
-        this.model.getCurrentTrackBank ().getItem (index).setPan (value);
+        this.setParameters (new PanParameterProvider (model));
     }
 
 

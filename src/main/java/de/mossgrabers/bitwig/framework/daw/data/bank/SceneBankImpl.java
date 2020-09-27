@@ -18,7 +18,7 @@ import com.bitwig.extension.controller.api.SceneBank;
  *
  * @author J&uuml;rgen Mo&szlig;graber
  */
-public class SceneBankImpl extends AbstractBankImpl<SceneBank, IScene> implements ISceneBank
+public class SceneBankImpl extends AbstractItemBankImpl<SceneBank, IScene> implements ISceneBank
 {
     /**
      * Constructor.
@@ -31,7 +31,9 @@ public class SceneBankImpl extends AbstractBankImpl<SceneBank, IScene> implement
     public SceneBankImpl (final IHost host, final IValueChanger valueChanger, final SceneBank sceneBank, final int numScenes)
     {
         super (host, valueChanger, sceneBank, numScenes);
-        this.initItems ();
+
+        for (int i = 0; i < this.getPageSize (); i++)
+            this.items.add (new SceneImpl (this.bank.getItemAt (i), i));
     }
 
 
@@ -40,14 +42,5 @@ public class SceneBankImpl extends AbstractBankImpl<SceneBank, IScene> implement
     public void stop ()
     {
         this.bank.stop ();
-    }
-
-
-    /** {@inheritDoc} */
-    @Override
-    protected void initItems ()
-    {
-        for (int i = 0; i < this.pageSize; i++)
-            this.items.add (new SceneImpl (this.bank.getItemAt (i), i));
     }
 }

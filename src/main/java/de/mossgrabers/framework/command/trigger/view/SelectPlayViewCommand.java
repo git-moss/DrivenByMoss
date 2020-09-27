@@ -12,6 +12,10 @@ import de.mossgrabers.framework.utils.ButtonEvent;
 import de.mossgrabers.framework.view.ViewManager;
 import de.mossgrabers.framework.view.Views;
 
+import java.util.Arrays;
+import java.util.HashSet;
+import java.util.Set;
+
 
 /**
  * Selects the next play/sequencer view from a list. If the last element is reached it wraps around
@@ -24,6 +28,9 @@ import de.mossgrabers.framework.view.Views;
  */
 public class SelectPlayViewCommand<S extends IControlSurface<C>, C extends Configuration> extends ViewMultiSelectCommand<S, C>
 {
+    private final Set<Views> allViewIds = new HashSet<> ();
+
+
     /**
      * Constructor.
      *
@@ -34,7 +41,24 @@ public class SelectPlayViewCommand<S extends IControlSurface<C>, C extends Confi
      */
     public SelectPlayViewCommand (final IModel model, final S surface, final boolean displayName, final Views... viewIds)
     {
+        this (model, surface, displayName, viewIds, viewIds);
+    }
+
+
+    /**
+     * Constructor.
+     *
+     * @param model The model
+     * @param surface The surface
+     * @param displayName Displays a popup with the views name if true
+     * @param viewIds The list with IDs of the views to select
+     * @param allViewIds The views for checking for previous play views
+     */
+    public SelectPlayViewCommand (final IModel model, final S surface, final boolean displayName, final Views [] viewIds, final Views [] allViewIds)
+    {
         super (model, surface, displayName, viewIds);
+
+        this.allViewIds.addAll (Arrays.asList (allViewIds));
     }
 
 
@@ -48,7 +72,7 @@ public class SelectPlayViewCommand<S extends IControlSurface<C>, C extends Confi
         // Restore the previous play view if coming from one not on the list
         final ViewManager viewManager = this.surface.getViewManager ();
         final Views activeViewId = viewManager.getActiveViewId ();
-        if (!this.viewIds.contains (activeViewId))
+        if (!this.allViewIds.contains (activeViewId))
         {
             final ITrack selectedTrack = this.model.getSelectedTrack ();
             if (selectedTrack != null)

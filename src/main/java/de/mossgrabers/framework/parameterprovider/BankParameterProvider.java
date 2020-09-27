@@ -4,10 +4,13 @@
 
 package de.mossgrabers.framework.parameterprovider;
 
-import de.mossgrabers.framework.daw.data.IItem;
 import de.mossgrabers.framework.daw.data.IParameter;
-import de.mossgrabers.framework.daw.data.bank.IBank;
-import de.mossgrabers.framework.utils.FrameworkException;
+import de.mossgrabers.framework.daw.data.bank.IParameterBank;
+import de.mossgrabers.framework.observer.IBankPageObserver;
+import de.mossgrabers.framework.observer.IParametersAdjustObserver;
+
+import java.util.HashSet;
+import java.util.Set;
 
 
 /**
@@ -16,9 +19,10 @@ import de.mossgrabers.framework.utils.FrameworkException;
  *
  * @author J&uuml;rgen Mo&szlig;graber
  */
-public class BankParameterProvider implements IParameterProvider
+public class BankParameterProvider implements IParameterProvider, IBankPageObserver
 {
-    private IBank<? extends IItem> bank;
+    private final IParameterBank                 bank;
+    private final Set<IParametersAdjustObserver> observers = new HashSet<> ();
 
 
     /**
@@ -26,7 +30,7 @@ public class BankParameterProvider implements IParameterProvider
      *
      * @param bank The bank from which to get the parameters
      */
-    public BankParameterProvider (final IBank<? extends IItem> bank)
+    public BankParameterProvider (final IParameterBank bank)
     {
         this.bank = bank;
     }
@@ -48,9 +52,33 @@ public class BankParameterProvider implements IParameterProvider
     @Override
     public IParameter get (final int index)
     {
-        final IItem item = this.bank.getItem (index);
-        if (!(item instanceof IParameter))
-            throw new FrameworkException ("Items in bank are not implementing IParameter!");
-        return (IParameter) item;
+        return this.bank.getItem (index);
+    }
+
+
+    /** {@inheritDoc} */
+    @Override
+    public void addParametersObserver (final IParametersAdjustObserver observer)
+    {
+        this.observers.add (observer);
+        this.bank.addPageObserver (this);
+    }
+
+
+    /** {@inheritDoc} */
+    @Override
+    public void removeParametersObserver (final IParametersAdjustObserver observer)
+    {
+        this.observers.remove (observer);
+        if (this.observers.isEmpty ())
+            this.bank.removePageObserver (this);
+    }
+
+
+    /** {@inheritDoc} */
+    @Override
+    public void pageAdjusted ()
+    {
+        this.observers.forEach (IParametersAdjustObserver::parametersAdjusted);
     }
 }

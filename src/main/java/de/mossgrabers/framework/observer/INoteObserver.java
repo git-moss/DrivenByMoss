@@ -10,7 +10,7 @@ package de.mossgrabers.framework.observer;
  * @author J&uuml;rgen Mo&szlig;graber
  */
 @FunctionalInterface
-public interface NoteObserver
+public interface INoteObserver
 {
     /**
      * The callback function.

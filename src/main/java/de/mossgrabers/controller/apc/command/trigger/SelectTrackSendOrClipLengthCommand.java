@@ -10,6 +10,7 @@ import de.mossgrabers.framework.command.core.AbstractTriggerCommand;
 import de.mossgrabers.framework.configuration.AbstractConfiguration;
 import de.mossgrabers.framework.controller.ButtonID;
 import de.mossgrabers.framework.daw.IModel;
+import de.mossgrabers.framework.mode.ModeManager;
 import de.mossgrabers.framework.mode.Modes;
 import de.mossgrabers.framework.utils.ButtonEvent;
 
@@ -46,10 +47,18 @@ public class SelectTrackSendOrClipLengthCommand extends AbstractTriggerCommand<A
         if (event != ButtonEvent.DOWN)
             return;
 
+        final ModeManager modeManager = this.surface.getModeManager ();
         if (this.surface.isPressed (ButtonID.SEND1))
         {
-            this.surface.getModeManager ().setActiveMode (Modes.get (Modes.SEND1, this.index));
+            modeManager.setActiveMode (Modes.get (Modes.SEND1, this.index));
             this.surface.getDisplay ().notify ("Send " + (this.index + 1));
+            return;
+        }
+
+        if (this.surface.isMkII () && this.surface.isPressed (ButtonID.SEND2))
+        {
+            modeManager.setActiveMode (Modes.USER);
+            modeManager.getMode (Modes.USER).selectItemPage (this.index);
             return;
         }
 

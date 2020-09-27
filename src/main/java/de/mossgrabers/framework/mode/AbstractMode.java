@@ -14,7 +14,7 @@ import de.mossgrabers.framework.daw.IModel;
 import de.mossgrabers.framework.daw.data.IItem;
 import de.mossgrabers.framework.daw.data.IParameter;
 import de.mossgrabers.framework.daw.data.bank.IBank;
-import de.mossgrabers.framework.parameterprovider.BankParameterProvider;
+import de.mossgrabers.framework.observer.IParametersAdjustObserver;
 import de.mossgrabers.framework.parameterprovider.IParameterProvider;
 import de.mossgrabers.framework.utils.ButtonEvent;
 import de.mossgrabers.framework.utils.FrameworkException;
@@ -32,7 +32,7 @@ import java.util.List;
  *
  * @author J&uuml;rgen Mo&szlig;graber
  */
-public abstract class AbstractMode<S extends IControlSurface<C>, C extends Configuration> implements Mode
+public abstract class AbstractMode<S extends IControlSurface<C>, C extends Configuration> implements Mode, IParametersAdjustObserver
 {
     /** Color identifier for a mode button which is off. */
     public static final String             BUTTON_COLOR_OFF = "BUTTON_COLOR_OFF";
@@ -152,18 +152,6 @@ public abstract class AbstractMode<S extends IControlSurface<C>, C extends Confi
     }
 
 
-    /**
-     * Calls setParameters with the items from the bank.
-     */
-    protected void setParametersFromBank ()
-    {
-        if (this.bank == null)
-            throw new FrameworkException ("Bank not initialized!");
-
-        this.setParameters (new BankParameterProvider (this.bank));
-    }
-
-
     /** {@inheritDoc} */
     @Override
     public String getName ()
@@ -185,6 +173,18 @@ public abstract class AbstractMode<S extends IControlSurface<C>, C extends Confi
     public void onActivate ()
     {
         this.isActive = true;
+
+        if (this.parameterProvider == null)
+            return;
+        this.parameterProvider.addParametersObserver (this);
+        this.bindControls ();
+    }
+
+
+    /** {@inheritDoc} */
+    @Override
+    public void parametersAdjusted ()
+    {
         this.bindControls ();
     }
 
@@ -194,6 +194,10 @@ public abstract class AbstractMode<S extends IControlSurface<C>, C extends Confi
     public void onDeactivate ()
     {
         this.isActive = false;
+
+        if (this.parameterProvider == null)
+            return;
+        this.parameterProvider.removeParametersObserver (this);
         this.unbindControls ();
     }
 
@@ -330,10 +334,8 @@ public abstract class AbstractMode<S extends IControlSurface<C>, C extends Confi
             return;
         }
 
-        if (this.bank == null)
-            return;
-        this.bank.selectPreviousItem ();
-        this.bindControls ();
+        if (this.bank != null)
+            this.bank.selectPreviousItem ();
     }
 
 
@@ -347,10 +349,8 @@ public abstract class AbstractMode<S extends IControlSurface<C>, C extends Confi
             return;
         }
 
-        if (this.bank == null)
-            return;
-        this.bank.selectNextItem ();
-        this.bindControls ();
+        if (this.bank != null)
+            this.bank.selectNextItem ();
     }
 
 
@@ -358,10 +358,8 @@ public abstract class AbstractMode<S extends IControlSurface<C>, C extends Confi
     @Override
     public void selectPreviousItemPage ()
     {
-        if (this.bank == null)
-            return;
-        this.bank.selectPreviousPage ();
-        this.bindControls ();
+        if (this.bank != null)
+            this.bank.selectPreviousPage ();
     }
 
 
@@ -369,10 +367,8 @@ public abstract class AbstractMode<S extends IControlSurface<C>, C extends Confi
     @Override
     public void selectNextItemPage ()
     {
-        if (this.bank == null)
-            return;
-        this.bank.selectNextPage ();
-        this.bindControls ();
+        if (this.bank != null)
+            this.bank.selectNextPage ();
     }
 
 
@@ -384,7 +380,6 @@ public abstract class AbstractMode<S extends IControlSurface<C>, C extends Confi
             return;
         final int position = page * this.bank.getPageSize ();
         this.bank.scrollTo (position);
-        this.bindControls ();
     }
 
 
@@ -428,8 +423,6 @@ public abstract class AbstractMode<S extends IControlSurface<C>, C extends Confi
     protected void switchBanks (final IBank<? extends IItem> bank)
     {
         this.bank = bank;
-
-        this.bindControls ();
     }
 
 

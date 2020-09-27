@@ -10,7 +10,7 @@ package de.mossgrabers.framework.observer;
  * @author J&uuml;rgen Mo&szlig;graber
  */
 @FunctionalInterface
-public interface ItemSelectionObserver
+public interface IItemSelectionObserver
 {
     /**
      * The callback function.

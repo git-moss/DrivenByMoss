@@ -10,7 +10,7 @@ import de.mossgrabers.framework.controller.valuechanger.IValueChanger;
 import de.mossgrabers.framework.daw.IHost;
 import de.mossgrabers.framework.daw.data.IItem;
 import de.mossgrabers.framework.daw.data.IParameter;
-import de.mossgrabers.framework.daw.data.bank.AbstractBank;
+import de.mossgrabers.framework.daw.data.bank.AbstractItemBank;
 import de.mossgrabers.framework.daw.data.bank.IParameterBank;
 import de.mossgrabers.framework.daw.data.bank.IParameterPageBank;
 
@@ -23,7 +23,7 @@ import com.bitwig.extension.controller.api.SettableIntegerValue;
  *
  * @author J&uuml;rgen Mo&szlig;graber
  */
-public class ParameterBankImpl extends AbstractBank<IParameter> implements IParameterBank
+public class ParameterBankImpl extends AbstractItemBank<IParameter> implements IParameterBank
 {
     private final CursorRemoteControlsPage remoteControls;
     private final IValueChanger            valueChanger;
@@ -47,21 +47,13 @@ public class ParameterBankImpl extends AbstractBank<IParameter> implements IPara
         this.valueChanger = valueChanger;
         this.remoteControls = remoteControlsPage;
 
-        this.initItems ();
+        for (int i = 0; i < this.getPageSize (); i++)
+            this.items.add (new ParameterImpl (this.valueChanger, this.remoteControls.getParameter (i), i));
 
         this.remoteControls.hasPrevious ().markInterested ();
         this.remoteControls.hasNext ().markInterested ();
         this.remoteControls.selectedPageIndex ().markInterested ();
         this.remoteControls.pageCount ().markInterested ();
-    }
-
-
-    /** {@inheritDoc} */
-    @Override
-    protected void initItems ()
-    {
-        for (int i = 0; i < this.pageSize; i++)
-            this.items.add (new ParameterImpl (this.valueChanger, this.remoteControls.getParameter (i), i));
     }
 
 

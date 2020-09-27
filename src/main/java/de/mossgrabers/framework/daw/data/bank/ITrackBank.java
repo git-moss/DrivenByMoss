@@ -6,7 +6,7 @@ package de.mossgrabers.framework.daw.data.bank;
 
 import de.mossgrabers.framework.daw.data.ITrack;
 import de.mossgrabers.framework.observer.IIndexedValueObserver;
-import de.mossgrabers.framework.observer.NoteObserver;
+import de.mossgrabers.framework.observer.INoteObserver;
 
 
 /**
@@ -70,5 +70,5 @@ public interface ITrackBank extends IChannelBank<ITrack>
      *
      * @param observer The note observer
      */
-    void addNoteObserver (final NoteObserver observer);
+    void addNoteObserver (final INoteObserver observer);
 }

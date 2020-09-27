@@ -17,6 +17,7 @@ import de.mossgrabers.framework.daw.IModel;
 import de.mossgrabers.framework.daw.data.IItem;
 import de.mossgrabers.framework.daw.data.IParameter;
 import de.mossgrabers.framework.mode.AbstractMode;
+import de.mossgrabers.framework.parameterprovider.BankParameterProvider;
 import de.mossgrabers.framework.utils.ButtonEvent;
 import de.mossgrabers.framework.utils.StringUtils;
 
@@ -38,7 +39,7 @@ public class UserMode extends BaseMode
     {
         super ("User Controls", surface, model, model.getUserParameterBank ());
 
-        this.setParametersFromBank ();
+        this.setParameters (new BankParameterProvider (model.getUserParameterBank ()));
 
         this.isTemporary = false;
     }

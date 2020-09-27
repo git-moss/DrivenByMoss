@@ -4,7 +4,7 @@
 
 package de.mossgrabers.framework.daw.data;
 
-import de.mossgrabers.framework.observer.ItemSelectionObserver;
+import de.mossgrabers.framework.observer.IItemSelectionObserver;
 
 
 /**
@@ -19,5 +19,5 @@ public interface IMasterTrack extends ITrack
      *
      * @param observer The observer to register
      */
-    void addSelectionObserver (ItemSelectionObserver observer);
+    void addSelectionObserver (IItemSelectionObserver observer);
 }

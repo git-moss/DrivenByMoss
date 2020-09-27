@@ -18,7 +18,7 @@ import com.bitwig.extension.controller.api.SendBank;
  *
  * @author J&uuml;rgen Mo&szlig;graber
  */
-public class SendBankImpl extends AbstractBankImpl<SendBank, ISend> implements ISendBank
+public class SendBankImpl extends AbstractItemBankImpl<SendBank, ISend> implements ISendBank
 {
     /**
      * Constructor.
@@ -31,15 +31,8 @@ public class SendBankImpl extends AbstractBankImpl<SendBank, ISend> implements I
     public SendBankImpl (final IHost host, final IValueChanger valueChanger, final SendBank sendBank, final int numSends)
     {
         super (host, valueChanger, sendBank, numSends);
-        this.initItems ();
-    }
 
-
-    /** {@inheritDoc} */
-    @Override
-    protected void initItems ()
-    {
-        for (int i = 0; i < this.pageSize; i++)
+        for (int i = 0; i < this.getPageSize (); i++)
             this.items.add (new SendImpl (this, this.valueChanger, this.bank.getItemAt (i), i));
     }
 }

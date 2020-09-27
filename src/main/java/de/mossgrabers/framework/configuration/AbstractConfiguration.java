@@ -15,7 +15,7 @@ import de.mossgrabers.framework.daw.data.bank.IDeviceBank;
 import de.mossgrabers.framework.daw.data.bank.IDrumPadBank;
 import de.mossgrabers.framework.daw.data.bank.ITrackBank;
 import de.mossgrabers.framework.daw.midi.ArpeggiatorMode;
-import de.mossgrabers.framework.observer.SettingObserver;
+import de.mossgrabers.framework.observer.ISettingObserver;
 import de.mossgrabers.framework.scale.Scale;
 import de.mossgrabers.framework.scale.ScaleLayout;
 import de.mossgrabers.framework.scale.Scales;
@@ -46,70 +46,68 @@ public abstract class AbstractConfiguration implements Configuration
     public static final Integer      ENABLE_VU_METERS                  = Integer.valueOf (4);
     /** ID for behaviour on stop setting. */
     public static final Integer      BEHAVIOUR_ON_STOP                 = Integer.valueOf (5);
-    /** ID for displaying the crossfader in tracks setting. */
-    public static final Integer      DISPLAY_CROSSFADER                = Integer.valueOf (6);
     /** ID for flipping the session grid setting. */
-    public static final Integer      FLIP_SESSION                      = Integer.valueOf (7);
+    public static final Integer      FLIP_SESSION                      = Integer.valueOf (6);
     /** ID for selecting the clip on launch setting. */
-    public static final Integer      SELECT_CLIP_ON_LAUNCH             = Integer.valueOf (8);
+    public static final Integer      SELECT_CLIP_ON_LAUNCH             = Integer.valueOf (7);
     /** ID for drawing record stripes setting. */
-    public static final Integer      DRAW_RECORD_STRIPE                = Integer.valueOf (9);
+    public static final Integer      DRAW_RECORD_STRIPE                = Integer.valueOf (8);
     /** ID for converting the aftertouch data setting. */
-    public static final Integer      CONVERT_AFTERTOUCH                = Integer.valueOf (10);
+    public static final Integer      CONVERT_AFTERTOUCH                = Integer.valueOf (9);
     /** ID for activating the fixed accent setting. */
-    public static final Integer      ACTIVATE_FIXED_ACCENT             = Integer.valueOf (11);
+    public static final Integer      ACTIVATE_FIXED_ACCENT             = Integer.valueOf (10);
     /** ID for the value of the fixed accent setting. */
-    public static final Integer      FIXED_ACCENT_VALUE                = Integer.valueOf (12);
+    public static final Integer      FIXED_ACCENT_VALUE                = Integer.valueOf (11);
     /** ID for the quantize amount setting. */
-    public static final Integer      QUANTIZE_AMOUNT                   = Integer.valueOf (13);
+    public static final Integer      QUANTIZE_AMOUNT                   = Integer.valueOf (12);
     /** ID for the flip recording setting. */
-    public static final Integer      FLIP_RECORD                       = Integer.valueOf (14);
+    public static final Integer      FLIP_RECORD                       = Integer.valueOf (13);
     /** Setting for automatic selecting the drum channel. */
-    public static final Integer      AUTO_SELECT_DRUM                  = Integer.valueOf (15);
+    public static final Integer      AUTO_SELECT_DRUM                  = Integer.valueOf (14);
     /** Setting for new clip length. */
-    public static final Integer      NEW_CLIP_LENGTH                   = Integer.valueOf (16);
+    public static final Integer      NEW_CLIP_LENGTH                   = Integer.valueOf (15);
     /** Setting for turning off empty drum pads (otherwise orange). */
-    public static final Integer      TURN_OFF_EMPTY_DRUM_PADS          = Integer.valueOf (17);
+    public static final Integer      TURN_OFF_EMPTY_DRUM_PADS          = Integer.valueOf (16);
     /** Setting for action for rec armed pad. */
-    public static final Integer      ACTION_FOR_REC_ARMED_PAD          = Integer.valueOf (18);
+    public static final Integer      ACTION_FOR_REC_ARMED_PAD          = Integer.valueOf (17);
     /** Setting for the footswitch functionality. */
-    public static final Integer      FOOTSWITCH_2                      = Integer.valueOf (19);
+    public static final Integer      FOOTSWITCH_2                      = Integer.valueOf (18);
     /** Setting for displaying browser column 1. */
-    public static final Integer      BROWSER_DISPLAY_FILTER1           = Integer.valueOf (20);
+    public static final Integer      BROWSER_DISPLAY_FILTER1           = Integer.valueOf (19);
     /** Setting for displaying browser column 2. */
-    public static final Integer      BROWSER_DISPLAY_FILTER2           = Integer.valueOf (21);
+    public static final Integer      BROWSER_DISPLAY_FILTER2           = Integer.valueOf (20);
     /** Setting for displaying browser column 3. */
-    public static final Integer      BROWSER_DISPLAY_FILTER3           = Integer.valueOf (22);
+    public static final Integer      BROWSER_DISPLAY_FILTER3           = Integer.valueOf (21);
     /** Setting for displaying browser column 4. */
-    public static final Integer      BROWSER_DISPLAY_FILTER4           = Integer.valueOf (23);
+    public static final Integer      BROWSER_DISPLAY_FILTER4           = Integer.valueOf (22);
     /** Setting for displaying browser column 5. */
-    public static final Integer      BROWSER_DISPLAY_FILTER5           = Integer.valueOf (24);
+    public static final Integer      BROWSER_DISPLAY_FILTER5           = Integer.valueOf (23);
     /** Setting for displaying browser column 6. */
-    public static final Integer      BROWSER_DISPLAY_FILTER6           = Integer.valueOf (25);
+    public static final Integer      BROWSER_DISPLAY_FILTER6           = Integer.valueOf (24);
     /** Setting for displaying browser column 7. */
-    public static final Integer      BROWSER_DISPLAY_FILTER7           = Integer.valueOf (26);
+    public static final Integer      BROWSER_DISPLAY_FILTER7           = Integer.valueOf (25);
     /** Setting for displaying browser column 8. */
-    public static final Integer      BROWSER_DISPLAY_FILTER8           = Integer.valueOf (27);
+    public static final Integer      BROWSER_DISPLAY_FILTER8           = Integer.valueOf (26);
     /** The speed of a knob. */
-    public static final Integer      KNOB_SENSITIVITY_DEFAULT          = Integer.valueOf (28);
+    public static final Integer      KNOB_SENSITIVITY_DEFAULT          = Integer.valueOf (27);
     /** The speed of a knob in slow mode. */
-    public static final Integer      KNOB_SENSITIVITY_SLOW             = Integer.valueOf (29);
+    public static final Integer      KNOB_SENSITIVITY_SLOW             = Integer.valueOf (28);
     /** Turn noterepeat on/off. */
-    public static final Integer      NOTEREPEAT_ACTIVE                 = Integer.valueOf (30);
+    public static final Integer      NOTEREPEAT_ACTIVE                 = Integer.valueOf (29);
     /** The note repeat period. */
-    public static final Integer      NOTEREPEAT_PERIOD                 = Integer.valueOf (31);
+    public static final Integer      NOTEREPEAT_PERIOD                 = Integer.valueOf (30);
     /** The note repeat length. */
-    public static final Integer      NOTEREPEAT_LENGTH                 = Integer.valueOf (32);
+    public static final Integer      NOTEREPEAT_LENGTH                 = Integer.valueOf (31);
     /** The note repeat mode. */
-    public static final Integer      NOTEREPEAT_MODE                   = Integer.valueOf (33);
+    public static final Integer      NOTEREPEAT_MODE                   = Integer.valueOf (32);
     /** The note repeat octave. */
-    public static final Integer      NOTEREPEAT_OCTAVE                 = Integer.valueOf (34);
+    public static final Integer      NOTEREPEAT_OCTAVE                 = Integer.valueOf (33);
     /** The MIDI channel to use for editing sequencer notes. */
-    public static final Integer      MIDI_EDIT_CHANNEL                 = Integer.valueOf (35);
+    public static final Integer      MIDI_EDIT_CHANNEL                 = Integer.valueOf (34);
     /** Setting for including mastertracks. */
-    public static final Integer      INCLUDE_MASTER                    = Integer.valueOf (36);
+    public static final Integer      INCLUDE_MASTER                    = Integer.valueOf (35);
     /** Setting for excluding deactivated tracks. */
-    public static final Integer      EXCLUDE_DEACTIVATED_ITEMS         = Integer.valueOf (37);
+    public static final Integer      EXCLUDE_DEACTIVATED_ITEMS         = Integer.valueOf (36);
 
     // Implementation IDs start at 50
 
@@ -210,7 +208,7 @@ public abstract class AbstractConfiguration implements Configuration
     }
 
     /** The names for clip lengths. */
-    protected static final String []                 NEW_CLIP_LENGTH_VALUES      =
+    protected static final String []                  NEW_CLIP_LENGTH_VALUES      =
     {
         "1 Beat",
         "2 Beat",
@@ -222,21 +220,21 @@ public abstract class AbstractConfiguration implements Configuration
         "32 Bars"
     };
 
-    private static final String []                   BEHAVIOUR_ON_STOP_VALUES    =
+    private static final String []                    BEHAVIOUR_ON_STOP_VALUES    =
     {
         "Move play cursor",
         "Return to Zero",
         "Pause"
     };
 
-    private static final String []                   ACTIONS_REC_ARMED_PADS      =
+    private static final String []                    ACTIONS_REC_ARMED_PADS      =
     {
         "Start recording",
         "Create new clip",
         "Do nothing"
     };
 
-    protected static final String []                 FOOTSWITCH_VALUES           =
+    protected static final String []                  FOOTSWITCH_VALUES           =
     {
         "Toggle Play",
         "Toggle Record",
@@ -255,7 +253,7 @@ public abstract class AbstractConfiguration implements Configuration
         "Quantize"
     };
 
-    private static final String []                   BROWSER_FILTER_COLUMN_NAMES =
+    private static final String []                    BROWSER_FILTER_COLUMN_NAMES =
     {
         "Collection",
         "Location",
@@ -267,65 +265,63 @@ public abstract class AbstractConfiguration implements Configuration
         "Device"
     };
 
-    private static final String []                   COLUMN_VALUES               =
+    private static final String []                    COLUMN_VALUES               =
     {
         "Hide",
         "Show"
     };
 
     /** The Off/On option. */
-    protected static final String []                 ON_OFF_OPTIONS              =
+    protected static final String []                  ON_OFF_OPTIONS              =
     {
         "Off",
         "On"
     };
 
-    protected final IHost                            host;
+    protected final IHost                             host;
 
-    private IEnumSetting                             scaleBaseSetting;
-    private IEnumSetting                             scaleInKeySetting;
-    private IEnumSetting                             scaleLayoutSetting;
-    private IEnumSetting                             scaleSetting;
-    private IEnumSetting                             enableVUMetersSetting;
-    private IEnumSetting                             displayCrossfaderSetting;
-    private IEnumSetting                             flipSessionSetting;
-    private IEnumSetting                             accentActiveSetting;
-    private IIntegerSetting                          accentValueSetting;
-    private IIntegerSetting                          quantizeAmountSetting;
-    private IEnumSetting                             newClipLengthSetting;
-    private IEnumSetting                             noteRepeatActiveSetting;
-    private IEnumSetting                             noteRepeatPeriodSetting;
-    private IEnumSetting                             noteRepeatLengthSetting;
-    private IEnumSetting                             noteRepeatModeSetting;
-    private IEnumSetting                             noteRepeatOctaveSetting;
-    private IEnumSetting                             midiEditChannelSetting;
+    private IEnumSetting                              scaleBaseSetting;
+    private IEnumSetting                              scaleInKeySetting;
+    private IEnumSetting                              scaleLayoutSetting;
+    private IEnumSetting                              scaleSetting;
+    private IEnumSetting                              enableVUMetersSetting;
+    private IEnumSetting                              flipSessionSetting;
+    private IEnumSetting                              accentActiveSetting;
+    private IIntegerSetting                           accentValueSetting;
+    private IIntegerSetting                           quantizeAmountSetting;
+    private IEnumSetting                              newClipLengthSetting;
+    private IEnumSetting                              noteRepeatActiveSetting;
+    private IEnumSetting                              noteRepeatPeriodSetting;
+    private IEnumSetting                              noteRepeatLengthSetting;
+    private IEnumSetting                              noteRepeatModeSetting;
+    private IEnumSetting                              noteRepeatOctaveSetting;
+    private IEnumSetting                              midiEditChannelSetting;
 
-    private final Map<Integer, Set<SettingObserver>> observers                   = new HashMap<> ();
-    protected IValueChanger                          valueChanger;
+    private final Map<Integer, Set<ISettingObserver>> observers                   = new HashMap<> ();
+    protected IValueChanger                           valueChanger;
 
-    private String                                   scale                       = "Major";
-    private String                                   scaleBase                   = "C";
-    private boolean                                  scaleInKey                  = true;
-    private String                                   scaleLayout                 = "4th ^";
-    private boolean                                  enableVUMeters              = false;
-    private BehaviourOnStop                          behaviourOnStop             = BehaviourOnStop.MOVE_PLAY_CURSOR;
-    protected boolean                                displayCrossfader           = true;
-    protected boolean                                flipSession                 = false;
-    private boolean                                  selectClipOnLaunch          = true;
-    private boolean                                  drawRecordStripe            = true;
-    private int                                      convertAftertouch           = 0;
+    private String                                    scale                       = "Major";
+    private String                                    scaleBase                   = "C";
+    private boolean                                   scaleInKey                  = true;
+    private String                                    scaleLayout                 = "4th ^";
+    private boolean                                   enableVUMeters              = false;
+    private BehaviourOnStop                           behaviourOnStop             = BehaviourOnStop.MOVE_PLAY_CURSOR;
+    protected boolean                                 flipSession                 = false;
+    private boolean                                   selectClipOnLaunch          = true;
+    private boolean                                   drawRecordStripe            = true;
+    private int                                       convertAftertouch           = 0;
     /** Accent button active. */
-    private boolean                                  accentActive                = false;
+    private boolean                                   accentActive                = false;
     /** Fixed velocity value for accent. */
-    private int                                      fixedAccentValue            = 127;
-    private int                                      quantizeAmount              = 100;
-    protected boolean                                flipRecord                  = false;
-    private int                                      newClipLength               = 2;
-    private boolean                                  autoSelectDrum              = false;
-    private boolean                                  turnOffEmptyDrumPads        = false;
-    private int                                      actionForRecArmedPad        = 0;
-    private int                                      footswitch2                 = FOOTSWITCH_2_NEW_BUTTON;
-    private boolean []                               browserDisplayFilter        =
+    private int                                       fixedAccentValue            = 127;
+    private int                                       quantizeAmount              = 100;
+    protected boolean                                 flipRecord                  = false;
+    private int                                       newClipLength               = 2;
+    private boolean                                   autoSelectDrum              = false;
+    private boolean                                   turnOffEmptyDrumPads        = false;
+    private int                                       actionForRecArmedPad        = 0;
+    private int                                       footswitch2                 = FOOTSWITCH_2_NEW_BUTTON;
+    private boolean []                                browserDisplayFilter        =
     {
         true,
         true,
@@ -336,20 +332,20 @@ public abstract class AbstractConfiguration implements Configuration
         true,
         true
     };
-    private int                                      knobSpeedDefault            = 0;
-    private int                                      knobSpeedSlow               = -40;
+    private int                                       knobSpeedDefault            = 0;
+    private int                                       knobSpeedSlow               = -40;
 
-    private boolean                                  noteRepeatActive            = false;
-    private Resolution                               noteRepeatPeriod            = Resolution.RES_1_8;
-    private Resolution                               noteRepeatLength            = Resolution.RES_1_8;
-    private ArpeggiatorMode                          noteRepeatMode;
-    private int                                      noteRepeatOctave            = 0;
-    private int                                      midiEditChannel             = 0;
-    private final ArpeggiatorMode []                 arpeggiatorModes;
+    private boolean                                   noteRepeatActive            = false;
+    private Resolution                                noteRepeatPeriod            = Resolution.RES_1_8;
+    private Resolution                                noteRepeatLength            = Resolution.RES_1_8;
+    private ArpeggiatorMode                           noteRepeatMode;
+    private int                                       noteRepeatOctave            = 0;
+    private int                                       midiEditChannel             = 0;
+    private final ArpeggiatorMode []                  arpeggiatorModes;
 
-    private boolean                                  includeMaster               = true;
-    private boolean                                  excludeDeactivatedItems     = false;
-    private final String []                          userPageNames               = new String [8];
+    private boolean                                   includeMaster               = true;
+    private boolean                                   excludeDeactivatedItems     = false;
+    private final String []                           userPageNames               = new String [8];
 
 
     /**
@@ -375,7 +371,7 @@ public abstract class AbstractConfiguration implements Configuration
 
     /** {@inheritDoc} */
     @Override
-    public void addSettingObserver (final Integer settingID, final SettingObserver observer)
+    public void addSettingObserver (final Integer settingID, final ISettingObserver observer)
     {
         this.observers.computeIfAbsent (settingID, id -> new HashSet<> ()).add (observer);
     }
@@ -481,17 +477,6 @@ public abstract class AbstractConfiguration implements Configuration
     }
 
 
-    /**
-     * Set the display crossfader setting.
-     *
-     * @param enabled True if visible
-     */
-    public void setDisplayCrossfader (final boolean enabled)
-    {
-        this.setOnOffSetting (this.displayCrossfaderSetting, enabled);
-    }
-
-
     /** {@inheritDoc} */
     @Override
     public void setFlipSession (final boolean enabled)
@@ -569,14 +554,6 @@ public abstract class AbstractConfiguration implements Configuration
     public BehaviourOnStop getBehaviourOnStop ()
     {
         return this.behaviourOnStop;
-    }
-
-
-    /** {@inheritDoc} */
-    @Override
-    public boolean isDisplayCrossfader ()
-    {
-        return this.displayCrossfader;
     }
 
 
@@ -941,21 +918,6 @@ public abstract class AbstractConfiguration implements Configuration
         behaviourOnStopSetting.addValueObserver (value -> {
             this.behaviourOnStop = BehaviourOnStop.values ()[lookupIndex (BEHAVIOUR_ON_STOP_VALUES, value)];
             this.notifyObservers (BEHAVIOUR_ON_STOP);
-        });
-    }
-
-
-    /**
-     * Activate the display crossfader setting.
-     *
-     * @param settingsUI The settings
-     */
-    protected void activateDisplayCrossfaderSetting (final ISettingsUI settingsUI)
-    {
-        this.displayCrossfaderSetting = settingsUI.getEnumSetting ("Display Crossfader on Track", CATEGORY_WORKFLOW, ON_OFF_OPTIONS, ON_OFF_OPTIONS[0]);
-        this.displayCrossfaderSetting.addValueObserver (value -> {
-            this.displayCrossfader = "On".equals (value);
-            this.notifyObservers (AbstractConfiguration.DISPLAY_CROSSFADER);
         });
     }
 
@@ -1332,9 +1294,9 @@ public abstract class AbstractConfiguration implements Configuration
      */
     protected void notifyObservers (final Integer settingID)
     {
-        final Set<SettingObserver> set = this.observers.get (settingID);
+        final Set<ISettingObserver> set = this.observers.get (settingID);
         if (set != null)
-            set.forEach (SettingObserver::hasChanged);
+            set.forEach (ISettingObserver::hasChanged);
     }
 
 

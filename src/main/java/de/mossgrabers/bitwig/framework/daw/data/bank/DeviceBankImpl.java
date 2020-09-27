@@ -19,7 +19,7 @@ import com.bitwig.extension.controller.api.DeviceBank;
  *
  * @author J&uuml;rgen Mo&szlig;graber
  */
-public class DeviceBankImpl extends AbstractBankImpl<DeviceBank, IDevice> implements IDeviceBank
+public class DeviceBankImpl extends AbstractItemBankImpl<DeviceBank, IDevice> implements IDeviceBank
 {
     private final ICursorDevice cursorDevice;
 
@@ -39,15 +39,7 @@ public class DeviceBankImpl extends AbstractBankImpl<DeviceBank, IDevice> implem
 
         this.cursorDevice = cursorDevice;
 
-        this.initItems ();
-    }
-
-
-    /** {@inheritDoc} */
-    @Override
-    protected void initItems ()
-    {
-        for (int i = 0; i < this.pageSize; i++)
+        for (int i = 0; i < this.getPageSize (); i++)
             this.items.add (new DeviceImpl (this.bank.getItemAt (i), i));
     }
 

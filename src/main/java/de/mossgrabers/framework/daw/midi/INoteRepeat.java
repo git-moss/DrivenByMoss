@@ -4,7 +4,7 @@
 
 package de.mossgrabers.framework.daw.midi;
 
-import de.mossgrabers.framework.observer.ObserverManagement;
+import de.mossgrabers.framework.observer.IObserverManagement;
 
 
 /**
@@ -12,7 +12,7 @@ import de.mossgrabers.framework.observer.ObserverManagement;
  *
  * @author J&uuml;rgen Mo&szlig;graber
  */
-public interface INoteRepeat extends ObserverManagement
+public interface INoteRepeat extends IObserverManagement
 {
     /**
      * Toggle if note repeat is active.

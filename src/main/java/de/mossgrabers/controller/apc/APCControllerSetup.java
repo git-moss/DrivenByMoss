@@ -30,7 +30,6 @@ import de.mossgrabers.controller.apc.view.SequencerView;
 import de.mossgrabers.controller.apc.view.SessionView;
 import de.mossgrabers.controller.apc.view.ShiftView;
 import de.mossgrabers.framework.command.continuous.CrossfaderCommand;
-import de.mossgrabers.framework.command.continuous.FaderAbsoluteCommand;
 import de.mossgrabers.framework.command.continuous.KnobRowModeCommand;
 import de.mossgrabers.framework.command.trigger.application.PaneCommand;
 import de.mossgrabers.framework.command.trigger.application.PaneCommand.Panels;
@@ -41,7 +40,6 @@ import de.mossgrabers.framework.command.trigger.clip.NewCommand;
 import de.mossgrabers.framework.command.trigger.device.DeviceLayerLeftCommand;
 import de.mossgrabers.framework.command.trigger.device.DeviceLayerRightCommand;
 import de.mossgrabers.framework.command.trigger.device.DeviceOnOffCommand;
-import de.mossgrabers.framework.command.trigger.device.DeviceParamsKnobRowCommand;
 import de.mossgrabers.framework.command.trigger.device.SelectNextDeviceOrParamPageCommand;
 import de.mossgrabers.framework.command.trigger.device.SelectPreviousDeviceOrParamPageCommand;
 import de.mossgrabers.framework.command.trigger.mode.ModeCursorCommand.Direction;
@@ -64,7 +62,6 @@ import de.mossgrabers.framework.controller.ContinuousID;
 import de.mossgrabers.framework.controller.ISetupFactory;
 import de.mossgrabers.framework.controller.color.ColorManager;
 import de.mossgrabers.framework.controller.hardware.BindType;
-import de.mossgrabers.framework.controller.hardware.IHwContinuousControl;
 import de.mossgrabers.framework.controller.valuechanger.DefaultValueChanger;
 import de.mossgrabers.framework.daw.IHost;
 import de.mossgrabers.framework.daw.ITransport;
@@ -79,6 +76,8 @@ import de.mossgrabers.framework.daw.midi.IMidiInput;
 import de.mossgrabers.framework.daw.midi.IMidiOutput;
 import de.mossgrabers.framework.mode.ModeManager;
 import de.mossgrabers.framework.mode.Modes;
+import de.mossgrabers.framework.mode.device.ParameterMode;
+import de.mossgrabers.framework.mode.track.VolumeMode;
 import de.mossgrabers.framework.scale.Scales;
 import de.mossgrabers.framework.utils.Timeout;
 import de.mossgrabers.framework.view.AbstractSequencerView;
@@ -320,10 +319,13 @@ public class APCControllerSetup extends AbstractControllerSetup<APCControlSurfac
 
         for (int i = 0; i < 8; i++)
         {
-            this.addFader (ContinuousID.get (ContinuousID.FADER1, i), "Fader" + (i + 1), new FaderAbsoluteCommand<> (i, this.model, surface), BindType.CC, i, APCControlSurface.APC_KNOB_TRACK_LEVEL);
+            this.addFader (ContinuousID.get (ContinuousID.FADER1, i), "Fader" + (i + 1), null, BindType.CC, i, APCControlSurface.APC_KNOB_TRACK_LEVEL);
             this.addAbsoluteKnob (ContinuousID.get (ContinuousID.KNOB1, i), "Knob " + (i + 1), new KnobRowModeCommand<> (i, this.model, surface), APCControlSurface.APC_KNOB_TRACK_KNOB_1 + i);
-            this.addAbsoluteKnob (ContinuousID.get (ContinuousID.DEVICE_KNOB1, i), "Device Knob " + (i + 1), new DeviceParamsKnobRowCommand<> (i, this.model, surface), APCControlSurface.APC_KNOB_DEVICE_KNOB_1 + i);
+            this.addAbsoluteKnob (ContinuousID.get (ContinuousID.DEVICE_KNOB1, i), "Device Knob " + (i + 1), null, APCControlSurface.APC_KNOB_DEVICE_KNOB_1 + i);
         }
+
+        new VolumeMode<> (surface, this.model, true, ContinuousID.createSequentialList (ContinuousID.FADER1, 8)).onActivate ();
+        new ParameterMode<> (surface, this.model, true, ContinuousID.createSequentialList (ContinuousID.DEVICE_KNOB1, 8)).onActivate ();
 
         if (this.isMkII)
             this.addRelativeKnob (ContinuousID.TEMPO, "Tempo", new APCTempoCommand (this.model, surface, timeout), APCControlSurface.APC_KNOB_TEMPO);
@@ -703,11 +705,7 @@ public class APCControllerSetup extends AbstractControllerSetup<APCControlSurfac
 
         final IParameterBank parameterBank = this.model.getCursorDevice ().getParameterBank ();
         for (int i = 0; i < 8; i++)
-        {
-            final IHwContinuousControl hwKnob = surface.getContinuous (ContinuousID.get (ContinuousID.DEVICE_KNOB1, i));
-            if (!((DeviceParamsKnobRowCommand<?, ?>) hwKnob.getCommand ()).isKnobMoving ())
-                surface.setLED (APCControlSurface.APC_KNOB_DEVICE_KNOB_1 + i, parameterBank.getItem (i).getValue ());
-        }
+            surface.setLED (APCControlSurface.APC_KNOB_DEVICE_KNOB_1 + i, parameterBank.getItem (i).getValue ());
     }
 
 

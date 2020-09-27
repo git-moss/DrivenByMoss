@@ -60,7 +60,7 @@ public class ParameterMode<S extends IControlSurface<C>, C extends Configuration
         super ("Parameters", surface, model, isAbsolute, model.getCursorDevice ().getParameterBank (), controls);
 
         if (controls != null)
-            this.setParameters (new BankParameterProvider (this.bank));
+            this.setParameters (new BankParameterProvider (model.getCursorDevice ().getParameterBank ()));
 
         this.isTemporary = false;
         this.cursorDevice = this.model.getCursorDevice ();

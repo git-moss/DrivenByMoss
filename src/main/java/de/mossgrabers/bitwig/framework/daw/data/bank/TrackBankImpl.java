@@ -8,7 +8,7 @@ import de.mossgrabers.bitwig.framework.daw.ApplicationImpl;
 import de.mossgrabers.bitwig.framework.daw.data.TrackImpl;
 import de.mossgrabers.framework.controller.valuechanger.IValueChanger;
 import de.mossgrabers.framework.daw.IHost;
-import de.mossgrabers.framework.observer.NoteObserver;
+import de.mossgrabers.framework.observer.INoteObserver;
 
 import com.bitwig.extension.controller.api.CursorTrack;
 import com.bitwig.extension.controller.api.Track;
@@ -75,7 +75,7 @@ public class TrackBankImpl extends AbstractTrackBankImpl
 
     /** {@inheritDoc} */
     @Override
-    public void addNoteObserver (final NoteObserver observer)
+    public void addNoteObserver (final INoteObserver observer)
     {
         for (int i = 0; i < this.getPageSize (); i++)
             ((TrackImpl) this.getItem (i)).addNoteObserver (observer);

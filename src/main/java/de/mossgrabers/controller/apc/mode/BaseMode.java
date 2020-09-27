@@ -58,7 +58,10 @@ public abstract class BaseMode extends AbstractMode<APCControlSurface, APCConfig
      * @param index The index of the knob
      * @param value The value
      */
-    public abstract void setValue (final int index, final int value);
+    public void setValue (final int index, final int value)
+    {
+        // Overwrite for modes which cannot use direct parameter mapping
+    }
 
 
     /** {@inheritDoc} */

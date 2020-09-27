@@ -107,19 +107,9 @@ public class PitchbendVolumeCommand extends AbstractPitchbendCommand<MCUControlS
                 selectedTrack.setPan (value);
                 break;
 
-            case 2:
-                if (this.surface.getConfiguration ().isDisplayCrossfader ())
-                {
-                    final double range = this.model.getValueChanger ().getUpperBound () / 3.0;
-                    selectedTrack.setCrossfadeModeAsNumber ((int) Math.round (value / range));
-                }
-                else if (!this.model.isEffectTrackBankActive ())
-                    selectedTrack.getSendBank ().getItem (0).setValue (value);
-                break;
-
             default:
                 if (!this.model.isEffectTrackBankActive ())
-                    selectedTrack.getSendBank ().getItem (index - (this.surface.getConfiguration ().isDisplayCrossfader () ? 3 : 2)).setValue (value);
+                    selectedTrack.getSendBank ().getItem (index - 2).setValue (value);
                 break;
         }
     }

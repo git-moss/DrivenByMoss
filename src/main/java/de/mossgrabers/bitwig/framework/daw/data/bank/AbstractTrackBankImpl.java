@@ -52,7 +52,8 @@ public abstract class AbstractTrackBankImpl extends AbstractChannelBankImpl<Trac
         this.cursorTrack = cursorTrack;
         this.rootGroup = rootGroup;
 
-        this.initItems ();
+        for (int i = 0; i < this.getPageSize (); i++)
+            this.items.add (new TrackImpl (this.host, this.valueChanger, this.application, this.cursorTrack, this.rootGroup, this.bank.getItemAt (i), i, this.numSends, this.numScenes));
 
         this.sceneBank = new SceneBankImpl (host, valueChanger, this.numScenes == 0 ? null : this.bank.sceneBank (), this.numScenes);
 
@@ -120,17 +121,6 @@ public abstract class AbstractTrackBankImpl extends AbstractChannelBankImpl<Trac
             }
         }
         return false;
-    }
-
-
-    /**
-     * Create all track data and setup observers.
-     */
-    @Override
-    protected void initItems ()
-    {
-        for (int i = 0; i < this.pageSize; i++)
-            this.items.add (new TrackImpl (this.host, this.valueChanger, this.application, this.cursorTrack, this.rootGroup, this.bank.getItemAt (i), i, this.numSends, this.numScenes));
     }
 
 

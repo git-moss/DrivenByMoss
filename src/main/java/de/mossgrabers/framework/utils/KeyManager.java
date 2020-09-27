@@ -7,7 +7,7 @@ package de.mossgrabers.framework.utils;
 import de.mossgrabers.framework.controller.grid.IPadGrid;
 import de.mossgrabers.framework.daw.IModel;
 import de.mossgrabers.framework.daw.data.ITrack;
-import de.mossgrabers.framework.observer.NoteObserver;
+import de.mossgrabers.framework.observer.INoteObserver;
 import de.mossgrabers.framework.scale.Scales;
 
 import java.util.ArrayList;
@@ -20,7 +20,7 @@ import java.util.List;
  *
  * @author J&uuml;rgen Mo&szlig;graber
  */
-public class KeyManager implements NoteObserver
+public class KeyManager implements INoteObserver
 {
     private final int []   pressedKeys = new int [128];
     private final IModel   model;

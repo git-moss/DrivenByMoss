@@ -40,7 +40,7 @@ public class ParamsMode extends AbstractKontrol1Mode
     {
         super ("Parameters", surface, model, model.getCursorDevice ().getParameterBank ());
 
-        this.setParameters (new BankParameterProvider (this.bank));
+        this.setParameters (new BankParameterProvider (model.getCursorDevice ().getParameterBank ()));
     }
 
 

@@ -8,7 +8,7 @@ import de.mossgrabers.bitwig.framework.daw.data.Util;
 import de.mossgrabers.framework.controller.valuechanger.IValueChanger;
 import de.mossgrabers.framework.daw.IHost;
 import de.mossgrabers.framework.daw.data.IItem;
-import de.mossgrabers.framework.daw.data.bank.AbstractBank;
+import de.mossgrabers.framework.daw.data.bank.AbstractItemBank;
 
 import com.bitwig.extension.controller.api.Bank;
 
@@ -21,7 +21,7 @@ import com.bitwig.extension.controller.api.Bank;
  *
  * @author J&uuml;rgen Mo&szlig;graber
  */
-public abstract class AbstractBankImpl<B extends Bank<?>, T extends IItem> extends AbstractBank<T>
+public abstract class AbstractItemBankImpl<B extends Bank<?>, T extends IItem> extends AbstractItemBank<T>
 {
     protected final IValueChanger valueChanger;
     protected final B             bank;
@@ -35,7 +35,7 @@ public abstract class AbstractBankImpl<B extends Bank<?>, T extends IItem> exten
      * @param bank The bank to encapsulate
      * @param pageSize The number of elements in a page of the bank
      */
-    public AbstractBankImpl (final IHost host, final IValueChanger valueChanger, final B bank, final int pageSize)
+    public AbstractItemBankImpl (final IHost host, final IValueChanger valueChanger, final B bank, final int pageSize)
     {
         super (host, pageSize);
 
@@ -158,7 +158,7 @@ public abstract class AbstractBankImpl<B extends Bank<?>, T extends IItem> exten
     {
         final T sel = this.getSelectedItem ();
         final int index = sel == null ? 0 : sel.getIndex () + 1;
-        if (index == this.pageSize)
+        if (index == this.getPageSize ())
             this.selectNextPage ();
         else
             this.getItem (index).select ();
@@ -185,7 +185,7 @@ public abstract class AbstractBankImpl<B extends Bank<?>, T extends IItem> exten
         if (!this.canScrollPageBackwards ())
             return;
         this.scrollPageBackwards ();
-        this.host.scheduleTask ( () -> this.getItem (this.pageSize - 1).select (), 75);
+        this.host.scheduleTask ( () -> this.getItem (this.getPageSize () - 1).select (), 75);
     }
 
 

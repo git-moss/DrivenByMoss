@@ -22,7 +22,7 @@ import com.bitwig.extension.controller.api.Bank;
  *
  * @author J&uuml;rgen Mo&szlig;graber
  */
-public abstract class AbstractChannelBankImpl<B extends Bank<?>, T extends IChannel> extends AbstractBankImpl<B, T> implements IChannelBank<T>
+public abstract class AbstractChannelBankImpl<B extends Bank<?>, T extends IChannel> extends AbstractItemBankImpl<B, T> implements IChannelBank<T>
 {
     protected final int  numScenes;
     protected final int  numSends;

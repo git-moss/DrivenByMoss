@@ -4,8 +4,8 @@
 
 package de.mossgrabers.framework.daw.data;
 
+import de.mossgrabers.framework.observer.IObserverManagement;
 import de.mossgrabers.framework.observer.IValueObserver;
-import de.mossgrabers.framework.observer.ObserverManagement;
 
 
 /**
@@ -14,7 +14,7 @@ import de.mossgrabers.framework.observer.ObserverManagement;
  *
  * @author J&uuml;rgen Mo&szlig;graber
  */
-public interface IItem extends ObserverManagement
+public interface IItem extends IObserverManagement
 {
     /**
      * Returns true if the item exits.

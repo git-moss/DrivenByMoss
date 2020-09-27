@@ -5,7 +5,7 @@
 package de.mossgrabers.framework.daw;
 
 import de.mossgrabers.framework.controller.color.ColorEx;
-import de.mossgrabers.framework.observer.ObserverManagement;
+import de.mossgrabers.framework.observer.IObserverManagement;
 
 
 /**
@@ -13,7 +13,7 @@ import de.mossgrabers.framework.observer.ObserverManagement;
  *
  * @author J&uuml;rgen Mo&szlig;graber
  */
-public interface IClip extends ObserverManagement
+public interface IClip extends IObserverManagement
 {
     /**
      * Returns true if the clip exits.

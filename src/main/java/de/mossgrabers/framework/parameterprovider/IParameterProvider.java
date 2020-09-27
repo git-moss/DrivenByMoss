@@ -5,6 +5,7 @@
 package de.mossgrabers.framework.parameterprovider;
 
 import de.mossgrabers.framework.daw.data.IParameter;
+import de.mossgrabers.framework.observer.IParametersAdjustObserver;
 
 
 /**
@@ -29,4 +30,20 @@ public interface IParameterProvider
      * @return The parameter
      */
     IParameter get (int index);
+
+
+    /**
+     * Registers a parameters adjustment observer.
+     *
+     * @param observer The observer to register
+     */
+    void addParametersObserver (final IParametersAdjustObserver observer);
+
+
+    /**
+     * Unregisters a parameters adjustment observer.
+     *
+     * @param observer The observer to unregister
+     */
+    void removeParametersObserver (final IParametersAdjustObserver observer);
 }

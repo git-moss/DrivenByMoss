@@ -5,7 +5,7 @@
 package de.mossgrabers.framework.daw;
 
 import de.mossgrabers.framework.daw.data.IParameter;
-import de.mossgrabers.framework.observer.ObserverManagement;
+import de.mossgrabers.framework.observer.IObserverManagement;
 
 
 /**
@@ -13,7 +13,7 @@ import de.mossgrabers.framework.observer.ObserverManagement;
  *
  * @author J&uuml;rgen Mo&szlig;graber
  */
-public interface IGroove extends ObserverManagement
+public interface IGroove extends IObserverManagement
 {
     /**
      * Get all groove parameters.

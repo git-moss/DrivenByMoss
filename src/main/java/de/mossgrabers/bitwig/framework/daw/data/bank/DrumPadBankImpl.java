@@ -43,25 +43,14 @@ public class DrumPadBankImpl extends AbstractChannelBankImpl<DrumPadBank, IDrumP
 
         this.numDevices = numDevices;
 
-        this.initItems ();
-
         for (int i = 0; i < this.getPageSize (); i++)
         {
-            final int index = i;
-            final DrumPadImpl drumPadImpl = (DrumPadImpl) this.items.get (i);
-            drumPadImpl.getDeviceChain ().addIsSelectedInEditorObserver (isSelected -> this.notifySelectionObservers (index, isSelected));
-        }
-    }
-
-
-    /** {@inheritDoc} */
-    @Override
-    protected void initItems ()
-    {
-        for (int i = 0; i < this.pageSize; i++)
-        {
             final DrumPad deviceLayer = this.bank.getItemAt (i);
-            this.items.add (new DrumPadImpl (this.host, this.valueChanger, deviceLayer, i, this.numSends, this.numDevices));
+            final DrumPadImpl drumPadImpl = new DrumPadImpl (this.host, this.valueChanger, deviceLayer, i, this.numSends, this.numDevices);
+            this.items.add (drumPadImpl);
+
+            final int index = i;
+            drumPadImpl.getDeviceChain ().addIsSelectedInEditorObserver (isSelected -> this.notifySelectionObservers (index, isSelected));
         }
 
         if (this.bank != null)

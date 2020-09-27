@@ -7,7 +7,7 @@ package de.mossgrabers.framework.configuration;
 import de.mossgrabers.framework.configuration.AbstractConfiguration.BehaviourOnStop;
 import de.mossgrabers.framework.daw.constants.Resolution;
 import de.mossgrabers.framework.daw.midi.ArpeggiatorMode;
-import de.mossgrabers.framework.observer.SettingObserver;
+import de.mossgrabers.framework.observer.ISettingObserver;
 
 
 /**
@@ -23,7 +23,7 @@ public interface Configuration
      * @param settingID The ID of the setting to observe
      * @param observer The observer to call when the settings has changed
      */
-    void addSettingObserver (Integer settingID, SettingObserver observer);
+    void addSettingObserver (Integer settingID, ISettingObserver observer);
 
 
     /**
@@ -134,14 +134,6 @@ public interface Configuration
      * @param enabled True if flipped
      */
     void setFlipSession (boolean enabled);
-
-
-    /**
-     * Should the crossfader be displayed?
-     *
-     * @return True if displayed
-     */
-    boolean isDisplayCrossfader ();
 
 
     /**

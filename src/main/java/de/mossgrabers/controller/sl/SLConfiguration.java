@@ -84,7 +84,6 @@ public class SLConfiguration extends AbstractConfiguration
 
         this.activateExcludeDeactivatedItemsSetting (globalSettings);
         this.activateBehaviourOnStopSetting (globalSettings);
-        this.activateDisplayCrossfaderSetting (globalSettings);
         this.activateNewClipLengthSetting (globalSettings);
 
         final IEnumSetting drumpadsAsModeSelectionSetting = globalSettings.getEnumSetting ("Use drum pads for mode selection", CATEGORY_WORKFLOW, ON_OFF_OPTIONS, ON_OFF_OPTIONS[0]);

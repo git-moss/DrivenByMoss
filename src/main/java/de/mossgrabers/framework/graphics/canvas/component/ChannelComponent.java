@@ -166,18 +166,15 @@ public class ChannelComponent extends ChannelSelectComponent
         final ColorEx backgroundDarker = this.modifyIfOff (configuration.getColorBackgroundDarker ());
         final ColorEx editColor = this.modifyIfOff (configuration.getColorEdit ());
 
+        // Crossfader A|B
+        final double leftColumn = left + inset - 1;
         if (this.type != ChannelType.MASTER && this.type != ChannelType.LAYER && this.crossfadeMode != -1)
         {
-            // Crossfader A|B
-            final double crossWidth = controlWidth / 3;
-            final ColorEx selColor = this.editType == EDIT_TYPE_CROSSFADER || this.editType == EDIT_TYPE_ALL ? editColor : textColor;
-
-            final IImage crossfaderAIcon = ResourceHandler.getSVGImage ("track/crossfade_a.svg");
-            gc.maskImage (crossfaderAIcon, left + inset + (crossWidth - crossfaderAIcon.getWidth ()) / 2, controlsTop + (panHeight - crossfaderAIcon.getHeight ()) / 2, this.crossfadeMode == 0 ? selColor : backgroundDarker);
-            final IImage crossfaderABIcon = ResourceHandler.getSVGImage ("track/crossfade_ab.svg");
-            gc.maskImage (crossfaderABIcon, crossWidth + left + inset + (crossWidth - crossfaderAIcon.getWidth ()) / 2, controlsTop + (panHeight - crossfaderAIcon.getHeight ()) / 2, this.crossfadeMode == 1 ? selColor : backgroundDarker);
-            final IImage crossfaderBIcon = ResourceHandler.getSVGImage ("track/crossfade_b.svg");
-            gc.maskImage (crossfaderBIcon, 2 * crossWidth + left + inset + (crossWidth - crossfaderAIcon.getWidth ()) / 2, controlsTop + (panHeight - crossfaderAIcon.getHeight ()) / 2, this.crossfadeMode == 2 ? selColor : backgroundDarker);
+            final ColorEx selColor = this.editType == EDIT_TYPE_CROSSFADER || this.editType == EDIT_TYPE_ALL ? editColor : ColorEx.ORANGE;
+            final double crossOptWidth = controlWidth / 3.0;
+            this.drawButton (gc, leftColumn, controlsTop, crossOptWidth, panHeight + 2, backgroundColor, this.modifyIfOff (selColor), textColor, this.crossfadeMode == 0, "track/crossfade_a.svg", configuration, 0);
+            this.drawButton (gc, leftColumn + crossOptWidth, controlsTop, crossOptWidth, panHeight + 2, backgroundColor, this.modifyIfOff (selColor), textColor, this.crossfadeMode == 1, "track/crossfade_ab.svg", configuration, 0);
+            this.drawButton (gc, leftColumn + 2 * crossOptWidth, controlsTop, crossOptWidth, panHeight + 2, backgroundColor, this.modifyIfOff (selColor), textColor, this.crossfadeMode == 2, "track/crossfade_b.svg", configuration, 0);
         }
 
         // Panorama
@@ -243,22 +240,22 @@ public class ChannelComponent extends ChannelSelectComponent
         if (this.type != ChannelType.LAYER)
         {
             // Rec Arm
-            this.drawButton (gc, left + inset - 1, buttonTop, controlWidth - 1, buttonHeight - 1, backgroundColor, this.modifyIfOff (configuration.getColorRecord ()), textColor, this.isArm, "channel/record_arm.svg", configuration);
+            this.drawButton (gc, leftColumn, buttonTop, controlWidth, buttonHeight - 1, backgroundColor, this.modifyIfOff (configuration.getColorRecord ()), textColor, this.isArm, "channel/record_arm.svg", configuration);
         }
 
         // Solo
         buttonTop += buttonHeight + 2 * separatorSize;
-        this.drawButton (gc, left + inset - 1, buttonTop, controlWidth - 1, buttonHeight - 1, backgroundColor, this.modifyIfOff (configuration.getColorSolo ()), textColor, this.isSolo, "channel/solo.svg", configuration);
+        this.drawButton (gc, leftColumn, buttonTop, controlWidth, buttonHeight - 1, backgroundColor, this.modifyIfOff (configuration.getColorSolo ()), textColor, this.isSolo, "channel/solo.svg", configuration);
 
         // Mute
         buttonTop += buttonHeight + 2 * separatorSize;
-        this.drawButton (gc, left + inset - 1, buttonTop, controlWidth - 1, buttonHeight - 1, backgroundColor, this.modifyIfOff (configuration.getColorMute ()), textColor, this.isMute, "channel/mute.svg", configuration);
+        this.drawButton (gc, leftColumn, buttonTop, controlWidth, buttonHeight - 1, backgroundColor, this.modifyIfOff (configuration.getColorMute ()), textColor, this.isMute, "channel/mute.svg", configuration);
 
         // Draw panorama text on top if set
         if (isPanTouched)
         {
             gc.fillRectangle (controlStart, panTextTop, controlWidth, unit, backgroundDarker);
-            gc.strokeRectangle (controlStart, panTextTop, controlWidth - 1, unit, borderColor);
+            gc.strokeRectangle (controlStart, panTextTop, controlWidth, unit, borderColor);
             gc.drawTextInBounds (this.panText, controlStart, panTextTop, controlWidth, unit, Align.CENTER, textColor, unit);
         }
 
@@ -267,7 +264,7 @@ public class ChannelComponent extends ChannelSelectComponent
         {
             final double volumeTextTop = this.volumeValue >= maxValue - 1 ? faderTop : Math.min (volumeTop - 1, faderTop + faderInnerHeight + separatorSize - unit + 1);
             gc.fillRectangle (volumeTextLeft, volumeTextTop, volumeTextWidth, unit, backgroundDarker);
-            gc.strokeRectangle (volumeTextLeft, volumeTextTop, volumeTextWidth - 1, unit, borderColor);
+            gc.strokeRectangle (volumeTextLeft, volumeTextTop, volumeTextWidth, unit, borderColor);
             gc.drawTextInBounds (this.volumeText, volumeTextLeft, volumeTextTop, volumeTextWidth, unit, Align.CENTER, textColor, unit);
         }
     }
@@ -290,8 +287,29 @@ public class ChannelComponent extends ChannelSelectComponent
      */
     private void drawButton (final IGraphicsContext gc, final double left, final double top, final double width, final double height, final ColorEx backgroundColor, final ColorEx isOnColor, final ColorEx textColor, final boolean isOn, final String iconName, final IGraphicsConfiguration configuration)
     {
+        this.drawButton (gc, left, top, width, height, backgroundColor, isOnColor, textColor, isOn, iconName, configuration, 2.0);
+    }
+
+
+    /**
+     * Draws a button a gradient background.
+     *
+     * @param gc The graphics context
+     * @param left The left bound of the drawing area
+     * @param top The top bound of the drawing area
+     * @param width The width of the drawing area
+     * @param height The height of the drawing area
+     * @param backgroundColor The background color
+     * @param isOnColor The color if the button is on
+     * @param textColor The color of the buttons text
+     * @param isOn True if the button is on
+     * @param iconName The name of the buttons icon
+     * @param configuration The layout settings
+     * @param radius The radius of the surrounding border rectangle
+     */
+    private void drawButton (final IGraphicsContext gc, final double left, final double top, final double width, final double height, final ColorEx backgroundColor, final ColorEx isOnColor, final ColorEx textColor, final boolean isOn, final String iconName, final IGraphicsConfiguration configuration, final double radius)
+    {
         final ColorEx borderColor = this.modifyIfOff (configuration.getColorBorder ());
-        final double radius = 2.0;
 
         gc.fillRoundedRectangle (left, top, width, height, radius, borderColor);
 

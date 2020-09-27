@@ -116,6 +116,14 @@ public interface ISpecificDevice extends IDevice
 
 
     /**
+     * Remove an observer for changes of drum pads support.
+     *
+     * @param observer The observer to remove
+     */
+    void removeHasDrumPadsObserver (IValueObserver<Boolean> observer);
+
+
+    /**
      * Does the device support layers? Might still have no layer.
      *
      * @return True if the device has layers

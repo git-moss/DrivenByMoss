@@ -190,9 +190,17 @@ public interface IModel
     /**
      * Add an observer for changes of the current track bank.
      *
-     * @param observer The new current track bank
+     * @param observer The observer to register
      */
     void addTrackBankObserver (IValueObserver<ITrackBank> observer);
+
+
+    /**
+     * Remove an observer for changes of the current track bank.
+     *
+     * @param observer The observer to remove
+     */
+    void removeTrackBankObserver (IValueObserver<ITrackBank> observer);
 
 
     /**

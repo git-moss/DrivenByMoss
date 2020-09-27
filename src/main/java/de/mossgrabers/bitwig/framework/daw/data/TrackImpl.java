@@ -12,7 +12,7 @@ import de.mossgrabers.framework.daw.constants.RecordQuantization;
 import de.mossgrabers.framework.daw.data.ITrack;
 import de.mossgrabers.framework.daw.data.bank.ISlotBank;
 import de.mossgrabers.framework.daw.resource.ChannelType;
-import de.mossgrabers.framework.observer.NoteObserver;
+import de.mossgrabers.framework.observer.INoteObserver;
 
 import com.bitwig.extension.controller.api.BooleanValue;
 import com.bitwig.extension.controller.api.CursorTrack;
@@ -31,19 +31,19 @@ import java.util.Set;
  */
 public class TrackImpl extends ChannelImpl implements ITrack
 {
-    protected static final int      NOTE_OFF      = 0;
-    protected static final int      NOTE_ON       = 1;
-    protected static final int      NOTE_ON_NEW   = 2;
+    protected static final int       NOTE_OFF      = 0;
+    protected static final int       NOTE_ON       = 1;
+    protected static final int       NOTE_ON_NEW   = 2;
 
-    protected final Track           track;
+    protected final Track            track;
 
-    private final BooleanValue      isTopGroup;
-    private final ApplicationImpl   application;
-    private final ISlotBank         slotBank;
-    private final int []            noteCache     = new int [128];
-    private final Set<NoteObserver> noteObservers = new HashSet<> ();
-    private final CursorTrack       cursorTrack;
-    private final IHost             host;
+    private final BooleanValue       isTopGroup;
+    private final ApplicationImpl    application;
+    private final ISlotBank          slotBank;
+    private final int []             noteCache     = new int [128];
+    private final Set<INoteObserver> noteObservers = new HashSet<> ();
+    private final CursorTrack        cursorTrack;
+    private final IHost              host;
 
 
     private enum CrossfadeSetting
@@ -420,7 +420,7 @@ public class TrackImpl extends ChannelImpl implements ITrack
      *
      * @param observer The note observer
      */
-    public void addNoteObserver (final NoteObserver observer)
+    public void addNoteObserver (final INoteObserver observer)
     {
         this.noteObservers.add (observer);
     }
@@ -466,7 +466,7 @@ public class TrackImpl extends ChannelImpl implements ITrack
      */
     protected void notifyNoteObservers (final int note, final int velocity)
     {
-        for (final NoteObserver noteObserver: this.noteObservers)
+        for (final INoteObserver noteObserver: this.noteObservers)
             noteObserver.call (this.index, note, velocity);
     }
 }

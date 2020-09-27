@@ -45,7 +45,7 @@ public class TrackMode extends AbstractTrackMode
     @Override
     public void onKnobValue (final int index, final int value)
     {
-        final ITrack selectedTrack = this.model.getSelectedTrack ();
+        final ITrack selectedTrack = this.model.getCurrentTrackBank ().getSelectedItem ();
         if (selectedTrack == null)
             return;
 
@@ -81,15 +81,7 @@ public class TrackMode extends AbstractTrackMode
             return;
         }
 
-        if (index == 2)
-        {
-            if (config.isDisplayCrossfader ())
-                this.changeCrossfader (value, selectedTrack);
-            else
-                sendBank.getItem (0).changeValue (value);
-        }
-        else
-            sendBank.getItem (index - (config.isDisplayCrossfader () ? 3 : 2)).changeValue (value);
+        sendBank.getItem (index - 2).changeValue (value);
     }
 
 
@@ -104,14 +96,13 @@ public class TrackMode extends AbstractTrackMode
     @Override
     public void onKnobTouch (final int index, final boolean isTouched)
     {
-        final ITrack selectedTrack = this.model.getSelectedTrack ();
+        final ITrack selectedTrack = this.model.getCurrentTrackBank ().getSelectedItem ();
         if (selectedTrack == null)
             return;
 
         this.isKnobTouched[index] = isTouched;
 
         final ISendBank sendBank = selectedTrack.getSendBank ();
-        final PushConfiguration config = this.surface.getConfiguration ();
         if (this.isPush2)
         {
             if (isTouched && this.surface.isDeletePressed ())
@@ -171,14 +162,8 @@ public class TrackMode extends AbstractTrackMode
                 case 1:
                     selectedTrack.resetPan ();
                     break;
-                case 2:
-                    if (config.isDisplayCrossfader ())
-                        selectedTrack.setCrossfadeMode ("AB");
-                    else
-                        sendBank.getItem (0).resetValue ();
-                    break;
                 default:
-                    sendBank.getItem (index - (config.isDisplayCrossfader () ? 3 : 2)).resetValue ();
+                    sendBank.getItem (index - 2).resetValue ();
                     break;
             }
             return;
@@ -192,12 +177,8 @@ public class TrackMode extends AbstractTrackMode
             case 1:
                 selectedTrack.touchPan (isTouched);
                 break;
-            case 2:
-                if (!config.isDisplayCrossfader ())
-                    sendBank.getItem (0).touchValue (isTouched);
-                break;
             default:
-                final int sendIndex = index - (config.isDisplayCrossfader () ? 3 : 2);
+                final int sendIndex = index - 2;
                 sendBank.getItem (sendIndex).touchValue (isTouched);
                 break;
         }
@@ -224,14 +205,6 @@ public class TrackMode extends AbstractTrackMode
 
             int sendStart = 2;
             int sendCount = 6;
-            if (config.isDisplayCrossfader ())
-            {
-                sendStart = 3;
-                sendCount = 5;
-                final String crossfadeMode = t.getCrossfadeMode ();
-                display.setCell (0, 2, "Crossfdr").setCell (1, 2, "A".equals (crossfadeMode) ? "A" : "B".equals (crossfadeMode) ? "       B" : "   <> ");
-                display.setCell (2, 2, "A".equals (crossfadeMode) ? 0 : "B".equals (crossfadeMode) ? upperBound : upperBound / 2, Format.FORMAT_PAN);
-            }
             final boolean isEffectTrackBankActive = this.model.isEffectTrackBankActive ();
             final ISendBank sendBank = t.getSendBank ();
             for (int i = 0; i < sendCount; i++)
@@ -266,7 +239,7 @@ public class TrackMode extends AbstractTrackMode
         this.updateMenuItems (0);
 
         final PushConfiguration config = this.surface.getConfiguration ();
-        final boolean displayCrossfader = config.isDisplayCrossfader ();
+        final boolean displayCrossfader = this.model.getHost ().hasCrossfader ();
         for (int i = 0; i < 8; i++)
         {
             final ITrack t = tb.getItem (i);

@@ -130,6 +130,19 @@ public class LaunchpadControllerSetup extends AbstractControllerSetup<LaunchpadC
         Views.DRUM8
     };
 
+    private static final Views []                ALL_PLAY_VIEWS  =
+    {
+        Views.PLAY,
+        Views.PIANO,
+        Views.DRUM64,
+        Views.SEQUENCER,
+        Views.POLY_SEQUENCER,
+        Views.RAINDROPS,
+        Views.DRUM,
+        Views.DRUM4,
+        Views.DRUM8
+    };
+
 
     /**
      * Constructor.
@@ -349,9 +362,9 @@ public class LaunchpadControllerSetup extends AbstractControllerSetup<LaunchpadC
                 this.addButton (ButtonID.get (ButtonID.ROW1_1, i), "Track Select " + (i + 1), (event, velocity) -> this.handleTrackSelection (event, index), LaunchpadControlSurface.LAUNCHPAD_TRACK1 + i, () -> this.getTrackModeColorIndex (index));
             }
 
-            this.addButton (ButtonID.NOTE, "Note", new SelectPlayViewCommand<> (this.model, surface, true, PLAY_VIEWS), buttonSetup.get (LaunchpadButton.NOTE).getControl (), () -> this.getViewStateColor (LaunchpadColorManager.LAUNCHPAD_COLOR_AMBER_HI, PLAY_VIEWS));
-            this.addButton (ButtonID.DRUM, "Drum Seq", new SelectPlayViewCommand<> (this.model, surface, true, DRUM_VIEWS), 95, () -> this.getViewStateColor (LaunchpadColorManager.LAUNCHPAD_COLOR_OCEAN_HI, DRUM_VIEWS));
-            this.addButton (ButtonID.SEQUENCER, "Sequencer", new SelectPlayViewCommand<> (this.model, surface, true, SEQUENCER_VIEWS), 97, () -> this.getViewStateColor (LaunchpadColorManager.LAUNCHPAD_COLOR_YELLOW_HI, SEQUENCER_VIEWS));
+            this.addButton (ButtonID.NOTE, "Note", new SelectPlayViewCommand<> (this.model, surface, true, PLAY_VIEWS, ALL_PLAY_VIEWS), buttonSetup.get (LaunchpadButton.NOTE).getControl (), () -> this.getViewStateColor (LaunchpadColorManager.LAUNCHPAD_COLOR_AMBER_HI, PLAY_VIEWS));
+            this.addButton (ButtonID.DRUM, "Drum Seq", new SelectPlayViewCommand<> (this.model, surface, true, DRUM_VIEWS, ALL_PLAY_VIEWS), 95, () -> this.getViewStateColor (LaunchpadColorManager.LAUNCHPAD_COLOR_OCEAN_HI, DRUM_VIEWS));
+            this.addButton (ButtonID.SEQUENCER, "Sequencer", new SelectPlayViewCommand<> (this.model, surface, true, SEQUENCER_VIEWS, ALL_PLAY_VIEWS), 97, () -> this.getViewStateColor (LaunchpadColorManager.LAUNCHPAD_COLOR_YELLOW_HI, SEQUENCER_VIEWS));
         }
         else
             this.addButton (ButtonID.NOTE, "Note", new SelectNoteViewCommand (this.model, surface), buttonSetup.get (LaunchpadButton.NOTE).getControl (), this::getNoteStateColor);

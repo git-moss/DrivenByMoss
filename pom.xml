@@ -6,7 +6,7 @@
 	<artifactId>DrivenByMoss</artifactId>
 	<packaging>jar</packaging>
 	<name>DrivenByMoss</name>
-	<version>10.7</version>
+	<version>10.7.1</version>
 
 	<properties>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
@@ -48,7 +48,7 @@
 		<dependency>
 			<groupId>purejavahidapi</groupId>
 			<artifactId>purejavahidapi</artifactId>
-			<version>0.0.14</version>
+			<version>0.0.15</version>
 		</dependency>
 		<dependency>
 			<artifactId>nativefilechooser</artifactId>

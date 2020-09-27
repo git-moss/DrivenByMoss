@@ -19,7 +19,7 @@ import com.bitwig.extension.controller.api.CueMarkerBank;
  *
  * @author J&uuml;rgen Mo&szlig;graber
  */
-public class MarkerBankImpl extends AbstractBankImpl<CueMarkerBank, IMarker> implements IMarkerBank
+public class MarkerBankImpl extends AbstractItemBankImpl<CueMarkerBank, IMarker> implements IMarkerBank
 {
     private final ITransport transport;
 
@@ -38,7 +38,9 @@ public class MarkerBankImpl extends AbstractBankImpl<CueMarkerBank, IMarker> imp
         super (host, valueChanger, bank, numMarkers);
 
         this.transport = transport;
-        this.initItems ();
+
+        for (int i = 0; i < this.getPageSize (); i++)
+            this.items.add (new MarkerImpl (this.bank.getItemAt (i), i, this.transport));
     }
 
 
@@ -47,14 +49,5 @@ public class MarkerBankImpl extends AbstractBankImpl<CueMarkerBank, IMarker> imp
     public void addMarker ()
     {
         // TODO API extension required - https://github.com/teotigraphix/Framework4Bitwig/issues/215
-    }
-
-
-    /** {@inheritDoc} */
-    @Override
-    protected void initItems ()
-    {
-        for (int i = 0; i < this.pageSize; i++)
-            this.items.add (new MarkerImpl (this.bank.getItemAt (i), i, this.transport));
     }
 }

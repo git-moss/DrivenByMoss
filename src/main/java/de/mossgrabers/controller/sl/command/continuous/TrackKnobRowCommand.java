@@ -76,26 +76,11 @@ public class TrackKnobRowCommand extends AbstractContinuousCommand<SLControlSurf
                 track.setPan (value);
                 break;
 
-            case 2:
-                if (this.surface.getConfiguration ().isDisplayCrossfader ())
-                    track.setCrossfadeModeAsNumber (toCrossfadeNumber (value));
-                else if (!this.model.isEffectTrackBankActive ())
-                    track.getSendBank ().getItem (0).setValue (value);
-                break;
-
-            // Send 1 - 5
+            // Send 1 - 6
             default:
                 if (!this.model.isEffectTrackBankActive ())
-                    track.getSendBank ().getItem (this.index - (this.surface.getConfiguration ().isDisplayCrossfader () ? 3 : 2)).setValue (value);
+                    track.getSendBank ().getItem (this.index - 2).setValue (value);
                 break;
         }
-    }
-
-
-    private static int toCrossfadeNumber (final int value)
-    {
-        if (value == 0)
-            return 0;
-        return value == 127 ? 2 : 1;
     }
 }

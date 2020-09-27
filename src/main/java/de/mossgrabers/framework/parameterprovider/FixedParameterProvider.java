@@ -5,6 +5,7 @@
 package de.mossgrabers.framework.parameterprovider;
 
 import de.mossgrabers.framework.daw.data.IParameter;
+import de.mossgrabers.framework.observer.IParametersAdjustObserver;
 
 
 /**
@@ -45,5 +46,21 @@ public class FixedParameterProvider implements IParameterProvider
     public IParameter get (final int index)
     {
         return this.parameters[index];
+    }
+
+
+    /** {@inheritDoc} */
+    @Override
+    public void addParametersObserver (final IParametersAdjustObserver observer)
+    {
+        // Intentionally empty
+    }
+
+
+    /** {@inheritDoc} */
+    @Override
+    public void removeParametersObserver (final IParametersAdjustObserver observer)
+    {
+        // Intentionally empty
     }
 }

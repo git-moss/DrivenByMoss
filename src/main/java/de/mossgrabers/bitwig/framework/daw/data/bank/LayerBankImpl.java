@@ -49,15 +49,7 @@ public class LayerBankImpl extends AbstractChannelBankImpl<DeviceLayerBank, ILay
 
         this.numDevices = numDevices;
 
-        this.initItems ();
-    }
-
-
-    /** {@inheritDoc} */
-    @Override
-    protected void initItems ()
-    {
-        for (int i = 0; i < this.pageSize; i++)
+        for (int i = 0; i < this.getPageSize (); i++)
         {
             final DeviceLayer deviceLayer = this.bank.getItemAt (i);
             this.items.add (new LayerImpl (this.host, this.valueChanger, deviceLayer, i, this.numSends, this.numDevices));

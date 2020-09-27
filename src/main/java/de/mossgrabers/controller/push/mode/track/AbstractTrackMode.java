@@ -163,13 +163,10 @@ public abstract class AbstractTrackMode extends BaseMode
                 break;
 
             case 2:
-                if (config.isDisplayCrossfader ())
-                {
-                    if (modeManager.isActiveOrTempMode (Modes.CROSSFADER))
-                        modeManager.setActiveMode (Modes.TRACK);
-                    else
-                        modeManager.setActiveMode (Modes.CROSSFADER);
-                }
+                if (modeManager.isActiveOrTempMode (Modes.CROSSFADER))
+                    modeManager.setActiveMode (Modes.TRACK);
+                else
+                    modeManager.setActiveMode (Modes.CROSSFADER);
                 break;
 
             case 3:
@@ -184,7 +181,7 @@ public abstract class AbstractTrackMode extends BaseMode
             case 7:
                 if (!this.model.isEffectTrackBankActive ())
                 {
-                    if (this.surface.isShiftPressed ())
+                    if (this.lastSendIsAccessible ())
                         this.handleSendEffect (config.isSendsAreToggled () ? 7 : 3);
                     else
                         this.model.getTrackBank ().selectParent ();
@@ -276,7 +273,7 @@ public abstract class AbstractTrackMode extends BaseMode
                         final Modes sendMode3 = sendsAreToggled ? Modes.SEND7 : Modes.SEND3;
                         return modeManager.isActiveOrTempMode (sendMode3) ? PushColorManager.PUSH2_COLOR2_WHITE : PushColorManager.PUSH2_COLOR_BLACK;
                     case 7:
-                        if (this.surface.isShiftPressed ())
+                        if (this.lastSendIsAccessible ())
                         {
                             final Modes sendMode4 = sendsAreToggled ? Modes.SEND8 : Modes.SEND4;
                             return modeManager.isActiveOrTempMode (sendMode4) ? PushColorManager.PUSH2_COLOR2_WHITE : PushColorManager.PUSH2_COLOR_BLACK;
@@ -345,7 +342,7 @@ public abstract class AbstractTrackMode extends BaseMode
         final IValueChanger valueChanger = this.model.getValueChanger ();
         final ITrackBank tb = this.model.getCurrentTrackBank ();
         final PushConfiguration config = this.surface.getConfiguration ();
-        final boolean displayCrossfader = config.isDisplayCrossfader ();
+        final boolean displayCrossfader = this.model.getHost ().hasCrossfader ();
         for (int i = 0; i < 8; i++)
         {
             final ITrack t = tb.getItem (i);
@@ -417,7 +414,7 @@ public abstract class AbstractTrackMode extends BaseMode
 
         this.menu.get (0).set ("Volume", Boolean.valueOf (selectedMenu - 1 == 0));
         this.menu.get (1).set ("Pan", Boolean.valueOf (selectedMenu - 1 == 1));
-        this.menu.get (2).set (config.isDisplayCrossfader () ? "Crossfader" : " ", Boolean.valueOf (selectedMenu - 1 == 2));
+        this.menu.get (2).set (this.model.getHost ().hasCrossfader () ? "Crossfader" : " ", Boolean.valueOf (selectedMenu - 1 == 2));
 
         if (this.model.isEffectTrackBankActive ())
         {
@@ -433,18 +430,29 @@ public abstract class AbstractTrackMode extends BaseMode
 
         final ITrackBank tb = this.model.getCurrentTrackBank ();
         final int sendOffset = sendsAreToggled ? 4 : 0;
-        final boolean isShiftPressed = this.surface.isShiftPressed ();
-        for (int i = 0; i < (isShiftPressed ? 4 : 3); i++)
+        for (int i = 0; i < 4; i++)
         {
             final String sendName = tb.getEditSendName (sendOffset + i);
             final boolean exists = !sendName.isEmpty ();
             this.menu.get (4 + i).set (exists ? sendName : " ", Boolean.valueOf (exists && 4 + i == selectedMenu - 1));
         }
 
-        if (isShiftPressed)
+        if (this.lastSendIsAccessible ())
             return;
 
         final boolean isUpAvailable = tb.hasParent ();
         this.menu.get (7).set (isUpAvailable ? "Up" : " ", Boolean.valueOf (isUpAvailable));
+    }
+
+
+    /**
+     * Check if the 4th/8th send is accessible. This is the case if the current tracks are not
+     * inside a group (hence no need to go up), Shift is pressed or the 8th knob is touched.
+     *
+     * @return True if one of the above described conditions is met
+     */
+    private boolean lastSendIsAccessible ()
+    {
+        return this.surface.isShiftPressed () || !this.model.getCurrentTrackBank ().hasParent () || this.isKnobTouched (7);
     }
 }

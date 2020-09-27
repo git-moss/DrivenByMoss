@@ -5,7 +5,7 @@
 package de.mossgrabers.framework.daw;
 
 import de.mossgrabers.framework.daw.constants.AutomationMode;
-import de.mossgrabers.framework.observer.ObserverManagement;
+import de.mossgrabers.framework.observer.IObserverManagement;
 
 
 /**
@@ -13,7 +13,7 @@ import de.mossgrabers.framework.observer.ObserverManagement;
  *
  * @author J&uuml;rgen Mo&szlig;graber
  */
-public interface ITransport extends ObserverManagement
+public interface ITransport extends IObserverManagement
 {
     /**
      * Start the playback.

@@ -252,6 +252,14 @@ public abstract class AbstractModel implements IModel
 
     /** {@inheritDoc} */
     @Override
+    public void removeTrackBankObserver (final IValueObserver<ITrackBank> observer)
+    {
+        this.trackBankObservers.remove (observer);
+    }
+
+
+    /** {@inheritDoc} */
+    @Override
     public ITrackBank getTrackBank ()
     {
         return this.trackBank;

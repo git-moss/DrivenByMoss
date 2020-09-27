@@ -4,8 +4,9 @@
 
 package de.mossgrabers.framework.daw.data.bank;
 
-import de.mossgrabers.framework.observer.ItemSelectionObserver;
-import de.mossgrabers.framework.observer.ObserverManagement;
+import de.mossgrabers.framework.observer.IBankPageObserver;
+import de.mossgrabers.framework.observer.IItemSelectionObserver;
+import de.mossgrabers.framework.observer.IObserverManagement;
 
 import java.util.List;
 
@@ -18,7 +19,7 @@ import java.util.List;
  *
  * @author J&uuml;rgen Mo&szlig;graber
  */
-public interface IBank<T> extends ObserverManagement
+public interface IBank<T> extends IObserverManagement
 {
     /**
      * Get the (maximum) number of elements in a page of the bank.
@@ -66,7 +67,23 @@ public interface IBank<T> extends ObserverManagement
      *
      * @param observer The observer to register
      */
-    void addSelectionObserver (final ItemSelectionObserver observer);
+    void addSelectionObserver (final IItemSelectionObserver observer);
+
+
+    /**
+     * Registers a page adjustment observer.
+     *
+     * @param observer The observer to register
+     */
+    void addPageObserver (final IBankPageObserver observer);
+
+
+    /**
+     * Unregisters a page adjustment observer.
+     *
+     * @param observer The observer to unregister
+     */
+    void removePageObserver (final IBankPageObserver observer);
 
 
     /**

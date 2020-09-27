@@ -5,7 +5,7 @@
 package de.mossgrabers.framework.daw.data.empty;
 
 import de.mossgrabers.framework.daw.data.IItem;
-import de.mossgrabers.framework.daw.data.bank.AbstractBank;
+import de.mossgrabers.framework.daw.data.bank.AbstractItemBank;
 
 
 /**
@@ -15,7 +15,7 @@ import de.mossgrabers.framework.daw.data.bank.AbstractBank;
  *
  * @author J&uuml;rgen Mo&szlig;graber
  */
-public class EmptyBank<T extends IItem> extends AbstractBank<T>
+public class EmptyBank<T extends IItem> extends AbstractItemBank<T>
 {
     /**
      * Constructor.
@@ -23,14 +23,6 @@ public class EmptyBank<T extends IItem> extends AbstractBank<T>
     public EmptyBank ()
     {
         super (null, 0);
-    }
-
-
-    /** {@inheritDoc} */
-    @Override
-    protected void initItems ()
-    {
-        // Intentionally empty
     }
 
 

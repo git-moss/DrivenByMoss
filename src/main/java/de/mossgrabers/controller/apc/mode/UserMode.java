@@ -7,6 +7,7 @@ package de.mossgrabers.controller.apc.mode;
 import de.mossgrabers.controller.apc.controller.APCControlSurface;
 import de.mossgrabers.framework.daw.IModel;
 import de.mossgrabers.framework.daw.data.IParameter;
+import de.mossgrabers.framework.parameterprovider.BankParameterProvider;
 
 
 /**
@@ -25,22 +26,8 @@ public class UserMode extends BaseMode
     public UserMode (final APCControlSurface surface, final IModel model)
     {
         super ("User", surface, model, APCControlSurface.LED_MODE_VOLUME, 0, model.getUserParameterBank ());
-    }
 
-
-    /** {@inheritDoc} */
-    @Override
-    public void onKnobValue (final int index, final int value)
-    {
-        // Not used - IParameter is directly mapped
-    }
-
-
-    /** {@inheritDoc} */
-    @Override
-    public void setValue (final int index, final int value)
-    {
-        // Not used - IParameter is directly mapped
+        this.setParameters (new BankParameterProvider (model.getUserParameterBank ()));
     }
 
 
@@ -55,10 +42,18 @@ public class UserMode extends BaseMode
 
     /** {@inheritDoc} */
     @Override
+    public void selectItemPage (final int page)
+    {
+        super.selectItemPage (page);
+        this.displayPageName ();
+    }
+
+
+    /** {@inheritDoc} */
+    @Override
     public void selectPreviousItem ()
     {
-        super.selectPreviousItem ();
-        this.displayPageName ();
+        this.model.getCurrentTrackBank ().selectPreviousItem ();
     }
 
 
@@ -66,8 +61,23 @@ public class UserMode extends BaseMode
     @Override
     public void selectNextItem ()
     {
-        super.selectNextItem ();
-        this.displayPageName ();
+        this.model.getCurrentTrackBank ().selectNextItem ();
+    }
+
+
+    /** {@inheritDoc} */
+    @Override
+    public void selectNextItemPage ()
+    {
+        this.model.getCurrentTrackBank ().selectNextPage ();
+    }
+
+
+    /** {@inheritDoc} */
+    @Override
+    public void selectPreviousItemPage ()
+    {
+        this.model.getCurrentTrackBank ().selectPreviousPage ();
     }
 
 

@@ -8,7 +8,7 @@ import de.mossgrabers.bitwig.framework.daw.ApplicationImpl;
 import de.mossgrabers.framework.controller.valuechanger.IValueChanger;
 import de.mossgrabers.framework.daw.IHost;
 import de.mossgrabers.framework.daw.data.bank.ITrackBank;
-import de.mossgrabers.framework.observer.NoteObserver;
+import de.mossgrabers.framework.observer.INoteObserver;
 
 import com.bitwig.extension.controller.api.CursorTrack;
 import com.bitwig.extension.controller.api.Track;
@@ -91,7 +91,7 @@ public class EffectTrackBankImpl extends AbstractTrackBankImpl
 
     /** {@inheritDoc} */
     @Override
-    public void addNoteObserver (final NoteObserver observer)
+    public void addNoteObserver (final INoteObserver observer)
     {
         // No notes on fx tracks
     }

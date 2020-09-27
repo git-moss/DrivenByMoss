@@ -51,14 +51,6 @@ public class TrackMode extends AbstractTrackMode<SLControlSurface, SLConfigurati
 
         int sendStart = 2;
         int sendCount = 6;
-        if (this.surface.getConfiguration ().isDisplayCrossfader ())
-        {
-            sendStart = 3;
-            sendCount = 5;
-            final String crossfadeMode = t.getCrossfadeMode ();
-            d.setCell (0, 2, "Crossfdr").setCell (2, 2, "A".equals (crossfadeMode) ? "A" : "B".equals (crossfadeMode) ? "       B" : "   <> ");
-        }
-
         int pos;
         final ISendBank sendBank = t.getSendBank ();
         if (!this.model.isEffectTrackBankActive () && sendBank.getPageSize () > 0)

@@ -9,7 +9,7 @@ package de.mossgrabers.framework.observer;
  *
  * @author J&uuml;rgen Mo&szlig;graber
  */
-public interface ObserverManagement
+public interface IObserverManagement
 {
     /**
      * Dis-/Enable all attributes. They are enabled by default. Use this function if values are
