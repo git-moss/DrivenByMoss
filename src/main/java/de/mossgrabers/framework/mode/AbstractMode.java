@@ -53,12 +53,11 @@ public abstract class AbstractMode<S extends IControlSurface<C>, C extends Confi
     protected final IModel                 model;
     protected final ColorManager           colorManager;
     protected boolean []                   isKnobTouched;
+    protected final MVHelper<S, C>         mvHelper;
 
     protected IParameterProvider           parameterProvider;
-
     protected IBank<? extends IItem>       bank;
-    protected final List<ContinuousID>     controls;
-    protected final MVHelper<S, C>         mvHelper;
+    protected List<ContinuousID>           controls;
     protected boolean                      isTemporary;
     protected boolean                      isAbsolute;
     protected boolean                      isActive;
@@ -127,12 +126,18 @@ public abstract class AbstractMode<S extends IControlSurface<C>, C extends Confi
         this.colorManager = this.model.getColorManager ();
         this.isAbsolute = isAbsolute;
         this.bank = bank;
-        this.controls = controls == null ? Collections.emptyList () : controls;
 
         this.isTemporary = true;
 
         this.mvHelper = new MVHelper<> (model, surface);
 
+        this.setControls (controls);
+    }
+
+
+    protected void setControls (final List<ContinuousID> controls)
+    {
+        this.controls = controls == null ? Collections.emptyList () : controls;
         this.isKnobTouched = new boolean [this.controls.size ()];
         Arrays.fill (this.isKnobTouched, false);
     }

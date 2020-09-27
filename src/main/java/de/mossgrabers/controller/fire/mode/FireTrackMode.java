@@ -8,12 +8,15 @@ import de.mossgrabers.controller.fire.FireConfiguration;
 import de.mossgrabers.controller.fire.controller.FireControlSurface;
 import de.mossgrabers.controller.fire.graphics.canvas.component.TitleValueComponent;
 import de.mossgrabers.framework.controller.ButtonID;
+import de.mossgrabers.framework.controller.ContinuousID;
 import de.mossgrabers.framework.controller.display.IGraphicDisplay;
 import de.mossgrabers.framework.daw.IModel;
 import de.mossgrabers.framework.daw.data.ISend;
 import de.mossgrabers.framework.daw.data.ITrack;
 import de.mossgrabers.framework.daw.data.bank.ISendBank;
 import de.mossgrabers.framework.mode.Modes;
+import de.mossgrabers.framework.mode.track.TrackMode;
+import de.mossgrabers.framework.parameterprovider.ChannelParameterProvider;
 
 
 /**
@@ -21,9 +24,9 @@ import de.mossgrabers.framework.mode.Modes;
  *
  * @author J&uuml;rgen Mo&szlig;graber
  */
-public class FireTrackMode extends de.mossgrabers.framework.mode.track.TrackMode<FireControlSurface, FireConfiguration>
+public class FireTrackMode extends TrackMode<FireControlSurface, FireConfiguration>
 {
-    private static final Modes [] MODES     =
+    private static final Modes [] MODES             =
     {
         Modes.VOLUME,
         Modes.PAN,
@@ -31,7 +34,7 @@ public class FireTrackMode extends de.mossgrabers.framework.mode.track.TrackMode
         Modes.SEND2
     };
 
-    private static final Modes [] ALT_MODES =
+    private static final Modes [] ALT_MODES         =
     {
         Modes.SEND3,
         Modes.SEND4,
@@ -39,7 +42,7 @@ public class FireTrackMode extends de.mossgrabers.framework.mode.track.TrackMode
         Modes.SEND6
     };
 
-    private Modes                 mode      = Modes.VOLUME;
+    private Modes                 selectedParameter = Modes.VOLUME;
 
 
     /**
@@ -51,6 +54,10 @@ public class FireTrackMode extends de.mossgrabers.framework.mode.track.TrackMode
     public FireTrackMode (final FireControlSurface surface, final IModel model)
     {
         super ("Mixer", surface, model, false);
+
+        this.setControls (ContinuousID.createSequentialList (ContinuousID.KNOB1, 4));
+
+        this.setParameters (new Fire4KnobProvider (surface, new ChannelParameterProvider (model)));
     }
 
 
@@ -74,7 +81,7 @@ public class FireTrackMode extends de.mossgrabers.framework.mode.track.TrackMode
 
             final ISendBank sendBank = track.getSendBank ();
 
-            switch (this.mode)
+            switch (this.selectedParameter)
             {
                 case VOLUME:
                     label = "Vol: " + track.getVolumeStr ();
@@ -93,7 +100,7 @@ public class FireTrackMode extends de.mossgrabers.framework.mode.track.TrackMode
                 case SEND4:
                 case SEND5:
                 case SEND6:
-                    final int sendIndex = this.mode.ordinal () - Modes.SEND1.ordinal ();
+                    final int sendIndex = this.selectedParameter.ordinal () - Modes.SEND1.ordinal ();
                     label = getSendLabel (sendBank, sendIndex);
                     value = getSendValue (sendBank, sendIndex);
                     break;
@@ -118,22 +125,14 @@ public class FireTrackMode extends de.mossgrabers.framework.mode.track.TrackMode
         final Modes [] ms = this.surface.isPressed (ButtonID.ALT) ? MODES : ALT_MODES;
         for (int i = 0; i < ms.length; i++)
         {
-            if (ms[i] == this.mode)
+            if (ms[i] == this.selectedParameter)
             {
                 index = i;
                 break;
             }
         }
         if (index >= 0)
-            this.mode = this.surface.isPressed (ButtonID.ALT) ? ALT_MODES[index] : MODES[index];
-    }
-
-
-    /** {@inheritDoc} */
-    @Override
-    public void onKnobValue (final int index, final int value)
-    {
-        super.onKnobValue (this.surface.isPressed (ButtonID.ALT) ? 4 + index : index, value);
+            this.selectedParameter = this.surface.isPressed (ButtonID.ALT) ? ALT_MODES[index] : MODES[index];
     }
 
 
@@ -141,7 +140,7 @@ public class FireTrackMode extends de.mossgrabers.framework.mode.track.TrackMode
     @Override
     public void onKnobTouch (final int index, final boolean isTouched)
     {
-        this.mode = this.surface.isPressed (ButtonID.ALT) ? ALT_MODES[index] : MODES[index];
+        this.selectedParameter = this.surface.isPressed (ButtonID.ALT) ? ALT_MODES[index] : MODES[index];
 
         super.onKnobTouch (index, isTouched);
     }

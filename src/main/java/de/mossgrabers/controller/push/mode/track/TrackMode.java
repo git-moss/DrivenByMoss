@@ -203,8 +203,8 @@ public class TrackMode extends AbstractTrackMode
             display.setCell (0, 0, "Volume").setCell (1, 0, t.getVolumeStr (8)).setCell (2, 0, volValueStr);
             display.setCell (0, 1, "Pan").setCell (1, 1, t.getPanStr (8)).setCell (2, 1, t.getPan (), Format.FORMAT_PAN);
 
-            int sendStart = 2;
-            int sendCount = 6;
+            final int sendStart = 2;
+            final int sendCount = 6;
             final boolean isEffectTrackBankActive = this.model.isEffectTrackBankActive ();
             final ISendBank sendBank = t.getSendBank ();
             for (int i = 0; i < sendCount; i++)

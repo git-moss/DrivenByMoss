@@ -24,10 +24,10 @@ import java.util.Set;
  */
 public abstract class AbstractChannelParameterProvider implements IParameterProvider, IBankPageObserver, IValueObserver<ITrackBank>
 {
-    protected final IModel                         model;
+    protected final IModel                           model;
 
-    private final IChannelBank<? extends IChannel> bank;
-    private final Set<IParametersAdjustObserver>   observers = new HashSet<> ();
+    protected final IChannelBank<? extends IChannel> bank;
+    protected final Set<IParametersAdjustObserver>   observers = new HashSet<> ();
 
 
     /**
@@ -107,7 +107,7 @@ public abstract class AbstractChannelParameterProvider implements IParameterProv
 
     /** {@inheritDoc} */
     @Override
-    public void pageAdjusted ()
+    public void notifyParametersObservers ()
     {
         this.observers.forEach (IParametersAdjustObserver::parametersAdjusted);
     }
@@ -115,9 +115,17 @@ public abstract class AbstractChannelParameterProvider implements IParameterProv
 
     /** {@inheritDoc} */
     @Override
+    public void pageAdjusted ()
+    {
+        this.notifyParametersObservers ();
+    }
+
+
+    /** {@inheritDoc} */
+    @Override
     public void update (final ITrackBank value)
     {
-        this.observers.forEach (IParametersAdjustObserver::parametersAdjusted);
+        this.notifyParametersObservers ();
     }
 
 

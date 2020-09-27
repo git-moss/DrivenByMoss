@@ -7,16 +7,15 @@ package de.mossgrabers.controller.fire.mode;
 import de.mossgrabers.controller.fire.FireConfiguration;
 import de.mossgrabers.controller.fire.controller.FireControlSurface;
 import de.mossgrabers.controller.fire.graphics.canvas.component.TitleValueComponent;
-import de.mossgrabers.framework.controller.ButtonID;
+import de.mossgrabers.framework.controller.ContinuousID;
 import de.mossgrabers.framework.controller.display.IGraphicDisplay;
 import de.mossgrabers.framework.daw.IModel;
 import de.mossgrabers.framework.daw.data.ICursorDevice;
 import de.mossgrabers.framework.daw.data.IParameter;
 import de.mossgrabers.framework.daw.data.bank.IParameterBank;
 import de.mossgrabers.framework.mode.device.ParameterMode;
+import de.mossgrabers.framework.parameterprovider.BankParameterProvider;
 import de.mossgrabers.framework.utils.StringUtils;
-
-import java.util.Arrays;
 
 
 /**
@@ -37,24 +36,9 @@ public class FireParameterMode extends ParameterMode<FireControlSurface, FireCon
     {
         super (surface, model, false);
 
-        this.isKnobTouched = new boolean [8];
-        Arrays.fill (this.isKnobTouched, false);
-    }
+        this.setControls (ContinuousID.createSequentialList (ContinuousID.KNOB1, 4));
 
-
-    /** {@inheritDoc} */
-    @Override
-    public void onKnobValue (final int index, final int value)
-    {
-        super.onKnobValue (this.surface.isPressed (ButtonID.ALT) ? 4 + index : index, value);
-    }
-
-
-    /** {@inheritDoc} */
-    @Override
-    public void onKnobTouch (final int index, final boolean isTouched)
-    {
-        super.onKnobTouch (this.surface.isPressed (ButtonID.ALT) ? 4 + index : index, isTouched);
+        this.setParameters (new Fire4KnobProvider (surface, new BankParameterProvider (model.getCursorDevice ().getParameterBank ())));
     }
 
 

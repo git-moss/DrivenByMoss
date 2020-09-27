@@ -63,4 +63,12 @@ public class FixedParameterProvider implements IParameterProvider
     {
         // Intentionally empty
     }
+
+
+    /** {@inheritDoc} */
+    @Override
+    public void notifyParametersObservers ()
+    {
+        // Intentionally empty
+    }
 }

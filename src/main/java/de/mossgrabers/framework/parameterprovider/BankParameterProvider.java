@@ -77,8 +77,16 @@ public class BankParameterProvider implements IParameterProvider, IBankPageObser
 
     /** {@inheritDoc} */
     @Override
-    public void pageAdjusted ()
+    public void notifyParametersObservers ()
     {
         this.observers.forEach (IParametersAdjustObserver::parametersAdjusted);
+    }
+
+
+    /** {@inheritDoc} */
+    @Override
+    public void pageAdjusted ()
+    {
+        this.notifyParametersObservers ();
     }
 }

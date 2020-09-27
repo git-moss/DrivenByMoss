@@ -49,8 +49,8 @@ public class TrackMode extends AbstractTrackMode<SLControlSurface, SLConfigurati
 
         d.setCell (0, 0, "Volume").setCell (2, 0, t.getVolumeStr (8)).setCell (0, 1, "Pan").setCell (2, 1, t.getPanStr (8));
 
-        int sendStart = 2;
-        int sendCount = 6;
+        final int sendStart = 2;
+        final int sendCount = 6;
         int pos;
         final ISendBank sendBank = t.getSendBank ();
         if (!this.model.isEffectTrackBankActive () && sendBank.getPageSize () > 0)

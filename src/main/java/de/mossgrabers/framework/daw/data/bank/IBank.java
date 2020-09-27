@@ -71,6 +71,14 @@ public interface IBank<T> extends IObserverManagement
 
 
     /**
+     * Unregisters an item selection observer.
+     *
+     * @param observer The observer to unregister
+     */
+    void removeSelectionObserver (final IItemSelectionObserver observer);
+
+
+    /**
      * Registers a page adjustment observer.
      *
      * @param observer The observer to register

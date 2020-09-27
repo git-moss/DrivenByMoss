@@ -46,4 +46,10 @@ public interface IParameterProvider
      * @param observer The observer to unregister
      */
     void removeParametersObserver (final IParametersAdjustObserver observer);
+
+
+    /**
+     * Notify all registered observers.
+     */
+    void notifyParametersObservers ();
 }

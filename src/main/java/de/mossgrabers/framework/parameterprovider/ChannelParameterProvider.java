@@ -10,7 +10,10 @@ import de.mossgrabers.framework.daw.data.IParameter;
 import de.mossgrabers.framework.daw.data.ISend;
 import de.mossgrabers.framework.daw.data.bank.IChannelBank;
 import de.mossgrabers.framework.daw.data.bank.ISendBank;
+import de.mossgrabers.framework.daw.data.bank.ITrackBank;
 import de.mossgrabers.framework.daw.data.empty.EmptyParameter;
+import de.mossgrabers.framework.observer.IItemSelectionObserver;
+import de.mossgrabers.framework.observer.IParametersAdjustObserver;
 
 
 /**
@@ -19,7 +22,7 @@ import de.mossgrabers.framework.daw.data.empty.EmptyParameter;
  *
  * @author J&uuml;rgen Mo&szlig;graber
  */
-public class ChannelParameterProvider extends AbstractChannelParameterProvider
+public class ChannelParameterProvider extends AbstractChannelParameterProvider implements IItemSelectionObserver
 {
     /**
      * Constructor.
@@ -49,6 +52,50 @@ public class ChannelParameterProvider extends AbstractChannelParameterProvider
     {
         final IChannel selectedTrack = this.getBank ().getSelectedItem ();
         return selectedTrack == null ? EmptyParameter.INSTANCE : this.getInternal (index, selectedTrack);
+    }
+
+
+    /** {@inheritDoc} */
+    @Override
+    public void addParametersObserver (final IParametersAdjustObserver observer)
+    {
+        super.addParametersObserver (observer);
+
+        if (this.bank != null)
+            this.bank.addSelectionObserver (this);
+        else
+        {
+            this.model.getTrackBank ().addSelectionObserver (this);
+            final ITrackBank effectTrackBank = this.model.getEffectTrackBank ();
+            if (effectTrackBank != null)
+                effectTrackBank.addSelectionObserver (this);
+        }
+    }
+
+
+    /** {@inheritDoc} */
+    @Override
+    public void removeParametersObserver (final IParametersAdjustObserver observer)
+    {
+        super.removeParametersObserver (observer);
+
+        if (this.bank != null)
+            this.bank.removeSelectionObserver (this);
+        else
+        {
+            this.model.getTrackBank ().removeSelectionObserver (this);
+            final ITrackBank effectTrackBank = this.model.getEffectTrackBank ();
+            if (effectTrackBank != null)
+                effectTrackBank.removeSelectionObserver (this);
+        }
+    }
+
+
+    /** {@inheritDoc} */
+    @Override
+    public void call (final int index, final boolean isSelected)
+    {
+        this.notifyParametersObservers ();
     }
 
 
@@ -85,7 +132,7 @@ public class ChannelParameterProvider extends AbstractChannelParameterProvider
     private IParameter handleSends (final int index, final IChannel selectedChannel)
     {
         final ISendBank sendBank = selectedChannel.getSendBank ();
-        if (this.model.isEffectTrackBankActive ())
+        if (this.model != null && this.model.isEffectTrackBankActive ())
             return EmptyParameter.INSTANCE;
         try
         {

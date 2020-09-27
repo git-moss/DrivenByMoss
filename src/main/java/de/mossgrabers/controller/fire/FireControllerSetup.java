@@ -34,7 +34,6 @@ import de.mossgrabers.controller.fire.view.SequencerView;
 import de.mossgrabers.controller.fire.view.SessionView;
 import de.mossgrabers.controller.fire.view.ShiftView;
 import de.mossgrabers.framework.command.continuous.KnobRowModeCommand;
-import de.mossgrabers.framework.command.core.NopCommand;
 import de.mossgrabers.framework.command.trigger.mode.KnobRowTouchModeCommand;
 import de.mossgrabers.framework.command.trigger.mode.ModeMultiSelectCommand;
 import de.mossgrabers.framework.command.trigger.transport.MetronomeCommand;
@@ -66,6 +65,7 @@ import de.mossgrabers.framework.daw.midi.IMidiOutput;
 import de.mossgrabers.framework.mode.Mode;
 import de.mossgrabers.framework.mode.ModeManager;
 import de.mossgrabers.framework.mode.Modes;
+import de.mossgrabers.framework.observer.IParametersAdjustObserver;
 import de.mossgrabers.framework.view.View;
 import de.mossgrabers.framework.view.ViewManager;
 import de.mossgrabers.framework.view.Views;
@@ -80,13 +80,15 @@ import java.util.function.IntSupplier;
  */
 public class FireControllerSetup extends AbstractControllerSetup<FireControlSurface, FireConfiguration>
 {
-    private static final Modes [] MODES =
+    private static final Modes []                                         MODES =
     {
         Modes.DEVICE_LAYER,
         Modes.TRACK,
         Modes.DEVICE_PARAMS,
         Modes.USER
     };
+
+    private ModeMultiSelectCommand<FireControlSurface, FireConfiguration> modeSelectCommand;
 
 
     /**
@@ -206,9 +208,8 @@ public class FireControllerSetup extends AbstractControllerSetup<FireControlSurf
 
         // Modes
 
-        final ModeMultiSelectCommand<FireControlSurface, FireConfiguration> modeSelectCommand = new ModeMultiSelectCommand<> (this.model, surface, MODES);
-        modeSelectCommand.activateMode (Modes.TRACK);
-        this.addButton (ButtonID.BANK_RIGHT, "BANK", modeSelectCommand, FireControlSurface.FIRE_BANK);
+        this.modeSelectCommand = new ModeMultiSelectCommand<> (this.model, surface, MODES);
+        this.addButton (ButtonID.BANK_RIGHT, "BANK", this.modeSelectCommand, FireControlSurface.FIRE_BANK);
 
         for (int i = 0; i < MODES.length; i++)
         {
@@ -275,7 +276,13 @@ public class FireControllerSetup extends AbstractControllerSetup<FireControlSurf
         }, FireColorManager.BUTTON_STATE_ON2, FireColorManager.BUTTON_STATE_HI2, ColorManager.BUTTON_STATE_HI);
 
         this.addButton (ButtonID.SHIFT, "SHIFT", new ToggleShiftViewCommand<> (this.model, surface), FireControlSurface.FIRE_SHIFT, (IntSupplier) null, FireColorManager.BUTTON_STATE_ON2, FireColorManager.BUTTON_STATE_HI2);
-        this.addButton (ButtonID.ALT, "ALT", NopCommand.INSTANCE, FireControlSurface.FIRE_ALT);
+        this.addButton (ButtonID.ALT, "ALT", (event, velocity) -> {
+
+            final Mode activeMode = modeManager.getActiveOrTempMode ();
+            if (activeMode instanceof IParametersAdjustObserver)
+                ((IParametersAdjustObserver) activeMode).parametersAdjusted ();
+
+        }, FireControlSurface.FIRE_ALT);
 
         this.addButton (ButtonID.SELECT, "SELECT", (event, velocity) -> {
 
@@ -527,6 +534,8 @@ public class FireControllerSetup extends AbstractControllerSetup<FireControlSurf
         final FireControlSurface surface = this.getSurface ();
         surface.getViewManager ().setActiveView (Views.PLAY);
         surface.getModeManager ().setActiveMode (Modes.TRACK);
+
+        this.modeSelectCommand.activateMode (Modes.TRACK);
     }
 
 

@@ -78,6 +78,14 @@ public abstract class AbstractBank<T> implements IBank<T>
 
     /** {@inheritDoc} */
     @Override
+    public void removeSelectionObserver (final IItemSelectionObserver observer)
+    {
+        this.selectionObservers.remove (observer);
+    }
+
+
+    /** {@inheritDoc} */
+    @Override
     public void addPageObserver (final IBankPageObserver observer)
     {
         this.pageObservers.add (observer);

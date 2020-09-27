@@ -38,7 +38,9 @@ import de.mossgrabers.framework.utils.Pair;
 import de.mossgrabers.framework.utils.StringUtils;
 
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 
 /**
@@ -48,7 +50,8 @@ import java.util.List;
  */
 public class DeviceLayerMode extends BaseMode implements IParameterProvider, IValueObserver<Boolean>
 {
-    protected final List<Pair<String, Boolean>> menu = new ArrayList<> ();
+    protected final List<Pair<String, Boolean>>  menu      = new ArrayList<> ();
+    private final Set<IParametersAdjustObserver> observers = new HashSet<> ();
 
 
     /**
@@ -110,6 +113,8 @@ public class DeviceLayerMode extends BaseMode implements IParameterProvider, IVa
     @Override
     public void addParametersObserver (final IParametersAdjustObserver observer)
     {
+        this.observers.add (observer);
+
         this.model.getCursorDevice ().addHasDrumPadsObserver (this);
 
         // Also update straight away to current state
@@ -121,7 +126,17 @@ public class DeviceLayerMode extends BaseMode implements IParameterProvider, IVa
     @Override
     public void removeParametersObserver (final IParametersAdjustObserver observer)
     {
+        this.observers.remove (observer);
+
         this.model.getCursorDevice ().removeHasDrumPadsObserver (this);
+    }
+
+
+    /** {@inheritDoc} */
+    @Override
+    public void notifyParametersObservers ()
+    {
+        this.observers.forEach (IParametersAdjustObserver::parametersAdjusted);
     }
 
 
