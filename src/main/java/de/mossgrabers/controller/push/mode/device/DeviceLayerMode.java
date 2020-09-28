@@ -87,6 +87,8 @@ public class DeviceLayerMode extends BaseMode implements IParameterProvider, IVa
     public IParameter get (final int index)
     {
         final ICursorDevice cd = this.model.getCursorDevice ();
+        if (!cd.hasLayers ())
+            return EmptyParameter.INSTANCE;
         final IChannel channel = cd.getLayerOrDrumPadBank ().getSelectedItem ();
         if (channel == null)
             return EmptyParameter.INSTANCE;
@@ -377,11 +379,10 @@ public class DeviceLayerMode extends BaseMode implements IParameterProvider, IVa
             return;
         }
 
-        final boolean noLayers = cd.hasLayers () && cd.getLayerBank ().hasZeroLayers ();
-        if (noLayers)
-        {
+        if (!cd.hasLayers ())
+            display.setBlock (1, 1, "    This device  ").setBlock (1, 2, "does not have layers.");
+        else if (cd.getLayerBank ().hasZeroLayers ())
             display.setBlock (1, 1, "    Please create").setBlock (1, 2, cd.hasDrumPads () ? "a Drum Pad..." : "a Device Layer...");
-        }
         else
         {
             final IChannel l = cd.getLayerOrDrumPadBank ().getSelectedItem ();
@@ -435,15 +436,35 @@ public class DeviceLayerMode extends BaseMode implements IParameterProvider, IVa
             return;
         }
 
-        final boolean noLayers = cd.hasLayers () && cd.getLayerBank ().hasZeroLayers ();
-        if (noLayers)
+        if (checkLayerExistance (display, cd))
+            this.updateDisplayElements (display, cd, cd.getLayerOrDrumPadBank ().getSelectedItem ());
+    }
+
+
+    /**
+     * Check if the cursor device has layers and at least one. Otherwise a message is displayed
+     *
+     * @param display The display where to show the message
+     * @param cd The cursor device
+     * @return True if layers exist
+     */
+    protected static boolean checkLayerExistance (final IGraphicDisplay display, final ICursorDevice cd)
+    {
+        if (!cd.hasLayers ())
+        {
+            for (int i = 0; i < 8; i++)
+                display.addOptionElement (i == 3 ? "This device does not have layers." : "", i == 7 ? "Up" : "", true, "", "", false, true);
+            return false;
+        }
+
+        if (cd.getLayerBank ().hasZeroLayers ())
         {
             for (int i = 0; i < 8; i++)
                 display.addOptionElement (i == 3 ? "Please create a " + (cd.hasDrumPads () ? "Drum Pad..." : "Device Layer...") : "", i == 7 ? "Up" : "", true, "", "", false, true);
-            return;
+            return false;
         }
 
-        this.updateDisplayElements (display, cd, cd.getLayerOrDrumPadBank ().getSelectedItem ());
+        return true;
     }
 
 

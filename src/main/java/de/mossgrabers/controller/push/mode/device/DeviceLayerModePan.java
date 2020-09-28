@@ -15,6 +15,7 @@ import de.mossgrabers.framework.daw.data.IChannel;
 import de.mossgrabers.framework.daw.data.ICursorDevice;
 import de.mossgrabers.framework.daw.data.IParameter;
 import de.mossgrabers.framework.daw.data.bank.IChannelBank;
+import de.mossgrabers.framework.daw.data.empty.EmptyParameter;
 
 
 /**
@@ -41,6 +42,8 @@ public class DeviceLayerModePan extends DeviceLayerMode
     public IParameter get (final int index)
     {
         final ICursorDevice cd = this.model.getCursorDevice ();
+        if (!cd.hasLayers ())
+            return EmptyParameter.INSTANCE;
 
         // Drum Pad Bank has size of 16, layers only 8
         final int offset = getDrumPadIndex (cd);
@@ -78,16 +81,23 @@ public class DeviceLayerModePan extends DeviceLayerMode
     public void updateDisplay1 (final ITextDisplay display)
     {
         final ICursorDevice cd = this.model.getCursorDevice ();
-        // Drum Pad Bank has size of 16, layers only 8
-        final int offset = getDrumPadIndex (cd);
-
-        final IChannelBank<?> bank = cd.getLayerOrDrumPadBank ();
-        for (int i = 0; i < 8; i++)
+        if (!cd.hasLayers ())
+            display.setBlock (1, 1, "    This device  ").setBlock (1, 2, "does not have layers.");
+        else if (cd.getLayerBank ().hasZeroLayers ())
+            display.setBlock (1, 1, "    Please create").setBlock (1, 2, cd.hasDrumPads () ? "a Drum Pad..." : "a Device Layer...");
+        else
         {
-            final IChannel layer = bank.getItem (offset + i);
-            display.setCell (0, i, layer.doesExist () ? "Pan" : "").setCell (1, i, layer.getPanStr (8));
-            if (layer.doesExist ())
-                display.setCell (2, i, layer.getPan (), Format.FORMAT_VALUE);
+            // Drum Pad Bank has size of 16, layers only 8
+            final int offset = getDrumPadIndex (cd);
+
+            final IChannelBank<?> bank = cd.getLayerOrDrumPadBank ();
+            for (int i = 0; i < 8; i++)
+            {
+                final IChannel layer = bank.getItem (offset + i);
+                display.setCell (0, i, layer.doesExist () ? "Pan" : "").setCell (1, i, layer.getPanStr (8));
+                if (layer.doesExist ())
+                    display.setCell (2, i, layer.getPan (), Format.FORMAT_VALUE);
+            }
         }
 
         this.drawRow4 (display, cd);

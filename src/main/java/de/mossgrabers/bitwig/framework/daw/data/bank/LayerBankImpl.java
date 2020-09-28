@@ -49,21 +49,24 @@ public class LayerBankImpl extends AbstractChannelBankImpl<DeviceLayerBank, ILay
 
         this.numDevices = numDevices;
 
-        for (int i = 0; i < this.getPageSize (); i++)
+        if (this.bank != null)
         {
-            final DeviceLayer deviceLayer = this.bank.getItemAt (i);
-            this.items.add (new LayerImpl (this.host, this.valueChanger, deviceLayer, i, this.numSends, this.numDevices));
-        }
-
-        // Note: cursorIndex is defined for all banks but currently only works for track banks
-        this.bank.cursorIndex ().addValueObserver (index -> {
             for (int i = 0; i < this.getPageSize (); i++)
             {
-                final boolean isSelected = index == i;
-                if (this.items.get (i).isSelected () != isSelected)
-                    this.handleBankSelection (i, isSelected);
+                final DeviceLayer deviceLayer = this.bank.getItemAt (i);
+                this.items.add (new LayerImpl (this.host, this.valueChanger, deviceLayer, i, this.numSends, this.numDevices));
             }
-        });
+
+            // Note: cursorIndex is defined for all banks but currently only works for track banks
+            this.bank.cursorIndex ().addValueObserver (index -> {
+                for (int i = 0; i < this.getPageSize (); i++)
+                {
+                    final boolean isSelected = index == i;
+                    if (this.items.get (i).isSelected () != isSelected)
+                        this.handleBankSelection (i, isSelected);
+                }
+            });
+        }
     }
 
 

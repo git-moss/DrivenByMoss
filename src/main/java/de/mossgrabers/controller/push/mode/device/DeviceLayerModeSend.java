@@ -16,6 +16,7 @@ import de.mossgrabers.framework.daw.data.ICursorDevice;
 import de.mossgrabers.framework.daw.data.IParameter;
 import de.mossgrabers.framework.daw.data.ISend;
 import de.mossgrabers.framework.daw.data.bank.IChannelBank;
+import de.mossgrabers.framework.daw.data.empty.EmptyParameter;
 import de.mossgrabers.framework.daw.resource.ChannelType;
 import de.mossgrabers.framework.graphics.canvas.utils.SendData;
 import de.mossgrabers.framework.utils.Pair;
@@ -54,7 +55,10 @@ public class DeviceLayerModeSend extends DeviceLayerMode
 
         // Drum Pad Bank has size of 16, layers only 8
         final int offset = getDrumPadIndex (cd);
-        return cd.getLayerOrDrumPadBank ().getItem (offset + index).getSendBank ().getItem (this.sendIndex);
+        if (!cd.hasLayers ())
+            return EmptyParameter.INSTANCE;
+        final IChannel item = cd.getLayerOrDrumPadBank ().getItem (offset + index);
+        return item.doesExist () ? item.getSendBank ().getItem (this.sendIndex) : EmptyParameter.INSTANCE;
     }
 
 
@@ -88,19 +92,27 @@ public class DeviceLayerModeSend extends DeviceLayerMode
     public void updateDisplay1 (final ITextDisplay display)
     {
         final ICursorDevice cd = this.model.getCursorDevice ();
-        // Drum Pad Bank has size of 16, layers only 8
-        final int offset = getDrumPadIndex (cd);
-
-        final IChannelBank<?> bank = cd.getLayerOrDrumPadBank ();
-        for (int i = 0; i < 8; i++)
+        if (!cd.hasLayers ())
+            display.setBlock (1, 1, "    This device  ").setBlock (1, 2, "does not have layers.");
+        else if (cd.getLayerBank ().hasZeroLayers ())
+            display.setBlock (1, 1, "    Please create").setBlock (1, 2, cd.hasDrumPads () ? "a Drum Pad..." : "a Device Layer...");
+        else
         {
-            final IChannel layer = bank.getItem (offset + i);
-            final boolean exists = layer.doesExist ();
-            final ISend send = layer.getSendBank ().getItem (this.sendIndex);
-            display.setCell (0, i, exists ? send.getName () : "").setCell (1, i, send.getDisplayedValue (8));
-            if (exists)
-                display.setCell (2, i, send.getValue (), Format.FORMAT_VALUE);
+            // Drum Pad Bank has size of 16, layers only 8
+            final int offset = getDrumPadIndex (cd);
+
+            final IChannelBank<?> bank = cd.getLayerOrDrumPadBank ();
+            for (int i = 0; i < 8; i++)
+            {
+                final IChannel layer = bank.getItem (offset + i);
+                final boolean exists = layer.doesExist ();
+                final ISend send = layer.getSendBank ().getItem (this.sendIndex);
+                display.setCell (0, i, exists ? send.getName () : "").setCell (1, i, send.getDisplayedValue (8));
+                if (exists)
+                    display.setCell (2, i, send.getValue (), Format.FORMAT_VALUE);
+            }
         }
+
         this.drawRow4 (display, cd);
     }
 
