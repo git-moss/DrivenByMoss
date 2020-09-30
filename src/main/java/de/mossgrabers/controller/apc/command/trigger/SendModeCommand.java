@@ -8,6 +8,8 @@ import de.mossgrabers.controller.apc.APCConfiguration;
 import de.mossgrabers.controller.apc.controller.APCControlSurface;
 import de.mossgrabers.framework.command.core.AbstractTriggerCommand;
 import de.mossgrabers.framework.daw.IModel;
+import de.mossgrabers.framework.daw.data.ITrack;
+import de.mossgrabers.framework.daw.data.bank.ITrackBank;
 import de.mossgrabers.framework.mode.ModeManager;
 import de.mossgrabers.framework.mode.Modes;
 import de.mossgrabers.framework.utils.ButtonEvent;
@@ -64,6 +66,17 @@ public class SendModeCommand extends AbstractTriggerCommand<APCControlSurface, A
 
         final ModeManager modeManager = this.surface.getModeManager ();
         modeManager.setActiveMode (Modes.get (Modes.SEND1, index));
-        this.model.getHost ().showNotification (modeManager.getActiveOrTempMode ().getName ());
+
+        String modeName = "Send " + (index + 1) + ": ";
+        final ITrackBank trackBank = this.model.getTrackBank ();
+        ITrack selectedTrack = trackBank.getSelectedItem ();
+        if (selectedTrack == null)
+            selectedTrack = trackBank.getItem (0);
+        if (selectedTrack != null)
+            modeName += selectedTrack.getSendBank ().getItem (index).getName ();
+        else
+            modeName += "-";
+
+        this.model.getHost ().showNotification (modeName);
     }
 }

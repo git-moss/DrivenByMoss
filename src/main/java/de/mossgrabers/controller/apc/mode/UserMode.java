@@ -81,12 +81,15 @@ public class UserMode extends BaseMode
     }
 
 
-    private void displayPageName ()
+    /**
+     * Display the page name.
+     */
+    public void displayPageName ()
     {
         this.surface.scheduleTask ( () -> {
             final int pageSize = this.bank.getPageSize ();
             final int selectedPage = this.bank.getScrollPosition () / pageSize;
-            this.surface.getDisplay ().notify ("User Page " + (selectedPage + 1));
+            this.model.getHost ().showNotification ("User: Page " + (selectedPage + 1));
         }, 200);
     }
 }

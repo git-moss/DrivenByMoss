@@ -225,7 +225,14 @@ public class APCControllerSetup extends AbstractControllerSetup<APCControlSurfac
         if (this.isMkII)
         {
             this.addButton (ButtonID.SEND1, "SENDS", new ModeMultiSelectCommand<> (this.model, surface, Modes.SEND1, Modes.SEND2, Modes.SEND3, Modes.SEND4, Modes.SEND5, Modes.SEND6, Modes.SEND7, Modes.SEND8), APCControlSurface.APC_BUTTON_SEND_A, () -> Modes.isSendMode (modeManager.getActiveOrTempModeId ()), ColorManager.BUTTON_STATE_OFF, ColorManager.BUTTON_STATE_ON);
-            this.addButton (ButtonID.SEND2, "USER", new ModeSelectCommand<> (this.model, surface, Modes.USER), APCControlSurface.APC_BUTTON_SEND_B, () -> modeManager.isActiveOrTempMode (Modes.USER), ColorManager.BUTTON_STATE_OFF, ColorManager.BUTTON_STATE_ON);
+            this.addButton (ButtonID.SEND2, "USER", new ModeSelectCommand<> (this.model, surface, Modes.USER)
+            {
+                @Override
+                protected void displayMode (final ModeManager modeManager)
+                {
+                    ((UserMode) modeManager.getMode (Modes.USER)).displayPageName ();
+                }
+            }, APCControlSurface.APC_BUTTON_SEND_B, () -> modeManager.isActiveOrTempMode (Modes.USER), ColorManager.BUTTON_STATE_OFF, ColorManager.BUTTON_STATE_ON);
         }
         else
         {
@@ -810,6 +817,18 @@ public class APCControllerSetup extends AbstractControllerSetup<APCControlSurfac
                     return index == clipLength;
                 final ITrack selTrack = tb.getSelectedItem ();
                 final int selIndex = selTrack == null ? -1 : selTrack.getIndex ();
+                if (surface.isMkII ())
+                {
+                    // Handle user mode selection
+                    if (surface.isPressed (ButtonID.SEND2))
+                    {
+                        final IParameterBank userParameterBank = this.model.getUserParameterBank ();
+                        final int pageSize = userParameterBank.getPageSize ();
+                        final int selectedPage = userParameterBank.getScrollPosition () / pageSize;
+                        return selectedPage == index;
+                    }
+                }
+                // Handle send mode selection
                 return surface.isPressed (ButtonID.SEND1) ? modeManager.isActiveOrTempMode (Modes.get (Modes.SEND1, index)) : index == selIndex;
 
             case APCControlSurface.APC_BUTTON_SOLO:

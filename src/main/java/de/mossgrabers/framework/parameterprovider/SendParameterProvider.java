@@ -6,6 +6,8 @@ package de.mossgrabers.framework.parameterprovider;
 
 import de.mossgrabers.framework.daw.IModel;
 import de.mossgrabers.framework.daw.data.IParameter;
+import de.mossgrabers.framework.daw.data.bank.ISendBank;
+import de.mossgrabers.framework.daw.data.empty.EmptyParameter;
 
 
 /**
@@ -37,6 +39,7 @@ public class SendParameterProvider extends AbstractChannelParameterProvider
     @Override
     public IParameter get (final int index)
     {
-        return this.getChannel (index).getSendBank ().getItem (this.sendIndex);
+        final ISendBank sendBank = this.getChannel (index).getSendBank ();
+        return sendBank.getItemCount () == 0 ? EmptyParameter.INSTANCE : sendBank.getItem (this.sendIndex);
     }
 }

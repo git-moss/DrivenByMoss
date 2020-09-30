@@ -7,6 +7,7 @@ package de.mossgrabers.bitwig.framework.daw.data;
 import de.mossgrabers.framework.controller.valuechanger.IValueChanger;
 import de.mossgrabers.framework.daw.data.AbstractItemImpl;
 import de.mossgrabers.framework.daw.data.IParameter;
+import de.mossgrabers.framework.daw.data.ISend;
 import de.mossgrabers.framework.observer.IValueObserver;
 
 import com.bitwig.extension.controller.api.DoubleValue;
@@ -85,7 +86,9 @@ public class ParameterImpl extends AbstractItemImpl implements IParameter
     @Override
     public String getName ()
     {
-        return this.targetName == null ? this.parameter.name ().get () : this.targetName.get ();
+        // TODO Bugfix required: The ISend check is a workaround for
+        // https://github.com/teotigraphix/Framework4Bitwig/issues/267
+        return this.targetName == null || this instanceof ISend ? this.parameter.name ().get () : this.targetName.get ();
     }
 
 
@@ -93,7 +96,9 @@ public class ParameterImpl extends AbstractItemImpl implements IParameter
     @Override
     public String getName (final int limit)
     {
-        return this.targetName == null ? this.parameter.name ().getLimited (limit) : this.targetName.getLimited (limit);
+        // TODO Bugfix required: The ISend check is a workaround for
+        // https://github.com/teotigraphix/Framework4Bitwig/issues/267
+        return this.targetName == null || this instanceof ISend ? this.parameter.name ().getLimited (limit) : this.targetName.getLimited (limit);
     }
 
 

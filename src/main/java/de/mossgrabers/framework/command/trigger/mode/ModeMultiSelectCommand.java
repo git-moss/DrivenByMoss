@@ -57,7 +57,7 @@ public class ModeMultiSelectCommand<S extends IControlSurface<C>, C extends Conf
     @Override
     public void executeShifted (final ButtonEvent event)
     {
-        if (event != ButtonEvent.DOWN)
+        if (event != ButtonEvent.UP)
             return;
 
         final Modes activeModeId = this.modeManager.getActiveModeId ();
@@ -86,7 +86,7 @@ public class ModeMultiSelectCommand<S extends IControlSurface<C>, C extends Conf
     @Override
     public void executeNormal (final ButtonEvent event)
     {
-        if (event != ButtonEvent.DOWN)
+        if (event != ButtonEvent.UP)
             return;
 
         final Modes activeModeId = this.modeManager.getActiveModeId ();

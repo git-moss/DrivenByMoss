@@ -73,13 +73,13 @@ public class HwAbsoluteKnobImpl extends AbstractHwContinuousControl implements I
         if (this.binding != null)
             this.binding.removeBinding ();
 
-        final HardwareBindable target;
+        HardwareBindable target = null;
         if (parameter == null)
         {
             HwUtils.enableObservers (false, this.hardwareKnob, this.parameterImpl);
             target = this.defaultAction;
         }
-        else
+        else if (parameter instanceof ParameterImpl)
         {
             this.parameterImpl = (ParameterImpl) parameter;
             target = this.parameterImpl.getParameter ();

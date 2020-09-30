@@ -39,8 +39,12 @@ public class SelectCommand extends AbstractTriggerCommand<PushControlSurface, Pu
         // Update for key combinations
         this.surface.getViewManager ().getActiveView ().updateNoteMapping ();
 
-        final boolean isUp = event == ButtonEvent.UP;
         final ModeManager modeManager = this.surface.getModeManager ();
+
+        // Don't do anything in browser mode
+        if (modeManager.isActiveOrTempMode (Modes.BROWSER))
+            return;
+
         if (event == ButtonEvent.DOWN)
         {
             // Track or layer details?
@@ -49,7 +53,7 @@ public class SelectCommand extends AbstractTriggerCommand<PushControlSurface, Pu
             else
                 modeManager.setActiveMode (Modes.TRACK_DETAILS);
         }
-        else if (isUp && (modeManager.isActiveOrTempMode (Modes.TRACK_DETAILS) || modeManager.isActiveOrTempMode (Modes.DEVICE_LAYER_DETAILS)))
+        else if (event == ButtonEvent.UP && (modeManager.isActiveOrTempMode (Modes.TRACK_DETAILS, Modes.DEVICE_LAYER_DETAILS)))
             modeManager.restoreMode ();
     }
 }

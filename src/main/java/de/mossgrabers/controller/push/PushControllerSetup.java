@@ -185,7 +185,7 @@ public class PushControllerSetup extends AbstractControllerSetup<PushControlSurf
         super.flush ();
 
         final PushControlSurface surface = this.getSurface ();
-        this.updateMode (surface.getModeManager ().getActiveOrTempModeId ());
+        this.updateIndication (surface.getModeManager ().getActiveOrTempModeId ());
 
         final de.mossgrabers.framework.command.core.PitchbendCommand pitchbendCommand = surface.getContinuous (ContinuousID.TOUCHSTRIP).getPitchbendCommand ();
         if (pitchbendCommand != null)
@@ -403,7 +403,6 @@ public class PushControllerSetup extends AbstractControllerSetup<PushControlSurf
         ////////////////////////////////////////////////////////////////////
         // Other observers
 
-        surface.getModeManager ().addModeListener ( (oldMode, newMode) -> this.updateMode (newMode));
         surface.getViewManager ().addViewChangeListener ( (previousViewId, activeViewId) -> this.onViewChange ());
 
         this.activateBrowserObserver (Modes.BROWSER);
@@ -898,15 +897,6 @@ public class PushControllerSetup extends AbstractControllerSetup<PushControlSurf
     }
 
 
-    private void updateMode (final Modes mode)
-    {
-        if (mode == null)
-            return;
-        this.updateIndication (mode);
-        this.getSurface ().getDisplay ().cancelNotification ();
-    }
-
-
     /** {@inheritDoc} */
     @Override
     protected void updateIndication (final Modes mode)
@@ -915,7 +905,14 @@ public class PushControllerSetup extends AbstractControllerSetup<PushControlSurf
             return;
 
         if (mode != null)
+        {
             this.currentMode = mode;
+            // Cancel current notification messages if a new mode is displayed
+            this.getSurface ().getDisplay ().cancelNotification ();
+        }
+
+        if (this.currentMode == null)
+            return;
 
         final ITrackBank tb = this.model.getTrackBank ();
         final ITrackBank tbe = this.model.getEffectTrackBank ();

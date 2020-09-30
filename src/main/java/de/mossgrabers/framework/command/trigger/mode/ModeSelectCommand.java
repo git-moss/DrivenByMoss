@@ -72,6 +72,17 @@ public class ModeSelectCommand<S extends IControlSurface<C>, C extends Configura
         }
         else
             modeManager.setActiveMode (this.modeId);
+        this.displayMode (modeManager);
+    }
+
+
+    /**
+     * Display the modes' name.
+     *
+     * @param modeManager The mode manager
+     */
+    protected void displayMode (final ModeManager modeManager)
+    {
         this.model.getHost ().showNotification (modeManager.getActiveOrTempMode ().getName ());
     }
 }
