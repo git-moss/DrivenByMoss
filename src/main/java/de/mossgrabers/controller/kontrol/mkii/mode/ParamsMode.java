@@ -7,6 +7,7 @@ package de.mossgrabers.controller.kontrol.mkii.mode;
 import de.mossgrabers.controller.kontrol.mkii.KontrolProtocolConfiguration;
 import de.mossgrabers.controller.kontrol.mkii.TrackType;
 import de.mossgrabers.controller.kontrol.mkii.controller.KontrolProtocolControlSurface;
+import de.mossgrabers.framework.controller.ContinuousID;
 import de.mossgrabers.framework.controller.valuechanger.IValueChanger;
 import de.mossgrabers.framework.daw.IModel;
 import de.mossgrabers.framework.daw.data.IParameter;
@@ -14,6 +15,10 @@ import de.mossgrabers.framework.daw.data.bank.IDeviceBank;
 import de.mossgrabers.framework.daw.data.bank.IParameterBank;
 import de.mossgrabers.framework.daw.data.bank.IParameterPageBank;
 import de.mossgrabers.framework.mode.device.ParameterMode;
+import de.mossgrabers.framework.parameterprovider.BankParameterProvider;
+import de.mossgrabers.framework.parameterprovider.CombinedParameterProvider;
+
+import java.util.List;
 
 
 /**
@@ -28,10 +33,15 @@ public class ParamsMode extends ParameterMode<KontrolProtocolControlSurface, Kon
      *
      * @param surface The control surface
      * @param model The model
+     * @param controls The IDs of the knobs or faders to control this mode
      */
-    public ParamsMode (final KontrolProtocolControlSurface surface, final IModel model)
+    public ParamsMode (final KontrolProtocolControlSurface surface, final IModel model, final List<ContinuousID> controls)
     {
-        super (surface, model, false, DEFAULT_KNOB_IDS);
+        super (surface, model, false);
+
+        this.setControls (controls);
+        final BankParameterProvider pp = new BankParameterProvider (this.cursorDevice.getParameterBank ());
+        this.setParameters (new CombinedParameterProvider (pp, pp));
     }
 
 

@@ -8,6 +8,7 @@ import de.mossgrabers.controller.kontrol.mkii.KontrolProtocolConfiguration;
 import de.mossgrabers.controller.kontrol.mkii.TrackType;
 import de.mossgrabers.controller.kontrol.mkii.controller.KontrolProtocol;
 import de.mossgrabers.controller.kontrol.mkii.controller.KontrolProtocolControlSurface;
+import de.mossgrabers.framework.controller.ContinuousID;
 import de.mossgrabers.framework.controller.valuechanger.IValueChanger;
 import de.mossgrabers.framework.daw.IModel;
 import de.mossgrabers.framework.daw.data.ITrack;
@@ -15,6 +16,11 @@ import de.mossgrabers.framework.daw.data.bank.ISceneBank;
 import de.mossgrabers.framework.daw.data.bank.ISlotBank;
 import de.mossgrabers.framework.daw.data.bank.ITrackBank;
 import de.mossgrabers.framework.mode.track.VolumeMode;
+import de.mossgrabers.framework.parameterprovider.CombinedParameterProvider;
+import de.mossgrabers.framework.parameterprovider.PanParameterProvider;
+import de.mossgrabers.framework.parameterprovider.VolumeParameterProvider;
+
+import java.util.List;
 
 
 /**
@@ -29,10 +35,14 @@ public class MixerMode extends VolumeMode<KontrolProtocolControlSurface, Kontrol
      *
      * @param surface The control surface
      * @param model The model
+     * @param controls The IDs of the knobs or faders to control this mode
      */
-    public MixerMode (final KontrolProtocolControlSurface surface, final IModel model)
+    public MixerMode (final KontrolProtocolControlSurface surface, final IModel model, final List<ContinuousID> controls)
     {
         super (surface, model, false);
+
+        this.setControls (controls);
+        this.setParameters (new CombinedParameterProvider (new VolumeParameterProvider (model), new PanParameterProvider (model)));
     }
 
 

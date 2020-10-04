@@ -12,6 +12,7 @@ import de.mossgrabers.framework.controller.grid.IPadGrid;
 import de.mossgrabers.framework.daw.DAWColor;
 import de.mossgrabers.framework.daw.IModel;
 import de.mossgrabers.framework.daw.data.IScene;
+import de.mossgrabers.framework.daw.data.ISlot;
 import de.mossgrabers.framework.daw.data.ITrack;
 import de.mossgrabers.framework.daw.data.bank.ISceneBank;
 import de.mossgrabers.framework.daw.data.bank.ITrackBank;
@@ -214,6 +215,22 @@ public class SessionView extends AbstractSessionView<LaunchpadControlSurface, La
 
     /** {@inheritDoc} */
     @Override
+    protected boolean handleButtonCombinations (final ITrack track, final ISlot slot)
+    {
+        final boolean result = super.handleButtonCombinations (track, slot);
+
+        final LaunchpadConfiguration configuration = this.surface.getConfiguration ();
+        if (this.isButtonCombination (ButtonID.DELETE) && configuration.isDeleteModeActive ())
+            configuration.toggleDeleteModeActive ();
+        else if (this.isButtonCombination (ButtonID.DUPLICATE) && configuration.isDuplicateModeActive () && (!slot.doesExist () || !slot.hasContent ()))
+            configuration.toggleDuplicateModeActive ();
+
+        return result;
+    }
+
+
+    /** {@inheritDoc} */
+    @Override
     protected boolean isButtonCombination (final ButtonID buttonID)
     {
         if (super.isButtonCombination (buttonID))
@@ -221,18 +238,9 @@ public class SessionView extends AbstractSessionView<LaunchpadControlSurface, La
 
         final LaunchpadConfiguration configuration = this.surface.getConfiguration ();
         if (buttonID == ButtonID.DELETE && configuration.isDeleteModeActive ())
-        {
-            configuration.toggleDeleteModeActive ();
             return true;
-        }
 
-        if (buttonID == ButtonID.DUPLICATE && configuration.isDuplicateModeActive ())
-        {
-            configuration.toggleDuplicateModeActive ();
-            return true;
-        }
-
-        return false;
+        return buttonID == ButtonID.DUPLICATE && configuration.isDuplicateModeActive ();
     }
 
 

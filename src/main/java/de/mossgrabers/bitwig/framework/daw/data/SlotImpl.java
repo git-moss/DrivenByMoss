@@ -231,6 +231,14 @@ public class SlotImpl extends AbstractItemImpl implements ISlot
     }
 
 
+    /** {@inheritDoc} */
+    @Override
+    public void paste (final ISlot slot)
+    {
+        this.slot.replaceInsertionPoint ().copySlotsOrScenes (((SlotImpl) slot).getSlot ());
+    }
+
+
     /**
      * Get the Bitwig slot.
      *

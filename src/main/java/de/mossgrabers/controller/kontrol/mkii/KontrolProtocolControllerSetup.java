@@ -12,7 +12,6 @@ import de.mossgrabers.controller.kontrol.mkii.mode.MixerMode;
 import de.mossgrabers.controller.kontrol.mkii.mode.ParamsMode;
 import de.mossgrabers.controller.kontrol.mkii.mode.SendMode;
 import de.mossgrabers.controller.kontrol.mkii.view.ControlView;
-import de.mossgrabers.framework.command.continuous.KnobRowModeCommand;
 import de.mossgrabers.framework.command.core.NopCommand;
 import de.mossgrabers.framework.command.core.TriggerCommand;
 import de.mossgrabers.framework.command.trigger.application.RedoCommand;
@@ -62,6 +61,7 @@ import de.mossgrabers.framework.utils.OperatingSystem;
 import de.mossgrabers.framework.view.ViewManager;
 import de.mossgrabers.framework.view.Views;
 
+import java.util.List;
 import java.util.function.IntSupplier;
 
 
@@ -202,9 +202,12 @@ public class KontrolProtocolControllerSetup extends AbstractControllerSetup<Kont
         final KontrolProtocolControlSurface surface = this.getSurface ();
         final ModeManager modeManager = surface.getModeManager ();
 
-        modeManager.registerMode (Modes.VOLUME, new MixerMode (surface, this.model));
-        modeManager.registerMode (Modes.SEND, new SendMode (surface, this.model));
-        modeManager.registerMode (Modes.DEVICE_PARAMS, new ParamsMode (surface, this.model));
+        final List<ContinuousID> controls = ContinuousID.createSequentialList (ContinuousID.KNOB1, 8);
+        controls.addAll (ContinuousID.createSequentialList (ContinuousID.FADER1, 8));
+
+        modeManager.registerMode (Modes.VOLUME, new MixerMode (surface, this.model, controls));
+        modeManager.registerMode (Modes.SEND, new SendMode (surface, this.model, controls));
+        modeManager.registerMode (Modes.DEVICE_PARAMS, new ParamsMode (surface, this.model, controls));
     }
 
 
@@ -313,19 +316,12 @@ public class KontrolProtocolControllerSetup extends AbstractControllerSetup<Kont
 
         for (int i = 0; i < 8; i++)
         {
-            final int index = i;
-            final KnobRowModeCommand<KontrolProtocolControlSurface, KontrolProtocolConfiguration> knobCommand = new KnobRowModeCommand<> (index, this.model, surface);
             final int knobMidi1 = KontrolProtocolControlSurface.KONTROL_TRACK_VOLUME + i;
-            final IHwRelativeKnob knob1 = this.addRelativeKnob (ContinuousID.get (ContinuousID.KNOB1, i), "Knob " + (i + 1), knobCommand, BindType.CC, 15, knobMidi1);
+            final IHwRelativeKnob knob1 = this.addRelativeKnob (ContinuousID.get (ContinuousID.KNOB1, i), "Knob " + (i + 1), null, BindType.CC, 15, knobMidi1);
             knob1.addOutput ( () -> this.getKnobValue (knobMidi1), value -> surface.setTrigger (15, knobMidi1, value));
 
             final int knobMidi2 = KontrolProtocolControlSurface.KONTROL_TRACK_PAN + i;
-            final IHwRelativeKnob knob2 = this.addRelativeKnob (ContinuousID.get (ContinuousID.FADER1, i), "Fader " + (i + 1), value -> {
-                if (this.getSurface ().getModeManager ().isActiveMode (Modes.VOLUME))
-                    this.model.getTrackBank ().getItem (index).changePan (value);
-                else
-                    knobCommand.execute (value);
-            }, BindType.CC, 15, KontrolProtocolControlSurface.KONTROL_TRACK_PAN + i);
+            final IHwRelativeKnob knob2 = this.addRelativeKnob (ContinuousID.get (ContinuousID.FADER1, i), "Fader " + (i + 1), null, BindType.CC, 15, KontrolProtocolControlSurface.KONTROL_TRACK_PAN + i);
             knob2.addOutput ( () -> this.getKnobValue (knobMidi2), value -> surface.setTrigger (15, knobMidi2, value));
         }
     }

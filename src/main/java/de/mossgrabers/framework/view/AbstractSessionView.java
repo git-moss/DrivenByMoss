@@ -54,6 +54,7 @@ public abstract class AbstractSessionView<S extends IControlSurface<C>, C extend
     protected int              rows;
     protected int              columns;
     protected boolean          useClipColor;
+    protected ISlot            sourceSlot;
 
 
     /**
@@ -217,8 +218,10 @@ public abstract class AbstractSessionView<S extends IControlSurface<C>, C extend
         // Duplicate a clip
         if (this.isButtonCombination (ButtonID.DUPLICATE))
         {
-            if (slot.doesExist ())
-                slot.duplicate ();
+            if (slot.doesExist () && slot.hasContent ())
+                this.sourceSlot = slot;
+            else if (this.sourceSlot != null)
+                slot.paste (this.sourceSlot);
             return true;
         }
 

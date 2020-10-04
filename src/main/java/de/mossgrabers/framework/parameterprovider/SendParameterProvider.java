@@ -6,6 +6,7 @@ package de.mossgrabers.framework.parameterprovider;
 
 import de.mossgrabers.framework.daw.IModel;
 import de.mossgrabers.framework.daw.data.IParameter;
+import de.mossgrabers.framework.daw.data.ITrack;
 import de.mossgrabers.framework.daw.data.bank.ISendBank;
 import de.mossgrabers.framework.daw.data.empty.EmptyParameter;
 
@@ -22,10 +23,21 @@ public class SendParameterProvider extends AbstractChannelParameterProvider
 
 
     /**
-     * Constructor.
+     * Constructor. Provides all sends of the currently selected track.
      *
      * @param model Uses the current track bank from this model to get the parameters
-     * @param sendIndex The index of the send
+     */
+    public SendParameterProvider (final IModel model)
+    {
+        this (model, -1);
+    }
+
+
+    /**
+     * Constructor. Provides one send parameter of all tracks.
+     *
+     * @param model Uses the current track bank from this model to get the parameters
+     * @param sendIndex The index of the send to provide
      */
     public SendParameterProvider (final IModel model, final int sendIndex)
     {
@@ -39,6 +51,15 @@ public class SendParameterProvider extends AbstractChannelParameterProvider
     @Override
     public IParameter get (final int index)
     {
+        if (this.sendIndex == -1)
+        {
+            final ITrack track = this.model.getCurrentTrackBank ().getSelectedItem ();
+            if (track == null)
+                return EmptyParameter.INSTANCE;
+            final ISendBank sendBank = track.getSendBank ();
+            return sendBank.getItemCount () > 0 ? sendBank.getItem (index) : EmptyParameter.INSTANCE;
+        }
+
         final ISendBank sendBank = this.getChannel (index).getSendBank ();
         return sendBank.getItemCount () == 0 ? EmptyParameter.INSTANCE : sendBank.getItem (this.sendIndex);
     }

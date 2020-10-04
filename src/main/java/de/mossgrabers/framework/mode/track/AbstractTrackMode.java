@@ -37,10 +37,6 @@ public class AbstractTrackMode<S extends IControlSurface<C>, C extends Configura
     public AbstractTrackMode (final String name, final S surface, final IModel model, final boolean isAbsolute)
     {
         this (name, surface, model, isAbsolute, null);
-
-        model.addTrackBankObserver (this::switchBanks);
-
-        this.isTemporary = false;
     }
 
 

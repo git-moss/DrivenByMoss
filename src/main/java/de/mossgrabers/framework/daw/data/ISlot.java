@@ -100,4 +100,12 @@ public interface ISlot extends IItem
      * Duplicate a clip.
      */
     void duplicate ();
+
+
+    /**
+     * Past the content of the given slot into this slot.
+     * 
+     * @param slot The slot to paste into this one
+     */
+    void paste (ISlot slot);
 }

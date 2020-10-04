@@ -7,6 +7,7 @@ package de.mossgrabers.controller.kontrol.mkii.mode;
 import de.mossgrabers.controller.kontrol.mkii.KontrolProtocolConfiguration;
 import de.mossgrabers.controller.kontrol.mkii.TrackType;
 import de.mossgrabers.controller.kontrol.mkii.controller.KontrolProtocolControlSurface;
+import de.mossgrabers.framework.controller.ContinuousID;
 import de.mossgrabers.framework.controller.valuechanger.IValueChanger;
 import de.mossgrabers.framework.daw.IModel;
 import de.mossgrabers.framework.daw.data.ISend;
@@ -14,6 +15,10 @@ import de.mossgrabers.framework.daw.data.ITrack;
 import de.mossgrabers.framework.daw.data.bank.ISendBank;
 import de.mossgrabers.framework.daw.data.empty.EmptySend;
 import de.mossgrabers.framework.mode.track.AbstractTrackMode;
+import de.mossgrabers.framework.parameterprovider.CombinedParameterProvider;
+import de.mossgrabers.framework.parameterprovider.SendParameterProvider;
+
+import java.util.List;
 
 
 /**
@@ -28,10 +33,17 @@ public class SendMode extends AbstractTrackMode<KontrolProtocolControlSurface, K
      *
      * @param surface The control surface
      * @param model The model
+     * @param controls The IDs of the knobs or faders to control this mode
      */
-    public SendMode (final KontrolProtocolControlSurface surface, final IModel model)
+    public SendMode (final KontrolProtocolControlSurface surface, final IModel model, final List<ContinuousID> controls)
     {
         super ("Send", surface, model, false);
+
+        this.setControls (controls);
+        final SendParameterProvider pp = new SendParameterProvider (model);
+        this.setParameters (new CombinedParameterProvider (pp, pp));
+
+        model.getTrackBank ().addSelectionObserver ( (index, isSelected) -> this.parametersAdjusted ());
     }
 
 
