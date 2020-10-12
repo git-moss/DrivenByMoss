@@ -5,6 +5,7 @@
 package de.mossgrabers.framework.daw;
 
 import de.mossgrabers.framework.daw.constants.AutomationMode;
+import de.mossgrabers.framework.daw.data.IParameter;
 import de.mossgrabers.framework.observer.IObserverManagement;
 
 
@@ -141,6 +142,14 @@ public interface ITransport extends IObserverManagement
      * @param on Turn on if true
      */
     void setMetronomeTicks (boolean on);
+
+
+    /**
+     * Get the metronome volume parameter.
+     *
+     * @return The metronome volume parameter
+     */
+    IParameter getMetronomeVolumeParameter ();
 
 
     /**
@@ -353,6 +362,14 @@ public interface ITransport extends IObserverManagement
 
 
     /**
+     * Get the tempo parameter.
+     *
+     * @return The tempo parameter
+     */
+    IParameter getTempoParameter ();
+
+
+    /**
      * Tap the tempo.
      */
     void tapTempo ();
@@ -417,6 +434,14 @@ public interface ITransport extends IObserverManagement
      * @param isTouched True if touched
      */
     void setTempoIndication (boolean isTouched);
+
+
+    /**
+     * Get the crossfade parameter.
+     *
+     * @return The tempo parameter
+     */
+    IParameter getCrossfadeParameter ();
 
 
     /**

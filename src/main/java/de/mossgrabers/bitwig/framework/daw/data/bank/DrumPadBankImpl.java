@@ -46,7 +46,7 @@ public class DrumPadBankImpl extends AbstractChannelBankImpl<DrumPadBank, IDrumP
         for (int i = 0; i < this.getPageSize (); i++)
         {
             final DrumPad deviceLayer = this.bank.getItemAt (i);
-            final DrumPadImpl drumPadImpl = new DrumPadImpl (this.host, this.valueChanger, deviceLayer, i, this.numSends, this.numDevices);
+            final DrumPadImpl drumPadImpl = new DrumPadImpl (this, this.host, this.valueChanger, deviceLayer, i, this.numSends, this.numDevices);
             this.items.add (drumPadImpl);
 
             final int index = i;

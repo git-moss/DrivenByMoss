@@ -70,7 +70,7 @@ public class TrackImpl extends ChannelImpl implements ITrack
      */
     public TrackImpl (final IHost host, final IValueChanger valueChanger, final ApplicationImpl application, final CursorTrack cursorTrack, final Track rootGroup, final Track track, final int index, final int numSends, final int numScenes)
     {
-        super (host, valueChanger, track, index, numSends);
+        super (null, host, valueChanger, track, index, numSends);
 
         this.host = host;
         this.cursorTrack = cursorTrack;

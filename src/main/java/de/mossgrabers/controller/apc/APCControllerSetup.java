@@ -29,7 +29,6 @@ import de.mossgrabers.controller.apc.view.RaindropsView;
 import de.mossgrabers.controller.apc.view.SequencerView;
 import de.mossgrabers.controller.apc.view.SessionView;
 import de.mossgrabers.controller.apc.view.ShiftView;
-import de.mossgrabers.framework.command.continuous.CrossfaderCommand;
 import de.mossgrabers.framework.command.continuous.KnobRowModeCommand;
 import de.mossgrabers.framework.command.trigger.application.PaneCommand;
 import de.mossgrabers.framework.command.trigger.application.PaneCommand.Panels;
@@ -62,6 +61,7 @@ import de.mossgrabers.framework.controller.ContinuousID;
 import de.mossgrabers.framework.controller.ISetupFactory;
 import de.mossgrabers.framework.controller.color.ColorManager;
 import de.mossgrabers.framework.controller.hardware.BindType;
+import de.mossgrabers.framework.controller.hardware.IHwAbsoluteKnob;
 import de.mossgrabers.framework.controller.valuechanger.DefaultValueChanger;
 import de.mossgrabers.framework.daw.IHost;
 import de.mossgrabers.framework.daw.ITransport;
@@ -316,19 +316,23 @@ public class APCControllerSetup extends AbstractControllerSetup<APCControlSurfac
     {
         final APCControlSurface surface = this.getSurface ();
 
-        this.addFader (ContinuousID.FADER_MASTER, "Master", null, BindType.CC, APCControlSurface.APC_KNOB_MASTER_LEVEL);
-        surface.getContinuous (ContinuousID.FADER_MASTER).bind (this.model.getMasterTrack ().getVolumeParameter ());
+        this.addFader (ContinuousID.FADER_MASTER, "Master", null, BindType.CC, APCControlSurface.APC_KNOB_MASTER_LEVEL).bind (this.model.getMasterTrack ().getVolumeParameter ());
+        this.addFader (ContinuousID.CROSSFADER, "Crossfader", null, BindType.CC, APCControlSurface.APC_KNOB_CROSSFADER, false).bind (this.model.getTransport ().getCrossfadeParameter ());
 
         final Timeout timeout = ((APCTapTempoCommand) surface.getButton (ButtonID.TAP_TEMPO).getCommand ()).getTimeout ();
         this.addRelativeKnob (ContinuousID.PLAY_POSITION, "Play Position", new APCPlayPositionCommand (this.model, surface, timeout), APCControlSurface.APC_KNOB_CUE_LEVEL);
 
-        this.addFader (ContinuousID.CROSSFADER, "Crossfader", new CrossfaderCommand<> (this.model, surface), BindType.CC, APCControlSurface.APC_KNOB_CROSSFADER, false);
-
         for (int i = 0; i < 8; i++)
         {
             this.addFader (ContinuousID.get (ContinuousID.FADER1, i), "Fader" + (i + 1), null, BindType.CC, i, APCControlSurface.APC_KNOB_TRACK_LEVEL);
-            this.addAbsoluteKnob (ContinuousID.get (ContinuousID.KNOB1, i), "Knob " + (i + 1), new KnobRowModeCommand<> (i, this.model, surface), APCControlSurface.APC_KNOB_TRACK_KNOB_1 + i);
-            this.addAbsoluteKnob (ContinuousID.get (ContinuousID.DEVICE_KNOB1, i), "Device Knob " + (i + 1), null, APCControlSurface.APC_KNOB_DEVICE_KNOB_1 + i);
+
+            final IHwAbsoluteKnob channelKnob = this.addAbsoluteKnob (ContinuousID.get (ContinuousID.KNOB1, i), "Knob " + (i + 1), new KnobRowModeCommand<> (i, this.model, surface), APCControlSurface.APC_KNOB_TRACK_KNOB_1 + i);
+            final IHwAbsoluteKnob deviceKnob = this.addAbsoluteKnob (ContinuousID.get (ContinuousID.DEVICE_KNOB1, i), "Device Knob " + (i + 1), null, APCControlSurface.APC_KNOB_DEVICE_KNOB_1 + i);
+
+            // Disable take over mode for the knobs since due to their LED updates they act like
+            // motor faders
+            channelKnob.disableTakeOver ();
+            deviceKnob.disableTakeOver ();
         }
 
         new VolumeMode<> (surface, this.model, true, ContinuousID.createSequentialList (ContinuousID.FADER1, 8)).onActivate ();

@@ -9,7 +9,7 @@ package de.mossgrabers.framework.controller.hardware;
  *
  * @author J&uuml;rgen Mo&szlig;graber
  */
-public interface IHwFader extends IHwContinuousControl
+public interface IHwFader extends IHwAbsoluteControl
 {
     // Intentionally empty
 }

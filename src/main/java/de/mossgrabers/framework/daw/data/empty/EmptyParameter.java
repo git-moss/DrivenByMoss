@@ -5,6 +5,7 @@
 package de.mossgrabers.framework.daw.data.empty;
 
 import de.mossgrabers.framework.daw.data.IParameter;
+import de.mossgrabers.framework.utils.StringUtils;
 
 
 /**
@@ -38,7 +39,7 @@ public class EmptyParameter extends EmptyItem implements IParameter
     @Override
     public String getDisplayedValue (final int limit)
     {
-        return "";
+        return StringUtils.optimizeName (this.getDisplayedValue (), limit);
     }
 
 
@@ -94,7 +95,7 @@ public class EmptyParameter extends EmptyItem implements IParameter
     @Override
     public int getModulatedValue ()
     {
-        return 0;
+        return this.getValue ();
     }
 
 

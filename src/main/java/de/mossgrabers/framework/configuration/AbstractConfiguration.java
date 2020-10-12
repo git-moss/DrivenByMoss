@@ -104,10 +104,8 @@ public abstract class AbstractConfiguration implements Configuration
     public static final Integer      NOTEREPEAT_OCTAVE                 = Integer.valueOf (33);
     /** The MIDI channel to use for editing sequencer notes. */
     public static final Integer      MIDI_EDIT_CHANNEL                 = Integer.valueOf (34);
-    /** Setting for including mastertracks. */
-    public static final Integer      INCLUDE_MASTER                    = Integer.valueOf (35);
     /** Setting for excluding deactivated tracks. */
-    public static final Integer      EXCLUDE_DEACTIVATED_ITEMS         = Integer.valueOf (36);
+    public static final Integer      EXCLUDE_DEACTIVATED_ITEMS         = Integer.valueOf (35);
 
     // Implementation IDs start at 50
 
@@ -1050,10 +1048,7 @@ public abstract class AbstractConfiguration implements Configuration
     protected void activateIncludeMasterSetting (final ISettingsUI settingsUI)
     {
         final IEnumSetting includeMasterSetting = settingsUI.getEnumSetting ("Include (Group-)Mastertrack (requires restart)", CATEGORY_WORKFLOW, ON_OFF_OPTIONS, ON_OFF_OPTIONS[1]);
-        includeMasterSetting.addValueObserver (value -> {
-            this.includeMaster = "On".equals (value);
-            this.notifyObservers (INCLUDE_MASTER);
-        });
+        this.includeMaster = "On".equals (includeMasterSetting.get ());
     }
 
 

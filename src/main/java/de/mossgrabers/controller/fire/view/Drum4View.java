@@ -53,7 +53,7 @@ public class Drum4View extends AbstractDrum4View<FireControlSurface, FireConfigu
         final int step = this.numColumns * (y / this.lanes) + x;
 
         final int channel = this.configuration.getMidiEditChannel ();
-        final int vel = this.configuration.isAccentActive () ? this.configuration.getFixedAccentValue () : velocity;
+        final int vel = this.configuration.isAccentActive () ? this.configuration.getFixedAccentValue () : this.surface.getButton (ButtonID.get (ButtonID.PAD1, index)).getPressedVelocity ();
         final INoteClip clip = this.getClip ();
 
         if (this.handleNoteAreaButtonCombinations (clip, channel, step, y, sound, velocity, vel))

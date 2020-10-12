@@ -28,6 +28,7 @@ import de.mossgrabers.framework.controller.ISetupFactory;
 import de.mossgrabers.framework.controller.OutputID;
 import de.mossgrabers.framework.controller.color.ColorEx;
 import de.mossgrabers.framework.controller.hardware.BindType;
+import de.mossgrabers.framework.controller.hardware.IHwAbsoluteKnob;
 import de.mossgrabers.framework.controller.hardware.IHwLight;
 import de.mossgrabers.framework.controller.valuechanger.DefaultValueChanger;
 import de.mossgrabers.framework.daw.IHost;
@@ -293,8 +294,8 @@ public class LaunchkeyMiniMk3ControllerSetup extends AbstractControllerSetup<Lau
 
             // Knobs in user mode send on the keys input on MIDI channel 1 (instead of 16), command
             // is not needed since it is mapped to IParameter when user mode is activated
-            final ContinuousID deviceKnobContinuousID = ContinuousID.get (ContinuousID.DEVICE_KNOB1, i);
-            surface.createAbsoluteKnob (deviceKnobContinuousID, "User Knob " + (i + 1)).bind (this.inputKeys, BindType.CC, 0, LaunchkeyMiniMk3ControlSurface.LAUNCHKEY_KNOB_1 + i);
+            final IHwAbsoluteKnob userKnob = surface.createAbsoluteKnob (ContinuousID.get (ContinuousID.DEVICE_KNOB1, i), "User Knob " + (i + 1));
+            userKnob.bind (this.inputKeys, BindType.CC, 0, LaunchkeyMiniMk3ControlSurface.LAUNCHKEY_KNOB_1 + i);
         }
     }
 

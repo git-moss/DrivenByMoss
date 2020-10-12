@@ -6,6 +6,7 @@ package de.mossgrabers.framework.daw.data.empty;
 
 import de.mossgrabers.framework.daw.data.IItem;
 import de.mossgrabers.framework.observer.IValueObserver;
+import de.mossgrabers.framework.utils.StringUtils;
 
 
 /**
@@ -75,7 +76,7 @@ public class EmptyItem implements IItem
     @Override
     public String getName (final int limit)
     {
-        return "";
+        return StringUtils.optimizeName (this.getName (), limit);
     }
 
 

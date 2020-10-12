@@ -24,10 +24,10 @@ import java.util.Set;
  */
 public abstract class AbstractChannelParameterProvider implements IParameterProvider, IBankPageObserver, IValueObserver<ITrackBank>
 {
-    protected final IModel                           model;
+    protected final IModel                         model;
+    protected final Set<IParametersAdjustObserver> observers = new HashSet<> ();
 
-    protected final IChannelBank<? extends IChannel> bank;
-    protected final Set<IParametersAdjustObserver>   observers = new HashSet<> ();
+    private final IChannelBank<? extends IChannel> bank;
 
 
     /**

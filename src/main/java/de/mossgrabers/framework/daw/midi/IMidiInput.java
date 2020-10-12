@@ -5,6 +5,7 @@
 package de.mossgrabers.framework.daw.midi;
 
 import de.mossgrabers.framework.controller.hardware.BindType;
+import de.mossgrabers.framework.controller.hardware.IHwAbsoluteControl;
 import de.mossgrabers.framework.controller.hardware.IHwAbsoluteKnob;
 import de.mossgrabers.framework.controller.hardware.IHwButton;
 import de.mossgrabers.framework.controller.hardware.IHwFader;
@@ -117,6 +118,17 @@ public interface IMidiInput
      * @param control The MIDI command (CC, Note, ...)
      */
     void bind (IHwAbsoluteKnob absoluteKnob, BindType type, int channel, int control);
+
+
+    /**
+     * Bind the given absolute knob to a MIDI command received on this midi input.
+     *
+     * @param absoluteControl The absolute control to bind
+     * @param type The MIDI binding type
+     * @param channel The MIDI channel
+     * @param control The MIDI command (CC, Note, ...)
+     */
+    void bind (IHwAbsoluteControl absoluteControl, BindType type, int channel, int control);
 
 
     /**

@@ -54,6 +54,7 @@ import de.mossgrabers.framework.controller.valuechanger.DefaultValueChanger;
 import de.mossgrabers.framework.daw.IHost;
 import de.mossgrabers.framework.daw.ITransport;
 import de.mossgrabers.framework.daw.ModelSetup;
+import de.mossgrabers.framework.daw.constants.DeviceID;
 import de.mossgrabers.framework.daw.data.ICursorDevice;
 import de.mossgrabers.framework.daw.data.ITrack;
 import de.mossgrabers.framework.daw.data.bank.IParameterBank;
@@ -115,6 +116,7 @@ public class FireControllerSetup extends AbstractControllerSetup<FireControlSurf
     {
         final ModelSetup ms = new ModelSetup ();
         ms.enableDrum64Device (true);
+        ms.enableDevice (DeviceID.FIRST_INSTRUMENT);
         ms.setNumTracks (16);
         ms.setNumScenes (4);
         ms.setNumSends (6);

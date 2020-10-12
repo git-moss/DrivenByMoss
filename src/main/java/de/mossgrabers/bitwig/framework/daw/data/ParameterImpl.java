@@ -5,14 +5,10 @@
 package de.mossgrabers.bitwig.framework.daw.data;
 
 import de.mossgrabers.framework.controller.valuechanger.IValueChanger;
-import de.mossgrabers.framework.daw.data.AbstractItemImpl;
-import de.mossgrabers.framework.daw.data.IParameter;
 import de.mossgrabers.framework.daw.data.ISend;
 import de.mossgrabers.framework.observer.IValueObserver;
 
-import com.bitwig.extension.controller.api.DoubleValue;
 import com.bitwig.extension.controller.api.Parameter;
-import com.bitwig.extension.controller.api.StringValue;
 
 
 /**
@@ -20,14 +16,21 @@ import com.bitwig.extension.controller.api.StringValue;
  *
  * @author J&uuml;rgen Mo&szlig;graber
  */
-public class ParameterImpl extends AbstractItemImpl implements IParameter
+public class ParameterImpl extends RangedValueImpl
 {
-    private final IValueChanger valueChanger;
-    private final Parameter     parameter;
-    private StringValue         targetName;
-    private StringValue         targetDisplayedValue;
-    private DoubleValue         targetValue;
-    private DoubleValue         targetModulatedValue;
+    private final Parameter parameter;
+
+
+    /**
+     * Constructor.
+     *
+     * @param valueChanger The value changer
+     * @param parameter The parameter
+     */
+    public ParameterImpl (final IValueChanger valueChanger, final Parameter parameter)
+    {
+        this (valueChanger, parameter, 0);
+    }
 
 
     /**
@@ -39,14 +42,12 @@ public class ParameterImpl extends AbstractItemImpl implements IParameter
      */
     public ParameterImpl (final IValueChanger valueChanger, final Parameter parameter, final int index)
     {
-        super (index);
+        super (null, valueChanger, parameter, index);
 
-        this.valueChanger = valueChanger;
         this.parameter = parameter;
 
         parameter.exists ().markInterested ();
         parameter.name ().markInterested ();
-        parameter.displayedValue ().markInterested ();
         parameter.value ().markInterested ();
         parameter.modulatedValue ().markInterested ();
     }
@@ -56,19 +57,12 @@ public class ParameterImpl extends AbstractItemImpl implements IParameter
     @Override
     public void enableObservers (final boolean enable)
     {
+        super.enableObservers (enable);
+
         Util.setIsSubscribed (this.parameter.exists (), enable);
         Util.setIsSubscribed (this.parameter.name (), enable);
-        Util.setIsSubscribed (this.parameter.displayedValue (), enable);
         Util.setIsSubscribed (this.parameter.value (), enable);
         Util.setIsSubscribed (this.parameter.modulatedValue (), enable);
-    }
-
-
-    /** {@inheritDoc} */
-    @Override
-    public void inc (final double increment)
-    {
-        this.parameter.inc (Double.valueOf (increment), Integer.valueOf (this.valueChanger.getUpperBound ()));
     }
 
 
@@ -112,67 +106,10 @@ public class ParameterImpl extends AbstractItemImpl implements IParameter
 
     /** {@inheritDoc} */
     @Override
-    public String getDisplayedValue ()
-    {
-        return this.targetDisplayedValue == null ? this.parameter.displayedValue ().get () : this.targetDisplayedValue.get ();
-    }
-
-
-    /** {@inheritDoc} */
-    @Override
-    public String getDisplayedValue (final int limit)
-    {
-        return this.targetDisplayedValue == null ? this.parameter.displayedValue ().getLimited (limit) : this.targetDisplayedValue.getLimited (limit);
-    }
-
-
-    /** {@inheritDoc} */
-    @Override
     public int getValue ()
     {
         final double value = this.targetValue == null ? this.parameter.value ().get () : this.targetValue.get ();
         return this.valueChanger.fromNormalizedValue (value);
-    }
-
-
-    /** {@inheritDoc} */
-    @Override
-    public void setValue (final int value)
-    {
-        this.parameter.set (Integer.valueOf (value), Integer.valueOf (this.valueChanger.getUpperBound ()));
-    }
-
-
-    /** {@inheritDoc} */
-    @Override
-    public void setValueImmediatly (final int value)
-    {
-        this.parameter.setImmediately (this.valueChanger.toNormalizedValue (value));
-    }
-
-
-    /** {@inheritDoc} */
-    @Override
-    public void changeValue (final int value)
-    {
-        this.inc (this.valueChanger.calcKnobChange (value));
-    }
-
-
-    /** {@inheritDoc} */
-    @Override
-    public int getModulatedValue ()
-    {
-        final double value = this.targetModulatedValue == null ? this.parameter.modulatedValue ().get () : this.targetModulatedValue.get ();
-        return this.valueChanger.fromNormalizedValue (value);
-    }
-
-
-    /** {@inheritDoc} */
-    @Override
-    public void setIndication (final boolean enable)
-    {
-        this.parameter.setIndication (enable);
     }
 
 
@@ -194,9 +131,18 @@ public class ParameterImpl extends AbstractItemImpl implements IParameter
 
     /** {@inheritDoc} */
     @Override
-    public void select ()
+    public int getModulatedValue ()
     {
-        // Parameters cannot be selected but should also not crash
+        final double value = this.targetModulatedValue == null ? this.parameter.modulatedValue ().get () : this.targetModulatedValue.get ();
+        return this.valueChanger.fromNormalizedValue (value);
+    }
+
+
+    /** {@inheritDoc} */
+    @Override
+    public void setIndication (final boolean enable)
+    {
+        this.parameter.setIndication (enable);
     }
 
 
@@ -208,23 +154,5 @@ public class ParameterImpl extends AbstractItemImpl implements IParameter
     public Parameter getParameter ()
     {
         return this.parameter;
-    }
-
-
-    /**
-     * Workaround for new hardware API to still be able to receive user mode values via the old
-     * interface.
-     *
-     * @param targetName The name of the parameter
-     * @param targetDisplayedValue The formatted value for displaying it
-     * @param targetValue The value of the parameter
-     * @param targetModulatedValue The modulated value of the parameter
-     */
-    public void setTargetInfo (final StringValue targetName, final StringValue targetDisplayedValue, final DoubleValue targetValue, final DoubleValue targetModulatedValue)
-    {
-        this.targetName = targetName;
-        this.targetDisplayedValue = targetDisplayedValue;
-        this.targetValue = targetValue;
-        this.targetModulatedValue = targetModulatedValue;
     }
 }

@@ -61,15 +61,16 @@ public class ChannelParameterProvider extends AbstractChannelParameterProvider i
     {
         super.addParametersObserver (observer);
 
-        if (this.bank != null)
-            this.bank.addSelectionObserver (this);
-        else
+        if (this.model != null)
         {
             this.model.getTrackBank ().addSelectionObserver (this);
             final ITrackBank effectTrackBank = this.model.getEffectTrackBank ();
             if (effectTrackBank != null)
                 effectTrackBank.addSelectionObserver (this);
+            return;
         }
+
+        this.getBank ().addSelectionObserver (this);
     }
 
 
@@ -79,15 +80,16 @@ public class ChannelParameterProvider extends AbstractChannelParameterProvider i
     {
         super.removeParametersObserver (observer);
 
-        if (this.bank != null)
-            this.bank.removeSelectionObserver (this);
-        else
+        if (this.model != null)
         {
             this.model.getTrackBank ().removeSelectionObserver (this);
             final ITrackBank effectTrackBank = this.model.getEffectTrackBank ();
             if (effectTrackBank != null)
                 effectTrackBank.removeSelectionObserver (this);
+            return;
         }
+
+        this.getBank ().removeSelectionObserver (this);
     }
 
 

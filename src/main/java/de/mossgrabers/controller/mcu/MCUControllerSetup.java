@@ -494,6 +494,12 @@ public class MCUControllerSetup extends AbstractControllerSetup<MCUControlSurfac
                 knob.bindTouch (new ButtonRowModeCommand<> (0, i, this.model, surface), input, BindType.NOTE, 0, MCUControlSurface.MCU_VSELECT1 + i);
 
                 final IHwFader fader = this.addFader (surface, ContinuousID.get (ContinuousID.FADER1, i), "Fader " + (i + 1), new PitchbendVolumeCommand (i, this.model, surface), i);
+                if (this.configuration.hasMotorFaders ())
+                {
+                    // Prevent catch up jitter with motor faders
+                    fader.disableTakeOver ();
+                }
+
                 fader.bindTouch (new FaderTouchCommand (i, this.model, surface), input, BindType.NOTE, 0, MCUControlSurface.MCU_FADER_TOUCH1 + i);
             }
         }

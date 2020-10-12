@@ -214,6 +214,7 @@ public class APCColorManager extends ColorManager
                 this.registerColor (this.getColorIndex (name), DAWColor.getColorEntry (name));
             }
 
+            this.registerColor (APC_MKII_COLOR_BLACK, ColorEx.BLACK);
             this.registerColor (APC_MKII_COLOR_WHITE, ColorEx.WHITE);
             this.registerColor (APC_MKII_COLOR_RED_HI, ColorEx.RED);
             this.registerColor (APC_MKII_COLOR_YELLOW_HI, ColorEx.YELLOW);
@@ -221,7 +222,8 @@ public class APCColorManager extends ColorManager
             this.registerColor (APC_MKII_COLOR_GREEN_HI, ColorEx.GREEN);
             this.registerColor (APC_MKII_COLOR_GREEN, ColorEx.darker (ColorEx.GREEN));
             this.registerColor (APC_MKII_COLOR_GREEN_LO, ColorEx.evenDarker (ColorEx.GREEN));
-            this.registerColor (APC_MKII_COLOR_BLUE_HI, ColorEx.BLUE);
+            this.registerColor (APC_MKII_COLOR_BLUE_HI, ColorEx.brighter (ColorEx.BLUE));
+            this.registerColor (APC_MKII_COLOR_BLUE, ColorEx.BLUE);
             this.registerColor (APC_MKII_COLOR_BLUE_LO, ColorEx.evenDarker (ColorEx.BLUE));
         }
         else

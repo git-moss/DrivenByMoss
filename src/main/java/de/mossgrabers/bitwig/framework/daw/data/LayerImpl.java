@@ -4,6 +4,7 @@
 
 package de.mossgrabers.bitwig.framework.daw.data;
 
+import de.mossgrabers.bitwig.framework.daw.data.bank.AbstractChannelBankImpl;
 import de.mossgrabers.framework.controller.valuechanger.IValueChanger;
 import de.mossgrabers.framework.daw.IHost;
 import de.mossgrabers.framework.daw.data.ILayer;
@@ -26,7 +27,8 @@ public class LayerImpl extends ChannelImpl implements ILayer
 
     /**
      * Constructor.
-     *
+     * 
+     * @param channelBank The related channel bank
      * @param host The DAW host
      * @param valueChanger The valueChanger
      * @param layer The layer
@@ -34,9 +36,9 @@ public class LayerImpl extends ChannelImpl implements ILayer
      * @param numSends The number of sends of a bank
      * @param numDevices The number of devices of a bank
      */
-    public LayerImpl (final IHost host, final IValueChanger valueChanger, final Channel layer, final int index, final int numSends, final int numDevices)
+    public LayerImpl (AbstractChannelBankImpl<?, ?> channelBank, final IHost host, final IValueChanger valueChanger, final Channel layer, final int index, final int numSends, final int numDevices)
     {
-        super (host, valueChanger, layer, index, numSends);
+        super (channelBank, host, valueChanger, layer, index, numSends);
 
         layer.addIsSelectedInEditorObserver (this::setSelected);
 

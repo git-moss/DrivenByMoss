@@ -4,6 +4,7 @@
 
 package de.mossgrabers.bitwig.framework.daw.data;
 
+import de.mossgrabers.bitwig.framework.daw.data.bank.DrumPadBankImpl;
 import de.mossgrabers.framework.controller.valuechanger.IValueChanger;
 import de.mossgrabers.framework.daw.IHost;
 import de.mossgrabers.framework.daw.data.IDrumPad;
@@ -23,7 +24,8 @@ public class DrumPadImpl extends LayerImpl implements IDrumPad
 
     /**
      * Constructor.
-     *
+     * 
+     * @param drumPadBankImpl The bank to which this drum pad belongs
      * @param host The DAW host
      * @param valueChanger The valueChanger
      * @param drumPad The drum pad
@@ -31,9 +33,9 @@ public class DrumPadImpl extends LayerImpl implements IDrumPad
      * @param numSends The number of sends of a bank
      * @param numDevices The number of devices of a bank
      */
-    public DrumPadImpl (final IHost host, final IValueChanger valueChanger, final DrumPad drumPad, final int index, final int numSends, final int numDevices)
+    public DrumPadImpl (final DrumPadBankImpl drumPadBankImpl, final IHost host, final IValueChanger valueChanger, final DrumPad drumPad, final int index, final int numSends, final int numDevices)
     {
-        super (host, valueChanger, drumPad, index, numSends, numDevices);
+        super (drumPadBankImpl, host, valueChanger, drumPad, index, numSends, numDevices);
 
         this.drumPad = drumPad;
     }

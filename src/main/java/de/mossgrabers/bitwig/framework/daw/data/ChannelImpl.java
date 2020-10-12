@@ -4,6 +4,7 @@
 
 package de.mossgrabers.bitwig.framework.daw.data;
 
+import de.mossgrabers.bitwig.framework.daw.data.bank.AbstractChannelBankImpl;
 import de.mossgrabers.bitwig.framework.daw.data.bank.SendBankImpl;
 import de.mossgrabers.framework.controller.color.ColorEx;
 import de.mossgrabers.framework.controller.valuechanger.IValueChanger;
@@ -25,30 +26,34 @@ import com.bitwig.extension.controller.api.SettableColorValue;
  */
 public class ChannelImpl extends AbstractDeviceChainImpl<Channel> implements IChannel
 {
-    protected final IValueChanger valueChanger;
+    protected final IValueChanger               valueChanger;
 
-    private static final int      MAX_RESOLUTION = 16384;
+    private static final int                    MAX_RESOLUTION = 16384;
 
-    private int                   vuLeft;
-    private int                   vuRight;
-    private IParameter            volumeParameter;
-    private IParameter            panParameter;
-    private ISendBank             sendBank;
+    private final AbstractChannelBankImpl<?, ?> channelBankImpl;
+
+    private int                                 vuLeft;
+    private int                                 vuRight;
+    private IParameter                          volumeParameter;
+    private IParameter                          panParameter;
+    private ISendBank                           sendBank;
 
 
     /**
      * Constructor.
-     *
+     * 
+     * @param channelBank The related channel bank
      * @param host The DAW host
      * @param valueChanger The value changer
      * @param channel The channel
      * @param index The index of the channel in the page
      * @param numSends The number of sends of a bank
      */
-    public ChannelImpl (final IHost host, final IValueChanger valueChanger, final Channel channel, final int index, final int numSends)
+    public ChannelImpl (final AbstractChannelBankImpl<?, ?> channelBank, final IHost host, final IValueChanger valueChanger, final Channel channel, final int index, final int numSends)
     {
         super (index, channel);
 
+        this.channelBankImpl = channelBank;
         this.deviceChain = channel;
         this.valueChanger = valueChanger;
 
@@ -62,13 +67,21 @@ public class ChannelImpl extends AbstractDeviceChainImpl<Channel> implements ICh
         channel.solo ().markInterested ();
         channel.color ().markInterested ();
 
-        this.volumeParameter = new ParameterImpl (valueChanger, channel.volume (), 0);
-        this.panParameter = new ParameterImpl (valueChanger, channel.pan (), 0);
+        this.volumeParameter = new ParameterImpl (valueChanger, channel.volume (), index);
+        this.panParameter = new ParameterImpl (valueChanger, channel.pan (), index);
 
         channel.addVuMeterObserver (MAX_RESOLUTION, 0, true, this::handleVULeftMeter);
         channel.addVuMeterObserver (MAX_RESOLUTION, 1, true, this::handleVURightMeter);
 
         this.sendBank = new SendBankImpl (host, valueChanger, numSends == 0 ? null : channel.sendBank (), numSends);
+    }
+
+
+    /** {@inheritDoc} */
+    @Override
+    public int getPosition ()
+    {
+        return this.channelBankImpl.getScrollPosition () + this.getIndex ();
     }
 
 

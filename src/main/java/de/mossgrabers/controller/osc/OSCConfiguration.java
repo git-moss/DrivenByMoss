@@ -113,9 +113,8 @@ public class OSCConfiguration extends AbstractOpenSoundControlConfiguration
         final String [] pageSize = new String [200];
         for (int i = 0; i < pageSize.length; i++)
             pageSize[i] = Integer.toString (i + 1);
-
         final IEnumSetting bankPageSizeSetting = globalSettings.getEnumSetting ("Bank Page Size (requires restart)", CATEGORY_PROTOCOL, pageSize, pageSize[7]);
-        bankPageSizeSetting.addValueObserver (value -> this.bankPageSize = Integer.parseInt (value));
+        this.bankPageSize = Integer.parseInt (bankPageSizeSetting.get ());
 
         ///////////////////////////
         // Transport

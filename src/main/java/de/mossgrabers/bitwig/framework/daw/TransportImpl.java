@@ -4,15 +4,18 @@
 
 package de.mossgrabers.bitwig.framework.daw;
 
+import de.mossgrabers.bitwig.framework.daw.data.ParameterImpl;
+import de.mossgrabers.bitwig.framework.daw.data.RangedValueImpl;
+import de.mossgrabers.bitwig.framework.daw.data.RawParameterImpl;
 import de.mossgrabers.bitwig.framework.daw.data.Util;
 import de.mossgrabers.framework.controller.valuechanger.IValueChanger;
 import de.mossgrabers.framework.daw.ITransport;
 import de.mossgrabers.framework.daw.constants.AutomationMode;
 import de.mossgrabers.framework.daw.constants.TransportConstants;
+import de.mossgrabers.framework.daw.data.IParameter;
 import de.mossgrabers.framework.utils.StringUtils;
 
 import com.bitwig.extension.controller.api.ControllerHost;
-import com.bitwig.extension.controller.api.SettableRangedValue;
 import com.bitwig.extension.controller.api.TimeSignatureValue;
 import com.bitwig.extension.controller.api.Transport;
 
@@ -33,11 +36,13 @@ public class TransportImpl implements ITransport
         AutomationMode.WRITE
     };
 
-    private ControllerHost                 host;
-    private IValueChanger                  valueChanger;
-    private Transport                      transport;
+    private final ControllerHost           host;
+    private final IValueChanger            valueChanger;
+    private final Transport                transport;
 
-    private double                         tempo;
+    private final RawParameterImpl         tempoParameter;
+    private final IParameter               crossfadeParameter;
+    private final IParameter               metronomeVolumeParameter;
 
 
     /**
@@ -66,13 +71,11 @@ public class TransportImpl implements ITransport
         this.transport.isMetronomeTickPlaybackEnabled ().markInterested ();
         this.transport.isMetronomeAudibleDuringPreRoll ().markInterested ();
         this.transport.preRoll ().markInterested ();
-        this.transport.tempo ().value ().addRawValueObserver (this::handleTempo);
         this.transport.getPosition ().markInterested ();
-        this.transport.crossfade ().value ().markInterested ();
 
-        final SettableRangedValue metronomeVolume = this.transport.metronomeVolume ();
-        metronomeVolume.markInterested ();
-        metronomeVolume.displayedValue ().markInterested ();
+        this.crossfadeParameter = new ParameterImpl (valueChanger, this.transport.crossfade ());
+        this.metronomeVolumeParameter = new RangedValueImpl ("Metronome Volume", valueChanger, this.transport.metronomeVolume ());
+        this.tempoParameter = new RawParameterImpl (valueChanger, this.transport.tempo (), TransportConstants.MIN_TEMPO, TransportConstants.MAX_TEMPO);
 
         final TimeSignatureValue ts = this.transport.timeSignature ();
         ts.numerator ().markInterested ();
@@ -98,13 +101,11 @@ public class TransportImpl implements ITransport
         Util.setIsSubscribed (this.transport.isMetronomeTickPlaybackEnabled (), enable);
         Util.setIsSubscribed (this.transport.isMetronomeAudibleDuringPreRoll (), enable);
         Util.setIsSubscribed (this.transport.preRoll (), enable);
-        Util.setIsSubscribed (this.transport.tempo ().value (), enable);
         Util.setIsSubscribed (this.transport.getPosition (), enable);
-        Util.setIsSubscribed (this.transport.crossfade ().value (), enable);
 
-        final SettableRangedValue metronomeVolume = this.transport.metronomeVolume ();
-        Util.setIsSubscribed (metronomeVolume, enable);
-        Util.setIsSubscribed (metronomeVolume.displayedValue (), enable);
+        this.crossfadeParameter.enableObservers (enable);
+        this.metronomeVolumeParameter.enableObservers (enable);
+        this.tempoParameter.enableObservers (enable);
 
         final TimeSignatureValue ts = this.transport.timeSignature ();
         Util.setIsSubscribed (ts.numerator (), enable);
@@ -255,6 +256,14 @@ public class TransportImpl implements ITransport
     public void setMetronomeTicks (final boolean on)
     {
         this.transport.isMetronomeTickPlaybackEnabled ().set (on);
+    }
+
+
+    /** {@inheritDoc} */
+    @Override
+    public IParameter getMetronomeVolumeParameter ()
+    {
+        return this.metronomeVolumeParameter;
     }
 
 
@@ -443,7 +452,7 @@ public class TransportImpl implements ITransport
     @Override
     public void setPosition (final double beats)
     {
-        this.transport.setPosition (beats);
+        this.transport.getPosition ().set (beats);
     }
 
 
@@ -452,7 +461,7 @@ public class TransportImpl implements ITransport
     public void changePosition (final boolean increase, final boolean slow)
     {
         final double frac = slow ? TransportConstants.INC_FRACTION_TIME_SLOW : TransportConstants.INC_FRACTION_TIME;
-        this.transport.incPosition (increase ? frac : -frac, false);
+        this.transport.getPosition ().inc (increase ? frac : -frac);
     }
 
 
@@ -506,6 +515,14 @@ public class TransportImpl implements ITransport
 
     /** {@inheritDoc} */
     @Override
+    public IParameter getTempoParameter ()
+    {
+        return this.tempoParameter;
+    }
+
+
+    /** {@inheritDoc} */
+    @Override
     public void tapTempo ()
     {
         this.transport.tapTempo ();
@@ -517,7 +534,7 @@ public class TransportImpl implements ITransport
     public void changeTempo (final boolean increase, final boolean slow)
     {
         final double offset = slow ? 0.01 : 1;
-        this.transport.tempo ().incRaw (increase ? offset : -offset);
+        this.tempoParameter.incRawValue (increase ? offset : -offset);
     }
 
 
@@ -525,7 +542,7 @@ public class TransportImpl implements ITransport
     @Override
     public void setTempo (final double tempo)
     {
-        this.transport.tempo ().setRaw (tempo);
+        this.tempoParameter.setRawValue (tempo);
     }
 
 
@@ -533,7 +550,7 @@ public class TransportImpl implements ITransport
     @Override
     public double getTempo ()
     {
-        return this.tempo;
+        return this.tempoParameter.getRawValue ();
     }
 
 
@@ -566,7 +583,7 @@ public class TransportImpl implements ITransport
     @Override
     public void setTempoIndication (final boolean isTouched)
     {
-        this.transport.tempo ().setIndication (isTouched);
+        this.tempoParameter.setIndication (isTouched);
     }
 
 
@@ -574,7 +591,15 @@ public class TransportImpl implements ITransport
     @Override
     public void setCrossfade (final int value)
     {
-        this.transport.crossfade ().set (Integer.valueOf (value), Integer.valueOf (this.valueChanger.getUpperBound ()));
+        this.crossfadeParameter.setValue (value);
+    }
+
+
+    /** {@inheritDoc} */
+    @Override
+    public IParameter getCrossfadeParameter ()
+    {
+        return this.crossfadeParameter;
     }
 
 
@@ -582,7 +607,7 @@ public class TransportImpl implements ITransport
     @Override
     public int getCrossfade ()
     {
-        return this.valueChanger.fromNormalizedValue (this.transport.crossfade ().get ());
+        return this.crossfadeParameter.getValue ();
     }
 
 
@@ -590,7 +615,7 @@ public class TransportImpl implements ITransport
     @Override
     public void changeCrossfade (final int control)
     {
-        this.transport.crossfade ().inc (Double.valueOf (this.valueChanger.calcKnobChange (control)), Integer.valueOf (this.valueChanger.getUpperBound ()));
+        this.crossfadeParameter.inc (this.valueChanger.calcKnobChange (control));
     }
 
 
@@ -676,11 +701,5 @@ public class TransportImpl implements ITransport
     public int getQuartersPerMeasure ()
     {
         return 4 * this.getNumerator () / this.getDenominator ();
-    }
-
-
-    private void handleTempo (final double value)
-    {
-        this.tempo = Math.min (TransportConstants.MAX_TEMPO, Math.max (TransportConstants.MIN_TEMPO, value));
     }
 }

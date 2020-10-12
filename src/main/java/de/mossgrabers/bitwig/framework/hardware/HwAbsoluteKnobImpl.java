@@ -5,20 +5,12 @@
 package de.mossgrabers.bitwig.framework.hardware;
 
 import de.mossgrabers.bitwig.framework.daw.HostImpl;
-import de.mossgrabers.bitwig.framework.daw.data.ParameterImpl;
-import de.mossgrabers.framework.command.core.ContinuousCommand;
 import de.mossgrabers.framework.command.core.TriggerCommand;
-import de.mossgrabers.framework.controller.hardware.AbstractHwContinuousControl;
 import de.mossgrabers.framework.controller.hardware.BindType;
 import de.mossgrabers.framework.controller.hardware.IHwAbsoluteKnob;
-import de.mossgrabers.framework.daw.data.IParameter;
 import de.mossgrabers.framework.daw.midi.IMidiInput;
 
-import com.bitwig.extension.controller.api.AbsoluteHardwarControlBindable;
-import com.bitwig.extension.controller.api.AbsoluteHardwareControlBinding;
 import com.bitwig.extension.controller.api.AbsoluteHardwareKnob;
-import com.bitwig.extension.controller.api.ControllerHost;
-import com.bitwig.extension.controller.api.HardwareBindable;
 
 
 /**
@@ -26,75 +18,18 @@ import com.bitwig.extension.controller.api.HardwareBindable;
  *
  * @author J&uuml;rgen Mo&szlig;graber
  */
-public class HwAbsoluteKnobImpl extends AbstractHwContinuousControl implements IHwAbsoluteKnob
+public class HwAbsoluteKnobImpl extends AbstractHwAbsoluteControl<AbsoluteHardwareKnob> implements IHwAbsoluteKnob
 {
-    private final AbsoluteHardwareKnob     hardwareKnob;
-    private final ControllerHost           controllerHost;
-    private AbsoluteHardwarControlBindable defaultAction;
-    private AbsoluteHardwareControlBinding binding;
-
-    private ParameterImpl                  parameterImpl;
-
-
     /**
      * Constructor.
      *
      * @param host The controller host
-     * @param hardwareKnob The Bitwig hardware knob
+     * @param hardwareControl The Bitwig hardware knob
      * @param label The label of the knob
      */
-    public HwAbsoluteKnobImpl (final HostImpl host, final AbsoluteHardwareKnob hardwareKnob, final String label)
+    public HwAbsoluteKnobImpl (final HostImpl host, final AbsoluteHardwareKnob hardwareControl, final String label)
     {
-        super (host, label);
-
-        this.controllerHost = host.getControllerHost ();
-        this.hardwareKnob = hardwareKnob;
-        this.hardwareKnob.setLabel (label);
-
-        HwUtils.markInterested (this.hardwareKnob);
-    }
-
-
-    /** {@inheritDoc} */
-    @Override
-    public void bind (final ContinuousCommand command)
-    {
-        super.bind (command);
-
-        this.defaultAction = this.controllerHost.createAbsoluteHardwareControlAdjustmentTarget (this::handleValue);
-        this.binding = this.hardwareKnob.setBinding (this.defaultAction);
-    }
-
-
-    /** {@inheritDoc} */
-    @Override
-    public void bind (final IParameter parameter)
-    {
-        if (this.binding != null)
-            this.binding.removeBinding ();
-
-        HardwareBindable target = null;
-        if (parameter == null)
-        {
-            HwUtils.enableObservers (false, this.hardwareKnob, this.parameterImpl);
-            target = this.defaultAction;
-        }
-        else if (parameter instanceof ParameterImpl)
-        {
-            this.parameterImpl = (ParameterImpl) parameter;
-            target = this.parameterImpl.getParameter ();
-            HwUtils.enableObservers (true, this.hardwareKnob, this.parameterImpl);
-        }
-
-        this.binding = target == null ? null : this.hardwareKnob.setBinding (target);
-    }
-
-
-    /** {@inheritDoc} */
-    @Override
-    public void bind (final IMidiInput input, final BindType type, final int channel, final int value)
-    {
-        input.bind (this, type, channel, value);
+        super (host, label, hardwareControl);
     }
 
 
@@ -103,32 +38,5 @@ public class HwAbsoluteKnobImpl extends AbstractHwContinuousControl implements I
     public void bindTouch (final TriggerCommand command, final IMidiInput input, final BindType type, final int channel, final int control)
     {
         // No touch on absolute knob
-    }
-
-
-    /** {@inheritDoc} */
-    @Override
-    public void handleValue (final double value)
-    {
-        this.command.execute ((int) Math.round (value * 127.0));
-    }
-
-
-    /**
-     * Get the Bitwig hardware knob proxy.
-     *
-     * @return The knob proxy
-     */
-    public AbsoluteHardwareKnob getHardwareKnob ()
-    {
-        return this.hardwareKnob;
-    }
-
-
-    /** {@inheritDoc} */
-    @Override
-    public void setBounds (final double x, final double y, final double width, final double height)
-    {
-        this.hardwareKnob.setBounds (x, y, width, height);
     }
 }

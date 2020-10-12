@@ -8,14 +8,16 @@ import de.mossgrabers.controller.fire.FireConfiguration;
 import de.mossgrabers.controller.fire.controller.FireControlSurface;
 import de.mossgrabers.controller.fire.graphics.canvas.component.TitleValueComponent;
 import de.mossgrabers.framework.controller.ButtonID;
+import de.mossgrabers.framework.controller.ContinuousID;
 import de.mossgrabers.framework.controller.display.IGraphicDisplay;
 import de.mossgrabers.framework.daw.IModel;
 import de.mossgrabers.framework.daw.data.IChannel;
-import de.mossgrabers.framework.daw.data.ICursorDevice;
 import de.mossgrabers.framework.daw.data.ISend;
+import de.mossgrabers.framework.daw.data.ISpecificDevice;
 import de.mossgrabers.framework.daw.data.bank.ISendBank;
 import de.mossgrabers.framework.mode.AbstractMode;
 import de.mossgrabers.framework.mode.Modes;
+import de.mossgrabers.framework.parameterprovider.DrumPadParameterProvider;
 
 
 /**
@@ -55,6 +57,10 @@ public class FireLayerMode extends AbstractMode<FireControlSurface, FireConfigur
         super ("Channel", surface, model);
 
         this.isTemporary = false;
+
+        this.setControls (ContinuousID.createSequentialList (ContinuousID.KNOB1, 4));
+
+        this.setParameters (new Fire4KnobProvider (surface, new DrumPadParameterProvider (model)));
     }
 
 
@@ -71,11 +77,11 @@ public class FireLayerMode extends AbstractMode<FireControlSurface, FireConfigur
         int value = -1;
         boolean isPan = false;
 
-        final ICursorDevice cd = this.model.getCursorDevice ();
+        final ISpecificDevice cd = this.model.getDrumDevice ();
         final IChannel channel = cd.getLayerOrDrumPadBank ().getSelectedItem ();
         if (channel != null)
         {
-            desc = channel.getIndex () + 1 + ": " + channel.getName (9);
+            desc = channel.getPosition () + ": " + channel.getName (9);
 
             final ISendBank sendBank = channel.getSendBank ();
 
@@ -131,32 +137,6 @@ public class FireLayerMode extends AbstractMode<FireControlSurface, FireConfigur
         }
         if (index >= 0)
             this.mode = this.surface.isPressed (ButtonID.ALT) ? ALT_MODES[index] : MODES[index];
-    }
-
-
-    /** {@inheritDoc} */
-    @Override
-    public void onKnobValue (final int index, final int value)
-    {
-        final ICursorDevice cd = this.model.getCursorDevice ();
-        final IChannel channel = cd.getLayerOrDrumPadBank ().getSelectedItem ();
-        if (channel == null)
-            return;
-
-        final int what = this.surface.isPressed (ButtonID.ALT) ? 4 + index : index;
-        switch (what)
-        {
-            case 0:
-                channel.changeVolume (value);
-                break;
-            case 1:
-                channel.changePan (value);
-                break;
-            default:
-                final int sendIndex = what - 2;
-                channel.getSendBank ().getItem (sendIndex).changeValue (value);
-                break;
-        }
     }
 
 
