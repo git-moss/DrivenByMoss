@@ -45,8 +45,8 @@ public class APCTempoCommand extends TempoCommand<APCControlSurface, APCConfigur
         super.execute (value);
 
         final ViewManager viewManager = this.surface.getViewManager ();
-        if (!viewManager.isActiveView (Views.TEMPO))
-            viewManager.setActiveView (Views.TEMPO);
-        this.timeout.delay (viewManager::restoreView);
+        if (!viewManager.isActive (Views.TEMPO))
+            viewManager.setActive (Views.TEMPO);
+        this.timeout.delay (viewManager::restore);
     }
 }

@@ -52,7 +52,7 @@ public class PageCommand extends AbstractTriggerCommand<MaschineControlSurface, 
             return;
 
         final ModeManager modeManager = this.surface.getModeManager ();
-        final Modes mode = modeManager.getActiveOrTempModeId ();
+        final Modes mode = modeManager.getActiveOrTempId ();
 
         switch (mode)
         {

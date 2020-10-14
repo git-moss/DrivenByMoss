@@ -113,8 +113,8 @@ public class SequencerView extends AbstractNoteSequencerView<PushControlSurface,
             return;
 
         final ModeManager modeManager = this.surface.getModeManager ();
-        final NoteMode noteMode = (NoteMode) modeManager.getMode (Modes.NOTE);
+        final NoteMode noteMode = (NoteMode) modeManager.get (Modes.NOTE);
         noteMode.setValues (cursorClip, editMidiChannel, x, mappedNote);
-        modeManager.setActiveMode (Modes.NOTE);
+        modeManager.setActive (Modes.NOTE);
     }
 }

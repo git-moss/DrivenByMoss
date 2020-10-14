@@ -68,7 +68,7 @@ public class DeviceChainsMode extends DeviceParamsMode
             if (index >= slotChains.length)
                 return;
             cd.selectSlotChain (slotChains[index]);
-            this.surface.getModeManager ().setActiveMode (Modes.DEVICE_PARAMS);
+            this.surface.getModeManager ().setActive (Modes.DEVICE_PARAMS);
             return;
         }
 

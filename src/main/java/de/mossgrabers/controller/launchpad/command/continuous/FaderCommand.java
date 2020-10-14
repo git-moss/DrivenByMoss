@@ -9,7 +9,7 @@ import de.mossgrabers.controller.launchpad.controller.LaunchpadControlSurface;
 import de.mossgrabers.controller.launchpad.view.AbstractFaderView;
 import de.mossgrabers.framework.command.core.AbstractContinuousCommand;
 import de.mossgrabers.framework.daw.IModel;
-import de.mossgrabers.framework.view.View;
+import de.mossgrabers.framework.featuregroup.View;
 
 
 /**
@@ -40,7 +40,7 @@ public class FaderCommand extends AbstractContinuousCommand<LaunchpadControlSurf
     @Override
     public void execute (final int value)
     {
-        final View view = this.surface.getViewManager ().getActiveView ();
+        final View view = this.surface.getViewManager ().getActive ();
         if (view instanceof AbstractFaderView)
             ((AbstractFaderView) view).onValueKnob (this.index, value);
     }

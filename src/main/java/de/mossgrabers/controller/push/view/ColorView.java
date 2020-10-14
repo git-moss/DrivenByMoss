@@ -112,7 +112,7 @@ public class ColorView extends AbstractView<PushControlSurface, PushConfiguratio
                     break;
             }
         }
-        this.surface.getViewManager ().restoreView ();
+        this.surface.getViewManager ().restore ();
     }
 
 

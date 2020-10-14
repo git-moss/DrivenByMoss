@@ -172,7 +172,7 @@ public class QuantizeMode extends BaseMode
             return;
 
         if (index == 1)
-            this.surface.getModeManager ().setActiveMode (Modes.GROOVE);
+            this.surface.getModeManager ().setActive (Modes.GROOVE);
     }
 
 

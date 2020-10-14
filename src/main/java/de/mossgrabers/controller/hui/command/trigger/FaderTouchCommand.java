@@ -42,9 +42,9 @@ public class FaderTouchCommand extends SelectCommand<HUIControlSurface, HUIConfi
         {
             final ModeManager modeManager = this.surface.getModeManager ();
             if (event == ButtonEvent.DOWN)
-                modeManager.setActiveMode (Modes.VOLUME);
+                modeManager.setActive (Modes.VOLUME);
             else if (event == ButtonEvent.UP)
-                modeManager.restoreMode ();
+                modeManager.restore ();
         }
 
         if (configuration.isTouchChannel ())

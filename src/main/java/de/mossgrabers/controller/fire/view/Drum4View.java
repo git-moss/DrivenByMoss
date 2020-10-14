@@ -67,16 +67,16 @@ public class Drum4View extends AbstractDrum4View<FireControlSurface, FireConfigu
             final int state = clip.getStep (channel, step, sound).getState ();
             if (state == IStepInfo.NOTE_START)
             {
-                final NoteMode noteMode = (NoteMode) modeManager.getMode (Modes.NOTE);
+                final NoteMode noteMode = (NoteMode) modeManager.get (Modes.NOTE);
                 noteMode.setValues (clip, channel, step, sound);
-                modeManager.setActiveMode (Modes.NOTE);
+                modeManager.setActive (Modes.NOTE);
             }
         }
         else
         {
             // Turn off Note mode
-            if (modeManager.isActiveOrTempMode (Modes.NOTE))
-                modeManager.restoreMode ();
+            if (modeManager.isActiveOrTemp (Modes.NOTE))
+                modeManager.restore ();
 
             if (this.isNoteEdited)
             {

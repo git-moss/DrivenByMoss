@@ -173,7 +173,7 @@ public class DrumView extends AbstractDrumView<LaunchkeyMiniMk3ControlSurface, L
             this.surface.getDisplay ().notify (this.isPlayMode ? "Play / Select" : "Steps");
         }
         else if (this.isActive ())
-            this.surface.getViewManager ().setActiveView (Views.SHIFT);
+            this.surface.getViewManager ().setActive (Views.SHIFT);
     }
 
 

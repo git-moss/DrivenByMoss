@@ -45,13 +45,13 @@ public class AbstractTrackCommand extends AbstractTriggerCommand<LaunchpadContro
         {
             case DOWN:
                 this.firstRowUsed = false;
-                if (modeManager.isActiveOrTempMode (controlMode))
+                if (modeManager.isActiveOrTemp (controlMode))
                 {
-                    modeManager.setActiveMode (Modes.DUMMY);
+                    modeManager.setActive (Modes.DUMMY);
                     return;
                 }
-                modeManager.setActiveMode (controlMode);
-                this.surface.getViewManager ().setActiveView (Views.SESSION);
+                modeManager.setActive (controlMode);
+                this.surface.getViewManager ().setActive (Views.SESSION);
                 this.surface.getDisplay ().notify (notification);
                 break;
 
@@ -62,8 +62,8 @@ public class AbstractTrackCommand extends AbstractTriggerCommand<LaunchpadContro
             case UP:
                 if (this.firstRowUsed)
                 {
-                    modeManager.setActiveMode (Modes.DUMMY);
-                    this.surface.getViewManager ().restoreView ();
+                    modeManager.setActive (Modes.DUMMY);
+                    this.surface.getViewManager ().restore ();
                 }
                 break;
         }
@@ -76,14 +76,14 @@ public class AbstractTrackCommand extends AbstractTriggerCommand<LaunchpadContro
         switch (event)
         {
             case DOWN:
-                if (viewManager.isActiveView (view))
+                if (viewManager.isActive (view))
                 {
-                    this.surface.getViewManager ().setActiveView (Views.SESSION);
+                    this.surface.getViewManager ().setActive (Views.SESSION);
                     return;
                 }
                 this.temporaryView = false;
-                this.surface.getModeManager ().setActiveMode (Modes.DUMMY);
-                viewManager.setActiveView (view);
+                this.surface.getModeManager ().setActive (Modes.DUMMY);
+                viewManager.setActive (view);
                 this.surface.getDisplay ().notify (notification);
                 break;
 
@@ -93,7 +93,7 @@ public class AbstractTrackCommand extends AbstractTriggerCommand<LaunchpadContro
 
             case UP:
                 if (this.temporaryView)
-                    viewManager.restoreView ();
+                    viewManager.restore ();
                 break;
         }
     }

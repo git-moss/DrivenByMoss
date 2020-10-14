@@ -82,7 +82,7 @@ public class DrumView extends AbstractDrumView<SLMkIIIControlSurface, SLMkIIICon
     @Override
     public void drawGrid ()
     {
-        ((SessionView) this.surface.getViewManager ().getView (Views.SESSION)).drawLightGuide (this.surface.getLightGuide ());
+        ((SessionView) this.surface.getViewManager ().get (Views.SESSION)).drawLightGuide (this.surface.getLightGuide ());
 
         final IPadGrid padGrid = this.surface.getPadGrid ();
         final IDrumDevice primary = this.model.getDrumDevice ();
@@ -169,10 +169,10 @@ public class DrumView extends AbstractDrumView<SLMkIIIControlSurface, SLMkIIICon
             if (!this.isActive ())
                 return;
             final ModeManager modeManager = this.surface.getModeManager ();
-            if (modeManager.isActiveOrTempMode (Modes.GROOVE))
-                modeManager.restoreMode ();
+            if (modeManager.isActiveOrTemp (Modes.GROOVE))
+                modeManager.restore ();
             else
-                modeManager.setActiveMode (Modes.GROOVE);
+                modeManager.setActive (Modes.GROOVE);
         }
     }
 
@@ -199,7 +199,7 @@ public class DrumView extends AbstractDrumView<SLMkIIIControlSurface, SLMkIIICon
         {
             if (!this.isActive ())
                 return SLMkIIIColorManager.SLMKIII_BLACK;
-            return this.surface.getModeManager ().isActiveOrTempMode (Modes.GROOVE) ? SLMkIIIColorManager.SLMKIII_PINK : SLMkIIIColorManager.SLMKIII_DARK_GREY;
+            return this.surface.getModeManager ().isActiveOrTemp (Modes.GROOVE) ? SLMkIIIColorManager.SLMKIII_PINK : SLMkIIIColorManager.SLMKIII_DARK_GREY;
         }
 
         return super.getButtonColor (buttonID);

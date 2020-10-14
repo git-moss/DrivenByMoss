@@ -13,8 +13,9 @@ import de.mossgrabers.framework.controller.color.ColorManager;
 import de.mossgrabers.framework.daw.DAWColor;
 import de.mossgrabers.framework.daw.IModel;
 import de.mossgrabers.framework.daw.data.ITrack;
+import de.mossgrabers.framework.featuregroup.Mode;
+import de.mossgrabers.framework.featuregroup.View;
 import de.mossgrabers.framework.mode.AbstractMode;
-import de.mossgrabers.framework.mode.Mode;
 import de.mossgrabers.framework.scale.Scales;
 import de.mossgrabers.framework.utils.ButtonEvent;
 import de.mossgrabers.framework.utils.KeyManager;
@@ -109,7 +110,7 @@ public abstract class AbstractView<S extends IControlSurface<C>, C extends Confi
     @Override
     public void updateControlSurface ()
     {
-        final Mode m = this.surface.getModeManager ().getActiveOrTempMode ();
+        final Mode m = this.surface.getModeManager ().getActiveOrTemp ();
         if (m != null)
             m.updateDisplay ();
     }

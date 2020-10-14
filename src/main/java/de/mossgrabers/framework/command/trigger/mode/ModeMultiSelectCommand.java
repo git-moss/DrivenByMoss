@@ -60,7 +60,7 @@ public class ModeMultiSelectCommand<S extends IControlSurface<C>, C extends Conf
         if (event != ButtonEvent.UP)
             return;
 
-        final Modes activeModeId = this.modeManager.getActiveModeId ();
+        final Modes activeModeId = this.modeManager.getActiveId ();
         Modes newMode = this.currentModeID;
 
         // If coming from a mode not on the list, activate the last one
@@ -89,7 +89,7 @@ public class ModeMultiSelectCommand<S extends IControlSurface<C>, C extends Conf
         if (event != ButtonEvent.UP)
             return;
 
-        final Modes activeModeId = this.modeManager.getActiveModeId ();
+        final Modes activeModeId = this.modeManager.getActiveId ();
         Modes newMode = this.currentModeID;
 
         // If coming from a mode not on the list, activate the last one
@@ -119,9 +119,9 @@ public class ModeMultiSelectCommand<S extends IControlSurface<C>, C extends Conf
     public void activateMode (final Modes modeID)
     {
         this.currentModeID = modeID;
-        this.modeManager.setActiveMode (modeID);
+        this.modeManager.setActive (modeID);
 
-        String modeName = this.modeManager.getMode (modeID).getName ();
+        String modeName = this.modeManager.get (modeID).getName ();
 
         if (Modes.isSendMode (modeID))
         {

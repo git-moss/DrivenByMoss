@@ -111,8 +111,8 @@ public class Drum64View extends AbstractDrum64View<PushControlSurface, PushConfi
 
         // Only activate layer mode if not one of the layer modes is already active
         final ModeManager modeManager = this.surface.getModeManager ();
-        if (!Modes.isLayerMode (modeManager.getActiveModeId ()))
-            modeManager.setActiveMode (Modes.DEVICE_LAYER);
+        if (!Modes.isLayerMode (modeManager.getActiveId ()))
+            modeManager.setActive (Modes.DEVICE_LAYER);
 
         drumPad.select ();
     }

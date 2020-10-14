@@ -40,36 +40,36 @@ public class LayoutCommand extends AbstractTriggerCommand<PushControlSurface, Pu
             return;
 
         final ViewManager viewManager = this.surface.getViewManager ();
-        if (viewManager.isActiveView (Views.PLAY))
-            viewManager.setActiveView (Views.PIANO);
-        else if (viewManager.isActiveView (Views.PIANO))
-            viewManager.setActiveView (Views.DRUM64);
-        else if (viewManager.isActiveView (Views.DRUM64))
-            viewManager.setActiveView (Views.PLAY);
-        else if (viewManager.isActiveView (Views.SEQUENCER))
-            viewManager.setActiveView (Views.RAINDROPS);
-        else if (viewManager.isActiveView (Views.RAINDROPS))
-            viewManager.setActiveView (Views.DRUM);
-        else if (viewManager.isActiveView (Views.DRUM))
-            viewManager.setActiveView (Views.DRUM4);
-        else if (viewManager.isActiveView (Views.DRUM4))
-            viewManager.setActiveView (Views.DRUM8);
-        else if (viewManager.isActiveView (Views.DRUM8))
-            viewManager.setActiveView (Views.SEQUENCER);
+        if (viewManager.isActive (Views.PLAY))
+            viewManager.setActive (Views.PIANO);
+        else if (viewManager.isActive (Views.PIANO))
+            viewManager.setActive (Views.DRUM64);
+        else if (viewManager.isActive (Views.DRUM64))
+            viewManager.setActive (Views.PLAY);
+        else if (viewManager.isActive (Views.SEQUENCER))
+            viewManager.setActive (Views.RAINDROPS);
+        else if (viewManager.isActive (Views.RAINDROPS))
+            viewManager.setActive (Views.DRUM);
+        else if (viewManager.isActive (Views.DRUM))
+            viewManager.setActive (Views.DRUM4);
+        else if (viewManager.isActive (Views.DRUM4))
+            viewManager.setActive (Views.DRUM8);
+        else if (viewManager.isActive (Views.DRUM8))
+            viewManager.setActive (Views.SEQUENCER);
         else
         {
             final PushConfiguration configuration = this.surface.getConfiguration ();
-            if (viewManager.isActiveView (Views.SESSION))
+            if (viewManager.isActive (Views.SESSION))
             {
                 if (configuration.isFlipSession ())
-                    viewManager.setActiveView (Views.SCENE_PLAY);
+                    viewManager.setActive (Views.SCENE_PLAY);
                 else
                     configuration.setFlipSession (true);
             }
-            else if (viewManager.isActiveView (Views.SCENE_PLAY))
+            else if (viewManager.isActive (Views.SCENE_PLAY))
             {
                 configuration.setFlipSession (false);
-                viewManager.setActiveView (Views.SESSION);
+                viewManager.setActive (Views.SESSION);
             }
         }
     }
@@ -83,12 +83,12 @@ public class LayoutCommand extends AbstractTriggerCommand<PushControlSurface, Pu
             return;
 
         final ViewManager viewManager = this.surface.getViewManager ();
-        if (Views.isSequencerView (viewManager.getActiveViewId ()))
-            viewManager.setActiveView (Views.PLAY);
+        if (Views.isSequencerView (viewManager.getActiveId ()))
+            viewManager.setActive (Views.PLAY);
         else
         {
-            if (viewManager.getView (Views.SEQUENCER) != null)
-                viewManager.setActiveView (Views.SEQUENCER);
+            if (viewManager.get (Views.SEQUENCER) != null)
+                viewManager.setActive (Views.SEQUENCER);
         }
     }
 }

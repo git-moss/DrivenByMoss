@@ -38,7 +38,7 @@ public class DeleteCommand<S extends IControlSurface<C>, C extends Configuration
     public void executeNormal (final ButtonEvent event)
     {
         // Update for key combinations
-        this.surface.getViewManager ().getActiveView ().updateNoteMapping ();
+        this.surface.getViewManager ().getActive ().updateNoteMapping ();
 
         if (event == ButtonEvent.UP)
             this.model.getApplication ().deleteSelection ();

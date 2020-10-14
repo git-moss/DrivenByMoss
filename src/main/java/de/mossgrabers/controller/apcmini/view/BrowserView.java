@@ -94,7 +94,7 @@ public class BrowserView extends AbstractView<APCminiControlSurface, APCminiConf
                 if (velocity == 0)
                     return;
                 this.model.getBrowser ().stopBrowsing (false);
-                viewManager.restoreView ();
+                viewManager.restore ();
                 break;
 
             // OK
@@ -102,7 +102,7 @@ public class BrowserView extends AbstractView<APCminiControlSurface, APCminiConf
                 if (velocity == 0)
                     return;
                 this.model.getBrowser ().stopBrowsing (true);
-                viewManager.restoreView ();
+                viewManager.restore ();
                 break;
 
             case 2:

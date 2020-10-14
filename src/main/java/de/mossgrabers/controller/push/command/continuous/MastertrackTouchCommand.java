@@ -42,7 +42,7 @@ public class MastertrackTouchCommand extends AbstractTriggerCommand<PushControlS
 
         // Avoid accidentally leaving the browser
         final ModeManager modeManager = this.surface.getModeManager ();
-        if (modeManager.isActiveOrTempMode (Modes.BROWSER))
+        if (modeManager.isActiveOrTemp (Modes.BROWSER))
             return;
 
         final IMasterTrack masterTrack = this.model.getMasterTrack ();
@@ -55,13 +55,13 @@ public class MastertrackTouchCommand extends AbstractTriggerCommand<PushControlS
             return;
         }
 
-        final boolean isMasterMode = modeManager.isActiveOrTempMode (Modes.MASTER);
+        final boolean isMasterMode = modeManager.isActiveOrTemp (Modes.MASTER);
         if (isTouched && isMasterMode)
             return;
 
         if (isTouched)
-            modeManager.setActiveMode (Modes.MASTER_TEMP);
+            modeManager.setActive (Modes.MASTER_TEMP);
         else if (!isMasterMode)
-            modeManager.restoreMode ();
+            modeManager.restore ();
     }
 }

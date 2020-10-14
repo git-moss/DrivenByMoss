@@ -40,7 +40,7 @@ public class NoteViewSelectView extends AbstractView<LaunchpadControlSurface, La
     public void drawGrid ()
     {
         final ViewManager viewManager = this.surface.getViewManager ();
-        final Views previousViewId = viewManager.getPreviousViewId ();
+        final Views previousViewId = viewManager.getPreviousId ();
 
         final IPadGrid padGrid = this.surface.getPadGrid ();
 
@@ -116,13 +116,13 @@ public class NoteViewSelectView extends AbstractView<LaunchpadControlSurface, La
     private void setView (final Views viewID)
     {
         final ViewManager viewManager = this.surface.getViewManager ();
-        viewManager.setActiveView (viewID);
+        viewManager.setActive (viewID);
 
         final ITrack sel = this.model.getSelectedTrack ();
         if (sel != null)
             viewManager.setPreferredView (sel.getPosition (), viewID);
 
-        this.surface.getDisplay ().notify (viewManager.getView (viewID).getName ());
+        this.surface.getDisplay ().notify (viewManager.get (viewID).getName ());
     }
 
 

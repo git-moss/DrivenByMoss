@@ -135,16 +135,16 @@ public class BeatstepControllerSetup extends AbstractControllerSetup<BeatstepCon
     {
         final BeatstepControlSurface surface = this.getSurface ();
         final ViewManager viewManager = surface.getViewManager ();
-        viewManager.registerView (Views.TRACK, new TrackView (surface, this.model));
-        viewManager.registerView (Views.DEVICE, new DeviceView (surface, this.model));
-        viewManager.registerView (Views.PLAY, new PlayView (surface, this.model));
+        viewManager.register (Views.TRACK, new TrackView (surface, this.model));
+        viewManager.register (Views.DEVICE, new DeviceView (surface, this.model));
+        viewManager.register (Views.PLAY, new PlayView (surface, this.model));
 
-        viewManager.registerView (Views.DRUM, new DrumView (surface, this.model));
-        viewManager.registerView (Views.SEQUENCER, new SequencerView (surface, this.model));
-        viewManager.registerView (Views.SESSION, new SessionView (surface, this.model));
+        viewManager.register (Views.DRUM, new DrumView (surface, this.model));
+        viewManager.register (Views.SEQUENCER, new SequencerView (surface, this.model));
+        viewManager.register (Views.SESSION, new SessionView (surface, this.model));
 
-        viewManager.registerView (Views.BROWSER, new BrowserView (surface, this.model));
-        viewManager.registerView (Views.SHIFT, new ShiftView (surface, this.model));
+        viewManager.register (Views.BROWSER, new BrowserView (surface, this.model));
+        viewManager.register (Views.SHIFT, new ShiftView (surface, this.model));
     }
 
 
@@ -154,7 +154,7 @@ public class BeatstepControllerSetup extends AbstractControllerSetup<BeatstepCon
     {
         super.createObservers ();
 
-        this.getSurface ().getViewManager ().addViewChangeListener ( (previousViewId, activeViewId) -> this.updateIndication (null));
+        this.getSurface ().getViewManager ().addChangeListener ( (previousViewId, activeViewId) -> this.updateIndication (null));
         this.createScaleObservers (this.configuration);
 
         this.configuration.registerDeactivatedItemsHandler (this.model);
@@ -182,14 +182,14 @@ public class BeatstepControllerSetup extends AbstractControllerSetup<BeatstepCon
 
             if (event == ButtonEvent.DOWN)
             {
-                viewManager.setActiveView (Views.SHIFT);
+                viewManager.setActive (Views.SHIFT);
                 return;
             }
 
             if (event == ButtonEvent.UP)
             {
-                if (viewManager.isActiveView (Views.SHIFT))
-                    viewManager.restoreView ();
+                if (viewManager.isActive (Views.SHIFT))
+                    viewManager.restore ();
 
                 // Red LED is turned off on button release, restore the correct color
                 final BeatstepPadGrid beatstepPadGrid = (BeatstepPadGrid) surface.getPadGrid ();
@@ -218,7 +218,7 @@ public class BeatstepControllerSetup extends AbstractControllerSetup<BeatstepCon
 
         this.addRelativeKnob (ContinuousID.MASTER_KNOB, "Master", new PlayPositionCommand<> (this.model, surface), BindType.CC, 2, BeatstepControlSurface.BEATSTEP_KNOB_MAIN, RelativeEncoding.OFFSET_BINARY);
 
-        final PlayView playView = (PlayView) viewManager.getView (Views.PLAY);
+        final PlayView playView = (PlayView) viewManager.get (Views.PLAY);
         playView.registerAftertouchCommand (new AftertouchAbstractViewCommand<> (playView, this.model, surface));
     }
 
@@ -277,7 +277,7 @@ public class BeatstepControllerSetup extends AbstractControllerSetup<BeatstepCon
         // Enable Shift button to send Midi Note 07
         final BeatstepControlSurface surface = this.getSurface ();
         surface.getMidiOutput ().sendSysex ("F0 00 20 6B 7F 42 02 00 01 5E 09 F7");
-        surface.getViewManager ().setActiveView (Views.TRACK);
+        surface.getViewManager ().setActive (Views.TRACK);
     }
 
 
@@ -288,9 +288,9 @@ public class BeatstepControllerSetup extends AbstractControllerSetup<BeatstepCon
         final BeatstepControlSurface surface = this.getSurface ();
 
         final ViewManager viewManager = surface.getViewManager ();
-        final boolean isTrack = viewManager.isActiveView (Views.TRACK);
-        final boolean isDevice = viewManager.isActiveView (Views.DEVICE);
-        final boolean isSession = viewManager.isActiveView (Views.SESSION);
+        final boolean isTrack = viewManager.isActive (Views.TRACK);
+        final boolean isDevice = viewManager.isActive (Views.DEVICE);
+        final boolean isSession = viewManager.isActive (Views.SESSION);
 
         final IMasterTrack mt = this.model.getMasterTrack ();
         mt.setVolumeIndication (!isDevice);
@@ -341,12 +341,12 @@ public class BeatstepControllerSetup extends AbstractControllerSetup<BeatstepCon
             return;
 
         final ViewManager viewManager = this.getSurface ().getViewManager ();
-        if (viewManager.isActiveView (Views.PLAY))
-            viewManager.getActiveView ().updateNoteMapping ();
+        if (viewManager.isActive (Views.PLAY))
+            viewManager.getActive ().updateNoteMapping ();
 
         // Reset drum octave because the drum pad bank is also reset
         this.scales.resetDrumOctave ();
-        if (viewManager.isActiveView (Views.DRUM))
-            viewManager.getView (Views.DRUM).updateNoteMapping ();
+        if (viewManager.isActive (Views.DRUM))
+            viewManager.get (Views.DRUM).updateNoteMapping ();
     }
 }

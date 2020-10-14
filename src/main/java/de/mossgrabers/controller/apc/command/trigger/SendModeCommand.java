@@ -65,7 +65,7 @@ public class SendModeCommand extends AbstractTriggerCommand<APCControlSurface, A
             return;
 
         final ModeManager modeManager = this.surface.getModeManager ();
-        modeManager.setActiveMode (Modes.get (Modes.SEND1, index));
+        modeManager.setActive (Modes.get (Modes.SEND1, index));
 
         String modeName = "Send " + (index + 1) + ": ";
         final ITrackBank trackBank = this.model.getTrackBank ();

@@ -38,7 +38,7 @@ public class FireViewButtonCommand extends ViewButtonCommand<FireControlSurface,
     @Override
     public void execute (final ButtonEvent event, final int velocity)
     {
-        if (this.surface.getModeManager ().isActiveMode (Modes.BROWSER))
+        if (this.surface.getModeManager ().isActive (Modes.BROWSER))
         {
             if (velocity == 0)
                 return;

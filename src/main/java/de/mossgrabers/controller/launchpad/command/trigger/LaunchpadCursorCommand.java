@@ -19,7 +19,8 @@ import de.mossgrabers.framework.daw.data.ITrack;
 import de.mossgrabers.framework.daw.data.bank.IParameterBank;
 import de.mossgrabers.framework.daw.data.bank.ISceneBank;
 import de.mossgrabers.framework.daw.data.bank.ITrackBank;
-import de.mossgrabers.framework.mode.Mode;
+import de.mossgrabers.framework.featuregroup.Mode;
+import de.mossgrabers.framework.featuregroup.View;
 import de.mossgrabers.framework.mode.Modes;
 import de.mossgrabers.framework.scale.Scale;
 import de.mossgrabers.framework.scale.Scales;
@@ -28,7 +29,6 @@ import de.mossgrabers.framework.utils.FrameworkException;
 import de.mossgrabers.framework.view.AbstractDrumView;
 import de.mossgrabers.framework.view.AbstractSequencerView;
 import de.mossgrabers.framework.view.TransposeView;
-import de.mossgrabers.framework.view.View;
 import de.mossgrabers.framework.view.ViewManager;
 import de.mossgrabers.framework.view.Views;
 
@@ -66,7 +66,7 @@ public class LaunchpadCursorCommand extends CursorCommand<LaunchpadControlSurfac
     {
         final ITrackBank tb = this.model.getCurrentTrackBank ();
         final ViewManager viewManager = this.surface.getViewManager ();
-        final Views activeViewId = viewManager.getActiveViewId ();
+        final Views activeViewId = viewManager.getActiveId ();
         if (activeViewId == null)
             return;
         switch (activeViewId)
@@ -104,7 +104,7 @@ public class LaunchpadCursorCommand extends CursorCommand<LaunchpadControlSurfac
                 break;
 
             case DRUM64:
-                final Drum64View drumView64 = (Drum64View) viewManager.getView (Views.DRUM64);
+                final Drum64View drumView64 = (Drum64View) viewManager.get (Views.DRUM64);
                 final int drumOctave = drumView64.getDrumOctave ();
                 this.canScrollUp = drumOctave < 1;
                 this.canScrollDown = drumOctave > -2;
@@ -115,7 +115,7 @@ public class LaunchpadCursorCommand extends CursorCommand<LaunchpadControlSurfac
             case SEQUENCER:
             case RAINDROPS:
             case POLY_SEQUENCER:
-                final INoteClip clip = AbstractSequencerView.class.cast (viewManager.getActiveView ()).getClip ();
+                final INoteClip clip = AbstractSequencerView.class.cast (viewManager.getActive ()).getClip ();
                 final int seqOctave = this.scales.getOctave ();
                 this.canScrollUp = seqOctave < Scales.OCTAVE_RANGE;
                 this.canScrollDown = seqOctave > -Scales.OCTAVE_RANGE;
@@ -126,7 +126,7 @@ public class LaunchpadCursorCommand extends CursorCommand<LaunchpadControlSurfac
             case DRUM:
             case DRUM4:
             case DRUM8:
-                final INoteClip drumClip = AbstractDrumView.class.cast (viewManager.getView (activeViewId)).getClip ();
+                final INoteClip drumClip = AbstractDrumView.class.cast (viewManager.get (activeViewId)).getClip ();
                 this.canScrollUp = this.scales.canScrollDrumOctaveUp ();
                 this.canScrollDown = this.scales.canScrollDrumOctaveDown ();
                 this.canScrollLeft = drumClip.canScrollStepsBackwards ();
@@ -185,7 +185,7 @@ public class LaunchpadCursorCommand extends CursorCommand<LaunchpadControlSurfac
     protected void scrollLeft ()
     {
         final ViewManager viewManager = this.surface.getViewManager ();
-        switch (viewManager.getActiveViewId ())
+        switch (viewManager.getActiveId ())
         {
             case USER:
             case CONTROL:
@@ -193,9 +193,9 @@ public class LaunchpadCursorCommand extends CursorCommand<LaunchpadControlSurfac
                 break;
 
             case SHIFT:
-                final Views previousViewId = viewManager.getPreviousViewId ();
-                viewManager.setActiveView (Views.SHUFFLE);
-                viewManager.setPreviousView (previousViewId);
+                final Views previousViewId = viewManager.getPreviousId ();
+                viewManager.setActive (Views.SHUFFLE);
+                viewManager.setPrevious (previousViewId);
                 break;
 
             case PLAY:
@@ -217,7 +217,7 @@ public class LaunchpadCursorCommand extends CursorCommand<LaunchpadControlSurfac
             case DRUM:
             case DRUM4:
             case DRUM8:
-                final View activeView = viewManager.getActiveView ();
+                final View activeView = viewManager.getActive ();
                 if (activeView instanceof AbstractSequencerView)
                     ((AbstractSequencerView) activeView).onLeft (ButtonEvent.DOWN);
                 break;
@@ -237,7 +237,7 @@ public class LaunchpadCursorCommand extends CursorCommand<LaunchpadControlSurfac
             case TRACK_PAN:
             case TRACK_SENDS:
             case MIX:
-                final Mode mode = this.surface.getModeManager ().getMode (Modes.VOLUME);
+                final Mode mode = this.surface.getModeManager ().get (Modes.VOLUME);
                 if (mode != null)
                     mode.selectPreviousItem ();
                 break;
@@ -266,7 +266,7 @@ public class LaunchpadCursorCommand extends CursorCommand<LaunchpadControlSurfac
     protected void scrollRight ()
     {
         final ViewManager viewManager = this.surface.getViewManager ();
-        switch (viewManager.getActiveViewId ())
+        switch (viewManager.getActiveId ())
         {
             case USER:
             case CONTROL:
@@ -274,9 +274,9 @@ public class LaunchpadCursorCommand extends CursorCommand<LaunchpadControlSurfac
                 break;
 
             case SHIFT:
-                final Views previousViewId = viewManager.getPreviousViewId ();
-                viewManager.setActiveView (Views.SHUFFLE);
-                viewManager.setPreviousView (previousViewId);
+                final Views previousViewId = viewManager.getPreviousId ();
+                viewManager.setActive (Views.SHUFFLE);
+                viewManager.setPrevious (previousViewId);
                 break;
 
             case PLAY:
@@ -297,7 +297,7 @@ public class LaunchpadCursorCommand extends CursorCommand<LaunchpadControlSurfac
             case DRUM:
             case DRUM4:
             case DRUM8:
-                final View activeView = viewManager.getActiveView ();
+                final View activeView = viewManager.getActive ();
                 if (activeView instanceof AbstractSequencerView)
                     ((AbstractSequencerView) activeView).onRight (ButtonEvent.DOWN);
                 break;
@@ -317,7 +317,7 @@ public class LaunchpadCursorCommand extends CursorCommand<LaunchpadControlSurfac
             case TRACK_PAN:
             case TRACK_SENDS:
             case MIX:
-                final Mode mode = this.surface.getModeManager ().getMode (Modes.VOLUME);
+                final Mode mode = this.surface.getModeManager ().get (Modes.VOLUME);
                 if (mode != null)
                     mode.selectNextItem ();
                 break;
@@ -345,7 +345,7 @@ public class LaunchpadCursorCommand extends CursorCommand<LaunchpadControlSurfac
     protected void scrollUp ()
     {
         final ViewManager viewManager = this.surface.getViewManager ();
-        switch (viewManager.getActiveViewId ())
+        switch (viewManager.getActiveId ())
         {
             case USER:
             case CONTROL:
@@ -353,9 +353,9 @@ public class LaunchpadCursorCommand extends CursorCommand<LaunchpadControlSurfac
                 break;
 
             case SHIFT:
-                final Views previousViewId = viewManager.getPreviousViewId ();
-                viewManager.setActiveView (Views.TEMPO);
-                viewManager.setPreviousView (previousViewId);
+                final Views previousViewId = viewManager.getPreviousId ();
+                viewManager.setActive (Views.TEMPO);
+                viewManager.setPrevious (previousViewId);
                 break;
 
             case PLAY:
@@ -367,7 +367,7 @@ public class LaunchpadCursorCommand extends CursorCommand<LaunchpadControlSurfac
             case POLY_SEQUENCER:
             case DRUM4:
             case DRUM8:
-                ((TransposeView) viewManager.getActiveView ()).onOctaveUp (ButtonEvent.DOWN);
+                ((TransposeView) viewManager.getActive ()).onOctaveUp (ButtonEvent.DOWN);
                 break;
 
             case DEVICE:
@@ -412,7 +412,7 @@ public class LaunchpadCursorCommand extends CursorCommand<LaunchpadControlSurfac
     protected void scrollDown ()
     {
         final ViewManager viewManager = this.surface.getViewManager ();
-        switch (viewManager.getActiveViewId ())
+        switch (viewManager.getActiveId ())
         {
             case USER:
             case CONTROL:
@@ -420,9 +420,9 @@ public class LaunchpadCursorCommand extends CursorCommand<LaunchpadControlSurfac
                 break;
 
             case SHIFT:
-                final Views previousViewId = viewManager.getPreviousViewId ();
-                viewManager.setActiveView (Views.TEMPO);
-                viewManager.setPreviousView (previousViewId);
+                final Views previousViewId = viewManager.getPreviousId ();
+                viewManager.setActive (Views.TEMPO);
+                viewManager.setPrevious (previousViewId);
                 break;
 
             case PLAY:
@@ -434,7 +434,7 @@ public class LaunchpadCursorCommand extends CursorCommand<LaunchpadControlSurfac
             case POLY_SEQUENCER:
             case DRUM4:
             case DRUM8:
-                ((TransposeView) viewManager.getActiveView ()).onOctaveDown (ButtonEvent.DOWN);
+                ((TransposeView) viewManager.getActive ()).onOctaveDown (ButtonEvent.DOWN);
                 break;
 
             case DEVICE:

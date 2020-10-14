@@ -40,9 +40,9 @@ public class ScalesCommand extends AbstractTriggerCommand<PushControlSurface, Pu
             return;
 
         final ModeManager modeManager = this.surface.getModeManager ();
-        if (modeManager.isActiveOrTempMode (Modes.SCALES))
-            modeManager.restoreMode ();
+        if (modeManager.isActiveOrTemp (Modes.SCALES))
+            modeManager.restore ();
         else
-            modeManager.setActiveMode (Modes.SCALES);
+            modeManager.setActive (Modes.SCALES);
     }
 }

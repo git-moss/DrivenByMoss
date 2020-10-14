@@ -44,8 +44,8 @@ public class ViewSelectMode extends AbstractMode<SLControlSurface, SLConfigurati
         {
             d.clearRow (0 + i).setBlock (0 + i, 0, "Select mode:").done (0 + i);
             d.clearRow (2 + i);
-            d.setCell (2 + i, 0, (viewManager.isActiveView (Views.CONTROL) ? SLDisplay.RIGHT_ARROW : " ") + "Control");
-            d.setCell (2 + i, 1, " " + (viewManager.isActiveView (Views.PLAY) ? SLDisplay.RIGHT_ARROW : " ") + "Play");
+            d.setCell (2 + i, 0, (viewManager.isActive (Views.CONTROL) ? SLDisplay.RIGHT_ARROW : " ") + "Control");
+            d.setCell (2 + i, 1, " " + (viewManager.isActive (Views.PLAY) ? SLDisplay.RIGHT_ARROW : " ") + "Play");
             d.done (2 + i);
         }
     }

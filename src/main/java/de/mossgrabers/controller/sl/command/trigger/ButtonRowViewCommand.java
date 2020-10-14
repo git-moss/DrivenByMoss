@@ -9,8 +9,8 @@ import de.mossgrabers.framework.command.core.AbstractTriggerCommand;
 import de.mossgrabers.framework.configuration.Configuration;
 import de.mossgrabers.framework.controller.IControlSurface;
 import de.mossgrabers.framework.daw.IModel;
+import de.mossgrabers.framework.featuregroup.View;
 import de.mossgrabers.framework.utils.ButtonEvent;
-import de.mossgrabers.framework.view.View;
 
 
 /**
@@ -47,7 +47,7 @@ public class ButtonRowViewCommand<S extends IControlSurface<C>, C extends Config
     @Override
     public void execute (final ButtonEvent event, final int velocity)
     {
-        final View view = this.surface.getViewManager ().getActiveView ();
+        final View view = this.surface.getViewManager ().getActive ();
         if (view == null)
             return;
 

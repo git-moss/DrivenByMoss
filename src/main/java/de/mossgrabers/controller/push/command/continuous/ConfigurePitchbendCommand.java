@@ -39,7 +39,7 @@ public class ConfigurePitchbendCommand extends AbstractTriggerCommand<PushContro
         if (event != ButtonEvent.DOWN)
             return;
         final ModeManager modeManager = this.surface.getModeManager ();
-        if (!modeManager.isActiveOrTempMode (Modes.RIBBON))
-            modeManager.setActiveMode (Modes.RIBBON);
+        if (!modeManager.isActiveOrTemp (Modes.RIBBON))
+            modeManager.setActive (Modes.RIBBON);
     }
 }

@@ -55,9 +55,9 @@ public class MasterCommand<S extends IControlSurface<C>, C extends Configuration
         {
             // No Sends on effect tracks
             final ModeManager modeManager = this.surface.getModeManager ();
-            final int mode = modeManager.getActiveOrTempModeId ().ordinal ();
+            final int mode = modeManager.getActiveOrTempId ().ordinal ();
             if (mode >= Modes.SEND1.ordinal () && mode <= Modes.SEND8.ordinal ())
-                modeManager.setActiveMode (Modes.PAN);
+                modeManager.setActive (Modes.PAN);
         }
 
         // Make sure that a track is selected

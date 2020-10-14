@@ -41,7 +41,7 @@ public class InfoMode extends BaseMode
         if (event != ButtonEvent.DOWN)
             return;
         if (index == 0)
-            this.surface.getModeManager ().setActiveMode (Modes.SETUP);
+            this.surface.getModeManager ().setActive (Modes.SETUP);
     }
 
 

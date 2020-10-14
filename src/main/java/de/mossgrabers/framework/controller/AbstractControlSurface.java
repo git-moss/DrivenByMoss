@@ -28,10 +28,10 @@ import de.mossgrabers.framework.daw.IHost;
 import de.mossgrabers.framework.daw.midi.IMidiInput;
 import de.mossgrabers.framework.daw.midi.IMidiOutput;
 import de.mossgrabers.framework.daw.midi.INoteInput;
+import de.mossgrabers.framework.featuregroup.View;
 import de.mossgrabers.framework.graphics.IBitmap;
 import de.mossgrabers.framework.mode.ModeManager;
 import de.mossgrabers.framework.utils.ButtonEvent;
-import de.mossgrabers.framework.view.View;
 import de.mossgrabers.framework.view.ViewManager;
 
 import java.util.ArrayList;
@@ -860,7 +860,7 @@ public abstract class AbstractControlSurface<C extends Configuration> implements
      */
     protected void handleChannelAftertouch (final int data1)
     {
-        final View view = this.viewManager.getActiveView ();
+        final View view = this.viewManager.getActive ();
         if (view != null)
             view.executeAftertouchCommand (-1, data1);
     }
@@ -874,7 +874,7 @@ public abstract class AbstractControlSurface<C extends Configuration> implements
      */
     protected void handlePolyAftertouch (final int data1, final int data2)
     {
-        final View view = this.viewManager.getActiveView ();
+        final View view = this.viewManager.getActive ();
         if (view != null)
             view.executeAftertouchCommand (data1, data2);
     }
@@ -977,7 +977,7 @@ public abstract class AbstractControlSurface<C extends Configuration> implements
      */
     protected void handleGridNote (final ButtonEvent event, final int note, final int velocity)
     {
-        final View view = this.viewManager.getActiveView ();
+        final View view = this.viewManager.getActive ();
         if (view == null)
             return;
         if (event == ButtonEvent.LONG)
@@ -992,7 +992,7 @@ public abstract class AbstractControlSurface<C extends Configuration> implements
      */
     protected void updateViewControls ()
     {
-        final View view = this.viewManager.getActiveView ();
+        final View view = this.viewManager.getActive ();
         if (view != null)
             view.updateControlSurface ();
     }
@@ -1003,7 +1003,7 @@ public abstract class AbstractControlSurface<C extends Configuration> implements
      */
     protected void updateGrid ()
     {
-        final View view = this.viewManager.getActiveView ();
+        final View view = this.viewManager.getActive ();
         if (view != null)
             view.drawGrid ();
     }

@@ -119,7 +119,7 @@ public class GrooveMode extends BaseMode
             return;
 
         if (index == 0)
-            this.surface.getModeManager ().setActiveMode (Modes.REC_ARM);
+            this.surface.getModeManager ().setActive (Modes.REC_ARM);
     }
 
 

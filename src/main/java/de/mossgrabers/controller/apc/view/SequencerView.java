@@ -58,16 +58,16 @@ public class SequencerView extends AbstractNoteSequencerView<APCControlSurface, 
             final int state = cursorClip.getStep (editMidiChannel, x, mappedNote).getState ();
             if (state == IStepInfo.NOTE_START)
             {
-                final NoteMode noteMode = (NoteMode) modeManager.getMode (Modes.NOTE);
+                final NoteMode noteMode = (NoteMode) modeManager.get (Modes.NOTE);
                 noteMode.setValues (cursorClip, editMidiChannel, x, mappedNote);
-                modeManager.setActiveMode (Modes.NOTE);
+                modeManager.setActive (Modes.NOTE);
             }
         }
         else
         {
             // Turn off Note mode
-            if (modeManager.isActiveOrTempMode (Modes.NOTE))
-                modeManager.restoreMode ();
+            if (modeManager.isActiveOrTemp (Modes.NOTE))
+                modeManager.restore ();
 
             if (this.isNoteEdited)
             {

@@ -64,14 +64,14 @@ public class ModeSelectCommand<S extends IControlSurface<C>, C extends Configura
         if (event != ButtonEvent.DOWN)
             return;
         final ModeManager modeManager = this.surface.getModeManager ();
-        if (modeManager.isActiveOrTempMode (this.modeId))
+        if (modeManager.isActiveOrTemp (this.modeId))
         {
             if (!this.toggle)
                 return;
-            modeManager.restoreMode ();
+            modeManager.restore ();
         }
         else
-            modeManager.setActiveMode (this.modeId);
+            modeManager.setActive (this.modeId);
         this.displayMode (modeManager);
     }
 
@@ -83,6 +83,6 @@ public class ModeSelectCommand<S extends IControlSurface<C>, C extends Configura
      */
     protected void displayMode (final ModeManager modeManager)
     {
-        this.model.getHost ().showNotification (modeManager.getActiveOrTempMode ().getName ());
+        this.model.getHost ().showNotification (modeManager.getActiveOrTemp ().getName ());
     }
 }

@@ -13,9 +13,9 @@ import de.mossgrabers.framework.daw.INoteClip;
 import de.mossgrabers.framework.daw.IStepInfo;
 import de.mossgrabers.framework.daw.constants.EditCapability;
 import de.mossgrabers.framework.daw.constants.Resolution;
+import de.mossgrabers.framework.featuregroup.View;
 import de.mossgrabers.framework.utils.StringUtils;
 import de.mossgrabers.framework.view.AbstractSequencerView;
-import de.mossgrabers.framework.view.View;
 
 
 /**
@@ -147,7 +147,7 @@ public class NoteMode extends BaseMode
         }
 
         // Note was modified, prevent deletion of note on button up
-        final View activeView = this.surface.getViewManager ().getActiveView ();
+        final View activeView = this.surface.getViewManager ().getActive ();
         if (activeView instanceof AbstractSequencerView)
             AbstractSequencerView.class.cast (activeView).setNoteEdited ();
     }

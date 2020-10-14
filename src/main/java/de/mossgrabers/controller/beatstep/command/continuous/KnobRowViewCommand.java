@@ -9,7 +9,7 @@ import de.mossgrabers.controller.beatstep.controller.BeatstepControlSurface;
 import de.mossgrabers.controller.beatstep.view.BeatstepView;
 import de.mossgrabers.framework.command.core.AbstractContinuousCommand;
 import de.mossgrabers.framework.daw.IModel;
-import de.mossgrabers.framework.view.View;
+import de.mossgrabers.framework.featuregroup.View;
 
 
 /**
@@ -40,7 +40,7 @@ public class KnobRowViewCommand extends AbstractContinuousCommand<BeatstepContro
     @Override
     public void execute (final int value)
     {
-        final View v = this.surface.getViewManager ().getActiveView ();
+        final View v = this.surface.getViewManager ().getActive ();
         if (v == null)
             return;
         // Ignore centered messages of Beatstep Pro, which are sent before each real knob movement

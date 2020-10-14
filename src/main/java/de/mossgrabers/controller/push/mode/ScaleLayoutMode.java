@@ -54,7 +54,7 @@ public class ScaleLayoutMode extends BaseMode
         else
             return;
 
-        this.surface.getViewManager ().getActiveView ().updateNoteMapping ();
+        this.surface.getViewManager ().getActive ().updateNoteMapping ();
         this.surface.getConfiguration ().setScaleLayout (this.scales.getScaleLayout ().getName ());
     }
 

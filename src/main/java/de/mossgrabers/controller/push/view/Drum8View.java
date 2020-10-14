@@ -56,9 +56,9 @@ public class Drum8View extends AbstractDrum8View<PushControlSurface, PushConfigu
             return;
 
         final ModeManager modeManager = this.surface.getModeManager ();
-        final NoteMode noteMode = (NoteMode) modeManager.getMode (Modes.NOTE);
+        final NoteMode noteMode = (NoteMode) modeManager.get (Modes.NOTE);
         noteMode.setValues (clip, editMidiChannel, stepX, stepY);
-        modeManager.setActiveMode (Modes.NOTE);
+        modeManager.setActive (Modes.NOTE);
     }
 
 

@@ -41,11 +41,11 @@ public class SwingCommand extends ModeSelectCommand<MaschineControlSurface, Masc
         final ModeManager modeManager = this.surface.getModeManager ();
 
         // Switch Gain/Velocity note edit parameters
-        if (modeManager.isActiveOrTempMode (Modes.NOTE) && this.surface.getViewManager ().isActiveView (Views.DRUM, Views.PLAY))
+        if (modeManager.isActiveOrTemp (Modes.NOTE) && this.surface.getViewManager ().isActive (Views.DRUM, Views.PLAY))
         {
             if (event == ButtonEvent.DOWN)
             {
-                final EditNoteMode mode = (EditNoteMode) modeManager.getMode (Modes.NOTE);
+                final EditNoteMode mode = (EditNoteMode) modeManager.get (Modes.NOTE);
                 final boolean isPanorama = mode.getSelectedItem () == EditNoteMode.PANORAMA;
                 mode.selectItem (isPanorama ? EditNoteMode.DURATION : EditNoteMode.PANORAMA);
                 this.surface.getDisplay ().notify (isPanorama ? "Duration" : "Panorama");

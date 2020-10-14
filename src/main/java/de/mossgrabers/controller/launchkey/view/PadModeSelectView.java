@@ -58,7 +58,7 @@ public class PadModeSelectView extends AbstractView<LaunchkeyMiniMk3ControlSurfa
         for (int x = 0; x < 8; x++)
             pads.lightEx (x, 0, LaunchkeyMiniMk3ColorManager.LAUNCHKEY_COLOR_BLACK);
 
-        final SessionView view = (SessionView) this.surface.getViewManager ().getView (Views.SESSION);
+        final SessionView view = (SessionView) this.surface.getViewManager ().get (Views.SESSION);
         final Modes padMode = view.getPadMode ();
         pads.lightEx (0, 1, padMode == null ? LaunchkeyMiniMk3ColorManager.LAUNCHKEY_COLOR_GREEN_HI : LaunchkeyMiniMk3ColorManager.LAUNCHKEY_COLOR_GREEN_LO);
         pads.lightEx (1, 1, padMode == Modes.REC_ARM ? LaunchkeyMiniMk3ColorManager.LAUNCHKEY_COLOR_RED_HI : LaunchkeyMiniMk3ColorManager.LAUNCHKEY_COLOR_RED_LO);
@@ -83,7 +83,7 @@ public class PadModeSelectView extends AbstractView<LaunchkeyMiniMk3ControlSurfa
         if (index > 5)
             return;
 
-        final SessionView view = (SessionView) this.surface.getViewManager ().getView (Views.SESSION);
+        final SessionView view = (SessionView) this.surface.getViewManager ().get (Views.SESSION);
         view.setPadMode (index == 0 ? null : SessionView.PAD_MODES[index - 1]);
         this.surface.getDisplay ().notify (PAD_MODE_NAMES[index]);
 
@@ -100,7 +100,7 @@ public class PadModeSelectView extends AbstractView<LaunchkeyMiniMk3ControlSurfa
 
         if (event == ButtonEvent.UP)
         {
-            this.surface.getViewManager ().restoreView ();
+            this.surface.getViewManager ().restore ();
 
             if (this.isConsumed)
                 return;

@@ -36,7 +36,7 @@ public class ProjectCommand extends AbstractTriggerCommand<LaunchpadControlSurfa
     public void executeNormal (final ButtonEvent event)
     {
         if (event == ButtonEvent.UP)
-            this.surface.getViewManager ().setActiveView (Views.PROJECT);
+            this.surface.getViewManager ().setActive (Views.PROJECT);
     }
 
 

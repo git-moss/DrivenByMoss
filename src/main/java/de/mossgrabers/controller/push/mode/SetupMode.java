@@ -125,7 +125,7 @@ public class SetupMode extends BaseMode
         if (event != ButtonEvent.UP)
             return;
         if (index == 1)
-            this.surface.getModeManager ().setActiveMode (Modes.INFO);
+            this.surface.getModeManager ().setActive (Modes.INFO);
     }
 
 

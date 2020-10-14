@@ -106,7 +106,7 @@ public class LaunchpadControlSurface extends AbstractControlSurface<LaunchpadCon
     protected void handleMidi (final int status, final int data1, final int data2)
     {
         // Workaround for user parameter mappings
-        if (this.getViewManager ().isActiveView (Views.USER))
+        if (this.getViewManager ().isActive (Views.USER))
         {
             final int code = status & 0xF0;
             // Note off

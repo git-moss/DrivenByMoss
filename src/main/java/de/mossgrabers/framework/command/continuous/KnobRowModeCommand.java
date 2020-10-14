@@ -8,7 +8,7 @@ import de.mossgrabers.framework.command.core.AbstractContinuousCommand;
 import de.mossgrabers.framework.configuration.Configuration;
 import de.mossgrabers.framework.controller.IControlSurface;
 import de.mossgrabers.framework.daw.IModel;
-import de.mossgrabers.framework.mode.Mode;
+import de.mossgrabers.framework.featuregroup.Mode;
 
 
 /**
@@ -42,7 +42,7 @@ public class KnobRowModeCommand<S extends IControlSurface<C>, C extends Configur
     @Override
     public void execute (final int value)
     {
-        final Mode m = this.surface.getModeManager ().getActiveOrTempMode ();
+        final Mode m = this.surface.getModeManager ().getActiveOrTemp ();
         if (m != null)
             m.onKnobValue (this.index, value);
     }

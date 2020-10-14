@@ -66,7 +66,7 @@ public class SelectCommand extends AbstractTriggerCommand<MCUControlSurface, MCU
             final ITrackBank effectTrackBank = this.model.getEffectTrackBank ();
             if (effectTrackBank != null && effectTrackBank.getItem (this.channel).doesExist ())
             {
-                modeManager.setActiveMode (Modes.get (Modes.SEND1, this.index));
+                modeManager.setActive (Modes.get (Modes.SEND1, this.index));
                 display.notify ("Send channel " + (this.channel + 1) + " selected.");
             }
             else
@@ -85,14 +85,14 @@ public class SelectCommand extends AbstractTriggerCommand<MCUControlSurface, MCU
         if (this.surface.getConfiguration ().hasOnly1Fader ())
         {
             // Select marker if marker mode is active
-            if (modeManager.isActiveOrTempMode (Modes.MARKERS))
+            if (modeManager.isActiveOrTemp (Modes.MARKERS))
             {
                 this.model.getMarkerBank ().getItem (this.channel).select ();
                 return;
             }
 
             // Select parameter if device mode is active
-            if (modeManager.isActiveOrTempMode (Modes.DEVICE_PARAMS))
+            if (modeManager.isActiveOrTemp (Modes.DEVICE_PARAMS))
             {
                 final ICursorDevice cursorDevice = this.model.getCursorDevice ();
                 if (cursorDevice.doesExist ())

@@ -293,7 +293,7 @@ public abstract class AbstractNumberDisplayView<S extends IControlSurface<C>, C 
     public void onGridNote (final int note, final int velocity)
     {
         if (velocity == 0)
-            this.surface.getViewManager ().restoreView ();
+            this.surface.getViewManager ().restore ();
     }
 
 

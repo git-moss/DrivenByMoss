@@ -189,7 +189,7 @@ public class SessionView extends AbstractSessionView<LaunchkeyMiniMk3ControlSurf
         if (event == ButtonEvent.DOWN)
         {
             if (index == 1)
-                this.surface.getViewManager ().setActiveView (Views.CONTROL);
+                this.surface.getViewManager ().setActive (Views.CONTROL);
             return;
         }
 

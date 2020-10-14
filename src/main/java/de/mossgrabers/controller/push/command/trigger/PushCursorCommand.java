@@ -78,6 +78,6 @@ public class PushCursorCommand extends CursorCommand<PushControlSurface, PushCon
 
     private boolean isScenePlay ()
     {
-        return this.surface.getViewManager ().isActiveView (Views.SCENE_PLAY);
+        return this.surface.getViewManager ().isActive (Views.SCENE_PLAY);
     }
 }

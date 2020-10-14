@@ -45,11 +45,11 @@ public class AccentCommand extends AbstractTriggerCommand<PushControlSurface, Pu
                 break;
             case LONG:
                 this.quitAccentMode = true;
-                this.surface.getModeManager ().setActiveMode (Modes.ACCENT);
+                this.surface.getModeManager ().setActive (Modes.ACCENT);
                 break;
             case UP:
                 if (this.quitAccentMode)
-                    this.surface.getModeManager ().restoreMode ();
+                    this.surface.getModeManager ().restore ();
                 else
                 {
                     final PushConfiguration config = this.surface.getConfiguration ();

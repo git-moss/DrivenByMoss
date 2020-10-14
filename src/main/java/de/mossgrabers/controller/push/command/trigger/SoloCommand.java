@@ -40,7 +40,7 @@ public class SoloCommand extends AbstractTriggerCommand<PushControlSurface, Push
     public void execute (final ButtonEvent event, final int velocity)
     {
         // Update for key combinations
-        this.surface.getViewManager ().getActiveView ().updateNoteMapping ();
+        this.surface.getViewManager ().getActive ().updateNoteMapping ();
 
         if (this.surface.isSelectPressed ())
         {
@@ -98,7 +98,7 @@ public class SoloCommand extends AbstractTriggerCommand<PushControlSurface, Push
             return;
         }
 
-        final Modes activeModeId = this.surface.getModeManager ().getActiveOrTempModeId ();
+        final Modes activeModeId = this.surface.getModeManager ().getActiveOrTempId ();
         if (Modes.isLayerMode (activeModeId))
         {
             final ICursorDevice cd = this.model.getCursorDevice ();

@@ -51,7 +51,7 @@ import de.mossgrabers.framework.daw.data.bank.ITrackBank;
 import de.mossgrabers.framework.daw.midi.IMidiAccess;
 import de.mossgrabers.framework.daw.midi.IMidiInput;
 import de.mossgrabers.framework.daw.midi.IMidiOutput;
-import de.mossgrabers.framework.mode.Mode;
+import de.mossgrabers.framework.featuregroup.Mode;
 import de.mossgrabers.framework.mode.ModeManager;
 import de.mossgrabers.framework.mode.Modes;
 import de.mossgrabers.framework.scale.Scales;
@@ -191,7 +191,7 @@ public class KontrolProtocolControllerSetup extends AbstractControllerSetup<Kont
     {
         final KontrolProtocolControlSurface surface = this.getSurface ();
         final ViewManager viewManager = surface.getViewManager ();
-        viewManager.registerView (Views.CONTROL, new ControlView (surface, this.model));
+        viewManager.register (Views.CONTROL, new ControlView (surface, this.model));
     }
 
 
@@ -205,9 +205,9 @@ public class KontrolProtocolControllerSetup extends AbstractControllerSetup<Kont
         final List<ContinuousID> controls = ContinuousID.createSequentialList (ContinuousID.KNOB1, 8);
         controls.addAll (ContinuousID.createSequentialList (ContinuousID.FADER1, 8));
 
-        modeManager.registerMode (Modes.VOLUME, new MixerMode (surface, this.model, controls));
-        modeManager.registerMode (Modes.SEND, new SendMode (surface, this.model, controls));
-        modeManager.registerMode (Modes.DEVICE_PARAMS, new ParamsMode (surface, this.model, controls));
+        modeManager.register (Modes.VOLUME, new MixerMode (surface, this.model, controls));
+        modeManager.register (Modes.SEND, new SendMode (surface, this.model, controls));
+        modeManager.register (Modes.DEVICE_PARAMS, new ParamsMode (surface, this.model, controls));
     }
 
 
@@ -217,7 +217,7 @@ public class KontrolProtocolControllerSetup extends AbstractControllerSetup<Kont
     {
         super.createObservers ();
 
-        this.getSurface ().getModeManager ().addModeListener ( (oldMode, newMode) -> this.updateIndication (newMode));
+        this.getSurface ().getModeManager ().addChangeListener ( (oldMode, newMode) -> this.updateIndication (newMode));
 
         this.configuration.registerDeactivatedItemsHandler (this.model);
     }
@@ -448,8 +448,8 @@ public class KontrolProtocolControllerSetup extends AbstractControllerSetup<Kont
     public void startup ()
     {
         final KontrolProtocolControlSurface surface = this.getSurface ();
-        surface.getViewManager ().setActiveView (Views.CONTROL);
-        surface.getModeManager ().setActiveMode (Modes.VOLUME);
+        surface.getViewManager ().setActive (Views.CONTROL);
+        surface.getModeManager ().setActive (Modes.VOLUME);
         surface.initHandshake ();
     }
 
@@ -569,7 +569,7 @@ public class KontrolProtocolControllerSetup extends AbstractControllerSetup<Kont
     {
         if (event != ButtonEvent.DOWN)
             return;
-        final Mode activeMode = this.getSurface ().getModeManager ().getActiveOrTempMode ();
+        final Mode activeMode = this.getSurface ().getModeManager ().getActiveOrTemp ();
         if (activeMode == null)
             return;
         if (isLeft)
@@ -585,7 +585,7 @@ public class KontrolProtocolControllerSetup extends AbstractControllerSetup<Kont
         if (event != ButtonEvent.DOWN)
             return;
 
-        if (this.getSurface ().getModeManager ().isActiveMode (Modes.VOLUME))
+        if (this.getSurface ().getModeManager ().isActive (Modes.VOLUME))
         {
             if (this.configuration.isFlipTrackClipNavigation ())
             {
@@ -599,7 +599,7 @@ public class KontrolProtocolControllerSetup extends AbstractControllerSetup<Kont
             return;
         }
 
-        final Mode activeMode = this.getSurface ().getModeManager ().getActiveOrTempMode ();
+        final Mode activeMode = this.getSurface ().getModeManager ().getActiveOrTemp ();
         if (activeMode == null)
             return;
         if (isLeft)
@@ -615,7 +615,7 @@ public class KontrolProtocolControllerSetup extends AbstractControllerSetup<Kont
         if (event != ButtonEvent.DOWN)
             return;
 
-        if (this.getSurface ().getModeManager ().isActiveMode (Modes.VOLUME))
+        if (this.getSurface ().getModeManager ().isActive (Modes.VOLUME))
         {
             if (this.configuration.isFlipTrackClipNavigation ())
             {
@@ -636,7 +636,7 @@ public class KontrolProtocolControllerSetup extends AbstractControllerSetup<Kont
 
     private int getKnobValue (final int continuousMidiControl)
     {
-        final Mode mode = this.getSurface ().getModeManager ().getActiveOrTempMode ();
+        final Mode mode = this.getSurface ().getModeManager ().getActiveOrTemp ();
         return mode == null ? 0 : mode.getKnobValue (continuousMidiControl);
     }
 }

@@ -121,7 +121,7 @@ public class ScaleMode extends AbstractKontrol1Mode
     @Override
     public void onBack ()
     {
-        this.surface.getModeManager ().restoreMode ();
+        this.surface.getModeManager ().restore ();
     }
 
 
@@ -129,7 +129,7 @@ public class ScaleMode extends AbstractKontrol1Mode
     @Override
     public void onEnter ()
     {
-        this.surface.getModeManager ().restoreMode ();
+        this.surface.getModeManager ().restore ();
     }
 
 

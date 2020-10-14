@@ -40,7 +40,7 @@ public class TouchstripCommand extends AbstractPitchbendCommand<PushControlSurfa
     @Override
     public void onPitchbend (final int data1, final int data2)
     {
-        if (this.surface.getViewManager ().isActiveView (Views.SESSION))
+        if (this.surface.getViewManager ().isActive (Views.SESSION))
         {
             final int value = this.surface.isShiftPressed () ? 63 : data2;
             this.model.getTransport ().setCrossfade (this.model.getValueChanger ().toDAWValue (value));
@@ -124,7 +124,7 @@ public class TouchstripCommand extends AbstractPitchbendCommand<PushControlSurfa
     @Override
     public void updateValue ()
     {
-        if (this.surface.getViewManager ().isActiveView (Views.SESSION))
+        if (this.surface.getViewManager ().isActive (Views.SESSION))
         {
             this.surface.setRibbonValue (this.model.getValueChanger ().toMidiValue (this.model.getTransport ().getCrossfade ()));
             return;

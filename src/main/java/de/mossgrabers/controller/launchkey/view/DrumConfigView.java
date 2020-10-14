@@ -45,7 +45,7 @@ public class DrumConfigView extends AbstractView<LaunchkeyMiniMk3ControlSurface,
         final int index = note - 36;
         final int col = index % 8;
 
-        final DrumView view = (DrumView) this.surface.getViewManager ().getView (Views.DRUM);
+        final DrumView view = (DrumView) this.surface.getViewManager ().get (Views.DRUM);
         if (index / 8 == 1)
         {
             view.setResolutionIndex (col);
@@ -87,7 +87,7 @@ public class DrumConfigView extends AbstractView<LaunchkeyMiniMk3ControlSurface,
     @Override
     public void drawGrid ()
     {
-        final DrumView view = (DrumView) this.surface.getViewManager ().getView (Views.DRUM);
+        final DrumView view = (DrumView) this.surface.getViewManager ().get (Views.DRUM);
         final INoteClip clip = view.getClip ();
 
         final IPadGrid padGrid = this.surface.getPadGrid ();
@@ -122,6 +122,6 @@ public class DrumConfigView extends AbstractView<LaunchkeyMiniMk3ControlSurface,
     public void onButton (final ButtonID buttonID, final ButtonEvent event, final int velocity)
     {
         if (buttonID == ButtonID.SCENE2 && event == ButtonEvent.UP)
-            this.surface.getViewManager ().restoreView ();
+            this.surface.getViewManager ().restore ();
     }
 }

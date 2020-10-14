@@ -10,7 +10,7 @@ import de.mossgrabers.framework.command.continuous.FootswitchCommand;
 import de.mossgrabers.framework.configuration.AbstractConfiguration;
 import de.mossgrabers.framework.daw.IApplication;
 import de.mossgrabers.framework.daw.IModel;
-import de.mossgrabers.framework.mode.Mode;
+import de.mossgrabers.framework.featuregroup.Mode;
 import de.mossgrabers.framework.mode.ModeManager;
 import de.mossgrabers.framework.mode.Modes;
 import de.mossgrabers.framework.utils.ButtonEvent;
@@ -62,11 +62,11 @@ public class AssignableCommand extends FootswitchCommand<MCUControlSurface, MCUC
                 if (event != ButtonEvent.DOWN)
                     return;
                 final ModeManager modeManager = this.surface.getModeManager ();
-                if (modeManager.isActiveOrTempMode (Modes.MARKERS))
-                    modeManager.restoreMode ();
+                if (modeManager.isActiveOrTemp (Modes.MARKERS))
+                    modeManager.restore ();
                 else
-                    modeManager.setActiveMode (Modes.MARKERS);
-                final Mode mode = modeManager.getActiveOrTempMode ();
+                    modeManager.setActive (Modes.MARKERS);
+                final Mode mode = modeManager.getActiveOrTemp ();
                 if (mode != null)
                     this.surface.getDisplay ().notify (mode.getName ());
                 break;
@@ -131,7 +131,7 @@ public class AssignableCommand extends FootswitchCommand<MCUControlSurface, MCUC
                 return IApplication.PANEL_LAYOUT_EDIT.equals (this.model.getApplication ().getPanelLayout ());
 
             case MCUConfiguration.FOOTSWITCH_2_SHOW_MARKER_MODE:
-                return this.surface.getModeManager ().isActiveOrTempMode (Modes.MARKERS);
+                return this.surface.getModeManager ().isActiveOrTemp (Modes.MARKERS);
 
             case MCUConfiguration.FOOTSWITCH_2_USE_FADERS_LIKE_EDIT_KNOBS:
                 return this.surface.getConfiguration ().useFadersAsKnobs ();

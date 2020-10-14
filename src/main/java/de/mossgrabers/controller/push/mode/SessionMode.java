@@ -143,7 +143,7 @@ public class SessionMode extends AbstractTrackMode
     @Override
     public void updateDisplay1 (final ITextDisplay display)
     {
-        if (this.surface.getViewManager ().isActiveView (Views.SESSION))
+        if (this.surface.getViewManager ().isActive (Views.SESSION))
             this.updateDisplay1Clips (display);
         else
             this.updateDisplay1Scenes (display);
@@ -154,7 +154,7 @@ public class SessionMode extends AbstractTrackMode
     @Override
     public void updateDisplay2 (final IGraphicDisplay display)
     {
-        if (this.surface.getViewManager ().isActiveView (Views.SESSION))
+        if (this.surface.getViewManager ().isActive (Views.SESSION))
             this.updateDisplay2Clips (display);
         else
             this.updateDisplay2Scenes (display);

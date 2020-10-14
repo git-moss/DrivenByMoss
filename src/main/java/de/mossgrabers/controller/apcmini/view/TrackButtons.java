@@ -98,7 +98,7 @@ public class TrackButtons
                 track.toggleMute ();
                 break;
             case APCminiControlSurface.TRACK_STATE_SELECT:
-                this.surface.getViewManager ().getActiveView ().selectTrack (index);
+                this.surface.getViewManager ().getActive ().selectTrack (index);
                 break;
             default:
                 // Not used

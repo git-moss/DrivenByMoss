@@ -150,7 +150,7 @@ public class RibbonMode extends BaseMode
         if (index > 1 && index < 6)
             this.surface.getConfiguration ().setRibbonModeCC (RibbonMode.MIDI_CCS[index - 2]);
         else
-            this.surface.getModeManager ().restoreMode ();
+            this.surface.getModeManager ().restore ();
     }
 
 

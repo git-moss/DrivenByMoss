@@ -65,9 +65,9 @@ public class NoteRepeatCommand<S extends IControlSurface<C>, C extends Configura
         if (event == ButtonEvent.LONG || event == ButtonEvent.DOWN && this.surface.isShiftPressed ())
         {
             if (this.isMode)
-                this.surface.getModeManager ().setActiveMode (Modes.REPEAT_NOTE);
+                this.surface.getModeManager ().setActive (Modes.REPEAT_NOTE);
             else
-                this.surface.getViewManager ().setActiveView (Views.REPEAT_NOTE);
+                this.surface.getViewManager ().setActive (Views.REPEAT_NOTE);
             this.surface.setTriggerConsumed (ButtonID.REPEAT);
             return true;
         }
@@ -78,18 +78,18 @@ public class NoteRepeatCommand<S extends IControlSurface<C>, C extends Configura
         if (this.isMode)
         {
             final ModeManager modeManager = this.surface.getModeManager ();
-            if (modeManager.isActiveOrTempMode (Modes.REPEAT_NOTE))
+            if (modeManager.isActiveOrTemp (Modes.REPEAT_NOTE))
             {
-                modeManager.restoreMode ();
+                modeManager.restore ();
                 return true;
             }
         }
         else
         {
             final ViewManager viewManager = this.surface.getViewManager ();
-            if (viewManager.isActiveView (Views.REPEAT_NOTE))
+            if (viewManager.isActive (Views.REPEAT_NOTE))
             {
-                viewManager.restoreView ();
+                viewManager.restore ();
                 return true;
             }
         }

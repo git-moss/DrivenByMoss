@@ -44,7 +44,7 @@ public class FixedMode extends BaseMode
         if (event != ButtonEvent.UP)
             return;
         this.surface.getConfiguration ().setNewClipLength (index);
-        this.surface.getModeManager ().restoreMode ();
+        this.surface.getModeManager ().restore ();
     }
 
 
@@ -55,7 +55,7 @@ public class FixedMode extends BaseMode
         if (event != ButtonEvent.UP)
             return;
         new TemporaryNewCommand<> (index, this.model, this.surface).execute (ButtonEvent.DOWN, 127);
-        this.surface.getModeManager ().restoreMode ();
+        this.surface.getModeManager ().restore ();
     }
 
 

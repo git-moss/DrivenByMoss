@@ -56,15 +56,15 @@ public class ViewMultiSelectCommand<S extends IControlSurface<C>, C extends Conf
             return;
 
         final ViewManager viewManager = this.surface.getViewManager ();
-        final Views activeViewId = viewManager.getActiveViewId ();
+        final Views activeViewId = viewManager.getActiveId ();
         int index = this.viewIds.indexOf (activeViewId) + 1;
         if (index < 0 || index >= this.viewIds.size ())
             index = 0;
         final Views viewId = this.viewIds.get (index);
-        if (viewManager.isActiveView (viewId))
+        if (viewManager.isActive (viewId))
             return;
-        viewManager.setActiveView (viewId);
+        viewManager.setActive (viewId);
         if (this.displayName)
-            this.surface.getDisplay ().notify (viewManager.getView (viewId).getName ());
+            this.surface.getDisplay ().notify (viewManager.get (viewId).getName ());
     }
 }

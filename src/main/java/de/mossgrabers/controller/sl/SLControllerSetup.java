@@ -52,10 +52,10 @@ import de.mossgrabers.framework.daw.data.bank.ITrackBank;
 import de.mossgrabers.framework.daw.midi.IMidiAccess;
 import de.mossgrabers.framework.daw.midi.IMidiInput;
 import de.mossgrabers.framework.daw.midi.IMidiOutput;
+import de.mossgrabers.framework.featuregroup.View;
 import de.mossgrabers.framework.mode.ModeManager;
 import de.mossgrabers.framework.mode.Modes;
 import de.mossgrabers.framework.scale.Scales;
-import de.mossgrabers.framework.view.View;
 import de.mossgrabers.framework.view.ViewManager;
 import de.mossgrabers.framework.view.Views;
 
@@ -109,7 +109,7 @@ public class SLControllerSetup extends AbstractControllerSetup<SLControlSurface,
     {
         super.flush ();
 
-        this.updateIndication (this.getSurface ().getModeManager ().getActiveOrTempModeId ());
+        this.updateIndication (this.getSurface ().getModeManager ().getActiveOrTempId ());
     }
 
 
@@ -135,8 +135,8 @@ public class SLControllerSetup extends AbstractControllerSetup<SLControlSurface,
             if (!isSelected)
                 return;
             final ModeManager modeManager = this.getSurface ().getModeManager ();
-            if (!modeManager.isActiveOrTempMode (Modes.VOLUME))
-                modeManager.setActiveMode (Modes.MASTER);
+            if (!modeManager.isActiveOrTemp (Modes.VOLUME))
+                modeManager.setActive (Modes.MASTER);
         });
     }
 
@@ -163,18 +163,18 @@ public class SLControllerSetup extends AbstractControllerSetup<SLControlSurface,
     {
         final SLControlSurface surface = this.getSurface ();
         final ModeManager modeManager = surface.getModeManager ();
-        modeManager.registerMode (Modes.FIXED, new FixedMode (surface, this.model));
-        modeManager.registerMode (Modes.FRAME, new FrameMode (surface, this.model));
-        modeManager.registerMode (Modes.FUNCTIONS, new FunctionMode (surface, this.model));
-        modeManager.registerMode (Modes.MASTER, new MasterMode (surface, this.model));
-        modeManager.registerMode (Modes.PLAY_OPTIONS, new PlayOptionsMode (surface, this.model));
-        modeManager.registerMode (Modes.SESSION, new SessionMode (surface, this.model));
-        modeManager.registerMode (Modes.TRACK, new TrackMode (surface, this.model));
-        modeManager.registerMode (Modes.TRACK_DETAILS, new TrackTogglesMode (surface, this.model));
-        modeManager.registerMode (Modes.VIEW_SELECT, new ViewSelectMode (surface, this.model));
-        modeManager.registerMode (Modes.VOLUME, new VolumeMode (surface, this.model));
-        modeManager.registerMode (Modes.DEVICE_PARAMS, new DeviceParamsMode (surface, this.model));
-        modeManager.registerMode (Modes.BROWSER, new DevicePresetsMode (surface, this.model));
+        modeManager.register (Modes.FIXED, new FixedMode (surface, this.model));
+        modeManager.register (Modes.FRAME, new FrameMode (surface, this.model));
+        modeManager.register (Modes.FUNCTIONS, new FunctionMode (surface, this.model));
+        modeManager.register (Modes.MASTER, new MasterMode (surface, this.model));
+        modeManager.register (Modes.PLAY_OPTIONS, new PlayOptionsMode (surface, this.model));
+        modeManager.register (Modes.SESSION, new SessionMode (surface, this.model));
+        modeManager.register (Modes.TRACK, new TrackMode (surface, this.model));
+        modeManager.register (Modes.TRACK_DETAILS, new TrackTogglesMode (surface, this.model));
+        modeManager.register (Modes.VIEW_SELECT, new ViewSelectMode (surface, this.model));
+        modeManager.register (Modes.VOLUME, new VolumeMode (surface, this.model));
+        modeManager.register (Modes.DEVICE_PARAMS, new DeviceParamsMode (surface, this.model));
+        modeManager.register (Modes.BROWSER, new DevicePresetsMode (surface, this.model));
     }
 
 
@@ -184,8 +184,8 @@ public class SLControllerSetup extends AbstractControllerSetup<SLControlSurface,
     {
         final SLControlSurface surface = this.getSurface ();
         final ViewManager viewManager = surface.getViewManager ();
-        viewManager.registerView (Views.PLAY, new PlayView (surface, this.model));
-        viewManager.registerView (Views.CONTROL, new ControlView (surface, this.model));
+        viewManager.register (Views.PLAY, new PlayView (surface, this.model));
+        viewManager.register (Views.CONTROL, new ControlView (surface, this.model));
     }
 
 
@@ -240,7 +240,7 @@ public class SLControllerSetup extends AbstractControllerSetup<SLControlSurface,
 
     private int getViewButtonColor (final ButtonID buttonID)
     {
-        final View activeView = this.getSurface ().getViewManager ().getActiveView ();
+        final View activeView = this.getSurface ().getViewManager ().getActive ();
         return activeView == null ? 0 : activeView.getButtonColor (buttonID);
     }
 
@@ -390,9 +390,9 @@ public class SLControllerSetup extends AbstractControllerSetup<SLControlSurface,
         // Initialise 2nd display
         final SLControlSurface surface = this.getSurface ();
         final ModeManager modeManager = surface.getModeManager ();
-        modeManager.getMode (Modes.VOLUME).updateDisplay ();
-        surface.getViewManager ().setActiveView (Views.CONTROL);
-        modeManager.setActiveMode (Modes.TRACK);
+        modeManager.get (Modes.VOLUME).updateDisplay ();
+        surface.getViewManager ().setActive (Views.CONTROL);
+        modeManager.setActive (Modes.TRACK);
     }
 
 
@@ -447,7 +447,7 @@ public class SLControllerSetup extends AbstractControllerSetup<SLControlSurface,
     private void handleTrackChange (final boolean isSelected)
     {
         final ModeManager modeManager = this.getSurface ().getModeManager ();
-        if (isSelected && modeManager.isActiveOrTempMode (Modes.MASTER))
-            modeManager.setActiveMode (Modes.TRACK);
+        if (isSelected && modeManager.isActiveOrTemp (Modes.MASTER))
+            modeManager.setActive (Modes.TRACK);
     }
 }

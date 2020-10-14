@@ -40,7 +40,7 @@ public class PushQuantizeCommand extends QuantizeCommand<PushControlSurface, Pus
         final ModeManager modeManager = this.surface.getModeManager ();
         if (event == ButtonEvent.LONG || event == ButtonEvent.DOWN && this.surface.isShiftPressed ())
         {
-            modeManager.setActiveMode (Modes.REC_ARM);
+            modeManager.setActive (Modes.REC_ARM);
             this.surface.setTriggerConsumed (ButtonID.QUANTIZE);
             return;
         }
@@ -48,8 +48,8 @@ public class PushQuantizeCommand extends QuantizeCommand<PushControlSurface, Pus
         if (event != ButtonEvent.UP)
             return;
 
-        if (Modes.REC_ARM.equals (modeManager.getActiveOrTempModeId ()))
-            modeManager.restoreMode ();
+        if (Modes.REC_ARM.equals (modeManager.getActiveOrTempId ()))
+            modeManager.restore ();
         else
             this.quantize ();
     }

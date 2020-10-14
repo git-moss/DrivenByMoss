@@ -42,8 +42,9 @@ import de.mossgrabers.framework.daw.data.bank.ITrackBank;
 import de.mossgrabers.framework.daw.midi.IMidiAccess;
 import de.mossgrabers.framework.daw.midi.IMidiInput;
 import de.mossgrabers.framework.daw.midi.IMidiOutput;
+import de.mossgrabers.framework.featuregroup.Mode;
+import de.mossgrabers.framework.featuregroup.View;
 import de.mossgrabers.framework.mode.AbstractMode;
-import de.mossgrabers.framework.mode.Mode;
 import de.mossgrabers.framework.mode.ModeManager;
 import de.mossgrabers.framework.mode.Modes;
 import de.mossgrabers.framework.mode.device.ParameterMode;
@@ -52,7 +53,6 @@ import de.mossgrabers.framework.mode.track.PanMode;
 import de.mossgrabers.framework.mode.track.SendMode;
 import de.mossgrabers.framework.mode.track.VolumeMode;
 import de.mossgrabers.framework.scale.Scales;
-import de.mossgrabers.framework.view.View;
 import de.mossgrabers.framework.view.ViewManager;
 import de.mossgrabers.framework.view.Views;
 
@@ -148,7 +148,7 @@ public class LaunchkeyMiniMk3ControllerSetup extends AbstractControllerSetup<Lau
     {
         super.createObservers ();
 
-        this.getSurface ().getModeManager ().addModeListener ( (previousViewId, activeViewId) -> this.updateIndication (null));
+        this.getSurface ().getModeManager ().addChangeListener ( (previousViewId, activeViewId) -> this.updateIndication (null));
         this.createScaleObservers (this.configuration);
         this.configuration.registerDeactivatedItemsHandler (this.model);
     }
@@ -161,12 +161,12 @@ public class LaunchkeyMiniMk3ControllerSetup extends AbstractControllerSetup<Lau
         final LaunchkeyMiniMk3ControlSurface surface = this.getSurface ();
         final ModeManager modeManager = surface.getModeManager ();
 
-        modeManager.registerMode (Modes.VOLUME, new VolumeMode<> (surface, this.model, true, AbstractMode.DEFAULT_KNOB_IDS));
-        modeManager.registerMode (Modes.PAN, new PanMode<> (surface, this.model, true, AbstractMode.DEFAULT_KNOB_IDS));
-        modeManager.registerMode (Modes.SEND1, new SendMode<> (0, surface, this.model, true, AbstractMode.DEFAULT_KNOB_IDS));
-        modeManager.registerMode (Modes.SEND2, new SendMode<> (1, surface, this.model, true, AbstractMode.DEFAULT_KNOB_IDS));
-        modeManager.registerMode (Modes.DEVICE_PARAMS, new ParameterMode<> (surface, this.model, true, AbstractMode.DEFAULT_KNOB_IDS));
-        modeManager.registerMode (Modes.USER, new UserMode<> (surface, this.model, true, ContinuousID.createSequentialList (ContinuousID.DEVICE_KNOB1, 8)));
+        modeManager.register (Modes.VOLUME, new VolumeMode<> (surface, this.model, true, AbstractMode.DEFAULT_KNOB_IDS));
+        modeManager.register (Modes.PAN, new PanMode<> (surface, this.model, true, AbstractMode.DEFAULT_KNOB_IDS));
+        modeManager.register (Modes.SEND1, new SendMode<> (0, surface, this.model, true, AbstractMode.DEFAULT_KNOB_IDS));
+        modeManager.register (Modes.SEND2, new SendMode<> (1, surface, this.model, true, AbstractMode.DEFAULT_KNOB_IDS));
+        modeManager.register (Modes.DEVICE_PARAMS, new ParameterMode<> (surface, this.model, true, AbstractMode.DEFAULT_KNOB_IDS));
+        modeManager.register (Modes.USER, new UserMode<> (surface, this.model, true, ContinuousID.createSequentialList (ContinuousID.DEVICE_KNOB1, 8)));
     }
 
 
@@ -177,11 +177,11 @@ public class LaunchkeyMiniMk3ControllerSetup extends AbstractControllerSetup<Lau
         final LaunchkeyMiniMk3ControlSurface surface = this.getSurface ();
         final ViewManager viewManager = surface.getViewManager ();
 
-        viewManager.registerView (Views.SESSION, new SessionView (surface, this.model));
-        viewManager.registerView (Views.CONTROL, new PadModeSelectView (surface, this.model));
-        viewManager.registerView (Views.DRUM, new DrumView (surface, this.model));
-        viewManager.registerView (Views.PLAY, new UserPadView (surface, this.model));
-        viewManager.registerView (Views.SHIFT, new DrumConfigView (surface, this.model));
+        viewManager.register (Views.SESSION, new SessionView (surface, this.model));
+        viewManager.register (Views.CONTROL, new PadModeSelectView (surface, this.model));
+        viewManager.register (Views.DRUM, new DrumView (surface, this.model));
+        viewManager.register (Views.PLAY, new UserPadView (surface, this.model));
+        viewManager.register (Views.SHIFT, new DrumConfigView (surface, this.model));
     }
 
 
@@ -201,20 +201,20 @@ public class LaunchkeyMiniMk3ControllerSetup extends AbstractControllerSetup<Lau
 
         this.addButton (ButtonID.MOVE_TRACK_LEFT, "Previous", new ModeCursorCommand<> (Direction.LEFT, this.model, surface), 15, LaunchkeyMiniMk3ControlSurface.LAUNCHKEY_LEFT, () -> {
 
-            final Mode mode = modeManager.getActiveOrTempMode ();
+            final Mode mode = modeManager.getActiveOrTemp ();
             if (mode == null)
                 return false;
-            if (modeManager.isActiveMode (Modes.DEVICE_PARAMS))
+            if (modeManager.isActive (Modes.DEVICE_PARAMS))
                 return this.model.getCursorDevice ().canSelectPreviousFX ();
             return mode.hasPreviousItem ();
 
         });
         this.addButton (ButtonID.MOVE_TRACK_RIGHT, "Next", new ModeCursorCommand<> (Direction.RIGHT, this.model, surface), 15, LaunchkeyMiniMk3ControlSurface.LAUNCHKEY_RIGHT, () -> {
 
-            final Mode mode = modeManager.getActiveOrTempMode ();
+            final Mode mode = modeManager.getActiveOrTemp ();
             if (mode == null)
                 return false;
-            if (modeManager.isActiveMode (Modes.DEVICE_PARAMS))
+            if (modeManager.isActive (Modes.DEVICE_PARAMS))
                 return this.model.getCursorDevice ().canSelectNextFX ();
             return mode.hasNextItem ();
 
@@ -222,11 +222,11 @@ public class LaunchkeyMiniMk3ControllerSetup extends AbstractControllerSetup<Lau
 
         // Scene buttons
         this.addButton (ButtonID.SCENE1, "Scene 1", new ViewButtonCommand<> (ButtonID.SCENE1, surface), LaunchkeyMiniMk3ControlSurface.LAUNCHKEY_SCENE1, () -> {
-            final View activeView = viewManager.getActiveView ();
+            final View activeView = viewManager.getActive ();
             return activeView != null ? activeView.getButtonColor (ButtonID.SCENE1) : 0;
         });
         this.addButton (ButtonID.SCENE2, "Scene 2", new ViewButtonCommand<> (ButtonID.SCENE2, surface), LaunchkeyMiniMk3ControlSurface.LAUNCHKEY_SCENE2, () -> {
-            final View activeView = viewManager.getActiveView ();
+            final View activeView = viewManager.getActive ();
             return activeView != null ? activeView.getButtonColor (ButtonID.SCENE2) : 0;
         });
 
@@ -254,7 +254,7 @@ public class LaunchkeyMiniMk3ControllerSetup extends AbstractControllerSetup<Lau
             viewSelectCommand.executeNormal (event);
             surface.getPadGrid ().setView (view);
         }, 15, LaunchkeyMiniMk3ControlSurface.LAUNCHKEY_VIEW_SELECT, viewIndex, false, null);
-        final IHwLight light = surface.createLight (outputID, () -> surface.getViewManager ().isActiveView (view) ? ColorEx.ORANGE : ColorEx.DARK_ORANGE, color -> {
+        final IHwLight light = surface.createLight (outputID, () -> surface.getViewManager ().isActive (view) ? ColorEx.ORANGE : ColorEx.DARK_ORANGE, color -> {
             // Intentionally empty
         });
         surface.getButton (buttonID).addLight (light);
@@ -266,7 +266,7 @@ public class LaunchkeyMiniMk3ControllerSetup extends AbstractControllerSetup<Lau
         final LaunchkeyMiniMk3ControlSurface surface = this.getSurface ();
         final ModeSelectCommand<LaunchkeyMiniMk3ControlSurface, LaunchkeyMiniMk3Configuration> modeSelectCommand = new ModeSelectCommand<> (this.model, surface, mode);
         this.addButton (surface, buttonID, label, (event, velocity) -> modeSelectCommand.executeNormal (event), 15, LaunchkeyMiniMk3ControlSurface.LAUNCHKEY_MODE_SELECT, modeIndex, false, null);
-        final IHwLight light = surface.createLight (outputID, () -> surface.getModeManager ().isActiveOrTempMode (mode) ? ColorEx.GREEN : ColorEx.DARK_GREEN, color -> {
+        final IHwLight light = surface.createLight (outputID, () -> surface.getModeManager ().isActiveOrTemp (mode) ? ColorEx.GREEN : ColorEx.DARK_GREEN, color -> {
             // Intentionally empty
         });
         surface.getButton (buttonID).addLight (light);
@@ -394,8 +394,8 @@ public class LaunchkeyMiniMk3ControllerSetup extends AbstractControllerSetup<Lau
         surface.setLaunchpadToDAW (true);
 
         surface.getPadGrid ().setView (Views.SESSION);
-        surface.getViewManager ().setActiveView (Views.SESSION);
-        surface.getModeManager ().setActiveMode (Modes.VOLUME);
+        surface.getViewManager ().setActive (Views.SESSION);
+        surface.getModeManager ().setActive (Modes.VOLUME);
         surface.setKnobMode (LaunchkeyMiniMk3ControlSurface.KNOB_MODE_VOLUME);
         surface.setPadMode (LaunchkeyMiniMk3ControlSurface.PAD_MODE_SESSION);
     }
@@ -406,12 +406,12 @@ public class LaunchkeyMiniMk3ControllerSetup extends AbstractControllerSetup<Lau
     protected void updateIndication (final Modes mode)
     {
         final ModeManager modeManager = this.getSurface ().getModeManager ();
-        final boolean isVolume = modeManager.isActiveMode (Modes.VOLUME);
-        final boolean isPan = modeManager.isActiveMode (Modes.PAN);
-        final boolean isSend1 = modeManager.isActiveMode (Modes.SEND1);
-        final boolean isSend2 = modeManager.isActiveMode (Modes.SEND2);
-        final boolean isDevice = modeManager.isActiveMode (Modes.DEVICE_PARAMS);
-        final boolean isUserMode = modeManager.isActiveMode (Modes.USER);
+        final boolean isVolume = modeManager.isActive (Modes.VOLUME);
+        final boolean isPan = modeManager.isActive (Modes.PAN);
+        final boolean isSend1 = modeManager.isActive (Modes.SEND1);
+        final boolean isSend2 = modeManager.isActive (Modes.SEND2);
+        final boolean isDevice = modeManager.isActive (Modes.DEVICE_PARAMS);
+        final boolean isUserMode = modeManager.isActive (Modes.USER);
 
         final ITrackBank tb = this.model.getTrackBank ();
         final ITrackBank tbe = this.model.getEffectTrackBank ();
@@ -450,7 +450,7 @@ public class LaunchkeyMiniMk3ControllerSetup extends AbstractControllerSetup<Lau
 
     private void processProgramChangeAction (final int value)
     {
-        final Modes modeID = this.getSurface ().getModeManager ().getActiveOrTempModeId ();
+        final Modes modeID = this.getSurface ().getModeManager ().getActiveOrTempId ();
         if (modeID == null)
             return;
         switch (modeID)

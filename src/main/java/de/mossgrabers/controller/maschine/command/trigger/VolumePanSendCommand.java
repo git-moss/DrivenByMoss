@@ -43,11 +43,11 @@ public class VolumePanSendCommand extends ModeMultiSelectCommand<MaschineControl
         final ModeManager modeManager = this.surface.getModeManager ();
 
         // Switch Gain/Velocity note edit parameters
-        if (modeManager.isActiveOrTempMode (Modes.NOTE) && this.surface.getViewManager ().isActiveView (Views.DRUM, Views.PLAY))
+        if (modeManager.isActiveOrTemp (Modes.NOTE) && this.surface.getViewManager ().isActive (Views.DRUM, Views.PLAY))
         {
             if (event == ButtonEvent.DOWN)
             {
-                final EditNoteMode mode = (EditNoteMode) modeManager.getMode (Modes.NOTE);
+                final EditNoteMode mode = (EditNoteMode) modeManager.get (Modes.NOTE);
                 final boolean isVelocity = mode.getSelectedItem () == EditNoteMode.VELOCITY;
                 mode.selectItem (isVelocity ? EditNoteMode.GAIN : EditNoteMode.VELOCITY);
                 this.surface.getDisplay ().notify (isVelocity ? "Gain" : "Velocity");
@@ -61,7 +61,7 @@ public class VolumePanSendCommand extends ModeMultiSelectCommand<MaschineControl
             if (event == ButtonEvent.DOWN)
             {
                 this.surface.setStopConsumed ();
-                ((MaschineVolumeMode) modeManager.getMode (Modes.VOLUME)).toggleDisplayVU ();
+                ((MaschineVolumeMode) modeManager.get (Modes.VOLUME)).toggleDisplayVU ();
             }
             return;
         }

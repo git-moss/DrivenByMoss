@@ -63,29 +63,29 @@ public class PitchbendVolumeCommand extends AbstractPitchbendCommand<MCUControlS
         if (this.surface.getConfiguration ().useFadersAsKnobs ())
         {
             final ModeManager modeManager = this.surface.getModeManager ();
-            if (modeManager.isActiveOrTempMode (Modes.VOLUME))
+            if (modeManager.isActiveOrTemp (Modes.VOLUME))
                 track.setVolume (value);
-            else if (modeManager.isActiveOrTempMode (Modes.PAN))
+            else if (modeManager.isActiveOrTemp (Modes.PAN))
                 track.setPan (value);
-            else if (modeManager.isActiveOrTempMode (Modes.TRACK))
+            else if (modeManager.isActiveOrTemp (Modes.TRACK))
                 this.handleTrack (this.channel, value);
-            else if (modeManager.isActiveOrTempMode (Modes.SEND1))
+            else if (modeManager.isActiveOrTemp (Modes.SEND1))
                 track.getSendBank ().getItem (0).setValue (value);
-            else if (modeManager.isActiveOrTempMode (Modes.SEND2))
+            else if (modeManager.isActiveOrTemp (Modes.SEND2))
                 track.getSendBank ().getItem (1).setValue (value);
-            else if (modeManager.isActiveOrTempMode (Modes.SEND3))
+            else if (modeManager.isActiveOrTemp (Modes.SEND3))
                 track.getSendBank ().getItem (2).setValue (value);
-            else if (modeManager.isActiveOrTempMode (Modes.SEND4))
+            else if (modeManager.isActiveOrTemp (Modes.SEND4))
                 track.getSendBank ().getItem (3).setValue (value);
-            else if (modeManager.isActiveOrTempMode (Modes.SEND5))
+            else if (modeManager.isActiveOrTemp (Modes.SEND5))
                 track.getSendBank ().getItem (4).setValue (value);
-            else if (modeManager.isActiveOrTempMode (Modes.SEND6))
+            else if (modeManager.isActiveOrTemp (Modes.SEND6))
                 track.getSendBank ().getItem (5).setValue (value);
-            else if (modeManager.isActiveOrTempMode (Modes.SEND7))
+            else if (modeManager.isActiveOrTemp (Modes.SEND7))
                 track.getSendBank ().getItem (6).setValue (value);
-            else if (modeManager.isActiveOrTempMode (Modes.SEND8))
+            else if (modeManager.isActiveOrTemp (Modes.SEND8))
                 track.getSendBank ().getItem (7).setValue (value);
-            else if (modeManager.isActiveOrTempMode (Modes.DEVICE_PARAMS))
+            else if (modeManager.isActiveOrTemp (Modes.DEVICE_PARAMS))
                 this.model.getCursorDevice ().getParameterBank ().getItem (extenderOffset + this.channel).setValue (value);
             return;
         }

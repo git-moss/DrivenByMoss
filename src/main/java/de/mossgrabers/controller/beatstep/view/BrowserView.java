@@ -96,7 +96,7 @@ public class BrowserView extends AbstractView<BeatstepControlSurface, BeatstepCo
                 if (velocity == 0)
                     return;
                 this.model.getBrowser ().stopBrowsing (false);
-                this.surface.getViewManager ().restoreView ();
+                this.surface.getViewManager ().restore ();
                 break;
 
             // OK
@@ -104,7 +104,7 @@ public class BrowserView extends AbstractView<BeatstepControlSurface, BeatstepCo
                 if (velocity == 0)
                     return;
                 this.model.getBrowser ().stopBrowsing (true);
-                this.surface.getViewManager ().restoreView ();
+                this.surface.getViewManager ().restore ();
                 break;
 
             // Notes for preview

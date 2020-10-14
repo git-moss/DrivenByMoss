@@ -45,16 +45,16 @@ public class MaschineStopCommand extends StopCommand<MaschineControlSurface, Mas
 
         if (event == ButtonEvent.DOWN)
         {
-            if (!viewManager.isActiveView (Views.SHIFT))
-                viewManager.setActiveView (Views.SHIFT);
+            if (!viewManager.isActive (Views.SHIFT))
+                viewManager.setActive (Views.SHIFT);
             return;
         }
 
         if (event != ButtonEvent.UP)
             return;
 
-        if (viewManager.isActiveView (Views.SHIFT))
-            viewManager.restoreView ();
+        if (viewManager.isActive (Views.SHIFT))
+            viewManager.restore ();
 
         if (this.consumed)
         {

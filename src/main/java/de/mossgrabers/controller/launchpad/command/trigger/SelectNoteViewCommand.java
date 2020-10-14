@@ -42,17 +42,17 @@ public class SelectNoteViewCommand extends AbstractTriggerCommand<LaunchpadContr
 
         final ViewManager viewManager = this.surface.getViewManager ();
 
-        if (viewManager.isActiveView (Views.CONTROL))
+        if (viewManager.isActive (Views.CONTROL))
         {
-            viewManager.restoreView ();
-            this.surface.getDisplay ().notify (viewManager.getActiveView ().getName ());
+            viewManager.restore ();
+            this.surface.getDisplay ().notify (viewManager.getActive ().getName ());
             return;
         }
 
-        Views viewID = viewManager.getActiveViewId ();
+        Views viewID = viewManager.getActiveId ();
         if (Views.isNoteView (viewID) || Views.isSequencerView (viewID))
         {
-            viewManager.setActiveView (Views.CONTROL);
+            viewManager.setActive (Views.CONTROL);
             this.surface.getDisplay ().notify ("Note / sequencer mode selection");
             return;
         }
@@ -60,7 +60,7 @@ public class SelectNoteViewCommand extends AbstractTriggerCommand<LaunchpadContr
         final ITrack sel = this.model.getSelectedTrack ();
         if (sel == null)
         {
-            viewManager.setActiveView (Views.SESSION);
+            viewManager.setActive (Views.SESSION);
             this.surface.getDisplay ().notify ("Session");
             return;
         }
@@ -68,7 +68,7 @@ public class SelectNoteViewCommand extends AbstractTriggerCommand<LaunchpadContr
         viewID = viewManager.getPreferredView (sel.getPosition ());
         if (viewID == null)
             viewID = Views.PLAY;
-        viewManager.setActiveView (viewID);
-        this.surface.getDisplay ().notify (viewManager.getView (viewID).getName ());
+        viewManager.setActive (viewID);
+        this.surface.getDisplay ().notify (viewManager.get (viewID).getName ());
     }
 }

@@ -46,13 +46,13 @@ public class PushMetronomeCommand extends MetronomeCommand<PushControlSurface, P
         if (event == ButtonEvent.LONG)
         {
             this.surface.setTriggerConsumed (ButtonID.METRONOME);
-            this.modeManager.setActiveMode (Modes.TRANSPORT);
+            this.modeManager.setActive (Modes.TRANSPORT);
             return;
         }
 
-        if (event == ButtonEvent.UP && this.modeManager.isActiveOrTempMode (Modes.TRANSPORT))
+        if (event == ButtonEvent.UP && this.modeManager.isActiveOrTemp (Modes.TRANSPORT))
         {
-            this.modeManager.restoreMode ();
+            this.modeManager.restore ();
             return;
         }
 

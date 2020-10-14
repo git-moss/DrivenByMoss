@@ -44,18 +44,18 @@ public class KeyboardCommand extends AbstractTriggerCommand<MaschineControlSurfa
             return;
 
         final ViewManager viewManager = this.surface.getViewManager ();
-        if (viewManager.isActiveView (Views.PLAY))
+        if (viewManager.isActive (Views.PLAY))
         {
             if (!this.surface.getMaschine ().hasMCUDisplay ())
-                ((PlayView) viewManager.getView (Views.PLAY)).toggleShifted ();
+                ((PlayView) viewManager.get (Views.PLAY)).toggleShifted ();
 
             final ModeManager modeManager = this.surface.getModeManager ();
-            if (modeManager.isActiveOrTempMode (Modes.SCALES))
-                modeManager.restoreMode ();
+            if (modeManager.isActiveOrTemp (Modes.SCALES))
+                modeManager.restore ();
             else
-                modeManager.setActiveMode (Modes.SCALES);
+                modeManager.setActive (Modes.SCALES);
         }
         else
-            viewManager.setActiveView (Views.PLAY);
+            viewManager.setActive (Views.PLAY);
     }
 }

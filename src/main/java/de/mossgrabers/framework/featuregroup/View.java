@@ -2,7 +2,7 @@
 // (c) 2017-2020
 // Licensed under LGPLv3 - http://www.gnu.org/licenses/lgpl-3.0.txt
 
-package de.mossgrabers.framework.view;
+package de.mossgrabers.framework.featuregroup;
 
 import de.mossgrabers.framework.command.core.AftertouchCommand;
 import de.mossgrabers.framework.controller.ButtonID;
@@ -15,37 +15,8 @@ import de.mossgrabers.framework.utils.ButtonEvent;
  *
  * @author J&uuml;rgen Mo&szlig;graber
  */
-public interface View
+public interface View extends FeatureGroup
 {
-    /**
-     * Get the name of the view.
-     *
-     * @return The name of the view
-     */
-    String getName ();
-
-
-    /**
-     * Called when the view should be activated.
-     */
-    void onActivate ();
-
-
-    /**
-     * Called when the view should be deactivated.
-     */
-    void onDeactivate ();
-
-
-    /**
-     * Get the color for a button, which is controlled by the view.
-     *
-     * @param buttonID The ID of the button
-     * @return A color index
-     */
-    int getButtonColor (ButtonID buttonID);
-
-
     /**
      * Registers the aftertouch command.
      *

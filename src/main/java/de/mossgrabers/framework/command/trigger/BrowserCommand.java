@@ -122,7 +122,7 @@ public class BrowserCommand<S extends IControlSurface<C>, C extends Configuratio
 
             // Add device to layer or track
 
-            if (Modes.isLayerMode (this.surface.getModeManager ().getActiveOrTempModeId ()))
+            if (Modes.isLayerMode (this.surface.getModeManager ().getActiveOrTempId ()))
             {
                 final IChannel layer = cursorDevice.getLayerOrDrumPadBank ().getSelectedItem ();
                 if (layer == null)
@@ -165,8 +165,8 @@ public class BrowserCommand<S extends IControlSurface<C>, C extends Configuratio
 
         // Workaround for drum page scroll bug
         final ViewManager viewManager = this.surface.getViewManager ();
-        if (viewManager.isActiveView (Views.DRUM))
-            AbstractDrumView.class.cast (viewManager.getView (Views.DRUM)).repositionBankPage ();
+        if (viewManager.isActive (Views.DRUM))
+            AbstractDrumView.class.cast (viewManager.get (Views.DRUM)).repositionBankPage ();
     }
 
 

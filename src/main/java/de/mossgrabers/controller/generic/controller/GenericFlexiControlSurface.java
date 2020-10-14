@@ -107,11 +107,11 @@ public class GenericFlexiControlSurface extends AbstractControlSurface<GenericFl
      */
     public void activateMode (final Modes modeID)
     {
-        final String modeName = this.modeManager.getMode (modeID).getName ();
+        final String modeName = this.modeManager.get (modeID).getName ();
 
-        if (!this.modeManager.isActiveMode (modeID))
+        if (!this.modeManager.isActive (modeID))
         {
-            this.modeManager.setActiveMode (modeID);
+            this.modeManager.setActive (modeID);
             this.host.showNotification (modeName);
         }
         if (!modeName.equals (this.configuration.getSelectedModeName ()))

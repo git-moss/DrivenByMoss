@@ -51,8 +51,8 @@ public class DrumConfigurationMode extends BaseMode
         {
             case 6:
             case 7:
-                ((DrumView) this.surface.getViewManager ().getView (Views.DRUM)).changeOctave (ButtonEvent.DOWN, inc, scales.getDrumDefaultOffset (), true, false);
-                this.surface.getViewManager ().getView (Views.DRUM).updateNoteMapping ();
+                ((DrumView) this.surface.getViewManager ().get (Views.DRUM)).changeOctave (ButtonEvent.DOWN, inc, scales.getDrumDefaultOffset (), true, false);
+                this.surface.getViewManager ().get (Views.DRUM).updateNoteMapping ();
                 break;
 
             default:
@@ -75,8 +75,8 @@ public class DrumConfigurationMode extends BaseMode
             {
                 case 6:
                 case 7:
-                    ((DrumView) this.surface.getViewManager ().getView (Views.DRUM)).resetOctave ();
-                    this.surface.getViewManager ().getView (Views.DRUM).updateNoteMapping ();
+                    ((DrumView) this.surface.getViewManager ().get (Views.DRUM)).resetOctave ();
+                    this.surface.getViewManager ().get (Views.DRUM).updateNoteMapping ();
                     break;
 
                 default:

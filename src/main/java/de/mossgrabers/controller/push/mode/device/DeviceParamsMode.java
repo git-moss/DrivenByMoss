@@ -165,7 +165,7 @@ public class DeviceParamsMode extends BaseMode
             final ModeManager modeManager = this.surface.getModeManager ();
             if (!cd.hasLayers ())
             {
-                ((DeviceParamsMode) modeManager.getMode (Modes.DEVICE_PARAMS)).setShowDevices (false);
+                ((DeviceParamsMode) modeManager.get (Modes.DEVICE_PARAMS)).setShowDevices (false);
                 return;
             }
 
@@ -173,7 +173,7 @@ public class DeviceParamsMode extends BaseMode
             final IChannel layer = cd.getLayerOrDrumPadBank ().getSelectedItem ();
             if (layer == null)
                 cd.getLayerOrDrumPadBank ().getItem (0).select ();
-            modeManager.setActiveMode (this.surface.getConfiguration ().getCurrentLayerMixMode ());
+            modeManager.setActive (this.surface.getConfiguration ().getCurrentLayerMixMode ());
 
             return;
         }
@@ -190,9 +190,9 @@ public class DeviceParamsMode extends BaseMode
     protected void moveUp ()
     {
         final ModeManager modeManager = this.surface.getModeManager ();
-        if (modeManager.isActiveOrTempMode (Modes.DEVICE_CHAINS))
+        if (modeManager.isActiveOrTemp (Modes.DEVICE_CHAINS))
         {
-            modeManager.setActiveMode (Modes.DEVICE_PARAMS);
+            modeManager.setActive (Modes.DEVICE_PARAMS);
             return;
         }
 
@@ -205,7 +205,7 @@ public class DeviceParamsMode extends BaseMode
         }
 
         // Parameter banks are shown -> show devices
-        final DeviceParamsMode deviceParamsMode = (DeviceParamsMode) modeManager.getMode (Modes.DEVICE_PARAMS);
+        final DeviceParamsMode deviceParamsMode = (DeviceParamsMode) modeManager.get (Modes.DEVICE_PARAMS);
         if (!deviceParamsMode.isShowDevices ())
         {
             deviceParamsMode.setShowDevices (true);
@@ -218,9 +218,9 @@ public class DeviceParamsMode extends BaseMode
             cd.selectParent ();
             this.model.getHost ().scheduleTask ( () -> {
                 if (cd.hasLayers ())
-                    modeManager.setActiveMode (this.surface.getConfiguration ().getCurrentLayerMixMode ());
+                    modeManager.setActive (this.surface.getConfiguration ().getCurrentLayerMixMode ());
                 else
-                    modeManager.setActiveMode (Modes.DEVICE_PARAMS);
+                    modeManager.setActive (Modes.DEVICE_PARAMS);
                 deviceParamsMode.setShowDevices (false);
                 cd.selectChannel ();
             }, 300);
@@ -283,7 +283,7 @@ public class DeviceParamsMode extends BaseMode
                 case 2:
                     return cd.isExpanded () ? orange : white;
                 case 3:
-                    return this.surface.getModeManager ().isActiveOrTempMode (Modes.DEVICE_CHAINS) ? orange : white;
+                    return this.surface.getModeManager ().isActiveOrTemp (Modes.DEVICE_CHAINS) ? orange : white;
                 case 4:
                     return this.showDevices ? white : orange;
                 case 5:
@@ -325,16 +325,16 @@ public class DeviceParamsMode extends BaseMode
             case 3:
                 if (!this.model.getHost ().hasSlotChains ())
                     return;
-                if (modeManager.isActiveOrTempMode (Modes.DEVICE_CHAINS))
-                    modeManager.setActiveMode (Modes.DEVICE_PARAMS);
+                if (modeManager.isActiveOrTemp (Modes.DEVICE_CHAINS))
+                    modeManager.setActive (Modes.DEVICE_PARAMS);
                 else
-                    modeManager.setActiveMode (Modes.DEVICE_CHAINS);
+                    modeManager.setActive (Modes.DEVICE_CHAINS);
                 break;
             case 4:
                 if (!device.doesExist ())
                     return;
-                if (!modeManager.isActiveOrTempMode (Modes.DEVICE_PARAMS))
-                    modeManager.setActiveMode (Modes.DEVICE_PARAMS);
+                if (!modeManager.isActiveOrTemp (Modes.DEVICE_PARAMS))
+                    modeManager.setActive (Modes.DEVICE_PARAMS);
                 this.setShowDevices (!this.showDevices);
                 break;
             case 5:
@@ -566,9 +566,9 @@ public class DeviceParamsMode extends BaseMode
             case 2:
                 return cd.isExpanded ();
             case 3:
-                return this.surface.getModeManager ().isActiveOrTempMode (Modes.DEVICE_CHAINS);
+                return this.surface.getModeManager ().isActiveOrTemp (Modes.DEVICE_CHAINS);
             case 4:
-                return !this.surface.getModeManager ().isActiveOrTempMode (Modes.DEVICE_CHAINS) && !this.showDevices;
+                return !this.surface.getModeManager ().isActiveOrTemp (Modes.DEVICE_CHAINS) && !this.showDevices;
             case 5:
                 return hasPinning && cd.isPinned ();
             case 6:

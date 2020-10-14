@@ -169,7 +169,7 @@ public class ScalesMode extends BaseMode
 
     private void update ()
     {
-        this.surface.getViewManager ().getActiveView ().updateNoteMapping ();
+        this.surface.getViewManager ().getActive ().updateNoteMapping ();
         final PushConfiguration config = this.surface.getConfiguration ();
         config.setScale (this.scales.getScale ().getName ());
         config.setScaleBase (Scales.BASES[this.scales.getScaleOffset ()]);

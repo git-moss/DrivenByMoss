@@ -90,7 +90,7 @@ import de.mossgrabers.framework.daw.data.bank.ITrackBank;
 import de.mossgrabers.framework.daw.midi.IMidiAccess;
 import de.mossgrabers.framework.daw.midi.IMidiInput;
 import de.mossgrabers.framework.daw.midi.IMidiOutput;
-import de.mossgrabers.framework.mode.Mode;
+import de.mossgrabers.framework.featuregroup.Mode;
 import de.mossgrabers.framework.mode.ModeManager;
 import de.mossgrabers.framework.mode.Modes;
 import de.mossgrabers.framework.scale.Scales;
@@ -212,26 +212,26 @@ public class MaschineControllerSetup extends AbstractControllerSetup<MaschineCon
         final MaschineControlSurface surface = this.getSurface ();
         final ModeManager modeManager = surface.getModeManager ();
 
-        modeManager.registerMode (Modes.BROWSER, new BrowseMode (surface, this.model));
+        modeManager.register (Modes.BROWSER, new BrowseMode (surface, this.model));
 
-        modeManager.registerMode (Modes.VOLUME, new MaschineVolumeMode (surface, this.model));
-        modeManager.registerMode (Modes.PAN, new MaschinePanMode (surface, this.model));
+        modeManager.register (Modes.VOLUME, new MaschineVolumeMode (surface, this.model));
+        modeManager.register (Modes.PAN, new MaschinePanMode (surface, this.model));
         for (int i = 0; i < 8; i++)
-            modeManager.registerMode (Modes.get (Modes.SEND1, i), new MaschineSendMode (i, surface, this.model));
+            modeManager.register (Modes.get (Modes.SEND1, i), new MaschineSendMode (i, surface, this.model));
 
-        modeManager.registerMode (Modes.POSITION, new PositionMode (surface, this.model));
-        modeManager.registerMode (Modes.TEMPO, new TempoMode (surface, this.model));
+        modeManager.register (Modes.POSITION, new PositionMode (surface, this.model));
+        modeManager.register (Modes.TEMPO, new TempoMode (surface, this.model));
 
-        modeManager.registerMode (Modes.REPEAT_NOTE, new NoteRepeatMode (surface, this.model));
-        modeManager.registerMode (Modes.SCALES, new PlayConfigurationMode (surface, this.model));
-        modeManager.registerMode (Modes.PLAY_OPTIONS, new DrumConfigurationMode (surface, this.model));
-        modeManager.registerMode (Modes.NOTE, new EditNoteMode (surface, this.model));
+        modeManager.register (Modes.REPEAT_NOTE, new NoteRepeatMode (surface, this.model));
+        modeManager.register (Modes.SCALES, new PlayConfigurationMode (surface, this.model));
+        modeManager.register (Modes.PLAY_OPTIONS, new DrumConfigurationMode (surface, this.model));
+        modeManager.register (Modes.NOTE, new EditNoteMode (surface, this.model));
 
-        modeManager.registerMode (Modes.DEVICE_PARAMS, new MaschineParametersMode (surface, this.model));
+        modeManager.register (Modes.DEVICE_PARAMS, new MaschineParametersMode (surface, this.model));
         if (this.maschine.hasMCUDisplay ())
-            modeManager.registerMode (Modes.USER, new MaschineUserMode (surface, this.model));
+            modeManager.register (Modes.USER, new MaschineUserMode (surface, this.model));
 
-        modeManager.setDefaultMode (Modes.VOLUME);
+        modeManager.setDefault (Modes.VOLUME);
     }
 
 
@@ -242,24 +242,24 @@ public class MaschineControllerSetup extends AbstractControllerSetup<MaschineCon
         final MaschineControlSurface surface = this.getSurface ();
         final ViewManager viewManager = surface.getViewManager ();
 
-        viewManager.registerView (Views.SCENE_PLAY, new SceneView (surface, this.model));
-        viewManager.registerView (Views.CLIP, new ClipView (surface, this.model));
+        viewManager.register (Views.SCENE_PLAY, new SceneView (surface, this.model));
+        viewManager.register (Views.CLIP, new ClipView (surface, this.model));
 
         final DrumView drumView = new DrumView (surface, this.model);
-        viewManager.registerView (Views.DRUM, drumView);
-        viewManager.registerView (Views.PLAY, new PlayView (surface, this.model, drumView));
+        viewManager.register (Views.DRUM, drumView);
+        viewManager.register (Views.PLAY, new PlayView (surface, this.model, drumView));
 
-        viewManager.registerView (Views.DEVICE, new ParameterView (surface, this.model));
+        viewManager.register (Views.DEVICE, new ParameterView (surface, this.model));
 
         if (!this.maschine.hasBankButtons ())
         {
-            viewManager.registerView (Views.TRACK_SELECT, new SelectView (surface, this.model));
-            viewManager.registerView (Views.TRACK_SOLO, new SoloView (surface, this.model));
-            viewManager.registerView (Views.TRACK_MUTE, new MuteView (surface, this.model));
+            viewManager.register (Views.TRACK_SELECT, new SelectView (surface, this.model));
+            viewManager.register (Views.TRACK_SOLO, new SoloView (surface, this.model));
+            viewManager.register (Views.TRACK_MUTE, new MuteView (surface, this.model));
         }
 
-        viewManager.registerView (Views.REPEAT_NOTE, new NoteRepeatView (surface, this.model));
-        viewManager.registerView (Views.SHIFT, new ShiftView (surface, this.model));
+        viewManager.register (Views.REPEAT_NOTE, new NoteRepeatView (surface, this.model));
+        viewManager.register (Views.SHIFT, new ShiftView (surface, this.model));
     }
 
 
@@ -271,8 +271,8 @@ public class MaschineControllerSetup extends AbstractControllerSetup<MaschineCon
 
         final MaschineControlSurface surface = this.getSurface ();
 
-        surface.getViewManager ().addViewChangeListener ( (previousViewId, activeViewId) -> this.updateMode (null));
-        surface.getModeManager ().addModeListener ( (previousModeId, activeModeId) -> this.updateMode (activeModeId));
+        surface.getViewManager ().addChangeListener ( (previousViewId, activeViewId) -> this.updateMode (null));
+        surface.getModeManager ().addChangeListener ( (previousModeId, activeModeId) -> this.updateMode (activeModeId));
 
         this.configuration.registerDeactivatedItemsHandler (this.model);
         this.createScaleObservers (this.configuration);
@@ -338,10 +338,10 @@ public class MaschineControllerSetup extends AbstractControllerSetup<MaschineCon
 
             if (event != ButtonEvent.UP)
                 return;
-            if (viewManager.isActiveView (Views.DRUM, Views.PLAY))
-                ((DrumView) viewManager.getView (Views.DRUM)).toggleGridEditor ();
+            if (viewManager.isActive (Views.DRUM, Views.PLAY))
+                ((DrumView) viewManager.get (Views.DRUM)).toggleGridEditor ();
 
-        }, MaschineControlSurface.FOLLOW, () -> viewManager.isActiveView (Views.DRUM, Views.PLAY) && ((DrumView) viewManager.getView (Views.DRUM)).isGridEditor ());
+        }, MaschineControlSurface.FOLLOW, () -> viewManager.isActive (Views.DRUM, Views.PLAY) && ((DrumView) viewManager.get (Views.DRUM)).isGridEditor ());
 
         this.addButton (ButtonID.NEW, this.maschine.hasCursorKeys () ? "Macro" : "Group", new NewCommand<> (this.model, surface), MaschineControlSurface.GROUP);
 
@@ -391,10 +391,10 @@ public class MaschineControllerSetup extends AbstractControllerSetup<MaschineCon
             if (event != ButtonEvent.DOWN)
                 return;
 
-            if (modeManager.getActiveOrTempModeId () == Modes.BROWSER)
+            if (modeManager.getActiveOrTempId () == Modes.BROWSER)
             {
                 this.model.getBrowser ().stopBrowsing (true);
-                modeManager.restoreMode ();
+                modeManager.restore ();
             }
             else
             {
@@ -406,9 +406,9 @@ public class MaschineControllerSetup extends AbstractControllerSetup<MaschineCon
         }, MaschineControlSurface.ENCODER_PUSH);
 
         // Encoder Modes
-        this.addButton (ButtonID.VOLUME, "Volume", new VolumePanSendCommand (this.model, surface), MaschineControlSurface.VOLUME, () -> Modes.isTrackMode (modeManager.getActiveOrTempModeId ()));
-        this.addButton (ButtonID.TAP_TEMPO, "Swing", new SwingCommand (this.model, surface), MaschineControlSurface.SWING, () -> modeManager.isActiveOrTempMode (Modes.POSITION));
-        this.addButton (ButtonID.TEMPO_TOUCH, "Tempo", new TempoCommand (this.model, surface), MaschineControlSurface.TEMPO, () -> modeManager.isActiveOrTempMode (Modes.TEMPO));
+        this.addButton (ButtonID.VOLUME, "Volume", new VolumePanSendCommand (this.model, surface), MaschineControlSurface.VOLUME, () -> Modes.isTrackMode (modeManager.getActiveOrTempId ()));
+        this.addButton (ButtonID.TAP_TEMPO, "Swing", new SwingCommand (this.model, surface), MaschineControlSurface.SWING, () -> modeManager.isActiveOrTemp (Modes.POSITION));
+        this.addButton (ButtonID.TEMPO_TOUCH, "Tempo", new TempoCommand (this.model, surface), MaschineControlSurface.TEMPO, () -> modeManager.isActiveOrTemp (Modes.TEMPO));
         this.addButton (ButtonID.DEVICE, "Plugin", (event, velocity) -> {
 
             if (this.maschine.hasMCUDisplay () || surface.isPressed (ButtonID.STOP))
@@ -419,7 +419,7 @@ public class MaschineControllerSetup extends AbstractControllerSetup<MaschineCon
             else
                 new ModeSelectCommand<> (this.model, surface, Modes.DEVICE_PARAMS).execute (event, velocity);
 
-        }, MaschineControlSurface.PLUGIN, () -> modeManager.isActiveMode (Modes.DEVICE_PARAMS));
+        }, MaschineControlSurface.PLUGIN, () -> modeManager.isActive (Modes.DEVICE_PARAMS));
         final ConvertCommand<MaschineControlSurface, MaschineConfiguration> convertCommand = new ConvertCommand<> (this.model, surface);
         this.addButton (ButtonID.DEVICE_ON_OFF, "Sampling", (event, velocity) -> {
             if (surface.isPressed (ButtonID.STOP))
@@ -445,10 +445,10 @@ public class MaschineControllerSetup extends AbstractControllerSetup<MaschineCon
         // Pad modes
         this.addButton (ButtonID.ACCENT, "Accent", new ToggleFixedVelCommand (this.model, surface), MaschineControlSurface.FIXED_VEL, this.configuration::isAccentActive);
 
-        this.addButton (ButtonID.SCENE1, "Scene", new ViewMultiSelectCommand<> (this.model, surface, true, Views.SCENE_PLAY), MaschineControlSurface.SCENE, () -> viewManager.isActiveView (Views.SCENE_PLAY));
-        this.addButton (ButtonID.CLIP, "Pattern", new ViewMultiSelectCommand<> (this.model, surface, true, Views.CLIP), MaschineControlSurface.PATTERN, () -> viewManager.isActiveView (Views.CLIP));
-        this.addButton (ButtonID.NOTE, "Events", new ModeSelectCommand<> (this.model, surface, Modes.NOTE, true), MaschineControlSurface.EVENTS, () -> modeManager.isActiveOrTempMode (Modes.NOTE));
-        this.addButton (ButtonID.TOGGLE_DEVICE, "Variation", new ViewMultiSelectCommand<> (this.model, surface, true, Views.DEVICE), MaschineControlSurface.VARIATION, () -> viewManager.isActiveView (Views.DEVICE));
+        this.addButton (ButtonID.SCENE1, "Scene", new ViewMultiSelectCommand<> (this.model, surface, true, Views.SCENE_PLAY), MaschineControlSurface.SCENE, () -> viewManager.isActive (Views.SCENE_PLAY));
+        this.addButton (ButtonID.CLIP, "Pattern", new ViewMultiSelectCommand<> (this.model, surface, true, Views.CLIP), MaschineControlSurface.PATTERN, () -> viewManager.isActive (Views.CLIP));
+        this.addButton (ButtonID.NOTE, "Events", new ModeSelectCommand<> (this.model, surface, Modes.NOTE, true), MaschineControlSurface.EVENTS, () -> modeManager.isActiveOrTemp (Modes.NOTE));
+        this.addButton (ButtonID.TOGGLE_DEVICE, "Variation", new ViewMultiSelectCommand<> (this.model, surface, true, Views.DEVICE), MaschineControlSurface.VARIATION, () -> viewManager.isActive (Views.DEVICE));
         this.addButton (ButtonID.DUPLICATE, "Duplicate", NopCommand.INSTANCE, MaschineControlSurface.DUPLICATE);
 
         if (this.maschine.hasMCUDisplay ())
@@ -468,19 +468,19 @@ public class MaschineControllerSetup extends AbstractControllerSetup<MaschineCon
         }
         else
         {
-            this.addButton (ButtonID.TRACK, "Select", new ViewMultiSelectCommand<> (this.model, surface, true, Views.TRACK_SELECT), MaschineControlSurface.SELECT, () -> viewManager.isActiveView (Views.TRACK_SELECT));
-            this.addButton (ButtonID.SOLO, "Solo", new ViewMultiSelectCommand<> (this.model, surface, true, Views.TRACK_SOLO), MaschineControlSurface.SOLO, () -> viewManager.isActiveView (Views.TRACK_SOLO));
-            this.addButton (ButtonID.MUTE, "Mute", new ViewMultiSelectCommand<> (this.model, surface, true, Views.TRACK_MUTE), MaschineControlSurface.MUTE, () -> viewManager.isActiveView (Views.TRACK_MUTE));
+            this.addButton (ButtonID.TRACK, "Select", new ViewMultiSelectCommand<> (this.model, surface, true, Views.TRACK_SELECT), MaschineControlSurface.SELECT, () -> viewManager.isActive (Views.TRACK_SELECT));
+            this.addButton (ButtonID.SOLO, "Solo", new ViewMultiSelectCommand<> (this.model, surface, true, Views.TRACK_SOLO), MaschineControlSurface.SOLO, () -> viewManager.isActive (Views.TRACK_SOLO));
+            this.addButton (ButtonID.MUTE, "Mute", new ViewMultiSelectCommand<> (this.model, surface, true, Views.TRACK_MUTE), MaschineControlSurface.MUTE, () -> viewManager.isActive (Views.TRACK_MUTE));
         }
 
-        this.addButton (ButtonID.ROW1_1, "Pad Mode", new PadModeCommand (this.model, surface), MaschineControlSurface.PAD_MODE, () -> viewManager.isActiveView (Views.DRUM));
-        this.addButton (ButtonID.ROW1_2, "Keyboard", new KeyboardCommand (this.model, surface), MaschineControlSurface.KEYBOARD, () -> viewManager.isActiveView (Views.PLAY));
+        this.addButton (ButtonID.ROW1_1, "Pad Mode", new PadModeCommand (this.model, surface), MaschineControlSurface.PAD_MODE, () -> viewManager.isActive (Views.DRUM));
+        this.addButton (ButtonID.ROW1_2, "Keyboard", new KeyboardCommand (this.model, surface), MaschineControlSurface.KEYBOARD, () -> viewManager.isActive (Views.PLAY));
         this.addButton (ButtonID.ROW1_3, "Chords", (event, velocity) -> {
             if (velocity == 0)
-                ((PlayView) surface.getViewManager ().getView (Views.PLAY)).toggleChordMode ();
-        }, MaschineControlSurface.CHORDS, ((PlayView) surface.getViewManager ().getView (Views.PLAY))::isChordMode);
+                ((PlayView) surface.getViewManager ().get (Views.PLAY)).toggleChordMode ();
+        }, MaschineControlSurface.CHORDS, ((PlayView) surface.getViewManager ().get (Views.PLAY))::isChordMode);
 
-        final DrumView drumView = (DrumView) viewManager.getView (Views.DRUM);
+        final DrumView drumView = (DrumView) viewManager.get (Views.DRUM);
         this.addButton (ButtonID.ROW1_4, "Step", (event, velocity) -> {
 
             if (event == ButtonEvent.UP)
@@ -505,22 +505,22 @@ public class MaschineControllerSetup extends AbstractControllerSetup<MaschineCon
 
         if (this.maschine.hasMCUDisplay ())
         {
-            this.addButton (ButtonID.ROW2_1, "Volume", new ModeSelectCommand<> (this.model, surface, Modes.VOLUME), MaschineControlSurface.MODE_BUTTON_1, () -> modeManager.isActiveOrTempMode (Modes.VOLUME));
-            this.addButton (ButtonID.ROW2_2, "Pan", new ModeSelectCommand<> (this.model, surface, Modes.PAN), MaschineControlSurface.MODE_BUTTON_2, () -> modeManager.isActiveOrTempMode (Modes.PAN));
+            this.addButton (ButtonID.ROW2_1, "Volume", new ModeSelectCommand<> (this.model, surface, Modes.VOLUME), MaschineControlSurface.MODE_BUTTON_1, () -> modeManager.isActiveOrTemp (Modes.VOLUME));
+            this.addButton (ButtonID.ROW2_2, "Pan", new ModeSelectCommand<> (this.model, surface, Modes.PAN), MaschineControlSurface.MODE_BUTTON_2, () -> modeManager.isActiveOrTemp (Modes.PAN));
 
             final MaschineSendSelectCommand sendSelectCommand = new MaschineSendSelectCommand (this.model, surface);
-            this.addButton (ButtonID.ROW2_3, "Send -", (event, velocity) -> sendSelectCommand.executeShifted (event), MaschineControlSurface.MODE_BUTTON_3, () -> Modes.isSendMode (modeManager.getActiveOrTempModeId ()));
-            this.addButton (ButtonID.ROW2_4, "Send +", sendSelectCommand, MaschineControlSurface.MODE_BUTTON_4, () -> Modes.isSendMode (modeManager.getActiveOrTempModeId ()));
+            this.addButton (ButtonID.ROW2_3, "Send -", (event, velocity) -> sendSelectCommand.executeShifted (event), MaschineControlSurface.MODE_BUTTON_3, () -> Modes.isSendMode (modeManager.getActiveOrTempId ()));
+            this.addButton (ButtonID.ROW2_4, "Send +", sendSelectCommand, MaschineControlSurface.MODE_BUTTON_4, () -> Modes.isSendMode (modeManager.getActiveOrTempId ()));
 
             this.addButton (ButtonID.ROW2_5, "Pin", (event, velocity) -> {
                 if (event != ButtonEvent.DOWN)
                     return;
-                if (modeManager.isActiveMode (Modes.DEVICE_PARAMS))
+                if (modeManager.isActive (Modes.DEVICE_PARAMS))
                     this.model.getCursorDevice ().togglePinned ();
                 else
                     this.model.toggleCursorTrackPinned ();
             }, MaschineControlSurface.MODE_BUTTON_5, () -> {
-                if (modeManager.isActiveMode (Modes.DEVICE_PARAMS))
+                if (modeManager.isActive (Modes.DEVICE_PARAMS))
                     return this.model.getCursorDevice ().isPinned ();
                 return this.model.isCursorTrackPinned ();
             });
@@ -528,7 +528,7 @@ public class MaschineControllerSetup extends AbstractControllerSetup<MaschineCon
             this.addButton (ButtonID.ROW2_6, "Active", (event, velocity) -> {
                 if (event != ButtonEvent.DOWN)
                     return;
-                if (modeManager.isActiveMode (Modes.DEVICE_PARAMS))
+                if (modeManager.isActive (Modes.DEVICE_PARAMS))
                     this.model.getCursorDevice ().toggleEnabledState ();
                 else
                 {
@@ -537,7 +537,7 @@ public class MaschineControllerSetup extends AbstractControllerSetup<MaschineCon
                         selectedTrack.toggleIsActivated ();
                 }
             }, MaschineControlSurface.MODE_BUTTON_6, () -> {
-                if (modeManager.isActiveMode (Modes.DEVICE_PARAMS))
+                if (modeManager.isActive (Modes.DEVICE_PARAMS))
                     return this.model.getCursorDevice ().isEnabled ();
                 final ITrack selectedTrack = this.model.getSelectedTrack ();
                 return selectedTrack != null && selectedTrack.isActivated ();
@@ -545,9 +545,9 @@ public class MaschineControllerSetup extends AbstractControllerSetup<MaschineCon
 
             // This button is mapped as Note not CC since it requires at least 1 MCU button to make
             // the MCU display activate!
-            this.addButton (ButtonID.ROW2_7, "User Params", new ModeSelectCommand<> (this.model, surface, Modes.USER), MaschineControlSurface.MODE_BUTTON_7, () -> modeManager.isActiveOrTempMode (Modes.USER));
+            this.addButton (ButtonID.ROW2_7, "User Params", new ModeSelectCommand<> (this.model, surface, Modes.USER), MaschineControlSurface.MODE_BUTTON_7, () -> modeManager.isActiveOrTemp (Modes.USER));
 
-            this.addButton (ButtonID.ROW2_8, "Parameters", new ModeSelectCommand<> (this.model, surface, Modes.DEVICE_PARAMS), MaschineControlSurface.MODE_BUTTON_8, () -> modeManager.isActiveOrTempMode (Modes.DEVICE_PARAMS));
+            this.addButton (ButtonID.ROW2_8, "Parameters", new ModeSelectCommand<> (this.model, surface, Modes.DEVICE_PARAMS), MaschineControlSurface.MODE_BUTTON_8, () -> modeManager.isActiveOrTemp (Modes.DEVICE_PARAMS));
         }
 
         if (this.maschine.hasBankButtons ())
@@ -604,11 +604,11 @@ public class MaschineControllerSetup extends AbstractControllerSetup<MaschineCon
     {
         final MaschineControlSurface surface = this.getSurface ();
         final ModeManager modeManager = surface.getModeManager ();
-        final Modes modeID = modeManager.getActiveOrTempModeId ();
+        final Modes modeID = modeManager.getActiveOrTempId ();
         if (modeID == null)
             return MaschineColorManager.COLOR_BLACK;
 
-        final Mode mode = modeManager.getActiveOrTempMode ();
+        final Mode mode = modeManager.getActiveOrTemp ();
 
         boolean isOn;
         switch (arrowButton)
@@ -673,7 +673,7 @@ public class MaschineControllerSetup extends AbstractControllerSetup<MaschineCon
 
         final IHwRelativeKnob knob = this.addRelativeKnob (ContinuousID.MASTER_KNOB, "Encoder", new MainKnobRowModeCommand (this.model, surface), MaschineControlSurface.ENCODER);
         knob.bindTouch ( (event, velocity) -> {
-            final Mode mode = modeManager.getActiveOrTempMode ();
+            final Mode mode = modeManager.getActiveOrTemp ();
             if (mode != null && event != ButtonEvent.LONG)
                 mode.onKnobTouch (8, event == ButtonEvent.DOWN);
         }, surface.getMidiInput (), BindType.CC, 0, MaschineControlSurface.ENCODER_TOUCH);
@@ -685,7 +685,7 @@ public class MaschineControllerSetup extends AbstractControllerSetup<MaschineCon
                 final int index = i;
                 final IHwRelativeKnob modeKnob = this.addRelativeKnob (ContinuousID.get (ContinuousID.KNOB1, i), "Knob " + (i + 1), new KnobRowModeCommand<> (i, this.model, surface), MaschineControlSurface.MODE_KNOB_1 + i);
                 modeKnob.bindTouch ( (event, velocity) -> {
-                    final Mode mode = modeManager.getActiveOrTempMode ();
+                    final Mode mode = modeManager.getActiveOrTemp ();
                     if (mode != null && event != ButtonEvent.LONG)
                         mode.onKnobTouch (index, event == ButtonEvent.DOWN);
                 }, surface.getMidiInput (), BindType.CC, 0, MaschineControlSurface.MODE_KNOB_TOUCH_1 + i);
@@ -884,8 +884,8 @@ public class MaschineControllerSetup extends AbstractControllerSetup<MaschineCon
     public void startup ()
     {
         final MaschineControlSurface surface = this.getSurface ();
-        surface.getModeManager ().setActiveMode (Modes.VOLUME);
-        surface.getViewManager ().setActiveView (Views.PLAY);
+        surface.getModeManager ().setActive (Modes.VOLUME);
+        surface.getViewManager ().setActive (Views.PLAY);
     }
 
 
@@ -903,7 +903,7 @@ public class MaschineControllerSetup extends AbstractControllerSetup<MaschineCon
 
     private void updateMode (final Modes mode)
     {
-        final Modes m = mode == null ? this.getSurface ().getModeManager ().getActiveOrTempModeId () : mode;
+        final Modes m = mode == null ? this.getSurface ().getModeManager ().getActiveOrTempId () : mode;
         this.currentMode = m;
         this.updateIndication (m);
     }
@@ -918,7 +918,7 @@ public class MaschineControllerSetup extends AbstractControllerSetup<MaschineCon
         final MaschineControlSurface surface = this.getSurface ();
         final ViewManager viewManager = surface.getViewManager ();
 
-        final boolean isSession = viewManager.isActiveView (Views.SCENE_PLAY) || viewManager.isActiveView (Views.CLIP);
+        final boolean isSession = viewManager.isActive (Views.SCENE_PLAY) || viewManager.isActive (Views.CLIP);
         final boolean isEffect = this.model.isEffectTrackBankActive ();
 
         final boolean isVolume = Modes.VOLUME.equals (mode);
@@ -967,13 +967,13 @@ public class MaschineControllerSetup extends AbstractControllerSetup<MaschineCon
 
         final MaschineControlSurface surface = this.getSurface ();
         final ViewManager viewManager = surface.getViewManager ();
-        if (viewManager.isActiveView (Views.PLAY))
-            viewManager.getActiveView ().updateNoteMapping ();
+        if (viewManager.isActive (Views.PLAY))
+            viewManager.getActive ().updateNoteMapping ();
 
         // Reset drum octave because the drum pad bank is also reset
         this.scales.resetDrumOctave ();
-        if (viewManager.isActiveView (Views.DRUM))
-            viewManager.getView (Views.DRUM).updateNoteMapping ();
+        if (viewManager.isActive (Views.DRUM))
+            viewManager.get (Views.DRUM).updateNoteMapping ();
 
         this.updateIndication (this.currentMode);
     }

@@ -41,11 +41,11 @@ public class TempoCommand extends ModeSelectCommand<MaschineControlSurface, Masc
         final ModeManager modeManager = this.surface.getModeManager ();
 
         // Switch Transpose/Pressure note edit parameters
-        if (modeManager.isActiveOrTempMode (Modes.NOTE) && this.surface.getViewManager ().isActiveView (Views.DRUM, Views.PLAY))
+        if (modeManager.isActiveOrTemp (Modes.NOTE) && this.surface.getViewManager ().isActive (Views.DRUM, Views.PLAY))
         {
             if (event == ButtonEvent.DOWN)
             {
-                final EditNoteMode mode = (EditNoteMode) modeManager.getMode (Modes.NOTE);
+                final EditNoteMode mode = (EditNoteMode) modeManager.get (Modes.NOTE);
                 final boolean isTranspose = mode.getSelectedItem () == EditNoteMode.TRANSPOSE;
                 mode.selectItem (isTranspose ? EditNoteMode.PRESSURE : EditNoteMode.TRANSPOSE);
                 this.surface.getDisplay ().notify (isTranspose ? "Pressure" : "Pitch");

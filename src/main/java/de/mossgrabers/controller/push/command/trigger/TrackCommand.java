@@ -50,7 +50,7 @@ public class TrackCommand extends AbstractTriggerCommand<PushControlSurface, Pus
         }
 
         final ModeManager modeManager = this.surface.getModeManager ();
-        final Modes currentMode = modeManager.getActiveOrTempModeId ();
+        final Modes currentMode = modeManager.getActiveOrTempId ();
 
         if (currentMode != null)
         {
@@ -62,31 +62,31 @@ public class TrackCommand extends AbstractTriggerCommand<PushControlSurface, Pus
                 }
                 else if (currentMode.ordinal () >= Modes.SEND1.ordinal () && currentMode.ordinal () <= Modes.SEND8.ordinal ())
                 {
-                    modeManager.setActiveMode (Modes.TRACK);
+                    modeManager.setActive (Modes.TRACK);
                     this.model.toggleCurrentTrackBank ();
                 }
                 else
-                    modeManager.setActiveMode (config.getCurrentMixMode ());
+                    modeManager.setActive (config.getCurrentMixMode ());
             }
             else
             {
                 // Layer mode selection for Push 1
                 if (this.surface.isSelectPressed () && Modes.isLayerMode (currentMode))
                 {
-                    modeManager.setActiveMode (Modes.DEVICE_LAYER);
+                    modeManager.setActive (Modes.DEVICE_LAYER);
                     return;
                 }
 
                 if (Modes.TRACK.equals (currentMode))
                     this.model.toggleCurrentTrackBank ();
                 else
-                    modeManager.setActiveMode (Modes.TRACK);
+                    modeManager.setActive (Modes.TRACK);
             }
         }
         else
-            modeManager.setActiveMode (Modes.TRACK);
+            modeManager.setActive (Modes.TRACK);
 
-        config.setDebugMode (modeManager.getActiveOrTempModeId ());
+        config.setDebugMode (modeManager.getActiveOrTempId ());
 
         final ITrackBank tb = this.model.getCurrentTrackBank ();
         final ITrack track = tb.getSelectedItem ();

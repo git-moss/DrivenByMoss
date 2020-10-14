@@ -14,9 +14,9 @@ import de.mossgrabers.framework.daw.DAWColor;
 import de.mossgrabers.framework.daw.IModel;
 import de.mossgrabers.framework.daw.constants.Resolution;
 import de.mossgrabers.framework.daw.midi.INoteRepeat;
+import de.mossgrabers.framework.featuregroup.View;
 import de.mossgrabers.framework.utils.ButtonEvent;
 import de.mossgrabers.framework.view.AbstractView;
-import de.mossgrabers.framework.view.View;
 
 
 /**
@@ -260,7 +260,7 @@ public class ShiftView extends AbstractView<FireControlSurface, FireConfiguratio
     @Override
     public int getButtonColor (final ButtonID buttonID)
     {
-        return this.surface.getViewManager ().getPreviousView ().getButtonColor (buttonID);
+        return this.surface.getViewManager ().getPrevious ().getButtonColor (buttonID);
     }
 
 
@@ -269,7 +269,7 @@ public class ShiftView extends AbstractView<FireControlSurface, FireConfiguratio
     public void onButton (final ButtonID buttonID, final ButtonEvent event, final int velocity)
     {
         // Relay to the actually active view
-        this.surface.getViewManager ().getPreviousView ().onButton (buttonID, event, velocity);
+        this.surface.getViewManager ().getPrevious ().onButton (buttonID, event, velocity);
     }
 
 
@@ -278,7 +278,7 @@ public class ShiftView extends AbstractView<FireControlSurface, FireConfiguratio
     public void onSelectKnobValue (final int value)
     {
         // Relay to the actually active view
-        final View previousView = this.surface.getViewManager ().getPreviousView ();
+        final View previousView = this.surface.getViewManager ().getPrevious ();
         if (previousView instanceof IFireView)
             ((IFireView) previousView).onSelectKnobValue (value);
     }
@@ -289,7 +289,7 @@ public class ShiftView extends AbstractView<FireControlSurface, FireConfiguratio
     public int getSoloButtonColor (final int index)
     {
         // Relay to the actually active view
-        final View previousView = this.surface.getViewManager ().getPreviousView ();
+        final View previousView = this.surface.getViewManager ().getPrevious ();
         return previousView instanceof IFireView ? ((IFireView) previousView).getSoloButtonColor (index) : 0;
     }
 }

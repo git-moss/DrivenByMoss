@@ -11,7 +11,7 @@ import de.mossgrabers.framework.controller.valuechanger.IValueChanger;
 import de.mossgrabers.framework.daw.IHost;
 import de.mossgrabers.framework.daw.IModel;
 import de.mossgrabers.framework.daw.data.bank.ITrackBank;
-import de.mossgrabers.framework.mode.Mode;
+import de.mossgrabers.framework.featuregroup.Mode;
 import de.mossgrabers.framework.mode.ModeManager;
 import de.mossgrabers.framework.mode.Modes;
 
@@ -115,7 +115,7 @@ public class ModesHandler extends AbstractHandler
     @Override
     public int getCommandValue (final FlexiCommand command)
     {
-        final Mode mode = this.modeManager.getActiveOrTempMode ();
+        final Mode mode = this.modeManager.getActiveOrTemp ();
 
         switch (command)
         {
@@ -146,7 +146,7 @@ public class ModesHandler extends AbstractHandler
     @Override
     public void handle (final FlexiCommand command, final int knobMode, final int value)
     {
-        final Mode mode = this.modeManager.getActiveOrTempMode ();
+        final Mode mode = this.modeManager.getActiveOrTemp ();
         if (mode == null)
             return;
 
@@ -280,7 +280,7 @@ public class ModesHandler extends AbstractHandler
 
     private void changeModeValue (final int knobMode, final int knobIndex, final int value)
     {
-        final Mode mode = this.modeManager.getActiveOrTempMode ();
+        final Mode mode = this.modeManager.getActiveOrTemp ();
         if (isAbsolute (knobMode))
             mode.onKnobValue (knobIndex, value);
         else
@@ -295,7 +295,7 @@ public class ModesHandler extends AbstractHandler
     private void selectPreviousMode ()
     {
         final ITrackBank trackBank = this.model.getTrackBank ();
-        final Modes activeModeId = this.modeManager.getActiveModeId ();
+        final Modes activeModeId = this.modeManager.getActiveId ();
         int index = MODE_IDS.indexOf (activeModeId);
         Modes newMode;
         int newModeID;
@@ -316,7 +316,7 @@ public class ModesHandler extends AbstractHandler
     private void selectNextMode ()
     {
         final ITrackBank trackBank = this.model.getTrackBank ();
-        final Modes activeModeId = this.modeManager.getActiveModeId ();
+        final Modes activeModeId = this.modeManager.getActiveId ();
         int index = MODE_IDS.indexOf (activeModeId);
         Modes newMode;
         int newModeID;

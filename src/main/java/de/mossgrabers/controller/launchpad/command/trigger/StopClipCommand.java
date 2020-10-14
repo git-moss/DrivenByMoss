@@ -40,9 +40,9 @@ public class StopClipCommand extends AbstractTrackCommand
             if (event != ButtonEvent.DOWN)
                 return;
             final ViewManager viewManager = this.surface.getViewManager ();
-            if (viewManager.isActiveView (Views.SHIFT))
-                viewManager.restoreView ();
-            viewManager.setActiveView (Views.SHUFFLE);
+            if (viewManager.isActive (Views.SHIFT))
+                viewManager.restore ();
+            viewManager.setActive (Views.SHUFFLE);
             return;
         }
 

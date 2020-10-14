@@ -8,7 +8,7 @@ import de.mossgrabers.framework.configuration.Configuration;
 import de.mossgrabers.framework.controller.IControlSurface;
 import de.mossgrabers.framework.daw.IModel;
 import de.mossgrabers.framework.daw.data.bank.ISceneBank;
-import de.mossgrabers.framework.mode.Mode;
+import de.mossgrabers.framework.featuregroup.Mode;
 
 
 /**
@@ -56,7 +56,7 @@ public class CursorCommand<S extends IControlSurface<C>, C extends Configuration
         this.canScrollUp = sceneBank.canScrollBackwards ();
         this.canScrollDown = sceneBank.canScrollForwards ();
 
-        final Mode mode = this.surface.getModeManager ().getActiveOrTempMode ();
+        final Mode mode = this.surface.getModeManager ().getActiveOrTemp ();
         final boolean shiftPressed = this.surface.isShiftPressed ();
         this.canScrollLeft = mode != null && (shiftPressed ? mode.hasPreviousItemPage () : mode.hasPreviousItem ());
         this.canScrollRight = mode != null && (shiftPressed ? mode.hasNextItemPage () : mode.hasNextItem ());

@@ -60,10 +60,10 @@ public class FaderTouchCommand extends SelectCommand
         final ModeManager modeManager = this.surface.getModeManager ();
         if (configuration.useFadersAsKnobs ())
         {
-            modeManager.getActiveOrTempMode ().onKnobTouch (this.index, isTouched);
+            modeManager.getActiveOrTemp ().onKnobTouch (this.index, isTouched);
             return;
         }
-        modeManager.getMode (Modes.VOLUME).onKnobTouch (this.index, isTouched);
+        modeManager.get (Modes.VOLUME).onKnobTouch (this.index, isTouched);
 
         final int pos = this.surface.getSurfaceID () * 8 + this.index;
 
@@ -72,10 +72,10 @@ public class FaderTouchCommand extends SelectCommand
         {
             if (!hasTouchedFader ())
             {
-                if (modeManager.isActiveOrTempMode (Modes.VOLUME))
-                    modeManager.setPreviousMode (Modes.VOLUME);
+                if (modeManager.isActiveOrTemp (Modes.VOLUME))
+                    modeManager.setPrevious (Modes.VOLUME);
                 else
-                    modeManager.setActiveMode (Modes.VOLUME);
+                    modeManager.setActive (Modes.VOLUME);
             }
             isTrackTouched[pos] = true;
         }
@@ -83,7 +83,7 @@ public class FaderTouchCommand extends SelectCommand
         {
             isTrackTouched[pos] = false;
             if (!hasTouchedFader ())
-                modeManager.restoreMode ();
+                modeManager.restore ();
         }
     }
 

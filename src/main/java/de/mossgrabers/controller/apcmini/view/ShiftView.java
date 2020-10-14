@@ -110,7 +110,7 @@ public class ShiftView extends AbstractView<APCminiControlSurface, APCminiConfig
         padGrid.light (36 + 27, APCminiColorManager.APC_COLOR_GREEN);
 
         // Draw the view selection: Session, Note, Drum, Sequencer
-        final Views previousViewId = this.surface.getViewManager ().getPreviousViewId ();
+        final Views previousViewId = this.surface.getViewManager ().getPreviousId ();
         padGrid.light (36 + 56, Views.SESSION == previousViewId ? APCminiColorManager.APC_COLOR_GREEN : APCminiColorManager.APC_COLOR_YELLOW);
         padGrid.light (36 + 57, Views.PLAY == previousViewId ? APCminiColorManager.APC_COLOR_GREEN : APCminiColorManager.APC_COLOR_YELLOW);
         padGrid.light (36 + 58, Views.DRUM == previousViewId ? APCminiColorManager.APC_COLOR_GREEN : APCminiColorManager.APC_COLOR_YELLOW);
@@ -250,7 +250,7 @@ public class ShiftView extends AbstractView<APCminiControlSurface, APCminiConfig
                 this.scales.setScaleOffset (pos);
                 this.surface.getConfiguration ().setScaleBase (Scales.BASES[pos]);
                 this.surface.getDisplay ().notify (Scales.BASES[pos]);
-                this.surface.getViewManager ().getActiveView ().updateNoteMapping ();
+                this.surface.getViewManager ().getActive ().updateNoteMapping ();
                 break;
         }
     }
@@ -282,13 +282,13 @@ public class ShiftView extends AbstractView<APCminiControlSurface, APCminiConfig
                 break;
 
             case 4:
-                modeManager.setActiveMode (Modes.VOLUME);
+                modeManager.setActive (Modes.VOLUME);
                 this.surface.getConfiguration ().setFaderCtrl ("Volume");
                 this.surface.getDisplay ().notify ("Volume");
                 break;
 
             case 5:
-                modeManager.setActiveMode (Modes.PAN);
+                modeManager.setActive (Modes.PAN);
                 this.surface.getConfiguration ().setFaderCtrl ("Pan");
                 this.surface.getDisplay ().notify ("Pan");
                 break;
@@ -296,25 +296,25 @@ public class ShiftView extends AbstractView<APCminiControlSurface, APCminiConfig
             case 6:
                 if (this.model.isEffectTrackBankActive ())
                     return;
-                Modes mode = Modes.get (modeManager.getActiveOrTempModeId (), 1);
+                Modes mode = Modes.get (modeManager.getActiveOrTempId (), 1);
                 // Wrap
                 if (!Modes.isSendMode (mode))
                     mode = Modes.SEND1;
                 // Check if Send channel exists
                 if (Modes.isSendMode (mode) && tb.canEditSend (mode.ordinal () - Modes.SEND1.ordinal ()))
                     mode = Modes.SEND1;
-                modeManager.setActiveMode (mode);
+                modeManager.setActive (mode);
                 final String name = "Send " + (mode.ordinal () - Modes.SEND1.ordinal () + 1);
                 this.surface.getConfiguration ().setFaderCtrl (name);
                 this.surface.getDisplay ().notify (name);
                 break;
 
             case 7:
-                if (modeManager.isActiveOrTempMode (Modes.DEVICE_PARAMS))
+                if (modeManager.isActiveOrTemp (Modes.DEVICE_PARAMS))
                     this.model.getBrowser ().replace (this.model.getCursorDevice ());
                 else
                 {
-                    modeManager.setActiveMode (Modes.DEVICE_PARAMS);
+                    modeManager.setActive (Modes.DEVICE_PARAMS);
                     this.surface.getConfiguration ().setFaderCtrl ("Device");
                     this.surface.getDisplay ().notify ("Device");
                 }
@@ -343,8 +343,8 @@ public class ShiftView extends AbstractView<APCminiControlSurface, APCminiConfig
                 {
                     // No Sends on effect tracks
                     final ModeManager modeManager = this.surface.getModeManager ();
-                    if (Modes.isSendMode (modeManager.getActiveOrTempModeId ()))
-                        modeManager.setActiveMode (Modes.VOLUME);
+                    if (Modes.isSendMode (modeManager.getActiveOrTempId ()))
+                        modeManager.setActive (Modes.VOLUME);
                 }
                 this.surface.getDisplay ().notify (isEffectTrackBank ? "Effect Tracks" : "Instrument/Audio Tracks");
                 break;
@@ -370,7 +370,7 @@ public class ShiftView extends AbstractView<APCminiControlSurface, APCminiConfig
     {
         final ITrackBank tb = this.model.getCurrentTrackBank ();
         final ISceneBank sceneBank = tb.getSceneBank ();
-        final Modes mode = this.surface.getModeManager ().getActiveOrTempModeId ();
+        final Modes mode = this.surface.getModeManager ().getActiveOrTempId ();
 
         switch (index)
         {
@@ -435,8 +435,8 @@ public class ShiftView extends AbstractView<APCminiControlSurface, APCminiConfig
     private void switchToView (final Views viewID)
     {
         final ViewManager viewManager = this.surface.getViewManager ();
-        viewManager.setPreviousView (viewID);
-        this.surface.getDisplay ().notify (viewManager.getView (viewID).getName ());
+        viewManager.setPrevious (viewID);
+        this.surface.getDisplay ().notify (viewManager.get (viewID).getName ());
     }
 
 

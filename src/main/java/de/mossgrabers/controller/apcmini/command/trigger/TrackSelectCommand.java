@@ -9,8 +9,8 @@ import de.mossgrabers.controller.apcmini.controller.APCminiControlSurface;
 import de.mossgrabers.controller.apcmini.view.APCminiView;
 import de.mossgrabers.framework.command.core.AbstractTriggerCommand;
 import de.mossgrabers.framework.daw.IModel;
+import de.mossgrabers.framework.featuregroup.View;
 import de.mossgrabers.framework.utils.ButtonEvent;
-import de.mossgrabers.framework.view.View;
 
 
 /**
@@ -41,7 +41,7 @@ public class TrackSelectCommand extends AbstractTriggerCommand<APCminiControlSur
     @Override
     public void execute (final ButtonEvent event, final int velocity)
     {
-        final View view = this.surface.getViewManager ().getActiveView ();
+        final View view = this.surface.getViewManager ().getActive ();
         if (view != null)
             ((APCminiView) view).onSelectTrack (this.index, event);
     }

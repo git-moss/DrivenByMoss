@@ -4,10 +4,11 @@
 
 package de.mossgrabers.framework.view;
 
+import de.mossgrabers.framework.FeatureGroupManager;
+import de.mossgrabers.framework.featuregroup.View;
 import de.mossgrabers.framework.utils.FrameworkException;
 
 import java.util.ArrayList;
-import java.util.EnumMap;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -18,40 +19,29 @@ import java.util.Map;
  *
  * @author J&uuml;rgen Mo&szlig;graber
  */
-public class ViewManager
+public class ViewManager extends FeatureGroupManager<Views, View>
 {
-    private final Map<Views, View>         views               = new EnumMap<> (Views.class);
     private final List<ViewChangeListener> viewChangeListeners = new ArrayList<> ();
     private final Map<Integer, Views>      preferredViews      = new HashMap<> ();
 
-    private Views                          activeViewId        = null;
-    private Views                          previousViewId      = null;
-
 
     /**
-     * Register a view.
-     *
-     * @param viewId The ID of the view to register
-     * @param view The view to register
+     * Constructor.
      */
-    public void registerView (final Views viewId, final View view)
+    public ViewManager ()
     {
-        this.views.put (viewId, view);
-
-        // Make sure it is off until used
-        view.onDeactivate ();
+        super (Views.class);
     }
 
 
-    /**
-     * Get the view with the given ID.
-     *
-     * @param viewId An ID
-     * @return The view or null if no view with that ID is registered
-     */
-    public View getView (final Views viewId)
+    /** {@inheritDoc} */
+    @Override
+    public void register (final Views viewId, final View view)
     {
-        return this.views.get (viewId);
+        super.register (viewId, view);
+
+        // Make sure it is off until used
+        view.onDeactivate ();
     }
 
 
@@ -60,18 +50,18 @@ public class ViewManager
      *
      * @param viewId The ID of the view to activate
      */
-    public void setActiveView (final Views viewId)
+    public void setActive (final Views viewId)
     {
         // Deactivate current view
-        View view = this.getActiveView ();
+        View view = this.getActive ();
         if (view != null)
             view.onDeactivate ();
 
         // Set the new view
-        this.previousViewId = this.activeViewId;
-        this.activeViewId = viewId;
+        this.previousID = this.activeID;
+        this.activeID = viewId;
 
-        view = this.getActiveView ();
+        view = this.getActive ();
         if (view == null)
             throw new FrameworkException ("Trying to activate view that does not exist: " + viewId);
 
@@ -79,18 +69,7 @@ public class ViewManager
 
         // Notify all view change listeners
         for (final ViewChangeListener listener: this.viewChangeListeners)
-            listener.call (this.previousViewId, this.activeViewId);
-    }
-
-
-    /**
-     * Get the active view ID.
-     *
-     * @return The ID of the active view
-     */
-    public Views getActiveViewId ()
-    {
-        return this.activeViewId;
+            listener.call (this.previousID, this.activeID);
     }
 
 
@@ -99,9 +78,9 @@ public class ViewManager
      *
      * @return The active view, might be null if not set
      */
-    public View getActiveView ()
+    public View getActive ()
     {
-        return this.activeViewId == null ? null : this.getView (this.activeViewId);
+        return this.activeID == null ? null : this.get (this.activeID);
     }
 
 
@@ -111,9 +90,9 @@ public class ViewManager
      * @param viewId An ID
      * @return True if active
      */
-    public boolean isActiveView (final Views viewId)
+    public boolean isActive (final Views viewId)
     {
-        return this.activeViewId == viewId;
+        return this.activeID == viewId;
     }
 
 
@@ -123,11 +102,11 @@ public class ViewManager
      * @param viewIds Several IDs
      * @return True if active
      */
-    public boolean isActiveView (final Views... viewIds)
+    public boolean isActive (final Views... viewIds)
     {
         for (final Views viewID: viewIds)
         {
-            if (this.isActiveView (viewID))
+            if (this.isActive (viewID))
                 return true;
         }
         return false;
@@ -139,9 +118,9 @@ public class ViewManager
      *
      * @return The ID of the previous view
      */
-    public Views getPreviousViewId ()
+    public Views getPreviousId ()
     {
-        return this.previousViewId;
+        return this.previousID;
     }
 
 
@@ -150,9 +129,9 @@ public class ViewManager
      *
      * @return The previous view, might be null if not set
      */
-    public View getPreviousView ()
+    public View getPrevious ()
     {
-        return this.previousViewId == null ? null : this.getView (this.previousViewId);
+        return this.previousID == null ? null : this.get (this.previousID);
     }
 
 
@@ -161,18 +140,18 @@ public class ViewManager
      *
      * @param viewId The ID of the previous view
      */
-    public void setPreviousView (final Views viewId)
+    public void setPrevious (final Views viewId)
     {
-        this.previousViewId = viewId;
+        this.previousID = viewId;
     }
 
 
     /**
      * Set the previous view as the active one.
      */
-    public void restoreView ()
+    public void restore ()
     {
-        this.setActiveView (this.previousViewId);
+        this.setActive (this.previousID);
     }
 
 
@@ -181,7 +160,7 @@ public class ViewManager
      *
      * @param listener The listener to register
      */
-    public void addViewChangeListener (final ViewChangeListener listener)
+    public void addChangeListener (final ViewChangeListener listener)
     {
         this.viewChangeListeners.add (listener);
     }

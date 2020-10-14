@@ -52,10 +52,10 @@ import de.mossgrabers.framework.daw.data.bank.ISendBank;
 import de.mossgrabers.framework.daw.data.bank.ITrackBank;
 import de.mossgrabers.framework.daw.midi.IMidiAccess;
 import de.mossgrabers.framework.daw.midi.IMidiInput;
+import de.mossgrabers.framework.featuregroup.View;
 import de.mossgrabers.framework.mode.ModeManager;
 import de.mossgrabers.framework.mode.Modes;
 import de.mossgrabers.framework.scale.Scales;
-import de.mossgrabers.framework.view.View;
 import de.mossgrabers.framework.view.ViewManager;
 import de.mossgrabers.framework.view.Views;
 
@@ -128,7 +128,7 @@ public class Kontrol1ControllerSetup extends AbstractControllerSetup<Kontrol1Con
         final Kontrol1Display display = new Kontrol1Display (this.host, this.valueChanger.getUpperBound (), this.configuration, usbDevice);
         surface.addTextDisplay (display);
 
-        surface.getModeManager ().setDefaultMode (Modes.TRACK);
+        surface.getModeManager ().setDefault (Modes.TRACK);
     }
 
 
@@ -139,12 +139,12 @@ public class Kontrol1ControllerSetup extends AbstractControllerSetup<Kontrol1Con
         final Kontrol1ControlSurface surface = this.getSurface ();
         final ModeManager modeManager = surface.getModeManager ();
 
-        modeManager.registerMode (Modes.TRACK, new TrackMode (surface, this.model));
-        modeManager.registerMode (Modes.VOLUME, new VolumeMode (surface, this.model));
-        modeManager.registerMode (Modes.DEVICE_PARAMS, new ParamsMode (surface, this.model));
-        modeManager.registerMode (Modes.BROWSER, new BrowseMode (surface, this.model));
+        modeManager.register (Modes.TRACK, new TrackMode (surface, this.model));
+        modeManager.register (Modes.VOLUME, new VolumeMode (surface, this.model));
+        modeManager.register (Modes.DEVICE_PARAMS, new ParamsMode (surface, this.model));
+        modeManager.register (Modes.BROWSER, new BrowseMode (surface, this.model));
 
-        modeManager.registerMode (Modes.SCALES, new ScaleMode (surface, this.model));
+        modeManager.register (Modes.SCALES, new ScaleMode (surface, this.model));
     }
 
 
@@ -154,7 +154,7 @@ public class Kontrol1ControllerSetup extends AbstractControllerSetup<Kontrol1Con
     {
         final Kontrol1ControlSurface surface = this.getSurface ();
         final ViewManager viewManager = surface.getViewManager ();
-        viewManager.registerView (Views.CONTROL, new ControlView (surface, this.model));
+        viewManager.register (Views.CONTROL, new ControlView (surface, this.model));
     }
 
 
@@ -167,7 +167,7 @@ public class Kontrol1ControllerSetup extends AbstractControllerSetup<Kontrol1Con
         this.createScaleObservers (this.configuration);
         this.configuration.addSettingObserver (Kontrol1Configuration.SCALE_IS_ACTIVE, this::updateViewNoteMapping);
 
-        this.getSurface ().getModeManager ().addModeListener ( (oldMode, newMode) -> this.updateIndication (newMode));
+        this.getSurface ().getModeManager ().addChangeListener ( (oldMode, newMode) -> this.updateIndication (newMode));
 
         final ITrackBank trackBank = this.model.getTrackBank ();
         trackBank.addSelectionObserver ( (index, isSelected) -> this.handleTrackChange (isSelected));
@@ -245,8 +245,8 @@ public class Kontrol1ControllerSetup extends AbstractControllerSetup<Kontrol1Con
     public void startup ()
     {
         final Kontrol1ControlSurface surface = this.getSurface ();
-        surface.getViewManager ().setActiveView (Views.CONTROL);
-        surface.getModeManager ().setActiveMode (Modes.TRACK);
+        surface.getViewManager ().setActive (Views.CONTROL);
+        surface.getModeManager ().setActive (Modes.TRACK);
     }
 
 
@@ -262,8 +262,8 @@ public class Kontrol1ControllerSetup extends AbstractControllerSetup<Kontrol1Con
 
         this.host.scheduleTask ( () -> {
             final Kontrol1ControlSurface surface = this.getSurface ();
-            this.updateIndication (surface.getModeManager ().getActiveModeId ());
-            final View activeView = surface.getViewManager ().getActiveView ();
+            this.updateIndication (surface.getModeManager ().getActiveId ());
+            final View activeView = surface.getViewManager ().getActive ();
             if (activeView != null)
             {
                 activeView.updateNoteMapping ();

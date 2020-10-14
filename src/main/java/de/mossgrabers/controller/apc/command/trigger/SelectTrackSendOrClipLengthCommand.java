@@ -60,7 +60,7 @@ public class SelectTrackSendOrClipLengthCommand extends AbstractTriggerCommand<A
             if (this.surface.isMkII ())
                 ((ModeMultiSelectCommand<?, ?>) this.surface.getButton (ButtonID.SEND1).getCommand ()).activateMode (sendModeId);
             else
-                modeManager.setActiveMode (sendModeId);
+                modeManager.setActive (sendModeId);
 
             // Display the sends name
             String modeName = "Send " + (this.index + 1) + ": ";
@@ -78,9 +78,9 @@ public class SelectTrackSendOrClipLengthCommand extends AbstractTriggerCommand<A
 
         if (this.surface.isMkII () && this.surface.isPressed (ButtonID.SEND2))
         {
-            modeManager.setActiveMode (Modes.USER);
+            modeManager.setActive (Modes.USER);
             this.surface.setTriggerConsumed (ButtonID.USER);
-            modeManager.getMode (Modes.USER).selectItemPage (this.index);
+            modeManager.get (Modes.USER).selectItemPage (this.index);
             return;
         }
 

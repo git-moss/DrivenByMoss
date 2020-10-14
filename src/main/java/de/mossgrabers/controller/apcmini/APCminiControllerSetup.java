@@ -36,13 +36,13 @@ import de.mossgrabers.framework.daw.data.bank.ITrackBank;
 import de.mossgrabers.framework.daw.midi.IMidiAccess;
 import de.mossgrabers.framework.daw.midi.IMidiInput;
 import de.mossgrabers.framework.daw.midi.IMidiOutput;
+import de.mossgrabers.framework.featuregroup.View;
 import de.mossgrabers.framework.mode.ModeManager;
 import de.mossgrabers.framework.mode.Modes;
 import de.mossgrabers.framework.mode.device.ParameterMode;
 import de.mossgrabers.framework.mode.track.PanMode;
 import de.mossgrabers.framework.mode.track.SendMode;
 import de.mossgrabers.framework.mode.track.VolumeMode;
-import de.mossgrabers.framework.view.View;
 import de.mossgrabers.framework.view.ViewManager;
 import de.mossgrabers.framework.view.Views;
 
@@ -156,13 +156,13 @@ public class APCminiControllerSetup extends AbstractControllerSetup<APCminiContr
     {
         final APCminiControlSurface surface = this.getSurface ();
         final ModeManager modeManager = surface.getModeManager ();
-        modeManager.registerMode (Modes.VOLUME, new VolumeMode<> (surface, this.model, true, FADER_IDS));
-        modeManager.registerMode (Modes.PAN, new PanMode<> (surface, this.model, true, FADER_IDS));
+        modeManager.register (Modes.VOLUME, new VolumeMode<> (surface, this.model, true, FADER_IDS));
+        modeManager.register (Modes.PAN, new PanMode<> (surface, this.model, true, FADER_IDS));
         for (int i = 0; i < 8; i++)
-            modeManager.registerMode (Modes.get (Modes.SEND1, i), new SendMode<> (i, surface, this.model, true, FADER_IDS));
-        modeManager.registerMode (Modes.DEVICE_PARAMS, new ParameterMode<> (surface, this.model, true, FADER_IDS));
+            modeManager.register (Modes.get (Modes.SEND1, i), new SendMode<> (i, surface, this.model, true, FADER_IDS));
+        modeManager.register (Modes.DEVICE_PARAMS, new ParameterMode<> (surface, this.model, true, FADER_IDS));
 
-        modeManager.setDefaultMode (Modes.VOLUME);
+        modeManager.setDefault (Modes.VOLUME);
     }
 
 
@@ -174,14 +174,14 @@ public class APCminiControllerSetup extends AbstractControllerSetup<APCminiContr
         final ViewManager viewManager = surface.getViewManager ();
         final TrackButtons trackButtons = new TrackButtons (surface, this.model);
 
-        viewManager.registerView (Views.PLAY, new PlayView (surface, this.model, trackButtons));
-        viewManager.registerView (Views.SHIFT, new ShiftView (surface, this.model));
-        viewManager.registerView (Views.BROWSER, new BrowserView (surface, this.model));
+        viewManager.register (Views.PLAY, new PlayView (surface, this.model, trackButtons));
+        viewManager.register (Views.SHIFT, new ShiftView (surface, this.model));
+        viewManager.register (Views.BROWSER, new BrowserView (surface, this.model));
 
-        viewManager.registerView (Views.SESSION, new SessionView (surface, this.model, trackButtons));
-        viewManager.registerView (Views.SEQUENCER, new SequencerView (surface, this.model));
-        viewManager.registerView (Views.DRUM, new DrumView (surface, this.model));
-        viewManager.registerView (Views.RAINDROPS, new RaindropsView (surface, this.model));
+        viewManager.register (Views.SESSION, new SessionView (surface, this.model, trackButtons));
+        viewManager.register (Views.SEQUENCER, new SequencerView (surface, this.model));
+        viewManager.register (Views.DRUM, new DrumView (surface, this.model));
+        viewManager.register (Views.RAINDROPS, new RaindropsView (surface, this.model));
     }
 
 
@@ -192,14 +192,14 @@ public class APCminiControllerSetup extends AbstractControllerSetup<APCminiContr
         super.createObservers ();
 
         final APCminiControlSurface surface = this.getSurface ();
-        surface.getViewManager ().addViewChangeListener ( (previousViewId, activeViewId) -> this.updateMode (null));
-        surface.getModeManager ().addModeListener ( (previousModeId, activeModeId) -> this.updateMode (activeModeId));
+        surface.getViewManager ().addChangeListener ( (previousViewId, activeViewId) -> this.updateMode (null));
+        surface.getModeManager ().addChangeListener ( (previousModeId, activeModeId) -> this.updateMode (activeModeId));
         this.createScaleObservers (this.configuration);
 
         this.configuration.addSettingObserver (APCminiConfiguration.FADER_CTRL, () -> {
             final Modes modeID = FADER_CTRL_MODES.get (this.configuration.getFaderCtrl ());
             if (modeID != null)
-                surface.getModeManager ().setActiveMode (modeID);
+                surface.getModeManager ().setActive (modeID);
         });
 
         this.configuration.addSettingObserver (APCminiConfiguration.SOFT_KEYS, () -> {
@@ -234,7 +234,7 @@ public class APCminiControllerSetup extends AbstractControllerSetup<APCminiContr
             this.addButton (buttonID, COL_NAMES[i], new ViewButtonCommand<> (buttonID, surface), APCminiControlSurface.APC_BUTTON_SCENE_BUTTON1 + i, () -> this.getViewColor (buttonID));
 
             this.addButton (ButtonID.get (ButtonID.ROW_SELECT_1, i), ROW_NAMES[i], new TrackSelectCommand (i, this.model, surface), APCminiControlSurface.APC_BUTTON_TRACK_BUTTON1 + i, () -> {
-                final View view = viewManager.getActiveView ();
+                final View view = viewManager.getActive ();
                 if (view instanceof APCminiView)
                 {
                     final int trackButtonColor = ((APCminiView) view).getTrackButtonColor (index);
@@ -304,15 +304,15 @@ public class APCminiControllerSetup extends AbstractControllerSetup<APCminiContr
     public void startup ()
     {
         final APCminiControlSurface surface = this.getSurface ();
-        surface.getModeManager ().setActiveMode (Modes.VOLUME);
-        surface.getViewManager ().setActiveView (Views.PLAY);
+        surface.getModeManager ().setActive (Modes.VOLUME);
+        surface.getViewManager ().setActive (Views.PLAY);
         this.host.scheduleTask (surface.getPadGrid ()::forceFlush, 1000);
     }
 
 
     private void updateMode (final Modes mode)
     {
-        this.updateIndication (mode == null ? this.getSurface ().getModeManager ().getActiveOrTempModeId () : mode);
+        this.updateIndication (mode == null ? this.getSurface ().getModeManager ().getActiveOrTempId () : mode);
     }
 
 
@@ -328,8 +328,8 @@ public class APCminiControllerSetup extends AbstractControllerSetup<APCminiContr
         final ITrackBank tbe = this.model.getEffectTrackBank ();
         final APCminiControlSurface surface = this.getSurface ();
         final ViewManager viewManager = surface.getViewManager ();
-        final boolean isShiftView = viewManager.isActiveView (Views.SHIFT);
-        final boolean isSession = viewManager.isActiveView (Views.SESSION) || isShiftView;
+        final boolean isShiftView = viewManager.isActive (Views.SHIFT);
+        final boolean isSession = viewManager.isActive (Views.SESSION) || isShiftView;
         final boolean isEffect = this.model.isEffectTrackBankActive ();
         final boolean isPan = Modes.PAN.equals (mode);
         final boolean isDevice = Modes.DEVICE_PARAMS.equals (mode);
@@ -372,15 +372,15 @@ public class APCminiControllerSetup extends AbstractControllerSetup<APCminiContr
 
         final APCminiControlSurface surface = this.getSurface ();
         final ViewManager viewManager = surface.getViewManager ();
-        if (viewManager.isActiveView (Views.PLAY))
-            viewManager.getActiveView ().updateNoteMapping ();
+        if (viewManager.isActive (Views.PLAY))
+            viewManager.getActive ().updateNoteMapping ();
 
-        if (viewManager.isActiveView (Views.PLAY))
-            viewManager.getActiveView ().updateNoteMapping ();
+        if (viewManager.isActive (Views.PLAY))
+            viewManager.getActive ().updateNoteMapping ();
 
         // Reset drum octave because the drum pad bank is also reset
         this.scales.resetDrumOctave ();
-        if (viewManager.isActiveView (Views.DRUM))
-            viewManager.getView (Views.DRUM).updateNoteMapping ();
+        if (viewManager.isActive (Views.DRUM))
+            viewManager.get (Views.DRUM).updateNoteMapping ();
     }
 }

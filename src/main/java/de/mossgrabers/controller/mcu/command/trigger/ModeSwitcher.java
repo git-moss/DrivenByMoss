@@ -36,25 +36,25 @@ public class ModeSwitcher
     public void scrollUp ()
     {
         final ModeManager modeManager = this.surface.getModeManager ();
-        final Modes activeModeId = modeManager.getActiveOrTempModeId ();
+        final Modes activeModeId = modeManager.getActiveOrTempId ();
         if (Modes.PAN == activeModeId)
         {
-            modeManager.setActiveMode (Modes.VOLUME);
+            modeManager.setActive (Modes.VOLUME);
             this.surface.getDisplay ().notify ("Volume");
         }
         else if (Modes.VOLUME == activeModeId)
         {
-            modeManager.setActiveMode (Modes.TRACK);
+            modeManager.setActive (Modes.TRACK);
             this.surface.getDisplay ().notify ("Track");
         }
         else if (Modes.TRACK == activeModeId)
         {
-            modeManager.setActiveMode (Modes.DEVICE_PARAMS);
+            modeManager.setActive (Modes.DEVICE_PARAMS);
             this.surface.getDisplay ().notify ("Parameters");
         }
         else
         {
-            modeManager.setActiveMode (Modes.PAN);
+            modeManager.setActive (Modes.PAN);
             this.surface.getDisplay ().notify ("Panorama");
         }
     }
@@ -66,25 +66,25 @@ public class ModeSwitcher
     public void scrollDown ()
     {
         final ModeManager modeManager = this.surface.getModeManager ();
-        final Modes activeModeId = modeManager.getActiveOrTempModeId ();
+        final Modes activeModeId = modeManager.getActiveOrTempId ();
         if (Modes.PAN == activeModeId)
         {
-            modeManager.setActiveMode (Modes.DEVICE_PARAMS);
+            modeManager.setActive (Modes.DEVICE_PARAMS);
             this.surface.getDisplay ().notify ("Parameters");
         }
         else if (Modes.VOLUME == activeModeId)
         {
-            modeManager.setActiveMode (Modes.PAN);
+            modeManager.setActive (Modes.PAN);
             this.surface.getDisplay ().notify ("Panorama");
         }
         else if (Modes.TRACK == activeModeId)
         {
-            modeManager.setActiveMode (Modes.VOLUME);
+            modeManager.setActive (Modes.VOLUME);
             this.surface.getDisplay ().notify ("Volume");
         }
         else
         {
-            modeManager.setActiveMode (Modes.TRACK);
+            modeManager.setActive (Modes.TRACK);
             this.surface.getDisplay ().notify ("Track");
         }
     }

@@ -9,7 +9,7 @@ import de.mossgrabers.controller.kontrol.mki.controller.Kontrol1ControlSurface;
 import de.mossgrabers.controller.kontrol.mki.mode.IKontrol1Mode;
 import de.mossgrabers.framework.command.continuous.MasterVolumeCommand;
 import de.mossgrabers.framework.daw.IModel;
-import de.mossgrabers.framework.mode.Mode;
+import de.mossgrabers.framework.featuregroup.Mode;
 
 
 /**
@@ -41,7 +41,7 @@ public class MainEncoderCommand extends MasterVolumeCommand<Kontrol1ControlSurfa
             return;
         }
 
-        final Mode activeMode = this.surface.getModeManager ().getActiveOrTempMode ();
+        final Mode activeMode = this.surface.getModeManager ().getActiveOrTemp ();
         ((IKontrol1Mode) activeMode).onMainKnob (value);
     }
 }

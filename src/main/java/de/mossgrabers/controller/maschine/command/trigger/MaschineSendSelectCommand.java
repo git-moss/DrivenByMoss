@@ -40,11 +40,11 @@ public class MaschineSendSelectCommand extends ModeMultiSelectCommand<MaschineCo
     public void executeShifted (final ButtonEvent event)
     {
         final ModeManager modeManager = this.surface.getModeManager ();
-        final Modes activeMode = modeManager.getActiveModeId ();
+        final Modes activeMode = modeManager.getActiveId ();
 
         super.executeShifted (event);
 
-        final Modes newMode = modeManager.getActiveModeId ();
+        final Modes newMode = modeManager.getActiveId ();
         if (activeMode == newMode)
             return;
 
@@ -65,11 +65,11 @@ public class MaschineSendSelectCommand extends ModeMultiSelectCommand<MaschineCo
     public void executeNormal (final ButtonEvent event)
     {
         final ModeManager modeManager = this.surface.getModeManager ();
-        final Modes activeMode = modeManager.getActiveModeId ();
+        final Modes activeMode = modeManager.getActiveId ();
 
         super.executeNormal (event);
 
-        final Modes newMode = modeManager.getActiveModeId ();
+        final Modes newMode = modeManager.getActiveId ();
         if (activeMode == newMode)
             return;
 

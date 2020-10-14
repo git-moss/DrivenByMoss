@@ -83,9 +83,9 @@ public class PlayConfigurationMode extends BaseMode
 
             case 7:
                 if (inc)
-                    ((PlayView) this.surface.getViewManager ().getView (Views.PLAY)).octaveUp ();
+                    ((PlayView) this.surface.getViewManager ().get (Views.PLAY)).octaveUp ();
                 else
-                    ((PlayView) this.surface.getViewManager ().getView (Views.PLAY)).octaveDown ();
+                    ((PlayView) this.surface.getViewManager ().get (Views.PLAY)).octaveDown ();
                 break;
 
             default:
@@ -132,7 +132,7 @@ public class PlayConfigurationMode extends BaseMode
                     break;
 
                 case 7:
-                    ((PlayView) this.surface.getViewManager ().getView (Views.PLAY)).resetOctave ();
+                    ((PlayView) this.surface.getViewManager ().get (Views.PLAY)).resetOctave ();
                     break;
 
                 default:
@@ -191,7 +191,7 @@ public class PlayConfigurationMode extends BaseMode
 
     private void update ()
     {
-        this.surface.getViewManager ().getView (Views.PLAY).updateNoteMapping ();
+        this.surface.getViewManager ().get (Views.PLAY).updateNoteMapping ();
         final MaschineConfiguration config = this.surface.getConfiguration ();
         final Scales scales = this.model.getScales ();
         config.setScale (scales.getScale ().getName ());

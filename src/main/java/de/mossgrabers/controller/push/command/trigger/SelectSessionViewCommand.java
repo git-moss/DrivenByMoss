@@ -56,24 +56,24 @@ public class SelectSessionViewCommand extends AbstractTriggerCommand<PushControl
 
             final ViewManager viewManager = this.surface.getViewManager ();
             final ModeManager modeManager = this.surface.getModeManager ();
-            if (Views.isSessionView (viewManager.getActiveViewId ()))
+            if (Views.isSessionView (viewManager.getActiveId ()))
             {
-                if (modeManager.isActiveOrTempMode (Modes.SESSION_VIEW_SELECT))
-                    modeManager.restoreMode ();
+                if (modeManager.isActiveOrTemp (Modes.SESSION_VIEW_SELECT))
+                    modeManager.restore ();
                 else
-                    modeManager.setActiveMode (Modes.SESSION_VIEW_SELECT);
+                    modeManager.setActive (Modes.SESSION_VIEW_SELECT);
                 return;
             }
 
             // Switch to the preferred session view and display scene/clip mode if enabled
             final PushConfiguration configuration = this.surface.getConfiguration ();
-            viewManager.setActiveView (configuration.isScenesClipViewSelected () ? Views.SCENE_PLAY : Views.SESSION);
+            viewManager.setActive (configuration.isScenesClipViewSelected () ? Views.SCENE_PLAY : Views.SESSION);
             if (configuration.shouldDisplayScenesOrClips ())
-                modeManager.setActiveMode (Modes.SESSION);
+                modeManager.setActive (Modes.SESSION);
             return;
         }
 
         if (event == ButtonEvent.UP && this.isTemporary)
-            this.surface.getViewManager ().restoreView ();
+            this.surface.getViewManager ().restore ();
     }
 }

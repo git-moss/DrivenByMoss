@@ -48,10 +48,10 @@ public class SetupCommand extends AbstractTriggerCommand<PushControlSurface, Pus
 
         final Modes mode = this.getMode ();
 
-        if (modeManager.isActiveOrTempMode (mode))
-            modeManager.restoreMode ();
+        if (modeManager.isActiveOrTemp (mode))
+            modeManager.restore ();
         else
-            modeManager.setActiveMode (mode);
+            modeManager.setActive (mode);
     }
 
 

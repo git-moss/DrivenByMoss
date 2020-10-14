@@ -52,9 +52,9 @@ public class DeviceModeCommand extends AbstractTriggerCommand<SLMkIIIControlSurf
             browser.stopBrowsing (!this.surface.isShiftPressed ());
 
         final ModeManager modeManager = this.surface.getModeManager ();
-        if (modeManager.isActiveMode (Modes.DEVICE_PARAMS))
+        if (modeManager.isActive (Modes.DEVICE_PARAMS))
         {
-            final ParametersMode parametersMode = (ParametersMode) modeManager.getMode (Modes.DEVICE_PARAMS);
+            final ParametersMode parametersMode = (ParametersMode) modeManager.get (Modes.DEVICE_PARAMS);
             parametersMode.setShowDevices (!parametersMode.isShowDevices ());
             return;
         }

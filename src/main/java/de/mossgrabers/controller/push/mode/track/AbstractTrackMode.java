@@ -149,32 +149,32 @@ public abstract class AbstractTrackMode extends BaseMode
         switch (index)
         {
             case 0:
-                if (modeManager.isActiveOrTempMode (Modes.VOLUME))
-                    modeManager.setActiveMode (Modes.TRACK);
+                if (modeManager.isActiveOrTemp (Modes.VOLUME))
+                    modeManager.setActive (Modes.TRACK);
                 else
-                    modeManager.setActiveMode (Modes.VOLUME);
+                    modeManager.setActive (Modes.VOLUME);
                 break;
 
             case 1:
-                if (modeManager.isActiveOrTempMode (Modes.PAN))
-                    modeManager.setActiveMode (Modes.TRACK);
+                if (modeManager.isActiveOrTemp (Modes.PAN))
+                    modeManager.setActive (Modes.TRACK);
                 else
-                    modeManager.setActiveMode (Modes.PAN);
+                    modeManager.setActive (Modes.PAN);
                 break;
 
             case 2:
-                if (modeManager.isActiveOrTempMode (Modes.CROSSFADER))
-                    modeManager.setActiveMode (Modes.TRACK);
+                if (modeManager.isActiveOrTemp (Modes.CROSSFADER))
+                    modeManager.setActive (Modes.TRACK);
                 else
-                    modeManager.setActiveMode (Modes.CROSSFADER);
+                    modeManager.setActive (Modes.CROSSFADER);
                 break;
 
             case 3:
                 if (!this.model.isEffectTrackBankActive ())
                 {
                     config.setSendsAreToggled (!config.isSendsAreToggled ());
-                    if (!modeManager.isActiveOrTempMode (Modes.TRACK))
-                        modeManager.setActiveMode (Modes.get (Modes.SEND1, config.isSendsAreToggled () ? 4 : 0));
+                    if (!modeManager.isActiveOrTemp (Modes.TRACK))
+                        modeManager.setActive (Modes.get (Modes.SEND1, config.isSendsAreToggled () ? 4 : 0));
                 }
                 break;
 
@@ -193,7 +193,7 @@ public abstract class AbstractTrackMode extends BaseMode
                 break;
         }
 
-        config.setDebugMode (modeManager.getActiveOrTempModeId ());
+        config.setDebugMode (modeManager.getActiveOrTempId ());
     }
 
 
@@ -209,7 +209,7 @@ public abstract class AbstractTrackMode extends BaseMode
             return;
         final Modes si = Modes.get (Modes.SEND1, sendIndex);
         final ModeManager modeManager = this.surface.getModeManager ();
-        modeManager.setActiveMode (modeManager.isActiveOrTempMode (si) ? Modes.TRACK : si);
+        modeManager.setActive (modeManager.isActiveOrTemp (si) ? Modes.TRACK : si);
     }
 
 
@@ -258,25 +258,25 @@ public abstract class AbstractTrackMode extends BaseMode
                 switch (index)
                 {
                     case 0:
-                        return modeManager.isActiveOrTempMode (Modes.VOLUME) ? PushColorManager.PUSH2_COLOR2_WHITE : PushColorManager.PUSH2_COLOR_BLACK;
+                        return modeManager.isActiveOrTemp (Modes.VOLUME) ? PushColorManager.PUSH2_COLOR2_WHITE : PushColorManager.PUSH2_COLOR_BLACK;
                     case 1:
-                        return modeManager.isActiveOrTempMode (Modes.PAN) ? PushColorManager.PUSH2_COLOR2_WHITE : PushColorManager.PUSH2_COLOR_BLACK;
+                        return modeManager.isActiveOrTemp (Modes.PAN) ? PushColorManager.PUSH2_COLOR2_WHITE : PushColorManager.PUSH2_COLOR_BLACK;
                     case 2:
-                        return modeManager.isActiveOrTempMode (Modes.CROSSFADER) ? PushColorManager.PUSH2_COLOR2_WHITE : PushColorManager.PUSH2_COLOR_BLACK;
+                        return modeManager.isActiveOrTemp (Modes.CROSSFADER) ? PushColorManager.PUSH2_COLOR2_WHITE : PushColorManager.PUSH2_COLOR_BLACK;
                     case 4:
                         final Modes sendMode1 = sendsAreToggled ? Modes.SEND5 : Modes.SEND1;
-                        return modeManager.isActiveOrTempMode (sendMode1) ? PushColorManager.PUSH2_COLOR2_WHITE : PushColorManager.PUSH2_COLOR_BLACK;
+                        return modeManager.isActiveOrTemp (sendMode1) ? PushColorManager.PUSH2_COLOR2_WHITE : PushColorManager.PUSH2_COLOR_BLACK;
                     case 5:
                         final Modes sendMode2 = sendsAreToggled ? Modes.SEND6 : Modes.SEND2;
-                        return modeManager.isActiveOrTempMode (sendMode2) ? PushColorManager.PUSH2_COLOR2_WHITE : PushColorManager.PUSH2_COLOR_BLACK;
+                        return modeManager.isActiveOrTemp (sendMode2) ? PushColorManager.PUSH2_COLOR2_WHITE : PushColorManager.PUSH2_COLOR_BLACK;
                     case 6:
                         final Modes sendMode3 = sendsAreToggled ? Modes.SEND7 : Modes.SEND3;
-                        return modeManager.isActiveOrTempMode (sendMode3) ? PushColorManager.PUSH2_COLOR2_WHITE : PushColorManager.PUSH2_COLOR_BLACK;
+                        return modeManager.isActiveOrTemp (sendMode3) ? PushColorManager.PUSH2_COLOR2_WHITE : PushColorManager.PUSH2_COLOR_BLACK;
                     case 7:
                         if (this.lastSendIsAccessible ())
                         {
                             final Modes sendMode4 = sendsAreToggled ? Modes.SEND8 : Modes.SEND4;
-                            return modeManager.isActiveOrTempMode (sendMode4) ? PushColorManager.PUSH2_COLOR2_WHITE : PushColorManager.PUSH2_COLOR_BLACK;
+                            return modeManager.isActiveOrTemp (sendMode4) ? PushColorManager.PUSH2_COLOR2_WHITE : PushColorManager.PUSH2_COLOR_BLACK;
                         }
                         return tb.hasParent () ? PushColorManager.PUSH2_COLOR2_WHITE : PushColorManager.PUSH2_COLOR_BLACK;
                     default:

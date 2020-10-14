@@ -88,7 +88,7 @@ public class SendMode extends AbstractTrackMode
 
         if (this.model.isEffectTrackBankActive ())
         {
-            this.surface.getModeManager ().setActiveMode (Modes.TRACK);
+            this.surface.getModeManager ().setActive (Modes.TRACK);
             return;
         }
 
@@ -122,7 +122,7 @@ public class SendMode extends AbstractTrackMode
     {
         if (this.model.isEffectTrackBankActive ())
         {
-            this.surface.getModeManager ().setActiveMode (Modes.TRACK);
+            this.surface.getModeManager ().setActive (Modes.TRACK);
             return true;
         }
 
@@ -160,7 +160,7 @@ public class SendMode extends AbstractTrackMode
 
         if (this.model.isEffectTrackBankActive ())
         {
-            this.surface.getModeManager ().setActiveMode (Modes.TRACK);
+            this.surface.getModeManager ().setActive (Modes.TRACK);
             return;
         }
 
@@ -190,6 +190,6 @@ public class SendMode extends AbstractTrackMode
 
     private int getCurrentSendIndex ()
     {
-        return this.surface.getModeManager ().getActiveOrTempModeId ().ordinal () - Modes.SEND1.ordinal ();
+        return this.surface.getModeManager ().getActiveOrTempId ().ordinal () - Modes.SEND1.ordinal ();
     }
 }

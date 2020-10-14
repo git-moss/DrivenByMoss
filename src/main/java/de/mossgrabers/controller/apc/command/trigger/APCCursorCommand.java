@@ -37,7 +37,7 @@ public class APCCursorCommand extends CursorCommand<APCControlSurface, APCConfig
     @Override
     protected void scrollUp ()
     {
-        if (this.surface.getModeManager ().isActiveMode (Modes.BROWSER))
+        if (this.surface.getModeManager ().isActive (Modes.BROWSER))
         {
             this.model.getBrowser ().selectPreviousResult ();
             return;
@@ -52,7 +52,7 @@ public class APCCursorCommand extends CursorCommand<APCControlSurface, APCConfig
     @Override
     protected void scrollDown ()
     {
-        if (this.surface.getModeManager ().isActiveMode (Modes.BROWSER))
+        if (this.surface.getModeManager ().isActive (Modes.BROWSER))
         {
             this.model.getBrowser ().selectNextResult ();
             return;

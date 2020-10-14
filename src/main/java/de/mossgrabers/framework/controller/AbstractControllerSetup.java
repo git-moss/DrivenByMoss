@@ -24,7 +24,8 @@ import de.mossgrabers.framework.daw.IModel;
 import de.mossgrabers.framework.daw.constants.EditCapability;
 import de.mossgrabers.framework.daw.midi.INoteInput;
 import de.mossgrabers.framework.daw.midi.INoteRepeat;
-import de.mossgrabers.framework.mode.Mode;
+import de.mossgrabers.framework.featuregroup.Mode;
+import de.mossgrabers.framework.featuregroup.View;
 import de.mossgrabers.framework.mode.ModeManager;
 import de.mossgrabers.framework.mode.Modes;
 import de.mossgrabers.framework.scale.Scales;
@@ -33,7 +34,6 @@ import de.mossgrabers.framework.utils.ConsoleLogger;
 import de.mossgrabers.framework.utils.IntConsumerSupplier;
 import de.mossgrabers.framework.utils.TestCallback;
 import de.mossgrabers.framework.utils.TestFramework;
-import de.mossgrabers.framework.view.View;
 import de.mossgrabers.framework.view.ViewManager;
 import de.mossgrabers.framework.view.Views;
 
@@ -181,20 +181,20 @@ public abstract class AbstractControllerSetup<S extends IControlSurface<C>, C ex
 
             for (final Views viewID: Views.values ())
             {
-                if (viewManager.getView (viewID) == null)
+                if (viewManager.get (viewID) == null)
                     continue;
 
                 for (final Modes modeID: Modes.values ())
                 {
-                    if (modeManager.getMode (modeID) == null)
+                    if (modeManager.get (modeID) == null)
                         continue;
 
                     framework.scheduleFunction ( () -> {
 
                         this.host.println ("- View " + viewID + " Mode " + modeID);
 
-                        viewManager.setActiveView (viewID);
-                        modeManager.setActiveMode (modeID);
+                        viewManager.setActive (viewID);
+                        modeManager.setActive (modeID);
 
                         for (final ButtonID buttonID: ButtonID.values ())
                         {
@@ -258,9 +258,9 @@ public abstract class AbstractControllerSetup<S extends IControlSurface<C>, C ex
 
             final ModeManager modeManager = this.getSurface ().getModeManager ();
             if (isActive.booleanValue ())
-                modeManager.setActiveMode (browserMode);
-            else if (modeManager.isActiveOrTempMode (browserMode))
-                modeManager.restoreMode ();
+                modeManager.setActive (browserMode);
+            else if (modeManager.isActiveOrTemp (browserMode))
+                modeManager.restore ();
 
         });
     }
@@ -278,13 +278,13 @@ public abstract class AbstractControllerSetup<S extends IControlSurface<C>, C ex
             final ViewManager viewManager = this.getSurface ().getViewManager ();
             if (isActive.booleanValue ())
             {
-                final Views previousViewId = viewManager.getPreviousViewId ();
-                viewManager.setActiveView (browserView);
-                if (viewManager.getPreviousViewId () == Views.SHIFT)
-                    viewManager.setPreviousView (previousViewId);
+                final Views previousViewId = viewManager.getPreviousId ();
+                viewManager.setActive (browserView);
+                if (viewManager.getPreviousId () == Views.SHIFT)
+                    viewManager.setPrevious (previousViewId);
             }
-            else if (viewManager.isActiveView (browserView))
-                viewManager.restoreView ();
+            else if (viewManager.isActive (browserView))
+                viewManager.restore ();
 
         });
     }
@@ -1245,7 +1245,7 @@ public abstract class AbstractControllerSetup<S extends IControlSurface<C>, C ex
     {
         for (final S surface: this.surfaces)
         {
-            final View view = surface.getViewManager ().getActiveView ();
+            final View view = surface.getViewManager ().getActive ();
             if (view != null)
                 view.updateNoteMapping ();
         }
@@ -1275,7 +1275,7 @@ public abstract class AbstractControllerSetup<S extends IControlSurface<C>, C ex
      */
     protected int getModeColor (final ButtonID buttonID)
     {
-        final Mode mode = this.getSurface ().getModeManager ().getActiveOrTempMode ();
+        final Mode mode = this.getSurface ().getModeManager ().getActiveOrTemp ();
         return mode == null ? 0 : mode.getButtonColor (buttonID);
     }
 
@@ -1288,7 +1288,7 @@ public abstract class AbstractControllerSetup<S extends IControlSurface<C>, C ex
      */
     protected int getViewColor (final ButtonID buttonID)
     {
-        final View view = this.getSurface ().getViewManager ().getActiveView ();
+        final View view = this.getSurface ().getViewManager ().getActive ();
         return view == null ? 0 : view.getButtonColor (buttonID);
     }
 

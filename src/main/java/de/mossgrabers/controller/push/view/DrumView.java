@@ -67,9 +67,9 @@ public class DrumView extends AbstractDrumView<PushControlSurface, PushConfigura
             return;
 
         final ModeManager modeManager = this.surface.getModeManager ();
-        final NoteMode noteMode = (NoteMode) modeManager.getMode (Modes.NOTE);
+        final NoteMode noteMode = (NoteMode) modeManager.get (Modes.NOTE);
         noteMode.setValues (clip, editMidiChannel, stepX, stepY);
-        modeManager.setActiveMode (Modes.NOTE);
+        modeManager.setActive (Modes.NOTE);
     }
 
 
@@ -117,8 +117,8 @@ public class DrumView extends AbstractDrumView<PushControlSurface, PushConfigura
 
         // Only activate layer mode if not one of the layer modes is already active
         final ModeManager modeManager = this.surface.getModeManager ();
-        if (!Modes.isLayerMode (modeManager.getActiveModeId ()))
-            modeManager.setActiveMode (Modes.DEVICE_LAYER);
+        if (!Modes.isLayerMode (modeManager.getActiveId ()))
+            modeManager.setActive (Modes.DEVICE_LAYER);
 
         drumPad.select ();
 

@@ -88,7 +88,7 @@ public class ParameterView extends BaseView
         // Flip row 2 and 1 to look the same as in the Bitwig device display
         final int selectedParameter = padIndex < 4 ? padIndex + 4 : padIndex - 4;
 
-        ((SelectedDeviceMode<?, ?>) this.surface.getModeManager ().getMode (Modes.DEVICE_PARAMS)).selectParameter (selectedParameter);
+        ((SelectedDeviceMode<?, ?>) this.surface.getModeManager ().get (Modes.DEVICE_PARAMS)).selectParameter (selectedParameter);
         this.model.getHost ().scheduleTask ( () -> {
 
             final StringBuilder message = new StringBuilder ();
@@ -128,7 +128,7 @@ public class ParameterView extends BaseView
         padGrid.lightEx (2, 0, doesExist && parameterBank.canScrollBackwards () ? MaschineColorManager.COLOR_SKIN : MaschineColorManager.COLOR_BLACK);
         padGrid.lightEx (3, 0, doesExist && parameterBank.canScrollForwards () ? MaschineColorManager.COLOR_SKIN : MaschineColorManager.COLOR_BLACK);
 
-        final SelectedDeviceMode<?, ?> deviceMode = (SelectedDeviceMode<?, ?>) this.surface.getModeManager ().getMode (Modes.DEVICE_PARAMS);
+        final SelectedDeviceMode<?, ?> deviceMode = (SelectedDeviceMode<?, ?>) this.surface.getModeManager ().get (Modes.DEVICE_PARAMS);
         for (int i = 0; i < 8; i++)
         {
             final int x = i % 4;

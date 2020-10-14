@@ -52,7 +52,7 @@ public class PlaySelectCommand extends ViewMultiSelectCommand<FireControlSurface
         if (selectedTrack != null)
         {
             final ViewManager viewManager = this.surface.getViewManager ();
-            viewManager.setPreferredView (selectedTrack.getPosition (), viewManager.getActiveViewId ());
+            viewManager.setPreferredView (selectedTrack.getPosition (), viewManager.getActiveId ());
         }
     }
 

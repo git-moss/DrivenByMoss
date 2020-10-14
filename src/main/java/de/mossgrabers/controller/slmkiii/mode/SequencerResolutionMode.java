@@ -51,9 +51,9 @@ public class SequencerResolutionMode extends BaseMode
         if (event != ButtonEvent.UP)
             return;
 
-        final DrumView drumView = (DrumView) this.surface.getViewManager ().getView (Views.DRUM);
+        final DrumView drumView = (DrumView) this.surface.getViewManager ().get (Views.DRUM);
         drumView.getClip ().setStepLength (Resolution.getValueAt (index));
-        this.surface.getModeManager ().restoreMode ();
+        this.surface.getModeManager ().restore ();
     }
 
 
@@ -69,7 +69,7 @@ public class SequencerResolutionMode extends BaseMode
     @Override
     public int getButtonColor (final ButtonID buttonID)
     {
-        final DrumView drumView = (DrumView) this.surface.getViewManager ().getView (Views.DRUM);
+        final DrumView drumView = (DrumView) this.surface.getViewManager ().get (Views.DRUM);
         final int match = Resolution.getMatch (drumView.getClip ().getStepLength ());
         final int index = buttonID.ordinal () - ButtonID.ROW1_1.ordinal ();
         return match == index ? SLMkIIIColorManager.SLMKIII_PINK : SLMkIIIColorManager.SLMKIII_DARK_GREY;
@@ -83,7 +83,7 @@ public class SequencerResolutionMode extends BaseMode
         final SLMkIIIDisplay d = this.surface.getDisplay ();
         d.clear ();
 
-        final DrumView drumView = (DrumView) this.surface.getViewManager ().getView (Views.DRUM);
+        final DrumView drumView = (DrumView) this.surface.getViewManager ().get (Views.DRUM);
 
         final int match = Resolution.getMatch (drumView.getClip ().getStepLength ());
 

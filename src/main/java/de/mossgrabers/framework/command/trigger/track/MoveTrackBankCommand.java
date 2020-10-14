@@ -57,7 +57,7 @@ public class MoveTrackBankCommand<S extends IControlSurface<C>, C extends Config
             return;
 
         final ModeManager modeManager = this.surface.getModeManager ();
-        if (modeManager.isActiveOrTempMode (this.deviceMode))
+        if (modeManager.isActiveOrTemp (this.deviceMode))
         {
             final ICursorDevice cursorDevice = this.model.getCursorDevice ();
             if (this.moveBy1)
@@ -73,7 +73,7 @@ public class MoveTrackBankCommand<S extends IControlSurface<C>, C extends Config
             return;
         }
 
-        if (modeManager.isActiveOrTempMode (Modes.MARKERS))
+        if (modeManager.isActiveOrTemp (Modes.MARKERS))
         {
             this.handleBankMovement (this.model.getMarkerBank ());
             return;

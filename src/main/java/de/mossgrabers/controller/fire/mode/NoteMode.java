@@ -15,11 +15,11 @@ import de.mossgrabers.framework.daw.IModel;
 import de.mossgrabers.framework.daw.INoteClip;
 import de.mossgrabers.framework.daw.IStepInfo;
 import de.mossgrabers.framework.daw.constants.EditCapability;
+import de.mossgrabers.framework.featuregroup.View;
 import de.mossgrabers.framework.mode.AbstractMode;
 import de.mossgrabers.framework.scale.Scales;
 import de.mossgrabers.framework.utils.StringUtils;
 import de.mossgrabers.framework.view.AbstractSequencerView;
-import de.mossgrabers.framework.view.View;
 
 import java.util.List;
 
@@ -144,7 +144,7 @@ public class NoteMode extends AbstractMode<FireControlSurface, FireConfiguration
      */
     private void preventNoteDeletion ()
     {
-        final View activeView = this.surface.getViewManager ().getActiveView ();
+        final View activeView = this.surface.getViewManager ().getActive ();
         if (activeView instanceof AbstractSequencerView)
             AbstractSequencerView.class.cast (activeView).setNoteEdited ();
     }

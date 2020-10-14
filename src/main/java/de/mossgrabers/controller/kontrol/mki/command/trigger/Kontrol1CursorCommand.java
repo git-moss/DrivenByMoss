@@ -7,7 +7,7 @@ package de.mossgrabers.controller.kontrol.mki.command.trigger;
 import de.mossgrabers.controller.kontrol.mki.Kontrol1Configuration;
 import de.mossgrabers.controller.kontrol.mki.controller.Kontrol1ControlSurface;
 import de.mossgrabers.framework.daw.IModel;
-import de.mossgrabers.framework.mode.Mode;
+import de.mossgrabers.framework.featuregroup.Mode;
 
 
 /**
@@ -34,7 +34,7 @@ public class Kontrol1CursorCommand extends de.mossgrabers.framework.command.trig
     @Override
     protected void scrollUp ()
     {
-        final Mode mode = this.surface.getModeManager ().getActiveOrTempMode ();
+        final Mode mode = this.surface.getModeManager ().getActiveOrTemp ();
         if (mode != null)
             mode.selectNextItemPage ();
     }
@@ -44,7 +44,7 @@ public class Kontrol1CursorCommand extends de.mossgrabers.framework.command.trig
     @Override
     protected void scrollDown ()
     {
-        final Mode mode = this.surface.getModeManager ().getActiveOrTempMode ();
+        final Mode mode = this.surface.getModeManager ().getActiveOrTemp ();
         if (mode != null)
             mode.selectPreviousItemPage ();
     }

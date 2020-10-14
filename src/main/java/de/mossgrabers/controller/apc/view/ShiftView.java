@@ -152,7 +152,7 @@ public class ShiftView extends AbstractView<APCControlSurface, APCConfiguration>
         this.model.getScales ().setScaleOffset (pos);
         this.surface.getConfiguration ().setScaleBase (Scales.BASES[pos]);
         this.surface.getDisplay ().notify (Scales.BASES[pos]);
-        this.surface.getViewManager ().getActiveView ().updateNoteMapping ();
+        this.surface.getViewManager ().getActive ().updateNoteMapping ();
     }
 
 
@@ -166,8 +166,8 @@ public class ShiftView extends AbstractView<APCControlSurface, APCConfiguration>
         final int index = buttonID.ordinal () - ButtonID.SCENE1.ordinal ();
 
         final ViewManager viewManager = this.surface.getViewManager ();
-        viewManager.setPreviousView (VIEW_IDS[index]);
-        this.surface.getDisplay ().notify (viewManager.getView (VIEW_IDS[index]).getName ());
+        viewManager.setPrevious (VIEW_IDS[index]);
+        this.surface.getDisplay ().notify (viewManager.get (VIEW_IDS[index]).getName ());
 
         if (Views.SESSION.equals (VIEW_IDS[index]))
             return;
@@ -182,7 +182,7 @@ public class ShiftView extends AbstractView<APCControlSurface, APCConfiguration>
     @Override
     public String getButtonColorID (final ButtonID buttonID)
     {
-        final Views previousViewId = this.surface.getViewManager ().getPreviousViewId ();
+        final Views previousViewId = this.surface.getViewManager ().getPreviousId ();
         if (buttonID == ButtonID.SCENE1)
             return Views.SESSION.equals (previousViewId) ? APCColorManager.COLOR_VIEW_SELECTED : APCColorManager.COLOR_VIEW_UNSELECTED;
         if (buttonID == ButtonID.SCENE2)
