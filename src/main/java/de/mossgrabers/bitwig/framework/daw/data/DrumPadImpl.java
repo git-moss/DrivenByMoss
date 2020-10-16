@@ -24,7 +24,7 @@ public class DrumPadImpl extends LayerImpl implements IDrumPad
 
     /**
      * Constructor.
-     * 
+     *
      * @param drumPadBankImpl The bank to which this drum pad belongs
      * @param host The DAW host
      * @param valueChanger The valueChanger

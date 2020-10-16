@@ -82,19 +82,19 @@ import de.mossgrabers.framework.daw.data.bank.ITrackBank;
 import de.mossgrabers.framework.daw.midi.IMidiAccess;
 import de.mossgrabers.framework.daw.midi.IMidiInput;
 import de.mossgrabers.framework.daw.midi.IMidiOutput;
-import de.mossgrabers.framework.featuregroup.View;
+import de.mossgrabers.framework.featuregroup.AbstractView;
+import de.mossgrabers.framework.featuregroup.IView;
+import de.mossgrabers.framework.featuregroup.ModeManager;
+import de.mossgrabers.framework.featuregroup.ViewManager;
 import de.mossgrabers.framework.mode.DummyMode;
-import de.mossgrabers.framework.mode.ModeManager;
 import de.mossgrabers.framework.mode.Modes;
 import de.mossgrabers.framework.mode.track.MuteMode;
 import de.mossgrabers.framework.mode.track.PanMode;
 import de.mossgrabers.framework.mode.track.SoloMode;
 import de.mossgrabers.framework.mode.track.VolumeMode;
 import de.mossgrabers.framework.utils.ButtonEvent;
-import de.mossgrabers.framework.view.AbstractView;
 import de.mossgrabers.framework.view.ShuffleView;
 import de.mossgrabers.framework.view.TempoView;
-import de.mossgrabers.framework.view.ViewManager;
 import de.mossgrabers.framework.view.Views;
 
 import java.util.Map.Entry;
@@ -452,7 +452,7 @@ public class LaunchpadControllerSetup extends AbstractControllerSetup<LaunchpadC
         if (viewManager.isActive (Views.RAINDROPS))
             return LaunchpadColorManager.LAUNCHPAD_COLOR_GREEN;
 
-        if (Views.isNoteView (viewManager.getActiveId ()))
+        if (Views.isNoteView (viewManager.getActiveID ()))
             return LaunchpadColorManager.LAUNCHPAD_COLOR_OCEAN_HI;
 
         return LaunchpadColorManager.LAUNCHPAD_COLOR_GREY_LO;
@@ -482,19 +482,19 @@ public class LaunchpadControllerSetup extends AbstractControllerSetup<LaunchpadC
         if (!track.doesExist ())
             return LaunchpadColorManager.LAUNCHPAD_COLOR_BLACK;
 
-        if (modeManager.isActiveOrTemp (Modes.REC_ARM))
+        if (modeManager.isActive (Modes.REC_ARM))
             return track.isRecArm () ? LaunchpadColorManager.LAUNCHPAD_COLOR_RED_HI : LaunchpadColorManager.LAUNCHPAD_COLOR_RED_LO;
 
-        if (modeManager.isActiveOrTemp (Modes.TRACK_SELECT))
+        if (modeManager.isActive (Modes.TRACK_SELECT))
             return track.isSelected () ? LaunchpadColorManager.LAUNCHPAD_COLOR_GREEN_HI : LaunchpadColorManager.LAUNCHPAD_COLOR_GREEN_LO;
 
-        if (modeManager.isActiveOrTemp (Modes.MUTE))
+        if (modeManager.isActive (Modes.MUTE))
             return track.isMute () ? LaunchpadColorManager.LAUNCHPAD_COLOR_YELLOW_HI : LaunchpadColorManager.LAUNCHPAD_COLOR_YELLOW_LO;
 
-        if (modeManager.isActiveOrTemp (Modes.SOLO))
+        if (modeManager.isActive (Modes.SOLO))
             return track.isSolo () ? LaunchpadColorManager.LAUNCHPAD_COLOR_BLUE_HI : LaunchpadColorManager.LAUNCHPAD_COLOR_BLUE_LO;
 
-        if (modeManager.isActiveOrTemp (Modes.STOP_CLIP))
+        if (modeManager.isActive (Modes.STOP_CLIP))
             return surface.isPressed (ButtonID.get (ButtonID.PAD1, index)) ? LaunchpadColorManager.LAUNCHPAD_COLOR_RED : LaunchpadColorManager.LAUNCHPAD_COLOR_ROSE;
 
         return this.colorManager.getColorIndex (DAWColor.getColorIndex (track.getColor ()));
@@ -510,19 +510,19 @@ public class LaunchpadControllerSetup extends AbstractControllerSetup<LaunchpadC
         switch (buttonID)
         {
             case REC_ARM:
-                if (modeManager.isActiveOrTemp (Modes.REC_ARM))
+                if (modeManager.isActive (Modes.REC_ARM))
                     return LaunchpadColorManager.LAUNCHPAD_COLOR_RED;
                 return LaunchpadColorManager.LAUNCHPAD_COLOR_GREY_LO;
             case TRACK:
-                if (modeManager.isActiveOrTemp (Modes.TRACK_SELECT))
+                if (modeManager.isActive (Modes.TRACK_SELECT))
                     return LaunchpadColorManager.LAUNCHPAD_COLOR_GREEN;
                 return LaunchpadColorManager.LAUNCHPAD_COLOR_GREY_LO;
             case MUTE:
-                if (modeManager.isActiveOrTemp (Modes.MUTE))
+                if (modeManager.isActive (Modes.MUTE))
                     return LaunchpadColorManager.LAUNCHPAD_COLOR_YELLOW;
                 return LaunchpadColorManager.LAUNCHPAD_COLOR_GREY_LO;
             case SOLO:
-                if (modeManager.isActiveOrTemp (Modes.SOLO))
+                if (modeManager.isActive (Modes.SOLO))
                     return LaunchpadColorManager.LAUNCHPAD_COLOR_BLUE;
                 return LaunchpadColorManager.LAUNCHPAD_COLOR_GREY_LO;
             case VOLUME:
@@ -538,7 +538,7 @@ public class LaunchpadControllerSetup extends AbstractControllerSetup<LaunchpadC
                     return LaunchpadColorManager.LAUNCHPAD_COLOR_ORCHID;
                 return LaunchpadColorManager.LAUNCHPAD_COLOR_GREY_LO;
             case STOP_CLIP:
-                if (modeManager.isActiveOrTemp (Modes.STOP_CLIP))
+                if (modeManager.isActive (Modes.STOP_CLIP))
                     return LaunchpadColorManager.LAUNCHPAD_COLOR_ROSE;
                 return LaunchpadColorManager.LAUNCHPAD_COLOR_GREY_LO;
             default:
@@ -782,7 +782,7 @@ public class LaunchpadControllerSetup extends AbstractControllerSetup<LaunchpadC
         final ITrackBank tb = this.model.getTrackBank ();
         final ITrackBank tbe = this.model.getEffectTrackBank ();
         final ICursorDevice cursorDevice = this.model.getCursorDevice ();
-        final View view = viewManager.getActive ();
+        final IView view = viewManager.getActive ();
         final int selSend = view instanceof SendsView ? ((SendsView) view).getSelectedSend () : -1;
         final boolean isSession = view instanceof SessionView && !isVolume && !isPan && !isSends;
 
@@ -854,7 +854,7 @@ public class LaunchpadControllerSetup extends AbstractControllerSetup<LaunchpadC
     private int getViewColor ()
     {
         final LaunchpadControlSurface surface = this.getSurface ();
-        switch (surface.getViewManager ().getActiveId ())
+        switch (surface.getViewManager ().getActiveID ())
         {
             case SESSION:
             case TRACK_VOLUME:
@@ -919,13 +919,13 @@ public class LaunchpadControllerSetup extends AbstractControllerSetup<LaunchpadC
         }
 
         final ModeManager modeManager = this.getSurface ().getModeManager ();
-        if (modeManager.isActiveOrTemp (Modes.REC_ARM))
+        if (modeManager.isActive (Modes.REC_ARM))
             track.toggleRecArm ();
-        else if (modeManager.isActiveOrTemp (Modes.MUTE))
+        else if (modeManager.isActive (Modes.MUTE))
             track.toggleMute ();
-        else if (modeManager.isActiveOrTemp (Modes.SOLO))
+        else if (modeManager.isActive (Modes.SOLO))
             track.toggleSolo ();
-        else if (modeManager.isActiveOrTemp (Modes.STOP_CLIP))
+        else if (modeManager.isActive (Modes.STOP_CLIP))
             track.stop ();
         else
             track.select ();

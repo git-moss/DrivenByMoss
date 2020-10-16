@@ -9,7 +9,7 @@ import de.mossgrabers.controller.apc.controller.APCControlSurface;
 import de.mossgrabers.framework.daw.IModel;
 import de.mossgrabers.framework.daw.data.IItem;
 import de.mossgrabers.framework.daw.data.bank.IBank;
-import de.mossgrabers.framework.mode.AbstractMode;
+import de.mossgrabers.framework.featuregroup.AbstractMode;
 import de.mossgrabers.framework.utils.ButtonEvent;
 
 import java.util.Date;
@@ -41,8 +41,6 @@ public abstract class BaseMode extends AbstractMode<APCControlSurface, APCConfig
     public BaseMode (final String name, final APCControlSurface surface, final IModel model, final int ledMode, final int defaultValue, final IBank<? extends IItem> bank)
     {
         super (name, surface, model, false, bank, DEFAULT_KNOB_IDS);
-
-        this.isTemporary = false;
 
         this.ledMode = ledMode;
         this.defaultValue = defaultValue;

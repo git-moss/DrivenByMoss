@@ -41,7 +41,7 @@ import de.mossgrabers.framework.daw.data.bank.ITrackBank;
 import de.mossgrabers.framework.daw.midi.IMidiAccess;
 import de.mossgrabers.framework.daw.midi.IMidiInput;
 import de.mossgrabers.framework.daw.midi.IMidiOutput;
-import de.mossgrabers.framework.mode.ModeManager;
+import de.mossgrabers.framework.featuregroup.ModeManager;
 import de.mossgrabers.framework.mode.Modes;
 import de.mossgrabers.framework.mode.device.BrowserMode;
 import de.mossgrabers.framework.mode.device.ParameterMode;
@@ -228,7 +228,7 @@ public class GenericFlexiControllerSetup extends AbstractControllerSetup<Generic
         modeManager.register (Modes.DEVICE_PARAMS, new ParameterMode<> (surface, this.model, true));
         modeManager.register (Modes.BROWSER, new BrowserMode<> (surface, this.model));
 
-        modeManager.setDefault (Modes.VOLUME);
+        modeManager.setDefaultID (Modes.VOLUME);
     }
 
 

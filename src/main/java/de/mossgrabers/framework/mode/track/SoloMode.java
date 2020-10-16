@@ -28,6 +28,5 @@ public class SoloMode<S extends IControlSurface<C>, C extends Configuration> ext
     public SoloMode (final S surface, final IModel model)
     {
         super ("Solo", surface, model, true);
-        this.isTemporary = false;
     }
 }

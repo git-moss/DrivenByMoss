@@ -8,7 +8,7 @@ import de.mossgrabers.controller.sl.SLConfiguration;
 import de.mossgrabers.controller.sl.controller.SLControlSurface;
 import de.mossgrabers.framework.controller.display.ITextDisplay;
 import de.mossgrabers.framework.daw.IModel;
-import de.mossgrabers.framework.mode.AbstractMode;
+import de.mossgrabers.framework.featuregroup.AbstractMode;
 import de.mossgrabers.framework.utils.ButtonEvent;
 
 
@@ -28,7 +28,6 @@ public class PlayOptionsMode extends AbstractMode<SLControlSurface, SLConfigurat
     public PlayOptionsMode (final SLControlSurface surface, final IModel model)
     {
         super ("Play options", surface, model);
-        this.isTemporary = false;
     }
 
 

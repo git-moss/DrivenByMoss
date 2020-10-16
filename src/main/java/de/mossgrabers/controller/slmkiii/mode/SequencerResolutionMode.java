@@ -31,8 +31,6 @@ public class SequencerResolutionMode extends BaseMode
     public SequencerResolutionMode (final SLMkIIIControlSurface surface, final IModel model)
     {
         super ("Sequencer Resolution", surface, model);
-
-        this.isTemporary = true;
     }
 
 

@@ -10,7 +10,8 @@ import de.mossgrabers.framework.controller.color.ColorIndexException;
 import de.mossgrabers.framework.controller.color.ColorManager;
 import de.mossgrabers.framework.controller.grid.IPadGrid;
 import de.mossgrabers.framework.daw.DAWColor;
-import de.mossgrabers.framework.mode.AbstractMode;
+import de.mossgrabers.framework.featuregroup.AbstractFeatureGroup;
+import de.mossgrabers.framework.featuregroup.AbstractMode;
 import de.mossgrabers.framework.scale.Scales;
 import de.mossgrabers.framework.view.AbstractDrumView;
 import de.mossgrabers.framework.view.AbstractPlayView;
@@ -453,8 +454,8 @@ public class PushColorManager extends ColorManager
         this.registerColorIndex (Scales.SCALE_COLOR_NOTE, isPush2 ? PUSH2_COLOR2_WHITE : PUSH1_COLOR2_WHITE);
         this.registerColorIndex (Scales.SCALE_COLOR_OUT_OF_SCALE, isPush2 ? PUSH2_COLOR_BLACK : PUSH1_COLOR_BLACK);
 
-        this.registerColorIndex (AbstractMode.BUTTON_COLOR_OFF, isPush2 ? PUSH2_COLOR_BLACK : PUSH1_COLOR_BLACK);
-        this.registerColorIndex (AbstractMode.BUTTON_COLOR_ON, isPush2 ? PUSH2_COLOR2_GREY_LO : PUSH1_COLOR_GREEN_LO);
+        this.registerColorIndex (AbstractFeatureGroup.BUTTON_COLOR_OFF, isPush2 ? PUSH2_COLOR_BLACK : PUSH1_COLOR_BLACK);
+        this.registerColorIndex (AbstractFeatureGroup.BUTTON_COLOR_ON, isPush2 ? PUSH2_COLOR2_GREY_LO : PUSH1_COLOR_GREEN_LO);
         this.registerColorIndex (AbstractMode.BUTTON_COLOR_HI, isPush2 ? PUSH2_COLOR2_WHITE : PUSH1_COLOR_YELLOW_MD);
         this.registerColorIndex (AbstractMode.BUTTON_COLOR2_ON, isPush2 ? PUSH2_COLOR2_GREY_LO : PUSH1_COLOR2_GREEN_LO);
         this.registerColorIndex (AbstractMode.BUTTON_COLOR2_HI, isPush2 ? PUSH2_COLOR2_WHITE : PUSH1_COLOR2_YELLOW_HI);

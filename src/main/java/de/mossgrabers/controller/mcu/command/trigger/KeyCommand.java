@@ -8,7 +8,7 @@ import de.mossgrabers.controller.mcu.MCUConfiguration;
 import de.mossgrabers.controller.mcu.controller.MCUControlSurface;
 import de.mossgrabers.framework.command.core.AbstractTriggerCommand;
 import de.mossgrabers.framework.daw.IModel;
-import de.mossgrabers.framework.mode.ModeManager;
+import de.mossgrabers.framework.featuregroup.ModeManager;
 import de.mossgrabers.framework.mode.Modes;
 import de.mossgrabers.framework.utils.ButtonEvent;
 
@@ -58,7 +58,7 @@ public class KeyCommand extends AbstractTriggerCommand<MCUControlSurface, MCUCon
         switch (this.key)
         {
             case ENTER:
-                if (modeManager.isActiveOrTemp (Modes.BROWSER))
+                if (modeManager.isActive (Modes.BROWSER))
                 {
                     this.model.getBrowser ().stopBrowsing (true);
                     modeManager.restore ();
@@ -68,7 +68,7 @@ public class KeyCommand extends AbstractTriggerCommand<MCUControlSurface, MCUCon
                 break;
 
             case ESCAPE:
-                if (modeManager.isActiveOrTemp (Modes.BROWSER))
+                if (modeManager.isActive (Modes.BROWSER))
                 {
                     this.model.getBrowser ().stopBrowsing (false);
                     modeManager.restore ();

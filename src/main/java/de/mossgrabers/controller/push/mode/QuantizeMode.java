@@ -15,7 +15,8 @@ import de.mossgrabers.framework.daw.constants.EditCapability;
 import de.mossgrabers.framework.daw.constants.RecordQuantization;
 import de.mossgrabers.framework.daw.data.ITrack;
 import de.mossgrabers.framework.daw.resource.ChannelType;
-import de.mossgrabers.framework.mode.AbstractMode;
+import de.mossgrabers.framework.featuregroup.AbstractFeatureGroup;
+import de.mossgrabers.framework.featuregroup.AbstractMode;
 import de.mossgrabers.framework.mode.Modes;
 import de.mossgrabers.framework.utils.ButtonEvent;
 
@@ -172,7 +173,7 @@ public class QuantizeMode extends BaseMode
             return;
 
         if (index == 1)
-            this.surface.getModeManager ().setActive (Modes.GROOVE);
+            this.surface.getModeManager ().setTemporary (Modes.GROOVE);
     }
 
 
@@ -187,10 +188,10 @@ public class QuantizeMode extends BaseMode
             final ITrack track = this.model.getSelectedTrack ();
             final RecordQuantization recQuant = track == null ? RecordQuantization.RES_OFF : track.getRecordQuantizationGrid ();
             if (index < values.length)
-                return values[index] == recQuant ? AbstractMode.BUTTON_COLOR_HI : AbstractMode.BUTTON_COLOR_ON;
+                return values[index] == recQuant ? AbstractMode.BUTTON_COLOR_HI : AbstractFeatureGroup.BUTTON_COLOR_ON;
             if (index == 6)
-                return track != null && track.isRecordQuantizationNoteLength () ? AbstractMode.BUTTON_COLOR_HI : AbstractMode.BUTTON_COLOR_ON;
-            return AbstractMode.BUTTON_COLOR_OFF;
+                return track != null && track.isRecordQuantizationNoteLength () ? AbstractMode.BUTTON_COLOR_HI : AbstractFeatureGroup.BUTTON_COLOR_ON;
+            return AbstractFeatureGroup.BUTTON_COLOR_OFF;
         }
 
         index = this.isButtonRow (1, buttonID);
@@ -199,10 +200,10 @@ public class QuantizeMode extends BaseMode
             if (index == 0)
                 return AbstractMode.BUTTON_COLOR_HI;
             if (index == 1)
-                return AbstractMode.BUTTON_COLOR_ON;
-            return AbstractMode.BUTTON_COLOR_OFF;
+                return AbstractFeatureGroup.BUTTON_COLOR_ON;
+            return AbstractFeatureGroup.BUTTON_COLOR_OFF;
         }
 
-        return AbstractMode.BUTTON_COLOR_OFF;
+        return AbstractFeatureGroup.BUTTON_COLOR_OFF;
     }
 }

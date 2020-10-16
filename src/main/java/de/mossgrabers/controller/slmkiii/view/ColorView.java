@@ -13,8 +13,8 @@ import de.mossgrabers.framework.daw.DAWColor;
 import de.mossgrabers.framework.daw.IModel;
 import de.mossgrabers.framework.daw.data.IMasterTrack;
 import de.mossgrabers.framework.daw.data.ITrack;
+import de.mossgrabers.framework.featuregroup.AbstractView;
 import de.mossgrabers.framework.view.AbstractSequencerView;
-import de.mossgrabers.framework.view.AbstractView;
 import de.mossgrabers.framework.view.Views;
 
 

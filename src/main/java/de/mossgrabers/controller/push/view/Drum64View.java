@@ -14,8 +14,8 @@ import de.mossgrabers.framework.daw.data.IDrumPad;
 import de.mossgrabers.framework.daw.data.IScene;
 import de.mossgrabers.framework.daw.data.bank.IDrumPadBank;
 import de.mossgrabers.framework.daw.data.bank.ISceneBank;
-import de.mossgrabers.framework.mode.AbstractMode;
-import de.mossgrabers.framework.mode.ModeManager;
+import de.mossgrabers.framework.featuregroup.AbstractFeatureGroup;
+import de.mossgrabers.framework.featuregroup.ModeManager;
 import de.mossgrabers.framework.mode.Modes;
 import de.mossgrabers.framework.utils.ButtonEvent;
 import de.mossgrabers.framework.view.AbstractDrum64View;
@@ -111,7 +111,7 @@ public class Drum64View extends AbstractDrum64View<PushControlSurface, PushConfi
 
         // Only activate layer mode if not one of the layer modes is already active
         final ModeManager modeManager = this.surface.getModeManager ();
-        if (!Modes.isLayerMode (modeManager.getActiveId ()))
+        if (!Modes.isLayerMode (modeManager.getActiveID ()))
             modeManager.setActive (Modes.DEVICE_LAYER);
 
         drumPad.select ();
@@ -123,7 +123,7 @@ public class Drum64View extends AbstractDrum64View<PushControlSurface, PushConfi
     public String getButtonColorID (final ButtonID buttonID)
     {
         if (!ButtonID.isSceneButton (buttonID))
-            return AbstractMode.BUTTON_COLOR_OFF;
+            return AbstractFeatureGroup.BUTTON_COLOR_OFF;
 
         if (this.surface.isPressed (ButtonID.REPEAT))
             return NoteRepeatSceneHelper.getButtonColorID (this.surface, buttonID);

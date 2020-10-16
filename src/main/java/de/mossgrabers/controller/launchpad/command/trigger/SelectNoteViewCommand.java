@@ -9,8 +9,8 @@ import de.mossgrabers.controller.launchpad.controller.LaunchpadControlSurface;
 import de.mossgrabers.framework.command.core.AbstractTriggerCommand;
 import de.mossgrabers.framework.daw.IModel;
 import de.mossgrabers.framework.daw.data.ITrack;
+import de.mossgrabers.framework.featuregroup.ViewManager;
 import de.mossgrabers.framework.utils.ButtonEvent;
-import de.mossgrabers.framework.view.ViewManager;
 import de.mossgrabers.framework.view.Views;
 
 
@@ -49,7 +49,7 @@ public class SelectNoteViewCommand extends AbstractTriggerCommand<LaunchpadContr
             return;
         }
 
-        Views viewID = viewManager.getActiveId ();
+        Views viewID = viewManager.getActiveID ();
         if (Views.isNoteView (viewID) || Views.isSequencerView (viewID))
         {
             viewManager.setActive (Views.CONTROL);

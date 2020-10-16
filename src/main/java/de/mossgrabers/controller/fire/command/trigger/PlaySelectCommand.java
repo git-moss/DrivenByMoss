@@ -11,8 +11,8 @@ import de.mossgrabers.framework.controller.ButtonID;
 import de.mossgrabers.framework.daw.IModel;
 import de.mossgrabers.framework.daw.constants.RecordQuantization;
 import de.mossgrabers.framework.daw.data.ITrack;
+import de.mossgrabers.framework.featuregroup.ViewManager;
 import de.mossgrabers.framework.utils.ButtonEvent;
-import de.mossgrabers.framework.view.ViewManager;
 import de.mossgrabers.framework.view.Views;
 
 
@@ -52,7 +52,7 @@ public class PlaySelectCommand extends ViewMultiSelectCommand<FireControlSurface
         if (selectedTrack != null)
         {
             final ViewManager viewManager = this.surface.getViewManager ();
-            viewManager.setPreferredView (selectedTrack.getPosition (), viewManager.getActiveId ());
+            viewManager.setPreferredView (selectedTrack.getPosition (), viewManager.getActiveID ());
         }
     }
 

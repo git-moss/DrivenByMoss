@@ -15,7 +15,7 @@ import de.mossgrabers.framework.daw.data.ICursorDevice;
 import de.mossgrabers.framework.daw.data.IDrumDevice;
 import de.mossgrabers.framework.daw.data.IDrumPad;
 import de.mossgrabers.framework.daw.data.bank.IDrumPadBank;
-import de.mossgrabers.framework.mode.ModeManager;
+import de.mossgrabers.framework.featuregroup.ModeManager;
 import de.mossgrabers.framework.mode.Modes;
 import de.mossgrabers.framework.utils.ButtonEvent;
 import de.mossgrabers.framework.view.AbstractDrumView;
@@ -117,7 +117,7 @@ public class DrumView extends AbstractDrumView<PushControlSurface, PushConfigura
 
         // Only activate layer mode if not one of the layer modes is already active
         final ModeManager modeManager = this.surface.getModeManager ();
-        if (!Modes.isLayerMode (modeManager.getActiveId ()))
+        if (!Modes.isLayerMode (modeManager.getActiveID ()))
             modeManager.setActive (Modes.DEVICE_LAYER);
 
         drumPad.select ();

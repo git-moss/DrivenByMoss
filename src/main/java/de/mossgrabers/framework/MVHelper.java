@@ -13,7 +13,7 @@ import de.mossgrabers.framework.daw.data.ICursorDevice;
 import de.mossgrabers.framework.daw.data.ITrack;
 import de.mossgrabers.framework.daw.data.bank.IParameterBank;
 import de.mossgrabers.framework.daw.data.bank.ITrackBank;
-import de.mossgrabers.framework.featuregroup.Mode;
+import de.mossgrabers.framework.featuregroup.IMode;
 
 import java.util.function.Supplier;
 
@@ -123,7 +123,7 @@ public class MVHelper<S extends IControlSurface<C>, C extends Configuration>
      *
      * @param mode The mode
      */
-    public void notifySelectedItem (final Mode mode)
+    public void notifySelectedItem (final IMode mode)
     {
         this.delayDisplay (mode::getSelectedItemName);
     }

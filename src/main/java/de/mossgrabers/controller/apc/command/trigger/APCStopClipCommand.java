@@ -8,7 +8,7 @@ import de.mossgrabers.controller.apc.APCConfiguration;
 import de.mossgrabers.controller.apc.controller.APCControlSurface;
 import de.mossgrabers.framework.command.trigger.clip.StopClipCommand;
 import de.mossgrabers.framework.daw.IModel;
-import de.mossgrabers.framework.featuregroup.View;
+import de.mossgrabers.framework.featuregroup.IView;
 import de.mossgrabers.framework.utils.ButtonEvent;
 import de.mossgrabers.framework.view.AbstractSequencerView;
 
@@ -41,7 +41,7 @@ public class APCStopClipCommand extends StopClipCommand<APCControlSurface, APCCo
         if (event != ButtonEvent.DOWN)
             return;
 
-        final View view = this.surface.getViewManager ().getActive ();
+        final IView view = this.surface.getViewManager ().getActive ();
         if (view instanceof AbstractSequencerView)
         {
             ((AbstractSequencerView<?, ?>) view).setResolutionIndex (this.index);

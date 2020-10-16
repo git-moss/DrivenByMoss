@@ -22,7 +22,8 @@ import de.mossgrabers.framework.daw.data.IParameter;
 import de.mossgrabers.framework.daw.midi.ArpeggiatorMode;
 import de.mossgrabers.framework.daw.midi.INoteInput;
 import de.mossgrabers.framework.daw.midi.INoteRepeat;
-import de.mossgrabers.framework.mode.AbstractMode;
+import de.mossgrabers.framework.featuregroup.AbstractFeatureGroup;
+import de.mossgrabers.framework.featuregroup.AbstractMode;
 import de.mossgrabers.framework.utils.ButtonEvent;
 import de.mossgrabers.framework.utils.Pair;
 import de.mossgrabers.framework.utils.StringUtils;
@@ -49,7 +50,6 @@ public class NoteRepeatMode extends BaseMode
     {
         super ("Note Repeat", surface, model);
 
-        this.isTemporary = true;
         this.host = this.model.getHost ();
 
         final INoteInput defaultNoteInput = surface.getMidiInput ().getDefaultNoteInput ();
@@ -238,8 +238,8 @@ public class NoteRepeatMode extends BaseMode
         if (index >= 0)
         {
             final ColorManager colorManager = this.model.getColorManager ();
-            final int offColor = colorManager.getColorIndex (AbstractMode.BUTTON_COLOR_OFF);
-            final int onColor = colorManager.getColorIndex (AbstractMode.BUTTON_COLOR_ON);
+            final int offColor = colorManager.getColorIndex (AbstractFeatureGroup.BUTTON_COLOR_OFF);
+            final int onColor = colorManager.getColorIndex (AbstractFeatureGroup.BUTTON_COLOR_ON);
             final int hiColor = colorManager.getColorIndex (AbstractMode.BUTTON_COLOR_HI);
 
             switch (index)
@@ -278,8 +278,8 @@ public class NoteRepeatMode extends BaseMode
         {
             final ColorManager colorManager = this.model.getColorManager ();
             if (index < 7)
-                return colorManager.getColorIndex (AbstractMode.BUTTON_COLOR_OFF);
-            return this.model.getGroove ().getParameters ()[0].getValue () > 0 ? colorManager.getColorIndex (AbstractMode.BUTTON_COLOR_HI) : colorManager.getColorIndex (AbstractMode.BUTTON_COLOR_ON);
+                return colorManager.getColorIndex (AbstractFeatureGroup.BUTTON_COLOR_OFF);
+            return this.model.getGroove ().getParameters ()[0].getValue () > 0 ? colorManager.getColorIndex (AbstractMode.BUTTON_COLOR_HI) : colorManager.getColorIndex (AbstractFeatureGroup.BUTTON_COLOR_ON);
         }
 
         return super.getButtonColor (buttonID);

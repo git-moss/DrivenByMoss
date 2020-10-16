@@ -13,7 +13,7 @@ import de.mossgrabers.framework.controller.display.ITextDisplay;
 import de.mossgrabers.framework.daw.IModel;
 import de.mossgrabers.framework.daw.data.ICursorDevice;
 import de.mossgrabers.framework.daw.data.bank.ITrackBank;
-import de.mossgrabers.framework.mode.ModeManager;
+import de.mossgrabers.framework.featuregroup.ModeManager;
 import de.mossgrabers.framework.mode.Modes;
 import de.mossgrabers.framework.utils.ButtonEvent;
 
@@ -85,14 +85,14 @@ public class SelectCommand extends AbstractTriggerCommand<MCUControlSurface, MCU
         if (this.surface.getConfiguration ().hasOnly1Fader ())
         {
             // Select marker if marker mode is active
-            if (modeManager.isActiveOrTemp (Modes.MARKERS))
+            if (modeManager.isActive (Modes.MARKERS))
             {
                 this.model.getMarkerBank ().getItem (this.channel).select ();
                 return;
             }
 
             // Select parameter if device mode is active
-            if (modeManager.isActiveOrTemp (Modes.DEVICE_PARAMS))
+            if (modeManager.isActive (Modes.DEVICE_PARAMS))
             {
                 final ICursorDevice cursorDevice = this.model.getCursorDevice ();
                 if (cursorDevice.doesExist ())

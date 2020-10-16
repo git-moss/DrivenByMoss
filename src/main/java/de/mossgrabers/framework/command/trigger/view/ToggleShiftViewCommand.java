@@ -8,8 +8,8 @@ import de.mossgrabers.framework.command.core.AbstractTriggerCommand;
 import de.mossgrabers.framework.configuration.Configuration;
 import de.mossgrabers.framework.controller.IControlSurface;
 import de.mossgrabers.framework.daw.IModel;
+import de.mossgrabers.framework.featuregroup.ViewManager;
 import de.mossgrabers.framework.utils.ButtonEvent;
-import de.mossgrabers.framework.view.ViewManager;
 import de.mossgrabers.framework.view.Views;
 
 
@@ -44,7 +44,7 @@ public class ToggleShiftViewCommand<S extends IControlSurface<C>, C extends Conf
 
         final ViewManager viewManager = this.surface.getViewManager ();
         if (event == ButtonEvent.DOWN && !viewManager.isActive (Views.SHIFT))
-            viewManager.setActive (Views.SHIFT);
+            viewManager.setTemporary (Views.SHIFT);
         else if (event == ButtonEvent.UP && viewManager.isActive (Views.SHIFT))
             viewManager.restore ();
 

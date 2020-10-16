@@ -8,7 +8,7 @@ import de.mossgrabers.controller.kontrol.mki.Kontrol1Configuration;
 import de.mossgrabers.controller.kontrol.mki.controller.Kontrol1ControlSurface;
 import de.mossgrabers.framework.command.core.AbstractTriggerCommand;
 import de.mossgrabers.framework.daw.IModel;
-import de.mossgrabers.framework.mode.ModeManager;
+import de.mossgrabers.framework.featuregroup.ModeManager;
 import de.mossgrabers.framework.mode.Modes;
 import de.mossgrabers.framework.utils.ButtonEvent;
 
@@ -49,9 +49,9 @@ public class ScaleButtonCommand extends AbstractTriggerCommand<Kontrol1ControlSu
             return;
 
         final ModeManager modeManager = this.surface.getModeManager ();
-        if (modeManager.isActiveOrTemp (Modes.SCALES))
+        if (modeManager.isActive (Modes.SCALES))
             modeManager.restore ();
         else
-            modeManager.setActive (Modes.SCALES);
+            modeManager.setTemporary (Modes.SCALES);
     }
 }

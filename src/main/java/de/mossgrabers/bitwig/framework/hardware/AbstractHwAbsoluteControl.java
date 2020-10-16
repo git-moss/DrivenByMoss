@@ -25,7 +25,7 @@ import com.bitwig.extension.controller.api.HardwareBindable;
  * Implementation of a proxy to an absolute knob on a hardware controller.
  *
  * @param <T> The type of the absolute hardware control
- * 
+ *
  * @author J&uuml;rgen Mo&szlig;graber
  */
 public abstract class AbstractHwAbsoluteControl<T extends AbsoluteHardwareControl> extends AbstractHwContinuousControl implements IHwAbsoluteControl

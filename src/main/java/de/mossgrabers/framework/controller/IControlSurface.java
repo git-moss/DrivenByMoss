@@ -23,8 +23,8 @@ import de.mossgrabers.framework.controller.valuechanger.ISensitivityCallback;
 import de.mossgrabers.framework.controller.valuechanger.RelativeEncoding;
 import de.mossgrabers.framework.daw.midi.IMidiInput;
 import de.mossgrabers.framework.daw.midi.IMidiOutput;
-import de.mossgrabers.framework.mode.ModeManager;
-import de.mossgrabers.framework.view.ViewManager;
+import de.mossgrabers.framework.featuregroup.ModeManager;
+import de.mossgrabers.framework.featuregroup.ViewManager;
 
 import java.util.List;
 import java.util.Map;

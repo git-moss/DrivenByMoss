@@ -52,11 +52,11 @@ import de.mossgrabers.framework.daw.data.bank.ISendBank;
 import de.mossgrabers.framework.daw.data.bank.ITrackBank;
 import de.mossgrabers.framework.daw.midi.IMidiAccess;
 import de.mossgrabers.framework.daw.midi.IMidiInput;
-import de.mossgrabers.framework.featuregroup.View;
-import de.mossgrabers.framework.mode.ModeManager;
+import de.mossgrabers.framework.featuregroup.IView;
+import de.mossgrabers.framework.featuregroup.ModeManager;
+import de.mossgrabers.framework.featuregroup.ViewManager;
 import de.mossgrabers.framework.mode.Modes;
 import de.mossgrabers.framework.scale.Scales;
-import de.mossgrabers.framework.view.ViewManager;
 import de.mossgrabers.framework.view.Views;
 
 
@@ -128,7 +128,7 @@ public class Kontrol1ControllerSetup extends AbstractControllerSetup<Kontrol1Con
         final Kontrol1Display display = new Kontrol1Display (this.host, this.valueChanger.getUpperBound (), this.configuration, usbDevice);
         surface.addTextDisplay (display);
 
-        surface.getModeManager ().setDefault (Modes.TRACK);
+        surface.getModeManager ().setDefaultID (Modes.TRACK);
     }
 
 
@@ -262,8 +262,8 @@ public class Kontrol1ControllerSetup extends AbstractControllerSetup<Kontrol1Con
 
         this.host.scheduleTask ( () -> {
             final Kontrol1ControlSurface surface = this.getSurface ();
-            this.updateIndication (surface.getModeManager ().getActiveId ());
-            final View activeView = surface.getViewManager ().getActive ();
+            this.updateIndication (surface.getModeManager ().getActiveID ());
+            final IView activeView = surface.getViewManager ().getActive ();
             if (activeView != null)
             {
                 activeView.updateNoteMapping ();

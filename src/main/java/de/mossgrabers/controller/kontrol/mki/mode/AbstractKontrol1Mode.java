@@ -13,7 +13,7 @@ import de.mossgrabers.framework.daw.data.IItem;
 import de.mossgrabers.framework.daw.data.ITrack;
 import de.mossgrabers.framework.daw.data.bank.IBank;
 import de.mossgrabers.framework.daw.data.bank.ITrackBank;
-import de.mossgrabers.framework.mode.AbstractMode;
+import de.mossgrabers.framework.featuregroup.AbstractMode;
 
 
 /**
@@ -47,8 +47,6 @@ public abstract class AbstractKontrol1Mode extends AbstractMode<Kontrol1ControlS
     public AbstractKontrol1Mode (final String name, final Kontrol1ControlSurface surface, final IModel model, final IBank<? extends IItem> bank)
     {
         super (name, surface, model, false, bank, DEFAULT_KNOB_IDS);
-
-        this.isTemporary = false;
     }
 
 

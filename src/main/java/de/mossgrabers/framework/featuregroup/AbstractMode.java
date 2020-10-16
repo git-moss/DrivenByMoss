@@ -2,19 +2,16 @@
 // (c) 2017-2020
 // Licensed under LGPLv3 - http://www.gnu.org/licenses/lgpl-3.0.txt
 
-package de.mossgrabers.framework.mode;
+package de.mossgrabers.framework.featuregroup;
 
-import de.mossgrabers.framework.MVHelper;
 import de.mossgrabers.framework.configuration.Configuration;
 import de.mossgrabers.framework.controller.ButtonID;
 import de.mossgrabers.framework.controller.ContinuousID;
 import de.mossgrabers.framework.controller.IControlSurface;
-import de.mossgrabers.framework.controller.color.ColorManager;
 import de.mossgrabers.framework.daw.IModel;
 import de.mossgrabers.framework.daw.data.IItem;
 import de.mossgrabers.framework.daw.data.IParameter;
 import de.mossgrabers.framework.daw.data.bank.IBank;
-import de.mossgrabers.framework.featuregroup.Mode;
 import de.mossgrabers.framework.observer.IParametersAdjustObserver;
 import de.mossgrabers.framework.parameterprovider.IParameterProvider;
 import de.mossgrabers.framework.utils.ButtonEvent;
@@ -33,12 +30,8 @@ import java.util.List;
  *
  * @author J&uuml;rgen Mo&szlig;graber
  */
-public abstract class AbstractMode<S extends IControlSurface<C>, C extends Configuration> implements Mode, IParametersAdjustObserver
+public abstract class AbstractMode<S extends IControlSurface<C>, C extends Configuration> extends AbstractFeatureGroup<S, C> implements IMode, IParametersAdjustObserver
 {
-    /** Color identifier for a mode button which is off. */
-    public static final String             BUTTON_COLOR_OFF = "BUTTON_COLOR_OFF";
-    /** Color identifier for a mode button which is on. */
-    public static final String             BUTTON_COLOR_ON  = "BUTTON_COLOR_ON";
     /** Color identifier for a mode button which is hilighted. */
     public static final String             BUTTON_COLOR_HI  = "BUTTON_COLOR_HI";
     /** Color identifier for a mode button which is on (second row). */
@@ -49,19 +42,12 @@ public abstract class AbstractMode<S extends IControlSurface<C>, C extends Confi
     /** Default knobs 1 to 8. **/
     public static final List<ContinuousID> DEFAULT_KNOB_IDS = ContinuousID.createSequentialList (ContinuousID.KNOB1, 8);
 
-    protected final String                 name;
-    protected final S                      surface;
-    protected final IModel                 model;
-    protected final ColorManager           colorManager;
-    protected boolean []                   isKnobTouched;
-    protected final MVHelper<S, C>         mvHelper;
-
     protected IParameterProvider           parameterProvider;
     protected IBank<? extends IItem>       bank;
     protected List<ContinuousID>           controls;
-    protected boolean                      isTemporary;
     protected boolean                      isAbsolute;
     protected boolean                      isActive;
+    protected boolean []                   isKnobTouched;
 
 
     /**
@@ -121,16 +107,10 @@ public abstract class AbstractMode<S extends IControlSurface<C>, C extends Confi
      */
     public AbstractMode (final String name, final S surface, final IModel model, final boolean isAbsolute, final IBank<? extends IItem> bank, final List<ContinuousID> controls)
     {
-        this.name = name;
-        this.surface = surface;
-        this.model = model;
-        this.colorManager = this.model.getColorManager ();
+        super (name, surface, model);
+
         this.isAbsolute = isAbsolute;
         this.bank = bank;
-
-        this.isTemporary = true;
-
-        this.mvHelper = new MVHelper<> (model, surface);
 
         this.setControls (controls);
     }
@@ -160,22 +140,6 @@ public abstract class AbstractMode<S extends IControlSurface<C>, C extends Confi
 
     /** {@inheritDoc} */
     @Override
-    public String getName ()
-    {
-        return this.name;
-    }
-
-
-    /** {@inheritDoc} */
-    @Override
-    public boolean isTemporary ()
-    {
-        return this.isTemporary;
-    }
-
-
-    /** {@inheritDoc} */
-    @Override
     public void onActivate ()
     {
         this.isActive = true;
@@ -183,14 +147,6 @@ public abstract class AbstractMode<S extends IControlSurface<C>, C extends Confi
         if (this.parameterProvider == null)
             return;
         this.parameterProvider.addParametersObserver (this);
-        this.bindControls ();
-    }
-
-
-    /** {@inheritDoc} */
-    @Override
-    public void parametersAdjusted ()
-    {
         this.bindControls ();
     }
 
@@ -205,6 +161,14 @@ public abstract class AbstractMode<S extends IControlSurface<C>, C extends Confi
             return;
         this.parameterProvider.removeParametersObserver (this);
         this.unbindControls ();
+    }
+
+
+    /** {@inheritDoc} */
+    @Override
+    public void parametersAdjusted ()
+    {
+        this.bindControls ();
     }
 
 
@@ -282,26 +246,6 @@ public abstract class AbstractMode<S extends IControlSurface<C>, C extends Confi
     public boolean isKnobTouched (final int index)
     {
         return index < this.isKnobTouched.length && this.isKnobTouched[index];
-    }
-
-
-    /** {@inheritDoc} */
-    @Override
-    public int getButtonColor (final ButtonID buttonID)
-    {
-        return this.colorManager.getColorIndex (this.getButtonColorID (buttonID));
-    }
-
-
-    /**
-     * Get the color ID for a button, which is controlled by the view.
-     *
-     * @param buttonID The ID of the button
-     * @return A color ID
-     */
-    protected String getButtonColorID (final ButtonID buttonID)
-    {
-        return AbstractMode.BUTTON_COLOR_OFF;
     }
 
 

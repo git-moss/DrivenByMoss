@@ -42,10 +42,11 @@ import de.mossgrabers.framework.daw.data.bank.ITrackBank;
 import de.mossgrabers.framework.daw.midi.IMidiAccess;
 import de.mossgrabers.framework.daw.midi.IMidiInput;
 import de.mossgrabers.framework.daw.midi.IMidiOutput;
-import de.mossgrabers.framework.featuregroup.Mode;
-import de.mossgrabers.framework.featuregroup.View;
-import de.mossgrabers.framework.mode.AbstractMode;
-import de.mossgrabers.framework.mode.ModeManager;
+import de.mossgrabers.framework.featuregroup.AbstractMode;
+import de.mossgrabers.framework.featuregroup.IMode;
+import de.mossgrabers.framework.featuregroup.IView;
+import de.mossgrabers.framework.featuregroup.ModeManager;
+import de.mossgrabers.framework.featuregroup.ViewManager;
 import de.mossgrabers.framework.mode.Modes;
 import de.mossgrabers.framework.mode.device.ParameterMode;
 import de.mossgrabers.framework.mode.device.UserMode;
@@ -53,7 +54,6 @@ import de.mossgrabers.framework.mode.track.PanMode;
 import de.mossgrabers.framework.mode.track.SendMode;
 import de.mossgrabers.framework.mode.track.VolumeMode;
 import de.mossgrabers.framework.scale.Scales;
-import de.mossgrabers.framework.view.ViewManager;
 import de.mossgrabers.framework.view.Views;
 
 
@@ -201,7 +201,7 @@ public class LaunchkeyMiniMk3ControllerSetup extends AbstractControllerSetup<Lau
 
         this.addButton (ButtonID.MOVE_TRACK_LEFT, "Previous", new ModeCursorCommand<> (Direction.LEFT, this.model, surface), 15, LaunchkeyMiniMk3ControlSurface.LAUNCHKEY_LEFT, () -> {
 
-            final Mode mode = modeManager.getActiveOrTemp ();
+            final IMode mode = modeManager.getActive ();
             if (mode == null)
                 return false;
             if (modeManager.isActive (Modes.DEVICE_PARAMS))
@@ -211,7 +211,7 @@ public class LaunchkeyMiniMk3ControllerSetup extends AbstractControllerSetup<Lau
         });
         this.addButton (ButtonID.MOVE_TRACK_RIGHT, "Next", new ModeCursorCommand<> (Direction.RIGHT, this.model, surface), 15, LaunchkeyMiniMk3ControlSurface.LAUNCHKEY_RIGHT, () -> {
 
-            final Mode mode = modeManager.getActiveOrTemp ();
+            final IMode mode = modeManager.getActive ();
             if (mode == null)
                 return false;
             if (modeManager.isActive (Modes.DEVICE_PARAMS))
@@ -222,11 +222,11 @@ public class LaunchkeyMiniMk3ControllerSetup extends AbstractControllerSetup<Lau
 
         // Scene buttons
         this.addButton (ButtonID.SCENE1, "Scene 1", new ViewButtonCommand<> (ButtonID.SCENE1, surface), LaunchkeyMiniMk3ControlSurface.LAUNCHKEY_SCENE1, () -> {
-            final View activeView = viewManager.getActive ();
+            final IView activeView = viewManager.getActive ();
             return activeView != null ? activeView.getButtonColor (ButtonID.SCENE1) : 0;
         });
         this.addButton (ButtonID.SCENE2, "Scene 2", new ViewButtonCommand<> (ButtonID.SCENE2, surface), LaunchkeyMiniMk3ControlSurface.LAUNCHKEY_SCENE2, () -> {
-            final View activeView = viewManager.getActive ();
+            final IView activeView = viewManager.getActive ();
             return activeView != null ? activeView.getButtonColor (ButtonID.SCENE2) : 0;
         });
 
@@ -266,7 +266,7 @@ public class LaunchkeyMiniMk3ControllerSetup extends AbstractControllerSetup<Lau
         final LaunchkeyMiniMk3ControlSurface surface = this.getSurface ();
         final ModeSelectCommand<LaunchkeyMiniMk3ControlSurface, LaunchkeyMiniMk3Configuration> modeSelectCommand = new ModeSelectCommand<> (this.model, surface, mode);
         this.addButton (surface, buttonID, label, (event, velocity) -> modeSelectCommand.executeNormal (event), 15, LaunchkeyMiniMk3ControlSurface.LAUNCHKEY_MODE_SELECT, modeIndex, false, null);
-        final IHwLight light = surface.createLight (outputID, () -> surface.getModeManager ().isActiveOrTemp (mode) ? ColorEx.GREEN : ColorEx.DARK_GREEN, color -> {
+        final IHwLight light = surface.createLight (outputID, () -> surface.getModeManager ().isActive (mode) ? ColorEx.GREEN : ColorEx.DARK_GREEN, color -> {
             // Intentionally empty
         });
         surface.getButton (buttonID).addLight (light);
@@ -450,7 +450,7 @@ public class LaunchkeyMiniMk3ControllerSetup extends AbstractControllerSetup<Lau
 
     private void processProgramChangeAction (final int value)
     {
-        final Modes modeID = this.getSurface ().getModeManager ().getActiveOrTempId ();
+        final Modes modeID = this.getSurface ().getModeManager ().getActiveID ();
         if (modeID == null)
             return;
         switch (modeID)

@@ -38,7 +38,7 @@ public class RawParameterImpl extends ParameterImpl
 
     /**
      * Constructor.
-     * 
+     *
      * @param valueChanger The value changer
      * @param parameter The parameter
      * @param index The index of the item in a page

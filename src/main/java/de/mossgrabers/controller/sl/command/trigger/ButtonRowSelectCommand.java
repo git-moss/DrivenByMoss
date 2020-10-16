@@ -9,9 +9,9 @@ import de.mossgrabers.framework.command.core.AbstractTriggerCommand;
 import de.mossgrabers.framework.configuration.Configuration;
 import de.mossgrabers.framework.controller.IControlSurface;
 import de.mossgrabers.framework.daw.IModel;
-import de.mossgrabers.framework.featuregroup.Mode;
-import de.mossgrabers.framework.featuregroup.View;
-import de.mossgrabers.framework.mode.ModeManager;
+import de.mossgrabers.framework.featuregroup.IMode;
+import de.mossgrabers.framework.featuregroup.IView;
+import de.mossgrabers.framework.featuregroup.ModeManager;
 import de.mossgrabers.framework.mode.Modes;
 import de.mossgrabers.framework.utils.ButtonEvent;
 
@@ -50,7 +50,7 @@ public class ButtonRowSelectCommand<S extends IControlSurface<C>, C extends Conf
         if (event != ButtonEvent.DOWN)
             return;
 
-        final View view = this.surface.getViewManager ().getActive ();
+        final IView view = this.surface.getViewManager ().getActive ();
         if (view == null)
             return;
 
@@ -96,13 +96,13 @@ public class ButtonRowSelectCommand<S extends IControlSurface<C>, C extends Conf
     {
         final ModeManager modeManager = this.surface.getModeManager ();
 
-        if (modeManager.isActiveOrTemp (Modes.MASTER))
+        if (modeManager.isActive (Modes.MASTER))
         {
             this.activateTrackMode (true, false);
             return;
         }
 
-        if (modeManager.isActiveOrTemp (Modes.TRACK))
+        if (modeManager.isActive (Modes.TRACK))
         {
             if (this.model.isEffectTrackBankActive ())
                 this.activateMasterMode (true);
@@ -126,7 +126,7 @@ public class ButtonRowSelectCommand<S extends IControlSurface<C>, C extends Conf
         this.model.getHost ().showNotification (isEffect ? "Effects" : "Tracks");
         if (this.model.getSelectedTrack () != null)
             return;
-        final Mode activeMode = modeManager.getActiveOrTemp ();
+        final IMode activeMode = modeManager.getActive ();
         if (activeMode != null)
             activeMode.selectItem (0);
     }
@@ -145,7 +145,7 @@ public class ButtonRowSelectCommand<S extends IControlSurface<C>, C extends Conf
     {
         final ModeManager modeManager = this.surface.getModeManager ();
 
-        if (!modeManager.isActiveOrTemp (Modes.VOLUME))
+        if (!modeManager.isActive (Modes.VOLUME))
         {
             modeManager.setActive (Modes.VOLUME);
             this.activateTrackMode (false, false);

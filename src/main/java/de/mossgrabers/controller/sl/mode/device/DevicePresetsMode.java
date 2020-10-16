@@ -12,7 +12,7 @@ import de.mossgrabers.framework.daw.IBrowser;
 import de.mossgrabers.framework.daw.IModel;
 import de.mossgrabers.framework.daw.data.IBrowserColumn;
 import de.mossgrabers.framework.daw.data.IBrowserColumnItem;
-import de.mossgrabers.framework.mode.AbstractMode;
+import de.mossgrabers.framework.featuregroup.AbstractMode;
 import de.mossgrabers.framework.mode.Modes;
 import de.mossgrabers.framework.utils.ButtonEvent;
 import de.mossgrabers.framework.utils.StringUtils;
@@ -43,7 +43,7 @@ public class DevicePresetsMode extends AbstractMode<SLControlSurface, SLConfigur
     public DevicePresetsMode (final SLControlSurface surface, final IModel model)
     {
         super ("Browser", surface, model);
-        this.isTemporary = false;
+
         this.selectionMode = SELECTION_OFF;
         this.filterColumn = 0;
     }

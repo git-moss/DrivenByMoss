@@ -8,7 +8,7 @@ import de.mossgrabers.framework.command.core.AbstractTriggerCommand;
 import de.mossgrabers.framework.configuration.Configuration;
 import de.mossgrabers.framework.controller.IControlSurface;
 import de.mossgrabers.framework.daw.IModel;
-import de.mossgrabers.framework.featuregroup.Mode;
+import de.mossgrabers.framework.featuregroup.IMode;
 import de.mossgrabers.framework.utils.ButtonEvent;
 
 
@@ -99,7 +99,7 @@ public class ModeCursorCommand<S extends IControlSurface<C>, C extends Configura
 
         if (this.notifySelection)
         {
-            final Mode activeMode = this.surface.getModeManager ().getActiveOrTemp ();
+            final IMode activeMode = this.surface.getModeManager ().getActive ();
             if (activeMode != null)
                 this.mvHelper.notifySelectedItem (activeMode);
         }
@@ -136,7 +136,7 @@ public class ModeCursorCommand<S extends IControlSurface<C>, C extends Configura
      */
     protected void updateArrowStates ()
     {
-        final Mode mode = this.surface.getModeManager ().getActiveOrTemp ();
+        final IMode mode = this.surface.getModeManager ().getActive ();
         this.canScrollLeft = mode != null && mode.hasPreviousItem ();
         this.canScrollRight = mode != null && mode.hasNextItem ();
         this.canScrollUp = mode != null && mode.hasNextItemPage ();
@@ -149,7 +149,7 @@ public class ModeCursorCommand<S extends IControlSurface<C>, C extends Configura
      */
     protected void scrollLeft ()
     {
-        final Mode activeMode = this.surface.getModeManager ().getActiveOrTemp ();
+        final IMode activeMode = this.surface.getModeManager ().getActive ();
         if (activeMode != null)
             activeMode.selectPreviousItem ();
     }
@@ -160,7 +160,7 @@ public class ModeCursorCommand<S extends IControlSurface<C>, C extends Configura
      */
     protected void scrollRight ()
     {
-        final Mode activeMode = this.surface.getModeManager ().getActiveOrTemp ();
+        final IMode activeMode = this.surface.getModeManager ().getActive ();
         if (activeMode != null)
             activeMode.selectNextItem ();
     }
@@ -171,7 +171,7 @@ public class ModeCursorCommand<S extends IControlSurface<C>, C extends Configura
      */
     protected void scrollUp ()
     {
-        final Mode activeMode = this.surface.getModeManager ().getActiveOrTemp ();
+        final IMode activeMode = this.surface.getModeManager ().getActive ();
         if (activeMode != null)
             activeMode.selectNextItemPage ();
     }
@@ -182,7 +182,7 @@ public class ModeCursorCommand<S extends IControlSurface<C>, C extends Configura
      */
     protected void scrollDown ()
     {
-        final Mode activeMode = this.surface.getModeManager ().getActiveOrTemp ();
+        final IMode activeMode = this.surface.getModeManager ().getActive ();
         if (activeMode != null)
             activeMode.selectPreviousItemPage ();
     }

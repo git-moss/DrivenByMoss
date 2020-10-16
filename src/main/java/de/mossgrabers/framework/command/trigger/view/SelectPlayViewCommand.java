@@ -8,8 +8,8 @@ import de.mossgrabers.framework.configuration.Configuration;
 import de.mossgrabers.framework.controller.IControlSurface;
 import de.mossgrabers.framework.daw.IModel;
 import de.mossgrabers.framework.daw.data.ITrack;
+import de.mossgrabers.framework.featuregroup.ViewManager;
 import de.mossgrabers.framework.utils.ButtonEvent;
-import de.mossgrabers.framework.view.ViewManager;
 import de.mossgrabers.framework.view.Views;
 
 import java.util.Arrays;
@@ -71,7 +71,7 @@ public class SelectPlayViewCommand<S extends IControlSurface<C>, C extends Confi
 
         // Restore the previous play view if coming from one not on the list
         final ViewManager viewManager = this.surface.getViewManager ();
-        final Views activeViewId = viewManager.getActiveId ();
+        final Views activeViewId = viewManager.getActiveID ();
         if (!this.allViewIds.contains (activeViewId))
         {
             final ITrack selectedTrack = this.model.getSelectedTrack ();
@@ -94,6 +94,6 @@ public class SelectPlayViewCommand<S extends IControlSurface<C>, C extends Confi
             return;
 
         // Store the newly selected view for the current track
-        viewManager.setPreferredView (selectedTrack.getPosition (), viewManager.getActiveId ());
+        viewManager.setPreferredView (selectedTrack.getPosition (), viewManager.getActiveID ());
     }
 }

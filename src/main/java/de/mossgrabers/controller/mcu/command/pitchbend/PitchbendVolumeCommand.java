@@ -10,7 +10,7 @@ import de.mossgrabers.framework.command.core.AbstractPitchbendCommand;
 import de.mossgrabers.framework.daw.IModel;
 import de.mossgrabers.framework.daw.data.ITrack;
 import de.mossgrabers.framework.daw.data.bank.ITrackBank;
-import de.mossgrabers.framework.mode.ModeManager;
+import de.mossgrabers.framework.featuregroup.ModeManager;
 import de.mossgrabers.framework.mode.Modes;
 
 
@@ -63,29 +63,29 @@ public class PitchbendVolumeCommand extends AbstractPitchbendCommand<MCUControlS
         if (this.surface.getConfiguration ().useFadersAsKnobs ())
         {
             final ModeManager modeManager = this.surface.getModeManager ();
-            if (modeManager.isActiveOrTemp (Modes.VOLUME))
+            if (modeManager.isActive (Modes.VOLUME))
                 track.setVolume (value);
-            else if (modeManager.isActiveOrTemp (Modes.PAN))
+            else if (modeManager.isActive (Modes.PAN))
                 track.setPan (value);
-            else if (modeManager.isActiveOrTemp (Modes.TRACK))
+            else if (modeManager.isActive (Modes.TRACK))
                 this.handleTrack (this.channel, value);
-            else if (modeManager.isActiveOrTemp (Modes.SEND1))
+            else if (modeManager.isActive (Modes.SEND1))
                 track.getSendBank ().getItem (0).setValue (value);
-            else if (modeManager.isActiveOrTemp (Modes.SEND2))
+            else if (modeManager.isActive (Modes.SEND2))
                 track.getSendBank ().getItem (1).setValue (value);
-            else if (modeManager.isActiveOrTemp (Modes.SEND3))
+            else if (modeManager.isActive (Modes.SEND3))
                 track.getSendBank ().getItem (2).setValue (value);
-            else if (modeManager.isActiveOrTemp (Modes.SEND4))
+            else if (modeManager.isActive (Modes.SEND4))
                 track.getSendBank ().getItem (3).setValue (value);
-            else if (modeManager.isActiveOrTemp (Modes.SEND5))
+            else if (modeManager.isActive (Modes.SEND5))
                 track.getSendBank ().getItem (4).setValue (value);
-            else if (modeManager.isActiveOrTemp (Modes.SEND6))
+            else if (modeManager.isActive (Modes.SEND6))
                 track.getSendBank ().getItem (5).setValue (value);
-            else if (modeManager.isActiveOrTemp (Modes.SEND7))
+            else if (modeManager.isActive (Modes.SEND7))
                 track.getSendBank ().getItem (6).setValue (value);
-            else if (modeManager.isActiveOrTemp (Modes.SEND8))
+            else if (modeManager.isActive (Modes.SEND8))
                 track.getSendBank ().getItem (7).setValue (value);
-            else if (modeManager.isActiveOrTemp (Modes.DEVICE_PARAMS))
+            else if (modeManager.isActive (Modes.DEVICE_PARAMS))
                 this.model.getCursorDevice ().getParameterBank ().getItem (extenderOffset + this.channel).setValue (value);
             return;
         }

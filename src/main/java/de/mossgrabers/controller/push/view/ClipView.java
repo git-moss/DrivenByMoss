@@ -12,7 +12,7 @@ import de.mossgrabers.framework.daw.IClip;
 import de.mossgrabers.framework.daw.IModel;
 import de.mossgrabers.framework.daw.INoteClip;
 import de.mossgrabers.framework.daw.constants.Resolution;
-import de.mossgrabers.framework.mode.AbstractMode;
+import de.mossgrabers.framework.featuregroup.AbstractFeatureGroup;
 import de.mossgrabers.framework.utils.ButtonEvent;
 import de.mossgrabers.framework.view.AbstractSequencerView;
 
@@ -141,7 +141,7 @@ public class ClipView extends AbstractSequencerView<PushControlSurface, PushConf
     {
         final int scene = buttonID.ordinal () - ButtonID.SCENE1.ordinal ();
         if (scene < 0 || scene >= 8)
-            return AbstractMode.BUTTON_COLOR_OFF;
+            return AbstractFeatureGroup.BUTTON_COLOR_OFF;
 
         if (scene < 3)
             return scene == this.padResolution ? AbstractSequencerView.COLOR_RESOLUTION_SELECTED : AbstractSequencerView.COLOR_RESOLUTION;

@@ -30,8 +30,6 @@ public class MasterMode extends BaseMode
     public MasterMode (final MCUControlSurface surface, final IModel model)
     {
         super ("Master", surface, model);
-
-        this.isTemporary = true;
     }
 
 

@@ -23,7 +23,7 @@ import de.mossgrabers.framework.daw.data.IParameter;
 import de.mossgrabers.framework.daw.data.bank.IDeviceBank;
 import de.mossgrabers.framework.daw.data.bank.IParameterBank;
 import de.mossgrabers.framework.daw.data.bank.IParameterPageBank;
-import de.mossgrabers.framework.mode.ModeManager;
+import de.mossgrabers.framework.featuregroup.ModeManager;
 import de.mossgrabers.framework.mode.Modes;
 import de.mossgrabers.framework.parameterprovider.BankParameterProvider;
 import de.mossgrabers.framework.utils.ButtonEvent;
@@ -62,8 +62,6 @@ public class DeviceParamsMode extends BaseMode
     public DeviceParamsMode (final PushControlSurface surface, final IModel model)
     {
         super ("Parameters", surface, model, model.getCursorDevice ().getParameterBank ());
-
-        this.isTemporary = false;
 
         this.setParameters (new BankParameterProvider (this.model.getCursorDevice ().getParameterBank ()));
 
@@ -190,7 +188,7 @@ public class DeviceParamsMode extends BaseMode
     protected void moveUp ()
     {
         final ModeManager modeManager = this.surface.getModeManager ();
-        if (modeManager.isActiveOrTemp (Modes.DEVICE_CHAINS))
+        if (modeManager.isActive (Modes.DEVICE_CHAINS))
         {
             modeManager.setActive (Modes.DEVICE_PARAMS);
             return;
@@ -283,7 +281,7 @@ public class DeviceParamsMode extends BaseMode
                 case 2:
                     return cd.isExpanded () ? orange : white;
                 case 3:
-                    return this.surface.getModeManager ().isActiveOrTemp (Modes.DEVICE_CHAINS) ? orange : white;
+                    return this.surface.getModeManager ().isActive (Modes.DEVICE_CHAINS) ? orange : white;
                 case 4:
                     return this.showDevices ? white : orange;
                 case 5:
@@ -325,7 +323,7 @@ public class DeviceParamsMode extends BaseMode
             case 3:
                 if (!this.model.getHost ().hasSlotChains ())
                     return;
-                if (modeManager.isActiveOrTemp (Modes.DEVICE_CHAINS))
+                if (modeManager.isActive (Modes.DEVICE_CHAINS))
                     modeManager.setActive (Modes.DEVICE_PARAMS);
                 else
                     modeManager.setActive (Modes.DEVICE_CHAINS);
@@ -333,7 +331,7 @@ public class DeviceParamsMode extends BaseMode
             case 4:
                 if (!device.doesExist ())
                     return;
-                if (!modeManager.isActiveOrTemp (Modes.DEVICE_PARAMS))
+                if (!modeManager.isActive (Modes.DEVICE_PARAMS))
                     modeManager.setActive (Modes.DEVICE_PARAMS);
                 this.setShowDevices (!this.showDevices);
                 break;
@@ -566,9 +564,9 @@ public class DeviceParamsMode extends BaseMode
             case 2:
                 return cd.isExpanded ();
             case 3:
-                return this.surface.getModeManager ().isActiveOrTemp (Modes.DEVICE_CHAINS);
+                return this.surface.getModeManager ().isActive (Modes.DEVICE_CHAINS);
             case 4:
-                return !this.surface.getModeManager ().isActiveOrTemp (Modes.DEVICE_CHAINS) && !this.showDevices;
+                return !this.surface.getModeManager ().isActive (Modes.DEVICE_CHAINS) && !this.showDevices;
             case 5:
                 return hasPinning && cd.isPinned ();
             case 6:

@@ -8,10 +8,10 @@ import de.mossgrabers.controller.launchpad.LaunchpadConfiguration;
 import de.mossgrabers.controller.launchpad.controller.LaunchpadControlSurface;
 import de.mossgrabers.framework.command.core.AbstractTriggerCommand;
 import de.mossgrabers.framework.daw.IModel;
-import de.mossgrabers.framework.mode.ModeManager;
+import de.mossgrabers.framework.featuregroup.ModeManager;
+import de.mossgrabers.framework.featuregroup.ViewManager;
 import de.mossgrabers.framework.mode.Modes;
 import de.mossgrabers.framework.utils.ButtonEvent;
-import de.mossgrabers.framework.view.ViewManager;
 import de.mossgrabers.framework.view.Views;
 
 
@@ -45,7 +45,7 @@ public class AbstractTrackCommand extends AbstractTriggerCommand<LaunchpadContro
         {
             case DOWN:
                 this.firstRowUsed = false;
-                if (modeManager.isActiveOrTemp (controlMode))
+                if (modeManager.isActive (controlMode))
                 {
                     modeManager.setActive (Modes.DUMMY);
                     return;

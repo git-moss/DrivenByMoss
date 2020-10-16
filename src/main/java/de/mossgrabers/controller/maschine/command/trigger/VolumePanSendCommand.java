@@ -11,7 +11,7 @@ import de.mossgrabers.controller.maschine.mode.MaschineVolumeMode;
 import de.mossgrabers.framework.command.trigger.mode.ModeMultiSelectCommand;
 import de.mossgrabers.framework.controller.ButtonID;
 import de.mossgrabers.framework.daw.IModel;
-import de.mossgrabers.framework.mode.ModeManager;
+import de.mossgrabers.framework.featuregroup.ModeManager;
 import de.mossgrabers.framework.mode.Modes;
 import de.mossgrabers.framework.utils.ButtonEvent;
 import de.mossgrabers.framework.view.Views;
@@ -43,7 +43,7 @@ public class VolumePanSendCommand extends ModeMultiSelectCommand<MaschineControl
         final ModeManager modeManager = this.surface.getModeManager ();
 
         // Switch Gain/Velocity note edit parameters
-        if (modeManager.isActiveOrTemp (Modes.NOTE) && this.surface.getViewManager ().isActive (Views.DRUM, Views.PLAY))
+        if (modeManager.isActive (Modes.NOTE) && this.surface.getViewManager ().isActive (Views.DRUM, Views.PLAY))
         {
             if (event == ButtonEvent.DOWN)
             {

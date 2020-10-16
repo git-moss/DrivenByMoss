@@ -13,7 +13,7 @@ import de.mossgrabers.framework.daw.INoteClip;
 import de.mossgrabers.framework.daw.IStepInfo;
 import de.mossgrabers.framework.daw.data.IDrumPad;
 import de.mossgrabers.framework.daw.data.bank.IDrumPadBank;
-import de.mossgrabers.framework.mode.ModeManager;
+import de.mossgrabers.framework.featuregroup.ModeManager;
 import de.mossgrabers.framework.mode.Modes;
 import de.mossgrabers.framework.utils.ButtonEvent;
 import de.mossgrabers.framework.view.AbstractDrum4View;
@@ -75,7 +75,7 @@ public class Drum4View extends AbstractDrum4View<FireControlSurface, FireConfigu
         else
         {
             // Turn off Note mode
-            if (modeManager.isActiveOrTemp (Modes.NOTE))
+            if (modeManager.isActive (Modes.NOTE))
                 modeManager.restore ();
 
             if (this.isNoteEdited)

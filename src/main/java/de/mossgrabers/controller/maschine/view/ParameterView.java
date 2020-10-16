@@ -12,7 +12,7 @@ import de.mossgrabers.framework.daw.IModel;
 import de.mossgrabers.framework.daw.data.ICursorDevice;
 import de.mossgrabers.framework.daw.data.IParameter;
 import de.mossgrabers.framework.daw.data.bank.IParameterBank;
-import de.mossgrabers.framework.mode.AbstractMode;
+import de.mossgrabers.framework.featuregroup.AbstractFeatureGroup;
 import de.mossgrabers.framework.mode.Modes;
 import de.mossgrabers.framework.mode.device.SelectedDeviceMode;
 
@@ -117,7 +117,7 @@ public class ParameterView extends BaseView
         final IPadGrid padGrid = this.surface.getPadGrid ();
 
         for (int i = 8; i < 12; i++)
-            padGrid.lightEx (i % 4, 3 - i / 4, AbstractMode.BUTTON_COLOR_OFF);
+            padGrid.lightEx (i % 4, 3 - i / 4, AbstractFeatureGroup.BUTTON_COLOR_OFF);
 
         final ICursorDevice cursorDevice = this.model.getCursorDevice ();
         final boolean doesExist = cursorDevice.doesExist ();
@@ -143,7 +143,7 @@ public class ParameterView extends BaseView
                     padGrid.lightEx (x, y, PARAM_COLORS[i]);
             }
             else
-                padGrid.lightEx (x, y, AbstractMode.BUTTON_COLOR_OFF);
+                padGrid.lightEx (x, y, AbstractFeatureGroup.BUTTON_COLOR_OFF);
         }
     }
 }

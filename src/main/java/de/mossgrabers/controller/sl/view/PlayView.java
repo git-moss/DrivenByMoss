@@ -19,7 +19,7 @@ import de.mossgrabers.framework.daw.data.IDrumDevice;
 import de.mossgrabers.framework.daw.data.ITrack;
 import de.mossgrabers.framework.daw.data.bank.IDrumPadBank;
 import de.mossgrabers.framework.daw.data.bank.ITrackBank;
-import de.mossgrabers.framework.mode.ModeManager;
+import de.mossgrabers.framework.featuregroup.ModeManager;
 import de.mossgrabers.framework.mode.Modes;
 import de.mossgrabers.framework.utils.ButtonEvent;
 import de.mossgrabers.framework.view.AbstractSequencerView;
@@ -77,13 +77,13 @@ public class PlayView extends AbstractSequencerView<SLControlSurface, SLConfigur
             return;
 
         final ModeManager modeManager = this.surface.getModeManager ();
-        final Modes activeModeId = modeManager.getActiveOrTempId ();
+        final Modes activeModeId = modeManager.getActiveID ();
         if (Modes.VIEW_SELECT == activeModeId)
         {
             if (index == 0)
             {
                 this.surface.getViewManager ().setActive (Views.CONTROL);
-                if (Modes.VOLUME.equals (modeManager.getPreviousId ()))
+                if (Modes.VOLUME.equals (modeManager.getPreviousID ()))
                     modeManager.restore ();
                 else
                     modeManager.setActive (Modes.TRACK);
@@ -109,7 +109,7 @@ public class PlayView extends AbstractSequencerView<SLControlSurface, SLConfigur
             return;
 
         final ModeManager modeManager = this.surface.getModeManager ();
-        final Modes cm = modeManager.getActiveOrTempId ();
+        final Modes cm = modeManager.getActiveID ();
         if (!Modes.PLAY_OPTIONS.equals (cm))
             modeManager.setActive (Modes.PLAY_OPTIONS);
 
@@ -221,7 +221,7 @@ public class PlayView extends AbstractSequencerView<SLControlSurface, SLConfigur
         if (event != ButtonEvent.DOWN)
             return;
 
-        final Modes activeModeId = this.surface.getModeManager ().getActiveOrTempId ();
+        final Modes activeModeId = this.surface.getModeManager ().getActiveID ();
         if (Modes.SESSION == activeModeId)
         {
             if (isUp)
@@ -274,7 +274,7 @@ public class PlayView extends AbstractSequencerView<SLControlSurface, SLConfigur
             if (buttonIDOrdinal >= ButtonID.ROW3_1.ordinal () && buttonIDOrdinal <= ButtonID.ROW3_8.ordinal ())
                 return SLControlSurface.MKII_BUTTON_STATE_OFF;
 
-            final Modes mode = this.surface.getModeManager ().getActiveOrTempId ();
+            final Modes mode = this.surface.getModeManager ().getActiveID ();
             final boolean isSession = Modes.SESSION == mode;
             final boolean isDevice = Modes.DEVICE_PARAMS == mode;
             final boolean isPlayOptions = Modes.PLAY_OPTIONS == mode;

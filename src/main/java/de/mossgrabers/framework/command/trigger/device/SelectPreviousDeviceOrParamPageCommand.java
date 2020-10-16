@@ -49,4 +49,18 @@ public class SelectPreviousDeviceOrParamPageCommand<S extends IControlSurface<C>
         if (event == ButtonEvent.DOWN)
             this.model.getCursorDevice ().selectPrevious ();
     }
+
+
+    /**
+     * Check if the command can be executed.
+     *
+     * @return True if it can
+     */
+    public boolean canExecute ()
+    {
+        if (this.surface.isShiftPressed ())
+            return this.model.getCursorDevice ().canSelectPreviousFX ();
+
+        return this.model.getCursorDevice ().getParameterBank ().canScrollBackwards ();
+    }
 }

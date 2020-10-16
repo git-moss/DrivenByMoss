@@ -14,9 +14,10 @@ import de.mossgrabers.framework.daw.DAWColor;
 import de.mossgrabers.framework.daw.IModel;
 import de.mossgrabers.framework.daw.constants.Resolution;
 import de.mossgrabers.framework.daw.midi.INoteRepeat;
-import de.mossgrabers.framework.featuregroup.View;
+import de.mossgrabers.framework.featuregroup.AbstractView;
+import de.mossgrabers.framework.featuregroup.IView;
+import de.mossgrabers.framework.featuregroup.ViewManager;
 import de.mossgrabers.framework.utils.ButtonEvent;
-import de.mossgrabers.framework.view.AbstractView;
 
 
 /**
@@ -260,7 +261,8 @@ public class ShiftView extends AbstractView<FireControlSurface, FireConfiguratio
     @Override
     public int getButtonColor (final ButtonID buttonID)
     {
-        return this.surface.getViewManager ().getPrevious ().getButtonColor (buttonID);
+        final ViewManager viewManager = this.surface.getViewManager ();
+        return viewManager.get (viewManager.getActiveIDIgnoreTemporary ()).getButtonColor (buttonID);
     }
 
 
@@ -269,7 +271,8 @@ public class ShiftView extends AbstractView<FireControlSurface, FireConfiguratio
     public void onButton (final ButtonID buttonID, final ButtonEvent event, final int velocity)
     {
         // Relay to the actually active view
-        this.surface.getViewManager ().getPrevious ().onButton (buttonID, event, velocity);
+        final ViewManager viewManager = this.surface.getViewManager ();
+        viewManager.get (viewManager.getActiveIDIgnoreTemporary ()).onButton (buttonID, event, velocity);
     }
 
 
@@ -278,7 +281,8 @@ public class ShiftView extends AbstractView<FireControlSurface, FireConfiguratio
     public void onSelectKnobValue (final int value)
     {
         // Relay to the actually active view
-        final View previousView = this.surface.getViewManager ().getPrevious ();
+        final ViewManager viewManager = this.surface.getViewManager ();
+        final IView previousView = viewManager.get (viewManager.getActiveIDIgnoreTemporary ());
         if (previousView instanceof IFireView)
             ((IFireView) previousView).onSelectKnobValue (value);
     }
@@ -289,7 +293,8 @@ public class ShiftView extends AbstractView<FireControlSurface, FireConfiguratio
     public int getSoloButtonColor (final int index)
     {
         // Relay to the actually active view
-        final View previousView = this.surface.getViewManager ().getPrevious ();
+        final ViewManager viewManager = this.surface.getViewManager ();
+        final IView previousView = viewManager.get (viewManager.getActiveIDIgnoreTemporary ());
         return previousView instanceof IFireView ? ((IFireView) previousView).getSoloButtonColor (index) : 0;
     }
 }

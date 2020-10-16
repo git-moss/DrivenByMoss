@@ -9,10 +9,10 @@ import de.mossgrabers.controller.push.controller.PushControlSurface;
 import de.mossgrabers.framework.command.core.AbstractTriggerCommand;
 import de.mossgrabers.framework.daw.IModel;
 import de.mossgrabers.framework.daw.data.ITrack;
-import de.mossgrabers.framework.mode.ModeManager;
+import de.mossgrabers.framework.featuregroup.ModeManager;
+import de.mossgrabers.framework.featuregroup.ViewManager;
 import de.mossgrabers.framework.mode.Modes;
 import de.mossgrabers.framework.utils.ButtonEvent;
-import de.mossgrabers.framework.view.ViewManager;
 import de.mossgrabers.framework.view.Views;
 
 
@@ -44,7 +44,7 @@ public class SelectPlayViewCommand extends AbstractTriggerCommand<PushControlSur
 
         final ModeManager modeManager = this.surface.getModeManager ();
         final ViewManager viewManager = this.surface.getViewManager ();
-        if (Views.isSessionView (viewManager.getActiveId ()))
+        if (Views.isSessionView (viewManager.getActiveID ()))
         {
             final ITrack selectedTrack = this.model.getSelectedTrack ();
             if (selectedTrack == null)
@@ -56,15 +56,15 @@ public class SelectPlayViewCommand extends AbstractTriggerCommand<PushControlSur
             final Views preferredView = viewManager.getPreferredView (selectedTrack.getPosition ());
             viewManager.setActive (preferredView == null ? Views.PLAY : preferredView);
 
-            if (modeManager.isActive (Modes.SESSION) || modeManager.getActiveOrTemp ().isTemporary ())
+            if (modeManager.isActive (Modes.SESSION) || modeManager.isTemporary ())
                 modeManager.restore ();
 
             return;
         }
 
-        if (modeManager.isActiveOrTemp (Modes.VIEW_SELECT))
+        if (modeManager.isActive (Modes.VIEW_SELECT))
             modeManager.restore ();
         else
-            modeManager.setActive (Modes.VIEW_SELECT);
+            modeManager.setTemporary (Modes.VIEW_SELECT);
     }
 }

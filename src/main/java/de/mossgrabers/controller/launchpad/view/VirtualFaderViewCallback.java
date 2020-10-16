@@ -5,8 +5,8 @@
 package de.mossgrabers.controller.launchpad.view;
 
 import de.mossgrabers.framework.controller.grid.IVirtualFaderCallback;
-import de.mossgrabers.framework.featuregroup.View;
-import de.mossgrabers.framework.view.ViewManager;
+import de.mossgrabers.framework.featuregroup.IView;
+import de.mossgrabers.framework.featuregroup.ViewManager;
 
 
 /**
@@ -37,7 +37,7 @@ public class VirtualFaderViewCallback implements IVirtualFaderCallback
     @Override
     public int getValue ()
     {
-        final View activeView = this.viewManager.getActive ();
+        final IView activeView = this.viewManager.getActive ();
         if (activeView instanceof AbstractFaderView)
             return ((AbstractFaderView) activeView).getFaderValue (this.index);
         return 0;
@@ -48,7 +48,7 @@ public class VirtualFaderViewCallback implements IVirtualFaderCallback
     @Override
     public void setValue (final int value)
     {
-        final View activeView = this.viewManager.getActive ();
+        final IView activeView = this.viewManager.getActive ();
         if (activeView instanceof AbstractFaderView)
             ((AbstractFaderView) activeView).onValueKnob (this.index, value);
     }

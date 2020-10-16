@@ -9,7 +9,7 @@ import de.mossgrabers.controller.launchkey.controller.LaunchkeyMiniMk3ColorManag
 import de.mossgrabers.controller.launchkey.controller.LaunchkeyMiniMk3ControlSurface;
 import de.mossgrabers.framework.controller.ButtonID;
 import de.mossgrabers.framework.daw.IModel;
-import de.mossgrabers.framework.view.AbstractView;
+import de.mossgrabers.framework.featuregroup.AbstractView;
 
 
 /**

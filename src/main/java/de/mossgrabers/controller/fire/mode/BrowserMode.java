@@ -12,7 +12,7 @@ import de.mossgrabers.framework.daw.IBrowser;
 import de.mossgrabers.framework.daw.IModel;
 import de.mossgrabers.framework.daw.data.IBrowserColumn;
 import de.mossgrabers.framework.daw.data.IBrowserColumnItem;
-import de.mossgrabers.framework.mode.AbstractMode;
+import de.mossgrabers.framework.featuregroup.AbstractMode;
 import de.mossgrabers.framework.utils.StringUtils;
 
 import java.util.Arrays;
@@ -37,8 +37,6 @@ public class BrowserMode extends AbstractMode<FireControlSurface, FireConfigurat
 
         this.isKnobTouched = new boolean [9];
         Arrays.fill (this.isKnobTouched, false);
-
-        this.isTemporary = false;
     }
 
 

@@ -9,7 +9,7 @@ import de.mossgrabers.controller.sl.controller.SLControlSurface;
 import de.mossgrabers.framework.command.core.AbstractContinuousCommand;
 import de.mossgrabers.framework.daw.IModel;
 import de.mossgrabers.framework.daw.data.IMasterTrack;
-import de.mossgrabers.framework.mode.ModeManager;
+import de.mossgrabers.framework.featuregroup.ModeManager;
 import de.mossgrabers.framework.mode.Modes;
 
 
@@ -51,7 +51,7 @@ public class FaderCommand extends AbstractContinuousCommand<SLControlSurface, SL
             this.model.getCurrentTrackBank ().getItem (this.index).setVolume (value);
 
         final ModeManager modeManager = this.surface.getModeManager ();
-        if (!modeManager.isActiveOrTemp (Modes.VOLUME))
+        if (!modeManager.isActive (Modes.VOLUME))
             modeManager.setActive (Modes.VOLUME);
     }
 }

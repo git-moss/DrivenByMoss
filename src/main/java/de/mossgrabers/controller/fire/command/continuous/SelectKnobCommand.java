@@ -14,9 +14,9 @@ import de.mossgrabers.framework.daw.ITransport;
 import de.mossgrabers.framework.daw.data.ICursorDevice;
 import de.mossgrabers.framework.daw.data.ITrack;
 import de.mossgrabers.framework.daw.data.bank.ITrackBank;
-import de.mossgrabers.framework.featuregroup.Mode;
-import de.mossgrabers.framework.featuregroup.View;
-import de.mossgrabers.framework.mode.ModeManager;
+import de.mossgrabers.framework.featuregroup.IMode;
+import de.mossgrabers.framework.featuregroup.IView;
+import de.mossgrabers.framework.featuregroup.ModeManager;
 import de.mossgrabers.framework.mode.Modes;
 import de.mossgrabers.framework.utils.Timeout;
 
@@ -52,18 +52,18 @@ public class SelectKnobCommand extends AbstractContinuousCommand<FireControlSurf
         final ModeManager modeManager = this.surface.getModeManager ();
 
         // In note mode use it to change the transposition
-        if (modeManager.isActiveOrTemp (Modes.NOTE))
+        if (modeManager.isActive (Modes.NOTE))
         {
-            final Mode mode = modeManager.get (Modes.NOTE);
+            final IMode mode = modeManager.get (Modes.NOTE);
             mode.onKnobTouch (4, true);
             mode.onKnobValue (4, value);
             this.checkUntouch (4);
             return;
         }
 
-        if (modeManager.isActiveOrTemp (Modes.BROWSER))
+        if (modeManager.isActive (Modes.BROWSER))
         {
-            final Mode mode = modeManager.get (Modes.BROWSER);
+            final IMode mode = modeManager.get (Modes.BROWSER);
             mode.onKnobTouch (8, true);
             mode.onKnobValue (8, value);
             this.checkUntouch (8);
@@ -74,11 +74,11 @@ public class SelectKnobCommand extends AbstractContinuousCommand<FireControlSurf
         if (this.surface.isPressed (ButtonID.ALT))
         {
             final boolean isInc = this.model.getValueChanger ().isIncrease (value);
-            if (modeManager.isActiveOrTemp (Modes.TRACK, Modes.DEVICE_LAYER))
+            if (modeManager.isActive (Modes.TRACK, Modes.DEVICE_LAYER))
                 handleTrackSelection (this.surface, this.model.getTrackBank (), isInc);
-            else if (modeManager.isActiveOrTemp (Modes.DEVICE_PARAMS))
+            else if (modeManager.isActive (Modes.DEVICE_PARAMS))
                 this.handleDevicePageSelection (isInc);
-            else if (modeManager.isActiveOrTemp (Modes.USER))
+            else if (modeManager.isActive (Modes.USER))
                 this.handleUserPageSelection (isInc);
             return;
         }
@@ -98,7 +98,7 @@ public class SelectKnobCommand extends AbstractContinuousCommand<FireControlSurf
             return;
         }
 
-        final View activeView = this.surface.getViewManager ().getActive ();
+        final IView activeView = this.surface.getViewManager ().getActive ();
         if (activeView instanceof IFireView)
             ((IFireView) activeView).onSelectKnobValue (value);
     }
@@ -141,7 +141,7 @@ public class SelectKnobCommand extends AbstractContinuousCommand<FireControlSurf
 
     private void handleUserPageSelection (final boolean isInc)
     {
-        final Mode userMode = this.surface.getModeManager ().get (Modes.USER);
+        final IMode userMode = this.surface.getModeManager ().get (Modes.USER);
         if (isInc)
             userMode.selectNextItem ();
         else

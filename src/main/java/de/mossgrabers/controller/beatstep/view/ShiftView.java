@@ -12,10 +12,10 @@ import de.mossgrabers.framework.controller.grid.IPadGrid;
 import de.mossgrabers.framework.daw.IModel;
 import de.mossgrabers.framework.daw.ITransport;
 import de.mossgrabers.framework.daw.data.ICursorDevice;
-import de.mossgrabers.framework.featuregroup.View;
+import de.mossgrabers.framework.featuregroup.AbstractView;
+import de.mossgrabers.framework.featuregroup.IView;
+import de.mossgrabers.framework.featuregroup.ViewManager;
 import de.mossgrabers.framework.utils.ButtonEvent;
-import de.mossgrabers.framework.view.AbstractView;
-import de.mossgrabers.framework.view.ViewManager;
 import de.mossgrabers.framework.view.Views;
 
 
@@ -85,7 +85,7 @@ public class ShiftView extends AbstractView<BeatstepControlSurface, BeatstepConf
             return;
 
         int viewIndex;
-        View view;
+        IView view;
         final ICursorDevice cursorDevice = this.model.getCursorDevice ();
         switch (note - 36)
         {
@@ -141,7 +141,7 @@ public class ShiftView extends AbstractView<BeatstepControlSurface, BeatstepConf
 
                 final ViewManager viewManager = this.surface.getViewManager ();
                 final Views viewId = VIEWS[viewIndex];
-                viewManager.setPrevious (viewId);
+                viewManager.setPreviousID (viewId);
                 view = viewManager.get (viewId);
                 this.surface.getDisplay ().notify (view.getName ());
                 break;

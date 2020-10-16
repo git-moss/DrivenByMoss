@@ -31,8 +31,6 @@ public class BrowserMode extends BaseMode
     public BrowserMode (final SLMkIIIControlSurface surface, final IModel model)
     {
         super ("Browser", surface, model);
-
-        this.isTemporary = true;
     }
 
 

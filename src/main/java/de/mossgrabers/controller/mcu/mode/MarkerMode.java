@@ -28,8 +28,6 @@ public class MarkerMode extends BaseMode
     public MarkerMode (final MCUControlSurface surface, final IModel model)
     {
         super ("Marker", surface, model);
-
-        this.isTemporary = true;
     }
 
 

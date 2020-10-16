@@ -7,7 +7,7 @@ package de.mossgrabers.controller.sl.mode;
 import de.mossgrabers.controller.sl.SLConfiguration;
 import de.mossgrabers.controller.sl.controller.SLControlSurface;
 import de.mossgrabers.framework.daw.IModel;
-import de.mossgrabers.framework.mode.AbstractMode;
+import de.mossgrabers.framework.featuregroup.AbstractMode;
 import de.mossgrabers.framework.utils.ButtonEvent;
 
 
@@ -27,7 +27,6 @@ public class FunctionMode extends AbstractMode<SLControlSurface, SLConfiguration
     public FunctionMode (final SLControlSurface surface, final IModel model)
     {
         super ("Functions", surface, model);
-        this.isTemporary = false;
     }
 
 

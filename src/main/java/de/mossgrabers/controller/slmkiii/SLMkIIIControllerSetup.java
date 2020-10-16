@@ -59,12 +59,12 @@ import de.mossgrabers.framework.daw.midi.DeviceInquiry;
 import de.mossgrabers.framework.daw.midi.IMidiAccess;
 import de.mossgrabers.framework.daw.midi.IMidiInput;
 import de.mossgrabers.framework.daw.midi.IMidiOutput;
-import de.mossgrabers.framework.featuregroup.Mode;
-import de.mossgrabers.framework.featuregroup.View;
-import de.mossgrabers.framework.mode.ModeManager;
+import de.mossgrabers.framework.featuregroup.IMode;
+import de.mossgrabers.framework.featuregroup.IView;
+import de.mossgrabers.framework.featuregroup.ModeManager;
+import de.mossgrabers.framework.featuregroup.ViewManager;
 import de.mossgrabers.framework.mode.Modes;
 import de.mossgrabers.framework.utils.ButtonEvent;
-import de.mossgrabers.framework.view.ViewManager;
 import de.mossgrabers.framework.view.Views;
 
 
@@ -233,7 +233,7 @@ public class SLMkIIIControllerSetup extends AbstractControllerSetup<SLMkIIIContr
             final ButtonID buttonID = ButtonID.get (ButtonID.ROW1_1, i);
             this.addButton (buttonID, "Select " + (i + 1), new ButtonRowModeCommand<> (0, i, this.model, surface), 15, SLMkIIIControlSurface.MKIII_DISPLAY_BUTTON_1 + i, () -> {
 
-                final Mode mode = modeManager.getActiveOrTemp ();
+                final IMode mode = modeManager.getActive ();
                 return mode == null ? 0 : mode.getButtonColor (buttonID);
 
             });
@@ -262,7 +262,7 @@ public class SLMkIIIControllerSetup extends AbstractControllerSetup<SLMkIIIContr
         this.addButton (ButtonID.ARROW_DOWN, "Down", new TrackModeCommand (this.model, surface), 15, SLMkIIIControlSurface.MKIII_DISPLAY_DOWN, () -> getTrackModeColor (modeManager));
 
         this.addButton (ButtonID.SHIFT, "Shift", new ShiftCommand<> (this.model, surface), 15, SLMkIIIControlSurface.MKIII_SHIFT);
-        this.addButton (ButtonID.USER, "Options", new ModeSelectCommand<> (this.model, surface, Modes.FUNCTIONS, true), 15, SLMkIIIControlSurface.MKIII_OPTIONS, () -> modeManager.isActiveOrTemp (Modes.FUNCTIONS) ? SLMkIIIColorManager.SLMKIII_DARK_BROWN : SLMkIIIColorManager.SLMKIII_DARK_GREY);
+        this.addButton (ButtonID.USER, "Options", new ModeSelectCommand<> (this.model, surface, Modes.FUNCTIONS, true), 15, SLMkIIIControlSurface.MKIII_OPTIONS, () -> modeManager.isActive (Modes.FUNCTIONS) ? SLMkIIIColorManager.SLMKIII_DARK_BROWN : SLMkIIIColorManager.SLMKIII_DARK_GREY);
 
         this.addButton (ButtonID.OCTAVE_UP, "Up", (event, value) -> {
             if (event == ButtonEvent.UP)
@@ -282,7 +282,7 @@ public class SLMkIIIControllerSetup extends AbstractControllerSetup<SLMkIIIContr
         {
             final ButtonID sceneButtonID = ButtonID.get (ButtonID.SCENE1, i);
             this.addButton (sceneButtonID, "Scene " + (i + 1), new ViewButtonCommand<> (sceneButtonID, surface), 15, SLMkIIIControlSurface.MKIII_SCENE_1 + i, () -> {
-                final View activeView = viewManager.getActive ();
+                final IView activeView = viewManager.getActive ();
                 return activeView != null ? activeView.getButtonColor (sceneButtonID) : 0;
             });
         }
@@ -346,7 +346,7 @@ public class SLMkIIIControllerSetup extends AbstractControllerSetup<SLMkIIIContr
 
                 // Note: On mode change the color does not change if the value is the same,
                 // let's ignore that since it is only visible in the simulation GUI
-                final Mode mode = modeManager.getActiveOrTemp ();
+                final IMode mode = modeManager.getActive ();
                 if (mode == null)
                     return 0;
                 final int value = mode.getKnobValue (index);
@@ -356,7 +356,7 @@ public class SLMkIIIControllerSetup extends AbstractControllerSetup<SLMkIIIContr
 
                 // On the device, the send value is displayed on the display as a knob
                 // On the simulation GUI represent it as a dimmed color of the mode
-                final BaseMode mode = (BaseMode) modeManager.getActiveOrTemp ();
+                final BaseMode mode = (BaseMode) modeManager.getActive ();
                 if (mode == null)
                     return ColorEx.BLACK;
                 final ColorEx c = this.colorManager.getColor (mode.getModeColor (), null);
@@ -621,7 +621,7 @@ public class SLMkIIIControllerSetup extends AbstractControllerSetup<SLMkIIIContr
             return SLMkIIIColorManager.SLMKIII_BLUE;
         if (modeManager.isActive (Modes.PAN))
             return SLMkIIIColorManager.SLMKIII_ORANGE;
-        if (Modes.isSendMode (modeManager.getActiveId ()))
+        if (Modes.isSendMode (modeManager.getActiveID ()))
             return SLMkIIIColorManager.SLMKIII_YELLOW;
 
         return SLMkIIIColorManager.SLMKIII_WHITE_HALF;
@@ -679,7 +679,7 @@ public class SLMkIIIControllerSetup extends AbstractControllerSetup<SLMkIIIContr
         if (!cursorCommand.canScroll ())
             return SLMkIIIColorManager.SLMKIII_BLACK;
 
-        if (Modes.isTrackMode (modeManager.getActiveId ()))
+        if (Modes.isTrackMode (modeManager.getActiveID ()))
             return SLMkIIIColorManager.SLMKIII_GREEN_HALF;
 
         if (modeManager.isActive (Modes.DEVICE_PARAMS))

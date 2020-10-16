@@ -8,7 +8,7 @@ import de.mossgrabers.controller.push.PushConfiguration;
 import de.mossgrabers.controller.push.controller.PushControlSurface;
 import de.mossgrabers.framework.command.core.AbstractTriggerCommand;
 import de.mossgrabers.framework.daw.IModel;
-import de.mossgrabers.framework.mode.ModeManager;
+import de.mossgrabers.framework.featuregroup.ModeManager;
 import de.mossgrabers.framework.mode.Modes;
 import de.mossgrabers.framework.utils.ButtonEvent;
 
@@ -40,7 +40,7 @@ public class VolumeCommand extends AbstractTriggerCommand<PushControlSurface, Pu
             return;
 
         final ModeManager modeManager = this.surface.getModeManager ();
-        final Modes currentMode = modeManager.getActiveOrTempId ();
+        final Modes currentMode = modeManager.getActiveID ();
 
         // Layer mode selection for Push 1
         final PushConfiguration config = this.surface.getConfiguration ();

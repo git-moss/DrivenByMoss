@@ -7,7 +7,8 @@ package de.mossgrabers.controller.mcu.controller;
 import de.mossgrabers.framework.controller.ButtonID;
 import de.mossgrabers.framework.controller.color.ColorEx;
 import de.mossgrabers.framework.controller.color.ColorManager;
-import de.mossgrabers.framework.mode.AbstractMode;
+import de.mossgrabers.framework.featuregroup.AbstractFeatureGroup;
+import de.mossgrabers.framework.featuregroup.AbstractMode;
 
 
 /**
@@ -22,8 +23,8 @@ public class MCUColorManager extends ColorManager
      */
     public MCUColorManager ()
     {
-        this.registerColorIndex (AbstractMode.BUTTON_COLOR_OFF, 0);
-        this.registerColorIndex (AbstractMode.BUTTON_COLOR_ON, 0);
+        this.registerColorIndex (AbstractFeatureGroup.BUTTON_COLOR_OFF, 0);
+        this.registerColorIndex (AbstractFeatureGroup.BUTTON_COLOR_ON, 0);
         this.registerColorIndex (AbstractMode.BUTTON_COLOR_HI, 127);
 
         this.registerColorIndex (ColorManager.BUTTON_STATE_OFF, 0);

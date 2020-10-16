@@ -11,7 +11,8 @@ import de.mossgrabers.framework.controller.ButtonID;
 import de.mossgrabers.framework.controller.display.IGraphicDisplay;
 import de.mossgrabers.framework.controller.display.ITextDisplay;
 import de.mossgrabers.framework.daw.IModel;
-import de.mossgrabers.framework.mode.AbstractMode;
+import de.mossgrabers.framework.featuregroup.AbstractFeatureGroup;
+import de.mossgrabers.framework.featuregroup.AbstractMode;
 import de.mossgrabers.framework.utils.ButtonEvent;
 
 
@@ -162,20 +163,20 @@ public class RibbonMode extends BaseMode
         if (index >= 0)
         {
             if (index < 5)
-                return this.configuration.getRibbonMode () == PushConfiguration.RIBBON_MODE_PITCH + index ? AbstractMode.BUTTON_COLOR_HI : AbstractMode.BUTTON_COLOR_ON;
+                return this.configuration.getRibbonMode () == PushConfiguration.RIBBON_MODE_PITCH + index ? AbstractMode.BUTTON_COLOR_HI : AbstractFeatureGroup.BUTTON_COLOR_ON;
 
-            return this.configuration.getRibbonNoteRepeat () == index - 5 ? AbstractMode.BUTTON_COLOR_HI : AbstractMode.BUTTON_COLOR_ON;
+            return this.configuration.getRibbonNoteRepeat () == index - 5 ? AbstractMode.BUTTON_COLOR_HI : AbstractFeatureGroup.BUTTON_COLOR_ON;
         }
 
         index = this.isButtonRow (1, buttonID);
         if (index >= 0)
         {
             if (index > 1 && index < 6)
-                return this.isPush2 ? AbstractMode.BUTTON_COLOR_ON : AbstractMode.BUTTON_COLOR2_ON;
-            return AbstractMode.BUTTON_COLOR_OFF;
+                return this.isPush2 ? AbstractFeatureGroup.BUTTON_COLOR_ON : AbstractMode.BUTTON_COLOR2_ON;
+            return AbstractFeatureGroup.BUTTON_COLOR_OFF;
         }
 
-        return AbstractMode.BUTTON_COLOR_OFF;
+        return AbstractFeatureGroup.BUTTON_COLOR_OFF;
     }
 
 

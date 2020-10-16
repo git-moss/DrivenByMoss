@@ -20,7 +20,7 @@ import de.mossgrabers.framework.daw.constants.EditCapability;
 import de.mossgrabers.framework.daw.data.IMasterTrack;
 import de.mossgrabers.framework.daw.data.empty.EmptyParameter;
 import de.mossgrabers.framework.daw.resource.ChannelType;
-import de.mossgrabers.framework.mode.AbstractMode;
+import de.mossgrabers.framework.featuregroup.AbstractFeatureGroup;
 import de.mossgrabers.framework.parameterprovider.FixedParameterProvider;
 import de.mossgrabers.framework.utils.ButtonEvent;
 
@@ -42,8 +42,6 @@ public class MasterMode extends BaseMode
     public MasterMode (final PushControlSurface surface, final IModel model, final boolean isTemporary)
     {
         super ("Master", surface, model);
-
-        this.isTemporary = isTemporary;
 
         final IMasterTrack masterTrack = this.model.getMasterTrack ();
         final IProject project = this.model.getProject ();
@@ -238,12 +236,12 @@ public class MasterMode extends BaseMode
             if (index == 0)
                 return this.getTrackButtonColor ();
             if (index < 4 || index == 5)
-                return colorManager.getColorIndex (AbstractMode.BUTTON_COLOR_OFF);
+                return colorManager.getColorIndex (AbstractFeatureGroup.BUTTON_COLOR_OFF);
             if (index > 5)
-                return colorManager.getColorIndex (AbstractMode.BUTTON_COLOR_ON);
+                return colorManager.getColorIndex (AbstractFeatureGroup.BUTTON_COLOR_ON);
 
             final int red = isPush2 ? PushColorManager.PUSH2_COLOR_RED_HI : PushColorManager.PUSH1_COLOR_RED_HI;
-            return this.model.getApplication ().isEngineActive () ? colorManager.getColorIndex (AbstractMode.BUTTON_COLOR_ON) : red;
+            return this.model.getApplication ().isEngineActive () ? colorManager.getColorIndex (AbstractFeatureGroup.BUTTON_COLOR_ON) : red;
         }
 
         index = this.isButtonRow (1, buttonID);

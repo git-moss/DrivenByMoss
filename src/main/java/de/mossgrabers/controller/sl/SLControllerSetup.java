@@ -52,11 +52,11 @@ import de.mossgrabers.framework.daw.data.bank.ITrackBank;
 import de.mossgrabers.framework.daw.midi.IMidiAccess;
 import de.mossgrabers.framework.daw.midi.IMidiInput;
 import de.mossgrabers.framework.daw.midi.IMidiOutput;
-import de.mossgrabers.framework.featuregroup.View;
-import de.mossgrabers.framework.mode.ModeManager;
+import de.mossgrabers.framework.featuregroup.IView;
+import de.mossgrabers.framework.featuregroup.ModeManager;
+import de.mossgrabers.framework.featuregroup.ViewManager;
 import de.mossgrabers.framework.mode.Modes;
 import de.mossgrabers.framework.scale.Scales;
-import de.mossgrabers.framework.view.ViewManager;
 import de.mossgrabers.framework.view.Views;
 
 
@@ -109,7 +109,7 @@ public class SLControllerSetup extends AbstractControllerSetup<SLControlSurface,
     {
         super.flush ();
 
-        this.updateIndication (this.getSurface ().getModeManager ().getActiveOrTempId ());
+        this.updateIndication (this.getSurface ().getModeManager ().getActiveID ());
     }
 
 
@@ -135,7 +135,7 @@ public class SLControllerSetup extends AbstractControllerSetup<SLControlSurface,
             if (!isSelected)
                 return;
             final ModeManager modeManager = this.getSurface ().getModeManager ();
-            if (!modeManager.isActiveOrTemp (Modes.VOLUME))
+            if (!modeManager.isActive (Modes.VOLUME))
                 modeManager.setActive (Modes.MASTER);
         });
     }
@@ -240,7 +240,7 @@ public class SLControllerSetup extends AbstractControllerSetup<SLControlSurface,
 
     private int getViewButtonColor (final ButtonID buttonID)
     {
-        final View activeView = this.getSurface ().getViewManager ().getActive ();
+        final IView activeView = this.getSurface ().getViewManager ().getActive ();
         return activeView == null ? 0 : activeView.getButtonColor (buttonID);
     }
 
@@ -447,7 +447,7 @@ public class SLControllerSetup extends AbstractControllerSetup<SLControlSurface,
     private void handleTrackChange (final boolean isSelected)
     {
         final ModeManager modeManager = this.getSurface ().getModeManager ();
-        if (isSelected && modeManager.isActiveOrTemp (Modes.MASTER))
+        if (isSelected && modeManager.isActive (Modes.MASTER))
             modeManager.setActive (Modes.TRACK);
     }
 }

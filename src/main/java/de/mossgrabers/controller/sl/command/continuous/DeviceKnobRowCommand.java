@@ -8,7 +8,7 @@ import de.mossgrabers.controller.sl.SLConfiguration;
 import de.mossgrabers.controller.sl.controller.SLControlSurface;
 import de.mossgrabers.framework.command.core.AbstractContinuousCommand;
 import de.mossgrabers.framework.daw.IModel;
-import de.mossgrabers.framework.mode.ModeManager;
+import de.mossgrabers.framework.featuregroup.ModeManager;
 import de.mossgrabers.framework.mode.Modes;
 
 
@@ -44,7 +44,7 @@ public class DeviceKnobRowCommand extends AbstractContinuousCommand<SLControlSur
             return;
 
         final ModeManager modeManager = this.surface.getModeManager ();
-        if (!modeManager.isActiveOrTemp (Modes.DEVICE_PARAMS))
+        if (!modeManager.isActive (Modes.DEVICE_PARAMS))
             modeManager.setActive (Modes.DEVICE_PARAMS);
         modeManager.get (Modes.DEVICE_PARAMS).onKnobValue (this.index, value);
     }

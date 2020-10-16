@@ -14,7 +14,8 @@ import de.mossgrabers.framework.daw.IBrowser;
 import de.mossgrabers.framework.daw.IModel;
 import de.mossgrabers.framework.daw.data.IBrowserColumn;
 import de.mossgrabers.framework.daw.data.IBrowserColumnItem;
-import de.mossgrabers.framework.mode.AbstractMode;
+import de.mossgrabers.framework.featuregroup.AbstractFeatureGroup;
+import de.mossgrabers.framework.featuregroup.AbstractMode;
 import de.mossgrabers.framework.utils.ButtonEvent;
 import de.mossgrabers.framework.utils.StringUtils;
 
@@ -43,8 +44,6 @@ public class DeviceBrowserMode extends BaseMode
     public DeviceBrowserMode (final PushControlSurface surface, final IModel model)
     {
         super ("Browser", surface, model);
-
-        this.isTemporary = false;
 
         this.selectionMode = SELECTION_OFF;
         this.filterColumn = -1;
@@ -325,9 +324,9 @@ public class DeviceBrowserMode extends BaseMode
         if (index >= 0)
         {
             if (index == 7)
-                return AbstractMode.BUTTON_COLOR_ON;
+                return AbstractFeatureGroup.BUTTON_COLOR_ON;
             final IBrowserColumn col = this.getFilterColumn (index);
-            return col != null && col.doesExist () ? AbstractMode.BUTTON_COLOR_ON : AbstractMode.BUTTON_COLOR_OFF;
+            return col != null && col.doesExist () ? AbstractFeatureGroup.BUTTON_COLOR_ON : AbstractFeatureGroup.BUTTON_COLOR_OFF;
         }
 
         index = this.isButtonRow (1, buttonID);
@@ -336,10 +335,10 @@ public class DeviceBrowserMode extends BaseMode
             if (index == 7)
                 return AbstractMode.BUTTON_COLOR2_ON;
             final IBrowserColumn col = this.getFilterColumn (index);
-            return col != null && col.doesExist () ? AbstractMode.BUTTON_COLOR2_ON : AbstractMode.BUTTON_COLOR_OFF;
+            return col != null && col.doesExist () ? AbstractMode.BUTTON_COLOR2_ON : AbstractFeatureGroup.BUTTON_COLOR_OFF;
         }
 
-        return AbstractMode.BUTTON_COLOR_OFF;
+        return AbstractFeatureGroup.BUTTON_COLOR_OFF;
     }
 
 

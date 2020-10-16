@@ -15,7 +15,7 @@ import de.mossgrabers.framework.daw.data.IChannel;
 import de.mossgrabers.framework.daw.data.ISend;
 import de.mossgrabers.framework.daw.data.ISpecificDevice;
 import de.mossgrabers.framework.daw.data.bank.ISendBank;
-import de.mossgrabers.framework.mode.AbstractMode;
+import de.mossgrabers.framework.featuregroup.AbstractMode;
 import de.mossgrabers.framework.mode.Modes;
 import de.mossgrabers.framework.parameterprovider.DrumPadParameterProvider;
 
@@ -56,10 +56,7 @@ public class FireLayerMode extends AbstractMode<FireControlSurface, FireConfigur
     {
         super ("Channel", surface, model);
 
-        this.isTemporary = false;
-
         this.setControls (ContinuousID.createSequentialList (ContinuousID.KNOB1, 4));
-
         this.setParameters (new Fire4KnobProvider (surface, new DrumPadParameterProvider (model)));
     }
 

@@ -90,8 +90,8 @@ import de.mossgrabers.framework.daw.data.bank.ITrackBank;
 import de.mossgrabers.framework.daw.midi.IMidiAccess;
 import de.mossgrabers.framework.daw.midi.IMidiInput;
 import de.mossgrabers.framework.daw.midi.IMidiOutput;
-import de.mossgrabers.framework.featuregroup.Mode;
-import de.mossgrabers.framework.mode.ModeManager;
+import de.mossgrabers.framework.featuregroup.IMode;
+import de.mossgrabers.framework.featuregroup.ModeManager;
 import de.mossgrabers.framework.mode.Modes;
 import de.mossgrabers.framework.view.ControlOnlyView;
 import de.mossgrabers.framework.view.Views;
@@ -178,7 +178,7 @@ public class MCUControllerSetup extends AbstractControllerSetup<MCUControlSurfac
 
         this.surfaces.forEach (surface -> {
             final ModeManager modeManager = surface.getModeManager ();
-            final Modes mode = modeManager.getActiveOrTempId ();
+            final Modes mode = modeManager.getActiveID ();
             this.updateMode (mode);
 
             if (mode == null)
@@ -188,7 +188,7 @@ public class MCUControllerSetup extends AbstractControllerSetup<MCUControlSurfac
             this.updateFaders (surface.isShiftPressed ());
             this.updateSegmentDisplay ();
 
-            final Mode activeOrTempMode = modeManager.getActiveOrTemp ();
+            final IMode activeOrTempMode = modeManager.getActive ();
             if (activeOrTempMode instanceof BaseMode)
                 ((BaseMode) activeOrTempMode).updateKnobLEDs ();
         });
@@ -250,7 +250,7 @@ public class MCUControllerSetup extends AbstractControllerSetup<MCUControlSurfac
             surface.addTextDisplay (new MCUDisplay (this.host, output, false, false, isMainDevice));
             surface.addTextDisplay (new MCUSegmentDisplay (this.host, output));
             surface.addTextDisplay (new MCUAssignmentDisplay (this.host, output));
-            surface.getModeManager ().setDefault (Modes.VOLUME);
+            surface.getModeManager ().setDefaultID (Modes.VOLUME);
         }
     }
 
@@ -305,7 +305,7 @@ public class MCUControllerSetup extends AbstractControllerSetup<MCUControlSurfac
             {
                 final MCUControlSurface surface = this.getSurface (index);
                 surface.switchVuMode (this.configuration.isEnableVUMeters () ? MCUControlSurface.VUMODE_LED_AND_LCD : MCUControlSurface.VUMODE_OFF);
-                final Mode activeMode = surface.getModeManager ().getActiveOrTemp ();
+                final IMode activeMode = surface.getModeManager ().getActive ();
                 if (activeMode != null)
                     activeMode.updateDisplay ();
                 ((MCUDisplay) surface.getDisplay ()).forceFlush ();
@@ -362,7 +362,7 @@ public class MCUControllerSetup extends AbstractControllerSetup<MCUControlSurfac
                     return isOn ? MCU_BUTTON_STATE_ON : MCU_BUTTON_STATE_OFF;
                 });
 
-                this.addButton (surface, ButtonID.SCRUB, "Scrub", new ScrubCommand (this.model, surface), 0, MCUControlSurface.MCU_SCRUB, () -> surface.getModeManager ().isActiveOrTemp (Modes.DEVICE_PARAMS));
+                this.addButton (surface, ButtonID.SCRUB, "Scrub", new ScrubCommand (this.model, surface), 0, MCUControlSurface.MCU_SCRUB, () -> surface.getModeManager ().isActive (Modes.DEVICE_PARAMS));
                 this.addButton (surface, ButtonID.ARROW_LEFT, "Left", new MCUCursorCommand (Direction.LEFT, this.model, surface), 0, MCUControlSurface.MCU_ARROW_LEFT);
                 this.addButton (surface, ButtonID.ARROW_RIGHT, "Right", new MCUCursorCommand (Direction.RIGHT, this.model, surface), 0, MCUControlSurface.MCU_ARROW_RIGHT);
                 this.addButton (surface, ButtonID.ARROW_UP, "Up", new MCUCursorCommand (Direction.UP, this.model, surface), 0, MCUControlSurface.MCU_ARROW_UP);
@@ -389,10 +389,10 @@ public class MCUControllerSetup extends AbstractControllerSetup<MCUControlSurfac
 
                 final ModeManager modeManager = surface.getModeManager ();
 
-                this.addButton (surface, ButtonID.TRACK, "Track", new TracksCommand (this.model, surface), 0, MCUControlSurface.MCU_MODE_IO, () -> surface.getButton (ButtonID.SELECT).isPressed () ? this.model.isCursorTrackPinned () : modeManager.isActiveOrTemp (Modes.TRACK, Modes.VOLUME));
-                this.addButton (surface, ButtonID.PAN_SEND, "Pan", new ModeSelectCommand<> (this.model, surface, Modes.PAN), 0, MCUControlSurface.MCU_MODE_PAN, () -> modeManager.isActiveOrTemp (Modes.PAN));
-                this.addButton (surface, ButtonID.SENDS, "Sends", new SendSelectCommand (this.model, surface), 0, MCUControlSurface.MCU_MODE_SENDS, () -> Modes.isSendMode (modeManager.getActiveOrTempId ()));
-                this.addButton (surface, ButtonID.DEVICE, "Device", new DevicesCommand (this.model, surface), 0, MCUControlSurface.MCU_MODE_PLUGIN, () -> surface.getButton (ButtonID.SELECT).isPressed () ? cursorDevice.isPinned () : modeManager.isActiveOrTemp (Modes.DEVICE_PARAMS));
+                this.addButton (surface, ButtonID.TRACK, "Track", new TracksCommand (this.model, surface), 0, MCUControlSurface.MCU_MODE_IO, () -> surface.getButton (ButtonID.SELECT).isPressed () ? this.model.isCursorTrackPinned () : modeManager.isActive (Modes.TRACK, Modes.VOLUME));
+                this.addButton (surface, ButtonID.PAN_SEND, "Pan", new ModeSelectCommand<> (this.model, surface, Modes.PAN), 0, MCUControlSurface.MCU_MODE_PAN, () -> modeManager.isActive (Modes.PAN));
+                this.addButton (surface, ButtonID.SENDS, "Sends", new SendSelectCommand (this.model, surface), 0, MCUControlSurface.MCU_MODE_SENDS, () -> Modes.isSendMode (modeManager.getActiveID ()));
+                this.addButton (surface, ButtonID.DEVICE, "Device", new DevicesCommand (this.model, surface), 0, MCUControlSurface.MCU_MODE_PLUGIN, () -> surface.getButton (ButtonID.SELECT).isPressed () ? cursorDevice.isPinned () : modeManager.isActive (Modes.DEVICE_PARAMS));
                 this.addButton (surface, ButtonID.MOVE_TRACK_LEFT, "Left", new MCUMoveTrackBankCommand (this.model, surface, true, true), 0, MCUControlSurface.MCU_MODE_EQ);
                 this.addButton (surface, ButtonID.MOVE_TRACK_RIGHT, "Right", new MCUMoveTrackBankCommand (this.model, surface, true, false), 0, MCUControlSurface.MCU_MODE_DYN);
 
@@ -417,7 +417,7 @@ public class MCUControllerSetup extends AbstractControllerSetup<MCUControlSurfac
                 this.addButton (surface, ButtonID.LAYOUT_EDIT, "Edit", new LayoutCommand<> (IApplication.PANEL_LAYOUT_EDIT, this.model, surface), MCUControlSurface.MCU_OUTPUTS);
 
                 // Utilities
-                this.addButton (surface, ButtonID.BROWSE, "Browse", new BrowserCommand<> (this.model, surface), 0, MCUControlSurface.MCU_USER, () -> modeManager.isActiveOrTemp (Modes.BROWSER));
+                this.addButton (surface, ButtonID.BROWSE, "Browse", new BrowserCommand<> (this.model, surface), 0, MCUControlSurface.MCU_USER, () -> modeManager.isActive (Modes.BROWSER));
                 this.addButton (surface, ButtonID.METRONOME, "Metronome", new MetronomeCommand<> (this.model, surface), 0, MCUControlSurface.MCU_CLICK, () -> surface.getButton (ButtonID.SHIFT).isPressed () ? t.isMetronomeTicksOn () : t.isMetronomeOn ());
                 this.addButton (surface, ButtonID.GROOVE, "Groove", new GrooveCommand (this.model, surface), 0, MCUControlSurface.MCU_SOLO, () -> this.model.getGroove ().getParameters ()[0].getValue () > 0);
                 this.addButton (surface, ButtonID.OVERDUB, "Overdub", new OverdubCommand<> (this.model, surface), 0, MCUControlSurface.MCU_REPLACE, () -> (surface.getButton (ButtonID.SHIFT).isPressed () ? t.isLauncherOverdub () : t.isArrangerOverdub ()));
@@ -445,7 +445,7 @@ public class MCUControllerSetup extends AbstractControllerSetup<MCUControlSurfac
 
                 // Only MCU
                 this.addButton (surface, ButtonID.SAVE, "Save", new SaveCommand<> (this.model, surface), MCUControlSurface.MCU_SAVE);
-                this.addButton (surface, ButtonID.MARKER, "Marker", new MarkerCommand<> (this.model, surface), 0, MCUControlSurface.MCU_MARKER, () -> surface.getButton (ButtonID.SHIFT).isPressed () ? this.model.getArranger ().areCueMarkersVisible () : modeManager.isActiveOrTemp (Modes.MARKERS));
+                this.addButton (surface, ButtonID.MARKER, "Marker", new MarkerCommand<> (this.model, surface), 0, MCUControlSurface.MCU_MARKER, () -> surface.getButton (ButtonID.SHIFT).isPressed () ? this.model.getArranger ().areCueMarkersVisible () : modeManager.isActive (Modes.MARKERS));
                 this.addButton (surface, ButtonID.TOGGLE_VU, "Toggle VU", new ToggleVUCommand<> (this.model, surface), 0, MCUControlSurface.MCU_EDIT, () -> this.configuration.isEnableVUMeters ());
 
                 this.addLight (surface, OutputID.LED1, 0, MCUControlSurface.MCU_SMPTE_LED, () -> this.configuration.isDisplayTicks () ? 2 : 0);
@@ -755,13 +755,13 @@ public class MCUControllerSetup extends AbstractControllerSetup<MCUControlSurfac
         if (!this.configuration.hasMotorFaders ())
             return;
 
-        final Modes activeMode = this.getSurface ().getModeManager ().getActiveOrTempId ();
+        final Modes activeMode = this.getSurface ().getModeManager ().getActiveID ();
         final Modes modeId = this.configuration.useFadersAsKnobs () && VALUE_MODES.contains (activeMode) ? activeMode : Modes.VOLUME;
 
         for (int index = 0; index < this.numMCUDevices; index++)
         {
             final MCUControlSurface surface = this.getSurface (index);
-            final Mode mode = surface.getModeManager ().get (modeId);
+            final IMode mode = surface.getModeManager ().get (modeId);
             final IMidiOutput output = surface.getMidiOutput ();
             for (int channel = 0; channel < 8; channel++)
             {
@@ -879,14 +879,14 @@ public class MCUControllerSetup extends AbstractControllerSetup<MCUControlSurfac
             return;
 
         final ModeManager modeManager = this.getSurface ().getModeManager ();
-        if (modeManager.isActiveOrTemp (Modes.MASTER))
+        if (modeManager.isActive (Modes.MASTER))
             modeManager.setActive (Modes.TRACK);
     }
 
 
     private static int getButtonColor (final MCUControlSurface surface, final ButtonID buttonID)
     {
-        final Mode mode = surface.getModeManager ().getActiveOrTemp ();
+        final IMode mode = surface.getModeManager ().getActive ();
         return mode == null ? 0 : mode.getButtonColor (buttonID);
     }
 }

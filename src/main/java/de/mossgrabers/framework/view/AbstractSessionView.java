@@ -17,6 +17,7 @@ import de.mossgrabers.framework.daw.data.ITrack;
 import de.mossgrabers.framework.daw.data.bank.ISceneBank;
 import de.mossgrabers.framework.daw.data.bank.ISlotBank;
 import de.mossgrabers.framework.daw.data.bank.ITrackBank;
+import de.mossgrabers.framework.featuregroup.AbstractView;
 import de.mossgrabers.framework.utils.ButtonEvent;
 import de.mossgrabers.framework.utils.FrameworkException;
 import de.mossgrabers.framework.utils.Pair;
@@ -300,9 +301,20 @@ public abstract class AbstractSessionView<S extends IControlSurface<C>, C extend
      */
     protected void drawSessionGrid ()
     {
+        this.drawSessionGrid (false);
+    }
+
+
+    /**
+     * Draw a session grid, where each pad stands for a clip.
+     * 
+     * @param ignoreFlipCheck True to ignore the check for same columns and rows
+     */
+    protected void drawSessionGrid (final boolean ignoreFlipCheck)
+    {
         final boolean flipSession = this.surface.getConfiguration ().isFlipSession ();
 
-        if (flipSession && this.columns != this.rows)
+        if (flipSession && this.columns != this.rows && !ignoreFlipCheck)
             throw new FrameworkException ("Session flip is only supported for same size of rows and columns!");
 
         final ITrackBank tb = this.model.getCurrentTrackBank ();

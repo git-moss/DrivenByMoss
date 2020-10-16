@@ -11,7 +11,8 @@ import de.mossgrabers.framework.controller.display.IGraphicDisplay;
 import de.mossgrabers.framework.controller.display.ITextDisplay;
 import de.mossgrabers.framework.daw.IModel;
 import de.mossgrabers.framework.daw.resource.ChannelType;
-import de.mossgrabers.framework.mode.AbstractMode;
+import de.mossgrabers.framework.featuregroup.AbstractFeatureGroup;
+import de.mossgrabers.framework.featuregroup.AbstractMode;
 import de.mossgrabers.framework.mode.Modes;
 import de.mossgrabers.framework.utils.ButtonEvent;
 
@@ -32,7 +33,6 @@ public class SetupMode extends BaseMode
     public SetupMode (final PushControlSurface surface, final IModel model)
     {
         super ("Setup", surface, model);
-        this.isTemporary = false;
     }
 
 
@@ -111,10 +111,10 @@ public class SetupMode extends BaseMode
             if (index == 0)
                 return AbstractMode.BUTTON_COLOR_HI;
             if (index == 1)
-                return AbstractMode.BUTTON_COLOR_ON;
+                return AbstractFeatureGroup.BUTTON_COLOR_ON;
         }
 
-        return AbstractMode.BUTTON_COLOR_OFF;
+        return AbstractFeatureGroup.BUTTON_COLOR_OFF;
     }
 
 
@@ -125,7 +125,7 @@ public class SetupMode extends BaseMode
         if (event != ButtonEvent.UP)
             return;
         if (index == 1)
-            this.surface.getModeManager ().setActive (Modes.INFO);
+            this.surface.getModeManager ().setTemporary (Modes.INFO);
     }
 
 

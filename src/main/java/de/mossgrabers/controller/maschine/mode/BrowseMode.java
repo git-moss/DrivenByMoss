@@ -33,8 +33,6 @@ public class BrowseMode extends BaseMode
     public BrowseMode (final MaschineControlSurface surface, final IModel model)
     {
         super ("Browser", surface, model);
-
-        this.isTemporary = true;
     }
 
 

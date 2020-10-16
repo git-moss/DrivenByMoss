@@ -16,9 +16,9 @@ import de.mossgrabers.framework.daw.IModel;
 import de.mossgrabers.framework.daw.data.IMasterTrack;
 import de.mossgrabers.framework.daw.data.ITrack;
 import de.mossgrabers.framework.daw.data.bank.ITrackBank;
-import de.mossgrabers.framework.mode.AbstractMode;
+import de.mossgrabers.framework.featuregroup.AbstractFeatureGroup;
+import de.mossgrabers.framework.featuregroup.ViewManager;
 import de.mossgrabers.framework.utils.ButtonEvent;
-import de.mossgrabers.framework.view.ViewManager;
 import de.mossgrabers.framework.view.Views;
 
 
@@ -183,9 +183,9 @@ public class TrackDetailsMode extends BaseMode
 
         index = this.isButtonRow (1, buttonID);
         if (index >= 0)
-            return this.colorManager.getColorIndex (index < 6 ? AbstractMode.BUTTON_COLOR_OFF : AbstractMode.BUTTON_COLOR_ON);
+            return this.colorManager.getColorIndex (index < 6 ? AbstractFeatureGroup.BUTTON_COLOR_OFF : AbstractFeatureGroup.BUTTON_COLOR_ON);
 
-        return this.colorManager.getColorIndex (AbstractMode.BUTTON_COLOR_OFF);
+        return this.colorManager.getColorIndex (AbstractFeatureGroup.BUTTON_COLOR_OFF);
     }
 
 

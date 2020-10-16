@@ -11,8 +11,8 @@ import de.mossgrabers.framework.controller.ButtonID;
 import de.mossgrabers.framework.controller.grid.IPadGrid;
 import de.mossgrabers.framework.daw.IModel;
 import de.mossgrabers.framework.daw.data.ITrack;
-import de.mossgrabers.framework.view.AbstractView;
-import de.mossgrabers.framework.view.ViewManager;
+import de.mossgrabers.framework.featuregroup.AbstractView;
+import de.mossgrabers.framework.featuregroup.ViewManager;
 import de.mossgrabers.framework.view.Views;
 
 
@@ -40,7 +40,7 @@ public class NoteViewSelectView extends AbstractView<LaunchpadControlSurface, La
     public void drawGrid ()
     {
         final ViewManager viewManager = this.surface.getViewManager ();
-        final Views previousViewId = viewManager.getPreviousId ();
+        final Views previousViewId = viewManager.getPreviousID ();
 
         final IPadGrid padGrid = this.surface.getPadGrid ();
 

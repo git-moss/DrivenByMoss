@@ -14,7 +14,7 @@ import de.mossgrabers.framework.daw.IModel;
 import de.mossgrabers.framework.daw.data.ISlot;
 import de.mossgrabers.framework.daw.data.ITrack;
 import de.mossgrabers.framework.daw.data.bank.ISlotBank;
-import de.mossgrabers.framework.mode.AbstractMode;
+import de.mossgrabers.framework.featuregroup.AbstractFeatureGroup;
 
 
 /**
@@ -140,7 +140,7 @@ public class ClipView extends BaseView
                     padGrid.lightEx (x, y, DAWColor.getColorIndex (item.getColor ()));
             }
             else
-                padGrid.lightEx (x, y, AbstractMode.BUTTON_COLOR_OFF);
+                padGrid.lightEx (x, y, AbstractFeatureGroup.BUTTON_COLOR_OFF);
         }
     }
 }

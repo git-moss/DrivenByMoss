@@ -74,8 +74,9 @@ import de.mossgrabers.framework.daw.data.bank.ITrackBank;
 import de.mossgrabers.framework.daw.midi.IMidiAccess;
 import de.mossgrabers.framework.daw.midi.IMidiInput;
 import de.mossgrabers.framework.daw.midi.IMidiOutput;
-import de.mossgrabers.framework.featuregroup.View;
-import de.mossgrabers.framework.mode.ModeManager;
+import de.mossgrabers.framework.featuregroup.IView;
+import de.mossgrabers.framework.featuregroup.ModeManager;
+import de.mossgrabers.framework.featuregroup.ViewManager;
 import de.mossgrabers.framework.mode.Modes;
 import de.mossgrabers.framework.mode.device.ParameterMode;
 import de.mossgrabers.framework.mode.track.VolumeMode;
@@ -83,7 +84,6 @@ import de.mossgrabers.framework.scale.Scales;
 import de.mossgrabers.framework.utils.Timeout;
 import de.mossgrabers.framework.view.AbstractSequencerView;
 import de.mossgrabers.framework.view.TempoView;
-import de.mossgrabers.framework.view.ViewManager;
 import de.mossgrabers.framework.view.Views;
 
 
@@ -220,11 +220,11 @@ public class APCControllerSetup extends AbstractControllerSetup<APCControlSurfac
         this.addButton (ButtonID.MASTERTRACK, "Master", new MasterCommand<> (this.model, surface), APCControlSurface.APC_BUTTON_MASTER, this.model.getMasterTrack ()::isSelected, ColorManager.BUTTON_STATE_OFF, ColorManager.BUTTON_STATE_ON);
         // Note: the stop-all-clips button has no LED
         this.addButton (ButtonID.STOP_ALL_CLIPS, "STOP CLIPS", new StopAllClipsOrBrowseCommand (this.model, surface), APCControlSurface.APC_BUTTON_STOP_ALL_CLIPS, () -> surface.isPressed (ButtonID.STOP_ALL_CLIPS) ? 1 : 0, ColorManager.BUTTON_STATE_OFF, ColorManager.BUTTON_STATE_ON);
-        this.addButton (ButtonID.PAN_SEND, "PAN", new ModeSelectCommand<> (this.model, surface, Modes.PAN), APCControlSurface.APC_BUTTON_PAN, () -> modeManager.isActiveOrTemp (Modes.PAN), ColorManager.BUTTON_STATE_OFF, ColorManager.BUTTON_STATE_ON);
+        this.addButton (ButtonID.PAN_SEND, "PAN", new ModeSelectCommand<> (this.model, surface, Modes.PAN), APCControlSurface.APC_BUTTON_PAN, () -> modeManager.isActive (Modes.PAN), ColorManager.BUTTON_STATE_OFF, ColorManager.BUTTON_STATE_ON);
 
         if (this.isMkII)
         {
-            this.addButton (ButtonID.SEND1, "SENDS", new ModeMultiSelectCommand<> (this.model, surface, Modes.SEND1, Modes.SEND2, Modes.SEND3, Modes.SEND4, Modes.SEND5, Modes.SEND6, Modes.SEND7, Modes.SEND8), APCControlSurface.APC_BUTTON_SEND_A, () -> Modes.isSendMode (modeManager.getActiveOrTempId ()), ColorManager.BUTTON_STATE_OFF, ColorManager.BUTTON_STATE_ON);
+            this.addButton (ButtonID.SEND1, "SENDS", new ModeMultiSelectCommand<> (this.model, surface, Modes.SEND1, Modes.SEND2, Modes.SEND3, Modes.SEND4, Modes.SEND5, Modes.SEND6, Modes.SEND7, Modes.SEND8), APCControlSurface.APC_BUTTON_SEND_A, () -> Modes.isSendMode (modeManager.getActiveID ()), ColorManager.BUTTON_STATE_OFF, ColorManager.BUTTON_STATE_ON);
             this.addButton (ButtonID.SEND2, "USER", new ModeSelectCommand<> (this.model, surface, Modes.USER)
             {
                 @Override
@@ -232,13 +232,13 @@ public class APCControllerSetup extends AbstractControllerSetup<APCControlSurfac
                 {
                     ((UserMode) modeManager.get (Modes.USER)).displayPageName ();
                 }
-            }, APCControlSurface.APC_BUTTON_SEND_B, () -> modeManager.isActiveOrTemp (Modes.USER), ColorManager.BUTTON_STATE_OFF, ColorManager.BUTTON_STATE_ON);
+            }, APCControlSurface.APC_BUTTON_SEND_B, () -> modeManager.isActive (Modes.USER), ColorManager.BUTTON_STATE_OFF, ColorManager.BUTTON_STATE_ON);
         }
         else
         {
-            this.addButton (ButtonID.SEND1, "Send A", new SendModeCommand (0, this.model, surface), APCControlSurface.APC_BUTTON_SEND_A, () -> modeManager.isActiveOrTemp (Modes.SEND1, Modes.SEND4, Modes.SEND7), ColorManager.BUTTON_STATE_OFF, ColorManager.BUTTON_STATE_ON);
-            this.addButton (ButtonID.SEND2, "Send B", new SendModeCommand (1, this.model, surface), APCControlSurface.APC_BUTTON_SEND_B, () -> modeManager.isActiveOrTemp (Modes.SEND2, Modes.SEND5, Modes.SEND8), ColorManager.BUTTON_STATE_OFF, ColorManager.BUTTON_STATE_ON);
-            this.addButton (ButtonID.SEND3, "SEND C", new SendModeCommand (2, this.model, surface), APCControlSurface.APC_BUTTON_SEND_C, () -> modeManager.isActiveOrTemp (Modes.SEND3, Modes.SEND6), ColorManager.BUTTON_STATE_OFF, ColorManager.BUTTON_STATE_ON);
+            this.addButton (ButtonID.SEND1, "Send A", new SendModeCommand (0, this.model, surface), APCControlSurface.APC_BUTTON_SEND_A, () -> modeManager.isActive (Modes.SEND1, Modes.SEND4, Modes.SEND7), ColorManager.BUTTON_STATE_OFF, ColorManager.BUTTON_STATE_ON);
+            this.addButton (ButtonID.SEND2, "Send B", new SendModeCommand (1, this.model, surface), APCControlSurface.APC_BUTTON_SEND_B, () -> modeManager.isActive (Modes.SEND2, Modes.SEND5, Modes.SEND8), ColorManager.BUTTON_STATE_OFF, ColorManager.BUTTON_STATE_ON);
+            this.addButton (ButtonID.SEND3, "SEND C", new SendModeCommand (2, this.model, surface), APCControlSurface.APC_BUTTON_SEND_C, () -> modeManager.isActive (Modes.SEND3, Modes.SEND6), ColorManager.BUTTON_STATE_OFF, ColorManager.BUTTON_STATE_ON);
         }
 
         for (int i = 0; i < 8; i++)
@@ -263,7 +263,7 @@ public class APCControllerSetup extends AbstractControllerSetup<APCControlSurfac
             final ButtonID stopButtonID = ButtonID.get (ButtonID.ROW6_1, i);
             this.addButton (stopButtonID, "Stop " + (i + 1), new APCStopClipCommand (i, this.model, surface), i, APCControlSurface.APC_BUTTON_CLIP_STOP, () -> {
 
-                final View view = viewManager.getActive ();
+                final IView view = viewManager.getActive ();
                 if (view instanceof AbstractSequencerView)
                     return ((AbstractSequencerView<?, ?>) view).getResolutionIndex () == index ? 1 : 0;
                 return surface.isPressed (stopButtonID) ? 1 : 0;
@@ -273,8 +273,10 @@ public class APCControllerSetup extends AbstractControllerSetup<APCControlSurfac
 
         if (this.isMkII)
         {
-            this.addButton (ButtonID.DEVICE_LEFT, "<- DEVICE", new DeviceLayerLeftCommand<> (this.model, surface), APCControlSurface.APC_BUTTON_CLIP_TRACK, () -> surface.isPressed (ButtonID.DEVICE_LEFT) ? 1 : 0, ColorManager.BUTTON_STATE_OFF, ColorManager.BUTTON_STATE_ON);
-            this.addButton (ButtonID.DEVICE_RIGHT, "DEVICE ->", new DeviceLayerRightCommand<> (this.model, surface), APCControlSurface.APC_BUTTON_DEVICE_ON_OFF, () -> surface.isPressed (ButtonID.DEVICE_RIGHT) ? 1 : 0, ColorManager.BUTTON_STATE_OFF, ColorManager.BUTTON_STATE_ON);
+            final DeviceLayerLeftCommand<APCControlSurface, APCConfiguration> deviceLayerLeftCommand = new DeviceLayerLeftCommand<> (this.model, surface);
+            this.addButton (ButtonID.DEVICE_LEFT, "<- DEVICE", deviceLayerLeftCommand, APCControlSurface.APC_BUTTON_CLIP_TRACK, () -> deviceLayerLeftCommand.canExecute () ? 1 : 0, ColorManager.BUTTON_STATE_OFF, ColorManager.BUTTON_STATE_ON);
+            final DeviceLayerRightCommand<APCControlSurface, APCConfiguration> deviceLayerRightCommand = new DeviceLayerRightCommand<> (this.model, surface);
+            this.addButton (ButtonID.DEVICE_RIGHT, "DEVICE ->", deviceLayerRightCommand, APCControlSurface.APC_BUTTON_DEVICE_ON_OFF, () -> deviceLayerRightCommand.canExecute () ? 1 : 0, ColorManager.BUTTON_STATE_OFF, ColorManager.BUTTON_STATE_ON);
             this.addButton (ButtonID.BROWSE, "BANK", new APCBrowserCommand (this.model, surface), APCControlSurface.APC_BUTTON_BANK, this.model.getBrowser ()::isActive, ColorManager.BUTTON_STATE_OFF, ColorManager.BUTTON_STATE_ON);
         }
         else
@@ -291,8 +293,10 @@ public class APCControllerSetup extends AbstractControllerSetup<APCControlSurfac
         this.addButton (ButtonID.TOGGLE_DEVICES_PANE, this.isMkII ? "CLIP/DEV.VIEW" : "CLIP/TRACK", new PaneCommand<> (Panels.DEVICE, this.model, surface), this.isMkII ? APCControlSurface.APC_BUTTON_MIDI_OVERDUB : APCControlSurface.APC_BUTTON_CLIP_TRACK, () -> surface.isPressed (ButtonID.TOGGLE_DEVICES_PANE) ? 1 : 0, ColorManager.BUTTON_STATE_OFF, ColorManager.BUTTON_STATE_ON);
         this.addButton (ButtonID.LAYOUT, "DETAIL VIEW", new PanelLayoutCommand<> (this.model, surface), this.isMkII ? APCControlSurface.APC_BUTTON_METRONOME : APCControlSurface.APC_BUTTON_DETAIL_VIEW, () -> !surface.isShiftPressed () && this.model.getCursorDevice ().isWindowOpen () ? 1 : 0, ColorManager.BUTTON_STATE_OFF, ColorManager.BUTTON_STATE_ON);
 
-        this.addButton (ButtonID.BANK_LEFT, "<- BANK", new SelectPreviousDeviceOrParamPageCommand<> (this.model, surface), APCControlSurface.APC_BUTTON_DEVICE_LEFT, () -> surface.isPressed (ButtonID.BANK_LEFT) ? 1 : 0, ColorManager.BUTTON_STATE_OFF, ColorManager.BUTTON_STATE_ON);
-        this.addButton (ButtonID.BANK_RIGHT, "BANK ->", new SelectNextDeviceOrParamPageCommand<> (this.model, surface), APCControlSurface.APC_BUTTON_DEVICE_RIGHT, () -> surface.isPressed (ButtonID.BANK_RIGHT) ? 1 : 0, ColorManager.BUTTON_STATE_OFF, ColorManager.BUTTON_STATE_ON);
+        final SelectPreviousDeviceOrParamPageCommand<APCControlSurface, APCConfiguration> selectPreviousDeviceOrParamPageCommand = new SelectPreviousDeviceOrParamPageCommand<> (this.model, surface);
+        this.addButton (ButtonID.BANK_LEFT, "<- BANK", selectPreviousDeviceOrParamPageCommand, APCControlSurface.APC_BUTTON_DEVICE_LEFT, () -> selectPreviousDeviceOrParamPageCommand.canExecute () ? 1 : 0, ColorManager.BUTTON_STATE_OFF, ColorManager.BUTTON_STATE_ON);
+        final SelectNextDeviceOrParamPageCommand<APCControlSurface, APCConfiguration> selectNextDeviceOrParamPageCommand = new SelectNextDeviceOrParamPageCommand<> (this.model, surface);
+        this.addButton (ButtonID.BANK_RIGHT, "BANK ->", selectNextDeviceOrParamPageCommand, APCControlSurface.APC_BUTTON_DEVICE_RIGHT, () -> selectNextDeviceOrParamPageCommand.canExecute () ? 1 : 0, ColorManager.BUTTON_STATE_OFF, ColorManager.BUTTON_STATE_ON);
 
         this.addButton (ButtonID.ARROW_DOWN, "Arrow Down", new APCCursorCommand (Direction.DOWN, this.model, surface), APCControlSurface.APC_BUTTON_DOWN);
         this.addButton (ButtonID.ARROW_UP, "Arrow Up", new APCCursorCommand (Direction.UP, this.model, surface), APCControlSurface.APC_BUTTON_UP);
@@ -303,7 +307,7 @@ public class APCControllerSetup extends AbstractControllerSetup<APCControlSurfac
         {
             final ButtonID sceneButtonID = ButtonID.get (ButtonID.SCENE1, i);
             this.addButton (sceneButtonID, "Scene " + (i + 1), new ViewButtonCommand<> (sceneButtonID, surface), APCControlSurface.APC_BUTTON_SCENE_LAUNCH_1 + i, () -> {
-                final View activeView = viewManager.getActive ();
+                final IView activeView = viewManager.getActive ();
                 return activeView != null ? activeView.getButtonColor (sceneButtonID) : 0;
             });
         }
@@ -698,7 +702,7 @@ public class APCControllerSetup extends AbstractControllerSetup<APCControlSurfac
     private void updateMode (final Modes mode)
     {
         final APCControlSurface surface = this.getSurface ();
-        final Modes m = mode == null ? surface.getModeManager ().getActiveOrTempId () : mode;
+        final Modes m = mode == null ? surface.getModeManager ().getActiveID () : mode;
         this.updateIndication (m);
     }
 
@@ -710,7 +714,7 @@ public class APCControllerSetup extends AbstractControllerSetup<APCControlSurfac
         super.flush ();
 
         final APCControlSurface surface = this.getSurface ();
-        final View view = surface.getViewManager ().getActive ();
+        final IView view = surface.getViewManager ().getActive ();
         if (view == null)
             return;
 
@@ -833,7 +837,7 @@ public class APCControllerSetup extends AbstractControllerSetup<APCControlSurfac
                     }
                 }
                 // Handle send mode selection
-                return surface.isPressed (ButtonID.SEND1) ? modeManager.isActiveOrTemp (Modes.get (Modes.SEND1, index)) : index == selIndex;
+                return surface.isPressed (ButtonID.SEND1) ? modeManager.isActive (Modes.get (Modes.SEND1, index)) : index == selIndex;
 
             case APCControlSurface.APC_BUTTON_SOLO:
                 return trackExists && getSoloButtonState (isShift, track);

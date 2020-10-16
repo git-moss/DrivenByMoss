@@ -2,20 +2,15 @@
 // (c) 2017-2020
 // Licensed under LGPLv3 - http://www.gnu.org/licenses/lgpl-3.0.txt
 
-package de.mossgrabers.framework.view;
+package de.mossgrabers.framework.featuregroup;
 
-import de.mossgrabers.framework.MVHelper;
 import de.mossgrabers.framework.command.core.AftertouchCommand;
 import de.mossgrabers.framework.configuration.Configuration;
 import de.mossgrabers.framework.controller.ButtonID;
 import de.mossgrabers.framework.controller.IControlSurface;
-import de.mossgrabers.framework.controller.color.ColorManager;
 import de.mossgrabers.framework.daw.DAWColor;
 import de.mossgrabers.framework.daw.IModel;
 import de.mossgrabers.framework.daw.data.ITrack;
-import de.mossgrabers.framework.featuregroup.Mode;
-import de.mossgrabers.framework.featuregroup.View;
-import de.mossgrabers.framework.mode.AbstractMode;
 import de.mossgrabers.framework.scale.Scales;
 import de.mossgrabers.framework.utils.ButtonEvent;
 import de.mossgrabers.framework.utils.KeyManager;
@@ -29,25 +24,19 @@ import de.mossgrabers.framework.utils.KeyManager;
  *
  * @author J&uuml;rgen Mo&szlig;graber
  */
-public abstract class AbstractView<S extends IControlSurface<C>, C extends Configuration> implements View
+public abstract class AbstractView<S extends IControlSurface<C>, C extends Configuration> extends AbstractFeatureGroup<S, C> implements IView
 {
-    protected static final int []  EMPTY_TABLE = Scales.getEmptyMatrix ();
+    protected static final int [] EMPTY_TABLE = Scales.getEmptyMatrix ();
 
-    private final String           name;
+    protected final Scales        scales;
+    protected final KeyManager    keyManager;
 
-    protected final S              surface;
-    protected final IModel         model;
-    protected final ColorManager   colorManager;
-    protected final Scales         scales;
-    protected final KeyManager     keyManager;
-    protected final MVHelper<S, C> mvHelper;
+    private AftertouchCommand     aftertouchCommand;
 
-    private AftertouchCommand      aftertouchCommand;
-
-    protected boolean              canScrollLeft;
-    protected boolean              canScrollRight;
-    protected boolean              canScrollUp;
-    protected boolean              canScrollDown;
+    protected boolean             canScrollLeft;
+    protected boolean             canScrollRight;
+    protected boolean             canScrollUp;
+    protected boolean             canScrollDown;
 
 
     /**
@@ -59,26 +48,15 @@ public abstract class AbstractView<S extends IControlSurface<C>, C extends Confi
      */
     public AbstractView (final String name, final S surface, final IModel model)
     {
-        this.name = name;
-        this.surface = surface;
-        this.model = model;
-        this.colorManager = this.model.getColorManager ();
+        super (name, surface, model);
+
         this.scales = model.getScales ();
         this.keyManager = new KeyManager (model, model.getScales (), surface.getPadGrid ());
-        this.mvHelper = new MVHelper<> (model, surface);
 
         this.canScrollLeft = true;
         this.canScrollRight = true;
         this.canScrollUp = true;
         this.canScrollDown = true;
-    }
-
-
-    /** {@inheritDoc} */
-    @Override
-    public String getName ()
-    {
-        return this.name;
     }
 
 
@@ -110,29 +88,9 @@ public abstract class AbstractView<S extends IControlSurface<C>, C extends Confi
     @Override
     public void updateControlSurface ()
     {
-        final Mode m = this.surface.getModeManager ().getActiveOrTemp ();
+        final IMode m = this.surface.getModeManager ().getActive ();
         if (m != null)
             m.updateDisplay ();
-    }
-
-
-    /** {@inheritDoc} */
-    @Override
-    public int getButtonColor (final ButtonID buttonID)
-    {
-        return this.colorManager.getColorIndex (this.getButtonColorID (buttonID));
-    }
-
-
-    /**
-     * Get the color ID for a button, which is controlled by the view.
-     *
-     * @param buttonID The ID of the button
-     * @return A color ID
-     */
-    protected String getButtonColorID (final ButtonID buttonID)
-    {
-        return AbstractMode.BUTTON_COLOR_OFF;
     }
 
 

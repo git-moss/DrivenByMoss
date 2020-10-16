@@ -18,7 +18,7 @@ import de.mossgrabers.framework.daw.data.ISlot;
 import de.mossgrabers.framework.daw.data.ITrack;
 import de.mossgrabers.framework.daw.data.bank.ISlotBank;
 import de.mossgrabers.framework.daw.data.bank.ITrackBank;
-import de.mossgrabers.framework.mode.ModeManager;
+import de.mossgrabers.framework.featuregroup.ModeManager;
 import de.mossgrabers.framework.mode.Modes;
 import de.mossgrabers.framework.utils.ButtonEvent;
 import de.mossgrabers.framework.view.ControlOnlyView;
@@ -60,13 +60,13 @@ public class ControlView extends ControlOnlyView<SLControlSurface, SLConfigurati
             return;
 
         final ModeManager modeManager = this.surface.getModeManager ();
-        Modes activeModeId = modeManager.getActiveOrTempId ();
+        Modes activeModeId = modeManager.getActiveID ();
         if (Modes.VIEW_SELECT == activeModeId)
         {
             if (index == 1)
             {
                 this.surface.getViewManager ().setActive (Views.PLAY);
-                if (Modes.VOLUME.equals (modeManager.getPreviousId ()))
+                if (Modes.VOLUME.equals (modeManager.getPreviousID ()))
                     modeManager.restore ();
                 else
                     modeManager.setActive (Modes.SESSION);
@@ -163,7 +163,7 @@ public class ControlView extends ControlOnlyView<SLControlSurface, SLConfigurati
             return;
 
         final ModeManager modeManager = this.surface.getModeManager ();
-        Modes cm = modeManager.getActiveOrTempId ();
+        Modes cm = modeManager.getActiveID ();
         if (!Modes.TRACK_DETAILS.equals (cm) && !Modes.FRAME.equals (cm) && !Modes.BROWSER.equals (cm))
         {
             modeManager.setActive (Modes.TRACK_DETAILS);
@@ -213,7 +213,7 @@ public class ControlView extends ControlOnlyView<SLControlSurface, SLConfigurati
             // Browse
             case 4:
                 this.model.getBrowser ().replace (this.model.getCursorDevice ());
-                modeManager.setActive (Modes.BROWSER);
+                modeManager.setTemporary (Modes.BROWSER);
                 break;
 
             // Dis-/Enable device
@@ -309,7 +309,7 @@ public class ControlView extends ControlOnlyView<SLControlSurface, SLConfigurati
     public void onButtonRow1Select ()
     {
         final ModeManager modeManager = this.surface.getModeManager ();
-        final boolean selectFixed = Modes.FUNCTIONS.equals (modeManager.getActiveOrTempId ());
+        final boolean selectFixed = Modes.FUNCTIONS.equals (modeManager.getActiveID ());
         modeManager.setActive (selectFixed ? Modes.FIXED : Modes.FUNCTIONS);
         this.model.getHost ().showNotification (selectFixed ? "Fixed Length" : "Functions");
     }
@@ -320,7 +320,7 @@ public class ControlView extends ControlOnlyView<SLControlSurface, SLConfigurati
     public void onButtonRow2Select ()
     {
         final ModeManager modeManager = this.surface.getModeManager ();
-        final boolean selectFrame = Modes.TRACK_DETAILS.equals (modeManager.getActiveOrTempId ());
+        final boolean selectFrame = Modes.TRACK_DETAILS.equals (modeManager.getActiveID ());
         modeManager.setActive (selectFrame ? Modes.FRAME : Modes.TRACK_DETAILS);
         this.model.getHost ().showNotification (selectFrame ? "Layouts & Panels" : "Track & Device");
     }
@@ -334,7 +334,7 @@ public class ControlView extends ControlOnlyView<SLControlSurface, SLConfigurati
             return;
 
         final ModeManager modeManager = this.surface.getModeManager ();
-        final Modes activeModeId = modeManager.getActiveOrTempId ();
+        final Modes activeModeId = modeManager.getActiveID ();
         if (Modes.FUNCTIONS.equals (activeModeId) || Modes.FIXED.equals (activeModeId))
             this.onButtonRow1Select ();
         else if (Modes.VOLUME.equals (activeModeId))
@@ -362,7 +362,7 @@ public class ControlView extends ControlOnlyView<SLControlSurface, SLConfigurati
         final ITransport transport = this.model.getTransport ();
         final int clipLength = this.surface.getConfiguration ().getNewClipLength ();
 
-        final Modes mode = this.surface.getModeManager ().getActiveOrTempId ();
+        final Modes mode = this.surface.getModeManager ().getActiveID ();
         final boolean isFunctions = Modes.FUNCTIONS.equals (mode);
 
         final boolean isViewSelectMode = Modes.VIEW_SELECT.equals (mode);

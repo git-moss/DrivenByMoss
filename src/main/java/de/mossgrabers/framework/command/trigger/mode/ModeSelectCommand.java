@@ -8,7 +8,7 @@ import de.mossgrabers.framework.command.core.AbstractTriggerCommand;
 import de.mossgrabers.framework.configuration.Configuration;
 import de.mossgrabers.framework.controller.IControlSurface;
 import de.mossgrabers.framework.daw.IModel;
-import de.mossgrabers.framework.mode.ModeManager;
+import de.mossgrabers.framework.featuregroup.ModeManager;
 import de.mossgrabers.framework.mode.Modes;
 import de.mossgrabers.framework.utils.ButtonEvent;
 
@@ -64,7 +64,7 @@ public class ModeSelectCommand<S extends IControlSurface<C>, C extends Configura
         if (event != ButtonEvent.DOWN)
             return;
         final ModeManager modeManager = this.surface.getModeManager ();
-        if (modeManager.isActiveOrTemp (this.modeId))
+        if (modeManager.isActive (this.modeId))
         {
             if (!this.toggle)
                 return;
@@ -83,6 +83,6 @@ public class ModeSelectCommand<S extends IControlSurface<C>, C extends Configura
      */
     protected void displayMode (final ModeManager modeManager)
     {
-        this.model.getHost ().showNotification (modeManager.getActiveOrTemp ().getName ());
+        this.model.getHost ().showNotification (modeManager.getActive ().getName ());
     }
 }

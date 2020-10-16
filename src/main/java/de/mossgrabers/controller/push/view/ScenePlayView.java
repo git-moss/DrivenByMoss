@@ -13,9 +13,9 @@ import de.mossgrabers.framework.daw.DAWColor;
 import de.mossgrabers.framework.daw.IModel;
 import de.mossgrabers.framework.daw.data.IScene;
 import de.mossgrabers.framework.daw.data.bank.ISceneBank;
-import de.mossgrabers.framework.mode.AbstractMode;
+import de.mossgrabers.framework.featuregroup.AbstractFeatureGroup;
+import de.mossgrabers.framework.featuregroup.AbstractView;
 import de.mossgrabers.framework.view.AbstractSequencerView;
-import de.mossgrabers.framework.view.AbstractView;
 
 
 /**
@@ -95,7 +95,7 @@ public class ScenePlayView extends AbstractView<PushControlSurface, PushConfigur
     {
         final int scene = buttonID.ordinal () - ButtonID.SCENE1.ordinal ();
         if (scene < 0 || scene >= 8)
-            return AbstractMode.BUTTON_COLOR_OFF;
+            return AbstractFeatureGroup.BUTTON_COLOR_OFF;
 
         return AbstractSequencerView.COLOR_RESOLUTION_OFF;
     }

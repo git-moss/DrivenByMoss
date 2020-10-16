@@ -10,8 +10,8 @@ import de.mossgrabers.framework.command.core.AbstractTriggerCommand;
 import de.mossgrabers.framework.daw.IBrowser;
 import de.mossgrabers.framework.daw.IModel;
 import de.mossgrabers.framework.daw.data.ICursorDevice;
+import de.mossgrabers.framework.featuregroup.ViewManager;
 import de.mossgrabers.framework.utils.ButtonEvent;
-import de.mossgrabers.framework.view.ViewManager;
 import de.mossgrabers.framework.view.Views;
 
 
@@ -47,7 +47,7 @@ public class SelectDeviceViewCommand extends AbstractTriggerCommand<LaunchpadCon
         {
             if (viewManager.isActive (Views.SHIFT))
                 viewManager.restore ();
-            viewManager.setActive (Views.TEMPO);
+            viewManager.setTemporary (Views.TEMPO);
             this.surface.getDisplay ().notify (viewManager.getActive ().getName ());
             return;
         }

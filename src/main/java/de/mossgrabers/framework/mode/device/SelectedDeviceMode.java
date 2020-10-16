@@ -11,7 +11,7 @@ import de.mossgrabers.framework.controller.IControlSurface;
 import de.mossgrabers.framework.daw.IModel;
 import de.mossgrabers.framework.daw.data.ICursorDevice;
 import de.mossgrabers.framework.daw.data.IParameter;
-import de.mossgrabers.framework.mode.AbstractMode;
+import de.mossgrabers.framework.featuregroup.AbstractMode;
 
 import java.util.List;
 
@@ -40,8 +40,6 @@ public class SelectedDeviceMode<S extends IControlSurface<C>, C extends Configur
     public SelectedDeviceMode (final S surface, final IModel model, final List<ContinuousID> knobs)
     {
         super ("Parameters", surface, model, false, model.getCursorDevice ().getParameterBank (), knobs);
-
-        this.isTemporary = false;
     }
 
 

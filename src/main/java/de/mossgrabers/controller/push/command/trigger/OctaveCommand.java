@@ -8,7 +8,7 @@ import de.mossgrabers.controller.push.PushConfiguration;
 import de.mossgrabers.controller.push.controller.PushControlSurface;
 import de.mossgrabers.framework.command.core.AbstractTriggerCommand;
 import de.mossgrabers.framework.daw.IModel;
-import de.mossgrabers.framework.featuregroup.View;
+import de.mossgrabers.framework.featuregroup.IView;
 import de.mossgrabers.framework.utils.ButtonEvent;
 import de.mossgrabers.framework.view.TransposeView;
 
@@ -41,7 +41,7 @@ public class OctaveCommand extends AbstractTriggerCommand<PushControlSurface, Pu
     @Override
     public void execute (final ButtonEvent event, final int velocity)
     {
-        final View activeView = this.surface.getViewManager ().getActive ();
+        final IView activeView = this.surface.getViewManager ().getActive ();
         if (!(activeView instanceof TransposeView))
             return;
 

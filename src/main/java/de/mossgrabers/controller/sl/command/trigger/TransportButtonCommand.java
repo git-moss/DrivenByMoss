@@ -8,7 +8,7 @@ import de.mossgrabers.controller.sl.SLConfiguration;
 import de.mossgrabers.controller.sl.controller.SLControlSurface;
 import de.mossgrabers.framework.command.core.AbstractTriggerCommand;
 import de.mossgrabers.framework.daw.IModel;
-import de.mossgrabers.framework.mode.ModeManager;
+import de.mossgrabers.framework.featuregroup.ModeManager;
 import de.mossgrabers.framework.mode.Modes;
 import de.mossgrabers.framework.utils.ButtonEvent;
 
@@ -42,9 +42,9 @@ public class TransportButtonCommand extends AbstractTriggerCommand<SLControlSurf
 
         // Toggle transport
         final ModeManager modeManager = this.surface.getModeManager ();
-        if (modeManager.isActiveOrTemp (Modes.VIEW_SELECT) || event == ButtonEvent.UP)
+        if (modeManager.isActive (Modes.VIEW_SELECT) || event == ButtonEvent.UP)
             modeManager.restore ();
         else
-            modeManager.setActive (Modes.VIEW_SELECT);
+            modeManager.setTemporary (Modes.VIEW_SELECT);
     }
 }

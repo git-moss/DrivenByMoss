@@ -36,6 +36,6 @@ public class BackButtonCommand extends AbstractTriggerCommand<Kontrol1ControlSur
     public void execute (final ButtonEvent event, final int velocity)
     {
         if (event == ButtonEvent.DOWN)
-            ((IKontrol1Mode) this.surface.getModeManager ().getActiveOrTemp ()).onBack ();
+            ((IKontrol1Mode) this.surface.getModeManager ().getActive ()).onBack ();
     }
 }

@@ -19,8 +19,9 @@ import de.mossgrabers.framework.daw.data.ITrack;
 import de.mossgrabers.framework.daw.data.bank.IParameterBank;
 import de.mossgrabers.framework.daw.data.bank.ISceneBank;
 import de.mossgrabers.framework.daw.data.bank.ITrackBank;
-import de.mossgrabers.framework.featuregroup.Mode;
-import de.mossgrabers.framework.featuregroup.View;
+import de.mossgrabers.framework.featuregroup.IMode;
+import de.mossgrabers.framework.featuregroup.IView;
+import de.mossgrabers.framework.featuregroup.ViewManager;
 import de.mossgrabers.framework.mode.Modes;
 import de.mossgrabers.framework.scale.Scale;
 import de.mossgrabers.framework.scale.Scales;
@@ -29,7 +30,6 @@ import de.mossgrabers.framework.utils.FrameworkException;
 import de.mossgrabers.framework.view.AbstractDrumView;
 import de.mossgrabers.framework.view.AbstractSequencerView;
 import de.mossgrabers.framework.view.TransposeView;
-import de.mossgrabers.framework.view.ViewManager;
 import de.mossgrabers.framework.view.Views;
 
 
@@ -66,7 +66,7 @@ public class LaunchpadCursorCommand extends CursorCommand<LaunchpadControlSurfac
     {
         final ITrackBank tb = this.model.getCurrentTrackBank ();
         final ViewManager viewManager = this.surface.getViewManager ();
-        final Views activeViewId = viewManager.getActiveId ();
+        final Views activeViewId = viewManager.getActiveID ();
         if (activeViewId == null)
             return;
         switch (activeViewId)
@@ -185,7 +185,7 @@ public class LaunchpadCursorCommand extends CursorCommand<LaunchpadControlSurfac
     protected void scrollLeft ()
     {
         final ViewManager viewManager = this.surface.getViewManager ();
-        switch (viewManager.getActiveId ())
+        switch (viewManager.getActiveID ())
         {
             case USER:
             case CONTROL:
@@ -193,9 +193,9 @@ public class LaunchpadCursorCommand extends CursorCommand<LaunchpadControlSurfac
                 break;
 
             case SHIFT:
-                final Views previousViewId = viewManager.getPreviousId ();
+                final Views previousViewId = viewManager.getPreviousID ();
                 viewManager.setActive (Views.SHUFFLE);
-                viewManager.setPrevious (previousViewId);
+                viewManager.setPreviousID (previousViewId);
                 break;
 
             case PLAY:
@@ -217,7 +217,7 @@ public class LaunchpadCursorCommand extends CursorCommand<LaunchpadControlSurfac
             case DRUM:
             case DRUM4:
             case DRUM8:
-                final View activeView = viewManager.getActive ();
+                final IView activeView = viewManager.getActive ();
                 if (activeView instanceof AbstractSequencerView)
                     ((AbstractSequencerView) activeView).onLeft (ButtonEvent.DOWN);
                 break;
@@ -237,7 +237,7 @@ public class LaunchpadCursorCommand extends CursorCommand<LaunchpadControlSurfac
             case TRACK_PAN:
             case TRACK_SENDS:
             case MIX:
-                final Mode mode = this.surface.getModeManager ().get (Modes.VOLUME);
+                final IMode mode = this.surface.getModeManager ().get (Modes.VOLUME);
                 if (mode != null)
                     mode.selectPreviousItem ();
                 break;
@@ -266,7 +266,7 @@ public class LaunchpadCursorCommand extends CursorCommand<LaunchpadControlSurfac
     protected void scrollRight ()
     {
         final ViewManager viewManager = this.surface.getViewManager ();
-        switch (viewManager.getActiveId ())
+        switch (viewManager.getActiveID ())
         {
             case USER:
             case CONTROL:
@@ -274,9 +274,9 @@ public class LaunchpadCursorCommand extends CursorCommand<LaunchpadControlSurfac
                 break;
 
             case SHIFT:
-                final Views previousViewId = viewManager.getPreviousId ();
+                final Views previousViewId = viewManager.getPreviousID ();
                 viewManager.setActive (Views.SHUFFLE);
-                viewManager.setPrevious (previousViewId);
+                viewManager.setPreviousID (previousViewId);
                 break;
 
             case PLAY:
@@ -297,7 +297,7 @@ public class LaunchpadCursorCommand extends CursorCommand<LaunchpadControlSurfac
             case DRUM:
             case DRUM4:
             case DRUM8:
-                final View activeView = viewManager.getActive ();
+                final IView activeView = viewManager.getActive ();
                 if (activeView instanceof AbstractSequencerView)
                     ((AbstractSequencerView) activeView).onRight (ButtonEvent.DOWN);
                 break;
@@ -317,7 +317,7 @@ public class LaunchpadCursorCommand extends CursorCommand<LaunchpadControlSurfac
             case TRACK_PAN:
             case TRACK_SENDS:
             case MIX:
-                final Mode mode = this.surface.getModeManager ().get (Modes.VOLUME);
+                final IMode mode = this.surface.getModeManager ().get (Modes.VOLUME);
                 if (mode != null)
                     mode.selectNextItem ();
                 break;
@@ -345,7 +345,7 @@ public class LaunchpadCursorCommand extends CursorCommand<LaunchpadControlSurfac
     protected void scrollUp ()
     {
         final ViewManager viewManager = this.surface.getViewManager ();
-        switch (viewManager.getActiveId ())
+        switch (viewManager.getActiveID ())
         {
             case USER:
             case CONTROL:
@@ -353,9 +353,7 @@ public class LaunchpadCursorCommand extends CursorCommand<LaunchpadControlSurfac
                 break;
 
             case SHIFT:
-                final Views previousViewId = viewManager.getPreviousId ();
-                viewManager.setActive (Views.TEMPO);
-                viewManager.setPrevious (previousViewId);
+                viewManager.setTemporary (Views.TEMPO);
                 break;
 
             case PLAY:
@@ -412,7 +410,7 @@ public class LaunchpadCursorCommand extends CursorCommand<LaunchpadControlSurfac
     protected void scrollDown ()
     {
         final ViewManager viewManager = this.surface.getViewManager ();
-        switch (viewManager.getActiveId ())
+        switch (viewManager.getActiveID ())
         {
             case USER:
             case CONTROL:
@@ -420,9 +418,7 @@ public class LaunchpadCursorCommand extends CursorCommand<LaunchpadControlSurfac
                 break;
 
             case SHIFT:
-                final Views previousViewId = viewManager.getPreviousId ();
-                viewManager.setActive (Views.TEMPO);
-                viewManager.setPrevious (previousViewId);
+                viewManager.setTemporary (Views.TEMPO);
                 break;
 
             case PLAY:

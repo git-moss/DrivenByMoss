@@ -8,7 +8,8 @@ import de.mossgrabers.framework.controller.ButtonID;
 import de.mossgrabers.framework.controller.color.ColorEx;
 import de.mossgrabers.framework.controller.color.ColorManager;
 import de.mossgrabers.framework.daw.DAWColor;
-import de.mossgrabers.framework.mode.AbstractMode;
+import de.mossgrabers.framework.featuregroup.AbstractFeatureGroup;
+import de.mossgrabers.framework.featuregroup.AbstractMode;
 import de.mossgrabers.framework.scale.Scales;
 import de.mossgrabers.framework.view.AbstractDrumView;
 import de.mossgrabers.framework.view.AbstractPlayView;
@@ -69,8 +70,8 @@ public class MaschineColorManager extends ColorManager
         this.registerColorIndex (Scales.SCALE_COLOR_NOTE, COLOR_WHITE);
         this.registerColorIndex (Scales.SCALE_COLOR_OUT_OF_SCALE, COLOR_BLACK);
 
-        this.registerColorIndex (AbstractMode.BUTTON_COLOR_OFF, 0);
-        this.registerColorIndex (AbstractMode.BUTTON_COLOR_ON, 0);
+        this.registerColorIndex (AbstractFeatureGroup.BUTTON_COLOR_OFF, 0);
+        this.registerColorIndex (AbstractFeatureGroup.BUTTON_COLOR_ON, 0);
         this.registerColorIndex (AbstractMode.BUTTON_COLOR_HI, 127);
 
         this.registerColorIndex (AbstractPlayView.COLOR_PLAY, COLOR_GREEN);

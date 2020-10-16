@@ -9,7 +9,7 @@ import de.mossgrabers.controller.push.controller.PushControlSurface;
 import de.mossgrabers.framework.command.trigger.transport.MetronomeCommand;
 import de.mossgrabers.framework.controller.ButtonID;
 import de.mossgrabers.framework.daw.IModel;
-import de.mossgrabers.framework.mode.ModeManager;
+import de.mossgrabers.framework.featuregroup.ModeManager;
 import de.mossgrabers.framework.mode.Modes;
 import de.mossgrabers.framework.utils.ButtonEvent;
 
@@ -46,11 +46,11 @@ public class PushMetronomeCommand extends MetronomeCommand<PushControlSurface, P
         if (event == ButtonEvent.LONG)
         {
             this.surface.setTriggerConsumed (ButtonID.METRONOME);
-            this.modeManager.setActive (Modes.TRANSPORT);
+            this.modeManager.setTemporary (Modes.TRANSPORT);
             return;
         }
 
-        if (event == ButtonEvent.UP && this.modeManager.isActiveOrTemp (Modes.TRANSPORT))
+        if (event == ButtonEvent.UP && this.modeManager.isActive (Modes.TRANSPORT))
         {
             this.modeManager.restore ();
             return;

@@ -15,7 +15,7 @@ import de.mossgrabers.framework.utils.ButtonEvent;
  *
  * @author J&uuml;rgen Mo&szlig;graber
  */
-public interface View extends FeatureGroup
+public interface IView extends IFeatureGroup
 {
     /**
      * Registers the aftertouch command.

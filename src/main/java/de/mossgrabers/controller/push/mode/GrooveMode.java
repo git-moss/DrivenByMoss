@@ -15,7 +15,8 @@ import de.mossgrabers.framework.daw.IModel;
 import de.mossgrabers.framework.daw.data.IParameter;
 import de.mossgrabers.framework.daw.data.empty.EmptyParameter;
 import de.mossgrabers.framework.daw.resource.ChannelType;
-import de.mossgrabers.framework.mode.AbstractMode;
+import de.mossgrabers.framework.featuregroup.AbstractFeatureGroup;
+import de.mossgrabers.framework.featuregroup.AbstractMode;
 import de.mossgrabers.framework.mode.Modes;
 import de.mossgrabers.framework.parameterprovider.FixedParameterProvider;
 import de.mossgrabers.framework.utils.ButtonEvent;
@@ -163,11 +164,11 @@ public class GrooveMode extends BaseMode
         if (index >= 0)
         {
             if (index == 0)
-                return AbstractMode.BUTTON_COLOR_ON;
+                return AbstractFeatureGroup.BUTTON_COLOR_ON;
             if (index == 1)
                 return AbstractMode.BUTTON_COLOR_HI;
         }
-        return AbstractMode.BUTTON_COLOR_OFF;
+        return AbstractFeatureGroup.BUTTON_COLOR_OFF;
     }
 
 

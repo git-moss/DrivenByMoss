@@ -51,14 +51,14 @@ import de.mossgrabers.framework.daw.data.bank.ITrackBank;
 import de.mossgrabers.framework.daw.midi.IMidiAccess;
 import de.mossgrabers.framework.daw.midi.IMidiInput;
 import de.mossgrabers.framework.daw.midi.IMidiOutput;
-import de.mossgrabers.framework.featuregroup.Mode;
-import de.mossgrabers.framework.mode.ModeManager;
+import de.mossgrabers.framework.featuregroup.IMode;
+import de.mossgrabers.framework.featuregroup.ModeManager;
+import de.mossgrabers.framework.featuregroup.ViewManager;
 import de.mossgrabers.framework.mode.Modes;
 import de.mossgrabers.framework.scale.Scales;
 import de.mossgrabers.framework.utils.ButtonEvent;
 import de.mossgrabers.framework.utils.FrameworkException;
 import de.mossgrabers.framework.utils.OperatingSystem;
-import de.mossgrabers.framework.view.ViewManager;
 import de.mossgrabers.framework.view.Views;
 
 import java.util.List;
@@ -569,7 +569,7 @@ public class KontrolProtocolControllerSetup extends AbstractControllerSetup<Kont
     {
         if (event != ButtonEvent.DOWN)
             return;
-        final Mode activeMode = this.getSurface ().getModeManager ().getActiveOrTemp ();
+        final IMode activeMode = this.getSurface ().getModeManager ().getActive ();
         if (activeMode == null)
             return;
         if (isLeft)
@@ -599,7 +599,7 @@ public class KontrolProtocolControllerSetup extends AbstractControllerSetup<Kont
             return;
         }
 
-        final Mode activeMode = this.getSurface ().getModeManager ().getActiveOrTemp ();
+        final IMode activeMode = this.getSurface ().getModeManager ().getActive ();
         if (activeMode == null)
             return;
         if (isLeft)
@@ -636,7 +636,7 @@ public class KontrolProtocolControllerSetup extends AbstractControllerSetup<Kont
 
     private int getKnobValue (final int continuousMidiControl)
     {
-        final Mode mode = this.getSurface ().getModeManager ().getActiveOrTemp ();
+        final IMode mode = this.getSurface ().getModeManager ().getActive ();
         return mode == null ? 0 : mode.getKnobValue (continuousMidiControl);
     }
 }

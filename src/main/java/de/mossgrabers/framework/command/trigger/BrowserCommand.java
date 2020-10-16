@@ -12,10 +12,10 @@ import de.mossgrabers.framework.daw.IBrowser;
 import de.mossgrabers.framework.daw.IModel;
 import de.mossgrabers.framework.daw.data.IChannel;
 import de.mossgrabers.framework.daw.data.ICursorDevice;
+import de.mossgrabers.framework.featuregroup.ViewManager;
 import de.mossgrabers.framework.mode.Modes;
 import de.mossgrabers.framework.utils.ButtonEvent;
 import de.mossgrabers.framework.view.AbstractDrumView;
-import de.mossgrabers.framework.view.ViewManager;
 import de.mossgrabers.framework.view.Views;
 
 
@@ -122,7 +122,7 @@ public class BrowserCommand<S extends IControlSurface<C>, C extends Configuratio
 
             // Add device to layer or track
 
-            if (Modes.isLayerMode (this.surface.getModeManager ().getActiveOrTempId ()))
+            if (Modes.isLayerMode (this.surface.getModeManager ().getActiveID ()))
             {
                 final IChannel layer = cursorDevice.getLayerOrDrumPadBank ().getSelectedItem ();
                 if (layer == null)

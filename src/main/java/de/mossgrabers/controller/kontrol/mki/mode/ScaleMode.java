@@ -32,7 +32,7 @@ public class ScaleMode extends AbstractKontrol1Mode
     public ScaleMode (final Kontrol1ControlSurface surface, final IModel model)
     {
         super ("Scales", surface, model);
-        this.isTemporary = true;
+
         this.scales = this.model.getScales ();
     }
 

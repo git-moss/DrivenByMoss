@@ -8,8 +8,8 @@ import de.mossgrabers.framework.command.core.AbstractTriggerCommand;
 import de.mossgrabers.framework.configuration.Configuration;
 import de.mossgrabers.framework.controller.IControlSurface;
 import de.mossgrabers.framework.daw.IModel;
+import de.mossgrabers.framework.featuregroup.ViewManager;
 import de.mossgrabers.framework.utils.ButtonEvent;
-import de.mossgrabers.framework.view.ViewManager;
 import de.mossgrabers.framework.view.Views;
 
 import java.util.ArrayList;
@@ -56,7 +56,7 @@ public class ViewMultiSelectCommand<S extends IControlSurface<C>, C extends Conf
             return;
 
         final ViewManager viewManager = this.surface.getViewManager ();
-        final Views activeViewId = viewManager.getActiveId ();
+        final Views activeViewId = viewManager.getActiveID ();
         int index = this.viewIds.indexOf (activeViewId) + 1;
         if (index < 0 || index >= this.viewIds.size ())
             index = 0;

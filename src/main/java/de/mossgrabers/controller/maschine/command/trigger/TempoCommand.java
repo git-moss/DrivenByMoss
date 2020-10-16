@@ -9,7 +9,7 @@ import de.mossgrabers.controller.maschine.controller.MaschineControlSurface;
 import de.mossgrabers.controller.maschine.mode.EditNoteMode;
 import de.mossgrabers.framework.command.trigger.mode.ModeSelectCommand;
 import de.mossgrabers.framework.daw.IModel;
-import de.mossgrabers.framework.mode.ModeManager;
+import de.mossgrabers.framework.featuregroup.ModeManager;
 import de.mossgrabers.framework.mode.Modes;
 import de.mossgrabers.framework.utils.ButtonEvent;
 import de.mossgrabers.framework.view.Views;
@@ -41,7 +41,7 @@ public class TempoCommand extends ModeSelectCommand<MaschineControlSurface, Masc
         final ModeManager modeManager = this.surface.getModeManager ();
 
         // Switch Transpose/Pressure note edit parameters
-        if (modeManager.isActiveOrTemp (Modes.NOTE) && this.surface.getViewManager ().isActive (Views.DRUM, Views.PLAY))
+        if (modeManager.isActive (Modes.NOTE) && this.surface.getViewManager ().isActive (Views.DRUM, Views.PLAY))
         {
             if (event == ButtonEvent.DOWN)
             {

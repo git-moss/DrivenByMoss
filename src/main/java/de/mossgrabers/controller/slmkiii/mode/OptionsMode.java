@@ -32,8 +32,6 @@ public class OptionsMode extends BaseMode
     public OptionsMode (final SLMkIIIControlSurface surface, final IModel model)
     {
         super ("Options", surface, model);
-
-        this.isTemporary = true;
     }
 
 

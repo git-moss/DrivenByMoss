@@ -8,7 +8,7 @@ import de.mossgrabers.controller.push.PushConfiguration;
 import de.mossgrabers.controller.push.controller.PushControlSurface;
 import de.mossgrabers.framework.command.core.AbstractTriggerCommand;
 import de.mossgrabers.framework.daw.IModel;
-import de.mossgrabers.framework.mode.ModeManager;
+import de.mossgrabers.framework.featuregroup.ModeManager;
 import de.mossgrabers.framework.mode.Modes;
 import de.mossgrabers.framework.utils.ButtonEvent;
 
@@ -48,10 +48,10 @@ public class SetupCommand extends AbstractTriggerCommand<PushControlSurface, Pus
 
         final Modes mode = this.getMode ();
 
-        if (modeManager.isActiveOrTemp (mode))
+        if (modeManager.isActive (mode))
             modeManager.restore ();
         else
-            modeManager.setActive (mode);
+            modeManager.setTemporary (mode);
     }
 
 

@@ -10,8 +10,8 @@ import de.mossgrabers.framework.command.continuous.PlayPositionCommand;
 import de.mossgrabers.framework.command.continuous.TempoCommand;
 import de.mossgrabers.framework.controller.ButtonID;
 import de.mossgrabers.framework.daw.IModel;
+import de.mossgrabers.framework.featuregroup.ViewManager;
 import de.mossgrabers.framework.utils.Timeout;
-import de.mossgrabers.framework.view.ViewManager;
 import de.mossgrabers.framework.view.Views;
 
 
@@ -52,7 +52,7 @@ public class APCPlayPositionCommand extends PlayPositionCommand<APCControlSurfac
 
             final ViewManager viewManager = this.surface.getViewManager ();
             if (!viewManager.isActive (Views.TEMPO))
-                viewManager.setActive (Views.TEMPO);
+                viewManager.setTemporary (Views.TEMPO);
             this.timeout.delay (viewManager::restore);
 
             return;

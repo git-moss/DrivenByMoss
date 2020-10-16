@@ -10,7 +10,7 @@ import de.mossgrabers.framework.controller.IControlSurface;
 import de.mossgrabers.framework.daw.IModel;
 import de.mossgrabers.framework.daw.data.ITrack;
 import de.mossgrabers.framework.daw.data.bank.ITrackBank;
-import de.mossgrabers.framework.mode.ModeManager;
+import de.mossgrabers.framework.featuregroup.ModeManager;
 import de.mossgrabers.framework.mode.Modes;
 import de.mossgrabers.framework.utils.ButtonEvent;
 
@@ -60,7 +60,7 @@ public class ModeMultiSelectCommand<S extends IControlSurface<C>, C extends Conf
         if (event != ButtonEvent.UP)
             return;
 
-        final Modes activeModeId = this.modeManager.getActiveId ();
+        final Modes activeModeId = this.modeManager.getActiveID ();
         Modes newMode = this.currentModeID;
 
         // If coming from a mode not on the list, activate the last one
@@ -89,7 +89,7 @@ public class ModeMultiSelectCommand<S extends IControlSurface<C>, C extends Conf
         if (event != ButtonEvent.UP)
             return;
 
-        final Modes activeModeId = this.modeManager.getActiveId ();
+        final Modes activeModeId = this.modeManager.getActiveID ();
         Modes newMode = this.currentModeID;
 
         // If coming from a mode not on the list, activate the last one

@@ -8,10 +8,10 @@ import de.mossgrabers.controller.push.PushConfiguration;
 import de.mossgrabers.controller.push.controller.PushControlSurface;
 import de.mossgrabers.framework.command.core.AbstractTriggerCommand;
 import de.mossgrabers.framework.daw.IModel;
-import de.mossgrabers.framework.featuregroup.View;
+import de.mossgrabers.framework.featuregroup.IView;
+import de.mossgrabers.framework.featuregroup.ViewManager;
 import de.mossgrabers.framework.utils.ButtonEvent;
 import de.mossgrabers.framework.view.AbstractSequencerView;
-import de.mossgrabers.framework.view.ViewManager;
 import de.mossgrabers.framework.view.Views;
 
 
@@ -47,7 +47,7 @@ public class PageLeftCommand extends AbstractTriggerCommand<PushControlSurface, 
             return;
         }
 
-        final View activeView = viewManager.getActive ();
+        final IView activeView = viewManager.getActive ();
         if (activeView instanceof AbstractSequencerView)
             ((AbstractSequencerView) activeView).onLeft (event);
     }

@@ -8,8 +8,8 @@ import de.mossgrabers.controller.push.PushConfiguration;
 import de.mossgrabers.controller.push.controller.PushControlSurface;
 import de.mossgrabers.framework.command.core.AbstractTriggerCommand;
 import de.mossgrabers.framework.daw.IModel;
+import de.mossgrabers.framework.featuregroup.ViewManager;
 import de.mossgrabers.framework.utils.ButtonEvent;
-import de.mossgrabers.framework.view.ViewManager;
 import de.mossgrabers.framework.view.Views;
 
 
@@ -83,7 +83,7 @@ public class LayoutCommand extends AbstractTriggerCommand<PushControlSurface, Pu
             return;
 
         final ViewManager viewManager = this.surface.getViewManager ();
-        if (Views.isSequencerView (viewManager.getActiveId ()))
+        if (Views.isSequencerView (viewManager.getActiveID ()))
             viewManager.setActive (Views.PLAY);
         else
         {

@@ -13,7 +13,7 @@ import de.mossgrabers.framework.daw.DAWColor;
 import de.mossgrabers.framework.daw.IModel;
 import de.mossgrabers.framework.daw.data.ITrack;
 import de.mossgrabers.framework.daw.data.bank.ITrackBank;
-import de.mossgrabers.framework.mode.ModeManager;
+import de.mossgrabers.framework.featuregroup.ModeManager;
 import de.mossgrabers.framework.mode.Modes;
 import de.mossgrabers.framework.utils.ButtonEvent;
 import de.mossgrabers.framework.utils.Pair;
@@ -68,8 +68,6 @@ public abstract class AbstractTrackMode extends BaseMode
     public AbstractTrackMode (final String name, final SLMkIIIControlSurface surface, final IModel model)
     {
         super (name, surface, model, model.getCurrentTrackBank ());
-
-        this.isTemporary = false;
 
         model.addTrackBankObserver (this::switchBanks);
 
@@ -178,7 +176,7 @@ public abstract class AbstractTrackMode extends BaseMode
             return;
         final Modes si = Modes.get (Modes.SEND1, sendIndex);
         final ModeManager modeManager = this.surface.getModeManager ();
-        modeManager.setActive (modeManager.isActiveOrTemp (si) ? Modes.TRACK : si);
+        modeManager.setActive (modeManager.isActive (si) ? Modes.TRACK : si);
     }
 
 

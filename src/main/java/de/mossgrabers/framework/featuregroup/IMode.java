@@ -15,16 +15,8 @@ import de.mossgrabers.framework.utils.ButtonEvent;
  *
  * @author J&uuml;rgen Mo&szlig;graber
  */
-public interface Mode extends FeatureGroup
+public interface IMode extends IFeatureGroup
 {
-    /**
-     * Get if this is a mode which is only temporarily displayed.
-     *
-     * @return True if temporary
-     */
-    boolean isTemporary ();
-
-
     /**
      * Update the display.
      */

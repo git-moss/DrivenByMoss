@@ -69,9 +69,9 @@ import de.mossgrabers.framework.daw.data.bank.ITrackBank;
 import de.mossgrabers.framework.daw.midi.IMidiAccess;
 import de.mossgrabers.framework.daw.midi.IMidiInput;
 import de.mossgrabers.framework.daw.midi.IMidiOutput;
-import de.mossgrabers.framework.featuregroup.Mode;
-import de.mossgrabers.framework.mode.AbstractMode;
-import de.mossgrabers.framework.mode.ModeManager;
+import de.mossgrabers.framework.featuregroup.AbstractFeatureGroup;
+import de.mossgrabers.framework.featuregroup.IMode;
+import de.mossgrabers.framework.featuregroup.ModeManager;
 import de.mossgrabers.framework.mode.Modes;
 import de.mossgrabers.framework.utils.ButtonEvent;
 import de.mossgrabers.framework.view.ControlOnlyView;
@@ -118,8 +118,8 @@ public class HUIControllerSetup extends AbstractControllerSetup<HUIControlSurfac
         this.colorManager = new ColorManager ();
         this.colorManager.registerColor (0, ColorEx.BLACK);
         this.colorManager.registerColor (127, ColorEx.RED);
-        this.colorManager.registerColorIndex (AbstractMode.BUTTON_COLOR_OFF, 0);
-        this.colorManager.registerColorIndex (AbstractMode.BUTTON_COLOR_ON, 127);
+        this.colorManager.registerColorIndex (AbstractFeatureGroup.BUTTON_COLOR_OFF, 0);
+        this.colorManager.registerColorIndex (AbstractFeatureGroup.BUTTON_COLOR_ON, 127);
 
         this.valueChanger = new DefaultValueChanger (16384, 100);
         this.configuration = new HUIConfiguration (host, this.valueChanger, factory.getArpeggiatorModes ());
@@ -132,7 +132,7 @@ public class HUIControllerSetup extends AbstractControllerSetup<HUIControlSurfac
     {
         super.flush ();
 
-        this.updateMode (this.getSurface ().getModeManager ().getActiveOrTempId ());
+        this.updateMode (this.getSurface ().getModeManager ().getActiveID ());
 
         this.updateVUandFaders ();
         this.updateSegmentDisplay ();
@@ -173,7 +173,7 @@ public class HUIControllerSetup extends AbstractControllerSetup<HUIControlSurfac
         this.surfaces.add (surface);
         surface.addTextDisplay (new HUIDisplay (this.host, output));
         surface.addTextDisplay (new HUISegmentDisplay (this.host, output));
-        surface.getModeManager ().setDefault (Modes.VOLUME);
+        surface.getModeManager ().setDefaultID (Modes.VOLUME);
     }
 
 
@@ -210,7 +210,7 @@ public class HUIControllerSetup extends AbstractControllerSetup<HUIControlSurfac
         surface.getModeManager ().addChangeListener ( (oldMode, newMode) -> this.updateMode (newMode));
 
         this.configuration.addSettingObserver (AbstractConfiguration.ENABLE_VU_METERS, () -> {
-            final Mode activeMode = surface.getModeManager ().getActiveOrTemp ();
+            final IMode activeMode = surface.getModeManager ().getActive ();
             if (activeMode != null)
                 activeMode.updateDisplay ();
             ((HUIDisplay) surface.getDisplay ()).forceFlush ();
@@ -282,12 +282,12 @@ public class HUIControllerSetup extends AbstractControllerSetup<HUIControlSurfac
         // Assignment (mode selection)
         // HUI_ASSIGN1_OUTPUT, not supported
         // HUI_ASSIGN1_INPUT, not supported
-        this.addButtonHUI (ButtonID.PAN_SEND, "Panorama", new ModeSelectCommand<> (this.model, surface, Modes.PAN), HUIControlSurface.HUI_ASSIGN1_PAN, () -> modeManager.isActiveOrTemp (Modes.PAN));
-        this.addButtonHUI (ButtonID.SEND1, "Send 1", new ModeSelectCommand<> (this.model, surface, Modes.SEND1), HUIControlSurface.HUI_ASSIGN1_SEND_A, () -> modeManager.isActiveOrTemp (Modes.SEND1));
-        this.addButtonHUI (ButtonID.SEND2, "Send 2", new ModeSelectCommand<> (this.model, surface, Modes.SEND2), HUIControlSurface.HUI_ASSIGN1_SEND_B, () -> modeManager.isActiveOrTemp (Modes.SEND2));
-        this.addButtonHUI (ButtonID.SEND3, "Send 3", new ModeSelectCommand<> (this.model, surface, Modes.SEND3), HUIControlSurface.HUI_ASSIGN1_SEND_C, () -> modeManager.isActiveOrTemp (Modes.SEND3));
-        this.addButtonHUI (ButtonID.SEND4, "Send 4", new ModeSelectCommand<> (this.model, surface, Modes.SEND4), HUIControlSurface.HUI_ASSIGN1_SEND_D, () -> modeManager.isActiveOrTemp (Modes.SEND4));
-        this.addButtonHUI (ButtonID.SEND5, "Send 5", new ModeSelectCommand<> (this.model, surface, Modes.SEND5), HUIControlSurface.HUI_ASSIGN1_SEND_E, () -> modeManager.isActiveOrTemp (Modes.SEND5));
+        this.addButtonHUI (ButtonID.PAN_SEND, "Panorama", new ModeSelectCommand<> (this.model, surface, Modes.PAN), HUIControlSurface.HUI_ASSIGN1_PAN, () -> modeManager.isActive (Modes.PAN));
+        this.addButtonHUI (ButtonID.SEND1, "Send 1", new ModeSelectCommand<> (this.model, surface, Modes.SEND1), HUIControlSurface.HUI_ASSIGN1_SEND_A, () -> modeManager.isActive (Modes.SEND1));
+        this.addButtonHUI (ButtonID.SEND2, "Send 2", new ModeSelectCommand<> (this.model, surface, Modes.SEND2), HUIControlSurface.HUI_ASSIGN1_SEND_B, () -> modeManager.isActive (Modes.SEND2));
+        this.addButtonHUI (ButtonID.SEND3, "Send 3", new ModeSelectCommand<> (this.model, surface, Modes.SEND3), HUIControlSurface.HUI_ASSIGN1_SEND_C, () -> modeManager.isActive (Modes.SEND3));
+        this.addButtonHUI (ButtonID.SEND4, "Send 4", new ModeSelectCommand<> (this.model, surface, Modes.SEND4), HUIControlSurface.HUI_ASSIGN1_SEND_D, () -> modeManager.isActive (Modes.SEND4));
+        this.addButtonHUI (ButtonID.SEND5, "Send 5", new ModeSelectCommand<> (this.model, surface, Modes.SEND5), HUIControlSurface.HUI_ASSIGN1_SEND_E, () -> modeManager.isActive (Modes.SEND5));
 
         // Assignment 2
         // HUI_ASSIGN2_ASSIGN, not supported
@@ -707,7 +707,7 @@ public class HUIControllerSetup extends AbstractControllerSetup<HUIControlSurfac
         if (modeID == null)
             return;
 
-        final Mode mode = this.getSurface ().getModeManager ().get (modeID);
+        final IMode mode = this.getSurface ().getModeManager ().get (modeID);
         if (mode instanceof AbstractTrackMode)
             ((AbstractTrackMode) mode).updateKnobLEDs ();
         this.updateIndication (modeID);
@@ -762,7 +762,7 @@ public class HUIControllerSetup extends AbstractControllerSetup<HUIControlSurfac
 
     private static int getButtonColor (final HUIControlSurface surface, final ButtonID buttonID)
     {
-        final Mode mode = surface.getModeManager ().getActiveOrTemp ();
+        final IMode mode = surface.getModeManager ().getActive ();
         return mode == null ? 0 : mode.getButtonColor (buttonID);
     }
 }

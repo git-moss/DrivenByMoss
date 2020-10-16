@@ -13,7 +13,7 @@ import de.mossgrabers.framework.controller.ButtonID;
 import de.mossgrabers.framework.daw.IModel;
 import de.mossgrabers.framework.daw.data.IScene;
 import de.mossgrabers.framework.daw.data.bank.ISceneBank;
-import de.mossgrabers.framework.mode.AbstractMode;
+import de.mossgrabers.framework.featuregroup.AbstractFeatureGroup;
 import de.mossgrabers.framework.utils.ButtonEvent;
 import de.mossgrabers.framework.view.AbstractSessionView;
 import de.mossgrabers.framework.view.SessionColor;
@@ -88,7 +88,7 @@ public class SessionView extends AbstractSessionView<PushControlSurface, PushCon
     {
         final int scene = buttonID.ordinal () - ButtonID.SCENE1.ordinal ();
         if (scene < 0 || scene >= 8)
-            return AbstractMode.BUTTON_COLOR_OFF;
+            return AbstractFeatureGroup.BUTTON_COLOR_OFF;
 
         final ISceneBank sceneBank = this.model.getSceneBank ();
         final IScene s = sceneBank.getItem (scene);

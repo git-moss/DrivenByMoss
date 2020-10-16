@@ -10,7 +10,7 @@ import de.mossgrabers.framework.command.core.AbstractTriggerCommand;
 import de.mossgrabers.framework.controller.ButtonID;
 import de.mossgrabers.framework.daw.IModel;
 import de.mossgrabers.framework.daw.data.IMasterTrack;
-import de.mossgrabers.framework.mode.ModeManager;
+import de.mossgrabers.framework.featuregroup.ModeManager;
 import de.mossgrabers.framework.mode.Modes;
 import de.mossgrabers.framework.utils.ButtonEvent;
 
@@ -42,7 +42,7 @@ public class MastertrackTouchCommand extends AbstractTriggerCommand<PushControlS
 
         // Avoid accidentally leaving the browser
         final ModeManager modeManager = this.surface.getModeManager ();
-        if (modeManager.isActiveOrTemp (Modes.BROWSER))
+        if (modeManager.isActive (Modes.BROWSER))
             return;
 
         final IMasterTrack masterTrack = this.model.getMasterTrack ();
@@ -55,12 +55,12 @@ public class MastertrackTouchCommand extends AbstractTriggerCommand<PushControlS
             return;
         }
 
-        final boolean isMasterMode = modeManager.isActiveOrTemp (Modes.MASTER);
+        final boolean isMasterMode = modeManager.isActive (Modes.MASTER);
         if (isTouched && isMasterMode)
             return;
 
         if (isTouched)
-            modeManager.setActive (Modes.MASTER_TEMP);
+            modeManager.setTemporary (Modes.MASTER_TEMP);
         else if (!isMasterMode)
             modeManager.restore ();
     }

@@ -9,7 +9,7 @@ import de.mossgrabers.controller.fire.controller.FireControlSurface;
 import de.mossgrabers.controller.fire.view.SessionView;
 import de.mossgrabers.framework.command.trigger.view.ViewMultiSelectCommand;
 import de.mossgrabers.framework.daw.IModel;
-import de.mossgrabers.framework.featuregroup.View;
+import de.mossgrabers.framework.featuregroup.IView;
 import de.mossgrabers.framework.utils.ButtonEvent;
 import de.mossgrabers.framework.view.Views;
 
@@ -41,7 +41,7 @@ public class SessionSelectCommand extends ViewMultiSelectCommand<FireControlSurf
         if (event != ButtonEvent.DOWN)
             return;
 
-        final View view = this.surface.getViewManager ().get (Views.SESSION);
+        final IView view = this.surface.getViewManager ().get (Views.SESSION);
         if (view instanceof SessionView)
             ((SessionView) view).toggleBirdsEyeView ();
     }

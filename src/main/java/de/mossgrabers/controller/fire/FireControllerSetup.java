@@ -63,12 +63,12 @@ import de.mossgrabers.framework.daw.data.bank.ITrackBank;
 import de.mossgrabers.framework.daw.midi.IMidiAccess;
 import de.mossgrabers.framework.daw.midi.IMidiInput;
 import de.mossgrabers.framework.daw.midi.IMidiOutput;
-import de.mossgrabers.framework.featuregroup.Mode;
-import de.mossgrabers.framework.featuregroup.View;
-import de.mossgrabers.framework.mode.ModeManager;
+import de.mossgrabers.framework.featuregroup.IMode;
+import de.mossgrabers.framework.featuregroup.IView;
+import de.mossgrabers.framework.featuregroup.ModeManager;
+import de.mossgrabers.framework.featuregroup.ViewManager;
 import de.mossgrabers.framework.mode.Modes;
 import de.mossgrabers.framework.observer.IParametersAdjustObserver;
-import de.mossgrabers.framework.view.ViewManager;
 import de.mossgrabers.framework.view.Views;
 
 import java.util.function.IntSupplier;
@@ -157,7 +157,7 @@ public class FireControllerSetup extends AbstractControllerSetup<FireControlSurf
 
         surface.addGraphicsDisplay (new FireDisplay (this.host, output, this.valueChanger.getUpperBound ()));
 
-        surface.getModeManager ().setDefault (Modes.TRACK);
+        surface.getModeManager ().setDefaultID (Modes.TRACK);
     }
 
 
@@ -216,7 +216,7 @@ public class FireControllerSetup extends AbstractControllerSetup<FireControlSurf
         for (int i = 0; i < MODES.length; i++)
         {
             final int index = i;
-            surface.createLight (OutputID.get (OutputID.LED1, i), () -> modeManager.getActiveOrTempId () == MODES[index] ? index : 5, color -> {
+            surface.createLight (OutputID.get (OutputID.LED1, i), () -> modeManager.getActiveID () == MODES[index] ? index : 5, color -> {
                 if (color < 5)
                     surface.setTrigger (0, 0x1B, color);
             }, state -> state < 5 ? ColorEx.RED : ColorEx.GRAY, null);
@@ -280,7 +280,7 @@ public class FireControllerSetup extends AbstractControllerSetup<FireControlSurf
         this.addButton (ButtonID.SHIFT, "SHIFT", new ToggleShiftViewCommand<> (this.model, surface), FireControlSurface.FIRE_SHIFT, (IntSupplier) null, FireColorManager.BUTTON_STATE_ON2, FireColorManager.BUTTON_STATE_HI2);
         this.addButton (ButtonID.ALT, "ALT", (event, velocity) -> {
 
-            final Mode activeMode = modeManager.getActiveOrTemp ();
+            final IMode activeMode = modeManager.getActive ();
             if (activeMode instanceof IParametersAdjustObserver)
                 ((IParametersAdjustObserver) activeMode).parametersAdjusted ();
 
@@ -291,14 +291,14 @@ public class FireControllerSetup extends AbstractControllerSetup<FireControlSurf
             if (velocity > 0)
                 return;
 
-            if (modeManager.isActiveOrTemp (Modes.NOTE))
+            if (modeManager.isActive (Modes.NOTE))
             {
                 final NoteMode mode = (NoteMode) modeManager.get (Modes.NOTE);
                 mode.resetTranspose ();
                 return;
             }
 
-            if (modeManager.isActiveOrTemp (Modes.BROWSER))
+            if (modeManager.isActive (Modes.BROWSER))
             {
                 ((FireBrowserCommand) surface.getButton (ButtonID.BROWSE).getCommand ()).discardBrowser (true);
                 return;
@@ -308,7 +308,7 @@ public class FireControllerSetup extends AbstractControllerSetup<FireControlSurf
 
         }, FireControlSurface.SELECT);
 
-        this.addButton (ButtonID.BROWSE, "BROWSER", new FireBrowserCommand (this.model, surface), FireControlSurface.FIRE_BROWSER, () -> modeManager.isActiveOrTemp (Modes.BROWSER));
+        this.addButton (ButtonID.BROWSE, "BROWSER", new FireBrowserCommand (this.model, surface), FireControlSurface.FIRE_BROWSER, () -> modeManager.isActive (Modes.BROWSER));
 
         // Navigation
 
@@ -346,13 +346,13 @@ public class FireControllerSetup extends AbstractControllerSetup<FireControlSurf
         {
             final ButtonID buttonID = ButtonID.get (ButtonID.SCENE1, i);
             this.addButton (buttonID, "SOLO" + (i + 1), new ViewButtonCommand<> (buttonID, surface), FireControlSurface.FIRE_SOLO_1 + i, () -> {
-                final View activeView = viewManager.getActive ();
+                final IView activeView = viewManager.getActive ();
                 return activeView != null ? activeView.getButtonColor (buttonID) : 0;
             });
 
             final int index = i;
             surface.createLight (OutputID.get (OutputID.LED5, i), () -> {
-                final View activeView = viewManager.getActive ();
+                final IView activeView = viewManager.getActive ();
                 return activeView instanceof IFireView ? ((IFireView) activeView).getSoloButtonColor (index) : 0;
             }, color -> surface.setTrigger (0, 0x28 + index, color), state -> {
                 switch (state)
@@ -554,7 +554,7 @@ public class FireControllerSetup extends AbstractControllerSetup<FireControlSurf
      */
     public void redraw ()
     {
-        final Mode mode = this.getSurface ().getModeManager ().getActiveOrTemp ();
+        final IMode mode = this.getSurface ().getModeManager ().getActive ();
         if (mode != null)
             mode.updateDisplay ();
     }

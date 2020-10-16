@@ -5,7 +5,7 @@
 package de.mossgrabers.controller.mcu.command.trigger;
 
 import de.mossgrabers.controller.mcu.controller.MCUControlSurface;
-import de.mossgrabers.framework.mode.ModeManager;
+import de.mossgrabers.framework.featuregroup.ModeManager;
 import de.mossgrabers.framework.mode.Modes;
 
 
@@ -36,7 +36,7 @@ public class ModeSwitcher
     public void scrollUp ()
     {
         final ModeManager modeManager = this.surface.getModeManager ();
-        final Modes activeModeId = modeManager.getActiveOrTempId ();
+        final Modes activeModeId = modeManager.getActiveID ();
         if (Modes.PAN == activeModeId)
         {
             modeManager.setActive (Modes.VOLUME);
@@ -66,7 +66,7 @@ public class ModeSwitcher
     public void scrollDown ()
     {
         final ModeManager modeManager = this.surface.getModeManager ();
-        final Modes activeModeId = modeManager.getActiveOrTempId ();
+        final Modes activeModeId = modeManager.getActiveID ();
         if (Modes.PAN == activeModeId)
         {
             modeManager.setActive (Modes.DEVICE_PARAMS);

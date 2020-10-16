@@ -49,11 +49,7 @@ public class DeviceLayerRightCommand<S extends IControlSurface<C>, C extends Con
         if (!cd.hasLayers () || sel == null)
             cd.selectNext ();
         else
-        {
-            final int index = sel.getIndex () + 1;
-            if (index < bank.getPageSize ())
-                bank.getItem (index).select ();
-        }
+            bank.selectNextItem ();
     }
 
 
@@ -75,5 +71,22 @@ public class DeviceLayerRightCommand<S extends IControlSurface<C>, C extends Con
             bank.getItem (0).select ();
         else
             layer.enter ();
+    }
+
+
+    /**
+     * Check if the command can be executed.
+     *
+     * @return True if it can
+     */
+    public boolean canExecute ()
+    {
+        if (this.surface.isShiftPressed ())
+            return true;
+
+        final ICursorDevice cd = this.model.getCursorDevice ();
+        final IChannelBank<?> bank = cd.getLayerOrDrumPadBank ();
+        final IChannel layer = bank.getSelectedItem ();
+        return cd.hasLayers () && layer != null ? bank.canScrollForwards () : cd.canSelectNextFX ();
     }
 }

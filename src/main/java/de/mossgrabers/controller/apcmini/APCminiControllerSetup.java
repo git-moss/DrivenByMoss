@@ -36,14 +36,14 @@ import de.mossgrabers.framework.daw.data.bank.ITrackBank;
 import de.mossgrabers.framework.daw.midi.IMidiAccess;
 import de.mossgrabers.framework.daw.midi.IMidiInput;
 import de.mossgrabers.framework.daw.midi.IMidiOutput;
-import de.mossgrabers.framework.featuregroup.View;
-import de.mossgrabers.framework.mode.ModeManager;
+import de.mossgrabers.framework.featuregroup.IView;
+import de.mossgrabers.framework.featuregroup.ModeManager;
+import de.mossgrabers.framework.featuregroup.ViewManager;
 import de.mossgrabers.framework.mode.Modes;
 import de.mossgrabers.framework.mode.device.ParameterMode;
 import de.mossgrabers.framework.mode.track.PanMode;
 import de.mossgrabers.framework.mode.track.SendMode;
 import de.mossgrabers.framework.mode.track.VolumeMode;
-import de.mossgrabers.framework.view.ViewManager;
 import de.mossgrabers.framework.view.Views;
 
 import java.util.HashMap;
@@ -162,7 +162,7 @@ public class APCminiControllerSetup extends AbstractControllerSetup<APCminiContr
             modeManager.register (Modes.get (Modes.SEND1, i), new SendMode<> (i, surface, this.model, true, FADER_IDS));
         modeManager.register (Modes.DEVICE_PARAMS, new ParameterMode<> (surface, this.model, true, FADER_IDS));
 
-        modeManager.setDefault (Modes.VOLUME);
+        modeManager.setDefaultID (Modes.VOLUME);
     }
 
 
@@ -234,7 +234,7 @@ public class APCminiControllerSetup extends AbstractControllerSetup<APCminiContr
             this.addButton (buttonID, COL_NAMES[i], new ViewButtonCommand<> (buttonID, surface), APCminiControlSurface.APC_BUTTON_SCENE_BUTTON1 + i, () -> this.getViewColor (buttonID));
 
             this.addButton (ButtonID.get (ButtonID.ROW_SELECT_1, i), ROW_NAMES[i], new TrackSelectCommand (i, this.model, surface), APCminiControlSurface.APC_BUTTON_TRACK_BUTTON1 + i, () -> {
-                final View view = viewManager.getActive ();
+                final IView view = viewManager.getActive ();
                 if (view instanceof APCminiView)
                 {
                     final int trackButtonColor = ((APCminiView) view).getTrackButtonColor (index);
@@ -312,7 +312,7 @@ public class APCminiControllerSetup extends AbstractControllerSetup<APCminiContr
 
     private void updateMode (final Modes mode)
     {
-        this.updateIndication (mode == null ? this.getSurface ().getModeManager ().getActiveOrTempId () : mode);
+        this.updateIndication (mode == null ? this.getSurface ().getModeManager ().getActiveID () : mode);
     }
 
 

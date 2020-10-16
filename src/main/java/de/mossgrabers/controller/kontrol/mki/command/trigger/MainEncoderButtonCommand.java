@@ -36,6 +36,6 @@ public class MainEncoderButtonCommand extends AbstractTriggerCommand<Kontrol1Con
     public void execute (final ButtonEvent event, final int velocity)
     {
         if (event == ButtonEvent.DOWN)
-            ((IKontrol1Mode) this.surface.getModeManager ().getActiveOrTemp ()).onMainKnobPressed ();
+            ((IKontrol1Mode) this.surface.getModeManager ().getActive ()).onMainKnobPressed ();
     }
 }

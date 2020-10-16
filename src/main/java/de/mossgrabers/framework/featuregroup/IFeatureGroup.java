@@ -13,7 +13,7 @@ import de.mossgrabers.framework.controller.ButtonID;
  *
  * @author J&uuml;rgen Mo&szlig;graber
  */
-public interface FeatureGroup
+public interface IFeatureGroup
 {
     /**
      * Get the name of the feature group.

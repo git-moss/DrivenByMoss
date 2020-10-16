@@ -16,11 +16,11 @@ import de.mossgrabers.framework.daw.IModel;
 import de.mossgrabers.framework.daw.INoteClip;
 import de.mossgrabers.framework.daw.data.ITrack;
 import de.mossgrabers.framework.daw.data.bank.ITrackBank;
-import de.mossgrabers.framework.featuregroup.View;
+import de.mossgrabers.framework.featuregroup.IView;
+import de.mossgrabers.framework.featuregroup.ViewManager;
 import de.mossgrabers.framework.utils.ButtonEvent;
 import de.mossgrabers.framework.utils.StringUtils;
 import de.mossgrabers.framework.view.AbstractSequencerView;
-import de.mossgrabers.framework.view.ViewManager;
 import de.mossgrabers.framework.view.Views;
 
 
@@ -134,7 +134,7 @@ public class ClipMode extends AbstractTrackMode
     {
         if (this.displayMidiNotes)
         {
-            final View activeView = this.surface.getViewManager ().getActive ();
+            final IView activeView = this.surface.getViewManager ().getActive ();
             INoteClip clip;
             if (activeView instanceof AbstractSequencerView)
                 clip = ((AbstractSequencerView<?, ?>) activeView).getClip ();

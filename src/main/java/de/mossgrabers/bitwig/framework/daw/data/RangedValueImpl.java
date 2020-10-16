@@ -47,7 +47,7 @@ public class RangedValueImpl extends AbstractItemImpl implements IParameter
 
     /**
      * Constructor.
-     * 
+     *
      * @param name The name of the value
      * @param valueChanger The value changer
      * @param rangedValue The ranged value
@@ -192,7 +192,7 @@ public class RangedValueImpl extends AbstractItemImpl implements IParameter
 
     /** {@inheritDoc} */
     @Override
-    public void setIndication (boolean enable)
+    public void setIndication (final boolean enable)
     {
         // Not supported
     }

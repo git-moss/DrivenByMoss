@@ -10,7 +10,7 @@ import de.mossgrabers.framework.command.core.AbstractTriggerCommand;
 import de.mossgrabers.framework.daw.IModel;
 import de.mossgrabers.framework.daw.data.ITrack;
 import de.mossgrabers.framework.daw.data.bank.ITrackBank;
-import de.mossgrabers.framework.mode.ModeManager;
+import de.mossgrabers.framework.featuregroup.ModeManager;
 import de.mossgrabers.framework.mode.Modes;
 import de.mossgrabers.framework.utils.ButtonEvent;
 
@@ -50,7 +50,7 @@ public class TrackCommand extends AbstractTriggerCommand<PushControlSurface, Pus
         }
 
         final ModeManager modeManager = this.surface.getModeManager ();
-        final Modes currentMode = modeManager.getActiveOrTempId ();
+        final Modes currentMode = modeManager.getActiveID ();
 
         if (currentMode != null)
         {
@@ -86,7 +86,7 @@ public class TrackCommand extends AbstractTriggerCommand<PushControlSurface, Pus
         else
             modeManager.setActive (Modes.TRACK);
 
-        config.setDebugMode (modeManager.getActiveOrTempId ());
+        config.setDebugMode (modeManager.getActiveID ());
 
         final ITrackBank tb = this.model.getCurrentTrackBank ();
         final ITrack track = tb.getSelectedItem ();

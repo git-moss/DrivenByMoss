@@ -12,7 +12,7 @@ import de.mossgrabers.framework.daw.IModel;
 import de.mossgrabers.framework.daw.data.ICursorDevice;
 import de.mossgrabers.framework.daw.data.IParameter;
 import de.mossgrabers.framework.daw.data.bank.IParameterPageBank;
-import de.mossgrabers.framework.mode.AbstractMode;
+import de.mossgrabers.framework.featuregroup.AbstractMode;
 import de.mossgrabers.framework.parameterprovider.BankParameterProvider;
 
 import java.util.List;
@@ -59,7 +59,6 @@ public class ParameterMode<S extends IControlSurface<C>, C extends Configuration
     {
         super ("Parameters", surface, model, isAbsolute, model.getCursorDevice ().getParameterBank (), controls);
 
-        this.isTemporary = false;
         this.cursorDevice = this.model.getCursorDevice ();
 
         if (controls != null)

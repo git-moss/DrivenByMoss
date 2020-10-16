@@ -14,7 +14,7 @@ import de.mossgrabers.framework.daw.data.ICursorDevice;
 import de.mossgrabers.framework.daw.data.ITrack;
 import de.mossgrabers.framework.daw.data.bank.IParameterBank;
 import de.mossgrabers.framework.daw.data.bank.ISlotBank;
-import de.mossgrabers.framework.mode.ModeManager;
+import de.mossgrabers.framework.featuregroup.ModeManager;
 import de.mossgrabers.framework.mode.Modes;
 import de.mossgrabers.framework.utils.ButtonEvent;
 
@@ -52,7 +52,7 @@ public class PageCommand extends AbstractTriggerCommand<MaschineControlSurface, 
             return;
 
         final ModeManager modeManager = this.surface.getModeManager ();
-        final Modes mode = modeManager.getActiveOrTempId ();
+        final Modes mode = modeManager.getActiveID ();
 
         switch (mode)
         {

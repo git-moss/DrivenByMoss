@@ -12,7 +12,8 @@ import de.mossgrabers.framework.controller.ButtonID;
 import de.mossgrabers.framework.controller.display.IGraphicDisplay;
 import de.mossgrabers.framework.controller.display.ITextDisplay;
 import de.mossgrabers.framework.daw.IModel;
-import de.mossgrabers.framework.mode.AbstractMode;
+import de.mossgrabers.framework.featuregroup.AbstractFeatureGroup;
+import de.mossgrabers.framework.featuregroup.AbstractMode;
 import de.mossgrabers.framework.scale.Scale;
 import de.mossgrabers.framework.scale.Scales;
 import de.mossgrabers.framework.utils.ButtonEvent;
@@ -38,7 +39,7 @@ public class ScalesMode extends BaseMode
     public ScalesMode (final PushControlSurface surface, final IModel model)
     {
         super ("Scale", surface, model);
-        this.isTemporary = false;
+
         this.scales = model.getScales ();
     }
 
@@ -85,11 +86,11 @@ public class ScalesMode extends BaseMode
         if (index >= 0)
         {
             if (index == 7)
-                return this.colorManager.getColorIndex (AbstractMode.BUTTON_COLOR_OFF);
+                return this.colorManager.getColorIndex (AbstractFeatureGroup.BUTTON_COLOR_OFF);
 
             final int offset = this.scales.getScaleOffset ();
             final boolean isFirstOrLast = index == 0 || index == 7;
-            return isFirstOrLast ? this.isPush2 ? PushColorManager.PUSH2_COLOR_ORANGE_LO : PushColorManager.PUSH1_COLOR_ORANGE_LO : this.colorManager.getColorIndex (offset == index - 1 ? AbstractMode.BUTTON_COLOR_HI : AbstractMode.BUTTON_COLOR_ON);
+            return isFirstOrLast ? this.isPush2 ? PushColorManager.PUSH2_COLOR_ORANGE_LO : PushColorManager.PUSH1_COLOR_ORANGE_LO : this.colorManager.getColorIndex (offset == index - 1 ? AbstractMode.BUTTON_COLOR_HI : AbstractFeatureGroup.BUTTON_COLOR_ON);
         }
 
         index = this.isButtonRow (1, buttonID);

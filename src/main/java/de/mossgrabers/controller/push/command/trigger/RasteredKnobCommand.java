@@ -10,7 +10,7 @@ import de.mossgrabers.controller.push.mode.device.DeviceBrowserMode;
 import de.mossgrabers.framework.command.continuous.TempoCommand;
 import de.mossgrabers.framework.command.core.TriggerCommand;
 import de.mossgrabers.framework.daw.IModel;
-import de.mossgrabers.framework.mode.ModeManager;
+import de.mossgrabers.framework.featuregroup.ModeManager;
 import de.mossgrabers.framework.mode.Modes;
 import de.mossgrabers.framework.utils.ButtonEvent;
 
@@ -39,7 +39,7 @@ public class RasteredKnobCommand extends TempoCommand<PushControlSurface, PushCo
     public void execute (final int value)
     {
         final ModeManager modeManager = this.surface.getModeManager ();
-        if (modeManager.isActiveOrTemp (Modes.BROWSER))
+        if (modeManager.isActive (Modes.BROWSER))
         {
             final DeviceBrowserMode mode = (DeviceBrowserMode) modeManager.get (Modes.BROWSER);
             mode.changeSelectedColumnValue (value);

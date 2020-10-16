@@ -22,7 +22,7 @@ public class CombinedParameterProvider implements IParameterProvider, IBankPageO
 
     /**
      * Constructor.
-     * 
+     *
      * @param first The first parameter provider
      * @param second The second parameter provider
      */

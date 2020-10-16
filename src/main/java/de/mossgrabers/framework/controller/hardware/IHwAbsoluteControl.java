@@ -15,7 +15,7 @@ public interface IHwAbsoluteControl extends IHwContinuousControl
     /**
      * Determines if this hardware control should immediately take over the parameter it is bound to
      * rather than respecting the user's current take over mode.
-     * 
+     *
      * This is useful for motorized faders for example, where the fader is already at the value of
      * the bound parameter.
      */

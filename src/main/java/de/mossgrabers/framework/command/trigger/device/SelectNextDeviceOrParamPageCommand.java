@@ -49,4 +49,18 @@ public class SelectNextDeviceOrParamPageCommand<S extends IControlSurface<C>, C 
         if (event == ButtonEvent.DOWN)
             this.model.getCursorDevice ().selectNext ();
     }
+
+
+    /**
+     * Check if the command can be executed.
+     *
+     * @return True if it can
+     */
+    public boolean canExecute ()
+    {
+        if (this.surface.isShiftPressed ())
+            return this.model.getCursorDevice ().canSelectNextFX ();
+
+        return this.model.getCursorDevice ().getParameterBank ().canScrollForwards ();
+    }
 }

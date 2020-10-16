@@ -12,7 +12,7 @@ import de.mossgrabers.framework.controller.ButtonID;
 import de.mossgrabers.framework.daw.IModel;
 import de.mossgrabers.framework.daw.data.IItem;
 import de.mossgrabers.framework.daw.data.bank.IBank;
-import de.mossgrabers.framework.mode.ModeManager;
+import de.mossgrabers.framework.featuregroup.ModeManager;
 import de.mossgrabers.framework.mode.Modes;
 
 
@@ -47,8 +47,6 @@ public abstract class AbstractParametersMode extends BaseMode
     public AbstractParametersMode (final String name, final SLMkIIIControlSurface surface, final IModel model, final IBank<? extends IItem> bank)
     {
         super (name, surface, model, bank);
-
-        this.isTemporary = false;
     }
 
 
@@ -83,7 +81,7 @@ public abstract class AbstractParametersMode extends BaseMode
     protected int getButtonColorArrowUp (final ButtonID buttonID)
     {
         final ModeManager modeManager = this.surface.getModeManager ();
-        final boolean isDeviceParams = modeManager.isActiveOrTemp (Modes.DEVICE_PARAMS);
+        final boolean isDeviceParams = modeManager.isActive (Modes.DEVICE_PARAMS);
         switch (buttonID)
         {
             case ROW1_1:
@@ -97,7 +95,7 @@ public abstract class AbstractParametersMode extends BaseMode
                 return SLMkIIIColorManager.SLMKIII_PURPLE_HALF;
 
             case ROW1_8:
-                return modeManager.isActiveOrTemp (Modes.USER) ? SLMkIIIColorManager.SLMKIII_WHITE : SLMkIIIColorManager.SLMKIII_WHITE_HALF;
+                return modeManager.isActive (Modes.USER) ? SLMkIIIColorManager.SLMKIII_WHITE : SLMkIIIColorManager.SLMKIII_WHITE_HALF;
 
             default:
                 return SLMkIIIColorManager.SLMKIII_BLACK;
@@ -120,7 +118,7 @@ public abstract class AbstractParametersMode extends BaseMode
             boolean isActive = false;
             int color = SLMkIIIColorManager.SLMKIII_BLACK;
 
-            final boolean isDeviceParams = modeManager.isActiveOrTemp (Modes.DEVICE_PARAMS);
+            final boolean isDeviceParams = modeManager.isActive (Modes.DEVICE_PARAMS);
             switch (i)
             {
                 case 0:
@@ -136,7 +134,7 @@ public abstract class AbstractParametersMode extends BaseMode
                     break;
 
                 case 7:
-                    isActive = modeManager.isActiveOrTemp (Modes.USER);
+                    isActive = modeManager.isActive (Modes.USER);
                     color = SLMkIIIColorManager.SLMKIII_WHITE;
                     break;
 

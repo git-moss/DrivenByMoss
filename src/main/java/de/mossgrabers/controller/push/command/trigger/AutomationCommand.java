@@ -54,7 +54,7 @@ public class AutomationCommand extends AbstractTriggerCommand<PushControlSurface
                 break;
             case LONG:
                 this.quitAutomationMode = true;
-                this.surface.getModeManager ().setActive (Modes.AUTOMATION);
+                this.surface.getModeManager ().setTemporary (Modes.AUTOMATION);
                 break;
             case UP:
                 if (this.quitAutomationMode)

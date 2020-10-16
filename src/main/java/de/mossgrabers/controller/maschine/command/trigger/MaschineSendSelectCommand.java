@@ -11,7 +11,7 @@ import de.mossgrabers.framework.daw.IModel;
 import de.mossgrabers.framework.daw.data.ISend;
 import de.mossgrabers.framework.daw.data.ITrack;
 import de.mossgrabers.framework.daw.data.bank.ISendBank;
-import de.mossgrabers.framework.mode.ModeManager;
+import de.mossgrabers.framework.featuregroup.ModeManager;
 import de.mossgrabers.framework.mode.Modes;
 import de.mossgrabers.framework.utils.ButtonEvent;
 
@@ -40,11 +40,11 @@ public class MaschineSendSelectCommand extends ModeMultiSelectCommand<MaschineCo
     public void executeShifted (final ButtonEvent event)
     {
         final ModeManager modeManager = this.surface.getModeManager ();
-        final Modes activeMode = modeManager.getActiveId ();
+        final Modes activeMode = modeManager.getActiveID ();
 
         super.executeShifted (event);
 
-        final Modes newMode = modeManager.getActiveId ();
+        final Modes newMode = modeManager.getActiveID ();
         if (activeMode == newMode)
             return;
 
@@ -65,11 +65,11 @@ public class MaschineSendSelectCommand extends ModeMultiSelectCommand<MaschineCo
     public void executeNormal (final ButtonEvent event)
     {
         final ModeManager modeManager = this.surface.getModeManager ();
-        final Modes activeMode = modeManager.getActiveId ();
+        final Modes activeMode = modeManager.getActiveID ();
 
         super.executeNormal (event);
 
-        final Modes newMode = modeManager.getActiveId ();
+        final Modes newMode = modeManager.getActiveID ();
         if (activeMode == newMode)
             return;
 

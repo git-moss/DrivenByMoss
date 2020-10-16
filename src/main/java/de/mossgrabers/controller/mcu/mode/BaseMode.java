@@ -16,7 +16,7 @@ import de.mossgrabers.framework.daw.data.IMasterTrack;
 import de.mossgrabers.framework.daw.data.ITrack;
 import de.mossgrabers.framework.daw.data.bank.IBank;
 import de.mossgrabers.framework.daw.data.bank.ITrackBank;
-import de.mossgrabers.framework.mode.AbstractMode;
+import de.mossgrabers.framework.featuregroup.AbstractMode;
 import de.mossgrabers.framework.utils.ButtonEvent;
 import de.mossgrabers.framework.utils.StringUtils;
 
@@ -55,8 +55,6 @@ public abstract class BaseMode extends AbstractMode<MCUControlSurface, MCUConfig
     public BaseMode (final String name, final MCUControlSurface surface, final IModel model, final IBank<? extends IItem> bank)
     {
         super (name, surface, model, true, bank, DEFAULT_KNOB_IDS);
-
-        this.isTemporary = false;
 
         final MCUConfiguration configuration = this.surface.getConfiguration ();
         this.useFxBank = configuration.shouldPinFXTracksToLastController () && this.surface.getSurfaceID () == configuration.getNumMCUDevices () - 1;

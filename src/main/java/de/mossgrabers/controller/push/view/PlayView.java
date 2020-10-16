@@ -12,7 +12,7 @@ import de.mossgrabers.framework.controller.ButtonID;
 import de.mossgrabers.framework.daw.IModel;
 import de.mossgrabers.framework.daw.data.IScene;
 import de.mossgrabers.framework.daw.data.bank.ISceneBank;
-import de.mossgrabers.framework.mode.AbstractMode;
+import de.mossgrabers.framework.featuregroup.AbstractFeatureGroup;
 import de.mossgrabers.framework.utils.ButtonEvent;
 import de.mossgrabers.framework.view.AbstractPlayView;
 import de.mossgrabers.framework.view.AbstractSessionView;
@@ -94,7 +94,7 @@ public class PlayView extends AbstractPlayView<PushControlSurface, PushConfigura
     public String getButtonColorID (final ButtonID buttonID)
     {
         if (!ButtonID.isSceneButton (buttonID))
-            return AbstractMode.BUTTON_COLOR_OFF;
+            return AbstractFeatureGroup.BUTTON_COLOR_OFF;
 
         if (this.surface.isPressed (ButtonID.REPEAT))
             return NoteRepeatSceneHelper.getButtonColorID (this.surface, buttonID);

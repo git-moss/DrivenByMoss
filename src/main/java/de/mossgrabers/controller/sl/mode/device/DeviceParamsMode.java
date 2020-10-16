@@ -11,7 +11,7 @@ import de.mossgrabers.framework.daw.IModel;
 import de.mossgrabers.framework.daw.data.ICursorDevice;
 import de.mossgrabers.framework.daw.data.IParameter;
 import de.mossgrabers.framework.daw.data.bank.IParameterBank;
-import de.mossgrabers.framework.mode.AbstractMode;
+import de.mossgrabers.framework.featuregroup.AbstractMode;
 import de.mossgrabers.framework.utils.ButtonEvent;
 import de.mossgrabers.framework.utils.StringUtils;
 
@@ -32,8 +32,6 @@ public class DeviceParamsMode extends AbstractMode<SLControlSurface, SLConfigura
     public DeviceParamsMode (final SLControlSurface surface, final IModel model)
     {
         super ("Parameters", surface, model, false, model.getCursorDevice ().getParameterBank (), null);
-
-        this.isTemporary = false;
     }
 
 

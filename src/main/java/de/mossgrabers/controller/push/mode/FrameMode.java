@@ -12,7 +12,8 @@ import de.mossgrabers.framework.daw.IApplication;
 import de.mossgrabers.framework.daw.IArranger;
 import de.mossgrabers.framework.daw.IMixer;
 import de.mossgrabers.framework.daw.IModel;
-import de.mossgrabers.framework.mode.AbstractMode;
+import de.mossgrabers.framework.featuregroup.AbstractFeatureGroup;
+import de.mossgrabers.framework.featuregroup.AbstractMode;
 import de.mossgrabers.framework.utils.ButtonEvent;
 
 
@@ -330,7 +331,7 @@ public class FrameMode extends BaseMode
     {
         int index = this.isButtonRow (0, buttonID);
         if (index >= 0)
-            return this.colorManager.getColorIndex (this.getFirstRowButtonState (index) ? AbstractMode.BUTTON_COLOR_HI : AbstractMode.BUTTON_COLOR_ON);
+            return this.colorManager.getColorIndex (this.getFirstRowButtonState (index) ? AbstractMode.BUTTON_COLOR_HI : AbstractFeatureGroup.BUTTON_COLOR_ON);
 
         index = this.isButtonRow (1, buttonID);
         if (index >= 0)
@@ -345,7 +346,7 @@ public class FrameMode extends BaseMode
                     colorID = AbstractMode.BUTTON_COLOR2_HI;
                     break;
                 default:
-                    colorID = AbstractMode.BUTTON_COLOR_OFF;
+                    colorID = AbstractFeatureGroup.BUTTON_COLOR_OFF;
                     break;
             }
             return this.colorManager.getColorIndex (colorID);

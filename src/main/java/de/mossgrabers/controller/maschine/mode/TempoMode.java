@@ -26,8 +26,6 @@ public class TempoMode extends BaseMode
     public TempoMode (final MaschineControlSurface surface, final IModel model)
     {
         super ("Tempo", surface, model);
-
-        this.isTemporary = false;
     }
 
 

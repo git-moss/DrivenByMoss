@@ -41,7 +41,7 @@ public class ChannelImpl extends AbstractDeviceChainImpl<Channel> implements ICh
 
     /**
      * Constructor.
-     * 
+     *
      * @param channelBank The related channel bank
      * @param host The DAW host
      * @param valueChanger The value changer

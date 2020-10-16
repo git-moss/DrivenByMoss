@@ -7,6 +7,7 @@ package de.mossgrabers.framework.mode;
 import de.mossgrabers.framework.configuration.Configuration;
 import de.mossgrabers.framework.controller.IControlSurface;
 import de.mossgrabers.framework.daw.IModel;
+import de.mossgrabers.framework.featuregroup.AbstractMode;
 
 
 /**

@@ -39,8 +39,6 @@ public class DeviceBrowserMode extends BaseMode
     public DeviceBrowserMode (final MCUControlSurface surface, final IModel model)
     {
         super ("Browser", surface, model);
-
-        this.isTemporary = false;
     }
 
 

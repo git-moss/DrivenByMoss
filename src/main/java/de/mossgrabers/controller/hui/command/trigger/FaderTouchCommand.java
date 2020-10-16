@@ -8,7 +8,7 @@ import de.mossgrabers.controller.hui.HUIConfiguration;
 import de.mossgrabers.controller.hui.controller.HUIControlSurface;
 import de.mossgrabers.framework.command.trigger.track.SelectCommand;
 import de.mossgrabers.framework.daw.IModel;
-import de.mossgrabers.framework.mode.ModeManager;
+import de.mossgrabers.framework.featuregroup.ModeManager;
 import de.mossgrabers.framework.mode.Modes;
 import de.mossgrabers.framework.utils.ButtonEvent;
 

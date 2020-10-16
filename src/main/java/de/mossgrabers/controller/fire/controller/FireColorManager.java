@@ -9,7 +9,7 @@ import de.mossgrabers.framework.controller.color.ColorEx;
 import de.mossgrabers.framework.controller.color.ColorManager;
 import de.mossgrabers.framework.controller.grid.IPadGrid;
 import de.mossgrabers.framework.daw.DAWColor;
-import de.mossgrabers.framework.mode.AbstractMode;
+import de.mossgrabers.framework.featuregroup.AbstractFeatureGroup;
 import de.mossgrabers.framework.scale.Scales;
 import de.mossgrabers.framework.view.AbstractDrumView;
 import de.mossgrabers.framework.view.AbstractPlayView;
@@ -115,7 +115,7 @@ public class FireColorManager extends ColorManager
         this.registerColorIndex (AbstractSessionView.COLOR_SELECTED_SCENE, FIRE_COLOR_GREEN);
         this.registerColorIndex (AbstractSessionView.COLOR_SCENE_OFF, FIRE_COLOR_BLACK);
 
-        this.registerColorIndex (AbstractMode.BUTTON_COLOR_OFF, 0);
+        this.registerColorIndex (AbstractFeatureGroup.BUTTON_COLOR_OFF, 0);
 
         this.registerColorIndex (ColorManager.BUTTON_STATE_OFF, 0);
         this.registerColorIndex (ColorManager.BUTTON_STATE_ON, 1);

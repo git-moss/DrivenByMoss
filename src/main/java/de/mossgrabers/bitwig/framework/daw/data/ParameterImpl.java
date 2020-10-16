@@ -5,7 +5,6 @@
 package de.mossgrabers.bitwig.framework.daw.data;
 
 import de.mossgrabers.framework.controller.valuechanger.IValueChanger;
-import de.mossgrabers.framework.daw.data.ISend;
 import de.mossgrabers.framework.observer.IValueObserver;
 
 import com.bitwig.extension.controller.api.Parameter;
@@ -82,7 +81,7 @@ public class ParameterImpl extends RangedValueImpl
     {
         // TODO Bugfix required: The ISend check is a workaround for
         // https://github.com/teotigraphix/Framework4Bitwig/issues/267
-        return this.targetName == null || this instanceof ISend ? this.parameter.name ().get () : this.targetName.get ();
+        return this.targetName == null ? this.parameter.name ().get () : this.targetName.get ();
     }
 
 
@@ -92,7 +91,7 @@ public class ParameterImpl extends RangedValueImpl
     {
         // TODO Bugfix required: The ISend check is a workaround for
         // https://github.com/teotigraphix/Framework4Bitwig/issues/267
-        return this.targetName == null || this instanceof ISend ? this.parameter.name ().getLimited (limit) : this.targetName.getLimited (limit);
+        return this.targetName == null ? this.parameter.name ().getLimited (limit) : this.targetName.getLimited (limit);
     }
 
 

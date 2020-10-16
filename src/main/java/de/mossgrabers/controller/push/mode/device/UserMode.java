@@ -16,7 +16,8 @@ import de.mossgrabers.framework.controller.valuechanger.IValueChanger;
 import de.mossgrabers.framework.daw.IModel;
 import de.mossgrabers.framework.daw.data.IItem;
 import de.mossgrabers.framework.daw.data.IParameter;
-import de.mossgrabers.framework.mode.AbstractMode;
+import de.mossgrabers.framework.featuregroup.AbstractFeatureGroup;
+import de.mossgrabers.framework.featuregroup.AbstractMode;
 import de.mossgrabers.framework.parameterprovider.BankParameterProvider;
 import de.mossgrabers.framework.utils.ButtonEvent;
 import de.mossgrabers.framework.utils.StringUtils;
@@ -40,8 +41,6 @@ public class UserMode extends BaseMode
         super ("User Controls", surface, model, model.getUserParameterBank ());
 
         this.setParameters (new BankParameterProvider (model.getUserParameterBank ()));
-
-        this.isTemporary = false;
     }
 
 
@@ -93,7 +92,7 @@ public class UserMode extends BaseMode
                 return super.getButtonColor (buttonID);
 
             final int max = this.model.getValueChanger ().getUpperBound () - 1;
-            return this.colorManager.getColorIndex (((IParameter) param).getValue () > max / 2 ? AbstractMode.BUTTON_COLOR_HI : AbstractMode.BUTTON_COLOR_ON);
+            return this.colorManager.getColorIndex (((IParameter) param).getValue () > max / 2 ? AbstractMode.BUTTON_COLOR_HI : AbstractFeatureGroup.BUTTON_COLOR_ON);
         }
 
         return super.getButtonColor (buttonID);
