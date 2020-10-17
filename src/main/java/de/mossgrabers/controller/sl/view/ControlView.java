@@ -8,8 +8,8 @@ import de.mossgrabers.controller.sl.SLConfiguration;
 import de.mossgrabers.controller.sl.command.trigger.ButtonRowSelectCommand;
 import de.mossgrabers.controller.sl.command.trigger.P2ButtonCommand;
 import de.mossgrabers.controller.sl.controller.SLControlSurface;
-import de.mossgrabers.controller.sl.mode.device.DeviceParamsMode;
 import de.mossgrabers.controller.sl.mode.device.DevicePresetsMode;
+import de.mossgrabers.controller.sl.mode.device.SLParameterMode;
 import de.mossgrabers.framework.controller.ButtonID;
 import de.mossgrabers.framework.daw.IModel;
 import de.mossgrabers.framework.daw.ITransport;
@@ -242,8 +242,7 @@ public class ControlView extends ControlOnlyView<SLControlSurface, SLConfigurati
     @Override
     public void onButtonRow3 (final int index, final ButtonEvent event)
     {
-        if (!this.model.getMasterTrack ().isSelected ())
-            this.selectTrack (index);
+        this.selectTrack (index);
     }
 
 
@@ -334,21 +333,33 @@ public class ControlView extends ControlOnlyView<SLControlSurface, SLConfigurati
             return;
 
         final ModeManager modeManager = this.surface.getModeManager ();
-        final Modes activeModeId = modeManager.getActiveID ();
-        if (Modes.FUNCTIONS.equals (activeModeId) || Modes.FIXED.equals (activeModeId))
-            this.onButtonRow1Select ();
-        else if (Modes.VOLUME.equals (activeModeId))
-            new P2ButtonCommand (isUp, this.model, this.surface).execute (ButtonEvent.DOWN, 127);
-        else if (Modes.TRACK.equals (activeModeId) || Modes.MASTER.equals (activeModeId))
-            new ButtonRowSelectCommand<> (3, this.model, this.surface).execute (ButtonEvent.DOWN, 127);
-        else if (Modes.TRACK_DETAILS.equals (activeModeId) || Modes.FRAME.equals (activeModeId))
-            this.onButtonRow2Select ();
-        else
+        switch (modeManager.getActiveID ())
         {
-            if (isUp)
-                ((DeviceParamsMode) modeManager.get (Modes.DEVICE_PARAMS)).nextPage ();
-            else
-                ((DeviceParamsMode) modeManager.get (Modes.DEVICE_PARAMS)).previousPage ();
+            case FUNCTIONS:
+            case FIXED:
+                this.onButtonRow1Select ();
+                break;
+
+            case VOLUME:
+                new P2ButtonCommand (isUp, this.model, this.surface).execute (ButtonEvent.DOWN, 127);
+                break;
+
+            case TRACK:
+                new ButtonRowSelectCommand<> (3, this.model, this.surface).execute (ButtonEvent.DOWN, 127);
+                break;
+
+            case TRACK_DETAILS:
+            case FRAME:
+                this.onButtonRow2Select ();
+                break;
+
+            default:
+                final SLParameterMode deviceParamsMode = (SLParameterMode) modeManager.get (Modes.DEVICE_PARAMS);
+                if (isUp)
+                    deviceParamsMode.selectNextItemPage ();
+                else
+                    deviceParamsMode.selectPreviousItemPage ();
+                break;
         }
     }
 
@@ -472,7 +483,6 @@ public class ControlView extends ControlOnlyView<SLControlSurface, SLConfigurati
         final boolean isTrack = Modes.TRACK.equals (mode);
         final boolean isTrackToggles = Modes.TRACK_DETAILS.equals (mode);
         final boolean isVolume = Modes.VOLUME.equals (mode);
-        final boolean isMaster = Modes.MASTER.equals (mode);
         final boolean isFixed = Modes.FIXED.equals (mode);
         final boolean isFrame = Modes.FRAME.equals (mode);
         final boolean isPreset = Modes.BROWSER.equals (mode);
@@ -497,7 +507,7 @@ public class ControlView extends ControlOnlyView<SLControlSurface, SLConfigurati
             case ROW_SELECT_3:
                 return isTrackToggles || isFrame || isPreset ? SLControlSurface.MKII_BUTTON_STATE_ON : SLControlSurface.MKII_BUTTON_STATE_OFF;
             case ROW_SELECT_4:
-                return isTrack || isMaster ? SLControlSurface.MKII_BUTTON_STATE_ON : SLControlSurface.MKII_BUTTON_STATE_OFF;
+                return isTrack ? SLControlSurface.MKII_BUTTON_STATE_ON : SLControlSurface.MKII_BUTTON_STATE_OFF;
             case ROW_SELECT_6:
                 return isVolume ? SLControlSurface.MKII_BUTTON_STATE_ON : SLControlSurface.MKII_BUTTON_STATE_OFF;
             case ROW_SELECT_7:

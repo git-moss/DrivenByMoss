@@ -118,40 +118,42 @@ public class DevicePresetsMode extends AbstractMode<SLControlSurface, SLConfigur
     @Override
     public void updateDisplay ()
     {
-        final ITextDisplay d = this.surface.getTextDisplay ();
+        final ITextDisplay d = this.surface.getTextDisplay ().clear ();
 
         if (!this.model.hasSelectedDevice ())
         {
-            d.clearRow (2).done (2).setRow (0, "                       Please select a device...                       ").done (0);
-            return;
-        }
-        final IBrowser browser = this.model.getBrowser ();
-        if (!browser.isActive ())
-        {
-            d.setRow (0, "                     No active Browsing Session.                       ").setRow (2, "                        Press Browse again...                          ");
+            d.setRow (0, "                       Please select a device...                       ");
+            d.done (0).done (1);
             return;
         }
 
-        d.clear ();
+        final IBrowser browser = this.model.getBrowser ();
+        if (!browser.isActive ())
+        {
+            d.setRow (0, "                     No active Browsing Session.                       ");
+            d.setRow (1, "                        Press Browse again...                          ");
+            d.done (0).done (1);
+            return;
+        }
 
         String selectedResult;
         switch (this.selectionMode)
         {
             case DevicePresetsMode.SELECTION_OFF:
                 selectedResult = browser.getSelectedResult ();
-                d.setBlock (0, 0, "Preset:").setBlock (2, 0, selectedResult == null ? "None" : selectedResult);
+                d.setBlock (0, 0, "Preset:").setBlock (1, 0, selectedResult == null ? "None" : selectedResult);
                 for (int i = 0; i < 6; i++)
                 {
                     final IBrowserColumn column = browser.getFilterColumn (i);
                     final String columnName = column.doesExist () ? StringUtils.shortenAndFixASCII (column.getName () + ":", 8) : "";
-                    d.setCell (0, 2 + i, columnName).setCell (2, 2 + i, column.doesCursorExist () ? column.getCursorName () : "");
+                    d.setCell (0, 2 + i, columnName).setCell (1, 2 + i, column.doesCursorExist () ? column.getCursorName () : "");
                 }
                 break;
 
             case DevicePresetsMode.SELECTION_PRESET:
                 final IBrowserColumnItem [] results = browser.getResultColumnItems ();
                 for (int i = 0; i < 16; i++)
-                    d.setCell (i % 2 * 2, i / 2, (results[i].isSelected () ? SLDisplay.RIGHT_ARROW : " ") + results[i].getName ());
+                    d.setCell (i % 2, i / 2, (results[i].isSelected () ? SLDisplay.RIGHT_ARROW : " ") + results[i].getName ());
                 break;
 
             case DevicePresetsMode.SELECTION_FILTER:
@@ -165,7 +167,7 @@ public class DevicePresetsMode extends AbstractMode<SLControlSurface, SLConfigur
                         final String hitStr = "(" + items[i].getHitCount () + ")";
                         text = text.substring (0, 17 - hitStr.length ()) + hitStr;
                     }
-                    d.setCell (i % 2 * 2, i / 2, text);
+                    d.setCell (i % 2, i / 2, text);
                 }
                 break;
 
@@ -173,7 +175,7 @@ public class DevicePresetsMode extends AbstractMode<SLControlSurface, SLConfigur
                 // Not used
                 break;
         }
-        d.allDone ();
+        d.done (0).done (1);
     }
 
 

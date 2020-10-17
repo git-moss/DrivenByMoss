@@ -11,7 +11,6 @@ import de.mossgrabers.framework.controller.display.ITextDisplay;
 import de.mossgrabers.framework.daw.IModel;
 import de.mossgrabers.framework.featuregroup.AbstractMode;
 import de.mossgrabers.framework.featuregroup.ViewManager;
-import de.mossgrabers.framework.utils.ButtonEvent;
 import de.mossgrabers.framework.view.Views;
 
 
@@ -38,23 +37,11 @@ public class ViewSelectMode extends AbstractMode<SLControlSurface, SLConfigurati
     @Override
     public void updateDisplay ()
     {
-        final ITextDisplay d = this.surface.getTextDisplay ();
+        final ITextDisplay d = this.surface.getTextDisplay ().clearRow (0).clearRow (1);
         final ViewManager viewManager = this.surface.getViewManager ();
-        for (int i = 0; i < 2; i++)
-        {
-            d.clearRow (0 + i).setBlock (0 + i, 0, "Select mode:").done (0 + i);
-            d.clearRow (2 + i);
-            d.setCell (2 + i, 0, (viewManager.isActive (Views.CONTROL) ? SLDisplay.RIGHT_ARROW : " ") + "Control");
-            d.setCell (2 + i, 1, " " + (viewManager.isActive (Views.PLAY) ? SLDisplay.RIGHT_ARROW : " ") + "Play");
-            d.done (2 + i);
-        }
-    }
-
-
-    /** {@inheritDoc} */
-    @Override
-    public void onButton (final int row, final int index, final ButtonEvent event)
-    {
-        // Intentionally empty
+        d.setBlock (0, 0, "Select mode:");
+        d.setCell (1, 0, (viewManager.isActive (Views.CONTROL) ? SLDisplay.RIGHT_ARROW : " ") + "Control");
+        d.setCell (1, 1, " " + (viewManager.isActive (Views.PLAY) ? SLDisplay.RIGHT_ARROW : " ") + "Play");
+        d.done (0).done (1);
     }
 }

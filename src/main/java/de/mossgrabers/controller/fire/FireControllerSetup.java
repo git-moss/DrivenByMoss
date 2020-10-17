@@ -550,17 +550,6 @@ public class FireControllerSetup extends AbstractControllerSetup<FireControlSurf
 
 
     /**
-     * Redraw the Fire display.
-     */
-    public void redraw ()
-    {
-        final IMode mode = this.getSurface ().getModeManager ().getActive ();
-        if (mode != null)
-            mode.updateDisplay ();
-    }
-
-
-    /**
      * Called when a new view is selected.
      */
     private void onViewChange ()

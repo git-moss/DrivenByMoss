@@ -8,7 +8,6 @@ import de.mossgrabers.controller.sl.SLConfiguration;
 import de.mossgrabers.controller.sl.controller.SLControlSurface;
 import de.mossgrabers.framework.command.core.AbstractContinuousCommand;
 import de.mossgrabers.framework.daw.IModel;
-import de.mossgrabers.framework.daw.data.IMasterTrack;
 import de.mossgrabers.framework.featuregroup.ModeManager;
 import de.mossgrabers.framework.mode.Modes;
 
@@ -41,14 +40,7 @@ public class FaderCommand extends AbstractContinuousCommand<SLControlSurface, SL
     @Override
     public void execute (final int value)
     {
-        final IMasterTrack masterTrack = this.model.getMasterTrack ();
-        if (masterTrack.isSelected ())
-        {
-            if (this.index == 0)
-                masterTrack.setVolume (value);
-        }
-        else
-            this.model.getCurrentTrackBank ().getItem (this.index).setVolume (value);
+        this.model.getCurrentTrackBank ().getItem (this.index).setVolume (value);
 
         final ModeManager modeManager = this.surface.getModeManager ();
         if (!modeManager.isActive (Modes.VOLUME))

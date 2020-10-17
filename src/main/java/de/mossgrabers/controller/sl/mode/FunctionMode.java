@@ -6,9 +6,9 @@ package de.mossgrabers.controller.sl.mode;
 
 import de.mossgrabers.controller.sl.SLConfiguration;
 import de.mossgrabers.controller.sl.controller.SLControlSurface;
+import de.mossgrabers.framework.controller.display.ITextDisplay;
 import de.mossgrabers.framework.daw.IModel;
 import de.mossgrabers.framework.featuregroup.AbstractMode;
-import de.mossgrabers.framework.utils.ButtonEvent;
 
 
 /**
@@ -34,14 +34,10 @@ public class FunctionMode extends AbstractMode<SLControlSurface, SLConfiguration
     @Override
     public void updateDisplay ()
     {
-        this.surface.getTextDisplay ().setCell (0, 0, "  Undo").setCell (0, 1, "  Redo").setCell (0, 2, " Delete").setCell (0, 3, " Double").setCell (0, 4, "  New").setCell (0, 5, " Window ").setCell (0, 6, "Metronom").setCell (0, 7, "TapTempo").clearRow (2).done (0).done (2);
-    }
-
-
-    /** {@inheritDoc} */
-    @Override
-    public void onButton (final int row, final int index, final ButtonEvent event)
-    {
-        // Intentionally empty
+        final ITextDisplay d = this.surface.getTextDisplay ().clearRow (0).clearRow (1);
+        d.setBlock (0, 0, "Functions:");
+        d.setCell (1, 0, "  Undo").setCell (1, 1, "  Redo").setCell (1, 2, " Delete").setCell (1, 3, " Double");
+        d.setCell (1, 4, "  New").setCell (1, 5, " Window ").setCell (1, 6, "Metronom").setCell (1, 7, "TapTempo");
+        d.done (0).done (1);
     }
 }

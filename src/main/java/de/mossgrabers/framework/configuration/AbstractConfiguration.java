@@ -1059,8 +1059,8 @@ public abstract class AbstractConfiguration implements Configuration
      */
     protected void activateExcludeDeactivatedItemsSetting (final ISettingsUI settingsUI)
     {
-        final IEnumSetting includeMasterSetting = settingsUI.getEnumSetting ("Exclude deactivated items (tracks, sends, devices, layers)", CATEGORY_WORKFLOW, ON_OFF_OPTIONS, ON_OFF_OPTIONS[0]);
-        includeMasterSetting.addValueObserver (value -> {
+        final IEnumSetting excludeDeactivatedItemsSetting = settingsUI.getEnumSetting ("Exclude deactivated items (tracks, sends, devices, layers)", CATEGORY_WORKFLOW, ON_OFF_OPTIONS, ON_OFF_OPTIONS[0]);
+        excludeDeactivatedItemsSetting.addValueObserver (value -> {
             this.excludeDeactivatedItems = ON_OFF_OPTIONS[1].equals (value);
             this.notifyObservers (EXCLUDE_DEACTIVATED_ITEMS);
         });

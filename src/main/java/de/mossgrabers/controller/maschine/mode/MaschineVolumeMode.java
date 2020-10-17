@@ -34,7 +34,7 @@ public class MaschineVolumeMode extends VolumeMode<MaschineControlSurface, Masch
      */
     public MaschineVolumeMode (final MaschineControlSurface surface, final IModel model)
     {
-        super (surface, model, false);
+        super (surface, model, false, surface.getMaschine ().hasMCUDisplay () ? DEFAULT_KNOB_IDS : null);
 
         this.isKnobTouched = new boolean [9];
         Arrays.fill (this.isKnobTouched, false);

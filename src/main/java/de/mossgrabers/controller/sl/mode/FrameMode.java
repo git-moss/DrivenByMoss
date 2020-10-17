@@ -96,12 +96,10 @@ public class FrameMode extends AbstractMode<SLControlSurface, SLConfiguration>
     @Override
     public void updateDisplay ()
     {
-        final ITextDisplay d = this.surface.getTextDisplay ();
-
-        d.clear ().setBlock (0, 0, "Layouts:").setCell (0, 3, "Panels:");
-
+        final ITextDisplay d = this.surface.getTextDisplay ().clearRow (0).clearRow (1);
+        d.setBlock (0, 0, "Layouts:").setCell (0, 3, "Panels:");
         for (int i = 0; i < COMMANDS.length; i++)
-            d.setCell (2, i, COMMANDS[i]);
-        d.done (0).done (2);
+            d.setCell (1, i, COMMANDS[i]);
+        d.done (0).done (1);
     }
 }

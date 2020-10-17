@@ -8,7 +8,7 @@ import de.mossgrabers.controller.sl.SLConfiguration;
 import de.mossgrabers.controller.sl.command.trigger.ButtonRowSelectCommand;
 import de.mossgrabers.controller.sl.command.trigger.P2ButtonCommand;
 import de.mossgrabers.controller.sl.controller.SLControlSurface;
-import de.mossgrabers.controller.sl.mode.device.DeviceParamsMode;
+import de.mossgrabers.controller.sl.mode.device.SLParameterMode;
 import de.mossgrabers.framework.controller.ButtonID;
 import de.mossgrabers.framework.daw.IModel;
 import de.mossgrabers.framework.daw.INoteClip;
@@ -237,7 +237,7 @@ public class PlayView extends AbstractSequencerView<SLControlSurface, SLConfigur
             return;
         }
 
-        if (Modes.TRACK.equals (activeModeId) || Modes.MASTER.equals (activeModeId))
+        if (Modes.TRACK.equals (activeModeId))
         {
             new ButtonRowSelectCommand<> (3, this.model, this.surface).execute (ButtonEvent.DOWN, 127);
             return;
@@ -246,11 +246,11 @@ public class PlayView extends AbstractSequencerView<SLControlSurface, SLConfigur
         if (Modes.PLAY_OPTIONS.equals (activeModeId))
             return;
 
-        final DeviceParamsMode mode = (DeviceParamsMode) this.surface.getModeManager ().get (Modes.DEVICE_PARAMS);
+        final SLParameterMode mode = (SLParameterMode) this.surface.getModeManager ().get (Modes.DEVICE_PARAMS);
         if (isUp)
-            mode.nextPage ();
+            mode.selectNextItemPage ();
         else
-            mode.previousPage ();
+            mode.selectPreviousItemPage ();
     }
 
 
@@ -268,19 +268,41 @@ public class PlayView extends AbstractSequencerView<SLControlSurface, SLConfigur
         if (buttonIDOrdinal >= ButtonID.ROW2_1.ordinal () && buttonIDOrdinal <= ButtonID.ROW2_8.ordinal ())
             return SLControlSurface.MKII_BUTTON_STATE_OFF;
 
+        final Modes mode = this.surface.getModeManager ().getActiveID ();
+        final boolean isSession = Modes.SESSION == mode;
+        final boolean isDevice = Modes.DEVICE_PARAMS == mode;
+        final boolean isPlayOptions = Modes.PLAY_OPTIONS == mode;
+        final boolean isTrack = Modes.TRACK == mode;
+        final boolean isVolume = Modes.VOLUME == mode;
+        switch (buttonID)
+        {
+            case ROW_SELECT_1:
+                return isSession ? SLControlSurface.MKII_BUTTON_STATE_ON : SLControlSurface.MKII_BUTTON_STATE_OFF;
+            case ROW_SELECT_2:
+                return isDevice ? SLControlSurface.MKII_BUTTON_STATE_ON : SLControlSurface.MKII_BUTTON_STATE_OFF;
+            case ROW_SELECT_3:
+                return isPlayOptions ? SLControlSurface.MKII_BUTTON_STATE_ON : SLControlSurface.MKII_BUTTON_STATE_OFF;
+            case ROW_SELECT_4:
+                return isTrack ? SLControlSurface.MKII_BUTTON_STATE_ON : SLControlSurface.MKII_BUTTON_STATE_OFF;
+            case ROW_SELECT_5:
+                return SLControlSurface.MKII_BUTTON_STATE_OFF;
+            case ROW_SELECT_6:
+                return isVolume ? SLControlSurface.MKII_BUTTON_STATE_ON : SLControlSurface.MKII_BUTTON_STATE_OFF;
+            case ROW_SELECT_7:
+            case ROW_SELECT_8:
+                return SLControlSurface.MKII_BUTTON_STATE_OFF;
+
+            default:
+                // Fall through
+                break;
+        }
+
         // Transport buttons
         if (this.surface.isTransportActive ())
         {
             if (buttonIDOrdinal >= ButtonID.ROW3_1.ordinal () && buttonIDOrdinal <= ButtonID.ROW3_8.ordinal ())
                 return SLControlSurface.MKII_BUTTON_STATE_OFF;
 
-            final Modes mode = this.surface.getModeManager ().getActiveID ();
-            final boolean isSession = Modes.SESSION == mode;
-            final boolean isDevice = Modes.DEVICE_PARAMS == mode;
-            final boolean isPlayOptions = Modes.PLAY_OPTIONS == mode;
-            final boolean isTrack = Modes.TRACK == mode;
-            final boolean isMaster = Modes.MASTER == mode;
-            final boolean isVolume = Modes.VOLUME == mode;
             final ITransport transport = this.model.getTransport ();
 
             switch (buttonID)
@@ -293,19 +315,6 @@ public class PlayView extends AbstractSequencerView<SLControlSurface, SLConfigur
                     return transport.isLoop () ? SLControlSurface.MKII_BUTTON_STATE_ON : SLControlSurface.MKII_BUTTON_STATE_OFF;
                 case ROW4_6:
                     return transport.isRecording () ? SLControlSurface.MKII_BUTTON_STATE_ON : SLControlSurface.MKII_BUTTON_STATE_OFF;
-
-                case ROW_SELECT_1:
-                    return isSession ? SLControlSurface.MKII_BUTTON_STATE_ON : SLControlSurface.MKII_BUTTON_STATE_OFF;
-                case ROW_SELECT_2:
-                    return isDevice ? SLControlSurface.MKII_BUTTON_STATE_ON : SLControlSurface.MKII_BUTTON_STATE_OFF;
-                case ROW_SELECT_3:
-                    return isPlayOptions ? SLControlSurface.MKII_BUTTON_STATE_ON : SLControlSurface.MKII_BUTTON_STATE_OFF;
-                case ROW_SELECT_4:
-                    return isTrack || isMaster ? SLControlSurface.MKII_BUTTON_STATE_ON : SLControlSurface.MKII_BUTTON_STATE_OFF;
-                case ROW_SELECT_6:
-                    return isVolume ? SLControlSurface.MKII_BUTTON_STATE_ON : SLControlSurface.MKII_BUTTON_STATE_OFF;
-                case ROW_SELECT_7:
-                    return SLControlSurface.MKII_BUTTON_STATE_OFF;
 
                 default:
                     return 0;

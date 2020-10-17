@@ -12,7 +12,10 @@ import de.mossgrabers.framework.daw.data.ICursorDevice;
 import de.mossgrabers.framework.daw.data.IParameter;
 import de.mossgrabers.framework.daw.data.bank.IParameterBank;
 import de.mossgrabers.framework.mode.device.SelectedDeviceMode;
+import de.mossgrabers.framework.parameterprovider.BankParameterProvider;
 import de.mossgrabers.framework.utils.StringUtils;
+
+import java.util.Arrays;
 
 
 /**
@@ -30,7 +33,13 @@ public class MaschineParametersMode extends SelectedDeviceMode<MaschineControlSu
      */
     public MaschineParametersMode (final MaschineControlSurface surface, final IModel model)
     {
-        super (surface, model, null);
+        super (surface, model, surface.getMaschine ().hasMCUDisplay () ? DEFAULT_KNOB_IDS : null);
+
+        if (surface.getMaschine ().hasMCUDisplay ())
+            this.setParameters (new BankParameterProvider ((IParameterBank) this.bank));
+
+        this.isKnobTouched = new boolean [9];
+        Arrays.fill (this.isKnobTouched, false);
     }
 
 
@@ -59,6 +68,17 @@ public class MaschineParametersMode extends SelectedDeviceMode<MaschineControlSu
         }
 
         d.allDone ();
+    }
+
+
+    /** {@inheritDoc} */
+    @Override
+    public void onKnobTouch (final int index, final boolean isTouched)
+    {
+        this.isKnobTouched[index] = isTouched;
+
+        if (index < 8)
+            super.onKnobTouch (index, isTouched);
     }
 
 

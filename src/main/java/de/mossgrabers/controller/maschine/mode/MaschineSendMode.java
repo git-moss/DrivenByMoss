@@ -33,7 +33,7 @@ public class MaschineSendMode extends SendMode<MaschineControlSurface, MaschineC
      */
     public MaschineSendMode (final int sendIndex, final MaschineControlSurface surface, final IModel model)
     {
-        super (sendIndex, surface, model, false);
+        super (sendIndex, surface, model, false, surface.getMaschine ().hasMCUDisplay () ? DEFAULT_KNOB_IDS : null);
 
         this.isKnobTouched = new boolean [9];
         Arrays.fill (this.isKnobTouched, false);

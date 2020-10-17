@@ -176,7 +176,7 @@ public class MaschineControllerSetup extends AbstractControllerSetup<MaschineCon
         ms.setNumDevicesInBank (16);
         ms.setNumScenes (16);
         ms.setNumSends (8);
-        ms.setNumParams (16);
+        ms.setNumParams (8);
         this.model = this.factory.createModel (this.colorManager, this.valueChanger, this.scales, ms);
 
         final ITrackBank trackBank = this.model.getTrackBank ();

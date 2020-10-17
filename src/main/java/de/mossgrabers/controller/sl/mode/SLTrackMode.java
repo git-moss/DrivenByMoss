@@ -6,13 +6,13 @@ package de.mossgrabers.controller.sl.mode;
 
 import de.mossgrabers.controller.sl.SLConfiguration;
 import de.mossgrabers.controller.sl.controller.SLControlSurface;
+import de.mossgrabers.framework.controller.ContinuousID;
 import de.mossgrabers.framework.controller.display.ITextDisplay;
 import de.mossgrabers.framework.daw.IModel;
 import de.mossgrabers.framework.daw.data.ISend;
 import de.mossgrabers.framework.daw.data.ITrack;
 import de.mossgrabers.framework.daw.data.bank.ISendBank;
-import de.mossgrabers.framework.mode.track.AbstractTrackMode;
-import de.mossgrabers.framework.utils.ButtonEvent;
+import de.mossgrabers.framework.mode.track.TrackMode;
 
 
 /**
@@ -20,7 +20,7 @@ import de.mossgrabers.framework.utils.ButtonEvent;
  *
  * @author J&uuml;rgen Mo&szlig;graber
  */
-public class TrackMode extends AbstractTrackMode<SLControlSurface, SLConfiguration>
+public class SLTrackMode extends TrackMode<SLControlSurface, SLConfiguration>
 {
     /**
      * Constructor.
@@ -28,9 +28,9 @@ public class TrackMode extends AbstractTrackMode<SLControlSurface, SLConfigurati
      * @param surface The surface
      * @param model The model
      */
-    public TrackMode (final SLControlSurface surface, final IModel model)
+    public SLTrackMode (final SLControlSurface surface, final IModel model)
     {
-        super ("Track", surface, model, true);
+        super (surface, model, true, ContinuousID.createSequentialList (ContinuousID.KNOB1, 8));
     }
 
 
@@ -39,37 +39,49 @@ public class TrackMode extends AbstractTrackMode<SLControlSurface, SLConfigurati
     public void updateDisplay ()
     {
         final ITrack t = this.model.getSelectedTrack ();
-        final ITextDisplay d = this.surface.getTextDisplay ().clearRow (0).clearRow (2);
+        final ITextDisplay d = this.surface.getTextDisplay ().clearRow (0).clearRow (1);
 
         if (t == null)
         {
-            d.setRow (0, "                        Please select a track...                       ").done (0).done (2);
+            d.setRow (0, "                        Please select a track...                       ").done (0).done (1);
             return;
         }
 
-        d.setCell (0, 0, "Volume").setCell (2, 0, t.getVolumeStr (8)).setCell (0, 1, "Pan").setCell (2, 1, t.getPanStr (8));
+        d.setCell (0, 0, "Volume").setCell (1, 0, t.getVolumeStr (8)).setCell (0, 1, "Pan").setCell (1, 1, t.getPanStr (8));
 
         final int sendStart = 2;
         final int sendCount = 6;
         int pos;
+
         final ISendBank sendBank = t.getSendBank ();
-        if (!this.model.isEffectTrackBankActive () && sendBank.getPageSize () > 0)
+        if (sendBank.getPageSize () > 0)
         {
             for (int i = 0; i < sendCount; i++)
             {
                 pos = sendStart + i;
                 final ISend send = sendBank.getItem (i);
-                d.setCell (0, pos, send.getName (8)).setCell (2, pos, send.getDisplayedValue (8));
+                if (send.doesExist ())
+                    d.setCell (0, pos, send.getName (8)).setCell (1, pos, send.getDisplayedValue (8));
             }
         }
-        d.done (0).done (2);
+        d.done (0).done (1);
     }
 
 
     /** {@inheritDoc} */
     @Override
-    public void onButton (final int row, final int index, final ButtonEvent event)
+    public void onActivate ()
     {
-        // Intentionally empty
+        // Only bind once to knobs!
+        if (!this.isActive)
+            super.onActivate ();
+    }
+
+
+    /** {@inheritDoc} */
+    @Override
+    public void onDeactivate ()
+    {
+        // Never deactivate
     }
 }

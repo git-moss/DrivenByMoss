@@ -67,7 +67,7 @@ public class MainKnobRowModeCommand extends KnobRowModeCommand<MaschineControlSu
 
         if (this.surface.isPressed (ButtonID.ACCENT))
         {
-            final int speed = (int) this.model.getValueChanger ().calcKnobChange (value, -100);
+            final int speed = this.model.getValueChanger ().decode (value);
             this.surface.setTriggerConsumed (ButtonID.ACCENT);
 
             final MaschineConfiguration configuration = this.surface.getConfiguration ();
@@ -83,7 +83,7 @@ public class MainKnobRowModeCommand extends KnobRowModeCommand<MaschineControlSu
 
     private void switchPage (final ButtonID buttonID, final IBank<?> bank, final int value)
     {
-        final int speed = (int) this.model.getValueChanger ().calcKnobChange (value, -100);
+        final int speed = this.model.getValueChanger ().decode (value);
         this.surface.setTriggerConsumed (buttonID);
         if (speed < 0)
             bank.selectPreviousPage ();

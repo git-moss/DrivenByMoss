@@ -32,6 +32,7 @@ public class P2ButtonCommand extends AbstractTriggerCommand<SLControlSurface, SL
     public P2ButtonCommand (final boolean isUp, final IModel model, final SLControlSurface surface)
     {
         super (model, surface);
+
         this.isUp = isUp;
     }
 

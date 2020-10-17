@@ -13,7 +13,9 @@ import de.mossgrabers.framework.utils.StringUtils;
 
 
 /**
- * The SLs display.
+ * The SLs display. The MkII has only 1 display but is addressed the same as the 2 displays on the
+ * MkI. The content is displayed in the display 1 depending if a mode button is active on the left
+ * or the right.
  *
  * @author J&uuml;rgen Mo&szlig;graber
  */
@@ -22,12 +24,20 @@ public class SLDisplay extends AbstractTextDisplay
     /** The right arrow. */
     public static final String   RIGHT_ARROW = ">";
 
+    private static final int []  ROW_MAP     =
+    {
+        0,
+        2,
+        1,
+        3
+    };
+
     private final IHwTextDisplay hwTextDisplay1;
     private final IHwTextDisplay hwTextDisplay2;
 
 
     /**
-     * Constructor. 2 rows (0-1) with 4 blocks (0-3). Each block consists of 18 characters or 2
+     * Constructor. 4 rows (0-1) with 4 blocks (0-3). Each block consists of 18 characters or 2
      * cells (0-8).
      *
      * @param host The host
@@ -51,9 +61,9 @@ public class SLDisplay extends AbstractTextDisplay
         if (row == 0)
             this.hwTextDisplay1.setLine (0, this.convertCharacterset (text));
         else if (row == 1)
-            this.hwTextDisplay2.setLine (0, this.convertCharacterset (text));
-        else if (row == 2)
             this.hwTextDisplay1.setLine (1, this.convertCharacterset (text));
+        else if (row == 2)
+            this.hwTextDisplay2.setLine (0, this.convertCharacterset (text));
         else if (row == 3)
             this.hwTextDisplay2.setLine (1, this.convertCharacterset (text));
 
@@ -113,7 +123,7 @@ public class SLDisplay extends AbstractTextDisplay
         final int [] array = new int [length];
         for (int i = 0; i < length; i++)
             array[i] = text.charAt (i);
-        this.output.sendSysex (SLControlSurface.SYSEX_HEADER + "02 01 00 " + uint7ToHex (row + 1) + "04 " + StringUtils.toHexStr (array) + "00 F7");
+        this.output.sendSysex (SLControlSurface.SYSEX_HEADER + "02 01 00 " + uint7ToHex (ROW_MAP[row] + 1) + "04 " + StringUtils.toHexStr (array) + "00 F7");
     }
 
 

@@ -53,7 +53,7 @@ public class FireTrackMode extends TrackMode<FireControlSurface, FireConfigurati
      */
     public FireTrackMode (final FireControlSurface surface, final IModel model)
     {
-        super ("Mixer", surface, model, false);
+        super ("Mixer", surface, model, false, null);
 
         this.setControls (ContinuousID.createSequentialList (ContinuousID.KNOB1, 4));
 

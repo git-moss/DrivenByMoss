@@ -11,7 +11,6 @@ import de.mossgrabers.framework.daw.IModel;
 import de.mossgrabers.framework.daw.data.IScene;
 import de.mossgrabers.framework.daw.data.bank.ISceneBank;
 import de.mossgrabers.framework.featuregroup.AbstractMode;
-import de.mossgrabers.framework.utils.ButtonEvent;
 import de.mossgrabers.framework.utils.StringUtils;
 
 
@@ -38,22 +37,14 @@ public class SessionMode extends AbstractMode<SLControlSurface, SLConfiguration>
     @Override
     public void updateDisplay ()
     {
-        final ITextDisplay d = this.surface.getTextDisplay ();
+        final ITextDisplay d = this.surface.getTextDisplay ().clearRow (0).clearRow (1);
         final ISceneBank sceneBank = this.model.getSceneBank ();
         for (int i = 0; i < 8; i++)
         {
             final IScene scene = sceneBank.getItem (i);
             final String name = StringUtils.fixASCII (scene.getName ());
-            d.setCell (2, i, name.isEmpty () ? "Scene " + (i + 1) : name);
+            d.setCell (1, i, name.isEmpty () ? "Scene " + (i + 1) : name);
         }
-        d.clearRow (0).done (0).done (2);
-    }
-
-
-    /** {@inheritDoc} */
-    @Override
-    public void onButton (final int row, final int index, final ButtonEvent event)
-    {
-        // Intentionally empty
+        d.done (0).done (1);
     }
 }

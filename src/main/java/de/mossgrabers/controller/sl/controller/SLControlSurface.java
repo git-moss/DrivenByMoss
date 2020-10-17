@@ -108,6 +108,7 @@ public class SLControlSurface extends AbstractControlSurface<SLConfiguration>
 
     public static final int     MKI_BUTTON_TAP_TEMPO       = 94;
     public static final int     MKI_BUTTON_TAP_TEMPO_VALUE = 95;
+    public static final int     MKI_CC_OFF_ONLINE_MESSAGE  = 107;
 
     public static final int     MKII_BUTTON_STATE_OFF      = 0;
     public static final int     MKII_BUTTON_STATE_ON       = 1;
@@ -119,6 +120,7 @@ public class SLControlSurface extends AbstractControlSurface<SLConfiguration>
     private boolean             isMkII;
     private boolean             isTransportActive;
     private int                 lastCC94Value;
+    private boolean             isDAWConnected             = false;
 
 
     /**
@@ -144,9 +146,17 @@ public class SLControlSurface extends AbstractControlSurface<SLConfiguration>
         final IHwTextDisplay hwTextDisplay1 = this.surfaceFactory.createTextDisplay (this.surfaceID, OutputID.DISPLAY1, 2);
         final IHwTextDisplay hwTextDisplay2 = this.surfaceFactory.createTextDisplay (this.surfaceID, OutputID.DISPLAY2, 2);
         this.textDisplays.add (new SLDisplay (host, output, hwTextDisplay1, hwTextDisplay2));
+    }
 
+
+    /**
+     * Send the necessary startup sequences to the device.
+     */
+    public void sendStartup ()
+    {
         // Switch to Ableton Automap mode
         this.output.sendSysex (SYSEX_AUTOMAP_ON);
+
         this.turnOffTriggers ();
 
         // Disable transport mode
@@ -229,4 +239,27 @@ public class SLControlSurface extends AbstractControlSurface<SLConfiguration>
     {
         this.lastCC94Value = lastCC94Value;
     }
+
+
+    /**
+     * True if the DAW is online.
+     *
+     * @return True if the DAW is online.
+     */
+    public boolean isDAWConnected ()
+    {
+        return this.isDAWConnected;
+    }
+
+
+    /**
+     * Set if the DAW is online.
+     *
+     * @param isDAWConnected True to set the online state
+     */
+    public void setDAWConnected (final boolean isDAWConnected)
+    {
+        this.isDAWConnected = isDAWConnected;
+    }
+
 }

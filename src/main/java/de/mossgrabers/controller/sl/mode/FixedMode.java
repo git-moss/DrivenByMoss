@@ -10,7 +10,6 @@ import de.mossgrabers.controller.sl.controller.SLDisplay;
 import de.mossgrabers.framework.controller.display.ITextDisplay;
 import de.mossgrabers.framework.daw.IModel;
 import de.mossgrabers.framework.featuregroup.AbstractMode;
-import de.mossgrabers.framework.utils.ButtonEvent;
 
 
 /**
@@ -49,17 +48,11 @@ public class FixedMode extends AbstractMode<SLControlSurface, SLConfiguration>
     @Override
     public void updateDisplay ()
     {
-        final ITextDisplay d = this.surface.getTextDisplay ().clearRow (0).setBlock (0, 0, "New Clip Length:").done (0);
+        final ITextDisplay d = this.surface.getTextDisplay ().clearRow (0).clearRow (1);
+        d.setBlock (0, 0, "New Clip Length:");
+        final int newClipLength = this.surface.getConfiguration ().getNewClipLength ();
         for (int i = 0; i < 8; i++)
-            d.setCell (2, i, (this.surface.getConfiguration ().getNewClipLength () == i ? SLDisplay.RIGHT_ARROW : " ") + FixedMode.CLIP_LENGTHS[i]);
-        d.done (2);
-    }
-
-
-    /** {@inheritDoc} */
-    @Override
-    public void onButton (final int row, final int index, final ButtonEvent event)
-    {
-        // Intentionally empty
+            d.setCell (1, i, (newClipLength == i ? SLDisplay.RIGHT_ARROW : " ") + FixedMode.CLIP_LENGTHS[i]);
+        d.done (0).done (1);
     }
 }
