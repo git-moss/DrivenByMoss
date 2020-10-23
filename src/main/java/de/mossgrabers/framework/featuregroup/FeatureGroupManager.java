@@ -86,7 +86,7 @@ public class FeatureGroupManager<E extends Enum<E>, F extends IFeatureGroup>
 
     /**
      * Check if the currently active feature group is temporary.
-     * 
+     *
      * @return True if temporary
      */
     public boolean isTemporary ()

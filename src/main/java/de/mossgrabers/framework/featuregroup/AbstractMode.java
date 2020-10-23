@@ -8,6 +8,7 @@ import de.mossgrabers.framework.configuration.Configuration;
 import de.mossgrabers.framework.controller.ButtonID;
 import de.mossgrabers.framework.controller.ContinuousID;
 import de.mossgrabers.framework.controller.IControlSurface;
+import de.mossgrabers.framework.controller.hardware.IHwButton;
 import de.mossgrabers.framework.daw.IModel;
 import de.mossgrabers.framework.daw.data.IItem;
 import de.mossgrabers.framework.daw.data.IParameter;
@@ -19,7 +20,10 @@ import de.mossgrabers.framework.utils.FrameworkException;
 
 import java.util.Arrays;
 import java.util.Collections;
+import java.util.EnumMap;
 import java.util.List;
+import java.util.Map;
+import java.util.Map.Entry;
 
 
 /**
@@ -33,21 +37,22 @@ import java.util.List;
 public abstract class AbstractMode<S extends IControlSurface<C>, C extends Configuration> extends AbstractFeatureGroup<S, C> implements IMode, IParametersAdjustObserver
 {
     /** Color identifier for a mode button which is hilighted. */
-    public static final String             BUTTON_COLOR_HI  = "BUTTON_COLOR_HI";
+    public static final String                  BUTTON_COLOR_HI    = "BUTTON_COLOR_HI";
     /** Color identifier for a mode button which is on (second row). */
-    public static final String             BUTTON_COLOR2_ON = "BUTTON_COLOR2_ON";
+    public static final String                  BUTTON_COLOR2_ON   = "BUTTON_COLOR2_ON";
     /** Color identifier for a mode button which is hilighted (second row). */
-    public static final String             BUTTON_COLOR2_HI = "BUTTON_COLOR2_HI";
+    public static final String                  BUTTON_COLOR2_HI   = "BUTTON_COLOR2_HI";
 
     /** Default knobs 1 to 8. **/
-    public static final List<ContinuousID> DEFAULT_KNOB_IDS = ContinuousID.createSequentialList (ContinuousID.KNOB1, 8);
+    public static final List<ContinuousID>      DEFAULT_KNOB_IDS   = ContinuousID.createSequentialList (ContinuousID.KNOB1, 8);
 
-    protected IParameterProvider           parameterProvider;
-    protected IBank<? extends IItem>       bank;
-    protected List<ContinuousID>           controls;
-    protected boolean                      isAbsolute;
-    protected boolean                      isActive;
-    protected boolean []                   isKnobTouched;
+    protected IParameterProvider                defaultParameterProvider;
+    protected Map<ButtonID, IParameterProvider> parameterProviders = new EnumMap<> (ButtonID.class);
+    protected IBank<? extends IItem>            bank;
+    protected List<ContinuousID>                controls;
+    protected boolean                           isAbsolute;
+    protected boolean                           isActive;
+    protected boolean []                        isKnobTouched;
 
 
     /**
@@ -131,10 +136,34 @@ public abstract class AbstractMode<S extends IControlSurface<C>, C extends Confi
      */
     protected void setParameters (final IParameterProvider parameterProvider)
     {
+        this.setParameters (null, parameterProvider);
+    }
+
+
+    /**
+     * Set the parameters controlled by this mode if used with the given button combination.
+     *
+     * @param buttonID The ID of the button which can activate the given parameters
+     *
+     * @param parameterProvider Interface to get a number of parameters
+     */
+    protected void setParameters (final ButtonID buttonID, final IParameterProvider parameterProvider)
+    {
         if (this.controls.size () != parameterProvider.size ())
             throw new FrameworkException ("Number of knobs must match the number of parameters!");
 
-        this.parameterProvider = parameterProvider;
+        if (buttonID == null)
+        {
+            this.defaultParameterProvider = parameterProvider;
+            return;
+        }
+
+        final IHwButton button = this.surface.getButton (buttonID);
+        if (button == null)
+            throw new FrameworkException ("Attempt to set parameters for non-existing button " + buttonID + "!");
+        this.parameterProviders.put (buttonID, parameterProvider);
+        button.addEventHandler (ButtonEvent.DOWN, event -> this.bindControls ());
+        button.addEventHandler (ButtonEvent.UP, event -> this.bindControls ());
     }
 
 
@@ -144,9 +173,9 @@ public abstract class AbstractMode<S extends IControlSurface<C>, C extends Confi
     {
         this.isActive = true;
 
-        if (this.parameterProvider == null)
+        if (this.defaultParameterProvider == null)
             return;
-        this.parameterProvider.addParametersObserver (this);
+        this.defaultParameterProvider.addParametersObserver (this);
         this.bindControls ();
     }
 
@@ -157,9 +186,9 @@ public abstract class AbstractMode<S extends IControlSurface<C>, C extends Confi
     {
         this.isActive = false;
 
-        if (this.parameterProvider == null)
+        if (this.defaultParameterProvider == null)
             return;
-        this.parameterProvider.removeParametersObserver (this);
+        this.defaultParameterProvider.removeParametersObserver (this);
         this.unbindControls ();
     }
 
@@ -418,11 +447,18 @@ public abstract class AbstractMode<S extends IControlSurface<C>, C extends Confi
      */
     protected void bindControls ()
     {
-        if (!this.isActive || this.parameterProvider == null)
+        if (!this.isActive || this.defaultParameterProvider == null)
             return;
 
-        for (int i = 0; i < this.parameterProvider.size (); i++)
-            this.surface.getContinuous (this.controls.get (i)).bind (this.parameterProvider.get (i));
+        IParameterProvider parameterProvider = this.defaultParameterProvider;
+        for (final Entry<ButtonID, IParameterProvider> entry: this.parameterProviders.entrySet ())
+        {
+            if (this.surface.isPressed (entry.getKey ()))
+                parameterProvider = entry.getValue ();
+        }
+
+        for (int i = 0; i < this.controls.size (); i++)
+            this.surface.getContinuous (this.controls.get (i)).bind (parameterProvider.get (i));
     }
 
 
@@ -431,10 +467,10 @@ public abstract class AbstractMode<S extends IControlSurface<C>, C extends Confi
      */
     private void unbindControls ()
     {
-        if (this.parameterProvider == null)
+        if (this.defaultParameterProvider == null)
             return;
 
-        for (int i = 0; i < this.parameterProvider.size (); i++)
-            this.surface.getContinuous (this.controls.get (i)).bind ((IParameter) null);
+        for (final ContinuousID controlID: this.controls)
+            this.surface.getContinuous (controlID).bind ((IParameter) null);
     }
 }

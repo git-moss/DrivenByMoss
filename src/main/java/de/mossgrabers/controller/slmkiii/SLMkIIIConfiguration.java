@@ -50,6 +50,7 @@ public class SLMkIIIConfiguration extends AbstractConfiguration
 
         this.activateScaleBaseSetting (documentSettings);
         this.activateScaleSetting (documentSettings);
+        this.activateScaleInScaleSetting (documentSettings);
 
         ///////////////////////////
         // Workflow

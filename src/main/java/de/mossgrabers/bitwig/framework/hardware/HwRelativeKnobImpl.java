@@ -34,6 +34,7 @@ public class HwRelativeKnobImpl extends AbstractHwContinuousControl implements I
     private final ControllerHost           controllerHost;
     private final RelativeEncoding         encoding;
     private RelativeHardwarControlBindable defaultAction;
+    private RelativeHardwarControlBindable defaultSimpleParameterAction;
     private RelativeHardwareControlBinding binding;
 
     private ParameterImpl                  parameterImpl;
@@ -107,7 +108,14 @@ public class HwRelativeKnobImpl extends AbstractHwContinuousControl implements I
                 HwUtils.enableObservers (true, this.hardwareKnob, this.parameterImpl);
             }
             else
+            {
+                // TODO release / map / does this need to be created on startup / whatr if trhere
+                // are multiple?
+                // this.defaultSimpleParameterAction =
+                // this.controllerHost.createRelativeHardwareControlAdjustmentTarget
+                // (this::handleSimpleParameterValue);
                 target = null;
+            }
         }
 
         this.binding = target == null ? null : this.hardwareKnob.setBinding (target);

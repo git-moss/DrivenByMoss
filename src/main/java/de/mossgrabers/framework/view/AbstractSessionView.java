@@ -307,7 +307,7 @@ public abstract class AbstractSessionView<S extends IControlSurface<C>, C extend
 
     /**
      * Draw a session grid, where each pad stands for a clip.
-     * 
+     *
      * @param ignoreFlipCheck True to ignore the check for same columns and rows
      */
     protected void drawSessionGrid (final boolean ignoreFlipCheck)

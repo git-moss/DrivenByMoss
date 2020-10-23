@@ -49,6 +49,6 @@ public class TrackModeCommand extends AbstractTriggerCommand<SLMkIIIControlSurfa
         if (browser != null && browser.isActive ())
             browser.stopBrowsing (!this.surface.isShiftPressed ());
 
-        this.modeSelectCommand.execute (ButtonEvent.DOWN, 127);
+        this.modeSelectCommand.execute (ButtonEvent.UP, 127);
     }
 }

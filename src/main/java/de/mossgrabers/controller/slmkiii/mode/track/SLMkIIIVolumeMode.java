@@ -18,7 +18,7 @@ import de.mossgrabers.framework.utils.StringUtils;
  *
  * @author J&uuml;rgen Mo&szlig;graber
  */
-public class VolumeMode extends AbstractTrackMode
+public class SLMkIIIVolumeMode extends AbstractTrackMode
 {
     /**
      * Constructor.
@@ -26,7 +26,7 @@ public class VolumeMode extends AbstractTrackMode
      * @param surface The control surface
      * @param model The model
      */
-    public VolumeMode (final SLMkIIIControlSurface surface, final IModel model)
+    public SLMkIIIVolumeMode (final SLMkIIIControlSurface surface, final IModel model)
     {
         super ("Volume", surface, model);
     }

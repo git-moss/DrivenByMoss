@@ -21,6 +21,7 @@ import de.mossgrabers.framework.featuregroup.ModeManager;
 import de.mossgrabers.framework.featuregroup.ViewManager;
 import de.mossgrabers.framework.mode.Modes;
 import de.mossgrabers.framework.utils.ButtonEvent;
+import de.mossgrabers.framework.utils.Pair;
 import de.mossgrabers.framework.view.AbstractSessionView;
 import de.mossgrabers.framework.view.SessionColor;
 import de.mossgrabers.framework.view.Views;
@@ -66,10 +67,9 @@ public class SessionView extends AbstractSessionView<LaunchpadControlSurface, La
     @Override
     public void onGridNote (final int note, final int velocity)
     {
-        final boolean controlModeIsOff = this.isControlModeOff ();
-
         // Block 1st row if mode is active
         final boolean isNotRow1 = note >= 44;
+        final boolean controlModeIsOff = this.isControlModeOff ();
         if (controlModeIsOff || isNotRow1)
         {
             if (this.isBirdsEyeActive ())
@@ -86,6 +86,29 @@ public class SessionView extends AbstractSessionView<LaunchpadControlSurface, La
 
         if (velocity != 0)
             this.handleFirstRowModes (note);
+    }
+
+
+    /** {@inheritDoc} */
+    @Override
+    public void onGridNoteLongPress (final int note)
+    {
+        // Block 1st row if mode is active
+        final boolean isNotRow1 = note >= 44;
+        final boolean controlModeIsOff = this.isControlModeOff ();
+        if (controlModeIsOff || isNotRow1)
+        {
+            final int n = note - (controlModeIsOff ? 0 : 8);
+
+            // Cannot call the super method here since the setConsumed would store the wrong button
+            final Pair<Integer, Integer> padPos = this.getPad (n);
+            final ITrack track = this.model.getCurrentTrackBank ().getItem (padPos.getKey ().intValue ());
+            final ISlot slot = track.getSlotBank ().getItem (padPos.getValue ().intValue ());
+            slot.select ();
+
+            final int index = note - 36;
+            this.surface.getButton (ButtonID.get (ButtonID.PAD1, index)).setConsumed ();
+        }
     }
 
 

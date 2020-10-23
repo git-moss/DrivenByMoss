@@ -106,7 +106,7 @@ public class SLMkIIIColorManager extends ColorManager
         this.registerColorIndex (Scales.SCALE_COLOR_OFF, SLMKIII_BLACK);
         this.registerColorIndex (Scales.SCALE_COLOR_OCTAVE, SLMKIII_BLUE);
         this.registerColorIndex (Scales.SCALE_COLOR_NOTE, SLMKIII_WHITE);
-        this.registerColorIndex (Scales.SCALE_COLOR_OUT_OF_SCALE, SLMKIII_BLACK);
+        this.registerColorIndex (Scales.SCALE_COLOR_OUT_OF_SCALE, SLMKIII_DARK_GREY);
 
         this.registerColorIndex (AbstractFeatureGroup.BUTTON_COLOR_OFF, SLMKIII_BLACK);
         this.registerColorIndex (AbstractFeatureGroup.BUTTON_COLOR_ON, SLMKIII_WHITE);

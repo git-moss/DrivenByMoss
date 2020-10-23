@@ -13,6 +13,7 @@ import de.mossgrabers.controller.mcu.command.trigger.GrooveCommand;
 import de.mossgrabers.controller.mcu.command.trigger.KeyCommand;
 import de.mossgrabers.controller.mcu.command.trigger.KeyCommand.Key;
 import de.mossgrabers.controller.mcu.command.trigger.MCUCursorCommand;
+import de.mossgrabers.controller.mcu.command.trigger.MCUMoveTrackBankCommand;
 import de.mossgrabers.controller.mcu.command.trigger.MCURecordCommand;
 import de.mossgrabers.controller.mcu.command.trigger.ScrubCommand;
 import de.mossgrabers.controller.mcu.command.trigger.SelectCommand;

@@ -4,7 +4,6 @@
 
 package de.mossgrabers.controller.slmkiii;
 
-import de.mossgrabers.controller.slmkiii.command.continuous.VolumeFaderCommand;
 import de.mossgrabers.controller.slmkiii.command.trigger.ButtonAreaCommand;
 import de.mossgrabers.controller.slmkiii.command.trigger.DeviceModeCommand;
 import de.mossgrabers.controller.slmkiii.command.trigger.TrackModeCommand;
@@ -19,9 +18,9 @@ import de.mossgrabers.controller.slmkiii.mode.SequencerResolutionMode;
 import de.mossgrabers.controller.slmkiii.mode.device.ParametersMode;
 import de.mossgrabers.controller.slmkiii.mode.device.UserMode;
 import de.mossgrabers.controller.slmkiii.mode.track.PanMode;
+import de.mossgrabers.controller.slmkiii.mode.track.SLMkIIIVolumeMode;
 import de.mossgrabers.controller.slmkiii.mode.track.SendMode;
 import de.mossgrabers.controller.slmkiii.mode.track.TrackMode;
-import de.mossgrabers.controller.slmkiii.mode.track.VolumeMode;
 import de.mossgrabers.controller.slmkiii.view.ColorView;
 import de.mossgrabers.controller.slmkiii.view.DrumView;
 import de.mossgrabers.controller.slmkiii.view.SessionView;
@@ -38,6 +37,7 @@ import de.mossgrabers.framework.command.trigger.transport.StopCommand;
 import de.mossgrabers.framework.command.trigger.transport.ToggleLoopCommand;
 import de.mossgrabers.framework.command.trigger.transport.WindCommand;
 import de.mossgrabers.framework.command.trigger.view.ViewButtonCommand;
+import de.mossgrabers.framework.configuration.AbstractConfiguration;
 import de.mossgrabers.framework.configuration.ISettingsUI;
 import de.mossgrabers.framework.controller.AbstractControllerSetup;
 import de.mossgrabers.framework.controller.ButtonID;
@@ -64,6 +64,8 @@ import de.mossgrabers.framework.featuregroup.IView;
 import de.mossgrabers.framework.featuregroup.ModeManager;
 import de.mossgrabers.framework.featuregroup.ViewManager;
 import de.mossgrabers.framework.mode.Modes;
+import de.mossgrabers.framework.mode.track.VolumeMode;
+import de.mossgrabers.framework.scale.Scales;
 import de.mossgrabers.framework.utils.ButtonEvent;
 import de.mossgrabers.framework.view.Views;
 
@@ -161,7 +163,7 @@ public class SLMkIIIControllerSetup extends AbstractControllerSetup<SLMkIIIContr
         final ModeManager modeManager = surface.getModeManager ();
 
         modeManager.register (Modes.TRACK, new TrackMode (surface, this.model));
-        modeManager.register (Modes.VOLUME, new VolumeMode (surface, this.model));
+        modeManager.register (Modes.VOLUME, new SLMkIIIVolumeMode (surface, this.model));
         modeManager.register (Modes.PAN, new PanMode (surface, this.model));
         for (int i = 0; i < 8; i++)
             modeManager.register (Modes.get (Modes.SEND1, i), new SendMode (i, surface, this.model));
@@ -196,6 +198,12 @@ public class SLMkIIIControllerSetup extends AbstractControllerSetup<SLMkIIIContr
         this.createScaleObservers (this.configuration);
 
         this.configuration.registerDeactivatedItemsHandler (this.model);
+        this.configuration.addSettingObserver (AbstractConfiguration.SCALES_IN_KEY, () -> {
+
+            final int colorIndex = this.configuration.isScaleInKey () ? SLMkIIIColorManager.SLMKIII_BLACK : SLMkIIIColorManager.SLMKIII_DARK_GREY;
+            this.colorManager.updateColorIndex (Scales.SCALE_COLOR_OUT_OF_SCALE, colorIndex);
+
+        });
 
         final SLMkIIIControlSurface surface = this.getSurface ();
         surface.getModeManager ().addChangeListener ( (oldMode, newMode) -> this.updateIndication (newMode));
@@ -375,8 +383,18 @@ public class SLMkIIIControllerSetup extends AbstractControllerSetup<SLMkIIIContr
         for (int i = 0; i < 8; i++)
         {
             this.addRelativeKnob (ContinuousID.get (ContinuousID.KNOB1, i), "Knob " + (i + 1), new KnobRowModeCommand<> (i, this.model, surface), BindType.CC, 15, SLMkIIIControlSurface.MKIII_KNOB_1 + i);
-            this.addFader (ContinuousID.get (ContinuousID.FADER1, i), "Fader " + (i + 1), new VolumeFaderCommand (i, this.model, surface), BindType.CC, 15, SLMkIIIControlSurface.MKIII_FADER_1 + i);
+            this.addFader (ContinuousID.get (ContinuousID.FADER1, i), "Fader " + (i + 1), null, BindType.CC, 15, SLMkIIIControlSurface.MKIII_FADER_1 + i);
         }
+
+        // Volume faders which can be turned off in the settings...
+        final VolumeMode<SLMkIIIControlSurface, SLMkIIIConfiguration> volumeMode = new VolumeMode<> (surface, this.model, true, ContinuousID.createSequentialList (ContinuousID.FADER1, 8));
+        volumeMode.onActivate ();
+        this.configuration.addSettingObserver (SLMkIIIConfiguration.ENABLE_FADERS, () -> {
+            if (this.configuration.areFadersEnabled ())
+                volumeMode.onActivate ();
+            else
+                volumeMode.onDeactivate ();
+        });
     }
 
 
