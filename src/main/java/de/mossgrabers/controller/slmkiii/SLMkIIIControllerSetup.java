@@ -18,9 +18,9 @@ import de.mossgrabers.controller.slmkiii.mode.SequencerResolutionMode;
 import de.mossgrabers.controller.slmkiii.mode.device.ParametersMode;
 import de.mossgrabers.controller.slmkiii.mode.device.UserMode;
 import de.mossgrabers.controller.slmkiii.mode.track.SLMkIIIPanMode;
-import de.mossgrabers.controller.slmkiii.mode.track.SLMkIIIVolumeMode;
 import de.mossgrabers.controller.slmkiii.mode.track.SLMkIIISendMode;
 import de.mossgrabers.controller.slmkiii.mode.track.SLMkIIITrackMode;
+import de.mossgrabers.controller.slmkiii.mode.track.SLMkIIIVolumeMode;
 import de.mossgrabers.controller.slmkiii.view.ColorView;
 import de.mossgrabers.controller.slmkiii.view.DrumView;
 import de.mossgrabers.controller.slmkiii.view.SessionView;
@@ -50,10 +50,7 @@ import de.mossgrabers.framework.controller.valuechanger.DefaultValueChanger;
 import de.mossgrabers.framework.daw.IHost;
 import de.mossgrabers.framework.daw.ITransport;
 import de.mossgrabers.framework.daw.ModelSetup;
-import de.mossgrabers.framework.daw.data.ICursorDevice;
 import de.mossgrabers.framework.daw.data.ITrack;
-import de.mossgrabers.framework.daw.data.bank.IParameterBank;
-import de.mossgrabers.framework.daw.data.bank.ISendBank;
 import de.mossgrabers.framework.daw.data.bank.ITrackBank;
 import de.mossgrabers.framework.daw.midi.DeviceInquiry;
 import de.mossgrabers.framework.daw.midi.IMidiAccess;
@@ -207,9 +204,6 @@ public class SLMkIIIControllerSetup extends AbstractControllerSetup<SLMkIIIContr
             this.colorManager.updateColorIndex (Scales.SCALE_COLOR_OUT_OF_SCALE, colorIndex);
 
         });
-
-        final SLMkIIIControlSurface surface = this.getSurface ();
-        surface.getModeManager ().addChangeListener ( (oldMode, newMode) -> this.updateIndication (newMode));
 
         this.activateBrowserObserver (Modes.BROWSER);
     }
@@ -384,8 +378,8 @@ public class SLMkIIIControllerSetup extends AbstractControllerSetup<SLMkIIIContr
         final SLMkIIIControlSurface surface = this.getSurface ();
         for (int i = 0; i < 8; i++)
         {
-            this.addRelativeKnob (ContinuousID.get (ContinuousID.KNOB1, i), "Knob " + (i + 1), new KnobRowModeCommand<> (i, this.model, surface), BindType.CC, 15, SLMkIIIControlSurface.MKIII_KNOB_1 + i);
-            this.addFader (ContinuousID.get (ContinuousID.FADER1, i), "Fader " + (i + 1), null, BindType.CC, 15, SLMkIIIControlSurface.MKIII_FADER_1 + i);
+            this.addRelativeKnob (ContinuousID.get (ContinuousID.KNOB1, i), "Knob " + (i + 1), new KnobRowModeCommand<> (i, this.model, surface), BindType.CC, 15, SLMkIIIControlSurface.MKIII_KNOB_1 + i).setIndexInGroup (i);
+            this.addFader (ContinuousID.get (ContinuousID.FADER1, i), "Fader " + (i + 1), null, BindType.CC, 15, SLMkIIIControlSurface.MKIII_FADER_1 + i).setIndexInGroup (i);
         }
 
         // Volume faders which can be turned off in the settings...
@@ -645,45 +639,6 @@ public class SLMkIIIControllerSetup extends AbstractControllerSetup<SLMkIIIContr
             return SLMkIIIColorManager.SLMKIII_YELLOW;
 
         return SLMkIIIColorManager.SLMKIII_WHITE_HALF;
-    }
-
-
-    /** {@inheritDoc} */
-    @Override
-    protected void updateIndication (final Modes mode)
-    {
-        if (this.currentMode != null && this.currentMode.equals (mode))
-            return;
-
-        if (mode != null)
-            this.currentMode = mode;
-
-        final ITrackBank tb = this.model.getTrackBank ();
-        final SLMkIIIControlSurface surface = this.getSurface ();
-        final boolean isSession = surface.getViewManager ().isActive (Views.SESSION);
-        final boolean isTrackMode = Modes.TRACK.equals (this.currentMode);
-        final boolean isPan = Modes.PAN.equals (this.currentMode);
-        final boolean isDevice = Modes.isDeviceMode (this.currentMode) || Modes.isLayerMode (this.currentMode);
-
-        tb.setIndication (isSession);
-
-        final ICursorDevice cursorDevice = this.model.getCursorDevice ();
-        final ITrack selectedTrack = tb.getSelectedItem ();
-        final IParameterBank parameterBank = cursorDevice.getParameterBank ();
-        for (int i = 0; i < tb.getPageSize (); i++)
-        {
-            final boolean hasTrackSel = selectedTrack != null && selectedTrack.getIndex () == i && isTrackMode;
-            final ITrack track = tb.getItem (i);
-            // Alayes true since faders are always active
-            track.setVolumeIndication (true);
-            track.setPanIndication (isPan || hasTrackSel);
-
-            final ISendBank sendBank = track.getSendBank ();
-            for (int j = 0; j < sendBank.getPageSize (); j++)
-                sendBank.getItem (j).setIndication (this.currentMode.ordinal () - Modes.SEND1.ordinal () == j || hasTrackSel);
-
-            parameterBank.getItem (i).setIndication (isDevice);
-        }
     }
 
 

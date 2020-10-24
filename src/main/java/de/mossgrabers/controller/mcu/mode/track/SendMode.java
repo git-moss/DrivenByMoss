@@ -11,6 +11,10 @@ import de.mossgrabers.framework.daw.data.ITrack;
 import de.mossgrabers.framework.daw.data.bank.ISendBank;
 import de.mossgrabers.framework.daw.data.bank.ITrackBank;
 import de.mossgrabers.framework.mode.Modes;
+import de.mossgrabers.framework.parameterprovider.EmptyParameterProvider;
+import de.mossgrabers.framework.parameterprovider.IParameterProvider;
+import de.mossgrabers.framework.parameterprovider.RangeFilterParameterProvider;
+import de.mossgrabers.framework.parameterprovider.SendParameterProvider;
 import de.mossgrabers.framework.utils.StringUtils;
 
 
@@ -21,27 +25,31 @@ import de.mossgrabers.framework.utils.StringUtils;
  */
 public class SendMode extends AbstractTrackMode
 {
+    private final int sendIndex;
+
+
     /**
      * Constructor.
      *
      * @param surface The control surface
      * @param model The model
+     * @param sendIndex The index of the send
      */
-    public SendMode (final MCUControlSurface surface, final IModel model)
+    public SendMode (final MCUControlSurface surface, final IModel model, final int sendIndex)
     {
         super ("Send", surface, model);
-    }
 
+        this.sendIndex = sendIndex;
 
-    /** {@inheritDoc} */
-    @Override
-    public void onKnobValue (final int index, final int value)
-    {
-        final int channel = this.getExtenderOffset () + index;
-        final ISendBank sendBank = this.getTrackBank ().getItem (channel).getSendBank ();
-        final int sendIndex = this.getCurrentSendIndex ();
-        if (sendIndex < sendBank.getPageSize ())
-            sendBank.getItem (sendIndex).changeValue (value);
+        final IParameterProvider parameterProvider;
+        if (surface.getConfiguration ().shouldPinFXTracksToLastController () && surface.isLastDevice ())
+            parameterProvider = new EmptyParameterProvider (8);
+        else
+        {
+            final int surfaceID = surface.getSurfaceID ();
+            parameterProvider = new RangeFilterParameterProvider (new SendParameterProvider (model, sendIndex), surfaceID * 8, 8);
+        }
+        this.setParameters (parameterProvider);
     }
 
 
@@ -49,8 +57,6 @@ public class SendMode extends AbstractTrackMode
     @Override
     public void onKnobTouch (final int index, final boolean isTouched)
     {
-        final int sendIndex = this.getCurrentSendIndex ();
-
         this.isKnobTouched[index] = isTouched;
 
         final int channel = this.getExtenderOffset () + index;
@@ -58,8 +64,8 @@ public class SendMode extends AbstractTrackMode
         if (!t.doesExist ())
             return;
         final ISendBank sendBank = t.getSendBank ();
-        if (sendIndex < sendBank.getPageSize ())
-            sendBank.getItem (sendIndex).touchValue (isTouched);
+        if (this.sendIndex < sendBank.getPageSize ())
+            sendBank.getItem (this.sendIndex).touchValue (isTouched);
     }
 
 
@@ -72,9 +78,8 @@ public class SendMode extends AbstractTrackMode
         if (!track.doesExist ())
             return 0;
         final ISendBank sendBank = track.getSendBank ();
-        final int sendIndex = this.getCurrentSendIndex ();
-        if (sendIndex < sendBank.getPageSize ())
-            return sendBank.getItem (sendIndex).getValue ();
+        if (this.sendIndex < sendBank.getPageSize ())
+            return sendBank.getItem (this.sendIndex).getValue ();
         return 0;
     }
 
@@ -97,11 +102,10 @@ public class SendMode extends AbstractTrackMode
             return;
 
         final ITextDisplay d = this.surface.getTextDisplay ();
-        final int sendIndex = this.getCurrentSendIndex ();
         final ITrackBank tb = this.getTrackBank ();
-        if (!tb.canEditSend (sendIndex))
+        if (!tb.canEditSend (this.sendIndex))
         {
-            d.notify ("Send channel " + (sendIndex + 1) + " does not exist.");
+            d.notify ("Send channel " + (this.sendIndex + 1) + " does not exist.");
             return;
         }
         final int extenderOffset = this.getExtenderOffset ();
@@ -109,7 +113,7 @@ public class SendMode extends AbstractTrackMode
         {
             final ITrack t = tb.getItem (extenderOffset + i);
             final ISendBank sendBank = t.getSendBank ();
-            d.setCell (1, i, sendIndex < sendBank.getPageSize () ? sendBank.getItem (sendIndex).getDisplayedValue (6) : "");
+            d.setCell (1, i, this.sendIndex < sendBank.getPageSize () ? sendBank.getItem (this.sendIndex).getDisplayedValue (6) : "");
         }
         d.done (1);
 
@@ -134,7 +138,6 @@ public class SendMode extends AbstractTrackMode
 
         final ITextDisplay d = this.surface.getTextDisplay ();
         final ITrackBank tb = this.getTrackBank ();
-        final int sendIndex = this.getCurrentSendIndex ();
         final int extenderOffset = this.getExtenderOffset ();
         for (int i = 0; i < 8; i++)
         {
@@ -142,7 +145,7 @@ public class SendMode extends AbstractTrackMode
             if (t.doesExist ())
             {
                 final ISendBank sendBank = t.getSendBank ();
-                d.setCell (0, i, StringUtils.shortenAndFixASCII (sendIndex < sendBank.getPageSize () ? sendBank.getItem (sendIndex).getName (6) : "", 6));
+                d.setCell (0, i, StringUtils.shortenAndFixASCII (this.sendIndex < sendBank.getPageSize () ? sendBank.getItem (this.sendIndex).getName (6) : "", 6));
             }
             else
                 d.clearCell (0, i);
@@ -165,13 +168,12 @@ public class SendMode extends AbstractTrackMode
         }
 
         final int upperBound = this.model.getValueChanger ().getUpperBound ();
-        final int sendIndex = this.getCurrentSendIndex ();
         final int extenderOffset = this.getExtenderOffset ();
         for (int i = 0; i < 8; i++)
         {
             final ITrack t = tb.getItem (extenderOffset + i);
             final ISendBank sendBank = t.getSendBank ();
-            this.surface.setKnobLED (i, MCUControlSurface.KNOB_LED_MODE_WRAP, sendIndex < sendBank.getPageSize () ? sendBank.getItem (sendIndex).getValue () : 0, upperBound);
+            this.surface.setKnobLED (i, MCUControlSurface.KNOB_LED_MODE_WRAP, this.sendIndex < sendBank.getPageSize () ? sendBank.getItem (this.sendIndex).getValue () : 0, upperBound);
         }
     }
 
@@ -182,14 +184,7 @@ public class SendMode extends AbstractTrackMode
     {
         final int extenderOffset = this.getExtenderOffset ();
         final ISendBank sendBank = this.getTrackBank ().getItem (extenderOffset + index).getSendBank ();
-        final int sendIndex = this.getCurrentSendIndex ();
-        if (sendIndex < sendBank.getPageSize ())
-            sendBank.getItem (sendIndex).resetValue ();
-    }
-
-
-    private int getCurrentSendIndex ()
-    {
-        return this.surface.getModeManager ().getActiveID ().ordinal () - Modes.SEND1.ordinal ();
+        if (this.sendIndex < sendBank.getPageSize ())
+            sendBank.getItem (this.sendIndex).resetValue ();
     }
 }

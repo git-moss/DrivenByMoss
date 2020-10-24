@@ -10,6 +10,8 @@ import de.mossgrabers.framework.daw.IModel;
 import de.mossgrabers.framework.daw.data.ISend;
 import de.mossgrabers.framework.daw.data.ITrack;
 import de.mossgrabers.framework.daw.data.bank.ISendBank;
+import de.mossgrabers.framework.parameterprovider.ChannelParameterProvider;
+import de.mossgrabers.framework.parameterprovider.RangeFilterParameterProvider;
 import de.mossgrabers.framework.utils.StringUtils;
 
 
@@ -29,30 +31,11 @@ public class TrackMode extends AbstractTrackMode
     public TrackMode (final MCUControlSurface surface, final IModel model)
     {
         super ("Track", surface, model);
-    }
 
-
-    /** {@inheritDoc} */
-    @Override
-    public void onKnobValue (final int index, final int value)
-    {
-        final ITrack selectedTrack = this.model.getSelectedTrack ();
-        if (selectedTrack == null)
-            return;
-
-        switch (index)
-        {
-            case 0:
-                selectedTrack.changeVolume (value);
-                break;
-            case 1:
-                selectedTrack.changePan (value);
-                break;
-            default:
-                if (!this.model.isEffectTrackBankActive ())
-                    selectedTrack.getSendBank ().getItem (index - 2).changeValue (value);
-                break;
-        }
+        if (surface.getConfiguration ().shouldPinFXTracksToLastController () && surface.isLastDevice ())
+            this.setParameters (new RangeFilterParameterProvider (new ChannelParameterProvider (model.getEffectTrackBank ()), 0, 8));
+        else
+            this.setParameters (new RangeFilterParameterProvider (new ChannelParameterProvider (model), 0, 8));
     }
 
 
@@ -60,7 +43,7 @@ public class TrackMode extends AbstractTrackMode
     @Override
     public int getKnobValue (final int index)
     {
-        final ITrack selectedTrack = this.model.getSelectedTrack ();
+        final ITrack selectedTrack = getSelectedTrack ();
         if (selectedTrack == null)
             return 0;
 
@@ -82,7 +65,7 @@ public class TrackMode extends AbstractTrackMode
     @Override
     public void onKnobTouch (final int index, final boolean isTouched)
     {
-        final ITrack selectedTrack = this.model.getSelectedTrack ();
+        final ITrack selectedTrack = getSelectedTrack ();
         if (selectedTrack == null)
             return;
 
@@ -116,7 +99,7 @@ public class TrackMode extends AbstractTrackMode
 
         final ITextDisplay d = this.surface.getTextDisplay ().clear ();
 
-        final ITrack selectedTrack = this.model.getSelectedTrack ();
+        final ITrack selectedTrack = getSelectedTrack ();
         if (selectedTrack == null)
         {
             d.notify ("Please select a track...");
@@ -164,7 +147,7 @@ public class TrackMode extends AbstractTrackMode
     {
         final int upperBound = this.model.getValueChanger ().getUpperBound ();
 
-        final ITrack t = this.model.getSelectedTrack ();
+        final ITrack t = this.getSelectedTrack ();
         if (t == null)
         {
             for (int i = 0; i < 8; i++)
@@ -196,7 +179,7 @@ public class TrackMode extends AbstractTrackMode
     @Override
     protected void resetParameter (final int index)
     {
-        final ITrack selectedTrack = this.model.getSelectedTrack ();
+        final ITrack selectedTrack = getSelectedTrack ();
         if (selectedTrack == null)
             return;
         switch (index)
@@ -212,5 +195,13 @@ public class TrackMode extends AbstractTrackMode
                     selectedTrack.getSendBank ().getItem (index - 2).resetValue ();
                 break;
         }
+    }
+
+
+    private ITrack getSelectedTrack ()
+    {
+        if (this.surface.getConfiguration ().shouldPinFXTracksToLastController () && this.surface.isLastDevice ())
+            return this.model.getEffectTrackBank ().getSelectedItem ();
+        return this.model.getCurrentTrackBank ().getSelectedItem ();
     }
 }

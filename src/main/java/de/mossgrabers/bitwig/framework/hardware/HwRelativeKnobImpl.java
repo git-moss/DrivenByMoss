@@ -36,7 +36,6 @@ public class HwRelativeKnobImpl extends AbstractHwContinuousControl implements I
     private RelativeHardwarControlBindable defaultAction;
     private RelativeHardwarControlBindable defaultSimpleParameterAction;
     private RelativeHardwareControlBinding binding;
-
     private IParameter                     parameter;
 
 
@@ -80,6 +79,14 @@ public class HwRelativeKnobImpl extends AbstractHwContinuousControl implements I
 
     /** {@inheritDoc} */
     @Override
+    public void setIndexInGroup (int index)
+    {
+        this.hardwareKnob.setIndexInGroup (index);
+    }
+
+
+    /** {@inheritDoc} */
+    @Override
     public void bind (final ContinuousCommand command)
     {
         super.bind (command);
@@ -102,7 +109,7 @@ public class HwRelativeKnobImpl extends AbstractHwContinuousControl implements I
         final HardwareBindable target;
         if (parameter == null)
         {
-            // No Bitwig parameter use the default action
+            // No Bitwig parameter, use the default action
             target = this.defaultAction;
         }
         else

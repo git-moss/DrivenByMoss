@@ -55,10 +55,7 @@ import de.mossgrabers.framework.daw.IHost;
 import de.mossgrabers.framework.daw.ITransport;
 import de.mossgrabers.framework.daw.ModelSetup;
 import de.mossgrabers.framework.daw.constants.DeviceID;
-import de.mossgrabers.framework.daw.data.ICursorDevice;
 import de.mossgrabers.framework.daw.data.ITrack;
-import de.mossgrabers.framework.daw.data.bank.IParameterBank;
-import de.mossgrabers.framework.daw.data.bank.ISendBank;
 import de.mossgrabers.framework.daw.data.bank.ITrackBank;
 import de.mossgrabers.framework.daw.midi.IMidiAccess;
 import de.mossgrabers.framework.daw.midi.IMidiInput;
@@ -386,6 +383,7 @@ public class FireControllerSetup extends AbstractControllerSetup<FireControlSurf
         {
             final IHwRelativeKnob knob = this.addRelativeKnob (ContinuousID.get (ContinuousID.KNOB1, i), "Knob " + i, new KnobRowModeCommand<> (i, this.model, surface), FireControlSurface.CC_VOLUME + i);
             knob.bindTouch (new KnobRowTouchModeCommand<> (i, this.model, surface), input, BindType.NOTE, 0, FireControlSurface.TOUCH_VOLUME + i);
+            knob.setIndexInGroup (i);
         }
 
         this.addRelativeKnob (ContinuousID.VIEW_SELECTION, "Select", new SelectKnobCommand (this.model, surface), FireControlSurface.CC_SELECT);
@@ -517,7 +515,6 @@ public class FireControllerSetup extends AbstractControllerSetup<FireControlSurf
 
         final FireControlSurface surface = this.getSurface ();
 
-        surface.getModeManager ().addChangeListener ( (oldMode, newMode) -> this.updateMode (newMode));
         surface.getViewManager ().addChangeListener ( (previousViewId, activeViewId) -> this.onViewChange ());
 
         this.configuration.registerDeactivatedItemsHandler (this.model);
@@ -554,55 +551,7 @@ public class FireControllerSetup extends AbstractControllerSetup<FireControlSurf
      */
     private void onViewChange ()
     {
-        this.updateIndication (null);
-    }
-
-
-    private void updateMode (final Modes mode)
-    {
-        if (mode == null)
-            return;
-        this.updateIndication (mode);
         this.getSurface ().getDisplay ().cancelNotification ();
-    }
-
-
-    /** {@inheritDoc} */
-    @Override
-    protected void updateIndication (final Modes mode)
-    {
-        if (this.currentMode != null && this.currentMode == mode)
-            return;
-
-        if (mode != null)
-            this.currentMode = mode;
-
-        final FireControlSurface surface = this.getSurface ();
-        final ITrackBank tb = this.model.getTrackBank ();
-        final ViewManager viewManager = surface.getViewManager ();
-
-        final boolean isSession = viewManager.isActive (Views.SESSION);
-        final boolean isTrackMode = Modes.TRACK == this.currentMode;
-        final boolean isDevice = Modes.isDeviceMode (this.currentMode) || Modes.isLayerMode (this.currentMode);
-
-        tb.setIndication (isSession);
-
-        final ICursorDevice cursorDevice = this.model.getCursorDevice ();
-        final ITrack selectedTrack = tb.getSelectedItem ();
-        final IParameterBank parameterBank = cursorDevice.getParameterBank ();
-        for (int i = 0; i < tb.getPageSize (); i++)
-        {
-            final boolean hasTrackSel = selectedTrack != null && selectedTrack.getIndex () == i && isTrackMode;
-            final ITrack track = tb.getItem (i);
-            track.setVolumeIndication (hasTrackSel);
-            track.setPanIndication (hasTrackSel);
-            final ISendBank sendBank = track.getSendBank ();
-            for (int j = 0; j < sendBank.getPageSize (); j++)
-                sendBank.getItem (j).setIndication (hasTrackSel);
-        }
-
-        for (int i = 0; i < parameterBank.getPageSize (); i++)
-            parameterBank.getItem (i).setIndication (isDevice);
     }
 
 

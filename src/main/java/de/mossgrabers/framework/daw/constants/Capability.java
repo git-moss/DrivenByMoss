@@ -5,11 +5,11 @@
 package de.mossgrabers.framework.daw.constants;
 
 /**
- * Edit capabilities of the hosts API.
+ * Capabilities of the hosts API.
  *
  * @author J&uuml;rgen Mo&szlig;graber
  */
-public enum EditCapability
+public enum Capability
 {
     /** The API provides support for adding and deleting markers. */
     MARKERS,
@@ -46,5 +46,16 @@ public enum EditCapability
     QUANTIZE_AMOUNT,
 
     /** The API provides support chaning the cue/preview volume. */
-    CUE_VOLUME
+    CUE_VOLUME,
+
+    /** Devices have additional slot chains. */
+    HAS_SLOT_CHAINS,
+    /** There is a specific drum device. */
+    HAS_DRUM_DEVICE,
+    /** Support for a crossfader. */
+    HAS_CROSSFADER,
+    /** If the DAW supports track/device pinning. */
+    HAS_PINNING,
+    /** The host has a dedicated send bank. */
+    HAS_EFFECT_BANK
 }

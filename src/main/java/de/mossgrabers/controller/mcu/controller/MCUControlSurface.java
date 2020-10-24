@@ -369,6 +369,17 @@ public class MCUControlSurface extends AbstractControlSurface<MCUConfiguration>
     }
 
 
+    /**
+     * Returns true if this is the 'most right device'.
+     *
+     * @return True if this is the 'most right device'
+     */
+    public boolean isLastDevice ()
+    {
+        return this.surfaceID == this.surfaces.size () - 1;
+    }
+
+
     private boolean isSinglePressed (final ButtonID buttonID)
     {
         return super.isPressed (buttonID);

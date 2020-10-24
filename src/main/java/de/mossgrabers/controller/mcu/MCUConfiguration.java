@@ -11,6 +11,7 @@ import de.mossgrabers.framework.configuration.IEnumSetting;
 import de.mossgrabers.framework.configuration.ISettingsUI;
 import de.mossgrabers.framework.controller.valuechanger.IValueChanger;
 import de.mossgrabers.framework.daw.IHost;
+import de.mossgrabers.framework.daw.constants.Capability;
 import de.mossgrabers.framework.daw.midi.ArpeggiatorMode;
 
 import java.util.Arrays;
@@ -48,9 +49,11 @@ public class MCUConfiguration extends AbstractConfiguration
     /** Use the faders like the editing knobs. */
     public static final Integer       USE_FADERS_AS_KNOBS                     = Integer.valueOf (61);
     /** Select the channel when touching it's fader. */
-    private static final Integer      TOUCH_CHANNEL                           = Integer.valueOf (62);
+    public static final Integer       TOUCH_CHANNEL                           = Integer.valueOf (62);
     /** iCON specific Master VU meter. */
-    private static final Integer      MASTER_VU_METER                         = Integer.valueOf (63);
+    public static final Integer       MASTER_VU_METER                         = Integer.valueOf (63);
+    /** Pin FX tracks to last controller. */
+    public static final Integer       PIN_FXTRACKS_TO_LAST_CONTROLLER         = Integer.valueOf (64);
 
     /** Use a Function button to switch to previous mode. */
     public static final int           FOOTSWITCH_2_PREV_MODE                  = 15;
@@ -452,10 +455,13 @@ public class MCUConfiguration extends AbstractConfiguration
         final IEnumSetting includeFXTracksSetting = settingsUI.getEnumSetting ("Include FX and master tracks in track bank", CATEGORY_TRACKS, ON_OFF_OPTIONS, ON_OFF_OPTIONS[0]);
         this.includeFXTracksInTrackBank = "On".equals (includeFXTracksSetting.get ());
 
-        if (this.deviceTyes.length > 1)
+        if (this.deviceTyes.length > 1 && this.host.supports (Capability.HAS_EFFECT_BANK))
         {
             final IEnumSetting pinFXTracksToLastControllerSetting = settingsUI.getEnumSetting ("Pin FX tracks to last device", CATEGORY_TRACKS, ON_OFF_OPTIONS, ON_OFF_OPTIONS[0]);
-            pinFXTracksToLastControllerSetting.addValueObserver (value -> this.pinFXTracksToLastController = "On".equals (value));
+            pinFXTracksToLastControllerSetting.addValueObserver (value -> {
+                this.pinFXTracksToLastController = "On".equals (value);
+                this.notifyObservers (PIN_FXTRACKS_TO_LAST_CONTROLLER);
+            });
         }
     }
 

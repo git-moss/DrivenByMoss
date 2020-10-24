@@ -47,6 +47,14 @@ public class ResetParameter implements IParameter
 
     /** {@inheritDoc} */
     @Override
+    public void setNormalizedValue (final double value)
+    {
+        this.parameter.resetValue ();
+    }
+
+
+    /** {@inheritDoc} */
+    @Override
     public void setValueImmediatly (final int value)
     {
         this.parameter.resetValue ();

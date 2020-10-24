@@ -53,6 +53,14 @@ public interface IParameter extends IItem
 
 
     /**
+     * Sets the value.
+     *
+     * @param value The new value to set in the range of [0..1]
+     */
+    void setNormalizedValue (double value);
+
+
+    /**
      * Sets the value. Ignores takeover.
      *
      * @param value The new value to set

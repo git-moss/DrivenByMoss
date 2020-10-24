@@ -11,7 +11,7 @@ import de.mossgrabers.framework.daw.IHost;
 import de.mossgrabers.framework.daw.IModel;
 import de.mossgrabers.framework.daw.INoteClip;
 import de.mossgrabers.framework.daw.IStepInfo;
-import de.mossgrabers.framework.daw.constants.EditCapability;
+import de.mossgrabers.framework.daw.constants.Capability;
 import de.mossgrabers.framework.scale.Scales;
 import de.mossgrabers.framework.utils.StringUtils;
 
@@ -103,7 +103,7 @@ public class EditNoteMode extends BaseMode
                 break;
 
             case GAIN:
-                if (this.host.canEdit (EditCapability.NOTE_EDIT_GAIN))
+                if (this.host.supports (Capability.NOTE_EDIT_GAIN))
                 {
                     this.clip.changeStepGain (this.channel, this.step, this.note, value);
                     if (!hasMCUDisplay)
@@ -112,7 +112,7 @@ public class EditNoteMode extends BaseMode
                 break;
 
             case PANORAMA:
-                if (this.host.canEdit (EditCapability.NOTE_EDIT_PANORAMA))
+                if (this.host.supports (Capability.NOTE_EDIT_PANORAMA))
                 {
                     this.clip.changeStepPan (this.channel, this.step, this.note, value);
                     if (!hasMCUDisplay)
@@ -121,7 +121,7 @@ public class EditNoteMode extends BaseMode
                 break;
 
             case TRANSPOSE:
-                if (this.host.canEdit (EditCapability.NOTE_EDIT_TRANSPOSE))
+                if (this.host.supports (Capability.NOTE_EDIT_TRANSPOSE))
                 {
                     this.clip.changeStepTranspose (this.channel, this.step, this.note, value);
                     if (!hasMCUDisplay)
@@ -130,7 +130,7 @@ public class EditNoteMode extends BaseMode
                 break;
 
             case PRESSURE:
-                if (this.host.canEdit (EditCapability.NOTE_EDIT_PRESSURE))
+                if (this.host.supports (Capability.NOTE_EDIT_PRESSURE))
                 {
                     this.clip.changeStepPressure (this.channel, this.step, this.note, value);
                     if (!hasMCUDisplay)
@@ -166,22 +166,22 @@ public class EditNoteMode extends BaseMode
                     break;
 
                 case GAIN:
-                    if (this.host.canEdit (EditCapability.NOTE_EDIT_GAIN))
+                    if (this.host.supports (Capability.NOTE_EDIT_GAIN))
                         this.clip.updateStepGain (this.channel, this.step, this.note, 0);
                     break;
 
                 case PANORAMA:
-                    if (this.host.canEdit (EditCapability.NOTE_EDIT_PANORAMA))
+                    if (this.host.supports (Capability.NOTE_EDIT_PANORAMA))
                         this.clip.updateStepPan (this.channel, this.step, this.note, 0);
                     break;
 
                 case TRANSPOSE:
-                    if (this.host.canEdit (EditCapability.NOTE_EDIT_TRANSPOSE))
+                    if (this.host.supports (Capability.NOTE_EDIT_TRANSPOSE))
                         this.clip.updateStepTranspose (this.channel, this.step, this.note, 0);
                     break;
 
                 case PRESSURE:
-                    if (this.host.canEdit (EditCapability.NOTE_EDIT_PRESSURE))
+                    if (this.host.supports (Capability.NOTE_EDIT_PRESSURE))
                         this.clip.updateStepPressure (this.channel, this.step, this.note, 0);
                     break;
 
@@ -211,13 +211,13 @@ public class EditNoteMode extends BaseMode
         d.setCell (0, 2, this.mark ("Length", 2)).setCell (1, 2, stepInfo == null ? "-" : this.formatLength (stepInfo.getDuration ()));
         d.setCell (0, 3, this.mark ("Velocity", 3)).setCell (1, 3, stepInfo == null ? "-" : StringUtils.formatPercentage (stepInfo.getVelocity ()));
 
-        if (this.host.canEdit (EditCapability.NOTE_EDIT_GAIN))
+        if (this.host.supports (Capability.NOTE_EDIT_GAIN))
             d.setCell (0, 4, this.mark ("Gain", 4)).setCell (1, 4, stepInfo == null ? "-" : StringUtils.formatPercentage (stepInfo.getGain ()));
-        if (this.host.canEdit (EditCapability.NOTE_EDIT_PANORAMA))
+        if (this.host.supports (Capability.NOTE_EDIT_PANORAMA))
             d.setCell (0, 5, this.mark ("Pan", 5)).setCell (1, 5, stepInfo == null ? "-" : StringUtils.formatPercentage (stepInfo.getPan ()));
-        if (this.host.canEdit (EditCapability.NOTE_EDIT_TRANSPOSE))
+        if (this.host.supports (Capability.NOTE_EDIT_TRANSPOSE))
             d.setCell (0, 6, this.mark ("Pitch", 6)).setCell (1, 6, stepInfo == null ? "-" : String.format ("%.1f", Double.valueOf (stepInfo.getTranspose ())));
-        if (this.host.canEdit (EditCapability.NOTE_EDIT_PRESSURE))
+        if (this.host.supports (Capability.NOTE_EDIT_PRESSURE))
             d.setCell (0, 7, this.mark ("Pressure", 7)).setCell (1, 7, stepInfo == null ? "-" : StringUtils.formatPercentage (stepInfo.getPressure ()));
 
         d.allDone ();

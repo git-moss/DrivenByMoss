@@ -29,9 +29,6 @@ import de.mossgrabers.framework.controller.hardware.BindType;
 import de.mossgrabers.framework.controller.valuechanger.DefaultValueChanger;
 import de.mossgrabers.framework.daw.IHost;
 import de.mossgrabers.framework.daw.ModelSetup;
-import de.mossgrabers.framework.daw.data.ICursorDevice;
-import de.mossgrabers.framework.daw.data.ITrack;
-import de.mossgrabers.framework.daw.data.bank.ISendBank;
 import de.mossgrabers.framework.daw.data.bank.ITrackBank;
 import de.mossgrabers.framework.daw.midi.IMidiAccess;
 import de.mossgrabers.framework.daw.midi.IMidiInput;
@@ -192,8 +189,6 @@ public class APCminiControllerSetup extends AbstractControllerSetup<APCminiContr
         super.createObservers ();
 
         final APCminiControlSurface surface = this.getSurface ();
-        surface.getViewManager ().addChangeListener ( (previousViewId, activeViewId) -> this.updateMode (null));
-        surface.getModeManager ().addChangeListener ( (previousModeId, activeModeId) -> this.updateMode (activeModeId));
         this.createScaleObservers (this.configuration);
 
         this.configuration.addSettingObserver (APCminiConfiguration.FADER_CTRL, () -> {
@@ -265,7 +260,7 @@ public class APCminiControllerSetup extends AbstractControllerSetup<APCminiContr
         surface.getContinuous (ContinuousID.FADER_MASTER).bind (this.model.getMasterTrack ().getVolumeParameter ());
 
         for (int i = 0; i < 8; i++)
-            this.addFader (ContinuousID.get (ContinuousID.FADER1, i), "Fader " + (i + 1), new KnobRowModeCommand<> (i, this.model, surface), BindType.CC, APCminiControlSurface.APC_KNOB_TRACK_LEVEL1 + i);
+            this.addFader (ContinuousID.get (ContinuousID.FADER1, i), "Fader " + (i + 1), new KnobRowModeCommand<> (i, this.model, surface), BindType.CC, APCminiControlSurface.APC_KNOB_TRACK_LEVEL1 + i).setIndexInGroup (i);
     }
 
 
@@ -307,56 +302,6 @@ public class APCminiControllerSetup extends AbstractControllerSetup<APCminiContr
         surface.getModeManager ().setActive (Modes.VOLUME);
         surface.getViewManager ().setActive (Views.PLAY);
         this.host.scheduleTask (surface.getPadGrid ()::forceFlush, 1000);
-    }
-
-
-    private void updateMode (final Modes mode)
-    {
-        this.updateIndication (mode == null ? this.getSurface ().getModeManager ().getActiveID () : mode);
-    }
-
-
-    /** {@inheritDoc} */
-    @Override
-    protected void updateIndication (final Modes mode)
-    {
-        if (this.currentMode != null && this.currentMode.equals (mode))
-            return;
-        this.currentMode = mode;
-
-        final ITrackBank tb = this.model.getTrackBank ();
-        final ITrackBank tbe = this.model.getEffectTrackBank ();
-        final APCminiControlSurface surface = this.getSurface ();
-        final ViewManager viewManager = surface.getViewManager ();
-        final boolean isShiftView = viewManager.isActive (Views.SHIFT);
-        final boolean isSession = viewManager.isActive (Views.SESSION) || isShiftView;
-        final boolean isEffect = this.model.isEffectTrackBankActive ();
-        final boolean isPan = Modes.PAN.equals (mode);
-        final boolean isDevice = Modes.DEVICE_PARAMS.equals (mode);
-
-        tb.setIndication (!isEffect && isSession);
-        if (tbe != null)
-            tbe.setIndication (isEffect && isSession);
-
-        final ICursorDevice cursorDevice = this.model.getCursorDevice ();
-        for (int i = 0; i < 8; i++)
-        {
-            final ITrack track = tb.getItem (i);
-            track.setVolumeIndication (!isEffect);
-            track.setPanIndication (!isEffect && isPan);
-            final ISendBank sendBank = track.getSendBank ();
-            for (int j = 0; j < 8; j++)
-                sendBank.getItem (j).setIndication (!isEffect && (Modes.SEND1.equals (mode) && j == 0 || Modes.SEND2.equals (mode) && j == 1 || Modes.SEND3.equals (mode) && j == 2 || Modes.SEND4.equals (mode) && j == 3 || Modes.SEND5.equals (mode) && j == 4 || Modes.SEND6.equals (mode) && j == 5 || Modes.SEND7.equals (mode) && j == 6 || Modes.SEND8.equals (mode) && j == 7));
-
-            if (tbe != null)
-            {
-                final ITrack fxTrack = tbe.getItem (i);
-                fxTrack.setVolumeIndication (isEffect);
-                fxTrack.setPanIndication (isEffect && isPan);
-            }
-
-            cursorDevice.getParameterBank ().getItem (i).setIndication (isDevice || isShiftView);
-        }
     }
 
 

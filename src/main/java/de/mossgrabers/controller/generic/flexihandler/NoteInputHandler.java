@@ -10,7 +10,7 @@ import de.mossgrabers.controller.generic.controller.GenericFlexiControlSurface;
 import de.mossgrabers.framework.controller.valuechanger.IValueChanger;
 import de.mossgrabers.framework.daw.IHost;
 import de.mossgrabers.framework.daw.IModel;
-import de.mossgrabers.framework.daw.constants.EditCapability;
+import de.mossgrabers.framework.daw.constants.Capability;
 import de.mossgrabers.framework.daw.constants.Resolution;
 import de.mossgrabers.framework.daw.midi.ArpeggiatorMode;
 import de.mossgrabers.framework.daw.midi.INoteInput;
@@ -139,7 +139,7 @@ public class NoteInputHandler extends AbstractHandler
 
             // Note Repeat: Set Length
             case NOTE_INPUT_REPEAT_LENGTH:
-                if (this.model.getHost ().canEdit (EditCapability.NOTE_REPEAT_LENGTH))
+                if (this.model.getHost ().supports (Capability.NOTE_REPEAT_LENGTH))
                 {
                     final int selLength;
                     if (isAbsolute (knobMode))
@@ -155,7 +155,7 @@ public class NoteInputHandler extends AbstractHandler
                 break;
 
             case NOTE_INPUT_REPEAT_MODE:
-                if (this.host.canEdit (EditCapability.NOTE_REPEAT_MODE))
+                if (this.host.supports (Capability.NOTE_REPEAT_MODE))
                 {
                     final ArpeggiatorMode [] modes = configuration.getArpeggiatorModes ();
                     final int newIndex;
@@ -177,7 +177,7 @@ public class NoteInputHandler extends AbstractHandler
                 break;
 
             case NOTE_INPUT_REPEAT_OCTAVE:
-                if (this.host.canEdit (EditCapability.NOTE_REPEAT_OCTAVES))
+                if (this.host.supports (Capability.NOTE_REPEAT_OCTAVES))
                 {
                     final int octave;
                     if (isAbsolute (knobMode))

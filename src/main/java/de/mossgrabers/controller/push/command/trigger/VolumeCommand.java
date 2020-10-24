@@ -8,6 +8,7 @@ import de.mossgrabers.controller.push.PushConfiguration;
 import de.mossgrabers.controller.push.controller.PushControlSurface;
 import de.mossgrabers.framework.command.core.AbstractTriggerCommand;
 import de.mossgrabers.framework.daw.IModel;
+import de.mossgrabers.framework.daw.constants.Capability;
 import de.mossgrabers.framework.featuregroup.ModeManager;
 import de.mossgrabers.framework.mode.Modes;
 import de.mossgrabers.framework.utils.ButtonEvent;
@@ -52,7 +53,7 @@ public class VolumeCommand extends AbstractTriggerCommand<PushControlSurface, Pu
 
         if (Modes.VOLUME.equals (currentMode))
         {
-            if (this.model.getHost ().hasCrossfader ())
+            if (this.model.getHost ().supports (Capability.HAS_CROSSFADER))
                 modeManager.setActive (Modes.CROSSFADER);
         }
         else

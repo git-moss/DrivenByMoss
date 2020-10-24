@@ -16,6 +16,7 @@ import de.mossgrabers.framework.controller.valuechanger.IValueChanger;
 import de.mossgrabers.framework.daw.DAWColor;
 import de.mossgrabers.framework.daw.IHost;
 import de.mossgrabers.framework.daw.IModel;
+import de.mossgrabers.framework.daw.constants.Capability;
 import de.mossgrabers.framework.daw.data.IChannel;
 import de.mossgrabers.framework.daw.data.ICursorDevice;
 import de.mossgrabers.framework.daw.data.IDevice;
@@ -69,9 +70,9 @@ public class DeviceParamsMode extends BaseMode
 
         System.arraycopy (MENU, 0, this.hostMenu, 0, MENU.length);
         final IHost host = this.model.getHost ();
-        if (!host.hasPinning ())
+        if (!host.supports (Capability.HAS_PINNING))
             this.hostMenu[5] = "";
-        if (!host.hasSlotChains ())
+        if (!host.supports (Capability.HAS_SLOT_CHAINS))
             this.hostMenu[3] = "";
     }
 
@@ -285,7 +286,7 @@ public class DeviceParamsMode extends BaseMode
                 case 4:
                     return this.showDevices ? white : orange;
                 case 5:
-                    return this.model.getHost ().hasPinning () ? cd.isPinned () ? turquoise : grey : off;
+                    return this.model.getHost ().supports (Capability.HAS_PINNING) ? cd.isPinned () ? turquoise : grey : off;
                 case 6:
                     return cd.isWindowOpen () ? turquoise : grey;
                 default:
@@ -321,7 +322,7 @@ public class DeviceParamsMode extends BaseMode
                     device.toggleExpanded ();
                 break;
             case 3:
-                if (!this.model.getHost ().hasSlotChains ())
+                if (!this.model.getHost ().supports (Capability.HAS_SLOT_CHAINS))
                     return;
                 if (modeManager.isActive (Modes.DEVICE_CHAINS))
                     modeManager.setActive (Modes.DEVICE_PARAMS);
@@ -415,7 +416,7 @@ public class DeviceParamsMode extends BaseMode
         final IParameterBank parameterBank = cd.getParameterBank ();
         final IParameterPageBank parameterPageBank = cd.getParameterPageBank ();
         final int selectedPage = parameterPageBank.getSelectedItemIndex ();
-        final boolean hasPinning = this.model.getHost ().hasPinning ();
+        final boolean hasPinning = this.model.getHost ().supports (Capability.HAS_PINNING);
         final IValueChanger valueChanger = this.model.getValueChanger ();
         for (int i = 0; i < parameterBank.getPageSize (); i++)
         {

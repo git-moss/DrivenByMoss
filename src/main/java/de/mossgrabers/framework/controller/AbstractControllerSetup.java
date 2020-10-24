@@ -21,7 +21,7 @@ import de.mossgrabers.framework.controller.valuechanger.IValueChanger;
 import de.mossgrabers.framework.controller.valuechanger.RelativeEncoding;
 import de.mossgrabers.framework.daw.IHost;
 import de.mossgrabers.framework.daw.IModel;
-import de.mossgrabers.framework.daw.constants.EditCapability;
+import de.mossgrabers.framework.daw.constants.Capability;
 import de.mossgrabers.framework.daw.midi.INoteInput;
 import de.mossgrabers.framework.daw.midi.INoteRepeat;
 import de.mossgrabers.framework.featuregroup.IMode;
@@ -880,7 +880,8 @@ public abstract class AbstractControllerSetup<S extends IControlSurface<C>, C ex
     protected IHwFader addFader (final S surface, final ContinuousID continuousID, final String label, final PitchbendCommand command, final int midiChannel)
     {
         final IHwFader fader = surface.createFader (continuousID, label, true);
-        fader.bind (command);
+        if (command != null)
+            fader.bind (command);
         fader.bind (surface.getMidiInput (), BindType.PITCHBEND, midiChannel, 0);
         return fader;
     }
@@ -1186,14 +1187,6 @@ public abstract class AbstractControllerSetup<S extends IControlSurface<C>, C ex
 
 
     /**
-     * Update the DAW indications for the given mode.
-     *
-     * @param mode The new mode
-     */
-    protected abstract void updateIndication (final Modes mode);
-
-
-    /**
      * Register observers for all scale settings. Stores the changed value in the scales object and
      * updates the actives views note mapping.
      *
@@ -1229,11 +1222,11 @@ public abstract class AbstractControllerSetup<S extends IControlSurface<C>, C ex
         final INoteRepeat noteRepeat = defaultNoteInput.getNoteRepeat ();
         conf.addSettingObserver (AbstractConfiguration.NOTEREPEAT_ACTIVE, () -> noteRepeat.setActive (conf.isNoteRepeatActive ()));
         conf.addSettingObserver (AbstractConfiguration.NOTEREPEAT_PERIOD, () -> noteRepeat.setPeriod (conf.getNoteRepeatPeriod ().getValue ()));
-        if (this.host.canEdit (EditCapability.NOTE_REPEAT_LENGTH))
+        if (this.host.supports (Capability.NOTE_REPEAT_LENGTH))
             conf.addSettingObserver (AbstractConfiguration.NOTEREPEAT_LENGTH, () -> noteRepeat.setNoteLength (conf.getNoteRepeatLength ().getValue ()));
-        if (this.host.canEdit (EditCapability.NOTE_REPEAT_MODE))
+        if (this.host.supports (Capability.NOTE_REPEAT_MODE))
             conf.addSettingObserver (AbstractConfiguration.NOTEREPEAT_MODE, () -> noteRepeat.setMode (conf.getNoteRepeatMode ()));
-        if (this.host.canEdit (EditCapability.NOTE_REPEAT_OCTAVES))
+        if (this.host.supports (Capability.NOTE_REPEAT_OCTAVES))
             conf.addSettingObserver (AbstractConfiguration.NOTEREPEAT_OCTAVE, () -> noteRepeat.setOctaves (conf.getNoteRepeatOctave ()));
     }
 

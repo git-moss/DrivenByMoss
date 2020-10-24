@@ -8,7 +8,7 @@ import de.mossgrabers.framework.controller.color.ColorEx;
 import de.mossgrabers.framework.controller.valuechanger.IValueChanger;
 import de.mossgrabers.framework.daw.IHost;
 import de.mossgrabers.framework.daw.IModel;
-import de.mossgrabers.framework.daw.constants.EditCapability;
+import de.mossgrabers.framework.daw.constants.Capability;
 import de.mossgrabers.framework.daw.constants.Resolution;
 import de.mossgrabers.framework.daw.data.ICursorDevice;
 import de.mossgrabers.framework.daw.data.bank.IDeviceBank;
@@ -1221,7 +1221,7 @@ public abstract class AbstractConfiguration implements Configuration
             this.notifyObservers (AbstractConfiguration.NOTEREPEAT_PERIOD);
         });
 
-        if (this.host.canEdit (EditCapability.NOTE_REPEAT_LENGTH))
+        if (this.host.supports (Capability.NOTE_REPEAT_LENGTH))
         {
             this.noteRepeatLengthSetting = settingsUI.getEnumSetting ("Length", CATEGORY_NOTEREPEAT, names, names[4]);
             this.noteRepeatLengthSetting.addValueObserver (value -> {
@@ -1230,7 +1230,7 @@ public abstract class AbstractConfiguration implements Configuration
             });
         }
 
-        if (this.host.canEdit (EditCapability.NOTE_REPEAT_MODE))
+        if (this.host.supports (Capability.NOTE_REPEAT_MODE))
         {
             final String [] arpModeNames = new String [this.arpeggiatorModes.length];
             for (int i = 0; i < this.arpeggiatorModes.length; i++)
@@ -1243,7 +1243,7 @@ public abstract class AbstractConfiguration implements Configuration
             });
         }
 
-        if (this.host.canEdit (EditCapability.NOTE_REPEAT_OCTAVES))
+        if (this.host.supports (Capability.NOTE_REPEAT_OCTAVES))
         {
             final String [] octaves =
             {

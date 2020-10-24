@@ -44,11 +44,7 @@ import de.mossgrabers.framework.controller.valuechanger.DefaultValueChanger;
 import de.mossgrabers.framework.daw.IHost;
 import de.mossgrabers.framework.daw.ITransport;
 import de.mossgrabers.framework.daw.ModelSetup;
-import de.mossgrabers.framework.daw.data.ICursorDevice;
 import de.mossgrabers.framework.daw.data.IDrumDevice;
-import de.mossgrabers.framework.daw.data.ITrack;
-import de.mossgrabers.framework.daw.data.bank.IParameterBank;
-import de.mossgrabers.framework.daw.data.bank.ISendBank;
 import de.mossgrabers.framework.daw.data.bank.ITrackBank;
 import de.mossgrabers.framework.daw.midi.IMidiAccess;
 import de.mossgrabers.framework.daw.midi.IMidiInput;
@@ -167,8 +163,6 @@ public class Kontrol1ControllerSetup extends AbstractControllerSetup<Kontrol1Con
         this.createScaleObservers (this.configuration);
         this.configuration.addSettingObserver (Kontrol1Configuration.SCALE_IS_ACTIVE, this::updateViewNoteMapping);
 
-        this.getSurface ().getModeManager ().addChangeListener ( (oldMode, newMode) -> this.updateIndication (newMode));
-
         final ITrackBank trackBank = this.model.getTrackBank ();
         trackBank.addSelectionObserver ( (index, isSelected) -> this.handleTrackChange (isSelected));
         final ITrackBank effectTrackBank = this.model.getEffectTrackBank ();
@@ -232,6 +226,7 @@ public class Kontrol1ControllerSetup extends AbstractControllerSetup<Kontrol1Con
         {
             final IHwRelativeKnob knob = this.addRelativeKnob (ContinuousID.get (ContinuousID.KNOB1, i), "Knob " + (i + 1), new KnobRowModeCommand<> (i, this.model, surface), Kontrol1ControlSurface.ENCODER_1 + i);
             knob.bindTouch (new KnobRowTouchModeCommand<> (i, this.model, surface), input, BindType.CC, 0, Kontrol1ControlSurface.TOUCH_ENCODER_1 + i);
+            knob.setIndexInGroup (i);
         }
 
         this.addRelativeKnob (ContinuousID.MASTER_KNOB, "Master", new MainEncoderCommand (this.model, surface), Kontrol1ControlSurface.MAIN_ENCODER);
@@ -262,7 +257,6 @@ public class Kontrol1ControllerSetup extends AbstractControllerSetup<Kontrol1Con
 
         this.host.scheduleTask ( () -> {
             final Kontrol1ControlSurface surface = this.getSurface ();
-            this.updateIndication (surface.getModeManager ().getActiveID ());
             final IView activeView = surface.getViewManager ().getActive ();
             if (activeView != null)
             {
@@ -277,50 +271,6 @@ public class Kontrol1ControllerSetup extends AbstractControllerSetup<Kontrol1Con
                     primary.getDrumPadBank ().scrollTo (0);
             }
         }, 100);
-    }
-
-
-    /** {@inheritDoc} */
-    @Override
-    protected void updateIndication (final Modes mode)
-    {
-        if (this.currentMode != null && this.currentMode.equals (mode))
-            return;
-        this.currentMode = mode;
-
-        final ITrackBank tb = this.model.getTrackBank ();
-        final ITrackBank tbe = this.model.getEffectTrackBank ();
-        final boolean isEffect = this.model.isEffectTrackBankActive ();
-
-        final boolean isVolume = Modes.VOLUME.equals (mode);
-        final boolean isDevice = Modes.DEVICE_PARAMS.equals (mode);
-
-        tb.setIndication (isVolume);
-        if (tbe != null)
-            tbe.setIndication (isEffect && isVolume);
-
-        final ICursorDevice cursorDevice = this.model.getCursorDevice ();
-        final ITrack selectedTrack = tb.getSelectedItem ();
-        final IParameterBank parameterBank = cursorDevice.getParameterBank ();
-        for (int i = 0; i < tb.getPageSize (); i++)
-        {
-            final boolean hasTrackSel = selectedTrack != null && selectedTrack.getIndex () == i && Modes.TRACK.equals (mode);
-            final ITrack track = tb.getItem (i);
-            track.setVolumeIndication (!isEffect && (isVolume || hasTrackSel));
-            track.setPanIndication (!isEffect && hasTrackSel);
-
-            final ISendBank sendBank = track.getSendBank ();
-            for (int j = 0; j < 6; j++)
-                sendBank.getItem (j).setIndication (!isEffect && hasTrackSel);
-
-            if (tbe != null)
-            {
-                final ITrack fxTrack = tbe.getItem (i);
-                fxTrack.setVolumeIndication (isEffect);
-            }
-
-            parameterBank.getItem (i).setIndication (isDevice);
-        }
     }
 
 

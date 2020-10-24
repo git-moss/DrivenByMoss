@@ -66,10 +66,8 @@ import de.mossgrabers.framework.controller.valuechanger.DefaultValueChanger;
 import de.mossgrabers.framework.daw.IHost;
 import de.mossgrabers.framework.daw.ITransport;
 import de.mossgrabers.framework.daw.ModelSetup;
-import de.mossgrabers.framework.daw.data.ICursorDevice;
 import de.mossgrabers.framework.daw.data.ITrack;
 import de.mossgrabers.framework.daw.data.bank.IParameterBank;
-import de.mossgrabers.framework.daw.data.bank.ISendBank;
 import de.mossgrabers.framework.daw.data.bank.ITrackBank;
 import de.mossgrabers.framework.daw.midi.IMidiAccess;
 import de.mossgrabers.framework.daw.midi.IMidiInput;
@@ -161,9 +159,6 @@ public class APCControllerSetup extends AbstractControllerSetup<APCControlSurfac
     {
         super.createObservers ();
 
-        final APCControlSurface surface = this.getSurface ();
-        surface.getViewManager ().addChangeListener ( (previousViewId, activeViewId) -> this.updateMode (null));
-        surface.getModeManager ().addChangeListener ( (previousModeId, activeModeId) -> this.updateMode (activeModeId));
         this.createScaleObservers (this.configuration);
 
         this.configuration.registerDeactivatedItemsHandler (this.model);
@@ -328,10 +323,13 @@ public class APCControllerSetup extends AbstractControllerSetup<APCControlSurfac
 
         for (int i = 0; i < 8; i++)
         {
-            this.addFader (ContinuousID.get (ContinuousID.FADER1, i), "Fader" + (i + 1), null, BindType.CC, i, APCControlSurface.APC_KNOB_TRACK_LEVEL);
+            this.addFader (ContinuousID.get (ContinuousID.FADER1, i), "Fader" + (i + 1), null, BindType.CC, i, APCControlSurface.APC_KNOB_TRACK_LEVEL).setIndexInGroup (i);
 
             final IHwAbsoluteKnob channelKnob = this.addAbsoluteKnob (ContinuousID.get (ContinuousID.KNOB1, i), "Knob " + (i + 1), new KnobRowModeCommand<> (i, this.model, surface), APCControlSurface.APC_KNOB_TRACK_KNOB_1 + i);
             final IHwAbsoluteKnob deviceKnob = this.addAbsoluteKnob (ContinuousID.get (ContinuousID.DEVICE_KNOB1, i), "Device Knob " + (i + 1), null, APCControlSurface.APC_KNOB_DEVICE_KNOB_1 + i);
+
+            channelKnob.setIndexInGroup (i);
+            deviceKnob.setIndexInGroup (i);
 
             // Disable take over mode for the knobs since due to their LED updates they act like
             // motor faders
@@ -699,14 +697,6 @@ public class APCControllerSetup extends AbstractControllerSetup<APCControlSurfac
     }
 
 
-    private void updateMode (final Modes mode)
-    {
-        final APCControlSurface surface = this.getSurface ();
-        final Modes m = mode == null ? surface.getModeManager ().getActiveID () : mode;
-        this.updateIndication (m);
-    }
-
-
     /** {@inheritDoc} */
     @Override
     public void flush ()
@@ -721,45 +711,6 @@ public class APCControllerSetup extends AbstractControllerSetup<APCControlSurfac
         final IParameterBank parameterBank = this.model.getCursorDevice ().getParameterBank ();
         for (int i = 0; i < 8; i++)
             surface.setLED (APCControlSurface.APC_KNOB_DEVICE_KNOB_1 + i, parameterBank.getItem (i).getValue ());
-    }
-
-
-    /** {@inheritDoc} */
-    @Override
-    protected void updateIndication (final Modes mode)
-    {
-        final ITrackBank tb = this.model.getTrackBank ();
-        final ITrackBank tbe = this.model.getEffectTrackBank ();
-        final APCControlSurface surface = this.getSurface ();
-        final boolean isSession = surface.getViewManager ().isActive (Views.SESSION);
-        final boolean isEffect = this.model.isEffectTrackBankActive ();
-        final boolean isPan = Modes.PAN.equals (mode);
-        final boolean isShift = surface.isShiftPressed ();
-
-        tb.setIndication (!isEffect && (isSession || isShift));
-        if (tbe != null)
-            tbe.setIndication (isEffect && (isSession || isShift));
-
-        final ICursorDevice cursorDevice = this.model.getCursorDevice ();
-        final IParameterBank parameterBank = cursorDevice.getParameterBank ();
-        for (int i = 0; i < 8; i++)
-        {
-            final ITrack track = tb.getItem (i);
-            track.setVolumeIndication (!isEffect);
-            track.setPanIndication (!isEffect && isPan);
-            final ISendBank sendBank = track.getSendBank ();
-            for (int j = 0; j < 8; j++)
-                sendBank.getItem (j).setIndication (!isEffect && (Modes.SEND1.equals (mode) && j == 0 || Modes.SEND2.equals (mode) && j == 1 || Modes.SEND3.equals (mode) && j == 2 || Modes.SEND4.equals (mode) && j == 3 || Modes.SEND5.equals (mode) && j == 4 || Modes.SEND6.equals (mode) && j == 5 || Modes.SEND7.equals (mode) && j == 6 || Modes.SEND8.equals (mode) && j == 7));
-
-            if (tbe != null)
-            {
-                final ITrack fxTrack = tbe.getItem (i);
-                fxTrack.setVolumeIndication (isEffect);
-                fxTrack.setPanIndication (isEffect && isPan);
-            }
-
-            parameterBank.getItem (i).setIndication (true);
-        }
     }
 
 

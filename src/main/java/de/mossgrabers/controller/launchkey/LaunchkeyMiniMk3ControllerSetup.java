@@ -35,9 +35,7 @@ import de.mossgrabers.framework.daw.IHost;
 import de.mossgrabers.framework.daw.ITransport;
 import de.mossgrabers.framework.daw.ModelSetup;
 import de.mossgrabers.framework.daw.data.ICursorDevice;
-import de.mossgrabers.framework.daw.data.ITrack;
 import de.mossgrabers.framework.daw.data.bank.IParameterBank;
-import de.mossgrabers.framework.daw.data.bank.ISendBank;
 import de.mossgrabers.framework.daw.data.bank.ITrackBank;
 import de.mossgrabers.framework.daw.midi.IMidiAccess;
 import de.mossgrabers.framework.daw.midi.IMidiInput;
@@ -148,7 +146,6 @@ public class LaunchkeyMiniMk3ControllerSetup extends AbstractControllerSetup<Lau
     {
         super.createObservers ();
 
-        this.getSurface ().getModeManager ().addChangeListener ( (previousViewId, activeViewId) -> this.updateIndication (null));
         this.createScaleObservers (this.configuration);
         this.configuration.registerDeactivatedItemsHandler (this.model);
     }
@@ -290,12 +287,13 @@ public class LaunchkeyMiniMk3ControllerSetup extends AbstractControllerSetup<Lau
         final LaunchkeyMiniMk3ControlSurface surface = this.getSurface ();
         for (int i = 0; i < 8; i++)
         {
-            this.addAbsoluteKnob (ContinuousID.get (ContinuousID.KNOB1, i), "Knob " + (i + 1), null, BindType.CC, 15, LaunchkeyMiniMk3ControlSurface.LAUNCHKEY_KNOB_1 + i);
+            this.addAbsoluteKnob (ContinuousID.get (ContinuousID.KNOB1, i), "Knob " + (i + 1), null, BindType.CC, 15, LaunchkeyMiniMk3ControlSurface.LAUNCHKEY_KNOB_1 + i).setIndexInGroup (i);
 
             // Knobs in user mode send on the keys input on MIDI channel 1 (instead of 16), command
             // is not needed since it is mapped to IParameter when user mode is activated
             final IHwAbsoluteKnob userKnob = surface.createAbsoluteKnob (ContinuousID.get (ContinuousID.DEVICE_KNOB1, i), "User Knob " + (i + 1));
             userKnob.bind (this.inputKeys, BindType.CC, 0, LaunchkeyMiniMk3ControlSurface.LAUNCHKEY_KNOB_1 + i);
+            userKnob.setIndexInGroup (i);
         }
     }
 
@@ -398,53 +396,6 @@ public class LaunchkeyMiniMk3ControllerSetup extends AbstractControllerSetup<Lau
         surface.getModeManager ().setActive (Modes.VOLUME);
         surface.setKnobMode (LaunchkeyMiniMk3ControlSurface.KNOB_MODE_VOLUME);
         surface.setPadMode (LaunchkeyMiniMk3ControlSurface.PAD_MODE_SESSION);
-    }
-
-
-    /** {@inheritDoc} */
-    @Override
-    protected void updateIndication (final Modes mode)
-    {
-        final ModeManager modeManager = this.getSurface ().getModeManager ();
-        final boolean isVolume = modeManager.isActive (Modes.VOLUME);
-        final boolean isPan = modeManager.isActive (Modes.PAN);
-        final boolean isSend1 = modeManager.isActive (Modes.SEND1);
-        final boolean isSend2 = modeManager.isActive (Modes.SEND2);
-        final boolean isDevice = modeManager.isActive (Modes.DEVICE_PARAMS);
-        final boolean isUserMode = modeManager.isActive (Modes.USER);
-
-        final ITrackBank tb = this.model.getTrackBank ();
-        final ITrackBank tbe = this.model.getEffectTrackBank ();
-        final ICursorDevice cursorDevice = this.model.getCursorDevice ();
-        final boolean isEffect = this.model.isEffectTrackBankActive ();
-
-        tb.setIndication (!isEffect);
-        if (tbe != null)
-            tbe.setIndication (isEffect);
-
-        final IParameterBank parameterBank = cursorDevice.getParameterBank ();
-        for (int i = 0; i < 8; i++)
-        {
-            final ITrack track = tb.getItem (i);
-            track.setVolumeIndication (!isEffect && isVolume);
-            track.setPanIndication (!isEffect && isPan);
-            final ISendBank sendBank = track.getSendBank ();
-            sendBank.getItem (0).setIndication (!isEffect && isSend1);
-            sendBank.getItem (1).setIndication (!isEffect && isSend2);
-
-            if (tbe != null)
-            {
-                final ITrack fxTrack = tbe.getItem (i);
-                fxTrack.setVolumeIndication (isEffect && isVolume);
-                fxTrack.setPanIndication (isEffect && isPan);
-            }
-
-            parameterBank.getItem (i).setIndication (isDevice);
-        }
-
-        final IParameterBank userParameterBank = this.model.getUserParameterBank ();
-        for (int i = 0; i < userParameterBank.getPageSize (); i++)
-            userParameterBank.getItem (i).setIndication (isUserMode);
     }
 
 

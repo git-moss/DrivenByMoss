@@ -14,6 +14,7 @@ import de.mossgrabers.framework.controller.display.IGraphicDisplay;
 import de.mossgrabers.framework.controller.display.ITextDisplay;
 import de.mossgrabers.framework.controller.valuechanger.IValueChanger;
 import de.mossgrabers.framework.daw.IModel;
+import de.mossgrabers.framework.daw.constants.Capability;
 import de.mossgrabers.framework.daw.data.ITrack;
 import de.mossgrabers.framework.daw.data.bank.ITrackBank;
 import de.mossgrabers.framework.featuregroup.ModeManager;
@@ -340,7 +341,7 @@ public abstract class AbstractTrackMode extends BaseMode
         final IValueChanger valueChanger = this.model.getValueChanger ();
         final ITrackBank tb = this.model.getCurrentTrackBank ();
         final PushConfiguration config = this.surface.getConfiguration ();
-        final boolean displayCrossfader = this.model.getHost ().hasCrossfader ();
+        final boolean displayCrossfader = this.model.getHost ().supports (Capability.HAS_CROSSFADER);
         for (int i = 0; i < 8; i++)
         {
             final ITrack t = tb.getItem (i);
@@ -412,7 +413,7 @@ public abstract class AbstractTrackMode extends BaseMode
 
         this.menu.get (0).set ("Volume", Boolean.valueOf (selectedMenu - 1 == 0));
         this.menu.get (1).set ("Pan", Boolean.valueOf (selectedMenu - 1 == 1));
-        this.menu.get (2).set (this.model.getHost ().hasCrossfader () ? "Crossfader" : " ", Boolean.valueOf (selectedMenu - 1 == 2));
+        this.menu.get (2).set (this.model.getHost ().supports (Capability.HAS_CROSSFADER) ? "Crossfader" : " ", Boolean.valueOf (selectedMenu - 1 == 2));
 
         if (this.model.isEffectTrackBankActive ())
         {

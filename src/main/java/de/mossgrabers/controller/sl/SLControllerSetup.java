@@ -39,11 +39,7 @@ import de.mossgrabers.framework.controller.valuechanger.DefaultValueChanger;
 import de.mossgrabers.framework.controller.valuechanger.RelativeEncoding;
 import de.mossgrabers.framework.daw.IHost;
 import de.mossgrabers.framework.daw.ModelSetup;
-import de.mossgrabers.framework.daw.data.ICursorDevice;
-import de.mossgrabers.framework.daw.data.ITrack;
 import de.mossgrabers.framework.daw.data.bank.IParameterBank;
-import de.mossgrabers.framework.daw.data.bank.ISendBank;
-import de.mossgrabers.framework.daw.data.bank.ITrackBank;
 import de.mossgrabers.framework.daw.midi.IMidiAccess;
 import de.mossgrabers.framework.daw.midi.IMidiInput;
 import de.mossgrabers.framework.daw.midi.IMidiOutput;
@@ -108,8 +104,6 @@ public class SLControllerSetup extends AbstractControllerSetup<SLControlSurface,
         final ModeManager modeManager = this.getSurface ().getModeManager ();
         if (!modeManager.isActive (Modes.VOLUME))
             modeManager.get (Modes.VOLUME).updateDisplay ();
-
-        this.updateIndication (modeManager.getActiveID ());
     }
 
 
@@ -408,44 +402,5 @@ public class SLControllerSetup extends AbstractControllerSetup<SLControlSurface,
         modeManager.get (Modes.VOLUME).updateDisplay ();
         surface.getViewManager ().setActive (Views.CONTROL);
         modeManager.setActive (Modes.TRACK);
-    }
-
-
-    /** {@inheritDoc} */
-    @Override
-    protected void updateIndication (final Modes mode)
-    {
-        if (this.currentMode != null && this.currentMode.equals (mode))
-            return;
-        this.currentMode = mode;
-
-        final ITrackBank tb = this.model.getTrackBank ();
-        final ITrackBank tbe = this.model.getEffectTrackBank ();
-        final boolean isEffect = this.model.isEffectTrackBankActive ();
-        final boolean isVolume = Modes.VOLUME.equals (mode);
-
-        final ICursorDevice cursorDevice = this.model.getCursorDevice ();
-        final IParameterBank parameterBank = cursorDevice.getParameterBank ();
-        final ITrack selectedTrack = tb.getSelectedItem ();
-        for (int i = 0; i < 8; i++)
-        {
-            final boolean hasTrackSel = selectedTrack != null && selectedTrack.getIndex () == i && Modes.TRACK.equals (mode);
-            final ITrack track = tb.getItem (i);
-            track.setVolumeIndication (!isEffect && (isVolume || hasTrackSel));
-            track.setPanIndication (!isEffect && hasTrackSel);
-
-            final ISendBank sendBank = track.getSendBank ();
-            for (int j = 0; j < 6; j++)
-                sendBank.getItem (j).setIndication (!isEffect && hasTrackSel);
-
-            if (tbe != null)
-            {
-                final ITrack fxTrack = tbe.getItem (i);
-                fxTrack.setVolumeIndication (isEffect);
-                fxTrack.setPanIndication (isEffect);
-            }
-
-            parameterBank.getItem (i).setIndication (true);
-        }
     }
 }

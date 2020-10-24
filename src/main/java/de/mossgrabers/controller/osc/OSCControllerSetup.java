@@ -31,7 +31,6 @@ import de.mossgrabers.framework.daw.constants.DeviceID;
 import de.mossgrabers.framework.daw.data.bank.ITrackBank;
 import de.mossgrabers.framework.daw.midi.IMidiAccess;
 import de.mossgrabers.framework.daw.midi.IMidiInput;
-import de.mossgrabers.framework.mode.Modes;
 import de.mossgrabers.framework.osc.IOpenSoundControlClient;
 import de.mossgrabers.framework.osc.IOpenSoundControlServer;
 import de.mossgrabers.framework.scale.Scales;
@@ -216,13 +215,5 @@ public class OSCControllerSetup extends AbstractControllerSetup<IControlSurface<
     {
         // Initial flush of the whole DAW state
         this.host.scheduleTask ( () -> this.writer.flush (true), 1000);
-    }
-
-
-    /** {@inheritDoc} */
-    @Override
-    protected void updateIndication (final Modes mode)
-    {
-        // Not used
     }
 }

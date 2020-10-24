@@ -11,7 +11,7 @@ import de.mossgrabers.framework.controller.display.ITextDisplay;
 import de.mossgrabers.framework.controller.valuechanger.IValueChanger;
 import de.mossgrabers.framework.daw.IHost;
 import de.mossgrabers.framework.daw.IModel;
-import de.mossgrabers.framework.daw.constants.EditCapability;
+import de.mossgrabers.framework.daw.constants.Capability;
 import de.mossgrabers.framework.daw.constants.Resolution;
 import de.mossgrabers.framework.daw.midi.ArpeggiatorMode;
 import de.mossgrabers.framework.daw.midi.INoteInput;
@@ -65,7 +65,7 @@ public class NoteRepeatMode extends BaseMode
 
             case 2:
             case 3:
-                if (this.host.canEdit (EditCapability.NOTE_REPEAT_LENGTH))
+                if (this.host.supports (Capability.NOTE_REPEAT_LENGTH))
                 {
                     final int sel2 = Resolution.change (Resolution.getMatch (configuration.getNoteRepeatLength ().getValue ()), valueChanger.calcKnobChange (value) > 0);
                     configuration.setNoteRepeatLength (Resolution.values ()[sel2]);
@@ -74,7 +74,7 @@ public class NoteRepeatMode extends BaseMode
 
             case 4:
             case 5:
-                if (this.host.canEdit (EditCapability.NOTE_REPEAT_MODE))
+                if (this.host.supports (Capability.NOTE_REPEAT_MODE))
                 {
                     final ArpeggiatorMode arpMode = configuration.getNoteRepeatMode ();
                     final int modeIndex = configuration.lookupArpeggiatorModeIndex (arpMode);
@@ -87,7 +87,7 @@ public class NoteRepeatMode extends BaseMode
 
             case 6:
             case 7:
-                if (this.host.canEdit (EditCapability.NOTE_REPEAT_OCTAVES))
+                if (this.host.supports (Capability.NOTE_REPEAT_OCTAVES))
                     configuration.setNoteRepeatOctave (configuration.getNoteRepeatOctave () + (valueChanger.calcKnobChange (value) > 0 ? 1 : -1));
                 break;
 
@@ -116,7 +116,7 @@ public class NoteRepeatMode extends BaseMode
 
                 case 2:
                 case 3:
-                    if (this.host.canEdit (EditCapability.NOTE_REPEAT_LENGTH))
+                    if (this.host.supports (Capability.NOTE_REPEAT_LENGTH))
                     {
                         configuration.setNoteRepeatLength (Resolution.values ()[4]);
                     }
@@ -124,13 +124,13 @@ public class NoteRepeatMode extends BaseMode
 
                 case 4:
                 case 5:
-                    if (this.host.canEdit (EditCapability.NOTE_REPEAT_MODE))
+                    if (this.host.supports (Capability.NOTE_REPEAT_MODE))
                         this.noteRepeat.setMode (ArpeggiatorMode.UP);
                     break;
 
                 case 6:
                 case 7:
-                    if (this.host.canEdit (EditCapability.NOTE_REPEAT_OCTAVES))
+                    if (this.host.supports (Capability.NOTE_REPEAT_OCTAVES))
                         this.noteRepeat.setOctaves (1);
                     break;
 
@@ -154,21 +154,21 @@ public class NoteRepeatMode extends BaseMode
         d.setBlock (0, 0, this.mark ("Period", 0));
         d.setBlock (1, 0, names[selPeriodIndex >= 0 && selPeriodIndex < names.length ? selPeriodIndex : 0]);
 
-        if (this.host.canEdit (EditCapability.NOTE_REPEAT_LENGTH))
+        if (this.host.supports (Capability.NOTE_REPEAT_LENGTH))
         {
             final int selLengthIndex = this.getSelectedNoteLengthIndex ();
             d.setBlock (0, 1, this.mark ("Length", 2));
             d.setBlock (1, 1, names[selLengthIndex >= 0 && selLengthIndex < names.length ? selLengthIndex : 0]);
         }
 
-        if (this.host.canEdit (EditCapability.NOTE_REPEAT_MODE))
+        if (this.host.supports (Capability.NOTE_REPEAT_MODE))
         {
             final ArpeggiatorMode mode = this.noteRepeat.getMode ();
             d.setBlock (0, 2, this.mark ("Mode", 4));
             d.setBlock (1, 2, StringUtils.optimizeName (mode.getName (), 12));
         }
 
-        if (this.host.canEdit (EditCapability.NOTE_REPEAT_OCTAVES))
+        if (this.host.supports (Capability.NOTE_REPEAT_OCTAVES))
         {
             final int octaves = this.noteRepeat.getOctaves ();
             d.setBlock (0, 3, this.mark ("Octaves", 6));

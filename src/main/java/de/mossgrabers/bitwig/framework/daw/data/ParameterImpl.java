@@ -79,8 +79,6 @@ public class ParameterImpl extends RangedValueImpl
     @Override
     public String getName ()
     {
-        // TODO Bugfix required: The ISend check is a workaround for
-        // https://github.com/teotigraphix/Framework4Bitwig/issues/267
         return this.targetName == null ? this.parameter.name ().get () : this.targetName.get ();
     }
 
@@ -89,8 +87,6 @@ public class ParameterImpl extends RangedValueImpl
     @Override
     public String getName (final int limit)
     {
-        // TODO Bugfix required: The ISend check is a workaround for
-        // https://github.com/teotigraphix/Framework4Bitwig/issues/267
         return this.targetName == null ? this.parameter.name ().getLimited (limit) : this.targetName.getLimited (limit);
     }
 

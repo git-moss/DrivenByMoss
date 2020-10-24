@@ -4,9 +4,7 @@
 
 package de.mossgrabers.framework.daw.data.empty;
 
-import de.mossgrabers.framework.daw.data.IItem;
-import de.mossgrabers.framework.observer.IValueObserver;
-import de.mossgrabers.framework.utils.StringUtils;
+import de.mossgrabers.framework.daw.data.AbstractItemImpl;
 
 
 /**
@@ -14,37 +12,13 @@ import de.mossgrabers.framework.utils.StringUtils;
  *
  * @author J&uuml;rgen Mo&szlig;graber
  */
-public class EmptyItem implements IItem
+public class EmptyItem extends AbstractItemImpl
 {
-    /** {@inheritDoc} */
-    @Override
-    public boolean doesExist ()
-    {
-        return false;
-    }
-
-
-    /** {@inheritDoc} */
-    @Override
-    public int getIndex ()
-    {
-        return -1;
-    }
-
-
     /** {@inheritDoc} */
     @Override
     public int getPosition ()
     {
         return -1;
-    }
-
-
-    /** {@inheritDoc} */
-    @Override
-    public boolean isSelected ()
-    {
-        return false;
     }
 
 
@@ -59,38 +33,6 @@ public class EmptyItem implements IItem
     /** {@inheritDoc} */
     @Override
     public void select ()
-    {
-        // Intentionally empty
-    }
-
-
-    /** {@inheritDoc} */
-    @Override
-    public String getName ()
-    {
-        return "";
-    }
-
-
-    /** {@inheritDoc} */
-    @Override
-    public String getName (final int limit)
-    {
-        return StringUtils.optimizeName (this.getName (), limit);
-    }
-
-
-    /** {@inheritDoc} */
-    @Override
-    public void addNameObserver (final IValueObserver<String> observer)
-    {
-        // Intentionally empty
-    }
-
-
-    /** {@inheritDoc} */
-    @Override
-    public void enableObservers (final boolean enable)
     {
         // Intentionally empty
     }

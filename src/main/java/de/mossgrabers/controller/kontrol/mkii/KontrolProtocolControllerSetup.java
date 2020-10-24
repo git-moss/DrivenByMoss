@@ -41,12 +41,9 @@ import de.mossgrabers.framework.daw.IHost;
 import de.mossgrabers.framework.daw.ITransport;
 import de.mossgrabers.framework.daw.ModelSetup;
 import de.mossgrabers.framework.daw.constants.DeviceID;
-import de.mossgrabers.framework.daw.data.ICursorDevice;
 import de.mossgrabers.framework.daw.data.ISpecificDevice;
 import de.mossgrabers.framework.daw.data.ITrack;
-import de.mossgrabers.framework.daw.data.bank.IParameterBank;
 import de.mossgrabers.framework.daw.data.bank.ISceneBank;
-import de.mossgrabers.framework.daw.data.bank.ISendBank;
 import de.mossgrabers.framework.daw.data.bank.ITrackBank;
 import de.mossgrabers.framework.daw.midi.IMidiAccess;
 import de.mossgrabers.framework.daw.midi.IMidiInput;
@@ -217,8 +214,6 @@ public class KontrolProtocolControllerSetup extends AbstractControllerSetup<Kont
     {
         super.createObservers ();
 
-        this.getSurface ().getModeManager ().addChangeListener ( (oldMode, newMode) -> this.updateIndication (newMode));
-
         this.configuration.registerDeactivatedItemsHandler (this.model);
     }
 
@@ -319,10 +314,12 @@ public class KontrolProtocolControllerSetup extends AbstractControllerSetup<Kont
             final int knobMidi1 = KontrolProtocolControlSurface.KONTROL_TRACK_VOLUME + i;
             final IHwRelativeKnob knob1 = this.addRelativeKnob (ContinuousID.get (ContinuousID.KNOB1, i), "Knob " + (i + 1), null, BindType.CC, 15, knobMidi1);
             knob1.addOutput ( () -> this.getKnobValue (knobMidi1), value -> surface.setTrigger (15, knobMidi1, value));
+            knob1.setIndexInGroup (i);
 
             final int knobMidi2 = KontrolProtocolControlSurface.KONTROL_TRACK_PAN + i;
             final IHwRelativeKnob knob2 = this.addRelativeKnob (ContinuousID.get (ContinuousID.FADER1, i), "Fader " + (i + 1), null, BindType.CC, 15, KontrolProtocolControlSurface.KONTROL_TRACK_PAN + i);
             knob2.addOutput ( () -> this.getKnobValue (knobMidi2), value -> surface.setTrigger (15, knobMidi2, value));
+            knob2.setIndexInGroup (i);
         }
     }
 
@@ -451,41 +448,6 @@ public class KontrolProtocolControllerSetup extends AbstractControllerSetup<Kont
         surface.getViewManager ().setActive (Views.CONTROL);
         surface.getModeManager ().setActive (Modes.VOLUME);
         surface.initHandshake ();
-    }
-
-
-    /** {@inheritDoc} */
-    @Override
-    protected void updateIndication (final Modes mode)
-    {
-        if (this.currentMode != null && this.currentMode == mode)
-            return;
-
-        if (mode != null)
-            this.currentMode = mode;
-
-        final ITrackBank tb = this.model.getTrackBank ();
-        final boolean isVolume = Modes.VOLUME == this.currentMode;
-        final boolean isSend = Modes.SEND == this.currentMode;
-        final boolean isDevice = Modes.isDeviceMode (this.currentMode) || Modes.isLayerMode (this.currentMode);
-
-        final ICursorDevice cursorDevice = this.model.getCursorDevice ();
-        final ITrack selectedTrack = tb.getSelectedItem ();
-        final IParameterBank parameterBank = cursorDevice.getParameterBank ();
-        for (int i = 0; i < tb.getPageSize (); i++)
-        {
-            final boolean hasTrackSel = selectedTrack != null && selectedTrack.getIndex () == i;
-
-            final ITrack track = tb.getItem (i);
-            track.setVolumeIndication (isVolume);
-            track.setPanIndication (isVolume);
-
-            final ISendBank sendBank = track.getSendBank ();
-            for (int j = 0; j < sendBank.getPageSize (); j++)
-                sendBank.getItem (j).setIndication (isSend && hasTrackSel);
-
-            parameterBank.getItem (i).setIndication (isDevice);
-        }
     }
 
 

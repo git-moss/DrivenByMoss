@@ -248,7 +248,7 @@ public class GenericFlexiControllerSetup extends AbstractControllerSetup<Generic
         if (effectTrackBank != null)
             effectTrackBank.addSelectionObserver ( (index, selected) -> this.handleTrackChange (selected));
 
-        surface.getModeManager ().addChangeListener ( (oldMode, newMode) -> this.updateIndication (newMode));
+        surface.getModeManager ().addChangeListener ( (oldMode, newMode) -> this.updateIndication ());
 
         this.createNoteRepeatObservers (this.configuration, surface);
 
@@ -326,7 +326,7 @@ public class GenericFlexiControllerSetup extends AbstractControllerSetup<Generic
     @Override
     public void update (final FlexiCommand value)
     {
-        this.updateIndication (null);
+        this.updateIndication ();
     }
 
 
@@ -342,9 +342,7 @@ public class GenericFlexiControllerSetup extends AbstractControllerSetup<Generic
     }
 
 
-    /** {@inheritDoc} */
-    @Override
-    protected void updateIndication (final Modes mode)
+    protected void updateIndication ()
     {
         final Set<FlexiCommand> commands = this.configuration.getMappedCommands ();
         final FlexiCommand [] allCommands = FlexiCommand.values ();

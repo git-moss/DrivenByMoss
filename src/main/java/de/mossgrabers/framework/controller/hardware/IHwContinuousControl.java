@@ -120,4 +120,13 @@ public interface IHwContinuousControl extends IHwInputControl
      * @param parameter THe parameter to bind
      */
     void bind (IParameter parameter);
+
+
+    /**
+     * If this control is part of group of related controls then this specifies the index in that
+     * group.
+     *
+     * @param index The index
+     */
+    void setIndexInGroup (int index);
 }

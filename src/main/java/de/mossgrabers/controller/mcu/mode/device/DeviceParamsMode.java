@@ -11,6 +11,8 @@ import de.mossgrabers.framework.daw.IModel;
 import de.mossgrabers.framework.daw.data.ICursorDevice;
 import de.mossgrabers.framework.daw.data.IParameter;
 import de.mossgrabers.framework.daw.data.bank.IParameterBank;
+import de.mossgrabers.framework.parameterprovider.BankParameterProvider;
+import de.mossgrabers.framework.parameterprovider.RangeFilterParameterProvider;
 import de.mossgrabers.framework.utils.StringUtils;
 
 
@@ -30,6 +32,9 @@ public class DeviceParamsMode extends BaseMode
     public DeviceParamsMode (final MCUControlSurface surface, final IModel model)
     {
         super ("Parameters", surface, model, model.getCursorDevice ().getParameterBank ());
+
+        final int surfaceID = surface.getSurfaceID ();
+        this.setParameters (new RangeFilterParameterProvider (new BankParameterProvider (model.getCursorDevice ().getParameterBank ()), surfaceID * 8, 8));
     }
 
 

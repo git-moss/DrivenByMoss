@@ -10,7 +10,7 @@ import de.mossgrabers.framework.controller.ButtonID;
 import de.mossgrabers.framework.controller.display.IGraphicDisplay;
 import de.mossgrabers.framework.controller.display.ITextDisplay;
 import de.mossgrabers.framework.daw.IModel;
-import de.mossgrabers.framework.daw.constants.EditCapability;
+import de.mossgrabers.framework.daw.constants.Capability;
 import de.mossgrabers.framework.daw.data.IMarker;
 import de.mossgrabers.framework.daw.data.bank.IMarkerBank;
 import de.mossgrabers.framework.featuregroup.AbstractFeatureGroup;
@@ -52,7 +52,7 @@ public class MarkerMode extends BaseMode
     {
         super ("Marker", surface, model, model.getMarkerBank ());
 
-        this.canEditMarkers = model.getHost ().canEdit (EditCapability.MARKERS);
+        this.canEditMarkers = model.getHost ().supports (Capability.MARKERS);
     }
 
 

@@ -5,10 +5,7 @@
 package de.mossgrabers.bitwig.framework.daw.data;
 
 import de.mossgrabers.framework.controller.valuechanger.IValueChanger;
-import de.mossgrabers.framework.daw.data.AbstractItemImpl;
-import de.mossgrabers.framework.daw.data.IParameter;
-import de.mossgrabers.framework.observer.IValueObserver;
-import de.mossgrabers.framework.utils.StringUtils;
+import de.mossgrabers.framework.daw.data.AbstractParameterImpl;
 
 import com.bitwig.extension.controller.api.DoubleValue;
 import com.bitwig.extension.controller.api.SettableRangedValue;
@@ -20,7 +17,7 @@ import com.bitwig.extension.controller.api.StringValue;
  *
  * @author J&uuml;rgen Mo&szlig;graber
  */
-public class RangedValueImpl extends AbstractItemImpl implements IParameter
+public class RangedValueImpl extends AbstractParameterImpl
 {
     protected final IValueChanger       valueChanger;
     protected final SettableRangedValue rangedValue;
@@ -102,22 +99,6 @@ public class RangedValueImpl extends AbstractItemImpl implements IParameter
 
     /** {@inheritDoc} */
     @Override
-    public String getName (final int limit)
-    {
-        return StringUtils.optimizeName (this.getName (), limit);
-    }
-
-
-    /** {@inheritDoc} */
-    @Override
-    public void addNameObserver (final IValueObserver<String> observer)
-    {
-        // Intentionally empty, since name does not change
-    }
-
-
-    /** {@inheritDoc} */
-    @Override
     public String getDisplayedValue ()
     {
         return this.targetDisplayedValue == null ? this.rangedValue.displayedValue ().get () : this.targetDisplayedValue.get ();
@@ -151,6 +132,14 @@ public class RangedValueImpl extends AbstractItemImpl implements IParameter
 
     /** {@inheritDoc} */
     @Override
+    public void setNormalizedValue (final double value)
+    {
+        this.setValue (this.valueChanger.fromNormalizedValue (value));
+    }
+
+
+    /** {@inheritDoc} */
+    @Override
     public void setValueImmediatly (final int value)
     {
         this.rangedValue.setImmediately (this.valueChanger.toNormalizedValue (value));
@@ -170,39 +159,6 @@ public class RangedValueImpl extends AbstractItemImpl implements IParameter
     public void resetValue ()
     {
         this.setValue (0);
-    }
-
-
-    /** {@inheritDoc} */
-    @Override
-    public void touchValue (final boolean isBeingTouched)
-    {
-        // Not supported
-    }
-
-
-    /** {@inheritDoc} */
-    @Override
-    public int getModulatedValue ()
-    {
-        // Not supported, simply use the value
-        return this.getValue ();
-    }
-
-
-    /** {@inheritDoc} */
-    @Override
-    public void setIndication (final boolean enable)
-    {
-        // Not supported
-    }
-
-
-    /** {@inheritDoc} */
-    @Override
-    public void select ()
-    {
-        // Cannot be selected but should also not crash
     }
 
 

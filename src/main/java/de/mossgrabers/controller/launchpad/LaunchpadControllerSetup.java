@@ -261,7 +261,7 @@ public class LaunchpadControllerSetup extends AbstractControllerSetup<LaunchpadC
         surface.getViewManager ().addChangeListener ( (previousViewId, activeViewId) -> {
 
             surface.getLight (OutputID.LED1).clearCache ();
-            this.updateIndication (null);
+            this.updateIndication ();
 
         });
 
@@ -769,9 +769,7 @@ public class LaunchpadControllerSetup extends AbstractControllerSetup<LaunchpadC
     }
 
 
-    /** {@inheritDoc} */
-    @Override
-    protected void updateIndication (final Modes mode)
+    protected void updateIndication ()
     {
         final ViewManager viewManager = this.getSurface ().getViewManager ();
         final boolean isVolume = viewManager.isActive (Views.TRACK_VOLUME);

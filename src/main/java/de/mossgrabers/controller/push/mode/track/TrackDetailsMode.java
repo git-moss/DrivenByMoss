@@ -13,6 +13,7 @@ import de.mossgrabers.framework.controller.ButtonID;
 import de.mossgrabers.framework.controller.display.IGraphicDisplay;
 import de.mossgrabers.framework.controller.display.ITextDisplay;
 import de.mossgrabers.framework.daw.IModel;
+import de.mossgrabers.framework.daw.constants.Capability;
 import de.mossgrabers.framework.daw.data.IMasterTrack;
 import de.mossgrabers.framework.daw.data.ITrack;
 import de.mossgrabers.framework.daw.data.bank.ITrackBank;
@@ -238,7 +239,7 @@ public class TrackDetailsMode extends BaseMode
         display.setCell (3, 4, track.isMonitor () ? "On" : "Off");
         display.setCell (2, 5, "Auto Monitor");
         display.setCell (3, 5, track.isAutoMonitor () ? "On" : "Off");
-        final boolean hasPinning = this.model.getHost ().hasPinning ();
+        final boolean hasPinning = this.model.getHost ().supports (Capability.HAS_PINNING);
         display.setCell (2, 6, hasPinning ? "Pin Trck" : "");
         display.setCell (3, 6, hasPinning ? this.model.isCursorTrackPinned () ? "On" : "Off" : "");
         display.setCell (2, 7, "Select").setCell (3, 7, "Color");
@@ -265,7 +266,7 @@ public class TrackDetailsMode extends BaseMode
         display.addOptionElement ("", "", false, "", "Solo", track.isSolo (), false);
         display.addOptionElement ("", "", false, "", "Monitor", track.isMonitor (), false);
         display.addOptionElement ("Midi Insert/Edit Channel:", "", false, "", "Auto Monitor", track.isAutoMonitor (), false);
-        final boolean hasPinning = this.model.getHost ().hasPinning ();
+        final boolean hasPinning = this.model.getHost ().supports (Capability.HAS_PINNING);
         display.addOptionElement ("", "", false, "", hasPinning ? "Pin Track" : "", hasPinning && this.model.isCursorTrackPinned (), false);
         display.addOptionElement ("        " + (this.surface.getConfiguration ().getMidiEditChannel () + 1), "", false, "", "Select Color", false, false);
     }

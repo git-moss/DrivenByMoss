@@ -10,6 +10,8 @@ import de.mossgrabers.framework.controller.display.ITextDisplay;
 import de.mossgrabers.framework.daw.IApplication;
 import de.mossgrabers.framework.daw.IModel;
 import de.mossgrabers.framework.daw.data.IMasterTrack;
+import de.mossgrabers.framework.daw.data.empty.EmptyParameter;
+import de.mossgrabers.framework.parameterprovider.FixedParameterProvider;
 import de.mossgrabers.framework.utils.ButtonEvent;
 import de.mossgrabers.framework.utils.StringUtils;
 
@@ -30,6 +32,9 @@ public class MasterMode extends BaseMode
     public MasterMode (final MCUControlSurface surface, final IModel model)
     {
         super ("Master", surface, model);
+
+        final IMasterTrack masterTrack = this.model.getMasterTrack ();
+        this.setParameters (new FixedParameterProvider (masterTrack.getVolumeParameter (), masterTrack.getPanParameter (), EmptyParameter.INSTANCE, EmptyParameter.INSTANCE, EmptyParameter.INSTANCE, EmptyParameter.INSTANCE, EmptyParameter.INSTANCE, EmptyParameter.INSTANCE));
     }
 
 
@@ -50,17 +55,6 @@ public class MasterMode extends BaseMode
         super.onDeactivate ();
 
         this.setActive (false);
-    }
-
-
-    /** {@inheritDoc} */
-    @Override
-    public void onKnobValue (final int index, final int value)
-    {
-        if (index == 0)
-            this.model.getMasterTrack ().changeVolume (value);
-        else if (index == 1)
-            this.model.getMasterTrack ().changePan (value);
     }
 
 

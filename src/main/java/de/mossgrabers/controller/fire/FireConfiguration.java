@@ -9,6 +9,7 @@ import de.mossgrabers.framework.configuration.IEnumSetting;
 import de.mossgrabers.framework.configuration.ISettingsUI;
 import de.mossgrabers.framework.controller.valuechanger.IValueChanger;
 import de.mossgrabers.framework.daw.IHost;
+import de.mossgrabers.framework.daw.constants.Capability;
 import de.mossgrabers.framework.daw.midi.ArpeggiatorMode;
 
 
@@ -79,7 +80,7 @@ public class FireConfiguration extends AbstractConfiguration
         ///////////////////////////
         // Drum Sequencer
 
-        if (this.host.hasDrumDevice ())
+        if (this.host.supports (Capability.HAS_DRUM_DEVICE))
             this.activateTurnOffEmptyDrumPadsSetting (globalSettings);
 
         ///////////////////////////

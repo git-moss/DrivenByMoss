@@ -40,7 +40,6 @@ import de.mossgrabers.framework.daw.midi.IMidiInput;
 import de.mossgrabers.framework.daw.midi.IMidiOutput;
 import de.mossgrabers.framework.daw.midi.INoteInput;
 import de.mossgrabers.framework.featuregroup.ViewManager;
-import de.mossgrabers.framework.mode.Modes;
 import de.mossgrabers.framework.scale.Scales;
 import de.mossgrabers.framework.utils.ButtonEvent;
 import de.mossgrabers.framework.view.Views;
@@ -154,7 +153,7 @@ public class BeatstepControllerSetup extends AbstractControllerSetup<BeatstepCon
     {
         super.createObservers ();
 
-        this.getSurface ().getViewManager ().addChangeListener ( (previousViewId, activeViewId) -> this.updateIndication (null));
+        this.getSurface ().getViewManager ().addChangeListener ( (previousViewId, activeViewId) -> this.updateIndication ());
         this.createScaleObservers (this.configuration);
 
         this.configuration.registerDeactivatedItemsHandler (this.model);
@@ -281,9 +280,7 @@ public class BeatstepControllerSetup extends AbstractControllerSetup<BeatstepCon
     }
 
 
-    /** {@inheritDoc} */
-    @Override
-    protected void updateIndication (final Modes mode)
+    protected void updateIndication ()
     {
         final BeatstepControlSurface surface = this.getSurface ();
 

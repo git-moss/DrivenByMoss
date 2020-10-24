@@ -81,11 +81,8 @@ import de.mossgrabers.framework.daw.DAWColor;
 import de.mossgrabers.framework.daw.IHost;
 import de.mossgrabers.framework.daw.ITransport;
 import de.mossgrabers.framework.daw.ModelSetup;
-import de.mossgrabers.framework.daw.data.ICursorDevice;
 import de.mossgrabers.framework.daw.data.ISlot;
 import de.mossgrabers.framework.daw.data.ITrack;
-import de.mossgrabers.framework.daw.data.bank.IParameterBank;
-import de.mossgrabers.framework.daw.data.bank.ISendBank;
 import de.mossgrabers.framework.daw.data.bank.ITrackBank;
 import de.mossgrabers.framework.daw.midi.IMidiAccess;
 import de.mossgrabers.framework.daw.midi.IMidiInput;
@@ -689,6 +686,7 @@ public class MaschineControllerSetup extends AbstractControllerSetup<MaschineCon
                     if (mode != null && event != ButtonEvent.LONG)
                         mode.onKnobTouch (index, event == ButtonEvent.DOWN);
                 }, surface.getMidiInput (), BindType.CC, 0, MaschineControlSurface.MODE_KNOB_TOUCH_1 + i);
+                modeKnob.setIndexInGroup (i);
             }
         }
 
@@ -903,55 +901,7 @@ public class MaschineControllerSetup extends AbstractControllerSetup<MaschineCon
 
     private void updateMode (final Modes mode)
     {
-        final Modes m = mode == null ? this.getSurface ().getModeManager ().getActiveID () : mode;
-        this.currentMode = m;
-        this.updateIndication (m);
-    }
-
-
-    /** {@inheritDoc} */
-    @Override
-    protected void updateIndication (final Modes mode)
-    {
-        final ITrackBank tb = this.model.getTrackBank ();
-        final ITrackBank tbe = this.model.getEffectTrackBank ();
-        final MaschineControlSurface surface = this.getSurface ();
-        final ViewManager viewManager = surface.getViewManager ();
-
-        final boolean isSession = viewManager.isActive (Views.SCENE_PLAY) || viewManager.isActive (Views.CLIP);
-        final boolean isEffect = this.model.isEffectTrackBankActive ();
-
-        final boolean isVolume = Modes.VOLUME.equals (mode);
-        final boolean isPan = Modes.PAN.equals (mode);
-
-        tb.setIndication (!isEffect && isSession);
-        if (tbe != null)
-            tbe.setIndication (isEffect && isSession);
-
-        final ITrack selectedTrack = tb.getSelectedItem ();
-        final int selIndex = selectedTrack == null ? -1 : selectedTrack.getIndex ();
-
-        final ICursorDevice cursorDevice = this.model.getCursorDevice ();
-        for (int i = 0; i < tb.getPageSize (); i++)
-        {
-            final ITrack track = tb.getItem (i);
-            track.setVolumeIndication (selIndex == i && !isEffect && isVolume);
-            track.setPanIndication (selIndex == i && !isEffect && isPan);
-            final ISendBank sendBank = track.getSendBank ();
-            for (int j = 0; j < sendBank.getPageSize (); j++)
-                sendBank.getItem (j).setIndication (selIndex == i && !isEffect && (Modes.SEND1.equals (mode) && j == 0 || Modes.SEND2.equals (mode) && j == 1 || Modes.SEND3.equals (mode) && j == 2 || Modes.SEND4.equals (mode) && j == 3 || Modes.SEND5.equals (mode) && j == 4 || Modes.SEND6.equals (mode) && j == 5 || Modes.SEND7.equals (mode) && j == 6 || Modes.SEND8.equals (mode) && j == 7));
-
-            if (tbe != null)
-            {
-                final ITrack fxTrack = tbe.getItem (i);
-                fxTrack.setVolumeIndication (selIndex == i && isEffect && isVolume);
-                fxTrack.setPanIndication (selIndex == i && isEffect && isPan);
-            }
-        }
-
-        final IParameterBank parameterBank = cursorDevice.getParameterBank ();
-        for (int i = 0; i < parameterBank.getPageSize (); i++)
-            parameterBank.getItem (i).setIndication (true);
+        this.currentMode = mode == null ? this.getSurface ().getModeManager ().getActiveID () : mode;
     }
 
 
@@ -974,8 +924,6 @@ public class MaschineControllerSetup extends AbstractControllerSetup<MaschineCon
         this.scales.resetDrumOctave ();
         if (viewManager.isActive (Views.DRUM))
             viewManager.get (Views.DRUM).updateNoteMapping ();
-
-        this.updateIndication (this.currentMode);
     }
 
 

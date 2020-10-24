@@ -10,7 +10,7 @@ import de.mossgrabers.controller.maschine.controller.MaschineControlSurface;
 import de.mossgrabers.framework.controller.grid.IPadGrid;
 import de.mossgrabers.framework.daw.IHost;
 import de.mossgrabers.framework.daw.IModel;
-import de.mossgrabers.framework.daw.constants.EditCapability;
+import de.mossgrabers.framework.daw.constants.Capability;
 import de.mossgrabers.framework.daw.constants.Resolution;
 import de.mossgrabers.framework.daw.midi.ArpeggiatorMode;
 
@@ -45,7 +45,7 @@ public class NoteRepeatView extends BaseView
         {
             case 6:
             case 7:
-                if (host.canEdit (EditCapability.NOTE_REPEAT_MODE))
+                if (host.supports (Capability.NOTE_REPEAT_MODE))
                 {
                     final ArpeggiatorMode arpMode = configuration.getNoteRepeatMode ();
                     final int modeIndex = configuration.lookupArpeggiatorModeIndex (arpMode);
@@ -59,7 +59,7 @@ public class NoteRepeatView extends BaseView
 
             case 8:
             case 9:
-                if (host.canEdit (EditCapability.NOTE_REPEAT_LENGTH))
+                if (host.supports (Capability.NOTE_REPEAT_LENGTH))
                 {
                     final int sel2 = Resolution.change (Resolution.getMatch (configuration.getNoteRepeatLength ().getValue ()), padIndex == 9);
                     configuration.setNoteRepeatLength (Resolution.values ()[sel2]);
@@ -76,7 +76,7 @@ public class NoteRepeatView extends BaseView
 
             case 14:
             case 15:
-                if (host.canEdit (EditCapability.NOTE_REPEAT_OCTAVES))
+                if (host.supports (Capability.NOTE_REPEAT_OCTAVES))
                 {
                     configuration.setNoteRepeatOctave (configuration.getNoteRepeatOctave () + (padIndex == 15 ? 1 : -1));
                     this.mvHelper.delayDisplay ( () -> "Octaves: " + configuration.getNoteRepeatOctave ());

@@ -11,7 +11,7 @@ import de.mossgrabers.framework.controller.display.Format;
 import de.mossgrabers.framework.controller.display.IGraphicDisplay;
 import de.mossgrabers.framework.controller.display.ITextDisplay;
 import de.mossgrabers.framework.daw.IModel;
-import de.mossgrabers.framework.daw.constants.EditCapability;
+import de.mossgrabers.framework.daw.constants.Capability;
 import de.mossgrabers.framework.daw.constants.RecordQuantization;
 import de.mossgrabers.framework.daw.data.ITrack;
 import de.mossgrabers.framework.daw.resource.ChannelType;
@@ -89,7 +89,7 @@ public class QuantizeMode extends BaseMode
         for (int i = 0; i < values.length; i++)
             display.setCell (3, i, (values[i] == recQuant ? Push1Display.SELECT_ARROW : "") + values[i].getName ());
 
-        if (this.model.getHost ().canEdit (EditCapability.QUANTIZE_INPUT_NOTE_LENGTH))
+        if (this.model.getHost ().supports (Capability.QUANTIZE_INPUT_NOTE_LENGTH))
         {
             display.setBlock (2, 2, "       Quant Note");
             display.setCell (2, 6, "Length:");
@@ -111,7 +111,7 @@ public class QuantizeMode extends BaseMode
         for (int i = 0; i < values.length; i++)
             display.addOptionElement ("", MENU[i], i == 0, i == 0 ? "Record Quantization" : "", values[i].getName (), values[i] == recQuant, true);
 
-        if (this.model.getHost ().canEdit (EditCapability.QUANTIZE_INPUT_NOTE_LENGTH))
+        if (this.model.getHost ().supports (Capability.QUANTIZE_INPUT_NOTE_LENGTH))
         {
             display.addOptionElement ("", " ", false, null, "Quantize Note Length", "", false, null, true);
             final boolean isQuantLength = track != null && track.isRecordQuantizationNoteLength ();
@@ -123,7 +123,7 @@ public class QuantizeMode extends BaseMode
             display.addEmptyElement (true);
         }
 
-        if (this.model.getHost ().canEdit (EditCapability.QUANTIZE_AMOUNT))
+        if (this.model.getHost ().supports (Capability.QUANTIZE_AMOUNT))
         {
             final int quantizeAmount = this.surface.getConfiguration ().getQuantizeAmount ();
             display.addParameterElement (" ", false, "", (ChannelType) null, null, false, "Qunt Amnt", quantizeAmount * 1023 / 100, quantizeAmount + "%", this.isKnobTouched[0], -1);

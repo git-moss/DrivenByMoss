@@ -12,7 +12,6 @@ import de.mossgrabers.framework.controller.ISetupFactory;
 import de.mossgrabers.framework.daw.IHost;
 import de.mossgrabers.framework.daw.midi.IMidiAccess;
 import de.mossgrabers.framework.daw.midi.IMidiInput;
-import de.mossgrabers.framework.mode.Modes;
 
 
 /**
@@ -67,14 +66,6 @@ public class MidiMonitorSetup extends AbstractControllerSetup<IControlSurface<Mi
     /** {@inheritDoc} */
     @Override
     public void startup ()
-    {
-        // Intentionally empty
-    }
-
-
-    /** {@inheritDoc} */
-    @Override
-    protected void updateIndication (final Modes mode)
     {
         // Intentionally empty
     }

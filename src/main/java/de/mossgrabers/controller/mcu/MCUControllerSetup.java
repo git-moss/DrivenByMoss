@@ -5,7 +5,6 @@
 package de.mossgrabers.controller.mcu;
 
 import de.mossgrabers.controller.mcu.command.continuous.PlayPositionTempoCommand;
-import de.mossgrabers.controller.mcu.command.pitchbend.PitchbendVolumeCommand;
 import de.mossgrabers.controller.mcu.command.trigger.AssignableCommand;
 import de.mossgrabers.controller.mcu.command.trigger.DevicesCommand;
 import de.mossgrabers.controller.mcu.command.trigger.FaderTouchCommand;
@@ -85,14 +84,14 @@ import de.mossgrabers.framework.daw.constants.AutomationMode;
 import de.mossgrabers.framework.daw.data.ICursorDevice;
 import de.mossgrabers.framework.daw.data.IMasterTrack;
 import de.mossgrabers.framework.daw.data.ITrack;
-import de.mossgrabers.framework.daw.data.bank.IParameterBank;
-import de.mossgrabers.framework.daw.data.bank.ISendBank;
 import de.mossgrabers.framework.daw.data.bank.ITrackBank;
 import de.mossgrabers.framework.daw.midi.IMidiAccess;
 import de.mossgrabers.framework.daw.midi.IMidiInput;
 import de.mossgrabers.framework.daw.midi.IMidiOutput;
+import de.mossgrabers.framework.featuregroup.AbstractMode;
 import de.mossgrabers.framework.featuregroup.IMode;
 import de.mossgrabers.framework.featuregroup.ModeManager;
+import de.mossgrabers.framework.mode.MasterVolumeMode;
 import de.mossgrabers.framework.mode.Modes;
 import de.mossgrabers.framework.view.ControlOnlyView;
 import de.mossgrabers.framework.view.Views;
@@ -268,9 +267,8 @@ public class MCUControllerSetup extends AbstractControllerSetup<MCUControlSurfac
             modeManager.register (Modes.TRACK, new TrackMode (surface, this.model));
             modeManager.register (Modes.VOLUME, new VolumeMode (surface, this.model));
             modeManager.register (Modes.PAN, new PanMode (surface, this.model));
-            final SendMode modeSend = new SendMode (surface, this.model);
             for (int i = 0; i < 8; i++)
-                modeManager.register (Modes.get (Modes.SEND1, i), modeSend);
+                modeManager.register (Modes.get (Modes.SEND1, i), new SendMode (surface, this.model, i));
             modeManager.register (Modes.MASTER, new MasterMode (surface, this.model));
 
             modeManager.register (Modes.DEVICE_PARAMS, new DeviceParamsMode (surface, this.model));
@@ -313,6 +311,16 @@ public class MCUControllerSetup extends AbstractControllerSetup<MCUControlSurfac
             }
         });
 
+        this.configuration.addSettingObserver (MCUConfiguration.USE_FADERS_AS_KNOBS, () -> {
+            for (int index = 0; index < this.numMCUDevices; index++)
+            {
+                final MCUControlSurface surface = this.getSurface (index);
+                final AbstractMode<?, ?> mode = (AbstractMode<?, ?>) surface.getModeManager ().getActive ();
+                if (mode != null)
+                    mode.parametersAdjusted ();
+            }
+        });
+
         this.configuration.registerDeactivatedItemsHandler (this.model);
 
         this.activateBrowserObserver (Modes.BROWSER);
@@ -341,7 +349,6 @@ public class MCUControllerSetup extends AbstractControllerSetup<MCUControlSurfac
         for (int index = 0; index < this.numMCUDevices; index++)
         {
             final MCUControlSurface surface = this.getSurface (index);
-            final IMidiInput input = surface.getMidiInput ();
 
             if (this.configuration.getDeviceType (index) == MCUDeviceType.MAIN)
             {
@@ -394,8 +401,13 @@ public class MCUControllerSetup extends AbstractControllerSetup<MCUControlSurfac
                 this.addButton (surface, ButtonID.PAN_SEND, "Pan", new ModeSelectCommand<> (this.model, surface, Modes.PAN), 0, MCUControlSurface.MCU_MODE_PAN, () -> modeManager.isActive (Modes.PAN));
                 this.addButton (surface, ButtonID.SENDS, "Sends", new SendSelectCommand (this.model, surface), 0, MCUControlSurface.MCU_MODE_SENDS, () -> Modes.isSendMode (modeManager.getActiveID ()));
                 this.addButton (surface, ButtonID.DEVICE, "Device", new DevicesCommand (this.model, surface), 0, MCUControlSurface.MCU_MODE_PLUGIN, () -> surface.getButton (ButtonID.SELECT).isPressed () ? cursorDevice.isPinned () : modeManager.isActive (Modes.DEVICE_PARAMS));
-                this.addButton (surface, ButtonID.MOVE_TRACK_LEFT, "Left", new MCUMoveTrackBankCommand (this.model, surface, true, true), 0, MCUControlSurface.MCU_MODE_EQ);
-                this.addButton (surface, ButtonID.MOVE_TRACK_RIGHT, "Right", new MCUMoveTrackBankCommand (this.model, surface, true, false), 0, MCUControlSurface.MCU_MODE_DYN);
+
+                final MCUMoveTrackBankCommand leftTrackCommand = new MCUMoveTrackBankCommand (this.model, surface, true, true);
+                final MCUMoveTrackBankCommand rightTrackCommand = new MCUMoveTrackBankCommand (this.model, surface, true, false);
+                this.addButton (surface, ButtonID.PAGE_LEFT, "Left", leftTrackCommand, 0, MCUControlSurface.MCU_MODE_EQ);
+                this.addButton (surface, ButtonID.PAGE_RIGHT, "Right", rightTrackCommand, 0, MCUControlSurface.MCU_MODE_DYN);
+                this.addButton (surface, ButtonID.MOVE_TRACK_LEFT, "Left", leftTrackCommand, 0, MCUControlSurface.MCU_TRACK_LEFT);
+                this.addButton (surface, ButtonID.MOVE_TRACK_RIGHT, "Right", rightTrackCommand, 0, MCUControlSurface.MCU_TRACK_RIGHT);
 
                 // Automation
                 this.addButton (surface, ButtonID.AUTOMATION_TRIM, "Trim", new AutomationCommand<> (AutomationMode.TRIM_READ, this.model, surface), 0, MCUControlSurface.MCU_TRIM, () -> !t.isWritingArrangerAutomation () && t.getAutomationWriteMode () == AutomationMode.TRIM_READ);
@@ -438,8 +450,6 @@ public class MCUControllerSetup extends AbstractControllerSetup<MCUControlSurfac
 
                 this.addButton (surface, ButtonID.MOVE_BANK_LEFT, "Bank Left", new MCUMoveTrackBankCommand (this.model, surface, false, true), MCUControlSurface.MCU_BANK_LEFT);
                 this.addButton (surface, ButtonID.MOVE_BANK_RIGHT, "Bank Right", new MCUMoveTrackBankCommand (this.model, surface, false, false), MCUControlSurface.MCU_BANK_RIGHT);
-                surface.getButton (ButtonID.MOVE_TRACK_LEFT).bind (input, this.getTriggerBindType (null), MCUControlSurface.MCU_TRACK_LEFT);
-                surface.getButton (ButtonID.MOVE_TRACK_RIGHT).bind (input, this.getTriggerBindType (null), MCUControlSurface.MCU_TRACK_RIGHT);
 
                 // Additional command for footcontrollers
                 this.addButton (surface, ButtonID.NEW, "New", new NewCommand<> (this.model, surface), -1);
@@ -484,8 +494,10 @@ public class MCUControllerSetup extends AbstractControllerSetup<MCUControlSurfac
             {
                 this.addRelativeKnob (surface, ContinuousID.PLAY_POSITION, "Jog Wheel", new PlayPositionTempoCommand (this.model, surface), MCUControlSurface.MCU_CC_JOG, RelativeEncoding.SIGNED_BIT);
 
-                final IHwFader master = this.addFader (surface, ContinuousID.FADER_MASTER, "Master", new PitchbendVolumeCommand (8, this.model, surface), 8);
+                final IHwFader master = this.addFader (surface, ContinuousID.FADER_MASTER, "Master", null, 8);
                 master.bindTouch (new FaderTouchCommand (8, this.model, surface), input, BindType.NOTE, 0, MCUControlSurface.MCU_FADER_MASTER);
+                master.disableTakeOver ();
+                new MasterVolumeMode<> (surface, this.model, ContinuousID.FADER_MASTER).onActivate ();
             }
 
             for (int i = 0; i < 8; i++)
@@ -493,8 +505,9 @@ public class MCUControllerSetup extends AbstractControllerSetup<MCUControlSurfac
                 final IHwRelativeKnob knob = this.addRelativeKnob (surface, ContinuousID.get (ContinuousID.KNOB1, i), "Knob " + i, new KnobRowModeCommand<> (i, this.model, surface), MCUControlSurface.MCU_CC_VPOT1 + i, RelativeEncoding.SIGNED_BIT);
                 // Note: this is pressing the knobs' button not touching it!
                 knob.bindTouch (new ButtonRowModeCommand<> (0, i, this.model, surface), input, BindType.NOTE, 0, MCUControlSurface.MCU_VSELECT1 + i);
+                knob.setIndexInGroup (index * 8 + i);
 
-                final IHwFader fader = this.addFader (surface, ContinuousID.get (ContinuousID.FADER1, i), "Fader " + (i + 1), new PitchbendVolumeCommand (i, this.model, surface), i);
+                final IHwFader fader = this.addFader (surface, ContinuousID.get (ContinuousID.FADER1, i), "Fader " + (i + 1), null, i);
                 if (this.configuration.hasMotorFaders ())
                 {
                     // Prevent catch up jitter with motor faders
@@ -502,6 +515,7 @@ public class MCUControllerSetup extends AbstractControllerSetup<MCUControlSurfac
                 }
 
                 fader.bindTouch (new FaderTouchCommand (i, this.model, surface), input, BindType.NOTE, 0, MCUControlSurface.MCU_FADER_TOUCH1 + i);
+                fader.setIndexInGroup (index * 8 + i);
             }
         }
     }
@@ -637,7 +651,7 @@ public class MCUControllerSetup extends AbstractControllerSetup<MCUControlSurfac
             surface.getContinuous (ContinuousID.FADER3).setBounds (163.75, 501.5, 65.0, 419.0);
             surface.getContinuous (ContinuousID.FADER4).setBounds (237.0, 501.5, 65.0, 419.0);
             surface.getContinuous (ContinuousID.FADER5).setBounds (311.25, 501.5, 65.0, 419.0);
-            surface.getContinuous (ContinuousID.FADER6).setBounds (386.5, 499.5, 65.0, 419.0);
+            surface.getContinuous (ContinuousID.FADER6).setBounds (386.5, 501.5, 65.0, 419.0);
             surface.getContinuous (ContinuousID.FADER7).setBounds (459.0, 501.5, 65.0, 419.0);
             surface.getContinuous (ContinuousID.FADER8).setBounds (532.25, 501.5, 65.0, 419.0);
 
@@ -798,8 +812,6 @@ public class MCUControllerSetup extends AbstractControllerSetup<MCUControlSurfac
         if (mode == null)
             return;
 
-        this.updateIndication (mode);
-
         if (!this.configuration.hasAssignmentDisplay ())
             return;
 
@@ -808,56 +820,6 @@ public class MCUControllerSetup extends AbstractControllerSetup<MCUControlSurfac
             if (this.configuration.getDeviceType (index) == MCUDeviceType.MAIN)
                 this.getSurface (index).getTextDisplay (3).setRow (0, MODE_ACRONYMS.get (mode)).allDone ();
         }
-    }
-
-
-    /** {@inheritDoc} */
-    @Override
-    protected void updateIndication (final Modes mode)
-    {
-        if (this.currentMode != null && this.currentMode.equals (mode))
-            return;
-        this.currentMode = mode;
-
-        final ITrackBank tb = this.model.getTrackBank ();
-        final boolean shouldPinFXTracksToLastController = this.configuration.shouldPinFXTracksToLastController ();
-        final boolean isEffect = this.model.isEffectTrackBankActive ();
-        final boolean isPan = Modes.PAN.equals (mode);
-        final boolean isTrack = Modes.TRACK.equals (mode);
-        final boolean isVolume = Modes.VOLUME.equals (mode);
-        final boolean isDevice = Modes.DEVICE_PARAMS.equals (mode);
-
-        tb.setIndication (!isEffect);
-
-        final ICursorDevice cursorDevice = this.model.getCursorDevice ();
-        for (int i = 0; i < tb.getPageSize (); i++)
-        {
-            final ITrack track = tb.getItem (i);
-            final boolean hasTrackSel = isTrack && track.isSelected ();
-            track.setVolumeIndication (!isEffect && (isVolume || hasTrackSel));
-            track.setPanIndication (!isEffect && (isPan || hasTrackSel));
-
-            final ISendBank sendBank = track.getSendBank ();
-            for (int j = 0; j < sendBank.getPageSize (); j++)
-                sendBank.getItem (j).setIndication (!isEffect && (mode.ordinal () - Modes.SEND1.ordinal () == j || hasTrackSel));
-        }
-
-        final ITrackBank tbe = this.model.getEffectTrackBank ();
-        if (tbe != null)
-        {
-            tbe.setIndication (isEffect || shouldPinFXTracksToLastController);
-
-            for (int i = 0; i < tbe.getPageSize (); i++)
-            {
-                final ITrack fxTrack = tbe.getItem (i);
-                fxTrack.setVolumeIndication (isEffect || shouldPinFXTracksToLastController);
-                fxTrack.setPanIndication ((isEffect || shouldPinFXTracksToLastController) && isPan);
-            }
-        }
-
-        final IParameterBank parameterBank = cursorDevice.getParameterBank ();
-        for (int i = 0; i < parameterBank.getPageSize (); i++)
-            parameterBank.getItem (i).setIndication (isDevice);
     }
 
 

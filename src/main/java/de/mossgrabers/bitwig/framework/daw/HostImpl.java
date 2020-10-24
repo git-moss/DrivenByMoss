@@ -14,7 +14,7 @@ import de.mossgrabers.bitwig.framework.usb.UsbDeviceImpl;
 import de.mossgrabers.framework.controller.hardware.IHwSurfaceFactory;
 import de.mossgrabers.framework.daw.IHost;
 import de.mossgrabers.framework.daw.IMemoryBlock;
-import de.mossgrabers.framework.daw.constants.EditCapability;
+import de.mossgrabers.framework.daw.constants.Capability;
 import de.mossgrabers.framework.graphics.IBitmap;
 import de.mossgrabers.framework.graphics.IImage;
 import de.mossgrabers.framework.osc.IOpenSoundControlCallback;
@@ -69,39 +69,7 @@ public class HostImpl implements IHost
 
     /** {@inheritDoc} */
     @Override
-    public boolean hasPinning ()
-    {
-        return true;
-    }
-
-
-    /** {@inheritDoc} */
-    @Override
-    public boolean hasCrossfader ()
-    {
-        return true;
-    }
-
-
-    /** {@inheritDoc} */
-    @Override
-    public boolean hasDrumDevice ()
-    {
-        return true;
-    }
-
-
-    /** {@inheritDoc} */
-    @Override
-    public boolean hasSlotChains ()
-    {
-        return true;
-    }
-
-
-    /** {@inheritDoc} */
-    @Override
-    public boolean canEdit (final EditCapability capability)
+    public boolean supports (final Capability capability)
     {
         switch (capability)
         {
@@ -129,6 +97,13 @@ public class HostImpl implements IHost
                 return true;
 
             case CUE_VOLUME:
+                return true;
+
+            case HAS_SLOT_CHAINS:
+            case HAS_DRUM_DEVICE:
+            case HAS_CROSSFADER:
+            case HAS_PINNING:
+            case HAS_EFFECT_BANK:
                 return true;
         }
         return false;

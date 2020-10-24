@@ -2,46 +2,26 @@
 // (c) 2017-2020
 // Licensed under LGPLv3 - http://www.gnu.org/licenses/lgpl-3.0.txt
 
-package de.mossgrabers.framework.daw.data.empty;
+package de.mossgrabers.framework.daw.data;
 
-import de.mossgrabers.framework.daw.data.AbstractParameterImpl;
-import de.mossgrabers.framework.daw.data.IParameter;
 import de.mossgrabers.framework.utils.StringUtils;
 
 
 /**
- * Default data for an empty send.
+ * Abstract implementation for a parameter.
  *
  * @author J&uuml;rgen Mo&szlig;graber
  */
-public class EmptyParameter extends AbstractParameterImpl
+public abstract class AbstractParameterImpl extends AbstractItemImpl implements IParameter
 {
-    /** The singleton. */
-    public static final IParameter INSTANCE = new EmptyParameter ();
-
-
     /**
      * Constructor.
+     *
+     * @param index The index of the item in a page
      */
-    protected EmptyParameter ()
+    public AbstractParameterImpl (final int index)
     {
-        super (-1);
-    }
-
-
-    /** {@inheritDoc} */
-    @Override
-    public void inc (final double increment)
-    {
-        // Intentionally empty
-    }
-
-
-    /** {@inheritDoc} */
-    @Override
-    public String getDisplayedValue ()
-    {
-        return "";
+        super (index);
     }
 
 
@@ -64,14 +44,6 @@ public class EmptyParameter extends AbstractParameterImpl
     /** {@inheritDoc} */
     @Override
     public void setValue (final int value)
-    {
-        // Intentionally empty
-    }
-
-
-    /** {@inheritDoc} */
-    @Override
-    public void setNormalizedValue (final double value)
     {
         // Intentionally empty
     }

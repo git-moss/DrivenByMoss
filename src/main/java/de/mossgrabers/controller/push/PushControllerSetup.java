@@ -90,7 +90,6 @@ import de.mossgrabers.controller.push.view.SessionView;
 import de.mossgrabers.framework.command.aftertouch.AftertouchAbstractViewCommand;
 import de.mossgrabers.framework.command.continuous.FootswitchCommand;
 import de.mossgrabers.framework.command.continuous.KnobRowModeCommand;
-import de.mossgrabers.framework.command.continuous.MasterVolumeCommand;
 import de.mossgrabers.framework.command.trigger.BrowserCommand;
 import de.mossgrabers.framework.command.trigger.application.DeleteCommand;
 import de.mossgrabers.framework.command.trigger.application.DuplicateCommand;
@@ -128,9 +127,7 @@ import de.mossgrabers.framework.daw.ModelSetup;
 import de.mossgrabers.framework.daw.data.IChannel;
 import de.mossgrabers.framework.daw.data.ICursorDevice;
 import de.mossgrabers.framework.daw.data.ITrack;
-import de.mossgrabers.framework.daw.data.bank.IParameterBank;
 import de.mossgrabers.framework.daw.data.bank.ISceneBank;
-import de.mossgrabers.framework.daw.data.bank.ISendBank;
 import de.mossgrabers.framework.daw.data.bank.ITrackBank;
 import de.mossgrabers.framework.daw.midi.DeviceInquiry;
 import de.mossgrabers.framework.daw.midi.IMidiAccess;
@@ -141,6 +138,7 @@ import de.mossgrabers.framework.featuregroup.IMode;
 import de.mossgrabers.framework.featuregroup.IView;
 import de.mossgrabers.framework.featuregroup.ModeManager;
 import de.mossgrabers.framework.featuregroup.ViewManager;
+import de.mossgrabers.framework.mode.MasterVolumeMode;
 import de.mossgrabers.framework.mode.Modes;
 import de.mossgrabers.framework.view.AbstractSequencerView;
 import de.mossgrabers.framework.view.TransposeView;
@@ -185,7 +183,7 @@ public class PushControllerSetup extends AbstractControllerSetup<PushControlSurf
         super.flush ();
 
         final PushControlSurface surface = this.getSurface ();
-        this.updateIndication (surface.getModeManager ().getActiveID ());
+        surface.getDisplay ().cancelNotification ();
 
         final de.mossgrabers.framework.command.core.PitchbendCommand pitchbendCommand = surface.getContinuous (ContinuousID.TOUCHSTRIP).getPitchbendCommand ();
         if (pitchbendCommand != null)
@@ -587,10 +585,12 @@ public class PushControllerSetup extends AbstractControllerSetup<PushControlSurf
         {
             final IHwRelativeKnob knob = this.addRelativeKnob (ContinuousID.get (ContinuousID.KNOB1, i), "Knob " + i, new KnobRowModeCommand<> (i, this.model, surface), PushControlSurface.PUSH_KNOB1 + i);
             knob.bindTouch (new KnobRowTouchModeCommand<> (i, this.model, surface), input, BindType.NOTE, 0, PushControlSurface.PUSH_KNOB1_TOUCH + i);
+            knob.setIndexInGroup (i);
         }
 
-        final IHwRelativeKnob knobMaster = this.addRelativeKnob (ContinuousID.MASTER_KNOB, "Master", new MasterVolumeCommand<> (this.model, surface), PushControlSurface.PUSH_KNOB9);
+        final IHwRelativeKnob knobMaster = this.addRelativeKnob (ContinuousID.MASTER_KNOB, "Master", null, PushControlSurface.PUSH_KNOB9);
         knobMaster.bindTouch (new MastertrackTouchCommand (this.model, surface), input, BindType.NOTE, 0, PushControlSurface.PUSH_KNOB9_TOUCH);
+        new MasterVolumeMode<> (surface, this.model, ContinuousID.MASTER_KNOB).onActivate ();
 
         final RasteredKnobCommand tempoCommand = new RasteredKnobCommand (this.model, surface);
         final IHwRelativeKnob knobTempo = this.addRelativeKnob (ContinuousID.TEMPO, "Tempo", tempoCommand, PushControlSurface.PUSH_SMALL_KNOB1);
@@ -893,69 +893,7 @@ public class PushControllerSetup extends AbstractControllerSetup<PushControlSurf
         else
             this.updateRibbonMode ();
 
-        this.updateIndication (null);
-    }
-
-
-    /** {@inheritDoc} */
-    @Override
-    protected void updateIndication (final Modes mode)
-    {
-        if (this.currentMode != null && this.currentMode == mode)
-            return;
-
-        if (mode != null)
-        {
-            this.currentMode = mode;
-            // Cancel current notification messages if a new mode is displayed
-            this.getSurface ().getDisplay ().cancelNotification ();
-        }
-
-        if (this.currentMode == null)
-            return;
-
-        final ITrackBank tb = this.model.getTrackBank ();
-        final ITrackBank tbe = this.model.getEffectTrackBank ();
-        final PushControlSurface surface = this.getSurface ();
-        final boolean isSession = surface.getViewManager ().isActive (Views.SESSION);
-        final boolean isEffect = this.model.isEffectTrackBankActive ();
-        final boolean isTrackMode = Modes.TRACK == this.currentMode;
-        final boolean isVolume = Modes.VOLUME == this.currentMode;
-        final boolean isPan = Modes.PAN == this.currentMode;
-        final boolean isDevice = Modes.isDeviceMode (this.currentMode) || Modes.isLayerMode (this.currentMode);
-        final boolean isUserMode = Modes.USER == this.currentMode;
-
-        tb.setIndication (!isEffect && isSession);
-        if (tbe != null)
-            tbe.setIndication (isEffect && isSession);
-
-        final ICursorDevice cursorDevice = this.model.getCursorDevice ();
-        final ITrack selectedTrack = tb.getSelectedItem ();
-        final IParameterBank parameterBank = cursorDevice.getParameterBank ();
-        for (int i = 0; i < tb.getPageSize (); i++)
-        {
-            final boolean hasTrackSel = selectedTrack != null && selectedTrack.getIndex () == i && isTrackMode;
-            final ITrack track = tb.getItem (i);
-            track.setVolumeIndication (!isEffect && (isVolume || hasTrackSel));
-            track.setPanIndication (!isEffect && (isPan || hasTrackSel));
-
-            final ISendBank sendBank = track.getSendBank ();
-            for (int j = 0; j < sendBank.getPageSize (); j++)
-                sendBank.getItem (j).setIndication (!isEffect && (this.currentMode.ordinal () - Modes.SEND1.ordinal () == j || hasTrackSel));
-
-            if (tbe != null)
-            {
-                final ITrack fxTrack = tbe.getItem (i);
-                fxTrack.setVolumeIndication (isEffect);
-                fxTrack.setPanIndication (isEffect && isPan);
-            }
-
-            parameterBank.getItem (i).setIndication (isDevice);
-        }
-
-        final IParameterBank userParameterBank = this.model.getUserParameterBank ();
-        for (int i = 0; i < userParameterBank.getPageSize (); i++)
-            userParameterBank.getItem (i).setIndication (isUserMode);
+        this.getSurface ().getDisplay ().cancelNotification ();
     }
 
 

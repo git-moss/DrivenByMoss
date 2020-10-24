@@ -450,7 +450,7 @@ public abstract class AbstractMode<S extends IControlSurface<C>, C extends Confi
         if (!this.isActive || this.defaultParameterProvider == null)
             return;
 
-        final IParameterProvider parameterProvider = getParameterProvider ();
+        final IParameterProvider parameterProvider = this.getParameterProvider ();
         for (int i = 0; i < this.controls.size (); i++)
             this.surface.getContinuous (this.controls.get (i)).bind (parameterProvider.get (i));
     }
@@ -458,10 +458,10 @@ public abstract class AbstractMode<S extends IControlSurface<C>, C extends Confi
 
     /**
      * Get the currently active parameter provider, depending on pressed buttons.
-     * 
+     *
      * @return The active parameter provider, might be null if none is set
      */
-    protected IParameterProvider getParameterProvider ()
+    public IParameterProvider getParameterProvider ()
     {
         for (final Entry<ButtonID, IParameterProvider> entry: this.parameterProviders.entrySet ())
         {

@@ -9,6 +9,9 @@ import de.mossgrabers.framework.controller.display.ITextDisplay;
 import de.mossgrabers.framework.daw.IModel;
 import de.mossgrabers.framework.daw.data.ITrack;
 import de.mossgrabers.framework.daw.data.bank.ITrackBank;
+import de.mossgrabers.framework.parameterprovider.IParameterProvider;
+import de.mossgrabers.framework.parameterprovider.PanParameterProvider;
+import de.mossgrabers.framework.parameterprovider.RangeFilterParameterProvider;
 
 
 /**
@@ -27,14 +30,16 @@ public class PanMode extends AbstractTrackMode
     public PanMode (final MCUControlSurface surface, final IModel model)
     {
         super ("Panorama", surface, model);
-    }
 
-
-    /** {@inheritDoc} */
-    @Override
-    public void onKnobValue (final int index, final int value)
-    {
-        this.getTrackBank ().getItem (this.getExtenderOffset () + index).changePan (value);
+        final IParameterProvider parameterProvider;
+        if (surface.getConfiguration ().shouldPinFXTracksToLastController () && surface.isLastDevice ())
+            parameterProvider = new PanParameterProvider (model.getEffectTrackBank ());
+        else
+        {
+            final int surfaceID = surface.getSurfaceID ();
+            parameterProvider = new RangeFilterParameterProvider (new PanParameterProvider (model), surfaceID * 8, 8);
+        }
+        this.setParameters (parameterProvider);
     }
 
 

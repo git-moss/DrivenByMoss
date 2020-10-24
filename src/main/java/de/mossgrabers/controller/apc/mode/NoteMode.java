@@ -11,7 +11,7 @@ import de.mossgrabers.framework.daw.IHost;
 import de.mossgrabers.framework.daw.IModel;
 import de.mossgrabers.framework.daw.INoteClip;
 import de.mossgrabers.framework.daw.IStepInfo;
-import de.mossgrabers.framework.daw.constants.EditCapability;
+import de.mossgrabers.framework.daw.constants.Capability;
 import de.mossgrabers.framework.daw.constants.Resolution;
 import de.mossgrabers.framework.featuregroup.IView;
 import de.mossgrabers.framework.utils.StringUtils;
@@ -92,7 +92,7 @@ public class NoteMode extends BaseMode
                 break;
 
             case 2:
-                if (this.host.canEdit (EditCapability.NOTE_EDIT_RELEASE_VELOCITY))
+                if (this.host.supports (Capability.NOTE_EDIT_RELEASE_VELOCITY))
                 {
                     this.clip.updateStepReleaseVelocity (this.channel, this.step, this.note, normalizedValue);
                     display.notify ("Release Velocity: " + StringUtils.formatPercentage (normalizedValue));
@@ -100,7 +100,7 @@ public class NoteMode extends BaseMode
                 break;
 
             case 3:
-                if (this.host.canEdit (EditCapability.NOTE_EDIT_GAIN))
+                if (this.host.supports (Capability.NOTE_EDIT_GAIN))
                 {
                     this.clip.updateStepGain (this.channel, this.step, this.note, normalizedValue);
                     display.notify ("Gain: " + StringUtils.formatPercentage (normalizedValue));
@@ -108,7 +108,7 @@ public class NoteMode extends BaseMode
                 break;
 
             case 4:
-                if (this.host.canEdit (EditCapability.NOTE_EDIT_PANORAMA))
+                if (this.host.supports (Capability.NOTE_EDIT_PANORAMA))
                 {
                     final double pan = normalizedValue * 2.0 - 1.0;
                     this.clip.updateStepPan (this.channel, this.step, this.note, pan);
@@ -117,7 +117,7 @@ public class NoteMode extends BaseMode
                 break;
 
             case 5:
-                if (this.host.canEdit (EditCapability.NOTE_EDIT_TRANSPOSE))
+                if (this.host.supports (Capability.NOTE_EDIT_TRANSPOSE))
                 {
                     final double pitch = normalizedValue * 48.0 - 24.0;
                     this.clip.updateStepTranspose (this.channel, this.step, this.note, pitch);
@@ -126,7 +126,7 @@ public class NoteMode extends BaseMode
                 break;
 
             case 6:
-                if (this.host.canEdit (EditCapability.NOTE_EDIT_TIMBRE))
+                if (this.host.supports (Capability.NOTE_EDIT_TIMBRE))
                 {
                     final double timbre = normalizedValue * 2.0 - 1.0;
                     this.clip.updateStepTimbre (this.channel, this.step, this.note, timbre);
@@ -135,7 +135,7 @@ public class NoteMode extends BaseMode
                 break;
 
             case 7:
-                if (this.host.canEdit (EditCapability.NOTE_EDIT_PRESSURE))
+                if (this.host.supports (Capability.NOTE_EDIT_PRESSURE))
                 {
                     this.clip.updateStepPressure (this.channel, this.step, this.note, normalizedValue);
                     display.notify ("Pressure: " + StringUtils.formatPercentage (stepInfo.getPressure ()));
@@ -173,32 +173,32 @@ public class NoteMode extends BaseMode
                 return valueChanger.fromNormalizedValue (stepInfo.getVelocity ());
 
             case 2:
-                if (this.host.canEdit (EditCapability.NOTE_EDIT_RELEASE_VELOCITY))
+                if (this.host.supports (Capability.NOTE_EDIT_RELEASE_VELOCITY))
                     return valueChanger.fromNormalizedValue (stepInfo.getReleaseVelocity ());
                 return -1;
 
             case 3:
-                if (this.host.canEdit (EditCapability.NOTE_EDIT_GAIN))
+                if (this.host.supports (Capability.NOTE_EDIT_GAIN))
                     return valueChanger.fromNormalizedValue (stepInfo.getGain ());
                 return -1;
 
             case 4:
-                if (this.host.canEdit (EditCapability.NOTE_EDIT_PANORAMA))
+                if (this.host.supports (Capability.NOTE_EDIT_PANORAMA))
                     return valueChanger.fromNormalizedValue ((stepInfo.getPan () + 1.0) / 2.0);
                 return -1;
 
             case 5:
-                if (this.host.canEdit (EditCapability.NOTE_EDIT_TRANSPOSE))
+                if (this.host.supports (Capability.NOTE_EDIT_TRANSPOSE))
                     return valueChanger.fromNormalizedValue ((stepInfo.getTranspose () + 24.0) / 48.0);
                 return -1;
 
             case 6:
-                if (this.host.canEdit (EditCapability.NOTE_EDIT_TIMBRE))
+                if (this.host.supports (Capability.NOTE_EDIT_TIMBRE))
                     return valueChanger.fromNormalizedValue ((stepInfo.getTimbre () + 1.0) / 2.0);
                 return -1;
 
             case 7:
-                if (this.host.canEdit (EditCapability.NOTE_EDIT_PRESSURE))
+                if (this.host.supports (Capability.NOTE_EDIT_PRESSURE))
                     return valueChanger.fromNormalizedValue (stepInfo.getPressure ());
                 return -1;
 

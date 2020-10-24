@@ -14,7 +14,7 @@ import de.mossgrabers.framework.daw.IHost;
 import de.mossgrabers.framework.daw.IModel;
 import de.mossgrabers.framework.daw.INoteClip;
 import de.mossgrabers.framework.daw.IStepInfo;
-import de.mossgrabers.framework.daw.constants.EditCapability;
+import de.mossgrabers.framework.daw.constants.Capability;
 import de.mossgrabers.framework.featuregroup.AbstractMode;
 import de.mossgrabers.framework.featuregroup.IView;
 import de.mossgrabers.framework.scale.Scales;
@@ -107,12 +107,12 @@ public class NoteMode extends AbstractMode<FireControlSurface, FireConfiguration
         switch (index)
         {
             case 0:
-                if (this.host.canEdit (EditCapability.NOTE_EDIT_GAIN))
+                if (this.host.supports (Capability.NOTE_EDIT_GAIN))
                     this.clip.changeStepGain (this.channel, this.step, this.note, value);
                 break;
 
             case 1:
-                if (this.host.canEdit (EditCapability.NOTE_EDIT_PANORAMA))
+                if (this.host.supports (Capability.NOTE_EDIT_PANORAMA))
                     this.clip.changeStepPan (this.channel, this.step, this.note, value);
                 break;
 
@@ -126,7 +126,7 @@ public class NoteMode extends AbstractMode<FireControlSurface, FireConfiguration
 
             // This is the select knob
             case 4:
-                if (this.host.canEdit (EditCapability.NOTE_EDIT_TRANSPOSE))
+                if (this.host.supports (Capability.NOTE_EDIT_TRANSPOSE))
                 {
                     this.clip.changeStepTranspose (this.channel, this.step, this.note, value);
                     this.preventNoteDeletion ();
@@ -170,7 +170,7 @@ public class NoteMode extends AbstractMode<FireControlSurface, FireConfiguration
         switch (this.getTouchedKnob ())
         {
             case 0:
-                if (this.host.canEdit (EditCapability.NOTE_EDIT_GAIN))
+                if (this.host.supports (Capability.NOTE_EDIT_GAIN))
                 {
                     final double noteGain = stepInfo.getGain ();
                     value = Math.min (1023, valueChanger.fromNormalizedValue (noteGain));
@@ -179,7 +179,7 @@ public class NoteMode extends AbstractMode<FireControlSurface, FireConfiguration
                 break;
 
             case 1:
-                if (this.host.canEdit (EditCapability.NOTE_EDIT_PANORAMA))
+                if (this.host.supports (Capability.NOTE_EDIT_PANORAMA))
                 {
                     final double notePan = stepInfo.getPan ();
                     value = valueChanger.fromNormalizedValue ((notePan + 1.0) / 2.0);
@@ -199,7 +199,7 @@ public class NoteMode extends AbstractMode<FireControlSurface, FireConfiguration
 
             // This is the select knob
             case 4:
-                if (this.host.canEdit (EditCapability.NOTE_EDIT_TRANSPOSE))
+                if (this.host.supports (Capability.NOTE_EDIT_TRANSPOSE))
                 {
                     final double noteTranspose = stepInfo.getTranspose ();
                     value = valueChanger.fromNormalizedValue ((noteTranspose + 24.0) / 48.0);
@@ -228,7 +228,7 @@ public class NoteMode extends AbstractMode<FireControlSurface, FireConfiguration
      */
     public void resetTranspose ()
     {
-        if (this.clip != null && this.host.canEdit (EditCapability.NOTE_EDIT_TRANSPOSE))
+        if (this.clip != null && this.host.supports (Capability.NOTE_EDIT_TRANSPOSE))
             this.clip.updateStepTranspose (this.channel, this.step, this.note, 0);
     }
 }
