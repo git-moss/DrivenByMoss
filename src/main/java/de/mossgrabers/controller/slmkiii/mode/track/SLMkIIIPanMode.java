@@ -7,9 +7,12 @@ package de.mossgrabers.controller.slmkiii.mode.track;
 import de.mossgrabers.controller.slmkiii.controller.SLMkIIIColorManager;
 import de.mossgrabers.controller.slmkiii.controller.SLMkIIIControlSurface;
 import de.mossgrabers.controller.slmkiii.controller.SLMkIIIDisplay;
+import de.mossgrabers.framework.controller.ButtonID;
 import de.mossgrabers.framework.daw.IModel;
 import de.mossgrabers.framework.daw.data.ITrack;
 import de.mossgrabers.framework.daw.data.bank.ITrackBank;
+import de.mossgrabers.framework.parameterprovider.PanParameterProvider;
+import de.mossgrabers.framework.parameterprovider.ResetParameterProvider;
 import de.mossgrabers.framework.utils.StringUtils;
 
 
@@ -18,7 +21,7 @@ import de.mossgrabers.framework.utils.StringUtils;
  *
  * @author J&uuml;rgen Mo&szlig;graber
  */
-public class PanMode extends AbstractTrackMode
+public class SLMkIIIPanMode extends AbstractTrackMode
 {
     /**
      * Constructor.
@@ -26,29 +29,13 @@ public class PanMode extends AbstractTrackMode
      * @param surface The control surface
      * @param model The model
      */
-    public PanMode (final SLMkIIIControlSurface surface, final IModel model)
+    public SLMkIIIPanMode (final SLMkIIIControlSurface surface, final IModel model)
     {
         super ("Panorama", surface, model);
-    }
 
-
-    /** {@inheritDoc} */
-    @Override
-    public void onKnobValue (final int index, final int value)
-    {
-        final ITrack track = this.model.getCurrentTrackBank ().getItem (index);
-        if (this.surface.isDeletePressed ())
-            track.resetPan ();
-        else
-            track.changePan (value);
-    }
-
-
-    /** {@inheritDoc} */
-    @Override
-    public int getKnobValue (final int index)
-    {
-        return this.model.getCurrentTrackBank ().getItem (index).getPan ();
+        final PanParameterProvider parameterProvider = new PanParameterProvider (model);
+        this.setParameters (parameterProvider);
+        this.setParameters (ButtonID.DELETE, new ResetParameterProvider (parameterProvider));
     }
 
 

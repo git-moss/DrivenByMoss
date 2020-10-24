@@ -37,7 +37,7 @@ public class HwRelativeKnobImpl extends AbstractHwContinuousControl implements I
     private RelativeHardwarControlBindable defaultSimpleParameterAction;
     private RelativeHardwareControlBinding binding;
 
-    private ParameterImpl                  parameterImpl;
+    private IParameter                     parameter;
 
 
     /**
@@ -72,6 +72,9 @@ public class HwRelativeKnobImpl extends AbstractHwContinuousControl implements I
         this.hardwareKnob.setLabel (label);
 
         HwUtils.markInterested (this.hardwareKnob);
+
+        this.defaultAction = this.controllerHost.createRelativeHardwareControlAdjustmentTarget (this::handleValue);
+        this.defaultSimpleParameterAction = this.controllerHost.createRelativeHardwareControlAdjustmentTarget (this::handleSimpleParameterValue);
     }
 
 
@@ -81,7 +84,6 @@ public class HwRelativeKnobImpl extends AbstractHwContinuousControl implements I
     {
         super.bind (command);
 
-        this.defaultAction = this.controllerHost.createRelativeHardwareControlAdjustmentTarget (this::handleValue);
         this.binding = this.hardwareKnob.setBinding (this.defaultAction);
     }
 
@@ -93,31 +95,30 @@ public class HwRelativeKnobImpl extends AbstractHwContinuousControl implements I
         if (this.binding != null)
             this.binding.removeBinding ();
 
+        // Remove the previously bound Bitwig parameter
+        if (this.parameter instanceof ParameterImpl)
+            HwUtils.enableObservers (false, this.hardwareKnob, (ParameterImpl) this.parameter);
+
         final HardwareBindable target;
         if (parameter == null)
         {
-            HwUtils.enableObservers (false, this.hardwareKnob, this.parameterImpl);
+            // No Bitwig parameter use the default action
             target = this.defaultAction;
         }
         else
         {
+            // Is parameter a real Bitwig parameter? If yes, map it.
             if (parameter instanceof ParameterImpl)
             {
-                this.parameterImpl = (ParameterImpl) parameter;
-                target = this.parameterImpl.getParameter ();
-                HwUtils.enableObservers (true, this.hardwareKnob, this.parameterImpl);
+                final ParameterImpl parameterImpl = (ParameterImpl) parameter;
+                target = parameterImpl.getParameter ();
+                HwUtils.enableObservers (true, this.hardwareKnob, parameterImpl);
             }
             else
-            {
-                // TODO release / map / does this need to be created on startup / whatr if trhere
-                // are multiple?
-                // this.defaultSimpleParameterAction =
-                // this.controllerHost.createRelativeHardwareControlAdjustmentTarget
-                // (this::handleSimpleParameterValue);
-                target = null;
-            }
+                target = this.defaultSimpleParameterAction;
         }
 
+        this.parameter = parameter;
         this.binding = target == null ? null : this.hardwareKnob.setBinding (target);
     }
 
@@ -147,11 +148,27 @@ public class HwRelativeKnobImpl extends AbstractHwContinuousControl implements I
     @Override
     public void handleValue (final double value)
     {
+        if (this.command == null)
+            return;
+
         // Convert the value back from the default 2s relative matcher, because we do the conversion
         // our own way
         final double a = value * 61.0;
         final int v = (int) (a > 0 ? Math.ceil (a) : Math.floor (a));
         this.command.execute (v < 0 ? v + 128 : v);
+    }
+
+
+    private void handleSimpleParameterValue (final double value)
+    {
+        if (this.parameter == null)
+            return;
+
+        // Convert the value back from the default 2s relative matcher, because we do the conversion
+        // our own way
+        final double a = value * 61.0;
+        final int v = (int) (a > 0 ? Math.ceil (a) : Math.floor (a));
+        this.parameter.changeValue (v);
     }
 
 

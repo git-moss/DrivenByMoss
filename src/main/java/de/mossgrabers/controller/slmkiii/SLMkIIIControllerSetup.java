@@ -17,10 +17,10 @@ import de.mossgrabers.controller.slmkiii.mode.OptionsMode;
 import de.mossgrabers.controller.slmkiii.mode.SequencerResolutionMode;
 import de.mossgrabers.controller.slmkiii.mode.device.ParametersMode;
 import de.mossgrabers.controller.slmkiii.mode.device.UserMode;
-import de.mossgrabers.controller.slmkiii.mode.track.PanMode;
+import de.mossgrabers.controller.slmkiii.mode.track.SLMkIIIPanMode;
 import de.mossgrabers.controller.slmkiii.mode.track.SLMkIIIVolumeMode;
-import de.mossgrabers.controller.slmkiii.mode.track.SendMode;
-import de.mossgrabers.controller.slmkiii.mode.track.TrackMode;
+import de.mossgrabers.controller.slmkiii.mode.track.SLMkIIISendMode;
+import de.mossgrabers.controller.slmkiii.mode.track.SLMkIIITrackMode;
 import de.mossgrabers.controller.slmkiii.view.ColorView;
 import de.mossgrabers.controller.slmkiii.view.DrumView;
 import de.mossgrabers.controller.slmkiii.view.SessionView;
@@ -162,11 +162,14 @@ public class SLMkIIIControllerSetup extends AbstractControllerSetup<SLMkIIIContr
         final SLMkIIIControlSurface surface = this.getSurface ();
         final ModeManager modeManager = surface.getModeManager ();
 
-        modeManager.register (Modes.TRACK, new TrackMode (surface, this.model));
+        // Required for button combinations in modes
+        this.addButton (ButtonID.DELETE, "Clear", NopCommand.INSTANCE, 15, SLMkIIIControlSurface.MKIII_CLEAR, () -> surface.isPressed (ButtonID.DELETE) ? SLMkIIIColorManager.SLMKIII_AMBER : SLMkIIIColorManager.SLMKIII_AMBER_HALF);
+
+        modeManager.register (Modes.TRACK, new SLMkIIITrackMode (surface, this.model));
         modeManager.register (Modes.VOLUME, new SLMkIIIVolumeMode (surface, this.model));
-        modeManager.register (Modes.PAN, new PanMode (surface, this.model));
+        modeManager.register (Modes.PAN, new SLMkIIIPanMode (surface, this.model));
         for (int i = 0; i < 8; i++)
-            modeManager.register (Modes.get (Modes.SEND1, i), new SendMode (i, surface, this.model));
+            modeManager.register (Modes.get (Modes.SEND1, i), new SLMkIIISendMode (i, surface, this.model));
         modeManager.register (Modes.DEVICE_PARAMS, new ParametersMode (surface, this.model));
         modeManager.register (Modes.BROWSER, new BrowserMode (surface, this.model));
         modeManager.register (Modes.USER, new UserMode (surface, this.model));
@@ -337,7 +340,6 @@ public class SLMkIIIControllerSetup extends AbstractControllerSetup<SLMkIIIContr
         }, 15, SLMkIIIControlSurface.MKIII_GRID, () -> viewManager.isActive (Views.SESSION) ? SLMkIIIColorManager.SLMKIII_GREEN : SLMkIIIColorManager.SLMKIII_BLUE);
 
         this.addButton (ButtonID.DUPLICATE, "Duplicate", NopCommand.INSTANCE, 15, SLMkIIIControlSurface.MKIII_DUPLICATE, () -> surface.isPressed (ButtonID.DUPLICATE) ? SLMkIIIColorManager.SLMKIII_AMBER : SLMkIIIColorManager.SLMKIII_AMBER_HALF);
-        this.addButton (ButtonID.DELETE, "Clear", NopCommand.INSTANCE, 15, SLMkIIIControlSurface.MKIII_CLEAR, () -> surface.isPressed (ButtonID.DELETE) ? SLMkIIIColorManager.SLMKIII_AMBER : SLMkIIIColorManager.SLMKIII_AMBER_HALF);
 
         final SLMkIIIDisplay display = surface.getDisplay ();
         for (int i = 0; i < 8; i++)

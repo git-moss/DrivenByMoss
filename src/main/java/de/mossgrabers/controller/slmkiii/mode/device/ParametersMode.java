@@ -17,6 +17,9 @@ import de.mossgrabers.framework.daw.data.IParameter;
 import de.mossgrabers.framework.daw.data.bank.IDeviceBank;
 import de.mossgrabers.framework.daw.data.bank.IParameterBank;
 import de.mossgrabers.framework.daw.data.bank.IParameterPageBank;
+import de.mossgrabers.framework.parameterprovider.BankParameterProvider;
+import de.mossgrabers.framework.parameterprovider.IParameterProvider;
+import de.mossgrabers.framework.parameterprovider.ResetParameterProvider;
 import de.mossgrabers.framework.utils.ButtonEvent;
 import de.mossgrabers.framework.utils.StringUtils;
 
@@ -46,6 +49,10 @@ public class ParametersMode extends AbstractParametersMode
         this.setShowDevices (true);
 
         this.browserCommand = new BrowserCommand<> (model, surface);
+
+        final IParameterProvider parameterProvider = new BankParameterProvider (this.model.getCursorDevice ().getParameterBank ());
+        this.setParameters (parameterProvider);
+        this.setParameters (ButtonID.DELETE, new ResetParameterProvider (parameterProvider));
     }
 
 
@@ -71,27 +78,6 @@ public class ParametersMode extends AbstractParametersMode
     public boolean isShowDevices ()
     {
         return this.showDevices;
-    }
-
-
-    /** {@inheritDoc} */
-    @Override
-    public void onKnobValue (final int index, final int value)
-    {
-        final IParameter param = this.model.getCursorDevice ().getParameterBank ().getItem (index);
-        if (this.surface.isDeletePressed ())
-            param.resetValue ();
-        else
-            param.changeValue (value);
-    }
-
-
-    /** {@inheritDoc} */
-    @Override
-    public int getKnobValue (final int index)
-    {
-        final ICursorDevice cd = this.model.getCursorDevice ();
-        return cd.doesExist () ? cd.getParameterBank ().getItem (index).getValue () : 0;
     }
 
 

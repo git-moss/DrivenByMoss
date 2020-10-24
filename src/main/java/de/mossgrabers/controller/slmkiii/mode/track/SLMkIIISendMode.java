@@ -7,10 +7,13 @@ package de.mossgrabers.controller.slmkiii.mode.track;
 import de.mossgrabers.controller.slmkiii.controller.SLMkIIIColorManager;
 import de.mossgrabers.controller.slmkiii.controller.SLMkIIIControlSurface;
 import de.mossgrabers.controller.slmkiii.controller.SLMkIIIDisplay;
+import de.mossgrabers.framework.controller.ButtonID;
 import de.mossgrabers.framework.daw.IModel;
 import de.mossgrabers.framework.daw.data.ISend;
 import de.mossgrabers.framework.daw.data.ITrack;
 import de.mossgrabers.framework.daw.data.bank.ITrackBank;
+import de.mossgrabers.framework.parameterprovider.ResetParameterProvider;
+import de.mossgrabers.framework.parameterprovider.SendParameterProvider;
 import de.mossgrabers.framework.utils.StringUtils;
 
 
@@ -19,7 +22,7 @@ import de.mossgrabers.framework.utils.StringUtils;
  *
  * @author J&uuml;rgen Mo&szlig;graber
  */
-public class SendMode extends AbstractTrackMode
+public class SLMkIIISendMode extends AbstractTrackMode
 {
     private final int sendIndex;
 
@@ -31,35 +34,15 @@ public class SendMode extends AbstractTrackMode
      * @param surface The control surface
      * @param model The model
      */
-    public SendMode (final int sendIndex, final SLMkIIIControlSurface surface, final IModel model)
+    public SLMkIIISendMode (final int sendIndex, final SLMkIIIControlSurface surface, final IModel model)
     {
         super ("Send", surface, model);
 
         this.sendIndex = sendIndex;
-    }
 
-
-    /** {@inheritDoc} */
-    @Override
-    public void onKnobValue (final int index, final int value)
-    {
-        final ISend send = this.model.getCurrentTrackBank ().getItem (index).getSendBank ().getItem (this.sendIndex);
-        if (this.surface.isDeletePressed ())
-            send.resetValue ();
-        else
-            send.changeValue (value);
-    }
-
-
-    /** {@inheritDoc} */
-    @Override
-    public int getKnobValue (final int index)
-    {
-        final ITrack t = this.model.getCurrentTrackBank ().getItem (index);
-        if (!t.doesExist ())
-            return 0;
-        final ISend send = t.getSendBank ().getItem (this.sendIndex);
-        return send.doesExist () ? send.getValue () : 0;
+        final SendParameterProvider parameterProvider = new SendParameterProvider (model, sendIndex);
+        this.setParameters (parameterProvider);
+        this.setParameters (ButtonID.DELETE, new ResetParameterProvider (parameterProvider));
     }
 
 

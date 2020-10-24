@@ -7,9 +7,12 @@ package de.mossgrabers.controller.slmkiii.mode.track;
 import de.mossgrabers.controller.slmkiii.controller.SLMkIIIColorManager;
 import de.mossgrabers.controller.slmkiii.controller.SLMkIIIControlSurface;
 import de.mossgrabers.controller.slmkiii.controller.SLMkIIIDisplay;
+import de.mossgrabers.framework.controller.ButtonID;
 import de.mossgrabers.framework.daw.IModel;
 import de.mossgrabers.framework.daw.data.ITrack;
 import de.mossgrabers.framework.daw.data.bank.ITrackBank;
+import de.mossgrabers.framework.parameterprovider.ResetParameterProvider;
+import de.mossgrabers.framework.parameterprovider.VolumeParameterProvider;
 import de.mossgrabers.framework.utils.StringUtils;
 
 
@@ -29,26 +32,10 @@ public class SLMkIIIVolumeMode extends AbstractTrackMode
     public SLMkIIIVolumeMode (final SLMkIIIControlSurface surface, final IModel model)
     {
         super ("Volume", surface, model);
-    }
 
-
-    /** {@inheritDoc} */
-    @Override
-    public void onKnobValue (final int index, final int value)
-    {
-        final ITrack track = this.model.getCurrentTrackBank ().getItem (index);
-        if (this.surface.isDeletePressed ())
-            track.resetVolume ();
-        else
-            track.changeVolume (value);
-    }
-
-
-    /** {@inheritDoc} */
-    @Override
-    public int getKnobValue (final int index)
-    {
-        return this.model.getCurrentTrackBank ().getItem (index).getVolume ();
+        final VolumeParameterProvider parameterProvider = new VolumeParameterProvider (model);
+        this.setParameters (parameterProvider);
+        this.setParameters (ButtonID.DELETE, new ResetParameterProvider (parameterProvider));
     }
 
 

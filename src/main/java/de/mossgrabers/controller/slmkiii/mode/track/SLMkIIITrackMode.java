@@ -7,10 +7,13 @@ package de.mossgrabers.controller.slmkiii.mode.track;
 import de.mossgrabers.controller.slmkiii.controller.SLMkIIIColorManager;
 import de.mossgrabers.controller.slmkiii.controller.SLMkIIIControlSurface;
 import de.mossgrabers.controller.slmkiii.controller.SLMkIIIDisplay;
+import de.mossgrabers.framework.controller.ButtonID;
 import de.mossgrabers.framework.daw.IModel;
 import de.mossgrabers.framework.daw.data.ISend;
 import de.mossgrabers.framework.daw.data.ITrack;
 import de.mossgrabers.framework.daw.data.bank.ISendBank;
+import de.mossgrabers.framework.parameterprovider.ChannelParameterProvider;
+import de.mossgrabers.framework.parameterprovider.ResetParameterProvider;
 import de.mossgrabers.framework.utils.StringUtils;
 
 
@@ -19,7 +22,7 @@ import de.mossgrabers.framework.utils.StringUtils;
  *
  * @author J&uuml;rgen Mo&szlig;graber
  */
-public class TrackMode extends AbstractTrackMode
+public class SLMkIIITrackMode extends AbstractTrackMode
 {
     /**
      * Constructor.
@@ -27,68 +30,13 @@ public class TrackMode extends AbstractTrackMode
      * @param surface The control surface
      * @param model The model
      */
-    public TrackMode (final SLMkIIIControlSurface surface, final IModel model)
+    public SLMkIIITrackMode (final SLMkIIIControlSurface surface, final IModel model)
     {
         super ("Track", surface, model);
-    }
 
-
-    /** {@inheritDoc} */
-    @Override
-    public void onKnobValue (final int index, final int value)
-    {
-        final ITrack selectedTrack = this.model.getSelectedTrack ();
-        if (selectedTrack == null)
-            return;
-
-        switch (index)
-        {
-            case 0:
-                if (this.surface.isDeletePressed ())
-                    selectedTrack.resetVolume ();
-                else
-                    selectedTrack.changeVolume (value);
-                return;
-            case 1:
-                if (this.surface.isDeletePressed ())
-                    selectedTrack.resetPan ();
-                else
-                    selectedTrack.changePan (value);
-                return;
-            default:
-                final ISend send = selectedTrack.getSendBank ().getItem (index - 2);
-                if (this.surface.isDeletePressed ())
-                    send.resetValue ();
-                else
-                    send.changeValue (value);
-                break;
-        }
-    }
-
-
-    /** {@inheritDoc} */
-    @Override
-    public int getKnobValue (final int index)
-    {
-        final ITrack t = this.model.getSelectedTrack ();
-        if (t == null)
-            return 0;
-
-        switch (index)
-        {
-            case 0:
-                return t.getVolume ();
-
-            case 1:
-                return t.getPan ();
-
-            default:
-                final ISendBank sendBank = t.getSendBank ();
-                if (sendBank.getItemCount () == 0)
-                    return 0;
-                final ISend send = sendBank.getItem (index - 2);
-                return send.doesExist () ? send.getValue () : 0;
-        }
+        final ChannelParameterProvider parameterProvider = new ChannelParameterProvider (model);
+        this.setParameters (parameterProvider);
+        this.setParameters (ButtonID.DELETE, new ResetParameterProvider (parameterProvider));
     }
 
 
