@@ -3,5 +3,8 @@
 .DS_Store
 last-build.bin
 fileHashes.lock
-/.settings/org.eclipse.m2e.core.prefs
-/.settings/org.sonarlint.eclipse.core.prefs
+/.settings/
+/.classpath
+/.project
+/.idea
+*.iml
