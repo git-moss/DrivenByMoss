@@ -46,7 +46,7 @@ public class OSCWriter extends AbstractOpenSoundControlWriter
         if (!this.isConnected ())
             return;
         this.modules.forEach (module -> module.flush (dump));
-        this.flush ();
+        this.flush ("/update");
     }
 
 

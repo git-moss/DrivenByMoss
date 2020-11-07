@@ -89,7 +89,19 @@ public class MixView extends AbstractView<FireControlSurface, FireConfiguration>
         switch (what)
         {
             case 3:
-                track.select ();
+                final FireConfiguration configuration = this.surface.getConfiguration ();
+                if (configuration.isDeleteModeActive ())
+                {
+                    configuration.toggleDeleteModeActive ();
+                    track.remove ();
+                }
+                else if (configuration.isDuplicateModeActive ())
+                {
+                    configuration.toggleDuplicateModeActive ();
+                    track.duplicate ();
+                }
+                else
+                    track.select ();
                 break;
 
             case 2:

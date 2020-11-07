@@ -31,6 +31,7 @@ import de.mossgrabers.controller.mcu.mode.BaseMode;
 import de.mossgrabers.controller.mcu.mode.MarkerMode;
 import de.mossgrabers.controller.mcu.mode.device.DeviceBrowserMode;
 import de.mossgrabers.controller.mcu.mode.device.DeviceParamsMode;
+import de.mossgrabers.controller.mcu.mode.device.UserMode;
 import de.mossgrabers.controller.mcu.mode.track.MasterMode;
 import de.mossgrabers.controller.mcu.mode.track.PanMode;
 import de.mossgrabers.controller.mcu.mode.track.SendMode;
@@ -272,6 +273,7 @@ public class MCUControllerSetup extends AbstractControllerSetup<MCUControlSurfac
             modeManager.register (Modes.MASTER, new MasterMode (surface, this.model));
 
             modeManager.register (Modes.DEVICE_PARAMS, new DeviceParamsMode (surface, this.model));
+            modeManager.register (Modes.USER, new UserMode (surface, this.model));
             modeManager.register (Modes.BROWSER, new DeviceBrowserMode (surface, this.model));
             modeManager.register (Modes.MARKERS, new MarkerMode (surface, this.model));
         }
@@ -400,7 +402,7 @@ public class MCUControllerSetup extends AbstractControllerSetup<MCUControlSurfac
                 this.addButton (surface, ButtonID.TRACK, "Track", new TracksCommand (this.model, surface), 0, MCUControlSurface.MCU_MODE_IO, () -> surface.getButton (ButtonID.SELECT).isPressed () ? this.model.isCursorTrackPinned () : modeManager.isActive (Modes.TRACK, Modes.VOLUME));
                 this.addButton (surface, ButtonID.PAN_SEND, "Pan", new ModeSelectCommand<> (this.model, surface, Modes.PAN), 0, MCUControlSurface.MCU_MODE_PAN, () -> modeManager.isActive (Modes.PAN));
                 this.addButton (surface, ButtonID.SENDS, "Sends", new SendSelectCommand (this.model, surface), 0, MCUControlSurface.MCU_MODE_SENDS, () -> Modes.isSendMode (modeManager.getActiveID ()));
-                this.addButton (surface, ButtonID.DEVICE, "Device", new DevicesCommand (this.model, surface), 0, MCUControlSurface.MCU_MODE_PLUGIN, () -> surface.getButton (ButtonID.SELECT).isPressed () ? cursorDevice.isPinned () : modeManager.isActive (Modes.DEVICE_PARAMS));
+                this.addButton (surface, ButtonID.DEVICE, "Device", new DevicesCommand (this.model, surface), 0, MCUControlSurface.MCU_MODE_PLUGIN, () -> surface.getButton (ButtonID.SELECT).isPressed () ? cursorDevice.isPinned () : modeManager.isActive (Modes.DEVICE_PARAMS, Modes.USER));
 
                 final MCUMoveTrackBankCommand leftTrackCommand = new MCUMoveTrackBankCommand (this.model, surface, true, true);
                 final MCUMoveTrackBankCommand rightTrackCommand = new MCUMoveTrackBankCommand (this.model, surface, true, false);

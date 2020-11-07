@@ -145,14 +145,14 @@ public class BrowserModule extends AbstractModule
             final String filterAddress = browserAddress + "filter/" + (i + 1) + "/";
             column = browser.getFilterColumn (i);
             this.writer.sendOSC (filterAddress + TAG_EXISTS, column.doesExist (), dump);
-            this.writer.sendOSC (filterAddress + "name", column.getName (), dump);
+            this.writer.sendOSC (filterAddress + TAG_NAME, column.getName (), dump);
             this.writer.sendOSC (filterAddress + "wildcard", column.getWildcard (), dump);
             final IBrowserColumnItem [] items = column.getItems ();
             for (int j = 0; j < items.length; j++)
             {
                 final String browserItemAddress = filterAddress + "item/" + (j + 1) + "/";
                 this.writer.sendOSC (browserItemAddress + TAG_EXISTS, items[j].doesExist (), dump);
-                this.writer.sendOSC (browserItemAddress + "name", items[j].getName (), dump);
+                this.writer.sendOSC (browserItemAddress + TAG_NAME, items[j].getName (), dump);
                 this.writer.sendOSC (browserItemAddress + "hits", items[j].getHitCount (), dump);
                 this.writer.sendOSC (browserItemAddress + "isSelected", items[j].isSelected (), dump);
             }
@@ -165,7 +165,7 @@ public class BrowserModule extends AbstractModule
         {
             final String browserPresetAddress = presetAddress + (i + 1) + "/";
             this.writer.sendOSC (browserPresetAddress + TAG_EXISTS, items[i].doesExist (), dump);
-            this.writer.sendOSC (browserPresetAddress + "name", items[i].getName (), dump);
+            this.writer.sendOSC (browserPresetAddress + TAG_NAME, items[i].getName (), dump);
             this.writer.sendOSC (browserPresetAddress + "hits", items[i].getHitCount (), dump);
             this.writer.sendOSC (browserPresetAddress + "isSelected", items[i].isSelected (), dump);
         }

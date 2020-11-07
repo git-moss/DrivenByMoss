@@ -81,6 +81,14 @@ public abstract class AbstractItemImpl implements IItem
 
     /** {@inheritDoc} */
     @Override
+    public void setName (final String name)
+    {
+        // Intentionally empty
+    }
+
+
+    /** {@inheritDoc} */
+    @Override
     public boolean isSelected ()
     {
         return this.selected;

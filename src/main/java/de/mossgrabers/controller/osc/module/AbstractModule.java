@@ -24,6 +24,7 @@ import java.util.LinkedList;
 public abstract class AbstractModule implements IModule
 {
     protected static final String     TAG_EXISTS   = "exists";
+    protected static final String     TAG_NAME     = "name";
     protected static final String     TAG_SELECTED = "selected";
     protected static final String     TAG_SELECT   = "select";
     protected static final String     TAG_VOLUME   = "volume";
@@ -177,7 +178,7 @@ public abstract class AbstractModule implements IModule
     {
         final boolean isSend = fxParam instanceof ISend;
 
-        writer.sendOSC (fxAddress + "name", fxParam.getName (), dump);
+        writer.sendOSC (fxAddress + TAG_NAME, fxParam.getName (), dump);
         writer.sendOSC (fxAddress + (isSend ? "volumeStr" : "valueStr"), fxParam.getDisplayedValue (), dump);
         writer.sendOSC (fxAddress + (isSend ? TAG_VOLUME : "value"), fxParam.getValue (), dump);
         writer.sendOSC (fxAddress + "modulatedValue", fxParam.getModulatedValue (), dump);

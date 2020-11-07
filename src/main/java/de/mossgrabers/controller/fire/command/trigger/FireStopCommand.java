@@ -9,6 +9,7 @@ import de.mossgrabers.controller.fire.controller.FireControlSurface;
 import de.mossgrabers.framework.command.trigger.transport.StopCommand;
 import de.mossgrabers.framework.controller.ButtonID;
 import de.mossgrabers.framework.daw.IModel;
+import de.mossgrabers.framework.daw.ITransport;
 import de.mossgrabers.framework.utils.ButtonEvent;
 
 
@@ -44,9 +45,23 @@ public class FireStopCommand extends StopCommand<FireControlSurface, FireConfigu
 
     /** {@inheritDoc} */
     @Override
+    public void executeNormal (ButtonEvent event)
+    {
+        if (event != ButtonEvent.UP)
+            return;
+        final ITransport transport = this.model.getTransport ();
+        if (transport.isPlaying ())
+            this.handleStopOptions ();
+        else
+            transport.stopAndRewind ();
+    }
+
+
+    /** {@inheritDoc} */
+    @Override
     public void executeShifted (final ButtonEvent event)
     {
-        if (event == ButtonEvent.DOWN)
+        if (event == ButtonEvent.UP)
             this.model.getTransport ().toggleWriteClipLauncherAutomation ();
     }
 
@@ -58,7 +73,7 @@ public class FireStopCommand extends StopCommand<FireControlSurface, FireConfigu
      */
     public void executeAlt (final ButtonEvent event)
     {
-        if (event == ButtonEvent.DOWN)
+        if (event == ButtonEvent.UP)
             this.model.getTransport ().toggleWriteArrangerAutomation ();
     }
 }
