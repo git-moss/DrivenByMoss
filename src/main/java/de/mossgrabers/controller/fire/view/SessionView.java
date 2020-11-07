@@ -10,6 +10,8 @@ import de.mossgrabers.controller.fire.controller.FireControlSurface;
 import de.mossgrabers.framework.controller.ButtonID;
 import de.mossgrabers.framework.daw.IModel;
 import de.mossgrabers.framework.daw.data.IScene;
+import de.mossgrabers.framework.daw.data.ISlot;
+import de.mossgrabers.framework.daw.data.ITrack;
 import de.mossgrabers.framework.daw.data.bank.ISceneBank;
 import de.mossgrabers.framework.utils.ButtonEvent;
 import de.mossgrabers.framework.view.AbstractSessionView;
@@ -141,6 +143,44 @@ public class SessionView extends AbstractSessionView<FireControlSurface, FireCon
                 super.onButton (buttonID, event, velocity);
                 break;
         }
+    }
+
+
+    /** {@inheritDoc} */
+    @Override
+    protected boolean handleButtonCombinations (final ITrack track, final ISlot slot)
+    {
+        final boolean result = super.handleButtonCombinations (track, slot);
+
+        // Stop clip with normal stop button
+        if (this.isButtonCombination (ButtonID.STOP))
+        {
+            track.stop ();
+            return true;
+        }
+
+        final FireConfiguration configuration = this.surface.getConfiguration ();
+        if (this.isButtonCombination (ButtonID.DELETE) && configuration.isDeleteModeActive ())
+            configuration.toggleDeleteModeActive ();
+        else if (this.isButtonCombination (ButtonID.DUPLICATE) && configuration.isDuplicateModeActive () && (!slot.doesExist () || !slot.hasContent ()))
+            configuration.toggleDuplicateModeActive ();
+
+        return result;
+    }
+
+
+    /** {@inheritDoc} */
+    @Override
+    protected boolean isButtonCombination (final ButtonID buttonID)
+    {
+        if (super.isButtonCombination (buttonID))
+            return true;
+
+        final FireConfiguration configuration = this.surface.getConfiguration ();
+        if (buttonID == ButtonID.DELETE && configuration.isDeleteModeActive ())
+            return true;
+
+        return buttonID == ButtonID.DUPLICATE && configuration.isDuplicateModeActive ();
     }
 
 

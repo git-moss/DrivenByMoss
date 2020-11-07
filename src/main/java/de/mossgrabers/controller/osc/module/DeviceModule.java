@@ -131,7 +131,7 @@ public class DeviceModule extends AbstractModule
     private void flushDevice (final IOpenSoundControlWriter writer, final String deviceAddress, final ISpecificDevice device, final boolean dump)
     {
         writer.sendOSC (deviceAddress + TAG_EXISTS, device.doesExist (), dump);
-        writer.sendOSC (deviceAddress + "name", device.getName (), dump);
+        writer.sendOSC (deviceAddress + TAG_NAME, device.getName (), dump);
         writer.sendOSC (deviceAddress + "bypass", !device.isEnabled (), dump);
         writer.sendOSC (deviceAddress + "expand", device.isExpanded (), dump);
         writer.sendOSC (deviceAddress + "parameters", device.isParameterPageSectionVisible (), dump);
@@ -199,7 +199,7 @@ public class DeviceModule extends AbstractModule
         writer.sendOSC (deviceAddress + TAG_EXISTS, channel.doesExist (), dump);
         writer.sendOSC (deviceAddress + "activated", channel.isActivated (), dump);
         writer.sendOSC (deviceAddress + TAG_SELECTED, channel.isSelected (), dump);
-        writer.sendOSC (deviceAddress + "name", channel.getName (), dump);
+        writer.sendOSC (deviceAddress + TAG_NAME, channel.getName (), dump);
         writer.sendOSC (deviceAddress + "volumeStr", channel.getVolumeStr (), dump);
         writer.sendOSC (deviceAddress + TAG_VOLUME, channel.getVolume (), dump);
         writer.sendOSC (deviceAddress + "panStr", channel.getPanStr (), dump);
@@ -532,7 +532,12 @@ public class DeviceModule extends AbstractModule
         {
             case TAG_SELECT:
             case TAG_SELECTED:
-                layerOrDrumPadBank.getItem (layerIndex).select ();
+                layer.select ();
+                break;
+
+            case TAG_NAME:
+                if (value != null)
+                    layer.setName (value.toString ());
                 break;
 
             case TAG_VOLUME:

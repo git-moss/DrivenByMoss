@@ -111,7 +111,7 @@ public class SceneModule extends AbstractModule
             final IScene scene = sceneBank.getItem (i);
             final String sceneAddress = "/scene/" + (i + 1) + "/";
             this.writer.sendOSC (sceneAddress + TAG_EXISTS, scene.doesExist (), dump);
-            this.writer.sendOSC (sceneAddress + "name", scene.getName (), dump);
+            this.writer.sendOSC (sceneAddress + TAG_NAME, scene.getName (), dump);
             this.writer.sendOSC (sceneAddress + TAG_SELECTED, scene.isSelected (), dump);
         }
     }

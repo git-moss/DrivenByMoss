@@ -6,7 +6,7 @@ package de.mossgrabers.controller.mcu.command.trigger;
 
 import de.mossgrabers.controller.mcu.MCUConfiguration;
 import de.mossgrabers.controller.mcu.controller.MCUControlSurface;
-import de.mossgrabers.framework.command.trigger.mode.ModeSelectCommand;
+import de.mossgrabers.framework.command.trigger.mode.ModeMultiSelectCommand;
 import de.mossgrabers.framework.controller.ButtonID;
 import de.mossgrabers.framework.daw.IModel;
 import de.mossgrabers.framework.mode.Modes;
@@ -18,7 +18,7 @@ import de.mossgrabers.framework.utils.ButtonEvent;
  *
  * @author J&uuml;rgen Mo&szlig;graber
  */
-public class DevicesCommand extends ModeSelectCommand<MCUControlSurface, MCUConfiguration>
+public class DevicesCommand extends ModeMultiSelectCommand<MCUControlSurface, MCUConfiguration>
 {
     /**
      * Constructor.
@@ -28,7 +28,7 @@ public class DevicesCommand extends ModeSelectCommand<MCUControlSurface, MCUConf
      */
     public DevicesCommand (final IModel model, final MCUControlSurface surface)
     {
-        super (model, surface, Modes.DEVICE_PARAMS);
+        super (model, surface, Modes.DEVICE_PARAMS, Modes.USER);
     }
 
 

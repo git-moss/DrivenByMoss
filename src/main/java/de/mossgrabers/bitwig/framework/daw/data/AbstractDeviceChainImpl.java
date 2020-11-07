@@ -60,6 +60,14 @@ public abstract class AbstractDeviceChainImpl<T extends DeviceChain> extends Abs
     }
 
 
+    /** {@inheritDoc} */
+    @Override
+    public void setName (final String name)
+    {
+        this.deviceChain.name ().set (name);
+    }
+
+
     /**
      * Get the device chain.
      *

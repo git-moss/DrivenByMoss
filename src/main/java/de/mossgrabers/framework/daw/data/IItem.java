@@ -85,4 +85,12 @@ public interface IItem extends IObserverManagement
      * @param observer The observer to notify on a name change
      */
     void addNameObserver (final IValueObserver<String> observer);
+
+
+    /**
+     * Set the name of the item.
+     *
+     * @param name The new name
+     */
+    void setName (String name);
 }

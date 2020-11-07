@@ -87,6 +87,14 @@ public class ResetParameter implements IParameter
 
     /** {@inheritDoc} */
     @Override
+    public void setName (final String name)
+    {
+        this.parameter.setName (name);
+    }
+
+
+    /** {@inheritDoc} */
+    @Override
     public boolean doesExist ()
     {
         return this.parameter.doesExist ();

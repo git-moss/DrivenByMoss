@@ -5,12 +5,14 @@
 package de.mossgrabers.controller.fire.view;
 
 import de.mossgrabers.controller.fire.FireConfiguration;
+import de.mossgrabers.controller.fire.controller.FireColorManager;
 import de.mossgrabers.controller.fire.controller.FireControlSurface;
 import de.mossgrabers.framework.configuration.AbstractConfiguration;
 import de.mossgrabers.framework.controller.ButtonID;
 import de.mossgrabers.framework.controller.color.ColorEx;
 import de.mossgrabers.framework.controller.grid.IPadGrid;
 import de.mossgrabers.framework.daw.DAWColor;
+import de.mossgrabers.framework.daw.IClip;
 import de.mossgrabers.framework.daw.IModel;
 import de.mossgrabers.framework.daw.constants.Resolution;
 import de.mossgrabers.framework.daw.midi.INoteRepeat;
@@ -94,7 +96,8 @@ public class ShiftView extends AbstractView<FireControlSurface, FireConfiguratio
         padGrid.light (43, DAWColor.getColorIndex ((lengthIndex == 7 ? DAWColor.DAW_COLOR_GREEN : DAWColor.DAW_COLOR_PINK).getColor ()));
 
         // New clip length
-        final int clipLengthIndex = this.surface.getConfiguration ().getNewClipLength ();
+        final FireConfiguration configuration = this.surface.getConfiguration ();
+        final int clipLengthIndex = configuration.getNewClipLength ();
         for (int i = 0; i < 8; i++)
             padGrid.light (44 + i, DAWColor.getColorIndex ((i == clipLengthIndex ? DAWColor.DAW_COLOR_RED : DAWColor.DAW_COLOR_LIGHT_ORANGE).getColor ()));
 
@@ -104,8 +107,23 @@ public class ShiftView extends AbstractView<FireControlSurface, FireConfiguratio
             padGrid.light (60 + i, 0);
             padGrid.light (76 + i, 0);
         }
-        for (int i = 0; i < 5; i++)
-            padGrid.light (92 + i, 0);
+
+        padGrid.light (92, 0);
+        padGrid.light (96, 0);
+
+        // Duplicate
+        if (configuration.isDuplicateModeActive ())
+            padGrid.light (93, FireColorManager.FIRE_COLOR_DARK_OCEAN, FireColorManager.FIRE_COLOR_BLUE, true);
+        else
+            padGrid.light (93, FireColorManager.FIRE_COLOR_DARK_OCEAN);
+
+        padGrid.light (94, FireColorManager.FIRE_COLOR_GREEN);
+
+        // Delete
+        if (configuration.isDeleteModeActive ())
+            padGrid.light (95, FireColorManager.FIRE_COLOR_DARK_RED, FireColorManager.FIRE_COLOR_RED, true);
+        else
+            padGrid.light (95, FireColorManager.FIRE_COLOR_DARK_RED);
 
         // Add tracks
         padGrid.light (97, DAWColor.getColorIndex (ColorEx.ORANGE));
@@ -216,6 +234,28 @@ public class ShiftView extends AbstractView<FireControlSurface, FireConfiguratio
                 final int newClipLength = note - 44;
                 configuration.setNewClipLength (newClipLength);
                 this.surface.getDisplay ().notify ("Clip len: " + AbstractConfiguration.getNewClipLengthValue (newClipLength));
+                break;
+
+            case 93:
+                configuration.toggleDuplicateModeActive ();
+                this.surface.getDisplay ().notify ("Duplicate " + (configuration.isDuplicateModeActive () ? "Active" : "Off"));
+                break;
+
+            case 94:
+                final IClip clip = this.model.getClip ();
+                if (clip.doesExist ())
+                {
+                    clip.duplicateContent ();
+                    this.surface.getDisplay ().notify ("Double clip");
+                }
+                else
+                    this.surface.getDisplay ().notify ("No clip.");
+
+                break;
+
+            case 95:
+                configuration.toggleDeleteModeActive ();
+                this.surface.getDisplay ().notify ("Delete " + (configuration.isDeleteModeActive () ? "Active" : "Off"));
                 break;
 
             case 97:

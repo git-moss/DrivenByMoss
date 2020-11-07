@@ -248,17 +248,17 @@ public class MidiMonitorControlSurface extends AbstractControlSurface<MidiMonito
         {
             // Note off
             case 0x80:
-                this.log (status, data1, data2, channel, "Note Off " + Scales.formatNoteAndOctave (data1, 0));
+                this.log (status, data1, data2, channel, "Note Off " + Scales.formatNoteAndOctave (data1, -2));
                 break;
 
             // Note on
             case 0x90:
-                this.log (status, data1, data2, channel, "Note On  " + Scales.formatNoteAndOctave (data1, 0));
+                this.log (status, data1, data2, channel, "Note On  " + Scales.formatNoteAndOctave (data1, -2));
                 break;
 
             // Polyphonic Aftertouch
             case 0xA0:
-                this.log (status, data1, data2, channel, "Polyphonic Key Pressure " + Scales.formatNoteAndOctave (data1, 0));
+                this.log (status, data1, data2, channel, "Polyphonic Key Pressure " + Scales.formatNoteAndOctave (data1, -2));
                 break;
 
             // CC

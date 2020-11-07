@@ -21,9 +21,6 @@ public class LaunchpadConfiguration extends AbstractConfiguration
 {
     private final ILaunchpadControllerDefinition definition;
 
-    private boolean                              isDeleteActive    = false;
-    private boolean                              isDuplicateActive = false;
-
 
     /**
      * Constructor.
@@ -95,49 +92,5 @@ public class LaunchpadConfiguration extends AbstractConfiguration
         // Pad Sensitivity
 
         this.activateConvertAftertouchSetting (globalSettings);
-    }
-
-
-    /**
-     * Returns true if the delete mode is active.
-     *
-     * @return True if active
-     */
-    public boolean isDeleteModeActive ()
-    {
-        return this.isDeleteActive;
-    }
-
-
-    /**
-     * Toggle the delete mode.
-     */
-    public void toggleDeleteModeActive ()
-    {
-        this.isDeleteActive = !this.isDeleteActive;
-        if (this.isDeleteActive)
-            this.isDuplicateActive = false;
-    }
-
-
-    /**
-     * Returns true if the duplicate mode is active.
-     *
-     * @return True if active
-     */
-    public boolean isDuplicateModeActive ()
-    {
-        return this.isDuplicateActive;
-    }
-
-
-    /**
-     * Toggle the duplicate mode.
-     */
-    public void toggleDuplicateModeActive ()
-    {
-        this.isDuplicateActive = !this.isDuplicateActive;
-        if (this.isDuplicateActive)
-            this.isDeleteActive = false;
     }
 }

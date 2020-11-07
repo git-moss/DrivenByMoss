@@ -99,7 +99,7 @@ public class MarkerModule extends AbstractModule
             final String markerAddress = "/marker/" + (i + 1) + "/";
             final IMarker marker = markerBank.getItem (i);
             this.writer.sendOSC (markerAddress + "exists", marker.doesExist (), dump);
-            this.writer.sendOSC (markerAddress + "name", marker.getName (), dump);
+            this.writer.sendOSC (markerAddress + TAG_NAME, marker.getName (), dump);
             final ColorEx color = marker.getColor ();
             this.writer.sendOSCColor (markerAddress + "color", color.getRed (), color.getGreen (), color.getBlue (), dump);
         }

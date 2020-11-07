@@ -10,6 +10,7 @@ import de.mossgrabers.controller.slmkiii.command.trigger.TrackModeCommand;
 import de.mossgrabers.controller.slmkiii.controller.SLMkIIIColorManager;
 import de.mossgrabers.controller.slmkiii.controller.SLMkIIIControlSurface;
 import de.mossgrabers.controller.slmkiii.controller.SLMkIIIDisplay;
+import de.mossgrabers.controller.slmkiii.controller.SLMkIIILightGuide;
 import de.mossgrabers.controller.slmkiii.controller.SLMkIIIScales;
 import de.mossgrabers.controller.slmkiii.mode.BaseMode;
 import de.mossgrabers.controller.slmkiii.mode.BrowserMode;
@@ -204,6 +205,8 @@ public class SLMkIIIControllerSetup extends AbstractControllerSetup<SLMkIIIContr
             this.colorManager.updateColorIndex (Scales.SCALE_COLOR_OUT_OF_SCALE, colorIndex);
 
         });
+
+        this.configuration.addSettingObserver (SLMkIIIConfiguration.ENABLE_LIGHTGUIDE, () -> ((SLMkIIILightGuide) this.getSurface ().getLightGuide ()).setActive (this.configuration.isLightEnabled ()));
 
         this.activateBrowserObserver (Modes.BROWSER);
     }

@@ -127,7 +127,7 @@ public class TrackModule extends AbstractModule
         writer.sendOSC (trackAddress + "activated", track.isActivated (), dump);
         writer.sendOSC (trackAddress + TAG_SELECTED, track.isSelected (), dump);
         writer.sendOSC (trackAddress + "isGroup", track.isGroup (), dump);
-        writer.sendOSC (trackAddress + "name", track.getName (), dump);
+        writer.sendOSC (trackAddress + TAG_NAME, track.getName (), dump);
         writer.sendOSC (trackAddress + "volumeStr", track.getVolumeStr (), dump);
         writer.sendOSC (trackAddress + TAG_VOLUME, track.getVolume (), dump);
         writer.sendOSC (trackAddress + "panStr", track.getPanStr (), dump);
@@ -150,7 +150,7 @@ public class TrackModule extends AbstractModule
         {
             final ISlot slot = slotBank.getItem (i);
             final String clipAddress = trackAddress + "clip/" + (i + 1) + "/";
-            writer.sendOSC (clipAddress + "name", slot.getName (), dump);
+            writer.sendOSC (clipAddress + TAG_NAME, slot.getName (), dump);
             writer.sendOSC (clipAddress + "isSelected", slot.isSelected (), dump);
             writer.sendOSC (clipAddress + "hasContent", slot.hasContent (), dump);
             writer.sendOSC (clipAddress + "isPlaying", slot.isPlaying (), dump);
@@ -319,6 +319,11 @@ public class TrackModule extends AbstractModule
         final String command = getSubCommand (path);
         switch (command)
         {
+            case TAG_NAME:
+                if (value != null)
+                    track.setName (value.toString ());
+                break;
+
             case "activated":
                 track.setIsActivated (isTrigger (value));
                 break;
