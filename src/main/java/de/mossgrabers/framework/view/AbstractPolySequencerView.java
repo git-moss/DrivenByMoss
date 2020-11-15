@@ -252,10 +252,8 @@ public abstract class AbstractPolySequencerView<S extends IControlSurface<C>, C 
     protected boolean handleSequencerAreaButtonCombinations (final INoteClip clip, final int channel, final int step)
     {
         // Handle note duplicate function
-        final IHwButton duplicateButton = this.surface.getButton (ButtonID.DUPLICATE);
-        if (duplicateButton != null && duplicateButton.isPressed ())
+        if (this.isButtonCombination (ButtonID.DUPLICATE))
         {
-            duplicateButton.setConsumed ();
             if (this.getStep (clip, step) == IStepInfo.NOTE_START)
                 this.copyStep = step;
             else if (this.copyStep >= 0)
@@ -263,7 +261,7 @@ public abstract class AbstractPolySequencerView<S extends IControlSurface<C>, C 
                 for (int row = 0; row < 128; row++)
                 {
                     final IStepInfo stepInfo = clip.getStep (channel, this.copyStep, row);
-                    if (stepInfo != null)
+                    if (stepInfo != null && stepInfo.getVelocity () > 0)
                         clip.setStep (channel, step, row, stepInfo);
                 }
             }

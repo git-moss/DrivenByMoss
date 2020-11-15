@@ -301,6 +301,13 @@ public class FireControllerSetup extends AbstractControllerSetup<FireControlSurf
                 return;
             }
 
+            if (modeManager.isActive (Modes.DEVICE_PARAMS) && this.configuration.isDeleteModeActive ())
+            {
+                this.model.getCursorDevice ().remove ();
+                this.configuration.toggleDeleteModeActive ();
+                return;
+            }
+
             this.model.getCursorDevice ().toggleWindowOpen ();
 
         }, FireControlSurface.SELECT);
@@ -386,7 +393,7 @@ public class FireControllerSetup extends AbstractControllerSetup<FireControlSurf
             knob.setIndexInGroup (i);
         }
 
-        this.addRelativeKnob (ContinuousID.VIEW_SELECTION, "Select", new SelectKnobCommand (this.model, surface), FireControlSurface.CC_SELECT);
+        this.addRelativeKnob (ContinuousID.VIEW_SELECTION, "Select", new SelectKnobCommand (this.model, surface), FireControlSurface.CC_SELECT).setShouldAdaptSensitivity (false);
     }
 
 

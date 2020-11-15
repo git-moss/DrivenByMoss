@@ -18,4 +18,20 @@ public interface IHwRelativeKnob extends IHwContinuousControl
      *            values are slower, positive faster
      */
     void setSensitivity (double sensitivity);
+
+
+    /**
+     * Check if the knob should be adjusted to the sensitivity settings.
+     *
+     * @return True if the knob should be adjusted to the sensitivity settings
+     */
+    boolean shouldAdaptSensitivity ();
+
+
+    /**
+     * Set if the knob should be adjusted to the sensitivity settings.
+     *
+     * @param shouldAdaptSensitivity True if the knob should be adjusted to the sensitivity settings
+     */
+    void setShouldAdaptSensitivity (boolean shouldAdaptSensitivity);
 }

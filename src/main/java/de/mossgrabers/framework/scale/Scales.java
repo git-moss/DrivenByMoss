@@ -319,17 +319,6 @@ public class Scales
 
 
     /**
-     * Change the scale offset value.
-     *
-     * @param control The control value
-     */
-    public void changeScaleOffset (final int control)
-    {
-        this.scaleOffset = this.valueChanger.changeValue (control, this.scaleOffset, -100, Scales.OFFSETS.length);
-    }
-
-
-    /**
      * Set the base note (offset) to use for the current scale by its name.
      *
      * @param scaleOffsetName The offsets name (e.g. 'G')

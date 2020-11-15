@@ -7,7 +7,9 @@ package de.mossgrabers.controller.fire.mode;
 import de.mossgrabers.controller.fire.FireConfiguration;
 import de.mossgrabers.controller.fire.controller.FireControlSurface;
 import de.mossgrabers.framework.controller.ButtonID;
+import de.mossgrabers.framework.controller.ContinuousID;
 import de.mossgrabers.framework.controller.display.IGraphicDisplay;
+import de.mossgrabers.framework.controller.hardware.IHwRelativeKnob;
 import de.mossgrabers.framework.daw.IBrowser;
 import de.mossgrabers.framework.daw.IModel;
 import de.mossgrabers.framework.daw.data.IBrowserColumn;
@@ -42,11 +44,26 @@ public class BrowserMode extends AbstractMode<FireControlSurface, FireConfigurat
 
     /** {@inheritDoc} */
     @Override
+    public void onActivate ()
+    {
+        super.onActivate ();
+
+        for (int i = 0; i < 4; i++)
+            ((IHwRelativeKnob) this.surface.getContinuous (ContinuousID.get (ContinuousID.KNOB1, i))).setSensitivity (1);
+    }
+
+
+    /** {@inheritDoc} */
+    @Override
     public void onDeactivate ()
     {
         super.onDeactivate ();
 
         this.model.getBrowser ().stopBrowsing (true);
+
+        final int knobSensitivityDefault = this.surface.getConfiguration ().getKnobSensitivityDefault ();
+        for (int i = 0; i < 4; i++)
+            ((IHwRelativeKnob) this.surface.getContinuous (ContinuousID.get (ContinuousID.KNOB1, i))).setSensitivity (knobSensitivityDefault);
     }
 
 

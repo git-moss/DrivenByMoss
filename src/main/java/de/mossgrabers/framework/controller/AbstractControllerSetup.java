@@ -1295,7 +1295,10 @@ public abstract class AbstractControllerSetup<S extends IControlSurface<C>, C ex
 
             final int knobSensitivity = surface.isKnobSensitivitySlow () ? this.configuration.getKnobSensitivitySlow () : this.configuration.getKnobSensitivityDefault ();
             this.valueChanger.setSensitivity (knobSensitivity);
-            surface.getRelativeKnobs ().forEach (knob -> knob.setSensitivity (knobSensitivity));
+            surface.getRelativeKnobs ().forEach (knob -> {
+                if (knob.shouldAdaptSensitivity ())
+                    knob.setSensitivity (knobSensitivity);
+            });
 
         });
     }

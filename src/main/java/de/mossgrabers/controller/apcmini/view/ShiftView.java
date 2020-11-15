@@ -435,7 +435,7 @@ public class ShiftView extends AbstractView<APCminiControlSurface, APCminiConfig
     private void switchToView (final Views viewID)
     {
         final ViewManager viewManager = this.surface.getViewManager ();
-        viewManager.setPreviousID (viewID);
+        viewManager.setActive (viewID);
         this.surface.getDisplay ().notify (viewManager.get (viewID).getName ());
     }
 

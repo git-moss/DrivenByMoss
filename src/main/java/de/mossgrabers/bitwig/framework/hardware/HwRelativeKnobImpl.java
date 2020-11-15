@@ -37,6 +37,7 @@ public class HwRelativeKnobImpl extends AbstractHwContinuousControl implements I
     private RelativeHardwarControlBindable defaultSimpleParameterAction;
     private RelativeHardwareControlBinding binding;
     private IParameter                     parameter;
+    private boolean                        shouldAdaptSensitivity = true;
 
 
     /**
@@ -203,5 +204,21 @@ public class HwRelativeKnobImpl extends AbstractHwContinuousControl implements I
     public void setSensitivity (final double sensitivity)
     {
         this.hardwareKnob.setSensitivity (DefaultValueChanger.rescale (sensitivity));
+    }
+
+
+    /** {@inheritDoc} */
+    @Override
+    public boolean shouldAdaptSensitivity ()
+    {
+        return this.shouldAdaptSensitivity;
+    }
+
+
+    /** {@inheritDoc} */
+    @Override
+    public void setShouldAdaptSensitivity (final boolean shouldAdaptSensitivity)
+    {
+        this.shouldAdaptSensitivity = shouldAdaptSensitivity;
     }
 }

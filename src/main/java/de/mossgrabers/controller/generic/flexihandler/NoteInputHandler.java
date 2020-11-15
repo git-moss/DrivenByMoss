@@ -120,21 +120,21 @@ public class NoteInputHandler extends AbstractHandler
             // Note Repeat: Toggle Active
             case NOTE_INPUT_REPEAT_ACTIVE:
                 if (isButtonPressed)
+                {
                     configuration.toggleNoteRepeatActive ();
+                    this.mvHelper.delayDisplay ( () -> "Repeat: " + (configuration.isNoteRepeatActive () ? "On" : "Off"));
+                }
                 break;
 
             // Note Repeat: Set Period
             case NOTE_INPUT_REPEAT_PERIOD:
                 final int selPeriod;
                 if (isAbsolute (knobMode))
-                {
-                    if (value >= resolutions.length)
-                        return;
-                    selPeriod = value;
-                }
+                    selPeriod = (int) Math.min (Math.round (value / 127.0 * resolutions.length), resolutions.length - 1L);
                 else
                     selPeriod = Resolution.change (Resolution.getMatch (configuration.getNoteRepeatPeriod ().getValue ()), this.getRelativeSpeed (knobMode, value) > 0);
                 configuration.setNoteRepeatPeriod (resolutions[selPeriod]);
+                this.mvHelper.delayDisplay ( () -> "Repeat Period: " + (configuration.getNoteRepeatPeriod ().getName ()));
                 break;
 
             // Note Repeat: Set Length
@@ -143,14 +143,11 @@ public class NoteInputHandler extends AbstractHandler
                 {
                     final int selLength;
                     if (isAbsolute (knobMode))
-                    {
-                        if (value >= resolutions.length)
-                            return;
-                        selLength = value;
-                    }
+                        selLength = (int) Math.min (Math.round (value / 127.0 * resolutions.length), resolutions.length - 1L);
                     else
                         selLength = Resolution.change (Resolution.getMatch (configuration.getNoteRepeatLength ().getValue ()), this.getRelativeSpeed (knobMode, value) > 0);
                     configuration.setNoteRepeatLength (resolutions[selLength]);
+                    this.mvHelper.delayDisplay ( () -> "Repeat Length: " + (configuration.getNoteRepeatLength ().getName ()));
                 }
                 break;
 
@@ -173,6 +170,7 @@ public class NoteInputHandler extends AbstractHandler
                         newIndex = Math.max (0, Math.min (modes.length - 1, modeIndex + (increase ? 1 : -1)));
                     }
                     configuration.setNoteRepeatMode (modes[newIndex]);
+                    this.mvHelper.delayDisplay ( () -> "Repeat Mode: " + modes[newIndex].getName ());
                 }
                 break;
 
@@ -185,6 +183,7 @@ public class NoteInputHandler extends AbstractHandler
                     else
                         octave = configuration.getNoteRepeatOctave () + (this.getRelativeSpeed (knobMode, value) > 0 ? 1 : -1);
                     configuration.setNoteRepeatOctave (octave);
+                    this.mvHelper.delayDisplay ( () -> "Repeat Octave: " + octave);
                 }
                 break;
 
@@ -192,7 +191,7 @@ public class NoteInputHandler extends AbstractHandler
                 if (isButtonPressed)
                 {
                     scales.incOctave ();
-                    this.surface.scheduleTask ( () -> this.surface.setKeyTranslationTable (scales.getNoteMatrix ()), 6);
+                    this.updateOctave (scales);
                 }
                 break;
 
@@ -200,12 +199,21 @@ public class NoteInputHandler extends AbstractHandler
                 if (isButtonPressed)
                 {
                     scales.decOctave ();
-                    this.surface.scheduleTask ( () -> this.surface.setKeyTranslationTable (scales.getNoteMatrix ()), 6);
+                    this.updateOctave (scales);
                 }
                 break;
 
             default:
                 throw new FlexiHandlerException (command);
         }
+    }
+
+
+    private void updateOctave (final Scales scales)
+    {
+        this.surface.scheduleTask ( () -> {
+            this.surface.setKeyTranslationTable (scales.getNoteMatrix ());
+            this.mvHelper.delayDisplay ( () -> "Octave: " + scales.getOctave ());
+        }, 6);
     }
 }

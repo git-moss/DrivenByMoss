@@ -9,7 +9,7 @@ package de.mossgrabers.framework.scale;
  *
  * @author J&uuml;rgen Mo&szlig;graber
  */
-public class ScaleGrid
+class ScaleGrid
 {
     /** Orientation of the layout. */
     public enum Orientation
