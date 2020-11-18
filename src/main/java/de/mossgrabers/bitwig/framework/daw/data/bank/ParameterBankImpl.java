@@ -48,7 +48,7 @@ public class ParameterBankImpl extends AbstractItemBank<IParameter> implements I
         this.remoteControls = remoteControlsPage;
 
         for (int i = 0; i < this.getPageSize (); i++)
-            this.items.add (new ParameterImpl (this.valueChanger, this.remoteControls.getParameter (i), i));
+            this.items.add (new ParameterImpl (this.valueChanger, this.remoteControls.getParameter (i), i, true));
 
         this.remoteControls.hasPrevious ().markInterested ();
         this.remoteControls.hasNext ().markInterested ();

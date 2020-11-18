@@ -166,7 +166,7 @@ public class MCUControllerSetup extends AbstractControllerSetup<MCUControlSurfac
         Arrays.fill (this.masterVuValues, -1);
 
         this.colorManager = new MCUColorManager ();
-        this.valueChanger = new DefaultValueChanger (16241 + 1, 500);
+        this.valueChanger = new DefaultValueChanger (16241 + 1, 10);
         this.configuration = new MCUConfiguration (host, this.valueChanger, numMCUDevices, factory.getArpeggiatorModes ());
     }
 

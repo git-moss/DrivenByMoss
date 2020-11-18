@@ -18,6 +18,7 @@ import com.bitwig.extension.controller.api.Parameter;
 public class ParameterImpl extends RangedValueImpl
 {
     private final Parameter parameter;
+    private final boolean   fixNames;
 
 
     /**
@@ -41,9 +42,26 @@ public class ParameterImpl extends RangedValueImpl
      */
     public ParameterImpl (final IValueChanger valueChanger, final Parameter parameter, final int index)
     {
+        this (valueChanger, parameter, index, false);
+    }
+
+
+    /**
+     * Constructor.
+     *
+     * @param valueChanger The value changer
+     * @param parameter The parameter
+     * @param index The index of the item in the page
+     * @param fixNames Don't use targetName if true
+     */
+    public ParameterImpl (final IValueChanger valueChanger, final Parameter parameter, final int index, final boolean fixNames)
+    {
         super (null, valueChanger, parameter, index);
 
         this.parameter = parameter;
+
+        // TODO Bugfix required: https://github.com/teotigraphix/Framework4Bitwig/issues/268
+        this.fixNames = fixNames;
 
         parameter.exists ().markInterested ();
         parameter.name ().markInterested ();
@@ -79,7 +97,7 @@ public class ParameterImpl extends RangedValueImpl
     @Override
     public String getName ()
     {
-        return this.targetName == null ? this.parameter.name ().get () : this.targetName.get ();
+        return this.targetName == null || this.fixNames ? this.parameter.name ().get () : this.targetName.get ();
     }
 
 
@@ -87,7 +105,7 @@ public class ParameterImpl extends RangedValueImpl
     @Override
     public String getName (final int limit)
     {
-        return this.targetName == null ? this.parameter.name ().getLimited (limit) : this.targetName.getLimited (limit);
+        return this.targetName == null || this.fixNames ? this.parameter.name ().getLimited (limit) : this.targetName.getLimited (limit);
     }
 
 
