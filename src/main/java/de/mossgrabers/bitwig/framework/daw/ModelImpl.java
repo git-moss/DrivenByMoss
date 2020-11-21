@@ -266,7 +266,7 @@ public class ModelImpl extends AbstractModel
     @Override
     public INoteClip getNoteClip (final int cols, final int rows)
     {
-        return (INoteClip) this.cursorClips.computeIfAbsent (cols + "-" + rows, k -> new CursorClipImpl (this.controllerHost, this.valueChanger, cols, rows));
+        return (INoteClip) this.cursorClips.computeIfAbsent (cols + "-" + rows, k -> new CursorClipImpl (this.controllerHost, this.cursorTrack, this.valueChanger, cols, rows));
     }
 
 

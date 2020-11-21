@@ -12,6 +12,20 @@ package de.mossgrabers.framework.daw;
 public interface INoteClip extends IClip
 {
     /**
+     * Get if the clip is pinned.
+     *
+     * @return True if pinned
+     */
+    boolean isPinned ();
+
+
+    /**
+     * Toggles if the clip is pinned.
+     */
+    void togglePinned ();
+
+
+    /**
      * Get the row of notes.
      *
      * @return The row of notes
