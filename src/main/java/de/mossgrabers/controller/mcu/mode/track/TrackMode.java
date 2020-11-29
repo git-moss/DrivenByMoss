@@ -43,7 +43,7 @@ public class TrackMode extends AbstractTrackMode
     @Override
     public int getKnobValue (final int index)
     {
-        final ITrack selectedTrack = getSelectedTrack ();
+        final ITrack selectedTrack = this.getSelectedTrack ();
         if (selectedTrack == null)
             return 0;
 
@@ -65,7 +65,7 @@ public class TrackMode extends AbstractTrackMode
     @Override
     public void onKnobTouch (final int index, final boolean isTouched)
     {
-        final ITrack selectedTrack = getSelectedTrack ();
+        final ITrack selectedTrack = this.getSelectedTrack ();
         if (selectedTrack == null)
             return;
 
@@ -99,7 +99,7 @@ public class TrackMode extends AbstractTrackMode
 
         final ITextDisplay d = this.surface.getTextDisplay ().clear ();
 
-        final ITrack selectedTrack = getSelectedTrack ();
+        final ITrack selectedTrack = this.getSelectedTrack ();
         if (selectedTrack == null)
         {
             d.notify ("Please select a track...");
@@ -179,7 +179,7 @@ public class TrackMode extends AbstractTrackMode
     @Override
     protected void resetParameter (final int index)
     {
-        final ITrack selectedTrack = getSelectedTrack ();
+        final ITrack selectedTrack = this.getSelectedTrack ();
         if (selectedTrack == null)
             return;
         switch (index)

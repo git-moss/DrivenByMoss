@@ -35,7 +35,7 @@ public class ToggleLoopCommand<S extends IControlSurface<C>, C extends Configura
 
     /** {@inheritDoc} */
     @Override
-    public void execute (final ButtonEvent event, final int velocity)
+    public void executeNormal (final ButtonEvent event)
     {
         if (event == ButtonEvent.DOWN)
             this.model.getTransport ().toggleLoop ();

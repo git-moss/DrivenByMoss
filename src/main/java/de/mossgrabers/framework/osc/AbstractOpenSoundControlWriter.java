@@ -61,7 +61,7 @@ public abstract class AbstractOpenSoundControlWriter implements IOpenSoundContro
 
     /**
      * Send all collected messages.
-     * 
+     *
      * @param updateAddress If this is not null it is sent before and after the flush with a value
      *            of 1 before and 0 after
      */

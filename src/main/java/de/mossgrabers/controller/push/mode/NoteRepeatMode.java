@@ -14,6 +14,8 @@ import de.mossgrabers.framework.controller.display.Format;
 import de.mossgrabers.framework.controller.display.IGraphicDisplay;
 import de.mossgrabers.framework.controller.display.ITextDisplay;
 import de.mossgrabers.framework.controller.valuechanger.IValueChanger;
+import de.mossgrabers.framework.daw.GrooveParameterID;
+import de.mossgrabers.framework.daw.IGroove;
 import de.mossgrabers.framework.daw.IHost;
 import de.mossgrabers.framework.daw.IModel;
 import de.mossgrabers.framework.daw.constants.Capability;
@@ -122,7 +124,7 @@ public class NoteRepeatMode extends BaseMode
 
             case 7:
                 if (this.host.supports (Capability.NOTE_REPEAT_SWING))
-                    this.model.getGroove ().getParameters ()[1].changeValue (value);
+                    this.model.getGroove ().getParameter (GrooveParameterID.SHUFFLE_AMOUNT).changeValue (value);
                 break;
 
             default:
@@ -156,7 +158,7 @@ public class NoteRepeatMode extends BaseMode
 
                 case 7:
                     if (this.host.supports (Capability.NOTE_REPEAT_SWING))
-                        this.model.getGroove ().getParameters ()[1].resetValue ();
+                        this.model.getGroove ().getParameter (GrooveParameterID.SHUFFLE_AMOUNT).resetValue ();
                     break;
 
                 default:
@@ -224,7 +226,7 @@ public class NoteRepeatMode extends BaseMode
 
         if (index == 7 && this.host.supports (Capability.NOTE_REPEAT_SWING))
         {
-            final IParameter grooveEnabled = this.model.getGroove ().getParameters ()[0];
+            final IParameter grooveEnabled = this.model.getGroove ().getParameter (GrooveParameterID.ENABLED);
             grooveEnabled.setValue (grooveEnabled.getValue () == 0 ? this.model.getValueChanger ().getUpperBound () : 0);
         }
     }
@@ -279,7 +281,7 @@ public class NoteRepeatMode extends BaseMode
             final ColorManager colorManager = this.model.getColorManager ();
             if (index < 7)
                 return colorManager.getColorIndex (AbstractFeatureGroup.BUTTON_COLOR_OFF);
-            return this.model.getGroove ().getParameters ()[0].getValue () > 0 ? colorManager.getColorIndex (AbstractMode.BUTTON_COLOR_HI) : colorManager.getColorIndex (AbstractFeatureGroup.BUTTON_COLOR_ON);
+            return this.model.getGroove ().getParameter (GrooveParameterID.ENABLED).getValue () > 0 ? colorManager.getColorIndex (AbstractMode.BUTTON_COLOR_HI) : colorManager.getColorIndex (AbstractFeatureGroup.BUTTON_COLOR_ON);
         }
 
         return super.getButtonColor (buttonID);
@@ -339,7 +341,7 @@ public class NoteRepeatMode extends BaseMode
 
         if (this.host.supports (Capability.NOTE_REPEAT_SWING))
         {
-            final IParameter shuffleParam = this.model.getGroove ().getParameters ()[1];
+            final IParameter shuffleParam = this.model.getGroove ().getParameter (GrooveParameterID.SHUFFLE_AMOUNT);
             display.setCell (0, 7, shuffleParam.getName (10));
             display.setCell (1, 7, shuffleParam.getDisplayedValue (8));
             display.setCell (2, 7, shuffleParam.getValue (), Format.FORMAT_VALUE);
@@ -401,10 +403,11 @@ public class NoteRepeatMode extends BaseMode
 
         if (this.host.supports (Capability.NOTE_REPEAT_SWING))
         {
-            final IParameter [] grooveParameters = this.model.getGroove ().getParameters ();
-            final IParameter shuffleParam = grooveParameters[1];
-            final int value = grooveParameters[0].getValue ();
-            display.addParameterElementWithPlainMenu ("Groove " + grooveParameters[0].getDisplayedValue (8), value != 0, "Shuffle", null, this.noteRepeat.isShuffle (), shuffleParam.getName (10), shuffleParam.getValue (), shuffleParam.getDisplayedValue (8), this.isKnobTouched[7], -1);
+            final IGroove groove = this.model.getGroove ();
+            final IParameter shuffleParam = groove.getParameter (GrooveParameterID.SHUFFLE_AMOUNT);
+            final IParameter enabledParam = groove.getParameter (GrooveParameterID.ENABLED);
+            final int value = enabledParam.getValue ();
+            display.addParameterElementWithPlainMenu ("Groove " + enabledParam.getDisplayedValue (8), value != 0, "Shuffle", null, this.noteRepeat.isShuffle (), shuffleParam.getName (10), shuffleParam.getValue (), shuffleParam.getDisplayedValue (8), this.isKnobTouched[7], -1);
         }
         else
             display.addEmptyElement ();

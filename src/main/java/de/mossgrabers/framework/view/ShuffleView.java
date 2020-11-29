@@ -6,7 +6,9 @@ package de.mossgrabers.framework.view;
 
 import de.mossgrabers.framework.configuration.Configuration;
 import de.mossgrabers.framework.controller.IControlSurface;
+import de.mossgrabers.framework.daw.GrooveParameterID;
 import de.mossgrabers.framework.daw.IModel;
+import de.mossgrabers.framework.daw.data.IParameter;
 
 
 /**
@@ -39,6 +41,7 @@ public class ShuffleView<S extends IControlSurface<C>, C extends Configuration> 
     protected int getNumber ()
     {
         final int max = this.model.getValueChanger ().getUpperBound () - 1;
-        return (int) (this.model.getGroove ().getParameters ()[1].getValue () * 100.0 / max);
+        final IParameter parameter = this.model.getGroove ().getParameter (GrooveParameterID.SHUFFLE_AMOUNT);
+        return parameter == null ? 0 : (int) (parameter.getValue () * 100.0 / max);
     }
 }

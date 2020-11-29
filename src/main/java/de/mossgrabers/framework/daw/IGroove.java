@@ -18,9 +18,10 @@ public interface IGroove extends IObserverManagement
     /**
      * Get all groove parameters.
      *
-     * @return The groove parameters
+     * @param id The ID of the parameter to get
+     * @return The groove parameter, might be null if not supported by the implementation
      */
-    IParameter [] getParameters ();
+    IParameter getParameter (GrooveParameterID id);
 
 
     /**
@@ -28,5 +29,5 @@ public interface IGroove extends IObserverManagement
      *
      * @param enable True to enable
      */
-    void setIndication (final boolean enable);
+    void setIndication (boolean enable);
 }

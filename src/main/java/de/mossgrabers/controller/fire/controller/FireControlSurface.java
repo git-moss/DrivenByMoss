@@ -10,7 +10,6 @@ import de.mossgrabers.framework.controller.color.ColorManager;
 import de.mossgrabers.framework.daw.IHost;
 import de.mossgrabers.framework.daw.midi.IMidiInput;
 import de.mossgrabers.framework.daw.midi.IMidiOutput;
-import de.mossgrabers.framework.utils.StringUtils;
 
 
 /**
@@ -122,16 +121,5 @@ public class FireControlSurface extends AbstractControlSurface<FireConfiguration
     public FirePadGrid getPadGrid ()
     {
         return (FirePadGrid) this.pads;
-    }
-
-
-    /**
-     * Send SysEx to the Fire.
-     *
-     * @param parameters The parameters to send
-     */
-    public void sendFireSysEx (final int [] parameters)
-    {
-        this.output.sendSysex ("F0 47 7F 43 " + StringUtils.toHexStr (parameters) + "F7");
     }
 }

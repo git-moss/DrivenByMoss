@@ -6,6 +6,8 @@ package de.mossgrabers.controller.slmkiii;
 
 import de.mossgrabers.controller.slmkiii.command.trigger.ButtonAreaCommand;
 import de.mossgrabers.controller.slmkiii.command.trigger.DeviceModeCommand;
+import de.mossgrabers.controller.slmkiii.command.trigger.SLMkIIIPlayCommand;
+import de.mossgrabers.controller.slmkiii.command.trigger.SLMkIIIToggleLoopCommand;
 import de.mossgrabers.controller.slmkiii.command.trigger.TrackModeCommand;
 import de.mossgrabers.controller.slmkiii.controller.SLMkIIIColorManager;
 import de.mossgrabers.controller.slmkiii.controller.SLMkIIIControlSurface;
@@ -32,10 +34,8 @@ import de.mossgrabers.framework.command.trigger.mode.ButtonRowModeCommand;
 import de.mossgrabers.framework.command.trigger.mode.CursorCommand;
 import de.mossgrabers.framework.command.trigger.mode.ModeCursorCommand.Direction;
 import de.mossgrabers.framework.command.trigger.mode.ModeSelectCommand;
-import de.mossgrabers.framework.command.trigger.transport.PlayCommand;
 import de.mossgrabers.framework.command.trigger.transport.RecordCommand;
 import de.mossgrabers.framework.command.trigger.transport.StopCommand;
-import de.mossgrabers.framework.command.trigger.transport.ToggleLoopCommand;
 import de.mossgrabers.framework.command.trigger.transport.WindCommand;
 import de.mossgrabers.framework.command.trigger.view.ViewButtonCommand;
 import de.mossgrabers.framework.configuration.AbstractConfiguration;
@@ -226,9 +226,9 @@ public class SLMkIIIControllerSetup extends AbstractControllerSetup<SLMkIIIContr
         final WindCommand<SLMkIIIControlSurface, SLMkIIIConfiguration> forwardCommand = new WindCommand<> (this.model, surface, true);
         this.addButton (ButtonID.REWIND, "<<", rewindCommand, 15, SLMkIIIControlSurface.MKIII_TRANSPORT_REWIND, () -> rewindCommand.isRewinding () ? 1 : 0, SLMkIIIColorManager.BUTTON_STATE_WIND_ON, SLMkIIIColorManager.BUTTON_STATE_WIND_HI);
         this.addButton (ButtonID.FORWARD, ">>", forwardCommand, 15, SLMkIIIControlSurface.MKIII_TRANSPORT_FORWARD, () -> forwardCommand.isForwarding () ? 1 : 0, SLMkIIIColorManager.BUTTON_STATE_WIND_ON, SLMkIIIColorManager.BUTTON_STATE_WIND_HI);
-        this.addButton (ButtonID.LOOP, "Loop", new ToggleLoopCommand<> (this.model, surface), 15, SLMkIIIControlSurface.MKIII_TRANSPORT_LOOP, () -> t.isLoop () ? 1 : 0, SLMkIIIColorManager.BUTTON_STATE_LOOP_ON, SLMkIIIColorManager.BUTTON_STATE_LOOP_HI);
+        this.addButton (ButtonID.LOOP, "Loop", new SLMkIIIToggleLoopCommand (this.model, surface), 15, SLMkIIIControlSurface.MKIII_TRANSPORT_LOOP, () -> t.isLoop () ? 1 : 0, SLMkIIIColorManager.BUTTON_STATE_LOOP_ON, SLMkIIIColorManager.BUTTON_STATE_LOOP_HI);
         this.addButton (ButtonID.STOP, "Stop", new StopCommand<> (this.model, surface), 15, SLMkIIIControlSurface.MKIII_TRANSPORT_STOP, () -> !t.isPlaying () ? 1 : 0, SLMkIIIColorManager.BUTTON_STATE_STOP_ON, SLMkIIIColorManager.BUTTON_STATE_STOP_HI);
-        this.addButton (ButtonID.PLAY, "Play", new PlayCommand<> (this.model, surface), 15, SLMkIIIControlSurface.MKIII_TRANSPORT_PLAY, () -> t.isPlaying () ? 1 : 0, SLMkIIIColorManager.BUTTON_STATE_PLAY_ON, SLMkIIIColorManager.BUTTON_STATE_PLAY_HI);
+        this.addButton (ButtonID.PLAY, "Play", new SLMkIIIPlayCommand (this.model, surface), 15, SLMkIIIControlSurface.MKIII_TRANSPORT_PLAY, () -> t.isPlaying () ? 1 : 0, SLMkIIIColorManager.BUTTON_STATE_PLAY_ON, SLMkIIIColorManager.BUTTON_STATE_PLAY_HI);
         this.addButton (ButtonID.RECORD, "Record", new RecordCommand<> (this.model, surface), 15, SLMkIIIControlSurface.MKIII_TRANSPORT_RECORD, () -> {
             final boolean isOn = this.isRecordShifted (surface) ? t.isLauncherOverdub () : t.isRecording ();
             return isOn ? 1 : 0;

@@ -27,6 +27,7 @@ public abstract class AbstractModule implements IModule
     protected static final String     TAG_NAME     = "name";
     protected static final String     TAG_SELECTED = "selected";
     protected static final String     TAG_SELECT   = "select";
+    protected static final String     TAG_REMOVE   = "remove";
     protected static final String     TAG_VOLUME   = "volume";
     protected static final String     TAG_PAGE     = "page";
     protected static final String     TAG_INDICATE = "indicate";

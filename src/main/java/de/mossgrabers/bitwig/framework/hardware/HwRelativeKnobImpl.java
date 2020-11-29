@@ -80,7 +80,7 @@ public class HwRelativeKnobImpl extends AbstractHwContinuousControl implements I
 
     /** {@inheritDoc} */
     @Override
-    public void setIndexInGroup (int index)
+    public void setIndexInGroup (final int index)
     {
         this.hardwareKnob.setIndexInGroup (index);
     }

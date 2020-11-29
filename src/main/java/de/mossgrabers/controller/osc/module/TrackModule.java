@@ -338,6 +338,10 @@ public class TrackModule extends AbstractModule
                     track.select ();
                 break;
 
+            case TAG_REMOVE:
+                track.remove ();
+                break;
+
             case TAG_VOLUME:
                 if (path.isEmpty ())
                     track.setVolume (toInteger (value));
@@ -444,7 +448,7 @@ public class TrackModule extends AbstractModule
                 case "record":
                     slot.record ();
                     break;
-                case "remove":
+                case TAG_REMOVE:
                     slot.remove ();
                     break;
                 case TAG_COLOR:

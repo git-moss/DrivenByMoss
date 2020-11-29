@@ -9,6 +9,7 @@ import de.mossgrabers.controller.launchpad.controller.LaunchpadControlSurface;
 import de.mossgrabers.controller.launchpad.view.Drum64View;
 import de.mossgrabers.framework.command.trigger.mode.CursorCommand;
 import de.mossgrabers.framework.controller.ButtonID;
+import de.mossgrabers.framework.daw.GrooveParameterID;
 import de.mossgrabers.framework.daw.IBrowser;
 import de.mossgrabers.framework.daw.IModel;
 import de.mossgrabers.framework.daw.INoteClip;
@@ -495,9 +496,9 @@ public class LaunchpadCursorCommand extends CursorCommand<LaunchpadControlSurfac
         if (!this.surface.isPressed (increase ? ButtonID.UP : ButtonID.DOWN))
             return;
 
-        final IParameter shufflePAram = this.model.getGroove ().getParameters ()[1];
+        final IParameter shuffleParam = this.model.getGroove ().getParameter (GrooveParameterID.SHUFFLE_AMOUNT);
         final int max = this.model.getValueChanger ().getUpperBound () - 1;
-        shufflePAram.setValue (Math.min (max, shufflePAram.getValue () + (increase ? 1 : -1)));
+        shuffleParam.setValue (Math.min (max, shuffleParam.getValue () + (increase ? 1 : -1)));
 
         this.surface.scheduleTask ( () -> this.triggerChangeShuffle1 (increase), 400);
     }
@@ -508,9 +509,9 @@ public class LaunchpadCursorCommand extends CursorCommand<LaunchpadControlSurfac
         if (!this.surface.isPressed (increase ? ButtonID.RIGHT : ButtonID.LEFT))
             return;
 
-        final IParameter shufflePAram = this.model.getGroove ().getParameters ()[1];
+        final IParameter shuffleParam = this.model.getGroove ().getParameter (GrooveParameterID.SHUFFLE_AMOUNT);
         final int max = this.model.getValueChanger ().getUpperBound () - 1;
-        shufflePAram.setValue (Math.min (max, shufflePAram.getValue () + (increase ? 10 : -10)));
+        shuffleParam.setValue (Math.min (max, shuffleParam.getValue () + (increase ? 10 : -10)));
 
         this.surface.scheduleTask ( () -> this.triggerChangeShuffle10 (increase), 400);
     }

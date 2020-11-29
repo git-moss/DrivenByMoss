@@ -38,7 +38,7 @@ public class StopCommand<S extends IControlSurface<C>, C extends Configuration> 
     @Override
     public void executeNormal (final ButtonEvent event)
     {
-        if (event != ButtonEvent.DOWN)
+        if (event != ButtonEvent.UP)
             return;
         final ITransport transport = this.model.getTransport ();
         if (transport.isPlaying ())

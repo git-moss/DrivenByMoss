@@ -304,6 +304,10 @@ public class DeviceModule extends AbstractModule
                 }
                 break;
 
+            case TAG_REMOVE:
+                device.remove ();
+                break;
+
             case "bypass":
                 device.toggleEnabledState ();
                 break;

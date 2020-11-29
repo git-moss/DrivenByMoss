@@ -10,6 +10,7 @@ import de.mossgrabers.framework.controller.ButtonID;
 import de.mossgrabers.framework.controller.display.Format;
 import de.mossgrabers.framework.controller.display.IGraphicDisplay;
 import de.mossgrabers.framework.controller.display.ITextDisplay;
+import de.mossgrabers.framework.daw.GrooveParameterID;
 import de.mossgrabers.framework.daw.IGroove;
 import de.mossgrabers.framework.daw.IModel;
 import de.mossgrabers.framework.daw.data.IParameter;
@@ -21,10 +22,6 @@ import de.mossgrabers.framework.mode.Modes;
 import de.mossgrabers.framework.parameterprovider.FixedParameterProvider;
 import de.mossgrabers.framework.utils.ButtonEvent;
 
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
-
 
 /**
  * Editing of groove parameters.
@@ -33,17 +30,7 @@ import java.util.List;
  */
 public class GrooveMode extends BaseMode
 {
-    private static final String [] MENU =
-    {
-        "Quantize",
-        "Groove",
-        " ",
-        " ",
-        " ",
-        " ",
-        " ",
-        " "
-    };
+    final IParameter [] params = new IParameter [8];
 
 
     /**
@@ -56,13 +43,22 @@ public class GrooveMode extends BaseMode
     {
         super ("Groove", surface, model);
 
-        final List<IParameter> params = new ArrayList<> (8);
-        params.add (EmptyParameter.INSTANCE);
-        params.add (EmptyParameter.INSTANCE);
-        Collections.addAll (params, this.model.getGroove ().getParameters ());
-        final IParameter [] parameters = new IParameter [8];
-        params.toArray (parameters);
-        this.setParameters (new FixedParameterProvider (parameters));
+        final IGroove groove = this.model.getGroove ();
+
+        this.params[2] = groove.getParameter (GrooveParameterID.SHUFFLE_AMOUNT);
+        this.params[3] = groove.getParameter (GrooveParameterID.SHUFFLE_RATE);
+
+        this.params[5] = groove.getParameter (GrooveParameterID.ACCENT_AMOUNT);
+        this.params[6] = groove.getParameter (GrooveParameterID.ACCENT_PHASE);
+        this.params[7] = groove.getParameter (GrooveParameterID.ACCENT_RATE);
+
+        for (int i = 0; i < this.params.length; i++)
+        {
+            if (this.params[i] == null)
+                this.params[i] = EmptyParameter.INSTANCE;
+        }
+
+        this.setParameters (new FixedParameterProvider (this.params));
     }
 
 
@@ -90,17 +86,13 @@ public class GrooveMode extends BaseMode
     @Override
     public void onKnobTouch (final int index, final boolean isTouched)
     {
-        if (index < 2)
-            return;
-
-        final IParameter [] parameters = this.model.getGroove ().getParameters ();
         if (isTouched && this.surface.isDeletePressed ())
         {
             this.surface.setTriggerConsumed (ButtonID.DELETE);
-            parameters[index - 2].resetValue ();
+            this.params[index].resetValue ();
         }
 
-        parameters[index - 2].touchValue (isTouched);
+        this.params[index].touchValue (isTouched);
     }
 
 
@@ -108,7 +100,14 @@ public class GrooveMode extends BaseMode
     @Override
     public void onFirstRow (final int index, final ButtonEvent event)
     {
-        // Intentionally empty
+        if (event != ButtonEvent.UP)
+            return;
+
+        if (index == 0)
+        {
+            final IParameter parameter = this.model.getGroove ().getParameter (GrooveParameterID.ENABLED);
+            parameter.setNormalizedValue (parameter.getValue () > 0 ? 0 : 1);
+        }
     }
 
 
@@ -128,15 +127,35 @@ public class GrooveMode extends BaseMode
     @Override
     public void updateDisplay1 (final ITextDisplay display)
     {
-        final IParameter [] parameters = this.model.getGroove ().getParameters ();
-        for (int i = 0; i < parameters.length; i++)
-        {
-            display.setCell (0, 2 + i, parameters[i].getName (8));
-            display.setCell (1, 2 + i, parameters[i].getDisplayedValue (8));
-            display.setCell (2, 2 + i, parameters[i].getValue (), Format.FORMAT_VALUE);
-        }
-        display.setCell (0, 0, MENU[0]);
-        display.setCell (0, 1, Push1Display.SELECT_ARROW + MENU[1]);
+        display.setCell (0, 0, "Quantize");
+        display.setCell (0, 1, Push1Display.SELECT_ARROW + "Groove");
+
+        final IGroove groove = this.model.getGroove ();
+        final IParameter enabledParameter = groove.getParameter (GrooveParameterID.ENABLED);
+        if (enabledParameter != null)
+            display.setCell (3, 0, enabledParameter.getValue () == 0 ? "  Off" : "Enabled");
+
+        display.setCell (2, 1, "Shuffle:");
+        this.displayParameter (display, GrooveParameterID.SHUFFLE_AMOUNT, 2);
+        this.displayParameter (display, GrooveParameterID.SHUFFLE_RATE, 3);
+
+        display.setCell (2, 4, " Accent:");
+        this.displayParameter (display, GrooveParameterID.ACCENT_AMOUNT, 5);
+        this.displayParameter (display, GrooveParameterID.ACCENT_PHASE, 6);
+        this.displayParameter (display, GrooveParameterID.ACCENT_RATE, 7);
+    }
+
+
+    private void displayParameter (final ITextDisplay display, final GrooveParameterID paramID, final int index)
+    {
+        IParameter p = this.model.getGroove ().getParameter (paramID);
+        if (p == null)
+            p = EmptyParameter.INSTANCE;
+        if (!p.doesExist ())
+            return;
+        display.setCell (0, index, p.getName (8));
+        display.setCell (1, index, p.getDisplayedValue (8));
+        display.setCell (2, index, p.getValue (), Format.FORMAT_VALUE);
     }
 
 
@@ -144,15 +163,35 @@ public class GrooveMode extends BaseMode
     @Override
     public void updateDisplay2 (final IGraphicDisplay display)
     {
-        display.addOptionElement ("", MENU[0], false, null, "", "", false, null, true);
-        display.addOptionElement ("", MENU[1], true, null, "", "", false, null, true);
+        final IGroove groove = this.model.getGroove ();
+        final IParameter enabledParameter = groove.getParameter (GrooveParameterID.ENABLED);
 
-        final IParameter [] parameters = this.model.getGroove ().getParameters ();
-        for (int i = 0; i < parameters.length; i++)
-            display.addParameterElement (" ", false, "", (ChannelType) null, null, false, parameters[i].getName (10), parameters[i].getValue (), parameters[i].getDisplayedValue (8), this.isKnobTouched[i], -1);
+        String paramText;
+        if (enabledParameter == null)
+            paramText = "";
+        else
+            paramText = enabledParameter.getValue () == 0 ? "Off" : "Enabled";
 
-        for (int i = parameters.length + 2; i < 8; i++)
-            display.addEmptyElement (true);
+        display.addOptionElement ("", "Quantize", false, null, "", paramText, enabledParameter != null && enabledParameter.getValue () > 0, null, true);
+        display.addOptionElement ("", "Groove", true, null, "      Shuffle", "", false, null, true);
+
+        this.displayParameter (display, GrooveParameterID.SHUFFLE_AMOUNT, 2);
+        this.displayParameter (display, GrooveParameterID.SHUFFLE_RATE, 3);
+
+        display.addOptionElement ("", "", false, null, "      Accent", "", false, null, true);
+
+        this.displayParameter (display, GrooveParameterID.ACCENT_AMOUNT, 5);
+        this.displayParameter (display, GrooveParameterID.ACCENT_PHASE, 6);
+        this.displayParameter (display, GrooveParameterID.ACCENT_RATE, 7);
+    }
+
+
+    private void displayParameter (final IGraphicDisplay display, final GrooveParameterID paramID, final int index)
+    {
+        IParameter p = this.model.getGroove ().getParameter (paramID);
+        if (p == null)
+            p = EmptyParameter.INSTANCE;
+        display.addParameterElement (" ", false, "", (ChannelType) null, null, false, p.getName (10), p.getValue (), p.getDisplayedValue (8), this.isKnobTouched[index], -1);
     }
 
 
@@ -160,13 +199,23 @@ public class GrooveMode extends BaseMode
     @Override
     public String getButtonColorID (final ButtonID buttonID)
     {
-        final int index = this.isButtonRow (1, buttonID);
+        int index = this.isButtonRow (1, buttonID);
         if (index >= 0)
         {
             if (index == 0)
                 return AbstractFeatureGroup.BUTTON_COLOR_ON;
             if (index == 1)
                 return AbstractMode.BUTTON_COLOR_HI;
+        }
+        else
+        {
+            index = this.isButtonRow (0, buttonID);
+            if (index == 0)
+            {
+                final IParameter parameter = this.model.getGroove ().getParameter (GrooveParameterID.ENABLED);
+                if (parameter != null)
+                    return parameter.getValue () > 0 ? AbstractMode.BUTTON_COLOR_HI : AbstractFeatureGroup.BUTTON_COLOR_ON;
+            }
         }
         return AbstractFeatureGroup.BUTTON_COLOR_OFF;
     }

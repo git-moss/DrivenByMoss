@@ -134,7 +134,7 @@ public class NoteInputHandler extends AbstractHandler
                 else
                     selPeriod = Resolution.change (Resolution.getMatch (configuration.getNoteRepeatPeriod ().getValue ()), this.getRelativeSpeed (knobMode, value) > 0);
                 configuration.setNoteRepeatPeriod (resolutions[selPeriod]);
-                this.mvHelper.delayDisplay ( () -> "Repeat Period: " + (configuration.getNoteRepeatPeriod ().getName ()));
+                this.mvHelper.delayDisplay ( () -> "Repeat Period: " + configuration.getNoteRepeatPeriod ().getName ());
                 break;
 
             // Note Repeat: Set Length
@@ -147,7 +147,7 @@ public class NoteInputHandler extends AbstractHandler
                     else
                         selLength = Resolution.change (Resolution.getMatch (configuration.getNoteRepeatLength ().getValue ()), this.getRelativeSpeed (knobMode, value) > 0);
                     configuration.setNoteRepeatLength (resolutions[selLength]);
-                    this.mvHelper.delayDisplay ( () -> "Repeat Length: " + (configuration.getNoteRepeatLength ().getName ()));
+                    this.mvHelper.delayDisplay ( () -> "Repeat Length: " + configuration.getNoteRepeatLength ().getName ());
                 }
                 break;
 

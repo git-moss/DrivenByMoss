@@ -104,6 +104,13 @@ public class SessionView extends AbstractSessionView<SLMkIIIControlSurface, SLMk
             return;
         }
 
+        // Stop clip with normal stop button
+        if (this.isButtonCombination (ButtonID.STOP))
+        {
+            track.stop ();
+            return;
+        }
+
         super.onGridNote (note, velocity);
     }
 

@@ -6,11 +6,15 @@ package de.mossgrabers.bitwig.framework.daw;
 
 import de.mossgrabers.bitwig.framework.daw.data.ParameterImpl;
 import de.mossgrabers.framework.controller.valuechanger.IValueChanger;
+import de.mossgrabers.framework.daw.GrooveParameterID;
 import de.mossgrabers.framework.daw.IGroove;
 import de.mossgrabers.framework.daw.data.IParameter;
 
 import com.bitwig.extension.controller.api.ControllerHost;
 import com.bitwig.extension.controller.api.Groove;
+
+import java.util.EnumMap;
+import java.util.Map;
 
 
 /**
@@ -20,8 +24,8 @@ import com.bitwig.extension.controller.api.Groove;
  */
 public class GrooveImpl implements IGroove
 {
-    private Groove        groove;
-    private IParameter [] parameters = new IParameter [6];
+    private Groove                             groove;
+    private Map<GrooveParameterID, IParameter> parameters = new EnumMap<> (GrooveParameterID.class);
 
 
     /**
@@ -34,12 +38,12 @@ public class GrooveImpl implements IGroove
     {
         this.groove = host.createGroove ();
 
-        this.parameters[0] = new ParameterImpl (valueChanger, this.groove.getEnabled (), 0);
-        this.parameters[1] = new ParameterImpl (valueChanger, this.groove.getShuffleAmount (), 1);
-        this.parameters[2] = new ParameterImpl (valueChanger, this.groove.getShuffleRate (), 2);
-        this.parameters[3] = new ParameterImpl (valueChanger, this.groove.getAccentAmount (), 3);
-        this.parameters[4] = new ParameterImpl (valueChanger, this.groove.getAccentRate (), 4);
-        this.parameters[5] = new ParameterImpl (valueChanger, this.groove.getAccentPhase (), 5);
+        this.parameters.put (GrooveParameterID.ENABLED, new ParameterImpl (valueChanger, this.groove.getEnabled (), 0));
+        this.parameters.put (GrooveParameterID.SHUFFLE_AMOUNT, new ParameterImpl (valueChanger, this.groove.getShuffleAmount (), 1));
+        this.parameters.put (GrooveParameterID.SHUFFLE_RATE, new ParameterImpl (valueChanger, this.groove.getShuffleRate (), 2));
+        this.parameters.put (GrooveParameterID.ACCENT_AMOUNT, new ParameterImpl (valueChanger, this.groove.getAccentAmount (), 3));
+        this.parameters.put (GrooveParameterID.ACCENT_RATE, new ParameterImpl (valueChanger, this.groove.getAccentRate (), 4));
+        this.parameters.put (GrooveParameterID.ACCENT_PHASE, new ParameterImpl (valueChanger, this.groove.getAccentPhase (), 5));
     }
 
 
@@ -47,16 +51,16 @@ public class GrooveImpl implements IGroove
     @Override
     public void enableObservers (final boolean enable)
     {
-        for (final IParameter parameter: this.parameters)
+        for (final IParameter parameter: this.parameters.values ())
             parameter.enableObservers (enable);
     }
 
 
     /** {@inheritDoc} */
     @Override
-    public IParameter [] getParameters ()
+    public IParameter getParameter (final GrooveParameterID id)
     {
-        return this.parameters;
+        return this.parameters.get (id);
     }
 
 
@@ -64,7 +68,7 @@ public class GrooveImpl implements IGroove
     @Override
     public void setIndication (final boolean enable)
     {
-        for (final IParameter p: this.parameters)
+        for (final IParameter p: this.parameters.values ())
             p.setIndication (enable);
     }
 }

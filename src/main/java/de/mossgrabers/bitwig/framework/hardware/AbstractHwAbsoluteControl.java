@@ -64,7 +64,7 @@ public abstract class AbstractHwAbsoluteControl<T extends AbsoluteHardwareContro
 
     /** {@inheritDoc} */
     @Override
-    public void setIndexInGroup (int index)
+    public void setIndexInGroup (final int index)
     {
         this.hardwareControl.setIndexInGroup (index);
     }
