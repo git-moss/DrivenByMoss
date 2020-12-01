@@ -18,10 +18,6 @@ import de.mossgrabers.framework.daw.midi.ArpeggiatorMode;
 import de.mossgrabers.framework.observer.IValueObserver;
 import de.mossgrabers.framework.scale.Scales;
 import de.mossgrabers.framework.utils.FileEx;
-import de.mossgrabers.nativefiledialogs.FileFilter;
-import de.mossgrabers.nativefiledialogs.NativeFileDialogs;
-import de.mossgrabers.nativefiledialogs.NativeFileDialogsFactory;
-import de.mossgrabers.nativefiledialogs.PlatformNotSupported;
 
 import java.io.File;
 import java.io.FileReader;
@@ -48,9 +44,9 @@ import java.util.concurrent.atomic.AtomicBoolean;
 public class GenericFlexiConfiguration extends AbstractConfiguration
 {
     /** Export signal. */
-    public static final Integer                      BUTTON_EXPORT             = Integer.valueOf (50);
+    public static final Integer                      BUTTON_SAVE               = Integer.valueOf (50);
     /** Import signal. */
-    public static final Integer                      BUTTON_IMPORT             = Integer.valueOf (51);
+    public static final Integer                      BUTTON_LOAD               = Integer.valueOf (51);
     /** Enable MMC. */
     public static final Integer                      ENABLE_MMC                = Integer.valueOf (52);
     /** The selected mode. */
@@ -271,6 +267,7 @@ public class GenericFlexiConfiguration extends AbstractConfiguration
     private IEnumSetting                             learnNumberSetting;
     private IEnumSetting                             learnMidiChannelSetting;
     private IEnumSetting                             selectedModeSetting;
+    private IStringSetting                           fileSetting;
 
     private CommandSlot []                           commandSlots              = new CommandSlot [NUM_SLOTS];
 
@@ -287,8 +284,6 @@ public class GenericFlexiConfiguration extends AbstractConfiguration
     private String []                                assignableFunctionActions = new String [8];
 
     private String                                   selectedMode              = MODES[0];
-
-    private NativeFileDialogs                        dialogs;
 
     private int                                      keyboardChannel           = 0;
     private boolean                                  keyboardRouteModulation   = true;
@@ -315,15 +310,6 @@ public class GenericFlexiConfiguration extends AbstractConfiguration
     @Override
     public void init (final ISettingsUI globalSettings, final ISettingsUI documentSettings)
     {
-        try
-        {
-            this.dialogs = NativeFileDialogsFactory.create (null);
-        }
-        catch (final PlatformNotSupported ex)
-        {
-            this.host.error ("Could not create dialogs instance.", ex);
-        }
-
         String category = "Slot";
 
         final String [] slotEntries = new String [NUM_SLOTS];
@@ -384,35 +370,16 @@ public class GenericFlexiConfiguration extends AbstractConfiguration
         ///////////////////////////////////////////////
         // Ex-/Import section
 
-        category = "Ex-/Import";
+        category = "Load / Save";
 
         // The Setlist file to auto-load
-        final IStringSetting fileSetting = globalSettings.getStringSetting ("Filename to ex-/import:", category, -1, "");
-        this.filename = fileSetting.get ();
-        fileSetting.addValueObserver (value -> this.filename = value);
+        this.fileSetting = globalSettings.getStringSetting ("Filename", category, -1, "");
+        this.filename = this.fileSetting.get ();
+        this.fileSetting.addValueObserver (value -> this.filename = value);
 
-        globalSettings.getSignalSetting (" ", category, "Select").addValueObserver (value -> {
-            if (this.filename != null)
-            {
-                final File currentFolder = new File (this.filename);
-                if (currentFolder.exists ())
-                    this.dialogs.setCurrentDirectory (currentFolder);
-            }
-
-            try
-            {
-                final File fn = this.dialogs.selectFile (new FileFilter ("Configuration", "properties"), new FileFilter ("All files", "*"));
-                if (fn != null)
-                    fileSetting.set (fn.getAbsolutePath ());
-            }
-            catch (final IOException ex)
-            {
-                this.host.error ("Could not create file dialog.", ex);
-            }
-        });
-
-        globalSettings.getSignalSetting ("  ", category, "Export").addValueObserver (value -> this.notifyObservers (BUTTON_EXPORT));
-        globalSettings.getSignalSetting ("   ", category, "Import").addValueObserver (value -> this.notifyObservers (BUTTON_IMPORT));
+        // The different blank labels are necessary to distinguish the widgets!
+        globalSettings.getSignalSetting ("  ", category, "Save").addValueObserver (value -> this.notifyObservers (BUTTON_SAVE));
+        globalSettings.getSignalSetting ("   ", category, "Load").addValueObserver (value -> this.notifyObservers (BUTTON_LOAD));
 
         this.learnTypeSetting.set (OPTIONS_TYPE[0]);
 
@@ -693,6 +660,17 @@ public class GenericFlexiConfiguration extends AbstractConfiguration
     public String getFilename ()
     {
         return this.filename;
+    }
+
+
+    /**
+     * Set the file name.
+     *
+     * @param filename The new file name
+     */
+    public void setFilename (String filename)
+    {
+        this.fileSetting.set (filename);
     }
 
 

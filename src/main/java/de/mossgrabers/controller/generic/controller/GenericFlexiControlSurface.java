@@ -14,6 +14,10 @@ import de.mossgrabers.framework.daw.midi.IMidiInput;
 import de.mossgrabers.framework.daw.midi.IMidiOutput;
 import de.mossgrabers.framework.mode.Modes;
 import de.mossgrabers.framework.utils.StringUtils;
+import de.mossgrabers.nativefiledialogs.FileFilter;
+import de.mossgrabers.nativefiledialogs.NativeFileDialogs;
+import de.mossgrabers.nativefiledialogs.NativeFileDialogsFactory;
+import de.mossgrabers.nativefiledialogs.PlatformNotSupported;
 
 import java.io.File;
 import java.io.IOException;
@@ -29,8 +33,15 @@ import java.util.Map;
  */
 public class GenericFlexiControlSurface extends AbstractControlSurface<GenericFlexiConfiguration>
 {
+    private static final FileFilter []                    FILE_FILTERS    =
+    {
+        new FileFilter ("Configuration", "properties"),
+        new FileFilter ("All files", "*")
+    };
+
     private final int []                                  valueCache      = new int [GenericFlexiConfiguration.NUM_SLOTS];
     private final Map<FlexiCommand, IFlexiCommandHandler> handlers        = new EnumMap<> (FlexiCommand.class);
+    private NativeFileDialogs                             dialogs;
 
     private boolean                                       isShiftPressed  = false;
     private boolean                                       isUpdatingValue = false;
@@ -49,10 +60,19 @@ public class GenericFlexiControlSurface extends AbstractControlSurface<GenericFl
     {
         super (host, configuration, colorManager, output, input, null, 10, 10);
 
+        try
+        {
+            this.dialogs = NativeFileDialogsFactory.create (null);
+        }
+        catch (final PlatformNotSupported ex)
+        {
+            this.host.error ("Could not create dialogs instance.", ex);
+        }
+
         Arrays.fill (this.valueCache, -1);
 
-        this.configuration.addSettingObserver (GenericFlexiConfiguration.BUTTON_EXPORT, this::exportFile);
-        this.configuration.addSettingObserver (GenericFlexiConfiguration.BUTTON_IMPORT, () -> this.importFile (true));
+        this.configuration.addSettingObserver (GenericFlexiConfiguration.BUTTON_SAVE, this::saveFile);
+        this.configuration.addSettingObserver (GenericFlexiConfiguration.BUTTON_LOAD, this::loadAndSelectFile);
 
         this.input.setSysexCallback (this::handleSysEx);
     }
@@ -217,49 +237,64 @@ public class GenericFlexiControlSurface extends AbstractControlSurface<GenericFl
 
 
     /**
-     * Export all settings to a file.
-     *
-     * @param showMessage True to show the success message in a popup window.
+     * Load all settings from a file.
      */
-    public void importFile (final boolean showMessage)
+    public void loadAndSelectFile ()
     {
-        final File file = this.getFile ();
-        if (file == null)
-            return;
+        final String filename = this.getFileName (false);
+        if (filename != null)
+            this.host.showNotification (this.loadFile (filename));
+    }
+
+
+    /**
+     * Load all settings from a file.
+     * 
+     * @param filename The name (full path) of the file to load
+     * @return An error or success text
+     */
+    public String loadFile (final String filename)
+    {
+        if (filename == null || filename.isBlank ())
+            return "No file name set.";
+
+        final File file = new File (filename);
         if (!file.exists ())
-        {
-            if (showMessage)
-                this.host.showNotification ("The entered file does not exist.");
-            return;
-        }
+            return "The entered file does not exist: " + file.getAbsolutePath ();
+
         try
         {
             this.configuration.importFrom (file);
-            final String text = "Imported from: " + file;
-            this.host.println (text);
-            if (showMessage)
-                this.host.showNotification (text);
             this.updateKeyTranslation ();
+            return "Imported from: " + file;
         }
         catch (final IOException ex)
         {
-            this.host.showNotification ("Error reading file: " + ex.getMessage ());
+            return "Error reading file: " + ex.getMessage ();
         }
     }
 
 
     /**
-     * Import all settings from a file.
+     * Store all settings in a file.
      */
-    private void exportFile ()
+    private void saveFile ()
     {
-        final File file = this.getFile ();
-        if (file == null)
+        String filename = this.getFileName (true);
+        if (filename == null)
             return;
+
         try
         {
-            this.configuration.exportTo (file);
-            this.host.showNotification ("Exported to: " + file);
+            // Ensure to end with .properties
+            if (!filename.endsWith (".properties"))
+            {
+                filename = filename + ".properties";
+                this.configuration.setFilename (filename);
+            }
+
+            this.configuration.exportTo (new File (filename));
+            this.host.showNotification ("Exported to: " + filename);
         }
         catch (final IOException ex)
         {
@@ -269,19 +304,36 @@ public class GenericFlexiControlSurface extends AbstractControlSurface<GenericFl
 
 
     /**
-     * Get a the im-/export file.
+     * Get a filename from the user.
      *
-     * @return The file or null
+     * @param isNew
+     * @return The filename or null if none was selected
      */
-    private File getFile ()
+    private String getFileName (final boolean isNew)
     {
-        final String filename = this.configuration.getFilename ();
-        if (filename == null || filename.isBlank ())
+        String filename = this.configuration.getFilename ();
+        if (filename != null && !filename.isBlank ())
         {
-            this.host.showNotification ("Please enter a filename first.");
+            final File currentFolder = new File (filename);
+            if (currentFolder.exists ())
+                this.dialogs.setCurrentDirectory (currentFolder);
+        }
+
+        try
+        {
+            final File fn = isNew ? this.dialogs.selectNewFile ("Save", FILE_FILTERS) : this.dialogs.selectFile ("Load", FILE_FILTERS);
+            if (fn == null)
+                return null;
+
+            filename = fn.getAbsolutePath ();
+            this.configuration.setFilename (filename);
+            return filename;
+        }
+        catch (final IOException ex)
+        {
+            this.host.error ("Could not create file dialog.", ex);
             return null;
         }
-        return new File (filename);
     }
 
 

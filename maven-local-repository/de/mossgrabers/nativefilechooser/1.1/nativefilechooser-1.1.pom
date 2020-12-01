@@ -7,7 +7,7 @@
 	<groupId>de.mossgrabers</groupId>
 	<packaging>jar</packaging>
 	<name>NativeFileChooser</name>
-	<version>1.0</version>
+	<version>1.1</version>
 
 	<properties>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
@@ -25,12 +25,12 @@
 		<dependency>
 			<groupId>net.java.dev.jna</groupId>
 			<artifactId>jna</artifactId>
-			<version>5.2.0</version>
+			<version>5.6.0</version>
 		</dependency>
 		<dependency>
 			<groupId>net.java.dev.jna</groupId>
 			<artifactId>jna-platform</artifactId>
-			<version>5.2.0</version>
+			<version>5.6.0</version>
 		</dependency>
 	</dependencies>
 
@@ -66,8 +66,8 @@
 				<configuration>
 					<optimize>true</optimize>
 					<fork>true</fork>
-					<source>1.8</source>
-					<target>1.8</target>
+					<source>12</source>
+					<target>12</target>
 					<encoding>UTF-8</encoding>
 					<maxmem>1024m</maxmem>
 				</configuration>

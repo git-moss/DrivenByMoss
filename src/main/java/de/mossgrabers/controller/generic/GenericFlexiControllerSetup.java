@@ -268,7 +268,7 @@ public class GenericFlexiControllerSetup extends AbstractControllerSetup<Generic
         surface.getModeManager ().setActive (Modes.TRACK);
 
         // Load last configuration
-        this.host.scheduleTask ( () -> surface.importFile (false), 2000);
+        this.host.scheduleTask ( () -> this.host.println (surface.loadFile (this.configuration.getFilename ())), 2000);
     }
 
 
