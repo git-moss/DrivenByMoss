@@ -73,7 +73,6 @@ public class GenericFlexiControllerSetup extends AbstractControllerSetup<Generic
     private final IValueChanger relative2ValueChanger = new Relative2ValueChanger (128, 1);
     private final IValueChanger relative3ValueChanger = new Relative3ValueChanger (128, 1);
 
-
     /**
      * Constructor.
      *
