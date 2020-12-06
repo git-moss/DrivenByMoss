@@ -4,7 +4,6 @@
 
 package de.mossgrabers.controller.kontrol.mkii;
 
-import de.mossgrabers.controller.kontrol.mkii.command.trigger.KontrolRecordCommand;
 import de.mossgrabers.controller.kontrol.mkii.command.trigger.StartClipOrSceneCommand;
 import de.mossgrabers.controller.kontrol.mkii.controller.KontrolProtocolColorManager;
 import de.mossgrabers.controller.kontrol.mkii.controller.KontrolProtocolControlSurface;
@@ -23,6 +22,7 @@ import de.mossgrabers.framework.command.trigger.clip.StopClipCommand;
 import de.mossgrabers.framework.command.trigger.mode.ModeMultiSelectCommand;
 import de.mossgrabers.framework.command.trigger.track.MuteCommand;
 import de.mossgrabers.framework.command.trigger.track.SoloCommand;
+import de.mossgrabers.framework.command.trigger.transport.ConfiguredRecordCommand;
 import de.mossgrabers.framework.command.trigger.transport.MetronomeCommand;
 import de.mossgrabers.framework.command.trigger.transport.PlayCommand;
 import de.mossgrabers.framework.command.trigger.transport.StopCommand;
@@ -227,8 +227,8 @@ public class KontrolProtocolControllerSetup extends AbstractControllerSetup<Kont
 
         this.addButton (ButtonID.PLAY, "Play", new PlayCommand<> (this.model, surface), 15, KontrolProtocolControlSurface.KONTROL_PLAY, t::isPlaying);
         this.addButton (ButtonID.NEW, "Shift+\nPlay", new NewCommand<> (this.model, surface), 15, KontrolProtocolControlSurface.KONTROL_RESTART);
-        this.addButton (ButtonID.RECORD, "Record", new KontrolRecordCommand (true, this.model, surface), 15, KontrolProtocolControlSurface.KONTROL_RECORD, this.model::hasRecordingState);
-        this.addButton (ButtonID.REC_ARM, "Shift+\nRecord", new KontrolRecordCommand (false, this.model, surface), 15, KontrolProtocolControlSurface.KONTROL_COUNT_IN, this.model::hasRecordingState);
+        this.addButton (ButtonID.RECORD, "Record", new ConfiguredRecordCommand<> (false, this.model, surface), 15, KontrolProtocolControlSurface.KONTROL_RECORD, this.model::hasRecordingState);
+        this.addButton (ButtonID.REC_ARM, "Shift+\nRecord", new ConfiguredRecordCommand<> (true, this.model, surface), 15, KontrolProtocolControlSurface.KONTROL_COUNT_IN, this.model::hasRecordingState);
         this.addButton (ButtonID.STOP, "Stop", new StopCommand<> (this.model, surface), 15, KontrolProtocolControlSurface.KONTROL_STOP, () -> !t.isPlaying ());
 
         this.addButton (ButtonID.LOOP, "Loop", new ToggleLoopCommand<> (this.model, surface), 15, KontrolProtocolControlSurface.KONTROL_LOOP, t::isLoop);

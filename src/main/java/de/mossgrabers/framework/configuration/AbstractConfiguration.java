@@ -106,6 +106,10 @@ public abstract class AbstractConfiguration implements Configuration
     public static final Integer      MIDI_EDIT_CHANNEL                 = Integer.valueOf (34);
     /** Setting for excluding deactivated tracks. */
     public static final Integer      EXCLUDE_DEACTIVATED_ITEMS         = Integer.valueOf (35);
+    /** Setting for different record button functions. */
+    public static final Integer      RECORD_BUTTON_FUNCTION            = Integer.valueOf (36);
+    /** Setting for different record button functions in combination with shift. */
+    public static final Integer      SHIFTED_RECORD_BUTTON_FUNCTION    = Integer.valueOf (37);
 
     // Implementation IDs start at 50
 
@@ -206,7 +210,7 @@ public abstract class AbstractConfiguration implements Configuration
     }
 
     /** The names for clip lengths. */
-    protected static final String []                  NEW_CLIP_LENGTH_VALUES      =
+    protected static final String [] NEW_CLIP_LENGTH_VALUES      =
     {
         "1 Beat",
         "2 Beat",
@@ -218,21 +222,21 @@ public abstract class AbstractConfiguration implements Configuration
         "32 Bars"
     };
 
-    private static final String []                    BEHAVIOUR_ON_STOP_VALUES    =
+    private static final String []   BEHAVIOUR_ON_STOP_VALUES    =
     {
         "Move play cursor",
         "Return to Zero",
         "Pause"
     };
 
-    private static final String []                    ACTIONS_REC_ARMED_PADS      =
+    private static final String []   ACTIONS_REC_ARMED_PADS      =
     {
         "Start recording",
         "Create new clip",
         "Do nothing"
     };
 
-    protected static final String []                  FOOTSWITCH_VALUES           =
+    protected static final String [] FOOTSWITCH_VALUES           =
     {
         "Toggle Play",
         "Toggle Record",
@@ -251,7 +255,7 @@ public abstract class AbstractConfiguration implements Configuration
         "Quantize"
     };
 
-    private static final String []                    BROWSER_FILTER_COLUMN_NAMES =
+    private static final String []   BROWSER_FILTER_COLUMN_NAMES =
     {
         "Collection",
         "Location",
@@ -263,17 +267,46 @@ public abstract class AbstractConfiguration implements Configuration
         "Device"
     };
 
-    private static final String []                    COLUMN_VALUES               =
+    private static final String []   COLUMN_VALUES               =
     {
         "Hide",
         "Show"
     };
 
     /** The Off/On option. */
-    protected static final String []                  ON_OFF_OPTIONS              =
+    protected static final String [] ON_OFF_OPTIONS              =
     {
         "Off",
         "On"
+    };
+
+
+    /** Different options for the record button. */
+    public enum RecordFunction
+    {
+        /** Record in arranger. */
+        RECORD_ARRANGER,
+        /** Record in clip. */
+        RECORD_CLIP,
+        /** Create a new clip, enable overdub and start playback. */
+        NEW_CLIP,
+        /** Toggle arranger overdub. */
+        TOGGLE_ARRANGER_OVERDUB,
+        /** Toggle clip overdub. */
+        TOGGLE_CLIP_OVERDUB,
+        /** Toggle clip overdub. */
+        TOGGLE_REC_ARM
+    }
+
+
+    private static final String []                    RECORD_OPTIONS              =
+    {
+        "Record arranger",
+        "Record clip",
+        "New clip",
+        "Toggle arranger overdub",
+        "Toggle clip overdub",
+        "Toggle rec arm",
     };
 
     protected final IHost                             host;
@@ -347,6 +380,9 @@ public abstract class AbstractConfiguration implements Configuration
 
     private boolean                                   isDeleteActive              = false;
     private boolean                                   isDuplicateActive           = false;
+
+    private RecordFunction                            recordButtonFunction        = RecordFunction.RECORD_ARRANGER;
+    private RecordFunction                            shiftedRecordButtonFunction = RecordFunction.NEW_CLIP;
 
 
     /**
@@ -1286,6 +1322,44 @@ public abstract class AbstractConfiguration implements Configuration
 
 
     /**
+     * Activate the settings for the record button.
+     *
+     * @param settingsUI The settings
+     */
+    protected void activateRecordButtonSetting (final ISettingsUI settingsUI)
+    {
+        final IEnumSetting recordButtonSetting = settingsUI.getEnumSetting ("Record button", CATEGORY_TRANSPORT, RECORD_OPTIONS, RECORD_OPTIONS[1]);
+        recordButtonSetting.addValueObserver (value -> {
+            for (int i = 0; i < RECORD_OPTIONS.length; i++)
+            {
+                if (RECORD_OPTIONS[i].equals (value))
+                    this.recordButtonFunction = RecordFunction.values ()[i];
+            }
+            this.notifyObservers (RECORD_BUTTON_FUNCTION);
+        });
+    }
+
+
+    /**
+     * Activate the settings for the record button in combination with shift.
+     *
+     * @param settingsUI The settings
+     */
+    protected void activateShiftedRecordButtonSetting (final ISettingsUI settingsUI)
+    {
+        final IEnumSetting shiftedRecordButtonSetting = settingsUI.getEnumSetting ("Shift + Record button", CATEGORY_TRANSPORT, RECORD_OPTIONS, RECORD_OPTIONS[0]);
+        shiftedRecordButtonSetting.addValueObserver (value -> {
+            for (int i = 0; i < RECORD_OPTIONS.length; i++)
+            {
+                if (RECORD_OPTIONS[i].equals (value))
+                    this.shiftedRecordButtonFunction = RecordFunction.values ()[i];
+            }
+            this.notifyObservers (SHIFTED_RECORD_BUTTON_FUNCTION);
+        });
+    }
+
+
+    /**
      * Notify all observers about the change of a setting.
      *
      * @param settingID The ID of the setting, which has changed
@@ -1403,6 +1477,22 @@ public abstract class AbstractConfiguration implements Configuration
     public ArpeggiatorMode [] getArpeggiatorModes ()
     {
         return this.arpeggiatorModes;
+    }
+
+
+    /** {@inheritDoc} */
+    @Override
+    public RecordFunction getRecordButtonFunction ()
+    {
+        return this.recordButtonFunction;
+    }
+
+
+    /** {@inheritDoc} */
+    @Override
+    public RecordFunction getShiftedRecordButtonFunction ()
+    {
+        return this.shiftedRecordButtonFunction;
     }
 
 

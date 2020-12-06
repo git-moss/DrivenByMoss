@@ -187,8 +187,13 @@ public abstract class AbstractSessionView<S extends IControlSurface<C>, C extend
     public void onGridNoteLongPress (final int note)
     {
         final Pair<Integer, Integer> padPos = this.getPad (note);
-        final ITrack track = this.model.getCurrentTrackBank ().getItem (padPos.getKey ().intValue ());
-        final ISlot slot = track.getSlotBank ().getItem (padPos.getValue ().intValue ());
+        final int key = padPos.getKey ().intValue ();
+        final int value = padPos.getValue ().intValue ();
+        if (key < 0 || value < 0)
+            return;
+
+        final ITrack track = this.model.getCurrentTrackBank ().getItem (key);
+        final ISlot slot = track.getSlotBank ().getItem (value);
         slot.select ();
 
         final int index = note - 36;

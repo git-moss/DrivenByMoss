@@ -5,6 +5,7 @@
 package de.mossgrabers.framework.configuration;
 
 import de.mossgrabers.framework.configuration.AbstractConfiguration.BehaviourOnStop;
+import de.mossgrabers.framework.configuration.AbstractConfiguration.RecordFunction;
 import de.mossgrabers.framework.daw.constants.Resolution;
 import de.mossgrabers.framework.daw.midi.ArpeggiatorMode;
 import de.mossgrabers.framework.observer.ISettingObserver;
@@ -399,4 +400,20 @@ public interface Configuration
      * @param midiChannel The midi channel, 0-15
      */
     void setMidiEditChannel (int midiChannel);
+
+
+    /**
+     * Get the selected function for the record button.
+     *
+     * @return The function index
+     */
+    RecordFunction getRecordButtonFunction ();
+
+
+    /**
+     * Get the selected function for the shifted record button.
+     *
+     * @return The function index
+     */
+    RecordFunction getShiftedRecordButtonFunction ();
 }

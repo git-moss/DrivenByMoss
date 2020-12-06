@@ -19,46 +19,13 @@ import de.mossgrabers.framework.daw.midi.ArpeggiatorMode;
  */
 public class KontrolProtocolConfiguration extends AbstractConfiguration
 {
-    private static final Integer RECORD_BUTTON_FUNCTION         = Integer.valueOf (50);
-    private static final Integer SHIFTED_RECORD_BUTTON_FUNCTION = Integer.valueOf (51);
-    private static final Integer FLIP_TRACK_CLIP_NAVIGATION     = Integer.valueOf (52);
-    private static final Integer FLIP_CLIP_SCENE_NAVIGATION     = Integer.valueOf (53);
+    private static final Integer FLIP_TRACK_CLIP_NAVIGATION = Integer.valueOf (52);
+    private static final Integer FLIP_CLIP_SCENE_NAVIGATION = Integer.valueOf (53);
 
+    private static final String  CATEGORY_NAVIGATION        = "Navigation";
 
-    /** Different options for the record button. */
-    public enum RecordFunction
-    {
-        /** Record in arranger. */
-        RECORD_ARRANGER,
-        /** Record in clip. */
-        RECORD_CLIP,
-        /** Create a new clip, enable overdub and start playback. */
-        NEW_CLIP,
-        /** Toggle arranger overdub. */
-        TOGGLE_ARRANGER_OVERDUB,
-        /** Toggle clip overdub. */
-        TOGGLE_CLIP_OVERDUB,
-        /** Toggle clip overdub. */
-        TOGGLE_REC_ARM
-    }
-
-
-    private static final String    CATEGORY_NAVIGATION         = "Navigation";
-
-    private static final String [] RECORD_OPTIONS              =
-    {
-        "Record arranger",
-        "Record clip",
-        "New clip",
-        "Toggle arranger overdub",
-        "Toggle clip overdub",
-        "Toggle rec arm",
-    };
-
-    private RecordFunction         recordButtonFunction        = RecordFunction.RECORD_ARRANGER;
-    private RecordFunction         shiftedRecordButtonFunction = RecordFunction.NEW_CLIP;
-    private boolean                flipTrackClipNavigation     = false;
-    private boolean                flipClipSceneNavigation     = false;
+    private boolean              flipTrackClipNavigation    = false;
+    private boolean              flipClipSceneNavigation    = false;
 
 
     /**
@@ -82,26 +49,8 @@ public class KontrolProtocolConfiguration extends AbstractConfiguration
         // Transport
 
         this.activateBehaviourOnStopSetting (globalSettings);
-
-        final IEnumSetting recordButtonSetting = globalSettings.getEnumSetting ("Record button", CATEGORY_TRANSPORT, RECORD_OPTIONS, RECORD_OPTIONS[1]);
-        recordButtonSetting.addValueObserver (value -> {
-            for (int i = 0; i < RECORD_OPTIONS.length; i++)
-            {
-                if (RECORD_OPTIONS[i].equals (value))
-                    this.recordButtonFunction = RecordFunction.values ()[i];
-            }
-            this.notifyObservers (RECORD_BUTTON_FUNCTION);
-        });
-
-        final IEnumSetting shiftedRecordButtonSetting = globalSettings.getEnumSetting ("Shift + Record button", CATEGORY_TRANSPORT, RECORD_OPTIONS, RECORD_OPTIONS[0]);
-        shiftedRecordButtonSetting.addValueObserver (value -> {
-            for (int i = 0; i < RECORD_OPTIONS.length; i++)
-            {
-                if (RECORD_OPTIONS[i].equals (value))
-                    this.shiftedRecordButtonFunction = RecordFunction.values ()[i];
-            }
-            this.notifyObservers (SHIFTED_RECORD_BUTTON_FUNCTION);
-        });
+        this.activateRecordButtonSetting (globalSettings);
+        this.activateShiftedRecordButtonSetting (globalSettings);
 
         ///////////////////////////
         // Navigation
@@ -124,28 +73,6 @@ public class KontrolProtocolConfiguration extends AbstractConfiguration
         this.activateExcludeDeactivatedItemsSetting (globalSettings);
         this.activateNewClipLengthSetting (globalSettings);
         this.activateKnobSpeedSetting (globalSettings);
-    }
-
-
-    /**
-     * Get the selected function for the record button.
-     *
-     * @return The function index
-     */
-    public RecordFunction getRecordButtonFunction ()
-    {
-        return this.recordButtonFunction;
-    }
-
-
-    /**
-     * Get the selected function for the shifted record button.
-     *
-     * @return The function index
-     */
-    public RecordFunction getShiftedRecordButtonFunction ()
-    {
-        return this.shiftedRecordButtonFunction;
     }
 
 

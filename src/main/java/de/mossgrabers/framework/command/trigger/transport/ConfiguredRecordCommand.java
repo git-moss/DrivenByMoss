@@ -2,12 +2,13 @@
 // (c) 2017-2020
 // Licensed under LGPLv3 - http://www.gnu.org/licenses/lgpl-3.0.txt
 
-package de.mossgrabers.controller.kontrol.mkii.command.trigger;
+package de.mossgrabers.framework.command.trigger.transport;
 
-import de.mossgrabers.controller.kontrol.mkii.KontrolProtocolConfiguration;
-import de.mossgrabers.controller.kontrol.mkii.controller.KontrolProtocolControlSurface;
 import de.mossgrabers.framework.command.core.AbstractTriggerCommand;
 import de.mossgrabers.framework.command.trigger.clip.NewCommand;
+import de.mossgrabers.framework.configuration.AbstractConfiguration;
+import de.mossgrabers.framework.configuration.Configuration;
+import de.mossgrabers.framework.controller.IControlSurface;
 import de.mossgrabers.framework.daw.IModel;
 import de.mossgrabers.framework.daw.data.ISlot;
 import de.mossgrabers.framework.daw.data.ITrack;
@@ -17,36 +18,62 @@ import de.mossgrabers.framework.utils.ButtonEvent;
 /**
  * Command handle the record and restart (Shift+Record) button.
  *
+ * @param <S> The type of the control surface
+ * @param <C> The type of the configuration
+ *
  * @author J&uuml;rgen Mo&szlig;graber
  */
-public class KontrolRecordCommand extends AbstractTriggerCommand<KontrolProtocolControlSurface, KontrolProtocolConfiguration>
+public class ConfiguredRecordCommand<S extends IControlSurface<C>, C extends Configuration> extends AbstractTriggerCommand<S, C>
 {
-    private boolean isRecordButton;
+    private ShiftMode shiftMode;
+
+
+    private enum ShiftMode
+    {
+        NO_SHIFT,
+        SHIFTED,
+        CALC_SHIFT
+    }
+
+
+    /**
+     * Constructor. The Shift state is calculated from the SHIFT button
+     *
+     * @param model The model
+     * @param surface The surface
+     */
+    public ConfiguredRecordCommand (final IModel model, final S surface)
+    {
+        super (model, surface);
+
+        this.shiftMode = ShiftMode.CALC_SHIFT;
+    }
 
 
     /**
      * Constructor.
      *
-     * @param isRecordButton True for the record button otherwise the restart button
+     * @param isShifted True for the shifted record button otherwise the record button
      * @param model The model
      * @param surface The surface
      */
-    public KontrolRecordCommand (final boolean isRecordButton, final IModel model, final KontrolProtocolControlSurface surface)
+    public ConfiguredRecordCommand (final boolean isShifted, final IModel model, final S surface)
     {
         super (model, surface);
-        this.isRecordButton = isRecordButton;
+
+        this.shiftMode = isShifted ? ShiftMode.SHIFTED : ShiftMode.NO_SHIFT;
     }
 
 
     /** {@inheritDoc} */
     @Override
-    public void executeNormal (final ButtonEvent event)
+    public void execute (final ButtonEvent event, final int velocity)
     {
         if (event != ButtonEvent.DOWN)
             return;
 
-        final KontrolProtocolConfiguration configuration = this.surface.getConfiguration ();
-        final KontrolProtocolConfiguration.RecordFunction recordMode = this.isRecordButton ? configuration.getRecordButtonFunction () : configuration.getShiftedRecordButtonFunction ();
+        final C configuration = this.surface.getConfiguration ();
+        final AbstractConfiguration.RecordFunction recordMode = this.isShifted () ? configuration.getShiftedRecordButtonFunction () : configuration.getRecordButtonFunction ();
         switch (recordMode)
         {
             case RECORD_ARRANGER:
@@ -77,6 +104,20 @@ public class KontrolRecordCommand extends AbstractTriggerCommand<KontrolProtocol
             default:
                 // Intentionally empty
                 break;
+        }
+    }
+
+
+    private boolean isShifted ()
+    {
+        switch (this.shiftMode)
+        {
+            case SHIFTED:
+                return true;
+            case NO_SHIFT:
+                return false;
+            default:
+                return this.surface.isShiftPressed ();
         }
     }
 }

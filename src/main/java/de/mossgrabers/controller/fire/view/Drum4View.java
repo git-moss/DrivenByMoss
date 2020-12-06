@@ -189,8 +189,12 @@ public class Drum4View extends AbstractDrum4View<FireControlSurface, FireConfigu
         if (this.primary.hasDrumPads ())
         {
             final IDrumPad item = this.primary.getDrumPadBank ().getItem (index);
+            if (!item.doesExist ())
+                return;
             if (this.surface.isPressed (ButtonID.SHIFT))
                 item.toggleSolo ();
+            else if (this.surface.isPressed (ButtonID.ALT))
+                this.surface.getDisplay ().notify (item.getName ());
             else
                 item.toggleMute ();
         }

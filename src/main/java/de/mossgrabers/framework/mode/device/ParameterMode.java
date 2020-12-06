@@ -168,6 +168,6 @@ public class ParameterMode<S extends IControlSurface<C>, C extends Configuration
     @Override
     public void selectItem (final int index)
     {
-        this.cursorDevice.getParameterBank ().selectItemAtPosition (index);
+        this.cursorDevice.getParameterPageBank ().selectPage (index);
     }
 }

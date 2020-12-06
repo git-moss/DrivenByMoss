@@ -213,7 +213,9 @@ public abstract class AbstractPlayView<S extends IControlSurface<C>, C extends C
     @Override
     public void updateNoteMapping ()
     {
-        this.delayedUpdateNoteMapping (this.model.canSelectedTrackHoldNotes () ? this.scales.getNoteMatrix () : EMPTY_TABLE);
+        this.surface.scheduleTask ( () -> {
+            this.delayedUpdateNoteMapping (this.model.canSelectedTrackHoldNotes () ? this.scales.getNoteMatrix () : EMPTY_TABLE);
+        }, 100);
     }
 
 

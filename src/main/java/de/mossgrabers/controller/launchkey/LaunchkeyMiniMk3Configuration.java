@@ -36,6 +36,13 @@ public class LaunchkeyMiniMk3Configuration extends AbstractConfiguration
     public void init (final ISettingsUI globalSettings, final ISettingsUI documentSettings)
     {
         ///////////////////////////
+        // Transport
+
+        this.activateRecordButtonSetting (globalSettings);
+        this.activateShiftedRecordButtonSetting (globalSettings);
+        this.activateNewClipLengthSetting (globalSettings);
+
+        ///////////////////////////
         // Workflow
 
         this.activateExcludeDeactivatedItemsSetting (globalSettings);
