@@ -12,6 +12,8 @@ import com.bitwig.extension.controller.api.Arpeggiator;
 import com.bitwig.extension.controller.api.EnumDefinition;
 import com.bitwig.extension.controller.api.EnumValueDefinition;
 
+import java.util.Locale;
+
 
 /**
  * Implementation for a note repeat.
@@ -47,7 +49,7 @@ public class NoteRepeatImpl implements INoteRepeat
         {
             final EnumValueDefinition def = enumDefinition.valueDefinitionAt (i);
             final String id = def.getId ();
-            if (ArpeggiatorMode.valueOf (id.toUpperCase ().replace ('-', '_')) == null)
+            if (ArpeggiatorMode.valueOf (id.toUpperCase (Locale.US).replace ('-', '_')) == null)
                 throw new RuntimeException ("New (unsupported) arpeggiator mode has been added: " + id);
         }
     }
@@ -178,7 +180,7 @@ public class NoteRepeatImpl implements INoteRepeat
     public ArpeggiatorMode getMode ()
     {
         final String v = this.noteRepeat.mode ().get ();
-        return ArpeggiatorMode.valueOf (v.toUpperCase ().replace ('-', '_'));
+        return ArpeggiatorMode.valueOf (v.toUpperCase (Locale.US).replace ('-', '_'));
     }
 
 
@@ -186,7 +188,7 @@ public class NoteRepeatImpl implements INoteRepeat
     @Override
     public void setMode (final ArpeggiatorMode mode)
     {
-        final String v = mode.name ().toLowerCase ().replace ('_', '-');
+        final String v = mode.name ().toLowerCase (Locale.US).replace ('_', '-');
         this.noteRepeat.mode ().set (v);
     }
 

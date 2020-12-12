@@ -150,6 +150,7 @@ public class FireControllerSetup extends AbstractControllerSetup<FireControlSurf
         final IMidiInput input = midiAccess.createInput ("Pads", "80????" /* Note off */,
                 "90????" /* Note on */);
         final FireControlSurface surface = new FireControlSurface (this.host, this.colorManager, this.configuration, output, input);
+        surface.configureLEDs ();
         this.surfaces.add (surface);
 
         surface.addGraphicsDisplay (new FireDisplay (this.host, output, this.valueChanger.getUpperBound ()));
@@ -525,6 +526,9 @@ public class FireControllerSetup extends AbstractControllerSetup<FireControlSurf
         surface.getViewManager ().addChangeListener ( (previousViewId, activeViewId) -> this.onViewChange ());
 
         this.configuration.registerDeactivatedItemsHandler (this.model);
+
+        this.configuration.addSettingObserver (FireConfiguration.PAD_BRIGHTNESS, surface::configureLEDs);
+        this.configuration.addSettingObserver (FireConfiguration.PAD_SATURATION, surface::configureLEDs);
 
         this.createScaleObservers (this.configuration);
         this.createNoteRepeatObservers (this.configuration, surface);

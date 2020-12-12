@@ -4,6 +4,8 @@
 
 package de.mossgrabers.framework.daw.constants;
 
+import java.util.Locale;
+
 /**
  * Possible values for automation modes.
  *
@@ -78,7 +80,7 @@ public enum AutomationMode
      */
     public String getIdentifier ()
     {
-        return this.name ().toLowerCase ();
+        return this.name ().toLowerCase (Locale.US);
     }
 
 

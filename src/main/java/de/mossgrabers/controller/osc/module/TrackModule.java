@@ -23,6 +23,7 @@ import de.mossgrabers.framework.daw.resource.ChannelType;
 import de.mossgrabers.framework.osc.IOpenSoundControlWriter;
 
 import java.util.LinkedList;
+import java.util.Locale;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -123,7 +124,7 @@ public class TrackModule extends AbstractModule
     {
         writer.sendOSC (trackAddress + TAG_EXISTS, track.doesExist (), dump);
         final ChannelType type = track.getType ();
-        writer.sendOSC (trackAddress + "type", type == null ? null : type.name ().toLowerCase (), dump);
+        writer.sendOSC (trackAddress + "type", type == null ? null : type.name ().toLowerCase (Locale.US), dump);
         writer.sendOSC (trackAddress + "activated", track.isActivated (), dump);
         writer.sendOSC (trackAddress + TAG_SELECTED, track.isSelected (), dump);
         writer.sendOSC (trackAddress + "isGroup", track.isGroup (), dump);

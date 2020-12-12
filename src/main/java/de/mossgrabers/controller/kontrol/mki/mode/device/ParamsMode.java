@@ -17,6 +17,7 @@ import de.mossgrabers.framework.daw.data.bank.IParameterBank;
 import de.mossgrabers.framework.parameterprovider.BankParameterProvider;
 import de.mossgrabers.framework.utils.StringUtils;
 
+import java.util.Locale;
 import java.util.Set;
 
 
@@ -54,13 +55,13 @@ public class ParamsMode extends AbstractKontrol1Mode
         if (this.model.hasSelectedDevice ())
         {
             final ICursorDevice cursorDevice = this.model.getCursorDevice ();
-            d.setCell (0, 0, cursorDevice.getName (8).toUpperCase ()).setCell (1, 0, cursorDevice.getParameterPageBank ().getSelectedItem ().toUpperCase ());
+            d.setCell (0, 0, cursorDevice.getName (8).toUpperCase (Locale.US)).setCell (1, 0, cursorDevice.getParameterPageBank ().getSelectedItem ().toUpperCase (Locale.US));
 
             final IParameterBank parameterBank = cursorDevice.getParameterBank ();
             for (int i = 0; i < 8; i++)
             {
                 final IParameter p = parameterBank.getItem (i);
-                final String name = StringUtils.shortenAndFixASCII (p.getName (8), 8).toUpperCase ();
+                final String name = StringUtils.shortenAndFixASCII (p.getName (8), 8).toUpperCase (Locale.US);
                 if (!name.isEmpty ())
                     d.setCell (0, 1 + i, name).setCell (1, 1 + i, checkForUpperCase (StringUtils.shortenAndFixASCII (p.getDisplayedValue (8), 8)));
 
@@ -174,7 +175,7 @@ public class ParamsMode extends AbstractKontrol1Mode
         for (int i = 0; i < displayedValue.length (); i++)
         {
             if (ILLEGAL_LOWER_CHARS.contains (Character.valueOf (displayedValue.charAt (i))))
-                return displayedValue.toUpperCase ();
+                return displayedValue.toUpperCase (Locale.US);
         }
         return displayedValue;
     }

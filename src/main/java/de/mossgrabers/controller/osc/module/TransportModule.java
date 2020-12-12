@@ -19,6 +19,7 @@ import de.mossgrabers.framework.osc.IOpenSoundControlWriter;
 import de.mossgrabers.framework.utils.ButtonEvent;
 
 import java.util.LinkedList;
+import java.util.Locale;
 
 
 /**
@@ -245,7 +246,7 @@ public class TransportModule extends AbstractModule
 
             case "automationWriteMode":
                 if (value != null)
-                    this.transport.setAutomationWriteMode (AutomationMode.valueOf (value.toString ().toUpperCase ()));
+                    this.transport.setAutomationWriteMode (AutomationMode.valueOf (value.toString ().toUpperCase (Locale.US)));
                 break;
 
             case TAG_PREROLL:

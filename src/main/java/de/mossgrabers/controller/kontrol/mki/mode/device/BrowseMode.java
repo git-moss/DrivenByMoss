@@ -16,6 +16,8 @@ import de.mossgrabers.framework.daw.data.IBrowserColumn;
 import de.mossgrabers.framework.daw.data.IBrowserColumnItem;
 import de.mossgrabers.framework.utils.StringUtils;
 
+import java.util.Locale;
+
 
 /**
  * Browser mode.
@@ -97,13 +99,13 @@ public class BrowseMode extends AbstractKontrol1Mode
         switch (this.selectionMode)
         {
             case BrowseMode.SELECTION_OFF:
-                d.setCell (0, 0, "BROWSE").setCell (1, 0, browser.getSelectedContentType ().toUpperCase ());
+                d.setCell (0, 0, "BROWSE").setCell (1, 0, browser.getSelectedContentType ().toUpperCase (Locale.US));
                 selectedResult = browser.getSelectedResult ();
                 d.setCell (0, 8, "SELECTED").setCell (1, 8, selectedResult == null ? "NONE" : selectedResult);
                 for (int i = 0; i < 7; i++)
                 {
                     final IBrowserColumn column = browser.getFilterColumn (i);
-                    d.setCell (0, 1 + i, StringUtils.shortenAndFixASCII (column.getName () + ":", 8).toUpperCase ()).setCell (1, 1 + i, column.doesCursorExist () ? column.getCursorName ().toUpperCase () : "");
+                    d.setCell (0, 1 + i, StringUtils.shortenAndFixASCII (column.getName () + ":", 8).toUpperCase (Locale.US)).setCell (1, 1 + i, column.doesCursorExist () ? column.getCursorName ().toUpperCase (Locale.US) : "");
                 }
                 break;
 
@@ -111,16 +113,16 @@ public class BrowseMode extends AbstractKontrol1Mode
                 d.setCell (0, 0, "SELECTED");
                 final IBrowserColumnItem [] results = browser.getResultColumnItems ();
                 for (int i = 0; i < 16; i++)
-                    d.setCell (i % 2, 1 + i / 2, (results[i].isSelected () ? ">" : " ") + results[i].getName ().toUpperCase ());
+                    d.setCell (i % 2, 1 + i / 2, (results[i].isSelected () ? ">" : " ") + results[i].getName ().toUpperCase (Locale.US));
                 break;
 
             case BrowseMode.SELECTION_FILTER:
                 final IBrowserColumn fc = browser.getFilterColumn (this.filterColumn);
-                d.setCell (0, 0, fc.getName ().toUpperCase ());
+                d.setCell (0, 0, fc.getName ().toUpperCase (Locale.US));
                 final IBrowserColumnItem [] items = fc.getItems ();
                 for (int i = 0; i < 16; i++)
                 {
-                    final String name = items[i].getName ().toUpperCase ();
+                    final String name = items[i].getName ().toUpperCase (Locale.US);
                     final String text = (items[i].isSelected () ? ">" : " ") + name;
                     d.setCell (i % 2, 1 + i / 2, text);
                 }

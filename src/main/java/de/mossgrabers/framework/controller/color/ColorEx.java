@@ -111,6 +111,55 @@ public class ColorEx
 
 
     /**
+     * Converts the components of a color, as specified by the HSB model, to an equivalent set of
+     * values for the default RGB model.
+     * 
+     * @param hue the hue component of the color
+     * @param saturation the saturation of the color
+     * @param brightness the brightness of the color
+     * @return the RGB value of the color with the indicated hue, saturation, and brightness.
+     */
+    public static ColorEx fromHSB (float hue, float saturation, float brightness)
+    {
+        if (saturation == 0)
+        {
+            int value = (int) (brightness * 255.0f + 0.5f);
+            return fromRGB (value, value, value);
+        }
+
+        float h = (hue - (float) Math.floor (hue)) * 6.0f;
+        float f = h - (float) java.lang.Math.floor (h);
+        float p = brightness * (1.0f - saturation);
+        float q = brightness * (1.0f - saturation * f);
+        float t = brightness * (1.0f - (saturation * (1.0f - f)));
+
+        switch ((int) h)
+        {
+            case 0:
+                return fromRGB ((int) (brightness * 255.0f + 0.5f), (int) (t * 255.0f + 0.5f), (int) (p * 255.0f + 0.5f));
+
+            case 1:
+                return fromRGB ((int) (q * 255.0f + 0.5f), (int) (brightness * 255.0f + 0.5f), (int) (p * 255.0f + 0.5f));
+
+            case 2:
+                return fromRGB ((int) (p * 255.0f + 0.5f), (int) (brightness * 255.0f + 0.5f), (int) (t * 255.0f + 0.5f));
+
+            case 3:
+                return fromRGB ((int) (p * 255.0f + 0.5f), (int) (q * 255.0f + 0.5f), (int) (brightness * 255.0f + 0.5f));
+
+            case 4:
+                return fromRGB ((int) (t * 255.0f + 0.5f), (int) (p * 255.0f + 0.5f), (int) (brightness * 255.0f + 0.5f));
+
+            case 5:
+                return fromRGB ((int) (brightness * 255.0f + 0.5f), (int) (p * 255.0f + 0.5f), (int) (q * 255.0f + 0.5f));
+
+            default:
+                return ColorEx.BLACK;
+        }
+    }
+
+
+    /**
      * Convert the internal color state to 3 integer RGB values.
      *
      * @return The 3 int (0-255) values
@@ -154,6 +203,61 @@ public class ColorEx
             this.redValue,
             this.greenValue,
             this.blueValue
+        };
+    }
+
+
+    /**
+     * Converts the components of a color, as specified by the default RGB model, to an equivalent
+     * set of values for hue, saturation, and brightness that are the three components of the HSB
+     * model.
+     * 
+     * @return hue, saturation, brightness (hsb)
+     */
+    public float [] toHSB ()
+    {
+        int [] rgb = this.toIntRGB255 ();
+        int r = rgb[0];
+        int g = rgb[1];
+        int b = rgb[2];
+
+        int cmax = (r > g) ? r : g;
+        if (b > cmax)
+            cmax = b;
+        int cmin = (r < g) ? r : g;
+        if (b < cmin)
+            cmin = b;
+
+        float brightness = cmax / 255.0f;
+        float hue;
+        float saturation;
+        if (cmax != 0)
+            saturation = ((float) (cmax - cmin)) / ((float) cmax);
+        else
+            saturation = 0;
+        if (saturation == 0)
+            hue = 0;
+        else
+        {
+            float redc = ((float) (cmax - r)) / ((float) (cmax - cmin));
+            float greenc = ((float) (cmax - g)) / ((float) (cmax - cmin));
+            float bluec = ((float) (cmax - b)) / ((float) (cmax - cmin));
+            if (r == cmax)
+                hue = bluec - greenc;
+            else if (g == cmax)
+                hue = 2.0f + redc - bluec;
+            else
+                hue = 4.0f + greenc - redc;
+            hue = hue / 6.0f;
+            if (hue < 0)
+                hue = hue + 1.0f;
+        }
+
+        return new float []
+        {
+            hue,
+            saturation,
+            brightness
         };
     }
 
@@ -248,6 +352,21 @@ public class ColorEx
         }
 
         return ColorEx.evenDarker (color);
+    }
+
+
+    /**
+     * Scale the color to the given brightness and saturation.
+     *
+     * @param brightness The brightness to scale to in the range of [0..1]
+     * @param saturation The saturation to scale to in the range of [0..1]
+     * @return The scaled color
+     */
+    public ColorEx scale (final double brightness, final double saturation)
+    {
+        final float [] hsb = this.toHSB ();
+        return fromHSB (hsb[0], (float) Math.min (1.0, hsb[1] * 2 * saturation), (float) Math.max (hsb[2] * brightness, 0.1));
+
     }
 
 

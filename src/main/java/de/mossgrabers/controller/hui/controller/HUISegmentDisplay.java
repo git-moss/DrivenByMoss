@@ -10,6 +10,7 @@ import de.mossgrabers.framework.daw.midi.IMidiOutput;
 import de.mossgrabers.framework.utils.StringUtils;
 
 import java.util.Arrays;
+import java.util.Locale;
 
 
 /**
@@ -44,7 +45,7 @@ public class HUISegmentDisplay extends AbstractTextDisplay
     public void writeLine (final int row, final String text)
     {
         // Sets the position string. Must only contain numbers and ':'
-        final String lowerText = text.toLowerCase ();
+        final String lowerText = text.toLowerCase (Locale.US);
         Arrays.fill (this.transportBuffer, 0);
 
         // Convert string to display character codes

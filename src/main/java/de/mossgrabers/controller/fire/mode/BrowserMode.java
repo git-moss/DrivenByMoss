@@ -18,6 +18,7 @@ import de.mossgrabers.framework.featuregroup.AbstractMode;
 import de.mossgrabers.framework.utils.StringUtils;
 
 import java.util.Arrays;
+import java.util.Locale;
 
 
 /**
@@ -134,7 +135,7 @@ public class BrowserMode extends AbstractMode<FireControlSurface, FireConfigurat
         if (idx < 0)
         {
             final String selectedResult = browser.getSelectedResult ();
-            rows[0] = browser.getSelectedContentType ().toUpperCase ();
+            rows[0] = browser.getSelectedContentType ().toUpperCase (Locale.US);
             rows[1] = "Selection: ";
             rows[2] = selectedResult == null || selectedResult.isBlank () ? "None" : selectedResult;
         }

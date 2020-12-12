@@ -26,6 +26,7 @@ import de.mossgrabers.framework.daw.midi.IMidiOutput;
 import de.mossgrabers.framework.featuregroup.ModeManager;
 import de.mossgrabers.framework.featuregroup.ViewManager;
 
+import java.util.Collection;
 import java.util.List;
 import java.util.Map;
 import java.util.function.Consumer;
@@ -347,7 +348,7 @@ public interface IControlSurface<C extends Configuration>
 
 
     /**
-     * Get a button the was created with the given ID.
+     * Get a button that was created with the given ID.
      *
      * @param buttonID The button ID
      * @return The button or null if not created
@@ -356,12 +357,20 @@ public interface IControlSurface<C extends Configuration>
 
 
     /**
-     * Get a light the was created with the given ID.
+     * Get a light that was created with the given ID.
      *
      * @param outputID The output ID
      * @return The light or null if not created
      */
     IHwLight getLight (OutputID outputID);
+
+
+    /**
+     * Get all lights.
+     *
+     * @return The lights
+     */
+    Collection<IHwLight> getLights ();
 
 
     /**

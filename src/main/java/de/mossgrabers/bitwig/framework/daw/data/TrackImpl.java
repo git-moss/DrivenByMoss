@@ -21,6 +21,7 @@ import com.bitwig.extension.controller.api.Track;
 
 import java.util.Arrays;
 import java.util.HashSet;
+import java.util.Locale;
 import java.util.Set;
 
 
@@ -147,7 +148,7 @@ public class TrackImpl extends ChannelImpl implements ITrack
     public ChannelType getType ()
     {
         final String typeID = this.track.trackType ().get ();
-        return typeID.isEmpty () ? ChannelType.UNKNOWN : ChannelType.valueOf (typeID.toUpperCase ());
+        return typeID.isEmpty () ? ChannelType.UNKNOWN : ChannelType.valueOf (typeID.toUpperCase (Locale.US));
     }
 
 

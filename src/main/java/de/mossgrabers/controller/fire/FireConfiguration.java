@@ -6,6 +6,7 @@ package de.mossgrabers.controller.fire;
 
 import de.mossgrabers.framework.configuration.AbstractConfiguration;
 import de.mossgrabers.framework.configuration.IEnumSetting;
+import de.mossgrabers.framework.configuration.IIntegerSetting;
 import de.mossgrabers.framework.configuration.ISettingsUI;
 import de.mossgrabers.framework.controller.valuechanger.IValueChanger;
 import de.mossgrabers.framework.daw.IHost;
@@ -20,6 +21,18 @@ import de.mossgrabers.framework.daw.midi.ArpeggiatorMode;
  */
 public class FireConfiguration extends AbstractConfiguration
 {
+    /** Setting for the pad brightness. */
+    public static final Integer PAD_BRIGHTNESS = Integer.valueOf (50);
+    /** Setting for the pad color saturation. */
+    public static final Integer PAD_SATURATION = Integer.valueOf (51);
+
+    private IIntegerSetting     padBrightnessSetting;
+    private IIntegerSetting     padSaturationSetting;
+
+    private int                 padBrightness  = 100;
+    private int                 padSaturation  = 100;
+
+
     /**
      * Constructor.
      *
@@ -89,5 +102,42 @@ public class FireConfiguration extends AbstractConfiguration
         this.activateExcludeDeactivatedItemsSetting (globalSettings);
         this.activateNewClipLengthSetting (globalSettings);
         this.activateKnobSpeedSetting (globalSettings);
+
+        ///////////////////////////
+        // Hardware
+
+        this.padBrightnessSetting = globalSettings.getRangeSetting ("Pad Brightness", CATEGORY_HARDWARE_SETUP, 0, 100, 1, "%", 100);
+        this.padBrightnessSetting.addValueObserver (value -> {
+            this.padBrightness = value.intValue ();
+            this.notifyObservers (PAD_BRIGHTNESS);
+        });
+
+        this.padSaturationSetting = globalSettings.getRangeSetting ("Pad Saturation", CATEGORY_HARDWARE_SETUP, 0, 100, 1, "%", 100);
+        this.padSaturationSetting.addValueObserver (value -> {
+            this.padSaturation = value.intValue ();
+            this.notifyObservers (PAD_SATURATION);
+        });
+    }
+
+
+    /**
+     * Get the brightness for the pad LEDs.
+     *
+     * @return The brightness in the range of [0, 100]
+     */
+    public int getPadBrightness ()
+    {
+        return this.padBrightness;
+    }
+
+
+    /**
+     * Get the saturation for the pad LEDs.
+     *
+     * @return The saturation in the range of [0, 100]
+     */
+    public int getPadSaturation ()
+    {
+        return this.padSaturation;
     }
 }

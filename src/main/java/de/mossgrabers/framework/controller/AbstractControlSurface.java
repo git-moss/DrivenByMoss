@@ -35,6 +35,7 @@ import de.mossgrabers.framework.graphics.IBitmap;
 import de.mossgrabers.framework.utils.ButtonEvent;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.EnumMap;
 import java.util.List;
 import java.util.Map;
@@ -473,6 +474,14 @@ public abstract class AbstractControlSurface<C extends Configuration> implements
     public IHwLight getLight (final OutputID outputID)
     {
         return this.lights.get (outputID);
+    }
+
+
+    /** {@inheritDoc} */
+    @Override
+    public Collection<IHwLight> getLights ()
+    {
+        return this.lights.values ();
     }
 
 

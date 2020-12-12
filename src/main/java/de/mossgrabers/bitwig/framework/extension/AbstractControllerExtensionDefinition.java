@@ -24,6 +24,7 @@ import com.bitwig.extension.controller.api.ControllerHost;
 import com.bitwig.extension.controller.api.UsbTransferType;
 
 import java.util.List;
+import java.util.Locale;
 import java.util.UUID;
 
 
@@ -134,7 +135,7 @@ public abstract class AbstractControllerExtensionDefinition extends ControllerEx
     @Override
     public void listAutoDetectionMidiPortNames (final AutoDetectionMidiPortNamesList list, final PlatformType platformType)
     {
-        final OperatingSystem os = OperatingSystem.valueOf (platformType.name ().toUpperCase ());
+        final OperatingSystem os = OperatingSystem.valueOf (platformType.name ().toUpperCase (Locale.US));
         for (final Pair<String [], String []> midiDiscoveryPair: this.definition.getMidiDiscoveryPairs (os))
             list.add (midiDiscoveryPair.getKey (), midiDiscoveryPair.getValue ());
     }

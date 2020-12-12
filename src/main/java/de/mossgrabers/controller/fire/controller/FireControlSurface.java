@@ -6,6 +6,7 @@ package de.mossgrabers.controller.fire.controller;
 
 import de.mossgrabers.controller.fire.FireConfiguration;
 import de.mossgrabers.framework.controller.AbstractControlSurface;
+import de.mossgrabers.framework.controller.ButtonID;
 import de.mossgrabers.framework.controller.color.ColorManager;
 import de.mossgrabers.framework.daw.IHost;
 import de.mossgrabers.framework.daw.midi.IMidiInput;
@@ -121,5 +122,21 @@ public class FireControlSurface extends AbstractControlSurface<FireConfiguration
     public FirePadGrid getPadGrid ()
     {
         return (FirePadGrid) this.pads;
+    }
+
+
+    /**
+     * Update the LEDs brightness and saturation settings on the device.
+     */
+    public void configureLEDs ()
+    {
+        // Scale to [0..1]. Brightness is in the range of [0.1..1]
+        final double padBrightness = Math.max (0.1, Math.min (1, 0.1 + 0.9 * this.configuration.getPadBrightness () / 100.0));
+        final double padSaturation = this.configuration.getPadSaturation () / 100.0;
+        final FirePadGrid padGrid = this.getPadGrid ();
+        padGrid.configureLEDs (padBrightness, padSaturation);
+
+        for (int i = 0; i < this.pads.getRows () * this.pads.getCols (); i++)
+            this.getButton (ButtonID.get (ButtonID.PAD1, i)).getLight ().clearCache ();
     }
 }

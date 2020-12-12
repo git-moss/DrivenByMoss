@@ -12,6 +12,8 @@ import de.mossgrabers.framework.controller.color.ColorManager;
 import de.mossgrabers.framework.daw.IModel;
 import de.mossgrabers.framework.scale.Scales;
 
+import java.util.Locale;
+
 
 /**
  * Scales mode.
@@ -44,7 +46,7 @@ public class ScaleMode extends AbstractKontrol1Mode
         final Kontrol1Display d = (Kontrol1Display) this.surface.getDisplay ();
         d.clear ();
         d.setCell (0, 0, "SCALE");
-        d.setCell (0, 1, "SCALE").setCell (1, 1, this.scales.getScale ().getName ().toUpperCase ());
+        d.setCell (0, 1, "SCALE").setCell (1, 1, this.scales.getScale ().getName ().toUpperCase (Locale.US));
         d.setCell (0, 2, "BASE").setCell (1, 2, Scales.BASES[this.scales.getScaleOffset ()]);
         d.allDone ();
     }

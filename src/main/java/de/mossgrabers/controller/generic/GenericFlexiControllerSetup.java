@@ -58,6 +58,7 @@ import java.text.ParseException;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import java.util.Locale;
 import java.util.Set;
 
 
@@ -72,6 +73,7 @@ public class GenericFlexiControllerSetup extends AbstractControllerSetup<Generic
 
     private final IValueChanger relative2ValueChanger = new Relative2ValueChanger (128, 1);
     private final IValueChanger relative3ValueChanger = new Relative3ValueChanger (128, 1);
+
 
     /**
      * Constructor.
@@ -190,7 +192,7 @@ public class GenericFlexiControllerSetup extends AbstractControllerSetup<Generic
             if (keyboardChannel >= 16)
                 midiChannel = "?";
             else
-                midiChannel = Integer.toHexString (keyboardChannel).toUpperCase ();
+                midiChannel = Integer.toHexString (keyboardChannel).toUpperCase (Locale.US);
 
             final List<String> filters = new ArrayList<> ();
             Collections.addAll (filters, "8" + midiChannel + "????", "9" + midiChannel + "????", "A" + midiChannel + "????", "D" + midiChannel + "????");

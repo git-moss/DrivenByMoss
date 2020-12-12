@@ -6,6 +6,7 @@ package de.mossgrabers.controller.fire.view;
 
 import de.mossgrabers.controller.fire.FireConfiguration;
 import de.mossgrabers.controller.fire.controller.FireControlSurface;
+import de.mossgrabers.controller.fire.mode.FireLayerMode;
 import de.mossgrabers.controller.fire.mode.NoteMode;
 import de.mossgrabers.framework.controller.ButtonID;
 import de.mossgrabers.framework.daw.IModel;
@@ -13,6 +14,7 @@ import de.mossgrabers.framework.daw.INoteClip;
 import de.mossgrabers.framework.daw.IStepInfo;
 import de.mossgrabers.framework.daw.data.IDrumPad;
 import de.mossgrabers.framework.daw.data.bank.IDrumPadBank;
+import de.mossgrabers.framework.featuregroup.IMode;
 import de.mossgrabers.framework.featuregroup.ModeManager;
 import de.mossgrabers.framework.mode.Modes;
 import de.mossgrabers.framework.utils.ButtonEvent;
@@ -212,29 +214,43 @@ public class Drum4View extends AbstractDrum4View<FireControlSurface, FireConfigu
         final IDrumPadBank drumPadBank = this.primary.getDrumPadBank ();
 
         final IDrumPad sel = drumPadBank.getSelectedItem ();
+        final int pageSize = drumPadBank.getPageSize ();
 
         final int index;
         if (isUp)
         {
-            index = sel == null ? drumPadBank.getPageSize () : sel.getIndex () + 1;
-            if (index == drumPadBank.getPageSize ())
+            index = sel == null ? pageSize : sel.getIndex () + 1;
+            if (index == pageSize)
             {
                 this.changeOctave (ButtonEvent.DOWN, isUp, 4, true, true);
-                this.surface.scheduleTask ( () -> drumPadBank.getItem (0).select (), 100);
+                this.surface.scheduleTask ( () -> this.selectDrumPad (drumPadBank, 0), 100);
+                return;
             }
-            else
-                drumPadBank.getItem (index).select ();
+            this.selectDrumPad (drumPadBank, index);
+            return;
         }
-        else
+
+        index = sel == null ? -1 : sel.getIndex () - 1;
+        if (index == -1)
         {
-            index = sel == null ? -1 : sel.getIndex () - 1;
-            if (index == -1)
-            {
-                this.changeOctave (ButtonEvent.DOWN, isUp, 4, true, true);
-                this.surface.scheduleTask ( () -> drumPadBank.getItem (drumPadBank.getPageSize () - 1).select (), 100);
-            }
-            else
-                drumPadBank.getItem (index).select ();
+            this.changeOctave (ButtonEvent.DOWN, isUp, 4, true, true);
+            this.surface.scheduleTask ( () -> this.selectDrumPad (drumPadBank, pageSize - 1), 100);
+            return;
         }
+        this.selectDrumPad (drumPadBank, index);
+    }
+
+
+    /**
+     *
+     * @param drumPadBank
+     * @param index
+     */
+    protected void selectDrumPad (final IDrumPadBank drumPadBank, final int index)
+    {
+        drumPadBank.getItem (index).select ();
+        final IMode activeMode = this.surface.getModeManager ().getActive ();
+        if (activeMode instanceof FireLayerMode)
+            ((FireLayerMode) activeMode).parametersAdjusted ();
     }
 }

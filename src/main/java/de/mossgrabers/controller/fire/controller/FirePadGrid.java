@@ -5,7 +5,6 @@
 package de.mossgrabers.controller.fire.controller;
 
 import de.mossgrabers.framework.controller.ButtonID;
-import de.mossgrabers.framework.controller.color.ColorEx;
 import de.mossgrabers.framework.controller.color.ColorManager;
 import de.mossgrabers.framework.controller.grid.BlinkingPadGrid;
 import de.mossgrabers.framework.controller.grid.LightInfo;
@@ -40,6 +39,9 @@ public class FirePadGrid extends BlinkingPadGrid
         for (int i = 0; i < TRANSLATE_16x4_MATRIX.length; i++)
             INVERSE_TRANSLATE_16x4_MATRIX.put (Integer.valueOf (TRANSLATE_16x4_MATRIX[i]), Integer.valueOf (36 + i));
     }
+
+    private double padBrightness = 1.0;
+    private double padSaturation = 1.0;
 
 
     /**
@@ -96,8 +98,7 @@ public class FirePadGrid extends BlinkingPadGrid
 
             final int index = note - 54;
             // Note: The exact PADx is not needed for getting the color
-            final ColorEx color = this.colorManager.getColor (info.getColor (), ButtonID.PAD1);
-            final int [] c = color.toIntRGB127 ();
+            final int [] c = this.colorManager.getColor (info.getColor (), ButtonID.PAD1).scale (this.padBrightness, this.padSaturation).toIntRGB127 ();
             sb.append (StringUtils.toHexStr (index)).append (' ');
             sb.append (StringUtils.toHexStr (c[0])).append (' ');
             sb.append (StringUtils.toHexStr (c[1])).append (' ');
@@ -124,8 +125,7 @@ public class FirePadGrid extends BlinkingPadGrid
                 final LightInfo info = value.getValue ();
 
                 final int colorIndex = this.isBlink ? info.getBlinkColor () : info.getColor ();
-                final ColorEx color = this.colorManager.getColor (colorIndex, ButtonID.PAD1);
-                final int [] c = color.toIntRGB127 ();
+                final int [] c = this.colorManager.getColor (colorIndex, ButtonID.PAD1).scale (this.padBrightness, this.padSaturation).toIntRGB127 ();
                 sb.append (StringUtils.toHexStr (value.getKey ().intValue ())).append (' ');
                 sb.append (StringUtils.toHexStr (c[0])).append (' ');
                 sb.append (StringUtils.toHexStr (c[1])).append (' ');
@@ -142,5 +142,18 @@ public class FirePadGrid extends BlinkingPadGrid
         msg.append (StringUtils.toHexStr (length / 128)).append (' ');
         msg.append (StringUtils.toHexStr (length % 128)).append (' ');
         return msg.append (sb).append ("F7").toString ();
+    }
+
+
+    /**
+     * Update the LED brightness and saturation.
+     *
+     * @param padBrightness The brightness in the range of [0.25 .. 1]
+     * @param padSaturation The color saturation in the range of [0 .. 1]
+     */
+    void configureLEDs (final double padBrightness, final double padSaturation)
+    {
+        this.padBrightness = padBrightness;
+        this.padSaturation = padSaturation;
     }
 }
