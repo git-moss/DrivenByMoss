@@ -139,7 +139,8 @@ public class GrooveMode extends BaseMode
         this.displayParameter (display, GrooveParameterID.SHUFFLE_AMOUNT, 2);
         this.displayParameter (display, GrooveParameterID.SHUFFLE_RATE, 3);
 
-        display.setCell (2, 4, " Accent:");
+        final boolean hasAccent = groove.getParameter (GrooveParameterID.ACCENT_AMOUNT) != EmptyParameter.INSTANCE;
+        display.setCell (2, 4, hasAccent ? " Accent:" : "");
         this.displayParameter (display, GrooveParameterID.ACCENT_AMOUNT, 5);
         this.displayParameter (display, GrooveParameterID.ACCENT_PHASE, 6);
         this.displayParameter (display, GrooveParameterID.ACCENT_RATE, 7);
@@ -178,7 +179,8 @@ public class GrooveMode extends BaseMode
         this.displayParameter (display, GrooveParameterID.SHUFFLE_AMOUNT, 2);
         this.displayParameter (display, GrooveParameterID.SHUFFLE_RATE, 3);
 
-        display.addOptionElement ("", "", false, null, "      Accent", "", false, null, true);
+        final boolean hasAccent = groove.getParameter (GrooveParameterID.ACCENT_AMOUNT) != EmptyParameter.INSTANCE;
+        display.addOptionElement ("", hasAccent ? "" : " ", false, null, hasAccent ? "      Accent" : "", "", false, null, true);
 
         this.displayParameter (display, GrooveParameterID.ACCENT_AMOUNT, 5);
         this.displayParameter (display, GrooveParameterID.ACCENT_PHASE, 6);
