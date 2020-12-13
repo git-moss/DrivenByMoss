@@ -113,7 +113,7 @@ public class FireControlSurface extends AbstractControlSurface<FireConfiguration
     {
         super.flushHardware ();
 
-        ((FirePadGrid) this.pads).flush ();
+        ((FirePadGrid) this.padGrid).flush ();
     }
 
 
@@ -121,7 +121,7 @@ public class FireControlSurface extends AbstractControlSurface<FireConfiguration
     @Override
     public FirePadGrid getPadGrid ()
     {
-        return (FirePadGrid) this.pads;
+        return (FirePadGrid) this.padGrid;
     }
 
 
@@ -136,7 +136,7 @@ public class FireControlSurface extends AbstractControlSurface<FireConfiguration
         final FirePadGrid padGrid = this.getPadGrid ();
         padGrid.configureLEDs (padBrightness, padSaturation);
 
-        for (int i = 0; i < this.pads.getRows () * this.pads.getCols (); i++)
+        for (int i = 0; i < this.padGrid.getRows () * this.padGrid.getCols (); i++)
             this.getButton (ButtonID.get (ButtonID.PAD1, i)).getLight ().clearCache ();
     }
 }

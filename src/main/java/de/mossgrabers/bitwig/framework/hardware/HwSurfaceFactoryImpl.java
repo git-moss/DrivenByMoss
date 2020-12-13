@@ -21,6 +21,7 @@ import de.mossgrabers.framework.controller.hardware.IHwSurfaceFactory;
 import de.mossgrabers.framework.controller.hardware.IHwTextDisplay;
 import de.mossgrabers.framework.controller.valuechanger.RelativeEncoding;
 import de.mossgrabers.framework.graphics.IBitmap;
+import de.mossgrabers.framework.utils.OperatingSystem;
 
 import com.bitwig.extension.api.Color;
 import com.bitwig.extension.controller.api.HardwareButton;
@@ -47,6 +48,8 @@ public class HwSurfaceFactoryImpl implements IHwSurfaceFactory
     private final HardwareSurface hardwareSurface;
 
     private int                   lightCounter = 0;
+    private long                  startup      = System.currentTimeMillis ();
+    private boolean               startupDone  = false;
 
 
     /**
@@ -185,6 +188,13 @@ public class HwSurfaceFactoryImpl implements IHwSurfaceFactory
     @Override
     public void flush ()
     {
+        // Workaround for state not updated on first startup on Macos 11
+        if (OperatingSystem.get () == OperatingSystem.MAC && !this.startupDone && System.currentTimeMillis () - this.startup > 10000)
+        {
+            this.hardwareSurface.invalidateHardwareOutputState ();
+            this.startupDone = true;
+        }
+
         this.hardwareSurface.updateHardware ();
     }
 

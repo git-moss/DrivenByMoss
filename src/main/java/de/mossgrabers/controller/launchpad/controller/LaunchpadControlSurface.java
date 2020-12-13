@@ -94,7 +94,7 @@ public class LaunchpadControlSurface extends AbstractControlSurface<LaunchpadCon
         this.definition = definition;
 
         for (int i = 0; i < this.virtualFaders.length; i++)
-            this.virtualFaders[i] = new VirtualFaderImpl (host, new VirtualFaderViewCallback (i, this.viewManager), this.pads, i);
+            this.virtualFaders[i] = new VirtualFaderImpl (host, new VirtualFaderViewCallback (i, this.viewManager), this.padGrid, i);
 
         this.input.setSysexCallback (this::handleSysEx);
         this.output.sendSysex (DeviceInquiry.createQuery ());
@@ -112,7 +112,7 @@ public class LaunchpadControlSurface extends AbstractControlSurface<LaunchpadCon
             // Note off
             if (code == 0x80 || code == 0x90)
             {
-                final int translated = this.pads.translateToGrid (data1);
+                final int translated = this.padGrid.translateToGrid (data1);
                 this.handleGridNote (code == 0x80 || data2 == 0 ? ButtonEvent.UP : ButtonEvent.DOWN, translated, data2);
                 return;
             }
@@ -251,7 +251,7 @@ public class LaunchpadControlSurface extends AbstractControlSurface<LaunchpadCon
     {
         super.flushHardware ();
 
-        ((LaunchpadPadGrid) this.pads).flush ();
+        ((LaunchpadPadGrid) this.padGrid).flush ();
     }
 
 

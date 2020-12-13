@@ -141,7 +141,7 @@ public class MaschineControlSurface extends AbstractControlSurface<MaschineConfi
     {
         super.flushHardware ();
 
-        ((MaschinePadGrid) this.pads).flush ();
+        ((MaschinePadGrid) this.padGrid).flush ();
     }
 
 

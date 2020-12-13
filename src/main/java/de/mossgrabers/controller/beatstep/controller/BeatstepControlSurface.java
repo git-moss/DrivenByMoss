@@ -106,8 +106,8 @@ public class BeatstepControlSurface extends AbstractControlSurface<BeatstepConfi
         if (event == ButtonEvent.UP)
         {
             // Red LED is turned off on button release, restore the correct color
-            final LightInfo lightInfo = this.pads.getLightInfo (note);
-            ((BeatstepPadGrid) this.pads).lightPad (note, lightInfo.getColor ());
+            final LightInfo lightInfo = this.padGrid.getLightInfo (note);
+            ((BeatstepPadGrid) this.padGrid).lightPad (note, lightInfo.getColor ());
         }
     }
 

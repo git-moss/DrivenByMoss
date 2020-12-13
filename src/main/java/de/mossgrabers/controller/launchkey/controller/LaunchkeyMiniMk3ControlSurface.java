@@ -84,14 +84,14 @@ public class LaunchkeyMiniMk3ControlSurface extends AbstractControlSurface<Launc
     {
         super (host, configuration, colorManager, output, input, new LaunchkeyPadGrid (colorManager, output), 800, 600);
 
-        final int size = this.pads.getRows () * this.pads.getCols ();
+        final int size = this.padGrid.getRows () * this.padGrid.getCols ();
         for (int i = 0; i < size; i++)
         {
-            final int note = this.pads.getStartNote () + i;
+            final int note = this.padGrid.getStartNote () + i;
 
             final ButtonID buttonID = ButtonID.get (ButtonID.PAD17, i);
             final IHwButton pad = this.createButton (buttonID, "D " + (i + 1));
-            pad.addLight (this.surfaceFactory.createLight (this.surfaceID, null, () -> this.pads.getLightInfo (note).getEncoded (), state -> this.pads.sendState (note), colorIndex -> this.colorManager.getColor (colorIndex, buttonID), null));
+            pad.addLight (this.surfaceFactory.createLight (this.surfaceID, null, () -> this.padGrid.getLightInfo (note).getEncoded (), state -> this.padGrid.sendState (note), colorIndex -> this.colorManager.getColor (colorIndex, buttonID), null));
             final int [] translated = LaunchkeyPadGrid.translateToController (Views.DRUM, note);
             pad.bind (input, BindType.NOTE, translated[0], translated[1]);
             pad.bind ( (event, velocity) -> this.handleGridNote (event, note, velocity));
