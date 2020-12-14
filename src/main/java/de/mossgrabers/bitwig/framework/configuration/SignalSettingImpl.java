@@ -16,7 +16,7 @@ import com.bitwig.extension.controller.api.Signal;
  *
  * @author J&uuml;rgen Mo&szlig;graber
  */
-public class SignalSettingImpl extends AbstractSetting<Void> implements ISignalSetting
+public class SignalSettingImpl extends AbstractSetting implements ISignalSetting
 {
     private Signal signalValue;
 
@@ -36,23 +36,7 @@ public class SignalSettingImpl extends AbstractSetting<Void> implements ISignalS
 
     /** {@inheritDoc} */
     @Override
-    public void set (final Void value)
-    {
-        // Intentionally empty
-    }
-
-
-    /** {@inheritDoc} */
-    @Override
-    public Void get ()
-    {
-        return null;
-    }
-
-
-    /** {@inheritDoc} */
-    @Override
-    public void addValueObserver (final IValueObserver<Void> observer)
+    public void addSignalObserver (final IValueObserver<Void> observer)
     {
         this.signalValue.addSignalObserver ( () -> observer.update (null));
     }

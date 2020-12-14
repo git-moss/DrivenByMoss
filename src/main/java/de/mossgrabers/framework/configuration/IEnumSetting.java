@@ -9,7 +9,7 @@ package de.mossgrabers.framework.configuration;
  *
  * @author J&uuml;rgen Mo&szlig;graber
  */
-public interface IEnumSetting extends ISetting<String>
+public interface IEnumSetting extends IValueSetting<String>
 {
     // Intentionally empty
 }

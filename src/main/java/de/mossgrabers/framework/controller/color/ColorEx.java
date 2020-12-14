@@ -113,25 +113,25 @@ public class ColorEx
     /**
      * Converts the components of a color, as specified by the HSB model, to an equivalent set of
      * values for the default RGB model.
-     * 
+     *
      * @param hue the hue component of the color
      * @param saturation the saturation of the color
      * @param brightness the brightness of the color
      * @return the RGB value of the color with the indicated hue, saturation, and brightness.
      */
-    public static ColorEx fromHSB (float hue, float saturation, float brightness)
+    public static ColorEx fromHSB (final float hue, final float saturation, final float brightness)
     {
         if (saturation == 0)
         {
-            int value = (int) (brightness * 255.0f + 0.5f);
+            final int value = (int) (brightness * 255.0f + 0.5f);
             return fromRGB (value, value, value);
         }
 
-        float h = (hue - (float) Math.floor (hue)) * 6.0f;
-        float f = h - (float) java.lang.Math.floor (h);
-        float p = brightness * (1.0f - saturation);
-        float q = brightness * (1.0f - saturation * f);
-        float t = brightness * (1.0f - (saturation * (1.0f - f)));
+        final float h = (hue - (float) Math.floor (hue)) * 6.0f;
+        final float f = h - (float) java.lang.Math.floor (h);
+        final float p = brightness * (1.0f - saturation);
+        final float q = brightness * (1.0f - saturation * f);
+        final float t = brightness * (1.0f - saturation * (1.0f - f));
 
         switch ((int) h)
         {
@@ -211,37 +211,37 @@ public class ColorEx
      * Converts the components of a color, as specified by the default RGB model, to an equivalent
      * set of values for hue, saturation, and brightness that are the three components of the HSB
      * model.
-     * 
+     *
      * @return hue, saturation, brightness (hsb)
      */
     public float [] toHSB ()
     {
-        int [] rgb = this.toIntRGB255 ();
-        int r = rgb[0];
-        int g = rgb[1];
-        int b = rgb[2];
+        final int [] rgb = this.toIntRGB255 ();
+        final int r = rgb[0];
+        final int g = rgb[1];
+        final int b = rgb[2];
 
-        int cmax = (r > g) ? r : g;
+        int cmax = r > g ? r : g;
         if (b > cmax)
             cmax = b;
-        int cmin = (r < g) ? r : g;
+        int cmin = r < g ? r : g;
         if (b < cmin)
             cmin = b;
 
-        float brightness = cmax / 255.0f;
+        final float brightness = cmax / 255.0f;
         float hue;
         float saturation;
         if (cmax != 0)
-            saturation = ((float) (cmax - cmin)) / ((float) cmax);
+            saturation = (float) (cmax - cmin) / (float) cmax;
         else
             saturation = 0;
         if (saturation == 0)
             hue = 0;
         else
         {
-            float redc = ((float) (cmax - r)) / ((float) (cmax - cmin));
-            float greenc = ((float) (cmax - g)) / ((float) (cmax - cmin));
-            float bluec = ((float) (cmax - b)) / ((float) (cmax - cmin));
+            final float redc = (float) (cmax - r) / (float) (cmax - cmin);
+            final float greenc = (float) (cmax - g) / (float) (cmax - cmin);
+            final float bluec = (float) (cmax - b) / (float) (cmax - cmin);
             if (r == cmax)
                 hue = bluec - greenc;
             else if (g == cmax)

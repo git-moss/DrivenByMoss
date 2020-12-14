@@ -4,12 +4,20 @@
 
 package de.mossgrabers.framework.configuration;
 
+import de.mossgrabers.framework.observer.IValueObserver;
+
+
 /**
  * A signal setting.
  *
  * @author J&uuml;rgen Mo&szlig;graber
  */
-public interface ISignalSetting extends ISetting<Void>
+public interface ISignalSetting extends ISetting
 {
-    // Intentionally empty
+    /**
+     * Add an observer for a signal.
+     *
+     * @param observer The observer
+     */
+    void addSignalObserver (IValueObserver<Void> observer);
 }

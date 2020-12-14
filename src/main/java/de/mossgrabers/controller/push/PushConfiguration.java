@@ -285,6 +285,8 @@ public class PushConfiguration extends AbstractConfiguration implements IGraphic
         super (host, valueChanger, arpeggiatorModes);
 
         this.isPush2 = isPush2;
+
+        this.dontNotifyAll.add (DEBUG_WINDOW);
     }
 
 
@@ -1245,7 +1247,7 @@ public class PushConfiguration extends AbstractConfiguration implements IGraphic
         if (!this.isPush2)
             return;
 
-        settingsUI.getSignalSetting ("Reset colors to default", CATEGORY_COLORS, "Reset").addValueObserver (value -> {
+        settingsUI.getSignalSetting ("Reset colors to default", CATEGORY_COLORS, "Reset").addSignalObserver (value -> {
             this.colorBackgroundSetting.set (DEFAULT_COLOR_BACKGROUND);
             this.colorBackgroundDarkerSetting.set (DEFAULT_COLOR_BACKGROUND_DARKER);
             this.colorBackgroundLighterSetting.set (DEFAULT_COLOR_BACKGROUND_LIGHTER);
@@ -1358,6 +1360,6 @@ public class PushConfiguration extends AbstractConfiguration implements IGraphic
         if (!this.isPush2)
             return;
 
-        settingsUI.getSignalSetting (" ", CATEGORY_DEBUG, "Display window").addValueObserver (value -> this.notifyObservers (DEBUG_WINDOW));
+        settingsUI.getSignalSetting (" ", CATEGORY_DEBUG, "Display window").addSignalObserver (value -> this.notifyObservers (DEBUG_WINDOW));
     }
 }

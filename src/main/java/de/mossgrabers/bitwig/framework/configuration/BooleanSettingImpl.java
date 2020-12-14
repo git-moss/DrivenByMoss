@@ -16,7 +16,7 @@ import com.bitwig.extension.controller.api.Setting;
  *
  * @author J&uuml;rgen Mo&szlig;graber
  */
-public class BooleanSettingImpl extends AbstractSetting<Boolean> implements IBooleanSetting
+public class BooleanSettingImpl extends AbstractSetting implements IBooleanSetting
 {
     private SettableBooleanValue booleanValue;
 

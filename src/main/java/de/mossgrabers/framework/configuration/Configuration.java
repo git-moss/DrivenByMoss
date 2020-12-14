@@ -28,6 +28,12 @@ public interface Configuration
 
 
     /**
+     * Notify all registered observers no matter for which they are registered.
+     */
+    void notifyAllObservers ();
+
+
+    /**
      * Removes all setting observers.
      */
     void clearSettingObservers ();

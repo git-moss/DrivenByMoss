@@ -6,6 +6,7 @@ package de.mossgrabers.framework.daw.constants;
 
 import java.util.Locale;
 
+
 /**
  * Possible values for automation modes.
  *

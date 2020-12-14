@@ -16,7 +16,7 @@ import com.bitwig.extension.controller.api.Setting;
  *
  * @author J&uuml;rgen Mo&szlig;graber
  */
-public class DoubleSettingImpl extends AbstractSetting<Double> implements IDoubleSetting
+public class DoubleSettingImpl extends AbstractSetting implements IDoubleSetting
 {
     private SettableRangedValue rangedValue;
 

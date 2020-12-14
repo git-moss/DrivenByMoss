@@ -9,7 +9,7 @@ package de.mossgrabers.framework.configuration;
  *
  * @author J&uuml;rgen Mo&szlig;graber
  */
-public interface IBooleanSetting extends ISetting<Boolean>
+public interface IBooleanSetting extends IValueSetting<Boolean>
 {
     /**
      * Set the boolean value.

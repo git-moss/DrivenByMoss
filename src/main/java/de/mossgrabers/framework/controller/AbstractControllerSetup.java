@@ -142,6 +142,8 @@ public abstract class AbstractControllerSetup<S extends IControlSurface<C>, C ex
         this.layoutControls ();
         if (this.model != null)
             this.model.ensureClip ();
+
+        this.configuration.notifyAllObservers ();
     }
 
 

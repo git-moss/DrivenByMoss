@@ -303,6 +303,9 @@ public class GenericFlexiConfiguration extends AbstractConfiguration
         super (host, valueChanger, arpeggiatorModes);
 
         Arrays.fill (this.assignableFunctionActions, "");
+
+        this.dontNotifyAll.add (BUTTON_SAVE);
+        this.dontNotifyAll.add (BUTTON_LOAD);
     }
 
 
@@ -359,7 +362,7 @@ public class GenericFlexiConfiguration extends AbstractConfiguration
         this.learnNumberSetting.setEnabled (false);
         this.learnMidiChannelSetting.setEnabled (false);
 
-        globalSettings.getSignalSetting (" ", category, "Set").addValueObserver (value -> {
+        globalSettings.getSignalSetting (" ", category, "Set").addSignalObserver (value -> {
             if (this.learnTypeValue == null)
                 return;
             this.typeSetting.set (this.learnTypeValue);
@@ -378,8 +381,8 @@ public class GenericFlexiConfiguration extends AbstractConfiguration
         this.fileSetting.addValueObserver (value -> this.filename = value);
 
         // The different blank labels are necessary to distinguish the widgets!
-        globalSettings.getSignalSetting ("  ", category, "Save").addValueObserver (value -> this.notifyObservers (BUTTON_SAVE));
-        globalSettings.getSignalSetting ("   ", category, "Load").addValueObserver (value -> this.notifyObservers (BUTTON_LOAD));
+        globalSettings.getSignalSetting ("  ", category, "Save").addSignalObserver (value -> this.notifyObservers (BUTTON_SAVE));
+        globalSettings.getSignalSetting ("   ", category, "Load").addSignalObserver (value -> this.notifyObservers (BUTTON_LOAD));
 
         this.learnTypeSetting.set (OPTIONS_TYPE[0]);
 
@@ -668,7 +671,7 @@ public class GenericFlexiConfiguration extends AbstractConfiguration
      *
      * @param filename The new file name
      */
-    public void setFilename (String filename)
+    public void setFilename (final String filename)
     {
         this.fileSetting.set (filename);
     }

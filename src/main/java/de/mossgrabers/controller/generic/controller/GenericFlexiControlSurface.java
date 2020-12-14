@@ -249,7 +249,7 @@ public class GenericFlexiControlSurface extends AbstractControlSurface<GenericFl
 
     /**
      * Load all settings from a file.
-     * 
+     *
      * @param filename The name (full path) of the file to load
      * @return An error or success text
      */

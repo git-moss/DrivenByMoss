@@ -12,7 +12,7 @@ import de.mossgrabers.framework.controller.color.ColorEx;
  *
  * @author J&uuml;rgen Mo&szlig;graber
  */
-public interface IColorSetting extends ISetting<ColorEx>
+public interface IColorSetting extends IValueSetting<ColorEx>
 {
     /**
      * Set the RGB color value.

@@ -9,7 +9,7 @@ package de.mossgrabers.framework.configuration;
  *
  * @author J&uuml;rgen Mo&szlig;graber
  */
-public interface IStringSetting extends ISetting<String>
+public interface IStringSetting extends IValueSetting<String>
 {
     // Intentionally empty
 }

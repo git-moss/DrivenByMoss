@@ -24,6 +24,7 @@ import de.mossgrabers.framework.view.Views;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
+import java.util.Map.Entry;
 import java.util.Set;
 
 
@@ -329,6 +330,7 @@ public abstract class AbstractConfiguration implements Configuration
     private IEnumSetting                              midiEditChannelSetting;
 
     private final Map<Integer, Set<ISettingObserver>> observers                   = new HashMap<> ();
+    protected final Set<Integer>                      dontNotifyAll               = new HashSet<> ();
     protected IValueChanger                           valueChanger;
 
     private String                                    scale                       = "Major";
@@ -1356,6 +1358,18 @@ public abstract class AbstractConfiguration implements Configuration
             }
             this.notifyObservers (SHIFTED_RECORD_BUTTON_FUNCTION);
         });
+    }
+
+
+    /** {@inheritDoc} */
+    @Override
+    public void notifyAllObservers ()
+    {
+        for (final Entry<Integer, Set<ISettingObserver>> entry: this.observers.entrySet ())
+        {
+            if (!this.dontNotifyAll.contains (entry.getKey ()))
+                entry.getValue ().forEach (ISettingObserver::hasChanged);
+        }
     }
 
 

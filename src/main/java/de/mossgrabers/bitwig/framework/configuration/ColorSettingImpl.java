@@ -18,7 +18,7 @@ import com.bitwig.extension.controller.api.Setting;
  *
  * @author J&uuml;rgen Mo&szlig;graber
  */
-public class ColorSettingImpl extends AbstractSetting<ColorEx> implements IColorSetting
+public class ColorSettingImpl extends AbstractSetting implements IColorSetting
 {
     private SettableColorValue colorValue;
 

@@ -16,7 +16,7 @@ import com.bitwig.extension.controller.api.Setting;
  *
  * @author J&uuml;rgen Mo&szlig;graber
  */
-public class StringSettingImpl extends AbstractSetting<String> implements IStringSetting
+public class StringSettingImpl extends AbstractSetting implements IStringSetting
 {
     private SettableStringValue stringValue;
 

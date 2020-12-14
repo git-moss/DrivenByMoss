@@ -18,7 +18,7 @@ import java.util.Map;
  *
  * @author J&uuml;rgen Mo&szlig;graber
  */
-public class ActionSettingImpl extends AbstractSetting<String> implements IActionSetting
+public class ActionSettingImpl extends AbstractSetting implements IActionSetting
 {
     private final SettableEnumValue   enumValue;
     private final Map<String, String> actionsMap;

@@ -9,7 +9,7 @@ package de.mossgrabers.framework.configuration;
  *
  * @author J&uuml;rgen Mo&szlig;graber
  */
-public interface IIntegerSetting extends ISetting<Integer>
+public interface IIntegerSetting extends IValueSetting<Integer>
 {
     /**
      * Set the integer value.

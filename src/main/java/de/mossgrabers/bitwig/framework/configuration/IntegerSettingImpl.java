@@ -16,7 +16,7 @@ import com.bitwig.extension.controller.api.Setting;
  *
  * @author J&uuml;rgen Mo&szlig;graber
  */
-public class IntegerSettingImpl extends AbstractSetting<Integer> implements IIntegerSetting
+public class IntegerSettingImpl extends AbstractSetting implements IIntegerSetting
 {
     private final SettableRangedValue rangedValue;
     private final int                 range;
