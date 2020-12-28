@@ -61,7 +61,7 @@ public class MasterCommand<S extends IControlSurface<C>, C extends Configuration
         }
 
         // Make sure that a track is selected
-        if (this.model.getSelectedTrack () == null)
+        if (!this.model.getCursorTrack ().doesExist ())
             this.model.getCurrentTrackBank ().getItem (0).select ();
     }
 }

@@ -11,7 +11,6 @@ import de.mossgrabers.framework.command.core.AbstractTriggerCommand;
 import de.mossgrabers.framework.daw.IModel;
 import de.mossgrabers.framework.daw.data.IChannel;
 import de.mossgrabers.framework.daw.data.ICursorDevice;
-import de.mossgrabers.framework.daw.data.ITrack;
 import de.mossgrabers.framework.mode.Modes;
 import de.mossgrabers.framework.utils.ButtonEvent;
 
@@ -109,10 +108,6 @@ public class MuteCommand extends AbstractTriggerCommand<PushControlSurface, Push
         else if (Modes.MASTER.equals (activeModeId))
             this.model.getMasterTrack ().toggleMute ();
         else
-        {
-            final ITrack selTrack = this.model.getSelectedTrack ();
-            if (selTrack != null)
-                selTrack.toggleMute ();
-        }
+            this.model.getCursorTrack ().toggleMute ();
     }
 }

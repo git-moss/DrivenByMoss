@@ -107,6 +107,7 @@ public class MaschineConfiguration extends AbstractConfiguration
             this.ribbonMode = lookupIndex (RIBBON_MODE_VALUES, value);
             this.notifyObservers (RIBBON_MODE);
         });
+        this.isSettingActive.add (RIBBON_MODE);
 
         ///////////////////////////
         // Session

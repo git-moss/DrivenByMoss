@@ -345,10 +345,13 @@ public abstract class AbstractControllerSetup<S extends IControlSurface<C>, C ex
      */
     protected void createObservers ()
     {
-        this.configuration.addSettingObserver (AbstractConfiguration.KNOB_SENSITIVITY_DEFAULT, this::updateRelativeKnobSensitivity);
-        this.configuration.addSettingObserver (AbstractConfiguration.KNOB_SENSITIVITY_SLOW, this::updateRelativeKnobSensitivity);
+        if (this.configuration.canSettingBeObserved (AbstractConfiguration.KNOB_SENSITIVITY_DEFAULT))
+        {
+            this.configuration.addSettingObserver (AbstractConfiguration.KNOB_SENSITIVITY_DEFAULT, this::updateRelativeKnobSensitivity);
+            this.configuration.addSettingObserver (AbstractConfiguration.KNOB_SENSITIVITY_SLOW, this::updateRelativeKnobSensitivity);
 
-        this.surfaces.forEach (surface -> surface.addKnobSensitivityObserver (this::updateRelativeKnobSensitivity));
+            this.surfaces.forEach (surface -> surface.addKnobSensitivityObserver (this::updateRelativeKnobSensitivity));
+        }
     }
 
 

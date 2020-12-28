@@ -177,9 +177,9 @@ public class NoteViewSelectMode extends BaseMode
             return;
         viewManager.setActive (viewID);
 
-        final ITrack selectedTrack = this.model.getSelectedTrack ();
-        if (selectedTrack != null)
-            viewManager.setPreferredView (selectedTrack.getPosition (), viewID);
+        final ITrack cursorTrack = this.model.getCursorTrack ();
+        if (cursorTrack.doesExist ())
+            viewManager.setPreferredView (cursorTrack.getPosition (), viewID);
         this.surface.getModeManager ().restore ();
     }
 }

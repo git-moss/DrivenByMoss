@@ -5,7 +5,6 @@
 package de.mossgrabers.framework.daw.data.empty;
 
 import de.mossgrabers.framework.daw.constants.RecordQuantization;
-import de.mossgrabers.framework.daw.data.ISlot;
 import de.mossgrabers.framework.daw.data.ITrack;
 import de.mossgrabers.framework.daw.data.bank.ISlotBank;
 
@@ -19,8 +18,6 @@ public class EmptyTrack extends EmptyChannel implements ITrack
 {
     /** The singleton. */
     public static final ITrack INSTANCE = new EmptyTrack ();
-
-    private final ISlotBank    slotBank = new EmptySlotBank ();
 
 
     /**
@@ -213,8 +210,7 @@ public class EmptyTrack extends EmptyChannel implements ITrack
     @Override
     public ISlotBank getSlotBank ()
     {
-        // Intentionally empty
-        return this.slotBank;
+        return EmptySlotBank.INSTANCE;
     }
 
 
@@ -263,24 +259,5 @@ public class EmptyTrack extends EmptyChannel implements ITrack
     public void addEqualizerDevice ()
     {
         // Intentionally empty
-    }
-
-
-    class EmptySlotBank extends EmptyBank<ISlot> implements ISlotBank
-    {
-        /** {@inheritDoc} */
-        @Override
-        public ISlot getEmptySlot (final int startFrom)
-        {
-            return null;
-        }
-
-
-        /** {@inheritDoc} */
-        @Override
-        public ISlot getItem (final int index)
-        {
-            return EmptySlot.INSTANCE;
-        }
     }
 }

@@ -142,7 +142,7 @@ public abstract class AbstractTrackMode extends BaseMode
                 break;
             case 1:
                 if (selectedTrack != null)
-                    this.model.toggleCursorTrackPinned ();
+                    this.model.getCursorTrack ().togglePinned ();
                 break;
             case 2:
                 if (selectedTrack != null)
@@ -198,7 +198,7 @@ public abstract class AbstractTrackMode extends BaseMode
                 case ROW1_2:
                     if (selectedTrack == null)
                         return SLMkIIIColorManager.SLMKIII_BLACK;
-                    return this.model.isCursorTrackPinned () ? SLMkIIIColorManager.SLMKIII_RED : SLMkIIIColorManager.SLMKIII_RED_HALF;
+                    return this.model.getCursorTrack ().isPinned () ? SLMkIIIColorManager.SLMKIII_RED : SLMkIIIColorManager.SLMKIII_RED_HALF;
                 case ROW1_3:
                     if (selectedTrack == null)
                         return SLMkIIIColorManager.SLMKIII_BLACK;
@@ -304,7 +304,7 @@ public abstract class AbstractTrackMode extends BaseMode
 
             d.setCell (3, 1, "Pin");
             d.setPropertyColor (1, 2, SLMkIIIColorManager.SLMKIII_RED);
-            d.setPropertyValue (1, 1, this.model.isCursorTrackPinned () ? 1 : 0);
+            d.setPropertyValue (1, 1, this.model.getCursorTrack ().isPinned () ? 1 : 0);
 
             d.setCell (3, 2, "Color");
             d.setPropertyColor (2, 2, SLMkIIIColorManager.SLMKIII_RED);

@@ -68,6 +68,10 @@ public abstract class AbstractOpenSoundControlConfiguration extends AbstractConf
             this.filterHeartbeatCommands = "On".equals (value);
             this.notifyObservers (FILTER_HEARTBEAT_COMMANDS);
         });
+
+        this.isSettingActive.add (LOG_INPUT_COMMANDS);
+        this.isSettingActive.add (LOG_OUTPUT_COMMANDS);
+        this.isSettingActive.add (FILTER_HEARTBEAT_COMMANDS);
     }
 
 

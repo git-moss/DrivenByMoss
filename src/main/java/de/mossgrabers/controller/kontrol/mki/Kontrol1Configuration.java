@@ -51,6 +51,7 @@ public class Kontrol1Configuration extends AbstractConfiguration
             this.scaleIsActive = "On".equals (value);
             this.notifyObservers (SCALE_IS_ACTIVE);
         });
+        this.isSettingActive.add (SCALE_IS_ACTIVE);
 
         this.activateScaleSetting (documentSettings);
         this.activateScaleBaseSetting (documentSettings);

@@ -5,6 +5,7 @@
 package de.mossgrabers.bitwig.framework.daw;
 
 import de.mossgrabers.bitwig.framework.daw.data.CursorDeviceImpl;
+import de.mossgrabers.bitwig.framework.daw.data.CursorTrackImpl;
 import de.mossgrabers.bitwig.framework.daw.data.DrumDeviceImpl;
 import de.mossgrabers.bitwig.framework.daw.data.EqualizerDeviceImpl;
 import de.mossgrabers.bitwig.framework.daw.data.KompleteDevice;
@@ -16,7 +17,6 @@ import de.mossgrabers.bitwig.framework.daw.data.bank.TrackBankImpl;
 import de.mossgrabers.bitwig.framework.daw.data.bank.UserParameterBankImpl;
 import de.mossgrabers.framework.daw.AbstractModel;
 import de.mossgrabers.framework.daw.DataSetup;
-import de.mossgrabers.framework.daw.IClip;
 import de.mossgrabers.framework.daw.INoteClip;
 import de.mossgrabers.framework.daw.ModelSetup;
 import de.mossgrabers.framework.daw.constants.DeviceID;
@@ -58,11 +58,10 @@ public class ModelImpl extends AbstractModel
     private static final UUID              INSTRUMENT_DRUM_MACHINE = UUID.fromString ("8ea97e45-0255-40fd-bc7e-94419741e9d1");
 
     private final ControllerHost           controllerHost;
-    private final CursorTrack              cursorTrack;
+    private final CursorTrack              bwCursorTrack;
+    private Track                          rootTrackGroup;
     private final BooleanValue             masterTrackEqualsValue;
     private final Map<Integer, ISceneBank> sceneBanks              = new HashMap<> (1);
-
-    private Track                          rootTrackGroup;
 
 
     /**
@@ -101,11 +100,11 @@ public class ModelImpl extends AbstractModel
         //////////////////////////////////////////////////////////////////////////////
         // Create track banks
 
-        this.cursorTrack = controllerHost.createCursorTrack ("MyCursorTrackID", "The Cursor Track", numSends, numScenes, true);
-        this.cursorTrack.isPinned ().markInterested ();
+        this.bwCursorTrack = controllerHost.createCursorTrack ("MyCursorTrackID", "The Cursor Track", numSends, numScenes, true);
+        this.cursorTrack = new CursorTrackImpl (this.host, this.valueChanger, this.bwCursorTrack, this.rootTrackGroup, (ApplicationImpl) this.application, numSends, numScenes);
 
         final MasterTrack master = controllerHost.createMasterTrack (0);
-        this.masterTrack = new MasterTrackImpl (this.host, this.valueChanger, master, this.cursorTrack, this.rootTrackGroup, (ApplicationImpl) this.application);
+        this.masterTrack = new MasterTrackImpl (this.host, this.valueChanger, master, this.bwCursorTrack, this.rootTrackGroup, (ApplicationImpl) this.application);
 
         final TrackBank tb;
         final int numTracks = this.modelSetup.getNumTracks ();
@@ -115,16 +114,16 @@ public class ModelImpl extends AbstractModel
                 tb = controllerHost.createTrackBank (numTracks, numSends, numScenes, true);
             else
                 tb = controllerHost.createMainTrackBank (numTracks, numSends, numScenes);
-            tb.followCursorTrack (this.cursorTrack);
+            tb.followCursorTrack (this.bwCursorTrack);
         }
         else
-            tb = this.cursorTrack.createSiblingsTrackBank (numTracks, numSends, numScenes, false, false);
+            tb = this.bwCursorTrack.createSiblingsTrackBank (numTracks, numSends, numScenes, false, false);
 
-        this.trackBank = new TrackBankImpl (this.host, this.valueChanger, tb, this.cursorTrack, this.rootTrackGroup, (ApplicationImpl) this.application, numTracks, numScenes, numSends);
+        this.trackBank = new TrackBankImpl (this.host, this.valueChanger, tb, this.bwCursorTrack, this.rootTrackGroup, (ApplicationImpl) this.application, numTracks, numScenes, numSends);
 
         final int numFxTracks = this.modelSetup.getNumFxTracks ();
         final TrackBank effectTrackBank = controllerHost.createEffectTrackBank (numFxTracks, numScenes);
-        this.effectTrackBank = new EffectTrackBankImpl (this.host, this.valueChanger, effectTrackBank, this.cursorTrack, this.rootTrackGroup, (ApplicationImpl) this.application, numFxTracks, numScenes, this.trackBank);
+        this.effectTrackBank = new EffectTrackBankImpl (this.host, this.valueChanger, effectTrackBank, this.bwCursorTrack, this.rootTrackGroup, (ApplicationImpl) this.application, numFxTracks, numScenes, this.trackBank);
 
         //////////////////////////////////////////////////////////////////////////////
         // Create devices
@@ -135,14 +134,14 @@ public class ModelImpl extends AbstractModel
         final int numDrumPadLayers = this.modelSetup.getNumDrumPadLayers ();
 
         // Cursor device
-        final PinnableCursorDevice mainCursorDevice = this.cursorTrack.createCursorDevice ("CURSOR_DEVICE", "Cursor device", numSends, CursorDeviceFollowMode.FOLLOW_SELECTION);
+        final PinnableCursorDevice mainCursorDevice = this.bwCursorTrack.createCursorDevice ("CURSOR_DEVICE", "Cursor device", numSends, CursorDeviceFollowMode.FOLLOW_SELECTION);
         this.cursorDevice = new CursorDeviceImpl (this.host, this.valueChanger, mainCursorDevice, numSends, numParams, numDevicesInBank, numDeviceLayers, numDrumPadLayers);
 
         // Drum Machine
         if (modelSetup.wantsDrumDevice ())
         {
             final DeviceMatcher drumMachineDeviceMatcher = controllerHost.createBitwigDeviceMatcher (INSTRUMENT_DRUM_MACHINE);
-            final DeviceBank drumDeviceBank = this.cursorTrack.createDeviceBank (1);
+            final DeviceBank drumDeviceBank = this.bwCursorTrack.createDeviceBank (1);
             drumDeviceBank.setDeviceMatcher (drumMachineDeviceMatcher);
             final Device drumMachineDevice = drumDeviceBank.getItemAt (0);
             this.drumDevice = new DrumDeviceImpl (this.host, this.valueChanger, drumMachineDevice, numSends, numParams, numDevicesInBank, numDeviceLayers, numDrumPadLayers);
@@ -173,7 +172,7 @@ public class ModelImpl extends AbstractModel
                     // Impossible to reach
                     throw new FrameworkException ("Unknown device ID.");
             }
-            final DeviceBank deviceBank = this.cursorTrack.createDeviceBank (1);
+            final DeviceBank deviceBank = this.bwCursorTrack.createDeviceBank (1);
             deviceBank.setDeviceMatcher (deviceMatcher);
             final Device device = deviceBank.getItemAt (0);
 
@@ -202,7 +201,7 @@ public class ModelImpl extends AbstractModel
 
         final int numResults = this.modelSetup.getNumResults ();
         if (numResults > 0)
-            this.browser = new BrowserImpl (controllerHost.createPopupBrowser (), this.cursorTrack, mainCursorDevice, this.modelSetup.getNumFilterColumnEntries (), numResults);
+            this.browser = new BrowserImpl (controllerHost.createPopupBrowser (), this.bwCursorTrack, mainCursorDevice, this.modelSetup.getNumFilterColumnEntries (), numResults);
 
         this.masterTrackEqualsValue = mainCursorDevice.channel ().createEqualsValue (master);
         this.masterTrackEqualsValue.markInterested ();
@@ -228,22 +227,6 @@ public class ModelImpl extends AbstractModel
 
     /** {@inheritDoc} */
     @Override
-    public boolean isCursorTrackPinned ()
-    {
-        return this.cursorTrack.isPinned ().get ();
-    }
-
-
-    /** {@inheritDoc} */
-    @Override
-    public void toggleCursorTrackPinned ()
-    {
-        this.cursorTrack.isPinned ().toggle ();
-    }
-
-
-    /** {@inheritDoc} */
-    @Override
     public boolean isCursorDeviceOnMasterTrack ()
     {
         return this.masterTrackEqualsValue.get ();
@@ -256,8 +239,8 @@ public class ModelImpl extends AbstractModel
     {
         return this.sceneBanks.computeIfAbsent (Integer.valueOf (numScenes), key -> {
             final TrackBank tb = this.controllerHost.createMainTrackBank (1, this.modelSetup.getNumSends (), numScenes);
-            tb.followCursorTrack (this.cursorTrack);
-            return new TrackBankImpl (this.host, this.valueChanger, tb, this.cursorTrack, this.rootTrackGroup, (ApplicationImpl) this.application, 1, numScenes, 0).getSceneBank ();
+            tb.followCursorTrack (this.bwCursorTrack);
+            return new TrackBankImpl (this.host, this.valueChanger, tb, this.bwCursorTrack, this.rootTrackGroup, (ApplicationImpl) this.application, 1, numScenes, 0).getSceneBank ();
         });
     }
 
@@ -266,7 +249,7 @@ public class ModelImpl extends AbstractModel
     @Override
     public INoteClip getNoteClip (final int cols, final int rows)
     {
-        return (INoteClip) this.cursorClips.computeIfAbsent (cols + "-" + rows, k -> new CursorClipImpl (this.controllerHost, this.cursorTrack, this.valueChanger, cols, rows));
+        return this.cursorClips.computeIfAbsent (cols + "-" + rows, k -> new CursorClipImpl (this.controllerHost, this.bwCursorTrack, this.valueChanger, cols, rows));
     }
 
 
@@ -294,7 +277,7 @@ public class ModelImpl extends AbstractModel
 
     /** {@inheritDoc} */
     @Override
-    public IClip getClip ()
+    public INoteClip getCursorClip ()
     {
         if (this.cursorClips.isEmpty ())
             throw new FrameworkException ("No cursor clip created!");

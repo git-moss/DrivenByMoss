@@ -72,8 +72,8 @@ public class SLMkIIISendMode extends AbstractTrackMode
             this.setColumnColors (d, i, t, color);
         }
 
-        final ITrack t = this.model.getSelectedTrack ();
-        d.setCell (1, 8, t == null ? "" : StringUtils.fixASCII (t.getName (9)));
+        final ITrack cursorTrack = this.model.getCursorTrack ();
+        d.setCell (1, 8, cursorTrack == null ? "" : StringUtils.fixASCII (cursorTrack.getName (9)));
 
         this.drawRow4 ();
         this.setButtonInfo (d);

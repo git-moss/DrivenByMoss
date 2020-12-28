@@ -12,20 +12,18 @@ import de.mossgrabers.framework.controller.color.ColorEx;
 import de.mossgrabers.framework.daw.IApplication;
 import de.mossgrabers.framework.daw.IHost;
 import de.mossgrabers.framework.daw.IModel;
+import de.mossgrabers.framework.daw.data.ICursorTrack;
 import de.mossgrabers.framework.daw.data.ISend;
 import de.mossgrabers.framework.daw.data.ISlot;
 import de.mossgrabers.framework.daw.data.ITrack;
 import de.mossgrabers.framework.daw.data.bank.ISendBank;
 import de.mossgrabers.framework.daw.data.bank.ISlotBank;
 import de.mossgrabers.framework.daw.data.bank.ITrackBank;
-import de.mossgrabers.framework.daw.data.empty.EmptyTrack;
 import de.mossgrabers.framework.daw.resource.ChannelType;
 import de.mossgrabers.framework.osc.IOpenSoundControlWriter;
 
 import java.util.LinkedList;
 import java.util.Locale;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 
 
 /**
@@ -35,8 +33,6 @@ import java.util.regex.Pattern;
  */
 public class TrackModule extends AbstractModule
 {
-    private static final Pattern   RGB_COLOR_PATTERN = Pattern.compile ("(rgb|RGB)\\((\\d+(\\.\\d+)?),(\\d+(\\.\\d+)?),(\\d+(\\.\\d+)?)\\)");
-
     private final OSCConfiguration configuration;
 
 
@@ -105,8 +101,8 @@ public class TrackModule extends AbstractModule
         for (int i = 0; i < trackBank.getPageSize (); i++)
             this.flushTrack (this.writer, "/track/" + (i + 1) + "/", trackBank.getItem (i), dump);
         this.flushTrack (this.writer, "/master/", this.model.getMasterTrack (), dump);
-        final ITrack selectedTrack = trackBank.getSelectedItem ();
-        this.flushTrack (this.writer, "/track/selected/", selectedTrack == null ? EmptyTrack.INSTANCE : selectedTrack, dump);
+        final ICursorTrack cursorTrack = this.model.getCursorTrack ();
+        this.flushTrack (this.writer, "/track/selected/", cursorTrack, dump);
         this.writer.sendOSC ("/track/toggleBank", this.model.isEffectTrackBankActive () ? 1 : 0, dump);
         this.writer.sendOSC ("/track/hasParent", trackBank.hasParent (), dump);
     }
@@ -141,6 +137,12 @@ public class TrackModule extends AbstractModule
         writer.sendOSC (trackAddress + "canHoldNotes", track.canHoldNotes (), dump);
         writer.sendOSC (trackAddress + "canHoldAudioData", track.canHoldAudioData (), dump);
         writer.sendOSC (trackAddress + "position", track.getPosition (), dump);
+
+        if (track instanceof ICursorTrack)
+        {
+            final ICursorTrack cursorTrack = (ICursorTrack) track;
+            writer.sendOSC (trackAddress + "pinned", cursorTrack.isPinned (), dump);
+        }
 
         final ISendBank sendBank = track.getSendBank ();
         for (int i = 0; i < sendBank.getPageSize (); i++)
@@ -304,9 +306,9 @@ public class TrackModule extends AbstractModule
 
             case TAG_SELECT:
             case TAG_SELECTED:
-                final ITrack selectedTrack2 = tb.getSelectedItem ();
-                if (selectedTrack2 != null)
-                    parseTrackValue (selectedTrack2, path, value);
+                final ITrack cursorTrack = this.model.getCursorTrack ();
+                if (cursorTrack.doesExist ())
+                    parseTrackValue (cursorTrack, path, value);
                 break;
 
             default:
@@ -414,12 +416,20 @@ public class TrackModule extends AbstractModule
                 break;
 
             case TAG_COLOR:
-                final Matcher matcher = RGB_COLOR_PATTERN.matcher (toString (value));
-                if (!matcher.matches ())
-                    return;
-                final int count = matcher.groupCount ();
-                if (count == 7)
-                    track.setColor (new ColorEx (Double.parseDouble (matcher.group (2)) / 255.0, Double.parseDouble (matcher.group (4)) / 255.0, Double.parseDouble (matcher.group (6)) / 255.0));
+                final ColorEx color = matchColor (toString (value));
+                if (color != null)
+                    track.setColor (color);
+                break;
+
+            case "pinned":
+                if (track instanceof ICursorTrack)
+                {
+                    final ICursorTrack cursorTrack = (ICursorTrack) track;
+                    if (value == null)
+                        cursorTrack.togglePinned ();
+                    else
+                        cursorTrack.setPinned (isTrigger (value));
+                }
                 break;
 
             default:
@@ -428,7 +438,7 @@ public class TrackModule extends AbstractModule
     }
 
 
-    private static void parseClipValue (final ITrack track, final LinkedList<String> path, final Object value) throws UnknownCommandException, MissingCommandException
+    private static void parseClipValue (final ITrack track, final LinkedList<String> path, final Object value) throws UnknownCommandException, MissingCommandException, IllegalParameterException
     {
         final String command = getSubCommand (path);
 
@@ -453,13 +463,9 @@ public class TrackModule extends AbstractModule
                     slot.remove ();
                     break;
                 case TAG_COLOR:
-                    final Matcher matcher = RGB_COLOR_PATTERN.matcher (value.toString ());
-                    if (!matcher.matches ())
-                        return;
-                    final int count = matcher.groupCount ();
-                    if (count != 7)
-                        return;
-                    slot.setColor (new ColorEx (Double.parseDouble (matcher.group (2)) / 255.0, Double.parseDouble (matcher.group (4)) / 255.0, Double.parseDouble (matcher.group (6)) / 255.0));
+                    final ColorEx color = matchColor (toString (value));
+                    if (color != null)
+                        slot.setColor (color);
                     break;
                 default:
                     throw new UnknownCommandException (clipCommand);

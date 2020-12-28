@@ -117,7 +117,7 @@ public class OptionsMode extends BaseMode
                 this.model.getApplication ().toggleEngineActive ();
                 break;
             case 7:
-                final IClip clip = this.model.getClip ();
+                final IClip clip = this.model.getCursorClip ();
                 if (clip.doesExist ())
                     clip.quantize (this.surface.getConfiguration ().getQuantizeAmount () / 100.0);
                 break;

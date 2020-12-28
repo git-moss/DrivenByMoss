@@ -44,6 +44,7 @@ import de.mossgrabers.framework.daw.constants.DeviceID;
 import de.mossgrabers.framework.daw.data.ISpecificDevice;
 import de.mossgrabers.framework.daw.data.ITrack;
 import de.mossgrabers.framework.daw.data.bank.ISceneBank;
+import de.mossgrabers.framework.daw.data.bank.ISlotBank;
 import de.mossgrabers.framework.daw.data.bank.ITrackBank;
 import de.mossgrabers.framework.daw.midi.IMidiAccess;
 import de.mossgrabers.framework.daw.midi.IMidiInput;
@@ -488,13 +489,14 @@ public class KontrolProtocolControllerSetup extends AbstractControllerSetup<Kont
      */
     private void navigateClips (final boolean isLeft)
     {
-        final ITrack selectedTrack = this.model.getSelectedTrack ();
-        if (selectedTrack == null)
+        final ITrack cursorTrack = this.model.getCursorTrack ();
+        if (!cursorTrack.doesExist ())
             return;
+        final ISlotBank slotBank = cursorTrack.getSlotBank ();
         if (isLeft)
-            selectedTrack.getSlotBank ().selectPreviousItem ();
+            slotBank.selectPreviousItem ();
         else
-            selectedTrack.getSlotBank ().selectNextItem ();
+            slotBank.selectNextItem ();
     }
 
 

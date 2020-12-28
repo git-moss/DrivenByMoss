@@ -12,6 +12,7 @@ import de.mossgrabers.controller.mcu.command.trigger.GrooveCommand;
 import de.mossgrabers.controller.mcu.command.trigger.KeyCommand;
 import de.mossgrabers.controller.mcu.command.trigger.KeyCommand.Key;
 import de.mossgrabers.controller.mcu.command.trigger.MCUCursorCommand;
+import de.mossgrabers.controller.mcu.command.trigger.MCUFlipCommand;
 import de.mossgrabers.controller.mcu.command.trigger.MCUMoveTrackBankCommand;
 import de.mossgrabers.controller.mcu.command.trigger.MCURecordCommand;
 import de.mossgrabers.controller.mcu.command.trigger.ScrubCommand;
@@ -55,7 +56,6 @@ import de.mossgrabers.framework.command.trigger.device.DeviceOnOffCommand;
 import de.mossgrabers.framework.command.trigger.mode.ButtonRowModeCommand;
 import de.mossgrabers.framework.command.trigger.mode.ModeCursorCommand.Direction;
 import de.mossgrabers.framework.command.trigger.mode.ModeSelectCommand;
-import de.mossgrabers.framework.command.trigger.track.ToggleTrackBanksCommand;
 import de.mossgrabers.framework.command.trigger.track.ToggleVUCommand;
 import de.mossgrabers.framework.command.trigger.transport.MetronomeCommand;
 import de.mossgrabers.framework.command.trigger.transport.PlayCommand;
@@ -401,7 +401,7 @@ public class MCUControllerSetup extends AbstractControllerSetup<MCUControlSurfac
 
                 final ModeManager modeManager = surface.getModeManager ();
 
-                this.addButton (surface, ButtonID.TRACK, "Track", new TracksCommand (this.model, surface), 0, MCUControlSurface.MCU_MODE_IO, () -> surface.getButton (ButtonID.SELECT).isPressed () ? this.model.isCursorTrackPinned () : modeManager.isActive (Modes.TRACK, Modes.VOLUME));
+                this.addButton (surface, ButtonID.TRACK, "Track", new TracksCommand (this.model, surface), 0, MCUControlSurface.MCU_MODE_IO, () -> surface.getButton (ButtonID.SELECT).isPressed () ? this.model.getCursorTrack ().isPinned () : modeManager.isActive (Modes.TRACK, Modes.VOLUME));
                 this.addButton (surface, ButtonID.PAN_SEND, "Pan", new ModeSelectCommand<> (this.model, surface, Modes.PAN), 0, MCUControlSurface.MCU_MODE_PAN, () -> modeManager.isActive (Modes.PAN));
                 this.addButton (surface, ButtonID.SENDS, "Sends", new SendSelectCommand (this.model, surface), 0, MCUControlSurface.MCU_MODE_SENDS, () -> Modes.isSendMode (modeManager.getActiveID ()));
                 this.addButton (surface, ButtonID.DEVICE, "Device", new DevicesCommand (this.model, surface), 0, MCUControlSurface.MCU_MODE_PLUGIN, () -> surface.getButton (ButtonID.SELECT).isPressed () ? cursorDevice.isPinned () : modeManager.isActive (Modes.DEVICE_PARAMS, Modes.USER));
@@ -451,7 +451,7 @@ public class MCUControllerSetup extends AbstractControllerSetup<MCUControlSurfac
                 this.addButton (surface, ButtonID.ALT, "Alt", NopCommand.INSTANCE, MCUControlSurface.MCU_ALT);
 
                 // Fader Controls
-                this.addButton (surface, ButtonID.FLIP, "Flip", new ToggleTrackBanksCommand<> (this.model, surface), 0, MCUControlSurface.MCU_FLIP, this.model::isEffectTrackBankActive);
+                this.addButton (surface, ButtonID.FLIP, "Flip", new MCUFlipCommand (this.model, surface), 0, MCUControlSurface.MCU_FLIP, this.model::isEffectTrackBankActive);
                 this.addButton (surface, ButtonID.CANCEL, "Cancel", new KeyCommand (Key.ESCAPE, this.model, surface), MCUControlSurface.MCU_CANCEL);
                 this.addButton (surface, ButtonID.ENTER, "Enter", new KeyCommand (Key.ENTER, this.model, surface), MCUControlSurface.MCU_ENTER);
 

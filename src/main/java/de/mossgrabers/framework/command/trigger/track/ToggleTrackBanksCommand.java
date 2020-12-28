@@ -36,7 +36,7 @@ public class ToggleTrackBanksCommand<S extends IControlSurface<C>, C extends Con
 
     /** {@inheritDoc} */
     @Override
-    public void execute (final ButtonEvent event, final int velocity)
+    public void executeNormal (final ButtonEvent event)
     {
         if (event != ButtonEvent.DOWN)
             return;

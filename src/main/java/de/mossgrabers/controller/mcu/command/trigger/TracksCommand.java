@@ -39,7 +39,7 @@ public class TracksCommand extends ModeMultiSelectCommand<MCUControlSurface, MCU
         if (this.surface.isPressed (ButtonID.SELECT))
         {
             if (event == ButtonEvent.DOWN)
-                this.model.toggleCursorTrackPinned ();
+                this.model.getCursorTrack ().togglePinned ();
             return;
         }
 

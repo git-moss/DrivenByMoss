@@ -8,6 +8,7 @@ import de.mossgrabers.framework.controller.color.ColorManager;
 import de.mossgrabers.framework.controller.valuechanger.IValueChanger;
 import de.mossgrabers.framework.daw.constants.DeviceID;
 import de.mossgrabers.framework.daw.data.ICursorDevice;
+import de.mossgrabers.framework.daw.data.ICursorTrack;
 import de.mossgrabers.framework.daw.data.IDrumDevice;
 import de.mossgrabers.framework.daw.data.IMasterTrack;
 import de.mossgrabers.framework.daw.data.ISlot;
@@ -53,12 +54,13 @@ public abstract class AbstractModel implements IModel
     protected ITrackBank                            currentTrackBank;
     protected ITrackBank                            trackBank;
     protected ITrackBank                            effectTrackBank;
+    protected ICursorTrack                          cursorTrack;
     protected IMasterTrack                          masterTrack;
     protected ICursorDevice                         cursorDevice;
     protected IDrumDevice                           drumDevice;
     protected IDrumDevice                           drumDevice64;
     protected IParameterBank                        userParameterBank;
-    protected Map<String, IClip>                    cursorClips        = new HashMap<> ();
+    protected Map<String, INoteClip>                cursorClips        = new HashMap<> ();
     protected final Map<DeviceID, ISpecificDevice>  specificDevices    = new EnumMap<> (DeviceID.class);
 
     private int                                     lastSelection;
@@ -174,6 +176,14 @@ public abstract class AbstractModel implements IModel
     public ICursorDevice getCursorDevice ()
     {
         return this.cursorDevice;
+    }
+
+
+    /** {@inheritDoc} */
+    @Override
+    public ICursorTrack getCursorTrack ()
+    {
+        return this.cursorTrack;
     }
 
 
@@ -325,33 +335,9 @@ public abstract class AbstractModel implements IModel
 
     /** {@inheritDoc} */
     @Override
-    public ITrack getSelectedTrack ()
-    {
-        // Is a "normal" track selected?
-        ITrackBank tb = this.getTrackBank ();
-        ITrack sel = tb.getSelectedItem ();
-        if (sel != null)
-            return sel;
-
-        // Is an effect track selected?
-        tb = this.getEffectTrackBank ();
-        if (tb != null)
-        {
-            sel = tb.getSelectedItem ();
-            if (sel != null)
-                return sel;
-        }
-
-        // Is the master track selected?
-        return this.masterTrack.isSelected () ? this.masterTrack : null;
-    }
-
-
-    /** {@inheritDoc} */
-    @Override
     public ISlot getSelectedSlot ()
     {
-        final ITrack track = this.getSelectedTrack ();
+        final ITrack track = this.getCursorTrack ();
         return track == null ? null : track.getSlotBank ().getSelectedItem ();
     }
 
@@ -360,8 +346,8 @@ public abstract class AbstractModel implements IModel
     @Override
     public boolean canConvertClip ()
     {
-        final ITrack selectedTrack = this.getSelectedTrack ();
-        if (selectedTrack == null || !selectedTrack.canHoldAudioData ())
+        final ITrack selectedTrack = this.getCursorTrack ();
+        if (!selectedTrack.doesExist () || !selectedTrack.canHoldAudioData ())
             return false;
         final List<ISlot> slots = selectedTrack.getSlotBank ().getSelectedItems ();
         if (slots.isEmpty ())

@@ -46,14 +46,14 @@ public class SelectPlayViewCommand extends AbstractTriggerCommand<PushControlSur
         final ViewManager viewManager = this.surface.getViewManager ();
         if (Views.isSessionView (viewManager.getActiveID ()))
         {
-            final ITrack selectedTrack = this.model.getSelectedTrack ();
-            if (selectedTrack == null)
+            final ITrack cursorTrack = this.model.getCursorTrack ();
+            if (!cursorTrack.doesExist ())
             {
                 this.surface.getDisplay ().notify ("Please select a track first.");
                 return;
             }
 
-            final Views preferredView = viewManager.getPreferredView (selectedTrack.getPosition ());
+            final Views preferredView = viewManager.getPreferredView (cursorTrack.getPosition ());
             viewManager.setActive (preferredView == null ? Views.PLAY : preferredView);
 
             if (modeManager.isActive (Modes.SESSION) || modeManager.isTemporary ())

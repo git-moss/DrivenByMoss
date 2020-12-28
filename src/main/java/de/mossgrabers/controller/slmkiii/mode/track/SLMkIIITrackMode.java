@@ -48,8 +48,8 @@ public class SLMkIIITrackMode extends AbstractTrackMode
         d.clear ();
         d.setCell (0, 8, "Track");
 
-        final ITrack t = this.model.getSelectedTrack ();
-        if (t == null)
+        final ITrack cursorTrack = this.model.getCursorTrack ();
+        if (!cursorTrack.doesExist ())
         {
             d.setBlock (1, 1, " Please  select a").setBlock (1, 2, "track.");
             d.setCell (1, 8, "");
@@ -57,15 +57,15 @@ public class SLMkIIITrackMode extends AbstractTrackMode
         }
         else
         {
-            d.setCell (0, 0, "Volume").setCell (1, 0, t.getVolumeStr (9));
+            d.setCell (0, 0, "Volume").setCell (1, 0, cursorTrack.getVolumeStr (9));
             d.setPropertyColor (0, 0, SLMkIIIColorManager.SLMKIII_BLUE);
             d.setPropertyColor (0, 1, SLMkIIIColorManager.SLMKIII_BLUE);
 
-            d.setCell (0, 1, "Pan").setCell (1, 1, t.getPanStr (9));
+            d.setCell (0, 1, "Pan").setCell (1, 1, cursorTrack.getPanStr (9));
             d.setPropertyColor (1, 0, SLMkIIIColorManager.SLMKIII_ORANGE);
             d.setPropertyColor (1, 1, SLMkIIIColorManager.SLMKIII_ORANGE);
 
-            final ISendBank sendBank = t.getSendBank ();
+            final ISendBank sendBank = cursorTrack.getSendBank ();
             for (int i = 0; i < 6; i++)
             {
                 final int pos = 2 + i;
@@ -85,7 +85,7 @@ public class SLMkIIITrackMode extends AbstractTrackMode
                 d.setPropertyColor (pos, 1, color);
             }
 
-            d.setCell (1, 8, StringUtils.fixASCII (t.getName (9)));
+            d.setCell (1, 8, StringUtils.fixASCII (cursorTrack.getName (9)));
         }
 
         this.drawRow4 ();

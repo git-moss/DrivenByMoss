@@ -56,14 +56,14 @@ public class NewCommand<S extends IControlSurface<C>, C extends Configuration> e
 
     private void handleExecute (final boolean enableOverdub)
     {
-        final ITrack track = this.model.getSelectedTrack ();
-        if (track == null)
+        final ITrack cursorTrack = this.model.getCursorTrack ();
+        if (!cursorTrack.doesExist ())
         {
             this.surface.getDisplay ().notify ("Please select an Instrument track first.");
             return;
         }
 
-        final ISlotBank slotBank = track.getSlotBank ();
+        final ISlotBank slotBank = cursorTrack.getSlotBank ();
         final ISlot selectedSlot = slotBank.getSelectedItem ();
         final int slotIndex = selectedSlot == null ? 0 : selectedSlot.getIndex ();
         final ISlot slot = slotBank.getEmptySlot (slotIndex);
@@ -74,7 +74,7 @@ public class NewCommand<S extends IControlSurface<C>, C extends Configuration> e
         }
 
         final int lengthInBeats = this.getNewClipLenghthInBeats (this.model.getTransport ().getQuartersPerMeasure ());
-        this.model.createNoteClip (track, slot, lengthInBeats, enableOverdub);
+        this.model.createNoteClip (cursorTrack, slot, lengthInBeats, enableOverdub);
     }
 
 

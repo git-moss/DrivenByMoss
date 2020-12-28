@@ -57,15 +57,15 @@ public class SelectNoteViewCommand extends AbstractTriggerCommand<LaunchpadContr
             return;
         }
 
-        final ITrack sel = this.model.getSelectedTrack ();
-        if (sel == null)
+        final ITrack cursorTrack = this.model.getCursorTrack ();
+        if (!cursorTrack.doesExist ())
         {
             viewManager.setActive (Views.SESSION);
             this.surface.getDisplay ().notify ("Session");
             return;
         }
 
-        viewID = viewManager.getPreferredView (sel.getPosition ());
+        viewID = viewManager.getPreferredView (cursorTrack.getPosition ());
         if (viewID == null)
             viewID = Views.PLAY;
         viewManager.setActive (viewID);

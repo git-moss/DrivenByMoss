@@ -134,6 +134,14 @@ public class CursorDeviceImpl extends SpecificDeviceImpl implements ICursorDevic
 
     /** {@inheritDoc} */
     @Override
+    public void setPinned (final boolean isPinned)
+    {
+        this.cursorDevice.isPinned ().set (isPinned);
+    }
+
+
+    /** {@inheritDoc} */
+    @Override
     public IDeviceBank getDeviceBank ()
     {
         return this.deviceBank;

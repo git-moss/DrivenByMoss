@@ -373,8 +373,8 @@ public class LaunchpadControllerSetup extends AbstractControllerSetup<LaunchpadC
 
         surface.createLight (OutputID.LED1, () -> {
 
-            final ITrack track = this.model.getSelectedTrack ();
-            return track != null && track.doesExist () ? this.colorManager.getColorIndex (DAWColor.getColorIndex (track.getColor ())) : 0;
+            final ITrack cursorTrack = this.model.getCursorTrack ();
+            return cursorTrack.doesExist () ? this.colorManager.getColorIndex (DAWColor.getColorIndex (cursorTrack.getColor ())) : 0;
 
         }, color -> this.definition.setLogoColor (surface, color), state -> this.colorManager.getColor (state, null), null);
 
@@ -831,10 +831,10 @@ public class LaunchpadControllerSetup extends AbstractControllerSetup<LaunchpadC
         // Recall last used view (if we are not in session mode)
         if (!viewManager.isActive (Views.SESSION))
         {
-            final ITrack selectedTrack = this.model.getSelectedTrack ();
-            if (selectedTrack != null)
+            final ITrack cursorTrack = this.model.getCursorTrack ();
+            if (cursorTrack.doesExist ())
             {
-                final Views preferredView = viewManager.getPreferredView (selectedTrack.getPosition ());
+                final Views preferredView = viewManager.getPreferredView (cursorTrack.getPosition ());
                 viewManager.setActive (preferredView == null ? Views.PLAY : preferredView);
             }
         }

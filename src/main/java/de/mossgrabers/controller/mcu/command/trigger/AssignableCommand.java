@@ -23,8 +23,9 @@ import de.mossgrabers.framework.utils.ButtonEvent;
  */
 public class AssignableCommand extends FootswitchCommand<MCUControlSurface, MCUConfiguration>
 {
-    private final int          index;
-    private final ModeSwitcher switcher;
+    private final int            index;
+    private final ModeSwitcher   switcher;
+    private final MCUFlipCommand flipCommand;
 
 
     /**
@@ -37,8 +38,10 @@ public class AssignableCommand extends FootswitchCommand<MCUControlSurface, MCUC
     public AssignableCommand (final int index, final IModel model, final MCUControlSurface surface)
     {
         super (model, surface);
+
         this.index = index;
         this.switcher = new ModeSwitcher (surface);
+        this.flipCommand = new MCUFlipCommand (model, surface);
     }
 
 
@@ -72,12 +75,7 @@ public class AssignableCommand extends FootswitchCommand<MCUControlSurface, MCUC
                 break;
 
             case MCUConfiguration.FOOTSWITCH_2_USE_FADERS_LIKE_EDIT_KNOBS:
-                if (event == ButtonEvent.DOWN)
-                {
-                    final MCUConfiguration configuration = this.surface.getConfiguration ();
-                    configuration.toggleUseFadersAsKnobs ();
-                    this.mvHelper.delayDisplay ( () -> "Use faders as knobs: " + (configuration.useFadersAsKnobs () ? "On" : "Off"));
-                }
+                this.flipCommand.executeNormal (event);
                 break;
 
             case MCUConfiguration.FOOTSWITCH_2_ACTION:

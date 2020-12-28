@@ -213,6 +213,8 @@ public enum FlexiCommand
     TRACK_7_SET_AUTO_MONITOR(CommandCategory.TRACK, "Track 7: Set Auto Monitor", true),
     TRACK_8_SET_AUTO_MONITOR(CommandCategory.TRACK, "Track 8: Set Auto Monitor", true),
     TRACK_SELECTED_SET_AUTO_MONITOR(CommandCategory.TRACK, "Track Selected: Set Auto Monitor", true),
+    TRACK_SELECTED_TOGGLE_PIN(CommandCategory.TRACK, "Track Selected: Toggle Pin", true),
+    TRACK_SELECTED_SET_PIN(CommandCategory.TRACK, "Track Selected: Set Pin", true),
     TRACK_1_SET_SEND_1(CommandCategory.TRACK, "Track 1: Set Send 1", false),
     TRACK_2_SET_SEND_1(CommandCategory.TRACK, "Track 2: Set Send 1", false),
     TRACK_3_SET_SEND_1(CommandCategory.TRACK, "Track 3: Set Send 1", false),
@@ -423,8 +425,9 @@ public enum FlexiCommand
     MASTER_CROSSFADER(CommandCategory.MASTER, "Master: Crossfader", false),
 
     DEVICE_TOGGLE_WINDOW(CommandCategory.DEVICE, "Device: Toggle Window", true),
-    DEVICE_BYPASS(CommandCategory.DEVICE, "Device: Bypass", true),
-    DEVICE_EXPAND(CommandCategory.DEVICE, "Device: Expand", true),
+    DEVICE_TOGGLE_BYPASS(CommandCategory.DEVICE, "Device: Bypass", true),
+    DEVICE_TOGGLE_PIN(CommandCategory.DEVICE, "Device: Toggle Pin", true),
+    DEVICE_TOGGLE_EXPAND(CommandCategory.DEVICE, "Device: Expand", true),
     DEVICE_TOGGLE_PARAMETERS(CommandCategory.DEVICE, "Device: Parameters", true),
     DEVICE_SELECT_PREVIOUS(CommandCategory.DEVICE, "Device: Select Previous", true),
     DEVICE_SELECT_NEXT(CommandCategory.DEVICE, "Device: Select Next", true),
@@ -500,6 +503,7 @@ public enum FlexiCommand
     SCENE_SELECT_NEXT_BANK(CommandCategory.SCENE, "Scene: Select Next Bank", true),
     SCENE_CREATE_SCENE_FROM_PLAYING_CLIPS(CommandCategory.SCENE, "Scene: Create Scene from playing Clips", true),
 
+    CLIP_TOGGLE_PIN(CommandCategory.CLIP, "Clip: Toggle Pin", true),
     CLIP_PREVIOUS(CommandCategory.CLIP, "Clip: Select previous", true),
     CLIP_NEXT(CommandCategory.CLIP, "Clip: Select next", true),
     CLIP_SCROLL(CommandCategory.CLIP, "Clip: Scroll clips", false),

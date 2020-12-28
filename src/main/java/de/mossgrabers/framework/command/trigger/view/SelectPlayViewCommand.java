@@ -69,31 +69,26 @@ public class SelectPlayViewCommand<S extends IControlSurface<C>, C extends Confi
         if (event != ButtonEvent.DOWN)
             return;
 
+        final ITrack cursorTrack = this.model.getCursorTrack ();
+
         // Restore the previous play view if coming from one not on the list
         final ViewManager viewManager = this.surface.getViewManager ();
         final Views activeViewId = viewManager.getActiveID ();
-        if (!this.allViewIds.contains (activeViewId))
+        if (cursorTrack.doesExist () && !this.allViewIds.contains (activeViewId))
         {
-            final ITrack selectedTrack = this.model.getSelectedTrack ();
-            if (selectedTrack != null)
+            final Views viewID = viewManager.getPreferredView (cursorTrack.getPosition ());
+            if (viewID != null)
             {
-                final Views viewID = viewManager.getPreferredView (selectedTrack.getPosition ());
-                if (viewID != null)
-                {
-                    viewManager.setActive (viewID);
-                    this.surface.getDisplay ().notify (viewManager.get (viewID).getName ());
-                    return;
-                }
+                viewManager.setActive (viewID);
+                this.surface.getDisplay ().notify (viewManager.get (viewID).getName ());
+                return;
             }
         }
 
         super.executeNormal (event);
 
-        final ITrack selectedTrack = this.model.getSelectedTrack ();
-        if (selectedTrack == null)
-            return;
-
         // Store the newly selected view for the current track
-        viewManager.setPreferredView (selectedTrack.getPosition (), viewManager.getActiveID ());
+        if (cursorTrack.doesExist ())
+            viewManager.setPreferredView (cursorTrack.getPosition (), viewManager.getActiveID ());
     }
 }

@@ -40,9 +40,9 @@ public class TrackTogglesMode extends AbstractTrackMode<SLControlSurface, SLConf
     @Override
     public void updateDisplay ()
     {
-        final ITrack t = this.model.getSelectedTrack ();
+        final ITrack cursorTrack = this.model.getCursorTrack ();
         final ITextDisplay d = this.surface.getTextDisplay ().clearRow (0).clearRow (1);
-        if (t == null)
+        if (!cursorTrack.doesExist ())
         {
             d.setRow (0, "                        Please select a track...                       ").done (0).done (1);
             return;
@@ -50,11 +50,11 @@ public class TrackTogglesMode extends AbstractTrackMode<SLControlSurface, SLConf
 
         final ICursorDevice device = this.model.getCursorDevice ();
         d.setCell (0, 0, "  Mute");
-        d.setCell (1, 0, t.isMute () ? ON : OFF);
+        d.setCell (1, 0, cursorTrack.isMute () ? ON : OFF);
         d.setCell (0, 1, "  Solo");
-        d.setCell (1, 1, t.isSolo () ? ON : OFF);
+        d.setCell (1, 1, cursorTrack.isSolo () ? ON : OFF);
         d.setCell (0, 2, "Rec Arm");
-        d.setCell (1, 2, t.isRecArm () ? ON : OFF);
+        d.setCell (1, 2, cursorTrack.isRecArm () ? ON : OFF);
         d.setCell (0, 3, " Write");
         d.setCell (1, 3, this.model.getTransport ().isWritingArrangerAutomation () ? ON : OFF);
         d.setCell (0, 4, " Browse");

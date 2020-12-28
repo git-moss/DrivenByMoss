@@ -11,6 +11,7 @@ import de.mossgrabers.framework.command.core.TriggerCommand;
 import de.mossgrabers.framework.command.trigger.track.ToggleTrackBanksCommand;
 import de.mossgrabers.framework.controller.valuechanger.IValueChanger;
 import de.mossgrabers.framework.daw.IModel;
+import de.mossgrabers.framework.daw.data.ICursorTrack;
 import de.mossgrabers.framework.daw.data.ISend;
 import de.mossgrabers.framework.daw.data.ITrack;
 import de.mossgrabers.framework.daw.data.bank.ISendBank;
@@ -195,6 +196,8 @@ public class TrackHandler extends AbstractHandler
             FlexiCommand.TRACK_8_SET_AUTO_MONITOR,
             FlexiCommand.TRACK_SELECTED_TOGGLE_AUTO_MONITOR,
             FlexiCommand.TRACK_SELECTED_SET_AUTO_MONITOR,
+            FlexiCommand.TRACK_SELECTED_TOGGLE_PIN,
+            FlexiCommand.TRACK_SELECTED_SET_PIN,
             FlexiCommand.TRACK_1_SET_SEND_1,
             FlexiCommand.TRACK_2_SET_SEND_1,
             FlexiCommand.TRACK_3_SET_SEND_1,
@@ -279,6 +282,8 @@ public class TrackHandler extends AbstractHandler
         if (trackBank == null)
             return -1;
 
+        final ICursorTrack cursorTrack = this.model.getCursorTrack ();
+
         switch (command)
         {
             case TRACK_1_SELECT:
@@ -312,8 +317,7 @@ public class TrackHandler extends AbstractHandler
 
             case TRACK_SELECTED_TOGGLE_ACTIVE:
             case TRACK_SELECTED_SET_ACTIVE:
-                final ITrack selectedTrack = this.model.getSelectedTrack ();
-                return selectedTrack != null && selectedTrack.isActivated () ? 127 : 0;
+                return cursorTrack.doesExist () && cursorTrack.isActivated () ? 127 : 0;
 
             case TRACK_1_SET_VOLUME:
             case TRACK_2_SET_VOLUME:
@@ -326,8 +330,7 @@ public class TrackHandler extends AbstractHandler
                 return trackBank.getItem (command.ordinal () - FlexiCommand.TRACK_1_SET_VOLUME.ordinal ()).getVolume ();
 
             case TRACK_SELECTED_SET_VOLUME_TRACK:
-                final ITrack sel = this.model.getSelectedTrack ();
-                return sel == null ? 0 : sel.getVolume ();
+                return cursorTrack.doesExist () ? cursorTrack.getVolume () : 0;
 
             case TRACK_1_SET_PANORAMA:
             case TRACK_2_SET_PANORAMA:
@@ -340,8 +343,7 @@ public class TrackHandler extends AbstractHandler
                 return trackBank.getItem (command.ordinal () - FlexiCommand.TRACK_1_SET_PANORAMA.ordinal ()).getPan ();
 
             case TRACK_SELECTED_SET_PANORAMA:
-                final ITrack selTrack = this.model.getSelectedTrack ();
-                return selTrack == null ? 0 : selTrack.getPan ();
+                return cursorTrack.doesExist () ? cursorTrack.getPan () : 0;
 
             case TRACK_1_TOGGLE_MUTE:
             case TRACK_2_TOGGLE_MUTE:
@@ -364,8 +366,7 @@ public class TrackHandler extends AbstractHandler
 
             case TRACK_SELECTED_TOGGLE_MUTE:
             case TRACK_SELECTED_SET_MUTE:
-                final ITrack track = this.model.getSelectedTrack ();
-                return track != null && track.isMute () ? 127 : 0;
+                return cursorTrack.doesExist () && cursorTrack.isMute () ? 127 : 0;
 
             case TRACK_1_TOGGLE_SOLO:
             case TRACK_2_TOGGLE_SOLO:
@@ -388,8 +389,7 @@ public class TrackHandler extends AbstractHandler
 
             case TRACK_SELECTED_TOGGLE_SOLO:
             case TRACK_SELECTED_SET_SOLO:
-                final ITrack track2 = this.model.getSelectedTrack ();
-                return track2 != null && track2.isSolo () ? 127 : 0;
+                return cursorTrack.doesExist () && cursorTrack.isSolo () ? 127 : 0;
 
             case TRACK_1_TOGGLE_ARM:
             case TRACK_2_TOGGLE_ARM:
@@ -412,8 +412,7 @@ public class TrackHandler extends AbstractHandler
 
             case TRACK_SELECTED_TOGGLE_ARM:
             case TRACK_SELECTED_SET_ARM:
-                final ITrack track3 = this.model.getSelectedTrack ();
-                return track3 != null && track3.isRecArm () ? 127 : 0;
+                return cursorTrack.doesExist () && cursorTrack.isRecArm () ? 127 : 0;
 
             case TRACK_1_TOGGLE_MONITOR:
             case TRACK_2_TOGGLE_MONITOR:
@@ -436,8 +435,7 @@ public class TrackHandler extends AbstractHandler
 
             case TRACK_SELECTED_TOGGLE_MONITOR:
             case TRACK_SELECTED_SET_MONITOR:
-                final ITrack track4 = this.model.getSelectedTrack ();
-                return track4 != null && track4.isMonitor () ? 127 : 0;
+                return cursorTrack.doesExist () && cursorTrack.isMonitor () ? 127 : 0;
 
             case TRACK_1_TOGGLE_AUTO_MONITOR:
             case TRACK_2_TOGGLE_AUTO_MONITOR:
@@ -460,8 +458,11 @@ public class TrackHandler extends AbstractHandler
 
             case TRACK_SELECTED_TOGGLE_AUTO_MONITOR:
             case TRACK_SELECTED_SET_AUTO_MONITOR:
-                final ITrack track5 = this.model.getSelectedTrack ();
-                return track5 != null && track5.isAutoMonitor () ? 127 : 0;
+                return cursorTrack.doesExist () && cursorTrack.isAutoMonitor () ? 127 : 0;
+
+            case TRACK_SELECTED_TOGGLE_PIN:
+            case TRACK_SELECTED_SET_PIN:
+                return cursorTrack.doesExist () && cursorTrack.isPinned () ? 127 : 0;
 
             case TRACK_1_SET_SEND_1:
             case TRACK_2_SET_SEND_1:
@@ -567,6 +568,8 @@ public class TrackHandler extends AbstractHandler
         if (trackBank == null)
             return;
 
+        final ICursorTrack cursorTrack = this.model.getCursorTrack ();
+
         final boolean isButtonPressed = this.isButtonPressed (knobMode, value);
 
         switch (command)
@@ -658,19 +661,11 @@ public class TrackHandler extends AbstractHandler
                 break;
             case TRACK_SELECTED_TOGGLE_ACTIVE:
                 if (isButtonPressed)
-                {
-                    final ITrack selectedTrack = this.model.getSelectedTrack ();
-                    if (selectedTrack != null)
-                        selectedTrack.toggleIsActivated ();
-                }
+                    cursorTrack.toggleIsActivated ();
                 break;
             case TRACK_SELECTED_SET_ACTIVE:
                 if (isButtonPressed)
-                {
-                    final ITrack selectedTrack = this.model.getSelectedTrack ();
-                    if (selectedTrack != null)
-                        selectedTrack.setIsActivated (value > 0);
-                }
+                    cursorTrack.setIsActivated (value > 0);
                 break;
 
             // Track 1-8: Set Volume
@@ -732,20 +727,12 @@ public class TrackHandler extends AbstractHandler
             // Track Selected: Toggle Mute
             case TRACK_SELECTED_TOGGLE_MUTE:
                 if (isButtonPressed)
-                {
-                    final ITrack selectedTrack = this.model.getSelectedTrack ();
-                    if (selectedTrack != null)
-                        selectedTrack.toggleMute ();
-                }
+                    cursorTrack.toggleMute ();
                 break;
             // Track Selected: Set Mute
             case TRACK_SELECTED_SET_MUTE:
                 if (isButtonPressed)
-                {
-                    final ITrack selectedTrack = this.model.getSelectedTrack ();
-                    if (selectedTrack != null)
-                        selectedTrack.setMute (value > 0);
-                }
+                    cursorTrack.setMute (value > 0);
                 break;
 
             // Track 1-8: Toggle Solo
@@ -775,20 +762,12 @@ public class TrackHandler extends AbstractHandler
             // Track Selected: Toggle Solo
             case TRACK_SELECTED_TOGGLE_SOLO:
                 if (isButtonPressed)
-                {
-                    final ITrack selectedTrack = this.model.getSelectedTrack ();
-                    if (selectedTrack != null)
-                        selectedTrack.toggleSolo ();
-                }
+                    cursorTrack.toggleSolo ();
                 break;
             // Track Selected: Set Solo
             case TRACK_SELECTED_SET_SOLO:
                 if (isButtonPressed)
-                {
-                    final ITrack selectedTrack = this.model.getSelectedTrack ();
-                    if (selectedTrack != null)
-                        selectedTrack.setSolo (value > 0);
-                }
+                    cursorTrack.setSolo (value > 0);
                 break;
 
             // Track 1-8: Toggle Arm
@@ -818,20 +797,12 @@ public class TrackHandler extends AbstractHandler
             // Track Selected: Toggle Arm
             case TRACK_SELECTED_TOGGLE_ARM:
                 if (isButtonPressed)
-                {
-                    final ITrack selectedTrack = this.model.getSelectedTrack ();
-                    if (selectedTrack != null)
-                        selectedTrack.toggleRecArm ();
-                }
+                    cursorTrack.toggleRecArm ();
                 break;
             // Track Selected: Set Arm
             case TRACK_SELECTED_SET_ARM:
                 if (isButtonPressed)
-                {
-                    final ITrack selectedTrack = this.model.getSelectedTrack ();
-                    if (selectedTrack != null)
-                        selectedTrack.setRecArm (value > 0);
-                }
+                    cursorTrack.setRecArm (value > 0);
                 break;
 
             // Track 1-8: Toggle Monitor
@@ -861,20 +832,12 @@ public class TrackHandler extends AbstractHandler
             // Track Selected: Toggle Monitor
             case TRACK_SELECTED_TOGGLE_MONITOR:
                 if (isButtonPressed)
-                {
-                    final ITrack selectedTrack = this.model.getSelectedTrack ();
-                    if (selectedTrack != null)
-                        selectedTrack.toggleMonitor ();
-                }
+                    cursorTrack.toggleMonitor ();
                 break;
             // Track Selected: Set Monitor
             case TRACK_SELECTED_SET_MONITOR:
                 if (isButtonPressed)
-                {
-                    final ITrack selectedTrack = this.model.getSelectedTrack ();
-                    if (selectedTrack != null)
-                        selectedTrack.setMonitor (value > 0);
-                }
+                    cursorTrack.setMonitor (value > 0);
                 break;
 
             // Track 1: Toggle Auto Monitor
@@ -904,20 +867,23 @@ public class TrackHandler extends AbstractHandler
             // Track Selected: Toggle Auto Monitor
             case TRACK_SELECTED_TOGGLE_AUTO_MONITOR:
                 if (isButtonPressed)
-                {
-                    final ITrack selectedTrack = this.model.getSelectedTrack ();
-                    if (selectedTrack != null)
-                        selectedTrack.toggleAutoMonitor ();
-                }
+                    cursorTrack.toggleAutoMonitor ();
                 break;
             // Track Selected: Set Auto Monitor
             case TRACK_SELECTED_SET_AUTO_MONITOR:
                 if (isButtonPressed)
-                {
-                    final ITrack selectedTrack = this.model.getSelectedTrack ();
-                    if (selectedTrack != null)
-                        selectedTrack.setAutoMonitor (value > 0);
-                }
+                    cursorTrack.setAutoMonitor (value > 0);
+                break;
+
+            // Track Selected: Toggle Pinned
+            case TRACK_SELECTED_TOGGLE_PIN:
+                if (isButtonPressed)
+                    cursorTrack.togglePinned ();
+                break;
+            // Track Selected: Set Pinned
+            case TRACK_SELECTED_SET_PIN:
+                if (isButtonPressed)
+                    cursorTrack.setPinned (value > 0);
                 break;
 
             // Track 1-8: Set Send 1

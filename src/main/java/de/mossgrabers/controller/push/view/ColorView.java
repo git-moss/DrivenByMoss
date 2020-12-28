@@ -90,15 +90,15 @@ public class ColorView extends AbstractView<PushControlSurface, PushConfiguratio
             switch (this.mode)
             {
                 case MODE_TRACK:
-                    final ITrack t = this.model.getSelectedTrack ();
-                    if (t == null)
+                    final ITrack cursorTrack = this.model.getCursorTrack ();
+                    if (cursorTrack.doesExist ())
+                        cursorTrack.setColor (entry);
+                    else
                     {
                         final IMasterTrack master = this.model.getMasterTrack ();
                         if (master.isSelected ())
                             master.setColor (entry);
                     }
-                    else
-                        t.setColor (entry);
                     break;
 
                 case MODE_LAYER:
@@ -106,7 +106,7 @@ public class ColorView extends AbstractView<PushControlSurface, PushConfiguratio
                     break;
 
                 case MODE_CLIP:
-                    final IClip clip = this.model.getClip ();
+                    final IClip clip = this.model.getCursorClip ();
                     if (clip.doesExist ())
                         clip.setColor (entry);
                     break;

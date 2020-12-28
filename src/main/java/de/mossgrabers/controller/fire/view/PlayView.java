@@ -62,7 +62,8 @@ public class PlayView extends AbstractPlayView<FireControlSurface, FireConfigura
 
         final boolean isShiftPressed = this.surface.isShiftPressed ();
         final boolean isAltPressed = this.surface.isPressed (ButtonID.ALT);
-        ITrack selectedTrack;
+
+        final ITrack cursorTrack = this.model.getCursorTrack ();
 
         switch (buttonID)
         {
@@ -75,27 +76,23 @@ public class PlayView extends AbstractPlayView<FireControlSurface, FireConfigura
                 break;
 
             case SCENE1:
-                selectedTrack = this.model.getSelectedTrack ();
-                if (selectedTrack != null && selectedTrack.doesExist ())
-                    selectedTrack.stop ();
+                if (cursorTrack.doesExist ())
+                    cursorTrack.stop ();
                 break;
 
             case SCENE2:
-                selectedTrack = this.model.getSelectedTrack ();
-                if (selectedTrack != null && selectedTrack.doesExist ())
-                    selectedTrack.toggleMute ();
+                if (cursorTrack.doesExist ())
+                    cursorTrack.toggleMute ();
                 break;
 
             case SCENE3:
-                selectedTrack = this.model.getSelectedTrack ();
-                if (selectedTrack != null && selectedTrack.doesExist ())
-                    selectedTrack.toggleSolo ();
+                if (cursorTrack.doesExist ())
+                    cursorTrack.toggleSolo ();
                 break;
 
             case SCENE4:
-                selectedTrack = this.model.getSelectedTrack ();
-                if (selectedTrack != null && selectedTrack.doesExist ())
-                    selectedTrack.toggleRecArm ();
+                if (cursorTrack.doesExist ())
+                    cursorTrack.toggleRecArm ();
                 break;
 
             default:
@@ -127,23 +124,21 @@ public class PlayView extends AbstractPlayView<FireControlSurface, FireConfigura
     @Override
     public int getSoloButtonColor (final int index)
     {
-        ITrack selectedTrack;
+        final ITrack cursorTrack = this.model.getCursorTrack ();
+
         switch (index)
         {
             case 0:
                 return 0;
 
             case 1:
-                selectedTrack = this.model.getSelectedTrack ();
-                return selectedTrack != null && selectedTrack.doesExist () && selectedTrack.isMute () ? 3 : 0;
+                return cursorTrack.doesExist () && cursorTrack.isMute () ? 3 : 0;
 
             case 2:
-                selectedTrack = this.model.getSelectedTrack ();
-                return selectedTrack != null && selectedTrack.doesExist () && selectedTrack.isSolo () ? 4 : 0;
+                return cursorTrack.doesExist () && cursorTrack.isSolo () ? 4 : 0;
 
             case 3:
-                selectedTrack = this.model.getSelectedTrack ();
-                return selectedTrack != null && selectedTrack.doesExist () && selectedTrack.isRecArm () ? 1 : 0;
+                return cursorTrack.doesExist () && cursorTrack.isRecArm () ? 1 : 0;
 
             default:
                 return 0;

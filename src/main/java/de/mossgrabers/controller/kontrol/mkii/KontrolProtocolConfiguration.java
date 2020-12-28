@@ -60,12 +60,14 @@ public class KontrolProtocolConfiguration extends AbstractConfiguration
             this.flipTrackClipNavigation = ON_OFF_OPTIONS[1].equals (value);
             this.notifyObservers (FLIP_TRACK_CLIP_NAVIGATION);
         });
+        this.isSettingActive.add (FLIP_TRACK_CLIP_NAVIGATION);
 
         final IEnumSetting flipClipSceneNavigationSetting = globalSettings.getEnumSetting ("Flip clip/scene navigation", CATEGORY_NAVIGATION, ON_OFF_OPTIONS, ON_OFF_OPTIONS[0]);
         flipClipSceneNavigationSetting.addValueObserver (value -> {
             this.flipClipSceneNavigation = ON_OFF_OPTIONS[1].equals (value);
             this.notifyObservers (FLIP_CLIP_SCENE_NAVIGATION);
         });
+        this.isSettingActive.add (FLIP_CLIP_SCENE_NAVIGATION);
 
         ///////////////////////////
         // Workflow

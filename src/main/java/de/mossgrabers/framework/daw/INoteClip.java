@@ -4,27 +4,16 @@
 
 package de.mossgrabers.framework.daw;
 
+import de.mossgrabers.framework.daw.data.IPinnable;
+
+
 /**
  * Interface to a clip, which contains note data.
  *
  * @author J&uuml;rgen Mo&szlig;graber
  */
-public interface INoteClip extends IClip
+public interface INoteClip extends IClip, IPinnable
 {
-    /**
-     * Get if the clip is pinned.
-     *
-     * @return True if pinned
-     */
-    boolean isPinned ();
-
-
-    /**
-     * Toggles if the clip is pinned.
-     */
-    void togglePinned ();
-
-
     /**
      * Get the row of notes.
      *

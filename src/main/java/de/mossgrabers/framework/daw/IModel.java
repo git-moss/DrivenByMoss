@@ -8,6 +8,7 @@ import de.mossgrabers.framework.controller.color.ColorManager;
 import de.mossgrabers.framework.controller.valuechanger.IValueChanger;
 import de.mossgrabers.framework.daw.constants.DeviceID;
 import de.mossgrabers.framework.daw.data.ICursorDevice;
+import de.mossgrabers.framework.daw.data.ICursorTrack;
 import de.mossgrabers.framework.daw.data.IDrumDevice;
 import de.mossgrabers.framework.daw.data.IMasterTrack;
 import de.mossgrabers.framework.daw.data.ISlot;
@@ -90,6 +91,14 @@ public interface IModel
      * @return The groove instance
      */
     IGroove getGroove ();
+
+
+    /**
+     * Get the cursor track.
+     *
+     * @return The cursor track
+     */
+    ICursorTrack getCursorTrack ();
 
 
     /**
@@ -252,34 +261,11 @@ public interface IModel
 
 
     /**
-     * Returns true if the cursor track is pinned (aka does not follow the track selection in the
-     * DAW).
-     *
-     * @return True if the cursor track is pinned
-     */
-    boolean isCursorTrackPinned ();
-
-
-    /**
-     * Toggles if the cursor track is pinned.
-     */
-    void toggleCursorTrackPinned ();
-
-
-    /**
      * Returns true if the cursor device is pointing to a device on the master track.
      *
      * @return True if the cursor device is pointing to a device on the master track
      */
     boolean isCursorDeviceOnMasterTrack ();
-
-
-    /**
-     * Get the selected track from the current track bank, if any.
-     *
-     * @return The selected track or null
-     */
-    ITrack getSelectedTrack ();
 
 
     /**
@@ -334,7 +320,7 @@ public interface IModel
      *
      * @return The cursor clip
      */
-    IClip getClip ();
+    INoteClip getCursorClip ();
 
 
     /**

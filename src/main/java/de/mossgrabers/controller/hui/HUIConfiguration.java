@@ -169,6 +169,10 @@ public class HUIConfiguration extends AbstractConfiguration
             this.hasMotorFaders = "On".equals (value);
             this.notifyObservers (HAS_MOTOR_FADERS);
         });
+
+        this.isSettingActive.add (HAS_DISPLAY1);
+        this.isSettingActive.add (HAS_SEGMENT_DISPLAY);
+        this.isSettingActive.add (HAS_MOTOR_FADERS);
     }
 
 
@@ -195,6 +199,7 @@ public class HUIConfiguration extends AbstractConfiguration
             this.zoomState = "On".equals (value);
             this.notifyObservers (ZOOM_STATE);
         });
+        this.isSettingActive.add (ZOOM_STATE);
     }
 
 
@@ -210,6 +215,7 @@ public class HUIConfiguration extends AbstractConfiguration
             this.touchChannel = "On".equals (value);
             this.notifyObservers (TOUCH_CHANNEL);
         });
+        this.isSettingActive.add (TOUCH_CHANNEL);
     }
 
 

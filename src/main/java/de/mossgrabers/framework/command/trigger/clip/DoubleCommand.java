@@ -40,7 +40,7 @@ public class DoubleCommand<S extends IControlSurface<C>, C extends Configuration
     {
         if (event != ButtonEvent.DOWN)
             return;
-        final IClip clip = this.model.getClip ();
+        final IClip clip = this.model.getCursorClip ();
         if (clip.doesExist ())
             clip.duplicateContent ();
     }

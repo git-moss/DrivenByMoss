@@ -43,8 +43,9 @@ public class DeviceHandler extends AbstractHandler
         return new FlexiCommand []
         {
             FlexiCommand.DEVICE_TOGGLE_WINDOW,
-            FlexiCommand.DEVICE_BYPASS,
-            FlexiCommand.DEVICE_EXPAND,
+            FlexiCommand.DEVICE_TOGGLE_BYPASS,
+            FlexiCommand.DEVICE_TOGGLE_PIN,
+            FlexiCommand.DEVICE_TOGGLE_EXPAND,
             FlexiCommand.DEVICE_TOGGLE_PARAMETERS,
             FlexiCommand.DEVICE_SELECT_PREVIOUS,
             FlexiCommand.DEVICE_SELECT_NEXT,
@@ -78,10 +79,13 @@ public class DeviceHandler extends AbstractHandler
             case DEVICE_TOGGLE_WINDOW:
                 return cursorDevice.isWindowOpen () ? 127 : 0;
 
-            case DEVICE_BYPASS:
+            case DEVICE_TOGGLE_BYPASS:
                 return cursorDevice.isEnabled () ? 0 : 127;
 
-            case DEVICE_EXPAND:
+            case DEVICE_TOGGLE_PIN:
+                return cursorDevice.isPinned () ? 127 : 0;
+
+            case DEVICE_TOGGLE_EXPAND:
                 return cursorDevice.isExpanded () ? 127 : 0;
 
             case DEVICE_TOGGLE_PARAMETERS:
@@ -118,12 +122,17 @@ public class DeviceHandler extends AbstractHandler
                     cursorDevice.toggleWindowOpen ();
                 break;
             // Device: Bypass
-            case DEVICE_BYPASS:
+            case DEVICE_TOGGLE_BYPASS:
                 if (isButtonPressed)
                     cursorDevice.toggleEnabledState ();
                 break;
+            // Device: Toggle Pinned
+            case DEVICE_TOGGLE_PIN:
+                if (isButtonPressed)
+                    cursorDevice.togglePinned ();
+                break;
             // Device: Expand
-            case DEVICE_EXPAND:
+            case DEVICE_TOGGLE_EXPAND:
                 if (isButtonPressed)
                     cursorDevice.toggleExpanded ();
                 break;

@@ -14,7 +14,7 @@ import de.mossgrabers.framework.controller.display.IGraphicDisplay;
 import de.mossgrabers.framework.controller.display.ITextDisplay;
 import de.mossgrabers.framework.daw.IModel;
 import de.mossgrabers.framework.daw.constants.Capability;
-import de.mossgrabers.framework.daw.data.IMasterTrack;
+import de.mossgrabers.framework.daw.data.ICursorTrack;
 import de.mossgrabers.framework.daw.data.ITrack;
 import de.mossgrabers.framework.daw.data.bank.ITrackBank;
 import de.mossgrabers.framework.featuregroup.AbstractFeatureGroup;
@@ -30,6 +30,9 @@ import de.mossgrabers.framework.view.Views;
  */
 public class TrackDetailsMode extends BaseMode
 {
+    private final boolean hasPinning;
+
+
     /**
      * Constructor.
      *
@@ -39,6 +42,8 @@ public class TrackDetailsMode extends BaseMode
     public TrackDetailsMode (final PushControlSurface surface, final IModel model)
     {
         super ("Track details", surface, model, model.getCurrentTrackBank ());
+
+        this.hasPinning = this.model.getHost ().supports (Capability.HAS_PINNING);
 
         model.addTrackBankObserver (this::switchBanks);
     }
@@ -135,7 +140,7 @@ public class TrackDetailsMode extends BaseMode
                 t.toggleAutoMonitor ();
                 break;
             case 6:
-                this.model.toggleCursorTrackPinned ();
+                this.model.getCursorTrack ().togglePinned ();
                 break;
             case 7:
                 final ViewManager viewManager = this.surface.getViewManager ();
@@ -156,26 +161,28 @@ public class TrackDetailsMode extends BaseMode
         int index = this.isButtonRow (0, buttonID);
         if (index >= 0)
         {
-            final ITrack deviceChain = this.getSelectedTrack ();
-            if (deviceChain == null)
+            final ICursorTrack cursorTrack = this.model.getCursorTrack ();
+            if (!cursorTrack.doesExist ())
                 return super.getButtonColor (buttonID);
 
             switch (index)
             {
                 case 0:
-                    return deviceChain.isActivated () ? this.isPush2 ? PushColorManager.PUSH2_COLOR_YELLOW_MD : PushColorManager.PUSH1_COLOR_YELLOW_MD : this.isPush2 ? PushColorManager.PUSH2_COLOR_YELLOW_LO : PushColorManager.PUSH1_COLOR_YELLOW_LO;
+                    return cursorTrack.isActivated () ? this.isPush2 ? PushColorManager.PUSH2_COLOR_YELLOW_MD : PushColorManager.PUSH1_COLOR_YELLOW_MD : this.isPush2 ? PushColorManager.PUSH2_COLOR_YELLOW_LO : PushColorManager.PUSH1_COLOR_YELLOW_LO;
                 case 1:
-                    return deviceChain.isRecArm () ? this.isPush2 ? PushColorManager.PUSH2_COLOR_RED_HI : PushColorManager.PUSH1_COLOR_RED_HI : this.isPush2 ? PushColorManager.PUSH2_COLOR_RED_LO : PushColorManager.PUSH1_COLOR_RED_LO;
+                    return cursorTrack.isRecArm () ? this.isPush2 ? PushColorManager.PUSH2_COLOR_RED_HI : PushColorManager.PUSH1_COLOR_RED_HI : this.isPush2 ? PushColorManager.PUSH2_COLOR_RED_LO : PushColorManager.PUSH1_COLOR_RED_LO;
                 case 2:
-                    return deviceChain.isMute () ? this.isPush2 ? PushColorManager.PUSH2_COLOR_ORANGE_HI : PushColorManager.PUSH1_COLOR_ORANGE_HI : this.isPush2 ? PushColorManager.PUSH2_COLOR_ORANGE_LO : PushColorManager.PUSH1_COLOR_ORANGE_LO;
+                    return cursorTrack.isMute () ? this.isPush2 ? PushColorManager.PUSH2_COLOR_ORANGE_HI : PushColorManager.PUSH1_COLOR_ORANGE_HI : this.isPush2 ? PushColorManager.PUSH2_COLOR_ORANGE_LO : PushColorManager.PUSH1_COLOR_ORANGE_LO;
                 case 3:
-                    return deviceChain.isSolo () ? this.isPush2 ? PushColorManager.PUSH2_COLOR_ORANGE_HI : PushColorManager.PUSH1_COLOR_ORANGE_HI : this.isPush2 ? PushColorManager.PUSH2_COLOR_ORANGE_LO : PushColorManager.PUSH1_COLOR_ORANGE_LO;
+                    return cursorTrack.isSolo () ? this.isPush2 ? PushColorManager.PUSH2_COLOR_ORANGE_HI : PushColorManager.PUSH1_COLOR_ORANGE_HI : this.isPush2 ? PushColorManager.PUSH2_COLOR_ORANGE_LO : PushColorManager.PUSH1_COLOR_ORANGE_LO;
                 case 4:
-                    return deviceChain.isMonitor () ? this.isPush2 ? PushColorManager.PUSH2_COLOR_GREEN_HI : PushColorManager.PUSH1_COLOR_GREEN_HI : this.isPush2 ? PushColorManager.PUSH2_COLOR_GREEN_LO : PushColorManager.PUSH1_COLOR_GREEN_LO;
+                    return cursorTrack.isMonitor () ? this.isPush2 ? PushColorManager.PUSH2_COLOR_GREEN_HI : PushColorManager.PUSH1_COLOR_GREEN_HI : this.isPush2 ? PushColorManager.PUSH2_COLOR_GREEN_LO : PushColorManager.PUSH1_COLOR_GREEN_LO;
                 case 5:
-                    return deviceChain.isAutoMonitor () ? this.isPush2 ? PushColorManager.PUSH2_COLOR_GREEN_HI : PushColorManager.PUSH1_COLOR_GREEN_HI : this.isPush2 ? PushColorManager.PUSH2_COLOR_GREEN_LO : PushColorManager.PUSH1_COLOR_GREEN_LO;
+                    return cursorTrack.isAutoMonitor () ? this.isPush2 ? PushColorManager.PUSH2_COLOR_GREEN_HI : PushColorManager.PUSH1_COLOR_GREEN_HI : this.isPush2 ? PushColorManager.PUSH2_COLOR_GREEN_LO : PushColorManager.PUSH1_COLOR_GREEN_LO;
                 case 6:
-                    return this.model.isCursorTrackPinned () ? this.isPush2 ? PushColorManager.PUSH2_COLOR_GREEN_HI : PushColorManager.PUSH1_COLOR_GREEN_HI : this.isPush2 ? PushColorManager.PUSH2_COLOR_GREEN_LO : PushColorManager.PUSH1_COLOR_GREEN_LO;
+                    if (!this.hasPinning)
+                        return this.isPush2 ? PushColorManager.PUSH2_COLOR_BLACK : PushColorManager.PUSH1_COLOR_BLACK;
+                    return cursorTrack.isPinned () ? this.isPush2 ? PushColorManager.PUSH2_COLOR_GREEN_HI : PushColorManager.PUSH1_COLOR_GREEN_HI : this.isPush2 ? PushColorManager.PUSH2_COLOR_GREEN_LO : PushColorManager.PUSH1_COLOR_GREEN_LO;
                 default:
                 case 7:
                     return this.isPush2 ? PushColorManager.PUSH2_COLOR_GREEN_HI : PushColorManager.PUSH1_COLOR_GREEN_HI;
@@ -219,29 +226,33 @@ public class TrackDetailsMode extends BaseMode
     @Override
     public void updateDisplay1 (final ITextDisplay display)
     {
-        final ITrack track = this.getSelectedTrack ();
-        if (track == null)
+        final ITrack cursorTrack = this.model.getCursorTrack ();
+        if (!cursorTrack.doesExist ())
         {
             display.setRow (1, "                     Please selecta track...                        ");
             return;
         }
 
-        final String trackName = track.getName ();
-        display.setBlock (0, 0, getTrackTitle (track) + trackName);
+        final String trackName = cursorTrack.getName ();
+        display.setBlock (0, 0, getTrackTitle (cursorTrack) + trackName);
         if (trackName.length () > 10)
             display.setBlock (0, 1, trackName.substring (10));
-        display.setCell (2, 0, "Active").setCell (3, 0, track.isActivated () ? "On" : "Off");
+        display.setCell (2, 0, "Active").setCell (3, 0, cursorTrack.isActivated () ? "On" : "Off");
         display.setCell (2, 1, "Rec Arm");
-        display.setCell (3, 1, track.isRecArm () ? "On" : "Off");
-        display.setCell (2, 2, "Mute").setCell (3, 2, track.isMute () ? "On" : "Off");
-        display.setCell (2, 3, "Solo").setCell (3, 3, track.isSolo () ? "On" : "Off");
+        display.setCell (3, 1, cursorTrack.isRecArm () ? "On" : "Off");
+        display.setCell (2, 2, "Mute").setCell (3, 2, cursorTrack.isMute () ? "On" : "Off");
+        display.setCell (2, 3, "Solo").setCell (3, 3, cursorTrack.isSolo () ? "On" : "Off");
         display.setCell (2, 4, "Monitor");
-        display.setCell (3, 4, track.isMonitor () ? "On" : "Off");
+        display.setCell (3, 4, cursorTrack.isMonitor () ? "On" : "Off");
         display.setCell (2, 5, "Auto Monitor");
-        display.setCell (3, 5, track.isAutoMonitor () ? "On" : "Off");
-        final boolean hasPinning = this.model.getHost ().supports (Capability.HAS_PINNING);
-        display.setCell (2, 6, hasPinning ? "Pin Trck" : "");
-        display.setCell (3, 6, hasPinning ? this.model.isCursorTrackPinned () ? "On" : "Off" : "");
+        display.setCell (3, 5, cursorTrack.isAutoMonitor () ? "On" : "Off");
+
+        if (this.hasPinning)
+        {
+            display.setCell (2, 6, "Pin Trck");
+            display.setCell (3, 6, this.model.getCursorTrack ().isPinned () ? "On" : "Off");
+        }
+
         display.setCell (2, 7, "Select").setCell (3, 7, "Color");
 
         display.setCell (0, 5, "Midi Ins");
@@ -253,21 +264,23 @@ public class TrackDetailsMode extends BaseMode
     @Override
     public void updateDisplay2 (final IGraphicDisplay display)
     {
-        final ITrack track = this.getSelectedTrack ();
-        if (track == null)
+        final ITrack cursorTrack = this.model.getCursorTrack ();
+        if (!cursorTrack.doesExist ())
         {
             display.setMessage (3, "Please select a track...");
             return;
         }
 
-        display.addOptionElement (getTrackTitle (track) + track.getName (), "", false, "", "Active", track.isActivated (), false);
-        display.addOptionElement ("", "", false, "", "Rec Arm", track.isRecArm (), false);
-        display.addOptionElement ("", "", false, "", "Mute", track.isMute (), false);
-        display.addOptionElement ("", "", false, "", "Solo", track.isSolo (), false);
-        display.addOptionElement ("", "", false, "", "Monitor", track.isMonitor (), false);
-        display.addOptionElement ("Midi Insert/Edit Channel:", "", false, "", "Auto Monitor", track.isAutoMonitor (), false);
-        final boolean hasPinning = this.model.getHost ().supports (Capability.HAS_PINNING);
-        display.addOptionElement ("", "", false, "", hasPinning ? "Pin Track" : "", hasPinning && this.model.isCursorTrackPinned (), false);
+        display.addOptionElement (getTrackTitle (cursorTrack) + cursorTrack.getName (), "", false, "", "Active", cursorTrack.isActivated (), false);
+        display.addOptionElement ("", "", false, "", "Rec Arm", cursorTrack.isRecArm (), false);
+        display.addOptionElement ("", "", false, "", "Mute", cursorTrack.isMute (), false);
+        display.addOptionElement ("", "", false, "", "Solo", cursorTrack.isSolo (), false);
+        display.addOptionElement ("", "", false, "", "Monitor", cursorTrack.isMonitor (), false);
+        display.addOptionElement ("Midi Insert/Edit Channel:", "", false, "", "Auto Monitor", cursorTrack.isAutoMonitor (), false);
+        if (this.hasPinning)
+            display.addOptionElement ("", "", false, "", "Pin Track", this.model.getCursorTrack ().isPinned (), false);
+        else
+            display.addEmptyElement ();
         display.addOptionElement ("        " + (this.surface.getConfiguration ().getMidiEditChannel () + 1), "", false, "", "Select Color", false, false);
     }
 
@@ -280,24 +293,6 @@ public class TrackDetailsMode extends BaseMode
      */
     private static String getTrackTitle (final ITrack track)
     {
-        if (track.hasParent ())
-            return "Child Track: ";
-        return "Track: ";
-    }
-
-
-    /**
-     * Get the currently selected track. If none is selected in the bank the master track is
-     * returned.
-     *
-     * @return The selected track
-     */
-    private ITrack getSelectedTrack ()
-    {
-        final ITrack t = this.model.getSelectedTrack ();
-        if (t != null)
-            return t;
-        final IMasterTrack master = this.model.getMasterTrack ();
-        return master.isSelected () ? master : null;
+        return track.hasParent () ? "Child Track: " : "Track: ";
     }
 }

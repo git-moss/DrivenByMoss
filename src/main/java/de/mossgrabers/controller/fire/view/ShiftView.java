@@ -242,7 +242,7 @@ public class ShiftView extends AbstractView<FireControlSurface, FireConfiguratio
                 break;
 
             case 94:
-                final IClip clip = this.model.getClip ();
+                final IClip clip = this.model.getCursorClip ();
                 if (clip.doesExist ())
                 {
                     clip.duplicateContent ();

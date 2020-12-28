@@ -64,12 +64,14 @@ public class SLMkIIIConfiguration extends AbstractConfiguration
             this.enableFaders = "On".equals (value);
             this.notifyObservers (ENABLE_FADERS);
         });
+        this.isSettingActive.add (ENABLE_FADERS);
 
         final IEnumSetting enableLightguideSetting = globalSettings.getEnumSetting ("Enable Lightguide", CATEGORY_WORKFLOW, ON_OFF_OPTIONS, ON_OFF_OPTIONS[1]);
         enableLightguideSetting.addValueObserver (value -> {
             this.enableLightguide = "On".equals (value);
             this.notifyObservers (ENABLE_LIGHTGUIDE);
         });
+        this.isSettingActive.add (ENABLE_LIGHTGUIDE);
 
         this.activateUserPageNamesSetting (globalSettings);
 

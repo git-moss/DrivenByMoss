@@ -45,6 +45,7 @@ public class MidiMonitorConfiguration extends AbstractConfiguration
             this.isFilterSystemRealtimeOn = "On".equals (value);
             this.notifyObservers (FILTER_SYSTEM_REALTIME);
         });
+        this.isSettingActive.add (FILTER_SYSTEM_REALTIME);
     }
 
 

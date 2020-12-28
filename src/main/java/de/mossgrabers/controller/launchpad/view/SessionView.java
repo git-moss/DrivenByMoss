@@ -222,10 +222,10 @@ public class SessionView extends AbstractSessionView<LaunchpadControlSurface, La
                 this.isShowTemporarily = false;
 
                 final ViewManager viewManager = this.surface.getViewManager ();
-                final ITrack selectedTrack = this.model.getSelectedTrack ();
-                if (selectedTrack == null)
+                final ITrack cursorTrack = this.model.getCursorTrack ();
+                if (!cursorTrack.doesExist ())
                     return;
-                final Views viewId = viewManager.getPreferredView (selectedTrack.getPosition ());
+                final Views viewId = viewManager.getPreferredView (cursorTrack.getPosition ());
                 viewManager.setActive (viewId == null ? Views.PLAY : viewId);
                 break;
 

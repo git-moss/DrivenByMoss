@@ -331,6 +331,7 @@ public abstract class AbstractConfiguration implements Configuration
 
     private final Map<Integer, Set<ISettingObserver>> observers                   = new HashMap<> ();
     protected final Set<Integer>                      dontNotifyAll               = new HashSet<> ();
+    protected final Set<Integer>                      isSettingActive             = new HashSet<> ();
     protected IValueChanger                           valueChanger;
 
     private String                                    scale                       = "Major";
@@ -421,6 +422,14 @@ public abstract class AbstractConfiguration implements Configuration
     public void clearSettingObservers ()
     {
         this.observers.clear ();
+    }
+
+
+    /** {@inheritDoc} */
+    @Override
+    public boolean canSettingBeObserved (final Integer settingID)
+    {
+        return this.isSettingActive.contains (settingID);
     }
 
 
@@ -852,8 +861,10 @@ public abstract class AbstractConfiguration implements Configuration
         this.scaleSetting = settingsUI.getEnumSetting ("Scale", CATEGORY_SCALES, scaleNames, scaleNames[0]);
         this.scaleSetting.addValueObserver (value -> {
             this.scale = value;
-            this.notifyObservers (AbstractConfiguration.SCALES_SCALE);
+            this.notifyObservers (SCALES_SCALE);
         });
+
+        this.isSettingActive.add (SCALES_SCALE);
     }
 
 
@@ -869,6 +880,8 @@ public abstract class AbstractConfiguration implements Configuration
             this.scaleBase = value;
             this.notifyObservers (SCALES_BASE);
         });
+
+        this.isSettingActive.add (SCALES_BASE);
     }
 
 
@@ -886,8 +899,10 @@ public abstract class AbstractConfiguration implements Configuration
         }, SCALE_IN_KEY);
         this.scaleInKeySetting.addValueObserver (value -> {
             this.scaleInKey = SCALE_IN_KEY.equals (value);
-            this.notifyObservers (AbstractConfiguration.SCALES_IN_KEY);
+            this.notifyObservers (SCALES_IN_KEY);
         });
+
+        this.isSettingActive.add (SCALES_IN_KEY);
     }
 
 
@@ -914,8 +929,10 @@ public abstract class AbstractConfiguration implements Configuration
         this.scaleLayoutSetting = settingsUI.getEnumSetting ("Layout", CATEGORY_SCALES, names, defaultScale);
         this.scaleLayoutSetting.addValueObserver (value -> {
             this.scaleLayout = value;
-            this.notifyObservers (AbstractConfiguration.SCALES_LAYOUT);
+            this.notifyObservers (SCALES_LAYOUT);
         });
+
+        this.isSettingActive.add (SCALES_LAYOUT);
     }
 
 
@@ -941,8 +958,10 @@ public abstract class AbstractConfiguration implements Configuration
         this.enableVUMetersSetting = settingsUI.getEnumSetting ("VU Meters", category, ON_OFF_OPTIONS, ON_OFF_OPTIONS[1]);
         this.enableVUMetersSetting.addValueObserver (value -> {
             this.enableVUMeters = "On".equals (value);
-            this.notifyObservers (AbstractConfiguration.ENABLE_VU_METERS);
+            this.notifyObservers (ENABLE_VU_METERS);
         });
+
+        this.isSettingActive.add (ENABLE_VU_METERS);
     }
 
 
@@ -958,6 +977,8 @@ public abstract class AbstractConfiguration implements Configuration
             this.behaviourOnStop = BehaviourOnStop.values ()[lookupIndex (BEHAVIOUR_ON_STOP_VALUES, value)];
             this.notifyObservers (BEHAVIOUR_ON_STOP);
         });
+
+        this.isSettingActive.add (BEHAVIOUR_ON_STOP);
     }
 
 
@@ -971,8 +992,10 @@ public abstract class AbstractConfiguration implements Configuration
         this.flipSessionSetting = settingsUI.getEnumSetting ("Flip Session", CATEGORY_SESSION, ON_OFF_OPTIONS, ON_OFF_OPTIONS[0]);
         this.flipSessionSetting.addValueObserver (value -> {
             this.flipSession = "On".equals (value);
-            this.notifyObservers (AbstractConfiguration.FLIP_SESSION);
+            this.notifyObservers (FLIP_SESSION);
         });
+
+        this.isSettingActive.add (FLIP_SESSION);
     }
 
 
@@ -986,8 +1009,10 @@ public abstract class AbstractConfiguration implements Configuration
         final IEnumSetting selectClipOnLaunchSetting = settingsUI.getEnumSetting ("Select clip/scene on launch", CATEGORY_SESSION, ON_OFF_OPTIONS, ON_OFF_OPTIONS[0]);
         selectClipOnLaunchSetting.addValueObserver (value -> {
             this.selectClipOnLaunch = "On".equals (value);
-            this.notifyObservers (AbstractConfiguration.SELECT_CLIP_ON_LAUNCH);
+            this.notifyObservers (SELECT_CLIP_ON_LAUNCH);
         });
+
+        this.isSettingActive.add (SELECT_CLIP_ON_LAUNCH);
     }
 
 
@@ -1001,8 +1026,10 @@ public abstract class AbstractConfiguration implements Configuration
         final IEnumSetting drawRecordStripeSetting = settingsUI.getEnumSetting ("Display clips of record enabled tracks in red", CATEGORY_SESSION, ON_OFF_OPTIONS, ON_OFF_OPTIONS[1]);
         drawRecordStripeSetting.addValueObserver (value -> {
             this.drawRecordStripe = "On".equals (value);
-            this.notifyObservers (AbstractConfiguration.DRAW_RECORD_STRIPE);
+            this.notifyObservers (DRAW_RECORD_STRIPE);
         });
+
+        this.isSettingActive.add (DRAW_RECORD_STRIPE);
     }
 
 
@@ -1016,8 +1043,10 @@ public abstract class AbstractConfiguration implements Configuration
         final IEnumSetting actionForRecArmedPadSetting = settingsUI.getEnumSetting ("Action for pressing rec armed empty clip", CATEGORY_SESSION, ACTIONS_REC_ARMED_PADS, ACTIONS_REC_ARMED_PADS[0]);
         actionForRecArmedPadSetting.addValueObserver (value -> {
             this.actionForRecArmedPad = lookupIndex (ACTIONS_REC_ARMED_PADS, value);
-            this.notifyObservers (AbstractConfiguration.ACTION_FOR_REC_ARMED_PAD);
+            this.notifyObservers (ACTION_FOR_REC_ARMED_PAD);
         });
+
+        this.isSettingActive.add (ACTION_FOR_REC_ARMED_PAD);
     }
 
 
@@ -1031,8 +1060,10 @@ public abstract class AbstractConfiguration implements Configuration
         final IEnumSetting convertAftertouchSetting = settingsUI.getEnumSetting ("Convert Poly Aftertouch to", CATEGORY_PADS, AbstractConfiguration.AFTERTOUCH_CONVERSION_VALUES, AbstractConfiguration.AFTERTOUCH_CONVERSION_VALUES[1]);
         convertAftertouchSetting.addValueObserver (value -> {
             this.convertAftertouch = lookupIndex (AbstractConfiguration.AFTERTOUCH_CONVERSION_VALUES, value) - 3;
-            this.notifyObservers (AbstractConfiguration.CONVERT_AFTERTOUCH);
+            this.notifyObservers (CONVERT_AFTERTOUCH);
         });
+
+        this.isSettingActive.add (CONVERT_AFTERTOUCH);
     }
 
 
@@ -1046,8 +1077,10 @@ public abstract class AbstractConfiguration implements Configuration
         this.accentActiveSetting = settingsUI.getEnumSetting ("Activate Fixed Accent", CATEGORY_PLAY_AND_SEQUENCE, ON_OFF_OPTIONS, ON_OFF_OPTIONS[0]);
         this.accentActiveSetting.addValueObserver (value -> {
             this.accentActive = "On".equals (value);
-            this.notifyObservers (AbstractConfiguration.ACTIVATE_FIXED_ACCENT);
+            this.notifyObservers (ACTIVATE_FIXED_ACCENT);
         });
+
+        this.isSettingActive.add (ACTIVATE_FIXED_ACCENT);
     }
 
 
@@ -1061,8 +1094,10 @@ public abstract class AbstractConfiguration implements Configuration
         this.accentValueSetting = settingsUI.getRangeSetting ("Fixed Accent Value", CATEGORY_PLAY_AND_SEQUENCE, 1, 127, 1, "", 127);
         this.accentValueSetting.addValueObserver (value -> {
             this.fixedAccentValue = value.intValue ();
-            this.notifyObservers (AbstractConfiguration.FIXED_ACCENT_VALUE);
+            this.notifyObservers (FIXED_ACCENT_VALUE);
         });
+
+        this.isSettingActive.add (FIXED_ACCENT_VALUE);
     }
 
 
@@ -1078,6 +1113,8 @@ public abstract class AbstractConfiguration implements Configuration
             this.flipRecord = "On".equals (value);
             this.notifyObservers (FLIP_RECORD);
         });
+
+        this.isSettingActive.add (FLIP_RECORD);
     }
 
 
@@ -1105,6 +1142,8 @@ public abstract class AbstractConfiguration implements Configuration
             this.excludeDeactivatedItems = ON_OFF_OPTIONS[1].equals (value);
             this.notifyObservers (EXCLUDE_DEACTIVATED_ITEMS);
         });
+
+        this.isSettingActive.add (EXCLUDE_DEACTIVATED_ITEMS);
     }
 
 
@@ -1120,6 +1159,8 @@ public abstract class AbstractConfiguration implements Configuration
             this.newClipLength = lookupIndex (NEW_CLIP_LENGTH_VALUES, value);
             this.notifyObservers (NEW_CLIP_LENGTH);
         });
+
+        this.isSettingActive.add (NEW_CLIP_LENGTH);
     }
 
 
@@ -1135,6 +1176,8 @@ public abstract class AbstractConfiguration implements Configuration
             this.quantizeAmount = value.intValue ();
             this.notifyObservers (QUANTIZE_AMOUNT);
         });
+
+        this.isSettingActive.add (QUANTIZE_AMOUNT);
     }
 
 
@@ -1150,6 +1193,8 @@ public abstract class AbstractConfiguration implements Configuration
             this.midiEditChannel = Integer.parseInt (value) - 1;
             this.notifyObservers (MIDI_EDIT_CHANNEL);
         });
+
+        this.isSettingActive.add (MIDI_EDIT_CHANNEL);
     }
 
 
@@ -1169,6 +1214,8 @@ public abstract class AbstractConfiguration implements Configuration
             this.autoSelectDrum = "Channel".equals (value);
             this.notifyObservers (AUTO_SELECT_DRUM);
         });
+
+        this.isSettingActive.add (AUTO_SELECT_DRUM);
     }
 
 
@@ -1184,6 +1231,8 @@ public abstract class AbstractConfiguration implements Configuration
             this.turnOffEmptyDrumPads = "On".equals (value);
             this.notifyObservers (TURN_OFF_EMPTY_DRUM_PADS);
         });
+
+        this.isSettingActive.add (TURN_OFF_EMPTY_DRUM_PADS);
     }
 
 
@@ -1199,6 +1248,8 @@ public abstract class AbstractConfiguration implements Configuration
             this.footswitch2 = lookupIndex (FOOTSWITCH_VALUES, value);
             this.notifyObservers (FOOTSWITCH_2);
         });
+
+        this.isSettingActive.add (FOOTSWITCH_2);
     }
 
 
@@ -1213,10 +1264,12 @@ public abstract class AbstractConfiguration implements Configuration
         {
             final IEnumSetting browserDisplayFilterSetting = settingsUI.getEnumSetting (BROWSER_FILTER_COLUMN_NAMES[i], "Browser", COLUMN_VALUES, COLUMN_VALUES[1]);
             final int index = i;
+            final Integer browserDisplayFilterIndex = Integer.valueOf (BROWSER_DISPLAY_FILTER1.intValue () + index);
             browserDisplayFilterSetting.addValueObserver (value -> {
                 this.browserDisplayFilter[index] = COLUMN_VALUES[1].equals (value);
-                this.notifyObservers (Integer.valueOf (BROWSER_DISPLAY_FILTER1.intValue () + index));
+                this.notifyObservers (browserDisplayFilterIndex);
             });
+            this.isSettingActive.add (browserDisplayFilterIndex);
         }
     }
 
@@ -1231,13 +1284,16 @@ public abstract class AbstractConfiguration implements Configuration
         final IEnumSetting knobSpeedNormalSetting = settingsUI.getEnumSetting ("Knob Sensitivity Default", CATEGORY_WORKFLOW, KNOB_SENSITIVITY, KNOB_SENSITIVITY[100]);
         knobSpeedNormalSetting.addValueObserver (value -> {
             this.knobSpeedDefault = lookupIndex (KNOB_SENSITIVITY, value) - 100;
-            this.notifyObservers (AbstractConfiguration.KNOB_SENSITIVITY_DEFAULT);
+            this.notifyObservers (KNOB_SENSITIVITY_DEFAULT);
         });
         final IEnumSetting knobSpeedSlowSetting = settingsUI.getEnumSetting ("Knob Sensitivity Slow", CATEGORY_WORKFLOW, KNOB_SENSITIVITY, KNOB_SENSITIVITY[60]);
         knobSpeedSlowSetting.addValueObserver (value -> {
             this.knobSpeedSlow = lookupIndex (KNOB_SENSITIVITY, value) - 100;
-            this.notifyObservers (AbstractConfiguration.KNOB_SENSITIVITY_SLOW);
+            this.notifyObservers (KNOB_SENSITIVITY_SLOW);
         });
+
+        this.isSettingActive.add (KNOB_SENSITIVITY_DEFAULT);
+        this.isSettingActive.add (KNOB_SENSITIVITY_SLOW);
     }
 
 
@@ -1251,7 +1307,7 @@ public abstract class AbstractConfiguration implements Configuration
         this.noteRepeatActiveSetting = settingsUI.getEnumSetting ("Active", CATEGORY_NOTEREPEAT, ON_OFF_OPTIONS, ON_OFF_OPTIONS[0]);
         this.noteRepeatActiveSetting.addValueObserver (value -> {
             this.noteRepeatActive = "On".equals (value);
-            this.notifyObservers (AbstractConfiguration.NOTEREPEAT_ACTIVE);
+            this.notifyObservers (NOTEREPEAT_ACTIVE);
         });
 
         final String [] names = Resolution.getNames ();
@@ -1259,16 +1315,21 @@ public abstract class AbstractConfiguration implements Configuration
         this.noteRepeatPeriodSetting = settingsUI.getEnumSetting ("Period", CATEGORY_NOTEREPEAT, names, names[4]);
         this.noteRepeatPeriodSetting.addValueObserver (value -> {
             this.noteRepeatPeriod = Resolution.getByName (value);
-            this.notifyObservers (AbstractConfiguration.NOTEREPEAT_PERIOD);
+            this.notifyObservers (NOTEREPEAT_PERIOD);
         });
+
+        this.isSettingActive.add (NOTEREPEAT_ACTIVE);
+        this.isSettingActive.add (NOTEREPEAT_PERIOD);
 
         if (this.host.supports (Capability.NOTE_REPEAT_LENGTH))
         {
             this.noteRepeatLengthSetting = settingsUI.getEnumSetting ("Length", CATEGORY_NOTEREPEAT, names, names[4]);
             this.noteRepeatLengthSetting.addValueObserver (value -> {
                 this.noteRepeatLength = Resolution.getByName (value);
-                this.notifyObservers (AbstractConfiguration.NOTEREPEAT_LENGTH);
+                this.notifyObservers (NOTEREPEAT_LENGTH);
             });
+
+            this.isSettingActive.add (NOTEREPEAT_LENGTH);
         }
 
         if (this.host.supports (Capability.NOTE_REPEAT_MODE))
@@ -1280,8 +1341,10 @@ public abstract class AbstractConfiguration implements Configuration
             this.noteRepeatModeSetting = settingsUI.getEnumSetting ("Mode", CATEGORY_NOTEREPEAT, arpModeNames, arpModeNames[1]);
             this.noteRepeatModeSetting.addValueObserver (value -> {
                 this.noteRepeatMode = ArpeggiatorMode.lookupByName (value);
-                this.notifyObservers (AbstractConfiguration.NOTEREPEAT_MODE);
+                this.notifyObservers (NOTEREPEAT_MODE);
             });
+
+            this.isSettingActive.add (NOTEREPEAT_MODE);
         }
 
         if (this.host.supports (Capability.NOTE_REPEAT_OCTAVES))
@@ -1302,8 +1365,10 @@ public abstract class AbstractConfiguration implements Configuration
             this.noteRepeatOctaveSetting = settingsUI.getEnumSetting ("Octave", CATEGORY_NOTEREPEAT, octaves, octaves[0]);
             this.noteRepeatOctaveSetting.addValueObserver (value -> {
                 this.noteRepeatOctave = Integer.parseInt (value);
-                this.notifyObservers (AbstractConfiguration.NOTEREPEAT_OCTAVE);
+                this.notifyObservers (NOTEREPEAT_OCTAVE);
             });
+
+            this.isSettingActive.add (NOTEREPEAT_OCTAVE);
         }
     }
 
@@ -1339,6 +1404,8 @@ public abstract class AbstractConfiguration implements Configuration
             }
             this.notifyObservers (RECORD_BUTTON_FUNCTION);
         });
+
+        this.isSettingActive.add (RECORD_BUTTON_FUNCTION);
     }
 
 
@@ -1358,6 +1425,8 @@ public abstract class AbstractConfiguration implements Configuration
             }
             this.notifyObservers (SHIFTED_RECORD_BUTTON_FUNCTION);
         });
+
+        this.isSettingActive.add (SHIFTED_RECORD_BUTTON_FUNCTION);
     }
 
 

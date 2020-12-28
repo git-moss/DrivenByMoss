@@ -351,8 +351,8 @@ public class MidiModule extends AbstractModule
         if (this.keyManager.isKeyPressed (note))
             return this.model.hasRecordingState () ? ColorEx.RED : ColorEx.GREEN;
 
-        final ITrack track = this.model.getSelectedTrack ();
-        final String colorID = AbstractView.replaceOctaveColorWithTrackColor (track, this.keyManager.getColor (note));
+        final ITrack cursorTrack = this.model.getCursorTrack ();
+        final String colorID = AbstractView.replaceOctaveColorWithTrackColor (cursorTrack, this.keyManager.getColor (note));
         final int colorIndex = colorManager.getColorIndex (colorID);
         return colorManager.getColor (colorIndex, null);
     }

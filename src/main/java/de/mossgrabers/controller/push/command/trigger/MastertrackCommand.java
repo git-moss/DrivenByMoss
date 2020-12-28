@@ -81,7 +81,7 @@ public class MastertrackCommand extends AbstractTriggerCommand<PushControlSurfac
 
         modeManager.setActive (Modes.MASTER);
         this.model.getMasterTrack ().select ();
-        final ITrack track = this.model.getSelectedTrack ();
-        this.selectedTrackBeforeMasterMode = track == null ? -1 : track.getIndex ();
+        final ITrack cursorTrack = this.model.getCursorTrack ();
+        this.selectedTrackBeforeMasterMode = cursorTrack.doesExist () ? cursorTrack.getIndex () : -1;
     }
 }

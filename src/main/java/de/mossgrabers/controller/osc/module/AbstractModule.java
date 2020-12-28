@@ -6,6 +6,7 @@ package de.mossgrabers.controller.osc.module;
 
 import de.mossgrabers.controller.osc.exception.IllegalParameterException;
 import de.mossgrabers.controller.osc.exception.MissingCommandException;
+import de.mossgrabers.framework.controller.color.ColorEx;
 import de.mossgrabers.framework.daw.IClip;
 import de.mossgrabers.framework.daw.IHost;
 import de.mossgrabers.framework.daw.IModel;
@@ -14,6 +15,8 @@ import de.mossgrabers.framework.daw.data.ISend;
 import de.mossgrabers.framework.osc.IOpenSoundControlWriter;
 
 import java.util.LinkedList;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 
 /**
@@ -23,19 +26,21 @@ import java.util.LinkedList;
  */
 public abstract class AbstractModule implements IModule
 {
-    protected static final String     TAG_EXISTS   = "exists";
-    protected static final String     TAG_NAME     = "name";
-    protected static final String     TAG_SELECTED = "selected";
-    protected static final String     TAG_SELECT   = "select";
-    protected static final String     TAG_REMOVE   = "remove";
-    protected static final String     TAG_VOLUME   = "volume";
-    protected static final String     TAG_PAGE     = "page";
-    protected static final String     TAG_INDICATE = "indicate";
-    protected static final String     TAG_TOUCHED  = "touched";
-    protected static final String     TAG_COLOR    = "color";
-    protected static final String     TAG_PARAM    = "param";
-    protected static final String     TAG_MIXER    = "mixer";
-    protected static final String     TAG_PREROLL  = "preroll";
+    private static final Pattern      RGB_COLOR_PATTERN = Pattern.compile ("(rgb|RGB)\\((\\d+(\\.\\d+)?),(\\d+(\\.\\d+)?),(\\d+(\\.\\d+)?)\\)");
+
+    protected static final String     TAG_EXISTS        = "exists";
+    protected static final String     TAG_NAME          = "name";
+    protected static final String     TAG_SELECTED      = "selected";
+    protected static final String     TAG_SELECT        = "select";
+    protected static final String     TAG_REMOVE        = "remove";
+    protected static final String     TAG_VOLUME        = "volume";
+    protected static final String     TAG_PAGE          = "page";
+    protected static final String     TAG_INDICATE      = "indicate";
+    protected static final String     TAG_TOUCHED       = "touched";
+    protected static final String     TAG_COLOR         = "color";
+    protected static final String     TAG_PARAM         = "param";
+    protected static final String     TAG_MIXER         = "mixer";
+    protected static final String     TAG_PREROLL       = "preroll";
 
     protected final IHost             host;
     protected final IModel            model;
@@ -183,5 +188,17 @@ public abstract class AbstractModule implements IModule
         writer.sendOSC (fxAddress + (isSend ? "volumeStr" : "valueStr"), fxParam.getDisplayedValue (), dump);
         writer.sendOSC (fxAddress + (isSend ? TAG_VOLUME : "value"), fxParam.getValue (), dump);
         writer.sendOSC (fxAddress + "modulatedValue", fxParam.getModulatedValue (), dump);
+    }
+
+
+    protected static ColorEx matchColor (final String value)
+    {
+        final Matcher matcher = RGB_COLOR_PATTERN.matcher (value);
+        if (!matcher.matches ())
+            return null;
+        final int count = matcher.groupCount ();
+        if (count == 7)
+            return new ColorEx (Double.parseDouble (matcher.group (2)) / 255.0, Double.parseDouble (matcher.group (4)) / 255.0, Double.parseDouble (matcher.group (6)) / 255.0);
+        return null;
     }
 }

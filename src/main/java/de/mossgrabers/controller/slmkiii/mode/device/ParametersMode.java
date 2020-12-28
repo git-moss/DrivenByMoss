@@ -180,7 +180,7 @@ public class ParametersMode extends AbstractParametersMode
                     this.browserCommand.startBrowser (false, false);
                 break;
             case 7:
-                if (this.model.getSelectedTrack () != null)
+                if (this.model.getCursorTrack ().doesExist ())
                     this.browserCommand.startBrowser (true, false);
                 break;
             default:
@@ -236,7 +236,7 @@ public class ParametersMode extends AbstractParametersMode
         final ICursorDevice cd = this.model.getCursorDevice ();
         if (!cd.doesExist ())
         {
-            if (buttonID == ButtonID.ROW1_8 && this.model.getSelectedTrack () != null)
+            if (buttonID == ButtonID.ROW1_8 && this.model.getCursorTrack ().doesExist ())
                 return SLMkIIIColorManager.SLMKIII_RED_HALF;
             return SLMkIIIColorManager.SLMKIII_BLACK;
         }
@@ -401,7 +401,7 @@ public class ParametersMode extends AbstractParametersMode
             }
         }
 
-        if (this.model.getSelectedTrack () != null)
+        if (this.model.getCursorTrack ().doesExist ())
         {
             d.setCell (3, 7, "Insert >>");
             d.setPropertyColor (7, 2, SLMkIIIColorManager.SLMKIII_RED);

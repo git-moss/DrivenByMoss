@@ -7,7 +7,6 @@ package de.mossgrabers.framework.daw.data.empty;
 import de.mossgrabers.framework.controller.color.ColorEx;
 import de.mossgrabers.framework.daw.data.IChannel;
 import de.mossgrabers.framework.daw.data.IParameter;
-import de.mossgrabers.framework.daw.data.ISend;
 import de.mossgrabers.framework.daw.data.bank.ISendBank;
 import de.mossgrabers.framework.daw.resource.ChannelType;
 import de.mossgrabers.framework.observer.IValueObserver;
@@ -20,9 +19,6 @@ import de.mossgrabers.framework.observer.IValueObserver;
  */
 public class EmptyChannel extends EmptyItem implements IChannel
 {
-    private final ISendBank sendBank = new EmptySendBank ();
-
-
     /** {@inheritDoc} */
     @Override
     public ChannelType getType ()
@@ -347,8 +343,7 @@ public class EmptyChannel extends EmptyItem implements IChannel
     @Override
     public ISendBank getSendBank ()
     {
-        // Intentionally empty
-        return this.sendBank;
+        return EmptySendBank.INSTANCE;
     }
 
 
@@ -365,16 +360,5 @@ public class EmptyChannel extends EmptyItem implements IChannel
     public void addColorObserver (final IValueObserver<ColorEx> observer)
     {
         // Intentionally empty
-    }
-
-
-    class EmptySendBank extends EmptyBank<ISend> implements ISendBank
-    {
-        /** {@inheritDoc} */
-        @Override
-        public ISend getItem (final int index)
-        {
-            return EmptySend.INSTANCE;
-        }
     }
 }

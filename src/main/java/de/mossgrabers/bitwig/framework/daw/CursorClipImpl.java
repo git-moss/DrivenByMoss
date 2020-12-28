@@ -148,6 +148,14 @@ public class CursorClipImpl implements INoteClip
 
     /** {@inheritDoc} */
     @Override
+    public void setPinned (final boolean isPinned)
+    {
+        this.launcherClip.isPinned ().set (isPinned);
+    }
+
+
+    /** {@inheritDoc} */
+    @Override
     public double getPlayStart ()
     {
         return this.getClip ().getPlayStart ().get ();

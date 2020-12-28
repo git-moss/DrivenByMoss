@@ -256,7 +256,7 @@ public abstract class AbstractNoteSequencerView<S extends IControlSurface<C>, C 
             return;
         }
 
-        final ITrack selectedTrack = this.model.getSelectedTrack ();
+        final ITrack cursorTrack = this.model.getCursorTrack ();
 
         // Steps with notes
         final INoteClip clip = this.getClip ();
@@ -270,7 +270,7 @@ public abstract class AbstractNoteSequencerView<S extends IControlSurface<C>, C 
                 // 0: not set, 1: note continues playing, 2: start of note
                 final int map = this.keyManager.map (y);
                 final int isSet = map < 0 ? 0 : clip.getStep (editMidiChannel, x, map).getState ();
-                gridPad.lightEx (x, this.numDisplayRows - 1 - y, this.getStepColor (isSet, x == hiStep, y, selectedTrack));
+                gridPad.lightEx (x, this.numDisplayRows - 1 - y, this.getStepColor (isSet, x == hiStep, y, cursorTrack));
             }
         }
 

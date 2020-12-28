@@ -106,9 +106,7 @@ public class TouchstripCommand extends AbstractPitchbendCommand<PushControlSurfa
                 break;
 
             case PushConfiguration.RIBBON_MODE_FADER:
-                final ITrack selTrack = this.model.getSelectedTrack ();
-                if (selTrack != null)
-                    selTrack.setVolume (this.model.getValueChanger ().toDAWValue (data2));
+                this.model.getCursorTrack ().setVolume (this.model.getValueChanger ().toDAWValue (data2));
                 return;
 
             default:
@@ -151,8 +149,8 @@ public class TouchstripCommand extends AbstractPitchbendCommand<PushControlSurfa
                 break;
 
             case PushConfiguration.RIBBON_MODE_FADER:
-                final ITrack t = this.model.getSelectedTrack ();
-                this.surface.setRibbonValue (t == null ? 0 : this.model.getValueChanger ().toMidiValue (t.getVolume ()));
+                final ITrack t = this.model.getCursorTrack ();
+                this.surface.setRibbonValue (this.model.getValueChanger ().toMidiValue (t.getVolume ()));
                 break;
 
             default:

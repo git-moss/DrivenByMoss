@@ -40,6 +40,15 @@ public interface Configuration
 
 
     /**
+     * Check if the setting with the given ID is active and can be observed.
+     *
+     * @param settingID The ID of a setting
+     * @return True if it can be observed
+     */
+    boolean canSettingBeObserved (Integer settingID);
+
+
+    /**
      * Get the scale by name.
      *
      * @return Get the name of the scale

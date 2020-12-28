@@ -342,10 +342,10 @@ public abstract class AbstractPolySequencerView<S extends IControlSurface<C>, C 
 
         // Paint the play part
         final boolean isRecording = this.model.hasRecordingState ();
-        final ITrack selectedTrack = this.model.getSelectedTrack ();
+        final ITrack cursorTrack = this.model.getCursorTrack ();
         final int startNote = this.scales.getStartNote ();
         for (int i = startNote; i < startNote + this.sequencerSteps; i++)
-            padGrid.light (i, this.getGridColor (isKeyboardEnabled, isRecording, selectedTrack, i));
+            padGrid.light (i, this.getGridColor (isKeyboardEnabled, isRecording, cursorTrack, i));
 
     }
 

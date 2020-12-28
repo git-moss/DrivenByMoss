@@ -31,6 +31,14 @@ public class EmptyParameter extends AbstractParameterImpl
 
     /** {@inheritDoc} */
     @Override
+    public int getPosition ()
+    {
+        return -1;
+    }
+
+
+    /** {@inheritDoc} */
+    @Override
     public void inc (final double increment)
     {
         // Intentionally empty

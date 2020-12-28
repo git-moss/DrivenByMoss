@@ -914,10 +914,10 @@ public class PushControllerSetup extends AbstractControllerSetup<PushControlSurf
         // Recall last used view (if we are not in session mode)
         if (!viewManager.isActive (Views.SESSION))
         {
-            final ITrack selectedTrack = this.model.getSelectedTrack ();
-            if (selectedTrack != null)
+            final ITrack cursorTrack = this.model.getCursorTrack ();
+            if (cursorTrack.doesExist ())
             {
-                final Views preferredView = viewManager.getPreferredView (selectedTrack.getPosition ());
+                final Views preferredView = viewManager.getPreferredView (cursorTrack.getPosition ());
                 viewManager.setActive (preferredView == null ? this.configuration.getDefaultNoteView () : preferredView);
             }
         }
@@ -967,8 +967,8 @@ public class PushControllerSetup extends AbstractControllerSetup<PushControlSurf
                 final IChannel layer = cd.getLayerOrDrumPadBank ().getSelectedItem ();
                 return layer != null && layer.isMute ();
             }
-            final ITrack selTrack = modeManager.isActive (Modes.MASTER) ? this.model.getMasterTrack () : this.model.getSelectedTrack ();
-            return selTrack != null && selTrack.isMute ();
+            final ITrack selTrack = modeManager.isActive (Modes.MASTER) ? this.model.getMasterTrack () : this.model.getCursorTrack ();
+            return selTrack.isMute ();
         }
         return surface.getConfiguration ().isMuteState ();
     }
@@ -986,8 +986,8 @@ public class PushControllerSetup extends AbstractControllerSetup<PushControlSurf
                 final IChannel layer = cd.getLayerOrDrumPadBank ().getSelectedItem ();
                 return layer != null && layer.isSolo ();
             }
-            final ITrack selTrack = modeManager.isActive (Modes.MASTER) ? this.model.getMasterTrack () : this.model.getSelectedTrack ();
-            return selTrack != null && selTrack.isSolo ();
+            final ITrack selTrack = modeManager.isActive (Modes.MASTER) ? this.model.getMasterTrack () : this.model.getCursorTrack ();
+            return selTrack.isSolo ();
         }
         return surface.getConfiguration ().isSoloState ();
     }

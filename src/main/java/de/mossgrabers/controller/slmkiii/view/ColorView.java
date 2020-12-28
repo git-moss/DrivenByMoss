@@ -68,15 +68,15 @@ public class ColorView extends AbstractView<SLMkIIIControlSurface, SLMkIIIConfig
         if (color < dawColors.length)
         {
             final ColorEx entry = dawColors[color].getColor ();
-            final ITrack t = this.model.getSelectedTrack ();
-            if (t == null)
+            final ITrack cursorTrack = this.model.getCursorTrack ();
+            if (cursorTrack.doesExist ())
+                cursorTrack.setColor (entry);
+            else
             {
                 final IMasterTrack master = this.model.getMasterTrack ();
                 if (master.isSelected ())
                     master.setColor (entry);
             }
-            else
-                t.setColor (entry);
         }
         this.surface.getViewManager ().restore ();
     }

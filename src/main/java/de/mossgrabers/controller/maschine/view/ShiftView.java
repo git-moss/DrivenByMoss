@@ -37,7 +37,7 @@ public class ShiftView extends BaseView
     protected void executeFunction (final int padIndex)
     {
         final IDisplay display = this.surface.getDisplay ();
-        final IClip clip = this.model.getClip ();
+        final IClip clip = this.model.getCursorClip ();
 
         this.surface.setStopConsumed ();
 
@@ -150,7 +150,7 @@ public class ShiftView extends BaseView
     {
         final IPadGrid padGrid = this.surface.getPadGrid ();
 
-        final IClip clip = this.model.getClip ();
+        final IClip clip = this.model.getCursorClip ();
         final boolean exists = clip.doesExist () && clip instanceof INoteClip;
 
         padGrid.lightEx (0, 0, exists ? MaschineColorManager.COLOR_TURQUOISE : MaschineColorManager.COLOR_BLACK);

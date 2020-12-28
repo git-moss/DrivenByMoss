@@ -59,7 +59,7 @@ public class ClipMode extends AbstractTrackMode
         if (index == 7 && isTouched && this.surface.isDeletePressed ())
         {
             this.surface.setTriggerConsumed (ButtonID.DELETE);
-            final IClip clip = this.model.getClip ();
+            final IClip clip = this.model.getCursorClip ();
             if (clip.doesExist ())
                 clip.resetAccent ();
         }
@@ -73,7 +73,7 @@ public class ClipMode extends AbstractTrackMode
         if (!this.increaseKnobMovement ())
             return;
 
-        final IClip clip = this.model.getClip ();
+        final IClip clip = this.model.getCursorClip ();
         if (!clip.doesExist ())
             return;
 
@@ -111,7 +111,7 @@ public class ClipMode extends AbstractTrackMode
     @Override
     public void updateDisplay1 (final ITextDisplay display)
     {
-        final IClip clip = this.model.getClip ();
+        final IClip clip = this.model.getCursorClip ();
         if (!clip.doesExist ())
         {
             display.notify (PLEASE_SELECT_A_CLIP_PUSH1);
@@ -152,7 +152,7 @@ public class ClipMode extends AbstractTrackMode
             return;
         }
 
-        final IClip clip = this.model.getClip ();
+        final IClip clip = this.model.getCursorClip ();
         if (!clip.doesExist ())
         {
             display.addEmptyElement ();
@@ -199,7 +199,7 @@ public class ClipMode extends AbstractTrackMode
 
         if (index == 0)
         {
-            final IClip clip = this.model.getClip ();
+            final IClip clip = this.model.getCursorClip ();
             if (clip instanceof INoteClip)
                 ((INoteClip) clip).togglePinned ();
             return;
@@ -225,7 +225,7 @@ public class ClipMode extends AbstractTrackMode
             {
                 if (!this.model.getHost ().supports (Capability.HAS_PINNING))
                     return PushColorManager.PUSH2_COLOR2_BLACK;
-                final IClip clip = this.model.getClip ();
+                final IClip clip = this.model.getCursorClip ();
                 final boolean isPinned = clip instanceof INoteClip && ((INoteClip) clip).isPinned ();
                 return isPinned ? PushColorManager.PUSH2_COLOR2_GREEN : PushColorManager.PUSH2_COLOR2_WHITE;
             }

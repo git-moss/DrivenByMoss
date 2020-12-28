@@ -45,11 +45,11 @@ public class DrumSequencerSelectCommand extends ViewMultiSelectCommand<FireContr
 
         super.executeNormal (ButtonEvent.DOWN);
 
-        final ITrack selectedTrack = this.model.getSelectedTrack ();
-        if (selectedTrack != null)
+        final ITrack cursorTrack = this.model.getCursorTrack ();
+        if (cursorTrack.doesExist ())
         {
             final ViewManager viewManager = this.surface.getViewManager ();
-            viewManager.setPreferredView (selectedTrack.getPosition (), viewManager.getActiveID ());
+            viewManager.setPreferredView (cursorTrack.getPosition (), viewManager.getActiveID ());
         }
     }
 

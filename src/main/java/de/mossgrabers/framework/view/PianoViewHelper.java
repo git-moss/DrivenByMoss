@@ -64,7 +64,7 @@ public class PianoViewHelper
 
         final ColorManager colorManager = model.getColorManager ();
         final boolean isRecording = model.hasRecordingState ();
-        final ITrack track = model.getSelectedTrack ();
+        final ITrack track = model.getCursorTrack ();
         final int playKeyColor = colorManager.getColorIndex (isRecording ? AbstractPlayView.COLOR_RECORD : AbstractPlayView.COLOR_PLAY);
         final int whiteKeyColor = colorManager.getColorIndex (Scales.SCALE_COLOR_NOTE);
         final int blackKeyColor = colorManager.getColorIndex (AbstractView.replaceOctaveColorWithTrackColor (track, Scales.SCALE_COLOR_OCTAVE));

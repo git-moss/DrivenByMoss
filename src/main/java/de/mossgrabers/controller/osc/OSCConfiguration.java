@@ -86,8 +86,9 @@ public class OSCConfiguration extends AbstractOpenSoundControlConfiguration
         final IIntegerSetting receivePortSetting = globalSettings.getRangeSetting ("Port to receive on", CATEGORY_SETUP, 1024, 65535, 1, "", 8000);
         receivePortSetting.addValueObserver (value -> {
             this.receivePort = value.intValue ();
-            this.notifyObservers (OSCConfiguration.RECEIVE_PORT);
+            this.notifyObservers (RECEIVE_PORT);
         });
+        this.isSettingActive.add (RECEIVE_PORT);
 
         final IStringSetting sendHostSetting = globalSettings.getStringSetting ("Host to send to (requires restart)", CATEGORY_SETUP, 15, DEFAULT_SERVER);
         this.sendHost = sendHostSetting.get ();
@@ -109,6 +110,7 @@ public class OSCConfiguration extends AbstractOpenSoundControlConfiguration
 
             this.notifyObservers (VALUE_RESOLUTION);
         });
+        this.isSettingActive.add (VALUE_RESOLUTION);
 
         final String [] pageSize = new String [200];
         for (int i = 0; i < pageSize.length; i++)

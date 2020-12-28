@@ -162,9 +162,9 @@ public class SessionView extends AbstractSessionView<SLMkIIIControlSurface, SLMk
         this.keyboardScales.setScaleOffset (this.scales.getScaleOffset ());
         this.keyboardScales.setScale (this.scales.getScale ());
 
-        final ITrack selectedTrack = this.model.getSelectedTrack ();
+        final ITrack cursorTrack = this.model.getCursorTrack ();
         for (int i = this.keyboardScales.getStartNote (); i < this.keyboardScales.getEndNote (); i++)
-            lightGuide.light (i - 36, this.getGridColor (isKeyboardEnabled, isRecording, selectedTrack, i));
+            lightGuide.light (i - 36, this.getGridColor (isKeyboardEnabled, isRecording, cursorTrack, i));
     }
 
 

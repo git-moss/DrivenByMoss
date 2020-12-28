@@ -113,10 +113,10 @@ public class ControlView extends ControlOnlyView<SLControlSurface, SLConfigurati
 
             // New
             case 4:
-                final ITrack t = this.model.getSelectedTrack ();
-                if (t == null)
+                final ITrack cursorTrack = this.model.getCursorTrack ();
+                if (!cursorTrack.doesExist ())
                     return;
-                final ISlotBank slotBank = t.getSlotBank ();
+                final ISlotBank slotBank = cursorTrack.getSlotBank ();
                 final List<ISlot> slotIndexes = slotBank.getSelectedItems ();
                 final int slotIndex = slotIndexes.isEmpty () ? 0 : slotIndexes.get (0).getIndex ();
                 for (int i = 0; i < 8; i++)
@@ -126,7 +126,7 @@ public class ControlView extends ControlOnlyView<SLControlSurface, SLConfigurati
                     if (!s.hasContent ())
                     {
                         final int lengthInBeats = this.surface.getConfiguration ().getNewClipLenghthInBeats (this.model.getTransport ().getQuartersPerMeasure ());
-                        this.model.createNoteClip (t, s, lengthInBeats, true);
+                        this.model.createNoteClip (cursorTrack, s, lengthInBeats, true);
                         return;
                     }
                 }
@@ -181,28 +181,21 @@ public class ControlView extends ControlOnlyView<SLControlSurface, SLConfigurati
             return;
         }
 
-        ITrack track;
         switch (index)
         {
             // Mute
             case 0:
-                track = this.model.getSelectedTrack ();
-                if (track != null)
-                    track.toggleMute ();
+                this.model.getCursorTrack ().toggleMute ();
                 break;
 
             // Solo
             case 1:
-                track = this.model.getSelectedTrack ();
-                if (track != null)
-                    track.toggleSolo ();
+                this.model.getCursorTrack ().toggleSolo ();
                 break;
 
             // Arm
             case 2:
-                track = this.model.getSelectedTrack ();
-                if (track != null)
-                    track.toggleRecArm ();
+                this.model.getCursorTrack ().toggleRecArm ();
                 break;
 
             // Write

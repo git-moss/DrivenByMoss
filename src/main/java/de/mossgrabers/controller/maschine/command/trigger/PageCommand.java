@@ -82,11 +82,11 @@ public class PageCommand extends AbstractTriggerCommand<MaschineControlSurface, 
                 break;
 
             default:
-                final ITrack selectedTrack = this.model.getSelectedTrack ();
-                if (selectedTrack == null)
+                final ITrack cursorTrack = this.model.getCursorTrack ();
+                if (!cursorTrack.doesExist ())
                     return;
 
-                final ISlotBank slotBank = selectedTrack.getSlotBank ();
+                final ISlotBank slotBank = cursorTrack.getSlotBank ();
                 if (this.direction == Direction.LEFT)
                 {
                     if (this.surface.isPressed (ButtonID.STOP))

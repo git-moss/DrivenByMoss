@@ -38,23 +38,20 @@ public class PolySequencerView extends AbstractPolySequencerView<FireControlSurf
     @Override
     public int getSoloButtonColor (final int index)
     {
-        ITrack selectedTrack;
+        final ITrack cursorTrack = this.model.getCursorTrack ();
         switch (index)
         {
             case 0:
                 return 0;
 
             case 1:
-                selectedTrack = this.model.getSelectedTrack ();
-                return selectedTrack != null && selectedTrack.doesExist () && selectedTrack.isMute () ? 3 : 0;
+                return cursorTrack.doesExist () && cursorTrack.isMute () ? 3 : 0;
 
             case 2:
-                selectedTrack = this.model.getSelectedTrack ();
-                return selectedTrack != null && selectedTrack.doesExist () && selectedTrack.isSolo () ? 4 : 0;
+                return cursorTrack.doesExist () && cursorTrack.isSolo () ? 4 : 0;
 
             case 3:
-                selectedTrack = this.model.getSelectedTrack ();
-                return selectedTrack != null && selectedTrack.doesExist () && selectedTrack.isRecArm () ? 1 : 0;
+                return cursorTrack.doesExist () && cursorTrack.isRecArm () ? 1 : 0;
 
             default:
                 return 0;
@@ -87,9 +84,9 @@ public class PolySequencerView extends AbstractPolySequencerView<FireControlSurf
         if (event != ButtonEvent.DOWN || !this.isActive ())
             return;
 
-        ITrack selectedTrack;
-
+        final ITrack cursorTrack = this.model.getCursorTrack ();
         final INoteClip clip = this.getClip ();
+
         switch (buttonID)
         {
             case ARROW_LEFT:
@@ -113,27 +110,19 @@ public class PolySequencerView extends AbstractPolySequencerView<FireControlSurf
                 break;
 
             case SCENE1:
-                selectedTrack = this.model.getSelectedTrack ();
-                if (selectedTrack != null && selectedTrack.doesExist ())
-                    selectedTrack.stop ();
+                cursorTrack.stop ();
                 break;
 
             case SCENE2:
-                selectedTrack = this.model.getSelectedTrack ();
-                if (selectedTrack != null && selectedTrack.doesExist ())
-                    selectedTrack.toggleMute ();
+                cursorTrack.toggleMute ();
                 break;
 
             case SCENE3:
-                selectedTrack = this.model.getSelectedTrack ();
-                if (selectedTrack != null && selectedTrack.doesExist ())
-                    selectedTrack.toggleSolo ();
+                cursorTrack.toggleSolo ();
                 break;
 
             case SCENE4:
-                selectedTrack = this.model.getSelectedTrack ();
-                if (selectedTrack != null && selectedTrack.doesExist ())
-                    selectedTrack.toggleRecArm ();
+                cursorTrack.toggleRecArm ();
                 break;
 
             default:

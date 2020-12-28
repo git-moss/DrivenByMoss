@@ -81,6 +81,7 @@ public class FireConfiguration extends AbstractConfiguration
             this.flipRecord = "On".equals (value);
             this.notifyObservers (FLIP_RECORD);
         });
+        this.isSettingActive.add (FLIP_RECORD);
 
         ///////////////////////////
         // Play and Sequence
@@ -111,12 +112,14 @@ public class FireConfiguration extends AbstractConfiguration
             this.padBrightness = value.intValue ();
             this.notifyObservers (PAD_BRIGHTNESS);
         });
+        this.isSettingActive.add (PAD_BRIGHTNESS);
 
         this.padSaturationSetting = globalSettings.getRangeSetting ("Pad Saturation", CATEGORY_HARDWARE_SETUP, 0, 100, 1, "%", 100);
         this.padSaturationSetting.addValueObserver (value -> {
             this.padSaturation = value.intValue ();
             this.notifyObservers (PAD_SATURATION);
         });
+        this.isSettingActive.add (PAD_SATURATION);
     }
 
 

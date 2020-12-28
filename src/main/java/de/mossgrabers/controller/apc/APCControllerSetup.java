@@ -729,10 +729,10 @@ public class APCControllerSetup extends AbstractControllerSetup<APCControlSurfac
         final ViewManager viewManager = surface.getViewManager ();
         if (!viewManager.isActive (Views.SESSION))
         {
-            final ITrack selectedTrack = this.model.getSelectedTrack ();
-            if (selectedTrack != null)
+            final ITrack cursorTrack = this.model.getCursorTrack ();
+            if (cursorTrack.doesExist ())
             {
-                final Views preferredView = viewManager.getPreferredView (selectedTrack.getPosition ());
+                final Views preferredView = viewManager.getPreferredView (cursorTrack.getPosition ());
                 viewManager.setActive (preferredView == null ? Views.PLAY : preferredView);
             }
         }

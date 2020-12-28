@@ -303,7 +303,7 @@ public class MaschineControllerSetup extends AbstractControllerSetup<MaschineCon
             if (pressed)
             {
                 final ISlot slot = this.model.getSelectedSlot ();
-                if (slot == null)
+                if (slot == null || !slot.doesExist ())
                     return;
                 if (!slot.isRecording ())
                     slot.record ();
@@ -451,16 +451,16 @@ public class MaschineControllerSetup extends AbstractControllerSetup<MaschineCon
         if (this.maschine.hasMCUDisplay ())
         {
             this.addButton (ButtonID.TRACK, "Select", new RecArmCommand<> (this.model, surface), MaschineControlSurface.SELECT, () -> {
-                final ITrack selectedTrack = this.model.getSelectedTrack ();
-                return selectedTrack != null && selectedTrack.isRecArm ();
+                final ITrack selectedTrack = this.model.getCursorTrack ();
+                return selectedTrack.doesExist () && selectedTrack.isRecArm ();
             });
             this.addButton (ButtonID.SOLO, "Solo", new SoloCommand<> (this.model, surface), MaschineControlSurface.SOLO, () -> {
-                final ITrack selectedTrack = this.model.getSelectedTrack ();
-                return selectedTrack != null && selectedTrack.isSolo ();
+                final ITrack selectedTrack = this.model.getCursorTrack ();
+                return selectedTrack.doesExist () && selectedTrack.isSolo ();
             });
             this.addButton (ButtonID.MUTE, "Mute", new MuteCommand<> (this.model, surface), MaschineControlSurface.MUTE, () -> {
-                final ITrack selectedTrack = this.model.getSelectedTrack ();
-                return selectedTrack != null && selectedTrack.isMute ();
+                final ITrack selectedTrack = this.model.getCursorTrack ();
+                return selectedTrack.doesExist () && selectedTrack.isMute ();
             });
         }
         else
@@ -515,11 +515,11 @@ public class MaschineControllerSetup extends AbstractControllerSetup<MaschineCon
                 if (modeManager.isActive (Modes.DEVICE_PARAMS))
                     this.model.getCursorDevice ().togglePinned ();
                 else
-                    this.model.toggleCursorTrackPinned ();
+                    this.model.getCursorTrack ().togglePinned ();
             }, MaschineControlSurface.MODE_BUTTON_5, () -> {
                 if (modeManager.isActive (Modes.DEVICE_PARAMS))
                     return this.model.getCursorDevice ().isPinned ();
-                return this.model.isCursorTrackPinned ();
+                return this.model.getCursorTrack ().isPinned ();
             });
 
             this.addButton (ButtonID.ROW2_6, "Active", (event, velocity) -> {
@@ -528,16 +528,12 @@ public class MaschineControllerSetup extends AbstractControllerSetup<MaschineCon
                 if (modeManager.isActive (Modes.DEVICE_PARAMS))
                     this.model.getCursorDevice ().toggleEnabledState ();
                 else
-                {
-                    final ITrack selectedTrack = this.model.getSelectedTrack ();
-                    if (selectedTrack != null)
-                        selectedTrack.toggleIsActivated ();
-                }
+                    this.model.getCursorTrack ().toggleIsActivated ();
             }, MaschineControlSurface.MODE_BUTTON_6, () -> {
                 if (modeManager.isActive (Modes.DEVICE_PARAMS))
                     return this.model.getCursorDevice ().isEnabled ();
-                final ITrack selectedTrack = this.model.getSelectedTrack ();
-                return selectedTrack != null && selectedTrack.isActivated ();
+                final ITrack selectedTrack = this.model.getCursorTrack ();
+                return selectedTrack.doesExist () && selectedTrack.isActivated ();
             });
 
             // This button is mapped as Note not CC since it requires at least 1 MCU button to make

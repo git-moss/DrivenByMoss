@@ -40,11 +40,11 @@ public class StepSequencerSelectCommand extends ViewMultiSelectCommand<FireContr
     {
         super.executeNormal (event);
 
-        final ITrack selectedTrack = this.model.getSelectedTrack ();
-        if (selectedTrack != null)
+        final ITrack cursorTrack = this.model.getCursorTrack ();
+        if (cursorTrack.doesExist ())
         {
             final ViewManager viewManager = this.surface.getViewManager ();
-            viewManager.setPreferredView (selectedTrack.getPosition (), viewManager.getActiveID ());
+            viewManager.setPreferredView (cursorTrack.getPosition (), viewManager.getActiveID ());
         }
     }
 

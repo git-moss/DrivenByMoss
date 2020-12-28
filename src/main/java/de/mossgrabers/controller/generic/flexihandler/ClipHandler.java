@@ -12,10 +12,6 @@ import de.mossgrabers.framework.controller.valuechanger.IValueChanger;
 import de.mossgrabers.framework.daw.IClip;
 import de.mossgrabers.framework.daw.IModel;
 import de.mossgrabers.framework.daw.data.ISlot;
-import de.mossgrabers.framework.daw.data.ITrack;
-import de.mossgrabers.framework.daw.data.bank.ISceneBank;
-import de.mossgrabers.framework.daw.data.bank.ISlotBank;
-import de.mossgrabers.framework.daw.data.bank.ITrackBank;
 import de.mossgrabers.framework.utils.ButtonEvent;
 
 
@@ -52,6 +48,7 @@ public class ClipHandler extends AbstractHandler
     {
         return new FlexiCommand []
         {
+            FlexiCommand.CLIP_TOGGLE_PIN,
             FlexiCommand.CLIP_PREVIOUS,
             FlexiCommand.CLIP_NEXT,
             FlexiCommand.CLIP_SCROLL,
@@ -71,6 +68,9 @@ public class ClipHandler extends AbstractHandler
         final ISlot selectedSlot = this.model.getSelectedSlot ();
         switch (command)
         {
+            case CLIP_TOGGLE_PIN:
+                return this.model.getCursorClip ().isPinned () ? 127 : 0;
+
             case CLIP_PLAY:
                 return selectedSlot != null && selectedSlot.isPlaying () ? 127 : 0;
 
@@ -94,14 +94,19 @@ public class ClipHandler extends AbstractHandler
 
         switch (command)
         {
+            case CLIP_TOGGLE_PIN:
+                if (isButtonPressed)
+                    this.model.getCursorClip ().togglePinned ();
+                break;
+
             case CLIP_PREVIOUS:
                 if (isButtonPressed)
-                    this.scrollClipLeft (false);
+                    this.scrollClipLeft ();
                 break;
 
             case CLIP_NEXT:
                 if (isButtonPressed)
-                    this.scrollClipRight (false);
+                    this.scrollClipRight ();
                 break;
 
             case CLIP_SCROLL:
@@ -119,11 +124,7 @@ public class ClipHandler extends AbstractHandler
 
             case CLIP_STOP:
                 if (isButtonPressed)
-                {
-                    final ITrack track = this.model.getSelectedTrack ();
-                    if (track != null)
-                        track.stop ();
-                }
+                    this.model.getCursorTrack ().stop ();
                 break;
 
             case CLIP_RECORD:
@@ -143,7 +144,7 @@ public class ClipHandler extends AbstractHandler
             case CLIP_QUANTIZE:
                 if (isButtonPressed)
                 {
-                    final IClip clip = this.model.getClip ();
+                    final IClip clip = this.model.getCursorClip ();
                     if (clip.doesExist ())
                         clip.quantize (1);
                 }
@@ -164,45 +165,20 @@ public class ClipHandler extends AbstractHandler
             return;
 
         if (this.getRelativeSpeed (knobMode, value) > 0)
-            this.scrollClipRight (false);
+            this.scrollClipRight ();
         else
-            this.scrollClipLeft (false);
+            this.scrollClipLeft ();
     }
 
 
-    private void scrollClipLeft (final boolean switchBank)
+    private void scrollClipLeft ()
     {
-        final ITrackBank tb = this.model.getCurrentTrackBank ();
-        final ITrack track = tb.getSelectedItem ();
-        if (track == null)
-            return;
-        final ISlotBank slotBank = track.getSlotBank ();
-        final ISlot sel = slotBank.getSelectedItem ();
-        final int index = sel == null ? 0 : sel.getIndex () - 1;
-        if (index == -1 || switchBank)
-        {
-            tb.getSceneBank ().selectPreviousPage ();
-            return;
-        }
-        slotBank.getItem (index).select ();
+        this.model.getCursorTrack ().getSlotBank ().selectPreviousItem ();
     }
 
 
-    private void scrollClipRight (final boolean switchBank)
+    private void scrollClipRight ()
     {
-        final ITrackBank tb = this.model.getCurrentTrackBank ();
-        final ITrack track = tb.getSelectedItem ();
-        if (track == null)
-            return;
-        final ISlotBank slotBank = track.getSlotBank ();
-        final ISlot sel = slotBank.getSelectedItem ();
-        final int index = sel == null ? 0 : sel.getIndex () + 1;
-        final ISceneBank sceneBank = tb.getSceneBank ();
-        if (index == sceneBank.getPageSize () || switchBank)
-        {
-            sceneBank.selectNextPage ();
-            return;
-        }
-        slotBank.getItem (index).select ();
+        this.model.getCursorTrack ().getSlotBank ().selectNextItem ();
     }
 }

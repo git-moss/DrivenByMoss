@@ -108,6 +108,8 @@ public class APCminiConfiguration extends AbstractConfiguration
             this.softKeys = value;
             this.notifyObservers (SOFT_KEYS);
         });
+        this.isSettingActive.add (FADER_CTRL);
+        this.isSettingActive.add (SOFT_KEYS);
     }
 
 

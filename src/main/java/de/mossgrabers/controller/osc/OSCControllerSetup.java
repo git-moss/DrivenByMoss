@@ -6,6 +6,7 @@ package de.mossgrabers.controller.osc;
 
 import de.mossgrabers.controller.osc.module.ActionModule;
 import de.mossgrabers.controller.osc.module.BrowserModule;
+import de.mossgrabers.controller.osc.module.ClipModule;
 import de.mossgrabers.controller.osc.module.DeviceModule;
 import de.mossgrabers.controller.osc.module.GlobalModule;
 import de.mossgrabers.controller.osc.module.IModule;
@@ -199,6 +200,7 @@ public class OSCControllerSetup extends AbstractControllerSetup<IControlSurface<
         modules.add (new MidiModule (this.host, this.model, surface, this.writer, this.keyManager));
         modules.add (new UserModule (this.host, this.model, this.writer));
         modules.add (new ActionModule (this.host, this.model, this.writer, this.configuration));
+        modules.add (new ClipModule (this.host, this.model, this.writer));
 
         modules.forEach (module -> {
             this.writer.registerModule (module);

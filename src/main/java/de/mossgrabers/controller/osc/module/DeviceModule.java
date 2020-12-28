@@ -16,6 +16,7 @@ import de.mossgrabers.framework.daw.data.IChannel;
 import de.mossgrabers.framework.daw.data.ICursorDevice;
 import de.mossgrabers.framework.daw.data.IEqualizerDevice;
 import de.mossgrabers.framework.daw.data.ILayer;
+import de.mossgrabers.framework.daw.data.IParameter;
 import de.mossgrabers.framework.daw.data.ISend;
 import de.mossgrabers.framework.daw.data.ISpecificDevice;
 import de.mossgrabers.framework.daw.data.ITrack;
@@ -103,6 +104,7 @@ public class DeviceModule extends AbstractModule
     {
         final ICursorDevice cd = this.model.getCursorDevice ();
         this.flushDevice (this.writer, "/device/", cd, dump);
+        this.writer.sendOSC ("/device/pinned", cd.isPinned (), dump);
         if (cd.hasDrumPads ())
         {
             final IDrumPadBank drumPadBank = cd.getDrumPadBank ();
@@ -266,6 +268,13 @@ public class DeviceModule extends AbstractModule
             case "-":
                 if (isTrigger (value))
                     cursorDevice.selectPrevious ();
+                break;
+
+            case "pinned":
+                if (value == null)
+                    cursorDevice.togglePinned ();
+                else
+                    cursorDevice.setPinned (isTrigger (value));
                 break;
 
             default:
@@ -451,9 +460,9 @@ public class DeviceModule extends AbstractModule
                 return true;
 
             case "add":
-                final ITrack selectedTrack = this.model.getSelectedTrack ();
-                if (selectedTrack != null && isTrigger (value))
-                    selectedTrack.addEqualizerDevice ();
+                final ITrack cursorTrack = this.model.getCursorTrack ();
+                if (cursorTrack.doesExist () && isTrigger (value))
+                    cursorTrack.addEqualizerDevice ();
                 return true;
 
             default:
@@ -604,22 +613,23 @@ public class DeviceModule extends AbstractModule
     private static void parseFXParamValue (final ISpecificDevice cursorDevice, final int fxparamIndex, final LinkedList<String> path, final Object value) throws MissingCommandException, IllegalParameterException, UnknownCommandException
     {
         final String command = getSubCommand (path);
+        final IParameter param = cursorDevice.getParameterBank ().getItem (fxparamIndex);
         switch (command)
         {
             case "value":
-                cursorDevice.getParameterBank ().getItem (fxparamIndex).setValue (toInteger (value));
+                param.setValue (toInteger (value));
                 break;
 
             case TAG_INDICATE:
-                cursorDevice.getParameterBank ().getItem (fxparamIndex).setIndication (isTrigger (value));
+                param.setIndication (isTrigger (value));
                 break;
 
             case "reset":
-                cursorDevice.getParameterBank ().getItem (fxparamIndex).resetValue ();
+                param.resetValue ();
                 break;
 
             case TAG_TOUCHED:
-                cursorDevice.getParameterBank ().getItem (fxparamIndex).touchValue (isTrigger (value));
+                param.touchValue (isTrigger (value));
                 break;
 
             default:

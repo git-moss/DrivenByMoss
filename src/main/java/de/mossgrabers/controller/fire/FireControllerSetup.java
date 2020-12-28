@@ -329,9 +329,7 @@ public class FireControllerSetup extends AbstractControllerSetup<FireControlSurf
                 surface.getDisplay ().notify ("Redo");
                 return;
             }
-            final ITrack selectedTrack = this.model.getSelectedTrack ();
-            if (selectedTrack != null)
-                selectedTrack.getSlotBank ().selectNextItem ();
+            this.model.getCursorTrack ().getSlotBank ().selectNextItem ();
         }, FireControlSurface.FIRE_PAT_UP);
         this.addButton (ButtonID.ARROW_DOWN, "PATTERN\nDOWN", (event, velocity) -> {
             if (velocity == 0)
@@ -342,9 +340,7 @@ public class FireControllerSetup extends AbstractControllerSetup<FireControlSurf
                 surface.getDisplay ().notify ("Undo");
                 return;
             }
-            final ITrack selectedTrack = this.model.getSelectedTrack ();
-            if (selectedTrack != null)
-                selectedTrack.getSlotBank ().selectPreviousItem ();
+            this.model.getCursorTrack ().getSlotBank ().selectPreviousItem ();
         }, FireControlSurface.FIRE_PAT_DOWN);
 
         for (int i = 0; i < 4; i++)
@@ -582,10 +578,10 @@ public class FireControllerSetup extends AbstractControllerSetup<FireControlSurf
         // Recall last used view (if we are not in session mode)
         if (!viewManager.isActive (Views.SESSION) && !viewManager.isActive (Views.MIX))
         {
-            final ITrack selectedTrack = this.model.getSelectedTrack ();
-            if (selectedTrack != null)
+            final ITrack cursorTrack = this.model.getCursorTrack ();
+            if (cursorTrack.doesExist ())
             {
-                final Views preferredView = viewManager.getPreferredView (selectedTrack.getPosition ());
+                final Views preferredView = viewManager.getPreferredView (cursorTrack.getPosition ());
                 viewManager.setActive (preferredView == null ? Views.PLAY : preferredView);
             }
         }

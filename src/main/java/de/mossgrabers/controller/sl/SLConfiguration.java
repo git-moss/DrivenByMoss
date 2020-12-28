@@ -78,6 +78,7 @@ public class SLConfiguration extends AbstractConfiguration
             this.touchpadMode = value;
             this.notifyObservers (TOUCHPAD_MODE);
         });
+        this.isSettingActive.add (TOUCHPAD_MODE);
 
         ///////////////////////////
         // Workflow
@@ -91,6 +92,7 @@ public class SLConfiguration extends AbstractConfiguration
             this.drumpadsAsModeSelection = ON_OFF_OPTIONS[1].equals (value);
             this.notifyObservers (DRUMPADS_AS_MODE_SELECTION);
         });
+        this.isSettingActive.add (DRUMPADS_AS_MODE_SELECTION);
     }
 
 

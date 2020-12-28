@@ -214,7 +214,7 @@ public class PlayView extends AbstractPlayView<MaschineControlSurface, MaschineC
             default:
                 if (hilite)
                     return AbstractSequencerView.COLOR_STEP_HILITE_NO_CONTENT;
-                return this.getPadColor (note, this.model.getSelectedTrack ());
+                return this.getPadColor (note, this.model.getCursorTrack ());
         }
     }
 

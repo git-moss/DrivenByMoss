@@ -38,22 +38,22 @@ public class SLTrackMode extends TrackMode<SLControlSurface, SLConfiguration>
     @Override
     public void updateDisplay ()
     {
-        final ITrack t = this.model.getSelectedTrack ();
+        final ITrack cursorTrack = this.model.getCursorTrack ();
         final ITextDisplay d = this.surface.getTextDisplay ().clearRow (0).clearRow (1);
 
-        if (t == null)
+        if (!cursorTrack.doesExist ())
         {
             d.setRow (0, "                        Please select a track...                       ").done (0).done (1);
             return;
         }
 
-        d.setCell (0, 0, "Volume").setCell (1, 0, t.getVolumeStr (8)).setCell (0, 1, "Pan").setCell (1, 1, t.getPanStr (8));
+        d.setCell (0, 0, "Volume").setCell (1, 0, cursorTrack.getVolumeStr (8)).setCell (0, 1, "Pan").setCell (1, 1, cursorTrack.getPanStr (8));
 
         final int sendStart = 2;
         final int sendCount = 6;
         int pos;
 
-        final ISendBank sendBank = t.getSendBank ();
+        final ISendBank sendBank = cursorTrack.getSendBank ();
         if (sendBank.getPageSize () > 0)
         {
             for (int i = 0; i < sendCount; i++)

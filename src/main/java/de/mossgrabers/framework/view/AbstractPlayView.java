@@ -88,9 +88,9 @@ public abstract class AbstractPlayView<S extends IControlSurface<C>, C extends C
         final boolean isKeyboardEnabled = this.model.canSelectedTrackHoldNotes ();
         final boolean isRecording = this.model.hasRecordingState ();
 
-        final ITrack selectedTrack = this.model.getSelectedTrack ();
+        final ITrack cursorTrack = this.model.getCursorTrack ();
         for (int i = this.scales.getStartNote (); i < this.scales.getEndNote (); i++)
-            lightGuide.light (i, this.getGridColor (isKeyboardEnabled, isRecording, selectedTrack, i));
+            lightGuide.light (i, this.getGridColor (isKeyboardEnabled, isRecording, cursorTrack, i));
     }
 
 
@@ -213,9 +213,7 @@ public abstract class AbstractPlayView<S extends IControlSurface<C>, C extends C
     @Override
     public void updateNoteMapping ()
     {
-        this.surface.scheduleTask ( () -> {
-            this.delayedUpdateNoteMapping (this.model.canSelectedTrackHoldNotes () ? this.scales.getNoteMatrix () : EMPTY_TABLE);
-        }, 100);
+        this.surface.scheduleTask ( () -> this.delayedUpdateNoteMapping (this.model.canSelectedTrackHoldNotes () ? this.scales.getNoteMatrix () : EMPTY_TABLE), 100);
     }
 
 
