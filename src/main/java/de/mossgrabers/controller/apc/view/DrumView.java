@@ -35,7 +35,7 @@ public class DrumView extends AbstractDrumView<APCControlSurface, APCConfigurati
      */
     public DrumView (final APCControlSurface surface, final IModel model)
     {
-        super ("Drum", surface, model, 2, 3, true);
+        super ("Drum", surface, model, 2, 3, surface.isMkII ());
     }
 
 
