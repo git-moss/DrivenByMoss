@@ -41,6 +41,8 @@ import de.mossgrabers.framework.view.Views;
  */
 public class LaunchpadCursorCommand extends CursorCommand<LaunchpadControlSurface, LaunchpadConfiguration>
 {
+    private final static int REPEAT_SPEED = 300;
+
     private final Scales     scales;
     private final ITransport transport;
 
@@ -194,9 +196,7 @@ public class LaunchpadCursorCommand extends CursorCommand<LaunchpadControlSurfac
                 break;
 
             case SHIFT:
-                final Views previousViewId = viewManager.getPreviousID ();
-                viewManager.setActive (Views.SHUFFLE);
-                viewManager.setPreviousID (previousViewId);
+                viewManager.setTemporary (Views.SHUFFLE);
                 break;
 
             case PLAY:
@@ -208,7 +208,6 @@ public class LaunchpadCursorCommand extends CursorCommand<LaunchpadControlSurfac
 
             case PIANO:
             case DRUM64:
-                // Not used
                 // Not used
                 break;
 
@@ -244,11 +243,13 @@ public class LaunchpadCursorCommand extends CursorCommand<LaunchpadControlSurfac
                 break;
 
             case SHUFFLE:
-                this.triggerChangeShuffle10 (false);
+                if (!this.surface.isPressed (ButtonID.RIGHT))
+                    this.triggerChangeShuffle (-10, ButtonID.LEFT);
                 break;
 
             case TEMPO:
-                this.triggerChangeTempo10 (false);
+                if (!this.surface.isPressed (ButtonID.RIGHT))
+                    this.triggerChangeTempo (-10, ButtonID.LEFT);
                 break;
 
             case PROJECT:
@@ -275,9 +276,7 @@ public class LaunchpadCursorCommand extends CursorCommand<LaunchpadControlSurfac
                 break;
 
             case SHIFT:
-                final Views previousViewId = viewManager.getPreviousID ();
-                viewManager.setActive (Views.SHUFFLE);
-                viewManager.setPreviousID (previousViewId);
+                viewManager.setTemporary (Views.SHUFFLE);
                 break;
 
             case PLAY:
@@ -324,11 +323,13 @@ public class LaunchpadCursorCommand extends CursorCommand<LaunchpadControlSurfac
                 break;
 
             case SHUFFLE:
-                this.triggerChangeShuffle10 (true);
+                if (!this.surface.isPressed (ButtonID.LEFT))
+                    this.triggerChangeShuffle (10, ButtonID.RIGHT);
                 break;
 
             case TEMPO:
-                this.triggerChangeTempo10 (true);
+                if (!this.surface.isPressed (ButtonID.LEFT))
+                    this.triggerChangeTempo (10, ButtonID.RIGHT);
                 break;
 
             case PROJECT:
@@ -389,11 +390,13 @@ public class LaunchpadCursorCommand extends CursorCommand<LaunchpadControlSurfac
                 break;
 
             case SHUFFLE:
-                this.triggerChangeShuffle1 (true);
+                if (!this.surface.isPressed (ButtonID.DOWN))
+                    this.triggerChangeShuffle (1, ButtonID.UP);
                 break;
 
             case TEMPO:
-                this.triggerChangeTempo1 (true);
+                if (!this.surface.isPressed (ButtonID.DOWN))
+                    this.triggerChangeTempo (1, ButtonID.UP);
                 break;
 
             case PROJECT:
@@ -454,11 +457,13 @@ public class LaunchpadCursorCommand extends CursorCommand<LaunchpadControlSurfac
                 break;
 
             case SHUFFLE:
-                this.triggerChangeShuffle1 (false);
+                if (!this.surface.isPressed (ButtonID.UP))
+                    this.triggerChangeShuffle (-1, ButtonID.DOWN);
                 break;
 
             case TEMPO:
-                this.triggerChangeTempo1 (false);
+                if (!this.surface.isPressed (ButtonID.UP))
+                    this.triggerChangeTempo (-1, ButtonID.DOWN);
                 break;
 
             case PROJECT:
@@ -471,49 +476,27 @@ public class LaunchpadCursorCommand extends CursorCommand<LaunchpadControlSurfac
     }
 
 
-    private void triggerChangeTempo1 (final boolean increase)
+    private void triggerChangeTempo (final int amount, final ButtonID buttonID)
     {
-        if (!this.surface.isPressed (increase ? ButtonID.UP : ButtonID.DOWN))
+        if (!this.surface.isPressed (buttonID))
             return;
 
-        this.model.getTransport ().changeTempo (increase, this.surface.isKnobSensitivitySlow ());
-        this.surface.scheduleTask ( () -> this.triggerChangeTempo1 (increase), 400);
+        this.transport.setTempo (this.transport.getTempo () + amount);
+        this.surface.scheduleTask ( () -> this.triggerChangeTempo (amount, buttonID), REPEAT_SPEED);
     }
 
 
-    private void triggerChangeTempo10 (final boolean increase)
+    private void triggerChangeShuffle (final int amount, final ButtonID buttonID)
     {
-        if (!this.surface.isPressed (increase ? ButtonID.RIGHT : ButtonID.LEFT))
-            return;
-
-        this.transport.setTempo (this.transport.getTempo () + (increase ? 10 : -10));
-        this.surface.scheduleTask ( () -> this.triggerChangeTempo10 (increase), 400);
-    }
-
-
-    private void triggerChangeShuffle1 (final boolean increase)
-    {
-        if (!this.surface.isPressed (increase ? ButtonID.UP : ButtonID.DOWN))
+        if (!this.surface.isPressed (buttonID))
             return;
 
         final IParameter shuffleParam = this.model.getGroove ().getParameter (GrooveParameterID.SHUFFLE_AMOUNT);
         final int max = this.model.getValueChanger ().getUpperBound () - 1;
-        shuffleParam.setValue (Math.min (max, shuffleParam.getValue () + (increase ? 1 : -1)));
+        final int a = (int) Math.round (amount * max / 100.0);
+        shuffleParam.setValue (Math.min (max, shuffleParam.getValue () + a));
 
-        this.surface.scheduleTask ( () -> this.triggerChangeShuffle1 (increase), 400);
-    }
-
-
-    private void triggerChangeShuffle10 (final boolean increase)
-    {
-        if (!this.surface.isPressed (increase ? ButtonID.RIGHT : ButtonID.LEFT))
-            return;
-
-        final IParameter shuffleParam = this.model.getGroove ().getParameter (GrooveParameterID.SHUFFLE_AMOUNT);
-        final int max = this.model.getValueChanger ().getUpperBound () - 1;
-        shuffleParam.setValue (Math.min (max, shuffleParam.getValue () + (increase ? 10 : -10)));
-
-        this.surface.scheduleTask ( () -> this.triggerChangeShuffle10 (increase), 400);
+        this.surface.scheduleTask ( () -> this.triggerChangeShuffle (amount, buttonID), REPEAT_SPEED);
     }
 
 
@@ -527,6 +510,6 @@ public class LaunchpadCursorCommand extends CursorCommand<LaunchpadControlSurfac
         else
             this.model.getApplication ().zoomOut ();
 
-        this.surface.scheduleTask ( () -> this.triggerChangeZoom1 (in), 300);
+        this.surface.scheduleTask ( () -> this.triggerChangeZoom1 (in), REPEAT_SPEED);
     }
 }

@@ -217,7 +217,7 @@ public abstract class AbstractNumberDisplayView<S extends IControlSurface<C>, C 
 
     // @formatter:on
 
-    private final IPadGrid                padGrid;
+    protected final IPadGrid              padGrid;
     private final int                     textColor1;
     private final int                     textColor2;
     private final int                     backgroundColor;
@@ -280,7 +280,15 @@ public abstract class AbstractNumberDisplayView<S extends IControlSurface<C>, C 
                 this.padGrid.lightEx (5 + x, y, third[y][x] ? this.textColor1 : this.backgroundColor);
         }
 
-        // Fill the rest of the grid with the background color
+        this.fillBottom ();
+    }
+
+
+    /**
+     * Fill the rest of the grid with the background color. Overwrite for additional features.
+     */
+    protected void fillBottom ()
+    {
         for (int x = 0; x < this.padGrid.getCols (); x++)
         {
             for (int y = 5; y < this.padGrid.getRows (); y++)
@@ -301,7 +309,7 @@ public abstract class AbstractNumberDisplayView<S extends IControlSurface<C>, C 
     /**
      * Get the number to display.
      *
-     * @return THe number in the range of 0 to 999
+     * @return The number in the range of 0 to 999
      */
     protected abstract int getNumber ();
 }

@@ -39,6 +39,7 @@ import de.mossgrabers.controller.launchpad.view.Drum4View;
 import de.mossgrabers.controller.launchpad.view.Drum64View;
 import de.mossgrabers.controller.launchpad.view.Drum8View;
 import de.mossgrabers.controller.launchpad.view.DrumView;
+import de.mossgrabers.controller.launchpad.view.LaunchpadShuffleView;
 import de.mossgrabers.controller.launchpad.view.MixView;
 import de.mossgrabers.controller.launchpad.view.NoteViewSelectView;
 import de.mossgrabers.controller.launchpad.view.PanView;
@@ -93,7 +94,6 @@ import de.mossgrabers.framework.mode.track.PanMode;
 import de.mossgrabers.framework.mode.track.SoloMode;
 import de.mossgrabers.framework.mode.track.VolumeMode;
 import de.mossgrabers.framework.utils.ButtonEvent;
-import de.mossgrabers.framework.view.ShuffleView;
 import de.mossgrabers.framework.view.TempoView;
 import de.mossgrabers.framework.view.Views;
 
@@ -245,7 +245,7 @@ public class LaunchpadControllerSetup extends AbstractControllerSetup<LaunchpadC
             viewManager.register (Views.USER, new UserView (surface, this.model));
 
         viewManager.register (Views.TEMPO, new TempoView<> (surface, this.model, LaunchpadColorManager.LAUNCHPAD_COLOR_BLUE_HI, LaunchpadColorManager.LAUNCHPAD_COLOR_WHITE, LaunchpadColorManager.LAUNCHPAD_COLOR_BLACK));
-        viewManager.register (Views.SHUFFLE, new ShuffleView<> (surface, this.model, LaunchpadColorManager.LAUNCHPAD_COLOR_PINK_HI, LaunchpadColorManager.LAUNCHPAD_COLOR_WHITE, LaunchpadColorManager.LAUNCHPAD_COLOR_BLACK));
+        viewManager.register (Views.SHUFFLE, new LaunchpadShuffleView (surface, this.model, LaunchpadColorManager.LAUNCHPAD_COLOR_PINK_HI, LaunchpadColorManager.LAUNCHPAD_COLOR_WHITE, LaunchpadColorManager.LAUNCHPAD_COLOR_BLACK));
         viewManager.register (Views.PROJECT, new ProjectView (surface, this.model));
     }
 
