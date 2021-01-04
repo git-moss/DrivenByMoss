@@ -1,5 +1,5 @@
 // Written by Jürgen Moßgraber - mossgrabers.de
-// (c) 2017-2020
+// (c) 2017-2021
 // Licensed under LGPLv3 - http://www.gnu.org/licenses/lgpl-3.0.txt
 
 package de.mossgrabers.controller.launchpad.controller;
@@ -32,49 +32,51 @@ import java.util.Map.Entry;
 @SuppressWarnings("javadoc")
 public class LaunchpadControlSurface extends AbstractControlSurface<LaunchpadConfiguration>
 {
-    public static final int                      LAUNCHPAD_BUTTON_SCENE1    = 89;                   // 1/4
-    public static final int                      LAUNCHPAD_BUTTON_SCENE2    = 79;
-    public static final int                      LAUNCHPAD_BUTTON_SCENE3    = 69;
-    public static final int                      LAUNCHPAD_BUTTON_SCENE4    = 59;
-    public static final int                      LAUNCHPAD_BUTTON_SCENE5    = 49;                   // ...
-    public static final int                      LAUNCHPAD_BUTTON_SCENE6    = 39;
-    public static final int                      LAUNCHPAD_BUTTON_SCENE7    = 29;
-    public static final int                      LAUNCHPAD_BUTTON_SCENE8    = 19;                   // 1/32T
+    public static final int                      LAUNCHPAD_BUTTON_SCENE1     = 89;                   // 1/4
+    public static final int                      LAUNCHPAD_BUTTON_SCENE2     = 79;
+    public static final int                      LAUNCHPAD_BUTTON_SCENE3     = 69;
+    public static final int                      LAUNCHPAD_BUTTON_SCENE4     = 59;
+    public static final int                      LAUNCHPAD_BUTTON_SCENE5     = 49;                   // ...
+    public static final int                      LAUNCHPAD_BUTTON_SCENE6     = 39;
+    public static final int                      LAUNCHPAD_BUTTON_SCENE7     = 29;
+    public static final int                      LAUNCHPAD_BUTTON_SCENE8     = 19;                   // 1/32T
 
-    public static final int                      LAUNCHPAD_FADER_1          = 21;
-    public static final int                      LAUNCHPAD_FADER_2          = 22;
-    public static final int                      LAUNCHPAD_FADER_3          = 23;
-    public static final int                      LAUNCHPAD_FADER_4          = 24;
-    public static final int                      LAUNCHPAD_FADER_5          = 25;
-    public static final int                      LAUNCHPAD_FADER_6          = 26;
-    public static final int                      LAUNCHPAD_FADER_7          = 27;
-    public static final int                      LAUNCHPAD_FADER_8          = 28;
+    public static final int                      LAUNCHPAD_FADER_1           = 21;
+    public static final int                      LAUNCHPAD_FADER_2           = 22;
+    public static final int                      LAUNCHPAD_FADER_3           = 23;
+    public static final int                      LAUNCHPAD_FADER_4           = 24;
+    public static final int                      LAUNCHPAD_FADER_5           = 25;
+    public static final int                      LAUNCHPAD_FADER_6           = 26;
+    public static final int                      LAUNCHPAD_FADER_7           = 27;
+    public static final int                      LAUNCHPAD_FADER_8           = 28;
 
-    public static final int                      LAUNCHPAD_LOGO             = 99;
+    public static final int                      PRO3_LAUNCHPAD_FIXED_LENGTH = 30;
 
-    public static final int                      LAUNCHPAD_TRACK1           = 101;
-    public static final int                      LAUNCHPAD_TRACK2           = 102;
-    public static final int                      LAUNCHPAD_TRACK3           = 103;
-    public static final int                      LAUNCHPAD_TRACK4           = 104;
-    public static final int                      LAUNCHPAD_TRACK5           = 105;
-    public static final int                      LAUNCHPAD_TRACK6           = 106;
-    public static final int                      LAUNCHPAD_TRACK7           = 107;
-    public static final int                      LAUNCHPAD_TRACK8           = 108;
+    public static final int                      LAUNCHPAD_LOGO              = 99;
 
-    public static final int                      LAUNCHPAD_BUTTON_STATE_OFF = 0;
-    public static final int                      LAUNCHPAD_BUTTON_STATE_ON  = 1;
-    public static final int                      LAUNCHPAD_BUTTON_STATE_HI  = 4;
+    public static final int                      LAUNCHPAD_TRACK1            = 101;
+    public static final int                      LAUNCHPAD_TRACK2            = 102;
+    public static final int                      LAUNCHPAD_TRACK3            = 103;
+    public static final int                      LAUNCHPAD_TRACK4            = 104;
+    public static final int                      LAUNCHPAD_TRACK5            = 105;
+    public static final int                      LAUNCHPAD_TRACK6            = 106;
+    public static final int                      LAUNCHPAD_TRACK7            = 107;
+    public static final int                      LAUNCHPAD_TRACK8            = 108;
 
-    public static final int                      CONTROL_MODE_OFF           = 0;
-    public static final int                      CONTROL_MODE_REC_ARM       = 1;
-    public static final int                      CONTROL_MODE_TRACK_SELECT  = 2;
-    public static final int                      CONTROL_MODE_MUTE          = 3;
-    public static final int                      CONTROL_MODE_SOLO          = 4;
-    public static final int                      CONTROL_MODE_STOP_CLIP     = 5;
+    public static final int                      LAUNCHPAD_BUTTON_STATE_OFF  = 0;
+    public static final int                      LAUNCHPAD_BUTTON_STATE_ON   = 1;
+    public static final int                      LAUNCHPAD_BUTTON_STATE_HI   = 4;
+
+    public static final int                      CONTROL_MODE_OFF            = 0;
+    public static final int                      CONTROL_MODE_REC_ARM        = 1;
+    public static final int                      CONTROL_MODE_TRACK_SELECT   = 2;
+    public static final int                      CONTROL_MODE_MUTE           = 3;
+    public static final int                      CONTROL_MODE_SOLO           = 4;
+    public static final int                      CONTROL_MODE_STOP_CLIP      = 5;
 
     private final ILaunchpadControllerDefinition definition;
 
-    private final IVirtualFader []               virtualFaders              = new IVirtualFader [8];
+    private final IVirtualFader []               virtualFaders               = new IVirtualFader [8];
 
 
     /**

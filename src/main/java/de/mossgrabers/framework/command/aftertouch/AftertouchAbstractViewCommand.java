@@ -1,5 +1,5 @@
 // Written by Jürgen Moßgraber - mossgrabers.de
-// (c) 2017-2020
+// (c) 2017-2021
 // Licensed under LGPLv3 - http://www.gnu.org/licenses/lgpl-3.0.txt
 
 package de.mossgrabers.framework.command.aftertouch;
@@ -23,7 +23,7 @@ import java.util.List;
  */
 public class AftertouchAbstractViewCommand<S extends IControlSurface<C>, C extends Configuration> extends AbstractAftertouchCommand<S, C>
 {
-    private AbstractView<S, C> view;
+    protected AbstractView<S, C> view;
 
 
     /**
@@ -44,6 +44,11 @@ public class AftertouchAbstractViewCommand<S extends IControlSurface<C>, C exten
     @Override
     public void onPolyAftertouch (final int note, final int value)
     {
+        // Only allow aftertouch for pads with notes
+        final int n = this.view.getKeyManager ().getMidiNoteFromGrid (note);
+        if (n == -1)
+            return;
+
         final Configuration config = this.surface.getConfiguration ();
         switch (config.getConvertAftertouch ())
         {
@@ -53,9 +58,7 @@ public class AftertouchAbstractViewCommand<S extends IControlSurface<C>, C exten
 
             case -2:
                 // Translate notes of Poly aftertouch to current note mapping
-                final int n = this.view.getKeyManager ().getMidiNoteFromGrid (note);
-                if (n != -1)
-                    this.surface.sendMidiEvent (0xA0, n, value);
+                this.surface.sendMidiEvent (0xA0, n, value);
                 break;
 
             case -1:

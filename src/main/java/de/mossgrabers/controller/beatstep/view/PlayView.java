@@ -1,5 +1,5 @@
 // Written by Jürgen Moßgraber - mossgrabers.de
-// (c) 2017-2020
+// (c) 2017-2021
 // Licensed under LGPLv3 - http://www.gnu.org/licenses/lgpl-3.0.txt
 
 package de.mossgrabers.controller.beatstep.view;
@@ -12,6 +12,7 @@ import de.mossgrabers.framework.controller.grid.IPadGrid;
 import de.mossgrabers.framework.daw.IModel;
 import de.mossgrabers.framework.scale.Scales;
 import de.mossgrabers.framework.view.AbstractPlayView;
+import de.mossgrabers.framework.view.Views;
 
 
 /**
@@ -32,7 +33,7 @@ public class PlayView extends AbstractPlayView<BeatstepControlSurface, BeatstepC
      */
     public PlayView (final BeatstepControlSurface surface, final IModel model)
     {
-        super ("Play", surface, model, false);
+        super (Views.VIEW_NAME_PLAY, surface, model, false);
         this.extensions = new TrackEditing (surface, model);
     }
 

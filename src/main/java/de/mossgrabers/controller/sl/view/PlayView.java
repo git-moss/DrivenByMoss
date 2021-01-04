@@ -1,5 +1,5 @@
 // Written by Jürgen Moßgraber - mossgrabers.de
-// (c) 2017-2020
+// (c) 2017-2021
 // Licensed under LGPLv3 - http://www.gnu.org/licenses/lgpl-3.0.txt
 
 package de.mossgrabers.controller.sl.view;
@@ -52,7 +52,7 @@ public class PlayView extends AbstractSequencerView<SLControlSurface, SLConfigur
      */
     public PlayView (final SLControlSurface surface, final IModel model)
     {
-        super ("Play", surface, model, 128, NUM_DISPLAY_COLS, false);
+        super (Views.VIEW_NAME_PLAY, surface, model, 128, NUM_DISPLAY_COLS, false);
 
         this.transportControl = new TransportControl (surface, model);
 

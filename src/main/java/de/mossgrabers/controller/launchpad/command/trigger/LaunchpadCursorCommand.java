@@ -1,5 +1,5 @@
 // Written by Jürgen Moßgraber - mossgrabers.de
-// (c) 2017-2020
+// (c) 2017-2021
 // Licensed under LGPLv3 - http://www.gnu.org/licenses/lgpl-3.0.txt
 
 package de.mossgrabers.controller.launchpad.command.trigger;
@@ -7,6 +7,7 @@ package de.mossgrabers.controller.launchpad.command.trigger;
 import de.mossgrabers.controller.launchpad.LaunchpadConfiguration;
 import de.mossgrabers.controller.launchpad.controller.LaunchpadControlSurface;
 import de.mossgrabers.controller.launchpad.view.Drum64View;
+import de.mossgrabers.controller.launchpad.view.SessionView;
 import de.mossgrabers.framework.command.trigger.mode.CursorCommand;
 import de.mossgrabers.framework.controller.ButtonID;
 import de.mossgrabers.framework.daw.GrooveParameterID;
@@ -41,7 +42,7 @@ import de.mossgrabers.framework.view.Views;
  */
 public class LaunchpadCursorCommand extends CursorCommand<LaunchpadControlSurface, LaunchpadConfiguration>
 {
-    private final static int REPEAT_SPEED = 300;
+    private static final int REPEAT_SPEED = 300;
 
     private final Scales     scales;
     private final ITransport transport;
@@ -90,6 +91,7 @@ public class LaunchpadCursorCommand extends CursorCommand<LaunchpadControlSurfac
                 break;
 
             case PLAY:
+            case CHORDS:
                 final int octave = this.scales.getOctave ();
                 this.canScrollUp = octave < 3;
                 this.canScrollDown = octave > -3;
@@ -200,6 +202,7 @@ public class LaunchpadCursorCommand extends CursorCommand<LaunchpadControlSurfac
                 break;
 
             case PLAY:
+            case CHORDS:
                 this.scales.prevScale ();
                 final String name = this.scales.getScale ().getName ();
                 this.surface.getConfiguration ().setScale (name);
@@ -233,6 +236,16 @@ public class LaunchpadCursorCommand extends CursorCommand<LaunchpadControlSurfac
                 break;
 
             case SESSION:
+                final IMode volumeMode = this.surface.getModeManager ().get (Modes.VOLUME);
+                if (volumeMode == null)
+                    return;
+                final SessionView sessionView = (SessionView) this.surface.getViewManager ().get (Views.SESSION);
+                if (sessionView.isBirdsEyeActive ())
+                    volumeMode.selectPreviousItemPage ();
+                else
+                    volumeMode.selectPreviousItem ();
+                break;
+
             case TRACK_VOLUME:
             case TRACK_PAN:
             case TRACK_SENDS:
@@ -280,6 +293,7 @@ public class LaunchpadCursorCommand extends CursorCommand<LaunchpadControlSurfac
                 break;
 
             case PLAY:
+            case CHORDS:
                 this.scales.nextScale ();
                 final String name = this.scales.getScale ().getName ();
                 this.surface.getConfiguration ().setScale (name);
@@ -313,6 +327,16 @@ public class LaunchpadCursorCommand extends CursorCommand<LaunchpadControlSurfac
                 break;
 
             case SESSION:
+                final IMode volumeMode = this.surface.getModeManager ().get (Modes.VOLUME);
+                if (volumeMode == null)
+                    return;
+                final SessionView sessionView = (SessionView) this.surface.getViewManager ().get (Views.SESSION);
+                if (sessionView.isBirdsEyeActive ())
+                    volumeMode.selectNextItemPage ();
+                else
+                    volumeMode.selectNextItem ();
+                break;
+
             case TRACK_VOLUME:
             case TRACK_PAN:
             case TRACK_SENDS:
@@ -359,6 +383,7 @@ public class LaunchpadCursorCommand extends CursorCommand<LaunchpadControlSurfac
                 break;
 
             case PLAY:
+            case CHORDS:
             case PIANO:
             case DRUM64:
             case DRUM:
@@ -382,6 +407,13 @@ public class LaunchpadCursorCommand extends CursorCommand<LaunchpadControlSurfac
                 break;
 
             case SESSION:
+                final SessionView sessionView = (SessionView) this.surface.getViewManager ().get (Views.SESSION);
+                if (sessionView.isBirdsEyeActive ())
+                    this.getSceneBank ().selectPreviousPage ();
+                else
+                    super.scrollUp ();
+                break;
+
             case TRACK_VOLUME:
             case TRACK_PAN:
             case TRACK_SENDS:
@@ -426,6 +458,7 @@ public class LaunchpadCursorCommand extends CursorCommand<LaunchpadControlSurfac
                 break;
 
             case PLAY:
+            case CHORDS:
             case PIANO:
             case DRUM64:
             case DRUM:
@@ -449,6 +482,13 @@ public class LaunchpadCursorCommand extends CursorCommand<LaunchpadControlSurfac
                 break;
 
             case SESSION:
+                final SessionView sessionView = (SessionView) this.surface.getViewManager ().get (Views.SESSION);
+                if (sessionView.isBirdsEyeActive ())
+                    this.getSceneBank ().selectNextPage ();
+                else
+                    super.scrollDown ();
+                break;
+
             case TRACK_VOLUME:
             case TRACK_PAN:
             case TRACK_SENDS:

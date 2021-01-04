@@ -1,5 +1,5 @@
 // Written by Jürgen Moßgraber - mossgrabers.de
-// (c) 2017-2020
+// (c) 2017-2021
 // Licensed under LGPLv3 - http://www.gnu.org/licenses/lgpl-3.0.txt
 
 package de.mossgrabers.framework.view;
@@ -22,6 +22,8 @@ public enum Views
 {
     /** View for playing notes. */
     PLAY,
+    /** View for playing chords. */
+    CHORDS,
     /** View for a session grid with clips. */
     SESSION,
     /** View for a sequencer. */
@@ -89,6 +91,8 @@ public enum Views
 
     /** The name of the play view. */
     public static final String              VIEW_NAME_PLAY           = "Play";
+    /** The name of the chords view. */
+    public static final String              VIEW_NAME_CHORDS         = "Chords";
     /** The name of the piano view. */
     public static final String              VIEW_NAME_PIANO          = "Piano";
     /** The name of the drum view. */
@@ -133,9 +137,11 @@ public enum Views
         isInitialised = true;
 
         NOTE_VIEWS.add (PLAY);
+        NOTE_VIEWS.add (CHORDS);
         NOTE_VIEWS.add (PIANO);
         NOTE_VIEWS.add (DRUM64);
         NOTE_VIEW_NAMES.put (VIEW_NAME_PLAY, PLAY);
+        NOTE_VIEW_NAMES.put (VIEW_NAME_CHORDS, CHORDS);
         NOTE_VIEW_NAMES.put (VIEW_NAME_PIANO, PIANO);
         NOTE_VIEW_NAMES.put (VIEW_NAME_DRUM64, DRUM64);
 

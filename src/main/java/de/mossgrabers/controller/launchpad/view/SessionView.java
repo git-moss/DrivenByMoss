@@ -1,5 +1,5 @@
 // Written by Jürgen Moßgraber - mossgrabers.de
-// (c) 2017-2020
+// (c) 2017-2021
 // Licensed under LGPLv3 - http://www.gnu.org/licenses/lgpl-3.0.txt
 
 package de.mossgrabers.controller.launchpad.view;
@@ -7,6 +7,7 @@ package de.mossgrabers.controller.launchpad.view;
 import de.mossgrabers.controller.launchpad.LaunchpadConfiguration;
 import de.mossgrabers.controller.launchpad.controller.LaunchpadColorManager;
 import de.mossgrabers.controller.launchpad.controller.LaunchpadControlSurface;
+import de.mossgrabers.framework.configuration.AbstractConfiguration;
 import de.mossgrabers.framework.controller.ButtonID;
 import de.mossgrabers.framework.controller.grid.IPadGrid;
 import de.mossgrabers.framework.daw.DAWColor;
@@ -34,8 +35,9 @@ import de.mossgrabers.framework.view.Views;
  */
 public class SessionView extends AbstractSessionView<LaunchpadControlSurface, LaunchpadConfiguration>
 {
-    protected boolean isShowTemporarily;
-    private boolean   isBirdsEyeViewActive = false;
+    protected boolean                    isShowTemporarily;
+    private boolean                      isBirdsEyeViewActive = false;
+    private final LaunchpadConfiguration configuration;
 
 
     /**
@@ -49,6 +51,8 @@ public class SessionView extends AbstractSessionView<LaunchpadControlSurface, La
     {
         super (name, surface, model, 8, 8, true);
 
+        this.configuration = this.surface.getConfiguration ();
+
         final SessionColor isRecording = new SessionColor (LaunchpadColorManager.LAUNCHPAD_COLOR_RED_HI, LaunchpadColorManager.LAUNCHPAD_COLOR_RED_HI, false);
         final SessionColor isRecordingQueued = new SessionColor (LaunchpadColorManager.LAUNCHPAD_COLOR_RED_HI, LaunchpadColorManager.LAUNCHPAD_COLOR_BLACK, true);
         final SessionColor isPlaying = new SessionColor (LaunchpadColorManager.LAUNCHPAD_COLOR_GREEN, LaunchpadColorManager.LAUNCHPAD_COLOR_GREEN, false);
@@ -60,6 +64,19 @@ public class SessionView extends AbstractSessionView<LaunchpadControlSurface, La
 
         this.birdColorHasContent = hasContent;
         this.birdColorSelected = new SessionColor (LaunchpadColorManager.LAUNCHPAD_COLOR_GREEN, -1, false);
+
+        this.configuration.addSettingObserver (AbstractConfiguration.FLIP_SESSION, this::updateRowsCols);
+        this.surface.getModeManager ().addChangeListener ( (oldMode, newMode) -> this.updateRowsCols ());
+    }
+
+
+    /** {@inheritDoc} */
+    @Override
+    public void onActivate ()
+    {
+        super.onActivate ();
+
+        this.updateRowsCols ();
     }
 
 
@@ -67,25 +84,21 @@ public class SessionView extends AbstractSessionView<LaunchpadControlSurface, La
     @Override
     public void onGridNote (final int note, final int velocity)
     {
-        // Block 1st row if mode is active
-        final boolean isNotRow1 = note >= 44;
-        final boolean controlModeIsOff = this.isControlModeOff ();
-        if (controlModeIsOff || isNotRow1)
+        final int modeIndex = this.getControlModeIndex (note);
+        if (modeIndex >= 0)
         {
-            if (this.isBirdsEyeActive ())
-            {
-                this.onGridNoteBankSelection (note, velocity, isNotRow1);
-                return;
-            }
-
-            final int n = note - (controlModeIsOff ? 0 : 8);
-
-            super.onGridNote (n, velocity);
+            if (velocity != 0)
+                this.handleFirstRowModes (modeIndex);
             return;
         }
 
-        if (velocity != 0)
-            this.handleFirstRowModes (note);
+        if (this.isBirdsEyeActive ())
+        {
+            this.onGridNoteBankSelection (note, velocity);
+            return;
+        }
+
+        super.onGridNote (note, velocity);
     }
 
 
@@ -93,22 +106,18 @@ public class SessionView extends AbstractSessionView<LaunchpadControlSurface, La
     @Override
     public void onGridNoteLongPress (final int note)
     {
-        // Block 1st row if mode is active
-        final boolean isNotRow1 = note >= 44;
-        final boolean controlModeIsOff = this.isControlModeOff ();
-        if (controlModeIsOff || isNotRow1)
-        {
-            final int n = note - (controlModeIsOff ? 0 : 8);
+        final int modeIndex = this.getControlModeIndex (note);
+        if (modeIndex >= 0)
+            return;
 
-            // Cannot call the super method here since the setConsumed would store the wrong button
-            final Pair<Integer, Integer> padPos = this.getPad (n);
-            final ITrack track = this.model.getCurrentTrackBank ().getItem (padPos.getKey ().intValue ());
-            final ISlot slot = track.getSlotBank ().getItem (padPos.getValue ().intValue ());
-            slot.select ();
+        // Cannot call the super method here since the setConsumed would store the wrong button
+        final Pair<Integer, Integer> padPos = this.getPad (note);
+        final ITrack track = this.model.getCurrentTrackBank ().getItem (padPos.getKey ().intValue ());
+        final ISlot slot = track.getSlotBank ().getItem (padPos.getValue ().intValue ());
+        slot.select ();
 
-            final int index = note - 36;
-            this.surface.getButton (ButtonID.get (ButtonID.PAD1, index)).setConsumed ();
-        }
+        final int index = note - 36;
+        this.surface.getButton (ButtonID.get (ButtonID.PAD1, index)).setConsumed ();
     }
 
 
@@ -116,41 +125,19 @@ public class SessionView extends AbstractSessionView<LaunchpadControlSurface, La
     @Override
     public void drawGrid ()
     {
-        final boolean controlModeIsOff = this.isControlModeOff ();
-
-        if (this.surface.getConfiguration ().isFlipSession ())
-        {
-            this.rows = 8;
-            this.columns = controlModeIsOff ? 8 : 7;
-        }
-        else
-        {
-            this.rows = controlModeIsOff ? 8 : 7;
-            this.columns = 8;
-        }
-
         super.drawGrid ();
 
-        if (controlModeIsOff)
+        if (this.isControlModeOff ())
             return;
 
         final ITrackBank tb = this.model.getCurrentTrackBank ();
         final IPadGrid pads = this.surface.getPadGrid ();
-        final ModeManager modeManager = this.surface.getModeManager ();
+        final boolean flipSession = this.configuration.isFlipSession ();
         for (int x = 0; x < 8; x++)
         {
-            final ITrack track = tb.getItem (x);
-            final boolean exists = track.doesExist ();
-            if (modeManager.isActive (Modes.REC_ARM))
-                pads.lightEx (x, 7, exists ? track.isRecArm () ? LaunchpadColorManager.LAUNCHPAD_COLOR_RED_HI : LaunchpadColorManager.LAUNCHPAD_COLOR_RED_LO : LaunchpadColorManager.LAUNCHPAD_COLOR_BLACK);
-            else if (modeManager.isActive (Modes.TRACK_SELECT))
-                pads.lightEx (x, 7, exists ? track.isSelected () ? LaunchpadColorManager.LAUNCHPAD_COLOR_GREEN_HI : LaunchpadColorManager.LAUNCHPAD_COLOR_GREEN_LO : LaunchpadColorManager.LAUNCHPAD_COLOR_BLACK);
-            else if (modeManager.isActive (Modes.MUTE))
-                pads.lightEx (x, 7, exists ? track.isMute () ? LaunchpadColorManager.LAUNCHPAD_COLOR_YELLOW_HI : LaunchpadColorManager.LAUNCHPAD_COLOR_YELLOW_LO : LaunchpadColorManager.LAUNCHPAD_COLOR_BLACK);
-            else if (modeManager.isActive (Modes.SOLO))
-                pads.lightEx (x, 7, exists ? track.isSolo () ? LaunchpadColorManager.LAUNCHPAD_COLOR_BLUE_HI : LaunchpadColorManager.LAUNCHPAD_COLOR_BLUE_LO : LaunchpadColorManager.LAUNCHPAD_COLOR_BLACK);
-            else if (modeManager.isActive (Modes.STOP_CLIP))
-                pads.lightEx (x, 7, exists ? this.surface.isPressed (ButtonID.get (ButtonID.PAD1, x)) ? LaunchpadColorManager.LAUNCHPAD_COLOR_RED : LaunchpadColorManager.LAUNCHPAD_COLOR_ROSE : LaunchpadColorManager.LAUNCHPAD_COLOR_BLACK);
+            final int padX = flipSession ? 7 : x;
+            final int padY = flipSession ? x : 7;
+            pads.lightEx (padX, padY, this.getModeColor (tb.getItem (x), x));
         }
     }
 
@@ -163,6 +150,8 @@ public class SessionView extends AbstractSessionView<LaunchpadControlSurface, La
     public void setBirdsEyeActive (final boolean isBirdsEyeActive)
     {
         this.isBirdsEyeViewActive = isBirdsEyeActive;
+
+        this.updateRowsCols ();
     }
 
 
@@ -250,11 +239,10 @@ public class SessionView extends AbstractSessionView<LaunchpadControlSurface, La
     {
         final boolean result = super.handleButtonCombinations (track, slot);
 
-        final LaunchpadConfiguration configuration = this.surface.getConfiguration ();
-        if (this.isButtonCombination (ButtonID.DELETE) && configuration.isDeleteModeActive ())
-            configuration.toggleDeleteModeActive ();
-        else if (this.isButtonCombination (ButtonID.DUPLICATE) && configuration.isDuplicateModeActive () && (!slot.doesExist () || !slot.hasContent ()))
-            configuration.toggleDuplicateModeActive ();
+        if (this.isButtonCombination (ButtonID.DELETE) && this.configuration.isDeleteModeActive ())
+            this.configuration.toggleDeleteModeActive ();
+        else if (this.isButtonCombination (ButtonID.DUPLICATE) && this.configuration.isDuplicateModeActive () && (!slot.doesExist () || !slot.hasContent ()))
+            this.configuration.toggleDuplicateModeActive ();
 
         return result;
     }
@@ -267,11 +255,10 @@ public class SessionView extends AbstractSessionView<LaunchpadControlSurface, La
         if (super.isButtonCombination (buttonID))
             return true;
 
-        final LaunchpadConfiguration configuration = this.surface.getConfiguration ();
-        if (buttonID == ButtonID.DELETE && configuration.isDeleteModeActive ())
+        if (buttonID == ButtonID.DELETE && this.configuration.isDeleteModeActive ())
             return true;
 
-        return buttonID == ButtonID.DUPLICATE && configuration.isDuplicateModeActive ();
+        return buttonID == ButtonID.DUPLICATE && this.configuration.isDuplicateModeActive ();
     }
 
 
@@ -280,27 +267,24 @@ public class SessionView extends AbstractSessionView<LaunchpadControlSurface, La
      *
      * @param note The note of the pad
      * @param velocity The velocity of the press
-     * @param isNotOffset Apply row 1 note offset if false
      */
-    protected void onGridNoteBankSelection (final int note, final int velocity, final boolean isNotOffset)
+    protected void onGridNoteBankSelection (final int note, final int velocity)
     {
         if (velocity == 0)
             return;
-        final int n = isNotOffset ? note : note - 8;
-        final int index = n - 36;
-        this.onGridNoteBirdsEyeView (index % this.columns, this.rows - 1 - index / this.columns, isNotOffset ? 0 : 1);
+        final int index = note - 36;
+        this.onGridNoteBirdsEyeView (index % this.columns, this.rows - 1 - index / this.columns, 0);
     }
 
 
     /**
      * Execute the functions of row 1 if active.
      *
-     * @param note The pressed note on the first row
+     * @param index The index on the first row
      */
-    private void handleFirstRowModes (final int note)
+    private void handleFirstRowModes (final int index)
     {
         // First row mode handling
-        final int index = note - 36;
         final ITrack track = this.model.getCurrentTrackBank ().getItem (index);
 
         if (this.isButtonCombination (ButtonID.DELETE))
@@ -334,6 +318,86 @@ public class SessionView extends AbstractSessionView<LaunchpadControlSurface, La
 
     private boolean isControlModeOff ()
     {
-        return this.surface.hasTrackSelectionButtons () || this.surface.getModeManager ().getActiveID () == Modes.DUMMY;
+        return this.surface.hasTrackSelectionButtons () || this.isBirdsEyeActive () || this.surface.getModeManager ().getActiveID () == Modes.DUMMY;
+    }
+
+
+    private void updateRowsCols ()
+    {
+        this.rows = 8;
+        this.columns = 8;
+
+        if (!this.isControlModeOff ())
+            this.rows = 7;
+    }
+
+
+    /**
+     * Get the color to use for a mode pad.
+     *
+     * @param track The for which to reflect states on the mode, e.g. solo, mute
+     * @param index The index of the pad 0-7
+     * @return The color
+     */
+    private int getModeColor (final ITrack track, final int index)
+    {
+        if (track.doesExist ())
+        {
+            final ModeManager modeManager = this.surface.getModeManager ();
+
+            if (modeManager.isActive (Modes.REC_ARM))
+                return track.isRecArm () ? LaunchpadColorManager.LAUNCHPAD_COLOR_RED_HI : LaunchpadColorManager.LAUNCHPAD_COLOR_RED_LO;
+
+            if (modeManager.isActive (Modes.TRACK_SELECT))
+                return track.isSelected () ? LaunchpadColorManager.LAUNCHPAD_COLOR_GREEN_HI : LaunchpadColorManager.LAUNCHPAD_COLOR_GREEN_LO;
+
+            if (modeManager.isActive (Modes.MUTE))
+                return track.isMute () ? LaunchpadColorManager.LAUNCHPAD_COLOR_YELLOW_HI : LaunchpadColorManager.LAUNCHPAD_COLOR_YELLOW_LO;
+
+            if (modeManager.isActive (Modes.SOLO))
+                return track.isSolo () ? LaunchpadColorManager.LAUNCHPAD_COLOR_BLUE_HI : LaunchpadColorManager.LAUNCHPAD_COLOR_BLUE_LO;
+
+            if (modeManager.isActive (Modes.STOP_CLIP))
+                return this.surface.isPressed (ButtonID.get (ButtonID.PAD1, index)) ? LaunchpadColorManager.LAUNCHPAD_COLOR_RED : LaunchpadColorManager.LAUNCHPAD_COLOR_ROSE;
+        }
+
+        return LaunchpadColorManager.LAUNCHPAD_COLOR_BLACK;
+    }
+
+
+    /**
+     * Get the index of the pressed mode button if a mode is active.
+     *
+     * @param note The note to test
+     * @return The index 0-7 or -1 if no mode button was pressed
+     */
+    private int getControlModeIndex (final int note)
+    {
+        if (this.isControlModeOff ())
+            return -1;
+
+        if (this.configuration.isFlipSession ())
+        {
+            final int n = note + 1 - 36;
+            if (n % 8 == 0)
+                return 8 - n / 8;
+            return -1;
+        }
+
+        if (note < 44)
+            return note - 36;
+
+        return -1;
+    }
+
+
+    /** {@inheritDoc} */
+    @Override
+    protected Pair<Integer, Integer> getPad (final int note)
+    {
+        final int index = note - 36;
+        final int x = index % 8;
+        final int y = 7 - index / 8;
+        return this.configuration.isFlipSession () ? new Pair<> (Integer.valueOf (y), Integer.valueOf (x)) : new Pair<> (Integer.valueOf (x), Integer.valueOf (y));
     }
 }

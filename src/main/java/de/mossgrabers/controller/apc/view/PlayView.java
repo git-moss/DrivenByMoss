@@ -1,5 +1,5 @@
 // Written by Jürgen Moßgraber - mossgrabers.de
-// (c) 2017-2020
+// (c) 2017-2021
 // Licensed under LGPLv3 - http://www.gnu.org/licenses/lgpl-3.0.txt
 
 package de.mossgrabers.controller.apc.view;
@@ -11,6 +11,7 @@ import de.mossgrabers.framework.controller.color.ColorManager;
 import de.mossgrabers.framework.daw.IModel;
 import de.mossgrabers.framework.utils.ButtonEvent;
 import de.mossgrabers.framework.view.AbstractPlayView;
+import de.mossgrabers.framework.view.Views;
 
 
 /**
@@ -28,7 +29,7 @@ public class PlayView extends AbstractPlayView<APCControlSurface, APCConfigurati
      */
     public PlayView (final APCControlSurface surface, final IModel model)
     {
-        super ("Play", surface, model, surface.isMkII ());
+        super (Views.VIEW_NAME_PLAY, surface, model, surface.isMkII ());
     }
 
 

@@ -1,5 +1,5 @@
 // Written by Jürgen Moßgraber - mossgrabers.de
-// (c) 2017-2020
+// (c) 2017-2021
 // Licensed under LGPLv3 - http://www.gnu.org/licenses/lgpl-3.0.txt
 
 package de.mossgrabers.controller.maschine.view;
@@ -282,8 +282,8 @@ public class PlayView extends AbstractPlayView<MaschineControlSurface, MaschineC
 
                 if (this.isChordActive)
                 {
-                    // Get the index of the note in the scale
-                    // Calculate two thirds (chors is then scale index: 0, 2, 4)
+                    // Get the index of the note in the scale and calculate two thirds (chord is
+                    // then scale index: 0, 2, 4)
                     final int [] thirdChord = this.scales.getThirdChord (note);
                     if (thirdChord == null)
                         return;

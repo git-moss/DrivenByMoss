@@ -1,5 +1,5 @@
 // Written by Jürgen Moßgraber - mossgrabers.de
-// (c) 2017-2020
+// (c) 2017-2021
 // Licensed under LGPLv3 - http://www.gnu.org/licenses/lgpl-3.0.txt
 
 package de.mossgrabers.framework.scale;
@@ -141,6 +141,7 @@ public class Scales
     private int                         drumNoteEnd              = DRUM_NOTE_END;
 
     private final Map<Scale, ScaleGrid> scaleGrids               = new EnumMap<> (Scale.class);
+    private final Map<Scale, ChordGrid> chordGrids               = new EnumMap<> (Scale.class);
     private IValueChanger               valueChanger;
 
 
@@ -731,28 +732,40 @@ public class Scales
      * Calculate the thirds on top of the given midi note. Respects the current octave, scale and
      * scale base.
      *
-     * @param midiNote The base note of the chord
+     * @param baseNote The base note of the chord
      * @return The additional 2 thirds
      */
-    public int [] getThirdChord (final int midiNote)
+    public int [] getThirdChord (final int baseNote)
     {
-        final int scaleIndex = this.getScaleIndex (midiNote);
+        return this.getChord (baseNote, 3, 5);
+    }
+
+
+    /**
+     * Calculate the additional notes of a chord. Adds the given intervals.Respects the current
+     * octave, scale and scale base.
+     *
+     * @param baseNote The MIDI base note
+     * @param addedIntervals The note intervals to add
+     * @return The additional notes, excluding the base note
+     */
+    public int [] getChord (final int baseNote, final int... addedIntervals)
+    {
+        final int scaleIndex = this.getScaleIndex (baseNote);
         if (scaleIndex < 0)
             return new int [0];
 
         final int [] intervals = this.selectedScale.getIntervals ();
-
-        final int secondNoteIndex = scaleIndex + 2;
-        final int thirdNoteIndex = scaleIndex + 4;
-
-        final int secondOctaveNote = intervals[secondNoteIndex % intervals.length];
-        final int thirdOctaveNote = intervals[thirdNoteIndex % intervals.length];
-
-        return new int []
+        final int [] result = new int [addedIntervals.length];
+        final int baseOffset = this.startNote + Scales.OFFSETS[this.scaleOffset];
+        for (int i = 0; i < addedIntervals.length; i++)
         {
-            this.startNote + Scales.OFFSETS[this.scaleOffset] + (this.octave + secondNoteIndex / intervals.length) * 12 + secondOctaveNote,
-            this.startNote + Scales.OFFSETS[this.scaleOffset] + (this.octave + thirdNoteIndex / intervals.length) * 12 + thirdOctaveNote
-        };
+            final int noteIndex = scaleIndex + addedIntervals[i] - 1;
+            final int octaveNote = intervals[noteIndex % intervals.length];
+            result[i] = baseOffset + (this.octave + noteIndex / intervals.length) * 12 + octaveNote;
+        }
+
+        return result;
     }
 
 
@@ -763,7 +776,18 @@ public class Scales
      */
     public int [] getNoteMatrix ()
     {
-        final int [] matrix = this.getActiveMatrix ();
+        return this.getNoteMatrix (this.getActiveMatrix ());
+    }
+
+
+    /**
+     * Get a note matrix.
+     *
+     * @param matrix The input scale matrix
+     * @return The matrix
+     */
+    public int [] getNoteMatrix (final int [] matrix)
+    {
         final int [] noteMap = Scales.getEmptyMatrix ();
         for (int note = this.startNote; note < this.endNote; note++)
         {
@@ -1025,6 +1049,17 @@ public class Scales
 
 
     /**
+     * Get the chord matrix of the selected scale.
+     *
+     * @return The matrix
+     */
+    public int [] getActiveChordMatrix ()
+    {
+        return this.chordGrids.get (this.selectedScale).getMatrix ();
+    }
+
+
+    /**
      * Overwrite to hook in translation for grids which do not send midi notes 36-100.
      *
      * @param matrix The matrix to translate
@@ -1042,8 +1077,12 @@ public class Scales
     private void generateMatrices ()
     {
         this.scaleGrids.clear ();
+        this.chordGrids.clear ();
         for (final Scale scale: Scale.values ())
+        {
             this.scaleGrids.put (scale, new ScaleGrid (scale, this.scaleLayout, this.orientation, this.numRows, this.numColumns, this.shift));
+            this.chordGrids.put (scale, new ChordGrid (scale, this.numRows, this.numColumns));
+        }
     }
 
 

@@ -1,5 +1,5 @@
 // Written by Jürgen Moßgraber - mossgrabers.de
-// (c) 2017-2020
+// (c) 2017-2021
 // Licensed under LGPLv3 - http://www.gnu.org/licenses/lgpl-3.0.txt
 
 package de.mossgrabers.controller.push.mode;
@@ -31,9 +31,9 @@ public class NoteViewSelectMode extends BaseMode
     private static final Views [] VIEWS     =
     {
         Views.PLAY,
+        Views.CHORDS,
         Views.PIANO,
         Views.DRUM64,
-        null,
         null,
         null,
         Views.CLIP,

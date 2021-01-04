@@ -1,5 +1,5 @@
 // Written by Jürgen Moßgraber - mossgrabers.de
-// (c) 2017-2020
+// (c) 2017-2021
 // Licensed under LGPLv3 - http://www.gnu.org/licenses/lgpl-3.0.txt
 
 package de.mossgrabers.controller.push;
@@ -73,6 +73,7 @@ import de.mossgrabers.controller.push.mode.track.SendMode;
 import de.mossgrabers.controller.push.mode.track.TrackDetailsMode;
 import de.mossgrabers.controller.push.mode.track.TrackMode;
 import de.mossgrabers.controller.push.mode.track.VolumeMode;
+import de.mossgrabers.controller.push.view.ChordsView;
 import de.mossgrabers.controller.push.view.ClipView;
 import de.mossgrabers.controller.push.view.ColorView;
 import de.mossgrabers.controller.push.view.Drum4View;
@@ -425,6 +426,7 @@ public class PushControllerSetup extends AbstractControllerSetup<PushControlSurf
         final PushControlSurface surface = this.getSurface ();
         final ViewManager viewManager = surface.getViewManager ();
         viewManager.register (Views.PLAY, new PlayView (surface, this.model));
+        viewManager.register (Views.CHORDS, new ChordsView (surface, this.model));
         viewManager.register (Views.PIANO, new PianoView (surface, this.model));
         viewManager.register (Views.PRG_CHANGE, new PrgChangeView (surface, this.model));
         viewManager.register (Views.CLIP, new ClipView (surface, this.model));

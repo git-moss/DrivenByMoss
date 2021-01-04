@@ -1,5 +1,5 @@
 // Written by Jürgen Moßgraber - mossgrabers.de
-// (c) 2017-2020
+// (c) 2017-2021
 // Licensed under LGPLv3 - http://www.gnu.org/licenses/lgpl-3.0.txt
 
 package de.mossgrabers.controller.launchpad.command.trigger;
@@ -45,6 +45,7 @@ public class SelectSessionViewCommand extends AbstractTriggerCommand<LaunchpadCo
 
         final ViewManager viewManager = this.surface.getViewManager ();
         final SessionView sessionView = (SessionView) viewManager.get (Views.SESSION);
+        final Configuration configuration = this.surface.getConfiguration ();
 
         if (event == ButtonEvent.UP)
         {
@@ -58,11 +59,10 @@ public class SelectSessionViewCommand extends AbstractTriggerCommand<LaunchpadCo
                 if (sessionView.isBirdsEyeActive ())
                 {
                     sessionView.setBirdsEyeActive (false);
-                    this.notifyViewName (Views.SESSION, false, false);
+                    this.notifyViewName (Views.SESSION, false, configuration.isFlipSession ());
                 }
                 else
                 {
-                    final Configuration configuration = this.surface.getConfiguration ();
                     final boolean flipped = !configuration.isFlipSession ();
                     configuration.setFlipSession (flipped);
                     this.notifyViewName (Views.SESSION, false, flipped);
@@ -71,14 +71,14 @@ public class SelectSessionViewCommand extends AbstractTriggerCommand<LaunchpadCo
             else
             {
                 viewManager.setActive (Views.SESSION);
-                this.notifyViewName (Views.SESSION, false, false);
+                this.notifyViewName (Views.SESSION, false, configuration.isFlipSession ());
             }
         }
         else if (event == ButtonEvent.LONG)
         {
             this.surface.setTriggerConsumed (ButtonID.SESSION);
             sessionView.setBirdsEyeActive (true);
-            this.notifyViewName (Views.SESSION, true, false);
+            this.notifyViewName (Views.SESSION, true, configuration.isFlipSession ());
         }
 
         this.surface.getPadGrid ().forceFlush ();

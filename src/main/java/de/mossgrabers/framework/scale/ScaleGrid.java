@@ -1,5 +1,5 @@
 // Written by Jürgen Moßgraber - mossgrabers.de
-// (c) 2017-2020
+// (c) 2017-2021
 // Licensed under LGPLv3 - http://www.gnu.org/licenses/lgpl-3.0.txt
 
 package de.mossgrabers.framework.scale;
@@ -48,7 +48,11 @@ class ScaleGrid
         final int len = intervals.length;
 
         final boolean isUp = orientation == Orientation.ORIENT_UP;
-        final int shiftedNote = shift == rows ? rows : shift == 7 ? 12 : cols - shift;
+        final int shiftedNote;
+        if (shift == rows)
+            shiftedNote = rows;
+        else
+            shiftedNote = shift == 7 ? 12 : cols - shift;
         final int centerOffset = layout == ScaleLayout.EIGHT_UP_CENTER || layout == ScaleLayout.EIGHT_RIGHT_CENTER ? -3 : 0;
 
         for (int row = 0; row < rows; row++)
@@ -57,7 +61,12 @@ class ScaleGrid
             {
                 final int y = isUp ? row : column;
                 final int x = isUp ? column : row;
-                int offset = y * shift + x + centerOffset;
+
+                int s = shift;
+                // Fix 8th layout for scales which do not have 7 steps
+                if (shift == 7)
+                    s = len;
+                int offset = y * s + x + centerOffset;
 
                 int oct = offset / len;
 

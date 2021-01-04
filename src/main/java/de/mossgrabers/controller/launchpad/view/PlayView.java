@@ -1,5 +1,5 @@
 // Written by Jürgen Moßgraber - mossgrabers.de
-// (c) 2017-2020
+// (c) 2017-2021
 // Licensed under LGPLv3 - http://www.gnu.org/licenses/lgpl-3.0.txt
 
 package de.mossgrabers.controller.launchpad.view;
@@ -11,10 +11,15 @@ import de.mossgrabers.framework.configuration.AbstractConfiguration;
 import de.mossgrabers.framework.configuration.Configuration;
 import de.mossgrabers.framework.controller.ButtonID;
 import de.mossgrabers.framework.controller.display.ITextDisplay;
+import de.mossgrabers.framework.controller.grid.IPadGrid;
 import de.mossgrabers.framework.daw.IModel;
+import de.mossgrabers.framework.daw.data.ITrack;
+import de.mossgrabers.framework.daw.midi.IMidiInput;
+import de.mossgrabers.framework.featuregroup.ViewManager;
 import de.mossgrabers.framework.scale.Scales;
 import de.mossgrabers.framework.utils.ButtonEvent;
 import de.mossgrabers.framework.view.AbstractPlayView;
+import de.mossgrabers.framework.view.Views;
 
 
 /**
@@ -24,6 +29,22 @@ import de.mossgrabers.framework.view.AbstractPlayView;
  */
 public class PlayView extends AbstractPlayView<LaunchpadControlSurface, LaunchpadConfiguration>
 {
+    private static final int [] MODULATION_INTENSITIES =
+    {
+        0,
+        32,
+        64,
+        92,
+        127
+    };
+
+    private boolean             playControls           = false;
+    private boolean             isSustain              = false;
+    private boolean             isPitchDown            = false;
+    private boolean             isPitchUp              = false;
+    private int                 isModulation           = 0;
+
+
     /**
      * Constructor.
      *
@@ -32,7 +53,7 @@ public class PlayView extends AbstractPlayView<LaunchpadControlSurface, Launchpa
      */
     public PlayView (final LaunchpadControlSurface surface, final IModel model)
     {
-        this ("Play", surface, model);
+        this (Views.VIEW_NAME_PLAY, surface, model);
     }
 
 
@@ -62,8 +83,14 @@ public class PlayView extends AbstractPlayView<LaunchpadControlSurface, Launchpa
             if (buttonID == ButtonID.SCENE1 || buttonID == ButtonID.SCENE2 || buttonID == ButtonID.SCENE7 || buttonID == ButtonID.SCENE8)
                 return LaunchpadColorManager.LAUNCHPAD_COLOR_OCEAN_HI;
 
+            if (buttonID == ButtonID.SCENE4)
+                return this.playControls ? LaunchpadColorManager.LAUNCHPAD_COLOR_GREEN_HI : LaunchpadColorManager.LAUNCHPAD_COLOR_GREEN_LO;
+
+            if (buttonID == ButtonID.SCENE5)
+                return LaunchpadColorManager.LAUNCHPAD_COLOR_AMBER_LO;
+
             if (buttonID == ButtonID.SCENE6)
-                return LaunchpadColorManager.LAUNCHPAD_COLOR_WHITE;
+                return this.scales.isChromatic () ? LaunchpadColorManager.LAUNCHPAD_COLOR_WHITE : LaunchpadColorManager.LAUNCHPAD_COLOR_GREY_LO;
         }
 
         return LaunchpadColorManager.LAUNCHPAD_COLOR_BLACK;
@@ -96,6 +123,18 @@ public class PlayView extends AbstractPlayView<LaunchpadControlSurface, Launchpa
                 this.surface.getConfiguration ().setScaleLayout (name);
                 display.notify (name);
                 break;
+            case SCENE4:
+                this.playControls = !this.playControls;
+                this.setBlockedNotes (this.playControls ? 8 : 0);
+                break;
+            case SCENE5:
+                final ViewManager viewManager = this.surface.getViewManager ();
+                viewManager.setActive (Views.CHORDS);
+                final ITrack cursorTrack = this.model.getCursorTrack ();
+                if (cursorTrack.doesExist ())
+                    viewManager.setPreferredView (cursorTrack.getPosition (), Views.CHORDS);
+                // Do not update note map!
+                return;
             case SCENE6:
                 this.scales.toggleChromatic ();
                 final boolean isChromatic = this.scales.isChromatic ();
@@ -119,5 +158,74 @@ public class PlayView extends AbstractPlayView<LaunchpadControlSurface, Launchpa
                 break;
         }
         this.updateNoteMapping ();
+    }
+
+
+    /** {@inheritDoc} */
+    @Override
+    public void drawGrid ()
+    {
+        super.drawGrid ();
+
+        if (!this.playControls)
+            return;
+
+        final IPadGrid padGrid = this.surface.getPadGrid ();
+
+        final int startNote = this.scales.getStartNote ();
+
+        padGrid.light (startNote, this.isSustain ? LaunchpadColorManager.LAUNCHPAD_COLOR_YELLOW_HI : LaunchpadColorManager.LAUNCHPAD_COLOR_YELLOW_LO);
+
+        padGrid.light (startNote + 1, this.isPitchDown ? LaunchpadColorManager.LAUNCHPAD_COLOR_CYAN_HI : LaunchpadColorManager.LAUNCHPAD_COLOR_CYAN_LO);
+        padGrid.light (startNote + 2, this.isPitchUp ? LaunchpadColorManager.LAUNCHPAD_COLOR_CYAN_HI : LaunchpadColorManager.LAUNCHPAD_COLOR_CYAN_LO);
+
+        for (int i = 0; i < 5; i++)
+            padGrid.light (startNote + 3 + i, this.isModulation == i ? LaunchpadColorManager.LAUNCHPAD_COLOR_MAGENTA_HI : LaunchpadColorManager.LAUNCHPAD_COLOR_MAGENTA_LO);
+    }
+
+
+    /** {@inheritDoc} */
+    @Override
+    public void onGridNote (final int key, final int velocity)
+    {
+        if (this.playControls)
+        {
+            final int pos = key - this.scales.getStartNote ();
+            if (pos < 8)
+            {
+                final boolean isDown = velocity > 0;
+
+                final IMidiInput midiInput = this.surface.getMidiInput ();
+                switch (pos)
+                {
+                    // Sustain
+                    case 0:
+                        this.isSustain = isDown;
+                        midiInput.sendRawMidiEvent (0xB0, 64, this.isSustain ? 127 : 0);
+                        return;
+
+                    // Pitch
+                    case 1:
+                        this.isPitchDown = isDown;
+                        midiInput.sendRawMidiEvent (0xE0, 0, this.isPitchDown ? Math.abs (velocity / 2 - 63) : 64);
+                        return;
+                    case 2:
+                        this.isPitchUp = isDown;
+                        midiInput.sendRawMidiEvent (0xE0, 0, this.isPitchUp ? 64 + velocity / 2 : 64);
+                        return;
+
+                    // Modulation
+                    default:
+                        if (isDown)
+                        {
+                            this.isModulation = pos - 3;
+                            midiInput.sendRawMidiEvent (0xB0, 1, MODULATION_INTENSITIES[this.isModulation]);
+                        }
+                        return;
+                }
+            }
+        }
+
+        super.onGridNote (key, velocity);
     }
 }

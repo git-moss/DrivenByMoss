@@ -1,5 +1,5 @@
 // Written by Jürgen Moßgraber - mossgrabers.de
-// (c) 2017-2020
+// (c) 2017-2021
 // Licensed under LGPLv3 - http://www.gnu.org/licenses/lgpl-3.0.txt
 
 package de.mossgrabers.framework.featuregroup;
@@ -51,7 +51,7 @@ public abstract class AbstractView<S extends IControlSurface<C>, C extends Confi
         super (name, surface, model);
 
         this.scales = model.getScales ();
-        this.keyManager = new KeyManager (model, model.getScales (), surface.getPadGrid ());
+        this.keyManager = new KeyManager (model, this.scales, surface.getPadGrid ());
 
         this.canScrollLeft = true;
         this.canScrollRight = true;
