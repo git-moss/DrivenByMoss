@@ -21,7 +21,6 @@ public class LaunchkeyMk3ControllerDefinition extends DefaultControllerDefinitio
 {
     private static final UUID EXTENSION_ID = UUID.fromString ("10CB5692-541C-4A5D-9EB4-07D80F34A02C");
 
-
     /**
      * Constructor.
      */
@@ -53,11 +52,35 @@ public class LaunchkeyMk3ControllerDefinition extends DefaultControllerDefinitio
             case MAC:
                 midiDiscoveryPairs.add (this.addDeviceDiscoveryPair (new String []
                 {
-                    "LKMK3 DAW Port",
-                    "LKMK3 MIDI Port"
+                    "Launchkey MK3 25 LKMK3 DAW Out",
+                    "Launchkey MK3 25 LKMK3 MIDI Out"
                 }, new String []
                 {
-                    "LKMK3 DAW Port"
+                    "Launchkey MK3 25 LKMK3 DAW In"
+                }));
+                midiDiscoveryPairs.add (this.addDeviceDiscoveryPair (new String []
+                {
+                    "Launchkey MK3 37 LKMK3 DAW Out",
+                    "Launchkey MK3 37 LKMK3 MIDI Out"
+                }, new String []
+                {
+                    "Launchkey MK3 37 LKMK3 DAW In"
+                }));
+                midiDiscoveryPairs.add (this.addDeviceDiscoveryPair (new String []
+                {
+                    "Launchkey MK3 49 LKMK3 DAW Out",
+                    "Launchkey MK3 49 LKMK3 MIDI Out"
+                }, new String []
+                {
+                    "Launchkey MK3 49 LKMK3 DAW In"
+                }));
+                midiDiscoveryPairs.add (this.addDeviceDiscoveryPair (new String []
+                {
+                    "Launchkey MK3 61 LKMK3 DAW Out",
+                    "Launchkey MK3 61 LKMK3 MIDI Out"
+                }, new String []
+                {
+                    "Launchkey MK3 61 LKMK3 DAW In"
                 }));
                 break;
 
