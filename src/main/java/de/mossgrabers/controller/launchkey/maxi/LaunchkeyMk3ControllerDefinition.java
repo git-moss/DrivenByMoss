@@ -117,6 +117,40 @@ public class LaunchkeyMk3ControllerDefinition extends DefaultControllerDefinitio
                 {
                     "Launchkey MK3 61 MIDI 2"
                 }));
+
+                // Reaper specific
+                midiDiscoveryPairs.add (this.addDeviceDiscoveryPair (new String []
+                {
+                    "L25 [hw:1,0,1]",
+                    "L25 [hw:1,0,0]"
+                }, new String []
+                {
+                    "L25 [hw:1,0,1]"
+                }));
+                midiDiscoveryPairs.add (this.addDeviceDiscoveryPair (new String []
+                {
+                    "L37 [hw:1,0,1]",
+                    "L37 [hw:1,0,0]"
+                }, new String []
+                {
+                    "L37 [hw:1,0,1]"
+                }));
+                midiDiscoveryPairs.add (this.addDeviceDiscoveryPair (new String []
+                {
+                    "L49 [hw:1,0,1]",
+                    "L49 [hw:1,0,0]"
+                }, new String []
+                {
+                    "L49 [hw:1,0,1]"
+                }));
+                midiDiscoveryPairs.add (this.addDeviceDiscoveryPair (new String []
+                {
+                    "L61 [hw:1,0,1]",
+                    "L61 [hw:1,0,0]"
+                }, new String []
+                {
+                    "L61 [hw:1,0,1]"
+                }));
                 break;
         }
         return midiDiscoveryPairs;
