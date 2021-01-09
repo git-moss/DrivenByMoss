@@ -2,32 +2,36 @@
 // (c) 2017-2021
 // Licensed under LGPLv3 - http://www.gnu.org/licenses/lgpl-3.0.txt
 
-package de.mossgrabers.controller.launchkey.view;
+package de.mossgrabers.framework.view;
 
-import de.mossgrabers.controller.launchkey.LaunchkeyMiniMk3Configuration;
-import de.mossgrabers.controller.launchkey.controller.LaunchkeyMiniMk3ColorManager;
-import de.mossgrabers.controller.launchkey.controller.LaunchkeyMiniMk3ControlSurface;
+import de.mossgrabers.framework.configuration.Configuration;
 import de.mossgrabers.framework.controller.ButtonID;
+import de.mossgrabers.framework.controller.IControlSurface;
+import de.mossgrabers.framework.controller.grid.IPadGrid;
 import de.mossgrabers.framework.daw.IModel;
 import de.mossgrabers.framework.featuregroup.AbstractView;
 
 
 /**
- * The pad mode user view.
+ * A view that does nothing.
+ *
+ * @param <S> The type of the control surface
+ * @param <C> The type of the configuration
  *
  * @author J&uuml;rgen Mo&szlig;graber
  */
-public class UserPadView extends AbstractView<LaunchkeyMiniMk3ControlSurface, LaunchkeyMiniMk3Configuration>
+public class DummyView<S extends IControlSurface<C>, C extends Configuration> extends AbstractView<S, C>
 {
     /**
      * Constructor.
      *
+     * @param name The name of the view
      * @param surface The surface
      * @param model The model
      */
-    public UserPadView (final LaunchkeyMiniMk3ControlSurface surface, final IModel model)
+    public DummyView (final String name, final S surface, final IModel model)
     {
-        super ("User Mode", surface, model);
+        super (name, surface, model);
     }
 
 
@@ -35,7 +39,7 @@ public class UserPadView extends AbstractView<LaunchkeyMiniMk3ControlSurface, La
     @Override
     public void drawGrid ()
     {
-        // Drawn by the device itself
+        // Intentionally empty
     }
 
 
@@ -43,7 +47,7 @@ public class UserPadView extends AbstractView<LaunchkeyMiniMk3ControlSurface, La
     @Override
     public void onGridNote (final int note, final int velocity)
     {
-        // Handled by the device itself
+        // Intentionally empty
     }
 
 
@@ -51,6 +55,6 @@ public class UserPadView extends AbstractView<LaunchkeyMiniMk3ControlSurface, La
     @Override
     public int getButtonColor (final ButtonID buttonID)
     {
-        return LaunchkeyMiniMk3ColorManager.LAUNCHKEY_COLOR_BLACK;
+        return this.colorManager.getColorIndex (IPadGrid.GRID_OFF);
     }
 }

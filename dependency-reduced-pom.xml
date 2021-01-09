@@ -4,7 +4,7 @@
   <groupId>de.mossgrabers</groupId>
   <artifactId>DrivenByMoss</artifactId>
   <name>DrivenByMoss</name>
-  <version>11.0.0</version>
+  <version>11.5.0</version>
   <build>
     <plugins>
       <plugin>
@@ -88,6 +88,7 @@
       </plugin>
       <plugin>
         <artifactId>maven-assembly-plugin</artifactId>
+        <version>3.1.1</version>
         <executions>
           <execution>
             <id>create-archive</id>

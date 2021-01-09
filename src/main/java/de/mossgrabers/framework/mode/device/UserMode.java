@@ -14,6 +14,7 @@ import de.mossgrabers.framework.featuregroup.AbstractMode;
 import de.mossgrabers.framework.parameterprovider.BankParameterProvider;
 
 import java.util.List;
+import java.util.function.BooleanSupplier;
 
 
 /**
@@ -37,7 +38,24 @@ public class UserMode<S extends IControlSurface<C>, C extends Configuration> ext
      */
     public UserMode (final S surface, final IModel model, final boolean isAbsolute, final List<ContinuousID> knobs)
     {
-        super ("User Controls", surface, model, isAbsolute, model.getUserParameterBank (), knobs);
+        this (surface, model, isAbsolute, knobs, surface::isShiftPressed);
+    }
+
+
+    /**
+     * Constructor.
+     *
+     * @param surface The control surface
+     * @param model The model
+     * @param isAbsolute If true the value change is happending with a setter otherwise relative
+     *            change method is used
+     * @param knobs The IDs of the knob to control this mode
+     * @param isAlternativeFunction Callback function to execute the secondary function, e.g. a
+     *            shift button
+     */
+    public UserMode (final S surface, final IModel model, final boolean isAbsolute, final List<ContinuousID> knobs, final BooleanSupplier isAlternativeFunction)
+    {
+        super ("User Controls", surface, model, isAbsolute, model.getUserParameterBank (), knobs, isAlternativeFunction);
 
         this.setParameters (new BankParameterProvider (model.getUserParameterBank ()));
     }

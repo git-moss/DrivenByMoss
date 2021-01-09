@@ -33,7 +33,7 @@ public class PushMetronomeCommand extends MetronomeCommand<PushControlSurface, P
      */
     public PushMetronomeCommand (final IModel model, final PushControlSurface surface)
     {
-        super (model, surface);
+        super (model, surface, false);
 
         this.modeManager = this.surface.getModeManager ();
     }

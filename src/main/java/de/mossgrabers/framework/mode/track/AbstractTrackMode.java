@@ -13,6 +13,7 @@ import de.mossgrabers.framework.daw.data.bank.ITrackBank;
 import de.mossgrabers.framework.featuregroup.AbstractMode;
 
 import java.util.List;
+import java.util.function.BooleanSupplier;
 
 
 /**
@@ -52,7 +53,25 @@ public class AbstractTrackMode<S extends IControlSurface<C>, C extends Configura
      */
     public AbstractTrackMode (final String name, final S surface, final IModel model, final boolean isAbsolute, final List<ContinuousID> controls)
     {
-        super (name, surface, model, isAbsolute, model.getCurrentTrackBank (), controls);
+        this (name, surface, model, isAbsolute, controls, surface::isShiftPressed);
+    }
+
+
+    /**
+     * Constructor.
+     *
+     * @param name The name of the mode
+     * @param surface The control surface
+     * @param model The model
+     * @param isAbsolute If true the value change is happending with a setter otherwise relative
+     *            change method is used
+     * @param controls The IDs of the knobs or faders to control this mode
+     * @param isAlternativeFunction Callback function to execute the secondary function, e.g. a
+     *            shift button
+     */
+    public AbstractTrackMode (final String name, final S surface, final IModel model, final boolean isAbsolute, final List<ContinuousID> controls, final BooleanSupplier isAlternativeFunction)
+    {
+        super (name, surface, model, isAbsolute, model.getCurrentTrackBank (), controls, isAlternativeFunction);
 
         model.addTrackBankObserver (this::switchBanks);
     }

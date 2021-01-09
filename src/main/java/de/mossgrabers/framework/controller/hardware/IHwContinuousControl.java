@@ -117,7 +117,7 @@ public interface IHwContinuousControl extends IHwInputControl
     /**
      * Directly bind a parameter to a continuous control.
      *
-     * @param parameter THe parameter to bind
+     * @param parameter The parameter to bind
      */
     void bind (IParameter parameter);
 

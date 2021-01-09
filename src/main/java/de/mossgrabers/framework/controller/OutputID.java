@@ -36,6 +36,8 @@ public enum OutputID
     LED7,
     /** The 8th LED. */
     LED8,
+    /** The 9th LED. */
+    LED9,
 
     /** The first LED ring. */
     LED_RING1,
@@ -53,6 +55,10 @@ public enum OutputID
     LED_RING7,
     /** The 8th LED ring. */
     LED_RING8,
+    /** The 9th LED ring. */
+    LED_RING9,
+    /** The 10th LED ring. */
+    LED_RING10,
 
     /** The light guide 1. */
     LIGHT_GUIDE1,

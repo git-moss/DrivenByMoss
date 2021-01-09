@@ -104,6 +104,7 @@ public class OSCControllerSetup extends AbstractControllerSetup<IControlSurface<
         ms.setNumSends (bankPageSize);
         ms.setNumDevicesInBank (bankPageSize);
         ms.setNumDeviceLayers (bankPageSize);
+        ms.setNumParamPages (bankPageSize);
         ms.setNumParams (bankPageSize);
         ms.setNumUserPageSize (bankPageSize);
         ms.setNumMarkers (bankPageSize);

@@ -152,6 +152,22 @@ public class KontrolProtocolControllerSetup extends AbstractControllerSetup<Kont
 
     /** {@inheritDoc} */
     @Override
+    protected void createSurface ()
+    {
+        final IMidiAccess midiAccess = this.factory.createMidiAccess ();
+        final IMidiOutput output = midiAccess.createOutput ();
+        final IMidiInput pianoInput = midiAccess.createInput (1, "Keyboard", "8?????" /* Note off */,
+                "9?????" /* Note on */, "B?????" /* Sustainpedal + Modulation + Strip */,
+                "D?????" /* Channel Aftertouch */, "E?????" /* Pitchbend */);
+        final KontrolProtocolControlSurface surface = new KontrolProtocolControlSurface (this.host, this.colorManager, this.configuration, output, midiAccess.createInput (null), this.version);
+        this.surfaces.add (surface);
+
+        surface.addPianoKeyboard (49, pianoInput, true);
+    }
+
+
+    /** {@inheritDoc} */
+    @Override
     protected void createModel ()
     {
         final ModelSetup ms = new ModelSetup ();
@@ -164,22 +180,6 @@ public class KontrolProtocolControllerSetup extends AbstractControllerSetup<Kont
         ms.setNumDrumPadLayers (0);
         ms.setNumMarkers (0);
         this.model = this.factory.createModel (this.colorManager, this.valueChanger, this.scales, ms);
-    }
-
-
-    /** {@inheritDoc} */
-    @Override
-    protected void createSurface ()
-    {
-        final IMidiAccess midiAccess = this.factory.createMidiAccess ();
-        final IMidiOutput output = midiAccess.createOutput ();
-        final IMidiInput pianoInput = midiAccess.createInput (1, "Keyboard", "80????" /* Note off */,
-                "90????" /* Note on */, "B0????" /* Sustainpedal + Modulation + Strip */,
-                "D0????" /* Channel Aftertouch */, "E0????" /* Pitchbend */);
-        final KontrolProtocolControlSurface surface = new KontrolProtocolControlSurface (this.host, this.colorManager, this.configuration, output, midiAccess.createInput (null), this.version);
-        this.surfaces.add (surface);
-
-        surface.addPianoKeyboard (49, pianoInput, true);
     }
 
 
@@ -233,7 +233,7 @@ public class KontrolProtocolControllerSetup extends AbstractControllerSetup<Kont
         this.addButton (ButtonID.STOP, "Stop", new StopCommand<> (this.model, surface), 15, KontrolProtocolControlSurface.KONTROL_STOP, () -> !t.isPlaying ());
 
         this.addButton (ButtonID.LOOP, "Loop", new ToggleLoopCommand<> (this.model, surface), 15, KontrolProtocolControlSurface.KONTROL_LOOP, t::isLoop);
-        this.addButton (ButtonID.METRONOME, "Metronome", new MetronomeCommand<> (this.model, surface), 15, KontrolProtocolControlSurface.KONTROL_METRO, t::isMetronomeOn);
+        this.addButton (ButtonID.METRONOME, "Metronome", new MetronomeCommand<> (this.model, surface, false), 15, KontrolProtocolControlSurface.KONTROL_METRO, t::isMetronomeOn);
         this.addButton (ButtonID.TAP_TEMPO, "Tempo", new TapTempoCommand<> (this.model, surface), 15, KontrolProtocolControlSurface.KONTROL_TAP_TEMPO);
 
         // Note: Since there is no pressed-state with this device, in the sim-GUI the following

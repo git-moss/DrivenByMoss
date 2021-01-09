@@ -86,7 +86,20 @@ public enum Views
     /** View for changing the shuffle. */
     SHUFFLE,
     /** View for changing project settings. */
-    PROJECT;
+    PROJECT,
+
+    /** To block functionality. */
+    DUMMY1,
+    /** To block functionality. */
+    DUMMY2,
+    /** To block functionality. */
+    DUMMY3,
+    /** To block functionality. */
+    DUMMY4,
+    /** To block functionality. */
+    DUMMY5,
+    /** To block functionality. */
+    DUMMY6;
 
 
     /** The name of the play view. */

@@ -33,14 +33,15 @@ public class CursorDeviceImpl extends SpecificDeviceImpl implements ICursorDevic
      * @param valueChanger The value changer
      * @param cursorDevice The cursor device
      * @param numSends The number of sends
+     * @param numParamPages The number of parameter pages
      * @param numParams The number of parameters
      * @param numDevicesInBank The number of devices
      * @param numDeviceLayers The number of layers
      * @param numDrumPadLayers The number of drum pad layers
      */
-    public CursorDeviceImpl (final IHost host, final IValueChanger valueChanger, final PinnableCursorDevice cursorDevice, final int numSends, final int numParams, final int numDevicesInBank, final int numDeviceLayers, final int numDrumPadLayers)
+    public CursorDeviceImpl (final IHost host, final IValueChanger valueChanger, final PinnableCursorDevice cursorDevice, final int numSends, final int numParamPages, final int numParams, final int numDevicesInBank, final int numDeviceLayers, final int numDrumPadLayers)
     {
-        super (host, valueChanger, cursorDevice, numSends, numParams, numDevicesInBank, numDeviceLayers, numDrumPadLayers);
+        super (host, valueChanger, cursorDevice, numSends, numParamPages, numParams, numDevicesInBank, numDeviceLayers, numDrumPadLayers);
 
         this.cursorDevice = cursorDevice;
 

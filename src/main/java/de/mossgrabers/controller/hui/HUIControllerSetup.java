@@ -146,12 +146,10 @@ public class HUIControllerSetup extends AbstractControllerSetup<HUIControlSurfac
         final ModelSetup ms = new ModelSetup ();
         ms.enableDrumDevice (false);
         ms.setHasFullFlatTrackList (true);
-        ms.setNumTracks (8);
         ms.setNumSends (5);
         ms.setNumScenes (0);
         ms.setNumFilterColumnEntries (8);
         ms.setNumResults (8);
-        ms.setNumParams (8);
         ms.setNumDeviceLayers (0);
         ms.setNumDrumPadLayers (0);
         ms.setNumMarkers (8);
@@ -329,7 +327,7 @@ public class HUIControllerSetup extends AbstractControllerSetup<HUIControlSurfac
         this.addButtonHUI (ButtonID.LOOP, "Loop", new ToggleLoopCommand<> (this.model, surface), HUIControlSurface.HUI_TRANSPORT_LOOP, t::isLoop);
         this.addButtonHUI (ButtonID.OVERDUB, "Quick Punch", new PunchInCommand<> (this.model, surface), HUIControlSurface.HUI_TRANSPORT_QICK_PUNCH, t::isPunchInEnabled);
         // HUI_TRANSPORT_AUDITION, not supported
-        this.addButtonHUI (ButtonID.METRONOME, "Metronome", new MetronomeCommand<> (this.model, surface), HUIControlSurface.HUI_TRANSPORT_PRE, t::isMetronomeOn);
+        this.addButtonHUI (ButtonID.METRONOME, "Metronome", new MetronomeCommand<> (this.model, surface, false), HUIControlSurface.HUI_TRANSPORT_PRE, t::isMetronomeOn);
         // Note: The following two punch commands should actually set the punch point, which is
         // currently not possible with the Bitwig API
         this.addButtonHUI (ButtonID.PUNCH_IN, "In", new PunchInCommand<> (this.model, surface), HUIControlSurface.HUI_TRANSPORT_IN, t::isPunchInEnabled);

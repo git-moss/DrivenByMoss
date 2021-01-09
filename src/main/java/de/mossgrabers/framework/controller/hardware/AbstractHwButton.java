@@ -67,7 +67,8 @@ public abstract class AbstractHwButton extends AbstractHwInputControl implements
 
         this.host.scheduleTask (this::checkButtonState, BUTTON_STATE_INTERVAL);
         this.pressedVelocity = (int) (value * 127.0);
-        this.command.execute (ButtonEvent.DOWN, this.pressedVelocity);
+        if (this.command != null)
+            this.command.execute (ButtonEvent.DOWN, this.pressedVelocity);
 
         this.downEventHandlers.forEach (handler -> handler.handle (ButtonEvent.DOWN));
     }
@@ -78,8 +79,11 @@ public abstract class AbstractHwButton extends AbstractHwInputControl implements
      */
     protected void handleButtonRelease ()
     {
+        if (!this.isBound ())
+            return;
+
         this.state = ButtonEvent.UP;
-        if (!this.isConsumed)
+        if (this.command != null && !this.isConsumed)
             this.command.execute (ButtonEvent.UP, 0);
 
         this.upEventHandlers.forEach (handler -> handler.handle (ButtonEvent.UP));

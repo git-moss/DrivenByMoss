@@ -8,8 +8,8 @@ import de.mossgrabers.bitwig.framework.BitwigSetupFactory;
 import de.mossgrabers.bitwig.framework.configuration.SettingsUIImpl;
 import de.mossgrabers.bitwig.framework.daw.HostImpl;
 import de.mossgrabers.bitwig.framework.extension.AbstractControllerExtensionDefinition;
-import de.mossgrabers.controller.launchkey.LaunchkeyMiniMk3ControllerDefinition;
-import de.mossgrabers.controller.launchkey.LaunchkeyMiniMk3ControllerSetup;
+import de.mossgrabers.controller.launchkey.mini.LaunchkeyMiniMk3ControllerDefinition;
+import de.mossgrabers.controller.launchkey.mini.LaunchkeyMiniMk3ControllerSetup;
 import de.mossgrabers.framework.controller.IControllerSetup;
 
 import com.bitwig.extension.controller.api.ControllerHost;

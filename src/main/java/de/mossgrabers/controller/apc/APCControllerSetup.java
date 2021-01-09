@@ -52,6 +52,7 @@ import de.mossgrabers.framework.command.trigger.track.SoloCommand;
 import de.mossgrabers.framework.command.trigger.transport.MetronomeCommand;
 import de.mossgrabers.framework.command.trigger.transport.PlayCommand;
 import de.mossgrabers.framework.command.trigger.transport.StopCommand;
+import de.mossgrabers.framework.command.trigger.view.FeatureGroupButtonColorSupplier;
 import de.mossgrabers.framework.command.trigger.view.ToggleShiftViewCommand;
 import de.mossgrabers.framework.command.trigger.view.ViewButtonCommand;
 import de.mossgrabers.framework.configuration.ISettingsUI;
@@ -223,7 +224,7 @@ public class APCControllerSetup extends AbstractControllerSetup<APCControlSurfac
             this.addButton (ButtonID.SEND2, "USER", new ModeSelectCommand<> (this.model, surface, Modes.USER)
             {
                 @Override
-                protected void displayMode (final ModeManager modeManager)
+                protected void displayMode ()
                 {
                     ((UserMode) modeManager.get (Modes.USER)).displayPageName ();
                 }
@@ -281,7 +282,7 @@ public class APCControllerSetup extends AbstractControllerSetup<APCControlSurfac
         }
 
         this.addButton (ButtonID.CLIP, this.isMkII ? "SESSION" : "MIDI OVERDUB", new SessionRecordCommand (this.model, surface), this.isMkII ? APCControlSurface.APC_BUTTON_SESSION : APCControlSurface.APC_BUTTON_MIDI_OVERDUB, t::isLauncherOverdub, ColorManager.BUTTON_STATE_OFF, ColorManager.BUTTON_STATE_ON);
-        this.addButton (ButtonID.METRONOME, "METRONOME", new MetronomeCommand<> (this.model, surface), this.isMkII ? APCControlSurface.APC_BUTTON_SEND_C : APCControlSurface.APC_BUTTON_METRONOME, t::isMetronomeOn, ColorManager.BUTTON_STATE_OFF, ColorManager.BUTTON_STATE_ON);
+        this.addButton (ButtonID.METRONOME, "METRONOME", new MetronomeCommand<> (this.model, surface, false), this.isMkII ? APCControlSurface.APC_BUTTON_SEND_C : APCControlSurface.APC_BUTTON_METRONOME, t::isMetronomeOn, ColorManager.BUTTON_STATE_OFF, ColorManager.BUTTON_STATE_ON);
         this.addButton (ButtonID.NUDGE_PLUS, "NUDGE+", new RedoCommand<> (this.model, surface), this.isMkII ? APCControlSurface.APC_BUTTON_NUDGE_MINUS : APCControlSurface.APC_BUTTON_NUDGE_PLUS);
         this.addButton (ButtonID.NUDGE_MINUS, "NUDGE-", new UndoCommand<> (this.model, surface), this.isMkII ? APCControlSurface.APC_BUTTON_NUDGE_PLUS : APCControlSurface.APC_BUTTON_NUDGE_MINUS);
         this.addButton (ButtonID.DEVICE_ON_OFF, "DEV. ON/OFF", new DeviceOnOffCommand<> (this.model, surface), this.isMkII ? APCControlSurface.APC_BUTTON_DETAIL_VIEW : APCControlSurface.APC_BUTTON_DEVICE_ON_OFF, this.model.getCursorDevice ()::isEnabled, ColorManager.BUTTON_STATE_OFF, ColorManager.BUTTON_STATE_ON);
@@ -301,10 +302,7 @@ public class APCControllerSetup extends AbstractControllerSetup<APCControlSurfac
         for (int i = 0; i < 5; i++)
         {
             final ButtonID sceneButtonID = ButtonID.get (ButtonID.SCENE1, i);
-            this.addButton (sceneButtonID, "Scene " + (i + 1), new ViewButtonCommand<> (sceneButtonID, surface), APCControlSurface.APC_BUTTON_SCENE_LAUNCH_1 + i, () -> {
-                final IView activeView = viewManager.getActive ();
-                return activeView != null ? activeView.getButtonColor (sceneButtonID) : 0;
-            });
+            this.addButton (sceneButtonID, "Scene " + (i + 1), new ViewButtonCommand<> (sceneButtonID, surface), APCControlSurface.APC_BUTTON_SCENE_LAUNCH_1 + i, new FeatureGroupButtonColorSupplier (viewManager, sceneButtonID));
         }
     }
 

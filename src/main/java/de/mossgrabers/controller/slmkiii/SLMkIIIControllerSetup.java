@@ -37,6 +37,7 @@ import de.mossgrabers.framework.command.trigger.mode.ModeSelectCommand;
 import de.mossgrabers.framework.command.trigger.transport.RecordCommand;
 import de.mossgrabers.framework.command.trigger.transport.StopCommand;
 import de.mossgrabers.framework.command.trigger.transport.WindCommand;
+import de.mossgrabers.framework.command.trigger.view.FeatureGroupButtonColorSupplier;
 import de.mossgrabers.framework.command.trigger.view.ViewButtonCommand;
 import de.mossgrabers.framework.configuration.AbstractConfiguration;
 import de.mossgrabers.framework.configuration.ISettingsUI;
@@ -58,7 +59,6 @@ import de.mossgrabers.framework.daw.midi.IMidiAccess;
 import de.mossgrabers.framework.daw.midi.IMidiInput;
 import de.mossgrabers.framework.daw.midi.IMidiOutput;
 import de.mossgrabers.framework.featuregroup.IMode;
-import de.mossgrabers.framework.featuregroup.IView;
 import de.mossgrabers.framework.featuregroup.ModeManager;
 import de.mossgrabers.framework.featuregroup.ViewManager;
 import de.mossgrabers.framework.mode.Modes;
@@ -239,12 +239,7 @@ public class SLMkIIIControllerSetup extends AbstractControllerSetup<SLMkIIIContr
             final int index = i;
 
             final ButtonID buttonID = ButtonID.get (ButtonID.ROW1_1, i);
-            this.addButton (buttonID, "Select " + (i + 1), new ButtonRowModeCommand<> (0, i, this.model, surface), 15, SLMkIIIControlSurface.MKIII_DISPLAY_BUTTON_1 + i, () -> {
-
-                final IMode mode = modeManager.getActive ();
-                return mode == null ? 0 : mode.getButtonColor (buttonID);
-
-            });
+            this.addButton (buttonID, "Select " + (i + 1), new ButtonRowModeCommand<> (0, i, this.model, surface), 15, SLMkIIIControlSurface.MKIII_DISPLAY_BUTTON_1 + i, new FeatureGroupButtonColorSupplier (modeManager, buttonID));
             this.addButton (ButtonID.get (ButtonID.ROW2_1, i), "Mute/Monitor " + (i + 1), new ButtonAreaCommand (0, i, this.model, surface), 15, SLMkIIIControlSurface.MKIII_BUTTON_ROW1_1 + i, () -> {
 
                 final ITrack track = tb.getItem (index);
@@ -289,10 +284,7 @@ public class SLMkIIIControllerSetup extends AbstractControllerSetup<SLMkIIIContr
         for (int i = 0; i < 2; i++)
         {
             final ButtonID sceneButtonID = ButtonID.get (ButtonID.SCENE1, i);
-            this.addButton (sceneButtonID, "Scene " + (i + 1), new ViewButtonCommand<> (sceneButtonID, surface), 15, SLMkIIIControlSurface.MKIII_SCENE_1 + i, () -> {
-                final IView activeView = viewManager.getActive ();
-                return activeView != null ? activeView.getButtonColor (sceneButtonID) : 0;
-            });
+            this.addButton (sceneButtonID, "Scene " + (i + 1), new ViewButtonCommand<> (sceneButtonID, surface), 15, SLMkIIIControlSurface.MKIII_SCENE_1 + i, new FeatureGroupButtonColorSupplier (viewManager, sceneButtonID));
         }
 
         this.addButton (ButtonID.SCENE7, "Scene Up", (event, value) -> {

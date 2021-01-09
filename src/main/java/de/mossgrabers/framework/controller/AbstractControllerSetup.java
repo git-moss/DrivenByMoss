@@ -22,6 +22,7 @@ import de.mossgrabers.framework.controller.valuechanger.RelativeEncoding;
 import de.mossgrabers.framework.daw.IHost;
 import de.mossgrabers.framework.daw.IModel;
 import de.mossgrabers.framework.daw.constants.Capability;
+import de.mossgrabers.framework.daw.midi.IMidiInput;
 import de.mossgrabers.framework.daw.midi.INoteInput;
 import de.mossgrabers.framework.daw.midi.INoteRepeat;
 import de.mossgrabers.framework.featuregroup.IMode;
@@ -673,28 +674,16 @@ public abstract class AbstractControllerSetup<S extends IControlSurface<C>, C ex
 
 
     /**
-     * Create a hardware button proxy, bind a trigger command to it and bind it to the trigger bind
-     * type retrieved from {@link #getTriggerBindType(ButtonID)}.
+     * Create a hardware button proxy, bind it to the trigger bind type retrieved from
+     * {@link #getTriggerBindType(ButtonID)}. Use to ignore a message.
      *
-     * @param surface The control surface
      * @param buttonID The ID of the button (for later access)
-     * @param label The label of the button
-     * @param supplier Callback for retrieving the state of the light
      * @param midiChannel The MIDI channel
      * @param midiControl The MIDI CC or note
-     * @param command The command to bind
-     * @param colorIds The color IDs to map to the states
      */
-    protected void addButton (final S surface, final ButtonID buttonID, final String label, final TriggerCommand command, final int midiChannel, final int midiControl, final IntSupplier supplier, final String... colorIds)
+    protected void addDummyButton (final ButtonID buttonID, final int midiChannel, final int midiControl)
     {
-        final IHwButton button = surface.createButton (buttonID, label);
-        button.bind (command);
-        if (midiControl < 0)
-            return;
-        button.bind (surface.getMidiInput (), this.getTriggerBindType (buttonID), midiChannel, midiControl);
-        final IntSupplier intSupplier = () -> button.isPressed () ? 1 : 0;
-        final IntSupplier supp = supplier == null ? intSupplier : supplier;
-        this.addLight (surface, null, buttonID, button, midiChannel, midiControl, supp, colorIds);
+        this.addButton (this.getSurface (), buttonID, "", null, midiChannel, midiControl, -1, false, null);
     }
 
 
@@ -728,6 +717,25 @@ public abstract class AbstractControllerSetup<S extends IControlSurface<C>, C ex
      * @param supplier Callback for retrieving the state of the light
      * @param midiChannel The MIDI channel
      * @param midiControl The MIDI CC or note
+     * @param command The command to bind
+     * @param colorIds The color IDs to map to the states
+     */
+    protected void addButton (final S surface, final ButtonID buttonID, final String label, final TriggerCommand command, final int midiChannel, final int midiControl, final IntSupplier supplier, final String... colorIds)
+    {
+        this.addButton (surface, buttonID, label, command, midiChannel, midiControl, -1, true, supplier, colorIds);
+    }
+
+
+    /**
+     * Create a hardware button proxy, bind a trigger command to it and bind it to the trigger bind
+     * type retrieved from {@link #getTriggerBindType(ButtonID)}.
+     *
+     * @param surface The control surface
+     * @param buttonID The ID of the button (for later access)
+     * @param label The label of the button
+     * @param supplier Callback for retrieving the state of the light
+     * @param midiChannel The MIDI channel
+     * @param midiControl The MIDI CC or note
      * @param value The specific value of the control to bind to
      * @param command The command to bind
      * @param hasLight True create and add a light
@@ -735,16 +743,43 @@ public abstract class AbstractControllerSetup<S extends IControlSurface<C>, C ex
      */
     protected void addButton (final S surface, final ButtonID buttonID, final String label, final TriggerCommand command, final int midiChannel, final int midiControl, final int value, final boolean hasLight, final IntSupplier supplier, final String... colorIds)
     {
+        this.addButton (surface, buttonID, label, command, midiChannel, midiChannel, midiControl, value, hasLight, supplier, colorIds);
+    }
+
+
+    /**
+     * Create a hardware button proxy, bind a trigger command to it and bind it to the trigger bind
+     * type retrieved from {@link #getTriggerBindType(ButtonID)}.
+     *
+     * @param surface The control surface
+     * @param buttonID The ID of the button (for later access)
+     * @param label The label of the button
+     * @param supplier Callback for retrieving the state of the light
+     * @param midiInputChannel The MIDI input channel
+     * @param midiOutputChannel The MIDI output channel
+     * @param midiControl The MIDI CC or note
+     * @param value The specific value of the control to bind to
+     * @param command The command to bind
+     * @param hasLight True create and add a light
+     * @param colorIds The color IDs to map to the states
+     */
+    protected void addButton (final S surface, final ButtonID buttonID, final String label, final TriggerCommand command, final int midiInputChannel, final int midiOutputChannel, final int midiControl, final int value, final boolean hasLight, final IntSupplier supplier, final String... colorIds)
+    {
         final IHwButton button = surface.createButton (buttonID, label);
         button.bind (command);
         if (midiControl < 0)
             return;
-        button.bind (surface.getMidiInput (), this.getTriggerBindType (buttonID), midiChannel, midiControl, value);
+        final IMidiInput midiInput = surface.getMidiInput ();
+        final BindType triggerBindType = this.getTriggerBindType (buttonID);
+        if (value == -1)
+            button.bind (midiInput, triggerBindType, midiInputChannel, midiControl);
+        else
+            button.bind (midiInput, triggerBindType, midiInputChannel, midiControl, value);
         if (hasLight)
         {
             final IntSupplier intSupplier = () -> button.isPressed () ? 1 : 0;
             final IntSupplier supp = supplier == null ? intSupplier : supplier;
-            this.addLight (surface, null, buttonID, button, midiChannel, midiControl, supp, colorIds);
+            this.addLight (surface, null, buttonID, button, midiOutputChannel, midiControl, supp, colorIds);
         }
     }
 

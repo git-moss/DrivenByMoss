@@ -2,15 +2,15 @@
 // (c) 2017-2021
 // Licensed under LGPLv3 - http://www.gnu.org/licenses/lgpl-3.0.txt
 
-package de.mossgrabers.controller.launchkey;
+package de.mossgrabers.controller.launchkey.mini;
 
-import de.mossgrabers.controller.launchkey.controller.LaunchkeyMiniMk3ColorManager;
-import de.mossgrabers.controller.launchkey.controller.LaunchkeyMiniMk3ControlSurface;
-import de.mossgrabers.controller.launchkey.view.DrumConfigView;
-import de.mossgrabers.controller.launchkey.view.DrumView;
-import de.mossgrabers.controller.launchkey.view.PadModeSelectView;
-import de.mossgrabers.controller.launchkey.view.SessionView;
-import de.mossgrabers.controller.launchkey.view.UserPadView;
+import de.mossgrabers.controller.launchkey.mini.controller.LaunchkeyMiniMk3ColorManager;
+import de.mossgrabers.controller.launchkey.mini.controller.LaunchkeyMiniMk3ControlSurface;
+import de.mossgrabers.controller.launchkey.mini.view.DrumConfigView;
+import de.mossgrabers.controller.launchkey.mini.view.DrumView;
+import de.mossgrabers.controller.launchkey.mini.view.PadModeSelectView;
+import de.mossgrabers.controller.launchkey.mini.view.SessionView;
+import de.mossgrabers.controller.launchkey.mini.view.UserPadView;
 import de.mossgrabers.framework.MVHelper;
 import de.mossgrabers.framework.command.core.NopCommand;
 import de.mossgrabers.framework.command.trigger.mode.ModeCursorCommand;
@@ -18,6 +18,7 @@ import de.mossgrabers.framework.command.trigger.mode.ModeCursorCommand.Direction
 import de.mossgrabers.framework.command.trigger.mode.ModeSelectCommand;
 import de.mossgrabers.framework.command.trigger.transport.ConfiguredRecordCommand;
 import de.mossgrabers.framework.command.trigger.transport.PlayCommand;
+import de.mossgrabers.framework.command.trigger.view.FeatureGroupButtonColorSupplier;
 import de.mossgrabers.framework.command.trigger.view.ViewButtonCommand;
 import de.mossgrabers.framework.command.trigger.view.ViewMultiSelectCommand;
 import de.mossgrabers.framework.configuration.ISettingsUI;
@@ -41,8 +42,6 @@ import de.mossgrabers.framework.daw.midi.IMidiAccess;
 import de.mossgrabers.framework.daw.midi.IMidiInput;
 import de.mossgrabers.framework.daw.midi.IMidiOutput;
 import de.mossgrabers.framework.featuregroup.AbstractMode;
-import de.mossgrabers.framework.featuregroup.IMode;
-import de.mossgrabers.framework.featuregroup.IView;
 import de.mossgrabers.framework.featuregroup.ModeManager;
 import de.mossgrabers.framework.featuregroup.ViewManager;
 import de.mossgrabers.framework.mode.Modes;
@@ -53,6 +52,8 @@ import de.mossgrabers.framework.mode.track.SendMode;
 import de.mossgrabers.framework.mode.track.VolumeMode;
 import de.mossgrabers.framework.scale.Scales;
 import de.mossgrabers.framework.view.Views;
+
+import java.util.function.BooleanSupplier;
 
 
 /**
@@ -118,6 +119,9 @@ public class LaunchkeyMiniMk3ControllerSetup extends AbstractControllerSetup<Lau
         ms.setNumScenes (2);
         ms.setNumSends (8);
         this.model = this.factory.createModel (this.colorManager, this.valueChanger, this.scales, ms);
+
+        final ITrackBank trackBank = this.model.getTrackBank ();
+        trackBank.setIndication (true);
     }
 
 
@@ -158,12 +162,14 @@ public class LaunchkeyMiniMk3ControllerSetup extends AbstractControllerSetup<Lau
         final LaunchkeyMiniMk3ControlSurface surface = this.getSurface ();
         final ModeManager modeManager = surface.getModeManager ();
 
-        modeManager.register (Modes.VOLUME, new VolumeMode<> (surface, this.model, true, AbstractMode.DEFAULT_KNOB_IDS));
-        modeManager.register (Modes.PAN, new PanMode<> (surface, this.model, true, AbstractMode.DEFAULT_KNOB_IDS));
-        modeManager.register (Modes.SEND1, new SendMode<> (0, surface, this.model, true, AbstractMode.DEFAULT_KNOB_IDS));
-        modeManager.register (Modes.SEND2, new SendMode<> (1, surface, this.model, true, AbstractMode.DEFAULT_KNOB_IDS));
-        modeManager.register (Modes.DEVICE_PARAMS, new ParameterMode<> (surface, this.model, true, AbstractMode.DEFAULT_KNOB_IDS));
-        modeManager.register (Modes.USER, new UserMode<> (surface, this.model, true, ContinuousID.createSequentialList (ContinuousID.DEVICE_KNOB1, 8)));
+        final BooleanSupplier offSupplier = () -> false;
+
+        modeManager.register (Modes.VOLUME, new VolumeMode<> (surface, this.model, true, AbstractMode.DEFAULT_KNOB_IDS, offSupplier));
+        modeManager.register (Modes.PAN, new PanMode<> (surface, this.model, true, AbstractMode.DEFAULT_KNOB_IDS, offSupplier));
+        modeManager.register (Modes.SEND1, new SendMode<> (0, surface, this.model, true, AbstractMode.DEFAULT_KNOB_IDS, offSupplier));
+        modeManager.register (Modes.SEND2, new SendMode<> (1, surface, this.model, true, AbstractMode.DEFAULT_KNOB_IDS, offSupplier));
+        modeManager.register (Modes.DEVICE_PARAMS, new ParameterMode<> (surface, this.model, true, AbstractMode.DEFAULT_KNOB_IDS, offSupplier));
+        modeManager.register (Modes.USER, new UserMode<> (surface, this.model, true, ContinuousID.createSequentialList (ContinuousID.DEVICE_KNOB1, 8), offSupplier));
     }
 
 
@@ -188,7 +194,6 @@ public class LaunchkeyMiniMk3ControllerSetup extends AbstractControllerSetup<Lau
     {
         final LaunchkeyMiniMk3ControlSurface surface = this.getSurface ();
         final ITransport t = this.model.getTransport ();
-        final ModeManager modeManager = surface.getModeManager ();
         final ViewManager viewManager = surface.getViewManager ();
 
         this.addButton (ButtonID.SHIFT, "Shift", NopCommand.INSTANCE, LaunchkeyMiniMk3ControlSurface.LAUNCHKEY_SHIFT);
@@ -196,41 +201,21 @@ public class LaunchkeyMiniMk3ControllerSetup extends AbstractControllerSetup<Lau
         this.addButton (ButtonID.PLAY, "Play", new PlayCommand<> (this.model, surface), 15, LaunchkeyMiniMk3ControlSurface.LAUNCHKEY_PLAY, t::isPlaying);
         this.addButton (ButtonID.RECORD, "Record", new ConfiguredRecordCommand<> (this.model, surface), 15, LaunchkeyMiniMk3ControlSurface.LAUNCHKEY_RECORD, () -> t.isLauncherOverdub () || t.isRecording ());
 
-        this.addButton (ButtonID.MOVE_TRACK_LEFT, "Previous", new ModeCursorCommand<> (Direction.LEFT, this.model, surface), 15, LaunchkeyMiniMk3ControlSurface.LAUNCHKEY_LEFT, () -> {
-
-            final IMode mode = modeManager.getActive ();
-            if (mode == null)
-                return false;
-            if (modeManager.isActive (Modes.DEVICE_PARAMS))
-                return this.model.getCursorDevice ().canSelectPreviousFX ();
-            return mode.hasPreviousItem ();
-
-        });
-        this.addButton (ButtonID.MOVE_TRACK_RIGHT, "Next", new ModeCursorCommand<> (Direction.RIGHT, this.model, surface), 15, LaunchkeyMiniMk3ControlSurface.LAUNCHKEY_RIGHT, () -> {
-
-            final IMode mode = modeManager.getActive ();
-            if (mode == null)
-                return false;
-            if (modeManager.isActive (Modes.DEVICE_PARAMS))
-                return this.model.getCursorDevice ().canSelectNextFX ();
-            return mode.hasNextItem ();
-
-        });
+        final ModeCursorCommand<LaunchkeyMiniMk3ControlSurface, LaunchkeyMiniMk3Configuration> leftCommand = new ModeCursorCommand<> (Direction.LEFT, this.model, surface);
+        this.addButton (ButtonID.MOVE_TRACK_LEFT, "Previous", leftCommand, 15, LaunchkeyMiniMk3ControlSurface.LAUNCHKEY_LEFT, leftCommand::canScroll);
+        final ModeCursorCommand<LaunchkeyMiniMk3ControlSurface, LaunchkeyMiniMk3Configuration> rightCommand = new ModeCursorCommand<> (Direction.RIGHT, this.model, surface);
+        this.addButton (ButtonID.MOVE_TRACK_RIGHT, "Next", rightCommand, 15, LaunchkeyMiniMk3ControlSurface.LAUNCHKEY_RIGHT, rightCommand::canScroll);
 
         // Scene buttons
-        this.addButton (ButtonID.SCENE1, "Scene 1", new ViewButtonCommand<> (ButtonID.SCENE1, surface), LaunchkeyMiniMk3ControlSurface.LAUNCHKEY_SCENE1, () -> {
-            final IView activeView = viewManager.getActive ();
-            return activeView != null ? activeView.getButtonColor (ButtonID.SCENE1) : 0;
-        });
-        this.addButton (ButtonID.SCENE2, "Scene 2", new ViewButtonCommand<> (ButtonID.SCENE2, surface), LaunchkeyMiniMk3ControlSurface.LAUNCHKEY_SCENE2, () -> {
-            final IView activeView = viewManager.getActive ();
-            return activeView != null ? activeView.getButtonColor (ButtonID.SCENE2) : 0;
-        });
+        this.addButton (ButtonID.SCENE1, "Scene 1", new ViewButtonCommand<> (ButtonID.SCENE1, surface), LaunchkeyMiniMk3ControlSurface.LAUNCHKEY_SCENE1, new FeatureGroupButtonColorSupplier (viewManager, ButtonID.SCENE1));
+        this.addButton (ButtonID.SCENE2, "Scene 2", new ViewButtonCommand<> (ButtonID.SCENE2, surface), LaunchkeyMiniMk3ControlSurface.LAUNCHKEY_SCENE2, new FeatureGroupButtonColorSupplier (viewManager, ButtonID.SCENE2));
 
-        // View and mode selection with Pads in Shift mode
+        // View selection with Pads in Shift mode
         this.createViewButton (ButtonID.ROW2_1, OutputID.LED_RING1, "Session", Views.SESSION, LaunchkeyMiniMk3ControlSurface.PAD_MODE_SESSION);
         this.createViewButton (ButtonID.ROW2_2, OutputID.LED_RING2, "Drum", Views.DRUM, LaunchkeyMiniMk3ControlSurface.PAD_MODE_DRUM);
         this.createViewButton (ButtonID.ROW2_3, OutputID.LED_RING3, "Custom", Views.PLAY, LaunchkeyMiniMk3ControlSurface.PAD_MODE_CUSTOM);
+
+        // Knob mode selection with Pads in Shift mode
         this.createModeButton (ButtonID.ROW1_1, OutputID.LED1, "Device", Modes.DEVICE_PARAMS, LaunchkeyMiniMk3ControlSurface.KNOB_MODE_PARAMS);
         this.createModeButton (ButtonID.ROW1_2, OutputID.LED2, "Volume", Modes.VOLUME, LaunchkeyMiniMk3ControlSurface.KNOB_MODE_VOLUME);
         this.createModeButton (ButtonID.ROW1_3, OutputID.LED3, "Pan", Modes.PAN, LaunchkeyMiniMk3ControlSurface.KNOB_MODE_PAN);

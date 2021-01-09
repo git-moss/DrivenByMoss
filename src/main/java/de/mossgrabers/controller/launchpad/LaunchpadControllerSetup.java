@@ -4,7 +4,6 @@
 
 package de.mossgrabers.controller.launchpad;
 
-import de.mossgrabers.controller.launchpad.command.trigger.ClickCommand;
 import de.mossgrabers.controller.launchpad.command.trigger.DeleteCommand;
 import de.mossgrabers.controller.launchpad.command.trigger.LaunchpadCursorCommand;
 import de.mossgrabers.controller.launchpad.command.trigger.LaunchpadDuplicateCommand;
@@ -60,6 +59,7 @@ import de.mossgrabers.framework.command.trigger.application.UndoCommand;
 import de.mossgrabers.framework.command.trigger.clip.NewCommand;
 import de.mossgrabers.framework.command.trigger.clip.QuantizeCommand;
 import de.mossgrabers.framework.command.trigger.mode.ModeCursorCommand.Direction;
+import de.mossgrabers.framework.command.trigger.transport.MetronomeCommand;
 import de.mossgrabers.framework.command.trigger.transport.RecordCommand;
 import de.mossgrabers.framework.command.trigger.view.SelectPlayViewCommand;
 import de.mossgrabers.framework.command.trigger.view.ViewButtonCommand;
@@ -321,7 +321,7 @@ public class LaunchpadControllerSetup extends AbstractControllerSetup<LaunchpadC
         // The following buttons are only available on the Pro but the commands are used by all
         // Launchpad models!
         final LaunchpadButtonInfo clickInfo = buttonSetup.get (LaunchpadButton.CLICK);
-        this.addButton (ButtonID.METRONOME, "Metronome", new ClickCommand (this.model, surface), clickInfo.isShifted () ? -1 : clickInfo.getControl (), () -> {
+        this.addButton (ButtonID.METRONOME, "Metronome", new MetronomeCommand<> (this.model, surface, true), clickInfo.isShifted () ? -1 : clickInfo.getControl (), () -> {
             if (surface.isShiftPressed ())
                 return surface.isPressed (ButtonID.METRONOME) ? LaunchpadColorManager.LAUNCHPAD_COLOR_WHITE : LaunchpadColorManager.LAUNCHPAD_COLOR_GREEN_SPRING;
             return transport.isMetronomeOn () ? LaunchpadColorManager.LAUNCHPAD_COLOR_GREEN_HI : LaunchpadColorManager.LAUNCHPAD_COLOR_GREEN_LO;
@@ -697,6 +697,7 @@ public class LaunchpadControllerSetup extends AbstractControllerSetup<LaunchpadC
                 surface.getButton (ButtonID.DOWN).setBounds (41.0, 150.75, 61.0, 60.0);
                 surface.getButton (ButtonID.DELETE).setBounds (41.0, 226.75, 61.0, 60.0);
                 surface.getButton (ButtonID.DUPLICATE).setBounds (41.0, 299.75, 61.0, 60.0);
+                surface.getButton (ButtonID.NEW).setBounds (41.0, 450.5, 61.0, 60.0);
 
                 surface.getButton (ButtonID.REC_ARM).setBounds (113.25, 698.0, 61.0, 30.0);
                 surface.getButton (ButtonID.MUTE).setBounds (188.5, 698.0, 61.0, 30.0);

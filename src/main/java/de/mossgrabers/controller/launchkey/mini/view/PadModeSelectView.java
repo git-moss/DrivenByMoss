@@ -2,11 +2,11 @@
 // (c) 2017-2021
 // Licensed under LGPLv3 - http://www.gnu.org/licenses/lgpl-3.0.txt
 
-package de.mossgrabers.controller.launchkey.view;
+package de.mossgrabers.controller.launchkey.mini.view;
 
-import de.mossgrabers.controller.launchkey.LaunchkeyMiniMk3Configuration;
-import de.mossgrabers.controller.launchkey.controller.LaunchkeyMiniMk3ColorManager;
-import de.mossgrabers.controller.launchkey.controller.LaunchkeyMiniMk3ControlSurface;
+import de.mossgrabers.controller.launchkey.mini.LaunchkeyMiniMk3Configuration;
+import de.mossgrabers.controller.launchkey.mini.controller.LaunchkeyMiniMk3ColorManager;
+import de.mossgrabers.controller.launchkey.mini.controller.LaunchkeyMiniMk3ControlSurface;
 import de.mossgrabers.framework.controller.ButtonID;
 import de.mossgrabers.framework.controller.grid.IPadGrid;
 import de.mossgrabers.framework.daw.IModel;
@@ -120,9 +120,9 @@ public class PadModeSelectView extends AbstractView<LaunchkeyMiniMk3ControlSurfa
     @Override
     public int getButtonColor (final ButtonID buttonID)
     {
-        if (buttonID == ButtonID.SCENE1)
-            return LaunchkeyMiniMk3ColorManager.LAUNCHKEY_COLOR_BLACK;
-        return LaunchkeyMiniMk3ColorManager.LAUNCHKEY_COLOR_WHITE;
+        if (buttonID == ButtonID.SCENE2)
+            return LaunchkeyMiniMk3ColorManager.LAUNCHKEY_COLOR_WHITE;
+        return LaunchkeyMiniMk3ColorManager.LAUNCHKEY_COLOR_BLACK;
     }
 
 

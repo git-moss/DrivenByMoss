@@ -2,7 +2,7 @@
 // (c) 2017-2021
 // Licensed under LGPLv3 - http://www.gnu.org/licenses/lgpl-3.0.txt
 
-package de.mossgrabers.controller.launchkey;
+package de.mossgrabers.controller.launchkey.maxi;
 
 import de.mossgrabers.framework.controller.DefaultControllerDefinition;
 import de.mossgrabers.framework.utils.OperatingSystem;
@@ -13,21 +13,21 @@ import java.util.UUID;
 
 
 /**
- * Definition class for the Novation Launchkey Mini Mk3 controller extension.
+ * Definition class for the Novation Launchkey Mk3 controller extension.
  *
  * @author J&uuml;rgen Mo&szlig;graber
  */
-public class LaunchkeyMiniMk3ControllerDefinition extends DefaultControllerDefinition
+public class LaunchkeyMk3ControllerDefinition extends DefaultControllerDefinition
 {
-    private static final UUID EXTENSION_ID = UUID.fromString ("5359D5B1-28CD-4457-B49D-F8D3D7BC52B9");
+    private static final UUID EXTENSION_ID = UUID.fromString ("10CB5692-541C-4A5D-9EB4-07D80F34A02C");
 
 
     /**
      * Constructor.
      */
-    public LaunchkeyMiniMk3ControllerDefinition ()
+    public LaunchkeyMk3ControllerDefinition ()
     {
-        super (EXTENSION_ID, "Launchkey Mini Mk3", "Novation", 2, 1);
+        super (EXTENSION_ID, "Launchkey Mk3", "Novation", 2, 1);
     }
 
 
@@ -42,22 +42,22 @@ public class LaunchkeyMiniMk3ControllerDefinition extends DefaultControllerDefin
             case WINDOWS:
                 midiDiscoveryPairs.add (this.addDeviceDiscoveryPair (new String []
                 {
-                    "MIDIIN2 (Launchkey Mini MK3)",
-                    "Launchkey Mini MK3"
+                    "MIDIIN2 (LKMK3 MIDI)",
+                    "LKMK3 MIDI"
                 }, new String []
                 {
-                    "MIDIOUT2 (Launchkey Mini MK3)"
+                    "MIDIOUT2 (LKMK3 MIDI)"
                 }));
                 break;
 
             case MAC:
                 midiDiscoveryPairs.add (this.addDeviceDiscoveryPair (new String []
                 {
-                    "Launchkey Mini MK3 DAW Port",
-                    "Launchkey Mini MK3 MIDI Port"
+                    "LKMK3 DAW Port",
+                    "LKMK3 MIDI Port"
                 }, new String []
                 {
-                    "Launchkey Mini MK3 DAW Port"
+                    "LKMK3 DAW Port"
                 }));
                 break;
 

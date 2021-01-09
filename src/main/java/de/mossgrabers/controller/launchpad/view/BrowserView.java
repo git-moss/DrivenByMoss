@@ -99,7 +99,7 @@ public class BrowserView extends AbstractView<LaunchpadControlSurface, Launchpad
             case 36:
                 if (velocity == 0)
                     return;
-                this.model.getBrowser ().stopBrowsing (false);
+                browser.stopBrowsing (false);
                 this.surface.getViewManager ().restore ();
                 break;
 
@@ -107,7 +107,7 @@ public class BrowserView extends AbstractView<LaunchpadControlSurface, Launchpad
             case 43:
                 if (velocity == 0)
                     return;
-                this.model.getBrowser ().stopBrowsing (true);
+                browser.stopBrowsing (true);
                 this.surface.getViewManager ().restore ();
                 break;
 

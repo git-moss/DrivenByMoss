@@ -46,12 +46,13 @@ public class SpecificDeviceImpl extends DeviceImpl implements ISpecificDevice
      * @param valueChanger The value changer
      * @param device The device to encapsulate
      * @param numSends The number of sends
+     * @param numParamPages The number of parameter pages
      * @param numParams The number of parameters
      * @param numDevicesInBank The number of devices
      * @param numDeviceLayers The number of layers
      * @param numDrumPadLayers The number of drum pad layers
      */
-    public SpecificDeviceImpl (final IHost host, final IValueChanger valueChanger, final Device device, final int numSends, final int numParams, final int numDevicesInBank, final int numDeviceLayers, final int numDrumPadLayers)
+    public SpecificDeviceImpl (final IHost host, final IValueChanger valueChanger, final Device device, final int numSends, final int numParamPages, final int numParams, final int numDevicesInBank, final int numDeviceLayers, final int numDrumPadLayers)
     {
         super (device, -1);
 
@@ -67,6 +68,7 @@ public class SpecificDeviceImpl extends DeviceImpl implements ISpecificDevice
         this.device.slotNames ().markInterested ();
 
         final int checkedNumDevices = numDevicesInBank >= 0 ? numDevicesInBank : 8;
+        final int checkedNumParamPages = numParamPages >= 0 ? numParamPages : 8;
         final int checkedNumParams = numParams >= 0 ? numParams : 8;
         final int checkedNumDeviceLayers = numDeviceLayers >= 0 ? numDeviceLayers : 8;
         final int checkedNumDrumPadLayers = numDrumPadLayers >= 0 ? numDrumPadLayers : 16;
@@ -74,10 +76,8 @@ public class SpecificDeviceImpl extends DeviceImpl implements ISpecificDevice
         if (checkedNumParams > 0)
         {
             final CursorRemoteControlsPage remoteControlsPage = this.device.createCursorRemoteControlsPage (checkedNumParams);
-            // We use the same number of page entries (numParams) for the page bank, add a specific
-            // parameter if there is one controller who wants that differently
-            this.parameterPageBank = new ParameterPageBankImpl (remoteControlsPage, numParams);
-            this.parameterBank = new ParameterBankImpl (host, valueChanger, this.parameterPageBank, remoteControlsPage, numParams);
+            this.parameterPageBank = new ParameterPageBankImpl (remoteControlsPage, checkedNumParamPages);
+            this.parameterBank = new ParameterBankImpl (host, valueChanger, this.parameterPageBank, remoteControlsPage, checkedNumParams);
         }
         else
         {
@@ -86,7 +86,7 @@ public class SpecificDeviceImpl extends DeviceImpl implements ISpecificDevice
         }
 
         // Monitor the layers of a container device (if any)
-        this.layerBank = new LayerBankImpl (host, valueChanger, checkedNumDeviceLayers > 0 ? this.device.createLayerBank (checkedNumDeviceLayers) : null, this.device.createCursorLayer (), numDeviceLayers, numSends, checkedNumDevices);
+        this.layerBank = new LayerBankImpl (host, valueChanger, checkedNumDeviceLayers > 0 ? this.device.createLayerBank (checkedNumDeviceLayers) : null, this.device.createCursorLayer (), checkedNumDeviceLayers, numSends, checkedNumDevices);
 
         // Monitor the drum pad layers of a container device (if any)
         this.drumPadBank = new DrumPadBankImpl (host, valueChanger, checkedNumDrumPadLayers > 0 ? this.device.createDrumPadBank (checkedNumDrumPadLayers) : null, checkedNumDrumPadLayers, numSends, checkedNumDevices);

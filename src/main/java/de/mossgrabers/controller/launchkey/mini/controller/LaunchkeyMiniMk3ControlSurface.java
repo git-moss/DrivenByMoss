@@ -2,9 +2,9 @@
 // (c) 2017-2021
 // Licensed under LGPLv3 - http://www.gnu.org/licenses/lgpl-3.0.txt
 
-package de.mossgrabers.controller.launchkey.controller;
+package de.mossgrabers.controller.launchkey.mini.controller;
 
-import de.mossgrabers.controller.launchkey.LaunchkeyMiniMk3Configuration;
+import de.mossgrabers.controller.launchkey.mini.LaunchkeyMiniMk3Configuration;
 import de.mossgrabers.framework.command.core.ContinuousCommand;
 import de.mossgrabers.framework.controller.AbstractControlSurface;
 import de.mossgrabers.framework.controller.ButtonID;
@@ -101,14 +101,6 @@ public class LaunchkeyMiniMk3ControlSurface extends AbstractControlSurface<Launc
 
         this.input.setSysexCallback (this::handleSysEx);
         this.output.sendSysex (DeviceInquiry.createQuery ());
-    }
-
-
-    /** {@inheritDoc} */
-    @Override
-    public boolean isShiftPressed ()
-    {
-        return super.isShiftPressed () && !this.isPressed (ButtonID.MOVE_TRACK_LEFT) && !this.isPressed (ButtonID.MOVE_TRACK_RIGHT);
     }
 
 
@@ -221,10 +213,7 @@ public class LaunchkeyMiniMk3ControlSurface extends AbstractControlSurface<Launc
     private void handleDeviceInquiryResponse (final DeviceInquiry deviceInquiry)
     {
         final int [] revisionLevel = deviceInquiry.getRevisionLevel ();
-        if (revisionLevel.length == 4)
-        {
-            final String firmwareVersion = String.format ("%d%d%d%d", Integer.valueOf (revisionLevel[0]), Integer.valueOf (revisionLevel[1]), Integer.valueOf (revisionLevel[2]), Integer.valueOf (revisionLevel[3]));
-            this.host.println ("Firmware version: " + (firmwareVersion.charAt (0) == '0' ? firmwareVersion.substring (1) : firmwareVersion));
-        }
+        final String firmwareVersion = String.format ("%d%d%d%d", Integer.valueOf (revisionLevel[0]), Integer.valueOf (revisionLevel[1]), Integer.valueOf (revisionLevel[2]), Integer.valueOf (revisionLevel[3]));
+        this.host.println ("Firmware version: " + (firmwareVersion.charAt (0) == '0' ? firmwareVersion.substring (1) : firmwareVersion));
     }
 }

@@ -222,6 +222,7 @@ public class MCUControllerSetup extends AbstractControllerSetup<MCUControlSurfac
         ms.setNumScenes (8);
         ms.setNumFilterColumnEntries (8);
         ms.setNumResults (8);
+        ms.setNumParamPages (8 * numMackieDevices);
         ms.setNumParams (8 * numMackieDevices);
         ms.setNumDeviceLayers (0);
         ms.setNumDrumPadLayers (0);
@@ -435,7 +436,7 @@ public class MCUControllerSetup extends AbstractControllerSetup<MCUControlSurfac
 
                 // Utilities
                 this.addButton (surface, ButtonID.BROWSE, "Browse", new BrowserCommand<> (this.model, surface), 0, MCUControlSurface.MCU_USER, () -> modeManager.isActive (Modes.BROWSER));
-                this.addButton (surface, ButtonID.METRONOME, "Metronome", new MetronomeCommand<> (this.model, surface), 0, MCUControlSurface.MCU_CLICK, () -> surface.getButton (ButtonID.SHIFT).isPressed () ? t.isMetronomeTicksOn () : t.isMetronomeOn ());
+                this.addButton (surface, ButtonID.METRONOME, "Metronome", new MetronomeCommand<> (this.model, surface, false), 0, MCUControlSurface.MCU_CLICK, () -> surface.getButton (ButtonID.SHIFT).isPressed () ? t.isMetronomeTicksOn () : t.isMetronomeOn ());
                 this.addButton (surface, ButtonID.GROOVE, "Groove", new GrooveCommand (this.model, surface), 0, MCUControlSurface.MCU_SOLO, () -> {
                     final IParameter parameter = this.model.getGroove ().getParameter (GrooveParameterID.ENABLED);
                     return parameter != null && parameter.getValue () > 0;

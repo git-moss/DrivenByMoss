@@ -233,7 +233,7 @@ public class FireControllerSetup extends AbstractControllerSetup<FireControlSurf
 
         }, ColorManager.BUTTON_STATE_ON, ColorManager.BUTTON_STATE_HI, FireColorManager.BUTTON_STATE_ON2, FireColorManager.BUTTON_STATE_HI2);
 
-        this.addButton (ButtonID.METRONOME, "PATTERN/\nSONG", new MetronomeCommand<> (this.model, surface), FireControlSurface.FIRE_PATTERN, () -> {
+        this.addButton (ButtonID.METRONOME, "PATTERN/\nSONG", new MetronomeCommand<> (this.model, surface, false), FireControlSurface.FIRE_PATTERN, () -> {
 
             if (surface.isShiftPressed ())
                 return t.isMetronomeTicksOn ();

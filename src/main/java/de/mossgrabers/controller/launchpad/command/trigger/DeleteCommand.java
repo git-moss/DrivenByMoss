@@ -12,7 +12,7 @@ import de.mossgrabers.framework.utils.ButtonEvent;
 
 
 /**
- * Track panorama command.
+ * Toggle the loop.
  *
  * @author J&uuml;rgen Mo&szlig;graber
  */

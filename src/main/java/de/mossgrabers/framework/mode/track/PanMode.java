@@ -13,6 +13,7 @@ import de.mossgrabers.framework.daw.data.ITrack;
 import de.mossgrabers.framework.parameterprovider.PanParameterProvider;
 
 import java.util.List;
+import java.util.function.BooleanSupplier;
 
 
 /**
@@ -50,7 +51,24 @@ public class PanMode<S extends IControlSurface<C>, C extends Configuration> exte
      */
     public PanMode (final S surface, final IModel model, final boolean isAbsolute, final List<ContinuousID> controls)
     {
-        super ("Panorama", surface, model, isAbsolute, controls);
+        this (surface, model, isAbsolute, controls, surface::isShiftPressed);
+    }
+
+
+    /**
+     * Constructor.
+     *
+     * @param surface The control surface
+     * @param model The model
+     * @param isAbsolute If true the value change is happending with a setter otherwise relative
+     *            change method is used
+     * @param controls The IDs of the knobs or faders to control this mode
+     * @param isAlternativeFunction Callback function to execute the secondary function, e.g. a
+     *            shift button
+     */
+    public PanMode (final S surface, final IModel model, final boolean isAbsolute, final List<ContinuousID> controls, final BooleanSupplier isAlternativeFunction)
+    {
+        super ("Panorama", surface, model, isAbsolute, controls, isAlternativeFunction);
 
         if (controls != null)
             this.setParameters (new PanParameterProvider (model));

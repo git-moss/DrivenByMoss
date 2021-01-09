@@ -21,15 +21,22 @@ import de.mossgrabers.framework.utils.ButtonEvent;
  */
 public class MetronomeCommand<S extends IControlSurface<C>, C extends Configuration> extends AbstractTriggerCommand<S, C>
 {
+    private final boolean tapWithShift;
+
+
     /**
      * Constructor.
      *
      * @param model The model
      * @param surface The surface
+     * @param tapWithShift Shift funtionality is changed to tap tempo instead of toggle metronome
+     *            ticks if true
      */
-    public MetronomeCommand (final IModel model, final S surface)
+    public MetronomeCommand (final IModel model, final S surface, final boolean tapWithShift)
     {
         super (model, surface);
+
+        this.tapWithShift = tapWithShift;
     }
 
 
@@ -46,7 +53,12 @@ public class MetronomeCommand<S extends IControlSurface<C>, C extends Configurat
     @Override
     public void executeShifted (final ButtonEvent event)
     {
-        if (event == ButtonEvent.UP)
+        if (event != ButtonEvent.UP)
+            return;
+
+        if (this.tapWithShift)
+            this.model.getTransport ().tapTempo ();
+        else
             this.model.getTransport ().toggleMetronomeTicks ();
     }
 }

@@ -60,7 +60,7 @@ public class HUIDisplay extends AbstractTextDisplay
 
 
     /**
-     * Send a line to the display
+     * Send a line to the display.
      *
      * @param text The text to send
      */

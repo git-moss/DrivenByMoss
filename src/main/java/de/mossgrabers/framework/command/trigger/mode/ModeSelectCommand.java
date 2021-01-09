@@ -23,8 +23,9 @@ import de.mossgrabers.framework.utils.ButtonEvent;
  */
 public class ModeSelectCommand<S extends IControlSurface<C>, C extends Configuration> extends AbstractTriggerCommand<S, C>
 {
-    private final Modes   modeId;
-    private final boolean toggle;
+    private final ModeManager modeManager;
+    private final Modes       modeId;
+    private final boolean     toggle;
 
 
     /**
@@ -43,6 +44,20 @@ public class ModeSelectCommand<S extends IControlSurface<C>, C extends Configura
     /**
      * Constructor.
      *
+     * @param modeManager The mode manager to use
+     * @param model The model
+     * @param surface The surface
+     * @param modeId The ID of the mode to select
+     */
+    public ModeSelectCommand (final ModeManager modeManager, final IModel model, final S surface, final Modes modeId)
+    {
+        this (modeManager, model, surface, modeId, false);
+    }
+
+
+    /**
+     * Constructor.
+     *
      * @param model The model
      * @param surface The surface
      * @param modeId The ID of the mode to select
@@ -51,7 +66,25 @@ public class ModeSelectCommand<S extends IControlSurface<C>, C extends Configura
      */
     public ModeSelectCommand (final IModel model, final S surface, final Modes modeId, final boolean toggle)
     {
+        this (null, model, surface, modeId, toggle);
+    }
+
+
+    /**
+     * Constructor.
+     *
+     * @param modeManager The mode manager to use, uses the default mode manager if null
+     * @param model The model
+     * @param surface The surface
+     * @param modeId The ID of the mode to select
+     * @param toggle Activates the previous mode if the mode is already active and this flag is set
+     *            to true
+     */
+    public ModeSelectCommand (final ModeManager modeManager, final IModel model, final S surface, final Modes modeId, final boolean toggle)
+    {
         super (model, surface);
+
+        this.modeManager = modeManager == null ? surface.getModeManager () : modeManager;
         this.modeId = modeId;
         this.toggle = toggle;
     }
@@ -63,26 +96,23 @@ public class ModeSelectCommand<S extends IControlSurface<C>, C extends Configura
     {
         if (event != ButtonEvent.DOWN)
             return;
-        final ModeManager modeManager = this.surface.getModeManager ();
-        if (modeManager.isActive (this.modeId))
+        if (this.modeManager.isActive (this.modeId))
         {
             if (!this.toggle)
                 return;
-            modeManager.restore ();
+            this.modeManager.restore ();
         }
         else
-            modeManager.setActive (this.modeId);
-        this.displayMode (modeManager);
+            this.modeManager.setActive (this.modeId);
+        this.displayMode ();
     }
 
 
     /**
      * Display the modes' name.
-     *
-     * @param modeManager The mode manager
      */
-    protected void displayMode (final ModeManager modeManager)
+    protected void displayMode ()
     {
-        this.model.getHost ().showNotification (modeManager.getActive ().getName ());
+        this.model.getHost ().showNotification (this.modeManager.getActive ().getName ());
     }
 }

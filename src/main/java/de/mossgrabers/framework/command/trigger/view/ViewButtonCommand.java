@@ -14,7 +14,8 @@ import de.mossgrabers.framework.utils.ButtonEvent;
 
 
 /**
- * Command to relay a button event to the active view.
+ * Command to relay a button event to the active view. Use in combination with a
+ * {@link FeatureGroupButtonColorSupplier}.
  *
  * @param <S> The type of the control surface
  * @param <C> The type of the configuration

@@ -231,7 +231,6 @@ public class SLControllerSetup extends AbstractControllerSetup<SLControlSurface,
         this.addButton (ButtonID.ARROW_UP, "Up", new P2ButtonCommand (true, this.model, surface), SLControlSurface.MKII_BUTTON_P2_UP);
         this.addButton (ButtonID.ARROW_DOWN, "Down", new P2ButtonCommand (false, this.model, surface), SLControlSurface.MKII_BUTTON_P2_DOWN);
         this.addButton (ButtonID.NOTE, "Play View", new TransportButtonCommand (this.model, surface), SLControlSurface.MKII_BUTTON_TRANSPORT);
-
     }
 
 

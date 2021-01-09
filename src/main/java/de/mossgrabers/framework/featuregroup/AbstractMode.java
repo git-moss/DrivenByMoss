@@ -24,6 +24,7 @@ import java.util.EnumMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
+import java.util.function.BooleanSupplier;
 
 
 /**
@@ -45,6 +46,8 @@ public abstract class AbstractMode<S extends IControlSurface<C>, C extends Confi
 
     /** Default knobs 1 to 8. **/
     public static final List<ContinuousID>      DEFAULT_KNOB_IDS   = ContinuousID.createSequentialList (ContinuousID.KNOB1, 8);
+
+    protected final BooleanSupplier             isAlternativeFunction;
 
     protected IParameterProvider                defaultParameterProvider;
     protected Map<ButtonID, IParameterProvider> parameterProviders = new EnumMap<> (ButtonID.class);
@@ -79,7 +82,24 @@ public abstract class AbstractMode<S extends IControlSurface<C>, C extends Confi
      */
     public AbstractMode (final String name, final S surface, final IModel model, final boolean isAbsolute)
     {
-        this (name, surface, model, isAbsolute, null, null);
+        this (name, surface, model, isAbsolute, (IBank<? extends IItem>) null);
+    }
+
+
+    /**
+     * Constructor.
+     *
+     * @param name The name of the mode
+     * @param surface The control surface
+     * @param model The model
+     * @param isAbsolute If true the value change is happending with a setter otherwise relative
+     *            change method is used
+     * @param isAlternativeFunction Callback function to execute the secondary function, e.g. a
+     *            shift button
+     */
+    public AbstractMode (final String name, final S surface, final IModel model, final boolean isAbsolute, final BooleanSupplier isAlternativeFunction)
+    {
+        this (name, surface, model, isAbsolute, null, null, isAlternativeFunction);
     }
 
 
@@ -95,7 +115,7 @@ public abstract class AbstractMode<S extends IControlSurface<C>, C extends Confi
      */
     public AbstractMode (final String name, final S surface, final IModel model, final boolean isAbsolute, final IBank<? extends IItem> bank)
     {
-        this (name, surface, model, isAbsolute, bank, null);
+        this (name, surface, model, isAbsolute, bank, null, surface::isShiftPressed);
     }
 
 
@@ -112,8 +132,28 @@ public abstract class AbstractMode<S extends IControlSurface<C>, C extends Confi
      */
     public AbstractMode (final String name, final S surface, final IModel model, final boolean isAbsolute, final IBank<? extends IItem> bank, final List<ContinuousID> controls)
     {
+        this (name, surface, model, isAbsolute, bank, controls, surface::isShiftPressed);
+    }
+
+
+    /**
+     * Constructor.
+     *
+     * @param name The name of the mode
+     * @param surface The control surface
+     * @param model The model
+     * @param isAbsolute If true the value change is happending with a setter otherwise relative
+     *            change method is used
+     * @param bank The parameter bank to control with this mode, might be null
+     * @param controls The IDs of the knobs or faders to control this mode
+     * @param isAlternativeFunction Callback function to execute the secondary function, e.g. a
+     *            shift button
+     */
+    public AbstractMode (final String name, final S surface, final IModel model, final boolean isAbsolute, final IBank<? extends IItem> bank, final List<ContinuousID> controls, final BooleanSupplier isAlternativeFunction)
+    {
         super (name, surface, model);
 
+        this.isAlternativeFunction = isAlternativeFunction;
         this.isAbsolute = isAbsolute;
         this.bank = bank;
 
@@ -307,7 +347,7 @@ public abstract class AbstractMode<S extends IControlSurface<C>, C extends Confi
     @Override
     public void selectPreviousItem ()
     {
-        if (this.surface.isShiftPressed ())
+        if (this.isAlternativeFunction.getAsBoolean ())
         {
             this.selectPreviousItemPage ();
             return;
@@ -322,7 +362,7 @@ public abstract class AbstractMode<S extends IControlSurface<C>, C extends Confi
     @Override
     public void selectNextItem ()
     {
-        if (this.surface.isShiftPressed ())
+        if (this.isAlternativeFunction.getAsBoolean ())
         {
             this.selectNextItemPage ();
             return;
@@ -391,6 +431,22 @@ public abstract class AbstractMode<S extends IControlSurface<C>, C extends Confi
     public boolean hasNextItemPage ()
     {
         return this.bank != null && this.bank.canScrollPageForwards ();
+    }
+
+
+    /** {@inheritDoc} */
+    @Override
+    public String formatPageRange (final String format)
+    {
+        if (this.bank == null)
+            return "";
+
+        final int positionFirst = this.bank.getScrollPosition ();
+        if (positionFirst < 0)
+            return "";
+
+        final int positionLast = this.bank.getPositionOfLastItem ();
+        return String.format (format, Integer.valueOf (positionFirst + 1), Integer.valueOf (positionLast + 1));
     }
 
 

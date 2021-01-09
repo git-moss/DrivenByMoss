@@ -16,6 +16,7 @@ import de.mossgrabers.framework.featuregroup.AbstractMode;
 import de.mossgrabers.framework.parameterprovider.BankParameterProvider;
 
 import java.util.List;
+import java.util.function.BooleanSupplier;
 
 
 /**
@@ -42,7 +43,23 @@ public class ParameterMode<S extends IControlSurface<C>, C extends Configuration
      */
     public ParameterMode (final S surface, final IModel model, final boolean isAbsolute)
     {
-        this (surface, model, isAbsolute, null);
+        this (surface, model, isAbsolute, null, surface::isShiftPressed);
+    }
+
+
+    /**
+     * Constructor.
+     *
+     * @param surface The control surface
+     * @param model The model
+     * @param isAbsolute If true the value change is happending with a setter otherwise relative
+     *            change method is used
+     * @param isAlternativeFunction Callback function to execute the secondary function, e.g. a
+     *            shift button
+     */
+    public ParameterMode (final S surface, final IModel model, final boolean isAbsolute, final BooleanSupplier isAlternativeFunction)
+    {
+        this (surface, model, isAbsolute, null, isAlternativeFunction);
     }
 
 
@@ -57,7 +74,24 @@ public class ParameterMode<S extends IControlSurface<C>, C extends Configuration
      */
     public ParameterMode (final S surface, final IModel model, final boolean isAbsolute, final List<ContinuousID> controls)
     {
-        super ("Parameters", surface, model, isAbsolute, model.getCursorDevice ().getParameterBank (), controls);
+        this (surface, model, isAbsolute, controls, surface::isShiftPressed);
+    }
+
+
+    /**
+     * Constructor.
+     *
+     * @param surface The control surface
+     * @param model The model
+     * @param isAbsolute If true the value change is happending with a setter otherwise relative
+     *            change method is used
+     * @param controls The IDs of the knobs or faders to control this mode
+     * @param isAlternativeFunction Callback function to execute the secondary function, e.g. a
+     *            shift button
+     */
+    public ParameterMode (final S surface, final IModel model, final boolean isAbsolute, final List<ContinuousID> controls, final BooleanSupplier isAlternativeFunction)
+    {
+        super ("Parameters", surface, model, isAbsolute, model.getCursorDevice ().getParameterBank (), controls, isAlternativeFunction);
 
         this.cursorDevice = this.model.getCursorDevice ();
 
@@ -70,7 +104,7 @@ public class ParameterMode<S extends IControlSurface<C>, C extends Configuration
     @Override
     public void onKnobValue (final int index, final int value)
     {
-        if (this.cursorDevice == null)
+        if (!this.cursorDevice.doesExist ())
             return;
         final IParameter item = this.cursorDevice.getParameterBank ().getItem (index);
         if (item == null || !item.doesExist ())
@@ -88,7 +122,7 @@ public class ParameterMode<S extends IControlSurface<C>, C extends Configuration
     {
         this.isKnobTouched[index] = isTouched;
 
-        if (this.cursorDevice == null)
+        if (!this.cursorDevice.doesExist ())
             return;
 
         final IParameter item = this.cursorDevice.getParameterBank ().getItem (index);
@@ -108,7 +142,7 @@ public class ParameterMode<S extends IControlSurface<C>, C extends Configuration
     @Override
     public int getKnobValue (final int index)
     {
-        if (this.cursorDevice == null)
+        if (!this.cursorDevice.doesExist ())
             return -1;
         final IParameter item = this.cursorDevice.getParameterBank ().getItem (index);
         return item != null && item.doesExist () ? item.getValue () : -1;
@@ -119,7 +153,7 @@ public class ParameterMode<S extends IControlSurface<C>, C extends Configuration
     @Override
     public String getSelectedItemName ()
     {
-        if (this.cursorDevice == null || !this.cursorDevice.doesExist ())
+        if (!this.cursorDevice.doesExist ())
             return null;
         final IParameterPageBank parameterPageBank = this.cursorDevice.getParameterPageBank ();
         return this.cursorDevice.getName () + " - " + parameterPageBank.getSelectedItem ();
@@ -130,7 +164,7 @@ public class ParameterMode<S extends IControlSurface<C>, C extends Configuration
     @Override
     public void selectPreviousItem ()
     {
-        if (this.surface.isShiftPressed ())
+        if (this.isAlternativeFunction.getAsBoolean ())
             this.cursorDevice.getDeviceBank ().selectPreviousPage ();
         else
             this.cursorDevice.selectPrevious ();
@@ -141,7 +175,7 @@ public class ParameterMode<S extends IControlSurface<C>, C extends Configuration
     @Override
     public void selectNextItem ()
     {
-        if (this.surface.isShiftPressed ())
+        if (this.isAlternativeFunction.getAsBoolean ())
             this.cursorDevice.getDeviceBank ().selectNextPage ();
         else
             this.cursorDevice.selectNext ();
@@ -169,5 +203,25 @@ public class ParameterMode<S extends IControlSurface<C>, C extends Configuration
     public void selectItem (final int index)
     {
         this.cursorDevice.getParameterPageBank ().selectPage (index);
+    }
+
+
+    /** {@inheritDoc} */
+    @Override
+    public boolean hasPreviousItem ()
+    {
+        if (this.isAlternativeFunction.getAsBoolean ())
+            return this.cursorDevice.getDeviceBank ().canScrollPageBackwards ();
+        return this.cursorDevice.canSelectPreviousFX ();
+    }
+
+
+    /** {@inheritDoc} */
+    @Override
+    public boolean hasNextItem ()
+    {
+        if (this.isAlternativeFunction.getAsBoolean ())
+            return this.cursorDevice.getDeviceBank ().canScrollPageForwards ();
+        return this.cursorDevice.canSelectNextFX ();
     }
 }

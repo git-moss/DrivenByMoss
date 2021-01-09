@@ -25,18 +25,28 @@ package de.mossgrabers.framework.daw.midi;
  */
 public class DeviceInquiry
 {
-    private static final byte [] INQUIRY = new byte []
+    private static final int     LENGTH_RESULT_SHORT      = 15;
+    private static final int     LENGTH_RESULT_LONG       = 17;
+    private static final int     LENGTH_SOFTWARE_REVISION = 4;
+
+    private static final int     OFFSET_DEVICE_ID         = 2;
+    private static final int     OFFSET_MANUFACTURER_ID   = 5;
+    private static final int     OFFSET_CONTENT_SHORT     = 6;
+    private static final int     OFFSET_CONTENT_LONG      = 8;
+
+    private static final byte [] INQUIRY                  = new byte []
     {
         (byte) 0xF0,
         (byte) 0x7E,
-        (byte) 0x7F,                                  // Ignore device ID
+        (byte) 0x7F,                                                   // Ignore device ID
         (byte) 0x06,
         (byte) 0x01,
         (byte) 0xF7
     };
 
-    private boolean              isResult;
+    private final boolean        isResult;
     private final int []         data;
+    private final boolean        isShort;
 
 
     /**
@@ -46,9 +56,8 @@ public class DeviceInquiry
      */
     public DeviceInquiry (final int [] data)
     {
-        this.isResult = data.length >= 15;
-        if (this.isResult && (data[0] != 0xF0 || data[1] != 0x7E || data[3] != 0x06 || data[4] != 0x02 || data[data.length - 1] != 0xF7))
-            this.isResult = false;
+        this.isShort = data.length == LENGTH_RESULT_SHORT;
+        this.isResult = (this.isShort || data.length == LENGTH_RESULT_LONG) && data[0] == 0xF0 && data[1] == 0x7E && data[3] == 0x06 && data[4] == 0x02 && data[data.length - 1] == 0xF7;
         this.data = this.isResult ? data : null;
     }
 
@@ -67,42 +76,95 @@ public class DeviceInquiry
     /**
      * Get the device ID.
      *
-     * @return The device ID
+     * @return The device ID or -1 if no data is present
      */
     public int getDeviceID ()
     {
-        return this.data == null ? -1 : this.data[2];
+        return this.isResult ? this.data[OFFSET_DEVICE_ID] : -1;
     }
 
 
     /**
-     * Get the manufacturers system exclusive id code.
+     * Get the manufacturers system exclusive ID code. It is 1 or 3 bytes long for newer IDs. If the
+     * first ID is 0, it is a 3 byte code.
      *
-     * @return The manufacturers system exclusive id code.
+     * @return The manufacturers system exclusive id code or an empty array if the data is empty
      */
-    public int getManufacturer ()
+    public int [] getManufacturer ()
     {
-        if (this.data == null)
-            return -1;
-        return this.data[5];
+        if (!this.isResult)
+            return new int [0];
+
+        // Old 1 byte ID
+        if (this.isShort)
+        {
+            return new int []
+            {
+                this.data[OFFSET_MANUFACTURER_ID]
+            };
+        }
+
+        // Newer 3-byte ID if first byte is 0
+        return new int []
+        {
+            this.data[OFFSET_MANUFACTURER_ID],
+            this.data[OFFSET_MANUFACTURER_ID + 1],
+            this.data[OFFSET_MANUFACTURER_ID + 2]
+        };
+    }
+
+
+    /**
+     * Get the device family code of the message.
+     *
+     * @return The code or -1 if no data is present
+     */
+    public int [] getDeviceFamilyCode ()
+    {
+        if (!this.isResult)
+            return new int [0];
+
+        final int contentStart = this.getContentStart ();
+        return new int []
+        {
+            this.data[contentStart],
+            this.data[contentStart + 1]
+        };
+    }
+
+
+    /**
+     * Get the device family member code of the message.
+     *
+     * @return The 2 byte code or an empty array if no data is present
+     */
+    public int [] getDeviceFamilyMemberCode ()
+    {
+        if (!this.isResult)
+            return new int [0];
+
+        final int contentStart = this.getContentStart ();
+        return new int []
+        {
+            this.data[contentStart + 2],
+            this.data[contentStart + 3]
+        };
     }
 
 
     /**
      * Get the software revision level. The format and length is device specific.
      *
-     * @return The Software revision level
+     * @return The Software revision level or an empty array if no data is present
      */
     public int [] getRevisionLevel ()
     {
-        if (this.data == null)
+        if (!this.isResult)
             return new int [0];
 
-        final int start = this.getManufacturer () == 0 ? 12 : 10;
-        final int end = this.data.length - 1;
-        final int length = end - start;
-        final int [] softwareData = new int [length];
-        System.arraycopy (this.data, start, softwareData, 0, length);
+        final int start = this.getContentStart () + LENGTH_SOFTWARE_REVISION;
+        final int [] softwareData = new int [LENGTH_SOFTWARE_REVISION];
+        System.arraycopy (this.data, start, softwareData, 0, LENGTH_SOFTWARE_REVISION);
         return softwareData;
     }
 
@@ -115,5 +177,16 @@ public class DeviceInquiry
     public static byte [] createQuery ()
     {
         return INQUIRY;
+    }
+
+
+    /**
+     * Get the start of the messages content depending on the length of the manufacturer ID.
+     *
+     * @return The start offset, zero based
+     */
+    private int getContentStart ()
+    {
+        return this.isShort ? OFFSET_CONTENT_SHORT : OFFSET_CONTENT_LONG;
     }
 }

@@ -31,7 +31,7 @@ public class ButtonAreaCommand extends AbstractTriggerCommand<SLMkIIIControlSurf
      * Constructor.
      *
      * @param row The row of the button (0 or 1)
-     * @param column The column of the buttopn (0-7)
+     * @param column The column of the button (0-7)
      * @param model The model
      * @param surface The surface
      */

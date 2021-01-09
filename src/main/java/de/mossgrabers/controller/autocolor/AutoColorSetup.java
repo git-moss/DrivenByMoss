@@ -79,6 +79,7 @@ public class AutoColorSetup extends AbstractControllerSetup<IControlSurface<Auto
         ms.setNumDrumPadLayers (0);
         ms.setNumFilterColumnEntries (0);
         ms.setNumMarkers (0);
+        ms.setNumParamPages (0);
         ms.setNumParams (0);
         ms.setNumResults (0);
         ms.setNumScenes (0);

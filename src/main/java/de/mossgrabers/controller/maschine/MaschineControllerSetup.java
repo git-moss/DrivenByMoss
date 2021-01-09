@@ -172,8 +172,6 @@ public class MaschineControllerSetup extends AbstractControllerSetup<MaschineCon
         ms.setNumTracks (this.maschine.hasBankButtons () ? 8 : 16);
         ms.setNumDevicesInBank (16);
         ms.setNumScenes (16);
-        ms.setNumSends (8);
-        ms.setNumParams (8);
         this.model = this.factory.createModel (this.colorManager, this.valueChanger, this.scales, ms);
 
         final ITrackBank trackBank = this.model.getTrackBank ();
@@ -317,7 +315,7 @@ public class MaschineControllerSetup extends AbstractControllerSetup<MaschineCon
         this.addButton (ButtonID.STOP, "Stop", new MaschineStopCommand (this.model, surface), MaschineControlSurface.STOP, () -> !t.isPlaying ());
         this.addButton (ButtonID.LOOP, "Loop", new ToggleLoopCommand<> (this.model, surface), MaschineControlSurface.RESTART, t::isLoop);
         this.addButton (ButtonID.DELETE, "Erase", NopCommand.INSTANCE, MaschineControlSurface.ERASE);
-        final MetronomeCommand<MaschineControlSurface, MaschineConfiguration> metroCommand = new MetronomeCommand<> (this.model, surface);
+        final MetronomeCommand<MaschineControlSurface, MaschineConfiguration> metroCommand = new MetronomeCommand<> (this.model, surface, false);
         final TapTempoCommand<MaschineControlSurface, MaschineConfiguration> tapTempoCommand = new TapTempoCommand<> (this.model, surface);
         this.addButton (ButtonID.METRONOME, "Tap/Metro", (event, velocity) -> {
             if (event != ButtonEvent.UP)
