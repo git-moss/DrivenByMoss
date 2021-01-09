@@ -71,7 +71,7 @@ public class LaunchkeyMk3Display extends AbstractTextDisplay
         if (row < SCREEN_ROW_POTS)
         {
             // Base screen
-            sb.append (SYSEX_DISPLAY_HEADER_BASE).append (StringUtils.toHexStr (row));
+            sb.append (SYSEX_DISPLAY_HEADER_BASE).append (StringUtils.toHexStr (row)).append (' ');
         }
         else
         {
@@ -89,6 +89,7 @@ public class LaunchkeyMk3Display extends AbstractTextDisplay
                 final int index = (row - SCREEN_ROW_FADERS) / 2;
                 sb.append (StringUtils.toHexStr (SCREEN_ID_FADER1 + index));
             }
+            sb.append (' ');
         }
 
         // Encode text into Launchkey specific ISO-8859-2 format
