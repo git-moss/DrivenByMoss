@@ -87,19 +87,35 @@ public class LaunchkeyMk3ControllerDefinition extends DefaultControllerDefinitio
             case LINUX:
                 midiDiscoveryPairs.add (this.addDeviceDiscoveryPair (new String []
                 {
-                    "MK3 [hw:1,0,1]",
-                    "MK3 [hw:1,0,0]"
+                    "Launchkey MK3 25 MIDI 2",
+                    "Launchkey MK3 25 MIDI 1"
                 }, new String []
                 {
-                    "MK3 [hw:1,0,1]"
+                    "Launchkey MK3 25 MIDI 2"
                 }));
                 midiDiscoveryPairs.add (this.addDeviceDiscoveryPair (new String []
                 {
-                    "MK3 [hw:2,0,1]",
-                    "MK3 [hw:2,0,0]"
+                    "Launchkey MK3 37 MIDI 2",
+                    "Launchkey MK3 37 MIDI 1"
                 }, new String []
                 {
-                    "MK3 [hw:2,0,1]"
+                    "Launchkey MK3 37 MIDI 2"
+                }));
+                midiDiscoveryPairs.add (this.addDeviceDiscoveryPair (new String []
+                {
+                    "Launchkey MK3 49 MIDI 2",
+                    "Launchkey MK3 49 MIDI 1"
+                }, new String []
+                {
+                    "Launchkey MK3 49 MIDI 2"
+                }));
+                midiDiscoveryPairs.add (this.addDeviceDiscoveryPair (new String []
+                {
+                    "Launchkey MK3 61 MIDI 2",
+                    "Launchkey MK3 61 MIDI 1"
+                }, new String []
+                {
+                    "Launchkey MK3 61 MIDI 2"
                 }));
                 break;
         }
