@@ -152,6 +152,19 @@ public class LaunchkeyMk3ControlSurface extends AbstractControlSurface<Launchkey
     {
         super (host, configuration, colorManager, output, input, new LaunchkeyPadGrid (colorManager, output), 1400, 600);
 
+        this.input.setSysexCallback (this::handleSysEx);
+        this.output.sendSysex (DeviceInquiry.createQuery ());
+    }
+
+
+    /** {@inheritDoc} */
+    @Override
+    protected void createPads ()
+    {
+        ((LaunchkeyPadGrid) this.padGrid).setView (Views.SESSION);
+
+        super.createPads ();
+
         // Map alternative MIDI notes for grid...
         final int size = this.padGrid.getRows () * this.padGrid.getCols ();
         final int startNote = this.padGrid.getStartNote ();
@@ -163,19 +176,16 @@ public class LaunchkeyMk3ControlSurface extends AbstractControlSurface<Launchkey
             IHwButton pad = this.createButton (buttonID, "D " + (i + 1));
             pad.addLight (this.surfaceFactory.createLight (this.surfaceID, null, () -> this.padGrid.getLightInfo (note).getEncoded (), state -> this.padGrid.sendState (note), colorIndex -> this.colorManager.getColor (colorIndex, buttonID), null));
             int [] translated = LaunchkeyPadGrid.translateToController (Views.DRUM, note);
-            pad.bind (input, BindType.NOTE, translated[0], translated[1]);
+            pad.bind (this.input, BindType.NOTE, translated[0], translated[1]);
             pad.bind ( (event, velocity) -> this.handleGridNote (event, note, velocity));
 
             final ButtonID buttonID2 = ButtonID.get (ButtonID.PAD33, i);
             pad = this.createButton (buttonID2, "DS " + (i + 1));
             pad.addLight (this.surfaceFactory.createLight (this.surfaceID, null, () -> this.padGrid.getLightInfo (note).getEncoded (), state -> this.padGrid.sendState (note), colorIndex -> this.colorManager.getColor (colorIndex, buttonID2), null));
             translated = LaunchkeyPadGrid.translateToController (Views.DEVICE, note);
-            pad.bind (input, BindType.NOTE, translated[0], translated[1]);
+            pad.bind (this.input, BindType.NOTE, translated[0], translated[1]);
             pad.bind ( (event, velocity) -> this.handleGridNote (event, note, velocity));
         }
-
-        this.input.setSysexCallback (this::handleSysEx);
-        this.output.sendSysex (DeviceInquiry.createQuery ());
     }
 
 

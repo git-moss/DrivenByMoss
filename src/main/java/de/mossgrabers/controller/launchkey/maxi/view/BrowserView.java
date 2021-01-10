@@ -139,7 +139,7 @@ public class BrowserView extends AbstractView<LaunchkeyMk3ControlSurface, Launch
      * @param browser The browser
      * @param commitSelection Commit or cancel?
      */
-    protected void confirmBrowser (final IBrowser browser, boolean commitSelection)
+    protected void confirmBrowser (final IBrowser browser, final boolean commitSelection)
     {
         browser.stopBrowsing (commitSelection);
     }

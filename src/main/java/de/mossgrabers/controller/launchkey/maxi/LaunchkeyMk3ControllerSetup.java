@@ -94,6 +94,7 @@ public class LaunchkeyMk3ControllerSetup extends AbstractControllerSetup<Launchk
     };
     // @formatter:on
 
+
     /**
      * Constructor.
      *

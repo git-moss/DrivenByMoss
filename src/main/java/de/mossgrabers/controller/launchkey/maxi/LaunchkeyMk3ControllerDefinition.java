@@ -21,6 +21,7 @@ public class LaunchkeyMk3ControllerDefinition extends DefaultControllerDefinitio
 {
     private static final UUID EXTENSION_ID = UUID.fromString ("10CB5692-541C-4A5D-9EB4-07D80F34A02C");
 
+
     /**
      * Constructor.
      */
