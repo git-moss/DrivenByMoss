@@ -94,7 +94,6 @@ public class LaunchkeyMk3ControllerSetup extends AbstractControllerSetup<Launchk
     };
     // @formatter:on
 
-
     /**
      * Constructor.
      *
@@ -550,7 +549,7 @@ public class LaunchkeyMk3ControllerSetup extends AbstractControllerSetup<Launchk
             surface.setLaunchpadToDAW (true);
             this.waitForConnection ();
 
-        }, 200);
+        }, 1000);
     }
 
 
