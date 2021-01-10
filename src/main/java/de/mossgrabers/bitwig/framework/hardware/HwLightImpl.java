@@ -10,6 +10,7 @@ import de.mossgrabers.framework.daw.IHost;
 
 import com.bitwig.extension.controller.api.InternalHardwareLightState;
 import com.bitwig.extension.controller.api.MultiStateHardwareLight;
+import com.bitwig.extension.controller.api.ObjectHardwareProperty;
 
 import java.util.function.Consumer;
 import java.util.function.Supplier;
@@ -22,8 +23,8 @@ import java.util.function.Supplier;
  */
 public class HwLightImpl extends AbstractHwControl implements IHwLight
 {
-    final MultiStateHardwareLight                                hardwareLight;
-    private final Supplier<? extends InternalHardwareLightState> valueSupplier;
+    final MultiStateHardwareLight                      hardwareLight;
+    private final Supplier<InternalHardwareLightState> valueSupplier;
 
 
     /**
@@ -34,25 +35,26 @@ public class HwLightImpl extends AbstractHwControl implements IHwLight
      * @param valueSupplier The value supplier for the light
      * @param hardwareUpdater The hardware updater for the light
      */
-    public HwLightImpl (final IHost host, final MultiStateHardwareLight hardwareLight, final Supplier<? extends InternalHardwareLightState> valueSupplier, final Consumer<? extends InternalHardwareLightState> hardwareUpdater)
+    public HwLightImpl (final IHost host, final MultiStateHardwareLight hardwareLight, final Supplier<InternalHardwareLightState> valueSupplier, final Consumer<InternalHardwareLightState> hardwareUpdater)
     {
         super (host, null);
 
         this.hardwareLight = hardwareLight;
         this.valueSupplier = valueSupplier;
 
-        hardwareLight.state ().setValueSupplier (valueSupplier);
-        hardwareLight.state ().onUpdateHardware (hardwareUpdater);
+        final ObjectHardwareProperty<InternalHardwareLightState> state = hardwareLight.state ();
+        state.setValueSupplier (valueSupplier);
+        state.onUpdateHardware (hardwareUpdater);
     }
 
 
     /** {@inheritDoc} */
     @Override
-    public void clearCache ()
+    public void forceFlush ()
     {
         // Workaround for missing clear cache method
         this.turnOff ();
-        this.host.scheduleTask ( () -> this.hardwareLight.state ().setValueSupplier (this.valueSupplier), 10);
+        this.host.scheduleTask ( () -> this.hardwareLight.state ().setValueSupplier (this.valueSupplier), 100);
     }
 
 

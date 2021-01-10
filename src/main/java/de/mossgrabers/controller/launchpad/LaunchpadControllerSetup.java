@@ -264,7 +264,7 @@ public class LaunchpadControllerSetup extends AbstractControllerSetup<LaunchpadC
 
         surface.getViewManager ().addChangeListener ( (previousViewId, activeViewId) -> {
 
-            surface.getLight (OutputID.LED1).clearCache ();
+            surface.getLight (OutputID.LED1).forceFlush ();
             this.updateIndication ();
 
         });
@@ -393,7 +393,7 @@ public class LaunchpadControllerSetup extends AbstractControllerSetup<LaunchpadC
                 entry.getValue ().addEventHandler (ButtonEvent.UP, event -> {
                     final IHwLight light = surface.getButton (key).getLight ();
                     if (light != null)
-                        light.clearCache ();
+                        light.forceFlush ();
                 });
             }
         }

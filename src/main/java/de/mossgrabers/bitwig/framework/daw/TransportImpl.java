@@ -9,6 +9,7 @@ import de.mossgrabers.bitwig.framework.daw.data.RangedValueImpl;
 import de.mossgrabers.bitwig.framework.daw.data.RawParameterImpl;
 import de.mossgrabers.bitwig.framework.daw.data.Util;
 import de.mossgrabers.framework.controller.valuechanger.IValueChanger;
+import de.mossgrabers.framework.daw.IApplication;
 import de.mossgrabers.framework.daw.ITransport;
 import de.mossgrabers.framework.daw.constants.AutomationMode;
 import de.mossgrabers.framework.daw.constants.TransportConstants;
@@ -29,7 +30,9 @@ import java.text.DecimalFormat;
  */
 public class TransportImpl implements ITransport
 {
-    private static final AutomationMode [] AUTOMATION_MODES = new AutomationMode []
+    private static final String            ACTION_JUMP_TO_END = "jump_to_end_of_arrangement";
+
+    private static final AutomationMode [] AUTOMATION_MODES   = new AutomationMode []
     {
         AutomationMode.LATCH,
         AutomationMode.TOUCH,
@@ -37,6 +40,7 @@ public class TransportImpl implements ITransport
     };
 
     private final ControllerHost           host;
+    private final IApplication             application;
     private final IValueChanger            valueChanger;
     private final Transport                transport;
 
@@ -49,11 +53,13 @@ public class TransportImpl implements ITransport
      * Constructor
      *
      * @param host The host
+     * @param application The application
      * @param valueChanger The value changer
      */
-    public TransportImpl (final ControllerHost host, final IValueChanger valueChanger)
+    public TransportImpl (final ControllerHost host, final IApplication application, final IValueChanger valueChanger)
     {
         this.host = host;
+        this.application = application;
         this.valueChanger = valueChanger;
         this.transport = host.createTransport ();
 
@@ -445,6 +451,18 @@ public class TransportImpl implements ITransport
             final int quartersPerMeasure = 4 * timeSignatureNumerator / timeSignatureDenominator;
             return StringUtils.formatMeasuresLong (quartersPerMeasure, beatTime, 1, true);
         });
+    }
+
+
+    /** {@inheritDoc} */
+    @Override
+    public void setPositionToEnd ()
+    {
+        this.application.invokeAction (ACTION_JUMP_TO_END);
+
+        // Force moving the end of the arranger into view
+        this.changePosition (false, true);
+        this.changePosition (true, true);
     }
 
 

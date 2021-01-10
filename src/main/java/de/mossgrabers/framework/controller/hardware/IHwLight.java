@@ -20,5 +20,5 @@ public interface IHwLight extends IHwControl
     /**
      * Clear the button cache state.
      */
-    void clearCache ();
+    void forceFlush ();
 }

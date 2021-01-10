@@ -162,7 +162,7 @@ public class LaunchpadControlSurface extends AbstractControlSurface<LaunchpadCon
             final ButtonID key = entry.getKey ();
             final int keyValue = key.ordinal ();
             if (ButtonID.PAD1.ordinal () < keyValue || ButtonID.PAD64.ordinal () > keyValue)
-                entry.getValue ().getLight ().clearCache ();
+                entry.getValue ().getLight ().forceFlush ();
         }
     }
 

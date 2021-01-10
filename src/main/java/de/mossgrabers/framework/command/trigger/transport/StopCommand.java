@@ -4,12 +4,11 @@
 
 package de.mossgrabers.framework.command.trigger.transport;
 
-import de.mossgrabers.framework.command.core.AbstractTriggerCommand;
+import de.mossgrabers.framework.command.trigger.AbstractDoubleTriggerCommand;
 import de.mossgrabers.framework.configuration.Configuration;
 import de.mossgrabers.framework.controller.IControlSurface;
 import de.mossgrabers.framework.daw.IModel;
 import de.mossgrabers.framework.daw.ITransport;
-import de.mossgrabers.framework.utils.ButtonEvent;
 
 
 /**
@@ -20,7 +19,7 @@ import de.mossgrabers.framework.utils.ButtonEvent;
  *
  * @author J&uuml;rgen Mo&szlig;graber
  */
-public class StopCommand<S extends IControlSurface<C>, C extends Configuration> extends AbstractTriggerCommand<S, C>
+public class StopCommand<S extends IControlSurface<C>, C extends Configuration> extends AbstractDoubleTriggerCommand<S, C>
 {
     /**
      * Constructor.
@@ -36,15 +35,24 @@ public class StopCommand<S extends IControlSurface<C>, C extends Configuration> 
 
     /** {@inheritDoc} */
     @Override
-    public void executeNormal (final ButtonEvent event)
+    protected void executeSingleClick ()
     {
-        if (event != ButtonEvent.UP)
-            return;
         final ITransport transport = this.model.getTransport ();
         if (transport.isPlaying ())
             this.handleStopOptions ();
         else
+        {
             transport.stopAndRewind ();
+            this.doubleClickTest ();
+        }
+    }
+
+
+    /** {@inheritDoc} */
+    @Override
+    protected void executeDoubleClick ()
+    {
+        this.model.getTransport ().setPositionToEnd ();
     }
 
 

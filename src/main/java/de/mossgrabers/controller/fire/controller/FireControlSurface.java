@@ -137,6 +137,6 @@ public class FireControlSurface extends AbstractControlSurface<FireConfiguration
         padGrid.configureLEDs (padBrightness, padSaturation);
 
         for (int i = 0; i < this.padGrid.getRows () * this.padGrid.getCols (); i++)
-            this.getButton (ButtonID.get (ButtonID.PAD1, i)).getLight ().clearCache ();
+            this.getButton (ButtonID.get (ButtonID.PAD1, i)).getLight ().forceFlush ();
     }
 }

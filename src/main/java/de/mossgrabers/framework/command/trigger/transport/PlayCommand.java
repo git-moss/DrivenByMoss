@@ -4,7 +4,7 @@
 
 package de.mossgrabers.framework.command.trigger.transport;
 
-import de.mossgrabers.framework.command.core.AbstractTriggerCommand;
+import de.mossgrabers.framework.command.trigger.AbstractDoubleTriggerCommand;
 import de.mossgrabers.framework.configuration.Configuration;
 import de.mossgrabers.framework.controller.ButtonID;
 import de.mossgrabers.framework.controller.IControlSurface;
@@ -21,10 +21,9 @@ import de.mossgrabers.framework.utils.ButtonEvent;
  *
  * @author J&uuml;rgen Mo&szlig;graber
  */
-public class PlayCommand<S extends IControlSurface<C>, C extends Configuration> extends AbstractTriggerCommand<S, C>
+public class PlayCommand<S extends IControlSurface<C>, C extends Configuration> extends AbstractDoubleTriggerCommand<S, C>
 {
     private final ButtonID selectButtonID;
-    private boolean        restartFlag = false;
 
 
     /**
@@ -57,46 +56,9 @@ public class PlayCommand<S extends IControlSurface<C>, C extends Configuration> 
 
     /** {@inheritDoc} */
     @Override
-    public void executeNormal (final ButtonEvent event)
+    protected void executeSingleClick ()
     {
-        if (event != ButtonEvent.DOWN)
-            return;
-
-        if (this.surface.isPressed (this.selectButtonID))
-        {
-            this.model.getTransport ().togglePunchIn ();
-            return;
-        }
-
-        if (this.restartFlag)
-        {
-            this.model.getTransport ().stopAndRewind ();
-            this.restartFlag = false;
-            return;
-        }
-
-        this.handleStopOptions ();
-    }
-
-
-    /** {@inheritDoc} */
-    @Override
-    public void executeShifted (final ButtonEvent event)
-    {
-        if (event != ButtonEvent.DOWN)
-            return;
-        if (this.surface.isPressed (this.selectButtonID))
-            this.model.getTransport ().togglePunchOut ();
-        else
-            this.model.getTransport ().toggleLoop ();
-    }
-
-
-    /**
-     * Handle the different options when the playback is stopped.
-     */
-    protected void handleStopOptions ()
-    {
+        // Handle the different options when the playback is stopped
         final ITransport transport = this.model.getTransport ();
         switch (this.surface.getConfiguration ().getBehaviourOnStop ())
         {
@@ -123,12 +85,36 @@ public class PlayCommand<S extends IControlSurface<C>, C extends Configuration> 
     }
 
 
-    /**
-     * Detecting a double click.
-     */
-    private void doubleClickTest ()
+    /** {@inheritDoc} */
+    @Override
+    protected void executeDoubleClick ()
     {
-        this.restartFlag = true;
-        this.surface.scheduleTask ( () -> this.restartFlag = false, 250);
+        this.model.getTransport ().stopAndRewind ();
+    }
+
+
+    /** {@inheritDoc} */
+    @Override
+    protected boolean handleButtonCombinations ()
+    {
+        if (this.surface.isPressed (this.selectButtonID))
+        {
+            this.model.getTransport ().togglePunchIn ();
+            return true;
+        }
+        return false;
+    }
+
+
+    /** {@inheritDoc} */
+    @Override
+    public void executeShifted (final ButtonEvent event)
+    {
+        if (event != ButtonEvent.DOWN)
+            return;
+        if (this.surface.isPressed (this.selectButtonID))
+            this.model.getTransport ().togglePunchOut ();
+        else
+            this.model.getTransport ().toggleLoop ();
     }
 }

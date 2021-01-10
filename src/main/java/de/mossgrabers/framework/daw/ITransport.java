@@ -309,6 +309,12 @@ public interface ITransport extends IObserverManagement
 
 
     /**
+     * Set the transport playback position to the end of the project.
+     */
+    void setPositionToEnd ();
+
+
+    /**
      * Changes the play position.
      *
      * @param increase If true move to the right otherwise left

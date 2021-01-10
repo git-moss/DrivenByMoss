@@ -282,16 +282,6 @@ public interface IControlSurface<C extends Configuration>
 
 
     /**
-     * Update the lighting of a trigger (if the trigger has light), sending on the default midi
-     * channel.
-     *
-     * @param cc The trigger
-     * @param colorID A registered color ID of the color / brightness depending on the controller
-     */
-    void setTrigger (int cc, String colorID);
-
-
-    /**
      * Update the lighting of a trigger (if the trigger has light).
      *
      * @param channel The midi channel to use
@@ -299,16 +289,6 @@ public interface IControlSurface<C extends Configuration>
      * @param value The color / brightness depending on the controller
      */
     void setTrigger (int channel, int cc, int value);
-
-
-    /**
-     * Update the lighting of a trigger (if the trigger has light).
-     *
-     * @param channel The midi channel to use
-     * @param cc The trigger
-     * @param colorID A registered color ID of the color / brightness depending on the controller
-     */
-    void setTrigger (int channel, int cc, String colorID);
 
 
     /**
@@ -502,6 +482,12 @@ public interface IControlSurface<C extends Configuration>
      * Flush all displays and grids.
      */
     void flush ();
+
+
+    /**
+     * Forces to resend all output states to the device.
+     */
+    void forceFlush ();
 
 
     /**

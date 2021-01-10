@@ -544,22 +544,45 @@ public class LaunchkeyMk3ControllerSetup extends AbstractControllerSetup<Launchk
         surface.setKnobMode (LaunchkeyMk3ControlSurface.KNOB_MODE_VOLUME);
         surface.setPadMode (LaunchkeyMk3ControlSurface.PAD_MODE_SESSION);
 
+        // Switch the Launchkey to DAW mode and wait until it is ready
         this.host.scheduleTask ( () -> {
 
             surface.setLaunchpadToDAW (true);
-
-            this.host.scheduleTask ( () -> {
-
-                // Sync modes to device
-                final IMidiOutput midiOutput = surface.getMidiOutput ();
-                midiOutput.sendCCEx (15, LaunchkeyMk3ControlSurface.LAUNCHKEY_MODE_SELECT, LaunchkeyMk3ControlSurface.KNOB_MODE_PAN);
-                midiOutput.sendCCEx (15, LaunchkeyMk3ControlSurface.LAUNCHKEY_FADER_SELECT, LaunchkeyMk3ControlSurface.FADER_MODE_VOLUME);
-
-                // Fix for display not being ready with the first flush...
-                this.host.scheduleTask (surface.getTextDisplay ()::forceFlush, 200);
-
-            }, 200);
+            this.waitForConnection ();
 
         }, 200);
+    }
+
+
+    /**
+     * Check if the DAW mode is ready in the Launchkey.
+     */
+    private void waitForConnection ()
+    {
+        final LaunchkeyMk3ControlSurface surface = this.getSurface ();
+        if (surface.isDAWConnected ())
+        {
+            this.startup2 ();
+            return;
+        }
+
+        this.host.scheduleTask (this::waitForConnection, 200);
+    }
+
+
+    /**
+     * DAW mode is ready. Update all states on the device.
+     */
+    private void startup2 ()
+    {
+        final LaunchkeyMk3ControlSurface surface = this.getSurface ();
+
+        // Sync modes to device
+        final IMidiOutput midiOutput = surface.getMidiOutput ();
+        midiOutput.sendCCEx (15, LaunchkeyMk3ControlSurface.LAUNCHKEY_MODE_SELECT, LaunchkeyMk3ControlSurface.KNOB_MODE_PAN);
+        midiOutput.sendCCEx (15, LaunchkeyMk3ControlSurface.LAUNCHKEY_FADER_SELECT, LaunchkeyMk3ControlSurface.FADER_MODE_VOLUME);
+
+        // Flush display and LEDs
+        surface.forceFlush ();
     }
 }

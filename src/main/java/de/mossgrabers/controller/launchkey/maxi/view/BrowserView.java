@@ -101,7 +101,7 @@ public class BrowserView extends AbstractView<LaunchkeyMk3ControlSurface, Launch
     @Override
     public void onButton (final ButtonID buttonID, final ButtonEvent event, final int velocity)
     {
-        if (event != ButtonEvent.DOWN)
+        if (event != ButtonEvent.UP)
             return;
 
         final IBrowser browser = this.model.getBrowser ();

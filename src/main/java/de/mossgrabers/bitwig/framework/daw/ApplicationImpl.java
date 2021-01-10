@@ -20,7 +20,11 @@ import com.bitwig.extension.controller.api.Application;
  */
 public class ApplicationImpl implements IApplication
 {
-    private Application application;
+    private static final String ACTION_ZOOM_OUT            = "Zoom Out";
+    private static final String ACTION_ZOOM_IN             = "Zoom In";
+    private static final String ACTION_TOGGLE_TRACK_HEIGHT = "toggle_double_or_single_row_track_height";
+
+    private Application         application;
 
 
     /**
@@ -308,7 +312,7 @@ public class ApplicationImpl implements IApplication
     @Override
     public void zoomOut ()
     {
-        this.invokeAction ("Zoom Out");
+        this.invokeAction (ACTION_ZOOM_OUT);
     }
 
 
@@ -316,7 +320,7 @@ public class ApplicationImpl implements IApplication
     @Override
     public void zoomIn ()
     {
-        this.invokeAction ("Zoom In");
+        this.invokeAction (ACTION_ZOOM_IN);
     }
 
 
@@ -325,7 +329,7 @@ public class ApplicationImpl implements IApplication
     public void incTrackHeight ()
     {
         // No track height increase method available
-        this.invokeAction ("toggle_double_or_single_row_track_height");
+        this.invokeAction (ACTION_TOGGLE_TRACK_HEIGHT);
     }
 
 
@@ -334,7 +338,7 @@ public class ApplicationImpl implements IApplication
     public void decTrackHeight ()
     {
         // No track height increase method available
-        this.invokeAction ("toggle_double_or_single_row_track_height");
+        this.invokeAction (ACTION_TOGGLE_TRACK_HEIGHT);
     }
 
 
