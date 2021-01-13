@@ -80,8 +80,30 @@ public abstract class AbstractTrackMode extends BaseMode
     @Override
     public void onButton (final int row, final int index, final ButtonEvent event)
     {
-        if (event != ButtonEvent.UP || row != 0)
+        if (event == ButtonEvent.DOWN || row != 0)
             return;
+
+        final ITrackBank tb = this.model.getCurrentTrackBank ();
+        final ITrack track = tb.getItem (index);
+
+        // Long-held attempts Group Entry/Exit
+        if (event == ButtonEvent.LONG)
+        {
+            if (track.isGroup ())
+            {
+                track.enter ();
+                track.scopeTo ();
+                this.surface.setTriggerConsumed (ButtonID.get (ButtonID.ROW1_1, index));
+            }
+            else if (tb.hasParent ())
+            {
+                track.scopeToParent ();
+                tb.selectParent ();
+                this.surface.setTriggerConsumed (ButtonID.get (ButtonID.ROW1_1, index));
+            }
+
+            return;
+        }
 
         // Combination with Shift
         if (this.surface.isShiftPressed ())
@@ -97,9 +119,6 @@ public abstract class AbstractTrackMode extends BaseMode
             this.surface.setTriggerConsumed (ButtonID.ARROW_DOWN);
             return;
         }
-
-        final ITrackBank tb = this.model.getCurrentTrackBank ();
-        final ITrack track = tb.getItem (index);
 
         // Combination with Duplicate
         if (this.surface.isPressed (ButtonID.DUPLICATE))
