@@ -416,6 +416,22 @@ public class TrackImpl extends ChannelImpl implements ITrack
     }
 
 
+    /** {@inheritDoc} */
+    @Override
+    public void scopeTo ()
+    {
+        this.application.navigateIntoTrackGroup (this.track);
+    }
+
+
+    /** {@inheritDoc} */
+    @Override
+    public void scopeToParent ()
+    {
+        this.application.navigateToParentTrackGroup ();
+    }
+
+
     /**
      * Add a note observer.
      *

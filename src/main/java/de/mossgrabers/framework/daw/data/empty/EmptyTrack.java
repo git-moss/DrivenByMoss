@@ -208,6 +208,22 @@ public class EmptyTrack extends EmptyChannel implements ITrack
 
     /** {@inheritDoc} */
     @Override
+    public void scopeTo ()
+    {
+        // Intentionally empty
+    }
+
+
+    /** {@inheritDoc} */
+    @Override
+    public void scopeToParent ()
+    {
+        // Intentionally empty
+    }
+
+
+    /** {@inheritDoc} */
+    @Override
     public ISlotBank getSlotBank ()
     {
         return EmptySlotBank.INSTANCE;

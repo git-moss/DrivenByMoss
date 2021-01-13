@@ -11,6 +11,7 @@ import de.mossgrabers.framework.daw.constants.RecordQuantization;
 import com.bitwig.extension.controller.api.Action;
 import com.bitwig.extension.controller.api.ActionCategory;
 import com.bitwig.extension.controller.api.Application;
+import com.bitwig.extension.controller.api.Track;
 
 
 /**
@@ -307,6 +308,23 @@ public class ApplicationImpl implements IApplication
         this.application.escape ();
     }
 
+    /**
+     * Changes the Document's Track Group.
+     *
+     * @param groupTrack Current project's engine active.
+     */
+    public void navigateIntoTrackGroup (Track groupTrack)
+    {
+        this.application.navigateIntoTrackGroup (groupTrack);
+    }
+
+    /**
+     * If inside a Track Group, changes the Document's Track Group to its Parent.
+     */
+    public void navigateToParentTrackGroup ()
+    {
+        this.application.navigateToParentTrackGroup ();
+    }
 
     /** {@inheritDoc} */
     @Override

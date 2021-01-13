@@ -197,6 +197,18 @@ public interface ITrack extends IChannel
 
 
     /**
+     * Change the Document's Scope to this Track (if it's a Group).
+     */
+    void scopeTo ();
+
+
+    /**
+     * Change the Document's Scope to this Track's Parent (if it's not the root).
+     */
+    void scopeToParent ();
+
+
+    /**
      * Test if record quantization for note lengths is enabled.
      *
      * @return True if enabled
