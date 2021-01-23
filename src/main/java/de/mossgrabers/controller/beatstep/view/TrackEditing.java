@@ -66,7 +66,7 @@ public class TrackEditing
                 break;
 
             case 4:
-                selectedTrack.changeCrossfadeModeAsNumber (value);
+                selectedTrack.getCrossfadeParameter ().changeValue (value);
                 break;
 
             case 5:

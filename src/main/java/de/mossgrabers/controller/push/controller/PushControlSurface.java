@@ -846,7 +846,7 @@ public class PushControlSurface extends AbstractControlSurface<PushConfiguration
      */
     private void handleDeviceInquiryResponse (final DeviceInquiry deviceInquiry)
     {
-        final int [] revisionLevel = deviceInquiry.getRevisionLevel ();
+        final int [] revisionLevel = deviceInquiry.getUnspecifiedData ();
 
         if (this.configuration.isPush2 ())
         {

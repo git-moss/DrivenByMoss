@@ -11,10 +11,10 @@ import de.mossgrabers.framework.daw.data.ITrack;
 import de.mossgrabers.framework.daw.data.bank.ISendBank;
 import de.mossgrabers.framework.daw.data.bank.ITrackBank;
 import de.mossgrabers.framework.mode.Modes;
-import de.mossgrabers.framework.parameterprovider.EmptyParameterProvider;
 import de.mossgrabers.framework.parameterprovider.IParameterProvider;
-import de.mossgrabers.framework.parameterprovider.RangeFilterParameterProvider;
-import de.mossgrabers.framework.parameterprovider.SendParameterProvider;
+import de.mossgrabers.framework.parameterprovider.special.EmptyParameterProvider;
+import de.mossgrabers.framework.parameterprovider.special.RangeFilterParameterProvider;
+import de.mossgrabers.framework.parameterprovider.track.SendParameterProvider;
 import de.mossgrabers.framework.utils.StringUtils;
 
 
@@ -49,7 +49,7 @@ public class SendMode extends AbstractTrackMode
             final int surfaceID = surface.getSurfaceID ();
             parameterProvider = new RangeFilterParameterProvider (new SendParameterProvider (model, sendIndex), surfaceID * 8, 8);
         }
-        this.setParameters (parameterProvider);
+        this.setParameterProvider (parameterProvider);
     }
 
 
@@ -66,21 +66,6 @@ public class SendMode extends AbstractTrackMode
         final ISendBank sendBank = t.getSendBank ();
         if (this.sendIndex < sendBank.getPageSize ())
             sendBank.getItem (this.sendIndex).touchValue (isTouched);
-    }
-
-
-    /** {@inheritDoc} */
-    @Override
-    public int getKnobValue (final int index)
-    {
-        final int channel = this.getExtenderOffset () + index;
-        final ITrack track = this.getTrackBank ().getItem (channel);
-        if (!track.doesExist ())
-            return 0;
-        final ISendBank sendBank = track.getSendBank ();
-        if (this.sendIndex < sendBank.getPageSize ())
-            return sendBank.getItem (this.sendIndex).getValue ();
-        return 0;
     }
 
 

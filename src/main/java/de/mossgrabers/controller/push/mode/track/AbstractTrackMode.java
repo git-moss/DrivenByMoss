@@ -15,6 +15,7 @@ import de.mossgrabers.framework.controller.display.ITextDisplay;
 import de.mossgrabers.framework.controller.valuechanger.IValueChanger;
 import de.mossgrabers.framework.daw.IModel;
 import de.mossgrabers.framework.daw.constants.Capability;
+import de.mossgrabers.framework.daw.data.IParameter;
 import de.mossgrabers.framework.daw.data.ITrack;
 import de.mossgrabers.framework.daw.data.bank.ITrackBank;
 import de.mossgrabers.framework.featuregroup.ModeManager;
@@ -32,7 +33,7 @@ import java.util.List;
  *
  * @author J&uuml;rgen Mo&szlig;graber
  */
-public abstract class AbstractTrackMode extends BaseMode
+public abstract class AbstractTrackMode extends BaseMode<ITrack>
 {
     protected final List<Pair<String, Boolean>> menu = new ArrayList<> ();
 
@@ -52,6 +53,25 @@ public abstract class AbstractTrackMode extends BaseMode
 
         for (int i = 0; i < 8; i++)
             this.menu.add (new Pair<> (" ", Boolean.FALSE));
+    }
+
+
+    /** {@inheritDoc} */
+    @Override
+    public void onKnobTouch (final int index, final boolean isTouched)
+    {
+        this.isKnobTouched[index] = isTouched;
+
+        final IParameter parameter = this.getParameterProvider ().get (index);
+
+        if (isTouched && this.surface.isDeletePressed ())
+        {
+            this.surface.setTriggerConsumed (ButtonID.DELETE);
+            parameter.resetValue ();
+        }
+
+        parameter.touchValue (isTouched);
+        this.checkStopAutomationOnKnobRelease (isTouched);
     }
 
 
@@ -341,14 +361,13 @@ public abstract class AbstractTrackMode extends BaseMode
         final IValueChanger valueChanger = this.model.getValueChanger ();
         final ITrackBank tb = this.model.getCurrentTrackBank ();
         final PushConfiguration config = this.surface.getConfiguration ();
-        final boolean displayCrossfader = this.model.getHost ().supports (Capability.HAS_CROSSFADER);
         for (int i = 0; i < 8; i++)
         {
             final ITrack t = tb.getItem (i);
             final Pair<String, Boolean> pair = this.menu.get (i);
             final String topMenu = pair.getKey ();
             final boolean isTopMenuOn = pair.getValue ().booleanValue ();
-            final int crossfadeMode = displayCrossfader ? t.getCrossfadeModeAsNumber () : -1;
+            final int crossfadeMode = this.getCrossfadeModeAsNumber (t);
             final boolean enableVUMeters = config.isEnableVUMeters ();
             final int vuR = valueChanger.toDisplayValue (enableVUMeters ? t.getVuRight () : 0);
             final int vuL = valueChanger.toDisplayValue (enableVUMeters ? t.getVuLeft () : 0);
@@ -453,5 +472,13 @@ public abstract class AbstractTrackMode extends BaseMode
     private boolean lastSendIsAccessible ()
     {
         return this.surface.isShiftPressed () || !this.model.getCurrentTrackBank ().hasParent () || this.isKnobTouched (7);
+    }
+
+
+    protected int getCrossfadeModeAsNumber (final ITrack track)
+    {
+        if (this.model.getHost ().supports (Capability.HAS_CROSSFADER))
+            return (int) Math.round (this.model.getValueChanger ().toNormalizedValue (track.getCrossfadeParameter ().getValue ()) * 2.0);
+        return -1;
     }
 }

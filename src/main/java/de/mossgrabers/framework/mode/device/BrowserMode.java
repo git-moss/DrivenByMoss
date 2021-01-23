@@ -9,6 +9,7 @@ import de.mossgrabers.framework.controller.ButtonID;
 import de.mossgrabers.framework.controller.IControlSurface;
 import de.mossgrabers.framework.daw.IBrowser;
 import de.mossgrabers.framework.daw.IModel;
+import de.mossgrabers.framework.daw.data.IItem;
 import de.mossgrabers.framework.featuregroup.AbstractMode;
 
 
@@ -20,7 +21,7 @@ import de.mossgrabers.framework.featuregroup.AbstractMode;
  *
  * @author J&uuml;rgen Mo&szlig;graber
  */
-public class BrowserMode<S extends IControlSurface<C>, C extends Configuration> extends AbstractMode<S, C>
+public class BrowserMode<S extends IControlSurface<C>, C extends Configuration> extends AbstractMode<S, C, IItem>
 {
     /**
      * Constructor. Changes are always relative.

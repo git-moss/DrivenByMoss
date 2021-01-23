@@ -9,6 +9,7 @@ import de.mossgrabers.controller.sl.controller.SLControlSurface;
 import de.mossgrabers.controller.sl.controller.SLDisplay;
 import de.mossgrabers.framework.controller.display.ITextDisplay;
 import de.mossgrabers.framework.daw.IModel;
+import de.mossgrabers.framework.daw.data.IItem;
 import de.mossgrabers.framework.featuregroup.AbstractMode;
 import de.mossgrabers.framework.featuregroup.ViewManager;
 import de.mossgrabers.framework.view.Views;
@@ -19,7 +20,7 @@ import de.mossgrabers.framework.view.Views;
  *
  * @author J&uuml;rgen Mo&szlig;graber
  */
-public class ViewSelectMode extends AbstractMode<SLControlSurface, SLConfiguration>
+public class ViewSelectMode extends AbstractMode<SLControlSurface, SLConfiguration, IItem>
 {
     /**
      * Constructor.

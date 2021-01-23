@@ -11,8 +11,7 @@ import de.mossgrabers.framework.controller.ButtonID;
 import de.mossgrabers.framework.controller.display.ITextDisplay;
 import de.mossgrabers.framework.daw.IModel;
 import de.mossgrabers.framework.daw.data.ITrack;
-import de.mossgrabers.framework.daw.data.bank.ITrackBank;
-import de.mossgrabers.framework.featuregroup.AbstractMode;
+import de.mossgrabers.framework.mode.track.DefaultTrackMode;
 import de.mossgrabers.framework.utils.ButtonEvent;
 import de.mossgrabers.framework.utils.StringUtils;
 
@@ -22,7 +21,7 @@ import de.mossgrabers.framework.utils.StringUtils;
  *
  * @author J&uuml;rgen Mo&szlig;graber
  */
-public abstract class AbstractTrackMode extends AbstractMode<HUIControlSurface, HUIConfiguration>
+public abstract class AbstractTrackMode extends DefaultTrackMode<HUIControlSurface, HUIConfiguration>
 {
     /**
      * Constructor.
@@ -33,23 +32,17 @@ public abstract class AbstractTrackMode extends AbstractMode<HUIControlSurface, 
      */
     public AbstractTrackMode (final String name, final HUIControlSurface surface, final IModel model)
     {
-        super (name, surface, model, false, model.getCurrentTrackBank ());
-
-        model.addTrackBankObserver (this::switchBanks);
+        super (name, surface, model, false);
     }
 
 
     protected ITextDisplay drawTrackHeader ()
     {
-        final ITrackBank tb = this.model.getCurrentTrackBank ();
         final ITextDisplay d = this.surface.getTextDisplay ().clear ();
 
         // Format track names
         for (int i = 0; i < 8; i++)
-        {
-            final ITrack t = tb.getItem (i);
-            d.setCell (0, i, StringUtils.shortenAndFixASCII (t.getName (), 4));
-        }
+            d.setCell (0, i, StringUtils.shortenAndFixASCII (this.getTrack (i).getName (), 4));
 
         return d;
     }
@@ -68,11 +61,9 @@ public abstract class AbstractTrackMode extends AbstractMode<HUIControlSurface, 
     @Override
     public int getButtonColor (final ButtonID buttonID)
     {
-        final ITrackBank tb = this.model.getCurrentTrackBank ();
-
         for (int i = 0; i < 8; i++)
         {
-            final ITrack track = tb.getItem (i);
+            final ITrack track = this.getTrack (i);
 
             final boolean exists = track.doesExist ();
 

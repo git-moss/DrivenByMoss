@@ -2,15 +2,13 @@
 // (c) 2017-2021
 // Licensed under LGPLv3 - http://www.gnu.org/licenses/lgpl-3.0.txt
 
-package de.mossgrabers.framework.parameterprovider;
+package de.mossgrabers.framework.parameterprovider.device;
 
 import de.mossgrabers.framework.daw.data.IParameter;
-import de.mossgrabers.framework.daw.data.bank.IParameterBank;
+import de.mossgrabers.framework.daw.data.bank.IBank;
 import de.mossgrabers.framework.observer.IBankPageObserver;
 import de.mossgrabers.framework.observer.IParametersAdjustObserver;
-
-import java.util.HashSet;
-import java.util.Set;
+import de.mossgrabers.framework.parameterprovider.AbstractParameterProvider;
 
 
 /**
@@ -19,10 +17,9 @@ import java.util.Set;
  *
  * @author J&uuml;rgen Mo&szlig;graber
  */
-public class BankParameterProvider implements IParameterProvider, IBankPageObserver
+public class BankParameterProvider extends AbstractParameterProvider implements IBankPageObserver
 {
-    private final IParameterBank                 bank;
-    private final Set<IParametersAdjustObserver> observers = new HashSet<> ();
+    private final IBank<IParameter> bank;
 
 
     /**
@@ -30,7 +27,7 @@ public class BankParameterProvider implements IParameterProvider, IBankPageObser
      *
      * @param bank The bank from which to get the parameters
      */
-    public BankParameterProvider (final IParameterBank bank)
+    public BankParameterProvider (final IBank<IParameter> bank)
     {
         this.bank = bank;
     }
@@ -60,7 +57,8 @@ public class BankParameterProvider implements IParameterProvider, IBankPageObser
     @Override
     public void addParametersObserver (final IParametersAdjustObserver observer)
     {
-        this.observers.add (observer);
+        super.addParametersObserver (observer);
+
         this.bank.addPageObserver (this);
     }
 
@@ -69,17 +67,10 @@ public class BankParameterProvider implements IParameterProvider, IBankPageObser
     @Override
     public void removeParametersObserver (final IParametersAdjustObserver observer)
     {
-        this.observers.remove (observer);
-        if (this.observers.isEmpty ())
+        super.removeParametersObserver (observer);
+
+        if (!this.hasObservers ())
             this.bank.removePageObserver (this);
-    }
-
-
-    /** {@inheritDoc} */
-    @Override
-    public void notifyParametersObservers ()
-    {
-        this.observers.forEach (IParametersAdjustObserver::parametersAdjusted);
     }
 
 

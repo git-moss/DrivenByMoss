@@ -11,8 +11,8 @@ import de.mossgrabers.framework.controller.ButtonID;
 import de.mossgrabers.framework.daw.IModel;
 import de.mossgrabers.framework.daw.data.ITrack;
 import de.mossgrabers.framework.daw.data.bank.ITrackBank;
-import de.mossgrabers.framework.parameterprovider.PanParameterProvider;
-import de.mossgrabers.framework.parameterprovider.ResetParameterProvider;
+import de.mossgrabers.framework.parameterprovider.special.ResetParameterProvider;
+import de.mossgrabers.framework.parameterprovider.track.PanParameterProvider;
 import de.mossgrabers.framework.utils.StringUtils;
 
 
@@ -34,8 +34,8 @@ public class SLMkIIIPanMode extends AbstractTrackMode
         super ("Panorama", surface, model);
 
         final PanParameterProvider parameterProvider = new PanParameterProvider (model);
-        this.setParameters (parameterProvider);
-        this.setParameters (ButtonID.DELETE, new ResetParameterProvider (parameterProvider));
+        this.setParameterProvider (parameterProvider);
+        this.setParameterProvider (ButtonID.DELETE, new ResetParameterProvider (parameterProvider));
     }
 
 

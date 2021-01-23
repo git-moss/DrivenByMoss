@@ -7,6 +7,7 @@ package de.mossgrabers.controller.maschine.mode;
 import de.mossgrabers.controller.maschine.MaschineConfiguration;
 import de.mossgrabers.controller.maschine.controller.MaschineControlSurface;
 import de.mossgrabers.framework.daw.IModel;
+import de.mossgrabers.framework.daw.data.IItem;
 import de.mossgrabers.framework.featuregroup.AbstractMode;
 
 
@@ -15,7 +16,7 @@ import de.mossgrabers.framework.featuregroup.AbstractMode;
  *
  * @author J&uuml;rgen Mo&szlig;graber
  */
-public abstract class BaseMode extends AbstractMode<MaschineControlSurface, MaschineConfiguration>
+public abstract class BaseMode extends AbstractMode<MaschineControlSurface, MaschineConfiguration, IItem>
 {
     protected int selectedParam = 0;
 

@@ -146,11 +146,30 @@ public enum Modes
     DUMMY;
 
 
-    private static final Set<Modes> TRACK_MODES  = EnumSet.range (Modes.TRACK, Modes.STOP_CLIP);
-    private static final Set<Modes> LAYER_MODES  = EnumSet.range (Modes.DEVICE_LAYER, Modes.DEVICE_LAYER_DETAILS);
-    private static final Set<Modes> SEND_MODES   = EnumSet.range (Modes.SEND1, Modes.SEND8);
-    private static final Set<Modes> MIX_MODES    = EnumSet.range (Modes.TRACK, Modes.SEND);
-    private static final Set<Modes> MASTER_MODES = EnumSet.of (Modes.MASTER, Modes.MASTER_TEMP, Modes.FRAME);
+    /** The name of the Track mode. */
+    public static final String      NAME_TRACK          = "Track";
+    /** The name of the Volume mode. */
+    public static final String      NAME_VOLUME         = "Volume";
+    /** The name of the Panorama mode. */
+    public static final String      NAME_PANORAMA       = "Panorama";
+    /** The name of the Crossfade mode. */
+    public static final String      NAME_CROSSFADE      = "Crossfade";
+    /** The name of the Parameters mode. */
+    public static final String      NAME_PARAMETERS     = "Parameters";
+    /** The name of the Layer mode. */
+    public static final String      NAME_LAYER          = "Layer";
+    /** The name of the Layer Volume mode. */
+    public static final String      NAME_LAYER_VOLUME   = "Layer Volume";
+    /** The name of the Layer Panorama mode. */
+    public static final String      NAME_LAYER_PANORAMA = "Layer Panorama";
+    /** The name of the Layer Sends mode. */
+    public static final String      NAME_LAYER_SENDS    = "Layer Sends";
+
+    private static final Set<Modes> TRACK_MODES         = EnumSet.range (Modes.TRACK, Modes.STOP_CLIP);
+    private static final Set<Modes> LAYER_MODES         = EnumSet.range (Modes.DEVICE_LAYER, Modes.DEVICE_LAYER_DETAILS);
+    private static final Set<Modes> SEND_MODES          = EnumSet.range (Modes.SEND1, Modes.SEND8);
+    private static final Set<Modes> MIX_MODES           = EnumSet.range (Modes.TRACK, Modes.SEND);
+    private static final Set<Modes> MASTER_MODES        = EnumSet.of (Modes.MASTER, Modes.MASTER_TEMP, Modes.FRAME);
 
     static
     {

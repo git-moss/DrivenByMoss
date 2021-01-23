@@ -11,6 +11,7 @@ import de.mossgrabers.controller.slmkiii.view.DrumView;
 import de.mossgrabers.framework.controller.ButtonID;
 import de.mossgrabers.framework.daw.IModel;
 import de.mossgrabers.framework.daw.constants.Resolution;
+import de.mossgrabers.framework.daw.data.IItem;
 import de.mossgrabers.framework.utils.ButtonEvent;
 import de.mossgrabers.framework.view.Views;
 
@@ -20,7 +21,7 @@ import de.mossgrabers.framework.view.Views;
  *
  * @author J&uuml;rgen Mo&szlig;graber
  */
-public class SequencerResolutionMode extends BaseMode
+public class SequencerResolutionMode extends BaseMode<IItem>
 {
     /**
      * Constructor.

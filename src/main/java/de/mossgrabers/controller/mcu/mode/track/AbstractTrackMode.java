@@ -18,7 +18,7 @@ import de.mossgrabers.framework.utils.StringUtils;
  *
  * @author J&uuml;rgen Mo&szlig;graber
  */
-public abstract class AbstractTrackMode extends BaseMode
+public abstract class AbstractTrackMode extends BaseMode<ITrack>
 {
     /**
      * Constructor.

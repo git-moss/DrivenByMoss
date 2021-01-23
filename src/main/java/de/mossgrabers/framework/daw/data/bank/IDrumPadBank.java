@@ -12,7 +12,7 @@ import de.mossgrabers.framework.daw.data.IDrumPad;
  *
  * @author J&uuml;rgen Mo&szlig;graber
  */
-public interface IDrumPadBank extends IChannelBank<IDrumPad>
+public interface IDrumPadBank extends ILayerBank
 {
     /**
      * Clears mute on all drum pads.
@@ -32,4 +32,14 @@ public interface IDrumPadBank extends IChannelBank<IDrumPad>
      * @return True if a pad is soloed
      */
     boolean hasSoloedPads ();
+
+
+    /** {@inheritDoc} */
+    @Override
+    IDrumPad getItem (int index);
+
+
+    /** {@inheritDoc} */
+    @Override
+    IDrumPad getSelectedItem ();
 }

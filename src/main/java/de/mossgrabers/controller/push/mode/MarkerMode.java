@@ -24,7 +24,7 @@ import de.mossgrabers.framework.utils.StringUtils;
  *
  * @author J&uuml;rgen Mo&szlig;graber
  */
-public class MarkerMode extends BaseMode
+public class MarkerMode extends BaseMode<IMarker>
 {
     private static final String [] EDIT_MENU        =
     {
@@ -63,7 +63,7 @@ public class MarkerMode extends BaseMode
         if (event != ButtonEvent.UP)
             return;
 
-        final IMarker marker = (IMarker) this.bank.getItem (index);
+        final IMarker marker = this.bank.getItem (index);
         if (!marker.doesExist ())
             return;
 
@@ -112,7 +112,7 @@ public class MarkerMode extends BaseMode
             if (i == 7)
                 display.setCell (0, i, (this.actionModeLaunch ? Push1Display.SELECT_ARROW : "") + EDIT_MENU[i]);
 
-            final IMarker marker = (IMarker) this.bank.getItem (i);
+            final IMarker marker = this.bank.getItem (i);
             if (marker.doesExist ())
                 display.setCell (3, i, StringUtils.shortenAndFixASCII (marker.getName (), 8));
         }
@@ -127,7 +127,7 @@ public class MarkerMode extends BaseMode
     {
         for (int i = 0; i < 8; i++)
         {
-            final IMarker marker = (IMarker) this.bank.getItem (i);
+            final IMarker marker = this.bank.getItem (i);
             final String menuTopName = this.canEditMarkers || i > 0 ? EDIT_MENU[i] : "";
             final String headerBottomName = i == 0 ? "Markers" : "";
             final String headerTopName = i == 6 ? "Action" : "";

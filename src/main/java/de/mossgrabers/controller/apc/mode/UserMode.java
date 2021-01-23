@@ -7,7 +7,7 @@ package de.mossgrabers.controller.apc.mode;
 import de.mossgrabers.controller.apc.controller.APCControlSurface;
 import de.mossgrabers.framework.daw.IModel;
 import de.mossgrabers.framework.daw.data.IParameter;
-import de.mossgrabers.framework.parameterprovider.BankParameterProvider;
+import de.mossgrabers.framework.parameterprovider.device.BankParameterProvider;
 
 
 /**
@@ -15,7 +15,7 @@ import de.mossgrabers.framework.parameterprovider.BankParameterProvider;
  *
  * @author J&uuml;rgen Mo&szlig;graber
  */
-public class UserMode extends BaseMode
+public class UserMode extends BaseMode<IParameter>
 {
     /**
      * Constructor.
@@ -25,18 +25,9 @@ public class UserMode extends BaseMode
      */
     public UserMode (final APCControlSurface surface, final IModel model)
     {
-        super ("User", surface, model, APCControlSurface.LED_MODE_VOLUME, 0, model.getUserParameterBank ());
+        super ("User", surface, model, APCControlSurface.LED_MODE_VOLUME, model.getUserParameterBank ());
 
-        this.setParameters (new BankParameterProvider (model.getUserParameterBank ()));
-    }
-
-
-    /** {@inheritDoc} */
-    @Override
-    public int getKnobValue (final int index)
-    {
-        final IParameter item = this.model.getUserParameterBank ().getItem (index);
-        return item != null && item.doesExist () ? item.getValue () : -1;
+        this.setParameterProvider (new BankParameterProvider (model.getUserParameterBank ()));
     }
 
 

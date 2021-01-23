@@ -7,8 +7,8 @@ package de.mossgrabers.controller.fire.mode;
 import de.mossgrabers.controller.fire.controller.FireControlSurface;
 import de.mossgrabers.framework.controller.ButtonID;
 import de.mossgrabers.framework.daw.data.IParameter;
-import de.mossgrabers.framework.observer.IParametersAdjustObserver;
 import de.mossgrabers.framework.parameterprovider.IParameterProvider;
+import de.mossgrabers.framework.parameterprovider.special.AbstractWrapperProvider;
 
 
 /**
@@ -17,22 +17,22 @@ import de.mossgrabers.framework.parameterprovider.IParameterProvider;
  *
  * @author J&uuml;rgen Mo&szlig;graber
  */
-public class Fire4KnobProvider implements IParameterProvider
+public class Fire4KnobProvider extends AbstractWrapperProvider
 {
     private final FireControlSurface surface;
-    private final IParameterProvider provider;
 
 
     /**
      * Constructor.
      *
      * @param surface The control surface
-     * @param provider The provider to wrap
+     * @param parameterProvider The provider to wrap
      */
-    public Fire4KnobProvider (final FireControlSurface surface, final IParameterProvider provider)
+    public Fire4KnobProvider (final FireControlSurface surface, final IParameterProvider parameterProvider)
     {
+        super (parameterProvider);
+
         this.surface = surface;
-        this.provider = provider;
     }
 
 
@@ -48,30 +48,6 @@ public class Fire4KnobProvider implements IParameterProvider
     @Override
     public IParameter get (final int index)
     {
-        return this.provider.get (this.surface.isPressed (ButtonID.ALT) ? 4 + index : index);
-    }
-
-
-    /** {@inheritDoc} */
-    @Override
-    public void addParametersObserver (final IParametersAdjustObserver observer)
-    {
-        this.provider.addParametersObserver (observer);
-    }
-
-
-    /** {@inheritDoc} */
-    @Override
-    public void removeParametersObserver (final IParametersAdjustObserver observer)
-    {
-        this.provider.removeParametersObserver (observer);
-    }
-
-
-    /** {@inheritDoc} */
-    @Override
-    public void notifyParametersObservers ()
-    {
-        this.provider.notifyParametersObservers ();
+        return this.parameterProvider.get (this.surface.isPressed (ButtonID.ALT) ? 4 + index : index);
     }
 }

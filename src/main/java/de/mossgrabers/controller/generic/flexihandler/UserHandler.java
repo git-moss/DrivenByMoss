@@ -50,7 +50,15 @@ public class UserHandler extends AbstractHandler
             FlexiCommand.USER_SET_PARAMETER_7,
             FlexiCommand.USER_SET_PARAMETER_8,
             FlexiCommand.USER_SELECT_PREVIOUS_PAGE,
-            FlexiCommand.USER_SELECT_NEXT_PAGE
+            FlexiCommand.USER_SELECT_NEXT_PAGE,
+            FlexiCommand.USER_TOGGLE_PARAMETER_1,
+            FlexiCommand.USER_TOGGLE_PARAMETER_2,
+            FlexiCommand.USER_TOGGLE_PARAMETER_3,
+            FlexiCommand.USER_TOGGLE_PARAMETER_4,
+            FlexiCommand.USER_TOGGLE_PARAMETER_5,
+            FlexiCommand.USER_TOGGLE_PARAMETER_6,
+            FlexiCommand.USER_TOGGLE_PARAMETER_7,
+            FlexiCommand.USER_TOGGLE_PARAMETER_8
         };
     }
 
@@ -74,6 +82,17 @@ public class UserHandler extends AbstractHandler
             case USER_SET_PARAMETER_7:
             case USER_SET_PARAMETER_8:
                 return userParameterBank.getItem (command.ordinal () - FlexiCommand.USER_SET_PARAMETER_1.ordinal ()).getValue ();
+
+            case USER_TOGGLE_PARAMETER_1:
+            case USER_TOGGLE_PARAMETER_2:
+            case USER_TOGGLE_PARAMETER_3:
+            case USER_TOGGLE_PARAMETER_4:
+            case USER_TOGGLE_PARAMETER_5:
+            case USER_TOGGLE_PARAMETER_6:
+            case USER_TOGGLE_PARAMETER_7:
+            case USER_TOGGLE_PARAMETER_8:
+                final int value = userParameterBank.getItem (command.ordinal () - FlexiCommand.USER_TOGGLE_PARAMETER_1.ordinal ()).getValue ();
+                return value > 0 ? 127 : 0;
 
             default:
                 return -1;
@@ -105,6 +124,22 @@ public class UserHandler extends AbstractHandler
                     userParam.setValue (value);
                 else
                     userParam.setValue (this.limit (userParam.getValue () + this.getRelativeSpeed (knobMode, value)));
+                break;
+
+            case USER_TOGGLE_PARAMETER_1:
+            case USER_TOGGLE_PARAMETER_2:
+            case USER_TOGGLE_PARAMETER_3:
+            case USER_TOGGLE_PARAMETER_4:
+            case USER_TOGGLE_PARAMETER_5:
+            case USER_TOGGLE_PARAMETER_6:
+            case USER_TOGGLE_PARAMETER_7:
+            case USER_TOGGLE_PARAMETER_8:
+                final IParameter userToggleParam = userParameterBank.getItem (command.ordinal () - FlexiCommand.USER_TOGGLE_PARAMETER_1.ordinal ());
+                if (this.isButtonPressed (knobMode, value))
+                {
+                    final int v = userToggleParam.getValue ();
+                    userToggleParam.setValue (v > 0 ? 0 : this.model.getValueChanger ().getUpperBound () - 1);
+                }
                 break;
 
             case USER_SELECT_PREVIOUS_PAGE:

@@ -88,4 +88,12 @@ public class EmptyBank<T extends IItem> extends AbstractItemBank<T>
     {
         // Intentionally empty
     }
+
+
+    /** {@inheritDoc} */
+    @Override
+    public boolean hasExistingItems ()
+    {
+        return false;
+    }
 }

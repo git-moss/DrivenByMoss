@@ -7,14 +7,14 @@ package de.mossgrabers.controller.fire.mode;
 import de.mossgrabers.controller.fire.FireConfiguration;
 import de.mossgrabers.controller.fire.controller.FireControlSurface;
 import de.mossgrabers.controller.fire.graphics.canvas.component.TitleValueComponent;
+import de.mossgrabers.framework.controller.ButtonID;
 import de.mossgrabers.framework.controller.ContinuousID;
 import de.mossgrabers.framework.controller.display.IGraphicDisplay;
 import de.mossgrabers.framework.daw.IModel;
 import de.mossgrabers.framework.daw.data.ICursorDevice;
 import de.mossgrabers.framework.daw.data.IParameter;
-import de.mossgrabers.framework.daw.data.bank.IParameterBank;
 import de.mossgrabers.framework.mode.device.ParameterMode;
-import de.mossgrabers.framework.parameterprovider.BankParameterProvider;
+import de.mossgrabers.framework.parameterprovider.device.BankParameterProvider;
 import de.mossgrabers.framework.utils.StringUtils;
 
 
@@ -38,7 +38,7 @@ public class FireParameterMode extends ParameterMode<FireControlSurface, FireCon
 
         this.setControls (ContinuousID.createSequentialList (ContinuousID.KNOB1, 4));
 
-        this.setParameters (new Fire4KnobProvider (surface, new BankParameterProvider (model.getCursorDevice ().getParameterBank ())));
+        this.setParameterProvider (new Fire4KnobProvider (surface, new BankParameterProvider (model.getCursorDevice ().getParameterBank ())));
     }
 
 
@@ -59,11 +59,11 @@ public class FireParameterMode extends ParameterMode<FireControlSurface, FireCon
             final ICursorDevice cursorDevice = this.model.getCursorDevice ();
             desc = cursorDevice.getName (5) + ": " + StringUtils.optimizeName (cursorDevice.getParameterPageBank ().getSelectedItem (), 5);
 
-            final int touchedKnob = this.getTouchedKnob ();
+            int touchedKnob = this.getTouchedKnob ();
+            touchedKnob = this.surface.isPressed (ButtonID.ALT) ? 4 + touchedKnob : touchedKnob;
             if (touchedKnob > -1)
             {
-                final IParameterBank parameterBank = cursorDevice.getParameterBank ();
-                final IParameter p = parameterBank.getItem (touchedKnob);
+                final IParameter p = this.bank.getItem (touchedKnob);
                 paramLine = p.getName (5);
                 if (!paramLine.isEmpty ())
                 {

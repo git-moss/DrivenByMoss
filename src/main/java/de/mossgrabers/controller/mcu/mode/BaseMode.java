@@ -27,9 +27,11 @@ import de.mossgrabers.framework.utils.StringUtils;
 /**
  * Base class for all modes used by MCU.
  *
+ * @param <B> The type of the item bank
+ * 
  * @author J&uuml;rgen Mo&szlig;graber
  */
-public abstract class BaseMode extends AbstractMode<MCUControlSurface, MCUConfiguration>
+public abstract class BaseMode<B extends IItem> extends AbstractMode<MCUControlSurface, MCUConfiguration, B>
 {
     private final boolean useFxBank;
 
@@ -55,7 +57,7 @@ public abstract class BaseMode extends AbstractMode<MCUControlSurface, MCUConfig
      * @param model The model
      * @param bank The bank
      */
-    public BaseMode (final String name, final MCUControlSurface surface, final IModel model, final IBank<? extends IItem> bank)
+    public BaseMode (final String name, final MCUControlSurface surface, final IModel model, final IBank<B> bank)
     {
         super (name, surface, model, true, bank, DEFAULT_KNOB_IDS);
 
@@ -77,7 +79,7 @@ public abstract class BaseMode extends AbstractMode<MCUControlSurface, MCUConfig
         if (this.surface.getConfiguration ().useFadersAsKnobs ())
             parameterProvider = this.getParameterProvider ();
         else
-            parameterProvider = ((AbstractMode<?, ?>) this.surface.getModeManager ().get (Modes.VOLUME)).getParameterProvider ();
+            parameterProvider = ((AbstractMode<?, ?, ?>) this.surface.getModeManager ().get (Modes.VOLUME)).getParameterProvider ();
 
         for (int i = 0; i < this.controls.size (); i++)
             this.surface.getContinuous (ContinuousID.get (ContinuousID.FADER1, i)).bind (parameterProvider.get (i));

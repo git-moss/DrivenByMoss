@@ -17,7 +17,7 @@ import de.mossgrabers.framework.daw.IModel;
  *
  * @author J&uuml;rgen Mo&szlig;graber
  */
-public class MuteMode<S extends IControlSurface<C>, C extends Configuration> extends AbstractTrackMode<S, C>
+public class MuteMode<S extends IControlSurface<C>, C extends Configuration> extends DefaultTrackMode<S, C>
 {
     /**
      * Constructor.

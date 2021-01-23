@@ -12,8 +12,8 @@ import de.mossgrabers.framework.daw.IModel;
 import de.mossgrabers.framework.daw.data.ISend;
 import de.mossgrabers.framework.daw.data.ITrack;
 import de.mossgrabers.framework.daw.data.bank.ITrackBank;
-import de.mossgrabers.framework.parameterprovider.ResetParameterProvider;
-import de.mossgrabers.framework.parameterprovider.SendParameterProvider;
+import de.mossgrabers.framework.parameterprovider.special.ResetParameterProvider;
+import de.mossgrabers.framework.parameterprovider.track.SendParameterProvider;
 import de.mossgrabers.framework.utils.StringUtils;
 
 
@@ -41,8 +41,8 @@ public class SLMkIIISendMode extends AbstractTrackMode
         this.sendIndex = sendIndex;
 
         final SendParameterProvider parameterProvider = new SendParameterProvider (model, sendIndex);
-        this.setParameters (parameterProvider);
-        this.setParameters (ButtonID.DELETE, new ResetParameterProvider (parameterProvider));
+        this.setParameterProvider (parameterProvider);
+        this.setParameterProvider (ButtonID.DELETE, new ResetParameterProvider (parameterProvider));
     }
 
 

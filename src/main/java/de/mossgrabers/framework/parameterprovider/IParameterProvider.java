@@ -7,6 +7,8 @@ package de.mossgrabers.framework.parameterprovider;
 import de.mossgrabers.framework.daw.data.IParameter;
 import de.mossgrabers.framework.observer.IParametersAdjustObserver;
 
+import java.util.Set;
+
 
 /**
  * Interface to get a number of parameters.
@@ -37,7 +39,7 @@ public interface IParameterProvider
      *
      * @param observer The observer to register
      */
-    void addParametersObserver (final IParametersAdjustObserver observer);
+    void addParametersObserver (IParametersAdjustObserver observer);
 
 
     /**
@@ -45,11 +47,13 @@ public interface IParameterProvider
      *
      * @param observer The observer to unregister
      */
-    void removeParametersObserver (final IParametersAdjustObserver observer);
+    void removeParametersObserver (IParametersAdjustObserver observer);
 
 
     /**
-     * Notify all registered observers.
+     * Unregisters all parameters adjustment observers.
+     * 
+     * @return The previously registered observers
      */
-    void notifyParametersObservers ();
+    Set<IParametersAdjustObserver> removeParametersObservers ();
 }

@@ -25,7 +25,7 @@ import java.util.List;
  *
  * @author J&uuml;rgen Mo&szlig;graber
  */
-public class SelectedDeviceMode<S extends IControlSurface<C>, C extends Configuration> extends AbstractMode<S, C>
+public class SelectedDeviceMode<S extends IControlSurface<C>, C extends Configuration> extends AbstractMode<S, C, IParameter>
 {
     private int selParam = 0;
 

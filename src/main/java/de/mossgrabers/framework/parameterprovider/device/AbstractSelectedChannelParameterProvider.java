@@ -2,15 +2,13 @@
 // (c) 2017-2021
 // Licensed under LGPLv3 - http://www.gnu.org/licenses/lgpl-3.0.txt
 
-package de.mossgrabers.framework.parameterprovider;
+package de.mossgrabers.framework.parameterprovider.device;
 
-import de.mossgrabers.framework.daw.IModel;
 import de.mossgrabers.framework.daw.data.IChannel;
 import de.mossgrabers.framework.daw.data.IParameter;
 import de.mossgrabers.framework.daw.data.ISend;
 import de.mossgrabers.framework.daw.data.bank.IChannelBank;
 import de.mossgrabers.framework.daw.data.bank.ISendBank;
-import de.mossgrabers.framework.daw.data.bank.ITrackBank;
 import de.mossgrabers.framework.daw.data.empty.EmptyParameter;
 import de.mossgrabers.framework.observer.IItemSelectionObserver;
 import de.mossgrabers.framework.observer.IParametersAdjustObserver;
@@ -20,29 +18,21 @@ import de.mossgrabers.framework.observer.IParametersAdjustObserver;
  * Get a number of parameters. This implementation provides the selected channels volume, panorama
  * and send parameters.
  *
+ * @param <B> The type of the bank
+ * @param <C> The type of the banks' item
+ * 
  * @author J&uuml;rgen Mo&szlig;graber
  */
-public class ChannelParameterProvider extends AbstractChannelParameterProvider implements IItemSelectionObserver
+public class AbstractSelectedChannelParameterProvider<B extends IChannelBank<C>, C extends IChannel> extends AbstractChannelParameterProvider<B, C> implements IItemSelectionObserver
 {
     /**
      * Constructor.
      *
      * @param bank The bank from which to get the parameters
      */
-    public ChannelParameterProvider (final IChannelBank<? extends IChannel> bank)
+    public AbstractSelectedChannelParameterProvider (final B bank)
     {
         super (bank);
-    }
-
-
-    /**
-     * Constructor.
-     *
-     * @param model Uses the current channel bank from this model to get the parameters
-     */
-    public ChannelParameterProvider (final IModel model)
-    {
-        super (model);
     }
 
 
@@ -50,7 +40,7 @@ public class ChannelParameterProvider extends AbstractChannelParameterProvider i
     @Override
     public IParameter get (final int index)
     {
-        final IChannel selectedTrack = this.getBank ().getSelectedItem ();
+        final IChannel selectedTrack = this.bank.getSelectedItem ();
         return selectedTrack == null ? EmptyParameter.INSTANCE : this.getInternal (index, selectedTrack);
     }
 
@@ -61,16 +51,7 @@ public class ChannelParameterProvider extends AbstractChannelParameterProvider i
     {
         super.addParametersObserver (observer);
 
-        if (this.model != null)
-        {
-            this.model.getTrackBank ().addSelectionObserver (this);
-            final ITrackBank effectTrackBank = this.model.getEffectTrackBank ();
-            if (effectTrackBank != null)
-                effectTrackBank.addSelectionObserver (this);
-            return;
-        }
-
-        this.getBank ().addSelectionObserver (this);
+        this.bank.addSelectionObserver (this);
     }
 
 
@@ -80,16 +61,8 @@ public class ChannelParameterProvider extends AbstractChannelParameterProvider i
     {
         super.removeParametersObserver (observer);
 
-        if (this.model != null)
-        {
-            this.model.getTrackBank ().removeSelectionObserver (this);
-            final ITrackBank effectTrackBank = this.model.getEffectTrackBank ();
-            if (effectTrackBank != null)
-                effectTrackBank.removeSelectionObserver (this);
-            return;
-        }
-
-        this.getBank ().removeSelectionObserver (this);
+        if (!this.hasObservers ())
+            this.bank.removeSelectionObserver (this);
     }
 
 
@@ -108,7 +81,7 @@ public class ChannelParameterProvider extends AbstractChannelParameterProvider i
      * @param selectedChannel The selected channel, not null
      * @return The parameter
      */
-    private IParameter getInternal (final int index, final IChannel selectedChannel)
+    protected IParameter getInternal (final int index, final IChannel selectedChannel)
     {
         switch (index)
         {
@@ -119,7 +92,7 @@ public class ChannelParameterProvider extends AbstractChannelParameterProvider i
                 return selectedChannel.getPanParameter ();
 
             default:
-                return this.handleSends (index, selectedChannel);
+                return this.handleSends (index - 2, selectedChannel);
         }
     }
 
@@ -127,18 +100,15 @@ public class ChannelParameterProvider extends AbstractChannelParameterProvider i
     /**
      * Get a send parameter.
      *
-     * @param index The index
+     * @param sendIndex The index of the send
      * @param selectedChannel The selected channel, not null
      * @return The parameter
      */
-    private IParameter handleSends (final int index, final IChannel selectedChannel)
+    protected IParameter handleSends (final int sendIndex, final IChannel selectedChannel)
     {
-        final ISendBank sendBank = selectedChannel.getSendBank ();
-        if (this.model != null && this.model.isEffectTrackBankActive ())
-            return EmptyParameter.INSTANCE;
         try
         {
-            return this.getSend (index - 2, sendBank);
+            return this.getSend (sendIndex, selectedChannel.getSendBank ());
         }
         catch (final IndexOutOfBoundsException ex)
         {

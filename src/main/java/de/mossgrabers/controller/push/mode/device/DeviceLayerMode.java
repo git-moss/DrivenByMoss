@@ -9,6 +9,7 @@ import de.mossgrabers.controller.push.controller.Push1Display;
 import de.mossgrabers.controller.push.controller.PushColorManager;
 import de.mossgrabers.controller.push.controller.PushControlSurface;
 import de.mossgrabers.controller.push.mode.BaseMode;
+import de.mossgrabers.controller.push.parameterprovider.PushSelectedLayerOrDrumPadParameterProvider;
 import de.mossgrabers.framework.controller.ButtonID;
 import de.mossgrabers.framework.controller.color.ColorEx;
 import de.mossgrabers.framework.controller.display.Format;
@@ -19,28 +20,20 @@ import de.mossgrabers.framework.daw.IModel;
 import de.mossgrabers.framework.daw.data.IChannel;
 import de.mossgrabers.framework.daw.data.ICursorDevice;
 import de.mossgrabers.framework.daw.data.ILayer;
-import de.mossgrabers.framework.daw.data.IParameter;
 import de.mossgrabers.framework.daw.data.ISend;
 import de.mossgrabers.framework.daw.data.ITrack;
-import de.mossgrabers.framework.daw.data.bank.IChannelBank;
 import de.mossgrabers.framework.daw.data.bank.ISendBank;
 import de.mossgrabers.framework.daw.data.bank.ITrackBank;
-import de.mossgrabers.framework.daw.data.empty.EmptyParameter;
 import de.mossgrabers.framework.daw.resource.ChannelType;
 import de.mossgrabers.framework.featuregroup.ModeManager;
 import de.mossgrabers.framework.graphics.canvas.utils.SendData;
 import de.mossgrabers.framework.mode.Modes;
-import de.mossgrabers.framework.observer.IParametersAdjustObserver;
-import de.mossgrabers.framework.observer.IValueObserver;
-import de.mossgrabers.framework.parameterprovider.IParameterProvider;
 import de.mossgrabers.framework.utils.ButtonEvent;
 import de.mossgrabers.framework.utils.Pair;
 import de.mossgrabers.framework.utils.StringUtils;
 
 import java.util.ArrayList;
-import java.util.HashSet;
 import java.util.List;
-import java.util.Set;
 
 
 /**
@@ -48,10 +41,25 @@ import java.util.Set;
  *
  * @author J&uuml;rgen Mo&szlig;graber
  */
-public class DeviceLayerMode extends BaseMode implements IParameterProvider, IValueObserver<Boolean>
+public class DeviceLayerMode extends BaseMode<ILayer>
 {
-    protected final List<Pair<String, Boolean>>  menu      = new ArrayList<> ();
-    private final Set<IParametersAdjustObserver> observers = new HashSet<> ();
+    protected final List<Pair<String, Boolean>> menu = new ArrayList<> ();
+    protected final ICursorDevice               cursorDevice;
+    protected final PushConfiguration           configuration;
+
+
+    /**
+     * Constructor.
+     *
+     * @param surface The control surface
+     * @param model The model
+     */
+    public DeviceLayerMode (final PushControlSurface surface, final IModel model)
+    {
+        this (Modes.NAME_LAYER, surface, model);
+
+        this.setParameterProvider (new PushSelectedLayerOrDrumPadParameterProvider (this.cursorDevice, this.configuration));
+    }
 
 
     /**
@@ -61,11 +69,13 @@ public class DeviceLayerMode extends BaseMode implements IParameterProvider, IVa
      * @param surface The control surface
      * @param model The model
      */
-    public DeviceLayerMode (final String name, final PushControlSurface surface, final IModel model)
+    DeviceLayerMode (final String name, final PushControlSurface surface, final IModel model)
     {
-        super (name, surface, model, model.getCursorDevice ().getLayerOrDrumPadBank ());
+        super (name, surface, model, model.getCursorDevice ().getLayerBank ());
 
-        this.setParameters (this);
+        this.configuration = this.surface.getConfiguration ();
+        this.cursorDevice = this.model.getCursorDevice ();
+        this.cursorDevice.addHasDrumPadsObserver (hasDrumPads -> this.switchBanks (this.cursorDevice.hasDrumPads () ? this.cursorDevice.getDrumPadBank () : this.cursorDevice.getLayerBank ()));
 
         for (int i = 0; i < 8; i++)
             this.menu.add (new Pair<> (" ", Boolean.FALSE));
@@ -74,116 +84,33 @@ public class DeviceLayerMode extends BaseMode implements IParameterProvider, IVa
 
     /** {@inheritDoc} */
     @Override
-    public int size ()
-    {
-        return 8;
-    }
-
-
-    /** {@inheritDoc} */
-    @Override
-    public IParameter get (final int index)
-    {
-        final ICursorDevice cd = this.model.getCursorDevice ();
-        if (!cd.hasLayers ())
-            return EmptyParameter.INSTANCE;
-        final IChannel channel = cd.getLayerOrDrumPadBank ().getSelectedItem ();
-        if (channel == null)
-            return EmptyParameter.INSTANCE;
-
-        switch (index)
-        {
-            case 0:
-                return channel.getVolumeParameter ();
-
-            case 1:
-                return channel.getPanParameter ();
-
-            default:
-                if (this.isPush2 && index < 4)
-                    return EmptyParameter.INSTANCE;
-
-                final int sendIndex = index - (this.isPush2 ? this.surface.getConfiguration ().isSendsAreToggled () ? 0 : 4 : 2);
-                return channel.getSendBank ().getItem (sendIndex);
-        }
-    }
-
-
-    /** {@inheritDoc} */
-    @Override
-    public void addParametersObserver (final IParametersAdjustObserver observer)
-    {
-        this.observers.add (observer);
-
-        this.model.getCursorDevice ().addHasDrumPadsObserver (this);
-
-        // Also update straight away to current state
-        this.update (null);
-    }
-
-
-    /** {@inheritDoc} */
-    @Override
-    public void removeParametersObserver (final IParametersAdjustObserver observer)
-    {
-        this.observers.remove (observer);
-
-        this.model.getCursorDevice ().removeHasDrumPadsObserver (this);
-    }
-
-
-    /** {@inheritDoc} */
-    @Override
-    public void notifyParametersObservers ()
-    {
-        this.observers.forEach (IParametersAdjustObserver::parametersAdjusted);
-    }
-
-
-    /**
-     * Callback from drum bank monitor. Update the bank.
-     */
-    @Override
-    public void update (final Boolean hasDrumPads)
-    {
-        this.switchBanks (this.model.getCursorDevice ().getLayerOrDrumPadBank ());
-    }
-
-
-    /** {@inheritDoc} */
-    @Override
     public void onKnobTouch (final int index, final boolean isTouched)
     {
-        final ICursorDevice cd = this.model.getCursorDevice ();
-        final IChannel channel = cd.getLayerOrDrumPadBank ().getSelectedItem ();
+        final IChannel channel = this.bank.getSelectedItem ();
         if (channel == null)
             return;
 
         this.isKnobTouched[index] = isTouched;
 
-        if (isTouched)
+        final ISendBank sendBank = channel.getSendBank ();
+
+        if (isTouched && this.surface.isDeletePressed ())
         {
-            final ISendBank sendBank = channel.getSendBank ();
-            if (this.surface.isDeletePressed ())
+            this.surface.setTriggerConsumed (ButtonID.DELETE);
+            switch (index)
             {
-                this.surface.setTriggerConsumed (ButtonID.DELETE);
-                switch (index)
-                {
-                    case 0:
-                        channel.resetVolume ();
-                        break;
-                    case 1:
-                        channel.resetPan ();
-                        break;
-                    default:
-                        if (this.isPush2 && index < 4)
-                            break;
-                        final int sendIndex = index - (this.isPush2 ? this.surface.getConfiguration ().isSendsAreToggled () ? 0 : 4 : 2);
-                        sendBank.getItem (sendIndex).resetValue ();
-                        break;
-                }
-                return;
+                case 0:
+                    channel.resetVolume ();
+                    break;
+                case 1:
+                    channel.resetPan ();
+                    break;
+                default:
+                    if (!this.isPush2 || index >= 4)
+                        sendBank.getItem (this.getSendIndex (index)).resetValue ();
+                    break;
             }
+            return;
         }
 
         switch (index)
@@ -195,14 +122,23 @@ public class DeviceLayerMode extends BaseMode implements IParameterProvider, IVa
                 channel.touchPan (isTouched);
                 break;
             default:
-                if (this.isPush2 && index < 4)
-                    break;
-                final int sendIndex = index - (this.isPush2 ? this.surface.getConfiguration ().isSendsAreToggled () ? 0 : 4 : 2);
-                channel.getSendBank ().getItem (sendIndex).touchValue (isTouched);
+                if (!this.isPush2 || index >= 4)
+                    sendBank.getItem (this.getSendIndex (index)).touchValue (isTouched);
                 break;
         }
 
         this.checkStopAutomationOnKnobRelease (isTouched);
+    }
+
+
+    private int getSendIndex (final int index)
+    {
+        final int offset;
+        if (this.isPush2)
+            offset = this.configuration.isSendsAreToggled () ? 0 : 4;
+        else
+            offset = 2;
+        return index - offset;
     }
 
 
@@ -215,20 +151,18 @@ public class DeviceLayerMode extends BaseMode implements IParameterProvider, IVa
 
         if (event == ButtonEvent.UP)
         {
-            final ICursorDevice cd = this.model.getCursorDevice ();
-            if (!cd.doesExist ())
+            if (!this.cursorDevice.doesExist ())
                 return;
 
-            final int offset = getDrumPadIndex (cd);
-            final IChannelBank<?> bank = cd.getLayerOrDrumPadBank ();
-            final ILayer layer = (ILayer) bank.getItem (offset + index);
+            final int offset = this.getDrumPadIndex ();
+            final ILayer layer = this.bank.getItem (offset + index);
             if (!layer.doesExist ())
                 return;
 
             final int layerIndex = layer.getIndex ();
             if (!layer.isSelected ())
             {
-                bank.getItem (layerIndex).select ();
+                this.bank.getItem (layerIndex).select ();
                 return;
             }
 
@@ -255,15 +189,14 @@ public class DeviceLayerMode extends BaseMode implements IParameterProvider, IVa
     protected void moveUp ()
     {
         // There is no device on the track move upwards to the track view
-        final ICursorDevice cd = this.model.getCursorDevice ();
-        if (!cd.doesExist ())
+        if (!this.cursorDevice.doesExist ())
         {
             this.surface.getButton (ButtonID.TRACK).trigger (ButtonEvent.DOWN);
             return;
         }
 
         this.setMode (Modes.DEVICE_PARAMS);
-        cd.selectChannel ();
+        this.cursorDevice.selectChannel ();
         final ModeManager modeManager = this.surface.getModeManager ();
         ((DeviceParamsMode) modeManager.get (Modes.DEVICE_PARAMS)).setShowDevices (true);
     }
@@ -275,15 +208,14 @@ public class DeviceLayerMode extends BaseMode implements IParameterProvider, IVa
     {
         if (event != ButtonEvent.DOWN)
             return;
-        final PushConfiguration config = this.surface.getConfiguration ();
-        if (!this.isPush2 || config.isMuteLongPressed () || config.isSoloLongPressed () || config.isMuteSoloLocked ())
+        if (!this.isPush2 || this.configuration.isMuteLongPressed () || this.configuration.isSoloLongPressed () || this.configuration.isMuteSoloLocked ())
         {
-            final ICursorDevice cd = this.model.getCursorDevice ();
-            final int offset = getDrumPadIndex (cd);
-            if (config.isMuteState ())
-                cd.getLayerOrDrumPadBank ().getItem (offset + index).toggleMute ();
+            final int offset = this.getDrumPadIndex ();
+            final ILayer layer = this.bank.getItem (offset + index);
+            if (this.configuration.isMuteState ())
+                layer.toggleMute ();
             else
-                cd.getLayerOrDrumPadBank ().getItem (offset + index).toggleSolo ();
+                layer.toggleSolo ();
             return;
         }
 
@@ -313,28 +245,28 @@ public class DeviceLayerMode extends BaseMode implements IParameterProvider, IVa
                 if (this.model.isEffectTrackBankActive ())
                     return;
                 // Check if there are more than 4 FX channels
-                if (!config.isSendsAreToggled ())
+                if (!this.configuration.isSendsAreToggled ())
                 {
                     fxTrackBank = this.model.getEffectTrackBank ();
                     if (fxTrackBank == null || !fxTrackBank.getItem (4).doesExist ())
                         return;
                 }
-                config.setSendsAreToggled (!config.isSendsAreToggled ());
+                this.configuration.setSendsAreToggled (!this.configuration.isSendsAreToggled ());
                 this.bindControls ();
 
                 if (!modeManager.isActive (Modes.DEVICE_LAYER))
-                    this.setMode (Modes.get (Modes.DEVICE_LAYER_SEND1, config.isSendsAreToggled () ? 4 : 0));
+                    this.setMode (Modes.get (Modes.DEVICE_LAYER_SEND1, this.configuration.isSendsAreToggled () ? 4 : 0));
                 break;
 
             case 7:
                 if (this.surface.isShiftPressed ())
-                    this.handleSendEffect (config.isSendsAreToggled () ? 7 : 3);
+                    this.handleSendEffect (this.configuration.isSendsAreToggled () ? 7 : 3);
                 else
                     this.moveUp ();
                 break;
 
             default:
-                this.handleSendEffect (index - (config.isSendsAreToggled () ? 0 : 4));
+                this.handleSendEffect (index - (this.configuration.isSendsAreToggled () ? 0 : 4));
                 break;
         }
     }
@@ -370,23 +302,22 @@ public class DeviceLayerMode extends BaseMode implements IParameterProvider, IVa
     @Override
     public void updateDisplay1 (final ITextDisplay display)
     {
-        final ICursorDevice cd = this.model.getCursorDevice ();
-        if (!cd.doesExist ())
+        if (!this.cursorDevice.doesExist ())
         {
             display.setBlock (1, 0, "           Select").setBlock (1, 1, "a device or press").setBlock (1, 2, "'Add Effect'...  ").allDone ();
             return;
         }
 
-        if (!cd.hasLayers ())
+        if (!this.cursorDevice.hasLayers ())
             display.setBlock (1, 1, "    This device  ").setBlock (1, 2, "does not have layers.");
-        else if (cd.getLayerBank ().hasZeroLayers ())
-            display.setBlock (1, 1, "    Please create").setBlock (1, 2, cd.hasDrumPads () ? "a Drum Pad..." : "a Device Layer...");
+        else if (!this.bank.hasExistingItems ())
+            display.setBlock (1, 1, "    Please create").setBlock (1, 2, this.cursorDevice.hasDrumPads () ? "a Drum Pad..." : "a Device Layer...");
         else
         {
-            final IChannel l = cd.getLayerOrDrumPadBank ().getSelectedItem ();
+            final IChannel l = this.bank.getSelectedItem ();
             if (l != null)
             {
-                display.setCell (0, 0, "Volume").setCell (1, 0, l.getVolumeStr (8)).setCell (2, 0, this.surface.getConfiguration ().isEnableVUMeters () ? l.getVu () : l.getVolume (), Format.FORMAT_VALUE);
+                display.setCell (0, 0, "Volume").setCell (1, 0, l.getVolumeStr (8)).setCell (2, 0, this.configuration.isEnableVUMeters () ? l.getVu () : l.getVolume (), Format.FORMAT_VALUE);
                 display.setCell (0, 1, "Pan").setCell (1, 1, l.getPanStr (8)).setCell (2, 1, l.getPan (), Format.FORMAT_PAN);
 
                 final ITrackBank fxTrackBank = this.model.getEffectTrackBank ();
@@ -418,7 +349,7 @@ public class DeviceLayerMode extends BaseMode implements IParameterProvider, IVa
             }
         }
 
-        this.drawRow4 (display, cd);
+        this.drawRow4 (display);
     }
 
 
@@ -426,16 +357,15 @@ public class DeviceLayerMode extends BaseMode implements IParameterProvider, IVa
     @Override
     public void updateDisplay2 (final IGraphicDisplay display)
     {
-        final ICursorDevice cd = this.model.getCursorDevice ();
-        if (!cd.doesExist ())
+        if (!this.cursorDevice.doesExist ())
         {
             for (int i = 0; i < 8; i++)
                 display.addOptionElement (i == 2 ? "Please select a device or press 'Add Device'..." : "", i == 7 ? "Up" : "", true, "", "", false, true);
             return;
         }
 
-        if (checkLayerExistance (display, cd))
-            this.updateDisplayElements (display, cd, cd.getLayerOrDrumPadBank ().getSelectedItem ());
+        if (checkLayerExistance (display))
+            this.updateDisplayElements (display, this.bank.getSelectedItem ());
     }
 
 
@@ -443,26 +373,30 @@ public class DeviceLayerMode extends BaseMode implements IParameterProvider, IVa
      * Check if the cursor device has layers and at least one. Otherwise a message is displayed
      *
      * @param display The display where to show the message
-     * @param cd The cursor device
      * @return True if layers exist
      */
-    protected static boolean checkLayerExistance (final IGraphicDisplay display, final ICursorDevice cd)
+    protected boolean checkLayerExistance (final IGraphicDisplay display)
     {
-        if (!cd.hasLayers ())
+        if (!this.cursorDevice.hasLayers ())
         {
             for (int i = 0; i < 8; i++)
                 display.addOptionElement (i == 3 ? "This device does not have layers." : "", i == 7 ? "Up" : "", true, "", "", false, true);
             return false;
         }
 
-        if (cd.getLayerBank ().hasZeroLayers ())
-        {
-            for (int i = 0; i < 8; i++)
-                display.addOptionElement (i == 3 ? "Please create a " + (cd.hasDrumPads () ? "Drum Pad..." : "Device Layer...") : "", i == 7 ? "Up" : "", true, "", "", false, true);
-            return false;
-        }
+        if (this.bank.hasExistingItems ())
+            return true;
 
-        return true;
+        for (int i = 0; i < 8; i++)
+        {
+            final String label;
+            if (i == 3)
+                label = "Please create a " + (this.cursorDevice.hasDrumPads () ? "Drum Pad..." : "Device Layer...");
+            else
+                label = "";
+            display.addOptionElement (label, i == 7 ? "Up" : "", true, "", "", false, true);
+        }
+        return false;
     }
 
 
@@ -470,13 +404,12 @@ public class DeviceLayerMode extends BaseMode implements IParameterProvider, IVa
      * Update all 8 elements.
      *
      * @param display The display
-     * @param cd The cursor device
      * @param l The channel data
      */
-    protected void updateDisplayElements (final IGraphicDisplay display, final ICursorDevice cd, final IChannel l)
+    protected void updateDisplayElements (final IGraphicDisplay display, final IChannel l)
     {
         // Drum Pad Bank has size of 16, layers only 8
-        final int offset = getDrumPadIndex (cd);
+        final int offset = this.getDrumPadIndex ();
 
         // Get the index at which to draw the Sends element
         int sendsIndex = l == null ? -1 : l.getIndex () - offset + 1;
@@ -487,10 +420,9 @@ public class DeviceLayerMode extends BaseMode implements IParameterProvider, IVa
 
         final PushConfiguration config = this.surface.getConfiguration ();
 
-        final IChannelBank<?> bank = cd.getLayerOrDrumPadBank ();
         for (int i = 0; i < 8; i++)
         {
-            final IChannel layer = bank.getItem (offset + i);
+            final IChannel layer = this.bank.getItem (offset + i);
 
             final Pair<String, Boolean> pair = this.menu.get (i);
             final String topMenu = pair.getKey ();
@@ -521,7 +453,7 @@ public class DeviceLayerMode extends BaseMode implements IParameterProvider, IVa
                     final boolean doesExist = send.doesExist ();
                     sendData[j] = new SendData (fxTrackBank == null ? send.getName () : fxTrackBank.getItem (sendPos).getName (), doesExist && this.isKnobTouched[4 + j] ? send.getDisplayedValue () : "", doesExist ? send.getValue () : 0, doesExist ? send.getModulatedValue () : 0, true);
                 }
-                display.addSendsElement (topMenu, isTopMenuOn, layer.doesExist () ? layer.getName () : "", ChannelType.LAYER, bank.getItem (offset + i).getColor (), layer.isSelected (), sendData, true, l.isActivated (), layer.isActivated ());
+                display.addSendsElement (topMenu, isTopMenuOn, layer.doesExist () ? layer.getName () : "", ChannelType.LAYER, this.bank.getItem (offset + i).getColor (), layer.isSelected (), sendData, true, l.isActivated (), layer.isActivated ());
             }
             else
                 display.addChannelSelectorElement (topMenu, isTopMenuOn, bottomMenu, ChannelType.LAYER, bottomMenuColor, isBottomMenuOn, layer.isActivated ());
@@ -530,24 +462,21 @@ public class DeviceLayerMode extends BaseMode implements IParameterProvider, IVa
 
 
     // Called from sub-classes
-    protected void updateChannelDisplay (final IGraphicDisplay display, final ICursorDevice cd, final int selectedMenu, final boolean isVolume, final boolean isPan)
+    protected void updateChannelDisplay (final IGraphicDisplay display, final int selectedMenu, final boolean isVolume, final boolean isPan)
     {
         this.updateMenuItems (selectedMenu);
 
-        final PushConfiguration config = this.surface.getConfiguration ();
-
         // Drum Pad Bank has size of 16, layers only 8
-        final int offset = getDrumPadIndex (cd);
+        final int offset = this.getDrumPadIndex ();
 
         final IValueChanger valueChanger = this.model.getValueChanger ();
-        final IChannelBank<?> bank = cd.getLayerOrDrumPadBank ();
         for (int i = 0; i < 8; i++)
         {
-            final IChannel layer = bank.getItem (offset + i);
+            final IChannel layer = this.bank.getItem (offset + i);
             final Pair<String, Boolean> pair = this.menu.get (i);
             final String topMenu = pair.getKey ();
             final boolean isTopMenuOn = pair.getValue ().booleanValue ();
-            final boolean enableVUMeters = config.isEnableVUMeters ();
+            final boolean enableVUMeters = this.configuration.isEnableVUMeters ();
             final int vuR = valueChanger.toDisplayValue (enableVUMeters ? layer.getVuRight () : 0);
             final int vuL = valueChanger.toDisplayValue (enableVUMeters ? layer.getVuLeft () : 0);
             display.addChannelElement (selectedMenu, topMenu, isTopMenuOn, layer.doesExist () ? layer.getName () : "", ChannelType.LAYER, layer.getColor (), layer.isSelected (), valueChanger.toDisplayValue (layer.getVolume ()), valueChanger.toDisplayValue (layer.getModulatedVolume ()), isVolume && this.isKnobTouched[i] ? layer.getVolumeStr (8) : "", valueChanger.toDisplayValue (layer.getPan ()), valueChanger.toDisplayValue (layer.getModulatedPan ()), isPan && this.isKnobTouched[i] ? layer.getPanStr () : "", vuL, vuR, layer.isMute (), layer.isSolo (), false, layer.isActivated (), 0);
@@ -557,10 +486,9 @@ public class DeviceLayerMode extends BaseMode implements IParameterProvider, IVa
 
     protected void updateMenuItems (final int selectedMenu)
     {
-        final PushConfiguration config = this.surface.getConfiguration ();
-        if (config.isMuteLongPressed () || config.isMuteSoloLocked () && config.isMuteState ())
+        if (this.configuration.isMuteLongPressed () || this.configuration.isMuteSoloLocked () && this.configuration.isMuteState ())
             this.updateMuteMenu ();
-        else if (config.isSoloLongPressed () || config.isMuteSoloLocked () && config.isSoloState ())
+        else if (this.configuration.isSoloLongPressed () || this.configuration.isMuteSoloLocked () && this.configuration.isSoloState ())
             this.updateSoloMenu ();
         else
             this.updateLayerMenu (selectedMenu);
@@ -569,10 +497,9 @@ public class DeviceLayerMode extends BaseMode implements IParameterProvider, IVa
 
     protected void updateSoloMenu ()
     {
-        final IChannelBank<?> bank = this.model.getCursorDevice ().getLayerOrDrumPadBank ();
         for (int i = 0; i < 8; i++)
         {
-            final IChannel layer = bank.getItem (i);
+            final IChannel layer = this.bank.getItem (i);
             this.menu.get (i).set (layer.doesExist () ? "Solo" : "", Boolean.valueOf (layer.isSolo ()));
         }
     }
@@ -580,10 +507,9 @@ public class DeviceLayerMode extends BaseMode implements IParameterProvider, IVa
 
     protected void updateMuteMenu ()
     {
-        final IChannelBank<?> bank = this.model.getCursorDevice ().getLayerOrDrumPadBank ();
         for (int i = 0; i < 8; i++)
         {
-            final IChannel layer = bank.getItem (i);
+            final IChannel layer = this.bank.getItem (i);
             this.menu.get (i).set (layer.doesExist () ? "Mute" : "", Boolean.valueOf (layer.isMute ()));
         }
     }
@@ -591,8 +517,6 @@ public class DeviceLayerMode extends BaseMode implements IParameterProvider, IVa
 
     protected void updateLayerMenu (final int selectedMenu)
     {
-        final PushConfiguration config = this.surface.getConfiguration ();
-
         this.menu.get (0).set ("Volume", Boolean.valueOf (selectedMenu - 1 == 0));
         this.menu.get (1).set ("Pan", Boolean.valueOf (selectedMenu - 1 == 1));
         this.menu.get (2).set (" ", Boolean.FALSE);
@@ -605,20 +529,19 @@ public class DeviceLayerMode extends BaseMode implements IParameterProvider, IVa
             return;
         }
 
-        final boolean sendsAreToggled = config.isSendsAreToggled ();
+        final boolean sendsAreToggled = this.configuration.isSendsAreToggled ();
 
         this.menu.get (3).set (sendsAreToggled ? "Sends 5-8" : "Sends 1-4", Boolean.valueOf (sendsAreToggled));
 
         final ITrackBank tb = this.model.getCurrentTrackBank ();
         final int sendOffset = sendsAreToggled ? 4 : 0;
-        final boolean isShiftPressed = this.surface.isShiftPressed ();
-        for (int i = 0; i < (isShiftPressed ? 4 : 3); i++)
+        for (int i = 0; i < 4; i++)
         {
             final String sendName = tb.getEditSendName (sendOffset + i);
             this.menu.get (4 + i).set (sendName.isEmpty () ? " " : sendName, Boolean.valueOf (4 + i == selectedMenu - 1));
         }
 
-        if (!isShiftPressed)
+        if (!this.surface.isShiftPressed () && !this.isKnobTouched (7))
             this.menu.get (7).set ("Up", Boolean.TRUE);
     }
 
@@ -631,14 +554,13 @@ public class DeviceLayerMode extends BaseMode implements IParameterProvider, IVa
         if (cd == null || !cd.hasLayers ())
             return super.getButtonColor (buttonID);
 
-        final IChannelBank<?> bank = cd.getLayerOrDrumPadBank ();
         // Drum Pad Bank has size of 16, layers only 8
-        final int offset = getDrumPadIndex (cd);
+        final int offset = this.getDrumPadIndex ();
 
         int index = this.isButtonRow (0, buttonID);
         if (index >= 0)
         {
-            final IChannel dl = bank.getItem (offset + buttonID.ordinal () - ButtonID.ROW1_1.ordinal ());
+            final IChannel dl = this.bank.getItem (offset + buttonID.ordinal () - ButtonID.ROW1_1.ordinal ());
             if (dl.doesExist () && dl.isActivated ())
             {
                 if (dl.isSelected ())
@@ -651,12 +573,11 @@ public class DeviceLayerMode extends BaseMode implements IParameterProvider, IVa
         index = this.isButtonRow (1, buttonID);
         if (index >= 0)
         {
-            final PushConfiguration config = this.surface.getConfiguration ();
-            final boolean muteState = config.isMuteState ();
-            final IChannel layer = bank.getItem (offset + index);
+            final boolean muteState = this.configuration.isMuteState ();
+            final IChannel layer = this.bank.getItem (offset + index);
             if (this.isPush2)
             {
-                if (config.isMuteLongPressed () || config.isSoloLongPressed () || config.isMuteSoloLocked ())
+                if (this.configuration.isMuteLongPressed () || this.configuration.isSoloLongPressed () || this.configuration.isMuteSoloLocked ())
                 {
                     if (layer.doesExist ())
                     {
@@ -679,13 +600,10 @@ public class DeviceLayerMode extends BaseMode implements IParameterProvider, IVa
                     case 1:
                         return modeManager.isActive (Modes.DEVICE_LAYER_PAN) ? PushColorManager.PUSH2_COLOR2_WHITE : PushColorManager.PUSH2_COLOR_BLACK;
                     case 4:
-                        return modeManager.isActive (config.isSendsAreToggled () ? Modes.DEVICE_LAYER_SEND5 : Modes.DEVICE_LAYER_SEND1) ? PushColorManager.PUSH2_COLOR2_WHITE : PushColorManager.PUSH2_COLOR_BLACK;
                     case 5:
-                        return modeManager.isActive (config.isSendsAreToggled () ? Modes.DEVICE_LAYER_SEND6 : Modes.DEVICE_LAYER_SEND2) ? PushColorManager.PUSH2_COLOR2_WHITE : PushColorManager.PUSH2_COLOR_BLACK;
                     case 6:
-                        return modeManager.isActive (config.isSendsAreToggled () ? Modes.DEVICE_LAYER_SEND7 : Modes.DEVICE_LAYER_SEND3) ? PushColorManager.PUSH2_COLOR2_WHITE : PushColorManager.PUSH2_COLOR_BLACK;
                     case 7:
-                        return modeManager.isActive (config.isSendsAreToggled () ? Modes.DEVICE_LAYER_SEND8 : Modes.DEVICE_LAYER_SEND4) ? PushColorManager.PUSH2_COLOR2_WHITE : PushColorManager.PUSH2_COLOR_BLACK;
+                        return modeManager.isActive (this.getSendMode (index)) ? PushColorManager.PUSH2_COLOR2_WHITE : PushColorManager.PUSH2_COLOR_BLACK;
                     default:
                         return PushColorManager.PUSH2_COLOR_BLACK;
                 }
@@ -710,27 +628,32 @@ public class DeviceLayerMode extends BaseMode implements IParameterProvider, IVa
      * Draw the fourth row.
      *
      * @param display The display
-     * @param cd The cursor device
      */
-    protected void drawRow4 (final ITextDisplay display, final ICursorDevice cd)
+    protected void drawRow4 (final ITextDisplay display)
     {
         // Drum Pad Bank has size of 16, layers only 8
-        final int offset = getDrumPadIndex (cd);
-        final IChannelBank<?> bank = cd.getLayerOrDrumPadBank ();
+        final int offset = this.getDrumPadIndex ();
         for (int i = 0; i < 8; i++)
         {
-            final IChannel layer = bank.getItem (offset + i);
+            final IChannel layer = this.bank.getItem (offset + i);
             final String n = StringUtils.shortenAndFixASCII (layer.getName (), layer.isSelected () ? 7 : 8);
             display.setCell (3, i, layer.isSelected () ? Push1Display.SELECT_ARROW + n : n);
         }
     }
 
 
-    protected static int getDrumPadIndex (final ICursorDevice cd)
+    private Modes getSendMode (int index)
     {
-        if (cd.hasDrumPads ())
+        int idx = index - 4;
+        return Modes.get (Modes.DEVICE_LAYER_SEND1, this.configuration.isSendsAreToggled () ? 4 + idx : idx);
+    }
+
+
+    protected int getDrumPadIndex ()
+    {
+        if (this.cursorDevice.hasDrumPads ())
         {
-            final IChannel selectedDrumPad = cd.getLayerOrDrumPadBank ().getSelectedItem ();
+            final IChannel selectedDrumPad = this.bank.getSelectedItem ();
             if (selectedDrumPad != null && selectedDrumPad.getIndex () > 7)
                 return 8;
         }

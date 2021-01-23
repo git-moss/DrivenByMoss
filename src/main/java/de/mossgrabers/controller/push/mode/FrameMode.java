@@ -12,6 +12,7 @@ import de.mossgrabers.framework.daw.IApplication;
 import de.mossgrabers.framework.daw.IArranger;
 import de.mossgrabers.framework.daw.IMixer;
 import de.mossgrabers.framework.daw.IModel;
+import de.mossgrabers.framework.daw.data.IItem;
 import de.mossgrabers.framework.featuregroup.AbstractFeatureGroup;
 import de.mossgrabers.framework.featuregroup.AbstractMode;
 import de.mossgrabers.framework.utils.ButtonEvent;
@@ -22,7 +23,7 @@ import de.mossgrabers.framework.utils.ButtonEvent;
  *
  * @author J&uuml;rgen Mo&szlig;graber
  */
-public class FrameMode extends BaseMode
+public class FrameMode extends BaseMode<IItem>
 {
     private static final String       ROW0             = "Layouts:                  Panels:                                   ";
     private static final String       ROW1             = "Arrange  Mix     Edit     Notes   Automate Device  Mixer    Inspectr";

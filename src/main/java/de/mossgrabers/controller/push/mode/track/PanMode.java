@@ -5,7 +5,6 @@
 package de.mossgrabers.controller.push.mode.track;
 
 import de.mossgrabers.controller.push.controller.PushControlSurface;
-import de.mossgrabers.framework.controller.ButtonID;
 import de.mossgrabers.framework.controller.display.AbstractGraphicDisplay;
 import de.mossgrabers.framework.controller.display.Format;
 import de.mossgrabers.framework.controller.display.IGraphicDisplay;
@@ -13,7 +12,7 @@ import de.mossgrabers.framework.controller.display.ITextDisplay;
 import de.mossgrabers.framework.daw.IModel;
 import de.mossgrabers.framework.daw.data.ITrack;
 import de.mossgrabers.framework.daw.data.bank.ITrackBank;
-import de.mossgrabers.framework.parameterprovider.PanParameterProvider;
+import de.mossgrabers.framework.parameterprovider.track.PanParameterProvider;
 
 
 /**
@@ -33,25 +32,7 @@ public class PanMode extends AbstractTrackMode
     {
         super ("Panorama", surface, model);
 
-        this.setParameters (new PanParameterProvider (model));
-    }
-
-
-    /** {@inheritDoc} */
-    @Override
-    public void onKnobTouch (final int index, final boolean isTouched)
-    {
-        this.isKnobTouched[index] = isTouched;
-
-        final ITrack t = this.model.getCurrentTrackBank ().getItem (index);
-        if (isTouched && this.surface.isDeletePressed ())
-        {
-            this.surface.setTriggerConsumed (ButtonID.DELETE);
-            t.resetPan ();
-        }
-
-        t.touchPan (isTouched);
-        this.checkStopAutomationOnKnobRelease (isTouched);
+        this.setParameterProvider (new PanParameterProvider (model));
     }
 
 

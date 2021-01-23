@@ -28,6 +28,15 @@ public interface Configuration
 
 
     /**
+     * Remove an observer which was previously registered.
+     *
+     * @param settingID The ID of the observed setting
+     * @param observer The observer to remove
+     */
+    void removeSettingObserver (Integer settingID, ISettingObserver observer);
+
+
+    /**
      * Notify all registered observers no matter for which they are registered.
      */
     void notifyAllObservers ();

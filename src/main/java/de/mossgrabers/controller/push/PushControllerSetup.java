@@ -58,6 +58,7 @@ import de.mossgrabers.controller.push.mode.SessionViewSelectMode;
 import de.mossgrabers.controller.push.mode.SetupMode;
 import de.mossgrabers.controller.push.mode.device.DeviceBrowserMode;
 import de.mossgrabers.controller.push.mode.device.DeviceChainsMode;
+import de.mossgrabers.controller.push.mode.device.DeviceLayerDetailsMode;
 import de.mossgrabers.controller.push.mode.device.DeviceLayerMode;
 import de.mossgrabers.controller.push.mode.device.DeviceLayerModePan;
 import de.mossgrabers.controller.push.mode.device.DeviceLayerModeSend;
@@ -65,8 +66,7 @@ import de.mossgrabers.controller.push.mode.device.DeviceLayerModeVolume;
 import de.mossgrabers.controller.push.mode.device.DeviceParamsMode;
 import de.mossgrabers.controller.push.mode.device.UserMode;
 import de.mossgrabers.controller.push.mode.track.ClipMode;
-import de.mossgrabers.controller.push.mode.track.CrossfaderMode;
-import de.mossgrabers.controller.push.mode.track.LayerDetailsMode;
+import de.mossgrabers.controller.push.mode.track.CrossfadeMode;
 import de.mossgrabers.controller.push.mode.track.MasterMode;
 import de.mossgrabers.controller.push.mode.track.PanMode;
 import de.mossgrabers.controller.push.mode.track.SendMode;
@@ -256,7 +256,7 @@ public class PushControllerSetup extends AbstractControllerSetup<PushControlSurf
         modeManager.register (Modes.TRACK_DETAILS, new TrackDetailsMode (surface, this.model));
         modeManager.register (Modes.VOLUME, new VolumeMode (surface, this.model));
         modeManager.register (Modes.PAN, new PanMode (surface, this.model));
-        modeManager.register (Modes.CROSSFADER, new CrossfaderMode (surface, this.model));
+        modeManager.register (Modes.CROSSFADER, new CrossfadeMode (surface, this.model));
 
         for (int i = 0; i < 8; i++)
             modeManager.register (Modes.get (Modes.SEND1, i), new SendMode (surface, this.model, i));
@@ -266,14 +266,14 @@ public class PushControllerSetup extends AbstractControllerSetup<PushControlSurf
 
         modeManager.register (Modes.DEVICE_PARAMS, new DeviceParamsMode (surface, this.model));
         modeManager.register (Modes.DEVICE_CHAINS, new DeviceChainsMode (surface, this.model));
-        modeManager.register (Modes.DEVICE_LAYER, new DeviceLayerMode ("Layer", surface, this.model));
+        modeManager.register (Modes.DEVICE_LAYER, new DeviceLayerMode (surface, this.model));
         modeManager.register (Modes.DEVICE_LAYER_VOLUME, new DeviceLayerModeVolume (surface, this.model));
         modeManager.register (Modes.DEVICE_LAYER_PAN, new DeviceLayerModePan (surface, this.model));
 
         for (int i = 0; i < 8; i++)
             modeManager.register (Modes.get (Modes.DEVICE_LAYER_SEND1, i), new DeviceLayerModeSend (surface, this.model, i));
 
-        modeManager.register (Modes.DEVICE_LAYER_DETAILS, new LayerDetailsMode (surface, this.model));
+        modeManager.register (Modes.DEVICE_LAYER_DETAILS, new DeviceLayerDetailsMode (surface, this.model));
         modeManager.register (Modes.BROWSER, new DeviceBrowserMode (surface, this.model));
 
         modeManager.register (Modes.CLIP, new ClipMode (surface, this.model));

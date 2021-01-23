@@ -10,8 +10,8 @@ import de.mossgrabers.framework.controller.display.ITextDisplay;
 import de.mossgrabers.framework.daw.IModel;
 import de.mossgrabers.framework.daw.data.IParameter;
 import de.mossgrabers.framework.daw.data.bank.IParameterBank;
-import de.mossgrabers.framework.parameterprovider.BankParameterProvider;
-import de.mossgrabers.framework.parameterprovider.RangeFilterParameterProvider;
+import de.mossgrabers.framework.parameterprovider.device.BankParameterProvider;
+import de.mossgrabers.framework.parameterprovider.special.RangeFilterParameterProvider;
 import de.mossgrabers.framework.utils.StringUtils;
 
 
@@ -20,7 +20,7 @@ import de.mossgrabers.framework.utils.StringUtils;
  *
  * @author J&uuml;rgen Mo&szlig;graber
  */
-public class UserMode extends BaseMode
+public class UserMode extends BaseMode<IParameter>
 {
     /**
      * Constructor.
@@ -33,7 +33,7 @@ public class UserMode extends BaseMode
         super ("User Parameters", surface, model, model.getUserParameterBank ());
 
         final int surfaceID = surface.getSurfaceID ();
-        this.setParameters (new RangeFilterParameterProvider (new BankParameterProvider (model.getUserParameterBank ()), surfaceID * 8, 8));
+        this.setParameterProvider (new RangeFilterParameterProvider (new BankParameterProvider (model.getUserParameterBank ()), surfaceID * 8, 8));
     }
 
 
@@ -43,15 +43,6 @@ public class UserMode extends BaseMode
     {
         final int extenderOffset = this.surface.getExtenderOffset ();
         this.model.getUserParameterBank ().getItem (extenderOffset + index).changeValue (value);
-    }
-
-
-    /** {@inheritDoc} */
-    @Override
-    public int getKnobValue (final int index)
-    {
-        final int param = this.surface.getExtenderOffset () + index;
-        return this.model.getUserParameterBank ().getItem (param).getValue ();
     }
 
 

@@ -13,16 +13,17 @@ import de.mossgrabers.framework.daw.IModel;
 import de.mossgrabers.framework.daw.data.IItem;
 import de.mossgrabers.framework.daw.data.bank.IBank;
 import de.mossgrabers.framework.featuregroup.AbstractMode;
-import de.mossgrabers.framework.parameterprovider.IParameterProvider;
 import de.mossgrabers.framework.utils.ButtonEvent;
 
 
 /**
  * Base class for all modes used by SLMkIII.
  *
+ * @param <B> The type of the item bank
+ * 
  * @author J&uuml;rgen Mo&szlig;graber
  */
-public abstract class BaseMode extends AbstractMode<SLMkIIIControlSurface, SLMkIIIConfiguration>
+public abstract class BaseMode<B extends IItem> extends AbstractMode<SLMkIIIControlSurface, SLMkIIIConfiguration, B>
 {
     protected static final int SCROLL_RATE     = 8;
 
@@ -50,18 +51,9 @@ public abstract class BaseMode extends AbstractMode<SLMkIIIControlSurface, SLMkI
      * @param model The model
      * @param bank The parameter bank to control with this mode, might be null
      */
-    public BaseMode (final String name, final SLMkIIIControlSurface surface, final IModel model, final IBank<? extends IItem> bank)
+    public BaseMode (final String name, final SLMkIIIControlSurface surface, final IModel model, final IBank<B> bank)
     {
         super (name, surface, model, false, bank, DEFAULT_KNOB_IDS);
-    }
-
-
-    /** {@inheritDoc} */
-    @Override
-    public int getKnobValue (final int index)
-    {
-        final IParameterProvider parameterProvider = this.getParameterProvider ();
-        return parameterProvider == null ? 0 : parameterProvider.get (index).getValue ();
     }
 
 

@@ -15,6 +15,7 @@ import de.mossgrabers.framework.daw.IModel;
 import de.mossgrabers.framework.daw.INoteClip;
 import de.mossgrabers.framework.daw.IStepInfo;
 import de.mossgrabers.framework.daw.constants.Capability;
+import de.mossgrabers.framework.daw.data.IItem;
 import de.mossgrabers.framework.scale.Scales;
 import de.mossgrabers.framework.utils.StringUtils;
 
@@ -24,7 +25,7 @@ import de.mossgrabers.framework.utils.StringUtils;
  *
  * @author J&uuml;rgen Mo&szlig;graber
  */
-public class NoteMode extends BaseMode
+public class NoteMode extends BaseMode<IItem>
 {
     private final IHost host;
 

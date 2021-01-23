@@ -13,7 +13,7 @@ import de.mossgrabers.framework.daw.data.ICursorDevice;
 import de.mossgrabers.framework.daw.data.IParameter;
 import de.mossgrabers.framework.daw.data.bank.IParameterPageBank;
 import de.mossgrabers.framework.featuregroup.AbstractMode;
-import de.mossgrabers.framework.parameterprovider.BankParameterProvider;
+import de.mossgrabers.framework.parameterprovider.device.BankParameterProvider;
 
 import java.util.List;
 import java.util.function.BooleanSupplier;
@@ -28,7 +28,7 @@ import java.util.function.BooleanSupplier;
  *
  * @author J&uuml;rgen Mo&szlig;graber
  */
-public class ParameterMode<S extends IControlSurface<C>, C extends Configuration> extends AbstractMode<S, C>
+public class ParameterMode<S extends IControlSurface<C>, C extends Configuration> extends AbstractMode<S, C, IParameter>
 {
     protected final ICursorDevice cursorDevice;
 
@@ -96,7 +96,7 @@ public class ParameterMode<S extends IControlSurface<C>, C extends Configuration
         this.cursorDevice = this.model.getCursorDevice ();
 
         if (controls != null)
-            this.setParameters (new BankParameterProvider (this.cursorDevice.getParameterBank ()));
+            this.setParameterProvider (new BankParameterProvider (this.cursorDevice.getParameterBank ()));
     }
 
 

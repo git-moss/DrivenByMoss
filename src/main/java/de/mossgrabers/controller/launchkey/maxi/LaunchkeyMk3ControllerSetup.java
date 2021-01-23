@@ -342,7 +342,8 @@ public class LaunchkeyMk3ControllerSetup extends AbstractControllerSetup<Launchk
         final ViewMultiSelectCommand<LaunchkeyMk3ControlSurface, LaunchkeyMk3Configuration> viewSelectCommand = new ViewMultiSelectCommand<> (this.model, surface, true, view);
         this.addButton (surface, buttonID, label, (event, velocity) -> {
             viewSelectCommand.executeNormal (event);
-            surface.getPadGrid ().setView (view);
+            if (event == ButtonEvent.DOWN)
+                surface.getPadGrid ().setView (view);
         }, 15, LaunchkeyMk3ControlSurface.LAUNCHKEY_VIEW_SELECT, viewIndex, false, null);
         final IHwLight light = surface.createLight (outputID, () -> surface.getViewManager ().isActive (view) ? ColorEx.ORANGE : ColorEx.DARK_ORANGE, color -> {
             // Intentionally empty

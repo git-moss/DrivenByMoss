@@ -601,6 +601,6 @@ public class KontrolProtocolControllerSetup extends AbstractControllerSetup<Kont
     private int getKnobValue (final int continuousMidiControl)
     {
         final IMode mode = this.getSurface ().getModeManager ().getActive ();
-        return mode == null ? 0 : mode.getKnobValue (continuousMidiControl);
+        return mode == null ? 0 : Math.max (0, mode.getKnobValue (continuousMidiControl));
     }
 }

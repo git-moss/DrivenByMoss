@@ -67,6 +67,7 @@ import de.mossgrabers.framework.controller.valuechanger.DefaultValueChanger;
 import de.mossgrabers.framework.daw.IHost;
 import de.mossgrabers.framework.daw.ITransport;
 import de.mossgrabers.framework.daw.ModelSetup;
+import de.mossgrabers.framework.daw.data.IParameter;
 import de.mossgrabers.framework.daw.data.ITrack;
 import de.mossgrabers.framework.daw.data.bank.IParameterBank;
 import de.mossgrabers.framework.daw.data.bank.ITrackBank;
@@ -149,8 +150,6 @@ public class APCControllerSetup extends AbstractControllerSetup<APCControlSurfac
                 "B040??" /* Sustainpedal */);
         final APCControlSurface surface = new APCControlSurface (this.host, this.colorManager, this.configuration, output, input, this.isMkII);
         this.surfaces.add (surface);
-        for (int i = 0; i < 8; i++)
-            surface.setLED (APCControlSurface.APC_KNOB_DEVICE_KNOB_LED_1 + i, 1);
     }
 
 
@@ -675,10 +674,9 @@ public class APCControllerSetup extends AbstractControllerSetup<APCControlSurfac
         if (!trackExists)
             return 0;
 
-        final String crossfadeMode = track.getCrossfadeMode ();
+        final String crossfadeMode = track.getCrossfadeParameter ().getDisplayedValue ();
         if ("AB".equals (crossfadeMode))
             return 0;
-
         return "A".equals (crossfadeMode) ? 1 : 2;
     }
 
@@ -708,7 +706,11 @@ public class APCControllerSetup extends AbstractControllerSetup<APCControlSurfac
 
         final IParameterBank parameterBank = this.model.getCursorDevice ().getParameterBank ();
         for (int i = 0; i < 8; i++)
-            surface.setLED (APCControlSurface.APC_KNOB_DEVICE_KNOB_1 + i, parameterBank.getItem (i).getValue ());
+        {
+            final IParameter item = parameterBank.getItem (i);
+            surface.setLED (APCControlSurface.APC_KNOB_DEVICE_KNOB_LED_1 + i, item.doesExist () ? APCControlSurface.LED_MODE_SINGLE : APCControlSurface.LED_MODE_VOLUME);
+            surface.setLED (APCControlSurface.APC_KNOB_DEVICE_KNOB_1 + i, item.doesExist () ? item.getValue () : 0);
+        }
     }
 
 
@@ -772,19 +774,19 @@ public class APCControllerSetup extends AbstractControllerSetup<APCControlSurfac
             case APCControlSurface.APC_BUTTON_TRACK_SELECTION:
                 if (isShift)
                     return index == clipLength;
+
                 final ITrack selTrack = tb.getSelectedItem ();
                 final int selIndex = selTrack == null ? -1 : selTrack.getIndex ();
-                if (surface.isMkII ())
+
+                // Handle user mode selection
+                if (surface.isMkII () && surface.isPressed (ButtonID.SEND2))
                 {
-                    // Handle user mode selection
-                    if (surface.isPressed (ButtonID.SEND2))
-                    {
-                        final IParameterBank userParameterBank = this.model.getUserParameterBank ();
-                        final int pageSize = userParameterBank.getPageSize ();
-                        final int selectedPage = userParameterBank.getScrollPosition () / pageSize;
-                        return selectedPage == index;
-                    }
+                    final IParameterBank userParameterBank = this.model.getUserParameterBank ();
+                    final int pageSize = userParameterBank.getPageSize ();
+                    final int selectedPage = userParameterBank.getScrollPosition () / pageSize;
+                    return selectedPage == index;
                 }
+
                 // Handle send mode selection
                 return surface.isPressed (ButtonID.SEND1) ? modeManager.isActive (Modes.get (Modes.SEND1, index)) : index == selIndex;
 

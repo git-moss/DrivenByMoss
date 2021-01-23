@@ -14,14 +14,17 @@ import de.mossgrabers.framework.daw.data.ITrack;
 import de.mossgrabers.framework.daw.data.bank.IBank;
 import de.mossgrabers.framework.daw.data.bank.ITrackBank;
 import de.mossgrabers.framework.featuregroup.AbstractMode;
+import de.mossgrabers.framework.parameterprovider.IParameterProvider;
 
 
 /**
  * Base mode for all Kontrol 1 modes.
  *
+ * @param <B> The type of the item bank
+ * 
  * @author J&uuml;rgen Mo&szlig;graber
  */
-public abstract class AbstractKontrol1Mode extends AbstractMode<Kontrol1ControlSurface, Kontrol1Configuration> implements IKontrol1Mode
+public abstract class AbstractKontrol1Mode<B extends IItem> extends AbstractMode<Kontrol1ControlSurface, Kontrol1Configuration, B> implements IKontrol1Mode
 {
     /**
      * Constructor.
@@ -44,9 +47,21 @@ public abstract class AbstractKontrol1Mode extends AbstractMode<Kontrol1ControlS
      * @param model The model
      * @param bank The bank
      */
-    public AbstractKontrol1Mode (final String name, final Kontrol1ControlSurface surface, final IModel model, final IBank<? extends IItem> bank)
+    public AbstractKontrol1Mode (final String name, final Kontrol1ControlSurface surface, final IModel model, final IBank<B> bank)
     {
         super (name, surface, model, false, bank, DEFAULT_KNOB_IDS);
+    }
+
+
+    /** {@inheritDoc} */
+    @Override
+    public void onKnobValue (final int index, final int value)
+    {
+        // Note: this implementation uses USB and there is no Bitwig HW support for audio process
+        // mapping!
+        final IParameterProvider parameterProvider = this.getParameterProvider ();
+        if (parameterProvider != null)
+            parameterProvider.get (index).changeValue (value);
     }
 
 

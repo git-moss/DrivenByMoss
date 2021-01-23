@@ -5,7 +5,6 @@
 package de.mossgrabers.controller.push.mode.track;
 
 import de.mossgrabers.controller.push.controller.PushControlSurface;
-import de.mossgrabers.framework.controller.ButtonID;
 import de.mossgrabers.framework.controller.display.Format;
 import de.mossgrabers.framework.controller.display.IGraphicDisplay;
 import de.mossgrabers.framework.controller.display.ITextDisplay;
@@ -15,7 +14,7 @@ import de.mossgrabers.framework.daw.data.ISend;
 import de.mossgrabers.framework.daw.data.ITrack;
 import de.mossgrabers.framework.daw.data.bank.ITrackBank;
 import de.mossgrabers.framework.graphics.canvas.utils.SendData;
-import de.mossgrabers.framework.parameterprovider.SendParameterProvider;
+import de.mossgrabers.framework.parameterprovider.track.SendParameterProvider;
 import de.mossgrabers.framework.utils.Pair;
 
 
@@ -42,26 +41,7 @@ public class SendMode extends AbstractTrackMode
 
         this.sendIndex = sendIndex;
 
-        this.setParameters (new SendParameterProvider (model, this.sendIndex));
-    }
-
-
-    /** {@inheritDoc} */
-    @Override
-    public void onKnobTouch (final int index, final boolean isTouched)
-    {
-        this.isKnobTouched[index] = isTouched;
-
-        final ITrack t = this.model.getCurrentTrackBank ().getItem (index);
-        final ISend send = t.getSendBank ().getItem (this.sendIndex);
-        if (isTouched && this.surface.isDeletePressed ())
-        {
-            this.surface.setTriggerConsumed (ButtonID.DELETE);
-            send.resetValue ();
-        }
-
-        send.touchValue (isTouched);
-        this.checkStopAutomationOnKnobRelease (isTouched);
+        this.setParameterProvider (new SendParameterProvider (model, this.sendIndex));
     }
 
 

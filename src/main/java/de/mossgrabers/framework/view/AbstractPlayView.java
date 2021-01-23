@@ -49,7 +49,7 @@ public abstract class AbstractPlayView<S extends IControlSurface<C>, C extends C
      */
     public AbstractPlayView (final S surface, final IModel model, final boolean useTrackColor)
     {
-        this (Views.VIEW_NAME_PLAY, surface, model, useTrackColor);
+        this (Views.NAME_PLAY, surface, model, useTrackColor);
     }
 
 

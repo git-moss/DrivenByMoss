@@ -289,7 +289,7 @@ public class ShiftView extends AbstractView<LaunchpadControlSurface, LaunchpadCo
                 this.mvHelper.delayDisplay ( () -> "Metronome: " + (this.model.getTransport ().isMetronomeOn () ? "On" : "Off"));
                 break;
             case 93:
-                this.executeShifted (ButtonID.METRONOME, ButtonEvent.DOWN);
+                this.executeShifted (ButtonID.METRONOME, ButtonEvent.UP);
                 this.surface.getDisplay ().notify ("Tap Tempo");
                 break;
             case 84:
@@ -435,18 +435,16 @@ public class ShiftView extends AbstractView<LaunchpadControlSurface, LaunchpadCo
     }
 
 
-    @SuppressWarnings("rawtypes")
     private void executeNormal (final ButtonID buttonID, final ButtonEvent event)
     {
         final IHwButton button = this.surface.getButton (buttonID);
-        ((AbstractTriggerCommand) button.getCommand ()).executeNormal (event);
+        ((AbstractTriggerCommand<?, ?>) button.getCommand ()).executeNormal (event);
     }
 
 
-    @SuppressWarnings("rawtypes")
     private void executeShifted (final ButtonID buttonID, final ButtonEvent event)
     {
         final IHwButton button = this.surface.getButton (buttonID);
-        ((AbstractTriggerCommand) button.getCommand ()).executeShifted (event);
+        ((AbstractTriggerCommand<?, ?>) button.getCommand ()).executeShifted (event);
     }
 }

@@ -348,14 +348,14 @@ public class SLMkIIIControllerSetup extends AbstractControllerSetup<SLMkIIIContr
                 final IMode mode = modeManager.getActive ();
                 if (mode == null)
                     return 0;
-                final int value = mode.getKnobValue (index);
+                final int value = Math.max (0, mode.getKnobValue (index));
                 return this.valueChanger.toMidiValue (value);
 
             }, color -> surface.setTrigger (SLMkIIIControlSurface.MKIII_KNOB_1 + index, color), state -> {
 
                 // On the device, the send value is displayed on the display as a knob
                 // On the simulation GUI represent it as a dimmed color of the mode
-                final BaseMode mode = (BaseMode) modeManager.getActive ();
+                final BaseMode<?> mode = (BaseMode<?>) modeManager.getActive ();
                 if (mode == null)
                     return ColorEx.BLACK;
                 final ColorEx c = this.colorManager.getColor (mode.getModeColor (), null);

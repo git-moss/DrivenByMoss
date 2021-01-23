@@ -10,7 +10,7 @@ import de.mossgrabers.framework.controller.IControlSurface;
 import de.mossgrabers.framework.daw.IModel;
 import de.mossgrabers.framework.daw.data.ISend;
 import de.mossgrabers.framework.daw.data.ITrack;
-import de.mossgrabers.framework.parameterprovider.ChannelParameterProvider;
+import de.mossgrabers.framework.parameterprovider.track.SelectedTrackParameterProvider;
 
 import java.util.List;
 
@@ -23,7 +23,7 @@ import java.util.List;
  *
  * @author J&uuml;rgen Mo&szlig;graber
  */
-public class TrackMode<S extends IControlSurface<C>, C extends Configuration> extends AbstractTrackMode<S, C>
+public class TrackMode<S extends IControlSurface<C>, C extends Configuration> extends DefaultTrackMode<S, C>
 {
     /**
      * Constructor.
@@ -69,7 +69,7 @@ public class TrackMode<S extends IControlSurface<C>, C extends Configuration> ex
         super (name, surface, model, isAbsolute, controls);
 
         if (controls != null)
-            this.setParameters (new ChannelParameterProvider (model));
+            this.setParameterProvider (new SelectedTrackParameterProvider (model));
     }
 
 

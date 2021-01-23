@@ -7,14 +7,14 @@ package de.mossgrabers.controller.push.mode.track;
 import de.mossgrabers.controller.push.PushConfiguration;
 import de.mossgrabers.controller.push.controller.Push1Display;
 import de.mossgrabers.controller.push.controller.PushControlSurface;
-import de.mossgrabers.framework.controller.ButtonID;
 import de.mossgrabers.framework.controller.display.AbstractGraphicDisplay;
 import de.mossgrabers.framework.controller.display.IGraphicDisplay;
 import de.mossgrabers.framework.controller.display.ITextDisplay;
 import de.mossgrabers.framework.daw.IModel;
 import de.mossgrabers.framework.daw.data.ITrack;
 import de.mossgrabers.framework.daw.data.bank.ITrackBank;
-import de.mossgrabers.framework.parameterprovider.VolumeParameterProvider;
+import de.mossgrabers.framework.mode.Modes;
+import de.mossgrabers.framework.parameterprovider.track.VolumeParameterProvider;
 
 
 /**
@@ -32,31 +32,9 @@ public class VolumeMode extends AbstractTrackMode
      */
     public VolumeMode (final PushControlSurface surface, final IModel model)
     {
-        super ("Volume", surface, model);
+        super (Modes.NAME_VOLUME, surface, model);
 
-        this.setParameters (new VolumeParameterProvider (model));
-    }
-
-
-    /** {@inheritDoc} */
-    @Override
-    public void onKnobTouch (final int index, final boolean isTouched)
-    {
-        this.isKnobTouched[index] = isTouched;
-
-        final ITrackBank tb = this.model.getCurrentTrackBank ();
-        final ITrack t = tb.getItem (index);
-        if (!t.doesExist ())
-            return;
-
-        if (isTouched && this.surface.isDeletePressed ())
-        {
-            this.surface.setTriggerConsumed (ButtonID.DELETE);
-            t.resetVolume ();
-        }
-
-        t.touchVolume (isTouched);
-        this.checkStopAutomationOnKnobRelease (isTouched);
+        this.setParameterProvider (new VolumeParameterProvider (model));
     }
 
 

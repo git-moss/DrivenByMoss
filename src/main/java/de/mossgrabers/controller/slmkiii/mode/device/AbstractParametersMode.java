@@ -19,9 +19,11 @@ import de.mossgrabers.framework.mode.Modes;
 /**
  * Base Mode for editing device remote control parameters and user parameters.
  *
+ * @param <B> The type of the item bank
+ *
  * @author J&uuml;rgen Mo&szlig;graber
  */
-public abstract class AbstractParametersMode extends BaseMode
+public abstract class AbstractParametersMode<B extends IItem> extends BaseMode<B>
 {
     private static final String [] MODE_MENU =
     {
@@ -44,7 +46,7 @@ public abstract class AbstractParametersMode extends BaseMode
      * @param model The model
      * @param bank The parameter bank to control with this mode, might be null
      */
-    public AbstractParametersMode (final String name, final SLMkIIIControlSurface surface, final IModel model, final IBank<? extends IItem> bank)
+    public AbstractParametersMode (final String name, final SLMkIIIControlSurface surface, final IModel model, final IBank<B> bank)
     {
         super (name, surface, model, bank);
     }

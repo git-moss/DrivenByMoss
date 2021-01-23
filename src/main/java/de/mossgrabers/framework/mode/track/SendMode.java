@@ -11,7 +11,7 @@ import de.mossgrabers.framework.controller.IControlSurface;
 import de.mossgrabers.framework.daw.IModel;
 import de.mossgrabers.framework.daw.data.ISend;
 import de.mossgrabers.framework.daw.data.ITrack;
-import de.mossgrabers.framework.parameterprovider.SendParameterProvider;
+import de.mossgrabers.framework.parameterprovider.track.SendParameterProvider;
 
 import java.util.List;
 import java.util.function.BooleanSupplier;
@@ -26,7 +26,7 @@ import java.util.function.BooleanSupplier;
  *
  * @author J&uuml;rgen Mo&szlig;graber
  */
-public class SendMode<S extends IControlSurface<C>, C extends Configuration> extends AbstractTrackMode<S, C>
+public class SendMode<S extends IControlSurface<C>, C extends Configuration> extends DefaultTrackMode<S, C>
 {
     protected int sendIndex;
 
@@ -81,7 +81,7 @@ public class SendMode<S extends IControlSurface<C>, C extends Configuration> ext
         this.sendIndex = sendIndex;
 
         if (controls != null)
-            this.setParameters (new SendParameterProvider (model, sendIndex));
+            this.setParameterProvider (new SendParameterProvider (model, sendIndex));
     }
 
 

@@ -9,6 +9,7 @@ import de.mossgrabers.controller.launchkey.maxi.controller.LaunchkeyMk3ControlSu
 import de.mossgrabers.controller.launchkey.maxi.controller.LaunchkeyMk3Display;
 import de.mossgrabers.framework.controller.display.ITextDisplay;
 import de.mossgrabers.framework.daw.IModel;
+import de.mossgrabers.framework.daw.data.IItem;
 import de.mossgrabers.framework.featuregroup.AbstractMode;
 
 
@@ -17,7 +18,7 @@ import de.mossgrabers.framework.featuregroup.AbstractMode;
  *
  * @author J&uuml;rgen Mo&szlig;graber
  */
-public class CustomMode extends AbstractMode<LaunchkeyMk3ControlSurface, LaunchkeyMk3Configuration>
+public class CustomMode extends AbstractMode<LaunchkeyMk3ControlSurface, LaunchkeyMk3Configuration, IItem>
 {
     private final int number;
 

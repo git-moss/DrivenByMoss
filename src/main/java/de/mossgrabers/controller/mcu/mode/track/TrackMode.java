@@ -10,8 +10,8 @@ import de.mossgrabers.framework.daw.IModel;
 import de.mossgrabers.framework.daw.data.ISend;
 import de.mossgrabers.framework.daw.data.ITrack;
 import de.mossgrabers.framework.daw.data.bank.ISendBank;
-import de.mossgrabers.framework.parameterprovider.ChannelParameterProvider;
-import de.mossgrabers.framework.parameterprovider.RangeFilterParameterProvider;
+import de.mossgrabers.framework.parameterprovider.special.RangeFilterParameterProvider;
+import de.mossgrabers.framework.parameterprovider.track.SelectedTrackParameterProvider;
 import de.mossgrabers.framework.utils.StringUtils;
 
 
@@ -33,31 +33,9 @@ public class TrackMode extends AbstractTrackMode
         super ("Track", surface, model);
 
         if (surface.getConfiguration ().shouldPinFXTracksToLastController () && surface.isLastDevice ())
-            this.setParameters (new RangeFilterParameterProvider (new ChannelParameterProvider (model.getEffectTrackBank ()), 0, 8));
+            this.setParameterProvider (new RangeFilterParameterProvider (new SelectedTrackParameterProvider (model.getEffectTrackBank ()), 0, 8));
         else
-            this.setParameters (new RangeFilterParameterProvider (new ChannelParameterProvider (model), 0, 8));
-    }
-
-
-    /** {@inheritDoc} */
-    @Override
-    public int getKnobValue (final int index)
-    {
-        final ITrack selectedTrack = this.getSelectedTrack ();
-        if (selectedTrack == null)
-            return 0;
-
-        switch (index)
-        {
-            case 0:
-                return selectedTrack.getVolume ();
-
-            case 1:
-                return selectedTrack.getPan ();
-
-            default:
-                return this.model.isEffectTrackBankActive () ? 0 : selectedTrack.getSendBank ().getItem (index - 2).getValue ();
-        }
+            this.setParameterProvider (new RangeFilterParameterProvider (new SelectedTrackParameterProvider (model), 0, 8));
     }
 
 

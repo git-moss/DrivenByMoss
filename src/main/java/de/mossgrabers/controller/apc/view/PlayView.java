@@ -29,7 +29,7 @@ public class PlayView extends AbstractPlayView<APCControlSurface, APCConfigurati
      */
     public PlayView (final APCControlSurface surface, final IModel model)
     {
-        super (Views.VIEW_NAME_PLAY, surface, model, surface.isMkII ());
+        super (Views.NAME_PLAY, surface, model, surface.isMkII ());
     }
 
 

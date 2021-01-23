@@ -33,7 +33,7 @@ public class PlayView extends AbstractPlayView<BeatstepControlSurface, BeatstepC
      */
     public PlayView (final BeatstepControlSurface surface, final IModel model)
     {
-        super (Views.VIEW_NAME_PLAY, surface, model, false);
+        super (Views.NAME_PLAY, surface, model, false);
         this.extensions = new TrackEditing (surface, model);
     }
 

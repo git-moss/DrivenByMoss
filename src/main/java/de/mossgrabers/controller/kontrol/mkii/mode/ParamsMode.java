@@ -12,11 +12,10 @@ import de.mossgrabers.framework.controller.valuechanger.IValueChanger;
 import de.mossgrabers.framework.daw.IModel;
 import de.mossgrabers.framework.daw.data.IParameter;
 import de.mossgrabers.framework.daw.data.bank.IDeviceBank;
-import de.mossgrabers.framework.daw.data.bank.IParameterBank;
 import de.mossgrabers.framework.daw.data.bank.IParameterPageBank;
 import de.mossgrabers.framework.mode.device.ParameterMode;
-import de.mossgrabers.framework.parameterprovider.BankParameterProvider;
-import de.mossgrabers.framework.parameterprovider.CombinedParameterProvider;
+import de.mossgrabers.framework.parameterprovider.device.BankParameterProvider;
+import de.mossgrabers.framework.parameterprovider.special.CombinedParameterProvider;
 
 import java.util.List;
 
@@ -41,7 +40,7 @@ public class ParamsMode extends ParameterMode<KontrolProtocolControlSurface, Kon
 
         this.setControls (controls);
         final BankParameterProvider pp = new BankParameterProvider (this.cursorDevice.getParameterBank ());
-        this.setParameters (new CombinedParameterProvider (pp, pp));
+        this.setParameterProvider (new CombinedParameterProvider (pp, pp));
     }
 
 
@@ -52,21 +51,20 @@ public class ParamsMode extends ParameterMode<KontrolProtocolControlSurface, Kon
         // Note: Since we need multiple value (more than 8), index is the MIDI CC of the knob
 
         final IValueChanger valueChanger = this.model.getValueChanger ();
-        final IParameterBank bank = (IParameterBank) this.getBank ();
 
         if (index >= KontrolProtocolControlSurface.KONTROL_TRACK_VOLUME && index < KontrolProtocolControlSurface.KONTROL_TRACK_VOLUME + 8)
         {
-            final IParameter parameter = bank.getItem (index - KontrolProtocolControlSurface.KONTROL_TRACK_VOLUME);
+            final IParameter parameter = this.bank.getItem (index - KontrolProtocolControlSurface.KONTROL_TRACK_VOLUME);
             return valueChanger.toMidiValue (parameter.getValue ());
         }
 
         if (index >= KontrolProtocolControlSurface.KONTROL_TRACK_PAN && index < KontrolProtocolControlSurface.KONTROL_TRACK_PAN + 8)
         {
-            final IParameter parameter = bank.getItem (index - KontrolProtocolControlSurface.KONTROL_TRACK_PAN);
+            final IParameter parameter = this.bank.getItem (index - KontrolProtocolControlSurface.KONTROL_TRACK_PAN);
             return valueChanger.toMidiValue (parameter.getValue ());
         }
 
-        final int scrollTracksState = (bank.canScrollBackwards () ? 1 : 0) + (bank.canScrollForwards () ? 2 : 0);
+        final int scrollTracksState = (this.bank.canScrollBackwards () ? 1 : 0) + (this.bank.canScrollForwards () ? 2 : 0);
 
         final IDeviceBank deviceBank = this.cursorDevice.getDeviceBank ();
         final int scrollScenesState = (deviceBank.canScrollBackwards () ? 1 : 0) + (deviceBank.canScrollForwards () ? 2 : 0);
@@ -91,7 +89,6 @@ public class ParamsMode extends ParameterMode<KontrolProtocolControlSurface, Kon
     public void updateDisplay ()
     {
         final IValueChanger valueChanger = this.model.getValueChanger ();
-        final IParameterBank bank = (IParameterBank) this.getBank ();
 
         final IParameterPageBank parameterPageBank = this.cursorDevice.getParameterPageBank ();
         final String selectedPage = parameterPageBank.getSelectedItem ();
@@ -99,7 +96,7 @@ public class ParamsMode extends ParameterMode<KontrolProtocolControlSurface, Kon
         final int [] vuData = new int [16];
         for (int i = 0; i < 8; i++)
         {
-            final IParameter parameter = bank.getItem (i);
+            final IParameter parameter = this.bank.getItem (i);
 
             // Track Available
             this.surface.sendKontrolTrackSysEx (KontrolProtocolControlSurface.KONTROL_TRACK_AVAILABLE, TrackType.GENERIC, i);

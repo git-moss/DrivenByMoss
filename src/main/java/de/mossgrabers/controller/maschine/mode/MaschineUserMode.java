@@ -18,7 +18,7 @@ import de.mossgrabers.framework.utils.StringUtils;
  *
  * @author J&uuml;rgen Mo&szlig;graber
  */
-public class MaschineUserMode extends AbstractMode<MaschineControlSurface, MaschineConfiguration>
+public class MaschineUserMode extends AbstractMode<MaschineControlSurface, MaschineConfiguration, IParameter>
 {
     private int selParam = 0;
 
@@ -44,7 +44,7 @@ public class MaschineUserMode extends AbstractMode<MaschineControlSurface, Masch
         // Row 1 & 2
         for (int i = 0; i < 8; i++)
         {
-            final IParameter param = (IParameter) this.bank.getItem (i);
+            final IParameter param = this.bank.getItem (i);
             String name = param.doesExist () ? StringUtils.shortenAndFixASCII (param.getName (), 6) : "";
             if (i == this.getSelectedParameter ())
                 name = ">" + name;

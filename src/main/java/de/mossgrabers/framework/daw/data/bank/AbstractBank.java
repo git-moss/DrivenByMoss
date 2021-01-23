@@ -46,6 +46,14 @@ public abstract class AbstractBank<T> implements IBank<T>
 
     /** {@inheritDoc} */
     @Override
+    public boolean hasExistingItems ()
+    {
+        return true;
+    }
+
+
+    /** {@inheritDoc} */
+    @Override
     public T getItem (final int index)
     {
         return this.items.get (index);

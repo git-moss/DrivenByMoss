@@ -14,11 +14,10 @@ import de.mossgrabers.framework.daw.IModel;
 import de.mossgrabers.framework.daw.data.ITrack;
 import de.mossgrabers.framework.daw.data.bank.ISceneBank;
 import de.mossgrabers.framework.daw.data.bank.ISlotBank;
-import de.mossgrabers.framework.daw.data.bank.ITrackBank;
 import de.mossgrabers.framework.mode.track.VolumeMode;
-import de.mossgrabers.framework.parameterprovider.CombinedParameterProvider;
-import de.mossgrabers.framework.parameterprovider.PanParameterProvider;
-import de.mossgrabers.framework.parameterprovider.VolumeParameterProvider;
+import de.mossgrabers.framework.parameterprovider.special.CombinedParameterProvider;
+import de.mossgrabers.framework.parameterprovider.track.PanParameterProvider;
+import de.mossgrabers.framework.parameterprovider.track.VolumeParameterProvider;
 
 import java.util.List;
 
@@ -42,7 +41,7 @@ public class MixerMode extends VolumeMode<KontrolProtocolControlSurface, Kontrol
         super (surface, model, false);
 
         this.setControls (controls);
-        this.setParameters (new CombinedParameterProvider (new VolumeParameterProvider (model), new PanParameterProvider (model)));
+        this.setParameterProvider (new CombinedParameterProvider (new VolumeParameterProvider (model), new PanParameterProvider (model)));
     }
 
 
@@ -53,29 +52,29 @@ public class MixerMode extends VolumeMode<KontrolProtocolControlSurface, Kontrol
         // Note: Since we need multiple value (more than 8), index is the MIDI CC of the knob
 
         final IValueChanger valueChanger = this.model.getValueChanger ();
-        final ITrackBank bank = (ITrackBank) this.getBank ();
 
         if (index >= KontrolProtocolControlSurface.KONTROL_TRACK_VOLUME && index < KontrolProtocolControlSurface.KONTROL_TRACK_VOLUME + 8)
         {
-            final ITrack track = bank.getItem (index - KontrolProtocolControlSurface.KONTROL_TRACK_VOLUME);
+            final ITrack track = this.bank.getItem (index - KontrolProtocolControlSurface.KONTROL_TRACK_VOLUME);
             return valueChanger.toMidiValue (track.getVolume ());
         }
 
         if (index >= KontrolProtocolControlSurface.KONTROL_TRACK_PAN && index < KontrolProtocolControlSurface.KONTROL_TRACK_PAN + 8)
         {
-            final ITrack track = bank.getItem (index - KontrolProtocolControlSurface.KONTROL_TRACK_PAN);
+            final ITrack track = this.bank.getItem (index - KontrolProtocolControlSurface.KONTROL_TRACK_PAN);
             return valueChanger.toMidiValue (track.getPan ());
         }
 
-        final ITrack selectedTrack = bank.getSelectedItem ();
-        final int scrollTracksState = (bank.canScrollBackwards () ? 1 : 0) + (bank.canScrollForwards () ? 2 : 0);
+        final ITrack selectedTrack = this.bank.getSelectedItem ();
+        final int scrollTracksState = (this.bank.canScrollBackwards () ? 1 : 0) + (this.bank.canScrollForwards () ? 2 : 0);
         int scrollClipsState = 0;
         if (selectedTrack != null)
         {
             final ISlotBank slotBank = selectedTrack.getSlotBank ();
             scrollClipsState = (slotBank.canScrollBackwards () ? 1 : 0) + (slotBank.canScrollForwards () ? 2 : 0);
         }
-        final ISceneBank sceneBank = bank.getSceneBank ();
+
+        final ISceneBank sceneBank = this.model.getSceneBank ();
         final int scrollScenesState = (sceneBank.canScrollBackwards () ? 1 : 0) + (sceneBank.canScrollForwards () ? 2 : 0);
 
         final KontrolProtocolConfiguration configuration = this.surface.getConfiguration ();
@@ -83,11 +82,15 @@ public class MixerMode extends VolumeMode<KontrolProtocolControlSurface, Kontrol
         switch (index)
         {
             case KontrolProtocolControlSurface.KONTROL_NAVIGATE_BANKS:
-                return (bank.canScrollPageBackwards () ? 1 : 0) + (bank.canScrollPageForwards () ? 2 : 0);
+                return (this.bank.canScrollPageBackwards () ? 1 : 0) + (this.bank.canScrollPageForwards () ? 2 : 0);
             case KontrolProtocolControlSurface.KONTROL_NAVIGATE_TRACKS:
-                return configuration.isFlipTrackClipNavigation () ? configuration.isFlipClipSceneNavigation () ? scrollScenesState : scrollClipsState : scrollTracksState;
+                if (configuration.isFlipTrackClipNavigation ())
+                    return configuration.isFlipClipSceneNavigation () ? scrollScenesState : scrollClipsState;
+                return scrollTracksState;
             case KontrolProtocolControlSurface.KONTROL_NAVIGATE_CLIPS:
-                return configuration.isFlipTrackClipNavigation () ? scrollTracksState : configuration.isFlipClipSceneNavigation () ? scrollScenesState : scrollClipsState;
+                if (configuration.isFlipTrackClipNavigation ())
+                    return scrollTracksState;
+                return configuration.isFlipClipSceneNavigation () ? scrollScenesState : scrollClipsState;
             default:
                 return 0;
         }
@@ -99,12 +102,11 @@ public class MixerMode extends VolumeMode<KontrolProtocolControlSurface, Kontrol
     public void updateDisplay ()
     {
         final IValueChanger valueChanger = this.model.getValueChanger ();
-        final ITrackBank bank = (ITrackBank) this.getBank ();
 
         final int [] vuData = new int [16];
         for (int i = 0; i < 8; i++)
         {
-            final ITrack track = bank.getItem (i);
+            final ITrack track = this.bank.getItem (i);
 
             // Track Available
             this.surface.sendKontrolTrackSysEx (KontrolProtocolControlSurface.KONTROL_TRACK_AVAILABLE, TrackType.toTrackType (track.getType ()), i);

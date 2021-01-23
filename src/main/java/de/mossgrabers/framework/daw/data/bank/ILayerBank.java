@@ -14,10 +14,5 @@ import de.mossgrabers.framework.daw.data.ILayer;
  */
 public interface ILayerBank extends IChannelBank<ILayer>
 {
-    /**
-     * Check if there is at least 1 existing layer.
-     *
-     * @return True if there are no layers
-     */
-    boolean hasZeroLayers ();
+    // Intentionally empty
 }

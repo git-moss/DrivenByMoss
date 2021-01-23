@@ -14,6 +14,7 @@ import de.mossgrabers.framework.daw.IBrowser;
 import de.mossgrabers.framework.daw.IModel;
 import de.mossgrabers.framework.daw.data.IBrowserColumn;
 import de.mossgrabers.framework.daw.data.IBrowserColumnItem;
+import de.mossgrabers.framework.daw.data.IItem;
 import de.mossgrabers.framework.utils.StringUtils;
 
 import java.util.Locale;
@@ -24,7 +25,7 @@ import java.util.Locale;
  *
  * @author J&uuml;rgen Mo&szlig;graber
  */
-public class BrowseMode extends AbstractKontrol1Mode
+public class BrowseMode extends AbstractKontrol1Mode<IItem>
 {
     /** No selection. */
     public static final int  SELECTION_OFF    = 0;

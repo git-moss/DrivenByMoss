@@ -28,6 +28,6 @@ public abstract class AbstractDrum8View<S extends IControlSurface<C>, C extends 
      */
     public AbstractDrum8View (final S surface, final IModel model, final boolean useDawColors)
     {
-        super (Views.VIEW_NAME_DRUM8, surface, model, 8, 8, useDawColors);
+        super (Views.NAME_DRUM8, surface, model, 8, 8, useDawColors);
     }
 }

@@ -11,7 +11,7 @@ import de.mossgrabers.framework.controller.IControlSurface;
 import de.mossgrabers.framework.daw.IModel;
 import de.mossgrabers.framework.daw.data.IParameter;
 import de.mossgrabers.framework.featuregroup.AbstractMode;
-import de.mossgrabers.framework.parameterprovider.BankParameterProvider;
+import de.mossgrabers.framework.parameterprovider.device.BankParameterProvider;
 
 import java.util.List;
 import java.util.function.BooleanSupplier;
@@ -25,7 +25,7 @@ import java.util.function.BooleanSupplier;
  *
  * @author J&uuml;rgen Mo&szlig;graber
  */
-public class UserMode<S extends IControlSurface<C>, C extends Configuration> extends AbstractMode<S, C>
+public class UserMode<S extends IControlSurface<C>, C extends Configuration> extends AbstractMode<S, C, IParameter>
 {
     /**
      * Constructor.
@@ -57,7 +57,7 @@ public class UserMode<S extends IControlSurface<C>, C extends Configuration> ext
     {
         super ("User Controls", surface, model, isAbsolute, model.getUserParameterBank (), knobs, isAlternativeFunction);
 
-        this.setParameters (new BankParameterProvider (model.getUserParameterBank ()));
+        this.setParameterProvider (new BankParameterProvider (model.getUserParameterBank ()));
     }
 
 

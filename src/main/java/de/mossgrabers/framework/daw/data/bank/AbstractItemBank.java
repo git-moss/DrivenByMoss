@@ -34,6 +34,19 @@ public abstract class AbstractItemBank<T extends IItem> extends AbstractBank<T>
 
     /** {@inheritDoc} */
     @Override
+    public boolean hasExistingItems ()
+    {
+        for (int i = 0; i < this.getPageSize (); i++)
+        {
+            if (this.getItem (i).doesExist ())
+                return true;
+        }
+        return false;
+    }
+
+
+    /** {@inheritDoc} */
+    @Override
     public T getSelectedItem ()
     {
         for (int i = 0; i < this.pageSize; i++)

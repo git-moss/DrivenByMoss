@@ -12,6 +12,7 @@ import de.mossgrabers.framework.daw.IModel;
 import de.mossgrabers.framework.daw.data.IBrowserColumn;
 import de.mossgrabers.framework.daw.data.IBrowserColumnItem;
 import de.mossgrabers.framework.daw.data.ICursorDevice;
+import de.mossgrabers.framework.daw.data.IItem;
 import de.mossgrabers.framework.utils.StringUtils;
 
 
@@ -20,7 +21,7 @@ import de.mossgrabers.framework.utils.StringUtils;
  *
  * @author J&uuml;rgen Mo&szlig;graber
  */
-public class DeviceBrowserMode extends BaseMode
+public class DeviceBrowserMode extends BaseMode<IItem>
 {
     private static final int SELECTION_OFF    = 0;
     private static final int SELECTION_PRESET = 1;

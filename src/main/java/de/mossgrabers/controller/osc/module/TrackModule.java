@@ -169,7 +169,7 @@ public class TrackModule extends AbstractModule
         final ColorEx color = track.getColor ();
         writer.sendOSCColor (trackAddress + TAG_COLOR, color.getRed (), color.getGreen (), color.getBlue (), dump);
 
-        final String crossfadeMode = track.getCrossfadeMode ();
+        final String crossfadeMode = track.getCrossfadeParameter ().getDisplayedValue ();
         writer.sendOSC (trackAddress + "crossfadeMode/A", "A".equals (crossfadeMode), dump);
         writer.sendOSC (trackAddress + "crossfadeMode/B", "B".equals (crossfadeMode), dump);
         writer.sendOSC (trackAddress + "crossfadeMode/AB", "AB".equals (crossfadeMode), dump);
@@ -332,7 +332,18 @@ public class TrackModule extends AbstractModule
                 break;
 
             case "crossfadeMode":
-                track.setCrossfadeMode (getSubCommand (path));
+                switch (getSubCommand (path))
+                {
+                    case "A":
+                        track.getCrossfadeParameter ().setNormalizedValue (0);
+                        break;
+                    case "B":
+                        track.getCrossfadeParameter ().setNormalizedValue (1);
+                        break;
+                    default:
+                        track.getCrossfadeParameter ().setNormalizedValue (0.5);
+                        break;
+                }
                 break;
 
             case TAG_SELECT:

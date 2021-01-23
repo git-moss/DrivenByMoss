@@ -26,7 +26,7 @@ import de.mossgrabers.framework.daw.data.bank.IParameterBank;
 import de.mossgrabers.framework.daw.data.bank.IParameterPageBank;
 import de.mossgrabers.framework.featuregroup.ModeManager;
 import de.mossgrabers.framework.mode.Modes;
-import de.mossgrabers.framework.parameterprovider.BankParameterProvider;
+import de.mossgrabers.framework.parameterprovider.device.BankParameterProvider;
 import de.mossgrabers.framework.utils.ButtonEvent;
 import de.mossgrabers.framework.utils.StringUtils;
 
@@ -36,7 +36,7 @@ import de.mossgrabers.framework.utils.StringUtils;
  *
  * @author J&uuml;rgen Mo&szlig;graber
  */
-public class DeviceParamsMode extends BaseMode
+public class DeviceParamsMode extends BaseMode<IParameter>
 {
     private static final String [] MENU     =
     {
@@ -64,7 +64,7 @@ public class DeviceParamsMode extends BaseMode
     {
         super ("Parameters", surface, model, model.getCursorDevice ().getParameterBank ());
 
-        this.setParameters (new BankParameterProvider (this.model.getCursorDevice ().getParameterBank ()));
+        this.setParameterProvider (new BankParameterProvider (this.model.getCursorDevice ().getParameterBank ()));
 
         this.setShowDevices (true);
 

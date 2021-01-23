@@ -18,7 +18,7 @@ import de.mossgrabers.framework.daw.data.IItem;
 import de.mossgrabers.framework.daw.data.IParameter;
 import de.mossgrabers.framework.featuregroup.AbstractFeatureGroup;
 import de.mossgrabers.framework.featuregroup.AbstractMode;
-import de.mossgrabers.framework.parameterprovider.BankParameterProvider;
+import de.mossgrabers.framework.parameterprovider.device.BankParameterProvider;
 import de.mossgrabers.framework.utils.ButtonEvent;
 import de.mossgrabers.framework.utils.StringUtils;
 
@@ -28,7 +28,7 @@ import de.mossgrabers.framework.utils.StringUtils;
  *
  * @author J&uuml;rgen Mo&szlig;graber
  */
-public class UserMode extends BaseMode
+public class UserMode extends BaseMode<IParameter>
 {
     /**
      * Constructor.
@@ -40,7 +40,7 @@ public class UserMode extends BaseMode
     {
         super ("User Controls", surface, model, model.getUserParameterBank ());
 
-        this.setParameters (new BankParameterProvider (model.getUserParameterBank ()));
+        this.setParameterProvider (new BankParameterProvider (this.bank));
     }
 
 
@@ -50,7 +50,7 @@ public class UserMode extends BaseMode
     {
         this.isKnobTouched[index] = isTouched;
 
-        final IParameter param = (IParameter) this.bank.getItem (index);
+        final IParameter param = this.bank.getItem (index);
         if (isTouched && this.surface.isDeletePressed ())
         {
             this.surface.setTriggerConsumed (ButtonID.DELETE);
@@ -106,7 +106,7 @@ public class UserMode extends BaseMode
         if (event != ButtonEvent.UP)
             return;
 
-        final IParameter param = (IParameter) this.bank.getItem (index);
+        final IParameter param = this.bank.getItem (index);
         if (!param.doesExist ())
             return;
 
@@ -125,7 +125,7 @@ public class UserMode extends BaseMode
         // Row 1 & 2
         for (int i = 0; i < 8; i++)
         {
-            final IParameter param = (IParameter) this.bank.getItem (i);
+            final IParameter param = this.bank.getItem (i);
             display.setCell (0, i, param.doesExist () ? StringUtils.fixASCII (param.getName ()) : "").setCell (1, i, param.getDisplayedValue (8));
         }
 
@@ -152,7 +152,7 @@ public class UserMode extends BaseMode
         {
             final boolean isBottomMenuOn = i == selectedPage;
 
-            final IParameter param = (IParameter) this.bank.getItem (i);
+            final IParameter param = this.bank.getItem (i);
             final boolean exists = param.doesExist ();
             final String parameterName = exists ? param.getName (9) : "";
             final int parameterValue = valueChanger.toDisplayValue (exists ? param.getValue () : 0);

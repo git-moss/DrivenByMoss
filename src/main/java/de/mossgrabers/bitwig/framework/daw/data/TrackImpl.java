@@ -9,6 +9,7 @@ import de.mossgrabers.bitwig.framework.daw.data.bank.SlotBankImpl;
 import de.mossgrabers.framework.controller.valuechanger.IValueChanger;
 import de.mossgrabers.framework.daw.IHost;
 import de.mossgrabers.framework.daw.constants.RecordQuantization;
+import de.mossgrabers.framework.daw.data.IParameter;
 import de.mossgrabers.framework.daw.data.ITrack;
 import de.mossgrabers.framework.daw.data.bank.ISlotBank;
 import de.mossgrabers.framework.daw.resource.ChannelType;
@@ -45,14 +46,7 @@ public class TrackImpl extends ChannelImpl implements ITrack
     private final Set<INoteObserver> noteObservers = new HashSet<> ();
     private final CursorTrack        cursorTrack;
     private final IHost              host;
-
-
-    private enum CrossfadeSetting
-    {
-        A,
-        AB,
-        B
-    }
+    private final IParameter         crossfadeParameter;
 
 
     /**
@@ -93,6 +87,7 @@ public class TrackImpl extends ChannelImpl implements ITrack
         this.isTopGroup = track.createParentTrack (0, 0).createEqualsValue (rootGroup);
         this.isTopGroup.markInterested ();
 
+        this.crossfadeParameter = new CrossfadeParameter (valueChanger, track, index);
         this.slotBank = new SlotBankImpl (host, valueChanger, this, track.clipLauncherSlotBank (), numScenes);
 
         Arrays.fill (this.noteCache, NOTE_OFF);
@@ -118,6 +113,14 @@ public class TrackImpl extends ChannelImpl implements ITrack
         Util.setIsSubscribed (this.track.playingNotes (), enable);
 
         this.slotBank.enableObservers (enable);
+    }
+
+
+    /** {@inheritDoc} */
+    @Override
+    public IParameter getCrossfadeParameter ()
+    {
+        return this.crossfadeParameter;
     }
 
 
@@ -261,77 +264,6 @@ public class TrackImpl extends ChannelImpl implements ITrack
     public boolean canHoldAudioData ()
     {
         return this.track.canHoldAudioData ().get ();
-    }
-
-
-    /** {@inheritDoc} */
-    @Override
-    public String getCrossfadeMode ()
-    {
-        return this.track.crossFadeMode ().get ();
-    }
-
-
-    /** {@inheritDoc} */
-    @Override
-    public void changeCrossfadeModeAsNumber (final int control)
-    {
-        this.setCrossfadeModeAsNumber (this.valueChanger.changeValue (control, this.getCrossfadeModeAsNumber (), -100, 3));
-    }
-
-
-    /** {@inheritDoc} */
-    @Override
-    public void setCrossfadeMode (final String mode)
-    {
-        this.track.crossFadeMode ().set (mode);
-    }
-
-
-    /** {@inheritDoc} */
-    @Override
-    public int getCrossfadeModeAsNumber ()
-    {
-        try
-        {
-            return CrossfadeSetting.valueOf (this.getCrossfadeMode ()).ordinal ();
-        }
-        catch (final IllegalArgumentException | NullPointerException ex)
-        {
-            return -1;
-        }
-    }
-
-
-    /** {@inheritDoc} */
-    @Override
-    public void setCrossfadeModeAsNumber (final int modeValue)
-    {
-        final CrossfadeSetting [] values = CrossfadeSetting.values ();
-        if (modeValue < values.length)
-            this.setCrossfadeMode (values[modeValue].name ());
-    }
-
-
-    /** {@inheritDoc} */
-    @Override
-    public void toggleCrossfadeMode ()
-    {
-        switch (this.getCrossfadeMode ())
-        {
-            case "A":
-                this.setCrossfadeMode ("B");
-                break;
-            case "B":
-                this.setCrossfadeMode ("AB");
-                break;
-            case "AB":
-                this.setCrossfadeMode ("A");
-                break;
-            default:
-                // Not possible
-                break;
-        }
     }
 
 

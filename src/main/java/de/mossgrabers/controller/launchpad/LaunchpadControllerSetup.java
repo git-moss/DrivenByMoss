@@ -31,7 +31,6 @@ import de.mossgrabers.controller.launchpad.definition.button.LaunchpadButtonInfo
 import de.mossgrabers.controller.launchpad.mode.RecArmMode;
 import de.mossgrabers.controller.launchpad.mode.SendMode;
 import de.mossgrabers.controller.launchpad.mode.StopClipMode;
-import de.mossgrabers.controller.launchpad.mode.TrackMode;
 import de.mossgrabers.controller.launchpad.view.BrowserView;
 import de.mossgrabers.controller.launchpad.view.ChordsView;
 import de.mossgrabers.controller.launchpad.view.DeviceView;
@@ -91,6 +90,7 @@ import de.mossgrabers.framework.featuregroup.ModeManager;
 import de.mossgrabers.framework.featuregroup.ViewManager;
 import de.mossgrabers.framework.mode.DummyMode;
 import de.mossgrabers.framework.mode.Modes;
+import de.mossgrabers.framework.mode.track.DefaultTrackMode;
 import de.mossgrabers.framework.mode.track.MuteMode;
 import de.mossgrabers.framework.mode.track.PanMode;
 import de.mossgrabers.framework.mode.track.SoloMode;
@@ -208,7 +208,7 @@ public class LaunchpadControllerSetup extends AbstractControllerSetup<LaunchpadC
         final LaunchpadControlSurface surface = this.getSurface ();
         final ModeManager modeManager = surface.getModeManager ();
         modeManager.register (Modes.REC_ARM, new RecArmMode (surface, this.model));
-        modeManager.register (Modes.TRACK_SELECT, new TrackMode (surface, this.model));
+        modeManager.register (Modes.TRACK_SELECT, new DefaultTrackMode<> (Modes.NAME_TRACK, surface, this.model, true));
         modeManager.register (Modes.MUTE, new MuteMode<> (surface, this.model));
         modeManager.register (Modes.SOLO, new SoloMode<> (surface, this.model));
         modeManager.register (Modes.VOLUME, new VolumeMode<> (surface, this.model, true));

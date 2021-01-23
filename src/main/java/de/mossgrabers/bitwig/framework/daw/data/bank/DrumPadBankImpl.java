@@ -22,7 +22,7 @@ import com.bitwig.extension.controller.api.DrumPadBank;
  *
  * @author J&uuml;rgen Mo&szlig;graber
  */
-public class DrumPadBankImpl extends AbstractChannelBankImpl<DrumPadBank, IDrumPad> implements IDrumPadBank
+public class DrumPadBankImpl extends AbstractChannelBankImpl<DrumPadBank, ILayer> implements IDrumPadBank
 {
     private int numDevices;
 
@@ -68,6 +68,22 @@ public class DrumPadBankImpl extends AbstractChannelBankImpl<DrumPadBank, IDrumP
             this.getItem (i).enableObservers (enable);
 
         Util.setIsSubscribed (this.bank.hasSoloedPads (), enable);
+    }
+
+
+    /** {@inheritDoc} */
+    @Override
+    public IDrumPad getItem (final int index)
+    {
+        return (IDrumPad) super.getItem (index);
+    }
+
+
+    /** {@inheritDoc} */
+    @Override
+    public IDrumPad getSelectedItem ()
+    {
+        return (IDrumPad) super.getSelectedItem ();
     }
 
 

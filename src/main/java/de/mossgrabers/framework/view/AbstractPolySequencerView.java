@@ -68,7 +68,7 @@ public abstract class AbstractPolySequencerView<S extends IControlSurface<C>, C 
      */
     public AbstractPolySequencerView (final S surface, final IModel model, final boolean useDawColors, final int numColumns, final int numRows, final int numSequencerRows)
     {
-        super (Views.VIEW_NAME_POLY_SEQUENCER, surface, model, 128, numSequencerRows * numColumns, useDawColors);
+        super (Views.NAME_POLY_SEQUENCER, surface, model, 128, numSequencerRows * numColumns, useDawColors);
 
         this.sequencerSteps = numSequencerRows * numColumns;
 

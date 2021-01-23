@@ -151,13 +151,19 @@ public class BrowserView extends AbstractView<LaunchkeyMk3ControlSurface, Launch
     {
         final IBrowser browser = this.model.getBrowser ();
         if (browser.isActive ())
-            browser.stopBrowsing (false);
-
-        final ICursorDevice cursorDevice = this.model.getCursorDevice ();
-        if (this.surface.isShiftPressed () || !cursorDevice.doesExist ())
-            browser.insertAfterCursorDevice ();
+        {
+            // Browser is already opened, normally this means the user opened it in Bitwig.
+            // Set the Navigation mode on the Launchkey
+            this.surface.getMidiOutput ().sendCCEx (15, LaunchkeyMk3ControlSurface.LAUNCHKEY_VIEW_SELECT, LaunchkeyMk3ControlSurface.PAD_MODE_NAVIGATION);
+        }
         else
-            browser.replace (cursorDevice);
+        {
+            final ICursorDevice cursorDevice = this.model.getCursorDevice ();
+            if (this.surface.isShiftPressed () || !cursorDevice.doesExist ())
+                browser.insertAfterCursorDevice ();
+            else
+                browser.replace (cursorDevice);
+        }
 
         super.onActivate ();
     }
@@ -176,8 +182,9 @@ public class BrowserView extends AbstractView<LaunchkeyMk3ControlSurface, Launch
         final Views activeID = viewManager.getActiveID ();
         if (activeID == Views.BROWSER)
         {
-            final Integer id = VIEW_COMMANDS.get (viewManager.getPreviousID ());
-            final int viewCommand = id == null ? LaunchkeyMk3ControlSurface.PAD_MODE_SESSION : id.intValue ();
+            final Views previousID = viewManager.getPreviousID ();
+            final Integer id = VIEW_COMMANDS.get (previousID);
+            final int viewCommand = id == null || previousID == Views.BROWSER ? LaunchkeyMk3ControlSurface.PAD_MODE_SESSION : id.intValue ();
             this.surface.getMidiOutput ().sendCCEx (15, LaunchkeyMk3ControlSurface.LAUNCHKEY_VIEW_SELECT, viewCommand);
         }
     }

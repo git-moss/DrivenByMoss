@@ -18,10 +18,11 @@ import de.mossgrabers.framework.daw.IModel;
 import de.mossgrabers.framework.daw.IProject;
 import de.mossgrabers.framework.daw.constants.Capability;
 import de.mossgrabers.framework.daw.data.IMasterTrack;
+import de.mossgrabers.framework.daw.data.ITrack;
 import de.mossgrabers.framework.daw.data.empty.EmptyParameter;
 import de.mossgrabers.framework.daw.resource.ChannelType;
 import de.mossgrabers.framework.featuregroup.AbstractFeatureGroup;
-import de.mossgrabers.framework.parameterprovider.FixedParameterProvider;
+import de.mossgrabers.framework.parameterprovider.special.FixedParameterProvider;
 import de.mossgrabers.framework.utils.ButtonEvent;
 
 
@@ -30,7 +31,7 @@ import de.mossgrabers.framework.utils.ButtonEvent;
  *
  * @author J&uuml;rgen Mo&szlig;graber
  */
-public class MasterMode extends BaseMode
+public class MasterMode extends BaseMode<ITrack>
 {
     /**
      * Constructor.
@@ -45,7 +46,7 @@ public class MasterMode extends BaseMode
 
         final IMasterTrack masterTrack = this.model.getMasterTrack ();
         final IProject project = this.model.getProject ();
-        this.setParameters (new FixedParameterProvider (masterTrack.getVolumeParameter (), masterTrack.getPanParameter (), project.getCueVolumeParameter (), project.getCueMixParameter (), EmptyParameter.INSTANCE, EmptyParameter.INSTANCE, EmptyParameter.INSTANCE, EmptyParameter.INSTANCE));
+        this.setParameterProvider (new FixedParameterProvider (masterTrack.getVolumeParameter (), masterTrack.getPanParameter (), project.getCueVolumeParameter (), project.getCueMixParameter (), EmptyParameter.INSTANCE, EmptyParameter.INSTANCE, EmptyParameter.INSTANCE, EmptyParameter.INSTANCE));
     }
 
 

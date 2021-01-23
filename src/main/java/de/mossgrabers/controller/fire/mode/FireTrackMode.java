@@ -16,7 +16,7 @@ import de.mossgrabers.framework.daw.data.ITrack;
 import de.mossgrabers.framework.daw.data.bank.ISendBank;
 import de.mossgrabers.framework.mode.Modes;
 import de.mossgrabers.framework.mode.track.TrackMode;
-import de.mossgrabers.framework.parameterprovider.ChannelParameterProvider;
+import de.mossgrabers.framework.parameterprovider.track.SelectedTrackParameterProvider;
 
 
 /**
@@ -57,7 +57,7 @@ public class FireTrackMode extends TrackMode<FireControlSurface, FireConfigurati
 
         this.setControls (ContinuousID.createSequentialList (ContinuousID.KNOB1, 4));
 
-        this.setParameters (new Fire4KnobProvider (surface, new ChannelParameterProvider (model)));
+        this.setParameterProvider (new Fire4KnobProvider (surface, new SelectedTrackParameterProvider (model)));
     }
 
 

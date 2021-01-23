@@ -13,8 +13,8 @@ import de.mossgrabers.framework.controller.color.ColorManager;
 import de.mossgrabers.framework.daw.IModel;
 import de.mossgrabers.framework.daw.data.ICursorDevice;
 import de.mossgrabers.framework.daw.data.IParameter;
-import de.mossgrabers.framework.daw.data.bank.IParameterBank;
-import de.mossgrabers.framework.parameterprovider.BankParameterProvider;
+import de.mossgrabers.framework.mode.Modes;
+import de.mossgrabers.framework.parameterprovider.device.BankParameterProvider;
 import de.mossgrabers.framework.utils.StringUtils;
 
 import java.util.Locale;
@@ -26,7 +26,7 @@ import java.util.Set;
  *
  * @author J&uuml;rgen Mo&szlig;graber
  */
-public class ParamsMode extends AbstractKontrol1Mode
+public class ParamsMode extends AbstractKontrol1Mode<IParameter>
 {
     private static final Set<Character> ILLEGAL_LOWER_CHARS = Set.of (Character.valueOf ('a'), Character.valueOf ('e'), Character.valueOf ('g'), Character.valueOf ('j'), Character.valueOf ('k'), Character.valueOf ('p'), Character.valueOf ('q'), Character.valueOf ('r'), Character.valueOf ('s'), Character.valueOf ('x'), Character.valueOf ('y'), Character.valueOf ('z'));
 
@@ -39,9 +39,9 @@ public class ParamsMode extends AbstractKontrol1Mode
      */
     public ParamsMode (final Kontrol1ControlSurface surface, final IModel model)
     {
-        super ("Parameters", surface, model, model.getCursorDevice ().getParameterBank ());
+        super (Modes.NAME_PARAMETERS, surface, model, model.getCursorDevice ().getParameterBank ());
 
-        this.setParameters (new BankParameterProvider (model.getCursorDevice ().getParameterBank ()));
+        this.setParameterProvider (new BankParameterProvider (this.bank));
     }
 
 
@@ -57,10 +57,9 @@ public class ParamsMode extends AbstractKontrol1Mode
             final ICursorDevice cursorDevice = this.model.getCursorDevice ();
             d.setCell (0, 0, cursorDevice.getName (8).toUpperCase (Locale.US)).setCell (1, 0, cursorDevice.getParameterPageBank ().getSelectedItem ().toUpperCase (Locale.US));
 
-            final IParameterBank parameterBank = cursorDevice.getParameterBank ();
             for (int i = 0; i < 8; i++)
             {
-                final IParameter p = parameterBank.getItem (i);
+                final IParameter p = this.bank.getItem (i);
                 final String name = StringUtils.shortenAndFixASCII (p.getName (8), 8).toUpperCase (Locale.US);
                 if (!name.isEmpty ())
                     d.setCell (0, 1 + i, name).setCell (1, 1 + i, checkForUpperCase (StringUtils.shortenAndFixASCII (p.getDisplayedValue (8), 8)));
@@ -96,20 +95,12 @@ public class ParamsMode extends AbstractKontrol1Mode
 
     /** {@inheritDoc} */
     @Override
-    public void onKnobValue (final int index, final int value)
-    {
-        this.model.getCursorDevice ().getParameterBank ().getItem (index).changeValue (value);
-    }
-
-
-    /** {@inheritDoc} */
-    @Override
     public void selectPreviousItem ()
     {
         if (this.surface.isShiftPressed ())
             this.model.getCursorDevice ().getParameterPageBank ().scrollBackwards ();
         else
-            this.model.getCursorDevice ().getParameterBank ().scrollBackwards ();
+            this.bank.scrollBackwards ();
     }
 
 
@@ -120,7 +111,7 @@ public class ParamsMode extends AbstractKontrol1Mode
         if (this.surface.isShiftPressed ())
             this.model.getCursorDevice ().getParameterPageBank ().scrollForwards ();
         else
-            this.model.getCursorDevice ().getParameterBank ().scrollForwards ();
+            this.bank.scrollForwards ();
     }
 
 

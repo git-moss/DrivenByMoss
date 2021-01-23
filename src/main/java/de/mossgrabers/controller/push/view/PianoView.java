@@ -28,7 +28,7 @@ public class PianoView extends PlayView
      */
     public PianoView (final PushControlSurface surface, final IModel model)
     {
-        super (Views.VIEW_NAME_PIANO, surface, model);
+        super (Views.NAME_PIANO, surface, model);
     }
 
 

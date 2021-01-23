@@ -13,13 +13,15 @@ import de.mossgrabers.framework.controller.ButtonID;
 import de.mossgrabers.framework.daw.IModel;
 import de.mossgrabers.framework.daw.data.ICursorDevice;
 import de.mossgrabers.framework.daw.data.IDevice;
+import de.mossgrabers.framework.daw.data.IItem;
 import de.mossgrabers.framework.daw.data.IParameter;
+import de.mossgrabers.framework.daw.data.bank.IBank;
 import de.mossgrabers.framework.daw.data.bank.IDeviceBank;
 import de.mossgrabers.framework.daw.data.bank.IParameterBank;
 import de.mossgrabers.framework.daw.data.bank.IParameterPageBank;
-import de.mossgrabers.framework.parameterprovider.BankParameterProvider;
 import de.mossgrabers.framework.parameterprovider.IParameterProvider;
-import de.mossgrabers.framework.parameterprovider.ResetParameterProvider;
+import de.mossgrabers.framework.parameterprovider.device.BankParameterProvider;
+import de.mossgrabers.framework.parameterprovider.special.ResetParameterProvider;
 import de.mossgrabers.framework.utils.ButtonEvent;
 import de.mossgrabers.framework.utils.StringUtils;
 
@@ -29,7 +31,7 @@ import de.mossgrabers.framework.utils.StringUtils;
  *
  * @author J&uuml;rgen Mo&szlig;graber
  */
-public class ParametersMode extends AbstractParametersMode
+public class ParametersMode extends AbstractParametersMode<IItem>
 {
     private boolean                                                           showDevices;
 
@@ -51,8 +53,8 @@ public class ParametersMode extends AbstractParametersMode
         this.browserCommand = new BrowserCommand<> (model, surface);
 
         final IParameterProvider parameterProvider = new BankParameterProvider (this.model.getCursorDevice ().getParameterBank ());
-        this.setParameters (parameterProvider);
-        this.setParameters (ButtonID.DELETE, new ResetParameterProvider (parameterProvider));
+        this.setParameterProvider (parameterProvider);
+        this.setParameterProvider (ButtonID.DELETE, new ResetParameterProvider (parameterProvider));
     }
 
 
@@ -61,12 +63,17 @@ public class ParametersMode extends AbstractParametersMode
      *
      * @param showDevices True to show devices otherwise parameters
      */
+    @SuppressWarnings(
+    {
+        "rawtypes",
+        "unchecked"
+    })
     public final void setShowDevices (final boolean showDevices)
     {
         this.showDevices = showDevices;
 
         final ICursorDevice cursorDevice = this.model.getCursorDevice ();
-        this.switchBanks (this.showDevices ? cursorDevice.getDeviceBank () : cursorDevice.getParameterBank ());
+        this.switchBanks ((IBank) (this.showDevices ? cursorDevice.getDeviceBank () : cursorDevice.getParameterBank ()));
     }
 
 

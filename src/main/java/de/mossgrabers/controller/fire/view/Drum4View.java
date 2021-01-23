@@ -28,6 +28,9 @@ import de.mossgrabers.framework.view.AbstractDrum4View;
  */
 public class Drum4View extends AbstractDrum4View<FireControlSurface, FireConfiguration> implements IFireView
 {
+    private boolean blockSelectKnob = false;
+
+
     /**
      * Constructor.
      *
@@ -210,45 +213,51 @@ public class Drum4View extends AbstractDrum4View<FireControlSurface, FireConfigu
         if (!this.primary.hasDrumPads ())
             return;
 
+        if (this.blockSelectKnob)
+            return;
+
         final boolean isUp = this.model.getValueChanger ().isIncrease (value);
         final IDrumPadBank drumPadBank = this.primary.getDrumPadBank ();
 
         final IDrumPad sel = drumPadBank.getSelectedItem ();
         final int pageSize = drumPadBank.getPageSize ();
 
-        final int index;
         if (isUp)
         {
-            index = sel == null ? pageSize : sel.getIndex () + 1;
+            final int index = sel == null ? pageSize : sel.getIndex () + 1;
             if (index == pageSize)
             {
-                this.changeOctave (ButtonEvent.DOWN, isUp, 4, true, true);
-                this.surface.scheduleTask ( () -> this.selectDrumPad (drumPadBank, 0), 100);
+                this.adjustPage (isUp, 0);
                 return;
             }
-            this.selectDrumPad (drumPadBank, index);
+            this.selectDrumPad (index);
             return;
         }
 
-        index = sel == null ? -1 : sel.getIndex () - 1;
+        final int index = sel == null ? -1 : sel.getIndex () - 1;
         if (index == -1)
         {
-            this.changeOctave (ButtonEvent.DOWN, isUp, 4, true, true);
-            this.surface.scheduleTask ( () -> this.selectDrumPad (drumPadBank, pageSize - 1), 100);
+            this.adjustPage (isUp, pageSize - 1);
             return;
         }
-        this.selectDrumPad (drumPadBank, index);
+        this.selectDrumPad (index);
     }
 
 
-    /**
-     *
-     * @param drumPadBank
-     * @param index
-     */
-    protected void selectDrumPad (final IDrumPadBank drumPadBank, final int index)
+    private void adjustPage (final boolean isUp, final int selection)
     {
-        drumPadBank.getItem (index).select ();
+        this.blockSelectKnob = true;
+        this.changeOctave (ButtonEvent.DOWN, isUp, 4, true, true);
+        this.surface.scheduleTask ( () -> {
+            this.selectDrumPad (selection);
+            this.blockSelectKnob = false;
+        }, 100);
+    }
+
+
+    private void selectDrumPad (final int index)
+    {
+        this.primary.getDrumPadBank ().getItem (index).select ();
         final IMode activeMode = this.surface.getModeManager ().getActive ();
         if (activeMode instanceof FireLayerMode)
             ((FireLayerMode) activeMode).parametersAdjusted ();

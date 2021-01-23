@@ -11,7 +11,7 @@ import de.mossgrabers.framework.controller.ContinuousID;
 import de.mossgrabers.framework.daw.IModel;
 import de.mossgrabers.framework.daw.data.ITrack;
 import de.mossgrabers.framework.daw.data.bank.ITrackBank;
-import de.mossgrabers.framework.parameterprovider.VolumeParameterProvider;
+import de.mossgrabers.framework.parameterprovider.track.VolumeParameterProvider;
 import de.mossgrabers.framework.utils.StringUtils;
 
 import java.util.Locale;
@@ -22,7 +22,7 @@ import java.util.Locale;
  *
  * @author J&uuml;rgen Mo&szlig;graber
  */
-public class VolumeMode extends AbstractKontrol1Mode
+public class VolumeMode extends AbstractKontrol1Mode<ITrack>
 {
     /**
      * Constructor.
@@ -36,7 +36,7 @@ public class VolumeMode extends AbstractKontrol1Mode
 
         model.addTrackBankObserver (this::switchBanks);
 
-        this.setParameters (new VolumeParameterProvider (model));
+        this.setParameterProvider (new VolumeParameterProvider (model));
     }
 
 
@@ -62,13 +62,5 @@ public class VolumeMode extends AbstractKontrol1Mode
             d.setBar (1 + i, this.surface.getContinuous (ContinuousID.get (ContinuousID.KNOB1, i)).isTouched () && t.doesExist (), t.getVolume ());
         }
         d.allDone ();
-    }
-
-
-    /** {@inheritDoc} */
-    @Override
-    public void onKnobValue (final int index, final int value)
-    {
-        this.model.getCurrentTrackBank ().getItem (index).changeVolume (value);
     }
 }

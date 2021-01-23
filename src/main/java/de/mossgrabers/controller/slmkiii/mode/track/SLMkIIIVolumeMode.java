@@ -11,8 +11,9 @@ import de.mossgrabers.framework.controller.ButtonID;
 import de.mossgrabers.framework.daw.IModel;
 import de.mossgrabers.framework.daw.data.ITrack;
 import de.mossgrabers.framework.daw.data.bank.ITrackBank;
-import de.mossgrabers.framework.parameterprovider.ResetParameterProvider;
-import de.mossgrabers.framework.parameterprovider.VolumeParameterProvider;
+import de.mossgrabers.framework.mode.Modes;
+import de.mossgrabers.framework.parameterprovider.special.ResetParameterProvider;
+import de.mossgrabers.framework.parameterprovider.track.VolumeParameterProvider;
 import de.mossgrabers.framework.utils.StringUtils;
 
 
@@ -31,11 +32,11 @@ public class SLMkIIIVolumeMode extends AbstractTrackMode
      */
     public SLMkIIIVolumeMode (final SLMkIIIControlSurface surface, final IModel model)
     {
-        super ("Volume", surface, model);
+        super (Modes.NAME_VOLUME, surface, model);
 
         final VolumeParameterProvider parameterProvider = new VolumeParameterProvider (model);
-        this.setParameters (parameterProvider);
-        this.setParameters (ButtonID.DELETE, new ResetParameterProvider (parameterProvider));
+        this.setParameterProvider (parameterProvider);
+        this.setParameterProvider (ButtonID.DELETE, new ResetParameterProvider (parameterProvider));
     }
 
 

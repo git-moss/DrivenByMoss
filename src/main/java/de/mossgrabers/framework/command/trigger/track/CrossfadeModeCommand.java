@@ -8,6 +8,7 @@ import de.mossgrabers.framework.command.core.AbstractTriggerCommand;
 import de.mossgrabers.framework.configuration.Configuration;
 import de.mossgrabers.framework.controller.IControlSurface;
 import de.mossgrabers.framework.daw.IModel;
+import de.mossgrabers.framework.daw.data.IParameter;
 import de.mossgrabers.framework.utils.ButtonEvent;
 
 
@@ -42,7 +43,11 @@ public class CrossfadeModeCommand<S extends IControlSurface<C>, C extends Config
     @Override
     public void executeNormal (final ButtonEvent event)
     {
-        if (event == ButtonEvent.DOWN)
-            this.model.getCurrentTrackBank ().getItem (this.index).toggleCrossfadeMode ();
+        if (event != ButtonEvent.DOWN)
+            return;
+
+        final IParameter crossfadeParameter = this.model.getCurrentTrackBank ().getItem (this.index).getCrossfadeParameter ();
+        final double value = this.model.getValueChanger ().toNormalizedValue (crossfadeParameter.getValue ()) + 0.5;
+        crossfadeParameter.setNormalizedValue (value > 1.1 ? 0 : value);
     }
 }

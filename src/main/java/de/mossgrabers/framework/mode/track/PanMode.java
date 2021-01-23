@@ -10,7 +10,7 @@ import de.mossgrabers.framework.controller.ContinuousID;
 import de.mossgrabers.framework.controller.IControlSurface;
 import de.mossgrabers.framework.daw.IModel;
 import de.mossgrabers.framework.daw.data.ITrack;
-import de.mossgrabers.framework.parameterprovider.PanParameterProvider;
+import de.mossgrabers.framework.parameterprovider.track.PanParameterProvider;
 
 import java.util.List;
 import java.util.function.BooleanSupplier;
@@ -24,7 +24,7 @@ import java.util.function.BooleanSupplier;
  *
  * @author J&uuml;rgen Mo&szlig;graber
  */
-public class PanMode<S extends IControlSurface<C>, C extends Configuration> extends AbstractTrackMode<S, C>
+public class PanMode<S extends IControlSurface<C>, C extends Configuration> extends DefaultTrackMode<S, C>
 {
     /**
      * Constructor.
@@ -71,7 +71,7 @@ public class PanMode<S extends IControlSurface<C>, C extends Configuration> exte
         super ("Panorama", surface, model, isAbsolute, controls, isAlternativeFunction);
 
         if (controls != null)
-            this.setParameters (new PanParameterProvider (model));
+            this.setParameterProvider (new PanParameterProvider (model));
     }
 
 

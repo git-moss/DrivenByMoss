@@ -37,7 +37,7 @@ public class DrumView extends AbstractDrumView<PushControlSurface, PushConfigura
      */
     public DrumView (final PushControlSurface surface, final IModel model)
     {
-        super (Views.VIEW_NAME_DRUM, surface, model, 4, 4, true);
+        super (Views.NAME_DRUM, surface, model, 4, 4, true);
     }
 
 

@@ -419,6 +419,16 @@ public abstract class AbstractConfiguration implements Configuration
 
     /** {@inheritDoc} */
     @Override
+    public void removeSettingObserver (final Integer settingID, final ISettingObserver observer)
+    {
+        final Set<ISettingObserver> settingObservers = this.observers.get (settingID);
+        if (settingObservers != null)
+            settingObservers.remove (observer);
+    }
+
+
+    /** {@inheritDoc} */
+    @Override
     public void clearSettingObservers ()
     {
         this.observers.clear ();

@@ -53,7 +53,7 @@ public class PlayView extends AbstractPlayView<LaunchpadControlSurface, Launchpa
      */
     public PlayView (final LaunchpadControlSurface surface, final IModel model)
     {
-        this (Views.VIEW_NAME_PLAY, surface, model);
+        this (Views.NAME_PLAY, surface, model);
     }
 
 

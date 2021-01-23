@@ -9,9 +9,10 @@ import de.mossgrabers.framework.controller.display.ITextDisplay;
 import de.mossgrabers.framework.daw.IModel;
 import de.mossgrabers.framework.daw.data.ITrack;
 import de.mossgrabers.framework.daw.data.bank.ITrackBank;
+import de.mossgrabers.framework.mode.Modes;
 import de.mossgrabers.framework.parameterprovider.IParameterProvider;
-import de.mossgrabers.framework.parameterprovider.RangeFilterParameterProvider;
-import de.mossgrabers.framework.parameterprovider.VolumeParameterProvider;
+import de.mossgrabers.framework.parameterprovider.special.RangeFilterParameterProvider;
+import de.mossgrabers.framework.parameterprovider.track.VolumeParameterProvider;
 
 
 /**
@@ -29,7 +30,7 @@ public class VolumeMode extends AbstractTrackMode
      */
     public VolumeMode (final MCUControlSurface surface, final IModel model)
     {
-        super ("Volume", surface, model);
+        super (Modes.NAME_VOLUME, surface, model);
 
         final IParameterProvider parameterProvider;
         if (surface.getConfiguration ().shouldPinFXTracksToLastController () && surface.isLastDevice ())
@@ -39,16 +40,7 @@ public class VolumeMode extends AbstractTrackMode
             final int surfaceID = surface.getSurfaceID ();
             parameterProvider = new RangeFilterParameterProvider (new VolumeParameterProvider (model), surfaceID * 8, 8);
         }
-        this.setParameters (parameterProvider);
-    }
-
-
-    /** {@inheritDoc} */
-    @Override
-    public int getKnobValue (final int index)
-    {
-        final int channel = this.getExtenderOffset () + index;
-        return this.getTrackBank ().getItem (channel).getVolume ();
+        this.setParameterProvider (parameterProvider);
     }
 
 

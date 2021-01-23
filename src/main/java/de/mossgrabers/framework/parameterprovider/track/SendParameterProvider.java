@@ -2,7 +2,7 @@
 // (c) 2017-2021
 // Licensed under LGPLv3 - http://www.gnu.org/licenses/lgpl-3.0.txt
 
-package de.mossgrabers.framework.parameterprovider;
+package de.mossgrabers.framework.parameterprovider.track;
 
 import de.mossgrabers.framework.daw.IModel;
 import de.mossgrabers.framework.daw.data.IParameter;
@@ -17,7 +17,7 @@ import de.mossgrabers.framework.daw.data.empty.EmptyParameter;
  *
  * @author J&uuml;rgen Mo&szlig;graber
  */
-public class SendParameterProvider extends AbstractChannelParameterProvider
+public class SendParameterProvider extends AbstractTrackParameterProvider
 {
     private final int sendIndex;
 
@@ -53,14 +53,14 @@ public class SendParameterProvider extends AbstractChannelParameterProvider
     {
         if (this.sendIndex == -1)
         {
-            final ITrack track = this.model.getCurrentTrackBank ().getSelectedItem ();
+            final ITrack track = this.bank.getSelectedItem ();
             if (track == null)
                 return EmptyParameter.INSTANCE;
             final ISendBank sendBank = track.getSendBank ();
             return sendBank.getItemCount () > 0 ? sendBank.getItem (index) : EmptyParameter.INSTANCE;
         }
 
-        final ISendBank sendBank = this.getChannel (index).getSendBank ();
+        final ISendBank sendBank = this.bank.getItem (index).getSendBank ();
         return sendBank.getItemCount () == 0 ? EmptyParameter.INSTANCE : sendBank.getItem (this.sendIndex);
     }
 }

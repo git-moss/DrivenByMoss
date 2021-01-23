@@ -114,49 +114,11 @@ public interface ITrack extends IChannel
 
 
     /**
-     * Get the crossfade mode (A, B, AB).
+     * Get the crossfade parameter.
      *
-     * @return The crossfade mode
+     * @return The crossfade parameter
      */
-    String getCrossfadeMode ();
-
-
-    /**
-     * Change the crossfade mode.
-     *
-     * @param control The control value
-     */
-    void changeCrossfadeModeAsNumber (final int control);
-
-
-    /**
-     * Set the crossfade mode.
-     *
-     * @param mode The crossfade mode A, AB or B
-     */
-    void setCrossfadeMode (final String mode);
-
-
-    /**
-     * Get the crossfade mode as a number.
-     *
-     * @return The crossfade mode 0, 1 or 2
-     */
-    int getCrossfadeModeAsNumber ();
-
-
-    /**
-     * Set the crossfade mode as a number.
-     *
-     * @param modeValue The crossfade mode 0, 1 or 2
-     */
-    void setCrossfadeModeAsNumber (final int modeValue);
-
-
-    /**
-     * Set the crossfade mode to the next value.
-     */
-    void toggleCrossfadeMode ();
+    IParameter getCrossfadeParameter ();
 
 
     /**

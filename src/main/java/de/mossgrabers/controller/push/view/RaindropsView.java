@@ -7,7 +7,6 @@ package de.mossgrabers.controller.push.view;
 import de.mossgrabers.controller.push.PushConfiguration;
 import de.mossgrabers.controller.push.controller.PushControlSurface;
 import de.mossgrabers.framework.daw.IModel;
-import de.mossgrabers.framework.utils.ButtonEvent;
 import de.mossgrabers.framework.view.AbstractRaindropsView;
 import de.mossgrabers.framework.view.Views;
 
@@ -27,59 +26,7 @@ public class RaindropsView extends AbstractRaindropsView<PushControlSurface, Pus
      */
     public RaindropsView (final PushControlSurface surface, final IModel model)
     {
-        super (Views.VIEW_NAME_RAINDROPS, surface, model, true);
+        super (Views.NAME_RAINDROPS, surface, model, true);
 
-    }
-
-
-    /** {@inheritDoc} */
-    @Override
-    public void onOctaveDown (final ButtonEvent event)
-    {
-        if (event != ButtonEvent.DOWN)
-            return;
-
-        if (!this.isActive ())
-            return;
-
-        if (this.surface.isShiftPressed ())
-        {
-            this.getClip ().transpose (-1);
-            return;
-        }
-
-        if (this.surface.isSelectPressed ())
-        {
-            this.getClip ().transpose (-12);
-            return;
-        }
-
-        super.onOctaveDown (event);
-    }
-
-
-    /** {@inheritDoc} */
-    @Override
-    public void onOctaveUp (final ButtonEvent event)
-    {
-        if (event != ButtonEvent.DOWN)
-            return;
-
-        if (!this.isActive ())
-            return;
-
-        if (this.surface.isShiftPressed ())
-        {
-            this.getClip ().transpose (1);
-            return;
-        }
-
-        if (this.surface.isSelectPressed ())
-        {
-            this.getClip ().transpose (12);
-            return;
-        }
-
-        super.onOctaveUp (event);
     }
 }

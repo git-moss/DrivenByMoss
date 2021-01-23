@@ -2,28 +2,27 @@
 // (c) 2017-2021
 // Licensed under LGPLv3 - http://www.gnu.org/licenses/lgpl-3.0.txt
 
-package de.mossgrabers.framework.parameterprovider;
+package de.mossgrabers.framework.parameterprovider.track;
 
 import de.mossgrabers.framework.daw.IModel;
-import de.mossgrabers.framework.daw.data.IChannel;
 import de.mossgrabers.framework.daw.data.IParameter;
-import de.mossgrabers.framework.daw.data.bank.IChannelBank;
+import de.mossgrabers.framework.daw.data.bank.ITrackBank;
 
 
 /**
- * Get a number of parameters. This implementation provides all panorama parameters of the tracks of
- * the current channel bank.
+ * Get a number of parameters. This implementation provides all volume parameters of the channels of
+ * the track bank.
  *
  * @author J&uuml;rgen Mo&szlig;graber
  */
-public class PanParameterProvider extends AbstractChannelParameterProvider
+public class VolumeParameterProvider extends AbstractTrackParameterProvider
 {
     /**
      * Constructor.
      *
      * @param bank The bank from which to get the parameters
      */
-    public PanParameterProvider (final IChannelBank<? extends IChannel> bank)
+    public VolumeParameterProvider (final ITrackBank bank)
     {
         super (bank);
     }
@@ -34,7 +33,7 @@ public class PanParameterProvider extends AbstractChannelParameterProvider
      *
      * @param model Uses the current track bank from this model to get the parameters
      */
-    public PanParameterProvider (final IModel model)
+    public VolumeParameterProvider (final IModel model)
     {
         super (model);
     }
@@ -44,6 +43,6 @@ public class PanParameterProvider extends AbstractChannelParameterProvider
     @Override
     public IParameter get (final int index)
     {
-        return this.getChannel (index).getPanParameter ();
+        return this.bank.getItem (index).getVolumeParameter ();
     }
 }

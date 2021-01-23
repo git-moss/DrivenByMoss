@@ -17,7 +17,7 @@ import de.mossgrabers.framework.utils.StringUtils;
  *
  * @author J&uuml;rgen Mo&szlig;graber
  */
-public class MarkerMode extends BaseMode
+public class MarkerMode extends BaseMode<IMarker>
 {
     /**
      * Constructor.

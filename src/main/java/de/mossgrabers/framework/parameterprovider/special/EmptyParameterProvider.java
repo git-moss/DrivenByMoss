@@ -2,30 +2,35 @@
 // (c) 2017-2021
 // Licensed under LGPLv3 - http://www.gnu.org/licenses/lgpl-3.0.txt
 
-package de.mossgrabers.framework.parameterprovider;
+package de.mossgrabers.framework.parameterprovider.special;
 
 import de.mossgrabers.framework.daw.data.IParameter;
+import de.mossgrabers.framework.daw.data.empty.EmptyParameter;
 import de.mossgrabers.framework.observer.IParametersAdjustObserver;
+import de.mossgrabers.framework.parameterprovider.IParameterProvider;
+
+import java.util.Collections;
+import java.util.Set;
 
 
 /**
- * Get a number of parameters. This implementation provides a fixed number of parameters.
+ * Get a number of empty parameters.
  *
  * @author J&uuml;rgen Mo&szlig;graber
  */
-public class FixedParameterProvider implements IParameterProvider
+public class EmptyParameterProvider implements IParameterProvider
 {
-    private final IParameter [] parameters;
+    private final int size;
 
 
     /**
      * Constructor.
      *
-     * @param parameters The fixed parameters
+     * @param size The number of parameters
      */
-    public FixedParameterProvider (final IParameter... parameters)
+    public EmptyParameterProvider (final int size)
     {
-        this.parameters = parameters;
+        this.size = size;
     }
 
 
@@ -33,7 +38,7 @@ public class FixedParameterProvider implements IParameterProvider
     @Override
     public int size ()
     {
-        return this.parameters.length;
+        return this.size;
     }
 
 
@@ -45,7 +50,7 @@ public class FixedParameterProvider implements IParameterProvider
     @Override
     public IParameter get (final int index)
     {
-        return this.parameters[index];
+        return EmptyParameter.INSTANCE;
     }
 
 
@@ -67,8 +72,8 @@ public class FixedParameterProvider implements IParameterProvider
 
     /** {@inheritDoc} */
     @Override
-    public void notifyParametersObservers ()
+    public Set<IParametersAdjustObserver> removeParametersObservers ()
     {
-        // Intentionally empty
+        return Collections.emptySet ();
     }
 }

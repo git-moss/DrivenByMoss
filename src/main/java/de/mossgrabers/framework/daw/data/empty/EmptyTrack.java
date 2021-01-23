@@ -5,6 +5,7 @@
 package de.mossgrabers.framework.daw.data.empty;
 
 import de.mossgrabers.framework.daw.constants.RecordQuantization;
+import de.mossgrabers.framework.daw.data.IParameter;
 import de.mossgrabers.framework.daw.data.ITrack;
 import de.mossgrabers.framework.daw.data.bank.ISlotBank;
 
@@ -26,6 +27,14 @@ public class EmptyTrack extends EmptyChannel implements ITrack
     private EmptyTrack ()
     {
         // Intentionally empty
+    }
+
+
+    /** {@inheritDoc} */
+    @Override
+    public IParameter getCrossfadeParameter ()
+    {
+        return EmptyParameter.INSTANCE;
     }
 
 
@@ -87,14 +96,6 @@ public class EmptyTrack extends EmptyChannel implements ITrack
 
     /** {@inheritDoc} */
     @Override
-    public String getCrossfadeMode ()
-    {
-        return "AB";
-    }
-
-
-    /** {@inheritDoc} */
-    @Override
     public boolean isPlaying ()
     {
         return false;
@@ -144,47 +145,6 @@ public class EmptyTrack extends EmptyChannel implements ITrack
     /** {@inheritDoc} */
     @Override
     public void toggleAutoMonitor ()
-    {
-        // Intentionally empty
-    }
-
-
-    /** {@inheritDoc} */
-    @Override
-    public void changeCrossfadeModeAsNumber (final int control)
-    {
-        // Intentionally empty
-    }
-
-
-    /** {@inheritDoc} */
-    @Override
-    public void setCrossfadeMode (final String mode)
-    {
-        // Intentionally empty
-    }
-
-
-    /** {@inheritDoc} */
-    @Override
-    public int getCrossfadeModeAsNumber ()
-    {
-        // Intentionally empty
-        return 0;
-    }
-
-
-    /** {@inheritDoc} */
-    @Override
-    public void setCrossfadeModeAsNumber (final int modeValue)
-    {
-        // Intentionally empty
-    }
-
-
-    /** {@inheritDoc} */
-    @Override
-    public void toggleCrossfadeMode ()
     {
         // Intentionally empty
     }

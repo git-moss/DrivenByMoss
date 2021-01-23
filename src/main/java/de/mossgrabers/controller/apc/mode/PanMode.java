@@ -7,7 +7,7 @@ package de.mossgrabers.controller.apc.mode;
 import de.mossgrabers.controller.apc.controller.APCControlSurface;
 import de.mossgrabers.framework.daw.IModel;
 import de.mossgrabers.framework.daw.data.ITrack;
-import de.mossgrabers.framework.parameterprovider.PanParameterProvider;
+import de.mossgrabers.framework.parameterprovider.track.PanParameterProvider;
 
 
 /**
@@ -15,7 +15,7 @@ import de.mossgrabers.framework.parameterprovider.PanParameterProvider;
  *
  * @author J&uuml;rgen Mo&szlig;graber
  */
-public class PanMode extends BaseMode
+public class PanMode extends BaseMode<ITrack>
 {
     /**
      * Constructor.
@@ -25,17 +25,8 @@ public class PanMode extends BaseMode
      */
     public PanMode (final APCControlSurface surface, final IModel model)
     {
-        super ("Panorama", surface, model, APCControlSurface.LED_MODE_PAN, 64, model.getCurrentTrackBank ());
+        super ("Panorama", surface, model, APCControlSurface.LED_MODE_PAN, model.getCurrentTrackBank ());
 
-        this.setParameters (new PanParameterProvider (model));
-    }
-
-
-    /** {@inheritDoc} */
-    @Override
-    public int getKnobValue (final int index)
-    {
-        final ITrack track = this.model.getCurrentTrackBank ().getItem (index);
-        return track.doesExist () ? track.getPan () : -1;
+        this.setParameterProvider (new PanParameterProvider (model));
     }
 }

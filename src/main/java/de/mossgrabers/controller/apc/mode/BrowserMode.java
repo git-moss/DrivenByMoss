@@ -7,6 +7,7 @@ package de.mossgrabers.controller.apc.mode;
 import de.mossgrabers.controller.apc.controller.APCControlSurface;
 import de.mossgrabers.framework.daw.IBrowser;
 import de.mossgrabers.framework.daw.IModel;
+import de.mossgrabers.framework.daw.data.IItem;
 
 
 /**
@@ -14,7 +15,7 @@ import de.mossgrabers.framework.daw.IModel;
  *
  * @author J&uuml;rgen Mo&szlig;graber
  */
-public class BrowserMode extends BaseMode
+public class BrowserMode extends BaseMode<IItem>
 {
     private static final int [] COLUMN_ORDER =
     {
@@ -37,7 +38,7 @@ public class BrowserMode extends BaseMode
      */
     public BrowserMode (final APCControlSurface surface, final IModel model)
     {
-        super ("Browser", surface, model, APCControlSurface.LED_MODE_PAN, 64, null);
+        super ("Browser", surface, model, APCControlSurface.LED_MODE_PAN, null);
     }
 
 

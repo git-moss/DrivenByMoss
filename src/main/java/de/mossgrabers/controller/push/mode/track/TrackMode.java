@@ -7,14 +7,13 @@ package de.mossgrabers.controller.push.mode.track;
 import de.mossgrabers.controller.push.PushConfiguration;
 import de.mossgrabers.controller.push.controller.Push1Display;
 import de.mossgrabers.controller.push.controller.PushControlSurface;
-import de.mossgrabers.framework.controller.ButtonID;
+import de.mossgrabers.controller.push.parameterprovider.PushTrackParameterProvider;
 import de.mossgrabers.framework.controller.color.ColorEx;
 import de.mossgrabers.framework.controller.display.Format;
 import de.mossgrabers.framework.controller.display.IGraphicDisplay;
 import de.mossgrabers.framework.controller.display.ITextDisplay;
 import de.mossgrabers.framework.controller.valuechanger.IValueChanger;
 import de.mossgrabers.framework.daw.IModel;
-import de.mossgrabers.framework.daw.constants.Capability;
 import de.mossgrabers.framework.daw.data.ISend;
 import de.mossgrabers.framework.daw.data.ITrack;
 import de.mossgrabers.framework.daw.data.bank.ISendBank;
@@ -39,152 +38,8 @@ public class TrackMode extends AbstractTrackMode
     public TrackMode (final PushControlSurface surface, final IModel model)
     {
         super ("Track", surface, model);
-    }
 
-
-    /** {@inheritDoc} */
-    @Override
-    public void onKnobValue (final int index, final int value)
-    {
-        final ITrack selectedTrack = this.model.getCurrentTrackBank ().getSelectedItem ();
-        if (selectedTrack == null)
-            return;
-
-        switch (index)
-        {
-            case 0:
-                selectedTrack.changeVolume (value);
-                return;
-            case 1:
-                selectedTrack.changePan (value);
-                return;
-            default:
-                // Not used
-                break;
-        }
-
-        final ISendBank sendBank = selectedTrack.getSendBank ();
-        final PushConfiguration config = this.surface.getConfiguration ();
-        if (this.isPush2)
-        {
-            switch (index)
-            {
-                case 2:
-                    this.changeCrossfader (value, selectedTrack);
-                    break;
-                case 3:
-                    break;
-                default:
-                    final int sendOffset = config.isSendsAreToggled () ? 0 : 4;
-                    sendBank.getItem (index - sendOffset).changeValue (value);
-                    break;
-            }
-            return;
-        }
-
-        sendBank.getItem (index - 2).changeValue (value);
-    }
-
-
-    private void changeCrossfader (final int value, final ITrack selectedTrack)
-    {
-        if (this.increaseKnobMovement ())
-            selectedTrack.changeCrossfadeModeAsNumber (value);
-    }
-
-
-    /** {@inheritDoc} */
-    @Override
-    public void onKnobTouch (final int index, final boolean isTouched)
-    {
-        final ITrack selectedTrack = this.model.getCurrentTrackBank ().getSelectedItem ();
-        if (selectedTrack == null)
-            return;
-
-        this.isKnobTouched[index] = isTouched;
-
-        final ISendBank sendBank = selectedTrack.getSendBank ();
-        if (this.isPush2)
-        {
-            if (isTouched && this.surface.isDeletePressed ())
-            {
-                this.surface.setTriggerConsumed (ButtonID.DELETE);
-                switch (index)
-                {
-                    case 0:
-                        selectedTrack.resetVolume ();
-                        break;
-                    case 1:
-                        selectedTrack.resetPan ();
-                        break;
-                    case 2:
-                        selectedTrack.setCrossfadeMode ("AB");
-                        break;
-                    case 3:
-                        // Not used
-                        break;
-                    default:
-                        sendBank.getItem (index - 4).resetValue ();
-                        break;
-                }
-                return;
-            }
-
-            switch (index)
-            {
-                case 0:
-                    selectedTrack.touchVolume (isTouched);
-                    break;
-                case 1:
-                    selectedTrack.touchPan (isTouched);
-                    break;
-                case 2:
-                case 3:
-                    // Not used
-                    break;
-                default:
-                    final int sendIndex = index - 4;
-                    sendBank.getItem (sendIndex).touchValue (isTouched);
-                    break;
-            }
-
-            this.checkStopAutomationOnKnobRelease (isTouched);
-            return;
-        }
-
-        if (isTouched && this.surface.isDeletePressed ())
-        {
-            this.surface.setTriggerConsumed (ButtonID.DELETE);
-            switch (index)
-            {
-                case 0:
-                    selectedTrack.resetVolume ();
-                    break;
-                case 1:
-                    selectedTrack.resetPan ();
-                    break;
-                default:
-                    sendBank.getItem (index - 2).resetValue ();
-                    break;
-            }
-            return;
-        }
-
-        switch (index)
-        {
-            case 0:
-                selectedTrack.touchVolume (isTouched);
-                break;
-            case 1:
-                selectedTrack.touchPan (isTouched);
-                break;
-            default:
-                final int sendIndex = index - 2;
-                sendBank.getItem (sendIndex).touchValue (isTouched);
-                break;
-        }
-
-        this.checkStopAutomationOnKnobRelease (isTouched);
+        this.setParameterProvider (new PushTrackParameterProvider (model, surface.getConfiguration ()));
     }
 
 
@@ -240,7 +95,6 @@ public class TrackMode extends AbstractTrackMode
         this.updateMenuItems (0);
 
         final PushConfiguration config = this.surface.getConfiguration ();
-        final boolean displayCrossfader = this.model.getHost ().supports (Capability.HAS_CROSSFADER);
         for (int i = 0; i < 8; i++)
         {
             final ITrack t = tb.getItem (i);
@@ -258,7 +112,7 @@ public class TrackMode extends AbstractTrackMode
             final IValueChanger valueChanger = this.model.getValueChanger ();
             if (t.isSelected ())
             {
-                final int crossfadeMode = displayCrossfader ? t.getCrossfadeModeAsNumber () : -1;
+                final int crossfadeMode = this.getCrossfadeModeAsNumber (t);
                 final boolean enableVUMeters = config.isEnableVUMeters ();
                 final int vuR = valueChanger.toDisplayValue (enableVUMeters ? t.getVuRight () : 0);
                 final int vuL = valueChanger.toDisplayValue (enableVUMeters ? t.getVuLeft () : 0);

@@ -24,7 +24,7 @@ import java.util.function.BooleanSupplier;
  *
  * @author J&uuml;rgen Mo&szlig;graber
  */
-public class AbstractTrackMode<S extends IControlSurface<C>, C extends Configuration> extends AbstractMode<S, C>
+public class DefaultTrackMode<S extends IControlSurface<C>, C extends Configuration> extends AbstractMode<S, C, ITrack>
 {
     /**
      * Constructor.
@@ -35,7 +35,7 @@ public class AbstractTrackMode<S extends IControlSurface<C>, C extends Configura
      * @param isAbsolute If true the value change is happending with a setter otherwise relative
      *            change method is used
      */
-    public AbstractTrackMode (final String name, final S surface, final IModel model, final boolean isAbsolute)
+    public DefaultTrackMode (final String name, final S surface, final IModel model, final boolean isAbsolute)
     {
         this (name, surface, model, isAbsolute, null);
     }
@@ -51,7 +51,7 @@ public class AbstractTrackMode<S extends IControlSurface<C>, C extends Configura
      *            change method is used
      * @param controls The IDs of the knobs or faders to control this mode
      */
-    public AbstractTrackMode (final String name, final S surface, final IModel model, final boolean isAbsolute, final List<ContinuousID> controls)
+    public DefaultTrackMode (final String name, final S surface, final IModel model, final boolean isAbsolute, final List<ContinuousID> controls)
     {
         this (name, surface, model, isAbsolute, controls, surface::isShiftPressed);
     }
@@ -69,7 +69,7 @@ public class AbstractTrackMode<S extends IControlSurface<C>, C extends Configura
      * @param isAlternativeFunction Callback function to execute the secondary function, e.g. a
      *            shift button
      */
-    public AbstractTrackMode (final String name, final S surface, final IModel model, final boolean isAbsolute, final List<ContinuousID> controls, final BooleanSupplier isAlternativeFunction)
+    public DefaultTrackMode (final String name, final S surface, final IModel model, final boolean isAbsolute, final List<ContinuousID> controls, final BooleanSupplier isAlternativeFunction)
     {
         super (name, surface, model, isAbsolute, model.getCurrentTrackBank (), controls, isAlternativeFunction);
 

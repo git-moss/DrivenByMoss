@@ -32,7 +32,7 @@ public class PlayView extends AbstractPlayView<FireControlSurface, FireConfigura
      */
     public PlayView (final FireControlSurface surface, final IModel model)
     {
-        this (Views.VIEW_NAME_PLAY, surface, model);
+        this (Views.NAME_PLAY, surface, model);
     }
 
 
@@ -152,13 +152,13 @@ public class PlayView extends AbstractPlayView<FireControlSurface, FireConfigura
         {
             if (isAltPressed)
             {
-                this.scales.toggleChromatic ();
-                this.mvHelper.delayDisplay ( () -> this.scales.isChromatic () ? "Chromatic" : "In Scale");
+                this.scales.prevScaleOffset ();
+                this.mvHelper.delayDisplay ( () -> Scales.BASES[this.scales.getScaleOffset ()]);
             }
             else
             {
-                this.scales.prevScaleOffset ();
-                this.mvHelper.delayDisplay ( () -> Scales.BASES[this.scales.getScaleOffset ()]);
+                this.scales.prevScale ();
+                this.mvHelper.delayDisplay ( () -> this.scales.getScale ().getName ());
             }
         }
         else if (isAltPressed)
@@ -168,8 +168,8 @@ public class PlayView extends AbstractPlayView<FireControlSurface, FireConfigura
         }
         else
         {
-            this.scales.prevScale ();
-            this.mvHelper.delayDisplay ( () -> this.scales.getScale ().getName ());
+            this.scales.toggleChromatic ();
+            this.mvHelper.delayDisplay ( () -> this.scales.isChromatic () ? "Chromatic" : "In Scale");
         }
         this.updateScale ();
     }
@@ -181,13 +181,13 @@ public class PlayView extends AbstractPlayView<FireControlSurface, FireConfigura
         {
             if (isAltPressed)
             {
-                this.scales.toggleChromatic ();
-                this.mvHelper.delayDisplay ( () -> this.scales.isChromatic () ? "Chromatic" : "In Scale");
+                this.scales.nextScaleOffset ();
+                this.mvHelper.delayDisplay ( () -> Scales.BASES[this.scales.getScaleOffset ()]);
             }
             else
             {
-                this.scales.nextScaleOffset ();
-                this.mvHelper.delayDisplay ( () -> Scales.BASES[this.scales.getScaleOffset ()]);
+                this.scales.nextScale ();
+                this.mvHelper.delayDisplay ( () -> this.scales.getScale ().getName ());
             }
         }
         else if (isAltPressed)
@@ -197,8 +197,8 @@ public class PlayView extends AbstractPlayView<FireControlSurface, FireConfigura
         }
         else
         {
-            this.scales.nextScale ();
-            this.mvHelper.delayDisplay ( () -> this.scales.getScale ().getName ());
+            this.scales.toggleChromatic ();
+            this.mvHelper.delayDisplay ( () -> this.scales.isChromatic () ? "Chromatic" : "In Scale");
         }
         this.updateScale ();
     }

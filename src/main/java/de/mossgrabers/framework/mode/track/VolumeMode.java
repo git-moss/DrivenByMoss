@@ -9,7 +9,8 @@ import de.mossgrabers.framework.controller.ContinuousID;
 import de.mossgrabers.framework.controller.IControlSurface;
 import de.mossgrabers.framework.daw.IModel;
 import de.mossgrabers.framework.daw.data.ITrack;
-import de.mossgrabers.framework.parameterprovider.VolumeParameterProvider;
+import de.mossgrabers.framework.mode.Modes;
+import de.mossgrabers.framework.parameterprovider.track.VolumeParameterProvider;
 
 import java.util.List;
 import java.util.function.BooleanSupplier;
@@ -23,7 +24,7 @@ import java.util.function.BooleanSupplier;
  *
  * @author J&uuml;rgen Mo&szlig;graber
  */
-public class VolumeMode<S extends IControlSurface<C>, C extends Configuration> extends AbstractTrackMode<S, C>
+public class VolumeMode<S extends IControlSurface<C>, C extends Configuration> extends DefaultTrackMode<S, C>
 {
     /**
      * Constructor.
@@ -67,10 +68,10 @@ public class VolumeMode<S extends IControlSurface<C>, C extends Configuration> e
      */
     public VolumeMode (final S surface, final IModel model, final boolean isAbsolute, final List<ContinuousID> controls, final BooleanSupplier isAlternativeFunction)
     {
-        super ("Volume", surface, model, isAbsolute, controls, isAlternativeFunction);
+        super (Modes.NAME_VOLUME, surface, model, isAbsolute, controls, isAlternativeFunction);
 
         if (controls != null)
-            this.setParameters (new VolumeParameterProvider (model));
+            this.setParameterProvider (new VolumeParameterProvider (model));
     }
 
 

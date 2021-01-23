@@ -322,8 +322,22 @@ public abstract class AbstractNoteSequencerView<S extends IControlSurface<C>, C 
         if (!this.isActive ())
             return;
 
-        if (event == ButtonEvent.DOWN)
-            this.updateOctave (Math.max (0, this.offsetY - this.getScrollOffset ()));
+        if (event != ButtonEvent.DOWN)
+            return;
+
+        if (this.surface.isShiftPressed ())
+        {
+            this.getClip ().transpose (-1);
+            return;
+        }
+
+        if (this.surface.isSelectPressed ())
+        {
+            this.getClip ().transpose (-12);
+            return;
+        }
+
+        this.updateOctave (Math.max (0, this.offsetY - this.getScrollOffset ()));
     }
 
 
@@ -336,6 +350,19 @@ public abstract class AbstractNoteSequencerView<S extends IControlSurface<C>, C 
 
         if (event != ButtonEvent.DOWN)
             return;
+
+        if (this.surface.isShiftPressed ())
+        {
+            this.getClip ().transpose (1);
+            return;
+        }
+
+        if (this.surface.isSelectPressed ())
+        {
+            this.getClip ().transpose (12);
+            return;
+        }
+
         final int offset = this.getScrollOffset ();
         if (this.offsetY + offset < this.getClip ().getNumRows ())
             this.updateOctave (this.offsetY + offset);

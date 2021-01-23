@@ -12,6 +12,7 @@ import de.mossgrabers.framework.daw.IBrowser;
 import de.mossgrabers.framework.daw.IModel;
 import de.mossgrabers.framework.daw.data.IBrowserColumn;
 import de.mossgrabers.framework.daw.data.IBrowserColumnItem;
+import de.mossgrabers.framework.daw.data.IItem;
 import de.mossgrabers.framework.featuregroup.AbstractMode;
 import de.mossgrabers.framework.mode.Modes;
 import de.mossgrabers.framework.utils.ButtonEvent;
@@ -23,7 +24,7 @@ import de.mossgrabers.framework.utils.StringUtils;
  *
  * @author J&uuml;rgen Mo&szlig;graber
  */
-public class DevicePresetsMode extends AbstractMode<SLControlSurface, SLConfiguration>
+public class DevicePresetsMode extends AbstractMode<SLControlSurface, SLConfiguration, IItem>
 {
     /** No selection. */
     public static final int  SELECTION_OFF    = 0;

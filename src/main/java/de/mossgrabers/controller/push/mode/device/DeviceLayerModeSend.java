@@ -6,19 +6,17 @@ package de.mossgrabers.controller.push.mode.device;
 
 import de.mossgrabers.controller.push.PushConfiguration;
 import de.mossgrabers.controller.push.controller.PushControlSurface;
+import de.mossgrabers.controller.push.parameterprovider.PushSendLayerOrDrumPadParameterProvider;
 import de.mossgrabers.framework.controller.ButtonID;
 import de.mossgrabers.framework.controller.display.Format;
 import de.mossgrabers.framework.controller.display.IGraphicDisplay;
 import de.mossgrabers.framework.controller.display.ITextDisplay;
 import de.mossgrabers.framework.daw.IModel;
 import de.mossgrabers.framework.daw.data.IChannel;
-import de.mossgrabers.framework.daw.data.ICursorDevice;
-import de.mossgrabers.framework.daw.data.IParameter;
 import de.mossgrabers.framework.daw.data.ISend;
-import de.mossgrabers.framework.daw.data.bank.IChannelBank;
-import de.mossgrabers.framework.daw.data.empty.EmptyParameter;
 import de.mossgrabers.framework.daw.resource.ChannelType;
 import de.mossgrabers.framework.graphics.canvas.utils.SendData;
+import de.mossgrabers.framework.mode.Modes;
 import de.mossgrabers.framework.utils.Pair;
 
 
@@ -41,24 +39,11 @@ public class DeviceLayerModeSend extends DeviceLayerMode
      */
     public DeviceLayerModeSend (final PushControlSurface surface, final IModel model, final int sendIndex)
     {
-        super ("Layer Send", surface, model);
+        super (Modes.NAME_LAYER_SENDS, surface, model);
 
         this.sendIndex = sendIndex;
-    }
 
-
-    /** {@inheritDoc} */
-    @Override
-    public IParameter get (final int index)
-    {
-        final ICursorDevice cd = this.model.getCursorDevice ();
-
-        // Drum Pad Bank has size of 16, layers only 8
-        final int offset = getDrumPadIndex (cd);
-        if (!cd.hasLayers ())
-            return EmptyParameter.INSTANCE;
-        final IChannel item = cd.getLayerOrDrumPadBank ().getItem (offset + index);
-        return item.doesExist () ? item.getSendBank ().getItem (this.sendIndex) : EmptyParameter.INSTANCE;
+        this.setParameterProvider (new PushSendLayerOrDrumPadParameterProvider (this.cursorDevice, sendIndex));
     }
 
 
@@ -68,11 +53,9 @@ public class DeviceLayerModeSend extends DeviceLayerMode
     {
         this.isKnobTouched[index] = isTouched;
 
-        final ICursorDevice cd = this.model.getCursorDevice ();
-
         // Drum Pad Bank has size of 16, layers only 8
-        final int offset = getDrumPadIndex (cd);
-        final IChannel layer = cd.getLayerOrDrumPadBank ().getItem (offset + index);
+        final int offset = this.getDrumPadIndex ();
+        final IChannel layer = this.bank.getItem (offset + index);
         if (!layer.doesExist ())
             return;
 
@@ -91,20 +74,18 @@ public class DeviceLayerModeSend extends DeviceLayerMode
     @Override
     public void updateDisplay1 (final ITextDisplay display)
     {
-        final ICursorDevice cd = this.model.getCursorDevice ();
-        if (!cd.hasLayers ())
+        if (!this.cursorDevice.hasLayers ())
             display.setBlock (1, 1, "    This device  ").setBlock (1, 2, "does not have layers.");
-        else if (cd.getLayerBank ().hasZeroLayers ())
-            display.setBlock (1, 1, "    Please create").setBlock (1, 2, cd.hasDrumPads () ? "a Drum Pad..." : "a Device Layer...");
+        else if (!this.bank.hasExistingItems ())
+            display.setBlock (1, 1, "    Please create").setBlock (1, 2, this.cursorDevice.hasDrumPads () ? "a Drum Pad..." : "a Device Layer...");
         else
         {
             // Drum Pad Bank has size of 16, layers only 8
-            final int offset = getDrumPadIndex (cd);
+            final int offset = this.getDrumPadIndex ();
 
-            final IChannelBank<?> bank = cd.getLayerOrDrumPadBank ();
             for (int i = 0; i < 8; i++)
             {
-                final IChannel layer = bank.getItem (offset + i);
+                final IChannel layer = this.bank.getItem (offset + i);
                 final boolean exists = layer.doesExist ();
                 final ISend send = layer.getSendBank ().getItem (this.sendIndex);
                 display.setCell (0, i, exists ? send.getName () : "").setCell (1, i, send.getDisplayedValue (8));
@@ -113,25 +94,24 @@ public class DeviceLayerModeSend extends DeviceLayerMode
             }
         }
 
-        this.drawRow4 (display, cd);
+        this.drawRow4 (display);
     }
 
 
     /** {@inheritDoc} */
     @Override
-    public void updateDisplayElements (final IGraphicDisplay display, final ICursorDevice cd, final IChannel l)
+    public void updateDisplayElements (final IGraphicDisplay display, final IChannel l)
     {
         this.updateMenuItems (5 + this.sendIndex % 4);
 
         final PushConfiguration config = this.surface.getConfiguration ();
 
         // Drum Pad Bank has size of 16, layers only 8
-        final int offset = getDrumPadIndex (cd);
+        final int offset = this.getDrumPadIndex ();
         final int sendOffset = config.isSendsAreToggled () ? 4 : 0;
-        final IChannelBank<?> bank = cd.getLayerOrDrumPadBank ();
         for (int i = 0; i < 8; i++)
         {
-            final IChannel layer = bank.getItem (offset + i);
+            final IChannel layer = this.bank.getItem (offset + i);
 
             final Pair<String, Boolean> pair = this.menu.get (i);
             final String topMenu = pair.getKey ();
@@ -147,7 +127,7 @@ public class DeviceLayerModeSend extends DeviceLayerMode
                 sendData[j] = new SendData (send.getName (), exists && this.sendIndex == sendPos && this.isKnobTouched[i] ? send.getDisplayedValue () : "", exists ? send.getValue () : 0, exists ? send.getModulatedValue () : 0, this.sendIndex == sendPos);
             }
 
-            display.addSendsElement (topMenu, isTopMenuOn, layer.doesExist () ? layer.getName () : "", ChannelType.LAYER, bank.getItem (offset + i).getColor (), layer.isSelected (), sendData, false, layer.isActivated (), layer.isActivated ());
+            display.addSendsElement (topMenu, isTopMenuOn, layer.doesExist () ? layer.getName () : "", ChannelType.LAYER, this.bank.getItem (offset + i).getColor (), layer.isSelected (), sendData, false, layer.isActivated (), layer.isActivated ());
         }
     }
 }

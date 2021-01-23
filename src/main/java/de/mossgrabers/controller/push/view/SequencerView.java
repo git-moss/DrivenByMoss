@@ -13,7 +13,6 @@ import de.mossgrabers.framework.daw.INoteClip;
 import de.mossgrabers.framework.daw.IStepInfo;
 import de.mossgrabers.framework.featuregroup.ModeManager;
 import de.mossgrabers.framework.mode.Modes;
-import de.mossgrabers.framework.utils.ButtonEvent;
 import de.mossgrabers.framework.view.AbstractNoteSequencerView;
 import de.mossgrabers.framework.view.Views;
 
@@ -33,57 +32,7 @@ public class SequencerView extends AbstractNoteSequencerView<PushControlSurface,
      */
     public SequencerView (final PushControlSurface surface, final IModel model)
     {
-        super (Views.VIEW_NAME_SEQUENCER, surface, model, true);
-    }
-
-
-    /** {@inheritDoc} */
-    @Override
-    public void onOctaveDown (final ButtonEvent event)
-    {
-        if (!this.isActive ())
-            return;
-
-        if (this.surface.isShiftPressed ())
-        {
-            if (event == ButtonEvent.DOWN)
-                this.getClip ().transpose (-1);
-            return;
-        }
-
-        if (this.surface.isSelectPressed ())
-        {
-            if (event == ButtonEvent.DOWN)
-                this.getClip ().transpose (-12);
-            return;
-        }
-
-        super.onOctaveDown (event);
-    }
-
-
-    /** {@inheritDoc} */
-    @Override
-    public void onOctaveUp (final ButtonEvent event)
-    {
-        if (!this.isActive ())
-            return;
-
-        if (this.surface.isShiftPressed ())
-        {
-            if (event == ButtonEvent.DOWN)
-                this.getClip ().transpose (1);
-            return;
-        }
-
-        if (this.surface.isSelectPressed ())
-        {
-            if (event == ButtonEvent.DOWN)
-                this.getClip ().transpose (12);
-            return;
-        }
-
-        super.onOctaveUp (event);
+        super (Views.NAME_SEQUENCER, surface, model, true);
     }
 
 

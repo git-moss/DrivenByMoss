@@ -13,6 +13,7 @@ import de.mossgrabers.framework.daw.INoteClip;
 import de.mossgrabers.framework.daw.IStepInfo;
 import de.mossgrabers.framework.daw.constants.Capability;
 import de.mossgrabers.framework.daw.constants.Resolution;
+import de.mossgrabers.framework.daw.data.IItem;
 import de.mossgrabers.framework.featuregroup.IView;
 import de.mossgrabers.framework.utils.StringUtils;
 import de.mossgrabers.framework.view.AbstractSequencerView;
@@ -23,7 +24,7 @@ import de.mossgrabers.framework.view.AbstractSequencerView;
  *
  * @author J&uuml;rgen Mo&szlig;graber
  */
-public class NoteMode extends BaseMode
+public class NoteMode extends BaseMode<IItem>
 {
     private final IHost host;
 
@@ -41,7 +42,7 @@ public class NoteMode extends BaseMode
      */
     public NoteMode (final APCControlSurface surface, final IModel model)
     {
-        super ("Note Edit", surface, model, APCControlSurface.LED_MODE_VOLUME, 0, null);
+        super ("Note Edit", surface, model, APCControlSurface.LED_MODE_VOLUME, null);
 
         this.host = this.model.getHost ();
     }

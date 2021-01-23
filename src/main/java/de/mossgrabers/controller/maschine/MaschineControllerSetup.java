@@ -186,7 +186,7 @@ public class MaschineControllerSetup extends AbstractControllerSetup<MaschineCon
     {
         final IMidiAccess midiAccess = this.factory.createMidiAccess ();
         final IMidiOutput output = midiAccess.createOutput ();
-        final IMidiInput input = midiAccess.createInput (this.maschine.getName (), "80????", "90????");
+        final IMidiInput input = midiAccess.createInput (this.maschine.getName (), "80????", "90????", "A0????", "D0????");
         this.colorManager.registerColorIndex (IPadGrid.GRID_OFF, 0);
         final MaschineControlSurface surface = new MaschineControlSurface (this.host, this.colorManager, this.maschine, this.configuration, output, input);
         this.surfaces.add (surface);

@@ -19,9 +19,11 @@ import de.mossgrabers.framework.utils.ButtonEvent;
 /**
  * Base class for all modes used by Push.
  *
+ * @param <B> The type of the item bank
+ *
  * @author J&uuml;rgen Mo&szlig;graber
  */
-public abstract class BaseMode extends AbstractMode<PushControlSurface, PushConfiguration>
+public abstract class BaseMode<B extends IItem> extends AbstractMode<PushControlSurface, PushConfiguration, B>
 {
     protected static final int SCROLL_RATE     = 8;
 
@@ -50,7 +52,7 @@ public abstract class BaseMode extends AbstractMode<PushControlSurface, PushConf
      * @param model The model
      * @param bank The parameter bank to control with this mode, might be null
      */
-    public BaseMode (final String name, final PushControlSurface surface, final IModel model, final IBank<? extends IItem> bank)
+    public BaseMode (final String name, final PushControlSurface surface, final IModel model, final IBank<B> bank)
     {
         super (name, surface, model, true, bank, DEFAULT_KNOB_IDS);
 

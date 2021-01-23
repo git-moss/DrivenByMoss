@@ -10,7 +10,7 @@ import de.mossgrabers.framework.controller.display.ITextDisplay;
 import de.mossgrabers.framework.daw.IModel;
 import de.mossgrabers.framework.daw.data.ICursorDevice;
 import de.mossgrabers.framework.daw.data.ITrack;
-import de.mossgrabers.framework.mode.track.AbstractTrackMode;
+import de.mossgrabers.framework.mode.track.DefaultTrackMode;
 
 
 /**
@@ -18,7 +18,7 @@ import de.mossgrabers.framework.mode.track.AbstractTrackMode;
  *
  * @author J&uuml;rgen Mo&szlig;graber
  */
-public class TrackTogglesMode extends AbstractTrackMode<SLControlSurface, SLConfiguration>
+public class TrackTogglesMode extends DefaultTrackMode<SLControlSurface, SLConfiguration>
 {
     private static final String OFF = "   Off";
     private static final String ON  = "   On";

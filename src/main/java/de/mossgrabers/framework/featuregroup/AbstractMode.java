@@ -32,10 +32,11 @@ import java.util.function.BooleanSupplier;
  *
  * @param <S> The type of the control surface
  * @param <C> The type of the configuration
+ * @param <B> The type of the item bank
  *
  * @author J&uuml;rgen Mo&szlig;graber
  */
-public abstract class AbstractMode<S extends IControlSurface<C>, C extends Configuration> extends AbstractFeatureGroup<S, C> implements IMode, IParametersAdjustObserver
+public abstract class AbstractMode<S extends IControlSurface<C>, C extends Configuration, B extends IItem> extends AbstractFeatureGroup<S, C> implements IMode, IParametersAdjustObserver
 {
     /** Color identifier for a mode button which is hilighted. */
     public static final String                  BUTTON_COLOR_HI    = "BUTTON_COLOR_HI";
@@ -51,7 +52,7 @@ public abstract class AbstractMode<S extends IControlSurface<C>, C extends Confi
 
     protected IParameterProvider                defaultParameterProvider;
     protected Map<ButtonID, IParameterProvider> parameterProviders = new EnumMap<> (ButtonID.class);
-    protected IBank<? extends IItem>            bank;
+    protected IBank<B>                          bank;
     protected List<ContinuousID>                controls;
     protected boolean                           isAbsolute;
     protected boolean                           isActive;
@@ -82,7 +83,7 @@ public abstract class AbstractMode<S extends IControlSurface<C>, C extends Confi
      */
     public AbstractMode (final String name, final S surface, final IModel model, final boolean isAbsolute)
     {
-        this (name, surface, model, isAbsolute, (IBank<? extends IItem>) null);
+        this (name, surface, model, isAbsolute, (IBank<B>) null);
     }
 
 
@@ -113,7 +114,7 @@ public abstract class AbstractMode<S extends IControlSurface<C>, C extends Confi
      *            change method is used
      * @param bank The parameter bank to control with this mode, might be null
      */
-    public AbstractMode (final String name, final S surface, final IModel model, final boolean isAbsolute, final IBank<? extends IItem> bank)
+    public AbstractMode (final String name, final S surface, final IModel model, final boolean isAbsolute, final IBank<B> bank)
     {
         this (name, surface, model, isAbsolute, bank, null, surface::isShiftPressed);
     }
@@ -130,7 +131,7 @@ public abstract class AbstractMode<S extends IControlSurface<C>, C extends Confi
      * @param bank The parameter bank to control with this mode, might be null
      * @param controls The IDs of the knobs or faders to control this mode
      */
-    public AbstractMode (final String name, final S surface, final IModel model, final boolean isAbsolute, final IBank<? extends IItem> bank, final List<ContinuousID> controls)
+    public AbstractMode (final String name, final S surface, final IModel model, final boolean isAbsolute, final IBank<B> bank, final List<ContinuousID> controls)
     {
         this (name, surface, model, isAbsolute, bank, controls, surface::isShiftPressed);
     }
@@ -149,7 +150,7 @@ public abstract class AbstractMode<S extends IControlSurface<C>, C extends Confi
      * @param isAlternativeFunction Callback function to execute the secondary function, e.g. a
      *            shift button
      */
-    public AbstractMode (final String name, final S surface, final IModel model, final boolean isAbsolute, final IBank<? extends IItem> bank, final List<ContinuousID> controls, final BooleanSupplier isAlternativeFunction)
+    public AbstractMode (final String name, final S surface, final IModel model, final boolean isAbsolute, final IBank<B> bank, final List<ContinuousID> controls, final BooleanSupplier isAlternativeFunction)
     {
         super (name, surface, model);
 
@@ -174,9 +175,9 @@ public abstract class AbstractMode<S extends IControlSurface<C>, C extends Confi
      *
      * @param parameterProvider Interface to get a number of parameters
      */
-    protected void setParameters (final IParameterProvider parameterProvider)
+    protected void setParameterProvider (final IParameterProvider parameterProvider)
     {
-        this.setParameters (null, parameterProvider);
+        this.setParameterProvider (null, parameterProvider);
     }
 
 
@@ -187,7 +188,7 @@ public abstract class AbstractMode<S extends IControlSurface<C>, C extends Confi
      *
      * @param parameterProvider Interface to get a number of parameters
      */
-    protected void setParameters (final ButtonID buttonID, final IParameterProvider parameterProvider)
+    protected void setParameterProvider (final ButtonID buttonID, final IParameterProvider parameterProvider)
     {
         if (this.controls.size () != parameterProvider.size ())
             throw new FrameworkException ("Number of knobs must match the number of parameters!");
@@ -272,7 +273,11 @@ public abstract class AbstractMode<S extends IControlSurface<C>, C extends Confi
     @Override
     public int getKnobValue (final int index)
     {
-        return -1;
+        final IParameterProvider parameterProvider = this.getParameterProvider ();
+        if (parameterProvider == null)
+            return -1;
+        final IParameter param = parameterProvider.get (index);
+        return param.doesExist () ? param.getValue () : -1;
     }
 
 
@@ -455,20 +460,9 @@ public abstract class AbstractMode<S extends IControlSurface<C>, C extends Confi
      *
      * @param bank The new bank to use
      */
-    protected void switchBanks (final IBank<? extends IItem> bank)
+    protected void switchBanks (final IBank<B> bank)
     {
         this.bank = bank;
-    }
-
-
-    /**
-     * Get the item bank, if any.
-     *
-     * @return The bank or null
-     */
-    protected final IBank<? extends IItem> getBank ()
-    {
-        return this.bank;
     }
 
 

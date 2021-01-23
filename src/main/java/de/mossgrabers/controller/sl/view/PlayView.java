@@ -52,7 +52,7 @@ public class PlayView extends AbstractSequencerView<SLControlSurface, SLConfigur
      */
     public PlayView (final SLControlSurface surface, final IModel model)
     {
-        super (Views.VIEW_NAME_PLAY, surface, model, 128, NUM_DISPLAY_COLS, false);
+        super (Views.NAME_PLAY, surface, model, 128, NUM_DISPLAY_COLS, false);
 
         this.transportControl = new TransportControl (surface, model);
 

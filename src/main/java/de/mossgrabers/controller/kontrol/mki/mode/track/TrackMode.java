@@ -13,7 +13,7 @@ import de.mossgrabers.framework.daw.data.ISend;
 import de.mossgrabers.framework.daw.data.ITrack;
 import de.mossgrabers.framework.daw.data.bank.ISendBank;
 import de.mossgrabers.framework.daw.data.bank.ITrackBank;
-import de.mossgrabers.framework.parameterprovider.ChannelParameterProvider;
+import de.mossgrabers.framework.parameterprovider.track.SelectedTrackParameterProvider;
 import de.mossgrabers.framework.utils.StringUtils;
 
 import java.util.Locale;
@@ -24,7 +24,7 @@ import java.util.Locale;
  *
  * @author J&uuml;rgen Mo&szlig;graber
  */
-public class TrackMode extends AbstractKontrol1Mode
+public class TrackMode extends AbstractKontrol1Mode<ITrack>
 {
     /**
      * Constructor.
@@ -37,12 +37,8 @@ public class TrackMode extends AbstractKontrol1Mode
         super ("Track", surface, model, model.getCurrentTrackBank ());
 
         model.addTrackBankObserver (this::switchBanks);
-        model.getTrackBank ().addSelectionObserver ( (index, isSelected) -> this.switchBanks (this.bank));
-        final ITrackBank effectTrackBank = model.getEffectTrackBank ();
-        if (effectTrackBank != null)
-            effectTrackBank.addSelectionObserver ( (index, isSelected) -> this.switchBanks (this.bank));
 
-        this.setParameters (new ChannelParameterProvider (model));
+        this.setParameterProvider (new SelectedTrackParameterProvider (model));
     }
 
 
@@ -82,29 +78,5 @@ public class TrackMode extends AbstractKontrol1Mode
             }
         }
         d.allDone ();
-    }
-
-
-    /** {@inheritDoc} */
-    @Override
-    public void onKnobValue (final int index, final int value)
-    {
-        final ITrackBank tb = this.model.getCurrentTrackBank ();
-        final ITrack selectedTrack = tb.getSelectedItem ();
-        if (selectedTrack == null)
-            return;
-
-        switch (index)
-        {
-            case 0:
-                selectedTrack.changeVolume (value);
-                return;
-            case 1:
-                selectedTrack.changePan (value);
-                return;
-            default:
-                selectedTrack.getSendBank ().getItem (index - 2).changeValue (value);
-                break;
-        }
     }
 }

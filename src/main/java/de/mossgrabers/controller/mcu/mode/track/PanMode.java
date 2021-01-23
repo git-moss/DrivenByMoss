@@ -10,8 +10,8 @@ import de.mossgrabers.framework.daw.IModel;
 import de.mossgrabers.framework.daw.data.ITrack;
 import de.mossgrabers.framework.daw.data.bank.ITrackBank;
 import de.mossgrabers.framework.parameterprovider.IParameterProvider;
-import de.mossgrabers.framework.parameterprovider.PanParameterProvider;
-import de.mossgrabers.framework.parameterprovider.RangeFilterParameterProvider;
+import de.mossgrabers.framework.parameterprovider.special.RangeFilterParameterProvider;
+import de.mossgrabers.framework.parameterprovider.track.PanParameterProvider;
 
 
 /**
@@ -39,16 +39,7 @@ public class PanMode extends AbstractTrackMode
             final int surfaceID = surface.getSurfaceID ();
             parameterProvider = new RangeFilterParameterProvider (new PanParameterProvider (model), surfaceID * 8, 8);
         }
-        this.setParameters (parameterProvider);
-    }
-
-
-    /** {@inheritDoc} */
-    @Override
-    public int getKnobValue (final int index)
-    {
-        final int channel = this.getExtenderOffset () + index;
-        return this.getTrackBank ().getItem (channel).getPan ();
+        this.setParameterProvider (parameterProvider);
     }
 
 

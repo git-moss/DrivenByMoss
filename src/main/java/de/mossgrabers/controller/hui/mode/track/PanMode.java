@@ -7,7 +7,7 @@ package de.mossgrabers.controller.hui.mode.track;
 import de.mossgrabers.controller.hui.controller.HUIControlSurface;
 import de.mossgrabers.framework.daw.IModel;
 import de.mossgrabers.framework.daw.data.ITrack;
-import de.mossgrabers.framework.daw.data.bank.ITrackBank;
+import de.mossgrabers.framework.mode.Modes;
 
 
 /**
@@ -25,7 +25,7 @@ public class PanMode extends AbstractTrackMode
      */
     public PanMode (final HUIControlSurface surface, final IModel model)
     {
-        super ("Panorama", surface, model);
+        super (Modes.NAME_PANORAMA, surface, model);
     }
 
 
@@ -33,7 +33,7 @@ public class PanMode extends AbstractTrackMode
     @Override
     public void onKnobValue (final int index, final int value)
     {
-        this.model.getCurrentTrackBank ().getItem (index).changePan (value);
+        this.getTrack (index).changePan (value);
     }
 
 
@@ -50,11 +50,10 @@ public class PanMode extends AbstractTrackMode
     @Override
     public void updateKnobLEDs ()
     {
-        final ITrackBank tb = this.model.getCurrentTrackBank ();
         final int upperBound = this.model.getValueChanger ().getUpperBound ();
         for (int i = 0; i < 8; i++)
         {
-            final ITrack t = tb.getItem (i);
+            final ITrack t = this.getTrack (i);
             if (t.doesExist ())
                 this.surface.setKnobLED (i, HUIControlSurface.KNOB_LED_MODE_BOOST_CUT, Math.max (t.getPan (), 1), upperBound);
             else
@@ -67,6 +66,6 @@ public class PanMode extends AbstractTrackMode
     @Override
     protected void resetParameter (final int index)
     {
-        this.model.getCurrentTrackBank ().getItem (index).resetPan ();
+        this.getTrack (index).resetPan ();
     }
 }

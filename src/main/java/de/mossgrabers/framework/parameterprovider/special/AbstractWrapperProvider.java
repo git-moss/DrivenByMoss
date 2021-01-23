@@ -2,22 +2,22 @@
 // (c) 2017-2021
 // Licensed under LGPLv3 - http://www.gnu.org/licenses/lgpl-3.0.txt
 
-package de.mossgrabers.framework.parameterprovider;
+package de.mossgrabers.framework.parameterprovider.special;
 
-import de.mossgrabers.framework.daw.data.IParameter;
-import de.mossgrabers.framework.daw.data.ResetParameter;
 import de.mossgrabers.framework.observer.IParametersAdjustObserver;
+import de.mossgrabers.framework.parameterprovider.IParameterProvider;
+
+import java.util.Set;
 
 
 /**
- * Get a number of parameters. This implementation encapsulates the parameters of a another
- * parameter provider to call reset.
+ * Abstract base class for providers which wrap another provider instance.
  *
  * @author J&uuml;rgen Mo&szlig;graber
  */
-public class ResetParameterProvider implements IParameterProvider
+public abstract class AbstractWrapperProvider implements IParameterProvider
 {
-    private final IParameterProvider parameterProvider;
+    protected final IParameterProvider parameterProvider;
 
 
     /**
@@ -25,7 +25,7 @@ public class ResetParameterProvider implements IParameterProvider
      *
      * @param parameterProvider The parameter provider
      */
-    public ResetParameterProvider (final IParameterProvider parameterProvider)
+    public AbstractWrapperProvider (final IParameterProvider parameterProvider)
     {
         this.parameterProvider = parameterProvider;
     }
@@ -36,18 +36,6 @@ public class ResetParameterProvider implements IParameterProvider
     public int size ()
     {
         return this.parameterProvider.size ();
-    }
-
-
-    /**
-     * Throws a FrameworkException if the bank does not contain parameters.
-     *
-     * {@inheritDoc}
-     */
-    @Override
-    public IParameter get (final int index)
-    {
-        return new ResetParameter (this.parameterProvider.get (index));
     }
 
 
@@ -69,8 +57,8 @@ public class ResetParameterProvider implements IParameterProvider
 
     /** {@inheritDoc} */
     @Override
-    public void notifyParametersObservers ()
+    public Set<IParametersAdjustObserver> removeParametersObservers ()
     {
-        this.parameterProvider.notifyParametersObservers ();
+        return this.parameterProvider.removeParametersObservers ();
     }
 }

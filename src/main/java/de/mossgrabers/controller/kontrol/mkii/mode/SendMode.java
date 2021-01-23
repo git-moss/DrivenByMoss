@@ -14,9 +14,9 @@ import de.mossgrabers.framework.daw.data.ISend;
 import de.mossgrabers.framework.daw.data.ITrack;
 import de.mossgrabers.framework.daw.data.bank.ISendBank;
 import de.mossgrabers.framework.daw.data.empty.EmptySend;
-import de.mossgrabers.framework.mode.track.AbstractTrackMode;
-import de.mossgrabers.framework.parameterprovider.CombinedParameterProvider;
-import de.mossgrabers.framework.parameterprovider.SendParameterProvider;
+import de.mossgrabers.framework.mode.track.DefaultTrackMode;
+import de.mossgrabers.framework.parameterprovider.special.CombinedParameterProvider;
+import de.mossgrabers.framework.parameterprovider.track.SendParameterProvider;
 
 import java.util.List;
 
@@ -26,7 +26,7 @@ import java.util.List;
  *
  * @author J&uuml;rgen Mo&szlig;graber
  */
-public class SendMode extends AbstractTrackMode<KontrolProtocolControlSurface, KontrolProtocolConfiguration>
+public class SendMode extends DefaultTrackMode<KontrolProtocolControlSurface, KontrolProtocolConfiguration>
 {
     /**
      * Constructor.
@@ -41,7 +41,7 @@ public class SendMode extends AbstractTrackMode<KontrolProtocolControlSurface, K
 
         this.setControls (controls);
         final SendParameterProvider pp = new SendParameterProvider (model);
-        this.setParameters (new CombinedParameterProvider (pp, pp));
+        this.setParameterProvider (new CombinedParameterProvider (pp, pp));
 
         model.getTrackBank ().addSelectionObserver ( (index, isSelected) -> this.parametersAdjusted ());
     }
@@ -69,7 +69,7 @@ public class SendMode extends AbstractTrackMode<KontrolProtocolControlSurface, K
         // Note: Since we need multiple value (more than 8), index is the MIDI CC of the knob
 
         final IValueChanger valueChanger = this.model.getValueChanger ();
-        final ITrack selectedTrack = (ITrack) this.getBank ().getSelectedItem ();
+        final ITrack selectedTrack = this.bank.getSelectedItem ();
         final ISendBank sendBank = selectedTrack == null ? null : selectedTrack.getSendBank ();
 
         if (index >= KontrolProtocolControlSurface.KONTROL_TRACK_VOLUME && index < KontrolProtocolControlSurface.KONTROL_TRACK_VOLUME + 8)
@@ -107,7 +107,7 @@ public class SendMode extends AbstractTrackMode<KontrolProtocolControlSurface, K
     public void updateDisplay ()
     {
         final IValueChanger valueChanger = this.model.getValueChanger ();
-        final ITrack selectedTrack = (ITrack) this.getBank ().getSelectedItem ();
+        final ITrack selectedTrack = this.bank.getSelectedItem ();
         final ISendBank sendBank = selectedTrack == null ? null : selectedTrack.getSendBank ();
 
         final int [] vuData = new int [16];
@@ -134,7 +134,7 @@ public class SendMode extends AbstractTrackMode<KontrolProtocolControlSurface, K
     @Override
     public void selectPreviousItem ()
     {
-        final ITrack selectedTrack = (ITrack) this.getBank ().getSelectedItem ();
+        final ITrack selectedTrack = this.bank.getSelectedItem ();
         if (selectedTrack != null)
             selectedTrack.getSendBank ().selectPreviousPage ();
     }
@@ -144,7 +144,7 @@ public class SendMode extends AbstractTrackMode<KontrolProtocolControlSurface, K
     @Override
     public void selectNextItem ()
     {
-        final ITrack selectedTrack = (ITrack) this.getBank ().getSelectedItem ();
+        final ITrack selectedTrack = this.bank.getSelectedItem ();
         if (selectedTrack != null)
             selectedTrack.getSendBank ().selectNextPage ();
     }

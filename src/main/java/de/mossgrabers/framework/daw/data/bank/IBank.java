@@ -38,12 +38,20 @@ public interface IBank<T> extends IObserverManagement
 
 
     /**
+     * Check if there is at least 1 existing item in the current page.
+     *
+     * @return True if there is at least 1 existing item
+     */
+    boolean hasExistingItems ();
+
+
+    /**
      * Get the item at the given index.
      *
      * @param index The index of the item to get
      * @return The item
      */
-    T getItem (final int index);
+    T getItem (int index);
 
 
     /**
@@ -67,7 +75,7 @@ public interface IBank<T> extends IObserverManagement
      *
      * @param observer The observer to register
      */
-    void addSelectionObserver (final IItemSelectionObserver observer);
+    void addSelectionObserver (IItemSelectionObserver observer);
 
 
     /**
@@ -75,7 +83,7 @@ public interface IBank<T> extends IObserverManagement
      *
      * @param observer The observer to unregister
      */
-    void removeSelectionObserver (final IItemSelectionObserver observer);
+    void removeSelectionObserver (IItemSelectionObserver observer);
 
 
     /**
@@ -83,7 +91,7 @@ public interface IBank<T> extends IObserverManagement
      *
      * @param observer The observer to register
      */
-    void addPageObserver (final IBankPageObserver observer);
+    void addPageObserver (IBankPageObserver observer);
 
 
     /**
@@ -91,7 +99,7 @@ public interface IBank<T> extends IObserverManagement
      *
      * @param observer The observer to unregister
      */
-    void removePageObserver (final IBankPageObserver observer);
+    void removePageObserver (IBankPageObserver observer);
 
 
     /**
@@ -145,7 +153,7 @@ public interface IBank<T> extends IObserverManagement
      * @param position The postion of the item to scroll to. The position is automaticaly adjusted
      *            to the beginning of a page
      */
-    void scrollTo (final int position);
+    void scrollTo (int position);
 
 
     /**
@@ -155,7 +163,7 @@ public interface IBank<T> extends IObserverManagement
      * @param position The postion of the item to scroll to
      * @param adjustPage If true, the position is adjusted to the beginning of a page
      */
-    void scrollTo (final int position, final boolean adjustPage);
+    void scrollTo (int position, boolean adjustPage);
 
 
     /**
@@ -182,7 +190,7 @@ public interface IBank<T> extends IObserverManagement
      *
      * @param position The position of the item to select
      */
-    void selectItemAtPosition (final int position);
+    void selectItemAtPosition (int position);
 
 
     /**

@@ -27,6 +27,7 @@ public class DeviceInquiry
 {
     private static final int     LENGTH_RESULT_SHORT      = 15;
     private static final int     LENGTH_RESULT_LONG       = 17;
+    private static final int     LENGTH_DEVICE_FAMILY     = 4;
     private static final int     LENGTH_SOFTWARE_REVISION = 4;
 
     private static final int     OFFSET_DEVICE_ID         = 2;
@@ -44,9 +45,26 @@ public class DeviceInquiry
         (byte) 0xF7
     };
 
-    private final boolean        isResult;
-    private final int []         data;
-    private final boolean        isShort;
+
+    /** Possible results. */
+    private enum ResponseType
+    {
+        /** A result with a short manufacturer ID. */
+        SHORT,
+        /** A result with a long manufacturer ID. */
+        LONG,
+        /**
+         * A result which is longer data content than the allowed by the MIDI specification but
+         * valid mesage bytes.
+         */
+        NOT_IN_SPEC,
+        /** Not a valid device inquiry response message. */
+        ERROR
+    }
+
+
+    private final int [] data;
+    private ResponseType responseType;
 
 
     /**
@@ -56,9 +74,22 @@ public class DeviceInquiry
      */
     public DeviceInquiry (final int [] data)
     {
-        this.isShort = data.length == LENGTH_RESULT_SHORT;
-        this.isResult = (this.isShort || data.length == LENGTH_RESULT_LONG) && data[0] == 0xF0 && data[1] == 0x7E && data[3] == 0x06 && data[4] == 0x02 && data[data.length - 1] == 0xF7;
-        this.data = this.isResult ? data : null;
+        this.data = data;
+
+        if (data.length == LENGTH_RESULT_SHORT)
+            this.responseType = ResponseType.SHORT;
+        else if (data.length == LENGTH_RESULT_LONG)
+            this.responseType = ResponseType.LONG;
+        else if (data.length > LENGTH_RESULT_LONG)
+            this.responseType = ResponseType.NOT_IN_SPEC;
+        else
+        {
+            this.responseType = ResponseType.ERROR;
+            return;
+        }
+
+        if (data[0] != 0xF0 || data[1] != 0x7E || data[3] != 0x06 || data[4] != 0x02 || data[data.length - 1] != 0xF7)
+            this.responseType = ResponseType.ERROR;
     }
 
 
@@ -69,18 +100,18 @@ public class DeviceInquiry
      */
     public boolean isValid ()
     {
-        return this.isResult;
+        return this.responseType != ResponseType.ERROR;
     }
 
 
     /**
      * Get the device ID.
      *
-     * @return The device ID or -1 if no data is present
+     * @return The device ID or -1 if data is not valid
      */
     public int getDeviceID ()
     {
-        return this.isResult ? this.data[OFFSET_DEVICE_ID] : -1;
+        return this.isValid () ? this.data[OFFSET_DEVICE_ID] : -1;
     }
 
 
@@ -88,15 +119,15 @@ public class DeviceInquiry
      * Get the manufacturers system exclusive ID code. It is 1 or 3 bytes long for newer IDs. If the
      * first ID is 0, it is a 3 byte code.
      *
-     * @return The manufacturers system exclusive id code or an empty array if the data is empty
+     * @return The manufacturers system exclusive id code or an empty array if data is not valid
      */
     public int [] getManufacturer ()
     {
-        if (!this.isResult)
+        if (!this.isValid ())
             return new int [0];
 
         // Old 1 byte ID
-        if (this.isShort)
+        if (this.responseType == ResponseType.SHORT)
         {
             return new int []
             {
@@ -117,11 +148,11 @@ public class DeviceInquiry
     /**
      * Get the device family code of the message.
      *
-     * @return The code or -1 if no data is present
+     * @return The code or -1 if data is not valid
      */
     public int [] getDeviceFamilyCode ()
     {
-        if (!this.isResult)
+        if (!this.isValid ())
             return new int [0];
 
         final int contentStart = this.getContentStart ();
@@ -136,11 +167,11 @@ public class DeviceInquiry
     /**
      * Get the device family member code of the message.
      *
-     * @return The 2 byte code or an empty array if no data is present
+     * @return The 2 byte code or an empty array if data is not valid
      */
     public int [] getDeviceFamilyMemberCode ()
     {
-        if (!this.isResult)
+        if (!this.isValid ())
             return new int [0];
 
         final int contentStart = this.getContentStart ();
@@ -155,16 +186,36 @@ public class DeviceInquiry
     /**
      * Get the software revision level. The format and length is device specific.
      *
-     * @return The Software revision level or an empty array if no data is present
+     * @return The Software revision level or an empty array if data is not valid
      */
     public int [] getRevisionLevel ()
     {
-        if (!this.isResult)
+        if (!this.isValid ())
             return new int [0];
 
-        final int start = this.getContentStart () + LENGTH_SOFTWARE_REVISION;
+        final int start = this.getContentStart () + LENGTH_DEVICE_FAMILY;
         final int [] softwareData = new int [LENGTH_SOFTWARE_REVISION];
         System.arraycopy (this.data, start, softwareData, 0, LENGTH_SOFTWARE_REVISION);
+        return softwareData;
+    }
+
+
+    /**
+     * Get the data which starts at the software revision position but has more data bytes (> 4) as
+     * specified by the MIDI specification.
+     *
+     * @return The data or an empty array if data is not valid
+     */
+    public int [] getUnspecifiedData ()
+    {
+        if (!this.isValid ())
+            return new int [0];
+
+        final int contentStart = this.getContentStart ();
+        final int length = this.data.length - contentStart - LENGTH_DEVICE_FAMILY - 1;
+        final int start = contentStart + LENGTH_DEVICE_FAMILY;
+        final int [] softwareData = new int [length];
+        System.arraycopy (this.data, start, softwareData, 0, length);
         return softwareData;
     }
 
@@ -187,6 +238,6 @@ public class DeviceInquiry
      */
     private int getContentStart ()
     {
-        return this.isShort ? OFFSET_CONTENT_SHORT : OFFSET_CONTENT_LONG;
+        return this.responseType == ResponseType.SHORT ? OFFSET_CONTENT_SHORT : OFFSET_CONTENT_LONG;
     }
 }

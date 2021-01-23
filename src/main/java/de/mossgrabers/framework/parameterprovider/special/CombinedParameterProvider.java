@@ -2,11 +2,11 @@
 // (c) 2017-2021
 // Licensed under LGPLv3 - http://www.gnu.org/licenses/lgpl-3.0.txt
 
-package de.mossgrabers.framework.parameterprovider;
+package de.mossgrabers.framework.parameterprovider.special;
 
 import de.mossgrabers.framework.daw.data.IParameter;
-import de.mossgrabers.framework.observer.IBankPageObserver;
-import de.mossgrabers.framework.observer.IParametersAdjustObserver;
+import de.mossgrabers.framework.parameterprovider.AbstractParameterProvider;
+import de.mossgrabers.framework.parameterprovider.IParameterProvider;
 
 
 /**
@@ -14,7 +14,7 @@ import de.mossgrabers.framework.observer.IParametersAdjustObserver;
  *
  * @author J&uuml;rgen Mo&szlig;graber
  */
-public class CombinedParameterProvider implements IParameterProvider, IBankPageObserver
+public class CombinedParameterProvider extends AbstractParameterProvider
 {
     private final IParameterProvider first;
     private final IParameterProvider second;
@@ -30,6 +30,9 @@ public class CombinedParameterProvider implements IParameterProvider, IBankPageO
     {
         this.first = first;
         this.second = second;
+
+        this.first.addParametersObserver (this::observerCallback);
+        this.second.addParametersObserver (this::observerCallback);
     }
 
 
@@ -54,36 +57,7 @@ public class CombinedParameterProvider implements IParameterProvider, IBankPageO
     }
 
 
-    /** {@inheritDoc} */
-    @Override
-    public void addParametersObserver (final IParametersAdjustObserver observer)
-    {
-        this.first.addParametersObserver (observer);
-        this.second.addParametersObserver (observer);
-    }
-
-
-    /** {@inheritDoc} */
-    @Override
-    public void removeParametersObserver (final IParametersAdjustObserver observer)
-    {
-        this.first.removeParametersObserver (observer);
-        this.second.removeParametersObserver (observer);
-    }
-
-
-    /** {@inheritDoc} */
-    @Override
-    public void notifyParametersObservers ()
-    {
-        this.first.notifyParametersObservers ();
-        this.second.notifyParametersObservers ();
-    }
-
-
-    /** {@inheritDoc} */
-    @Override
-    public void pageAdjusted ()
+    private void observerCallback ()
     {
         this.notifyParametersObservers ();
     }

@@ -103,25 +103,25 @@ public enum Views
 
 
     /** The name of the play view. */
-    public static final String              VIEW_NAME_PLAY           = "Play";
+    public static final String              NAME_PLAY           = "Play";
     /** The name of the chords view. */
-    public static final String              VIEW_NAME_CHORDS         = "Chords";
+    public static final String              NAME_CHORDS         = "Chords";
     /** The name of the piano view. */
-    public static final String              VIEW_NAME_PIANO          = "Piano";
+    public static final String              NAME_PIANO          = "Piano";
     /** The name of the drum view. */
-    public static final String              VIEW_NAME_DRUM           = "Drum";
+    public static final String              NAME_DRUM           = "Drum";
     /** The name of the drum4 view. */
-    public static final String              VIEW_NAME_DRUM4          = "Drum 4";
+    public static final String              NAME_DRUM4          = "Drum 4";
     /** The name of the drum 8 view. */
-    public static final String              VIEW_NAME_DRUM8          = "Drum 8";
+    public static final String              NAME_DRUM8          = "Drum 8";
     /** The name of the drum 64 view. */
-    public static final String              VIEW_NAME_DRUM64         = "Drum 64";
+    public static final String              NAME_DRUM64         = "Drum 64";
     /** The name of the sequencer view. */
-    public static final String              VIEW_NAME_SEQUENCER      = "Sequencer";
+    public static final String              NAME_SEQUENCER      = "Sequencer";
     /** The name of the raindrops view. */
-    public static final String              VIEW_NAME_RAINDROPS      = "Raindrop";
+    public static final String              NAME_RAINDROPS      = "Raindrop";
     /** The name of the poly sequencer view. */
-    public static final String              VIEW_NAME_POLY_SEQUENCER = "Poly Seq.";
+    public static final String              NAME_POLY_SEQUENCER = "Poly Seq.";
 
     private static final Map<String, Views> NOTE_VIEW_NAMES          = new HashMap<> ();
     private static final List<Views>        NOTE_VIEWS               = new ArrayList<> ();
@@ -153,17 +153,17 @@ public enum Views
         NOTE_VIEWS.add (CHORDS);
         NOTE_VIEWS.add (PIANO);
         NOTE_VIEWS.add (DRUM64);
-        NOTE_VIEW_NAMES.put (VIEW_NAME_PLAY, PLAY);
-        NOTE_VIEW_NAMES.put (VIEW_NAME_CHORDS, CHORDS);
-        NOTE_VIEW_NAMES.put (VIEW_NAME_PIANO, PIANO);
-        NOTE_VIEW_NAMES.put (VIEW_NAME_DRUM64, DRUM64);
+        NOTE_VIEW_NAMES.put (NAME_PLAY, PLAY);
+        NOTE_VIEW_NAMES.put (NAME_CHORDS, CHORDS);
+        NOTE_VIEW_NAMES.put (NAME_PIANO, PIANO);
+        NOTE_VIEW_NAMES.put (NAME_DRUM64, DRUM64);
 
         NOTE_VIEWS.add (DRUM);
         NOTE_VIEWS.add (DRUM4);
         NOTE_VIEWS.add (DRUM8);
-        NOTE_VIEW_NAMES.put (VIEW_NAME_DRUM, DRUM);
-        NOTE_VIEW_NAMES.put (VIEW_NAME_DRUM4, DRUM4);
-        NOTE_VIEW_NAMES.put (VIEW_NAME_DRUM8, DRUM8);
+        NOTE_VIEW_NAMES.put (NAME_DRUM, DRUM);
+        NOTE_VIEW_NAMES.put (NAME_DRUM4, DRUM4);
+        NOTE_VIEW_NAMES.put (NAME_DRUM8, DRUM8);
 
         SEQUENCER_VIEWS.add (DRUM);
         SEQUENCER_VIEWS.add (DRUM4);
@@ -171,8 +171,8 @@ public enum Views
 
         NOTE_VIEWS.add (SEQUENCER);
         NOTE_VIEWS.add (RAINDROPS);
-        NOTE_VIEW_NAMES.put (VIEW_NAME_SEQUENCER, SEQUENCER);
-        NOTE_VIEW_NAMES.put (VIEW_NAME_RAINDROPS, RAINDROPS);
+        NOTE_VIEW_NAMES.put (NAME_SEQUENCER, SEQUENCER);
+        NOTE_VIEW_NAMES.put (NAME_RAINDROPS, RAINDROPS);
 
         SEQUENCER_VIEWS.add (SEQUENCER);
         SEQUENCER_VIEWS.add (RAINDROPS);

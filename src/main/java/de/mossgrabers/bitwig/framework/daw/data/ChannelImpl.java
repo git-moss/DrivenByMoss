@@ -12,6 +12,8 @@ import de.mossgrabers.framework.daw.IHost;
 import de.mossgrabers.framework.daw.data.IChannel;
 import de.mossgrabers.framework.daw.data.IParameter;
 import de.mossgrabers.framework.daw.data.bank.ISendBank;
+import de.mossgrabers.framework.daw.data.empty.EmptyParameter;
+import de.mossgrabers.framework.daw.data.empty.EmptySendBank;
 import de.mossgrabers.framework.daw.resource.ChannelType;
 import de.mossgrabers.framework.observer.IValueObserver;
 
@@ -26,17 +28,17 @@ import com.bitwig.extension.controller.api.SettableColorValue;
  */
 public class ChannelImpl extends AbstractDeviceChainImpl<Channel> implements IChannel
 {
-    protected final IValueChanger               valueChanger;
-
     private static final int                    MAX_RESOLUTION = 16384;
 
+    protected final IValueChanger               valueChanger;
+
     private final AbstractChannelBankImpl<?, ?> channelBankImpl;
+    private final IParameter                    volumeParameter;
+    private final IParameter                    panParameter;
+    private final ISendBank                     sendBank;
 
     private int                                 vuLeft;
     private int                                 vuRight;
-    private IParameter                          volumeParameter;
-    private IParameter                          panParameter;
-    private ISendBank                           sendBank;
 
 
     /**
@@ -58,7 +60,12 @@ public class ChannelImpl extends AbstractDeviceChainImpl<Channel> implements ICh
         this.valueChanger = valueChanger;
 
         if (channel == null)
+        {
+            this.volumeParameter = EmptyParameter.INSTANCE;
+            this.panParameter = EmptyParameter.INSTANCE;
+            this.sendBank = EmptySendBank.INSTANCE;
             return;
+        }
 
         channel.exists ().markInterested ();
         channel.name ().markInterested ();

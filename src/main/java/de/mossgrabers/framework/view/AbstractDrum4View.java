@@ -30,7 +30,7 @@ public abstract class AbstractDrum4View<S extends IControlSurface<C>, C extends 
      */
     public AbstractDrum4View (final S surface, final IModel model, final boolean useDawColors)
     {
-        super (Views.VIEW_NAME_DRUM4, surface, model, 4, 16, useDawColors);
+        super (Views.NAME_DRUM4, surface, model, 4, 16, useDawColors);
     }
 
 
@@ -48,6 +48,6 @@ public abstract class AbstractDrum4View<S extends IControlSurface<C>, C extends 
      */
     public AbstractDrum4View (final S surface, final IModel model, final int lanes, final int numRows, final int numColumns, final int clipCols, final boolean followSelection, final boolean useDawColors)
     {
-        super (Views.VIEW_NAME_DRUM4, surface, model, lanes, numRows, numColumns, clipCols, followSelection, useDawColors);
+        super (Views.NAME_DRUM4, surface, model, lanes, numRows, numColumns, clipCols, followSelection, useDawColors);
     }
 }

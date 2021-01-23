@@ -10,6 +10,7 @@ import de.mossgrabers.controller.kontrol.mki.controller.Kontrol1Display;
 import de.mossgrabers.framework.controller.ButtonID;
 import de.mossgrabers.framework.controller.color.ColorManager;
 import de.mossgrabers.framework.daw.IModel;
+import de.mossgrabers.framework.daw.data.IItem;
 import de.mossgrabers.framework.scale.Scales;
 
 import java.util.Locale;
@@ -20,7 +21,7 @@ import java.util.Locale;
  *
  * @author J&uuml;rgen Mo&szlig;graber
  */
-public class ScaleMode extends AbstractKontrol1Mode
+public class ScaleMode extends AbstractKontrol1Mode<IItem>
 {
     final Scales scales;
 

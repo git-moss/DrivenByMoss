@@ -18,13 +18,14 @@ import java.util.Date;
 /**
  * Base class for knob modes.
  *
+ * @param <B> The type of the item bank
+ * 
  * @author J&uuml;rgen Mo&szlig;graber
  */
-public abstract class BaseMode extends AbstractMode<APCControlSurface, APCConfiguration>
+public abstract class BaseMode<B extends IItem> extends AbstractMode<APCControlSurface, APCConfiguration, B>
 {
     private boolean isKnobMoving;
     private long    moveStartTime;
-    private int     defaultValue;
     private int     ledMode;
 
 
@@ -35,15 +36,13 @@ public abstract class BaseMode extends AbstractMode<APCControlSurface, APCConfig
      * @param surface The control surface
      * @param model The model
      * @param ledMode The mode for the knob LEDs
-     * @param defaultValue Default value to use
      * @param bank The parameter bank to control with this mode, might be null
      */
-    public BaseMode (final String name, final APCControlSurface surface, final IModel model, final int ledMode, final int defaultValue, final IBank<? extends IItem> bank)
+    public BaseMode (final String name, final APCControlSurface surface, final IModel model, final int ledMode, final IBank<B> bank)
     {
         super (name, surface, model, false, bank, DEFAULT_KNOB_IDS);
 
         this.ledMode = ledMode;
-        this.defaultValue = defaultValue;
 
         this.isKnobMoving = false;
         this.moveStartTime = 0;
@@ -59,17 +58,6 @@ public abstract class BaseMode extends AbstractMode<APCControlSurface, APCConfig
     public void setValue (final int index, final int value)
     {
         // Overwrite for modes which cannot use direct parameter mapping
-    }
-
-
-    /** {@inheritDoc} */
-    @Override
-    public void onActivate ()
-    {
-        super.onActivate ();
-
-        for (int i = 0; i < 8; i++)
-            this.surface.setLED (APCControlSurface.APC_KNOB_TRACK_KNOB_LED_1 + i, this.ledMode);
     }
 
 
@@ -97,7 +85,9 @@ public abstract class BaseMode extends AbstractMode<APCControlSurface, APCConfig
         for (int i = 0; i < 8; i++)
         {
             final int value = this.getKnobValue (i);
-            this.surface.setLED (APCControlSurface.APC_KNOB_TRACK_KNOB_1 + i, value < 0 ? this.defaultValue : value);
+            final boolean isOff = value < 0;
+            this.surface.setLED (APCControlSurface.APC_KNOB_TRACK_KNOB_LED_MODE_1 + i, isOff ? APCControlSurface.LED_MODE_VOLUME : this.ledMode);
+            this.surface.setLED (APCControlSurface.APC_KNOB_TRACK_KNOB_1 + i, isOff ? 0 : value);
         }
     }
 

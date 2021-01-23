@@ -34,7 +34,7 @@ public class ChordsView extends AbstractChordView<PushControlSurface, PushConfig
      */
     public ChordsView (final PushControlSurface surface, final IModel model)
     {
-        this (Views.VIEW_NAME_CHORDS, surface, model);
+        this (Views.NAME_CHORDS, surface, model);
     }
 
 

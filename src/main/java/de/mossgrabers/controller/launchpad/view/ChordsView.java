@@ -53,7 +53,7 @@ public class ChordsView extends AbstractChordView<LaunchpadControlSurface, Launc
      */
     public ChordsView (final LaunchpadControlSurface surface, final IModel model)
     {
-        this (Views.VIEW_NAME_CHORDS, surface, model);
+        this (Views.NAME_CHORDS, surface, model);
     }
 
 

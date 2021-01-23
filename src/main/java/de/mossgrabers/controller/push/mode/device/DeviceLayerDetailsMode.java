@@ -2,7 +2,7 @@
 // (c) 2017-2021
 // Licensed under LGPLv3 - http://www.gnu.org/licenses/lgpl-3.0.txt
 
-package de.mossgrabers.controller.push.mode.track;
+package de.mossgrabers.controller.push.mode.device;
 
 import de.mossgrabers.controller.push.controller.PushColorManager;
 import de.mossgrabers.controller.push.controller.PushControlSurface;
@@ -13,7 +13,6 @@ import de.mossgrabers.framework.controller.display.IGraphicDisplay;
 import de.mossgrabers.framework.controller.display.ITextDisplay;
 import de.mossgrabers.framework.daw.IModel;
 import de.mossgrabers.framework.daw.data.IChannel;
-import de.mossgrabers.framework.daw.data.bank.IChannelBank;
 import de.mossgrabers.framework.daw.data.bank.IDrumPadBank;
 import de.mossgrabers.framework.featuregroup.AbstractFeatureGroup;
 import de.mossgrabers.framework.featuregroup.AbstractMode;
@@ -27,7 +26,8 @@ import de.mossgrabers.framework.view.Views;
  *
  * @author J&uuml;rgen Mo&szlig;graber
  */
-public class LayerDetailsMode extends BaseMode
+@SuppressWarnings("rawtypes")
+public class DeviceLayerDetailsMode extends BaseMode
 {
     /**
      * Constructor.
@@ -35,7 +35,8 @@ public class LayerDetailsMode extends BaseMode
      * @param surface The control surface
      * @param model The model
      */
-    public LayerDetailsMode (final PushControlSurface surface, final IModel model)
+    @SuppressWarnings("unchecked")
+    public DeviceLayerDetailsMode (final PushControlSurface surface, final IModel model)
     {
         super ("Layer details", surface, model, model.getCursorDevice ().getLayerOrDrumPadBank ());
 
@@ -49,7 +50,7 @@ public class LayerDetailsMode extends BaseMode
     {
         if (event != ButtonEvent.UP)
             return;
-        final IChannel channel = this.model.getCursorDevice ().getLayerOrDrumPadBank ().getSelectedItem ();
+        final IChannel channel = (IChannel) this.bank.getSelectedItem ();
         if (channel == null)
             return;
 
@@ -82,19 +83,16 @@ public class LayerDetailsMode extends BaseMode
     {
         if (event != ButtonEvent.UP)
             return;
-        final IChannelBank<?> bank = this.model.getCursorDevice ().getLayerOrDrumPadBank ();
-        if (bank == null)
-            return;
 
         switch (index)
         {
             case 6:
-                if (bank instanceof IDrumPadBank)
-                    ((IDrumPadBank) bank).clearMute ();
+                if (this.bank instanceof IDrumPadBank)
+                    ((IDrumPadBank) this.bank).clearMute ();
                 break;
             case 7:
-                if (bank instanceof IDrumPadBank)
-                    ((IDrumPadBank) bank).clearSolo ();
+                if (this.bank instanceof IDrumPadBank)
+                    ((IDrumPadBank) this.bank).clearSolo ();
                 break;
             default:
                 // Not used
@@ -107,8 +105,8 @@ public class LayerDetailsMode extends BaseMode
     @Override
     public int getButtonColor (final ButtonID buttonID)
     {
-        final IChannel deviceChain = this.model.getCursorDevice ().getLayerOrDrumPadBank ().getSelectedItem ();
-        if (deviceChain == null)
+        final IChannel channel = (IChannel) this.bank.getSelectedItem ();
+        if (channel == null)
             return super.getButtonColor (buttonID);
 
         int index = this.isButtonRow (0, buttonID);
@@ -117,11 +115,11 @@ public class LayerDetailsMode extends BaseMode
             switch (index)
             {
                 case 0:
-                    return deviceChain.isActivated () ? this.isPush2 ? PushColorManager.PUSH2_COLOR_YELLOW_MD : PushColorManager.PUSH1_COLOR_YELLOW_MD : this.isPush2 ? PushColorManager.PUSH2_COLOR_YELLOW_LO : PushColorManager.PUSH1_COLOR_YELLOW_LO;
+                    return channel.isActivated () ? this.isPush2 ? PushColorManager.PUSH2_COLOR_YELLOW_MD : PushColorManager.PUSH1_COLOR_YELLOW_MD : this.isPush2 ? PushColorManager.PUSH2_COLOR_YELLOW_LO : PushColorManager.PUSH1_COLOR_YELLOW_LO;
                 case 2:
-                    return deviceChain.isMute () ? this.isPush2 ? PushColorManager.PUSH2_COLOR_ORANGE_HI : PushColorManager.PUSH1_COLOR_ORANGE_HI : this.isPush2 ? PushColorManager.PUSH2_COLOR_ORANGE_LO : PushColorManager.PUSH1_COLOR_ORANGE_LO;
+                    return channel.isMute () ? this.isPush2 ? PushColorManager.PUSH2_COLOR_ORANGE_HI : PushColorManager.PUSH1_COLOR_ORANGE_HI : this.isPush2 ? PushColorManager.PUSH2_COLOR_ORANGE_LO : PushColorManager.PUSH1_COLOR_ORANGE_LO;
                 case 3:
-                    return deviceChain.isSolo () ? this.isPush2 ? PushColorManager.PUSH2_COLOR_ORANGE_HI : PushColorManager.PUSH1_COLOR_ORANGE_HI : this.isPush2 ? PushColorManager.PUSH2_COLOR_ORANGE_LO : PushColorManager.PUSH1_COLOR_ORANGE_LO;
+                    return channel.isSolo () ? this.isPush2 ? PushColorManager.PUSH2_COLOR_ORANGE_HI : PushColorManager.PUSH1_COLOR_ORANGE_HI : this.isPush2 ? PushColorManager.PUSH2_COLOR_ORANGE_LO : PushColorManager.PUSH1_COLOR_ORANGE_LO;
                 case 7:
                     return this.isPush2 ? PushColorManager.PUSH2_COLOR_GREEN_HI : PushColorManager.PUSH1_COLOR_GREEN_HI;
                 default:
@@ -133,7 +131,7 @@ public class LayerDetailsMode extends BaseMode
         if (index >= 0)
         {
             if (index >= 6)
-                return this.model.getColorManager ().getColorIndex (this.model.getCursorDevice ().getLayerOrDrumPadBank () instanceof IDrumPadBank ? AbstractMode.BUTTON_COLOR2_ON : AbstractFeatureGroup.BUTTON_COLOR_OFF);
+                return this.model.getColorManager ().getColorIndex (this.bank instanceof IDrumPadBank ? AbstractMode.BUTTON_COLOR2_ON : AbstractFeatureGroup.BUTTON_COLOR_OFF);
             return this.isPush2 ? PushColorManager.PUSH2_COLOR_BLACK : PushColorManager.PUSH1_COLOR_BLACK;
         }
 
@@ -145,22 +143,22 @@ public class LayerDetailsMode extends BaseMode
     @Override
     public void updateDisplay1 (final ITextDisplay display)
     {
-        final IChannel deviceChain = this.model.getCursorDevice ().getLayerOrDrumPadBank ().getSelectedItem ();
-        if (deviceChain == null)
+        final IChannel channel = (IChannel) this.bank.getSelectedItem ();
+        if (channel == null)
         {
             display.setRow (1, "                     Please selecta layer...                        ");
             return;
         }
 
-        final String layerName = deviceChain.getName ();
+        final String layerName = channel.getName ();
         display.setBlock (0, 0, "Layer: " + layerName);
         if (layerName.length () > 10)
             display.setBlock (0, 1, layerName.substring (10));
-        display.setCell (2, 0, "Active").setCell (3, 0, deviceChain.isActivated () ? "On" : "Off");
+        display.setCell (2, 0, "Active").setCell (3, 0, channel.isActivated () ? "On" : "Off");
         display.setCell (2, 1, "");
         display.setCell (3, 1, "");
-        display.setCell (2, 2, "Mute").setCell (3, 2, deviceChain.isMute () ? "On" : "Off");
-        display.setCell (2, 3, "Solo").setCell (3, 3, deviceChain.isSolo () ? "On" : "Off");
+        display.setCell (2, 2, "Mute").setCell (3, 2, channel.isMute () ? "On" : "Off");
+        display.setCell (2, 3, "Solo").setCell (3, 3, channel.isSolo () ? "On" : "Off");
         display.setCell (2, 4, "");
         display.setCell (3, 4, "");
         display.setCell (2, 5, "");
@@ -176,17 +174,17 @@ public class LayerDetailsMode extends BaseMode
     @Override
     public void updateDisplay2 (final IGraphicDisplay display)
     {
-        final IChannel deviceChain = this.model.getCursorDevice ().getLayerOrDrumPadBank ().getSelectedItem ();
-        if (deviceChain == null)
+        final IChannel channel = (IChannel) this.bank.getSelectedItem ();
+        if (channel == null)
         {
             display.setMessage (3, "Please select a layer...");
             return;
         }
 
-        display.addOptionElement ("Layer: " + deviceChain.getName (), "", false, "", "Active", deviceChain.isActivated (), false);
+        display.addOptionElement ("Layer: " + channel.getName (), "", false, "", "Active", channel.isActivated (), false);
         display.addEmptyElement ();
-        display.addOptionElement ("", "", false, "", "Mute", deviceChain.isMute (), false);
-        display.addOptionElement ("", "", false, "", "Solo", deviceChain.isSolo (), false);
+        display.addOptionElement ("", "", false, "", "Mute", channel.isMute (), false);
+        display.addOptionElement ("", "", false, "", "Solo", channel.isSolo (), false);
         display.addEmptyElement ();
         display.addEmptyElement ();
         display.addOptionElement ("", "Clear Mute", false, "", "", false, false);

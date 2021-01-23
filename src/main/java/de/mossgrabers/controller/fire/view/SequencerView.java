@@ -14,6 +14,7 @@ import de.mossgrabers.framework.daw.IStepInfo;
 import de.mossgrabers.framework.daw.data.ITrack;
 import de.mossgrabers.framework.featuregroup.ModeManager;
 import de.mossgrabers.framework.mode.Modes;
+import de.mossgrabers.framework.scale.Scales;
 import de.mossgrabers.framework.utils.ButtonEvent;
 import de.mossgrabers.framework.view.AbstractNoteSequencerView;
 import de.mossgrabers.framework.view.Views;
@@ -34,7 +35,7 @@ public class SequencerView extends AbstractNoteSequencerView<FireControlSurface,
      */
     public SequencerView (final FireControlSurface surface, final IModel model)
     {
-        super (Views.VIEW_NAME_SEQUENCER, surface, model, 16, 4, true);
+        super (Views.NAME_SEQUENCER, surface, model, 16, 4, true);
 
         this.numDisplayRows = 4;
     }
@@ -128,29 +129,19 @@ public class SequencerView extends AbstractNoteSequencerView<FireControlSurface,
         if (event != ButtonEvent.DOWN || !this.isActive ())
             return;
 
+        final boolean isShiftPressed = this.surface.isShiftPressed ();
+        final boolean isAltPressed = this.surface.isPressed (ButtonID.ALT);
+
         final ITrack cursorTrack = this.model.getCursorTrack ();
-        final INoteClip clip = this.getClip ();
 
         switch (buttonID)
         {
             case ARROW_LEFT:
-                if (this.surface.isPressed (ButtonID.ALT))
-                    this.setResolutionIndex (this.selectedResolutionIndex - 1);
-                else
-                {
-                    clip.scrollStepsPageBackwards ();
-                    this.surface.getDisplay ().notify ("Page: " + (clip.getEditPage () + 1));
-                }
+                this.handleArrowLeft (isShiftPressed, isAltPressed);
                 return;
 
             case ARROW_RIGHT:
-                if (this.surface.isPressed (ButtonID.ALT))
-                    this.setResolutionIndex (this.selectedResolutionIndex + 1);
-                else
-                {
-                    clip.scrollStepsPageForward ();
-                    this.surface.getDisplay ().notify ("Page: " + (clip.getEditPage () + 1));
-                }
+                this.handleArrowRight (isShiftPressed, isAltPressed);
                 return;
 
             case SCENE1:
@@ -184,5 +175,63 @@ public class SequencerView extends AbstractNoteSequencerView<FireControlSurface,
             this.onOctaveUp (ButtonEvent.DOWN);
         else
             this.onOctaveDown (ButtonEvent.DOWN);
+    }
+
+
+    private void handleArrowLeft (final boolean isShiftPressed, final boolean isAltPressed)
+    {
+        if (isShiftPressed)
+        {
+            if (isAltPressed)
+            {
+                this.scales.prevScaleOffset ();
+                this.mvHelper.delayDisplay ( () -> Scales.BASES[this.scales.getScaleOffset ()]);
+            }
+            else
+            {
+                this.scales.prevScale ();
+                this.mvHelper.delayDisplay ( () -> this.scales.getScale ().getName ());
+            }
+            this.updateScale ();
+        }
+        else if (isAltPressed)
+        {
+            this.setResolutionIndex (this.selectedResolutionIndex - 1);
+        }
+        else
+        {
+            final INoteClip clip = this.getClip ();
+            clip.scrollStepsPageBackwards ();
+            this.surface.getDisplay ().notify ("Page: " + (clip.getEditPage () + 1));
+        }
+    }
+
+
+    private void handleArrowRight (final boolean isShiftPressed, final boolean isAltPressed)
+    {
+        if (isShiftPressed)
+        {
+            if (isAltPressed)
+            {
+                this.scales.nextScaleOffset ();
+                this.mvHelper.delayDisplay ( () -> Scales.BASES[this.scales.getScaleOffset ()]);
+            }
+            else
+            {
+                this.scales.nextScale ();
+                this.mvHelper.delayDisplay ( () -> this.scales.getScale ().getName ());
+            }
+            this.updateScale ();
+        }
+        else if (isAltPressed)
+        {
+            this.setResolutionIndex (this.selectedResolutionIndex + 1);
+        }
+        else
+        {
+            final INoteClip clip = this.getClip ();
+            clip.scrollStepsPageForward ();
+            this.surface.getDisplay ().notify ("Page: " + (clip.getEditPage () + 1));
+        }
     }
 }

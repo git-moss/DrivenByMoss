@@ -12,12 +12,13 @@ import de.mossgrabers.framework.controller.ContinuousID;
 import de.mossgrabers.framework.controller.display.IGraphicDisplay;
 import de.mossgrabers.framework.daw.IModel;
 import de.mossgrabers.framework.daw.data.IChannel;
+import de.mossgrabers.framework.daw.data.ILayer;
 import de.mossgrabers.framework.daw.data.ISend;
 import de.mossgrabers.framework.daw.data.ISpecificDevice;
 import de.mossgrabers.framework.daw.data.bank.ISendBank;
 import de.mossgrabers.framework.featuregroup.AbstractMode;
 import de.mossgrabers.framework.mode.Modes;
-import de.mossgrabers.framework.parameterprovider.DrumPadParameterProvider;
+import de.mossgrabers.framework.parameterprovider.device.SelectedLayerOrDrumPadParameterProvider;
 
 
 /**
@@ -25,7 +26,7 @@ import de.mossgrabers.framework.parameterprovider.DrumPadParameterProvider;
  *
  * @author J&uuml;rgen Mo&szlig;graber
  */
-public class FireLayerMode extends AbstractMode<FireControlSurface, FireConfiguration>
+public class FireLayerMode extends AbstractMode<FireControlSurface, FireConfiguration, ILayer>
 {
     private static final Modes [] MODES     =
     {
@@ -57,7 +58,7 @@ public class FireLayerMode extends AbstractMode<FireControlSurface, FireConfigur
         super ("Channel", surface, model);
 
         this.setControls (ContinuousID.createSequentialList (ContinuousID.KNOB1, 4));
-        this.setParameters (new Fire4KnobProvider (surface, new DrumPadParameterProvider (model)));
+        this.setParameterProvider (new Fire4KnobProvider (surface, new SelectedLayerOrDrumPadParameterProvider (this.model.getDrumDevice ())));
     }
 
 
@@ -70,7 +71,7 @@ public class FireLayerMode extends AbstractMode<FireControlSurface, FireConfigur
         final IGraphicDisplay display = this.surface.getGraphicsDisplay ();
 
         String desc = "Select";
-        String label = "a channel";
+        String label = "a drum pad";
         int value = -1;
         boolean isPan = false;
 

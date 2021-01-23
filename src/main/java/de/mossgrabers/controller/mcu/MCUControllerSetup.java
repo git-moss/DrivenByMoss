@@ -193,7 +193,7 @@ public class MCUControllerSetup extends AbstractControllerSetup<MCUControlSurfac
 
             final IMode activeOrTempMode = modeManager.getActive ();
             if (activeOrTempMode instanceof BaseMode)
-                ((BaseMode) activeOrTempMode).updateKnobLEDs ();
+                ((BaseMode<?>) activeOrTempMode).updateKnobLEDs ();
         });
     }
 
@@ -320,7 +320,7 @@ public class MCUControllerSetup extends AbstractControllerSetup<MCUControlSurfac
             for (int index = 0; index < this.numMCUDevices; index++)
             {
                 final MCUControlSurface surface = this.getSurface (index);
-                final AbstractMode<?, ?> mode = (AbstractMode<?, ?>) surface.getModeManager ().getActive ();
+                final AbstractMode<?, ?, ?> mode = (AbstractMode<?, ?, ?>) surface.getModeManager ().getActive ();
                 if (mode != null)
                     mode.parametersAdjusted ();
             }
@@ -792,7 +792,7 @@ public class MCUControllerSetup extends AbstractControllerSetup<MCUControlSurfac
                 if (mode.isKnobTouched (channel))
                     continue;
 
-                final int value = mode.getKnobValue (channel);
+                final int value = Math.max (0, mode.getKnobValue (channel));
                 final int position = surface.getExtenderOffset () + channel;
                 if (value != this.faderValues[position])
                 {

@@ -6,6 +6,7 @@ package de.mossgrabers.controller.push.mode.device;
 
 import de.mossgrabers.controller.push.PushConfiguration;
 import de.mossgrabers.controller.push.controller.PushControlSurface;
+import de.mossgrabers.controller.push.parameterprovider.PushVolumeLayerOrDrumPadParameterProvider;
 import de.mossgrabers.framework.controller.ButtonID;
 import de.mossgrabers.framework.controller.display.AbstractGraphicDisplay;
 import de.mossgrabers.framework.controller.display.Format;
@@ -13,9 +14,7 @@ import de.mossgrabers.framework.controller.display.IGraphicDisplay;
 import de.mossgrabers.framework.controller.display.ITextDisplay;
 import de.mossgrabers.framework.daw.IModel;
 import de.mossgrabers.framework.daw.data.IChannel;
-import de.mossgrabers.framework.daw.data.ICursorDevice;
-import de.mossgrabers.framework.daw.data.IParameter;
-import de.mossgrabers.framework.daw.data.empty.EmptyParameter;
+import de.mossgrabers.framework.mode.Modes;
 
 
 /**
@@ -33,21 +32,9 @@ public class DeviceLayerModeVolume extends DeviceLayerMode
      */
     public DeviceLayerModeVolume (final PushControlSurface surface, final IModel model)
     {
-        super ("Layer Volume", surface, model);
-    }
+        super (Modes.NAME_LAYER_VOLUME, surface, model);
 
-
-    /** {@inheritDoc} */
-    @Override
-    public IParameter get (final int index)
-    {
-        final ICursorDevice cd = this.model.getCursorDevice ();
-        if (!cd.hasLayers ())
-            return EmptyParameter.INSTANCE;
-
-        // Drum Pad Bank has size of 16, layers only 8
-        final int offset = getDrumPadIndex (cd);
-        return cd.getLayerOrDrumPadBank ().getItem (offset + index).getVolumeParameter ();
+        this.setParameterProvider (new PushVolumeLayerOrDrumPadParameterProvider (this.cursorDevice));
     }
 
 
@@ -57,11 +44,9 @@ public class DeviceLayerModeVolume extends DeviceLayerMode
     {
         this.isKnobTouched[index] = isTouched;
 
-        final ICursorDevice cd = this.model.getCursorDevice ();
-
         // Drum Pad Bank has size of 16, layers only 8
-        final int offset = getDrumPadIndex (cd);
-        final IChannel layer = cd.getLayerOrDrumPadBank ().getItem (offset + index);
+        final int offset = this.getDrumPadIndex ();
+        final IChannel layer = this.bank.getItem (offset + index);
         if (!layer.doesExist ())
             return;
 
@@ -80,34 +65,33 @@ public class DeviceLayerModeVolume extends DeviceLayerMode
     @Override
     public void updateDisplay1 (final ITextDisplay display)
     {
-        final ICursorDevice cd = this.model.getCursorDevice ();
-        if (!cd.hasLayers ())
+        if (!this.cursorDevice.hasLayers ())
             display.setBlock (1, 1, "    This device  ").setBlock (1, 2, "does not have layers.");
-        else if (cd.getLayerBank ().hasZeroLayers ())
-            display.setBlock (1, 1, "    Please create").setBlock (1, 2, cd.hasDrumPads () ? "a Drum Pad..." : "a Device Layer...");
+        else if (!this.bank.hasExistingItems ())
+            display.setBlock (1, 1, "    Please create").setBlock (1, 2, this.cursorDevice.hasDrumPads () ? "a Drum Pad..." : "a Device Layer...");
         else
         {
             // Drum Pad Bank has size of 16, layers only 8
-            final int offset = getDrumPadIndex (cd);
+            final int offset = this.getDrumPadIndex ();
 
             final PushConfiguration config = this.surface.getConfiguration ();
             for (int i = 0; i < 8; i++)
             {
-                final IChannel layer = cd.getLayerOrDrumPadBank ().getItem (offset + i);
+                final IChannel layer = this.bank.getItem (offset + i);
                 display.setCell (0, i, layer.doesExist () ? "Volume" : "").setCell (1, i, layer.getVolumeStr (8));
                 if (layer.doesExist ())
                     display.setCell (2, i, config.isEnableVUMeters () ? layer.getVu () : layer.getVolume (), Format.FORMAT_VALUE);
             }
         }
 
-        this.drawRow4 (display, cd);
+        this.drawRow4 (display);
     }
 
 
     /** {@inheritDoc} */
     @Override
-    public void updateDisplayElements (final IGraphicDisplay message, final ICursorDevice cd, final IChannel l)
+    public void updateDisplayElements (final IGraphicDisplay message, final IChannel l)
     {
-        this.updateChannelDisplay (message, cd, AbstractGraphicDisplay.GRID_ELEMENT_CHANNEL_VOLUME, true, false);
+        this.updateChannelDisplay (message, AbstractGraphicDisplay.GRID_ELEMENT_CHANNEL_VOLUME, true, false);
     }
 }

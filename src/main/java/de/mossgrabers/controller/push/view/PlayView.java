@@ -34,7 +34,7 @@ public class PlayView extends AbstractPlayView<PushControlSurface, PushConfigura
      */
     public PlayView (final PushControlSurface surface, final IModel model)
     {
-        this (Views.VIEW_NAME_PLAY, surface, model);
+        this (Views.NAME_PLAY, surface, model);
     }
 
 

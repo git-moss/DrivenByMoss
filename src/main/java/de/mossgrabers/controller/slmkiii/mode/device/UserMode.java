@@ -10,7 +10,7 @@ import de.mossgrabers.controller.slmkiii.controller.SLMkIIIDisplay;
 import de.mossgrabers.framework.controller.ButtonID;
 import de.mossgrabers.framework.daw.IModel;
 import de.mossgrabers.framework.daw.data.IParameter;
-import de.mossgrabers.framework.parameterprovider.BankParameterProvider;
+import de.mossgrabers.framework.parameterprovider.device.BankParameterProvider;
 import de.mossgrabers.framework.utils.ButtonEvent;
 import de.mossgrabers.framework.utils.StringUtils;
 
@@ -20,7 +20,7 @@ import de.mossgrabers.framework.utils.StringUtils;
  *
  * @author J&uuml;rgen Mo&szlig;graber
  */
-public class UserMode extends AbstractParametersMode
+public class UserMode extends AbstractParametersMode<IParameter>
 {
     /**
      * Constructor.
@@ -32,7 +32,7 @@ public class UserMode extends AbstractParametersMode
     {
         super ("User Parameters", surface, model, model.getUserParameterBank ());
 
-        this.setParameters (new BankParameterProvider (model.getUserParameterBank ()));
+        this.setParameterProvider (new BankParameterProvider (this.bank));
     }
 
 
@@ -85,7 +85,7 @@ public class UserMode extends AbstractParametersMode
         // Row 1 & 2
         for (int i = 0; i < 8; i++)
         {
-            final IParameter param = (IParameter) this.bank.getItem (i);
+            final IParameter param = this.bank.getItem (i);
             d.setCell (0, i, param.doesExist () ? StringUtils.fixASCII (param.getName (9)) : "").setCell (1, i, param.getDisplayedValue (9));
 
             final int color = param.doesExist () ? SLMkIIIColorManager.SLMKIII_WHITE : SLMkIIIColorManager.SLMKIII_BLACK;

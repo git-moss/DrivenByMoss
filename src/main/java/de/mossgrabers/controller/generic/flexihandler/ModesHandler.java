@@ -120,21 +120,14 @@ public class ModesHandler extends AbstractHandler
         switch (command)
         {
             case MODES_KNOB1:
-                return mode == null ? 0 : mode.getKnobValue (0);
             case MODES_KNOB2:
-                return mode == null ? 0 : mode.getKnobValue (1);
             case MODES_KNOB3:
-                return mode == null ? 0 : mode.getKnobValue (2);
             case MODES_KNOB4:
-                return mode == null ? 0 : mode.getKnobValue (3);
             case MODES_KNOB5:
-                return mode == null ? 0 : mode.getKnobValue (4);
             case MODES_KNOB6:
-                return mode == null ? 0 : mode.getKnobValue (5);
             case MODES_KNOB7:
-                return mode == null ? 0 : mode.getKnobValue (6);
             case MODES_KNOB8:
-                return mode == null ? 0 : mode.getKnobValue (7);
+                return mode.getKnobValue (command.ordinal () - FlexiCommand.MODES_KNOB1.ordinal ());
 
             default:
                 return -1;

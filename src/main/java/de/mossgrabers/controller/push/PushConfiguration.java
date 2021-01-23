@@ -49,6 +49,9 @@ public class PushConfiguration extends AbstractConfiguration implements IGraphic
     /** Setting for the ribbon mode note repeat. */
     public static final Integer     RIBBON_MODE_NOTE_REPEAT         = Integer.valueOf (52);
 
+    /** Setting for toggling the sends. */
+    public static final Integer     TOGGLING_SENDS                  = Integer.valueOf (53);
+
     /** Setting for the velocity curve. */
     public static final Integer     VELOCITY_CURVE                  = Integer.valueOf (54);
     /** Setting for the pad threshold. */
@@ -658,6 +661,7 @@ public class PushConfiguration extends AbstractConfiguration implements IGraphic
     public void setSendsAreToggled (final boolean sendsAreToggled)
     {
         this.sendsAreToggled = sendsAreToggled;
+        this.notifyObservers (TOGGLING_SENDS);
     }
 
 
@@ -1229,7 +1233,7 @@ public class PushConfiguration extends AbstractConfiguration implements IGraphic
     private void activateDefaultNoteViewSetting (final ISettingsUI settingsUI)
     {
         final String [] noteViewNames = Views.getNoteViewNames ();
-        final IEnumSetting defaultNoteViewSetting = settingsUI.getEnumSetting ("Default note view", CATEGORY_PLAY_AND_SEQUENCE, noteViewNames, Views.VIEW_NAME_PLAY);
+        final IEnumSetting defaultNoteViewSetting = settingsUI.getEnumSetting ("Default note view", CATEGORY_PLAY_AND_SEQUENCE, noteViewNames, Views.NAME_PLAY);
         defaultNoteViewSetting.addValueObserver (value -> {
             this.defaultNoteView = Views.getNoteView (value);
             this.notifyObservers (DEFAULT_NOTE_VIEW);

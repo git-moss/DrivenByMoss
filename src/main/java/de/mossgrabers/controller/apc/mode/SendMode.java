@@ -7,7 +7,7 @@ package de.mossgrabers.controller.apc.mode;
 import de.mossgrabers.controller.apc.controller.APCControlSurface;
 import de.mossgrabers.framework.daw.IModel;
 import de.mossgrabers.framework.daw.data.ITrack;
-import de.mossgrabers.framework.parameterprovider.SendParameterProvider;
+import de.mossgrabers.framework.parameterprovider.track.SendParameterProvider;
 
 
 /**
@@ -15,7 +15,7 @@ import de.mossgrabers.framework.parameterprovider.SendParameterProvider;
  *
  * @author J&uuml;rgen Mo&szlig;graber
  */
-public class SendMode extends BaseMode
+public class SendMode extends BaseMode<ITrack>
 {
     private int sendIndex;
 
@@ -29,21 +29,10 @@ public class SendMode extends BaseMode
      */
     public SendMode (final APCControlSurface surface, final IModel model, final int sendIndex)
     {
-        super ("Send", surface, model, APCControlSurface.LED_MODE_VOLUME, 0, model.getCurrentTrackBank ());
+        super ("Send", surface, model, APCControlSurface.LED_MODE_VOLUME, model.getCurrentTrackBank ());
 
         this.sendIndex = sendIndex;
 
-        this.setParameters (new SendParameterProvider (model, this.sendIndex));
-    }
-
-
-    /** {@inheritDoc} */
-    @Override
-    public int getKnobValue (final int index)
-    {
-        if (this.model.isEffectTrackBankActive ())
-            return 0;
-        final ITrack track = this.model.getCurrentTrackBank ().getItem (index);
-        return track.doesExist () ? track.getSendBank ().getItem (this.sendIndex).getValue () : -1;
+        this.setParameterProvider (new SendParameterProvider (model, this.sendIndex));
     }
 }

@@ -85,6 +85,10 @@ public class ClipModule extends AbstractModule
                 this.model.getCursorTrack ().stop ();
                 break;
 
+            case "stopall":
+                this.model.getTrackBank ().stop ();
+                break;
+
             case "record":
                 final ISlot selectedSlot2 = this.model.getSelectedSlot ();
                 if (selectedSlot2 != null)

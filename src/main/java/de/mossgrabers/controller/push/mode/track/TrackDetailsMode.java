@@ -28,7 +28,7 @@ import de.mossgrabers.framework.view.Views;
  *
  * @author J&uuml;rgen Mo&szlig;graber
  */
-public class TrackDetailsMode extends BaseMode
+public class TrackDetailsMode extends BaseMode<ITrack>
 {
     private final boolean hasPinning;
 
