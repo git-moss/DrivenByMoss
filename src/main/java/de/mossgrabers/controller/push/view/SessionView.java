@@ -8,7 +8,6 @@ import de.mossgrabers.controller.push.PushConfiguration;
 import de.mossgrabers.controller.push.command.trigger.SelectSessionViewCommand;
 import de.mossgrabers.controller.push.controller.PushColorManager;
 import de.mossgrabers.controller.push.controller.PushControlSurface;
-import de.mossgrabers.framework.command.core.TriggerCommand;
 import de.mossgrabers.framework.controller.ButtonID;
 import de.mossgrabers.framework.daw.IModel;
 import de.mossgrabers.framework.daw.data.IScene;
@@ -62,10 +61,7 @@ public class SessionView extends AbstractSessionView<PushControlSurface, PushCon
     public void onGridNote (final int note, final int velocity)
     {
         if (velocity == 0)
-        {
-            final TriggerCommand triggerCommand = this.surface.getButton (ButtonID.SESSION).getCommand ();
-            ((SelectSessionViewCommand) triggerCommand).setTemporary ();
-        }
+            ((SelectSessionViewCommand) this.surface.getButton (ButtonID.SESSION).getCommand ()).setTemporary ();
 
         // Birds-eye-view navigation
         if (this.isBirdsEyeActive ())
@@ -139,9 +135,6 @@ public class SessionView extends AbstractSessionView<PushControlSurface, PushCon
         super.onButton (buttonID, event, velocity);
 
         if (ButtonID.isSceneButton (buttonID) && event == ButtonEvent.UP)
-        {
-            final TriggerCommand triggerCommand = this.surface.getButton (ButtonID.SESSION).getCommand ();
-            ((SelectSessionViewCommand) triggerCommand).setTemporary ();
-        }
+            ((SelectSessionViewCommand) this.surface.getButton (ButtonID.SESSION).getCommand ()).setTemporary ();
     }
 }

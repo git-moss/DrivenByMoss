@@ -82,6 +82,17 @@ public class DefaultValueChanger implements IValueChanger
 
     /** {@inheritDoc} */
     @Override
+    public int calcSteppedKnobChange (final int control)
+    {
+        final double result = calcKnobChange (control, -100);
+        if (result >= 0)
+            return (int) Math.max (1, Math.round (result));
+        return (int) Math.min (-1, Math.round (result));
+    }
+
+
+    /** {@inheritDoc} */
+    @Override
     public int encode (final int speed)
     {
         return speed < 0 ? speed + 128 : speed;

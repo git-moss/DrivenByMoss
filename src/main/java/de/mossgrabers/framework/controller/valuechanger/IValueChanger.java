@@ -68,6 +68,16 @@ public interface IValueChanger
 
 
     /**
+     * Calculate the amount by which to change a value from the control value, depending on the step
+     * size and the given sensitivity. The result is rounded to integer and never 0.
+     *
+     * @param control The control value, depending on the specific encoding
+     * @return The amount to change the value
+     */
+    int calcSteppedKnobChange (int control);
+
+
+    /**
      * Returns true if the change is positive (increase).
      *
      * @param control The control value, depending on the specific encoding

@@ -50,7 +50,7 @@ public class BrowseMode extends BaseMode
     @Override
     public void onKnobValue (final int index, final int value)
     {
-        final int speed = (int) this.model.getValueChanger ().calcKnobChange (value, -100);
+        final int speed = this.model.getValueChanger ().calcSteppedKnobChange (value);
         if (speed < 0)
             this.selectPrevious (index < 0 ? this.selColumn : index, Math.abs (speed));
         else

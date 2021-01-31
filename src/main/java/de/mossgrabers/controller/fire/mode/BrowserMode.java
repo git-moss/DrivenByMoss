@@ -74,7 +74,7 @@ public class BrowserMode extends AbstractMode<FireControlSurface, FireConfigurat
     public void onKnobValue (final int index, final int value)
     {
         final int idx = this.getKnobIndex (index);
-        int speed = (int) this.model.getValueChanger ().calcKnobChange (value, -100);
+        int speed = this.model.getValueChanger ().calcSteppedKnobChange (value);
 
         if (index == 8 && this.surface.isPressed (ButtonID.SELECT))
         {

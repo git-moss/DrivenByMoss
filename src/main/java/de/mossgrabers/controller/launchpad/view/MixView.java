@@ -266,20 +266,20 @@ public class MixView extends AbstractView<LaunchpadControlSurface, LaunchpadConf
         {
             default:
             case VOLUME:
-                track.setVolume (value);
+                track.getVolumeParameter ().setValueImmediatly (value);
                 break;
             case PAN:
-                track.setPan (value);
+                track.getPanParameter ().setValueImmediatly (value);
                 break;
             case SEND1:
                 final ISend send1 = track.getSendBank ().getItem (0);
                 if (send1.doesExist ())
-                    send1.setValue (value);
+                    send1.setValueImmediatly (value);
                 break;
             case SEND2:
                 final ISend send2 = track.getSendBank ().getItem (1);
                 if (send2.doesExist ())
-                    send2.setValue (value);
+                    send2.setValueImmediatly (value);
                 break;
         }
     }

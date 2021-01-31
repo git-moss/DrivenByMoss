@@ -5,6 +5,7 @@
 package de.mossgrabers.controller.launchpad.view;
 
 import de.mossgrabers.controller.launchpad.LaunchpadConfiguration;
+import de.mossgrabers.controller.launchpad.command.trigger.SelectSessionViewCommand;
 import de.mossgrabers.controller.launchpad.controller.LaunchpadColorManager;
 import de.mossgrabers.controller.launchpad.controller.LaunchpadControlSurface;
 import de.mossgrabers.framework.configuration.AbstractConfiguration;
@@ -84,6 +85,9 @@ public class SessionView extends AbstractSessionView<LaunchpadControlSurface, La
     @Override
     public void onGridNote (final int note, final int velocity)
     {
+        if (velocity == 0)
+            ((SelectSessionViewCommand) this.surface.getButton (ButtonID.SESSION).getCommand ()).setTemporary ();
+
         final int modeIndex = this.getControlModeIndex (note);
         if (modeIndex >= 0)
         {
@@ -118,6 +122,17 @@ public class SessionView extends AbstractSessionView<LaunchpadControlSurface, La
 
         final int index = note - 36;
         this.surface.getButton (ButtonID.get (ButtonID.PAD1, index)).setConsumed ();
+    }
+
+
+    /** {@inheritDoc} */
+    @Override
+    public void onButton (final ButtonID buttonID, final ButtonEvent event, final int velocity)
+    {
+        super.onButton (buttonID, event, velocity);
+
+        if (ButtonID.isSceneButton (buttonID) && event == ButtonEvent.UP)
+            ((SelectSessionViewCommand) this.surface.getButton (ButtonID.SESSION).getCommand ()).setTemporary ();
     }
 
 
