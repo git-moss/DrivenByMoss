@@ -30,8 +30,11 @@ public class ConfiguredRecordCommand<S extends IControlSurface<C>, C extends Con
 
     private enum ShiftMode
     {
+        /** Use the primary commands. */
         NO_SHIFT,
+        /** Use the secondary commands. */
         SHIFTED,
+        /** Use the primary or secondary commands depending on the Shift button state. */
         CALC_SHIFT
     }
 

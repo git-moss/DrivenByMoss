@@ -116,6 +116,12 @@ public interface IHwButton extends IHwInputControl
 
 
     /**
+     * Resets the buttons state.
+     */
+    void clearState ();
+
+
+    /**
      * Get the velocity of the last (dynamic) button press.
      *
      * @return The velocity

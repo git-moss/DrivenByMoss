@@ -38,9 +38,10 @@ public class APCStopClipCommand extends StopClipCommand<APCControlSurface, APCCo
     @Override
     public void executeNormal (final ButtonEvent event)
     {
-        if (event != ButtonEvent.DOWN)
+        if (event != ButtonEvent.UP)
             return;
 
+        // Set the step resolution in sequencer modes
         final IView view = this.surface.getViewManager ().getActive ();
         if (view instanceof AbstractSequencerView)
         {
@@ -48,6 +49,6 @@ public class APCStopClipCommand extends StopClipCommand<APCControlSurface, APCCo
             return;
         }
 
-        super.executeNormal (event);
+        super.executeNormal (ButtonEvent.DOWN);
     }
 }

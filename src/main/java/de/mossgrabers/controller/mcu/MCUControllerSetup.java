@@ -721,8 +721,6 @@ public class MCUControllerSetup extends AbstractControllerSetup<MCUControlSurfac
         if (!this.configuration.isEnableVUMeters ())
             return;
 
-        final double upperBound = this.valueChanger.getUpperBound ();
-
         final ITrackBank tb = this.model.getCurrentTrackBank ();
         final boolean shouldPinFXTracksToLastController = this.configuration.shouldPinFXTracksToLastController ();
 
@@ -743,8 +741,7 @@ public class MCUControllerSetup extends AbstractControllerSetup<MCUControlSurfac
                 if (vu != this.vuValues[channel])
                 {
                     this.vuValues[channel] = vu;
-                    final int scaledValue = (int) Math.round (vu * 12 / upperBound);
-                    output.sendChannelAftertouch (0x10 * i + scaledValue, 0);
+                    this.sendVUValue (output, i, vu, false);
                 }
             }
 
@@ -757,19 +754,24 @@ public class MCUControllerSetup extends AbstractControllerSetup<MCUControlSurfac
                 if (vu != this.masterVuValues[0])
                 {
                     this.masterVuValues[0] = vu;
-                    final int scaledValue = (int) Math.round (vu * 12 / upperBound);
-                    output.sendChannelAftertouch (1, scaledValue, 0);
+                    this.sendVUValue (output, 0, vu, true);
                 }
 
                 vu = masterTrack.getVuRight ();
                 if (vu != this.masterVuValues[1])
                 {
                     this.masterVuValues[1] = vu;
-                    final int scaledValue = (int) Math.round (vu * 12 / upperBound);
-                    output.sendChannelAftertouch (1, 0x10 + scaledValue, 0);
+                    this.sendVUValue (output, 1, vu, true);
                 }
             }
         }
+    }
+
+
+    private void sendVUValue (final IMidiOutput output, final int track, final int vu, final boolean isMaster)
+    {
+        final int scaledValue = (int) Math.round (this.valueChanger.toNormalizedValue (vu) * 13);
+        output.sendChannelAftertouch (isMaster ? 1 : 0, 0x10 * track + scaledValue, 0);
     }
 
 

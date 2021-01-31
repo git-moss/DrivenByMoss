@@ -9,6 +9,7 @@ import de.mossgrabers.framework.configuration.Configuration;
 import de.mossgrabers.framework.controller.IControlSurface;
 import de.mossgrabers.framework.daw.IModel;
 import de.mossgrabers.framework.daw.ITransport;
+import de.mossgrabers.framework.utils.ButtonEvent;
 
 
 /**
@@ -21,6 +22,9 @@ import de.mossgrabers.framework.daw.ITransport;
  */
 public class StopCommand<S extends IControlSurface<C>, C extends Configuration> extends AbstractDoubleTriggerCommand<S, C>
 {
+    private final ITransport transport;
+
+
     /**
      * Constructor.
      *
@@ -30,6 +34,8 @@ public class StopCommand<S extends IControlSurface<C>, C extends Configuration> 
     public StopCommand (final IModel model, final S surface)
     {
         super (model, surface);
+
+        this.transport = this.model.getTransport ();
     }
 
 
@@ -37,12 +43,11 @@ public class StopCommand<S extends IControlSurface<C>, C extends Configuration> 
     @Override
     protected void executeSingleClick ()
     {
-        final ITransport transport = this.model.getTransport ();
-        if (transport.isPlaying ())
+        if (this.transport.isPlaying ())
             this.handleStopOptions ();
         else
         {
-            transport.stopAndRewind ();
+            this.transport.stopAndRewind ();
             this.doubleClickTest ();
         }
     }
@@ -52,7 +57,16 @@ public class StopCommand<S extends IControlSurface<C>, C extends Configuration> 
     @Override
     protected void executeDoubleClick ()
     {
-        this.model.getTransport ().setPositionToEnd ();
+        this.transport.setPositionToEnd ();
+    }
+
+
+    /** {@inheritDoc} */
+    @Override
+    public void executeShifted (final ButtonEvent event)
+    {
+        if (event == ButtonEvent.UP)
+            this.model.getTrackBank ().stop ();
     }
 
 
@@ -61,19 +75,18 @@ public class StopCommand<S extends IControlSurface<C>, C extends Configuration> 
      */
     protected void handleStopOptions ()
     {
-        final ITransport transport = this.model.getTransport ();
         switch (this.surface.getConfiguration ().getBehaviourOnStop ())
         {
             case RETURN_TO_ZERO:
-                transport.stopAndRewind ();
+                this.transport.stopAndRewind ();
                 break;
 
             case MOVE_PLAY_CURSOR:
-                transport.play ();
+                this.transport.play ();
                 break;
 
             case PAUSE:
-                transport.stop ();
+                this.transport.stop ();
                 break;
         }
     }

@@ -11,6 +11,8 @@ import de.mossgrabers.framework.controller.ButtonID;
 import de.mossgrabers.framework.daw.DAWColor;
 import de.mossgrabers.framework.daw.IModel;
 import de.mossgrabers.framework.daw.data.IScene;
+import de.mossgrabers.framework.daw.data.ISlot;
+import de.mossgrabers.framework.daw.data.ITrack;
 import de.mossgrabers.framework.daw.data.bank.ISceneBank;
 import de.mossgrabers.framework.featuregroup.AbstractFeatureGroup;
 import de.mossgrabers.framework.view.AbstractSessionView;
@@ -85,5 +87,34 @@ public class SessionView extends AbstractSessionView<APCControlSurface, APCConfi
     {
         // No birds eye view, since Shift is used for view changes...
         this.drawSessionGrid ();
+    }
+
+
+    /** {@inheritDoc} */
+    @Override
+    protected boolean handleButtonCombinations (final ITrack track, final ISlot slot)
+    {
+        if (super.handleButtonCombinations (track, slot))
+            return true;
+
+        final int index = track.getIndex ();
+        if (index < 0)
+            return true;
+
+        // Duplicate the slot with Select button
+        if (this.isButtonCombination (ButtonID.get (ButtonID.ROW1_1, index)))
+        {
+            slot.duplicate ();
+            return true;
+        }
+
+        // Delete the slot with Stop Clip button
+        if (this.isButtonCombination (ButtonID.get (ButtonID.ROW6_1, index)))
+        {
+            slot.remove ();
+            return true;
+        }
+
+        return false;
     }
 }

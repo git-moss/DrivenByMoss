@@ -81,23 +81,28 @@ public class SessionView extends AbstractSessionView<LaunchkeyMk3ControlSurface,
         for (int x = 0; x < this.columns; x++)
         {
             final ITrack track = tb.getItem (x);
-            final boolean exists = track.doesExist ();
+            if (!track.doesExist ())
+            {
+                pads.lightEx (x, 1, LaunchkeyMk3ColorManager.LAUNCHKEY_COLOR_BLACK);
+                continue;
+            }
+
             switch (this.padMode)
             {
                 case REC_ARM:
-                    pads.lightEx (x, 1, exists ? track.isRecArm () ? LaunchkeyMk3ColorManager.LAUNCHKEY_COLOR_RED_HI : LaunchkeyMk3ColorManager.LAUNCHKEY_COLOR_RED_LO : LaunchkeyMk3ColorManager.LAUNCHKEY_COLOR_BLACK);
+                    pads.lightEx (x, 1, track.isRecArm () ? LaunchkeyMk3ColorManager.LAUNCHKEY_COLOR_RED_HI : LaunchkeyMk3ColorManager.LAUNCHKEY_COLOR_RED_LO);
                     break;
                 case TRACK_SELECT:
-                    pads.lightEx (x, 1, exists ? track.isSelected () ? LaunchkeyMk3ColorManager.LAUNCHKEY_COLOR_WHITE : LaunchkeyMk3ColorManager.LAUNCHKEY_COLOR_GREY_LO : LaunchkeyMk3ColorManager.LAUNCHKEY_COLOR_BLACK);
+                    pads.lightEx (x, 1, track.isSelected () ? LaunchkeyMk3ColorManager.LAUNCHKEY_COLOR_WHITE : LaunchkeyMk3ColorManager.LAUNCHKEY_COLOR_GREY_LO);
                     break;
                 case MUTE:
-                    pads.lightEx (x, 1, exists ? track.isMute () ? LaunchkeyMk3ColorManager.LAUNCHKEY_COLOR_AMBER_HI : LaunchkeyMk3ColorManager.LAUNCHKEY_COLOR_AMBER_LO : LaunchkeyMk3ColorManager.LAUNCHKEY_COLOR_BLACK);
+                    pads.lightEx (x, 1, track.isMute () ? LaunchkeyMk3ColorManager.LAUNCHKEY_COLOR_AMBER_HI : LaunchkeyMk3ColorManager.LAUNCHKEY_COLOR_AMBER_LO);
                     break;
                 case SOLO:
-                    pads.lightEx (x, 1, exists ? track.isSolo () ? LaunchkeyMk3ColorManager.LAUNCHKEY_COLOR_YELLOW_HI : LaunchkeyMk3ColorManager.LAUNCHKEY_COLOR_YELLOW_LO : LaunchkeyMk3ColorManager.LAUNCHKEY_COLOR_BLACK);
+                    pads.lightEx (x, 1, track.isSolo () ? LaunchkeyMk3ColorManager.LAUNCHKEY_COLOR_YELLOW_HI : LaunchkeyMk3ColorManager.LAUNCHKEY_COLOR_YELLOW_LO);
                     break;
                 case STOP_CLIP:
-                    pads.lightEx (x, 1, exists ? LaunchkeyMk3ColorManager.LAUNCHKEY_COLOR_ROSE : LaunchkeyMk3ColorManager.LAUNCHKEY_COLOR_BLACK);
+                    pads.lightEx (x, 1, LaunchkeyMk3ColorManager.LAUNCHKEY_COLOR_ROSE);
                     break;
                 default:
                     // Unused
@@ -111,15 +116,32 @@ public class SessionView extends AbstractSessionView<LaunchkeyMk3ControlSurface,
     @Override
     public void onGridNote (final int note, final int velocity)
     {
-        if (velocity != 0)
-            return;
-
         final Pair<Integer, Integer> padPos = this.getPad (note);
         final int row = padPos.getValue ().intValue ();
+        final int column = padPos.getKey ().intValue ();
+
         if (row == 0 || this.padMode == null)
+        {
+            final ITrack track = this.model.getCurrentTrackBank ().getItem (column);
+
+            // Stop clip with normal stop button
+            if (this.isButtonCombination (ButtonID.STOP))
+            {
+                track.stop ();
+                return;
+            }
+
+            // Use Undo button for delete
+            if (this.isButtonCombination (ButtonID.UNDO))
+            {
+                track.getSlotBank ().getItem (row).remove ();
+                return;
+            }
+
             super.onGridNote (note, velocity);
-        else
-            this.handleFirstRowModes (padPos.getKey ().intValue ());
+        }
+        else if (velocity != 0)
+            this.handleFirstRowModes (column);
     }
 
 
@@ -146,9 +168,10 @@ public class SessionView extends AbstractSessionView<LaunchkeyMk3ControlSurface,
                 return;
 
             if (buttonID == ButtonID.ARROW_UP)
-                sceneBank.selectPreviousPage ();
+                sceneBank.scrollBackwards ();
             else
-                sceneBank.selectNextPage ();
+                sceneBank.scrollForwards ();
+
             return;
         }
 

@@ -40,7 +40,7 @@ public abstract class AbstractDoubleTriggerCommand<S extends IControlSurface<C>,
     @Override
     public void executeNormal (final ButtonEvent event)
     {
-        if (event != ButtonEvent.DOWN)
+        if (event != ButtonEvent.UP)
             return;
 
         if (this.handleButtonCombinations ())

@@ -39,6 +39,7 @@ public class SelectTrackSendOrClipLengthCommand extends AbstractTriggerCommand<A
     public SelectTrackSendOrClipLengthCommand (final int index, final IModel model, final APCControlSurface surface)
     {
         super (model, surface);
+
         this.index = index;
     }
 
@@ -47,7 +48,7 @@ public class SelectTrackSendOrClipLengthCommand extends AbstractTriggerCommand<A
     @Override
     public void executeNormal (final ButtonEvent event)
     {
-        if (event != ButtonEvent.DOWN)
+        if (event != ButtonEvent.UP)
             return;
 
         final ModeManager modeManager = this.surface.getModeManager ();
@@ -92,7 +93,7 @@ public class SelectTrackSendOrClipLengthCommand extends AbstractTriggerCommand<A
     @Override
     public void executeShifted (final ButtonEvent event)
     {
-        if (event != ButtonEvent.DOWN)
+        if (event != ButtonEvent.UP)
             return;
         this.surface.getDisplay ().notify (AbstractConfiguration.getNewClipLengthValue (this.index));
         this.surface.getConfiguration ().setNewClipLength (this.index);

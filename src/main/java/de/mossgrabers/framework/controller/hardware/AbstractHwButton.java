@@ -52,6 +52,14 @@ public abstract class AbstractHwButton extends AbstractHwInputControl implements
     }
 
 
+    /** {@inheritDoc} */
+    @Override
+    public void clearState ()
+    {
+        this.state = null;
+    }
+
+
     /**
      * Handle a button press.
      *

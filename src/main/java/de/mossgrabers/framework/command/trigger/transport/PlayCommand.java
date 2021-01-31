@@ -23,7 +23,8 @@ import de.mossgrabers.framework.utils.ButtonEvent;
  */
 public class PlayCommand<S extends IControlSurface<C>, C extends Configuration> extends AbstractDoubleTriggerCommand<S, C>
 {
-    private final ButtonID selectButtonID;
+    private final ButtonID   selectButtonID;
+    private final ITransport transport;
 
 
     /**
@@ -51,6 +52,7 @@ public class PlayCommand<S extends IControlSurface<C>, C extends Configuration> 
         super (model, surface);
 
         this.selectButtonID = selectButtonID;
+        this.transport = this.model.getTransport ();
     }
 
 
@@ -59,26 +61,25 @@ public class PlayCommand<S extends IControlSurface<C>, C extends Configuration> 
     protected void executeSingleClick ()
     {
         // Handle the different options when the playback is stopped
-        final ITransport transport = this.model.getTransport ();
         switch (this.surface.getConfiguration ().getBehaviourOnStop ())
         {
             case RETURN_TO_ZERO:
-                if (transport.isPlaying ())
-                    transport.stopAndRewind ();
+                if (this.transport.isPlaying ())
+                    this.transport.stopAndRewind ();
                 else
-                    transport.play ();
+                    this.transport.play ();
                 break;
 
             case MOVE_PLAY_CURSOR:
-                transport.play ();
+                this.transport.play ();
                 this.doubleClickTest ();
                 break;
 
             case PAUSE:
-                if (transport.isPlaying ())
-                    transport.stop ();
+                if (this.transport.isPlaying ())
+                    this.transport.stop ();
                 else
-                    transport.play ();
+                    this.transport.play ();
                 this.doubleClickTest ();
                 break;
         }
@@ -89,7 +90,7 @@ public class PlayCommand<S extends IControlSurface<C>, C extends Configuration> 
     @Override
     protected void executeDoubleClick ()
     {
-        this.model.getTransport ().stopAndRewind ();
+        this.transport.stopAndRewind ();
     }
 
 
@@ -99,7 +100,7 @@ public class PlayCommand<S extends IControlSurface<C>, C extends Configuration> 
     {
         if (this.surface.isPressed (this.selectButtonID))
         {
-            this.model.getTransport ().togglePunchIn ();
+            this.transport.togglePunchIn ();
             return true;
         }
         return false;
@@ -113,8 +114,8 @@ public class PlayCommand<S extends IControlSurface<C>, C extends Configuration> 
         if (event != ButtonEvent.DOWN)
             return;
         if (this.surface.isPressed (this.selectButtonID))
-            this.model.getTransport ().togglePunchOut ();
+            this.transport.togglePunchOut ();
         else
-            this.model.getTransport ().toggleLoop ();
+            this.transport.toggleLoop ();
     }
 }

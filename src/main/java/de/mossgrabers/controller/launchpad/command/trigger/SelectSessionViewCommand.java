@@ -76,9 +76,13 @@ public class SelectSessionViewCommand extends AbstractTriggerCommand<LaunchpadCo
         }
         else if (event == ButtonEvent.LONG)
         {
-            this.surface.setTriggerConsumed (ButtonID.SESSION);
-            sessionView.setBirdsEyeActive (true);
-            this.notifyViewName (Views.SESSION, true, configuration.isFlipSession ());
+            // Only trigger birds-eye-view if session view is already active
+            if (viewManager.isActive (Views.SESSION))
+            {
+                this.surface.setTriggerConsumed (ButtonID.SESSION);
+                sessionView.setBirdsEyeActive (true);
+                this.notifyViewName (Views.SESSION, true, configuration.isFlipSession ());
+            }
         }
 
         this.surface.getPadGrid ().forceFlush ();
