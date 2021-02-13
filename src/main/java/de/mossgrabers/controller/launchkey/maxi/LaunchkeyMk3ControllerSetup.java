@@ -6,6 +6,7 @@ package de.mossgrabers.controller.launchkey.maxi;
 
 import de.mossgrabers.controller.launchkey.maxi.command.trigger.ButtonAreaCommand;
 import de.mossgrabers.controller.launchkey.maxi.command.trigger.DeviceLockCommand;
+import de.mossgrabers.controller.launchkey.maxi.command.trigger.LaunchkeyMk3PlayCommand;
 import de.mossgrabers.controller.launchkey.maxi.controller.LaunchkeyMk3ColorManager;
 import de.mossgrabers.controller.launchkey.maxi.controller.LaunchkeyMk3ControlSurface;
 import de.mossgrabers.controller.launchkey.maxi.controller.LaunchkeyMk3Display;
@@ -29,7 +30,6 @@ import de.mossgrabers.framework.command.trigger.mode.ModeSelectCommand;
 import de.mossgrabers.framework.command.trigger.track.SelectPrevNextTrackCommand;
 import de.mossgrabers.framework.command.trigger.transport.ConfiguredRecordCommand;
 import de.mossgrabers.framework.command.trigger.transport.MetronomeCommand;
-import de.mossgrabers.framework.command.trigger.transport.PlayCommand;
 import de.mossgrabers.framework.command.trigger.transport.StopCommand;
 import de.mossgrabers.framework.command.trigger.transport.ToggleLoopCommand;
 import de.mossgrabers.framework.command.trigger.view.FeatureGroupButtonColorSupplier;
@@ -43,6 +43,7 @@ import de.mossgrabers.framework.controller.ISetupFactory;
 import de.mossgrabers.framework.controller.OutputID;
 import de.mossgrabers.framework.controller.color.ColorEx;
 import de.mossgrabers.framework.controller.hardware.BindType;
+import de.mossgrabers.framework.controller.hardware.IHwButton;
 import de.mossgrabers.framework.controller.hardware.IHwLight;
 import de.mossgrabers.framework.controller.valuechanger.DefaultValueChanger;
 import de.mossgrabers.framework.daw.IHost;
@@ -64,6 +65,7 @@ import de.mossgrabers.framework.view.Views;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.function.IntSupplier;
 
 
 /**
@@ -244,7 +246,7 @@ public class LaunchkeyMk3ControllerSetup extends AbstractControllerSetup<Launchk
 
         this.addButton (ButtonID.SHIFT, "Shift", NopCommand.INSTANCE, LaunchkeyMk3ControlSurface.LAUNCHKEY_SHIFT);
 
-        this.addButton (ButtonID.PLAY, "Play", new PlayCommand<> (this.model, surface), 15, LaunchkeyMk3ControlSurface.LAUNCHKEY_PLAY, t::isPlaying);
+        this.addButton (ButtonID.PLAY, "Play", new LaunchkeyMk3PlayCommand (this.model, surface), 15, LaunchkeyMk3ControlSurface.LAUNCHKEY_PLAY, t::isPlaying);
         this.addButton (ButtonID.STOP, "Stop", new StopCommand<> (this.model, surface), 15, LaunchkeyMk3ControlSurface.LAUNCHKEY_STOP, () -> !t.isPlaying ());
         this.addButton (ButtonID.RECORD, "Record", new ConfiguredRecordCommand<> (this.model, surface), 15, LaunchkeyMk3ControlSurface.LAUNCHKEY_RECORD, () -> t.isLauncherOverdub () || t.isRecording ());
         this.addButton (ButtonID.REPEAT, "Repeat", new ToggleLoopCommand<> (this.model, surface), 15, LaunchkeyMk3ControlSurface.LAUNCHKEY_LOOP, t::isLoop);
@@ -306,8 +308,17 @@ public class LaunchkeyMk3ControllerSetup extends AbstractControllerSetup<Launchk
         for (int i = 0; i < 8; i++)
         {
             final ButtonID row1ButtonID = ButtonID.get (ButtonID.ROW_SELECT_1, i);
+            final IHwButton button = surface.createButton (row1ButtonID, "Select " + (i + 1));
             final ButtonAreaCommand command = new ButtonAreaCommand (i, this.model, surface);
-            this.addButton (surface, row1ButtonID, "Select " + (i + 1), command, 15, 0, LaunchkeyMk3ControlSurface.LAUNCHKEY_SELECT1 + i, -1, true, command::getButtonColor);
+            button.bind (command);
+
+            final IMidiInput midiInput = surface.getMidiInput ();
+            final BindType triggerBindType = this.getTriggerBindType (row1ButtonID);
+            final int midiControl = LaunchkeyMk3ControlSurface.LAUNCHKEY_SELECT1 + i;
+            button.bind (midiInput, triggerBindType, 15, midiControl);
+
+            final IntSupplier supplier = command::getButtonColor;
+            surface.createLight (null, supplier::getAsInt, color -> surface.setTrigger (color >= 0x1000 ? 2 : 0, midiControl, color >= 0x1000 ? color - 0x1000 : color), state -> this.colorManager.getColor (state >= 0x1000 ? state - 0x1000 : state, row1ButtonID), button);
         }
 
         this.addButton (surface, ButtonID.MASTERTRACK, "Toggle Select/RecArm", (event, velocity) -> {

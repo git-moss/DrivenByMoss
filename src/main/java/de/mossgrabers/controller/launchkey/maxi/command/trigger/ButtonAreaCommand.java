@@ -64,15 +64,20 @@ public class ButtonAreaCommand extends AbstractTriggerCommand<LaunchkeyMk3Contro
     /**
      * Get the color to use for the button.
      *
-     * @return THe color index
+     * @return The color index, negative if track is selected
      */
     public int getButtonColor ()
     {
         final ITrackBank tb = this.model.getCurrentTrackBank ();
         final ITrack t = tb.getItem (this.column);
-        if (isSelect)
-            return this.model.getColorManager ().getColorIndex (DAWColor.getColorIndex (t.getColor ()));
-        return t.isRecArm () ? LaunchkeyMk3ColorManager.LAUNCHKEY_COLOR_RED : LaunchkeyMk3ColorManager.LAUNCHKEY_COLOR_GREY_LO;
+        final int color;
+        if (!t.doesExist ())
+            color = LaunchkeyMk3ColorManager.LAUNCHKEY_COLOR_BLACK;
+        else if (isSelect)
+            color = this.model.getColorManager ().getColorIndex (DAWColor.getColorIndex (t.getColor ()));
+        else
+            color = t.isRecArm () ? LaunchkeyMk3ColorManager.LAUNCHKEY_COLOR_RED : LaunchkeyMk3ColorManager.LAUNCHKEY_COLOR_GREY_LO;
+        return t.isSelected () ? 0x1000 + color : color;
     }
 
 

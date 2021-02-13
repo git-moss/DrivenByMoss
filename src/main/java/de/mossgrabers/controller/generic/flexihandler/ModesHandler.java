@@ -11,6 +11,7 @@ import de.mossgrabers.framework.controller.valuechanger.IValueChanger;
 import de.mossgrabers.framework.daw.IHost;
 import de.mossgrabers.framework.daw.IModel;
 import de.mossgrabers.framework.daw.data.bank.ITrackBank;
+import de.mossgrabers.framework.featuregroup.AbstractMode;
 import de.mossgrabers.framework.featuregroup.IMode;
 import de.mossgrabers.framework.featuregroup.ModeManager;
 import de.mossgrabers.framework.mode.Modes;
@@ -274,13 +275,20 @@ public class ModesHandler extends AbstractHandler
     private void changeModeValue (final int knobMode, final int knobIndex, final int value)
     {
         final IMode mode = this.modeManager.getActive ();
-        if (isAbsolute (knobMode))
-            mode.onKnobValue (knobIndex, value);
-        else
+        final boolean absolute = isAbsolute (knobMode);
+        synchronized (mode)
         {
-            final int knobValue = mode.getKnobValue (knobIndex);
-            final int relativeSpeed = (int) Math.round (this.getRelativeSpeed (knobMode, value));
-            mode.onKnobValue (knobIndex, knobValue == -1 ? relativeSpeed : (int) this.limit ((double) knobValue + relativeSpeed));
+            if (mode instanceof AbstractMode)
+                ((AbstractMode<?, ?, ?>) mode).setAbsolute (absolute);
+            if (absolute)
+                mode.onKnobValue (knobIndex, value);
+            else
+            {
+                // Re-encode the selected relative type to the default relative type
+                final IValueChanger relativeValueChanger = this.getRelativeValueChanger (knobMode);
+                final int control = this.model.getValueChanger ().encode (relativeValueChanger.decode (value));
+                mode.onKnobValue (knobIndex, control);
+            }
         }
     }
 

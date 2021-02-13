@@ -132,7 +132,7 @@ public class NoteInputHandler extends AbstractHandler
                 if (isAbsolute (knobMode))
                     selPeriod = (int) Math.min (Math.round (value / 127.0 * resolutions.length), resolutions.length - 1L);
                 else
-                    selPeriod = Resolution.change (Resolution.getMatch (configuration.getNoteRepeatPeriod ().getValue ()), this.getRelativeSpeed (knobMode, value) > 0);
+                    selPeriod = Resolution.change (Resolution.getMatch (configuration.getNoteRepeatPeriod ().getValue ()), this.isIncrease (knobMode, value));
                 configuration.setNoteRepeatPeriod (resolutions[selPeriod]);
                 this.mvHelper.delayDisplay ( () -> "Repeat Period: " + configuration.getNoteRepeatPeriod ().getName ());
                 break;
@@ -145,7 +145,7 @@ public class NoteInputHandler extends AbstractHandler
                     if (isAbsolute (knobMode))
                         selLength = (int) Math.min (Math.round (value / 127.0 * resolutions.length), resolutions.length - 1L);
                     else
-                        selLength = Resolution.change (Resolution.getMatch (configuration.getNoteRepeatLength ().getValue ()), this.getRelativeSpeed (knobMode, value) > 0);
+                        selLength = Resolution.change (Resolution.getMatch (configuration.getNoteRepeatLength ().getValue ()), this.isIncrease (knobMode, value));
                     configuration.setNoteRepeatLength (resolutions[selLength]);
                     this.mvHelper.delayDisplay ( () -> "Repeat Length: " + configuration.getNoteRepeatLength ().getName ());
                 }
@@ -166,7 +166,7 @@ public class NoteInputHandler extends AbstractHandler
                     {
                         final ArpeggiatorMode arpMode = configuration.getNoteRepeatMode ();
                         final int modeIndex = configuration.lookupArpeggiatorModeIndex (arpMode);
-                        final boolean increase = this.getRelativeSpeed (knobMode, value) > 0;
+                        final boolean increase = this.isIncrease (knobMode, value);
                         newIndex = Math.max (0, Math.min (modes.length - 1, modeIndex + (increase ? 1 : -1)));
                     }
                     configuration.setNoteRepeatMode (modes[newIndex]);
@@ -181,7 +181,7 @@ public class NoteInputHandler extends AbstractHandler
                     if (isAbsolute (knobMode))
                         octave = value;
                     else
-                        octave = configuration.getNoteRepeatOctave () + (this.getRelativeSpeed (knobMode, value) > 0 ? 1 : -1);
+                        octave = configuration.getNoteRepeatOctave () + (this.isIncrease (knobMode, value) ? 1 : -1);
                     configuration.setNoteRepeatOctave (octave);
                     this.mvHelper.delayDisplay ( () -> "Repeat Octave: " + octave);
                 }

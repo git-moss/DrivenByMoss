@@ -19,7 +19,7 @@ import java.util.Date;
  * Base class for knob modes.
  *
  * @param <B> The type of the item bank
- * 
+ *
  * @author J&uuml;rgen Mo&szlig;graber
  */
 public abstract class BaseMode<B extends IItem> extends AbstractMode<APCControlSurface, APCConfiguration, B>

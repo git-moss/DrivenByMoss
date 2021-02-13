@@ -69,10 +69,12 @@ import java.util.Set;
  */
 public class GenericFlexiControllerSetup extends AbstractControllerSetup<GenericFlexiControlSurface, GenericFlexiConfiguration> implements IValueObserver<FlexiCommand>
 {
-    private static final String PROGRAM_NONE          = "None";
+    private static final String     PROGRAM_NONE          = "None";
 
-    private final IValueChanger relative2ValueChanger = new Relative2ValueChanger (128, 1);
-    private final IValueChanger relative3ValueChanger = new Relative3ValueChanger (128, 1);
+    private final IValueChanger     relative2ValueChanger = new Relative2ValueChanger (128, 1);
+    private final IValueChanger     relative3ValueChanger = new Relative3ValueChanger (128, 1);
+
+    private final List<ProgramBank> banks                 = new ArrayList<> ();
 
 
     /**
@@ -106,19 +108,21 @@ public class GenericFlexiControllerSetup extends AbstractControllerSetup<Generic
 
         try
         {
-            final List<ProgramBank> banks = ProgramBank.parse (programsFile.readUTF8 ());
-            final IEnumSetting [] bankSettings = new IEnumSetting [banks.size ()];
+            final String nameWithoutType = programsFile.getNameWithoutType ();
 
-            for (int i = 0; i < banks.size (); i++)
+            this.banks.addAll (ProgramBank.parse (programsFile.readUTF8 ()));
+            final IEnumSetting [] bankSettings = new IEnumSetting [this.banks.size ()];
+
+            for (int i = 0; i < this.banks.size (); i++)
             {
                 final int bankPos = i;
-                final ProgramBank pb = banks.get (bankPos);
+                final ProgramBank pb = this.banks.get (bankPos);
 
                 final String [] programs = pb.getPrograms ();
                 final String [] opts = new String [programs.length + 1];
                 System.arraycopy (programs, 0, opts, 1, programs.length);
                 opts[0] = PROGRAM_NONE;
-                bankSettings[bankPos] = this.documentSettings.getEnumSetting (pb.getName (), "Program Banks", opts, opts[0]);
+                bankSettings[bankPos] = this.documentSettings.getEnumSetting (pb.getName (), nameWithoutType + " Program Banks", opts, opts[0]);
                 bankSettings[bankPos].addValueObserver (value -> {
 
                     final int program = pb.lookupProgram (value);
@@ -134,7 +138,7 @@ public class GenericFlexiControllerSetup extends AbstractControllerSetup<Generic
                     final int channel = pb.getMidiChannel ();
                     for (int b = 0; b < bankSettings.length; b++)
                     {
-                        if (bankPos != b && banks.get (b).getMidiChannel () == channel)
+                        if (bankPos != b && this.banks.get (b).getMidiChannel () == channel)
                             bankSettings[b].set (PROGRAM_NONE);
                     }
 

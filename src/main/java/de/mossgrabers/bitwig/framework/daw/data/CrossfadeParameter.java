@@ -31,7 +31,7 @@ public class CrossfadeParameter extends AbstractParameterImpl
 
     /**
      * Constructor.
-     * 
+     *
      * @param valueChanger The value changer
      * @param track The track which crossfade setting to edit
      * @param index The index of the crossfade parameter
@@ -142,7 +142,15 @@ public class CrossfadeParameter extends AbstractParameterImpl
     @Override
     public void changeValue (final int control)
     {
-        this.inc (this.valueChanger.isIncrease (control) ? 1 : -1);
+        this.changeValue (this.valueChanger, control);
+    }
+
+
+    /** {@inheritDoc} */
+    @Override
+    public void changeValue (final IValueChanger valueChanger, final int control)
+    {
+        this.inc (valueChanger.isIncrease (control) ? 1 : -1);
     }
 
 

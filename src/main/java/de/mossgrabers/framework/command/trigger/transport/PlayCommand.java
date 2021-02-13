@@ -23,8 +23,8 @@ import de.mossgrabers.framework.utils.ButtonEvent;
  */
 public class PlayCommand<S extends IControlSurface<C>, C extends Configuration> extends AbstractDoubleTriggerCommand<S, C>
 {
-    private final ButtonID   selectButtonID;
-    private final ITransport transport;
+    protected final ButtonID   selectButtonID;
+    protected final ITransport transport;
 
 
     /**

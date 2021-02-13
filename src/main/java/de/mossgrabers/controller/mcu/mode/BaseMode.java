@@ -28,7 +28,7 @@ import de.mossgrabers.framework.utils.StringUtils;
  * Base class for all modes used by MCU.
  *
  * @param <B> The type of the item bank
- * 
+ *
  * @author J&uuml;rgen Mo&szlig;graber
  */
 public abstract class BaseMode<B extends IItem> extends AbstractMode<MCUControlSurface, MCUConfiguration, B>

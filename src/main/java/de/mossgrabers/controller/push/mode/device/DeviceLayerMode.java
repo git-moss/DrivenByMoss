@@ -364,7 +364,7 @@ public class DeviceLayerMode extends BaseMode<ILayer>
             return;
         }
 
-        if (checkLayerExistance (display))
+        if (this.checkLayerExistance (display))
             this.updateDisplayElements (display, this.bank.getSelectedItem ());
     }
 
@@ -642,9 +642,9 @@ public class DeviceLayerMode extends BaseMode<ILayer>
     }
 
 
-    private Modes getSendMode (int index)
+    private Modes getSendMode (final int index)
     {
-        int idx = index - 4;
+        final int idx = index - 4;
         return Modes.get (Modes.DEVICE_LAYER_SEND1, this.configuration.isSendsAreToggled () ? 4 + idx : idx);
     }
 

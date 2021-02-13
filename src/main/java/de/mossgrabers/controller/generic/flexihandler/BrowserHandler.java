@@ -218,7 +218,7 @@ public class BrowserHandler extends AbstractHandler
             return;
 
         final IBrowser browser = this.model.getBrowser ();
-        if (this.getRelativeSpeed (knobMode, value) > 0)
+        if (this.isIncrease (knobMode, value))
             browser.selectNextFilterItem (filterColumn);
         else
             browser.selectPreviousFilterItem (filterColumn);
@@ -231,7 +231,7 @@ public class BrowserHandler extends AbstractHandler
             return;
 
         final IBrowser browser = this.model.getBrowser ();
-        if (this.getRelativeSpeed (knobMode, value) > 0)
+        if (this.isIncrease (knobMode, value))
             browser.selectNextResult ();
         else
             browser.selectPreviousResult ();
@@ -247,7 +247,7 @@ public class BrowserHandler extends AbstractHandler
             return;
 
         final IBrowser browser = this.model.getBrowser ();
-        if (this.getRelativeSpeed (knobMode, value) > 0)
+        if (this.isIncrease (knobMode, value))
             browser.nextContentType ();
         else
             browser.previousContentType ();

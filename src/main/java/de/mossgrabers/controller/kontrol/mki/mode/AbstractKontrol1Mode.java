@@ -21,7 +21,7 @@ import de.mossgrabers.framework.parameterprovider.IParameterProvider;
  * Base mode for all Kontrol 1 modes.
  *
  * @param <B> The type of the item bank
- * 
+ *
  * @author J&uuml;rgen Mo&szlig;graber
  */
 public abstract class AbstractKontrol1Mode<B extends IItem> extends AbstractMode<Kontrol1ControlSurface, Kontrol1Configuration, B> implements IKontrol1Mode

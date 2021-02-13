@@ -12,6 +12,7 @@ import de.mossgrabers.framework.controller.color.ColorManager;
 import de.mossgrabers.framework.controller.grid.IPadGrid;
 import de.mossgrabers.framework.daw.IModel;
 import de.mossgrabers.framework.daw.data.IScene;
+import de.mossgrabers.framework.daw.data.ISlot;
 import de.mossgrabers.framework.daw.data.ITrack;
 import de.mossgrabers.framework.daw.data.bank.ISceneBank;
 import de.mossgrabers.framework.daw.data.bank.ITrackBank;
@@ -153,6 +154,23 @@ public class SessionView extends AbstractSessionView<LaunchkeyMk3ControlSurface,
         final int row = padPos.getValue ().intValue ();
         if (row == 0 || this.padMode == null)
             super.onGridNoteLongPress (note);
+    }
+
+
+    /** {@inheritDoc} */
+    @Override
+    protected boolean handleButtonCombinations (final ITrack track, final ISlot slot)
+    {
+        if (super.handleButtonCombinations (track, slot))
+            return true;
+
+        if (this.isButtonCombination (ButtonID.PLAY))
+        {
+            track.returnToArrangement ();
+            return true;
+        }
+
+        return false;
     }
 
 

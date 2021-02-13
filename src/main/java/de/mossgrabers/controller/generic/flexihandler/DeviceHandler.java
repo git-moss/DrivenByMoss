@@ -211,7 +211,7 @@ public class DeviceHandler extends AbstractHandler
 
         final ICursorDevice cursorDevice = this.model.getCursorDevice ();
         final IParameterBank parameterBank = cursorDevice.getParameterBank ();
-        if (this.getRelativeSpeed (knobMode, value) > 0)
+        if (this.isIncrease (knobMode, value))
             parameterBank.scrollForwards ();
         else
             parameterBank.scrollBackwards ();
@@ -229,7 +229,7 @@ public class DeviceHandler extends AbstractHandler
 
         final ICursorDevice cursorDevice = this.model.getCursorDevice ();
         final IParameterBank parameterBank = cursorDevice.getParameterBank ();
-        if (this.getRelativeSpeed (knobMode, value) > 0)
+        if (this.isIncrease (knobMode, value))
             parameterBank.selectNextPage ();
         else
             parameterBank.selectPreviousPage ();
@@ -243,7 +243,7 @@ public class DeviceHandler extends AbstractHandler
         if (isAbsolute (knobMode))
             fxParam.setValue (value);
         else
-            fxParam.setValue (this.limit (fxParam.getValue () + this.getRelativeSpeed (knobMode, value)));
+            fxParam.changeValue (this.getRelativeValueChanger (knobMode), value);
     }
 
 
@@ -256,7 +256,7 @@ public class DeviceHandler extends AbstractHandler
             return;
 
         final ICursorDevice cursorDevice = this.model.getCursorDevice ();
-        if (this.getRelativeSpeed (knobMode, value) > 0)
+        if (this.isIncrease (knobMode, value))
             cursorDevice.selectNext ();
         else
             cursorDevice.selectPrevious ();

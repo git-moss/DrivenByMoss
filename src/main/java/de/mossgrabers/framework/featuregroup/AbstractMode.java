@@ -261,6 +261,17 @@ public abstract class AbstractMode<S extends IControlSurface<C>, C extends Confi
     }
 
 
+    /**
+     * Get if absolute or relative value changing is enabled for the mode.
+     *
+     * @param isAbsolute True if absolute mode is on
+     */
+    public void setAbsolute (final boolean isAbsolute)
+    {
+        this.isAbsolute = isAbsolute;
+    }
+
+
     /** {@inheritDoc} */
     @Override
     public void onKnobValue (final int index, final int value)

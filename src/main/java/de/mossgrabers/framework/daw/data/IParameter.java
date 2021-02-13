@@ -4,6 +4,9 @@
 
 package de.mossgrabers.framework.daw.data;
 
+import de.mossgrabers.framework.controller.valuechanger.IValueChanger;
+
+
 /**
  * Interface to a parameter.
  *
@@ -74,6 +77,15 @@ public interface IParameter extends IItem
      * @param value The control value
      */
     void changeValue (int value);
+
+
+    /**
+     * Change the value.
+     *
+     * @param valueChanger The value-changer to use
+     * @param value The control value
+     */
+    void changeValue (IValueChanger valueChanger, int value);
 
 
     /**

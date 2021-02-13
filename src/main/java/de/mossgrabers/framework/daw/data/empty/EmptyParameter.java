@@ -4,6 +4,7 @@
 
 package de.mossgrabers.framework.daw.data.empty;
 
+import de.mossgrabers.framework.controller.valuechanger.IValueChanger;
 import de.mossgrabers.framework.daw.data.AbstractParameterImpl;
 import de.mossgrabers.framework.daw.data.IParameter;
 import de.mossgrabers.framework.utils.StringUtils;
@@ -96,6 +97,14 @@ public class EmptyParameter extends AbstractParameterImpl
     /** {@inheritDoc} */
     @Override
     public void changeValue (final int value)
+    {
+        // Intentionally empty
+    }
+
+
+    /** {@inheritDoc} */
+    @Override
+    public void changeValue (final IValueChanger valueChanger, final int value)
     {
         // Intentionally empty
     }

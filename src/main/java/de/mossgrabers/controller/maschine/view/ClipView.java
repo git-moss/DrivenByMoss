@@ -54,7 +54,7 @@ public class ClipView extends BaseView
         }
 
         // Stop clip
-        if (this.isButtonCombination (ButtonID.STOP))
+        if (this.isButtonCombination (ButtonID.CLIP))
         {
             track.stop ();
             return;

@@ -4,6 +4,7 @@
 
 package de.mossgrabers.framework.daw.data;
 
+import de.mossgrabers.framework.controller.valuechanger.IValueChanger;
 import de.mossgrabers.framework.observer.IValueObserver;
 import de.mossgrabers.framework.utils.StringUtils;
 
@@ -63,7 +64,15 @@ public class ResetParameter implements IParameter
 
     /** {@inheritDoc} */
     @Override
-    public void changeValue (final int value)
+    public void changeValue (final int control)
+    {
+        this.parameter.resetValue ();
+    }
+
+
+    /** {@inheritDoc} */
+    @Override
+    public void changeValue (final IValueChanger valueChanger, final int control)
     {
         this.parameter.resetValue ();
     }

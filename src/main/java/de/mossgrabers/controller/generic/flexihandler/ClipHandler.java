@@ -164,7 +164,7 @@ public class ClipHandler extends AbstractHandler
         if (!this.increaseKnobMovement ())
             return;
 
-        if (this.getRelativeSpeed (knobMode, value) > 0)
+        if (this.isIncrease (knobMode, value))
             this.scrollClipRight ();
         else
             this.scrollClipLeft ();

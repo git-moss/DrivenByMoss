@@ -150,7 +150,15 @@ public class RangedValueImpl extends AbstractParameterImpl
     @Override
     public void changeValue (final int value)
     {
-        this.inc (this.valueChanger.calcKnobChange (value));
+        this.changeValue (this.valueChanger, value);
+    }
+
+
+    /** {@inheritDoc} */
+    @Override
+    public void changeValue (final IValueChanger valueChanger, final int value)
+    {
+        this.inc (valueChanger.calcKnobChange (value));
     }
 
 

@@ -39,7 +39,8 @@ public class FaderTouchCommand extends SelectCommand
     @Override
     public void executeNormal (final ButtonEvent event)
     {
-        if (event == ButtonEvent.LONG || this.surface.getConfiguration ().useFadersAsKnobs ())
+        final MCUConfiguration configuration = this.surface.getConfiguration ();
+        if (event == ButtonEvent.LONG || configuration.useFadersAsKnobs ())
             return;
 
         final boolean isTouched = event == ButtonEvent.DOWN;
@@ -47,13 +48,12 @@ public class FaderTouchCommand extends SelectCommand
         // Master Channel
         if (this.index == 8)
         {
-            if (isTouched)
+            if (isTouched && configuration.isTouchChannel ())
                 this.model.getMasterTrack ().select ();
             return;
         }
 
         // Select channel
-        final MCUConfiguration configuration = this.surface.getConfiguration ();
         if (configuration.isTouchChannel ())
             super.executeNormal (event);
 

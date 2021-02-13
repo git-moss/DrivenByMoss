@@ -160,7 +160,7 @@ public class MasterHandler extends AbstractHandler
         if (isAbsolute (knobMode))
             track.setVolume (value);
         else
-            track.setVolume (this.limit (track.getVolume () + this.getRelativeSpeed (knobMode, value)));
+            track.getVolumeParameter ().changeValue (this.getRelativeValueChanger (knobMode), value);
     }
 
 
@@ -170,7 +170,7 @@ public class MasterHandler extends AbstractHandler
         if (isAbsolute (knobMode))
             track.setPan (value);
         else
-            track.setPan (this.limit (track.getPan () + this.getRelativeSpeed (knobMode, value)));
+            track.getPanParameter ().changeValue (this.getRelativeValueChanger (knobMode), value);
     }
 
 
@@ -180,6 +180,6 @@ public class MasterHandler extends AbstractHandler
         if (isAbsolute (knobMode))
             transport.setCrossfade (value);
         else
-            transport.setCrossfade (this.limit (transport.getCrossfade () + this.getRelativeSpeed (knobMode, value)));
+            transport.getCrossfadeParameter ().changeValue (this.getRelativeValueChanger (knobMode), value);
     }
 }

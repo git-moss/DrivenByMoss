@@ -57,19 +57,24 @@ public abstract class AbstractHandler implements IFlexiCommandHandler
     }
 
 
-    protected double getRelativeSpeed (final int knobMode, final int value)
+    protected IValueChanger getRelativeValueChanger (final int knobMode)
     {
         switch (knobMode)
         {
-            case KNOB_MODE_RELATIVE1:
-                return this.model.getValueChanger ().calcKnobChange (value);
-            case KNOB_MODE_RELATIVE2:
-                return this.relative2ValueChanger.calcKnobChange (value);
-            case KNOB_MODE_RELATIVE3:
-                return this.relative3ValueChanger.calcKnobChange (value);
             default:
-                return 0;
+            case KNOB_MODE_RELATIVE1:
+                return this.model.getValueChanger ();
+            case KNOB_MODE_RELATIVE2:
+                return this.relative2ValueChanger;
+            case KNOB_MODE_RELATIVE3:
+                return this.relative3ValueChanger;
         }
+    }
+
+
+    protected boolean isIncrease (final int knobMode, final int control)
+    {
+        return this.getRelativeValueChanger (knobMode).calcKnobChange (control) > 0;
     }
 
 
@@ -95,19 +100,6 @@ public abstract class AbstractHandler implements IFlexiCommandHandler
     protected boolean isButtonPressed (final int knobMode, final int value)
     {
         return knobMode == KNOB_MODE_ABSOLUTE_TOGGLE || knobMode == KNOB_MODE_ABSOLUTE && value > 0;
-    }
-
-
-    /**
-     * Limit the given value to the value changers range.
-     *
-     * @param value The value tio limit
-     * @return The limited value
-     */
-    protected int limit (final double value)
-    {
-        final IValueChanger valueChanger = this.model.getValueChanger ();
-        return (int) Math.max (0, Math.min (value, valueChanger.getUpperBound () - 1.0));
     }
 
 

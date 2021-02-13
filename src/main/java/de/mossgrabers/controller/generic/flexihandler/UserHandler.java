@@ -123,7 +123,7 @@ public class UserHandler extends AbstractHandler
                 if (isAbsolute (knobMode))
                     userParam.setValue (value);
                 else
-                    userParam.setValue (this.limit (userParam.getValue () + this.getRelativeSpeed (knobMode, value)));
+                    userParam.changeValue (this.getRelativeValueChanger (knobMode), value);
                 break;
 
             case USER_TOGGLE_PARAMETER_1:

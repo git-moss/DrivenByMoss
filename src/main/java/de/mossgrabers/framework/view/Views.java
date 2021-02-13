@@ -123,12 +123,12 @@ public enum Views
     /** The name of the poly sequencer view. */
     public static final String              NAME_POLY_SEQUENCER = "Poly Seq.";
 
-    private static final Map<String, Views> NOTE_VIEW_NAMES          = new HashMap<> ();
-    private static final List<Views>        NOTE_VIEWS               = new ArrayList<> ();
-    private static final Set<Views>         SEQUENCER_VIEWS          = new HashSet<> ();
-    private static final Set<Views>         SESSION_VIEWS            = new HashSet<> ();
+    private static final Map<String, Views> NOTE_VIEW_NAMES     = new HashMap<> ();
+    private static final List<Views>        NOTE_VIEWS          = new ArrayList<> ();
+    private static final Set<Views>         SEQUENCER_VIEWS     = new HashSet<> ();
+    private static final Set<Views>         SESSION_VIEWS       = new HashSet<> ();
 
-    private static boolean                  isInitialised            = false;
+    private static boolean                  isInitialised       = false;
 
 
     /**

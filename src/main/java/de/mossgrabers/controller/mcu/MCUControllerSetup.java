@@ -504,7 +504,11 @@ public class MCUControllerSetup extends AbstractControllerSetup<MCUControlSurfac
 
                 final IHwFader master = this.addFader (surface, ContinuousID.FADER_MASTER, "Master", null, 8);
                 master.bindTouch (new FaderTouchCommand (8, this.model, surface), input, BindType.NOTE, 0, MCUControlSurface.MCU_FADER_MASTER);
-                master.disableTakeOver ();
+                if (this.configuration.hasMotorFaders ())
+                {
+                    // Prevent catch up jitter with motor faders
+                    master.disableTakeOver ();
+                }
                 new MasterVolumeMode<> (surface, this.model, ContinuousID.FADER_MASTER).onActivate ();
             }
 

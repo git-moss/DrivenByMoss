@@ -52,7 +52,7 @@ public interface IParameterProvider
 
     /**
      * Unregisters all parameters adjustment observers.
-     * 
+     *
      * @return The previously registered observers
      */
     Set<IParametersAdjustObserver> removeParametersObservers ();

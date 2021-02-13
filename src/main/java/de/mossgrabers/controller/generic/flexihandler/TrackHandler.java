@@ -1033,7 +1033,7 @@ public class TrackHandler extends AbstractHandler
         if (isAbsolute (knobMode))
             track.setVolume (value);
         else
-            track.setVolume (this.limit (track.getVolume () + this.getRelativeSpeed (knobMode, value)));
+            track.getVolumeParameter ().changeValue (this.getRelativeValueChanger (knobMode), value);
     }
 
 
@@ -1043,7 +1043,7 @@ public class TrackHandler extends AbstractHandler
         if (isAbsolute (knobMode))
             track.setPan (value);
         else
-            track.setPan (this.limit (track.getPan () + this.getRelativeSpeed (knobMode, value)));
+            track.getPanParameter ().changeValue (this.getRelativeValueChanger (knobMode), value);
     }
 
 
@@ -1064,7 +1064,7 @@ public class TrackHandler extends AbstractHandler
         if (isAbsolute (knobMode))
             send.setValue (value);
         else
-            send.setValue (this.limit (send.getValue () + this.getRelativeSpeed (knobMode, value)));
+            send.changeValue (this.getRelativeValueChanger (knobMode), value);
     }
 
 
@@ -1076,7 +1076,7 @@ public class TrackHandler extends AbstractHandler
         if (!this.increaseKnobMovement ())
             return;
 
-        if (this.getRelativeSpeed (knobMode, value) > 0)
+        if (this.isIncrease (knobMode, value))
             this.scrollTrackRight (false);
         else
             this.scrollTrackLeft (false);

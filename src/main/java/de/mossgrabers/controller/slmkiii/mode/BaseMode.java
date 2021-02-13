@@ -20,7 +20,7 @@ import de.mossgrabers.framework.utils.ButtonEvent;
  * Base class for all modes used by SLMkIII.
  *
  * @param <B> The type of the item bank
- * 
+ *
  * @author J&uuml;rgen Mo&szlig;graber
  */
 public abstract class BaseMode<B extends IItem> extends AbstractMode<SLMkIIIControlSurface, SLMkIIIConfiguration, B>

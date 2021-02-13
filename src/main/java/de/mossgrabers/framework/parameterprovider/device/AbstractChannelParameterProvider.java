@@ -17,7 +17,7 @@ import de.mossgrabers.framework.parameterprovider.AbstractParameterProvider;
  *
  * @param <B> The type of the bank
  * @param <C> The type of the banks' item
- * 
+ *
  * @author J&uuml;rgen Mo&szlig;graber
  */
 public abstract class AbstractChannelParameterProvider<B extends IChannelBank<C>, C extends IChannel> extends AbstractParameterProvider implements IBankPageObserver
