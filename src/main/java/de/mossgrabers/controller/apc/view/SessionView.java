@@ -42,7 +42,7 @@ public class SessionView extends AbstractSessionView<APCControlSurface, APCConfi
             final SessionColor isRecordingQueued = new SessionColor (APCColorManager.APC_MKII_COLOR_RED_HI, APCColorManager.APC_MKII_COLOR_RED_HI, true);
             final SessionColor isPlaying = new SessionColor (APCColorManager.APC_MKII_COLOR_GREEN_HI, APCColorManager.APC_MKII_COLOR_GREEN_HI, false);
             final SessionColor isPlayingQueued = new SessionColor (APCColorManager.APC_MKII_COLOR_GREEN_HI, APCColorManager.APC_MKII_COLOR_GREEN_HI, true);
-            final SessionColor hasContent = new SessionColor (APCColorManager.APC_MKII_COLOR_AMBER, -1, false);
+            final SessionColor hasContent = new SessionColor (APCColorManager.APC_MKII_COLOR_AMBER, APCColorManager.APC_MKII_COLOR_WHITE, false);
             final SessionColor noContent = new SessionColor (APCColorManager.APC_MKII_COLOR_BLACK, -1, false);
             final SessionColor recArmed = new SessionColor (APCColorManager.APC_MKII_COLOR_RED_LO, -1, false);
             this.setColors (isRecording, isRecordingQueued, isPlaying, isPlayingQueued, hasContent, noContent, recArmed);
@@ -53,7 +53,7 @@ public class SessionView extends AbstractSessionView<APCControlSurface, APCConfi
             final SessionColor isRecordingQueued = new SessionColor (APCColorManager.APC_COLOR_RED, APCColorManager.APC_COLOR_RED_BLINK, false);
             final SessionColor isPlaying = new SessionColor (APCColorManager.APC_COLOR_GREEN, -1, false);
             final SessionColor isPlayingQueued = new SessionColor (APCColorManager.APC_COLOR_GREEN, APCColorManager.APC_COLOR_GREEN_BLINK, false);
-            final SessionColor hasContent = new SessionColor (APCColorManager.APC_COLOR_YELLOW, -1, false);
+            final SessionColor hasContent = new SessionColor (APCColorManager.APC_COLOR_YELLOW, APCColorManager.APC_COLOR_YELLOW_BLINK, false);
             final SessionColor noContent = new SessionColor (APCColorManager.APC_COLOR_BLACK, -1, false);
             final SessionColor recArmed = new SessionColor (APCColorManager.APC_COLOR_BLACK, -1, false);
             this.setColors (isRecording, isRecordingQueued, isPlaying, isPlayingQueued, hasContent, noContent, recArmed);

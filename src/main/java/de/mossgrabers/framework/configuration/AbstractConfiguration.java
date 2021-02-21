@@ -11,6 +11,7 @@ import de.mossgrabers.framework.daw.IModel;
 import de.mossgrabers.framework.daw.constants.Capability;
 import de.mossgrabers.framework.daw.constants.Resolution;
 import de.mossgrabers.framework.daw.data.ICursorDevice;
+import de.mossgrabers.framework.daw.data.IDeviceMetadata;
 import de.mossgrabers.framework.daw.data.bank.IDeviceBank;
 import de.mossgrabers.framework.daw.data.bank.IDrumPadBank;
 import de.mossgrabers.framework.daw.data.bank.ITrackBank;
@@ -21,8 +22,10 @@ import de.mossgrabers.framework.scale.ScaleLayout;
 import de.mossgrabers.framework.scale.Scales;
 import de.mossgrabers.framework.view.Views;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Set;
@@ -124,6 +127,7 @@ public abstract class AbstractConfiguration implements Configuration
     protected static final String    CATEGORY_HARDWARE_SETUP           = "Hardware Setup";
     protected static final String    CATEGORY_DEBUG                    = "Debug";
     protected static final String    CATEGORY_NOTEREPEAT               = "Note Repeat";
+    private static final String      CATEGORY_FAV_DEVICES              = "Add Track - favorite devices";
 
     private static final String      SCALE_IN_KEY                      = "In Key";
     private static final String      SCALE_CHROMATIC                   = "Chromatic";
@@ -328,6 +332,12 @@ public abstract class AbstractConfiguration implements Configuration
     private IEnumSetting                              noteRepeatModeSetting;
     private IEnumSetting                              noteRepeatOctaveSetting;
     private IEnumSetting                              midiEditChannelSetting;
+    private List<IEnumSetting>                        instrumentSettings          = new ArrayList<> (7);
+    private List<IEnumSetting>                        audioSettings               = new ArrayList<> (3);
+    private List<IEnumSetting>                        effectSettings              = new ArrayList<> (3);
+
+    private String []                                 effectNames;
+    private String []                                 instrumentNames;
 
     private final Map<Integer, Set<ISettingObserver>> observers                   = new HashMap<> ();
     protected final Set<Integer>                      dontNotifyAll               = new HashSet<> ();
@@ -1440,6 +1450,43 @@ public abstract class AbstractConfiguration implements Configuration
     }
 
 
+    /**
+     * Activate the add track device favorites.
+     *
+     * @param settingsUI The settings
+     * @param numFavInstruments The number of favorite instrument track devices
+     * @param numFavAudio The number of favorite audio tracks devices
+     * @param numFavEffects The number of favorite effect tracks devices
+     */
+    protected void activateDeviceFavorites (final ISettingsUI settingsUI, final int numFavInstruments, final int numFavAudio, final int numFavEffects)
+    {
+        this.instrumentNames = getNames (this.host.getInstrumentMetadata ());
+        if (this.instrumentNames.length >= numFavInstruments)
+        {
+            for (int i = 0; i < numFavInstruments; i++)
+            {
+                final IEnumSetting favSetting = settingsUI.getEnumSetting ("Instrument " + (i + 1), CATEGORY_FAV_DEVICES, this.instrumentNames, this.instrumentNames[i]);
+                this.instrumentSettings.add (favSetting);
+            }
+        }
+
+        this.effectNames = getNames (this.host.getAudioEffectMetadata ());
+        if (this.effectNames.length >= Math.max (numFavAudio, numFavEffects))
+        {
+            for (int i = 0; i < numFavAudio; i++)
+            {
+                final IEnumSetting favSetting = settingsUI.getEnumSetting ("Audio " + (i + 1), CATEGORY_FAV_DEVICES, this.effectNames, this.effectNames[i]);
+                this.audioSettings.add (favSetting);
+            }
+            for (int i = 0; i < numFavEffects; i++)
+            {
+                final IEnumSetting favSetting = settingsUI.getEnumSetting ("Effect " + (i + 1), CATEGORY_FAV_DEVICES, this.effectNames, this.effectNames[i]);
+                this.effectSettings.add (favSetting);
+            }
+        }
+    }
+
+
     /** {@inheritDoc} */
     @Override
     public void notifyAllObservers ()
@@ -1663,5 +1710,59 @@ public abstract class AbstractConfiguration implements Configuration
         this.isDuplicateActive = !this.isDuplicateActive;
         if (this.isDuplicateActive)
             this.isDeleteActive = false;
+    }
+
+
+    /**
+     * Get one of the favorite instrument devices.
+     *
+     * @param index The index
+     * @return The devices' metadata or null if none existing
+     */
+    public IDeviceMetadata getInstrumentFavorite (final int index)
+    {
+        final String sel = this.instrumentSettings.get (index).get ();
+        final int lookupIndex = lookupIndex (this.instrumentNames, sel);
+        final List<IDeviceMetadata> instrumentMetadata = this.host.getInstrumentMetadata ();
+        return lookupIndex >= instrumentMetadata.size () ? null : instrumentMetadata.get (lookupIndex);
+    }
+
+
+    /**
+     * Get one of the favorite audio devices.
+     *
+     * @param index The index
+     * @return The devices' metadata or null if none existing
+     */
+    public IDeviceMetadata getAudioFavorite (final int index)
+    {
+        final String sel = this.audioSettings.get (index).get ();
+        final int lookupIndex = lookupIndex (this.effectNames, sel);
+        final List<IDeviceMetadata> effectMetadata = this.host.getAudioEffectMetadata ();
+        return lookupIndex >= effectMetadata.size () ? null : effectMetadata.get (lookupIndex);
+    }
+
+
+    /**
+     * Get one of the favorite effect devices.
+     *
+     * @param index The index
+     * @return The devices' metadata or null if none existing
+     */
+    public IDeviceMetadata getEffectFavorite (final int index)
+    {
+        final String sel = this.effectSettings.get (index).get ();
+        final int lookupIndex = lookupIndex (this.effectNames, sel);
+        final List<IDeviceMetadata> effectMetadata = this.host.getAudioEffectMetadata ();
+        return lookupIndex >= effectMetadata.size () ? null : effectMetadata.get (lookupIndex);
+    }
+
+
+    private static String [] getNames (final List<IDeviceMetadata> deviceMetadata)
+    {
+        final String [] deviceNames = new String [deviceMetadata.size ()];
+        for (int i = 0; i < deviceNames.length; i++)
+            deviceNames[i] = deviceMetadata.get (i).getName ();
+        return deviceNames;
     }
 }

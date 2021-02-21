@@ -4,12 +4,14 @@
 
 package de.mossgrabers.bitwig.framework.daw.data;
 
+import de.mossgrabers.bitwig.framework.daw.DeviceMetadataImpl;
 import de.mossgrabers.bitwig.framework.daw.data.bank.AbstractChannelBankImpl;
 import de.mossgrabers.bitwig.framework.daw.data.bank.SendBankImpl;
 import de.mossgrabers.framework.controller.color.ColorEx;
 import de.mossgrabers.framework.controller.valuechanger.IValueChanger;
 import de.mossgrabers.framework.daw.IHost;
 import de.mossgrabers.framework.daw.data.IChannel;
+import de.mossgrabers.framework.daw.data.IDeviceMetadata;
 import de.mossgrabers.framework.daw.data.IParameter;
 import de.mossgrabers.framework.daw.data.bank.ISendBank;
 import de.mossgrabers.framework.daw.data.empty.EmptyParameter;
@@ -18,7 +20,10 @@ import de.mossgrabers.framework.daw.resource.ChannelType;
 import de.mossgrabers.framework.observer.IValueObserver;
 
 import com.bitwig.extension.controller.api.Channel;
+import com.bitwig.extension.controller.api.InsertionPoint;
 import com.bitwig.extension.controller.api.SettableColorValue;
+
+import java.util.UUID;
 
 
 /**
@@ -32,6 +37,7 @@ public class ChannelImpl extends AbstractDeviceChainImpl<Channel> implements ICh
 
     protected final IValueChanger               valueChanger;
 
+    private final IHost                         host;
     private final AbstractChannelBankImpl<?, ?> channelBankImpl;
     private final IParameter                    volumeParameter;
     private final IParameter                    panParameter;
@@ -54,6 +60,8 @@ public class ChannelImpl extends AbstractDeviceChainImpl<Channel> implements ICh
     public ChannelImpl (final AbstractChannelBankImpl<?, ?> channelBank, final IHost host, final IValueChanger valueChanger, final Channel channel, final int index, final int numSends)
     {
         super (index, channel);
+
+        this.host = host;
 
         this.channelBankImpl = channelBank;
         this.deviceChain = channel;
@@ -447,6 +455,38 @@ public class ChannelImpl extends AbstractDeviceChainImpl<Channel> implements ICh
     public void addColorObserver (final IValueObserver<ColorEx> observer)
     {
         this.deviceChain.color ().addValueObserver ( (red, green, blue) -> observer.update (new ColorEx (red, green, blue)));
+    }
+
+
+    /** {@inheritDoc} */
+    @Override
+    public void addDevice (final IDeviceMetadata metadata)
+    {
+        if (!this.doesExist ())
+            return;
+
+        final InsertionPoint insertionPoint = this.deviceChain.endOfDeviceChainInsertionPoint ();
+
+        try
+        {
+            final DeviceMetadataImpl dm = (DeviceMetadataImpl) metadata;
+            switch (dm.getPluginType ())
+            {
+                case BITWIG:
+                    insertionPoint.insertBitwigDevice (UUID.fromString (dm.getId ()));
+                    break;
+                case VST2:
+                    insertionPoint.insertVST2Device (Integer.parseInt (dm.getId ()));
+                    break;
+                case VST3:
+                    insertionPoint.insertVST3Device (dm.getId ());
+                    break;
+            }
+        }
+        catch (final RuntimeException ex)
+        {
+            this.host.error ("Could not instantiate device.", ex);
+        }
     }
 
 

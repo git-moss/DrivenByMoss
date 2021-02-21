@@ -4,6 +4,9 @@
 
 package de.mossgrabers.bitwig.framework.daw;
 
+import static java.util.stream.Collectors.toList;
+
+import de.mossgrabers.bitwig.framework.daw.DeviceMetadataImpl.PluginType;
 import de.mossgrabers.bitwig.framework.graphics.BitmapImpl;
 import de.mossgrabers.bitwig.framework.graphics.ImageImpl;
 import de.mossgrabers.bitwig.framework.hardware.HwSurfaceFactoryImpl;
@@ -15,6 +18,7 @@ import de.mossgrabers.framework.controller.hardware.IHwSurfaceFactory;
 import de.mossgrabers.framework.daw.IHost;
 import de.mossgrabers.framework.daw.IMemoryBlock;
 import de.mossgrabers.framework.daw.constants.Capability;
+import de.mossgrabers.framework.daw.data.IDeviceMetadata;
 import de.mossgrabers.framework.graphics.IBitmap;
 import de.mossgrabers.framework.graphics.IImage;
 import de.mossgrabers.framework.osc.IOpenSoundControlCallback;
@@ -23,6 +27,7 @@ import de.mossgrabers.framework.osc.IOpenSoundControlMessage;
 import de.mossgrabers.framework.osc.IOpenSoundControlServer;
 import de.mossgrabers.framework.usb.IUsbDevice;
 import de.mossgrabers.framework.usb.UsbException;
+import de.mossgrabers.framework.utils.ConsoleLogger;
 
 import com.bitwig.extension.api.graphics.BitmapFormat;
 import com.bitwig.extension.api.opensoundcontrol.OscAddressSpace;
@@ -31,9 +36,13 @@ import com.bitwig.extension.controller.api.ControllerHost;
 import com.bitwig.extension.controller.api.HardwareDevice;
 import com.bitwig.extension.controller.api.UsbDevice;
 
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStreamReader;
 import java.io.PrintWriter;
 import java.io.StringWriter;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 
@@ -44,8 +53,11 @@ import java.util.List;
  */
 public class HostImpl implements IHost
 {
-    private ControllerHost   host;
-    private List<IUsbDevice> usbDevices = new ArrayList<> ();
+    private static final List<DeviceMetadataImpl> instrumentsMetadata  = new ArrayList<> ();
+    private static final List<DeviceMetadataImpl> audioEffectsMetadata = new ArrayList<> ();
+
+    private ControllerHost                        host;
+    private List<IUsbDevice>                      usbDevices           = new ArrayList<> ();
 
 
     /**
@@ -56,6 +68,8 @@ public class HostImpl implements IHost
     public HostImpl (final ControllerHost host)
     {
         this.host = host;
+
+        readDeviceFiles ();
     }
 
 
@@ -258,5 +272,78 @@ public class HostImpl implements IHost
     public ControllerHost getControllerHost ()
     {
         return this.host;
+    }
+
+
+    /** {@inheritDoc} */
+    @Override
+    public List<IDeviceMetadata> getInstrumentMetadata ()
+    {
+        return new ArrayList<> (instrumentsMetadata);
+    }
+
+
+    /** {@inheritDoc} */
+    @Override
+    public List<IDeviceMetadata> getAudioEffectMetadata ()
+    {
+        return new ArrayList<> (audioEffectsMetadata);
+    }
+
+
+    private static void readDeviceFiles ()
+    {
+        synchronized (instrumentsMetadata)
+        {
+            if (!instrumentsMetadata.isEmpty ())
+                return;
+
+            readDeviceFile ("Instruments.txt").forEach (line -> {
+                final DeviceMetadataImpl dm = parseDeviceLine (line);
+                if (dm != null)
+                    instrumentsMetadata.add (dm);
+            });
+            readDeviceFile ("AudioEffects.txt").forEach (line -> {
+                final DeviceMetadataImpl dm = parseDeviceLine (line);
+                if (dm != null)
+                    audioEffectsMetadata.add (dm);
+            });
+        }
+    }
+
+
+    private static DeviceMetadataImpl parseDeviceLine (final String line)
+    {
+        final String [] parts = line.split ("\\$");
+        if (parts.length != 3)
+        {
+            ConsoleLogger.log ("Could not parse device line. Wrong number of parts: " + line);
+            return null;
+        }
+
+        try
+        {
+            final PluginType type = PluginType.valueOf (parts[0]);
+            return new DeviceMetadataImpl (parts[1], parts[2], type);
+        }
+        catch (final IllegalArgumentException ex)
+        {
+            ConsoleLogger.log ("Could not parse device line. Wrong type argument: " + line);
+            return null;
+        }
+    }
+
+
+    private static List<String> readDeviceFile (final String fileName)
+    {
+        try (final BufferedReader reader = new BufferedReader (new InputStreamReader (HostImpl.class.getClassLoader ().getResourceAsStream ("devices/" + fileName))))
+        {
+            return reader.lines ().collect (toList ());
+        }
+        catch (final IOException ex)
+        {
+            ConsoleLogger.log ("Could not load device file: " + fileName);
+            return Collections.emptyList ();
+        }
     }
 }

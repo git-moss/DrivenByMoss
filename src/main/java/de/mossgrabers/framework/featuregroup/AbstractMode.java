@@ -481,7 +481,7 @@ public abstract class AbstractMode<S extends IControlSurface<C>, C extends Confi
      * Test if the given button ID is part of one of the button rows (ROW1_1 to ROW_6_8).
      *
      * @param row The row to test for (0-5)
-     * @param buttonID THe button ID
+     * @param buttonID The button ID
      * @return The index of the button in the row or -1 if the button is not part of the row.
      */
     protected int isButtonRow (final int row, final ButtonID buttonID)

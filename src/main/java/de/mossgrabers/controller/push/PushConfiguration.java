@@ -353,6 +353,11 @@ public class PushConfiguration extends AbstractConfiguration implements IGraphic
         this.activateUserPageNamesSetting (documentSettings);
 
         ///////////////////////////
+        // Add Track - Device Favorites
+
+        this.activateDeviceFavorites (globalSettings, 7, 3, 3);
+
+        ///////////////////////////
         // Ribbon
 
         this.activateRibbonSettings (globalSettings);

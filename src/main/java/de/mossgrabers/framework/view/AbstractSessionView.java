@@ -442,7 +442,7 @@ public abstract class AbstractSessionView<S extends IControlSurface<C>, C extend
         if (slot.hasContent ())
         {
             if (this.useClipColor && colorIndex != null)
-                return new SessionColor (cm.getColorIndex (colorIndex), this.clipColorHasContent.getBlink (), this.clipColorHasContent.isFast ());
+                return new SessionColor (cm.getColorIndex (colorIndex), slot.isSelected () ? this.clipColorHasContent.getBlink () : -1, this.clipColorHasContent.isFast ());
             return this.clipColorHasContent;
         }
 

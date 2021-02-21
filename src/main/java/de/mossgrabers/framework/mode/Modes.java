@@ -143,7 +143,9 @@ public enum Modes
     /** A user mode. */
     USER,
     /** A mode that does nothing. */
-    DUMMY;
+    DUMMY,
+    /** A mode to select options for adding a track. */
+    ADD_TRACK;
 
 
     /** The name of the Track mode. */

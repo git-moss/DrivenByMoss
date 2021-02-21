@@ -1,0 +1,19 @@
+BITWIG$Drum Machine$8ea97e45-0255-40fd-bc7e-94419741e9d1
+BITWIG$E-Clap$89eba41d-46d3-4506-8ce6-ba9fe3e3bee4
+BITWIG$E-Cowbell$dd594db1-a908-453f-a1b9-0a1b6c4c3b32
+BITWIG$E-Hat$742e4a89-df78-4ca5-b6b0-ca78889d5953
+BITWIG$E-Kick$c6d5de18-a6f1-4daa-90a9-d9254527601a
+BITWIG$E-Snare$db22eb41-c8a0-4055-b617-637614dfa185
+BITWIG$E-Tom$b5c7c298-e6af-42b3-8f14-26e25bb72d48
+BITWIG$FM-4$7a0a94df-3aa4-4bb5-8e24-2511999871ad
+BITWIG$HW CV Instrument$c511bc17-9ebf-43de-a20c-4a9e40028fdf
+BITWIG$HW Instrument$6a27aef7-bba5-4b0d-af98-7c192f84fbc2
+BITWIG$Instrument Layer$5024be2e-65d6-4d40-bbfe-8b2ea993c445
+BITWIG$Instrument Selector$9588fbcf-721a-438b-8555-97e4231f7d2c
+BITWIG$Organ$f2dcfe9a-7b66-4c84-984a-b25685a1c21a
+BITWIG$Phase-4$252723bf-68a6-4ee6-81f8-95ba4d0fb467
+BITWIG$Polymer$8f58138b-03aa-4e9d-83bd-a038c99a4ed5
+BITWIG$Poly Grid$a33bba66-8cd4-4f89-aee5-68bf67f70a54
+BITWIG$Polysynth$a9ffacb5-33e9-4fc7-8621-b1af31e410ef
+BITWIG$Sampler$468bc14b-b2e7-45a1-9666-e83117fe404e
+BITWIG$XY Instrument$bab3f04d-d3b6-4dfa-86f9-506e0b091ca8

@@ -6,6 +6,7 @@ package de.mossgrabers.framework.daw;
 
 import de.mossgrabers.framework.controller.hardware.IHwSurfaceFactory;
 import de.mossgrabers.framework.daw.constants.Capability;
+import de.mossgrabers.framework.daw.data.IDeviceMetadata;
 import de.mossgrabers.framework.graphics.IBitmap;
 import de.mossgrabers.framework.graphics.IImage;
 import de.mossgrabers.framework.osc.IOpenSoundControlCallback;
@@ -174,4 +175,20 @@ public interface IHost
      * Call on shutdown to release all USB devices.
      */
     void releaseUsbDevices ();
+
+
+    /**
+     * Get the metadata of the instruments which can be created.
+     *
+     * @return The metadata
+     */
+    List<IDeviceMetadata> getInstrumentMetadata ();
+
+
+    /**
+     * Get the metadata of the audiu effect which can be created.
+     *
+     * @return The metadata
+     */
+    List<IDeviceMetadata> getAudioEffectMetadata ();
 }

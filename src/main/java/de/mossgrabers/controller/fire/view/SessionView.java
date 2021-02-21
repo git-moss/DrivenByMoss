@@ -43,7 +43,7 @@ public class SessionView extends AbstractSessionView<FireControlSurface, FireCon
         final SessionColor isRecordingQueued = new SessionColor (FireColorManager.FIRE_COLOR_RED, FireColorManager.FIRE_COLOR_GRAY, true);
         final SessionColor isPlaying = new SessionColor (FireColorManager.FIRE_COLOR_GREEN, FireColorManager.FIRE_COLOR_DARK_GREEN, false);
         final SessionColor isPlayingQueued = new SessionColor (FireColorManager.FIRE_COLOR_GREEN, FireColorManager.FIRE_COLOR_GRAY, true);
-        final SessionColor hasContent = new SessionColor (FireColorManager.FIRE_COLOR_ORANGE, -1, false);
+        final SessionColor hasContent = new SessionColor (FireColorManager.FIRE_COLOR_ORANGE, FireColorManager.FIRE_COLOR_WHITE, false);
         final SessionColor noContent = new SessionColor (FireColorManager.FIRE_COLOR_BLACK, -1, false);
         final SessionColor recArmed = new SessionColor (FireColorManager.FIRE_COLOR_DARK_RED, -1, false);
         this.setColors (isRecording, isRecordingQueued, isPlaying, isPlayingQueued, hasContent, noContent, recArmed);

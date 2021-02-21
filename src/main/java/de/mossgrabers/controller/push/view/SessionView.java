@@ -40,13 +40,14 @@ public class SessionView extends AbstractSessionView<PushControlSurface, PushCon
         final int redLo = isPush2 ? PushColorManager.PUSH2_COLOR2_RED_LO : PushColorManager.PUSH1_COLOR2_RED_LO;
         final int redHi = isPush2 ? PushColorManager.PUSH2_COLOR2_RED_HI : PushColorManager.PUSH1_COLOR2_RED_HI;
         final int black = isPush2 ? PushColorManager.PUSH2_COLOR2_BLACK : PushColorManager.PUSH1_COLOR2_BLACK;
+        final int white = isPush2 ? PushColorManager.PUSH2_COLOR2_WHITE : PushColorManager.PUSH1_COLOR2_WHITE;
         final int green = isPush2 ? PushColorManager.PUSH2_COLOR2_GREEN : PushColorManager.PUSH1_COLOR2_GREEN;
         final int amber = isPush2 ? PushColorManager.PUSH2_COLOR2_AMBER : PushColorManager.PUSH1_COLOR2_AMBER;
         final SessionColor isRecording = new SessionColor (redHi, redHi, false);
         final SessionColor isRecordingQueued = new SessionColor (redHi, black, true);
         final SessionColor isPlaying = new SessionColor (green, green, false);
         final SessionColor isPlayingQueued = new SessionColor (green, green, true);
-        final SessionColor hasContent = new SessionColor (amber, -1, false);
+        final SessionColor hasContent = new SessionColor (amber, white, false);
         final SessionColor noContent = new SessionColor (black, -1, false);
         final SessionColor recArmed = new SessionColor (redLo, -1, false);
         this.setColors (isRecording, isRecordingQueued, isPlaying, isPlayingQueued, hasContent, noContent, recArmed);

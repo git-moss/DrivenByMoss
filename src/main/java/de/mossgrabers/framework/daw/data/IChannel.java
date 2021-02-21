@@ -321,4 +321,12 @@ public interface IChannel extends IItem
      * @param observer The observer to notify on a color change
      */
     void addColorObserver (IValueObserver<ColorEx> observer);
+
+
+    /**
+     * Add a device at the end of the channels' device chain.
+     *
+     * @param metadata The metadata of the device to add
+     */
+    void addDevice (IDeviceMetadata metadata);
 }
