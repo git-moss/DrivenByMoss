@@ -1460,7 +1460,7 @@ public abstract class AbstractConfiguration implements Configuration
      */
     protected void activateDeviceFavorites (final ISettingsUI settingsUI, final int numFavInstruments, final int numFavAudio, final int numFavEffects)
     {
-        this.instrumentNames = getNames (this.host.getInstrumentMetadata ());
+        this.instrumentNames = getDeviceNames (this.host.getInstrumentMetadata ());
         if (this.instrumentNames.length >= numFavInstruments)
         {
             for (int i = 0; i < numFavInstruments; i++)
@@ -1470,7 +1470,7 @@ public abstract class AbstractConfiguration implements Configuration
             }
         }
 
-        this.effectNames = getNames (this.host.getAudioEffectMetadata ());
+        this.effectNames = getDeviceNames (this.host.getAudioEffectMetadata ());
         if (this.effectNames.length >= Math.max (numFavAudio, numFavEffects))
         {
             for (int i = 0; i < numFavAudio; i++)
@@ -1758,11 +1758,11 @@ public abstract class AbstractConfiguration implements Configuration
     }
 
 
-    private static String [] getNames (final List<IDeviceMetadata> deviceMetadata)
+    private static String [] getDeviceNames (final List<IDeviceMetadata> deviceMetadata)
     {
         final String [] deviceNames = new String [deviceMetadata.size ()];
         for (int i = 0; i < deviceNames.length; i++)
-            deviceNames[i] = deviceMetadata.get (i).getName ();
+            deviceNames[i] = deviceMetadata.get (i).getFullName ();
         return deviceNames;
     }
 }
