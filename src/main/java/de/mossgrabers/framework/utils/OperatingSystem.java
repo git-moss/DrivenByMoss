@@ -18,11 +18,12 @@ public enum OperatingSystem
     WINDOWS,
     /** Linux. */
     LINUX,
-    /** Any Mac. */
+    /** Intel Mac. */
     MAC,
+    /** ARM Mac. */
+    MAC_ARM,
     /** No idea. */
     OTHER;
-
 
     private static OperatingSystem os = OTHER;
 
@@ -37,10 +38,15 @@ public enum OperatingSystem
             else if (osName.contains ("linux"))
                 os = LINUX;
             else if (osName.contains ("mac os x"))
-                os = MAC;
+            {
+                final String osArch = System.getProperty ("os.arch");
+                if (osArch != null && osArch.toLowerCase (Locale.ENGLISH).contains ("aarch64"))
+                    os = MAC_ARM;
+                else
+                    os = MAC;
+            }
         }
     }
-
 
     /**
      * Get the OS we are running on.
