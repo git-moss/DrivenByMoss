@@ -191,7 +191,6 @@ public abstract class AbstractConfiguration implements Configuration
     protected static final ColorEx DEFAULT_COLOR_BACKGROUND_DARKER  = ColorEx.fromRGB (39, 39, 39);
     protected static final ColorEx DEFAULT_COLOR_BACKGROUND_LIGHTER = ColorEx.fromRGB (118, 118, 118);
 
-
     /** The behaviour when the stop button is pressed. */
     public enum BehaviourOnStop
     {
@@ -202,7 +201,6 @@ public abstract class AbstractConfiguration implements Configuration
         /** Only pause on stop. */
         PAUSE
     }
-
 
     private static final String [] AFTERTOUCH_CONVERSION_VALUES = new String [131];
     static
@@ -285,7 +283,6 @@ public abstract class AbstractConfiguration implements Configuration
         "On"
     };
 
-
     /** Different options for the record button. */
     public enum RecordFunction
     {
@@ -302,7 +299,6 @@ public abstract class AbstractConfiguration implements Configuration
         /** Toggle clip overdub. */
         TOGGLE_REC_ARM
     }
-
 
     private static final String []                    RECORD_OPTIONS              =
     {
@@ -396,7 +392,6 @@ public abstract class AbstractConfiguration implements Configuration
 
     private RecordFunction                            recordButtonFunction        = RecordFunction.RECORD_ARRANGER;
     private RecordFunction                            shiftedRecordButtonFunction = RecordFunction.NEW_CLIP;
-
 
     /**
      * Constructor.
@@ -1461,26 +1456,26 @@ public abstract class AbstractConfiguration implements Configuration
     protected void activateDeviceFavorites (final ISettingsUI settingsUI, final int numFavInstruments, final int numFavAudio, final int numFavEffects)
     {
         this.instrumentNames = getDeviceNames (this.host.getInstrumentMetadata ());
-        if (this.instrumentNames.length >= numFavInstruments)
+        if (this.instrumentNames.length >= 0)
         {
             for (int i = 0; i < numFavInstruments; i++)
             {
-                final IEnumSetting favSetting = settingsUI.getEnumSetting ("Instrument " + (i + 1), CATEGORY_FAV_DEVICES, this.instrumentNames, this.instrumentNames[i]);
+                final IEnumSetting favSetting = settingsUI.getEnumSetting ("Instrument " + (i + 1), CATEGORY_FAV_DEVICES, this.instrumentNames, this.instrumentNames[Math.min (this.instrumentNames.length - 1, i)]);
                 this.instrumentSettings.add (favSetting);
             }
         }
 
         this.effectNames = getDeviceNames (this.host.getAudioEffectMetadata ());
-        if (this.effectNames.length >= Math.max (numFavAudio, numFavEffects))
+        if (this.effectNames.length >= 0)
         {
             for (int i = 0; i < numFavAudio; i++)
             {
-                final IEnumSetting favSetting = settingsUI.getEnumSetting ("Audio " + (i + 1), CATEGORY_FAV_DEVICES, this.effectNames, this.effectNames[i]);
+                final IEnumSetting favSetting = settingsUI.getEnumSetting ("Audio " + (i + 1), CATEGORY_FAV_DEVICES, this.effectNames, this.effectNames[Math.min (this.effectNames.length - 1, i)]);
                 this.audioSettings.add (favSetting);
             }
             for (int i = 0; i < numFavEffects; i++)
             {
-                final IEnumSetting favSetting = settingsUI.getEnumSetting ("Effect " + (i + 1), CATEGORY_FAV_DEVICES, this.effectNames, this.effectNames[i]);
+                final IEnumSetting favSetting = settingsUI.getEnumSetting ("Effect " + (i + 1), CATEGORY_FAV_DEVICES, this.effectNames, this.effectNames[Math.min (this.effectNames.length - 1, i)]);
                 this.effectSettings.add (favSetting);
             }
         }
@@ -1721,6 +1716,8 @@ public abstract class AbstractConfiguration implements Configuration
      */
     public IDeviceMetadata getInstrumentFavorite (final int index)
     {
+        if (index >= this.instrumentSettings.size ())
+            return null;
         final String sel = this.instrumentSettings.get (index).get ();
         final int lookupIndex = lookupIndex (this.instrumentNames, sel);
         final List<IDeviceMetadata> instrumentMetadata = this.host.getInstrumentMetadata ();
@@ -1736,6 +1733,8 @@ public abstract class AbstractConfiguration implements Configuration
      */
     public IDeviceMetadata getAudioFavorite (final int index)
     {
+        if (index >= this.audioSettings.size ())
+            return null;
         final String sel = this.audioSettings.get (index).get ();
         final int lookupIndex = lookupIndex (this.effectNames, sel);
         final List<IDeviceMetadata> effectMetadata = this.host.getAudioEffectMetadata ();
@@ -1751,6 +1750,8 @@ public abstract class AbstractConfiguration implements Configuration
      */
     public IDeviceMetadata getEffectFavorite (final int index)
     {
+        if (index >= this.effectSettings.size ())
+            return null;
         final String sel = this.effectSettings.get (index).get ();
         final int lookupIndex = lookupIndex (this.effectNames, sel);
         final List<IDeviceMetadata> effectMetadata = this.host.getAudioEffectMetadata ();

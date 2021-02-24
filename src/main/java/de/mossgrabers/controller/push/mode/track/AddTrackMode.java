@@ -13,6 +13,7 @@ import de.mossgrabers.framework.controller.color.ColorEx;
 import de.mossgrabers.framework.controller.display.IGraphicDisplay;
 import de.mossgrabers.framework.controller.display.ITextDisplay;
 import de.mossgrabers.framework.daw.IModel;
+import de.mossgrabers.framework.daw.data.IDeviceMetadata;
 import de.mossgrabers.framework.daw.data.IItem;
 import de.mossgrabers.framework.featuregroup.AbstractFeatureGroup;
 import de.mossgrabers.framework.utils.ButtonEvent;
@@ -27,7 +28,6 @@ import de.mossgrabers.framework.utils.StringUtils;
 public class AddTrackMode extends BaseMode<IItem>
 {
     private static final String STR_EMPTY = "Empty";
-
 
     /**
      * Constructor.
@@ -163,14 +163,27 @@ public class AddTrackMode extends BaseMode<IItem>
 
         display.addOptionElement ("Instrument", STR_EMPTY, false, ColorEx.YELLOW, "Audio", STR_EMPTY, false, ColorEx.GREEN, false, false);
 
-        display.addOptionElement ("", conf.getInstrumentFavorite (0).getName (), false, "", conf.getAudioFavorite (0).getName (), false, false);
-        display.addOptionElement ("", conf.getInstrumentFavorite (1).getName (), false, "", conf.getAudioFavorite (1).getName (), false, false);
-        display.addOptionElement ("", conf.getInstrumentFavorite (2).getName (), false, "", conf.getAudioFavorite (2).getName (), false, false);
+        IDeviceMetadata instrFav = conf.getInstrumentFavorite (0);
+        IDeviceMetadata audioFav = conf.getAudioFavorite (0);
+        display.addOptionElement ("", instrFav == null ? "" : instrFav.getName (), false, "", audioFav == null ? "" : audioFav.getName (), false, false);
+        instrFav = conf.getInstrumentFavorite (1);
+        audioFav = conf.getAudioFavorite (1);
+        display.addOptionElement ("", instrFav == null ? "" : instrFav.getName (), false, "", audioFav == null ? "" : audioFav.getName (), false, false);
+        instrFav = conf.getInstrumentFavorite (2);
+        audioFav = conf.getAudioFavorite (2);
+        display.addOptionElement ("", instrFav == null ? "" : instrFav.getName (), false, "", audioFav == null ? "" : audioFav.getName (), false, false);
 
-        display.addOptionElement ("", conf.getInstrumentFavorite (3).getName (), false, null, "Effect", STR_EMPTY, false, ColorEx.BLUE, false, false);
+        instrFav = conf.getInstrumentFavorite (3);
+        display.addOptionElement ("", instrFav == null ? "" : instrFav.getName (), false, null, "Effect", STR_EMPTY, false, ColorEx.BLUE, false, false);
 
-        display.addOptionElement ("", conf.getInstrumentFavorite (4).getName (), false, "", conf.getEffectFavorite (0).getName (), false, false);
-        display.addOptionElement ("", conf.getInstrumentFavorite (5).getName (), false, "", conf.getEffectFavorite (1).getName (), false, false);
-        display.addOptionElement ("", conf.getInstrumentFavorite (6).getName (), false, "", conf.getEffectFavorite (2).getName (), false, false);
+        instrFav = conf.getInstrumentFavorite (4);
+        IDeviceMetadata effectFavorite = conf.getEffectFavorite (0);
+        display.addOptionElement ("", instrFav == null ? "" : instrFav.getName (), false, "", effectFavorite == null ? "" : effectFavorite.getName (), false, false);
+        instrFav = conf.getInstrumentFavorite (5);
+        effectFavorite = conf.getEffectFavorite (1);
+        display.addOptionElement ("", instrFav == null ? "" : instrFav.getName (), false, "", effectFavorite == null ? "" : effectFavorite.getName (), false, false);
+        instrFav = conf.getInstrumentFavorite (6);
+        effectFavorite = conf.getEffectFavorite (2);
+        display.addOptionElement ("", instrFav == null ? "" : instrFav.getName (), false, "", effectFavorite == null ? "" : effectFavorite.getName (), false, false);
     }
 }
