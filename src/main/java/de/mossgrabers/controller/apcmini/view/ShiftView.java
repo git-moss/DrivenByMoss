@@ -110,7 +110,7 @@ public class ShiftView extends AbstractView<APCminiControlSurface, APCminiConfig
         padGrid.light (36 + 27, APCminiColorManager.APC_COLOR_GREEN);
 
         // Draw the view selection: Session, Note, Drum, Sequencer
-        final Views previousViewId = this.surface.getViewManager ().getPreviousID ();
+        final Views previousViewId = this.surface.getViewManager ().getActiveIDIgnoreTemporary ();
         padGrid.light (36 + 56, Views.SESSION == previousViewId ? APCminiColorManager.APC_COLOR_GREEN : APCminiColorManager.APC_COLOR_YELLOW);
         padGrid.light (36 + 57, Views.PLAY == previousViewId ? APCminiColorManager.APC_COLOR_GREEN : APCminiColorManager.APC_COLOR_YELLOW);
         padGrid.light (36 + 58, Views.DRUM == previousViewId ? APCminiColorManager.APC_COLOR_GREEN : APCminiColorManager.APC_COLOR_YELLOW);
@@ -135,7 +135,7 @@ public class ShiftView extends AbstractView<APCminiControlSurface, APCminiConfig
     @Override
     public void onGridNote (final int note, final int velocity)
     {
-        if (velocity == 0)
+        if (velocity != 0)
             return;
 
         final ICursorDevice cursorDevice = this.model.getCursorDevice ();
@@ -161,7 +161,7 @@ public class ShiftView extends AbstractView<APCminiControlSurface, APCminiConfig
 
             // Last row transport
             case 63:
-                this.playCommand.executeNormal (ButtonEvent.DOWN);
+                this.playCommand.executeNormal (ButtonEvent.UP);
                 this.surface.getDisplay ().notify ("Start/Stop");
                 break;
             case 55:
@@ -237,7 +237,7 @@ public class ShiftView extends AbstractView<APCminiControlSurface, APCminiConfig
                 break;
             case 27:
                 this.scales.toggleChromatic ();
-                this.surface.getDisplay ().notify (this.scales.isChromatic () ? "Chromatc" : "In Key");
+                this.surface.getDisplay ().notify (this.scales.isChromatic () ? "Chromatic" : "In Key");
                 break;
 
             // Scale Base note selection

@@ -443,7 +443,7 @@ public abstract class AbstractSessionView<S extends IControlSurface<C>, C extend
         {
             if (this.useClipColor && colorIndex != null)
                 return new SessionColor (cm.getColorIndex (colorIndex), slot.isSelected () ? this.clipColorHasContent.getBlink () : -1, this.clipColorHasContent.isFast ());
-            return this.clipColorHasContent;
+            return new SessionColor (this.clipColorHasContent.getColor (), slot.isSelected () ? this.clipColorHasContent.getBlink () : -1, this.clipColorHasContent.isFast ());
         }
 
         return isArmed && this.surface.getConfiguration ().isDrawRecordStripe () ? this.clipColorIsRecArmed : this.clipColorHasNoContent;

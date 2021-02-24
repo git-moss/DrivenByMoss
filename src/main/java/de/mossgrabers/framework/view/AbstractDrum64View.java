@@ -21,7 +21,8 @@ import de.mossgrabers.framework.utils.ButtonEvent;
 
 
 /**
- * Abstract implementation for a 64 drum grid.
+ * Abstract implementation for a 64 (or more) drum grid consisting of 4x4 blocks. Blocks start on
+ * the left bottom, then go up the column and continue then on the right bottom.
  *
  * @param <S> The type of the control surface
  * @param <C> The type of the configuration
@@ -95,8 +96,7 @@ public abstract class AbstractDrum64View<S extends IControlSurface<C>, C extends
     {
         super.onActivate ();
 
-        final IDrumDevice drumDevice64 = this.model.getDrumDevice64 ();
-        drumDevice64.getDrumPadBank ().setIndication (true);
+        this.model.getDrumDevice64 ().getDrumPadBank ().setIndication (true);
     }
 
 
@@ -106,8 +106,7 @@ public abstract class AbstractDrum64View<S extends IControlSurface<C>, C extends
     {
         super.onDeactivate ();
 
-        final IDrumDevice drumDevice64 = this.model.getDrumDevice64 ();
-        drumDevice64.getDrumPadBank ().setIndication (false);
+        this.model.getDrumDevice64 ().getDrumPadBank ().setIndication (false);
     }
 
 
@@ -121,18 +120,9 @@ public abstract class AbstractDrum64View<S extends IControlSurface<C>, C extends
         final int index = note - 36;
         final int x = index % this.columns;
         final int y = index / this.columns;
-
         final int xblockPos = x / 4;
         final int yblockPos = y / 4;
-
-        int blocks = -16;
-        for (int xblock = 0; xblock <= xblockPos; xblock++)
-        {
-            for (int yblock = 0; yblock <= yblockPos; yblock++)
-            {
-                blocks += 16;
-            }
-        }
+        final int blocks = xblockPos * this.yblocks * 16 + yblockPos * 16;
 
         this.selectedPad = blocks + y % 4 * 4 + x % 4;
 
