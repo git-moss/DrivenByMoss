@@ -56,6 +56,7 @@ public abstract class AbstractSessionView<S extends IControlSurface<C>, C extend
     protected int              columns;
     protected boolean          useClipColor;
     protected ISlot            sourceSlot;
+    protected boolean          isBirdsEyeActive           = false;
 
 
     /**
@@ -281,6 +282,26 @@ public abstract class AbstractSessionView<S extends IControlSurface<C>, C extend
             this.drawBirdsEyeGrid ();
         else
             this.drawSessionGrid ();
+    }
+
+
+    /**
+     * Toggles the birdseye view.
+     */
+    public void toggleBirdsEyeView ()
+    {
+        this.isBirdsEyeActive = !this.isBirdsEyeActive;
+    }
+
+
+    /**
+     * Set the birds eye view in-/active.
+     *
+     * @param isBirdsEyeActive True to activate
+     */
+    public void setBirdsEyeActive (final boolean isBirdsEyeActive)
+    {
+        this.isBirdsEyeActive = isBirdsEyeActive;
     }
 
 

@@ -83,10 +83,28 @@ public class SessionView extends AbstractSessionView<APCControlSurface, APCConfi
 
     /** {@inheritDoc} */
     @Override
-    public void drawGrid ()
+    public boolean isBirdsEyeActive ()
     {
-        // No birds eye view, since Shift is used for view changes...
-        this.drawSessionGrid ();
+        return this.isBirdsEyeActive;
+    }
+
+
+    /** {@inheritDoc} */
+    @Override
+    public void onGridNote (final int note, final int velocity)
+    {
+        // Birds-eye-view navigation
+        if (this.isBirdsEyeActive ())
+        {
+            final int index = note - 36;
+            final int x = index % this.columns;
+            final int y = this.rows - 1 - index / this.columns;
+
+            this.onGridNoteBirdsEyeView (x, y, 0);
+            return;
+        }
+
+        super.onGridNote (note, velocity);
     }
 
 

@@ -77,19 +77,21 @@ public class ClipMode extends AbstractTrackMode
         if (!clip.doesExist ())
             return;
 
+        final boolean shiftPressed = this.surface.isShiftPressed ();
+
         switch (index)
         {
             case 0:
-                clip.changePlayStart (value);
+                clip.changePlayStart (value, shiftPressed);
                 break;
             case 1:
-                clip.changePlayEnd (value);
+                clip.changePlayEnd (value, shiftPressed);
                 break;
             case 2:
-                clip.changeLoopStart (value);
+                clip.changeLoopStart (value, shiftPressed);
                 break;
             case 3:
-                clip.changeLoopLength (value);
+                clip.changeLoopLength (value, shiftPressed);
                 break;
             case 4:
                 clip.setLoopEnabled (value <= 61);
@@ -98,7 +100,7 @@ public class ClipMode extends AbstractTrackMode
                 clip.setShuffleEnabled (value <= 61);
                 break;
             case 7:
-                clip.changeAccent (value);
+                clip.changeAccent (value, shiftPressed);
                 break;
             default:
                 // Intentionally empty

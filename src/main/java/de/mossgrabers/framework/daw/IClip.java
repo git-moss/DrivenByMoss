@@ -60,8 +60,9 @@ public interface IClip extends IObserverManagement
      * cannot be applied to this.
      *
      * @param control The control value
+     * @param slow Change slowly
      */
-    void changePlayStart (int control);
+    void changePlayStart (int control, boolean slow);
 
 
     /**
@@ -85,8 +86,9 @@ public interface IClip extends IObserverManagement
      * be applied to this.
      *
      * @param control The control value
+     * @param slow Change slowly
      */
-    void changePlayEnd (int control);
+    void changePlayEnd (int control, boolean slow);
 
 
     /**
@@ -119,8 +121,9 @@ public interface IClip extends IObserverManagement
      * cannot be applied to this.
      *
      * @param control The control value
+     * @param slow Change slowly
      */
-    void changeLoopStart (int control);
+    void changeLoopStart (int control, boolean slow);
 
 
     /**
@@ -144,8 +147,9 @@ public interface IClip extends IObserverManagement
      * cannot be applied to this.
      *
      * @param control The control value
+     * @param slow Change slowly
      */
-    void changeLoopLength (int control);
+    void changeLoopLength (int control, boolean slow);
 
 
     /**
@@ -206,8 +210,9 @@ public interface IClip extends IObserverManagement
      * Change the accent value.
      *
      * @param control The control value
+     * @param slow Change slowly
      */
-    void changeAccent (int control);
+    void changeAccent (int control, boolean slow);
 
 
     /**

@@ -411,8 +411,8 @@ public class APCControllerSetup extends AbstractControllerSetup<APCControlSurfac
             surface.getButton (ButtonID.SEND1).setBounds (562.25, 96.0, 33.25, 15.25);
             surface.getButton (ButtonID.SEND2).setBounds (562.25, 132.0, 33.25, 15.25);
 
-            surface.getButton (ButtonID.ARROW_DOWN).setBounds (581.25, 361.75, 33.25, 25.0);
-            surface.getButton (ButtonID.ARROW_UP).setBounds (581.5, 386.25, 33.25, 25.0);
+            surface.getButton (ButtonID.ARROW_UP).setBounds (581.25, 361.75, 33.25, 25.0);
+            surface.getButton (ButtonID.ARROW_DOWN).setBounds (581.5, 386.25, 33.25, 25.0);
             surface.getButton (ButtonID.ARROW_LEFT).setBounds (562.5, 361.75, 17.0, 49.25);
             surface.getButton (ButtonID.ARROW_RIGHT).setBounds (616.0, 361.75, 17.0, 49.25);
 

@@ -26,9 +26,6 @@ import de.mossgrabers.framework.view.TransposeView;
  */
 public class SessionView extends AbstractSessionView<FireControlSurface, FireConfiguration> implements TransposeView, IFireView
 {
-    private boolean isBirdsEyeActive = false;
-
-
     /**
      * Constructor.
      *
@@ -97,15 +94,6 @@ public class SessionView extends AbstractSessionView<FireControlSurface, FireCon
         if (!s.doesExist ())
             return 0;
         return this.surface.isPressed (buttonID) ? 2 : 1;
-    }
-
-
-    /**
-     * Toggles the birdseye view.
-     */
-    public void toggleBirdsEyeView ()
-    {
-        this.isBirdsEyeActive = !this.isBirdsEyeActive;
     }
 
 
