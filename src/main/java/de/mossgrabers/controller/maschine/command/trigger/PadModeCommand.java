@@ -45,14 +45,16 @@ public class PadModeCommand extends AbstractTriggerCommand<MaschineControlSurfac
         final ViewManager viewManager = this.surface.getViewManager ();
         if (viewManager.isActive (Views.DRUM))
         {
-            if (!this.surface.getMaschine ().hasMCUDisplay ())
-                ((DrumView) viewManager.get (Views.DRUM)).toggleShifted ();
+            if (!((DrumView) viewManager.get (Views.DRUM)).isSequencerVisible()) {
+                if (!this.surface.getMaschine().hasMCUDisplay())
+                    ((DrumView) viewManager.get(Views.DRUM)).toggleShifted();
 
-            final ModeManager modeManager = this.surface.getModeManager ();
-            if (modeManager.isActive (Modes.PLAY_OPTIONS))
-                modeManager.restore ();
-            else
-                modeManager.setActive (Modes.PLAY_OPTIONS);
+                final ModeManager modeManager = this.surface.getModeManager();
+                if (modeManager.isActive(Modes.PLAY_OPTIONS))
+                    modeManager.restore();
+                else
+                    modeManager.setActive(Modes.PLAY_OPTIONS);
+            }
         }
         else
             viewManager.setActive (Views.DRUM);

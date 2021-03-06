@@ -6,6 +6,7 @@ package de.mossgrabers.controller.maschine.command.trigger;
 
 import de.mossgrabers.controller.maschine.MaschineConfiguration;
 import de.mossgrabers.controller.maschine.controller.MaschineControlSurface;
+import de.mossgrabers.controller.maschine.view.DrumView;
 import de.mossgrabers.controller.maschine.view.PlayView;
 import de.mossgrabers.framework.command.core.AbstractTriggerCommand;
 import de.mossgrabers.framework.daw.IModel;
@@ -46,14 +47,16 @@ public class KeyboardCommand extends AbstractTriggerCommand<MaschineControlSurfa
         final ViewManager viewManager = this.surface.getViewManager ();
         if (viewManager.isActive (Views.PLAY))
         {
-            if (!this.surface.getMaschine ().hasMCUDisplay ())
-                ((PlayView) viewManager.get (Views.PLAY)).toggleShifted ();
+            if (!((DrumView) viewManager.get (Views.DRUM)).isSequencerVisible()) {
+                if (!this.surface.getMaschine().hasMCUDisplay())
+                    ((PlayView) viewManager.get(Views.PLAY)).toggleShifted();
 
-            final ModeManager modeManager = this.surface.getModeManager ();
-            if (modeManager.isActive (Modes.SCALES))
-                modeManager.restore ();
-            else
-                modeManager.setTemporary (Modes.SCALES);
+                final ModeManager modeManager = this.surface.getModeManager();
+                if (modeManager.isActive(Modes.SCALES))
+                    modeManager.restore();
+                else
+                    modeManager.setTemporary(Modes.SCALES);
+            }
         }
         else
             viewManager.setActive (Views.PLAY);
