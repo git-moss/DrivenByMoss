@@ -13,7 +13,10 @@ import de.mossgrabers.framework.controller.display.IGraphicDisplay;
 import de.mossgrabers.framework.controller.display.ITextDisplay;
 import de.mossgrabers.framework.daw.IModel;
 import de.mossgrabers.framework.daw.data.IChannel;
+import de.mossgrabers.framework.daw.data.ILayer;
 import de.mossgrabers.framework.mode.Modes;
+
+import java.util.Optional;
 
 
 /**
@@ -88,7 +91,7 @@ public class DeviceLayerModePan extends DeviceLayerMode
 
     /** {@inheritDoc} */
     @Override
-    public void updateDisplayElements (final IGraphicDisplay display, final IChannel l)
+    public void updateDisplayElements (final IGraphicDisplay display, final Optional<ILayer> l)
     {
         this.updateChannelDisplay (display, AbstractGraphicDisplay.GRID_ELEMENT_CHANNEL_PAN, false, true);
     }

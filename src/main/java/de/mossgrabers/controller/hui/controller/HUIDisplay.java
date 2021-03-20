@@ -94,6 +94,7 @@ public class HUIDisplay extends AbstractTextDisplay
         catch (final InterruptedException ex)
         {
             this.host.error ("HUI display send executor did not end in 10 seconds. Interrupted.", ex);
+            Thread.currentThread ().interrupt ();
         }
     }
 }

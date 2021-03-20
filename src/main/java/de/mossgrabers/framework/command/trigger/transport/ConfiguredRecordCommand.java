@@ -14,6 +14,8 @@ import de.mossgrabers.framework.daw.data.ISlot;
 import de.mossgrabers.framework.daw.data.ITrack;
 import de.mossgrabers.framework.utils.ButtonEvent;
 
+import java.util.Optional;
+
 
 /**
  * Command handle the record and restart (Shift+Record) button.
@@ -83,12 +85,13 @@ public class ConfiguredRecordCommand<S extends IControlSurface<C>, C extends Con
                 this.model.getTransport ().record ();
                 break;
             case RECORD_CLIP:
-                final ISlot slot = this.model.getSelectedSlot ();
-                if (slot == null)
+                final Optional<ISlot> slot = this.model.getSelectedSlot ();
+                if (slot.isEmpty ())
                     return;
-                if (!slot.isRecording ())
-                    slot.record ();
-                slot.launch ();
+                final ISlot s = slot.get ();
+                if (!s.isRecording ())
+                    s.record ();
+                s.launch ();
                 break;
             case NEW_CLIP:
                 new NewCommand<> (this.model, this.surface).executeNormal (ButtonEvent.DOWN);
@@ -100,9 +103,9 @@ public class ConfiguredRecordCommand<S extends IControlSurface<C>, C extends Con
                 this.model.getTransport ().toggleLauncherOverdub ();
                 break;
             case TOGGLE_REC_ARM:
-                final ITrack selectedTrack = this.model.getCurrentTrackBank ().getSelectedItem ();
-                if (selectedTrack != null)
-                    selectedTrack.toggleRecArm ();
+                final Optional<ITrack> selectedTrack = this.model.getCurrentTrackBank ().getSelectedItem ();
+                if (selectedTrack.isPresent ())
+                    selectedTrack.get ().toggleRecArm ();
                 break;
             default:
                 // Intentionally empty

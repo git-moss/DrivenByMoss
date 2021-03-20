@@ -9,6 +9,7 @@ import de.mossgrabers.framework.observer.IItemSelectionObserver;
 import de.mossgrabers.framework.observer.IObserverManagement;
 
 import java.util.List;
+import java.util.Optional;
 
 
 /**
@@ -59,7 +60,7 @@ public interface IBank<T> extends IObserverManagement
      *
      * @return The selected item or null if no item is selected on the current page
      */
-    T getSelectedItem ();
+    Optional<T> getSelectedItem ();
 
 
     /**

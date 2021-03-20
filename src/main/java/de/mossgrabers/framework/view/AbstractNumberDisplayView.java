@@ -233,7 +233,7 @@ public abstract class AbstractNumberDisplayView<S extends IControlSurface<C>, C 
      * @param textColor2 The color of 2nd digit
      * @param backgroundColor The background color
      */
-    public AbstractNumberDisplayView (final String name, final S surface, final IModel model, final int textColor1, final int textColor2, final int backgroundColor)
+    protected AbstractNumberDisplayView (final String name, final S surface, final IModel model, final int textColor1, final int textColor2, final int backgroundColor)
     {
         super (name, surface, model);
 

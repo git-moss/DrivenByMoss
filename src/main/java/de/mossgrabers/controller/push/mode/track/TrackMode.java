@@ -21,6 +21,8 @@ import de.mossgrabers.framework.daw.data.bank.ITrackBank;
 import de.mossgrabers.framework.graphics.canvas.utils.SendData;
 import de.mossgrabers.framework.utils.Pair;
 
+import java.util.Optional;
+
 
 /**
  * Mode for editing a track parameters.
@@ -48,11 +50,13 @@ public class TrackMode extends AbstractTrackMode
     public void updateDisplay1 (final ITextDisplay display)
     {
         final ITrackBank tb = this.model.getCurrentTrackBank ();
-        final ITrack t = tb.getSelectedItem ();
-        if (t == null)
+        final Optional<ITrack> track = tb.getSelectedItem ();
+        if (track.isEmpty ())
             display.setRow (1, "                     Please selecta track...                        ");
         else
         {
+            final ITrack t = track.get ();
+
             final PushConfiguration config = this.surface.getConfiguration ();
             final int upperBound = this.model.getValueChanger ().getUpperBound ();
             final String volValueStr = config.isEnableVUMeters () ? Push1Display.formatValue (t.getVolume (), t.getVu (), upperBound) : Push1Display.formatValue (t.getVolume (), upperBound);
@@ -84,11 +88,11 @@ public class TrackMode extends AbstractTrackMode
     public void updateDisplay2 (final IGraphicDisplay display)
     {
         final ITrackBank tb = this.model.getCurrentTrackBank ();
-        final ITrack selectedTrack = tb.getSelectedItem ();
+        final Optional<ITrack> selectedTrack = tb.getSelectedItem ();
 
         // Get the index at which to draw the Sends element
-        final int selectedIndex = selectedTrack == null ? -1 : selectedTrack.getIndex ();
-        int sendsIndex = selectedTrack == null || this.model.isEffectTrackBankActive () ? -1 : selectedTrack.getIndex () + 1;
+        final int selectedIndex = selectedTrack.isEmpty () ? -1 : selectedTrack.get ().getIndex ();
+        int sendsIndex = selectedTrack.isEmpty () || this.model.isEffectTrackBankActive () ? -1 : selectedTrack.get ().getIndex () + 1;
         if (sendsIndex == 8)
             sendsIndex = 6;
 

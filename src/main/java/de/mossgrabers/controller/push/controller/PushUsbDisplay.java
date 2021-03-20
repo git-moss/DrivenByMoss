@@ -180,6 +180,7 @@ public class PushUsbDisplay
             catch (final InterruptedException ex)
             {
                 this.host.error ("USB Send executor did not end in 10 seconds. Interrupted.", ex);
+                Thread.currentThread ().interrupt ();
             }
         }
     }

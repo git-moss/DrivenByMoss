@@ -47,7 +47,7 @@ public abstract class AbstractNoteSequencerView<S extends IControlSurface<C>, C 
      * @param model The model
      * @param useDawColors True to use the color of the current track for coloring the octaves
      */
-    public AbstractNoteSequencerView (final String name, final S surface, final IModel model, final boolean useDawColors)
+    protected AbstractNoteSequencerView (final String name, final S surface, final IModel model, final boolean useDawColors)
     {
         this (name, surface, model, 8, useDawColors);
     }
@@ -62,7 +62,7 @@ public abstract class AbstractNoteSequencerView<S extends IControlSurface<C>, C 
      * @param numDisplayCols The number of grid columns
      * @param useDawColors True to use the color of the current track for coloring the octaves
      */
-    public AbstractNoteSequencerView (final String name, final S surface, final IModel model, final int numDisplayCols, final boolean useDawColors)
+    protected AbstractNoteSequencerView (final String name, final S surface, final IModel model, final int numDisplayCols, final boolean useDawColors)
     {
         this (name, surface, model, numDisplayCols, 7, useDawColors);
     }
@@ -78,7 +78,7 @@ public abstract class AbstractNoteSequencerView<S extends IControlSurface<C>, C 
      * @param numSequencerRows The number of seuqencer rows
      * @param useDawColors True to use the color of the current track for coloring the octaves
      */
-    public AbstractNoteSequencerView (final String name, final S surface, final IModel model, final int numDisplayCols, final int numSequencerRows, final boolean useDawColors)
+    protected AbstractNoteSequencerView (final String name, final S surface, final IModel model, final int numDisplayCols, final int numSequencerRows, final boolean useDawColors)
     {
         super (name, surface, model, 128, numDisplayCols, numSequencerRows, useDawColors);
 

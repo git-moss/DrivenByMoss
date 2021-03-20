@@ -38,7 +38,7 @@ public abstract class BaseMode<B extends IItem> extends AbstractMode<PushControl
      * @param surface The control surface
      * @param model The model
      */
-    public BaseMode (final String name, final PushControlSurface surface, final IModel model)
+    protected BaseMode (final String name, final PushControlSurface surface, final IModel model)
     {
         this (name, surface, model, null);
     }
@@ -52,7 +52,7 @@ public abstract class BaseMode<B extends IItem> extends AbstractMode<PushControl
      * @param model The model
      * @param bank The parameter bank to control with this mode, might be null
      */
-    public BaseMode (final String name, final PushControlSurface surface, final IModel model, final IBank<B> bank)
+    protected BaseMode (final String name, final PushControlSurface surface, final IModel model, final IBank<B> bank)
     {
         super (name, surface, model, true, bank, DEFAULT_KNOB_IDS);
 

@@ -30,7 +30,7 @@ public abstract class AbstractKontrol1ExtensionDefinition extends AbstractContro
      *
      * @param modelIndex The index of the specific model
      */
-    public AbstractKontrol1ExtensionDefinition (final int modelIndex)
+    protected AbstractKontrol1ExtensionDefinition (final int modelIndex)
     {
         super (new Kontrol1ControllerDefinition (modelIndex));
         this.modelIndex = modelIndex;

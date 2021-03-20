@@ -15,6 +15,7 @@ import purejavahidapi.PureJavaHidApi;
 
 import java.io.IOException;
 import java.nio.ByteBuffer;
+import java.util.Optional;
 
 
 /**
@@ -37,12 +38,12 @@ public class HidDeviceImpl implements IHidDevice
      */
     public HidDeviceImpl (final short vendorID, final short productID) throws UsbException
     {
-        final HidDeviceInfo hidDeviceInfo = lookupDevice (vendorID, productID);
-        if (hidDeviceInfo == null)
+        final Optional<HidDeviceInfo> hidDeviceInfo = lookupDevice (vendorID, productID);
+        if (hidDeviceInfo.isEmpty ())
             throw new UsbException ("Could not find HID device: Vendor ID: " + vendorID + ", Product ID: " + productID);
         try
         {
-            this.hidDevice = PureJavaHidApi.openDevice (hidDeviceInfo);
+            this.hidDevice = PureJavaHidApi.openDevice (hidDeviceInfo.get ());
             this.isOpen = true;
             this.hidDevice.setDeviceRemovalListener (source -> this.isOpen = false);
         }
@@ -122,14 +123,14 @@ public class HidDeviceImpl implements IHidDevice
     }
 
 
-    private static HidDeviceInfo lookupDevice (final short vendorID, final short productID)
+    private static Optional<HidDeviceInfo> lookupDevice (final short vendorID, final short productID)
     {
         for (final HidDeviceInfo info: PureJavaHidApi.enumerateDevices ())
         {
             if (info.getVendorId () == vendorID && info.getProductId () == productID)
-                return info;
+                return Optional.of (info);
         }
-        return null;
+        return Optional.empty ();
     }
 
 

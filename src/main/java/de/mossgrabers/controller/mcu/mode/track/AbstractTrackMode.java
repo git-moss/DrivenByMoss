@@ -27,7 +27,7 @@ public abstract class AbstractTrackMode extends BaseMode<ITrack>
      * @param surface The control surface
      * @param model The model
      */
-    public AbstractTrackMode (final String name, final MCUControlSurface surface, final IModel model)
+    protected AbstractTrackMode (final String name, final MCUControlSurface surface, final IModel model)
     {
         super (name, surface, model, model.getCurrentTrackBank ());
 

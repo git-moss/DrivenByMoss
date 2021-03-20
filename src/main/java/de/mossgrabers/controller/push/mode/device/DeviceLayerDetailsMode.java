@@ -20,6 +20,8 @@ import de.mossgrabers.framework.featuregroup.ViewManager;
 import de.mossgrabers.framework.utils.ButtonEvent;
 import de.mossgrabers.framework.view.Views;
 
+import java.util.Optional;
+
 
 /**
  * Mode for editing details of a layer.
@@ -50,9 +52,11 @@ public class DeviceLayerDetailsMode extends BaseMode
     {
         if (event != ButtonEvent.UP)
             return;
-        final IChannel channel = (IChannel) this.bank.getSelectedItem ();
-        if (channel == null)
+        final Optional channelOpt = this.bank.getSelectedItem ();
+        if (channelOpt.isEmpty ())
             return;
+
+        final IChannel channel = (IChannel) channelOpt.get ();
 
         switch (index)
         {
@@ -105,13 +109,14 @@ public class DeviceLayerDetailsMode extends BaseMode
     @Override
     public int getButtonColor (final ButtonID buttonID)
     {
-        final IChannel channel = (IChannel) this.bank.getSelectedItem ();
-        if (channel == null)
+        final Optional channelOpt = this.bank.getSelectedItem ();
+        if (channelOpt.isEmpty ())
             return super.getButtonColor (buttonID);
 
         int index = this.isButtonRow (0, buttonID);
         if (index >= 0)
         {
+            final IChannel channel = (IChannel) channelOpt.get ();
             switch (index)
             {
                 case 0:
@@ -143,12 +148,14 @@ public class DeviceLayerDetailsMode extends BaseMode
     @Override
     public void updateDisplay1 (final ITextDisplay display)
     {
-        final IChannel channel = (IChannel) this.bank.getSelectedItem ();
-        if (channel == null)
+        final Optional channelOpt = this.bank.getSelectedItem ();
+        if (channelOpt.isEmpty ())
         {
             display.setRow (1, "                     Please selecta layer...                        ");
             return;
         }
+
+        final IChannel channel = (IChannel) channelOpt.get ();
 
         final String layerName = channel.getName ();
         display.setBlock (0, 0, "Layer: " + layerName);
@@ -174,12 +181,14 @@ public class DeviceLayerDetailsMode extends BaseMode
     @Override
     public void updateDisplay2 (final IGraphicDisplay display)
     {
-        final IChannel channel = (IChannel) this.bank.getSelectedItem ();
-        if (channel == null)
+        final Optional channelOpt = this.bank.getSelectedItem ();
+        if (channelOpt.isEmpty ())
         {
             display.setMessage (3, "Please select a layer...");
             return;
         }
+
+        final IChannel channel = (IChannel) channelOpt.get ();
 
         display.addOptionElement ("Layer: " + channel.getName (), "", false, "", "Active", channel.isActivated (), false);
         display.addEmptyElement ();

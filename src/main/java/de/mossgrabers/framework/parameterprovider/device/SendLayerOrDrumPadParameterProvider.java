@@ -10,6 +10,8 @@ import de.mossgrabers.framework.daw.data.ISpecificDevice;
 import de.mossgrabers.framework.daw.data.bank.ISendBank;
 import de.mossgrabers.framework.daw.data.empty.EmptyParameter;
 
+import java.util.Optional;
+
 
 /**
  * Get a number of parameters. This implementation provides all panorama parameters of the layers of
@@ -42,10 +44,10 @@ public class SendLayerOrDrumPadParameterProvider extends AbstractLayerOrDrumPadP
     {
         if (this.sendIndex == -1)
         {
-            final IChannel channel = this.bank.getSelectedItem ();
-            if (channel == null)
+            final Optional<? extends IChannel> channel = this.bank.getSelectedItem ();
+            if (channel.isEmpty ())
                 return EmptyParameter.INSTANCE;
-            final ISendBank sendBank = channel.getSendBank ();
+            final ISendBank sendBank = channel.get ().getSendBank ();
             return sendBank.getItemCount () > 0 ? sendBank.getItem (index) : EmptyParameter.INSTANCE;
         }
 

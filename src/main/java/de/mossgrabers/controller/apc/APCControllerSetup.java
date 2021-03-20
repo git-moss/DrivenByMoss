@@ -86,6 +86,8 @@ import de.mossgrabers.framework.view.AbstractSequencerView;
 import de.mossgrabers.framework.view.TempoView;
 import de.mossgrabers.framework.view.Views;
 
+import java.util.Optional;
+
 
 /**
  * Support for the Akai APC40 mkI and APC40 mkII controllers.
@@ -775,8 +777,8 @@ public class APCControllerSetup extends AbstractControllerSetup<APCControlSurfac
                 if (isShift)
                     return index == clipLength;
 
-                final ITrack selTrack = tb.getSelectedItem ();
-                final int selIndex = selTrack == null ? -1 : selTrack.getIndex ();
+                final Optional<ITrack> selTrack = tb.getSelectedItem ();
+                final int selIndex = selTrack.isEmpty () ? -1 : selTrack.get ().getIndex ();
 
                 // Handle user mode selection
                 if (surface.isMkII () && surface.isPressed (ButtonID.SEND2))

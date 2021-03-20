@@ -16,6 +16,8 @@ import de.mossgrabers.framework.daw.data.bank.IDrumPadBank;
 import com.bitwig.extension.controller.api.DrumPad;
 import com.bitwig.extension.controller.api.DrumPadBank;
 
+import java.util.Optional;
+
 
 /**
  * Encapsulates the data of a drumpad bank.
@@ -43,9 +45,13 @@ public class DrumPadBankImpl extends AbstractChannelBankImpl<DrumPadBank, ILayer
 
         this.numDevices = numDevices;
 
+        if (this.bank.isEmpty ())
+            return;
+
+        final DrumPadBank drumPadBank = this.bank.get ();
         for (int i = 0; i < this.getPageSize (); i++)
         {
-            final DrumPad deviceLayer = this.bank.getItemAt (i);
+            final DrumPad deviceLayer = drumPadBank.getItemAt (i);
             final DrumPadImpl drumPadImpl = new DrumPadImpl (this, this.host, this.valueChanger, deviceLayer, i, this.numSends, this.numDevices);
             this.items.add (drumPadImpl);
 
@@ -53,8 +59,7 @@ public class DrumPadBankImpl extends AbstractChannelBankImpl<DrumPadBank, ILayer
             drumPadImpl.getDeviceChain ().addIsSelectedInEditorObserver (isSelected -> this.notifySelectionObservers (index, isSelected));
         }
 
-        if (this.bank != null)
-            this.bank.hasSoloedPads ().markInterested ();
+        drumPadBank.hasSoloedPads ().markInterested ();
     }
 
 
@@ -67,7 +72,8 @@ public class DrumPadBankImpl extends AbstractChannelBankImpl<DrumPadBank, ILayer
         for (int i = 0; i < this.getPageSize (); i++)
             this.getItem (i).enableObservers (enable);
 
-        Util.setIsSubscribed (this.bank.hasSoloedPads (), enable);
+        if (this.bank.isPresent ())
+            Util.setIsSubscribed (this.bank.get ().hasSoloedPads (), enable);
     }
 
 
@@ -81,29 +87,12 @@ public class DrumPadBankImpl extends AbstractChannelBankImpl<DrumPadBank, ILayer
 
     /** {@inheritDoc} */
     @Override
-    public IDrumPad getSelectedItem ()
-    {
-        return (IDrumPad) super.getSelectedItem ();
-    }
-
-
-    /** {@inheritDoc} */
-    @Override
-    public void setIndication (final boolean shouldIndicate)
-    {
-        if (this.bank != null)
-            this.bank.setIndication (shouldIndicate);
-    }
-
-
-    /** {@inheritDoc} */
-    @Override
     public String getSelectedChannelColorEntry ()
     {
-        final ILayer sel = this.getSelectedItem ();
-        if (sel == null)
+        final Optional<ILayer> sel = this.getSelectedItem ();
+        if (sel.isEmpty ())
             return DAWColor.COLOR_OFF.name ();
-        return DAWColor.getColorIndex (sel.getColor ());
+        return DAWColor.getColorIndex (sel.get ().getColor ());
     }
 
 
@@ -111,7 +100,8 @@ public class DrumPadBankImpl extends AbstractChannelBankImpl<DrumPadBank, ILayer
     @Override
     public void clearMute ()
     {
-        this.bank.clearMutedPads ();
+        if (this.bank.isPresent ())
+            this.bank.get ().clearMutedPads ();
     }
 
 
@@ -119,7 +109,8 @@ public class DrumPadBankImpl extends AbstractChannelBankImpl<DrumPadBank, ILayer
     @Override
     public void clearSolo ()
     {
-        this.bank.clearSoloedPads ();
+        if (this.bank.isPresent ())
+            this.bank.get ().clearSoloedPads ();
     }
 
 
@@ -127,6 +118,15 @@ public class DrumPadBankImpl extends AbstractChannelBankImpl<DrumPadBank, ILayer
     @Override
     public boolean hasSoloedPads ()
     {
-        return this.bank.hasSoloedPads ().get ();
+        return this.bank.isPresent () && this.bank.get ().hasSoloedPads ().get ();
+    }
+
+
+    /** {@inheritDoc} */
+    @Override
+    public void setIndication (final boolean enable)
+    {
+        if (this.bank.isPresent ())
+            this.bank.get ().setIndication (enable);
     }
 }

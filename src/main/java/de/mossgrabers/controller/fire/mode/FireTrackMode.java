@@ -18,6 +18,8 @@ import de.mossgrabers.framework.mode.Modes;
 import de.mossgrabers.framework.mode.track.TrackMode;
 import de.mossgrabers.framework.parameterprovider.track.SelectedTrackParameterProvider;
 
+import java.util.Optional;
+
 
 /**
  * The track mode. The knobs control the volume, the panorama and the sends of the selected track.
@@ -74,9 +76,10 @@ public class FireTrackMode extends TrackMode<FireControlSurface, FireConfigurati
         int value = -1;
         boolean isPan = false;
 
-        final ITrack track = this.model.getCurrentTrackBank ().getSelectedItem ();
-        if (track != null)
+        final Optional<ITrack> trackOptional = this.model.getCurrentTrackBank ().getSelectedItem ();
+        if (trackOptional.isPresent ())
         {
+            final ITrack track = trackOptional.get ();
             desc = track.getPosition () + 1 + ": " + track.getName (9);
 
             final ISendBank sendBank = track.getSendBank ();

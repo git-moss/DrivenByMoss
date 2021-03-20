@@ -34,6 +34,8 @@ import de.mossgrabers.framework.view.AbstractSequencerView;
 import de.mossgrabers.framework.view.TransposeView;
 import de.mossgrabers.framework.view.Views;
 
+import java.util.Optional;
+
 
 /**
  * Command for cursor arrow keys.
@@ -160,8 +162,8 @@ public class LaunchpadCursorCommand extends CursorCommand<LaunchpadControlSurfac
             case TRACK_PAN:
             case TRACK_SENDS:
             case MIX:
-                final ITrack sel = tb.getSelectedItem ();
-                final int selIndex = sel != null ? sel.getIndex () : -1;
+                final Optional<ITrack> sel = tb.getSelectedItem ();
+                final int selIndex = sel.isPresent () ? sel.get ().getIndex () : -1;
                 this.canScrollLeft = selIndex > 0 || tb.canScrollPageBackwards ();
                 this.canScrollRight = selIndex >= 0 && selIndex < 7 && tb.getItem (selIndex + 1).doesExist () || tb.canScrollPageForwards ();
                 final ISceneBank sceneBank = tb.getSceneBank ();

@@ -49,7 +49,7 @@ public abstract class AbstractPolySequencerView<S extends IControlSurface<C>, C 
      * @param model The model
      * @param useDawColors True to use the color of the current track for coloring the octaves
      */
-    public AbstractPolySequencerView (final S surface, final IModel model, final boolean useDawColors)
+    protected AbstractPolySequencerView (final S surface, final IModel model, final boolean useDawColors)
     {
         this (surface, model, useDawColors, GRID_COLUMNS, GRID_ROWS, NUM_SEQUENCER_LINES);
     }
@@ -66,7 +66,7 @@ public abstract class AbstractPolySequencerView<S extends IControlSurface<C>, C 
      * @param numSequencerRows The number of rows to use for the sequencer (rest is for the play
      *            area)
      */
-    public AbstractPolySequencerView (final S surface, final IModel model, final boolean useDawColors, final int numColumns, final int numRows, final int numSequencerRows)
+    protected AbstractPolySequencerView (final S surface, final IModel model, final boolean useDawColors, final int numColumns, final int numRows, final int numSequencerRows)
     {
         super (Views.NAME_POLY_SEQUENCER, surface, model, 128, numSequencerRows * numColumns, useDawColors);
 

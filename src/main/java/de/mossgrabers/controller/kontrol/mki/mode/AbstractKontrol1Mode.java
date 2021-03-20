@@ -16,6 +16,8 @@ import de.mossgrabers.framework.daw.data.bank.ITrackBank;
 import de.mossgrabers.framework.featuregroup.AbstractMode;
 import de.mossgrabers.framework.parameterprovider.IParameterProvider;
 
+import java.util.Optional;
+
 
 /**
  * Base mode for all Kontrol 1 modes.
@@ -33,7 +35,7 @@ public abstract class AbstractKontrol1Mode<B extends IItem> extends AbstractMode
      * @param surface The surface
      * @param model The model
      */
-    public AbstractKontrol1Mode (final String name, final Kontrol1ControlSurface surface, final IModel model)
+    protected AbstractKontrol1Mode (final String name, final Kontrol1ControlSurface surface, final IModel model)
     {
         super (name, surface, model);
     }
@@ -47,7 +49,7 @@ public abstract class AbstractKontrol1Mode<B extends IItem> extends AbstractMode
      * @param model The model
      * @param bank The bank
      */
-    public AbstractKontrol1Mode (final String name, final Kontrol1ControlSurface surface, final IModel model, final IBank<B> bank)
+    protected AbstractKontrol1Mode (final String name, final Kontrol1ControlSurface surface, final IModel model, final IBank<B> bank)
     {
         super (name, surface, model, false, bank, DEFAULT_KNOB_IDS);
     }
@@ -69,14 +71,14 @@ public abstract class AbstractKontrol1Mode<B extends IItem> extends AbstractMode
     @Override
     public String getButtonColorID (final ButtonID buttonID)
     {
-        final ITrack t = this.model.getCurrentTrackBank ().getSelectedItem ();
+        final Optional<ITrack> t = this.model.getCurrentTrackBank ().getSelectedItem ();
 
         switch (buttonID)
         {
             case MUTE:
-                return t != null && t.isMute () ? ColorManager.BUTTON_STATE_HI : ColorManager.BUTTON_STATE_ON;
+                return t.isPresent () && t.get ().isMute () ? ColorManager.BUTTON_STATE_HI : ColorManager.BUTTON_STATE_ON;
             case SOLO:
-                return t != null && t.isSolo () ? ColorManager.BUTTON_STATE_HI : ColorManager.BUTTON_STATE_ON;
+                return t.isPresent () && t.get ().isSolo () ? ColorManager.BUTTON_STATE_HI : ColorManager.BUTTON_STATE_ON;
             case BROWSE:
                 return ColorManager.BUTTON_STATE_ON;
             default:
@@ -102,8 +104,8 @@ public abstract class AbstractKontrol1Mode<B extends IItem> extends AbstractMode
     {
         this.model.toggleCurrentTrackBank ();
         final ITrackBank tb = this.model.getCurrentTrackBank ();
-        final ITrack track = tb.getSelectedItem ();
-        if (track == null)
+        final Optional<ITrack> track = tb.getSelectedItem ();
+        if (track.isEmpty ())
             tb.getItem (0).select ();
     }
 
@@ -112,13 +114,13 @@ public abstract class AbstractKontrol1Mode<B extends IItem> extends AbstractMode
     @Override
     public void onBack ()
     {
-        final ITrack selectedTrack = this.model.getCurrentTrackBank ().getSelectedItem ();
-        if (selectedTrack == null)
+        final Optional<ITrack> selectedTrack = this.model.getCurrentTrackBank ().getSelectedItem ();
+        if (selectedTrack.isEmpty ())
             return;
         if (this.surface.isShiftPressed ())
-            selectedTrack.toggleMonitor ();
+            selectedTrack.get ().toggleMonitor ();
         else
-            selectedTrack.toggleMute ();
+            selectedTrack.get ().toggleMute ();
     }
 
 
@@ -126,13 +128,13 @@ public abstract class AbstractKontrol1Mode<B extends IItem> extends AbstractMode
     @Override
     public void onEnter ()
     {
-        final ITrack selectedTrack = this.model.getCurrentTrackBank ().getSelectedItem ();
-        if (selectedTrack == null)
+        final Optional<ITrack> selectedTrack = this.model.getCurrentTrackBank ().getSelectedItem ();
+        if (selectedTrack.isEmpty ())
             return;
         if (this.surface.isShiftPressed ())
-            selectedTrack.toggleRecArm ();
+            selectedTrack.get ().toggleRecArm ();
         else
-            selectedTrack.toggleSolo ();
+            selectedTrack.get ().toggleSolo ();
     }
 
 

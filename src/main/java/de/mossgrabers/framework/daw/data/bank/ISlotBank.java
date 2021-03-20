@@ -6,6 +6,8 @@ package de.mossgrabers.framework.daw.data.bank;
 
 import de.mossgrabers.framework.daw.data.ISlot;
 
+import java.util.Optional;
+
 
 /**
  * Interface to a slot bank.
@@ -22,5 +24,5 @@ public interface ISlotBank extends IBank<ISlot>
      * @param startFrom At what index to start the search
      * @return The empty slot or null if none is found
      */
-    ISlot getEmptySlot (final int startFrom);
+    Optional<ISlot> getEmptySlot (final int startFrom);
 }

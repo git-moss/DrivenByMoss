@@ -12,6 +12,8 @@ import de.mossgrabers.framework.daw.data.ISlot;
 import de.mossgrabers.framework.daw.data.ITrack;
 import de.mossgrabers.framework.utils.ButtonEvent;
 
+import java.util.Optional;
+
 
 /**
  * Command to start the currently selected clip.
@@ -39,11 +41,11 @@ public class StartClipCommand<S extends IControlSurface<C>, C extends Configurat
     @Override
     public void execute (final ButtonEvent event, final int velocity)
     {
-        final ITrack selectedtrack = this.model.getCurrentTrackBank ().getSelectedItem ();
-        if (selectedtrack == null)
+        final Optional<ITrack> selectedtrack = this.model.getCurrentTrackBank ().getSelectedItem ();
+        if (selectedtrack.isEmpty ())
             return;
-        final ISlot selectedSlot = selectedtrack.getSlotBank ().getSelectedItem ();
-        if (selectedSlot != null)
-            selectedSlot.launch ();
+        final Optional<ISlot> selectedSlot = selectedtrack.get ().getSlotBank ().getSelectedItem ();
+        if (selectedSlot.isPresent ())
+            selectedSlot.get ().launch ();
     }
 }

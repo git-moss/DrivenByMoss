@@ -70,7 +70,7 @@ public abstract class AbstractSessionView<S extends IControlSurface<C>, C extend
      * @param useClipColor Use the clip colors? Only set to true for controllers which support RGB
      *            pads.
      */
-    public AbstractSessionView (final String name, final S surface, final IModel model, final int rows, final int columns, final boolean useClipColor)
+    protected AbstractSessionView (final String name, final S surface, final IModel model, final int rows, final int columns, final boolean useClipColor)
     {
         super (name, surface, model);
 

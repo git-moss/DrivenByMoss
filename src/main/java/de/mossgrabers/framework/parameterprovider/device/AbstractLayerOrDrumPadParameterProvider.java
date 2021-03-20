@@ -29,7 +29,7 @@ public abstract class AbstractLayerOrDrumPadParameterProvider extends AbstractCh
      *
      * @param device Uses the layer bank from the given device to get their volume parameters
      */
-    public AbstractLayerOrDrumPadParameterProvider (final ISpecificDevice device)
+    protected AbstractLayerOrDrumPadParameterProvider (final ISpecificDevice device)
     {
         super (device.getLayerBank ());
 

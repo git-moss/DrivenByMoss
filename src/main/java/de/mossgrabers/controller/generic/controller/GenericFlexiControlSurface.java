@@ -24,6 +24,7 @@ import java.io.IOException;
 import java.util.Arrays;
 import java.util.EnumMap;
 import java.util.Map;
+import java.util.Optional;
 
 
 /**
@@ -241,9 +242,9 @@ public class GenericFlexiControlSurface extends AbstractControlSurface<GenericFl
      */
     public void loadAndSelectFile ()
     {
-        final String filename = this.getFileName (false);
-        if (filename != null)
-            this.host.showNotification (this.loadFile (filename));
+        final Optional<String> filename = this.getFileName (false);
+        if (filename.isPresent ())
+            this.host.showNotification (this.loadFile (filename.get ()));
     }
 
 
@@ -280,12 +281,14 @@ public class GenericFlexiControlSurface extends AbstractControlSurface<GenericFl
      */
     private void saveFile ()
     {
-        String filename = this.getFileName (true);
-        if (filename == null)
+        final Optional<String> filenameOpt = this.getFileName (true);
+        if (filenameOpt.isEmpty ())
             return;
 
         try
         {
+            String filename = filenameOpt.get ();
+
             // Ensure to end with .properties
             if (!filename.endsWith (".properties"))
             {
@@ -309,7 +312,7 @@ public class GenericFlexiControlSurface extends AbstractControlSurface<GenericFl
      * @param isNew
      * @return The filename or null if none was selected
      */
-    private String getFileName (final boolean isNew)
+    private Optional<String> getFileName (final boolean isNew)
     {
         String filename = this.configuration.getFilename ();
         if (filename != null && !filename.isBlank ())
@@ -323,16 +326,16 @@ public class GenericFlexiControlSurface extends AbstractControlSurface<GenericFl
         {
             final File fn = isNew ? this.dialogs.selectNewFile ("Save", FILE_FILTERS) : this.dialogs.selectFile ("Load", FILE_FILTERS);
             if (fn == null)
-                return null;
+                return Optional.empty ();
 
             filename = fn.getAbsolutePath ();
             this.configuration.setFilename (filename);
-            return filename;
+            return Optional.of (filename);
         }
         catch (final IOException ex)
         {
             this.host.error ("Could not create file dialog.", ex);
-            return null;
+            return Optional.empty ();
         }
     }
 
@@ -383,16 +386,26 @@ public class GenericFlexiControlSurface extends AbstractControlSurface<GenericFl
      */
     private void reflectValue (final CommandSlot slot, final int value)
     {
+        if (value < 0 || value > 127)
+        {
+            this.host.error (String.format ("Attempt to reflect value out of range from slot command: %s Value: %d", slot.getCommand ().getName (), Integer.valueOf (value)));
+            return;
+        }
+
+        final IMidiOutput output = this.getMidiOutput ();
+
         switch (slot.getType ())
         {
+            case CommandSlot.TYPE_NOTE:
+                output.sendNoteEx (slot.getMidiChannel (), slot.getNumber (), value);
+                break;
+
             case CommandSlot.TYPE_CC:
-                if (value >= 0 && value <= 127)
-                    this.getMidiOutput ().sendCCEx (slot.getMidiChannel (), slot.getNumber (), value);
+                output.sendCCEx (slot.getMidiChannel (), slot.getNumber (), value);
                 break;
 
             case CommandSlot.TYPE_PITCH_BEND:
-                if (value >= 0 && value <= 127)
-                    this.getMidiOutput ().sendPitchbend (slot.getMidiChannel (), 0, value);
+                output.sendPitchbend (slot.getMidiChannel (), 0, value);
                 break;
 
             default:

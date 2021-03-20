@@ -31,6 +31,7 @@ import de.mossgrabers.framework.daw.data.empty.EmptyLayer;
 import de.mossgrabers.framework.osc.IOpenSoundControlWriter;
 
 import java.util.LinkedList;
+import java.util.Optional;
 
 
 /**
@@ -114,8 +115,8 @@ public class DeviceModule extends AbstractModule
         final ILayerBank layerBank = cd.getLayerBank ();
         for (int i = 0; i < layerBank.getPageSize (); i++)
             this.flushDeviceLayer (this.writer, "/device/layer/" + (i + 1) + "/", layerBank.getItem (i), dump);
-        final ILayer selectedLayer = layerBank.getSelectedItem ();
-        this.flushDeviceLayer (this.writer, "/device/layer/selected/", selectedLayer == null ? EmptyLayer.INSTANCE : selectedLayer, dump);
+        final Optional<ILayer> selectedLayer = layerBank.getSelectedItem ();
+        this.flushDeviceLayer (this.writer, "/device/layer/selected/", selectedLayer.isEmpty () ? EmptyLayer.INSTANCE : selectedLayer.get (), dump);
 
         this.flushDevice (this.writer, "/primary/", this.model.getSpecificDevice (DeviceID.FIRST_INSTRUMENT), dump);
         this.flushDevice (this.writer, "/eq/", this.model.getSpecificDevice (DeviceID.EQ), dump);
@@ -181,7 +182,8 @@ public class DeviceModule extends AbstractModule
             writer.sendOSC (deviceAddress + "page/" + oneplus + "/", parameterPageBank.getItem (i), dump);
             writer.sendOSC (deviceAddress + "page/" + oneplus + "/selected", selectedParameterPage == i, dump);
         }
-        writer.sendOSC (deviceAddress + "page/selected/name", parameterPageBank.getSelectedItem (), dump);
+        final Optional<String> selectedItem = parameterPageBank.getSelectedItem ();
+        writer.sendOSC (deviceAddress + "page/selected/name", selectedItem.isPresent () ? selectedItem.get () : "", dump);
     }
 
 
@@ -481,8 +483,8 @@ public class DeviceModule extends AbstractModule
             final int layerNo;
             if (TAG_SELECTED.equals (command) || TAG_SELECT.equals (command))
             {
-                final IChannel selectedLayerOrDrumPad = device.getLayerOrDrumPadBank ().getSelectedItem ();
-                layerNo = selectedLayerOrDrumPad == null ? -1 : selectedLayerOrDrumPad.getIndex ();
+                final Optional<?> selectedLayerOrDrumPad = device.getLayerOrDrumPadBank ().getSelectedItem ();
+                layerNo = selectedLayerOrDrumPad.isEmpty () ? -1 : ((ILayer) selectedLayerOrDrumPad.get ()).getIndex ();
             }
             else
             {

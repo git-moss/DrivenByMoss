@@ -60,6 +60,7 @@ import de.mossgrabers.framework.utils.OperatingSystem;
 import de.mossgrabers.framework.view.Views;
 
 import java.util.List;
+import java.util.Optional;
 import java.util.function.IntSupplier;
 
 
@@ -133,9 +134,9 @@ public class KontrolProtocolControllerSetup extends AbstractControllerSetup<Kont
         }
 
         final ITrackBank tb = this.model.getCurrentTrackBank ();
-        final ITrack selectedTrack = tb.getSelectedItem ();
-        surface.sendCommand (KontrolProtocolControlSurface.KONTROL_SELECTED_TRACK_AVAILABLE, selectedTrack != null ? TrackType.toTrackType (selectedTrack.getType ()) : 0);
-        surface.sendCommand (KontrolProtocolControlSurface.KONTROL_SELECTED_TRACK_MUTED_BY_SOLO, selectedTrack != null && !selectedTrack.isSolo () && hasSolo ? 1 : 0);
+        final Optional<ITrack> selectedTrack = tb.getSelectedItem ();
+        surface.sendCommand (KontrolProtocolControlSurface.KONTROL_SELECTED_TRACK_AVAILABLE, selectedTrack.isPresent () ? TrackType.toTrackType (selectedTrack.get ().getType ()) : 0);
+        surface.sendCommand (KontrolProtocolControlSurface.KONTROL_SELECTED_TRACK_MUTED_BY_SOLO, selectedTrack.isPresent () && !selectedTrack.get ().isSolo () && hasSolo ? 1 : 0);
 
         super.flush ();
     }
@@ -254,13 +255,13 @@ public class KontrolProtocolControllerSetup extends AbstractControllerSetup<Kont
 
         this.addButton (ButtonID.MUTE, "Mute", new MuteCommand<> (this.model, surface), 15, KontrolProtocolControlSurface.KONTROL_SELECTED_TRACK_MUTE, () -> {
             final ITrackBank tb = this.model.getCurrentTrackBank ();
-            final ITrack selectedTrack = tb.getSelectedItem ();
-            return selectedTrack != null && selectedTrack.isMute () ? 1 : 0;
+            final Optional<ITrack> selectedTrack = tb.getSelectedItem ();
+            return selectedTrack.isPresent () && selectedTrack.get ().isMute () ? 1 : 0;
         });
         this.addButton (ButtonID.SOLO, "Solo", new SoloCommand<> (this.model, surface), 15, KontrolProtocolControlSurface.KONTROL_SELECTED_TRACK_SOLO, () -> {
             final ITrackBank tb = this.model.getCurrentTrackBank ();
-            final ITrack selectedTrack = tb.getSelectedItem ();
-            return selectedTrack != null && selectedTrack.isSolo () ? 1 : 0;
+            final Optional<ITrack> selectedTrack = tb.getSelectedItem ();
+            return selectedTrack.isPresent () && selectedTrack.get ().isSolo () ? 1 : 0;
         });
 
         this.addButtons (surface, 0, 8, ButtonID.ROW_SELECT_1, "Select", (event, index) -> {

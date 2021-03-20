@@ -14,6 +14,8 @@ import de.mossgrabers.framework.daw.data.ITrack;
 import de.mossgrabers.framework.daw.data.bank.ITrackBank;
 import de.mossgrabers.framework.scale.Scales;
 
+import java.util.Optional;
+
 
 /**
  * The Sequencer view.
@@ -182,15 +184,15 @@ public class SequencerView extends BaseSequencerView
      */
     private void updateNote (final int trackIndex, final int note, final int velocity)
     {
-        final ITrack sel = this.model.getCurrentTrackBank ().getSelectedItem ();
-        if (sel != null && sel.getIndex () == trackIndex)
+        final Optional<ITrack> sel = this.model.getCurrentTrackBank ().getSelectedItem ();
+        if (sel.isEmpty () || sel.get ().getIndex () != trackIndex)
+            return;
+
+        // Light notes sent from the sequencer
+        for (int i = 0; i < 128; i++)
         {
-            // Light notes sent from the sequencer
-            for (int i = 0; i < 128; i++)
-            {
-                if (this.keyManager.map (i) == note)
-                    this.keyManager.setKeyPressed (i, velocity);
-            }
+            if (this.keyManager.map (i) == note)
+                this.keyManager.setKeyPressed (i, velocity);
         }
     }
 }

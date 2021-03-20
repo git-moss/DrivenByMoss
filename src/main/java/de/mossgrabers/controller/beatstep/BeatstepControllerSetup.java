@@ -44,6 +44,8 @@ import de.mossgrabers.framework.scale.Scales;
 import de.mossgrabers.framework.utils.ButtonEvent;
 import de.mossgrabers.framework.view.Views;
 
+import java.util.Optional;
+
 
 /**
  * Support for the Arturia Beatstep and Beatstep Pro controllers.
@@ -293,7 +295,7 @@ public class BeatstepControllerSetup extends AbstractControllerSetup<BeatstepCon
         mt.setVolumeIndication (!isDevice);
 
         final ITrackBank tb = this.model.getTrackBank ();
-        final ITrack selectedTrack = tb.getSelectedItem ();
+        final Optional<ITrack> selectedTrack = tb.getSelectedItem ();
         final ITrackBank tbe = this.model.getEffectTrackBank ();
         final ICursorDevice cursorDevice = this.model.getCursorDevice ();
         final boolean isEffect = this.model.isEffectTrackBankActive ();
@@ -305,7 +307,7 @@ public class BeatstepControllerSetup extends AbstractControllerSetup<BeatstepCon
         final IParameterBank parameterBank = cursorDevice.getParameterBank ();
         for (int i = 0; i < 8; i++)
         {
-            final boolean hasTrackSel = selectedTrack != null && selectedTrack.getIndex () == i;
+            final boolean hasTrackSel = selectedTrack.isPresent () && selectedTrack.get ().getIndex () == i;
             final ITrack track = tb.getItem (i);
             track.setVolumeIndication (!isEffect && hasTrackSel && !isDevice);
             track.setPanIndication (!isEffect && hasTrackSel && !isDevice);
@@ -315,8 +317,8 @@ public class BeatstepControllerSetup extends AbstractControllerSetup<BeatstepCon
 
             if (tbe != null)
             {
-                final ITrack selectedFXTrack = tbe.getSelectedItem ();
-                final boolean hasFXTrackSel = selectedFXTrack != null && selectedFXTrack.getIndex () == i;
+                final Optional<ITrack> selectedFXTrack = tbe.getSelectedItem ();
+                final boolean hasFXTrackSel = selectedFXTrack.isPresent () && selectedFXTrack.get ().getIndex () == i;
                 final ITrack fxTrack = tbe.getItem (i);
                 fxTrack.setVolumeIndication (isEffect && hasFXTrackSel && isTrack);
                 fxTrack.setPanIndication (isEffect && hasFXTrackSel && isTrack);

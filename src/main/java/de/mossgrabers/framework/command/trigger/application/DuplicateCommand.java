@@ -13,6 +13,8 @@ import de.mossgrabers.framework.daw.data.ITrack;
 import de.mossgrabers.framework.daw.data.bank.ISlotBank;
 import de.mossgrabers.framework.utils.ButtonEvent;
 
+import java.util.Optional;
+
 
 /**
  * Command to duplicate an object (clip, track, ...) depending on the context.
@@ -50,33 +52,33 @@ public class DuplicateCommand<S extends IControlSurface<C>, C extends Configurat
 
         // Is there a selected slot?
         final ISlotBank slotBank = cursorTrack.getSlotBank ();
-        final ISlot slot = slotBank.getSelectedItem ();
-        if (slot == null)
+        final Optional<ISlot> slot = slotBank.getSelectedItem ();
+        if (slot.isEmpty ())
             return;
 
-        final boolean isPlaying = slot.isPlaying ();
+        final boolean isPlaying = slot.get ().isPlaying ();
 
         // Duplicate the clip in the selected slot
-        slot.duplicate ();
+        slot.get ().duplicate ();
 
         if (!isPlaying)
             return;
 
         // Need to wait a bit with starting the duplicated clip until it is selected
         this.model.getHost ().scheduleTask ( () -> {
-            final ISlot slotNew = slotBank.getSelectedItem ();
-            if (slotNew != null)
+            final Optional<ISlot> slotNew = slotBank.getSelectedItem ();
+            if (slotNew.isPresent ())
             {
-                slotNew.launch ();
+                slotNew.get ().launch ();
                 return;
             }
 
             // Try to find the clip in the next page...
             slotBank.selectNextPage ();
             this.model.getHost ().scheduleTask ( () -> {
-                final ISlot slotNew2 = slotBank.getSelectedItem ();
-                if (slotNew2 != null)
-                    slotNew2.launch ();
+                final Optional<ISlot> slotNew2 = slotBank.getSelectedItem ();
+                if (slotNew2.isPresent ())
+                    slotNew2.get ().launch ();
             }, 200);
         }, 200);
     }

@@ -25,7 +25,7 @@ public abstract class AbstractWrapperProvider implements IParameterProvider
      *
      * @param parameterProvider The parameter provider
      */
-    public AbstractWrapperProvider (final IParameterProvider parameterProvider)
+    protected AbstractWrapperProvider (final IParameterProvider parameterProvider)
     {
         this.parameterProvider = parameterProvider;
     }

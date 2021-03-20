@@ -31,6 +31,7 @@ import java.util.EnumMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 import java.util.Properties;
 import java.util.Set;
 import java.util.concurrent.atomic.AtomicBoolean;
@@ -683,17 +684,17 @@ public class GenericFlexiConfiguration extends AbstractConfiguration
      *
      * @return The file or null if not present
      */
-    public FileEx getProgramsFile ()
+    public Optional<FileEx> getProgramsFile ()
     {
         if (this.filename == null || this.filename.isBlank ())
-            return null;
+            return Optional.empty ();
 
         final FileEx file = new FileEx (this.filename);
         final String name = file.getNameWithoutType ();
         final FileEx programsFile = new FileEx (file.getParent (), name + ".programs");
         final boolean exists = programsFile.exists ();
         this.host.println ("Scanning for: " + programsFile.getAbsolutePath () + " (" + (exists ? "present" : "not present") + ")");
-        return exists ? programsFile : null;
+        return exists ? Optional.of (programsFile) : Optional.empty ();
     }
 
 

@@ -16,8 +16,9 @@ import de.mossgrabers.framework.daw.data.ISend;
 import de.mossgrabers.framework.daw.data.ITrack;
 import de.mossgrabers.framework.daw.data.bank.ISendBank;
 import de.mossgrabers.framework.daw.data.bank.ITrackBank;
-import de.mossgrabers.framework.daw.data.empty.EmptyTrack;
 import de.mossgrabers.framework.utils.ButtonEvent;
+
+import java.util.Optional;
 
 
 /**
@@ -1002,11 +1003,11 @@ public class TrackHandler extends AbstractHandler
 
     private int getSendValue (final int trackIndex, final int sendIndex)
     {
-        final ITrack track = this.getTrack (trackIndex);
-        if (track == null)
+        final Optional<ITrack> track = this.getTrack (trackIndex);
+        if (track.isEmpty ())
             return 0;
 
-        final ISendBank sendBank = track.getSendBank ();
+        final ISendBank sendBank = track.get ().getSendBank ();
         if (sendIndex >= sendBank.getPageSize ())
             return 0;
 
@@ -1018,42 +1019,49 @@ public class TrackHandler extends AbstractHandler
     }
 
 
-    private ITrack getTrack (final int trackIndex)
+    private Optional<ITrack> getTrack (final int trackIndex)
     {
         final ITrackBank tb = this.model.getCurrentTrackBank ();
         if (tb == null)
-            return EmptyTrack.INSTANCE;
-        return trackIndex < 0 ? tb.getSelectedItem () : tb.getItem (trackIndex);
+            return Optional.empty ();
+        if (trackIndex < 0)
+            return tb.getSelectedItem ();
+        final ITrack item = tb.getItem (trackIndex);
+        return item.doesExist () ? Optional.of (item) : Optional.empty ();
     }
 
 
     private void changeTrackVolume (final int knobMode, final int trackIndex, final int value)
     {
-        final ITrack track = this.getTrack (trackIndex);
+        final Optional<ITrack> track = this.getTrack (trackIndex);
+        if (track.isEmpty ())
+            return;
         if (isAbsolute (knobMode))
-            track.setVolume (value);
+            track.get ().setVolume (value);
         else
-            track.getVolumeParameter ().changeValue (this.getRelativeValueChanger (knobMode), value);
+            track.get ().getVolumeParameter ().changeValue (this.getRelativeValueChanger (knobMode), value);
     }
 
 
     private void changeTrackPanorama (final int knobMode, final int trackIndex, final int value)
     {
-        final ITrack track = this.getTrack (trackIndex);
+        final Optional<ITrack> track = this.getTrack (trackIndex);
+        if (track.isEmpty ())
+            return;
         if (isAbsolute (knobMode))
-            track.setPan (value);
+            track.get ().setPan (value);
         else
-            track.getPanParameter ().changeValue (this.getRelativeValueChanger (knobMode), value);
+            track.get ().getPanParameter ().changeValue (this.getRelativeValueChanger (knobMode), value);
     }
 
 
     private void changeSendVolume (final int trackIndex, final int sendIndex, final int knobMode, final int value)
     {
-        final ITrack track = this.getTrack (trackIndex);
-        if (track == null)
+        final Optional<ITrack> track = this.getTrack (trackIndex);
+        if (track.isEmpty ())
             return;
 
-        final ISendBank sendBank = track.getSendBank ();
+        final ISendBank sendBank = track.get ().getSendBank ();
         if (sendIndex >= sendBank.getPageSize ())
             return;
 
@@ -1086,8 +1094,8 @@ public class TrackHandler extends AbstractHandler
     private void scrollTrackLeft (final boolean switchBank)
     {
         final ITrackBank tb = this.model.getCurrentTrackBank ();
-        final ITrack sel = tb.getSelectedItem ();
-        final int index = sel == null ? 0 : sel.getIndex () - 1;
+        final Optional<ITrack> sel = tb.getSelectedItem ();
+        final int index = sel.isEmpty () ? 0 : sel.get ().getIndex () - 1;
         if (index == -1 || switchBank)
         {
             tb.selectPreviousPage ();
@@ -1100,8 +1108,8 @@ public class TrackHandler extends AbstractHandler
     private void scrollTrackRight (final boolean switchBank)
     {
         final ITrackBank tb = this.model.getCurrentTrackBank ();
-        final ITrack sel = tb.getSelectedItem ();
-        final int index = sel == null ? 0 : sel.getIndex () + 1;
+        final Optional<ITrack> sel = tb.getSelectedItem ();
+        final int index = sel.isEmpty () ? 0 : sel.get ().getIndex () + 1;
         if (index == 8 || switchBank)
         {
             tb.selectNextPage ();

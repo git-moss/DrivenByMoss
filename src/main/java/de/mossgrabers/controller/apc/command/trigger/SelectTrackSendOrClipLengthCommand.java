@@ -17,6 +17,8 @@ import de.mossgrabers.framework.featuregroup.ModeManager;
 import de.mossgrabers.framework.mode.Modes;
 import de.mossgrabers.framework.utils.ButtonEvent;
 
+import java.util.Optional;
+
 
 /**
  * Selects a track. Sets the new clip length if shifted. If "Send A" button is pressed selects a
@@ -66,13 +68,16 @@ public class SelectTrackSendOrClipLengthCommand extends AbstractTriggerCommand<A
             // Display the sends name
             String modeName = "Send " + (this.index + 1) + ": ";
             final ITrackBank trackBank = this.model.getTrackBank ();
-            ITrack selectedTrack = trackBank.getSelectedItem ();
-            if (selectedTrack == null)
-                selectedTrack = trackBank.getItem (0);
-            if (selectedTrack == null)
+            Optional<ITrack> selectedTrack = trackBank.getSelectedItem ();
+            if (selectedTrack.isEmpty ())
+            {
+                final ITrack item = trackBank.getItem (0);
+                selectedTrack = item.doesExist () ? Optional.of (item) : Optional.empty ();
+            }
+            if (selectedTrack.isEmpty ())
                 modeName += "-";
             else
-                modeName += selectedTrack.getSendBank ().getItem (this.index).getName ();
+                modeName += selectedTrack.get ().getSendBank ().getItem (this.index).getName ();
             this.surface.getDisplay ().notify (modeName);
             return;
         }

@@ -43,7 +43,7 @@ public abstract class AbstractControllerExtensionDefinition extends ControllerEx
      *
      * @param definition The definition
      */
-    public AbstractControllerExtensionDefinition (final IControllerDefinition definition)
+    protected AbstractControllerExtensionDefinition (final IControllerDefinition definition)
     {
         this.definition = definition;
     }

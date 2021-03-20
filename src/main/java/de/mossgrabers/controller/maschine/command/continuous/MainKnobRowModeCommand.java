@@ -8,6 +8,8 @@ import de.mossgrabers.framework.daw.IModel;
 import de.mossgrabers.framework.daw.data.ITrack;
 import de.mossgrabers.framework.daw.data.bank.IBank;
 
+import java.util.Optional;
+
 
 /**
  * Command to delegate the moves of a knob/fader row to the active mode. Special handling for button
@@ -41,9 +43,9 @@ public class MainKnobRowModeCommand extends KnobRowModeCommand<MaschineControlSu
 
         if (this.surface.isPressed (ButtonID.CLIP))
         {
-            final ITrack selectedTrack = this.model.getCurrentTrackBank ().getSelectedItem ();
-            if (selectedTrack != null)
-                this.switchPage (ButtonID.CLIP, selectedTrack.getSlotBank (), value);
+            final Optional<ITrack> selectedTrack = this.model.getCurrentTrackBank ().getSelectedItem ();
+            if (selectedTrack.isPresent ())
+                this.switchPage (ButtonID.CLIP, selectedTrack.get ().getSlotBank (), value);
             return;
         }
 

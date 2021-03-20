@@ -12,10 +12,13 @@ import de.mossgrabers.framework.controller.grid.IPadGrid;
 import de.mossgrabers.framework.daw.DAWColor;
 import de.mossgrabers.framework.daw.IClip;
 import de.mossgrabers.framework.daw.IModel;
+import de.mossgrabers.framework.daw.data.ILayer;
 import de.mossgrabers.framework.daw.data.IMasterTrack;
 import de.mossgrabers.framework.daw.data.ITrack;
 import de.mossgrabers.framework.featuregroup.AbstractFeatureGroup;
 import de.mossgrabers.framework.featuregroup.AbstractView;
+
+import java.util.Optional;
 
 
 /**
@@ -102,7 +105,9 @@ public class ColorView extends AbstractView<PushControlSurface, PushConfiguratio
                     break;
 
                 case MODE_LAYER:
-                    this.model.getCursorDevice ().getLayerOrDrumPadBank ().getSelectedItem ().setColor (entry);
+                    final Optional<?> selectedItem = this.model.getCursorDevice ().getLayerOrDrumPadBank ().getSelectedItem ();
+                    if (selectedItem.isPresent ())
+                        ((ILayer) selectedItem.get ()).setColor (entry);
                     break;
 
                 case MODE_CLIP:

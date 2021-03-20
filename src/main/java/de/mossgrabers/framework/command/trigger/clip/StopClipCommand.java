@@ -12,6 +12,8 @@ import de.mossgrabers.framework.daw.data.ITrack;
 import de.mossgrabers.framework.daw.data.bank.ITrackBank;
 import de.mossgrabers.framework.utils.ButtonEvent;
 
+import java.util.Optional;
+
 
 /**
  * Stop the playing clip on the given track. Return to arrangement if shifted.
@@ -59,9 +61,9 @@ public class StopClipCommand<S extends IControlSurface<C>, C extends Configurati
         if (event != ButtonEvent.DOWN)
             return;
         final ITrackBank currentTrackBank = this.model.getCurrentTrackBank ();
-        final ITrack track = this.index == -1 ? currentTrackBank.getSelectedItem () : currentTrackBank.getItem (this.index);
-        if (track != null)
-            track.stop ();
+        final Optional<ITrack> track = this.index == -1 ? currentTrackBank.getSelectedItem () : Optional.of (currentTrackBank.getItem (this.index));
+        if (track.isPresent ())
+            track.get ().stop ();
     }
 
 
@@ -72,8 +74,8 @@ public class StopClipCommand<S extends IControlSurface<C>, C extends Configurati
         if (event != ButtonEvent.DOWN)
             return;
         final ITrackBank currentTrackBank = this.model.getCurrentTrackBank ();
-        final ITrack track = this.index == -1 ? currentTrackBank.getSelectedItem () : currentTrackBank.getItem (this.index);
-        if (track != null)
-            track.returnToArrangement ();
+        final Optional<ITrack> track = this.index == -1 ? currentTrackBank.getSelectedItem () : Optional.of (currentTrackBank.getItem (this.index));
+        if (track.isPresent ())
+            track.get ().returnToArrangement ();
     }
 }

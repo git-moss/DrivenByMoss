@@ -20,6 +20,8 @@ import de.mossgrabers.framework.featuregroup.AbstractMode;
 import de.mossgrabers.framework.utils.ButtonEvent;
 import de.mossgrabers.framework.utils.StringUtils;
 
+import java.util.Optional;
+
 
 /**
  * Mode for navigating the browser.
@@ -105,15 +107,15 @@ public class DeviceBrowserMode extends BaseMode<IItem>
 
         this.isKnobTouched[index] = isTouched;
 
-        IBrowserColumn fc;
+        Optional<IBrowserColumn> fc;
         if (isTouched)
         {
             if (this.surface.isDeletePressed ())
             {
                 this.surface.setTriggerConsumed (ButtonID.DELETE);
                 fc = this.getFilterColumn (index);
-                if (fc != null && fc.doesExist ())
-                    this.model.getBrowser ().resetFilterColumn (fc.getIndex ());
+                if (fc.isPresent () && fc.get ().doesExist ())
+                    this.model.getBrowser ().resetFilterColumn (fc.get ().getIndex ());
                 return;
             }
         }
@@ -131,10 +133,10 @@ public class DeviceBrowserMode extends BaseMode<IItem>
         else
         {
             fc = this.getFilterColumn (index);
-            if (fc != null && fc.doesExist ())
+            if (fc.isPresent () && fc.get ().doesExist ())
             {
                 this.selectionMode = DeviceBrowserMode.SELECTION_FILTER;
-                this.filterColumn = fc.getIndex ();
+                this.filterColumn = fc.get ().getIndex ();
             }
         }
     }
@@ -195,8 +197,8 @@ public class DeviceBrowserMode extends BaseMode<IItem>
 
                 for (int i = 0; i < 7; i++)
                 {
-                    final IBrowserColumn column = this.getFilterColumn (i);
-                    String name = column == null ? "" : StringUtils.shortenAndFixASCII (column.getName (), 8);
+                    final Optional<IBrowserColumn> column = this.getFilterColumn (i);
+                    String name = column.isEmpty () ? "" : StringUtils.shortenAndFixASCII (column.get ().getName (), 8);
                     if (i == this.filterColumn)
                         name = Push1Display.SELECT_ARROW + name;
                     display.setCell (0, i, name).setCell (1, i, getColumnName (column));
@@ -257,11 +259,11 @@ public class DeviceBrowserMode extends BaseMode<IItem>
                 selectedResult = selectedResult == null || selectedResult.isBlank () ? "Selection: None" : "Selection: " + selectedResult;
                 for (int i = 0; i < 7; i++)
                 {
-                    final IBrowserColumn column = this.getFilterColumn (i);
+                    final Optional<IBrowserColumn> column = this.getFilterColumn (i);
                     final String headerTopName = i == 0 ? browser.getInfoText () : "";
                     final String headerBottomName = i == 0 ? selectedResult : "";
                     final String menuBottomName = getColumnName (column);
-                    display.addOptionElement (headerTopName, column == null ? "" : column.getName (), i == this.filterColumn, headerBottomName, menuBottomName, !menuBottomName.equals (" "), false);
+                    display.addOptionElement (headerTopName, column.isEmpty () ? "" : column.get ().getName (), i == this.filterColumn, headerBottomName, menuBottomName, !menuBottomName.equals (" "), false);
                 }
                 display.addOptionElement ("", browser.getSelectedContentType (), this.filterColumn == -1, "", "", false, false);
                 break;
@@ -326,8 +328,8 @@ public class DeviceBrowserMode extends BaseMode<IItem>
         {
             if (index == 7)
                 return AbstractFeatureGroup.BUTTON_COLOR_ON;
-            final IBrowserColumn col = this.getFilterColumn (index);
-            return col != null && col.doesExist () ? AbstractFeatureGroup.BUTTON_COLOR_ON : AbstractFeatureGroup.BUTTON_COLOR_OFF;
+            final Optional<IBrowserColumn> col = this.getFilterColumn (index);
+            return col.isPresent () && col.get ().doesExist () ? AbstractFeatureGroup.BUTTON_COLOR_ON : AbstractFeatureGroup.BUTTON_COLOR_OFF;
         }
 
         index = this.isButtonRow (1, buttonID);
@@ -335,8 +337,8 @@ public class DeviceBrowserMode extends BaseMode<IItem>
         {
             if (index == 7)
                 return AbstractMode.BUTTON_COLOR2_ON;
-            final IBrowserColumn col = this.getFilterColumn (index);
-            return col != null && col.doesExist () ? AbstractMode.BUTTON_COLOR2_ON : AbstractFeatureGroup.BUTTON_COLOR_OFF;
+            final Optional<IBrowserColumn> col = this.getFilterColumn (index);
+            return col.isPresent () && col.get ().doesExist () ? AbstractMode.BUTTON_COLOR2_ON : AbstractFeatureGroup.BUTTON_COLOR_OFF;
         }
 
         return AbstractFeatureGroup.BUTTON_COLOR_OFF;
@@ -393,7 +395,7 @@ public class DeviceBrowserMode extends BaseMode<IItem>
     }
 
 
-    private IBrowserColumn getFilterColumn (final int index)
+    private Optional<IBrowserColumn> getFilterColumn (final int index)
     {
         final IBrowser browser = this.model.getBrowser ();
         int column = -1;
@@ -404,10 +406,10 @@ public class DeviceBrowserMode extends BaseMode<IItem>
             {
                 column++;
                 if (column == index)
-                    return browser.getFilterColumn (i);
+                    return Optional.of (browser.getFilterColumn (i));
             }
         }
-        return null;
+        return Optional.empty ();
     }
 
 
@@ -416,10 +418,10 @@ public class DeviceBrowserMode extends BaseMode<IItem>
         final IBrowser browser = this.model.getBrowser ();
         if (index < 7)
         {
-            final IBrowserColumn fc = this.getFilterColumn (index);
-            if (fc != null && fc.doesExist ())
+            final Optional<IBrowserColumn> fc = this.getFilterColumn (index);
+            if (fc.isPresent () && fc.get ().doesExist ())
             {
-                final int fi = fc.getIndex ();
+                final int fi = fc.get ().getIndex ();
                 if (fi < 0)
                     return;
                 this.filterColumn = fi;
@@ -440,10 +442,10 @@ public class DeviceBrowserMode extends BaseMode<IItem>
         final IBrowser browser = this.model.getBrowser ();
         if (index < 7)
         {
-            final IBrowserColumn fc = this.getFilterColumn (index);
-            if (fc != null && fc.doesExist ())
+            final Optional<IBrowserColumn> fc = this.getFilterColumn (index);
+            if (fc.isPresent () && fc.get ().doesExist ())
             {
-                final int fi = fc.getIndex ();
+                final int fi = fc.get ().getIndex ();
                 if (fi < 0)
                     return;
                 this.filterColumn = fi;
@@ -474,10 +476,11 @@ public class DeviceBrowserMode extends BaseMode<IItem>
     }
 
 
-    private static String getColumnName (final IBrowserColumn column)
+    private static String getColumnName (final Optional<IBrowserColumn> column)
     {
-        if (column == null || !column.doesCursorExist ())
+        if (column.isEmpty () || !column.get ().doesCursorExist ())
             return "";
-        return column.getCursorName ().equals (column.getWildcard ()) ? " " : column.getCursorName (12);
+        final IBrowserColumn browserColumn = column.get ();
+        return browserColumn.getCursorName ().equals (browserColumn.getWildcard ()) ? " " : browserColumn.getCursorName (12);
     }
 }

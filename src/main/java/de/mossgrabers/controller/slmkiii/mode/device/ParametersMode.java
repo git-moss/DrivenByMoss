@@ -25,6 +25,8 @@ import de.mossgrabers.framework.parameterprovider.special.ResetParameterProvider
 import de.mossgrabers.framework.utils.ButtonEvent;
 import de.mossgrabers.framework.utils.StringUtils;
 
+import java.util.Optional;
+
 
 /**
  * Mode for editing device remote control parameters.
@@ -290,8 +292,8 @@ public class ParametersMode extends AbstractParametersMode<IItem>
         else
         {
             final IParameterPageBank parameterPageBank = cd.getParameterPageBank ();
-            final String selectedPage = parameterPageBank.getSelectedItem ();
-            d.setCell (0, 8, cd.getName (9)).setCell (1, 8, selectedPage);
+            final Optional<String> selectedPage = parameterPageBank.getSelectedItem ();
+            d.setCell (0, 8, cd.getName (9)).setCell (1, 8, selectedPage.isPresent () ? selectedPage.get () : "");
 
             // Row 1 & 2
             for (int i = 0; i < 8; i++)

@@ -74,7 +74,7 @@ public abstract class AbstractSequencerView<S extends IControlSurface<C>, C exte
      * @param clipCols The cols of the monitored clip
      * @param useDawColors True to use the DAW color of items for coloring (for full RGB devices)
      */
-    public AbstractSequencerView (final String name, final S surface, final IModel model, final int clipRows, final int clipCols, final boolean useDawColors)
+    protected AbstractSequencerView (final String name, final S surface, final IModel model, final int clipRows, final int clipCols, final boolean useDawColors)
     {
         this (name, surface, model, clipRows, clipCols, clipRows, useDawColors);
     }
@@ -91,7 +91,7 @@ public abstract class AbstractSequencerView<S extends IControlSurface<C>, C exte
      * @param numSequencerRows The number of displayed rows of the sequencer
      * @param useDawColors True to use the DAW color of items for coloring (for full RGB devices)
      */
-    public AbstractSequencerView (final String name, final S surface, final IModel model, final int clipRows, final int clipCols, final int numSequencerRows, final boolean useDawColors)
+    protected AbstractSequencerView (final String name, final S surface, final IModel model, final int clipRows, final int clipCols, final int numSequencerRows, final boolean useDawColors)
     {
         super (name, surface, model);
 

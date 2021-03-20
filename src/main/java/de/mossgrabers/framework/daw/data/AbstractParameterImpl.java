@@ -19,7 +19,7 @@ public abstract class AbstractParameterImpl extends AbstractItemImpl implements 
      *
      * @param index The index of the item in a page
      */
-    public AbstractParameterImpl (final int index)
+    protected AbstractParameterImpl (final int index)
     {
         super (index);
     }

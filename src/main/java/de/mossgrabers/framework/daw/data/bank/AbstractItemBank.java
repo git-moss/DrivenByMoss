@@ -9,6 +9,7 @@ import de.mossgrabers.framework.daw.data.IItem;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 
 /**
@@ -26,7 +27,7 @@ public abstract class AbstractItemBank<T extends IItem> extends AbstractBank<T>
      * @param host The DAW host
      * @param pageSize The number of elements in a page of the bank
      */
-    public AbstractItemBank (final IHost host, final int pageSize)
+    protected AbstractItemBank (final IHost host, final int pageSize)
     {
         super (host, pageSize);
     }
@@ -47,15 +48,15 @@ public abstract class AbstractItemBank<T extends IItem> extends AbstractBank<T>
 
     /** {@inheritDoc} */
     @Override
-    public T getSelectedItem ()
+    public Optional<T> getSelectedItem ()
     {
         for (int i = 0; i < this.pageSize; i++)
         {
             final T item = this.getItem (i);
             if (item.isSelected ())
-                return item;
+                return Optional.of (item);
         }
-        return null;
+        return Optional.empty ();
     }
 
 
@@ -121,8 +122,8 @@ public abstract class AbstractItemBank<T extends IItem> extends AbstractBank<T>
     @Override
     public boolean canScrollBackwards ()
     {
-        final IItem sel = this.getSelectedItem ();
-        final int selIndex = sel != null ? sel.getIndex () : -1;
+        final Optional<T> sel = this.getSelectedItem ();
+        final int selIndex = sel.isPresent () ? sel.get ().getIndex () : -1;
         return selIndex > 0 || this.canScrollPageBackwards ();
     }
 
@@ -131,8 +132,8 @@ public abstract class AbstractItemBank<T extends IItem> extends AbstractBank<T>
     @Override
     public boolean canScrollForwards ()
     {
-        final IItem sel = this.getSelectedItem ();
-        final int selIndex = sel != null ? sel.getIndex () : -1;
+        final Optional<T> sel = this.getSelectedItem ();
+        final int selIndex = sel.isPresent () ? sel.get ().getIndex () : -1;
         return selIndex >= 0 && selIndex < this.pageSize - 1 && this.getItem (selIndex + 1).doesExist () || this.canScrollPageForwards ();
     }
 }

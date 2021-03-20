@@ -10,6 +10,8 @@ import de.mossgrabers.framework.daw.data.ITrack;
 import de.mossgrabers.framework.daw.data.bank.ISendBank;
 import de.mossgrabers.framework.daw.data.empty.EmptyParameter;
 
+import java.util.Optional;
+
 
 /**
  * Get a number of parameters. This implementation provides all volume parameters of the channels of
@@ -53,10 +55,10 @@ public class SendParameterProvider extends AbstractTrackParameterProvider
     {
         if (this.sendIndex == -1)
         {
-            final ITrack track = this.bank.getSelectedItem ();
-            if (track == null)
+            final Optional<ITrack> track = this.bank.getSelectedItem ();
+            if (track.isEmpty ())
                 return EmptyParameter.INSTANCE;
-            final ISendBank sendBank = track.getSendBank ();
+            final ISendBank sendBank = track.get ().getSendBank ();
             return sendBank.getItemCount () > 0 ? sendBank.getItem (index) : EmptyParameter.INSTANCE;
         }
 

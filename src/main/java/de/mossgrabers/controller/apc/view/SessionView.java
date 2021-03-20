@@ -96,6 +96,9 @@ public class SessionView extends AbstractSessionView<APCControlSurface, APCConfi
         // Birds-eye-view navigation
         if (this.isBirdsEyeActive ())
         {
+            if (velocity == 0)
+                return;
+
             final int index = note - 36;
             final int x = index % this.columns;
             final int y = this.rows - 1 - index / this.columns;

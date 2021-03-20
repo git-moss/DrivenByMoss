@@ -32,8 +32,12 @@ public class SceneBankImpl extends AbstractItemBankImpl<SceneBank, IScene> imple
     {
         super (host, valueChanger, sceneBank, numScenes);
 
+        if (this.bank.isEmpty ())
+            return;
+
+        final SceneBank sb = this.bank.get ();
         for (int i = 0; i < this.getPageSize (); i++)
-            this.items.add (new SceneImpl (this.bank.getItemAt (i), i));
+            this.items.add (new SceneImpl (sb.getItemAt (i), i));
     }
 
 
@@ -41,6 +45,7 @@ public class SceneBankImpl extends AbstractItemBankImpl<SceneBank, IScene> imple
     @Override
     public void stop ()
     {
-        this.bank.stop ();
+        if (this.bank.isPresent ())
+            this.bank.get ().stop ();
     }
 }

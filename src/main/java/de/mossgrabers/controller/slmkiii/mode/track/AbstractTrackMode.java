@@ -13,6 +13,7 @@ import de.mossgrabers.framework.daw.DAWColor;
 import de.mossgrabers.framework.daw.IModel;
 import de.mossgrabers.framework.daw.data.ITrack;
 import de.mossgrabers.framework.daw.data.bank.ITrackBank;
+import de.mossgrabers.framework.daw.data.empty.EmptyTrack;
 import de.mossgrabers.framework.featuregroup.ModeManager;
 import de.mossgrabers.framework.mode.Modes;
 import de.mossgrabers.framework.utils.ButtonEvent;
@@ -22,6 +23,7 @@ import de.mossgrabers.framework.view.Views;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 
 /**
@@ -65,7 +67,7 @@ public abstract class AbstractTrackMode extends BaseMode<ITrack>
      * @param surface The control surface
      * @param model The model
      */
-    public AbstractTrackMode (final String name, final SLMkIIIControlSurface surface, final IModel model)
+    protected AbstractTrackMode (final String name, final SLMkIIIControlSurface surface, final IModel model)
     {
         super (name, surface, model, model.getCurrentTrackBank ());
 
@@ -118,8 +120,8 @@ public abstract class AbstractTrackMode extends BaseMode<ITrack>
         }
 
         // Normal behaviour
-        final ITrack selTrack = tb.getSelectedItem ();
-        if (selTrack != null && selTrack.getIndex () == index)
+        final Optional<ITrack> selTrack = tb.getSelectedItem ();
+        if (selTrack.isPresent () && selTrack.get ().getIndex () == index)
             this.surface.getButton (ButtonID.ARROW_UP).getCommand ().execute (ButtonEvent.DOWN, 127);
         else
             track.select ();
@@ -133,19 +135,19 @@ public abstract class AbstractTrackMode extends BaseMode<ITrack>
      */
     private void onButtonShifted (final int index)
     {
-        final ITrack selectedTrack = this.model.getCurrentTrackBank ().getSelectedItem ();
+        final Optional<ITrack> selectedTrack = this.model.getCurrentTrackBank ().getSelectedItem ();
         switch (index)
         {
             case 0:
-                if (selectedTrack != null)
-                    selectedTrack.toggleIsActivated ();
+                if (selectedTrack.isPresent ())
+                    selectedTrack.get ().toggleIsActivated ();
                 break;
             case 1:
-                if (selectedTrack != null)
+                if (selectedTrack.isPresent ())
                     this.model.getCursorTrack ().togglePinned ();
                 break;
             case 2:
-                if (selectedTrack != null)
+                if (selectedTrack.isPresent ())
                     this.surface.getViewManager ().setActive (Views.COLOR);
                 break;
             case 5:
@@ -185,22 +187,22 @@ public abstract class AbstractTrackMode extends BaseMode<ITrack>
     public int getButtonColor (final ButtonID buttonID)
     {
         final ITrackBank tb = this.model.getCurrentTrackBank ();
-        final ITrack selectedTrack = tb.getSelectedItem ();
+        final Optional<ITrack> selectedTrack = tb.getSelectedItem ();
 
         if (this.surface.isShiftPressed ())
         {
             switch (buttonID)
             {
                 case ROW1_1:
-                    if (selectedTrack == null)
+                    if (selectedTrack.isEmpty ())
                         return SLMkIIIColorManager.SLMKIII_BLACK;
-                    return selectedTrack.isActivated () ? SLMkIIIColorManager.SLMKIII_RED : SLMkIIIColorManager.SLMKIII_RED_HALF;
+                    return selectedTrack.get ().isActivated () ? SLMkIIIColorManager.SLMKIII_RED : SLMkIIIColorManager.SLMKIII_RED_HALF;
                 case ROW1_2:
-                    if (selectedTrack == null)
+                    if (selectedTrack.isEmpty ())
                         return SLMkIIIColorManager.SLMKIII_BLACK;
                     return this.model.getCursorTrack ().isPinned () ? SLMkIIIColorManager.SLMKIII_RED : SLMkIIIColorManager.SLMKIII_RED_HALF;
                 case ROW1_3:
-                    if (selectedTrack == null)
+                    if (selectedTrack.isEmpty ())
                         return SLMkIIIColorManager.SLMKIII_BLACK;
                     return SLMkIIIColorManager.SLMKIII_RED_HALF;
                 case ROW1_4:
@@ -243,11 +245,11 @@ public abstract class AbstractTrackMode extends BaseMode<ITrack>
         final SLMkIIIDisplay d = this.surface.getDisplay ();
 
         final ITrackBank tb = this.model.getCurrentTrackBank ();
-        final ITrack selectedTrack = tb.getSelectedItem ();
+        final Optional<ITrack> selectedTrack = tb.getSelectedItem ();
 
         if (this.surface.isShiftPressed ())
         {
-            this.drawRow4Shifted (d, selectedTrack);
+            this.drawRow4Shifted (d, selectedTrack.isPresent () ? selectedTrack.get () : EmptyTrack.INSTANCE);
             return;
         }
 

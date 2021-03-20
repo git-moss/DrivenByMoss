@@ -13,6 +13,8 @@ import de.mossgrabers.framework.daw.data.ITrack;
 import de.mossgrabers.framework.daw.data.bank.ISlotBank;
 import de.mossgrabers.framework.utils.ButtonEvent;
 
+import java.util.Optional;
+
 
 /**
  * Command to create a new clip on the current track, start it and activate overdub.
@@ -64,17 +66,17 @@ public class NewCommand<S extends IControlSurface<C>, C extends Configuration> e
         }
 
         final ISlotBank slotBank = cursorTrack.getSlotBank ();
-        final ISlot selectedSlot = slotBank.getSelectedItem ();
-        final int slotIndex = selectedSlot == null ? 0 : selectedSlot.getIndex ();
-        final ISlot slot = slotBank.getEmptySlot (slotIndex);
-        if (slot == null)
+        final Optional<ISlot> selectedSlot = slotBank.getSelectedItem ();
+        final int slotIndex = selectedSlot.isEmpty () ? 0 : selectedSlot.get ().getIndex ();
+        final Optional<ISlot> slot = slotBank.getEmptySlot (slotIndex);
+        if (slot.isEmpty ())
         {
             this.surface.getDisplay ().notify ("No empty slot in the current page. Please scroll down.");
             return;
         }
 
         final int lengthInBeats = this.getNewClipLenghthInBeats (this.model.getTransport ().getQuartersPerMeasure ());
-        this.model.createNoteClip (cursorTrack, slot, lengthInBeats, enableOverdub);
+        this.model.createNoteClip (cursorTrack, slot.get (), lengthInBeats, enableOverdub);
     }
 
 

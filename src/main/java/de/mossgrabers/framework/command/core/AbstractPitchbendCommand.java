@@ -29,7 +29,7 @@ public abstract class AbstractPitchbendCommand<S extends IControlSurface<C>, C e
      * @param model The model
      * @param surface The surface
      */
-    public AbstractPitchbendCommand (final IModel model, final S surface)
+    protected AbstractPitchbendCommand (final IModel model, final S surface)
     {
         this.model = model;
         this.surface = surface;

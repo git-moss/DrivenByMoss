@@ -23,6 +23,7 @@ import de.mossgrabers.framework.daw.data.bank.IDrumPadBank;
 import de.mossgrabers.framework.daw.data.bank.ITrackBank;
 import de.mossgrabers.framework.utils.ButtonEvent;
 
+import java.util.Optional;
 import java.util.function.IntUnaryOperator;
 
 
@@ -79,7 +80,7 @@ public abstract class AbstractDrumView<S extends IControlSurface<C>, C extends C
      * @param numPlayLines The number of rows to use for playing
      * @param useDawColors True to use the drum machine pad colors for coloring the octaves
      */
-    public AbstractDrumView (final String name, final S surface, final IModel model, final int numSequencerLines, final int numPlayLines, final boolean useDawColors)
+    protected AbstractDrumView (final String name, final S surface, final IModel model, final int numSequencerLines, final int numPlayLines, final boolean useDawColors)
     {
         this (name, surface, model, numSequencerLines, numPlayLines, GRID_COLUMNS, 128, numSequencerLines * GRID_COLUMNS, true, useDawColors);
     }
@@ -99,7 +100,7 @@ public abstract class AbstractDrumView<S extends IControlSurface<C>, C extends C
      * @param followSelection Follow the drum pad selection if true
      * @param useDawColors True to use the drum machine pad colors for coloring the octaves
      */
-    public AbstractDrumView (final String name, final S surface, final IModel model, final int numSequencerLines, final int numPlayRows, final int numColumns, final int clipRows, final int clipCols, final boolean followSelection, final boolean useDawColors)
+    protected AbstractDrumView (final String name, final S surface, final IModel model, final int numSequencerLines, final int numPlayRows, final int numColumns, final int clipRows, final int clipCols, final boolean followSelection, final boolean useDawColors)
     {
         super (name, surface, model, clipRows, clipCols, useDawColors);
 
@@ -366,13 +367,13 @@ public abstract class AbstractDrumView<S extends IControlSurface<C>, C extends C
      * @param drumPadIndex The index of the drum pad in the current drum pad page
      * @return The color or null if not a drum device, drum layer is empty, ...
      */
-    protected ColorEx getDrumPadColor (final IDrumDevice primary, final int drumPadIndex)
+    protected Optional<ColorEx> getDrumPadColor (final IDrumDevice primary, final int drumPadIndex)
     {
         if (!primary.hasDrumPads ())
-            return null;
+            return Optional.empty ();
 
         final IDrumPad item = primary.getDrumPadBank ().getItem (drumPadIndex);
-        return item.doesExist () ? item.getColor () : null;
+        return item.doesExist () ? Optional.of (item.getColor ()) : Optional.empty ();
     }
 
 
@@ -407,7 +408,7 @@ public abstract class AbstractDrumView<S extends IControlSurface<C>, C extends C
     }
 
 
-    protected String getStepColor (final int isSet, final boolean hilite, final ColorEx rowColor)
+    protected String getStepColor (final int isSet, final boolean hilite, final Optional<ColorEx> rowColor)
     {
         switch (isSet)
         {
@@ -415,12 +416,12 @@ public abstract class AbstractDrumView<S extends IControlSurface<C>, C extends C
             case IStepInfo.NOTE_CONTINUE:
                 if (hilite)
                     return AbstractSequencerView.COLOR_STEP_HILITE_CONTENT;
-                return rowColor != null && this.useDawColors ? DAWColor.getColorIndex (ColorEx.darker (rowColor)) : AbstractSequencerView.COLOR_CONTENT_CONT;
+                return rowColor.isPresent () && this.useDawColors ? DAWColor.getColorIndex (ColorEx.darker (rowColor.get ())) : AbstractSequencerView.COLOR_CONTENT_CONT;
             // Note starts
             case IStepInfo.NOTE_START:
                 if (hilite)
                     return AbstractSequencerView.COLOR_STEP_HILITE_CONTENT;
-                return rowColor != null && this.useDawColors ? DAWColor.getColorIndex (rowColor) : AbstractSequencerView.COLOR_CONTENT;
+                return rowColor.isPresent () && this.useDawColors ? DAWColor.getColorIndex (rowColor.get ()) : AbstractSequencerView.COLOR_CONTENT;
             // Empty
             default:
                 return hilite ? AbstractSequencerView.COLOR_STEP_HILITE_NO_CONTENT : AbstractSequencerView.COLOR_NO_CONTENT;
@@ -637,7 +638,7 @@ public abstract class AbstractDrumView<S extends IControlSurface<C>, C extends C
      * @param noteRow The note for which to draw the row
      * @param rowColor The color to use the notes of the row
      */
-    protected void drawSequencerSteps (final INoteClip clip, final boolean isActive, final int noteRow, final ColorEx rowColor)
+    protected void drawSequencerSteps (final INoteClip clip, final boolean isActive, final int noteRow, final Optional<ColorEx> rowColor)
     {
         this.drawSequencerSteps (clip, isActive, noteRow, rowColor, null);
     }
@@ -652,7 +653,7 @@ public abstract class AbstractDrumView<S extends IControlSurface<C>, C extends C
      * @param rowColor The color to use the notes of the row
      * @param yModifier Flips the Y order if true
      */
-    protected void drawSequencerSteps (final INoteClip clip, final boolean isActive, final int noteRow, final ColorEx rowColor, final IntUnaryOperator yModifier)
+    protected void drawSequencerSteps (final INoteClip clip, final boolean isActive, final int noteRow, final Optional<ColorEx> rowColor, final IntUnaryOperator yModifier)
     {
         final int step = clip.getCurrentStep ();
         final int hiStep = this.isInXRange (step) ? step % this.sequencerSteps : -1;
@@ -705,8 +706,8 @@ public abstract class AbstractDrumView<S extends IControlSurface<C>, C extends C
      */
     private void updateNote (final int trackIndex, final int note, final int velocity)
     {
-        final ITrack sel = this.model.getCurrentTrackBank ().getSelectedItem ();
-        if (sel != null && sel.getIndex () == trackIndex)
+        final Optional<ITrack> sel = this.model.getCurrentTrackBank ().getSelectedItem ();
+        if (sel.isPresent () && sel.get ().getIndex () == trackIndex)
             this.keyManager.setKeyPressed (note, velocity);
     }
 

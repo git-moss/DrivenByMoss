@@ -17,6 +17,7 @@ import de.mossgrabers.framework.utils.ButtonEvent;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Optional;
 
 
 /**
@@ -128,11 +129,14 @@ public class ModeMultiSelectCommand<S extends IControlSurface<C>, C extends Conf
             final int sendIndex = modeID.ordinal () - this.send1.ordinal ();
             modeName = modeName + " " + (sendIndex + 1);
             final ITrackBank trackBank = this.model.getTrackBank ();
-            ITrack selectedTrack = trackBank.getSelectedItem ();
-            if (selectedTrack == null)
-                selectedTrack = trackBank.getItem (0);
-            if (selectedTrack != null)
-                modeName += ": " + selectedTrack.getSendBank ().getItem (sendIndex).getName ();
+            Optional<ITrack> selectedTrack = trackBank.getSelectedItem ();
+            if (selectedTrack.isEmpty ())
+            {
+                final ITrack item = trackBank.getItem (0);
+                selectedTrack = item.doesExist () ? Optional.of (item) : Optional.empty ();
+            }
+            if (selectedTrack.isPresent ())
+                modeName += ": " + selectedTrack.get ().getSendBank ().getItem (sendIndex).getName ();
         }
 
         this.model.getHost ().showNotification (modeName);

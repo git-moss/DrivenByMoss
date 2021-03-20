@@ -13,6 +13,8 @@ import de.mossgrabers.framework.daw.data.empty.EmptyParameter;
 import de.mossgrabers.framework.observer.IItemSelectionObserver;
 import de.mossgrabers.framework.observer.IParametersAdjustObserver;
 
+import java.util.Optional;
+
 
 /**
  * Get a number of parameters. This implementation provides the selected channels volume, panorama
@@ -40,8 +42,8 @@ public class AbstractSelectedChannelParameterProvider<B extends IChannelBank<C>,
     @Override
     public IParameter get (final int index)
     {
-        final IChannel selectedTrack = this.bank.getSelectedItem ();
-        return selectedTrack == null ? EmptyParameter.INSTANCE : this.getInternal (index, selectedTrack);
+        final Optional<? extends IChannel> selectedTrack = this.bank.getSelectedItem ();
+        return selectedTrack.isEmpty () ? EmptyParameter.INSTANCE : this.getInternal (index, selectedTrack.get ());
     }
 
 

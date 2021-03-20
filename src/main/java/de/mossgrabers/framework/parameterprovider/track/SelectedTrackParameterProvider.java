@@ -8,11 +8,14 @@ import de.mossgrabers.framework.daw.IModel;
 import de.mossgrabers.framework.daw.data.IChannel;
 import de.mossgrabers.framework.daw.data.IParameter;
 import de.mossgrabers.framework.daw.data.ISend;
+import de.mossgrabers.framework.daw.data.ITrack;
 import de.mossgrabers.framework.daw.data.bank.ISendBank;
 import de.mossgrabers.framework.daw.data.bank.ITrackBank;
 import de.mossgrabers.framework.daw.data.empty.EmptyParameter;
 import de.mossgrabers.framework.observer.IItemSelectionObserver;
 import de.mossgrabers.framework.observer.IParametersAdjustObserver;
+
+import java.util.Optional;
 
 
 /**
@@ -49,8 +52,8 @@ public class SelectedTrackParameterProvider extends AbstractTrackParameterProvid
     @Override
     public IParameter get (final int index)
     {
-        final IChannel selectedTrack = this.bank.getSelectedItem ();
-        return selectedTrack == null ? EmptyParameter.INSTANCE : this.getInternal (index, selectedTrack);
+        final Optional<ITrack> selectedTrack = this.bank.getSelectedItem ();
+        return selectedTrack.isEmpty () ? EmptyParameter.INSTANCE : this.getInternal (index, selectedTrack.get ());
     }
 
 

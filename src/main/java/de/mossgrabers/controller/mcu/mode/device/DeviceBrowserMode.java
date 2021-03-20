@@ -15,6 +15,8 @@ import de.mossgrabers.framework.daw.data.ICursorDevice;
 import de.mossgrabers.framework.daw.data.IItem;
 import de.mossgrabers.framework.utils.StringUtils;
 
+import java.util.Optional;
+
 
 /**
  * Mode for navigating the browser.
@@ -91,9 +93,16 @@ public class DeviceBrowserMode extends BaseMode<IItem>
             case SELECTION_OFF:
                 for (int i = 0; i < 7; i++)
                 {
-                    final IBrowserColumn column = this.getFilterColumn (i);
-                    final String value = column != null && column.doesCursorExist () ? column.getCursorName ().equals (column.getWildcard ()) ? "-" : column.getCursorName () : "";
-                    final String name = column == null ? "" : StringUtils.shortenAndFixASCII (column.getName (), 6);
+                    final Optional<IBrowserColumn> column = this.getFilterColumn (i);
+                    String value = "";
+                    String name = "";
+                    if (column.isPresent ())
+                    {
+                        final IBrowserColumn browserColumn = column.get ();
+                        if (browserColumn.doesCursorExist ())
+                            value = browserColumn.getCursorName ().equals (browserColumn.getWildcard ()) ? "-" : browserColumn.getCursorName ();
+                        name = StringUtils.shortenAndFixASCII (browserColumn.getName (), 6);
+                    }
                     d.setCell (0, i, name).setCell (1, i, value);
                 }
                 final String selectedResult = browser.getSelectedResult ();
@@ -142,11 +151,11 @@ public class DeviceBrowserMode extends BaseMode<IItem>
         }
         else
         {
-            final IBrowserColumn fc = this.getFilterColumn (index);
-            if (fc != null && fc.doesExist ())
+            final Optional<IBrowserColumn> fc = this.getFilterColumn (index);
+            if (fc.isPresent () && fc.get ().doesExist ())
             {
                 this.selectionMode = SELECTION_FILTER;
-                this.filterColumn = fc.getIndex ();
+                this.filterColumn = fc.get ().getIndex ();
             }
         }
     }
@@ -161,7 +170,7 @@ public class DeviceBrowserMode extends BaseMode<IItem>
     }
 
 
-    private IBrowserColumn getFilterColumn (final int index)
+    private Optional<IBrowserColumn> getFilterColumn (final int index)
     {
         final IBrowser browser = this.model.getBrowser ();
         int column = -1;
@@ -172,10 +181,10 @@ public class DeviceBrowserMode extends BaseMode<IItem>
             {
                 column++;
                 if (column == index)
-                    return browser.getFilterColumn (i);
+                    return Optional.of (browser.getFilterColumn (i));
             }
         }
-        return null;
+        return Optional.empty ();
     }
 
 
@@ -184,10 +193,10 @@ public class DeviceBrowserMode extends BaseMode<IItem>
         final IBrowser browser = this.model.getBrowser ();
         if (index < 7)
         {
-            final IBrowserColumn fc = this.getFilterColumn (index);
-            if (fc != null && fc.doesExist ())
+            final Optional<IBrowserColumn> fc = this.getFilterColumn (index);
+            if (fc.isPresent () && fc.get ().doesExist ())
             {
-                this.filterColumn = fc.getIndex ();
+                this.filterColumn = fc.get ().getIndex ();
                 for (int i = 0; i < count; i++)
                     browser.selectNextFilterItem (this.filterColumn);
                 if (browser.getSelectedFilterItemIndex (this.filterColumn) == -1)
@@ -209,10 +218,10 @@ public class DeviceBrowserMode extends BaseMode<IItem>
         {
             if (index < 7)
             {
-                final IBrowserColumn fc = this.getFilterColumn (index);
-                if (fc != null && fc.doesExist ())
+                final Optional<IBrowserColumn> fc = this.getFilterColumn (index);
+                if (fc.isPresent () && fc.get ().doesExist ())
                 {
-                    this.filterColumn = fc.getIndex ();
+                    this.filterColumn = fc.get ().getIndex ();
                     for (int j = 0; j < count; j++)
                         browser.selectPreviousFilterItem (this.filterColumn);
                     if (browser.getSelectedFilterItemIndex (this.filterColumn) == -1)

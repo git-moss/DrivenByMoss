@@ -13,6 +13,7 @@ import de.mossgrabers.framework.mode.Modes;
 import de.mossgrabers.framework.parameterprovider.track.VolumeParameterProvider;
 
 import java.util.List;
+import java.util.Optional;
 import java.util.function.BooleanSupplier;
 
 
@@ -79,13 +80,14 @@ public class VolumeMode<S extends IControlSurface<C>, C extends Configuration> e
     @Override
     public void onKnobValue (final int index, final int value)
     {
-        final ITrack track = this.getTrack (index);
-        if (track == null)
+        final Optional<ITrack> track = this.getTrack (index);
+        if (track.isEmpty ())
             return;
+        final ITrack t = track.get ();
         if (this.isAbsolute)
-            track.setVolume (value);
+            t.setVolume (value);
         else
-            track.changeVolume (value);
+            t.changeVolume (value);
     }
 
 
@@ -93,13 +95,14 @@ public class VolumeMode<S extends IControlSurface<C>, C extends Configuration> e
     @Override
     public void onKnobTouch (final int index, final boolean isTouched)
     {
-        final ITrack track = this.getTrack (index);
-        if (track == null)
+        final Optional<ITrack> track = this.getTrack (index);
+        if (track.isEmpty ())
             return;
 
+        final ITrack t = track.get ();
         if (isTouched && this.surface.isDeletePressed ())
-            track.resetVolume ();
-        track.touchVolume (isTouched);
+            t.resetVolume ();
+        t.touchVolume (isTouched);
     }
 
 
@@ -107,7 +110,7 @@ public class VolumeMode<S extends IControlSurface<C>, C extends Configuration> e
     @Override
     public int getKnobValue (final int index)
     {
-        final ITrack track = this.getTrack (index);
-        return track == null ? -1 : track.getVolume ();
+        final Optional<ITrack> track = this.getTrack (index);
+        return track.isEmpty () ? -1 : track.get ().getVolume ();
     }
 }

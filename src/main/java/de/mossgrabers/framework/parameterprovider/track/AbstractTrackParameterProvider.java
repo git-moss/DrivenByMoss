@@ -29,7 +29,7 @@ public abstract class AbstractTrackParameterProvider extends AbstractParameterPr
      *
      * @param bank The bank from which to get the parameters
      */
-    public AbstractTrackParameterProvider (final ITrackBank bank)
+    protected AbstractTrackParameterProvider (final ITrackBank bank)
     {
         this.bank = bank;
         this.model = null;
@@ -41,7 +41,7 @@ public abstract class AbstractTrackParameterProvider extends AbstractParameterPr
      *
      * @param model Uses the current track bank from this model to get the parameters
      */
-    public AbstractTrackParameterProvider (final IModel model)
+    protected AbstractTrackParameterProvider (final IModel model)
     {
         this.model = model;
         this.bank = model.getCurrentTrackBank ();

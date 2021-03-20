@@ -17,6 +17,8 @@ import de.mossgrabers.framework.daw.data.ITrack;
 import de.mossgrabers.framework.daw.data.bank.ISlotBank;
 import de.mossgrabers.framework.utils.ButtonEvent;
 
+import java.util.Optional;
+
 
 /**
  * Command for different functionalities of a foot switch.
@@ -164,8 +166,8 @@ public class FootswitchCommand<S extends IControlSurface<C>, C extends Configura
         }
 
         final ISlotBank slotBank = cursorTrack.getSlotBank ();
-        final ISlot selectedSlot = slotBank.getSelectedItem ();
-        final ISlot slot = selectedSlot == null ? slotBank.getItem (0) : selectedSlot;
+        final Optional<ISlot> selectedSlot = slotBank.getSelectedItem ();
+        final ISlot slot = selectedSlot.isEmpty () ? slotBank.getItem (0) : selectedSlot.get ();
         if (event == ButtonEvent.DOWN)
         {
             if (slot.hasContent ())

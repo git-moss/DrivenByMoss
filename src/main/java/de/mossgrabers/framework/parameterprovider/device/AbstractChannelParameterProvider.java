@@ -30,7 +30,7 @@ public abstract class AbstractChannelParameterProvider<B extends IChannelBank<C>
      *
      * @param bank The bank from which to get the parameters
      */
-    public AbstractChannelParameterProvider (final B bank)
+    protected AbstractChannelParameterProvider (final B bank)
     {
         this.bank = bank;
     }

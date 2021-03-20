@@ -9,6 +9,8 @@ import de.mossgrabers.framework.daw.IModel;
 import de.mossgrabers.framework.daw.data.ITrack;
 import de.mossgrabers.framework.daw.data.bank.ITrackBank;
 
+import java.util.Optional;
+
 
 /**
  * Pluggable extension to edit track parameters.
@@ -44,29 +46,29 @@ public class TrackEditing
     public void onTrackKnob (final int index, final int value, final boolean isTurnedRight)
     {
         final ITrackBank tb = this.model.getCurrentTrackBank ();
-        final ITrack selectedTrack = tb.getSelectedItem ();
-        if (selectedTrack == null)
+        final Optional<ITrack> selectedTrack = tb.getSelectedItem ();
+        if (selectedTrack.isEmpty ())
             return;
 
         switch (index)
         {
             case 0:
-                selectedTrack.changeVolume (value);
+                selectedTrack.get ().changeVolume (value);
                 break;
             case 1:
-                selectedTrack.changePan (value);
+                selectedTrack.get ().changePan (value);
                 break;
 
             case 2:
-                selectedTrack.setMute (isTurnedRight);
+                selectedTrack.get ().setMute (isTurnedRight);
                 break;
 
             case 3:
-                selectedTrack.setSolo (isTurnedRight);
+                selectedTrack.get ().setSolo (isTurnedRight);
                 break;
 
             case 4:
-                selectedTrack.getCrossfadeParameter ().changeValue (value);
+                selectedTrack.get ().getCrossfadeParameter ().changeValue (value);
                 break;
 
             case 5:
@@ -87,7 +89,7 @@ public class TrackEditing
             case 10:
             case 11:
                 if (!this.model.isEffectTrackBankActive ())
-                    selectedTrack.getSendBank ().getItem (index - 8).changeValue (value);
+                    selectedTrack.get ().getSendBank ().getItem (index - 8).changeValue (value);
                 break;
 
             default:

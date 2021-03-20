@@ -13,6 +13,8 @@ import de.mossgrabers.framework.daw.data.bank.ISceneBank;
 
 import com.bitwig.extension.controller.api.Bank;
 
+import java.util.Optional;
+
 
 /**
  * An abstract channel bank.
@@ -40,7 +42,7 @@ public abstract class AbstractChannelBankImpl<B extends Bank<?>, T extends IChan
      * @param numScenes The number of scenes of a bank page
      * @param numSends The number of sends of a bank page
      */
-    public AbstractChannelBankImpl (final IHost host, final IValueChanger valueChanger, final B bank, final int numTracks, final int numScenes, final int numSends)
+    protected AbstractChannelBankImpl (final IHost host, final IValueChanger valueChanger, final B bank, final int numTracks, final int numScenes, final int numSends)
     {
         super (host, valueChanger, bank, numTracks);
 
@@ -53,10 +55,10 @@ public abstract class AbstractChannelBankImpl<B extends Bank<?>, T extends IChan
     @Override
     public String getSelectedChannelColorEntry ()
     {
-        final T sel = this.getSelectedItem ();
-        if (sel == null)
+        final Optional<T> sel = this.getSelectedItem ();
+        if (sel.isEmpty ())
             return DAWColor.COLOR_OFF.name ();
-        return DAWColor.getColorIndex (sel.getColor ());
+        return DAWColor.getColorIndex (sel.get ().getColor ());
     }
 
 

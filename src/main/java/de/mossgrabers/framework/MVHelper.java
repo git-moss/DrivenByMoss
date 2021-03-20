@@ -15,6 +15,7 @@ import de.mossgrabers.framework.daw.data.bank.IParameterBank;
 import de.mossgrabers.framework.daw.data.bank.ITrackBank;
 import de.mossgrabers.framework.featuregroup.IMode;
 
+import java.util.Optional;
 import java.util.function.Supplier;
 
 
@@ -28,8 +29,9 @@ import java.util.function.Supplier;
  */
 public class MVHelper<S extends IControlSurface<C>, C extends Configuration>
 {
-    private static final String NONE          = "None";
-    private static final int    DISPLAY_DELAY = 100;
+    private static final String SELECTED_TRACK_NONE = "Selected track: None";
+    private static final String NONE                = "None";
+    private static final int    DISPLAY_DELAY       = 100;
 
     private final IModel        model;
     private final ITransport    transport;
@@ -60,10 +62,15 @@ public class MVHelper<S extends IControlSurface<C>, C extends Configuration>
         this.delayDisplay ( () -> {
 
             final ITrackBank currentTrackBank = this.model.getCurrentTrackBank ();
-            final ITrack selectedTrack = currentTrackBank.getSelectedItem ();
-            if (selectedTrack == null || !selectedTrack.doesExist ())
-                return "Selected track: None";
-            return selectedTrack.getPosition () + 1 + ": " + selectedTrack.getName ();
+            final Optional<ITrack> selectedTrack = currentTrackBank.getSelectedItem ();
+            if (selectedTrack.isEmpty ())
+                return SELECTED_TRACK_NONE;
+
+            final ITrack t = selectedTrack.get ();
+            if (!t.doesExist ())
+                return SELECTED_TRACK_NONE;
+
+            return t.getPosition () + 1 + ": " + t.getName ();
 
         });
     }
@@ -93,8 +100,8 @@ public class MVHelper<S extends IControlSurface<C>, C extends Configuration>
             final ICursorDevice cursorDevice = this.model.getCursorDevice ();
             if (cursorDevice.doesExist ())
             {
-                final String selectedItem = cursorDevice.getParameterPageBank ().getSelectedItem ();
-                if (selectedItem != null)
+                final Optional<String> selectedItem = cursorDevice.getParameterPageBank ().getSelectedItem ();
+                if (selectedItem.isPresent ())
                     return "Page: " + selectedItem;
             }
             return "Page: " + NONE;
@@ -125,7 +132,12 @@ public class MVHelper<S extends IControlSurface<C>, C extends Configuration>
      */
     public void notifySelectedItem (final IMode mode)
     {
-        this.delayDisplay (mode::getSelectedItemName);
+        this.delayDisplay ( () -> {
+
+            final Optional<String> selectedItemName = mode.getSelectedItemName ();
+            return selectedItemName.isPresent () ? selectedItemName.get () : "None";
+
+        });
     }
 
 

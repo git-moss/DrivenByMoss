@@ -9,6 +9,8 @@ import de.mossgrabers.framework.daw.IModel;
 import de.mossgrabers.framework.daw.data.ITrack;
 import de.mossgrabers.framework.mode.Modes;
 
+import java.util.Optional;
+
 
 /**
  * Mode for editing the panorama of all tracks.
@@ -33,7 +35,9 @@ public class PanMode extends AbstractTrackMode
     @Override
     public void onKnobValue (final int index, final int value)
     {
-        this.getTrack (index).changePan (value);
+        final Optional<ITrack> track = this.getTrack (index);
+        if (track.isPresent ())
+            track.get ().changePan (value);
     }
 
 
@@ -53,9 +57,9 @@ public class PanMode extends AbstractTrackMode
         final int upperBound = this.model.getValueChanger ().getUpperBound ();
         for (int i = 0; i < 8; i++)
         {
-            final ITrack t = this.getTrack (i);
-            if (t.doesExist ())
-                this.surface.setKnobLED (i, HUIControlSurface.KNOB_LED_MODE_BOOST_CUT, Math.max (t.getPan (), 1), upperBound);
+            final Optional<ITrack> t = this.getTrack (i);
+            if (t.isPresent ())
+                this.surface.setKnobLED (i, HUIControlSurface.KNOB_LED_MODE_BOOST_CUT, Math.max (t.get ().getPan (), 1), upperBound);
             else
                 this.surface.setKnobLED (i, HUIControlSurface.KNOB_LED_MODE_OFF, 0, 0);
         }
@@ -66,6 +70,8 @@ public class PanMode extends AbstractTrackMode
     @Override
     protected void resetParameter (final int index)
     {
-        this.getTrack (index).resetPan ();
+        final Optional<ITrack> track = this.getTrack (index);
+        if (track.isPresent ())
+            track.get ().resetPan ();
     }
 }

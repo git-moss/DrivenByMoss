@@ -13,6 +13,7 @@ import de.mossgrabers.framework.daw.data.ITrack;
 import de.mossgrabers.framework.parameterprovider.track.PanParameterProvider;
 
 import java.util.List;
+import java.util.Optional;
 import java.util.function.BooleanSupplier;
 
 
@@ -79,13 +80,14 @@ public class PanMode<S extends IControlSurface<C>, C extends Configuration> exte
     @Override
     public void onKnobValue (final int index, final int value)
     {
-        final ITrack track = this.getTrack (index);
-        if (track == null)
+        final Optional<ITrack> track = this.getTrack (index);
+        if (track.isEmpty ())
             return;
+        final ITrack t = track.get ();
         if (this.isAbsolute)
-            track.setPan (value);
+            t.setPan (value);
         else
-            track.changePan (value);
+            t.changePan (value);
     }
 
 
@@ -93,16 +95,20 @@ public class PanMode<S extends IControlSurface<C>, C extends Configuration> exte
     @Override
     public void onKnobTouch (final int index, final boolean isTouched)
     {
-        final ITrack track = this.getTrack (index);
-        if (!track.doesExist ())
+        final Optional<ITrack> track = this.getTrack (index);
+        if (track.isEmpty ())
+            return;
+
+        final ITrack t = track.get ();
+        if (!t.doesExist ())
             return;
 
         if (isTouched && this.surface.isDeletePressed ())
         {
             this.surface.setTriggerConsumed (ButtonID.DELETE);
-            track.resetPan ();
+            t.resetPan ();
         }
-        track.touchPan (isTouched);
+        t.touchPan (isTouched);
     }
 
 
@@ -110,7 +116,7 @@ public class PanMode<S extends IControlSurface<C>, C extends Configuration> exte
     @Override
     public int getKnobValue (final int index)
     {
-        final ITrack track = this.getTrack (index);
-        return track == null ? -1 : track.getPan ();
+        final Optional<ITrack> track = this.getTrack (index);
+        return track.isEmpty () ? -1 : track.get ().getPan ();
     }
 }

@@ -20,6 +20,7 @@ import de.mossgrabers.framework.parameterprovider.track.PanParameterProvider;
 import de.mossgrabers.framework.parameterprovider.track.VolumeParameterProvider;
 
 import java.util.List;
+import java.util.Optional;
 
 
 /**
@@ -65,12 +66,12 @@ public class MixerMode extends VolumeMode<KontrolProtocolControlSurface, Kontrol
             return valueChanger.toMidiValue (track.getPan ());
         }
 
-        final ITrack selectedTrack = this.bank.getSelectedItem ();
+        final Optional<ITrack> selectedTrack = this.bank.getSelectedItem ();
         final int scrollTracksState = (this.bank.canScrollBackwards () ? 1 : 0) + (this.bank.canScrollForwards () ? 2 : 0);
         int scrollClipsState = 0;
-        if (selectedTrack != null)
+        if (selectedTrack.isPresent ())
         {
-            final ISlotBank slotBank = selectedTrack.getSlotBank ();
+            final ISlotBank slotBank = selectedTrack.get ().getSlotBank ();
             scrollClipsState = (slotBank.canScrollBackwards () ? 1 : 0) + (slotBank.canScrollForwards () ? 2 : 0);
         }
 

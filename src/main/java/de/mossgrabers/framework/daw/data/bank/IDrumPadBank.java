@@ -5,6 +5,9 @@
 package de.mossgrabers.framework.daw.data.bank;
 
 import de.mossgrabers.framework.daw.data.IDrumPad;
+import de.mossgrabers.framework.daw.data.ILayer;
+
+import java.util.Optional;
 
 
 /**
@@ -41,5 +44,5 @@ public interface IDrumPadBank extends ILayerBank
 
     /** {@inheritDoc} */
     @Override
-    IDrumPad getSelectedItem ();
+    Optional<ILayer> getSelectedItem ();
 }

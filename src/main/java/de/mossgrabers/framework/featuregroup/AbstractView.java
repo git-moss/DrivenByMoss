@@ -46,7 +46,7 @@ public abstract class AbstractView<S extends IControlSurface<C>, C extends Confi
      * @param surface The surface
      * @param model The model
      */
-    public AbstractView (final String name, final S surface, final IModel model)
+    protected AbstractView (final String name, final S surface, final IModel model)
     {
         super (name, surface, model);
 

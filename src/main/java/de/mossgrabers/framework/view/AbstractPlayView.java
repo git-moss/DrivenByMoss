@@ -47,7 +47,7 @@ public abstract class AbstractPlayView<S extends IControlSurface<C>, C extends C
      * @param model The model
      * @param useTrackColor True to use the color of the current track for coloring the octaves
      */
-    public AbstractPlayView (final S surface, final IModel model, final boolean useTrackColor)
+    protected AbstractPlayView (final S surface, final IModel model, final boolean useTrackColor)
     {
         this (Views.NAME_PLAY, surface, model, useTrackColor);
     }
@@ -61,7 +61,7 @@ public abstract class AbstractPlayView<S extends IControlSurface<C>, C extends C
      * @param model The model
      * @param useTrackColor True to use the color of the current track for coloring the octaves
      */
-    public AbstractPlayView (final String name, final S surface, final IModel model, final boolean useTrackColor)
+    protected AbstractPlayView (final String name, final S surface, final IModel model, final boolean useTrackColor)
     {
         super (name, surface, model);
 

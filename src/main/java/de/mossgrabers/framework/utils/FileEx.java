@@ -20,17 +20,6 @@ public class FileEx extends File
 
 
     /**
-     * Encapsulates the given file.
-     *
-     * @param file A file
-     */
-    public FileEx (final File file)
-    {
-        super (file.getAbsolutePath ());
-    }
-
-
-    /**
      * Creates a new FileEx instance by converting the given pathname string into an abstract
      * pathname. If the given string is the empty string, then the result is the empty abstract
      * pathname.
@@ -40,27 +29,6 @@ public class FileEx extends File
     public FileEx (final String filename)
     {
         super (filename);
-    }
-
-
-    /**
-     * Creates a new FileEx instance from a parent file and a child pathname string.<br>
-     * If parent is null then the new FileEx instance is created as if by invoking the
-     * single-argument FileEx constructor on the given child pathname string. Otherwise the parent
-     * pathname string is taken to denote a directory, and the child pathname string is taken to
-     * denote either a directory or a file. If the child pathname string is absolute then it is
-     * converted into a relative pathname in a system-dependent way. If parent is the empty string
-     * then the new File instance is created by converting child into an abstract pathname and
-     * resolving the result against a system-dependent default directory. Otherwise each pathname
-     * string is converted into an abstract pathname and the child abstract pathname is resolved
-     * against the parent.
-     *
-     * @param parent The parent path
-     * @param child The child pathname string
-     */
-    public FileEx (final File parent, final String child)
-    {
-        super (parent, child);
     }
 
 

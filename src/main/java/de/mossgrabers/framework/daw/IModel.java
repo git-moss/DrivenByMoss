@@ -21,6 +21,8 @@ import de.mossgrabers.framework.daw.data.bank.ITrackBank;
 import de.mossgrabers.framework.observer.IValueObserver;
 import de.mossgrabers.framework.scale.Scales;
 
+import java.util.Optional;
+
 
 /**
  * The interface to all data and access to the DAW.
@@ -273,7 +275,7 @@ public interface IModel
      *
      * @return The slot or null
      */
-    ISlot getSelectedSlot ();
+    Optional<ISlot> getSelectedSlot ();
 
 
     /**

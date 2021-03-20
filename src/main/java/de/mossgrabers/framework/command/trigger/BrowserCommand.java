@@ -12,11 +12,15 @@ import de.mossgrabers.framework.daw.IBrowser;
 import de.mossgrabers.framework.daw.IModel;
 import de.mossgrabers.framework.daw.data.IChannel;
 import de.mossgrabers.framework.daw.data.ICursorDevice;
+import de.mossgrabers.framework.daw.data.IMasterTrack;
+import de.mossgrabers.framework.daw.data.ITrack;
 import de.mossgrabers.framework.featuregroup.ViewManager;
 import de.mossgrabers.framework.mode.Modes;
 import de.mossgrabers.framework.utils.ButtonEvent;
 import de.mossgrabers.framework.view.AbstractDrumView;
 import de.mossgrabers.framework.view.Views;
+
+import java.util.Optional;
 
 
 /**
@@ -124,10 +128,10 @@ public class BrowserCommand<S extends IControlSurface<C>, C extends Configuratio
 
             if (Modes.isLayerMode (this.surface.getModeManager ().getActiveID ()))
             {
-                final IChannel layer = cursorDevice.getLayerOrDrumPadBank ().getSelectedItem ();
-                if (layer == null)
+                final Optional<?> layer = cursorDevice.getLayerOrDrumPadBank ().getSelectedItem ();
+                if (layer.isEmpty ())
                     return false;
-                browser.addDevice (layer);
+                browser.addDevice ((IChannel) layer.get ());
                 return true;
             }
 
@@ -139,14 +143,17 @@ public class BrowserCommand<S extends IControlSurface<C>, C extends Configuratio
         }
 
         // No cursor device, add to the selected channel, if any
-        IChannel channel = this.model.getCurrentTrackBank ().getSelectedItem ();
-        if (channel == null)
+        final Optional<ITrack> channel = this.model.getCurrentTrackBank ().getSelectedItem ();
+        if (channel.isPresent ())
         {
-            channel = this.model.getMasterTrack ();
-            if (!channel.isSelected ())
-                return false;
+            browser.addDevice (channel.get ());
+            return true;
         }
-        browser.addDevice (channel);
+
+        final IMasterTrack master = this.model.getMasterTrack ();
+        if (!master.isSelected ())
+            return false;
+        browser.addDevice (master);
         return true;
     }
 

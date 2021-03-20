@@ -26,6 +26,7 @@ import de.mossgrabers.framework.utils.StringUtils;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 
 /**
@@ -45,7 +46,7 @@ public abstract class AbstractTrackMode extends BaseMode<ITrack>
      * @param surface The control surface
      * @param model The model
      */
-    public AbstractTrackMode (final String name, final PushControlSurface surface, final IModel model)
+    protected AbstractTrackMode (final String name, final PushControlSurface surface, final IModel model)
     {
         super (name, surface, model, model.getCurrentTrackBank ());
 
@@ -115,13 +116,15 @@ public abstract class AbstractTrackMode extends BaseMode<ITrack>
                 return;
             }
 
-            final ITrack selTrack = tb.getSelectedItem ();
-            if (selTrack != null && selTrack.getIndex () == index)
+            final Optional<ITrack> selTrack = tb.getSelectedItem ();
+            if (selTrack.isPresent () && selTrack.get ().getIndex () == index)
             {
+                final ITrack t = selTrack.get ();
+
                 // If it is a group display child channels of group, otherwise jump into device
                 // mode
-                if (selTrack.isGroup ())
-                    selTrack.enter ();
+                if (t.isGroup ())
+                    t.enter ();
                 else
                     this.surface.getButton (ButtonID.DEVICE).trigger (ButtonEvent.DOWN);
             }
@@ -337,10 +340,10 @@ public abstract class AbstractTrackMode extends BaseMode<ITrack>
     protected void drawRow4 (final ITextDisplay d)
     {
         final ITrackBank tb = this.model.getCurrentTrackBank ();
-        final ITrack selTrack = tb.getSelectedItem ();
+        final Optional<ITrack> selTrack = tb.getSelectedItem ();
 
         // Format track names
-        final int selIndex = selTrack == null ? -1 : selTrack.getIndex ();
+        final int selIndex = selTrack.isEmpty () ? -1 : selTrack.get ().getIndex ();
         for (int i = 0; i < 8; i++)
         {
             final boolean isSel = i == selIndex;

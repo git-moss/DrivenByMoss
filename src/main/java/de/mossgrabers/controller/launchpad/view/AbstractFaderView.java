@@ -24,7 +24,7 @@ public abstract class AbstractFaderView extends SessionView
      * @param surface The surface
      * @param model The model
      */
-    public AbstractFaderView (final String name, final LaunchpadControlSurface surface, final IModel model)
+    protected AbstractFaderView (final String name, final LaunchpadControlSurface surface, final IModel model)
     {
         super (name, surface, model);
     }

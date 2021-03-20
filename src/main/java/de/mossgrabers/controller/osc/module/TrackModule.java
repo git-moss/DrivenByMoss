@@ -24,6 +24,7 @@ import de.mossgrabers.framework.osc.IOpenSoundControlWriter;
 
 import java.util.LinkedList;
 import java.util.Locale;
+import java.util.Optional;
 
 
 /**
@@ -230,8 +231,8 @@ public class TrackModule extends AbstractModule
                 break;
 
             case "+":
-                final ITrack selTrack1 = tb.getSelectedItem ();
-                final int index1 = selTrack1 == null ? 0 : selTrack1.getIndex () + 1;
+                final Optional<ITrack> selTrack1 = tb.getSelectedItem ();
+                final int index1 = selTrack1.isEmpty () ? 0 : selTrack1.get ().getIndex () + 1;
                 if (index1 == tb.getPageSize ())
                 {
                     tb.selectNextPage ();
@@ -241,8 +242,8 @@ public class TrackModule extends AbstractModule
                 break;
 
             case "-":
-                final ITrack selTrack2 = tb.getSelectedItem ();
-                final int index2 = selTrack2 == null ? 0 : selTrack2.getIndex () - 1;
+                final Optional<ITrack> selTrack2 = tb.getSelectedItem ();
+                final int index2 = selTrack2.isEmpty () ? 0 : selTrack2.get ().getIndex () - 1;
                 if (index2 == -1)
                 {
                     tb.selectPreviousPage ();
@@ -285,8 +286,8 @@ public class TrackModule extends AbstractModule
                 final ITrackBank tbNew = this.model.getCurrentTrackBank ();
                 // Make sure a track is selected
                 final ITrackBank tbOther = this.model.isEffectTrackBankActive () ? this.model.getTrackBank () : this.model.getEffectTrackBank ();
-                final ITrack selectedTrack = tbNew.getSelectedItem ();
-                if (selectedTrack == null)
+                final Optional<ITrack> selectedTrack = tbNew.getSelectedItem ();
+                if (selectedTrack.isEmpty ())
                     tbNew.getItem (0).select ();
                 // Move the indication to the other bank
                 for (int i = 0; i < tbNew.getPageSize (); i++)
@@ -427,9 +428,9 @@ public class TrackModule extends AbstractModule
                 break;
 
             case TAG_COLOR:
-                final ColorEx color = matchColor (toString (value));
-                if (color != null)
-                    track.setColor (color);
+                final Optional<ColorEx> color = matchColor (toString (value));
+                if (color.isPresent ())
+                    track.setColor (color.get ());
                 break;
 
             case "pinned":
@@ -474,9 +475,9 @@ public class TrackModule extends AbstractModule
                     slot.remove ();
                     break;
                 case TAG_COLOR:
-                    final ColorEx color = matchColor (toString (value));
-                    if (color != null)
-                        slot.setColor (color);
+                    final Optional<ColorEx> color = matchColor (toString (value));
+                    if (color.isPresent ())
+                        slot.setColor (color.get ());
                     break;
                 default:
                     throw new UnknownCommandException (clipCommand);

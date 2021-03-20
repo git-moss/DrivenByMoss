@@ -20,6 +20,8 @@ import de.mossgrabers.framework.featuregroup.AbstractMode;
 import de.mossgrabers.framework.mode.Modes;
 import de.mossgrabers.framework.parameterprovider.device.SelectedLayerOrDrumPadParameterProvider;
 
+import java.util.Optional;
+
 
 /**
  * The track mode. The knobs control the volume, the panorama and the sends of the selected track.
@@ -76,9 +78,11 @@ public class FireLayerMode extends AbstractMode<FireControlSurface, FireConfigur
         boolean isPan = false;
 
         final ISpecificDevice cd = this.model.getDrumDevice ();
-        final IChannel channel = cd.getLayerOrDrumPadBank ().getSelectedItem ();
-        if (channel != null)
+        final Optional<?> channelOptional = cd.getLayerOrDrumPadBank ().getSelectedItem ();
+        if (channelOptional.isPresent ())
         {
+            final IChannel channel = (IChannel) channelOptional.get ();
+
             desc = channel.getPosition () + ": " + channel.getName (9);
 
             final ISendBank sendBank = channel.getSendBank ();

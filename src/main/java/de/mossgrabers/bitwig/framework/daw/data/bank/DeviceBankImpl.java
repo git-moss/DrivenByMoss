@@ -13,6 +13,8 @@ import de.mossgrabers.framework.daw.data.bank.IDeviceBank;
 
 import com.bitwig.extension.controller.api.DeviceBank;
 
+import java.util.Optional;
+
 
 /**
  * Encapsulates the data of a device bank.
@@ -39,8 +41,12 @@ public class DeviceBankImpl extends AbstractItemBankImpl<DeviceBank, IDevice> im
 
         this.cursorDevice = cursorDevice;
 
+        if (this.bank.isEmpty ())
+            return;
+
+        final DeviceBank db = this.bank.get ();
         for (int i = 0; i < this.getPageSize (); i++)
-            this.items.add (new DeviceImpl (this.bank.getItemAt (i), i));
+            this.items.add (new DeviceImpl (db.getItemAt (i), i));
     }
 
 
@@ -62,8 +68,8 @@ public class DeviceBankImpl extends AbstractItemBankImpl<DeviceBank, IDevice> im
 
     /** {@inheritDoc} */
     @Override
-    public IDevice getSelectedItem ()
+    public Optional<IDevice> getSelectedItem ()
     {
-        return this.cursorDevice.doesExist () ? this.cursorDevice : null;
+        return this.cursorDevice.doesExist () ? Optional.of (this.cursorDevice) : Optional.empty ();
     }
 }

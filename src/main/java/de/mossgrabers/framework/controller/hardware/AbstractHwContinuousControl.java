@@ -39,7 +39,7 @@ public abstract class AbstractHwContinuousControl extends AbstractHwInputControl
      * @param host The host
      * @param label The label of the control
      */
-    public AbstractHwContinuousControl (final IHost host, final String label)
+    protected AbstractHwContinuousControl (final IHost host, final String label)
     {
         super (host, label);
     }

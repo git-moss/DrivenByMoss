@@ -29,7 +29,7 @@ public abstract class AbstractAftertouchCommand<S extends IControlSurface<C>, C 
      * @param model The model
      * @param surface The surface
      */
-    public AbstractAftertouchCommand (final IModel model, final S surface)
+    protected AbstractAftertouchCommand (final IModel model, final S surface)
     {
         this.model = model;
         this.surface = surface;

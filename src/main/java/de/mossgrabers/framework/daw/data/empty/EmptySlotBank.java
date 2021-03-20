@@ -7,6 +7,8 @@ package de.mossgrabers.framework.daw.data.empty;
 import de.mossgrabers.framework.daw.data.ISlot;
 import de.mossgrabers.framework.daw.data.bank.ISlotBank;
 
+import java.util.Optional;
+
 
 /**
  * Default data for an empty slot bank.
@@ -30,9 +32,9 @@ public class EmptySlotBank extends EmptyBank<ISlot> implements ISlotBank
 
     /** {@inheritDoc} */
     @Override
-    public ISlot getEmptySlot (final int startFrom)
+    public Optional<ISlot> getEmptySlot (final int startFrom)
     {
-        return null;
+        return Optional.empty ();
     }
 
 

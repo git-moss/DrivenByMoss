@@ -13,6 +13,8 @@ import de.mossgrabers.framework.daw.data.bank.ISlotBank;
 
 import com.bitwig.extension.controller.api.ClipLauncherSlotBank;
 
+import java.util.Optional;
+
 
 /**
  * Encapsulates the data of a slot bank.
@@ -39,14 +41,18 @@ public class SlotBankImpl extends AbstractItemBankImpl<ClipLauncherSlotBank, ISl
 
         this.track = track;
 
+        if (this.bank.isEmpty ())
+            return;
+
+        final ClipLauncherSlotBank clsb = this.bank.get ();
         for (int i = 0; i < this.getPageSize (); i++)
-            this.items.add (new SlotImpl (this.track, this.bank.getItemAt (i), i));
+            this.items.add (new SlotImpl (this.track, clsb.getItemAt (i), i));
     }
 
 
     /** {@inheritDoc} */
     @Override
-    public ISlot getEmptySlot (final int startFrom)
+    public Optional<ISlot> getEmptySlot (final int startFrom)
     {
         final int start = startFrom >= 0 ? startFrom : 0;
         final int size = this.items.size ();
@@ -54,8 +60,8 @@ public class SlotBankImpl extends AbstractItemBankImpl<ClipLauncherSlotBank, ISl
         {
             final ISlot item = this.items.get ((start + i) % size);
             if (!item.hasContent ())
-                return item;
+                return Optional.of (item);
         }
-        return null;
+        return Optional.empty ();
     }
 }

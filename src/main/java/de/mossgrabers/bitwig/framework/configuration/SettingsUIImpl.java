@@ -112,7 +112,7 @@ public class SettingsUIImpl implements ISettingsUI
     @Override
     public IActionSetting getActionSetting (final String label, final String category)
     {
-        // Has to be here since it must be execute in init()!
+        // Has to be here since it must be executed in init()!
         if (this.formattedActions == null)
         {
             final Application application = this.host.createApplication ();

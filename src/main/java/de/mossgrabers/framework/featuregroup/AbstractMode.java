@@ -24,6 +24,7 @@ import java.util.EnumMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
+import java.util.Optional;
 import java.util.function.BooleanSupplier;
 
 
@@ -66,7 +67,7 @@ public abstract class AbstractMode<S extends IControlSurface<C>, C extends Confi
      * @param surface The control surface
      * @param model The model
      */
-    public AbstractMode (final String name, final S surface, final IModel model)
+    protected AbstractMode (final String name, final S surface, final IModel model)
     {
         this (name, surface, model, true);
     }
@@ -81,7 +82,7 @@ public abstract class AbstractMode<S extends IControlSurface<C>, C extends Confi
      * @param isAbsolute If true the value change is using a setter otherwise relative change method
      *            is used
      */
-    public AbstractMode (final String name, final S surface, final IModel model, final boolean isAbsolute)
+    protected AbstractMode (final String name, final S surface, final IModel model, final boolean isAbsolute)
     {
         this (name, surface, model, isAbsolute, (IBank<B>) null);
     }
@@ -98,7 +99,7 @@ public abstract class AbstractMode<S extends IControlSurface<C>, C extends Confi
      * @param isAlternativeFunction Callback function to execute the secondary function, e.g. a
      *            shift button
      */
-    public AbstractMode (final String name, final S surface, final IModel model, final boolean isAbsolute, final BooleanSupplier isAlternativeFunction)
+    protected AbstractMode (final String name, final S surface, final IModel model, final boolean isAbsolute, final BooleanSupplier isAlternativeFunction)
     {
         this (name, surface, model, isAbsolute, null, null, isAlternativeFunction);
     }
@@ -114,7 +115,7 @@ public abstract class AbstractMode<S extends IControlSurface<C>, C extends Confi
      *            change method is used
      * @param bank The parameter bank to control with this mode, might be null
      */
-    public AbstractMode (final String name, final S surface, final IModel model, final boolean isAbsolute, final IBank<B> bank)
+    protected AbstractMode (final String name, final S surface, final IModel model, final boolean isAbsolute, final IBank<B> bank)
     {
         this (name, surface, model, isAbsolute, bank, null, surface::isShiftPressed);
     }
@@ -131,7 +132,7 @@ public abstract class AbstractMode<S extends IControlSurface<C>, C extends Confi
      * @param bank The parameter bank to control with this mode, might be null
      * @param controls The IDs of the knobs or faders to control this mode
      */
-    public AbstractMode (final String name, final S surface, final IModel model, final boolean isAbsolute, final IBank<B> bank, final List<ContinuousID> controls)
+    protected AbstractMode (final String name, final S surface, final IModel model, final boolean isAbsolute, final IBank<B> bank, final List<ContinuousID> controls)
     {
         this (name, surface, model, isAbsolute, bank, controls, surface::isShiftPressed);
     }
@@ -150,7 +151,7 @@ public abstract class AbstractMode<S extends IControlSurface<C>, C extends Confi
      * @param isAlternativeFunction Callback function to execute the secondary function, e.g. a
      *            shift button
      */
-    public AbstractMode (final String name, final S surface, final IModel model, final boolean isAbsolute, final IBank<B> bank, final List<ContinuousID> controls, final BooleanSupplier isAlternativeFunction)
+    protected AbstractMode (final String name, final S surface, final IModel model, final boolean isAbsolute, final IBank<B> bank, final List<ContinuousID> controls, final BooleanSupplier isAlternativeFunction)
     {
         super (name, surface, model);
 
@@ -353,9 +354,9 @@ public abstract class AbstractMode<S extends IControlSurface<C>, C extends Confi
 
     /** {@inheritDoc} */
     @Override
-    public String getSelectedItemName ()
+    public Optional<String> getSelectedItemName ()
     {
-        return null;
+        return Optional.empty ();
     }
 
 

@@ -12,6 +12,8 @@ import de.mossgrabers.framework.daw.data.ITrack;
 import de.mossgrabers.framework.daw.data.bank.ITrackBank;
 import de.mossgrabers.framework.utils.ButtonEvent;
 
+import java.util.Optional;
+
 
 /**
  * A monitor button command.
@@ -60,8 +62,13 @@ public class MonitorCommand<S extends IControlSurface<C>, C extends Configuratio
         if (event != ButtonEvent.DOWN)
             return;
         final ITrackBank currentTrackBank = this.model.getCurrentTrackBank ();
-        final ITrack track = this.index == -1 ? currentTrackBank.getSelectedItem () : currentTrackBank.getItem (this.index);
-        if (track != null)
-            track.toggleMonitor ();
+        if (this.index == -1)
+        {
+            final Optional<ITrack> selectedItem = currentTrackBank.getSelectedItem ();
+            if (selectedItem.isPresent ())
+                selectedItem.get ().toggleMonitor ();
+        }
+        else
+            currentTrackBank.getItem (this.index).toggleMonitor ();
     }
 }

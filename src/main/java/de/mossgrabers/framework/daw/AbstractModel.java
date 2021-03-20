@@ -26,6 +26,7 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 import java.util.Set;
 
 
@@ -73,7 +74,7 @@ public abstract class AbstractModel implements IModel
      * @param dataSetup Some setup variables
      * @param scales The scales object
      */
-    public AbstractModel (final ModelSetup modelSetup, final DataSetup dataSetup, final Scales scales)
+    protected AbstractModel (final ModelSetup modelSetup, final DataSetup dataSetup, final Scales scales)
     {
         this.modelSetup = modelSetup;
         this.host = dataSetup.getHost ();
@@ -226,8 +227,8 @@ public abstract class AbstractModel implements IModel
         if (this.effectTrackBank == null)
             return;
 
-        final ITrack selectedItem = this.getCurrentTrackBank ().getSelectedItem ();
-        final int selPosition = selectedItem == null ? -1 : selectedItem.getPosition ();
+        final Optional<ITrack> selectedItem = this.getCurrentTrackBank ().getSelectedItem ();
+        final int selPosition = selectedItem.isEmpty () ? -1 : selectedItem.get ().getPosition ();
         this.currentTrackBank = this.currentTrackBank == this.trackBank ? this.effectTrackBank : this.trackBank;
         this.currentTrackBank.selectItemAtPosition (this.lastSelection);
         this.lastSelection = selPosition;
@@ -328,17 +329,17 @@ public abstract class AbstractModel implements IModel
     @Override
     public boolean canSelectedTrackHoldNotes ()
     {
-        final ITrack t = this.getCurrentTrackBank ().getSelectedItem ();
-        return t != null && t.canHoldNotes ();
+        final Optional<ITrack> t = this.getCurrentTrackBank ().getSelectedItem ();
+        return t.isPresent () && t.get ().canHoldNotes ();
     }
 
 
     /** {@inheritDoc} */
     @Override
-    public ISlot getSelectedSlot ()
+    public Optional<ISlot> getSelectedSlot ()
     {
         final ITrack track = this.getCursorTrack ();
-        return track == null ? null : track.getSlotBank ().getSelectedItem ();
+        return track == null ? Optional.empty () : track.getSlotBank ().getSelectedItem ();
     }
 
 

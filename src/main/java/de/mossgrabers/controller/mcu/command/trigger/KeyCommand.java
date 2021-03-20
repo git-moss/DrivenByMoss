@@ -76,6 +76,10 @@ public class KeyCommand extends AbstractTriggerCommand<MCUControlSurface, MCUCon
                 else
                     this.model.getApplication ().escape ();
                 break;
+
+            default:
+                // No more buttons supported
+                break;
         }
     }
 }

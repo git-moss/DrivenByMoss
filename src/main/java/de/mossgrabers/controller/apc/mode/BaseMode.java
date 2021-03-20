@@ -38,7 +38,7 @@ public abstract class BaseMode<B extends IItem> extends AbstractMode<APCControlS
      * @param ledMode The mode for the knob LEDs
      * @param bank The parameter bank to control with this mode, might be null
      */
-    public BaseMode (final String name, final APCControlSurface surface, final IModel model, final int ledMode, final IBank<B> bank)
+    protected BaseMode (final String name, final APCControlSurface surface, final IModel model, final int ledMode, final IBank<B> bank)
     {
         super (name, surface, model, false, bank, DEFAULT_KNOB_IDS);
 

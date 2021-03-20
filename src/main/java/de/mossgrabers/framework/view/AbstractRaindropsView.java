@@ -46,7 +46,7 @@ public abstract class AbstractRaindropsView<S extends IControlSurface<C>, C exte
      * @param model The model
      * @param useDawColors True to use the color of the current track for coloring the octaves
      */
-    public AbstractRaindropsView (final String name, final S surface, final IModel model, final boolean useDawColors)
+    protected AbstractRaindropsView (final String name, final S surface, final IModel model, final boolean useDawColors)
     {
         super (name, surface, model, 128, MAX_STEPS, useDawColors);
 

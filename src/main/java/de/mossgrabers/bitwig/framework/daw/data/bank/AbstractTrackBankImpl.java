@@ -44,7 +44,7 @@ public abstract class AbstractTrackBankImpl extends AbstractChannelBankImpl<Trac
      * @param numScenes The number of scenes of a bank page
      * @param numSends The number of sends of a bank page
      */
-    public AbstractTrackBankImpl (final IHost host, final IValueChanger valueChanger, final TrackBank bank, final CursorTrack cursorTrack, final Track rootGroup, final ApplicationImpl application, final int numTracks, final int numScenes, final int numSends)
+    protected AbstractTrackBankImpl (final IHost host, final IValueChanger valueChanger, final TrackBank bank, final CursorTrack cursorTrack, final Track rootGroup, final ApplicationImpl application, final int numTracks, final int numScenes, final int numSends)
     {
         super (host, valueChanger, bank, numTracks, numScenes, numSends);
 
@@ -52,16 +52,18 @@ public abstract class AbstractTrackBankImpl extends AbstractChannelBankImpl<Trac
         this.cursorTrack = cursorTrack;
         this.rootGroup = rootGroup;
 
-        for (int i = 0; i < this.getPageSize (); i++)
-            this.items.add (new TrackImpl (this.host, this.valueChanger, this.application, this.cursorTrack, this.rootGroup, this.bank.getItemAt (i), i, this.numSends, this.numScenes));
-
-        this.sceneBank = new SceneBankImpl (host, valueChanger, this.numScenes == 0 ? null : this.bank.sceneBank (), this.numScenes);
-
-        if (this.bank == null)
+        if (this.bank.isEmpty ())
             return;
 
+        final TrackBank trackBank = this.bank.get ();
+
+        for (int i = 0; i < this.getPageSize (); i++)
+            this.items.add (new TrackImpl (this.host, this.valueChanger, this.application, this.cursorTrack, this.rootGroup, trackBank.getItemAt (i), i, this.numSends, this.numScenes));
+
+        this.sceneBank = new SceneBankImpl (host, valueChanger, this.numScenes == 0 ? null : trackBank.sceneBank (), this.numScenes);
+
         // Note: cursorIndex is defined for all banks but currently only works for track banks
-        this.bank.cursorIndex ().addValueObserver (index -> {
+        trackBank.cursorIndex ().addValueObserver (index -> {
             for (int i = 0; i < this.getPageSize (); i++)
             {
                 final boolean isSelected = index == i;
@@ -86,9 +88,14 @@ public abstract class AbstractTrackBankImpl extends AbstractChannelBankImpl<Trac
     @Override
     public void setIndication (final boolean enable)
     {
+        if (this.bank.isEmpty ())
+            return;
+
+        final TrackBank trackBank = this.bank.get ();
+
         for (int index = 0; index < this.getPageSize (); index++)
         {
-            final ClipLauncherSlotBank bank = this.bank.getItemAt (index).clipLauncherSlotBank ();
+            final ClipLauncherSlotBank bank = trackBank.getItemAt (index).clipLauncherSlotBank ();
             if (bank != null)
                 bank.setIndication (enable);
         }

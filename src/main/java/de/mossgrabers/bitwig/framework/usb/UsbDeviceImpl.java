@@ -12,6 +12,7 @@ import de.mossgrabers.framework.usb.UsbException;
 
 import com.bitwig.extension.controller.api.UsbDevice;
 
+import java.util.Optional;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -67,16 +68,16 @@ public class UsbDeviceImpl implements IUsbDevice
 
     /** {@inheritDoc} */
     @Override
-    public IHidDevice getHidDevice () throws UsbException
+    public Optional<IHidDevice> getHidDevice () throws UsbException
     {
         final String expression = this.usbDevice.deviceMatcher ().getExpression ();
         // Parse like "idVendor == 0x17CC && idProduct == 0x1610"
         final Matcher matcher = PATTERN.matcher (expression);
         if (!matcher.matches ())
-            return null;
+            return Optional.empty ();
 
         final short vendorID = Short.parseShort (matcher.group (1), 16);
         final short productID = Short.parseShort (matcher.group (2), 16);
-        return new HidDeviceImpl (vendorID, productID);
+        return Optional.of (new HidDeviceImpl (vendorID, productID));
     }
 }

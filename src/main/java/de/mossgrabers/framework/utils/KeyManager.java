@@ -13,6 +13,7 @@ import de.mossgrabers.framework.scale.Scales;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Optional;
 
 
 /**
@@ -98,8 +99,8 @@ public class KeyManager implements INoteObserver
     @Override
     public void call (final int trackIndex, final int note, final int velocity)
     {
-        final ITrack sel = this.model.getCurrentTrackBank ().getSelectedItem ();
-        if (sel != null && sel.getIndex () == trackIndex)
+        final Optional<ITrack> sel = this.model.getCurrentTrackBank ().getSelectedItem ();
+        if (sel.isPresent () && sel.get ().getIndex () == trackIndex)
             this.setAllKeysPressed (note, velocity);
     }
 

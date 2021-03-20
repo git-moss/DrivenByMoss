@@ -15,6 +15,7 @@ import de.mossgrabers.framework.parameterprovider.track.VolumeParameterProvider;
 import de.mossgrabers.framework.utils.StringUtils;
 
 import java.util.Locale;
+import java.util.Optional;
 
 
 /**
@@ -50,9 +51,9 @@ public class VolumeMode extends AbstractKontrol1Mode<ITrack>
         d.setCell (0, 0, this.model.isEffectTrackBankActive () ? "VOL-FX" : "VOLUME").setCell (1, 0, this.formatPageRange ("%d - %d"));
 
         final ITrackBank tb = this.model.getCurrentTrackBank ();
-        final ITrack selTrack = tb.getSelectedItem ();
+        final Optional<ITrack> selTrack = tb.getSelectedItem ();
 
-        final int selIndex = selTrack == null ? -1 : selTrack.getIndex ();
+        final int selIndex = selTrack.isEmpty () ? -1 : selTrack.get ().getIndex ();
         for (int i = 0; i < 8; i++)
         {
             final boolean isSel = i == selIndex;

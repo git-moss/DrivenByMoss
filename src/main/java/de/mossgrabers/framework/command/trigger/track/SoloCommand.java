@@ -12,6 +12,8 @@ import de.mossgrabers.framework.daw.data.ITrack;
 import de.mossgrabers.framework.daw.data.bank.ITrackBank;
 import de.mossgrabers.framework.utils.ButtonEvent;
 
+import java.util.Optional;
+
 
 /**
  * A command to toggle mute on a track. Additionally, toggles auto monitor if shifted.
@@ -60,9 +62,14 @@ public class SoloCommand<S extends IControlSurface<C>, C extends Configuration> 
         if (event != ButtonEvent.UP)
             return;
         final ITrackBank currentTrackBank = this.model.getCurrentTrackBank ();
-        final ITrack track = this.index == -1 ? currentTrackBank.getSelectedItem () : currentTrackBank.getItem (this.index);
-        if (track != null)
-            track.toggleSolo ();
+        if (this.index == -1)
+        {
+            final Optional<ITrack> selectedItem = currentTrackBank.getSelectedItem ();
+            if (selectedItem.isPresent ())
+                selectedItem.get ().toggleSolo ();
+        }
+        else
+            currentTrackBank.getItem (this.index).toggleSolo ();
     }
 
 
@@ -73,8 +80,13 @@ public class SoloCommand<S extends IControlSurface<C>, C extends Configuration> 
         if (event != ButtonEvent.UP)
             return;
         final ITrackBank currentTrackBank = this.model.getCurrentTrackBank ();
-        final ITrack track = this.index == -1 ? currentTrackBank.getSelectedItem () : currentTrackBank.getItem (this.index);
-        if (track != null)
-            track.toggleAutoMonitor ();
+        if (this.index == -1)
+        {
+            final Optional<ITrack> selectedItem = currentTrackBank.getSelectedItem ();
+            if (selectedItem.isPresent ())
+                selectedItem.get ().toggleAutoMonitor ();
+        }
+        else
+            currentTrackBank.getItem (this.index).toggleAutoMonitor ();
     }
 }
