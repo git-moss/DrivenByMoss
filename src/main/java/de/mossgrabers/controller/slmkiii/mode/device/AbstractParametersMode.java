@@ -46,7 +46,7 @@ public abstract class AbstractParametersMode<B extends IItem> extends BaseMode<B
      * @param model The model
      * @param bank The parameter bank to control with this mode, might be null
      */
-    public AbstractParametersMode (final String name, final SLMkIIIControlSurface surface, final IModel model, final IBank<B> bank)
+    protected AbstractParametersMode (final String name, final SLMkIIIControlSurface surface, final IModel model, final IBank<B> bank)
     {
         super (name, surface, model, bank);
     }

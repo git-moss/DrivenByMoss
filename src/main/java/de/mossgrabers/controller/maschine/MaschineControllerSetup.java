@@ -97,6 +97,8 @@ import de.mossgrabers.framework.utils.FrameworkException;
 import de.mossgrabers.framework.utils.OperatingSystem;
 import de.mossgrabers.framework.view.Views;
 
+import java.util.Optional;
+
 
 /**
  * Support for the NI Maschine controller series.
@@ -300,12 +302,15 @@ public class MaschineControllerSetup extends AbstractControllerSetup<MaschineCon
                 pressed = !pressed;
             if (pressed)
             {
-                final ISlot slot = this.model.getSelectedSlot ();
-                if (slot == null || !slot.doesExist ())
+                final Optional<ISlot> slot = this.model.getSelectedSlot ();
+                if (slot.isEmpty ())
                     return;
-                if (!slot.isRecording ())
-                    slot.record ();
-                slot.launch ();
+                final ISlot s = slot.get ();
+                if (!s.doesExist ())
+                    return;
+                if (!s.isRecording ())
+                    s.record ();
+                s.launch ();
             }
             else
                 this.model.getTransport ().record ();

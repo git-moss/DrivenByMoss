@@ -17,7 +17,6 @@ import de.mossgrabers.framework.daw.DAWColor;
 import de.mossgrabers.framework.daw.IHost;
 import de.mossgrabers.framework.daw.IModel;
 import de.mossgrabers.framework.daw.constants.Capability;
-import de.mossgrabers.framework.daw.data.IChannel;
 import de.mossgrabers.framework.daw.data.ICursorDevice;
 import de.mossgrabers.framework.daw.data.IDevice;
 import de.mossgrabers.framework.daw.data.IParameter;
@@ -29,6 +28,8 @@ import de.mossgrabers.framework.mode.Modes;
 import de.mossgrabers.framework.parameterprovider.device.BankParameterProvider;
 import de.mossgrabers.framework.utils.ButtonEvent;
 import de.mossgrabers.framework.utils.StringUtils;
+
+import java.util.Optional;
 
 
 /**
@@ -169,8 +170,8 @@ public class DeviceParamsMode extends BaseMode<IParameter>
             }
 
             // If there are layers, make sure one is selected
-            final IChannel layer = cd.getLayerOrDrumPadBank ().getSelectedItem ();
-            if (layer == null)
+            final Optional<?> layer = cd.getLayerOrDrumPadBank ().getSelectedItem ();
+            if (layer.isEmpty ())
                 cd.getLayerOrDrumPadBank ().getItem (0).select ();
             modeManager.setActive (this.surface.getConfiguration ().getCurrentLayerMixMode ());
 

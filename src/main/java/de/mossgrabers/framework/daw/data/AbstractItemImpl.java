@@ -22,7 +22,7 @@ public abstract class AbstractItemImpl implements IItem
     /**
      * Constructor.
      */
-    public AbstractItemImpl ()
+    protected AbstractItemImpl ()
     {
         this (-1);
     }
@@ -33,7 +33,7 @@ public abstract class AbstractItemImpl implements IItem
      *
      * @param index The index of the item in a page
      */
-    public AbstractItemImpl (final int index)
+    protected AbstractItemImpl (final int index)
     {
         this.index = index;
     }

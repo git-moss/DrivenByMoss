@@ -32,7 +32,7 @@ public abstract class AbstractTriggerCommand<S extends IControlSurface<C>, C ext
      * @param model The model
      * @param surface The surface
      */
-    public AbstractTriggerCommand (final IModel model, final S surface)
+    protected AbstractTriggerCommand (final IModel model, final S surface)
     {
         this.model = model;
         this.surface = surface;

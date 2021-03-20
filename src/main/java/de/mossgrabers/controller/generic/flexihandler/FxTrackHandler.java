@@ -12,6 +12,8 @@ import de.mossgrabers.framework.daw.IModel;
 import de.mossgrabers.framework.daw.data.ITrack;
 import de.mossgrabers.framework.daw.data.bank.ITrackBank;
 
+import java.util.Optional;
+
 
 /**
  * The handler for effect track commands.
@@ -564,30 +566,38 @@ public class FxTrackHandler extends AbstractHandler
     }
 
 
-    private ITrack getTrack (final int trackIndex)
+    private Optional<ITrack> getTrack (final int trackIndex)
     {
         final ITrackBank tb = this.model.getEffectTrackBank ();
-        return trackIndex < 0 ? tb.getSelectedItem () : tb.getItem (trackIndex);
+        if (trackIndex < 0)
+            return tb.getSelectedItem ();
+
+        final ITrack track = tb.getItem (trackIndex);
+        return track.doesExist () ? Optional.of (track) : Optional.empty ();
     }
 
 
     private void changeTrackVolume (final int knobMode, final int trackIndex, final int value)
     {
-        final ITrack track = this.getTrack (trackIndex);
+        final Optional<ITrack> track = this.getTrack (trackIndex);
+        if (track.isEmpty ())
+            return;
         if (isAbsolute (knobMode))
-            track.setVolume (value);
+            track.get ().setVolume (value);
         else
-            track.getVolumeParameter ().changeValue (this.getRelativeValueChanger (knobMode), value);
+            track.get ().getVolumeParameter ().changeValue (this.getRelativeValueChanger (knobMode), value);
     }
 
 
     private void changeTrackPanorama (final int knobMode, final int trackIndex, final int value)
     {
-        final ITrack track = this.getTrack (trackIndex);
+        final Optional<ITrack> track = this.getTrack (trackIndex);
+        if (track.isEmpty ())
+            return;
         if (isAbsolute (knobMode))
-            track.setPan (value);
+            track.get ().setPan (value);
         else
-            track.getPanParameter ().changeValue (this.getRelativeValueChanger (knobMode), value);
+            track.get ().getPanParameter ().changeValue (this.getRelativeValueChanger (knobMode), value);
     }
 
 
@@ -609,8 +619,8 @@ public class FxTrackHandler extends AbstractHandler
     private void scrollTrackLeft (final boolean switchBank)
     {
         final ITrackBank tb = this.model.getCurrentTrackBank ();
-        final ITrack sel = tb.getSelectedItem ();
-        final int index = sel == null ? 0 : sel.getIndex () - 1;
+        final Optional<ITrack> sel = tb.getSelectedItem ();
+        final int index = sel.isEmpty () ? 0 : sel.get ().getIndex () - 1;
         if (index == -1 || switchBank)
         {
             tb.selectPreviousPage ();
@@ -623,8 +633,8 @@ public class FxTrackHandler extends AbstractHandler
     private void scrollTrackRight (final boolean switchBank)
     {
         final ITrackBank tb = this.model.getCurrentTrackBank ();
-        final ITrack sel = tb.getSelectedItem ();
-        final int index = sel == null ? 0 : sel.getIndex () + 1;
+        final Optional<ITrack> sel = tb.getSelectedItem ();
+        final int index = sel.isEmpty () ? 0 : sel.get ().getIndex () + 1;
         if (index == 8 || switchBank)
         {
             tb.selectNextPage ();

@@ -18,6 +18,7 @@ import de.mossgrabers.framework.parameterprovider.device.BankParameterProvider;
 import de.mossgrabers.framework.utils.StringUtils;
 
 import java.util.Locale;
+import java.util.Optional;
 import java.util.Set;
 
 
@@ -55,7 +56,11 @@ public class ParamsMode extends AbstractKontrol1Mode<IParameter>
         if (this.model.hasSelectedDevice ())
         {
             final ICursorDevice cursorDevice = this.model.getCursorDevice ();
-            d.setCell (0, 0, cursorDevice.getName (8).toUpperCase (Locale.US)).setCell (1, 0, cursorDevice.getParameterPageBank ().getSelectedItem ().toUpperCase (Locale.US));
+            d.setCell (0, 0, cursorDevice.getName (8).toUpperCase (Locale.US));
+
+            final Optional<String> selectedItem = cursorDevice.getParameterPageBank ().getSelectedItem ();
+            if (selectedItem.isPresent ())
+                d.setCell (1, 0, selectedItem.get ().toUpperCase (Locale.US));
 
             for (int i = 0; i < 8; i++)
             {

@@ -10,6 +10,7 @@ import de.mossgrabers.framework.controller.valuechanger.IValueChanger;
 import de.mossgrabers.framework.daw.INoteClip;
 import de.mossgrabers.framework.daw.IStepInfo;
 import de.mossgrabers.framework.daw.constants.Resolution;
+import de.mossgrabers.framework.daw.constants.TransportConstants;
 import de.mossgrabers.framework.daw.data.GridStep;
 import de.mossgrabers.framework.daw.data.empty.EmptyStepInfo;
 
@@ -172,9 +173,11 @@ public class CursorClipImpl implements INoteClip
 
     /** {@inheritDoc} */
     @Override
-    public void changePlayStart (final int control)
+    public void changePlayStart (final int control, final boolean slow)
     {
-        this.getClip ().getPlayStart ().inc (this.valueChanger.calcKnobChange (control, -100));
+        final boolean increase = this.valueChanger.isIncrease (control);
+        final double frac = slow ? TransportConstants.INC_FRACTION_TIME_SLOW : TransportConstants.INC_FRACTION_TIME;
+        this.getClip ().getPlayStart ().inc (increase ? frac : -frac);
     }
 
 
@@ -196,9 +199,11 @@ public class CursorClipImpl implements INoteClip
 
     /** {@inheritDoc} */
     @Override
-    public void changePlayEnd (final int control)
+    public void changePlayEnd (final int control, final boolean slow)
     {
-        this.getClip ().getPlayStop ().inc (this.valueChanger.calcKnobChange (control, -100));
+        final boolean increase = this.valueChanger.isIncrease (control);
+        final double frac = slow ? TransportConstants.INC_FRACTION_TIME_SLOW : TransportConstants.INC_FRACTION_TIME;
+        this.getClip ().getPlayStop ().inc (increase ? frac : -frac);
     }
 
 
@@ -239,9 +244,11 @@ public class CursorClipImpl implements INoteClip
 
     /** {@inheritDoc} */
     @Override
-    public void changeLoopStart (final int control)
+    public void changeLoopStart (final int control, final boolean slow)
     {
-        this.getClip ().getLoopStart ().inc (this.valueChanger.calcKnobChange (control, -100));
+        final boolean increase = this.valueChanger.isIncrease (control);
+        final double frac = slow ? TransportConstants.INC_FRACTION_TIME_SLOW : TransportConstants.INC_FRACTION_TIME;
+        this.getClip ().getLoopStart ().inc (increase ? frac : -frac);
     }
 
 
@@ -263,9 +270,11 @@ public class CursorClipImpl implements INoteClip
 
     /** {@inheritDoc} */
     @Override
-    public void changeLoopLength (final int control)
+    public void changeLoopLength (final int control, final boolean slow)
     {
-        this.getClip ().getLoopLength ().inc (this.valueChanger.calcKnobChange (control, -100));
+        final boolean increase = this.valueChanger.isIncrease (control);
+        final double frac = slow ? TransportConstants.INC_FRACTION_TIME_SLOW : TransportConstants.INC_FRACTION_TIME;
+        this.getClip ().getLoopLength ().inc (increase ? frac : -frac);
     }
 
 
@@ -327,9 +336,11 @@ public class CursorClipImpl implements INoteClip
 
     /** {@inheritDoc} */
     @Override
-    public void changeAccent (final int control)
+    public void changeAccent (final int control, final boolean slow)
     {
-        this.getClip ().getAccent ().inc (this.valueChanger.calcKnobChange (control, -100));
+        final boolean increase = this.valueChanger.isIncrease (control);
+        final double frac = slow ? TransportConstants.INC_FRACTION_TIME_SLOW : TransportConstants.INC_FRACTION_TIME;
+        this.getClip ().getAccent ().inc (increase ? frac : -frac);
     }
 
 

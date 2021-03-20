@@ -54,6 +54,16 @@ public class DeviceMetadataImpl implements IDeviceMetadata
     }
 
 
+    /** {@inheritDoc} */
+    @Override
+    public String getFullName ()
+    {
+        if (this.pluginType == PluginType.BITWIG)
+            return this.name;
+        return String.format ("%s (%s)", this.name, this.pluginType);
+    }
+
+
     /**
      * Get the ID.
      *

@@ -16,6 +16,8 @@ import com.bitwig.extension.controller.api.CursorDeviceLayer;
 import com.bitwig.extension.controller.api.DeviceLayer;
 import com.bitwig.extension.controller.api.DeviceLayerBank;
 
+import java.util.Optional;
+
 
 /**
  * Encapsulates the data of a layer bank.
@@ -49,17 +51,18 @@ public class LayerBankImpl extends AbstractChannelBankImpl<DeviceLayerBank, ILay
 
         this.numDevices = numDevices;
 
-        if (this.bank != null)
-        {
-            for (int i = 0; i < this.getPageSize (); i++)
-            {
-                final DeviceLayer deviceLayer = this.bank.getItemAt (i);
-                final LayerImpl layerImpl = new LayerImpl (this, this.host, this.valueChanger, deviceLayer, i, this.numSends, this.numDevices);
-                this.items.add (layerImpl);
+        if (this.bank.isEmpty ())
+            return;
 
-                final int index = i;
-                layerImpl.getDeviceChain ().addIsSelectedInEditorObserver (isSelected -> this.notifySelectionObservers (index, isSelected));
-            }
+        final DeviceLayerBank deviceLayerBank = this.bank.get ();
+        for (int i = 0; i < this.getPageSize (); i++)
+        {
+            final DeviceLayer deviceLayer = deviceLayerBank.getItemAt (i);
+            final LayerImpl layerImpl = new LayerImpl (this, this.host, this.valueChanger, deviceLayer, i, this.numSends, this.numDevices);
+            this.items.add (layerImpl);
+
+            final int index = i;
+            layerImpl.getDeviceChain ().addIsSelectedInEditorObserver (isSelected -> this.notifySelectionObservers (index, isSelected));
         }
     }
 
@@ -82,10 +85,10 @@ public class LayerBankImpl extends AbstractChannelBankImpl<DeviceLayerBank, ILay
     @Override
     public String getSelectedChannelColorEntry ()
     {
-        final ILayer sel = this.getSelectedItem ();
-        if (sel == null)
+        final Optional<ILayer> sel = this.getSelectedItem ();
+        if (sel.isEmpty ())
             return DAWColor.COLOR_OFF.name ();
-        return DAWColor.getColorIndex (sel.getColor ());
+        return DAWColor.getColorIndex (sel.get ().getColor ());
     }
 
 

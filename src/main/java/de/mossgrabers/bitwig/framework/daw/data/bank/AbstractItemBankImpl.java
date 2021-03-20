@@ -12,6 +12,8 @@ import de.mossgrabers.framework.daw.data.bank.AbstractItemBank;
 
 import com.bitwig.extension.controller.api.Bank;
 
+import java.util.Optional;
+
 
 /**
  * An abstract bank which uses internally a Bitwig bank.
@@ -24,7 +26,7 @@ import com.bitwig.extension.controller.api.Bank;
 public abstract class AbstractItemBankImpl<B extends Bank<?>, T extends IItem> extends AbstractItemBank<T>
 {
     protected final IValueChanger valueChanger;
-    protected final B             bank;
+    protected final Optional<B>   bank;
 
 
     /**
@@ -35,20 +37,20 @@ public abstract class AbstractItemBankImpl<B extends Bank<?>, T extends IItem> e
      * @param bank The bank to encapsulate
      * @param pageSize The number of elements in a page of the bank
      */
-    public AbstractItemBankImpl (final IHost host, final IValueChanger valueChanger, final B bank, final int pageSize)
+    protected AbstractItemBankImpl (final IHost host, final IValueChanger valueChanger, final B bank, final int pageSize)
     {
         super (host, pageSize);
 
         this.valueChanger = valueChanger;
-        this.bank = bank;
+        this.bank = Optional.ofNullable (bank);
 
-        if (this.bank == null)
+        if (this.bank.isEmpty ())
             return;
 
-        this.bank.scrollPosition ().markInterested ();
-        this.bank.canScrollBackwards ().markInterested ();
-        this.bank.canScrollForwards ().markInterested ();
-        this.bank.itemCount ().markInterested ();
+        bank.scrollPosition ().markInterested ();
+        bank.canScrollBackwards ().markInterested ();
+        bank.canScrollForwards ().markInterested ();
+        bank.itemCount ().markInterested ();
     }
 
 
@@ -59,13 +61,14 @@ public abstract class AbstractItemBankImpl<B extends Bank<?>, T extends IItem> e
         for (final IItem item: this.items)
             item.enableObservers (enable);
 
-        if (this.bank == null)
+        if (this.bank.isEmpty ())
             return;
 
-        Util.setIsSubscribed (this.bank.scrollPosition (), enable);
-        Util.setIsSubscribed (this.bank.canScrollBackwards (), enable);
-        Util.setIsSubscribed (this.bank.canScrollForwards (), enable);
-        Util.setIsSubscribed (this.bank.itemCount (), enable);
+        final B b = this.bank.get ();
+        Util.setIsSubscribed (b.scrollPosition (), enable);
+        Util.setIsSubscribed (b.canScrollBackwards (), enable);
+        Util.setIsSubscribed (b.canScrollForwards (), enable);
+        Util.setIsSubscribed (b.itemCount (), enable);
     }
 
 
@@ -73,7 +76,7 @@ public abstract class AbstractItemBankImpl<B extends Bank<?>, T extends IItem> e
     @Override
     public int getItemCount ()
     {
-        return this.bank == null ? 0 : this.bank.itemCount ().get ();
+        return this.bank.isEmpty () ? 0 : this.bank.get ().itemCount ().get ();
     }
 
 
@@ -81,7 +84,7 @@ public abstract class AbstractItemBankImpl<B extends Bank<?>, T extends IItem> e
     @Override
     public int getScrollPosition ()
     {
-        return this.bank.scrollPosition ().get ();
+        return this.bank.isEmpty () ? -1 : this.bank.get ().scrollPosition ().get ();
     }
 
 
@@ -89,7 +92,8 @@ public abstract class AbstractItemBankImpl<B extends Bank<?>, T extends IItem> e
     @Override
     public void scrollBackwards ()
     {
-        this.bank.scrollBackwards ();
+        if (this.bank.isPresent ())
+            this.bank.get ().scrollBackwards ();
     }
 
 
@@ -97,7 +101,8 @@ public abstract class AbstractItemBankImpl<B extends Bank<?>, T extends IItem> e
     @Override
     public void scrollForwards ()
     {
-        this.bank.scrollForwards ();
+        if (this.bank.isPresent ())
+            this.bank.get ().scrollForwards ();
     }
 
 
@@ -106,7 +111,8 @@ public abstract class AbstractItemBankImpl<B extends Bank<?>, T extends IItem> e
      */
     protected void scrollPageBackwards ()
     {
-        this.bank.scrollPageBackwards ();
+        if (this.bank.isPresent ())
+            this.bank.get ().scrollPageBackwards ();
     }
 
 
@@ -115,7 +121,8 @@ public abstract class AbstractItemBankImpl<B extends Bank<?>, T extends IItem> e
      */
     protected void scrollPageForwards ()
     {
-        this.bank.scrollPageForwards ();
+        if (this.bank.isPresent ())
+            this.bank.get ().scrollPageForwards ();
     }
 
 
@@ -123,7 +130,7 @@ public abstract class AbstractItemBankImpl<B extends Bank<?>, T extends IItem> e
     @Override
     public boolean canScrollPageBackwards ()
     {
-        return this.bank.canScrollBackwards ().get ();
+        return this.bank.isPresent () && this.bank.get ().canScrollBackwards ().get ();
     }
 
 
@@ -131,7 +138,7 @@ public abstract class AbstractItemBankImpl<B extends Bank<?>, T extends IItem> e
     @Override
     public boolean canScrollPageForwards ()
     {
-        return this.bank.canScrollForwards ().get ();
+        return this.bank.isPresent () && this.bank.get ().canScrollForwards ().get ();
     }
 
 
@@ -147,8 +154,8 @@ public abstract class AbstractItemBankImpl<B extends Bank<?>, T extends IItem> e
     @Override
     public void scrollTo (final int position, final boolean adjustPage)
     {
-        if (position >= 0 && position < this.getItemCount ())
-            this.bank.scrollPosition ().set (position);
+        if (this.bank.isPresent () && position >= 0 && position < this.getItemCount ())
+            this.bank.get ().scrollPosition ().set (position);
     }
 
 
@@ -156,8 +163,8 @@ public abstract class AbstractItemBankImpl<B extends Bank<?>, T extends IItem> e
     @Override
     public void selectNextItem ()
     {
-        final T sel = this.getSelectedItem ();
-        final int index = sel == null ? 0 : sel.getIndex () + 1;
+        final Optional<T> sel = this.getSelectedItem ();
+        final int index = sel.isEmpty () ? 0 : sel.get ().getIndex () + 1;
         if (index == this.getPageSize ())
             this.selectNextPage ();
         else
@@ -169,8 +176,8 @@ public abstract class AbstractItemBankImpl<B extends Bank<?>, T extends IItem> e
     @Override
     public void selectPreviousItem ()
     {
-        final T sel = this.getSelectedItem ();
-        final int index = sel == null ? 0 : sel.getIndex () - 1;
+        final Optional<T> sel = this.getSelectedItem ();
+        final int index = sel.isEmpty () ? 0 : sel.get ().getIndex () - 1;
         if (index == -1)
             this.selectPreviousPage ();
         else
@@ -204,7 +211,7 @@ public abstract class AbstractItemBankImpl<B extends Bank<?>, T extends IItem> e
     @Override
     public void setSkipDisabledItems (final boolean shouldSkip)
     {
-        if (this.bank != null)
-            this.bank.setSkipDisabledItems (shouldSkip);
+        if (this.bank.isPresent ())
+            this.bank.get ().setSkipDisabledItems (shouldSkip);
     }
 }

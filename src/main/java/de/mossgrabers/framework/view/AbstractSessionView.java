@@ -56,6 +56,7 @@ public abstract class AbstractSessionView<S extends IControlSurface<C>, C extend
     protected int              columns;
     protected boolean          useClipColor;
     protected ISlot            sourceSlot;
+    protected boolean          isBirdsEyeActive           = false;
 
 
     /**
@@ -69,7 +70,7 @@ public abstract class AbstractSessionView<S extends IControlSurface<C>, C extend
      * @param useClipColor Use the clip colors? Only set to true for controllers which support RGB
      *            pads.
      */
-    public AbstractSessionView (final String name, final S surface, final IModel model, final int rows, final int columns, final boolean useClipColor)
+    protected AbstractSessionView (final String name, final S surface, final IModel model, final int rows, final int columns, final boolean useClipColor)
     {
         super (name, surface, model);
 
@@ -281,6 +282,26 @@ public abstract class AbstractSessionView<S extends IControlSurface<C>, C extend
             this.drawBirdsEyeGrid ();
         else
             this.drawSessionGrid ();
+    }
+
+
+    /**
+     * Toggles the birdseye view.
+     */
+    public void toggleBirdsEyeView ()
+    {
+        this.isBirdsEyeActive = !this.isBirdsEyeActive;
+    }
+
+
+    /**
+     * Set the birds eye view in-/active.
+     *
+     * @param isBirdsEyeActive True to activate
+     */
+    public void setBirdsEyeActive (final boolean isBirdsEyeActive)
+    {
+        this.isBirdsEyeActive = isBirdsEyeActive;
     }
 
 

@@ -166,7 +166,10 @@ public class ShiftView extends AbstractView<APCControlSurface, APCConfiguration>
         final int index = buttonID.ordinal () - ButtonID.SCENE1.ordinal ();
 
         final ViewManager viewManager = this.surface.getViewManager ();
-        viewManager.setActive (VIEW_IDS[index]);
+        if (viewManager.getActiveIDIgnoreTemporary () == Views.SESSION && VIEW_IDS[index] == Views.SESSION)
+            ((SessionView) viewManager.get (Views.SESSION)).toggleBirdsEyeView ();
+        else
+            viewManager.setActive (VIEW_IDS[index]);
         this.surface.getDisplay ().notify (viewManager.get (VIEW_IDS[index]).getName ());
 
         if (Views.SESSION.equals (VIEW_IDS[index]))

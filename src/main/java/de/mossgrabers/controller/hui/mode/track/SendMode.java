@@ -10,6 +10,8 @@ import de.mossgrabers.framework.daw.data.ISend;
 import de.mossgrabers.framework.daw.data.ITrack;
 import de.mossgrabers.framework.daw.data.bank.ITrackBank;
 
+import java.util.Optional;
+
 
 /**
  * Mode for editing a Send volumes.
@@ -98,11 +100,11 @@ public class SendMode extends AbstractTrackMode
     @Override
     public String getName ()
     {
-        final ITrack selectedTrack = this.model.getTrackBank ().getSelectedItem ();
+        final Optional<ITrack> selectedTrack = this.model.getTrackBank ().getSelectedItem ();
         String name = "-";
-        if (selectedTrack != null)
+        if (selectedTrack.isPresent ())
         {
-            final ISend send = selectedTrack.getSendBank ().getItem (this.sendIndex);
+            final ISend send = selectedTrack.get ().getSendBank ().getItem (this.sendIndex);
             if (send.doesExist ())
                 name = send.getName ();
         }

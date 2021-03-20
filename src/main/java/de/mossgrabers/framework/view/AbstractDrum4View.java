@@ -28,7 +28,7 @@ public abstract class AbstractDrum4View<S extends IControlSurface<C>, C extends 
      * @param model The model
      * @param useDawColors True to use the drum machine pad colors for coloring the octaves
      */
-    public AbstractDrum4View (final S surface, final IModel model, final boolean useDawColors)
+    protected AbstractDrum4View (final S surface, final IModel model, final boolean useDawColors)
     {
         super (Views.NAME_DRUM4, surface, model, 4, 16, useDawColors);
     }
@@ -46,7 +46,7 @@ public abstract class AbstractDrum4View<S extends IControlSurface<C>, C extends 
      * @param followSelection Follow the drum pad selection if true
      * @param useDawColors True to use the drum machine pad colors for coloring the octaves
      */
-    public AbstractDrum4View (final S surface, final IModel model, final int lanes, final int numRows, final int numColumns, final int clipCols, final boolean followSelection, final boolean useDawColors)
+    protected AbstractDrum4View (final S surface, final IModel model, final int lanes, final int numRows, final int numColumns, final int clipCols, final boolean followSelection, final boolean useDawColors)
     {
         super (Views.NAME_DRUM4, surface, model, lanes, numRows, numColumns, clipCols, followSelection, useDawColors);
     }

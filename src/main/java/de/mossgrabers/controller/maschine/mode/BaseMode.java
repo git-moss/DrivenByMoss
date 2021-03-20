@@ -28,7 +28,7 @@ public abstract class BaseMode extends AbstractMode<MaschineControlSurface, Masc
      * @param surface The control surface
      * @param model The model
      */
-    public BaseMode (final String name, final MaschineControlSurface surface, final IModel model)
+    protected BaseMode (final String name, final MaschineControlSurface surface, final IModel model)
     {
         super (name, surface, model, false);
     }

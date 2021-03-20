@@ -14,6 +14,8 @@ import de.mossgrabers.framework.featuregroup.ModeManager;
 import de.mossgrabers.framework.mode.Modes;
 import de.mossgrabers.framework.utils.ButtonEvent;
 
+import java.util.Optional;
+
 
 /**
  * Command to edit track parameters.
@@ -89,8 +91,8 @@ public class TrackCommand extends AbstractTriggerCommand<PushControlSurface, Pus
         config.setDebugMode (modeManager.getActiveID ());
 
         final ITrackBank tb = this.model.getCurrentTrackBank ();
-        final ITrack track = tb.getSelectedItem ();
-        if (track == null)
+        final Optional<ITrack> track = tb.getSelectedItem ();
+        if (track.isEmpty ())
             tb.getItem (0).select ();
     }
 }

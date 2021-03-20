@@ -15,6 +15,7 @@ import de.mossgrabers.framework.daw.data.ISlot;
 import de.mossgrabers.framework.osc.IOpenSoundControlWriter;
 
 import java.util.LinkedList;
+import java.util.Optional;
 
 
 /**
@@ -76,9 +77,9 @@ public class ClipModule extends AbstractModule
                 break;
 
             case "launch":
-                final ISlot selectedSlot = this.model.getSelectedSlot ();
-                if (selectedSlot != null)
-                    selectedSlot.launch ();
+                final Optional<ISlot> selectedSlot = this.model.getSelectedSlot ();
+                if (selectedSlot.isPresent ())
+                    selectedSlot.get ().launch ();
                 break;
 
             case "stop":
@@ -90,9 +91,9 @@ public class ClipModule extends AbstractModule
                 break;
 
             case "record":
-                final ISlot selectedSlot2 = this.model.getSelectedSlot ();
-                if (selectedSlot2 != null)
-                    selectedSlot2.record ();
+                final Optional<ISlot> selectedSlot2 = this.model.getSelectedSlot ();
+                if (selectedSlot2.isPresent ())
+                    selectedSlot2.get ().record ();
                 break;
 
             case "quantize":

@@ -34,7 +34,7 @@ public abstract class AbstractLaunchpadDefinition extends DefaultControllerDefin
      * @param uuid The UUID of the controller implementation
      * @param hardwareModel The hardware model which this controller implementation supports
      */
-    public AbstractLaunchpadDefinition (final UUID uuid, final String hardwareModel)
+    protected AbstractLaunchpadDefinition (final UUID uuid, final String hardwareModel)
     {
         super (uuid, hardwareModel, "Novation", 1, 1);
 

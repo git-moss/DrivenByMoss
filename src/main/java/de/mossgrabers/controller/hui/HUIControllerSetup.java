@@ -78,6 +78,7 @@ import de.mossgrabers.framework.view.ControlOnlyView;
 import de.mossgrabers.framework.view.Views;
 
 import java.util.Arrays;
+import java.util.Optional;
 import java.util.function.BooleanSupplier;
 import java.util.function.IntSupplier;
 
@@ -730,10 +731,10 @@ public class HUIControllerSetup extends AbstractControllerSetup<HUIControlSurfac
             tbe.setIndication (isEffect);
 
         final ICursorDevice cursorDevice = this.model.getCursorDevice ();
-        final ITrack selectedTrack = tb.getSelectedItem ();
+        final Optional<ITrack> selectedTrack = tb.getSelectedItem ();
         for (int i = 0; i < tb.getPageSize (); i++)
         {
-            final boolean hasTrackSel = selectedTrack != null && selectedTrack.getIndex () == i && isTrack;
+            final boolean hasTrackSel = selectedTrack.isPresent () && selectedTrack.get ().getIndex () == i && isTrack;
             final ITrack track = tb.getItem (i);
             track.setVolumeIndication (!isEffect && (isTrack || hasTrackSel));
             track.setPanIndication (!isEffect && (isPan || hasTrackSel));

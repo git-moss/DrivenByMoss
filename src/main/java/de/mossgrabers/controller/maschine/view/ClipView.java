@@ -16,6 +16,8 @@ import de.mossgrabers.framework.daw.data.ITrack;
 import de.mossgrabers.framework.daw.data.bank.ISlotBank;
 import de.mossgrabers.framework.featuregroup.AbstractFeatureGroup;
 
+import java.util.Optional;
+
 
 /**
  * The Clip view.
@@ -40,15 +42,15 @@ public class ClipView extends BaseView
     @Override
     protected void executeFunction (final int padIndex)
     {
-        final ITrack track = this.model.getCurrentTrackBank ().getSelectedItem ();
-        if (track == null)
+        final Optional<ITrack> track = this.model.getCurrentTrackBank ().getSelectedItem ();
+        if (track.isEmpty ())
             return;
-        final ISlot slot = track.getSlotBank ().getItem (padIndex);
+        final ISlot slot = track.get ().getSlotBank ().getItem (padIndex);
 
         final MaschineConfiguration configuration = this.surface.getConfiguration ();
         if (this.isButtonCombination (ButtonID.DUPLICATE))
         {
-            if (track.doesExist ())
+            if (track.get ().doesExist ())
                 slot.duplicate ();
             return;
         }
@@ -56,14 +58,14 @@ public class ClipView extends BaseView
         // Stop clip
         if (this.isButtonCombination (ButtonID.CLIP))
         {
-            track.stop ();
+            track.get ().stop ();
             return;
         }
 
         // Browse for clips
         if (this.isButtonCombination (ButtonID.BROWSE))
         {
-            if (track.doesExist ())
+            if (track.get ().doesExist ())
                 this.model.getBrowser ().replace (slot);
             return;
         }
@@ -78,7 +80,7 @@ public class ClipView extends BaseView
         if (configuration.isSelectClipOnLaunch ())
             slot.select ();
 
-        if (!track.isRecArm ())
+        if (!track.get ().isRecArm ())
         {
             slot.launch ();
             return;
@@ -93,12 +95,12 @@ public class ClipView extends BaseView
         switch (configuration.getActionForRecArmedPad ())
         {
             case 0:
-                this.model.recordNoteClip (track, slot);
+                this.model.recordNoteClip (track.get (), slot);
                 break;
 
             case 1:
                 final int lengthInBeats = configuration.getNewClipLenghthInBeats (this.model.getTransport ().getQuartersPerMeasure ());
-                this.model.createNoteClip (track, slot, lengthInBeats, true);
+                this.model.createNoteClip (track.get (), slot, lengthInBeats, true);
                 break;
 
             case 2:
@@ -115,10 +117,10 @@ public class ClipView extends BaseView
     {
         final IPadGrid padGrid = this.surface.getPadGrid ();
 
-        final ITrack selectedTrack = this.model.getCurrentTrackBank ().getSelectedItem ();
-        if (selectedTrack == null)
+        final Optional<ITrack> selectedTrack = this.model.getCurrentTrackBank ().getSelectedItem ();
+        if (selectedTrack.isEmpty ())
             return;
-        final ISlotBank slotBank = selectedTrack.getSlotBank ();
+        final ISlotBank slotBank = selectedTrack.get ().getSlotBank ();
         for (int i = 0; i < 16; i++)
         {
             final ISlot item = slotBank.getItem (i);

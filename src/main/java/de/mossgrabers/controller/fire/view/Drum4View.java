@@ -13,12 +13,15 @@ import de.mossgrabers.framework.daw.IModel;
 import de.mossgrabers.framework.daw.INoteClip;
 import de.mossgrabers.framework.daw.IStepInfo;
 import de.mossgrabers.framework.daw.data.IDrumPad;
+import de.mossgrabers.framework.daw.data.ILayer;
 import de.mossgrabers.framework.daw.data.bank.IDrumPadBank;
 import de.mossgrabers.framework.featuregroup.IMode;
 import de.mossgrabers.framework.featuregroup.ModeManager;
 import de.mossgrabers.framework.mode.Modes;
 import de.mossgrabers.framework.utils.ButtonEvent;
 import de.mossgrabers.framework.view.AbstractDrum4View;
+
+import java.util.Optional;
 
 
 /**
@@ -219,12 +222,12 @@ public class Drum4View extends AbstractDrum4View<FireControlSurface, FireConfigu
         final boolean isUp = this.model.getValueChanger ().isIncrease (value);
         final IDrumPadBank drumPadBank = this.primary.getDrumPadBank ();
 
-        final IDrumPad sel = drumPadBank.getSelectedItem ();
+        final Optional<ILayer> sel = drumPadBank.getSelectedItem ();
         final int pageSize = drumPadBank.getPageSize ();
 
         if (isUp)
         {
-            final int index = sel == null ? pageSize : sel.getIndex () + 1;
+            final int index = sel.isEmpty () ? pageSize : sel.get ().getIndex () + 1;
             if (index == pageSize)
             {
                 this.adjustPage (isUp, 0);
@@ -234,7 +237,7 @@ public class Drum4View extends AbstractDrum4View<FireControlSurface, FireConfigu
             return;
         }
 
-        final int index = sel == null ? -1 : sel.getIndex () - 1;
+        final int index = sel.isEmpty () ? -1 : sel.get ().getIndex () - 1;
         if (index == -1)
         {
             this.adjustPage (isUp, pageSize - 1);

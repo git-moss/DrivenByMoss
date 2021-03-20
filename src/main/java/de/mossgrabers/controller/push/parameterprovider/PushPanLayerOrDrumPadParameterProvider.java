@@ -12,6 +12,8 @@ import de.mossgrabers.framework.observer.IItemSelectionObserver;
 import de.mossgrabers.framework.observer.IParametersAdjustObserver;
 import de.mossgrabers.framework.parameterprovider.device.PanLayerOrDrumPadParameterProvider;
 
+import java.util.Optional;
+
 
 /**
  * Extends panorama layer or drum pad parameter provider with the specific layout of Push 2.
@@ -63,8 +65,8 @@ public class PushPanLayerOrDrumPadParameterProvider extends PanLayerOrDrumPadPar
         int offset = 0;
         if (this.device.hasDrumPads ())
         {
-            final IChannel selectedDrumPad = this.bank.getSelectedItem ();
-            if (selectedDrumPad != null && selectedDrumPad.getIndex () > 7)
+            final Optional<? extends IChannel> selectedDrumPad = this.bank.getSelectedItem ();
+            if (selectedDrumPad.isPresent () && selectedDrumPad.get ().getIndex () > 7)
                 offset = 8;
         }
 

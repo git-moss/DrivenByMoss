@@ -9,10 +9,12 @@ import de.mossgrabers.controller.push.PushConfiguration.TrackState;
 import de.mossgrabers.controller.push.controller.PushControlSurface;
 import de.mossgrabers.framework.command.core.AbstractTriggerCommand;
 import de.mossgrabers.framework.daw.IModel;
-import de.mossgrabers.framework.daw.data.IChannel;
 import de.mossgrabers.framework.daw.data.ICursorDevice;
+import de.mossgrabers.framework.daw.data.ILayer;
 import de.mossgrabers.framework.mode.Modes;
 import de.mossgrabers.framework.utils.ButtonEvent;
+
+import java.util.Optional;
 
 
 /**
@@ -101,9 +103,9 @@ public class SoloCommand extends AbstractTriggerCommand<PushControlSurface, Push
         if (Modes.isLayerMode (activeModeId))
         {
             final ICursorDevice cd = this.model.getCursorDevice ();
-            final IChannel layer = cd.getLayerOrDrumPadBank ().getSelectedItem ();
-            if (layer != null)
-                layer.toggleSolo ();
+            final Optional<?> layer = cd.getLayerOrDrumPadBank ().getSelectedItem ();
+            if (layer.isPresent ())
+                ((ILayer) layer.get ()).toggleSolo ();
         }
         else if (Modes.MASTER.equals (activeModeId))
             this.model.getMasterTrack ().toggleSolo ();

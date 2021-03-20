@@ -12,6 +12,8 @@ import de.mossgrabers.framework.daw.IModel;
 import de.mossgrabers.framework.daw.data.IItem;
 import de.mossgrabers.framework.featuregroup.AbstractMode;
 
+import java.util.Optional;
+
 
 /**
  * The device browser mode. The knobs control the selection of the filter rows.
@@ -73,12 +75,12 @@ public class BrowserMode<S extends IControlSurface<C>, C extends Configuration> 
 
     /** {@inheritDoc} */
     @Override
-    public String getSelectedItemName ()
+    public Optional<String> getSelectedItemName ()
     {
         final IBrowser browser = this.model.getBrowser ();
         if (browser == null)
-            return "";
-        return browser.getSelectedResult ();
+            return Optional.empty ();
+        return Optional.ofNullable (browser.getSelectedResult ());
     }
 
 

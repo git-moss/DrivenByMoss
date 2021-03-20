@@ -31,7 +31,7 @@ public abstract class AbstractContinuousCommand<S extends IControlSurface<C>, C 
      * @param model The model
      * @param surface The surface
      */
-    public AbstractContinuousCommand (final IModel model, final S surface)
+    protected AbstractContinuousCommand (final IModel model, final S surface)
     {
         this.model = model;
         this.surface = surface;

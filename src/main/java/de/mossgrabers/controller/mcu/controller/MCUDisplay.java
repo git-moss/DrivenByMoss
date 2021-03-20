@@ -137,6 +137,7 @@ public class MCUDisplay extends AbstractTextDisplay
             catch (final InterruptedException ex)
             {
                 this.host.error ("USB display send executor did not end in 10 seconds. Interrupted.", ex);
+                Thread.currentThread ().interrupt ();
             }
         }
     }

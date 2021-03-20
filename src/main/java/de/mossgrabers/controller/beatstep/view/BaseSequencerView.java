@@ -32,7 +32,7 @@ public abstract class BaseSequencerView extends AbstractSequencerView<BeatstepCo
      * @param rows The number of rows of the sequencer
      * @param cols The number of columns of the sequencer
      */
-    public BaseSequencerView (final String name, final BeatstepControlSurface surface, final IModel model, final int rows, final int cols)
+    protected BaseSequencerView (final String name, final BeatstepControlSurface surface, final IModel model, final int rows, final int cols)
     {
         super (name, surface, model, rows, cols, false);
 

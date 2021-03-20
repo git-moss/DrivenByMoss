@@ -17,6 +17,8 @@ import de.mossgrabers.framework.mode.device.ParameterMode;
 import de.mossgrabers.framework.parameterprovider.device.BankParameterProvider;
 import de.mossgrabers.framework.utils.StringUtils;
 
+import java.util.Optional;
+
 
 /**
  * The device parameter mode. The knobs control the value of the parameter on the parameter page.
@@ -57,7 +59,8 @@ public class FireParameterMode extends ParameterMode<FireControlSurface, FireCon
             paramLine = "";
 
             final ICursorDevice cursorDevice = this.model.getCursorDevice ();
-            desc = cursorDevice.getName (5) + ": " + StringUtils.optimizeName (cursorDevice.getParameterPageBank ().getSelectedItem (), 5);
+            final Optional<String> pageName = cursorDevice.getParameterPageBank ().getSelectedItem ();
+            desc = cursorDevice.getName (5) + ": " + (pageName.isPresent () ? StringUtils.optimizeName (pageName.get (), 5) : "None");
 
             int touchedKnob = this.getTouchedKnob ();
             touchedKnob = this.surface.isPressed (ButtonID.ALT) ? 4 + touchedKnob : touchedKnob;

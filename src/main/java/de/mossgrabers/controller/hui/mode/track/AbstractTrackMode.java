@@ -15,6 +15,8 @@ import de.mossgrabers.framework.mode.track.DefaultTrackMode;
 import de.mossgrabers.framework.utils.ButtonEvent;
 import de.mossgrabers.framework.utils.StringUtils;
 
+import java.util.Optional;
+
 
 /**
  * Abstract base mode for all track modes.
@@ -30,7 +32,7 @@ public abstract class AbstractTrackMode extends DefaultTrackMode<HUIControlSurfa
      * @param surface The control surface
      * @param model The model
      */
-    public AbstractTrackMode (final String name, final HUIControlSurface surface, final IModel model)
+    protected AbstractTrackMode (final String name, final HUIControlSurface surface, final IModel model)
     {
         super (name, surface, model, false);
     }
@@ -42,7 +44,11 @@ public abstract class AbstractTrackMode extends DefaultTrackMode<HUIControlSurfa
 
         // Format track names
         for (int i = 0; i < 8; i++)
-            d.setCell (0, i, StringUtils.shortenAndFixASCII (this.getTrack (i).getName (), 4));
+        {
+            final Optional<ITrack> track = this.getTrack (i);
+            if (track.isPresent ())
+                d.setCell (0, i, StringUtils.shortenAndFixASCII (track.get ().getName (), 4));
+        }
 
         return d;
     }
@@ -63,19 +69,19 @@ public abstract class AbstractTrackMode extends DefaultTrackMode<HUIControlSurfa
     {
         for (int i = 0; i < 8; i++)
         {
-            final ITrack track = this.getTrack (i);
+            final Optional<ITrack> track = this.getTrack (i);
 
-            final boolean exists = track.doesExist ();
+            final boolean exists = track.isPresent ();
 
             // HUI_INSERT1 is used on icon for selection
             if (buttonID == ButtonID.get (ButtonID.ROW_SELECT_1, i) || buttonID == ButtonID.get (ButtonID.ROW5_1, i))
-                return exists && track.isSelected () ? HUIControllerSetup.HUI_BUTTON_STATE_ON : HUIControllerSetup.HUI_BUTTON_STATE_OFF;
+                return exists && track.get ().isSelected () ? HUIControllerSetup.HUI_BUTTON_STATE_ON : HUIControllerSetup.HUI_BUTTON_STATE_OFF;
             if (buttonID == ButtonID.get (ButtonID.ROW2_1, i))
-                return exists && track.isRecArm () ? HUIControllerSetup.HUI_BUTTON_STATE_ON : HUIControllerSetup.HUI_BUTTON_STATE_OFF;
+                return exists && track.get ().isRecArm () ? HUIControllerSetup.HUI_BUTTON_STATE_ON : HUIControllerSetup.HUI_BUTTON_STATE_OFF;
             if (buttonID == ButtonID.get (ButtonID.ROW3_1, i))
-                return exists && track.isSolo () ? HUIControllerSetup.HUI_BUTTON_STATE_ON : HUIControllerSetup.HUI_BUTTON_STATE_OFF;
+                return exists && track.get ().isSolo () ? HUIControllerSetup.HUI_BUTTON_STATE_ON : HUIControllerSetup.HUI_BUTTON_STATE_OFF;
             if (buttonID == ButtonID.get (ButtonID.ROW4_1, i))
-                return exists && track.isMute () ? HUIControllerSetup.HUI_BUTTON_STATE_ON : HUIControllerSetup.HUI_BUTTON_STATE_OFF;
+                return exists && track.get ().isMute () ? HUIControllerSetup.HUI_BUTTON_STATE_ON : HUIControllerSetup.HUI_BUTTON_STATE_OFF;
         }
 
         return HUIControllerSetup.HUI_BUTTON_STATE_OFF;

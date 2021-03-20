@@ -14,6 +14,8 @@ import de.mossgrabers.framework.daw.IModel;
 import de.mossgrabers.framework.daw.data.ISlot;
 import de.mossgrabers.framework.utils.ButtonEvent;
 
+import java.util.Optional;
+
 
 /**
  * The handler for clip commands.
@@ -65,20 +67,20 @@ public class ClipHandler extends AbstractHandler
     @Override
     public int getCommandValue (final FlexiCommand command)
     {
-        final ISlot selectedSlot = this.model.getSelectedSlot ();
+        final Optional<ISlot> selectedSlot = this.model.getSelectedSlot ();
         switch (command)
         {
             case CLIP_TOGGLE_PIN:
                 return this.model.getCursorClip ().isPinned () ? 127 : 0;
 
             case CLIP_PLAY:
-                return selectedSlot != null && selectedSlot.isPlaying () ? 127 : 0;
+                return selectedSlot.isPresent () && selectedSlot.get ().isPlaying () ? 127 : 0;
 
             case CLIP_STOP:
-                return selectedSlot != null && selectedSlot.isPlaying () ? 0 : 127;
+                return selectedSlot.isPresent () && selectedSlot.get ().isPlaying () ? 0 : 127;
 
             case CLIP_RECORD:
-                return selectedSlot != null && selectedSlot.isRecording () ? 127 : 0;
+                return selectedSlot.isPresent () && selectedSlot.get ().isRecording () ? 127 : 0;
 
             default:
                 return -1;
@@ -116,9 +118,9 @@ public class ClipHandler extends AbstractHandler
             case CLIP_PLAY:
                 if (isButtonPressed)
                 {
-                    final ISlot selectedSlot = this.model.getSelectedSlot ();
-                    if (selectedSlot != null)
-                        selectedSlot.launch ();
+                    final Optional<ISlot> selectedSlot = this.model.getSelectedSlot ();
+                    if (selectedSlot.isPresent ())
+                        selectedSlot.get ().launch ();
                 }
                 break;
 
@@ -130,9 +132,9 @@ public class ClipHandler extends AbstractHandler
             case CLIP_RECORD:
                 if (isButtonPressed)
                 {
-                    final ISlot selectedSlot = this.model.getSelectedSlot ();
-                    if (selectedSlot != null)
-                        selectedSlot.record ();
+                    final Optional<ISlot> selectedSlot = this.model.getSelectedSlot ();
+                    if (selectedSlot.isPresent ())
+                        selectedSlot.get ().record ();
                 }
                 break;
 

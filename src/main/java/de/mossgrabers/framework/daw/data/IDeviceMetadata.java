@@ -17,4 +17,12 @@ public interface IDeviceMetadata
      * @return The name
      */
     String getName ();
+
+
+    /**
+     * Get the long name of the device for identification (e.g. adds type).
+     *
+     * @return The full name
+     */
+    String getFullName ();
 }

@@ -19,6 +19,7 @@ import de.mossgrabers.framework.parameterprovider.special.CombinedParameterProvi
 import de.mossgrabers.framework.parameterprovider.track.SendParameterProvider;
 
 import java.util.List;
+import java.util.Optional;
 
 
 /**
@@ -51,10 +52,10 @@ public class SendMode extends DefaultTrackMode<KontrolProtocolControlSurface, Ko
     @Override
     public void onKnobValue (final int index, final int value)
     {
-        final ITrack track = this.model.getCurrentTrackBank ().getSelectedItem ();
-        if (track == null)
+        final Optional<ITrack> track = this.model.getCurrentTrackBank ().getSelectedItem ();
+        if (track.isEmpty ())
             return;
-        final ISend send = track.getSendBank ().getItem (index);
+        final ISend send = track.get ().getSendBank ().getItem (index);
         if (this.isAbsolute)
             send.setValue (value);
         else
@@ -69,8 +70,8 @@ public class SendMode extends DefaultTrackMode<KontrolProtocolControlSurface, Ko
         // Note: Since we need multiple value (more than 8), index is the MIDI CC of the knob
 
         final IValueChanger valueChanger = this.model.getValueChanger ();
-        final ITrack selectedTrack = this.bank.getSelectedItem ();
-        final ISendBank sendBank = selectedTrack == null ? null : selectedTrack.getSendBank ();
+        final Optional<ITrack> selectedTrack = this.bank.getSelectedItem ();
+        final ISendBank sendBank = selectedTrack.isEmpty () ? null : selectedTrack.get ().getSendBank ();
 
         if (index >= KontrolProtocolControlSurface.KONTROL_TRACK_VOLUME && index < KontrolProtocolControlSurface.KONTROL_TRACK_VOLUME + 8)
         {
@@ -107,8 +108,8 @@ public class SendMode extends DefaultTrackMode<KontrolProtocolControlSurface, Ko
     public void updateDisplay ()
     {
         final IValueChanger valueChanger = this.model.getValueChanger ();
-        final ITrack selectedTrack = this.bank.getSelectedItem ();
-        final ISendBank sendBank = selectedTrack == null ? null : selectedTrack.getSendBank ();
+        final Optional<ITrack> selectedTrack = this.bank.getSelectedItem ();
+        final ISendBank sendBank = selectedTrack.isEmpty () ? null : selectedTrack.get ().getSendBank ();
 
         final int [] vuData = new int [16];
         for (int i = 0; i < 8; i++)
@@ -120,7 +121,8 @@ public class SendMode extends DefaultTrackMode<KontrolProtocolControlSurface, Ko
             this.surface.sendKontrolTrackSysEx (KontrolProtocolControlSurface.KONTROL_TRACK_RECARM, 0, i);
             this.surface.sendKontrolTrackSysEx (KontrolProtocolControlSurface.KONTROL_TRACK_VOLUME_TEXT, 0, i, send.getDisplayedValue (8));
             this.surface.sendKontrolTrackSysEx (KontrolProtocolControlSurface.KONTROL_TRACK_PAN_TEXT, 0, i, send.getDisplayedValue (8));
-            this.surface.sendKontrolTrackSysEx (KontrolProtocolControlSurface.KONTROL_TRACK_NAME, 0, i, getName (selectedTrack, send));
+            final String n = selectedTrack.isPresent () ? getName (selectedTrack.get (), send) : "";
+            this.surface.sendKontrolTrackSysEx (KontrolProtocolControlSurface.KONTROL_TRACK_NAME, 0, i, n);
 
             final int j = 2 * i;
             vuData[j] = valueChanger.toMidiValue (send.getModulatedValue ());
@@ -134,9 +136,9 @@ public class SendMode extends DefaultTrackMode<KontrolProtocolControlSurface, Ko
     @Override
     public void selectPreviousItem ()
     {
-        final ITrack selectedTrack = this.bank.getSelectedItem ();
-        if (selectedTrack != null)
-            selectedTrack.getSendBank ().selectPreviousPage ();
+        final Optional<ITrack> selectedTrack = this.bank.getSelectedItem ();
+        if (selectedTrack.isPresent ())
+            selectedTrack.get ().getSendBank ().selectPreviousPage ();
     }
 
 
@@ -144,9 +146,9 @@ public class SendMode extends DefaultTrackMode<KontrolProtocolControlSurface, Ko
     @Override
     public void selectNextItem ()
     {
-        final ITrack selectedTrack = this.bank.getSelectedItem ();
-        if (selectedTrack != null)
-            selectedTrack.getSendBank ().selectNextPage ();
+        final Optional<ITrack> selectedTrack = this.bank.getSelectedItem ();
+        if (selectedTrack.isPresent ())
+            selectedTrack.get ().getSendBank ().selectNextPage ();
     }
 
 
@@ -168,8 +170,6 @@ public class SendMode extends DefaultTrackMode<KontrolProtocolControlSurface, Ko
 
     private static String getName (final ITrack track, final ISend send)
     {
-        if (track == null)
-            return "";
         return "Track " + (track.getPosition () + 1) + "\nFX " + (send.getPosition () + 1) + "\n\n" + send.getName ();
     }
 }

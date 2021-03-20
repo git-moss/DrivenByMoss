@@ -11,6 +11,8 @@ import de.mossgrabers.framework.daw.IModel;
 import de.mossgrabers.framework.daw.data.IScene;
 import de.mossgrabers.framework.utils.ButtonEvent;
 
+import java.util.Optional;
+
 
 /**
  * Command to start the currently selected scene.
@@ -38,8 +40,8 @@ public class StartSceneCommand<S extends IControlSurface<C>, C extends Configura
     @Override
     public void execute (final ButtonEvent event, final int velocity)
     {
-        final IScene scene = this.model.getSceneBank ().getSelectedItem ();
-        if (scene != null)
-            scene.launch ();
+        final Optional<IScene> scene = this.model.getSceneBank ().getSelectedItem ();
+        if (scene.isPresent ())
+            scene.get ().launch ();
     }
 }

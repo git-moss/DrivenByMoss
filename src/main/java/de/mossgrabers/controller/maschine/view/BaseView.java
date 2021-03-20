@@ -24,7 +24,7 @@ public abstract class BaseView extends AbstractView<MaschineControlSurface, Masc
      * @param surface The controller
      * @param model The model
      */
-    public BaseView (final String name, final MaschineControlSurface surface, final IModel model)
+    protected BaseView (final String name, final MaschineControlSurface surface, final IModel model)
     {
         super (name, surface, model);
     }

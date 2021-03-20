@@ -16,6 +16,7 @@ import com.bitwig.extension.controller.api.UserControlBank;
 
 import java.util.Collections;
 import java.util.List;
+import java.util.Optional;
 
 
 /**
@@ -72,9 +73,9 @@ public class UserParameterBankImpl extends AbstractBank<IParameter> implements I
 
     /** {@inheritDoc} */
     @Override
-    public IParameter getSelectedItem ()
+    public Optional<IParameter> getSelectedItem ()
     {
-        return null;
+        return Optional.empty ();
     }
 
 

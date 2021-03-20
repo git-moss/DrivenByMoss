@@ -17,11 +17,14 @@ import de.mossgrabers.framework.daw.data.IMasterTrack;
 import de.mossgrabers.framework.daw.data.ITrack;
 import de.mossgrabers.framework.daw.data.bank.IBank;
 import de.mossgrabers.framework.daw.data.bank.ITrackBank;
+import de.mossgrabers.framework.daw.data.empty.EmptyTrack;
 import de.mossgrabers.framework.featuregroup.AbstractMode;
 import de.mossgrabers.framework.mode.Modes;
 import de.mossgrabers.framework.parameterprovider.IParameterProvider;
 import de.mossgrabers.framework.utils.ButtonEvent;
 import de.mossgrabers.framework.utils.StringUtils;
+
+import java.util.Optional;
 
 
 /**
@@ -43,7 +46,7 @@ public abstract class BaseMode<B extends IItem> extends AbstractMode<MCUControlS
      * @param surface The control surface
      * @param model The model
      */
-    public BaseMode (final String name, final MCUControlSurface surface, final IModel model)
+    protected BaseMode (final String name, final MCUControlSurface surface, final IModel model)
     {
         this (name, surface, model, null);
     }
@@ -57,7 +60,7 @@ public abstract class BaseMode<B extends IItem> extends AbstractMode<MCUControlS
      * @param model The model
      * @param bank The bank
      */
-    public BaseMode (final String name, final MCUControlSurface surface, final IModel model, final IBank<B> bank)
+    protected BaseMode (final String name, final MCUControlSurface surface, final IModel model, final IBank<B> bank)
     {
         super (name, surface, model, true, bank, DEFAULT_KNOB_IDS);
 
@@ -189,7 +192,14 @@ public abstract class BaseMode<B extends IItem> extends AbstractMode<MCUControlS
         {
             final IMasterTrack masterTrack = this.model.getMasterTrack ();
             final ICursorDevice cursorDevice = this.model.getCursorDevice ();
-            final ITrack selectedTrack = masterTrack.isSelected () ? masterTrack : tb.getSelectedItem ();
+            final ITrack selectedTrack;
+            if (masterTrack.isSelected ())
+                selectedTrack = masterTrack;
+            else
+            {
+                final Optional<ITrack> selectedItem = tb.getSelectedItem ();
+                selectedTrack = selectedItem.isPresent () ? selectedItem.get () : EmptyTrack.INSTANCE;
+            }
             d2.setBlock (1, 0, "Sel. track:").setBlock (1, 1, selectedTrack == null ? "None" : StringUtils.shortenAndFixASCII (selectedTrack.getName (), 11));
             d2.setBlock (1, 2, "Sel. devce:").setBlock (1, 3, cursorDevice.doesExist () ? StringUtils.shortenAndFixASCII (cursorDevice.getName (), 11) : "None");
         }

@@ -125,8 +125,8 @@ import de.mossgrabers.framework.daw.IHost;
 import de.mossgrabers.framework.daw.INoteClip;
 import de.mossgrabers.framework.daw.ITransport;
 import de.mossgrabers.framework.daw.ModelSetup;
-import de.mossgrabers.framework.daw.data.IChannel;
 import de.mossgrabers.framework.daw.data.ICursorDevice;
+import de.mossgrabers.framework.daw.data.ILayer;
 import de.mossgrabers.framework.daw.data.ITrack;
 import de.mossgrabers.framework.daw.data.bank.ISceneBank;
 import de.mossgrabers.framework.daw.data.bank.ITrackBank;
@@ -144,6 +144,8 @@ import de.mossgrabers.framework.mode.Modes;
 import de.mossgrabers.framework.view.AbstractSequencerView;
 import de.mossgrabers.framework.view.TransposeView;
 import de.mossgrabers.framework.view.Views;
+
+import java.util.Optional;
 
 
 /**
@@ -967,8 +969,8 @@ public class PushControllerSetup extends AbstractControllerSetup<PushControlSurf
             if (modeManager.isActive (Modes.DEVICE_LAYER))
             {
                 final ICursorDevice cd = this.model.getCursorDevice ();
-                final IChannel layer = cd.getLayerOrDrumPadBank ().getSelectedItem ();
-                return layer != null && layer.isMute ();
+                final Optional<?> layer = cd.getLayerOrDrumPadBank ().getSelectedItem ();
+                return layer.isPresent () && ((ILayer) layer.get ()).isMute ();
             }
             final ITrack selTrack = modeManager.isActive (Modes.MASTER) ? this.model.getMasterTrack () : this.model.getCursorTrack ();
             return selTrack.isMute ();
@@ -986,8 +988,8 @@ public class PushControllerSetup extends AbstractControllerSetup<PushControlSurf
             if (modeManager.isActive (Modes.DEVICE_LAYER))
             {
                 final ICursorDevice cd = this.model.getCursorDevice ();
-                final IChannel layer = cd.getLayerOrDrumPadBank ().getSelectedItem ();
-                return layer != null && layer.isSolo ();
+                final Optional<?> layer = cd.getLayerOrDrumPadBank ().getSelectedItem ();
+                return layer.isPresent () && ((ILayer) layer.get ()).isSolo ();
             }
             final ITrack selTrack = modeManager.isActive (Modes.MASTER) ? this.model.getMasterTrack () : this.model.getCursorTrack ();
             return selTrack.isSolo ();

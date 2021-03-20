@@ -22,6 +22,8 @@ import de.mossgrabers.framework.featuregroup.ViewManager;
 import de.mossgrabers.framework.utils.ButtonEvent;
 import de.mossgrabers.framework.view.Views;
 
+import java.util.Optional;
+
 
 /**
  * Mode for editing details of a track.
@@ -115,9 +117,11 @@ public class TrackDetailsMode extends BaseMode<ITrack>
     private void onFirstRowTrack (final int index)
     {
         final ITrackBank tb = this.model.getCurrentTrackBank ();
-        final ITrack t = tb.getSelectedItem ();
-        if (t == null)
+        final Optional<ITrack> track = tb.getSelectedItem ();
+        if (track.isEmpty ())
             return;
+
+        final ITrack t = track.get ();
 
         switch (index)
         {

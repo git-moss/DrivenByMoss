@@ -12,6 +12,8 @@ import de.mossgrabers.framework.daw.data.IBrowserColumn;
 import de.mossgrabers.framework.daw.data.ICursorDevice;
 import de.mossgrabers.framework.utils.StringUtils;
 
+import java.util.Optional;
+
 
 /**
  * The browse mode.
@@ -76,9 +78,16 @@ public class BrowseMode extends BaseMode
 
         for (int i = 0; i < 7; i++)
         {
-            final IBrowserColumn column = this.getFilterColumn (i);
-            final String value = column != null && column.doesCursorExist () ? column.getCursorName ().equals (column.getWildcard ()) ? "-" : column.getCursorName () : "";
-            String name = column == null ? "" : StringUtils.shortenAndFixASCII (column.getName (), 6);
+            final Optional<IBrowserColumn> column = this.getFilterColumn (i);
+            String value = "";
+            String name = "";
+            if (column.isPresent ())
+            {
+                final IBrowserColumn browserColumn = column.get ();
+                if (browserColumn.doesCursorExist ())
+                    value = browserColumn.getCursorName ().equals (browserColumn.getWildcard ()) ? "-" : browserColumn.getCursorName ();
+                name = StringUtils.shortenAndFixASCII (browserColumn.getName (), 6);
+            }
             if (i == this.getSelectedParameter ())
                 name = ">" + name;
             d.setCell (0, i, name).setCell (1, i, value);
@@ -114,7 +123,7 @@ public class BrowseMode extends BaseMode
     }
 
 
-    private IBrowserColumn getFilterColumn (final int index)
+    private Optional<IBrowserColumn> getFilterColumn (final int index)
     {
         final IBrowser browser = this.model.getBrowser ();
         int column = -1;
@@ -125,10 +134,10 @@ public class BrowseMode extends BaseMode
             {
                 column++;
                 if (column == index)
-                    return browser.getFilterColumn (i);
+                    return Optional.of (browser.getFilterColumn (i));
             }
         }
-        return null;
+        return Optional.empty ();
     }
 
 
@@ -137,10 +146,10 @@ public class BrowseMode extends BaseMode
         final IBrowser browser = this.model.getBrowser ();
         if (index < 7)
         {
-            final IBrowserColumn fc = this.getFilterColumn (index);
-            if (fc != null && fc.doesExist ())
+            final Optional<IBrowserColumn> fc = this.getFilterColumn (index);
+            if (fc.isPresent () && fc.get ().doesExist ())
             {
-                this.filterColumn = fc.getIndex ();
+                this.filterColumn = fc.get ().getIndex ();
                 for (int i = 0; i < count; i++)
                     browser.selectNextFilterItem (this.filterColumn);
                 if (browser.getSelectedFilterItemIndex (this.filterColumn) == -1)
@@ -162,10 +171,10 @@ public class BrowseMode extends BaseMode
         {
             if (index < 7)
             {
-                final IBrowserColumn fc = this.getFilterColumn (index);
-                if (fc != null && fc.doesExist ())
+                final Optional<IBrowserColumn> fc = this.getFilterColumn (index);
+                if (fc.isPresent () && fc.get ().doesExist ())
                 {
-                    this.filterColumn = fc.getIndex ();
+                    this.filterColumn = fc.get ().getIndex ();
                     for (int j = 0; j < count; j++)
                         browser.selectPreviousFilterItem (this.filterColumn);
                     if (browser.getSelectedFilterItemIndex (this.filterColumn) == -1)

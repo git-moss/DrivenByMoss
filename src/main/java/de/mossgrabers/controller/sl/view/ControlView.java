@@ -25,6 +25,7 @@ import de.mossgrabers.framework.view.ControlOnlyView;
 import de.mossgrabers.framework.view.Views;
 
 import java.util.List;
+import java.util.Optional;
 
 
 /**
@@ -437,16 +438,16 @@ public class ControlView extends ControlOnlyView<SLControlSurface, SLConfigurati
         else
         {
             final boolean isNoOverlayMode = !Modes.FRAME.equals (mode) && !Modes.BROWSER.equals (mode);
-            final ITrack track = tb.getSelectedItem ();
+            final Optional<ITrack> track = tb.getSelectedItem ();
 
             switch (buttonID)
             {
                 case ROW2_1:
-                    return isNoOverlayMode && track != null && track.isMute () ? SLControlSurface.MKII_BUTTON_STATE_ON : SLControlSurface.MKII_BUTTON_STATE_OFF;
+                    return isNoOverlayMode && track.isPresent () && track.get ().isMute () ? SLControlSurface.MKII_BUTTON_STATE_ON : SLControlSurface.MKII_BUTTON_STATE_OFF;
                 case ROW2_2:
-                    return isNoOverlayMode && track != null && track.isSolo () ? SLControlSurface.MKII_BUTTON_STATE_ON : SLControlSurface.MKII_BUTTON_STATE_OFF;
+                    return isNoOverlayMode && track.isPresent () && track.get ().isSolo () ? SLControlSurface.MKII_BUTTON_STATE_ON : SLControlSurface.MKII_BUTTON_STATE_OFF;
                 case ROW2_3:
-                    return isNoOverlayMode && track != null && track.isRecArm () ? SLControlSurface.MKII_BUTTON_STATE_ON : SLControlSurface.MKII_BUTTON_STATE_OFF;
+                    return isNoOverlayMode && track.isPresent () && track.get ().isRecArm () ? SLControlSurface.MKII_BUTTON_STATE_ON : SLControlSurface.MKII_BUTTON_STATE_OFF;
                 case ROW2_4:
                     return transport.isWritingArrangerAutomation () ? SLControlSurface.MKII_BUTTON_STATE_ON : SLControlSurface.MKII_BUTTON_STATE_OFF;
                 case ROW2_5:

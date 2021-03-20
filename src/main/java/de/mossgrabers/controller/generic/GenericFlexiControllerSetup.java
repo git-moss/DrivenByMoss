@@ -59,6 +59,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.Locale;
+import java.util.Optional;
 import java.util.Set;
 
 
@@ -102,12 +103,14 @@ public class GenericFlexiControllerSetup extends AbstractControllerSetup<Generic
         super.init ();
 
         // Load program name file and create selection list if present
-        final FileEx programsFile = this.configuration.getProgramsFile ();
-        if (programsFile == null)
+        final Optional<FileEx> programsFileOpt = this.configuration.getProgramsFile ();
+        if (programsFileOpt.isEmpty ())
             return;
 
         try
         {
+            final FileEx programsFile = programsFileOpt.get ();
+
             final String nameWithoutType = programsFile.getNameWithoutType ();
 
             this.banks.addAll (ProgramBank.parse (programsFile.readUTF8 ()));
@@ -353,10 +356,10 @@ public class GenericFlexiControllerSetup extends AbstractControllerSetup<Generic
         final FlexiCommand [] allCommands = FlexiCommand.values ();
 
         final ITrackBank trackBank = this.model.getTrackBank ();
-        final ITrack selectedTrack = trackBank.getSelectedItem ();
+        final Optional<ITrack> selectedTrack = trackBank.getSelectedItem ();
         for (int i = 0; i < trackBank.getPageSize (); i++)
         {
-            final boolean hasTrackSel = selectedTrack != null && selectedTrack.getIndex () == i;
+            final boolean hasTrackSel = selectedTrack.isPresent () && selectedTrack.get ().getIndex () == i;
 
             final ITrack track = trackBank.getItem (i);
             track.setVolumeIndication (this.testVolumeIndication (commands, allCommands, i, hasTrackSel));

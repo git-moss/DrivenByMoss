@@ -39,8 +39,12 @@ public class MarkerBankImpl extends AbstractItemBankImpl<CueMarkerBank, IMarker>
 
         this.transport = transport;
 
+        if (this.bank.isEmpty ())
+            return;
+
+        final CueMarkerBank cueMarkerBank = this.bank.get ();
         for (int i = 0; i < this.getPageSize (); i++)
-            this.items.add (new MarkerImpl (this.bank.getItemAt (i), i, this.transport));
+            this.items.add (new MarkerImpl (cueMarkerBank.getItemAt (i), i, this.transport));
     }
 
 

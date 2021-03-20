@@ -37,7 +37,6 @@ import de.mossgrabers.framework.view.Views;
 public class SessionView extends AbstractSessionView<LaunchpadControlSurface, LaunchpadConfiguration>
 {
     protected boolean                    isShowTemporarily;
-    private boolean                      isBirdsEyeViewActive = false;
     private final LaunchpadConfiguration configuration;
 
 
@@ -157,14 +156,11 @@ public class SessionView extends AbstractSessionView<LaunchpadControlSurface, La
     }
 
 
-    /**
-     * Set the birds eye view in-/active.
-     *
-     * @param isBirdsEyeActive True to activate
-     */
+    /** {@inheritDoc} */
+    @Override
     public void setBirdsEyeActive (final boolean isBirdsEyeActive)
     {
-        this.isBirdsEyeViewActive = isBirdsEyeActive;
+        super.setBirdsEyeActive (isBirdsEyeActive);
 
         this.updateRowsCols ();
     }
@@ -244,7 +240,7 @@ public class SessionView extends AbstractSessionView<LaunchpadControlSurface, La
     @Override
     public boolean isBirdsEyeActive ()
     {
-        return this.isBirdsEyeViewActive;
+        return this.isBirdsEyeActive;
     }
 
 

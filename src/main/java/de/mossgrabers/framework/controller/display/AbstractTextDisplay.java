@@ -52,7 +52,7 @@ public abstract class AbstractTextDisplay implements ITextDisplay
      * @param noOfCells The number of cells that the display supports
      * @param noOfCharacters The number of characters of 1 row that the display supports
      */
-    public AbstractTextDisplay (final IHost host, final IMidiOutput output, final int noOfLines, final int noOfCells, final int noOfCharacters)
+    protected AbstractTextDisplay (final IHost host, final IMidiOutput output, final int noOfLines, final int noOfCells, final int noOfCharacters)
     {
         this.host = host;
         this.output = output;

@@ -16,6 +16,7 @@ import de.mossgrabers.framework.featuregroup.AbstractMode;
 import de.mossgrabers.framework.parameterprovider.device.BankParameterProvider;
 
 import java.util.List;
+import java.util.Optional;
 import java.util.function.BooleanSupplier;
 
 
@@ -151,12 +152,12 @@ public class ParameterMode<S extends IControlSurface<C>, C extends Configuration
 
     /** {@inheritDoc} */
     @Override
-    public String getSelectedItemName ()
+    public Optional<String> getSelectedItemName ()
     {
         if (!this.cursorDevice.doesExist ())
-            return null;
+            return Optional.empty ();
         final IParameterPageBank parameterPageBank = this.cursorDevice.getParameterPageBank ();
-        return this.cursorDevice.getName () + " - " + parameterPageBank.getSelectedItem ();
+        return Optional.of (this.cursorDevice.getName () + " - " + parameterPageBank.getSelectedItem ());
     }
 
 

@@ -30,7 +30,7 @@ public abstract class AbstractDoubleTriggerCommand<S extends IControlSurface<C>,
      * @param model The model
      * @param surface The surface
      */
-    public AbstractDoubleTriggerCommand (final IModel model, final S surface)
+    protected AbstractDoubleTriggerCommand (final IModel model, final S surface)
     {
         super (model, surface);
     }

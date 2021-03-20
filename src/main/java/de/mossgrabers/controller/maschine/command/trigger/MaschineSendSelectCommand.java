@@ -15,6 +15,8 @@ import de.mossgrabers.framework.featuregroup.ModeManager;
 import de.mossgrabers.framework.mode.Modes;
 import de.mossgrabers.framework.utils.ButtonEvent;
 
+import java.util.Optional;
+
 
 /**
  * Selects the previous/next send mode.
@@ -50,10 +52,10 @@ public class MaschineSendSelectCommand extends ModeMultiSelectCommand<MaschineCo
 
         final int sendIndex = newMode.ordinal () - Modes.SEND1.ordinal ();
 
-        final ITrack t = this.model.getCurrentTrackBank ().getSelectedItem ();
-        if (t == null)
+        final Optional<ITrack> t = this.model.getCurrentTrackBank ().getSelectedItem ();
+        if (t.isEmpty ())
             return;
-        final ISendBank sendBank = t.getSendBank ();
+        final ISendBank sendBank = t.get ().getSendBank ();
         final ISend send = sendBank.getItem (sendIndex);
         if (send.doesExist ())
             this.surface.getDisplay ().notify ("Send " + (sendIndex + 1) + ": " + send.getName ());
@@ -75,10 +77,10 @@ public class MaschineSendSelectCommand extends ModeMultiSelectCommand<MaschineCo
 
         final int sendIndex = newMode.ordinal () - Modes.SEND1.ordinal ();
 
-        final ITrack t = this.model.getCurrentTrackBank ().getSelectedItem ();
-        if (t == null)
+        final Optional<ITrack> t = this.model.getCurrentTrackBank ().getSelectedItem ();
+        if (t.isEmpty ())
             return;
-        final ISendBank sendBank = t.getSendBank ();
+        final ISendBank sendBank = t.get ().getSendBank ();
         final ISend send = sendBank.getItem (sendIndex);
         if (send.doesExist ())
             this.surface.getDisplay ().notify ("Send " + (sendIndex + 1) + ": " + send.getName ());

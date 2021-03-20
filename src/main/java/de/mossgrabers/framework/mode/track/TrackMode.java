@@ -13,6 +13,7 @@ import de.mossgrabers.framework.daw.data.ITrack;
 import de.mossgrabers.framework.parameterprovider.track.SelectedTrackParameterProvider;
 
 import java.util.List;
+import java.util.Optional;
 
 
 /**
@@ -77,27 +78,28 @@ public class TrackMode<S extends IControlSurface<C>, C extends Configuration> ex
     @Override
     public void onKnobValue (final int index, final int value)
     {
-        final ITrack track = this.model.getCurrentTrackBank ().getSelectedItem ();
-        if (track == null)
+        final Optional<ITrack> track = this.model.getCurrentTrackBank ().getSelectedItem ();
+        if (track.isEmpty ())
             return;
+        final ITrack t = track.get ();
         switch (index)
         {
             case 0:
                 if (this.isAbsolute)
-                    track.setVolume (value);
+                    t.setVolume (value);
                 else
-                    track.changeVolume (value);
+                    t.changeVolume (value);
                 break;
 
             case 1:
                 if (this.isAbsolute)
-                    track.setPan (value);
+                    t.setPan (value);
                 else
-                    track.changePan (value);
+                    t.changePan (value);
                 break;
 
             default:
-                final ISend send = track.getSendBank ().getItem (index - 2);
+                final ISend send = t.getSendBank ().getItem (index - 2);
                 if (this.isAbsolute)
                     send.setValue (value);
                 else
@@ -111,25 +113,26 @@ public class TrackMode<S extends IControlSurface<C>, C extends Configuration> ex
     @Override
     public void onKnobTouch (final int index, final boolean isTouched)
     {
-        final ITrack track = this.model.getCurrentTrackBank ().getSelectedItem ();
-        if (track == null)
+        final Optional<ITrack> track = this.model.getCurrentTrackBank ().getSelectedItem ();
+        if (track.isEmpty ())
             return;
 
+        final ITrack t = track.get ();
         switch (index)
         {
             case 0:
                 if (isTouched && this.surface.isDeletePressed ())
-                    track.resetVolume ();
-                track.touchVolume (isTouched);
+                    t.resetVolume ();
+                t.touchVolume (isTouched);
                 break;
 
             case 1:
                 if (isTouched && this.surface.isDeletePressed ())
-                    track.resetPan ();
+                    t.resetPan ();
                 break;
 
             default:
-                final ISend item = track.getSendBank ().getItem (index - 2);
+                final ISend item = t.getSendBank ().getItem (index - 2);
                 if (isTouched && this.surface.isDeletePressed ())
                     item.resetValue ();
                 item.touchValue (isTouched);

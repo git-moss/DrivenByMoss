@@ -13,6 +13,8 @@ import de.mossgrabers.framework.daw.data.ITrack;
 import de.mossgrabers.framework.daw.data.bank.ITrackBank;
 import de.mossgrabers.framework.featuregroup.AbstractView;
 
+import java.util.Optional;
+
 
 /**
  * The track view.
@@ -48,8 +50,8 @@ public class TrackView extends AbstractView<BeatstepControlSurface, BeatstepConf
         }
 
         final ITrackBank tb = this.model.getCurrentTrackBank ();
-        final ITrack selectedTrack = tb.getSelectedItem ();
-        if (selectedTrack == null)
+        final Optional<ITrack> selectedTrack = tb.getSelectedItem ();
+        if (selectedTrack.isEmpty ())
             return;
 
         switch (index)
@@ -58,7 +60,7 @@ public class TrackView extends AbstractView<BeatstepControlSurface, BeatstepConf
             case 12:
             case 13:
                 if (!this.model.isEffectTrackBankActive ())
-                    selectedTrack.getSendBank ().getItem (index - 8).changeValue (value);
+                    selectedTrack.get ().getSendBank ().getItem (index - 8).changeValue (value);
                 break;
 
             case 14:
@@ -87,20 +89,20 @@ public class TrackView extends AbstractView<BeatstepControlSurface, BeatstepConf
         final ITrackBank tb = this.model.getCurrentTrackBank ();
 
         int track;
-        final ITrack selectedTrack = tb.getSelectedItem ();
+        final Optional<ITrack> selectedTrack = tb.getSelectedItem ();
         int index;
         switch (note - 36)
         {
             // Toggle Activate
             case 0:
 
-                if (selectedTrack != null)
-                    selectedTrack.toggleIsActivated ();
+                if (selectedTrack.isPresent ())
+                    selectedTrack.get ().toggleIsActivated ();
                 break;
 
             // Track left
             case 1:
-                index = selectedTrack == null ? 0 : selectedTrack.getIndex () - 1;
+                index = selectedTrack.isEmpty () ? 0 : selectedTrack.get ().getIndex () - 1;
                 if (index == -1 || this.surface.isShiftPressed ())
                     tb.selectPreviousPage ();
                 else
@@ -109,7 +111,7 @@ public class TrackView extends AbstractView<BeatstepControlSurface, BeatstepConf
 
             // Track right
             case 2:
-                index = selectedTrack == null ? 0 : selectedTrack.getIndex () + 1;
+                index = selectedTrack.isEmpty () ? 0 : selectedTrack.get ().getIndex () + 1;
                 if (index == 8 || this.surface.isShiftPressed ())
                     tb.selectNextPage ();
                 else
@@ -118,8 +120,8 @@ public class TrackView extends AbstractView<BeatstepControlSurface, BeatstepConf
 
             // Move down
             case 3:
-                if (selectedTrack != null)
-                    selectedTrack.enter ();
+                if (selectedTrack.isPresent ())
+                    selectedTrack.get ().enter ();
                 break;
 
             // Move up
@@ -158,8 +160,8 @@ public class TrackView extends AbstractView<BeatstepControlSurface, BeatstepConf
         for (int i = 0; i < 8; i++)
             padGrid.light (44 + i, tb.getItem (i).isSelected () ? BeatstepColorManager.BEATSTEP_BUTTON_STATE_BLUE : BeatstepColorManager.BEATSTEP_BUTTON_STATE_OFF);
 
-        final ITrack sel = tb.getSelectedItem ();
-        padGrid.light (36, sel != null && sel.isActivated () ? BeatstepColorManager.BEATSTEP_BUTTON_STATE_RED : BeatstepColorManager.BEATSTEP_BUTTON_STATE_OFF);
+        final Optional<ITrack> sel = tb.getSelectedItem ();
+        padGrid.light (36, sel.isPresent () && sel.get ().isActivated () ? BeatstepColorManager.BEATSTEP_BUTTON_STATE_RED : BeatstepColorManager.BEATSTEP_BUTTON_STATE_OFF);
         padGrid.light (37, BeatstepColorManager.BEATSTEP_BUTTON_STATE_BLUE);
         padGrid.light (38, BeatstepColorManager.BEATSTEP_BUTTON_STATE_BLUE);
         padGrid.light (39, BeatstepColorManager.BEATSTEP_BUTTON_STATE_RED);

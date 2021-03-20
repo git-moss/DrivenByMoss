@@ -39,7 +39,7 @@ public abstract class DefaultControllerDefinition implements IControllerDefiniti
      * @param numMidiInPorts The number of required midi in ports
      * @param numMidiOutPorts The number of required midi out ports
      */
-    public DefaultControllerDefinition (final UUID uuid, final String hardwareModel, final String hardwareVendor, final int numMidiInPorts, final int numMidiOutPorts)
+    protected DefaultControllerDefinition (final UUID uuid, final String hardwareModel, final String hardwareVendor, final int numMidiInPorts, final int numMidiOutPorts)
     {
         this.name = "";
         this.author = "Jürgen Moßgraber";

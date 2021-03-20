@@ -46,7 +46,7 @@ public abstract class AbstractHwAbsoluteControl<T extends AbsoluteHardwareContro
      * @param label The label of the control
      * @param hardwareControl The Bitwig hardware control to wrap
      */
-    public AbstractHwAbsoluteControl (final HostImpl host, final String label, final T hardwareControl)
+    protected AbstractHwAbsoluteControl (final HostImpl host, final String label, final T hardwareControl)
     {
         super (host, label);
 

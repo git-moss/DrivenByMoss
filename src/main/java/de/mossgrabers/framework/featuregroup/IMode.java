@@ -6,6 +6,8 @@ package de.mossgrabers.framework.featuregroup;
 
 import de.mossgrabers.framework.utils.ButtonEvent;
 
+import java.util.Optional;
+
 
 /**
  * Interface to a mode. A mode has a number of knobs, one or two rows of buttons to navigate it and
@@ -96,9 +98,9 @@ public interface IMode extends IFeatureGroup
     /**
      * Get the selected item if any.
      *
-     * @return THe selected item or null
+     * @return The selected item or null
      */
-    String getSelectedItemName ();
+    Optional<String> getSelectedItemName ();
 
 
     /**

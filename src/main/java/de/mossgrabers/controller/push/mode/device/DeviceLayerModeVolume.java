@@ -14,7 +14,10 @@ import de.mossgrabers.framework.controller.display.IGraphicDisplay;
 import de.mossgrabers.framework.controller.display.ITextDisplay;
 import de.mossgrabers.framework.daw.IModel;
 import de.mossgrabers.framework.daw.data.IChannel;
+import de.mossgrabers.framework.daw.data.ILayer;
 import de.mossgrabers.framework.mode.Modes;
+
+import java.util.Optional;
 
 
 /**
@@ -90,7 +93,7 @@ public class DeviceLayerModeVolume extends DeviceLayerMode
 
     /** {@inheritDoc} */
     @Override
-    public void updateDisplayElements (final IGraphicDisplay message, final IChannel l)
+    public void updateDisplayElements (final IGraphicDisplay message, final Optional<ILayer> l)
     {
         this.updateChannelDisplay (message, AbstractGraphicDisplay.GRID_ELEMENT_CHANNEL_VOLUME, true, false);
     }

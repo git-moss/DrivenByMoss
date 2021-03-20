@@ -38,7 +38,7 @@ public abstract class AbstractHwButton extends AbstractHwInputControl implements
      * @param host The host
      * @param label The label of the button
      */
-    public AbstractHwButton (final IHost host, final String label)
+    protected AbstractHwButton (final IHost host, final String label)
     {
         super (host, label);
     }

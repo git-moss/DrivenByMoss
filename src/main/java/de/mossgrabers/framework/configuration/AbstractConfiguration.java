@@ -28,6 +28,7 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
+import java.util.Optional;
 import java.util.Set;
 
 
@@ -405,7 +406,7 @@ public abstract class AbstractConfiguration implements Configuration
      * @param valueChanger The value changer
      * @param arpeggiatorModes The available arpeggiator modes
      */
-    public AbstractConfiguration (final IHost host, final IValueChanger valueChanger, final ArpeggiatorMode [] arpeggiatorModes)
+    protected AbstractConfiguration (final IHost host, final IValueChanger valueChanger, final ArpeggiatorMode [] arpeggiatorModes)
     {
         this.host = host;
         this.valueChanger = valueChanger;
@@ -1460,29 +1461,23 @@ public abstract class AbstractConfiguration implements Configuration
      */
     protected void activateDeviceFavorites (final ISettingsUI settingsUI, final int numFavInstruments, final int numFavAudio, final int numFavEffects)
     {
-        this.instrumentNames = getNames (this.host.getInstrumentMetadata ());
-        if (this.instrumentNames.length >= numFavInstruments)
+        this.instrumentNames = getDeviceNames (this.host.getInstrumentMetadata ());
+        for (int i = 0; i < numFavInstruments; i++)
         {
-            for (int i = 0; i < numFavInstruments; i++)
-            {
-                final IEnumSetting favSetting = settingsUI.getEnumSetting ("Instrument " + (i + 1), CATEGORY_FAV_DEVICES, this.instrumentNames, this.instrumentNames[i]);
-                this.instrumentSettings.add (favSetting);
-            }
+            final IEnumSetting favSetting = settingsUI.getEnumSetting ("Instrument " + (i + 1), CATEGORY_FAV_DEVICES, this.instrumentNames, this.instrumentNames[Math.min (this.instrumentNames.length - 1, i)]);
+            this.instrumentSettings.add (favSetting);
         }
 
-        this.effectNames = getNames (this.host.getAudioEffectMetadata ());
-        if (this.effectNames.length >= Math.max (numFavAudio, numFavEffects))
+        this.effectNames = getDeviceNames (this.host.getAudioEffectMetadata ());
+        for (int i = 0; i < numFavAudio; i++)
         {
-            for (int i = 0; i < numFavAudio; i++)
-            {
-                final IEnumSetting favSetting = settingsUI.getEnumSetting ("Audio " + (i + 1), CATEGORY_FAV_DEVICES, this.effectNames, this.effectNames[i]);
-                this.audioSettings.add (favSetting);
-            }
-            for (int i = 0; i < numFavEffects; i++)
-            {
-                final IEnumSetting favSetting = settingsUI.getEnumSetting ("Effect " + (i + 1), CATEGORY_FAV_DEVICES, this.effectNames, this.effectNames[i]);
-                this.effectSettings.add (favSetting);
-            }
+            final IEnumSetting favSetting = settingsUI.getEnumSetting ("Audio " + (i + 1), CATEGORY_FAV_DEVICES, this.effectNames, this.effectNames[Math.min (this.effectNames.length - 1, i)]);
+            this.audioSettings.add (favSetting);
+        }
+        for (int i = 0; i < numFavEffects; i++)
+        {
+            final IEnumSetting favSetting = settingsUI.getEnumSetting ("Effect " + (i + 1), CATEGORY_FAV_DEVICES, this.effectNames, this.effectNames[Math.min (this.effectNames.length - 1, i)]);
+            this.effectSettings.add (favSetting);
         }
     }
 
@@ -1719,12 +1714,14 @@ public abstract class AbstractConfiguration implements Configuration
      * @param index The index
      * @return The devices' metadata or null if none existing
      */
-    public IDeviceMetadata getInstrumentFavorite (final int index)
+    public Optional<IDeviceMetadata> getInstrumentFavorite (final int index)
     {
+        if (index >= this.instrumentSettings.size ())
+            return Optional.empty ();
         final String sel = this.instrumentSettings.get (index).get ();
         final int lookupIndex = lookupIndex (this.instrumentNames, sel);
         final List<IDeviceMetadata> instrumentMetadata = this.host.getInstrumentMetadata ();
-        return lookupIndex >= instrumentMetadata.size () ? null : instrumentMetadata.get (lookupIndex);
+        return Optional.ofNullable (lookupIndex >= instrumentMetadata.size () ? null : instrumentMetadata.get (lookupIndex));
     }
 
 
@@ -1734,12 +1731,14 @@ public abstract class AbstractConfiguration implements Configuration
      * @param index The index
      * @return The devices' metadata or null if none existing
      */
-    public IDeviceMetadata getAudioFavorite (final int index)
+    public Optional<IDeviceMetadata> getAudioFavorite (final int index)
     {
+        if (index >= this.audioSettings.size ())
+            return Optional.empty ();
         final String sel = this.audioSettings.get (index).get ();
         final int lookupIndex = lookupIndex (this.effectNames, sel);
         final List<IDeviceMetadata> effectMetadata = this.host.getAudioEffectMetadata ();
-        return lookupIndex >= effectMetadata.size () ? null : effectMetadata.get (lookupIndex);
+        return Optional.ofNullable (lookupIndex >= effectMetadata.size () ? null : effectMetadata.get (lookupIndex));
     }
 
 
@@ -1749,20 +1748,22 @@ public abstract class AbstractConfiguration implements Configuration
      * @param index The index
      * @return The devices' metadata or null if none existing
      */
-    public IDeviceMetadata getEffectFavorite (final int index)
+    public Optional<IDeviceMetadata> getEffectFavorite (final int index)
     {
+        if (index >= this.effectSettings.size ())
+            return Optional.empty ();
         final String sel = this.effectSettings.get (index).get ();
         final int lookupIndex = lookupIndex (this.effectNames, sel);
         final List<IDeviceMetadata> effectMetadata = this.host.getAudioEffectMetadata ();
-        return lookupIndex >= effectMetadata.size () ? null : effectMetadata.get (lookupIndex);
+        return Optional.ofNullable (lookupIndex >= effectMetadata.size () ? null : effectMetadata.get (lookupIndex));
     }
 
 
-    private static String [] getNames (final List<IDeviceMetadata> deviceMetadata)
+    private static String [] getDeviceNames (final List<IDeviceMetadata> deviceMetadata)
     {
         final String [] deviceNames = new String [deviceMetadata.size ()];
         for (int i = 0; i < deviceNames.length; i++)
-            deviceNames[i] = deviceMetadata.get (i).getName ();
+            deviceNames[i] = deviceMetadata.get (i).getFullName ();
         return deviceNames;
     }
 }

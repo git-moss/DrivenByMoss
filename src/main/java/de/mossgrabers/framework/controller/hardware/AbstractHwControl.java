@@ -24,7 +24,7 @@ public abstract class AbstractHwControl implements IHwControl
      * @param host The host
      * @param label The label of the control
      */
-    public AbstractHwControl (final IHost host, final String label)
+    protected AbstractHwControl (final IHost host, final String label)
     {
         this.host = host;
         this.label = label;

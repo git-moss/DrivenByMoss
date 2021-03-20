@@ -36,7 +36,7 @@ public abstract class AbstractBank<T> implements IBank<T>
      * @param host The DAW host
      * @param pageSize The number of elements in a page of the bank
      */
-    public AbstractBank (final IHost host, final int pageSize)
+    protected AbstractBank (final IHost host, final int pageSize)
     {
         this.host = host;
         this.pageSize = pageSize;

@@ -19,6 +19,8 @@ import de.mossgrabers.framework.featuregroup.AbstractView;
 import de.mossgrabers.framework.scale.Scales;
 import de.mossgrabers.framework.utils.ButtonEvent;
 
+import java.util.Optional;
+
 
 /**
  * Abstract implementation for a 64 (or more) drum grid consisting of 4x4 blocks. Blocks start on
@@ -52,7 +54,7 @@ public abstract class AbstractDrum64View<S extends IControlSurface<C>, C extends
      * @param surface The surface
      * @param model The model
      */
-    public AbstractDrum64View (final S surface, final IModel model)
+    protected AbstractDrum64View (final S surface, final IModel model)
     {
         this (surface, model, 8, 8);
     }
@@ -66,7 +68,7 @@ public abstract class AbstractDrum64View<S extends IControlSurface<C>, C extends
      * @param columns The number of columns of the grid
      * @param rows The number of rows of the grid
      */
-    public AbstractDrum64View (final S surface, final IModel model, final int columns, final int rows)
+    protected AbstractDrum64View (final S surface, final IModel model, final int columns, final int rows)
     {
         super ("Drum 64", surface, model);
 
@@ -405,8 +407,8 @@ public abstract class AbstractDrum64View<S extends IControlSurface<C>, C extends
      */
     private void updateNote (final int trackIndex, final int note, final int velocity)
     {
-        final ITrack sel = this.model.getCurrentTrackBank ().getSelectedItem ();
-        if (sel != null && sel.getIndex () == trackIndex)
+        final Optional<ITrack> sel = this.model.getCurrentTrackBank ().getSelectedItem ();
+        if (sel.isPresent () && sel.get ().getIndex () == trackIndex)
             this.pressedKeys[note] = velocity;
     }
 }

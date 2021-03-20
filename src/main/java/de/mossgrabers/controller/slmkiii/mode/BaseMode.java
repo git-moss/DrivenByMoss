@@ -37,7 +37,7 @@ public abstract class BaseMode<B extends IItem> extends AbstractMode<SLMkIIICont
      * @param surface The control surface
      * @param model The model
      */
-    public BaseMode (final String name, final SLMkIIIControlSurface surface, final IModel model)
+    protected BaseMode (final String name, final SLMkIIIControlSurface surface, final IModel model)
     {
         super (name, surface, model, true);
     }
@@ -51,7 +51,7 @@ public abstract class BaseMode<B extends IItem> extends AbstractMode<SLMkIIICont
      * @param model The model
      * @param bank The parameter bank to control with this mode, might be null
      */
-    public BaseMode (final String name, final SLMkIIIControlSurface surface, final IModel model, final IBank<B> bank)
+    protected BaseMode (final String name, final SLMkIIIControlSurface surface, final IModel model, final IBank<B> bank)
     {
         super (name, surface, model, false, bank, DEFAULT_KNOB_IDS);
     }

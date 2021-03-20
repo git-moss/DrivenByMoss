@@ -14,6 +14,7 @@ import java.nio.ByteBuffer;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Optional;
 
 
 /**
@@ -481,9 +482,12 @@ public class Kontrol1UsbDevice
         try
         {
             this.usbDevice = host.getUsbDevice (0);
-            this.hidDevice = this.usbDevice.getHidDevice ();
-            if (this.hidDevice != null)
+            final Optional<IHidDevice> hidDevOpt = this.usbDevice.getHidDevice ();
+            if (hidDevOpt.isPresent ())
+            {
+                this.hidDevice = hidDevOpt.get ();
                 this.hidDevice.setCallback ( (reportID, data, received) -> this.processHIDMessage (reportID, data));
+            }
         }
         catch (final UsbException ex)
         {

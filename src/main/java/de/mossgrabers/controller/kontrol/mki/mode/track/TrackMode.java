@@ -17,6 +17,7 @@ import de.mossgrabers.framework.parameterprovider.track.SelectedTrackParameterPr
 import de.mossgrabers.framework.utils.StringUtils;
 
 import java.util.Locale;
+import java.util.Optional;
 
 
 /**
@@ -47,12 +48,12 @@ public class TrackMode extends AbstractKontrol1Mode<ITrack>
     public void updateDisplay ()
     {
         final ITrackBank currentTrackBank = this.model.getCurrentTrackBank ();
-        final ITrack t = currentTrackBank.getSelectedItem ();
+        final Optional<ITrack> t = currentTrackBank.getSelectedItem ();
         final Kontrol1Display d = (Kontrol1Display) this.surface.getDisplay ();
 
         d.clear ();
 
-        if (t == null)
+        if (t.isEmpty ())
         {
             d.setCell (0, 3, "  PLEASE").setCell (0, 4, "SELECT A").setCell (0, 5, "TRACK").allDone ();
             return;
@@ -60,15 +61,16 @@ public class TrackMode extends AbstractKontrol1Mode<ITrack>
 
         final boolean isEffectTrackBankActive = this.model.isEffectTrackBankActive ();
 
-        d.setCell (0, 0, (isEffectTrackBankActive ? "TR-FX " : "TRACK ") + (t.getPosition () + 1)).setCell (1, 0, StringUtils.shortenAndFixASCII (t.getName (), 8).toUpperCase (Locale.US));
+        final ITrack track = t.get ();
+        d.setCell (0, 0, (isEffectTrackBankActive ? "TR-FX " : "TRACK ") + (track.getPosition () + 1)).setCell (1, 0, StringUtils.shortenAndFixASCII (track.getName (), 8).toUpperCase (Locale.US));
 
-        d.setCell (0, 1, "VOLUME").setCell (1, 1, getSecondLineText (t)).setCell (0, 2, "PAN").setCell (1, 2, t.getPanStr (8));
-        d.setBar (1, this.surface.getContinuous (ContinuousID.KNOB1).isTouched (), t.getVolume ());
-        d.setPanBar (2, this.surface.getContinuous (ContinuousID.KNOB2).isTouched (), t.getPan ());
+        d.setCell (0, 1, "VOLUME").setCell (1, 1, getSecondLineText (track)).setCell (0, 2, "PAN").setCell (1, 2, track.getPanStr (8));
+        d.setBar (1, this.surface.getContinuous (ContinuousID.KNOB1).isTouched (), track.getVolume ());
+        d.setPanBar (2, this.surface.getContinuous (ContinuousID.KNOB2).isTouched (), track.getPan ());
 
         if (!isEffectTrackBankActive)
         {
-            final ISendBank sendBank = t.getSendBank ();
+            final ISendBank sendBank = track.getSendBank ();
             for (int i = 0; i < 6; i++)
             {
                 final int pos = 3 + i;

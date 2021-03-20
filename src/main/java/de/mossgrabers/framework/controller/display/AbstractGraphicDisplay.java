@@ -96,7 +96,7 @@ public abstract class AbstractGraphicDisplay implements IGraphicDisplay
      * @param dimensions The pre-calculated dimensions
      * @param windowTitle The window title
      */
-    public AbstractGraphicDisplay (final IHost host, final IGraphicsConfiguration configuration, final IGraphicsDimensions dimensions, final String windowTitle)
+    protected AbstractGraphicDisplay (final IHost host, final IGraphicsConfiguration configuration, final IGraphicsDimensions dimensions, final String windowTitle)
     {
         this.host = host;
         this.configuration = configuration;
@@ -146,6 +146,7 @@ public abstract class AbstractGraphicDisplay implements IGraphicDisplay
         catch (final InterruptedException ex)
         {
             this.host.error ("USB display send executor did not end in 10 seconds. Interrupted.", ex);
+            Thread.currentThread ().interrupt ();
         }
     }
 

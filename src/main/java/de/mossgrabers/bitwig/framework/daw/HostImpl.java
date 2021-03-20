@@ -44,6 +44,7 @@ import java.io.StringWriter;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import java.util.Optional;
 
 
 /**
@@ -53,11 +54,11 @@ import java.util.List;
  */
 public class HostImpl implements IHost
 {
-    private static final List<DeviceMetadataImpl> instrumentsMetadata  = new ArrayList<> ();
-    private static final List<DeviceMetadataImpl> audioEffectsMetadata = new ArrayList<> ();
+    private static final List<IDeviceMetadata> instrumentsMetadata  = new ArrayList<> ();
+    private static final List<IDeviceMetadata> audioEffectsMetadata = new ArrayList<> ();
 
-    private ControllerHost                        host;
-    private List<IUsbDevice>                      usbDevices           = new ArrayList<> ();
+    private ControllerHost                     host;
+    private List<IUsbDevice>                   usbDevices           = new ArrayList<> ();
 
 
     /**
@@ -299,37 +300,41 @@ public class HostImpl implements IHost
                 return;
 
             readDeviceFile ("Instruments.txt").forEach (line -> {
-                final DeviceMetadataImpl dm = parseDeviceLine (line);
-                if (dm != null)
-                    instrumentsMetadata.add (dm);
+                final Optional<IDeviceMetadata> dm = parseDeviceLine (line);
+                if (dm.isPresent ())
+                    instrumentsMetadata.add (dm.get ());
             });
             readDeviceFile ("AudioEffects.txt").forEach (line -> {
-                final DeviceMetadataImpl dm = parseDeviceLine (line);
-                if (dm != null)
-                    audioEffectsMetadata.add (dm);
+                final Optional<IDeviceMetadata> dm = parseDeviceLine (line);
+                if (dm.isPresent ())
+                    audioEffectsMetadata.add (dm.get ());
             });
         }
     }
 
 
-    private static DeviceMetadataImpl parseDeviceLine (final String line)
+    private static Optional<IDeviceMetadata> parseDeviceLine (final String line)
     {
+        // Ignore comments
+        if (line.startsWith ("#"))
+            return Optional.empty ();
+
         final String [] parts = line.split ("\\$");
         if (parts.length != 3)
         {
             ConsoleLogger.log ("Could not parse device line. Wrong number of parts: " + line);
-            return null;
+            return Optional.empty ();
         }
 
         try
         {
             final PluginType type = PluginType.valueOf (parts[0]);
-            return new DeviceMetadataImpl (parts[1], parts[2], type);
+            return Optional.of (new DeviceMetadataImpl (parts[1], parts[2], type));
         }
         catch (final IllegalArgumentException ex)
         {
             ConsoleLogger.log ("Could not parse device line. Wrong type argument: " + line);
-            return null;
+            return Optional.empty ();
         }
     }
 

@@ -16,8 +16,10 @@ import de.mossgrabers.framework.daw.data.bank.IParameterPageBank;
 import de.mossgrabers.framework.mode.device.ParameterMode;
 import de.mossgrabers.framework.parameterprovider.device.BankParameterProvider;
 import de.mossgrabers.framework.parameterprovider.special.CombinedParameterProvider;
+import de.mossgrabers.framework.utils.StringUtils;
 
 import java.util.List;
+import java.util.Optional;
 
 
 /**
@@ -91,7 +93,8 @@ public class ParamsMode extends ParameterMode<KontrolProtocolControlSurface, Kon
         final IValueChanger valueChanger = this.model.getValueChanger ();
 
         final IParameterPageBank parameterPageBank = this.cursorDevice.getParameterPageBank ();
-        final String selectedPage = parameterPageBank.getSelectedItem ();
+        final Optional<String> selectedItem = parameterPageBank.getSelectedItem ();
+        final String selectedPage = selectedItem.isPresent () ? StringUtils.optimizeName (selectedItem.get (), 8) : "";
 
         final int [] vuData = new int [16];
         for (int i = 0; i < 8; i++)
@@ -102,10 +105,11 @@ public class ParamsMode extends ParameterMode<KontrolProtocolControlSurface, Kon
             this.surface.sendKontrolTrackSysEx (KontrolProtocolControlSurface.KONTROL_TRACK_AVAILABLE, TrackType.GENERIC, i);
             this.surface.sendKontrolTrackSysEx (KontrolProtocolControlSurface.KONTROL_TRACK_SELECTED, parameter.isSelected () ? 1 : 0, i);
             this.surface.sendKontrolTrackSysEx (KontrolProtocolControlSurface.KONTROL_TRACK_RECARM, 0, i);
-            final String info = parameter.doesExist () ? parameter.getDisplayedValue (8) : " ";
+            final boolean exists = parameter.doesExist ();
+            final String info = exists ? parameter.getDisplayedValue (8) : " ";
             this.surface.sendKontrolTrackSysEx (KontrolProtocolControlSurface.KONTROL_TRACK_VOLUME_TEXT, 0, i, info);
             this.surface.sendKontrolTrackSysEx (KontrolProtocolControlSurface.KONTROL_TRACK_PAN_TEXT, 0, i, info);
-            final String name = parameter.doesExist () ? this.cursorDevice.getName () + "\n" + selectedPage + "\n" + parameter.getName () : "None";
+            final String name = exists ? this.cursorDevice.getName (8) + "\n" + selectedPage + "\n" + parameter.getName (16) : "None";
             this.surface.sendKontrolTrackSysEx (KontrolProtocolControlSurface.KONTROL_TRACK_NAME, 0, i, name);
 
             final int j = 2 * i;

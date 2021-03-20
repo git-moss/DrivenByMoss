@@ -86,6 +86,8 @@ import de.mossgrabers.framework.view.AbstractSequencerView;
 import de.mossgrabers.framework.view.TempoView;
 import de.mossgrabers.framework.view.Views;
 
+import java.util.Optional;
+
 
 /**
  * Support for the Akai APC40 mkI and APC40 mkII controllers.
@@ -411,8 +413,8 @@ public class APCControllerSetup extends AbstractControllerSetup<APCControlSurfac
             surface.getButton (ButtonID.SEND1).setBounds (562.25, 96.0, 33.25, 15.25);
             surface.getButton (ButtonID.SEND2).setBounds (562.25, 132.0, 33.25, 15.25);
 
-            surface.getButton (ButtonID.ARROW_DOWN).setBounds (581.25, 361.75, 33.25, 25.0);
-            surface.getButton (ButtonID.ARROW_UP).setBounds (581.5, 386.25, 33.25, 25.0);
+            surface.getButton (ButtonID.ARROW_UP).setBounds (581.25, 361.75, 33.25, 25.0);
+            surface.getButton (ButtonID.ARROW_DOWN).setBounds (581.5, 386.25, 33.25, 25.0);
             surface.getButton (ButtonID.ARROW_LEFT).setBounds (562.5, 361.75, 17.0, 49.25);
             surface.getButton (ButtonID.ARROW_RIGHT).setBounds (616.0, 361.75, 17.0, 49.25);
 
@@ -775,8 +777,8 @@ public class APCControllerSetup extends AbstractControllerSetup<APCControlSurfac
                 if (isShift)
                     return index == clipLength;
 
-                final ITrack selTrack = tb.getSelectedItem ();
-                final int selIndex = selTrack == null ? -1 : selTrack.getIndex ();
+                final Optional<ITrack> selTrack = tb.getSelectedItem ();
+                final int selIndex = selTrack.isEmpty () ? -1 : selTrack.get ().getIndex ();
 
                 // Handle user mode selection
                 if (surface.isMkII () && surface.isPressed (ButtonID.SEND2))

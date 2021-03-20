@@ -8,10 +8,12 @@ import de.mossgrabers.framework.command.core.AbstractTriggerCommand;
 import de.mossgrabers.framework.configuration.Configuration;
 import de.mossgrabers.framework.controller.IControlSurface;
 import de.mossgrabers.framework.daw.IModel;
-import de.mossgrabers.framework.daw.data.IChannel;
 import de.mossgrabers.framework.daw.data.ICursorDevice;
+import de.mossgrabers.framework.daw.data.ILayer;
 import de.mossgrabers.framework.daw.data.bank.IChannelBank;
 import de.mossgrabers.framework.utils.ButtonEvent;
+
+import java.util.Optional;
 
 
 /**
@@ -46,8 +48,7 @@ public class DeviceLayerLeftCommand<S extends IControlSurface<C>, C extends Conf
 
         final ICursorDevice cd = this.model.getCursorDevice ();
         final IChannelBank<?> bank = cd.getLayerOrDrumPadBank ();
-        final IChannel layer = bank.getSelectedItem ();
-        if (!cd.hasLayers () || layer == null)
+        if (!cd.hasLayers () || bank.getSelectedItem ().isEmpty ())
             cd.selectPrevious ();
         else
             bank.selectPreviousItem ();
@@ -64,8 +65,8 @@ public class DeviceLayerLeftCommand<S extends IControlSurface<C>, C extends Conf
         // Exit layer
         final ICursorDevice cd = this.model.getCursorDevice ();
         final IChannelBank<?> bank = cd.getLayerOrDrumPadBank ();
-        final IChannel layer = bank.getSelectedItem ();
-        if (!cd.hasLayers () || layer == null)
+        final Optional<?> layer = bank.getSelectedItem ();
+        if (!cd.hasLayers () || layer.isEmpty ())
         {
             if (cd.isNested ())
             {
@@ -74,7 +75,7 @@ public class DeviceLayerLeftCommand<S extends IControlSurface<C>, C extends Conf
             }
         }
         else
-            layer.setSelected (false);
+            ((ILayer) layer.get ()).setSelected (false);
     }
 
 
@@ -90,7 +91,7 @@ public class DeviceLayerLeftCommand<S extends IControlSurface<C>, C extends Conf
 
         final ICursorDevice cd = this.model.getCursorDevice ();
         final IChannelBank<?> bank = cd.getLayerOrDrumPadBank ();
-        final IChannel layer = bank.getSelectedItem ();
-        return cd.hasLayers () && layer != null ? bank.canScrollBackwards () : cd.canSelectPreviousFX ();
+        final Optional<?> layer = bank.getSelectedItem ();
+        return cd.hasLayers () && layer.isPresent () ? bank.canScrollBackwards () : cd.canSelectPreviousFX ();
     }
 }

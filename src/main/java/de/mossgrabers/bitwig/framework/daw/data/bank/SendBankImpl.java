@@ -32,7 +32,11 @@ public class SendBankImpl extends AbstractItemBankImpl<SendBank, ISend> implemen
     {
         super (host, valueChanger, sendBank, numSends);
 
+        if (this.bank.isEmpty ())
+            return;
+
+        final SendBank sb = this.bank.get ();
         for (int i = 0; i < this.getPageSize (); i++)
-            this.items.add (new SendImpl (this, this.valueChanger, this.bank.getItemAt (i), i));
+            this.items.add (new SendImpl (this, this.valueChanger, sb.getItemAt (i), i));
     }
 }

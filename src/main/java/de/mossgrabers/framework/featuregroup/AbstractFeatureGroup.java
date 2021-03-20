@@ -42,7 +42,7 @@ public abstract class AbstractFeatureGroup<S extends IControlSurface<C>, C exten
      * @param surface The surface
      * @param model The model
      */
-    public AbstractFeatureGroup (final String name, final S surface, final IModel model)
+    protected AbstractFeatureGroup (final String name, final S surface, final IModel model)
     {
         this.name = name;
         this.surface = surface;

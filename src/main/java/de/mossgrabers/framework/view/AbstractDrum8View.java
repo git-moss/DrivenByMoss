@@ -26,7 +26,7 @@ public abstract class AbstractDrum8View<S extends IControlSurface<C>, C extends 
      * @param model The model
      * @param useDawColors True to use the drum machine pad colors for coloring the octaves
      */
-    public AbstractDrum8View (final S surface, final IModel model, final boolean useDawColors)
+    protected AbstractDrum8View (final S surface, final IModel model, final boolean useDawColors)
     {
         super (Views.NAME_DRUM8, surface, model, 8, 8, useDawColors);
     }

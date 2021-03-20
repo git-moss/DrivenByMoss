@@ -15,6 +15,7 @@ import de.mossgrabers.framework.daw.data.ISend;
 import de.mossgrabers.framework.osc.IOpenSoundControlWriter;
 
 import java.util.LinkedList;
+import java.util.Optional;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -54,7 +55,7 @@ public abstract class AbstractModule implements IModule
      * @param model The model
      * @param writer The writer
      */
-    public AbstractModule (final IHost host, final IModel model, final IOpenSoundControlWriter writer)
+    protected AbstractModule (final IHost host, final IModel model, final IOpenSoundControlWriter writer)
     {
         this.host = host;
         this.model = model;
@@ -191,14 +192,14 @@ public abstract class AbstractModule implements IModule
     }
 
 
-    protected static ColorEx matchColor (final String value)
+    protected static Optional<ColorEx> matchColor (final String value)
     {
         final Matcher matcher = RGB_COLOR_PATTERN.matcher (value);
         if (!matcher.matches ())
-            return null;
+            return Optional.empty ();
         final int count = matcher.groupCount ();
         if (count == 7)
-            return new ColorEx (Double.parseDouble (matcher.group (2)) / 255.0, Double.parseDouble (matcher.group (4)) / 255.0, Double.parseDouble (matcher.group (6)) / 255.0);
-        return null;
+            return Optional.of (new ColorEx (Double.parseDouble (matcher.group (2)) / 255.0, Double.parseDouble (matcher.group (4)) / 255.0, Double.parseDouble (matcher.group (6)) / 255.0));
+        return Optional.empty ();
     }
 }

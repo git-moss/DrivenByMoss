@@ -106,7 +106,7 @@ public abstract class AbstractControlSurface<C extends Configuration> implements
      * @param width The physical width of the controller device in mm
      * @param height The physical height of the controller device in mm
      */
-    public AbstractControlSurface (final IHost host, final C configuration, final ColorManager colorManager, final IMidiOutput output, final IMidiInput input, final IPadGrid padGrid, final double width, final double height)
+    protected AbstractControlSurface (final IHost host, final C configuration, final ColorManager colorManager, final IMidiOutput output, final IMidiInput input, final IPadGrid padGrid, final double width, final double height)
     {
         this (0, host, configuration, colorManager, output, input, padGrid, width, height);
     }
@@ -125,7 +125,7 @@ public abstract class AbstractControlSurface<C extends Configuration> implements
      * @param width The physical width of the controller device in mm
      * @param height The physical height of the controller device in mm
      */
-    public AbstractControlSurface (final int surfaceID, final IHost host, final C configuration, final ColorManager colorManager, final IMidiOutput output, final IMidiInput input, final IPadGrid padGrid, final double width, final double height)
+    protected AbstractControlSurface (final int surfaceID, final IHost host, final C configuration, final ColorManager colorManager, final IMidiOutput output, final IMidiInput input, final IPadGrid padGrid, final double width, final double height)
     {
         this (surfaceID, host, configuration, colorManager, output, input, padGrid, null, width, height);
     }
@@ -145,7 +145,7 @@ public abstract class AbstractControlSurface<C extends Configuration> implements
      * @param width The physical width of the controller device in mm
      * @param height The physical height of the controller device in mm
      */
-    public AbstractControlSurface (final int surfaceID, final IHost host, final C configuration, final ColorManager colorManager, final IMidiOutput output, final IMidiInput input, final IPadGrid padGrid, final ILightGuide lightGuide, final double width, final double height)
+    protected AbstractControlSurface (final int surfaceID, final IHost host, final C configuration, final ColorManager colorManager, final IMidiOutput output, final IMidiInput input, final IPadGrid padGrid, final ILightGuide lightGuide, final double width, final double height)
     {
         this.surfaceID = surfaceID;
 

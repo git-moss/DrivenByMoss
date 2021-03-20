@@ -14,6 +14,8 @@ import de.mossgrabers.framework.featuregroup.ModeManager;
 import de.mossgrabers.framework.mode.Modes;
 import de.mossgrabers.framework.utils.ButtonEvent;
 
+import java.util.Optional;
+
 
 /**
  * Select a send mode.
@@ -69,11 +71,14 @@ public class SendModeCommand extends AbstractTriggerCommand<APCControlSurface, A
 
         String modeName = "Send " + (index + 1) + ": ";
         final ITrackBank trackBank = this.model.getTrackBank ();
-        ITrack selectedTrack = trackBank.getSelectedItem ();
-        if (selectedTrack == null)
-            selectedTrack = trackBank.getItem (0);
-        if (selectedTrack != null)
-            modeName += selectedTrack.getSendBank ().getItem (index).getName ();
+        Optional<ITrack> selectedTrack = trackBank.getSelectedItem ();
+        if (selectedTrack.isEmpty ())
+        {
+            final ITrack item = trackBank.getItem (0);
+            selectedTrack = item.doesExist () ? Optional.of (item) : Optional.empty ();
+        }
+        if (selectedTrack.isPresent ())
+            modeName += selectedTrack.get ().getSendBank ().getItem (index).getName ();
         else
             modeName += "-";
 

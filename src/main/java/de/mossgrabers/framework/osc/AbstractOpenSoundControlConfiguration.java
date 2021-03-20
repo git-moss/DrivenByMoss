@@ -40,7 +40,7 @@ public abstract class AbstractOpenSoundControlConfiguration extends AbstractConf
      * @param valueChanger The value changer
      * @param arpeggiatorModes The available arpeggiator modes
      */
-    public AbstractOpenSoundControlConfiguration (final IHost host, final IValueChanger valueChanger, final ArpeggiatorMode [] arpeggiatorModes)
+    protected AbstractOpenSoundControlConfiguration (final IHost host, final IValueChanger valueChanger, final ArpeggiatorMode [] arpeggiatorModes)
     {
         super (host, valueChanger, arpeggiatorModes);
     }

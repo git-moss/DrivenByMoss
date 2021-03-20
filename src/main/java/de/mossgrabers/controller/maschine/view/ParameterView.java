@@ -16,6 +16,8 @@ import de.mossgrabers.framework.featuregroup.AbstractFeatureGroup;
 import de.mossgrabers.framework.mode.Modes;
 import de.mossgrabers.framework.mode.device.SelectedDeviceMode;
 
+import java.util.Optional;
+
 
 /**
  * The Parameter view.
@@ -92,8 +94,8 @@ public class ParameterView extends BaseView
         this.model.getHost ().scheduleTask ( () -> {
 
             final StringBuilder message = new StringBuilder ();
-            final String selectedPage = cursorDevice.getParameterPageBank ().getSelectedItem ();
-            if (selectedPage == null)
+            final Optional<String> selectedPage = cursorDevice.getParameterPageBank ().getSelectedItem ();
+            if (selectedPage.isEmpty ())
                 message.append ("No parameters available.");
             else
             {

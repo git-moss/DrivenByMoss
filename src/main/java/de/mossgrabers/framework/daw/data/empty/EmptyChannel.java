@@ -366,7 +366,7 @@ public class EmptyChannel extends EmptyItem implements IChannel
 
     /** {@inheritDoc} */
     @Override
-    public void addDevice (IDeviceMetadata metadata)
+    public void addDevice (final IDeviceMetadata metadata)
     {
         // Intentionally empty
     }

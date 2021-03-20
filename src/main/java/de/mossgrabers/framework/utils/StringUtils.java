@@ -92,7 +92,7 @@ public class StringUtils
     public static String fixASCII (final String text)
     {
         if (text == null)
-            return null;
+            return "";
         final StringBuilder str = new StringBuilder ();
         for (int i = 0; i < text.length (); i++)
         {
@@ -155,23 +155,13 @@ public class StringUtils
     public static String fixFontCharacters (final String text)
     {
         if (text == null)
-            return null;
+            return "";
         final StringBuilder str = new StringBuilder ();
         for (int i = 0; i < text.length (); i++)
         {
             final char c = text.charAt (i);
-            if (c > 127)
-            {
-                switch (c)
-                {
-                    case '♯':
-                        str.append ("#");
-                        break;
-                    default:
-                        str.append (c);
-                        break;
-                }
-            }
+            if (c == '♯')
+                str.append ("#");
             else
                 str.append (c);
         }

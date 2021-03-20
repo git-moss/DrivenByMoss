@@ -16,6 +16,8 @@ import de.mossgrabers.framework.daw.data.ITrack;
 import de.mossgrabers.framework.daw.data.bank.IDrumPadBank;
 import de.mossgrabers.framework.daw.data.bank.ITrackBank;
 
+import java.util.Optional;
+
 
 /**
  * The Drum view.
@@ -207,8 +209,8 @@ public class DrumView extends BaseSequencerView
      */
     private void updateNote (final int trackIndex, final int note, final int velocity)
     {
-        final ITrack sel = this.model.getCurrentTrackBank ().getSelectedItem ();
-        if (sel != null && sel.getIndex () == trackIndex)
+        final Optional<ITrack> sel = this.model.getCurrentTrackBank ().getSelectedItem ();
+        if (sel.isPresent () && sel.get ().getIndex () == trackIndex)
             this.keyManager.setKeyPressed (note, velocity);
     }
 }

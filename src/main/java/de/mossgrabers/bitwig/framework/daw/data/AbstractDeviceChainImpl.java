@@ -28,7 +28,7 @@ public abstract class AbstractDeviceChainImpl<T extends DeviceChain> extends Abs
      * @param index The index of the device chain
      * @param deviceChain The Bitwig device chain
      */
-    public AbstractDeviceChainImpl (final int index, final T deviceChain)
+    protected AbstractDeviceChainImpl (final int index, final T deviceChain)
     {
         super (index);
 

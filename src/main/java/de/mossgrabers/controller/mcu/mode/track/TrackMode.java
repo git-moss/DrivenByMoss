@@ -14,6 +14,8 @@ import de.mossgrabers.framework.parameterprovider.special.RangeFilterParameterPr
 import de.mossgrabers.framework.parameterprovider.track.SelectedTrackParameterProvider;
 import de.mossgrabers.framework.utils.StringUtils;
 
+import java.util.Optional;
+
 
 /**
  * Mode for editing a track parameters.
@@ -43,8 +45,8 @@ public class TrackMode extends AbstractTrackMode
     @Override
     public void onKnobTouch (final int index, final boolean isTouched)
     {
-        final ITrack selectedTrack = this.getSelectedTrack ();
-        if (selectedTrack == null)
+        final Optional<ITrack> selectedTrack = this.getSelectedTrack ();
+        if (selectedTrack.isEmpty ())
             return;
 
         this.isKnobTouched[index] = isTouched;
@@ -52,13 +54,13 @@ public class TrackMode extends AbstractTrackMode
         switch (index)
         {
             case 0:
-                selectedTrack.touchVolume (isTouched);
+                selectedTrack.get ().touchVolume (isTouched);
                 break;
             case 1:
-                selectedTrack.touchPan (isTouched);
+                selectedTrack.get ().touchPan (isTouched);
                 break;
             default:
-                selectedTrack.getSendBank ().getItem (index - 2).touchValue (isTouched);
+                selectedTrack.get ().getSendBank ().getItem (index - 2).touchValue (isTouched);
                 break;
         }
     }
@@ -77,8 +79,8 @@ public class TrackMode extends AbstractTrackMode
 
         final ITextDisplay d = this.surface.getTextDisplay ().clear ();
 
-        final ITrack selectedTrack = this.getSelectedTrack ();
-        if (selectedTrack == null)
+        final Optional<ITrack> selectedTrack = this.getSelectedTrack ();
+        if (selectedTrack.isEmpty ())
         {
             d.notify ("Please select a track...");
             return;
@@ -91,13 +93,14 @@ public class TrackMode extends AbstractTrackMode
             d.setCell (0, 1, "Pan");
         }
 
-        d.setCell (1, 0, selectedTrack.getVolumeStr (6));
-        d.setCell (1, 1, selectedTrack.getPanStr (6));
+        final ITrack t = selectedTrack.get ();
+        d.setCell (1, 0, t.getVolumeStr (6));
+        d.setCell (1, 1, t.getPanStr (6));
 
         final int sendStart = 2;
         final int sendCount = 6;
         final boolean isEffectTrackBankActive = this.model.isEffectTrackBankActive ();
-        final ISendBank sendBank = selectedTrack.getSendBank ();
+        final ISendBank sendBank = t.getSendBank ();
         for (int i = 0; i < sendCount; i++)
         {
             final int pos = sendStart + i;
@@ -125,22 +128,23 @@ public class TrackMode extends AbstractTrackMode
     {
         final int upperBound = this.model.getValueChanger ().getUpperBound ();
 
-        final ITrack t = this.getSelectedTrack ();
-        if (t == null)
+        final Optional<ITrack> t = this.getSelectedTrack ();
+        if (t.isEmpty ())
         {
             for (int i = 0; i < 8; i++)
                 this.surface.setKnobLED (i, MCUControlSurface.KNOB_LED_MODE_WRAP, 0, upperBound);
             return;
         }
 
-        this.surface.setKnobLED (0, MCUControlSurface.KNOB_LED_MODE_WRAP, t.getVolume (), upperBound);
-        this.surface.setKnobLED (1, MCUControlSurface.KNOB_LED_MODE_BOOST_CUT, t.getPan (), upperBound);
+        final ITrack track = t.get ();
+        this.surface.setKnobLED (0, MCUControlSurface.KNOB_LED_MODE_WRAP, track.getVolume (), upperBound);
+        this.surface.setKnobLED (1, MCUControlSurface.KNOB_LED_MODE_BOOST_CUT, track.getPan (), upperBound);
 
         final int start = 2;
         final int end = 6;
 
         final boolean isEffectTrackBankActive = this.model.isEffectTrackBankActive ();
-        final ISendBank sendBank = t.getSendBank ();
+        final ISendBank sendBank = track.getSendBank ();
         for (int i = 0; i < end; i++)
         {
             final int value;
@@ -157,26 +161,26 @@ public class TrackMode extends AbstractTrackMode
     @Override
     protected void resetParameter (final int index)
     {
-        final ITrack selectedTrack = this.getSelectedTrack ();
-        if (selectedTrack == null)
+        final Optional<ITrack> selectedTrack = this.getSelectedTrack ();
+        if (selectedTrack.isEmpty ())
             return;
         switch (index)
         {
             case 0:
-                selectedTrack.resetVolume ();
+                selectedTrack.get ().resetVolume ();
                 break;
             case 1:
-                selectedTrack.resetPan ();
+                selectedTrack.get ().resetPan ();
                 break;
             default:
                 if (!this.model.isEffectTrackBankActive ())
-                    selectedTrack.getSendBank ().getItem (index - 2).resetValue ();
+                    selectedTrack.get ().getSendBank ().getItem (index - 2).resetValue ();
                 break;
         }
     }
 
 
-    private ITrack getSelectedTrack ()
+    private Optional<ITrack> getSelectedTrack ()
     {
         if (this.surface.getConfiguration ().shouldPinFXTracksToLastController () && this.surface.isLastDevice ())
             return this.model.getEffectTrackBank ().getSelectedItem ();
