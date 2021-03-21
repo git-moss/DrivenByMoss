@@ -437,6 +437,17 @@ public class PushColorManager extends ColorManager
     public static final int          PUSH1_COLOR_SCENE_GREEN_HI_BLINK       = 23;
     public static final int          PUSH1_COLOR_SCENE_GREEN_HI_BLINK_FAST  = 24;
 
+    public static final String       PUSH_BLACK                             = "PUSH_BLACK";
+    public static final String       PUSH_RED                               = "PUSH_RED";
+    public static final String       PUSH_RED_LO                            = "PUSH_RED_LO";
+    public static final String       PUSH_RED_HI                            = "PUSH_RED_HI";
+    public static final String       PUSH_ORANGE_LO                         = "PUSH_ORANGE_LO";
+    public static final String       PUSH_ORANGE_HI                         = "PUSH_ORANGE_HI";
+    public static final String       PUSH_YELLOW_LO                         = "PUSH_YELLOW_LO";
+    public static final String       PUSH_YELLOW_MD                         = "PUSH_YELLOW_MD";
+    public static final String       PUSH_GREEN_LO                          = "PUSH_GREEN_LO";
+    public static final String       PUSH_GREEN_HI                          = "PUSH_GREEN_HI";
+
     private final boolean            isPush2;
 
 
@@ -448,6 +459,17 @@ public class PushColorManager extends ColorManager
     public PushColorManager (final boolean isPush2)
     {
         this.isPush2 = isPush2;
+
+        this.registerColorIndex (PUSH_BLACK, this.isPush2 ? PushColorManager.PUSH2_COLOR_BLACK : PushColorManager.PUSH1_COLOR_BLACK);
+        this.registerColorIndex (PUSH_RED, this.isPush2 ? PushColorManager.PUSH2_COLOR_RED_HI : PushColorManager.PUSH1_COLOR_RED_HI);
+        this.registerColorIndex (PUSH_RED_LO, this.isPush2 ? PushColorManager.PUSH2_COLOR_RED_LO : PushColorManager.PUSH1_COLOR_RED_LO);
+        this.registerColorIndex (PUSH_RED_HI, this.isPush2 ? PushColorManager.PUSH2_COLOR_RED_HI : PushColorManager.PUSH1_COLOR_RED_HI);
+        this.registerColorIndex (PUSH_ORANGE_LO, this.isPush2 ? PushColorManager.PUSH2_COLOR_ORANGE_LO : PushColorManager.PUSH1_COLOR_ORANGE_LO);
+        this.registerColorIndex (PUSH_ORANGE_HI, this.isPush2 ? PushColorManager.PUSH2_COLOR_ORANGE_HI : PushColorManager.PUSH1_COLOR_ORANGE_HI);
+        this.registerColorIndex (PUSH_YELLOW_LO, this.isPush2 ? PushColorManager.PUSH2_COLOR_YELLOW_LO : PushColorManager.PUSH1_COLOR_YELLOW_LO);
+        this.registerColorIndex (PUSH_YELLOW_MD, this.isPush2 ? PushColorManager.PUSH2_COLOR_YELLOW_MD : PushColorManager.PUSH1_COLOR_YELLOW_MD);
+        this.registerColorIndex (PUSH_GREEN_LO, this.isPush2 ? PushColorManager.PUSH2_COLOR_GREEN_LO : PushColorManager.PUSH1_COLOR_GREEN_LO);
+        this.registerColorIndex (PUSH_GREEN_HI, this.isPush2 ? PushColorManager.PUSH2_COLOR_GREEN_HI : PushColorManager.PUSH1_COLOR_GREEN_HI);
 
         this.registerColorIndex (Scales.SCALE_COLOR_OFF, isPush2 ? PUSH2_COLOR2_BLACK : PUSH1_COLOR2_BLACK);
         this.registerColorIndex (Scales.SCALE_COLOR_OCTAVE, isPush2 ? PUSH2_COLOR2_OCEAN_HI : PUSH1_COLOR2_OCEAN_HI);
@@ -623,7 +645,12 @@ public class PushColorManager extends ColorManager
                 case MASTERTRACK:
                 case SETUP:
                 case LAYOUT:
-                    return this.colorByIndex.get (Integer.valueOf (colorIndex == 0 ? 0 : colorIndex == 8 ? PUSH2_COLOR2_GREY_LO : PUSH2_COLOR2_WHITE));
+                    int color = PUSH2_COLOR2_WHITE;
+                    if (colorIndex == 0)
+                        color = PUSH2_COLOR2_BLACK;
+                    else if (colorIndex == 8)
+                        color = PUSH2_COLOR2_GREY_LO;
+                    return this.colorByIndex.get (Integer.valueOf (color));
 
                 default:
                     // Fall through
@@ -638,7 +665,12 @@ public class PushColorManager extends ColorManager
                     return this.colorByIndex.get (Integer.valueOf (colorIndex == 1 ? PUSH2_COLOR2_GREY_LO : PUSH2_COLOR2_GREEN_HI));
                 case AUTOMATION:
                 case RECORD:
-                    return this.colorByIndex.get (Integer.valueOf (colorIndex == 1 ? PUSH2_COLOR2_GREY_LO : colorIndex == 4 ? PUSH2_COLOR2_RED_HI : PUSH2_COLOR2_AMBER));
+                    int col = PUSH2_COLOR2_AMBER;
+                    if (colorIndex == 1)
+                        col = PUSH2_COLOR2_GREY_LO;
+                    else if (colorIndex == 4)
+                        col = PUSH2_COLOR2_RED_HI;
+                    return this.colorByIndex.get (Integer.valueOf (col));
                 case MUTE:
                     return this.colorByIndex.get (Integer.valueOf (colorIndex == 1 ? PUSH2_COLOR2_GREY_LO : PUSH2_COLOR2_AMBER_LO));
                 case SOLO:
@@ -680,7 +712,12 @@ public class PushColorManager extends ColorManager
                 case ARROW_DOWN:
                 case ARROW_UP:
                 case MASTERTRACK:
-                    return this.colorByIndex.get (Integer.valueOf (colorIndex == 0 ? 0 : colorIndex == 1 ? PUSH2_COLOR2_GREY_LO : PUSH2_COLOR2_WHITE));
+                    int color = PUSH2_COLOR2_WHITE;
+                    if (colorIndex == 0)
+                        color = PUSH2_COLOR_BLACK;
+                    else if (colorIndex == 1)
+                        color = PUSH2_COLOR2_GREY_LO;
+                    return this.colorByIndex.get (Integer.valueOf (color));
 
                 default:
                     // Fall through

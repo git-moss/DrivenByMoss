@@ -27,6 +27,9 @@ import de.mossgrabers.framework.utils.ButtonEvent;
  */
 public class ShiftView extends AbstractView<LaunchpadControlSurface, LaunchpadConfiguration>
 {
+    private static final String TAG_ACTIVE = "Active";
+
+
     /**
      * Constructor.
      *
@@ -206,7 +209,7 @@ public class ShiftView extends AbstractView<LaunchpadControlSurface, LaunchpadCo
 
             case 87:
                 configuration.toggleNoteRepeatActive ();
-                this.mvHelper.delayDisplay ( () -> "Note Repeat: " + (configuration.isNoteRepeatActive () ? "Active" : "Off"));
+                this.mvHelper.delayDisplay ( () -> "Note Repeat: " + (configuration.isNoteRepeatActive () ? TAG_ACTIVE : "Off"));
                 return;
 
             case 79:
@@ -302,7 +305,7 @@ public class ShiftView extends AbstractView<LaunchpadControlSurface, LaunchpadCo
                 break;
             case 76:
                 configuration.toggleDeleteModeActive ();
-                this.surface.getDisplay ().notify ("Delete " + (configuration.isDeleteModeActive () ? "Active" : "Off"));
+                this.surface.getDisplay ().notify ("Delete " + (configuration.isDeleteModeActive () ? TAG_ACTIVE : "Off"));
                 break;
             case 77:
                 this.executeShifted (ButtonID.DELETE, ButtonEvent.DOWN);
@@ -317,7 +320,7 @@ public class ShiftView extends AbstractView<LaunchpadControlSurface, LaunchpadCo
                 break;
             case 60:
                 configuration.toggleDuplicateModeActive ();
-                this.surface.getDisplay ().notify ("Duplicate " + (configuration.isDuplicateModeActive () ? "Active" : "Off"));
+                this.surface.getDisplay ().notify ("Duplicate " + (configuration.isDuplicateModeActive () ? TAG_ACTIVE : "Off"));
                 break;
             case 61:
                 this.executeShifted (ButtonID.DUPLICATE, ButtonEvent.DOWN);

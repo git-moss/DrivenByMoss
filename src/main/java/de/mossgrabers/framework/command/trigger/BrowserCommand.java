@@ -10,8 +10,8 @@ import de.mossgrabers.framework.controller.ButtonID;
 import de.mossgrabers.framework.controller.IControlSurface;
 import de.mossgrabers.framework.daw.IBrowser;
 import de.mossgrabers.framework.daw.IModel;
-import de.mossgrabers.framework.daw.data.IChannel;
 import de.mossgrabers.framework.daw.data.ICursorDevice;
+import de.mossgrabers.framework.daw.data.ILayer;
 import de.mossgrabers.framework.daw.data.IMasterTrack;
 import de.mossgrabers.framework.daw.data.ITrack;
 import de.mossgrabers.framework.featuregroup.ViewManager;
@@ -128,10 +128,10 @@ public class BrowserCommand<S extends IControlSurface<C>, C extends Configuratio
 
             if (Modes.isLayerMode (this.surface.getModeManager ().getActiveID ()))
             {
-                final Optional<?> layer = cursorDevice.getLayerOrDrumPadBank ().getSelectedItem ();
+                final Optional<ILayer> layer = cursorDevice.getLayerBank ().getSelectedItem ();
                 if (layer.isEmpty ())
                     return false;
-                browser.addDevice ((IChannel) layer.get ());
+                browser.addDevice (layer.get ());
                 return true;
             }
 

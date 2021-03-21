@@ -194,10 +194,20 @@ public class ChannelComponent extends ChannelSelectComponent
         final boolean isModulatedRight = this.modulatedPanValue > halfMax;
         final double v = isRight ? (this.panValue - halfMax) * panRange / halfMax : panRange - this.panValue * panRange / halfMax;
         final boolean isPanModulated = this.modulatedPanValue != -1;
-        final double vMod = isPanModulated ? isModulatedRight ? (this.modulatedPanValue - halfMax) * panRange / halfMax : panRange - this.modulatedPanValue * panRange / halfMax : v;
+        final double vMod;
+        if (isPanModulated)
+        {
+            if (isModulatedRight)
+                vMod = (this.modulatedPanValue - halfMax) * panRange / halfMax;
+            else
+                vMod = panRange - this.modulatedPanValue * panRange / halfMax;
+        }
+        else
+            vMod = v;
 
         final ColorEx faderColor = this.modifyIfOff (configuration.getColorFader ());
-        gc.fillRectangle ((isPanModulated ? isModulatedRight : isRight) ? panMiddle + 1 : panMiddle - vMod, controlsTop + 1, vMod, panHeight, faderColor);
+        final boolean rightMod = isPanModulated ? isModulatedRight : isRight;
+        gc.fillRectangle (rightMod ? panMiddle + 1 : panMiddle - vMod, controlsTop + 1, vMod, panHeight, faderColor);
 
         if (this.editType == EDIT_TYPE_PAN || this.editType == EDIT_TYPE_ALL)
         {
@@ -211,7 +221,16 @@ public class ChannelComponent extends ChannelSelectComponent
         final double volumeWidth = controlWidth - 2 * separatorSize - faderOffset;
         final double volumeHeight = this.volumeValue >= maxValue - 1 ? faderInnerHeight : faderInnerHeight * this.volumeValue / maxValue;
         final boolean isVolumeModulated = this.modulatedVolumeValue != -1;
-        final double modulatedVolumeHeight = isVolumeModulated ? (double) (this.modulatedVolumeValue >= maxValue - 1 ? faderInnerHeight : faderInnerHeight * this.modulatedVolumeValue / maxValue) : volumeHeight;
+        final double modulatedVolumeHeight;
+        if (isVolumeModulated)
+        {
+            if (this.modulatedVolumeValue >= maxValue - 1)
+                modulatedVolumeHeight = faderInnerHeight;
+            else
+                modulatedVolumeHeight = faderInnerHeight * this.modulatedVolumeValue / maxValue;
+        }
+        else
+            modulatedVolumeHeight = volumeHeight;
         final double volumeTop = faderTop + separatorSize + faderInnerHeight - volumeHeight;
         final double modulatedVolumeTop = isVolumeModulated ? faderTop + separatorSize + faderInnerHeight - modulatedVolumeHeight : volumeTop;
 

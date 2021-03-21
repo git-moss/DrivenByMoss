@@ -12,6 +12,8 @@ import de.mossgrabers.framework.daw.IHost;
 import de.mossgrabers.framework.daw.midi.ArpeggiatorMode;
 import de.mossgrabers.framework.scale.ScaleLayout;
 
+import java.util.List;
+
 
 /**
  * The configuration settings for Maschine.
@@ -21,42 +23,32 @@ import de.mossgrabers.framework.scale.ScaleLayout;
 public class MaschineConfiguration extends AbstractConfiguration
 {
     /** Setting for the ribbon mode. */
-    public static final Integer   RIBBON_MODE                    = Integer.valueOf (50);
+    public static final Integer      RIBBON_MODE                    = Integer.valueOf (50);
 
     /** Use ribbon for pitch bend down. */
-    public static final int       RIBBON_MODE_PITCH_DOWN         = 0;
+    public static final int          RIBBON_MODE_PITCH_DOWN         = 0;
     /** Use ribbon for pitch bend up. */
-    public static final int       RIBBON_MODE_PITCH_UP           = 1;
+    public static final int          RIBBON_MODE_PITCH_UP           = 1;
     /** Use ribbon for pitch bend down/up. */
-    public static final int       RIBBON_MODE_PITCH_DOWN_UP      = 2;
+    public static final int          RIBBON_MODE_PITCH_DOWN_UP      = 2;
     /** Use ribbon for midi CC 1. */
-    public static final int       RIBBON_MODE_CC_1               = 3;
+    public static final int          RIBBON_MODE_CC_1               = 3;
     /** Use ribbon for midi CC 11. */
-    public static final int       RIBBON_MODE_CC_11              = 4;
+    public static final int          RIBBON_MODE_CC_11              = 4;
     /** Use ribbon for master volume. */
-    public static final int       RIBBON_MODE_MASTER_VOLUME      = 5;
+    public static final int          RIBBON_MODE_MASTER_VOLUME      = 5;
     /** Use ribbon for note repeat period. */
-    public static final int       RIBBON_MODE_NOTE_REPEAT_PERIOD = 6;
+    public static final int          RIBBON_MODE_NOTE_REPEAT_PERIOD = 6;
     /** Use ribbon for note repeat length. */
-    public static final int       RIBBON_MODE_NOTE_REPEAT_LENGTH = 7;
+    public static final int          RIBBON_MODE_NOTE_REPEAT_LENGTH = 7;
 
     /** The ribbon mode names. */
-    public static final String [] RIBBON_MODE_VALUES             =
-    {
-        "Pitch Down",
-        "Pitch Up",
-        "Pitch Down/Up",
-        "Modulation (CC 1)",
-        "Expression (CC 11)",
-        "Master Volume",
-        "Note Repeat: Period",
-        "Note Repeat: Length"
-    };
+    public static final List<String> RIBBON_MODE_VALUES             = List.of ("Pitch Down", "Pitch Up", "Pitch Down/Up", "Modulation (CC 1)", "Expression (CC 11)", "Master Volume", "Note Repeat: Period", "Note Repeat: Length");
 
     /** What does the ribbon send? **/
-    private int                   ribbonMode                     = RIBBON_MODE_PITCH_DOWN;
+    private int                      ribbonMode                     = RIBBON_MODE_PITCH_DOWN;
 
-    private IEnumSetting          ribbonModeSetting;
+    private IEnumSetting             ribbonModeSetting;
 
 
     /**
@@ -66,7 +58,7 @@ public class MaschineConfiguration extends AbstractConfiguration
      * @param valueChanger The value changer
      * @param arpeggiatorModes The available arpeggiator modes
      */
-    public MaschineConfiguration (final IHost host, final IValueChanger valueChanger, final ArpeggiatorMode [] arpeggiatorModes)
+    public MaschineConfiguration (final IHost host, final IValueChanger valueChanger, final List<ArpeggiatorMode> arpeggiatorModes)
     {
         super (host, valueChanger, arpeggiatorModes);
     }
@@ -102,7 +94,7 @@ public class MaschineConfiguration extends AbstractConfiguration
         this.activateAccentValueSetting (globalSettings);
         this.activateQuantizeAmountSetting (globalSettings);
 
-        this.ribbonModeSetting = globalSettings.getEnumSetting ("Ribbon Mode", CATEGORY_PLAY_AND_SEQUENCE, RIBBON_MODE_VALUES, RIBBON_MODE_VALUES[0]);
+        this.ribbonModeSetting = globalSettings.getEnumSetting ("Ribbon Mode", CATEGORY_PLAY_AND_SEQUENCE, RIBBON_MODE_VALUES, RIBBON_MODE_VALUES.get (0));
         this.ribbonModeSetting.addValueObserver (value -> {
             this.ribbonMode = lookupIndex (RIBBON_MODE_VALUES, value);
             this.notifyObservers (RIBBON_MODE);
@@ -131,7 +123,7 @@ public class MaschineConfiguration extends AbstractConfiguration
      */
     public void setRibbonMode (final int mode)
     {
-        this.ribbonModeSetting.set (RIBBON_MODE_VALUES[mode]);
+        this.ribbonModeSetting.set (RIBBON_MODE_VALUES.get (mode));
     }
 
 

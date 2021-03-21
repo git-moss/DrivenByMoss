@@ -55,9 +55,11 @@ import java.util.function.Supplier;
  */
 public abstract class AbstractControlSurface<C extends Configuration> implements IControlSurface<C>
 {
-    protected static final int                      BUTTON_STATE_INTERVAL    = 400;
-    protected static final int                      NUM_NOTES                = 128;
-    protected static final int                      NUM_INFOS                = 256;
+    private static final String                     SHOULD_BE_HANDLED_IN_FRAMEWORK = " should be handled in framework...";
+
+    protected static final int                      BUTTON_STATE_INTERVAL          = 400;
+    protected static final int                      NUM_NOTES                      = 128;
+    protected static final int                      NUM_INFOS                      = 256;
 
     protected final IHost                           host;
     protected final IHwSurfaceFactory               surfaceFactory;
@@ -68,16 +70,16 @@ public abstract class AbstractControlSurface<C extends Configuration> implements
 
     protected final int                             surfaceID;
 
-    protected final ViewManager                     viewManager              = new ViewManager ();
-    protected final ModeManager                     modeManager              = new ModeManager ();
+    protected final ViewManager                     viewManager                    = new ViewManager ();
+    protected final ModeManager                     modeManager                    = new ModeManager ();
 
-    protected int                                   defaultMidiChannel       = 0;
+    protected int                                   defaultMidiChannel             = 0;
 
-    private Map<ContinuousID, IHwContinuousControl> continuous               = new EnumMap<> (ContinuousID.class);
-    private Map<ButtonID, IHwButton>                buttons                  = new EnumMap<> (ButtonID.class);
-    private Map<OutputID, IHwLight>                 lights                   = new EnumMap<> (OutputID.class);
-    protected List<ITextDisplay>                    textDisplays             = new ArrayList<> (1);
-    protected List<IGraphicDisplay>                 graphicsDisplays         = new ArrayList<> (1);
+    private Map<ContinuousID, IHwContinuousControl> continuous                     = new EnumMap<> (ContinuousID.class);
+    private Map<ButtonID, IHwButton>                buttons                        = new EnumMap<> (ButtonID.class);
+    private Map<OutputID, IHwLight>                 lights                         = new EnumMap<> (OutputID.class);
+    protected List<ITextDisplay>                    textDisplays                   = new ArrayList<> (1);
+    protected List<IGraphicDisplay>                 graphicsDisplays               = new ArrayList<> (1);
 
     protected final IPadGrid                        padGrid;
     protected ILightGuide                           lightGuide;
@@ -87,11 +89,11 @@ public abstract class AbstractControlSurface<C extends Configuration> implements
     private final DummyDisplay                      dummyDisplay;
     private IHwPianoKeyboard                        pianoKeyboard;
 
-    private final Object                            updateCounterLock        = new Object ();
-    private int                                     updateCounter            = 0;
+    private final Object                            updateCounterLock              = new Object ();
+    private int                                     updateCounter                  = 0;
 
-    private boolean                                 knobSensitivityIsSlow    = false;
-    private final List<ISensitivityCallback>        knobSensitivityObservers = new ArrayList<> ();
+    private boolean                                 knobSensitivityIsSlow          = false;
+    private final List<ISensitivityCallback>        knobSensitivityObservers       = new ArrayList<> ();
 
 
     /**
@@ -826,7 +828,7 @@ public abstract class AbstractControlSurface<C extends Configuration> implements
     protected void handleCC (final int data1, final int data2)
     {
         // Handled by bind framework
-        this.host.error ("CC " + data1 + " should be handled in framework...");
+        this.host.error ("CC " + data1 + SHOULD_BE_HANDLED_IN_FRAMEWORK);
     }
 
 
@@ -851,7 +853,7 @@ public abstract class AbstractControlSurface<C extends Configuration> implements
     protected void handleNoteOff (final int data1, final int data2)
     {
         // Handled by bind framework
-        this.host.error ("Midi Note off " + data1 + " should be handled in framework...");
+        this.host.error ("Midi Note off " + data1 + SHOULD_BE_HANDLED_IN_FRAMEWORK);
     }
 
 
@@ -864,7 +866,7 @@ public abstract class AbstractControlSurface<C extends Configuration> implements
     protected void handleNoteOn (final int data1, final int data2)
     {
         // Handled by bind framework
-        this.host.error ("Midi Note on " + data1 + " should be handled in framework...");
+        this.host.error ("Midi Note on " + data1 + SHOULD_BE_HANDLED_IN_FRAMEWORK);
     }
 
 

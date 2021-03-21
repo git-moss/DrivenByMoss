@@ -14,6 +14,8 @@ import de.mossgrabers.framework.daw.constants.Capability;
 import de.mossgrabers.framework.daw.constants.Resolution;
 import de.mossgrabers.framework.daw.midi.ArpeggiatorMode;
 
+import java.util.List;
+
 
 /**
  * View to select the note repeat settings.
@@ -50,9 +52,9 @@ public class NoteRepeatView extends BaseView
                     final ArpeggiatorMode arpMode = configuration.getNoteRepeatMode ();
                     final int modeIndex = configuration.lookupArpeggiatorModeIndex (arpMode);
                     final boolean increase = padIndex == 7;
-                    final ArpeggiatorMode [] modes = configuration.getArpeggiatorModes ();
-                    final int newIndex = Math.max (0, Math.min (modes.length - 1, modeIndex + (increase ? 1 : -1)));
-                    configuration.setNoteRepeatMode (modes[newIndex]);
+                    final List<ArpeggiatorMode> modes = configuration.getArpeggiatorModes ();
+                    final int newIndex = Math.max (0, Math.min (modes.size () - 1, modeIndex + (increase ? 1 : -1)));
+                    configuration.setNoteRepeatMode (modes.get (newIndex));
                     this.mvHelper.delayDisplay ( () -> "Mode: " + configuration.getNoteRepeatMode ().getName ());
                 }
                 break;

@@ -20,6 +20,7 @@ import de.mossgrabers.framework.mode.Modes;
 import de.mossgrabers.framework.view.Views;
 
 import java.util.EnumSet;
+import java.util.List;
 import java.util.Set;
 
 
@@ -283,7 +284,7 @@ public class PushConfiguration extends AbstractConfiguration implements IGraphic
      * @param arpeggiatorModes The available arpeggiator modes
      * @param isPush2 Use Push 1 or Push 2 controller?
      */
-    public PushConfiguration (final IHost host, final IValueChanger valueChanger, final ArpeggiatorMode [] arpeggiatorModes, final boolean isPush2)
+    public PushConfiguration (final IHost host, final IValueChanger valueChanger, final List<ArpeggiatorMode> arpeggiatorModes, final boolean isPush2)
     {
         super (host, valueChanger, arpeggiatorModes);
 
@@ -463,9 +464,10 @@ public class PushConfiguration extends AbstractConfiguration implements IGraphic
      */
     public void changePadThreshold (final int control)
     {
-        final int value = this.valueChanger.changeValue (control, this.padThreshold, -100, PushControlSurface.PUSH_PAD_THRESHOLDS_NAME.length);
-        this.padThreshold = Math.max (0, Math.min (value, PushControlSurface.PUSH_PAD_THRESHOLDS_NAME.length - 1));
-        this.padThresholdSetting.set (PushControlSurface.PUSH_PAD_THRESHOLDS_NAME[this.padThreshold]);
+        final int size = PushControlSurface.PUSH_PAD_THRESHOLDS_NAME.size ();
+        final int value = this.valueChanger.changeValue (control, this.padThreshold, -100, size);
+        this.padThreshold = Math.max (0, Math.min (value, size - 1));
+        this.padThresholdSetting.set (PushControlSurface.PUSH_PAD_THRESHOLDS_NAME.get (this.padThreshold));
     }
 
 
@@ -476,9 +478,10 @@ public class PushConfiguration extends AbstractConfiguration implements IGraphic
      */
     public void changeVelocityCurve (final int control)
     {
-        final int value = this.valueChanger.changeValue (control, this.velocityCurve, -100, PushControlSurface.PUSH_PAD_CURVES_NAME.length);
-        this.velocityCurve = Math.max (0, Math.min (value, PushControlSurface.PUSH_PAD_CURVES_NAME.length - 1));
-        this.velocityCurveSetting.set (PushControlSurface.PUSH_PAD_CURVES_NAME[this.velocityCurve]);
+        final int size = PushControlSurface.PUSH_PAD_CURVES_NAME.size ();
+        final int value = this.valueChanger.changeValue (control, this.velocityCurve, -100, size);
+        this.velocityCurve = Math.max (0, Math.min (value, size - 1));
+        this.velocityCurveSetting.set (PushControlSurface.PUSH_PAD_CURVES_NAME.get (this.velocityCurve));
     }
 
 
@@ -1189,13 +1192,13 @@ public class PushConfiguration extends AbstractConfiguration implements IGraphic
      */
     private void activatePush1PadSettings (final ISettingsUI settingsUI)
     {
-        this.velocityCurveSetting = settingsUI.getEnumSetting ("Velocity Curve", CATEGORY_PADS, PushControlSurface.PUSH_PAD_CURVES_NAME, PushControlSurface.PUSH_PAD_CURVES_NAME[1]);
+        this.velocityCurveSetting = settingsUI.getEnumSetting ("Velocity Curve", CATEGORY_PADS, PushControlSurface.PUSH_PAD_CURVES_NAME, PushControlSurface.PUSH_PAD_CURVES_NAME.get (1));
         this.velocityCurveSetting.addValueObserver (value -> {
             this.velocityCurve = lookupIndex (PushControlSurface.PUSH_PAD_CURVES_NAME, value);
             this.notifyObservers (VELOCITY_CURVE);
         });
 
-        this.padThresholdSetting = settingsUI.getEnumSetting ("Pad Threshold", CATEGORY_PADS, PushControlSurface.PUSH_PAD_THRESHOLDS_NAME, PushControlSurface.PUSH_PAD_THRESHOLDS_NAME[20]);
+        this.padThresholdSetting = settingsUI.getEnumSetting ("Pad Threshold", CATEGORY_PADS, PushControlSurface.PUSH_PAD_THRESHOLDS_NAME, PushControlSurface.PUSH_PAD_THRESHOLDS_NAME.get (20));
         this.padThresholdSetting.addValueObserver (value -> {
             this.padThreshold = lookupIndex (PushControlSurface.PUSH_PAD_THRESHOLDS_NAME, value);
             this.notifyObservers (PAD_THRESHOLD);

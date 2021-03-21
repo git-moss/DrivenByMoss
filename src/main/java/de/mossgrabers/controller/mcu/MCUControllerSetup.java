@@ -113,6 +113,8 @@ import java.util.Set;
  */
 public class MCUControllerSetup extends AbstractControllerSetup<MCUControlSurface, MCUConfiguration>
 {
+    private static final String             TAG_RIGHT            = "Right";
+
     /** State for button LED on. */
     public static final int                 MCU_BUTTON_STATE_ON  = 127;
     /** State for button LED off. */
@@ -377,7 +379,7 @@ public class MCUControllerSetup extends AbstractControllerSetup<MCUControlSurfac
 
                 this.addButton (surface, ButtonID.SCRUB, "Scrub", new ScrubCommand (this.model, surface), 0, MCUControlSurface.MCU_SCRUB, () -> surface.getModeManager ().isActive (Modes.DEVICE_PARAMS));
                 this.addButton (surface, ButtonID.ARROW_LEFT, "Left", new MCUCursorCommand (Direction.LEFT, this.model, surface), 0, MCUControlSurface.MCU_ARROW_LEFT);
-                this.addButton (surface, ButtonID.ARROW_RIGHT, "Right", new MCUCursorCommand (Direction.RIGHT, this.model, surface), 0, MCUControlSurface.MCU_ARROW_RIGHT);
+                this.addButton (surface, ButtonID.ARROW_RIGHT, TAG_RIGHT, new MCUCursorCommand (Direction.RIGHT, this.model, surface), 0, MCUControlSurface.MCU_ARROW_RIGHT);
                 this.addButton (surface, ButtonID.ARROW_UP, "Up", new MCUCursorCommand (Direction.UP, this.model, surface), 0, MCUControlSurface.MCU_ARROW_UP);
                 this.addButton (surface, ButtonID.ARROW_DOWN, "Down", new MCUCursorCommand (Direction.DOWN, this.model, surface), 0, MCUControlSurface.MCU_ARROW_DOWN);
                 this.addButton (surface, ButtonID.ZOOM, "Zoom", new ZoomCommand (this.model, surface), 0, MCUControlSurface.MCU_ZOOM, surface.getConfiguration ()::isZoomState);
@@ -410,9 +412,9 @@ public class MCUControllerSetup extends AbstractControllerSetup<MCUControlSurfac
                 final MCUMoveTrackBankCommand leftTrackCommand = new MCUMoveTrackBankCommand (this.model, surface, true, true);
                 final MCUMoveTrackBankCommand rightTrackCommand = new MCUMoveTrackBankCommand (this.model, surface, true, false);
                 this.addButton (surface, ButtonID.PAGE_LEFT, "Left", leftTrackCommand, 0, MCUControlSurface.MCU_MODE_EQ);
-                this.addButton (surface, ButtonID.PAGE_RIGHT, "Right", rightTrackCommand, 0, MCUControlSurface.MCU_MODE_DYN);
+                this.addButton (surface, ButtonID.PAGE_RIGHT, TAG_RIGHT, rightTrackCommand, 0, MCUControlSurface.MCU_MODE_DYN);
                 this.addButton (surface, ButtonID.MOVE_TRACK_LEFT, "Left", leftTrackCommand, 0, MCUControlSurface.MCU_TRACK_LEFT);
-                this.addButton (surface, ButtonID.MOVE_TRACK_RIGHT, "Right", rightTrackCommand, 0, MCUControlSurface.MCU_TRACK_RIGHT);
+                this.addButton (surface, ButtonID.MOVE_TRACK_RIGHT, TAG_RIGHT, rightTrackCommand, 0, MCUControlSurface.MCU_TRACK_RIGHT);
 
                 // Automation
                 this.addButton (surface, ButtonID.AUTOMATION_TRIM, "Trim", new AutomationCommand<> (AutomationMode.TRIM_READ, this.model, surface), 0, MCUControlSurface.MCU_TRIM, () -> !t.isWritingArrangerAutomation () && t.getAutomationWriteMode () == AutomationMode.TRIM_READ);

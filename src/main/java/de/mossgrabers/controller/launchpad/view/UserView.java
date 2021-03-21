@@ -43,7 +43,7 @@ public class UserView extends AbstractFaderView
     @Override
     public void setupFader (final int index)
     {
-        this.surface.setupFader (index, LaunchpadColorManager.DAW_INDICATOR_COLORS[index], false);
+        this.surface.setupFader (index, LaunchpadColorManager.DAW_INDICATOR_COLORS.get (index).intValue (), false);
     }
 
 

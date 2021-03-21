@@ -16,13 +16,14 @@ import java.util.UUID;
  */
 public class KontrolProtocolDeviceDescriptorV2 implements IKontrolProtocolDeviceDescriptor
 {
+    private static final String KOMPLETE_KONTROL_DAW_1 = "Komplete Kontrol DAW - 1";
     private static final UUID         EXTENSION_ID  = UUID.fromString ("91A751B5-61C8-4388-8B8B-C2F6AD05A25D");
     private static final String       DEVICE_NAME   = "Komplete Kontrol S-series mkII";
 
     private static final String [] [] PORTS_WINDOWS =
     {
         {
-            "Komplete Kontrol DAW - 1",
+            KOMPLETE_KONTROL_DAW_1,
             "KOMPLETE KONTROL - 1"
         }
     };
@@ -30,27 +31,27 @@ public class KontrolProtocolDeviceDescriptorV2 implements IKontrolProtocolDevice
     private static final String [] [] PORTS_MACOS   =
     {
         {
-            "Komplete Kontrol DAW - 1",
+            KOMPLETE_KONTROL_DAW_1,
             "KOMPLETE KONTROL S49 MK2 Port 1"
         },
         {
-            "Komplete Kontrol DAW - 1",
+            KOMPLETE_KONTROL_DAW_1,
             "KOMPLETE KONTROL S49 MK2 Anschluss 1"
         },
         {
-            "Komplete Kontrol DAW - 1",
+            KOMPLETE_KONTROL_DAW_1,
             "KOMPLETE KONTROL S61 MK2 Port 1"
         },
         {
-            "Komplete Kontrol DAW - 1",
+            KOMPLETE_KONTROL_DAW_1,
             "KOMPLETE KONTROL S61 MK2 Anschluss 1"
         },
         {
-            "Komplete Kontrol DAW - 1",
+            KOMPLETE_KONTROL_DAW_1,
             "KOMPLETE KONTROL S88 MK2 Port 1"
         },
         {
-            "Komplete Kontrol DAW - 1",
+            KOMPLETE_KONTROL_DAW_1,
             "KOMPLETE KONTROL S88 MK2 Anschluss 1"
         }
     };

@@ -19,6 +19,9 @@ import de.mossgrabers.framework.scale.Scales;
 
 import com.bitwig.extension.controller.api.ControllerHost;
 
+import java.util.Arrays;
+import java.util.List;
+
 
 /**
  * Factory for creating Bitwig objects.
@@ -27,7 +30,9 @@ import com.bitwig.extension.controller.api.ControllerHost;
  */
 public class BitwigSetupFactory implements ISetupFactory
 {
-    private ControllerHost controllerHost;
+    private ControllerHost                     controllerHost;
+
+    private static final List<ArpeggiatorMode> ARP_MODES = Arrays.asList (ArpeggiatorMode.values ());
 
 
     /**
@@ -60,8 +65,8 @@ public class BitwigSetupFactory implements ISetupFactory
 
     /** {@inheritDoc} */
     @Override
-    public ArpeggiatorMode [] getArpeggiatorModes ()
+    public List<ArpeggiatorMode> getArpeggiatorModes ()
     {
-        return ArpeggiatorMode.values ();
+        return ARP_MODES;
     }
 }

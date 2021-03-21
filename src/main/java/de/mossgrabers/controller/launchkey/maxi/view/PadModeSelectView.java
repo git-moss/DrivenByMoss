@@ -84,7 +84,7 @@ public class PadModeSelectView extends AbstractView<LaunchkeyMk3ControlSurface, 
             return;
 
         final SessionView view = (SessionView) this.surface.getViewManager ().get (Views.SESSION);
-        view.setPadMode (index == 0 ? null : SessionView.PAD_MODES[index - 1]);
+        view.setPadMode (index == 0 ? null : SessionView.PAD_MODES.get (index - 1));
         this.surface.getDisplay ().notify (PAD_MODE_NAMES[index]);
 
         this.isConsumed = true;

@@ -47,7 +47,7 @@ public abstract class AbstractMode<S extends IControlSurface<C>, C extends Confi
     public static final String                  BUTTON_COLOR2_HI   = "BUTTON_COLOR2_HI";
 
     /** Default knobs 1 to 8. **/
-    public static final List<ContinuousID>      DEFAULT_KNOB_IDS   = ContinuousID.createSequentialList (ContinuousID.KNOB1, 8);
+    public static final List<ContinuousID>      DEFAULT_KNOB_IDS   = Collections.unmodifiableList (ContinuousID.createSequentialList (ContinuousID.KNOB1, 8));
 
     protected final BooleanSupplier             isAlternativeFunction;
 

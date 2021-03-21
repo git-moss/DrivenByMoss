@@ -19,6 +19,8 @@ import de.mossgrabers.framework.utils.StringUtils;
  */
 public class MidiMonitorControlSurface extends AbstractControlSurface<MidiMonitorConfiguration>
 {
+    private static final String GENERAL_PURPOSE = "General Purpose";
+
     private static final String [] SPACES    =
     {
         "",
@@ -119,10 +121,10 @@ public class MidiMonitorControlSurface extends AbstractControlSurface<MidiMonito
         "Sound Controller 8",
         "Sound Controller 9",
         "Sound Controller 10",
-        "General Purpose",
-        "General Purpose",
-        "General Purpose",
-        "General Purpose",
+        GENERAL_PURPOSE,
+        GENERAL_PURPOSE,
+        GENERAL_PURPOSE,
+        GENERAL_PURPOSE,
         "Portamento",
         "85",
         "86",

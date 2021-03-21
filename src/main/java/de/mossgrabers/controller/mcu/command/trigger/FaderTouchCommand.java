@@ -77,11 +77,11 @@ public class FaderTouchCommand extends SelectCommand
                 else
                     modeManager.setActive (Modes.VOLUME);
             }
-            isTrackTouched[pos] = true;
+            setTouchedFader (pos, true);
         }
         else
         {
-            isTrackTouched[pos] = false;
+            setTouchedFader (pos, false);
             if (!hasTouchedFader ())
                 modeManager.restore ();
         }
@@ -90,11 +90,23 @@ public class FaderTouchCommand extends SelectCommand
 
     private static boolean hasTouchedFader ()
     {
-        for (final boolean element: isTrackTouched)
+        synchronized (isTrackTouched)
         {
-            if (element)
-                return true;
+            for (final boolean element: isTrackTouched)
+            {
+                if (element)
+                    return true;
+            }
         }
         return false;
+    }
+
+
+    private static void setTouchedFader (final int pos, final boolean isTouched)
+    {
+        synchronized (isTrackTouched)
+        {
+            isTrackTouched[pos] = isTouched;
+        }
     }
 }

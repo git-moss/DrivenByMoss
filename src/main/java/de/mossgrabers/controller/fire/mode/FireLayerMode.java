@@ -78,10 +78,10 @@ public class FireLayerMode extends AbstractMode<FireControlSurface, FireConfigur
         boolean isPan = false;
 
         final ISpecificDevice cd = this.model.getDrumDevice ();
-        final Optional<?> channelOptional = cd.getLayerOrDrumPadBank ().getSelectedItem ();
+        final Optional<ILayer> channelOptional = cd.getLayerBank ().getSelectedItem ();
         if (channelOptional.isPresent ())
         {
-            final IChannel channel = (IChannel) channelOptional.get ();
+            final IChannel channel = channelOptional.get ();
 
             desc = channel.getPosition () + ": " + channel.getName (9);
 

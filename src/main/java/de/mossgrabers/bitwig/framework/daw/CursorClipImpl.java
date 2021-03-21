@@ -740,8 +740,6 @@ public class CursorClipImpl implements INoteClip
     @Override
     public boolean canScrollStepsBackwards ()
     {
-        // TODO Bugfix required: https://github.com/teotigraphix/Framework4Bitwig/issues/217
-        // return this.getClip ().canScrollStepsBackwards ().get ();
         return this.getEditPage () > 0;
     }
 
@@ -750,8 +748,6 @@ public class CursorClipImpl implements INoteClip
     @Override
     public boolean canScrollStepsForwards ()
     {
-        // TODO Bugfix required: https://github.com/teotigraphix/Framework4Bitwig/issues/217
-        // return this.getClip ().canScrollStepsForwards ().get ();
         return true;
     }
 

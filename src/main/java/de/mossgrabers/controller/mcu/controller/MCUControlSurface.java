@@ -166,17 +166,7 @@ public class MCUControlSurface extends AbstractControlSurface<MCUConfiguration>
 
     // Sysex
 
-    public static final int []      MCU_SYSEX_HEADER      =
-    {
-        0xF0,
-        0x00,
-        0x00,
-        0x66,
-        0x14
-    };
-
     public static final String      SYSEX_HDR             = "F0 00 00 66 14 ";
-
     public static final int         MCU_SYSEX_CMD_DISPLAY = 0x12;
 
     private static final boolean [] MCU_BUTTON_UPDATE;

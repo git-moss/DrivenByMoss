@@ -20,7 +20,6 @@ import de.mossgrabers.framework.daw.data.IParameter;
 import de.mossgrabers.framework.daw.data.ISend;
 import de.mossgrabers.framework.daw.data.ISpecificDevice;
 import de.mossgrabers.framework.daw.data.ITrack;
-import de.mossgrabers.framework.daw.data.bank.IChannelBank;
 import de.mossgrabers.framework.daw.data.bank.IDeviceBank;
 import de.mossgrabers.framework.daw.data.bank.IDrumPadBank;
 import de.mossgrabers.framework.daw.data.bank.ILayerBank;
@@ -477,14 +476,16 @@ public class DeviceModule extends AbstractModule
 
     private void parseLayerOrDrumpad (final ISpecificDevice device, final LinkedList<String> path, final Object value) throws MissingCommandException, UnknownCommandException, IllegalParameterException
     {
+        final ILayerBank layerBank = device.getLayerBank ();
+
         final String command = getSubCommand (path);
         try
         {
             final int layerNo;
             if (TAG_SELECTED.equals (command) || TAG_SELECT.equals (command))
             {
-                final Optional<?> selectedLayerOrDrumPad = device.getLayerOrDrumPadBank ().getSelectedItem ();
-                layerNo = selectedLayerOrDrumPad.isEmpty () ? -1 : ((ILayer) selectedLayerOrDrumPad.get ()).getIndex ();
+                final Optional<ILayer> selectedLayer = layerBank.getSelectedItem ();
+                layerNo = selectedLayer.isEmpty () ? -1 : selectedLayer.get ().getIndex ();
             }
             else
             {
@@ -506,11 +507,11 @@ public class DeviceModule extends AbstractModule
                     break;
 
                 case "+":
-                    device.getLayerOrDrumPadBank ().selectNextItem ();
+                    layerBank.selectNextItem ();
                     break;
 
                 case "-":
-                    device.getLayerOrDrumPadBank ().selectPreviousItem ();
+                    layerBank.selectPreviousItem ();
                     break;
 
                 case TAG_PAGE:
@@ -520,9 +521,9 @@ public class DeviceModule extends AbstractModule
                         return;
                     }
                     if ("+".equals (path.get (0)))
-                        device.getLayerOrDrumPadBank ().selectNextPage ();
+                        layerBank.selectNextPage ();
                     else
-                        device.getLayerOrDrumPadBank ().selectPreviousPage ();
+                        layerBank.selectPreviousPage ();
                     break;
 
                 default:
@@ -535,14 +536,14 @@ public class DeviceModule extends AbstractModule
     private void parseDeviceLayerValue (final ISpecificDevice cursorDevice, final int layerIndex, final LinkedList<String> path, final Object value) throws UnknownCommandException, IllegalParameterException, MissingCommandException
     {
         final String command = getSubCommand (path);
-        final IChannelBank<?> layerOrDrumPadBank = cursorDevice.getLayerOrDrumPadBank ();
-        if (layerIndex >= layerOrDrumPadBank.getPageSize ())
+        final ILayerBank layerBank = cursorDevice.getLayerBank ();
+        if (layerIndex >= layerBank.getPageSize ())
         {
             this.host.println ("Layer or drumpad index larger than page size: " + layerIndex);
             return;
         }
 
-        final IChannel layer = layerOrDrumPadBank.getItem (layerIndex);
+        final IChannel layer = layerBank.getItem (layerIndex);
         switch (command)
         {
             case TAG_SELECT:

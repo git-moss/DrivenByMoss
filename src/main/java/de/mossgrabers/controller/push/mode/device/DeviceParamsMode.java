@@ -170,9 +170,9 @@ public class DeviceParamsMode extends BaseMode<IParameter>
             }
 
             // If there are layers, make sure one is selected
-            final Optional<?> layer = cd.getLayerOrDrumPadBank ().getSelectedItem ();
+            final Optional<?> layer = cd.getLayerBank ().getSelectedItem ();
             if (layer.isEmpty ())
-                cd.getLayerOrDrumPadBank ().getItem (0).select ();
+                cd.getLayerBank ().getItem (0).select ();
             modeManager.setActive (this.surface.getConfiguration ().getCurrentLayerMixMode ());
 
             return;
@@ -247,18 +247,22 @@ public class DeviceParamsMode extends BaseMode<IParameter>
             if (!cd.doesExist ())
                 return super.getButtonColor (buttonID);
 
-            final int selectedColor = this.isPush2 ? PushColorManager.PUSH2_COLOR_ORANGE_HI : PushColorManager.PUSH1_COLOR_ORANGE_HI;
-            final int existsColor = this.isPush2 ? PushColorManager.PUSH2_COLOR_YELLOW_LO : PushColorManager.PUSH1_COLOR_YELLOW_LO;
-            final int offColor = this.isPush2 ? PushColorManager.PUSH2_COLOR_BLACK : PushColorManager.PUSH1_COLOR_BLACK;
+            final int selectedColor = this.colorManager.getColorIndex (PushColorManager.PUSH_ORANGE_HI);
+            final int existsColor = this.colorManager.getColorIndex (PushColorManager.PUSH_YELLOW_LO);
+            final int offColor = this.colorManager.getColorIndex (PushColorManager.PUSH_BLACK);
 
             if (this.showDevices)
             {
                 final IDeviceBank bank = cd.getDeviceBank ();
-                return bank.getItem (index).doesExist () ? index == cd.getIndex () ? selectedColor : existsColor : offColor;
+                if (!bank.getItem (index).doesExist ())
+                    return offColor;
+                return index == cd.getIndex () ? selectedColor : existsColor;
             }
             final IParameterPageBank bank = cd.getParameterPageBank ();
             final int selectedItemIndex = bank.getSelectedItemIndex ();
-            return !bank.getItem (index).isEmpty () ? index == selectedItemIndex ? selectedColor : existsColor : offColor;
+            if (bank.getItem (index).isEmpty ())
+                return offColor;
+            return index == selectedItemIndex ? selectedColor : existsColor;
         }
 
         index = this.isButtonRow (1, buttonID);
@@ -287,7 +291,9 @@ public class DeviceParamsMode extends BaseMode<IParameter>
                 case 4:
                     return this.showDevices ? white : orange;
                 case 5:
-                    return this.model.getHost ().supports (Capability.HAS_PINNING) ? cd.isPinned () ? turquoise : grey : off;
+                    if (!this.model.getHost ().supports (Capability.HAS_PINNING))
+                        return off;
+                    return cd.isPinned () ? turquoise : grey;
                 case 6:
                     return cd.isWindowOpen () ? turquoise : grey;
                 default:
@@ -397,7 +403,8 @@ public class DeviceParamsMode extends BaseMode<IParameter>
         for (int i = 0; i < bank.getPageSize (); i++)
         {
             final String item = bank.getItem (i);
-            display.setCell (3, i, !item.isEmpty () ? (i == selectedItemIndex ? Push1Display.SELECT_ARROW : "") + item : "");
+            final String selectedStr = i == selectedItemIndex ? Push1Display.SELECT_ARROW : "";
+            display.setCell (3, i, item.isEmpty () ? "" : selectedStr + item);
         }
     }
 

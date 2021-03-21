@@ -14,6 +14,8 @@ import de.mossgrabers.framework.daw.midi.IMidiInput;
 import de.mossgrabers.framework.daw.midi.IMidiOutput;
 import de.mossgrabers.framework.utils.StringUtils;
 
+import java.util.List;
+
 
 /**
  * The Push 1 and Push 2 control surface.
@@ -22,20 +24,19 @@ import de.mossgrabers.framework.utils.StringUtils;
  */
 public class PushControlSurface extends AbstractControlSurface<PushConfiguration>
 {
+    // @formatter:off
     /** The names for the dynamic curves. */
-    public static final String []  PUSH_PAD_CURVES_NAME          =
-    {
+    public static final List<String>  PUSH_PAD_CURVES_NAME     = List.of (
         "Linear",
         "Log 1 (Default)",
         "Log 2",
         "Log 3",
         "Log 4",
         "Log 5"
-    };
+    );
 
     /** The names for the pad thresholds. */
-    public static final String []  PUSH_PAD_THRESHOLDS_NAME      =
-    {
+    public static final List<String>  PUSH_PAD_THRESHOLDS_NAME = List.of (
         "-20",
         "-19",
         "-18",
@@ -77,7 +78,8 @@ public class PushControlSurface extends AbstractControlSurface<PushConfiguration
         "18",
         "19",
         "20"
-    };
+    );
+    // @formatter:off
 
     /** The tap button. */
     public static final int        PUSH_BUTTON_TAP               = 3;
@@ -483,7 +485,7 @@ public class PushControlSurface extends AbstractControlSurface<PushConfiguration
      */
     public String getSelectedPadThreshold ()
     {
-        return PUSH_PAD_THRESHOLDS_NAME[this.configuration.getPadThreshold ()];
+        return PUSH_PAD_THRESHOLDS_NAME.get (this.configuration.getPadThreshold ());
     }
 
 
@@ -494,7 +496,7 @@ public class PushControlSurface extends AbstractControlSurface<PushConfiguration
      */
     public String getSelectedVelocityCurve ()
     {
-        return PUSH_PAD_CURVES_NAME[this.configuration.getVelocityCurve ()];
+        return PUSH_PAD_CURVES_NAME.get (this.configuration.getVelocityCurve ());
     }
 
 

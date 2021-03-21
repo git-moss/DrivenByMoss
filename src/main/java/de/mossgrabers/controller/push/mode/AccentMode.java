@@ -21,6 +21,9 @@ import de.mossgrabers.framework.daw.data.IItem;
  */
 public class AccentMode extends BaseMode<IItem>
 {
+    private static final String TAG_ACCENT = "Accent";
+
+
     /**
      * Constructor.
      *
@@ -29,7 +32,7 @@ public class AccentMode extends BaseMode<IItem>
      */
     public AccentMode (final PushControlSurface surface, final IModel model)
     {
-        super ("Accent", surface, model);
+        super (TAG_ACCENT, surface, model);
     }
 
 
@@ -59,7 +62,7 @@ public class AccentMode extends BaseMode<IItem>
     {
         final int fixedAccentValue = this.surface.getConfiguration ().getFixedAccentValue ();
         final IValueChanger valueChanger = this.model.getValueChanger ();
-        display.setCell (0, 7, "Accent").setCell (1, 7, fixedAccentValue, Format.FORMAT_RAW).setCell (2, 7, valueChanger.toDAWValue (fixedAccentValue), Format.FORMAT_VALUE);
+        display.setCell (0, 7, TAG_ACCENT).setCell (1, 7, fixedAccentValue, Format.FORMAT_RAW).setCell (2, 7, valueChanger.toDAWValue (fixedAccentValue), Format.FORMAT_VALUE);
     }
 
 
@@ -70,6 +73,6 @@ public class AccentMode extends BaseMode<IItem>
         final int fixedAccentValue = this.surface.getConfiguration ().getFixedAccentValue ();
         final IValueChanger valueChanger = this.model.getValueChanger ();
         for (int i = 0; i < 8; i++)
-            display.addParameterElement (i == 7 ? "Accent" : "", i == 7 ? valueChanger.toDisplayValue (valueChanger.toDAWValue (fixedAccentValue)) : 0, i == 7 ? Integer.toString (fixedAccentValue) : "", this.isKnobTouched[i], -1);
+            display.addParameterElement (i == 7 ? TAG_ACCENT : "", i == 7 ? valueChanger.toDisplayValue (valueChanger.toDAWValue (fixedAccentValue)) : 0, i == 7 ? Integer.toString (fixedAccentValue) : "", this.isKnobTouched[i], -1);
     }
 }

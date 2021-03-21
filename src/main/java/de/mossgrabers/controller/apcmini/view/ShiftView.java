@@ -248,8 +248,8 @@ public class ShiftView extends AbstractView<APCminiControlSurface, APCminiConfig
                 if (pos == -1)
                     return;
                 this.scales.setScaleOffset (pos);
-                this.surface.getConfiguration ().setScaleBase (Scales.BASES[pos]);
-                this.surface.getDisplay ().notify (Scales.BASES[pos]);
+                this.surface.getConfiguration ().setScaleBase (Scales.BASES.get (pos));
+                this.surface.getDisplay ().notify (Scales.BASES.get (pos));
                 this.surface.getViewManager ().getActive ().updateNoteMapping ();
                 break;
         }
@@ -357,8 +357,9 @@ public class ShiftView extends AbstractView<APCminiControlSurface, APCminiConfig
             default:
                 final int index = buttonID.ordinal () - ButtonID.SCENE1.ordinal ();
                 this.surface.setTrackState (index);
-                this.surface.getConfiguration ().setSoftKeys (APCminiConfiguration.SOFT_KEYS_OPTIONS[index]);
-                this.surface.getDisplay ().notify (APCminiConfiguration.SOFT_KEYS_OPTIONS[index]);
+                final String softKeys = APCminiConfiguration.SOFT_KEYS_OPTIONS.get (index);
+                this.surface.getConfiguration ().setSoftKeys (softKeys);
+                this.surface.getDisplay ().notify (softKeys);
                 break;
         }
     }

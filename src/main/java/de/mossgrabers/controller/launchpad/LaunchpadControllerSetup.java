@@ -353,7 +353,7 @@ public class LaunchpadControllerSetup extends AbstractControllerSetup<LaunchpadC
         for (int i = 0; i < 8; i++)
         {
             final ButtonID buttonID = ButtonID.get (ButtonID.SCENE1, i);
-            this.addButton (buttonID, "Scene " + (i + 1), new ViewButtonCommand<> (buttonID, surface), buttonSetup.get (LaunchpadButton.SCENES[i]).getControl (), () -> this.getViewColor (buttonID));
+            this.addButton (buttonID, "Scene " + (i + 1), new ViewButtonCommand<> (buttonID, surface), buttonSetup.get (LaunchpadButton.SCENES.get (i)).getControl (), () -> this.getViewColor (buttonID));
         }
 
         // Pro Mk3

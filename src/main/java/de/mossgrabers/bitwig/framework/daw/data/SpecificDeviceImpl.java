@@ -11,7 +11,6 @@ import de.mossgrabers.bitwig.framework.daw.data.bank.ParameterPageBankImpl;
 import de.mossgrabers.framework.controller.valuechanger.IValueChanger;
 import de.mossgrabers.framework.daw.IHost;
 import de.mossgrabers.framework.daw.data.ISpecificDevice;
-import de.mossgrabers.framework.daw.data.bank.IChannelBank;
 import de.mossgrabers.framework.daw.data.bank.IDrumPadBank;
 import de.mossgrabers.framework.daw.data.bank.ILayerBank;
 import de.mossgrabers.framework.daw.data.bank.IParameterBank;
@@ -280,14 +279,6 @@ public class SpecificDeviceImpl extends DeviceImpl implements ISpecificDevice
     public IDrumPadBank getDrumPadBank ()
     {
         return this.drumPadBank;
-    }
-
-
-    /** {@inheritDoc} */
-    @Override
-    public IChannelBank<?> getLayerOrDrumPadBank ()
-    {
-        return this.hasDrumPads () ? this.drumPadBank : this.layerBank;
     }
 
 

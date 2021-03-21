@@ -10,6 +10,8 @@ import de.mossgrabers.framework.daw.constants.Resolution;
 import de.mossgrabers.framework.daw.midi.ArpeggiatorMode;
 import de.mossgrabers.framework.observer.ISettingObserver;
 
+import java.util.List;
+
 
 /**
  * Interface to several configuration settings.
@@ -312,7 +314,7 @@ public interface Configuration
      *
      * @return The modes
      */
-    ArpeggiatorMode [] getArpeggiatorModes ();
+    List<ArpeggiatorMode> getArpeggiatorModes ();
 
 
     /**

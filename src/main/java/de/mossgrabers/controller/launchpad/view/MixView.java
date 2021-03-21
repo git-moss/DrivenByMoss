@@ -79,9 +79,19 @@ public class MixView extends AbstractView<LaunchpadControlSurface, LaunchpadConf
                 // Panorama
                 padGrid.light (84 + i, isSelected ? LaunchpadColorManager.LAUNCHPAD_COLOR_SKY_HI : LaunchpadColorManager.LAUNCHPAD_COLOR_GREY_LO);
                 // Send 1
-                padGrid.light (76 + i, hasSends ? isSelected ? LaunchpadColorManager.LAUNCHPAD_COLOR_ORCHID_HI : LaunchpadColorManager.LAUNCHPAD_COLOR_GREY_LO : LaunchpadColorManager.LAUNCHPAD_COLOR_BLACK);
+                final int send1ColorID;
+                if (hasSends)
+                    send1ColorID = isSelected ? LaunchpadColorManager.LAUNCHPAD_COLOR_ORCHID_HI : LaunchpadColorManager.LAUNCHPAD_COLOR_GREY_LO;
+                else
+                    send1ColorID = LaunchpadColorManager.LAUNCHPAD_COLOR_BLACK;
+                padGrid.light (76 + i, send1ColorID);
                 // Send 2
-                padGrid.light (68 + i, hasSends ? isSelected ? LaunchpadColorManager.LAUNCHPAD_COLOR_LIME_HI : LaunchpadColorManager.LAUNCHPAD_COLOR_GREY_LO : LaunchpadColorManager.LAUNCHPAD_COLOR_BLACK);
+                final int send2ColorID;
+                if (hasSends)
+                    send2ColorID = isSelected ? LaunchpadColorManager.LAUNCHPAD_COLOR_LIME_HI : LaunchpadColorManager.LAUNCHPAD_COLOR_GREY_LO;
+                else
+                    send2ColorID = LaunchpadColorManager.LAUNCHPAD_COLOR_BLACK;
+                padGrid.light (68 + i, send2ColorID);
                 // Stop
                 padGrid.light (60 + i, this.surface.isPressed (ButtonID.get (ButtonID.PAD25, i)) ? LaunchpadColorManager.LAUNCHPAD_COLOR_RED : LaunchpadColorManager.LAUNCHPAD_COLOR_ROSE);
                 // Mute

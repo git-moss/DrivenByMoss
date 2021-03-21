@@ -4,6 +4,9 @@
 
 package de.mossgrabers.framework.controller.grid;
 
+import de.mossgrabers.framework.utils.FrameworkException;
+
+
 /**
  * Info for pad updates.
  *
@@ -38,9 +41,9 @@ public class LightInfo
     public void setColors (final int color, final int blinkColor, final boolean fast)
     {
         if (color < 0 || color > 127)
-            throw new RuntimeException ("color must be in the range of 0..127");
+            throw new FrameworkException ("color must be in the range of 0..127");
         if (blinkColor < 0 || blinkColor > 127)
-            throw new RuntimeException ("blinkColor must be in the range of 0..127");
+            throw new FrameworkException ("blinkColor must be in the range of 0..127");
 
         this.color = color;
         this.blinkColor = blinkColor;

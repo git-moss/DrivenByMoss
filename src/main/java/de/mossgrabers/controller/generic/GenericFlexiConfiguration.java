@@ -68,18 +68,10 @@ public class GenericFlexiConfiguration extends AbstractConfiguration
     };
 
     /** The types. */
-    public static final String []                    OPTIONS_TYPE              =
-    {
-        "Off",
-        "CC",
-        "Note",
-        "Program Change",
-        "Pitchbend",
-        "MMC"
-    };
+    public static final List<String>                 OPTIONS_TYPE              = List.of ("Off", "CC", "Note", "Program Change", "Pitchbend", "MMC");
 
-    static final String []                           NUMBER_NAMES              =
-    {
+    // @formatter:off
+    static final List<String>                        NUMBER_NAMES              = List.of (
         "0  CC Bank Select",
         "1  MMC Stop, CC Modulation",
         "2  MMC Play, CC Breath Controller",
@@ -208,11 +200,10 @@ public class GenericFlexiConfiguration extends AbstractConfiguration
         "125 CC Omni Mode On",
         "126 CC Mono Mode",
         "127 CC Poly Mode"
-    };
+    );
 
     /** The midi channel options. */
-    private static final String []                   MODES                     =
-    {
+    private static final List<String>                MODES                     = List.of (
         "Track",
         "Volume",
         "Panorama",
@@ -225,10 +216,9 @@ public class GenericFlexiConfiguration extends AbstractConfiguration
         "Send 7",
         "Send 8",
         "Parameters"
-    };
+    );
 
-    private static final String []                   KEYBOARD_CHANNELS         =
-    {
+    private static final List<String>                KEYBOARD_CHANNELS         = List.of (
         "Off",
         "1",
         "2",
@@ -247,7 +237,8 @@ public class GenericFlexiConfiguration extends AbstractConfiguration
         "15",
         "16",
         "All"
-    };
+    );
+    // @formatter:on
 
     /** A setting of a slot has changed. */
     static final Integer                             SLOT_CHANGE               = Integer.valueOf (1000);
@@ -284,7 +275,7 @@ public class GenericFlexiConfiguration extends AbstractConfiguration
     private AtomicBoolean                            commandIsUpdating         = new AtomicBoolean (false);
     private String []                                assignableFunctionActions = new String [8];
 
-    private String                                   selectedMode              = MODES[0];
+    private String                                   selectedMode              = MODES.get (0);
 
     private int                                      keyboardChannel           = 0;
     private boolean                                  keyboardRouteModulation   = true;
@@ -299,7 +290,7 @@ public class GenericFlexiConfiguration extends AbstractConfiguration
      * @param valueChanger The value changer
      * @param arpeggiatorModes The available arpeggiator modes
      */
-    public GenericFlexiConfiguration (final IHost host, final IValueChanger valueChanger, final ArpeggiatorMode [] arpeggiatorModes)
+    public GenericFlexiConfiguration (final IHost host, final IValueChanger valueChanger, final List<ArpeggiatorMode> arpeggiatorModes)
     {
         super (host, valueChanger, arpeggiatorModes);
 
@@ -330,8 +321,8 @@ public class GenericFlexiConfiguration extends AbstractConfiguration
 
         category = "Selected Slot - MIDI trigger";
 
-        this.typeSetting = globalSettings.getEnumSetting ("Type:", category, OPTIONS_TYPE, OPTIONS_TYPE[0]);
-        this.numberSetting = globalSettings.getEnumSetting ("Number:", category, NUMBER_NAMES, NUMBER_NAMES[0]);
+        this.typeSetting = globalSettings.getEnumSetting ("Type:", category, OPTIONS_TYPE, OPTIONS_TYPE.get (0));
+        this.numberSetting = globalSettings.getEnumSetting ("Number:", category, NUMBER_NAMES, NUMBER_NAMES.get (0));
         this.midiChannelSetting = globalSettings.getEnumSetting ("Midi Channel:", category, OPTIONS_MIDI_CHANNEL, OPTIONS_MIDI_CHANNEL[0]);
         this.knobModeSetting = globalSettings.getEnumSetting ("Knob Mode:", category, OPTIONS_KNOBMODE, OPTIONS_KNOBMODE[0]);
         this.sendValueSetting = globalSettings.getEnumSetting ("Send value to device:", category, AbstractConfiguration.ON_OFF_OPTIONS, AbstractConfiguration.ON_OFF_OPTIONS[1]);
@@ -356,8 +347,8 @@ public class GenericFlexiConfiguration extends AbstractConfiguration
 
         category = "Use a knob/fader/button then click Set...";
 
-        this.learnTypeSetting = globalSettings.getEnumSetting ("Type:", category, OPTIONS_TYPE, OPTIONS_TYPE[0]);
-        this.learnNumberSetting = globalSettings.getEnumSetting ("Number:", category, NUMBER_NAMES, NUMBER_NAMES[0]);
+        this.learnTypeSetting = globalSettings.getEnumSetting ("Type:", category, OPTIONS_TYPE, OPTIONS_TYPE.get (0));
+        this.learnNumberSetting = globalSettings.getEnumSetting ("Number:", category, NUMBER_NAMES, NUMBER_NAMES.get (0));
         this.learnMidiChannelSetting = globalSettings.getEnumSetting ("Midi channel:", category, OPTIONS_MIDI_CHANNEL, OPTIONS_MIDI_CHANNEL[0]);
         this.learnTypeSetting.setEnabled (false);
         this.learnNumberSetting.setEnabled (false);
@@ -385,7 +376,7 @@ public class GenericFlexiConfiguration extends AbstractConfiguration
         globalSettings.getSignalSetting ("  ", category, "Save").addSignalObserver (value -> this.notifyObservers (BUTTON_SAVE));
         globalSettings.getSignalSetting ("   ", category, "Load").addSignalObserver (value -> this.notifyObservers (BUTTON_LOAD));
 
-        this.learnTypeSetting.set (OPTIONS_TYPE[0]);
+        this.learnTypeSetting.set (OPTIONS_TYPE.get (0));
 
         this.typeSetting.addValueObserver (value -> {
             final int index = AbstractConfiguration.lookupIndex (OPTIONS_TYPE, value);
@@ -393,7 +384,7 @@ public class GenericFlexiConfiguration extends AbstractConfiguration
             this.sendValueSetting.setVisible (index == CommandSlot.TYPE_CC);
             this.sendValueWhenReceivedSetting.setVisible (index == CommandSlot.TYPE_CC);
             this.clearNoteMap ();
-            this.updateVisibility (!OPTIONS_TYPE[0].equals (value));
+            this.updateVisibility (!OPTIONS_TYPE.get (0).equals (value));
         });
         this.numberSetting.addValueObserver (value -> {
             this.getSelectedSlot ().setNumber (AbstractConfiguration.lookupIndex (NUMBER_NAMES, value));
@@ -413,7 +404,7 @@ public class GenericFlexiConfiguration extends AbstractConfiguration
         ///////////////////////////////////////////////
         // Keyboard / Pads
 
-        final IEnumSetting keyboardMidiChannel = globalSettings.getEnumSetting ("Midi Channel", CATEGORY_KEYBOARD, KEYBOARD_CHANNELS, KEYBOARD_CHANNELS[1]);
+        final IEnumSetting keyboardMidiChannel = globalSettings.getEnumSetting ("Midi Channel", CATEGORY_KEYBOARD, KEYBOARD_CHANNELS, KEYBOARD_CHANNELS.get (1));
         this.keyboardChannel = AbstractConfiguration.lookupIndex (KEYBOARD_CHANNELS, keyboardMidiChannel.get ()) - 1;
 
         final IEnumSetting routeModulationSetting = globalSettings.getEnumSetting ("Route Modulation", CATEGORY_KEYBOARD, AbstractConfiguration.ON_OFF_OPTIONS, AbstractConfiguration.ON_OFF_OPTIONS[1]);
@@ -426,7 +417,7 @@ public class GenericFlexiConfiguration extends AbstractConfiguration
         ///////////////////////////////////////////////
         // Options
 
-        this.selectedModeSetting = globalSettings.getEnumSetting ("Selected Mode", CATEGORY_OPTIONS, MODES, MODES[0]);
+        this.selectedModeSetting = globalSettings.getEnumSetting ("Selected Mode", CATEGORY_OPTIONS, MODES, MODES.get (0));
         this.selectedModeSetting.addValueObserver (value -> {
             this.selectedMode = value;
             this.notifyObservers (SELECTED_MODE);
@@ -514,7 +505,7 @@ public class GenericFlexiConfiguration extends AbstractConfiguration
     public void setLearnValues (final String type, final int number, final int midiChannel)
     {
         this.learnTypeValue = type;
-        this.learnNumberValue = NUMBER_NAMES[number];
+        this.learnNumberValue = NUMBER_NAMES.get (number);
         this.learnMidiChannelValue = Integer.toString (midiChannel + 1);
 
         this.learnTypeSetting.set (type);
@@ -856,7 +847,7 @@ public class GenericFlexiConfiguration extends AbstractConfiguration
      */
     private void setType (final int value)
     {
-        this.typeSetting.set (OPTIONS_TYPE[value + 1]);
+        this.typeSetting.set (OPTIONS_TYPE.get (value + 1));
     }
 
 
@@ -867,7 +858,7 @@ public class GenericFlexiConfiguration extends AbstractConfiguration
      */
     private void setNumber (final int value)
     {
-        this.numberSetting.set (NUMBER_NAMES[value]);
+        this.numberSetting.set (NUMBER_NAMES.get (value));
     }
 
 

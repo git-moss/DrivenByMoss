@@ -12,6 +12,8 @@ import de.mossgrabers.framework.daw.midi.ArpeggiatorMode;
 import de.mossgrabers.framework.daw.midi.IMidiAccess;
 import de.mossgrabers.framework.scale.Scales;
 
+import java.util.List;
+
 
 /**
  * Interface to a factory for creating models and midi access.
@@ -45,5 +47,5 @@ public interface ISetupFactory
      *
      * @return The modes
      */
-    ArpeggiatorMode [] getArpeggiatorModes ();
+    List<ArpeggiatorMode> getArpeggiatorModes ();
 }

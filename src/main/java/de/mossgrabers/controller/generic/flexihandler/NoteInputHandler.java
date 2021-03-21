@@ -17,6 +17,8 @@ import de.mossgrabers.framework.daw.midi.INoteInput;
 import de.mossgrabers.framework.daw.midi.INoteRepeat;
 import de.mossgrabers.framework.scale.Scales;
 
+import java.util.List;
+
 
 /**
  * The handler for master channel commands.
@@ -86,13 +88,8 @@ public class NoteInputHandler extends AbstractHandler
 
             case NOTE_INPUT_REPEAT_MODE:
                 final ArpeggiatorMode am = noteRepeat.getMode ();
-                final ArpeggiatorMode [] arpeggiatorModes = configuration.getArpeggiatorModes ();
-                for (int i = 0; i < arpeggiatorModes.length; i++)
-                {
-                    if (am == arpeggiatorModes[i])
-                        return i;
-                }
-                return 0;
+                final int index = configuration.getArpeggiatorModes ().indexOf (am);
+                return Math.max (0, index);
 
             case NOTE_INPUT_REPEAT_OCTAVE:
                 return noteRepeat.getOctaves ();
@@ -154,11 +151,11 @@ public class NoteInputHandler extends AbstractHandler
             case NOTE_INPUT_REPEAT_MODE:
                 if (this.host.supports (Capability.NOTE_REPEAT_MODE))
                 {
-                    final ArpeggiatorMode [] modes = configuration.getArpeggiatorModes ();
+                    final List<ArpeggiatorMode> modes = configuration.getArpeggiatorModes ();
                     final int newIndex;
                     if (isAbsolute (knobMode))
                     {
-                        if (value >= modes.length)
+                        if (value >= modes.size ())
                             return;
                         newIndex = value;
                     }
@@ -167,10 +164,10 @@ public class NoteInputHandler extends AbstractHandler
                         final ArpeggiatorMode arpMode = configuration.getNoteRepeatMode ();
                         final int modeIndex = configuration.lookupArpeggiatorModeIndex (arpMode);
                         final boolean increase = this.isIncrease (knobMode, value);
-                        newIndex = Math.max (0, Math.min (modes.length - 1, modeIndex + (increase ? 1 : -1)));
+                        newIndex = Math.max (0, Math.min (modes.size () - 1, modeIndex + (increase ? 1 : -1)));
                     }
-                    configuration.setNoteRepeatMode (modes[newIndex]);
-                    this.mvHelper.delayDisplay ( () -> "Repeat Mode: " + modes[newIndex].getName ());
+                    configuration.setNoteRepeatMode (modes.get (newIndex));
+                    this.mvHelper.delayDisplay ( () -> "Repeat Mode: " + modes.get (newIndex).getName ());
                 }
                 break;
 

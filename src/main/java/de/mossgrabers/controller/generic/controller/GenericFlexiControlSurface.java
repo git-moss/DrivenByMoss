@@ -98,18 +98,24 @@ public class GenericFlexiControlSurface extends AbstractControlSurface<GenericFl
         for (int i = 0; i < slots.length; i++)
         {
             final FlexiCommand command = slots[i].getCommand ();
-            if (command == FlexiCommand.OFF || !slots[i].isSendValue ())
-                continue;
-
-            if (this.isUpdatingValue && !(slots[i].getCommand ().isTrigger () && slots[i].isSendValueWhenReceived ()))
-                continue;
-
-            final int value = this.getCommandValue (command);
-            if (this.valueCache[i] == value)
-                continue;
-            this.valueCache[i] = value;
-            this.reflectValue (slots[i], value);
+            if (command != FlexiCommand.OFF && slots[i].isSendValue ())
+                this.flushValue (i, slots[i]);
         }
+    }
+
+
+    private void flushValue (final int index, final CommandSlot slot)
+    {
+        final FlexiCommand command = slot.getCommand ();
+        if (this.isUpdatingValue && !(command.isTrigger () && slot.isSendValueWhenReceived ()))
+            return;
+
+        final int value = this.getCommandValue (command);
+        if (this.valueCache[index] == value)
+            return;
+
+        this.valueCache[index] = value;
+        this.reflectValue (slot, value);
     }
 
 
@@ -171,13 +177,13 @@ public class GenericFlexiControlSurface extends AbstractControlSurface<GenericFl
         {
             // Note on/off
             case 0x90:
-                this.configuration.setLearnValues (GenericFlexiConfiguration.OPTIONS_TYPE[CommandSlot.TYPE_NOTE + 1], data1, channel);
+                this.configuration.setLearnValues (GenericFlexiConfiguration.OPTIONS_TYPE.get (CommandSlot.TYPE_NOTE + 1), data1, channel);
                 this.handleCommand (this.configuration.getSlotCommand (CommandSlot.TYPE_NOTE, data1, channel), data2);
                 break;
 
             // Program Change
             case 0xC0:
-                this.configuration.setLearnValues (GenericFlexiConfiguration.OPTIONS_TYPE[CommandSlot.TYPE_PROGRAM_CHANGE + 1], data1, channel);
+                this.configuration.setLearnValues (GenericFlexiConfiguration.OPTIONS_TYPE.get (CommandSlot.TYPE_PROGRAM_CHANGE + 1), data1, channel);
                 final int slotIndex = this.configuration.getSlotCommand (CommandSlot.TYPE_PROGRAM_CHANGE, data1, channel);
                 if (slotIndex < 0)
                     return;
@@ -196,13 +202,13 @@ public class GenericFlexiControlSurface extends AbstractControlSurface<GenericFl
 
             // CC
             case 0xB0:
-                this.configuration.setLearnValues (GenericFlexiConfiguration.OPTIONS_TYPE[CommandSlot.TYPE_CC + 1], data1, channel);
+                this.configuration.setLearnValues (GenericFlexiConfiguration.OPTIONS_TYPE.get (CommandSlot.TYPE_CC + 1), data1, channel);
                 this.handleCommand (this.configuration.getSlotCommand (CommandSlot.TYPE_CC, data1, channel), data2);
                 break;
 
             // Pitchbend
             case 0xE0:
-                this.configuration.setLearnValues (GenericFlexiConfiguration.OPTIONS_TYPE[CommandSlot.TYPE_PITCH_BEND + 1], data1, channel);
+                this.configuration.setLearnValues (GenericFlexiConfiguration.OPTIONS_TYPE.get (CommandSlot.TYPE_PITCH_BEND + 1), data1, channel);
                 this.handleCommand (this.configuration.getSlotCommand (CommandSlot.TYPE_PITCH_BEND, data1, channel), data2);
                 break;
 
@@ -228,7 +234,7 @@ public class GenericFlexiControlSurface extends AbstractControlSurface<GenericFl
         final int channel = data[2] % 16;
         final int number = data[4];
 
-        this.configuration.setLearnValues (GenericFlexiConfiguration.OPTIONS_TYPE[CommandSlot.TYPE_MMC + 1], number, channel);
+        this.configuration.setLearnValues (GenericFlexiConfiguration.OPTIONS_TYPE.get (CommandSlot.TYPE_MMC + 1), number, channel);
         final int slotIndex = this.configuration.getSlotCommand (CommandSlot.TYPE_MMC, number, channel);
         if (slotIndex == -1)
             return;

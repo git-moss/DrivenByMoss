@@ -15,6 +15,7 @@ import de.mossgrabers.framework.daw.midi.ArpeggiatorMode;
 import de.mossgrabers.framework.osc.AbstractOpenSoundControlConfiguration;
 
 import java.util.Arrays;
+import java.util.List;
 
 
 /**
@@ -68,7 +69,7 @@ public class OSCConfiguration extends AbstractOpenSoundControlConfiguration
      * @param valueChanger The value changer
      * @param arpeggiatorModes The available arpeggiator modes
      */
-    public OSCConfiguration (final IHost host, final IValueChanger valueChanger, final ArpeggiatorMode [] arpeggiatorModes)
+    public OSCConfiguration (final IHost host, final IValueChanger valueChanger, final List<ArpeggiatorMode> arpeggiatorModes)
     {
         super (host, valueChanger, arpeggiatorModes);
 

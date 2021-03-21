@@ -4,7 +4,6 @@
 
 package de.mossgrabers.framework.daw.data;
 
-import de.mossgrabers.framework.daw.data.bank.IChannelBank;
 import de.mossgrabers.framework.daw.data.bank.IDrumPadBank;
 import de.mossgrabers.framework.daw.data.bank.ILayerBank;
 import de.mossgrabers.framework.daw.data.bank.IParameterBank;
@@ -169,12 +168,4 @@ public interface ISpecificDevice extends IDevice
      * @return The bank
      */
     IDrumPadBank getDrumPadBank ();
-
-
-    /**
-     * Get the layer or drum pad bank whatever is present for a device.
-     *
-     * @return The bank
-     */
-    IChannelBank<?> getLayerOrDrumPadBank ();
 }

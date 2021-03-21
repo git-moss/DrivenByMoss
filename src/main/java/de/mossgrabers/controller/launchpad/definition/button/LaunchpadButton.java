@@ -4,6 +4,9 @@
 
 package de.mossgrabers.controller.launchpad.definition.button;
 
+import java.util.List;
+
+
 /**
  * Enumaration for all non-grid buttons.
  *
@@ -85,15 +88,5 @@ public enum LaunchpadButton
 
 
     /** All scene buttons. */
-    public static final LaunchpadButton [] SCENES =
-    {
-        SCENE1,
-        SCENE2,
-        SCENE3,
-        SCENE4,
-        SCENE5,
-        SCENE6,
-        SCENE7,
-        SCENE8
-    };
+    public static final List<LaunchpadButton> SCENES = List.of (SCENE1, SCENE2, SCENE3, SCENE4, SCENE5, SCENE6, SCENE7, SCENE8);
 }

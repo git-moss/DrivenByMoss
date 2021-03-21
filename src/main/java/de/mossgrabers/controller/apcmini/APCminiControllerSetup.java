@@ -198,17 +198,15 @@ public class APCminiControllerSetup extends AbstractControllerSetup<APCminiContr
         });
 
         this.configuration.addSettingObserver (APCminiConfiguration.SOFT_KEYS, () -> {
-            final String softKeys = this.configuration.getSoftKeys ();
-            for (int i = 0; i < APCminiConfiguration.SOFT_KEYS_OPTIONS.length; i++)
-            {
-                if (APCminiConfiguration.SOFT_KEYS_OPTIONS[i].equals (softKeys))
-                    surface.setTrackState (i);
-            }
+            final int index = APCminiConfiguration.SOFT_KEYS_OPTIONS.indexOf (this.configuration.getSoftKeys ());
+            if (index >= 0)
+                surface.setTrackState (index);
         });
 
         this.configuration.registerDeactivatedItemsHandler (this.model);
 
         this.activateBrowserObserver (Views.BROWSER);
+
     }
 
 

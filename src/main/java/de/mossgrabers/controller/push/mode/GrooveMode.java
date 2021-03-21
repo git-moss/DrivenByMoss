@@ -31,7 +31,9 @@ import de.mossgrabers.framework.utils.ButtonEvent;
  */
 public class GrooveMode extends BaseMode<IItem>
 {
-    final IParameter [] params = new IParameter [8];
+    private static final String TAG_GROOVE = "Groove";
+
+    final IParameter []         params     = new IParameter [8];
 
 
     /**
@@ -42,7 +44,7 @@ public class GrooveMode extends BaseMode<IItem>
      */
     public GrooveMode (final PushControlSurface surface, final IModel model)
     {
-        super ("Groove", surface, model);
+        super (TAG_GROOVE, surface, model);
 
         final IGroove groove = this.model.getGroove ();
 
@@ -129,7 +131,7 @@ public class GrooveMode extends BaseMode<IItem>
     public void updateDisplay1 (final ITextDisplay display)
     {
         display.setCell (0, 0, "Quantize");
-        display.setCell (0, 1, Push1Display.SELECT_ARROW + "Groove");
+        display.setCell (0, 1, Push1Display.SELECT_ARROW + TAG_GROOVE);
 
         final IGroove groove = this.model.getGroove ();
         final IParameter enabledParameter = groove.getParameter (GrooveParameterID.ENABLED);
@@ -175,7 +177,7 @@ public class GrooveMode extends BaseMode<IItem>
             paramText = enabledParameter.getValue () == 0 ? "Off" : "Enabled";
 
         display.addOptionElement ("", "Quantize", false, null, "", paramText, enabledParameter != null && enabledParameter.getValue () > 0, null, true);
-        display.addOptionElement ("", "Groove", true, null, "      Shuffle", "", false, null, true);
+        display.addOptionElement ("", TAG_GROOVE, true, null, "      Shuffle", "", false, null, true);
 
         this.displayParameter (display, GrooveParameterID.SHUFFLE_AMOUNT, 2);
         this.displayParameter (display, GrooveParameterID.SHUFFLE_RATE, 3);

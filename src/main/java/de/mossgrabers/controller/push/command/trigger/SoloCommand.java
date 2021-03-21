@@ -103,7 +103,7 @@ public class SoloCommand extends AbstractTriggerCommand<PushControlSurface, Push
         if (Modes.isLayerMode (activeModeId))
         {
             final ICursorDevice cd = this.model.getCursorDevice ();
-            final Optional<?> layer = cd.getLayerOrDrumPadBank ().getSelectedItem ();
+            final Optional<?> layer = cd.getLayerBank ().getSelectedItem ();
             if (layer.isPresent ())
                 ((ILayer) layer.get ()).toggleSolo ();
         }

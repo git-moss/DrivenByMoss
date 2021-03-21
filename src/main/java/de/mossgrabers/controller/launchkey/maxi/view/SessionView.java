@@ -23,6 +23,8 @@ import de.mossgrabers.framework.view.AbstractSessionView;
 import de.mossgrabers.framework.view.SessionColor;
 import de.mossgrabers.framework.view.Views;
 
+import java.util.List;
+
 
 /**
  * The Session view.
@@ -32,16 +34,9 @@ import de.mossgrabers.framework.view.Views;
 public class SessionView extends AbstractSessionView<LaunchkeyMk3ControlSurface, LaunchkeyMk3Configuration>
 {
     /** Modes which can take over the first row of pads. */
-    public static final Modes [] PAD_MODES =
-    {
-        Modes.REC_ARM,
-        Modes.TRACK_SELECT,
-        Modes.MUTE,
-        Modes.SOLO,
-        Modes.STOP_CLIP
-    };
+    public static final List<Modes> PAD_MODES = List.of (Modes.REC_ARM, Modes.TRACK_SELECT, Modes.MUTE, Modes.SOLO, Modes.STOP_CLIP);
 
-    private Modes                padMode   = null;
+    private Modes                   padMode   = null;
 
 
     /**
