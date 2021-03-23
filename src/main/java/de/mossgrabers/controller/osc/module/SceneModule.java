@@ -91,12 +91,27 @@ public class SceneModule extends AbstractModule
                 break;
 
             default:
-                final int scene = Integer.parseInt (sceneCommand);
+                final int sceneIndex = Integer.parseInt (sceneCommand);
+                final IScene scene = sceneBank.getItem (sceneIndex - 1);
                 final String sceneCommand2 = getSubCommand (path);
-                if ("launch".equals (sceneCommand2))
-                    sceneBank.getItem (scene - 1).launch ();
-                else
-                    throw new UnknownCommandException (sceneCommand2);
+                switch (sceneCommand2)
+                {
+                    case "launch":
+                        scene.launch ();
+                        break;
+
+                    case TAG_DUPLICATE:
+                        scene.duplicate ();
+                        break;
+
+                    case TAG_REMOVE:
+                        scene.remove ();
+                        break;
+
+                    default:
+                        throw new UnknownCommandException (sceneCommand2);
+                }
+                break;
         }
     }
 

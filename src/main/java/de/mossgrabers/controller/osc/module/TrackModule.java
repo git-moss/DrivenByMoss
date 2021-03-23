@@ -353,6 +353,10 @@ public class TrackModule extends AbstractModule
                     track.select ();
                 break;
 
+            case TAG_DUPLICATE:
+                track.duplicate ();
+                break;
+
             case TAG_REMOVE:
                 track.remove ();
                 break;
@@ -470,6 +474,9 @@ public class TrackModule extends AbstractModule
                     break;
                 case "record":
                     slot.record ();
+                    break;
+                case TAG_DUPLICATE:
+                    slot.duplicate ();
                     break;
                 case TAG_REMOVE:
                     slot.remove ();

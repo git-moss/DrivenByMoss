@@ -314,6 +314,10 @@ public class DeviceModule extends AbstractModule
                 }
                 break;
 
+            case TAG_DUPLICATE:
+                device.duplicate ();
+                break;
+
             case TAG_REMOVE:
                 device.remove ();
                 break;
