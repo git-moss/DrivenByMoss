@@ -7,6 +7,7 @@ package de.mossgrabers.bitwig.framework.midi;
 import de.mossgrabers.bitwig.framework.daw.data.Util;
 import de.mossgrabers.framework.daw.midi.ArpeggiatorMode;
 import de.mossgrabers.framework.daw.midi.INoteRepeat;
+import de.mossgrabers.framework.utils.FrameworkException;
 
 import com.bitwig.extension.controller.api.Arpeggiator;
 import com.bitwig.extension.controller.api.EnumDefinition;
@@ -50,7 +51,7 @@ public class NoteRepeatImpl implements INoteRepeat
             final EnumValueDefinition def = enumDefinition.valueDefinitionAt (i);
             final String id = def.getId ();
             if (ArpeggiatorMode.valueOf (id.toUpperCase (Locale.US).replace ('-', '_')) == null)
-                throw new RuntimeException ("New (unsupported) arpeggiator mode has been added: " + id);
+                throw new FrameworkException ("New (unsupported) arpeggiator mode has been added: " + id);
         }
     }
 

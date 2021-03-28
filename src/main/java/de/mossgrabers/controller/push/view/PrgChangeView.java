@@ -118,7 +118,11 @@ public class PrgChangeView extends AbstractView<PushControlSurface, PushConfigur
     public void drawGrid ()
     {
         final int [] colors = this.isToggled ? this.yellows : this.greens;
-        final int selPad = this.isToggled ? this.programNumber >= 64 ? this.programNumber - 64 : -1 : this.programNumber < 64 ? this.programNumber : -1;
+        final int selPad;
+        if (this.isToggled)
+            selPad = this.programNumber >= 64 ? this.programNumber - 64 : -1;
+        else
+            selPad = this.programNumber < 64 ? this.programNumber : -1;
         final IPadGrid gridPad = this.surface.getPadGrid ();
         final boolean isPush2 = this.surface.getConfiguration ().isPush2 ();
         final int red = isPush2 ? PushColorManager.PUSH2_COLOR2_RED : PushColorManager.PUSH1_COLOR2_RED;

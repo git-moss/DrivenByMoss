@@ -33,6 +33,9 @@ import de.mossgrabers.framework.utils.ButtonEvent;
  */
 public class MasterMode extends BaseMode<ITrack>
 {
+    private static final String TAG_VOLUME = "Volume";
+
+
     /**
      * Constructor.
      *
@@ -131,9 +134,9 @@ public class MasterMode extends BaseMode<ITrack>
         final IProject project = this.model.getProject ();
         final boolean canEditCueVolume = this.model.getHost ().supports (Capability.CUE_VOLUME);
 
-        display.setCell (0, 0, "Volume").setCell (0, 1, "Pan");
+        display.setCell (0, 0, TAG_VOLUME).setCell (0, 1, "Pan");
         if (canEditCueVolume)
-            display.setCell (0, 2, "Volume").setCell (0, 3, "Mix");
+            display.setCell (0, 2, TAG_VOLUME).setCell (0, 3, "Mix");
         display.setCell (0, 6, "Project:");
         display.setCell (1, 0, master.getVolumeStr (8)).setCell (1, 1, master.getPanStr (8));
         if (canEditCueVolume)
@@ -164,7 +167,7 @@ public class MasterMode extends BaseMode<ITrack>
         final int vuR = valueChanger.toDisplayValue (enableVUMeters ? master.getVuRight () : 0);
         final int vuL = valueChanger.toDisplayValue (enableVUMeters ? master.getVuLeft () : 0);
 
-        display.addChannelElement ("Volume", false, master.getName (), ChannelType.MASTER, master.getColor (), master.isSelected (), valueChanger.toDisplayValue (master.getVolume ()), valueChanger.toDisplayValue (master.getModulatedVolume ()), this.isKnobTouched[0] ? master.getVolumeStr (8) : "", valueChanger.toDisplayValue (master.getPan ()), valueChanger.toDisplayValue (master.getModulatedPan ()), this.isKnobTouched[1] ? master.getPanStr (8) : "", vuL, vuR, master.isMute (), master.isSolo (), master.isRecArm (), master.isActivated (), 0);
+        display.addChannelElement (TAG_VOLUME, false, master.getName (), ChannelType.MASTER, master.getColor (), master.isSelected (), valueChanger.toDisplayValue (master.getVolume ()), valueChanger.toDisplayValue (master.getModulatedVolume ()), this.isKnobTouched[0] ? master.getVolumeStr (8) : "", valueChanger.toDisplayValue (master.getPan ()), valueChanger.toDisplayValue (master.getModulatedPan ()), this.isKnobTouched[1] ? master.getPanStr (8) : "", vuL, vuR, master.isMute (), master.isSolo (), master.isRecArm (), master.isActivated (), 0);
         display.addChannelSelectorElement ("Pan", false, "", null, ColorEx.BLACK, false, master.isActivated ());
 
         if (this.model.getHost ().supports (Capability.CUE_VOLUME))

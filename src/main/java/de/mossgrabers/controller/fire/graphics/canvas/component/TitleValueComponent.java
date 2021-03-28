@@ -8,7 +8,6 @@ import de.mossgrabers.framework.controller.color.ColorEx;
 import de.mossgrabers.framework.graphics.IGraphicsConfiguration;
 import de.mossgrabers.framework.graphics.IGraphicsContext;
 import de.mossgrabers.framework.graphics.IGraphicsInfo;
-import de.mossgrabers.framework.graphics.canvas.component.IComponent;
 
 
 /**
@@ -16,11 +15,12 @@ import de.mossgrabers.framework.graphics.canvas.component.IComponent;
  *
  * @author J&uuml;rgen Mo&szlig;graber
  */
-public class TitleValueComponent implements IComponent
+public class TitleValueComponent extends AbstractBaseComponent
 {
-    private final String  label1;
     private final String  label2;
     private final int     value;
+    private final int     vuLeft;
+    private final int     vuRight;
     private final boolean isPan;
 
 
@@ -34,9 +34,28 @@ public class TitleValueComponent implements IComponent
      */
     public TitleValueComponent (final String label1, final String label2, final int value, final boolean isPan)
     {
-        this.label1 = label1;
+        this (label1, label2, value, -1, -1, isPan);
+    }
+
+
+    /**
+     * Constructor.
+     *
+     * @param label1 The first row text
+     * @param label2 The second row text
+     * @param value The value, hides the value fader if set to -1
+     * @param vuLeft The left VU value, not drawn if -1
+     * @param vuRight The right VU value, not drawn if -1
+     * @param isPan True if display as panorama bar
+     */
+    public TitleValueComponent (final String label1, final String label2, final int value, final int vuLeft, final int vuRight, final boolean isPan)
+    {
+        super (label1);
+
         this.label2 = label2;
         this.value = value;
+        this.vuLeft = vuLeft;
+        this.vuRight = vuRight;
         this.isPan = isPan;
     }
 
@@ -51,25 +70,39 @@ public class TitleValueComponent implements IComponent
         final ColorEx colorText = configuration.getColorText ();
         final ColorEx colorFader = configuration.getColorFader ();
 
-        gc.drawTextInHeight (this.label1, 0, 0, 20, colorText, 20);
-        gc.drawTextInHeight (this.label2, 0, 20, 20, colorText, 20);
+        gc.drawTextInHeight (this.label, 0, 0, ROW_HEIGHT, colorText, ROW_HEIGHT);
+        gc.drawTextInHeight (this.label2, 0, ROW_HEIGHT, ROW_HEIGHT, colorText, ROW_HEIGHT);
 
         if (this.value >= 0)
         {
-            final int width = this.value * 128 / 1024;
-            final int barHeight = 20;
-            gc.strokeRectangle (1, 44, 127, barHeight, colorFader);
+            final int width = this.value * 128 / RESOLUTION;
+            gc.strokeRectangle (1, TOP, 127, ROW_HEIGHT, colorFader);
             if (this.isPan)
             {
-                if (width == 64)
-                    gc.fillRectangle (65, 44, 1, barHeight, colorFader);
-                else if (width > 64)
-                    gc.fillRectangle (65, 44, width - 64.0, barHeight, colorFader);
+                if (width == CENTER)
+                    gc.fillRectangle (CENTER + 1.0, TOP, 1, ROW_HEIGHT, colorFader);
+                else if (width > CENTER)
+                    gc.fillRectangle (CENTER + 1.0, TOP, width - (double) CENTER, ROW_HEIGHT, colorFader);
                 else
-                    gc.fillRectangle (width, 44, 64.0 - width, barHeight, colorFader);
+                    gc.fillRectangle (width, TOP, CENTER - (double) width, ROW_HEIGHT, colorFader);
             }
             else
-                gc.fillRectangle (1, 44, width, barHeight, colorFader);
+                gc.fillRectangle (1, TOP, width, ROW_HEIGHT, colorFader);
+        }
+
+        if (this.vuLeft > 0 || this.vuRight > 0)
+        {
+            final double height = 2.0 * ROW_HEIGHT;
+
+            final double heightLeft = this.vuLeft * height / RESOLUTION;
+            final double topLeft = Math.max (height - heightLeft - 1, 0);
+            gc.strokeRectangle (118, topLeft, 5, heightLeft, ColorEx.BLACK);
+            gc.fillRectangle (119, height - heightLeft, 3, heightLeft, colorFader);
+
+            final double heightRight = this.vuRight * height / RESOLUTION;
+            final double topRight = Math.max (height - heightRight - 1, 0);
+            gc.strokeRectangle (123, topRight, 4, height - topRight, ColorEx.BLACK);
+            gc.fillRectangle (124, height - heightRight, 3, heightRight, colorFader);
         }
     }
 
@@ -79,12 +112,12 @@ public class TitleValueComponent implements IComponent
     public int hashCode ()
     {
         final int prime = 31;
-        int result = 1;
+        int result = super.hashCode ();
         result = prime * result + (this.isPan ? 1231 : 1237);
-        result = prime * result + (this.label1 == null ? 0 : this.label1.hashCode ());
         result = prime * result + (this.label2 == null ? 0 : this.label2.hashCode ());
         result = prime * result + this.value;
-        return result;
+        result = prime * result + this.vuLeft;
+        return prime * result + this.vuRight;
     }
 
 
@@ -94,19 +127,12 @@ public class TitleValueComponent implements IComponent
     {
         if (this == obj)
             return true;
-        if (obj == null)
+        if (!super.equals (obj))
             return false;
         if (this.getClass () != obj.getClass ())
             return false;
         final TitleValueComponent other = (TitleValueComponent) obj;
         if (this.isPan != other.isPan)
-            return false;
-        if (this.label1 == null)
-        {
-            if (other.label1 != null)
-                return false;
-        }
-        else if (!this.label1.equals (other.label1))
             return false;
         if (this.label2 == null)
         {
@@ -115,6 +141,10 @@ public class TitleValueComponent implements IComponent
         }
         else if (!this.label2.equals (other.label2))
             return false;
-        return this.value == other.value;
+        if (this.value != other.value)
+            return false;
+        if (this.vuLeft != other.vuLeft)
+            return false;
+        return this.vuRight == other.vuRight;
     }
 }

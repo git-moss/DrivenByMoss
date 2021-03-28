@@ -115,7 +115,7 @@ public class ParametersMode extends AbstractParametersMode<IItem>
         if (!cd.doesExist ())
             return;
 
-        // Normal behaviour - parameters
+        // Normal behavior - parameters
         if (!this.showDevices)
         {
             final IParameterPageBank parameterPageBank = cd.getParameterPageBank ();
@@ -142,7 +142,7 @@ public class ParametersMode extends AbstractParametersMode<IItem>
             return;
         }
 
-        // Normal behaviour - devices
+        // Normal behavior - devices
         if (cd.getIndex () == index)
             this.setShowDevices (!this.isShowDevices ());
         else

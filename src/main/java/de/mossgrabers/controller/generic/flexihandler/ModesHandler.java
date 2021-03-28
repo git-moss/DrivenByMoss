@@ -7,6 +7,8 @@ package de.mossgrabers.controller.generic.flexihandler;
 import de.mossgrabers.controller.generic.GenericFlexiConfiguration;
 import de.mossgrabers.controller.generic.controller.FlexiCommand;
 import de.mossgrabers.controller.generic.controller.GenericFlexiControlSurface;
+import de.mossgrabers.controller.generic.flexihandler.utils.FlexiHandlerException;
+import de.mossgrabers.controller.generic.flexihandler.utils.MidiValue;
 import de.mossgrabers.framework.controller.valuechanger.IValueChanger;
 import de.mossgrabers.framework.daw.IHost;
 import de.mossgrabers.framework.daw.IModel;
@@ -138,7 +140,7 @@ public class ModesHandler extends AbstractHandler
 
     /** {@inheritDoc} */
     @Override
-    public void handle (final FlexiCommand command, final int knobMode, final int value)
+    public void handle (final FlexiCommand command, final int knobMode, final MidiValue value)
     {
         final IMode mode = this.modeManager.getActive ();
         if (mode == null)
@@ -272,7 +274,7 @@ public class ModesHandler extends AbstractHandler
     }
 
 
-    private void changeModeValue (final int knobMode, final int knobIndex, final int value)
+    private void changeModeValue (final int knobMode, final int knobIndex, final MidiValue value)
     {
         final IMode mode = this.modeManager.getActive ();
         final boolean absolute = isAbsolute (knobMode);
@@ -281,12 +283,15 @@ public class ModesHandler extends AbstractHandler
             if (mode instanceof AbstractMode)
                 ((AbstractMode<?, ?, ?>) mode).setAbsolute (absolute);
             if (absolute)
-                mode.onKnobValue (knobIndex, value);
+            {
+                final int val = value.getValue ();
+                mode.onKnobValue (knobIndex, value.isHighRes () ? val : (int) Math.round (val * 16383.0 / 127.0));
+            }
             else
             {
                 // Re-encode the selected relative type to the default relative type
                 final IValueChanger relativeValueChanger = this.getRelativeValueChanger (knobMode);
-                final int control = this.model.getValueChanger ().encode (relativeValueChanger.decode (value));
+                final int control = this.model.getValueChanger ().encode (relativeValueChanger.decode (value.getValue ()));
                 mode.onKnobValue (knobIndex, control);
             }
         }

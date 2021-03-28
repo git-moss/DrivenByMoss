@@ -100,12 +100,18 @@ public class NoteViewSelectMode extends BaseMode<IItem>
             if (VIEWS[i] != null)
             {
                 final IView view = viewManager.get (VIEWS[i]);
-                display.setCell (3, i, view == null ? "" : (viewManager.isActive (VIEWS[i]) ? Push1Display.SELECT_ARROW : "") + StringUtils.optimizeName (view.getName (), 8));
+                String value = "";
+                if (view != null)
+                    value = (viewManager.isActive (VIEWS[i]) ? Push1Display.SELECT_ARROW : "") + StringUtils.optimizeName (view.getName (), 8);
+                display.setCell (3, i, value);
             }
             if (VIEWS_TOP[i] != null)
             {
                 final IView view = viewManager.get (VIEWS_TOP[i]);
-                display.setCell (0, i, view == null ? "" : (viewManager.isActive (VIEWS_TOP[i]) ? Push1Display.SELECT_ARROW : "") + StringUtils.optimizeName (view.getName (), 8));
+                String value = "";
+                if (view != null)
+                    value = (viewManager.isActive (VIEWS_TOP[i]) ? Push1Display.SELECT_ARROW : "") + StringUtils.optimizeName (view.getName (), 8);
+                display.setCell (0, i, value);
             }
         }
     }

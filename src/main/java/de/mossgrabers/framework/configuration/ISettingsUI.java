@@ -6,6 +6,8 @@ package de.mossgrabers.framework.configuration;
 
 import de.mossgrabers.framework.controller.color.ColorEx;
 
+import java.util.List;
+
 
 /**
  * An interface to create user interface widgets for settings.
@@ -27,6 +29,24 @@ public interface ISettingsUI
      * @return The object that encapsulates the requested enum setting
      */
     IEnumSetting getEnumSetting (final String label, final String category, final String [] options, final String initialValue);
+
+
+    /**
+     * Returns an enumeration setting that is shown either as a chooser or as a button group,
+     * depending on the number of provided options.
+     *
+     * @param label The name of the setting, must not be null
+     * @param category The name of the category, may not be null
+     * @param options The string array that defines the allowed options for the button group or
+     *            chooser
+     * @param initialValue The initial string value, must be one of the items specified with the
+     *            option argument
+     * @return The object that encapsulates the requested enum setting
+     */
+    default IEnumSetting getEnumSetting (final String label, final String category, final List<String> options, final String initialValue)
+    {
+        return this.getEnumSetting (label, category, options.toArray (new String [options.size ()]), initialValue);
+    }
 
 
     /**

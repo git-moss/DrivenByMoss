@@ -253,7 +253,7 @@ public abstract class AbstractNumberDisplayView<S extends IControlSurface<C>, C 
 
         final int value = Math.min (999, Math.max (0, this.getNumber ()));
 
-        // 1st digit (two cols) in color 1
+        // 1st digit (two columns) in color 1
         final int digit1 = value / 100;
         final boolean [] [] first = TWO_COLS[digit1];
         for (int x = 0; x < 2; x++)
@@ -262,7 +262,7 @@ public abstract class AbstractNumberDisplayView<S extends IControlSurface<C>, C 
                 this.padGrid.lightEx (x, y, first[y][x] ? this.textColor1 : this.backgroundColor);
         }
 
-        // 2nd digit (three cols) in color 2
+        // 2nd digit (three columns) in color 2
         final int digit2 = value % 100 / 10;
         final boolean [] [] second = THREE_COLS[digit2];
         final boolean show2ndDigit = digit1 > 0 || digit2 > 0;
@@ -272,7 +272,7 @@ public abstract class AbstractNumberDisplayView<S extends IControlSurface<C>, C 
                 this.padGrid.lightEx (2 + x, y, show2ndDigit && second[y][x] ? this.textColor2 : this.backgroundColor);
         }
 
-        // 3rd digit (three cols) in color 1
+        // 3rd digit (three columns) in color 1
         final boolean [] [] third = THREE_COLS[value % 10];
         for (int x = 0; x < 3; x++)
         {

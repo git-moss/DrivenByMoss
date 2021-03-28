@@ -16,21 +16,23 @@ import java.util.UUID;
  */
 public class KontrolProtocolDeviceDescriptorV1 implements IKontrolProtocolDeviceDescriptor
 {
-    private static final UUID         EXTENSION_ID  = UUID.fromString ("4EA6215E-C7EB-4184-AEA4-67D03D8EF7A8");
-    private static final String       DEVICE_NAME   = "Komplete Kontrol A-series / M32";
+    private static final String       KOMPLETE_KONTROL_A_DAW = "Komplete Kontrol A DAW";
 
-    private static final String [] [] PORTS_WINDOWS =
+    private static final UUID         EXTENSION_ID           = UUID.fromString ("4EA6215E-C7EB-4184-AEA4-67D03D8EF7A8");
+    private static final String       DEVICE_NAME            = "Komplete Kontrol A-series / M32";
+
+    private static final String [] [] PORTS_WINDOWS          =
     {
         {
-            "Komplete Kontrol A DAW",
+            KOMPLETE_KONTROL_A_DAW,
             "KOMPLETE KONTROL A25 MIDI",
         },
         {
-            "Komplete Kontrol A DAW",
+            KOMPLETE_KONTROL_A_DAW,
             "KOMPLETE KONTROL A49 MIDI",
         },
         {
-            "Komplete Kontrol A DAW",
+            KOMPLETE_KONTROL_A_DAW,
             "KOMPLETE KONTROL A61 MIDI",
         },
         {
@@ -39,18 +41,18 @@ public class KontrolProtocolDeviceDescriptorV1 implements IKontrolProtocolDevice
         }
     };
 
-    private static final String [] [] PORTS_MACOS   =
+    private static final String [] [] PORTS_MACOS            =
     {
         {
-            "Komplete Kontrol A DAW",
+            KOMPLETE_KONTROL_A_DAW,
             "KOMPLETE KONTROL A25",
         },
         {
-            "Komplete Kontrol A DAW",
+            KOMPLETE_KONTROL_A_DAW,
             "KOMPLETE KONTROL A49",
         },
         {
-            "Komplete Kontrol A DAW",
+            KOMPLETE_KONTROL_A_DAW,
             "KOMPLETE KONTROL A61",
         },
         {

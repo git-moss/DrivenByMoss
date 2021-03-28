@@ -51,7 +51,7 @@ public class LaunchpadPadGrid extends PadGridImpl
      * Constructor.
      *
      * @param colorManager The color manager for accessing specific colors to use
-     * @param output The midi output which can address the pad states
+     * @param output The MIDI output which can address the pad states
      * @param definition The Launchpad definition
      */
     public LaunchpadPadGrid (final ColorManager colorManager, final IMidiOutput output, final ILaunchpadControllerDefinition definition)
@@ -85,7 +85,7 @@ public class LaunchpadPadGrid extends PadGridImpl
 
 
     /**
-     * Flush the changed pad LEDs using sysex.
+     * Flush the changed pad LEDs using system exclusive.
      */
     public void flush ()
     {

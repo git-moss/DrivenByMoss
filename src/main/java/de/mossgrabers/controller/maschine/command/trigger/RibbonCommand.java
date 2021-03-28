@@ -59,7 +59,7 @@ public class RibbonCommand extends AbstractTriggerCommand<MaschineControlSurface
             }
         }
 
-        this.surface.getDisplay ().notify (MaschineConfiguration.RIBBON_MODE_VALUES[m]);
+        this.surface.getDisplay ().notify (MaschineConfiguration.RIBBON_MODE_VALUES.get (m));
         configuration.setRibbonMode (m);
 
         ((TouchstripCommand) this.surface.getContinuous (ContinuousID.CROSSFADER).getTouchCommand ()).resetRibbonValue (m);

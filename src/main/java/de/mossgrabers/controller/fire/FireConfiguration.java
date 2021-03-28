@@ -13,6 +13,8 @@ import de.mossgrabers.framework.daw.IHost;
 import de.mossgrabers.framework.daw.constants.Capability;
 import de.mossgrabers.framework.daw.midi.ArpeggiatorMode;
 
+import java.util.List;
+
 
 /**
  * The configuration settings for Fire.
@@ -37,7 +39,7 @@ public class FireConfiguration extends AbstractConfiguration
      * @param valueChanger The value changer
      * @param arpeggiatorModes The available arpeggiator modes
      */
-    public FireConfiguration (final IHost host, final IValueChanger valueChanger, final ArpeggiatorMode [] arpeggiatorModes)
+    public FireConfiguration (final IHost host, final IValueChanger valueChanger, final List<ArpeggiatorMode> arpeggiatorModes)
     {
         super (host, valueChanger, arpeggiatorModes);
     }

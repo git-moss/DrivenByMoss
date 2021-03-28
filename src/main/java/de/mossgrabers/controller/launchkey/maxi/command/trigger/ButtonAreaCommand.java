@@ -82,7 +82,7 @@ public class ButtonAreaCommand extends AbstractTriggerCommand<LaunchkeyMk3Contro
 
 
     /**
-     * Toggle between select and rec-arm.
+     * Toggle between select and record arm.
      */
     public static void toggleSelect ()
     {
@@ -91,7 +91,7 @@ public class ButtonAreaCommand extends AbstractTriggerCommand<LaunchkeyMk3Contro
 
 
     /**
-     * Test if track selection or track rec-arm is active.
+     * Test if track selection or track record arm is active.
      *
      * @return True if selection is active
      */

@@ -12,6 +12,7 @@ import de.mossgrabers.framework.daw.IHost;
 import de.mossgrabers.framework.daw.midi.ArpeggiatorMode;
 
 import java.util.Arrays;
+import java.util.List;
 
 
 /**
@@ -87,7 +88,7 @@ public class HUIConfiguration extends AbstractConfiguration
      * @param valueChanger The value changer
      * @param arpeggiatorModes The available arpeggiator modes
      */
-    public HUIConfiguration (final IHost host, final IValueChanger valueChanger, final ArpeggiatorMode [] arpeggiatorModes)
+    public HUIConfiguration (final IHost host, final IValueChanger valueChanger, final List<ArpeggiatorMode> arpeggiatorModes)
     {
         super (host, valueChanger, arpeggiatorModes);
 

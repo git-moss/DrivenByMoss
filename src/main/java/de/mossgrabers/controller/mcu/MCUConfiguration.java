@@ -15,6 +15,7 @@ import de.mossgrabers.framework.daw.constants.Capability;
 import de.mossgrabers.framework.daw.midi.ArpeggiatorMode;
 
 import java.util.Arrays;
+import java.util.List;
 
 
 /**
@@ -24,6 +25,8 @@ import java.util.Arrays;
  */
 public class MCUConfiguration extends AbstractConfiguration
 {
+    private static final String       MCU_DEVICE_1_LEFT                       = "MCU Device 1 - left";
+
     /** Zoom state. */
     public static final Integer       ZOOM_STATE                              = Integer.valueOf (50);
     /** Display time or beats. */
@@ -44,7 +47,7 @@ public class MCUConfiguration extends AbstractConfiguration
     public static final Integer       HAS_ONLY_1_FADER                        = Integer.valueOf (58);
     /** Display track names in 1st display. */
     public static final Integer       DISPLAY_TRACK_NAMES                     = Integer.valueOf (59);
-    /** Replace the vertical zoom withmode change. */
+    /** Replace the vertical zoom with mode change. */
     public static final Integer       USE_VERT_ZOOM_FOR_MODES                 = Integer.valueOf (60);
     /** Use the faders like the editing knobs. */
     public static final Integer       USE_FADERS_AS_KNOBS                     = Integer.valueOf (61);
@@ -148,16 +151,16 @@ public class MCUConfiguration extends AbstractConfiguration
             "MCU Device 1"
         },
         {
-            "MCU Device 1 - left",
+            MCU_DEVICE_1_LEFT,
             "MCU Device 2 - right",
         },
         {
-            "MCU Device 1 - left",
+            MCU_DEVICE_1_LEFT,
             "MCU Device 2 - center",
             "MCU Device 3 - right",
         },
         {
-            "MCU Device 1 - left",
+            MCU_DEVICE_1_LEFT,
             "MCU Device 2",
             "MCU Device 3",
             "MCU Device 4 - right",
@@ -207,7 +210,7 @@ public class MCUConfiguration extends AbstractConfiguration
      * @param numMCUDevices The number of MCU device (main device plus extenders) 1-4
      * @param arpeggiatorModes The available arpeggiator modes
      */
-    public MCUConfiguration (final IHost host, final IValueChanger valueChanger, final int numMCUDevices, final ArpeggiatorMode [] arpeggiatorModes)
+    public MCUConfiguration (final IHost host, final IValueChanger valueChanger, final int numMCUDevices, final List<ArpeggiatorMode> arpeggiatorModes)
     {
         super (host, valueChanger, arpeggiatorModes);
 

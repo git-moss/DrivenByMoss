@@ -355,7 +355,7 @@ public class HUIControlSurface extends AbstractControlSurface<HUIConfiguration>
 
         switch (data1)
         {
-            // Move fader hi-byte
+            // Move fader high-byte
             case 0x00:
             case 0x01:
             case 0x02:
@@ -377,7 +377,7 @@ public class HUIControlSurface extends AbstractControlSurface<HUIConfiguration>
                 this.zone = data2;
                 break;
 
-            // Move fader lo-byte
+            // Move fader low-byte
             case 0x20:
             case 0x21:
             case 0x22:

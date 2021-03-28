@@ -19,7 +19,9 @@ import de.mossgrabers.framework.utils.StringUtils;
  */
 public class MidiMonitorControlSurface extends AbstractControlSurface<MidiMonitorConfiguration>
 {
-    private static final String [] SPACES    =
+    private static final String    GENERAL_PURPOSE = "General Purpose";
+
+    private static final String [] SPACES          =
     {
         "",
         " ",
@@ -37,7 +39,7 @@ public class MidiMonitorControlSurface extends AbstractControlSurface<MidiMonito
         "             "
     };
 
-    static final String []         CC_NAMES  =
+    static final String []         CC_NAMES        =
     {
         "Bank Select",
         "Modulation",
@@ -119,10 +121,10 @@ public class MidiMonitorControlSurface extends AbstractControlSurface<MidiMonito
         "Sound Controller 8",
         "Sound Controller 9",
         "Sound Controller 10",
-        "General Purpose",
-        "General Purpose",
-        "General Purpose",
-        "General Purpose",
+        GENERAL_PURPOSE,
+        GENERAL_PURPOSE,
+        GENERAL_PURPOSE,
+        GENERAL_PURPOSE,
         "Portamento",
         "85",
         "86",
@@ -169,7 +171,7 @@ public class MidiMonitorControlSurface extends AbstractControlSurface<MidiMonito
         "Poly Mode"
     };
 
-    static final String []         MMC_NAMES = new String [128];
+    static final String []         MMC_NAMES       = new String [128];
     static
     {
         MMC_NAMES[0x00] = "Reserved for extensions";
@@ -227,7 +229,7 @@ public class MidiMonitorControlSurface extends AbstractControlSurface<MidiMonito
      *
      * @param host The host
      * @param configuration The configuration
-     * @param input The midi input
+     * @param input The MIDI input
      */
     public MidiMonitorControlSurface (final IHost host, final MidiMonitorConfiguration configuration, final IMidiInput input)
     {
@@ -256,7 +258,7 @@ public class MidiMonitorControlSurface extends AbstractControlSurface<MidiMonito
                 this.log (status, data1, data2, channel, "Note On  " + Scales.formatNoteAndOctave (data1, -2));
                 break;
 
-            // Polyphonic Aftertouch
+            // Polyphonic After-touch
             case 0xA0:
                 this.log (status, data1, data2, channel, "Polyphonic Key Pressure " + Scales.formatNoteAndOctave (data1, -2));
                 break;
@@ -271,7 +273,7 @@ public class MidiMonitorControlSurface extends AbstractControlSurface<MidiMonito
                 this.log (status, data1, data2, channel, "Program Change");
                 break;
 
-            // Channel Aftertouch
+            // Channel After-touch
             case 0xD0:
                 this.log (status, data1, data2, channel, "Channel Pressure (Aftertouch)");
                 break;

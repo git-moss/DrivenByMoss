@@ -69,8 +69,8 @@ public class DeviceView extends AbstractView<BeatstepControlSurface, BeatstepCon
             return;
 
         final ICursorDevice cd = this.model.getCursorDevice ();
-        final IChannelBank<?> bank = cd.getLayerOrDrumPadBank ();
-        final Optional<?> sel = bank.getSelectedItem ();
+        final IChannelBank<ILayer> bank = cd.getLayerBank ();
+        final Optional<ILayer> sel = bank.getSelectedItem ();
 
         switch (note - 36)
         {
@@ -86,7 +86,7 @@ public class DeviceView extends AbstractView<BeatstepControlSurface, BeatstepCon
                     int index = 0;
                     if (sel.isPresent ())
                     {
-                        final int idx = ((ILayer) sel.get ()).getIndex ();
+                        final int idx = sel.get ().getIndex ();
                         index = idx - 1;
                     }
                     if (index >= 0)
@@ -100,7 +100,7 @@ public class DeviceView extends AbstractView<BeatstepControlSurface, BeatstepCon
             case 2:
                 if (this.isLayer)
                 {
-                    final int index = sel.isEmpty () ? 0 : ((ILayer) sel.get ()).getIndex () + 1;
+                    final int index = sel.isEmpty () ? 0 : sel.get ().getIndex () + 1;
                     bank.getItem (index > 7 ? 7 : index).select ();
                 }
                 else
@@ -114,7 +114,7 @@ public class DeviceView extends AbstractView<BeatstepControlSurface, BeatstepCon
                 if (this.isLayer)
                 {
                     if (sel.isPresent ())
-                        ((ILayer) sel.get ()).enter ();
+                        sel.get ().enter ();
                 }
                 else if (sel.isEmpty ())
                     bank.getItem (0).select ();

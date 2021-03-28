@@ -13,7 +13,7 @@ import java.util.Optional;
 
 
 /**
- * Pluggable extension to edit track parameters.
+ * Plugable extension to edit track parameters.
  *
  * @author J&uuml;rgen Mo&szlig;graber
  */

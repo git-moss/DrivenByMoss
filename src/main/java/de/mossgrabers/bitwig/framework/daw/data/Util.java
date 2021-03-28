@@ -26,7 +26,7 @@ public final class Util
     /**
      * Hides new subscribe/unsubscribe API.
      *
-     * @param subscribable The subscrible
+     * @param subscribable The subscribable
      * @param enable True to subscribe, otherwise unsubscribed
      */
     public static void setIsSubscribed (final Subscribable subscribable, final boolean enable)

@@ -20,7 +20,7 @@ public class PaletteEntry
     }
 
 
-    /** The maximumnumber of read/write attempts. */
+    /** The maximum number of read/write attempts. */
     public static final int  MAX_NUMBER_OF_RETRIES  = 10;
 
     private static final int PALETTE_MESSAGE_OUT_ID = 0x03;
@@ -117,7 +117,7 @@ public class PaletteEntry
 
 
     /**
-     * Creates a sysex message which contains the current color.
+     * Creates a system exclusive message which contains the current color.
      *
      * @param index The palette index where to store the color
      * @return The created message
@@ -166,7 +166,7 @@ public class PaletteEntry
 
 
     /**
-     * Get the current numner of attempts to read the value on the device.
+     * Get the current number of attempts to read the value on the device.
      *
      * @return The number of retries
      */
@@ -177,7 +177,7 @@ public class PaletteEntry
 
 
     /**
-     * Get the current numner of attempts to update the value on the device.
+     * Get the current number of attempts to update the value on the device.
      *
      * @return The number of retries
      */

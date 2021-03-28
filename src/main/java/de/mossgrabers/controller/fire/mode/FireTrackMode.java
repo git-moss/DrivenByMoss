@@ -44,7 +44,7 @@ public class FireTrackMode extends TrackMode<FireControlSurface, FireConfigurati
         Modes.SEND6
     };
 
-    private Modes                 selectedParameter = Modes.VOLUME;
+    protected Modes               selectedParameter = Modes.VOLUME;
 
 
     /**
@@ -55,10 +55,22 @@ public class FireTrackMode extends TrackMode<FireControlSurface, FireConfigurati
      */
     public FireTrackMode (final FireControlSurface surface, final IModel model)
     {
-        super ("Mixer", surface, model, false, null);
+        this ("Track", surface, model);
+    }
+
+
+    /**
+     * Constructor.
+     *
+     * @param name The name of the mode
+     * @param surface The control surface
+     * @param model The model
+     */
+    protected FireTrackMode (final String name, final FireControlSurface surface, final IModel model)
+    {
+        super (name, surface, model, false, null);
 
         this.setControls (ContinuousID.createSequentialList (ContinuousID.KNOB1, 4));
-
         this.setParameterProvider (new Fire4KnobProvider (surface, new SelectedTrackParameterProvider (model)));
     }
 
@@ -74,12 +86,17 @@ public class FireTrackMode extends TrackMode<FireControlSurface, FireConfigurati
         String desc = "Select";
         String label = "a track";
         int value = -1;
+        int vuLeft = -1;
+        int vuRight = -1;
         boolean isPan = false;
 
         final Optional<ITrack> trackOptional = this.model.getCurrentTrackBank ().getSelectedItem ();
         if (trackOptional.isPresent ())
         {
             final ITrack track = trackOptional.get ();
+            vuLeft = track.getVuLeft ();
+            vuRight = track.getVuRight ();
+
             desc = track.getPosition () + 1 + ": " + track.getName (9);
 
             final ISendBank sendBank = track.getSendBank ();
@@ -114,7 +131,7 @@ public class FireTrackMode extends TrackMode<FireControlSurface, FireConfigurati
             }
         }
 
-        display.addElement (new TitleValueComponent (desc, label, value, isPan));
+        display.addElement (new TitleValueComponent (desc, label, value, vuLeft, vuRight, isPan));
         display.send ();
     }
 
@@ -122,7 +139,7 @@ public class FireTrackMode extends TrackMode<FireControlSurface, FireConfigurati
     /**
      * Ensure that the correct mode is still active in case the ALT key was toggled.
      */
-    private void updateMode ()
+    protected void updateMode ()
     {
         int index = -1;
         final Modes [] ms = this.surface.isPressed (ButtonID.ALT) ? MODES : ALT_MODES;
@@ -144,6 +161,8 @@ public class FireTrackMode extends TrackMode<FireControlSurface, FireConfigurati
     public void onKnobTouch (final int index, final boolean isTouched)
     {
         this.selectedParameter = this.surface.isPressed (ButtonID.ALT) ? ALT_MODES[index] : MODES[index];
+
+        this.isKnobTouched[index] = isTouched;
 
         super.onKnobTouch (index, isTouched);
     }

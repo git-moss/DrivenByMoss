@@ -15,7 +15,7 @@ import de.mossgrabers.framework.view.Views;
 
 
 /**
- * Command to toggle between the Session orientation (flip). Additional, toggles to Birdseye view
+ * Command to toggle between the Session orientation (flip). Additional, toggles to birdseye view
  * when used with Shift button.
  *
  * @author J&uuml;rgen Mo&szlig;graber

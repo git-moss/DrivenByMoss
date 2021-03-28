@@ -13,7 +13,7 @@ import java.util.List;
 
 
 /**
- * Abstrct implementation of a browser. Adds functions based on generic interfaces.
+ * Abstract implementation of a browser. Adds functions based on generic interfaces.
  *
  * @author J&uuml;rgen Mo&szlig;graber
  */

@@ -59,7 +59,7 @@ public class Push1Display extends AbstractTextDisplay
      *
      * @param host The host
      * @param maxParameterValue The maximum parameter value (upper bound)
-     * @param output The midi output
+     * @param output The MIDI output
      * @param configuration The Push configuration
      */
     public Push1Display (final IHost host, final int maxParameterValue, final IMidiOutput output, final PushConfiguration configuration)

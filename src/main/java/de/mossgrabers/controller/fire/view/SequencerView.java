@@ -185,7 +185,7 @@ public class SequencerView extends AbstractNoteSequencerView<FireControlSurface,
             if (isAltPressed)
             {
                 this.scales.prevScaleOffset ();
-                this.mvHelper.delayDisplay ( () -> Scales.BASES[this.scales.getScaleOffset ()]);
+                this.mvHelper.delayDisplay ( () -> Scales.BASES.get (this.scales.getScaleOffset ()));
             }
             else
             {
@@ -214,7 +214,7 @@ public class SequencerView extends AbstractNoteSequencerView<FireControlSurface,
             if (isAltPressed)
             {
                 this.scales.nextScaleOffset ();
-                this.mvHelper.delayDisplay ( () -> Scales.BASES[this.scales.getScaleOffset ()]);
+                this.mvHelper.delayDisplay ( () -> Scales.BASES.get (this.scales.getScaleOffset ()));
             }
             else
             {

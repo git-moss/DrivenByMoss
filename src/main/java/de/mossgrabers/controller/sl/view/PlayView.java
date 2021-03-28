@@ -331,7 +331,7 @@ public class PlayView extends AbstractSequencerView<SLControlSurface, SLConfigur
      * 'Draw' the drum grid sequencer.
      *
      * @param buttonIDOrdinal The ordinal number of the button
-     * @return The colo for the step
+     * @return The color for the step
      */
     public int drawDrumGrid (final int buttonIDOrdinal)
     {

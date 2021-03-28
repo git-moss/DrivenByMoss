@@ -9,12 +9,13 @@ import de.mossgrabers.framework.scale.ScaleGrid.Orientation;
 
 import java.util.Arrays;
 import java.util.EnumMap;
+import java.util.List;
 import java.util.Map;
 
 
 /**
  * Helper class for applying scales to a row x column pad grid. There are different layouts
- * available incl. transpositions by octaves. Furthermore, specific matrices are supported for a
+ * available including transpositions by octaves. Furthermore, specific matrices are supported for a
  * drum, a piano and a sequencer layout.
  *
  * @author J&uuml;rgen Mo&szlig;graber
@@ -26,38 +27,10 @@ public class Scales
     private static final int            DRUM_DEFAULT_OFFSET      = 16;
 
     /** The names of notes. */
-    private static final String []      NOTE_NAMES               =
-    {
-        "C",
-        "Db",
-        "D",
-        "Eb",
-        "E",
-        "F",
-        "Gb",
-        "G",
-        "Ab",
-        "A",
-        "Bb",
-        "B"
-    };
+    private static final List<String>   NOTE_NAMES               = List.of ("C", "Db", "D", "Eb", "E", "F", "Gb", "G", "Ab", "A", "Bb", "B");
 
     /** The names of the base notes. */
-    public static final String []       BASES                    =
-    {
-        "C",
-        "G",
-        "D",
-        "A",
-        "E",
-        "B",
-        "F",
-        "Bb",
-        "Eb",
-        "Ab",
-        "Db",
-        "Gb"
-    };
+    public static final List<String>    BASES                    = List.of ("C", "G", "D", "A", "E", "B", "F", "Bb", "Eb", "Ab", "Db", "Gb");
 
     /** The semitone offsets of the base notes. */
     private static final int []         OFFSETS                  =
@@ -76,9 +49,9 @@ public class Scales
         6
     };
 
-    /** The midi note at which the drum grid starts. */
+    /** The MIDI note at which the drum grid starts. */
     public static final int             DRUM_NOTE_START          = 36;
-    /** The midi note at which the drum grid ends. */
+    /** The MIDI note at which the drum grid ends. */
     public static final int             DRUM_NOTE_END            = 100;
 
     // @formatter:off
@@ -122,7 +95,7 @@ public class Scales
     public static final int             DRUM_OCTAVE_LOWER        = -2;
 
     private Scale                       selectedScale            = Scale.MAJOR;
-    private int                         scaleOffset              = 0;                          // C
+    private int                         scaleOffset              = 0;                                                                        // C
     private ScaleLayout                 scaleLayout              = ScaleLayout.FOURTH_UP;
     private Orientation                 orientation              = Orientation.ORIENT_UP;
     private boolean                     chromaticOn              = false;
@@ -149,8 +122,8 @@ public class Scales
      * Constructor.
      *
      * @param valueChanger A value changer
-     * @param startNote The first midi note of the pad grid
-     * @param endNote The last midi note of the pad grid
+     * @param startNote The first MIDI note of the pad grid
+     * @param endNote The last MIDI note of the pad grid
      * @param numColumns The number of columns of the pad grid
      * @param numRows The number of rows of the pad grid
      */
@@ -326,14 +299,9 @@ public class Scales
      */
     public void setScaleOffsetByName (final String scaleOffsetName)
     {
-        for (int i = 0; i < Scales.BASES.length; i++)
-        {
-            if (Scales.BASES[i].equals (scaleOffsetName))
-            {
-                this.scaleOffset = i;
-                break;
-            }
-        }
+        final int index = Scales.BASES.indexOf (scaleOffsetName);
+        if (index >= 0)
+            this.scaleOffset = index;
     }
 
 
@@ -1032,7 +1000,7 @@ public class Scales
      */
     public static String formatNoteAndOctave (final int note, final int octaveOffset)
     {
-        return Scales.NOTE_NAMES[Math.abs (note % 12)] + Integer.toString (note / 12 + octaveOffset + 1);
+        return Scales.NOTE_NAMES.get (Math.abs (note % 12)) + Integer.toString (note / 12 + octaveOffset + 1);
     }
 
 
@@ -1087,9 +1055,9 @@ public class Scales
 
 
     /**
-     * Get the first midi note of the pad grid.
+     * Get the first MIDI note of the pad grid.
      *
-     * @return The first midi note of the pad grid
+     * @return The first MIDI note of the pad grid
      */
     public int getStartNote ()
     {
@@ -1098,9 +1066,9 @@ public class Scales
 
 
     /**
-     * Set the first midi note of the pad grid.
+     * Set the first MIDI note of the pad grid.
      *
-     * @param startNote The first midi note of the pad grid
+     * @param startNote The first MIDI note of the pad grid
      */
     public void setStartNote (final int startNote)
     {
@@ -1109,9 +1077,9 @@ public class Scales
 
 
     /**
-     * Get the last midi note of the pad grid.
+     * Get the last MIDI note of the pad grid.
      *
-     * @return The last midi note of the pad grid
+     * @return The last MIDI note of the pad grid
      */
     public int getEndNote ()
     {
@@ -1120,9 +1088,9 @@ public class Scales
 
 
     /**
-     * Set the last midi note of the pad grid.
+     * Set the last MIDI note of the pad grid.
      *
-     * @param endNote The last midi note of the pad grid
+     * @param endNote The last MIDI note of the pad grid
      */
     public void setEndNote (final int endNote)
     {

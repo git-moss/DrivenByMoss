@@ -30,7 +30,7 @@ import java.util.Optional;
  */
 public class FireLayerMode extends AbstractMode<FireControlSurface, FireConfiguration, ILayer>
 {
-    private static final Modes [] MODES     =
+    private static final Modes [] MODES             =
     {
         Modes.VOLUME,
         Modes.PAN,
@@ -38,7 +38,7 @@ public class FireLayerMode extends AbstractMode<FireControlSurface, FireConfigur
         Modes.SEND2
     };
 
-    private static final Modes [] ALT_MODES =
+    private static final Modes [] ALT_MODES         =
     {
         Modes.SEND3,
         Modes.SEND4,
@@ -46,7 +46,7 @@ public class FireLayerMode extends AbstractMode<FireControlSurface, FireConfigur
         Modes.SEND6
     };
 
-    private Modes                 mode      = Modes.VOLUME;
+    protected Modes               selectedParameter = Modes.VOLUME;
 
 
     /**
@@ -57,7 +57,20 @@ public class FireLayerMode extends AbstractMode<FireControlSurface, FireConfigur
      */
     public FireLayerMode (final FireControlSurface surface, final IModel model)
     {
-        super ("Channel", surface, model);
+        this ("Channel", surface, model);
+    }
+
+
+    /**
+     * Constructor.
+     *
+     * @param name The name of the mode
+     * @param surface The control surface
+     * @param model The model
+     */
+    public FireLayerMode (final String name, final FireControlSurface surface, final IModel model)
+    {
+        super (name, surface, model);
 
         this.setControls (ContinuousID.createSequentialList (ContinuousID.KNOB1, 4));
         this.setParameterProvider (new Fire4KnobProvider (surface, new SelectedLayerOrDrumPadParameterProvider (this.model.getDrumDevice ())));
@@ -75,19 +88,23 @@ public class FireLayerMode extends AbstractMode<FireControlSurface, FireConfigur
         String desc = "Select";
         String label = "a drum pad";
         int value = -1;
+        int vuLeft = -1;
+        int vuRight = -1;
         boolean isPan = false;
 
         final ISpecificDevice cd = this.model.getDrumDevice ();
-        final Optional<?> channelOptional = cd.getLayerOrDrumPadBank ().getSelectedItem ();
+        final Optional<ILayer> channelOptional = cd.getLayerBank ().getSelectedItem ();
         if (channelOptional.isPresent ())
         {
-            final IChannel channel = (IChannel) channelOptional.get ();
+            final IChannel channel = channelOptional.get ();
+            vuLeft = channel.getVuLeft ();
+            vuRight = channel.getVuRight ();
 
-            desc = channel.getPosition () + ": " + channel.getName (9);
+            desc = channel.getPosition () + 1 + ": " + channel.getName (9);
 
             final ISendBank sendBank = channel.getSendBank ();
 
-            switch (this.mode)
+            switch (this.selectedParameter)
             {
                 case VOLUME:
                     label = "Vol: " + channel.getVolumeStr ();
@@ -106,7 +123,7 @@ public class FireLayerMode extends AbstractMode<FireControlSurface, FireConfigur
                 case SEND4:
                 case SEND5:
                 case SEND6:
-                    final int sendIndex = this.mode.ordinal () - Modes.SEND1.ordinal ();
+                    final int sendIndex = this.selectedParameter.ordinal () - Modes.SEND1.ordinal ();
                     label = getSendLabel (sendBank, sendIndex);
                     value = getSendValue (sendBank, sendIndex);
                     break;
@@ -117,7 +134,7 @@ public class FireLayerMode extends AbstractMode<FireControlSurface, FireConfigur
             }
         }
 
-        display.addElement (new TitleValueComponent (desc, label, value, isPan));
+        display.addElement (new TitleValueComponent (desc, label, value, vuLeft, vuRight, isPan));
         display.send ();
     }
 
@@ -125,20 +142,20 @@ public class FireLayerMode extends AbstractMode<FireControlSurface, FireConfigur
     /**
      * Ensure that the correct mode is still active in case the ALT key was toggled.
      */
-    private void updateMode ()
+    protected void updateMode ()
     {
         int index = -1;
         final Modes [] ms = this.surface.isPressed (ButtonID.ALT) ? MODES : ALT_MODES;
         for (int i = 0; i < ms.length; i++)
         {
-            if (ms[i] == this.mode)
+            if (ms[i] == this.selectedParameter)
             {
                 index = i;
                 break;
             }
         }
         if (index >= 0)
-            this.mode = this.surface.isPressed (ButtonID.ALT) ? ALT_MODES[index] : MODES[index];
+            this.selectedParameter = this.surface.isPressed (ButtonID.ALT) ? ALT_MODES[index] : MODES[index];
     }
 
 
@@ -146,7 +163,9 @@ public class FireLayerMode extends AbstractMode<FireControlSurface, FireConfigur
     @Override
     public void onKnobTouch (final int index, final boolean isTouched)
     {
-        this.mode = this.surface.isPressed (ButtonID.ALT) ? ALT_MODES[index] : MODES[index];
+        this.selectedParameter = this.surface.isPressed (ButtonID.ALT) ? ALT_MODES[index] : MODES[index];
+
+        this.isKnobTouched[index] = isTouched;
 
         super.onKnobTouch (index, isTouched);
     }

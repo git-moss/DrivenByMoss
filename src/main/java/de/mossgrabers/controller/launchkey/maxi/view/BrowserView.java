@@ -21,7 +21,7 @@ import java.util.Map;
 
 
 /**
- * The Browseer view.
+ * The Browser view.
  *
  * @author J&uuml;rgen Mo&szlig;graber
  */

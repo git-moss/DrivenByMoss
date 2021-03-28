@@ -12,7 +12,7 @@ package de.mossgrabers.framework.daw.midi;
 public interface IMidiAccess
 {
     /**
-     * Create a midi output.
+     * Create a MIDI output.
      *
      * @return The output
      */
@@ -20,16 +20,16 @@ public interface IMidiAccess
 
 
     /**
-     * Create a midi output.
+     * Create a MIDI output.
      *
-     * @param index The index of the midi output
+     * @param index The index of the MIDI output
      * @return The output
      */
     IMidiOutput createOutput (int index);
 
 
     /**
-     * Create a midi input. Uses the first input.
+     * Create a MIDI input. Uses the first input.
      *
      * @param name The name to use for the input
      * @param filters The filters to regiser for
@@ -39,11 +39,11 @@ public interface IMidiAccess
 
 
     /**
-     * Create a midi input.
+     * Create a MIDI input.
      *
-     * @param index The index of the midi input
+     * @param index The index of the MIDI input
      * @param name The name to use for the input
-     * @param filters The filters to regiser for
+     * @param filters The filters to register for
      * @return The created input
      */
     IMidiInput createInput (int index, String name, String... filters);

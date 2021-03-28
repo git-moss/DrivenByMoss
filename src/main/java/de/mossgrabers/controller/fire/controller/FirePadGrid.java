@@ -48,7 +48,7 @@ public class FirePadGrid extends BlinkingPadGrid
      * Constructor.
      *
      * @param colorManager The color manager for accessing specific colors to use
-     * @param output The midi output which can address the pad states
+     * @param output The MIDI output which can address the pad states
      */
     public FirePadGrid (final ColorManager colorManager, final IMidiOutput output)
     {

@@ -39,7 +39,7 @@ public class APCminiControlSurface extends AbstractControlSurface<APCminiConfigu
     public static final int APC_BUTTON_SCENE_BUTTON8 = 89;
     public static final int APC_BUTTON_SHIFT         = 98;
 
-    // Midi CC
+    // MIDI CC
     public static final int APC_KNOB_TRACK_LEVEL1    = 48;
     public static final int APC_KNOB_TRACK_LEVEL2    = 49;
     public static final int APC_KNOB_TRACK_LEVEL3    = 50;
@@ -69,8 +69,8 @@ public class APCminiControlSurface extends AbstractControlSurface<APCminiConfigu
      * @param host The host
      * @param colorManager The color manager
      * @param configuration The configuration
-     * @param output The midi output
-     * @param input The midi input
+     * @param output The MIDI output
+     * @param input The MIDI input
      */
     public APCminiControlSurface (final IHost host, final ColorManager colorManager, final APCminiConfiguration configuration, final IMidiOutput output, final IMidiInput input)
     {
@@ -91,7 +91,7 @@ public class APCminiControlSurface extends AbstractControlSurface<APCminiConfigu
 
 
     /**
-     * Get the mode of the track button (Select, Rec Arm, Solo, Mute, ...)
+     * Get the mode of the track button (Select, Record Arm, Solo, Mute, ...)
      *
      * @return The new state
      */
@@ -102,7 +102,7 @@ public class APCminiControlSurface extends AbstractControlSurface<APCminiConfigu
 
 
     /**
-     * Sets the mode of the track button (Select, Rec Arm, Solo, Mute, ...)
+     * Sets the mode of the track button (Select, Record Arm, Solo, Mute, ...)
      *
      * @param trackState The new state
      */

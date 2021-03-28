@@ -16,7 +16,7 @@ import java.util.List;
 
 
 /**
- * Writes the changed DAW stati as OSC messages.
+ * Writes the changed DAW status as OSC messages.
  *
  * @author J&uuml;rgen Mo&szlig;graber
  */

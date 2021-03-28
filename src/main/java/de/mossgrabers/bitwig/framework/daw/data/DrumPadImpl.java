@@ -44,7 +44,7 @@ public class DrumPadImpl extends LayerImpl implements IDrumPad
     /**
      * Get the Bitwig drum pad.
      *
-     * @return The dsrum pad
+     * @return The drum pad
      */
     public DrumPad getDrumPad ()
     {

@@ -153,7 +153,7 @@ public class PlayView extends AbstractPlayView<FireControlSurface, FireConfigura
             if (isAltPressed)
             {
                 this.scales.prevScaleOffset ();
-                this.mvHelper.delayDisplay ( () -> Scales.BASES[this.scales.getScaleOffset ()]);
+                this.mvHelper.delayDisplay ( () -> Scales.BASES.get (this.scales.getScaleOffset ()));
             }
             else
             {
@@ -182,7 +182,7 @@ public class PlayView extends AbstractPlayView<FireControlSurface, FireConfigura
             if (isAltPressed)
             {
                 this.scales.nextScaleOffset ();
-                this.mvHelper.delayDisplay ( () -> Scales.BASES[this.scales.getScaleOffset ()]);
+                this.mvHelper.delayDisplay ( () -> Scales.BASES.get (this.scales.getScaleOffset ()));
             }
             else
             {
@@ -222,7 +222,7 @@ public class PlayView extends AbstractPlayView<FireControlSurface, FireConfigura
         this.updateNoteMapping ();
         final FireConfiguration config = this.surface.getConfiguration ();
         config.setScale (this.scales.getScale ().getName ());
-        config.setScaleBase (Scales.BASES[this.scales.getScaleOffset ()]);
+        config.setScaleBase (Scales.BASES.get (this.scales.getScaleOffset ()));
         config.setScaleInKey (!this.scales.isChromatic ());
         config.setScaleLayout (this.scales.getScaleLayout ().getName ());
     }

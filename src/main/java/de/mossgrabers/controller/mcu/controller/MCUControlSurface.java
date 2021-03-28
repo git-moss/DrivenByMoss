@@ -152,7 +152,7 @@ public class MCUControlSurface extends AbstractControlSurface<MCUConfiguration>
     public static final int         MCU_RUDE_SOLO_L       = 0x73;
     public static final int         MCU_RELAY_CLICK       = 0x76;
 
-    // CC: 41-43 inc, 1-3 dec
+    // CC: 41-43 increase, 1-3 decrease
     public static final int         MCU_CC_VPOT1          = 0x10;
     public static final int         MCU_CC_VPOT2          = 0x11;
     public static final int         MCU_CC_VPOT3          = 0x12;
@@ -166,17 +166,7 @@ public class MCUControlSurface extends AbstractControlSurface<MCUConfiguration>
 
     // Sysex
 
-    public static final int []      MCU_SYSEX_HEADER      =
-    {
-        0xF0,
-        0x00,
-        0x00,
-        0x66,
-        0x14
-    };
-
     public static final String      SYSEX_HDR             = "F0 00 00 66 14 ";
-
     public static final int         MCU_SYSEX_CMD_DISPLAY = 0x12;
 
     private static final boolean [] MCU_BUTTON_UPDATE;
@@ -302,7 +292,7 @@ public class MCUControlSurface extends AbstractControlSurface<MCUConfiguration>
     }
 
 
-    // leds on/leds and vu-meter on display on/vu-meter on display on/all off
+    // LEDs on/LEDs and VU-meter on display on/VU-meter on display on/all off
     public void switchVuMode (final int mode)
     {
         // Always horizontal
@@ -316,8 +306,8 @@ public class MCUControlSurface extends AbstractControlSurface<MCUConfiguration>
                 this.activeVuMode = VUMODE_LED;
         }
         final IMidiOutput out = this.getMidiOutput ();
-        // the mcu changes the vu-meter mode when receiving the
-        // corresponding sysex message
+        // The MCU changes the VU-meter mode when receiving the corresponding system exclusive
+        // message
         switch (this.activeVuMode)
         {
             case VUMODE_LED:

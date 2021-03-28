@@ -31,6 +31,8 @@ import de.mossgrabers.framework.utils.ButtonEvent;
 import de.mossgrabers.framework.utils.Pair;
 import de.mossgrabers.framework.utils.StringUtils;
 
+import java.util.List;
+
 
 /**
  * Editing the length of note repeat notes.
@@ -112,9 +114,9 @@ public class NoteRepeatMode extends BaseMode<IItem>
                     final ArpeggiatorMode arpMode = configuration.getNoteRepeatMode ();
                     final int modeIndex = configuration.lookupArpeggiatorModeIndex (arpMode);
                     final boolean increase = valueChanger.calcKnobChange (value) > 0;
-                    final ArpeggiatorMode [] modes = configuration.getArpeggiatorModes ();
-                    final int newIndex = Math.max (0, Math.min (modes.length - 1, modeIndex + (increase ? 1 : -1)));
-                    configuration.setNoteRepeatMode (modes[newIndex]);
+                    final List<ArpeggiatorMode> modes = configuration.getArpeggiatorModes ();
+                    final int newIndex = Math.max (0, Math.min (modes.size () - 1, modeIndex + (increase ? 1 : -1)));
+                    configuration.setNoteRepeatMode (modes.get (newIndex));
                 }
                 break;
 
@@ -320,9 +322,9 @@ public class NoteRepeatMode extends BaseMode<IItem>
             final String bottomMenu = this.host.supports (Capability.NOTE_REPEAT_USE_PRESSURE_TO_VELOCITY) ? "Use Pressure" : "";
             final ArpeggiatorMode mode = this.noteRepeat.getMode ();
             final Configuration configuration = this.surface.getConfiguration ();
-            final ArpeggiatorMode [] arpeggiatorModes = configuration.getArpeggiatorModes ();
+            final List<ArpeggiatorMode> arpeggiatorModes = configuration.getArpeggiatorModes ();
             final int modeIndex = configuration.lookupArpeggiatorModeIndex (mode);
-            final int value = modeIndex * upperBound / (arpeggiatorModes.length - 1);
+            final int value = modeIndex * upperBound / (arpeggiatorModes.size () - 1);
             display.setCell (0, 5, "Mode");
             display.setCell (1, 5, StringUtils.optimizeName (mode.getName (), 8));
             display.setCell (2, 5, value, Format.FORMAT_VALUE);
@@ -383,9 +385,9 @@ public class NoteRepeatMode extends BaseMode<IItem>
             final boolean isBottomMenuEnabled = this.noteRepeat.usePressure ();
             final ArpeggiatorMode mode = this.noteRepeat.getMode ();
             final Configuration configuration = this.surface.getConfiguration ();
-            final ArpeggiatorMode [] arpeggiatorModes = configuration.getArpeggiatorModes ();
+            final List<ArpeggiatorMode> arpeggiatorModes = configuration.getArpeggiatorModes ();
             final int modeIndex = configuration.lookupArpeggiatorModeIndex (mode);
-            final int value = modeIndex * upperBound / (arpeggiatorModes.length - 1);
+            final int value = modeIndex * upperBound / (arpeggiatorModes.size () - 1);
             display.addParameterElementWithPlainMenu ("", false, bottomMenu, null, isBottomMenuEnabled, "Mode", value, StringUtils.optimizeName (mode.getName (), 8), this.isKnobTouched[5], -1);
         }
         else

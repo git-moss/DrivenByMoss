@@ -11,6 +11,8 @@ import de.mossgrabers.framework.controller.valuechanger.IValueChanger;
 import de.mossgrabers.framework.daw.IHost;
 import de.mossgrabers.framework.daw.midi.ArpeggiatorMode;
 
+import java.util.List;
+
 
 /**
  * The configuration settings for the Novation SL MkIII.
@@ -35,7 +37,7 @@ public class SLMkIIIConfiguration extends AbstractConfiguration
      * @param valueChanger The value changer
      * @param arpeggiatorModes The available arpeggiator modes
      */
-    public SLMkIIIConfiguration (final IHost host, final IValueChanger valueChanger, final ArpeggiatorMode [] arpeggiatorModes)
+    public SLMkIIIConfiguration (final IHost host, final IValueChanger valueChanger, final List<ArpeggiatorMode> arpeggiatorModes)
     {
         super (host, valueChanger, arpeggiatorModes);
     }
@@ -96,9 +98,9 @@ public class SLMkIIIConfiguration extends AbstractConfiguration
 
 
     /**
-     * Check if the lightguide should be active.
+     * Check if the light guide should be active.
      *
-     * @return True if lightguide is active
+     * @return True if light guide is active
      */
     public boolean isLightEnabled ()
     {

@@ -4,15 +4,17 @@
 
 package de.mossgrabers.controller.generic.controller;
 
-import de.mossgrabers.controller.generic.CommandSlot;
 import de.mossgrabers.controller.generic.GenericFlexiConfiguration;
 import de.mossgrabers.controller.generic.flexihandler.IFlexiCommandHandler;
+import de.mossgrabers.controller.generic.flexihandler.utils.CommandSlot;
+import de.mossgrabers.controller.generic.flexihandler.utils.MidiValue;
 import de.mossgrabers.framework.controller.AbstractControlSurface;
 import de.mossgrabers.framework.controller.color.ColorManager;
 import de.mossgrabers.framework.daw.IHost;
 import de.mossgrabers.framework.daw.midi.IMidiInput;
 import de.mossgrabers.framework.daw.midi.IMidiOutput;
 import de.mossgrabers.framework.mode.Modes;
+import de.mossgrabers.framework.utils.Pair;
 import de.mossgrabers.framework.utils.StringUtils;
 import de.mossgrabers.nativefiledialogs.FileFilter;
 import de.mossgrabers.nativefiledialogs.NativeFileDialogs;
@@ -43,6 +45,10 @@ public class GenericFlexiControlSurface extends AbstractControlSurface<GenericFl
     private final int []                                  valueCache      = new int [GenericFlexiConfiguration.NUM_SLOTS];
     private final Map<FlexiCommand, IFlexiCommandHandler> handlers        = new EnumMap<> (FlexiCommand.class);
     private NativeFileDialogs                             dialogs;
+
+    private long                                          lastReceived    = 0;
+    private int                                           lastCCReceived  = -1;
+    private int []                                        lastCCValues    = new int [128];
 
     private boolean                                       isShiftPressed  = false;
     private boolean                                       isUpdatingValue = false;
@@ -98,18 +104,24 @@ public class GenericFlexiControlSurface extends AbstractControlSurface<GenericFl
         for (int i = 0; i < slots.length; i++)
         {
             final FlexiCommand command = slots[i].getCommand ();
-            if (command == FlexiCommand.OFF || !slots[i].isSendValue ())
-                continue;
-
-            if (this.isUpdatingValue && !(slots[i].getCommand ().isTrigger () && slots[i].isSendValueWhenReceived ()))
-                continue;
-
-            final int value = this.getCommandValue (command);
-            if (this.valueCache[i] == value)
-                continue;
-            this.valueCache[i] = value;
-            this.reflectValue (slots[i], value);
+            if (command != FlexiCommand.OFF && slots[i].isSendValue ())
+                this.flushValue (i, slots[i]);
         }
+    }
+
+
+    private void flushValue (final int index, final CommandSlot slot)
+    {
+        final FlexiCommand command = slot.getCommand ();
+        if (this.isUpdatingValue && !(command.isTrigger () && slot.isSendValueWhenReceived ()))
+            return;
+
+        final int value = this.getCommandValue (command);
+        if (this.valueCache[index] == value)
+            return;
+
+        this.valueCache[index] = value;
+        this.reflectValue (slot, value);
     }
 
 
@@ -170,45 +182,127 @@ public class GenericFlexiControlSurface extends AbstractControlSurface<GenericFl
         switch (code)
         {
             // Note on/off
+            case 0x80:
             case 0x90:
-                this.configuration.setLearnValues (GenericFlexiConfiguration.OPTIONS_TYPE[CommandSlot.TYPE_NOTE + 1], data1, channel);
-                this.handleCommand (this.configuration.getSlotCommand (CommandSlot.TYPE_NOTE, data1, channel), data2);
+                this.configuration.setLearnValues (GenericFlexiConfiguration.OPTIONS_TYPE.get (CommandSlot.TYPE_NOTE + 1), data1, channel, false);
+                this.handleCommand (this.configuration.getSlotCommand (CommandSlot.TYPE_NOTE, data1, channel), MidiValue.get (data2, false));
                 break;
 
             // Program Change
             case 0xC0:
-                this.configuration.setLearnValues (GenericFlexiConfiguration.OPTIONS_TYPE[CommandSlot.TYPE_PROGRAM_CHANGE + 1], data1, channel);
-                final int slotIndex = this.configuration.getSlotCommand (CommandSlot.TYPE_PROGRAM_CHANGE, data1, channel);
-                if (slotIndex < 0)
-                    return;
-                final CommandSlot commandSlot = this.configuration.getCommandSlots ()[slotIndex];
-                if (commandSlot.getCommand ().isTrigger ())
-                {
-                    this.handleCommand (slotIndex, 127);
-                    this.handleCommand (slotIndex, 0);
-                }
-                else
-                {
-                    // Note: there is no data2 value for PC
-                    this.handleCommand (slotIndex, data1);
-                }
+                this.handleProgramChange (channel, data1);
                 break;
 
             // CC
             case 0xB0:
-                this.configuration.setLearnValues (GenericFlexiConfiguration.OPTIONS_TYPE[CommandSlot.TYPE_CC + 1], data1, channel);
-                this.handleCommand (this.configuration.getSlotCommand (CommandSlot.TYPE_CC, data1, channel), data2);
+                this.handleCC (channel, data1, data2);
                 break;
 
-            // Pitchbend
+            // Pitch-bend
             case 0xE0:
-                this.configuration.setLearnValues (GenericFlexiConfiguration.OPTIONS_TYPE[CommandSlot.TYPE_PITCH_BEND + 1], data1, channel);
-                this.handleCommand (this.configuration.getSlotCommand (CommandSlot.TYPE_PITCH_BEND, data1, channel), data2);
+                this.configuration.setLearnValues (GenericFlexiConfiguration.OPTIONS_TYPE.get (CommandSlot.TYPE_PITCH_BEND + 1), data1, channel, true);
+                this.handleCommand (this.configuration.getSlotCommand (CommandSlot.TYPE_PITCH_BEND, data1, channel), MidiValue.get (data1 + data2 * 128, true));
                 break;
 
             default:
                 // Not used
                 break;
+        }
+    }
+
+
+    /**
+     * Handle the reception of a CC message.
+     *
+     * @param channel The channel of the message
+     * @param data1 The first data byte
+     * @param data2 The second data byte
+     */
+    protected void handleCC (final int channel, final int data1, final int data2)
+    {
+        final long now = System.currentTimeMillis ();
+
+        // High resolution command? See MIDI 1.0 Detailed Specification 4.2, page 11
+        final boolean isRelated = now - this.lastReceived < 1000;
+        final boolean isHighRes = isRelated && this.lastCCReceived < 32 && this.lastCCReceived + 32 == data1;
+
+        this.lastCCReceived = data1;
+        this.lastReceived = now;
+        this.lastCCValues[data1] = data2;
+
+        this.configuration.setLearnValues (GenericFlexiConfiguration.OPTIONS_TYPE.get (CommandSlot.TYPE_CC + 1), data1, channel, isHighRes);
+
+        int slotIndex = -1;
+        int value = 0;
+        boolean isHighResValue = false;
+
+        // Check for high resolution related setting
+        if (data1 >= 0 && data1 < 32)
+        {
+            final Optional<Pair<Integer, CommandSlot>> optional = this.configuration.getSlot (CommandSlot.TYPE_CC, data1, channel);
+            if (optional.isPresent ())
+            {
+                final Pair<Integer, CommandSlot> pair = optional.get ();
+                if (pair.getValue ().getResolution ())
+                {
+                    slotIndex = pair.getKey ().intValue ();
+                    value = data2 * 128 + this.lastCCValues[data1 + 32];
+                    isHighResValue = true;
+                }
+            }
+        }
+        else if (data1 >= 32 && data1 < 64)
+        {
+            final int firstCC = data1 - 32;
+            final Optional<Pair<Integer, CommandSlot>> optional = this.configuration.getSlot (CommandSlot.TYPE_CC, firstCC, channel);
+            if (optional.isPresent ())
+            {
+                final Pair<Integer, CommandSlot> pair = optional.get ();
+                if (pair.getValue ().getResolution ())
+                {
+                    slotIndex = pair.getKey ().intValue ();
+                    value = this.lastCCValues[firstCC] * 128 + data2;
+                    isHighResValue = true;
+                }
+            }
+        }
+
+        if (slotIndex == -1)
+        {
+            final Optional<Pair<Integer, CommandSlot>> optional = this.configuration.getSlot (CommandSlot.TYPE_CC, data1, channel);
+            if (optional.isPresent ())
+            {
+                slotIndex = optional.get ().getKey ().intValue ();
+                value = data2;
+            }
+        }
+
+        this.handleCommand (slotIndex, MidiValue.get (value, isHighResValue));
+    }
+
+
+    /**
+     * Handle the reception of a program change message.
+     *
+     * @param channel The channel of the message
+     * @param data1 The program change value
+     */
+    private void handleProgramChange (final int channel, final int data1)
+    {
+        this.configuration.setLearnValues (GenericFlexiConfiguration.OPTIONS_TYPE.get (CommandSlot.TYPE_PROGRAM_CHANGE + 1), data1, channel, false);
+        final int slotIndex = this.configuration.getSlotCommand (CommandSlot.TYPE_PROGRAM_CHANGE, data1, channel);
+        if (slotIndex < 0)
+            return;
+        final CommandSlot commandSlot = this.configuration.getCommandSlots ()[slotIndex];
+        if (commandSlot.getCommand ().isTrigger ())
+        {
+            this.handleCommand (slotIndex, MidiValue.get (127, false));
+            this.handleCommand (slotIndex, MidiValue.get (0, false));
+        }
+        else
+        {
+            // Note: there is no data2 value for PC
+            this.handleCommand (slotIndex, MidiValue.get (data1, false));
         }
     }
 
@@ -228,12 +322,12 @@ public class GenericFlexiControlSurface extends AbstractControlSurface<GenericFl
         final int channel = data[2] % 16;
         final int number = data[4];
 
-        this.configuration.setLearnValues (GenericFlexiConfiguration.OPTIONS_TYPE[CommandSlot.TYPE_MMC + 1], number, channel);
+        this.configuration.setLearnValues (GenericFlexiConfiguration.OPTIONS_TYPE.get (CommandSlot.TYPE_MMC + 1), number, channel, false);
         final int slotIndex = this.configuration.getSlotCommand (CommandSlot.TYPE_MMC, number, channel);
         if (slotIndex == -1)
             return;
-        this.handleCommand (slotIndex, 127);
-        this.handleCommand (slotIndex, 0);
+        this.handleCommand (slotIndex, MidiValue.get (127, false));
+        this.handleCommand (slotIndex, MidiValue.get (0, false));
     }
 
 
@@ -348,7 +442,9 @@ public class GenericFlexiControlSurface extends AbstractControlSurface<GenericFl
      */
     private int getCommandValue (final FlexiCommand command)
     {
-        return this.handlers.get (command).getCommandValue (command);
+        final int value = this.handlers.get (command).getCommandValue (command);
+        // Scale down to 7-bit
+        return (int) Math.round (value * 127.0 / 16383.0);
     }
 
 
@@ -358,7 +454,7 @@ public class GenericFlexiControlSurface extends AbstractControlSurface<GenericFl
      * @param slotIndex The slot index where the command is stored
      * @param value The received parameter value to handle
      */
-    private void handleCommand (final int slotIndex, final int value)
+    private void handleCommand (final int slotIndex, final MidiValue value)
     {
         if (slotIndex < 0)
             return;

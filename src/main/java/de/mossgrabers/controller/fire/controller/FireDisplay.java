@@ -51,7 +51,7 @@ public class FireDisplay extends AbstractGraphicDisplay
      * arrangement is written in a block of 8×7 pixels
      *
      * @param host The host
-     * @param output The midi output which addresses the display
+     * @param output The MIDI output which addresses the display
      * @param maxParameterValue The maximum parameter value (upper bound)
      */
     public FireDisplay (final IHost host, final IMidiOutput output, final int maxParameterValue)
@@ -114,7 +114,7 @@ public class FireDisplay extends AbstractGraphicDisplay
                             final int xpos = x + 128 * (y / 8);
                             final int ypos = y % 8;
 
-                            // Remap by tiling 7x8 block of translated pixels
+                            // Re-map by tiling 7x8 block of translated pixels
                             final int remapBit = BIT_MUTATE[ypos][xpos % 7];
                             final int idx = xpos / 7 * 8 + remapBit / 7;
                             if (blue + green + red < 0)
@@ -126,7 +126,7 @@ public class FireDisplay extends AbstractGraphicDisplay
                 }
             });
 
-            // Convert to sysex and send to device
+            // Convert to system exclusive and send to device
             for (int stripe = 0; stripe < 8; stripe++)
             {
                 // Start 8-pixel band of update

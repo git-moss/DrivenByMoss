@@ -12,9 +12,9 @@ package de.mossgrabers.framework.daw.midi;
 public interface MidiSysExCallback
 {
     /**
-     * Handle received midi sysex data.
+     * Handle received MIDI system exclusive data.
      *
-     * @param data The sysex formatted in hex
+     * @param data The system exclusive formatted in hex
      */
     void handleMidi (final String data);
 }

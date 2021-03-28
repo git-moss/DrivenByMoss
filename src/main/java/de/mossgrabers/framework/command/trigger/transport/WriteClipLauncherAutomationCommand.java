@@ -12,7 +12,7 @@ import de.mossgrabers.framework.utils.ButtonEvent;
 
 
 /**
- * Command to dis-/enable clip launcher automation.
+ * Command to disable/enable clip launcher automation.
  *
  * @param <S> The type of the control surface
  * @param <C> The type of the configuration

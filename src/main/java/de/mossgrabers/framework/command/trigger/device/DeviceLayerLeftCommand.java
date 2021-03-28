@@ -47,7 +47,7 @@ public class DeviceLayerLeftCommand<S extends IControlSurface<C>, C extends Conf
             return;
 
         final ICursorDevice cd = this.model.getCursorDevice ();
-        final IChannelBank<?> bank = cd.getLayerOrDrumPadBank ();
+        final IChannelBank<ILayer> bank = cd.getLayerBank ();
         if (!cd.hasLayers () || bank.getSelectedItem ().isEmpty ())
             cd.selectPrevious ();
         else
@@ -64,8 +64,8 @@ public class DeviceLayerLeftCommand<S extends IControlSurface<C>, C extends Conf
 
         // Exit layer
         final ICursorDevice cd = this.model.getCursorDevice ();
-        final IChannelBank<?> bank = cd.getLayerOrDrumPadBank ();
-        final Optional<?> layer = bank.getSelectedItem ();
+        final IChannelBank<ILayer> bank = cd.getLayerBank ();
+        final Optional<ILayer> layer = bank.getSelectedItem ();
         if (!cd.hasLayers () || layer.isEmpty ())
         {
             if (cd.isNested ())
@@ -75,7 +75,7 @@ public class DeviceLayerLeftCommand<S extends IControlSurface<C>, C extends Conf
             }
         }
         else
-            ((ILayer) layer.get ()).setSelected (false);
+            layer.get ().setSelected (false);
     }
 
 
@@ -90,8 +90,8 @@ public class DeviceLayerLeftCommand<S extends IControlSurface<C>, C extends Conf
             return true;
 
         final ICursorDevice cd = this.model.getCursorDevice ();
-        final IChannelBank<?> bank = cd.getLayerOrDrumPadBank ();
-        final Optional<?> layer = bank.getSelectedItem ();
+        final IChannelBank<ILayer> bank = cd.getLayerBank ();
+        final Optional<ILayer> layer = bank.getSelectedItem ();
         return cd.hasLayers () && layer.isPresent () ? bank.canScrollBackwards () : cd.canSelectPreviousFX ();
     }
 }

@@ -55,7 +55,7 @@ public class ModelSetup
 
 
     /**
-     * Dis-/enable the drum device (enabled by default).
+     * Disable/enable the drum device (enabled by default).
      *
      * @param wantsDrumDevice True to enable
      */

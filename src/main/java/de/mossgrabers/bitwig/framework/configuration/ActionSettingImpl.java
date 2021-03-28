@@ -27,7 +27,7 @@ public class ActionSettingImpl extends AbstractSetting implements IActionSetting
     /**
      * Constructor.
      *
-     * @param enumValue The enum value
+     * @param enumValue The enumeration value
      * @param actionsMap The action map for looking up the ID of the selected action
      */
     public ActionSettingImpl (final SettableEnumValue enumValue, final Map<String, String> actionsMap)

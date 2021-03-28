@@ -7,6 +7,8 @@ package de.mossgrabers.controller.generic.flexihandler;
 import de.mossgrabers.controller.generic.GenericFlexiConfiguration;
 import de.mossgrabers.controller.generic.controller.FlexiCommand;
 import de.mossgrabers.controller.generic.controller.GenericFlexiControlSurface;
+import de.mossgrabers.controller.generic.flexihandler.utils.FlexiHandlerException;
+import de.mossgrabers.controller.generic.flexihandler.utils.MidiValue;
 import de.mossgrabers.framework.controller.valuechanger.IValueChanger;
 import de.mossgrabers.framework.daw.IBrowser;
 import de.mossgrabers.framework.daw.IModel;
@@ -97,7 +99,7 @@ public class BrowserHandler extends AbstractHandler
 
     /** {@inheritDoc} */
     @Override
-    public void handle (final FlexiCommand command, final int knobMode, final int value)
+    public void handle (final FlexiCommand command, final int knobMode, final MidiValue value)
     {
         final boolean isButtonPressed = this.isButtonPressed (knobMode, value);
 
@@ -212,7 +214,7 @@ public class BrowserHandler extends AbstractHandler
     }
 
 
-    private void scrollFilterColumn (final int knobMode, final int filterColumn, final int value)
+    private void scrollFilterColumn (final int knobMode, final int filterColumn, final MidiValue value)
     {
         if (isAbsolute (knobMode))
             return;
@@ -225,7 +227,7 @@ public class BrowserHandler extends AbstractHandler
     }
 
 
-    private void scrollPresetColumn (final int knobMode, final int value)
+    private void scrollPresetColumn (final int knobMode, final MidiValue value)
     {
         if (isAbsolute (knobMode))
             return;
@@ -238,7 +240,7 @@ public class BrowserHandler extends AbstractHandler
     }
 
 
-    private void scrollBrowserTabs (final int knobMode, final int value)
+    private void scrollBrowserTabs (final int knobMode, final MidiValue value)
     {
         if (isAbsolute (knobMode))
             return;

@@ -370,13 +370,13 @@ public abstract class AbstractNoteSequencerView<S extends IControlSurface<C>, C 
 
 
     /**
-     * Calculates how many semi-notes are between the first and last 'pad'.
+     * Calculates how many seminotes are between the first and last 'pad'.
      *
-     * @return The number of semi-notes
+     * @return The number of seminotes
      */
     protected int getScrollOffset ()
     {
-        // In chromatic mode all semi-notes are present
+        // In chromatic mode all seminotes are present
         if (this.scales.isChromatic ())
             return this.numSequencerRows;
 

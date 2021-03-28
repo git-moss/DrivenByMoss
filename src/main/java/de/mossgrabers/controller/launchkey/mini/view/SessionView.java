@@ -22,6 +22,8 @@ import de.mossgrabers.framework.view.AbstractSessionView;
 import de.mossgrabers.framework.view.SessionColor;
 import de.mossgrabers.framework.view.Views;
 
+import java.util.List;
+
 
 /**
  * The Session view.
@@ -31,16 +33,9 @@ import de.mossgrabers.framework.view.Views;
 public class SessionView extends AbstractSessionView<LaunchkeyMiniMk3ControlSurface, LaunchkeyMiniMk3Configuration>
 {
     /** Modes which can take over the first row of pads. */
-    public static final Modes [] PAD_MODES =
-    {
-        Modes.REC_ARM,
-        Modes.TRACK_SELECT,
-        Modes.MUTE,
-        Modes.SOLO,
-        Modes.STOP_CLIP
-    };
+    public static final List<Modes> PAD_MODES = List.of (Modes.REC_ARM, Modes.TRACK_SELECT, Modes.MUTE, Modes.SOLO, Modes.STOP_CLIP);
 
-    private Modes                padMode   = null;
+    private Modes                   padMode   = null;
 
 
     /**
@@ -77,14 +72,20 @@ public class SessionView extends AbstractSessionView<LaunchkeyMiniMk3ControlSurf
         IScene s = sceneBank.getItem (0);
 
         if (buttonID == ButtonID.SCENE1)
-            return s.doesExist () ? s.isSelected () ? colorSceneSelected : colorScene : colorSceneOff;
+        {
+            if (!s.doesExist ())
+                return colorSceneOff;
+            return s.isSelected () ? colorSceneSelected : colorScene;
+        }
 
         // SCENE 2
 
         if (this.padMode == null)
         {
             s = sceneBank.getItem (1);
-            return s.doesExist () ? s.isSelected () ? colorSceneSelected : colorScene : colorSceneOff;
+            if (!s.doesExist ())
+                return colorSceneOff;
+            return s.isSelected () ? colorSceneSelected : colorScene;
         }
 
         switch (this.padMode)
@@ -126,16 +127,28 @@ public class SessionView extends AbstractSessionView<LaunchkeyMiniMk3ControlSurf
             switch (this.padMode)
             {
                 case REC_ARM:
-                    pads.lightEx (x, 1, exists ? track.isRecArm () ? LaunchkeyMiniMk3ColorManager.LAUNCHKEY_COLOR_RED_HI : LaunchkeyMiniMk3ColorManager.LAUNCHKEY_COLOR_RED_LO : LaunchkeyMiniMk3ColorManager.LAUNCHKEY_COLOR_BLACK);
+                    int recColor = LaunchkeyMiniMk3ColorManager.LAUNCHKEY_COLOR_BLACK;
+                    if (exists)
+                        recColor = track.isRecArm () ? LaunchkeyMiniMk3ColorManager.LAUNCHKEY_COLOR_RED_HI : LaunchkeyMiniMk3ColorManager.LAUNCHKEY_COLOR_RED_LO;
+                    pads.lightEx (x, 1, recColor);
                     break;
                 case TRACK_SELECT:
-                    pads.lightEx (x, 1, exists ? track.isSelected () ? LaunchkeyMiniMk3ColorManager.LAUNCHKEY_COLOR_WHITE : LaunchkeyMiniMk3ColorManager.LAUNCHKEY_COLOR_GREY_LO : LaunchkeyMiniMk3ColorManager.LAUNCHKEY_COLOR_BLACK);
+                    int selectColor = LaunchkeyMiniMk3ColorManager.LAUNCHKEY_COLOR_BLACK;
+                    if (exists)
+                        selectColor = track.isSelected () ? LaunchkeyMiniMk3ColorManager.LAUNCHKEY_COLOR_WHITE : LaunchkeyMiniMk3ColorManager.LAUNCHKEY_COLOR_GREY_LO;
+                    pads.lightEx (x, 1, selectColor);
                     break;
                 case MUTE:
-                    pads.lightEx (x, 1, exists ? track.isMute () ? LaunchkeyMiniMk3ColorManager.LAUNCHKEY_COLOR_AMBER_HI : LaunchkeyMiniMk3ColorManager.LAUNCHKEY_COLOR_AMBER_LO : LaunchkeyMiniMk3ColorManager.LAUNCHKEY_COLOR_BLACK);
+                    int muteColor = LaunchkeyMiniMk3ColorManager.LAUNCHKEY_COLOR_BLACK;
+                    if (exists)
+                        muteColor = track.isMute () ? LaunchkeyMiniMk3ColorManager.LAUNCHKEY_COLOR_AMBER_HI : LaunchkeyMiniMk3ColorManager.LAUNCHKEY_COLOR_AMBER_LO;
+                    pads.lightEx (x, 1, muteColor);
                     break;
                 case SOLO:
-                    pads.lightEx (x, 1, exists ? track.isSolo () ? LaunchkeyMiniMk3ColorManager.LAUNCHKEY_COLOR_YELLOW_HI : LaunchkeyMiniMk3ColorManager.LAUNCHKEY_COLOR_YELLOW_LO : LaunchkeyMiniMk3ColorManager.LAUNCHKEY_COLOR_BLACK);
+                    int soloColor = LaunchkeyMiniMk3ColorManager.LAUNCHKEY_COLOR_BLACK;
+                    if (exists)
+                        soloColor = track.isSolo () ? LaunchkeyMiniMk3ColorManager.LAUNCHKEY_COLOR_YELLOW_HI : LaunchkeyMiniMk3ColorManager.LAUNCHKEY_COLOR_YELLOW_LO;
+                    pads.lightEx (x, 1, soloColor);
                     break;
                 case STOP_CLIP:
                     pads.lightEx (x, 1, exists ? LaunchkeyMiniMk3ColorManager.LAUNCHKEY_COLOR_ROSE : LaunchkeyMiniMk3ColorManager.LAUNCHKEY_COLOR_BLACK);

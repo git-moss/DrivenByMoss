@@ -19,7 +19,7 @@ public class OSCControlSurface extends AbstractControlSurface<OSCConfiguration>
      * @param host The host
      * @param colorManager The color manager
      * @param configuration The configuration
-     * @param input The midi input
+     * @param input The MIDI input
      */
     public OSCControlSurface (final IHost host, final OSCConfiguration configuration, final ColorManager colorManager, final IMidiInput input)
     {

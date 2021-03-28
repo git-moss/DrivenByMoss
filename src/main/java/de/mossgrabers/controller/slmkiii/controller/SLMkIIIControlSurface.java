@@ -108,8 +108,8 @@ public class SLMkIIIControlSurface extends AbstractControlSurface<SLMkIIIConfigu
      * @param host The host
      * @param colorManager The color manager
      * @param configuration The configuration
-     * @param output The midi output
-     * @param input The midi input
+     * @param output The MIDI output
+     * @param input The MIDI input
      */
     public SLMkIIIControlSurface (final IHost host, final ColorManager colorManager, final SLMkIIIConfiguration configuration, final IMidiOutput output, final IMidiInput input)
     {
@@ -126,7 +126,7 @@ public class SLMkIIIControlSurface extends AbstractControlSurface<SLMkIIIConfigu
 
 
     /**
-     * Handle incoming sysex data.
+     * Handle incoming system exclusive data.
      *
      * @param data The data
      */
@@ -184,7 +184,7 @@ public class SLMkIIIControlSurface extends AbstractControlSurface<SLMkIIIConfigu
 
 
     /**
-     * Check if mute/solo or monitor/racarm is active.
+     * Check if mute/solo or monitor/record arm is active.
      *
      * @return True if mute/solo is active
      */

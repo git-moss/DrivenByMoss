@@ -7,6 +7,8 @@ package de.mossgrabers.controller.generic.flexihandler;
 import de.mossgrabers.controller.generic.GenericFlexiConfiguration;
 import de.mossgrabers.controller.generic.controller.FlexiCommand;
 import de.mossgrabers.controller.generic.controller.GenericFlexiControlSurface;
+import de.mossgrabers.controller.generic.flexihandler.utils.FlexiHandlerException;
+import de.mossgrabers.controller.generic.flexihandler.utils.MidiValue;
 import de.mossgrabers.framework.controller.valuechanger.IValueChanger;
 import de.mossgrabers.framework.daw.IApplication;
 import de.mossgrabers.framework.daw.IModel;
@@ -124,7 +126,7 @@ public class LayoutHandler extends AbstractHandler
 
     /** {@inheritDoc} */
     @Override
-    public void handle (final FlexiCommand command, final int knobMode, final int value)
+    public void handle (final FlexiCommand command, final int knobMode, final MidiValue value)
     {
         final boolean isButtonPressed = this.isButtonPressed (knobMode, value);
 

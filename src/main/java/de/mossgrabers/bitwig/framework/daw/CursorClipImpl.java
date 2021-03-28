@@ -740,8 +740,6 @@ public class CursorClipImpl implements INoteClip
     @Override
     public boolean canScrollStepsBackwards ()
     {
-        // TODO Bugfix required: https://github.com/teotigraphix/Framework4Bitwig/issues/217
-        // return this.getClip ().canScrollStepsBackwards ().get ();
         return this.getEditPage () > 0;
     }
 
@@ -750,8 +748,6 @@ public class CursorClipImpl implements INoteClip
     @Override
     public boolean canScrollStepsForwards ()
     {
-        // TODO Bugfix required: https://github.com/teotigraphix/Framework4Bitwig/issues/217
-        // return this.getClip ().canScrollStepsForwards ().get ();
         return true;
     }
 
@@ -868,12 +864,12 @@ public class CursorClipImpl implements INoteClip
 
     /**
      * Get the step at the given position. If the position still contains the Empty Step Info object
-     * an updateable one is created.
+     * an updatable one is created.
      *
-     * @param channel The midi channel
+     * @param channel The MIDI channel
      * @param step The step
      * @param row The row
-     * @return The updateable step info
+     * @return The updatable step info
      */
     private StepInfoImpl getUpdateableStep (final int channel, final int step, final int row)
     {
@@ -882,7 +878,7 @@ public class CursorClipImpl implements INoteClip
         {
             try
             {
-                // Lazily create an updateable object and keep it
+                // Lazily create an updatable object and keep it
                 if (stepInfos[channel][step] == null)
                     stepInfos[channel][step] = new IStepInfo [this.numRows];
                 if (stepInfos[channel][step][row] == null)

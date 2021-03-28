@@ -90,8 +90,8 @@ public class FireControlSurface extends AbstractControlSurface<FireConfiguration
      * @param host The host
      * @param colorManager The color manager
      * @param configuration The configuration
-     * @param output The midi output
-     * @param input The midi input
+     * @param output The MIDI output
+     * @param input The MIDI input
      */
     public FireControlSurface (final IHost host, final ColorManager colorManager, final FireConfiguration configuration, final IMidiOutput output, final IMidiInput input)
     {

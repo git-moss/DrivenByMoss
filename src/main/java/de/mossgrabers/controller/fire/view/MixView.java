@@ -59,7 +59,7 @@ public class MixView extends AbstractView<FireControlSurface, FireConfiguration>
                 padGrid.lightEx (i, 1, track.isMute () ? FireColorManager.FIRE_COLOR_ORANGE : FireColorManager.FIRE_COLOR_DARKER_ORANGE);
                 // Solo
                 padGrid.lightEx (i, 2, track.isSolo () ? FireColorManager.FIRE_COLOR_YELLOW : FireColorManager.FIRE_COLOR_DARKER_YELLOW);
-                // Rec Arm
+                // Record Arm
                 padGrid.lightEx (i, 3, track.isRecArm () ? FireColorManager.FIRE_COLOR_RED : FireColorManager.FIRE_COLOR_DARKER_RED);
             }
             else

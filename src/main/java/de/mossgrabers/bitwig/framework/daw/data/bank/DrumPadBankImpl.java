@@ -20,7 +20,7 @@ import java.util.Optional;
 
 
 /**
- * Encapsulates the data of a drumpad bank.
+ * Encapsulates the data of a drum pad bank.
  *
  * @author J&uuml;rgen Mo&szlig;graber
  */

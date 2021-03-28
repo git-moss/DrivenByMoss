@@ -8,7 +8,7 @@ import de.mossgrabers.framework.daw.resource.ChannelType;
 
 
 /**
- * Track types for the NI Host proocol.
+ * Track types for the NI Host protocol.
  *
  * @author J&uuml;rgen Mo&szlig;graber
  */

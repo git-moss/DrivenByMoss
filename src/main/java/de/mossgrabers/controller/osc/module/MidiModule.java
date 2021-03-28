@@ -264,7 +264,7 @@ public class MidiModule extends AbstractModule
      * Send the note.
      *
      * @param conf The configuration
-     * @param midiChannel THe midi channel
+     * @param midiChannel The MIDI channel
      * @param input Where to send
      * @param note The note
      * @param numValue The note velocity

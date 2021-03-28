@@ -43,7 +43,7 @@ public class TouchpadCommand extends AbstractContinuousCommand<SLControlSurface,
             case SLConfiguration.TOUCHPAD_MODE_CROSSFADER:
                 if (this.isXDirection)
                     this.model.getTransport ().setCrossfade (value);
-                // Crossfade only in X direction
+                // Cross-fade only in X direction
                 break;
 
             case SLConfiguration.TOUCHPAD_MODE_PARAMETER:

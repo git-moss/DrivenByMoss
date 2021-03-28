@@ -12,13 +12,13 @@ import de.mossgrabers.framework.daw.IHost;
 
 
 /**
- * The configuration settings for the Midi Monitor implementation.
+ * The configuration settings for the MIDI Monitor implementation.
  *
  * @author J&uuml;rgen Mo&szlig;graber
  */
 public class MidiMonitorConfiguration extends AbstractConfiguration
 {
-    /** Setting for filtering system realtime. */
+    /** Setting for filtering system real-time. */
     public static final Integer FILTER_SYSTEM_REALTIME   = Integer.valueOf (50);
 
     private boolean             isFilterSystemRealtimeOn = false;
@@ -50,9 +50,9 @@ public class MidiMonitorConfiguration extends AbstractConfiguration
 
 
     /**
-     * Is the filter for system realtime events enabled?
+     * Is the filter for system real-time events enabled?
      *
-     * @return True if the filter for system realtime events is enabled
+     * @return True if the filter for system real-time events is enabled
      */
     public boolean isFilterSystemRealtimeEnabled ()
     {

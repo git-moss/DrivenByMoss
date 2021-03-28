@@ -2,7 +2,7 @@
 // (c) 2017-2021
 // Licensed under LGPLv3 - http://www.gnu.org/licenses/lgpl-3.0.txt
 
-package de.mossgrabers.controller.generic;
+package de.mossgrabers.controller.generic.flexihandler.utils;
 
 import de.mossgrabers.controller.generic.controller.FlexiCommand;
 
@@ -31,6 +31,7 @@ public class CommandSlot
     private int             type                  = -1;
     private int             number                = 0;
     private int             midiChannel           = 0;
+    private boolean         isHighRes             = false;
     private int             knobMode              = 0;
     private boolean         sendValue             = false;
     private boolean         sendValueWhenReceived = false;
@@ -76,6 +77,17 @@ public class CommandSlot
     public int getMidiChannel ()
     {
         return this.midiChannel;
+    }
+
+
+    /**
+     * Get the configured MIDI resolution.
+     *
+     * @return True for high resolution (14-bit)
+     */
+    public boolean getResolution ()
+    {
+        return this.isHighRes;
     }
 
 
@@ -131,6 +143,17 @@ public class CommandSlot
     public void setMidiChannel (final int value)
     {
         this.midiChannel = value;
+    }
+
+
+    /**
+     * Set the MIDI resolution (only for CC) to 7-bit or 14-bit (high resolution).
+     *
+     * @param isHighRes True to use 14-bi5
+     */
+    public void setResolution (final boolean isHighRes)
+    {
+        this.isHighRes = isHighRes;
     }
 
 

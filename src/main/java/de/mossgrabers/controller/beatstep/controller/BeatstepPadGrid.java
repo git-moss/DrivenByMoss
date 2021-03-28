@@ -21,7 +21,7 @@ public class BeatstepPadGrid extends PadGridImpl
      * Constructor.
      *
      * @param colorManager The color manager for accessing specific colors to use
-     * @param output The midi output which can address the pad states
+     * @param output The MIDI output which can address the pad states
      */
     public BeatstepPadGrid (final ColorManager colorManager, final IMidiOutput output)
     {

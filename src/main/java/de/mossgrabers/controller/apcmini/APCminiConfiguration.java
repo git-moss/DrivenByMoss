@@ -11,6 +11,8 @@ import de.mossgrabers.framework.controller.valuechanger.IValueChanger;
 import de.mossgrabers.framework.daw.IHost;
 import de.mossgrabers.framework.daw.midi.ArpeggiatorMode;
 
+import java.util.List;
+
 
 /**
  * The configuration settings for APC.
@@ -20,40 +22,20 @@ import de.mossgrabers.framework.daw.midi.ArpeggiatorMode;
 public class APCminiConfiguration extends AbstractConfiguration
 {
     /** Default function of the faders. */
-    public static final Integer    FADER_CTRL         = Integer.valueOf (50);
+    public static final Integer       FADER_CTRL         = Integer.valueOf (50);
     /** Default function of the track buttons. */
-    public static final Integer    SOFT_KEYS          = Integer.valueOf (51);
+    public static final Integer       SOFT_KEYS          = Integer.valueOf (51);
 
-    private static final String [] FADER_CTRL_OPTIONS =
-    {
-        "Volume",
-        "Pan",
-        "Send 1",
-        "Send 2",
-        "Send 3",
-        "Send 4",
-        "Send 5",
-        "Send 6",
-        "Send 7",
-        "Send 8",
-        "Device"
-    };
+    private static final List<String> FADER_CTRL_OPTIONS = List.of ("Volume", "Pan", "Send 1", "Send 2", "Send 3", "Send 4", "Send 5", "Send 6", "Send 7", "Send 8", "Device");
 
     /** The names of the track button functions. */
-    public static final String []  SOFT_KEYS_OPTIONS  =
-    {
-        "Clip Stop",
-        "Solo",
-        "Rec Arm",
-        "Mute",
-        "Select"
-    };
+    public static final List<String>  SOFT_KEYS_OPTIONS  = List.of ("Clip Stop", "Solo", "Rec Arm", "Mute", "Select");
 
-    private String                 faderCtrl          = FADER_CTRL_OPTIONS[0];
-    private String                 softKeys           = SOFT_KEYS_OPTIONS[0];
+    private String                    faderCtrl          = FADER_CTRL_OPTIONS.get (0);
+    private String                    softKeys           = SOFT_KEYS_OPTIONS.get (0);
 
-    private IEnumSetting           faderCtrlSetting;
-    private IEnumSetting           softKeysSetting;
+    private IEnumSetting              faderCtrlSetting;
+    private IEnumSetting              softKeysSetting;
 
 
     /**
@@ -63,7 +45,7 @@ public class APCminiConfiguration extends AbstractConfiguration
      * @param valueChanger The value changer
      * @param arpeggiatorModes The available arpeggiator modes
      */
-    public APCminiConfiguration (final IHost host, final IValueChanger valueChanger, final ArpeggiatorMode [] arpeggiatorModes)
+    public APCminiConfiguration (final IHost host, final IValueChanger valueChanger, final List<ArpeggiatorMode> arpeggiatorModes)
     {
         super (host, valueChanger, arpeggiatorModes);
     }
@@ -97,13 +79,13 @@ public class APCminiConfiguration extends AbstractConfiguration
         ///////////////////////////
         // Button Control
 
-        this.faderCtrlSetting = globalSettings.getEnumSetting ("Fader Ctrl", "Button Control", FADER_CTRL_OPTIONS, FADER_CTRL_OPTIONS[0]);
+        this.faderCtrlSetting = globalSettings.getEnumSetting ("Fader Ctrl", "Button Control", FADER_CTRL_OPTIONS, this.faderCtrl);
         this.faderCtrlSetting.addValueObserver (value -> {
             this.faderCtrl = value;
             this.notifyObservers (FADER_CTRL);
         });
 
-        this.softKeysSetting = globalSettings.getEnumSetting ("Soft Keys", "Button Control", SOFT_KEYS_OPTIONS, SOFT_KEYS_OPTIONS[0]);
+        this.softKeysSetting = globalSettings.getEnumSetting ("Soft Keys", "Button Control", SOFT_KEYS_OPTIONS, this.softKeys);
         this.softKeysSetting.addValueObserver (value -> {
             this.softKeys = value;
             this.notifyObservers (SOFT_KEYS);

@@ -11,6 +11,8 @@ import de.mossgrabers.framework.controller.valuechanger.IValueChanger;
 import de.mossgrabers.framework.daw.IHost;
 import de.mossgrabers.framework.daw.midi.ArpeggiatorMode;
 
+import java.util.List;
+
 
 /**
  * The configuration settings for the Novation SL.
@@ -47,7 +49,7 @@ public class SLConfiguration extends AbstractConfiguration
      * @param arpeggiatorModes The available arpeggiator modes
      * @param isMkII Is MkI or MkII?
      */
-    public SLConfiguration (final IHost host, final IValueChanger valueChanger, final ArpeggiatorMode [] arpeggiatorModes, final boolean isMkII)
+    public SLConfiguration (final IHost host, final IValueChanger valueChanger, final List<ArpeggiatorMode> arpeggiatorModes, final boolean isMkII)
     {
         super (host, valueChanger, arpeggiatorModes);
 

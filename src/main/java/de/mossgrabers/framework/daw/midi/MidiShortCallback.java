@@ -12,11 +12,11 @@ package de.mossgrabers.framework.daw.midi;
 public interface MidiShortCallback
 {
     /**
-     * Handle received midi data.
+     * Handle received MIDI data.
      *
-     * @param status The midi status byte
-     * @param data1 The midi data byte 1
-     * @param data2 The midi data byte 2
+     * @param status The MIDI status byte
+     * @param data1 The MIDI data byte 1
+     * @param data2 The MIDI data byte 2
      */
     void handleMidi (final int status, final int data1, final int data2);
 }

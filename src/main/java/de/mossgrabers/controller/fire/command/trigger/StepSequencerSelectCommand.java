@@ -15,7 +15,7 @@ import de.mossgrabers.framework.view.Views;
 
 
 /**
- * Command to toggle between Sequencer and Poly Sequencer. Additional, toggles Accent when used with
+ * Command to toggle between Sequencer and Poly-Sequencer. Additional, toggles Accent when used with
  * Shift button.
  *
  * @author J&uuml;rgen Mo&szlig;graber

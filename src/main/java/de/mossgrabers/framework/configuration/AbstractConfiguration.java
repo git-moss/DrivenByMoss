@@ -23,6 +23,7 @@ import de.mossgrabers.framework.scale.Scales;
 import de.mossgrabers.framework.view.Views;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
@@ -49,7 +50,7 @@ public abstract class AbstractConfiguration implements Configuration
     public static final Integer      SCALES_LAYOUT                     = Integer.valueOf (3);
     /** ID for enabling VU meters setting. */
     public static final Integer      ENABLE_VU_METERS                  = Integer.valueOf (4);
-    /** ID for behaviour on stop setting. */
+    /** ID for behavior on stop setting. */
     public static final Integer      BEHAVIOUR_ON_STOP                 = Integer.valueOf (5);
     /** ID for flipping the session grid setting. */
     public static final Integer      FLIP_SESSION                      = Integer.valueOf (6);
@@ -386,7 +387,7 @@ public abstract class AbstractConfiguration implements Configuration
     private ArpeggiatorMode                           noteRepeatMode;
     private int                                       noteRepeatOctave            = 0;
     private int                                       midiEditChannel             = 0;
-    private final ArpeggiatorMode []                  arpeggiatorModes;
+    private final List<ArpeggiatorMode>               arpeggiatorModes;
 
     private boolean                                   includeMaster               = true;
     private boolean                                   excludeDeactivatedItems     = false;
@@ -406,12 +407,12 @@ public abstract class AbstractConfiguration implements Configuration
      * @param valueChanger The value changer
      * @param arpeggiatorModes The available arpeggiator modes
      */
-    protected AbstractConfiguration (final IHost host, final IValueChanger valueChanger, final ArpeggiatorMode [] arpeggiatorModes)
+    protected AbstractConfiguration (final IHost host, final IValueChanger valueChanger, final List<ArpeggiatorMode> arpeggiatorModes)
     {
         this.host = host;
         this.valueChanger = valueChanger;
         this.arpeggiatorModes = arpeggiatorModes;
-        this.noteRepeatMode = arpeggiatorModes == null ? null : arpeggiatorModes[0];
+        this.noteRepeatMode = arpeggiatorModes == null || arpeggiatorModes.isEmpty () ? null : arpeggiatorModes.get (0);
 
         for (int i = 0; i < this.userPageNames.length; i++)
             this.userPageNames[i] = "Page " + (i + 1);
@@ -896,7 +897,7 @@ public abstract class AbstractConfiguration implements Configuration
      */
     protected void activateScaleBaseSetting (final ISettingsUI settingsUI)
     {
-        this.scaleBaseSetting = settingsUI.getEnumSetting ("Base", CATEGORY_SCALES, Scales.BASES, Scales.BASES[0]);
+        this.scaleBaseSetting = settingsUI.getEnumSetting ("Base", CATEGORY_SCALES, Scales.BASES, Scales.BASES.get (0));
         this.scaleBaseSetting.addValueObserver (value -> {
             this.scaleBase = value;
             this.notifyObservers (SCALES_BASE);
@@ -987,7 +988,7 @@ public abstract class AbstractConfiguration implements Configuration
 
 
     /**
-     * Activate the behaviour on stop setting.
+     * Activate the behavior on stop setting.
      *
      * @param settingsUI The settings
      */
@@ -1055,7 +1056,7 @@ public abstract class AbstractConfiguration implements Configuration
 
 
     /**
-     * Activate action for rec armed pad setting.
+     * Activate action for record armed pad setting.
      *
      * @param settingsUI The settings
      */
@@ -1152,7 +1153,7 @@ public abstract class AbstractConfiguration implements Configuration
 
 
     /**
-     * Activate the exclude deactovated tracks setting.
+     * Activate the exclude deactivated tracks setting.
      *
      * @param settingsUI The settings
      */
@@ -1355,9 +1356,9 @@ public abstract class AbstractConfiguration implements Configuration
 
         if (this.host.supports (Capability.NOTE_REPEAT_MODE))
         {
-            final String [] arpModeNames = new String [this.arpeggiatorModes.length];
-            for (int i = 0; i < this.arpeggiatorModes.length; i++)
-                arpModeNames[i] = this.arpeggiatorModes[i].getName ();
+            final String [] arpModeNames = new String [this.arpeggiatorModes.size ()];
+            for (int i = 0; i < this.arpeggiatorModes.size (); i++)
+                arpModeNames[i] = this.arpeggiatorModes.get (i).getName ();
 
             this.noteRepeatModeSetting = settingsUI.getEnumSetting ("Mode", CATEGORY_NOTEREPEAT, arpModeNames, arpModeNames[1]);
             this.noteRepeatModeSetting.addValueObserver (value -> {
@@ -1543,12 +1544,20 @@ public abstract class AbstractConfiguration implements Configuration
      */
     public static int lookupIndex (final String [] options, final String value)
     {
-        for (int i = 0; i < options.length; i++)
-        {
-            if (options[i].equals (value))
-                return i;
-        }
-        return 0;
+        return lookupIndex (Arrays.asList (options), value);
+    }
+
+
+    /**
+     * Lookup the index of the value in the given options array.
+     *
+     * @param options The options in which to search for the value
+     * @param value The value to search for
+     * @return The index or 0 if not found
+     */
+    public static int lookupIndex (final List<String> options, final String value)
+    {
+        return Math.max (0, options.indexOf (value));
     }
 
 
@@ -1568,12 +1577,7 @@ public abstract class AbstractConfiguration implements Configuration
     @Override
     public int lookupArpeggiatorModeIndex (final ArpeggiatorMode arpMode)
     {
-        for (int i = 0; i < this.arpeggiatorModes.length; i++)
-        {
-            if (this.arpeggiatorModes[i] == arpMode)
-                return i;
-        }
-        return 0;
+        return Math.max (0, this.arpeggiatorModes.indexOf (arpMode));
     }
 
 
@@ -1585,10 +1589,8 @@ public abstract class AbstractConfiguration implements Configuration
     public ArpeggiatorMode nextArpeggiatorMode ()
     {
         final ArpeggiatorMode arpMode = this.getNoteRepeatMode ();
-        int index = this.lookupArpeggiatorModeIndex (arpMode) + 1;
-        if (index >= this.arpeggiatorModes.length)
-            index = 0;
-        return this.arpeggiatorModes[index];
+        final int index = this.lookupArpeggiatorModeIndex (arpMode) + 1;
+        return this.arpeggiatorModes.get (index < this.arpeggiatorModes.size () ? index : 0);
     }
 
 
@@ -1600,16 +1602,14 @@ public abstract class AbstractConfiguration implements Configuration
     public ArpeggiatorMode prevArpeggiatorMode ()
     {
         final ArpeggiatorMode arpMode = this.getNoteRepeatMode ();
-        int index = this.lookupArpeggiatorModeIndex (arpMode) - 1;
-        if (index < 0)
-            index = this.arpeggiatorModes.length - 1;
-        return this.arpeggiatorModes[index];
+        final int index = this.lookupArpeggiatorModeIndex (arpMode) - 1;
+        return this.arpeggiatorModes.get (index < 0 ? this.arpeggiatorModes.size () - 1 : index);
     }
 
 
     /** {@inheritDoc} */
     @Override
-    public ArpeggiatorMode [] getArpeggiatorModes ()
+    public List<ArpeggiatorMode> getArpeggiatorModes ()
     {
         return this.arpeggiatorModes;
     }

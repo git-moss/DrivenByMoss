@@ -12,7 +12,7 @@ package de.mossgrabers.controller.fire.view;
 public interface IFireView
 {
     /**
-     * The Select knob has benn turned.
+     * The Select knob has been turned.
      *
      * @param value The value the knob sent
      */

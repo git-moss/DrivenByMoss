@@ -25,7 +25,7 @@ import java.util.List;
  */
 public class KontrolProtocolControlSurface extends AbstractControlSurface<KontrolProtocolConfiguration>
 {
-    /** Command to initialise the protocol handshake (and acknowledge). */
+    /** Command to initialize the protocol handshake (and acknowledge). */
     public static final int CMD_HELLO                            = 0x01;
     /** Command to stop the protocol. */
     public static final int CMD_GOODBYE                          = 0x02;

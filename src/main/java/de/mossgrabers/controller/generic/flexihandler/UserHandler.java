@@ -7,6 +7,8 @@ package de.mossgrabers.controller.generic.flexihandler;
 import de.mossgrabers.controller.generic.GenericFlexiConfiguration;
 import de.mossgrabers.controller.generic.controller.FlexiCommand;
 import de.mossgrabers.controller.generic.controller.GenericFlexiControlSurface;
+import de.mossgrabers.controller.generic.flexihandler.utils.FlexiHandlerException;
+import de.mossgrabers.controller.generic.flexihandler.utils.MidiValue;
 import de.mossgrabers.framework.controller.valuechanger.IValueChanger;
 import de.mossgrabers.framework.daw.IModel;
 import de.mossgrabers.framework.daw.data.IParameter;
@@ -102,7 +104,7 @@ public class UserHandler extends AbstractHandler
 
     /** {@inheritDoc} */
     @Override
-    public void handle (final FlexiCommand command, final int knobMode, final int value)
+    public void handle (final FlexiCommand command, final int knobMode, final MidiValue value)
     {
         final IParameterBank userParameterBank = this.model.getUserParameterBank ();
         if (userParameterBank == null)
@@ -120,10 +122,11 @@ public class UserHandler extends AbstractHandler
             case USER_SET_PARAMETER_8:
                 final int index = command.ordinal () - FlexiCommand.USER_SET_PARAMETER_1.ordinal ();
                 final IParameter userParam = userParameterBank.getItem (index);
+                final int val = value.getValue ();
                 if (isAbsolute (knobMode))
-                    userParam.setValue (value);
+                    userParam.setValue (this.getAbsoluteValueChanger (value), val);
                 else
-                    userParam.changeValue (this.getRelativeValueChanger (knobMode), value);
+                    userParam.changeValue (this.getRelativeValueChanger (knobMode), val);
                 break;
 
             case USER_TOGGLE_PARAMETER_1:

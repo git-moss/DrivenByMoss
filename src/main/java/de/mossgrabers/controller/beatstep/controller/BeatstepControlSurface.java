@@ -88,8 +88,8 @@ public class BeatstepControlSurface extends AbstractControlSurface<BeatstepConfi
      * @param host The host
      * @param colorManager The color manager
      * @param configuration The configuration
-     * @param output The midi output
-     * @param input The midi input
+     * @param output The MIDI output
+     * @param input The MIDI input
      */
     public BeatstepControlSurface (final IHost host, final ColorManager colorManager, final BeatstepConfiguration configuration, final IMidiOutput output, final IMidiInput input)
     {

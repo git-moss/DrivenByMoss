@@ -47,7 +47,7 @@ public abstract class AbstractTextDisplay implements ITextDisplay
      * Constructor.
      *
      * @param host The host
-     * @param output The midi output which addresses the display
+     * @param output The MIDI output which addresses the display
      * @param noOfLines The number of rows that the display supports
      * @param noOfCells The number of cells that the display supports
      * @param noOfCharacters The number of characters of 1 row that the display supports
@@ -336,7 +336,7 @@ public abstract class AbstractTextDisplay implements ITextDisplay
 
 
     /**
-     * Overwrite if the device display uses a non-standard characterset.
+     * Overwrite if the device display uses a non-standard character set.
      *
      * @param text The text
      * @return The text adapted to the simulator GUI character set

@@ -7,12 +7,15 @@ package de.mossgrabers.controller.generic.flexihandler;
 import de.mossgrabers.controller.generic.GenericFlexiConfiguration;
 import de.mossgrabers.controller.generic.controller.FlexiCommand;
 import de.mossgrabers.controller.generic.controller.GenericFlexiControlSurface;
+import de.mossgrabers.controller.generic.flexihandler.utils.FlexiHandlerException;
+import de.mossgrabers.controller.generic.flexihandler.utils.MidiValue;
 import de.mossgrabers.framework.command.trigger.transport.PlayCommand;
 import de.mossgrabers.framework.command.trigger.transport.WindCommand;
 import de.mossgrabers.framework.controller.valuechanger.IValueChanger;
 import de.mossgrabers.framework.daw.IModel;
 import de.mossgrabers.framework.daw.ITransport;
 import de.mossgrabers.framework.daw.constants.AutomationMode;
+import de.mossgrabers.framework.daw.data.IParameter;
 import de.mossgrabers.framework.utils.ButtonEvent;
 
 
@@ -134,7 +137,7 @@ public class TransportHandler extends AbstractHandler
 
     /** {@inheritDoc} */
     @Override
-    public void handle (final FlexiCommand command, final int knobMode, final int value)
+    public void handle (final FlexiCommand command, final int knobMode, final MidiValue value)
     {
         final boolean isButtonPressed = this.isButtonPressed (knobMode, value);
 
@@ -269,7 +272,7 @@ public class TransportHandler extends AbstractHandler
     }
 
 
-    private void handlePlayCursor (final int knobMode, final int value)
+    private void handlePlayCursor (final int knobMode, final MidiValue value)
     {
         final ITransport transport = this.model.getTransport ();
         // Only relative modes are supported
@@ -278,22 +281,27 @@ public class TransportHandler extends AbstractHandler
     }
 
 
-    private void handleTempo (final int knobMode, final int value)
+    private void handleTempo (final int knobMode, final MidiValue value)
     {
         final ITransport transport = this.model.getTransport ();
         if (isAbsolute (knobMode))
-            transport.setTempo (value);
+        {
+            final int val = value.getValue ();
+            transport.setTempo (transport.rescaleTempo (val, value.isHighRes () ? 16384 : 128));
+        }
         else
             transport.changeTempo (this.isIncrease (knobMode, value), this.surface.isKnobSensitivitySlow ());
     }
 
 
-    private void handleMetronomeVolume (final int knobMode, final int value)
+    private void handleMetronomeVolume (final int knobMode, final MidiValue value)
     {
         final ITransport transport = this.model.getTransport ();
+        final IParameter metronomeVolumeParameter = transport.getMetronomeVolumeParameter ();
+        final int val = value.getValue ();
         if (isAbsolute (knobMode))
-            transport.setMetronomeVolume (value);
+            metronomeVolumeParameter.setValue (this.getAbsoluteValueChanger (value), val);
         else
-            transport.getMetronomeVolumeParameter ().changeValue (this.getRelativeValueChanger (knobMode), value);
+            metronomeVolumeParameter.changeValue (this.getRelativeValueChanger (knobMode), val);
     }
 }

@@ -7,6 +7,8 @@ package de.mossgrabers.controller.generic.flexihandler;
 import de.mossgrabers.controller.generic.GenericFlexiConfiguration;
 import de.mossgrabers.controller.generic.controller.FlexiCommand;
 import de.mossgrabers.controller.generic.controller.GenericFlexiControlSurface;
+import de.mossgrabers.controller.generic.flexihandler.utils.FlexiHandlerException;
+import de.mossgrabers.controller.generic.flexihandler.utils.MidiValue;
 import de.mossgrabers.framework.controller.valuechanger.IValueChanger;
 import de.mossgrabers.framework.daw.IModel;
 
@@ -181,7 +183,7 @@ public class MidiCCHandler extends AbstractHandler
 
     /** {@inheritDoc} */
     @Override
-    public void handle (final FlexiCommand command, final int knobMode, final int value)
+    public void handle (final FlexiCommand command, final int knobMode, final MidiValue value)
     {
         switch (command)
         {
@@ -313,7 +315,10 @@ public class MidiCCHandler extends AbstractHandler
             case MIDI_CC_125:
             case MIDI_CC_126:
             case MIDI_CC_127:
-                this.surface.getMidiInput ().sendRawMidiEvent (0xB0, command.ordinal () - FlexiCommand.MIDI_CC_0.ordinal (), value);
+                int val = value.getValue ();
+                if (value.isHighRes ())
+                    val = val % 128;
+                this.surface.getMidiInput ().sendRawMidiEvent (0xB0, command.ordinal () - FlexiCommand.MIDI_CC_0.ordinal (), val);
                 break;
 
             default:

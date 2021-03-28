@@ -49,7 +49,7 @@ public interface INoteClip extends IClip, IPinnable
     /**
      * Get the state of a note.
      *
-     * @param channel The midi channel
+     * @param channel The MIDI channel
      * @param step The step
      * @param row The row
      * @return The step info

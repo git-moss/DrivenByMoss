@@ -15,12 +15,12 @@ import java.util.Optional;
 public interface IUsbDevice
 {
     /**
-     * Create an endpoint for the USB device.
+     * Create an end-point for the USB device.
      *
      * @param interfaceIndex The index of the registered interface
-     * @param endpointIndex The index of the registered endpoint
-     * @return The endpoint
-     * @throws UsbException Could not lookup or open the endpoint
+     * @param endpointIndex The index of the registered end-point
+     * @return The end-point
+     * @throws UsbException Could not lookup or open the end-point
      */
     IUsbEndpoint getEndpoint (final int interfaceIndex, final int endpointIndex) throws UsbException;
 

@@ -33,7 +33,7 @@ public interface IKontrolProtocolDeviceDescriptor
 
 
     /**
-     * Get the midi port discovery pairs depending on the operating system.
+     * Get the MIDI port discovery pairs depending on the operating system.
      *
      * @param os The operating system
      * @return The discovery pairs

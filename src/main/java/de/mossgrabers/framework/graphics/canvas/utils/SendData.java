@@ -82,7 +82,7 @@ public class SendData
 
 
     /**
-     * Is the sendselected for editing.
+     * Is the send selected for editing.
      *
      * @return True if selected
      */

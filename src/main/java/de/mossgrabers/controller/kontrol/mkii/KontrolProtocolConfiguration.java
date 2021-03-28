@@ -11,6 +11,8 @@ import de.mossgrabers.framework.controller.valuechanger.IValueChanger;
 import de.mossgrabers.framework.daw.IHost;
 import de.mossgrabers.framework.daw.midi.ArpeggiatorMode;
 
+import java.util.List;
+
 
 /**
  * The configuration settings for Komplete Kontrol MkII.
@@ -35,7 +37,7 @@ public class KontrolProtocolConfiguration extends AbstractConfiguration
      * @param valueChanger The value changer
      * @param arpeggiatorModes The available arpeggiator modes
      */
-    public KontrolProtocolConfiguration (final IHost host, final IValueChanger valueChanger, final ArpeggiatorMode [] arpeggiatorModes)
+    public KontrolProtocolConfiguration (final IHost host, final IValueChanger valueChanger, final List<ArpeggiatorMode> arpeggiatorModes)
     {
         super (host, valueChanger, arpeggiatorModes);
     }
@@ -79,7 +81,7 @@ public class KontrolProtocolConfiguration extends AbstractConfiguration
 
 
     /**
-     * Returns true if track and clip navigation should be flipped
+     * Returns true if track and clip navigation should be flipped.
      *
      * @return True if track and clip navigation should be flipped
      */
@@ -90,7 +92,7 @@ public class KontrolProtocolConfiguration extends AbstractConfiguration
 
 
     /**
-     * Returns true if clip and scene navigation should be flipped
+     * Returns true if clip and scene navigation should be flipped.
      *
      * @return True if clip and scene navigation should be flipped
      */

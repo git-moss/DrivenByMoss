@@ -8,7 +8,7 @@ import de.mossgrabers.framework.daw.IHost;
 
 
 /**
- * Support a timeout of a number of millisecond. The timeout can be delayed if an interrupt occured
+ * Support a timeout of a number of millisecond. The timeout can be delayed if an interrupt occurred
  * meanwhile.
  *
  * @author J&uuml;rgen Mo&szlig;graber
@@ -43,10 +43,15 @@ public class Timeout
     {
         final long nowTime = System.currentTimeMillis ();
         this.updateTime = nowTime;
+        this.delayExecution (runnable, nowTime);
+    }
 
+
+    private void delayExecution (final Runnable runnable, final long issuedTime)
+    {
         this.host.scheduleTask ( () -> {
 
-            if (nowTime == this.updateTime)
+            if (issuedTime == this.updateTime)
                 runnable.run ();
 
         }, this.timeoutMillis);

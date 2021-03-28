@@ -45,7 +45,7 @@ public class TrackMode<S extends IControlSurface<C>, C extends Configuration> ex
      *
      * @param surface The control surface
      * @param model The model
-     * @param isAbsolute If true the value change is happending with a setter otherwise relative
+     * @param isAbsolute If true the value change is happening with a setter otherwise relative
      *            change method is used
      * @param controls The IDs of the knobs or faders to control this mode
      */
@@ -61,7 +61,7 @@ public class TrackMode<S extends IControlSurface<C>, C extends Configuration> ex
      * @param name The name of the mode
      * @param surface The control surface
      * @param model The model
-     * @param isAbsolute If true the value change is happending with a setter otherwise relative
+     * @param isAbsolute If true the value change is happening with a setter otherwise relative
      *            change method is used
      * @param controls The IDs of the knobs or faders to control this mode
      */

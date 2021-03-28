@@ -7,7 +7,7 @@ package de.mossgrabers.framework.featuregroup;
 /**
  * Interface for notifications about feature group changes.
  *
- * @param <E> The specific type of the ID enum
+ * @param <E> The specific type of the ID enumeration
  *
  * @author J&uuml;rgen Mo&szlig;graber
  */

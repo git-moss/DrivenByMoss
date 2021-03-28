@@ -115,8 +115,8 @@ public class Kontrol1ControllerSetup extends AbstractControllerSetup<Kontrol1Con
         final IMidiAccess midiAccess = this.factory.createMidiAccess ();
         final IMidiInput input = midiAccess.createInput ("Komplete Kontrol 1",
                 "80????" /* Note off */, "90????" /* Note on */, "B040??",
-                "B001??" /* Sustainpedal + Modulation */, "D0????" /* Channel Aftertouch */,
-                "E0????" /* Pitchbend */);
+                "B001??" /* Sustain pedal + Modulation */, "D0????" /* Channel After-touch */,
+                "E0????" /* Pitch-bend */);
 
         final Kontrol1ControlSurface surface = new Kontrol1ControlSurface (this.host, this.colorManager, this.configuration, input, usbDevice);
         usbDevice.setCallback (surface);

@@ -143,13 +143,13 @@ public class PlayView extends AbstractPlayView<LaunchpadControlSurface, Launchpa
                 break;
             case SCENE7:
                 this.scales.setScaleOffset (this.scales.getScaleOffset () + 1);
-                name = Scales.BASES[this.scales.getScaleOffset ()];
+                name = Scales.BASES.get (this.scales.getScaleOffset ());
                 this.surface.getConfiguration ().setScaleBase (name);
                 display.notify (name);
                 break;
             case SCENE8:
                 this.scales.setScaleOffset (this.scales.getScaleOffset () - 1);
-                name = Scales.BASES[this.scales.getScaleOffset ()];
+                name = Scales.BASES.get (this.scales.getScaleOffset ());
                 this.surface.getConfiguration ().setScaleBase (name);
                 display.notify (name);
                 break;

@@ -55,7 +55,7 @@ public class DeviceInquiry
         LONG,
         /**
          * A result which is longer data content than the allowed by the MIDI specification but
-         * valid mesage bytes.
+         * valid message bytes.
          */
         NOT_IN_SPEC,
         /** Not a valid device inquiry response message. */

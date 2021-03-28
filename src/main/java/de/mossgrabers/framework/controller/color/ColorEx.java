@@ -194,7 +194,7 @@ public class ColorEx
     /**
      * Convert the internal color state to 3 double RGB values.
      *
-     * @return The 3 int (0-1) values
+     * @return The 3 integer (0-1) values
      */
     public double [] toDoubleRGB ()
     {

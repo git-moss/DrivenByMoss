@@ -158,8 +158,8 @@ public class KontrolProtocolControllerSetup extends AbstractControllerSetup<Kont
         final IMidiAccess midiAccess = this.factory.createMidiAccess ();
         final IMidiOutput output = midiAccess.createOutput ();
         final IMidiInput pianoInput = midiAccess.createInput (1, "Keyboard", "8?????" /* Note off */,
-                "9?????" /* Note on */, "B?????" /* Sustainpedal + Modulation + Strip */,
-                "D?????" /* Channel Aftertouch */, "E?????" /* Pitchbend */);
+                "9?????" /* Note on */, "B?????" /* Sustain pedal + Modulation + Strip */,
+                "D?????" /* Channel After-touch */, "E?????" /* Pitch-bend */);
         final KontrolProtocolControlSurface surface = new KontrolProtocolControlSurface (this.host, this.colorManager, this.configuration, output, midiAccess.createInput (null), this.version);
         this.surfaces.add (surface);
 

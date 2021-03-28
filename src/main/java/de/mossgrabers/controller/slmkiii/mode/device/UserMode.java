@@ -50,7 +50,7 @@ public class UserMode extends AbstractParametersMode<IParameter>
             return;
         }
 
-        // Normal behaviour - user parameters
+        // Normal behavior - user parameters
         this.selectItemPage (index);
     }
 

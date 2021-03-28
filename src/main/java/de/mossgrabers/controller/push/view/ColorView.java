@@ -105,7 +105,7 @@ public class ColorView extends AbstractView<PushControlSurface, PushConfiguratio
                     break;
 
                 case MODE_LAYER:
-                    final Optional<?> selectedItem = this.model.getCursorDevice ().getLayerOrDrumPadBank ().getSelectedItem ();
+                    final Optional<?> selectedItem = this.model.getCursorDevice ().getLayerBank ().getSelectedItem ();
                     if (selectedItem.isPresent ())
                         ((ILayer) selectedItem.get ()).setColor (entry);
                     break;

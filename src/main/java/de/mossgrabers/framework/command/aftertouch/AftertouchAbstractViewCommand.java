@@ -67,7 +67,7 @@ public class AftertouchAbstractViewCommand<S extends IControlSurface<C>, C exten
                 break;
 
             default:
-                // Midi CC
+                // MIDI CC
                 this.surface.sendMidiEvent (0xB0, config.getConvertAftertouch (), value);
                 break;
         }

@@ -159,11 +159,11 @@ public enum Resolution
 
 
     /**
-     * Increase or descrease the index of a resolution and keeps it in the bounds of the existing
+     * Increase or decrease the index of a resolution and keeps it in the bounds of the existing
      * resolution range.
      *
      * @param index An index of a resolution
-     * @param inc Increase if true otherwise descrease
+     * @param inc Increase if true otherwise decrease
      * @return The index of the previous or next resolution
      */
     public static int change (final int index, final boolean inc)

@@ -9,7 +9,7 @@ import de.mossgrabers.framework.observer.IObserverManagement;
 
 
 /**
- * Interace to the Groove.
+ * Interface to the Groove.
  *
  * @author J&uuml;rgen Mo&szlig;graber
  */

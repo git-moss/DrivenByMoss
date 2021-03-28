@@ -11,7 +11,7 @@ import com.bitwig.extension.controller.api.Track;
 
 
 /**
- * A parameter encapsulating the tracks crossfade setting.
+ * A parameter encapsulating the tracks cross-fade setting.
  *
  * @author J&uuml;rgen Mo&szlig;graber
  */
@@ -126,7 +126,15 @@ public class CrossfadeParameter extends AbstractParameterImpl
     @Override
     public void setValue (final int value)
     {
-        this.setNormalizedValue (this.valueChanger.toNormalizedValue (value));
+        this.setValue (this.valueChanger, value);
+    }
+
+
+    /** {@inheritDoc} */
+    @Override
+    public void setValue (final IValueChanger valueChanger, final int value)
+    {
+        this.setNormalizedValue (valueChanger.toNormalizedValue (value));
     }
 
 

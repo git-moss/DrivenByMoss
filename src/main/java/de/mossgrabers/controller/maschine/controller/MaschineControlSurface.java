@@ -115,8 +115,8 @@ public class MaschineControlSurface extends AbstractControlSurface<MaschineConfi
      * @param colorManager The color manager
      * @param maschine The maschine description
      * @param configuration The configuration
-     * @param output The midi output
-     * @param input The midi input
+     * @param output The MIDI output
+     * @param input The MIDI input
      */
     public MaschineControlSurface (final IHost host, final ColorManager colorManager, final Maschine maschine, final MaschineConfiguration configuration, final IMidiOutput output, final IMidiInput input)
     {

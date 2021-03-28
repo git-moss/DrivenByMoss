@@ -48,7 +48,7 @@ public class ScaleMode extends AbstractKontrol1Mode<IItem>
         d.clear ();
         d.setCell (0, 0, "SCALE");
         d.setCell (0, 1, "SCALE").setCell (1, 1, this.scales.getScale ().getName ().toUpperCase (Locale.US));
-        d.setCell (0, 2, "BASE").setCell (1, 2, Scales.BASES[this.scales.getScaleOffset ()]);
+        d.setCell (0, 2, "BASE").setCell (1, 2, Scales.BASES.get (this.scales.getScaleOffset ()));
         d.allDone ();
     }
 
@@ -156,6 +156,6 @@ public class ScaleMode extends AbstractKontrol1Mode<IItem>
     {
         final Kontrol1Configuration config = this.surface.getConfiguration ();
         config.setScale (this.scales.getScale ().getName ());
-        config.setScaleBase (Scales.BASES[this.scales.getScaleOffset ()]);
+        config.setScaleBase (Scales.BASES.get (this.scales.getScaleOffset ()));
     }
 }

@@ -15,7 +15,7 @@ import java.util.UUID;
 
 
 /**
- * Definition class for the Native Instruments Kontrol Mk I controller extension.
+ * Definition class for the Native Instruments Kontrol MkI controller extension.
  *
  * @author J&uuml;rgen Mo&szlig;graber
  */

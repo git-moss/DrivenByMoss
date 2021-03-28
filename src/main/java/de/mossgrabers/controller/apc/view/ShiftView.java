@@ -150,8 +150,8 @@ public class ShiftView extends AbstractView<APCControlSurface, APCConfiguration>
         if (pos == -1)
             return;
         this.model.getScales ().setScaleOffset (pos);
-        this.surface.getConfiguration ().setScaleBase (Scales.BASES[pos]);
-        this.surface.getDisplay ().notify (Scales.BASES[pos]);
+        this.surface.getConfiguration ().setScaleBase (Scales.BASES.get (pos));
+        this.surface.getDisplay ().notify (Scales.BASES.get (pos));
         this.surface.getViewManager ().getActive ().updateNoteMapping ();
     }
 

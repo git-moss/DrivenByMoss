@@ -5,7 +5,7 @@
 package de.mossgrabers.framework.daw.midi;
 
 /**
- * An abstract implementation for a midi output
+ * An abstract implementation for a MIDI output
  *
  * @author J&uuml;rgen Mo&szlig;graber
  */

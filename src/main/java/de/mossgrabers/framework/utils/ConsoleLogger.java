@@ -27,7 +27,7 @@ public class ConsoleLogger
 
 
     /**
-     * Init the host for logging.
+     * Initialize the host for logging.
      *
      * @param host The host
      */

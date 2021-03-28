@@ -969,8 +969,8 @@ public class PushControllerSetup extends AbstractControllerSetup<PushControlSurf
             if (modeManager.isActive (Modes.DEVICE_LAYER))
             {
                 final ICursorDevice cd = this.model.getCursorDevice ();
-                final Optional<?> layer = cd.getLayerOrDrumPadBank ().getSelectedItem ();
-                return layer.isPresent () && ((ILayer) layer.get ()).isMute ();
+                final Optional<ILayer> layer = cd.getLayerBank ().getSelectedItem ();
+                return layer.isPresent () && layer.get ().isMute ();
             }
             final ITrack selTrack = modeManager.isActive (Modes.MASTER) ? this.model.getMasterTrack () : this.model.getCursorTrack ();
             return selTrack.isMute ();
@@ -988,8 +988,8 @@ public class PushControllerSetup extends AbstractControllerSetup<PushControlSurf
             if (modeManager.isActive (Modes.DEVICE_LAYER))
             {
                 final ICursorDevice cd = this.model.getCursorDevice ();
-                final Optional<?> layer = cd.getLayerOrDrumPadBank ().getSelectedItem ();
-                return layer.isPresent () && ((ILayer) layer.get ()).isSolo ();
+                final Optional<ILayer> layer = cd.getLayerBank ().getSelectedItem ();
+                return layer.isPresent () && layer.get ().isSolo ();
             }
             final ITrack selTrack = modeManager.isActive (Modes.MASTER) ? this.model.getMasterTrack () : this.model.getCursorTrack ();
             return selTrack.isSolo ();

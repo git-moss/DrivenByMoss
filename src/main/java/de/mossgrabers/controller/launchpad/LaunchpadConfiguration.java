@@ -11,6 +11,8 @@ import de.mossgrabers.framework.controller.valuechanger.IValueChanger;
 import de.mossgrabers.framework.daw.IHost;
 import de.mossgrabers.framework.daw.midi.ArpeggiatorMode;
 
+import java.util.List;
+
 
 /**
  * The configuration settings for Launchpad.
@@ -30,7 +32,7 @@ public class LaunchpadConfiguration extends AbstractConfiguration
      * @param arpeggiatorModes The available arpeggiator modes
      * @param definition The Launchpad definition
      */
-    public LaunchpadConfiguration (final IHost host, final IValueChanger valueChanger, final ArpeggiatorMode [] arpeggiatorModes, final ILaunchpadControllerDefinition definition)
+    public LaunchpadConfiguration (final IHost host, final IValueChanger valueChanger, final List<ArpeggiatorMode> arpeggiatorModes, final ILaunchpadControllerDefinition definition)
     {
         super (host, valueChanger, arpeggiatorModes);
 

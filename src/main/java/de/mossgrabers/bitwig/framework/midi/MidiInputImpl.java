@@ -35,7 +35,7 @@ import com.bitwig.extension.controller.api.RelativeHardwareValueMatcher;
 
 
 /**
- * A midi input.
+ * A MIDI input.
  *
  * @author J&uuml;rgen Mo&szlig;graber
  */

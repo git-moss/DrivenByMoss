@@ -10,7 +10,7 @@ import java.util.UUID;
 
 
 /**
- * Definition class for the Midi Monitor extension.
+ * Definition class for the MIDI Monitor extension.
  *
  * @author J&uuml;rgen Mo&szlig;graber
  */
