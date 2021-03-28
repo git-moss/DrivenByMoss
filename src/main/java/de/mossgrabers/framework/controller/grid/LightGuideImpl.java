@@ -19,9 +19,9 @@ public class LightGuideImpl extends PadGridImpl
      * Constructor.
      *
      * @param startNote The first note
-     * @param keys The mnumber of keys
+     * @param keys The number of keys
      * @param colorManager The color manager for accessing specific colors to use
-     * @param output The midi output which can address the pad states
+     * @param output The MIDI output which can address the pad states
      */
     public LightGuideImpl (final int startNote, final int keys, final ColorManager colorManager, final IMidiOutput output)
     {

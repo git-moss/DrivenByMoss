@@ -396,7 +396,7 @@ public class SLControllerSetup extends AbstractControllerSetup<SLControlSurface,
     {
         final SLControlSurface surface = this.getSurface ();
 
-        // Initialise 2nd display
+        // Initialize 2nd display
         final ModeManager modeManager = surface.getModeManager ();
         modeManager.get (Modes.VOLUME).updateDisplay ();
         surface.getViewManager ().setActive (Views.CONTROL);

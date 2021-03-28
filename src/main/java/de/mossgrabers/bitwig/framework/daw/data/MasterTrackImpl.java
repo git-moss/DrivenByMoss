@@ -51,7 +51,7 @@ public class MasterTrackImpl extends TrackImpl implements IMasterTrack
     @Override
     public void enter ()
     {
-        // Mastertrack is not a group
+        // Master track is not a group
     }
 
 

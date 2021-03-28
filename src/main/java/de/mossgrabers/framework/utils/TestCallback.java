@@ -5,7 +5,7 @@
 package de.mossgrabers.framework.utils;
 
 /**
- * Interface for signalling the start and end of the tests.
+ * Interface for signaling the start and end of the tests.
  *
  * @author J&uuml;rgen Mo&szlig;graber
  */

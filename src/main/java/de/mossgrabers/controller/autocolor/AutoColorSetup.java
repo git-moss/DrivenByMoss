@@ -111,7 +111,7 @@ public class AutoColorSetup extends AbstractControllerSetup<IControlSurface<Auto
                 this.autoColor.matchTrackName (i, tb.getItem (i).getName ());
         });
 
-        // Monitor all color regex settings
+        // Monitor all color regular expression settings
         final DAWColor [] colors = DAWColor.values ();
         for (int i = 0; i < colors.length; i++)
         {

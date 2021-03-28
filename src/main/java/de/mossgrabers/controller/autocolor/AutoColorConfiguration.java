@@ -88,10 +88,10 @@ public class AutoColorConfiguration extends AbstractConfiguration
 
 
     /**
-     * Get the regex value for the given color.
+     * Get the regular expression value for the given color.
      *
      * @param color The color
-     * @return The regex
+     * @return The regular expression
      */
     public String getColorRegExValue (final DAWColor color)
     {

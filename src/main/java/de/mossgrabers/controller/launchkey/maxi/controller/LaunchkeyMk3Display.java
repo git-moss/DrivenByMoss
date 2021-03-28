@@ -15,7 +15,7 @@ import java.nio.charset.UnsupportedCharsetException;
 
 
 /**
- * The Launchkey Mk3 16x2 character LCD display. It chaches different screens for the basic display
+ * The Launchkey Mk3 16x2 character LCD display. It caches different screens for the basic display
  * as well as for each pot and fader.
  *
  * @author J&uuml;rgen Mo&szlig;graber
@@ -43,7 +43,7 @@ public class LaunchkeyMk3Display extends AbstractTextDisplay
      * Constructor. 2 rows, 16 characters per row, 18 screens (1 base mode, 8 pots, 9 faders).
      *
      * @param host The host
-     * @param output The midi output which addresses the display
+     * @param output The MIDI output which addresses the display
      */
     public LaunchkeyMk3Display (final IHost host, final IMidiOutput output)
     {

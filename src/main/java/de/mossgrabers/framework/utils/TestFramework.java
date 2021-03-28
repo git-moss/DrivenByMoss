@@ -10,7 +10,7 @@ import java.util.LinkedList;
 
 
 /**
- * Testframework.
+ * Test framework.
  *
  * @author J&uuml;rgen Mo&szlig;graber
  */

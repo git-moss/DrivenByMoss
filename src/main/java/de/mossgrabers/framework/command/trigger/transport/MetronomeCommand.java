@@ -12,7 +12,7 @@ import de.mossgrabers.framework.utils.ButtonEvent;
 
 
 /**
- * Command to dis-/enable the metronome. Also toggles metronome ticks when Shift is pressed.
+ * Command to disable/enable the metronome. Also toggles metronome ticks when Shift is pressed.
  *
  * @param <S> The type of the control surface
  * @param <C> The type of the configuration

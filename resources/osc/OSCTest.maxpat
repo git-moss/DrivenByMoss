@@ -51,6 +51,56 @@
 					"fontname" : "Arial",
 					"fontsize" : 12.0,
 					"gradient" : 0,
+					"id" : "obj-212",
+					"maxclass" : "message",
+					"numinlets" : 2,
+					"numoutlets" : 1,
+					"outlettype" : [ "" ],
+					"patching_rect" : [ 624.5, 245.0, 126.0, 22.0 ],
+					"presentation_linecount" : 2,
+					"text" : "/track/1/clip/2/create 6",
+					"textcolor" : [ 0.0, 0.0, 0.0, 1.0 ]
+				}
+
+			}
+, 			{
+				"box" : 				{
+					"bgcolor" : [ 0.678431, 0.819608, 0.819608, 1.0 ],
+					"bgfillcolor_angle" : 270.0,
+					"bgfillcolor_autogradient" : 0.79,
+					"bgfillcolor_color" : [ 0.290196, 0.309804, 0.301961, 1.0 ],
+					"bgfillcolor_color1" : [ 0.678431, 0.819608, 0.819608, 1.0 ],
+					"bgfillcolor_color2" : [ 0.685, 0.685, 0.685, 1.0 ],
+					"bgfillcolor_proportion" : 0.39,
+					"bgfillcolor_type" : "gradient",
+					"fontname" : "Arial",
+					"fontsize" : 12.0,
+					"gradient" : 0,
+					"id" : "obj-210",
+					"maxclass" : "message",
+					"numinlets" : 2,
+					"numoutlets" : 1,
+					"outlettype" : [ "" ],
+					"patching_rect" : [ 624.5, 658.71696371272651, 77.0, 22.0 ],
+					"presentation_linecount" : 2,
+					"text" : "/clip/create 8",
+					"textcolor" : [ 0.0, 0.0, 0.0, 1.0 ]
+				}
+
+			}
+, 			{
+				"box" : 				{
+					"bgcolor" : [ 0.678431, 0.819608, 0.819608, 1.0 ],
+					"bgfillcolor_angle" : 270.0,
+					"bgfillcolor_autogradient" : 0.79,
+					"bgfillcolor_color" : [ 0.290196, 0.309804, 0.301961, 1.0 ],
+					"bgfillcolor_color1" : [ 0.678431, 0.819608, 0.819608, 1.0 ],
+					"bgfillcolor_color2" : [ 0.685, 0.685, 0.685, 1.0 ],
+					"bgfillcolor_proportion" : 0.39,
+					"bgfillcolor_type" : "gradient",
+					"fontname" : "Arial",
+					"fontsize" : 12.0,
+					"gradient" : 0,
 					"id" : "obj-172",
 					"maxclass" : "message",
 					"numinlets" : 2,
@@ -105,7 +155,6 @@
 					"numoutlets" : 1,
 					"outlettype" : [ "" ],
 					"patching_rect" : [ 996.5, 264.333344000000011, 98.0, 22.0 ],
-					"presentation_linecount" : 2,
 					"text" : "/device/duplicate",
 					"textcolor" : [ 0.0, 0.0, 0.0, 1.0 ]
 				}
@@ -130,7 +179,6 @@
 					"numoutlets" : 1,
 					"outlettype" : [ "" ],
 					"patching_rect" : [ 624.5, 146.666671999999977, 131.0, 22.0 ],
-					"presentation_linecount" : 2,
 					"text" : "/track/1/clip/2/duplicate",
 					"textcolor" : [ 0.0, 0.0, 0.0, 1.0 ]
 				}
@@ -155,7 +203,6 @@
 					"numoutlets" : 1,
 					"outlettype" : [ "" ],
 					"patching_rect" : [ 426.0, 95.0, 99.0, 22.0 ],
-					"presentation_linecount" : 2,
 					"text" : "/track/2/duplicate",
 					"textcolor" : [ 0.0, 0.0, 0.0, 1.0 ]
 				}
@@ -323,7 +370,7 @@
 					"numinlets" : 2,
 					"numoutlets" : 1,
 					"outlettype" : [ "" ],
-					"patching_rect" : [ 624.5, 420.09095838281246, 69.0, 22.0 ],
+					"patching_rect" : [ 624.666656494140625, 469.0, 69.0, 22.0 ],
 					"text" : "/clip/pinned",
 					"textcolor" : [ 0.0, 0.0, 0.0, 1.0 ]
 				}
@@ -1041,7 +1088,7 @@
 					"numinlets" : 2,
 					"numoutlets" : 1,
 					"outlettype" : [ "" ],
-					"patching_rect" : [ 624.5, 329.424270382812324, 206.0, 22.0 ],
+					"patching_rect" : [ 624.5, 358.666647999999725, 206.0, 22.0 ],
 					"text" : "/track/1/clip/1/color RGB(64\\,127\\,20)",
 					"textcolor" : [ 0.0, 0.0, 0.0, 1.0 ]
 				}
@@ -1065,7 +1112,7 @@
 					"numinlets" : 2,
 					"numoutlets" : 1,
 					"outlettype" : [ "" ],
-					"patching_rect" : [ 624.5, 304.424270382812324, 199.0, 22.0 ],
+					"patching_rect" : [ 624.5, 333.666647999999725, 199.0, 22.0 ],
 					"text" : "/track/1/clip/1/color RGB(127\\,64\\,0)",
 					"textcolor" : [ 0.0, 0.0, 0.0, 1.0 ]
 				}
@@ -3319,7 +3366,7 @@
 					"numinlets" : 2,
 					"numoutlets" : 1,
 					"outlettype" : [ "" ],
-					"patching_rect" : [ 624.5, 268.424278382812417, 184.0, 22.0 ],
+					"patching_rect" : [ 624.5, 297.666655999999819, 184.0, 22.0 ],
 					"text" : "/track/1/clip/returntoarrangement",
 					"textcolor" : [ 0.0, 0.0, 0.0, 1.0 ]
 				}
@@ -3343,7 +3390,7 @@
 					"numinlets" : 2,
 					"numoutlets" : 1,
 					"outlettype" : [ "" ],
-					"patching_rect" : [ 624.5, 248.424286382812568, 97.0, 22.0 ],
+					"patching_rect" : [ 624.5, 277.666663999999969, 97.0, 22.0 ],
 					"text" : "/track/1/clip/stop",
 					"textcolor" : [ 0.0, 0.0, 0.0, 1.0 ]
 				}
@@ -7238,7 +7285,21 @@
 , 			{
 				"patchline" : 				{
 					"destination" : [ "obj-1", 0 ],
+					"source" : [ "obj-210", 0 ]
+				}
+
+			}
+, 			{
+				"patchline" : 				{
+					"destination" : [ "obj-1", 0 ],
 					"source" : [ "obj-211", 0 ]
+				}
+
+			}
+, 			{
+				"patchline" : 				{
+					"destination" : [ "obj-1", 0 ],
+					"source" : [ "obj-212", 0 ]
 				}
 
 			}

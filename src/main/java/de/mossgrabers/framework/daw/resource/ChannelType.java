@@ -17,7 +17,7 @@ public enum ChannelType
     AUDIO,
     /** Instrument Track. */
     INSTRUMENT,
-    /** Hybrid Track (Audio + Midi). */
+    /** Hybrid Track (Audio + MIDI). */
     HYBRID,
     /** A group Track. */
     GROUP,

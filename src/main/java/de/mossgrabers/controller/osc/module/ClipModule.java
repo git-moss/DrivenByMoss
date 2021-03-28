@@ -11,7 +11,9 @@ import de.mossgrabers.framework.controller.color.ColorEx;
 import de.mossgrabers.framework.daw.IHost;
 import de.mossgrabers.framework.daw.IModel;
 import de.mossgrabers.framework.daw.INoteClip;
+import de.mossgrabers.framework.daw.data.ICursorTrack;
 import de.mossgrabers.framework.daw.data.ISlot;
+import de.mossgrabers.framework.daw.data.bank.ISlotBank;
 import de.mossgrabers.framework.osc.IOpenSoundControlWriter;
 
 import java.util.LinkedList;
@@ -56,9 +58,17 @@ public class ClipModule extends AbstractModule
         if (!"clip".equals (command))
             throw new UnknownCommandException (command);
 
-        final INoteClip cursorClip = this.model.getCursorClip ();
-
         final String subCommand = getSubCommand (path);
+
+        if ("stopall".equals (subCommand))
+        {
+            this.model.getTrackBank ().stop ();
+            return;
+        }
+
+        // Cursor clip related commands
+
+        final INoteClip cursorClip = this.model.getCursorClip ();
         switch (subCommand)
         {
             case "pinned":
@@ -66,40 +76,64 @@ public class ClipModule extends AbstractModule
                     cursorClip.togglePinned ();
                 else
                     cursorClip.setPinned (isTrigger (value));
-                break;
-
-            case "+":
-                this.model.getCursorTrack ().getSlotBank ().selectNextItem ();
-                break;
-
-            case "-":
-                this.model.getCursorTrack ().getSlotBank ().selectPreviousItem ();
-                break;
-
-            case "launch":
-                final Optional<ISlot> selectedSlot = this.model.getSelectedSlot ();
-                if (selectedSlot.isPresent ())
-                    selectedSlot.get ().launch ();
-                break;
-
-            case "stop":
-                this.model.getCursorTrack ().stop ();
-                break;
-
-            case "stopall":
-                this.model.getTrackBank ().stop ();
-                break;
-
-            case "record":
-                final Optional<ISlot> selectedSlot2 = this.model.getSelectedSlot ();
-                if (selectedSlot2.isPresent ())
-                    selectedSlot2.get ().record ();
-                break;
+                return;
 
             case "quantize":
                 if (cursorClip.doesExist ())
                     cursorClip.quantize (1);
+                return;
+
+            default:
+                // Fall through
                 break;
+        }
+
+        // Slot bank related commands
+
+        final ICursorTrack cursorTrack = this.model.getCursorTrack ();
+        if (!cursorTrack.doesExist ())
+            return;
+
+        if ("stop".equals (subCommand))
+        {
+            cursorTrack.stop ();
+            return;
+        }
+
+        final ISlotBank slotBank = cursorTrack.getSlotBank ();
+        switch (subCommand)
+        {
+            case "+":
+                slotBank.selectNextItem ();
+                return;
+
+            case "-":
+                slotBank.selectPreviousItem ();
+                return;
+
+            default:
+                // Fall through
+                break;
+        }
+
+        final Optional<ISlot> selectedSlotOptional = slotBank.getSelectedItem ();
+        if (selectedSlotOptional.isEmpty ())
+            return;
+
+        final ISlot selectedSlot = selectedSlotOptional.get ();
+        switch (subCommand)
+        {
+            case "launch":
+                selectedSlot.launch ();
+                return;
+
+            case "record":
+                this.model.recordNoteClip (cursorTrack, selectedSlot);
+                return;
+
+            case "create":
+                this.model.createNoteClip (cursorTrack, selectedSlot, toInteger (value), true);
+                return;
 
             default:
                 throw new UnknownCommandException (command);

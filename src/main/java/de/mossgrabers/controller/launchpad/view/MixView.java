@@ -98,7 +98,7 @@ public class MixView extends AbstractView<LaunchpadControlSurface, LaunchpadConf
                 padGrid.light (52 + i, track.isMute () ? LaunchpadColorManager.LAUNCHPAD_COLOR_GREY_LO : LaunchpadColorManager.LAUNCHPAD_COLOR_YELLOW_HI);
                 // Solo
                 padGrid.light (44 + i, track.isSolo () ? LaunchpadColorManager.LAUNCHPAD_COLOR_BLUE_HI : LaunchpadColorManager.LAUNCHPAD_COLOR_GREY_MD);
-                // Rec Arm
+                // Record Arm
                 padGrid.light (36 + i, track.isRecArm () ? LaunchpadColorManager.LAUNCHPAD_COLOR_RED_HI : LaunchpadColorManager.LAUNCHPAD_COLOR_GREY_LO);
             }
             else

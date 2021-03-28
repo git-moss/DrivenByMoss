@@ -50,7 +50,7 @@ public abstract class AbstractConfiguration implements Configuration
     public static final Integer      SCALES_LAYOUT                     = Integer.valueOf (3);
     /** ID for enabling VU meters setting. */
     public static final Integer      ENABLE_VU_METERS                  = Integer.valueOf (4);
-    /** ID for behaviour on stop setting. */
+    /** ID for behavior on stop setting. */
     public static final Integer      BEHAVIOUR_ON_STOP                 = Integer.valueOf (5);
     /** ID for flipping the session grid setting. */
     public static final Integer      FLIP_SESSION                      = Integer.valueOf (6);
@@ -988,7 +988,7 @@ public abstract class AbstractConfiguration implements Configuration
 
 
     /**
-     * Activate the behaviour on stop setting.
+     * Activate the behavior on stop setting.
      *
      * @param settingsUI The settings
      */
@@ -1056,7 +1056,7 @@ public abstract class AbstractConfiguration implements Configuration
 
 
     /**
-     * Activate action for rec armed pad setting.
+     * Activate action for record armed pad setting.
      *
      * @param settingsUI The settings
      */
@@ -1153,7 +1153,7 @@ public abstract class AbstractConfiguration implements Configuration
 
 
     /**
-     * Activate the exclude deactovated tracks setting.
+     * Activate the exclude deactivated tracks setting.
      *
      * @param settingsUI The settings
      */
@@ -1589,7 +1589,7 @@ public abstract class AbstractConfiguration implements Configuration
     public ArpeggiatorMode nextArpeggiatorMode ()
     {
         final ArpeggiatorMode arpMode = this.getNoteRepeatMode ();
-        int index = this.lookupArpeggiatorModeIndex (arpMode) + 1;
+        final int index = this.lookupArpeggiatorModeIndex (arpMode) + 1;
         return this.arpeggiatorModes.get (index < this.arpeggiatorModes.size () ? index : 0);
     }
 
@@ -1602,7 +1602,7 @@ public abstract class AbstractConfiguration implements Configuration
     public ArpeggiatorMode prevArpeggiatorMode ()
     {
         final ArpeggiatorMode arpMode = this.getNoteRepeatMode ();
-        int index = this.lookupArpeggiatorModeIndex (arpMode) - 1;
+        final int index = this.lookupArpeggiatorModeIndex (arpMode) - 1;
         return this.arpeggiatorModes.get (index < 0 ? this.arpeggiatorModes.size () - 1 : index);
     }
 

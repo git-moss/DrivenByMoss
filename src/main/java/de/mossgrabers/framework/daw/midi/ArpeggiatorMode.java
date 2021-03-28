@@ -41,7 +41,7 @@ public enum ArpeggiatorMode
     THUMB_UP("Thumb Up"),
     /** Thumb down mode. */
     THUMB_DOWN("Thumb Down"),
-    /** Pikny up mode. */
+    /** Pinky up mode. */
     PINKY_UP("Pinky UP"),
     /** Pinky down mode. */
     PINKY_DOWN("Pinky Down");

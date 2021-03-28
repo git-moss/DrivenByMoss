@@ -6,7 +6,9 @@ package de.mossgrabers.controller.generic.flexihandler;
 
 import de.mossgrabers.controller.generic.GenericFlexiConfiguration;
 import de.mossgrabers.controller.generic.controller.GenericFlexiControlSurface;
+import de.mossgrabers.controller.generic.flexihandler.utils.MidiValue;
 import de.mossgrabers.framework.MVHelper;
+import de.mossgrabers.framework.controller.valuechanger.DefaultValueChanger;
 import de.mossgrabers.framework.controller.valuechanger.IValueChanger;
 import de.mossgrabers.framework.daw.IModel;
 
@@ -26,6 +28,7 @@ public abstract class AbstractHandler implements IFlexiCommandHandler
 
     protected static final int                                                      SCROLL_RATE               = 6;
 
+    protected final IValueChanger                                                   absoluteLowResValueChanger;
     protected final IValueChanger                                                   relative2ValueChanger;
     protected final IValueChanger                                                   relative3ValueChanger;
 
@@ -52,8 +55,15 @@ public abstract class AbstractHandler implements IFlexiCommandHandler
         this.surface = surface;
         this.configuration = configuration;
         this.mvHelper = new MVHelper<> (model, surface);
+        this.absoluteLowResValueChanger = new DefaultValueChanger (128, 1);
         this.relative2ValueChanger = relative2ValueChanger;
         this.relative3ValueChanger = relative3ValueChanger;
+    }
+
+
+    protected IValueChanger getAbsoluteValueChanger (final MidiValue value)
+    {
+        return value.isHighRes () ? this.model.getValueChanger () : this.absoluteLowResValueChanger;
     }
 
 
@@ -72,9 +82,9 @@ public abstract class AbstractHandler implements IFlexiCommandHandler
     }
 
 
-    protected boolean isIncrease (final int knobMode, final int control)
+    protected boolean isIncrease (final int knobMode, final MidiValue control)
     {
-        return this.getRelativeValueChanger (knobMode).calcKnobChange (control) > 0;
+        return this.getRelativeValueChanger (knobMode).calcKnobChange (control.getValue ()) > 0;
     }
 
 
@@ -97,9 +107,9 @@ public abstract class AbstractHandler implements IFlexiCommandHandler
      * @param value The value to test
      * @return True if pressed
      */
-    protected boolean isButtonPressed (final int knobMode, final int value)
+    protected boolean isButtonPressed (final int knobMode, final MidiValue value)
     {
-        return knobMode == KNOB_MODE_ABSOLUTE_TOGGLE || knobMode == KNOB_MODE_ABSOLUTE && value > 0;
+        return knobMode == KNOB_MODE_ABSOLUTE_TOGGLE || knobMode == KNOB_MODE_ABSOLUTE && value.isPositive ();
     }
 
 

@@ -15,7 +15,7 @@ import java.util.Map;
 
 /**
  * Helper class for applying scales to a row x column pad grid. There are different layouts
- * available incl. transpositions by octaves. Furthermore, specific matrices are supported for a
+ * available including transpositions by octaves. Furthermore, specific matrices are supported for a
  * drum, a piano and a sequencer layout.
  *
  * @author J&uuml;rgen Mo&szlig;graber
@@ -49,9 +49,9 @@ public class Scales
         6
     };
 
-    /** The midi note at which the drum grid starts. */
+    /** The MIDI note at which the drum grid starts. */
     public static final int             DRUM_NOTE_START          = 36;
-    /** The midi note at which the drum grid ends. */
+    /** The MIDI note at which the drum grid ends. */
     public static final int             DRUM_NOTE_END            = 100;
 
     // @formatter:off
@@ -122,8 +122,8 @@ public class Scales
      * Constructor.
      *
      * @param valueChanger A value changer
-     * @param startNote The first midi note of the pad grid
-     * @param endNote The last midi note of the pad grid
+     * @param startNote The first MIDI note of the pad grid
+     * @param endNote The last MIDI note of the pad grid
      * @param numColumns The number of columns of the pad grid
      * @param numRows The number of rows of the pad grid
      */
@@ -1055,9 +1055,9 @@ public class Scales
 
 
     /**
-     * Get the first midi note of the pad grid.
+     * Get the first MIDI note of the pad grid.
      *
-     * @return The first midi note of the pad grid
+     * @return The first MIDI note of the pad grid
      */
     public int getStartNote ()
     {
@@ -1066,9 +1066,9 @@ public class Scales
 
 
     /**
-     * Set the first midi note of the pad grid.
+     * Set the first MIDI note of the pad grid.
      *
-     * @param startNote The first midi note of the pad grid
+     * @param startNote The first MIDI note of the pad grid
      */
     public void setStartNote (final int startNote)
     {
@@ -1077,9 +1077,9 @@ public class Scales
 
 
     /**
-     * Get the last midi note of the pad grid.
+     * Get the last MIDI note of the pad grid.
      *
-     * @return The last midi note of the pad grid
+     * @return The last MIDI note of the pad grid
      */
     public int getEndNote ()
     {
@@ -1088,9 +1088,9 @@ public class Scales
 
 
     /**
-     * Set the last midi note of the pad grid.
+     * Set the last MIDI note of the pad grid.
      *
-     * @param endNote The last midi note of the pad grid
+     * @param endNote The last MIDI note of the pad grid
      */
     public void setEndNote (final int endNote)
     {

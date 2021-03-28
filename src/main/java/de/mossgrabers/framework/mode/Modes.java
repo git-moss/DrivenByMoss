@@ -23,7 +23,7 @@ public enum Modes
     VOLUME,
     /** Edit panorama of all tracks. */
     PAN,
-    /** Edit crossfader settings of all tracks. */
+    /** Edit cross-fader settings of all tracks. */
     CROSSFADER,
     /** Mode to arm tracks for recording. */
     REC_ARM,

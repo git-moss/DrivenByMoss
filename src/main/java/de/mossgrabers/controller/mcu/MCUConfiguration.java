@@ -47,7 +47,7 @@ public class MCUConfiguration extends AbstractConfiguration
     public static final Integer       HAS_ONLY_1_FADER                        = Integer.valueOf (58);
     /** Display track names in 1st display. */
     public static final Integer       DISPLAY_TRACK_NAMES                     = Integer.valueOf (59);
-    /** Replace the vertical zoom withmode change. */
+    /** Replace the vertical zoom with mode change. */
     public static final Integer       USE_VERT_ZOOM_FOR_MODES                 = Integer.valueOf (60);
     /** Use the faders like the editing knobs. */
     public static final Integer       USE_FADERS_AS_KNOBS                     = Integer.valueOf (61);

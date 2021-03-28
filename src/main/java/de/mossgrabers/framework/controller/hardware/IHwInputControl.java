@@ -15,7 +15,7 @@ import de.mossgrabers.framework.daw.midi.IMidiInput;
 public interface IHwInputControl extends IHwControl
 {
     /**
-     * Bind a midi command coming from a MIDI input to the button.
+     * Bind a MIDI command coming from a MIDI input to the button.
      *
      * @param input The MIDI input
      * @param type How to bind
@@ -25,7 +25,7 @@ public interface IHwInputControl extends IHwControl
 
 
     /**
-     * Bind a midi command coming from a MIDI input to the button.
+     * Bind a MIDI command coming from a MIDI input to the button.
      *
      * @param input The MIDI input
      * @param channel The MIDI channel

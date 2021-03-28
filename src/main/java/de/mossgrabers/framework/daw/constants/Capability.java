@@ -45,14 +45,14 @@ public enum Capability
     /** The API provides support quantizing notes by an amount percentage. */
     QUANTIZE_AMOUNT,
 
-    /** The API provides support chaning the cue/preview volume. */
+    /** The API provides support changing the cue/preview volume. */
     CUE_VOLUME,
 
     /** Devices have additional slot chains. */
     HAS_SLOT_CHAINS,
     /** There is a specific drum device. */
     HAS_DRUM_DEVICE,
-    /** Support for a crossfader. */
+    /** Support for a cross-fader. */
     HAS_CROSSFADER,
     /** If the DAW supports track/device pinning. */
     HAS_PINNING,

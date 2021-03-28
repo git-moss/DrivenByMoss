@@ -5,6 +5,7 @@
 package de.mossgrabers.controller.generic.flexihandler;
 
 import de.mossgrabers.controller.generic.controller.FlexiCommand;
+import de.mossgrabers.controller.generic.flexihandler.utils.MidiValue;
 
 
 /**
@@ -38,5 +39,5 @@ public interface IFlexiCommandHandler
      * @param knobMode If a knob is mapped this is the type of the knob (relative, absolute, ...)
      * @param value The knob or button value
      */
-    void handle (FlexiCommand command, int knobMode, int value);
+    void handle (FlexiCommand command, int knobMode, MidiValue value);
 }

@@ -25,7 +25,7 @@ public interface IHwButton extends IHwInputControl
 
 
     /**
-     * Bind a midi command coming from a MIDI input to the button.
+     * Bind a MIDI command coming from a MIDI input to the button.
      *
      * @param input The MIDI input
      * @param type How to bind
@@ -136,4 +136,13 @@ public interface IHwButton extends IHwInputControl
      * @param eventHandler The event handler
      */
     void addEventHandler (ButtonEvent event, ButtonEventHandler eventHandler);
+
+
+    /**
+     * Unregister a button event handler.
+     *
+     * @param event The event type from which to unregister the handler
+     * @param eventHandler The event handler
+     */
+    void removeEventHandler (ButtonEvent event, ButtonEventHandler eventHandler);
 }

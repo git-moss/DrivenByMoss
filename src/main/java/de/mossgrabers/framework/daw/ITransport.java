@@ -115,7 +115,7 @@ public interface ITransport extends IObserverManagement
 
 
     /**
-     * Dis-/enables the metronome.
+     * Disable/enables the metronome.
      *
      * @param on Turn on if true
      */
@@ -475,7 +475,7 @@ public interface ITransport extends IObserverManagement
 
 
     /**
-     * Get the value that reports the current pre-roll setting. Possible values are `"none"`,
+     * Get the value that reports the current preroll setting. Possible values are `"none"`,
      * `"one_bar"`, `"two_bars"`, or `"four_bars"`.
      *
      * @return The value

@@ -359,7 +359,7 @@ public class MCUControllerSetup extends AbstractControllerSetup<MCUControlSurfac
 
             if (this.configuration.getDeviceType (index) == MCUDeviceType.MAIN)
             {
-                // Footswitches
+                // Foot-switches
                 this.addButton (surface, ButtonID.FOOTSWITCH1, "Footswitch 1", new AssignableCommand (0, this.model, surface), MCUControlSurface.MCU_USER_A);
                 this.addButton (surface, ButtonID.FOOTSWITCH2, "Footswitch 2", new AssignableCommand (1, this.model, surface), MCUControlSurface.MCU_USER_B);
 

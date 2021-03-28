@@ -120,7 +120,7 @@ public abstract class AbstractLaunchpadDefinition extends DefaultControllerDefin
 
             if (info.getBlinkColor () <= 0)
             {
-                // 00h: Static colour from palette, Lighting data is 1 byte specifying palette
+                // 00h: Static color from palette, Lighting data is 1 byte specifying palette
                 // entry.
                 sb.append ("00 ").append (StringUtils.toHexStr (note)).append (' ').append (StringUtils.toHexStr (info.getColor ())).append (' ');
             }
@@ -128,13 +128,13 @@ public abstract class AbstractLaunchpadDefinition extends DefaultControllerDefin
             {
                 if (info.isFast ())
                 {
-                    // 01h: Flashing colour, Lighting data is 2 bytes specifying Colour B and
-                    // Colour A.
+                    // 01h: Flashing color, Lighting data is 2 bytes specifying Color B and
+                    // Color A.
                     sb.append ("01 ").append (StringUtils.toHexStr (note)).append (' ').append (StringUtils.toHexStr (info.getBlinkColor ())).append (' ').append (StringUtils.toHexStr (info.getColor ())).append (' ');
                 }
                 else
                 {
-                    // 02h: Pulsing colour, Lighting data is 1 byte specifying palette entry.
+                    // 02h: Pulsing color, Lighting data is 1 byte specifying palette entry.
                     sb.append ("02 ").append (StringUtils.toHexStr (note)).append (' ').append (StringUtils.toHexStr (info.getColor ())).append (' ');
                 }
             }

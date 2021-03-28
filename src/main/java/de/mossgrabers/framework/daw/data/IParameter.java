@@ -58,6 +58,15 @@ public interface IParameter extends IItem
     /**
      * Sets the value.
      *
+     * @param valueChanger The value-changer to use
+     * @param value The new value to set
+     */
+    void setValue (IValueChanger valueChanger, int value);
+
+
+    /**
+     * Sets the value.
+     *
      * @param value The new value to set in the range of [0..1]
      */
     void setNormalizedValue (double value);

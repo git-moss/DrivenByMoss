@@ -425,9 +425,9 @@ public class PushConfiguration extends AbstractConfiguration implements IGraphic
 
 
     /**
-     * Get the midi CC to use for the CC functionality of the ribbon.
+     * Get the MIDI CC to use for the CC functionality of the ribbon.
      *
-     * @return The midi CC value
+     * @return The MIDI CC value
      */
     public int getRibbonModeCCVal ()
     {

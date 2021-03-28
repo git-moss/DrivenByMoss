@@ -14,10 +14,6 @@ import de.mossgrabers.framework.daw.midi.IMidiOutput;
  *
  * @author J&uuml;rgen Mo&szlig;graber
  */
-/**
- *
- * @author mos (Fraunhofer IOSB)
- */
 public class APCPadGrid extends PadGridImpl
 {
     private final boolean isMkII;
@@ -27,7 +23,7 @@ public class APCPadGrid extends PadGridImpl
      * Constructor.
      *
      * @param colorManager The color manager for accessing specific colors to use
-     * @param output The midi output which can address the pad states
+     * @param output The MIDI output which can address the pad states
      * @param isMkII True if it is the MkII
      */
     public APCPadGrid (final ColorManager colorManager, final IMidiOutput output, final boolean isMkII)

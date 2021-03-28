@@ -119,7 +119,7 @@ public class APCColorManager extends ColorManager
     /**
      * Constructor.
      *
-     * @param isMkII True if it is the Mk II
+     * @param isMkII True if it is the MkII
      */
     public APCColorManager (final boolean isMkII)
     {

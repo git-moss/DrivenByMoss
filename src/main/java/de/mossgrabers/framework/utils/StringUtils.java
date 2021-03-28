@@ -26,7 +26,7 @@ public class StringUtils
 
 
     /**
-     * Construcotr, private due to help class.
+     * Constructor, private due to help class.
      */
     private StringUtils ()
     {

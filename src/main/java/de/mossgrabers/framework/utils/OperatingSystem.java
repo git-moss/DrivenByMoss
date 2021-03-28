@@ -8,7 +8,7 @@ import java.util.Locale;
 
 
 /**
- * Enums for different operating systems.
+ * Enumerations for different operating systems.
  *
  * @author J&uuml;rgen Mo&szlig;graber
  */
@@ -53,7 +53,7 @@ public enum OperatingSystem
     /**
      * Get the OS we are running on.
      *
-     * @return The OS enum
+     * @return The OS enumeration
      */
     public static OperatingSystem get ()
     {

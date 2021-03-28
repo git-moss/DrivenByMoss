@@ -102,8 +102,8 @@ public abstract class AbstractControlSurface<C extends Configuration> implements
      * @param host The host
      * @param configuration The configuration
      * @param colorManager
-     * @param output The midi output
-     * @param input The midi input
+     * @param output The MIDI output
+     * @param input The MIDI input
      * @param padGrid The pads if any, may be null
      * @param width The physical width of the controller device in mm
      * @param height The physical height of the controller device in mm
@@ -121,8 +121,8 @@ public abstract class AbstractControlSurface<C extends Configuration> implements
      * @param host The host
      * @param configuration The configuration
      * @param colorManager
-     * @param output The midi output
-     * @param input The midi input
+     * @param output The MIDI output
+     * @param input The MIDI input
      * @param padGrid The pads if any, may be null
      * @param width The physical width of the controller device in mm
      * @param height The physical height of the controller device in mm
@@ -140,8 +140,8 @@ public abstract class AbstractControlSurface<C extends Configuration> implements
      * @param host The host
      * @param configuration The configuration
      * @param colorManager
-     * @param output The midi output
-     * @param input The midi input
+     * @param output The MIDI output
+     * @param input The MIDI input
      * @param padGrid The pads if any, may be null
      * @param lightGuide The light guide
      * @param width The physical width of the controller device in mm

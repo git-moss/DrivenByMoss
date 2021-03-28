@@ -80,6 +80,14 @@ public class EmptyParameter extends AbstractParameterImpl
 
     /** {@inheritDoc} */
     @Override
+    public void setValue (final IValueChanger valueChanger, final int value)
+    {
+        // Intentionally empty
+    }
+
+
+    /** {@inheritDoc} */
+    @Override
     public void setNormalizedValue (final double value)
     {
         // Intentionally empty

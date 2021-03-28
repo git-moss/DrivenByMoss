@@ -16,7 +16,7 @@ import com.bitwig.extension.controller.api.ControllerHost;
 
 
 /**
- * Definition class for the Midi Monitor.
+ * Definition class for the MIDI Monitor.
  *
  * @author J&uuml;rgen Mo&szlig;graber
  */

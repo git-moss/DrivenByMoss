@@ -8,7 +8,7 @@ import java.util.List;
 
 
 /**
- * Enumaration for all non-grid buttons.
+ * Enumeration for all non-grid buttons.
  *
  * @author J&uuml;rgen Mo&szlig;graber
  */

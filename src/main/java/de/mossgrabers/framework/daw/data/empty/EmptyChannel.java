@@ -14,7 +14,7 @@ import de.mossgrabers.framework.observer.IValueObserver;
 
 
 /**
- * Default data for an empty channmel.
+ * Default data for an empty channel.
  *
  * @author J&uuml;rgen Mo&szlig;graber
  */

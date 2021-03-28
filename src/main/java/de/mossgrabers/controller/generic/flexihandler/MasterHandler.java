@@ -7,10 +7,13 @@ package de.mossgrabers.controller.generic.flexihandler;
 import de.mossgrabers.controller.generic.GenericFlexiConfiguration;
 import de.mossgrabers.controller.generic.controller.FlexiCommand;
 import de.mossgrabers.controller.generic.controller.GenericFlexiControlSurface;
+import de.mossgrabers.controller.generic.flexihandler.utils.FlexiHandlerException;
+import de.mossgrabers.controller.generic.flexihandler.utils.MidiValue;
 import de.mossgrabers.framework.controller.valuechanger.IValueChanger;
 import de.mossgrabers.framework.daw.IModel;
 import de.mossgrabers.framework.daw.ITransport;
 import de.mossgrabers.framework.daw.data.IMasterTrack;
+import de.mossgrabers.framework.daw.data.IParameter;
 import de.mossgrabers.framework.daw.data.ITrack;
 
 
@@ -92,7 +95,7 @@ public class MasterHandler extends AbstractHandler
 
     /** {@inheritDoc} */
     @Override
-    public void handle (final FlexiCommand command, final int knobMode, final int value)
+    public void handle (final FlexiCommand command, final int knobMode, final MidiValue value)
     {
         final boolean isButtonPressed = this.isButtonPressed (knobMode, value);
 
@@ -117,7 +120,7 @@ public class MasterHandler extends AbstractHandler
             // Master: Set Mute
             case MASTER_SET_MUTE:
                 if (isButtonPressed)
-                    this.model.getMasterTrack ().setMute (value > 0);
+                    this.model.getMasterTrack ().setMute (value.isPositive ());
                 break;
 
             // Master: Toggle Solo
@@ -129,7 +132,7 @@ public class MasterHandler extends AbstractHandler
             // Master: Set Solo
             case MASTER_SET_SOLO:
                 if (isButtonPressed)
-                    this.model.getMasterTrack ().setSolo (value > 0);
+                    this.model.getMasterTrack ().setSolo (value.isPositive ());
                 break;
             // Master: Toggle Arm
             case MASTER_TOGGLE_ARM:
@@ -140,10 +143,10 @@ public class MasterHandler extends AbstractHandler
             // Master: Set Arm
             case MASTER_SET_ARM:
                 if (isButtonPressed)
-                    this.model.getMasterTrack ().setRecArm (value > 0);
+                    this.model.getMasterTrack ().setRecArm (value.isPositive ());
                 break;
 
-            // Master: Crossfader
+            // Master: Cross-fader
             case MASTER_CROSSFADER:
                 this.changeMasterCrossfader (knobMode, value);
                 break;
@@ -154,32 +157,38 @@ public class MasterHandler extends AbstractHandler
     }
 
 
-    private void changeMasterVolume (final int knobMode, final int value)
+    private void changeMasterVolume (final int knobMode, final MidiValue value)
     {
         final ITrack track = this.model.getMasterTrack ();
+        final int val = value.getValue ();
+        final IParameter volumeParameter = track.getVolumeParameter ();
         if (isAbsolute (knobMode))
-            track.setVolume (value);
+            volumeParameter.setValue (this.getAbsoluteValueChanger (value), val);
         else
-            track.getVolumeParameter ().changeValue (this.getRelativeValueChanger (knobMode), value);
+            volumeParameter.changeValue (this.getRelativeValueChanger (knobMode), val);
     }
 
 
-    private void changeMasterPanorama (final int knobMode, final int value)
+    private void changeMasterPanorama (final int knobMode, final MidiValue value)
     {
         final ITrack track = this.model.getMasterTrack ();
+        final int val = value.getValue ();
+        final IParameter panParameter = track.getPanParameter ();
         if (isAbsolute (knobMode))
-            track.setPan (value);
+            panParameter.setValue (this.getAbsoluteValueChanger (value), val);
         else
-            track.getPanParameter ().changeValue (this.getRelativeValueChanger (knobMode), value);
+            panParameter.changeValue (this.getRelativeValueChanger (knobMode), val);
     }
 
 
-    private void changeMasterCrossfader (final int knobMode, final int value)
+    private void changeMasterCrossfader (final int knobMode, final MidiValue value)
     {
         final ITransport transport = this.model.getTransport ();
+        final int val = value.getValue ();
+        final IParameter crossfadeParameter = transport.getCrossfadeParameter ();
         if (isAbsolute (knobMode))
-            transport.setCrossfade (value);
+            crossfadeParameter.setValue (this.getAbsoluteValueChanger (value), val);
         else
-            transport.getCrossfadeParameter ().changeValue (this.getRelativeValueChanger (knobMode), value);
+            crossfadeParameter.changeValue (this.getRelativeValueChanger (knobMode), val);
     }
 }

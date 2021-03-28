@@ -7,6 +7,8 @@ package de.mossgrabers.controller.generic.flexihandler;
 import de.mossgrabers.controller.generic.GenericFlexiConfiguration;
 import de.mossgrabers.controller.generic.controller.FlexiCommand;
 import de.mossgrabers.controller.generic.controller.GenericFlexiControlSurface;
+import de.mossgrabers.controller.generic.flexihandler.utils.FlexiHandlerException;
+import de.mossgrabers.controller.generic.flexihandler.utils.MidiValue;
 import de.mossgrabers.framework.controller.valuechanger.IValueChanger;
 import de.mossgrabers.framework.daw.IModel;
 import de.mossgrabers.framework.daw.data.ICursorDevice;
@@ -109,7 +111,7 @@ public class DeviceHandler extends AbstractHandler
 
     /** {@inheritDoc} */
     @Override
-    public void handle (final FlexiCommand command, final int knobMode, final int value)
+    public void handle (final FlexiCommand command, final int knobMode, final MidiValue value)
     {
         final ICursorDevice cursorDevice = this.model.getCursorDevice ();
         final boolean isButtonPressed = this.isButtonPressed (knobMode, value);
@@ -201,7 +203,7 @@ public class DeviceHandler extends AbstractHandler
     }
 
 
-    private void scrollParameterPage (final int knobMode, final int value)
+    private void scrollParameterPage (final int knobMode, final MidiValue value)
     {
         if (isAbsolute (knobMode))
             return;
@@ -219,7 +221,7 @@ public class DeviceHandler extends AbstractHandler
     }
 
 
-    private void scrollParameterBank (final int knobMode, final int value)
+    private void scrollParameterBank (final int knobMode, final MidiValue value)
     {
         if (isAbsolute (knobMode))
             return;
@@ -237,17 +239,18 @@ public class DeviceHandler extends AbstractHandler
     }
 
 
-    private void handleParameter (final int knobMode, final int index, final int value)
+    private void handleParameter (final int knobMode, final int index, final MidiValue value)
     {
         final IParameter fxParam = this.model.getCursorDevice ().getParameterBank ().getItem (index);
+        final int val = value.getValue ();
         if (isAbsolute (knobMode))
-            fxParam.setValue (value);
+            fxParam.setValue (this.getAbsoluteValueChanger (value), val);
         else
-            fxParam.changeValue (this.getRelativeValueChanger (knobMode), value);
+            fxParam.changeValue (this.getRelativeValueChanger (knobMode), val);
     }
 
 
-    private void scrollDevice (final int knobMode, final int value)
+    private void scrollDevice (final int knobMode, final MidiValue value)
     {
         if (isAbsolute (knobMode))
             return;

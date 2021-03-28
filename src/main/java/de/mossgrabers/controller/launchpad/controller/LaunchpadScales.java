@@ -19,8 +19,8 @@ public class LaunchpadScales extends Scales
      * Constructor.
      *
      * @param valueChanger A value changer
-     * @param startNote The first midi note of the pad grid
-     * @param endNote The last midi note of the pad grid
+     * @param startNote The first MIDI note of the pad grid
+     * @param endNote The last MIDI note of the pad grid
      * @param numColumns The number of columns of the pad grid
      * @param numRows The number of rows of the pad grid
      */

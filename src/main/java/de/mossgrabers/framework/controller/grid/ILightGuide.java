@@ -14,7 +14,7 @@ public interface ILightGuide
     /**
      * Set the lighting state of an LED.
      *
-     * @param note The midi note of the LED
+     * @param note The MIDI note of the LED
      * @param color The color or brightness to set
      */
     void light (int note, int color);
@@ -23,7 +23,7 @@ public interface ILightGuide
     /**
      * Set the lighting state of a LED.
      *
-     * @param note The midi note of the LED
+     * @param note The MIDI note of the LED
      * @param color The color or brightness to set
      * @param blinkColor The state to make a LED blink
      * @param fast Blinking is fast if true
@@ -34,7 +34,7 @@ public interface ILightGuide
     /**
      * Set the lighting state of a LED.
      *
-     * @param note The midi note of the LED
+     * @param note The MIDI note of the LED
      * @param colorID A registered color ID of the color / brightness
      */
     void light (int note, String colorID);
@@ -43,7 +43,7 @@ public interface ILightGuide
     /**
      * Set the lighting state of a LED.
      *
-     * @param note The midi note of the LED
+     * @param note The MIDI note of the LED
      * @param colorID A registered color ID of the color / brightness
      * @param blinkColorID A registered color ID of the blinking color / brightness
      * @param fast Blinking is fast if true
@@ -75,7 +75,7 @@ public interface ILightGuide
      * Plug for grids not sending notes in the range of 36-100.
      *
      * @param note The outgoing note
-     * @return The midi channel (index 0) and note (index 1) scaled to the controller
+     * @return The MIDI channel (index 0) and note (index 1) scaled to the controller
      */
     int [] translateToController (int note);
 

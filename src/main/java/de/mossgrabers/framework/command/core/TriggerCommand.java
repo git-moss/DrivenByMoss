@@ -19,7 +19,7 @@ public interface TriggerCommand
      * Execute the command.
      *
      * @param event The button event that initiated the command
-     * @param velocity The pressure or release veloicity that was applied
+     * @param velocity The pressure or release velocity that was applied
      */
     void execute (ButtonEvent event, int velocity);
 }

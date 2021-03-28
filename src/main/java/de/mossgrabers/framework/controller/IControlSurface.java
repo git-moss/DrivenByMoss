@@ -152,7 +152,7 @@ public interface IControlSurface<C extends Configuration>
 
 
     /**
-     * Get the midi output.
+     * Get the MIDI output.
      *
      * @return The output
      */
@@ -160,7 +160,7 @@ public interface IControlSurface<C extends Configuration>
 
 
     /**
-     * Get the midi input.
+     * Get the MIDI input.
      *
      * @return The input
      */
@@ -168,7 +168,7 @@ public interface IControlSurface<C extends Configuration>
 
 
     /**
-     * Set the mapping of midi notes to the midi notes sent to the DAW.
+     * Set the mapping of MIDI notes to the MIDI notes sent to the DAW.
      *
      * @param table The table has 128 items. The index is the incoming note, the value at the index
      *            the outgoing note.
@@ -186,7 +186,7 @@ public interface IControlSurface<C extends Configuration>
 
 
     /**
-     * Sets the mapping of midi note velocities to the midi note velocities sent to the DAW
+     * Sets the mapping of MIDI note velocities to the MIDI note velocities sent to the DAW
      *
      * @param table The table has 128 items. The index is the incoming velocity, the value at the
      *            index the outgoing velocity. E.g. if you set all values to 127 you set the
@@ -295,7 +295,7 @@ public interface IControlSurface<C extends Configuration>
      * Add a piano keyboard.
      *
      * @param numKeys The number of the keys, e.g. 25 or 88
-     * @param input The midi input to bind to
+     * @param input The MIDI input to bind to
      * @param addWheels If true pitchbend and modulation wheels (CC 1) are added
      */
     void addPianoKeyboard (int numKeys, IMidiInput input, boolean addWheels);
@@ -469,11 +469,11 @@ public interface IControlSurface<C extends Configuration>
 
 
     /**
-     * Send a midi message to the DAW (not to the midi output).
+     * Send a MIDI message to the DAW (not to the MIDI output).
      *
-     * @param status The midi status byte
-     * @param data1 The midi data byte 1
-     * @param data2 The midi data byte 2
+     * @param status The MIDI status byte
+     * @param data1 The MIDI data byte 1
+     * @param data2 The MIDI data byte 2
      */
     void sendMidiEvent (int status, int data1, int data2);
 
@@ -485,7 +485,7 @@ public interface IControlSurface<C extends Configuration>
 
 
     /**
-     * Forces to resend all output states to the device.
+     * Forces to send all output states to the device again.
      */
     void forceFlush ();
 

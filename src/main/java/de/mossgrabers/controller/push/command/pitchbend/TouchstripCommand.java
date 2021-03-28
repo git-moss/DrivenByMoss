@@ -15,7 +15,7 @@ import de.mossgrabers.framework.view.Views;
 
 
 /**
- * Command to handle pitchbend.
+ * Command to handle pitch-bend.
  *
  * @author J&uuml;rgen Mo&szlig;graber
  */

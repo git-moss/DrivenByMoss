@@ -47,7 +47,7 @@ public interface IGraphicDisplay extends IDisplay
 
 
     /**
-     * Set a midi clip to display in a piano roll.
+     * Set a MIDI clip to display in a piano roll.
      *
      * @param clip The clip to display
      * @param quartersPerMeasure The quarters of a measure

@@ -7,8 +7,11 @@ package de.mossgrabers.controller.generic.flexihandler;
 import de.mossgrabers.controller.generic.GenericFlexiConfiguration;
 import de.mossgrabers.controller.generic.controller.FlexiCommand;
 import de.mossgrabers.controller.generic.controller.GenericFlexiControlSurface;
+import de.mossgrabers.controller.generic.flexihandler.utils.FlexiHandlerException;
+import de.mossgrabers.controller.generic.flexihandler.utils.MidiValue;
 import de.mossgrabers.framework.controller.valuechanger.IValueChanger;
 import de.mossgrabers.framework.daw.IModel;
+import de.mossgrabers.framework.daw.data.IParameter;
 import de.mossgrabers.framework.daw.data.ITrack;
 import de.mossgrabers.framework.daw.data.bank.ITrackBank;
 
@@ -334,7 +337,7 @@ public class FxTrackHandler extends AbstractHandler
 
     /** {@inheritDoc} */
     @Override
-    public void handle (final FlexiCommand command, final int knobMode, final int value)
+    public void handle (final FlexiCommand command, final int knobMode, final MidiValue value)
     {
         final ITrackBank effectTrackBank = this.model.getEffectTrackBank ();
         if (effectTrackBank == null)
@@ -408,7 +411,7 @@ public class FxTrackHandler extends AbstractHandler
             case FX_TRACK_7_SET_ACTIVE:
             case FX_TRACK_8_SET_ACTIVE:
                 if (isButtonPressed)
-                    effectTrackBank.getItem (command.ordinal () - FlexiCommand.FX_TRACK_1_SET_ACTIVE.ordinal ()).setIsActivated (value > 0);
+                    effectTrackBank.getItem (command.ordinal () - FlexiCommand.FX_TRACK_1_SET_ACTIVE.ordinal ()).setIsActivated (value.isPositive ());
                 break;
 
             // Track 1-8: Set Volume
@@ -457,7 +460,7 @@ public class FxTrackHandler extends AbstractHandler
             case FX_TRACK_7_SET_MUTE:
             case FX_TRACK_8_SET_MUTE:
                 if (isButtonPressed)
-                    effectTrackBank.getItem (command.ordinal () - FlexiCommand.FX_TRACK_1_SET_MUTE.ordinal ()).setMute (value > 0);
+                    effectTrackBank.getItem (command.ordinal () - FlexiCommand.FX_TRACK_1_SET_MUTE.ordinal ()).setMute (value.isPositive ());
                 break;
 
             // Track 1-8: Toggle Solo
@@ -482,7 +485,7 @@ public class FxTrackHandler extends AbstractHandler
             case FX_TRACK_7_SET_SOLO:
             case FX_TRACK_8_SET_SOLO:
                 if (isButtonPressed)
-                    effectTrackBank.getItem (command.ordinal () - FlexiCommand.FX_TRACK_1_SET_SOLO.ordinal ()).setSolo (value > 0);
+                    effectTrackBank.getItem (command.ordinal () - FlexiCommand.FX_TRACK_1_SET_SOLO.ordinal ()).setSolo (value.isPositive ());
                 break;
 
             // Track 1-8: Toggle Arm
@@ -507,7 +510,7 @@ public class FxTrackHandler extends AbstractHandler
             case FX_TRACK_7_SET_ARM:
             case FX_TRACK_8_SET_ARM:
                 if (isButtonPressed)
-                    effectTrackBank.getItem (command.ordinal () - FlexiCommand.FX_TRACK_1_SET_ARM.ordinal ()).setRecArm (value > 0);
+                    effectTrackBank.getItem (command.ordinal () - FlexiCommand.FX_TRACK_1_SET_ARM.ordinal ()).setRecArm (value.isPositive ());
                 break;
 
             // Track 1-8: Toggle Monitor
@@ -532,7 +535,7 @@ public class FxTrackHandler extends AbstractHandler
             case FX_TRACK_7_SET_MONITOR:
             case FX_TRACK_8_SET_MONITOR:
                 if (isButtonPressed)
-                    effectTrackBank.getItem (command.ordinal () - FlexiCommand.FX_TRACK_1_SET_MONITOR.ordinal ()).setMonitor (value > 0);
+                    effectTrackBank.getItem (command.ordinal () - FlexiCommand.FX_TRACK_1_SET_MONITOR.ordinal ()).setMonitor (value.isPositive ());
                 break;
 
             // Track 1: Toggle Auto Monitor
@@ -557,7 +560,7 @@ public class FxTrackHandler extends AbstractHandler
             case FX_TRACK_7_SET_AUTO_MONITOR:
             case FX_TRACK_8_SET_AUTO_MONITOR:
                 if (isButtonPressed)
-                    effectTrackBank.getItem (command.ordinal () - FlexiCommand.FX_TRACK_1_SET_AUTO_MONITOR.ordinal ()).setAutoMonitor (value > 0);
+                    effectTrackBank.getItem (command.ordinal () - FlexiCommand.FX_TRACK_1_SET_AUTO_MONITOR.ordinal ()).setAutoMonitor (value.isPositive ());
                 break;
 
             default:
@@ -577,31 +580,35 @@ public class FxTrackHandler extends AbstractHandler
     }
 
 
-    private void changeTrackVolume (final int knobMode, final int trackIndex, final int value)
+    private void changeTrackVolume (final int knobMode, final int trackIndex, final MidiValue value)
     {
         final Optional<ITrack> track = this.getTrack (trackIndex);
         if (track.isEmpty ())
             return;
+        final int val = value.getValue ();
+        final IParameter volumeParameter = track.get ().getVolumeParameter ();
         if (isAbsolute (knobMode))
-            track.get ().setVolume (value);
+            volumeParameter.setValue (this.getAbsoluteValueChanger (value), val);
         else
-            track.get ().getVolumeParameter ().changeValue (this.getRelativeValueChanger (knobMode), value);
+            volumeParameter.changeValue (this.getRelativeValueChanger (knobMode), val);
     }
 
 
-    private void changeTrackPanorama (final int knobMode, final int trackIndex, final int value)
+    private void changeTrackPanorama (final int knobMode, final int trackIndex, final MidiValue value)
     {
         final Optional<ITrack> track = this.getTrack (trackIndex);
         if (track.isEmpty ())
             return;
+        final IParameter panParameter = track.get ().getPanParameter ();
+        final int val = value.getValue ();
         if (isAbsolute (knobMode))
-            track.get ().setPan (value);
+            panParameter.setValue (this.getAbsoluteValueChanger (value), val);
         else
-            track.get ().getPanParameter ().changeValue (this.getRelativeValueChanger (knobMode), value);
+            panParameter.changeValue (this.getRelativeValueChanger (knobMode), val);
     }
 
 
-    private void scrollTrack (final int knobMode, final int value)
+    private void scrollTrack (final int knobMode, final MidiValue value)
     {
         if (isAbsolute (knobMode))
             return;

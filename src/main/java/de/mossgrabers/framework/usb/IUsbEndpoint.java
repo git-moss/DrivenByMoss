@@ -8,14 +8,14 @@ import de.mossgrabers.framework.daw.IMemoryBlock;
 
 
 /**
- * Interface to an USB endpoint.
+ * Interface to an USB end-point.
  *
  * @author J&uuml;rgen Mo&szlig;graber
  */
 public interface IUsbEndpoint
 {
     /**
-     * Send data to the endpoint.
+     * Send data to the end-point.
      *
      * @param memoryBlock The memory block with the data to send
      * @param timeout Timeout for the sending task
@@ -24,7 +24,7 @@ public interface IUsbEndpoint
 
 
     /**
-     * Send data asynchroneously to the endpoint.
+     * Send data asynchronously to the end-point.
      *
      * @param memoryBlock The memory block with the data to send
      * @param callback Callback when the sending has finished

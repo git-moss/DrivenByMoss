@@ -95,6 +95,6 @@ public class EffectTrackBankImpl extends AbstractTrackBankImpl
     @Override
     public void addNoteObserver (final INoteObserver observer)
     {
-        // No notes on fx tracks
+        // No notes on FX tracks
     }
 }

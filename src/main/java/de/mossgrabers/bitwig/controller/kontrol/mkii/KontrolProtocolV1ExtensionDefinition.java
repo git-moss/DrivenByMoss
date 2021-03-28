@@ -18,7 +18,7 @@ import com.bitwig.extension.controller.api.ControllerHost;
 
 
 /**
- * Extension definition class for devices supporting the Komplete Kontrol MIDI protocl version 1.
+ * Extension definition class for devices supporting the Komplete Kontrol MIDI protocol version 1.
  *
  * @author J&uuml;rgen Mo&szlig;graber
  */

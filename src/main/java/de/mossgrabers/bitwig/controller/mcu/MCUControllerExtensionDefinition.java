@@ -28,7 +28,7 @@ abstract class MCUControllerExtensionDefinition extends AbstractControllerExtens
     /**
      * Constructor.
      *
-     * @param numMCUExtenders The number of supported Extenders
+     * @param numMCUExtenders The number of supported extenders
      */
     MCUControllerExtensionDefinition (final int numMCUExtenders)
     {

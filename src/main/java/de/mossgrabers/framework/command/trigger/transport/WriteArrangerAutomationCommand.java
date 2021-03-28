@@ -12,7 +12,7 @@ import de.mossgrabers.framework.utils.ButtonEvent;
 
 
 /**
- * Command to dis-/enable arranger automation.
+ * Command to disable/enable arranger automation.
  *
  * @param <S> The type of the control surface
  * @param <C> The type of the configuration

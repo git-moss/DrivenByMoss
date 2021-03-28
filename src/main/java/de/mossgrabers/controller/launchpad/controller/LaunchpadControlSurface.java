@@ -85,8 +85,8 @@ public class LaunchpadControlSurface extends AbstractControlSurface<LaunchpadCon
      * @param host The host
      * @param colorManager The color manager
      * @param configuration The configuration
-     * @param output The midi output
-     * @param input The midi input
+     * @param output The MIDI output
+     * @param input The MIDI input
      * @param definition The Launchpad definition
      */
     public LaunchpadControlSurface (final IHost host, final ColorManager colorManager, final LaunchpadConfiguration configuration, final IMidiOutput output, final IMidiInput input, final ILaunchpadControllerDefinition definition)
@@ -258,7 +258,7 @@ public class LaunchpadControlSurface extends AbstractControlSurface<LaunchpadCon
 
 
     /**
-     * Send sysex data to the launchpad.
+     * Send system exclusive data to the launchpad.
      *
      * @param data The data without the header and closing byte
      */

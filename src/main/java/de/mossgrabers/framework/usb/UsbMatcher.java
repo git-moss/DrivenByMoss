@@ -94,10 +94,10 @@ public class UsbMatcher
 
 
     /**
-     * Add multiple endpoints on an interface.
+     * Add multiple end-points on an interface.
      *
      * @param interfaceNumber The interface
-     * @param endpointAddresses The endpoints on the interface
+     * @param endpointAddresses The end-points on the interface
      * @param isBulk True to use bulk otherwise interrupted
      */
     public final void addEndpoints (final byte interfaceNumber, final byte [] endpointAddresses, final boolean [] isBulk)
@@ -107,10 +107,10 @@ public class UsbMatcher
 
 
     /**
-     * Add an endpoint.
+     * Add an end-point.
      *
      * @param interfaceNumber The interface
-     * @param endpointAddress The endpoint on the interface
+     * @param endpointAddress The end-point on the interface
      * @param isBulk True to use bulk otherwise interrupted
      */
     public final void addEndpoint (final byte interfaceNumber, final byte endpointAddress, final boolean isBulk)
@@ -126,9 +126,9 @@ public class UsbMatcher
 
 
     /**
-     * Get the configured endpoints.
+     * Get the configured end-points.
      *
-     * @return The endpoints
+     * @return The end-points
      */
     public List<EndpointMatcher> getEndpoints ()
     {
@@ -137,7 +137,7 @@ public class UsbMatcher
 
 
     /**
-     * One or more endpoints on the USB device.
+     * One or more end-points on the USB device.
      */
     public class EndpointMatcher
     {
@@ -173,9 +173,9 @@ public class UsbMatcher
 
 
         /**
-         * Get the endpoint addresses of the interface.
+         * Get the end-point addresses of the interface.
          *
-         * @return The endpoint addresses
+         * @return The end-point addresses
          */
         public byte [] getEndpointAddresses ()
         {

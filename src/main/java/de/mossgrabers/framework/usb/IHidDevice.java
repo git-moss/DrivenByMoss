@@ -15,7 +15,7 @@ import de.mossgrabers.framework.daw.IMemoryBlock;
 public interface IHidDevice
 {
     /**
-     * Set the callback function to reveive input.
+     * Set the callback function to receive input.
      *
      * @param callback The callback
      */

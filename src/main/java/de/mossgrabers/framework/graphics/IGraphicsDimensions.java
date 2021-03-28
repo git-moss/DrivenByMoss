@@ -84,8 +84,8 @@ public interface IGraphicsDimensions
 
 
     /**
-     * Get the limit for the maximum value for parameters. The value is in the range of 0 to
-     * upperbound-1.
+     * Get the limit for the maximum value for parameters. The value is in the range of 0 to upper
+     * bound - 1.
      *
      * @return The upper bound value
      */

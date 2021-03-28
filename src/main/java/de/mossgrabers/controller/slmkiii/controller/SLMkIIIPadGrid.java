@@ -10,7 +10,7 @@ import de.mossgrabers.framework.daw.midi.IMidiOutput;
 
 
 /**
- * Implementation of the SL Mk III grid of pads.
+ * Implementation of the SL MkIII grid of pads.
  *
  * @author J&uuml;rgen Mo&szlig;graber
  */
@@ -20,7 +20,7 @@ public class SLMkIIIPadGrid extends PadGridImpl
      * Constructor.
      *
      * @param colorManager The color manager for accessing specific colors to use
-     * @param output The midi output which can address the pad states
+     * @param output The MIDI output which can address the pad states
      */
     public SLMkIIIPadGrid (final ColorManager colorManager, final IMidiOutput output)
     {

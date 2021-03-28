@@ -5,14 +5,14 @@
 package de.mossgrabers.framework.daw.midi;
 
 /**
- * Interface to a midi output
+ * Interface to a MIDI output
  *
  * @author J&uuml;rgen Mo&szlig;graber
  */
 public interface IMidiOutput
 {
     /**
-     * Send a midi CC to the output on midi channel 1.
+     * Send a MIDI CC to the output on MIDI channel 1.
      *
      * @param cc The CC
      * @param value The value
@@ -21,9 +21,9 @@ public interface IMidiOutput
 
 
     /**
-     * Send a midi CC to the output.
+     * Send a MIDI CC to the output.
      *
-     * @param channel The midi channel
+     * @param channel The MIDI channel
      * @param cc The CC
      * @param value The value
      */
@@ -31,7 +31,7 @@ public interface IMidiOutput
 
 
     /**
-     * Send a midi note to the output on midi channel 1.
+     * Send a MIDI note to the output on MIDI channel 1.
      *
      * @param note The note
      * @param velocity The velocity
@@ -40,9 +40,9 @@ public interface IMidiOutput
 
 
     /**
-     * Send a midi note to the output.
+     * Send a MIDI note to the output.
      *
-     * @param channel The midi channel
+     * @param channel The MIDI channel
      * @param note The note
      * @param velocity The velocity
      */
@@ -50,7 +50,7 @@ public interface IMidiOutput
 
 
     /**
-     * Send polyphonic aftertouch to the output on midi channel 1.
+     * Send polyphonic aftertouch to the output on MIDI channel 1.
      *
      * @param data1 First data byte
      * @param data2 Second data byte
@@ -59,9 +59,9 @@ public interface IMidiOutput
 
 
     /**
-     * Send polyphonic aftertouch to the output on the given midi channel.
+     * Send polyphonic aftertouch to the output on the given MIDI channel.
      *
-     * @param channel The midi channel
+     * @param channel The MIDI channel
      * @param data1 First data byte
      * @param data2 Second data byte
      */
@@ -69,7 +69,7 @@ public interface IMidiOutput
 
 
     /**
-     * Send channel aftertouch to the output on midi channel 1.
+     * Send channel aftertouch to the output on MIDI channel 1.
      *
      * @param data1 First data byte
      * @param data2 Second data byte
@@ -78,9 +78,9 @@ public interface IMidiOutput
 
 
     /**
-     * Send channel aftertouch to the output on the given midi channel.
+     * Send channel aftertouch to the output on the given MIDI channel.
      *
-     * @param channel The midi channel
+     * @param channel The MIDI channel
      * @param data1 First data byte
      * @param data2 Second data byte
      */
@@ -88,7 +88,7 @@ public interface IMidiOutput
 
 
     /**
-     * Send pitchbend to the output on midi channel 1.
+     * Send pitchbend to the output on MIDI channel 1.
      *
      * @param data1 First data byte
      * @param data2 Second data byte
@@ -97,9 +97,9 @@ public interface IMidiOutput
 
 
     /**
-     * Send pitchbend to the output on the given midi channel.
+     * Send pitchbend to the output on the given MIDI channel.
      *
-     * @param channel The midi channel
+     * @param channel The MIDI channel
      * @param data1 First data byte
      * @param data2 Second data byte
      */
@@ -119,7 +119,7 @@ public interface IMidiOutput
     /**
      * Send a program change to the output.
      *
-     * @param channel The midi channel
+     * @param channel The MIDI channel
      * @param bankMSB The most significant byte of the bank
      * @param bankLSB The least significant byte of the bank
      * @param value The program change value

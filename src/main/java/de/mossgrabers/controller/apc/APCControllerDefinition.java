@@ -28,7 +28,7 @@ public class APCControllerDefinition extends DefaultControllerDefinition
     /**
      * Constructor.
      *
-     * @param isMkII True if is Mk II other Mk I
+     * @param isMkII True if is MkII other MkI
      */
     public APCControllerDefinition (final boolean isMkII)
     {

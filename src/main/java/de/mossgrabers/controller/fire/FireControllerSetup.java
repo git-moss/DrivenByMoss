@@ -18,8 +18,10 @@ import de.mossgrabers.controller.fire.controller.FireControlSurface;
 import de.mossgrabers.controller.fire.controller.FireDisplay;
 import de.mossgrabers.controller.fire.controller.FireScales;
 import de.mossgrabers.controller.fire.mode.BrowserMode;
+import de.mossgrabers.controller.fire.mode.FireLayerMixerMode;
 import de.mossgrabers.controller.fire.mode.FireLayerMode;
 import de.mossgrabers.controller.fire.mode.FireParameterMode;
+import de.mossgrabers.controller.fire.mode.FireTrackMixerMode;
 import de.mossgrabers.controller.fire.mode.FireTrackMode;
 import de.mossgrabers.controller.fire.mode.FireUserMode;
 import de.mossgrabers.controller.fire.mode.NoteMode;
@@ -66,6 +68,7 @@ import de.mossgrabers.framework.featuregroup.ModeManager;
 import de.mossgrabers.framework.featuregroup.ViewManager;
 import de.mossgrabers.framework.mode.Modes;
 import de.mossgrabers.framework.observer.IParametersAdjustObserver;
+import de.mossgrabers.framework.utils.ButtonEvent;
 import de.mossgrabers.framework.view.Views;
 
 import java.util.function.IntSupplier;
@@ -167,7 +170,9 @@ public class FireControllerSetup extends AbstractControllerSetup<FireControlSurf
         final ModeManager modeManager = surface.getModeManager ();
 
         modeManager.register (Modes.DEVICE_LAYER, new FireLayerMode (surface, this.model));
+        modeManager.register (Modes.DEVICE_LAYER_VOLUME, new FireLayerMixerMode (surface, this.model));
         modeManager.register (Modes.TRACK, new FireTrackMode (surface, this.model));
+        modeManager.register (Modes.VOLUME, new FireTrackMixerMode (surface, this.model));
         modeManager.register (Modes.DEVICE_PARAMS, new FireParameterMode (surface, this.model));
         modeManager.register (Modes.USER, new FireUserMode (surface, this.model));
         modeManager.register (Modes.NOTE, new NoteMode (surface, this.model));
@@ -208,7 +213,41 @@ public class FireControllerSetup extends AbstractControllerSetup<FireControlSurf
 
         // Modes
 
-        this.modeSelectCommand = new ModeMultiSelectCommand<> (this.model, surface, MODES);
+        this.modeSelectCommand = new ModeMultiSelectCommand<> (this.model, surface, MODES)
+        {
+            /** {@inheritDoc} */
+            @Override
+            public void execute (final ButtonEvent event, final int velocity)
+            {
+                if (this.surface.isPressed (ButtonID.ALT))
+                {
+                    if (event == ButtonEvent.UP)
+                        return;
+                    final ModeManager modeManager = this.surface.getModeManager ();
+                    switch (modeManager.getActiveID ())
+                    {
+                        case DEVICE_LAYER:
+                            modeManager.setActive (Modes.DEVICE_LAYER_VOLUME);
+                            break;
+                        case DEVICE_LAYER_VOLUME:
+                            modeManager.setActive (Modes.DEVICE_LAYER);
+                            break;
+                        case TRACK:
+                            modeManager.setActive (Modes.VOLUME);
+                            break;
+                        case VOLUME:
+                            modeManager.setActive (Modes.TRACK);
+                            break;
+                        default:
+                            // Do nothing
+                            break;
+                    }
+                    this.model.getHost ().showNotification (modeManager.getActive ().getName ());
+                }
+                else
+                    super.execute (event, velocity);
+            }
+        };
         this.addButton (ButtonID.BANK_RIGHT, "BANK", this.modeSelectCommand, FireControlSurface.FIRE_BANK);
 
         for (int i = 0; i < MODES.length; i++)

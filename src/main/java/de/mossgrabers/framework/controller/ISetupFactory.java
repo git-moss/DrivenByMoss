@@ -16,7 +16,7 @@ import java.util.List;
 
 
 /**
- * Interface to a factory for creating models and midi access.
+ * Interface to a factory for creating models and MIDI access.
  *
  * @author J&uuml;rgen Mo&szlig;graber
  */
@@ -35,7 +35,7 @@ public interface ISetupFactory
 
 
     /**
-     * Create the midi access object.
+     * Create the MIDI access object.
      *
      * @return The object
      */

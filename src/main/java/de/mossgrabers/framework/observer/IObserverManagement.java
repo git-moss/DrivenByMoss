@@ -5,14 +5,14 @@
 package de.mossgrabers.framework.observer;
 
 /**
- * Interface for dis-/enabling observers.
+ * Interface for disable/enabling observers.
  *
  * @author J&uuml;rgen Mo&szlig;graber
  */
 public interface IObserverManagement
 {
     /**
-     * Dis-/Enable all attributes. They are enabled by default. Use this function if values are
+     * Disable/Enable all attributes. They are enabled by default. Use this function if values are
      * currently not needed to improve performance.
      *
      * @param enable True to enable

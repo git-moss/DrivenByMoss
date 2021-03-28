@@ -13,7 +13,7 @@ public interface IValueChanger
 {
     /**
      * Get the limit for the upper bound (maximum) for parameters. The value is in the range of 0 to
-     * upperbound-1.
+     * upper bound - 1.
      *
      * @return The upper bound value
      */
@@ -31,7 +31,7 @@ public interface IValueChanger
     /**
      * The value for de-/increasing the value by '1' without any scaling.
      *
-     * @param stepSize The satep size
+     * @param stepSize The step size
      */
     void setStepSize (int stepSize);
 
@@ -161,7 +161,7 @@ public interface IValueChanger
      * Translate the value in the range from [0, max-1] to [0.0, 1.0].
      *
      * @param value The DAW value
-     * @return The midi value
+     * @return The MIDI value
      */
     double toNormalizedValue (int value);
 
@@ -170,7 +170,7 @@ public interface IValueChanger
      * Translate the value in the range from [0.0, 1.0] to [0, max-1].
      *
      * @param value The DAW value
-     * @return The midi value
+     * @return The MIDI value
      */
     int fromNormalizedValue (double value);
 }

@@ -22,6 +22,7 @@ import de.mossgrabers.controller.generic.flexihandler.SceneHandler;
 import de.mossgrabers.controller.generic.flexihandler.TrackHandler;
 import de.mossgrabers.controller.generic.flexihandler.TransportHandler;
 import de.mossgrabers.controller.generic.flexihandler.UserHandler;
+import de.mossgrabers.controller.generic.flexihandler.utils.ProgramBank;
 import de.mossgrabers.framework.configuration.IEnumSetting;
 import de.mossgrabers.framework.configuration.ISettingsUI;
 import de.mossgrabers.framework.controller.AbstractControllerSetup;
@@ -91,7 +92,7 @@ public class GenericFlexiControllerSetup extends AbstractControllerSetup<Generic
         super (factory, host, globalSettings, documentSettings);
 
         this.colorManager = new ColorManager ();
-        this.valueChanger = new DefaultValueChanger (128, 1);
+        this.valueChanger = new DefaultValueChanger (16384, 1);
         this.configuration = new GenericFlexiConfiguration (host, this.valueChanger, factory.getArpeggiatorModes ());
     }
 

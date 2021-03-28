@@ -256,7 +256,7 @@ public interface IBrowser extends IObserverManagement
     /**
      * Get the number of results to display on a page.
      *
-     * @return The number oif results.
+     * @return The number of results.
      */
     int getNumResults ();
 
@@ -264,7 +264,7 @@ public interface IBrowser extends IObserverManagement
     /**
      * Get the number of filter items to display on a page.
      *
-     * @return The number oif results.
+     * @return The number of results.
      */
     int getNumFilterColumnEntries ();
 

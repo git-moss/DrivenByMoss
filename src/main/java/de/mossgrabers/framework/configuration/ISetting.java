@@ -12,7 +12,7 @@ package de.mossgrabers.framework.configuration;
 public interface ISetting
 {
     /**
-     * Dis-/enable the setting.
+     * Disable/enable the setting.
      *
      * @param enable True to enable
      */

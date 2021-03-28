@@ -11,5 +11,5 @@ package de.mossgrabers.framework.daw.data;
  */
 public interface ICursorTrack extends ITrack, IPinnable
 {
-    // Intentionably empty
+    // Intentionally empty
 }

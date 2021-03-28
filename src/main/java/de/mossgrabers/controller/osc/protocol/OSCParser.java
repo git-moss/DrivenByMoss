@@ -44,7 +44,7 @@ public class OSCParser extends AbstractOpenSoundControlParser
      * @param model The model
      * @param configuration The configuration
      * @param writer The OSC writer
-     * @param midiInput The midi input
+     * @param midiInput The MIDI input
      * @param keyManager The key manager
      */
     public OSCParser (final IHost host, final OSCControlSurface surface, final IModel model, final IOpenSoundControlConfiguration configuration, final IOpenSoundControlWriter writer, final IMidiInput midiInput, final KeyManager keyManager)

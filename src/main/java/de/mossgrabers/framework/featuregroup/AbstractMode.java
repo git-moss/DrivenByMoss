@@ -111,7 +111,7 @@ public abstract class AbstractMode<S extends IControlSurface<C>, C extends Confi
      * @param name The name of the mode
      * @param surface The control surface
      * @param model The model
-     * @param isAbsolute If true the value change is happending with a setter otherwise relative
+     * @param isAbsolute If true the value change is happening with a setter otherwise relative
      *            change method is used
      * @param bank The parameter bank to control with this mode, might be null
      */
@@ -127,7 +127,7 @@ public abstract class AbstractMode<S extends IControlSurface<C>, C extends Confi
      * @param name The name of the mode
      * @param surface The control surface
      * @param model The model
-     * @param isAbsolute If true the value change is happending with a setter otherwise relative
+     * @param isAbsolute If true the value change is happening with a setter otherwise relative
      *            change method is used
      * @param bank The parameter bank to control with this mode, might be null
      * @param controls The IDs of the knobs or faders to control this mode
@@ -144,7 +144,7 @@ public abstract class AbstractMode<S extends IControlSurface<C>, C extends Confi
      * @param name The name of the mode
      * @param surface The control surface
      * @param model The model
-     * @param isAbsolute If true the value change is happending with a setter otherwise relative
+     * @param isAbsolute If true the value change is happening with a setter otherwise relative
      *            change method is used
      * @param bank The parameter bank to control with this mode, might be null
      * @param controls The IDs of the knobs or faders to control this mode

@@ -103,7 +103,7 @@ public interface IGraphicsConfiguration
 
 
     /**
-     * Should antialising be applied?
+     * Should anti-aliasing be applied?
      *
      * @return True if enabled
      */

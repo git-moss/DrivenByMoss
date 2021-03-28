@@ -89,7 +89,7 @@ public enum ButtonID
     DEVICE,
     /** The Track button button. */
     TRACK,
-    /** The Mastertrack button. */
+    /** The master track button. */
     MASTERTRACK,
     /** The Volume button button. */
     VOLUME,
@@ -395,12 +395,12 @@ public enum ButtonID
     KNOB7_TOUCH,
     /** Knob 8 touched. */
     KNOB8_TOUCH,
-    /** Mastertrack touched. */
+    /** Master track touched. */
     MASTERTRACK_TOUCH,
 
     /** Tempo button touched. */
     TEMPO_TOUCH,
-    /** Playcursor button touched. */
+    /** Play cursor button touched. */
     PLAYCURSOR_TOUCH,
 
     /** Configure pitchbend touched. */

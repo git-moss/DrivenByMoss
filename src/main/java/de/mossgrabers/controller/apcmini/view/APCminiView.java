@@ -26,7 +26,7 @@ public interface APCminiView
     /**
      * Get the track button color.
      *
-     * @param index The index of the utton
+     * @param index The index of the button
      * @return The color
      */
     int getTrackButtonColor (int index);

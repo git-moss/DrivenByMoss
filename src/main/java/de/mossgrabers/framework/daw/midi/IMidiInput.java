@@ -29,7 +29,7 @@ public interface IMidiInput
 
 
     /**
-     * Set a callback for midi system exclusive messages coming from this input.
+     * Set a callback for MIDI system exclusive messages coming from this input.
      *
      * @param callback The callback
      */
@@ -58,7 +58,7 @@ public interface IMidiInput
 
 
     /**
-     * Sends a midi short message to the DAW.
+     * Sends a MIDI short message to the DAW.
      *
      * @param status The MIDI status byte
      * @param data1 The MIDI data byte 1
@@ -68,7 +68,7 @@ public interface IMidiInput
 
 
     /**
-     * Bind the given button to a MIDI command received on this midi input.
+     * Bind the given button to a MIDI command received on this MIDI input.
      *
      * @param button The button to bind
      * @param type The MIDI binding type
@@ -87,7 +87,7 @@ public interface IMidiInput
 
 
     /**
-     * Bind a midi command coming from a MIDI input to the button.
+     * Bind a MIDI command coming from a MIDI input to the button.
      *
      * @param button The button to bind
      * @param type How to bind
@@ -99,7 +99,7 @@ public interface IMidiInput
 
 
     /**
-     * Bind the given fader to a MIDI command received on this midi input.
+     * Bind the given fader to a MIDI command received on this MIDI input.
      *
      * @param fader The fader to bind
      * @param type The MIDI binding type
@@ -110,7 +110,7 @@ public interface IMidiInput
 
 
     /**
-     * Bind the given absolute knob to a MIDI command received on this midi input.
+     * Bind the given absolute knob to a MIDI command received on this MIDI input.
      *
      * @param absoluteKnob The absolute knob to bind
      * @param type The MIDI binding type
@@ -121,7 +121,7 @@ public interface IMidiInput
 
 
     /**
-     * Bind the given absolute knob to a MIDI command received on this midi input.
+     * Bind the given absolute knob to a MIDI command received on this MIDI input.
      *
      * @param absoluteControl The absolute control to bind
      * @param type The MIDI binding type
@@ -132,7 +132,7 @@ public interface IMidiInput
 
 
     /**
-     * Bind the given relative knob to a MIDI command received on this midi input.
+     * Bind the given relative knob to a MIDI command received on this MIDI input.
      *
      * @param relativeKnob The relative knob to bind
      * @param type The MIDI binding type
@@ -144,7 +144,7 @@ public interface IMidiInput
 
 
     /**
-     * Bind the given relative knob to a MIDI command received on this midi input as a touch action.
+     * Bind the given relative knob to a MIDI command received on this MIDI input as a touch action.
      *
      * @param relativeKnob The relative knob to bind
      * @param type The MIDI binding type
@@ -155,7 +155,7 @@ public interface IMidiInput
 
 
     /**
-     * Bind the given fader to a MIDI command received on this midi input as a touch action.
+     * Bind the given fader to a MIDI command received on this MIDI input as a touch action.
      *
      * @param fader The fader to bind
      * @param type The MIDI binding type

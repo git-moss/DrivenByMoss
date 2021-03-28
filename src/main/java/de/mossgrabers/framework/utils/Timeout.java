@@ -8,7 +8,7 @@ import de.mossgrabers.framework.daw.IHost;
 
 
 /**
- * Support a timeout of a number of millisecond. The timeout can be delayed if an interrupt occured
+ * Support a timeout of a number of millisecond. The timeout can be delayed if an interrupt occurred
  * meanwhile.
  *
  * @author J&uuml;rgen Mo&szlig;graber

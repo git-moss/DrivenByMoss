@@ -38,7 +38,7 @@ public interface ILaunchpadControllerDefinition
     /**
      * Get the MIDI system exclusive header of the specific Launchpad.
      *
-     * @return The hader as formatted string with hex values
+     * @return The header as formatted string with hex values
      */
     String getSysExHeader ();
 
@@ -46,7 +46,7 @@ public interface ILaunchpadControllerDefinition
     /**
      * Get the command to switch to standalone mode.
      *
-     * @return The commad as formatted string with hex values
+     * @return The command as formatted string with hex values
      */
     String getStandaloneModeCommand ();
 
@@ -93,10 +93,10 @@ public interface ILaunchpadControllerDefinition
 
 
     /**
-     * Create an update sysex string for all given pads.
+     * Create an update system exclusive string for all given pads.
      *
      * @param padInfos The info how to update the pads
-     * @return The sysex string
+     * @return The system exclusive string
      */
     List<String> buildLEDUpdate (Map<Integer, LightInfo> padInfos);
 }

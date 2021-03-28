@@ -58,7 +58,7 @@ public class ColorManager
     /**
      * Registers a a color index. An exception is thrown if the color index is already registered.
      *
-     * @param dawColor The daw color key under which to register the color index
+     * @param dawColor The DAW color key under which to register the color index
      * @param colorIndex The color index
      */
     public void registerColorIndex (final DAWColor dawColor, final int colorIndex)

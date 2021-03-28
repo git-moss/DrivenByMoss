@@ -21,7 +21,7 @@ import java.util.Map;
 
 
 /**
- * Mode for editing the crossfade setting of all tracks.
+ * Mode for editing the cross-fade setting of all tracks.
  *
  * @author J&uuml;rgen Mo&szlig;graber
  */

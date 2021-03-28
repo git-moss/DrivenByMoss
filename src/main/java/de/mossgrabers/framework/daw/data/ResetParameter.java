@@ -20,7 +20,7 @@ public class ResetParameter implements IParameter
 
 
     /**
-     * Cosntructor.
+     * Constructor.
      *
      * @param parameter The parameter to encapsulate
      */
@@ -33,6 +33,14 @@ public class ResetParameter implements IParameter
     /** {@inheritDoc} */
     @Override
     public void setValue (final int value)
+    {
+        this.parameter.resetValue ();
+    }
+
+
+    /** {@inheritDoc} */
+    @Override
+    public void setValue (final IValueChanger valueChanger, final int value)
     {
         this.parameter.resetValue ();
     }

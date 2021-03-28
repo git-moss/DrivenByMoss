@@ -22,7 +22,7 @@ import java.util.List;
 public interface IControllerSetup<S extends IControlSurface<C>, C extends Configuration>
 {
     /**
-     * Initialise all required functionality for the controller.
+     * Initialize all required functionality for the controller.
      */
     void init ();
 
@@ -79,7 +79,7 @@ public interface IControllerSetup<S extends IControlSurface<C>, C extends Config
 
 
     /**
-     * Get the configuratgion.
+     * Get the configuration.
      *
      * @return The configuration
      */
@@ -89,7 +89,7 @@ public interface IControllerSetup<S extends IControlSurface<C>, C extends Config
     /**
      * Test the user interface.
      *
-     * @param callback Callback for signalling the start and end of the tests
+     * @param callback Callback for signaling the start and end of the tests
      */
     void test (TestCallback callback);
 }

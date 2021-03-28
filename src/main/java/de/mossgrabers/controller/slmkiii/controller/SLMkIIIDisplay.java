@@ -84,7 +84,7 @@ public class SLMkIIIDisplay extends AbstractTextDisplay
 
 
     /**
-     * Hide all knob ellements.
+     * Hide all knob elements.
      */
     public void hideAllElements ()
     {

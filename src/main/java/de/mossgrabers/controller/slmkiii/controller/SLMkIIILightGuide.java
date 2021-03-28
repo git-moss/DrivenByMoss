@@ -20,7 +20,7 @@ public class SLMkIIILightGuide extends LightGuideImpl
      * Constructor.
      *
      * @param colorManager The color manager for accessing specific colors to use
-     * @param output The midi output which can address the pad states
+     * @param output The MIDI output which can address the pad states
      */
     public SLMkIIILightGuide (final ColorManager colorManager, final IMidiOutput output)
     {
@@ -37,7 +37,7 @@ public class SLMkIIILightGuide extends LightGuideImpl
 
 
     /**
-     * Dis-/enable the light guide.
+     * Disable/enable the light guide.
      *
      * @param enable True to enable
      */

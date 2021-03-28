@@ -81,7 +81,7 @@ public class KontrolProtocolConfiguration extends AbstractConfiguration
 
 
     /**
-     * Returns true if track and clip navigation should be flipped
+     * Returns true if track and clip navigation should be flipped.
      *
      * @return True if track and clip navigation should be flipped
      */
@@ -92,7 +92,7 @@ public class KontrolProtocolConfiguration extends AbstractConfiguration
 
 
     /**
-     * Returns true if clip and scene navigation should be flipped
+     * Returns true if clip and scene navigation should be flipped.
      *
      * @return True if clip and scene navigation should be flipped
      */

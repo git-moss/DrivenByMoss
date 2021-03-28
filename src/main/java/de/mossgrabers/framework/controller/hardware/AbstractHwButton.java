@@ -143,6 +143,17 @@ public abstract class AbstractHwButton extends AbstractHwInputControl implements
 
     /** {@inheritDoc} */
     @Override
+    public void removeEventHandler (final ButtonEvent event, final ButtonEventHandler eventHandler)
+    {
+        if (event == ButtonEvent.DOWN)
+            this.downEventHandlers.remove (eventHandler);
+        else if (event == ButtonEvent.UP)
+            this.upEventHandlers.remove (eventHandler);
+    }
+
+
+    /** {@inheritDoc} */
+    @Override
     public void setConsumed ()
     {
         this.isConsumed = true;

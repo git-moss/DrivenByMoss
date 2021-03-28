@@ -11,7 +11,7 @@ import com.bitwig.extension.controller.api.MidiOut;
 
 
 /**
- * A midi output
+ * A MIDI output
  *
  * @author J&uuml;rgen Mo&szlig;graber
  */

@@ -93,7 +93,7 @@ public interface IControllerDefinition
 
 
     /**
-     * Get all midi input/output port discovery names.
+     * Get all MIDI input/output port discovery names.
      *
      * @param os The operating system. Use for different names on different platforms.
      * @return The names
@@ -102,7 +102,7 @@ public interface IControllerDefinition
 
 
     /**
-     * Returns an USB matcher to claim one or more endpoints of an USB device.
+     * Returns an USB matcher to claim one or more end-points of an USB device.
      *
      * @return The matcher description
      */

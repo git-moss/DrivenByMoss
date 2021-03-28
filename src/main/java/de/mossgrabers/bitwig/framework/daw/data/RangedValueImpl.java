@@ -126,7 +126,15 @@ public class RangedValueImpl extends AbstractParameterImpl
     @Override
     public void setValue (final int value)
     {
-        this.rangedValue.set (Integer.valueOf (value), Integer.valueOf (this.valueChanger.getUpperBound ()));
+        this.setValue (this.valueChanger, value);
+    }
+
+
+    /** {@inheritDoc} */
+    @Override
+    public void setValue (final IValueChanger valueChanger, final int value)
+    {
+        this.rangedValue.set (Integer.valueOf (value), Integer.valueOf (valueChanger.getUpperBound ()));
     }
 
 

@@ -120,7 +120,7 @@ public class SelectSessionViewCommand extends AbstractTriggerCommand<LaunchpadCo
 
     private void notifyViewName (final Views activeView, final boolean isBirdsEye, final boolean isFlipped)
     {
-        // Launchpads sometimes do not update correctly, force a flush
+        // Launchpad sometimes do not update correctly, force a flush
         this.surface.getPadGrid ().forceFlush ();
 
         final IDisplay display = this.surface.getDisplay ();

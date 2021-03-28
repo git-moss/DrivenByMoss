@@ -15,7 +15,7 @@ import de.mossgrabers.framework.utils.ButtonEvent;
 
 
 /**
- * Command to dis-/enable the metronome. Also toggles metronome ticks when Shift is pressed. Long
+ * Command to disable/enable the metronome. Also toggles metronome ticks when Shift is pressed. Long
  * pressing activates the metronome mode.
  *
  * @author J&uuml;rgen Mo&szlig;graber

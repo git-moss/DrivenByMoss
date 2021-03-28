@@ -16,7 +16,7 @@ import java.util.Optional;
 
 
 /**
- * A rec arm button command.
+ * A record arm button command.
  *
  * @param <S> The type of the control surface
  * @param <C> The type of the configuration

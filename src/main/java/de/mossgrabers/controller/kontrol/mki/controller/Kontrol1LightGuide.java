@@ -23,7 +23,7 @@ public class Kontrol1LightGuide extends LightGuideImpl
      * Constructor.
      *
      * @param colorManager The color manager
-     * @param usbDevice The usb device
+     * @param usbDevice The USB device
      */
     public Kontrol1LightGuide (final ColorManager colorManager, final Kontrol1UsbDevice usbDevice)
     {

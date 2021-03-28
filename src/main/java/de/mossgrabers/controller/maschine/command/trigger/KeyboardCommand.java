@@ -17,7 +17,7 @@ import de.mossgrabers.framework.view.Views;
 
 
 /**
- * Command for the keybaord button which activates the play view or toggles chromatic mode if
+ * Command for the keyboard button which activates the play view or toggles chromatic mode if
  * already active.
  *
  * @author J&uuml;rgen Mo&szlig;graber

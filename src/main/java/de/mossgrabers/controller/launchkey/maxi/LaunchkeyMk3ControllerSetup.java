@@ -158,10 +158,10 @@ public class LaunchkeyMk3ControllerSetup extends AbstractControllerSetup<Launchk
         }
         final IMidiInput input = midiAccess.createInput ("Pads", filters.toArray (new String [filters.size ()]));
         final IMidiInput inputKeys = midiAccess.createInput (1, "Keyboard", "8?????" /* Note off */,
-                "9?????" /* Note on */, "A?????" /* Polyphonic Aftertouch */,
+                "9?????" /* Note on */, "A?????" /* Polyphonic After-touch */,
                 "B?01??" /* Modulation */, "C?????" /* Program change */,
-                "B?40??" /* Sustainpedal */, "D?????" /* Channel Aftertouch */,
-                "E?????" /* Pitchbend */);
+                "B?40??" /* Sustain pedal */, "D?????" /* Channel After-touch */,
+                "E?????" /* Pitch-bend */);
 
         final LaunchkeyMk3ControlSurface surface = new LaunchkeyMk3ControlSurface (this.host, this.colorManager, this.configuration, output, input);
         this.surfaces.add (surface);

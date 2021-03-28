@@ -6,13 +6,17 @@
 	<artifactId>DrivenByMoss</artifactId>
 	<packaging>jar</packaging>
 	<name>DrivenByMoss</name>
-	<version>11.6.2</version>
+	<version>11.7.0</version>
 
 	<properties>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 	</properties>
 
 	<repositories>
+		<repository>
+			<id>maven-local-repository</id>
+			<url>file:///${project.basedir}/maven-local-repository</url>
+		</repository>
 		<repository>
 			<id>bitwig</id>
 			<name>Bitwig Maven Repository</name>
@@ -22,10 +26,6 @@
 			<id>MavenCentral</id>
 			<name>Maven Central Repository</name>
 			<url>https://mvnrepository.com</url>
-		</repository>
-		<repository>
-			<id>maven-local-repository</id>
-			<url>file:///${project.basedir}/maven-local-repository</url>
 		</repository>
 	</repositories>
 
@@ -38,12 +38,12 @@
 		<dependency>
 			<groupId>net.java.dev.jna</groupId>
 			<artifactId>jna</artifactId>
-			<version>5.7.0</version>
+			<version>5.8.0</version>
 		</dependency>
 		<dependency>
 			<groupId>net.java.dev.jna</groupId>
 			<artifactId>jna-platform</artifactId>
-			<version>5.7.0</version>
+			<version>5.8.0</version>
 		</dependency>
 		<dependency>
 			<groupId>purejavahidapi</groupId>
@@ -75,7 +75,7 @@
 						<configuration>
 							<rules>
 								<requireMavenVersion>
-									<version>3.0.5</version>
+									<version>3.6.3</version>
 								</requireMavenVersion>
 							</rules>
 						</configuration>
