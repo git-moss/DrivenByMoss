@@ -31,7 +31,7 @@ import java.util.Set;
  */
 public class PushConfiguration extends AbstractConfiguration implements IGraphicsConfiguration
 {
-    /** Settings for different Mute and Solo behaviour. */
+    /** Settings for different Mute and Solo behavior. */
     public enum TrackState
     {
         /** Use Mute, Solo for muting/soloing the current track. */

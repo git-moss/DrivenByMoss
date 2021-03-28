@@ -215,7 +215,7 @@ public class ParametersMode extends AbstractParametersMode<IItem>
         if (!cd.doesExist ())
             return 0;
 
-        // Colors normal behaviour
+        // Colors normal behavior
         final int index = buttonID.ordinal () - ButtonID.ROW1_1.ordinal ();
         if (this.showDevices)
         {

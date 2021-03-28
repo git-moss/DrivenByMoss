@@ -86,7 +86,7 @@ public class ParameterComponent extends MenuComponent
      * @param modulatedParamValue The modulated value of the fader, -1 if not modulated
      * @param paramValueText The textual form of the faders value
      * @param isTouched True if touched
-     * @param lowerLayout THe layout for the lower label
+     * @param lowerLayout The layout for the lower label
      */
     public ParameterComponent (final String menuName, final boolean isMenuSelected, final String name, final String deviceName, final ColorEx color, final boolean isSelected, final String paramName, final int paramValue, final int modulatedParamValue, final String paramValueText, final boolean isTouched, final LabelLayout lowerLayout)
     {

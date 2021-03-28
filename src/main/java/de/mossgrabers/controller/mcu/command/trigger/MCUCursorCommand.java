@@ -43,7 +43,7 @@ public class MCUCursorCommand extends AbstractTriggerCommand<MCUControlSurface, 
     @Override
     public void execute (final ButtonEvent event, final int velocity)
     {
-        if (event != ButtonEvent.DOWN)
+        if (event != ButtonEvent.UP)
             return;
 
         switch (this.direction)

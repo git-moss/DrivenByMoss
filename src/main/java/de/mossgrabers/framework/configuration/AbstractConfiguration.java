@@ -194,8 +194,8 @@ public abstract class AbstractConfiguration implements Configuration
     protected static final ColorEx DEFAULT_COLOR_BACKGROUND_LIGHTER = ColorEx.fromRGB (118, 118, 118);
 
 
-    /** The behaviour when the stop button is pressed. */
-    public enum BehaviourOnStop
+    /** The behavior when the stop button is pressed. */
+    public enum BehaviorOnStop
     {
         /** Keep the play cursor at the current position on stop. */
         MOVE_PLAY_CURSOR,
@@ -351,7 +351,7 @@ public abstract class AbstractConfiguration implements Configuration
     private boolean                                   scaleInKey                  = true;
     private String                                    scaleLayout                 = "4th ^";
     private boolean                                   enableVUMeters              = false;
-    private BehaviourOnStop                           behaviourOnStop             = BehaviourOnStop.MOVE_PLAY_CURSOR;
+    private BehaviorOnStop                            behaviorOnStop              = BehaviorOnStop.MOVE_PLAY_CURSOR;
     protected boolean                                 flipSession                 = false;
     private boolean                                   selectClipOnLaunch          = true;
     private boolean                                   drawRecordStripe            = true;
@@ -621,9 +621,9 @@ public abstract class AbstractConfiguration implements Configuration
 
     /** {@inheritDoc} */
     @Override
-    public BehaviourOnStop getBehaviourOnStop ()
+    public BehaviorOnStop getBehaviourOnStop ()
     {
-        return this.behaviourOnStop;
+        return this.behaviorOnStop;
     }
 
 
@@ -996,7 +996,7 @@ public abstract class AbstractConfiguration implements Configuration
     {
         final IEnumSetting behaviourOnStopSetting = settingsUI.getEnumSetting ("Behaviour on Stop", CATEGORY_TRANSPORT, BEHAVIOUR_ON_STOP_VALUES, BEHAVIOUR_ON_STOP_VALUES[0]);
         behaviourOnStopSetting.addValueObserver (value -> {
-            this.behaviourOnStop = BehaviourOnStop.values ()[lookupIndex (BEHAVIOUR_ON_STOP_VALUES, value)];
+            this.behaviorOnStop = BehaviorOnStop.values ()[lookupIndex (BEHAVIOUR_ON_STOP_VALUES, value)];
             this.notifyObservers (BEHAVIOUR_ON_STOP);
         });
 
