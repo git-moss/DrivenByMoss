@@ -239,6 +239,6 @@ public abstract class AbstractView<S extends IControlSurface<C>, C extends Confi
         final IHwButton button = this.surface.getButton (buttonID);
         final AbstractTriggerCommand<?, ?> triggerCommand = (AbstractTriggerCommand<?, ?>) button.getCommand ();
         triggerCommand.executeShifted (ButtonEvent.DOWN);
-        triggerCommand.executeNormal (ButtonEvent.UP);
+        triggerCommand.executeShifted (ButtonEvent.UP);
     }
 }
