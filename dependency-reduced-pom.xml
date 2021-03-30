@@ -4,7 +4,7 @@
   <groupId>de.mossgrabers</groupId>
   <artifactId>DrivenByMoss</artifactId>
   <name>DrivenByMoss</name>
-  <version>11.7.0</version>
+  <version>11.7.1</version>
   <build>
     <plugins>
       <plugin>

@@ -45,7 +45,7 @@ public class PushConfiguration extends AbstractConfiguration implements IGraphic
 
     /** Setting for the ribbon mode. */
     public static final Integer     RIBBON_MODE                     = Integer.valueOf (50);
-    /** Setting for the ribbon mode midi CC. */
+    /** Setting for the ribbon mode MIDI CC. */
     public static final Integer     RIBBON_MODE_CC_VAL              = Integer.valueOf (51);
     /** Setting for the ribbon mode note repeat. */
     public static final Integer     RIBBON_MODE_NOTE_REPEAT         = Integer.valueOf (52);
@@ -107,11 +107,11 @@ public class PushConfiguration extends AbstractConfiguration implements IGraphic
 
     /** Use ribbon for pitch bend. */
     public static final int         RIBBON_MODE_PITCH               = 0;
-    /** Use ribbon for midi CC. */
+    /** Use ribbon for MIDI CC. */
     public static final int         RIBBON_MODE_CC                  = 1;
-    /** Use ribbon for midi CC and pitch bend. */
+    /** Use ribbon for MIDI CC and pitch bend. */
     public static final int         RIBBON_MODE_CC_PB               = 2;
-    /** Use ribbon for pitch bend and midi CC. */
+    /** Use ribbon for pitch bend and MIDI CC. */
     public static final int         RIBBON_MODE_PB_CC               = 3;
     /** Use ribbon as volume fader. */
     public static final int         RIBBON_MODE_FADER               = 4;
@@ -414,9 +414,9 @@ public class PushConfiguration extends AbstractConfiguration implements IGraphic
 
 
     /**
-     * Set the midi CC to use for the CC functionality of the ribbon.
+     * Set the MIDI CC to use for the CC functionality of the ribbon.
      *
-     * @param value The midi CC value
+     * @param value The MIDI CC value
      */
     public void setRibbonModeCC (final int value)
     {

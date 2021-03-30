@@ -15,7 +15,7 @@ import de.mossgrabers.framework.utils.StringUtils;
 
 
 /**
- * A component which displays the notes of a midi clip.
+ * A component which displays the notes of a MIDI clip.
  *
  * @author J&uuml;rgen Mo&szlig;graber
  */

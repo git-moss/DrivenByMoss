@@ -7,11 +7,9 @@ package de.mossgrabers.controller.launchpad.view;
 import de.mossgrabers.controller.launchpad.LaunchpadConfiguration;
 import de.mossgrabers.controller.launchpad.controller.LaunchpadColorManager;
 import de.mossgrabers.controller.launchpad.controller.LaunchpadControlSurface;
-import de.mossgrabers.framework.command.core.AbstractTriggerCommand;
 import de.mossgrabers.framework.configuration.AbstractConfiguration;
 import de.mossgrabers.framework.controller.ButtonID;
 import de.mossgrabers.framework.controller.grid.IPadGrid;
-import de.mossgrabers.framework.controller.hardware.IHwButton;
 import de.mossgrabers.framework.daw.IModel;
 import de.mossgrabers.framework.daw.ITransport;
 import de.mossgrabers.framework.daw.constants.Resolution;
@@ -288,19 +286,19 @@ public class ShiftView extends AbstractView<LaunchpadControlSurface, LaunchpadCo
         switch (note)
         {
             case 92:
-                this.executeNormal (ButtonID.METRONOME, ButtonEvent.UP);
+                this.simulateButtonPress (ButtonID.METRONOME);
                 this.mvHelper.delayDisplay ( () -> "Metronome: " + (this.model.getTransport ().isMetronomeOn () ? "On" : "Off"));
                 break;
             case 93:
-                this.executeShifted (ButtonID.METRONOME, ButtonEvent.UP);
+                this.simulateShiftedButtonPress (ButtonID.METRONOME);
                 this.surface.getDisplay ().notify ("Tap Tempo");
                 break;
             case 84:
-                this.executeNormal (ButtonID.UNDO, ButtonEvent.UP);
+                this.simulateButtonPress (ButtonID.UNDO);
                 this.surface.getDisplay ().notify ("Undo");
                 break;
             case 85:
-                this.executeShifted (ButtonID.UNDO, ButtonEvent.UP);
+                this.simulateShiftedButtonPress (ButtonID.UNDO);
                 this.surface.getDisplay ().notify ("Redo");
                 break;
             case 76:
@@ -308,14 +306,14 @@ public class ShiftView extends AbstractView<LaunchpadControlSurface, LaunchpadCo
                 this.surface.getDisplay ().notify ("Delete " + (configuration.isDeleteModeActive () ? TAG_ACTIVE : "Off"));
                 break;
             case 77:
-                this.executeShifted (ButtonID.DELETE, ButtonEvent.DOWN);
+                this.simulateShiftedButtonPress (ButtonID.DELETE);
                 this.mvHelper.delayDisplay ( () -> "Arrangement Loop: " + (this.model.getTransport ().isLoop () ? "On" : "Off"));
                 break;
             case 69:
-                this.executeShifted (ButtonID.QUANTIZE, ButtonEvent.DOWN);
+                this.simulateShiftedButtonPress (ButtonID.QUANTIZE);
                 break;
             case 68:
-                this.executeNormal (ButtonID.QUANTIZE, ButtonEvent.DOWN);
+                this.simulateButtonPress (ButtonID.QUANTIZE);
                 this.surface.getDisplay ().notify ("Quantize");
                 break;
             case 60:
@@ -323,23 +321,23 @@ public class ShiftView extends AbstractView<LaunchpadControlSurface, LaunchpadCo
                 this.surface.getDisplay ().notify ("Duplicate " + (configuration.isDuplicateModeActive () ? TAG_ACTIVE : "Off"));
                 break;
             case 61:
-                this.executeShifted (ButtonID.DUPLICATE, ButtonEvent.DOWN);
+                this.simulateShiftedButtonPress (ButtonID.DUPLICATE);
                 this.surface.getDisplay ().notify ("Double");
                 break;
             case 52:
-                this.executeNormal (ButtonID.PLAY, ButtonEvent.DOWN);
+                this.simulateButtonPress (ButtonID.PLAY);
                 this.surface.getDisplay ().notify ("Play");
                 break;
             case 53:
-                this.executeShifted (ButtonID.PLAY, ButtonEvent.DOWN);
+                this.simulateShiftedButtonPress (ButtonID.PLAY);
                 this.surface.getDisplay ().notify ("New");
                 break;
             case 44:
-                this.executeNormal (ButtonID.RECORD, ButtonEvent.UP);
+                this.simulateButtonPress (ButtonID.RECORD);
                 this.surface.getDisplay ().notify ("Arranger record");
                 break;
             case 45:
-                this.executeShifted (ButtonID.RECORD, ButtonEvent.UP);
+                this.simulateShiftedButtonPress (ButtonID.RECORD);
                 this.mvHelper.delayDisplay ( () -> "Overdub launcher clips: " + (this.model.getTransport ().isLauncherOverdub () ? "On" : "Off"));
                 break;
             default:
@@ -435,19 +433,5 @@ public class ShiftView extends AbstractView<LaunchpadControlSurface, LaunchpadCo
     {
         this.surface.getConfiguration ().setNoteRepeatLength (Resolution.values ()[index]);
         this.surface.scheduleTask ( () -> this.surface.getDisplay ().notify ("Note Length: " + Resolution.getNameAt (index)), 100);
-    }
-
-
-    private void executeNormal (final ButtonID buttonID, final ButtonEvent event)
-    {
-        final IHwButton button = this.surface.getButton (buttonID);
-        ((AbstractTriggerCommand<?, ?>) button.getCommand ()).executeNormal (event);
-    }
-
-
-    private void executeShifted (final ButtonID buttonID, final ButtonEvent event)
-    {
-        final IHwButton button = this.surface.getButton (buttonID);
-        ((AbstractTriggerCommand<?, ?>) button.getCommand ()).executeShifted (event);
     }
 }

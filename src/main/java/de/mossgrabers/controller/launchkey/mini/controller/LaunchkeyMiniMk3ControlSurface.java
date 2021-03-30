@@ -76,8 +76,8 @@ public class LaunchkeyMiniMk3ControlSurface extends AbstractControlSurface<Launc
      * @param host The host
      * @param colorManager The color manager
      * @param configuration The configuration
-     * @param output The DAW midi output
-     * @param input The DAW midi input
+     * @param output The DAW MIDI output
+     * @param input The DAW MIDI input
      * @param definition The Launchpad definition
      */
     public LaunchkeyMiniMk3ControlSurface (final IHost host, final ColorManager colorManager, final LaunchkeyMiniMk3Configuration configuration, final IMidiOutput output, final IMidiInput input, final ContinuousCommand pageAdjuster)

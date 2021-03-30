@@ -48,7 +48,7 @@ public class MidiInputImpl implements IMidiInput
     /**
      * Constructor. Creates a default note input.
      *
-     * @param portNumber The number of the midi input port
+     * @param portNumber The number of the MIDI input port
      * @param host The Bitwig host
      * @param name the name of the note input as it appears in the track input choosers in Bitwig
      *            Studio

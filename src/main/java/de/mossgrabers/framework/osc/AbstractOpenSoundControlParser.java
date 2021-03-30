@@ -37,7 +37,7 @@ public abstract class AbstractOpenSoundControlParser implements IOpenSoundContro
      *
      * @param host The host
      * @param model The model
-     * @param midiInput The midi input
+     * @param midiInput The MIDI input
      * @param configuration The configuration
      * @param writer The writer
      */

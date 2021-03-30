@@ -41,7 +41,7 @@ public class SLDisplay extends AbstractTextDisplay
      * cells (0-8).
      *
      * @param host The host
-     * @param output The midi output which addresses the display
+     * @param output The MIDI output which addresses the display
      * @param hwTextDisplay2
      * @param hwTextDisplay1
      */

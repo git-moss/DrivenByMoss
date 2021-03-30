@@ -23,7 +23,7 @@ import de.mossgrabers.framework.daw.midi.IMidiOutput;
 @SuppressWarnings("javadoc")
 public class MaschineControlSurface extends AbstractControlSurface<MaschineConfiguration>
 {
-    // Midi CC
+    // MIDI CC
     public static final int TOUCHSTRIP        = 1;
     public static final int TOUCHSTRIP_TOUCH  = 2;
 

@@ -111,4 +111,15 @@ public class DeviceImpl extends AbstractItemImpl implements IDevice
     {
         this.device.afterDeviceInsertionPoint ().copyDevices (this.device);
     }
+
+
+    /**
+     * Get the Bitwig device.
+     *
+     * @return The Bitwig device
+     */
+    public Device getDevice ()
+    {
+        return this.device;
+    }
 }

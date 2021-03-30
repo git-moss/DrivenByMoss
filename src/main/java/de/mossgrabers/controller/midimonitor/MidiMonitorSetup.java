@@ -15,7 +15,7 @@ import de.mossgrabers.framework.daw.midi.IMidiInput;
 
 
 /**
- * A simple Midi Monitor, which logs to the console.
+ * A simple MIDI Monitor, which logs to the console.
  *
  * @author J&uuml;rgen Mo&szlig;graber
  */

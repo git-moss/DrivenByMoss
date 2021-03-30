@@ -170,6 +170,15 @@ public abstract class AbstractHwButton extends AbstractHwInputControl implements
 
     /** {@inheritDoc} */
     @Override
+    public void trigger ()
+    {
+        this.trigger (ButtonEvent.DOWN);
+        this.trigger (ButtonEvent.UP);
+    }
+
+
+    /** {@inheritDoc} */
+    @Override
     public void trigger (final ButtonEvent event)
     {
         this.trigger (event, 1.0);

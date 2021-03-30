@@ -295,7 +295,7 @@ public class MidiMonitorControlSurface extends AbstractControlSurface<MidiMonito
                 break;
 
             default:
-                this.host.println ("Unhandled midi status: " + status);
+                this.host.println ("Unhandled MIDI status: " + status);
                 break;
         }
     }

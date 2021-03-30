@@ -62,7 +62,7 @@ public class LaunchkeyPadGrid extends PadGridImpl
      * Constructor.
      *
      * @param colorManager The color manager for accessing specific colors to use
-     * @param output The midi output which can address the pad states
+     * @param output The MIDI output which can address the pad states
      */
     public LaunchkeyPadGrid (final ColorManager colorManager, final IMidiOutput output)
     {
@@ -112,7 +112,7 @@ public class LaunchkeyPadGrid extends PadGridImpl
      *
      * @param view The view
      * @param note The outgoing note
-     * @return The midi channel (index 0) and note (index 1) scaled to the controller
+     * @return The MIDI channel (index 0) and note (index 1) scaled to the controller
      */
     public static int [] translateToController (final Views view, final int note)
     {

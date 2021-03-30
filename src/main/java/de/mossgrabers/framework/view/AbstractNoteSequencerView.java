@@ -157,7 +157,7 @@ public abstract class AbstractNoteSequencerView<S extends IControlSurface<C>, C 
     /**
      * Handle button combinations on the note area of the sequencer.
      *
-     * @param clip The sequenced midi clip
+     * @param clip The sequenced MIDI clip
      * @param channel The MIDI channel of the note
      * @param step The step in the current page in the clip
      * @param row The row in the current page in the clip

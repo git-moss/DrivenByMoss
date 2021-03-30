@@ -221,7 +221,7 @@ public class MidiModule extends AbstractModule
             case "cc":
                 if (path.isEmpty ())
                 {
-                    this.host.println ("Missing Midi CC value.");
+                    this.host.println ("Missing MIDI CC value.");
                     return;
                 }
                 final int cc = Integer.parseInt (path.removeFirst ());

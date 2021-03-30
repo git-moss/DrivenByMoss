@@ -163,6 +163,7 @@ public abstract class AbstractDrumView<S extends IControlSurface<C>, C extends C
         this.unregisterButtonMonitors (this.buttonSolo);
         this.unregisterButtonMonitors (this.buttonMute);
         this.unregisterButtonMonitors (this.buttonDelete);
+        this.unregisterButtonMonitors (this.buttonBrowse);
     }
 
 
