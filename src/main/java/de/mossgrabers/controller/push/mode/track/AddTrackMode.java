@@ -15,6 +15,7 @@ import de.mossgrabers.framework.controller.display.ITextDisplay;
 import de.mossgrabers.framework.daw.IModel;
 import de.mossgrabers.framework.daw.data.IDeviceMetadata;
 import de.mossgrabers.framework.daw.data.IItem;
+import de.mossgrabers.framework.daw.resource.ChannelType;
 import de.mossgrabers.framework.featuregroup.AbstractFeatureGroup;
 import de.mossgrabers.framework.utils.ButtonEvent;
 import de.mossgrabers.framework.utils.StringUtils;
@@ -53,19 +54,21 @@ public class AddTrackMode extends BaseMode<IItem>
 
         if (index < 4)
         {
-            this.model.getApplication ().addAudioTrack ();
-
+            String channelName = null;
+            final Optional<IDeviceMetadata> audioFavorite;
             if (index > 0)
             {
-                this.surface.scheduleTask ( () -> {
-
-                    final PushConfiguration conf = this.surface.getConfiguration ();
-                    final Optional<IDeviceMetadata> audioFavorite = conf.getAudioFavorite (index - 1);
-                    if (audioFavorite.isPresent ())
-                        this.model.getCursorTrack ().addDevice (audioFavorite.get ());
-
-                }, 300);
+                final PushConfiguration conf = this.surface.getConfiguration ();
+                audioFavorite = conf.getAudioFavorite (index - 1);
+                if (audioFavorite.isPresent ())
+                    channelName = audioFavorite.get ().getName ();
             }
+            else
+                audioFavorite = Optional.empty ();
+
+            this.model.getTrackBank ().addChannel (ChannelType.AUDIO, channelName);
+            if (audioFavorite.isPresent ())
+                this.surface.scheduleTask ( () -> this.model.getCursorTrack ().addDevice (audioFavorite.get ()), 300);
         }
         else
         {
@@ -95,21 +98,24 @@ public class AddTrackMode extends BaseMode<IItem>
         if (event != ButtonEvent.UP)
             return;
 
-        this.model.getApplication ().addInstrumentTrack ();
-
+        String channelName = null;
+        final Optional<IDeviceMetadata> instrumentFavorite;
         if (index > 0)
         {
-            this.surface.scheduleTask ( () -> {
-
-                final PushConfiguration conf = this.surface.getConfiguration ();
-                final Optional<IDeviceMetadata> instrumentFavorite = conf.getInstrumentFavorite (index - 1);
-                if (instrumentFavorite.isPresent ())
-                    this.model.getCursorTrack ().addDevice (instrumentFavorite.get ());
-
-            }, 300);
+            final PushConfiguration conf = this.surface.getConfiguration ();
+            instrumentFavorite = conf.getInstrumentFavorite (index - 1);
+            if (instrumentFavorite.isPresent ())
+                channelName = instrumentFavorite.get ().getName ();
         }
+        else
+            instrumentFavorite = Optional.empty ();
+
+        this.model.getTrackBank ().addChannel (ChannelType.INSTRUMENT, channelName);
+        if (instrumentFavorite.isPresent ())
+            this.surface.scheduleTask ( () -> this.model.getCursorTrack ().addDevice (instrumentFavorite.get ()), 300);
 
         this.surface.getModeManager ().restore ();
+
     }
 
 

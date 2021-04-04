@@ -13,6 +13,7 @@ import de.mossgrabers.framework.controller.color.ColorManager;
 import de.mossgrabers.framework.controller.grid.IPadGrid;
 import de.mossgrabers.framework.daw.IModel;
 import de.mossgrabers.framework.daw.data.ITrack;
+import de.mossgrabers.framework.daw.resource.ChannelType;
 import de.mossgrabers.framework.featuregroup.AbstractView;
 import de.mossgrabers.framework.featuregroup.ViewManager;
 import de.mossgrabers.framework.scale.Scales;
@@ -120,10 +121,10 @@ public class ShiftView extends AbstractView<APCControlSurface, APCConfiguration>
             switch (index)
             {
                 case 32:
-                    this.model.getApplication ().addInstrumentTrack ();
+                    this.model.getTrackBank ().addChannel (ChannelType.INSTRUMENT);
                     break;
                 case 33:
-                    this.model.getApplication ().addAudioTrack ();
+                    this.model.getTrackBank ().addChannel (ChannelType.AUDIO);
                     break;
                 case 34:
                     this.model.getApplication ().addEffectTrack ();

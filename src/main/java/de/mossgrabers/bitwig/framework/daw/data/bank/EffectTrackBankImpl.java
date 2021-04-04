@@ -5,6 +5,7 @@
 package de.mossgrabers.bitwig.framework.daw.data.bank;
 
 import de.mossgrabers.bitwig.framework.daw.ApplicationImpl;
+import de.mossgrabers.bitwig.framework.daw.data.CursorTrackImpl;
 import de.mossgrabers.framework.controller.valuechanger.IValueChanger;
 import de.mossgrabers.framework.daw.IHost;
 import de.mossgrabers.framework.daw.data.bank.ITrackBank;
@@ -36,14 +37,14 @@ public class EffectTrackBankImpl extends AbstractTrackBankImpl
      * @param application The application
      * @param numFxTracks The number of FX track of a bank page
      * @param numScenes The number of scenes of a bank page
-     * @param audioInstrumentTrackBank The trackbank which monitors the audio and instrument tracks
+     * @param audioInstrumentTrackBank The track bank which monitors the audio and instrument tracks
      */
-    public EffectTrackBankImpl (final IHost host, final IValueChanger valueChanger, final TrackBank effectTrackBank, final CursorTrack cursorTrack, final Track rootGroup, final ApplicationImpl application, final int numFxTracks, final int numScenes, final ITrackBank audioInstrumentTrackBank)
+    public EffectTrackBankImpl (final IHost host, final IValueChanger valueChanger, final TrackBank effectTrackBank, final CursorTrackImpl cursorTrack, final Track rootGroup, final ApplicationImpl application, final int numFxTracks, final int numScenes, final ITrackBank audioInstrumentTrackBank)
     {
         super (host, valueChanger, effectTrackBank, cursorTrack, rootGroup, application, numFxTracks, numScenes, 0);
 
         if (this.bank.isPresent ())
-            this.bank.get ().followCursorTrack (cursorTrack);
+            this.bank.get ().followCursorTrack ((CursorTrack) cursorTrack.getTrack ());
 
         this.audioInstrumentTrackBank = audioInstrumentTrackBank;
     }

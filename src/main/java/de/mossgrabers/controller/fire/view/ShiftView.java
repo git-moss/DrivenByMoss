@@ -16,6 +16,7 @@ import de.mossgrabers.framework.daw.IClip;
 import de.mossgrabers.framework.daw.IModel;
 import de.mossgrabers.framework.daw.constants.Resolution;
 import de.mossgrabers.framework.daw.midi.INoteRepeat;
+import de.mossgrabers.framework.daw.resource.ChannelType;
 import de.mossgrabers.framework.featuregroup.AbstractView;
 import de.mossgrabers.framework.featuregroup.IView;
 import de.mossgrabers.framework.featuregroup.ViewManager;
@@ -259,10 +260,10 @@ public class ShiftView extends AbstractView<FireControlSurface, FireConfiguratio
                 break;
 
             case 97:
-                this.model.getApplication ().addInstrumentTrack ();
+                this.model.getTrackBank ().addChannel (ChannelType.INSTRUMENT);
                 return;
             case 98:
-                this.model.getApplication ().addAudioTrack ();
+                this.model.getTrackBank ().addChannel (ChannelType.AUDIO);
                 return;
             case 99:
                 this.model.getApplication ().addEffectTrack ();
