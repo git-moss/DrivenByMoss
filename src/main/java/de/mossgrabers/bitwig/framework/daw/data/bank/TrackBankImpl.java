@@ -5,6 +5,7 @@
 package de.mossgrabers.bitwig.framework.daw.data.bank;
 
 import de.mossgrabers.bitwig.framework.daw.ApplicationImpl;
+import de.mossgrabers.bitwig.framework.daw.data.CursorTrackImpl;
 import de.mossgrabers.bitwig.framework.daw.data.TrackImpl;
 import de.mossgrabers.framework.controller.valuechanger.IValueChanger;
 import de.mossgrabers.framework.daw.IHost;
@@ -26,16 +27,16 @@ public class TrackBankImpl extends AbstractTrackBankImpl
      * Constructor.
      *
      * @param host The host
+     * @param application The application
      * @param valueChanger The value changer
      * @param bank The Bitwig track bank
      * @param cursorTrack The cursor track
      * @param rootGroup The root track
-     * @param application The application
      * @param numTracks The number of tracks in a bank page
      * @param numScenes The number of scenes in a bank page
      * @param numSends The number of sends in a bank page
      */
-    public TrackBankImpl (final IHost host, final IValueChanger valueChanger, final TrackBank bank, final CursorTrack cursorTrack, final Track rootGroup, final ApplicationImpl application, final int numTracks, final int numScenes, final int numSends)
+    public TrackBankImpl (final IHost host, final ApplicationImpl application, final IValueChanger valueChanger, final TrackBank bank, final CursorTrackImpl cursorTrack, final Track rootGroup, final int numTracks, final int numScenes, final int numSends)
     {
         super (host, valueChanger, bank, cursorTrack, rootGroup, application, numTracks, numScenes, numSends);
     }
@@ -45,7 +46,7 @@ public class TrackBankImpl extends AbstractTrackBankImpl
     @Override
     public void selectParent ()
     {
-        this.cursorTrack.selectParent ();
+        ((CursorTrack) this.cursorTrack.getTrack ()).selectParent ();
     }
 
 

@@ -6,6 +6,8 @@ package de.mossgrabers.framework.daw;
 
 import de.mossgrabers.framework.controller.color.ColorEx;
 
+import java.util.List;
+
 
 /**
  * Support for handling the colors used in the DAW.
@@ -72,8 +74,11 @@ public enum DAWColor
     DAW_COLOR_LIGHT_BLUE("Light Blue", new ColorEx (0, 0.6000000238418579, 0.8509804010391235));
 
 
-    private String  name;
-    private ColorEx color;
+    private static final List<DAWColor> NEW_TRACK_COLORS = List.of (DAW_COLOR_PURPLE, DAW_COLOR_PINK, DAW_COLOR_RED, DAW_COLOR_ORANGE, DAW_COLOR_LIGHT_ORANGE, DAW_COLOR_MOSS_GREEN, DAW_COLOR_GREEN, DAW_COLOR_COLD_GREEN, DAW_COLOR_BLUE);
+    private static DAWColor             newTrackColor    = DAW_COLOR_DARK_BLUE;
+
+    private String                      name;
+    private ColorEx                     color;
 
 
     /**
@@ -185,5 +190,23 @@ public enum DAWColor
             }
         }
         return cid.name ();
+    }
+
+
+    /**
+     * Cycle through some of the DAWColors to assign to a new track.
+     *
+     * @return The next color to use
+     */
+    public static DAWColor getNextColor ()
+    {
+        final DAWColor color = newTrackColor;
+
+        int position = NEW_TRACK_COLORS.indexOf (color) + 1;
+        if (position >= NEW_TRACK_COLORS.size ())
+            position = 0;
+        newTrackColor = NEW_TRACK_COLORS.get (position);
+
+        return color;
     }
 }

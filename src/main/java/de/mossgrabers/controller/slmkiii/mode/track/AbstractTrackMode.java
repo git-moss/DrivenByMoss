@@ -14,6 +14,7 @@ import de.mossgrabers.framework.daw.IModel;
 import de.mossgrabers.framework.daw.data.ITrack;
 import de.mossgrabers.framework.daw.data.bank.ITrackBank;
 import de.mossgrabers.framework.daw.data.empty.EmptyTrack;
+import de.mossgrabers.framework.daw.resource.ChannelType;
 import de.mossgrabers.framework.featuregroup.ModeManager;
 import de.mossgrabers.framework.mode.Modes;
 import de.mossgrabers.framework.utils.ButtonEvent;
@@ -151,10 +152,10 @@ public abstract class AbstractTrackMode extends BaseMode<ITrack>
                     this.surface.getViewManager ().setActive (Views.COLOR);
                 break;
             case 5:
-                this.model.getApplication ().addInstrumentTrack ();
+                this.model.getTrackBank ().addChannel (ChannelType.INSTRUMENT);
                 break;
             case 6:
-                this.model.getApplication ().addAudioTrack ();
+                this.model.getTrackBank ().addChannel (ChannelType.AUDIO);
                 break;
             case 7:
                 this.model.getApplication ().addEffectTrack ();

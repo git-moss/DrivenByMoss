@@ -15,6 +15,7 @@ import de.mossgrabers.framework.daw.IModel;
 import de.mossgrabers.framework.daw.data.ISlot;
 import de.mossgrabers.framework.daw.data.ITrack;
 import de.mossgrabers.framework.daw.data.bank.ISlotBank;
+import de.mossgrabers.framework.daw.resource.ChannelType;
 import de.mossgrabers.framework.utils.ButtonEvent;
 
 import java.util.Optional;
@@ -75,11 +76,11 @@ public class FootswitchCommand<S extends IControlSurface<C>, C extends Configura
                 break;
 
             case AbstractConfiguration.FOOTSWITCH_2_ADD_INSTRUMENT_TRACK:
-                this.model.getApplication ().addInstrumentTrack ();
+                this.model.getTrackBank ().addChannel (ChannelType.INSTRUMENT);
                 break;
 
             case AbstractConfiguration.FOOTSWITCH_2_ADD_AUDIO_TRACK:
-                this.model.getApplication ().addAudioTrack ();
+                this.model.getTrackBank ().addChannel (ChannelType.AUDIO);
                 break;
 
             case AbstractConfiguration.FOOTSWITCH_2_ADD_EFFECT_TRACK:

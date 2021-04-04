@@ -11,6 +11,7 @@ import de.mossgrabers.framework.controller.IControlSurface;
 import de.mossgrabers.framework.daw.IApplication;
 import de.mossgrabers.framework.daw.IModel;
 import de.mossgrabers.framework.daw.data.bank.ITrackBank;
+import de.mossgrabers.framework.daw.resource.ChannelType;
 import de.mossgrabers.framework.utils.ButtonEvent;
 
 
@@ -76,9 +77,9 @@ public class AddTrackCommand<S extends IControlSurface<C>, C extends Configurati
                 return;
         }
         else if (this.combi2 != null && this.surface.isPressed (this.combi2))
-            application.addAudioTrack ();
+            this.model.getTrackBank ().addChannel (ChannelType.AUDIO);
         else
-            application.addInstrumentTrack ();
+            this.model.getTrackBank ().addChannel (ChannelType.INSTRUMENT);
 
         final ITrackBank bank = tb;
         this.surface.scheduleTask ( () -> {

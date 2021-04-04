@@ -402,4 +402,15 @@ public class TrackImpl extends ChannelImpl implements ITrack
         for (final INoteObserver noteObserver: this.noteObservers)
             noteObserver.call (this.index, note, velocity);
     }
+
+
+    /**
+     * Get the Bitwig track.
+     *
+     * @return The track
+     */
+    public Track getTrack ()
+    {
+        return this.track;
+    }
 }
