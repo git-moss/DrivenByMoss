@@ -47,7 +47,7 @@ public class MenuComponent implements IComponent
      * @param color The color to use for the header, may be null
      * @param isSelected True if the grid element is selected
      * @param isActive True if channel is activated
-     * @param lowerLayout THe layout for the lower label
+     * @param lowerLayout The layout for the lower label
      */
     public MenuComponent (final String menuName, final boolean isMenuSelected, final String name, final String icon, final ColorEx color, final boolean isSelected, final boolean isActive, final LabelLayout lowerLayout)
     {

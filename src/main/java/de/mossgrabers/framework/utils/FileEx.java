@@ -53,7 +53,7 @@ public class FileEx extends File
 
 
     /**
-     * Gets the name of the file without the ending. Eg. the filename 'aFile.jpeg' will return
+     * Gets the name of the file without the ending. E.g. the filename 'aFile.jpeg' will return
      * 'aFile'.
      *
      * @return The name of the file without the ending

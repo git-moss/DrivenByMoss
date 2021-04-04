@@ -307,7 +307,7 @@ public abstract class AbstractSessionView<S extends IControlSurface<C>, C extend
 
     /**
      * Is the birds eye view active? Default implementation checks for Shift button. Override for
-     * different behaviour.
+     * different behavior.
      *
      * @return True if birds eye view should be active
      */

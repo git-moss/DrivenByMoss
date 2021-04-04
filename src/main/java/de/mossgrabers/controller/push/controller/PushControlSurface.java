@@ -265,7 +265,7 @@ public class PushControlSurface extends AbstractControlSurface<PushConfiguration
     /** The note sent when touching the small knob 2. */
     public static final int        PUSH_SMALL_KNOB2_TOUCH        = 9;
 
-    /** The midi note which is sent when touching the ribbon. */
+    /** The MIDI note which is sent when touching the ribbon. */
     public static final int        PUSH_RIBBON_TOUCH             = 12;
 
     /** Configure Ribbon as pitchbend. */
@@ -464,8 +464,8 @@ public class PushControlSurface extends AbstractControlSurface<PushConfiguration
      * @param host The host
      * @param colorManager The color manager
      * @param configuration The configuration
-     * @param output The midi output
-     * @param input The midi input
+     * @param output The MIDI output
+     * @param input The MIDI input
      */
     public PushControlSurface (final IHost host, final ColorManager colorManager, final PushConfiguration configuration, final IMidiOutput output, final IMidiInput input)
     {
@@ -806,7 +806,7 @@ public class PushControlSurface extends AbstractControlSurface<PushConfiguration
 
 
     /**
-     * Handle incoming sysex data.
+     * Handle incoming system exclusive data.
      *
      * @param data The data
      */

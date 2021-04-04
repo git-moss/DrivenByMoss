@@ -34,9 +34,38 @@ public class PlayPositionTempoCommand extends PlayPositionCommand<MCUControlSurf
     @Override
     public void execute (final int value)
     {
+        final boolean increase = this.model.getValueChanger ().isIncrease (value);
+
         if (this.surface.isPressed (ButtonID.SELECT))
-            this.model.getTransport ().changeTempo (this.model.getValueChanger ().isIncrease (value), this.surface.isKnobSensitivitySlow ());
-        else
-            super.execute (value);
+        {
+            this.model.getTransport ().changeTempo (increase, this.surface.isKnobSensitivitySlow ());
+            return;
+        }
+
+        if (this.surface.isPressed (ButtonID.ARROW_LEFT) || this.surface.isPressed (ButtonID.ARROW_RIGHT))
+        {
+            this.surface.setTriggerConsumed (ButtonID.ARROW_LEFT);
+            this.surface.setTriggerConsumed (ButtonID.ARROW_RIGHT);
+
+            if (increase)
+                this.model.getApplication ().zoomIn ();
+            else
+                this.model.getApplication ().zoomOut ();
+            return;
+        }
+
+        if (this.surface.isPressed (ButtonID.ARROW_UP) || this.surface.isPressed (ButtonID.ARROW_DOWN))
+        {
+            this.surface.setTriggerConsumed (ButtonID.ARROW_UP);
+            this.surface.setTriggerConsumed (ButtonID.ARROW_DOWN);
+
+            if (increase)
+                this.model.getApplication ().incTrackHeight ();
+            else
+                this.model.getApplication ().decTrackHeight ();
+            return;
+        }
+
+        super.execute (value);
     }
 }

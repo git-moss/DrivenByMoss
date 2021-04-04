@@ -390,7 +390,7 @@ public class PlayView extends AbstractPlayView<MaschineControlSurface, MaschineC
     /**
      * Handle button combinations in the sequencer area.
      *
-     * @param clip The sequenced midi clip
+     * @param clip The sequenced MIDI clip
      * @param channel The MIDI channel of the note
      * @param step The step in the current page in the clip
      * @param note The note in the current page of the pad in the clip

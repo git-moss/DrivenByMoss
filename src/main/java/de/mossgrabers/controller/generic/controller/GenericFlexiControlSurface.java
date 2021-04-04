@@ -60,8 +60,8 @@ public class GenericFlexiControlSurface extends AbstractControlSurface<GenericFl
      * @param host The host
      * @param colorManager The color manager
      * @param configuration The configuration
-     * @param output The midi output
-     * @param input The midi input
+     * @param output The MIDI output
+     * @param input The MIDI input
      */
     public GenericFlexiControlSurface (final IHost host, final GenericFlexiConfiguration configuration, final ColorManager colorManager, final IMidiOutput output, final IMidiInput input)
     {
@@ -308,9 +308,9 @@ public class GenericFlexiControlSurface extends AbstractControlSurface<GenericFl
 
 
     /**
-     * Handle sysex for MMC commands.
+     * Handle system exclusive for MMC commands.
      *
-     * @param dataStr The sysex data
+     * @param dataStr The system exclusive data
      */
     private void handleSysEx (final String dataStr)
     {

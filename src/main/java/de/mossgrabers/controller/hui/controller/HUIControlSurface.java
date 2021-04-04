@@ -284,8 +284,8 @@ public class HUIControlSurface extends AbstractControlSurface<HUIConfiguration>
      * @param host The host
      * @param colorManager The color manager
      * @param configuration The configuration
-     * @param output The midi output
-     * @param input The midi input
+     * @param output The MIDI output
+     * @param input The MIDI input
      * @param model The model
      */
     public HUIControlSurface (final IHost host, final ColorManager colorManager, final HUIConfiguration configuration, final IMidiOutput output, final IMidiInput input, final IModel model)
@@ -421,7 +421,7 @@ public class HUIControlSurface extends AbstractControlSurface<HUIConfiguration>
                 break;
 
             default:
-                this.host.println ("Unhandled midi CC: " + data1);
+                this.host.println ("Unhandled MIDI CC: " + data1);
                 break;
         }
     }

@@ -20,7 +20,7 @@ import de.mossgrabers.framework.daw.midi.IMidiOutput;
 @SuppressWarnings("javadoc")
 public class APCminiControlSurface extends AbstractControlSurface<APCminiConfiguration>
 {
-    // Midi Notes
+    // MIDI Notes
     public static final int APC_BUTTON_TRACK_BUTTON1 = 64;
     public static final int APC_BUTTON_TRACK_BUTTON2 = 65;
     public static final int APC_BUTTON_TRACK_BUTTON3 = 66;

@@ -21,10 +21,10 @@ public class SendData
     /**
      * Constructor.
      *
-     * @param name THe name of the send
+     * @param name The name of the send
      * @param text The description text
      * @param value The value
-     * @param modulatedValue THe modulated value
+     * @param modulatedValue The modulated value
      * @param edited Is selected for editing
      */
     public SendData (final String name, final String text, final int value, final int modulatedValue, final boolean edited)

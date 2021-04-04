@@ -213,7 +213,7 @@ public class GenericFlexiConfiguration extends AbstractConfiguration
         "127 CC Poly Mode"
     );
 
-    /** The midi channel options. */
+    /** The MIDI channel options. */
     private static final List<String>                MODES                     = List.of (
         "Track",
         "Volume",
@@ -593,7 +593,7 @@ public class GenericFlexiConfiguration extends AbstractConfiguration
      *
      * @param type The type
      * @param number The number
-     * @param midiChannel The midi channel
+     * @param midiChannel The MIDI channel
      * @return The slot index or -1 if not found
      */
     public int getSlotCommand (final int type, final int number, final int midiChannel)
@@ -965,7 +965,7 @@ public class GenericFlexiConfiguration extends AbstractConfiguration
 
 
     /**
-     * Set the midi channel.
+     * Set the MIDI channel.
      *
      * @param value The index
      */
@@ -976,7 +976,7 @@ public class GenericFlexiConfiguration extends AbstractConfiguration
 
 
     /**
-     * Set the midi resolution.
+     * Set the MIDI resolution.
      *
      * @param isHighRes True for 14-bit
      */

@@ -221,9 +221,9 @@ public class DeviceInquiry
 
 
     /**
-     * Create inquiry sysex message. Ignores the device ID.
+     * Create inquiry system exclusive message. Ignores the device ID.
      *
-     * @return The sysex query
+     * @return The system exclusive query
      */
     public static byte [] createQuery ()
     {

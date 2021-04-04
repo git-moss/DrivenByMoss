@@ -70,9 +70,9 @@ public class CommandSlot
 
 
     /**
-     * Get the configured midi channel.
+     * Get the configured MIDI channel.
      *
-     * @return The midi channel
+     * @return The MIDI channel
      */
     public int getMidiChannel ()
     {
@@ -136,7 +136,7 @@ public class CommandSlot
 
 
     /**
-     * Set the midi channel.
+     * Set the MIDI channel.
      *
      * @param value The index
      */

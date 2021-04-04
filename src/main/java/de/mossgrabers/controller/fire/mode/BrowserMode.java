@@ -95,7 +95,7 @@ public class BrowserMode extends AbstractMode<FireControlSurface, FireConfigurat
     {
         final int idx = this.getKnobIndex (index);
 
-        // Make sure that only 1 knob gets changed in browse mode to prevent weird behaviour. Also
+        // Make sure that only 1 knob gets changed in browse mode to prevent weird behavior. Also
         // ignore the 8th element which does not have touch
         for (int i = 0; i < 8; i++)
             if (this.isKnobTouched[i] && i != idx)

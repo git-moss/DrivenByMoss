@@ -123,6 +123,7 @@ public class BrowserView extends AbstractView<LaunchpadControlSurface, Launchpad
             case 41:
                 this.surface.sendMidiEvent (0x90, 84, velocity);
                 break;
+
             default:
                 // Not used
                 break;

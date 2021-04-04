@@ -37,7 +37,7 @@ public interface IHwButton extends IHwInputControl
 
 
     /**
-     * Unbind the button from the given midi input.
+     * Unbind the button from the given MIDI input.
      *
      * @param input The MIDI input from which to unbind
      */
@@ -85,7 +85,13 @@ public interface IHwButton extends IHwInputControl
 
 
     /**
-     * Manually triggers a button press and release.
+     * Manually trigger a button press and release.
+     */
+    void trigger ();
+
+
+    /**
+     * Manually trigger a button event.
      *
      * @param event The button event
      */

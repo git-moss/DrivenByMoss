@@ -4,7 +4,7 @@
 
 package de.mossgrabers.framework.configuration;
 
-import de.mossgrabers.framework.configuration.AbstractConfiguration.BehaviourOnStop;
+import de.mossgrabers.framework.configuration.AbstractConfiguration.BehaviorOnStop;
 import de.mossgrabers.framework.configuration.AbstractConfiguration.RecordFunction;
 import de.mossgrabers.framework.daw.constants.Resolution;
 import de.mossgrabers.framework.daw.midi.ArpeggiatorMode;
@@ -100,11 +100,11 @@ public interface Configuration
 
 
     /**
-     * Get the behaviour when stop is pressed.
+     * Get the behavior when stop is pressed.
      *
-     * @return THe behaviour
+     * @return The behavior
      */
-    BehaviourOnStop getBehaviourOnStop ();
+    BehaviorOnStop getBehaviourOnStop ();
 
 
     /**

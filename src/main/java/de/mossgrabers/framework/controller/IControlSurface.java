@@ -177,7 +177,7 @@ public interface IControlSurface<C extends Configuration>
 
 
     /**
-     * Get the mapping of midi notes to the midi notes sent to the DAW.
+     * Get the mapping of MIDI notes to the MIDI notes sent to the DAW.
      *
      * @return The table has 128 items. The index is the incoming note, the value at the index the
      *         outgoing note.
@@ -284,7 +284,7 @@ public interface IControlSurface<C extends Configuration>
     /**
      * Update the lighting of a trigger (if the trigger has light).
      *
-     * @param channel The midi channel to use
+     * @param channel The MIDI channel to use
      * @param cc The trigger
      * @param value The color / brightness depending on the controller
      */

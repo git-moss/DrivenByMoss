@@ -31,9 +31,9 @@ public class MaschineConfiguration extends AbstractConfiguration
     public static final int          RIBBON_MODE_PITCH_UP           = 1;
     /** Use ribbon for pitch bend down/up. */
     public static final int          RIBBON_MODE_PITCH_DOWN_UP      = 2;
-    /** Use ribbon for midi CC 1. */
+    /** Use ribbon for MIDI CC 1. */
     public static final int          RIBBON_MODE_CC_1               = 3;
-    /** Use ribbon for midi CC 11. */
+    /** Use ribbon for MIDI CC 11. */
     public static final int          RIBBON_MODE_CC_11              = 4;
     /** Use ribbon for master volume. */
     public static final int          RIBBON_MODE_MASTER_VOLUME      = 5;

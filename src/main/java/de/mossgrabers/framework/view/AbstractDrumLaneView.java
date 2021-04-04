@@ -107,7 +107,7 @@ public abstract class AbstractDrumLaneView<S extends IControlSurface<C>, C exten
     /**
      * Handle button combinations on the note area of the sequencer.
      *
-     * @param clip The sequenced midi clip
+     * @param clip The sequenced MIDI clip
      * @param channel The MIDI channel of the note
      * @param row The row in the current page in the clip
      * @param note The note in the current page of the pad in the clip

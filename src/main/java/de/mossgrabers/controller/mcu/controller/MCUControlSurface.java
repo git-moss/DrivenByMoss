@@ -201,8 +201,8 @@ public class MCUControlSurface extends AbstractControlSurface<MCUConfiguration>
      * @param host The host
      * @param colorManager The color manager
      * @param configuration The configuration
-     * @param output The midi output
-     * @param input The midi input
+     * @param output The MIDI output
+     * @param input The MIDI input
      * @param extenderOffset The channel/bank offset if multiple extenders are used
      * @param isMainDevice True if it is the main MCU controller (and not an extender)
      */

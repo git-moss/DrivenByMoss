@@ -764,11 +764,11 @@ public abstract class AbstractControlSurface<C extends Configuration> implements
 
 
     /**
-     * Handle received midi data.
+     * Handle received MIDI data.
      *
-     * @param status The midi status byte
-     * @param data1 The midi data byte 1
-     * @param data2 The midi data byte 2
+     * @param status The MIDI status byte
+     * @param data1 The MIDI data byte 1
+     * @param data2 The MIDI data byte 2
      */
     protected void handleMidi (final int status, final int data1, final int data2)
     {
@@ -813,7 +813,7 @@ public abstract class AbstractControlSurface<C extends Configuration> implements
                 break;
 
             default:
-                this.host.error ("Unhandled midi status: " + status);
+                this.host.error ("Unhandled MIDI status: " + status);
                 break;
         }
     }
@@ -986,10 +986,10 @@ public abstract class AbstractControlSurface<C extends Configuration> implements
 
 
     /**
-     * Handle a midi note which belongs to the grid.
+     * Handle a MIDI note which belongs to the grid.
      *
      * @param event The button event
-     * @param note The midi note (already transformed to the grid)
+     * @param note The MIDI note (already transformed to the grid)
      * @param velocity The velocity of the note
      */
     protected void handleGridNote (final ButtonEvent event, final int note, final int velocity)

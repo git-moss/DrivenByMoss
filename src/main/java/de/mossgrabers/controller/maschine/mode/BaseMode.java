@@ -76,7 +76,7 @@ public abstract class BaseMode extends AbstractMode<MaschineControlSurface, Masc
     /**
      * Get the selected item (edit index).
      *
-     * @return THe edit index
+     * @return The edit index
      */
     public int getSelectedItem ()
     {

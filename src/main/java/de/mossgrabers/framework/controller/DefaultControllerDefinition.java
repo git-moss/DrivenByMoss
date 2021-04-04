@@ -36,8 +36,8 @@ public abstract class DefaultControllerDefinition implements IControllerDefiniti
      * @param uuid The UUID of the controller implementation
      * @param hardwareModel The hardware model which this controller implementation supports
      * @param hardwareVendor The hardware vendor of the controller
-     * @param numMidiInPorts The number of required midi in ports
-     * @param numMidiOutPorts The number of required midi out ports
+     * @param numMidiInPorts The number of required MIDI in ports
+     * @param numMidiOutPorts The number of required MIDI out ports
      */
     protected DefaultControllerDefinition (final UUID uuid, final String hardwareModel, final String hardwareVendor, final int numMidiInPorts, final int numMidiOutPorts)
     {

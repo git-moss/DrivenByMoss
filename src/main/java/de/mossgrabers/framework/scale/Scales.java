@@ -697,7 +697,7 @@ public class Scales
 
 
     /**
-     * Calculate the thirds on top of the given midi note. Respects the current octave, scale and
+     * Calculate the thirds on top of the given MIDI note. Respects the current octave, scale and
      * scale base.
      *
      * @param baseNote The base note of the chord
@@ -1028,7 +1028,7 @@ public class Scales
 
 
     /**
-     * Overwrite to hook in translation for grids which do not send midi notes 36-100.
+     * Overwrite to hook in translation for grids which do not send MIDI notes 36-100.
      *
      * @param matrix The matrix to translate
      * @return The modified matrix

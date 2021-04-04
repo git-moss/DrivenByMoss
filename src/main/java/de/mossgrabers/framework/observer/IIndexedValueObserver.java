@@ -17,7 +17,7 @@ public interface IIndexedValueObserver<V>
     /**
      * Called if the value has changed.
      *
-     * @param index THe index of the value
+     * @param index The index of the value
      * @param value The new value
      */
     void update (int index, V value);

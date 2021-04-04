@@ -244,7 +244,7 @@ public abstract class AbstractPolySequencerView<S extends IControlSurface<C>, C 
     /**
      * Handle button combinations in the sequencer area.
      *
-     * @param clip The sequenced midi clip
+     * @param clip The sequenced MIDI clip
      * @param channel The MIDI channel of the note
      * @param step The step in the current page in the clip
      * @return True if handled

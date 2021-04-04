@@ -133,7 +133,7 @@ public interface IValueChanger
      * Translate the value in the range from [0, max-1] to [0, 127].
      *
      * @param value The DAW value
-     * @return The midi value
+     * @return The MIDI value
      */
     int toMidiValue (int value);
 
@@ -141,7 +141,7 @@ public interface IValueChanger
     /**
      * Translate the value in the range from [0, 127] to [0, max-1].
      *
-     * @param value The midi value
+     * @param value The MIDI value
      * @return The DAW value
      */
     int toDAWValue (int value);
