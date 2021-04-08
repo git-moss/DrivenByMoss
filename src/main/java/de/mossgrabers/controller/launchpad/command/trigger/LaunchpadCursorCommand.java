@@ -59,7 +59,7 @@ public class LaunchpadCursorCommand extends CursorCommand<LaunchpadControlSurfac
      */
     public LaunchpadCursorCommand (final Direction direction, final IModel model, final LaunchpadControlSurface surface)
     {
-        super (direction, model, surface);
+        super (direction, model, surface, false);
 
         this.scales = this.model.getScales ();
         this.transport = this.model.getTransport ();
@@ -167,8 +167,8 @@ public class LaunchpadCursorCommand extends CursorCommand<LaunchpadControlSurfac
                 this.canScrollLeft = selIndex > 0 || tb.canScrollPageBackwards ();
                 this.canScrollRight = selIndex >= 0 && selIndex < 7 && tb.getItem (selIndex + 1).doesExist () || tb.canScrollPageForwards ();
                 final ISceneBank sceneBank = tb.getSceneBank ();
-                this.canScrollUp = sceneBank.canScrollBackwards ();
-                this.canScrollDown = sceneBank.canScrollForwards ();
+                this.canScrollUp = sceneBank.canScrollPageBackwards ();
+                this.canScrollDown = sceneBank.canScrollPageForwards ();
                 break;
 
             case SHUFFLE:
@@ -224,7 +224,11 @@ public class LaunchpadCursorCommand extends CursorCommand<LaunchpadControlSurfac
             case DRUM8:
                 final IView activeView = viewManager.getActive ();
                 if (activeView instanceof AbstractSequencerView)
-                    ((AbstractSequencerView) activeView).onLeft (ButtonEvent.DOWN);
+                {
+                    final AbstractSequencerView sequencerView = (AbstractSequencerView) activeView;
+                    sequencerView.onLeft (ButtonEvent.DOWN);
+                    this.mvHelper.notifyEditPage (sequencerView.getClip ());
+                }
                 break;
 
             case DEVICE:
@@ -246,6 +250,7 @@ public class LaunchpadCursorCommand extends CursorCommand<LaunchpadControlSurfac
                     volumeMode.selectPreviousItemPage ();
                 else
                     volumeMode.selectPreviousItem ();
+                this.mvHelper.notifySelectedTrack ();
                 break;
 
             case TRACK_VOLUME:
@@ -315,7 +320,11 @@ public class LaunchpadCursorCommand extends CursorCommand<LaunchpadControlSurfac
             case DRUM8:
                 final IView activeView = viewManager.getActive ();
                 if (activeView instanceof AbstractSequencerView)
-                    ((AbstractSequencerView) activeView).onRight (ButtonEvent.DOWN);
+                {
+                    final AbstractSequencerView sequencerView = (AbstractSequencerView) activeView;
+                    sequencerView.onRight (ButtonEvent.DOWN);
+                    this.mvHelper.notifyEditPage (sequencerView.getClip ());
+                }
                 break;
 
             case DEVICE:
@@ -337,6 +346,7 @@ public class LaunchpadCursorCommand extends CursorCommand<LaunchpadControlSurfac
                     volumeMode.selectNextItemPage ();
                 else
                     volumeMode.selectNextItem ();
+                this.mvHelper.notifySelectedTrack ();
                 break;
 
             case TRACK_VOLUME:

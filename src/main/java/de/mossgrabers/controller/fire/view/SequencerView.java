@@ -202,7 +202,7 @@ public class SequencerView extends AbstractNoteSequencerView<FireControlSurface,
         {
             final INoteClip clip = this.getClip ();
             clip.scrollStepsPageBackwards ();
-            this.surface.getDisplay ().notify ("Page: " + (clip.getEditPage () + 1));
+            this.mvHelper.notifyEditPage (clip);
         }
     }
 
@@ -231,7 +231,7 @@ public class SequencerView extends AbstractNoteSequencerView<FireControlSurface,
         {
             final INoteClip clip = this.getClip ();
             clip.scrollStepsPageForward ();
-            this.surface.getDisplay ().notify ("Page: " + (clip.getEditPage () + 1));
+            this.mvHelper.notifyEditPage (clip);
         }
     }
 }

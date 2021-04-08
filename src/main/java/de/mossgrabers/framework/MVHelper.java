@@ -8,6 +8,7 @@ import de.mossgrabers.framework.configuration.Configuration;
 import de.mossgrabers.framework.controller.IControlSurface;
 import de.mossgrabers.framework.controller.display.IDisplay;
 import de.mossgrabers.framework.daw.IModel;
+import de.mossgrabers.framework.daw.INoteClip;
 import de.mossgrabers.framework.daw.ITransport;
 import de.mossgrabers.framework.daw.data.ICursorDevice;
 import de.mossgrabers.framework.daw.data.ITrack;
@@ -135,7 +136,7 @@ public class MVHelper<S extends IControlSurface<C>, C extends Configuration>
         this.delayDisplay ( () -> {
 
             final Optional<String> selectedItemName = mode.getSelectedItemName ();
-            return selectedItemName.isPresent () ? selectedItemName.get () : "None";
+            return selectedItemName.isPresent () ? selectedItemName.get () : NONE;
 
         });
     }
@@ -147,6 +148,18 @@ public class MVHelper<S extends IControlSurface<C>, C extends Configuration>
     public void notifyTempo ()
     {
         this.delayDisplay ( () -> "Tempo: " + this.transport.formatTempo (this.transport.getTempo ()));
+    }
+
+
+    /**
+     * Display the current edit page of the note clip.
+     *
+     * @param clip The clip
+     */
+    public void notifyEditPage (final INoteClip clip)
+    {
+        if (clip != null && clip.doesExist ())
+            this.delayDisplay ( () -> "Edit page: " + (clip.getEditPage () + 1));
     }
 
 
