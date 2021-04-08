@@ -23,6 +23,7 @@ import de.mossgrabers.framework.view.Views;
 public class AbstractTrackCommand extends AbstractTriggerCommand<LaunchpadControlSurface, LaunchpadConfiguration>
 {
     private boolean firstRowUsed;
+    private boolean wasSession;
     private boolean temporaryView;
 
 
@@ -41,6 +42,7 @@ public class AbstractTrackCommand extends AbstractTriggerCommand<LaunchpadContro
     protected void onModeButton (final ButtonEvent event, final Modes controlMode, final String notification)
     {
         final ModeManager modeManager = this.surface.getModeManager ();
+        final ViewManager viewManager = this.surface.getViewManager ();
         switch (event)
         {
             case DOWN:
@@ -51,7 +53,9 @@ public class AbstractTrackCommand extends AbstractTriggerCommand<LaunchpadContro
                     return;
                 }
                 modeManager.setActive (controlMode);
-                this.surface.getViewManager ().setActive (Views.SESSION);
+                this.wasSession = viewManager.isActive (Views.SESSION);
+                if (!this.wasSession)
+                    viewManager.setActive (Views.SESSION);
                 this.surface.getDisplay ().notify (notification);
                 break;
 
@@ -63,7 +67,8 @@ public class AbstractTrackCommand extends AbstractTriggerCommand<LaunchpadContro
                 if (this.firstRowUsed)
                 {
                     modeManager.setActive (Modes.DUMMY);
-                    this.surface.getViewManager ().restore ();
+                    if (!this.wasSession)
+                        viewManager.restore ();
                 }
                 break;
         }

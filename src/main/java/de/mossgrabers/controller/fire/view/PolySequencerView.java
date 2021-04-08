@@ -95,7 +95,7 @@ public class PolySequencerView extends AbstractPolySequencerView<FireControlSurf
                 else
                 {
                     clip.scrollStepsPageBackwards ();
-                    this.surface.getDisplay ().notify ("Page: " + (clip.getEditPage () + 1));
+                    this.mvHelper.notifyEditPage (clip);
                 }
                 break;
 
@@ -105,7 +105,7 @@ public class PolySequencerView extends AbstractPolySequencerView<FireControlSurf
                 else
                 {
                     clip.scrollStepsPageForward ();
-                    this.surface.getDisplay ().notify ("Page: " + (clip.getEditPage () + 1));
+                    this.mvHelper.notifyEditPage (clip);
                 }
                 break;
 

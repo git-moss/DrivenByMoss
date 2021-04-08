@@ -31,9 +31,7 @@ public class APCCursorCommand extends CursorCommand<APCControlSurface, APCConfig
     }
 
 
-    /**
-     * Scroll scenes up.
-     */
+    /** {@inheritDoc} */
     @Override
     protected void scrollUp ()
     {
@@ -46,9 +44,7 @@ public class APCCursorCommand extends CursorCommand<APCControlSurface, APCConfig
     }
 
 
-    /**
-     * Scroll scenes down.
-     */
+    /** {@inheritDoc} */
     @Override
     protected void scrollDown ()
     {

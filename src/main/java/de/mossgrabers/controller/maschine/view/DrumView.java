@@ -179,7 +179,7 @@ public class DrumView extends AbstractDrumView<MaschineControlSurface, MaschineC
                     clip.scrollStepsPageBackwards ();
                 else if (index == 13)
                     clip.scrollStepsPageForward ();
-                this.surface.getDisplay ().notify ("Page " + (clip.getEditPage () + 1));
+                this.mvHelper.notifyEditPage (clip);
             }
             return;
         }

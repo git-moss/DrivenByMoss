@@ -729,7 +729,7 @@ public class APCControllerSetup extends AbstractControllerSetup<APCControlSurfac
         final APCControlSurface surface = this.getSurface ();
         // Recall last used view (if we are not in session mode)
         final ViewManager viewManager = surface.getViewManager ();
-        if (!viewManager.isActive (Views.SESSION))
+        if (viewManager.getActiveIDIgnoreTemporary () != Views.SESSION)
         {
             final ITrack cursorTrack = this.model.getCursorTrack ();
             if (cursorTrack.doesExist ())

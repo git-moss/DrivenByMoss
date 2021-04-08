@@ -174,7 +174,7 @@ public class Drum4View extends AbstractDrum4View<FireControlSurface, FireConfigu
             else
             {
                 clip.scrollStepsPageBackwards ();
-                this.surface.getDisplay ().notify ("Page: " + (clip.getEditPage () + 1));
+                this.mvHelper.notifyEditPage (clip);
             }
             return;
         }
@@ -186,7 +186,7 @@ public class Drum4View extends AbstractDrum4View<FireControlSurface, FireConfigu
             else
             {
                 clip.scrollStepsPageForward ();
-                this.surface.getDisplay ().notify ("Page: " + (clip.getEditPage () + 1));
+                this.mvHelper.notifyEditPage (clip);
             }
             return;
         }

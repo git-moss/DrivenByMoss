@@ -57,11 +57,11 @@ public class DrumConfigView extends AbstractView<LaunchkeyMk3ControlSurface, Lau
         {
             case 0:
                 clip.scrollStepsPageBackwards ();
-                this.mvHelper.delayDisplay ( () -> "Edit page: " + (clip.getEditPage () + 1));
+                this.mvHelper.notifyEditPage (clip);
                 break;
             case 1:
                 clip.scrollStepsPageForward ();
-                this.mvHelper.delayDisplay ( () -> "Edit page: " + (clip.getEditPage () + 1));
+                this.mvHelper.notifyEditPage (clip);
                 break;
 
             default:
