@@ -529,4 +529,12 @@ public interface ITransport extends IObserverManagement
      * @return The quarters per measure.
      */
     int getQuartersPerMeasure ();
+
+
+    /**
+     * Sets the clip launcher post recording time offset to the given beat time value.
+     *
+     * @param beats The new time offset
+     */
+    void setClipLauncherPostRecordingTimeOffset (double beats);
 }

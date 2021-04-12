@@ -78,6 +78,7 @@ public class TransportImpl implements ITransport
         this.transport.isMetronomeAudibleDuringPreRoll ().markInterested ();
         this.transport.preRoll ().markInterested ();
         this.transport.getPosition ().markInterested ();
+        this.transport.getClipLauncherPostRecordingTimeOffset ().markInterested ();
 
         this.crossfadeParameter = new ParameterImpl (valueChanger, this.transport.crossfade ());
         this.metronomeVolumeParameter = new RangedValueImpl ("Metronome Volume", valueChanger, this.transport.metronomeVolume ());
@@ -719,5 +720,13 @@ public class TransportImpl implements ITransport
     public int getQuartersPerMeasure ()
     {
         return 4 * this.getNumerator () / this.getDenominator ();
+    }
+
+
+    /** {@inheritDoc} */
+    @Override
+    public void setClipLauncherPostRecordingTimeOffset (final double beats)
+    {
+        this.transport.getClipLauncherPostRecordingTimeOffset ().set (beats);
     }
 }

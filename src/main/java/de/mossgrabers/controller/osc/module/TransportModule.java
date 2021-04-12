@@ -253,6 +253,11 @@ public class TransportModule extends AbstractModule
                 this.transport.setPrerollAsBars (toInteger (value));
                 break;
 
+            case "postRecordingOffset":
+                this.transport.setClipLauncherPostRecordingTimeOffset (toNumber (value));
+                break;
+
+
             default:
                 throw new UnknownCommandException (command);
         }
