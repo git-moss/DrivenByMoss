@@ -44,20 +44,20 @@ public class AftertouchAbstractViewCommand<S extends IControlSurface<C>, C exten
     @Override
     public void onPolyAftertouch (final int note, final int value)
     {
-        // Only allow aftertouch for pads with notes
-        final int n = this.view.getKeyManager ().getMidiNoteFromGrid (note);
-        if (n == -1)
-            return;
-
         final Configuration config = this.surface.getConfiguration ();
-        switch (config.getConvertAftertouch ())
+        final int convertAftertouch = config.getConvertAftertouch ();
+        switch (convertAftertouch)
         {
             case -3:
                 // Filter poly aftertouch
                 break;
 
             case -2:
-                // Translate notes of Poly aftertouch to current note mapping
+                // Translate notes of Poly aftertouch to current note mapping and only allow
+                // aftertouch for pads with notes
+                final int n = this.view.getKeyManager ().map (note);
+                if (n == -1)
+                    return;
                 this.surface.sendMidiEvent (0xA0, n, value);
                 break;
 
@@ -68,7 +68,7 @@ public class AftertouchAbstractViewCommand<S extends IControlSurface<C>, C exten
 
             default:
                 // MIDI CC
-                this.surface.sendMidiEvent (0xB0, config.getConvertAftertouch (), value);
+                this.surface.sendMidiEvent (0xB0, convertAftertouch, value);
                 break;
         }
     }
@@ -86,6 +86,6 @@ public class AftertouchAbstractViewCommand<S extends IControlSurface<C>, C exten
                 this.onPolyAftertouch (key.intValue (), value);
         }
         else
-            this.onPolyAftertouch (0, value);
+            this.onPolyAftertouch (-1, value);
     }
 }

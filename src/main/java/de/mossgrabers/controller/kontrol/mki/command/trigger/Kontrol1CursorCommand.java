@@ -26,7 +26,7 @@ public class Kontrol1CursorCommand extends de.mossgrabers.framework.command.trig
      */
     public Kontrol1CursorCommand (final Direction direction, final IModel model, final Kontrol1ControlSurface surface)
     {
-        super (direction, model, surface);
+        super (direction, model, surface, false);
     }
 
 
