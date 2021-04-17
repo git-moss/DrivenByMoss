@@ -27,7 +27,7 @@ public class APCCursorCommand extends CursorCommand<APCControlSurface, APCConfig
      */
     public APCCursorCommand (final Direction direction, final IModel model, final APCControlSurface surface)
     {
-        super (direction, model, surface);
+        super (direction, model, surface, false);
     }
 
 

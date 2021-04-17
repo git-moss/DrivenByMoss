@@ -32,7 +32,7 @@ public class PushCursorCommand extends CursorCommand<PushControlSurface, PushCon
      */
     public PushCursorCommand (final ISceneBank sceneBank, final Direction direction, final IModel model, final PushControlSurface surface)
     {
-        super (direction, model, surface);
+        super (direction, model, surface, false);
 
         this.sceneBank64 = sceneBank;
     }
