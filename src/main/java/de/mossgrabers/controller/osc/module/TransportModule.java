@@ -73,7 +73,8 @@ public class TransportModule extends AbstractModule
             "crossfade",
             "autowrite",
             "automationWriteMode",
-            TAG_PREROLL
+            TAG_PREROLL,
+            "postRecordingOffset"
         };
     }
 
