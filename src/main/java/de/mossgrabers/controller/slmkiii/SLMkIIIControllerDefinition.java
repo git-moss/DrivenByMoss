@@ -21,7 +21,6 @@ public class SLMkIIIControllerDefinition extends DefaultControllerDefinition
 {
     private static final UUID EXTENSION_ID = UUID.fromString ("20C2BF16-8D2A-4C00-8D55-27FA2E6EAA07");
 
-
     /**
      * Constructor.
      */
@@ -37,36 +36,49 @@ public class SLMkIIIControllerDefinition extends DefaultControllerDefinition
     {
         final List<Pair<String [], String []>> midiDiscoveryPairs = super.getMidiDiscoveryPairs (os);
 
-        if (os == OperatingSystem.MAC)
+        switch (os)
         {
-            midiDiscoveryPairs.add (this.addDeviceDiscoveryPair (new String []
-            {
-                "SL MkIII MIDI 2",
-                "SL MkIII MIDI 1"
-            }, new String []
-            {
-                "SL MkIII MIDI 2"
-            }));
-            midiDiscoveryPairs.add (this.addDeviceDiscoveryPair (new String []
-            {
-                "Novation SL MkIII SL MkIII InControl",
-                "Novation SL MkIII SL MkIII MIDI"
-            }, new String []
-            {
-                "Novation SL MkIII SL MkIII InControl"
-            }));
-        }
-        else
-        {
-            // WINDOWS + Linux
-            midiDiscoveryPairs.add (this.addDeviceDiscoveryPair (new String []
-            {
-                "MIDIIN2 (Novation SL MkIII)",
-                "Novation SL MkIII"
-            }, new String []
-            {
-                "MIDIOUT2 (Novation SL MkIII)"
-            }));
+            case MAC:
+                midiDiscoveryPairs.add (this.addDeviceDiscoveryPair (new String []
+                {
+                    "SL MkIII MIDI 2",
+                    "SL MkIII MIDI 1"
+                }, new String []
+                {
+                    "SL MkIII MIDI 2"
+                }));
+                midiDiscoveryPairs.add (this.addDeviceDiscoveryPair (new String []
+                {
+                    "Novation SL MkIII SL MkIII InControl",
+                    "Novation SL MkIII SL MkIII MIDI"
+                }, new String []
+                {
+                    "Novation SL MkIII SL MkIII InControl"
+                }));
+                break;
+
+            case LINUX:
+                midiDiscoveryPairs.add (this.addDeviceDiscoveryPair (new String []
+                {
+                    "Novation SL MkIII MIDI 2",
+                    "Novation SL MkIII MIDI 1"
+                }, new String []
+                {
+                    "Novation SL MkIII MIDI 2"
+                }));
+                break;
+
+            default:
+            case WINDOWS:
+                midiDiscoveryPairs.add (this.addDeviceDiscoveryPair (new String []
+                {
+                    "MIDIIN2 (Novation SL MkIII)",
+                    "Novation SL MkIII"
+                }, new String []
+                {
+                    "MIDIOUT2 (Novation SL MkIII)"
+                }));
+                break;
         }
 
         return midiDiscoveryPairs;
