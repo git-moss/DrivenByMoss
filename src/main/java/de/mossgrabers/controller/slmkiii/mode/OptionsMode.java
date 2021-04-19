@@ -76,7 +76,7 @@ public class OptionsMode extends BaseMode<IItem>
                 return master.getPan ();
 
             case 4:
-                return (int) transport.rescaleTempo (transport.getTempo (), this.model.getValueChanger ().getUpperBound ());
+                return (int) transport.scaleTempo (transport.getTempo (), this.model.getValueChanger ().getUpperBound ());
 
             case 5:
                 return transport.getMetronomeVolume ();

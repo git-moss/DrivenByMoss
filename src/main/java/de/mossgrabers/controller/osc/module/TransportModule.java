@@ -15,6 +15,8 @@ import de.mossgrabers.framework.daw.IHost;
 import de.mossgrabers.framework.daw.IModel;
 import de.mossgrabers.framework.daw.ITransport;
 import de.mossgrabers.framework.daw.constants.AutomationMode;
+import de.mossgrabers.framework.daw.constants.LaunchQuantization;
+import de.mossgrabers.framework.daw.constants.PostRecordingAction;
 import de.mossgrabers.framework.osc.IOpenSoundControlWriter;
 import de.mossgrabers.framework.utils.ButtonEvent;
 
@@ -29,6 +31,8 @@ import java.util.Locale;
  */
 public class TransportModule extends AbstractModule
 {
+    private static final String                                    TAG_LAUNCHER = "launcher";
+
     private final ITransport                                       transport;
     private final PlayCommand<OSCControlSurface, OSCConfiguration> playCommand;
 
@@ -73,7 +77,8 @@ public class TransportModule extends AbstractModule
             "crossfade",
             "autowrite",
             "automationWriteMode",
-            TAG_PREROLL
+            TAG_PREROLL,
+            TAG_LAUNCHER
         };
     }
 
@@ -114,7 +119,7 @@ public class TransportModule extends AbstractModule
                 break;
 
             case "overdub":
-                if (!path.isEmpty () && "launcher".equals (path.get (0)))
+                if (!path.isEmpty () && TAG_LAUNCHER.equals (path.get (0)))
                     this.transport.toggleLauncherOverdub ();
                 else
                     this.transport.toggleOverdub ();
@@ -238,7 +243,7 @@ public class TransportModule extends AbstractModule
                 break;
 
             case "autowrite":
-                if (!path.isEmpty () && "launcher".equals (path.get (0)))
+                if (!path.isEmpty () && TAG_LAUNCHER.equals (path.get (0)))
                     this.transport.toggleWriteClipLauncherAutomation ();
                 else
                     this.transport.toggleWriteArrangerAutomation ();
@@ -251,6 +256,25 @@ public class TransportModule extends AbstractModule
 
             case TAG_PREROLL:
                 this.transport.setPrerollAsBars (toInteger (value));
+                break;
+
+            case TAG_LAUNCHER:
+                final String launcherCommand = path.get (0);
+                switch (launcherCommand)
+                {
+                    case "postRecordingAction":
+                        this.transport.setClipLauncherPostRecordingAction (PostRecordingAction.lookup (value.toString ()));
+                        break;
+                    case "postRecordingTimeOffset":
+                        final double beats = Math.min (4000, Math.max (0, toNumber (value)));
+                        this.transport.setClipLauncherPostRecordingTimeOffset (beats);
+                        break;
+                    case "defaultQuantization":
+                        this.transport.setDefaultLaunchQuantization (LaunchQuantization.lookup (value.toString ()));
+                        break;
+                    default:
+                        throw new UnknownCommandException (launcherCommand);
+                }
                 break;
 
             default:
@@ -284,5 +308,8 @@ public class TransportModule extends AbstractModule
         this.writer.sendOSC ("/time/str", this.transport.getPositionText (), dump);
         this.writer.sendOSC ("/time/signature", this.transport.getNumerator () + " / " + this.transport.getDenominator (), dump);
         this.writer.sendOSC ("/beat/str", this.transport.getBeatText (), dump);
+        this.writer.sendOSC ("/launcher/postRecordingAction", this.transport.getClipLauncherPostRecordingAction ().getIdentifier (), dump);
+        this.writer.sendOSC ("/launcher/postRecordingTimeOffset", this.transport.getClipLauncherPostRecordingTimeOffset (), dump);
+        this.writer.sendOSC ("/launcher/defaultQuantization", this.transport.getDefaultLaunchQuantization ().getValue (), dump);
     }
 }

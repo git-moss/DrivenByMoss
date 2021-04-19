@@ -369,7 +369,7 @@ public class ApplicationImpl implements IApplication
      */
     public RecordQuantization getRecordQuantizationGrid ()
     {
-        return RecordQuantization.getByValue (this.application.recordQuantizationGrid ().get ());
+        return RecordQuantization.lookup (this.application.recordQuantizationGrid ().get ());
     }
 
 

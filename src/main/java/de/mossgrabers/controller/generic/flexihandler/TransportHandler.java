@@ -287,7 +287,7 @@ public class TransportHandler extends AbstractHandler
         if (isAbsolute (knobMode))
         {
             final int val = value.getValue ();
-            transport.setTempo (transport.rescaleTempo (val, value.isHighRes () ? 16384 : 128));
+            transport.setTempo (transport.scaleTempo (val, value.isHighRes () ? 16384 : 128));
         }
         else
             transport.changeTempo (this.isIncrease (knobMode, value), this.surface.isKnobSensitivitySlow ());

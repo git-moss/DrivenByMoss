@@ -89,7 +89,7 @@ public class LaunchpadColorManager extends ColorManager
     public static final int           LAUNCHPAD_COLOR_PINK_LO          = 59;
     public static final int           LAUNCHPAD_COLOR_ORANGE           = 60;
 
-    public static final List<Integer> DAW_INDICATOR_COLORS             = List.of (Integer.valueOf (LAUNCHPAD_COLOR_AMBER_HI), Integer.valueOf (LAUNCHPAD_COLOR_AMBER), Integer.valueOf (LAUNCHPAD_COLOR_YELLOW), Integer.valueOf (LAUNCHPAD_COLOR_SPRING), Integer.valueOf (LAUNCHPAD_COLOR_CYAN), Integer.valueOf (LAUNCHPAD_COLOR_OCEAN), Integer.valueOf (LAUNCHPAD_COLOR_MAGENTA), Integer.valueOf (LAUNCHPAD_COLOR_PINK));
+    public static final List<Integer> DAW_INDICATOR_COLORS             = List.of (Integer.valueOf (LAUNCHPAD_COLOR_RED), Integer.valueOf (LAUNCHPAD_COLOR_AMBER), Integer.valueOf (LAUNCHPAD_COLOR_YELLOW), Integer.valueOf (LAUNCHPAD_COLOR_SPRING), Integer.valueOf (LAUNCHPAD_COLOR_CYAN), Integer.valueOf (LAUNCHPAD_COLOR_OCEAN), Integer.valueOf (LAUNCHPAD_COLOR_MAGENTA), Integer.valueOf (LAUNCHPAD_COLOR_PINK));
 
 
     /**

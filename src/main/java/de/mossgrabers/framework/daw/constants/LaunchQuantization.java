@@ -9,28 +9,36 @@ import java.util.Map;
 
 
 /**
- * Record quantization options.
+ * Launch quantization options.
  *
  * @author J&uuml;rgen Mo&szlig;graber
  */
-public enum RecordQuantization
+public enum LaunchQuantization
 {
     /** Off */
-    RES_OFF("Off", "OFF"),
-    /** 1/32 */
-    RES_1_32("1/32", "1/32"),
-    /** 1/16 */
-    RES_1_16("1/16", "1/16"),
+    RES_NONE("None", "none"),
+    /** 8 */
+    RES_8("8", "8"),
+    /** 4 */
+    RES_4("4", "4"),
+    /** 2 */
+    RES_2("2", "2"),
+    /** 1 */
+    RES_1("1", "1"),
+    /** 1/2 */
+    RES_1_2("1/2", "1/2"),
+    /** 1/4 */
+    RES_1_4("1/4", "1/4"),
     /** 1/8 */
     RES_1_8("1/8", "1/8"),
-    /** 1/4 */
-    RES_1_4("1/4", "1/4");
+    /** 1/16 */
+    RES_1_16("1/16", "1/16");
 
 
-    private static final Map<String, RecordQuantization> QUANTIZATION_VALUES = new HashMap<> ();
+    private static final Map<String, LaunchQuantization> QUANTIZATION_VALUES = new HashMap<> ();
     static
     {
-        for (final RecordQuantization value: values ())
+        for (final LaunchQuantization value: values ())
             QUANTIZATION_VALUES.put (value.getValue (), value);
     }
 
@@ -44,7 +52,7 @@ public enum RecordQuantization
      * @param name The name of the quantization
      * @param value The value
      */
-    RecordQuantization (final String name, final String value)
+    LaunchQuantization (final String name, final String value)
     {
         this.name = name;
         this.value = value;
@@ -74,13 +82,13 @@ public enum RecordQuantization
 
 
     /**
-     * Get the record quantization by its value.
+     * Get the launch quantization by its value.
      *
      * @param value The value
-     * @return The record quantization
+     * @return The launch quantization
      */
-    public static RecordQuantization lookup (final String value)
+    public static LaunchQuantization lookup (final String value)
     {
-        return QUANTIZATION_VALUES.getOrDefault (value, RecordQuantization.RES_OFF);
+        return QUANTIZATION_VALUES.getOrDefault (value, LaunchQuantization.RES_NONE);
     }
 }
