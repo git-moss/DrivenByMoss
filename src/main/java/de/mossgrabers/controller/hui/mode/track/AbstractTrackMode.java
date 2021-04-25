@@ -88,6 +88,15 @@ public abstract class AbstractTrackMode extends DefaultTrackMode<HUIControlSurfa
     }
 
 
+    /** {@inheritDoc} */
+    @Override
+    protected Optional<ITrack> getTrack (final int index)
+    {
+        final int extenderOffset = this.surface.getExtenderOffset ();
+        return super.getTrack (extenderOffset + index);
+    }
+
+
     /**
      * Update the knob LEDs.
      */

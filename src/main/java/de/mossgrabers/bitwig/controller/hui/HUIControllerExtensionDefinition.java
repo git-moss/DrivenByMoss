@@ -22,12 +22,18 @@ import com.bitwig.extension.controller.api.ControllerHost;
  */
 public class HUIControllerExtensionDefinition extends AbstractControllerExtensionDefinition
 {
+    private final int numHUIDevices;
+
+
     /**
      * Constructor.
+     *
+     * @param numHUIExtenders The number of supported extenders
      */
-    public HUIControllerExtensionDefinition ()
+    HUIControllerExtensionDefinition (final int numHUIExtenders)
     {
-        super (new HUIControllerDefinition ());
+        super (new HUIControllerDefinition (numHUIExtenders));
+        this.numHUIDevices = numHUIExtenders + 1;
     }
 
 
@@ -35,6 +41,6 @@ public class HUIControllerExtensionDefinition extends AbstractControllerExtensio
     @Override
     protected IControllerSetup<?, ?> getControllerSetup (final ControllerHost host)
     {
-        return new HUIControllerSetup (new HostImpl (host), new BitwigSetupFactory (host), new SettingsUIImpl (host, host.getPreferences ()), new SettingsUIImpl (host, host.getDocumentState ()));
+        return new HUIControllerSetup (new HostImpl (host), new BitwigSetupFactory (host), new SettingsUIImpl (host, host.getPreferences ()), new SettingsUIImpl (host, host.getDocumentState ()), this.numHUIDevices);
     }
 }

@@ -116,6 +116,8 @@ public abstract class AbstractConfiguration implements Configuration
     public static final Integer      RECORD_BUTTON_FUNCTION            = Integer.valueOf (36);
     /** Setting for different record button functions in combination with shift. */
     public static final Integer      SHIFTED_RECORD_BUTTON_FUNCTION    = Integer.valueOf (37);
+    /** Show tracks hierarchical (instead of flat) if enabled. */
+    public static final Integer      HIERARCHICAL_TRACKS               = Integer.valueOf (38);
 
     // Implementation IDs start at 50
 
@@ -287,6 +289,13 @@ public abstract class AbstractConfiguration implements Configuration
         "On"
     };
 
+    /** The Flat/Hierarchical tracks option. */
+    protected static final String [] TRACK_NAVIGATION_OPTIONS    =
+    {
+        "Flat",
+        "Hierarchical"
+    };
+
 
     /** Different options for the record button. */
     public enum RecordFunction
@@ -391,6 +400,8 @@ public abstract class AbstractConfiguration implements Configuration
 
     private boolean                                   includeMaster               = true;
     private boolean                                   excludeDeactivatedItems     = false;
+    private boolean                                   isTrackNavigationFlat       = true;
+
     private final String []                           userPageNames               = new String [8];
 
     private boolean                                   isDeleteActive              = false;
@@ -1170,6 +1181,19 @@ public abstract class AbstractConfiguration implements Configuration
 
 
     /**
+     * Activate the flat or hierarchical tracks setting.
+     *
+     * @param settingsUI The settings
+     * @param category The category to add the setting to or null to use default
+     */
+    protected void activateTrackNavigationSetting (final ISettingsUI settingsUI, final String category)
+    {
+        final IEnumSetting trackNavigationSetting = settingsUI.getEnumSetting ("Track Navigation (requires restart)", category == null ? CATEGORY_WORKFLOW : category, TRACK_NAVIGATION_OPTIONS, TRACK_NAVIGATION_OPTIONS[0]);
+        this.isTrackNavigationFlat = TRACK_NAVIGATION_OPTIONS[0].equals (trackNavigationSetting.get ());
+    }
+
+
+    /**
      * Activate the accent value setting.
      *
      * @param settingsUI The settings
@@ -1705,6 +1729,17 @@ public abstract class AbstractConfiguration implements Configuration
         this.isDuplicateActive = !this.isDuplicateActive;
         if (this.isDuplicateActive)
             this.isDeleteActive = false;
+    }
+
+
+    /**
+     * Returns true if the track navigation should be hierarchical.
+     *
+     * @return True if the track navigation should be hierarchical otherwise flat
+     */
+    public boolean isTrackNavigationFlat ()
+    {
+        return this.isTrackNavigationFlat;
     }
 
 

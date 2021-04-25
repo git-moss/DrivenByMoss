@@ -8,7 +8,6 @@ import de.mossgrabers.controller.hui.controller.HUIControlSurface;
 import de.mossgrabers.framework.daw.IModel;
 import de.mossgrabers.framework.daw.data.ISend;
 import de.mossgrabers.framework.daw.data.ITrack;
-import de.mossgrabers.framework.daw.data.bank.ITrackBank;
 
 import java.util.Optional;
 
@@ -61,7 +60,9 @@ public class SendMode extends AbstractTrackMode
     @Override
     public void onKnobValue (final int index, final int value)
     {
-        this.model.getCurrentTrackBank ().getItem (index).getSendBank ().getItem (this.sendIndex).changeValue (value);
+        final Optional<ITrack> track = this.getTrack (index);
+        if (track.isPresent ())
+            track.get ().getSendBank ().getItem (this.sendIndex).changeValue (value);
     }
 
 
@@ -78,12 +79,11 @@ public class SendMode extends AbstractTrackMode
     @Override
     public void updateKnobLEDs ()
     {
-        final ITrackBank tb = this.model.getCurrentTrackBank ();
         final int upperBound = this.model.getValueChanger ().getUpperBound ();
         for (int i = 0; i < 8; i++)
         {
-            final ITrack t = tb.getItem (i);
-            this.surface.setKnobLED (i, HUIControlSurface.KNOB_LED_MODE_WRAP, t.getSendBank ().getItem (this.sendIndex).getValue (), upperBound);
+            final Optional<ITrack> track = this.getTrack (i);
+            this.surface.setKnobLED (i, HUIControlSurface.KNOB_LED_MODE_WRAP, track.isPresent () ? track.get ().getSendBank ().getItem (this.sendIndex).getValue () : 0, upperBound);
         }
     }
 
@@ -92,7 +92,9 @@ public class SendMode extends AbstractTrackMode
     @Override
     protected void resetParameter (final int index)
     {
-        this.model.getCurrentTrackBank ().getItem (index).getSendBank ().getItem (this.sendIndex).resetValue ();
+        final Optional<ITrack> track = this.getTrack (index);
+        if (track.isPresent ())
+            track.get ().getSendBank ().getItem (this.sendIndex).resetValue ();
     }
 
 

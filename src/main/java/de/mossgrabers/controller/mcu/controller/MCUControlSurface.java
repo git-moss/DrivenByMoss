@@ -176,22 +176,22 @@ public class MCUControlSurface extends AbstractControlSurface<MCUConfiguration>
         Arrays.fill (MCU_BUTTON_UPDATE, false);
     }
 
-    public static final int         VUMODE_LED               = 1;
-    public static final int         VUMODE_OFF               = 2;
-    public static final int         VUMODE_LED_AND_LCD       = 3;
-    public static final int         VUMODE_LCD               = 4;
+    public static final int               VUMODE_LED               = 1;
+    public static final int               VUMODE_OFF               = 2;
+    public static final int               VUMODE_LED_AND_LCD       = 3;
+    public static final int               VUMODE_LCD               = 4;
 
-    public static final int         KNOB_LED_MODE_SINGLE_DOT = 0;
-    public static final int         KNOB_LED_MODE_BOOST_CUT  = 1;
-    public static final int         KNOB_LED_MODE_WRAP       = 2;
-    public static final int         KNOB_LED_MODE_SPREAD     = 3;
+    public static final int               KNOB_LED_MODE_SINGLE_DOT = 0;
+    public static final int               KNOB_LED_MODE_BOOST_CUT  = 1;
+    public static final int               KNOB_LED_MODE_WRAP       = 2;
+    public static final int               KNOB_LED_MODE_SPREAD     = 3;
 
-    private int                     activeVuMode             = VUMODE_LED;
-    private int []                  knobValues               = new int [8];
+    private int                           activeVuMode             = VUMODE_LED;
+    private int []                        knobValues               = new int [8];
 
-    private final int               extenderOffset;
-    private boolean                 isMainDevice;
-    private List<MCUControlSurface> surfaces;
+    private final List<MCUControlSurface> surfaces;
+    private final int                     extenderOffset;
+    private final boolean                 isMainDevice;
 
 
     /**
@@ -353,9 +353,17 @@ public class MCUControlSurface extends AbstractControlSurface<MCUConfiguration>
         // Check on all MCU surfaces for state button presses
 
         for (final MCUControlSurface surface: this.surfaces)
+        {
             if (surface.isSinglePressed (buttonID))
                 return true;
+        }
         return false;
+    }
+
+
+    private boolean isSinglePressed (final ButtonID buttonID)
+    {
+        return super.isPressed (buttonID);
     }
 
 
@@ -367,12 +375,6 @@ public class MCUControlSurface extends AbstractControlSurface<MCUConfiguration>
     public boolean isLastDevice ()
     {
         return this.surfaceID == this.surfaces.size () - 1;
-    }
-
-
-    private boolean isSinglePressed (final ButtonID buttonID)
-    {
-        return super.isPressed (buttonID);
     }
 
 

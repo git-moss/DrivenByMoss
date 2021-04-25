@@ -119,9 +119,7 @@ public class NoteRepeatMode extends BaseMode
                 case 2:
                 case 3:
                     if (this.host.supports (Capability.NOTE_REPEAT_LENGTH))
-                    {
                         configuration.setNoteRepeatLength (Resolution.values ()[4]);
-                    }
                     break;
 
                 case 4:

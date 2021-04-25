@@ -164,7 +164,42 @@ public class FireTrackMode extends TrackMode<FireControlSurface, FireConfigurati
 
         this.isKnobTouched[index] = isTouched;
 
-        super.onKnobTouch (index, isTouched);
+        final Optional<ITrack> trackOptional = this.model.getCurrentTrackBank ().getSelectedItem ();
+        if (!trackOptional.isPresent ())
+            return;
+
+        final ITrack track = trackOptional.get ();
+        switch (this.selectedParameter)
+        {
+            case VOLUME:
+                if (isTouched && this.surface.isDeletePressed ())
+                    track.resetVolume ();
+                track.touchVolume (isTouched);
+                break;
+
+            case PAN:
+                if (isTouched && this.surface.isDeletePressed ())
+                    track.resetPan ();
+                track.touchPan (isTouched);
+                break;
+
+            case SEND1:
+            case SEND2:
+            case SEND3:
+            case SEND4:
+            case SEND5:
+            case SEND6:
+                final int sendIndex = this.selectedParameter.ordinal () - Modes.SEND1.ordinal ();
+                final ISend item = track.getSendBank ().getItem (sendIndex);
+                if (isTouched && this.surface.isDeletePressed ())
+                    item.resetValue ();
+                item.touchValue (isTouched);
+                break;
+
+            default:
+                // Not used
+                break;
+        }
     }
 
 

@@ -54,8 +54,8 @@ public class FaderTouchCommand extends SelectCommand
         }
 
         // Select channel
-        if (configuration.isTouchChannel ())
-            super.executeNormal (event);
+        if (configuration.isTouchChannel () && event == ButtonEvent.DOWN)
+            this.getTrackBank ().getItem (this.channel).select ();
 
         final ModeManager modeManager = this.surface.getModeManager ();
         if (configuration.useFadersAsKnobs ())

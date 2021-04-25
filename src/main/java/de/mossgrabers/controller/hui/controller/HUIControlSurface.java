@@ -6,11 +6,15 @@ package de.mossgrabers.controller.hui.controller;
 
 import de.mossgrabers.controller.hui.HUIConfiguration;
 import de.mossgrabers.controller.hui.command.trigger.WorkaroundFader;
+import de.mossgrabers.controller.hui.command.trigger.WorkaroundMasterFader;
 import de.mossgrabers.framework.command.core.ContinuousCommand;
 import de.mossgrabers.framework.controller.AbstractControlSurface;
+import de.mossgrabers.framework.controller.ButtonID;
 import de.mossgrabers.framework.controller.ContinuousID;
 import de.mossgrabers.framework.controller.color.ColorManager;
 import de.mossgrabers.framework.controller.hardware.IHwButton;
+import de.mossgrabers.framework.controller.valuechanger.DefaultValueChanger;
+import de.mossgrabers.framework.controller.valuechanger.Relative4ValueChanger;
 import de.mossgrabers.framework.daw.IHost;
 import de.mossgrabers.framework.daw.IModel;
 import de.mossgrabers.framework.daw.midi.IMidiInput;
@@ -19,6 +23,7 @@ import de.mossgrabers.framework.utils.ButtonEvent;
 
 import java.util.Arrays;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 
@@ -263,36 +268,86 @@ public class HUIControlSurface extends AbstractControlSurface<HUIConfiguration>
         Arrays.fill (HUI_BUTTON_UPDATE, false);
     }
 
-    public static final int         KNOB_LED_MODE_OFF        = -1;
-    public static final int         KNOB_LED_MODE_SINGLE_DOT = 0;
-    public static final int         KNOB_LED_MODE_BOOST_CUT  = 1;
-    public static final int         KNOB_LED_MODE_WRAP       = 2;
-    public static final int         KNOB_LED_MODE_SPREAD     = 3;
+    public static final int                    KNOB_LED_MODE_OFF        = -1;
+    public static final int                    KNOB_LED_MODE_SINGLE_DOT = 0;
+    public static final int                    KNOB_LED_MODE_BOOST_CUT  = 1;
+    public static final int                    KNOB_LED_MODE_WRAP       = 2;
+    public static final int                    KNOB_LED_MODE_SPREAD     = 3;
 
-    private int []                  knobValues               = new int [8];
+    // Note: Parameters do not matter, only used relative
+    private static final DefaultValueChanger   ENCODER                  = new DefaultValueChanger (128, 1);
+    private static final Relative4ValueChanger DECODER                  = new Relative4ValueChanger (128, 1);
+
+    private final List<HUIControlSurface>      surfaces;
+    private final int                          extenderOffset;
+
+    private final int []                       knobValues               = new int [8];
+    private final int []                       vuValuesL                = new int [8];
+    private final int []                       vuValuesR                = new int [8];
+    private final int []                       faderValues              = new int [9];
 
     // The currently selected zone (area of a group of buttons)
-    private int                     zone;
+    private int                                zone;
 
-    private final int []            faderHiValues            = new int [9];
-    private Map<Integer, IHwButton> huiButtons               = new HashMap<> ();
+    private final int []                       faderHiValues            = new int [9];
+    private Map<Integer, IHwButton>            huiButtons               = new HashMap<> ();
 
 
     /**
      * Constructor.
      *
+     * @param surfaces All surfaces to be able to check for status keys like Shift.
      * @param host The host
      * @param colorManager The color manager
      * @param configuration The configuration
      * @param output The MIDI output
      * @param input The MIDI input
      * @param model The model
+     * @param extenderOffset The channel/bank offset if multiple extenders are used
      */
-    public HUIControlSurface (final IHost host, final ColorManager colorManager, final HUIConfiguration configuration, final IMidiOutput output, final IMidiInput input, final IModel model)
+    public HUIControlSurface (final List<HUIControlSurface> surfaces, final IHost host, final ColorManager colorManager, final HUIConfiguration configuration, final IMidiOutput output, final IMidiInput input, final IModel model, final int extenderOffset)
     {
-        super (host, configuration, colorManager, output, input, null, 1000, 1000);
+        super (surfaces.size (), host, configuration, colorManager, output, input, null, 1000, 1000);
+
+        this.surfaces = surfaces;
+        this.extenderOffset = extenderOffset;
 
         Arrays.fill (this.knobValues, -1);
+        Arrays.fill (this.vuValuesL, -1);
+        Arrays.fill (this.vuValuesR, -1);
+        Arrays.fill (this.faderValues, -1);
+    }
+
+
+    /**
+     * Get the channel/bank offset if multiple extenders are used.
+     *
+     * @return The offset 0, 8 or 16
+     */
+    public int getExtenderOffset ()
+    {
+        return this.extenderOffset;
+    }
+
+
+    /** {@inheritDoc} */
+    @Override
+    public boolean isPressed (final ButtonID buttonID)
+    {
+        // Check on all HUI surfaces for state button presses
+
+        for (final HUIControlSurface surface: this.surfaces)
+        {
+            if (surface.isSinglePressed (buttonID))
+                return true;
+        }
+        return false;
+    }
+
+
+    private boolean isSinglePressed (final ButtonID buttonID)
+    {
+        return super.isPressed (buttonID);
     }
 
 
@@ -364,12 +419,14 @@ public class HUIControlSurface extends AbstractControlSurface<HUIConfiguration>
             case 0x05:
             case 0x06:
             case 0x07:
+                // This is an iCON extension
             case 0x08:
                 this.faderHiValues[data1] = data2;
                 break;
 
             case 0x0d:
-                this.getContinuous (ContinuousID.PLAY_POSITION).getCommand ().execute (data2);
+                final int d = ENCODER.encode (DECODER.decode (data2));
+                this.getContinuous (ContinuousID.PLAY_POSITION).getCommand ().execute (d);
                 break;
 
             // Button zone selection
@@ -393,7 +450,7 @@ public class HUIControlSurface extends AbstractControlSurface<HUIConfiguration>
                 break;
             case 0x28:
                 final int masterValue = (this.faderHiValues[8] << 7) + data2;
-                this.getContinuous (ContinuousID.FADER_MASTER).getCommand ().execute (masterValue);
+                ((WorkaroundMasterFader) this.getContinuous (ContinuousID.FADER_MASTER).getCommand ()).executeHiRes (masterValue);
                 break;
 
             // Button port up/down (a button in the selected row)
@@ -423,6 +480,47 @@ public class HUIControlSurface extends AbstractControlSurface<HUIConfiguration>
             default:
                 this.host.println ("Unhandled MIDI CC: " + data1);
                 break;
+        }
+    }
+
+
+    /**
+     * Update the channels fader value.
+     *
+     * @param channel The channel [0..7]
+     * @param value The value [0..16383]
+     */
+    public void updateFaders (final int channel, final int value)
+    {
+        if (this.faderValues[channel] == value)
+            return;
+        this.faderValues[channel] = value;
+        this.output.sendCC (channel, value / 128);
+        this.output.sendCC (0x20 + channel, value % 128);
+    }
+
+
+    /**
+     * Update the channels VU value.
+     *
+     * @param channel The channel [0..7]
+     * @param vuLeft The left VU value [0..16383]
+     * @param vuRight The right VU value [0..16383]
+     * @param upperBound The upper bound
+     */
+    public void updateVuMeters (final int channel, final int vuLeft, final int vuRight, final double upperBound)
+    {
+        if (this.vuValuesL[channel] != vuLeft)
+        {
+            this.vuValuesL[channel] = vuLeft;
+            final int scaledValue = (int) Math.floor (vuLeft * 12.0 / upperBound);
+            this.output.sendPolyphonicAftertouch (channel, scaledValue);
+        }
+        if (this.vuValuesR[channel] != vuRight)
+        {
+            this.vuValuesR[channel] = vuRight;
+            final int scaledValue = (int) Math.floor (vuRight * 12.0 / upperBound);
+            this.output.sendPolyphonicAftertouch (0x10 + channel, scaledValue);
         }
     }
 

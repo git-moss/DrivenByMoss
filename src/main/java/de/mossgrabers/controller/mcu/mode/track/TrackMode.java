@@ -48,19 +48,20 @@ public class TrackMode extends AbstractTrackMode
         final Optional<ITrack> selectedTrack = this.getSelectedTrack ();
         if (selectedTrack.isEmpty ())
             return;
+        final ITrack track = selectedTrack.get ();
 
         this.isKnobTouched[index] = isTouched;
 
         switch (index)
         {
             case 0:
-                selectedTrack.get ().touchVolume (isTouched);
+                track.touchVolume (isTouched);
                 break;
             case 1:
-                selectedTrack.get ().touchPan (isTouched);
+                track.touchPan (isTouched);
                 break;
             default:
-                selectedTrack.get ().getSendBank ().getItem (index - 2).touchValue (isTouched);
+                track.getSendBank ().getItem (index - 2).touchValue (isTouched);
                 break;
         }
     }

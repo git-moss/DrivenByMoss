@@ -167,7 +167,44 @@ public class FireLayerMode extends AbstractMode<FireControlSurface, FireConfigur
 
         this.isKnobTouched[index] = isTouched;
 
-        super.onKnobTouch (index, isTouched);
+        final ISpecificDevice cd = this.model.getDrumDevice ();
+        final Optional<ILayer> channelOptional = cd.getLayerBank ().getSelectedItem ();
+        if (!channelOptional.isPresent ())
+            return;
+
+        final IChannel channel = channelOptional.get ();
+
+        switch (this.selectedParameter)
+        {
+            case VOLUME:
+                if (isTouched && this.surface.isDeletePressed ())
+                    channel.resetVolume ();
+                channel.touchVolume (isTouched);
+                break;
+
+            case PAN:
+                if (isTouched && this.surface.isDeletePressed ())
+                    channel.resetPan ();
+                channel.touchPan (isTouched);
+                break;
+
+            case SEND1:
+            case SEND2:
+            case SEND3:
+            case SEND4:
+            case SEND5:
+            case SEND6:
+                final int sendIndex = this.selectedParameter.ordinal () - Modes.SEND1.ordinal ();
+                final ISend item = channel.getSendBank ().getItem (sendIndex);
+                if (isTouched && this.surface.isDeletePressed ())
+                    item.resetValue ();
+                item.touchValue (isTouched);
+                break;
+
+            default:
+                // No more
+                break;
+        }
     }
 
 

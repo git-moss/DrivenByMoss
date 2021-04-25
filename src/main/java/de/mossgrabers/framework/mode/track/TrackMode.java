@@ -129,6 +129,7 @@ public class TrackMode<S extends IControlSurface<C>, C extends Configuration> ex
             case 1:
                 if (isTouched && this.surface.isDeletePressed ())
                     t.resetPan ();
+                t.touchPan (isTouched);
                 break;
 
             default:

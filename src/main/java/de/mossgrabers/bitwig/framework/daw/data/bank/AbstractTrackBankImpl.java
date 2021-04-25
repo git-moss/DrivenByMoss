@@ -184,6 +184,8 @@ public abstract class AbstractTrackBankImpl extends AbstractChannelBankImpl<Trac
             if (color != null)
                 this.cursorTrack.setColor (color);
 
+            this.bank.get ().scrollIntoView (this.cursorTrack.getPosition ());
+
         }, 300);
     }
 

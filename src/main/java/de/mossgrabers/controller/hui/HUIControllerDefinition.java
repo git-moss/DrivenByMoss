@@ -16,14 +16,30 @@ import java.util.UUID;
  */
 public class HUIControllerDefinition extends DefaultControllerDefinition
 {
-    private static final UUID EXTENSION_ID = UUID.fromString ("AD354AAA-E499-4B89-B86C-3E1F74647FF5");
+    private static final UUID []   EXTENSION_ID   =
+    {
+        UUID.fromString ("AD354AAA-E499-4B89-B86C-3E1F74647FF5"),
+        UUID.fromString ("A9517933-B7AD-408A-B987-39560B0057CD"),
+        UUID.fromString ("415E6966-B016-4224-A667-47248F945CE2"),
+        UUID.fromString ("53566C82-7C54-4A5A-A574-12EDEA44CF33")
+    };
+
+    private static final String [] HARDWARE_MODEL =
+    {
+        "HUI - Human User Interface",
+        "HUI - Human User Interface + 1 Extender",
+        "HUI - Human User Interface + 2 Extenders",
+        "HUI - Human User Interface + 3 Extenders"
+    };
 
 
     /**
      * Constructor.
+     *
+     * @param numHUIExtenders The number of supported Extenders
      */
-    public HUIControllerDefinition ()
+    public HUIControllerDefinition (final int numHUIExtenders)
     {
-        super (EXTENSION_ID, "HUI - Human User Interface", "Mackie", 1, 1);
+        super (EXTENSION_ID[numHUIExtenders], HARDWARE_MODEL[numHUIExtenders], "Mackie", numHUIExtenders + 1, numHUIExtenders + 1);
     }
 }

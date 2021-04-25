@@ -208,27 +208,27 @@ public class MCUControllerSetup extends AbstractControllerSetup<MCUControlSurfac
 
         ms.enableDrumDevice (false);
 
-        final int numMackieDevices = this.numMCUDevices;
         if (this.configuration.shouldPinFXTracksToLastController ())
         {
-            ms.setNumTracks (8 * (numMackieDevices - 1));
+            ms.setNumTracks (8 * (this.numMCUDevices - 1));
             ms.setNumFxTracks (8);
         }
         else
         {
-            ms.setNumTracks (8 * numMackieDevices);
+            ms.setNumTracks (8 * this.numMCUDevices);
         }
 
+        ms.setHasFlatTrackList (this.configuration.isTrackNavigationFlat ());
         ms.setHasFullFlatTrackList (this.configuration.shouldIncludeFXTracksInTrackBank ());
         // This is required to make the new clip function work!
         ms.setNumScenes (8);
         ms.setNumFilterColumnEntries (8);
         ms.setNumResults (8);
-        ms.setNumParamPages (8 * numMackieDevices);
-        ms.setNumParams (8 * numMackieDevices);
+        ms.setNumParamPages (8 * this.numMCUDevices);
+        ms.setNumParams (8 * this.numMCUDevices);
         ms.setNumDeviceLayers (0);
         ms.setNumDrumPadLayers (0);
-        ms.setNumMarkers (8 * numMackieDevices);
+        ms.setNumMarkers (8 * this.numMCUDevices);
         this.model = this.factory.createModel (this.colorManager, this.valueChanger, this.scales, ms);
 
         final ITrackBank trackBank = this.model.getTrackBank ();
@@ -287,10 +287,23 @@ public class MCUControllerSetup extends AbstractControllerSetup<MCUControlSurfac
 
     /** {@inheritDoc} */
     @Override
+    protected void createViews ()
+    {
+        for (int index = 0; index < this.numMCUDevices; index++)
+        {
+            final MCUControlSurface surface = this.getSurface (index);
+            surface.getViewManager ().register (Views.CONTROL, new ControlOnlyView<> (surface, this.model));
+        }
+    }
+
+
+    /** {@inheritDoc} */
+    @Override
     protected void createObservers ()
     {
         super.createObservers ();
 
+        // Connect all modes
         for (int i = 0; i < this.numMCUDevices; i++)
         {
             final ModeManager mm = this.getSurface (i).getModeManager ();
@@ -331,18 +344,6 @@ public class MCUControllerSetup extends AbstractControllerSetup<MCUControlSurfac
         this.configuration.registerDeactivatedItemsHandler (this.model);
 
         this.activateBrowserObserver (Modes.BROWSER);
-    }
-
-
-    /** {@inheritDoc} */
-    @Override
-    protected void createViews ()
-    {
-        for (int index = 0; index < this.numMCUDevices; index++)
-        {
-            final MCUControlSurface surface = this.getSurface (index);
-            surface.getViewManager ().register (Views.CONTROL, new ControlOnlyView<> (surface, this.model));
-        }
     }
 
 
@@ -461,7 +462,7 @@ public class MCUControllerSetup extends AbstractControllerSetup<MCUControlSurfac
                 this.addButton (surface, ButtonID.MOVE_BANK_LEFT, "Bank Left", new MCUMoveTrackBankCommand (this.model, surface, false, true), MCUControlSurface.MCU_BANK_LEFT);
                 this.addButton (surface, ButtonID.MOVE_BANK_RIGHT, "Bank Right", new MCUMoveTrackBankCommand (this.model, surface, false, false), MCUControlSurface.MCU_BANK_RIGHT);
 
-                // Additional command for footcontrollers
+                // Additional command for foot controllers
                 this.addButton (surface, ButtonID.NEW, "New", new NewCommand<> (this.model, surface), -1);
 
                 // Only MCU

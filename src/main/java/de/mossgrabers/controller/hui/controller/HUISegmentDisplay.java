@@ -34,7 +34,7 @@ public class HUISegmentDisplay extends AbstractTextDisplay
      */
     public HUISegmentDisplay (final IHost host, final IMidiOutput output)
     {
-        super (host, output, 1, 1, 20);
+        super (host, output, 1, 1, 8);
 
         Arrays.fill (this.oldtransportBuffer, -1);
     }
@@ -56,14 +56,17 @@ public class HUISegmentDisplay extends AbstractTextDisplay
 
             // Set a dot
             if (c == ':')
-            {
                 this.transportBuffer[index] += 0x10;
-                continue;
+            else
+            {
+                int value = c - '0';
+                if (value < 0 || value > 9)
+                    value = 0;
+                this.transportBuffer[index] += value;
+                index++;
+                if (index >= 8)
+                    break;
             }
-
-            final int value = c - '0';
-            this.transportBuffer[index] += value;
-            index++;
         }
 
         // Lookup number of changed digits

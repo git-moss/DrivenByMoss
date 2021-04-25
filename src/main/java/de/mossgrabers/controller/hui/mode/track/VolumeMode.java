@@ -7,7 +7,8 @@ package de.mossgrabers.controller.hui.mode.track;
 import de.mossgrabers.controller.hui.controller.HUIControlSurface;
 import de.mossgrabers.framework.daw.IModel;
 import de.mossgrabers.framework.daw.data.ITrack;
-import de.mossgrabers.framework.daw.data.bank.ITrackBank;
+
+import java.util.Optional;
 
 
 /**
@@ -33,7 +34,9 @@ public class VolumeMode extends AbstractTrackMode
     @Override
     public void onKnobValue (final int index, final int value)
     {
-        this.model.getCurrentTrackBank ().getItem (index).changeVolume (value);
+        final Optional<ITrack> track = this.getTrack (index);
+        if (track.isPresent ())
+            track.get ().changeVolume (value);
     }
 
 
@@ -50,12 +53,11 @@ public class VolumeMode extends AbstractTrackMode
     @Override
     public void updateKnobLEDs ()
     {
-        final ITrackBank tb = this.model.getCurrentTrackBank ();
         final int upperBound = this.model.getValueChanger ().getUpperBound ();
         for (int i = 0; i < 8; i++)
         {
-            final ITrack t = tb.getItem (i);
-            this.surface.setKnobLED (i, HUIControlSurface.KNOB_LED_MODE_WRAP, t.getVolume (), upperBound);
+            final Optional<ITrack> track = this.getTrack (i);
+            this.surface.setKnobLED (i, HUIControlSurface.KNOB_LED_MODE_WRAP, track.isPresent () ? track.get ().getVolume () : 0, upperBound);
         }
     }
 
@@ -64,6 +66,8 @@ public class VolumeMode extends AbstractTrackMode
     @Override
     protected void resetParameter (final int index)
     {
-        this.model.getCurrentTrackBank ().getItem (index).resetVolume ();
+        final Optional<ITrack> track = this.getTrack (index);
+        if (track.isPresent ())
+            track.get ().resetVolume ();
     }
 }

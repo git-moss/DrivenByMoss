@@ -12,6 +12,7 @@ import de.mossgrabers.framework.controller.ButtonID;
 import de.mossgrabers.framework.controller.display.ITextDisplay;
 import de.mossgrabers.framework.daw.IModel;
 import de.mossgrabers.framework.daw.data.ICursorDevice;
+import de.mossgrabers.framework.daw.data.ITrack;
 import de.mossgrabers.framework.daw.data.bank.ITrackBank;
 import de.mossgrabers.framework.featuregroup.ModeManager;
 import de.mossgrabers.framework.mode.Modes;
@@ -54,41 +55,70 @@ public class SelectCommand extends AbstractTriggerCommand<MCUControlSurface, MCU
     @Override
     public void executeNormal (final ButtonEvent event)
     {
-        if (event != ButtonEvent.DOWN)
+        if (this.handleButtonCombinations (event))
             return;
 
-        final ITextDisplay display = this.surface.getTextDisplay ();
-        final ModeManager modeManager = this.surface.getModeManager ();
+        final MCUConfiguration configuration = this.surface.getConfiguration ();
 
+        final ITrackBank trackBank = this.getTrackBank ();
+        if (event == ButtonEvent.UP)
+        {
+            final ITrack track = trackBank.getItem (this.channel);
+            if (track.isSelected () && !configuration.isTrackNavigationFlat ())
+                track.enter ();
+            else
+                track.select ();
+        }
+        else if (event == ButtonEvent.LONG && !configuration.isTrackNavigationFlat ())
+        {
+            trackBank.selectParent ();
+            for (int i = 0; i < 8; i++)
+                this.surface.setTriggerConsumed (ButtonID.get (ButtonID.ROW_SELECT_1, i));
+        }
+    }
+
+
+    private boolean handleButtonCombinations (final ButtonEvent event)
+    {
         // Select Send channels if Send button is pressed
         if (this.surface.isPressed (ButtonID.SENDS))
         {
+            if (event != ButtonEvent.DOWN)
+                return true;
+
+            final ITextDisplay display = this.surface.getTextDisplay ();
             final ITrackBank effectTrackBank = this.model.getEffectTrackBank ();
             if (effectTrackBank != null && effectTrackBank.getItem (this.channel).doesExist ())
             {
-                modeManager.setActive (Modes.get (Modes.SEND1, this.index));
+                this.surface.getModeManager ().setActive (Modes.get (Modes.SEND1, this.index));
                 display.notify ("Send channel " + (this.channel + 1) + " selected.");
             }
             else
                 display.notify ("Send channel " + (this.channel + 1) + " does not exist.");
             this.surface.setTriggerConsumed (ButtonID.SENDS);
-            return;
+            return true;
         }
 
         // Execute stop if Select is pressed
         if (this.surface.isSelectPressed ())
         {
-            this.getTrackBank ().getItem (this.channel).stop ();
-            return;
+            if (event == ButtonEvent.DOWN)
+                this.getTrackBank ().getItem (this.channel).stop ();
+            return true;
         }
 
         if (this.surface.getConfiguration ().hasOnly1Fader ())
         {
+            if (event != ButtonEvent.DOWN)
+                return true;
+
+            final ModeManager modeManager = this.surface.getModeManager ();
+
             // Select marker if marker mode is active
             if (modeManager.isActive (Modes.MARKERS))
             {
                 this.model.getMarkerBank ().getItem (this.channel).select ();
-                return;
+                return true;
             }
 
             // Select parameter if device mode is active
@@ -97,11 +127,11 @@ public class SelectCommand extends AbstractTriggerCommand<MCUControlSurface, MCU
                 final ICursorDevice cursorDevice = this.model.getCursorDevice ();
                 if (cursorDevice.doesExist ())
                     cursorDevice.getParameterBank ().getItem (this.channel).select ();
-                return;
+                return true;
             }
         }
 
-        this.getTrackBank ().getItem (this.channel).select ();
+        return false;
     }
 
 
@@ -125,11 +155,5 @@ public class SelectCommand extends AbstractTriggerCommand<MCUControlSurface, MCU
                 return effectTrackBank;
         }
         return this.model.getCurrentTrackBank ();
-    }
-
-
-    protected int getExtenderOffset ()
-    {
-        return this.useFxBank ? 0 : this.surface.getExtenderOffset ();
     }
 }

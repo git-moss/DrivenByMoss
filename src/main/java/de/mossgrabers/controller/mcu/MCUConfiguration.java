@@ -467,6 +467,8 @@ public class MCUConfiguration extends AbstractConfiguration
 
     private void activateTracksSettings (final ISettingsUI settingsUI)
     {
+        this.activateTrackNavigationSetting (settingsUI, CATEGORY_TRACKS);
+
         final IEnumSetting includeFXTracksSetting = settingsUI.getEnumSetting ("Include FX and master tracks in track bank", CATEGORY_TRACKS, ON_OFF_OPTIONS, ON_OFF_OPTIONS[0]);
         this.includeFXTracksInTrackBank = "On".equals (includeFXTracksSetting.get ());
 
