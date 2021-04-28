@@ -653,13 +653,16 @@ public class HUIControllerSetup extends AbstractControllerSetup<HUIControlSurfac
     @Override
     public void startup ()
     {
+        final boolean shouldSendPing = this.configuration.shouldSendPing ();
+
         for (int index = 0; index < this.numHUIDevices; index++)
         {
             final HUIControlSurface surface = this.getSurface (index);
             surface.getViewManager ().setActive (Views.CONTROL);
             surface.getModeManager ().setActive (Modes.PAN);
 
-            this.sendPing (surface);
+            if (shouldSendPing)
+                this.sendPing (surface);
         }
     }
 

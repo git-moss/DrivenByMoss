@@ -26,6 +26,8 @@ public class HUIConfiguration extends AbstractConfiguration
     public static final Integer    ZOOM_STATE              = Integer.valueOf (50);
     /** Has a display. */
     public static final Integer    HAS_DISPLAY1            = Integer.valueOf (51);
+    /** Should send ping. */
+    public static final Integer    SEND_PING               = Integer.valueOf (52);
     /** Has a segment display. */
     public static final Integer    HAS_SEGMENT_DISPLAY     = Integer.valueOf (53);
     /** Has motor faders. */
@@ -77,6 +79,7 @@ public class HUIConfiguration extends AbstractConfiguration
     private boolean                hasSegmentDisplay;
     private boolean                hasMotorFaders;
     private boolean                touchChannel;
+    private boolean                sendPing;
 
     private int []                 assignableFunctions     = new int [10];
 
@@ -171,9 +174,16 @@ public class HUIConfiguration extends AbstractConfiguration
             this.notifyObservers (HAS_MOTOR_FADERS);
         });
 
+        final IEnumSetting sendPingSetting = settingsUI.getEnumSetting ("Send ping", CATEGORY_HARDWARE_SETUP, ON_OFF_OPTIONS, ON_OFF_OPTIONS[1]);
+        sendPingSetting.addValueObserver (value -> {
+            this.sendPing = "On".equals (value);
+            this.notifyObservers (HAS_MOTOR_FADERS);
+        });
+
         this.isSettingActive.add (HAS_DISPLAY1);
         this.isSettingActive.add (HAS_SEGMENT_DISPLAY);
         this.isSettingActive.add (HAS_MOTOR_FADERS);
+        this.isSettingActive.add (SEND_PING);
     }
 
 
@@ -243,7 +253,7 @@ public class HUIConfiguration extends AbstractConfiguration
     /**
      * Returns true if it has a main display.
      *
-     * @return True if it has a main display.
+     * @return True if it has a main display
      */
     public boolean hasDisplay1 ()
     {
@@ -254,7 +264,7 @@ public class HUIConfiguration extends AbstractConfiguration
     /**
      * Returns true if it has a segment display for tempo and position.
      *
-     * @return True if it has a segment display.
+     * @return True if it has a segment display
      */
     public boolean hasSegmentDisplay ()
     {
@@ -265,11 +275,22 @@ public class HUIConfiguration extends AbstractConfiguration
     /**
      * Returns true if it has motor faders.
      *
-     * @return True if it has motor faders.
+     * @return True if it has motor faders
      */
     public boolean hasMotorFaders ()
     {
         return this.hasMotorFaders;
+    }
+
+
+    /**
+     * Returns true if a ping message should be send every second to the HUI device.
+     *
+     * @return True if it should send a ping
+     */
+    public boolean shouldSendPing ()
+    {
+        return this.sendPing;
     }
 
 

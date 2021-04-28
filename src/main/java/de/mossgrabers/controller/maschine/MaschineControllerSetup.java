@@ -43,6 +43,7 @@ import de.mossgrabers.controller.maschine.view.SelectView;
 import de.mossgrabers.controller.maschine.view.ShiftView;
 import de.mossgrabers.controller.maschine.view.SoloView;
 import de.mossgrabers.controller.mcu.controller.MCUDisplay;
+import de.mossgrabers.framework.command.aftertouch.AftertouchAbstractViewCommand;
 import de.mossgrabers.framework.command.continuous.KnobRowModeCommand;
 import de.mossgrabers.framework.command.core.NopCommand;
 import de.mossgrabers.framework.command.trigger.BrowserCommand;
@@ -87,6 +88,7 @@ import de.mossgrabers.framework.daw.data.bank.ITrackBank;
 import de.mossgrabers.framework.daw.midi.IMidiAccess;
 import de.mossgrabers.framework.daw.midi.IMidiInput;
 import de.mossgrabers.framework.daw.midi.IMidiOutput;
+import de.mossgrabers.framework.featuregroup.AbstractView;
 import de.mossgrabers.framework.featuregroup.IMode;
 import de.mossgrabers.framework.featuregroup.ModeManager;
 import de.mossgrabers.framework.featuregroup.ViewManager;
@@ -661,6 +663,11 @@ public class MaschineControllerSetup extends AbstractControllerSetup<MaschineCon
 
 
     /** {@inheritDoc} */
+    @SuppressWarnings(
+    {
+        "rawtypes",
+        "unchecked"
+    })
     @Override
     protected void registerContinuousCommands ()
     {
@@ -692,6 +699,19 @@ public class MaschineControllerSetup extends AbstractControllerSetup<MaschineCon
         final TouchstripCommand touchstripCommand = new TouchstripCommand (this.model, surface);
         this.addFader (ContinuousID.CROSSFADER, "Touchstrip", touchstripCommand, BindType.CC, MaschineControlSurface.TOUCHSTRIP, false);
         surface.getContinuous (ContinuousID.CROSSFADER).bindTouch (touchstripCommand, surface.getMidiInput (), BindType.CC, 0, MaschineControlSurface.TOUCHSTRIP_TOUCH);
+
+        // Enable aftertouch
+        final ViewManager viewManager = surface.getViewManager ();
+        final Views [] views =
+        {
+            Views.PLAY,
+            Views.DRUM,
+        };
+        for (final Views viewID: views)
+        {
+            final AbstractView view = AbstractView.class.cast (viewManager.get (viewID));
+            view.registerAftertouchCommand (new AftertouchAbstractViewCommand<> (view, this.model, surface));
+        }
     }
 
 
