@@ -1228,28 +1228,43 @@ public abstract class AbstractControllerSetup<S extends IControlSurface<C>, C ex
 
     /**
      * Register observers for all scale settings. Stores the changed value in the scales object and
-     * updates the actives views note mapping.
+     * updates the active views note mapping.
      *
      * @param conf The configuration
      */
     protected void createScaleObservers (final C conf)
     {
-        conf.addSettingObserver (AbstractConfiguration.SCALES_SCALE, () -> {
-            this.scales.setScaleByName (conf.getScale ());
-            this.updateViewNoteMapping ();
-        });
-        conf.addSettingObserver (AbstractConfiguration.SCALES_BASE, () -> {
-            this.scales.setScaleOffsetByName (conf.getScaleBase ());
-            this.updateViewNoteMapping ();
-        });
-        conf.addSettingObserver (AbstractConfiguration.SCALES_IN_KEY, () -> {
-            this.scales.setChromatic (!conf.isScaleInKey ());
-            this.updateViewNoteMapping ();
-        });
-        conf.addSettingObserver (AbstractConfiguration.SCALES_LAYOUT, () -> {
-            this.scales.setScaleLayoutByName (conf.getScaleLayout ());
-            this.updateViewNoteMapping ();
-        });
+        if (conf.canSettingBeObserved (AbstractConfiguration.SCALES_SCALE))
+        {
+            conf.addSettingObserver (AbstractConfiguration.SCALES_SCALE, () -> {
+                this.scales.setScaleByName (conf.getScale ());
+                this.updateViewNoteMapping ();
+            });
+        }
+
+        if (conf.canSettingBeObserved (AbstractConfiguration.SCALES_BASE))
+        {
+            conf.addSettingObserver (AbstractConfiguration.SCALES_BASE, () -> {
+                this.scales.setScaleOffsetByName (conf.getScaleBase ());
+                this.updateViewNoteMapping ();
+            });
+        }
+
+        if (conf.canSettingBeObserved (AbstractConfiguration.SCALES_IN_KEY))
+        {
+            conf.addSettingObserver (AbstractConfiguration.SCALES_IN_KEY, () -> {
+                this.scales.setChromatic (!conf.isScaleInKey ());
+                this.updateViewNoteMapping ();
+            });
+        }
+
+        if (conf.canSettingBeObserved (AbstractConfiguration.SCALES_LAYOUT))
+        {
+            conf.addSettingObserver (AbstractConfiguration.SCALES_LAYOUT, () -> {
+                this.scales.setScaleLayoutByName (conf.getScaleLayout ());
+                this.updateViewNoteMapping ();
+            });
+        }
     }
 
 
