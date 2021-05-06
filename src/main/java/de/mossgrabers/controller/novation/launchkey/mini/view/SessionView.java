@@ -10,6 +10,7 @@ import de.mossgrabers.controller.novation.launchkey.mini.controller.LaunchkeyMin
 import de.mossgrabers.framework.controller.ButtonID;
 import de.mossgrabers.framework.controller.color.ColorManager;
 import de.mossgrabers.framework.controller.grid.IPadGrid;
+import de.mossgrabers.framework.controller.grid.LightInfo;
 import de.mossgrabers.framework.daw.IModel;
 import de.mossgrabers.framework.daw.data.IScene;
 import de.mossgrabers.framework.daw.data.ITrack;
@@ -19,7 +20,6 @@ import de.mossgrabers.framework.mode.Modes;
 import de.mossgrabers.framework.utils.ButtonEvent;
 import de.mossgrabers.framework.utils.Pair;
 import de.mossgrabers.framework.view.AbstractSessionView;
-import de.mossgrabers.framework.view.SessionColor;
 import de.mossgrabers.framework.view.Views;
 
 import java.util.List;
@@ -48,13 +48,13 @@ public class SessionView extends AbstractSessionView<LaunchkeyMiniMk3ControlSurf
     {
         super ("Session", surface, model, 2, 8, true);
 
-        final SessionColor isRecording = new SessionColor (LaunchkeyMiniMk3ColorManager.LAUNCHKEY_COLOR_RED, LaunchkeyMiniMk3ColorManager.LAUNCHKEY_COLOR_RED, false);
-        final SessionColor isRecordingQueued = new SessionColor (LaunchkeyMiniMk3ColorManager.LAUNCHKEY_COLOR_RED_LO, LaunchkeyMiniMk3ColorManager.LAUNCHKEY_COLOR_RED_LO, true);
-        final SessionColor isPlaying = new SessionColor (LaunchkeyMiniMk3ColorManager.LAUNCHKEY_COLOR_GREEN_SPRING, LaunchkeyMiniMk3ColorManager.LAUNCHKEY_COLOR_GREEN, false);
-        final SessionColor isPlayingQueued = new SessionColor (LaunchkeyMiniMk3ColorManager.LAUNCHKEY_COLOR_GREEN_SPRING, LaunchkeyMiniMk3ColorManager.LAUNCHKEY_COLOR_GREEN, true);
-        final SessionColor hasContent = new SessionColor (LaunchkeyMiniMk3ColorManager.LAUNCHKEY_COLOR_AMBER, -1, false);
-        final SessionColor noContent = new SessionColor (LaunchkeyMiniMk3ColorManager.LAUNCHKEY_COLOR_BLACK, -1, false);
-        final SessionColor recArmed = new SessionColor (LaunchkeyMiniMk3ColorManager.LAUNCHKEY_COLOR_RED_LO, -1, false);
+        final LightInfo isRecording = new LightInfo (LaunchkeyMiniMk3ColorManager.LAUNCHKEY_COLOR_RED, LaunchkeyMiniMk3ColorManager.LAUNCHKEY_COLOR_RED, false);
+        final LightInfo isRecordingQueued = new LightInfo (LaunchkeyMiniMk3ColorManager.LAUNCHKEY_COLOR_RED_LO, LaunchkeyMiniMk3ColorManager.LAUNCHKEY_COLOR_RED_LO, true);
+        final LightInfo isPlaying = new LightInfo (LaunchkeyMiniMk3ColorManager.LAUNCHKEY_COLOR_GREEN_SPRING, LaunchkeyMiniMk3ColorManager.LAUNCHKEY_COLOR_GREEN, false);
+        final LightInfo isPlayingQueued = new LightInfo (LaunchkeyMiniMk3ColorManager.LAUNCHKEY_COLOR_GREEN_SPRING, LaunchkeyMiniMk3ColorManager.LAUNCHKEY_COLOR_GREEN, true);
+        final LightInfo hasContent = new LightInfo (LaunchkeyMiniMk3ColorManager.LAUNCHKEY_COLOR_AMBER, -1, false);
+        final LightInfo noContent = new LightInfo (LaunchkeyMiniMk3ColorManager.LAUNCHKEY_COLOR_BLACK, -1, false);
+        final LightInfo recArmed = new LightInfo (LaunchkeyMiniMk3ColorManager.LAUNCHKEY_COLOR_RED_LO, -1, false);
         this.setColors (isRecording, isRecordingQueued, isPlaying, isPlayingQueued, hasContent, noContent, recArmed);
     }
 

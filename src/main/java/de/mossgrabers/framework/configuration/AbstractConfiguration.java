@@ -704,9 +704,20 @@ public abstract class AbstractConfiguration implements Configuration
 
     /** {@inheritDoc} */
     @Override
-    public void setNewClipLength (final int value)
+    public void setNewClipLength (final int index)
     {
-        this.newClipLengthSetting.set (NEW_CLIP_LENGTH_VALUES[value]);
+        this.newClipLengthSetting.set (NEW_CLIP_LENGTH_VALUES[index]);
+    }
+
+
+    /** {@inheritDoc} */
+    @Override
+    public void nextNewClipLength ()
+    {
+        int index = this.newClipLength + 1;
+        if (index >= NEW_CLIP_LENGTH_VALUES.length)
+            index = 0;
+        this.newClipLengthSetting.set (NEW_CLIP_LENGTH_VALUES[index]);
     }
 
 

@@ -16,7 +16,7 @@ import de.mossgrabers.controller.arturia.beatstep.view.SequencerView;
 import de.mossgrabers.controller.arturia.beatstep.view.SessionView;
 import de.mossgrabers.controller.arturia.beatstep.view.ShiftView;
 import de.mossgrabers.controller.arturia.beatstep.view.TrackView;
-import de.mossgrabers.framework.command.aftertouch.AftertouchAbstractViewCommand;
+import de.mossgrabers.framework.command.aftertouch.AftertouchViewCommand;
 import de.mossgrabers.framework.command.continuous.PlayPositionCommand;
 import de.mossgrabers.framework.configuration.ISettingsUI;
 import de.mossgrabers.framework.controller.AbstractControllerSetup;
@@ -220,7 +220,7 @@ public class BeatstepControllerSetup extends AbstractControllerSetup<BeatstepCon
         this.addRelativeKnob (ContinuousID.MASTER_KNOB, "Master", new PlayPositionCommand<> (this.model, surface), BindType.CC, 2, BeatstepControlSurface.BEATSTEP_KNOB_MAIN, RelativeEncoding.OFFSET_BINARY);
 
         final PlayView playView = (PlayView) viewManager.get (Views.PLAY);
-        playView.registerAftertouchCommand (new AftertouchAbstractViewCommand<> (playView, this.model, surface));
+        playView.registerAftertouchCommand (new AftertouchViewCommand<> (playView, this.model, surface));
     }
 
 

@@ -12,7 +12,7 @@ import de.mossgrabers.framework.utils.FrameworkException;
  *
  * @author J&uuml;rgen Mo&szlig;graber
  */
-public class LightInfo
+public final class LightInfo
 {
     private int     color      = 0;
     private int     blinkColor = 0;
@@ -21,13 +21,24 @@ public class LightInfo
 
 
     /**
-     * Get the color of the pad.
-     *
-     * @return The color
+     * Default constructor.
      */
-    public int getColor ()
+    public LightInfo ()
     {
-        return this.color;
+        // Intentionally empty
+    }
+
+
+    /**
+     * Constructor.
+     *
+     * @param color The main color
+     * @param blinkColor If a different code is necessary for blinking (if supported by controller)
+     * @param fast Blink fast if true
+     */
+    public LightInfo (final int color, final int blinkColor, final boolean fast)
+    {
+        this.setColors (color, blinkColor, fast);
     }
 
 
@@ -41,15 +52,26 @@ public class LightInfo
     public void setColors (final int color, final int blinkColor, final boolean fast)
     {
         if (color < 0 || color > 127)
-            throw new FrameworkException ("color must be in the range of 0..127");
-        if (blinkColor < 0 || blinkColor > 127)
-            throw new FrameworkException ("blinkColor must be in the range of 0..127");
+            throw new FrameworkException ("color must be in the range of 0..127.");
+        if (blinkColor < -1 || blinkColor > 127)
+            throw new FrameworkException ("blinkColor must be in the range of 0..127 or -1 for off.");
 
         this.color = color;
         this.blinkColor = blinkColor;
         this.fast = fast;
 
         this.encode ();
+    }
+
+
+    /**
+     * Get the color of the pad.
+     *
+     * @return The color
+     */
+    public int getColor ()
+    {
+        return this.color;
     }
 
 

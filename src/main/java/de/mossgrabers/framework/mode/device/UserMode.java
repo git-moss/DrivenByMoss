@@ -32,7 +32,7 @@ public class UserMode<S extends IControlSurface<C>, C extends Configuration> ext
      *
      * @param surface The control surface
      * @param model The model
-     * @param isAbsolute If true the value change is happending with a setter otherwise relative
+     * @param isAbsolute If true the value change is happening with a setter otherwise relative
      *            change method is used
      * @param knobs The IDs of the knob to control this mode
      */
@@ -47,7 +47,7 @@ public class UserMode<S extends IControlSurface<C>, C extends Configuration> ext
      *
      * @param surface The control surface
      * @param model The model
-     * @param isAbsolute If true the value change is happending with a setter otherwise relative
+     * @param isAbsolute If true the value change is happening with a setter otherwise relative
      *            change method is used
      * @param knobs The IDs of the knob to control this mode
      * @param isAlternativeFunction Callback function to execute the secondary function, e.g. a

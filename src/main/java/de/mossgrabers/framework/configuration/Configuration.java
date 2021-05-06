@@ -189,11 +189,18 @@ public interface Configuration
 
 
     /**
-     * Set the default length for new clips.
+     * Set the index (0-7) of the default length for new clips.
      *
-     * @param value The default length for new clips
+     * @param value The index of the length which is: 0: "1 Beat", 1: "2 Beat", 2: "1 Bar", 3: "2
+     *            Bars", 4: "4 Bars", 5: "8 Bars", 6: "16 Bars", 7: "32 Bars"
      */
     void setNewClipLength (int value);
+
+
+    /**
+     * Select the next new clip length. Wraps around to the first.
+     */
+    void nextNewClipLength ();
 
 
     /**

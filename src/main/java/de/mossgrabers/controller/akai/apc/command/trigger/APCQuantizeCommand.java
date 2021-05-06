@@ -36,7 +36,7 @@ public class APCQuantizeCommand extends QuantizeCommand<APCControlSurface, APCCo
     @Override
     public void executeShifted (final ButtonEvent event)
     {
-        if (event != ButtonEvent.DOWN)
+        if (event != ButtonEvent.UP)
             return;
         final ICursorTrack cursorTrack = this.model.getCursorTrack ();
         final ICursorDevice cursorDevice = this.model.getCursorDevice ();

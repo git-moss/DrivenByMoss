@@ -248,7 +248,8 @@ public class LaunchkeyMk3ControllerSetup extends AbstractControllerSetup<Launchk
 
         this.addButton (ButtonID.PLAY, "Play", new LaunchkeyMk3PlayCommand (this.model, surface), 15, LaunchkeyMk3ControlSurface.LAUNCHKEY_PLAY, t::isPlaying);
         this.addButton (ButtonID.STOP, "Stop", new StopCommand<> (this.model, surface), 15, LaunchkeyMk3ControlSurface.LAUNCHKEY_STOP, () -> !t.isPlaying ());
-        this.addButton (ButtonID.RECORD, "Record", new ConfiguredRecordCommand<> (this.model, surface), 15, LaunchkeyMk3ControlSurface.LAUNCHKEY_RECORD, () -> t.isLauncherOverdub () || t.isRecording ());
+        final ConfiguredRecordCommand<LaunchkeyMk3ControlSurface, LaunchkeyMk3Configuration> recordCommand = new ConfiguredRecordCommand<> (this.model, surface);
+        this.addButton (ButtonID.RECORD, "Record", recordCommand, 15, LaunchkeyMk3ControlSurface.LAUNCHKEY_RECORD, recordCommand::isLit);
         this.addButton (ButtonID.REPEAT, "Repeat", new ToggleLoopCommand<> (this.model, surface), 15, LaunchkeyMk3ControlSurface.LAUNCHKEY_LOOP, t::isLoop);
 
         this.addButton (ButtonID.NEW, "Capture MIDI", new NewCommand<> (this.model, surface), 15, LaunchkeyMk3ControlSurface.LAUNCHKEY_CAPTURE_MIDI);

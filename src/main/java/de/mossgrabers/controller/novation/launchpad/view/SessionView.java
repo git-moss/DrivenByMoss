@@ -11,6 +11,7 @@ import de.mossgrabers.controller.novation.launchpad.controller.LaunchpadControlS
 import de.mossgrabers.framework.configuration.AbstractConfiguration;
 import de.mossgrabers.framework.controller.ButtonID;
 import de.mossgrabers.framework.controller.grid.IPadGrid;
+import de.mossgrabers.framework.controller.grid.LightInfo;
 import de.mossgrabers.framework.daw.DAWColor;
 import de.mossgrabers.framework.daw.IModel;
 import de.mossgrabers.framework.daw.data.IScene;
@@ -25,7 +26,6 @@ import de.mossgrabers.framework.mode.Modes;
 import de.mossgrabers.framework.utils.ButtonEvent;
 import de.mossgrabers.framework.utils.Pair;
 import de.mossgrabers.framework.view.AbstractSessionView;
-import de.mossgrabers.framework.view.SessionColor;
 import de.mossgrabers.framework.view.Views;
 
 
@@ -53,17 +53,17 @@ public class SessionView extends AbstractSessionView<LaunchpadControlSurface, La
 
         this.configuration = this.surface.getConfiguration ();
 
-        final SessionColor isRecording = new SessionColor (LaunchpadColorManager.LAUNCHPAD_COLOR_RED_HI, LaunchpadColorManager.LAUNCHPAD_COLOR_RED_HI, false);
-        final SessionColor isRecordingQueued = new SessionColor (LaunchpadColorManager.LAUNCHPAD_COLOR_RED_HI, LaunchpadColorManager.LAUNCHPAD_COLOR_BLACK, true);
-        final SessionColor isPlaying = new SessionColor (LaunchpadColorManager.LAUNCHPAD_COLOR_GREEN, LaunchpadColorManager.LAUNCHPAD_COLOR_GREEN, false);
-        final SessionColor isPlayingQueued = new SessionColor (LaunchpadColorManager.LAUNCHPAD_COLOR_GREEN, LaunchpadColorManager.LAUNCHPAD_COLOR_GREEN, true);
-        final SessionColor hasContent = new SessionColor (LaunchpadColorManager.LAUNCHPAD_COLOR_AMBER, -1, false);
-        final SessionColor noContent = new SessionColor (LaunchpadColorManager.LAUNCHPAD_COLOR_BLACK, -1, false);
-        final SessionColor recArmed = new SessionColor (LaunchpadColorManager.LAUNCHPAD_COLOR_RED_LO, -1, false);
+        final LightInfo isRecording = new LightInfo (LaunchpadColorManager.LAUNCHPAD_COLOR_RED_HI, LaunchpadColorManager.LAUNCHPAD_COLOR_RED_HI, false);
+        final LightInfo isRecordingQueued = new LightInfo (LaunchpadColorManager.LAUNCHPAD_COLOR_RED_HI, LaunchpadColorManager.LAUNCHPAD_COLOR_BLACK, true);
+        final LightInfo isPlaying = new LightInfo (LaunchpadColorManager.LAUNCHPAD_COLOR_GREEN, LaunchpadColorManager.LAUNCHPAD_COLOR_GREEN, false);
+        final LightInfo isPlayingQueued = new LightInfo (LaunchpadColorManager.LAUNCHPAD_COLOR_GREEN, LaunchpadColorManager.LAUNCHPAD_COLOR_GREEN, true);
+        final LightInfo hasContent = new LightInfo (LaunchpadColorManager.LAUNCHPAD_COLOR_AMBER, -1, false);
+        final LightInfo noContent = new LightInfo (LaunchpadColorManager.LAUNCHPAD_COLOR_BLACK, -1, false);
+        final LightInfo recArmed = new LightInfo (LaunchpadColorManager.LAUNCHPAD_COLOR_RED_LO, -1, false);
         this.setColors (isRecording, isRecordingQueued, isPlaying, isPlayingQueued, hasContent, noContent, recArmed);
 
         this.birdColorHasContent = hasContent;
-        this.birdColorSelected = new SessionColor (LaunchpadColorManager.LAUNCHPAD_COLOR_GREEN, -1, false);
+        this.birdColorSelected = new LightInfo (LaunchpadColorManager.LAUNCHPAD_COLOR_GREEN, -1, false);
 
         this.configuration.addSettingObserver (AbstractConfiguration.FLIP_SESSION, this::updateRowsCols);
         this.surface.getModeManager ().addChangeListener ( (oldMode, newMode) -> this.updateRowsCols ());

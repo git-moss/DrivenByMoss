@@ -14,8 +14,8 @@ public interface PitchbendCommand
     /**
      * Execute the pitchbend command.
      *
-     * @param data1 The first pitchbend byte
-     * @param data2 The second pitchbend byte
+     * @param data1 The first pitchbend byte (low byte)
+     * @param data2 The second pitchbend byte (high byte)
      */
     void onPitchbend (final int data1, int data2);
 

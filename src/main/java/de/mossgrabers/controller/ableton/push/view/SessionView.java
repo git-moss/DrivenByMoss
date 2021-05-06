@@ -9,13 +9,13 @@ import de.mossgrabers.controller.ableton.push.command.trigger.SelectSessionViewC
 import de.mossgrabers.controller.ableton.push.controller.PushColorManager;
 import de.mossgrabers.controller.ableton.push.controller.PushControlSurface;
 import de.mossgrabers.framework.controller.ButtonID;
+import de.mossgrabers.framework.controller.grid.LightInfo;
 import de.mossgrabers.framework.daw.IModel;
 import de.mossgrabers.framework.daw.data.IScene;
 import de.mossgrabers.framework.daw.data.bank.ISceneBank;
 import de.mossgrabers.framework.featuregroup.AbstractFeatureGroup;
 import de.mossgrabers.framework.utils.ButtonEvent;
 import de.mossgrabers.framework.view.AbstractSessionView;
-import de.mossgrabers.framework.view.SessionColor;
 import de.mossgrabers.framework.view.TransposeView;
 
 
@@ -43,13 +43,13 @@ public class SessionView extends AbstractSessionView<PushControlSurface, PushCon
         final int white = isPush2 ? PushColorManager.PUSH2_COLOR2_WHITE : PushColorManager.PUSH1_COLOR2_WHITE;
         final int green = isPush2 ? PushColorManager.PUSH2_COLOR2_GREEN : PushColorManager.PUSH1_COLOR2_GREEN;
         final int amber = isPush2 ? PushColorManager.PUSH2_COLOR2_AMBER : PushColorManager.PUSH1_COLOR2_AMBER;
-        final SessionColor isRecording = new SessionColor (redHi, redHi, false);
-        final SessionColor isRecordingQueued = new SessionColor (redHi, black, true);
-        final SessionColor isPlaying = new SessionColor (green, green, false);
-        final SessionColor isPlayingQueued = new SessionColor (green, green, true);
-        final SessionColor hasContent = new SessionColor (amber, white, false);
-        final SessionColor noContent = new SessionColor (black, -1, false);
-        final SessionColor recArmed = new SessionColor (redLo, -1, false);
+        final LightInfo isRecording = new LightInfo (redHi, redHi, false);
+        final LightInfo isRecordingQueued = new LightInfo (redHi, black, true);
+        final LightInfo isPlaying = new LightInfo (green, green, false);
+        final LightInfo isPlayingQueued = new LightInfo (green, green, true);
+        final LightInfo hasContent = new LightInfo (amber, white, false);
+        final LightInfo noContent = new LightInfo (black, -1, false);
+        final LightInfo recArmed = new LightInfo (redLo, -1, false);
         this.setColors (isRecording, isRecordingQueued, isPlaying, isPlayingQueued, hasContent, noContent, recArmed);
 
         this.birdColorHasContent = hasContent;

@@ -199,7 +199,8 @@ public class LaunchkeyMiniMk3ControllerSetup extends AbstractControllerSetup<Lau
         this.addButton (ButtonID.SHIFT, "Shift", NopCommand.INSTANCE, LaunchkeyMiniMk3ControlSurface.LAUNCHKEY_SHIFT);
 
         this.addButton (ButtonID.PLAY, "Play", new PlayCommand<> (this.model, surface), 15, LaunchkeyMiniMk3ControlSurface.LAUNCHKEY_PLAY, t::isPlaying);
-        this.addButton (ButtonID.RECORD, "Record", new ConfiguredRecordCommand<> (this.model, surface), 15, LaunchkeyMiniMk3ControlSurface.LAUNCHKEY_RECORD, () -> t.isLauncherOverdub () || t.isRecording ());
+        final ConfiguredRecordCommand<LaunchkeyMiniMk3ControlSurface, LaunchkeyMiniMk3Configuration> recordCommand = new ConfiguredRecordCommand<> (this.model, surface);
+        this.addButton (ButtonID.RECORD, "Record", recordCommand, 15, LaunchkeyMiniMk3ControlSurface.LAUNCHKEY_RECORD, recordCommand::isLit);
 
         final ModeCursorCommand<LaunchkeyMiniMk3ControlSurface, LaunchkeyMiniMk3Configuration> leftCommand = new ModeCursorCommand<> (Direction.LEFT, this.model, surface);
         this.addButton (ButtonID.MOVE_TRACK_LEFT, "Previous", leftCommand, 15, LaunchkeyMiniMk3ControlSurface.LAUNCHKEY_LEFT, leftCommand::canScroll);

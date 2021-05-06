@@ -8,6 +8,7 @@ import de.mossgrabers.framework.command.core.AbstractTriggerCommand;
 import de.mossgrabers.framework.configuration.Configuration;
 import de.mossgrabers.framework.controller.IControlSurface;
 import de.mossgrabers.framework.daw.IModel;
+import de.mossgrabers.framework.daw.data.ISend;
 import de.mossgrabers.framework.daw.data.ITrack;
 import de.mossgrabers.framework.daw.data.bank.ITrackBank;
 import de.mossgrabers.framework.featuregroup.ModeManager;
@@ -32,7 +33,6 @@ public class ModeMultiSelectCommand<S extends IControlSurface<C>, C extends Conf
 {
     private final ModeManager modeManager;
     private final List<Modes> modeIds = new ArrayList<> ();
-    private final Modes       send1;
     private Modes             currentModeID;
 
 
@@ -49,7 +49,6 @@ public class ModeMultiSelectCommand<S extends IControlSurface<C>, C extends Conf
 
         this.modeManager = this.surface.getModeManager ();
         this.modeIds.addAll (Arrays.asList (modeIds));
-        this.send1 = Modes.SEND1;
         this.currentModeID = this.modeIds.get (0);
     }
 
@@ -76,7 +75,7 @@ public class ModeMultiSelectCommand<S extends IControlSurface<C>, C extends Conf
                 if (index < 0 || index >= this.modeIds.size ())
                     index = this.modeIds.size () - 1;
                 newMode = this.modeIds.get (index);
-            } while (Modes.isSendMode (newMode) && !trackBank.canEditSend (newMode.ordinal () - this.send1.ordinal ()));
+            } while (Modes.isSendMode (newMode) && !trackBank.canEditSend (newMode.ordinal () - Modes.SEND1.ordinal ()));
         }
 
         this.activateMode (newMode);
@@ -105,7 +104,7 @@ public class ModeMultiSelectCommand<S extends IControlSurface<C>, C extends Conf
                 if (index < 0 || index >= this.modeIds.size ())
                     index = 0;
                 newMode = this.modeIds.get (index);
-            } while (Modes.isSendMode (newMode) && !trackBank.canEditSend (newMode.ordinal () - this.send1.ordinal ()));
+            } while (Modes.isSendMode (newMode) && !trackBank.canEditSend (newMode.ordinal () - Modes.SEND1.ordinal ()));
         }
 
         this.activateMode (newMode);
@@ -123,22 +122,37 @@ public class ModeMultiSelectCommand<S extends IControlSurface<C>, C extends Conf
         this.modeManager.setActive (modeID);
 
         String modeName = this.modeManager.get (modeID).getName ();
-
         if (Modes.isSendMode (modeID))
-        {
-            final int sendIndex = modeID.ordinal () - this.send1.ordinal ();
-            modeName = modeName + " " + (sendIndex + 1);
-            final ITrackBank trackBank = this.model.getTrackBank ();
-            Optional<ITrack> selectedTrack = trackBank.getSelectedItem ();
-            if (selectedTrack.isEmpty ())
-            {
-                final ITrack item = trackBank.getItem (0);
-                selectedTrack = item.doesExist () ? Optional.of (item) : Optional.empty ();
-            }
-            if (selectedTrack.isPresent ())
-                modeName += ": " + selectedTrack.get ().getSendBank ().getItem (sendIndex).getName ();
-        }
+            modeName = getSendModeNotification (modeID, modeName, this.model.getTrackBank ());
 
         this.model.getHost ().showNotification (modeName);
+    }
+
+
+    /**
+     * Build the information text for a send channel.
+     *
+     * @param modeID The ID of the send mode
+     * @param modeName The name of the mode
+     * @param trackBank The track bank from which to get more effect info
+     * @return The text
+     */
+    public static String getSendModeNotification (final Modes modeID, final String modeName, final ITrackBank trackBank)
+    {
+        final int sendIndex = modeID.ordinal () - Modes.SEND1.ordinal ();
+        String sendModeName = modeName + " " + (sendIndex + 1);
+        Optional<ITrack> selectedTrack = trackBank.getSelectedItem ();
+        if (selectedTrack.isEmpty ())
+        {
+            final ITrack item = trackBank.getItem (0);
+            selectedTrack = item.doesExist () ? Optional.of (item) : Optional.empty ();
+        }
+        if (selectedTrack.isPresent ())
+        {
+            sendModeName += ": ";
+            final ISend send = selectedTrack.get ().getSendBank ().getItem (sendIndex);
+            sendModeName += send.doesExist () ? send.getName () : "-";
+        }
+        return sendModeName;
     }
 }

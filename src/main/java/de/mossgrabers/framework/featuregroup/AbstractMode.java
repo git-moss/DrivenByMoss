@@ -94,7 +94,7 @@ public abstract class AbstractMode<S extends IControlSurface<C>, C extends Confi
      * @param name The name of the mode
      * @param surface The control surface
      * @param model The model
-     * @param isAbsolute If true the value change is happending with a setter otherwise relative
+     * @param isAbsolute If true the value change is happening with a setter otherwise relative
      *            change method is used
      * @param isAlternativeFunction Callback function to execute the secondary function, e.g. a
      *            shift button

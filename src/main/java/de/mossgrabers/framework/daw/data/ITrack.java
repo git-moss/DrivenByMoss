@@ -7,6 +7,8 @@ package de.mossgrabers.framework.daw.data;
 import de.mossgrabers.framework.daw.constants.RecordQuantization;
 import de.mossgrabers.framework.daw.data.bank.ISlotBank;
 
+import java.util.Arrays;
+
 
 /**
  * Interface to a track.
@@ -186,6 +188,38 @@ public interface ITrack extends IChannel
      * @param recordQuantization The record quantization grid resolution
      */
     void setRecordQuantizationGrid (RecordQuantization recordQuantization);
+
+
+    /**
+     * Select the next automation write mode.
+     */
+    default void previousRecordQuantization ()
+    {
+        final RecordQuantization [] recordQuantizations = RecordQuantization.values ();
+        final RecordQuantization recordQuantization = this.getRecordQuantizationGrid ();
+
+        int pos = Arrays.asList (recordQuantizations).indexOf (recordQuantization) - 1;
+        if (pos < 0)
+            pos = recordQuantizations.length - 1;
+
+        this.setRecordQuantizationGrid (recordQuantizations[pos]);
+    }
+
+
+    /**
+     * Select the next automation write mode.
+     */
+    default void nextRecordQuantization ()
+    {
+        final RecordQuantization [] recordQuantizations = RecordQuantization.values ();
+        final RecordQuantization recordQuantization = this.getRecordQuantizationGrid ();
+
+        int pos = Arrays.asList (recordQuantizations).indexOf (recordQuantization) + 1;
+        if (pos >= recordQuantizations.length)
+            pos = 0;
+
+        this.setRecordQuantizationGrid (recordQuantizations[pos]);
+    }
 
 
     /**

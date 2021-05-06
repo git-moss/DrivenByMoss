@@ -10,6 +10,8 @@ import de.mossgrabers.framework.daw.constants.PostRecordingAction;
 import de.mossgrabers.framework.daw.data.IParameter;
 import de.mossgrabers.framework.observer.IObserverManagement;
 
+import java.util.Arrays;
+
 
 /**
  * Interface to the Transport instance.
@@ -260,6 +262,22 @@ public interface ITransport extends IObserverManagement
      * @param mode The automation write mode
      */
     void setAutomationWriteMode (AutomationMode mode);
+
+
+    /**
+     * Select the next automation write mode.
+     */
+    default void nextAutomationWriteMode ()
+    {
+        final AutomationMode [] automationWriteModes = this.getAutomationWriteModes ();
+        final AutomationMode automationWriteMode = this.getAutomationWriteMode ();
+
+        int pos = Arrays.asList (automationWriteModes).indexOf (automationWriteMode) + 1;
+        if (pos >= automationWriteModes.length)
+            pos = 0;
+
+        this.setAutomationWriteMode (automationWriteModes[pos]);
+    }
 
 
     /**
@@ -570,7 +588,7 @@ public interface ITransport extends IObserverManagement
      *
      * @return The default launch quantization
      */
-    public LaunchQuantization getDefaultLaunchQuantization ();
+    LaunchQuantization getDefaultLaunchQuantization ();
 
 
     /**
@@ -578,5 +596,21 @@ public interface ITransport extends IObserverManagement
      *
      * @param launchQuantization The default launch quantization
      */
-    public void setDefaultLaunchQuantization (final LaunchQuantization launchQuantization);
+    void setDefaultLaunchQuantization (final LaunchQuantization launchQuantization);
+
+
+    /**
+     * Select the next automation write mode.
+     */
+    default void nextLaunchQuantization ()
+    {
+        final LaunchQuantization [] launchQuantizations = LaunchQuantization.values ();
+        final LaunchQuantization launchQuantization = this.getDefaultLaunchQuantization ();
+
+        int pos = Arrays.asList (launchQuantizations).indexOf (launchQuantization) + 1;
+        if (pos >= launchQuantizations.length)
+            pos = 0;
+
+        this.setDefaultLaunchQuantization (launchQuantizations[pos]);
+    }
 }

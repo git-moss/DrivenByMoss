@@ -32,7 +32,7 @@ public class VolumeMode<S extends IControlSurface<C>, C extends Configuration> e
      *
      * @param surface The control surface
      * @param model The model
-     * @param isAbsolute If true the value change is happending with a setter otherwise relative
+     * @param isAbsolute If true the value change is happening with a setter otherwise relative
      *            change method is used
      */
     public VolumeMode (final S surface, final IModel model, final boolean isAbsolute)

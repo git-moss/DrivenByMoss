@@ -103,7 +103,7 @@ public class MVHelper<S extends IControlSurface<C>, C extends Configuration>
             {
                 final Optional<String> selectedItem = cursorDevice.getParameterPageBank ().getSelectedItem ();
                 if (selectedItem.isPresent ())
-                    return "Page: " + selectedItem;
+                    return "Page: " + selectedItem.get ();
             }
             return "Page: " + NONE;
 

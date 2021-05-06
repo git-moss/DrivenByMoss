@@ -68,7 +68,7 @@ public abstract class BlinkingPadGrid extends PadGridImpl
 
 
     /**
-     * Send the changes incl. blinking pad changes to the controller.
+     * Send the changes including blinking pad changes to the controller.
      */
     protected abstract void updateController ();
 

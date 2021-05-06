@@ -10,6 +10,7 @@ import de.mossgrabers.controller.mackie.mcu.command.trigger.DevicesCommand;
 import de.mossgrabers.controller.mackie.mcu.command.trigger.FaderTouchCommand;
 import de.mossgrabers.controller.mackie.mcu.command.trigger.GrooveCommand;
 import de.mossgrabers.controller.mackie.mcu.command.trigger.KeyCommand;
+import de.mossgrabers.controller.mackie.mcu.command.trigger.KeyCommand.Key;
 import de.mossgrabers.controller.mackie.mcu.command.trigger.MCUCursorCommand;
 import de.mossgrabers.controller.mackie.mcu.command.trigger.MCUFlipCommand;
 import de.mossgrabers.controller.mackie.mcu.command.trigger.MCUMoveTrackBankCommand;
@@ -21,7 +22,6 @@ import de.mossgrabers.controller.mackie.mcu.command.trigger.TempoTicksCommand;
 import de.mossgrabers.controller.mackie.mcu.command.trigger.ToggleDisplayCommand;
 import de.mossgrabers.controller.mackie.mcu.command.trigger.TracksCommand;
 import de.mossgrabers.controller.mackie.mcu.command.trigger.ZoomCommand;
-import de.mossgrabers.controller.mackie.mcu.command.trigger.KeyCommand.Key;
 import de.mossgrabers.controller.mackie.mcu.controller.MCUAssignmentDisplay;
 import de.mossgrabers.controller.mackie.mcu.controller.MCUColorManager;
 import de.mossgrabers.controller.mackie.mcu.controller.MCUControlSurface;
@@ -40,7 +40,6 @@ import de.mossgrabers.controller.mackie.mcu.mode.track.TrackMode;
 import de.mossgrabers.controller.mackie.mcu.mode.track.VolumeMode;
 import de.mossgrabers.framework.command.continuous.KnobRowModeCommand;
 import de.mossgrabers.framework.command.core.NopCommand;
-import de.mossgrabers.framework.command.trigger.AutomationCommand;
 import de.mossgrabers.framework.command.trigger.BrowserCommand;
 import de.mossgrabers.framework.command.trigger.MarkerCommand;
 import de.mossgrabers.framework.command.trigger.ShiftCommand;
@@ -57,6 +56,7 @@ import de.mossgrabers.framework.command.trigger.mode.ButtonRowModeCommand;
 import de.mossgrabers.framework.command.trigger.mode.ModeCursorCommand.Direction;
 import de.mossgrabers.framework.command.trigger.mode.ModeSelectCommand;
 import de.mossgrabers.framework.command.trigger.track.ToggleVUCommand;
+import de.mossgrabers.framework.command.trigger.transport.AutomationModeCommand;
 import de.mossgrabers.framework.command.trigger.transport.MetronomeCommand;
 import de.mossgrabers.framework.command.trigger.transport.PlayCommand;
 import de.mossgrabers.framework.command.trigger.transport.PunchInCommand;
@@ -418,12 +418,12 @@ public class MCUControllerSetup extends AbstractControllerSetup<MCUControlSurfac
                 this.addButton (surface, ButtonID.MOVE_TRACK_RIGHT, TAG_RIGHT, rightTrackCommand, 0, MCUControlSurface.MCU_TRACK_RIGHT);
 
                 // Automation
-                this.addButton (surface, ButtonID.AUTOMATION_TRIM, "Trim", new AutomationCommand<> (AutomationMode.TRIM_READ, this.model, surface), 0, MCUControlSurface.MCU_TRIM, () -> !t.isWritingArrangerAutomation () && t.getAutomationWriteMode () == AutomationMode.TRIM_READ);
-                this.addButton (surface, ButtonID.AUTOMATION_READ, "Read", new AutomationCommand<> (AutomationMode.READ, this.model, surface), 0, MCUControlSurface.MCU_READ, () -> !t.isWritingArrangerAutomation () && t.getAutomationWriteMode () != AutomationMode.TRIM_READ);
-                this.addButton (surface, ButtonID.AUTOMATION_WRITE, "Write", new AutomationCommand<> (AutomationMode.WRITE, this.model, surface), 0, MCUControlSurface.MCU_WRITE, () -> t.isWritingArrangerAutomation () && t.getAutomationWriteMode () == AutomationMode.WRITE);
-                this.addButton (surface, ButtonID.AUTOMATION_GROUP, "Group/Write", new AutomationCommand<> (AutomationMode.LATCH_PREVIEW, this.model, surface), 0, MCUControlSurface.MCU_GROUP, () -> t.isWritingArrangerAutomation () && t.getAutomationWriteMode () == AutomationMode.LATCH_PREVIEW);
-                this.addButton (surface, ButtonID.AUTOMATION_TOUCH, "Touch", new AutomationCommand<> (AutomationMode.TOUCH, this.model, surface), 0, MCUControlSurface.MCU_TOUCH, () -> t.isWritingArrangerAutomation () && t.getAutomationWriteMode () == AutomationMode.TOUCH);
-                this.addButton (surface, ButtonID.AUTOMATION_LATCH, "Latch", new AutomationCommand<> (AutomationMode.LATCH, this.model, surface), 0, MCUControlSurface.MCU_LATCH, () -> t.isWritingArrangerAutomation () && t.getAutomationWriteMode () == AutomationMode.LATCH);
+                this.addButton (surface, ButtonID.AUTOMATION_TRIM, "Trim", new AutomationModeCommand<> (AutomationMode.TRIM_READ, this.model, surface), 0, MCUControlSurface.MCU_TRIM, () -> !t.isWritingArrangerAutomation () && t.getAutomationWriteMode () == AutomationMode.TRIM_READ);
+                this.addButton (surface, ButtonID.AUTOMATION_READ, "Read", new AutomationModeCommand<> (AutomationMode.READ, this.model, surface), 0, MCUControlSurface.MCU_READ, () -> !t.isWritingArrangerAutomation () && t.getAutomationWriteMode () != AutomationMode.TRIM_READ);
+                this.addButton (surface, ButtonID.AUTOMATION_WRITE, "Write", new AutomationModeCommand<> (AutomationMode.WRITE, this.model, surface), 0, MCUControlSurface.MCU_WRITE, () -> t.isWritingArrangerAutomation () && t.getAutomationWriteMode () == AutomationMode.WRITE);
+                this.addButton (surface, ButtonID.AUTOMATION_GROUP, "Group/Write", new AutomationModeCommand<> (AutomationMode.LATCH_PREVIEW, this.model, surface), 0, MCUControlSurface.MCU_GROUP, () -> t.isWritingArrangerAutomation () && t.getAutomationWriteMode () == AutomationMode.LATCH_PREVIEW);
+                this.addButton (surface, ButtonID.AUTOMATION_TOUCH, "Touch", new AutomationModeCommand<> (AutomationMode.TOUCH, this.model, surface), 0, MCUControlSurface.MCU_TOUCH, () -> t.isWritingArrangerAutomation () && t.getAutomationWriteMode () == AutomationMode.TOUCH);
+                this.addButton (surface, ButtonID.AUTOMATION_LATCH, "Latch", new AutomationModeCommand<> (AutomationMode.LATCH, this.model, surface), 0, MCUControlSurface.MCU_LATCH, () -> t.isWritingArrangerAutomation () && t.getAutomationWriteMode () == AutomationMode.LATCH);
                 this.addButton (surface, ButtonID.UNDO, "Undo", new UndoCommand<> (this.model, surface), MCUControlSurface.MCU_UNDO);
 
                 // Panes
@@ -797,7 +797,7 @@ public class MCUControllerSetup extends AbstractControllerSetup<MCUControlSurfac
             final IMidiOutput output = surface.getMidiOutput ();
             for (int channel = 0; channel < 8; channel++)
             {
-                // Dont't update fader if the user touches and therefore 'stops' it
+                // Don't update fader if the user touches and therefore 'stops' it
                 if (mode.isKnobTouched (channel))
                     continue;
 

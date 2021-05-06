@@ -126,4 +126,42 @@ public class ConfiguredRecordCommand<S extends IControlSurface<C>, C extends Con
                 return this.surface.isShiftPressed ();
         }
     }
+
+
+    /**
+     * Returns true if the record button should be lit depending on the selected function.
+     *
+     * @return True if lit
+     */
+    public boolean isLit ()
+    {
+        final C configuration = this.surface.getConfiguration ();
+        final AbstractConfiguration.RecordFunction recordMode = this.isShifted () ? configuration.getShiftedRecordButtonFunction () : configuration.getRecordButtonFunction ();
+        switch (recordMode)
+        {
+            case RECORD_ARRANGER:
+                return this.model.getTransport ().isRecording ();
+
+            case NEW_CLIP:
+            case RECORD_CLIP:
+                final Optional<ISlot> slot = this.model.getSelectedSlot ();
+                if (slot.isEmpty ())
+                    return false;
+                final ISlot s = slot.get ();
+                return s.isRecording ();
+
+            case TOGGLE_ARRANGER_OVERDUB:
+                return this.model.getTransport ().isArrangerOverdub ();
+
+            case TOGGLE_CLIP_OVERDUB:
+                return this.model.getTransport ().isLauncherOverdub ();
+
+            case TOGGLE_REC_ARM:
+                final Optional<ITrack> selectedTrack = this.model.getCurrentTrackBank ().getSelectedItem ();
+                return selectedTrack.isPresent () && selectedTrack.get ().isRecArm ();
+
+            default:
+                return false;
+        }
+    }
 }

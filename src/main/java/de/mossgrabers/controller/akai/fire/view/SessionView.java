@@ -8,6 +8,7 @@ import de.mossgrabers.controller.akai.fire.FireConfiguration;
 import de.mossgrabers.controller.akai.fire.controller.FireColorManager;
 import de.mossgrabers.controller.akai.fire.controller.FireControlSurface;
 import de.mossgrabers.framework.controller.ButtonID;
+import de.mossgrabers.framework.controller.grid.LightInfo;
 import de.mossgrabers.framework.daw.IModel;
 import de.mossgrabers.framework.daw.data.IScene;
 import de.mossgrabers.framework.daw.data.ISlot;
@@ -15,7 +16,6 @@ import de.mossgrabers.framework.daw.data.ITrack;
 import de.mossgrabers.framework.daw.data.bank.ISceneBank;
 import de.mossgrabers.framework.utils.ButtonEvent;
 import de.mossgrabers.framework.view.AbstractSessionView;
-import de.mossgrabers.framework.view.SessionColor;
 import de.mossgrabers.framework.view.TransposeView;
 
 
@@ -36,13 +36,13 @@ public class SessionView extends AbstractSessionView<FireControlSurface, FireCon
     {
         super ("Session", surface, model, 4, 16, true);
 
-        final SessionColor isRecording = new SessionColor (FireColorManager.FIRE_COLOR_RED, FireColorManager.FIRE_COLOR_DARKER_RED, false);
-        final SessionColor isRecordingQueued = new SessionColor (FireColorManager.FIRE_COLOR_RED, FireColorManager.FIRE_COLOR_GRAY, true);
-        final SessionColor isPlaying = new SessionColor (FireColorManager.FIRE_COLOR_GREEN, FireColorManager.FIRE_COLOR_DARK_GREEN, false);
-        final SessionColor isPlayingQueued = new SessionColor (FireColorManager.FIRE_COLOR_GREEN, FireColorManager.FIRE_COLOR_GRAY, true);
-        final SessionColor hasContent = new SessionColor (FireColorManager.FIRE_COLOR_ORANGE, FireColorManager.FIRE_COLOR_WHITE, false);
-        final SessionColor noContent = new SessionColor (FireColorManager.FIRE_COLOR_BLACK, -1, false);
-        final SessionColor recArmed = new SessionColor (FireColorManager.FIRE_COLOR_DARK_RED, -1, false);
+        final LightInfo isRecording = new LightInfo (FireColorManager.FIRE_COLOR_RED, FireColorManager.FIRE_COLOR_DARKER_RED, false);
+        final LightInfo isRecordingQueued = new LightInfo (FireColorManager.FIRE_COLOR_RED, FireColorManager.FIRE_COLOR_GRAY, true);
+        final LightInfo isPlaying = new LightInfo (FireColorManager.FIRE_COLOR_GREEN, FireColorManager.FIRE_COLOR_DARK_GREEN, false);
+        final LightInfo isPlayingQueued = new LightInfo (FireColorManager.FIRE_COLOR_GREEN, FireColorManager.FIRE_COLOR_GRAY, true);
+        final LightInfo hasContent = new LightInfo (FireColorManager.FIRE_COLOR_ORANGE, FireColorManager.FIRE_COLOR_WHITE, false);
+        final LightInfo noContent = new LightInfo (FireColorManager.FIRE_COLOR_BLACK, -1, false);
+        final LightInfo recArmed = new LightInfo (FireColorManager.FIRE_COLOR_DARK_RED, -1, false);
         this.setColors (isRecording, isRecordingQueued, isPlaying, isPlayingQueued, hasContent, noContent, recArmed);
 
         this.birdColorHasContent = hasContent;

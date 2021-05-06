@@ -53,7 +53,7 @@ import de.mossgrabers.controller.novation.launchpad.view.SessionView;
 import de.mossgrabers.controller.novation.launchpad.view.ShiftView;
 import de.mossgrabers.controller.novation.launchpad.view.UserView;
 import de.mossgrabers.controller.novation.launchpad.view.VolumeView;
-import de.mossgrabers.framework.command.aftertouch.AftertouchAbstractViewCommand;
+import de.mossgrabers.framework.command.aftertouch.AftertouchViewCommand;
 import de.mossgrabers.framework.command.trigger.application.UndoCommand;
 import de.mossgrabers.framework.command.trigger.clip.NewCommand;
 import de.mossgrabers.framework.command.trigger.clip.QuantizeCommand;
@@ -584,7 +584,7 @@ public class LaunchpadControllerSetup extends AbstractControllerSetup<LaunchpadC
         for (final Views viewID: views)
         {
             final AbstractView view = (AbstractView) viewManager.get (viewID);
-            view.registerAftertouchCommand (new AftertouchAbstractViewCommand<> (view, this.model, surface));
+            view.registerAftertouchCommand (new AftertouchViewCommand<> (view, this.model, surface));
         }
     }
 

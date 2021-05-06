@@ -8,6 +8,7 @@ import de.mossgrabers.controller.akai.apc.APCConfiguration;
 import de.mossgrabers.controller.akai.apc.controller.APCColorManager;
 import de.mossgrabers.controller.akai.apc.controller.APCControlSurface;
 import de.mossgrabers.framework.controller.ButtonID;
+import de.mossgrabers.framework.controller.grid.LightInfo;
 import de.mossgrabers.framework.daw.DAWColor;
 import de.mossgrabers.framework.daw.IModel;
 import de.mossgrabers.framework.daw.data.IScene;
@@ -16,7 +17,6 @@ import de.mossgrabers.framework.daw.data.ITrack;
 import de.mossgrabers.framework.daw.data.bank.ISceneBank;
 import de.mossgrabers.framework.featuregroup.AbstractFeatureGroup;
 import de.mossgrabers.framework.view.AbstractSessionView;
-import de.mossgrabers.framework.view.SessionColor;
 
 
 /**
@@ -38,24 +38,24 @@ public class SessionView extends AbstractSessionView<APCControlSurface, APCConfi
 
         if (surface.isMkII ())
         {
-            final SessionColor isRecording = new SessionColor (APCColorManager.APC_MKII_COLOR_RED_HI, APCColorManager.APC_MKII_COLOR_RED_HI, false);
-            final SessionColor isRecordingQueued = new SessionColor (APCColorManager.APC_MKII_COLOR_RED_HI, APCColorManager.APC_MKII_COLOR_RED_HI, true);
-            final SessionColor isPlaying = new SessionColor (APCColorManager.APC_MKII_COLOR_GREEN_HI, APCColorManager.APC_MKII_COLOR_GREEN_HI, false);
-            final SessionColor isPlayingQueued = new SessionColor (APCColorManager.APC_MKII_COLOR_GREEN_HI, APCColorManager.APC_MKII_COLOR_GREEN_HI, true);
-            final SessionColor hasContent = new SessionColor (APCColorManager.APC_MKII_COLOR_AMBER, APCColorManager.APC_MKII_COLOR_WHITE, false);
-            final SessionColor noContent = new SessionColor (APCColorManager.APC_MKII_COLOR_BLACK, -1, false);
-            final SessionColor recArmed = new SessionColor (APCColorManager.APC_MKII_COLOR_RED_LO, -1, false);
+            final LightInfo isRecording = new LightInfo (APCColorManager.APC_MKII_COLOR_RED_HI, APCColorManager.APC_MKII_COLOR_RED_HI, false);
+            final LightInfo isRecordingQueued = new LightInfo (APCColorManager.APC_MKII_COLOR_RED_HI, APCColorManager.APC_MKII_COLOR_RED_HI, true);
+            final LightInfo isPlaying = new LightInfo (APCColorManager.APC_MKII_COLOR_GREEN_HI, APCColorManager.APC_MKII_COLOR_GREEN_HI, false);
+            final LightInfo isPlayingQueued = new LightInfo (APCColorManager.APC_MKII_COLOR_GREEN_HI, APCColorManager.APC_MKII_COLOR_GREEN_HI, true);
+            final LightInfo hasContent = new LightInfo (APCColorManager.APC_MKII_COLOR_AMBER, APCColorManager.APC_MKII_COLOR_WHITE, false);
+            final LightInfo noContent = new LightInfo (APCColorManager.APC_MKII_COLOR_BLACK, -1, false);
+            final LightInfo recArmed = new LightInfo (APCColorManager.APC_MKII_COLOR_RED_LO, -1, false);
             this.setColors (isRecording, isRecordingQueued, isPlaying, isPlayingQueued, hasContent, noContent, recArmed);
         }
         else
         {
-            final SessionColor isRecording = new SessionColor (APCColorManager.APC_COLOR_RED, -1, false);
-            final SessionColor isRecordingQueued = new SessionColor (APCColorManager.APC_COLOR_RED, APCColorManager.APC_COLOR_RED_BLINK, false);
-            final SessionColor isPlaying = new SessionColor (APCColorManager.APC_COLOR_GREEN, -1, false);
-            final SessionColor isPlayingQueued = new SessionColor (APCColorManager.APC_COLOR_GREEN, APCColorManager.APC_COLOR_GREEN_BLINK, false);
-            final SessionColor hasContent = new SessionColor (APCColorManager.APC_COLOR_YELLOW, APCColorManager.APC_COLOR_YELLOW_BLINK, false);
-            final SessionColor noContent = new SessionColor (APCColorManager.APC_COLOR_BLACK, -1, false);
-            final SessionColor recArmed = new SessionColor (APCColorManager.APC_COLOR_BLACK, -1, false);
+            final LightInfo isRecording = new LightInfo (APCColorManager.APC_COLOR_RED, -1, false);
+            final LightInfo isRecordingQueued = new LightInfo (APCColorManager.APC_COLOR_RED, APCColorManager.APC_COLOR_RED_BLINK, false);
+            final LightInfo isPlaying = new LightInfo (APCColorManager.APC_COLOR_GREEN, -1, false);
+            final LightInfo isPlayingQueued = new LightInfo (APCColorManager.APC_COLOR_GREEN, APCColorManager.APC_COLOR_GREEN_BLINK, false);
+            final LightInfo hasContent = new LightInfo (APCColorManager.APC_COLOR_YELLOW, APCColorManager.APC_COLOR_YELLOW_BLINK, false);
+            final LightInfo noContent = new LightInfo (APCColorManager.APC_COLOR_BLACK, -1, false);
+            final LightInfo recArmed = new LightInfo (APCColorManager.APC_COLOR_BLACK, -1, false);
             this.setColors (isRecording, isRecordingQueued, isPlaying, isPlayingQueued, hasContent, noContent, recArmed);
         }
     }

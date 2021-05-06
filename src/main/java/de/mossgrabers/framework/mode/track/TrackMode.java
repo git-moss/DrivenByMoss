@@ -31,7 +31,7 @@ public class TrackMode<S extends IControlSurface<C>, C extends Configuration> ex
      *
      * @param surface The control surface
      * @param model The model
-     * @param isAbsolute If true the value change is happending with a setter otherwise relative
+     * @param isAbsolute If true the value change is happening with a setter otherwise relative
      *            change method is used
      */
     public TrackMode (final S surface, final IModel model, final boolean isAbsolute)
@@ -146,19 +146,21 @@ public class TrackMode<S extends IControlSurface<C>, C extends Configuration> ex
     @Override
     public int getKnobValue (final int index)
     {
-        final ITrack track = this.model.getCurrentTrackBank ().getItem (index);
-        if (track == null)
+        final Optional<ITrack> track = this.model.getCurrentTrackBank ().getSelectedItem ();
+        if (track.isEmpty ())
             return -1;
+
+        final ITrack t = track.get ();
         switch (index)
         {
             case 0:
-                return track.getVolume ();
+                return t.getVolume ();
 
             case 1:
-                return track.getPan ();
+                return t.getPan ();
 
             default:
-                return track.getSendBank ().getItem (index - 2).getValue ();
+                return t.getSendBank ().getItem (index - 2).getValue ();
         }
     }
 }

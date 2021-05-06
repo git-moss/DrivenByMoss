@@ -8,7 +8,7 @@ import de.mossgrabers.controller.ableton.push.command.continuous.ConfigurePitchb
 import de.mossgrabers.controller.ableton.push.command.continuous.MastertrackTouchCommand;
 import de.mossgrabers.controller.ableton.push.command.pitchbend.TouchstripCommand;
 import de.mossgrabers.controller.ableton.push.command.trigger.AccentCommand;
-import de.mossgrabers.controller.ableton.push.command.trigger.AutomationCommand;
+import de.mossgrabers.controller.ableton.push.command.trigger.PushAutomationCommand;
 import de.mossgrabers.controller.ableton.push.command.trigger.ClipCommand;
 import de.mossgrabers.controller.ableton.push.command.trigger.DeviceCommand;
 import de.mossgrabers.controller.ableton.push.command.trigger.FixedLengthCommand;
@@ -89,7 +89,7 @@ import de.mossgrabers.controller.ableton.push.view.RaindropsView;
 import de.mossgrabers.controller.ableton.push.view.ScenePlayView;
 import de.mossgrabers.controller.ableton.push.view.SequencerView;
 import de.mossgrabers.controller.ableton.push.view.SessionView;
-import de.mossgrabers.framework.command.aftertouch.AftertouchAbstractViewCommand;
+import de.mossgrabers.framework.command.aftertouch.AftertouchViewCommand;
 import de.mossgrabers.framework.command.continuous.FootswitchCommand;
 import de.mossgrabers.framework.command.continuous.KnobRowModeCommand;
 import de.mossgrabers.framework.command.trigger.BrowserCommand;
@@ -476,7 +476,7 @@ public class PushControllerSetup extends AbstractControllerSetup<PushControlSurf
         this.addButton (ButtonID.DOUBLE, "Double Loop", new DoubleCommand<> (this.model, surface), PushControlSurface.PUSH_BUTTON_DOUBLE);
         this.addButton (ButtonID.UNDO, "Undo", new UndoCommand<> (this.model, surface), PushControlSurface.PUSH_BUTTON_UNDO);
 
-        this.addButton (ButtonID.AUTOMATION, "Automate", new AutomationCommand (this.model, surface), PushControlSurface.PUSH_BUTTON_AUTOMATION, () -> {
+        this.addButton (ButtonID.AUTOMATION, "Automate", new PushAutomationCommand (this.model, surface), PushControlSurface.PUSH_BUTTON_AUTOMATION, () -> {
 
             if (this.isRecordShifted (surface))
                 return t.isWritingClipLauncherAutomation () ? 3 : 2;
@@ -617,7 +617,7 @@ public class PushControllerSetup extends AbstractControllerSetup<PushControlSurf
         for (final Views viewID: views)
         {
             final AbstractView view = AbstractView.class.cast (viewManager.get (viewID));
-            view.registerAftertouchCommand (new AftertouchAbstractViewCommand<> (view, this.model, surface));
+            view.registerAftertouchCommand (new AftertouchViewCommand<> (view, this.model, surface));
         }
 
         final IHwFader touchstrip = this.addFader (ContinuousID.TOUCHSTRIP, "Touchstrip", new TouchstripCommand (this.model, surface));

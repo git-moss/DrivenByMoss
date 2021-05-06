@@ -11,6 +11,7 @@ import de.mossgrabers.framework.controller.ButtonID;
 import de.mossgrabers.framework.controller.color.ColorManager;
 import de.mossgrabers.framework.controller.grid.ILightGuide;
 import de.mossgrabers.framework.controller.grid.IPadGrid;
+import de.mossgrabers.framework.controller.grid.LightInfo;
 import de.mossgrabers.framework.daw.IModel;
 import de.mossgrabers.framework.daw.data.IScene;
 import de.mossgrabers.framework.daw.data.ITrack;
@@ -20,7 +21,6 @@ import de.mossgrabers.framework.scale.Scales;
 import de.mossgrabers.framework.utils.KeyManager;
 import de.mossgrabers.framework.view.AbstractPlayView;
 import de.mossgrabers.framework.view.AbstractSessionView;
-import de.mossgrabers.framework.view.SessionColor;
 
 
 /**
@@ -44,13 +44,13 @@ public class SessionView extends AbstractSessionView<SLMkIIIControlSurface, SLMk
     {
         super ("Session", surface, model, 2, 8, true);
 
-        final SessionColor isRecording = new SessionColor (SLMkIIIColorManager.SLMKIII_RED, SLMkIIIColorManager.SLMKIII_RED, false);
-        final SessionColor isRecordingQueued = new SessionColor (SLMkIIIColorManager.SLMKIII_RED_HALF, SLMkIIIColorManager.SLMKIII_RED_HALF, true);
-        final SessionColor isPlaying = new SessionColor (SLMkIIIColorManager.SLMKIII_GREEN_GRASS, SLMkIIIColorManager.SLMKIII_GREEN, false);
-        final SessionColor isPlayingQueued = new SessionColor (SLMkIIIColorManager.SLMKIII_GREEN_GRASS, SLMkIIIColorManager.SLMKIII_GREEN, true);
-        final SessionColor hasContent = new SessionColor (SLMkIIIColorManager.SLMKIII_AMBER, -1, false);
-        final SessionColor noContent = new SessionColor (SLMkIIIColorManager.SLMKIII_BLACK, -1, false);
-        final SessionColor recArmed = new SessionColor (SLMkIIIColorManager.SLMKIII_RED_HALF, -1, false);
+        final LightInfo isRecording = new LightInfo (SLMkIIIColorManager.SLMKIII_RED, SLMkIIIColorManager.SLMKIII_RED, false);
+        final LightInfo isRecordingQueued = new LightInfo (SLMkIIIColorManager.SLMKIII_RED_HALF, SLMkIIIColorManager.SLMKIII_RED_HALF, true);
+        final LightInfo isPlaying = new LightInfo (SLMkIIIColorManager.SLMKIII_GREEN_GRASS, SLMkIIIColorManager.SLMKIII_GREEN, false);
+        final LightInfo isPlayingQueued = new LightInfo (SLMkIIIColorManager.SLMKIII_GREEN_GRASS, SLMkIIIColorManager.SLMKIII_GREEN, true);
+        final LightInfo hasContent = new LightInfo (SLMkIIIColorManager.SLMKIII_AMBER, -1, false);
+        final LightInfo noContent = new LightInfo (SLMkIIIColorManager.SLMKIII_BLACK, -1, false);
+        final LightInfo recArmed = new LightInfo (SLMkIIIColorManager.SLMKIII_RED_HALF, -1, false);
         this.setColors (isRecording, isRecordingQueued, isPlaying, isPlayingQueued, hasContent, noContent, recArmed);
 
         final IPadGrid lightGuide = (IPadGrid) this.surface.getLightGuide ();

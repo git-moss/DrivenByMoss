@@ -11,35 +11,57 @@ package de.mossgrabers.controller.ni.maschine;
  */
 public enum Maschine
 {
-    /** Maschine Mk3. */
-    MK3("Maschine Mk3", true, true, true, 800),
+    /** Maschine JAM. */
+    JAM("Maschine JAM", "1500", true, false, true, true, 440),
     /** Maschine Mikro Mk3. */
-    MIKRO_MK3("Maschine Mikro Mk3", false, false, false, 440);
+    MIKRO_MK3("Maschine Mikro Mk3", "1700", false, false, false, false, 440),
+    /** Maschine Mk3. */
+    MK3("Maschine Mk3", "1600", true, true, true, true, 800),
+    /** Maschine+. */
+    PLUS("Maschine+", "1820", true, true, true, true, 800);
 
 
-    private final String  name;
-    private final boolean hasMCUDisplay;
-    private final boolean hasBankButtons;
-    private final boolean hasCursorKeys;
-    private final int     height;
+    private static final String MESSAGE_SHIFT_DOWN       = "F0002109%s4D5000014D01F7";
+    private static final String MESSAGE_SHIFT_UP         = "F0002109%s4D5000014D00F7";
+    private static final String MESSAGE_RETURN_FROM_HOST = "F0002109%s4D5000014601F7";
+
+    private final String        name;
+    private final String        maschineID;
+    private final boolean       hasShift;
+    private final boolean       hasMCUDisplay;
+    private final boolean       hasBankButtons;
+    private final boolean       hasCursorKeys;
+    private final int           height;
+
+    private final String        messageShiftDown;
+    private final String        messageShiftUp;
+    private final String        messageReturnFromHost;
 
 
     /**
      * Constructor.
      *
      * @param name The name of the Maschine
-     * @param hasMCUDisplay DSoes it support a MCU protocol display?
+     * @param maschineID The ID of the device
+     * @param hasShift Can the Shift button be used? Otherwise emulated with Stop button
+     * @param hasMCUDisplay Does it support a MCU protocol display?
      * @param hasBankButtons Does it have bank buttons?
      * @param hasCursorKeys Does the device have cursor keys?
      * @param height The height of the simulator window
      */
-    private Maschine (final String name, final boolean hasMCUDisplay, final boolean hasBankButtons, final boolean hasCursorKeys, final int height)
+    private Maschine (final String name, final String maschineID, final boolean hasShift, final boolean hasMCUDisplay, final boolean hasBankButtons, final boolean hasCursorKeys, final int height)
     {
         this.name = name;
+        this.maschineID = maschineID;
+        this.hasShift = hasShift;
         this.hasMCUDisplay = hasMCUDisplay;
         this.hasBankButtons = hasBankButtons;
         this.hasCursorKeys = hasCursorKeys;
         this.height = height;
+
+        this.messageShiftDown = String.format (MESSAGE_SHIFT_DOWN, this.maschineID);
+        this.messageShiftUp = String.format (MESSAGE_SHIFT_UP, this.maschineID);
+        this.messageReturnFromHost = String.format (MESSAGE_RETURN_FROM_HOST, this.maschineID);
     }
 
 
@@ -51,6 +73,17 @@ public enum Maschine
     public String getName ()
     {
         return this.name;
+    }
+
+
+    /**
+     * Can the Shift button be used? Otherwise emulated with Stop button.
+     *
+     * @return True if Shift is supported
+     */
+    public boolean hasShift ()
+    {
+        return this.hasShift;
     }
 
 
@@ -95,5 +128,38 @@ public enum Maschine
     public int getHeight ()
     {
         return this.height;
+    }
+
+
+    /**
+     * Get the system exclusive message which is sent from the device on pressing the Shift button.
+     * 
+     * @return The message
+     */
+    public String getMessageShiftDown ()
+    {
+        return this.messageShiftDown;
+    }
+
+
+    /**
+     * Get the system exclusive message which is sent from the device on releasing the Shift button.
+     * 
+     * @return The message
+     */
+    public String getMessageShiftUp ()
+    {
+        return this.messageShiftUp;
+    }
+
+
+    /**
+     * Get the system exclusive message which is sent from the device when the MIDI mode is entered.
+     * 
+     * @return The message
+     */
+    public String getMessageReturnFromHost ()
+    {
+        return this.messageReturnFromHost;
     }
 }
