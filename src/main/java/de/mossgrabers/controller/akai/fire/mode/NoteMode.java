@@ -21,6 +21,7 @@ import de.mossgrabers.framework.featuregroup.IView;
 import de.mossgrabers.framework.scale.Scales;
 import de.mossgrabers.framework.utils.StringUtils;
 import de.mossgrabers.framework.view.AbstractSequencerView;
+import de.mossgrabers.framework.mode.Modes;
 
 import java.util.List;
 
@@ -105,11 +106,19 @@ public class NoteMode extends AbstractMode<FireControlSurface, FireConfiguration
         if (this.clip == null)
             return;
 
+        // This means USER 1 is selected on the controller
+        final boolean userMode = this.surface.getModeManager().getPreviousID() == Modes.DEVICE_PARAMS;
+
         switch (index)
         {
             case 0:
-                if (this.host.supports (Capability.NOTE_EDIT_GAIN))
-                    this.clip.changeStepGain (this.channel, this.step, this.note, value);
+                if (userMode) {
+                    if (this.host.supports(Capability.NOTE_EDIT_PRESSURE))
+                        this.clip.changeStepPressure(this.channel, this.step, this.note, value);
+                } else {
+                    if (this.host.supports(Capability.NOTE_EDIT_GAIN))
+                        this.clip.changeStepGain(this.channel, this.step, this.note, value);
+                }
                 break;
 
             case 1:
@@ -118,7 +127,12 @@ public class NoteMode extends AbstractMode<FireControlSurface, FireConfiguration
                 break;
 
             case 2:
-                this.clip.changeStepDuration (this.channel, this.step, this.note, value);
+                if (userMode) {
+                    if (this.host.supports(Capability.NOTE_EDIT_TIMBRE))
+                        this.clip.changeStepTimbre(this.channel, this.step, this.note, value);
+                } else {
+                    this.clip.changeStepDuration(this.channel, this.step, this.note, value);
+                }
                 break;
 
             case 3:
@@ -167,15 +181,24 @@ public class NoteMode extends AbstractMode<FireControlSurface, FireConfiguration
 
         final IStepInfo stepInfo = this.clip.getStep (this.channel, this.step, this.note);
         final IValueChanger valueChanger = this.model.getValueChanger ();
+        // This means USER 1 is selected on the controller
+        final boolean userMode = this.surface.getModeManager().getPreviousID() == Modes.DEVICE_PARAMS;
 
         switch (this.getTouchedKnob ())
         {
             case 0:
-                if (this.host.supports (Capability.NOTE_EDIT_GAIN))
-                {
-                    final double noteGain = stepInfo.getGain ();
-                    value = Math.min (1023, valueChanger.fromNormalizedValue (noteGain));
-                    paramLine = "Gain: " + StringUtils.formatPercentage (noteGain);
+                if (userMode) {
+                    if (this.host.supports(Capability.NOTE_EDIT_PRESSURE)) {
+                        final double notePressure = stepInfo.getPressure();
+                        value = Math.min(1023, valueChanger.fromNormalizedValue(notePressure));
+                        paramLine = "Pres: " + StringUtils.formatPercentage(notePressure);
+                    }
+                } else {
+                    if (this.host.supports(Capability.NOTE_EDIT_GAIN)) {
+                        final double noteGain = stepInfo.getGain();
+                        value = Math.min(1023, valueChanger.fromNormalizedValue(noteGain));
+                        paramLine = "Gain: " + StringUtils.formatPercentage(noteGain);
+                    }
                 }
                 break;
 
@@ -189,7 +212,15 @@ public class NoteMode extends AbstractMode<FireControlSurface, FireConfiguration
                 break;
 
             case 2:
-                paramLine = this.formatLength (stepInfo.getDuration ());
+                if (userMode) {
+                    if (this.host.supports(Capability.NOTE_EDIT_TIMBRE)) {
+                        final double noteTimbre = stepInfo.getTimbre();
+                        value = valueChanger.fromNormalizedValue ((noteTimbre + 1.0) / 2.0);
+                        paramLine = "Timb: " + StringUtils.formatPercentage(noteTimbre);
+                    }
+                } else {
+                    paramLine = this.formatLength(stepInfo.getDuration());
+                }
                 break;
 
             case 3:
