@@ -11,6 +11,7 @@ import de.mossgrabers.framework.scale.Scales;
 import de.mossgrabers.framework.view.AbstractDrumView;
 import de.mossgrabers.framework.view.AbstractPlayView;
 import de.mossgrabers.framework.view.AbstractSequencerView;
+import de.mossgrabers.framework.view.BrowserView;
 
 
 /**
@@ -70,6 +71,19 @@ public class APCminiColorManager extends ColorManager
         this.registerColorIndex (AbstractPlayView.COLOR_PLAY, APC_COLOR_GREEN);
         this.registerColorIndex (AbstractPlayView.COLOR_RECORD, APC_COLOR_RED);
         this.registerColorIndex (AbstractPlayView.COLOR_OFF, APC_COLOR_BLACK);
+
+        this.registerColorIndex (BrowserView.OFF, APC_COLOR_BLACK);
+        this.registerColorIndex (BrowserView.DISCARD, APC_COLOR_RED_BLINK);
+        this.registerColorIndex (BrowserView.CONFIRM, APC_COLOR_GREEN_BLINK);
+        this.registerColorIndex (BrowserView.PLAY, APC_COLOR_YELLOW);
+        this.registerColorIndex (BrowserView.COLUMN1, APC_COLOR_GREEN);
+        this.registerColorIndex (BrowserView.COLUMN2, APC_COLOR_RED);
+        this.registerColorIndex (BrowserView.COLUMN3, APC_COLOR_GREEN);
+        this.registerColorIndex (BrowserView.COLUMN4, APC_COLOR_RED);
+        this.registerColorIndex (BrowserView.COLUMN5, APC_COLOR_GREEN);
+        this.registerColorIndex (BrowserView.COLUMN6, APC_COLOR_RED);
+        this.registerColorIndex (BrowserView.COLUMN7, APC_COLOR_BLACK);
+        this.registerColorIndex (BrowserView.COLUMN8, APC_COLOR_YELLOW);
 
         this.registerColorIndex (IPadGrid.GRID_OFF, APC_COLOR_BLACK);
 

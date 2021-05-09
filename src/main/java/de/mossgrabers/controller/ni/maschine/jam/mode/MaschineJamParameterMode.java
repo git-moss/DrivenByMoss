@@ -39,6 +39,32 @@ public class MaschineJamParameterMode extends ParameterMode<MaschineJamControlSu
 
     /** {@inheritDoc} */
     @Override
+    public void selectPreviousItemPage ()
+    {
+        if (this.surface.isSelectPressed ())
+            this.cursorDevice.selectPrevious ();
+        else
+            this.cursorDevice.getParameterBank ().scrollBackwards ();
+
+        this.mvHelper.notifySelectedDeviceAndParameterPage ();
+    }
+
+
+    /** {@inheritDoc} */
+    @Override
+    public void selectNextItemPage ()
+    {
+        if (this.surface.isSelectPressed ())
+            this.cursorDevice.selectNext ();
+        else
+            this.cursorDevice.getParameterBank ().scrollForwards ();
+
+        this.mvHelper.notifySelectedDeviceAndParameterPage ();
+    }
+
+
+    /** {@inheritDoc} */
+    @Override
     public FaderConfig setupFader (final int index)
     {
         final ICursorDevice cursorDevice = this.model.getCursorDevice ();
@@ -50,6 +76,6 @@ public class MaschineJamParameterMode extends ParameterMode<MaschineJamControlSu
             return FADER_OFF;
 
         final int value = this.model.getValueChanger ().toMidiValue (parameter.getValue ());
-        return new FaderConfig (FaderConfig.TYPE_SINGLE, MaschineColorManager.PARAM_COLORS[index], value);
+        return new FaderConfig (FaderConfig.TYPE_SINGLE, MaschineColorManager.PARAM_COLORS.get (index).intValue (), value);
     }
 }

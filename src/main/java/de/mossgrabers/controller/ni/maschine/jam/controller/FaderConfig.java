@@ -28,7 +28,7 @@ public class FaderConfig
 
     /**
      * Constructor for non-dual types.
-     * 
+     *
      * @param type The type of the fader, use the TYPE_* constants.
      * @param color The color index of the fader, 0-127
      * @param value The value of the fader, 0-127
@@ -41,7 +41,7 @@ public class FaderConfig
 
     /**
      * Constructor.
-     * 
+     *
      * @param type The type of the fader, use the TYPE_* constants.
      * @param color The color index of the fader, 0-127
      * @param value The value of the fader, 0-127
@@ -58,7 +58,7 @@ public class FaderConfig
 
     /**
      * Get the type of the fader.
-     * 
+     *
      * @return the type The type
      */
     public int getType ()
@@ -69,7 +69,7 @@ public class FaderConfig
 
     /**
      * Get the color of the fader.
-     * 
+     *
      * @return The color, 0-127
      */
     public int getColor ()
@@ -80,7 +80,7 @@ public class FaderConfig
 
     /**
      * Get the value of the fader.
-     * 
+     *
      * @return The value, 0-127
      */
     public int getValue ()
@@ -91,7 +91,7 @@ public class FaderConfig
 
     /**
      * Get the second value of the fader, if type is DUAL.
-     * 
+     *
      * @return The value, 0-127
      */
     public int getDualValue ()

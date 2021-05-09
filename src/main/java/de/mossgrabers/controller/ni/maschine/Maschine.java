@@ -133,7 +133,7 @@ public enum Maschine
 
     /**
      * Get the system exclusive message which is sent from the device on pressing the Shift button.
-     * 
+     *
      * @return The message
      */
     public String getMessageShiftDown ()
@@ -144,7 +144,7 @@ public enum Maschine
 
     /**
      * Get the system exclusive message which is sent from the device on releasing the Shift button.
-     * 
+     *
      * @return The message
      */
     public String getMessageShiftUp ()
@@ -155,7 +155,7 @@ public enum Maschine
 
     /**
      * Get the system exclusive message which is sent from the device when the MIDI mode is entered.
-     * 
+     *
      * @return The message
      */
     public String getMessageReturnFromHost ()

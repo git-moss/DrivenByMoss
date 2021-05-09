@@ -15,6 +15,9 @@ import de.mossgrabers.framework.scale.Scales;
 import de.mossgrabers.framework.view.AbstractDrumView;
 import de.mossgrabers.framework.view.AbstractPlayView;
 import de.mossgrabers.framework.view.AbstractSequencerView;
+import de.mossgrabers.framework.view.BrowserView;
+
+import java.util.List;
 
 
 /**
@@ -25,51 +28,41 @@ import de.mossgrabers.framework.view.AbstractSequencerView;
 @SuppressWarnings("javadoc")
 public class MaschineColorManager extends ColorManager
 {
-    public static final int    COLOR_BLACK        = 0;
-    public static final int    COLOR_DARK_GREY    = 76;
-    public static final int    COLOR_GREY         = 77;
-    public static final int    COLOR_WHITE        = 78;
-    public static final int    COLOR_ROSE         = 7;
-    public static final int    COLOR_RED          = 6;
-    public static final int    COLOR_RED_LO       = 5;
-    public static final int    COLOR_AMBER        = 14;
-    public static final int    COLOR_AMBER_LO     = 13;
-    public static final int    COLOR_LIME         = 34;
-    public static final int    COLOR_LIME_LO      = 33;
-    public static final int    COLOR_GREEN        = 30;
-    public static final int    COLOR_GREEN_LO     = 29;
-    public static final int    COLOR_SPRING       = 26;
-    public static final int    COLOR_SPRING_LO    = 25;
-    public static final int    COLOR_TURQUOISE_LO = 27;
-    public static final int    COLOR_TURQUOISE    = 31;
-    public static final int    COLOR_SKY          = 38;
-    public static final int    COLOR_SKY_LO       = 37;
-    public static final int    COLOR_BLUE         = 42;
-    public static final int    COLOR_BLUE_LO      = 45;
-    public static final int    COLOR_MAGENTA      = 58;
-    public static final int    COLOR_MAGENTA_LO   = 57;
-    public static final int    COLOR_PINK         = 62;
-    public static final int    COLOR_PINK_LO      = 61;
-    public static final int    COLOR_ORANGE       = 10;
-    public static final int    COLOR_ORANGE_LO    = 9;
-    public static final int    COLOR_PURPLE       = 50;
-    public static final int    COLOR_PURPLE_LO    = 53;
-    public static final int    COLOR_SKIN         = 11;
-    public static final int    COLOR_YELLOW_LO    = 21;
-    public static final int    COLOR_YELLOW       = 22;
+    public static final int           COLOR_BLACK        = 0;
+    public static final int           COLOR_DARK_GREY    = 76;
+    public static final int           COLOR_GREY         = 77;
+    public static final int           COLOR_WHITE        = 78;
+    public static final int           COLOR_ROSE         = 7;
+    public static final int           COLOR_RED          = 6;
+    public static final int           COLOR_RED_LO       = 5;
+    public static final int           COLOR_AMBER        = 14;
+    public static final int           COLOR_AMBER_LO     = 13;
+    public static final int           COLOR_LIME         = 34;
+    public static final int           COLOR_LIME_LO      = 33;
+    public static final int           COLOR_GREEN        = 30;
+    public static final int           COLOR_GREEN_LO     = 29;
+    public static final int           COLOR_SPRING       = 26;
+    public static final int           COLOR_SPRING_LO    = 25;
+    public static final int           COLOR_TURQUOISE_LO = 27;
+    public static final int           COLOR_TURQUOISE    = 31;
+    public static final int           COLOR_SKY          = 38;
+    public static final int           COLOR_SKY_LO       = 37;
+    public static final int           COLOR_BLUE         = 42;
+    public static final int           COLOR_BLUE_LO      = 45;
+    public static final int           COLOR_MAGENTA      = 58;
+    public static final int           COLOR_MAGENTA_LO   = 57;
+    public static final int           COLOR_PINK         = 62;
+    public static final int           COLOR_PINK_LO      = 61;
+    public static final int           COLOR_ORANGE       = 10;
+    public static final int           COLOR_ORANGE_LO    = 9;
+    public static final int           COLOR_PURPLE       = 50;
+    public static final int           COLOR_PURPLE_LO    = 53;
+    public static final int           COLOR_SKIN         = 11;
+    public static final int           COLOR_YELLOW_LO    = 21;
+    public static final int           COLOR_YELLOW       = 22;
 
     /** The 8 parameter colors. */
-    public static final int [] PARAM_COLORS       =
-    {
-        MaschineColorManager.COLOR_RED,
-        MaschineColorManager.COLOR_AMBER,
-        MaschineColorManager.COLOR_YELLOW,
-        MaschineColorManager.COLOR_GREEN,
-        MaschineColorManager.COLOR_LIME,
-        MaschineColorManager.COLOR_SKY,
-        MaschineColorManager.COLOR_PURPLE,
-        MaschineColorManager.COLOR_PINK
-    };
+    public static final List<Integer> PARAM_COLORS       = List.of (Integer.valueOf (MaschineColorManager.COLOR_RED), Integer.valueOf (MaschineColorManager.COLOR_AMBER), Integer.valueOf (MaschineColorManager.COLOR_YELLOW), Integer.valueOf (MaschineColorManager.COLOR_GREEN), Integer.valueOf (MaschineColorManager.COLOR_LIME), Integer.valueOf (MaschineColorManager.COLOR_SKY), Integer.valueOf (MaschineColorManager.COLOR_PURPLE), Integer.valueOf (MaschineColorManager.COLOR_PINK));
 
 
     /**
@@ -102,7 +95,7 @@ public class MaschineColorManager extends ColorManager
         this.registerColorIndex (AbstractSequencerView.COLOR_CONTENT, COLOR_BLUE);
         this.registerColorIndex (AbstractSequencerView.COLOR_CONTENT_CONT, COLOR_BLUE_LO);
 
-        this.registerColorIndex (AbstractSequencerView.COLOR_PAGE, COLOR_WHITE);
+        this.registerColorIndex (AbstractSequencerView.COLOR_PAGE, COLOR_GREY);
         this.registerColorIndex (AbstractSequencerView.COLOR_ACTIVE_PAGE, COLOR_GREEN);
         this.registerColorIndex (AbstractSequencerView.COLOR_SELECTED_PAGE, COLOR_BLUE);
         this.registerColorIndex (AbstractSequencerView.COLOR_RESOLUTION, COLOR_ORANGE);
@@ -116,6 +109,19 @@ public class MaschineColorManager extends ColorManager
         this.registerColorIndex (AbstractDrumView.COLOR_PAD_MUTED, COLOR_AMBER);
         this.registerColorIndex (AbstractDrumView.COLOR_PAD_HAS_CONTENT, COLOR_DARK_GREY);
         this.registerColorIndex (AbstractDrumView.COLOR_PAD_NO_CONTENT, COLOR_BLACK);
+
+        this.registerColorIndex (BrowserView.OFF, COLOR_BLACK);
+        this.registerColorIndex (BrowserView.DISCARD, COLOR_RED);
+        this.registerColorIndex (BrowserView.CONFIRM, COLOR_GREEN);
+        this.registerColorIndex (BrowserView.PLAY, COLOR_AMBER_LO);
+        this.registerColorIndex (BrowserView.COLUMN1, COLOR_WHITE);
+        this.registerColorIndex (BrowserView.COLUMN2, COLOR_GREY);
+        this.registerColorIndex (BrowserView.COLUMN3, COLOR_DARK_GREY);
+        this.registerColorIndex (BrowserView.COLUMN4, COLOR_ROSE);
+        this.registerColorIndex (BrowserView.COLUMN5, COLOR_SPRING);
+        this.registerColorIndex (BrowserView.COLUMN6, COLOR_BLUE_LO);
+        this.registerColorIndex (BrowserView.COLUMN7, COLOR_BLACK);
+        this.registerColorIndex (BrowserView.COLUMN8, COLOR_YELLOW);
 
         this.registerColorIndex (DAWColor.COLOR_OFF, COLOR_BLACK);
         this.registerColorIndex (DAWColor.DAW_COLOR_GRAY_HALF, COLOR_DARK_GREY);
@@ -181,6 +187,23 @@ public class MaschineColorManager extends ColorManager
     }
 
 
+    /**
+     * Workaround for darker/brighter colors. Returns the index with the lowest brightness in a
+     * color row.
+     *
+     * @param colorIndex The index of the color for which to get the color with the lowest
+     *            brightness
+     * @return The index
+     */
+    public int dimOrHighlightColor (final ColorEx color, final boolean isSelected)
+    {
+        final int colorIndex = this.getColorIndex (DAWColor.getColorIndex (color));
+        if (isSelected)
+            return colorIndex == MaschineColorManager.COLOR_DARK_GREY ? MaschineColorManager.COLOR_WHITE : colorIndex;
+        return colorIndex / 8 * 8 + 5;
+    }
+
+
     /** {@inheritDoc} */
     @Override
     public ColorEx getColor (final int colorIndex, final ButtonID buttonID)
@@ -191,6 +214,9 @@ public class MaschineColorManager extends ColorManager
         if (buttonID == null)
             return ColorEx.GRAY;
 
+        if (buttonID.ordinal () >= ButtonID.PAD1.ordinal () && buttonID.ordinal () <= ButtonID.PAD64.ordinal ())
+            return super.getColor (colorIndex, buttonID);
+
         switch (buttonID)
         {
             case PLAY:
@@ -199,22 +225,6 @@ public class MaschineColorManager extends ColorManager
             case RECORD:
                 return colorIndex > 0 ? ColorEx.RED : ColorEx.DARK_RED;
 
-            case PAD1:
-            case PAD2:
-            case PAD3:
-            case PAD4:
-            case PAD5:
-            case PAD6:
-            case PAD7:
-            case PAD8:
-            case PAD9:
-            case PAD10:
-            case PAD11:
-            case PAD12:
-            case PAD13:
-            case PAD14:
-            case PAD15:
-            case PAD16:
             case ROW3_1:
             case ROW3_2:
             case ROW3_3:

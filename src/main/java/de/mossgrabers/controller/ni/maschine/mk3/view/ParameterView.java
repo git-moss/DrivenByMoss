@@ -126,10 +126,11 @@ public class ParameterView extends BaseView
             final IParameter item = parameterBank.getItem (i);
             if (item.doesExist ())
             {
+                final int color = MaschineColorManager.PARAM_COLORS.get (i).intValue ();
                 if (i == deviceMode.getSelectedParameter ())
-                    padGrid.lightEx (x, y, MaschineColorManager.PARAM_COLORS[i], MaschineColorManager.COLOR_WHITE, false);
+                    padGrid.lightEx (x, y, color, MaschineColorManager.COLOR_WHITE, false);
                 else
-                    padGrid.lightEx (x, y, MaschineColorManager.PARAM_COLORS[i]);
+                    padGrid.lightEx (x, y, color);
             }
             else
                 padGrid.lightEx (x, y, AbstractFeatureGroup.BUTTON_COLOR_OFF);

@@ -385,8 +385,16 @@ public class MaschineControllerSetup extends AbstractControllerSetup<MaschineCon
         if (this.maschine.hasBankButtons ())
         {
             this.addButton (ButtonID.TRACK, "Select", NopCommand.INSTANCE, MaschineControlSurface.SELECT);
-            this.addButton (ButtonID.SOLO, "Solo", NopCommand.INSTANCE, MaschineControlSurface.SOLO);
-            this.addButton (ButtonID.MUTE, "Mute", NopCommand.INSTANCE, MaschineControlSurface.MUTE);
+
+            this.addButton (ButtonID.SOLO, "Solo", (event, velocity) -> {
+                if (event == ButtonEvent.UP && surface.isShiftPressed ())
+                    this.model.getProject ().clearSolo ();
+            }, MaschineControlSurface.SOLO);
+
+            this.addButton (ButtonID.MUTE, "Mute", (event, velocity) -> {
+                if (event == ButtonEvent.UP && surface.isShiftPressed ())
+                    this.model.getProject ().clearMute ();
+            }, MaschineControlSurface.MUTE);
         }
         else
         {

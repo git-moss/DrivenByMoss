@@ -192,7 +192,7 @@ public abstract class AbstractTrackBankImpl extends AbstractChannelBankImpl<Trac
 
     /**
      * Adds a new track to this track bank.
-     * 
+     *
      * @param type The type of the track to add
      */
     protected void addTrack (final ChannelType type)

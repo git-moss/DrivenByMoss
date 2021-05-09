@@ -78,7 +78,7 @@ public interface ITrackBank extends IChannelBank<ITrack>
     /**
      * Adds a new channel to this channel bank. Creates a random name. Uses a random color for the
      * channel.
-     * 
+     *
      * @param type The type of channel to add
      */
     void addChannel (ChannelType type);
@@ -86,7 +86,7 @@ public interface ITrackBank extends IChannelBank<ITrack>
 
     /**
      * Adds a new channel to this channel bank. Uses a random color for the channel.
-     * 
+     *
      * @param type The type of channel to add
      * @param name The name of the channel, might be null
      */
@@ -95,7 +95,7 @@ public interface ITrackBank extends IChannelBank<ITrack>
 
     /**
      * Adds a new channel to this channel bank.
-     * 
+     *
      * @param type The type of channel to add
      * @param name The name of the channel, might be null
      * @param color The color of the channel, might be null

@@ -2,12 +2,16 @@
 // (c) 2017-2021
 // Licensed under LGPLv3 - http://www.gnu.org/licenses/lgpl-3.0.txt
 
-package de.mossgrabers.framework.command.continuous;
+package de.mossgrabers.framework.command.trigger;
 
 import de.mossgrabers.framework.command.core.AbstractTriggerCommand;
+import de.mossgrabers.framework.command.trigger.application.UndoCommand;
+import de.mossgrabers.framework.command.trigger.clip.NewCommand;
+import de.mossgrabers.framework.command.trigger.transport.PlayCommand;
+import de.mossgrabers.framework.command.trigger.transport.RecordCommand;
+import de.mossgrabers.framework.command.trigger.transport.TapTempoCommand;
 import de.mossgrabers.framework.configuration.AbstractConfiguration;
 import de.mossgrabers.framework.configuration.Configuration;
-import de.mossgrabers.framework.controller.ButtonID;
 import de.mossgrabers.framework.controller.IControlSurface;
 import de.mossgrabers.framework.daw.IApplication;
 import de.mossgrabers.framework.daw.IClip;
@@ -31,6 +35,13 @@ import java.util.Optional;
  */
 public class FootswitchCommand<S extends IControlSurface<C>, C extends Configuration> extends AbstractTriggerCommand<S, C>
 {
+    private final NewCommand<S, C>      newCommand;
+    private final RecordCommand<S, C>   recordCommand;
+    private final UndoCommand<S, C>     undoCommand;
+    private final TapTempoCommand<S, C> tapTempoCommand;
+    private final PlayCommand<S, C>     playCommand;
+
+
     /**
      * Constructor.
      *
@@ -40,6 +51,12 @@ public class FootswitchCommand<S extends IControlSurface<C>, C extends Configura
     public FootswitchCommand (final IModel model, final S surface)
     {
         super (model, surface);
+
+        this.newCommand = new NewCommand<> (model, surface);
+        this.recordCommand = new RecordCommand<> (model, surface);
+        this.undoCommand = new UndoCommand<> (this.model, surface);
+        this.tapTempoCommand = new TapTempoCommand<> (this.model, surface);
+        this.playCommand = new PlayCommand<> (this.model, surface);
     }
 
 
@@ -122,23 +139,23 @@ public class FootswitchCommand<S extends IControlSurface<C>, C extends Configura
         switch (this.getSetting ())
         {
             case AbstractConfiguration.FOOTSWITCH_2_TOGGLE_PLAY:
-                this.surface.getButton (ButtonID.PLAY).trigger (event);
+                this.playCommand.execute (event, 127);
                 break;
 
             case AbstractConfiguration.FOOTSWITCH_2_TOGGLE_RECORD:
-                this.surface.getButton (ButtonID.RECORD).trigger (event);
+                this.recordCommand.execute (event, 127);
                 break;
 
             case AbstractConfiguration.FOOTSWITCH_2_UNDO:
-                this.surface.getButton (ButtonID.UNDO).trigger (event);
+                this.undoCommand.execute (event, 127);
                 break;
 
             case AbstractConfiguration.FOOTSWITCH_2_TAP_TEMPO:
-                this.surface.getButton (ButtonID.TAP_TEMPO).trigger (event);
+                this.tapTempoCommand.execute (event, 127);
                 break;
 
             case AbstractConfiguration.FOOTSWITCH_2_NEW_BUTTON:
-                this.surface.getButton (ButtonID.NEW).trigger (event);
+                this.newCommand.execute (event, 127);
                 break;
 
             case AbstractConfiguration.FOOTSWITCH_2_CLIP_BASED_LOOPER:
@@ -181,7 +198,7 @@ public class FootswitchCommand<S extends IControlSurface<C>, C extends Configura
             {
                 // If there is no clip in the selected slot, create a clip and begin record
                 // mode. Releasing it ends record mode.
-                this.surface.getButton (ButtonID.NEW).trigger (event);
+                this.newCommand.execute (event, 127);
                 slot.select ();
                 this.model.getTransport ().setLauncherOverdub (true);
             }

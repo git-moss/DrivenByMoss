@@ -12,6 +12,7 @@ import de.mossgrabers.bitwig.framework.daw.data.DrumPadImpl;
 import de.mossgrabers.bitwig.framework.daw.data.SlotImpl;
 import de.mossgrabers.bitwig.framework.daw.data.Util;
 import de.mossgrabers.framework.daw.AbstractBrowser;
+import de.mossgrabers.framework.daw.IHost;
 import de.mossgrabers.framework.daw.data.IBrowserColumn;
 import de.mossgrabers.framework.daw.data.IBrowserColumnItem;
 import de.mossgrabers.framework.daw.data.IChannel;
@@ -33,6 +34,7 @@ import com.bitwig.extension.controller.api.PopupBrowser;
  */
 public class BrowserImpl extends AbstractBrowser
 {
+    private final IHost                   host;
     private final CursorDevice            cursorDevice;
     private final CursorTrack             cursorTrack;
     private final PopupBrowser            browser;
@@ -44,16 +46,18 @@ public class BrowserImpl extends AbstractBrowser
     /**
      * Constructor.
      *
+     * @param host The host
      * @param browser The browser
      * @param cursorTrack The cursor track
      * @param cursorDevice The cursor device
      * @param numFilterColumnEntries The number of entries in a filter column page
      * @param numResults The number of entries in a results column page
      */
-    public BrowserImpl (final PopupBrowser browser, final CursorTrack cursorTrack, final CursorDevice cursorDevice, final int numFilterColumnEntries, final int numResults)
+    public BrowserImpl (final IHost host, final PopupBrowser browser, final CursorTrack cursorTrack, final CursorDevice cursorDevice, final int numFilterColumnEntries, final int numResults)
     {
         super (numFilterColumnEntries, numResults);
 
+        this.host = host;
         this.cursorTrack = cursorTrack;
         this.cursorDevice = cursorDevice;
 
@@ -211,7 +215,8 @@ public class BrowserImpl extends AbstractBrowser
         if (insertionPoint == null)
             return;
 
-        insertionPoint.browse ();
+        // Delay a bit to give the previous browser the chance to shutdown
+        this.host.scheduleTask (insertionPoint::browse, 400);
     }
 
 

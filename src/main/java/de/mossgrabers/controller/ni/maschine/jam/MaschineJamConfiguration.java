@@ -55,6 +55,7 @@ public class MaschineJamConfiguration extends AbstractConfiguration
 
         this.activateRecordButtonSetting (globalSettings);
         this.activateShiftedRecordButtonSetting (globalSettings);
+        this.activateBehaviourOnStopSetting (globalSettings);
 
         ///////////////////////////
         // Play and Sequence
@@ -66,6 +67,7 @@ public class MaschineJamConfiguration extends AbstractConfiguration
 
         this.activateSelectClipOnLaunchSetting (globalSettings);
         this.activateActionForRecArmedPad (globalSettings);
+        this.activateFlipSessionSetting (globalSettings);
 
         ///////////////////////////
         // Workflow
@@ -73,5 +75,6 @@ public class MaschineJamConfiguration extends AbstractConfiguration
         this.activateExcludeDeactivatedItemsSetting (globalSettings);
         this.activateNewClipLengthSetting (globalSettings);
         this.activateKnobSpeedSetting (globalSettings);
+        this.activateFootswitchSetting (globalSettings, 0);
     }
 }

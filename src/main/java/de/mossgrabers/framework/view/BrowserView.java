@@ -2,50 +2,85 @@
 // (c) 2017-2021
 // Licensed under LGPLv3 - http://www.gnu.org/licenses/lgpl-3.0.txt
 
-package de.mossgrabers.controller.akai.apcmini.view;
+package de.mossgrabers.framework.view;
 
-import de.mossgrabers.controller.akai.apcmini.APCminiConfiguration;
-import de.mossgrabers.controller.akai.apcmini.controller.APCminiColorManager;
-import de.mossgrabers.controller.akai.apcmini.controller.APCminiControlSurface;
+import de.mossgrabers.framework.configuration.Configuration;
 import de.mossgrabers.framework.controller.ButtonID;
+import de.mossgrabers.framework.controller.IControlSurface;
 import de.mossgrabers.framework.controller.color.ColorManager;
 import de.mossgrabers.framework.controller.grid.IPadGrid;
 import de.mossgrabers.framework.daw.IBrowser;
 import de.mossgrabers.framework.daw.IModel;
 import de.mossgrabers.framework.featuregroup.AbstractView;
-import de.mossgrabers.framework.featuregroup.ViewManager;
-import de.mossgrabers.framework.utils.ButtonEvent;
 
 
 /**
- * The Browser view.
+ * Navigate the browser.
+ *
+ * @param <S> The type of the control surface
+ * @param <C> The type of the configuration
  *
  * @author J&uuml;rgen Mo&szlig;graber
  */
-public class BrowserView extends AbstractView<APCminiControlSurface, APCminiConfiguration> implements APCminiView
+public class BrowserView<S extends IControlSurface<C>, C extends Configuration> extends AbstractView<S, C>
 {
-    private static final int [] COLUMN_COLORS =
+    /** The color for the unused pads. */
+    public static final String     OFF          = "BROWSER_OFF";
+    /** The color for the discard pad. */
+    public static final String     DISCARD      = "BROWSER_DISCARD";
+    /** The color for the confirmation pad. */
+    public static final String     CONFIRM      = "BROWSER_CONFIRM";
+    /** The color for the play (test) pads. */
+    public static final String     PLAY         = "BROWSER_PLAY";
+    /** The color for the first column. */
+    public static final String     COLUMN1      = "BROWSER_COLUMN1";
+    /** The color for the second column. */
+    public static final String     COLUMN2      = "BROWSER_COLUMN2";
+    /** The color for the third column. */
+    public static final String     COLUMN3      = "BROWSER_COLUMN3";
+    /** The color for the fourth column. */
+    public static final String     COLUMN4      = "BROWSER_COLUMN4";
+    /** The color for the fifth column. */
+    public static final String     COLUMN5      = "BROWSER_COLUMN5";
+    /** The color for the sixth column. */
+    public static final String     COLUMN6      = "BROWSER_COLUMN6";
+    /** The color for the seventh column. */
+    public static final String     COLUMN7      = "BROWSER_COLUMN7";
+    /** The color for the eighth column. */
+    public static final String     COLUMN8      = "BROWSER_COLUMN8";
+
+    private static final String [] COLUMNS      =
     {
-        APCminiColorManager.APC_COLOR_GREEN,
-        APCminiColorManager.APC_COLOR_RED,
-        APCminiColorManager.APC_COLOR_GREEN,
-        APCminiColorManager.APC_COLOR_RED,
-        APCminiColorManager.APC_COLOR_GREEN,
-        APCminiColorManager.APC_COLOR_RED,
-        APCminiColorManager.APC_COLOR_BLACK,
-        APCminiColorManager.APC_COLOR_YELLOW,
+        COLUMN1,
+        COLUMN2,
+        COLUMN3,
+        COLUMN4,
+        COLUMN5,
+        COLUMN6,
+        COLUMN7,
+        COLUMN8
+    };
+
+    private static final int []    COLUMN_ORDER =
+    {
+        0,
+        1,
+        2,
+        3,
+        4,
+        5
     };
 
 
     /**
      * Constructor.
      *
-     * @param surface The controller
+     * @param surface The surface
      * @param model The model
      */
-    public BrowserView (final APCminiControlSurface surface, final IModel model)
+    public BrowserView (final S surface, final IModel model)
     {
-        super ("Browser", surface, model);
+        super (Views.NAME_BROWSER, surface, model);
     }
 
 
@@ -54,26 +89,32 @@ public class BrowserView extends AbstractView<APCminiControlSurface, APCminiConf
     public void drawGrid ()
     {
         final IPadGrid padGrid = this.surface.getPadGrid ();
-        padGrid.light (36, APCminiColorManager.APC_COLOR_RED_BLINK);
-        padGrid.light (37, APCminiColorManager.APC_COLOR_BLACK);
+
+        padGrid.light (36, DISCARD);
+
+        padGrid.light (37, OFF);
+
         for (int i = 38; i < 42; i++)
-            padGrid.light (i, APCminiColorManager.APC_COLOR_YELLOW);
-        padGrid.light (42, APCminiColorManager.APC_COLOR_BLACK);
-        padGrid.light (43, APCminiColorManager.APC_COLOR_GREEN_BLINK);
+            padGrid.light (i, PLAY);
+
+        padGrid.light (42, OFF);
+
+        padGrid.light (43, CONFIRM);
+
         for (int i = 44; i < 52; i++)
-            padGrid.light (i, APCminiColorManager.APC_COLOR_BLACK);
+            padGrid.light (i, OFF);
 
         for (int i = 52; i < 60; i++)
-            padGrid.light (i, COLUMN_COLORS[i - 52]);
+            padGrid.light (i, COLUMNS[i - 52]);
         for (int i = 60; i < 68; i++)
-            padGrid.light (i, COLUMN_COLORS[i - 60]);
+            padGrid.light (i, COLUMNS[i - 60]);
         for (int i = 68; i < 76; i++)
-            padGrid.light (i, COLUMN_COLORS[i - 68]);
+            padGrid.light (i, COLUMNS[i - 68]);
         for (int i = 76; i < 84; i++)
-            padGrid.light (i, COLUMN_COLORS[i - 76]);
+            padGrid.light (i, COLUMNS[i - 76]);
 
         for (int i = 84; i < 100; i++)
-            padGrid.light (i, APCminiColorManager.APC_COLOR_BLACK);
+            padGrid.light (i, OFF);
     }
 
 
@@ -82,39 +123,37 @@ public class BrowserView extends AbstractView<APCminiControlSurface, APCminiConf
     public void onGridNote (final int note, final int velocity)
     {
         final IBrowser browser = this.model.getBrowser ();
-        final ViewManager viewManager = this.surface.getViewManager ();
         if (!browser.isActive ())
             return;
 
-        int n = this.surface.getPadGrid ().translateToController (note)[1];
-        switch (n)
+        switch (note)
         {
             // Cancel
-            case 0:
+            case 36:
                 if (velocity == 0)
                     return;
                 browser.stopBrowsing (false);
-                viewManager.restore ();
+                this.surface.getViewManager ().restore ();
                 break;
 
             // OK
-            case 7:
+            case 43:
                 if (velocity == 0)
                     return;
                 browser.stopBrowsing (true);
-                viewManager.restore ();
+                this.surface.getViewManager ().restore ();
                 break;
 
-            case 2:
+            case 38:
                 this.surface.sendMidiEvent (0x90, 48, velocity);
                 break;
-            case 3:
+            case 39:
                 this.surface.sendMidiEvent (0x90, 60, velocity);
                 break;
-            case 4:
+            case 40:
                 this.surface.sendMidiEvent (0x90, 72, velocity);
                 break;
-            case 5:
+            case 41:
                 this.surface.sendMidiEvent (0x90, 84, velocity);
                 break;
 
@@ -126,9 +165,9 @@ public class BrowserView extends AbstractView<APCminiControlSurface, APCminiConf
         if (velocity == 0)
             return;
 
-        if (n >= 16 && n < 48)
+        if (note >= 52 && note < 84)
         {
-            n -= 16;
+            final int n = note - 52;
             final int row = n / 8;
             final int col = n % 8;
 
@@ -156,38 +195,22 @@ public class BrowserView extends AbstractView<APCminiControlSurface, APCminiConf
 
                 default:
                     if (row == 0)
-                        browser.selectNextFilterItem (col);
+                        browser.selectNextFilterItem (BrowserView.COLUMN_ORDER[col]);
                     else if (row == 1)
                     {
                         for (int i = 0; i < 8; i++)
-                            browser.selectNextFilterItem (col);
+                            browser.selectNextFilterItem (BrowserView.COLUMN_ORDER[col]);
                     }
                     else if (row == 2)
                     {
                         for (int i = 0; i < 8; i++)
-                            browser.selectPreviousFilterItem (col);
+                            browser.selectPreviousFilterItem (BrowserView.COLUMN_ORDER[col]);
                     }
                     else if (row == 3)
-                        browser.selectPreviousFilterItem (col);
+                        browser.selectPreviousFilterItem (BrowserView.COLUMN_ORDER[col]);
                     break;
             }
         }
-    }
-
-
-    /** {@inheritDoc} */
-    @Override
-    public void onSelectTrack (final int index, final ButtonEvent event)
-    {
-        // Intentionally empty
-    }
-
-
-    /** {@inheritDoc} */
-    @Override
-    public int getTrackButtonColor (final int index)
-    {
-        return APCminiColorManager.APC_COLOR_BLACK;
     }
 
 

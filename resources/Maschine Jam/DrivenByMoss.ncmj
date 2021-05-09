@@ -3453,7 +3453,8 @@
           <default>0</default>
         </led>
         <button version="1" id="BtnD6">
-          <note>67</note>
+          <name>G2</name>
+          <note>55</note>
           <channel>0</channel>
           <off>0</off>
           <on>127</on>
@@ -3464,7 +3465,7 @@
           <display type="0">
             <unit color-type="1" color-mode="3" color-on-index="2" color-off-index="1" />
           </display>
-          <note>67</note>
+          <note>55</note>
           <channel>0</channel>
           <min>0</min>
           <max>127</max>
@@ -3795,7 +3796,7 @@
           <default>0</default>
         </led>
         <button version="1" id="BtnG1">
-          <note>86</note>
+          <note>98</note>
           <channel>0</channel>
           <off>0</off>
           <on>127</on>
@@ -3806,7 +3807,7 @@
           <display type="0">
             <unit color-type="1" color-mode="3" color-on-index="2" color-off-index="1" />
           </display>
-          <note>86</note>
+          <note>98</note>
           <channel>0</channel>
           <min>0</min>
           <max>127</max>
@@ -3939,7 +3940,7 @@
           <default>0</default>
         </led>
         <button version="1" id="BtnH1">
-          <note>87</note>
+          <note>99</note>
           <channel>0</channel>
           <off>0</off>
           <on>127</on>
@@ -3950,7 +3951,7 @@
           <display type="0">
             <unit color-type="1" color-mode="3" color-on-index="2" color-off-index="1" />
           </display>
-          <note>87</note>
+          <note>99</note>
           <channel>0</channel>
           <min>0</min>
           <max>127</max>
@@ -11957,12 +11958,12 @@
           <bipolar>off</bipolar>
           <min>0</min>
           <max>127</max>
-          <ledPattern>1</ledPattern>
+          <ledPattern>0</ledPattern>
           <behavior>none</behavior>
         </knob>
         <led version="1" id="TstAIDX">
           <display type="0">
-            <unit color-type="1" color-mode="0" color-on-index="1" color-off-index="1" />
+            <unit color-type="1" color-mode="0" color-on-index="8" color-off-index="1" />
           </display>
           <controller>8</controller>
           <channel>0</channel>
@@ -11981,12 +11982,12 @@
           <bipolar>off</bipolar>
           <min>0</min>
           <max>127</max>
-          <ledPattern>1</ledPattern>
+          <ledPattern>0</ledPattern>
           <behavior>none</behavior>
         </knob>
         <led version="1" id="TstBIDX">
           <display type="0">
-            <unit color-type="1" color-mode="0" color-on-index="1" color-off-index="1" />
+            <unit color-type="1" color-mode="0" color-on-index="4" color-off-index="1" />
           </display>
           <controller>9</controller>
           <channel>0</channel>
@@ -12005,12 +12006,12 @@
           <bipolar>off</bipolar>
           <min>0</min>
           <max>127</max>
-          <ledPattern>1</ledPattern>
+          <ledPattern>0</ledPattern>
           <behavior>none</behavior>
         </knob>
         <led version="1" id="TstCIDX">
           <display type="0">
-            <unit color-type="1" color-mode="0" color-on-index="1" color-off-index="1" />
+            <unit color-type="1" color-mode="0" color-on-index="18" color-off-index="1" />
           </display>
           <controller>10</controller>
           <channel>0</channel>
@@ -12029,12 +12030,12 @@
           <bipolar>off</bipolar>
           <min>0</min>
           <max>127</max>
-          <ledPattern>1</ledPattern>
+          <ledPattern>0</ledPattern>
           <behavior>none</behavior>
         </knob>
         <led version="1" id="TstDIDX">
           <display type="0">
-            <unit color-type="1" color-mode="0" color-on-index="1" color-off-index="1" />
+            <unit color-type="1" color-mode="0" color-on-index="14" color-off-index="1" />
           </display>
           <controller>11</controller>
           <channel>0</channel>
@@ -12053,12 +12054,12 @@
           <bipolar>off</bipolar>
           <min>0</min>
           <max>127</max>
-          <ledPattern>1</ledPattern>
+          <ledPattern>0</ledPattern>
           <behavior>none</behavior>
         </knob>
         <led version="1" id="TstEIDX">
           <display type="0">
-            <unit color-type="1" color-mode="0" color-on-index="1" color-off-index="1" />
+            <unit color-type="1" color-mode="0" color-on-index="0" color-off-index="1" />
           </display>
           <controller>12</controller>
           <channel>0</channel>
@@ -12077,12 +12078,12 @@
           <bipolar>off</bipolar>
           <min>0</min>
           <max>127</max>
-          <ledPattern>1</ledPattern>
+          <ledPattern>0</ledPattern>
           <behavior>none</behavior>
         </knob>
         <led version="1" id="TstFIDX">
           <display type="0">
-            <unit color-type="1" color-mode="0" color-on-index="1" color-off-index="1" />
+            <unit color-type="1" color-mode="0" color-on-index="8" color-off-index="1" />
           </display>
           <controller>13</controller>
           <channel>0</channel>
@@ -12101,12 +12102,12 @@
           <bipolar>off</bipolar>
           <min>0</min>
           <max>127</max>
-          <ledPattern>1</ledPattern>
+          <ledPattern>0</ledPattern>
           <behavior>none</behavior>
         </knob>
         <led version="1" id="TstGIDX">
           <display type="0">
-            <unit color-type="1" color-mode="0" color-on-index="1" color-off-index="1" />
+            <unit color-type="1" color-mode="0" color-on-index="4" color-off-index="1" />
           </display>
           <controller>14</controller>
           <channel>0</channel>
@@ -12125,12 +12126,12 @@
           <bipolar>off</bipolar>
           <min>0</min>
           <max>127</max>
-          <ledPattern>1</ledPattern>
+          <ledPattern>0</ledPattern>
           <behavior>none</behavior>
         </knob>
         <led version="1" id="TstHIDX">
           <display type="0">
-            <unit color-type="1" color-mode="0" color-on-index="1" color-off-index="1" />
+            <unit color-type="1" color-mode="0" color-on-index="4" color-off-index="1" />
           </display>
           <controller>15</controller>
           <channel>0</channel>

@@ -39,17 +39,17 @@ import java.util.function.BooleanSupplier;
  */
 public abstract class AbstractMode<S extends IControlSurface<C>, C extends Configuration, B extends IItem> extends AbstractFeatureGroup<S, C> implements IMode, IParametersAdjustObserver
 {
-    /** Color identifier for a mode button which is hilighted. */
+    /** Color identifier for a mode button which is highlighted. */
     public static final String                  BUTTON_COLOR_HI    = "BUTTON_COLOR_HI";
     /** Color identifier for a mode button which is on (second row). */
     public static final String                  BUTTON_COLOR2_ON   = "BUTTON_COLOR2_ON";
-    /** Color identifier for a mode button which is hilighted (second row). */
+    /** Color identifier for a mode button which is highlighted (second row). */
     public static final String                  BUTTON_COLOR2_HI   = "BUTTON_COLOR2_HI";
 
     /** Default knobs 1 to 8. **/
     public static final List<ContinuousID>      DEFAULT_KNOB_IDS   = Collections.unmodifiableList (ContinuousID.createSequentialList (ContinuousID.KNOB1, 8));
 
-    protected final BooleanSupplier             isAlternativeFunction;
+    protected BooleanSupplier                   isAlternativeFunction;
 
     protected IParameterProvider                defaultParameterProvider;
     protected Map<ButtonID, IParameterProvider> parameterProviders = new EnumMap<> (ButtonID.class);

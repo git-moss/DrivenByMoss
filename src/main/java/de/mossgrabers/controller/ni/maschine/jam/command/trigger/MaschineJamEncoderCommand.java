@@ -5,15 +5,11 @@
 package de.mossgrabers.controller.ni.maschine.jam.command.trigger;
 
 import de.mossgrabers.controller.ni.maschine.jam.MaschineJamConfiguration;
+import de.mossgrabers.controller.ni.maschine.jam.controller.EncoderModeManager;
 import de.mossgrabers.controller.ni.maschine.jam.controller.MaschineJamControlSurface;
 import de.mossgrabers.framework.command.core.AbstractTriggerCommand;
-import de.mossgrabers.framework.controller.hardware.IHwRelativeKnob;
 import de.mossgrabers.framework.daw.IModel;
-import de.mossgrabers.framework.daw.data.IParameter;
-import de.mossgrabers.framework.daw.data.ITrack;
 import de.mossgrabers.framework.utils.ButtonEvent;
-
-import java.util.Optional;
 
 
 /**
@@ -23,33 +19,24 @@ import java.util.Optional;
  */
 public class MaschineJamEncoderCommand extends AbstractTriggerCommand<MaschineJamControlSurface, MaschineJamConfiguration>
 {
-    private static EncoderMode    activeEncoderMode = null;
-
-    private EncoderMode           encoderMode;
-    private final IHwRelativeKnob encoder;
+    private final EncoderModeManager manager;
+    private EncoderMode              encoderMode;
 
 
     /**
      * Constructor.
-     * 
-     * @param encoder The main encoder knob
+     *
+     * @param manager The encoder manager
      * @param encoderMode The mode to trigger with this button
      * @param model The model
      * @param surface The surface
      */
-    public MaschineJamEncoderCommand (final IHwRelativeKnob encoder, final EncoderMode encoderMode, final IModel model, final MaschineJamControlSurface surface)
+    public MaschineJamEncoderCommand (final EncoderModeManager manager, final EncoderMode encoderMode, final IModel model, final MaschineJamControlSurface surface)
     {
         super (model, surface);
 
-        this.encoder = encoder;
+        this.manager = manager;
         this.encoderMode = encoderMode;
-
-        // Activate the default mode
-        if (this.encoderMode == EncoderMode.MASTER_VOLUME)
-        {
-            this.execute (ButtonEvent.DOWN, 127);
-            this.model.getTrackBank ().addSelectionObserver ( (index, isSelected) -> this.handleTrackChange (isSelected));
-        }
     }
 
 
@@ -57,37 +44,8 @@ public class MaschineJamEncoderCommand extends AbstractTriggerCommand<MaschineJa
     @Override
     public synchronized void execute (final ButtonEvent event, final int velocity)
     {
-        if (event != ButtonEvent.DOWN || activeEncoderMode == this.encoderMode)
-            return;
-
-        final IParameter parameter;
-
-        switch (this.encoderMode)
-        {
-            case SELECTED_TRACK_VOLUME:
-                final Optional<ITrack> selectedTrack = this.model.getTrackBank ().getSelectedItem ();
-                if (selectedTrack.isEmpty ())
-                    return;
-                parameter = selectedTrack.get ().getVolumeParameter ();
-                break;
-
-            case METRONOME_VOLUME:
-                parameter = this.model.getTransport ().getMetronomeVolumeParameter ();
-                break;
-
-            case CUE_VOLUME:
-                parameter = this.model.getProject ().getCueVolumeParameter ();
-                break;
-
-            default:
-            case MASTER_VOLUME:
-                parameter = this.model.getMasterTrack ().getVolumeParameter ();
-                break;
-        }
-
-        activeEncoderMode = this.encoderMode;
-
-        this.encoder.bind (parameter);
+        if (event == ButtonEvent.DOWN)
+            this.manager.setActiveEncoderMode (this.encoderMode);
     }
 
 
@@ -98,21 +56,6 @@ public class MaschineJamEncoderCommand extends AbstractTriggerCommand<MaschineJa
      */
     public boolean isLit ()
     {
-        return activeEncoderMode == this.encoderMode;
-    }
-
-
-    /**
-     * Bind the selected tracks' volume parameter.
-     *
-     * @param isSelected True if the track got selected
-     */
-    private void handleTrackChange (final boolean isSelected)
-    {
-        if (!isSelected || activeEncoderMode != EncoderMode.SELECTED_TRACK_VOLUME)
-            return;
-        final Optional<ITrack> selectedTrack = this.model.getTrackBank ().getSelectedItem ();
-        if (selectedTrack.isPresent ())
-            this.encoder.bind (selectedTrack.get ().getVolumeParameter ());
+        return this.manager.isActiveEncoderMode (this.encoderMode);
     }
 }

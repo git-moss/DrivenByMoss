@@ -8,8 +8,8 @@ import de.mossgrabers.controller.akai.apcmini.command.trigger.TrackSelectCommand
 import de.mossgrabers.controller.akai.apcmini.controller.APCminiColorManager;
 import de.mossgrabers.controller.akai.apcmini.controller.APCminiControlSurface;
 import de.mossgrabers.controller.akai.apcmini.controller.APCminiScales;
+import de.mossgrabers.controller.akai.apcmini.view.APCMiniBrowserView;
 import de.mossgrabers.controller.akai.apcmini.view.APCminiView;
-import de.mossgrabers.controller.akai.apcmini.view.BrowserView;
 import de.mossgrabers.controller.akai.apcmini.view.DrumView;
 import de.mossgrabers.controller.akai.apcmini.view.PlayView;
 import de.mossgrabers.controller.akai.apcmini.view.RaindropsView;
@@ -173,7 +173,7 @@ public class APCminiControllerSetup extends AbstractControllerSetup<APCminiContr
 
         viewManager.register (Views.PLAY, new PlayView (surface, this.model, trackButtons));
         viewManager.register (Views.SHIFT, new ShiftView (surface, this.model));
-        viewManager.register (Views.BROWSER, new BrowserView (surface, this.model));
+        viewManager.register (Views.BROWSER, new APCMiniBrowserView (surface, this.model));
 
         viewManager.register (Views.SESSION, new SessionView (surface, this.model, trackButtons));
         viewManager.register (Views.SEQUENCER, new SequencerView (surface, this.model));

@@ -10,7 +10,6 @@ import de.mossgrabers.framework.command.trigger.mode.ModeMultiSelectCommand;
 import de.mossgrabers.framework.configuration.Configuration;
 import de.mossgrabers.framework.controller.ButtonID;
 import de.mossgrabers.framework.controller.IControlSurface;
-import de.mossgrabers.framework.daw.DAWColor;
 import de.mossgrabers.framework.daw.IModel;
 import de.mossgrabers.framework.daw.data.ISend;
 import de.mossgrabers.framework.daw.data.ITrack;
@@ -121,6 +120,7 @@ public class GroupButtonCommand<S extends IControlSurface<C>, C extends Configur
             final IView active = this.surface.getViewManager ().getActive ();
             if (active instanceof AbstractSequencerView)
                 ((AbstractSequencerView<?, ?>) active).setResolutionIndex (this.index);
+            return;
         }
 
         // Track selection
@@ -179,12 +179,6 @@ public class GroupButtonCommand<S extends IControlSurface<C>, C extends Configur
         }
 
         // Track selection
-        int colorIndex = this.model.getColorManager ().getColorIndex (DAWColor.getColorIndex (track.getColor ()));
-        // Workaround for darker/brighter colors
-        if (track.isSelected ())
-            colorIndex = colorIndex == MaschineColorManager.COLOR_DARK_GREY ? MaschineColorManager.COLOR_WHITE : colorIndex;
-        else
-            colorIndex = (colorIndex / 8) * 8 + 5;
-        return colorIndex;
+        return ((MaschineColorManager) this.model.getColorManager ()).dimOrHighlightColor (track.getColor (), track.isSelected ());
     }
 }

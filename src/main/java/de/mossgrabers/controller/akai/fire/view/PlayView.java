@@ -215,15 +215,4 @@ public class PlayView extends AbstractPlayView<FireControlSurface, FireConfigura
         this.mvHelper.delayDisplay (this.scales::getRangeText);
         this.updateNoteMapping ();
     }
-
-
-    private void updateScale ()
-    {
-        this.updateNoteMapping ();
-        final FireConfiguration config = this.surface.getConfiguration ();
-        config.setScale (this.scales.getScale ().getName ());
-        config.setScaleBase (Scales.BASES.get (this.scales.getScaleOffset ()));
-        config.setScaleInKey (!this.scales.isChromatic ());
-        config.setScaleLayout (this.scales.getScaleLayout ().getName ());
-    }
 }

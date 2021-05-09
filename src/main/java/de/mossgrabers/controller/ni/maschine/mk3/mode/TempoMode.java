@@ -4,7 +4,9 @@
 
 package de.mossgrabers.controller.ni.maschine.mk3.mode;
 
+import de.mossgrabers.controller.ni.maschine.mk3.MaschineConfiguration;
 import de.mossgrabers.controller.ni.maschine.mk3.controller.MaschineControlSurface;
+import de.mossgrabers.framework.command.continuous.TempoCommand;
 import de.mossgrabers.framework.controller.display.ITextDisplay;
 import de.mossgrabers.framework.daw.IModel;
 import de.mossgrabers.framework.daw.ITransport;
@@ -17,6 +19,9 @@ import de.mossgrabers.framework.daw.ITransport;
  */
 public class TempoMode extends BaseMode
 {
+    private final TempoCommand<MaschineControlSurface, MaschineConfiguration> tempoCommand;
+
+
     /**
      * Constructor.
      *
@@ -26,6 +31,8 @@ public class TempoMode extends BaseMode
     public TempoMode (final MaschineControlSurface surface, final IModel model)
     {
         super ("Tempo", surface, model);
+
+        this.tempoCommand = new TempoCommand<> (model, surface);
     }
 
 
@@ -33,8 +40,7 @@ public class TempoMode extends BaseMode
     @Override
     public void onKnobValue (final int index, final int value)
     {
-        final double speed = this.model.getValueChanger ().calcKnobChange (value);
-        this.model.getTransport ().changeTempo (speed > 0, this.surface.isKnobSensitivitySlow ());
+        this.tempoCommand.execute (value);
     }
 
 

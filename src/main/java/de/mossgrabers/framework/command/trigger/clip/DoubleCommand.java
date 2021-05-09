@@ -22,6 +22,9 @@ import de.mossgrabers.framework.utils.ButtonEvent;
  */
 public class DoubleCommand<S extends IControlSurface<C>, C extends Configuration> extends AbstractTriggerCommand<S, C>
 {
+    private final boolean onShift;
+
+
     /**
      * Constructor.
      *
@@ -30,16 +33,45 @@ public class DoubleCommand<S extends IControlSurface<C>, C extends Configuration
      */
     public DoubleCommand (final IModel model, final S surface)
     {
+        this (model, surface, false);
+    }
+
+
+    /**
+     * Constructor.
+     *
+     * @param model The model
+     * @param surface The surface
+     * @param onShift If true execute the command in combination with Shift button
+     */
+    public DoubleCommand (final IModel model, final S surface, final boolean onShift)
+    {
         super (model, surface);
+
+        this.onShift = onShift;
     }
 
 
     /** {@inheritDoc} */
     @Override
-    public void execute (final ButtonEvent event, final int velocity)
+    public void executeNormal (final ButtonEvent event)
     {
-        if (event != ButtonEvent.DOWN)
-            return;
+        if (event == ButtonEvent.DOWN && !this.onShift)
+            this.doubleClip ();
+    }
+
+
+    /** {@inheritDoc} */
+    @Override
+    public void executeShifted (final ButtonEvent event)
+    {
+        if (event == ButtonEvent.DOWN && this.onShift)
+            this.doubleClip ();
+    }
+
+
+    protected void doubleClip ()
+    {
         final IClip clip = this.model.getCursorClip ();
         if (clip.doesExist ())
             clip.duplicateContent ();

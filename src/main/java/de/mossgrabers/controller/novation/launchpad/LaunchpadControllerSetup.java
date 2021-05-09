@@ -31,7 +31,6 @@ import de.mossgrabers.controller.novation.launchpad.definition.button.LaunchpadB
 import de.mossgrabers.controller.novation.launchpad.mode.RecArmMode;
 import de.mossgrabers.controller.novation.launchpad.mode.SendMode;
 import de.mossgrabers.controller.novation.launchpad.mode.StopClipMode;
-import de.mossgrabers.controller.novation.launchpad.view.BrowserView;
 import de.mossgrabers.controller.novation.launchpad.view.ChordsView;
 import de.mossgrabers.controller.novation.launchpad.view.DeviceView;
 import de.mossgrabers.controller.novation.launchpad.view.Drum4View;
@@ -96,6 +95,7 @@ import de.mossgrabers.framework.mode.track.PanMode;
 import de.mossgrabers.framework.mode.track.SoloMode;
 import de.mossgrabers.framework.mode.track.VolumeMode;
 import de.mossgrabers.framework.utils.ButtonEvent;
+import de.mossgrabers.framework.view.BrowserView;
 import de.mossgrabers.framework.view.TempoView;
 import de.mossgrabers.framework.view.Views;
 
@@ -225,7 +225,7 @@ public class LaunchpadControllerSetup extends AbstractControllerSetup<LaunchpadC
     {
         final LaunchpadControlSurface surface = this.getSurface ();
         final ViewManager viewManager = surface.getViewManager ();
-        viewManager.register (Views.BROWSER, new BrowserView (surface, this.model));
+        viewManager.register (Views.BROWSER, new BrowserView<> (surface, this.model));
         viewManager.register (Views.DEVICE, new DeviceView (surface, this.model));
         viewManager.register (Views.DRUM, new DrumView (surface, this.model));
         viewManager.register (Views.DRUM4, new Drum4View (surface, this.model));

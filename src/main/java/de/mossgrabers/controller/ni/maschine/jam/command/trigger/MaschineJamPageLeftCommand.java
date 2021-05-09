@@ -26,7 +26,7 @@ public class MaschineJamPageLeftCommand extends ModeCursorCommand<MaschineJamCon
      */
     public MaschineJamPageLeftCommand (final IModel model, final MaschineJamControlSurface surface)
     {
-        super (Direction.DOWN, model, surface);
+        super (Direction.DOWN, model, surface, false);
     }
 
 

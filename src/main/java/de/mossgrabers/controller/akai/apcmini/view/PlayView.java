@@ -73,25 +73,23 @@ public class PlayView extends AbstractPlayView<APCminiControlSurface, APCminiCon
         {
             case SCENE1:
                 this.scales.nextScaleLayout ();
-                this.updateScaleLayout ();
+                this.surface.getDisplay ().notify ("Scale layout: " + this.scales.getScaleLayout ().getName ());
                 break;
             case SCENE2:
                 this.scales.prevScaleLayout ();
-                this.updateScaleLayout ();
+                this.surface.getDisplay ().notify ("Scale layout: " + this.scales.getScaleLayout ().getName ());
                 break;
             case SCENE4:
                 this.scales.prevScale ();
-                this.updateScale ();
+                this.surface.getDisplay ().notify (this.scales.getScale ().getName ());
                 break;
             case SCENE5:
                 this.scales.nextScale ();
-                this.updateScale ();
+                this.surface.getDisplay ().notify (this.scales.getScale ().getName ());
                 break;
             case SCENE6:
                 this.scales.toggleChromatic ();
-                final boolean isChromatic = this.scales.isChromatic ();
-                this.surface.getConfiguration ().setScaleInKey (!isChromatic);
-                this.surface.getDisplay ().notify (isChromatic ? "Chromatic" : "In Key");
+                this.surface.getDisplay ().notify (this.scales.isChromatic () ? "Chromatic" : "In Key");
                 break;
             case SCENE7:
                 this.onOctaveUp (event);
@@ -103,23 +101,6 @@ public class PlayView extends AbstractPlayView<APCminiControlSurface, APCminiCon
                 // Not used
                 break;
         }
-        this.updateNoteMapping ();
-    }
-
-
-    private void updateScaleLayout ()
-    {
-        this.updateNoteMapping ();
-        final String name = this.scales.getScaleLayout ().getName ();
-        this.surface.getConfiguration ().setScaleLayout (name);
-        this.surface.getDisplay ().notify (name);
-    }
-
-
-    private void updateScale ()
-    {
-        final String name = this.scales.getScale ().getName ();
-        this.surface.getConfiguration ().setScale (name);
-        this.surface.getDisplay ().notify (name);
+        this.updateScale ();
     }
 }

@@ -35,7 +35,7 @@ public abstract class BaseMode extends AbstractMode<MaschineControlSurface, Masc
 
 
     /**
-     * Add a marker (>) if the index equals the selected pareameter.
+     * Add a marker (>) if the index equals the selected parameter.
      *
      * @param label The label to eventually add the marker
      * @param index The index

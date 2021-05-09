@@ -92,6 +92,27 @@ public class MVHelper<S extends IControlSurface<C>, C extends Configuration>
 
 
     /**
+     * Display the name of the selected cursor device and parameter page.
+     */
+    public void notifySelectedDeviceAndParameterPage ()
+    {
+        this.delayDisplay ( () -> {
+
+            final ICursorDevice cursorDevice = this.model.getCursorDevice ();
+            if (cursorDevice.doesExist ())
+            {
+                final Optional<String> selectedItem = cursorDevice.getParameterPageBank ().getSelectedItem ();
+                if (selectedItem.isPresent ())
+                    return cursorDevice.getName () + " - " + selectedItem.get ();
+            }
+
+            return "No device selected";
+
+        });
+    }
+
+
+    /**
      * Display the name of the selected parameter page.
      */
     public void notifySelectedParameterPage ()

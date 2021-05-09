@@ -170,16 +170,8 @@ public class MCUConfiguration extends AbstractConfiguration
     private IEnumSetting              zoomStateSetting;
     private IEnumSetting              displayTimeSetting;
     private IEnumSetting              tempoOrTicksSetting;
-    private IEnumSetting              hasDisplay1Setting;
-    private IEnumSetting              hasDisplay2Setting;
-    private IEnumSetting              hasSegmentDisplaySetting;
-    private IEnumSetting              hasAssignmentDisplaySetting;
-    private IEnumSetting              hasMotorFadersSetting;
-    private IEnumSetting              hasOnly1FaderSetting;
     private IEnumSetting              displayTrackNamesSetting;
-    private IEnumSetting              useVertZoomForModesSetting;
     private IEnumSetting              useFadersAsKnobsSetting;
-    private IEnumSetting              masterVuMeterSetting;
 
     private boolean                   zoomState;
     private boolean                   displayTime;
@@ -277,43 +269,43 @@ public class MCUConfiguration extends AbstractConfiguration
     {
         final IEnumSetting profileSetting = settingsUI.getEnumSetting ("Profile", CATEGORY_HARDWARE_SETUP, DEVICE_OPTIONS, DEVICE_OPTIONS[0]);
 
-        this.hasDisplay1Setting = settingsUI.getEnumSetting ("Has a display", CATEGORY_HARDWARE_SETUP, ON_OFF_OPTIONS, ON_OFF_OPTIONS[1]);
-        this.hasDisplay1Setting.addValueObserver (value -> {
+        final IEnumSetting hasDisplay1Setting = settingsUI.getEnumSetting ("Has a display", CATEGORY_HARDWARE_SETUP, ON_OFF_OPTIONS, ON_OFF_OPTIONS[1]);
+        hasDisplay1Setting.addValueObserver (value -> {
             this.hasDisplay1 = "On".equals (value);
             this.notifyObservers (HAS_DISPLAY1);
         });
         this.isSettingActive.add (HAS_DISPLAY1);
 
-        this.hasDisplay2Setting = settingsUI.getEnumSetting ("Has a second display", CATEGORY_HARDWARE_SETUP, ON_OFF_OPTIONS, ON_OFF_OPTIONS[1]);
-        this.hasDisplay2Setting.addValueObserver (value -> {
+        final IEnumSetting hasDisplay2Setting = settingsUI.getEnumSetting ("Has a second display", CATEGORY_HARDWARE_SETUP, ON_OFF_OPTIONS, ON_OFF_OPTIONS[1]);
+        hasDisplay2Setting.addValueObserver (value -> {
             this.hasDisplay2 = "On".equals (value);
             this.notifyObservers (HAS_DISPLAY2);
         });
         this.isSettingActive.add (HAS_DISPLAY2);
 
-        this.hasSegmentDisplaySetting = settingsUI.getEnumSetting ("Has a segment display", CATEGORY_HARDWARE_SETUP, ON_OFF_OPTIONS, ON_OFF_OPTIONS[1]);
-        this.hasSegmentDisplaySetting.addValueObserver (value -> {
+        final IEnumSetting hasSegmentDisplaySetting = settingsUI.getEnumSetting ("Has a segment display", CATEGORY_HARDWARE_SETUP, ON_OFF_OPTIONS, ON_OFF_OPTIONS[1]);
+        hasSegmentDisplaySetting.addValueObserver (value -> {
             this.hasSegmentDisplay = "On".equals (value);
             this.notifyObservers (HAS_SEGMENT_DISPLAY);
         });
         this.isSettingActive.add (HAS_SEGMENT_DISPLAY);
 
-        this.hasAssignmentDisplaySetting = settingsUI.getEnumSetting ("Has an assignment display", CATEGORY_HARDWARE_SETUP, ON_OFF_OPTIONS, ON_OFF_OPTIONS[1]);
-        this.hasAssignmentDisplaySetting.addValueObserver (value -> {
+        final IEnumSetting hasAssignmentDisplaySetting = settingsUI.getEnumSetting ("Has an assignment display", CATEGORY_HARDWARE_SETUP, ON_OFF_OPTIONS, ON_OFF_OPTIONS[1]);
+        hasAssignmentDisplaySetting.addValueObserver (value -> {
             this.hasAssignmentDisplay = "On".equals (value);
             this.notifyObservers (HAS_ASSIGNMENT_DISPLAY);
         });
         this.isSettingActive.add (HAS_ASSIGNMENT_DISPLAY);
 
-        this.hasMotorFadersSetting = settingsUI.getEnumSetting ("Has motor faders", CATEGORY_HARDWARE_SETUP, ON_OFF_OPTIONS, ON_OFF_OPTIONS[1]);
-        this.hasMotorFadersSetting.addValueObserver (value -> {
+        final IEnumSetting hasMotorFadersSetting = settingsUI.getEnumSetting ("Has motor faders", CATEGORY_HARDWARE_SETUP, ON_OFF_OPTIONS, ON_OFF_OPTIONS[1]);
+        hasMotorFadersSetting.addValueObserver (value -> {
             this.hasMotorFaders = "On".equals (value);
             this.notifyObservers (HAS_MOTOR_FADERS);
         });
         this.isSettingActive.add (HAS_MOTOR_FADERS);
 
-        this.hasOnly1FaderSetting = settingsUI.getEnumSetting ("Has only 1 fader", CATEGORY_HARDWARE_SETUP, ON_OFF_OPTIONS, ON_OFF_OPTIONS[0]);
-        this.hasOnly1FaderSetting.addValueObserver (value -> {
+        final IEnumSetting hasOnly1FaderSetting = settingsUI.getEnumSetting ("Has only 1 fader", CATEGORY_HARDWARE_SETUP, ON_OFF_OPTIONS, ON_OFF_OPTIONS[0]);
+        hasOnly1FaderSetting.addValueObserver (value -> {
             this.hasOnly1Fader = "On".equals (value);
             this.notifyObservers (HAS_ONLY_1_FADER);
         });
@@ -326,8 +318,8 @@ public class MCUConfiguration extends AbstractConfiguration
         });
         this.isSettingActive.add (DISPLAY_TRACK_NAMES);
 
-        this.useVertZoomForModesSetting = settingsUI.getEnumSetting ("Use vertical zoom to change tracks", CATEGORY_HARDWARE_SETUP, ON_OFF_OPTIONS, ON_OFF_OPTIONS[0]);
-        this.useVertZoomForModesSetting.addValueObserver (value -> {
+        final IEnumSetting useVertZoomForModesSetting = settingsUI.getEnumSetting ("Use vertical zoom to change tracks", CATEGORY_HARDWARE_SETUP, ON_OFF_OPTIONS, ON_OFF_OPTIONS[0]);
+        useVertZoomForModesSetting.addValueObserver (value -> {
             this.useVertZoomForModes = "On".equals (value);
             this.notifyObservers (USE_VERT_ZOOM_FOR_MODES);
         });
@@ -342,8 +334,8 @@ public class MCUConfiguration extends AbstractConfiguration
 
         this.activateEnableVUMetersSetting (settingsUI, CATEGORY_HARDWARE_SETUP);
 
-        this.masterVuMeterSetting = settingsUI.getEnumSetting ("Master VU Meter (iCON extension)", CATEGORY_HARDWARE_SETUP, ON_OFF_OPTIONS, ON_OFF_OPTIONS[0]);
-        this.masterVuMeterSetting.addValueObserver (value -> {
+        final IEnumSetting masterVuMeterSetting = settingsUI.getEnumSetting ("Master VU Meter (iCON extension)", CATEGORY_HARDWARE_SETUP, ON_OFF_OPTIONS, ON_OFF_OPTIONS[0]);
+        masterVuMeterSetting.addValueObserver (value -> {
             this.masterVuMeter = "On".equals (value);
             this.notifyObservers (MASTER_VU_METER);
         });
@@ -354,73 +346,73 @@ public class MCUConfiguration extends AbstractConfiguration
             switch (value)
             {
                 case DEVICE_MACKIE_MCU_PRO:
-                    this.hasDisplay1Setting.set (ON_OFF_OPTIONS[1]);
-                    this.hasDisplay2Setting.set (ON_OFF_OPTIONS[0]);
-                    this.hasSegmentDisplaySetting.set (ON_OFF_OPTIONS[1]);
-                    this.hasAssignmentDisplaySetting.set (ON_OFF_OPTIONS[1]);
-                    this.hasMotorFadersSetting.set (ON_OFF_OPTIONS[1]);
-                    this.hasOnly1FaderSetting.set (ON_OFF_OPTIONS[0]);
+                    hasDisplay1Setting.set (ON_OFF_OPTIONS[1]);
+                    hasDisplay2Setting.set (ON_OFF_OPTIONS[0]);
+                    hasSegmentDisplaySetting.set (ON_OFF_OPTIONS[1]);
+                    hasAssignmentDisplaySetting.set (ON_OFF_OPTIONS[1]);
+                    hasMotorFadersSetting.set (ON_OFF_OPTIONS[1]);
+                    hasOnly1FaderSetting.set (ON_OFF_OPTIONS[0]);
                     this.displayTrackNamesSetting.set (ON_OFF_OPTIONS[1]);
-                    this.useVertZoomForModesSetting.set (ON_OFF_OPTIONS[0]);
+                    useVertZoomForModesSetting.set (ON_OFF_OPTIONS[0]);
                     this.useFadersAsKnobsSetting.set (ON_OFF_OPTIONS[0]);
                     this.setVUMetersEnabled (true);
-                    this.masterVuMeterSetting.set (ON_OFF_OPTIONS[0]);
+                    masterVuMeterSetting.set (ON_OFF_OPTIONS[0]);
                     break;
 
                 case DEVICE_BEHRINGER_X_TOUCH_ONE:
-                    this.hasDisplay1Setting.set (ON_OFF_OPTIONS[1]);
-                    this.hasDisplay2Setting.set (ON_OFF_OPTIONS[0]);
-                    this.hasSegmentDisplaySetting.set (ON_OFF_OPTIONS[1]);
-                    this.hasAssignmentDisplaySetting.set (ON_OFF_OPTIONS[1]);
-                    this.hasMotorFadersSetting.set (ON_OFF_OPTIONS[1]);
-                    this.hasOnly1FaderSetting.set (ON_OFF_OPTIONS[1]);
+                    hasDisplay1Setting.set (ON_OFF_OPTIONS[1]);
+                    hasDisplay2Setting.set (ON_OFF_OPTIONS[0]);
+                    hasSegmentDisplaySetting.set (ON_OFF_OPTIONS[1]);
+                    hasAssignmentDisplaySetting.set (ON_OFF_OPTIONS[1]);
+                    hasMotorFadersSetting.set (ON_OFF_OPTIONS[1]);
+                    hasOnly1FaderSetting.set (ON_OFF_OPTIONS[1]);
                     this.displayTrackNamesSetting.set (ON_OFF_OPTIONS[1]);
-                    this.useVertZoomForModesSetting.set (ON_OFF_OPTIONS[0]);
+                    useVertZoomForModesSetting.set (ON_OFF_OPTIONS[0]);
                     this.useFadersAsKnobsSetting.set (ON_OFF_OPTIONS[0]);
                     this.setVUMetersEnabled (true);
-                    this.masterVuMeterSetting.set (ON_OFF_OPTIONS[0]);
+                    masterVuMeterSetting.set (ON_OFF_OPTIONS[0]);
                     break;
 
                 case DEVICE_ICON_PLATFORM_M:
-                    this.hasDisplay1Setting.set (ON_OFF_OPTIONS[0]);
-                    this.hasDisplay2Setting.set (ON_OFF_OPTIONS[0]);
-                    this.hasSegmentDisplaySetting.set (ON_OFF_OPTIONS[0]);
-                    this.hasAssignmentDisplaySetting.set (ON_OFF_OPTIONS[0]);
-                    this.hasMotorFadersSetting.set (ON_OFF_OPTIONS[1]);
-                    this.hasOnly1FaderSetting.set (ON_OFF_OPTIONS[0]);
+                    hasDisplay1Setting.set (ON_OFF_OPTIONS[0]);
+                    hasDisplay2Setting.set (ON_OFF_OPTIONS[0]);
+                    hasSegmentDisplaySetting.set (ON_OFF_OPTIONS[0]);
+                    hasAssignmentDisplaySetting.set (ON_OFF_OPTIONS[0]);
+                    hasMotorFadersSetting.set (ON_OFF_OPTIONS[1]);
+                    hasOnly1FaderSetting.set (ON_OFF_OPTIONS[0]);
                     this.displayTrackNamesSetting.set (ON_OFF_OPTIONS[0]);
-                    this.useVertZoomForModesSetting.set (ON_OFF_OPTIONS[1]);
+                    useVertZoomForModesSetting.set (ON_OFF_OPTIONS[1]);
                     this.useFadersAsKnobsSetting.set (ON_OFF_OPTIONS[0]);
                     this.setVUMetersEnabled (false);
-                    this.masterVuMeterSetting.set (ON_OFF_OPTIONS[0]);
+                    masterVuMeterSetting.set (ON_OFF_OPTIONS[0]);
                     break;
 
                 case DEVICE_ICON_QCON_PRO_X:
-                    this.hasDisplay1Setting.set (ON_OFF_OPTIONS[1]);
-                    this.hasDisplay2Setting.set (ON_OFF_OPTIONS[1]);
-                    this.hasSegmentDisplaySetting.set (ON_OFF_OPTIONS[1]);
-                    this.hasAssignmentDisplaySetting.set (ON_OFF_OPTIONS[0]);
-                    this.hasMotorFadersSetting.set (ON_OFF_OPTIONS[1]);
-                    this.hasOnly1FaderSetting.set (ON_OFF_OPTIONS[0]);
+                    hasDisplay1Setting.set (ON_OFF_OPTIONS[1]);
+                    hasDisplay2Setting.set (ON_OFF_OPTIONS[1]);
+                    hasSegmentDisplaySetting.set (ON_OFF_OPTIONS[1]);
+                    hasAssignmentDisplaySetting.set (ON_OFF_OPTIONS[0]);
+                    hasMotorFadersSetting.set (ON_OFF_OPTIONS[1]);
+                    hasOnly1FaderSetting.set (ON_OFF_OPTIONS[0]);
                     this.displayTrackNamesSetting.set (ON_OFF_OPTIONS[0]);
-                    this.useVertZoomForModesSetting.set (ON_OFF_OPTIONS[0]);
+                    useVertZoomForModesSetting.set (ON_OFF_OPTIONS[0]);
                     this.useFadersAsKnobsSetting.set (ON_OFF_OPTIONS[0]);
                     this.setVUMetersEnabled (true);
-                    this.masterVuMeterSetting.set (ON_OFF_OPTIONS[1]);
+                    masterVuMeterSetting.set (ON_OFF_OPTIONS[1]);
                     break;
 
                 case DEVICE_ZOOM_R16:
-                    this.hasDisplay1Setting.set (ON_OFF_OPTIONS[0]);
-                    this.hasDisplay2Setting.set (ON_OFF_OPTIONS[0]);
-                    this.hasSegmentDisplaySetting.set (ON_OFF_OPTIONS[0]);
-                    this.hasAssignmentDisplaySetting.set (ON_OFF_OPTIONS[0]);
-                    this.hasMotorFadersSetting.set (ON_OFF_OPTIONS[0]);
-                    this.hasOnly1FaderSetting.set (ON_OFF_OPTIONS[0]);
+                    hasDisplay1Setting.set (ON_OFF_OPTIONS[0]);
+                    hasDisplay2Setting.set (ON_OFF_OPTIONS[0]);
+                    hasSegmentDisplaySetting.set (ON_OFF_OPTIONS[0]);
+                    hasAssignmentDisplaySetting.set (ON_OFF_OPTIONS[0]);
+                    hasMotorFadersSetting.set (ON_OFF_OPTIONS[0]);
+                    hasOnly1FaderSetting.set (ON_OFF_OPTIONS[0]);
                     this.displayTrackNamesSetting.set (ON_OFF_OPTIONS[0]);
-                    this.useVertZoomForModesSetting.set (ON_OFF_OPTIONS[0]);
+                    useVertZoomForModesSetting.set (ON_OFF_OPTIONS[0]);
                     this.useFadersAsKnobsSetting.set (ON_OFF_OPTIONS[1]);
                     this.setVUMetersEnabled (false);
-                    this.masterVuMeterSetting.set (ON_OFF_OPTIONS[0]);
+                    masterVuMeterSetting.set (ON_OFF_OPTIONS[0]);
                     break;
 
                 default:

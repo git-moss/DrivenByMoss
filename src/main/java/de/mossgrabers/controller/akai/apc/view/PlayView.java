@@ -72,11 +72,13 @@ public class PlayView extends AbstractPlayView<APCControlSurface, APCConfigurati
             case SCENE1:
                 this.scales.nextScale ();
                 this.updateScale ();
+                this.surface.getDisplay ().notify ("Scale: " + this.scales.getScale ().getName ());
                 break;
 
             case SCENE2:
                 this.scales.prevScale ();
                 this.updateScale ();
+                this.surface.getDisplay ().notify ("Scale: " + this.scales.getScale ().getName ());
                 break;
 
             case SCENE3:
@@ -99,13 +101,5 @@ public class PlayView extends AbstractPlayView<APCControlSurface, APCConfigurati
                 break;
         }
         this.updateNoteMapping ();
-    }
-
-
-    private void updateScale ()
-    {
-        final String name = this.scales.getScale ().getName ();
-        this.surface.getConfiguration ().setScale (name);
-        this.surface.getDisplay ().notify (name);
     }
 }

@@ -91,6 +91,15 @@ public class MaschineJamControlSurface extends AbstractMaschineControlSurface<Ma
     public static final int             GROUP_G            = 76;
     public static final int             GROUP_H            = 77;
 
+    public static final int             SCENE1             = 80;
+    public static final int             SCENE2             = 81;
+    public static final int             SCENE3             = 82;
+    public static final int             SCENE4             = 83;
+    public static final int             SCENE5             = 84;
+    public static final int             SCENE6             = 85;
+    public static final int             SCENE7             = 86;
+    public static final int             SCENE8             = 87;
+
     public static final int             PLAY               = 90;
     public static final int             RECORD             = 91;
     public static final int             LEFT               = 92;

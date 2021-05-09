@@ -13,6 +13,7 @@ import de.mossgrabers.framework.scale.Scales;
 import de.mossgrabers.framework.view.AbstractDrumView;
 import de.mossgrabers.framework.view.AbstractPlayView;
 import de.mossgrabers.framework.view.AbstractSequencerView;
+import de.mossgrabers.framework.view.BrowserView;
 
 import java.util.List;
 
@@ -128,6 +129,19 @@ public class LaunchpadColorManager extends ColorManager
         this.registerColorIndex (AbstractPlayView.COLOR_PLAY, LAUNCHPAD_COLOR_GREEN_HI);
         this.registerColorIndex (AbstractPlayView.COLOR_RECORD, LAUNCHPAD_COLOR_RED_HI);
         this.registerColorIndex (AbstractPlayView.COLOR_OFF, LAUNCHPAD_COLOR_BLACK);
+
+        this.registerColorIndex (BrowserView.OFF, LAUNCHPAD_COLOR_BLACK);
+        this.registerColorIndex (BrowserView.DISCARD, LAUNCHPAD_COLOR_RED);
+        this.registerColorIndex (BrowserView.CONFIRM, LAUNCHPAD_COLOR_GREEN_HI);
+        this.registerColorIndex (BrowserView.PLAY, LAUNCHPAD_COLOR_ORCHID_LO);
+        this.registerColorIndex (BrowserView.COLUMN1, LAUNCHPAD_COLOR_WHITE);
+        this.registerColorIndex (BrowserView.COLUMN2, LAUNCHPAD_COLOR_GREY_MD);
+        this.registerColorIndex (BrowserView.COLUMN3, LAUNCHPAD_COLOR_GREY_LO);
+        this.registerColorIndex (BrowserView.COLUMN4, LAUNCHPAD_COLOR_ROSE);
+        this.registerColorIndex (BrowserView.COLUMN5, LAUNCHPAD_COLOR_SPRING);
+        this.registerColorIndex (BrowserView.COLUMN6, LAUNCHPAD_COLOR_OCEAN);
+        this.registerColorIndex (BrowserView.COLUMN7, LAUNCHPAD_COLOR_BLACK);
+        this.registerColorIndex (BrowserView.COLUMN8, LAUNCHPAD_COLOR_YELLOW);
 
         this.registerColorIndex (IPadGrid.GRID_OFF, LAUNCHPAD_COLOR_BLACK);
 

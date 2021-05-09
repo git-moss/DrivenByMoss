@@ -13,8 +13,11 @@ import de.mossgrabers.framework.controller.color.ColorEx;
 import de.mossgrabers.framework.controller.grid.IPadGrid;
 import de.mossgrabers.framework.daw.DAWColor;
 import de.mossgrabers.framework.daw.IClip;
+import de.mossgrabers.framework.daw.IHost;
 import de.mossgrabers.framework.daw.IModel;
+import de.mossgrabers.framework.daw.constants.Capability;
 import de.mossgrabers.framework.daw.constants.Resolution;
+import de.mossgrabers.framework.daw.midi.ArpeggiatorMode;
 import de.mossgrabers.framework.daw.midi.INoteRepeat;
 import de.mossgrabers.framework.daw.resource.ChannelType;
 import de.mossgrabers.framework.featuregroup.AbstractView;
@@ -47,6 +50,7 @@ public class ShiftView extends AbstractView<FireControlSurface, FireConfiguratio
     public void drawGrid ()
     {
         final IPadGrid padGrid = this.surface.getPadGrid ();
+        final IHost host = this.model.getHost ();
 
         // Note Repeat
         final INoteRepeat noteRepeat = this.surface.getMidiInput ().getDefaultNoteInput ().getNoteRepeat ();
@@ -55,13 +59,25 @@ public class ShiftView extends AbstractView<FireControlSurface, FireConfiguratio
         padGrid.light (84, DAWColor.getColorIndex ((noteRepeat.isActive () ? DAWColor.DAW_COLOR_GREEN : DAWColor.DAW_COLOR_GRAY).getColor ()));
 
         // Octave
-        final int octaves = noteRepeat.getOctaves ();
-        for (int i = 0; i < 4; i++)
+        if (host.supports (Capability.NOTE_REPEAT_OCTAVES))
         {
-            padGrid.light (36 + i, DAWColor.getColorIndex ((octaves == i ? DAWColor.DAW_COLOR_GREEN : DAWColor.DAW_COLOR_GRAY).getColor ()));
-            padGrid.light (52 + i, DAWColor.getColorIndex ((octaves == 4 + i ? DAWColor.DAW_COLOR_GREEN : DAWColor.DAW_COLOR_GRAY).getColor ()));
+            final int octaves = noteRepeat.getOctaves ();
+            for (int i = 0; i < 4; i++)
+            {
+                padGrid.light (36 + i, DAWColor.getColorIndex ((octaves == i ? DAWColor.DAW_COLOR_GREEN : DAWColor.DAW_COLOR_GRAY).getColor ()));
+                padGrid.light (52 + i, DAWColor.getColorIndex ((octaves == 4 + i ? DAWColor.DAW_COLOR_GREEN : DAWColor.DAW_COLOR_GRAY).getColor ()));
+            }
+            padGrid.light (68, DAWColor.getColorIndex ((octaves == 8 ? DAWColor.DAW_COLOR_GREEN : DAWColor.DAW_COLOR_GRAY).getColor ()));
         }
-        padGrid.light (68, DAWColor.getColorIndex ((octaves == 8 ? DAWColor.DAW_COLOR_GREEN : DAWColor.DAW_COLOR_GRAY).getColor ()));
+        else
+        {
+            for (int i = 0; i < 4; i++)
+            {
+                padGrid.light (36 + i, 0);
+                padGrid.light (52 + i, 0);
+            }
+            padGrid.light (68, 0);
+        }
 
         padGrid.light (69, 0);
         padGrid.light (70, 0);
@@ -69,8 +85,16 @@ public class ShiftView extends AbstractView<FireControlSurface, FireConfiguratio
         padGrid.light (85, 0);
 
         // Dec/Inc Arp Mode
-        padGrid.light (86, DAWColor.getColorIndex (ColorEx.WHITE));
-        padGrid.light (87, DAWColor.getColorIndex (ColorEx.WHITE));
+        if (host.supports (Capability.NOTE_REPEAT_MODE))
+        {
+            padGrid.light (86, DAWColor.getColorIndex (ColorEx.WHITE));
+            padGrid.light (87, DAWColor.getColorIndex (ColorEx.WHITE));
+        }
+        else
+        {
+            padGrid.light (86, DAWColor.getColorIndex (ColorEx.BLACK));
+            padGrid.light (87, DAWColor.getColorIndex (ColorEx.BLACK));
+        }
 
         // Note Repeat period
         final int periodIndex = Resolution.getMatch (noteRepeat.getPeriod ());
@@ -85,16 +109,31 @@ public class ShiftView extends AbstractView<FireControlSurface, FireConfiguratio
         padGrid.light (41, DAWColor.getColorIndex ((periodIndex == 7 ? DAWColor.DAW_COLOR_GREEN : DAWColor.DAW_COLOR_PINK).getColor ()));
 
         // Note Repeat length
-        final int lengthIndex = Resolution.getMatch (noteRepeat.getNoteLength ());
-        padGrid.light (90, DAWColor.getColorIndex ((lengthIndex == 0 ? DAWColor.DAW_COLOR_GREEN : DAWColor.DAW_COLOR_BLUE).getColor ()));
-        padGrid.light (74, DAWColor.getColorIndex ((lengthIndex == 2 ? DAWColor.DAW_COLOR_GREEN : DAWColor.DAW_COLOR_BLUE).getColor ()));
-        padGrid.light (58, DAWColor.getColorIndex ((lengthIndex == 4 ? DAWColor.DAW_COLOR_GREEN : DAWColor.DAW_COLOR_BLUE).getColor ()));
-        padGrid.light (42, DAWColor.getColorIndex ((lengthIndex == 6 ? DAWColor.DAW_COLOR_GREEN : DAWColor.DAW_COLOR_BLUE).getColor ()));
+        if (this.model.getHost ().supports (Capability.NOTE_REPEAT_LENGTH))
+        {
+            final int lengthIndex = Resolution.getMatch (noteRepeat.getNoteLength ());
+            padGrid.light (90, DAWColor.getColorIndex ((lengthIndex == 0 ? DAWColor.DAW_COLOR_GREEN : DAWColor.DAW_COLOR_BLUE).getColor ()));
+            padGrid.light (74, DAWColor.getColorIndex ((lengthIndex == 2 ? DAWColor.DAW_COLOR_GREEN : DAWColor.DAW_COLOR_BLUE).getColor ()));
+            padGrid.light (58, DAWColor.getColorIndex ((lengthIndex == 4 ? DAWColor.DAW_COLOR_GREEN : DAWColor.DAW_COLOR_BLUE).getColor ()));
+            padGrid.light (42, DAWColor.getColorIndex ((lengthIndex == 6 ? DAWColor.DAW_COLOR_GREEN : DAWColor.DAW_COLOR_BLUE).getColor ()));
 
-        padGrid.light (91, DAWColor.getColorIndex ((lengthIndex == 1 ? DAWColor.DAW_COLOR_GREEN : DAWColor.DAW_COLOR_PINK).getColor ()));
-        padGrid.light (75, DAWColor.getColorIndex ((lengthIndex == 3 ? DAWColor.DAW_COLOR_GREEN : DAWColor.DAW_COLOR_PINK).getColor ()));
-        padGrid.light (59, DAWColor.getColorIndex ((lengthIndex == 5 ? DAWColor.DAW_COLOR_GREEN : DAWColor.DAW_COLOR_PINK).getColor ()));
-        padGrid.light (43, DAWColor.getColorIndex ((lengthIndex == 7 ? DAWColor.DAW_COLOR_GREEN : DAWColor.DAW_COLOR_PINK).getColor ()));
+            padGrid.light (91, DAWColor.getColorIndex ((lengthIndex == 1 ? DAWColor.DAW_COLOR_GREEN : DAWColor.DAW_COLOR_PINK).getColor ()));
+            padGrid.light (75, DAWColor.getColorIndex ((lengthIndex == 3 ? DAWColor.DAW_COLOR_GREEN : DAWColor.DAW_COLOR_PINK).getColor ()));
+            padGrid.light (59, DAWColor.getColorIndex ((lengthIndex == 5 ? DAWColor.DAW_COLOR_GREEN : DAWColor.DAW_COLOR_PINK).getColor ()));
+            padGrid.light (43, DAWColor.getColorIndex ((lengthIndex == 7 ? DAWColor.DAW_COLOR_GREEN : DAWColor.DAW_COLOR_PINK).getColor ()));
+        }
+        else
+        {
+            padGrid.light (90, 0);
+            padGrid.light (74, 0);
+            padGrid.light (58, 0);
+            padGrid.light (42, 0);
+
+            padGrid.light (91, 0);
+            padGrid.light (75, 0);
+            padGrid.light (59, 0);
+            padGrid.light (43, 0);
+        }
 
         // New clip length
         final FireConfiguration configuration = this.surface.getConfiguration ();
@@ -141,6 +180,7 @@ public class ShiftView extends AbstractView<FireControlSurface, FireConfiguratio
             return;
 
         final FireConfiguration configuration = this.surface.getConfiguration ();
+        final IHost host = this.model.getHost ();
 
         switch (note)
         {
@@ -161,12 +201,20 @@ public class ShiftView extends AbstractView<FireControlSurface, FireConfiguratio
                 break;
 
             case 86:
-                configuration.setNoteRepeatMode (configuration.prevArpeggiatorMode ());
-                this.mvHelper.delayDisplay ( () -> "Arp: " + configuration.getNoteRepeatMode ().getName ());
+                if (host.supports (Capability.NOTE_REPEAT_MODE))
+                {
+                    final ArpeggiatorMode prevArpeggiatorMode = configuration.prevArpeggiatorMode ();
+                    configuration.setNoteRepeatMode (prevArpeggiatorMode);
+                    this.mvHelper.delayDisplay ( () -> "Arp: " + prevArpeggiatorMode.getName ());
+                }
                 break;
             case 87:
-                configuration.setNoteRepeatMode (configuration.nextArpeggiatorMode ());
-                this.mvHelper.delayDisplay ( () -> "Arp: " + configuration.getNoteRepeatMode ().getName ());
+                if (host.supports (Capability.NOTE_REPEAT_MODE))
+                {
+                    final ArpeggiatorMode nextArpeggiatorMode = configuration.nextArpeggiatorMode ();
+                    configuration.setNoteRepeatMode (nextArpeggiatorMode);
+                    this.mvHelper.delayDisplay ( () -> "Arp: " + nextArpeggiatorMode.getName ());
+                }
                 break;
 
             case 84:
@@ -285,16 +333,22 @@ public class ShiftView extends AbstractView<FireControlSurface, FireConfiguratio
 
     private void setNoteLength (final int index)
     {
-        this.surface.getConfiguration ().setNoteRepeatLength (Resolution.values ()[index]);
-        this.surface.scheduleTask ( () -> this.surface.getDisplay ().notify ("Note Len: " + Resolution.getNameAt (index)), 100);
+        if (this.model.getHost ().supports (Capability.NOTE_REPEAT_LENGTH))
+        {
+            this.surface.getConfiguration ().setNoteRepeatLength (Resolution.values ()[index]);
+            this.surface.scheduleTask ( () -> this.surface.getDisplay ().notify ("Note Len: " + Resolution.getNameAt (index)), 100);
+        }
     }
 
 
     private void setNoteRepeatOctave (final int octave)
     {
-        final FireConfiguration configuration = this.surface.getConfiguration ();
-        configuration.setNoteRepeatOctave (octave);
-        this.mvHelper.delayDisplay ( () -> "Octave: " + configuration.getNoteRepeatOctave ());
+        if (this.model.getHost ().supports (Capability.NOTE_REPEAT_OCTAVES))
+        {
+            final FireConfiguration configuration = this.surface.getConfiguration ();
+            configuration.setNoteRepeatOctave (octave);
+            this.mvHelper.delayDisplay ( () -> "Octave: " + configuration.getNoteRepeatOctave ());
+        }
     }
 
 

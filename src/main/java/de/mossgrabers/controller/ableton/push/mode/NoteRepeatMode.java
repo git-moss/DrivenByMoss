@@ -110,14 +110,7 @@ public class NoteRepeatMode extends BaseMode<IItem>
 
             case 5:
                 if (this.host.supports (Capability.NOTE_REPEAT_MODE))
-                {
-                    final ArpeggiatorMode arpMode = configuration.getNoteRepeatMode ();
-                    final int modeIndex = configuration.lookupArpeggiatorModeIndex (arpMode);
-                    final boolean increase = valueChanger.calcKnobChange (value) > 0;
-                    final List<ArpeggiatorMode> modes = configuration.getArpeggiatorModes ();
-                    final int newIndex = Math.max (0, Math.min (modes.size () - 1, modeIndex + (increase ? 1 : -1)));
-                    configuration.setNoteRepeatMode (modes.get (newIndex));
-                }
+                    configuration.setPrevNextNoteRepeatMode (valueChanger.isIncrease (value));
                 break;
 
             case 6:

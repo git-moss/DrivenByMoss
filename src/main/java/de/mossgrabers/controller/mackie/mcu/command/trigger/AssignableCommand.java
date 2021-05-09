@@ -6,7 +6,7 @@ package de.mossgrabers.controller.mackie.mcu.command.trigger;
 
 import de.mossgrabers.controller.mackie.mcu.MCUConfiguration;
 import de.mossgrabers.controller.mackie.mcu.controller.MCUControlSurface;
-import de.mossgrabers.framework.command.continuous.FootswitchCommand;
+import de.mossgrabers.framework.command.trigger.FootswitchCommand;
 import de.mossgrabers.framework.configuration.AbstractConfiguration;
 import de.mossgrabers.framework.daw.IApplication;
 import de.mossgrabers.framework.daw.IModel;

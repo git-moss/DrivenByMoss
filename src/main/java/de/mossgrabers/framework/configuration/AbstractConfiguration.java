@@ -466,11 +466,8 @@ public abstract class AbstractConfiguration implements Configuration
     }
 
 
-    /**
-     * Set the scale by name.
-     *
-     * @param scale The name of a scale
-     */
+    /** {@inheritDoc} */
+    @Override
     public void setScale (final String scale)
     {
         this.scaleSetting.set (scale);
@@ -485,11 +482,8 @@ public abstract class AbstractConfiguration implements Configuration
     }
 
 
-    /**
-     * Set the scale base note by name.
-     *
-     * @param scaleBase The name of a scale base note
-     */
+    /** {@inheritDoc} */
+    @Override
     public void setScaleBase (final String scaleBase)
     {
         this.scaleBaseSetting.set (scaleBase);
@@ -504,11 +498,8 @@ public abstract class AbstractConfiguration implements Configuration
     }
 
 
-    /**
-     * Set the in-scale setting.
-     *
-     * @param inScale True if scale otherwise chromatic
-     */
+    /** {@inheritDoc} */
+    @Override
     public void setScaleInKey (final boolean inScale)
     {
         this.scaleInKeySetting.set (inScale ? SCALE_IN_KEY : SCALE_CHROMATIC);
@@ -523,11 +514,8 @@ public abstract class AbstractConfiguration implements Configuration
     }
 
 
-    /**
-     * Set the scale layout.
-     *
-     * @param scaleLayout The scale layout
-     */
+    /** {@inheritDoc} */
+    @Override
     public void setScaleLayout (final String scaleLayout)
     {
         this.scaleLayoutSetting.set (scaleLayout);
@@ -1297,10 +1285,15 @@ public abstract class AbstractConfiguration implements Configuration
      * Activate the footswitch setting.
      *
      * @param settingsUI The settings
+     * @param index The index of the foot switch
      */
-    protected void activateFootswitchSetting (final ISettingsUI settingsUI)
+    protected void activateFootswitchSetting (final ISettingsUI settingsUI, final int index)
     {
-        final IEnumSetting footswitch2Setting = settingsUI.getEnumSetting ("Footswitch 2", CATEGORY_WORKFLOW, FOOTSWITCH_VALUES, FOOTSWITCH_VALUES[6]);
+        String label = "Footswitch";
+        if (index > 0)
+            label += " " + index;
+
+        final IEnumSetting footswitch2Setting = settingsUI.getEnumSetting (label, CATEGORY_WORKFLOW, FOOTSWITCH_VALUES, FOOTSWITCH_VALUES[6]);
         footswitch2Setting.addValueObserver (value -> {
             this.footswitch2 = lookupIndex (FOOTSWITCH_VALUES, value);
             this.notifyObservers (FOOTSWITCH_2);
