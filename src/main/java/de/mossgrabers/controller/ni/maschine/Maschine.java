@@ -15,6 +15,8 @@ public enum Maschine
     JAM("Maschine JAM", "1500", true, false, true, true, 440),
     /** Maschine Mikro Mk3. */
     MIKRO_MK3("Maschine Mikro Mk3", "1700", false, false, false, false, 440),
+    /** Maschine Mk2. */
+    MK2("Maschine Mk2", "0000", false, true, true, true, 800),
     /** Maschine Mk3. */
     MK3("Maschine Mk3", "1600", true, true, true, true, 800),
     /** Maschine+. */
@@ -29,7 +31,7 @@ public enum Maschine
     private final String        maschineID;
     private final boolean       hasShift;
     private final boolean       hasMCUDisplay;
-    private final boolean       hasBankButtons;
+    private final boolean       hasGroupButtons;
     private final boolean       hasCursorKeys;
     private final int           height;
 
@@ -45,17 +47,17 @@ public enum Maschine
      * @param maschineID The ID of the device
      * @param hasShift Can the Shift button be used? Otherwise emulated with Stop button
      * @param hasMCUDisplay Does it support a MCU protocol display?
-     * @param hasBankButtons Does it have bank buttons?
+     * @param hasGroupButtons Does it have group buttons?
      * @param hasCursorKeys Does the device have cursor keys?
      * @param height The height of the simulator window
      */
-    private Maschine (final String name, final String maschineID, final boolean hasShift, final boolean hasMCUDisplay, final boolean hasBankButtons, final boolean hasCursorKeys, final int height)
+    private Maschine (final String name, final String maschineID, final boolean hasShift, final boolean hasMCUDisplay, final boolean hasGroupButtons, final boolean hasCursorKeys, final int height)
     {
         this.name = name;
         this.maschineID = maschineID;
         this.hasShift = hasShift;
         this.hasMCUDisplay = hasMCUDisplay;
-        this.hasBankButtons = hasBankButtons;
+        this.hasGroupButtons = hasGroupButtons;
         this.hasCursorKeys = hasCursorKeys;
         this.height = height;
 
@@ -99,13 +101,13 @@ public enum Maschine
 
 
     /**
-     * Does it have bank buttons?
+     * Does it have group buttons?
      *
      * @return True if supported
      */
-    public boolean hasBankButtons ()
+    public boolean hasGroupButtons ()
     {
-        return this.hasBankButtons;
+        return this.hasGroupButtons;
     }
 
 

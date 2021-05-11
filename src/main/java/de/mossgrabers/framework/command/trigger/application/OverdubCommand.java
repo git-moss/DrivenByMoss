@@ -47,6 +47,12 @@ public class OverdubCommand<S extends IControlSurface<C>, C extends Configuratio
     public void executeShifted (final ButtonEvent event)
     {
         if (event == ButtonEvent.DOWN)
-            this.model.getTransport ().toggleLauncherOverdub ();
+            this.shiftedFunction ();
+    }
+
+
+    protected void shiftedFunction ()
+    {
+        this.model.getTransport ().toggleLauncherOverdub ();
     }
 }

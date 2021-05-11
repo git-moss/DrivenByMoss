@@ -75,7 +75,6 @@ import de.mossgrabers.framework.controller.ButtonID;
 import de.mossgrabers.framework.controller.ContinuousID;
 import de.mossgrabers.framework.controller.ISetupFactory;
 import de.mossgrabers.framework.controller.hardware.BindType;
-import de.mossgrabers.framework.controller.hardware.IHwButton;
 import de.mossgrabers.framework.controller.hardware.IHwRelativeKnob;
 import de.mossgrabers.framework.controller.valuechanger.DefaultValueChanger;
 import de.mossgrabers.framework.daw.IHost;
@@ -96,8 +95,6 @@ import de.mossgrabers.framework.utils.ButtonEvent;
 import de.mossgrabers.framework.utils.FrameworkException;
 import de.mossgrabers.framework.utils.OperatingSystem;
 import de.mossgrabers.framework.view.Views;
-
-import java.util.Map;
 
 
 /**
@@ -171,7 +168,7 @@ public class MaschineControllerSetup extends AbstractControllerSetup<MaschineCon
     {
         final ModelSetup ms = new ModelSetup ();
         ms.setHasFullFlatTrackList (true);
-        ms.setNumTracks (this.maschine.hasBankButtons () ? 8 : 16);
+        ms.setNumTracks (this.maschine.hasGroupButtons () ? 8 : 16);
         ms.setNumDevicesInBank (16);
         ms.setNumScenes (16);
         this.model = this.factory.createModel (this.colorManager, this.valueChanger, this.scales, ms);
@@ -247,7 +244,7 @@ public class MaschineControllerSetup extends AbstractControllerSetup<MaschineCon
 
         viewManager.register (Views.DEVICE, new ParameterView (surface, this.model));
 
-        if (!this.maschine.hasBankButtons ())
+        if (!this.maschine.hasGroupButtons ())
         {
             viewManager.register (Views.TRACK_SELECT, new SelectView (surface, this.model));
             viewManager.register (Views.TRACK_SOLO, new SoloView (surface, this.model));
@@ -300,7 +297,10 @@ public class MaschineControllerSetup extends AbstractControllerSetup<MaschineCon
             if (event != ButtonEvent.UP)
                 return;
             if (surface.isShiftPressed ())
+            {
+                surface.setStopConsumed ();
                 metroCommand.executeNormal (event);
+            }
             else
                 tapTempoCommand.execute (ButtonEvent.DOWN, velocity);
         }, MaschineControlSurface.TAP_METRO, t::isMetronomeOn);
@@ -314,9 +314,25 @@ public class MaschineControllerSetup extends AbstractControllerSetup<MaschineCon
 
         this.addButton (ButtonID.NEW, this.maschine.hasCursorKeys () ? "Macro" : "Group", new NewCommand<> (this.model, surface), MaschineControlSurface.GROUP);
 
-        final AutomationCommand<MaschineControlSurface, MaschineConfiguration> automationCommand = new AutomationCommand<> (this.model, surface);
+        final AutomationCommand<MaschineControlSurface, MaschineConfiguration> automationCommand = new AutomationCommand<> (this.model, surface)
+        {
+            @Override
+            protected void cleanupShift ()
+            {
+                this.surface.setStopConsumed ();
+            }
+
+        };
         this.addButton (ButtonID.AUTOMATION, "Auto", automationCommand, MaschineControlSurface.AUTO, automationCommand::isLit);
-        this.addButton (ButtonID.OVERDUB, "Lock", new OverdubCommand<> (this.model, surface), MaschineControlSurface.LOCK, () -> surface.isShiftPressed () ? t.isLauncherOverdub () : t.isArrangerOverdub ());
+        this.addButton (ButtonID.OVERDUB, "Lock", new OverdubCommand<> (this.model, surface)
+        {
+            @Override
+            protected void shiftedFunction ()
+            {
+                this.surface.setStopConsumed ();
+                super.shiftedFunction ();
+            }
+        }, MaschineControlSurface.LOCK, () -> surface.isShiftPressed () ? t.isLauncherOverdub () : t.isArrangerOverdub ());
         this.addButton (ButtonID.REPEAT, "Repeat", new NoteRepeatCommand<> (this.model, surface, this.maschine.hasMCUDisplay ()), MaschineControlSurface.NOTE_REPEAT, this.configuration::isNoteRepeatActive);
 
         // Ribbon
@@ -357,7 +373,15 @@ public class MaschineControllerSetup extends AbstractControllerSetup<MaschineCon
 
         }, MaschineControlSurface.PLUGIN, () -> modeManager.isActive (Modes.DEVICE_PARAMS));
 
-        this.addButton (ButtonID.DEVICE_ON_OFF, "Sampling", new ConvertCommand<> (this.model, surface), MaschineControlSurface.SAMPLING);
+        this.addButton (ButtonID.DEVICE_ON_OFF, "Sampling", new ConvertCommand<> (this.model, surface)
+        {
+            @Override
+            protected void sliceToSampler ()
+            {
+                this.surface.setStopConsumed ();
+                super.sliceToSampler ();
+            }
+        }, MaschineControlSurface.SAMPLING);
 
         // Browser
         this.addButton (ButtonID.ADD_TRACK, this.maschine.hasCursorKeys () ? "File" : "Project", new ProjectButtonCommand (this.model, surface), MaschineControlSurface.PROJECT);
@@ -382,18 +406,24 @@ public class MaschineControllerSetup extends AbstractControllerSetup<MaschineCon
         this.addButton (ButtonID.TOGGLE_DEVICE, "Variation", new ViewMultiSelectCommand<> (this.model, surface, true, Views.DEVICE), MaschineControlSurface.VARIATION, () -> viewManager.isActive (Views.DEVICE));
         this.addButton (ButtonID.DUPLICATE, "Duplicate", NopCommand.INSTANCE, MaschineControlSurface.DUPLICATE);
 
-        if (this.maschine.hasBankButtons ())
+        if (this.maschine.hasGroupButtons ())
         {
             this.addButton (ButtonID.TRACK, "Select", NopCommand.INSTANCE, MaschineControlSurface.SELECT);
 
             this.addButton (ButtonID.SOLO, "Solo", (event, velocity) -> {
                 if (event == ButtonEvent.UP && surface.isShiftPressed ())
+                {
+                    surface.setStopConsumed ();
                     this.model.getProject ().clearSolo ();
+                }
             }, MaschineControlSurface.SOLO);
 
             this.addButton (ButtonID.MUTE, "Mute", (event, velocity) -> {
                 if (event == ButtonEvent.UP && surface.isShiftPressed ())
+                {
+                    surface.setStopConsumed ();
                     this.model.getProject ().clearMute ();
+                }
             }, MaschineControlSurface.MUTE);
         }
         else
@@ -403,8 +433,9 @@ public class MaschineControllerSetup extends AbstractControllerSetup<MaschineCon
             this.addButton (ButtonID.MUTE, "Mute", new ViewMultiSelectCommand<> (this.model, surface, true, Views.TRACK_MUTE), MaschineControlSurface.MUTE, () -> viewManager.isActive (Views.TRACK_MUTE));
         }
 
-        this.addButton (ButtonID.ROW1_1, "Pad Mode", new PadModeCommand (this.model, surface), MaschineControlSurface.PAD_MODE, () -> viewManager.isActive (Views.DRUM));
-        this.addButton (ButtonID.ROW1_2, "Keyboard", new KeyboardCommand (this.model, surface), MaschineControlSurface.KEYBOARD, () -> viewManager.isActive (Views.PLAY));
+        final KeyboardCommand keyboardCommand = new KeyboardCommand (this.model, surface);
+        this.addButton (ButtonID.ROW1_1, "Pad Mode", new PadModeCommand (keyboardCommand, this.model, surface), MaschineControlSurface.PAD_MODE, () -> viewManager.isActive (Views.DRUM));
+        this.addButton (ButtonID.ROW1_2, "Keyboard", keyboardCommand, MaschineControlSurface.KEYBOARD, () -> viewManager.isActive (Views.PLAY));
         this.addButton (ButtonID.ROW1_3, "Chords", (event, velocity) -> {
             if (velocity == 0)
                 ((PlayView) viewManager.get (Views.PLAY)).toggleChordMode ();
@@ -421,22 +452,12 @@ public class MaschineControllerSetup extends AbstractControllerSetup<MaschineCon
         this.registerCursorKeys (surface);
         this.registerDisplayButtons (surface, modeManager);
         this.registerGroupButtons (surface);
-
-        // Workaround for non-working Shift button (use Stop button)
-        if (surface.getMaschine ().hasShift ())
-            return;
-        for (final Map.Entry<ButtonID, IHwButton> entry: surface.getButtons ().entrySet ())
-        {
-            final ButtonID buttonID = entry.getKey ();
-            if (buttonID != ButtonID.STOP)
-                entry.getValue ().addEventHandler (ButtonEvent.UP, event -> surface.setTriggerConsumed (ButtonID.STOP));
-        }
     }
 
 
     private void registerGroupButtons (final MaschineControlSurface surface)
     {
-        if (!this.maschine.hasBankButtons ())
+        if (!this.maschine.hasGroupButtons ())
             return;
 
         for (int i = 0; i < 8; i++)
@@ -636,7 +657,9 @@ public class MaschineControllerSetup extends AbstractControllerSetup<MaschineCon
     {
         switch (this.maschine)
         {
+            case MK2:
             case MK3:
+            case PLUS:
                 this.layoutMk3 ();
                 break;
             case MIKRO_MK3:

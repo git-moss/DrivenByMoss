@@ -305,7 +305,6 @@ public class PlayView extends AbstractPlayView<MaschineControlSurface, MaschineC
         switch (index)
         {
             case 0:
-                this.surface.setStopConsumed ();
                 this.scales.toggleChromatic ();
                 this.surface.getDisplay ().notify ("Chromatic: " + (this.scales.isChromatic () ? "On" : "Off"));
                 this.configuration.setScaleInKey (!this.scales.isChromatic ());

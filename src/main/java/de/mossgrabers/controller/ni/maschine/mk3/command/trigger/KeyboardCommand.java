@@ -38,7 +38,7 @@ public class KeyboardCommand extends AbstractTriggerCommand<MaschineControlSurfa
 
     /** {@inheritDoc} */
     @Override
-    public void execute (final ButtonEvent event, final int velocity)
+    public void executeNormal (final ButtonEvent event)
     {
         if (event != ButtonEvent.DOWN)
             return;

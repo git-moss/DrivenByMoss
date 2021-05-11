@@ -38,13 +38,13 @@ public class MaschineStopCommand extends StopCommand<MaschineControlSurface, Mas
 
     /** {@inheritDoc} */
     @Override
-    public void executeNormal (final ButtonEvent event)
+    public void execute (final ButtonEvent event, final int velocity)
     {
-        final ViewManager viewManager = this.surface.getViewManager ();
-
         // Emulate Shift with Stop button if Shift button is not supported
         if (!this.surface.getMaschine ().hasShift ())
         {
+            final ViewManager viewManager = this.surface.getViewManager ();
+
             if (event == ButtonEvent.DOWN)
             {
                 if (!viewManager.isActive (Views.SHIFT))
@@ -65,6 +65,14 @@ public class MaschineStopCommand extends StopCommand<MaschineControlSurface, Mas
             }
         }
 
+        super.executeNormal (event);
+    }
+
+
+    /** {@inheritDoc} */
+    @Override
+    public void executeNormal (final ButtonEvent event)
+    {
         final ITransport transport = this.model.getTransport ();
         if (transport.isPlaying ())
             this.handleStopOptions ();

@@ -10,25 +10,25 @@ import de.mossgrabers.bitwig.framework.daw.HostImpl;
 import de.mossgrabers.bitwig.framework.extension.AbstractControllerExtensionDefinition;
 import de.mossgrabers.controller.ni.maschine.Maschine;
 import de.mossgrabers.controller.ni.maschine.mk3.MaschineControllerSetup;
-import de.mossgrabers.controller.ni.maschine.mk3.MaschineMk3ControllerDefinition;
+import de.mossgrabers.controller.ni.maschine.mk3.MaschinePlusControllerDefinition;
 import de.mossgrabers.framework.controller.IControllerSetup;
 
 import com.bitwig.extension.controller.api.ControllerHost;
 
 
 /**
- * Definition class for the NI Maschine Mk3 controller.
+ * Definition class for the NI Maschine Plus controller.
  *
  * @author J&uuml;rgen Mo&szlig;graber
  */
-public class MaschineMk3ExtensionDefinition extends AbstractControllerExtensionDefinition
+public class MaschinePlusExtensionDefinition extends AbstractControllerExtensionDefinition
 {
     /**
      * Constructor.
      */
-    public MaschineMk3ExtensionDefinition ()
+    public MaschinePlusExtensionDefinition ()
     {
-        super (new MaschineMk3ControllerDefinition ());
+        super (new MaschinePlusControllerDefinition ());
     }
 
 
@@ -36,6 +36,6 @@ public class MaschineMk3ExtensionDefinition extends AbstractControllerExtensionD
     @Override
     protected IControllerSetup<?, ?> getControllerSetup (final ControllerHost host)
     {
-        return new MaschineControllerSetup (new HostImpl (host), new BitwigSetupFactory (host), new SettingsUIImpl (host, host.getPreferences ()), new SettingsUIImpl (host, host.getDocumentState ()), Maschine.MK3);
+        return new MaschineControllerSetup (new HostImpl (host), new BitwigSetupFactory (host), new SettingsUIImpl (host, host.getPreferences ()), new SettingsUIImpl (host, host.getDocumentState ()), Maschine.PLUS);
     }
 }

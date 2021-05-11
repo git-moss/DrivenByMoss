@@ -56,6 +56,15 @@ public class AutomationCommand<S extends IControlSurface<C>, C extends Configura
             transport.toggleWriteClipLauncherAutomation ();
         else
             transport.toggleWriteArrangerAutomation ();
+
+        if (isShift)
+            this.cleanupShift ();
+    }
+
+
+    protected void cleanupShift ()
+    {
+        // Override for specific shift workarounds
     }
 
 

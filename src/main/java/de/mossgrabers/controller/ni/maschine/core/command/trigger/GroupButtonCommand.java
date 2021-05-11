@@ -38,7 +38,7 @@ public class GroupButtonCommand<S extends IControlSurface<C>, C extends Configur
 
     /**
      * Constructor.
-     *
+     * 
      * @param model The model
      * @param surface The surface
      * @param index The index of the button

@@ -17,7 +17,7 @@ import de.mossgrabers.framework.view.Views;
 
 
 /**
- * Command to edit the Pan and Sends of tracks.
+ * Command to edit the Volume, Pan and Sends of tracks.
  *
  * @author J&uuml;rgen Mo&szlig;graber
  */

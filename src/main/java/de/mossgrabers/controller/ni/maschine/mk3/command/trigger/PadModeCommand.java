@@ -23,21 +23,28 @@ import de.mossgrabers.framework.view.Views;
  */
 public class PadModeCommand extends AbstractTriggerCommand<MaschineControlSurface, MaschineConfiguration>
 {
+    private final KeyboardCommand keyboardCommand;
+
+
     /**
      * Constructor.
+     * 
+     * @param keyboardCommand
      *
      * @param model The model
      * @param surface The surface
      */
-    public PadModeCommand (final IModel model, final MaschineControlSurface surface)
+    public PadModeCommand (final KeyboardCommand keyboardCommand, final IModel model, final MaschineControlSurface surface)
     {
         super (model, surface);
+
+        this.keyboardCommand = keyboardCommand;
     }
 
 
     /** {@inheritDoc} */
     @Override
-    public void execute (final ButtonEvent event, final int velocity)
+    public void executeNormal (final ButtonEvent event)
     {
         if (event != ButtonEvent.DOWN)
             return;
@@ -56,5 +63,14 @@ public class PadModeCommand extends AbstractTriggerCommand<MaschineControlSurfac
         }
         else
             viewManager.setActive (Views.DRUM);
+    }
+
+
+    /** {@inheritDoc} */
+    @Override
+    public void executeShifted (final ButtonEvent event)
+    {
+        this.surface.setStopConsumed ();
+        this.keyboardCommand.executeNormal (event);
     }
 }
