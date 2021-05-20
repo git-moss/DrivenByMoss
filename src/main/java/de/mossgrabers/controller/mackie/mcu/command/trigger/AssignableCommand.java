@@ -49,6 +49,8 @@ public class AssignableCommand extends FootswitchCommand<MCUControlSurface, MCUC
     @Override
     public void execute (final ButtonEvent event, final int velocity)
     {
+        final MCUConfiguration configuration = this.surface.getConfiguration ();
+
         switch (this.getSetting ())
         {
             case MCUConfiguration.FOOTSWITCH_2_PREV_MODE:
@@ -78,10 +80,17 @@ public class AssignableCommand extends FootswitchCommand<MCUControlSurface, MCUC
                 this.flipCommand.executeNormal (event);
                 break;
 
+            case MCUConfiguration.FOOTSWITCH_2_TOGGLE_MOTOR_FADERS_ON_OFF:
+                if (event != ButtonEvent.DOWN)
+                    return;
+                configuration.toggleMotorFaders ();
+                this.mvHelper.delayDisplay ( () -> "Motor Faders: " + (configuration.hasMotorFaders () ? "On" : "Off"));
+                break;
+
             case MCUConfiguration.FOOTSWITCH_2_ACTION:
                 if (event != ButtonEvent.DOWN)
                     return;
-                final String assignableActionID = this.surface.getConfiguration ().getAssignableAction (this.index);
+                final String assignableActionID = configuration.getAssignableAction (this.index);
                 if (assignableActionID != null)
                     this.model.getApplication ().invokeAction (assignableActionID);
                 break;
@@ -133,6 +142,9 @@ public class AssignableCommand extends FootswitchCommand<MCUControlSurface, MCUC
 
             case MCUConfiguration.FOOTSWITCH_2_USE_FADERS_LIKE_EDIT_KNOBS:
                 return this.surface.getConfiguration ().useFadersAsKnobs ();
+
+            case MCUConfiguration.FOOTSWITCH_2_TOGGLE_MOTOR_FADERS_ON_OFF:
+                return this.surface.getConfiguration ().hasMotorFaders ();
 
             case AbstractConfiguration.FOOTSWITCH_2_UNDO:
             case AbstractConfiguration.FOOTSWITCH_2_TAP_TEMPO:

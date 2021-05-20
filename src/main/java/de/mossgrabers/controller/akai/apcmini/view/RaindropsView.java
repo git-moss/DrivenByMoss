@@ -76,15 +76,14 @@ public class RaindropsView extends AbstractRaindropsView<APCminiControlSurface, 
     @Override
     public int getTrackButtonColor (final int index)
     {
-        this.canScrollUp = this.offsetY + AbstractRaindropsView.NUM_OCTAVE <= this.getClip ().getNumRows () - AbstractRaindropsView.NUM_OCTAVE;
-        this.canScrollDown = this.offsetY - AbstractRaindropsView.NUM_OCTAVE >= 0;
-
         switch (index)
         {
             case 0:
-                return this.canScrollUp ? APCminiControlSurface.APC_BUTTON_STATE_ON : APCminiControlSurface.APC_BUTTON_STATE_OFF;
+                final boolean canScrollUp = this.offsetY + AbstractRaindropsView.NUM_OCTAVE <= this.getClip ().getNumRows () - AbstractRaindropsView.NUM_OCTAVE;
+                return canScrollUp ? APCminiControlSurface.APC_BUTTON_STATE_ON : APCminiControlSurface.APC_BUTTON_STATE_OFF;
             case 1:
-                return this.canScrollDown ? APCminiControlSurface.APC_BUTTON_STATE_ON : APCminiControlSurface.APC_BUTTON_STATE_OFF;
+                final boolean canScrollDown = this.offsetY - AbstractRaindropsView.NUM_OCTAVE >= 0;
+                return canScrollDown ? APCminiControlSurface.APC_BUTTON_STATE_ON : APCminiControlSurface.APC_BUTTON_STATE_OFF;
             default:
                 return APCminiControlSurface.APC_BUTTON_STATE_OFF;
         }

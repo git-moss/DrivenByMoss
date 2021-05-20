@@ -18,6 +18,7 @@ import de.mossgrabers.controller.ni.maschine.jam.command.trigger.MaschineJamPage
 import de.mossgrabers.controller.ni.maschine.jam.command.trigger.MaschineJamPageRightCommand;
 import de.mossgrabers.controller.ni.maschine.jam.command.trigger.MaschineJamSessionViewCommand;
 import de.mossgrabers.controller.ni.maschine.jam.command.trigger.MaschineJamSoloCommand;
+import de.mossgrabers.controller.ni.maschine.jam.command.trigger.MaschineJamStartSceneCommand;
 import de.mossgrabers.controller.ni.maschine.jam.command.trigger.MaschineJamSwingCommand;
 import de.mossgrabers.controller.ni.maschine.jam.command.trigger.MaschineJamTapTempoCommand;
 import de.mossgrabers.controller.ni.maschine.jam.command.trigger.MaschineJamViewCommand;
@@ -31,6 +32,8 @@ import de.mossgrabers.controller.ni.maschine.jam.mode.MaschineJamSendMode;
 import de.mossgrabers.controller.ni.maschine.jam.mode.MaschineJamTrackMode;
 import de.mossgrabers.controller.ni.maschine.jam.mode.MaschineJamUserMode;
 import de.mossgrabers.controller.ni.maschine.jam.mode.MaschineJamVolumeMode;
+import de.mossgrabers.controller.ni.maschine.jam.view.Drum4View;
+import de.mossgrabers.controller.ni.maschine.jam.view.Drum8View;
 import de.mossgrabers.controller.ni.maschine.jam.view.DrumView;
 import de.mossgrabers.controller.ni.maschine.jam.view.NoteRepeatView;
 import de.mossgrabers.controller.ni.maschine.jam.view.PlayView;
@@ -43,7 +46,6 @@ import de.mossgrabers.framework.command.trigger.BrowserCommand;
 import de.mossgrabers.framework.command.trigger.FootswitchCommand;
 import de.mossgrabers.framework.command.trigger.clip.DoubleCommand;
 import de.mossgrabers.framework.command.trigger.clip.NoteRepeatCommand;
-import de.mossgrabers.framework.command.trigger.clip.StartSceneCommand;
 import de.mossgrabers.framework.command.trigger.mode.CursorCommand;
 import de.mossgrabers.framework.command.trigger.mode.ModeCursorCommand.Direction;
 import de.mossgrabers.framework.command.trigger.transport.AutomationCommand;
@@ -65,7 +67,6 @@ import de.mossgrabers.framework.daw.IBrowser;
 import de.mossgrabers.framework.daw.IHost;
 import de.mossgrabers.framework.daw.ITransport;
 import de.mossgrabers.framework.daw.ModelSetup;
-import de.mossgrabers.framework.daw.data.IScene;
 import de.mossgrabers.framework.daw.data.ITrack;
 import de.mossgrabers.framework.daw.data.bank.ITrackBank;
 import de.mossgrabers.framework.daw.data.empty.EmptyTrack;
@@ -94,7 +95,15 @@ import java.util.Optional;
  */
 public class MaschineJamControllerSetup extends AbstractControllerSetup<MaschineJamControlSurface, MaschineJamConfiguration>
 {
-    private EncoderModeManager encoderManager;
+    private static final Views [] SEQUENCERS =
+    {
+        Views.SEQUENCER,
+        Views.DRUM,
+        Views.DRUM4,
+        Views.DRUM8
+    };
+
+    private EncoderModeManager    encoderManager;
 
 
     /**
@@ -184,6 +193,8 @@ public class MaschineJamControllerSetup extends AbstractControllerSetup<Maschine
         viewManager.register (Views.PLAY, new PlayView (surface, this.model));
         viewManager.register (Views.SEQUENCER, new SequencerView (surface, this.model));
         viewManager.register (Views.DRUM, new DrumView (surface, this.model));
+        viewManager.register (Views.DRUM4, new Drum4View (surface, this.model));
+        viewManager.register (Views.DRUM8, new Drum8View (surface, this.model));
         viewManager.register (Views.TEMPO, new TempoView<> (surface, this.model, MaschineColorManager.COLOR_BLUE, MaschineColorManager.COLOR_WHITE, MaschineColorManager.COLOR_BLACK));
         viewManager.register (Views.SHUFFLE, new ShuffleView<> (surface, this.model, MaschineColorManager.COLOR_PINK, MaschineColorManager.COLOR_WHITE, MaschineColorManager.COLOR_BLACK));
         viewManager.register (Views.BROWSER, new BrowserView<> (surface, this.model));
@@ -271,18 +282,13 @@ public class MaschineJamControllerSetup extends AbstractControllerSetup<Maschine
         }
 
         this.addButton (ButtonID.SESSION, "SONG", new MaschineJamSessionViewCommand (this.model, surface), MaschineJamControlSurface.SONG, () -> viewManager.isActive (Views.SESSION));
-        this.addButton (ButtonID.SEQUENCER, "STEP", new ViewMultiSelectCommand<> (this.model, surface, true, Views.SEQUENCER, Views.DRUM), MaschineJamControlSurface.STEP, () -> viewManager.isActive (Views.SEQUENCER));
-        this.addButton (ButtonID.NOTE, "PAD MODE", new ViewMultiSelectCommand<> (this.model, surface, true, Views.PLAY), MaschineJamControlSurface.PAD_MODE, () -> viewManager.isActive (Views.PLAY));
+        this.addButton (ButtonID.SEQUENCER, "STEP", new ViewMultiSelectCommand<> (this.model, surface, true, ButtonEvent.UP, SEQUENCERS), MaschineJamControlSurface.STEP, () -> viewManager.isActive (SEQUENCERS));
+        this.addButton (ButtonID.NOTE, "PAD MODE", new ViewMultiSelectCommand<> (this.model, surface, true, ButtonEvent.UP, Views.PLAY), MaschineJamControlSurface.PAD_MODE, () -> viewManager.isActive (Views.PLAY));
 
         for (int i = 0; i < 8; i++)
         {
-            final StartSceneCommand<MaschineJamControlSurface, MaschineJamConfiguration> sceneCommand = new StartSceneCommand<> (this.model, surface, i);
-            this.addButton (ButtonID.get (ButtonID.SCENE1, i), "SCENE " + i, sceneCommand, MaschineJamControlSurface.SCENE1 + i, () -> {
-                final IScene scene = sceneCommand.getScene ();
-                if (scene.doesExist ())
-                    return ((MaschineColorManager) this.colorManager).dimOrHighlightColor (scene.getColor (), scene.isSelected ());
-                return 0;
-            });
+            final MaschineJamStartSceneCommand sceneCommand = new MaschineJamStartSceneCommand (this.model, surface, i);
+            this.addButton (ButtonID.get (ButtonID.SCENE1, i), "SCENE " + i, sceneCommand, MaschineJamControlSurface.SCENE1 + i, sceneCommand::getButtonColor);
         }
 
         this.addButton (ButtonID.ARROW_LEFT, "LEFT", new CursorCommand<> (Direction.LEFT, this.model, surface), MaschineJamControlSurface.NAV_LEFT);

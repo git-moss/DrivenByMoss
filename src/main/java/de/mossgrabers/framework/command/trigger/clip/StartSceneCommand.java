@@ -26,7 +26,7 @@ import java.util.Optional;
  */
 public class StartSceneCommand<S extends IControlSurface<C>, C extends Configuration> extends AbstractTriggerCommand<S, C>
 {
-    private final int index;
+    protected final int index;
 
 
     /**

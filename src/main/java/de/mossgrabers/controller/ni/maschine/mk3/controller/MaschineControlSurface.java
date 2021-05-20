@@ -6,6 +6,7 @@ package de.mossgrabers.controller.ni.maschine.mk3.controller;
 
 import de.mossgrabers.controller.ni.maschine.Maschine;
 import de.mossgrabers.controller.ni.maschine.core.AbstractMaschineControlSurface;
+import de.mossgrabers.controller.ni.maschine.core.controller.MaschinePadGrid;
 import de.mossgrabers.controller.ni.maschine.mk3.MaschineConfiguration;
 import de.mossgrabers.controller.ni.maschine.mk3.command.trigger.MaschineStopCommand;
 import de.mossgrabers.framework.controller.ButtonID;

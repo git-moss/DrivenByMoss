@@ -313,6 +313,7 @@ public class PushConfiguration extends AbstractConfiguration implements IGraphic
 
         ///////////////////////////
         // Session
+
         this.activateSessionView (globalSettings);
         this.activateSelectClipOnLaunchSetting (globalSettings);
         this.activateDrawRecordStripeSetting (globalSettings);
@@ -335,6 +336,7 @@ public class PushConfiguration extends AbstractConfiguration implements IGraphic
 
         ///////////////////////////
         // Drum Sequencer
+
         if (this.host.supports (Capability.HAS_DRUM_DEVICE))
         {
             this.activateAutoSelectDrumSetting (globalSettings);

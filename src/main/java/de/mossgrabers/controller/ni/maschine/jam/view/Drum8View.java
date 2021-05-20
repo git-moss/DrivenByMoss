@@ -9,16 +9,15 @@ import de.mossgrabers.controller.ni.maschine.jam.command.trigger.EncoderMode;
 import de.mossgrabers.controller.ni.maschine.jam.controller.MaschineJamControlSurface;
 import de.mossgrabers.framework.daw.IModel;
 import de.mossgrabers.framework.utils.ButtonEvent;
-import de.mossgrabers.framework.view.AbstractDrumView;
-import de.mossgrabers.framework.view.Views;
+import de.mossgrabers.framework.view.AbstractDrum8View;
 
 
 /**
- * The Drum view.
+ * The 8 lane drum sequencer.
  *
  * @author J&uuml;rgen Mo&szlig;graber
  */
-public class DrumView extends AbstractDrumView<MaschineJamControlSurface, MaschineJamConfiguration> implements IMaschineJamView
+public class Drum8View extends AbstractDrum8View<MaschineJamControlSurface, MaschineJamConfiguration> implements IMaschineJamView
 {
     /**
      * Constructor.
@@ -26,9 +25,9 @@ public class DrumView extends AbstractDrumView<MaschineJamControlSurface, Maschi
      * @param surface The surface
      * @param model The model
      */
-    public DrumView (final MaschineJamControlSurface surface, final IModel model)
+    public Drum8View (final MaschineJamControlSurface surface, final IModel model)
     {
-        super (Views.NAME_DRUM, surface, model, 4, 4, true);
+        super (surface, model, true);
     }
 
 

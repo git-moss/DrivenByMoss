@@ -6,9 +6,9 @@ package de.mossgrabers.controller.ni.maschine.jam.controller;
 
 import de.mossgrabers.controller.ni.maschine.Maschine;
 import de.mossgrabers.controller.ni.maschine.core.AbstractMaschineControlSurface;
+import de.mossgrabers.controller.ni.maschine.core.controller.MaschinePadGrid;
 import de.mossgrabers.controller.ni.maschine.jam.MaschineJamConfiguration;
 import de.mossgrabers.framework.controller.color.ColorManager;
-import de.mossgrabers.framework.controller.grid.PadGridImpl;
 import de.mossgrabers.framework.daw.IHost;
 import de.mossgrabers.framework.daw.midi.IMidiInput;
 import de.mossgrabers.framework.daw.midi.IMidiOutput;
@@ -190,10 +190,20 @@ public class MaschineJamControlSurface extends AbstractMaschineControlSurface<Ma
      */
     public MaschineJamControlSurface (final IHost host, final ColorManager colorManager, final MaschineJamConfiguration configuration, final IMidiOutput output, final IMidiInput input)
     {
-        super (host, configuration, colorManager, Maschine.JAM, output, input, new PadGridImpl (colorManager, output), 800, 800);
+        super (host, configuration, colorManager, Maschine.JAM, output, input, new MaschinePadGrid (colorManager, output, 8, 8), 800, 800);
 
         for (int i = 0; i < this.currentFaderConfigs.length; i++)
             this.currentFaderConfigs[i] = new FaderConfig (-1, -1, -1);
+    }
+
+
+    /** {@inheritDoc} */
+    @Override
+    protected void flushHardware ()
+    {
+        super.flushHardware ();
+
+        ((MaschinePadGrid) this.padGrid).flush ();
     }
 
 

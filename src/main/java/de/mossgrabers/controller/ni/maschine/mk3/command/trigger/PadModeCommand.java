@@ -28,7 +28,7 @@ public class PadModeCommand extends AbstractTriggerCommand<MaschineControlSurfac
 
     /**
      * Constructor.
-     * 
+     *
      * @param keyboardCommand
      *
      * @param model The model

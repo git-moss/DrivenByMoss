@@ -82,10 +82,11 @@ public class PlayConfigurationMode extends BaseMode
                 break;
 
             case 7:
+                final PlayView playView = (PlayView) this.surface.getViewManager ().get (Views.PLAY);
                 if (inc)
-                    ((PlayView) this.surface.getViewManager ().get (Views.PLAY)).octaveUp ();
+                    playView.octaveUp ();
                 else
-                    ((PlayView) this.surface.getViewManager ().get (Views.PLAY)).octaveDown ();
+                    playView.octaveDown ();
                 break;
 
             default:

@@ -67,6 +67,7 @@ public class MaschineJamConfiguration extends AbstractConfiguration
 
         this.activateSelectClipOnLaunchSetting (globalSettings);
         this.activateActionForRecArmedPad (globalSettings);
+        this.activateDrawRecordStripeSetting (globalSettings);
         this.activateFlipSessionSetting (globalSettings);
 
         ///////////////////////////

@@ -66,8 +66,10 @@ public class MCUConfiguration extends AbstractConfiguration
     public static final int           FOOTSWITCH_2_SHOW_MARKER_MODE           = 17;
     /** Toggle use faders like editing knobs. */
     public static final int           FOOTSWITCH_2_USE_FADERS_LIKE_EDIT_KNOBS = 18;
+    /** Use a Function button to toggle motor faders on/off. */
+    public static final int           FOOTSWITCH_2_TOGGLE_MOTOR_FADERS_ON_OFF = 19;
     /** Use a Function button to execute an action. */
-    public static final int           FOOTSWITCH_2_ACTION                     = 19;
+    public static final int           FOOTSWITCH_2_ACTION                     = 20;
 
     private static final String       CATEGORY_EXTENDER_SETUP                 = "Extender Setup (requires restart)";
     private static final String       CATEGORY_SEGMENT_DISPLAY                = "Segment Display";
@@ -112,6 +114,7 @@ public class MCUConfiguration extends AbstractConfiguration
         "Next mode",
         "Marker mode",
         "Toggle use faders like editing knobs",
+        "Toggle motor faders on/off",
         "Action"
     };
 
@@ -172,6 +175,7 @@ public class MCUConfiguration extends AbstractConfiguration
     private IEnumSetting              tempoOrTicksSetting;
     private IEnumSetting              displayTrackNamesSetting;
     private IEnumSetting              useFadersAsKnobsSetting;
+    private IEnumSetting              hasMotorFadersSetting;
 
     private boolean                   zoomState;
     private boolean                   displayTime;
@@ -297,8 +301,8 @@ public class MCUConfiguration extends AbstractConfiguration
         });
         this.isSettingActive.add (HAS_ASSIGNMENT_DISPLAY);
 
-        final IEnumSetting hasMotorFadersSetting = settingsUI.getEnumSetting ("Has motor faders", CATEGORY_HARDWARE_SETUP, ON_OFF_OPTIONS, ON_OFF_OPTIONS[1]);
-        hasMotorFadersSetting.addValueObserver (value -> {
+        this.hasMotorFadersSetting = settingsUI.getEnumSetting ("Has motor faders", CATEGORY_HARDWARE_SETUP, ON_OFF_OPTIONS, ON_OFF_OPTIONS[1]);
+        this.hasMotorFadersSetting.addValueObserver (value -> {
             this.hasMotorFaders = "On".equals (value);
             this.notifyObservers (HAS_MOTOR_FADERS);
         });
@@ -350,7 +354,7 @@ public class MCUConfiguration extends AbstractConfiguration
                     hasDisplay2Setting.set (ON_OFF_OPTIONS[0]);
                     hasSegmentDisplaySetting.set (ON_OFF_OPTIONS[1]);
                     hasAssignmentDisplaySetting.set (ON_OFF_OPTIONS[1]);
-                    hasMotorFadersSetting.set (ON_OFF_OPTIONS[1]);
+                    this.hasMotorFadersSetting.set (ON_OFF_OPTIONS[1]);
                     hasOnly1FaderSetting.set (ON_OFF_OPTIONS[0]);
                     this.displayTrackNamesSetting.set (ON_OFF_OPTIONS[1]);
                     useVertZoomForModesSetting.set (ON_OFF_OPTIONS[0]);
@@ -364,7 +368,7 @@ public class MCUConfiguration extends AbstractConfiguration
                     hasDisplay2Setting.set (ON_OFF_OPTIONS[0]);
                     hasSegmentDisplaySetting.set (ON_OFF_OPTIONS[1]);
                     hasAssignmentDisplaySetting.set (ON_OFF_OPTIONS[1]);
-                    hasMotorFadersSetting.set (ON_OFF_OPTIONS[1]);
+                    this.hasMotorFadersSetting.set (ON_OFF_OPTIONS[1]);
                     hasOnly1FaderSetting.set (ON_OFF_OPTIONS[1]);
                     this.displayTrackNamesSetting.set (ON_OFF_OPTIONS[1]);
                     useVertZoomForModesSetting.set (ON_OFF_OPTIONS[0]);
@@ -378,7 +382,7 @@ public class MCUConfiguration extends AbstractConfiguration
                     hasDisplay2Setting.set (ON_OFF_OPTIONS[0]);
                     hasSegmentDisplaySetting.set (ON_OFF_OPTIONS[0]);
                     hasAssignmentDisplaySetting.set (ON_OFF_OPTIONS[0]);
-                    hasMotorFadersSetting.set (ON_OFF_OPTIONS[1]);
+                    this.hasMotorFadersSetting.set (ON_OFF_OPTIONS[1]);
                     hasOnly1FaderSetting.set (ON_OFF_OPTIONS[0]);
                     this.displayTrackNamesSetting.set (ON_OFF_OPTIONS[0]);
                     useVertZoomForModesSetting.set (ON_OFF_OPTIONS[1]);
@@ -392,7 +396,7 @@ public class MCUConfiguration extends AbstractConfiguration
                     hasDisplay2Setting.set (ON_OFF_OPTIONS[1]);
                     hasSegmentDisplaySetting.set (ON_OFF_OPTIONS[1]);
                     hasAssignmentDisplaySetting.set (ON_OFF_OPTIONS[0]);
-                    hasMotorFadersSetting.set (ON_OFF_OPTIONS[1]);
+                    this.hasMotorFadersSetting.set (ON_OFF_OPTIONS[1]);
                     hasOnly1FaderSetting.set (ON_OFF_OPTIONS[0]);
                     this.displayTrackNamesSetting.set (ON_OFF_OPTIONS[0]);
                     useVertZoomForModesSetting.set (ON_OFF_OPTIONS[0]);
@@ -406,7 +410,7 @@ public class MCUConfiguration extends AbstractConfiguration
                     hasDisplay2Setting.set (ON_OFF_OPTIONS[0]);
                     hasSegmentDisplaySetting.set (ON_OFF_OPTIONS[0]);
                     hasAssignmentDisplaySetting.set (ON_OFF_OPTIONS[0]);
-                    hasMotorFadersSetting.set (ON_OFF_OPTIONS[0]);
+                    this.hasMotorFadersSetting.set (ON_OFF_OPTIONS[0]);
                     hasOnly1FaderSetting.set (ON_OFF_OPTIONS[0]);
                     this.displayTrackNamesSetting.set (ON_OFF_OPTIONS[0]);
                     useVertZoomForModesSetting.set (ON_OFF_OPTIONS[0]);
@@ -636,6 +640,15 @@ public class MCUConfiguration extends AbstractConfiguration
     public boolean hasMotorFaders ()
     {
         return this.hasMotorFaders;
+    }
+
+
+    /**
+     * Toggles the has motor faders setting.
+     */
+    public void toggleMotorFaders ()
+    {
+        this.hasMotorFadersSetting.set (ON_OFF_OPTIONS[this.hasMotorFaders ? 0 : 1]);
     }
 
 
