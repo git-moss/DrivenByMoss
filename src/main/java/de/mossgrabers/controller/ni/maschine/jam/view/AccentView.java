@@ -6,10 +6,14 @@ package de.mossgrabers.controller.ni.maschine.jam.view;
 
 import de.mossgrabers.controller.ni.maschine.core.MaschineColorManager;
 import de.mossgrabers.controller.ni.maschine.jam.MaschineJamConfiguration;
+import de.mossgrabers.controller.ni.maschine.jam.command.trigger.EncoderMode;
 import de.mossgrabers.controller.ni.maschine.jam.controller.MaschineJamControlSurface;
 import de.mossgrabers.framework.controller.grid.IPadGrid;
 import de.mossgrabers.framework.daw.IModel;
 import de.mossgrabers.framework.featuregroup.AbstractView;
+import de.mossgrabers.framework.featuregroup.IView;
+import de.mossgrabers.framework.featuregroup.ViewManager;
+import de.mossgrabers.framework.view.Views;
 
 
 /**
@@ -17,7 +21,7 @@ import de.mossgrabers.framework.featuregroup.AbstractView;
  *
  * @author J&uuml;rgen Mo&szlig;graber
  */
-public class AccentView extends AbstractView<MaschineJamControlSurface, MaschineJamConfiguration>
+public class AccentView extends AbstractView<MaschineJamControlSurface, MaschineJamConfiguration> implements IMaschineJamView
 {
     private final static int BLOCK_SIZE = 4;
 
@@ -53,9 +57,9 @@ public class AccentView extends AbstractView<MaschineJamControlSurface, Maschine
 
         final MaschineJamConfiguration configuration = this.surface.getConfiguration ();
         int selectedPad = 15 - configuration.getFixedAccentValue () / 8;
-        int selY = selectedPad / 4;
-        int selX = selectedPad % 4;
-        selectedPad = (selY) * 4 + (3 - selX);
+        final int selY = selectedPad / 4;
+        final int selX = selectedPad % 4;
+        selectedPad = selY * 4 + 3 - selX;
 
         for (int pad = 0; pad < 16; pad++)
         {
@@ -82,5 +86,19 @@ public class AccentView extends AbstractView<MaschineJamControlSurface, Maschine
         final int pad = (BLOCK_SIZE - 1 - y) * BLOCK_SIZE + x - BLOCK_SIZE;
         final int selPad = (3 - pad / 4) * 4 + pad % 4;
         this.surface.getConfiguration ().setFixedAccentValue ((selPad + 1) * 8 - 1);
+    }
+
+
+    /** {@inheritDoc} */
+    @Override
+    public void changeOption (final EncoderMode temporaryEncoderMode, final int control)
+    {
+        final ViewManager viewManager = this.surface.getViewManager ();
+        final Views activeID = viewManager.getActiveIDIgnoreTemporary ();
+        if (activeID == Views.CONTROL)
+            return;
+        final IView view = viewManager.get (activeID);
+        if (view instanceof IMaschineJamView)
+            ((IMaschineJamView) view).changeOption (temporaryEncoderMode, control);
     }
 }

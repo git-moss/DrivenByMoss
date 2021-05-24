@@ -8,6 +8,7 @@ import de.mossgrabers.controller.ni.maschine.core.MaschineColorManager;
 import de.mossgrabers.controller.ni.maschine.jam.MaschineJamConfiguration;
 import de.mossgrabers.controller.ni.maschine.jam.command.trigger.EncoderMode;
 import de.mossgrabers.controller.ni.maschine.jam.controller.MaschineJamControlSurface;
+import de.mossgrabers.framework.command.trigger.Direction;
 import de.mossgrabers.framework.controller.ButtonID;
 import de.mossgrabers.framework.controller.grid.IPadGrid;
 import de.mossgrabers.framework.daw.IModel;
@@ -22,7 +23,7 @@ import de.mossgrabers.framework.view.Views;
  *
  * @author J&uuml;rgen Mo&szlig;graber
  */
-public class DrumView extends AbstractDrumView<MaschineJamControlSurface, MaschineJamConfiguration> implements IMaschineJamView
+public class DrumView extends AbstractDrumView<MaschineJamControlSurface, MaschineJamConfiguration> implements IMaschineJamView, IViewNavigation
 {
     /**
      * Constructor.
@@ -107,9 +108,9 @@ public class DrumView extends AbstractDrumView<MaschineJamControlSurface, Maschi
         if (isAccentActive)
         {
             int selectedPad = 15 - this.configuration.getFixedAccentValue () / 8;
-            int selY = selectedPad / 4;
-            int selX = selectedPad % 4;
-            selectedPad = (selY) * 4 + (3 - selX);
+            final int selY = selectedPad / 4;
+            final int selX = selectedPad % 4;
+            selectedPad = selY * 4 + 3 - selX;
 
             final IPadGrid padGrid = this.surface.getPadGrid ();
             for (int pad = 0; pad < 16; pad++)
@@ -141,5 +142,25 @@ public class DrumView extends AbstractDrumView<MaschineJamControlSurface, Maschi
         }
 
         super.handleLoopArea (pad, velocity);
+    }
+
+
+    /** {@inheritDoc} */
+    @Override
+    public boolean canScroll (final Direction direction)
+    {
+        final INoteClip clip = this.getClip ();
+        switch (direction)
+        {
+            case LEFT:
+                return clip.canScrollStepsBackwards ();
+            case RIGHT:
+                return clip.canScrollStepsForwards ();
+            case UP:
+                return this.isOctaveUpButtonOn ();
+            case DOWN:
+                return this.isOctaveDownButtonOn ();
+        }
+        return false;
     }
 }

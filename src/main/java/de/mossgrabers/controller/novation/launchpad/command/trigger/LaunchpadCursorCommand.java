@@ -8,6 +8,7 @@ import de.mossgrabers.controller.novation.launchpad.LaunchpadConfiguration;
 import de.mossgrabers.controller.novation.launchpad.controller.LaunchpadControlSurface;
 import de.mossgrabers.controller.novation.launchpad.view.Drum64View;
 import de.mossgrabers.controller.novation.launchpad.view.SessionView;
+import de.mossgrabers.framework.command.trigger.Direction;
 import de.mossgrabers.framework.command.trigger.mode.CursorCommand;
 import de.mossgrabers.framework.controller.ButtonID;
 import de.mossgrabers.framework.daw.GrooveParameterID;

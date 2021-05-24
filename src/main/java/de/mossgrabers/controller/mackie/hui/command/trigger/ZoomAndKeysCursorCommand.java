@@ -7,7 +7,7 @@ package de.mossgrabers.controller.mackie.hui.command.trigger;
 import de.mossgrabers.controller.mackie.hui.HUIConfiguration;
 import de.mossgrabers.controller.mackie.hui.controller.HUIControlSurface;
 import de.mossgrabers.framework.command.core.AbstractTriggerCommand;
-import de.mossgrabers.framework.command.trigger.mode.ModeCursorCommand.Direction;
+import de.mossgrabers.framework.command.trigger.Direction;
 import de.mossgrabers.framework.daw.IModel;
 import de.mossgrabers.framework.utils.ButtonEvent;
 

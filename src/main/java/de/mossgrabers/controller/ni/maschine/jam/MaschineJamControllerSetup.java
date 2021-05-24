@@ -21,6 +21,7 @@ import de.mossgrabers.controller.ni.maschine.jam.command.trigger.MaschineJamSolo
 import de.mossgrabers.controller.ni.maschine.jam.command.trigger.MaschineJamStartSceneCommand;
 import de.mossgrabers.controller.ni.maschine.jam.command.trigger.MaschineJamSwingCommand;
 import de.mossgrabers.controller.ni.maschine.jam.command.trigger.MaschineJamTapTempoCommand;
+import de.mossgrabers.controller.ni.maschine.jam.command.trigger.MaschineJamViewButtonCommand;
 import de.mossgrabers.controller.ni.maschine.jam.command.trigger.MaschineJamViewCommand;
 import de.mossgrabers.controller.ni.maschine.jam.controller.EncoderModeManager;
 import de.mossgrabers.controller.ni.maschine.jam.controller.FaderConfig;
@@ -56,7 +57,6 @@ import de.mossgrabers.framework.command.trigger.transport.AutomationCommand;
 import de.mossgrabers.framework.command.trigger.transport.ConfiguredRecordCommand;
 import de.mossgrabers.framework.command.trigger.transport.PlayCommand;
 import de.mossgrabers.framework.command.trigger.view.ToggleShiftViewCommand;
-import de.mossgrabers.framework.command.trigger.view.ViewButtonCommand;
 import de.mossgrabers.framework.command.trigger.view.ViewMultiSelectCommand;
 import de.mossgrabers.framework.configuration.ISettingsUI;
 import de.mossgrabers.framework.controller.AbstractControllerSetup;
@@ -68,6 +68,7 @@ import de.mossgrabers.framework.controller.hardware.BindType;
 import de.mossgrabers.framework.controller.hardware.IHwFader;
 import de.mossgrabers.framework.controller.hardware.IHwRelativeKnob;
 import de.mossgrabers.framework.controller.valuechanger.DefaultValueChanger;
+import de.mossgrabers.framework.daw.GrooveParameterID;
 import de.mossgrabers.framework.daw.IBrowser;
 import de.mossgrabers.framework.daw.IHost;
 import de.mossgrabers.framework.daw.ITransport;
@@ -316,10 +317,15 @@ public class MaschineJamControllerSetup extends AbstractControllerSetup<Maschine
             this.addButton (ButtonID.get (ButtonID.SCENE1, i), "SCENE " + i, sceneCommand, MaschineJamControlSurface.SCENE1 + i, sceneCommand::getButtonColor);
         }
 
-        this.addButton (ButtonID.ARROW_LEFT, "LEFT", new ViewButtonCommand<> (ButtonID.ARROW_LEFT, surface), MaschineJamControlSurface.NAV_LEFT);
-        this.addButton (ButtonID.ARROW_RIGHT, "RIGHT", new ViewButtonCommand<> (ButtonID.ARROW_RIGHT, surface), MaschineJamControlSurface.NAV_RIGHT);
-        this.addButton (ButtonID.ARROW_UP, "UP", new ViewButtonCommand<> (ButtonID.ARROW_UP, surface), MaschineJamControlSurface.NAV_UP);
-        this.addButton (ButtonID.ARROW_DOWN, "DOWN", new ViewButtonCommand<> (ButtonID.ARROW_DOWN, surface), MaschineJamControlSurface.NAV_DOWN);
+        final MaschineJamViewButtonCommand leftCommand = new MaschineJamViewButtonCommand (ButtonID.ARROW_LEFT, this.model, surface);
+        final MaschineJamViewButtonCommand rightCommand = new MaschineJamViewButtonCommand (ButtonID.ARROW_RIGHT, this.model, surface);
+        final MaschineJamViewButtonCommand upCommand = new MaschineJamViewButtonCommand (ButtonID.ARROW_UP, this.model, surface);
+        final MaschineJamViewButtonCommand downCommand = new MaschineJamViewButtonCommand (ButtonID.ARROW_DOWN, this.model, surface);
+
+        this.addButton (ButtonID.ARROW_LEFT, "LEFT", leftCommand, MaschineJamControlSurface.NAV_LEFT, leftCommand::canScroll);
+        this.addButton (ButtonID.ARROW_RIGHT, "RIGHT", rightCommand, MaschineJamControlSurface.NAV_RIGHT, rightCommand::canScroll);
+        this.addButton (ButtonID.ARROW_UP, "UP", upCommand, MaschineJamControlSurface.NAV_UP, upCommand::canScroll);
+        this.addButton (ButtonID.ARROW_DOWN, "DOWN", downCommand, MaschineJamControlSurface.NAV_DOWN, downCommand::canScroll);
 
         this.addButton (ButtonID.BROWSE, "Browser", new BrowserCommand<> (this.model, surface)
         {
@@ -382,7 +388,7 @@ public class MaschineJamControllerSetup extends AbstractControllerSetup<Maschine
         this.addButton (ButtonID.MASTERTRACK_TOUCH, "ENC_TOUCH", NopCommand.INSTANCE, MaschineJamControlSurface.KNOB_TOUCH);
 
         this.addButton (ButtonID.TAP_TEMPO, "TEMPO", new MaschineJamTapTempoCommand (this.encoderManager, this.model, surface), MaschineJamControlSurface.TEMPO);
-        this.addButton (ButtonID.ACCENT, "SWING", new MaschineJamSwingCommand (this.encoderManager, this.model, surface), MaschineJamControlSurface.SWING);
+        this.addButton (ButtonID.ACCENT, "SWING", new MaschineJamSwingCommand (this.encoderManager, this.model, surface), MaschineJamControlSurface.SWING, () -> this.model.getGroove ().getParameter (GrooveParameterID.ENABLED).getValue () > 0);
         this.addButton (ButtonID.GROOVE, "GRID", new MaschineJamGridCommand (this.encoderManager, this.model, surface), MaschineJamControlSurface.GRID);
 
         this.addButton (ButtonID.ROW1_1, "PERFORM", new MaschineJamViewCommand (this.encoderManager, EncoderMode.TEMPORARY_PERFORM, this.model, surface), MaschineJamControlSurface.PERFORM);

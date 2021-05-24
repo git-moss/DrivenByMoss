@@ -104,7 +104,7 @@
         <channel>0</channel>
         <off>0</off>
         <on>127</on>
-        <behavior onIfDown="on">gate</behavior>
+        <behavior>gate</behavior>
         <reaction>ondown</reaction>
       </button>
       <button version="1" id="BtnDpad2">
@@ -113,7 +113,7 @@
         <channel>0</channel>
         <off>0</off>
         <on>127</on>
-        <behavior onIfDown="on">gate</behavior>
+        <behavior>gate</behavior>
         <reaction>ondown</reaction>
       </button>
       <button version="1" id="BtnDpad3">
@@ -122,7 +122,7 @@
         <channel>0</channel>
         <off>0</off>
         <on>127</on>
-        <behavior onIfDown="on">gate</behavior>
+        <behavior>gate</behavior>
         <reaction>ondown</reaction>
       </button>
       <button version="1" id="BtnDpad4">
@@ -131,7 +131,7 @@
         <channel>0</channel>
         <off>0</off>
         <on>127</on>
-        <behavior onIfDown="on">gate</behavior>
+        <behavior>gate</behavior>
         <reaction>ondown</reaction>
       </button>
       <button version="1" id="BtnDuplicate">
@@ -11963,7 +11963,7 @@
         </knob>
         <led version="1" id="TstAIDX">
           <display type="0">
-            <unit color-type="1" color-mode="0" color-on-index="8" color-off-index="1" />
+            <unit color-type="1" color-mode="0" color-on-index="16" color-off-index="1" />
           </display>
           <controller>8</controller>
           <channel>0</channel>
@@ -11987,7 +11987,7 @@
         </knob>
         <led version="1" id="TstBIDX">
           <display type="0">
-            <unit color-type="1" color-mode="0" color-on-index="4" color-off-index="1" />
+            <unit color-type="1" color-mode="0" color-on-index="16" color-off-index="1" />
           </display>
           <controller>9</controller>
           <channel>0</channel>
@@ -12011,7 +12011,7 @@
         </knob>
         <led version="1" id="TstCIDX">
           <display type="0">
-            <unit color-type="1" color-mode="0" color-on-index="18" color-off-index="1" />
+            <unit color-type="1" color-mode="0" color-on-index="16" color-off-index="1" />
           </display>
           <controller>10</controller>
           <channel>0</channel>
@@ -12035,7 +12035,7 @@
         </knob>
         <led version="1" id="TstDIDX">
           <display type="0">
-            <unit color-type="1" color-mode="0" color-on-index="14" color-off-index="1" />
+            <unit color-type="1" color-mode="0" color-on-index="16" color-off-index="1" />
           </display>
           <controller>11</controller>
           <channel>0</channel>
@@ -12059,7 +12059,7 @@
         </knob>
         <led version="1" id="TstEIDX">
           <display type="0">
-            <unit color-type="1" color-mode="0" color-on-index="0" color-off-index="1" />
+            <unit color-type="1" color-mode="0" color-on-index="16" color-off-index="1" />
           </display>
           <controller>12</controller>
           <channel>0</channel>
@@ -12083,7 +12083,7 @@
         </knob>
         <led version="1" id="TstFIDX">
           <display type="0">
-            <unit color-type="1" color-mode="0" color-on-index="8" color-off-index="1" />
+            <unit color-type="1" color-mode="0" color-on-index="16" color-off-index="1" />
           </display>
           <controller>13</controller>
           <channel>0</channel>
@@ -12107,7 +12107,7 @@
         </knob>
         <led version="1" id="TstGIDX">
           <display type="0">
-            <unit color-type="1" color-mode="0" color-on-index="4" color-off-index="1" />
+            <unit color-type="1" color-mode="0" color-on-index="16" color-off-index="1" />
           </display>
           <controller>14</controller>
           <channel>0</channel>
@@ -12131,7 +12131,7 @@
         </knob>
         <led version="1" id="TstHIDX">
           <display type="0">
-            <unit color-type="1" color-mode="0" color-on-index="4" color-off-index="1" />
+            <unit color-type="1" color-mode="0" color-on-index="16" color-off-index="1" />
           </display>
           <controller>15</controller>
           <channel>0</channel>

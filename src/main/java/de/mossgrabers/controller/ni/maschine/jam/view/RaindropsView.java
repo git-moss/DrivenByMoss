@@ -6,6 +6,7 @@ package de.mossgrabers.controller.ni.maschine.jam.view;
 
 import de.mossgrabers.controller.ni.maschine.jam.MaschineJamConfiguration;
 import de.mossgrabers.controller.ni.maschine.jam.controller.MaschineJamControlSurface;
+import de.mossgrabers.framework.command.trigger.Direction;
 import de.mossgrabers.framework.controller.ButtonID;
 import de.mossgrabers.framework.daw.IModel;
 import de.mossgrabers.framework.utils.ButtonEvent;
@@ -18,7 +19,7 @@ import de.mossgrabers.framework.view.Views;
  *
  * @author J&uuml;rgen Mo&szlig;graber
  */
-public class RaindropsView extends AbstractRaindropsView<MaschineJamControlSurface, MaschineJamConfiguration>
+public class RaindropsView extends AbstractRaindropsView<MaschineJamControlSurface, MaschineJamConfiguration> implements IViewNavigation
 {
     /**
      * Constructor.
@@ -52,5 +53,22 @@ public class RaindropsView extends AbstractRaindropsView<MaschineJamControlSurfa
                 super.onButton (buttonID, event, velocity);
                 break;
         }
+    }
+
+
+    /** {@inheritDoc} */
+    @Override
+    public boolean canScroll (final Direction direction)
+    {
+        switch (direction)
+        {
+            case UP:
+            case LEFT:
+                return this.isOctaveUpButtonOn ();
+            case DOWN:
+            case RIGHT:
+                return this.isOctaveDownButtonOn ();
+        }
+        return false;
     }
 }

@@ -4,6 +4,7 @@
 
 package de.mossgrabers.framework.command.trigger.mode;
 
+import de.mossgrabers.framework.command.trigger.Direction;
 import de.mossgrabers.framework.configuration.Configuration;
 import de.mossgrabers.framework.controller.IControlSurface;
 import de.mossgrabers.framework.daw.IModel;

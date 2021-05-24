@@ -55,7 +55,8 @@ public class MaschineJamViewCommand extends AbstractTriggerCommand<MaschineJamCo
             case DOWN:
                 this.wasUsed = false;
                 this.encoderManager.enableTemporaryEncodeMode (this.encoderMode);
-                this.surface.getViewManager ().setActive (Views.CONTROL);
+                if (this.encoderMode == EncoderMode.TEMPORARY_LOCK)
+                    this.surface.getViewManager ().setTemporary (Views.CONTROL);
                 break;
 
             case UP:
@@ -65,7 +66,8 @@ public class MaschineJamViewCommand extends AbstractTriggerCommand<MaschineJamCo
                     final MaschineJamConfiguration configuration = this.surface.getConfiguration ();
                     configuration.setAccentEnabled (!configuration.isAccentActive ());
                 }
-                this.surface.getViewManager ().restore ();
+                if (this.encoderMode == EncoderMode.TEMPORARY_LOCK)
+                    this.surface.getViewManager ().restore ();
                 break;
         }
     }

@@ -7,6 +7,7 @@ package de.mossgrabers.controller.ni.maschine.jam.view;
 import de.mossgrabers.controller.ni.maschine.core.MaschineColorManager;
 import de.mossgrabers.controller.ni.maschine.jam.MaschineJamConfiguration;
 import de.mossgrabers.controller.ni.maschine.jam.controller.MaschineJamControlSurface;
+import de.mossgrabers.framework.command.trigger.Direction;
 import de.mossgrabers.framework.controller.ButtonID;
 import de.mossgrabers.framework.controller.grid.LightInfo;
 import de.mossgrabers.framework.daw.IModel;
@@ -25,7 +26,7 @@ import de.mossgrabers.framework.view.AbstractSessionView;
  *
  * @author J&uuml;rgen Mo&szlig;graber
  */
-public class SessionView extends AbstractSessionView<MaschineJamControlSurface, MaschineJamConfiguration>
+public class SessionView extends AbstractSessionView<MaschineJamControlSurface, MaschineJamConfiguration> implements IViewNavigation
 {
     /**
      * Constructor.
@@ -157,6 +158,30 @@ public class SessionView extends AbstractSessionView<MaschineJamControlSurface, 
         }
 
         return super.handleButtonCombinations (track, slot);
+    }
+
+
+    /** {@inheritDoc} */
+    @Override
+    public boolean canScroll (final Direction direction)
+    {
+        final boolean flipSession = this.surface.getConfiguration ().isFlipSession ();
+        final ITrackBank trackBank = this.model.getCurrentTrackBank ();
+
+        switch (direction)
+        {
+            case LEFT:
+            case RIGHT:
+                if (flipSession)
+                    return direction == Direction.LEFT ? trackBank.getSceneBank ().canScrollPageBackwards () : trackBank.getSceneBank ().canScrollPageForwards ();
+                return direction == Direction.LEFT ? trackBank.canScrollPageBackwards () : trackBank.canScrollPageForwards ();
+            case UP:
+            case DOWN:
+                if (flipSession)
+                    return direction == Direction.UP ? trackBank.canScrollPageBackwards () : trackBank.canScrollPageForwards ();
+                return direction == Direction.UP ? trackBank.getSceneBank ().canScrollPageBackwards () : trackBank.getSceneBank ().canScrollPageForwards ();
+        }
+        return false;
     }
 
 

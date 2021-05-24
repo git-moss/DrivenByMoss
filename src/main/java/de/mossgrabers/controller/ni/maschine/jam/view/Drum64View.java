@@ -6,6 +6,7 @@ package de.mossgrabers.controller.ni.maschine.jam.view;
 
 import de.mossgrabers.controller.ni.maschine.jam.MaschineJamConfiguration;
 import de.mossgrabers.controller.ni.maschine.jam.controller.MaschineJamControlSurface;
+import de.mossgrabers.framework.command.trigger.Direction;
 import de.mossgrabers.framework.controller.ButtonID;
 import de.mossgrabers.framework.daw.IModel;
 import de.mossgrabers.framework.daw.data.IDrumDevice;
@@ -18,7 +19,7 @@ import de.mossgrabers.framework.view.AbstractDrum64View;
  *
  * @author J&uuml;rgen Mo&szlig;graber
  */
-public class Drum64View extends AbstractDrum64View<MaschineJamControlSurface, MaschineJamConfiguration>
+public class Drum64View extends AbstractDrum64View<MaschineJamControlSurface, MaschineJamConfiguration> implements IViewNavigation
 {
     /**
      * Constructor.
@@ -70,5 +71,23 @@ public class Drum64View extends AbstractDrum64View<MaschineJamControlSurface, Ma
                 super.onButton (buttonID, event, velocity);
                 break;
         }
+    }
+
+
+    /** {@inheritDoc} */
+    @Override
+    public boolean canScroll (final Direction direction)
+    {
+        switch (direction)
+        {
+            case LEFT:
+            case RIGHT:
+                return false;
+            case UP:
+                return this.isOctaveUpButtonOn ();
+            case DOWN:
+                return this.isOctaveDownButtonOn ();
+        }
+        return false;
     }
 }

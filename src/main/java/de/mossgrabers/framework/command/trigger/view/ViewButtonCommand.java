@@ -25,9 +25,8 @@ import de.mossgrabers.framework.utils.ButtonEvent;
  */
 public class ViewButtonCommand<S extends IControlSurface<C>, C extends Configuration> extends AbstractTriggerCommand<S, C>
 {
-    protected ButtonID        buttonID;
-
-    private final ViewManager viewManager;
+    protected final ViewManager viewManager;
+    protected ButtonID          buttonID;
 
 
     /**

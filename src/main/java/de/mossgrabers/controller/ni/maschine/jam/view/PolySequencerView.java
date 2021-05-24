@@ -6,8 +6,10 @@ package de.mossgrabers.controller.ni.maschine.jam.view;
 
 import de.mossgrabers.controller.ni.maschine.jam.MaschineJamConfiguration;
 import de.mossgrabers.controller.ni.maschine.jam.controller.MaschineJamControlSurface;
+import de.mossgrabers.framework.command.trigger.Direction;
 import de.mossgrabers.framework.controller.ButtonID;
 import de.mossgrabers.framework.daw.IModel;
+import de.mossgrabers.framework.daw.INoteClip;
 import de.mossgrabers.framework.utils.ButtonEvent;
 import de.mossgrabers.framework.view.AbstractPolySequencerView;
 
@@ -17,7 +19,7 @@ import de.mossgrabers.framework.view.AbstractPolySequencerView;
  *
  * @author J&uuml;rgen Mo&szlig;graber
  */
-public class PolySequencerView extends AbstractPolySequencerView<MaschineJamControlSurface, MaschineJamConfiguration>
+public class PolySequencerView extends AbstractPolySequencerView<MaschineJamControlSurface, MaschineJamConfiguration> implements IViewNavigation
 {
     /**
      * Constructor.
@@ -55,5 +57,25 @@ public class PolySequencerView extends AbstractPolySequencerView<MaschineJamCont
                 super.onButton (buttonID, event, velocity);
                 break;
         }
+    }
+
+
+    /** {@inheritDoc} */
+    @Override
+    public boolean canScroll (final Direction direction)
+    {
+        final INoteClip clip = this.getClip ();
+        switch (direction)
+        {
+            case LEFT:
+                return clip.canScrollStepsBackwards ();
+            case RIGHT:
+                return clip.canScrollStepsForwards ();
+            case UP:
+                return this.isOctaveUpButtonOn ();
+            case DOWN:
+                return this.isOctaveDownButtonOn ();
+        }
+        return false;
     }
 }

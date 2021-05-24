@@ -7,8 +7,10 @@ package de.mossgrabers.controller.ni.maschine.jam.view;
 import de.mossgrabers.controller.ni.maschine.jam.MaschineJamConfiguration;
 import de.mossgrabers.controller.ni.maschine.jam.command.trigger.EncoderMode;
 import de.mossgrabers.controller.ni.maschine.jam.controller.MaschineJamControlSurface;
+import de.mossgrabers.framework.command.trigger.Direction;
 import de.mossgrabers.framework.controller.ButtonID;
 import de.mossgrabers.framework.daw.IModel;
+import de.mossgrabers.framework.daw.INoteClip;
 import de.mossgrabers.framework.utils.ButtonEvent;
 import de.mossgrabers.framework.view.AbstractDrum4View;
 
@@ -18,7 +20,7 @@ import de.mossgrabers.framework.view.AbstractDrum4View;
  *
  * @author J&uuml;rgen Mo&szlig;graber
  */
-public class Drum4View extends AbstractDrum4View<MaschineJamControlSurface, MaschineJamConfiguration> implements IMaschineJamView
+public class Drum4View extends AbstractDrum4View<MaschineJamControlSurface, MaschineJamConfiguration> implements IMaschineJamView, IViewNavigation
 {
     /**
      * Constructor.
@@ -92,5 +94,25 @@ public class Drum4View extends AbstractDrum4View<MaschineJamControlSurface, Masc
                 super.onButton (buttonID, event, velocity);
                 break;
         }
+    }
+
+
+    /** {@inheritDoc} */
+    @Override
+    public boolean canScroll (final Direction direction)
+    {
+        final INoteClip clip = this.getClip ();
+        switch (direction)
+        {
+            case LEFT:
+                return clip.canScrollStepsBackwards ();
+            case RIGHT:
+                return clip.canScrollStepsForwards ();
+            case UP:
+                return this.isOctaveUpButtonOn ();
+            case DOWN:
+                return this.isOctaveDownButtonOn ();
+        }
+        return false;
     }
 }

@@ -363,6 +363,28 @@ public class Scales
 
 
     /**
+     * Returns true if there is a previous scale layout to select.
+     *
+     * @return True if there is a previous scale layout to select
+     */
+    public boolean hasPrevScaleLayout ()
+    {
+        return this.scaleLayout.ordinal () > 0;
+    }
+
+
+    /**
+     * Returns true if there is a next scale layout to select.
+     *
+     * @return True if there is a next scale layout to select
+     */
+    public boolean hasNextScaleLayout ()
+    {
+        return this.scaleLayout.ordinal () < ScaleLayout.values ().length - 1;
+    }
+
+
+    /**
      * Select the previous scale layout.
      */
     public void prevScaleLayout ()

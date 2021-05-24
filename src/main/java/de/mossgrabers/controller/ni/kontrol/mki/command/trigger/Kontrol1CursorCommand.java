@@ -6,6 +6,7 @@ package de.mossgrabers.controller.ni.kontrol.mki.command.trigger;
 
 import de.mossgrabers.controller.ni.kontrol.mki.Kontrol1Configuration;
 import de.mossgrabers.controller.ni.kontrol.mki.controller.Kontrol1ControlSurface;
+import de.mossgrabers.framework.command.trigger.Direction;
 import de.mossgrabers.framework.daw.IModel;
 import de.mossgrabers.framework.featuregroup.IMode;
 

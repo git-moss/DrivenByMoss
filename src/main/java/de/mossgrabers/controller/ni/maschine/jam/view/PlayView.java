@@ -7,6 +7,7 @@ package de.mossgrabers.controller.ni.maschine.jam.view;
 import de.mossgrabers.controller.ni.maschine.jam.MaschineJamConfiguration;
 import de.mossgrabers.controller.ni.maschine.jam.command.trigger.EncoderMode;
 import de.mossgrabers.controller.ni.maschine.jam.controller.MaschineJamControlSurface;
+import de.mossgrabers.framework.command.trigger.Direction;
 import de.mossgrabers.framework.controller.ButtonID;
 import de.mossgrabers.framework.daw.IModel;
 import de.mossgrabers.framework.scale.Scales;
@@ -20,7 +21,7 @@ import de.mossgrabers.framework.view.Views;
  *
  * @author J&uuml;rgen Mo&szlig;graber
  */
-public class PlayView extends AbstractPlayView<MaschineJamControlSurface, MaschineJamConfiguration> implements IMaschineJamView
+public class PlayView extends AbstractPlayView<MaschineJamControlSurface, MaschineJamConfiguration> implements IMaschineJamView, IViewNavigation
 {
     /**
      * Constructor.
@@ -136,5 +137,24 @@ public class PlayView extends AbstractPlayView<MaschineJamControlSurface, Maschi
                 super.onButton (buttonID, event, velocity);
                 break;
         }
+    }
+
+
+    /** {@inheritDoc} */
+    @Override
+    public boolean canScroll (final Direction direction)
+    {
+        switch (direction)
+        {
+            case LEFT:
+                return this.scales.hasPrevScaleLayout ();
+            case RIGHT:
+                return this.scales.hasNextScaleLayout ();
+            case UP:
+                return this.isOctaveUpButtonOn ();
+            case DOWN:
+                return this.isOctaveDownButtonOn ();
+        }
+        return false;
     }
 }
