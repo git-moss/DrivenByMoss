@@ -107,8 +107,8 @@ public class MaschineColorManager extends ColorManager
         this.registerColorIndex (AbstractDrumView.COLOR_PAD_PLAY, COLOR_GREEN);
         this.registerColorIndex (AbstractDrumView.COLOR_PAD_SELECTED, COLOR_BLUE);
         this.registerColorIndex (AbstractDrumView.COLOR_PAD_MUTED, COLOR_AMBER);
-        this.registerColorIndex (AbstractDrumView.COLOR_PAD_HAS_CONTENT, COLOR_DARK_GREY);
-        this.registerColorIndex (AbstractDrumView.COLOR_PAD_NO_CONTENT, COLOR_BLACK);
+        this.registerColorIndex (AbstractDrumView.COLOR_PAD_HAS_CONTENT, COLOR_LIME);
+        this.registerColorIndex (AbstractDrumView.COLOR_PAD_NO_CONTENT, COLOR_DARK_GREY);
 
         this.registerColorIndex (BrowserView.OFF, COLOR_BLACK);
         this.registerColorIndex (BrowserView.DISCARD, COLOR_RED);

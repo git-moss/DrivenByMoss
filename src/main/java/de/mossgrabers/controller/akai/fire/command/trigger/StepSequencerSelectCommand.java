@@ -7,9 +7,12 @@ package de.mossgrabers.controller.akai.fire.command.trigger;
 import de.mossgrabers.controller.akai.fire.FireConfiguration;
 import de.mossgrabers.controller.akai.fire.controller.FireControlSurface;
 import de.mossgrabers.framework.command.trigger.view.ViewMultiSelectCommand;
+import de.mossgrabers.framework.controller.ButtonID;
 import de.mossgrabers.framework.daw.IModel;
 import de.mossgrabers.framework.daw.data.ITrack;
+import de.mossgrabers.framework.featuregroup.ModeManager;
 import de.mossgrabers.framework.featuregroup.ViewManager;
+import de.mossgrabers.framework.mode.Modes;
 import de.mossgrabers.framework.utils.ButtonEvent;
 import de.mossgrabers.framework.view.Views;
 
@@ -38,6 +41,22 @@ public class StepSequencerSelectCommand extends ViewMultiSelectCommand<FireContr
     @Override
     public void executeNormal (final ButtonEvent event)
     {
+        // Toggle note mode
+        if (this.surface.isPressed (ButtonID.ALT))
+        {
+            if (event == ButtonEvent.DOWN)
+            {
+                this.surface.setTriggerConsumed (ButtonID.DRUM);
+                final ModeManager modeManager = this.surface.getModeManager ();
+                if (modeManager.isActive (Modes.NOTE))
+                    modeManager.restore ();
+                else
+                    modeManager.setActive (Modes.NOTE);
+                this.surface.getDisplay ().notify ("Edit Notes: " + (modeManager.isActive (Modes.NOTE) ? "On" : "Off"));
+            }
+            return;
+        }
+
         super.executeNormal (event);
 
         final ITrack cursorTrack = this.model.getCursorTrack ();

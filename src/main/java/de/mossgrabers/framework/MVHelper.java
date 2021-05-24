@@ -173,6 +173,15 @@ public class MVHelper<S extends IControlSurface<C>, C extends Configuration>
 
 
     /**
+     * Display the current play position.
+     */
+    public void notifyPlayPosition ()
+    {
+        this.delayDisplay ( () -> "Play Pos.: " + this.transport.getBeatText ());
+    }
+
+
+    /**
      * Display the current edit page of the note clip.
      *
      * @param clip The clip

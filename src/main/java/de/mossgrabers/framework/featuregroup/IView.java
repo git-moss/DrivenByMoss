@@ -58,7 +58,7 @@ public interface IView extends IFeatureGroup
 
 
     /**
-     * A button event occured.
+     * A button event occurred.
      *
      * @param buttonID The ID of the button
      * @param event The button event

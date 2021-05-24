@@ -70,7 +70,7 @@ public class GroupButtonCommand<S extends IControlSurface<C>, C extends Configur
             return;
         }
 
-        final ITrackBank trackBank = this.model.getTrackBank ();
+        final ITrackBank trackBank = this.model.getCurrentTrackBank ();
         final ITrack track = trackBank.getItem (this.index);
         if (!track.doesExist ())
             return;
@@ -135,22 +135,25 @@ public class GroupButtonCommand<S extends IControlSurface<C>, C extends Configur
      */
     public int getButtonColor ()
     {
-        final ITrackBank trackBank = this.model.getTrackBank ();
+        final ITrackBank trackBank = this.model.getCurrentTrackBank ();
 
         // Send selection
         if (this.surface.isPressed (ButtonID.SENDS))
         {
-            Optional<ITrack> selectedTrack = trackBank.getSelectedItem ();
-            if (selectedTrack.isEmpty ())
+            if (!this.model.isEffectTrackBankActive ())
             {
-                final ITrack item = trackBank.getItem (0);
-                selectedTrack = item.doesExist () ? Optional.of (item) : Optional.empty ();
-            }
-            if (selectedTrack.isPresent ())
-            {
-                final ISend send = selectedTrack.get ().getSendBank ().getItem (this.index);
-                if (send.doesExist ())
-                    return MaschineColorManager.COLOR_WHITE;
+                Optional<ITrack> selectedTrack = trackBank.getSelectedItem ();
+                if (selectedTrack.isEmpty ())
+                {
+                    final ITrack item = trackBank.getItem (0);
+                    selectedTrack = item.doesExist () ? Optional.of (item) : Optional.empty ();
+                }
+                if (selectedTrack.isPresent ())
+                {
+                    final ISend send = selectedTrack.get ().getSendBank ().getItem (this.index);
+                    if (send.doesExist ())
+                        return MaschineColorManager.COLOR_WHITE;
+                }
             }
 
             return MaschineColorManager.COLOR_BLACK;

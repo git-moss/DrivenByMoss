@@ -10,6 +10,7 @@ import de.mossgrabers.controller.ni.maschine.jam.controller.MaschineJamControlSu
 import de.mossgrabers.framework.controller.ButtonID;
 import de.mossgrabers.framework.daw.IModel;
 import de.mossgrabers.framework.scale.Scales;
+import de.mossgrabers.framework.utils.ButtonEvent;
 import de.mossgrabers.framework.view.AbstractPlayView;
 import de.mossgrabers.framework.view.Views;
 
@@ -105,5 +106,35 @@ public class PlayView extends AbstractPlayView<MaschineJamControlSurface, Maschi
         }
 
         this.updateScale ();
+    }
+
+
+    /** {@inheritDoc} */
+    @Override
+    public void onButton (final ButtonID buttonID, final ButtonEvent event, final int velocity)
+    {
+        switch (buttonID)
+        {
+            case ARROW_LEFT:
+            case ARROW_RIGHT:
+                if (buttonID == ButtonID.ARROW_LEFT)
+                    this.scales.prevScaleLayout ();
+                else
+                    this.scales.nextScaleLayout ();
+                this.updateScale ();
+                this.mvHelper.delayDisplay ( () -> "Scale Layout: " + this.scales.getScaleLayout ().getName ());
+                break;
+
+            case ARROW_UP:
+                this.onOctaveUp (event);
+                break;
+            case ARROW_DOWN:
+                this.onOctaveDown (event);
+                break;
+
+            default:
+                super.onButton (buttonID, event, velocity);
+                break;
+        }
     }
 }

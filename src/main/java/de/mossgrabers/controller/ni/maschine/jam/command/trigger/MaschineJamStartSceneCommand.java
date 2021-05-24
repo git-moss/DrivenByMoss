@@ -27,11 +27,11 @@ public class MaschineJamStartSceneCommand extends StartSceneCommand<MaschineJamC
     private static final Views [] SEQUENCER_VIEWS =
     {
         Views.SEQUENCER,
+        Views.POLY_SEQUENCER,
+        Views.RAINDROPS,
         Views.DRUM,
         Views.DRUM4,
         Views.DRUM8,
-        null,
-        null,
         null,
         null
     };
@@ -39,9 +39,9 @@ public class MaschineJamStartSceneCommand extends StartSceneCommand<MaschineJamC
     private static final Views [] PLAY_VIEWS      =
     {
         Views.PLAY,
-        null,
-        null,
-        null,
+        Views.CHORDS,
+        Views.PIANO,
+        Views.DRUM64,
         null,
         null,
         null,
@@ -76,7 +76,7 @@ public class MaschineJamStartSceneCommand extends StartSceneCommand<MaschineJamC
             this.surface.setTriggerConsumed (ButtonID.SEQUENCER);
             if (SEQUENCER_VIEWS[this.index] != null)
             {
-                viewManager.setActive (SEQUENCER_VIEWS[this.index]);
+                this.activatePreferredView (SEQUENCER_VIEWS[this.index]);
                 this.mvHelper.delayDisplay ( () -> viewManager.getActive ().getName ());
             }
             return;
@@ -87,7 +87,7 @@ public class MaschineJamStartSceneCommand extends StartSceneCommand<MaschineJamC
             this.surface.setTriggerConsumed (ButtonID.NOTE);
             if (PLAY_VIEWS[this.index] != null)
             {
-                viewManager.setActive (PLAY_VIEWS[this.index]);
+                this.activatePreferredView (PLAY_VIEWS[this.index]);
                 this.mvHelper.delayDisplay ( () -> viewManager.getActive ().getName ());
             }
             return;

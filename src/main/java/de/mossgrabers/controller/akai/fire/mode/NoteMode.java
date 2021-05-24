@@ -7,6 +7,7 @@ package de.mossgrabers.controller.akai.fire.mode;
 import de.mossgrabers.controller.akai.fire.FireConfiguration;
 import de.mossgrabers.controller.akai.fire.controller.FireControlSurface;
 import de.mossgrabers.controller.akai.fire.graphics.canvas.component.TitleValueComponent;
+import de.mossgrabers.framework.controller.ButtonID;
 import de.mossgrabers.framework.controller.ContinuousID;
 import de.mossgrabers.framework.controller.display.IGraphicDisplay;
 import de.mossgrabers.framework.controller.valuechanger.IValueChanger;
@@ -108,13 +109,29 @@ public class NoteMode extends AbstractMode<FireControlSurface, FireConfiguration
         switch (index)
         {
             case 0:
-                if (this.host.supports (Capability.NOTE_EDIT_GAIN))
-                    this.clip.changeStepGain (this.channel, this.step, this.note, value);
+                if (this.surface.isPressed (ButtonID.ALT))
+                {
+                    if (this.host.supports (Capability.NOTE_EDIT_PRESSURE))
+                        this.clip.changeStepPressure (this.channel, this.step, this.note, value);
+                }
+                else
+                {
+                    if (this.host.supports (Capability.NOTE_EDIT_GAIN))
+                        this.clip.changeStepGain (this.channel, this.step, this.note, value);
+                }
                 break;
 
             case 1:
-                if (this.host.supports (Capability.NOTE_EDIT_PANORAMA))
-                    this.clip.changeStepPan (this.channel, this.step, this.note, value);
+                if (this.surface.isPressed (ButtonID.ALT))
+                {
+                    if (this.host.supports (Capability.NOTE_EDIT_TIMBRE))
+                        this.clip.changeStepTimbre (this.channel, this.step, this.note, value);
+                }
+                else
+                {
+                    if (this.host.supports (Capability.NOTE_EDIT_PANORAMA))
+                        this.clip.changeStepPan (this.channel, this.step, this.note, value);
+                }
                 break;
 
             case 2:
@@ -122,7 +139,13 @@ public class NoteMode extends AbstractMode<FireControlSurface, FireConfiguration
                 break;
 
             case 3:
-                this.clip.changeStepVelocity (this.channel, this.step, this.note, value);
+                if (this.surface.isPressed (ButtonID.ALT))
+                {
+                    if (this.host.supports (Capability.NOTE_EDIT_RELEASE_VELOCITY))
+                        this.clip.changeStepReleaseVelocity (this.channel, this.step, this.note, value);
+                }
+                else
+                    this.clip.changeStepVelocity (this.channel, this.step, this.note, value);
                 break;
 
             // This is the select knob
@@ -155,62 +178,103 @@ public class NoteMode extends AbstractMode<FireControlSurface, FireConfiguration
     @Override
     public void updateDisplay ()
     {
-        if (this.clip == null)
-            return;
-
         final IGraphicDisplay display = this.surface.getGraphicsDisplay ();
-
-        final String desc = "Step: " + (this.step + 1) + " - " + Scales.formatNoteAndOctave (this.note, -3);
 
         String paramLine = "";
         int value = -1;
+        final String desc;
 
-        final IStepInfo stepInfo = this.clip.getStep (this.channel, this.step, this.note);
-        final IValueChanger valueChanger = this.model.getValueChanger ();
-
-        switch (this.getTouchedKnob ())
+        if (this.clip == null)
         {
-            case 0:
-                if (this.host.supports (Capability.NOTE_EDIT_GAIN))
-                {
-                    final double noteGain = stepInfo.getGain ();
-                    value = Math.min (1023, valueChanger.fromNormalizedValue (noteGain));
-                    paramLine = "Gain: " + StringUtils.formatPercentage (noteGain);
-                }
-                break;
+            desc = "Select a note";
+        }
+        else
+        {
+            desc = "Step: " + (this.step + 1) + " - " + Scales.formatNoteAndOctave (this.note, -3);
 
-            case 1:
-                if (this.host.supports (Capability.NOTE_EDIT_PANORAMA))
-                {
-                    final double notePan = stepInfo.getPan ();
-                    value = valueChanger.fromNormalizedValue ((notePan + 1.0) / 2.0);
-                    paramLine = "Pan: " + StringUtils.formatPercentage (notePan);
-                }
-                break;
+            final IStepInfo stepInfo = this.clip.getStep (this.channel, this.step, this.note);
+            final IValueChanger valueChanger = this.model.getValueChanger ();
 
-            case 2:
-                paramLine = this.formatLength (stepInfo.getDuration ());
-                break;
+            switch (this.getTouchedKnob ())
+            {
+                case 0:
+                    if (this.surface.isPressed (ButtonID.ALT))
+                    {
+                        if (this.host.supports (Capability.NOTE_EDIT_PRESSURE))
+                        {
+                            final double pressure = stepInfo.getPressure ();
+                            value = valueChanger.fromNormalizedValue (pressure);
+                            paramLine = "Prssr: " + StringUtils.formatPercentage (pressure);
+                        }
+                    }
+                    else
+                    {
+                        if (this.host.supports (Capability.NOTE_EDIT_GAIN))
+                        {
+                            final double noteGain = stepInfo.getGain ();
+                            value = Math.min (1023, valueChanger.fromNormalizedValue (noteGain));
+                            paramLine = "Gain: " + StringUtils.formatPercentage (noteGain);
+                        }
+                    }
+                    break;
 
-            case 3:
-                final double noteVelocity = stepInfo.getVelocity ();
-                value = valueChanger.fromNormalizedValue (noteVelocity);
-                paramLine = "Vel.: " + StringUtils.formatPercentage (noteVelocity);
-                break;
+                case 1:
+                    if (this.surface.isPressed (ButtonID.ALT))
+                    {
+                        if (this.host.supports (Capability.NOTE_EDIT_TIMBRE))
+                        {
+                            final double noteTimbre = stepInfo.getTimbre ();
+                            value = valueChanger.fromNormalizedValue ((noteTimbre + 1.0) / 2.0);
+                            paramLine = "Timbre: " + StringUtils.formatPercentage (noteTimbre);
+                        }
+                    }
+                    else
+                    {
+                        if (this.host.supports (Capability.NOTE_EDIT_PANORAMA))
+                        {
+                            final double notePan = stepInfo.getPan ();
+                            value = valueChanger.fromNormalizedValue ((notePan + 1.0) / 2.0);
+                            paramLine = "Pan: " + StringUtils.formatPercentage (notePan);
+                        }
+                    }
+                    break;
 
-            // This is the select knob
-            case 4:
-                if (this.host.supports (Capability.NOTE_EDIT_TRANSPOSE))
-                {
-                    final double noteTranspose = stepInfo.getTranspose ();
-                    value = valueChanger.fromNormalizedValue ((noteTranspose + 24.0) / 48.0);
-                    paramLine = "Pitch: " + String.format ("%.1f", Double.valueOf (noteTranspose));
-                }
-                break;
+                case 2:
+                    paramLine = this.formatLength (stepInfo.getDuration ());
+                    break;
 
-            default:
-                // That's all...
-                break;
+                case 3:
+                    if (this.surface.isPressed (ButtonID.ALT))
+                    {
+                        if (this.host.supports (Capability.NOTE_EDIT_RELEASE_VELOCITY))
+                        {
+                            final double noteReleaseVelocity = stepInfo.getReleaseVelocity ();
+                            value = valueChanger.fromNormalizedValue (noteReleaseVelocity);
+                            paramLine = "RelVel: " + StringUtils.formatPercentage (noteReleaseVelocity);
+                        }
+                    }
+                    else
+                    {
+                        final double noteVelocity = stepInfo.getVelocity ();
+                        value = valueChanger.fromNormalizedValue (noteVelocity);
+                        paramLine = "Vel.: " + StringUtils.formatPercentage (noteVelocity);
+                    }
+                    break;
+
+                // This is the select knob
+                case 4:
+                    if (this.host.supports (Capability.NOTE_EDIT_TRANSPOSE))
+                    {
+                        final double noteTranspose = stepInfo.getTranspose ();
+                        value = valueChanger.fromNormalizedValue ((noteTranspose + 24.0) / 48.0);
+                        paramLine = "Pitch: " + String.format ("%.1f", Double.valueOf (noteTranspose));
+                    }
+                    break;
+
+                default:
+                    // That's all...
+                    break;
+            }
         }
 
         display.addElement (new TitleValueComponent (desc, paramLine, value, false));

@@ -14,7 +14,9 @@ import de.mossgrabers.framework.daw.data.IScene;
 import de.mossgrabers.framework.daw.data.ISlot;
 import de.mossgrabers.framework.daw.data.ITrack;
 import de.mossgrabers.framework.daw.data.bank.ISceneBank;
+import de.mossgrabers.framework.daw.data.bank.ITrackBank;
 import de.mossgrabers.framework.featuregroup.AbstractFeatureGroup;
+import de.mossgrabers.framework.utils.ButtonEvent;
 import de.mossgrabers.framework.view.AbstractSessionView;
 
 
@@ -73,6 +75,44 @@ public class SessionView extends AbstractSessionView<MaschineJamControlSurface, 
 
     /** {@inheritDoc} */
     @Override
+    public void onButton (final ButtonID buttonID, final ButtonEvent event, final int velocity)
+    {
+        final boolean flipSession = this.surface.getConfiguration ().isFlipSession ();
+        final boolean isDown = event == ButtonEvent.DOWN;
+
+        switch (buttonID)
+        {
+            case ARROW_LEFT:
+            case ARROW_RIGHT:
+                if (isDown)
+                {
+                    if (flipSession)
+                        this.scrollSceneBank (buttonID == ButtonID.ARROW_RIGHT);
+                    else
+                        this.scrollTrackBank (buttonID == ButtonID.ARROW_RIGHT);
+                }
+                break;
+
+            case ARROW_UP:
+            case ARROW_DOWN:
+                if (isDown)
+                {
+                    if (flipSession)
+                        this.scrollTrackBank (buttonID == ButtonID.ARROW_DOWN);
+                    else
+                        this.scrollSceneBank (buttonID == ButtonID.ARROW_DOWN);
+                }
+                break;
+
+            default:
+                super.onButton (buttonID, event, velocity);
+                break;
+        }
+    }
+
+
+    /** {@inheritDoc} */
+    @Override
     public String getButtonColorID (final ButtonID buttonID)
     {
         final int scene = buttonID.ordinal () - ButtonID.SCENE1.ordinal ();
@@ -117,5 +157,25 @@ public class SessionView extends AbstractSessionView<MaschineJamControlSurface, 
         }
 
         return super.handleButtonCombinations (track, slot);
+    }
+
+
+    private void scrollTrackBank (final boolean isForwards)
+    {
+        final ITrackBank trackBank = this.model.getCurrentTrackBank ();
+        if (isForwards)
+            trackBank.scrollForwards ();
+        else
+            trackBank.scrollBackwards ();
+    }
+
+
+    private void scrollSceneBank (final boolean isForwards)
+    {
+        final ISceneBank sceneBank = this.model.getCurrentTrackBank ().getSceneBank ();
+        if (isForwards)
+            sceneBank.scrollForwards ();
+        else
+            sceneBank.scrollBackwards ();
     }
 }

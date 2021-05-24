@@ -10,7 +10,6 @@ import de.mossgrabers.controller.novation.launchpad.controller.LaunchpadControlS
 import de.mossgrabers.framework.controller.ButtonID;
 import de.mossgrabers.framework.controller.grid.IPadGrid;
 import de.mossgrabers.framework.daw.IModel;
-import de.mossgrabers.framework.daw.data.ITrack;
 import de.mossgrabers.framework.featuregroup.AbstractView;
 import de.mossgrabers.framework.featuregroup.ViewManager;
 import de.mossgrabers.framework.view.Views;
@@ -115,14 +114,8 @@ public class NoteViewSelectView extends AbstractView<LaunchpadControlSurface, La
 
     private void setView (final Views viewID)
     {
-        final ViewManager viewManager = this.surface.getViewManager ();
-        viewManager.setActive (viewID);
-
-        final ITrack cursorTrack = this.model.getCursorTrack ();
-        if (cursorTrack.doesExist ())
-            viewManager.setPreferredView (cursorTrack.getPosition (), viewID);
-
-        this.surface.getDisplay ().notify (viewManager.get (viewID).getName ());
+        this.activatePreferredView (viewID);
+        this.surface.getDisplay ().notify (this.surface.getViewManager ().get (viewID).getName ());
     }
 
 

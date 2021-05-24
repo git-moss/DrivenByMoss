@@ -74,7 +74,7 @@ public class SelectKnobCommand extends AbstractContinuousCommand<FireControlSurf
         if (this.surface.isPressed (ButtonID.ALT))
         {
             final boolean isInc = this.model.getValueChanger ().isIncrease (value);
-            if (modeManager.isActive (Modes.TRACK, Modes.DEVICE_LAYER))
+            if (modeManager.isActive (Modes.TRACK, Modes.VOLUME, Modes.DEVICE_LAYER, Modes.DEVICE_LAYER_VOLUME))
                 handleTrackSelection (this.surface, this.model.getTrackBank (), isInc);
             else if (modeManager.isActive (Modes.DEVICE_PARAMS))
                 this.handleDevicePageSelection (isInc);
@@ -94,7 +94,17 @@ public class SelectKnobCommand extends AbstractContinuousCommand<FireControlSurf
             if (this.model.getValueChanger ().calcKnobChange (value) < 0)
                 amount *= -1;
             transport.setTempo (transport.getTempo () + amount);
-            this.mvHelper.delayDisplay ( () -> String.format ("Tempo: %.02f", Double.valueOf (transport.getTempo ())));
+            this.mvHelper.notifyTempo ();
+            return;
+        }
+
+        // Change the play position in combination with the metronome button
+        if (this.surface.isPressed (ButtonID.METRONOME))
+        {
+            this.surface.setTriggerConsumed (ButtonID.METRONOME);
+            final ITransport transport = this.model.getTransport ();
+            transport.changePosition (this.model.getValueChanger ().isIncrease (value), this.surface.isPressed (ButtonID.SHIFT));
+            this.mvHelper.notifyPlayPosition ();
             return;
         }
 

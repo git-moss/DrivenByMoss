@@ -10,6 +10,7 @@ import de.mossgrabers.framework.controller.IControlSurface;
 import de.mossgrabers.framework.daw.IModel;
 import de.mossgrabers.framework.daw.data.ISend;
 import de.mossgrabers.framework.daw.data.ITrack;
+import de.mossgrabers.framework.daw.data.bank.ISendBank;
 import de.mossgrabers.framework.parameterprovider.track.SelectedTrackParameterProvider;
 
 import java.util.List;
@@ -99,7 +100,10 @@ public class TrackMode<S extends IControlSurface<C>, C extends Configuration> ex
                 break;
 
             default:
-                final ISend send = t.getSendBank ().getItem (index - 2);
+                final ISendBank sendBank = t.getSendBank ();
+                if (!sendBank.hasExistingItems ())
+                    return;
+                final ISend send = sendBank.getItem (index - 2);
                 if (this.isAbsolute)
                     send.setValue (value);
                 else
@@ -133,7 +137,11 @@ public class TrackMode<S extends IControlSurface<C>, C extends Configuration> ex
                 break;
 
             default:
-                final ISend item = t.getSendBank ().getItem (index - 2);
+                final ISendBank sendBank = t.getSendBank ();
+                if (!sendBank.hasExistingItems ())
+                    return;
+
+                final ISend item = sendBank.getItem (index - 2);
                 if (isTouched && this.surface.isDeletePressed ())
                     item.resetValue ();
                 item.touchValue (isTouched);
@@ -160,7 +168,10 @@ public class TrackMode<S extends IControlSurface<C>, C extends Configuration> ex
                 return t.getPan ();
 
             default:
-                return t.getSendBank ().getItem (index - 2).getValue ();
+                final ISendBank sendBank = t.getSendBank ();
+                if (!sendBank.hasExistingItems ())
+                    return 0;
+                return sendBank.getItem (index - 2).getValue ();
         }
     }
 }

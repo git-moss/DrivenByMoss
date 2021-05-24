@@ -4,10 +4,14 @@
 
 package de.mossgrabers.controller.ni.maschine.jam.view;
 
+import de.mossgrabers.controller.ni.maschine.core.MaschineColorManager;
 import de.mossgrabers.controller.ni.maschine.jam.MaschineJamConfiguration;
 import de.mossgrabers.controller.ni.maschine.jam.command.trigger.EncoderMode;
 import de.mossgrabers.controller.ni.maschine.jam.controller.MaschineJamControlSurface;
+import de.mossgrabers.framework.controller.ButtonID;
+import de.mossgrabers.framework.controller.grid.IPadGrid;
 import de.mossgrabers.framework.daw.IModel;
+import de.mossgrabers.framework.daw.INoteClip;
 import de.mossgrabers.framework.utils.ButtonEvent;
 import de.mossgrabers.framework.view.AbstractDrumView;
 import de.mossgrabers.framework.view.Views;
@@ -65,5 +69,77 @@ public class DrumView extends AbstractDrumView<MaschineJamControlSurface, Maschi
                 // Not used
                 break;
         }
+    }
+
+
+    /** {@inheritDoc} */
+    @Override
+    public void onButton (final ButtonID buttonID, final ButtonEvent event, final int velocity)
+    {
+        switch (buttonID)
+        {
+            case ARROW_LEFT:
+                this.onLeft (event);
+                break;
+            case ARROW_RIGHT:
+                this.onRight (event);
+                break;
+
+            case ARROW_UP:
+                this.onOctaveUp (event);
+                break;
+            case ARROW_DOWN:
+                this.onOctaveDown (event);
+                break;
+
+            default:
+                super.onButton (buttonID, event, velocity);
+                break;
+        }
+    }
+
+
+    /** {@inheritDoc} */
+    @Override
+    protected void drawPages (final INoteClip clip, final boolean isActive)
+    {
+        final boolean isAccentActive = this.configuration.isAccentActive ();
+        if (isAccentActive)
+        {
+            int selectedPad = 15 - this.configuration.getFixedAccentValue () / 8;
+            int selY = selectedPad / 4;
+            int selX = selectedPad % 4;
+            selectedPad = (selY) * 4 + (3 - selX);
+
+            final IPadGrid padGrid = this.surface.getPadGrid ();
+            for (int pad = 0; pad < 16; pad++)
+            {
+                final int x = this.playColumns + pad % this.playColumns;
+                final int y = this.sequencerLines + pad / this.playColumns;
+                padGrid.lightEx (x, y, pad == selectedPad ? MaschineColorManager.COLOR_GREEN : MaschineColorManager.COLOR_LIME_LO);
+            }
+
+            return;
+        }
+
+        super.drawPages (clip, isActive);
+    }
+
+
+    /** {@inheritDoc} */
+    @Override
+    protected void handleLoopArea (final int pad, final int velocity)
+    {
+        final boolean isAccentActive = this.configuration.isAccentActive ();
+        if (isAccentActive)
+        {
+            if (velocity == 0)
+                return;
+            final int selPad = (3 - pad / 4) * 4 + pad % 4;
+            this.configuration.setFixedAccentValue ((selPad + 1) * 8 - 1);
+            return;
+        }
+
+        super.handleLoopArea (pad, velocity);
     }
 }

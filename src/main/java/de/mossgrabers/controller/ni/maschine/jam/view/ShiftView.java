@@ -7,10 +7,14 @@ package de.mossgrabers.controller.ni.maschine.jam.view;
 import de.mossgrabers.controller.ni.maschine.core.MaschineColorManager;
 import de.mossgrabers.controller.ni.maschine.jam.MaschineJamConfiguration;
 import de.mossgrabers.controller.ni.maschine.jam.controller.MaschineJamControlSurface;
+import de.mossgrabers.framework.controller.ButtonID;
 import de.mossgrabers.framework.controller.grid.IPadGrid;
 import de.mossgrabers.framework.daw.IModel;
 import de.mossgrabers.framework.daw.INoteClip;
+import de.mossgrabers.framework.daw.data.bank.ISceneBank;
+import de.mossgrabers.framework.daw.data.bank.ITrackBank;
 import de.mossgrabers.framework.featuregroup.AbstractView;
+import de.mossgrabers.framework.utils.ButtonEvent;
 
 
 /**
@@ -100,5 +104,63 @@ public class ShiftView extends AbstractView<MaschineJamControlSurface, MaschineJ
                 // Fall through to be handled below
                 break;
         }
+    }
+
+
+    /** {@inheritDoc} */
+    @Override
+    public void onButton (final ButtonID buttonID, final ButtonEvent event, final int velocity)
+    {
+        final boolean flipSession = this.surface.getConfiguration ().isFlipSession ();
+        final boolean isDown = event == ButtonEvent.DOWN;
+
+        switch (buttonID)
+        {
+            case ARROW_LEFT:
+            case ARROW_RIGHT:
+                if (isDown)
+                {
+                    if (flipSession)
+                        this.scrollSceneBank (buttonID == ButtonID.ARROW_RIGHT);
+                    else
+                        this.scrollTrackBank (buttonID == ButtonID.ARROW_RIGHT);
+                }
+                break;
+
+            case ARROW_UP:
+            case ARROW_DOWN:
+                if (isDown)
+                {
+                    if (flipSession)
+                        this.scrollTrackBank (buttonID == ButtonID.ARROW_DOWN);
+                    else
+                        this.scrollSceneBank (buttonID == ButtonID.ARROW_DOWN);
+                }
+                break;
+
+            default:
+                super.onButton (buttonID, event, velocity);
+                break;
+        }
+    }
+
+
+    private void scrollTrackBank (final boolean isForwards)
+    {
+        final ITrackBank trackBank = this.model.getCurrentTrackBank ();
+        if (isForwards)
+            trackBank.selectNextPage ();
+        else
+            trackBank.selectPreviousPage ();
+    }
+
+
+    private void scrollSceneBank (final boolean isForwards)
+    {
+        final ISceneBank sceneBank = this.model.getCurrentTrackBank ().getSceneBank ();
+        if (isForwards)
+            sceneBank.selectNextPage ();
+        else
+            sceneBank.selectPreviousPage ();
     }
 }

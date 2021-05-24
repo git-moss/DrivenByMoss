@@ -53,26 +53,21 @@ public class SequencerView extends AbstractNoteSequencerView<FireControlSurface,
         final ModeManager modeManager = this.surface.getModeManager ();
         if (velocity > 0)
         {
-            // Turn on Note mode if an existing note is pressed
-            final int state = clip.getStep (channel, x, mappedY).getState ();
-            if (state == IStepInfo.NOTE_START)
+            if (modeManager.isActive (Modes.NOTE))
             {
-                final NoteMode noteMode = (NoteMode) modeManager.get (Modes.NOTE);
-                noteMode.setValues (clip, channel, x, mappedY);
-                modeManager.setActive (Modes.NOTE);
+                // Store existing note for editing
+                final int state = clip.getStep (channel, x, mappedY).getState ();
+                if (state == IStepInfo.NOTE_START)
+                    ((NoteMode) modeManager.get (Modes.NOTE)).setValues (clip, channel, x, mappedY);
+                return;
             }
         }
         else
         {
-            // Turn off Note mode
-            if (modeManager.isActive (Modes.NOTE))
-                modeManager.restore ();
-
             if (this.isNoteEdited)
-            {
                 this.isNoteEdited = false;
+            if (modeManager.isActive (Modes.NOTE))
                 return;
-            }
         }
 
         super.handleSequencerArea (index, x, y, velocity);

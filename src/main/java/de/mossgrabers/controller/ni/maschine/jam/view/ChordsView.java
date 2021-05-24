@@ -11,16 +11,16 @@ import de.mossgrabers.framework.controller.ButtonID;
 import de.mossgrabers.framework.daw.IModel;
 import de.mossgrabers.framework.scale.Scales;
 import de.mossgrabers.framework.utils.ButtonEvent;
-import de.mossgrabers.framework.view.AbstractNoteSequencerView;
+import de.mossgrabers.framework.view.AbstractChordView;
 import de.mossgrabers.framework.view.Views;
 
 
 /**
- * The Sequencer view.
+ * The chord view.
  *
  * @author J&uuml;rgen Mo&szlig;graber
  */
-public class SequencerView extends AbstractNoteSequencerView<MaschineJamControlSurface, MaschineJamConfiguration> implements IMaschineJamView
+public class ChordsView extends AbstractChordView<MaschineJamControlSurface, MaschineJamConfiguration> implements IMaschineJamView
 {
     /**
      * Constructor.
@@ -28,9 +28,9 @@ public class SequencerView extends AbstractNoteSequencerView<MaschineJamControlS
      * @param surface The surface
      * @param model The model
      */
-    public SequencerView (final MaschineJamControlSurface surface, final IModel model)
+    public ChordsView (final MaschineJamControlSurface surface, final IModel model)
     {
-        super (Views.NAME_SEQUENCER, surface, model, true);
+        super (Views.NAME_CHORDS, surface, model, true);
     }
 
 
@@ -67,9 +67,10 @@ public class SequencerView extends AbstractNoteSequencerView<MaschineJamControlS
 
             case TEMPORARY_TUNE:
                 if (increase)
-                    this.onOctaveUp (ButtonEvent.DOWN);
+                    this.scales.incOctave ();
                 else
-                    this.onOctaveDown (ButtonEvent.DOWN);
+                    this.scales.decOctave ();
+                this.mvHelper.delayDisplay ( () -> "Octave: " + this.scales.getOctave ());
                 break;
 
             default:
@@ -77,7 +78,7 @@ public class SequencerView extends AbstractNoteSequencerView<MaschineJamControlS
                 break;
         }
 
-        this.updateScaleConfig ();
+        this.updateScale ();
     }
 
 
@@ -88,10 +89,8 @@ public class SequencerView extends AbstractNoteSequencerView<MaschineJamControlS
         switch (buttonID)
         {
             case ARROW_LEFT:
-                this.onLeft (event);
-                break;
             case ARROW_RIGHT:
-                this.onRight (event);
+                // Not used
                 break;
 
             case ARROW_UP:
@@ -105,17 +104,5 @@ public class SequencerView extends AbstractNoteSequencerView<MaschineJamControlS
                 super.onButton (buttonID, event, velocity);
                 break;
         }
-    }
-
-
-    private void updateScaleConfig ()
-    {
-        final MaschineJamConfiguration config = this.surface.getConfiguration ();
-        config.setScale (this.scales.getScale ().getName ());
-        config.setScaleBase (Scales.BASES.get (this.scales.getScaleOffset ()));
-        config.setScaleInKey (!this.scales.isChromatic ());
-        config.setScaleLayout (this.scales.getScaleLayout ().getName ());
-
-        this.updateNoteMapping ();
     }
 }

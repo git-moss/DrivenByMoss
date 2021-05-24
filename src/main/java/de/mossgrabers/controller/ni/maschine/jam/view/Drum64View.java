@@ -5,20 +5,20 @@
 package de.mossgrabers.controller.ni.maschine.jam.view;
 
 import de.mossgrabers.controller.ni.maschine.jam.MaschineJamConfiguration;
-import de.mossgrabers.controller.ni.maschine.jam.command.trigger.EncoderMode;
 import de.mossgrabers.controller.ni.maschine.jam.controller.MaschineJamControlSurface;
 import de.mossgrabers.framework.controller.ButtonID;
 import de.mossgrabers.framework.daw.IModel;
+import de.mossgrabers.framework.daw.data.IDrumDevice;
 import de.mossgrabers.framework.utils.ButtonEvent;
-import de.mossgrabers.framework.view.AbstractDrum8View;
+import de.mossgrabers.framework.view.AbstractDrum64View;
 
 
 /**
- * The 8 lane drum sequencer.
+ * The Drum 64 view.
  *
  * @author J&uuml;rgen Mo&szlig;graber
  */
-public class Drum8View extends AbstractDrum8View<MaschineJamControlSurface, MaschineJamConfiguration> implements IMaschineJamView
+public class Drum64View extends AbstractDrum64View<MaschineJamControlSurface, MaschineJamConfiguration>
 {
     /**
      * Constructor.
@@ -26,45 +26,25 @@ public class Drum8View extends AbstractDrum8View<MaschineJamControlSurface, Masc
      * @param surface The surface
      * @param model The model
      */
-    public Drum8View (final MaschineJamControlSurface surface, final IModel model)
+    public Drum64View (final MaschineJamControlSurface surface, final IModel model)
     {
-        super (surface, model, true);
+        super (surface, model);
     }
 
 
     /** {@inheritDoc} */
     @Override
-    public void changeOption (final EncoderMode temporaryEncoderMode, final int control)
+    protected void handleButtonCombinations (final int playedPad)
     {
-        this.keyManager.clearPressedKeys ();
-
-        final boolean increase = this.model.getValueChanger ().isIncrease (control);
-
-        switch (temporaryEncoderMode)
+        if (this.isButtonCombination (ButtonID.BROWSE))
         {
-            case TEMPORARY_PERFORM:
-                // Not used
-                break;
-
-            case TEMPORARY_NOTES:
-                // Not used
-                break;
-
-            case TEMPORARY_LOCK:
-                // Not used
-                break;
-
-            case TEMPORARY_TUNE:
-                if (increase)
-                    this.onOctaveUp (ButtonEvent.DOWN);
-                else
-                    this.onOctaveDown (ButtonEvent.DOWN);
-                break;
-
-            default:
-                // Not used
-                break;
+            final IDrumDevice primary = this.model.getDrumDevice64 ();
+            if (primary.hasDrumPads ())
+                this.model.getBrowser ().replace (primary.getDrumPadBank ().getItem (playedPad));
+            return;
         }
+
+        super.handleButtonCombinations (playedPad);
     }
 
 
@@ -75,10 +55,8 @@ public class Drum8View extends AbstractDrum8View<MaschineJamControlSurface, Masc
         switch (buttonID)
         {
             case ARROW_LEFT:
-                this.onLeft (event);
-                break;
             case ARROW_RIGHT:
-                this.onRight (event);
+                // Not used
                 break;
 
             case ARROW_UP:

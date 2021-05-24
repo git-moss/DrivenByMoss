@@ -7,7 +7,9 @@ package de.mossgrabers.controller.akai.fire;
 import de.mossgrabers.controller.akai.fire.command.continuous.SelectKnobCommand;
 import de.mossgrabers.controller.akai.fire.command.trigger.DrumSequencerSelectCommand;
 import de.mossgrabers.controller.akai.fire.command.trigger.FireBrowserCommand;
+import de.mossgrabers.controller.akai.fire.command.trigger.FireModeCommand;
 import de.mossgrabers.controller.akai.fire.command.trigger.FireRecordCommand;
+import de.mossgrabers.controller.akai.fire.command.trigger.FireSelectButtonCommand;
 import de.mossgrabers.controller.akai.fire.command.trigger.FireStopCommand;
 import de.mossgrabers.controller.akai.fire.command.trigger.FireViewButtonCommand;
 import de.mossgrabers.controller.akai.fire.command.trigger.PlaySelectCommand;
@@ -68,7 +70,6 @@ import de.mossgrabers.framework.featuregroup.ModeManager;
 import de.mossgrabers.framework.featuregroup.ViewManager;
 import de.mossgrabers.framework.mode.Modes;
 import de.mossgrabers.framework.observer.IParametersAdjustObserver;
-import de.mossgrabers.framework.utils.ButtonEvent;
 import de.mossgrabers.framework.view.Views;
 
 import java.util.function.IntSupplier;
@@ -213,41 +214,7 @@ public class FireControllerSetup extends AbstractControllerSetup<FireControlSurf
 
         // Modes
 
-        this.modeSelectCommand = new ModeMultiSelectCommand<> (this.model, surface, MODES)
-        {
-            /** {@inheritDoc} */
-            @Override
-            public void execute (final ButtonEvent event, final int velocity)
-            {
-                if (this.surface.isPressed (ButtonID.ALT))
-                {
-                    if (event == ButtonEvent.UP)
-                        return;
-                    final ModeManager modeManager = this.surface.getModeManager ();
-                    switch (modeManager.getActiveID ())
-                    {
-                        case DEVICE_LAYER:
-                            modeManager.setActive (Modes.DEVICE_LAYER_VOLUME);
-                            break;
-                        case DEVICE_LAYER_VOLUME:
-                            modeManager.setActive (Modes.DEVICE_LAYER);
-                            break;
-                        case TRACK:
-                            modeManager.setActive (Modes.VOLUME);
-                            break;
-                        case VOLUME:
-                            modeManager.setActive (Modes.TRACK);
-                            break;
-                        default:
-                            // Do nothing
-                            break;
-                    }
-                    this.model.getHost ().showNotification (modeManager.getActive ().getName ());
-                }
-                else
-                    super.execute (event, velocity);
-            }
-        };
+        this.modeSelectCommand = new FireModeCommand (this.model, surface, MODES);
         this.addButton (ButtonID.BANK_RIGHT, "BANK", this.modeSelectCommand, FireControlSurface.FIRE_BANK);
 
         for (int i = 0; i < MODES.length; i++)
@@ -323,35 +290,7 @@ public class FireControllerSetup extends AbstractControllerSetup<FireControlSurf
 
         }, FireControlSurface.FIRE_ALT);
 
-        this.addButton (ButtonID.SELECT, "SELECT", (event, velocity) -> {
-
-            if (velocity > 0)
-                return;
-
-            if (modeManager.isActive (Modes.NOTE))
-            {
-                final NoteMode mode = (NoteMode) modeManager.get (Modes.NOTE);
-                mode.resetTranspose ();
-                return;
-            }
-
-            if (modeManager.isActive (Modes.BROWSER))
-            {
-                ((FireBrowserCommand) surface.getButton (ButtonID.BROWSE).getCommand ()).discardBrowser (true);
-                return;
-            }
-
-            if (modeManager.isActive (Modes.DEVICE_PARAMS) && this.configuration.isDeleteModeActive ())
-            {
-                this.model.getCursorDevice ().remove ();
-                this.configuration.toggleDeleteModeActive ();
-                return;
-            }
-
-            this.model.getCursorDevice ().toggleWindowOpen ();
-
-        }, FireControlSurface.SELECT);
-
+        this.addButton (ButtonID.SELECT, "SELECT", new FireSelectButtonCommand (this.model, surface), FireControlSurface.SELECT);
         this.addButton (ButtonID.BROWSE, "BROWSER", new FireBrowserCommand (this.model, surface), FireControlSurface.FIRE_BROWSER, () -> modeManager.isActive (Modes.BROWSER));
 
         // Navigation

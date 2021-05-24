@@ -32,11 +32,17 @@ import de.mossgrabers.controller.ni.maschine.jam.mode.MaschineJamSendMode;
 import de.mossgrabers.controller.ni.maschine.jam.mode.MaschineJamTrackMode;
 import de.mossgrabers.controller.ni.maschine.jam.mode.MaschineJamUserMode;
 import de.mossgrabers.controller.ni.maschine.jam.mode.MaschineJamVolumeMode;
+import de.mossgrabers.controller.ni.maschine.jam.view.AccentView;
+import de.mossgrabers.controller.ni.maschine.jam.view.ChordsView;
 import de.mossgrabers.controller.ni.maschine.jam.view.Drum4View;
+import de.mossgrabers.controller.ni.maschine.jam.view.Drum64View;
 import de.mossgrabers.controller.ni.maschine.jam.view.Drum8View;
 import de.mossgrabers.controller.ni.maschine.jam.view.DrumView;
 import de.mossgrabers.controller.ni.maschine.jam.view.NoteRepeatView;
+import de.mossgrabers.controller.ni.maschine.jam.view.PianoView;
 import de.mossgrabers.controller.ni.maschine.jam.view.PlayView;
+import de.mossgrabers.controller.ni.maschine.jam.view.PolySequencerView;
+import de.mossgrabers.controller.ni.maschine.jam.view.RaindropsView;
 import de.mossgrabers.controller.ni.maschine.jam.view.SequencerView;
 import de.mossgrabers.controller.ni.maschine.jam.view.SessionView;
 import de.mossgrabers.controller.ni.maschine.jam.view.ShiftView;
@@ -46,12 +52,11 @@ import de.mossgrabers.framework.command.trigger.BrowserCommand;
 import de.mossgrabers.framework.command.trigger.FootswitchCommand;
 import de.mossgrabers.framework.command.trigger.clip.DoubleCommand;
 import de.mossgrabers.framework.command.trigger.clip.NoteRepeatCommand;
-import de.mossgrabers.framework.command.trigger.mode.CursorCommand;
-import de.mossgrabers.framework.command.trigger.mode.ModeCursorCommand.Direction;
 import de.mossgrabers.framework.command.trigger.transport.AutomationCommand;
 import de.mossgrabers.framework.command.trigger.transport.ConfiguredRecordCommand;
 import de.mossgrabers.framework.command.trigger.transport.PlayCommand;
 import de.mossgrabers.framework.command.trigger.view.ToggleShiftViewCommand;
+import de.mossgrabers.framework.command.trigger.view.ViewButtonCommand;
 import de.mossgrabers.framework.command.trigger.view.ViewMultiSelectCommand;
 import de.mossgrabers.framework.configuration.ISettingsUI;
 import de.mossgrabers.framework.controller.AbstractControllerSetup;
@@ -95,12 +100,22 @@ import java.util.Optional;
  */
 public class MaschineJamControllerSetup extends AbstractControllerSetup<MaschineJamControlSurface, MaschineJamConfiguration>
 {
-    private static final Views [] SEQUENCERS =
+    private static final Views [] SEQUENCER_VIEWS =
     {
         Views.SEQUENCER,
+        Views.POLY_SEQUENCER,
+        Views.RAINDROPS,
         Views.DRUM,
         Views.DRUM4,
         Views.DRUM8
+    };
+
+    private static final Views [] PLAY_VIEWS      =
+    {
+        Views.PLAY,
+        Views.CHORDS,
+        Views.PIANO,
+        Views.DRUM64
     };
 
     private EncoderModeManager    encoderManager;
@@ -140,11 +155,15 @@ public class MaschineJamControllerSetup extends AbstractControllerSetup<Maschine
     protected void createModel ()
     {
         final ModelSetup ms = new ModelSetup ();
+        ms.enableDrum64Device (true);
         this.model = this.factory.createModel (this.colorManager, this.valueChanger, this.scales, ms);
 
         final ITrackBank trackBank = this.model.getTrackBank ();
         trackBank.setIndication (true);
         trackBank.addSelectionObserver ( (index, isSelected) -> this.handleTrackChange (isSelected));
+        final ITrackBank effectTrackBank = this.model.getEffectTrackBank ();
+        if (effectTrackBank != null)
+            effectTrackBank.addSelectionObserver ( (index, isSelected) -> this.handleTrackChange (isSelected));
     }
 
 
@@ -191,13 +210,19 @@ public class MaschineJamControllerSetup extends AbstractControllerSetup<Maschine
         viewManager.register (Views.REPEAT_NOTE, new NoteRepeatView (surface, this.model));
         viewManager.register (Views.SESSION, new SessionView (surface, this.model));
         viewManager.register (Views.PLAY, new PlayView (surface, this.model));
+        viewManager.register (Views.CHORDS, new ChordsView (surface, this.model));
+        viewManager.register (Views.PIANO, new PianoView (surface, this.model));
+        viewManager.register (Views.DRUM64, new Drum64View (surface, this.model));
         viewManager.register (Views.SEQUENCER, new SequencerView (surface, this.model));
         viewManager.register (Views.DRUM, new DrumView (surface, this.model));
         viewManager.register (Views.DRUM4, new Drum4View (surface, this.model));
         viewManager.register (Views.DRUM8, new Drum8View (surface, this.model));
+        viewManager.register (Views.RAINDROPS, new RaindropsView (surface, this.model));
+        viewManager.register (Views.POLY_SEQUENCER, new PolySequencerView (surface, this.model));
         viewManager.register (Views.TEMPO, new TempoView<> (surface, this.model, MaschineColorManager.COLOR_BLUE, MaschineColorManager.COLOR_WHITE, MaschineColorManager.COLOR_BLACK));
         viewManager.register (Views.SHUFFLE, new ShuffleView<> (surface, this.model, MaschineColorManager.COLOR_PINK, MaschineColorManager.COLOR_WHITE, MaschineColorManager.COLOR_BLACK));
         viewManager.register (Views.BROWSER, new BrowserView<> (surface, this.model));
+        viewManager.register (Views.CONTROL, new AccentView (surface, this.model));
     }
 
 
@@ -282,8 +307,8 @@ public class MaschineJamControllerSetup extends AbstractControllerSetup<Maschine
         }
 
         this.addButton (ButtonID.SESSION, "SONG", new MaschineJamSessionViewCommand (this.model, surface), MaschineJamControlSurface.SONG, () -> viewManager.isActive (Views.SESSION));
-        this.addButton (ButtonID.SEQUENCER, "STEP", new ViewMultiSelectCommand<> (this.model, surface, true, ButtonEvent.UP, SEQUENCERS), MaschineJamControlSurface.STEP, () -> viewManager.isActive (SEQUENCERS));
-        this.addButton (ButtonID.NOTE, "PAD MODE", new ViewMultiSelectCommand<> (this.model, surface, true, ButtonEvent.UP, Views.PLAY), MaschineJamControlSurface.PAD_MODE, () -> viewManager.isActive (Views.PLAY));
+        this.addButton (ButtonID.SEQUENCER, "STEP", new ViewMultiSelectCommand<> (this.model, surface, true, ButtonEvent.UP, SEQUENCER_VIEWS), MaschineJamControlSurface.STEP, () -> viewManager.isActive (SEQUENCER_VIEWS));
+        this.addButton (ButtonID.NOTE, "PAD MODE", new ViewMultiSelectCommand<> (this.model, surface, true, ButtonEvent.UP, PLAY_VIEWS), MaschineJamControlSurface.PAD_MODE, () -> viewManager.isActive (PLAY_VIEWS));
 
         for (int i = 0; i < 8; i++)
         {
@@ -291,10 +316,10 @@ public class MaschineJamControllerSetup extends AbstractControllerSetup<Maschine
             this.addButton (ButtonID.get (ButtonID.SCENE1, i), "SCENE " + i, sceneCommand, MaschineJamControlSurface.SCENE1 + i, sceneCommand::getButtonColor);
         }
 
-        this.addButton (ButtonID.ARROW_LEFT, "LEFT", new CursorCommand<> (Direction.LEFT, this.model, surface), MaschineJamControlSurface.NAV_LEFT);
-        this.addButton (ButtonID.ARROW_RIGHT, "LEFT", new CursorCommand<> (Direction.RIGHT, this.model, surface), MaschineJamControlSurface.NAV_RIGHT);
-        this.addButton (ButtonID.ARROW_UP, "UP", new CursorCommand<> (Direction.UP, this.model, surface), MaschineJamControlSurface.NAV_UP);
-        this.addButton (ButtonID.ARROW_DOWN, "DOWN", new CursorCommand<> (Direction.DOWN, this.model, surface), MaschineJamControlSurface.NAV_DOWN);
+        this.addButton (ButtonID.ARROW_LEFT, "LEFT", new ViewButtonCommand<> (ButtonID.ARROW_LEFT, surface), MaschineJamControlSurface.NAV_LEFT);
+        this.addButton (ButtonID.ARROW_RIGHT, "RIGHT", new ViewButtonCommand<> (ButtonID.ARROW_RIGHT, surface), MaschineJamControlSurface.NAV_RIGHT);
+        this.addButton (ButtonID.ARROW_UP, "UP", new ViewButtonCommand<> (ButtonID.ARROW_UP, surface), MaschineJamControlSurface.NAV_UP);
+        this.addButton (ButtonID.ARROW_DOWN, "DOWN", new ViewButtonCommand<> (ButtonID.ARROW_DOWN, surface), MaschineJamControlSurface.NAV_DOWN);
 
         this.addButton (ButtonID.BROWSE, "Browser", new BrowserCommand<> (this.model, surface)
         {
@@ -362,7 +387,7 @@ public class MaschineJamControllerSetup extends AbstractControllerSetup<Maschine
 
         this.addButton (ButtonID.ROW1_1, "PERFORM", new MaschineJamViewCommand (this.encoderManager, EncoderMode.TEMPORARY_PERFORM, this.model, surface), MaschineJamControlSurface.PERFORM);
         this.addButton (ButtonID.ROW1_2, "NOTES", new MaschineJamViewCommand (this.encoderManager, EncoderMode.TEMPORARY_NOTES, this.model, surface), MaschineJamControlSurface.NOTES);
-        this.addButton (ButtonID.ROW1_3, "LOCK", new MaschineJamViewCommand (this.encoderManager, EncoderMode.TEMPORARY_LOCK, this.model, surface), MaschineJamControlSurface.LOCK);
+        this.addButton (ButtonID.ROW1_3, "LOCK", new MaschineJamViewCommand (this.encoderManager, EncoderMode.TEMPORARY_LOCK, this.model, surface), MaschineJamControlSurface.LOCK, () -> this.configuration.isAccentActive ());
         this.addButton (ButtonID.ROW1_4, "TUNE", new MaschineJamViewCommand (this.encoderManager, EncoderMode.TEMPORARY_TUNE, this.model, surface), MaschineJamControlSurface.TUNE);
     }
 
@@ -554,6 +579,17 @@ public class MaschineJamControllerSetup extends AbstractControllerSetup<Maschine
 
         final MaschineJamControlSurface surface = this.getSurface ();
         final ViewManager viewManager = surface.getViewManager ();
+
+        if (!viewManager.isActive (Views.SESSION))
+        {
+            final ITrack cursorTrack = this.model.getCursorTrack ();
+            if (cursorTrack.doesExist ())
+            {
+                final Views preferredView = viewManager.getPreferredView (cursorTrack.getPosition ());
+                viewManager.setActive (preferredView == null ? Views.PLAY : preferredView);
+            }
+        }
+
         if (viewManager.isActive (Views.PLAY))
             viewManager.getActive ().updateNoteMapping ();
 

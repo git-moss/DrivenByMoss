@@ -147,8 +147,11 @@ public abstract class AbstractSequencerView<S extends IControlSurface<C>, C exte
      */
     public void onLeft (final ButtonEvent event)
     {
-        if (event == ButtonEvent.DOWN)
-            this.getClip ().scrollStepsPageBackwards ();
+        if (event != ButtonEvent.DOWN)
+            return;
+        final INoteClip clip = this.getClip ();
+        clip.scrollStepsPageBackwards ();
+        this.mvHelper.notifyEditPage (clip);
     }
 
 
@@ -159,8 +162,11 @@ public abstract class AbstractSequencerView<S extends IControlSurface<C>, C exte
      */
     public void onRight (final ButtonEvent event)
     {
-        if (event == ButtonEvent.DOWN)
-            this.getClip ().scrollStepsPageForward ();
+        if (event != ButtonEvent.DOWN)
+            return;
+        final INoteClip clip = this.getClip ();
+        clip.scrollStepsPageForward ();
+        this.mvHelper.notifyEditPage (clip);
     }
 
 

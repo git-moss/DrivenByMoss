@@ -10,6 +10,7 @@ import de.mossgrabers.framework.controller.ButtonID;
 import de.mossgrabers.framework.controller.IControlSurface;
 import de.mossgrabers.framework.daw.IModel;
 import de.mossgrabers.framework.featuregroup.IView;
+import de.mossgrabers.framework.featuregroup.ViewManager;
 import de.mossgrabers.framework.utils.ButtonEvent;
 
 
@@ -24,7 +25,9 @@ import de.mossgrabers.framework.utils.ButtonEvent;
  */
 public class ViewButtonCommand<S extends IControlSurface<C>, C extends Configuration> extends AbstractTriggerCommand<S, C>
 {
-    protected ButtonID buttonID;
+    protected ButtonID        buttonID;
+
+    private final ViewManager viewManager;
 
 
     /**
@@ -51,6 +54,7 @@ public class ViewButtonCommand<S extends IControlSurface<C>, C extends Configura
         super (model, surface);
 
         this.buttonID = buttonID;
+        this.viewManager = this.surface.getViewManager ();
     }
 
 
@@ -58,7 +62,7 @@ public class ViewButtonCommand<S extends IControlSurface<C>, C extends Configura
     @Override
     public void execute (final ButtonEvent event, final int velocity)
     {
-        final IView view = this.surface.getViewManager ().getActive ();
+        final IView view = this.viewManager.getActive ();
         if (view != null)
             view.onButton (this.buttonID, event, velocity);
     }

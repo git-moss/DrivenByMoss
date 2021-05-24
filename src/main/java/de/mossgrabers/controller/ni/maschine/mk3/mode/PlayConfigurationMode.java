@@ -13,6 +13,7 @@ import de.mossgrabers.framework.daw.IModel;
 import de.mossgrabers.framework.scale.Scale;
 import de.mossgrabers.framework.scale.ScaleLayout;
 import de.mossgrabers.framework.scale.Scales;
+import de.mossgrabers.framework.utils.ButtonEvent;
 import de.mossgrabers.framework.utils.StringUtils;
 import de.mossgrabers.framework.view.Views;
 
@@ -84,9 +85,9 @@ public class PlayConfigurationMode extends BaseMode
             case 7:
                 final PlayView playView = (PlayView) this.surface.getViewManager ().get (Views.PLAY);
                 if (inc)
-                    playView.octaveUp ();
+                    playView.onOctaveUp (ButtonEvent.DOWN);
                 else
-                    playView.octaveDown ();
+                    playView.onOctaveDown (ButtonEvent.DOWN);
                 break;
 
             default:

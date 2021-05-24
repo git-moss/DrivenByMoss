@@ -10,6 +10,7 @@ import de.mossgrabers.controller.ni.maschine.jam.controller.MaschineJamControlSu
 import de.mossgrabers.framework.command.core.AbstractTriggerCommand;
 import de.mossgrabers.framework.daw.IModel;
 import de.mossgrabers.framework.utils.ButtonEvent;
+import de.mossgrabers.framework.view.Views;
 
 
 /**
@@ -21,6 +22,7 @@ public class MaschineJamViewCommand extends AbstractTriggerCommand<MaschineJamCo
 {
     private final EncoderModeManager encoderManager;
     private final EncoderMode        encoderMode;
+    private boolean                  wasUsed = false;
 
 
     /**
@@ -44,9 +46,27 @@ public class MaschineJamViewCommand extends AbstractTriggerCommand<MaschineJamCo
     @Override
     public void executeNormal (final ButtonEvent event)
     {
-        if (event == ButtonEvent.DOWN)
-            this.encoderManager.enableTemporaryEncodeMode (this.encoderMode);
-        else if (event == ButtonEvent.UP)
-            this.encoderManager.disableTemporaryEncodeMode ();
+        switch (event)
+        {
+            case LONG:
+                this.wasUsed = true;
+                return;
+
+            case DOWN:
+                this.wasUsed = false;
+                this.encoderManager.enableTemporaryEncodeMode (this.encoderMode);
+                this.surface.getViewManager ().setActive (Views.CONTROL);
+                break;
+
+            case UP:
+                this.encoderManager.disableTemporaryEncodeMode ();
+                if (!this.wasUsed && this.encoderMode == EncoderMode.TEMPORARY_LOCK)
+                {
+                    final MaschineJamConfiguration configuration = this.surface.getConfiguration ();
+                    configuration.setAccentEnabled (!configuration.isAccentActive ());
+                }
+                this.surface.getViewManager ().restore ();
+                break;
+        }
     }
 }

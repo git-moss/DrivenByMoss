@@ -8,6 +8,7 @@ import de.mossgrabers.framework.configuration.AbstractConfiguration;
 import de.mossgrabers.framework.configuration.ISettingsUI;
 import de.mossgrabers.framework.controller.valuechanger.IValueChanger;
 import de.mossgrabers.framework.daw.IHost;
+import de.mossgrabers.framework.daw.constants.Capability;
 import de.mossgrabers.framework.daw.midi.ArpeggiatorMode;
 
 import java.util.List;
@@ -60,7 +61,15 @@ public class MaschineJamConfiguration extends AbstractConfiguration
         ///////////////////////////
         // Play and Sequence
 
+        this.activateAccentActiveSetting (globalSettings);
+        this.activateAccentValueSetting (globalSettings);
         this.activateQuantizeAmountSetting (globalSettings);
+
+        ///////////////////////////
+        // Drum Sequencer
+
+        if (this.host.supports (Capability.HAS_DRUM_DEVICE))
+            this.activateTurnOffEmptyDrumPadsSetting (globalSettings);
 
         ///////////////////////////
         // Session

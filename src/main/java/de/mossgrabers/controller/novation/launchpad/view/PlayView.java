@@ -13,9 +13,7 @@ import de.mossgrabers.framework.controller.ButtonID;
 import de.mossgrabers.framework.controller.display.ITextDisplay;
 import de.mossgrabers.framework.controller.grid.IPadGrid;
 import de.mossgrabers.framework.daw.IModel;
-import de.mossgrabers.framework.daw.data.ITrack;
 import de.mossgrabers.framework.daw.midi.IMidiInput;
-import de.mossgrabers.framework.featuregroup.ViewManager;
 import de.mossgrabers.framework.scale.Scales;
 import de.mossgrabers.framework.utils.ButtonEvent;
 import de.mossgrabers.framework.view.AbstractPlayView;
@@ -128,11 +126,7 @@ public class PlayView extends AbstractPlayView<LaunchpadControlSurface, Launchpa
                 this.setBlockedNotes (this.playControls ? 8 : 0);
                 break;
             case SCENE5:
-                final ViewManager viewManager = this.surface.getViewManager ();
-                viewManager.setActive (Views.CHORDS);
-                final ITrack cursorTrack = this.model.getCursorTrack ();
-                if (cursorTrack.doesExist ())
-                    viewManager.setPreferredView (cursorTrack.getPosition (), Views.CHORDS);
+                this.activatePreferredView (Views.CHORDS);
                 // Do not update note map!
                 return;
             case SCENE6:

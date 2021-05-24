@@ -44,4 +44,16 @@ public class MaschineJamAuxCommand extends ModeMultiSelectCommand<MaschineJamCon
         else
             super.executeNormal (event);
     }
+
+
+    /** {@inheritDoc} */
+    @Override
+    public void executeShifted (final ButtonEvent event)
+    {
+        if (event != ButtonEvent.UP)
+            return;
+
+        this.model.toggleCurrentTrackBank ();
+        this.mvHelper.delayDisplay ( () -> this.model.isEffectTrackBankActive () ? "Effect Tracks" : "Audio/Instrument Tracks");
+    }
 }

@@ -13,6 +13,7 @@ import de.mossgrabers.framework.daw.DAWColor;
 import de.mossgrabers.framework.daw.IModel;
 import de.mossgrabers.framework.daw.data.ISend;
 import de.mossgrabers.framework.daw.data.ITrack;
+import de.mossgrabers.framework.daw.data.bank.ISendBank;
 import de.mossgrabers.framework.mode.track.TrackMode;
 
 import java.util.Optional;
@@ -71,9 +72,12 @@ public class MaschineJamTrackMode extends TrackMode<MaschineJamControlSurface, M
                 return new FaderConfig (FaderConfig.TYPE_PAN, color, panValue);
 
             default:
-                final int sendIndex = index - 2;
+                final ISendBank sendBank = track.getSendBank ();
+                if (!sendBank.hasExistingItems ())
+                    return FADER_OFF;
 
-                final ISend send = track.getSendBank ().getItem (sendIndex);
+                final int sendIndex = index - 2;
+                final ISend send = sendBank.getItem (sendIndex);
                 if (!send.doesExist ())
                     return FADER_OFF;
 

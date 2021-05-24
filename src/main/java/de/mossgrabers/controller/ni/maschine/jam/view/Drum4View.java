@@ -7,6 +7,7 @@ package de.mossgrabers.controller.ni.maschine.jam.view;
 import de.mossgrabers.controller.ni.maschine.jam.MaschineJamConfiguration;
 import de.mossgrabers.controller.ni.maschine.jam.command.trigger.EncoderMode;
 import de.mossgrabers.controller.ni.maschine.jam.controller.MaschineJamControlSurface;
+import de.mossgrabers.framework.controller.ButtonID;
 import de.mossgrabers.framework.daw.IModel;
 import de.mossgrabers.framework.utils.ButtonEvent;
 import de.mossgrabers.framework.view.AbstractDrum4View;
@@ -62,6 +63,33 @@ public class Drum4View extends AbstractDrum4View<MaschineJamControlSurface, Masc
 
             default:
                 // Not used
+                break;
+        }
+    }
+
+
+    /** {@inheritDoc} */
+    @Override
+    public void onButton (final ButtonID buttonID, final ButtonEvent event, final int velocity)
+    {
+        switch (buttonID)
+        {
+            case ARROW_LEFT:
+                this.onLeft (event);
+                break;
+            case ARROW_RIGHT:
+                this.onRight (event);
+                break;
+
+            case ARROW_UP:
+                this.onOctaveUp (event);
+                break;
+            case ARROW_DOWN:
+                this.onOctaveDown (event);
+                break;
+
+            default:
+                super.onButton (buttonID, event, velocity);
                 break;
         }
     }

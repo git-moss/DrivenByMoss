@@ -11,7 +11,6 @@ import de.mossgrabers.framework.controller.display.IGraphicDisplay;
 import de.mossgrabers.framework.controller.display.ITextDisplay;
 import de.mossgrabers.framework.daw.IModel;
 import de.mossgrabers.framework.daw.data.IItem;
-import de.mossgrabers.framework.daw.data.ITrack;
 import de.mossgrabers.framework.featuregroup.AbstractFeatureGroup;
 import de.mossgrabers.framework.featuregroup.AbstractMode;
 import de.mossgrabers.framework.featuregroup.IView;
@@ -176,17 +175,7 @@ public class NoteViewSelectMode extends BaseMode<IItem>
 
     private void activateView (final Views viewID)
     {
-        if (viewID == null)
-            return;
-
-        final ViewManager viewManager = this.surface.getViewManager ();
-        if (viewManager.get (viewID) == null)
-            return;
-        viewManager.setActive (viewID);
-
-        final ITrack cursorTrack = this.model.getCursorTrack ();
-        if (cursorTrack.doesExist ())
-            viewManager.setPreferredView (cursorTrack.getPosition (), viewID);
+        this.activatePreferredView (viewID);
         this.surface.getModeManager ().restore ();
     }
 }

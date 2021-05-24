@@ -66,12 +66,12 @@ public class FireDisplay extends AbstractGraphicDisplay
         this.data[3] = 0x43; // Fire
         this.data[4] = 0x0E; // WRITE OLED
 
-        // Payload length high
+        // Pay-load length high
         this.data[5] = (byte) (PACKET_SIZE / 128);
-        // Payload length low
+        // Pay-load length low
         this.data[6] = (byte) (PACKET_SIZE % 128);
 
-        // Start colum of update
+        // Start column of update
         this.data[9] = 0x00;
         // End column of update
         this.data[10] = 0x7f;

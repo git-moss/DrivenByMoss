@@ -8,7 +8,6 @@ import de.mossgrabers.controller.ableton.push.PushConfiguration;
 import de.mossgrabers.controller.ableton.push.controller.PushControlSurface;
 import de.mossgrabers.framework.command.core.AbstractTriggerCommand;
 import de.mossgrabers.framework.daw.IModel;
-import de.mossgrabers.framework.daw.data.ITrack;
 import de.mossgrabers.framework.featuregroup.ViewManager;
 import de.mossgrabers.framework.utils.ButtonEvent;
 import de.mossgrabers.framework.view.Views;
@@ -42,23 +41,23 @@ public class LayoutCommand extends AbstractTriggerCommand<PushControlSurface, Pu
 
         final ViewManager viewManager = this.surface.getViewManager ();
         if (viewManager.isActive (Views.PLAY))
-            this.activateView (Views.CHORDS);
+            this.activatePreferredView (Views.CHORDS);
         else if (viewManager.isActive (Views.CHORDS))
-            this.activateView (Views.PIANO);
+            this.activatePreferredView (Views.PIANO);
         else if (viewManager.isActive (Views.PIANO))
-            this.activateView (Views.DRUM64);
+            this.activatePreferredView (Views.DRUM64);
         else if (viewManager.isActive (Views.DRUM64))
-            this.activateView (Views.PLAY);
+            this.activatePreferredView (Views.PLAY);
         else if (viewManager.isActive (Views.SEQUENCER))
-            this.activateView (Views.RAINDROPS);
+            this.activatePreferredView (Views.RAINDROPS);
         else if (viewManager.isActive (Views.RAINDROPS))
-            this.activateView (Views.DRUM);
+            this.activatePreferredView (Views.DRUM);
         else if (viewManager.isActive (Views.DRUM))
-            this.activateView (Views.DRUM4);
+            this.activatePreferredView (Views.DRUM4);
         else if (viewManager.isActive (Views.DRUM4))
-            this.activateView (Views.DRUM8);
+            this.activatePreferredView (Views.DRUM8);
         else if (viewManager.isActive (Views.DRUM8))
-            this.activateView (Views.SEQUENCER);
+            this.activatePreferredView (Views.SEQUENCER);
         else
         {
             final PushConfiguration configuration = this.surface.getConfiguration ();
@@ -87,21 +86,11 @@ public class LayoutCommand extends AbstractTriggerCommand<PushControlSurface, Pu
 
         final ViewManager viewManager = this.surface.getViewManager ();
         if (Views.isSequencerView (viewManager.getActiveID ()))
-            this.activateView (Views.PLAY);
+            this.activatePreferredView (Views.PLAY);
         else
         {
             if (viewManager.get (Views.SEQUENCER) != null)
-                this.activateView (Views.SEQUENCER);
+                this.activatePreferredView (Views.SEQUENCER);
         }
-    }
-
-
-    private void activateView (final Views view)
-    {
-        final ViewManager viewManager = this.surface.getViewManager ();
-        viewManager.setActive (view);
-        final ITrack cursorTrack = this.model.getCursorTrack ();
-        if (cursorTrack.doesExist ())
-            viewManager.setPreferredView (cursorTrack.getPosition (), view);
     }
 }
