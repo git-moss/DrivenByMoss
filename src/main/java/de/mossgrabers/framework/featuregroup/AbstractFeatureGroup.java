@@ -10,6 +10,8 @@ import de.mossgrabers.framework.controller.ButtonID;
 import de.mossgrabers.framework.controller.IControlSurface;
 import de.mossgrabers.framework.controller.color.ColorManager;
 import de.mossgrabers.framework.daw.IModel;
+import de.mossgrabers.framework.daw.data.ITrack;
+import de.mossgrabers.framework.view.Views;
 
 
 /**
@@ -78,5 +80,26 @@ public abstract class AbstractFeatureGroup<S extends IControlSurface<C>, C exten
     protected String getButtonColorID (final ButtonID buttonID)
     {
         return BUTTON_COLOR_OFF;
+    }
+
+
+    /**
+     * Activates the given view and stores it as the preferred view for the currently active track.
+     *
+     * @param viewID The ID of the view to activate and store
+     */
+    protected void activatePreferredView (final Views viewID)
+    {
+        if (viewID == null)
+            return;
+
+        final ViewManager viewManager = this.surface.getViewManager ();
+        if (viewManager.get (viewID) == null)
+            return;
+
+        viewManager.setActive (viewID);
+        final ITrack cursorTrack = this.model.getCursorTrack ();
+        if (cursorTrack.doesExist ())
+            viewManager.setPreferredView (cursorTrack.getPosition (), viewID);
     }
 }

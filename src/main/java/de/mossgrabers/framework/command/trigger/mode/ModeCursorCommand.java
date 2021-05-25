@@ -5,6 +5,7 @@
 package de.mossgrabers.framework.command.trigger.mode;
 
 import de.mossgrabers.framework.command.core.AbstractTriggerCommand;
+import de.mossgrabers.framework.command.trigger.Direction;
 import de.mossgrabers.framework.configuration.Configuration;
 import de.mossgrabers.framework.controller.IControlSurface;
 import de.mossgrabers.framework.daw.IModel;
@@ -22,20 +23,6 @@ import de.mossgrabers.framework.utils.ButtonEvent;
  */
 public class ModeCursorCommand<S extends IControlSurface<C>, C extends Configuration> extends AbstractTriggerCommand<S, C>
 {
-    /** The direction of the cursor. */
-    public enum Direction
-    {
-        /** Move left. */
-        LEFT,
-        /** Move right. */
-        RIGHT,
-        /** Move up. */
-        UP,
-        /** Move down. */
-        DOWN
-    }
-
-
     protected Direction     direction;
     protected boolean       canScrollLeft;
     protected boolean       canScrollRight;

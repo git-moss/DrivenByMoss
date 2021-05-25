@@ -116,6 +116,8 @@ public abstract class AbstractConfiguration implements Configuration
     public static final Integer      RECORD_BUTTON_FUNCTION            = Integer.valueOf (36);
     /** Setting for different record button functions in combination with shift. */
     public static final Integer      SHIFTED_RECORD_BUTTON_FUNCTION    = Integer.valueOf (37);
+    /** Show tracks hierarchical (instead of flat) if enabled. */
+    public static final Integer      HIERARCHICAL_TRACKS               = Integer.valueOf (38);
 
     // Implementation IDs start at 50
 
@@ -287,6 +289,13 @@ public abstract class AbstractConfiguration implements Configuration
         "On"
     };
 
+    /** The Flat/Hierarchical tracks option. */
+    protected static final String [] TRACK_NAVIGATION_OPTIONS    =
+    {
+        "Flat",
+        "Hierarchical"
+    };
+
 
     /** Different options for the record button. */
     public enum RecordFunction
@@ -391,6 +400,8 @@ public abstract class AbstractConfiguration implements Configuration
 
     private boolean                                   includeMaster               = true;
     private boolean                                   excludeDeactivatedItems     = false;
+    private boolean                                   isTrackNavigationFlat       = true;
+
     private final String []                           userPageNames               = new String [8];
 
     private boolean                                   isDeleteActive              = false;
@@ -455,11 +466,8 @@ public abstract class AbstractConfiguration implements Configuration
     }
 
 
-    /**
-     * Set the scale by name.
-     *
-     * @param scale The name of a scale
-     */
+    /** {@inheritDoc} */
+    @Override
     public void setScale (final String scale)
     {
         this.scaleSetting.set (scale);
@@ -474,11 +482,8 @@ public abstract class AbstractConfiguration implements Configuration
     }
 
 
-    /**
-     * Set the scale base note by name.
-     *
-     * @param scaleBase The name of a scale base note
-     */
+    /** {@inheritDoc} */
+    @Override
     public void setScaleBase (final String scaleBase)
     {
         this.scaleBaseSetting.set (scaleBase);
@@ -493,11 +498,8 @@ public abstract class AbstractConfiguration implements Configuration
     }
 
 
-    /**
-     * Set the in-scale setting.
-     *
-     * @param inScale True if scale otherwise chromatic
-     */
+    /** {@inheritDoc} */
+    @Override
     public void setScaleInKey (final boolean inScale)
     {
         this.scaleInKeySetting.set (inScale ? SCALE_IN_KEY : SCALE_CHROMATIC);
@@ -512,11 +514,8 @@ public abstract class AbstractConfiguration implements Configuration
     }
 
 
-    /**
-     * Set the scale layout.
-     *
-     * @param scaleLayout The scale layout
-     */
+    /** {@inheritDoc} */
+    @Override
     public void setScaleLayout (final String scaleLayout)
     {
         this.scaleLayoutSetting.set (scaleLayout);
@@ -693,9 +692,20 @@ public abstract class AbstractConfiguration implements Configuration
 
     /** {@inheritDoc} */
     @Override
-    public void setNewClipLength (final int value)
+    public void setNewClipLength (final int index)
     {
-        this.newClipLengthSetting.set (NEW_CLIP_LENGTH_VALUES[value]);
+        this.newClipLengthSetting.set (NEW_CLIP_LENGTH_VALUES[index]);
+    }
+
+
+    /** {@inheritDoc} */
+    @Override
+    public void nextNewClipLength ()
+    {
+        int index = this.newClipLength + 1;
+        if (index >= NEW_CLIP_LENGTH_VALUES.length)
+            index = 0;
+        this.newClipLengthSetting.set (NEW_CLIP_LENGTH_VALUES[index]);
     }
 
 
@@ -1170,6 +1180,19 @@ public abstract class AbstractConfiguration implements Configuration
 
 
     /**
+     * Activate the flat or hierarchical tracks setting.
+     *
+     * @param settingsUI The settings
+     * @param category The category to add the setting to or null to use default
+     */
+    protected void activateTrackNavigationSetting (final ISettingsUI settingsUI, final String category)
+    {
+        final IEnumSetting trackNavigationSetting = settingsUI.getEnumSetting ("Track Navigation (requires restart)", category == null ? CATEGORY_WORKFLOW : category, TRACK_NAVIGATION_OPTIONS, TRACK_NAVIGATION_OPTIONS[0]);
+        this.isTrackNavigationFlat = TRACK_NAVIGATION_OPTIONS[0].equals (trackNavigationSetting.get ());
+    }
+
+
+    /**
      * Activate the accent value setting.
      *
      * @param settingsUI The settings
@@ -1262,10 +1285,15 @@ public abstract class AbstractConfiguration implements Configuration
      * Activate the footswitch setting.
      *
      * @param settingsUI The settings
+     * @param index The index of the foot switch
      */
-    protected void activateFootswitchSetting (final ISettingsUI settingsUI)
+    protected void activateFootswitchSetting (final ISettingsUI settingsUI, final int index)
     {
-        final IEnumSetting footswitch2Setting = settingsUI.getEnumSetting ("Footswitch 2", CATEGORY_WORKFLOW, FOOTSWITCH_VALUES, FOOTSWITCH_VALUES[6]);
+        String label = "Footswitch";
+        if (index > 0)
+            label += " " + index;
+
+        final IEnumSetting footswitch2Setting = settingsUI.getEnumSetting (label, CATEGORY_WORKFLOW, FOOTSWITCH_VALUES, FOOTSWITCH_VALUES[6]);
         footswitch2Setting.addValueObserver (value -> {
             this.footswitch2 = lookupIndex (FOOTSWITCH_VALUES, value);
             this.notifyObservers (FOOTSWITCH_2);
@@ -1705,6 +1733,17 @@ public abstract class AbstractConfiguration implements Configuration
         this.isDuplicateActive = !this.isDuplicateActive;
         if (this.isDuplicateActive)
             this.isDeleteActive = false;
+    }
+
+
+    /**
+     * Returns true if the track navigation should be hierarchical.
+     *
+     * @return True if the track navigation should be hierarchical otherwise flat
+     */
+    public boolean isTrackNavigationFlat ()
+    {
+        return this.isTrackNavigationFlat;
     }
 
 

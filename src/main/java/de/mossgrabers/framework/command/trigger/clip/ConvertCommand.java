@@ -46,7 +46,14 @@ public class ConvertCommand<S extends IControlSurface<C>, C extends Configuratio
     @Override
     public void executeShifted (final ButtonEvent event)
     {
-        if (event == ButtonEvent.DOWN && this.model.canConvertClip ())
+        if (event == ButtonEvent.DOWN)
+            this.sliceToSampler ();
+    }
+
+
+    protected void sliceToSampler ()
+    {
+        if (this.model.canConvertClip ())
             this.model.getApplication ().sliceToSampler ();
     }
 }

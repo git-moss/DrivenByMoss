@@ -6,10 +6,10 @@ package de.mossgrabers.framework.command.trigger.clip;
 
 import de.mossgrabers.framework.command.core.AbstractTriggerCommand;
 import de.mossgrabers.framework.configuration.Configuration;
+import de.mossgrabers.framework.controller.ButtonID;
 import de.mossgrabers.framework.controller.IControlSurface;
 import de.mossgrabers.framework.daw.IClip;
 import de.mossgrabers.framework.daw.IModel;
-import de.mossgrabers.framework.daw.constants.RecordQuantization;
 import de.mossgrabers.framework.daw.data.ITrack;
 import de.mossgrabers.framework.utils.ButtonEvent;
 
@@ -40,7 +40,12 @@ public class QuantizeCommand<S extends IControlSurface<C>, C extends Configurati
     @Override
     public void executeNormal (final ButtonEvent event)
     {
-        if (event == ButtonEvent.DOWN)
+        if (event != ButtonEvent.UP)
+            return;
+
+        if (this.surface.isPressed (ButtonID.SELECT))
+            this.selectRecordQuantization (false);
+        else
             this.quantize ();
     }
 
@@ -49,30 +54,8 @@ public class QuantizeCommand<S extends IControlSurface<C>, C extends Configurati
     @Override
     public void executeShifted (final ButtonEvent event)
     {
-        if (event != ButtonEvent.DOWN)
-            return;
-
-        final ITrack cursorTrack = this.model.getCursorTrack ();
-        if (!cursorTrack.doesExist ())
-            return;
-
-        // Toggle through all record quantization settings...
-
-        final RecordQuantization [] values = RecordQuantization.values ();
-        final RecordQuantization recordQuantization = cursorTrack.getRecordQuantizationGrid ();
-        int index = 0;
-        for (int i = 0; i < values.length; i++)
-        {
-            if (recordQuantization == values[i])
-            {
-                index = i + 1;
-                if (index >= values.length)
-                    index = 0;
-                break;
-            }
-        }
-        cursorTrack.setRecordQuantizationGrid (values[index]);
-        this.surface.getDisplay ().notify ("Record Quantization: " + values[index].getName ());
+        if (event == ButtonEvent.UP)
+            this.selectRecordQuantization (true);
     }
 
 
@@ -81,5 +64,20 @@ public class QuantizeCommand<S extends IControlSurface<C>, C extends Configurati
         final IClip clip = this.model.getCursorClip ();
         if (clip.doesExist ())
             clip.quantize (this.surface.getConfiguration ().getQuantizeAmount () / 100.0);
+    }
+
+
+    protected void selectRecordQuantization (final boolean next)
+    {
+        // Toggle through all record quantization settings...
+        final ITrack cursorTrack = this.model.getCursorTrack ();
+        if (cursorTrack.doesExist ())
+        {
+            if (next)
+                cursorTrack.nextRecordQuantization ();
+            else
+                cursorTrack.previousRecordQuantization ();
+            this.mvHelper.delayDisplay ( () -> "Record Quantization: " + cursorTrack.getRecordQuantizationGrid ().getName ());
+        }
     }
 }

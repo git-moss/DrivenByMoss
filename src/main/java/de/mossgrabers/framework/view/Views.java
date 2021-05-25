@@ -122,6 +122,8 @@ public enum Views
     public static final String              NAME_RAINDROPS      = "Raindrop";
     /** The name of the poly sequencer view. */
     public static final String              NAME_POLY_SEQUENCER = "Poly Seq.";
+    /** The name of the browser view. */
+    public static final String              NAME_BROWSER        = "Browser";
 
     private static final Map<String, Views> NOTE_VIEW_NAMES     = new HashMap<> ();
     private static final List<Views>        NOTE_VIEWS          = new ArrayList<> ();

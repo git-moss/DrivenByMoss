@@ -31,8 +31,7 @@ public abstract class AbstractTrackParameterProvider extends AbstractParameterPr
      */
     protected AbstractTrackParameterProvider (final ITrackBank bank)
     {
-        this.bank = bank;
-        this.model = null;
+        this (null, bank);
     }
 
 
@@ -43,8 +42,24 @@ public abstract class AbstractTrackParameterProvider extends AbstractParameterPr
      */
     protected AbstractTrackParameterProvider (final IModel model)
     {
+        this (model, model.getCurrentTrackBank ());
+    }
+
+
+    /**
+     * Constructor. Monitors the track and effect track banks as well as switching between them.
+     *
+     * @param model Uses the current track bank from this model to get the parameters
+     * @param bank The bank from which to get the parameters
+     */
+    private AbstractTrackParameterProvider (final IModel model, final ITrackBank bank)
+    {
+        this.bank = bank;
         this.model = model;
-        this.bank = model.getCurrentTrackBank ();
+
+        // Monitor switching between the instrument/audio and effect track banks - must always be
+        // active!
+        this.model.addTrackBankObserver (this);
     }
 
 
@@ -73,9 +88,6 @@ public abstract class AbstractTrackParameterProvider extends AbstractParameterPr
         final ITrackBank effectTrackBank = this.model.getEffectTrackBank ();
         if (effectTrackBank != null)
             effectTrackBank.addPageObserver (this);
-
-        // Monitor switching between the instrument/audio and effect track banks
-        this.model.addTrackBankObserver (this);
     }
 
 
@@ -98,8 +110,6 @@ public abstract class AbstractTrackParameterProvider extends AbstractParameterPr
         final ITrackBank effectTrackBank = this.model.getEffectTrackBank ();
         if (effectTrackBank != null)
             effectTrackBank.removePageObserver (this);
-
-        this.model.removeTrackBankObserver (this);
     }
 
 

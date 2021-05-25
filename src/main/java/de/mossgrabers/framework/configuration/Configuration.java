@@ -68,11 +68,27 @@ public interface Configuration
 
 
     /**
+     * Set the scale by name.
+     *
+     * @param scale The name of a scale
+     */
+    void setScale (String scale);
+
+
+    /**
      * Get the scale base note by name.
      *
      * @return The name of a scale base note
      */
     String getScaleBase ();
+
+
+    /**
+     * Set the scale base note by name.
+     *
+     * @param scaleBase The name of a scale base note
+     */
+    void setScaleBase (final String scaleBase);
 
 
     /**
@@ -84,11 +100,27 @@ public interface Configuration
 
 
     /**
+     * Set the in-scale setting.
+     *
+     * @param inScale True if scale otherwise chromatic
+     */
+    void setScaleInKey (boolean inScale);
+
+
+    /**
      * Get the scale layout.
      *
      * @return The scale layout
      */
     String getScaleLayout ();
+
+
+    /**
+     * Set the scale layout.
+     *
+     * @param scaleLayout The scale layout
+     */
+    void setScaleLayout (String scaleLayout);
 
 
     /**
@@ -189,11 +221,18 @@ public interface Configuration
 
 
     /**
-     * Set the default length for new clips.
+     * Set the index (0-7) of the default length for new clips.
      *
-     * @param value The default length for new clips
+     * @param value The index of the length which is: 0: "1 Beat", 1: "2 Beat", 2: "1 Bar", 3: "2
+     *            Bars", 4: "4 Bars", 5: "8 Bars", 6: "16 Bars", 7: "32 Bars"
      */
     void setNewClipLength (int value);
+
+
+    /**
+     * Select the next new clip length. Wraps around to the first.
+     */
+    void nextNewClipLength ();
 
 
     /**
@@ -410,6 +449,21 @@ public interface Configuration
      * @param arpMode The note repeat mode
      */
     void setNoteRepeatMode (ArpeggiatorMode arpMode);
+
+
+    /**
+     * Select the next or previous note repeat mode.
+     *
+     * @param increase True to select the next otherwise the previous
+     */
+    default void setPrevNextNoteRepeatMode (final boolean increase)
+    {
+        final ArpeggiatorMode arpMode = this.getNoteRepeatMode ();
+        final int modeIndex = this.lookupArpeggiatorModeIndex (arpMode);
+        final List<ArpeggiatorMode> modes = this.getArpeggiatorModes ();
+        final int newIndex = Math.max (0, Math.min (modes.size () - 1, modeIndex + (increase ? 1 : -1)));
+        this.setNoteRepeatMode (modes.get (newIndex));
+    }
 
 
     /**

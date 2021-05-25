@@ -79,7 +79,7 @@ public enum RecordQuantization
      * @param value The value
      * @return The record quantization
      */
-    public static RecordQuantization getByValue (final String value)
+    public static RecordQuantization lookup (final String value)
     {
         return QUANTIZATION_VALUES.getOrDefault (value, RecordQuantization.RES_OFF);
     }

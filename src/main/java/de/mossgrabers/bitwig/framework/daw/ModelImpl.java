@@ -119,11 +119,11 @@ public class ModelImpl extends AbstractModel
         else
             tb = this.bwCursorTrack.createSiblingsTrackBank (numTracks, numSends, numScenes, false, false);
 
-        this.trackBank = new TrackBankImpl (this.host, this.valueChanger, tb, this.bwCursorTrack, this.rootTrackGroup, (ApplicationImpl) this.application, numTracks, numScenes, numSends);
+        this.trackBank = new TrackBankImpl (this.host, (ApplicationImpl) this.application, this.valueChanger, tb, (CursorTrackImpl) this.cursorTrack, this.rootTrackGroup, numTracks, numScenes, numSends);
 
         final int numFxTracks = this.modelSetup.getNumFxTracks ();
         final TrackBank effectTrackBank = controllerHost.createEffectTrackBank (numFxTracks, numScenes);
-        this.effectTrackBank = new EffectTrackBankImpl (this.host, this.valueChanger, effectTrackBank, this.bwCursorTrack, this.rootTrackGroup, (ApplicationImpl) this.application, numFxTracks, numScenes, this.trackBank);
+        this.effectTrackBank = new EffectTrackBankImpl (this.host, this.valueChanger, effectTrackBank, (CursorTrackImpl) this.cursorTrack, this.rootTrackGroup, (ApplicationImpl) this.application, numFxTracks, numScenes, this.trackBank);
 
         //////////////////////////////////////////////////////////////////////////////
         // Create devices
@@ -202,7 +202,7 @@ public class ModelImpl extends AbstractModel
 
         final int numResults = this.modelSetup.getNumResults ();
         if (numResults > 0)
-            this.browser = new BrowserImpl (controllerHost.createPopupBrowser (), this.bwCursorTrack, mainCursorDevice, this.modelSetup.getNumFilterColumnEntries (), numResults);
+            this.browser = new BrowserImpl (this.host, controllerHost.createPopupBrowser (), this.bwCursorTrack, mainCursorDevice, this.modelSetup.getNumFilterColumnEntries (), numResults);
 
         this.masterTrackEqualsValue = mainCursorDevice.channel ().createEqualsValue (master);
         this.masterTrackEqualsValue.markInterested ();
@@ -241,7 +241,7 @@ public class ModelImpl extends AbstractModel
         return this.sceneBanks.computeIfAbsent (Integer.valueOf (numScenes), key -> {
             final TrackBank tb = this.controllerHost.createMainTrackBank (1, this.modelSetup.getNumSends (), numScenes);
             tb.followCursorTrack (this.bwCursorTrack);
-            return new TrackBankImpl (this.host, this.valueChanger, tb, this.bwCursorTrack, this.rootTrackGroup, (ApplicationImpl) this.application, 1, numScenes, 0).getSceneBank ();
+            return new TrackBankImpl (this.host, (ApplicationImpl) this.application, this.valueChanger, tb, (CursorTrackImpl) this.cursorTrack, this.rootTrackGroup, 1, numScenes, 0).getSceneBank ();
         });
     }
 

@@ -5,12 +5,17 @@
 package de.mossgrabers.bitwig.framework.daw.data.bank;
 
 import de.mossgrabers.bitwig.framework.daw.ApplicationImpl;
+import de.mossgrabers.bitwig.framework.daw.data.CursorTrackImpl;
 import de.mossgrabers.bitwig.framework.daw.data.TrackImpl;
+import de.mossgrabers.framework.controller.color.ColorEx;
 import de.mossgrabers.framework.controller.valuechanger.IValueChanger;
+import de.mossgrabers.framework.daw.DAWColor;
+import de.mossgrabers.framework.daw.IApplication;
 import de.mossgrabers.framework.daw.IHost;
 import de.mossgrabers.framework.daw.data.ITrack;
 import de.mossgrabers.framework.daw.data.bank.ISlotBank;
 import de.mossgrabers.framework.daw.data.bank.ITrackBank;
+import de.mossgrabers.framework.daw.resource.ChannelType;
 import de.mossgrabers.framework.observer.IIndexedValueObserver;
 
 import com.bitwig.extension.controller.api.ClipLauncherSlotBank;
@@ -26,9 +31,9 @@ import com.bitwig.extension.controller.api.TrackBank;
  */
 public abstract class AbstractTrackBankImpl extends AbstractChannelBankImpl<TrackBank, ITrack> implements ITrackBank
 {
-    private final ApplicationImpl application;
-    protected final CursorTrack   cursorTrack;
-    private final Track           rootGroup;
+    protected IApplication          application;
+    protected final CursorTrackImpl cursorTrack;
+    protected final Track           rootGroup;
 
 
     /**
@@ -44,7 +49,7 @@ public abstract class AbstractTrackBankImpl extends AbstractChannelBankImpl<Trac
      * @param numScenes The number of scenes of a bank page
      * @param numSends The number of sends of a bank page
      */
-    protected AbstractTrackBankImpl (final IHost host, final IValueChanger valueChanger, final TrackBank bank, final CursorTrack cursorTrack, final Track rootGroup, final ApplicationImpl application, final int numTracks, final int numScenes, final int numSends)
+    protected AbstractTrackBankImpl (final IHost host, final IValueChanger valueChanger, final TrackBank bank, final CursorTrackImpl cursorTrack, final Track rootGroup, final ApplicationImpl application, final int numTracks, final int numScenes, final int numSends)
     {
         super (host, valueChanger, bank, numTracks, numScenes, numSends);
 
@@ -58,7 +63,7 @@ public abstract class AbstractTrackBankImpl extends AbstractChannelBankImpl<Trac
         final TrackBank trackBank = this.bank.get ();
 
         for (int i = 0; i < this.getPageSize (); i++)
-            this.items.add (new TrackImpl (this.host, this.valueChanger, this.application, this.cursorTrack, this.rootGroup, trackBank.getItemAt (i), i, this.numSends, this.numScenes));
+            this.items.add (new TrackImpl (host, valueChanger, application, (CursorTrack) cursorTrack.getTrack (), rootGroup, trackBank.getItemAt (i), i, this.numSends, this.numScenes));
 
         this.sceneBank = new SceneBankImpl (host, valueChanger, this.numScenes == 0 ? null : trackBank.sceneBank (), this.numScenes);
 
@@ -141,5 +146,72 @@ public abstract class AbstractTrackBankImpl extends AbstractChannelBankImpl<Trac
     {
         this.getItem (index).setSelected (isSelected);
         this.notifySelectionObservers (index, isSelected);
+    }
+
+
+    /** {@inheritDoc} */
+    @Override
+    public void addChannel (final ChannelType type)
+    {
+        this.addChannel (type, null);
+    }
+
+
+    /** {@inheritDoc} */
+    @Override
+    public void addChannel (final ChannelType type, final String name)
+    {
+        final DAWColor color = DAWColor.getNextColor ();
+        this.addChannel (type, name, color.getColor ());
+    }
+
+
+    /** {@inheritDoc} */
+    @Override
+    public void addChannel (final ChannelType type, final String name, final ColorEx color)
+    {
+        this.addTrack (type);
+
+        if (name == null && color == null)
+            return;
+
+        this.host.scheduleTask ( () -> {
+
+            if (!this.cursorTrack.doesExist ())
+                return;
+            if (name != null)
+                this.cursorTrack.setName (name);
+            if (color != null)
+                this.cursorTrack.setColor (color);
+
+            this.bank.get ().scrollIntoView (this.cursorTrack.getPosition ());
+
+        }, 300);
+    }
+
+
+    /**
+     * Adds a new track to this track bank.
+     *
+     * @param type The type of the track to add
+     */
+    protected void addTrack (final ChannelType type)
+    {
+        switch (type)
+        {
+            case HYBRID:
+            case INSTRUMENT:
+                this.application.addInstrumentTrack ();
+                break;
+
+            case EFFECT:
+                this.application.addEffectTrack ();
+                break;
+
+            default:
+            case AUDIO:
+                this.application.addAudioTrack ();
+                break;
+        }
     }
 }

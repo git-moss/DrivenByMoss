@@ -71,7 +71,7 @@ public abstract class AbstractSequencerView<S extends IControlSurface<C>, C exte
      * @param surface The surface
      * @param model The model
      * @param clipRows The rows of the monitored clip
-     * @param clipCols The cols of the monitored clip
+     * @param clipCols The columns of the monitored clip
      * @param useDawColors True to use the DAW color of items for coloring (for full RGB devices)
      */
     protected AbstractSequencerView (final String name, final S surface, final IModel model, final int clipRows, final int clipCols, final boolean useDawColors)
@@ -87,7 +87,7 @@ public abstract class AbstractSequencerView<S extends IControlSurface<C>, C exte
      * @param surface The surface
      * @param model The model
      * @param clipRows The rows of the monitored clip
-     * @param clipCols The cols of the monitored clip
+     * @param clipCols The columns of the monitored clip
      * @param numSequencerRows The number of displayed rows of the sequencer
      * @param useDawColors True to use the DAW color of items for coloring (for full RGB devices)
      */
@@ -147,8 +147,11 @@ public abstract class AbstractSequencerView<S extends IControlSurface<C>, C exte
      */
     public void onLeft (final ButtonEvent event)
     {
-        if (event == ButtonEvent.DOWN)
-            this.getClip ().scrollStepsPageBackwards ();
+        if (event != ButtonEvent.DOWN)
+            return;
+        final INoteClip clip = this.getClip ();
+        clip.scrollStepsPageBackwards ();
+        this.mvHelper.notifyEditPage (clip);
     }
 
 
@@ -159,8 +162,11 @@ public abstract class AbstractSequencerView<S extends IControlSurface<C>, C exte
      */
     public void onRight (final ButtonEvent event)
     {
-        if (event == ButtonEvent.DOWN)
-            this.getClip ().scrollStepsPageForward ();
+        if (event != ButtonEvent.DOWN)
+            return;
+        final INoteClip clip = this.getClip ();
+        clip.scrollStepsPageForward ();
+        this.mvHelper.notifyEditPage (clip);
     }
 
 
@@ -185,7 +191,7 @@ public abstract class AbstractSequencerView<S extends IControlSurface<C>, C exte
         this.selectedResolutionIndex = Math.min (Math.max (0, selectedResolutionIndex), 7);
         final Resolution resolution = Resolution.values ()[this.selectedResolutionIndex];
         this.getClip ().setStepLength (resolution.getValue ());
-        this.surface.getDisplay ().notify (resolution.getName ());
+        this.surface.getDisplay ().notify ("Grid resolution: " + resolution.getName ());
     }
 
 

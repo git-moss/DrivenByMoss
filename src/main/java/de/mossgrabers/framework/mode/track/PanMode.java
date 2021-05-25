@@ -32,7 +32,7 @@ public class PanMode<S extends IControlSurface<C>, C extends Configuration> exte
      *
      * @param surface The control surface
      * @param model The model
-     * @param isAbsolute If true the value change is happending with a setter otherwise relative
+     * @param isAbsolute If true the value change is happening with a setter otherwise relative
      *            change method is used
      */
     public PanMode (final S surface, final IModel model, final boolean isAbsolute)

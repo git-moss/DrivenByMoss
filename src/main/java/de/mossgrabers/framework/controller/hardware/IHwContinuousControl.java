@@ -38,6 +38,14 @@ public interface IHwContinuousControl extends IHwInputControl
 
 
     /**
+     * Directly bind a parameter to a continuous control.
+     *
+     * @param parameter The parameter to bind
+     */
+    void bind (IParameter parameter);
+
+
+    /**
      * Bind a command which is executed when the control (knob, fader) is touched.
      *
      * @param command The command to bind to touch
@@ -112,14 +120,6 @@ public interface IHwContinuousControl extends IHwInputControl
      * @param consumer Send the value to the hardware
      */
     void addOutput (IntSupplier supplier, IntConsumer consumer);
-
-
-    /**
-     * Directly bind a parameter to a continuous control.
-     *
-     * @param parameter The parameter to bind
-     */
-    void bind (IParameter parameter);
 
 
     /**

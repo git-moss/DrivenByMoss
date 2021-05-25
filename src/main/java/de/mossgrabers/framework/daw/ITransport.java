@@ -5,8 +5,12 @@
 package de.mossgrabers.framework.daw;
 
 import de.mossgrabers.framework.daw.constants.AutomationMode;
+import de.mossgrabers.framework.daw.constants.LaunchQuantization;
+import de.mossgrabers.framework.daw.constants.PostRecordingAction;
 import de.mossgrabers.framework.daw.data.IParameter;
 import de.mossgrabers.framework.observer.IObserverManagement;
+
+import java.util.Arrays;
 
 
 /**
@@ -261,6 +265,22 @@ public interface ITransport extends IObserverManagement
 
 
     /**
+     * Select the next automation write mode.
+     */
+    default void nextAutomationWriteMode ()
+    {
+        final AutomationMode [] automationWriteModes = this.getAutomationWriteModes ();
+        final AutomationMode automationWriteMode = this.getAutomationWriteMode ();
+
+        int pos = Arrays.asList (automationWriteModes).indexOf (automationWriteMode) + 1;
+        if (pos >= automationWriteModes.length)
+            pos = 0;
+
+        this.setAutomationWriteMode (automationWriteModes[pos]);
+    }
+
+
+    /**
      * Toggles the arranger automation write enabled state of the transport.
      */
     void toggleWriteArrangerAutomation ();
@@ -425,13 +445,13 @@ public interface ITransport extends IObserverManagement
 
 
     /**
-     * Rescale the tempo (in the range from MIN_TEMPO and MAX_TEMPO to the range of 0 to maxValue.
+     * Scale the tempo (in the range from MIN_TEMPO and MAX_TEMPO to the range of 0 to maxValue.
      *
-     * @param tempo The tempo to rescale
+     * @param tempo The tempo to scale
      * @param maxValue The upper bound
      * @return The rescaled tempo
      */
-    double rescaleTempo (double tempo, int maxValue);
+    double scaleTempo (double tempo, int maxValue);
 
 
     /**
@@ -529,4 +549,68 @@ public interface ITransport extends IObserverManagement
      * @return The quarters per measure.
      */
     int getQuartersPerMeasure ();
+
+
+    /**
+     * Get the clip launcher post recording action.
+     *
+     * @return The clip launcher post recording action
+     */
+    PostRecordingAction getClipLauncherPostRecordingAction ();
+
+
+    /**
+     * Set the clip launcher post recording action.
+     *
+     * @param action The action
+     */
+    void setClipLauncherPostRecordingAction (final PostRecordingAction action);
+
+
+    /**
+     * Get the clip launcher post recording time offset.
+     *
+     * @return The number of beats
+     */
+    double getClipLauncherPostRecordingTimeOffset ();
+
+
+    /**
+     * Set the clip launcher post recording time offset.
+     *
+     * @param beats The number of beats
+     */
+    void setClipLauncherPostRecordingTimeOffset (final double beats);
+
+
+    /**
+     * Get the default launch quantization.
+     *
+     * @return The default launch quantization
+     */
+    LaunchQuantization getDefaultLaunchQuantization ();
+
+
+    /**
+     * Set the default launch quantization.
+     *
+     * @param launchQuantization The default launch quantization
+     */
+    void setDefaultLaunchQuantization (final LaunchQuantization launchQuantization);
+
+
+    /**
+     * Select the next automation write mode.
+     */
+    default void nextLaunchQuantization ()
+    {
+        final LaunchQuantization [] launchQuantizations = LaunchQuantization.values ();
+        final LaunchQuantization launchQuantization = this.getDefaultLaunchQuantization ();
+
+        int pos = Arrays.asList (launchQuantizations).indexOf (launchQuantization) + 1;
+        if (pos >= launchQuantizations.length)
+            pos = 0;
+
+        this.setDefaultLaunchQuantization (launchQuantizations[pos]);
+    }
 }

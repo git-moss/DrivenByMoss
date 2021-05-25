@@ -35,11 +35,6 @@ public abstract class AbstractView<S extends IControlSurface<C>, C extends Confi
 
     private AftertouchCommand     aftertouchCommand;
 
-    protected boolean             canScrollLeft;
-    protected boolean             canScrollRight;
-    protected boolean             canScrollUp;
-    protected boolean             canScrollDown;
-
 
     /**
      * Constructor.
@@ -54,11 +49,6 @@ public abstract class AbstractView<S extends IControlSurface<C>, C extends Confi
 
         this.scales = model.getScales ();
         this.keyManager = new KeyManager (model, this.scales, surface.getPadGrid ());
-
-        this.canScrollLeft = true;
-        this.canScrollRight = true;
-        this.canScrollUp = true;
-        this.canScrollDown = true;
     }
 
 

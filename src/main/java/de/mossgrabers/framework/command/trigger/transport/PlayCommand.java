@@ -116,6 +116,15 @@ public class PlayCommand<S extends IControlSurface<C>, C extends Configuration> 
         if (this.surface.isPressed (this.selectButtonID))
             this.transport.togglePunchOut ();
         else
-            this.transport.toggleLoop ();
+            this.executeShifted ();
+    }
+
+
+    /**
+     * Overwrite to change the execute shifted action.
+     */
+    protected void executeShifted ()
+    {
+        this.transport.toggleLoop ();
     }
 }

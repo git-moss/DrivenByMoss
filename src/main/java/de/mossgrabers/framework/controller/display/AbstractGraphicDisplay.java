@@ -75,6 +75,7 @@ public abstract class AbstractGraphicDisplay implements IGraphicDisplay
 
     private final AtomicInteger            counter                         = new AtomicInteger ();
     private final ScheduledExecutorService executor                        = Executors.newSingleThreadScheduledExecutor ();
+    private final Object                   counterSync                     = new Object ();
 
     private final List<IComponent>         columns                         = new ArrayList<> (8);
     private final AtomicReference<String>  notificationMessage             = new AtomicReference<> ();
@@ -108,13 +109,7 @@ public abstract class AbstractGraphicDisplay implements IGraphicDisplay
         this.image.setDisplayWindowTitle (windowTitle);
 
         // Manage notification message display time
-        this.executor.scheduleAtFixedRate ( () -> {
-            int c = this.counter.get ();
-            if (c > 0)
-                c = this.counter.decrementAndGet ();
-            if (c <= 0 && this.notificationMessage.get () != null)
-                this.notificationMessage.set (null);
-        }, 1, 1, TimeUnit.SECONDS);
+        this.executor.scheduleAtFixedRate (this::checkNotificationCounter, 1, 1, TimeUnit.SECONDS);
     }
 
 
@@ -122,7 +117,10 @@ public abstract class AbstractGraphicDisplay implements IGraphicDisplay
     @Override
     public void cancelNotification ()
     {
-        this.counter.set (0);
+        synchronized (this.counterSync)
+        {
+            this.counter.set (0);
+        }
     }
 
 
@@ -160,7 +158,13 @@ public abstract class AbstractGraphicDisplay implements IGraphicDisplay
 
         try
         {
-            final ModelInfo newInfo = new ModelInfo (this.notificationMessage.get (), this.columns);
+            final String notification;
+            synchronized (this.counterSync)
+            {
+                notification = this.notificationMessage.get ();
+            }
+
+            final ModelInfo newInfo = new ModelInfo (notification, this.columns);
 
             // Only render image if there is a change in the data
             if (!this.info.equals (newInfo))
@@ -190,8 +194,11 @@ public abstract class AbstractGraphicDisplay implements IGraphicDisplay
     @Override
     public void setNotificationMessage (final String message)
     {
-        this.counter.set (TIMEOUT);
-        this.notificationMessage.set (message);
+        synchronized (this.counterSync)
+        {
+            this.counter.set (TIMEOUT);
+            this.notificationMessage.set (message);
+        }
     }
 
 
@@ -442,5 +449,20 @@ public abstract class AbstractGraphicDisplay implements IGraphicDisplay
             final ColorEx colorText = this.configuration.getColorText ();
             gc.drawTextInBounds (notification, 0, 0, width, height, Align.CENTER, colorText, colorBorder, height / 4.0);
         });
+    }
+
+
+    private void checkNotificationCounter ()
+    {
+        synchronized (this.counterSync)
+        {
+            int c = this.counter.get ();
+            if (c < 0)
+                return;
+
+            c = this.counter.decrementAndGet ();
+            if (c < 0)
+                this.notificationMessage.set (null);
+        }
     }
 }

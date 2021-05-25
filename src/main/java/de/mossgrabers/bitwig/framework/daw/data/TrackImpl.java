@@ -21,9 +21,9 @@ import com.bitwig.extension.controller.api.PlayingNote;
 import com.bitwig.extension.controller.api.Track;
 
 import java.util.Arrays;
-import java.util.HashSet;
 import java.util.Locale;
 import java.util.Set;
+import java.util.concurrent.CopyOnWriteArraySet;
 
 
 /**
@@ -43,7 +43,7 @@ public class TrackImpl extends ChannelImpl implements ITrack
     private final ApplicationImpl    application;
     private final ISlotBank          slotBank;
     private final int []             noteCache     = new int [128];
-    private final Set<INoteObserver> noteObservers = new HashSet<> ();
+    private final Set<INoteObserver> noteObservers = new CopyOnWriteArraySet<> ();
     private final CursorTrack        cursorTrack;
     private final IHost              host;
     private final IParameter         crossfadeParameter;
@@ -401,5 +401,16 @@ public class TrackImpl extends ChannelImpl implements ITrack
     {
         for (final INoteObserver noteObserver: this.noteObservers)
             noteObserver.call (this.index, note, velocity);
+    }
+
+
+    /**
+     * Get the Bitwig track.
+     *
+     * @return The track
+     */
+    public Track getTrack ()
+    {
+        return this.track;
     }
 }

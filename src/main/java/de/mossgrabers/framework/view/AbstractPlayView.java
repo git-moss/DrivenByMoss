@@ -150,19 +150,10 @@ public abstract class AbstractPlayView<S extends IControlSurface<C>, C extends C
     {
         if (event != ButtonEvent.DOWN)
             return;
-        this.octaveDown ();
-        this.surface.getDisplay ().notify (this.scales.getRangeText ());
-    }
-
-
-    /**
-     * Executes octave down.
-     */
-    public void octaveDown ()
-    {
         this.keyManager.clearPressedKeys ();
         this.scales.decOctave ();
         this.updateNoteMapping ();
+        this.surface.getDisplay ().notify (this.scales.getRangeText ());
     }
 
 
@@ -172,19 +163,10 @@ public abstract class AbstractPlayView<S extends IControlSurface<C>, C extends C
     {
         if (event != ButtonEvent.DOWN)
             return;
-        this.octaveUp ();
-        this.surface.getDisplay ().notify (this.scales.getRangeText ());
-    }
-
-
-    /**
-     * Execute octave up.
-     */
-    public void octaveUp ()
-    {
         this.keyManager.clearPressedKeys ();
         this.scales.incOctave ();
         this.updateNoteMapping ();
+        this.surface.getDisplay ().notify (this.scales.getRangeText ());
     }
 
 
@@ -268,5 +250,16 @@ public abstract class AbstractPlayView<S extends IControlSurface<C>, C extends C
         Arrays.fill (maxVelocity, Math.min (127, Math.max (0, config.getFixedAccentValue ())));
         maxVelocity[0] = 0;
         this.surface.setVelocityTranslationTable (config.isAccentActive () ? maxVelocity : this.defaultVelocity);
+    }
+
+
+    protected void updateScale ()
+    {
+        this.updateNoteMapping ();
+        final C config = this.surface.getConfiguration ();
+        config.setScale (this.scales.getScale ().getName ());
+        config.setScaleBase (Scales.BASES.get (this.scales.getScaleOffset ()));
+        config.setScaleInKey (!this.scales.isChromatic ());
+        config.setScaleLayout (this.scales.getScaleLayout ().getName ());
     }
 }

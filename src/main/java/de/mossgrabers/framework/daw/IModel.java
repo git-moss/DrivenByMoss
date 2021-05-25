@@ -155,7 +155,7 @@ public interface IModel
     /**
      * Get the first drum device of the track.
      *
-     * @return The device, never null but needs to checked fore existance
+     * @return The device, never null but needs to checked fore existence
      */
     IDrumDevice getDrumDevice ();
 

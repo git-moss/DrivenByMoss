@@ -580,7 +580,7 @@ public class CursorClipImpl implements INoteClip
     public void changeStepTranspose (final int channel, final int step, final int row, final int control)
     {
         final IStepInfo info = this.getStep (channel, step, row);
-        final double transpose = info.getTranspose () + this.valueChanger.calcKnobChange (control) / 8.0;
+        final double transpose = info.getTranspose () + this.valueChanger.calcSteppedKnobChange (control) / 10.0;
         this.updateStepTranspose (channel, step, row, Math.min (24.0, Math.max (-24.0, transpose)));
     }
 

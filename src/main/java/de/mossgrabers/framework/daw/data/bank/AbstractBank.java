@@ -9,9 +9,9 @@ import de.mossgrabers.framework.observer.IBankPageObserver;
 import de.mossgrabers.framework.observer.IItemSelectionObserver;
 
 import java.util.ArrayList;
-import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
+import java.util.concurrent.CopyOnWriteArraySet;
 
 
 /**
@@ -23,11 +23,12 @@ import java.util.Set;
  */
 public abstract class AbstractBank<T> implements IBank<T>
 {
-    protected final IHost                       host;
-    protected final Set<IItemSelectionObserver> selectionObservers = new HashSet<> ();
-    protected final Set<IBankPageObserver>      pageObservers      = new HashSet<> ();
-    protected final List<T>                     items;
-    protected final int                         pageSize;
+    protected final IHost                     host;
+    protected final List<T>                   items;
+    protected final int                       pageSize;
+
+    private final Set<IItemSelectionObserver> selectionObservers = new CopyOnWriteArraySet<> ();
+    private final Set<IBankPageObserver>      pageObservers      = new CopyOnWriteArraySet<> ();
 
 
     /**

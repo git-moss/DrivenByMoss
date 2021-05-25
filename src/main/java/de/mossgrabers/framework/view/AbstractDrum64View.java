@@ -81,9 +81,6 @@ public abstract class AbstractDrum64View<S extends IControlSurface<C>, C extends
 
         this.offsetY = DRUM_START_KEY;
 
-        this.canScrollUp = false;
-        this.canScrollDown = false;
-
         this.drumOctave = 0;
 
         final ITrackBank tb = model.getTrackBank ();

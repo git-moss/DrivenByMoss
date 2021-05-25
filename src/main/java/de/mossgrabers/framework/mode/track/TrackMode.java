@@ -10,6 +10,7 @@ import de.mossgrabers.framework.controller.IControlSurface;
 import de.mossgrabers.framework.daw.IModel;
 import de.mossgrabers.framework.daw.data.ISend;
 import de.mossgrabers.framework.daw.data.ITrack;
+import de.mossgrabers.framework.daw.data.bank.ISendBank;
 import de.mossgrabers.framework.parameterprovider.track.SelectedTrackParameterProvider;
 
 import java.util.List;
@@ -31,7 +32,7 @@ public class TrackMode<S extends IControlSurface<C>, C extends Configuration> ex
      *
      * @param surface The control surface
      * @param model The model
-     * @param isAbsolute If true the value change is happending with a setter otherwise relative
+     * @param isAbsolute If true the value change is happening with a setter otherwise relative
      *            change method is used
      */
     public TrackMode (final S surface, final IModel model, final boolean isAbsolute)
@@ -99,7 +100,10 @@ public class TrackMode<S extends IControlSurface<C>, C extends Configuration> ex
                 break;
 
             default:
-                final ISend send = t.getSendBank ().getItem (index - 2);
+                final ISendBank sendBank = t.getSendBank ();
+                if (!sendBank.hasExistingItems ())
+                    return;
+                final ISend send = sendBank.getItem (index - 2);
                 if (this.isAbsolute)
                     send.setValue (value);
                 else
@@ -129,10 +133,15 @@ public class TrackMode<S extends IControlSurface<C>, C extends Configuration> ex
             case 1:
                 if (isTouched && this.surface.isDeletePressed ())
                     t.resetPan ();
+                t.touchPan (isTouched);
                 break;
 
             default:
-                final ISend item = t.getSendBank ().getItem (index - 2);
+                final ISendBank sendBank = t.getSendBank ();
+                if (!sendBank.hasExistingItems ())
+                    return;
+
+                final ISend item = sendBank.getItem (index - 2);
                 if (isTouched && this.surface.isDeletePressed ())
                     item.resetValue ();
                 item.touchValue (isTouched);
@@ -145,19 +154,24 @@ public class TrackMode<S extends IControlSurface<C>, C extends Configuration> ex
     @Override
     public int getKnobValue (final int index)
     {
-        final ITrack track = this.model.getCurrentTrackBank ().getItem (index);
-        if (track == null)
+        final Optional<ITrack> track = this.model.getCurrentTrackBank ().getSelectedItem ();
+        if (track.isEmpty ())
             return -1;
+
+        final ITrack t = track.get ();
         switch (index)
         {
             case 0:
-                return track.getVolume ();
+                return t.getVolume ();
 
             case 1:
-                return track.getPan ();
+                return t.getPan ();
 
             default:
-                return track.getSendBank ().getItem (index - 2).getValue ();
+                final ISendBank sendBank = t.getSendBank ();
+                if (!sendBank.hasExistingItems ())
+                    return 0;
+                return sendBank.getItem (index - 2).getValue ();
         }
     }
 }

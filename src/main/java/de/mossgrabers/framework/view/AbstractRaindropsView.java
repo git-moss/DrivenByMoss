@@ -52,8 +52,6 @@ public abstract class AbstractRaindropsView<S extends IControlSurface<C>, C exte
 
         this.offsetY = AbstractRaindropsView.START_KEY;
 
-        this.canScrollUp = false;
-        this.canScrollDown = false;
         this.ongoingResolutionChange = false;
     }
 

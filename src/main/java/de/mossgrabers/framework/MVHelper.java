@@ -8,6 +8,7 @@ import de.mossgrabers.framework.configuration.Configuration;
 import de.mossgrabers.framework.controller.IControlSurface;
 import de.mossgrabers.framework.controller.display.IDisplay;
 import de.mossgrabers.framework.daw.IModel;
+import de.mossgrabers.framework.daw.INoteClip;
 import de.mossgrabers.framework.daw.ITransport;
 import de.mossgrabers.framework.daw.data.ICursorDevice;
 import de.mossgrabers.framework.daw.data.ITrack;
@@ -91,6 +92,27 @@ public class MVHelper<S extends IControlSurface<C>, C extends Configuration>
 
 
     /**
+     * Display the name of the selected cursor device and parameter page.
+     */
+    public void notifySelectedDeviceAndParameterPage ()
+    {
+        this.delayDisplay ( () -> {
+
+            final ICursorDevice cursorDevice = this.model.getCursorDevice ();
+            if (cursorDevice.doesExist ())
+            {
+                final Optional<String> selectedItem = cursorDevice.getParameterPageBank ().getSelectedItem ();
+                if (selectedItem.isPresent ())
+                    return cursorDevice.getName () + " - " + selectedItem.get ();
+            }
+
+            return "No device selected";
+
+        });
+    }
+
+
+    /**
      * Display the name of the selected parameter page.
      */
     public void notifySelectedParameterPage ()
@@ -102,7 +124,7 @@ public class MVHelper<S extends IControlSurface<C>, C extends Configuration>
             {
                 final Optional<String> selectedItem = cursorDevice.getParameterPageBank ().getSelectedItem ();
                 if (selectedItem.isPresent ())
-                    return "Page: " + selectedItem;
+                    return "Page: " + selectedItem.get ();
             }
             return "Page: " + NONE;
 
@@ -135,7 +157,7 @@ public class MVHelper<S extends IControlSurface<C>, C extends Configuration>
         this.delayDisplay ( () -> {
 
             final Optional<String> selectedItemName = mode.getSelectedItemName ();
-            return selectedItemName.isPresent () ? selectedItemName.get () : "None";
+            return selectedItemName.isPresent () ? selectedItemName.get () : NONE;
 
         });
     }
@@ -147,6 +169,27 @@ public class MVHelper<S extends IControlSurface<C>, C extends Configuration>
     public void notifyTempo ()
     {
         this.delayDisplay ( () -> "Tempo: " + this.transport.formatTempo (this.transport.getTempo ()));
+    }
+
+
+    /**
+     * Display the current play position.
+     */
+    public void notifyPlayPosition ()
+    {
+        this.delayDisplay ( () -> "Play Pos.: " + this.transport.getBeatText ());
+    }
+
+
+    /**
+     * Display the current edit page of the note clip.
+     *
+     * @param clip The clip
+     */
+    public void notifyEditPage (final INoteClip clip)
+    {
+        if (clip != null && clip.doesExist ())
+            this.delayDisplay ( () -> "Edit page: " + (clip.getEditPage () + 1));
     }
 
 

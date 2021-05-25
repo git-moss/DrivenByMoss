@@ -258,13 +258,13 @@ public class TrackModule extends AbstractModule
                 switch (subCommand2)
                 {
                     case "audio":
-                        application.addAudioTrack ();
+                        this.model.getTrackBank ().addChannel (ChannelType.AUDIO);
                         break;
                     case "effect":
                         application.addEffectTrack ();
                         break;
                     case "instrument":
-                        application.addInstrumentTrack ();
+                        this.model.getTrackBank ().addChannel (ChannelType.INSTRUMENT);
                         break;
                     default:
                         throw new UnknownCommandException (subCommand2);

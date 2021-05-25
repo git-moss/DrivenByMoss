@@ -39,7 +39,7 @@ public class ParameterMode<S extends IControlSurface<C>, C extends Configuration
      *
      * @param surface The control surface
      * @param model The model
-     * @param isAbsolute If true the value change is happending with a setter otherwise relative
+     * @param isAbsolute If true the value change is happening with a setter otherwise relative
      *            change method is used
      */
     public ParameterMode (final S surface, final IModel model, final boolean isAbsolute)
@@ -53,7 +53,7 @@ public class ParameterMode<S extends IControlSurface<C>, C extends Configuration
      *
      * @param surface The control surface
      * @param model The model
-     * @param isAbsolute If true the value change is happending with a setter otherwise relative
+     * @param isAbsolute If true the value change is happening with a setter otherwise relative
      *            change method is used
      * @param isAlternativeFunction Callback function to execute the secondary function, e.g. a
      *            shift button
@@ -69,7 +69,7 @@ public class ParameterMode<S extends IControlSurface<C>, C extends Configuration
      *
      * @param surface The control surface
      * @param model The model
-     * @param isAbsolute If true the value change is happending with a setter otherwise relative
+     * @param isAbsolute If true the value change is happening with a setter otherwise relative
      *            change method is used
      * @param controls The IDs of the knobs or faders to control this mode
      */
@@ -84,7 +84,7 @@ public class ParameterMode<S extends IControlSurface<C>, C extends Configuration
      *
      * @param surface The control surface
      * @param model The model
-     * @param isAbsolute If true the value change is happending with a setter otherwise relative
+     * @param isAbsolute If true the value change is happening with a setter otherwise relative
      *            change method is used
      * @param controls The IDs of the knobs or faders to control this mode
      * @param isAlternativeFunction Callback function to execute the secondary function, e.g. a
@@ -157,7 +157,11 @@ public class ParameterMode<S extends IControlSurface<C>, C extends Configuration
         if (!this.cursorDevice.doesExist ())
             return Optional.empty ();
         final IParameterPageBank parameterPageBank = this.cursorDevice.getParameterPageBank ();
-        return Optional.of (this.cursorDevice.getName () + " - " + parameterPageBank.getSelectedItem ());
+        final Optional<String> selectedItem = parameterPageBank.getSelectedItem ();
+        String value = this.cursorDevice.getName ();
+        if (selectedItem.isPresent ())
+            value += " - " + selectedItem.get ();
+        return Optional.of (value);
     }
 
 

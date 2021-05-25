@@ -8,7 +8,10 @@ import de.mossgrabers.framework.MVHelper;
 import de.mossgrabers.framework.configuration.Configuration;
 import de.mossgrabers.framework.controller.IControlSurface;
 import de.mossgrabers.framework.daw.IModel;
+import de.mossgrabers.framework.daw.data.ITrack;
+import de.mossgrabers.framework.featuregroup.ViewManager;
 import de.mossgrabers.framework.utils.ButtonEvent;
+import de.mossgrabers.framework.view.Views;
 
 
 /**
@@ -70,5 +73,26 @@ public abstract class AbstractTriggerCommand<S extends IControlSurface<C>, C ext
     public void executeShifted (final ButtonEvent event)
     {
         // Intentionally empty
+    }
+
+
+    /**
+     * Activates the given view and stores it as the preferred view for the currently active track.
+     *
+     * @param viewID The ID of the view to activate and store
+     */
+    protected void activatePreferredView (final Views viewID)
+    {
+        if (viewID == null)
+            return;
+
+        final ViewManager viewManager = this.surface.getViewManager ();
+        if (viewManager.get (viewID) == null)
+            return;
+
+        viewManager.setActive (viewID);
+        final ITrack cursorTrack = this.model.getCursorTrack ();
+        if (cursorTrack.doesExist ())
+            viewManager.setPreferredView (cursorTrack.getPosition (), viewID);
     }
 }

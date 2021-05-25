@@ -29,6 +29,7 @@ public class ViewMultiSelectCommand<S extends IControlSurface<C>, C extends Conf
 {
     protected final List<Views> viewIds = new ArrayList<> ();
     private final boolean       displayName;
+    private final ButtonEvent   triggerEvent;
 
 
     /**
@@ -41,9 +42,25 @@ public class ViewMultiSelectCommand<S extends IControlSurface<C>, C extends Conf
      */
     public ViewMultiSelectCommand (final IModel model, final S surface, final boolean displayName, final Views... viewIds)
     {
+        this (model, surface, displayName, ButtonEvent.DOWN, viewIds);
+    }
+
+
+    /**
+     * Constructor.
+     *
+     * @param model The model
+     * @param surface The surface
+     * @param displayName Displays a popup with the views name if true
+     * @param triggerEvent The event to trigger this command
+     * @param viewIds The list with IDs of the views to select
+     */
+    public ViewMultiSelectCommand (final IModel model, final S surface, final boolean displayName, final ButtonEvent triggerEvent, final Views... viewIds)
+    {
         super (model, surface);
 
         this.displayName = displayName;
+        this.triggerEvent = triggerEvent;
         this.viewIds.addAll (Arrays.asList (viewIds));
     }
 
@@ -52,7 +69,7 @@ public class ViewMultiSelectCommand<S extends IControlSurface<C>, C extends Conf
     @Override
     public void executeNormal (final ButtonEvent event)
     {
-        if (event != ButtonEvent.DOWN)
+        if (event != this.triggerEvent)
             return;
 
         final ViewManager viewManager = this.surface.getViewManager ();

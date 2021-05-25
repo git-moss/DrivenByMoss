@@ -19,6 +19,7 @@ import de.mossgrabers.framework.daw.data.ISend;
 import de.mossgrabers.framework.daw.data.ITrack;
 import de.mossgrabers.framework.daw.data.bank.ISendBank;
 import de.mossgrabers.framework.daw.data.bank.ITrackBank;
+import de.mossgrabers.framework.daw.resource.ChannelType;
 import de.mossgrabers.framework.utils.ButtonEvent;
 
 import java.util.Optional;
@@ -585,7 +586,7 @@ public class TrackHandler extends AbstractHandler
             // Track: Add Audio Track
             case TRACK_ADD_AUDIO_TRACK:
                 if (isButtonPressed)
-                    this.model.getApplication ().addAudioTrack ();
+                    this.model.getTrackBank ().addChannel (ChannelType.AUDIO);
                 break;
             // Track: Add Effect Track
             case TRACK_ADD_EFFECT_TRACK:
@@ -595,7 +596,7 @@ public class TrackHandler extends AbstractHandler
             // Track: Add Instrument Track
             case TRACK_ADD_INSTRUMENT_TRACK:
                 if (isButtonPressed)
-                    this.model.getApplication ().addInstrumentTrack ();
+                    this.model.getTrackBank ().addChannel (ChannelType.INSTRUMENT);
                 break;
             // Track: Select Previous Bank Page
             case TRACK_SELECT_PREVIOUS_BANK_PAGE:
