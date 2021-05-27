@@ -105,7 +105,7 @@ public class TrackDetailsMode extends BaseMode<ITrack>
                 break;
             case 7:
                 final ViewManager viewManager = this.surface.getViewManager ();
-                ((ColorView) viewManager.get (Views.COLOR)).setMode (ColorSelectMode.MODE_TRACK);
+                ((ColorView<?, ?>) viewManager.get (Views.COLOR)).setMode (ColorSelectMode.MODE_TRACK);
                 viewManager.setActive (Views.COLOR);
                 break;
             default:
@@ -149,7 +149,7 @@ public class TrackDetailsMode extends BaseMode<ITrack>
                 break;
             case 7:
                 final ViewManager viewManager = this.surface.getViewManager ();
-                ((ColorView) viewManager.get (Views.COLOR)).setMode (ColorSelectMode.MODE_TRACK);
+                ((ColorView<?, ?>) viewManager.get (Views.COLOR)).setMode (ColorSelectMode.MODE_TRACK);
                 viewManager.setActive (Views.COLOR);
                 break;
             default:
