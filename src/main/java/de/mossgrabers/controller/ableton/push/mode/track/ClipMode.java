@@ -6,8 +6,6 @@ package de.mossgrabers.controller.ableton.push.mode.track;
 
 import de.mossgrabers.controller.ableton.push.controller.PushColorManager;
 import de.mossgrabers.controller.ableton.push.controller.PushControlSurface;
-import de.mossgrabers.controller.ableton.push.view.ColorView;
-import de.mossgrabers.controller.ableton.push.view.ColorView.SelectMode;
 import de.mossgrabers.framework.controller.ButtonID;
 import de.mossgrabers.framework.controller.display.IGraphicDisplay;
 import de.mossgrabers.framework.controller.display.ITextDisplay;
@@ -22,6 +20,8 @@ import de.mossgrabers.framework.featuregroup.ViewManager;
 import de.mossgrabers.framework.utils.ButtonEvent;
 import de.mossgrabers.framework.utils.StringUtils;
 import de.mossgrabers.framework.view.AbstractSequencerView;
+import de.mossgrabers.framework.view.ColorSelectMode;
+import de.mossgrabers.framework.view.ColorView;
 import de.mossgrabers.framework.view.Views;
 
 
@@ -210,7 +210,7 @@ public class ClipMode extends AbstractTrackMode
         if (index == 7)
         {
             final ViewManager viewManager = this.surface.getViewManager ();
-            ((ColorView) viewManager.get (Views.COLOR)).setMode (SelectMode.MODE_CLIP);
+            ((ColorView<?, ?>) viewManager.get (Views.COLOR)).setMode (ColorSelectMode.MODE_CLIP);
             viewManager.setActive (Views.COLOR);
         }
     }

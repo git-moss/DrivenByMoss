@@ -76,7 +76,6 @@ import de.mossgrabers.controller.ableton.push.mode.track.TrackMode;
 import de.mossgrabers.controller.ableton.push.mode.track.VolumeMode;
 import de.mossgrabers.controller.ableton.push.view.ChordsView;
 import de.mossgrabers.controller.ableton.push.view.ClipView;
-import de.mossgrabers.controller.ableton.push.view.ColorView;
 import de.mossgrabers.controller.ableton.push.view.Drum4View;
 import de.mossgrabers.controller.ableton.push.view.Drum64View;
 import de.mossgrabers.controller.ableton.push.view.Drum8View;
@@ -142,6 +141,7 @@ import de.mossgrabers.framework.featuregroup.ViewManager;
 import de.mossgrabers.framework.mode.MasterVolumeMode;
 import de.mossgrabers.framework.mode.Modes;
 import de.mossgrabers.framework.view.AbstractSequencerView;
+import de.mossgrabers.framework.view.ColorView;
 import de.mossgrabers.framework.view.TransposeView;
 import de.mossgrabers.framework.view.Views;
 
@@ -433,7 +433,7 @@ public class PushControllerSetup extends AbstractControllerSetup<PushControlSurf
         viewManager.register (Views.PIANO, new PianoView (surface, this.model));
         viewManager.register (Views.PRG_CHANGE, new PrgChangeView (surface, this.model));
         viewManager.register (Views.CLIP, new ClipView (surface, this.model));
-        viewManager.register (Views.COLOR, new ColorView (surface, this.model));
+        viewManager.register (Views.COLOR, new ColorView<> (surface, this.model));
 
         viewManager.register (Views.SESSION, new SessionView (surface, this.model));
         viewManager.register (Views.SEQUENCER, new SequencerView (surface, this.model));

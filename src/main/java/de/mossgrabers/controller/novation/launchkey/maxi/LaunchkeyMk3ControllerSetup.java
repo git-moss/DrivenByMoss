@@ -49,7 +49,6 @@ import de.mossgrabers.framework.controller.valuechanger.DefaultValueChanger;
 import de.mossgrabers.framework.daw.IHost;
 import de.mossgrabers.framework.daw.ITransport;
 import de.mossgrabers.framework.daw.ModelSetup;
-import de.mossgrabers.framework.daw.data.bank.ITrackBank;
 import de.mossgrabers.framework.daw.midi.IMidiAccess;
 import de.mossgrabers.framework.daw.midi.IMidiInput;
 import de.mossgrabers.framework.daw.midi.IMidiOutput;
@@ -136,9 +135,7 @@ public class LaunchkeyMk3ControllerSetup extends AbstractControllerSetup<Launchk
         ms.setNumScenes (2);
         ms.setNumSends (2);
         this.model = this.factory.createModel (this.colorManager, this.valueChanger, this.scales, ms);
-
-        final ITrackBank trackBank = this.model.getTrackBank ();
-        trackBank.setIndication (true);
+        this.model.getTrackBank ().setIndication (true);
     }
 
 
