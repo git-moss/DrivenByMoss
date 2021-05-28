@@ -104,8 +104,8 @@ public class HwRelativeKnobImpl extends AbstractHwContinuousControl implements I
             this.binding.removeBinding ();
 
         // Remove the previously bound Bitwig parameter
-        if (this.parameter instanceof ParameterImpl)
-            HwUtils.enableObservers (false, this.hardwareKnob, (ParameterImpl) this.parameter);
+        if (this.parameter instanceof ParameterImpl param)
+            HwUtils.enableObservers (false, this.hardwareKnob, param);
 
         final HardwareBindable target;
         if (parameter == null)
@@ -116,11 +116,10 @@ public class HwRelativeKnobImpl extends AbstractHwContinuousControl implements I
         else
         {
             // Is parameter a real Bitwig parameter? If yes, map it.
-            if (parameter instanceof ParameterImpl)
+            if (parameter instanceof ParameterImpl param)
             {
-                final ParameterImpl parameterImpl = (ParameterImpl) parameter;
-                target = parameterImpl.getParameter ();
-                HwUtils.enableObservers (true, this.hardwareKnob, parameterImpl);
+                target = param.getParameter ();
+                HwUtils.enableObservers (true, this.hardwareKnob, param);
             }
             else
                 target = this.defaultSimpleParameterAction;

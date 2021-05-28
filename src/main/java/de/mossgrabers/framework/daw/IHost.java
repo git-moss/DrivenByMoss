@@ -121,7 +121,7 @@ public interface IHost
      * @param values The values for the message
      * @return The created message
      */
-    IOpenSoundControlMessage createOSCMessage (String address, List<Object> values);
+    IOpenSoundControlMessage createOSCMessage (String address, List<?> values);
 
 
     /**

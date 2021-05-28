@@ -32,10 +32,9 @@
         <configuration>
           <optimize>true</optimize>
           <fork>true</fork>
-          <source>12</source>
-          <target>12</target>
+          <source>16</source>
+          <target>16</target>
           <encoding>UTF-8</encoding>
-          <maxmem>1024m</maxmem>
         </configuration>
       </plugin>
       <plugin>
@@ -64,6 +63,26 @@
                   <exclude>com.bitwig:extension-api</exclude>
                 </excludes>
               </artifactSet>
+              <filters>
+                <filter>
+                  <artifact>net.java.dev.jna:*</artifact>
+                  <excludes>
+                    <exclude>META-INF/*</exclude>
+                  </excludes>
+                </filter>
+                <filter>
+                  <artifact>purejavahidapi:*</artifact>
+                  <excludes>
+                    <exclude>META-INF/*</exclude>
+                  </excludes>
+                </filter>
+                <filter>
+                  <artifact>de.mossgrabers:nativefilechooser</artifact>
+                  <excludes>
+                    <exclude>META-INF/*</exclude>
+                  </excludes>
+                </filter>
+              </filters>
             </configuration>
           </execution>
         </executions>

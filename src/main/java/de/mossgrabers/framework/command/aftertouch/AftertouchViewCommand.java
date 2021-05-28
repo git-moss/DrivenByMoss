@@ -8,7 +8,7 @@ import de.mossgrabers.framework.command.core.AbstractAftertouchCommand;
 import de.mossgrabers.framework.configuration.Configuration;
 import de.mossgrabers.framework.controller.IControlSurface;
 import de.mossgrabers.framework.daw.IModel;
-import de.mossgrabers.framework.featuregroup.AbstractView;
+import de.mossgrabers.framework.featuregroup.IView;
 
 import java.util.List;
 
@@ -23,7 +23,7 @@ import java.util.List;
  */
 public class AftertouchViewCommand<S extends IControlSurface<C>, C extends Configuration> extends AbstractAftertouchCommand<S, C>
 {
-    protected AbstractView<S, C> view;
+    protected IView view;
 
 
     /**
@@ -33,7 +33,7 @@ public class AftertouchViewCommand<S extends IControlSurface<C>, C extends Confi
      * @param model The model
      * @param surface The surface
      */
-    public AftertouchViewCommand (final AbstractView<S, C> view, final IModel model, final S surface)
+    public AftertouchViewCommand (final IView view, final IModel model, final S surface)
     {
         super (model, surface);
         this.view = view;

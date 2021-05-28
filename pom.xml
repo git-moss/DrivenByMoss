@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<project xmlns="http://maven.apache.org/POM/4.0.0" 
-	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
 	<modelVersion>4.0.0</modelVersion>
 	<groupId>de.mossgrabers</groupId>
 	<artifactId>DrivenByMoss</artifactId>
@@ -90,10 +91,9 @@
 				<configuration>
 					<optimize>true</optimize>
 					<fork>true</fork>
-					<source>12</source>
-					<target>12</target>
+					<source>16</source>
+					<target>16</target>
 					<encoding>UTF-8</encoding>
-					<maxmem>1024m</maxmem>
 				</configuration>
 			</plugin>
 
@@ -126,6 +126,26 @@
 									<exclude>com.bitwig:extension-api</exclude>
 								</excludes>
 							</artifactSet>
+							<filters>
+								<filter>
+									<artifact>net.java.dev.jna:*</artifact>
+									<excludes>
+										<exclude>META-INF/*</exclude>
+									</excludes>
+								</filter>
+								<filter>
+									<artifact>purejavahidapi:*</artifact>
+									<excludes>
+										<exclude>META-INF/*</exclude>
+									</excludes>
+								</filter>
+								<filter>
+									<artifact>de.mossgrabers:nativefilechooser</artifact>
+									<excludes>
+										<exclude>META-INF/*</exclude>
+									</excludes>
+								</filter>
+							</filters>
 						</configuration>
 					</execution>
 				</executions>

@@ -85,8 +85,8 @@ import de.mossgrabers.framework.daw.data.bank.ITrackBank;
 import de.mossgrabers.framework.daw.midi.IMidiAccess;
 import de.mossgrabers.framework.daw.midi.IMidiInput;
 import de.mossgrabers.framework.daw.midi.IMidiOutput;
-import de.mossgrabers.framework.featuregroup.AbstractView;
 import de.mossgrabers.framework.featuregroup.IMode;
+import de.mossgrabers.framework.featuregroup.IView;
 import de.mossgrabers.framework.featuregroup.ModeManager;
 import de.mossgrabers.framework.featuregroup.ViewManager;
 import de.mossgrabers.framework.mode.Modes;
@@ -599,11 +599,6 @@ public class MaschineControllerSetup extends AbstractControllerSetup<MaschineCon
 
 
     /** {@inheritDoc} */
-    @SuppressWarnings(
-    {
-        "rawtypes",
-        "unchecked"
-    })
     @Override
     protected void registerContinuousCommands ()
     {
@@ -645,7 +640,7 @@ public class MaschineControllerSetup extends AbstractControllerSetup<MaschineCon
         };
         for (final Views viewID: views)
         {
-            final AbstractView view = AbstractView.class.cast (viewManager.get (viewID));
+            final IView view = viewManager.get (viewID);
             view.registerAftertouchCommand (new AftertouchViewCommand<> (view, this.model, surface));
         }
     }

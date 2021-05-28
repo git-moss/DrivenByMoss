@@ -38,8 +38,8 @@ public class VirtualFaderViewCallback implements IVirtualFaderCallback
     public int getValue ()
     {
         final IView activeView = this.viewManager.getActive ();
-        if (activeView instanceof AbstractFaderView)
-            return ((AbstractFaderView) activeView).getFaderValue (this.index);
+        if (activeView instanceof AbstractFaderView faderView)
+            return faderView.getFaderValue (this.index);
         return 0;
     }
 
@@ -49,7 +49,7 @@ public class VirtualFaderViewCallback implements IVirtualFaderCallback
     public void setValue (final int value)
     {
         final IView activeView = this.viewManager.getActive ();
-        if (activeView instanceof AbstractFaderView)
-            ((AbstractFaderView) activeView).onValueKnob (this.index, value);
+        if (activeView instanceof AbstractFaderView faderView)
+            faderView.onValueKnob (this.index, value);
     }
 }

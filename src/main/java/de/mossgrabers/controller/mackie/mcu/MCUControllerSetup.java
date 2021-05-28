@@ -194,8 +194,8 @@ public class MCUControllerSetup extends AbstractControllerSetup<MCUControlSurfac
             this.updateSegmentDisplay ();
 
             final IMode activeOrTempMode = modeManager.getActive ();
-            if (activeOrTempMode instanceof BaseMode)
-                ((BaseMode<?>) activeOrTempMode).updateKnobLEDs ();
+            if (activeOrTempMode instanceof BaseMode<?> baseMode)
+                baseMode.updateKnobLEDs ();
         });
     }
 

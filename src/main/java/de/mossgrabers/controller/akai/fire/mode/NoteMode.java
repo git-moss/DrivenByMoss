@@ -169,8 +169,8 @@ public class NoteMode extends AbstractMode<FireControlSurface, FireConfiguration
     private void preventNoteDeletion ()
     {
         final IView activeView = this.surface.getViewManager ().getActive ();
-        if (activeView instanceof AbstractSequencerView)
-            AbstractSequencerView.class.cast (activeView).setNoteEdited ();
+        if (activeView instanceof AbstractSequencerView<?, ?> sequencerView)
+            sequencerView.setNoteEdited ();
     }
 
 

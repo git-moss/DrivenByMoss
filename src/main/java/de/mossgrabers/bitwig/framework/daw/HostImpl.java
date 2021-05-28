@@ -192,7 +192,7 @@ public class HostImpl implements IHost
 
     /** {@inheritDoc} */
     @Override
-    public IOpenSoundControlMessage createOSCMessage (final String address, final List<Object> values)
+    public IOpenSoundControlMessage createOSCMessage (final String address, final List<?> values)
     {
         return new OpenSoundControlMessageImpl (address, values);
     }

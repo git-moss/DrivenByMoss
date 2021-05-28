@@ -257,7 +257,7 @@ public class Drum4View extends AbstractDrum4View<FireControlSurface, FireConfigu
     {
         this.primary.getDrumPadBank ().getItem (index).select ();
         final IMode activeMode = this.surface.getModeManager ().getActive ();
-        if (activeMode instanceof FireLayerMode)
-            ((FireLayerMode) activeMode).parametersAdjusted ();
+        if (activeMode instanceof FireLayerMode fireLayerMode)
+            fireLayerMode.parametersAdjusted ();
     }
 }

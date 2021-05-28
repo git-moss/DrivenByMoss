@@ -139,25 +139,24 @@ public class DeviceModule extends AbstractModule
         writer.sendOSC (deviceAddress + "parameters", device.isParameterPageSectionVisible (), dump);
         writer.sendOSC (deviceAddress + "window", device.isWindowOpen (), dump);
 
-        if (device instanceof IEqualizerDevice)
+        if (device instanceof IEqualizerDevice equalizer)
         {
-            final IEqualizerDevice eqDevice = (IEqualizerDevice) device;
-            for (int i = 0; i < eqDevice.getBandCount (); i++)
+            for (int i = 0; i < equalizer.getBandCount (); i++)
             {
                 final int oneplus = i + 1;
 
-                writer.sendOSC (deviceAddress + "type/" + oneplus + "/value", eqDevice.getType (i), dump);
-                this.flushParameterData (writer, deviceAddress + "gain/" + oneplus + "/", eqDevice.getGain (i), dump);
-                this.flushParameterData (writer, deviceAddress + "freq/" + oneplus + "/", eqDevice.getFrequency (i), dump);
-                this.flushParameterData (writer, deviceAddress + "q/" + oneplus + "/", eqDevice.getQ (i), dump);
+                writer.sendOSC (deviceAddress + "type/" + oneplus + "/value", equalizer.getType (i), dump);
+                this.flushParameterData (writer, deviceAddress + "gain/" + oneplus + "/", equalizer.getGain (i), dump);
+                this.flushParameterData (writer, deviceAddress + "freq/" + oneplus + "/", equalizer.getFrequency (i), dump);
+                this.flushParameterData (writer, deviceAddress + "q/" + oneplus + "/", equalizer.getQ (i), dump);
             }
             return;
         }
 
-        if (device instanceof ICursorDevice)
+        if (device instanceof ICursorDevice cursorDevice)
         {
             final int positionInBank = device.getIndex ();
-            final IDeviceBank deviceBank = ((ICursorDevice) device).getDeviceBank ();
+            final IDeviceBank deviceBank = cursorDevice.getDeviceBank ();
             for (int i = 0; i < deviceBank.getPageSize (); i++)
             {
                 final int oneplus = i + 1;
@@ -502,9 +501,8 @@ public class DeviceModule extends AbstractModule
             switch (command)
             {
                 case "parent":
-                    if (device.doesExist () && device instanceof ICursorDevice)
+                    if (device.doesExist () && device instanceof ICursorDevice cursorDevice)
                     {
-                        final ICursorDevice cursorDevice = (ICursorDevice) device;
                         cursorDevice.selectParent ();
                         cursorDevice.selectChannel ();
                     }

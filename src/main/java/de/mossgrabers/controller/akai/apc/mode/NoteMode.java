@@ -149,8 +149,8 @@ public class NoteMode extends BaseMode<IItem>
 
         // Note was modified, prevent deletion of note on button up
         final IView activeView = this.surface.getViewManager ().getActive ();
-        if (activeView instanceof AbstractSequencerView)
-            AbstractSequencerView.class.cast (activeView).setNoteEdited ();
+        if (activeView instanceof AbstractSequencerView<?, ?> sequencerView)
+            sequencerView.setNoteEdited ();
     }
 
 

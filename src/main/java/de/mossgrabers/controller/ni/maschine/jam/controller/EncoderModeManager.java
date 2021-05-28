@@ -243,8 +243,8 @@ public class EncoderModeManager implements ContinuousCommand
             case TEMPORARY_LOCK:
             case TEMPORARY_TUNE:
                 final IView activeView = this.surface.getViewManager ().getActive ();
-                if (activeView instanceof IMaschineJamView)
-                    ((IMaschineJamView) activeView).changeOption (this.temporaryEncoderMode, value);
+                if (activeView instanceof IMaschineJamView jamView)
+                    jamView.changeOption (this.temporaryEncoderMode, value);
                 break;
 
             case TEMPORARY_BROWSER:

@@ -133,7 +133,6 @@ import de.mossgrabers.framework.daw.midi.DeviceInquiry;
 import de.mossgrabers.framework.daw.midi.IMidiAccess;
 import de.mossgrabers.framework.daw.midi.IMidiInput;
 import de.mossgrabers.framework.daw.midi.IMidiOutput;
-import de.mossgrabers.framework.featuregroup.AbstractView;
 import de.mossgrabers.framework.featuregroup.IMode;
 import de.mossgrabers.framework.featuregroup.IView;
 import de.mossgrabers.framework.featuregroup.ModeManager;
@@ -509,7 +508,7 @@ public class PushControllerSetup extends AbstractControllerSetup<PushControlSurf
             if (viewManager.isActive (Views.SESSION))
                 return this.model.getCurrentTrackBank ().canScrollPageBackwards ();
             final IView activeView = viewManager.getActive ();
-            final INoteClip clip = activeView instanceof AbstractSequencerView && !(activeView instanceof ClipView) ? ((AbstractSequencerView<?, ?>) activeView).getClip () : null;
+            final INoteClip clip = activeView instanceof AbstractSequencerView<?, ?> sequencerView && !(activeView instanceof ClipView) ? sequencerView.getClip () : null;
             return clip != null && clip.doesExist () && clip.canScrollStepsBackwards ();
 
         }, ColorManager.BUTTON_STATE_OFF, ColorManager.BUTTON_STATE_ON);
@@ -518,7 +517,7 @@ public class PushControllerSetup extends AbstractControllerSetup<PushControlSurf
             if (viewManager.isActive (Views.SESSION))
                 return this.model.getCurrentTrackBank ().canScrollPageForwards ();
             final IView activeView = viewManager.getActive ();
-            final INoteClip clip = activeView instanceof AbstractSequencerView && !(activeView instanceof ClipView) ? ((AbstractSequencerView<?, ?>) activeView).getClip () : null;
+            final INoteClip clip = activeView instanceof AbstractSequencerView<?, ?> sequencerView && !(activeView instanceof ClipView) ? sequencerView.getClip () : null;
             return clip != null && clip.doesExist () && clip.canScrollStepsForwards ();
 
         }, ColorManager.BUTTON_STATE_OFF, ColorManager.BUTTON_STATE_ON);
@@ -542,11 +541,11 @@ public class PushControllerSetup extends AbstractControllerSetup<PushControlSurf
 
         this.addButton (ButtonID.OCTAVE_DOWN, "Octave Down", new OctaveCommand (false, this.model, surface), PushControlSurface.PUSH_BUTTON_OCTAVE_DOWN, () -> {
             final IView activeView = viewManager.getActive ();
-            return activeView instanceof TransposeView && ((TransposeView) activeView).isOctaveDownButtonOn ();
+            return activeView instanceof TransposeView transposeView && transposeView.isOctaveDownButtonOn ();
         }, ColorManager.BUTTON_STATE_OFF, ColorManager.BUTTON_STATE_ON);
         this.addButton (ButtonID.OCTAVE_UP, "Octave Up", new OctaveCommand (true, this.model, surface), PushControlSurface.PUSH_BUTTON_OCTAVE_UP, () -> {
             final IView activeView = viewManager.getActive ();
-            return activeView instanceof TransposeView && ((TransposeView) activeView).isOctaveUpButtonOn ();
+            return activeView instanceof TransposeView transposeView && transposeView.isOctaveUpButtonOn ();
         }, ColorManager.BUTTON_STATE_OFF, ColorManager.BUTTON_STATE_ON);
 
         if (this.isPush2)
@@ -575,11 +574,6 @@ public class PushControllerSetup extends AbstractControllerSetup<PushControlSurf
 
 
     /** {@inheritDoc} */
-    @SuppressWarnings(
-    {
-        "rawtypes",
-        "unchecked"
-    })
     @Override
     protected void registerContinuousCommands ()
     {
@@ -616,7 +610,7 @@ public class PushControllerSetup extends AbstractControllerSetup<PushControlSurf
         };
         for (final Views viewID: views)
         {
-            final AbstractView view = AbstractView.class.cast (viewManager.get (viewID));
+            final IView view = viewManager.get (viewID);
             view.registerAftertouchCommand (new AftertouchViewCommand<> (view, this.model, surface));
         }
 

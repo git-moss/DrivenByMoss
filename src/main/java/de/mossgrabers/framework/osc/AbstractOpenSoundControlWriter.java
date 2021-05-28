@@ -112,7 +112,7 @@ public abstract class AbstractOpenSoundControlWriter implements IOpenSoundContro
     }
 
 
-    protected void fastSendOSC (final String address, final List<Object> parameters)
+    private void fastSendOSC (final String address, final List<Object> parameters)
     {
         this.sendOSC (address, parameters, true);
         this.flush ();
@@ -189,40 +189,36 @@ public abstract class AbstractOpenSoundControlWriter implements IOpenSoundContro
      * @param value The value(s) of the OSC message
      * @param dump True to dump (ignore cache)
      */
-    @SuppressWarnings("unchecked")
     protected void sendOSC (final String cacheAddress, final String address, final Object testValue, final Object value, final boolean dump)
     {
         if (!dump && compareValues (this.oldValues.get (cacheAddress), testValue))
             return;
         this.oldValues.put (cacheAddress, testValue);
+
+        // Convert the value to a list in case it is not already one
+        final List<?> list;
+        if (value instanceof List<?> l)
+            list = l;
+        else if (value instanceof Boolean)
+            list = Collections.singletonList (Integer.valueOf (((Boolean) value).booleanValue () ? 1 : 0));
+        else
+            list = Collections.singletonList (value);
+
         synchronized (this.messages)
         {
-            final Object converted = convertBooleanToInt (value);
-            this.messages.add (this.host.createOSCMessage (address, converted instanceof List ? (List<Object>) converted : Collections.singletonList (converted)));
+            this.messages.add (this.host.createOSCMessage (address, list));
         }
     }
 
 
+    /**
+     * Check if the client is connected.
+     *
+     * @return True if connected
+     */
     protected boolean isConnected ()
     {
         return this.oscClient != null;
-    }
-
-
-    /**
-     * Convert the value to a list in case it is not already one. Also converts Boolean to Integer.
-     *
-     * @param value The value to convert
-     * @return The converted value
-     */
-    @SuppressWarnings("unchecked")
-    protected static List<Object> convertToList (final Object value)
-    {
-        if (value instanceof List)
-            return List.class.cast (value);
-        if (value instanceof Boolean)
-            return Collections.singletonList (Integer.valueOf (((Boolean) value).booleanValue () ? 1 : 0));
-        return Collections.singletonList (value);
     }
 
 
@@ -238,10 +234,8 @@ public abstract class AbstractOpenSoundControlWriter implements IOpenSoundContro
         if (value1 == null)
             return value2 == null;
 
-        if (value1 instanceof List && value2 instanceof List)
+        if (value1 instanceof List<?> l1 && value2 instanceof List<?> l2)
         {
-            final List<?> l1 = List.class.cast (value1);
-            final List<?> l2 = List.class.cast (value2);
             final int size1 = l1.size ();
             final int size2 = l2.size ();
             if (size1 != size2)
@@ -258,14 +252,11 @@ public abstract class AbstractOpenSoundControlWriter implements IOpenSoundContro
     }
 
 
-    private static Object convertBooleanToInt (final Object value)
-    {
-        if (!(value instanceof Boolean))
-            return value;
-        return Integer.valueOf (((Boolean) value).booleanValue () ? 1 : 0);
-    }
-
-
+    /**
+     * Log messages to the console.
+     *
+     * @param messages The messages to log
+     */
     protected void logMessages (final List<IOpenSoundControlMessage> messages)
     {
         if (!this.configuration.shouldLogOutputCommands () || messages.isEmpty ())
