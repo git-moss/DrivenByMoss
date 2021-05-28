@@ -8,7 +8,6 @@ import de.mossgrabers.controller.ableton.push.PushConfiguration;
 import de.mossgrabers.controller.ableton.push.controller.PushColorManager;
 import de.mossgrabers.controller.ableton.push.controller.PushControlSurface;
 import de.mossgrabers.controller.ableton.push.mode.BaseMode;
-import de.mossgrabers.controller.ableton.push.view.ColorView;
 import de.mossgrabers.framework.controller.ButtonID;
 import de.mossgrabers.framework.controller.display.IGraphicDisplay;
 import de.mossgrabers.framework.controller.display.ITextDisplay;
@@ -20,6 +19,8 @@ import de.mossgrabers.framework.daw.data.bank.ITrackBank;
 import de.mossgrabers.framework.featuregroup.AbstractFeatureGroup;
 import de.mossgrabers.framework.featuregroup.ViewManager;
 import de.mossgrabers.framework.utils.ButtonEvent;
+import de.mossgrabers.framework.view.ColorSelectMode;
+import de.mossgrabers.framework.view.ColorView;
 import de.mossgrabers.framework.view.Views;
 
 import java.util.Optional;
@@ -104,7 +105,7 @@ public class TrackDetailsMode extends BaseMode<ITrack>
                 break;
             case 7:
                 final ViewManager viewManager = this.surface.getViewManager ();
-                ((ColorView) viewManager.get (Views.COLOR)).setMode (ColorView.SelectMode.MODE_TRACK);
+                ((ColorView<?, ?>) viewManager.get (Views.COLOR)).setMode (ColorSelectMode.MODE_TRACK);
                 viewManager.setActive (Views.COLOR);
                 break;
             default:
@@ -148,7 +149,7 @@ public class TrackDetailsMode extends BaseMode<ITrack>
                 break;
             case 7:
                 final ViewManager viewManager = this.surface.getViewManager ();
-                ((ColorView) viewManager.get (Views.COLOR)).setMode (ColorView.SelectMode.MODE_TRACK);
+                ((ColorView<?, ?>) viewManager.get (Views.COLOR)).setMode (ColorSelectMode.MODE_TRACK);
                 viewManager.setActive (Views.COLOR);
                 break;
             default:

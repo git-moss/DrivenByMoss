@@ -24,7 +24,6 @@ import de.mossgrabers.controller.novation.slmkiii.mode.track.SLMkIIIPanMode;
 import de.mossgrabers.controller.novation.slmkiii.mode.track.SLMkIIISendMode;
 import de.mossgrabers.controller.novation.slmkiii.mode.track.SLMkIIITrackMode;
 import de.mossgrabers.controller.novation.slmkiii.mode.track.SLMkIIIVolumeMode;
-import de.mossgrabers.controller.novation.slmkiii.view.ColorView;
 import de.mossgrabers.controller.novation.slmkiii.view.DrumView;
 import de.mossgrabers.controller.novation.slmkiii.view.SessionView;
 import de.mossgrabers.framework.command.continuous.KnobRowModeCommand;
@@ -65,6 +64,7 @@ import de.mossgrabers.framework.mode.Modes;
 import de.mossgrabers.framework.mode.track.VolumeMode;
 import de.mossgrabers.framework.scale.Scales;
 import de.mossgrabers.framework.utils.ButtonEvent;
+import de.mossgrabers.framework.view.ColorView;
 import de.mossgrabers.framework.view.Views;
 
 
@@ -128,6 +128,7 @@ public class SLMkIIIControllerSetup extends AbstractControllerSetup<SLMkIIIContr
         ms.setNumScenes (2);
         ms.setNumSends (8);
         this.model = this.factory.createModel (this.colorManager, this.valueChanger, this.scales, ms);
+        this.model.getTrackBank ().setIndication (true);
     }
 
 
@@ -140,7 +141,8 @@ public class SLMkIIIControllerSetup extends AbstractControllerSetup<SLMkIIIContr
         final IMidiInput keyboardInput = midiAccess.createInput (1, "Keyboard", "8?????", "9?????", "B?????", "D?????", "E?????");
         final IHost hostProxy = this.model.getHost ();
         final IMidiInput input = midiAccess.createInput ("Pads", "8?????", "9?????");
-        final SLMkIIIControlSurface surface = new SLMkIIIControlSurface (hostProxy, this.colorManager, this.configuration, output, input);
+        final SLMkIIILightGuide lightGuide = new SLMkIIILightGuide (this.model, this.colorManager, output);
+        final SLMkIIIControlSurface surface = new SLMkIIIControlSurface (hostProxy, this.colorManager, this.configuration, output, input, lightGuide);
         this.surfaces.add (surface);
 
         surface.addPianoKeyboard (61, keyboardInput, true);
@@ -148,7 +150,7 @@ public class SLMkIIIControllerSetup extends AbstractControllerSetup<SLMkIIIContr
         keyboardInput.setMidiCallback ( (status, data1, data2) -> {
             final int code = status & 0xF0;
             if (code == 0x80 || code == 0x90)
-                ((SessionView) this.getSurface ().getViewManager ().get (Views.SESSION)).updateKeyboardNote (data1, data2);
+                lightGuide.updateKeyboardNote (data1, data2);
         });
     }
 
@@ -186,7 +188,7 @@ public class SLMkIIIControllerSetup extends AbstractControllerSetup<SLMkIIIContr
 
         viewManager.register (Views.SESSION, new SessionView (surface, this.model));
         viewManager.register (Views.DRUM, new DrumView (surface, this.model));
-        viewManager.register (Views.COLOR, new ColorView (surface, this.model));
+        viewManager.register (Views.COLOR, new ColorView<> (surface, this.model));
     }
 
 
@@ -301,7 +303,7 @@ public class SLMkIIIControllerSetup extends AbstractControllerSetup<SLMkIIIContr
                     drumView.onLeft (ButtonEvent.DOWN);
             }
             else if (viewManager.isActive (Views.COLOR))
-                ((ColorView) viewManager.get (Views.COLOR)).setFlip (false);
+                ((ColorView<?, ?>) viewManager.get (Views.COLOR)).setPage (0);
         }, 15, SLMkIIIControlSurface.MKIII_SCENE_UP, this::getSceneUpColor);
 
         this.addButton (ButtonID.SCENE8, "Scene Down", (event, value) -> {
@@ -318,7 +320,7 @@ public class SLMkIIIControllerSetup extends AbstractControllerSetup<SLMkIIIContr
                     drumView.onRight (ButtonEvent.DOWN);
             }
             else if (viewManager.isActive (Views.COLOR))
-                ((ColorView) viewManager.get (Views.COLOR)).setFlip (true);
+                ((ColorView<?, ?>) viewManager.get (Views.COLOR)).setPage (1);
         }, 15, SLMkIIIControlSurface.MKIII_SCENE_DOWN, this::getSceneDownColor);
 
         this.addButton (ButtonID.SESSION, "Grid", (event, value) -> {
@@ -584,6 +586,17 @@ public class SLMkIIIControllerSetup extends AbstractControllerSetup<SLMkIIIContr
     }
 
 
+    /** {@inheritDoc} */
+    @Override
+    public void flush ()
+    {
+        super.flush ();
+
+        final boolean isEnabled = this.model.canSelectedTrackHoldNotes () && this.configuration.isLightEnabled ();
+        ((SLMkIIILightGuide) this.getSurface ().getLightGuide ()).draw (isEnabled);
+    }
+
+
     private int getSceneDownColor ()
     {
         final ViewManager viewManager = this.getSurface ().getViewManager ();
@@ -592,7 +605,7 @@ public class SLMkIIIControllerSetup extends AbstractControllerSetup<SLMkIIIContr
         else if (viewManager.isActive (Views.DRUM))
             return ((DrumView) viewManager.get (Views.DRUM)).isPlayMode () ? SLMkIIIColorManager.SLMKIII_BLUE : SLMkIIIColorManager.SLMKIII_SKY_BLUE;
         else if (viewManager.isActive (Views.COLOR))
-            return !((ColorView) viewManager.get (Views.COLOR)).isFlip () ? SLMkIIIColorManager.SLMKIII_RED : SLMkIIIColorManager.SLMKIII_BLACK;
+            return ((ColorView<?, ?>) viewManager.get (Views.COLOR)).getPage () == 0 ? SLMkIIIColorManager.SLMKIII_RED : SLMkIIIColorManager.SLMKIII_BLACK;
         return SLMkIIIColorManager.SLMKIII_BLACK;
     }
 
@@ -605,7 +618,7 @@ public class SLMkIIIControllerSetup extends AbstractControllerSetup<SLMkIIIContr
         else if (viewManager.isActive (Views.DRUM))
             return ((DrumView) viewManager.get (Views.DRUM)).isPlayMode () ? SLMkIIIColorManager.SLMKIII_BLUE : SLMkIIIColorManager.SLMKIII_SKY_BLUE;
         else if (viewManager.isActive (Views.COLOR))
-            return ((ColorView) viewManager.get (Views.COLOR)).isFlip () ? SLMkIIIColorManager.SLMKIII_RED : SLMkIIIColorManager.SLMKIII_BLACK;
+            return ((ColorView<?, ?>) viewManager.get (Views.COLOR)).getPage () == 1 ? SLMkIIIColorManager.SLMKIII_RED : SLMkIIIColorManager.SLMKIII_BLACK;
         return SLMkIIIColorManager.SLMKIII_BLACK;
     }
 

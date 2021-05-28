@@ -45,10 +45,6 @@ public class SequencerView extends AbstractNoteSequencerView<FireControlSurface,
     @Override
     protected void handleSequencerArea (final int index, final int x, final int y, final int velocity)
     {
-        final INoteClip clip = this.getClip ();
-        final int channel = this.configuration.getMidiEditChannel ();
-        final int mappedY = this.keyManager.map (y);
-
         // Handle note editor mode
         final ModeManager modeManager = this.surface.getModeManager ();
         if (velocity > 0)
@@ -56,6 +52,10 @@ public class SequencerView extends AbstractNoteSequencerView<FireControlSurface,
             if (modeManager.isActive (Modes.NOTE))
             {
                 // Store existing note for editing
+                final INoteClip clip = this.getClip ();
+                final int channel = this.configuration.getMidiEditChannel ();
+                final int mappedY = this.keyManager.map (y);
+
                 final int state = clip.getStep (channel, x, mappedY).getState ();
                 if (state == IStepInfo.NOTE_START)
                     ((NoteMode) modeManager.get (Modes.NOTE)).setValues (clip, channel, x, mappedY);

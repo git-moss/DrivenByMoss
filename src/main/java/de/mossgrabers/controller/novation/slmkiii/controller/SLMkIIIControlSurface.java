@@ -110,10 +110,11 @@ public class SLMkIIIControlSurface extends AbstractControlSurface<SLMkIIIConfigu
      * @param configuration The configuration
      * @param output The MIDI output
      * @param input The MIDI input
+     * @param lightGuide The light guide
      */
-    public SLMkIIIControlSurface (final IHost host, final ColorManager colorManager, final SLMkIIIConfiguration configuration, final IMidiOutput output, final IMidiInput input)
+    public SLMkIIIControlSurface (final IHost host, final ColorManager colorManager, final SLMkIIIConfiguration configuration, final IMidiOutput output, final IMidiInput input, final SLMkIIILightGuide lightGuide)
     {
-        super (0, host, configuration, colorManager, output, input, new SLMkIIIPadGrid (colorManager, output), new SLMkIIILightGuide (colorManager, output), 1000, 360);
+        super (0, host, configuration, colorManager, output, input, new SLMkIIIPadGrid (colorManager, output), lightGuide, 1000, 360);
 
         this.defaultMidiChannel = 15;
 

@@ -2,11 +2,11 @@
 // (c) 2017-2021
 // Licensed under LGPLv3 - http://www.gnu.org/licenses/lgpl-3.0.txt
 
-package de.mossgrabers.controller.ableton.push.view;
+package de.mossgrabers.framework.view;
 
-import de.mossgrabers.controller.ableton.push.PushConfiguration;
-import de.mossgrabers.controller.ableton.push.controller.PushControlSurface;
+import de.mossgrabers.framework.configuration.Configuration;
 import de.mossgrabers.framework.controller.ButtonID;
+import de.mossgrabers.framework.controller.IControlSurface;
 import de.mossgrabers.framework.controller.color.ColorEx;
 import de.mossgrabers.framework.controller.grid.IPadGrid;
 import de.mossgrabers.framework.daw.DAWColor;
@@ -22,25 +22,21 @@ import java.util.Optional;
 
 
 /**
- * The Color view.
+ * The Color view. Presents all DAW colors for selection. Depending on the mode it is applied to the
+ * cursor track, layer or clip. If the colors do not fit on the grid it is paged into several color
+ * pages which can be changed via the setPage method.
+ *
+ * @param <S> The type of the control surface
+ * @param <C> The type of the configuration
  *
  * @author J&uuml;rgen Mo&szlig;graber
  */
-public class ColorView extends AbstractView<PushControlSurface, PushConfiguration>
+public class ColorView<S extends IControlSurface<C>, C extends Configuration> extends AbstractView<S, C>
 {
-    /** What should the color be selected for? */
-    public enum SelectMode
-    {
-        /** Select a track color. */
-        MODE_TRACK,
-        /** Select a layer color. */
-        MODE_LAYER,
-        /** Select a clip color. */
-        MODE_CLIP
-    }
-
-
-    private SelectMode mode;
+    private final int       pageSize;
+    private final int       pages;
+    private int             page = 0;
+    private ColorSelectMode mode;
 
 
     /**
@@ -49,10 +45,17 @@ public class ColorView extends AbstractView<PushControlSurface, PushConfiguratio
      * @param surface The surface
      * @param model The model
      */
-    public ColorView (final PushControlSurface surface, final IModel model)
+    public ColorView (final S surface, final IModel model)
     {
         super ("Color", surface, model);
-        this.mode = SelectMode.MODE_TRACK;
+
+        this.mode = ColorSelectMode.MODE_TRACK;
+
+        final IPadGrid padGrid = this.surface.getPadGrid ();
+        this.pageSize = padGrid.getCols () * padGrid.getRows ();
+
+        final DAWColor [] dawColors = DAWColor.values ();
+        this.pages = 1 + ((dawColors.length - 1) / this.pageSize);
     }
 
 
@@ -61,9 +64,31 @@ public class ColorView extends AbstractView<PushControlSurface, PushConfiguratio
      *
      * @param mode The selection mode
      */
-    public void setMode (final SelectMode mode)
+    public void setMode (final ColorSelectMode mode)
     {
         this.mode = mode;
+    }
+
+
+    /**
+     * Select the currently active color page.
+     *
+     * @param page The page index to set
+     */
+    public void setPage (final int page)
+    {
+        this.page = Math.max (0, Math.min (page, this.pages - 1));
+    }
+
+
+    /**
+     * Get the currently active color page.
+     *
+     * @return The currently active color page
+     */
+    public int getPage ()
+    {
+        return this.page;
     }
 
 
@@ -73,8 +98,12 @@ public class ColorView extends AbstractView<PushControlSurface, PushConfiguratio
     {
         final IPadGrid padGrid = this.surface.getPadGrid ();
         final DAWColor [] dawColors = DAWColor.values ();
-        for (int i = 0; i < 64; i++)
-            padGrid.light (36 + i, i < dawColors.length ? dawColors[i].name () : IPadGrid.GRID_OFF);
+        final int offset = this.page * this.pageSize;
+        for (int i = 0; i < this.pageSize; i++)
+        {
+            final int index = offset + i;
+            padGrid.light (36 + i, index < dawColors.length ? dawColors[index].name () : IPadGrid.GRID_OFF);
+        }
     }
 
 
@@ -82,10 +111,12 @@ public class ColorView extends AbstractView<PushControlSurface, PushConfiguratio
     @Override
     public void onGridNote (final int note, final int velocity)
     {
-        if (velocity == 0)
+        if (velocity > 0)
             return;
 
-        final int color = note - 36;
+        final int offset = this.page * this.pageSize;
+        final int color = offset + note - 36;
+
         final DAWColor [] dawColors = DAWColor.values ();
         if (color < dawColors.length)
         {
@@ -93,7 +124,7 @@ public class ColorView extends AbstractView<PushControlSurface, PushConfiguratio
             switch (this.mode)
             {
                 case MODE_TRACK:
-                    final ITrack cursorTrack = this.model.getCursorTrack ();
+                    ITrack cursorTrack = this.model.getCursorTrack ();
                     if (cursorTrack.doesExist ())
                         cursorTrack.setColor (entry);
                     else

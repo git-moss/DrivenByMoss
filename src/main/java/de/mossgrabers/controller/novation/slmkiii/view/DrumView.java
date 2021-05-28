@@ -18,7 +18,6 @@ import de.mossgrabers.framework.featuregroup.ModeManager;
 import de.mossgrabers.framework.mode.Modes;
 import de.mossgrabers.framework.utils.ButtonEvent;
 import de.mossgrabers.framework.view.AbstractDrumView;
-import de.mossgrabers.framework.view.Views;
 
 
 /**
@@ -82,8 +81,6 @@ public class DrumView extends AbstractDrumView<SLMkIIIControlSurface, SLMkIIICon
     @Override
     public void drawGrid ()
     {
-        ((SessionView) this.surface.getViewManager ().get (Views.SESSION)).drawLightGuide (this.surface.getLightGuide ());
-
         final IPadGrid padGrid = this.surface.getPadGrid ();
         final IDrumDevice primary = this.model.getDrumDevice ();
         if (this.isPlayMode)
