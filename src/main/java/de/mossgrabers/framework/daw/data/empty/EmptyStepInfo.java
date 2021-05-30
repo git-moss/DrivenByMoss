@@ -5,6 +5,7 @@
 package de.mossgrabers.framework.daw.data.empty;
 
 import de.mossgrabers.framework.daw.IStepInfo;
+import de.mossgrabers.framework.daw.NoteOccurrenceType;
 
 
 /**
@@ -53,6 +54,14 @@ public class EmptyStepInfo implements IStepInfo
 
     /** {@inheritDoc} */
     @Override
+    public double getVelocitySpread ()
+    {
+        return 0;
+    }
+
+
+    /** {@inheritDoc} */
+    @Override
     public double getReleaseVelocity ()
     {
         return 0;
@@ -94,6 +103,102 @@ public class EmptyStepInfo implements IStepInfo
     /** {@inheritDoc} */
     @Override
     public double getGain ()
+    {
+        return 0;
+    }
+
+
+    /** {@inheritDoc} */
+    @Override
+    public boolean isChanceEnabled ()
+    {
+        return false;
+    }
+
+
+    /** {@inheritDoc} */
+    @Override
+    public double getChance ()
+    {
+        return 0;
+    }
+
+
+    /** {@inheritDoc} */
+    @Override
+    public boolean isOccurrenceEnabled ()
+    {
+        return false;
+    }
+
+
+    /** {@inheritDoc} */
+    @Override
+    public NoteOccurrenceType getOccurrence ()
+    {
+        return NoteOccurrenceType.ALWAYS;
+    }
+
+
+    /** {@inheritDoc} */
+    @Override
+    public boolean isRecurrenceEnabled ()
+    {
+        return false;
+    }
+
+
+    /** {@inheritDoc} */
+    @Override
+    public int getRecurrenceLength ()
+    {
+        return 0;
+    }
+
+
+    /** {@inheritDoc} */
+    @Override
+    public int getRecurrenceMask ()
+    {
+        return 0;
+    }
+
+
+    /** {@inheritDoc} */
+    @Override
+    public boolean isRepeatEnabled ()
+    {
+        return false;
+    }
+
+
+    /** {@inheritDoc} */
+    @Override
+    public int getRepeatCount ()
+    {
+        return 0;
+    }
+
+
+    /** {@inheritDoc} */
+    @Override
+    public double getRepeatCurve ()
+    {
+        return 0;
+    }
+
+
+    /** {@inheritDoc} */
+    @Override
+    public double getRepeatVelocityCurve ()
+    {
+        return 0;
+    }
+
+
+    /** {@inheritDoc} */
+    @Override
+    public double getRepeatVelocityEnd ()
     {
         return 0;
     }

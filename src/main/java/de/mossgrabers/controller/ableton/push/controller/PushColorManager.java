@@ -448,6 +448,11 @@ public class PushColorManager extends ColorManager
     public static final String       PUSH_GREEN_LO                          = "PUSH_GREEN_LO";
     public static final String       PUSH_GREEN_HI                          = "PUSH_GREEN_HI";
 
+    public static final String       PUSH_BLACK_2                           = "PUSH_BLACK_2";
+    public static final String       PUSH_WHITE_2                           = "PUSH_WHITE_2";
+    public static final String       PUSH_GREY_LO_2                         = "PUSH_GREY_LO_2";
+    public static final String       PUSH_GREEN_2                           = "PUSH_GREEN_2";
+
     private final boolean            isPush2;
 
 
@@ -470,6 +475,11 @@ public class PushColorManager extends ColorManager
         this.registerColorIndex (PUSH_YELLOW_MD, this.isPush2 ? PushColorManager.PUSH2_COLOR_YELLOW_MD : PushColorManager.PUSH1_COLOR_YELLOW_MD);
         this.registerColorIndex (PUSH_GREEN_LO, this.isPush2 ? PushColorManager.PUSH2_COLOR_GREEN_LO : PushColorManager.PUSH1_COLOR_GREEN_LO);
         this.registerColorIndex (PUSH_GREEN_HI, this.isPush2 ? PushColorManager.PUSH2_COLOR_GREEN_HI : PushColorManager.PUSH1_COLOR_GREEN_HI);
+
+        this.registerColorIndex (PUSH_BLACK_2, this.isPush2 ? PushColorManager.PUSH2_COLOR2_BLACK : PushColorManager.PUSH1_COLOR2_BLACK);
+        this.registerColorIndex (PUSH_WHITE_2, this.isPush2 ? PushColorManager.PUSH2_COLOR2_WHITE : PushColorManager.PUSH1_COLOR2_WHITE);
+        this.registerColorIndex (PUSH_GREY_LO_2, this.isPush2 ? PushColorManager.PUSH2_COLOR2_GREY_LO : PushColorManager.PUSH1_COLOR2_GREY_LO);
+        this.registerColorIndex (PUSH_GREEN_2, this.isPush2 ? PushColorManager.PUSH2_COLOR2_GREEN : PushColorManager.PUSH1_COLOR2_GREEN);
 
         this.registerColorIndex (Scales.SCALE_COLOR_OFF, isPush2 ? PUSH2_COLOR2_BLACK : PUSH1_COLOR2_BLACK);
         this.registerColorIndex (Scales.SCALE_COLOR_OCTAVE, isPush2 ? PUSH2_COLOR2_OCEAN_HI : PUSH1_COLOR2_OCEAN_HI);

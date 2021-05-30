@@ -27,18 +27,20 @@ public enum Capability
     /** The API provides support for editing note repeat use pressure. */
     NOTE_REPEAT_USE_PRESSURE_TO_VELOCITY,
 
+    /** The API provides support for editing note velocity spread. */
+    NOTE_EDIT_VELOCITY_SPREAD,
     /** The API provides support for editing note release velocity. */
     NOTE_EDIT_RELEASE_VELOCITY,
-    /** The API provides support for editing note pressure. */
-    NOTE_EDIT_PRESSURE,
-    /** The API provides support for editing note timbre. */
-    NOTE_EDIT_TIMBRE,
-    /** The API provides support for editing note panorama. */
-    NOTE_EDIT_PANORAMA,
-    /** The API provides support for editing note transpose. */
-    NOTE_EDIT_TRANSPOSE,
-    /** The API provides support for editing note gain. */
-    NOTE_EDIT_GAIN,
+    /** Supports editing of note expressions like gain, panorama, pitch, timbre and pressure. */
+    NOTE_EDIT_EXPRESSIONS,
+    /** Supports editing of note repeat options like count, curve, etc. */
+    NOTE_EDIT_REPEAT,
+    /** Supports editing of note repeat options like count, curve, etc. */
+    NOTE_EDIT_CHANCE,
+    /** Supports editing of note occurrence. */
+    NOTE_EDIT_OCCURRENCE,
+    /** Supports editing of note recurrence. */
+    NOTE_EDIT_RECCURRENCE,
 
     /** The API provides support quantizing the note lengths of MIDI input. */
     QUANTIZE_INPUT_NOTE_LENGTH,
