@@ -7,6 +7,7 @@ package de.mossgrabers.controller.ni.maschine.mk3;
 import de.mossgrabers.controller.mackie.mcu.controller.MCUDisplay;
 import de.mossgrabers.controller.ni.maschine.Maschine;
 import de.mossgrabers.controller.ni.maschine.core.MaschineColorManager;
+import de.mossgrabers.controller.ni.maschine.core.RibbonMode;
 import de.mossgrabers.controller.ni.maschine.core.command.trigger.GroupButtonCommand;
 import de.mossgrabers.controller.ni.maschine.mk3.command.continuous.MainKnobRowModeCommand;
 import de.mossgrabers.controller.ni.maschine.mk3.command.continuous.TouchstripCommand;
@@ -96,6 +97,11 @@ import de.mossgrabers.framework.utils.FrameworkException;
 import de.mossgrabers.framework.utils.OperatingSystem;
 import de.mossgrabers.framework.view.Views;
 
+import java.util.Arrays;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
+
 
 /**
  * Support for the NI Maschine controller series.
@@ -119,7 +125,12 @@ public class MaschineControllerSetup extends AbstractControllerSetup<MaschineCon
     };
     // @formatter:on
 
-    private final Maschine      maschine;
+    private static final List<RibbonMode> RIBBON_MODES_PITCH         = Arrays.asList (RibbonMode.PITCH_DOWN, RibbonMode.PITCH_DOWN_UP, RibbonMode.PITCH_UP);
+    private static final List<RibbonMode> RIBBON_MODES_CC            = Arrays.asList (RibbonMode.CC_1, RibbonMode.CC_11);
+    private static final List<RibbonMode> RIBBON_MODES_MASTER_VOLUME = Arrays.asList (RibbonMode.MASTER_VOLUME);
+    private static final List<RibbonMode> RIBBON_MODES_NOTE_REPEAT   = Arrays.asList (RibbonMode.NOTE_REPEAT_PERIOD, RibbonMode.NOTE_REPEAT_LENGTH);
+
+    private final Maschine                maschine;
 
 
     /**
@@ -336,10 +347,10 @@ public class MaschineControllerSetup extends AbstractControllerSetup<MaschineCon
         this.addButton (ButtonID.REPEAT, "Repeat", new NoteRepeatCommand<> (this.model, surface, this.maschine.hasMCUDisplay ()), MaschineControlSurface.NOTE_REPEAT, this.configuration::isNoteRepeatActive);
 
         // Ribbon
-        this.addButton (ButtonID.F1, "Pitch", new RibbonCommand (this.model, surface, MaschineConfiguration.RIBBON_MODE_PITCH_DOWN, MaschineConfiguration.RIBBON_MODE_PITCH_UP, MaschineConfiguration.RIBBON_MODE_PITCH_DOWN_UP), MaschineControlSurface.PITCH, () -> this.isRibbonMode (MaschineConfiguration.RIBBON_MODE_PITCH_DOWN, MaschineConfiguration.RIBBON_MODE_PITCH_DOWN_UP, MaschineConfiguration.RIBBON_MODE_PITCH_UP));
-        this.addButton (ButtonID.F2, "Mod", new RibbonCommand (this.model, surface, MaschineConfiguration.RIBBON_MODE_CC_1, MaschineConfiguration.RIBBON_MODE_CC_11), MaschineControlSurface.MOD, () -> this.isRibbonMode (MaschineConfiguration.RIBBON_MODE_CC_1, MaschineConfiguration.RIBBON_MODE_CC_11));
-        this.addButton (ButtonID.F3, "Perform", new RibbonCommand (this.model, surface, MaschineConfiguration.RIBBON_MODE_MASTER_VOLUME), MaschineControlSurface.PERFORM, () -> this.isRibbonMode (MaschineConfiguration.RIBBON_MODE_MASTER_VOLUME));
-        this.addButton (ButtonID.F4, "Notes", new RibbonCommand (this.model, surface, MaschineConfiguration.RIBBON_MODE_NOTE_REPEAT_PERIOD, MaschineConfiguration.RIBBON_MODE_NOTE_REPEAT_LENGTH), MaschineControlSurface.NOTES, () -> this.isRibbonMode (MaschineConfiguration.RIBBON_MODE_NOTE_REPEAT_PERIOD, MaschineConfiguration.RIBBON_MODE_NOTE_REPEAT_LENGTH));
+        this.addButton (ButtonID.F1, "Pitch", new RibbonCommand (this.model, surface, RIBBON_MODES_PITCH), MaschineControlSurface.PITCH, () -> this.isRibbonMode (new HashSet<> (RIBBON_MODES_PITCH)));
+        this.addButton (ButtonID.F2, "Mod", new RibbonCommand (this.model, surface, RIBBON_MODES_CC), MaschineControlSurface.MOD, () -> this.isRibbonMode (new HashSet<> (RIBBON_MODES_CC)));
+        this.addButton (ButtonID.F3, "Perform", new RibbonCommand (this.model, surface, RIBBON_MODES_MASTER_VOLUME), MaschineControlSurface.PERFORM, () -> this.isRibbonMode (new HashSet<> (RIBBON_MODES_MASTER_VOLUME)));
+        this.addButton (ButtonID.F4, "Notes", new RibbonCommand (this.model, surface, RIBBON_MODES_NOTE_REPEAT), MaschineControlSurface.NOTES, () -> this.isRibbonMode (new HashSet<> (RIBBON_MODES_NOTE_REPEAT)));
 
         this.addButton (ButtonID.FADER_TOUCH_1, "Encoder Press", (event, velocity) -> {
 
@@ -879,15 +890,9 @@ public class MaschineControllerSetup extends AbstractControllerSetup<MaschineCon
     }
 
 
-    private boolean isRibbonMode (final int... modes)
+    private boolean isRibbonMode (final Set<RibbonMode> modes)
     {
-        final int ribbonMode = this.configuration.getRibbonMode ();
-        for (final int mode: modes)
-        {
-            if (ribbonMode == mode)
-                return true;
-        }
-        return false;
+        return modes.contains (this.configuration.getRibbonMode ());
     }
 
 

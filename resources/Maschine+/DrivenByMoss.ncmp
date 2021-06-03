@@ -593,7 +593,7 @@
         <min>0</min>
         <max>127</max>
         <ledPattern>0</ledPattern>
-        <behavior onIfDown="on">none</behavior>
+        <behavior>none</behavior>
       </knob>
       <button version="1" id="TouchstripCap">
         <disabled />

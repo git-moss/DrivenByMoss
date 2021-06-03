@@ -164,11 +164,11 @@ public class OptionsMode extends BaseMode<IItem>
         d.setPropertyColor (1, 2, SLMkIIIColorManager.SLMKIII_BROWN);
         d.setPropertyValue (1, 1, 0);
 
-        d.setCell (3, 2, "<< Project");
+        d.setCell (3, 2, "<<Project");
         d.setPropertyColor (2, 2, SLMkIIIColorManager.SLMKIII_BROWN);
         d.setPropertyValue (2, 1, 0);
 
-        d.setCell (3, 3, "Project >>");
+        d.setCell (3, 3, "Project>>");
         d.setPropertyColor (3, 2, SLMkIIIColorManager.SLMKIII_BROWN);
         d.setPropertyValue (3, 1, 0);
 

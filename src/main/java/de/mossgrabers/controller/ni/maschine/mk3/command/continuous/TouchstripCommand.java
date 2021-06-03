@@ -4,6 +4,7 @@
 
 package de.mossgrabers.controller.ni.maschine.mk3.command.continuous;
 
+import de.mossgrabers.controller.ni.maschine.core.RibbonMode;
 import de.mossgrabers.controller.ni.maschine.mk3.MaschineConfiguration;
 import de.mossgrabers.controller.ni.maschine.mk3.controller.MaschineControlSurface;
 import de.mossgrabers.framework.command.core.AbstractContinuousCommand;
@@ -44,41 +45,41 @@ public class TouchstripCommand extends AbstractContinuousCommand<MaschineControl
         this.ribbonValue = value;
 
         final MaschineConfiguration config = this.surface.getConfiguration ();
-        final int ribbonMode = config.getRibbonMode ();
+        final RibbonMode ribbonMode = config.getRibbonMode ();
         switch (ribbonMode)
         {
-            case MaschineConfiguration.RIBBON_MODE_PITCH_DOWN:
+            case PITCH_DOWN:
                 this.surface.sendMidiEvent (0xE0, 0, (127 - value) / 2);
                 break;
 
-            case MaschineConfiguration.RIBBON_MODE_PITCH_UP:
+            case PITCH_UP:
                 this.surface.sendMidiEvent (0xE0, 0, 64 + value / 2);
                 break;
 
-            case MaschineConfiguration.RIBBON_MODE_PITCH_DOWN_UP:
+            case PITCH_DOWN_UP:
                 this.surface.sendMidiEvent (0xE0, 0, value);
                 break;
 
-            case MaschineConfiguration.RIBBON_MODE_CC_1:
+            case CC_1:
                 this.surface.sendMidiEvent (0xB0, 1, value);
                 break;
 
-            case MaschineConfiguration.RIBBON_MODE_CC_11:
+            case CC_11:
                 this.surface.sendMidiEvent (0xB0, 11, value);
                 break;
 
-            case MaschineConfiguration.RIBBON_MODE_MASTER_VOLUME:
+            case MASTER_VOLUME:
                 this.model.getMasterTrack ().setVolume (this.model.getValueChanger ().toDAWValue (value));
                 break;
 
-            case MaschineConfiguration.RIBBON_MODE_NOTE_REPEAT_PERIOD:
-            case MaschineConfiguration.RIBBON_MODE_NOTE_REPEAT_LENGTH:
+            case NOTE_REPEAT_PERIOD:
+            case NOTE_REPEAT_LENGTH:
                 final Resolution [] values = Resolution.values ();
                 final double scaled = (127 - value) / 127.0;
                 final int index = (int) Math.round (scaled * (values.length - 1));
                 final double resolutionValue = values[values.length - 1 - index].getValue ();
                 final INoteRepeat noteRepeat = this.surface.getMidiInput ().getDefaultNoteInput ().getNoteRepeat ();
-                if (ribbonMode == MaschineConfiguration.RIBBON_MODE_NOTE_REPEAT_PERIOD)
+                if (ribbonMode == RibbonMode.NOTE_REPEAT_PERIOD)
                     noteRepeat.setPeriod (resolutionValue);
                 else
                     noteRepeat.setNoteLength (resolutionValue);
@@ -99,25 +100,25 @@ public class TouchstripCommand extends AbstractContinuousCommand<MaschineControl
             return;
 
         final MaschineConfiguration config = this.surface.getConfiguration ();
-        final int ribbonMode = config.getRibbonMode ();
+        final RibbonMode ribbonMode = config.getRibbonMode ();
         switch (ribbonMode)
         {
-            case MaschineConfiguration.RIBBON_MODE_PITCH_DOWN:
-            case MaschineConfiguration.RIBBON_MODE_PITCH_UP:
+            case PITCH_DOWN:
+            case PITCH_UP:
                 this.ribbonValue = 0;
                 this.surface.sendMidiEvent (0xE0, 0, 64);
                 break;
 
-            case MaschineConfiguration.RIBBON_MODE_PITCH_DOWN_UP:
+            case PITCH_DOWN_UP:
                 this.ribbonValue = 64;
                 this.surface.sendMidiEvent (0xE0, 0, 64);
                 break;
 
-            case MaschineConfiguration.RIBBON_MODE_CC_1:
-            case MaschineConfiguration.RIBBON_MODE_CC_11:
-            case MaschineConfiguration.RIBBON_MODE_MASTER_VOLUME:
-            case MaschineConfiguration.RIBBON_MODE_NOTE_REPEAT_PERIOD:
-            case MaschineConfiguration.RIBBON_MODE_NOTE_REPEAT_LENGTH:
+            case CC_1:
+            case CC_11:
+            case MASTER_VOLUME:
+            case NOTE_REPEAT_PERIOD:
+            case NOTE_REPEAT_LENGTH:
                 // No automatic reset
                 break;
 
@@ -134,18 +135,18 @@ public class TouchstripCommand extends AbstractContinuousCommand<MaschineControl
      *
      * @param ribbonMode The mode to reset
      */
-    public void resetRibbonValue (final int ribbonMode)
+    public void resetRibbonValue (final RibbonMode ribbonMode)
     {
         switch (ribbonMode)
         {
-            case MaschineConfiguration.RIBBON_MODE_PITCH_DOWN:
-            case MaschineConfiguration.RIBBON_MODE_PITCH_UP:
-            case MaschineConfiguration.RIBBON_MODE_CC_1:
-            case MaschineConfiguration.RIBBON_MODE_CC_11:
+            case PITCH_DOWN:
+            case PITCH_UP:
+            case CC_1:
+            case CC_11:
                 this.ribbonValue = 0;
                 break;
 
-            case MaschineConfiguration.RIBBON_MODE_PITCH_DOWN_UP:
+            case PITCH_DOWN_UP:
                 this.ribbonValue = 64;
                 break;
 
@@ -161,28 +162,27 @@ public class TouchstripCommand extends AbstractContinuousCommand<MaschineControl
      */
     public void updateValue ()
     {
-        final MaschineConfiguration config = this.surface.getConfiguration ();
-        final int ribbonMode = config.getRibbonMode ();
+        final RibbonMode ribbonMode = this.surface.getConfiguration ().getRibbonMode ();
         switch (ribbonMode)
         {
-            case MaschineConfiguration.RIBBON_MODE_PITCH_DOWN:
-            case MaschineConfiguration.RIBBON_MODE_PITCH_UP:
-            case MaschineConfiguration.RIBBON_MODE_PITCH_DOWN_UP:
-            case MaschineConfiguration.RIBBON_MODE_CC_1:
-            case MaschineConfiguration.RIBBON_MODE_CC_11:
+            case PITCH_DOWN:
+            case PITCH_UP:
+            case PITCH_DOWN_UP:
+            case CC_1:
+            case CC_11:
                 this.surface.setRibbonValue (this.ribbonValue);
                 break;
 
-            case MaschineConfiguration.RIBBON_MODE_MASTER_VOLUME:
+            case MASTER_VOLUME:
                 final ITrack t = this.model.getMasterTrack ();
                 this.surface.setRibbonValue (t == null ? 0 : this.model.getValueChanger ().toMidiValue (t.getVolume ()));
                 break;
 
-            case MaschineConfiguration.RIBBON_MODE_NOTE_REPEAT_PERIOD:
-            case MaschineConfiguration.RIBBON_MODE_NOTE_REPEAT_LENGTH:
+            case NOTE_REPEAT_PERIOD:
+            case NOTE_REPEAT_LENGTH:
                 final Resolution [] values = Resolution.values ();
                 final INoteRepeat noteRepeat = this.surface.getMidiInput ().getDefaultNoteInput ().getNoteRepeat ();
-                final double value = ribbonMode == MaschineConfiguration.RIBBON_MODE_NOTE_REPEAT_PERIOD ? noteRepeat.getPeriod () : noteRepeat.getNoteLength ();
+                final double value = ribbonMode == RibbonMode.NOTE_REPEAT_PERIOD ? noteRepeat.getPeriod () : noteRepeat.getNoteLength ();
                 final int index = Resolution.getMatch (value);
                 this.surface.setRibbonValue ((int) Math.round (index * 127.0 / (values.length - 1)));
                 break;
