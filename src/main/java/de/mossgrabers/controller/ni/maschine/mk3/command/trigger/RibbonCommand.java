@@ -4,6 +4,7 @@
 
 package de.mossgrabers.controller.ni.maschine.mk3.command.trigger;
 
+import de.mossgrabers.controller.ni.maschine.core.RibbonMode;
 import de.mossgrabers.controller.ni.maschine.mk3.MaschineConfiguration;
 import de.mossgrabers.controller.ni.maschine.mk3.command.continuous.TouchstripCommand;
 import de.mossgrabers.controller.ni.maschine.mk3.controller.MaschineControlSurface;
@@ -11,6 +12,8 @@ import de.mossgrabers.framework.command.core.AbstractTriggerCommand;
 import de.mossgrabers.framework.controller.ContinuousID;
 import de.mossgrabers.framework.daw.IModel;
 import de.mossgrabers.framework.utils.ButtonEvent;
+
+import java.util.List;
 
 
 /**
@@ -20,7 +23,8 @@ import de.mossgrabers.framework.utils.ButtonEvent;
  */
 public class RibbonCommand extends AbstractTriggerCommand<MaschineControlSurface, MaschineConfiguration>
 {
-    private final int [] modes;
+    private final List<RibbonMode> modes;
+    private RibbonMode             activeMode;
 
 
     /**
@@ -30,10 +34,12 @@ public class RibbonCommand extends AbstractTriggerCommand<MaschineControlSurface
      * @param surface The surface
      * @param modes The modes to toggle
      */
-    public RibbonCommand (final IModel model, final MaschineControlSurface surface, final int... modes)
+    public RibbonCommand (final IModel model, final MaschineControlSurface surface, final List<RibbonMode> modes)
     {
         super (model, surface);
+
         this.modes = modes;
+        this.activeMode = modes.get (0);
     }
 
 
@@ -45,21 +51,22 @@ public class RibbonCommand extends AbstractTriggerCommand<MaschineControlSurface
             return;
 
         final MaschineConfiguration configuration = this.surface.getConfiguration ();
-        final int ribbonMode = configuration.getRibbonMode ();
+        final RibbonMode ribbonMode = configuration.getRibbonMode ();
 
-        int m = this.modes[0];
+        RibbonMode m = this.activeMode;
 
-        for (int i = 0; i < this.modes.length; i++)
+        // If the current mode is part of these modes select the next one
+        int index = this.modes.indexOf (ribbonMode);
+        if (index >= 0)
         {
-            if (this.modes[i] == ribbonMode)
-            {
-                if (i + 1 < this.modes.length)
-                    m = this.modes[i + 1];
-                break;
-            }
+            index++;
+            if (index >= this.modes.size ())
+                index = 0;
+            m = this.modes.get (index);
         }
+        this.activeMode = m;
 
-        this.surface.getDisplay ().notify (MaschineConfiguration.RIBBON_MODE_VALUES.get (m));
+        this.surface.getDisplay ().notify (m.getName ());
         configuration.setRibbonMode (m);
 
         ((TouchstripCommand) this.surface.getContinuous (ContinuousID.CROSSFADER).getTouchCommand ()).resetRibbonValue (m);

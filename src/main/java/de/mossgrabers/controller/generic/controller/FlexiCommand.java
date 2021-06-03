@@ -726,12 +726,14 @@ public enum FlexiCommand
     ACTION_8(CommandCategory.ACTION, "Action: Execute Action 8", true);
 
 
-    private static final String []                 NAMES            = new String [FlexiCommand.values ().length];
-    private static final Map<String, FlexiCommand> NAME_COMMAND_MAP = new HashMap<> (FlexiCommand.values ().length);
+    private static final String []                 NAMES;
+    private static final Map<String, FlexiCommand> NAME_COMMAND_MAP;
 
     static
     {
         final FlexiCommand [] values = FlexiCommand.values ();
+        NAMES = new String [values.length];
+        NAME_COMMAND_MAP = new HashMap<> (values.length);
         for (int i = 0; i < values.length; i++)
         {
             NAMES[i] = values[i].getName ();

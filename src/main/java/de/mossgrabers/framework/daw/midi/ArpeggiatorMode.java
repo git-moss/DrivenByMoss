@@ -4,6 +4,10 @@
 
 package de.mossgrabers.framework.daw.midi;
 
+import java.util.HashMap;
+import java.util.Map;
+
+
 /**
  * An arpeggiator mode.
  *
@@ -47,6 +51,18 @@ public enum ArpeggiatorMode
     PINKY_DOWN("Pinky Down");
 
 
+    private static final String []                    NAMES         = new String [ArpeggiatorMode.values ().length];
+    private static final Map<String, ArpeggiatorMode> NAME_MODE_MAP = new HashMap<> (ArpeggiatorMode.values ().length);
+    static
+    {
+        final ArpeggiatorMode [] values = ArpeggiatorMode.values ();
+        for (int i = 0; i < values.length; i++)
+        {
+            NAMES[i] = values[i].getName ();
+            NAME_MODE_MAP.put (NAMES[i], values[i]);
+        }
+    }
+
     private final String name;
 
 
@@ -73,6 +89,17 @@ public enum ArpeggiatorMode
 
 
     /**
+     * Get the names of all commands.
+     *
+     * @return The names
+     */
+    public static String [] getNames ()
+    {
+        return NAMES;
+    }
+
+
+    /**
      * Lookup an arpeggiator mode.
      *
      * @param value The value of the mode
@@ -92,12 +119,7 @@ public enum ArpeggiatorMode
      */
     public static ArpeggiatorMode lookupByName (final String name)
     {
-        final ArpeggiatorMode [] values = ArpeggiatorMode.values ();
-        for (final ArpeggiatorMode mode: values)
-        {
-            if (mode.getName ().equals (name))
-                return mode;
-        }
-        return values[0];
+        final ArpeggiatorMode c = NAME_MODE_MAP.get (name);
+        return c == null ? ArpeggiatorMode.values ()[0] : c;
     }
 }
