@@ -55,7 +55,7 @@ public class AftertouchViewCommand<S extends IControlSurface<C>, C extends Confi
             case -2:
                 // Translate notes of Poly aftertouch to current note mapping and only allow
                 // aftertouch for pads with notes
-                final int n = this.view.getKeyManager ().map (note);
+                final int n = this.view.getKeyManager ().getMidiNoteFromGrid (note);
                 if (n == -1)
                     return;
                 this.surface.sendMidiEvent (0xA0, n, value);
