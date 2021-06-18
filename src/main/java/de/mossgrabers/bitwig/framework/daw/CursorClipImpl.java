@@ -751,8 +751,7 @@ public class CursorClipImpl implements INoteClip
     @Override
     public void updateRecurrenceLength (final int channel, final int step, final int row, final int recurrenceLength)
     {
-        // TODO 2 needs to be 1 but does currently crash
-        final int rl = Math.min (8, Math.max (2, recurrenceLength));
+        final int rl = Math.min (8, Math.max (1, recurrenceLength));
         final StepInfoImpl stepInfo = this.getUpdateableStep (channel, step, row);
         stepInfo.setRecurrenceLength (rl);
         if (!this.editStep.isSet ())
