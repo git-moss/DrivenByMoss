@@ -4,8 +4,9 @@
 
 package de.mossgrabers.controller.ni.maschine.jam.command.trigger;
 
+import de.mossgrabers.controller.ni.maschine.core.command.trigger.EncoderMode;
+import de.mossgrabers.controller.ni.maschine.core.controller.EncoderModeManager;
 import de.mossgrabers.controller.ni.maschine.jam.MaschineJamConfiguration;
-import de.mossgrabers.controller.ni.maschine.jam.controller.EncoderModeManager;
 import de.mossgrabers.controller.ni.maschine.jam.controller.MaschineJamControlSurface;
 import de.mossgrabers.framework.command.core.AbstractTriggerCommand;
 import de.mossgrabers.framework.daw.IModel;
@@ -20,9 +21,9 @@ import de.mossgrabers.framework.view.Views;
  */
 public class MaschineJamViewCommand extends AbstractTriggerCommand<MaschineJamControlSurface, MaschineJamConfiguration>
 {
-    private final EncoderModeManager encoderManager;
-    private final EncoderMode        encoderMode;
-    private boolean                  wasUsed = false;
+    private final EncoderModeManager<MaschineJamControlSurface, MaschineJamConfiguration> encoderManager;
+    private final EncoderMode                                                             encoderMode;
+    private boolean                                                                       wasUsed = false;
 
 
     /**
@@ -33,7 +34,7 @@ public class MaschineJamViewCommand extends AbstractTriggerCommand<MaschineJamCo
      * @param model The model
      * @param surface The surface
      */
-    public MaschineJamViewCommand (final EncoderModeManager encoderManager, final EncoderMode encoderMode, final IModel model, final MaschineJamControlSurface surface)
+    public MaschineJamViewCommand (final EncoderModeManager<MaschineJamControlSurface, MaschineJamConfiguration> encoderManager, final EncoderMode encoderMode, final IModel model, final MaschineJamControlSurface surface)
     {
         super (model, surface);
 

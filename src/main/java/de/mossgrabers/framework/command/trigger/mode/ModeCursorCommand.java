@@ -71,10 +71,16 @@ public class ModeCursorCommand<S extends IControlSurface<C>, C extends Configura
         switch (this.direction)
         {
             case LEFT:
-                this.scrollLeft ();
+                if (this.surface.isShiftPressed ())
+                    this.scrollDown ();
+                else
+                    this.scrollLeft ();
                 break;
             case RIGHT:
-                this.scrollRight ();
+                if (this.surface.isShiftPressed ())
+                    this.scrollUp ();
+                else
+                    this.scrollRight ();
                 break;
             case UP:
                 this.scrollUp ();

@@ -55,7 +55,7 @@ public class ColorView<S extends IControlSurface<C>, C extends Configuration> ex
         this.pageSize = padGrid.getCols () * padGrid.getRows ();
 
         final DAWColor [] dawColors = DAWColor.values ();
-        this.pages = 1 + ((dawColors.length - 1) / this.pageSize);
+        this.pages = 1 + (dawColors.length - 1) / this.pageSize;
     }
 
 
@@ -124,7 +124,7 @@ public class ColorView<S extends IControlSurface<C>, C extends Configuration> ex
             switch (this.mode)
             {
                 case MODE_TRACK:
-                    ITrack cursorTrack = this.model.getCursorTrack ();
+                    final ITrack cursorTrack = this.model.getCursorTrack ();
                     if (cursorTrack.doesExist ())
                         cursorTrack.setColor (entry);
                     else

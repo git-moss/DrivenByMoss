@@ -34,7 +34,7 @@ public class ShiftView extends BaseView
 
     /** {@inheritDoc} */
     @Override
-    protected void executeFunction (final int padIndex)
+    public void executeFunction (final int padIndex)
     {
         final IDisplay display = this.surface.getDisplay ();
         final IClip clip = this.model.getCursorClip ();

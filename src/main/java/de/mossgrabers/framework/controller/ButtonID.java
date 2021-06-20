@@ -39,9 +39,11 @@ public enum ButtonID
     NUDGE_PLUS,
     /** The button for Nudge negative. */
     NUDGE_MINUS,
-    /** The Tap Tempo button button. */
+    /** The Tap Tempo button. */
     TAP_TEMPO,
-    /** The Metronome button button. */
+    /** The Swing button. */
+    SWING,
+    /** The Metronome button. */
     METRONOME,
     /** Toggle scrubbing. */
     SCRUB,
@@ -56,16 +58,16 @@ public enum ButtonID
     FIXED_LENGTH,
     /** The duplicate button. */
     DUPLICATE,
-    /** The Delete button button. */
+    /** The Delete button. */
     DELETE,
-    /** The Double button button. */
+    /** The Double button. */
     DOUBLE,
-    /** The Quantize button button. */
+    /** The Quantize button. */
     QUANTIZE,
     /** The Audio conversion button. */
     CONVERT,
 
-    /** The Undo button button. */
+    /** The Undo button. */
     UNDO,
     /** Button to redo a button. */
     REDO,
@@ -85,21 +87,21 @@ public enum ButtonID
     /** The Page right button. */
     PAGE_RIGHT,
 
-    /** The Device button button. */
+    /** The Device button. */
     DEVICE,
-    /** The Track button button. */
+    /** The Track button. */
     TRACK,
     /** The master track button. */
     MASTERTRACK,
-    /** The Volume button button. */
+    /** The Volume button. */
     VOLUME,
-    /** The Pan and Send button button. */
+    /** The Pan and Send button. */
     PAN_SEND,
     /** The button for sends. */
     SENDS,
-    /** The Clip button button. */
+    /** The Clip button. */
     CLIP,
-    /** The Browse button button. */
+    /** The Browse button. */
     BROWSE,
     /** The button to toggle markers. */
     MARKER,
@@ -108,24 +110,24 @@ public enum ButtonID
     /** The zoom state button. */
     ZOOM,
 
-    /** The Shift button button. */
+    /** The Shift button. */
     SHIFT,
-    /** The Select button button. */
+    /** The Select button. */
     SELECT,
-    /** The Control button button. */
+    /** The Control button. */
     CONTROL,
-    /** The Alternate button button. */
+    /** The Alternate button. */
     ALT,
-    /** The Enter (confirm) button button. */
+    /** The Enter (confirm) button. */
     ENTER,
-    /** The Cancel button button. */
+    /** The Cancel button. */
     CANCEL,
 
     /** The edit Scales button. */
     SCALES,
     /** The accent button. */
     ACCENT,
-    /** The Layout button button. */
+    /** The Layout button. */
     LAYOUT,
 
     /** The button for User. */
@@ -141,6 +143,11 @@ public enum ButtonID
     SOLO,
     /** The button for arming record. */
     REC_ARM,
+
+    /** The button to copy something. */
+    COPY,
+    /** The button to paste something copied. */
+    PASTE,
 
     /** The add effect button. */
     ADD_EFFECT,

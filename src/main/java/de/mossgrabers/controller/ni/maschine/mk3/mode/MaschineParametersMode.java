@@ -4,8 +4,10 @@
 
 package de.mossgrabers.controller.ni.maschine.mk3.mode;
 
+import de.mossgrabers.controller.ni.maschine.Maschine;
 import de.mossgrabers.controller.ni.maschine.mk3.MaschineConfiguration;
 import de.mossgrabers.controller.ni.maschine.mk3.controller.MaschineControlSurface;
+import de.mossgrabers.framework.controller.ButtonID;
 import de.mossgrabers.framework.controller.display.ITextDisplay;
 import de.mossgrabers.framework.daw.IModel;
 import de.mossgrabers.framework.daw.data.ICursorDevice;
@@ -33,7 +35,7 @@ public class MaschineParametersMode extends SelectedDeviceMode<MaschineControlSu
      */
     public MaschineParametersMode (final MaschineControlSurface surface, final IModel model)
     {
-        super (surface, model, surface.getMaschine ().hasMCUDisplay () ? DEFAULT_KNOB_IDS : null);
+        super (surface, model, surface.getMaschine ().hasMCUDisplay () ? DEFAULT_KNOB_IDS : null, () -> false);
 
         if (surface.getMaschine ().hasMCUDisplay ())
             this.setParameterProvider (new BankParameterProvider (this.bank));
@@ -86,6 +88,13 @@ public class MaschineParametersMode extends SelectedDeviceMode<MaschineControlSu
     @Override
     public void selectPreviousItem ()
     {
+        if (this.surface.getMaschine () == Maschine.STUDIO && this.surface.isPressed (ButtonID.TRACK))
+        {
+            this.model.getCursorDevice ().selectPrevious ();
+            this.mvHelper.notifySelectedDevice ();
+            return;
+        }
+
         final int selectedParameter = this.getSelectedParameter ();
         if (selectedParameter == 0)
         {
@@ -101,6 +110,13 @@ public class MaschineParametersMode extends SelectedDeviceMode<MaschineControlSu
     @Override
     public void selectNextItem ()
     {
+        if (this.surface.getMaschine () == Maschine.STUDIO && this.surface.isPressed (ButtonID.TRACK))
+        {
+            this.model.getCursorDevice ().selectNext ();
+            this.mvHelper.notifySelectedDevice ();
+            return;
+        }
+
         final int selectedParameter = this.getSelectedParameter ();
         if (selectedParameter == 7)
         {

@@ -2,12 +2,12 @@
 // (c) 2017-2021
 // Licensed under LGPLv3 - http://www.gnu.org/licenses/lgpl-3.0.txt
 
-package de.mossgrabers.controller.ni.maschine.jam.command.trigger;
+package de.mossgrabers.controller.ni.maschine.core.command.trigger;
 
-import de.mossgrabers.controller.ni.maschine.jam.MaschineJamConfiguration;
-import de.mossgrabers.controller.ni.maschine.jam.controller.EncoderModeManager;
-import de.mossgrabers.controller.ni.maschine.jam.controller.MaschineJamControlSurface;
+import de.mossgrabers.controller.ni.maschine.core.controller.EncoderModeManager;
 import de.mossgrabers.framework.command.core.AbstractTriggerCommand;
+import de.mossgrabers.framework.configuration.Configuration;
+import de.mossgrabers.framework.controller.IControlSurface;
 import de.mossgrabers.framework.daw.IModel;
 import de.mossgrabers.framework.utils.ButtonEvent;
 
@@ -15,12 +15,15 @@ import de.mossgrabers.framework.utils.ButtonEvent;
 /**
  * Support for the NI Maschine controller series.
  *
+ * @param <S> The type of the control surface
+ * @param <C> The type of the configuration
+ *
  * @author J&uuml;rgen Mo&szlig;graber
  */
-public class MaschineJamEncoderCommand extends AbstractTriggerCommand<MaschineJamControlSurface, MaschineJamConfiguration>
+public class MaschineMonitorEncoderCommand<S extends IControlSurface<C>, C extends Configuration> extends AbstractTriggerCommand<S, C>
 {
-    private final EncoderModeManager manager;
-    private EncoderMode              encoderMode;
+    protected final EncoderModeManager<S, C> manager;
+    protected EncoderMode                    encoderMode;
 
 
     /**
@@ -31,7 +34,7 @@ public class MaschineJamEncoderCommand extends AbstractTriggerCommand<MaschineJa
      * @param model The model
      * @param surface The surface
      */
-    public MaschineJamEncoderCommand (final EncoderModeManager manager, final EncoderMode encoderMode, final IModel model, final MaschineJamControlSurface surface)
+    public MaschineMonitorEncoderCommand (final EncoderModeManager<S, C> manager, final EncoderMode encoderMode, final IModel model, final S surface)
     {
         super (model, surface);
 
@@ -56,6 +59,6 @@ public class MaschineJamEncoderCommand extends AbstractTriggerCommand<MaschineJa
      */
     public boolean isLit ()
     {
-        return this.manager.isActiveEncoderMode (this.encoderMode);
+        return this.manager.isLit (this.encoderMode);
     }
 }

@@ -37,7 +37,7 @@ public class OverdubCommand<S extends IControlSurface<C>, C extends Configuratio
     @Override
     public void executeNormal (final ButtonEvent event)
     {
-        if (event == ButtonEvent.DOWN)
+        if (event == ButtonEvent.UP)
             this.model.getTransport ().toggleOverdub ();
     }
 
@@ -46,7 +46,7 @@ public class OverdubCommand<S extends IControlSurface<C>, C extends Configuratio
     @Override
     public void executeShifted (final ButtonEvent event)
     {
-        if (event == ButtonEvent.DOWN)
+        if (event == ButtonEvent.UP)
             this.shiftedFunction ();
     }
 

@@ -2,7 +2,7 @@
 // (c) 2017-2021
 // Licensed under LGPLv3 - http://www.gnu.org/licenses/lgpl-3.0.txt
 
-package de.mossgrabers.controller.ni.maschine.jam.command.trigger;
+package de.mossgrabers.controller.ni.maschine.core.command.trigger;
 
 /**
  * The mode of the encoder knob.
@@ -11,14 +11,22 @@ package de.mossgrabers.controller.ni.maschine.jam.command.trigger;
  */
 public enum EncoderMode
 {
+    /** No mode is active. */
+    OFF,
     /** The encoder controls the volume of the master channel. */
     MASTER_VOLUME,
+    /** The encoder controls the panorama of the master channel. */
+    MASTER_PANORAMA,
     /** The encoder controls the volume of the selected track. */
     SELECTED_TRACK_VOLUME,
+    /** The encoder controls the panorama of the selected track. */
+    SELECTED_TRACK_PANORAMA,
     /** The encoder controls the volume of the metronome. */
     METRONOME_VOLUME,
     /** The encoder controls the volume of the cue output. */
     CUE_VOLUME,
+    /** The encoder controls the mix of the cue output. */
+    CUE_MIX,
     /** The encoder controls the tempo - temporary mode. */
     TEMPORARY_TEMPO,
     /** The encoder controls the swing - temporary mode. */

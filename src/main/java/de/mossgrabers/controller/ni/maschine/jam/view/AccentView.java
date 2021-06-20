@@ -5,8 +5,9 @@
 package de.mossgrabers.controller.ni.maschine.jam.view;
 
 import de.mossgrabers.controller.ni.maschine.core.MaschineColorManager;
+import de.mossgrabers.controller.ni.maschine.core.command.trigger.EncoderMode;
+import de.mossgrabers.controller.ni.maschine.core.view.IMaschineView;
 import de.mossgrabers.controller.ni.maschine.jam.MaschineJamConfiguration;
-import de.mossgrabers.controller.ni.maschine.jam.command.trigger.EncoderMode;
 import de.mossgrabers.controller.ni.maschine.jam.controller.MaschineJamControlSurface;
 import de.mossgrabers.framework.controller.grid.IPadGrid;
 import de.mossgrabers.framework.daw.IModel;
@@ -21,7 +22,7 @@ import de.mossgrabers.framework.view.Views;
  *
  * @author J&uuml;rgen Mo&szlig;graber
  */
-public class AccentView extends AbstractView<MaschineJamControlSurface, MaschineJamConfiguration> implements IMaschineJamView
+public class AccentView extends AbstractView<MaschineJamControlSurface, MaschineJamConfiguration> implements IMaschineView
 {
     private final static int BLOCK_SIZE = 4;
 
@@ -98,7 +99,7 @@ public class AccentView extends AbstractView<MaschineJamControlSurface, Maschine
         if (activeID == Views.CONTROL)
             return;
         final IView view = viewManager.get (activeID);
-        if (view instanceof IMaschineJamView)
-            ((IMaschineJamView) view).changeOption (temporaryEncoderMode, control);
+        if (view instanceof IMaschineView)
+            ((IMaschineView) view).changeOption (temporaryEncoderMode, control);
     }
 }
