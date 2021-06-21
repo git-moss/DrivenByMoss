@@ -8,16 +8,17 @@ import de.mossgrabers.controller.novation.launchkey.maxi.LaunchkeyMk3Configurati
 import de.mossgrabers.controller.novation.launchkey.maxi.controller.LaunchkeyMk3ColorManager;
 import de.mossgrabers.controller.novation.launchkey.maxi.controller.LaunchkeyMk3ControlSurface;
 import de.mossgrabers.framework.controller.ButtonID;
+import de.mossgrabers.framework.controller.color.ColorEx;
 import de.mossgrabers.framework.controller.grid.IPadGrid;
-import de.mossgrabers.framework.daw.DAWColor;
 import de.mossgrabers.framework.daw.IModel;
 import de.mossgrabers.framework.daw.INoteClip;
 import de.mossgrabers.framework.daw.IStepInfo;
-import de.mossgrabers.framework.daw.data.IChannel;
 import de.mossgrabers.framework.daw.data.IDrumDevice;
 import de.mossgrabers.framework.utils.ButtonEvent;
 import de.mossgrabers.framework.view.AbstractDrumView;
 import de.mossgrabers.framework.view.Views;
+
+import java.util.Optional;
 
 
 /**
@@ -41,6 +42,9 @@ public class DrumView extends AbstractDrumView<LaunchkeyMk3ControlSurface, Launc
     public DrumView (final LaunchkeyMk3ControlSurface surface, final IModel model)
     {
         super ("Drum", surface, model, 2, DrumView.NUM_DISPLAY_COLS, true);
+
+        this.allRows = 2;
+        this.firstPad = ButtonID.PAD17;
     }
 
 
@@ -48,12 +52,12 @@ public class DrumView extends AbstractDrumView<LaunchkeyMk3ControlSurface, Launc
     @Override
     public void onGridNote (final int note, final int velocity)
     {
-        if (!this.isActive ())
+        if (!this.model.canSelectedTrackHoldNotes ())
             return;
 
-        final int index = note - 36;
-
+        final int index = note - DRUM_START_KEY;
         final int offsetY = this.scales.getDrumOffset ();
+
         if (this.isPlayMode)
         {
             this.setSelectedPad (index, velocity); // 0-16
@@ -63,8 +67,12 @@ public class DrumView extends AbstractDrumView<LaunchkeyMk3ControlSurface, Launc
         }
         else
         {
-            if (velocity != 0)
-                this.getClip ().toggleStep (this.configuration.getMidiEditChannel (), index < 8 ? index + 8 : index - 8, offsetY + this.getSelectedPad (), this.configuration.isAccentActive () ? this.configuration.getFixedAccentValue () : velocity);
+            if (this.isActive ())
+            {
+                final int x = index % this.numColumns;
+                final int y = index / this.numColumns;
+                this.handleSequencerArea (index, x, y, offsetY, velocity);
+            }
         }
     }
 
@@ -105,7 +113,6 @@ public class DrumView extends AbstractDrumView<LaunchkeyMk3ControlSurface, Launc
         // Paint the sequencer steps
         final INoteClip clip = this.getClip ();
         final int step = clip.getCurrentStep ();
-        final int stepColor = this.getStepColor (primary);
         final int hiStep = this.isInXRange (step) ? step % this.sequencerSteps : -1;
         final int offsetY = this.scales.getDrumOffset ();
         final int editMidiChannel = this.configuration.getMidiEditChannel ();
@@ -117,35 +124,10 @@ public class DrumView extends AbstractDrumView<LaunchkeyMk3ControlSurface, Launc
             final boolean hilite = col == hiStep;
             final int x = col % GRID_COLUMNS;
             final int y = col / GRID_COLUMNS;
-            padGrid.lightEx (x, y, getSequencerPadColor (isSet, hilite, stepColor));
+
+            final Optional<ColorEx> rowColor = this.getDrumPadColor (primary, this.selectedPad);
+            padGrid.lightEx (x, y, this.getStepColor (isSet, hilite, rowColor));
         }
-    }
-
-
-    private int getStepColor (final IDrumDevice primary)
-    {
-        final int selPad = this.getSelectedPad ();
-        if (selPad < 0)
-            return LaunchkeyMk3ColorManager.LAUNCHKEY_COLOR_BLACK;
-
-        // If we cannot get the color from the drum pads use a default color
-        if (!primary.getName ().equals ("Drum Machine"))
-            return LaunchkeyMk3ColorManager.LAUNCHKEY_COLOR_BLUE;
-
-        // Exists and active?
-        final IChannel drumPad = primary.getDrumPadBank ().getItem (selPad);
-        if (!drumPad.doesExist () || !drumPad.isActivated ())
-            return LaunchkeyMk3ColorManager.LAUNCHKEY_COLOR_BLACK;
-
-        return this.model.getColorManager ().getColorIndex (DAWColor.getColorIndex (drumPad.getColor ()));
-    }
-
-
-    private static int getSequencerPadColor (final int isSet, final boolean hilite, final int stepColor)
-    {
-        if (isSet > 0)
-            return hilite ? LaunchkeyMk3ColorManager.LAUNCHKEY_COLOR_GREEN : stepColor;
-        return hilite ? LaunchkeyMk3ColorManager.LAUNCHKEY_COLOR_GREEN : LaunchkeyMk3ColorManager.LAUNCHKEY_COLOR_BLACK;
     }
 
 
