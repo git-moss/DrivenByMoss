@@ -103,7 +103,7 @@ public class DefaultValueChanger implements IValueChanger
     @Override
     public int decode (final int control)
     {
-        return control <= 61 ? control : control - 128;
+        return control <= 64 ? control : control - 128;
     }
 
 
