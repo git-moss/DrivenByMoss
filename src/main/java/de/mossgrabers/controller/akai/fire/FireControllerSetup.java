@@ -72,8 +72,6 @@ import de.mossgrabers.framework.mode.Modes;
 import de.mossgrabers.framework.observer.IParametersAdjustObserver;
 import de.mossgrabers.framework.view.Views;
 
-import java.util.function.IntSupplier;
-
 
 /**
  * Support for the Akai Fire controller.
@@ -281,7 +279,7 @@ public class FireControllerSetup extends AbstractControllerSetup<FireControlSurf
             return 0;
         }, FireColorManager.BUTTON_STATE_ON2, FireColorManager.BUTTON_STATE_HI2, ColorManager.BUTTON_STATE_HI);
 
-        this.addButton (ButtonID.SHIFT, "SHIFT", new ToggleShiftViewCommand<> (this.model, surface), FireControlSurface.FIRE_SHIFT, (IntSupplier) null, FireColorManager.BUTTON_STATE_ON2, FireColorManager.BUTTON_STATE_HI2);
+        this.addButton (ButtonID.SHIFT, "SHIFT", new ToggleShiftViewCommand<> (this.model, surface), FireControlSurface.FIRE_SHIFT, () -> viewManager.isActive (Views.SHIFT) || surface.isShiftPressed () ? 1 : 0, FireColorManager.BUTTON_STATE_ON2, FireColorManager.BUTTON_STATE_HI2);
         this.addButton (ButtonID.ALT, "ALT", (event, velocity) -> {
 
             final IMode activeMode = modeManager.getActive ();

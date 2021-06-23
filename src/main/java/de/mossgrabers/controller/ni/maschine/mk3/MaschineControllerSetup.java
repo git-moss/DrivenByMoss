@@ -305,7 +305,7 @@ public class MaschineControllerSetup extends AbstractControllerSetup<MaschineCon
         final ViewManager viewManager = surface.getViewManager ();
         final ITransport t = this.model.getTransport ();
 
-        this.addButton (ButtonID.SHIFT, "SHIFT", new ToggleShiftViewCommand<> (this.model, surface), this.maschine == Maschine.STUDIO ? MaschineControlSurface.NAVIGATE_BACK : -1);
+        this.addButton (ButtonID.SHIFT, "SHIFT", new ToggleShiftViewCommand<> (this.model, surface), this.maschine == Maschine.STUDIO ? MaschineControlSurface.NAVIGATE_BACK : -1, () -> viewManager.isActive (Views.SHIFT) || surface.isShiftPressed ());
 
         // Transport
         this.addButton (ButtonID.PLAY, "PLAY", new PlayCommand<> (this.model, surface), MaschineControlSurface.PLAY, t::isPlaying);

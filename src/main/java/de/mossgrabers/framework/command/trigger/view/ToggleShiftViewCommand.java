@@ -23,6 +23,10 @@ import de.mossgrabers.framework.view.Views;
  */
 public class ToggleShiftViewCommand<S extends IControlSurface<C>, C extends Configuration> extends AbstractTriggerCommand<S, C>
 {
+    private final ViewManager viewManager;
+    private boolean           isCombi;
+
+
     /**
      * Constructor.
      *
@@ -32,6 +36,8 @@ public class ToggleShiftViewCommand<S extends IControlSurface<C>, C extends Conf
     public ToggleShiftViewCommand (final IModel model, final S surface)
     {
         super (model, surface);
+
+        this.viewManager = this.surface.getViewManager ();
     }
 
 
@@ -39,14 +45,25 @@ public class ToggleShiftViewCommand<S extends IControlSurface<C>, C extends Conf
     @Override
     public void execute (final ButtonEvent event, final int velocity)
     {
-        if (event == ButtonEvent.LONG)
-            return;
+        switch (event)
+        {
+            case DOWN:
+                this.isCombi = false;
+                if (this.viewManager.isActive (Views.SHIFT))
+                    this.viewManager.restore ();
+                else
+                    this.viewManager.setTemporary (Views.SHIFT);
+                break;
 
-        final ViewManager viewManager = this.surface.getViewManager ();
-        if (event == ButtonEvent.DOWN && !viewManager.isActive (Views.SHIFT))
-            viewManager.setTemporary (Views.SHIFT);
-        else if (event == ButtonEvent.UP && viewManager.isActive (Views.SHIFT))
-            viewManager.restore ();
+            case LONG:
+                this.isCombi = true;
+                return;
+
+            case UP:
+                if (this.isCombi && this.viewManager.isActive (Views.SHIFT))
+                    this.viewManager.restore ();
+                break;
+        }
 
         this.surface.setKnobSensitivityIsSlow (this.surface.isShiftPressed ());
     }

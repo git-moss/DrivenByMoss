@@ -424,7 +424,7 @@ public class PlayView extends AbstractPlayView<MaschineControlSurface, MaschineC
         for (int s = step - 1; s >= 0; s--)
         {
             final int x = s % this.numColumns;
-            final int y = 3 - s / this.numColumns;
+            final int y = s / this.numColumns;
             final int pad = y * this.numColumns + x;
             final IHwButton button = this.surface.getButton (ButtonID.get (ButtonID.PAD1, pad));
             if (button.isLongPressed ())

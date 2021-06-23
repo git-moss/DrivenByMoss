@@ -290,7 +290,7 @@ public class LaunchpadControllerSetup extends AbstractControllerSetup<LaunchpadC
 
         final ButtonSetup buttonSetup = this.definition.getButtonSetup ();
 
-        this.addButton (ButtonID.SHIFT, "Shift", new LaunchpadToggleShiftViewCommand (this.model, surface), buttonSetup.get (LaunchpadButton.SHIFT).getControl (), () -> surface.isShiftPressed () ? LaunchpadColorManager.LAUNCHPAD_COLOR_WHITE : LaunchpadColorManager.LAUNCHPAD_COLOR_GREY_LO);
+        this.addButton (ButtonID.SHIFT, "Shift", new LaunchpadToggleShiftViewCommand (this.model, surface), buttonSetup.get (LaunchpadButton.SHIFT).getControl (), () -> viewManager.isActive (Views.SHIFT) || surface.isShiftPressed () ? LaunchpadColorManager.LAUNCHPAD_COLOR_WHITE : LaunchpadColorManager.LAUNCHPAD_COLOR_GREY_LO);
 
         final LaunchpadCursorCommand commandUp = new LaunchpadCursorCommand (Direction.UP, this.model, surface);
         this.addButton (ButtonID.UP, "Up", commandUp, buttonSetup.get (LaunchpadButton.ARROW_UP).getControl (), () -> commandUp.canScroll () ? this.getViewColor () : LaunchpadColorManager.LAUNCHPAD_COLOR_BLACK);
