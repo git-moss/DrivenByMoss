@@ -8,16 +8,17 @@ import de.mossgrabers.controller.novation.slmkiii.SLMkIIIConfiguration;
 import de.mossgrabers.controller.novation.slmkiii.controller.SLMkIIIColorManager;
 import de.mossgrabers.controller.novation.slmkiii.controller.SLMkIIIControlSurface;
 import de.mossgrabers.framework.controller.ButtonID;
+import de.mossgrabers.framework.controller.color.ColorEx;
 import de.mossgrabers.framework.controller.grid.IPadGrid;
-import de.mossgrabers.framework.daw.DAWColor;
 import de.mossgrabers.framework.daw.IModel;
 import de.mossgrabers.framework.daw.INoteClip;
-import de.mossgrabers.framework.daw.data.IChannel;
 import de.mossgrabers.framework.daw.data.IDrumDevice;
 import de.mossgrabers.framework.featuregroup.ModeManager;
 import de.mossgrabers.framework.mode.Modes;
 import de.mossgrabers.framework.utils.ButtonEvent;
 import de.mossgrabers.framework.view.AbstractDrumView;
+
+import java.util.Optional;
 
 
 /**
@@ -41,6 +42,8 @@ public class DrumView extends AbstractDrumView<SLMkIIIControlSurface, SLMkIIICon
     public DrumView (final SLMkIIIControlSurface surface, final IModel model)
     {
         super ("Drum", surface, model, 2, DrumView.NUM_DISPLAY_COLS, true);
+
+        this.allRows = 2;
     }
 
 
@@ -48,12 +51,12 @@ public class DrumView extends AbstractDrumView<SLMkIIIControlSurface, SLMkIIICon
     @Override
     public void onGridNote (final int note, final int velocity)
     {
-        if (!this.isActive ())
+        if (!this.model.canSelectedTrackHoldNotes ())
             return;
 
-        final int index = note - 36;
-
+        final int index = note - DRUM_START_KEY;
         final int offsetY = this.scales.getDrumOffset ();
+
         if (this.isPlayMode)
         {
             this.setSelectedPad (index, velocity); // 0-16
@@ -63,8 +66,12 @@ public class DrumView extends AbstractDrumView<SLMkIIIControlSurface, SLMkIIICon
         }
         else
         {
-            if (velocity != 0)
-                this.getClip ().toggleStep (this.configuration.getMidiEditChannel (), index < 8 ? index + 8 : index - 8, offsetY + this.getSelectedPad (), this.configuration.isAccentActive () ? this.configuration.getFixedAccentValue () : velocity);
+            if (this.isActive ())
+            {
+                final int x = index % this.numColumns;
+                final int y = index / this.numColumns;
+                this.handleSequencerArea (index, x, y, offsetY, velocity);
+            }
         }
     }
 
@@ -105,7 +112,6 @@ public class DrumView extends AbstractDrumView<SLMkIIIControlSurface, SLMkIIICon
         // Paint the sequencer steps
         final INoteClip clip = this.getClip ();
         final int step = clip.getCurrentStep ();
-        final int stepColor = this.getStepColor (primary);
         final int hiStep = this.isInXRange (step) ? step % this.sequencerSteps : -1;
         final int offsetY = this.scales.getDrumOffset ();
         final int editMidiChannel = this.configuration.getMidiEditChannel ();
@@ -116,35 +122,10 @@ public class DrumView extends AbstractDrumView<SLMkIIIControlSurface, SLMkIIICon
             final boolean hilite = col == hiStep;
             final int x = col % GRID_COLUMNS;
             final int y = col / GRID_COLUMNS;
-            padGrid.lightEx (x, y, getSequencerPadColor (isSet, hilite, stepColor));
+
+            final Optional<ColorEx> rowColor = this.getDrumPadColor (primary, this.selectedPad);
+            padGrid.lightEx (x, y, this.getStepColor (isSet, hilite, rowColor));
         }
-    }
-
-
-    private int getStepColor (final IDrumDevice primary)
-    {
-        final int selPad = this.getSelectedPad ();
-        if (selPad < 0)
-            return SLMkIIIColorManager.SLMKIII_BLACK;
-
-        // If we cannot get the color from the drum pads use a default color
-        if (!primary.getName ().equals ("Drum Machine"))
-            return SLMkIIIColorManager.SLMKIII_BLUE;
-
-        // Exists and active?
-        final IChannel drumPad = primary.getDrumPadBank ().getItem (selPad);
-        if (!drumPad.doesExist () || !drumPad.isActivated ())
-            return SLMkIIIColorManager.SLMKIII_BLACK;
-
-        return this.model.getColorManager ().getColorIndex (DAWColor.getColorIndex (drumPad.getColor ()));
-    }
-
-
-    private static int getSequencerPadColor (final int isSet, final boolean hilite, final int stepColor)
-    {
-        if (isSet > 0)
-            return hilite ? SLMkIIIColorManager.SLMKIII_GREEN : stepColor;
-        return hilite ? SLMkIIIColorManager.SLMKIII_GREEN : SLMkIIIColorManager.SLMKIII_BLACK;
     }
 
 

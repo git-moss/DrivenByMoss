@@ -2,17 +2,18 @@
 // (c) 2017-2021
 // Licensed under LGPLv3 - http://www.gnu.org/licenses/lgpl-3.0.txt
 
-package de.mossgrabers.controller.ni.maschine.jam.controller;
+package de.mossgrabers.controller.ni.maschine.core.controller;
 
-import de.mossgrabers.controller.ni.maschine.jam.MaschineJamConfiguration;
-import de.mossgrabers.controller.ni.maschine.jam.command.trigger.EncoderMode;
-import de.mossgrabers.controller.ni.maschine.jam.view.IMaschineJamView;
+import de.mossgrabers.controller.ni.maschine.core.command.trigger.EncoderMode;
+import de.mossgrabers.controller.ni.maschine.core.view.IMaschineView;
 import de.mossgrabers.framework.MVHelper;
 import de.mossgrabers.framework.command.continuous.PlayPositionCommand;
 import de.mossgrabers.framework.command.continuous.SwingCommand;
 import de.mossgrabers.framework.command.continuous.TempoCommand;
 import de.mossgrabers.framework.command.core.ContinuousCommand;
-import de.mossgrabers.framework.controller.hardware.IHwRelativeKnob;
+import de.mossgrabers.framework.configuration.Configuration;
+import de.mossgrabers.framework.controller.IControlSurface;
+import de.mossgrabers.framework.controller.hardware.IHwContinuousControl;
 import de.mossgrabers.framework.daw.IBrowser;
 import de.mossgrabers.framework.daw.IModel;
 import de.mossgrabers.framework.daw.IProject;
@@ -30,43 +31,41 @@ import java.util.Optional;
 /**
  * Manages the active encoder mode.
  *
+ * @param <S> The type of the control surface
+ * @param <C> The type of the configuration
+ *
  * @author J&uuml;rgen Mo&szlig;graber
  */
-public class EncoderModeManager implements ContinuousCommand
+public class EncoderModeManager<S extends IControlSurface<C>, C extends Configuration> implements ContinuousCommand
 {
-    private static final Map<EncoderMode, String> MODE_LABELS         = new EnumMap<> (EncoderMode.class);
-    private static final Map<EncoderMode, String> TOGGLED_MODE_LABELS = new EnumMap<> (EncoderMode.class);
+    private static final Map<EncoderMode, String> MODE_LABELS = new EnumMap<> (EncoderMode.class);
     static
     {
+        MODE_LABELS.put (EncoderMode.OFF, "Off");
         MODE_LABELS.put (EncoderMode.MASTER_VOLUME, "Master: Volume");
+        MODE_LABELS.put (EncoderMode.MASTER_PANORAMA, "Master: Panorama");
         MODE_LABELS.put (EncoderMode.SELECTED_TRACK_VOLUME, "Selected track: Volume");
+        MODE_LABELS.put (EncoderMode.SELECTED_TRACK_PANORAMA, "Selected track: Panorama");
         MODE_LABELS.put (EncoderMode.METRONOME_VOLUME, "Metronome: Volume");
         MODE_LABELS.put (EncoderMode.CUE_VOLUME, "Cue: Volume");
+        MODE_LABELS.put (EncoderMode.CUE_MIX, "Cue: Mix");
         MODE_LABELS.put (EncoderMode.TEMPORARY_TEMPO, "Tempo");
         MODE_LABELS.put (EncoderMode.TEMPORARY_SWING, "Swing");
         MODE_LABELS.put (EncoderMode.TEMPORARY_PLAY_POSITION, "Play Position");
-
-        TOGGLED_MODE_LABELS.put (EncoderMode.MASTER_VOLUME, "Master: Panorama");
-        TOGGLED_MODE_LABELS.put (EncoderMode.SELECTED_TRACK_VOLUME, "Selected track: Panorama");
-        TOGGLED_MODE_LABELS.put (EncoderMode.METRONOME_VOLUME, "Metronome: Volume");
-        TOGGLED_MODE_LABELS.put (EncoderMode.CUE_VOLUME, "Cue: Mix");
-        TOGGLED_MODE_LABELS.put (EncoderMode.TEMPORARY_TEMPO, "Tempo");
-        TOGGLED_MODE_LABELS.put (EncoderMode.TEMPORARY_SWING, "Swing");
-        TOGGLED_MODE_LABELS.put (EncoderMode.TEMPORARY_PLAY_POSITION, "Play Position");
     }
 
-    private final IHwRelativeKnob                                                          encoder;
-    private final IModel                                                                   model;
-    private final MaschineJamControlSurface                                                surface;
-    private final MVHelper<MaschineJamControlSurface, MaschineJamConfiguration>            mvHelper;
+    protected final IHwContinuousControl    encoder;
+    protected final IModel                  model;
+    protected final S                       surface;
+    protected final MVHelper<S, C>          mvHelper;
 
-    private EncoderMode                                                                    activeEncoderMode    = null;
-    private EncoderMode                                                                    temporaryEncoderMode = null;
-    private boolean                                                                        isFunctionToggled    = false;
+    private EncoderMode                     activeEncoderMode    = null;
+    private EncoderMode                     temporaryEncoderMode = null;
+    private boolean                         isFunctionToggled    = false;
 
-    private final TempoCommand<MaschineJamControlSurface, MaschineJamConfiguration>        tempoCommand;
-    private final SwingCommand<MaschineJamControlSurface, MaschineJamConfiguration>        swingCommand;
-    private final PlayPositionCommand<MaschineJamControlSurface, MaschineJamConfiguration> playPositionCommand;
+    private final TempoCommand<S, C>        tempoCommand;
+    private final SwingCommand<S, C>        swingCommand;
+    private final PlayPositionCommand<S, C> playPositionCommand;
 
 
     /**
@@ -76,7 +75,7 @@ public class EncoderModeManager implements ContinuousCommand
      * @param model The model
      * @param surface The controller surface
      */
-    public EncoderModeManager (final IHwRelativeKnob encoder, final IModel model, final MaschineJamControlSurface surface)
+    public EncoderModeManager (final IHwContinuousControl encoder, final IModel model, final S surface)
     {
         this.encoder = encoder;
         this.model = model;
@@ -172,12 +171,17 @@ public class EncoderModeManager implements ContinuousCommand
         final IParameter parameter;
         switch (this.activeEncoderMode)
         {
+            case OFF:
+                parameter = null;
+                break;
+
             case SELECTED_TRACK_VOLUME:
+            case SELECTED_TRACK_PANORAMA:
                 final Optional<ITrack> selectedTrack = this.model.getTrackBank ().getSelectedItem ();
                 if (selectedTrack.isEmpty ())
                     return;
                 final ITrack t = selectedTrack.get ();
-                parameter = this.isFunctionToggled ? t.getPanParameter () : t.getVolumeParameter ();
+                parameter = this.isFunctionToggled || this.activeEncoderMode == EncoderMode.SELECTED_TRACK_PANORAMA ? t.getPanParameter () : t.getVolumeParameter ();
                 break;
 
             case METRONOME_VOLUME:
@@ -185,20 +189,27 @@ public class EncoderModeManager implements ContinuousCommand
                 break;
 
             case CUE_VOLUME:
+            case CUE_MIX:
                 final IProject project = this.model.getProject ();
-                parameter = this.isFunctionToggled ? project.getCueMixParameter () : project.getCueVolumeParameter ();
+                parameter = this.isFunctionToggled || this.activeEncoderMode == EncoderMode.CUE_MIX ? project.getCueMixParameter () : project.getCueVolumeParameter ();
                 break;
 
             default:
             case MASTER_VOLUME:
+            case MASTER_PANORAMA:
                 final IMasterTrack masterTrack = this.model.getMasterTrack ();
-                parameter = this.isFunctionToggled ? masterTrack.getPanParameter () : masterTrack.getVolumeParameter ();
+                parameter = this.isFunctionToggled || this.activeEncoderMode == EncoderMode.MASTER_PANORAMA ? masterTrack.getPanParameter () : masterTrack.getVolumeParameter ();
                 break;
         }
 
         this.encoder.bind (parameter);
-        final Map<EncoderMode, String> labels = this.isFunctionToggled ? TOGGLED_MODE_LABELS : MODE_LABELS;
-        this.mvHelper.delayDisplay ( () -> labels.get (this.activeEncoderMode));
+        this.notifyMode ();
+    }
+
+
+    protected void notifyMode ()
+    {
+        this.mvHelper.delayDisplay ( () -> MODE_LABELS.get (this.activeEncoderMode));
     }
 
 
@@ -209,7 +220,7 @@ public class EncoderModeManager implements ContinuousCommand
      */
     private void handleTrackChange (final boolean isSelected)
     {
-        if (!isSelected || this.activeEncoderMode != EncoderMode.SELECTED_TRACK_VOLUME)
+        if (!isSelected || this.activeEncoderMode != EncoderMode.SELECTED_TRACK_VOLUME && this.activeEncoderMode != EncoderMode.SELECTED_TRACK_PANORAMA)
             return;
         final Optional<ITrack> selectedTrack = this.model.getTrackBank ().getSelectedItem ();
         if (selectedTrack.isPresent ())
@@ -243,8 +254,8 @@ public class EncoderModeManager implements ContinuousCommand
             case TEMPORARY_LOCK:
             case TEMPORARY_TUNE:
                 final IView activeView = this.surface.getViewManager ().getActive ();
-                if (activeView instanceof IMaschineJamView jamView)
-                    jamView.changeOption (this.temporaryEncoderMode, value);
+                if (activeView instanceof IMaschineView maschineView)
+                    maschineView.changeOption (this.temporaryEncoderMode, value);
                 break;
 
             case TEMPORARY_BROWSER:
@@ -288,5 +299,17 @@ public class EncoderModeManager implements ContinuousCommand
             browser.selectNextResult ();
         else
             browser.selectPreviousResult ();
+    }
+
+
+    /**
+     * Test if the given encoder mode should be lit.
+     *
+     * @param encoderMode The encoder mode to test
+     * @return True if it should be lit
+     */
+    public boolean isLit (final EncoderMode encoderMode)
+    {
+        return this.isActiveEncoderMode (encoderMode);
     }
 }

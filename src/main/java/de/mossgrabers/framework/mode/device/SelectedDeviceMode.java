@@ -14,6 +14,7 @@ import de.mossgrabers.framework.daw.data.IParameter;
 import de.mossgrabers.framework.featuregroup.AbstractMode;
 
 import java.util.List;
+import java.util.function.BooleanSupplier;
 
 
 /**
@@ -40,6 +41,21 @@ public class SelectedDeviceMode<S extends IControlSurface<C>, C extends Configur
     public SelectedDeviceMode (final S surface, final IModel model, final List<ContinuousID> knobs)
     {
         super ("Parameters", surface, model, false, model.getCursorDevice ().getParameterBank (), knobs);
+    }
+
+
+    /**
+     * Constructor.
+     *
+     * @param surface The control surface
+     * @param model The model
+     * @param knobs The IDs of the knob to control this mode
+     * @param isAlternativeFunction Callback function to execute the secondary function, e.g. a
+     *            shift button
+     */
+    public SelectedDeviceMode (final S surface, final IModel model, final List<ContinuousID> knobs, final BooleanSupplier isAlternativeFunction)
+    {
+        super ("Parameters", surface, model, false, model.getCursorDevice ().getParameterBank (), knobs, isAlternativeFunction);
     }
 
 

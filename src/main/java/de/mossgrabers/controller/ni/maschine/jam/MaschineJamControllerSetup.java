@@ -5,11 +5,12 @@
 package de.mossgrabers.controller.ni.maschine.jam;
 
 import de.mossgrabers.controller.ni.maschine.core.MaschineColorManager;
+import de.mossgrabers.controller.ni.maschine.core.command.trigger.EncoderMode;
 import de.mossgrabers.controller.ni.maschine.core.command.trigger.GroupButtonCommand;
-import de.mossgrabers.controller.ni.maschine.jam.command.trigger.EncoderMode;
+import de.mossgrabers.controller.ni.maschine.core.command.trigger.MaschineMonitorEncoderCommand;
+import de.mossgrabers.controller.ni.maschine.core.controller.EncoderModeManager;
 import de.mossgrabers.controller.ni.maschine.jam.command.trigger.MaschineJamAuxCommand;
 import de.mossgrabers.controller.ni.maschine.jam.command.trigger.MaschineJamControlCommand;
-import de.mossgrabers.controller.ni.maschine.jam.command.trigger.MaschineJamEncoderCommand;
 import de.mossgrabers.controller.ni.maschine.jam.command.trigger.MaschineJamGridCommand;
 import de.mossgrabers.controller.ni.maschine.jam.command.trigger.MaschineJamLevelCommand;
 import de.mossgrabers.controller.ni.maschine.jam.command.trigger.MaschineJamMacroCommand;
@@ -23,7 +24,6 @@ import de.mossgrabers.controller.ni.maschine.jam.command.trigger.MaschineJamSwin
 import de.mossgrabers.controller.ni.maschine.jam.command.trigger.MaschineJamTapTempoCommand;
 import de.mossgrabers.controller.ni.maschine.jam.command.trigger.MaschineJamViewButtonCommand;
 import de.mossgrabers.controller.ni.maschine.jam.command.trigger.MaschineJamViewCommand;
-import de.mossgrabers.controller.ni.maschine.jam.controller.EncoderModeManager;
 import de.mossgrabers.controller.ni.maschine.jam.controller.FaderConfig;
 import de.mossgrabers.controller.ni.maschine.jam.controller.MaschineJamControlSurface;
 import de.mossgrabers.controller.ni.maschine.jam.mode.IMaschineJamMode;
@@ -101,7 +101,7 @@ import java.util.Optional;
  */
 public class MaschineJamControllerSetup extends AbstractControllerSetup<MaschineJamControlSurface, MaschineJamConfiguration>
 {
-    private static final Views [] SEQUENCER_VIEWS =
+    private static final Views []                                                   SEQUENCER_VIEWS =
     {
         Views.SEQUENCER,
         Views.POLY_SEQUENCER,
@@ -111,7 +111,7 @@ public class MaschineJamControllerSetup extends AbstractControllerSetup<Maschine
         Views.DRUM8
     };
 
-    private static final Views [] PLAY_VIEWS      =
+    private static final Views []                                                   PLAY_VIEWS      =
     {
         Views.PLAY,
         Views.CHORDS,
@@ -119,7 +119,7 @@ public class MaschineJamControllerSetup extends AbstractControllerSetup<Maschine
         Views.DRUM64
     };
 
-    private EncoderModeManager    encoderManager;
+    private EncoderModeManager<MaschineJamControlSurface, MaschineJamConfiguration> encoderManager;
 
 
     /**
@@ -360,17 +360,16 @@ public class MaschineJamControllerSetup extends AbstractControllerSetup<Maschine
         }
 
         final IHwRelativeKnob knob = this.addRelativeKnob (ContinuousID.MASTER_KNOB, "Encoder", null, MaschineJamControlSurface.KNOB_TURN);
-
-        this.encoderManager = new EncoderModeManager (knob, this.model, surface);
+        this.encoderManager = new EncoderModeManager<> (knob, this.model, surface);
         knob.bind (this.encoderManager);
 
-        final MaschineJamEncoderCommand encoderCommandMaster = new MaschineJamEncoderCommand (this.encoderManager, EncoderMode.MASTER_VOLUME, this.model, surface);
+        final MaschineMonitorEncoderCommand<MaschineJamControlSurface, MaschineJamConfiguration> encoderCommandMaster = new MaschineMonitorEncoderCommand<> (this.encoderManager, EncoderMode.MASTER_VOLUME, this.model, surface);
         this.addButton (ButtonID.MASTERTRACK, "MST", encoderCommandMaster, MaschineJamControlSurface.MASTER, encoderCommandMaster::isLit);
-        final MaschineJamEncoderCommand encoderCommandSelectedTrack = new MaschineJamEncoderCommand (this.encoderManager, EncoderMode.SELECTED_TRACK_VOLUME, this.model, surface);
+        final MaschineMonitorEncoderCommand<MaschineJamControlSurface, MaschineJamConfiguration> encoderCommandSelectedTrack = new MaschineMonitorEncoderCommand<> (this.encoderManager, EncoderMode.SELECTED_TRACK_VOLUME, this.model, surface);
         this.addButton (ButtonID.ALT, "GRP", encoderCommandSelectedTrack, MaschineJamControlSurface.GROUP, encoderCommandSelectedTrack::isLit);
-        final MaschineJamEncoderCommand encoderCommandMetronome = new MaschineJamEncoderCommand (this.encoderManager, EncoderMode.METRONOME_VOLUME, this.model, surface);
+        final MaschineMonitorEncoderCommand<MaschineJamControlSurface, MaschineJamConfiguration> encoderCommandMetronome = new MaschineMonitorEncoderCommand<> (this.encoderManager, EncoderMode.METRONOME_VOLUME, this.model, surface);
         this.addButton (ButtonID.METRONOME, "IN 1", encoderCommandMetronome, MaschineJamControlSurface.IN, encoderCommandMetronome::isLit);
-        final MaschineJamEncoderCommand encoderCommandCue = new MaschineJamEncoderCommand (this.encoderManager, EncoderMode.CUE_VOLUME, this.model, surface);
+        final MaschineMonitorEncoderCommand<MaschineJamControlSurface, MaschineJamConfiguration> encoderCommandCue = new MaschineMonitorEncoderCommand<> (this.encoderManager, EncoderMode.CUE_VOLUME, this.model, surface);
         this.addButton (ButtonID.MIXER, "HEADPHONE", encoderCommandCue, MaschineJamControlSurface.HEADPHONE, encoderCommandCue::isLit);
 
         // Activate the default mode

@@ -65,7 +65,7 @@ public abstract class AbstractMaschineControlSurface<C extends Configuration> ex
     {
         if (this.maschine.hasShift ())
             return this.isSysexShift;
-        return this.isPressed (ButtonID.STOP);
+        return this.isPressed (this.maschine == Maschine.STUDIO ? ButtonID.SHIFT : ButtonID.STOP);
     }
 
 

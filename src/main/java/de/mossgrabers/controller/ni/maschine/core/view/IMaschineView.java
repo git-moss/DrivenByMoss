@@ -2,9 +2,9 @@
 // (c) 2017-2021
 // Licensed under LGPLv3 - http://www.gnu.org/licenses/lgpl-3.0.txt
 
-package de.mossgrabers.controller.ni.maschine.jam.view;
+package de.mossgrabers.controller.ni.maschine.core.view;
 
-import de.mossgrabers.controller.ni.maschine.jam.command.trigger.EncoderMode;
+import de.mossgrabers.controller.ni.maschine.core.command.trigger.EncoderMode;
 
 
 /**
@@ -12,7 +12,7 @@ import de.mossgrabers.controller.ni.maschine.jam.command.trigger.EncoderMode;
  *
  * @author J&uuml;rgen Mo&szlig;graber
  */
-public interface IMaschineJamView
+public interface IMaschineView
 {
     /**
      * Change an option of the view.

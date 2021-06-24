@@ -38,8 +38,11 @@ public enum ContinuousID
     /** The crossfader. */
     CROSSFADER,
 
-    /** The Mastertrack knob. */
+    /** The master track knob. */
     MASTER_KNOB,
+
+    /** A monitor knob. */
+    MONITOR_KNOB,
 
     /** Knob 1. */
     KNOB1,

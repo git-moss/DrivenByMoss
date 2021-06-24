@@ -4,8 +4,9 @@
 
 package de.mossgrabers.controller.ni.maschine.jam.command.trigger;
 
+import de.mossgrabers.controller.ni.maschine.core.command.trigger.EncoderMode;
+import de.mossgrabers.controller.ni.maschine.core.controller.EncoderModeManager;
 import de.mossgrabers.controller.ni.maschine.jam.MaschineJamConfiguration;
-import de.mossgrabers.controller.ni.maschine.jam.controller.EncoderModeManager;
 import de.mossgrabers.controller.ni.maschine.jam.controller.MaschineJamControlSurface;
 import de.mossgrabers.framework.command.trigger.clip.QuantizeCommand;
 import de.mossgrabers.framework.daw.IModel;
@@ -19,7 +20,7 @@ import de.mossgrabers.framework.utils.ButtonEvent;
  */
 public class MaschineJamGridCommand extends QuantizeCommand<MaschineJamControlSurface, MaschineJamConfiguration>
 {
-    private final EncoderModeManager encoderManager;
+    private final EncoderModeManager<MaschineJamControlSurface, MaschineJamConfiguration> encoderManager;
 
 
     /**
@@ -29,7 +30,7 @@ public class MaschineJamGridCommand extends QuantizeCommand<MaschineJamControlSu
      * @param model The model
      * @param surface The surface
      */
-    public MaschineJamGridCommand (final EncoderModeManager encoderManager, final IModel model, final MaschineJamControlSurface surface)
+    public MaschineJamGridCommand (final EncoderModeManager<MaschineJamControlSurface, MaschineJamConfiguration> encoderManager, final IModel model, final MaschineJamControlSurface surface)
     {
         super (model, surface);
 

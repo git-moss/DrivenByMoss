@@ -76,7 +76,7 @@ public class TrackImpl extends ChannelImpl implements ITrack
         track.position ().markInterested ();
         track.isGroup ().markInterested ();
         track.arm ().markInterested ();
-        track.monitor ().markInterested ();
+        track.isMonitoring ().markInterested ();
         track.autoMonitor ().markInterested ();
         track.crossFadeMode ().markInterested ();
         track.canHoldNoteData ().markInterested ();
@@ -104,7 +104,7 @@ public class TrackImpl extends ChannelImpl implements ITrack
         Util.setIsSubscribed (this.track.position (), enable);
         Util.setIsSubscribed (this.track.isGroup (), enable);
         Util.setIsSubscribed (this.track.arm (), enable);
-        Util.setIsSubscribed (this.track.monitor (), enable);
+        Util.setIsSubscribed (this.track.isMonitoring (), enable);
         Util.setIsSubscribed (this.track.autoMonitor (), enable);
         Util.setIsSubscribed (this.track.crossFadeMode (), enable);
         Util.setIsSubscribed (this.track.canHoldNoteData (), enable);
@@ -207,7 +207,7 @@ public class TrackImpl extends ChannelImpl implements ITrack
     @Override
     public boolean isMonitor ()
     {
-        return this.track.monitor ().get ();
+        return this.track.isMonitoring ().get ();
     }
 
 
@@ -215,7 +215,7 @@ public class TrackImpl extends ChannelImpl implements ITrack
     @Override
     public void setMonitor (final boolean value)
     {
-        this.track.monitor ().set (value);
+        this.track.isMonitoring ().set (value);
     }
 
 
@@ -223,7 +223,7 @@ public class TrackImpl extends ChannelImpl implements ITrack
     @Override
     public void toggleMonitor ()
     {
-        this.track.monitor ().toggle ();
+        this.track.isMonitoring ().toggle ();
     }
 
 
@@ -231,7 +231,7 @@ public class TrackImpl extends ChannelImpl implements ITrack
     @Override
     public boolean isAutoMonitor ()
     {
-        return this.track.autoMonitor ().get ();
+        return this.track.mon.autoMonitor ().get ();
     }
 
 

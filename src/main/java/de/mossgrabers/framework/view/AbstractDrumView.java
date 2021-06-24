@@ -70,6 +70,7 @@ public abstract class AbstractDrumView<S extends IControlSurface<C>, C extends C
     protected int              selectedPad;
     protected int              scrollPosition        = -1;
 
+    protected ButtonID         firstPad              = ButtonID.PAD1;
     protected ButtonID         buttonSelect          = ButtonID.SELECT;
     protected ButtonID         buttonBrowse          = ButtonID.BROWSE;
     protected ButtonID         buttonSolo            = ButtonID.SOLO;
@@ -273,12 +274,28 @@ public abstract class AbstractDrumView<S extends IControlSurface<C>, C extends C
         final int channel = this.configuration.getMidiEditChannel ();
         final int step = this.numColumns * (this.allRows - 1 - y) + x;
         final int note = offsetY + this.selectedPad;
-        final int vel = this.configuration.isAccentActive () ? this.configuration.getFixedAccentValue () : this.surface.getButton (ButtonID.get (ButtonID.PAD1, index)).getPressedVelocity ();
+        final int vel = this.getVelocity (index);
 
         if (this.handleSequencerAreaButtonCombinations (clip, channel, step, note, vel))
             return;
 
         clip.toggleStep (channel, step, note, vel);
+    }
+
+
+    /**
+     * Get the velocity of the played pad. Either it is fixed in the settings or the stored value
+     * from the down event.
+     *
+     * @param index The index of the pad
+     * @return The velocity
+     */
+    protected int getVelocity (final int index)
+    {
+        if (this.configuration.isAccentActive ())
+            return this.configuration.getFixedAccentValue ();
+        final IHwButton button = this.surface.getButton (ButtonID.get (this.firstPad, index));
+        return button.getPressedVelocity ();
     }
 
 
@@ -313,7 +330,7 @@ public abstract class AbstractDrumView<S extends IControlSurface<C>, C extends C
             final int x = s % this.numColumns;
             final int y = this.allRows - 1 - s / this.numColumns;
             final int pad = y * this.numColumns + x;
-            final IHwButton button = this.surface.getButton (ButtonID.get (ButtonID.PAD1, pad));
+            final IHwButton button = this.surface.getButton (ButtonID.get (this.firstPad, pad));
             if (button.isLongPressed ())
             {
                 button.setConsumed ();

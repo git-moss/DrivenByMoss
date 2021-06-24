@@ -74,7 +74,7 @@ public class ConfiguredRecordCommand<S extends IControlSurface<C>, C extends Con
     @Override
     public void execute (final ButtonEvent event, final int velocity)
     {
-        if (event != ButtonEvent.DOWN)
+        if (event != ButtonEvent.UP)
             return;
 
         final C configuration = this.surface.getConfiguration ();

@@ -112,6 +112,14 @@ public class SLMkIIIColorManager extends ColorManager
         this.registerColorIndex (AbstractFeatureGroup.BUTTON_COLOR_ON, SLMKIII_WHITE);
         this.registerColorIndex (AbstractMode.BUTTON_COLOR_HI, SLMKIII_WHITE_HALF);
 
+        this.registerColorIndex (AbstractSequencerView.COLOR_STEP_HILITE_NO_CONTENT, SLMkIIIColorManager.SLMKIII_DARK_GREEN);
+        this.registerColorIndex (AbstractSequencerView.COLOR_STEP_HILITE_CONTENT, SLMkIIIColorManager.SLMKIII_GREEN);
+        this.registerColorIndex (AbstractSequencerView.COLOR_NO_CONTENT, SLMkIIIColorManager.SLMKIII_BLACK);
+        this.registerColorIndex (AbstractSequencerView.COLOR_CONTENT, SLMkIIIColorManager.SLMKIII_BLUE);
+        this.registerColorIndex (AbstractSequencerView.COLOR_CONTENT_CONT, SLMkIIIColorManager.SLMKIII_DARK_BLUE);
+        this.registerColorIndex (AbstractSequencerView.COLOR_PAGE, SLMkIIIColorManager.SLMKIII_WHITE);
+        this.registerColorIndex (AbstractSequencerView.COLOR_ACTIVE_PAGE, SLMkIIIColorManager.SLMKIII_GREEN);
+        this.registerColorIndex (AbstractSequencerView.COLOR_SELECTED_PAGE, SLMkIIIColorManager.SLMKIII_BLUE_METAL);
         this.registerColorIndex (AbstractSequencerView.COLOR_RESOLUTION, SLMkIIIColorManager.SLMKIII_ORANGE_HALF);
         this.registerColorIndex (AbstractSequencerView.COLOR_RESOLUTION_SELECTED, SLMkIIIColorManager.SLMKIII_ORANGE);
         this.registerColorIndex (AbstractSequencerView.COLOR_RESOLUTION_OFF, SLMKIII_BLACK);

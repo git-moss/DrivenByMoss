@@ -4,8 +4,9 @@
 
 package de.mossgrabers.controller.ni.maschine.jam.view;
 
+import de.mossgrabers.controller.ni.maschine.core.command.trigger.EncoderMode;
+import de.mossgrabers.controller.ni.maschine.core.view.IMaschineView;
 import de.mossgrabers.controller.ni.maschine.jam.MaschineJamConfiguration;
-import de.mossgrabers.controller.ni.maschine.jam.command.trigger.EncoderMode;
 import de.mossgrabers.controller.ni.maschine.jam.controller.MaschineJamControlSurface;
 import de.mossgrabers.framework.command.trigger.Direction;
 import de.mossgrabers.framework.controller.ButtonID;
@@ -21,7 +22,7 @@ import de.mossgrabers.framework.view.Views;
  *
  * @author J&uuml;rgen Mo&szlig;graber
  */
-public class PlayView extends AbstractPlayView<MaschineJamControlSurface, MaschineJamConfiguration> implements IMaschineJamView, IViewNavigation
+public class PlayView extends AbstractPlayView<MaschineJamControlSurface, MaschineJamConfiguration> implements IMaschineView, IViewNavigation
 {
     /**
      * Constructor.

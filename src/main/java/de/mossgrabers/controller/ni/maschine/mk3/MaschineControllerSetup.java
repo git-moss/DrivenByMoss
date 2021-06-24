@@ -8,11 +8,14 @@ import de.mossgrabers.controller.mackie.mcu.controller.MCUDisplay;
 import de.mossgrabers.controller.ni.maschine.Maschine;
 import de.mossgrabers.controller.ni.maschine.core.MaschineColorManager;
 import de.mossgrabers.controller.ni.maschine.core.RibbonMode;
+import de.mossgrabers.controller.ni.maschine.core.command.trigger.EncoderMode;
 import de.mossgrabers.controller.ni.maschine.core.command.trigger.GroupButtonCommand;
+import de.mossgrabers.controller.ni.maschine.core.command.trigger.MaschineMonitorEncoderCommand;
 import de.mossgrabers.controller.ni.maschine.mk3.command.continuous.MainKnobRowModeCommand;
 import de.mossgrabers.controller.ni.maschine.mk3.command.continuous.TouchstripCommand;
 import de.mossgrabers.controller.ni.maschine.mk3.command.trigger.AddDeviceCommand;
 import de.mossgrabers.controller.ni.maschine.mk3.command.trigger.KeyboardCommand;
+import de.mossgrabers.controller.ni.maschine.mk3.command.trigger.MaschineCursorCommand;
 import de.mossgrabers.controller.ni.maschine.mk3.command.trigger.MaschineSendSelectCommand;
 import de.mossgrabers.controller.ni.maschine.mk3.command.trigger.MaschineStopCommand;
 import de.mossgrabers.controller.ni.maschine.mk3.command.trigger.PadModeCommand;
@@ -24,6 +27,7 @@ import de.mossgrabers.controller.ni.maschine.mk3.command.trigger.TempoCommand;
 import de.mossgrabers.controller.ni.maschine.mk3.command.trigger.ToggleFixedVelCommand;
 import de.mossgrabers.controller.ni.maschine.mk3.command.trigger.VolumePanSendCommand;
 import de.mossgrabers.controller.ni.maschine.mk3.controller.MaschineControlSurface;
+import de.mossgrabers.controller.ni.maschine.mk3.controller.StudioEncoderModeManager;
 import de.mossgrabers.controller.ni.maschine.mk3.mode.BrowseMode;
 import de.mossgrabers.controller.ni.maschine.mk3.mode.DrumConfigurationMode;
 import de.mossgrabers.controller.ni.maschine.mk3.mode.EditNoteMode;
@@ -49,6 +53,7 @@ import de.mossgrabers.controller.ni.maschine.mk3.view.SoloView;
 import de.mossgrabers.framework.command.aftertouch.AftertouchViewCommand;
 import de.mossgrabers.framework.command.continuous.KnobRowModeCommand;
 import de.mossgrabers.framework.command.core.NopCommand;
+import de.mossgrabers.framework.command.core.TriggerCommand;
 import de.mossgrabers.framework.command.trigger.BrowserCommand;
 import de.mossgrabers.framework.command.trigger.Direction;
 import de.mossgrabers.framework.command.trigger.application.LayoutCommand;
@@ -76,6 +81,7 @@ import de.mossgrabers.framework.controller.ButtonID;
 import de.mossgrabers.framework.controller.ContinuousID;
 import de.mossgrabers.framework.controller.ISetupFactory;
 import de.mossgrabers.framework.controller.hardware.BindType;
+import de.mossgrabers.framework.controller.hardware.IHwAbsoluteKnob;
 import de.mossgrabers.framework.controller.hardware.IHwRelativeKnob;
 import de.mossgrabers.framework.controller.valuechanger.DefaultValueChanger;
 import de.mossgrabers.framework.daw.IHost;
@@ -83,6 +89,7 @@ import de.mossgrabers.framework.daw.ITransport;
 import de.mossgrabers.framework.daw.ModelSetup;
 import de.mossgrabers.framework.daw.data.ITrack;
 import de.mossgrabers.framework.daw.data.bank.ITrackBank;
+import de.mossgrabers.framework.daw.data.empty.EmptyTrack;
 import de.mossgrabers.framework.daw.midi.IMidiAccess;
 import de.mossgrabers.framework.daw.midi.IMidiInput;
 import de.mossgrabers.framework.daw.midi.IMidiOutput;
@@ -100,6 +107,7 @@ import de.mossgrabers.framework.view.Views;
 import java.util.Arrays;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Optional;
 import java.util.Set;
 
 
@@ -130,7 +138,10 @@ public class MaschineControllerSetup extends AbstractControllerSetup<MaschineCon
     private static final List<RibbonMode> RIBBON_MODES_MASTER_VOLUME = Arrays.asList (RibbonMode.MASTER_VOLUME);
     private static final List<RibbonMode> RIBBON_MODES_NOTE_REPEAT   = Arrays.asList (RibbonMode.NOTE_REPEAT_PERIOD, RibbonMode.NOTE_REPEAT_LENGTH);
 
+    private StudioEncoderModeManager      encoderManager;
+
     private final Maschine                maschine;
+    private ShiftView                     shiftView;
 
 
     /**
@@ -263,7 +274,9 @@ public class MaschineControllerSetup extends AbstractControllerSetup<MaschineCon
         }
 
         viewManager.register (Views.REPEAT_NOTE, new NoteRepeatView (surface, this.model));
-        viewManager.register (Views.SHIFT, new ShiftView (surface, this.model));
+
+        this.shiftView = new ShiftView (surface, this.model);
+        viewManager.register (Views.SHIFT, this.shiftView);
     }
 
 
@@ -292,19 +305,19 @@ public class MaschineControllerSetup extends AbstractControllerSetup<MaschineCon
         final ViewManager viewManager = surface.getViewManager ();
         final ITransport t = this.model.getTransport ();
 
-        this.addButton (ButtonID.SHIFT, "SHIFT", new ToggleShiftViewCommand<> (this.model, surface), -1);
+        this.addButton (ButtonID.SHIFT, "SHIFT", new ToggleShiftViewCommand<> (this.model, surface), this.maschine == Maschine.STUDIO ? MaschineControlSurface.NAVIGATE_BACK : -1, () -> viewManager.isActive (Views.SHIFT) || surface.isShiftPressed ());
 
         // Transport
-        this.addButton (ButtonID.PLAY, "Play", new PlayCommand<> (this.model, surface), MaschineControlSurface.PLAY, t::isPlaying);
+        this.addButton (ButtonID.PLAY, "PLAY", new PlayCommand<> (this.model, surface), MaschineControlSurface.PLAY, t::isPlaying);
 
         final ConfiguredRecordCommand<MaschineControlSurface, MaschineConfiguration> recordCommand = new ConfiguredRecordCommand<> (this.model, surface);
-        this.addButton (ButtonID.RECORD, "Record", recordCommand, MaschineControlSurface.REC, recordCommand::isLit);
-        this.addButton (ButtonID.STOP, "Stop", new MaschineStopCommand (this.model, surface), MaschineControlSurface.STOP, () -> !t.isPlaying ());
-        this.addButton (ButtonID.LOOP, "Loop", new ToggleLoopCommand<> (this.model, surface), MaschineControlSurface.RESTART, t::isLoop);
-        this.addButton (ButtonID.DELETE, "Erase", NopCommand.INSTANCE, MaschineControlSurface.ERASE);
+        this.addButton (ButtonID.RECORD, "RECORD", recordCommand, MaschineControlSurface.REC, recordCommand::isLit);
+        this.addButton (ButtonID.STOP, "STOP", new MaschineStopCommand (this.model, surface), MaschineControlSurface.STOP, () -> !t.isPlaying ());
+        this.addButton (ButtonID.LOOP, "LOOP", new ToggleLoopCommand<> (this.model, surface), MaschineControlSurface.RESTART, t::isLoop);
+        this.addButton (ButtonID.DELETE, "ERASE", NopCommand.INSTANCE, MaschineControlSurface.ERASE);
         final MetronomeCommand<MaschineControlSurface, MaschineConfiguration> metroCommand = new MetronomeCommand<> (this.model, surface, false);
         final TapTempoCommand<MaschineControlSurface, MaschineConfiguration> tapTempoCommand = new TapTempoCommand<> (this.model, surface);
-        this.addButton (ButtonID.METRONOME, "Tap/Metro", (event, velocity) -> {
+        this.addButton (ButtonID.TAP_TEMPO, "TAP/METRO", (event, velocity) -> {
             if (event != ButtonEvent.UP)
                 return;
             if (surface.isShiftPressed ())
@@ -316,14 +329,14 @@ public class MaschineControllerSetup extends AbstractControllerSetup<MaschineCon
                 tapTempoCommand.execute (ButtonEvent.DOWN, velocity);
         }, MaschineControlSurface.TAP_METRO, t::isMetronomeOn);
 
-        this.addButton (ButtonID.FLIP, "Follow", (event, velocity) -> {
+        this.addButton (ButtonID.FLIP, this.maschine == Maschine.STUDIO || this.maschine == Maschine.MK2 ? "GRID" : "FOLLOW", (event, velocity) -> {
             if (event != ButtonEvent.UP)
                 return;
             if (viewManager.isActive (Views.DRUM, Views.PLAY))
                 ((DrumView) viewManager.get (Views.DRUM)).toggleGridEditor ();
         }, MaschineControlSurface.FOLLOW, () -> viewManager.isActive (Views.DRUM, Views.PLAY) && ((DrumView) viewManager.get (Views.DRUM)).isGridEditor ());
 
-        this.addButton (ButtonID.NEW, this.maschine.hasCursorKeys () ? "Macro" : "Group", new NewCommand<> (this.model, surface), MaschineControlSurface.GROUP);
+        this.addButton (ButtonID.NEW, this.maschine.hasCursorKeys () ? "MACRO" : "GROUP", new NewCommand<> (this.model, surface), MaschineControlSurface.GROUP);
 
         final AutomationCommand<MaschineControlSurface, MaschineConfiguration> automationCommand = new AutomationCommand<> (this.model, surface)
         {
@@ -334,8 +347,8 @@ public class MaschineControllerSetup extends AbstractControllerSetup<MaschineCon
             }
 
         };
-        this.addButton (ButtonID.AUTOMATION, "Auto", automationCommand, MaschineControlSurface.AUTO, automationCommand::isLit);
-        this.addButton (ButtonID.OVERDUB, "Lock", new OverdubCommand<> (this.model, surface)
+        this.addButton (ButtonID.AUTOMATION, "AUTO", automationCommand, MaschineControlSurface.AUTO, automationCommand::isLit);
+        this.addButton (ButtonID.OVERDUB, this.maschine == Maschine.STUDIO || this.maschine == Maschine.MK2 ? "ENTER" : "LOCK", new OverdubCommand<> (this.model, surface)
         {
             @Override
             protected void shiftedFunction ()
@@ -344,15 +357,15 @@ public class MaschineControllerSetup extends AbstractControllerSetup<MaschineCon
                 super.shiftedFunction ();
             }
         }, MaschineControlSurface.LOCK, () -> surface.isShiftPressed () ? t.isLauncherOverdub () : t.isArrangerOverdub ());
-        this.addButton (ButtonID.REPEAT, "Repeat", new NoteRepeatCommand<> (this.model, surface, this.maschine.hasMCUDisplay ()), MaschineControlSurface.NOTE_REPEAT, this.configuration::isNoteRepeatActive);
+        this.addButton (ButtonID.REPEAT, "NOTE REPEAT", new NoteRepeatCommand<> (this.model, surface, this.maschine.hasMCUDisplay ()), MaschineControlSurface.NOTE_REPEAT, this.configuration::isNoteRepeatActive);
 
         // Ribbon
-        this.addButton (ButtonID.F1, "Pitch", new RibbonCommand (this.model, surface, RIBBON_MODES_PITCH), MaschineControlSurface.PITCH, () -> this.isRibbonMode (new HashSet<> (RIBBON_MODES_PITCH)));
-        this.addButton (ButtonID.F2, "Mod", new RibbonCommand (this.model, surface, RIBBON_MODES_CC), MaschineControlSurface.MOD, () -> this.isRibbonMode (new HashSet<> (RIBBON_MODES_CC)));
-        this.addButton (ButtonID.F3, "Perform", new RibbonCommand (this.model, surface, RIBBON_MODES_MASTER_VOLUME), MaschineControlSurface.PERFORM, () -> this.isRibbonMode (new HashSet<> (RIBBON_MODES_MASTER_VOLUME)));
-        this.addButton (ButtonID.F4, "Notes", new RibbonCommand (this.model, surface, RIBBON_MODES_NOTE_REPEAT), MaschineControlSurface.NOTES, () -> this.isRibbonMode (new HashSet<> (RIBBON_MODES_NOTE_REPEAT)));
+        this.addButton (ButtonID.F1, "PITCH", new RibbonCommand (this.model, surface, RIBBON_MODES_PITCH), MaschineControlSurface.PITCH, () -> this.isRibbonMode (new HashSet<> (RIBBON_MODES_PITCH)));
+        this.addButton (ButtonID.F2, "MOD", new RibbonCommand (this.model, surface, RIBBON_MODES_CC), MaschineControlSurface.MOD, () -> this.isRibbonMode (new HashSet<> (RIBBON_MODES_CC)));
+        this.addButton (ButtonID.F3, "PERFORM", new RibbonCommand (this.model, surface, RIBBON_MODES_MASTER_VOLUME), MaschineControlSurface.PERFORM, () -> this.isRibbonMode (new HashSet<> (RIBBON_MODES_MASTER_VOLUME)));
+        this.addButton (ButtonID.F4, "NOTES", new RibbonCommand (this.model, surface, RIBBON_MODES_NOTE_REPEAT), MaschineControlSurface.NOTES, () -> this.isRibbonMode (new HashSet<> (RIBBON_MODES_NOTE_REPEAT)));
 
-        this.addButton (ButtonID.FADER_TOUCH_1, "Encoder Press", (event, velocity) -> {
+        this.addButton (ButtonID.FADER_TOUCH_1, "ENCODER PRESS", (event, velocity) -> {
 
             if (event != ButtonEvent.DOWN)
                 return;
@@ -372,19 +385,19 @@ public class MaschineControllerSetup extends AbstractControllerSetup<MaschineCon
         }, MaschineControlSurface.ENCODER_PUSH);
 
         // Encoder Modes
-        this.addButton (ButtonID.VOLUME, "Volume", new VolumePanSendCommand (this.model, surface), MaschineControlSurface.VOLUME, () -> Modes.isTrackMode (modeManager.getActiveID ()));
-        this.addButton (ButtonID.TAP_TEMPO, "Swing", new SwingCommand (this.model, surface), MaschineControlSurface.SWING, () -> modeManager.isActive (Modes.POSITION));
-        this.addButton (ButtonID.TEMPO_TOUCH, "Tempo", new TempoCommand (this.model, surface), MaschineControlSurface.TEMPO, () -> modeManager.isActive (Modes.TEMPO));
-        this.addButton (ButtonID.DEVICE, "Plugin", (event, velocity) -> {
+        this.addButton (ButtonID.VOLUME, "VOLUME", new VolumePanSendCommand (this.model, surface), MaschineControlSurface.VOLUME, () -> Modes.isTrackMode (modeManager.getActiveID ()));
+        this.addButton (ButtonID.SWING, "SWING", new SwingCommand (this.model, surface), MaschineControlSurface.SWING, () -> modeManager.isActive (Modes.POSITION));
+        this.addButton (ButtonID.TEMPO_TOUCH, "TEMPO", new TempoCommand (this.model, surface), MaschineControlSurface.TEMPO, () -> modeManager.isActive (Modes.TEMPO));
+        this.addButton (ButtonID.DEVICE, "PLUG-IN", (event, velocity) -> {
 
             if (this.maschine.hasMCUDisplay () || surface.isShiftPressed ())
                 new PanelLayoutCommand<> (this.model, surface).executeNormal (event);
             else
                 new ModeSelectCommand<> (this.model, surface, Modes.DEVICE_PARAMS).execute (event, velocity);
 
-        }, MaschineControlSurface.PLUGIN, () -> modeManager.isActive (Modes.DEVICE_PARAMS));
+        }, MaschineControlSurface.PLUGIN, () -> this.maschine.hasMCUDisplay () || surface.isShiftPressed () ? this.model.getCursorDevice ().isWindowOpen () : modeManager.isActive (Modes.DEVICE_PARAMS));
 
-        this.addButton (ButtonID.DEVICE_ON_OFF, "Sampling", new ConvertCommand<> (this.model, surface)
+        this.addButton (ButtonID.DEVICE_ON_OFF, "SAMPLING", new ConvertCommand<> (this.model, surface)
         {
             @Override
             protected void sliceToSampler ()
@@ -395,9 +408,9 @@ public class MaschineControllerSetup extends AbstractControllerSetup<MaschineCon
         }, MaschineControlSurface.SAMPLING);
 
         // Browser
-        this.addButton (ButtonID.ADD_TRACK, this.maschine.hasCursorKeys () ? "File" : "Project", new ProjectButtonCommand (this.model, surface), MaschineControlSurface.PROJECT);
-        this.addButton (ButtonID.ADD_EFFECT, this.maschine.hasCursorKeys () ? "Settings" : "Favorites", new AddDeviceCommand (this.model, surface), MaschineControlSurface.FAVORITES);
-        this.addButton (ButtonID.BROWSE, "Browser", new BrowserCommand<> (this.model, surface)
+        this.addButton (ButtonID.ADD_TRACK, this.maschine.hasCursorKeys () ? (this.maschine == Maschine.STUDIO || this.maschine == Maschine.MK2 ? "ALL/SAVE" : "FILE") : "PROJECT", new ProjectButtonCommand (this.model, surface), MaschineControlSurface.PROJECT);
+        this.addButton (ButtonID.ADD_EFFECT, this.maschine.hasCursorKeys () ? "SETTINGS" : "FAVORITES", new AddDeviceCommand (this.model, surface), MaschineControlSurface.FAVORITES);
+        this.addButton (ButtonID.BROWSE, this.maschine == Maschine.STUDIO || this.maschine == Maschine.MK2 ? "BROWSE" : "BROWSER", new BrowserCommand<> (this.model, surface, ButtonID.SHIFT, ButtonID.TRACK)
         {
             /** {@inheritDoc} */
             @Override
@@ -409,19 +422,19 @@ public class MaschineControllerSetup extends AbstractControllerSetup<MaschineCon
         }, MaschineControlSurface.BROWSER, this.model.getBrowser ()::isActive);
 
         // Pad modes
-        this.addButton (ButtonID.ACCENT, "Accent", new ToggleFixedVelCommand (this.model, surface), MaschineControlSurface.FIXED_VEL, this.configuration::isAccentActive);
+        this.addButton (ButtonID.ACCENT, "ACCENT", new ToggleFixedVelCommand (this.model, surface), MaschineControlSurface.FIXED_VEL, this.configuration::isAccentActive);
 
-        this.addButton (ButtonID.SCENE1, "Scene", new ViewMultiSelectCommand<> (this.model, surface, true, Views.SCENE_PLAY), MaschineControlSurface.SCENE, () -> viewManager.isActive (Views.SCENE_PLAY));
-        this.addButton (ButtonID.CLIP, "Pattern", new ViewMultiSelectCommand<> (this.model, surface, true, Views.CLIP), MaschineControlSurface.PATTERN, () -> viewManager.isActive (Views.CLIP));
-        this.addButton (ButtonID.NOTE, "Events", new ModeSelectCommand<> (this.model, surface, Modes.NOTE, true), MaschineControlSurface.EVENTS, () -> modeManager.isActive (Modes.NOTE));
-        this.addButton (ButtonID.TOGGLE_DEVICE, "Variation", new ViewMultiSelectCommand<> (this.model, surface, true, Views.DEVICE), MaschineControlSurface.VARIATION, () -> viewManager.isActive (Views.DEVICE));
-        this.addButton (ButtonID.DUPLICATE, "Duplicate", NopCommand.INSTANCE, MaschineControlSurface.DUPLICATE);
+        this.addButton (ButtonID.SCENE1, "SCENE", new ViewMultiSelectCommand<> (this.model, surface, true, Views.SCENE_PLAY), MaschineControlSurface.SCENE, () -> viewManager.isActive (Views.SCENE_PLAY));
+        this.addButton (ButtonID.CLIP, "PATTERN", new ViewMultiSelectCommand<> (this.model, surface, true, Views.CLIP), MaschineControlSurface.PATTERN, () -> viewManager.isActive (Views.CLIP));
+        this.addButton (ButtonID.NOTE, "EVENTS", new ModeSelectCommand<> (this.model, surface, Modes.NOTE, true), MaschineControlSurface.EVENTS, () -> modeManager.isActive (Modes.NOTE));
+        this.addButton (ButtonID.TOGGLE_DEVICE, this.maschine == Maschine.STUDIO || this.maschine == Maschine.MK2 ? "NAVIGATE" : "VARIATION", new ViewMultiSelectCommand<> (this.model, surface, true, Views.DEVICE), MaschineControlSurface.VARIATION, () -> viewManager.isActive (Views.DEVICE));
+        this.addButton (ButtonID.DUPLICATE, "DUPLICATE", NopCommand.INSTANCE, MaschineControlSurface.DUPLICATE);
 
         if (this.maschine.hasGroupButtons ())
         {
-            this.addButton (ButtonID.TRACK, "Select", NopCommand.INSTANCE, MaschineControlSurface.SELECT);
+            this.addButton (ButtonID.TRACK, "SELECT", NopCommand.INSTANCE, MaschineControlSurface.SELECT);
 
-            this.addButton (ButtonID.SOLO, "Solo", (event, velocity) -> {
+            this.addButton (ButtonID.SOLO, "SOLO", (event, velocity) -> {
                 if (event == ButtonEvent.UP && surface.isShiftPressed ())
                 {
                     surface.setStopConsumed ();
@@ -429,7 +442,7 @@ public class MaschineControllerSetup extends AbstractControllerSetup<MaschineCon
                 }
             }, MaschineControlSurface.SOLO);
 
-            this.addButton (ButtonID.MUTE, "Mute", (event, velocity) -> {
+            this.addButton (ButtonID.MUTE, "MUTE", (event, velocity) -> {
                 if (event == ButtonEvent.UP && surface.isShiftPressed ())
                 {
                     surface.setStopConsumed ();
@@ -439,21 +452,21 @@ public class MaschineControllerSetup extends AbstractControllerSetup<MaschineCon
         }
         else
         {
-            this.addButton (ButtonID.TRACK, "Select", new ViewMultiSelectCommand<> (this.model, surface, true, Views.TRACK_SELECT), MaschineControlSurface.SELECT, () -> viewManager.isActive (Views.TRACK_SELECT));
-            this.addButton (ButtonID.SOLO, "Solo", new ViewMultiSelectCommand<> (this.model, surface, true, Views.TRACK_SOLO), MaschineControlSurface.SOLO, () -> viewManager.isActive (Views.TRACK_SOLO));
-            this.addButton (ButtonID.MUTE, "Mute", new ViewMultiSelectCommand<> (this.model, surface, true, Views.TRACK_MUTE), MaschineControlSurface.MUTE, () -> viewManager.isActive (Views.TRACK_MUTE));
+            this.addButton (ButtonID.TRACK, "SELECT", new ViewMultiSelectCommand<> (this.model, surface, true, Views.TRACK_SELECT), MaschineControlSurface.SELECT, () -> viewManager.isActive (Views.TRACK_SELECT));
+            this.addButton (ButtonID.SOLO, "SOLO", new ViewMultiSelectCommand<> (this.model, surface, true, Views.TRACK_SOLO), MaschineControlSurface.SOLO, () -> viewManager.isActive (Views.TRACK_SOLO));
+            this.addButton (ButtonID.MUTE, "MUTE", new ViewMultiSelectCommand<> (this.model, surface, true, Views.TRACK_MUTE), MaschineControlSurface.MUTE, () -> viewManager.isActive (Views.TRACK_MUTE));
         }
 
         final KeyboardCommand keyboardCommand = new KeyboardCommand (this.model, surface);
-        this.addButton (ButtonID.ROW1_1, "Pad Mode", new PadModeCommand (keyboardCommand, this.model, surface), MaschineControlSurface.PAD_MODE, () -> viewManager.isActive (Views.DRUM));
-        this.addButton (ButtonID.ROW1_2, "Keyboard", keyboardCommand, MaschineControlSurface.KEYBOARD, () -> viewManager.isActive (Views.PLAY));
-        this.addButton (ButtonID.ROW1_3, "Chords", (event, velocity) -> {
+        this.addButton (ButtonID.ROW1_1, "PAD MODE", new PadModeCommand (keyboardCommand, this.model, surface), MaschineControlSurface.PAD_MODE, () -> viewManager.isActive (Views.DRUM));
+        this.addButton (ButtonID.ROW1_2, "KEYBOARD", keyboardCommand, MaschineControlSurface.KEYBOARD, () -> viewManager.isActive (Views.PLAY));
+        this.addButton (ButtonID.ROW1_3, "CHORDS", (event, velocity) -> {
             if (velocity == 0)
                 ((PlayView) viewManager.get (Views.PLAY)).toggleChordMode ();
         }, MaschineControlSurface.CHORDS, ((PlayView) viewManager.get (Views.PLAY))::isChordMode);
 
         final DrumView drumView = (DrumView) viewManager.get (Views.DRUM);
-        this.addButton (ButtonID.ROW1_4, "Step", (event, velocity) -> {
+        this.addButton (ButtonID.ROW1_4, "STEP", (event, velocity) -> {
 
             if (event == ButtonEvent.UP)
                 drumView.toggleSequencerVisible ();
@@ -463,19 +476,28 @@ public class MaschineControllerSetup extends AbstractControllerSetup<MaschineCon
         this.registerCursorKeys (surface);
         this.registerDisplayButtons (surface, modeManager);
         this.registerGroupButtons (surface);
+
+        if (this.maschine == Maschine.STUDIO)
+            this.registerMaschineStudioButtons (surface);
     }
 
 
-    private void registerGroupButtons (final MaschineControlSurface surface)
+    private void registerCursorKeys (final MaschineControlSurface surface)
     {
-        if (!this.maschine.hasGroupButtons ())
+        if (!this.maschine.hasCursorKeys ())
             return;
 
-        for (int i = 0; i < 8; i++)
-        {
-            final GroupButtonCommand<MaschineControlSurface, MaschineConfiguration> command = new GroupButtonCommand<> (this.model, surface, i);
-            this.addButton (ButtonID.get (ButtonID.ROW3_1, i), "Bank " + (i + 1), command, MaschineControlSurface.BANK_1 + i, command::getButtonColor);
-        }
+        this.addButton (ButtonID.ARROW_LEFT, "LEFT", new MaschineCursorCommand (Direction.LEFT, this.model, surface), MaschineControlSurface.CURSOR_LEFT, () -> this.getEncoderColor (ButtonID.ARROW_LEFT));
+        this.addButton (ButtonID.ARROW_RIGHT, "RIGHT", new MaschineCursorCommand (Direction.RIGHT, this.model, surface), MaschineControlSurface.CURSOR_RIGHT, () -> this.getEncoderColor (ButtonID.ARROW_RIGHT));
+        this.addButton (ButtonID.ARROW_UP, "UP", new ModeCursorCommand<> (Direction.UP, this.model, surface, false), MaschineControlSurface.CURSOR_UP, () -> this.getEncoderColor (ButtonID.ARROW_UP));
+        this.addButton (ButtonID.ARROW_DOWN, "DOWN", new ModeCursorCommand<> (Direction.DOWN, this.model, surface, false), MaschineControlSurface.CURSOR_DOWN, () -> this.getEncoderColor (ButtonID.ARROW_DOWN));
+
+        this.addButton (ButtonID.PAGE_LEFT, "PAGE LEFT", new PageCommand (Direction.LEFT, this.model, surface), MaschineControlSurface.PAGE_LEFT);
+        this.addButton (ButtonID.PAGE_RIGHT, "PAGE RIGHT", new PageCommand (Direction.RIGHT, this.model, surface), MaschineControlSurface.PAGE_RIGHT);
+
+        this.addButton (ButtonID.LAYOUT_ARRANGE, this.maschine == Maschine.STUDIO ? "ARRANGE" : "ARRANGER", new LayoutCommand<> (this.model, surface), MaschineControlSurface.ARRANGER);
+        this.addButton (ButtonID.MIXER, this.maschine == Maschine.STUDIO ? "MIX" : "MIXER", new PaneCommand<> (Panels.MIXER, this.model, surface), MaschineControlSurface.MIXER);
+        this.addButton (ButtonID.DRUM, this.maschine == Maschine.MK2 ? "CONTROL" : "CHANNEL", new AddTrackCommand<> (this.model, surface, null, ButtonID.STOP), MaschineControlSurface.CHANNEL);
     }
 
 
@@ -526,22 +548,41 @@ public class MaschineControllerSetup extends AbstractControllerSetup<MaschineCon
     }
 
 
-    private void registerCursorKeys (final MaschineControlSurface surface)
+    private void registerGroupButtons (final MaschineControlSurface surface)
     {
-        if (!this.maschine.hasCursorKeys ())
+        if (!this.maschine.hasGroupButtons ())
             return;
 
-        this.addButton (ButtonID.ARROW_LEFT, "Left", new ModeCursorCommand<> (Direction.LEFT, this.model, surface, false), MaschineControlSurface.CURSOR_LEFT, () -> this.getEncoderColor (ButtonID.ARROW_LEFT));
-        this.addButton (ButtonID.ARROW_RIGHT, "Right", new ModeCursorCommand<> (Direction.RIGHT, this.model, surface, false), MaschineControlSurface.CURSOR_RIGHT, () -> this.getEncoderColor (ButtonID.ARROW_RIGHT));
-        this.addButton (ButtonID.ARROW_UP, "Up", new ModeCursorCommand<> (Direction.UP, this.model, surface, false), MaschineControlSurface.CURSOR_UP, () -> this.getEncoderColor (ButtonID.ARROW_UP));
-        this.addButton (ButtonID.ARROW_DOWN, "Down", new ModeCursorCommand<> (Direction.DOWN, this.model, surface, false), MaschineControlSurface.CURSOR_DOWN, () -> this.getEncoderColor (ButtonID.ARROW_DOWN));
+        for (int i = 0; i < 8; i++)
+        {
+            final GroupButtonCommand<MaschineControlSurface, MaschineConfiguration> command = new GroupButtonCommand<> (this.model, surface, i);
+            this.addButton (ButtonID.get (ButtonID.ROW3_1, i), "Bank " + (i + 1), command, MaschineControlSurface.BANK_1 + i, command::getButtonColor);
+        }
+    }
 
-        this.addButton (ButtonID.PAGE_LEFT, "Page Left", new PageCommand (Direction.LEFT, this.model, surface), MaschineControlSurface.PAGE_LEFT);
-        this.addButton (ButtonID.PAGE_RIGHT, "Page Right", new PageCommand (Direction.RIGHT, this.model, surface), MaschineControlSurface.PAGE_RIGHT);
 
-        this.addButton (ButtonID.LAYOUT_ARRANGE, "Arranger", new LayoutCommand<> (this.model, surface), MaschineControlSurface.ARRANGER);
-        this.addButton (ButtonID.MIXER, "Mixer", new PaneCommand<> (Panels.MIXER, this.model, surface), MaschineControlSurface.MIXER);
-        this.addButton (ButtonID.DRUM, "Channel", new AddTrackCommand<> (this.model, surface, null, ButtonID.STOP), MaschineControlSurface.CHANNEL);
+    private void registerMaschineStudioButtons (final MaschineControlSurface surface)
+    {
+        this.addButton (ButtonID.METRONOME, "METRO", new MetronomeCommand<> (this.model, surface, false), MaschineControlSurface.METRO, () -> this.model.getTransport ().isMetronomeOn ());
+
+        this.addButton (ButtonID.UNDO, "UNDO", this.createShiftViewFunction (surface, 0, 2), MaschineControlSurface.EDIT_UNDO);
+        this.addButton (ButtonID.REDO, "REDO", this.createShiftViewFunction (surface, 1, 3), MaschineControlSurface.EDIT_REDO);
+        this.addButton (ButtonID.QUANTIZE, "QUANTIZE", this.createShiftViewFunction (surface, 4, 5), MaschineControlSurface.EDIT_QUANTIZE);
+        this.addButton (ButtonID.CONTROL, "CLEAR", this.createShiftViewFunction (surface, 8, 9), MaschineControlSurface.EDIT_CLEAR);
+
+        this.addButton (ButtonID.COPY, "COPY", this.createShiftViewFunction (surface, 10, 10), MaschineControlSurface.EDIT_COPY);
+        this.addButton (ButtonID.PASTE, "PASTE", this.createShiftViewFunction (surface, 11, 11), MaschineControlSurface.EDIT_PASTE);
+        this.addButton (ButtonID.NUDGE_MINUS, "NOTE", this.createShiftViewFunction (surface, 13, 12), MaschineControlSurface.EDIT_NOTE);
+        this.addButton (ButtonID.NUDGE_PLUS, "NUDGE", this.createShiftViewFunction (surface, 15, 14), MaschineControlSurface.EDIT_NUDGE);
+    }
+
+
+    private TriggerCommand createShiftViewFunction (final MaschineControlSurface surface, final int padIndex, final int shiftPadIndex)
+    {
+        return (event, velocity) -> {
+            if (event == ButtonEvent.UP)
+                this.shiftView.executeFunction (surface.isShiftPressed () ? shiftPadIndex : padIndex);
+        };
     }
 
 
@@ -654,6 +695,37 @@ public class MaschineControllerSetup extends AbstractControllerSetup<MaschineCon
             final IView view = viewManager.get (viewID);
             view.registerAftertouchCommand (new AftertouchViewCommand<> (view, this.model, surface));
         }
+
+        if (this.maschine == Maschine.STUDIO)
+        {
+            final IHwAbsoluteKnob masterKnob = this.addAbsoluteKnob (ContinuousID.MONITOR_KNOB, "Encoder", null, MaschineControlSurface.MONITOR_ENCODER);
+            this.encoderManager = new StudioEncoderModeManager (masterKnob, this.model, surface);
+            masterKnob.bind (this.encoderManager);
+
+            final MaschineMonitorEncoderCommand<MaschineControlSurface, MaschineConfiguration> encoderCommandMaster = new MaschineMonitorEncoderCommand<> (this.encoderManager, EncoderMode.MASTER_VOLUME, this.model, surface);
+            this.addButton (ButtonID.ROW4_1, "MST", encoderCommandMaster, MaschineControlSurface.MONITOR_MST, encoderCommandMaster::isLit);
+            final MaschineMonitorEncoderCommand<MaschineControlSurface, MaschineConfiguration> encoderCommandSelectedTrack = new MaschineMonitorEncoderCommand<> (this.encoderManager, EncoderMode.SELECTED_TRACK_VOLUME, this.model, surface);
+            this.addButton (ButtonID.ROW4_2, "GRP", encoderCommandSelectedTrack, MaschineControlSurface.MONITOR_GRP, encoderCommandSelectedTrack::isLit);
+            final MaschineMonitorEncoderCommand<MaschineControlSurface, MaschineConfiguration> encoderCommandMetronome = new MaschineMonitorEncoderCommand<> (this.encoderManager, EncoderMode.METRONOME_VOLUME, this.model, surface);
+            this.addButton (ButtonID.ROW4_3, "SND", encoderCommandMetronome, MaschineControlSurface.MONITOR_SND, encoderCommandMetronome::isLit);
+            final MaschineMonitorEncoderCommand<MaschineControlSurface, MaschineConfiguration> encoderCommandCue = new MaschineMonitorEncoderCommand<> (this.encoderManager, EncoderMode.CUE_VOLUME, this.model, surface);
+            this.addButton (ButtonID.ROW4_4, "CUE", encoderCommandCue, MaschineControlSurface.MONITOR_CUE, encoderCommandCue::isLit);
+
+            final MaschineMonitorEncoderCommand<MaschineControlSurface, MaschineConfiguration> encoderCommandMasterPan = new MaschineMonitorEncoderCommand<> (this.encoderManager, EncoderMode.MASTER_PANORAMA, this.model, surface);
+            this.addButton (ButtonID.ROW4_5, "IN1", encoderCommandMasterPan, MaschineControlSurface.MONITOR_IN1, encoderCommandMasterPan::isLit);
+            final MaschineMonitorEncoderCommand<MaschineControlSurface, MaschineConfiguration> encoderCommandSelectedTrackPan = new MaschineMonitorEncoderCommand<> (this.encoderManager, EncoderMode.SELECTED_TRACK_PANORAMA, this.model, surface);
+            this.addButton (ButtonID.ROW4_6, "IN2", encoderCommandSelectedTrackPan, MaschineControlSurface.MONITOR_IN2, encoderCommandSelectedTrackPan::isLit);
+            final MaschineMonitorEncoderCommand<MaschineControlSurface, MaschineConfiguration> encoderCommandCueMix = new MaschineMonitorEncoderCommand<> (this.encoderManager, EncoderMode.CUE_MIX, this.model, surface);
+            this.addButton (ButtonID.ROW4_8, "IN4", encoderCommandCueMix, MaschineControlSurface.MONITOR_IN4, encoderCommandCueMix::isLit);
+
+            this.addButton (ButtonID.TOGGLE_VU, "IN3", (event, value) -> {
+                if (event == ButtonEvent.UP)
+                    this.encoderManager.toggleMode ();
+            }, MaschineControlSurface.MONITOR_IN3, this.encoderManager::isParameterMode);
+
+            // Activate the default mode
+            this.encoderManager.setActiveEncoderMode (EncoderMode.MASTER_VOLUME);
+        }
     }
 
 
@@ -664,9 +736,14 @@ public class MaschineControllerSetup extends AbstractControllerSetup<MaschineCon
         switch (this.maschine)
         {
             case MK2:
+                this.layoutMk2 ();
+                break;
             case MK3:
             case PLUS:
                 this.layoutMk3 ();
+                break;
+            case STUDIO:
+                this.layoutStudio ();
                 break;
             case MIKRO_MK3:
                 this.layoutMikroMk3 ();
@@ -675,6 +752,190 @@ public class MaschineControllerSetup extends AbstractControllerSetup<MaschineCon
                 // Not used
                 break;
         }
+    }
+
+
+    private void layoutMk2 ()
+    {
+        final MaschineControlSurface surface = this.getSurface ();
+
+        surface.getButton (ButtonID.PAD1).setBounds (425.5, 604.5, 76.25, 79.0);
+        surface.getButton (ButtonID.PAD2).setBounds (516.25, 605.25, 76.25, 79.0);
+        surface.getButton (ButtonID.PAD3).setBounds (606.75, 605.25, 76.25, 79.0);
+        surface.getButton (ButtonID.PAD4).setBounds (694.75, 605.25, 76.25, 79.0);
+        surface.getButton (ButtonID.PAD5).setBounds (425.5, 515.0, 76.25, 79.0);
+        surface.getButton (ButtonID.PAD6).setBounds (516.25, 515.5, 76.25, 79.0);
+        surface.getButton (ButtonID.PAD7).setBounds (606.75, 515.75, 76.25, 79.0);
+        surface.getButton (ButtonID.PAD8).setBounds (694.75, 515.5, 76.25, 79.0);
+        surface.getButton (ButtonID.PAD9).setBounds (425.5, 425.25, 76.25, 79.0);
+        surface.getButton (ButtonID.PAD10).setBounds (516.25, 426.0, 76.25, 79.0);
+        surface.getButton (ButtonID.PAD11).setBounds (606.75, 426.25, 76.25, 79.0);
+        surface.getButton (ButtonID.PAD12).setBounds (694.75, 425.5, 76.25, 79.0);
+        surface.getButton (ButtonID.PAD13).setBounds (425.5, 335.75, 76.25, 79.0);
+        surface.getButton (ButtonID.PAD14).setBounds (516.25, 336.25, 76.25, 79.0);
+        surface.getButton (ButtonID.PAD15).setBounds (606.75, 336.75, 76.25, 79.0);
+        surface.getButton (ButtonID.PAD16).setBounds (694.75, 335.75, 76.25, 79.0);
+        surface.getButton (ButtonID.SHIFT).setBounds (96.75, 619.0, 56.0, 18.0);
+        surface.getButton (ButtonID.PLAY).setBounds (24.75, 650.0, 55.75, 32.0);
+        surface.getButton (ButtonID.RECORD).setBounds (96.75, 650.0, 55.75, 32.0);
+        surface.getButton (ButtonID.LOOP).setBounds (24.75, 619.0, 56.0, 18.0);
+        surface.getButton (ButtonID.DELETE).setBounds (166.25, 650.0, 55.75, 32.0);
+        surface.getButton (ButtonID.TAP_TEMPO).setBounds (166.25, 619.0, 56.0, 18.0);
+        surface.getButton (ButtonID.FLIP).setBounds (236.5, 619.0, 56.0, 18.0);
+        surface.getButton (ButtonID.AUTOMATION).setBounds (94.0, 236.25, 55.75, 32.0);
+        surface.getButton (ButtonID.OVERDUB).setBounds (231.5, 406.75, 58.0, 19.0);
+        surface.getButton (ButtonID.REPEAT).setBounds (231.5, 337.25, 58.0, 46.25);
+        surface.getButton (ButtonID.FADER_TOUCH_1).setBounds (123.25, 303.25, 69.5, 22.75);
+        surface.getButton (ButtonID.VOLUME).setBounds (27.75, 337.25, 58.0, 18.0);
+        surface.getButton (ButtonID.SWING).setBounds (27.75, 373.0, 58.0, 18.0);
+        surface.getButton (ButtonID.TEMPO_TOUCH).setBounds (27.75, 407.75, 58.0, 18.0);
+        surface.getButton (ButtonID.DEVICE_ON_OFF).setBounds (95.75, 107.25, 55.75, 38.5);
+        surface.getButton (ButtonID.ADD_TRACK).setBounds (27.25, 236.25, 55.75, 32.0);
+        surface.getButton (ButtonID.BROWSE).setBounds (28.75, 107.25, 55.75, 38.5);
+        surface.getButton (ButtonID.SCENE1).setBounds (346.5, 335.5, 58.0, 34.0);
+        surface.getButton (ButtonID.CLIP).setBounds (346.5, 379.25, 58.0, 34.0);
+        surface.getButton (ButtonID.NOTE).setBounds (346.5, 561.5, 58.0, 34.0);
+        surface.getButton (ButtonID.TOGGLE_DEVICE).setBounds (346.5, 466.75, 58.0, 41.25);
+        surface.getButton (ButtonID.DUPLICATE).setBounds (347.25, 515.0, 58.0, 34.0);
+        surface.getButton (ButtonID.SOLO).setBounds (346.5, 605.25, 58.0, 34.0);
+        surface.getButton (ButtonID.MUTE).setBounds (346.5, 649.0, 58.0, 34.0);
+        surface.getButton (ButtonID.ROW1_1).setBounds (346.5, 423.0, 58.0, 34.0);
+        surface.getButton (ButtonID.ROW1_4).setBounds (95.75, 21.25, 55.75, 23.0);
+        surface.getButton (ButtonID.ARROW_LEFT).setBounds (121.5, 408.25, 32.75, 17.5);
+        surface.getButton (ButtonID.ARROW_RIGHT).setBounds (157.0, 408.25, 32.75, 17.5);
+        surface.getButton (ButtonID.PAGE_LEFT).setBounds (28.75, 157.75, 55.75, 23.0);
+        surface.getButton (ButtonID.PAGE_RIGHT).setBounds (95.75, 157.75, 55.75, 23.0);
+        surface.getButton (ButtonID.DRUM).setBounds (28.75, 21.25, 55.75, 23.0);
+        surface.getButton (ButtonID.ROW2_1).setBounds (179.25, 21.25, 66.25, 27.25);
+        surface.getButton (ButtonID.ROW2_2).setBounds (254.25, 21.25, 66.25, 27.25);
+        surface.getButton (ButtonID.ROW2_3).setBounds (329.25, 21.25, 66.25, 27.25);
+        surface.getButton (ButtonID.ROW2_4).setBounds (404.0, 21.25, 66.25, 27.25);
+        surface.getButton (ButtonID.ROW2_5).setBounds (479.0, 21.25, 66.25, 27.25);
+        surface.getButton (ButtonID.ROW2_6).setBounds (554.0, 21.25, 66.25, 27.25);
+        surface.getButton (ButtonID.ROW2_7).setBounds (629.0, 21.25, 66.25, 27.25);
+        surface.getButton (ButtonID.ROW2_8).setBounds (704.0, 21.25, 66.25, 27.25);
+        surface.getButton (ButtonID.ROW3_1).setBounds (26.25, 480.0, 53.75, 35.0);
+        surface.getButton (ButtonID.ROW3_2).setBounds (96.75, 480.0, 53.75, 35.0);
+        surface.getButton (ButtonID.ROW3_3).setBounds (167.0, 480.0, 53.75, 35.0);
+        surface.getButton (ButtonID.ROW3_4).setBounds (237.5, 480.0, 53.75, 35.0);
+        surface.getButton (ButtonID.ROW3_5).setBounds (26.25, 526.0, 53.75, 35.0);
+        surface.getButton (ButtonID.ROW3_6).setBounds (96.75, 526.0, 53.75, 35.0);
+        surface.getButton (ButtonID.ROW3_7).setBounds (167.0, 526.0, 53.75, 35.0);
+        surface.getButton (ButtonID.ROW3_8).setBounds (237.5, 526.0, 53.75, 35.0);
+
+        surface.getContinuous (ContinuousID.MASTER_KNOB).setBounds (125.0, 337.25, 64.0, 63.0);
+        surface.getContinuous (ContinuousID.KNOB1).setBounds (183.5, 226.25, 53.75, 49.25);
+        surface.getContinuous (ContinuousID.KNOB2).setBounds (259.0, 226.25, 53.75, 49.25);
+        surface.getContinuous (ContinuousID.KNOB3).setBounds (334.75, 226.25, 53.75, 49.25);
+        surface.getContinuous (ContinuousID.KNOB4).setBounds (410.25, 226.25, 53.75, 49.25);
+        surface.getContinuous (ContinuousID.KNOB5).setBounds (486.0, 226.25, 53.75, 49.25);
+        surface.getContinuous (ContinuousID.KNOB6).setBounds (561.5, 226.25, 53.75, 49.25);
+        surface.getContinuous (ContinuousID.KNOB7).setBounds (637.0, 226.25, 53.75, 49.25);
+        surface.getContinuous (ContinuousID.KNOB8).setBounds (712.75, 226.25, 53.75, 49.25);
+
+        surface.getTextDisplay ().getHardwareDisplay ().setBounds (182.75, 111.75, 591.75, 64.5);
+    }
+
+
+    private void layoutStudio ()
+    {
+        final MaschineControlSurface surface = this.getSurface ();
+
+        surface.getButton (ButtonID.PAD1).setBounds (425.5, 590.0, 76.25, 79.0);
+        surface.getButton (ButtonID.PAD2).setBounds (516.25, 590.75, 76.25, 79.0);
+        surface.getButton (ButtonID.PAD3).setBounds (606.75, 590.75, 76.25, 79.0);
+        surface.getButton (ButtonID.PAD4).setBounds (694.75, 590.75, 75.75, 79.0);
+        surface.getButton (ButtonID.PAD5).setBounds (425.5, 500.5, 76.25, 79.0);
+        surface.getButton (ButtonID.PAD6).setBounds (516.25, 501.0, 76.25, 79.0);
+        surface.getButton (ButtonID.PAD7).setBounds (606.75, 501.25, 76.25, 79.0);
+        surface.getButton (ButtonID.PAD8).setBounds (694.75, 501.0, 76.25, 79.0);
+        surface.getButton (ButtonID.PAD9).setBounds (425.5, 410.75, 76.25, 79.0);
+        surface.getButton (ButtonID.PAD10).setBounds (516.25, 411.5, 76.25, 79.0);
+        surface.getButton (ButtonID.PAD11).setBounds (606.75, 411.75, 76.25, 79.0);
+        surface.getButton (ButtonID.PAD12).setBounds (694.75, 411.0, 76.25, 79.0);
+        surface.getButton (ButtonID.PAD13).setBounds (425.5, 321.25, 76.25, 79.0);
+        surface.getButton (ButtonID.PAD14).setBounds (516.25, 321.75, 76.25, 79.0);
+        surface.getButton (ButtonID.PAD15).setBounds (606.75, 322.25, 76.25, 79.0);
+        surface.getButton (ButtonID.PAD16).setBounds (694.75, 321.25, 76.25, 79.0);
+        surface.getButton (ButtonID.SHIFT).setBounds (837.25, 637.75, 56.25, 32.0);
+        surface.getButton (ButtonID.PLAY).setBounds (24.0, 636.25, 56.75, 32.0);
+        surface.getButton (ButtonID.RECORD).setBounds (96.0, 636.25, 56.75, 32.0);
+        surface.getButton (ButtonID.LOOP).setBounds (24.75, 604.5, 56.0, 18.0);
+        surface.getButton (ButtonID.DELETE).setBounds (165.5, 636.25, 56.75, 32.0);
+        surface.getButton (ButtonID.TAP_TEMPO).setBounds (27.75, 318.0, 56.25, 37.0);
+        surface.getButton (ButtonID.FLIP).setBounds (236.5, 604.5, 56.0, 18.0);
+        surface.getButton (ButtonID.NEW).setBounds (168.5, 318.0, 56.25, 37.5);
+        surface.getButton (ButtonID.AUTOMATION).setBounds (94.75, 236.75, 55.75, 32.0);
+        surface.getButton (ButtonID.OVERDUB).setBounds (1052.0, 637.75, 56.25, 32.0);
+        surface.getButton (ButtonID.REPEAT).setBounds (239.0, 318.0, 56.25, 37.0);
+        surface.getButton (ButtonID.FADER_TOUCH_1).setBounds (1037.0, 426.5, 69.5, 22.75);
+        surface.getButton (ButtonID.DEVICE).setBounds (94.75, 21.25, 55.75, 23.0);
+        surface.getButton (ButtonID.DEVICE_ON_OFF).setBounds (94.75, 107.25, 55.75, 38.5);
+        surface.getButton (ButtonID.ADD_TRACK).setBounds (27.75, 236.75, 55.75, 32.0);
+        surface.getButton (ButtonID.BROWSE).setBounds (27.75, 107.25, 55.75, 38.5);
+        surface.getButton (ButtonID.SCENE1).setBounds (347.25, 321.0, 58.0, 34.0);
+        surface.getButton (ButtonID.CLIP).setBounds (347.25, 365.75, 58.0, 34.0);
+        surface.getButton (ButtonID.NOTE).setBounds (165.5, 604.5, 56.0, 18.0);
+        surface.getButton (ButtonID.TOGGLE_DEVICE).setBounds (347.25, 455.0, 58.0, 34.0);
+        surface.getButton (ButtonID.DUPLICATE).setBounds (347.25, 499.5, 58.0, 34.0);
+        surface.getButton (ButtonID.TRACK).setBounds (347.25, 544.25, 58.0, 34.0);
+        surface.getButton (ButtonID.SOLO).setBounds (347.25, 588.75, 58.0, 34.0);
+        surface.getButton (ButtonID.MUTE).setBounds (347.25, 633.5, 58.0, 34.0);
+        surface.getButton (ButtonID.ROW1_1).setBounds (347.25, 410.25, 58.0, 34.0);
+        surface.getButton (ButtonID.ROW1_4).setBounds (98.25, 318.0, 56.25, 37.0);
+        surface.getButton (ButtonID.ARROW_LEFT).setBounds (908.75, 637.75, 56.25, 32.0);
+        surface.getButton (ButtonID.ARROW_RIGHT).setBounds (980.5, 637.75, 56.25, 32.0);
+        surface.getButton (ButtonID.PAGE_LEFT).setBounds (27.75, 157.75, 55.75, 23.0);
+        surface.getButton (ButtonID.PAGE_RIGHT).setBounds (94.75, 157.75, 55.75, 23.0);
+        surface.getButton (ButtonID.LAYOUT_ARRANGE).setBounds (27.75, 56.5, 55.75, 38.5);
+        surface.getButton (ButtonID.MIXER).setBounds (94.75, 56.5, 55.75, 38.5);
+        surface.getButton (ButtonID.DRUM).setBounds (27.75, 21.25, 55.75, 23.0);
+        surface.getButton (ButtonID.ROW2_1).setBounds (179.25, 21.25, 66.25, 27.25);
+        surface.getButton (ButtonID.ROW2_2).setBounds (254.25, 21.25, 66.25, 27.25);
+        surface.getButton (ButtonID.ROW2_3).setBounds (329.25, 21.25, 66.25, 27.25);
+        surface.getButton (ButtonID.ROW2_4).setBounds (404.0, 21.25, 66.25, 27.25);
+        surface.getButton (ButtonID.ROW2_5).setBounds (479.0, 21.25, 66.25, 27.25);
+        surface.getButton (ButtonID.ROW2_6).setBounds (554.0, 21.25, 66.25, 27.25);
+        surface.getButton (ButtonID.ROW2_7).setBounds (629.0, 21.25, 66.25, 27.25);
+        surface.getButton (ButtonID.ROW2_8).setBounds (704.0, 21.25, 66.25, 27.25);
+        surface.getButton (ButtonID.ROW3_1).setBounds (28.5, 438.75, 53.75, 35.0);
+        surface.getButton (ButtonID.ROW3_2).setBounds (98.25, 438.75, 53.75, 35.0);
+        surface.getButton (ButtonID.ROW3_3).setBounds (167.75, 438.75, 53.75, 35.0);
+        surface.getButton (ButtonID.ROW3_4).setBounds (239.75, 438.75, 53.75, 35.0);
+        surface.getButton (ButtonID.ROW3_5).setBounds (28.5, 484.75, 53.75, 35.0);
+        surface.getButton (ButtonID.ROW3_6).setBounds (98.25, 484.75, 53.75, 35.0);
+        surface.getButton (ButtonID.ROW3_7).setBounds (167.75, 484.75, 53.75, 35.0);
+        surface.getButton (ButtonID.ROW3_8).setBounds (239.75, 484.75, 53.75, 35.0);
+        surface.getButton (ButtonID.METRONOME).setBounds (96.0, 604.5, 56.0, 18.0);
+        surface.getButton (ButtonID.UNDO).setBounds (837.25, 366.25, 56.25, 32.0);
+        surface.getButton (ButtonID.REDO).setBounds (908.75, 366.25, 56.25, 32.0);
+        surface.getButton (ButtonID.QUANTIZE).setBounds (980.5, 366.25, 56.25, 32.0);
+        surface.getButton (ButtonID.CONTROL).setBounds (1052.0, 366.25, 56.25, 32.0);
+        surface.getButton (ButtonID.COPY).setBounds (837.25, 323.0, 56.25, 32.0);
+        surface.getButton (ButtonID.PASTE).setBounds (908.75, 323.0, 56.25, 32.0);
+        surface.getButton (ButtonID.NUDGE_MINUS).setBounds (980.5, 323.0, 56.25, 32.0);
+        surface.getButton (ButtonID.NUDGE_PLUS).setBounds (1052.0, 323.0, 56.25, 32.0);
+        surface.getButton (ButtonID.ROW4_1).setBounds (1033.75, 44.5, 27.5, 22.75);
+        surface.getButton (ButtonID.ROW4_2).setBounds (1033.75, 89.5, 27.5, 22.75);
+        surface.getButton (ButtonID.ROW4_3).setBounds (1033.75, 134.25, 27.5, 22.75);
+        surface.getButton (ButtonID.ROW4_4).setBounds (1033.75, 179.25, 27.5, 22.75);
+        surface.getButton (ButtonID.ROW4_5).setBounds (930.75, 44.5, 27.5, 22.75);
+        surface.getButton (ButtonID.ROW4_6).setBounds (930.75, 89.5, 27.5, 22.75);
+        surface.getButton (ButtonID.ROW4_8).setBounds (930.75, 179.25, 27.5, 22.75);
+        surface.getButton (ButtonID.TOGGLE_VU).setBounds (930.75, 134.25, 27.5, 22.75);
+
+        surface.getContinuous (ContinuousID.MASTER_KNOB).setBounds (905.0, 427.0, 143.5, 138.5);
+        surface.getContinuous (ContinuousID.KNOB1).setBounds (183.5, 226.25, 53.75, 49.25);
+        surface.getContinuous (ContinuousID.KNOB2).setBounds (259.0, 226.25, 53.75, 49.25);
+        surface.getContinuous (ContinuousID.KNOB3).setBounds (334.75, 226.25, 53.75, 49.25);
+        surface.getContinuous (ContinuousID.KNOB4).setBounds (410.25, 226.25, 53.75, 49.25);
+        surface.getContinuous (ContinuousID.KNOB5).setBounds (486.0, 226.25, 53.75, 49.25);
+        surface.getContinuous (ContinuousID.KNOB6).setBounds (561.5, 226.25, 53.75, 49.25);
+        surface.getContinuous (ContinuousID.KNOB7).setBounds (637.0, 226.25, 53.75, 49.25);
+        surface.getContinuous (ContinuousID.KNOB8).setBounds (712.75, 226.25, 53.75, 49.25);
+        surface.getContinuous (ContinuousID.MONITOR_KNOB).setBounds (962.0, 217.0, 70.75, 69.0);
+
+        surface.getTextDisplay ().getHardwareDisplay ().setBounds (182.75, 111.75, 591.75, 64.5);
     }
 
 
@@ -704,7 +965,7 @@ public class MaschineControllerSetup extends AbstractControllerSetup<MaschineCon
         surface.getButton (ButtonID.SHIFT).setBounds (236.5, 697.75, 56.0, 32.0);
         surface.getButton (ButtonID.LOOP).setBounds (24.75, 666.75, 56.0, 18.0);
         surface.getButton (ButtonID.DELETE).setBounds (96.75, 666.75, 56.0, 18.0);
-        surface.getButton (ButtonID.METRONOME).setBounds (166.25, 666.75, 56.0, 18.0);
+        surface.getButton (ButtonID.TAP_TEMPO).setBounds (166.25, 666.75, 56.0, 18.0);
         surface.getButton (ButtonID.FLIP).setBounds (236.5, 666.75, 56.0, 18.0);
         surface.getButton (ButtonID.NEW).setBounds (95.75, 237.25, 55.75, 32.0);
         surface.getButton (ButtonID.AUTOMATION).setBounds (28.75, 237.25, 55.75, 32.0);
@@ -716,7 +977,7 @@ public class MaschineControllerSetup extends AbstractControllerSetup<MaschineCon
         surface.getButton (ButtonID.F4).setBounds (233.75, 465.5, 57.25, 18.25);
         surface.getButton (ButtonID.FADER_TOUCH_1).setBounds (51.25, 315.0, 69.5, 22.75);
         surface.getButton (ButtonID.VOLUME).setBounds (164.5, 343.75, 58.0, 18.0);
-        surface.getButton (ButtonID.TAP_TEMPO).setBounds (164.5, 373.25, 58.0, 18.0);
+        surface.getButton (ButtonID.SWING).setBounds (164.5, 373.25, 58.0, 18.0);
         surface.getButton (ButtonID.TEMPO_TOUCH).setBounds (164.5, 402.75, 58.0, 18.0);
         surface.getButton (ButtonID.DEVICE).setBounds (95.75, 21.25, 55.75, 23.0);
         surface.getButton (ButtonID.DEVICE_ON_OFF).setBounds (95.75, 107.25, 55.75, 38.5);
@@ -803,7 +1064,7 @@ public class MaschineControllerSetup extends AbstractControllerSetup<MaschineCon
         surface.getButton (ButtonID.STOP).setBounds (167.75, 381.5, 55.75, 32.0);
         surface.getButton (ButtonID.LOOP).setBounds (26.25, 350.5, 56.0, 18.0);
         surface.getButton (ButtonID.DELETE).setBounds (98.25, 350.5, 56.0, 18.0);
-        surface.getButton (ButtonID.METRONOME).setBounds (167.75, 350.5, 56.0, 18.0);
+        surface.getButton (ButtonID.TAP_TEMPO).setBounds (167.75, 350.5, 56.0, 18.0);
         surface.getButton (ButtonID.FLIP).setBounds (238.0, 350.5, 56.0, 18.0);
         surface.getButton (ButtonID.NEW).setBounds (26.25, 280.5, 55.75, 32.0);
         surface.getButton (ButtonID.AUTOMATION).setBounds (98.25, 280.5, 55.75, 32.0);
@@ -815,7 +1076,7 @@ public class MaschineControllerSetup extends AbstractControllerSetup<MaschineCon
         surface.getButton (ButtonID.F4).setBounds (238.0, 170.75, 57.25, 18.25);
         surface.getButton (ButtonID.FADER_TOUCH_1).setBounds (74.0, 21.25, 69.5, 22.75);
         surface.getButton (ButtonID.VOLUME).setBounds (166.0, 25.75, 58.0, 19.0);
-        surface.getButton (ButtonID.TAP_TEMPO).setBounds (166.0, 56.75, 58.0, 19.0);
+        surface.getButton (ButtonID.SWING).setBounds (166.0, 56.75, 58.0, 19.0);
         surface.getButton (ButtonID.TEMPO_TOUCH).setBounds (166.0, 85.75, 58.0, 19.0);
         surface.getButton (ButtonID.DEVICE).setBounds (238.0, 25.75, 58.0, 19.0);
         surface.getButton (ButtonID.DEVICE_ON_OFF).setBounds (238.0, 56.75, 58.0, 19.0);
@@ -857,9 +1118,70 @@ public class MaschineControllerSetup extends AbstractControllerSetup<MaschineCon
     {
         super.flush ();
 
-        final TouchstripCommand command = (TouchstripCommand) this.getSurface ().getContinuous (ContinuousID.CROSSFADER).getCommand ();
+        final MaschineControlSurface surface = this.getSurface ();
+        final TouchstripCommand command = (TouchstripCommand) surface.getContinuous (ContinuousID.CROSSFADER).getCommand ();
         if (command != null)
             command.updateValue ();
+
+        if (this.maschine == Maschine.STUDIO)
+        {
+            // Update main VU
+            final IMidiOutput midiOutput = surface.getMidiOutput ();
+
+            final int value;
+            if (this.encoderManager.isParameterMode ())
+            {
+                final EncoderMode activeEncoderMode = this.encoderManager.getActiveEncoderMode ();
+                switch (activeEncoderMode)
+                {
+                    case MASTER_VOLUME:
+                        value = this.valueChanger.toMidiValue (this.model.getMasterTrack ().getVolume ());
+                        break;
+                    case MASTER_PANORAMA:
+                        value = this.valueChanger.toMidiValue (this.model.getMasterTrack ().getPan ());
+                        break;
+                    case SELECTED_TRACK_VOLUME:
+                    case SELECTED_TRACK_PANORAMA:
+                        final ITrack track;
+                        final Optional<ITrack> trackOptional = this.model.getTrackBank ().getSelectedItem ();
+                        if (trackOptional.isPresent ())
+                            track = trackOptional.get ();
+                        else
+                            track = EmptyTrack.INSTANCE;
+                        value = this.valueChanger.toMidiValue (activeEncoderMode == EncoderMode.SELECTED_TRACK_VOLUME ? track.getVolume () : track.getPan ());
+                        break;
+                    case CUE_VOLUME:
+                        value = this.valueChanger.toMidiValue (this.model.getProject ().getCueVolume ());
+                        break;
+                    case CUE_MIX:
+                        value = this.valueChanger.toMidiValue (this.model.getProject ().getCueMix ());
+                        break;
+                    case METRONOME_VOLUME:
+                        value = this.valueChanger.toMidiValue (this.model.getTransport ().getMetronomeVolume ());
+                        break;
+                    default:
+                        value = 0;
+                        break;
+                }
+            }
+            else
+            {
+                final ITrack track;
+                if (this.encoderManager.isActiveEncoderMode (EncoderMode.SELECTED_TRACK_VOLUME))
+                {
+                    final Optional<ITrack> trackOptional = this.model.getTrackBank ().getSelectedItem ();
+                    if (trackOptional.isPresent ())
+                        track = trackOptional.get ();
+                    else
+                        track = EmptyTrack.INSTANCE;
+                }
+                else
+                    track = this.model.getMasterTrack ();
+                value = this.valueChanger.toMidiValue (track.getVu ());
+            }
+
+            midiOutput.sendCC (MaschineControlSurface.MONITOR_ENCODER, value);
+        }
     }
 
 
