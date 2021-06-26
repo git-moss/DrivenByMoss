@@ -9,7 +9,7 @@ import de.mossgrabers.framework.controller.AbstractControllerSetup;
 import de.mossgrabers.framework.controller.IControlSurface;
 import de.mossgrabers.framework.controller.ISetupFactory;
 import de.mossgrabers.framework.controller.color.ColorManager;
-import de.mossgrabers.framework.controller.valuechanger.DefaultValueChanger;
+import de.mossgrabers.framework.controller.valuechanger.TwosComplementValueChanger;
 import de.mossgrabers.framework.daw.DAWColor;
 import de.mossgrabers.framework.daw.IHost;
 import de.mossgrabers.framework.daw.ModelSetup;
@@ -43,7 +43,7 @@ public class AutoColorSetup extends AbstractControllerSetup<IControlSurface<Auto
         super (factory, host, globalSettings, documentSettings);
 
         this.colorManager = new ColorManager ();
-        this.valueChanger = new DefaultValueChanger (128, 1);
+        this.valueChanger = new TwosComplementValueChanger (128, 1);
         this.configuration = new AutoColorConfiguration (host, this.valueChanger);
         this.autoColor = new AutoColor (this.configuration);
     }

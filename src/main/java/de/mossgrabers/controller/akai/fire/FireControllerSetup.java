@@ -54,7 +54,7 @@ import de.mossgrabers.framework.controller.color.ColorEx;
 import de.mossgrabers.framework.controller.color.ColorManager;
 import de.mossgrabers.framework.controller.hardware.BindType;
 import de.mossgrabers.framework.controller.hardware.IHwRelativeKnob;
-import de.mossgrabers.framework.controller.valuechanger.DefaultValueChanger;
+import de.mossgrabers.framework.controller.valuechanger.TwosComplementValueChanger;
 import de.mossgrabers.framework.daw.IHost;
 import de.mossgrabers.framework.daw.ITransport;
 import de.mossgrabers.framework.daw.ModelSetup;
@@ -104,7 +104,7 @@ public class FireControllerSetup extends AbstractControllerSetup<FireControlSurf
         super (factory, host, globalSettings, documentSettings);
 
         this.colorManager = new FireColorManager ();
-        this.valueChanger = new DefaultValueChanger (1024, 10);
+        this.valueChanger = new TwosComplementValueChanger (1024, 10);
         this.configuration = new FireConfiguration (host, this.valueChanger, factory.getArpeggiatorModes ());
     }
 

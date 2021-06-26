@@ -31,7 +31,7 @@ import de.mossgrabers.framework.controller.color.ColorEx;
 import de.mossgrabers.framework.controller.hardware.BindType;
 import de.mossgrabers.framework.controller.hardware.IHwAbsoluteKnob;
 import de.mossgrabers.framework.controller.hardware.IHwLight;
-import de.mossgrabers.framework.controller.valuechanger.DefaultValueChanger;
+import de.mossgrabers.framework.controller.valuechanger.TwosComplementValueChanger;
 import de.mossgrabers.framework.daw.IHost;
 import de.mossgrabers.framework.daw.ITransport;
 import de.mossgrabers.framework.daw.ModelSetup;
@@ -94,7 +94,7 @@ public class LaunchkeyMiniMk3ControllerSetup extends AbstractControllerSetup<Lau
         super (factory, host, globalSettings, documentSettings);
 
         this.colorManager = new LaunchkeyMiniMk3ColorManager ();
-        this.valueChanger = new DefaultValueChanger (128, 1);
+        this.valueChanger = new TwosComplementValueChanger (128, 1);
         this.configuration = new LaunchkeyMiniMk3Configuration (host, this.valueChanger, factory.getArpeggiatorModes ());
     }
 

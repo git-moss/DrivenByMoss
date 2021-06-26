@@ -8,6 +8,7 @@ import de.mossgrabers.controller.generic.GenericFlexiConfiguration;
 import de.mossgrabers.controller.generic.controller.FlexiCommand;
 import de.mossgrabers.controller.generic.controller.GenericFlexiControlSurface;
 import de.mossgrabers.controller.generic.flexihandler.utils.FlexiHandlerException;
+import de.mossgrabers.controller.generic.flexihandler.utils.KnobMode;
 import de.mossgrabers.controller.generic.flexihandler.utils.MidiValue;
 import de.mossgrabers.framework.command.trigger.clip.NewCommand;
 import de.mossgrabers.framework.controller.valuechanger.IValueChanger;
@@ -35,12 +36,13 @@ public class ClipHandler extends AbstractHandler
      * @param model The model
      * @param surface The surface
      * @param configuration The configuration
-     * @param relative2ValueChanger The relative value changer variant 2
-     * @param relative3ValueChanger The relative value changer variant 3
+     * @param absoluteLowResValueChanger The default absolute value changer in low res mode
+     * @param signedBitRelativeValueChanger The signed bit relative value changer
+     * @param offsetBinaryRelativeValueChanger The offset binary relative value changer
      */
-    public ClipHandler (final IModel model, final GenericFlexiControlSurface surface, final GenericFlexiConfiguration configuration, final IValueChanger relative2ValueChanger, final IValueChanger relative3ValueChanger)
+    public ClipHandler (final IModel model, final GenericFlexiControlSurface surface, final GenericFlexiConfiguration configuration, final IValueChanger absoluteLowResValueChanger, final IValueChanger signedBitRelativeValueChanger, final IValueChanger offsetBinaryRelativeValueChanger)
     {
-        super (model, surface, configuration, relative2ValueChanger, relative3ValueChanger);
+        super (model, surface, configuration, absoluteLowResValueChanger, signedBitRelativeValueChanger, offsetBinaryRelativeValueChanger);
 
         this.newCommand = new NewCommand<> (this.model, this.surface);
     }
@@ -92,7 +94,7 @@ public class ClipHandler extends AbstractHandler
 
     /** {@inheritDoc} */
     @Override
-    public void handle (final FlexiCommand command, final int knobMode, final MidiValue value)
+    public void handle (final FlexiCommand command, final KnobMode knobMode, final MidiValue value)
     {
         final boolean isButtonPressed = this.isButtonPressed (knobMode, value);
 
@@ -160,7 +162,7 @@ public class ClipHandler extends AbstractHandler
     }
 
 
-    private void scrollClips (final int knobMode, final MidiValue value)
+    private void scrollClips (final KnobMode knobMode, final MidiValue value)
     {
         if (isAbsolute (knobMode))
             return;

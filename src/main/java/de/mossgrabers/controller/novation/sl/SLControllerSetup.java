@@ -35,7 +35,7 @@ import de.mossgrabers.framework.controller.ContinuousID;
 import de.mossgrabers.framework.controller.ISetupFactory;
 import de.mossgrabers.framework.controller.hardware.BindType;
 import de.mossgrabers.framework.controller.hardware.IHwRelativeKnob;
-import de.mossgrabers.framework.controller.valuechanger.DefaultValueChanger;
+import de.mossgrabers.framework.controller.valuechanger.TwosComplementValueChanger;
 import de.mossgrabers.framework.controller.valuechanger.RelativeEncoding;
 import de.mossgrabers.framework.daw.IHost;
 import de.mossgrabers.framework.daw.ModelSetup;
@@ -89,7 +89,7 @@ public class SLControllerSetup extends AbstractControllerSetup<SLControlSurface,
         super (factory, host, globalSettings, documentSettings);
         this.isMkII = isMkII;
         this.colorManager = new SLColorManager ();
-        this.valueChanger = new DefaultValueChanger (128, 1);
+        this.valueChanger = new TwosComplementValueChanger (128, 1);
         this.configuration = new SLConfiguration (host, this.valueChanger, factory.getArpeggiatorModes (), isMkII);
     }
 

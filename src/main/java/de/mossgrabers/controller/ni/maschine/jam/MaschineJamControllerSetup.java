@@ -67,7 +67,7 @@ import de.mossgrabers.framework.controller.color.ColorManager;
 import de.mossgrabers.framework.controller.hardware.BindType;
 import de.mossgrabers.framework.controller.hardware.IHwFader;
 import de.mossgrabers.framework.controller.hardware.IHwRelativeKnob;
-import de.mossgrabers.framework.controller.valuechanger.DefaultValueChanger;
+import de.mossgrabers.framework.controller.valuechanger.TwosComplementValueChanger;
 import de.mossgrabers.framework.daw.GrooveParameterID;
 import de.mossgrabers.framework.daw.IBrowser;
 import de.mossgrabers.framework.daw.IHost;
@@ -135,7 +135,7 @@ public class MaschineJamControllerSetup extends AbstractControllerSetup<Maschine
         super (factory, host, globalSettings, documentSettings);
 
         this.colorManager = new MaschineColorManager ();
-        this.valueChanger = new DefaultValueChanger (128, 1);
+        this.valueChanger = new TwosComplementValueChanger (128, 1);
         this.configuration = new MaschineJamConfiguration (host, this.valueChanger, factory.getArpeggiatorModes ());
     }
 

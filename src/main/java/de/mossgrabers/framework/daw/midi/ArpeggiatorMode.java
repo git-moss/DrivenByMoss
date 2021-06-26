@@ -119,7 +119,6 @@ public enum ArpeggiatorMode
      */
     public static ArpeggiatorMode lookupByName (final String name)
     {
-        final ArpeggiatorMode c = NAME_MODE_MAP.get (name);
-        return c == null ? ArpeggiatorMode.values ()[0] : c;
+        return NAME_MODE_MAP.getOrDefault (name, ArpeggiatorMode.ALL);
     }
 }

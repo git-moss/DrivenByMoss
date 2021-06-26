@@ -325,11 +325,9 @@ public abstract class AbstractDrumView<S extends IControlSurface<C>, C extends C
         }
 
         // Change length of a note or create a new one with a length
-        for (int s = step - 1; s >= 0; s--)
+        for (int s = 0; s < step; s++)
         {
-            final int x = s % this.numColumns;
-            final int y = this.allRows - 1 - s / this.numColumns;
-            final int pad = y * this.numColumns + x;
+            final int pad = this.getPadIndex (s);
             final IHwButton button = this.surface.getButton (ButtonID.get (this.firstPad, pad));
             if (button.isLongPressed ())
             {
@@ -346,6 +344,20 @@ public abstract class AbstractDrumView<S extends IControlSurface<C>, C extends C
         }
 
         return false;
+    }
+
+
+    /**
+     * Calculate the index of the pad from the given sequencer step.
+     *
+     * @param step The step
+     * @return The pad index
+     */
+    protected int getPadIndex (final int step)
+    {
+        final int x = step % this.numColumns;
+        final int y = this.allRows - 1 - step / this.numColumns;
+        return y * this.numColumns + x;
     }
 
 

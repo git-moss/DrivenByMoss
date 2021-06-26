@@ -5,11 +5,12 @@
 package de.mossgrabers.framework.controller.valuechanger;
 
 /**
- * The MCU value changer (@see RelativeEncoding.SIGNED_BIT).
+ * E.g. used by the MCU jug wheel (@see RelativeEncoding.SIGNED_BIT).<br/>
+ * [0..127] = [0..63,0,-1..-63] speed.
  *
  * @author J&uuml;rgen Mo&szlig;graber
  */
-public class Relative2ValueChanger extends DefaultValueChanger
+public class SignedBitRelativeValueChanger extends TwosComplementValueChanger
 {
     /**
      * Constructor.
@@ -17,7 +18,7 @@ public class Relative2ValueChanger extends DefaultValueChanger
      * @param upperBound The range of the parameter values (0 to upperBound - 1)
      * @param stepSize The value for de-/increasing the value by '1' without any scaling
      */
-    public Relative2ValueChanger (final int upperBound, final int stepSize)
+    public SignedBitRelativeValueChanger (final int upperBound, final int stepSize)
     {
         super (upperBound, stepSize);
     }
@@ -27,7 +28,7 @@ public class Relative2ValueChanger extends DefaultValueChanger
     @Override
     public int decode (final int control)
     {
-        return control < 0x41 ? control : 0x40 - control;
+        return control < 64 ? control : 64 - control;
     }
 
 
@@ -35,6 +36,6 @@ public class Relative2ValueChanger extends DefaultValueChanger
     @Override
     public int encode (final int speed)
     {
-        return speed < 0 ? 0x40 + speed : speed;
+        return speed <= 0 ? 64 + Math.abs (speed) : speed;
     }
 }
