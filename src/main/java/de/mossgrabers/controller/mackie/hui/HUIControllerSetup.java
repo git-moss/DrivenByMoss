@@ -55,7 +55,7 @@ import de.mossgrabers.framework.controller.color.ColorManager;
 import de.mossgrabers.framework.controller.hardware.IHwButton;
 import de.mossgrabers.framework.controller.hardware.IHwFader;
 import de.mossgrabers.framework.controller.hardware.IHwRelativeKnob;
-import de.mossgrabers.framework.controller.valuechanger.DefaultValueChanger;
+import de.mossgrabers.framework.controller.valuechanger.TwosComplementValueChanger;
 import de.mossgrabers.framework.daw.IApplication;
 import de.mossgrabers.framework.daw.IHost;
 import de.mossgrabers.framework.daw.ITransport;
@@ -115,7 +115,7 @@ public class HUIControllerSetup extends AbstractControllerSetup<HUIControlSurfac
         this.colorManager.registerColorIndex (AbstractFeatureGroup.BUTTON_COLOR_OFF, 0);
         this.colorManager.registerColorIndex (AbstractFeatureGroup.BUTTON_COLOR_ON, 127);
 
-        this.valueChanger = new DefaultValueChanger (16384, 100);
+        this.valueChanger = new TwosComplementValueChanger (16384, 100);
         this.configuration = new HUIConfiguration (host, this.valueChanger, factory.getArpeggiatorModes ());
     }
 

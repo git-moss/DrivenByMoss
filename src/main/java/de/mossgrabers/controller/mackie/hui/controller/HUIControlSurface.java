@@ -13,8 +13,8 @@ import de.mossgrabers.framework.controller.ButtonID;
 import de.mossgrabers.framework.controller.ContinuousID;
 import de.mossgrabers.framework.controller.color.ColorManager;
 import de.mossgrabers.framework.controller.hardware.IHwButton;
-import de.mossgrabers.framework.controller.valuechanger.DefaultValueChanger;
-import de.mossgrabers.framework.controller.valuechanger.Relative4ValueChanger;
+import de.mossgrabers.framework.controller.valuechanger.TwosComplementValueChanger;
+import de.mossgrabers.framework.controller.valuechanger.SignedBit2RelativeValueChanger;
 import de.mossgrabers.framework.daw.IHost;
 import de.mossgrabers.framework.daw.IModel;
 import de.mossgrabers.framework.daw.midi.IMidiInput;
@@ -275,8 +275,8 @@ public class HUIControlSurface extends AbstractControlSurface<HUIConfiguration>
     public static final int                    KNOB_LED_MODE_SPREAD     = 3;
 
     // Note: Parameters do not matter, only used relative
-    private static final DefaultValueChanger   ENCODER                  = new DefaultValueChanger (128, 1);
-    private static final Relative4ValueChanger DECODER                  = new Relative4ValueChanger (128, 1);
+    private static final TwosComplementValueChanger   ENCODER                  = new TwosComplementValueChanger (128, 1);
+    private static final SignedBit2RelativeValueChanger DECODER                  = new SignedBit2RelativeValueChanger (128, 1);
 
     private final List<HUIControlSurface>      surfaces;
     private final int                          extenderOffset;

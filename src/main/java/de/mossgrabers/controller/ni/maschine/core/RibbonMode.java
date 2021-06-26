@@ -92,7 +92,6 @@ public enum RibbonMode
      */
     public static RibbonMode lookupByName (final String name)
     {
-        final RibbonMode c = NAME_MODE_MAP.get (name);
-        return c == null ? RibbonMode.values ()[0] : c;
+        return NAME_MODE_MAP.getOrDefault (name, RibbonMode.PITCH_DOWN);
     }
 }

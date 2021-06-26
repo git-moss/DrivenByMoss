@@ -267,6 +267,7 @@ public class GenericFlexiControlSurface extends AbstractControlSurface<GenericFl
             }
         }
 
+        // No Hi-Res
         if (slotIndex == -1)
         {
             final Optional<Pair<Integer, CommandSlot>> optional = this.configuration.getSlot (CommandSlot.TYPE_CC, data1, channel);

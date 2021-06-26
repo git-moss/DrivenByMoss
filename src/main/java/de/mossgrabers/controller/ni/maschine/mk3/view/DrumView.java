@@ -225,6 +225,15 @@ public class DrumView extends AbstractDrumView<MaschineControlSurface, MaschineC
 
     /** {@inheritDoc} */
     @Override
+    protected void handleSequencerArea (final int index, final int x, final int y, final int offsetY, final int velocity)
+    {
+        final int yMod = 3 - y;
+        super.handleSequencerArea (index, x, yMod, offsetY, velocity);
+    }
+
+
+    /** {@inheritDoc} */
+    @Override
     protected boolean handleSequencerAreaButtonCombinations (final INoteClip clip, final int channel, final int step, final int note, final int velocity)
     {
         final ModeManager modeManager = this.surface.getModeManager ();
@@ -242,9 +251,10 @@ public class DrumView extends AbstractDrumView<MaschineControlSurface, MaschineC
 
     /** {@inheritDoc} */
     @Override
-    protected void handleSequencerArea (final int index, final int x, final int y, final int offsetY, final int velocity)
+    protected int getPadIndex (final int step)
     {
-        final int yMod = 3 - y;
-        super.handleSequencerArea (index, x, yMod, offsetY, velocity);
+        final int x = step % this.numColumns;
+        final int y = step / this.numColumns;
+        return y * this.numColumns + x;
     }
 }

@@ -40,7 +40,7 @@ import de.mossgrabers.framework.controller.ISetupFactory;
 import de.mossgrabers.framework.controller.OutputID;
 import de.mossgrabers.framework.controller.hardware.BindType;
 import de.mossgrabers.framework.controller.hardware.IHwRelativeKnob;
-import de.mossgrabers.framework.controller.valuechanger.DefaultValueChanger;
+import de.mossgrabers.framework.controller.valuechanger.TwosComplementValueChanger;
 import de.mossgrabers.framework.daw.IHost;
 import de.mossgrabers.framework.daw.ITransport;
 import de.mossgrabers.framework.daw.ModelSetup;
@@ -79,7 +79,7 @@ public class Kontrol1ControllerSetup extends AbstractControllerSetup<Kontrol1Con
     {
         super (factory, host, globalSettings, documentSettings);
         this.modelIndex = modelIndex;
-        this.valueChanger = new DefaultValueChanger (1024, 10);
+        this.valueChanger = new TwosComplementValueChanger (1024, 10);
         this.colorManager = new Kontrol1ColorManager ();
         this.configuration = new Kontrol1Configuration (host, this.valueChanger, factory.getArpeggiatorModes ());
     }

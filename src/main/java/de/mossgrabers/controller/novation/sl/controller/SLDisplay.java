@@ -47,7 +47,7 @@ public class SLDisplay extends AbstractTextDisplay
      */
     public SLDisplay (final IHost host, final IMidiOutput output, final IHwTextDisplay hwTextDisplay1, final IHwTextDisplay hwTextDisplay2)
     {
-        super (host, output, 4 /* No of rows */, 8 /* No of cells */, 8 * 8);
+        super (host, output, 4 /* No of rows */, 8 /* No of cells */, 72);
 
         this.hwTextDisplay1 = hwTextDisplay1;
         this.hwTextDisplay2 = hwTextDisplay2;

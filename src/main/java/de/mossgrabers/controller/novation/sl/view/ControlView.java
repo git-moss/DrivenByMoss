@@ -10,13 +10,12 @@ import de.mossgrabers.controller.novation.sl.command.trigger.P2ButtonCommand;
 import de.mossgrabers.controller.novation.sl.controller.SLControlSurface;
 import de.mossgrabers.controller.novation.sl.mode.device.DevicePresetsMode;
 import de.mossgrabers.controller.novation.sl.mode.device.SLParameterMode;
+import de.mossgrabers.framework.command.trigger.clip.NewCommand;
 import de.mossgrabers.framework.controller.ButtonID;
 import de.mossgrabers.framework.daw.IModel;
 import de.mossgrabers.framework.daw.ITransport;
 import de.mossgrabers.framework.daw.data.ICursorDevice;
-import de.mossgrabers.framework.daw.data.ISlot;
 import de.mossgrabers.framework.daw.data.ITrack;
-import de.mossgrabers.framework.daw.data.bank.ISlotBank;
 import de.mossgrabers.framework.daw.data.bank.ITrackBank;
 import de.mossgrabers.framework.featuregroup.ModeManager;
 import de.mossgrabers.framework.mode.Modes;
@@ -24,7 +23,6 @@ import de.mossgrabers.framework.utils.ButtonEvent;
 import de.mossgrabers.framework.view.ControlOnlyView;
 import de.mossgrabers.framework.view.Views;
 
-import java.util.List;
 import java.util.Optional;
 
 
@@ -35,9 +33,10 @@ import java.util.Optional;
  */
 public class ControlView extends ControlOnlyView<SLControlSurface, SLConfiguration> implements SLView
 {
-    private boolean          isTempoDec;
-    private boolean          isTempoInc;
-    private TransportControl transportControl;
+    private boolean                                             isTempoDec;
+    private boolean                                             isTempoInc;
+    private final TransportControl                              transportControl;
+    private final NewCommand<SLControlSurface, SLConfiguration> newCommand;
 
 
     /**
@@ -49,6 +48,8 @@ public class ControlView extends ControlOnlyView<SLControlSurface, SLConfigurati
     public ControlView (final SLControlSurface surface, final IModel model)
     {
         super (surface, model);
+
+        this.newCommand = new NewCommand<> (model, surface);
         this.transportControl = new TransportControl (surface, model);
     }
 
@@ -114,24 +115,7 @@ public class ControlView extends ControlOnlyView<SLControlSurface, SLConfigurati
 
             // New
             case 4:
-                final ITrack cursorTrack = this.model.getCursorTrack ();
-                if (!cursorTrack.doesExist ())
-                    return;
-                final ISlotBank slotBank = cursorTrack.getSlotBank ();
-                final List<ISlot> slotIndexes = slotBank.getSelectedItems ();
-                final int slotIndex = slotIndexes.isEmpty () ? 0 : slotIndexes.get (0).getIndex ();
-                for (int i = 0; i < 8; i++)
-                {
-                    final int sIndex = (slotIndex + i) % 8;
-                    final ISlot s = slotBank.getItem (sIndex);
-                    if (!s.hasContent ())
-                    {
-                        final int lengthInBeats = this.surface.getConfiguration ().getNewClipLenghthInBeats (this.model.getTransport ().getQuartersPerMeasure ());
-                        this.model.createNoteClip (cursorTrack, s, lengthInBeats, true);
-                        return;
-                    }
-                }
-                this.surface.getDisplay ().notify ("In the current selected grid view there is no empty slot. Please scroll down.");
+                this.newCommand.executeNormal (ButtonEvent.DOWN);
                 break;
 
             // Open the VST window

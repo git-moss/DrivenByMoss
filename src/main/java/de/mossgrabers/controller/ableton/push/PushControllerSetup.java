@@ -119,7 +119,7 @@ import de.mossgrabers.framework.controller.color.ColorManager;
 import de.mossgrabers.framework.controller.hardware.BindType;
 import de.mossgrabers.framework.controller.hardware.IHwFader;
 import de.mossgrabers.framework.controller.hardware.IHwRelativeKnob;
-import de.mossgrabers.framework.controller.valuechanger.DefaultValueChanger;
+import de.mossgrabers.framework.controller.valuechanger.TwosComplementValueChanger;
 import de.mossgrabers.framework.daw.IHost;
 import de.mossgrabers.framework.daw.INoteClip;
 import de.mossgrabers.framework.daw.ITransport;
@@ -174,7 +174,7 @@ public class PushControllerSetup extends AbstractControllerSetup<PushControlSurf
 
         this.isPush2 = isPush2;
         this.colorManager = new PushColorManager (isPush2);
-        this.valueChanger = new DefaultValueChanger (1024, 10);
+        this.valueChanger = new TwosComplementValueChanger (1024, 10);
         this.configuration = new PushConfiguration (host, this.valueChanger, factory.getArpeggiatorModes (), isPush2);
     }
 

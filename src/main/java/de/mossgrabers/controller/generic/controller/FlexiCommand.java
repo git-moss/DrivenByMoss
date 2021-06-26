@@ -812,7 +812,6 @@ public enum FlexiCommand
      */
     public static FlexiCommand lookupByName (final String name)
     {
-        final FlexiCommand c = NAME_COMMAND_MAP.get (name);
-        return c == null ? FlexiCommand.OFF : c;
+        return NAME_COMMAND_MAP.getOrDefault (name, FlexiCommand.OFF);
     }
 }

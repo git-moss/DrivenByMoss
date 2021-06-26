@@ -5,14 +5,16 @@
 package de.mossgrabers.framework.controller.valuechanger;
 
 /**
- * Default implementation for changing values. The relative knob implementation is Two's Complement
- *
+ * Default implementation for changing values. The relative knob implementation is Two's
+ * Complement.<br/>
+ * [0..127] = [0..63,-64..-1] speed<br/>
+ * 
  * @see <a href=
  *      "https://en.wikipedia.org/wiki/Two%27s_complement">https://en.wikipedia.org/wiki/Two%27s_complement</a>
- *
+ * 
  * @author J&uuml;rgen Mo&szlig;graber
  */
-public class DefaultValueChanger implements IValueChanger
+public class TwosComplementValueChanger implements IValueChanger
 {
     private int    upperBound;
     protected int  stepSize;
@@ -25,7 +27,7 @@ public class DefaultValueChanger implements IValueChanger
      * @param upperBound The range of the parameter values (0 to upperBound - 1)
      * @param stepSize The value for de-/increasing the value by '1' without any scaling
      */
-    public DefaultValueChanger (final int upperBound, final int stepSize)
+    public TwosComplementValueChanger (final int upperBound, final int stepSize)
     {
         this.upperBound = upperBound;
         this.stepSize = stepSize;
@@ -93,17 +95,17 @@ public class DefaultValueChanger implements IValueChanger
 
     /** {@inheritDoc} */
     @Override
-    public int encode (final int speed)
+    public int decode (final int control)
     {
-        return speed < 0 ? speed + 128 : speed;
+        return control < 64 ? control : control - 128;
     }
 
 
     /** {@inheritDoc} */
     @Override
-    public int decode (final int control)
+    public int encode (final int speed)
     {
-        return control <= 64 ? control : control - 128;
+        return speed < 0 ? speed + 128 : speed;
     }
 
 

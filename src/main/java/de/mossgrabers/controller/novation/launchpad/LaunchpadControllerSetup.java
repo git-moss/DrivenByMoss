@@ -70,7 +70,7 @@ import de.mossgrabers.framework.controller.OutputID;
 import de.mossgrabers.framework.controller.hardware.BindType;
 import de.mossgrabers.framework.controller.hardware.IHwButton;
 import de.mossgrabers.framework.controller.hardware.IHwLight;
-import de.mossgrabers.framework.controller.valuechanger.DefaultValueChanger;
+import de.mossgrabers.framework.controller.valuechanger.TwosComplementValueChanger;
 import de.mossgrabers.framework.daw.DAWColor;
 import de.mossgrabers.framework.daw.IHost;
 import de.mossgrabers.framework.daw.ITransport;
@@ -162,7 +162,7 @@ public class LaunchpadControllerSetup extends AbstractControllerSetup<LaunchpadC
 
         this.definition = definition;
         this.colorManager = new LaunchpadColorManager ();
-        this.valueChanger = new DefaultValueChanger (128, 1);
+        this.valueChanger = new TwosComplementValueChanger (128, 1);
         this.configuration = new LaunchpadConfiguration (host, this.valueChanger, factory.getArpeggiatorModes (), definition);
     }
 

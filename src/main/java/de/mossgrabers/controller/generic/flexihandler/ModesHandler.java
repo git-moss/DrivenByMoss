@@ -8,6 +8,7 @@ import de.mossgrabers.controller.generic.GenericFlexiConfiguration;
 import de.mossgrabers.controller.generic.controller.FlexiCommand;
 import de.mossgrabers.controller.generic.controller.GenericFlexiControlSurface;
 import de.mossgrabers.controller.generic.flexihandler.utils.FlexiHandlerException;
+import de.mossgrabers.controller.generic.flexihandler.utils.KnobMode;
 import de.mossgrabers.controller.generic.flexihandler.utils.MidiValue;
 import de.mossgrabers.framework.controller.valuechanger.IValueChanger;
 import de.mossgrabers.framework.daw.IHost;
@@ -56,13 +57,14 @@ public class ModesHandler extends AbstractHandler
      * @param model The model
      * @param surface The surface
      * @param configuration The configuration
-     * @param relative2ValueChanger The relative value changer variant 2
-     * @param relative3ValueChanger The relative value changer variant 3
+     * @param absoluteLowResValueChanger The default absolute value changer in low res mode
+     * @param signedBitRelativeValueChanger The signed bit relative value changer
+     * @param offsetBinaryRelativeValueChanger The offset binary relative value changer
      * @param host The host
      */
-    public ModesHandler (final IModel model, final GenericFlexiControlSurface surface, final GenericFlexiConfiguration configuration, final IValueChanger relative2ValueChanger, final IValueChanger relative3ValueChanger, final IHost host)
+    public ModesHandler (final IModel model, final GenericFlexiControlSurface surface, final GenericFlexiConfiguration configuration, final IValueChanger absoluteLowResValueChanger, final IValueChanger signedBitRelativeValueChanger, final IValueChanger offsetBinaryRelativeValueChanger, final IHost host)
     {
-        super (model, surface, configuration, relative2ValueChanger, relative3ValueChanger);
+        super (model, surface, configuration, absoluteLowResValueChanger, signedBitRelativeValueChanger, offsetBinaryRelativeValueChanger);
 
         this.host = host;
         this.modeManager = this.surface.getModeManager ();
@@ -140,7 +142,7 @@ public class ModesHandler extends AbstractHandler
 
     /** {@inheritDoc} */
     @Override
-    public void handle (final FlexiCommand command, final int knobMode, final MidiValue value)
+    public void handle (final FlexiCommand command, final KnobMode knobMode, final MidiValue value)
     {
         final IMode mode = this.modeManager.getActive ();
         if (mode == null)
@@ -274,7 +276,7 @@ public class ModesHandler extends AbstractHandler
     }
 
 
-    private void changeModeValue (final int knobMode, final int knobIndex, final MidiValue value)
+    private void changeModeValue (final KnobMode knobMode, final int knobIndex, final MidiValue value)
     {
         final IMode mode = this.modeManager.getActive ();
         final boolean absolute = isAbsolute (knobMode);
@@ -283,10 +285,7 @@ public class ModesHandler extends AbstractHandler
             if (mode instanceof AbstractMode)
                 ((AbstractMode<?, ?, ?>) mode).setAbsolute (absolute);
             if (absolute)
-            {
-                final int val = value.getValue ();
-                mode.onKnobValue (knobIndex, value.isHighRes () ? val : (int) Math.round (val * 16383.0 / 127.0));
-            }
+                mode.onKnobValue (knobIndex, value.getUpscaled ());
             else
             {
                 // Re-encode the selected relative type to the default relative type

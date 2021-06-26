@@ -47,7 +47,7 @@ import de.mossgrabers.framework.controller.ISetupFactory;
 import de.mossgrabers.framework.controller.OutputID;
 import de.mossgrabers.framework.controller.color.ColorEx;
 import de.mossgrabers.framework.controller.hardware.BindType;
-import de.mossgrabers.framework.controller.valuechanger.DefaultValueChanger;
+import de.mossgrabers.framework.controller.valuechanger.TwosComplementValueChanger;
 import de.mossgrabers.framework.daw.IHost;
 import de.mossgrabers.framework.daw.ITransport;
 import de.mossgrabers.framework.daw.ModelSetup;
@@ -103,7 +103,7 @@ public class SLMkIIIControllerSetup extends AbstractControllerSetup<SLMkIIIContr
         super (factory, host, globalSettings, documentSettings);
 
         this.colorManager = new SLMkIIIColorManager ();
-        this.valueChanger = new DefaultValueChanger (1024, 8);
+        this.valueChanger = new TwosComplementValueChanger (1024, 8);
         this.configuration = new SLMkIIIConfiguration (host, this.valueChanger, factory.getArpeggiatorModes ());
     }
 

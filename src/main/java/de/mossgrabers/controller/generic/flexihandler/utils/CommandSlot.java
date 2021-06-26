@@ -32,7 +32,7 @@ public class CommandSlot
     private int             number                = 0;
     private int             midiChannel           = 0;
     private boolean         isHighRes             = false;
-    private int             knobMode              = 0;
+    private KnobMode        knobMode              = KnobMode.ABSOLUTE;
     private boolean         sendValue             = false;
     private boolean         sendValueWhenReceived = false;
     private FlexiCommand    command               = FlexiCommand.OFF;
@@ -96,7 +96,7 @@ public class CommandSlot
      *
      * @return The knob mode
      */
-    public int getKnobMode ()
+    public KnobMode getKnobMode ()
     {
         return this.knobMode;
     }
@@ -162,7 +162,7 @@ public class CommandSlot
      *
      * @param value The index
      */
-    public void setKnobMode (final int value)
+    public void setKnobMode (final KnobMode value)
     {
         this.knobMode = value;
     }

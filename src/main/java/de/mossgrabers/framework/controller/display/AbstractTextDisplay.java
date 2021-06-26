@@ -258,17 +258,20 @@ public abstract class AbstractTextDisplay implements ITextDisplay
 
     protected void notifyOnDisplay (final String message)
     {
-        final String msg;
+        final StringBuilder msg = new StringBuilder ();
         if (this.centerNotification)
         {
             final int padLength = (this.noOfCharacters - message.length ()) / 2 + 1;
             final String padding = padLength > 0 ? this.emptyLine.substring (0, padLength) : "";
-            msg = padding + message + padding;
+            msg.append (padding).append (message).append (padding);
         }
         else
-            msg = message + this.emptyLine;
+            msg.append (message);
 
-        this.notificationMessage = msg.substring (0, Math.min (this.noOfCharacters, msg.length ()));
+        // Pad enough spaces at the to fill all lines...
+        for (int row = 0; row < this.noOfLines; row++)
+            msg.append (this.emptyLine);
+        this.notificationMessage = msg.toString ();
 
         synchronized (this.notificationLock)
         {
@@ -303,9 +306,11 @@ public abstract class AbstractTextDisplay implements ITextDisplay
         {
             if (this.isNotificationActive > 0)
             {
-                this.updateLine (0, this.notificationMessage);
-                for (int row = 1; row < this.noOfLines; row++)
-                    this.updateLine (row, this.emptyLine);
+                for (int row = 0; row < this.noOfLines; row++)
+                {
+                    final int pos = row * this.noOfCharacters;
+                    this.updateLine (row, this.notificationMessage.substring (pos, pos + this.noOfCharacters));
+                }
                 return;
             }
         }
