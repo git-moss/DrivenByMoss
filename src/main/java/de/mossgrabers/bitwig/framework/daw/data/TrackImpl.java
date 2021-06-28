@@ -33,17 +33,21 @@ import java.util.concurrent.CopyOnWriteArraySet;
  */
 public class TrackImpl extends ChannelImpl implements ITrack
 {
-    protected static final int       NOTE_OFF      = 0;
-    protected static final int       NOTE_ON       = 1;
-    protected static final int       NOTE_ON_NEW   = 2;
+    protected static final int       NOTE_OFF          = 0;
+    protected static final int       NOTE_ON           = 1;
+    protected static final int       NOTE_ON_NEW       = 2;
+
+    private static final String      MONITOR_MODE_OFF  = "OFF";
+    private static final String      MONITOR_MODE_ON   = "ON";
+    private static final String      MONITOR_MODE_AUTO = "AUTO";
 
     protected final Track            track;
 
     private final BooleanValue       isTopGroup;
     private final ApplicationImpl    application;
     private final ISlotBank          slotBank;
-    private final int []             noteCache     = new int [128];
-    private final Set<INoteObserver> noteObservers = new CopyOnWriteArraySet<> ();
+    private final int []             noteCache         = new int [128];
+    private final Set<INoteObserver> noteObservers     = new CopyOnWriteArraySet<> ();
     private final CursorTrack        cursorTrack;
     private final IHost              host;
     private final IParameter         crossfadeParameter;
@@ -77,7 +81,7 @@ public class TrackImpl extends ChannelImpl implements ITrack
         track.isGroup ().markInterested ();
         track.arm ().markInterested ();
         track.isMonitoring ().markInterested ();
-        track.autoMonitor ().markInterested ();
+        track.monitorMode ().markInterested ();
         track.crossFadeMode ().markInterested ();
         track.canHoldNoteData ().markInterested ();
         track.canHoldAudioData ().markInterested ();
@@ -105,7 +109,7 @@ public class TrackImpl extends ChannelImpl implements ITrack
         Util.setIsSubscribed (this.track.isGroup (), enable);
         Util.setIsSubscribed (this.track.arm (), enable);
         Util.setIsSubscribed (this.track.isMonitoring (), enable);
-        Util.setIsSubscribed (this.track.autoMonitor (), enable);
+        Util.setIsSubscribed (this.track.monitorMode (), enable);
         Util.setIsSubscribed (this.track.crossFadeMode (), enable);
         Util.setIsSubscribed (this.track.canHoldNoteData (), enable);
         Util.setIsSubscribed (this.track.canHoldAudioData (), enable);
@@ -215,7 +219,7 @@ public class TrackImpl extends ChannelImpl implements ITrack
     @Override
     public void setMonitor (final boolean value)
     {
-        this.track.isMonitoring ().set (value);
+        this.track.monitorMode ().set (MONITOR_MODE_ON);
     }
 
 
@@ -223,7 +227,7 @@ public class TrackImpl extends ChannelImpl implements ITrack
     @Override
     public void toggleMonitor ()
     {
-        this.track.isMonitoring ().toggle ();
+        this.track.monitorMode ().set (isMonitor () ? MONITOR_MODE_OFF : MONITOR_MODE_ON);
     }
 
 
@@ -231,7 +235,7 @@ public class TrackImpl extends ChannelImpl implements ITrack
     @Override
     public boolean isAutoMonitor ()
     {
-        return this.track.mon.autoMonitor ().get ();
+        return MONITOR_MODE_AUTO.equalsIgnoreCase (this.track.monitorMode ().get ());
     }
 
 
@@ -239,7 +243,7 @@ public class TrackImpl extends ChannelImpl implements ITrack
     @Override
     public void setAutoMonitor (final boolean value)
     {
-        this.track.autoMonitor ().set (value);
+        this.track.monitorMode ().set (value ? MONITOR_MODE_AUTO : MONITOR_MODE_OFF);
     }
 
 
@@ -247,7 +251,7 @@ public class TrackImpl extends ChannelImpl implements ITrack
     @Override
     public void toggleAutoMonitor ()
     {
-        this.track.autoMonitor ().toggle ();
+        this.setAutoMonitor (!this.isAutoMonitor ());
     }
 
 
