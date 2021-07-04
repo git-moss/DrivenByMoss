@@ -12,6 +12,7 @@ import de.mossgrabers.framework.controller.color.ColorEx;
 import de.mossgrabers.framework.controller.grid.IPadGrid;
 import de.mossgrabers.framework.daw.IModel;
 import de.mossgrabers.framework.daw.INoteClip;
+import de.mossgrabers.framework.daw.IStepInfo;
 import de.mossgrabers.framework.daw.data.IDrumDevice;
 import de.mossgrabers.framework.featuregroup.ModeManager;
 import de.mossgrabers.framework.mode.Modes;
@@ -118,13 +119,13 @@ public class DrumView extends AbstractDrumView<SLMkIIIControlSurface, SLMkIIICon
         final int selPad = this.getSelectedPad ();
         for (int col = 0; col < DrumView.NUM_DISPLAY_COLS; col++)
         {
-            final int isSet = clip.getStep (editMidiChannel, col, offsetY + selPad).getState ();
+            final IStepInfo stepInfo = clip.getStep (editMidiChannel, col, offsetY + selPad);
             final boolean hilite = col == hiStep;
             final int x = col % GRID_COLUMNS;
             final int y = col / GRID_COLUMNS;
 
             final Optional<ColorEx> rowColor = this.getDrumPadColor (primary, this.selectedPad);
-            padGrid.lightEx (x, y, this.getStepColor (isSet, hilite, rowColor));
+            padGrid.lightEx (x, y, this.getStepColor (stepInfo, hilite, rowColor));
         }
     }
 

@@ -10,7 +10,7 @@ import de.mossgrabers.controller.akai.fire.mode.NoteMode;
 import de.mossgrabers.framework.controller.ButtonID;
 import de.mossgrabers.framework.daw.IModel;
 import de.mossgrabers.framework.daw.INoteClip;
-import de.mossgrabers.framework.daw.IStepInfo;
+import de.mossgrabers.framework.daw.StepState;
 import de.mossgrabers.framework.daw.data.ITrack;
 import de.mossgrabers.framework.featuregroup.ModeManager;
 import de.mossgrabers.framework.mode.Modes;
@@ -56,8 +56,8 @@ public class SequencerView extends AbstractNoteSequencerView<FireControlSurface,
                 final int channel = this.configuration.getMidiEditChannel ();
                 final int mappedY = this.keyManager.map (y);
 
-                final int state = clip.getStep (channel, x, mappedY).getState ();
-                if (state == IStepInfo.NOTE_START)
+                final StepState state = clip.getStep (channel, x, mappedY).getState ();
+                if (state == StepState.START)
                     ((NoteMode) modeManager.get (Modes.NOTE)).setValues (clip, channel, x, mappedY);
                 return;
             }

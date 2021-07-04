@@ -102,6 +102,28 @@ public interface INoteClip extends IClip, IPinnable
 
 
     /**
+     * If there is a note started at this position, it will update the mute state of the note.
+     *
+     * @param channel The MIDI channel
+     * @param step The step
+     * @param row The note row
+     * @param isMuted Is the note muted?
+     */
+    void updateMuteState (int channel, int step, int row, boolean isMuted);
+
+
+    /**
+     * If there is a note started at this position, it will change the mute state of the note.
+     *
+     * @param channel The MIDI channel
+     * @param step The step
+     * @param row The note row
+     * @param control The change value
+     */
+    void changeMuteState (int channel, int step, int row, int control);
+
+
+    /**
      * If there is a note started at this position, it will update the duration of the note.
      *
      * @param channel The MIDI channel

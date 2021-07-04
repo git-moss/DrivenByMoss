@@ -613,4 +613,26 @@ public interface ITransport extends IObserverManagement
 
         this.setDefaultLaunchQuantization (launchQuantizations[pos]);
     }
+
+
+    /**
+     * Is the fill mode active?
+     *
+     * @return True if active
+     */
+    boolean isFillModeActive ();
+
+
+    /**
+     * Set the fill mode active.
+     *
+     * @param isActive True to activate
+     */
+    void setFillModeActive (boolean isActive);
+
+
+    /**
+     * Toggle the fill mode.
+     */
+    void toggleFillModeActive ();
 }

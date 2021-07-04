@@ -11,7 +11,7 @@ import de.mossgrabers.controller.akai.fire.mode.NoteMode;
 import de.mossgrabers.framework.controller.ButtonID;
 import de.mossgrabers.framework.daw.IModel;
 import de.mossgrabers.framework.daw.INoteClip;
-import de.mossgrabers.framework.daw.IStepInfo;
+import de.mossgrabers.framework.daw.StepState;
 import de.mossgrabers.framework.daw.data.IDrumPad;
 import de.mossgrabers.framework.daw.data.ILayer;
 import de.mossgrabers.framework.daw.data.bank.IDrumPadBank;
@@ -74,8 +74,8 @@ public class Drum4View extends AbstractDrum4View<FireControlSurface, FireConfigu
             if (modeManager.isActive (Modes.NOTE))
             {
                 // Store existing note for editing
-                final int state = clip.getStep (channel, step, sound).getState ();
-                if (state == IStepInfo.NOTE_START)
+                final StepState state = clip.getStep (channel, step, sound).getState ();
+                if (state == StepState.START)
                     ((NoteMode) modeManager.get (Modes.NOTE)).setValues (clip, channel, step, sound);
                 return;
             }

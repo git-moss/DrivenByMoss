@@ -78,14 +78,15 @@ public class ModelImpl extends AbstractModel
 
         this.controllerHost = controllerHost;
 
-        final Application app = controllerHost.createApplication ();
-        this.application = new ApplicationImpl (app);
+        final Application bwApplication = controllerHost.createApplication ();
+        final Arranger bwArranger = controllerHost.createArranger ();
+
+        this.application = new ApplicationImpl (bwApplication, bwArranger);
         final Project proj = controllerHost.getProject ();
         this.rootTrackGroup = proj.getRootTrackGroup ();
-        this.project = new ProjectImpl (this.valueChanger, proj, app);
+        this.project = new ProjectImpl (this.valueChanger, proj, bwApplication);
 
         this.transport = new TransportImpl (controllerHost, this.application, this.valueChanger);
-        final Arranger bwArranger = controllerHost.createArranger ();
         this.arranger = new ArrangerImpl (bwArranger);
         final int numMarkers = modelSetup.getNumMarkers ();
         if (numMarkers > 0)

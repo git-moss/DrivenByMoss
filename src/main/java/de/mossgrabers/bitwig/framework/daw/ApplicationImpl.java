@@ -11,6 +11,7 @@ import de.mossgrabers.framework.daw.constants.RecordQuantization;
 import com.bitwig.extension.controller.api.Action;
 import com.bitwig.extension.controller.api.ActionCategory;
 import com.bitwig.extension.controller.api.Application;
+import com.bitwig.extension.controller.api.Arranger;
 
 
 /**
@@ -20,21 +21,20 @@ import com.bitwig.extension.controller.api.Application;
  */
 public class ApplicationImpl implements IApplication
 {
-    private static final String ACTION_ZOOM_OUT            = "Zoom Out";
-    private static final String ACTION_ZOOM_IN             = "Zoom In";
-    private static final String ACTION_TOGGLE_TRACK_HEIGHT = "toggle_double_or_single_row_track_height";
-
-    private Application         application;
+    private final Application application;
+    private final Arranger    arranger;
 
 
     /**
      * Constructor.
      *
      * @param application The application object
+     * @param arranger The arranger
      */
-    public ApplicationImpl (final Application application)
+    public ApplicationImpl (final Application application, final Arranger arranger)
     {
         this.application = application;
+        this.arranger = arranger;
 
         this.application.hasActiveEngine ().markInterested ();
         this.application.panelLayout ().markInterested ();
@@ -312,7 +312,7 @@ public class ApplicationImpl implements IApplication
     @Override
     public void zoomOut ()
     {
-        this.invokeAction (ACTION_ZOOM_OUT);
+        this.arranger.zoomOut ();
     }
 
 
@@ -320,7 +320,7 @@ public class ApplicationImpl implements IApplication
     @Override
     public void zoomIn ()
     {
-        this.invokeAction (ACTION_ZOOM_IN);
+        this.arranger.zoomIn ();
     }
 
 
@@ -328,8 +328,7 @@ public class ApplicationImpl implements IApplication
     @Override
     public void incTrackHeight ()
     {
-        // No track height increase method available
-        this.invokeAction (ACTION_TOGGLE_TRACK_HEIGHT);
+        this.arranger.zoomInLaneHeightsAll ();
     }
 
 
@@ -337,8 +336,7 @@ public class ApplicationImpl implements IApplication
     @Override
     public void decTrackHeight ()
     {
-        // No track height increase method available
-        this.invokeAction (ACTION_TOGGLE_TRACK_HEIGHT);
+        this.arranger.zoomOutLaneHeightsAll ();
     }
 
 

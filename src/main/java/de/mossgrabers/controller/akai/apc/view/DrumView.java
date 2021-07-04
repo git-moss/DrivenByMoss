@@ -12,7 +12,7 @@ import de.mossgrabers.framework.controller.color.ColorManager;
 import de.mossgrabers.framework.daw.DAWColor;
 import de.mossgrabers.framework.daw.IModel;
 import de.mossgrabers.framework.daw.INoteClip;
-import de.mossgrabers.framework.daw.IStepInfo;
+import de.mossgrabers.framework.daw.StepState;
 import de.mossgrabers.framework.daw.data.IChannel;
 import de.mossgrabers.framework.featuregroup.ModeManager;
 import de.mossgrabers.framework.mode.Modes;
@@ -55,8 +55,8 @@ public class DrumView extends AbstractDrumView<APCControlSurface, APCConfigurati
             final int channel = this.configuration.getMidiEditChannel ();
             final int step = this.numColumns * (this.allRows - 1 - y) + x;
             final int note = offsetY + this.selectedPad;
-            final int state = cursorClip.getStep (channel, step, note).getState ();
-            if (state == IStepInfo.NOTE_START)
+            final StepState state = cursorClip.getStep (channel, step, note).getState ();
+            if (state == StepState.START)
             {
                 final NoteMode noteMode = (NoteMode) modeManager.get (Modes.NOTE);
                 noteMode.setValues (cursorClip, channel, step, note);

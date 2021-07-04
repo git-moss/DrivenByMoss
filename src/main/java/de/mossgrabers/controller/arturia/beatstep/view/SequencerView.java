@@ -9,6 +9,7 @@ import de.mossgrabers.controller.arturia.beatstep.controller.BeatstepControlSurf
 import de.mossgrabers.framework.controller.grid.IPadGrid;
 import de.mossgrabers.framework.daw.IModel;
 import de.mossgrabers.framework.daw.INoteClip;
+import de.mossgrabers.framework.daw.StepState;
 import de.mossgrabers.framework.daw.constants.Resolution;
 import de.mossgrabers.framework.daw.data.ITrack;
 import de.mossgrabers.framework.daw.data.bank.ITrackBank;
@@ -160,16 +161,16 @@ public class SequencerView extends BaseSequencerView
             {
                 final int y = this.offsetY + this.selectedPad;
                 final int map = this.scales.getNoteMatrix ()[y];
-                final int isSet = clip.getStep (editMidiChannel, col, map).getState ();
-                padGrid.lightEx (col % 8, 1 - col / 8, getSequencerColor (isSet, col == hiStep));
+                final StepState stepState = clip.getStep (editMidiChannel, col, map).getState ();
+                padGrid.lightEx (col % 8, 1 - col / 8, getSequencerColor (stepState, col == hiStep));
             }
         }
     }
 
 
-    private static int getSequencerColor (final int isSet, final boolean hilite)
+    private static int getSequencerColor (final StepState stepState, final boolean hilite)
     {
-        if (isSet > 0)
+        if (stepState != StepState.OFF)
             return hilite ? BeatstepColorManager.BEATSTEP_BUTTON_STATE_PINK : BeatstepColorManager.BEATSTEP_BUTTON_STATE_BLUE;
         return hilite ? BeatstepColorManager.BEATSTEP_BUTTON_STATE_PINK : BeatstepColorManager.BEATSTEP_BUTTON_STATE_OFF;
     }

@@ -11,20 +11,20 @@ package de.mossgrabers.framework.daw;
  */
 public interface IStepInfo
 {
-    /** Constant for getStep result for note off. */
-    int NOTE_OFF      = 0;
-    /** Constant for getStep result for note continue. */
-    int NOTE_CONTINUE = 1;
-    /** Constant for getStep result for note start. */
-    int NOTE_START    = 2;
-
-
     /**
      * Get state.
      *
-     * @return 0: not set, 1: note continues playing, 2: start of note, see the defined constants
+     * @return The state of the step
      */
-    int getState ();
+    StepState getState ();
+
+
+    /**
+     * Is the note muted?
+     *
+     * @return If true the note is muted
+     */
+    boolean isMuted ();
 
 
     /**

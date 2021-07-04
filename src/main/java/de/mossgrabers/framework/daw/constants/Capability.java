@@ -27,6 +27,8 @@ public enum Capability
     /** The API provides support for editing note repeat use pressure. */
     NOTE_REPEAT_USE_PRESSURE_TO_VELOCITY,
 
+    /** The API provides support for editing a notes' mute state. */
+    NOTE_EDIT_MUTE,
     /** The API provides support for editing note velocity spread. */
     NOTE_EDIT_VELOCITY_SPREAD,
     /** The API provides support for editing note release velocity. */

@@ -11,7 +11,7 @@ import de.mossgrabers.framework.controller.ButtonID;
 import de.mossgrabers.framework.controller.color.ColorManager;
 import de.mossgrabers.framework.daw.IModel;
 import de.mossgrabers.framework.daw.INoteClip;
-import de.mossgrabers.framework.daw.IStepInfo;
+import de.mossgrabers.framework.daw.StepState;
 import de.mossgrabers.framework.featuregroup.ModeManager;
 import de.mossgrabers.framework.mode.Modes;
 import de.mossgrabers.framework.utils.ButtonEvent;
@@ -55,8 +55,8 @@ public class SequencerView extends AbstractNoteSequencerView<APCControlSurface, 
             final INoteClip cursorClip = this.getClip ();
             final int mappedNote = this.keyManager.map (y);
             final int editMidiChannel = this.configuration.getMidiEditChannel ();
-            final int state = cursorClip.getStep (editMidiChannel, x, mappedNote).getState ();
-            if (state == IStepInfo.NOTE_START)
+            final StepState state = cursorClip.getStep (editMidiChannel, x, mappedNote).getState ();
+            if (state == StepState.START)
             {
                 final NoteMode noteMode = (NoteMode) modeManager.get (Modes.NOTE);
                 noteMode.setValues (cursorClip, editMidiChannel, x, mappedNote);

@@ -6,6 +6,7 @@ package de.mossgrabers.framework.daw.data.empty;
 
 import de.mossgrabers.framework.daw.IStepInfo;
 import de.mossgrabers.framework.daw.NoteOccurrenceType;
+import de.mossgrabers.framework.daw.StepState;
 
 
 /**
@@ -30,9 +31,17 @@ public class EmptyStepInfo implements IStepInfo
 
     /** {@inheritDoc} */
     @Override
-    public int getState ()
+    public StepState getState ()
     {
-        return NOTE_OFF;
+        return StepState.OFF;
+    }
+
+
+    /** {@inheritDoc} */
+    @Override
+    public boolean isMuted ()
+    {
+        return false;
     }
 
 

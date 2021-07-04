@@ -120,13 +120,12 @@ public class DrumView extends AbstractDrumView<LaunchkeyMiniMk3ControlSurface, L
         for (int col = 0; col < DrumView.NUM_DISPLAY_COLS; col++)
         {
             final IStepInfo stepInfo = clip.getStep (editMidiChannel, col, offsetY + selPad);
-            final int isSet = stepInfo.getState ();
             final boolean hilite = col == hiStep;
             final int x = col % GRID_COLUMNS;
             final int y = col / GRID_COLUMNS;
 
             final Optional<ColorEx> rowColor = this.getDrumPadColor (primary, this.selectedPad);
-            padGrid.lightEx (x, y, this.getStepColor (isSet, hilite, rowColor));
+            padGrid.lightEx (x, y, this.getStepColor (stepInfo, hilite, rowColor));
         }
     }
 

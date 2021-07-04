@@ -13,6 +13,7 @@ import de.mossgrabers.framework.controller.ButtonID;
 import de.mossgrabers.framework.daw.IModel;
 import de.mossgrabers.framework.daw.INoteClip;
 import de.mossgrabers.framework.daw.ITransport;
+import de.mossgrabers.framework.daw.StepState;
 import de.mossgrabers.framework.daw.constants.Resolution;
 import de.mossgrabers.framework.daw.data.IChannel;
 import de.mossgrabers.framework.daw.data.IDrumDevice;
@@ -362,9 +363,9 @@ public class PlayView extends AbstractSequencerView<SLControlSurface, SLConfigur
         if (col >= PlayView.NUM_DISPLAY_COLS)
             return SLControlSurface.MKII_BUTTON_STATE_OFF;
 
-        final int isSet = clip.getStep (editMidiChannel, col, offsetY + this.selectedPad).getState ();
+        final StepState isSet = clip.getStep (editMidiChannel, col, offsetY + this.selectedPad).getState ();
         final boolean hilite = col == hiStep;
-        return exists && (isSet > 0 || hilite) ? SLControlSurface.MKII_BUTTON_STATE_ON : SLControlSurface.MKII_BUTTON_STATE_OFF;
+        return exists && (isSet != StepState.OFF || hilite) ? SLControlSurface.MKII_BUTTON_STATE_ON : SLControlSurface.MKII_BUTTON_STATE_OFF;
     }
 
 

@@ -10,6 +10,7 @@ import de.mossgrabers.framework.controller.valuechanger.IValueChanger;
 import de.mossgrabers.framework.daw.INoteClip;
 import de.mossgrabers.framework.daw.IStepInfo;
 import de.mossgrabers.framework.daw.NoteOccurrenceType;
+import de.mossgrabers.framework.daw.StepState;
 import de.mossgrabers.framework.daw.constants.Resolution;
 import de.mossgrabers.framework.daw.constants.TransportConstants;
 import de.mossgrabers.framework.daw.data.GridStep;
@@ -450,6 +451,26 @@ public class CursorClipImpl implements INoteClip
     public void clearStep (final int channel, final int step, final int row)
     {
         this.getClip ().clearStep (channel, step, row);
+    }
+
+
+    /** {@inheritDoc} */
+    @Override
+    public void changeMuteState (final int channel, final int step, final int row, final int control)
+    {
+        final boolean increase = this.valueChanger.isIncrease (control);
+        this.updateMuteState (channel, step, row, increase);
+    }
+
+
+    /** {@inheritDoc} */
+    @Override
+    public void updateMuteState (final int channel, final int step, final int row, final boolean isMuted)
+    {
+        final StepInfoImpl stepInfo = this.getUpdateableStep (channel, step, row);
+        stepInfo.setMuted (isMuted);
+        if (!this.editStep.isSet ())
+            this.getClip ().getStep (channel, step, row).setIsMuted (isMuted);
     }
 
 
@@ -898,7 +919,7 @@ public class CursorClipImpl implements INoteClip
         final IStepInfo [] [] [] data = this.getStepInfos ();
         for (int step = 0; step < this.numSteps; step++)
         {
-            if (data[channel] != null && data[channel][step] != null && data[channel][step][row] != null && data[channel][step][row].getState () > 0)
+            if (data[channel] != null && data[channel][step] != null && data[channel][step][row] != null && data[channel][step][row].getState () != StepState.OFF)
                 return true;
         }
         return false;
@@ -1093,6 +1114,7 @@ public class CursorClipImpl implements INoteClip
             return;
 
         final IStepInfo stepInfo = this.getStep (channel, step, row);
+        noteInfo.setIsMuted (stepInfo.isMuted ());
         noteInfo.setDuration (stepInfo.getDuration ());
         noteInfo.setVelocity (stepInfo.getVelocity ());
         noteInfo.setVelocitySpread (stepInfo.getVelocitySpread ());
@@ -1110,7 +1132,7 @@ public class CursorClipImpl implements INoteClip
         noteInfo.setOccurrence (NoteOccurrence.valueOf (stepInfo.getOccurrence ().name ()));
 
         noteInfo.setIsRecurrenceEnabled (stepInfo.isRecurrenceEnabled ());
-        final int recurrenceLength = Math.max (2, stepInfo.getRecurrenceLength ());
+        final int recurrenceLength = Math.max (1, stepInfo.getRecurrenceLength ());
         noteInfo.setRecurrence (recurrenceLength, stepInfo.getRecurrenceMask ());
 
         noteInfo.setIsRepeatEnabled (stepInfo.isRepeatEnabled ());

@@ -16,6 +16,7 @@ import de.mossgrabers.framework.controller.hardware.IHwButton;
 import de.mossgrabers.framework.daw.IModel;
 import de.mossgrabers.framework.daw.INoteClip;
 import de.mossgrabers.framework.daw.IStepInfo;
+import de.mossgrabers.framework.daw.StepState;
 import de.mossgrabers.framework.daw.constants.Resolution;
 import de.mossgrabers.framework.daw.midi.IMidiInput;
 import de.mossgrabers.framework.featuregroup.ModeManager;
@@ -170,9 +171,9 @@ public class PlayView extends AbstractPlayView<MaschineControlSurface, MaschineC
                 continue;
             }
 
-            final int isSet = clip.getStep (editMidiChannel, col, noteRow).getState ();
+            final IStepInfo stepInfo = clip.getStep (editMidiChannel, col, noteRow);
             final boolean hilite = col == hiStep;
-            padGrid.lightEx (x, y, isActive ? this.getStepColor (isSet, hilite, noteRow) : AbstractSequencerView.COLOR_NO_CONTENT);
+            padGrid.lightEx (x, y, isActive ? this.getStepColor (stepInfo, hilite, noteRow) : AbstractSequencerView.COLOR_NO_CONTENT);
         }
     }
 
@@ -195,22 +196,30 @@ public class PlayView extends AbstractPlayView<MaschineControlSurface, MaschineC
     /**
      * Get the color for a step.
      *
-     * @param isSet The step has content
+     * @param stepInfo The information about the step
      * @param hilite The step should be highlighted
      * @param note The note of the step
      * @return The color
      */
-    protected String getStepColor (final int isSet, final boolean hilite, final int note)
+    protected String getStepColor (final IStepInfo stepInfo, final boolean hilite, final int note)
     {
-        switch (isSet)
+        switch (stepInfo.getState ())
         {
-            case IStepInfo.NOTE_CONTINUE:
-                return hilite ? AbstractSequencerView.COLOR_STEP_HILITE_CONTENT : AbstractSequencerView.COLOR_CONTENT_CONT;
+            case START:
+                if (hilite)
+                    return AbstractSequencerView.COLOR_STEP_HILITE_CONTENT;
+                if (stepInfo.isMuted ())
+                    return AbstractSequencerView.COLOR_STEP_MUTED_CONT;
+                return AbstractSequencerView.COLOR_CONTENT;
 
-            case IStepInfo.NOTE_START:
-                return hilite ? AbstractSequencerView.COLOR_STEP_HILITE_CONTENT : AbstractSequencerView.COLOR_CONTENT;
+            case CONTINUE:
+                if (hilite)
+                    return AbstractSequencerView.COLOR_STEP_HILITE_CONTENT;
+                if (stepInfo.isMuted ())
+                    return AbstractSequencerView.COLOR_STEP_MUTED;
+                return AbstractSequencerView.COLOR_CONTENT_CONT;
 
-            case IStepInfo.NOTE_OFF:
+            case OFF:
             default:
                 if (hilite)
                     return AbstractSequencerView.COLOR_STEP_HILITE_NO_CONTENT;
@@ -401,9 +410,9 @@ public class PlayView extends AbstractPlayView<MaschineControlSurface, MaschineC
         final ModeManager modeManager = this.surface.getModeManager ();
         if (modeManager.isActive (Modes.NOTE))
         {
-            final int isSet = clip.getStep (channel, step, note).getState ();
+            final StepState isSet = clip.getStep (channel, step, note).getState ();
             this.model.getHost ().showNotification ("Note " + Scales.formatNoteAndOctave (note, -3) + " - Step " + Integer.toString (step + 1));
-            ((EditNoteMode) modeManager.get (Modes.NOTE)).setValues (isSet == IStepInfo.NOTE_START ? clip : null, channel, step, note);
+            ((EditNoteMode) modeManager.get (Modes.NOTE)).setValues (isSet == StepState.START ? clip : null, channel, step, note);
             return true;
         }
 
@@ -413,7 +422,7 @@ public class PlayView extends AbstractPlayView<MaschineControlSurface, MaschineC
         {
             duplicateButton.setConsumed ();
             final IStepInfo noteStep = clip.getStep (channel, step, note);
-            if (noteStep.getState () == IStepInfo.NOTE_START)
+            if (noteStep.getState () == StepState.START)
                 this.copyNote = noteStep;
             else if (this.copyNote != null)
                 clip.setStep (channel, step, note, this.copyNote);
@@ -432,8 +441,8 @@ public class PlayView extends AbstractPlayView<MaschineControlSurface, MaschineC
                 button.setConsumed ();
                 final int length = step - s + 1;
                 final double duration = length * Resolution.getValueAt (this.drumView.getResolutionIndex ());
-                final int state = note < 0 ? 0 : clip.getStep (channel, s, note).getState ();
-                if (state == IStepInfo.NOTE_START)
+                final StepState state = note < 0 ? StepState.OFF : clip.getStep (channel, s, note).getState ();
+                if (state == StepState.START)
                     clip.updateStepDuration (channel, s, note, duration);
                 else
                     clip.setStep (channel, s, note, velocity, duration);

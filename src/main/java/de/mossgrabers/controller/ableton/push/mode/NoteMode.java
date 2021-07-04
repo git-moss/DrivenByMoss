@@ -131,11 +131,8 @@ public class NoteMode extends BaseMode<IItem>
                 break;
 
             case REPEAT:
-                if (index == 3)
-                {
-                    if (this.host.supports (Capability.NOTE_EDIT_REPEAT))
-                        this.clip.updateIsRepeatEnabled (this.channel, this.step, this.note, !stepInfo.isRepeatEnabled ());
-                }
+                if (index == 3 && this.host.supports (Capability.NOTE_EDIT_REPEAT))
+                    this.clip.updateIsRepeatEnabled (this.channel, this.step, this.note, !stepInfo.isRepeatEnabled ());
                 break;
 
             case RECCURRENCE_PATTERN:
@@ -205,6 +202,10 @@ public class NoteMode extends BaseMode<IItem>
                             this.clip.updateStepDuration (this.channel, this.step, this.note, 1.0);
                             break;
 
+                        case 1:
+                            this.clip.updateMuteState (this.channel, this.step, this.note, false);
+                            break;
+
                         case 2:
                             this.clip.updateStepVelocity (this.channel, this.step, this.note, 1.0);
                             break;
@@ -246,6 +247,10 @@ public class NoteMode extends BaseMode<IItem>
                             this.clip.updateStepDuration (this.channel, this.step, this.note, 1.0);
                             break;
 
+                        case 1:
+                            this.clip.updateMuteState (this.channel, this.step, this.note, false);
+                            break;
+
                         case 3:
                             if (this.host.supports (Capability.NOTE_EDIT_EXPRESSIONS))
                                 this.clip.updateStepGain (this.channel, this.step, this.note, 0);
@@ -280,6 +285,10 @@ public class NoteMode extends BaseMode<IItem>
                             this.clip.updateStepDuration (this.channel, this.step, this.note, 1.0);
                             break;
 
+                        case 1:
+                            this.clip.updateMuteState (this.channel, this.step, this.note, false);
+                            break;
+
                         case 3:
                             if (this.host.supports (Capability.NOTE_EDIT_REPEAT))
                                 this.clip.updateRepeatCount (this.channel, this.step, this.note, 0);
@@ -303,11 +312,8 @@ public class NoteMode extends BaseMode<IItem>
                     break;
 
                 case RECCURRENCE_PATTERN:
-                    if (index == 7)
-                    {
-                        if (this.host.supports (Capability.NOTE_EDIT_RECCURRENCE))
-                            this.clip.updateRecurrenceLength (this.channel, this.step, this.note, 1);
-                    }
+                    if (index == 7 && this.host.supports (Capability.NOTE_EDIT_RECCURRENCE))
+                        this.clip.updateRecurrenceLength (this.channel, this.step, this.note, 1);
                     break;
             }
         }
@@ -333,6 +339,11 @@ public class NoteMode extends BaseMode<IItem>
                 {
                     case 0:
                         this.clip.changeStepDuration (this.channel, this.step, this.note, value);
+                        break;
+
+                    case 1:
+                        if (this.host.supports (Capability.NOTE_EDIT_MUTE))
+                            this.clip.changeMuteState (this.channel, this.step, this.note, value);
                         break;
 
                     case 2:
@@ -379,6 +390,11 @@ public class NoteMode extends BaseMode<IItem>
                         this.clip.changeStepDuration (this.channel, this.step, this.note, value);
                         break;
 
+                    case 1:
+                        if (this.host.supports (Capability.NOTE_EDIT_MUTE))
+                            this.clip.changeMuteState (this.channel, this.step, this.note, value);
+                        break;
+
                     case 3:
                         if (this.host.supports (Capability.NOTE_EDIT_EXPRESSIONS))
                             this.clip.changeStepGain (this.channel, this.step, this.note, value);
@@ -413,6 +429,11 @@ public class NoteMode extends BaseMode<IItem>
                         this.clip.changeStepDuration (this.channel, this.step, this.note, value);
                         break;
 
+                    case 1:
+                        if (this.host.supports (Capability.NOTE_EDIT_MUTE))
+                            this.clip.changeMuteState (this.channel, this.step, this.note, value);
+                        break;
+
                     case 3:
                         if (this.host.supports (Capability.NOTE_EDIT_REPEAT))
                             this.clip.changeRepeatCount (this.channel, this.step, this.note, value);
@@ -436,11 +457,8 @@ public class NoteMode extends BaseMode<IItem>
                 break;
 
             case RECCURRENCE_PATTERN:
-                if (index == 7)
-                {
-                    if (this.host.supports (Capability.NOTE_EDIT_RECCURRENCE))
-                        this.clip.changeRecurrenceLength (this.channel, this.step, this.note, value);
-                }
+                if (index == 7 && this.host.supports (Capability.NOTE_EDIT_RECCURRENCE))
+                    this.clip.changeRecurrenceLength (this.channel, this.step, this.note, value);
                 break;
         }
     }
@@ -458,6 +476,9 @@ public class NoteMode extends BaseMode<IItem>
         if (this.page != Page.RECCURRENCE_PATTERN)
         {
             display.setCell (0, 0, "Length").setCell (1, 0, this.formatLength (stepInfo.getDuration ()));
+
+            if (stepInfo.isMuted ())
+                display.setCell (2, 1, " MUTED");
 
             display.setCell (3, 0, "Step: " + (this.step + 1));
             display.setCell (3, 1, "Note: " + Scales.formatNoteAndOctave (this.note, -3));
@@ -626,14 +647,24 @@ public class NoteMode extends BaseMode<IItem>
 
         final IStepInfo stepInfo = this.clip.getStep (this.channel, this.step, this.note);
 
+        final IValueChanger valueChanger = this.model.getValueChanger ();
+
         if (this.page != Page.RECCURRENCE_PATTERN)
         {
             display.addParameterElementWithPlainMenu (MENU[0], this.page == Page.NOTE, "Step: " + (this.step + 1), null, false, "Length", -1, this.formatLength (stepInfo.getDuration ()), this.isKnobTouched[0], -1);
             final boolean hasExpressions = this.host.supports (Capability.NOTE_EDIT_EXPRESSIONS);
-            display.addParameterElementWithPlainMenu (hasExpressions ? MENU[1] : " ", hasExpressions && this.page == Page.EXPRESSIONS, Scales.formatNoteAndOctave (this.note, -3), null, false, null, -1, null, false, -1);
-        }
 
-        final IValueChanger valueChanger = this.model.getValueChanger ();
+            final String topMenu = hasExpressions ? MENU[1] : " ";
+            final boolean isTopMenuOn = hasExpressions && this.page == Page.EXPRESSIONS;
+            final String bottomMenu = Scales.formatNoteAndOctave (this.note, -3);
+            if (this.host.supports (Capability.NOTE_EDIT_MUTE))
+            {
+                final int value = stepInfo.isMuted () ? valueChanger.getUpperBound () : 0;
+                display.addParameterElementWithPlainMenu (topMenu, isTopMenuOn, bottomMenu, null, false, "Is Muted?", value, stepInfo.isMuted () ? "Yes" : "No", this.isKnobTouched[1], value);
+            }
+            else
+                display.addParameterElementWithPlainMenu (topMenu, isTopMenuOn, bottomMenu, null, false, null, -1, null, false, -1);
+        }
 
         switch (this.page)
         {

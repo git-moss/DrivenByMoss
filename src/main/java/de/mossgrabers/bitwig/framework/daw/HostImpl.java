@@ -99,6 +99,7 @@ public class HostImpl implements IHost
             case NOTE_REPEAT_USE_PRESSURE_TO_VELOCITY:
                 return true;
 
+            case NOTE_EDIT_MUTE:
             case NOTE_EDIT_VELOCITY_SPREAD:
             case NOTE_EDIT_RELEASE_VELOCITY:
             case NOTE_EDIT_EXPRESSIONS:

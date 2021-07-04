@@ -10,7 +10,7 @@ import de.mossgrabers.controller.ableton.push.mode.NoteMode;
 import de.mossgrabers.framework.controller.ButtonID;
 import de.mossgrabers.framework.daw.IModel;
 import de.mossgrabers.framework.daw.INoteClip;
-import de.mossgrabers.framework.daw.IStepInfo;
+import de.mossgrabers.framework.daw.StepState;
 import de.mossgrabers.framework.featuregroup.ModeManager;
 import de.mossgrabers.framework.mode.Modes;
 import de.mossgrabers.framework.utils.ButtonEvent;
@@ -65,8 +65,8 @@ public class Drum4View extends AbstractDrum4View<PushControlSurface, PushConfigu
 
         final int editMidiChannel = this.configuration.getMidiEditChannel ();
         final INoteClip clip = this.getClip ();
-        final int state = clip.getStep (editMidiChannel, stepX, stepY).getState ();
-        if (state != IStepInfo.NOTE_START)
+        final StepState state = clip.getStep (editMidiChannel, stepX, stepY).getState ();
+        if (state != StepState.START)
             return;
 
         final ModeManager modeManager = this.surface.getModeManager ();
@@ -91,5 +91,21 @@ public class Drum4View extends AbstractDrum4View<PushControlSurface, PushConfigu
         }
 
         super.onButton (buttonID, event, velocity);
+    }
+
+
+    /** {@inheritDoc} */
+    @Override
+    protected boolean handleNoteAreaButtonCombinations (INoteClip clip, int channel, int step, int row, int note, int velocity, int accentVelocity)
+    {
+        final boolean isShiftPressed = this.surface.isShiftPressed ();
+        if (isShiftPressed || this.surface.isSelectPressed ())
+        {
+            if (velocity > 0)
+                this.handleSequencerAreaRepeatOperator (clip, channel, step, note, velocity, isShiftPressed);
+            return true;
+        }
+
+        return super.handleNoteAreaButtonCombinations (clip, channel, step, row, note, velocity, accentVelocity);
     }
 }
