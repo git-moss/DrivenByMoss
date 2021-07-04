@@ -12,6 +12,8 @@ import de.mossgrabers.framework.daw.IModel;
 import de.mossgrabers.framework.featuregroup.IMode;
 import de.mossgrabers.framework.utils.ButtonEvent;
 
+import java.util.function.BooleanSupplier;
+
 
 /**
  * Command for navigating mode pages and items.
@@ -23,12 +25,13 @@ import de.mossgrabers.framework.utils.ButtonEvent;
  */
 public class ModeCursorCommand<S extends IControlSurface<C>, C extends Configuration> extends AbstractTriggerCommand<S, C>
 {
-    protected Direction     direction;
-    protected boolean       canScrollLeft;
-    protected boolean       canScrollRight;
-    protected boolean       canScrollUp;
-    protected boolean       canScrollDown;
-    protected final boolean notifySelection;
+    protected Direction             direction;
+    protected boolean               canScrollLeft;
+    protected boolean               canScrollRight;
+    protected boolean               canScrollUp;
+    protected boolean               canScrollDown;
+    protected final boolean         notifySelection;
+    protected final BooleanSupplier alternateMode;
 
 
     /**
@@ -54,10 +57,27 @@ public class ModeCursorCommand<S extends IControlSurface<C>, C extends Configura
      */
     public ModeCursorCommand (final Direction direction, final IModel model, final S surface, final boolean notifySelection)
     {
+        this (direction, model, surface, true, null);
+    }
+
+
+    /**
+     * Constructor.
+     *
+     * @param direction The direction of the pushed cursor arrow
+     * @param model The model
+     * @param surface The surface
+     * @param notifySelection Set to true to show a notification message if an item is selected
+     * @param alternateMode Default is checking the Shift key but this allows to trigger with
+     *            something else
+     */
+    public ModeCursorCommand (final Direction direction, final IModel model, final S surface, final boolean notifySelection, final BooleanSupplier alternateMode)
+    {
         super (model, surface);
 
         this.direction = direction;
         this.notifySelection = notifySelection;
+        this.alternateMode = alternateMode == null ? this.surface::isShiftPressed : alternateMode;
     }
 
 
@@ -71,13 +91,13 @@ public class ModeCursorCommand<S extends IControlSurface<C>, C extends Configura
         switch (this.direction)
         {
             case LEFT:
-                if (this.surface.isShiftPressed ())
+                if (this.alternateMode.getAsBoolean ())
                     this.scrollDown ();
                 else
                     this.scrollLeft ();
                 break;
             case RIGHT:
-                if (this.surface.isShiftPressed ())
+                if (this.alternateMode.getAsBoolean ())
                     this.scrollUp ();
                 else
                     this.scrollRight ();

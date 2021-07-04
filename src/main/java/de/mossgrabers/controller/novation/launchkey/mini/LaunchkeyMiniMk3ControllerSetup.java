@@ -200,9 +200,9 @@ public class LaunchkeyMiniMk3ControllerSetup extends AbstractControllerSetup<Lau
         final ConfiguredRecordCommand<LaunchkeyMiniMk3ControlSurface, LaunchkeyMiniMk3Configuration> recordCommand = new ConfiguredRecordCommand<> (this.model, surface);
         this.addButton (ButtonID.RECORD, "Record", recordCommand, 15, LaunchkeyMiniMk3ControlSurface.LAUNCHKEY_RECORD, recordCommand::isLit);
 
-        final ModeCursorCommand<LaunchkeyMiniMk3ControlSurface, LaunchkeyMiniMk3Configuration> leftCommand = new ModeCursorCommand<> (Direction.LEFT, this.model, surface);
+        final ModeCursorCommand<LaunchkeyMiniMk3ControlSurface, LaunchkeyMiniMk3Configuration> leftCommand = new ModeCursorCommand<> (Direction.LEFT, this.model, surface, true, () -> false);
         this.addButton (ButtonID.MOVE_TRACK_LEFT, "Previous", leftCommand, 15, LaunchkeyMiniMk3ControlSurface.LAUNCHKEY_LEFT, leftCommand::canScroll);
-        final ModeCursorCommand<LaunchkeyMiniMk3ControlSurface, LaunchkeyMiniMk3Configuration> rightCommand = new ModeCursorCommand<> (Direction.RIGHT, this.model, surface);
+        final ModeCursorCommand<LaunchkeyMiniMk3ControlSurface, LaunchkeyMiniMk3Configuration> rightCommand = new ModeCursorCommand<> (Direction.RIGHT, this.model, surface, true, () -> false);
         this.addButton (ButtonID.MOVE_TRACK_RIGHT, "Next", rightCommand, 15, LaunchkeyMiniMk3ControlSurface.LAUNCHKEY_RIGHT, rightCommand::canScroll);
 
         // Scene buttons
