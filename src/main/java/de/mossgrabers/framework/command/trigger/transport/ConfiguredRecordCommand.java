@@ -94,7 +94,7 @@ public class ConfiguredRecordCommand<S extends IControlSurface<C>, C extends Con
                 s.launch ();
                 break;
             case NEW_CLIP:
-                new NewCommand<> (this.model, this.surface).executeNormal (ButtonEvent.DOWN);
+                new NewCommand<> (this.model, this.surface).execute ();
                 break;
             case TOGGLE_ARRANGER_OVERDUB:
                 this.model.getTransport ().toggleOverdub ();

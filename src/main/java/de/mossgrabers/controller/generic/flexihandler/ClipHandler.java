@@ -15,7 +15,6 @@ import de.mossgrabers.framework.controller.valuechanger.IValueChanger;
 import de.mossgrabers.framework.daw.IClip;
 import de.mossgrabers.framework.daw.IModel;
 import de.mossgrabers.framework.daw.data.ISlot;
-import de.mossgrabers.framework.utils.ButtonEvent;
 
 import java.util.Optional;
 
@@ -144,7 +143,7 @@ public class ClipHandler extends AbstractHandler
 
             case CLIP_NEW:
                 if (isButtonPressed)
-                    this.newCommand.executeNormal (ButtonEvent.DOWN);
+                    this.newCommand.execute ();
                 break;
 
             case CLIP_QUANTIZE:

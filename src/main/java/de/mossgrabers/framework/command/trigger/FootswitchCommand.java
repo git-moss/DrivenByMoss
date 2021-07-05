@@ -198,7 +198,7 @@ public class FootswitchCommand<S extends IControlSurface<C>, C extends Configura
             {
                 // If there is no clip in the selected slot, create a clip and begin record
                 // mode. Releasing it ends record mode.
-                this.newCommand.execute (event, 127);
+                this.newCommand.execute ();
                 slot.select ();
                 this.model.getTransport ().setLauncherOverdub (true);
             }

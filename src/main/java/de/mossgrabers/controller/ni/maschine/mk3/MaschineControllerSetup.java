@@ -16,6 +16,7 @@ import de.mossgrabers.controller.ni.maschine.mk3.command.continuous.TouchstripCo
 import de.mossgrabers.controller.ni.maschine.mk3.command.trigger.AddDeviceCommand;
 import de.mossgrabers.controller.ni.maschine.mk3.command.trigger.KeyboardCommand;
 import de.mossgrabers.controller.ni.maschine.mk3.command.trigger.MaschineCursorCommand;
+import de.mossgrabers.controller.ni.maschine.mk3.command.trigger.MaschineSelectButtonCommand;
 import de.mossgrabers.controller.ni.maschine.mk3.command.trigger.MaschineSendSelectCommand;
 import de.mossgrabers.controller.ni.maschine.mk3.command.trigger.MaschineStopCommand;
 import de.mossgrabers.controller.ni.maschine.mk3.command.trigger.PadModeCommand;
@@ -410,7 +411,7 @@ public class MaschineControllerSetup extends AbstractControllerSetup<MaschineCon
         // Browser
         this.addButton (ButtonID.ADD_TRACK, this.maschine.hasCursorKeys () ? (this.maschine == Maschine.STUDIO || this.maschine == Maschine.MK2 ? "ALL/SAVE" : "FILE") : "PROJECT", new ProjectButtonCommand (this.model, surface), MaschineControlSurface.PROJECT);
         this.addButton (ButtonID.ADD_EFFECT, this.maschine.hasCursorKeys () ? "SETTINGS" : "FAVORITES", new AddDeviceCommand (this.model, surface), MaschineControlSurface.FAVORITES);
-        this.addButton (ButtonID.BROWSE, this.maschine == Maschine.STUDIO || this.maschine == Maschine.MK2 ? "BROWSE" : "BROWSER", new BrowserCommand<> (this.model, surface, ButtonID.SHIFT, ButtonID.TRACK)
+        this.addButton (ButtonID.BROWSE, this.maschine == Maschine.STUDIO || this.maschine == Maschine.MK2 ? "BROWSE" : "BROWSER", new BrowserCommand<> (this.model, surface, ButtonID.SHIFT, ButtonID.SELECT)
         {
             /** {@inheritDoc} */
             @Override
@@ -432,7 +433,7 @@ public class MaschineControllerSetup extends AbstractControllerSetup<MaschineCon
 
         if (this.maschine.hasGroupButtons ())
         {
-            this.addButton (ButtonID.TRACK, "SELECT", NopCommand.INSTANCE, MaschineControlSurface.SELECT);
+            this.addButton (ButtonID.SELECT, "SELECT", new MaschineSelectButtonCommand (this.model, surface), MaschineControlSurface.SELECT);
 
             this.addButton (ButtonID.SOLO, "SOLO", (event, velocity) -> {
                 if (event == ButtonEvent.UP && surface.isShiftPressed ())
@@ -452,7 +453,7 @@ public class MaschineControllerSetup extends AbstractControllerSetup<MaschineCon
         }
         else
         {
-            this.addButton (ButtonID.TRACK, "SELECT", new ViewMultiSelectCommand<> (this.model, surface, true, Views.TRACK_SELECT), MaschineControlSurface.SELECT, () -> viewManager.isActive (Views.TRACK_SELECT));
+            this.addButton (ButtonID.SELECT, "SELECT", new ViewMultiSelectCommand<> (this.model, surface, true, Views.TRACK_SELECT), MaschineControlSurface.SELECT, () -> viewManager.isActive (Views.TRACK_SELECT));
             this.addButton (ButtonID.SOLO, "SOLO", new ViewMultiSelectCommand<> (this.model, surface, true, Views.TRACK_SOLO), MaschineControlSurface.SOLO, () -> viewManager.isActive (Views.TRACK_SOLO));
             this.addButton (ButtonID.MUTE, "MUTE", new ViewMultiSelectCommand<> (this.model, surface, true, Views.TRACK_MUTE), MaschineControlSurface.MUTE, () -> viewManager.isActive (Views.TRACK_MUTE));
         }
@@ -883,7 +884,7 @@ public class MaschineControllerSetup extends AbstractControllerSetup<MaschineCon
         surface.getButton (ButtonID.NOTE).setBounds (165.5, 604.5, 56.0, 18.0);
         surface.getButton (ButtonID.TOGGLE_DEVICE).setBounds (347.25, 455.0, 58.0, 34.0);
         surface.getButton (ButtonID.DUPLICATE).setBounds (347.25, 499.5, 58.0, 34.0);
-        surface.getButton (ButtonID.TRACK).setBounds (347.25, 544.25, 58.0, 34.0);
+        surface.getButton (ButtonID.SELECT).setBounds (347.25, 544.25, 58.0, 34.0);
         surface.getButton (ButtonID.SOLO).setBounds (347.25, 588.75, 58.0, 34.0);
         surface.getButton (ButtonID.MUTE).setBounds (347.25, 633.5, 58.0, 34.0);
         surface.getButton (ButtonID.ROW1_1).setBounds (347.25, 410.25, 58.0, 34.0);
@@ -995,7 +996,7 @@ public class MaschineControllerSetup extends AbstractControllerSetup<MaschineCon
         surface.getButton (ButtonID.NOTE).setBounds (346.5, 470.75, 58.0, 34.0);
         surface.getButton (ButtonID.TOGGLE_DEVICE).setBounds (346.5, 514.5, 58.0, 41.25);
         surface.getButton (ButtonID.DUPLICATE).setBounds (347.25, 562.75, 58.0, 34.0);
-        surface.getButton (ButtonID.TRACK).setBounds (346.5, 609.25, 58.0, 34.0);
+        surface.getButton (ButtonID.SELECT).setBounds (346.5, 609.25, 58.0, 34.0);
         surface.getButton (ButtonID.SOLO).setBounds (346.5, 653.0, 58.0, 34.0);
         surface.getButton (ButtonID.MUTE).setBounds (346.5, 696.75, 58.0, 34.0);
         surface.getButton (ButtonID.ROW1_1).setBounds (425.5, 343.75, 78.0, 20.75);
@@ -1094,7 +1095,7 @@ public class MaschineControllerSetup extends AbstractControllerSetup<MaschineCon
         surface.getButton (ButtonID.NOTE).setBounds (348.0, 154.5, 58.0, 34.0);
         surface.getButton (ButtonID.TOGGLE_DEVICE).setBounds (348.0, 198.25, 58.0, 41.25);
         surface.getButton (ButtonID.DUPLICATE).setBounds (348.75, 246.5, 58.0, 34.0);
-        surface.getButton (ButtonID.TRACK).setBounds (348.0, 293.0, 58.0, 34.0);
+        surface.getButton (ButtonID.SELECT).setBounds (348.0, 293.0, 58.0, 34.0);
         surface.getButton (ButtonID.SOLO).setBounds (348.0, 336.75, 58.0, 34.0);
         surface.getButton (ButtonID.MUTE).setBounds (348.0, 380.5, 58.0, 34.0);
         surface.getButton (ButtonID.ROW1_1).setBounds (427.0, 25.75, 78.0, 20.75);

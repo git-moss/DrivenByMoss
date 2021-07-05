@@ -38,11 +38,20 @@ public class NewCommand<S extends IControlSurface<C>, C extends Configuration> e
     }
 
 
+    /**
+     * Execute the default function.
+     */
+    public void execute ()
+    {
+        this.handleExecute (true);
+    }
+
+
     /** {@inheritDoc} */
     @Override
     public void executeNormal (final ButtonEvent event)
     {
-        if (event == ButtonEvent.DOWN)
+        if (event == ButtonEvent.UP)
             this.handleExecute (true);
     }
 
@@ -51,7 +60,7 @@ public class NewCommand<S extends IControlSurface<C>, C extends Configuration> e
     @Override
     public void executeShifted (final ButtonEvent event)
     {
-        if (event == ButtonEvent.DOWN)
+        if (event == ButtonEvent.UP)
             this.handleExecute (false);
     }
 
@@ -75,20 +84,12 @@ public class NewCommand<S extends IControlSurface<C>, C extends Configuration> e
             return;
         }
 
-        final int lengthInBeats = this.getNewClipLenghthInBeats (this.model.getTransport ().getQuartersPerMeasure ());
-        this.model.createNoteClip (cursorTrack, slot.get (), lengthInBeats, enableOverdub);
-    }
-
-
-    private int getNewClipLenghthInBeats (final int quartersPerMeasure)
-    {
-        final int length = this.getClipLength ();
-        return (int) (length < 2 ? Math.pow (2, length) : Math.pow (2, length - 2.0) * quartersPerMeasure);
+        this.model.createNoteClip (cursorTrack, slot.get (), this.getClipLength (), enableOverdub);
     }
 
 
     protected int getClipLength ()
     {
-        return this.surface.getConfiguration ().getNewClipLength ();
+        return this.surface.getConfiguration ().getNewClipLenghthInBeats (this.model.getTransport ().getQuartersPerMeasure ());
     }
 }

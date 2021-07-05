@@ -57,6 +57,7 @@ import de.mossgrabers.framework.command.trigger.Direction;
 import de.mossgrabers.framework.command.trigger.application.UndoCommand;
 import de.mossgrabers.framework.command.trigger.clip.NewCommand;
 import de.mossgrabers.framework.command.trigger.clip.QuantizeCommand;
+import de.mossgrabers.framework.command.trigger.clip.TemporaryNewCommand;
 import de.mossgrabers.framework.command.trigger.transport.MetronomeCommand;
 import de.mossgrabers.framework.command.trigger.transport.RecordCommand;
 import de.mossgrabers.framework.command.trigger.view.SelectPlayViewCommand;
@@ -478,8 +479,12 @@ public class LaunchpadControllerSetup extends AbstractControllerSetup<LaunchpadC
 
     private int getTrackModeColorIndex (final int index)
     {
-        final ITrackBank tb = this.model.getCurrentTrackBank ();
         final LaunchpadControlSurface surface = this.getSurface ();
+
+        if (surface.isPressed (ButtonID.NEW))
+            return LaunchpadColorManager.LAUNCHPAD_COLOR_WHITE;
+
+        final ITrackBank tb = this.model.getCurrentTrackBank ();
         final ModeManager modeManager = surface.getModeManager ();
 
         final ITrack track = tb.getItem (index);
@@ -920,6 +925,12 @@ public class LaunchpadControllerSetup extends AbstractControllerSetup<LaunchpadC
         if (this.isButtonCombination (ButtonID.DUPLICATE))
         {
             track.duplicate ();
+            return;
+        }
+
+        if (this.isButtonCombination (ButtonID.NEW))
+        {
+            new TemporaryNewCommand<> (index, this.model, this.getSurface ()).execute ();
             return;
         }
 
