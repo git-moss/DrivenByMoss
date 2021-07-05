@@ -131,6 +131,22 @@ public class SequencerView extends AbstractNoteSequencerView<MaschineJamControlS
     }
 
 
+    /** {@inheritDoc} */
+    @Override
+    protected boolean handleSequencerAreaButtonCombinations (final INoteClip clip, final int channel, final int step, final int row, final int note, final int velocity)
+    {
+        final boolean isSelectPressed = this.surface.isSelectPressed ();
+        if (isSelectPressed)
+        {
+            if (velocity > 0)
+                this.handleSequencerAreaRepeatOperator (clip, channel, step, note, velocity, isSelectPressed);
+            return true;
+        }
+
+        return super.handleSequencerAreaButtonCombinations (clip, channel, step, row, note, velocity);
+    }
+
+
     private void updateScaleConfig ()
     {
         final MaschineJamConfiguration config = this.surface.getConfiguration ();

@@ -146,6 +146,12 @@ public abstract class AbstractSessionView<S extends IControlSurface<C>, C extend
         if (this.surface.isSelectPressed ())
         {
             slot.select ();
+            if (slot.hasContent ())
+            {
+                final String slotName = slot.getName ();
+                if (!slotName.isBlank ())
+                    this.surface.getDisplay ().notify (slotName);
+            }
             return;
         }
 

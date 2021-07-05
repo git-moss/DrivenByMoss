@@ -164,4 +164,20 @@ public class DrumView extends AbstractDrumView<MaschineJamControlSurface, Maschi
         }
         return false;
     }
+
+
+    /** {@inheritDoc} */
+    @Override
+    protected boolean handleSequencerAreaButtonCombinations (INoteClip clip, int channel, int step, int note, int velocity)
+    {
+        final boolean isSelectPressed = this.surface.isSelectPressed ();
+        if (isSelectPressed)
+        {
+            if (velocity > 0)
+                this.handleSequencerAreaRepeatOperator (clip, channel, step, note, velocity, isSelectPressed);
+            return true;
+        }
+
+        return super.handleSequencerAreaButtonCombinations (clip, channel, step, note, velocity);
+    }
 }

@@ -115,7 +115,7 @@ public class ControlView extends ControlOnlyView<SLControlSurface, SLConfigurati
 
             // New
             case 4:
-                this.newCommand.executeNormal (ButtonEvent.DOWN);
+                this.newCommand.execute ();
                 break;
 
             // Open the VST window

@@ -245,6 +245,14 @@ public class DrumView extends AbstractDrumView<MaschineControlSurface, MaschineC
             return true;
         }
 
+        final boolean isSelectPressed = this.surface.isSelectPressed ();
+        if (isSelectPressed)
+        {
+            if (velocity > 0)
+                this.handleSequencerAreaRepeatOperator (clip, channel, step, note, velocity, isSelectPressed);
+            return true;
+        }
+
         return super.handleSequencerAreaButtonCombinations (clip, channel, step, note, velocity);
     }
 
