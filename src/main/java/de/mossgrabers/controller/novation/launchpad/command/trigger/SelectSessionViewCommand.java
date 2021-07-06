@@ -74,8 +74,33 @@ public class SelectSessionViewCommand extends AbstractTriggerCommand<LaunchpadCo
                 {
                     viewManager.setActive (Views.MIX);
                     this.notifyViewName (Views.MIX, false, false);
+                }
+                break;
+
+            case LONG:
+                // Only trigger birds-eye-view if session view is already active
+                if (viewManager.isActive (Views.SESSION))
+                {
+                    if (this.temporaryMode != TemporaryMode.POSSIBLE)
+                    {
+                        this.surface.setTriggerConsumed (ButtonID.SESSION);
+                        sessionView.setBirdsEyeActive (true);
+                        this.notifyViewName (Views.SESSION, true, configuration.isFlipSession ());
+                    }
                     return;
                 }
+                this.activatedView (viewManager, configuration);
+                break;
+
+            case UP:
+                if (this.temporaryMode == TemporaryMode.ACTIVE)
+                {
+                    this.surface.getViewManager ().restore ();
+                    return;
+                }
+
+                if (this.temporaryMode == TemporaryMode.POSSIBLE)
+                    return;
 
                 if (viewManager.isActive (Views.SESSION))
                 {
@@ -94,27 +119,18 @@ public class SelectSessionViewCommand extends AbstractTriggerCommand<LaunchpadCo
                     return;
                 }
 
-                // Activate session view
-                this.temporaryMode = TemporaryMode.POSSIBLE;
-                viewManager.setActive (Views.SESSION);
-                this.notifyViewName (Views.SESSION, false, configuration.isFlipSession ());
-                break;
-
-            case LONG:
-                // Only trigger birds-eye-view if session view is already active
-                if (this.temporaryMode != TemporaryMode.POSSIBLE)
-                {
-                    this.surface.setTriggerConsumed (ButtonID.SESSION);
-                    sessionView.setBirdsEyeActive (true);
-                    this.notifyViewName (Views.SESSION, true, configuration.isFlipSession ());
-                }
-                break;
-
-            case UP:
-                if (this.temporaryMode == TemporaryMode.ACTIVE)
-                    this.surface.getViewManager ().restore ();
+                this.activatedView (viewManager, configuration);
                 break;
         }
+    }
+
+
+    private void activatedView (final ViewManager viewManager, final Configuration configuration)
+    {
+        // Activate session view
+        this.temporaryMode = TemporaryMode.POSSIBLE;
+        viewManager.setActive (Views.SESSION);
+        this.notifyViewName (Views.SESSION, false, configuration.isFlipSession ());
     }
 
 
