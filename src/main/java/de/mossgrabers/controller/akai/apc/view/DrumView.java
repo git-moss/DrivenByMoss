@@ -132,4 +132,21 @@ public class DrumView extends AbstractDrumView<APCControlSurface, APCConfigurati
             return ColorManager.BUTTON_STATE_OFF;
         return this.isActive () ? ColorManager.BUTTON_STATE_ON : ColorManager.BUTTON_STATE_OFF;
     }
+
+
+    /** {@inheritDoc} */
+    @Override
+    protected boolean handleSequencerAreaButtonCombinations (INoteClip clip, int channel, int step, int note, int velocity)
+    {
+        final boolean isUpPressed = this.surface.isPressed (ButtonID.ARROW_UP);
+        if (isUpPressed || this.surface.isPressed (ButtonID.ARROW_DOWN))
+        {
+            this.surface.setTriggerConsumed (isUpPressed ? ButtonID.ARROW_UP : ButtonID.ARROW_DOWN);
+            if (velocity > 0)
+                this.handleSequencerAreaRepeatOperator (clip, channel, step, note, velocity, isUpPressed);
+            return true;
+        }
+
+        return super.handleSequencerAreaButtonCombinations (clip, channel, step, note, velocity);
+    }
 }

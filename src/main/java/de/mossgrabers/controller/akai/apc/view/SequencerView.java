@@ -141,6 +141,23 @@ public class SequencerView extends AbstractNoteSequencerView<APCControlSurface, 
     }
 
 
+    /** {@inheritDoc} */
+    @Override
+    protected boolean handleSequencerAreaButtonCombinations (final INoteClip clip, final int channel, final int step, final int row, final int note, final int velocity)
+    {
+        final boolean isUpPressed = this.surface.isPressed (ButtonID.ARROW_UP);
+        if (isUpPressed || this.surface.isPressed (ButtonID.ARROW_DOWN))
+        {
+            this.surface.setTriggerConsumed (isUpPressed ? ButtonID.ARROW_UP : ButtonID.ARROW_DOWN);
+            if (velocity > 0)
+                this.handleSequencerAreaRepeatOperator (clip, channel, step, note, velocity, isUpPressed);
+            return true;
+        }
+
+        return super.handleSequencerAreaButtonCombinations (clip, channel, step, row, note, velocity);
+    }
+
+
     private void notifyScale ()
     {
         final String name = this.scales.getScale ().getName ();

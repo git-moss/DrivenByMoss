@@ -86,4 +86,21 @@ public class DrumView extends AbstractDrumView<LaunchpadControlSurface, Launchpa
         // Remove the last 4 buttons so we can use it for something else
         return super.getNumberOfAvailablePages () - 4;
     }
+
+
+    /** {@inheritDoc} */
+    @Override
+    protected boolean handleSequencerAreaButtonCombinations (INoteClip clip, int channel, int step, int note, int velocity)
+    {
+        final boolean isUpPressed = this.surface.isPressed (ButtonID.UP);
+        if (isUpPressed || this.surface.isPressed (ButtonID.DOWN))
+        {
+            this.surface.setTriggerConsumed (isUpPressed ? ButtonID.UP : ButtonID.DOWN);
+            if (velocity > 0)
+                this.handleSequencerAreaRepeatOperator (clip, channel, step, note, velocity, isUpPressed);
+            return true;
+        }
+
+        return super.handleSequencerAreaButtonCombinations (clip, channel, step, note, velocity);
+    }
 }

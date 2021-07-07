@@ -304,21 +304,17 @@ public abstract class AbstractSequencerView<S extends IControlSurface<C>, C exte
         final IStepInfo stepInfo = clip.getStep (channel, step, note);
         if (stepInfo.getState () == StepState.OFF)
             clip.toggleStep (channel, step, note, velocity);
-        if (!stepInfo.isRepeatEnabled ())
+        final boolean isOff = !stepInfo.isRepeatEnabled ();
+        if (isOff)
             clip.updateIsRepeatEnabled (channel, step, note, true);
         int repeatCount = stepInfo.getRepeatCount ();
-        if (repeatCount == 0)
-            repeatCount = 3;
-        else if (increase)
-            repeatCount = Math.min (127, repeatCount + 1);
-        else
-            repeatCount = Math.max (-127, repeatCount - 1);
+        repeatCount = increase ? Math.min (127, repeatCount + 1) : Math.max (-127, repeatCount - 1);
         clip.updateRepeatCount (channel, step, note, repeatCount);
         String repeatCountStr;
         if (repeatCount > 0)
             repeatCountStr = Integer.toString (repeatCount + 1);
         else if (repeatCount == 0)
-            repeatCountStr = "off";
+            repeatCountStr = "Off";
         else
             repeatCountStr = "1/" + Integer.toString (1 - repeatCount);
         this.surface.getDisplay ().notify ("Note repeat: " + repeatCountStr);
