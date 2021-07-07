@@ -70,6 +70,7 @@ import de.mossgrabers.framework.featuregroup.ModeManager;
 import de.mossgrabers.framework.featuregroup.ViewManager;
 import de.mossgrabers.framework.mode.Modes;
 import de.mossgrabers.framework.observer.IParametersAdjustObserver;
+import de.mossgrabers.framework.utils.ButtonEvent;
 import de.mossgrabers.framework.view.Views;
 
 
@@ -297,7 +298,7 @@ public class FireControllerSetup extends AbstractControllerSetup<FireControlSurf
         this.addButton (ButtonID.ARROW_RIGHT, "GRID\nRIGHT", new FireViewButtonCommand (ButtonID.ARROW_RIGHT, this.model, surface), FireControlSurface.FIRE_GRID_RIGHT);
 
         this.addButton (ButtonID.ARROW_UP, "PATTERN\nUP", (event, velocity) -> {
-            if (velocity == 0)
+            if (event != ButtonEvent.UP)
                 return;
             if (surface.isPressed (ButtonID.ALT))
             {
@@ -308,7 +309,7 @@ public class FireControllerSetup extends AbstractControllerSetup<FireControlSurf
             this.model.getCursorTrack ().getSlotBank ().selectNextItem ();
         }, FireControlSurface.FIRE_PAT_UP);
         this.addButton (ButtonID.ARROW_DOWN, "PATTERN\nDOWN", (event, velocity) -> {
-            if (velocity == 0)
+            if (event != ButtonEvent.UP)
                 return;
             if (surface.isPressed (ButtonID.ALT))
             {
