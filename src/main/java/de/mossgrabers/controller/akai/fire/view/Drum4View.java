@@ -95,30 +95,6 @@ public class Drum4View extends AbstractDrum4View<FireControlSurface, FireConfigu
 
     /** {@inheritDoc} */
     @Override
-    protected boolean handleNoteAreaButtonCombinations (final INoteClip clip, final int channel, final int step, final int row, final int note, final int velocity, final int accentVelocity)
-    {
-        if (this.isButtonCombination (ButtonID.BROWSE))
-        {
-            if (velocity == 0)
-            {
-                this.surface.setTriggerConsumed (ButtonID.BROWSE);
-
-                if (!this.primary.hasDrumPads ())
-                    return true;
-
-                final IDrumPadBank drumPadBank = this.primary.getDrumPadBank ();
-                this.scrollPosition = drumPadBank.getScrollPosition ();
-                this.model.getBrowser ().replace (drumPadBank.getItem (row));
-            }
-            return true;
-        }
-
-        return super.handleNoteAreaButtonCombinations (clip, channel, step, row, note, velocity, accentVelocity);
-    }
-
-
-    /** {@inheritDoc} */
-    @Override
     public int getSoloButtonColor (final int index)
     {
         return this.isActive () && this.primary.hasDrumPads () && this.primary.getDrumPadBank ().getItem (3 - index).isSelected () ? this.lanes : 0;
@@ -239,6 +215,39 @@ public class Drum4View extends AbstractDrum4View<FireControlSurface, FireConfigu
             return;
         }
         this.selectDrumPad (index);
+    }
+
+
+    /** {@inheritDoc} */
+    @Override
+    protected boolean handleNoteAreaButtonCombinations (final INoteClip clip, final int channel, final int step, final int row, final int note, final int velocity, final int accentVelocity)
+    {
+        if (this.isButtonCombination (ButtonID.BROWSE))
+        {
+            if (velocity == 0)
+            {
+                this.surface.setTriggerConsumed (ButtonID.BROWSE);
+
+                if (!this.primary.hasDrumPads ())
+                    return true;
+
+                final IDrumPadBank drumPadBank = this.primary.getDrumPadBank ();
+                this.scrollPosition = drumPadBank.getScrollPosition ();
+                this.model.getBrowser ().replace (drumPadBank.getItem (row));
+            }
+            return true;
+        }
+
+        final boolean isUpPressed = this.surface.isPressed (ButtonID.ARROW_UP);
+        if (isUpPressed || this.surface.isPressed (ButtonID.ARROW_DOWN))
+        {
+            this.surface.setTriggerConsumed (isUpPressed ? ButtonID.ARROW_UP : ButtonID.ARROW_DOWN);
+            if (velocity > 0)
+                this.handleSequencerAreaRepeatOperator (clip, channel, step, note, velocity, isUpPressed);
+            return true;
+        }
+
+        return super.handleNoteAreaButtonCombinations (clip, channel, step, row, note, velocity, accentVelocity);
     }
 
 
