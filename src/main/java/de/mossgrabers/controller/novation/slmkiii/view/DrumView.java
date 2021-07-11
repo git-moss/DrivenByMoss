@@ -183,4 +183,20 @@ public class DrumView extends AbstractDrumView<SLMkIIIControlSurface, SLMkIIICon
 
         return super.getButtonColor (buttonID);
     }
+
+
+    /** {@inheritDoc} */
+    @Override
+    protected boolean handleSequencerAreaButtonCombinations (INoteClip clip, int channel, int step, int note, int velocity)
+    {
+        final boolean isShiftPressed = this.surface.isShiftPressed ();
+        if (isShiftPressed)
+        {
+            if (velocity > 0)
+                this.handleSequencerAreaRepeatOperator (clip, channel, step, note, velocity, isShiftPressed);
+            return true;
+        }
+
+        return super.handleSequencerAreaButtonCombinations (clip, channel, step, note, velocity);
+    }
 }

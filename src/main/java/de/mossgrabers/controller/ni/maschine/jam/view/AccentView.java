@@ -24,7 +24,7 @@ import de.mossgrabers.framework.view.Views;
  */
 public class AccentView extends AbstractView<MaschineJamControlSurface, MaschineJamConfiguration> implements IMaschineView
 {
-    private final static int BLOCK_SIZE = 4;
+    private static final int BLOCK_SIZE = 4;
 
 
     /**

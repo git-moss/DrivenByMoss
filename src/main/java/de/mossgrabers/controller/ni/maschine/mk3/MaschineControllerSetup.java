@@ -63,8 +63,8 @@ import de.mossgrabers.framework.command.trigger.application.PaneCommand;
 import de.mossgrabers.framework.command.trigger.application.PaneCommand.Panels;
 import de.mossgrabers.framework.command.trigger.application.PanelLayoutCommand;
 import de.mossgrabers.framework.command.trigger.clip.ConvertCommand;
+import de.mossgrabers.framework.command.trigger.clip.FillModeNoteRepeatCommand;
 import de.mossgrabers.framework.command.trigger.clip.NewCommand;
-import de.mossgrabers.framework.command.trigger.clip.NoteRepeatCommand;
 import de.mossgrabers.framework.command.trigger.mode.ModeCursorCommand;
 import de.mossgrabers.framework.command.trigger.mode.ModeSelectCommand;
 import de.mossgrabers.framework.command.trigger.track.AddTrackCommand;
@@ -358,7 +358,7 @@ public class MaschineControllerSetup extends AbstractControllerSetup<MaschineCon
                 super.shiftedFunction ();
             }
         }, MaschineControlSurface.LOCK, () -> surface.isShiftPressed () ? t.isLauncherOverdub () : t.isArrangerOverdub ());
-        this.addButton (ButtonID.REPEAT, "NOTE REPEAT", new NoteRepeatCommand<> (this.model, surface, this.maschine.hasMCUDisplay ()), MaschineControlSurface.NOTE_REPEAT, this.configuration::isNoteRepeatActive);
+        this.addButton (ButtonID.REPEAT, "NOTE REPEAT", new FillModeNoteRepeatCommand<> (this.model, surface, this.maschine.hasMCUDisplay ()), MaschineControlSurface.NOTE_REPEAT, this.configuration::isNoteRepeatActive);
 
         // Ribbon
         this.addButton (ButtonID.F1, "PITCH", new RibbonCommand (this.model, surface, RIBBON_MODES_PITCH), MaschineControlSurface.PITCH, () -> this.isRibbonMode (new HashSet<> (RIBBON_MODES_PITCH)));
