@@ -35,7 +35,6 @@ public class PageRightCommand extends AbstractTriggerCommand<PushControlSurface,
 
 
     /** {@inheritDoc} */
-    @SuppressWarnings("rawtypes")
     @Override
     public void execute (final ButtonEvent event, final int velocity)
     {
@@ -48,7 +47,7 @@ public class PageRightCommand extends AbstractTriggerCommand<PushControlSurface,
         }
 
         final IView activeView = viewManager.getActive ();
-        if (activeView instanceof AbstractSequencerView)
-            ((AbstractSequencerView) activeView).onRight (event);
+        if (activeView instanceof AbstractSequencerView<?, ?> sequencerView)
+            sequencerView.onRight (event);
     }
 }

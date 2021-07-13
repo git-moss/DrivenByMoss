@@ -18,8 +18,8 @@ import java.util.List;
  */
 public class OpenSoundControlMessageImpl implements IOpenSoundControlMessage
 {
-    private final String       address;
-    private final List<Object> values;
+    private final String  address;
+    private final List<?> values;
 
 
     /**
@@ -39,7 +39,7 @@ public class OpenSoundControlMessageImpl implements IOpenSoundControlMessage
      * @param address The OSC address
      * @param values The values
      */
-    public OpenSoundControlMessageImpl (final String address, final List<Object> values)
+    public OpenSoundControlMessageImpl (final String address, final List<?> values)
     {
         this.address = address;
         this.values = values;

@@ -166,6 +166,14 @@ public abstract class AbstractView<S extends IControlSurface<C>, C extends Confi
     }
 
 
+    /** {@inheritDoc} */
+    @Override
+    public KeyManager getKeyManager ()
+    {
+        return this.keyManager;
+    }
+
+
     protected void delayedUpdateNoteMapping (final int [] matrix)
     {
         this.surface.scheduleTask ( () -> {
@@ -173,17 +181,6 @@ public abstract class AbstractView<S extends IControlSurface<C>, C extends Confi
             if (matrix.length == 128)
                 this.surface.setKeyTranslationTable (this.scales.translateMatrixToGrid (matrix));
         }, 6);
-    }
-
-
-    /**
-     * Get the key manager.
-     *
-     * @return The key manager
-     */
-    public KeyManager getKeyManager ()
-    {
-        return this.keyManager;
     }
 
 

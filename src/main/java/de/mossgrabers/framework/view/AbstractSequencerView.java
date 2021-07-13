@@ -9,6 +9,8 @@ import de.mossgrabers.framework.controller.ButtonID;
 import de.mossgrabers.framework.controller.IControlSurface;
 import de.mossgrabers.framework.daw.IModel;
 import de.mossgrabers.framework.daw.INoteClip;
+import de.mossgrabers.framework.daw.IStepInfo;
+import de.mossgrabers.framework.daw.StepState;
 import de.mossgrabers.framework.daw.constants.Resolution;
 import de.mossgrabers.framework.featuregroup.AbstractFeatureGroup;
 import de.mossgrabers.framework.featuregroup.AbstractView;
@@ -27,8 +29,12 @@ public abstract class AbstractSequencerView<S extends IControlSurface<C>, C exte
 {
     /** The color for highlighting a step with no content. */
     public static final String    COLOR_STEP_HILITE_NO_CONTENT = "COLOR_STEP_HILITE_NO_CONTENT";
-    /** The color for highlighting a step with with content. */
+    /** The color for highlighting a step with content. */
     public static final String    COLOR_STEP_HILITE_CONTENT    = "COLOR_STEP_HILITE_CONTENT";
+    /** The color for a muted step. */
+    public static final String    COLOR_STEP_MUTED             = "COLOR_STEP_MUTED";
+    /** The color for a continued muted step. */
+    public static final String    COLOR_STEP_MUTED_CONT        = "COLOR_STEP_MUTED_CONT";
     /** The color for a step with no content. */
     public static final String    COLOR_NO_CONTENT             = "COLOR_NO_CONTENT";
     /** The color for a step with content. */
@@ -279,6 +285,39 @@ public abstract class AbstractSequencerView<S extends IControlSurface<C>, C exte
             return AbstractSequencerView.COLOR_NO_CONTENT;
 
         return AbstractSequencerView.COLOR_PAGE;
+    }
+
+
+    /**
+     * Handle repeat operator quick change. If repeat count is off it is set to 4 otherwise it is
+     * increased or decreased depending on the parameter.
+     *
+     * @param clip The sequenced MIDI clip
+     * @param channel The MIDI channel of the note
+     * @param step The step in the current page in the clip
+     * @param note The note in the current page of the pad in the clip
+     * @param velocity The velocity
+     * @param increase True to increase otherwise decrease
+     */
+    protected void handleSequencerAreaRepeatOperator (final INoteClip clip, final int channel, final int step, final int note, final int velocity, final boolean increase)
+    {
+        final IStepInfo stepInfo = clip.getStep (channel, step, note);
+        if (stepInfo.getState () == StepState.OFF)
+            clip.toggleStep (channel, step, note, velocity);
+        final boolean isOff = !stepInfo.isRepeatEnabled ();
+        if (isOff)
+            clip.updateIsRepeatEnabled (channel, step, note, true);
+        int repeatCount = stepInfo.getRepeatCount ();
+        repeatCount = increase ? Math.min (127, repeatCount + 1) : Math.max (-127, repeatCount - 1);
+        clip.updateRepeatCount (channel, step, note, repeatCount);
+        String repeatCountStr;
+        if (repeatCount > 0)
+            repeatCountStr = Integer.toString (repeatCount + 1);
+        else if (repeatCount == 0)
+            repeatCountStr = "Off";
+        else
+            repeatCountStr = "1/" + Integer.toString (1 - repeatCount);
+        this.surface.getDisplay ().notify ("Note repeat: " + repeatCountStr);
     }
 
 

@@ -10,7 +10,7 @@ import de.mossgrabers.controller.ableton.push.mode.NoteMode;
 import de.mossgrabers.framework.controller.ButtonID;
 import de.mossgrabers.framework.daw.IModel;
 import de.mossgrabers.framework.daw.INoteClip;
-import de.mossgrabers.framework.daw.IStepInfo;
+import de.mossgrabers.framework.daw.StepState;
 import de.mossgrabers.framework.featuregroup.ModeManager;
 import de.mossgrabers.framework.mode.Modes;
 import de.mossgrabers.framework.view.AbstractNoteSequencerView;
@@ -57,13 +57,29 @@ public class SequencerView extends AbstractNoteSequencerView<PushControlSurface,
         final INoteClip cursorClip = this.getClip ();
         final int mappedNote = this.keyManager.map (y);
         final int editMidiChannel = this.configuration.getMidiEditChannel ();
-        final int state = cursorClip.getStep (editMidiChannel, x, mappedNote).getState ();
-        if (state != IStepInfo.NOTE_START)
+        final StepState state = cursorClip.getStep (editMidiChannel, x, mappedNote).getState ();
+        if (state != StepState.START)
             return;
 
         final ModeManager modeManager = this.surface.getModeManager ();
         final NoteMode noteMode = (NoteMode) modeManager.get (Modes.NOTE);
         noteMode.setValues (cursorClip, editMidiChannel, x, mappedNote);
         modeManager.setActive (Modes.NOTE);
+    }
+
+
+    /** {@inheritDoc} */
+    @Override
+    protected boolean handleSequencerAreaButtonCombinations (final INoteClip clip, final int channel, final int step, final int row, final int note, final int velocity)
+    {
+        final boolean isShiftPressed = this.surface.isShiftPressed ();
+        if (isShiftPressed || this.surface.isSelectPressed ())
+        {
+            if (velocity > 0)
+                this.handleSequencerAreaRepeatOperator (clip, channel, step, note, velocity, isShiftPressed);
+            return true;
+        }
+
+        return super.handleSequencerAreaButtonCombinations (clip, channel, step, row, note, velocity);
     }
 }

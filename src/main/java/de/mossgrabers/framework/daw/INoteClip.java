@@ -102,6 +102,28 @@ public interface INoteClip extends IClip, IPinnable
 
 
     /**
+     * If there is a note started at this position, it will update the mute state of the note.
+     *
+     * @param channel The MIDI channel
+     * @param step The step
+     * @param row The note row
+     * @param isMuted Is the note muted?
+     */
+    void updateMuteState (int channel, int step, int row, boolean isMuted);
+
+
+    /**
+     * If there is a note started at this position, it will change the mute state of the note.
+     *
+     * @param channel The MIDI channel
+     * @param step The step
+     * @param row The note row
+     * @param control The change value
+     */
+    void changeMuteState (int channel, int step, int row, int control);
+
+
+    /**
      * If there is a note started at this position, it will update the duration of the note.
      *
      * @param channel The MIDI channel
@@ -143,6 +165,28 @@ public interface INoteClip extends IClip, IPinnable
      * @param control The change value
      */
     void changeStepVelocity (int channel, int step, int row, int control);
+
+
+    /**
+     * If there is a note started at this position, it will update the velocity spread of the note.
+     *
+     * @param channel The MIDI channel
+     * @param step The step
+     * @param row The note row
+     * @param velocitySpread The velocity spread of the note
+     */
+    void updateVelocitySpread (int channel, int step, int row, double velocitySpread);
+
+
+    /**
+     * If there is a note started at this position, it will change the velocity spread of the note.
+     *
+     * @param channel The MIDI channel
+     * @param step The step
+     * @param row The note row
+     * @param control The change value
+     */
+    void changeVelocitySpread (int channel, int step, int row, int control);
 
 
     /**
@@ -275,6 +319,227 @@ public interface INoteClip extends IClip, IPinnable
      * @param control The change value
      */
     void changeStepGain (int channel, int step, int row, int control);
+
+
+    /**
+     * If there is a note started at this position, it will update the on/off state of the chance of
+     * the note.
+     *
+     * @param channel The MIDI channel
+     * @param step The step
+     * @param row The note row
+     * @param isEnabled True to enabled
+     */
+    void updateIsChanceEnabled (int channel, int step, int row, boolean isEnabled);
+
+
+    /**
+     * If there is a note started at this position, it will update the chance of the note.
+     *
+     * @param channel The MIDI channel
+     * @param step The step
+     * @param row The note row
+     * @param chance The chance to set
+     */
+    void updateChance (int channel, int step, int row, double chance);
+
+
+    /**
+     * If there is a note started at this position, it will change the chance of the note.
+     *
+     * @param channel The MIDI channel
+     * @param step The step
+     * @param row The note row
+     * @param control The change value
+     */
+    void changeChance (int channel, int step, int row, int control);
+
+
+    /**
+     * If there is a note started at this position, it will update the on/off state of occurrence of
+     * the note.
+     *
+     * @param channel The MIDI channel
+     * @param step The step
+     * @param row The note row
+     * @param isEnabled True to enabled
+     */
+    void updateIsOccurrenceEnabled (int channel, int step, int row, boolean isEnabled);
+
+
+    /**
+     * If there is a note started at this position, it will change the occurrence of the note to the
+     * next or previous.
+     *
+     * @param channel The MIDI channel
+     * @param step The step
+     * @param row The note row
+     * @param increase True to increase otherwise decrease
+     */
+    void setPrevNextOccurrence (int channel, int step, int row, boolean increase);
+
+
+    /**
+     * If there is a note started at this position, it will change the occurrence of the note to the
+     * next or previous.
+     *
+     * @param channel The MIDI channel
+     * @param step The step
+     * @param row The note row
+     * @param occurrence The occurrence to set
+     */
+    void setOccurrence (int channel, int step, int row, NoteOccurrenceType occurrence);
+
+
+    /**
+     * If there is a note started at this position, it will update the on/off state of the
+     * recurrence of the note.
+     *
+     * @param channel The MIDI channel
+     * @param step The step
+     * @param row The note row
+     * @param isEnabled True to enabled
+     */
+    void updateIsRecurrenceEnabled (int channel, int step, int row, boolean isEnabled);
+
+
+    /**
+     * If there is a note started at this position, it will update the recurrence length of the
+     * note.
+     *
+     * @param channel The MIDI channel
+     * @param step The step
+     * @param row The note row
+     * @param recurrenceLength The recurrence length to set
+     */
+    void updateRecurrenceLength (int channel, int step, int row, int recurrenceLength);
+
+
+    /**
+     * If there is a note started at this position, it will update the recurrence mask of the note.
+     *
+     * @param channel The MIDI channel
+     * @param step The step
+     * @param row The note row
+     * @param mask The recurrence length to set
+     */
+    void updateRecurrenceMask (int channel, int step, int row, int mask);
+
+
+    /**
+     * If there is a note started at this position, it will change the recurrence length of the
+     * note.
+     *
+     * @param channel The MIDI channel
+     * @param step The step
+     * @param row The note row
+     * @param control The change value
+     */
+    void changeRecurrenceLength (int channel, int step, int row, int control);
+
+
+    /**
+     * If there is a note started at this position, it will update the on/off state of repeat of the
+     * note.
+     *
+     * @param channel The MIDI channel
+     * @param step The step
+     * @param row The note row
+     * @param isEnabled True to enabled
+     */
+    void updateIsRepeatEnabled (int channel, int step, int row, boolean isEnabled);
+
+
+    /**
+     * If there is a note started at this position, it will update the repeat count of the note.
+     *
+     * @param channel The MIDI channel
+     * @param step The step
+     * @param row The note row
+     * @param value The value
+     */
+    void updateRepeatCount (int channel, int step, int row, int value);
+
+
+    /**
+     * If there is a note started at this position, it will change the repeat count of the note.
+     *
+     * @param channel The MIDI channel
+     * @param step The step
+     * @param row The note row
+     * @param control The change value
+     */
+    void changeRepeatCount (int channel, int step, int row, int control);
+
+
+    /**
+     * If there is a note started at this position, it will update the repeat curve of the note.
+     *
+     * @param channel The MIDI channel
+     * @param step The step
+     * @param row The note row
+     * @param value The value
+     */
+    void updateRepeatCurve (int channel, int step, int row, double value);
+
+
+    /**
+     * If there is a note started at this position, it will change the repeat curve of the note.
+     *
+     * @param channel The MIDI channel
+     * @param step The step
+     * @param row The note row
+     * @param control The change value
+     */
+    void changeRepeatCurve (int channel, int step, int row, int control);
+
+
+    /**
+     * If there is a note started at this position, it will update the repeat velocity curve of the
+     * note.
+     *
+     * @param channel The MIDI channel
+     * @param step The step
+     * @param row The note row
+     * @param value The value
+     */
+    void updateRepeatVelocityCurve (int channel, int step, int row, double value);
+
+
+    /**
+     * If there is a note started at this position, it will change the repeat velocity curve of the
+     * note.
+     *
+     * @param channel The MIDI channel
+     * @param step The step
+     * @param row The note row
+     * @param control The change value
+     */
+    void changeRepeatVelocityCurve (int channel, int step, int row, int control);
+
+
+    /**
+     * If there is a note started at this position, it will update the repeat velocity end of the
+     * note.
+     *
+     * @param channel The MIDI channel
+     * @param step The step
+     * @param row The note row
+     * @param value The value
+     */
+    void updateRepeatVelocityEnd (int channel, int step, int row, double value);
+
+
+    /**
+     * If there is a note started at this position, it will change the repeat velocity end of the
+     * note.
+     *
+     * @param channel The MIDI channel
+     * @param step The step
+     * @param row The note row
+     * @param control The change value
+     */
+    void changeRepeatVelocityEnd (int channel, int step, int row, int control);
 
 
     /**

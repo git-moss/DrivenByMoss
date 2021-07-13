@@ -162,12 +162,12 @@ public class BrowserImpl extends AbstractBrowser
     public void replace (final IItem item)
     {
         final InsertionPoint insertionPoint;
-        if (item instanceof CursorDeviceImpl)
-            insertionPoint = ((CursorDeviceImpl) item).getCursorDevice ().replaceDeviceInsertionPoint ();
-        else if (item instanceof SlotImpl)
-            insertionPoint = ((SlotImpl) item).getSlot ().replaceInsertionPoint ();
-        else if (item instanceof DrumPadImpl)
-            insertionPoint = ((DrumPadImpl) item).getDrumPad ().insertionPoint ();
+        if (item instanceof CursorDeviceImpl cursorDevice)
+            insertionPoint = cursorDevice.getCursorDevice ().replaceDeviceInsertionPoint ();
+        else if (item instanceof SlotImpl slot)
+            insertionPoint = slot.getSlot ().replaceInsertionPoint ();
+        else if (item instanceof DrumPadImpl drumPad)
+            insertionPoint = drumPad.getDrumPad ().insertionPoint ();
         else
             return;
 

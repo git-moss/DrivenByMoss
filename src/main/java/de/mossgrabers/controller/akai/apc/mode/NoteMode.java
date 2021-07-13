@@ -101,7 +101,7 @@ public class NoteMode extends BaseMode<IItem>
                 break;
 
             case 3:
-                if (this.host.supports (Capability.NOTE_EDIT_GAIN))
+                if (this.host.supports (Capability.NOTE_EDIT_EXPRESSIONS))
                 {
                     this.clip.updateStepGain (this.channel, this.step, this.note, normalizedValue);
                     display.notify ("Gain: " + StringUtils.formatPercentage (normalizedValue));
@@ -109,7 +109,7 @@ public class NoteMode extends BaseMode<IItem>
                 break;
 
             case 4:
-                if (this.host.supports (Capability.NOTE_EDIT_PANORAMA))
+                if (this.host.supports (Capability.NOTE_EDIT_EXPRESSIONS))
                 {
                     final double pan = normalizedValue * 2.0 - 1.0;
                     this.clip.updateStepPan (this.channel, this.step, this.note, pan);
@@ -118,7 +118,7 @@ public class NoteMode extends BaseMode<IItem>
                 break;
 
             case 5:
-                if (this.host.supports (Capability.NOTE_EDIT_TRANSPOSE))
+                if (this.host.supports (Capability.NOTE_EDIT_EXPRESSIONS))
                 {
                     final double pitch = normalizedValue * 48.0 - 24.0;
                     this.clip.updateStepTranspose (this.channel, this.step, this.note, pitch);
@@ -127,7 +127,7 @@ public class NoteMode extends BaseMode<IItem>
                 break;
 
             case 6:
-                if (this.host.supports (Capability.NOTE_EDIT_TIMBRE))
+                if (this.host.supports (Capability.NOTE_EDIT_EXPRESSIONS))
                 {
                     final double timbre = normalizedValue * 2.0 - 1.0;
                     this.clip.updateStepTimbre (this.channel, this.step, this.note, timbre);
@@ -136,7 +136,7 @@ public class NoteMode extends BaseMode<IItem>
                 break;
 
             case 7:
-                if (this.host.supports (Capability.NOTE_EDIT_PRESSURE))
+                if (this.host.supports (Capability.NOTE_EDIT_EXPRESSIONS))
                 {
                     this.clip.updateStepPressure (this.channel, this.step, this.note, normalizedValue);
                     display.notify ("Pressure: " + StringUtils.formatPercentage (stepInfo.getPressure ()));
@@ -149,8 +149,8 @@ public class NoteMode extends BaseMode<IItem>
 
         // Note was modified, prevent deletion of note on button up
         final IView activeView = this.surface.getViewManager ().getActive ();
-        if (activeView instanceof AbstractSequencerView)
-            AbstractSequencerView.class.cast (activeView).setNoteEdited ();
+        if (activeView instanceof AbstractSequencerView<?, ?> sequencerView)
+            sequencerView.setNoteEdited ();
     }
 
 
@@ -179,27 +179,27 @@ public class NoteMode extends BaseMode<IItem>
                 return -1;
 
             case 3:
-                if (this.host.supports (Capability.NOTE_EDIT_GAIN))
+                if (this.host.supports (Capability.NOTE_EDIT_EXPRESSIONS))
                     return valueChanger.fromNormalizedValue (stepInfo.getGain ());
                 return -1;
 
             case 4:
-                if (this.host.supports (Capability.NOTE_EDIT_PANORAMA))
+                if (this.host.supports (Capability.NOTE_EDIT_EXPRESSIONS))
                     return valueChanger.fromNormalizedValue ((stepInfo.getPan () + 1.0) / 2.0);
                 return -1;
 
             case 5:
-                if (this.host.supports (Capability.NOTE_EDIT_TRANSPOSE))
+                if (this.host.supports (Capability.NOTE_EDIT_EXPRESSIONS))
                     return valueChanger.fromNormalizedValue ((stepInfo.getTranspose () + 24.0) / 48.0);
                 return -1;
 
             case 6:
-                if (this.host.supports (Capability.NOTE_EDIT_TIMBRE))
+                if (this.host.supports (Capability.NOTE_EDIT_EXPRESSIONS))
                     return valueChanger.fromNormalizedValue ((stepInfo.getTimbre () + 1.0) / 2.0);
                 return -1;
 
             case 7:
-                if (this.host.supports (Capability.NOTE_EDIT_PRESSURE))
+                if (this.host.supports (Capability.NOTE_EDIT_EXPRESSIONS))
                     return valueChanger.fromNormalizedValue (stepInfo.getPressure ());
                 return -1;
 

@@ -86,9 +86,9 @@ public class ShiftView extends BaseView
                 break;
 
             case 8:
-                if (clip.doesExist () && clip instanceof INoteClip)
+                if (clip.doesExist () && clip instanceof INoteClip noteClip)
                 {
-                    ((INoteClip) clip).clearAll ();
+                    noteClip.clearAll ();
                     display.notify ("Clear all notes");
                 }
                 break;
@@ -106,33 +106,33 @@ public class ShiftView extends BaseView
                 break;
 
             case 12:
-                if (clip.doesExist () && clip instanceof INoteClip)
+                if (clip.doesExist () && clip instanceof INoteClip noteClip)
                 {
-                    ((INoteClip) clip).transpose (-1);
+                    noteClip.transpose (-1);
                     display.notify ("Transpose: -1");
                 }
                 break;
 
             case 13:
-                if (clip.doesExist () && clip instanceof INoteClip)
+                if (clip.doesExist () && clip instanceof INoteClip noteClip)
                 {
-                    ((INoteClip) clip).transpose (1);
+                    noteClip.transpose (1);
                     display.notify ("Transpose: 1");
                 }
                 break;
 
             case 14:
-                if (clip.doesExist () && clip instanceof INoteClip)
+                if (clip.doesExist () && clip instanceof INoteClip noteClip)
                 {
-                    ((INoteClip) clip).transpose (-12);
+                    noteClip.transpose (-12);
                     display.notify ("Transpose: -12");
                 }
                 break;
 
             case 15:
-                if (clip.doesExist () && clip instanceof INoteClip)
+                if (clip.doesExist () && clip instanceof INoteClip noteClip)
                 {
-                    ((INoteClip) clip).transpose (12);
+                    noteClip.transpose (12);
                     display.notify ("Transpose: 12");
                 }
                 break;

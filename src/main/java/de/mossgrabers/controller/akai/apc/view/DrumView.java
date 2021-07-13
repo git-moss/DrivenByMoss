@@ -12,7 +12,7 @@ import de.mossgrabers.framework.controller.color.ColorManager;
 import de.mossgrabers.framework.daw.DAWColor;
 import de.mossgrabers.framework.daw.IModel;
 import de.mossgrabers.framework.daw.INoteClip;
-import de.mossgrabers.framework.daw.IStepInfo;
+import de.mossgrabers.framework.daw.StepState;
 import de.mossgrabers.framework.daw.data.IChannel;
 import de.mossgrabers.framework.featuregroup.ModeManager;
 import de.mossgrabers.framework.mode.Modes;
@@ -55,8 +55,8 @@ public class DrumView extends AbstractDrumView<APCControlSurface, APCConfigurati
             final int channel = this.configuration.getMidiEditChannel ();
             final int step = this.numColumns * (this.allRows - 1 - y) + x;
             final int note = offsetY + this.selectedPad;
-            final int state = cursorClip.getStep (channel, step, note).getState ();
-            if (state == IStepInfo.NOTE_START)
+            final StepState state = cursorClip.getStep (channel, step, note).getState ();
+            if (state == StepState.START)
             {
                 final NoteMode noteMode = (NoteMode) modeManager.get (Modes.NOTE);
                 noteMode.setValues (cursorClip, channel, step, note);
@@ -131,5 +131,22 @@ public class DrumView extends AbstractDrumView<APCControlSurface, APCConfigurati
         if (buttonID == ButtonID.SCENE3)
             return ColorManager.BUTTON_STATE_OFF;
         return this.isActive () ? ColorManager.BUTTON_STATE_ON : ColorManager.BUTTON_STATE_OFF;
+    }
+
+
+    /** {@inheritDoc} */
+    @Override
+    protected boolean handleSequencerAreaButtonCombinations (INoteClip clip, int channel, int step, int note, int velocity)
+    {
+        final boolean isUpPressed = this.surface.isPressed (ButtonID.ARROW_UP);
+        if (isUpPressed || this.surface.isPressed (ButtonID.ARROW_DOWN))
+        {
+            this.surface.setTriggerConsumed (isUpPressed ? ButtonID.ARROW_UP : ButtonID.ARROW_DOWN);
+            if (velocity > 0)
+                this.handleSequencerAreaRepeatOperator (clip, channel, step, note, velocity, isUpPressed);
+            return true;
+        }
+
+        return super.handleSequencerAreaButtonCombinations (clip, channel, step, note, velocity);
     }
 }

@@ -6,6 +6,8 @@ package de.mossgrabers.framework.graphics.canvas.component;
 
 import de.mossgrabers.framework.controller.color.ColorEx;
 import de.mossgrabers.framework.daw.INoteClip;
+import de.mossgrabers.framework.daw.IStepInfo;
+import de.mossgrabers.framework.daw.StepState;
 import de.mossgrabers.framework.graphics.Align;
 import de.mossgrabers.framework.graphics.IGraphicsConfiguration;
 import de.mossgrabers.framework.graphics.IGraphicsContext;
@@ -50,6 +52,7 @@ public class MidiClipComponent implements IComponent
         final ColorEx dividersColor = configuration.getColorBackgroundDarker ();
 
         final ColorEx noteColor = this.clip.getColor ();
+        final ColorEx noteMutedColor = ColorEx.DARK_GRAY;
         final ColorEx noteGridLoopColor = configuration.getColorBackground ();
         final ColorEx noteBorderColor = ColorEx.BLACK;
 
@@ -147,13 +150,14 @@ public class MidiClipComponent implements IComponent
                 // Get step, check for length
                 for (int channel = 0; channel < 16; channel++)
                 {
-                    final int stepState = this.clip.getStep (channel, step, note).getState ();
-                    if (stepState == 0)
+                    final IStepInfo stepInfo = this.clip.getStep (channel, step, note);
+                    final StepState stepState = stepInfo.getState ();
+                    if (stepState == StepState.OFF)
                         continue;
 
                     double x = left + step * stepWidth - 1;
                     double w = stepWidth + 2;
-                    final boolean isStart = stepState == 2;
+                    final boolean isStart = stepState == StepState.START;
                     if (isStart)
                     {
                         x += 2;
@@ -161,7 +165,7 @@ public class MidiClipComponent implements IComponent
                     }
 
                     gc.strokeRectangle (x, top + (range - row - 1) * stepHeight + 2, w, stepHeight - 2, noteBorderColor);
-                    gc.fillRectangle (x + (isStart ? 0 : -2), top + (range - row - 1) * stepHeight + 2, w - 1 + (isStart ? 0 : 2), stepHeight - 3, noteColor);
+                    gc.fillRectangle (x + (isStart ? 0 : -2), top + (range - row - 1) * stepHeight + 2, w - 1 + (isStart ? 0 : 2), stepHeight - 3, stepInfo.isMuted () ? noteMutedColor : noteColor);
 
                     if (isStart && fontSize > 0)
                     {

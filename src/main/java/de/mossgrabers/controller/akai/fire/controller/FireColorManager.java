@@ -87,6 +87,8 @@ public class FireColorManager extends ColorManager
 
         this.registerColorIndex (AbstractSequencerView.COLOR_STEP_HILITE_NO_CONTENT, FIRE_COLOR_DARK_GREEN);
         this.registerColorIndex (AbstractSequencerView.COLOR_STEP_HILITE_CONTENT, FIRE_COLOR_GREEN);
+        this.registerColorIndex (AbstractSequencerView.COLOR_STEP_MUTED, FIRE_COLOR_GRAY);
+        this.registerColorIndex (AbstractSequencerView.COLOR_STEP_MUTED_CONT, FIRE_COLOR_GRAY);
         this.registerColorIndex (AbstractSequencerView.COLOR_NO_CONTENT, FIRE_COLOR_BLACK);
         this.registerColorIndex (AbstractSequencerView.COLOR_CONTENT, FIRE_COLOR_BLUE);
         this.registerColorIndex (AbstractSequencerView.COLOR_CONTENT_CONT, FIRE_COLOR_DARK_BLUE);

@@ -1,2 +1,2 @@
-set JAVA_HOME=%JAVA_HOME12%
+set JAVA_HOME=%JAVA_HOME16%
 mvn deploy:deploy-file -Dfile=./libs/purejavahidapi-0.0.16.jar -Dsources=./libs/purejavahidapi-0.0.16-sources.jar -Djavadoc=./libs/purejavahidapi-0.0.16-javadoc.jar -DgroupId=purejavahidapi -DartifactId=purejavahidapi -Dversion=0.0.16 -Dpackaging=jar -Durl=file:./maven-local-repository/ -DrepositoryId=maven-repository -DupdateReleaseInfo=true

@@ -52,7 +52,7 @@ import de.mossgrabers.framework.command.core.NopCommand;
 import de.mossgrabers.framework.command.trigger.BrowserCommand;
 import de.mossgrabers.framework.command.trigger.FootswitchCommand;
 import de.mossgrabers.framework.command.trigger.clip.DoubleCommand;
-import de.mossgrabers.framework.command.trigger.clip.NoteRepeatCommand;
+import de.mossgrabers.framework.command.trigger.clip.FillModeNoteRepeatCommand;
 import de.mossgrabers.framework.command.trigger.transport.AutomationCommand;
 import de.mossgrabers.framework.command.trigger.transport.ConfiguredRecordCommand;
 import de.mossgrabers.framework.command.trigger.transport.PlayCommand;
@@ -291,7 +291,7 @@ public class MaschineJamControllerSetup extends AbstractControllerSetup<Maschine
         this.addButton (ButtonID.SOLO, "SOLO", new MaschineJamSoloCommand (this.model, surface), MaschineJamControlSurface.SOLO);
         this.addButton (ButtonID.MUTE, "MUTE", new MaschineJamMuteCommand (this.model, surface), MaschineJamControlSurface.MUTE);
 
-        this.addButton (ButtonID.REPEAT, "NOTE REPEAT", new NoteRepeatCommand<> (this.model, surface, false), MaschineJamControlSurface.NOTE_REPEAT, this.configuration::isNoteRepeatActive);
+        this.addButton (ButtonID.REPEAT, "NOTE REPEAT", new FillModeNoteRepeatCommand<> (this.model, surface, false), MaschineJamControlSurface.NOTE_REPEAT, this.configuration::isNoteRepeatActive);
 
         this.addButton (ButtonID.TRACK, "MACRO", new MaschineJamMacroCommand (this.model, surface), MaschineJamControlSurface.MACRO, () -> modeManager.isActive (Modes.TRACK));
         this.addButton (ButtonID.VOLUME, "LEVEL", new MaschineJamLevelCommand (this.model, surface), MaschineJamControlSurface.LEVEL, () -> modeManager.isActive (Modes.VOLUME, Modes.PAN));
@@ -611,15 +611,12 @@ public class MaschineJamControllerSetup extends AbstractControllerSetup<Maschine
     private void updateFaders ()
     {
         final MaschineJamControlSurface surface = this.getSurface ();
-
         final IMode mode = surface.getModeManager ().getActive ();
-        if (!(mode instanceof IMaschineJamMode))
+        if (!(mode instanceof IMaschineJamMode jamMode))
             return;
-        final IMaschineJamMode maschineMode = (IMaschineJamMode) mode;
-
         final FaderConfig [] configs = new FaderConfig [8];
         for (int i = 0; i < 8; i++)
-            configs[i] = maschineMode.setupFader (i);
+            configs[i] = jamMode.setupFader (i);
         surface.setupFaders (configs);
     }
 }

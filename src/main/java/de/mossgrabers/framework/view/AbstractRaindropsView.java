@@ -10,6 +10,7 @@ import de.mossgrabers.framework.controller.IControlSurface;
 import de.mossgrabers.framework.controller.grid.IPadGrid;
 import de.mossgrabers.framework.daw.IModel;
 import de.mossgrabers.framework.daw.INoteClip;
+import de.mossgrabers.framework.daw.StepState;
 import de.mossgrabers.framework.daw.constants.Resolution;
 import de.mossgrabers.framework.daw.data.ITrack;
 import de.mossgrabers.framework.scale.Scales;
@@ -247,14 +248,14 @@ public abstract class AbstractRaindropsView<S extends IControlSurface<C>, C exte
         final int editMidiChannel = this.configuration.getMidiEditChannel ();
         for (step = 0; step < length; step++)
         {
-            if (clip.getStep (editMidiChannel, step, row).getState () > 0)
+            if (clip.getStep (editMidiChannel, step, row).getState () != StepState.OFF)
                 break;
         }
         if (step >= length)
             return -1;
         for (int step2 = step + 1; step2 < length; step2++)
         {
-            if (clip.getStep (editMidiChannel, step2, row).getState () > 0)
+            if (clip.getStep (editMidiChannel, step2, row).getState () != StepState.OFF)
                 return step2 - step;
         }
         return -1;
@@ -273,7 +274,7 @@ public abstract class AbstractRaindropsView<S extends IControlSurface<C>, C exte
         final int editMidiChannel = this.configuration.getMidiEditChannel ();
         do
         {
-            if (clip.getStep (editMidiChannel, step, row).getState () > 0)
+            if (clip.getStep (editMidiChannel, step, row).getState () != StepState.OFF)
                 return counter;
             step++;
             counter++;
@@ -297,7 +298,7 @@ public abstract class AbstractRaindropsView<S extends IControlSurface<C>, C exte
         final int editMidiChannel = this.configuration.getMidiEditChannel ();
         do
         {
-            if (clip.getStep (editMidiChannel, step, row).getState () > 0)
+            if (clip.getStep (editMidiChannel, step, row).getState () != StepState.OFF)
                 return counter;
             step--;
             counter++;

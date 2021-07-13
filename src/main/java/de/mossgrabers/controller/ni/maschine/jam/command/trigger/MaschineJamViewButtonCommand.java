@@ -62,6 +62,6 @@ public class MaschineJamViewButtonCommand extends ViewButtonCommand<MaschineJamC
     public boolean canScroll ()
     {
         final IView view = this.viewManager.getActive ();
-        return view instanceof IViewNavigation && ((IViewNavigation) view).canScroll (this.direction);
+        return view instanceof IViewNavigation viewNavigation && viewNavigation.canScroll (this.direction);
     }
 }

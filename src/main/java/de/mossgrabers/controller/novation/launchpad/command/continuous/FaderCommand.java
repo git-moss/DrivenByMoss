@@ -41,7 +41,7 @@ public class FaderCommand extends AbstractContinuousCommand<LaunchpadControlSurf
     public void execute (final int value)
     {
         final IView view = this.surface.getViewManager ().getActive ();
-        if (view instanceof AbstractFaderView)
-            ((AbstractFaderView) view).onValueKnob (this.index, value);
+        if (view instanceof AbstractFaderView faderView)
+            faderView.onValueKnob (this.index, value);
     }
 }

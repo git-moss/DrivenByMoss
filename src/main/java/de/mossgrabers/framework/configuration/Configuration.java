@@ -359,7 +359,7 @@ public interface Configuration
     /**
      * Lookup the index of the given arpeggiator mode among the available ones.
      *
-     * @param arpMode The arp mode to look up
+     * @param arpMode The arpeggiator mode to look up
      * @return The index
      */
     int lookupArpeggiatorModeIndex (ArpeggiatorMode arpMode);

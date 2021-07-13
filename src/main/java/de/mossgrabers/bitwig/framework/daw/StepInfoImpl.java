@@ -4,9 +4,11 @@
 
 package de.mossgrabers.bitwig.framework.daw;
 
-import de.mossgrabers.framework.daw.IStepInfo;
-import de.mossgrabers.framework.daw.constants.Resolution;
+import de.mossgrabers.framework.daw.DefaultStepInfo;
+import de.mossgrabers.framework.daw.NoteOccurrenceType;
+import de.mossgrabers.framework.daw.StepState;
 
+import com.bitwig.extension.controller.api.NoteOccurrence;
 import com.bitwig.extension.controller.api.NoteStep;
 
 
@@ -15,109 +17,14 @@ import com.bitwig.extension.controller.api.NoteStep;
  *
  * @author J&uuml;rgen Mo&szlig;graber
  */
-public class StepInfoImpl implements IStepInfo
+public class StepInfoImpl extends DefaultStepInfo
 {
-    private int    state;
-    private double duration = Resolution.RES_1_16.getValue ();
-    private double velocity;
-    private double releaseVelocity;
-    private double pressure;
-    private double timbre;
-    private double pan;
-    private double transpose;
-    private double gain;
-
-
     /**
      * Constructor.
      */
     public StepInfoImpl ()
     {
         // Intentionally empty
-    }
-
-
-    /** {@inheritDoc} */
-    @Override
-    public int getState ()
-    {
-        return this.state;
-    }
-
-
-    /** {@inheritDoc} */
-    @Override
-    public double getDuration ()
-    {
-        return this.duration;
-    }
-
-
-    /** {@inheritDoc} */
-    @Override
-    public double getVelocity ()
-    {
-        return this.velocity;
-    }
-
-
-    /** {@inheritDoc} */
-    @Override
-    public double getReleaseVelocity ()
-    {
-        return this.releaseVelocity;
-    }
-
-
-    /** {@inheritDoc} */
-    @Override
-    public double getPressure ()
-    {
-        return this.pressure;
-    }
-
-
-    /** {@inheritDoc} */
-    @Override
-    public double getTimbre ()
-    {
-        return this.timbre;
-    }
-
-
-    /** {@inheritDoc} */
-    @Override
-    public double getPan ()
-    {
-        return this.pan;
-    }
-
-
-    /** {@inheritDoc} */
-    @Override
-    public double getTranspose ()
-    {
-        return this.transpose;
-    }
-
-
-    /** {@inheritDoc} */
-    @Override
-    public double getGain ()
-    {
-        return this.gain;
-    }
-
-
-    /**
-     * Set the state.
-     *
-     * @param state The state, 0: not set, 1: note continues playing, 2: start of note, see the
-     *            defined constants
-     */
-    public void setState (final int state)
-    {
-        this.state = state;
     }
 
 
@@ -131,16 +38,17 @@ public class StepInfoImpl implements IStepInfo
         switch (stepInfo.state ())
         {
             case NoteOn:
-                this.state = IStepInfo.NOTE_START;
+                this.state = StepState.START;
                 break;
             case NoteSustain:
-                this.state = IStepInfo.NOTE_CONTINUE;
+                this.state = StepState.CONTINUE;
                 break;
             case Empty:
-                this.state = IStepInfo.NOTE_OFF;
+                this.state = StepState.OFF;
                 break;
         }
 
+        this.isMuted = stepInfo.isMuted ();
         this.duration = stepInfo.duration ();
         this.velocity = stepInfo.velocity ();
         this.releaseVelocity = stepInfo.releaseVelocity ();
@@ -149,53 +57,22 @@ public class StepInfoImpl implements IStepInfo
         this.pan = stepInfo.pan ();
         this.transpose = stepInfo.transpose ();
         this.gain = stepInfo.gain ();
-    }
 
+        this.isChanceEnabled = stepInfo.isChanceEnabled ();
+        this.chance = stepInfo.chance ();
 
-    void setDuration (final double duration)
-    {
-        this.duration = duration;
-    }
+        this.isOccurrenceEnabled = stepInfo.isOccurrenceEnabled ();
+        final NoteOccurrence noteOccurrence = stepInfo.occurrence ();
+        this.occurrence = NoteOccurrenceType.lookup (noteOccurrence.name ());
 
+        this.isRecurrenceEnabled = stepInfo.isRecurrenceEnabled ();
+        this.recurrenceLength = stepInfo.recurrenceLength ();
+        this.recurrenceMask = stepInfo.recurrenceMask ();
 
-    void setVelocity (final double velocity)
-    {
-        this.velocity = velocity;
-    }
-
-
-    void setReleaseVelocity (final double releaseVelocity)
-    {
-        this.releaseVelocity = releaseVelocity;
-    }
-
-
-    void setPressure (final double pressure)
-    {
-        this.pressure = pressure;
-    }
-
-
-    void setTimbre (final double timbre)
-    {
-        this.timbre = timbre;
-    }
-
-
-    void setPan (final double pan)
-    {
-        this.pan = pan;
-    }
-
-
-    void setTranspose (final double transpose)
-    {
-        this.transpose = transpose;
-    }
-
-
-    void setGain (final double gain)
-    {
-        this.gain = gain;
+        this.isRepeatEnabled = stepInfo.isRepeatEnabled ();
+        this.repeatCount = stepInfo.repeatCount ();
+        this.repeatCurve = stepInfo.repeatCurve ();
+        this.repeatVelocityCurve = stepInfo.repeatVelocityCurve ();
+        this.repeatVelocityEnd = stepInfo.repeatVelocityEnd ();
     }
 }

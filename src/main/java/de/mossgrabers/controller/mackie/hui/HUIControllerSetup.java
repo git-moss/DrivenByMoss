@@ -720,8 +720,8 @@ public class HUIControllerSetup extends AbstractControllerSetup<HUIControlSurfac
             return;
 
         final IMode mode = surface.getModeManager ().get (modeID);
-        if (mode instanceof AbstractTrackMode)
-            ((AbstractTrackMode) mode).updateKnobLEDs ();
+        if (mode instanceof AbstractTrackMode abstractMode)
+            abstractMode.updateKnobLEDs ();
         this.updateIndication (modeID);
     }
 

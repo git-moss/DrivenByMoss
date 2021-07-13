@@ -462,8 +462,8 @@ public abstract class AbstractControlSurface<C extends Configuration> implements
         final List<IHwRelativeKnob> relativeKnobs = new ArrayList<> ();
 
         this.continuous.forEach ( (id, control) -> {
-            if (control instanceof IHwRelativeKnob)
-                relativeKnobs.add ((IHwRelativeKnob) control);
+            if (control instanceof IHwRelativeKnob knob)
+                relativeKnobs.add (knob);
         });
 
         return relativeKnobs;

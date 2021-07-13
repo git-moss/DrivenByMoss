@@ -284,8 +284,8 @@ public class FireControllerSetup extends AbstractControllerSetup<FireControlSurf
         this.addButton (ButtonID.ALT, "ALT", (event, velocity) -> {
 
             final IMode activeMode = modeManager.getActive ();
-            if (activeMode instanceof IParametersAdjustObserver)
-                ((IParametersAdjustObserver) activeMode).parametersAdjusted ();
+            if (activeMode instanceof IParametersAdjustObserver observer)
+                observer.parametersAdjusted ();
 
         }, FireControlSurface.FIRE_ALT);
 
@@ -331,7 +331,7 @@ public class FireControllerSetup extends AbstractControllerSetup<FireControlSurf
             final int index = i;
             surface.createLight (OutputID.get (OutputID.LED5, i), () -> {
                 final IView activeView = viewManager.getActive ();
-                return activeView instanceof IFireView ? ((IFireView) activeView).getSoloButtonColor (index) : 0;
+                return activeView instanceof IFireView fireView ? fireView.getSoloButtonColor (index) : 0;
             }, color -> surface.setTrigger (0, 0x28 + index, color), state -> {
                 switch (state)
                 {

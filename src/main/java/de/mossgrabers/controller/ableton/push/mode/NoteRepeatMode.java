@@ -424,7 +424,7 @@ public class NoteRepeatMode extends BaseMode<IItem>
     /**
      * Get the index of the selected length.
      *
-     * @return The selected lenth index
+     * @return The selected length index
      */
     private int getSelectedNoteLengthIndex ()
     {

@@ -282,8 +282,8 @@ public class ModesHandler extends AbstractHandler
         final boolean absolute = isAbsolute (knobMode);
         synchronized (mode)
         {
-            if (mode instanceof AbstractMode)
-                ((AbstractMode<?, ?, ?>) mode).setAbsolute (absolute);
+            if (mode instanceof AbstractMode<?, ?, ?> abstractMode)
+                abstractMode.setAbsolute (absolute);
             if (absolute)
                 mode.onKnobValue (knobIndex, value.getUpscaled ());
             else

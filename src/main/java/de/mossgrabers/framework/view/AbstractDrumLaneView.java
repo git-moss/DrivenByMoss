@@ -13,6 +13,7 @@ import de.mossgrabers.framework.controller.hardware.IHwButton;
 import de.mossgrabers.framework.daw.IModel;
 import de.mossgrabers.framework.daw.INoteClip;
 import de.mossgrabers.framework.daw.IStepInfo;
+import de.mossgrabers.framework.daw.StepState;
 import de.mossgrabers.framework.daw.constants.Resolution;
 import de.mossgrabers.framework.daw.data.IDrumDevice;
 import de.mossgrabers.framework.utils.ButtonEvent;
@@ -126,7 +127,7 @@ public abstract class AbstractDrumLaneView<S extends IControlSurface<C>, C exten
             {
                 duplicateButton.setConsumed ();
                 final IStepInfo noteStep = clip.getStep (channel, step, note);
-                if (noteStep.getState () == IStepInfo.NOTE_START)
+                if (noteStep.getState () == StepState.START)
                     this.copyNote = noteStep;
                 else if (this.copyNote != null)
                     clip.setStep (channel, step, note, this.copyNote);
@@ -146,8 +147,8 @@ public abstract class AbstractDrumLaneView<S extends IControlSurface<C>, C exten
                 button.setConsumed ();
                 final int length = step - start + 1;
                 final double duration = length * Resolution.getValueAt (this.getResolutionIndex ());
-                final int state = note < 0 ? 0 : clip.getStep (channel, start, note).getState ();
-                if (state == IStepInfo.NOTE_START)
+                final StepState state = note < 0 ? StepState.OFF : clip.getStep (channel, start, note).getState ();
+                if (state == StepState.START)
                     clip.updateStepDuration (channel, start, note, duration);
                 else
                     clip.setStep (channel, start, note, accentVelocity, duration);
@@ -184,13 +185,13 @@ public abstract class AbstractDrumLaneView<S extends IControlSurface<C>, C exten
             final Optional<ColorEx> drumPadColor = this.getDrumPadColor (this.primary, sound);
             for (int col = 0; col < this.clipCols; col++)
             {
-                final int isSet = clip.getStep (editMidiChannel, col, noteRow).getState ();
+                final IStepInfo stepInfo = clip.getStep (editMidiChannel, col, noteRow);
                 final boolean hilite = col == hiStep;
                 final int x = col % this.numColumns;
                 int y = this.lanes - 1 - sound;
                 if (col >= this.numColumns)
                     y += this.lanes;
-                padGrid.lightEx (x, y, this.getStepColor (isSet, hilite, drumPadColor));
+                padGrid.lightEx (x, y, this.getStepColor (stepInfo, hilite, drumPadColor));
             }
         }
     }

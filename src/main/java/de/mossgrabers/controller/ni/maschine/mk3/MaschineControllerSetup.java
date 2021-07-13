@@ -63,8 +63,8 @@ import de.mossgrabers.framework.command.trigger.application.PaneCommand;
 import de.mossgrabers.framework.command.trigger.application.PaneCommand.Panels;
 import de.mossgrabers.framework.command.trigger.application.PanelLayoutCommand;
 import de.mossgrabers.framework.command.trigger.clip.ConvertCommand;
+import de.mossgrabers.framework.command.trigger.clip.FillModeNoteRepeatCommand;
 import de.mossgrabers.framework.command.trigger.clip.NewCommand;
-import de.mossgrabers.framework.command.trigger.clip.NoteRepeatCommand;
 import de.mossgrabers.framework.command.trigger.mode.ModeCursorCommand;
 import de.mossgrabers.framework.command.trigger.mode.ModeSelectCommand;
 import de.mossgrabers.framework.command.trigger.track.AddTrackCommand;
@@ -94,8 +94,8 @@ import de.mossgrabers.framework.daw.data.empty.EmptyTrack;
 import de.mossgrabers.framework.daw.midi.IMidiAccess;
 import de.mossgrabers.framework.daw.midi.IMidiInput;
 import de.mossgrabers.framework.daw.midi.IMidiOutput;
-import de.mossgrabers.framework.featuregroup.AbstractView;
 import de.mossgrabers.framework.featuregroup.IMode;
+import de.mossgrabers.framework.featuregroup.IView;
 import de.mossgrabers.framework.featuregroup.ModeManager;
 import de.mossgrabers.framework.featuregroup.ViewManager;
 import de.mossgrabers.framework.mode.Modes;
@@ -358,7 +358,7 @@ public class MaschineControllerSetup extends AbstractControllerSetup<MaschineCon
                 super.shiftedFunction ();
             }
         }, MaschineControlSurface.LOCK, () -> surface.isShiftPressed () ? t.isLauncherOverdub () : t.isArrangerOverdub ());
-        this.addButton (ButtonID.REPEAT, "NOTE REPEAT", new NoteRepeatCommand<> (this.model, surface, this.maschine.hasMCUDisplay ()), MaschineControlSurface.NOTE_REPEAT, this.configuration::isNoteRepeatActive);
+        this.addButton (ButtonID.REPEAT, "NOTE REPEAT", new FillModeNoteRepeatCommand<> (this.model, surface, this.maschine.hasMCUDisplay ()), MaschineControlSurface.NOTE_REPEAT, this.configuration::isNoteRepeatActive);
 
         // Ribbon
         this.addButton (ButtonID.F1, "PITCH", new RibbonCommand (this.model, surface, RIBBON_MODES_PITCH), MaschineControlSurface.PITCH, () -> this.isRibbonMode (new HashSet<> (RIBBON_MODES_PITCH)));
@@ -652,11 +652,6 @@ public class MaschineControllerSetup extends AbstractControllerSetup<MaschineCon
 
 
     /** {@inheritDoc} */
-    @SuppressWarnings(
-    {
-        "rawtypes",
-        "unchecked"
-    })
     @Override
     protected void registerContinuousCommands ()
     {
@@ -698,7 +693,7 @@ public class MaschineControllerSetup extends AbstractControllerSetup<MaschineCon
         };
         for (final Views viewID: views)
         {
-            final AbstractView view = AbstractView.class.cast (viewManager.get (viewID));
+            final IView view = viewManager.get (viewID);
             view.registerAftertouchCommand (new AftertouchViewCommand<> (view, this.model, surface));
         }
 

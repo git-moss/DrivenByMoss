@@ -111,12 +111,12 @@ public class NoteMode extends AbstractMode<FireControlSurface, FireConfiguration
             case 0:
                 if (this.surface.isPressed (ButtonID.ALT))
                 {
-                    if (this.host.supports (Capability.NOTE_EDIT_PRESSURE))
+                    if (this.host.supports (Capability.NOTE_EDIT_EXPRESSIONS))
                         this.clip.changeStepPressure (this.channel, this.step, this.note, value);
                 }
                 else
                 {
-                    if (this.host.supports (Capability.NOTE_EDIT_GAIN))
+                    if (this.host.supports (Capability.NOTE_EDIT_EXPRESSIONS))
                         this.clip.changeStepGain (this.channel, this.step, this.note, value);
                 }
                 break;
@@ -124,12 +124,12 @@ public class NoteMode extends AbstractMode<FireControlSurface, FireConfiguration
             case 1:
                 if (this.surface.isPressed (ButtonID.ALT))
                 {
-                    if (this.host.supports (Capability.NOTE_EDIT_TIMBRE))
+                    if (this.host.supports (Capability.NOTE_EDIT_EXPRESSIONS))
                         this.clip.changeStepTimbre (this.channel, this.step, this.note, value);
                 }
                 else
                 {
-                    if (this.host.supports (Capability.NOTE_EDIT_PANORAMA))
+                    if (this.host.supports (Capability.NOTE_EDIT_EXPRESSIONS))
                         this.clip.changeStepPan (this.channel, this.step, this.note, value);
                 }
                 break;
@@ -150,7 +150,7 @@ public class NoteMode extends AbstractMode<FireControlSurface, FireConfiguration
 
             // This is the select knob
             case 4:
-                if (this.host.supports (Capability.NOTE_EDIT_TRANSPOSE))
+                if (this.host.supports (Capability.NOTE_EDIT_EXPRESSIONS))
                 {
                     this.clip.changeStepTranspose (this.channel, this.step, this.note, value);
                     this.preventNoteDeletion ();
@@ -169,8 +169,8 @@ public class NoteMode extends AbstractMode<FireControlSurface, FireConfiguration
     private void preventNoteDeletion ()
     {
         final IView activeView = this.surface.getViewManager ().getActive ();
-        if (activeView instanceof AbstractSequencerView)
-            AbstractSequencerView.class.cast (activeView).setNoteEdited ();
+        if (activeView instanceof AbstractSequencerView<?, ?> sequencerView)
+            sequencerView.setNoteEdited ();
     }
 
 
@@ -198,18 +198,15 @@ public class NoteMode extends AbstractMode<FireControlSurface, FireConfiguration
             switch (this.getTouchedKnob ())
             {
                 case 0:
-                    if (this.surface.isPressed (ButtonID.ALT))
+                    if (this.host.supports (Capability.NOTE_EDIT_EXPRESSIONS))
                     {
-                        if (this.host.supports (Capability.NOTE_EDIT_PRESSURE))
+                        if (this.surface.isPressed (ButtonID.ALT))
                         {
                             final double pressure = stepInfo.getPressure ();
                             value = valueChanger.fromNormalizedValue (pressure);
                             paramLine = "Prssr: " + StringUtils.formatPercentage (pressure);
                         }
-                    }
-                    else
-                    {
-                        if (this.host.supports (Capability.NOTE_EDIT_GAIN))
+                        else
                         {
                             final double noteGain = stepInfo.getGain ();
                             value = Math.min (1023, valueChanger.fromNormalizedValue (noteGain));
@@ -219,18 +216,15 @@ public class NoteMode extends AbstractMode<FireControlSurface, FireConfiguration
                     break;
 
                 case 1:
-                    if (this.surface.isPressed (ButtonID.ALT))
+                    if (this.host.supports (Capability.NOTE_EDIT_EXPRESSIONS))
                     {
-                        if (this.host.supports (Capability.NOTE_EDIT_TIMBRE))
+                        if (this.surface.isPressed (ButtonID.ALT))
                         {
                             final double noteTimbre = stepInfo.getTimbre ();
                             value = valueChanger.fromNormalizedValue ((noteTimbre + 1.0) / 2.0);
                             paramLine = "Timbre: " + StringUtils.formatPercentage (noteTimbre);
                         }
-                    }
-                    else
-                    {
-                        if (this.host.supports (Capability.NOTE_EDIT_PANORAMA))
+                        else
                         {
                             final double notePan = stepInfo.getPan ();
                             value = valueChanger.fromNormalizedValue ((notePan + 1.0) / 2.0);
@@ -263,7 +257,7 @@ public class NoteMode extends AbstractMode<FireControlSurface, FireConfiguration
 
                 // This is the select knob
                 case 4:
-                    if (this.host.supports (Capability.NOTE_EDIT_TRANSPOSE))
+                    if (this.host.supports (Capability.NOTE_EDIT_EXPRESSIONS))
                     {
                         final double noteTranspose = stepInfo.getTranspose ();
                         value = valueChanger.fromNormalizedValue ((noteTranspose + 24.0) / 48.0);
@@ -293,7 +287,7 @@ public class NoteMode extends AbstractMode<FireControlSurface, FireConfiguration
      */
     public void resetTranspose ()
     {
-        if (this.clip != null && this.host.supports (Capability.NOTE_EDIT_TRANSPOSE))
+        if (this.clip != null && this.host.supports (Capability.NOTE_EDIT_EXPRESSIONS))
             this.clip.updateStepTranspose (this.channel, this.step, this.note, 0);
     }
 }

@@ -11,7 +11,7 @@ import de.mossgrabers.controller.akai.fire.mode.NoteMode;
 import de.mossgrabers.framework.controller.ButtonID;
 import de.mossgrabers.framework.daw.IModel;
 import de.mossgrabers.framework.daw.INoteClip;
-import de.mossgrabers.framework.daw.IStepInfo;
+import de.mossgrabers.framework.daw.StepState;
 import de.mossgrabers.framework.daw.data.IDrumPad;
 import de.mossgrabers.framework.daw.data.ILayer;
 import de.mossgrabers.framework.daw.data.bank.IDrumPadBank;
@@ -74,8 +74,8 @@ public class Drum4View extends AbstractDrum4View<FireControlSurface, FireConfigu
             if (modeManager.isActive (Modes.NOTE))
             {
                 // Store existing note for editing
-                final int state = clip.getStep (channel, step, sound).getState ();
-                if (state == IStepInfo.NOTE_START)
+                final StepState state = clip.getStep (channel, step, sound).getState ();
+                if (state == StepState.START)
                     ((NoteMode) modeManager.get (Modes.NOTE)).setValues (clip, channel, step, sound);
                 return;
             }
@@ -90,30 +90,6 @@ public class Drum4View extends AbstractDrum4View<FireControlSurface, FireConfigu
 
         if (velocity == 0)
             clip.toggleStep (channel, step, sound, vel);
-    }
-
-
-    /** {@inheritDoc} */
-    @Override
-    protected boolean handleNoteAreaButtonCombinations (final INoteClip clip, final int channel, final int step, final int row, final int note, final int velocity, final int accentVelocity)
-    {
-        if (this.isButtonCombination (ButtonID.BROWSE))
-        {
-            if (velocity == 0)
-            {
-                this.surface.setTriggerConsumed (ButtonID.BROWSE);
-
-                if (!this.primary.hasDrumPads ())
-                    return true;
-
-                final IDrumPadBank drumPadBank = this.primary.getDrumPadBank ();
-                this.scrollPosition = drumPadBank.getScrollPosition ();
-                this.model.getBrowser ().replace (drumPadBank.getItem (row));
-            }
-            return true;
-        }
-
-        return super.handleNoteAreaButtonCombinations (clip, channel, step, row, note, velocity, accentVelocity);
     }
 
 
@@ -242,6 +218,39 @@ public class Drum4View extends AbstractDrum4View<FireControlSurface, FireConfigu
     }
 
 
+    /** {@inheritDoc} */
+    @Override
+    protected boolean handleNoteAreaButtonCombinations (final INoteClip clip, final int channel, final int step, final int row, final int note, final int velocity, final int accentVelocity)
+    {
+        if (this.isButtonCombination (ButtonID.BROWSE))
+        {
+            if (velocity == 0)
+            {
+                this.surface.setTriggerConsumed (ButtonID.BROWSE);
+
+                if (!this.primary.hasDrumPads ())
+                    return true;
+
+                final IDrumPadBank drumPadBank = this.primary.getDrumPadBank ();
+                this.scrollPosition = drumPadBank.getScrollPosition ();
+                this.model.getBrowser ().replace (drumPadBank.getItem (row));
+            }
+            return true;
+        }
+
+        final boolean isUpPressed = this.surface.isPressed (ButtonID.ARROW_UP);
+        if (isUpPressed || this.surface.isPressed (ButtonID.ARROW_DOWN))
+        {
+            this.surface.setTriggerConsumed (isUpPressed ? ButtonID.ARROW_UP : ButtonID.ARROW_DOWN);
+            if (velocity > 0)
+                this.handleSequencerAreaRepeatOperator (clip, channel, step, note, velocity, isUpPressed);
+            return true;
+        }
+
+        return super.handleNoteAreaButtonCombinations (clip, channel, step, row, note, velocity, accentVelocity);
+    }
+
+
     private void adjustPage (final boolean isUp, final int selection)
     {
         this.blockSelectKnob = true;
@@ -257,7 +266,7 @@ public class Drum4View extends AbstractDrum4View<FireControlSurface, FireConfigu
     {
         this.primary.getDrumPadBank ().getItem (index).select ();
         final IMode activeMode = this.surface.getModeManager ().getActive ();
-        if (activeMode instanceof FireLayerMode)
-            ((FireLayerMode) activeMode).parametersAdjusted ();
+        if (activeMode instanceof FireLayerMode fireLayerMode)
+            fireLayerMode.parametersAdjusted ();
     }
 }

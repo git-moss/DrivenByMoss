@@ -33,6 +33,7 @@ public class OctaveCommand extends AbstractTriggerCommand<PushControlSurface, Pu
     public OctaveCommand (final boolean isUp, final IModel model, final PushControlSurface surface)
     {
         super (model, surface);
+
         this.isUp = isUp;
     }
 
@@ -42,12 +43,12 @@ public class OctaveCommand extends AbstractTriggerCommand<PushControlSurface, Pu
     public void execute (final ButtonEvent event, final int velocity)
     {
         final IView activeView = this.surface.getViewManager ().getActive ();
-        if (!(activeView instanceof TransposeView))
-            return;
-
-        if (this.isUp)
-            ((TransposeView) activeView).onOctaveUp (event);
-        else
-            ((TransposeView) activeView).onOctaveDown (event);
+        if (activeView instanceof TransposeView transposeView)
+        {
+            if (this.isUp)
+                transposeView.onOctaveUp (event);
+            else
+                transposeView.onOctaveDown (event);
+        }
     }
 }

@@ -12,7 +12,7 @@ import de.mossgrabers.framework.controller.ButtonID;
 import de.mossgrabers.framework.controller.grid.IPadGrid;
 import de.mossgrabers.framework.daw.IModel;
 import de.mossgrabers.framework.daw.INoteClip;
-import de.mossgrabers.framework.daw.IStepInfo;
+import de.mossgrabers.framework.daw.StepState;
 import de.mossgrabers.framework.daw.data.IDrumDevice;
 import de.mossgrabers.framework.featuregroup.ModeManager;
 import de.mossgrabers.framework.mode.Modes;
@@ -239,9 +239,17 @@ public class DrumView extends AbstractDrumView<MaschineControlSurface, MaschineC
         final ModeManager modeManager = this.surface.getModeManager ();
         if (modeManager.isActive (Modes.NOTE))
         {
-            final int isSet = clip.getStep (channel, step, note).getState ();
+            final StepState isSet = clip.getStep (channel, step, note).getState ();
             this.model.getHost ().showNotification ("Note " + Scales.formatNoteAndOctave (note, -3) + " - Step " + Integer.toString (step + 1));
-            ((EditNoteMode) modeManager.get (Modes.NOTE)).setValues (isSet == IStepInfo.NOTE_START ? clip : null, channel, step, note);
+            ((EditNoteMode) modeManager.get (Modes.NOTE)).setValues (isSet == StepState.START ? clip : null, channel, step, note);
+            return true;
+        }
+
+        final boolean isSelectPressed = this.surface.isSelectPressed ();
+        if (isSelectPressed)
+        {
+            if (velocity > 0)
+                this.handleSequencerAreaRepeatOperator (clip, channel, step, note, velocity, isSelectPressed);
             return true;
         }
 
