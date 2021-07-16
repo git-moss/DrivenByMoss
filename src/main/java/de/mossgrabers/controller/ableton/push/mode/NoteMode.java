@@ -576,13 +576,7 @@ public class NoteMode extends BaseMode<IItem>
                 display.setCell (0, 2, "REPEAT:");
 
                 final int repeatCount = stepInfo.getRepeatCount ();
-                final String repeatCountValue;
-                if (repeatCount == 0)
-                    repeatCountValue = "Off";
-                else if (repeatCount < 0)
-                    repeatCountValue = "1/" + Math.abs (repeatCount - 1);
-                else
-                    repeatCountValue = Integer.toString (repeatCount + 1);
+                final String repeatCountValue = stepInfo.getFormattedRepeatCount ();
                 final int rc = (repeatCount + 127) * (this.model.getValueChanger ().getUpperBound () - 1) / 254;
                 display.setCell (0, 3, "Count");
                 display.setCell (1, 3, repeatCountValue);
@@ -748,13 +742,7 @@ public class NoteMode extends BaseMode<IItem>
                 display.addParameterElementWithPlainMenu (MENU[2], true, null, null, false, null, -1, null, false, -1);
 
                 final int repeatCount = stepInfo.getRepeatCount ();
-                final String repeatCountValue;
-                if (repeatCount == 0)
-                    repeatCountValue = "Off";
-                else if (repeatCount < 0)
-                    repeatCountValue = "1/" + Math.abs (repeatCount - 1);
-                else
-                    repeatCountValue = Integer.toString (repeatCount + 1);
+                final String repeatCountValue = stepInfo.getFormattedRepeatCount ();
                 final int rc = (repeatCount + 127) * (this.model.getValueChanger ().getUpperBound () - 1) / 254;
                 display.addParameterElementWithPlainMenu (MENU[3], false, stepInfo.isRepeatEnabled () ? "On" : "Off", null, false, "Count", rc, repeatCountValue, this.isKnobTouched[3], rc);
 

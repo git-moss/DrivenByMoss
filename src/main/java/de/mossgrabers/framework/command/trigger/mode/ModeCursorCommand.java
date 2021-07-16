@@ -58,7 +58,7 @@ public class ModeCursorCommand<S extends IControlSurface<C>, C extends Configura
      */
     public ModeCursorCommand (final Direction direction, final IModel model, final S surface, final boolean notifySelection)
     {
-        this (direction, model, surface, true, null);
+        this (direction, model, surface, notifySelection, null);
     }
 
 

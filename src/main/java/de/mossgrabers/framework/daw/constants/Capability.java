@@ -37,7 +37,7 @@ public enum Capability
     NOTE_EDIT_EXPRESSIONS,
     /** Supports editing of note repeat options like count, curve, etc. */
     NOTE_EDIT_REPEAT,
-    /** Supports editing of note repeat options like count, curve, etc. */
+    /** Supports editing of note chance. */
     NOTE_EDIT_CHANCE,
     /** Supports editing of note occurrence. */
     NOTE_EDIT_OCCURRENCE,

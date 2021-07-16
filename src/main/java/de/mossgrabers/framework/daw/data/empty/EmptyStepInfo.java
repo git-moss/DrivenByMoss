@@ -191,6 +191,14 @@ public class EmptyStepInfo implements IStepInfo
 
     /** {@inheritDoc} */
     @Override
+    public String getFormattedRepeatCount ()
+    {
+        return "-";
+    }
+
+
+    /** {@inheritDoc} */
+    @Override
     public double getRepeatCurve ()
     {
         return 0;

@@ -172,6 +172,14 @@ public interface IStepInfo
 
 
     /**
+     * Get the number of repeats formatted as a text.
+     *
+     * @return The text
+     */
+    String getFormattedRepeatCount ();
+
+
+    /**
      * Get the repeat curve.
      *
      * @return The curve

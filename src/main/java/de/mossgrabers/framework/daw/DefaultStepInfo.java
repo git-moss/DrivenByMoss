@@ -210,6 +210,19 @@ public class DefaultStepInfo implements IStepInfo
 
     /** {@inheritDoc} */
     @Override
+    public String getFormattedRepeatCount ()
+    {
+        final int count = this.getRepeatCount ();
+        if (count == 0)
+            return "Off";
+        if (count < 0)
+            return "1/" + Math.abs (count - 1);
+        return Integer.toString (count + 1);
+    }
+
+
+    /** {@inheritDoc} */
+    @Override
     public double getRepeatCurve ()
     {
         return this.repeatCurve;

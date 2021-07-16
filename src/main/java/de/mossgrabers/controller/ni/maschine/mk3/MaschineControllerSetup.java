@@ -645,6 +645,9 @@ public class MaschineControllerSetup extends AbstractControllerSetup<MaschineCon
             case BROWSER:
                 return surface.isPressed (arrowButton) ? MaschineColorManager.COLOR_AMBER : MaschineColorManager.COLOR_AMBER_LO;
 
+            case NOTE:
+                return surface.isPressed (arrowButton) ? MaschineColorManager.COLOR_GREEN : MaschineColorManager.COLOR_GREEN_LO;
+
             default:
                 return MaschineColorManager.COLOR_BLACK;
         }
