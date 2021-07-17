@@ -11,5 +11,4 @@ These directions are for developers to test changes prior to release.
 or if on Linux, using the distro package manager, e.g. `yum install maven` or
 `apt-get install maven`.
 2. Run `mvn install` in this repo's root.
-3. Follow [installation instructions](https://github.com/git-moss/DrivenByMoss/wiki/Installation)
-for further steps.
+3. Follow [installation instructions] in the included manual for further steps.
