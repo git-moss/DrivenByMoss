@@ -31,7 +31,7 @@ import de.mossgrabers.framework.command.core.NopCommand;
 import de.mossgrabers.framework.command.trigger.Direction;
 import de.mossgrabers.framework.command.trigger.ShiftCommand;
 import de.mossgrabers.framework.command.trigger.mode.ButtonRowModeCommand;
-import de.mossgrabers.framework.command.trigger.mode.CursorCommand;
+import de.mossgrabers.framework.command.trigger.mode.ModeCursorCommand;
 import de.mossgrabers.framework.command.trigger.mode.ModeSelectCommand;
 import de.mossgrabers.framework.command.trigger.transport.RecordCommand;
 import de.mossgrabers.framework.command.trigger.transport.StopCommand;
@@ -278,9 +278,9 @@ public class SLMkIIIControllerSetup extends AbstractControllerSetup<SLMkIIIContr
                 surface.toggleMuteSolo ();
         }, 15, SLMkIIIControlSurface.MKIII_BUTTONS_DOWN, () -> !surface.isMuteSolo () ? SLMkIIIColorManager.SLMKIII_RED : SLMkIIIColorManager.SLMKIII_RED_HALF);
 
-        final CursorCommand<SLMkIIIControlSurface, SLMkIIIConfiguration> cursorLeftCommand = new CursorCommand<> (Direction.LEFT, this.model, surface);
+        final ModeCursorCommand<SLMkIIIControlSurface, SLMkIIIConfiguration> cursorLeftCommand = new ModeCursorCommand<> (Direction.LEFT, this.model, surface, true, () -> false);
         this.addButton (ButtonID.ARROW_LEFT, "Left", cursorLeftCommand, 15, SLMkIIIControlSurface.MKIII_TRACK_LEFT, () -> getCursorColor (modeManager, cursorLeftCommand));
-        final CursorCommand<SLMkIIIControlSurface, SLMkIIIConfiguration> cursorRightCommand = new CursorCommand<> (Direction.RIGHT, this.model, surface);
+        final ModeCursorCommand<SLMkIIIControlSurface, SLMkIIIConfiguration> cursorRightCommand = new ModeCursorCommand<> (Direction.RIGHT, this.model, surface, true, () -> false);
         this.addButton (ButtonID.ARROW_RIGHT, "Right", cursorRightCommand, 15, SLMkIIIControlSurface.MKIII_TRACK_RIGHT, () -> getCursorColor (modeManager, cursorRightCommand));
 
         for (int i = 0; i < 2; i++)
@@ -657,7 +657,7 @@ public class SLMkIIIControllerSetup extends AbstractControllerSetup<SLMkIIIContr
      * @param cursorCommand The cursor command
      * @return The color index
      */
-    private static int getCursorColor (final ModeManager modeManager, final CursorCommand<SLMkIIIControlSurface, SLMkIIIConfiguration> cursorCommand)
+    private static int getCursorColor (final ModeManager modeManager, final ModeCursorCommand<SLMkIIIControlSurface, SLMkIIIConfiguration> cursorCommand)
     {
         if (!cursorCommand.canScroll ())
             return SLMkIIIColorManager.SLMKIII_BLACK;
