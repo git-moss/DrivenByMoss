@@ -17,7 +17,7 @@ import de.mossgrabers.framework.utils.StringUtils;
  */
 public abstract class AbstractTextDisplay implements ITextDisplay
 {
-    /** Time to keep a notification displayed in ms. */
+    /** Time to keep a notification displayed in milliseconds. */
     public static final int  NOTIFICATION_TIME    = 1000;
 
     protected IHost          host;
@@ -309,7 +309,8 @@ public abstract class AbstractTextDisplay implements ITextDisplay
                 for (int row = 0; row < this.noOfLines; row++)
                 {
                     final int pos = row * this.noOfCharacters;
-                    this.updateLine (row, this.notificationMessage.substring (pos, pos + this.noOfCharacters));
+                    final int length = this.notificationMessage.length ();
+                    this.updateLine (row, StringUtils.pad (pos < length ? this.notificationMessage.substring (pos, Math.min (length, pos + this.noOfCharacters)) : "", this.noOfCharacters));
                 }
                 return;
             }

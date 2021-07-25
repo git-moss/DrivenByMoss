@@ -40,7 +40,7 @@ public class SessionView extends AbstractSessionView<MaschineJamControlSurface, 
 
         final LightInfo isRecording = new LightInfo (MaschineColorManager.COLOR_RED, MaschineColorManager.COLOR_RED, false);
         final LightInfo isRecordingQueued = new LightInfo (MaschineColorManager.COLOR_RED, MaschineColorManager.COLOR_BLACK, true);
-        final LightInfo isPlaying = new LightInfo (MaschineColorManager.COLOR_GREEN, MaschineColorManager.COLOR_GREEN, false);
+        final LightInfo isPlaying = new LightInfo (MaschineColorManager.COLOR_GREEN, -1, false);
         final LightInfo isPlayingQueued = new LightInfo (MaschineColorManager.COLOR_GREEN, MaschineColorManager.COLOR_GREEN, true);
         final LightInfo hasContent = new LightInfo (MaschineColorManager.COLOR_AMBER, MaschineColorManager.COLOR_WHITE, false);
         final LightInfo noContent = new LightInfo (MaschineColorManager.COLOR_BLACK, -1, false);

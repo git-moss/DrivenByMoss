@@ -185,7 +185,7 @@ public class GenericFlexiControlSurface extends AbstractControlSurface<GenericFl
             case 0x80:
             case 0x90:
                 this.configuration.setLearnValues (GenericFlexiConfiguration.OPTIONS_TYPE.get (CommandSlot.TYPE_NOTE + 1), data1, channel, false);
-                this.handleCommand (this.configuration.getSlotCommand (CommandSlot.TYPE_NOTE, data1, channel), MidiValue.get (data2, false));
+                this.handleCommand (this.configuration.getSlotCommand (CommandSlot.TYPE_NOTE, data1, channel), MidiValue.get (code == 0x80 ? 0 : data2, false));
                 break;
 
             // Program Change
