@@ -72,6 +72,7 @@ public class SelectSessionViewCommand extends AbstractTriggerCommand<LaunchpadCo
                 // Display Mix view with Shift
                 if (this.surface.isShiftPressed ())
                 {
+                    this.surface.setTriggerConsumed (ButtonID.SESSION);
                     viewManager.setActive (Views.MIX);
                     this.notifyViewName (Views.MIX, false, false);
                 }

@@ -34,7 +34,7 @@ public class SLMkIIIColorManager extends ColorManager
     public static final int    SLMKIII_RED              = 5;
     public static final int    SLMKIII_DARK_RED         = 6;
     public static final int    SLMKIII_RED_HALF         = 7;
-    public static final int    SLMKIII_SKIN             = 8;
+    public static final int    SLMKIII_ROSE             = 8;
     public static final int    SLMKIII_ORANGE           = 9;
     public static final int    SLMKIII_DARK_BROWN       = 10;
     public static final int    SLMKIII_ORANGE_HALF      = 11;
@@ -169,7 +169,7 @@ public class SLMkIIIColorManager extends ColorManager
         this.registerColorIndex (DAWColor.DAW_COLOR_LIGHT_PURPLE, SLMKIII_PURPLE);
 
         this.registerColorIndex (DAWColor.DAW_COLOR_LIGHT_PINK, SLMKIII_PINK_LIGHT);
-        this.registerColorIndex (DAWColor.DAW_COLOR_ROSE, SLMKIII_SKIN);
+        this.registerColorIndex (DAWColor.DAW_COLOR_ROSE, SLMKIII_ROSE);
         this.registerColorIndex (DAWColor.DAW_COLOR_REDDISH_BROWN, SLMKIII_DARK_RED);
         this.registerColorIndex (DAWColor.DAW_COLOR_LIGHT_BROWN, SLMKIII_AMBER_HALF);
         this.registerColorIndex (DAWColor.DAW_COLOR_LIGHT_GREEN, SLMKIII_GREEN_LIGHT);
@@ -205,7 +205,7 @@ public class SLMkIIIColorManager extends ColorManager
         this.registerColor (SLMKIII_RED, ColorEx.RED);
         this.registerColor (SLMKIII_DARK_RED, ColorEx.DARK_RED);
         this.registerColor (SLMKIII_RED_HALF, ColorEx.evenDarker (ColorEx.RED));
-        this.registerColor (SLMKIII_SKIN, ColorEx.SKIN);
+        this.registerColor (SLMKIII_ROSE, ColorEx.SKIN);
         this.registerColor (SLMKIII_ORANGE, ColorEx.ORANGE);
         this.registerColor (SLMKIII_DARK_BROWN, ColorEx.DARK_BROWN);
         this.registerColor (SLMKIII_ORANGE_HALF, ColorEx.evenDarker (ColorEx.ORANGE));

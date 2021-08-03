@@ -4,7 +4,10 @@
 
 package de.mossgrabers.framework.daw;
 
+import de.mossgrabers.framework.daw.data.GridStep;
 import de.mossgrabers.framework.daw.data.IPinnable;
+
+import java.util.List;
 
 
 /**
@@ -543,14 +546,12 @@ public interface INoteClip extends IClip, IPinnable
 
 
     /**
-     * Start editing a note. Signals to prevent round-trip error by quickly changing values to the
-     * DAW, which are not set at the same time.
-     *
-     * @param channel The MIDI channel
-     * @param step The step
-     * @param note The note to edit
+     * Start editing one or more notes. Signals to prevent round-trip error by quickly changing
+     * values to the DAW, which are not set at the same time.
+     * 
+     * @param editSteps The steps to edit
      */
-    void startEdit (int channel, int step, int note);
+    void startEdit (List<GridStep> editSteps);
 
 
     /**

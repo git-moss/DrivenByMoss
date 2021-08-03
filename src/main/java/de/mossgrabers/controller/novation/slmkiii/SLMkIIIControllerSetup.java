@@ -16,6 +16,7 @@ import de.mossgrabers.controller.novation.slmkiii.controller.SLMkIIILightGuide;
 import de.mossgrabers.controller.novation.slmkiii.controller.SLMkIIIScales;
 import de.mossgrabers.controller.novation.slmkiii.mode.BaseMode;
 import de.mossgrabers.controller.novation.slmkiii.mode.BrowserMode;
+import de.mossgrabers.controller.novation.slmkiii.mode.NoteMode;
 import de.mossgrabers.controller.novation.slmkiii.mode.OptionsMode;
 import de.mossgrabers.controller.novation.slmkiii.mode.SequencerResolutionMode;
 import de.mossgrabers.controller.novation.slmkiii.mode.device.ParametersMode;
@@ -176,6 +177,7 @@ public class SLMkIIIControllerSetup extends AbstractControllerSetup<SLMkIIIContr
 
         modeManager.register (Modes.FUNCTIONS, new OptionsMode (surface, this.model));
         modeManager.register (Modes.GROOVE, new SequencerResolutionMode (surface, this.model));
+        modeManager.register (Modes.NOTE, new NoteMode (surface, this.model));
     }
 
 

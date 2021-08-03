@@ -40,8 +40,8 @@ public abstract class AbstractPolySequencerView<S extends IControlSurface<C>, C 
     protected final int                   sequencerSteps;
     protected final Map<Integer, Integer> noteMemory          = new HashMap<> ();
     protected int                         copyStep            = -1;
-    private int                           numColumns;
-    private int                           numRows;
+    protected int                         numColumns;
+    protected int                         numRows;
 
 
     /**

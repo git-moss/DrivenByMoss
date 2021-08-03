@@ -24,6 +24,7 @@ import com.bitwig.extension.controller.api.NoteStep;
 import com.bitwig.extension.controller.api.PinnableCursorClip;
 import com.bitwig.extension.controller.api.SettableColorValue;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
@@ -42,9 +43,9 @@ public class CursorClipImpl implements INoteClip
 
     private final IStepInfo [] [] [] launcherData;
     private PinnableCursorClip       launcherClip;
-    private int                      editPage = 0;
+    private int                      editPage  = 0;
     private double                   stepLength;
-    private final GridStep           editStep = new GridStep ();
+    private final List<GridStep>     editSteps = new ArrayList<> ();
 
 
     /**
@@ -469,7 +470,7 @@ public class CursorClipImpl implements INoteClip
     {
         final StepInfoImpl stepInfo = this.getUpdateableStep (channel, step, row);
         stepInfo.setMuted (isMuted);
-        if (!this.editStep.isSet ())
+        if (this.editSteps.isEmpty ())
             this.getClip ().getStep (channel, step, row).setIsMuted (isMuted);
     }
 
@@ -492,7 +493,7 @@ public class CursorClipImpl implements INoteClip
         final double d = Math.max (0, duration);
         final StepInfoImpl stepInfo = this.getUpdateableStep (channel, step, row);
         stepInfo.setDuration (d);
-        if (!this.editStep.isSet ())
+        if (this.editSteps.isEmpty ())
             this.getClip ().getStep (channel, step, row).setDuration (d);
     }
 
@@ -514,7 +515,7 @@ public class CursorClipImpl implements INoteClip
         final double v = Math.min (1.0, Math.max (0, velocity));
         final StepInfoImpl stepInfo = this.getUpdateableStep (channel, step, row);
         stepInfo.setVelocity (v);
-        if (!this.editStep.isSet ())
+        if (this.editSteps.isEmpty ())
             this.getClip ().getStep (channel, step, row).setVelocity (v);
     }
 
@@ -536,7 +537,7 @@ public class CursorClipImpl implements INoteClip
         final double v = Math.min (1.0, Math.max (0, velocitySpread));
         final StepInfoImpl stepInfo = this.getUpdateableStep (channel, step, row);
         stepInfo.setVelocitySpread (v);
-        if (!this.editStep.isSet ())
+        if (this.editSteps.isEmpty ())
             this.getClip ().getStep (channel, step, row).setVelocitySpread (v);
     }
 
@@ -558,7 +559,7 @@ public class CursorClipImpl implements INoteClip
         final double rv = Math.min (1.0, Math.max (0, releaseVelocity));
         final StepInfoImpl stepInfo = this.getUpdateableStep (channel, step, row);
         stepInfo.setReleaseVelocity (rv);
-        if (!this.editStep.isSet ())
+        if (this.editSteps.isEmpty ())
             this.getClip ().getStep (channel, step, row).setReleaseVelocity (rv);
     }
 
@@ -580,7 +581,7 @@ public class CursorClipImpl implements INoteClip
         final double p = Math.min (1.0, Math.max (0, pressure));
         final StepInfoImpl stepInfo = this.getUpdateableStep (channel, step, row);
         stepInfo.setPressure (p);
-        if (!this.editStep.isSet ())
+        if (this.editSteps.isEmpty ())
             this.getClip ().getStep (channel, step, row).setPressure (p);
     }
 
@@ -602,7 +603,7 @@ public class CursorClipImpl implements INoteClip
         final double t = Math.min (1.0, Math.max (-1.0, timbre));
         final StepInfoImpl stepInfo = this.getUpdateableStep (channel, step, row);
         stepInfo.setTimbre (t);
-        if (!this.editStep.isSet ())
+        if (this.editSteps.isEmpty ())
             this.getClip ().getStep (channel, step, row).setTimbre (t);
     }
 
@@ -624,7 +625,7 @@ public class CursorClipImpl implements INoteClip
         final double p = Math.min (1.0, Math.max (-1.0, pan));
         final StepInfoImpl stepInfo = this.getUpdateableStep (channel, step, row);
         stepInfo.setPan (p);
-        if (!this.editStep.isSet ())
+        if (this.editSteps.isEmpty ())
             this.getClip ().getStep (channel, step, row).setPan (p);
     }
 
@@ -646,7 +647,7 @@ public class CursorClipImpl implements INoteClip
         final double t = Math.min (24.0, Math.max (-24.0, transpose));
         final StepInfoImpl stepInfo = this.getUpdateableStep (channel, step, row);
         stepInfo.setTranspose (t);
-        if (!this.editStep.isSet ())
+        if (this.editSteps.isEmpty ())
             this.getClip ().getStep (channel, step, row).setTranspose (t);
     }
 
@@ -668,7 +669,7 @@ public class CursorClipImpl implements INoteClip
         final double g = Math.min (1.0, Math.max (0, gain));
         final StepInfoImpl stepInfo = this.getUpdateableStep (channel, step, row);
         stepInfo.setGain (g);
-        if (!this.editStep.isSet ())
+        if (this.editSteps.isEmpty ())
             this.getClip ().getStep (channel, step, row).setGain (g);
     }
 
@@ -679,7 +680,7 @@ public class CursorClipImpl implements INoteClip
     {
         final StepInfoImpl stepInfo = this.getUpdateableStep (channel, step, row);
         stepInfo.setIsChanceEnabled (isEnabled);
-        if (!this.editStep.isSet ())
+        if (this.editSteps.isEmpty ())
             this.getClip ().getStep (channel, step, row).setIsChanceEnabled (isEnabled);
     }
 
@@ -701,7 +702,7 @@ public class CursorClipImpl implements INoteClip
         final double c = Math.min (1.0, Math.max (0, chance));
         final StepInfoImpl stepInfo = this.getUpdateableStep (channel, step, row);
         stepInfo.setChance (c);
-        if (!this.editStep.isSet ())
+        if (this.editSteps.isEmpty ())
             this.getClip ().getStep (channel, step, row).setChance (c);
     }
 
@@ -712,7 +713,7 @@ public class CursorClipImpl implements INoteClip
     {
         final StepInfoImpl stepInfo = this.getUpdateableStep (channel, step, row);
         stepInfo.setIsOccurrenceEnabled (isEnabled);
-        if (!this.editStep.isSet ())
+        if (this.editSteps.isEmpty ())
             this.getClip ().getStep (channel, step, row).setIsOccurrenceEnabled (isEnabled);
     }
 
@@ -728,7 +729,7 @@ public class CursorClipImpl implements INoteClip
         final int newIndex = Math.max (0, Math.min (types.size () - 1, typeIndex + (increase ? 1 : -1)));
         final NoteOccurrenceType newType = types.get (newIndex);
         stepInfo.setOccurrence (newType);
-        if (!this.editStep.isSet ())
+        if (this.editSteps.isEmpty ())
         {
             final NoteOccurrence v = NoteOccurrence.valueOf (newType.name ());
             this.getClip ().getStep (channel, step, row).setOccurrence (v);
@@ -742,7 +743,7 @@ public class CursorClipImpl implements INoteClip
     {
         final StepInfoImpl stepInfo = this.getUpdateableStep (channel, step, row);
         stepInfo.setOccurrence (occurrence);
-        if (!this.editStep.isSet ())
+        if (this.editSteps.isEmpty ())
             this.getClip ().getStep (channel, step, row).setOccurrence (NoteOccurrence.valueOf (occurrence.name ()));
     }
 
@@ -753,7 +754,7 @@ public class CursorClipImpl implements INoteClip
     {
         final StepInfoImpl stepInfo = this.getUpdateableStep (channel, step, row);
         stepInfo.setIsRecurrenceEnabled (isEnabled);
-        if (!this.editStep.isSet ())
+        if (this.editSteps.isEmpty ())
             this.getClip ().getStep (channel, step, row).setIsRecurrenceEnabled (isEnabled);
     }
 
@@ -775,7 +776,7 @@ public class CursorClipImpl implements INoteClip
         final int rl = Math.min (8, Math.max (1, recurrenceLength));
         final StepInfoImpl stepInfo = this.getUpdateableStep (channel, step, row);
         stepInfo.setRecurrenceLength (rl);
-        if (!this.editStep.isSet ())
+        if (this.editSteps.isEmpty ())
         {
             final NoteStep noteStep = this.getClip ().getStep (channel, step, row);
             noteStep.setRecurrence (rl, noteStep.recurrenceMask ());
@@ -789,7 +790,7 @@ public class CursorClipImpl implements INoteClip
     {
         final StepInfoImpl stepInfo = this.getUpdateableStep (channel, step, row);
         stepInfo.setRecurrenceMask (mask);
-        if (!this.editStep.isSet ())
+        if (this.editSteps.isEmpty ())
         {
             final NoteStep noteStep = this.getClip ().getStep (channel, step, row);
             noteStep.setRecurrence (noteStep.recurrenceLength (), mask);
@@ -803,7 +804,7 @@ public class CursorClipImpl implements INoteClip
     {
         final StepInfoImpl stepInfo = this.getUpdateableStep (channel, step, row);
         stepInfo.setIsRepeatEnabled (isEnabled);
-        if (!this.editStep.isSet ())
+        if (this.editSteps.isEmpty ())
             this.getClip ().getStep (channel, step, row).setIsRepeatEnabled (isEnabled);
     }
 
@@ -825,7 +826,7 @@ public class CursorClipImpl implements INoteClip
         final int v = Math.min (127, Math.max (-127, value));
         final StepInfoImpl stepInfo = this.getUpdateableStep (channel, step, row);
         stepInfo.setRepeatCount (v);
-        if (!this.editStep.isSet ())
+        if (this.editSteps.isEmpty ())
             this.getClip ().getStep (channel, step, row).setRepeatCount (v);
     }
 
@@ -847,7 +848,7 @@ public class CursorClipImpl implements INoteClip
         final double v = Math.min (1.0, Math.max (-1.0, value));
         final StepInfoImpl stepInfo = this.getUpdateableStep (channel, step, row);
         stepInfo.setRepeatCurve (v);
-        if (!this.editStep.isSet ())
+        if (this.editSteps.isEmpty ())
             this.getClip ().getStep (channel, step, row).setRepeatCurve (v);
     }
 
@@ -869,7 +870,7 @@ public class CursorClipImpl implements INoteClip
         final double vc = Math.min (1.0, Math.max (-1.0, velocityCurve));
         final StepInfoImpl stepInfo = this.getUpdateableStep (channel, step, row);
         stepInfo.setRepeatVelocityCurve (vc);
-        if (!this.editStep.isSet ())
+        if (this.editSteps.isEmpty ())
             this.getClip ().getStep (channel, step, row).setRepeatVelocityCurve (vc);
     }
 
@@ -891,7 +892,7 @@ public class CursorClipImpl implements INoteClip
         final double ve = Math.min (1.0, Math.max (-1.0, velocityEnd));
         final StepInfoImpl stepInfo = this.getUpdateableStep (channel, step, row);
         stepInfo.setRepeatVelocityEnd (ve);
-        if (!this.editStep.isSet ())
+        if (this.editSteps.isEmpty ())
             this.getClip ().getStep (channel, step, row).setRepeatVelocityEnd (ve);
     }
 
@@ -1070,13 +1071,14 @@ public class CursorClipImpl implements INoteClip
 
     /** {@inheritDoc} */
     @Override
-    public void startEdit (final int channel, final int step, final int row)
+    public void startEdit (final List<GridStep> editSteps)
     {
         // Is there a previous edit, which is not stopped yet?
         this.stopEdit ();
 
-        this.editStep.set (this, channel, step, row);
-        this.delayedUpdate (channel, step, row);
+        this.editSteps.addAll (editSteps);
+        for (final GridStep step: this.editSteps)
+            this.delayedUpdate (step);
     }
 
 
@@ -1084,19 +1086,21 @@ public class CursorClipImpl implements INoteClip
     @Override
     public void stopEdit ()
     {
-        if (!this.editStep.isSet ())
-            return;
-        this.sendClipData (this.editStep.getChannel (), this.editStep.getStep (), this.editStep.getNote ());
-        this.editStep.reset ();
+        for (final GridStep editStep: this.editSteps)
+            this.sendClipData (editStep.getChannel (), editStep.getStep (), editStep.getNote ());
+        this.editSteps.clear ();
     }
 
 
-    private void delayedUpdate (final int channel, final int step, final int row)
+    private void delayedUpdate (final GridStep editStep)
     {
-        if (!this.editStep.isSet ())
+        if (this.editSteps.isEmpty ())
             return;
-        this.sendClipData (channel, step, row);
-        this.host.scheduleTask ( () -> this.delayedUpdate (channel, step, row), 100);
+        final int channel = editStep.getChannel ();
+        final int step = editStep.getStep ();
+        final int note = editStep.getNote ();
+        this.sendClipData (channel, step, note);
+        this.host.scheduleTask ( () -> this.delayedUpdate (new GridStep (channel, step, note)), 100);
     }
 
 
@@ -1153,9 +1157,15 @@ public class CursorClipImpl implements INoteClip
         final int channel = noteStep.channel ();
         final int step = noteStep.x ();
         final int note = noteStep.y ();
-        final StepInfoImpl sinfo = this.getUpdateableStep (channel, step, note);
-        if (!this.editStep.isSet () || this.editStep.getChannel () != channel || this.editStep.getStep () != step || this.editStep.getNote () != note)
-            sinfo.updateData (noteStep);
+
+        for (final GridStep editStep: this.editSteps)
+        {
+            // Is the note among the currently edited ones?
+            if (editStep.getChannel () == channel && editStep.getStep () == step && editStep.getNote () == note)
+                return;
+        }
+
+        this.getUpdateableStep (channel, step, note).updateData (noteStep);
     }
 
 

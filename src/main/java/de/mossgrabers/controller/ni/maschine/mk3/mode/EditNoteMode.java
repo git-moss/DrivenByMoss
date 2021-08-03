@@ -13,10 +13,12 @@ import de.mossgrabers.framework.daw.INoteClip;
 import de.mossgrabers.framework.daw.IStepInfo;
 import de.mossgrabers.framework.daw.NoteOccurrenceType;
 import de.mossgrabers.framework.daw.constants.Capability;
+import de.mossgrabers.framework.daw.data.GridStep;
 import de.mossgrabers.framework.scale.Scales;
 import de.mossgrabers.framework.utils.StringUtils;
 
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 
 
@@ -375,7 +377,7 @@ public class EditNoteMode extends BaseMode
         }
 
         if (isTouched)
-            this.clip.startEdit (this.channel, this.step, this.note);
+            this.clip.startEdit (Collections.singletonList (new GridStep (this.channel, this.step, this.note)));
         else
             this.clip.stopEdit ();
     }

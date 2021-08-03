@@ -79,6 +79,26 @@ public class DrumView extends AbstractDrumView<SLMkIIIControlSurface, SLMkIIICon
 
     /** {@inheritDoc} */
     @Override
+    public void onGridNoteLongPress (final int note)
+    {
+        if (!this.isActive () || this.isPlayMode)
+            return;
+
+        final int index = note - DRUM_START_KEY;
+        this.surface.getButton (ButtonID.get (ButtonID.PAD1, index)).setConsumed ();
+
+        final int x = index % this.numColumns;
+        final int y = index / this.numColumns;
+        final int step = this.numColumns * (1 - y) + x;
+        final int row = this.scales.getDrumOffset () + this.getSelectedPad ();
+        final int channel = this.configuration.getMidiEditChannel ();
+        final INoteClip clip = this.getClip ();
+        this.editNote (clip, channel, step, row, false);
+    }
+
+
+    /** {@inheritDoc} */
+    @Override
     public void updateNoteMapping ()
     {
         this.delayedUpdateNoteMapping (this.model.canSelectedTrackHoldNotes () && this.isPlayMode ? this.scales.getDrumMatrix () : EMPTY_TABLE);

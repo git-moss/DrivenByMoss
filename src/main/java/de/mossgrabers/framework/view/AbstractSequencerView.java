@@ -14,6 +14,10 @@ import de.mossgrabers.framework.daw.StepState;
 import de.mossgrabers.framework.daw.constants.Resolution;
 import de.mossgrabers.framework.featuregroup.AbstractFeatureGroup;
 import de.mossgrabers.framework.featuregroup.AbstractView;
+import de.mossgrabers.framework.featuregroup.IMode;
+import de.mossgrabers.framework.featuregroup.ModeManager;
+import de.mossgrabers.framework.mode.INoteMode;
+import de.mossgrabers.framework.mode.Modes;
 import de.mossgrabers.framework.utils.ButtonEvent;
 
 
@@ -158,6 +162,7 @@ public abstract class AbstractSequencerView<S extends IControlSurface<C>, C exte
         final INoteClip clip = this.getClip ();
         clip.scrollStepsPageBackwards ();
         this.mvHelper.notifyEditPage (clip);
+        this.clearEditNotes ();
     }
 
 
@@ -173,6 +178,7 @@ public abstract class AbstractSequencerView<S extends IControlSurface<C>, C exte
         final INoteClip clip = this.getClip ();
         clip.scrollStepsPageForward ();
         this.mvHelper.notifyEditPage (clip);
+        this.clearEditNotes ();
     }
 
 
@@ -340,5 +346,45 @@ public abstract class AbstractSequencerView<S extends IControlSurface<C>, C exte
     public void setSequencerActive (final boolean isSequencerActive)
     {
         this.isSequencerActive = isSequencerActive;
+    }
+
+
+    /**
+     * Show edit mode and set or add note.
+     * 
+     * @param clip The MIDI clip
+     * @param channel The MIDI channel of the note
+     * @param step The step of the note
+     * @param mappedNote The real note
+     * @param addNote Add the note to the edited notes otherwise clear the already selected and add
+     *            only the new one
+     */
+    protected void editNote (final INoteClip clip, final int channel, final int step, final int mappedNote, final boolean addNote)
+    {
+        final StepState state = clip.getStep (channel, step, mappedNote).getState ();
+        if (state != StepState.START)
+            return;
+
+        final ModeManager modeManager = this.surface.getModeManager ();
+        final IMode mode = modeManager.get (Modes.NOTE);
+        if (!(mode instanceof INoteMode noteMode))
+            return;
+        if (addNote)
+            noteMode.addNote (clip, channel, step, mappedNote);
+        else
+            noteMode.setNote (clip, channel, step, mappedNote);
+        modeManager.setActive (Modes.NOTE);
+    }
+
+
+    /**
+     * Clear all edit notes.
+     */
+    protected void clearEditNotes ()
+    {
+        final ModeManager modeManager = this.surface.getModeManager ();
+        final IMode mode = modeManager.get (Modes.NOTE);
+        if (mode instanceof INoteMode noteMode)
+            noteMode.clearNotes ();
     }
 }

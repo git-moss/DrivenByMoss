@@ -588,6 +588,7 @@ public abstract class AbstractDrumView<S extends IControlSurface<C>, C extends C
         if (notify)
             this.surface.getDisplay ().notify (this.scales.getDrumRangeText ());
         this.model.getDrumDevice ().getDrumPadBank ().scrollTo (this.scales.getDrumOffset (), adjustPage);
+        this.clearEditNotes ();
     }
 
 
@@ -878,6 +879,7 @@ public abstract class AbstractDrumView<S extends IControlSurface<C>, C extends C
             return;
 
         this.selectedPad = selectedPad;
+        this.clearEditNotes ();
         if (velocity > 0)
             this.model.getDrumDevice ().getDrumPadBank ().getItem (selectedPad).select ();
     }

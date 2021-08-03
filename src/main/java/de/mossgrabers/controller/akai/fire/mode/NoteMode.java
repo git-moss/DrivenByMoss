@@ -16,6 +16,7 @@ import de.mossgrabers.framework.daw.IModel;
 import de.mossgrabers.framework.daw.INoteClip;
 import de.mossgrabers.framework.daw.IStepInfo;
 import de.mossgrabers.framework.daw.constants.Capability;
+import de.mossgrabers.framework.daw.data.GridStep;
 import de.mossgrabers.framework.daw.data.IItem;
 import de.mossgrabers.framework.featuregroup.AbstractMode;
 import de.mossgrabers.framework.featuregroup.IView;
@@ -23,6 +24,7 @@ import de.mossgrabers.framework.scale.Scales;
 import de.mossgrabers.framework.utils.StringUtils;
 import de.mossgrabers.framework.view.AbstractSequencerView;
 
+import java.util.Collections;
 import java.util.List;
 
 
@@ -91,7 +93,7 @@ public class NoteMode extends AbstractMode<FireControlSurface, FireConfiguration
         this.isKnobTouched[index] = isTouched;
         if (isTouched)
         {
-            this.clip.startEdit (this.channel, this.step, this.note);
+            this.clip.startEdit (Collections.singletonList (new GridStep (this.channel, this.step, this.note)));
             this.preventNoteDeletion ();
         }
         else
