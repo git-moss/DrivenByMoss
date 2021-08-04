@@ -810,6 +810,8 @@ public class NoteMode extends BaseMode<IItem> implements INoteMode
             d.setBlock (1, 1, " Please  select a").setBlock (1, 2, "note.");
             d.setCell (1, 8, "");
             d.hideAllElements ();
+            for (int i = 0; i < 8; i++)
+                d.setPropertyColor (i, 2, SLMkIIIColorManager.SLMKIII_BLACK);
         }
         else
         {
