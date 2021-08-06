@@ -160,8 +160,13 @@ public class DeviceView extends AbstractView<LaunchkeyMiniMk3ControlSurface, Lau
 
         if (buttonID == ButtonID.SCENE1) {
             ICursorDevice cd = this.model.getCursorDevice();
-            this.surface.getViewManager ().setActive (Views.BROWSER);
-            this.model.getBrowser().replace(cd);
+            if (cd.doesExist()) {
+                this.surface.getViewManager ().setActive (Views.BROWSER);
+                this.model.getBrowser().replace(cd);
+            } else {
+                this.surface.getViewManager ().setActive (Views.BROWSER);
+                this.model.getBrowser ().insertAfterCursorDevice ();
+            }
         } else if (buttonID == ButtonID.SCENE2) {
             ICursorDevice cd = this.model.getCursorDevice();
             cd.toggleParameterPageSectionVisible();
