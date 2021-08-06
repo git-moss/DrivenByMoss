@@ -116,7 +116,7 @@ public class DeviceView extends AbstractView<LaunchkeyMiniMk3ControlSurface, Lau
             ICursorDevice cd = this.model.getCursorDevice();
             IParameterPageBank parameterPageBank = cd.getParameterPageBank();
             final int pageBankId = note - 44;
-            parameterPageBank.selectItemAtPosition(pageBankId);
+            parameterPageBank.scrollTo(pageBankId);
         }
         else if (note >= 36 && note <= 43)
         {
@@ -133,6 +133,6 @@ public class DeviceView extends AbstractView<LaunchkeyMiniMk3ControlSurface, Lau
     @Override
     public int getButtonColor (final ButtonID buttonID)
     {
-        return LaunchkeyMiniMk3ColorManager.LAUNCHKEY_COLOR_BLACK;
+        return LaunchkeyMiniMk3ColorManager.LAUNCHKEY_COLOR_GREEN_HI;
     }
 }
