@@ -12,9 +12,13 @@ import de.mossgrabers.framework.controller.grid.IPadGrid;
 import de.mossgrabers.framework.daw.IModel;
 import de.mossgrabers.framework.daw.data.ICursorDevice;
 import de.mossgrabers.framework.daw.data.IParameter;
+import de.mossgrabers.framework.daw.data.IScene;
 import de.mossgrabers.framework.daw.data.bank.IDeviceBank;
 import de.mossgrabers.framework.daw.data.bank.IParameterPageBank;
+import de.mossgrabers.framework.daw.data.bank.ISceneBank;
 import de.mossgrabers.framework.featuregroup.AbstractView;
+import de.mossgrabers.framework.utils.ButtonEvent;
+import de.mossgrabers.framework.view.Views;
 
 
 /**
@@ -138,9 +142,24 @@ public class DeviceView extends AbstractView<LaunchkeyMiniMk3ControlSurface, Lau
         }
 
         if (buttonID == ButtonID.SCENE2) {
-            return LaunchkeyMiniMk3ColorManager.LAUNCHKEY_COLOR_RED_HI;
+            return LaunchkeyMiniMk3ColorManager.LAUNCHKEY_COLOR_BLUE;
         }
 
         return LaunchkeyMiniMk3ColorManager.LAUNCHKEY_COLOR_BLACK;
+    }
+
+    /** {@inheritDoc} */
+    @Override
+    public void onButton (final ButtonID buttonID, final ButtonEvent event, final int velocity)
+    {
+        if (event == ButtonEvent.DOWN) {
+            if (buttonID == ButtonID.SCENE1) {
+                ICursorDevice cd = this.model.getCursorDevice();
+                this.model.getBrowser().replace(cd);
+            } else if (buttonID == ButtonID.SCENE2) {
+                ICursorDevice cd = this.model.getCursorDevice();
+                cd.toggleParameterPageSectionVisible();
+            }
+        }
     }
 }
