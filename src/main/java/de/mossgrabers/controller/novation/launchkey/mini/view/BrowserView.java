@@ -48,8 +48,14 @@ public class BrowserView extends AbstractView<LaunchkeyMiniMk3ControlSurface, La
             padGrid.lightEx(x, 1, LaunchkeyMiniMk3ColorManager.LAUNCHKEY_COLOR_BLACK);
         }
 
-        padGrid.lightEx(0, 0, LaunchkeyMiniMk3ColorManager.LAUNCHKEY_COLOR_RED_HI);
-        padGrid.lightEx(7, 0, LaunchkeyMiniMk3ColorManager.LAUNCHKEY_COLOR_GREEN_HI);
+        padGrid.lightEx(0, 1, LaunchkeyMiniMk3ColorManager.LAUNCHKEY_COLOR_RED_HI);
+        padGrid.lightEx(1, 1, LaunchkeyMiniMk3ColorManager.LAUNCHKEY_COLOR_AMBER_HI);
+        padGrid.lightEx(2, 1, LaunchkeyMiniMk3ColorManager.LAUNCHKEY_COLOR_YELLOW_HI);
+        padGrid.lightEx(3, 1, LaunchkeyMiniMk3ColorManager.LAUNCHKEY_COLOR_GREEN_HI);
+        padGrid.lightEx(4, 1, LaunchkeyMiniMk3ColorManager.LAUNCHKEY_COLOR_LIME_HI);
+        padGrid.lightEx(5, 1, LaunchkeyMiniMk3ColorManager.LAUNCHKEY_COLOR_BLUE_HI);
+        padGrid.lightEx(6, 1, LaunchkeyMiniMk3ColorManager.LAUNCHKEY_COLOR_MAGENTA_HI);
+        padGrid.lightEx(7, 1, LaunchkeyMiniMk3ColorManager.LAUNCHKEY_COLOR_PINK_HI);
     }
 
 
@@ -81,16 +87,17 @@ public class BrowserView extends AbstractView<LaunchkeyMiniMk3ControlSurface, La
     @Override
     public void onButton (final ButtonID buttonID, final ButtonEvent event, final int velocity)
     {
-        if (event == ButtonEvent.DOWN) {
-            final IBrowser browser = this.model.getBrowser ();
+        if (!ButtonID.isSceneButton (buttonID) || event != ButtonEvent.DOWN)
+            return;
 
-            if (buttonID == ButtonID.SCENE1) {
-                this.surface.getViewManager ().setActive (Views.DRUM);
-                browser.stopBrowsing(true);
-            } else if (buttonID == ButtonID.SCENE2) {
-                this.surface.getViewManager ().setActive (Views.DRUM);
-                browser.stopBrowsing(false);
-            }
+        final IBrowser browser = this.model.getBrowser ();
+
+        if (buttonID == ButtonID.SCENE1) {
+            this.surface.getViewManager ().setActive (Views.DRUM);
+            browser.stopBrowsing(true);
+        } else if (buttonID == ButtonID.SCENE2) {
+            this.surface.getViewManager ().setActive (Views.DRUM);
+            browser.stopBrowsing(false);
         }
     }
 }
