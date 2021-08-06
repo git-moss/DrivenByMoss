@@ -372,11 +372,11 @@ public class LaunchkeyMiniMk3ControllerSetup extends AbstractControllerSetup<Lau
 
         surface.setLaunchpadToDAW (true);
 
-        surface.getPadGrid ().setView (Views.SESSION);
-        surface.getViewManager ().setActive (Views.SESSION);
-        surface.getModeManager ().setActive (Modes.VOLUME);
-        surface.setKnobMode (LaunchkeyMiniMk3ControlSurface.KNOB_MODE_VOLUME);
-        surface.setPadMode (LaunchkeyMiniMk3ControlSurface.PAD_MODE_SESSION);
+        surface.getPadGrid ().setView (Views.DRUM);
+        surface.getViewManager ().setActive (Views.DRUM);
+        surface.getModeManager ().setActive (Modes.DEVICE_PARAMS);
+        surface.setKnobMode (LaunchkeyMiniMk3ControlSurface.KNOB_MODE_PARAMS);
+        surface.setPadMode (LaunchkeyMiniMk3ControlSurface.PAD_MODE_DRUM);
     }
 
 

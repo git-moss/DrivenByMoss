@@ -48,23 +48,19 @@ public class BrowserView extends AbstractView<LaunchkeyMiniMk3ControlSurface, La
             padGrid.lightEx(x, 1, LaunchkeyMiniMk3ColorManager.LAUNCHKEY_COLOR_BLACK);
         }
 
-        padGrid.lightEx(0, 0, LaunchkeyMiniMk3ColorManager.LAUNCHKEY_COLOR_RED_HI);
-        padGrid.lightEx(1, 0, LaunchkeyMiniMk3ColorManager.LAUNCHKEY_COLOR_AMBER_HI);
-        padGrid.lightEx(2, 0, LaunchkeyMiniMk3ColorManager.LAUNCHKEY_COLOR_YELLOW_HI);
-        padGrid.lightEx(3, 0, LaunchkeyMiniMk3ColorManager.LAUNCHKEY_COLOR_GREEN_HI);
-        padGrid.lightEx(4, 0, LaunchkeyMiniMk3ColorManager.LAUNCHKEY_COLOR_LIME_HI);
-        padGrid.lightEx(5, 0, LaunchkeyMiniMk3ColorManager.LAUNCHKEY_COLOR_BLUE_HI);
-        padGrid.lightEx(6, 0, LaunchkeyMiniMk3ColorManager.LAUNCHKEY_COLOR_MAGENTA_HI);
-        padGrid.lightEx(7, 0, LaunchkeyMiniMk3ColorManager.LAUNCHKEY_COLOR_PINK_HI);
-
+        // Keypad
+        padGrid.lightEx(1, 0, LaunchkeyMiniMk3ColorManager.LAUNCHKEY_COLOR_BLUE_HI);
         padGrid.lightEx(0, 1, LaunchkeyMiniMk3ColorManager.LAUNCHKEY_COLOR_BLUE_HI);
-        padGrid.lightEx(1, 1, LaunchkeyMiniMk3ColorManager.LAUNCHKEY_COLOR_WHITE);
+        padGrid.lightEx(1, 1, LaunchkeyMiniMk3ColorManager.LAUNCHKEY_COLOR_BLUE_HI);
         padGrid.lightEx(2, 1, LaunchkeyMiniMk3ColorManager.LAUNCHKEY_COLOR_BLUE_HI);
-        padGrid.lightEx(3, 1, LaunchkeyMiniMk3ColorManager.LAUNCHKEY_COLOR_WHITE);
-        padGrid.lightEx(4, 1, LaunchkeyMiniMk3ColorManager.LAUNCHKEY_COLOR_BLUE_HI);
-        padGrid.lightEx(5, 1, LaunchkeyMiniMk3ColorManager.LAUNCHKEY_COLOR_WHITE);
-        padGrid.lightEx(6, 1, LaunchkeyMiniMk3ColorManager.LAUNCHKEY_COLOR_BLUE_HI);
-        padGrid.lightEx(7, 1, LaunchkeyMiniMk3ColorManager.LAUNCHKEY_COLOR_WHITE);
+
+        // Select
+        padGrid.lightEx(6, 1, LaunchkeyMiniMk3ColorManager.LAUNCHKEY_COLOR_RED_HI);
+        padGrid.lightEx(7, 1, LaunchkeyMiniMk3ColorManager.LAUNCHKEY_COLOR_BLUE_HI);
+
+        // Switch Tab
+        padGrid.lightEx(6, 0, LaunchkeyMiniMk3ColorManager.LAUNCHKEY_COLOR_YELLOW_HI);
+        padGrid.lightEx(7, 0, LaunchkeyMiniMk3ColorManager.LAUNCHKEY_COLOR_PINK_HI);
     }
 
 
@@ -80,15 +76,17 @@ public class BrowserView extends AbstractView<LaunchkeyMiniMk3ControlSurface, La
             return;
 
         switch (note) {
-            case 36 -> browser.previousContentType();
-            case 37 -> browser.nextContentType();
-            case 38 -> {
-                browser.selectPreviousFilterColumn();
-                browser.selectPreviousFilterColumn();
-            }
-            case 39 -> browser.selectNextFilterColumn();
-            case 40 -> browser.selectPreviousFilterItem(browser.getSelectedFilterColumn().getIndex());
-            case 41 -> browser.selectNextFilterItem(browser.getSelectedFilterColumn().getIndex());
+            // Bottom left arrow keypad
+            case 36 -> this.model.getApplication().arrowKeyLeft();
+            case 37 -> this.model.getApplication().arrowKeyDown();
+            case 38 -> this.model.getApplication().arrowKeyRight();
+            case 45 -> this.model.getApplication().arrowKeyUp();
+
+            // Top Right
+            case 50 -> browser.previousContentType();
+            case 51 -> browser.nextContentType();
+
+            // Bottom Right
             case 42 -> browser.selectPreviousResult();
             case 43 -> browser.selectNextResult();
         }
