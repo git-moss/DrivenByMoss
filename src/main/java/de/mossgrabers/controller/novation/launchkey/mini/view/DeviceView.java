@@ -78,6 +78,14 @@ public class DeviceView extends AbstractView<LaunchkeyMiniMk3ControlSurface, Lau
     @Override
     public void onGridNote (final int note, final int velocity)
     {
+        // note is 36 - 43
+        if (note >= 36 && note <= 43)
+        {
+            IDeviceBank mDeviceBank = this.model.getCursorDevice().getDeviceBank();
+            int deviceId = note - 36;
+            mDeviceBank.scrollTo(deviceId);
+            mDeviceBank.selectItemAtPosition(deviceId);
+        }
     }
 
 
