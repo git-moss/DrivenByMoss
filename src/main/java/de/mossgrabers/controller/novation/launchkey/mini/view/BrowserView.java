@@ -48,14 +48,23 @@ public class BrowserView extends AbstractView<LaunchkeyMiniMk3ControlSurface, La
             padGrid.lightEx(x, 1, LaunchkeyMiniMk3ColorManager.LAUNCHKEY_COLOR_BLACK);
         }
 
+        padGrid.lightEx(0, 0, LaunchkeyMiniMk3ColorManager.LAUNCHKEY_COLOR_RED_HI);
+        padGrid.lightEx(1, 0, LaunchkeyMiniMk3ColorManager.LAUNCHKEY_COLOR_AMBER_HI);
+        padGrid.lightEx(2, 0, LaunchkeyMiniMk3ColorManager.LAUNCHKEY_COLOR_YELLOW_HI);
+        padGrid.lightEx(3, 0, LaunchkeyMiniMk3ColorManager.LAUNCHKEY_COLOR_GREEN_HI);
+        padGrid.lightEx(4, 0, LaunchkeyMiniMk3ColorManager.LAUNCHKEY_COLOR_LIME_HI);
+        padGrid.lightEx(5, 0, LaunchkeyMiniMk3ColorManager.LAUNCHKEY_COLOR_BLUE_HI);
+        padGrid.lightEx(6, 0, LaunchkeyMiniMk3ColorManager.LAUNCHKEY_COLOR_MAGENTA_HI);
+        padGrid.lightEx(7, 0, LaunchkeyMiniMk3ColorManager.LAUNCHKEY_COLOR_PINK_HI);
+
         padGrid.lightEx(0, 1, LaunchkeyMiniMk3ColorManager.LAUNCHKEY_COLOR_RED_HI);
-        padGrid.lightEx(1, 1, LaunchkeyMiniMk3ColorManager.LAUNCHKEY_COLOR_AMBER_HI);
-        padGrid.lightEx(2, 1, LaunchkeyMiniMk3ColorManager.LAUNCHKEY_COLOR_YELLOW_HI);
+        padGrid.lightEx(1, 1, LaunchkeyMiniMk3ColorManager.LAUNCHKEY_COLOR_GREEN_HI);
+        padGrid.lightEx(2, 1, LaunchkeyMiniMk3ColorManager.LAUNCHKEY_COLOR_RED_HI);
         padGrid.lightEx(3, 1, LaunchkeyMiniMk3ColorManager.LAUNCHKEY_COLOR_GREEN_HI);
-        padGrid.lightEx(4, 1, LaunchkeyMiniMk3ColorManager.LAUNCHKEY_COLOR_LIME_HI);
-        padGrid.lightEx(5, 1, LaunchkeyMiniMk3ColorManager.LAUNCHKEY_COLOR_BLUE_HI);
-        padGrid.lightEx(6, 1, LaunchkeyMiniMk3ColorManager.LAUNCHKEY_COLOR_MAGENTA_HI);
-        padGrid.lightEx(7, 1, LaunchkeyMiniMk3ColorManager.LAUNCHKEY_COLOR_PINK_HI);
+        padGrid.lightEx(4, 1, LaunchkeyMiniMk3ColorManager.LAUNCHKEY_COLOR_RED_HI);
+        padGrid.lightEx(5, 1, LaunchkeyMiniMk3ColorManager.LAUNCHKEY_COLOR_GREEN_HI);
+        padGrid.lightEx(6, 1, LaunchkeyMiniMk3ColorManager.LAUNCHKEY_COLOR_RED_HI);
+        padGrid.lightEx(7, 1, LaunchkeyMiniMk3ColorManager.LAUNCHKEY_COLOR_GREEN_HI);
     }
 
 
@@ -63,8 +72,40 @@ public class BrowserView extends AbstractView<LaunchkeyMiniMk3ControlSurface, La
     @Override
     public void onGridNote (final int note, final int velocity)
     {
-        if (note >= 36 && note <= 43)
+        if (velocity != 0)
+            return;
+
+        final IBrowser browser = this.model.getBrowser ();
+        if (!browser.isActive ())
+            return;
+
+        switch (note)
         {
+            case 36:
+                browser.previousContentType();
+                break;
+            case 37:
+                browser.nextContentType();
+                break;
+            case 38:
+                browser.selectPreviousFilterColumn();
+                browser.selectPreviousFilterColumn();
+                break;
+            case 39:
+                browser.selectNextFilterColumn();
+                break;
+            case 40:
+                browser.selectPreviousFilterItem(browser.getSelectedFilterColumn().getIndex());
+                break;
+            case 41:
+                browser.selectNextFilterItem(browser.getSelectedFilterColumn().getIndex());
+                break;
+            case 42:
+                browser.selectPreviousResult();
+                break;
+            case 43:
+                browser.selectNextResult();
+                break;
         }
     }
 

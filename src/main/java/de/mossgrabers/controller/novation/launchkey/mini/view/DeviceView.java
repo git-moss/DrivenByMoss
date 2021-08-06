@@ -115,6 +115,9 @@ public class DeviceView extends AbstractView<LaunchkeyMiniMk3ControlSurface, Lau
     @Override
     public void onGridNote (final int note, final int velocity)
     {
+        if (velocity != 0)
+            return;
+
         if (note >= 44 && note <= 51)
         {
             // Top Row: note is 36 - 43
