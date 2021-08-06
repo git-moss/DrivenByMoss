@@ -39,6 +39,7 @@ public class DeviceView extends AbstractView<LaunchkeyMiniMk3ControlSurface, Lau
     public void drawGrid ()
     {
         final IPadGrid padGrid = this.surface.getPadGrid ();
+
         padGrid.lightEx(0, 0, LaunchkeyMiniMk3ColorManager.LAUNCHKEY_COLOR_RED_HI);
         padGrid.lightEx(1, 0, LaunchkeyMiniMk3ColorManager.LAUNCHKEY_COLOR_ORANGE);
         padGrid.lightEx(2, 0, LaunchkeyMiniMk3ColorManager.LAUNCHKEY_COLOR_YELLOW_HI);
@@ -55,7 +56,8 @@ public class DeviceView extends AbstractView<LaunchkeyMiniMk3ControlSurface, Lau
         ICursorDevice cd = this.model.getCursorDevice();
         final int deviceId = cd.getIndex();
 
-        for(int x = 0; x < deviceCount; x++)
+        // Draw White / Dim white circles for the Primary Device / Other Devices
+        for (int x = 0; x < deviceCount; x++)
         {
             if (deviceId == x)
             {
@@ -67,7 +69,8 @@ public class DeviceView extends AbstractView<LaunchkeyMiniMk3ControlSurface, Lau
             }
         }
 
-        for(int x = deviceCount; x < 8; x++)
+        // Dor the rest of the pads, turn them off
+        for (int x = deviceCount; x < 8; x++)
         {
             padGrid.lightEx(x, 1, LaunchkeyMiniMk3ColorManager.LAUNCHKEY_COLOR_BLACK);
         }
