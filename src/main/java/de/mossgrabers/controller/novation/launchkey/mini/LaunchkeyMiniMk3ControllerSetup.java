@@ -179,6 +179,7 @@ public class LaunchkeyMiniMk3ControllerSetup extends AbstractControllerSetup<Lau
         viewManager.register (Views.DRUM, new DeviceView (surface, this.model));
         viewManager.register (Views.PLAY, new UserPadView (surface, this.model));
         viewManager.register (Views.SHIFT, new DrumConfigView (surface, this.model));
+        viewManager.register (Views.BROWSER, new BrowserView (surface, this.model));
     }
 
 

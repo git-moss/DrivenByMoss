@@ -142,7 +142,7 @@ public class DeviceView extends AbstractView<LaunchkeyMiniMk3ControlSurface, Lau
         }
 
         if (buttonID == ButtonID.SCENE2) {
-            return LaunchkeyMiniMk3ColorManager.LAUNCHKEY_COLOR_BLUE;
+            return LaunchkeyMiniMk3ColorManager.LAUNCHKEY_COLOR_BLUE_HI;
         }
 
         return LaunchkeyMiniMk3ColorManager.LAUNCHKEY_COLOR_BLACK;
@@ -155,6 +155,7 @@ public class DeviceView extends AbstractView<LaunchkeyMiniMk3ControlSurface, Lau
         if (event == ButtonEvent.DOWN) {
             if (buttonID == ButtonID.SCENE1) {
                 ICursorDevice cd = this.model.getCursorDevice();
+                this.surface.getViewManager ().setActive (Views.BROWSER);
                 this.model.getBrowser().replace(cd);
             } else if (buttonID == ButtonID.SCENE2) {
                 ICursorDevice cd = this.model.getCursorDevice();
