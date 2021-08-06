@@ -6,11 +6,7 @@ package de.mossgrabers.controller.novation.launchkey.mini;
 
 import de.mossgrabers.controller.novation.launchkey.mini.controller.LaunchkeyMiniMk3ColorManager;
 import de.mossgrabers.controller.novation.launchkey.mini.controller.LaunchkeyMiniMk3ControlSurface;
-import de.mossgrabers.controller.novation.launchkey.mini.view.DrumConfigView;
-import de.mossgrabers.controller.novation.launchkey.mini.view.DrumView;
-import de.mossgrabers.controller.novation.launchkey.mini.view.PadModeSelectView;
-import de.mossgrabers.controller.novation.launchkey.mini.view.SessionView;
-import de.mossgrabers.controller.novation.launchkey.mini.view.UserPadView;
+import de.mossgrabers.controller.novation.launchkey.mini.view.*;
 import de.mossgrabers.framework.MVHelper;
 import de.mossgrabers.framework.command.core.NopCommand;
 import de.mossgrabers.framework.command.trigger.Direction;
@@ -178,7 +174,7 @@ public class LaunchkeyMiniMk3ControllerSetup extends AbstractControllerSetup<Lau
         final LaunchkeyMiniMk3ControlSurface surface = this.getSurface ();
         final ViewManager viewManager = surface.getViewManager ();
 
-        viewManager.register (Views.SESSION, new SessionView (surface, this.model));
+        viewManager.register (Views.SESSION, new DeviceView (surface, this.model));
         viewManager.register (Views.CONTROL, new PadModeSelectView (surface, this.model));
         viewManager.register (Views.DRUM, new DrumView (surface, this.model));
         viewManager.register (Views.PLAY, new UserPadView (surface, this.model));
@@ -210,7 +206,7 @@ public class LaunchkeyMiniMk3ControllerSetup extends AbstractControllerSetup<Lau
         this.addButton (ButtonID.SCENE2, "Scene 2", new ViewButtonCommand<> (ButtonID.SCENE2, surface), LaunchkeyMiniMk3ControlSurface.LAUNCHKEY_SCENE2, new FeatureGroupButtonColorSupplier (viewManager, ButtonID.SCENE2));
 
         // View selection with Pads in Shift mode
-        this.createViewButton (ButtonID.ROW2_1, OutputID.LED_RING1, "Session", Views.SESSION, LaunchkeyMiniMk3ControlSurface.PAD_MODE_SESSION);
+        this.createViewButton (ButtonID.ROW2_1, OutputID.LED_RING1, "Device", Views.SESSION, LaunchkeyMiniMk3ControlSurface.PAD_MODE_SESSION);
         this.createViewButton (ButtonID.ROW2_2, OutputID.LED_RING2, "Drum", Views.DRUM, LaunchkeyMiniMk3ControlSurface.PAD_MODE_DRUM);
         this.createViewButton (ButtonID.ROW2_3, OutputID.LED_RING3, "Custom", Views.PLAY, LaunchkeyMiniMk3ControlSurface.PAD_MODE_CUSTOM);
 
