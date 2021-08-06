@@ -11,6 +11,7 @@ import de.mossgrabers.framework.controller.ButtonID;
 import de.mossgrabers.framework.controller.grid.IPadGrid;
 import de.mossgrabers.framework.daw.IModel;
 import de.mossgrabers.framework.daw.data.ICursorDevice;
+import de.mossgrabers.framework.daw.data.IParameter;
 import de.mossgrabers.framework.daw.data.bank.IDeviceBank;
 import de.mossgrabers.framework.daw.data.bank.IParameterPageBank;
 import de.mossgrabers.framework.featuregroup.AbstractView;
@@ -128,11 +129,18 @@ public class DeviceView extends AbstractView<LaunchkeyMiniMk3ControlSurface, Lau
         }
     }
 
-
     /** {@inheritDoc} */
     @Override
     public int getButtonColor (final ButtonID buttonID)
     {
-        return LaunchkeyMiniMk3ColorManager.LAUNCHKEY_COLOR_GREEN_HI;
+        if (buttonID == ButtonID.SCENE1) {
+            return LaunchkeyMiniMk3ColorManager.LAUNCHKEY_COLOR_GREEN_HI;
+        }
+
+        if (buttonID == ButtonID.SCENE2) {
+            return LaunchkeyMiniMk3ColorManager.LAUNCHKEY_COLOR_RED_HI;
+        }
+
+        return LaunchkeyMiniMk3ColorManager.LAUNCHKEY_COLOR_BLACK;
     }
 }
