@@ -12,6 +12,7 @@ import de.mossgrabers.framework.controller.grid.IPadGrid;
 import de.mossgrabers.framework.daw.IModel;
 import de.mossgrabers.framework.daw.data.ICursorDevice;
 import de.mossgrabers.framework.daw.data.bank.IDeviceBank;
+import de.mossgrabers.framework.daw.data.bank.IParameterPageBank;
 import de.mossgrabers.framework.featuregroup.AbstractView;
 
 
@@ -38,17 +39,29 @@ public class DeviceView extends AbstractView<LaunchkeyMiniMk3ControlSurface, Lau
     @Override
     public void drawGrid ()
     {
+        final int[] brightColors = {
+            LaunchkeyMiniMk3ColorManager.LAUNCHKEY_COLOR_RED_HI,
+            LaunchkeyMiniMk3ColorManager.LAUNCHKEY_COLOR_AMBER_HI,
+            LaunchkeyMiniMk3ColorManager.LAUNCHKEY_COLOR_YELLOW_HI,
+            LaunchkeyMiniMk3ColorManager.LAUNCHKEY_COLOR_GREEN_HI,
+            LaunchkeyMiniMk3ColorManager.LAUNCHKEY_COLOR_LIME_HI,
+            LaunchkeyMiniMk3ColorManager.LAUNCHKEY_COLOR_BLUE_HI,
+            LaunchkeyMiniMk3ColorManager.LAUNCHKEY_COLOR_MAGENTA_HI,
+            LaunchkeyMiniMk3ColorManager.LAUNCHKEY_COLOR_PINK_HI
+        };
+
+        final int[] dimColors = {
+            LaunchkeyMiniMk3ColorManager.LAUNCHKEY_COLOR_RED_LO,
+            LaunchkeyMiniMk3ColorManager.LAUNCHKEY_COLOR_AMBER_LO,
+            LaunchkeyMiniMk3ColorManager.LAUNCHKEY_COLOR_YELLOW_LO,
+            LaunchkeyMiniMk3ColorManager.LAUNCHKEY_COLOR_GREEN_LO,
+            LaunchkeyMiniMk3ColorManager.LAUNCHKEY_COLOR_LIME_LO,
+            LaunchkeyMiniMk3ColorManager.LAUNCHKEY_COLOR_BLUE_LO,
+            LaunchkeyMiniMk3ColorManager.LAUNCHKEY_COLOR_MAGENTA_LO,
+            LaunchkeyMiniMk3ColorManager.LAUNCHKEY_COLOR_PINK_LO
+        };
+
         final IPadGrid padGrid = this.surface.getPadGrid ();
-
-        padGrid.lightEx(0, 0, LaunchkeyMiniMk3ColorManager.LAUNCHKEY_COLOR_RED_HI);
-        padGrid.lightEx(1, 0, LaunchkeyMiniMk3ColorManager.LAUNCHKEY_COLOR_ORANGE);
-        padGrid.lightEx(2, 0, LaunchkeyMiniMk3ColorManager.LAUNCHKEY_COLOR_YELLOW_HI);
-        padGrid.lightEx(3, 0, LaunchkeyMiniMk3ColorManager.LAUNCHKEY_COLOR_GREEN_HI);
-        padGrid.lightEx(4, 0, LaunchkeyMiniMk3ColorManager.LAUNCHKEY_COLOR_LIME_HI);
-        padGrid.lightEx(5, 0, LaunchkeyMiniMk3ColorManager.LAUNCHKEY_COLOR_BLUE_HI);
-        padGrid.lightEx(6, 0, LaunchkeyMiniMk3ColorManager.LAUNCHKEY_COLOR_MAGENTA_HI);
-        padGrid.lightEx(7, 0, LaunchkeyMiniMk3ColorManager.LAUNCHKEY_COLOR_PINK_HI);
-
 
         IDeviceBank mDeviceBank = this.model.getCursorDevice().getDeviceBank();
         final int deviceCount = mDeviceBank.getItemCount();
@@ -56,7 +69,23 @@ public class DeviceView extends AbstractView<LaunchkeyMiniMk3ControlSurface, Lau
         ICursorDevice cd = this.model.getCursorDevice();
         final int deviceId = cd.getIndex();
 
-        // Draw White / Dim white circles for the Primary Device / Other Devices
+        IParameterPageBank parameterPageBank = cd.getParameterPageBank();
+        final int parameterPageId = parameterPageBank.getSelectedItemIndex();
+
+        // Draw Rainbow pads on the top row for selecting the parameter page
+        for (int x = 0; x < 8; x++)
+        {
+            if (parameterPageId == x)
+            {
+                padGrid.lightEx(x, 0, brightColors[x]);
+            }
+            else
+            {
+                padGrid.lightEx(x, 0, dimColors[x]);
+            }
+        }
+
+        // Draw White / Dim white pads for the Primary Device / Other Devices on the bottom row
         for (int x = 0; x < deviceCount; x++)
         {
             if (deviceId == x)
@@ -69,7 +98,7 @@ public class DeviceView extends AbstractView<LaunchkeyMiniMk3ControlSurface, Lau
             }
         }
 
-        // Dor the rest of the pads, turn them off
+        // For the rest of the bottom row pads, turn them off
         for (int x = deviceCount; x < 8; x++)
         {
             padGrid.lightEx(x, 1, LaunchkeyMiniMk3ColorManager.LAUNCHKEY_COLOR_BLACK);
