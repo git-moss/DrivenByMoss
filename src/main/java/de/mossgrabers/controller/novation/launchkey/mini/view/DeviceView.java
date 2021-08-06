@@ -120,15 +120,16 @@ public class DeviceView extends AbstractView<LaunchkeyMiniMk3ControlSurface, Lau
 
         if (note >= 44 && note <= 51)
         {
-            // Top Row: note is 36 - 43
+            // Top Row (Param Page): note is 36 - 43
             ICursorDevice cd = this.model.getCursorDevice();
             IParameterPageBank parameterPageBank = cd.getParameterPageBank();
             final int pageBankId = note - 44;
             parameterPageBank.scrollTo(pageBankId);
+            this.mvHelper.notifySelectedParameterPage ();
         }
         else if (note >= 36 && note <= 43)
         {
-            // Bottom Row: note is 36 - 43
+            // Bottom Row (Device): note is 36 - 43
             IDeviceBank mDeviceBank = this.model.getCursorDevice().getDeviceBank();
             int deviceId = note - 36;
             mDeviceBank.scrollTo(deviceId);

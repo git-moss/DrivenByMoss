@@ -400,13 +400,16 @@ public class LaunchkeyMiniMk3ControllerSetup extends AbstractControllerSetup<Lau
                 break;
 
             case DEVICE_PARAMS:
-                final ICursorDevice cursorDevice = this.model.getCursorDevice ();
-                final IParameterBank parameterBank = cursorDevice.getParameterBank ();
+                // Insert device before or after current device
                 if (value > 0)
-                    parameterBank.selectNextItem ();
-                else
-                    parameterBank.selectPreviousItem ();
-                this.mvHelper.notifySelectedParameterPage ();
+                {
+                    this.getSurface().getViewManager().setActive(Views.BROWSER);
+                    this.model.getBrowser().insertAfterCursorDevice();
+                }
+                else {
+                    this.getSurface().getViewManager ().setActive (Views.BROWSER);
+                    this.model.getBrowser().insertBeforeCursorDevice();
+                }
                 break;
 
             default:
