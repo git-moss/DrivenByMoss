@@ -88,7 +88,7 @@ public class MidiValue
     /**
      * Get the value. If this is a high-res value it is unmodified. If it is low-res it is
      * up-scaled.
-     * 
+     *
      * @return The up-scaled value
      */
     public int getUpscaled ()

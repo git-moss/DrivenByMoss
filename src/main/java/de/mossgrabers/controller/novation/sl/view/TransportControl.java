@@ -21,8 +21,8 @@ import de.mossgrabers.framework.utils.ButtonEvent;
  */
 public class TransportControl
 {
-    private SLControlSurface                                     surface;
-    private IModel                                               model;
+    private final SLControlSurface                               surface;
+    private final IModel                                         model;
     private boolean                                              isRewinding;
     private boolean                                              isForwarding;
     private final PlayCommand<SLControlSurface, SLConfiguration> playCommand;

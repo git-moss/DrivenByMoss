@@ -64,10 +64,7 @@ public class FootswitchCommand<S extends IControlSurface<C>, C extends Configura
     @Override
     public void execute (final ButtonEvent event, final int velocity)
     {
-        if (this.handleViewCommand (event))
-            return;
-
-        if (event != ButtonEvent.DOWN)
+        if (this.handleViewCommand (event) || event != ButtonEvent.DOWN)
             return;
 
         switch (this.getSetting ())

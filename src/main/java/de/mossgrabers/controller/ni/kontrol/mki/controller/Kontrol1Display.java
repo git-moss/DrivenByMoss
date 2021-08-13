@@ -18,8 +18,8 @@ import de.mossgrabers.framework.utils.StringUtils;
  */
 public class Kontrol1Display extends AbstractTextDisplay
 {
-    private int               maxParameterValue;
-    private Kontrol1UsbDevice usbDevice;
+    private final int               maxParameterValue;
+    private final Kontrol1UsbDevice usbDevice;
 
 
     /**

@@ -12,6 +12,7 @@ import de.mossgrabers.framework.controller.ButtonID;
 import de.mossgrabers.framework.controller.grid.IPadGrid;
 import de.mossgrabers.framework.daw.IModel;
 import de.mossgrabers.framework.daw.INoteClip;
+import de.mossgrabers.framework.daw.IStepInfo;
 import de.mossgrabers.framework.daw.StepState;
 import de.mossgrabers.framework.daw.data.IDrumDevice;
 import de.mossgrabers.framework.featuregroup.ModeManager;
@@ -236,6 +237,15 @@ public class DrumView extends AbstractDrumView<MaschineControlSurface, MaschineC
     @Override
     protected boolean handleSequencerAreaButtonCombinations (final INoteClip clip, final int channel, final int step, final int note, final int velocity)
     {
+        if (this.isButtonCombination (ButtonID.MUTE))
+        {
+            final IStepInfo stepInfo = clip.getStep (channel, step, note);
+            final StepState isSet = stepInfo.getState ();
+            if (isSet == StepState.START)
+                this.model.getCursorClip ().updateMuteState (channel, step, note, !stepInfo.isMuted ());
+            return true;
+        }
+
         final ModeManager modeManager = this.surface.getModeManager ();
         if (modeManager.isActive (Modes.NOTE))
         {

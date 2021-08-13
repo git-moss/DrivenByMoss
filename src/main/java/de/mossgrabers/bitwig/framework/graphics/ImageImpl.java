@@ -16,7 +16,7 @@ import com.bitwig.extension.api.graphics.Image;
  */
 public class ImageImpl implements IImage
 {
-    private Image image;
+    private final Image image;
 
 
     /**

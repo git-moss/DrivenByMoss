@@ -391,7 +391,7 @@ public class EditNoteMode extends BaseMode
 
         final IStepInfo stepInfo = this.clip == null ? null : this.clip.getStep (this.channel, this.step, this.note);
 
-        d.setCell (0, 0, "Note").setCell (1, 0, stepInfo == null ? "-" : (Integer.toString (this.step + 1) + ":" + Scales.formatNoteAndOctave (this.note, -3)));
+        d.setCell (0, 0, "Note").setCell (1, 0, stepInfo == null ? "-" : Integer.toString (this.step + 1) + ":" + Scales.formatNoteAndOctave (this.note, -3));
 
         d.setCell (0, 1, this.mark ("Length", DURATION + this.selectedPage * 10));
         if (stepInfo == null)

@@ -158,13 +158,7 @@ public abstract class AbstractSessionView<S extends IControlSurface<C>, C extend
         if (this.doSelectClipOnLaunch ())
             slot.select ();
 
-        if (!track.isRecArm ())
-        {
-            slot.launch ();
-            return;
-        }
-
-        if (slot.hasContent ())
+        if (!track.isRecArm () || slot.hasContent ())
         {
             slot.launch ();
             return;
@@ -447,13 +441,13 @@ public abstract class AbstractSessionView<S extends IControlSurface<C>, C extend
             return this.clipColorIsRecordingQueued;
 
         if (slot.isRecording ())
-            return insertClipColor (cm, colorIndex, this.clipColorIsRecording);
+            return this.insertClipColor (cm, colorIndex, this.clipColorIsRecording);
 
         if (slot.isPlayingQueued ())
-            return insertClipColor (cm, colorIndex, this.clipColorIsPlayingQueued);
+            return this.insertClipColor (cm, colorIndex, this.clipColorIsPlayingQueued);
 
         if (slot.isPlaying ())
-            return insertClipColor (cm, colorIndex, this.clipColorIsPlaying);
+            return this.insertClipColor (cm, colorIndex, this.clipColorIsPlaying);
 
         if (slot.hasContent ())
         {
@@ -480,7 +474,7 @@ public abstract class AbstractSessionView<S extends IControlSurface<C>, C extend
     /**
      * If blinking is supported and clip colors should be used the given light info is updated with
      * the clips' color.
-     * 
+     *
      * @param colorManager The color manager
      * @param colorIndex The index of the clip color
      * @param lightInfo The light info

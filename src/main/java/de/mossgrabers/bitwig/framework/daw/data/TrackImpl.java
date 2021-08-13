@@ -227,7 +227,7 @@ public class TrackImpl extends ChannelImpl implements ITrack
     @Override
     public void toggleMonitor ()
     {
-        this.track.monitorMode ().set (isMonitor () ? MONITOR_MODE_OFF : MONITOR_MODE_ON);
+        this.track.monitorMode ().set (this.isMonitor () ? MONITOR_MODE_OFF : MONITOR_MODE_ON);
     }
 
 

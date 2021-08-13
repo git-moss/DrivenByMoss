@@ -136,7 +136,7 @@ public class DrumView extends AbstractDrumView<APCControlSurface, APCConfigurati
 
     /** {@inheritDoc} */
     @Override
-    protected boolean handleSequencerAreaButtonCombinations (INoteClip clip, int channel, int step, int note, int velocity)
+    protected boolean handleSequencerAreaButtonCombinations (final INoteClip clip, final int channel, final int step, final int note, final int velocity)
     {
         final boolean isUpPressed = this.surface.isPressed (ButtonID.ARROW_UP);
         if (isUpPressed || this.surface.isPressed (ButtonID.ARROW_DOWN))

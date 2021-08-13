@@ -16,7 +16,7 @@ import de.mossgrabers.framework.daw.midi.IMidiOutput;
  */
 public class MCUAssignmentDisplay extends AbstractTextDisplay
 {
-    private int [] assignmentBuffer = new int [2];
+    private final int [] assignmentBuffer = new int [2];
 
 
     /**

@@ -351,7 +351,7 @@ public abstract class AbstractSequencerView<S extends IControlSurface<C>, C exte
 
     /**
      * Show edit mode and set or add note.
-     * 
+     *
      * @param clip The MIDI clip
      * @param channel The MIDI channel of the note
      * @param step The step of the note
@@ -367,13 +367,14 @@ public abstract class AbstractSequencerView<S extends IControlSurface<C>, C exte
 
         final ModeManager modeManager = this.surface.getModeManager ();
         final IMode mode = modeManager.get (Modes.NOTE);
-        if (!(mode instanceof INoteMode noteMode))
-            return;
-        if (addNote)
-            noteMode.addNote (clip, channel, step, mappedNote);
-        else
-            noteMode.setNote (clip, channel, step, mappedNote);
-        modeManager.setActive (Modes.NOTE);
+        if (mode instanceof final INoteMode noteMode)
+        {
+            if (addNote)
+                noteMode.addNote (clip, channel, step, mappedNote);
+            else
+                noteMode.setNote (clip, channel, step, mappedNote);
+            modeManager.setActive (Modes.NOTE);
+        }
     }
 
 
@@ -384,7 +385,7 @@ public abstract class AbstractSequencerView<S extends IControlSurface<C>, C exte
     {
         final ModeManager modeManager = this.surface.getModeManager ();
         final IMode mode = modeManager.get (Modes.NOTE);
-        if (mode instanceof INoteMode noteMode)
+        if (mode instanceof final INoteMode noteMode)
             noteMode.clearNotes ();
     }
 }

@@ -19,7 +19,7 @@ import de.mossgrabers.framework.mode.Modes;
  */
 public class FaderCommand extends AbstractContinuousCommand<SLControlSurface, SLConfiguration>
 {
-    private int index;
+    private final int index;
 
 
     /**

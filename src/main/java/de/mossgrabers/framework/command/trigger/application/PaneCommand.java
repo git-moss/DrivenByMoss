@@ -36,7 +36,7 @@ public class PaneCommand<S extends IControlSurface<C>, C extends Configuration> 
     }
 
 
-    private Panels panel;
+    private final Panels panel;
 
 
     /**

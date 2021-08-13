@@ -18,7 +18,7 @@ import com.bitwig.extension.controller.api.ControllerHost;
  */
 public class GenericControllerExtension extends ControllerExtension
 {
-    private IControllerSetup<?, ?> setup;
+    private final IControllerSetup<?, ?> setup;
 
 
     /**

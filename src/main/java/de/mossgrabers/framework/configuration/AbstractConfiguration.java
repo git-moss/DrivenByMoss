@@ -343,9 +343,9 @@ public abstract class AbstractConfiguration implements Configuration
     private IEnumSetting                              noteRepeatModeSetting;
     private IEnumSetting                              noteRepeatOctaveSetting;
     private IEnumSetting                              midiEditChannelSetting;
-    private List<IEnumSetting>                        instrumentSettings          = new ArrayList<> (7);
-    private List<IEnumSetting>                        audioSettings               = new ArrayList<> (3);
-    private List<IEnumSetting>                        effectSettings              = new ArrayList<> (3);
+    private final List<IEnumSetting>                  instrumentSettings          = new ArrayList<> (7);
+    private final List<IEnumSetting>                  audioSettings               = new ArrayList<> (3);
+    private final List<IEnumSetting>                  effectSettings              = new ArrayList<> (3);
 
     private String []                                 effectNames;
     private String []                                 instrumentNames;
@@ -376,7 +376,7 @@ public abstract class AbstractConfiguration implements Configuration
     private boolean                                   turnOffEmptyDrumPads        = false;
     private int                                       actionForRecArmedPad        = 0;
     private int                                       footswitch2                 = FOOTSWITCH_2_NEW_BUTTON;
-    private boolean []                                browserDisplayFilter        =
+    private final boolean []                          browserDisplayFilter        =
     {
         true,
         true,

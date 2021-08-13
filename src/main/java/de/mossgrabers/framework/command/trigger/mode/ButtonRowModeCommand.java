@@ -22,8 +22,8 @@ import de.mossgrabers.framework.utils.ButtonEvent;
  */
 public class ButtonRowModeCommand<S extends IControlSurface<C>, C extends Configuration> extends AbstractTriggerCommand<S, C>
 {
-    private int index;
-    private int row;
+    private final int index;
+    private final int row;
 
 
     /**

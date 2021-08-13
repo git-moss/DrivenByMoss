@@ -147,7 +147,7 @@ public class DrumView extends AbstractDrumView<PushControlSurface, PushConfigura
 
     /** {@inheritDoc} */
     @Override
-    protected boolean handleSequencerAreaButtonCombinations (INoteClip clip, int channel, int step, int note, int velocity)
+    protected boolean handleSequencerAreaButtonCombinations (final INoteClip clip, final int channel, final int step, final int note, final int velocity)
     {
         final boolean isSelectPressed = this.surface.isSelectPressed ();
 

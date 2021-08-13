@@ -20,7 +20,7 @@ import de.mossgrabers.framework.daw.IModel;
  */
 public class TemporaryNewCommand<S extends IControlSurface<C>, C extends Configuration> extends NewCommand<S, C>
 {
-    private int clipLength;
+    private final int clipLength;
 
 
     /**

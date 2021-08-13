@@ -41,7 +41,7 @@ import com.bitwig.extension.controller.api.RelativeHardwareValueMatcher;
  */
 public class MidiInputImpl implements IMidiInput
 {
-    private MidiIn        port;
+    private final MidiIn  port;
     private NoteInputImpl defaultNoteInput;
 
 

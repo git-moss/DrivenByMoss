@@ -71,7 +71,7 @@ public class Drum8View extends AbstractDrum8View<PushControlSurface, PushConfigu
 
     /** {@inheritDoc} */
     @Override
-    protected boolean handleNoteAreaButtonCombinations (INoteClip clip, int channel, int step, int row, int note, int velocity, int accentVelocity)
+    protected boolean handleNoteAreaButtonCombinations (final INoteClip clip, final int channel, final int step, final int row, final int note, final int velocity, final int accentVelocity)
     {
         final boolean isSelectPressed = this.surface.isSelectPressed ();
 

@@ -22,8 +22,8 @@ public class HUISegmentDisplay extends AbstractTextDisplay
 {
     private static final String SYSEX_HDR          = "F0 00 00 66 05 00 11 ";
 
-    private int []              transportBuffer    = new int [8];
-    private int []              oldtransportBuffer = new int [8];
+    private final int []        transportBuffer    = new int [8];
+    private final int []        oldtransportBuffer = new int [8];
 
 
     /**

@@ -17,7 +17,7 @@ import com.bitwig.extension.controller.api.Mixer;
  */
 public class MixerImpl implements IMixer
 {
-    private Mixer mixer;
+    private final Mixer mixer;
 
 
     /**

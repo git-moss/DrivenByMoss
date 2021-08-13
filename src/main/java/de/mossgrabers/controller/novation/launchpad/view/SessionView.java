@@ -263,10 +263,7 @@ public class SessionView extends AbstractSessionView<LaunchpadControlSurface, La
     @Override
     protected boolean isButtonCombination (final ButtonID buttonID)
     {
-        if (super.isButtonCombination (buttonID))
-            return true;
-
-        if (buttonID == ButtonID.DELETE && this.configuration.isDeleteModeActive ())
+        if (super.isButtonCombination (buttonID) || buttonID == ButtonID.DELETE && this.configuration.isDeleteModeActive ())
             return true;
 
         return buttonID == ButtonID.DUPLICATE && this.configuration.isDuplicateModeActive ();

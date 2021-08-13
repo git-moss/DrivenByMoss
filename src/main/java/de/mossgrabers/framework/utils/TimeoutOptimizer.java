@@ -45,7 +45,7 @@ public class TimeoutOptimizer
      */
     private void measure ()
     {
-        long endValue = System.currentTimeMillis ();
+        final long endValue = System.currentTimeMillis ();
         this.diff += endValue - this.startValue;
 
         if (this.iterations < RUNS)

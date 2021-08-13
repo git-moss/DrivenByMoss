@@ -84,10 +84,7 @@ public class NoteMode extends AbstractMode<FireControlSurface, FireConfiguration
     @Override
     public void onKnobTouch (final int index, final boolean isTouched)
     {
-        if (this.clip == null)
-            return;
-
-        if (this.isKnobTouched[index] == isTouched)
+        if (this.clip == null || this.isKnobTouched[index] == isTouched)
             return;
 
         this.isKnobTouched[index] = isTouched;
@@ -171,7 +168,7 @@ public class NoteMode extends AbstractMode<FireControlSurface, FireConfiguration
     private void preventNoteDeletion ()
     {
         final IView activeView = this.surface.getViewManager ().getActive ();
-        if (activeView instanceof AbstractSequencerView<?, ?> sequencerView)
+        if (activeView instanceof final AbstractSequencerView<?, ?> sequencerView)
             sequencerView.setNoteEdited ();
     }
 

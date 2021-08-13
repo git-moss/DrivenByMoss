@@ -26,8 +26,8 @@ public class UsbDeviceImpl implements IUsbDevice
 {
     private static final Pattern PATTERN = Pattern.compile ("idVendor == 0x(\\p{XDigit}+) && idProduct == 0x(\\p{XDigit}+)");
 
-    private UsbDevice            usbDevice;
-    private IHost                host;
+    private final UsbDevice      usbDevice;
+    private final IHost          host;
 
 
     /**

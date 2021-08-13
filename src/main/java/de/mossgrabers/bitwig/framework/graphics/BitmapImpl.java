@@ -21,7 +21,7 @@ import java.nio.ByteBuffer;
  */
 public class BitmapImpl implements IBitmap
 {
-    private Bitmap bitmap;
+    private final Bitmap bitmap;
 
 
     /**

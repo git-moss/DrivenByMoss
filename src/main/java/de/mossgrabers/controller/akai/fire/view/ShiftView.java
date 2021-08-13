@@ -378,7 +378,7 @@ public class ShiftView extends AbstractView<FireControlSurface, FireConfiguratio
         // Relay to the actually active view
         final ViewManager viewManager = this.surface.getViewManager ();
         final IView previousView = viewManager.get (viewManager.getActiveIDIgnoreTemporary ());
-        if (previousView instanceof IFireView fireView)
+        if (previousView instanceof final IFireView fireView)
             fireView.onSelectKnobValue (value);
     }
 
@@ -390,6 +390,6 @@ public class ShiftView extends AbstractView<FireControlSurface, FireConfiguratio
         // Relay to the actually active view
         final ViewManager viewManager = this.surface.getViewManager ();
         final IView previousView = viewManager.get (viewManager.getActiveIDIgnoreTemporary ());
-        return previousView instanceof IFireView fireView ? fireView.getSoloButtonColor (index) : 0;
+        return previousView instanceof final IFireView fireView ? fireView.getSoloButtonColor (index) : 0;
     }
 }

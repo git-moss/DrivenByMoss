@@ -30,13 +30,13 @@ import com.bitwig.extension.controller.api.HardwareBindable;
  */
 public abstract class AbstractHwAbsoluteControl<T extends AbsoluteHardwareControl> extends AbstractHwContinuousControl implements IHwAbsoluteControl
 {
-    protected final ControllerHost         controllerHost;
-    protected final T                      hardwareControl;
+    protected final ControllerHost               controllerHost;
+    protected final T                            hardwareControl;
 
-    private AbsoluteHardwarControlBindable defaultAction;
-    private AbsoluteHardwarControlBindable defaultSimpleParameterAction;
-    private AbsoluteHardwareControlBinding binding;
-    private IParameter                     parameter;
+    private final AbsoluteHardwarControlBindable defaultAction;
+    private final AbsoluteHardwarControlBindable defaultSimpleParameterAction;
+    private AbsoluteHardwareControlBinding       binding;
+    private IParameter                           parameter;
 
 
     /**
@@ -105,7 +105,7 @@ public abstract class AbstractHwAbsoluteControl<T extends AbsoluteHardwareContro
             this.binding.removeBinding ();
 
         // Remove the previously bound Bitwig parameter
-        if (this.parameter instanceof ParameterImpl param)
+        if (this.parameter instanceof final ParameterImpl param)
             HwUtils.enableObservers (false, this.hardwareControl, param);
 
         HardwareBindable target = null;
@@ -117,7 +117,7 @@ public abstract class AbstractHwAbsoluteControl<T extends AbsoluteHardwareContro
         else
         {
             // Is parameter a real Bitwig parameter? If yes, map it.
-            if (parameter instanceof ParameterImpl param)
+            if (parameter instanceof final ParameterImpl param)
             {
                 target = param.getParameter ();
                 HwUtils.enableObservers (true, this.hardwareControl, param);

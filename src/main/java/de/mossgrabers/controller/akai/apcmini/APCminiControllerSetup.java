@@ -228,7 +228,7 @@ public class APCminiControllerSetup extends AbstractControllerSetup<APCminiContr
 
             this.addButton (ButtonID.get (ButtonID.ROW_SELECT_1, i), ROW_NAMES[i], new TrackSelectCommand (i, this.model, surface), APCminiControlSurface.APC_BUTTON_TRACK_BUTTON1 + i, () -> {
                 final IView view = viewManager.getActive ();
-                if (view instanceof APCminiView miniView)
+                if (view instanceof final APCminiView miniView)
                 {
                     final int trackButtonColor = miniView.getTrackButtonColor (index);
                     // Track buttons are only red!

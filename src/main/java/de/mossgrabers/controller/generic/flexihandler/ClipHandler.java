@@ -163,10 +163,7 @@ public class ClipHandler extends AbstractHandler
 
     private void scrollClips (final KnobMode knobMode, final MidiValue value)
     {
-        if (isAbsolute (knobMode))
-            return;
-
-        if (!this.increaseKnobMovement ())
+        if (isAbsolute (knobMode) || !this.increaseKnobMovement ())
             return;
 
         if (this.isIncrease (knobMode, value))

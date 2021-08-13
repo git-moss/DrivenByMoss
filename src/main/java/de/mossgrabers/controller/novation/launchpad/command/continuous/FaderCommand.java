@@ -19,7 +19,7 @@ import de.mossgrabers.framework.featuregroup.IView;
  */
 public class FaderCommand extends AbstractContinuousCommand<LaunchpadControlSurface, LaunchpadConfiguration>
 {
-    private int index;
+    private final int index;
 
 
     /**
@@ -41,7 +41,7 @@ public class FaderCommand extends AbstractContinuousCommand<LaunchpadControlSurf
     public void execute (final int value)
     {
         final IView view = this.surface.getViewManager ().getActive ();
-        if (view instanceof AbstractFaderView faderView)
+        if (view instanceof final AbstractFaderView faderView)
             faderView.onValueKnob (this.index, value);
     }
 }

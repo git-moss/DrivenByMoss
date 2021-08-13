@@ -38,10 +38,7 @@ public class MCUMoveTrackBankCommand extends MoveTrackBankCommand<MCUControlSurf
     @Override
     public void executeShifted (final ButtonEvent event)
     {
-        if (event != ButtonEvent.DOWN)
-            return;
-
-        if (!this.surface.getConfiguration ().shouldPinFXTracksToLastController ())
+        if (event != ButtonEvent.DOWN || !this.surface.getConfiguration ().shouldPinFXTracksToLastController ())
             return;
 
         final ITrackBank effectTrackBank = this.model.getEffectTrackBank ();

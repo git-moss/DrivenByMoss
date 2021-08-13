@@ -99,9 +99,7 @@ public class PlayView extends AbstractPlayView<LaunchpadControlSurface, Launchpa
     @Override
     public void onButton (final ButtonID buttonID, final ButtonEvent event, final int velocity)
     {
-        if (!ButtonID.isSceneButton (buttonID) || event != ButtonEvent.DOWN)
-            return;
-        if (!this.model.canSelectedTrackHoldNotes ())
+        if (!ButtonID.isSceneButton (buttonID) || event != ButtonEvent.DOWN || !this.model.canSelectedTrackHoldNotes ())
             return;
 
         final ITextDisplay display = this.surface.getTextDisplay ();

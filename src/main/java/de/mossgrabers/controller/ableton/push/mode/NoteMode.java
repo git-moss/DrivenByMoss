@@ -61,10 +61,10 @@ public class NoteMode extends BaseMode<IItem> implements INoteMode
     }
 
 
-    private final IHost    host;
-    private Page           page  = Page.NOTE;
-    private INoteClip      clip  = null;
-    private List<GridStep> notes = new ArrayList<> ();
+    private final IHost          host;
+    private Page                 page  = Page.NOTE;
+    private INoteClip            clip  = null;
+    private final List<GridStep> notes = new ArrayList<> ();
 
 
     /**
@@ -957,11 +957,9 @@ public class NoteMode extends BaseMode<IItem> implements INoteMode
                         break;
                 }
 
-                if ((index == 0) || (index == 1 && this.host.supports (Capability.NOTE_EDIT_EXPRESSIONS)))
+                if (index == 0 || index == 1 && this.host.supports (Capability.NOTE_EDIT_EXPRESSIONS))
                     return this.colorManager.getColorIndex (PushColorManager.PUSH_GREY_LO_2);
-                if (index == 2 && this.host.supports (Capability.NOTE_EDIT_REPEAT))
-                    return this.colorManager.getColorIndex (PushColorManager.PUSH_GREY_LO_2);
-                if (index == 7 && this.host.supports (Capability.NOTE_EDIT_RECCURRENCE))
+                if (index == 2 && this.host.supports (Capability.NOTE_EDIT_REPEAT) || index == 7 && this.host.supports (Capability.NOTE_EDIT_RECCURRENCE))
                     return this.colorManager.getColorIndex (PushColorManager.PUSH_GREY_LO_2);
 
                 return this.colorManager.getColorIndex (PushColorManager.PUSH_BLACK_2);

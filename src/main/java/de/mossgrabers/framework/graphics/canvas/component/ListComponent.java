@@ -86,9 +86,7 @@ public class ListComponent implements IComponent
     {
         if (this == obj)
             return true;
-        if (obj == null)
-            return false;
-        if (this.getClass () != obj.getClass ())
+        if (obj == null || this.getClass () != obj.getClass ())
             return false;
         final ListComponent other = (ListComponent) obj;
         return this.items.equals (other.items);

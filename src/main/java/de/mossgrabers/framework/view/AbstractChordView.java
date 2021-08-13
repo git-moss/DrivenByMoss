@@ -85,8 +85,12 @@ public class AbstractChordView<S extends IControlSurface<C>, C extends Configura
         final int [] chord = this.scales.getChord (note, CHORD_INTERVALS[row]);
         // Send additional chord notes to the DAW
         final IMidiInput input = this.surface.getMidiInput ();
-        final int channel = this.surface.getConfiguration ().getMidiEditChannel ();
+        final C config = this.surface.getConfiguration ();
+        final int channel = config.getMidiEditChannel ();
+        int vel = 0;
+        if (velocity > 0)
+            vel = config.isAccentActive () ? config.getFixedAccentValue () : velocity;
         for (final int element: chord)
-            input.sendRawMidiEvent (0x90 + channel, element, velocity);
+            input.sendRawMidiEvent (0x90 + channel, element, vel);
     }
 }

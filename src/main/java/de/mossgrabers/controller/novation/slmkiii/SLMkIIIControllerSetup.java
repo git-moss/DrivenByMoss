@@ -280,9 +280,9 @@ public class SLMkIIIControllerSetup extends AbstractControllerSetup<SLMkIIIContr
                 surface.toggleMuteSolo ();
         }, 15, SLMkIIIControlSurface.MKIII_BUTTONS_DOWN, () -> !surface.isMuteSolo () ? SLMkIIIColorManager.SLMKIII_RED : SLMkIIIColorManager.SLMKIII_RED_HALF);
 
-        final ModeCursorCommand<SLMkIIIControlSurface, SLMkIIIConfiguration> cursorLeftCommand = new ModeCursorCommand<> (Direction.LEFT, this.model, surface, true, () -> false);
+        final ModeCursorCommand<SLMkIIIControlSurface, SLMkIIIConfiguration> cursorLeftCommand = new ModeCursorCommand<> (Direction.LEFT, this.model, surface, true);
         this.addButton (ButtonID.ARROW_LEFT, "Left", cursorLeftCommand, 15, SLMkIIIControlSurface.MKIII_TRACK_LEFT, () -> getCursorColor (modeManager, cursorLeftCommand));
-        final ModeCursorCommand<SLMkIIIControlSurface, SLMkIIIConfiguration> cursorRightCommand = new ModeCursorCommand<> (Direction.RIGHT, this.model, surface, true, () -> false);
+        final ModeCursorCommand<SLMkIIIControlSurface, SLMkIIIConfiguration> cursorRightCommand = new ModeCursorCommand<> (Direction.RIGHT, this.model, surface, true);
         this.addButton (ButtonID.ARROW_RIGHT, "Right", cursorRightCommand, 15, SLMkIIIControlSurface.MKIII_TRACK_RIGHT, () -> getCursorColor (modeManager, cursorRightCommand));
 
         for (int i = 0; i < 2; i++)

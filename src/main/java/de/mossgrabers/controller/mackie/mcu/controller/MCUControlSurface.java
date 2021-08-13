@@ -187,7 +187,7 @@ public class MCUControlSurface extends AbstractControlSurface<MCUConfiguration>
     public static final int               KNOB_LED_MODE_SPREAD     = 3;
 
     private int                           activeVuMode             = VUMODE_LED;
-    private int []                        knobValues               = new int [8];
+    private final int []                  knobValues               = new int [8];
 
     private final List<MCUControlSurface> surfaces;
     private final int                     extenderOffset;

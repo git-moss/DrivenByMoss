@@ -47,7 +47,7 @@ public class PageLeftCommand extends AbstractTriggerCommand<PushControlSurface, 
         }
 
         final IView activeView = viewManager.getActive ();
-        if (activeView instanceof AbstractSequencerView<?, ?> sequencerView)
+        if (activeView instanceof final AbstractSequencerView<?, ?> sequencerView)
             sequencerView.onLeft (event);
     }
 }

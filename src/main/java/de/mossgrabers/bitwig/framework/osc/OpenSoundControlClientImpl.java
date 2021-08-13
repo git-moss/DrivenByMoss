@@ -20,7 +20,7 @@ import java.util.List;
  */
 public class OpenSoundControlClientImpl implements IOpenSoundControlClient
 {
-    private OscConnection connection;
+    private final OscConnection connection;
 
 
     /**

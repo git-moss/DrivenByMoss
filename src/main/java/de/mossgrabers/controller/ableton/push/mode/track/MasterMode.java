@@ -272,12 +272,7 @@ public class MasterMode extends BaseMode<ITrack>
     @Override
     public void onSecondRow (final int index, final ButtonEvent event)
     {
-        if (event != ButtonEvent.DOWN)
-            return;
-        if (this.isPush2)
-            return;
-
-        if (index > 0)
+        if (event != ButtonEvent.DOWN || this.isPush2 || index > 0)
             return;
 
         final IMasterTrack master = this.model.getMasterTrack ();

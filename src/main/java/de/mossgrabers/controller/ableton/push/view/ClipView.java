@@ -24,14 +24,14 @@ import de.mossgrabers.framework.view.AbstractSequencerView;
  */
 public class ClipView extends AbstractSequencerView<PushControlSurface, PushConfiguration>
 {
-    private int    loopPadPressed = -1;
-    private int [] padResolutions =
+    private int          loopPadPressed = -1;
+    private final int [] padResolutions =
     {
         1,
         4,
         16
     };
-    private int    padResolution  = 0;
+    private int          padResolution  = 0;
 
 
     /**

@@ -21,8 +21,8 @@ import de.mossgrabers.framework.utils.ButtonEvent;
  */
 public class ChangeTempoCommand<S extends IControlSurface<C>, C extends Configuration> extends AbstractTriggerCommand<S, C>
 {
-    private boolean isPlus;
-    private boolean isTempoChange;
+    private final boolean isPlus;
+    private boolean       isTempoChange;
 
 
     /**

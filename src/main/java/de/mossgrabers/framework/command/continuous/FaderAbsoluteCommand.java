@@ -22,7 +22,7 @@ import de.mossgrabers.framework.daw.data.bank.ITrackBank;
  */
 public class FaderAbsoluteCommand<S extends IControlSurface<C>, C extends Configuration> extends AbstractContinuousCommand<S, C>
 {
-    private int index;
+    private final int index;
 
 
     /**

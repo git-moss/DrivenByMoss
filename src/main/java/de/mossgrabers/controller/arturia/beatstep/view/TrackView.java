@@ -23,7 +23,7 @@ import java.util.Optional;
  */
 public class TrackView extends AbstractView<BeatstepControlSurface, BeatstepConfiguration> implements BeatstepView
 {
-    private TrackEditing extensions;
+    private final TrackEditing extensions;
 
 
     /**

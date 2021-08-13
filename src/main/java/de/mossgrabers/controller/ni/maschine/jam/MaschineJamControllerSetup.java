@@ -612,11 +612,12 @@ public class MaschineJamControllerSetup extends AbstractControllerSetup<Maschine
     {
         final MaschineJamControlSurface surface = this.getSurface ();
         final IMode mode = surface.getModeManager ().getActive ();
-        if (!(mode instanceof IMaschineJamMode jamMode))
-            return;
-        final FaderConfig [] configs = new FaderConfig [8];
-        for (int i = 0; i < 8; i++)
-            configs[i] = jamMode.setupFader (i);
-        surface.setupFaders (configs);
+        if (mode instanceof final IMaschineJamMode jamMode)
+        {
+            final FaderConfig [] configs = new FaderConfig [8];
+            for (int i = 0; i < 8; i++)
+                configs[i] = jamMode.setupFader (i);
+            surface.setupFaders (configs);
+        }
     }
 }

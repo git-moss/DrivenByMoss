@@ -191,8 +191,8 @@ public class MCUConfiguration extends AbstractConfiguration
     private boolean                   useFadersAsKnobs;
     private boolean                   masterVuMeter;
     private boolean                   touchChannel;
-    private int []                    assignableFunctions                     = new int [7];
-    private String []                 assignableFunctionActions               = new String [7];
+    private final int []              assignableFunctions                     = new int [7];
+    private final String []           assignableFunctionActions               = new String [7];
     private final MCUDeviceType []    deviceTyes;
     private boolean                   includeFXTracksInTrackBank;
     private boolean                   pinFXTracksToLastController;

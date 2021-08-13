@@ -87,13 +87,7 @@ public class ClipView extends BaseView
         if (configuration.isSelectClipOnLaunch ())
             slot.select ();
 
-        if (!track.get ().isRecArm ())
-        {
-            slot.launch ();
-            return;
-        }
-
-        if (slot.hasContent ())
+        if (!track.get ().isRecArm () || slot.hasContent ())
         {
             slot.launch ();
             return;

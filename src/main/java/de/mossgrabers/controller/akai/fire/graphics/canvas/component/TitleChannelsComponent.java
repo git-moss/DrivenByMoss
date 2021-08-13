@@ -19,9 +19,9 @@ import java.util.Arrays;
  */
 public class TitleChannelsComponent extends AbstractBaseComponent
 {
-    private boolean [] selected;
-    private int []     values;
-    private boolean    isPan;
+    private final boolean [] selected;
+    private final int []     values;
+    private final boolean    isPan;
 
 
     /**
@@ -116,14 +116,10 @@ public class TitleChannelsComponent extends AbstractBaseComponent
     {
         if (this == obj)
             return true;
-        if (!super.equals (obj))
-            return false;
-        if (this.getClass () != obj.getClass ())
+        if (!super.equals (obj) || this.getClass () != obj.getClass ())
             return false;
         final TitleChannelsComponent other = (TitleChannelsComponent) obj;
-        if (this.isPan != other.isPan)
-            return false;
-        if (!Arrays.equals (this.selected, other.selected))
+        if (this.isPan != other.isPan || !Arrays.equals (this.selected, other.selected))
             return false;
         return Arrays.equals (this.values, other.values);
     }

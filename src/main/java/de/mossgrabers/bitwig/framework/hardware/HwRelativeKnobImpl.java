@@ -30,14 +30,14 @@ import com.bitwig.extension.controller.api.RelativeHardwareKnob;
  */
 public class HwRelativeKnobImpl extends AbstractHwContinuousControl implements IHwRelativeKnob
 {
-    private final RelativeHardwareKnob     hardwareKnob;
-    private final ControllerHost           controllerHost;
-    private final RelativeEncoding         encoding;
-    private RelativeHardwarControlBindable defaultAction;
-    private RelativeHardwarControlBindable defaultSimpleParameterAction;
-    private RelativeHardwareControlBinding binding;
-    private IParameter                     parameter;
-    private boolean                        shouldAdaptSensitivity = true;
+    private final RelativeHardwareKnob           hardwareKnob;
+    private final ControllerHost                 controllerHost;
+    private final RelativeEncoding               encoding;
+    private final RelativeHardwarControlBindable defaultAction;
+    private final RelativeHardwarControlBindable defaultSimpleParameterAction;
+    private RelativeHardwareControlBinding       binding;
+    private IParameter                           parameter;
+    private boolean                              shouldAdaptSensitivity = true;
 
 
     /**
@@ -104,7 +104,7 @@ public class HwRelativeKnobImpl extends AbstractHwContinuousControl implements I
             this.binding.removeBinding ();
 
         // Remove the previously bound Bitwig parameter
-        if (this.parameter instanceof ParameterImpl param)
+        if (this.parameter instanceof final ParameterImpl param)
             HwUtils.enableObservers (false, this.hardwareKnob, param);
 
         final HardwareBindable target;
@@ -116,7 +116,7 @@ public class HwRelativeKnobImpl extends AbstractHwContinuousControl implements I
         else
         {
             // Is parameter a real Bitwig parameter? If yes, map it.
-            if (parameter instanceof ParameterImpl param)
+            if (parameter instanceof final ParameterImpl param)
             {
                 target = param.getParameter ();
                 HwUtils.enableObservers (true, this.hardwareKnob, param);

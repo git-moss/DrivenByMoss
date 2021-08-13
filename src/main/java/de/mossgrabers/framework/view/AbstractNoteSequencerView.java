@@ -330,10 +330,7 @@ public abstract class AbstractNoteSequencerView<S extends IControlSurface<C>, C 
     @Override
     public void onOctaveDown (final ButtonEvent event)
     {
-        if (!this.isActive ())
-            return;
-
-        if (event != ButtonEvent.DOWN)
+        if (!this.isActive () || event != ButtonEvent.DOWN)
             return;
 
         if (this.surface.isShiftPressed ())
@@ -356,10 +353,7 @@ public abstract class AbstractNoteSequencerView<S extends IControlSurface<C>, C 
     @Override
     public void onOctaveUp (final ButtonEvent event)
     {
-        if (!this.isActive ())
-            return;
-
-        if (event != ButtonEvent.DOWN)
+        if (!this.isActive () || event != ButtonEvent.DOWN)
             return;
 
         if (this.surface.isShiftPressed ())

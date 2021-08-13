@@ -62,7 +62,6 @@ public class LaunchpadCursorCommand extends CursorCommand<LaunchpadControlSurfac
     {
         super (direction, model, surface, false);
 
-        this.triggerEvent = ButtonEvent.UP;
         this.scales = this.model.getScales ();
         this.transport = this.model.getTransport ();
     }
@@ -224,7 +223,7 @@ public class LaunchpadCursorCommand extends CursorCommand<LaunchpadControlSurfac
             case DRUM4:
             case DRUM8:
                 final IView activeView = viewManager.getActive ();
-                if (activeView instanceof AbstractSequencerView<?, ?> sequencerView)
+                if (activeView instanceof final AbstractSequencerView<?, ?> sequencerView)
                 {
                     sequencerView.onLeft (ButtonEvent.DOWN);
                     this.mvHelper.notifyEditPage (sequencerView.getClip ());
@@ -318,7 +317,7 @@ public class LaunchpadCursorCommand extends CursorCommand<LaunchpadControlSurfac
             case DRUM4:
             case DRUM8:
                 final IView activeView = viewManager.getActive ();
-                if (activeView instanceof AbstractSequencerView<?, ?> sequencerView)
+                if (activeView instanceof final AbstractSequencerView<?, ?> sequencerView)
                 {
                     sequencerView.onRight (ButtonEvent.DOWN);
                     this.mvHelper.notifyEditPage (sequencerView.getClip ());

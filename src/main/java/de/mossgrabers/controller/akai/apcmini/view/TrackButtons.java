@@ -19,8 +19,8 @@ import de.mossgrabers.framework.utils.ButtonEvent;
  */
 public class TrackButtons
 {
-    private APCminiControlSurface surface;
-    private IModel                model;
+    private final APCminiControlSurface surface;
+    private final IModel                model;
 
 
     /**

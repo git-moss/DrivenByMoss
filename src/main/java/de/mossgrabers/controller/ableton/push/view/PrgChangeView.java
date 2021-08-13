@@ -21,11 +21,11 @@ import de.mossgrabers.framework.utils.ButtonEvent;
  */
 public class PrgChangeView extends AbstractView<PushControlSurface, PushConfiguration>
 {
-    private int []  greens;
-    private int []  yellows;
-    private int     bankNumber    = 0;
-    private int     programNumber = -1;
-    private boolean isToggled     = false;
+    private final int [] greens;
+    private final int [] yellows;
+    private int          bankNumber    = 0;
+    private int          programNumber = -1;
+    private boolean      isToggled     = false;
 
 
     /**

@@ -8,10 +8,10 @@ package de.mossgrabers.framework.controller.valuechanger;
  * Default implementation for changing values. The relative knob implementation is Two's
  * Complement.<br/>
  * [0..127] = [0..63,-64..-1] speed<br/>
- * 
+ *
  * @see <a href=
  *      "https://en.wikipedia.org/wiki/Two%27s_complement">https://en.wikipedia.org/wiki/Two%27s_complement</a>
- * 
+ *
  * @author J&uuml;rgen Mo&szlig;graber
  */
 public class TwosComplementValueChanger implements IValueChanger

@@ -42,7 +42,7 @@ public class SessionSelectCommand extends ViewMultiSelectCommand<FireControlSurf
             return;
 
         final IView view = this.surface.getViewManager ().get (Views.SESSION);
-        if (view instanceof SessionView sessionView)
+        if (view instanceof final SessionView sessionView)
             sessionView.toggleBirdsEyeView ();
     }
 }

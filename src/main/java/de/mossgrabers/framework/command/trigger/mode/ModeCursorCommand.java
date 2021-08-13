@@ -78,7 +78,7 @@ public class ModeCursorCommand<S extends IControlSurface<C>, C extends Configura
 
         this.direction = direction;
         this.notifySelection = notifySelection;
-        this.alternateMode = alternateMode == null ? this.surface::isShiftPressed : alternateMode;
+        this.alternateMode = alternateMode == null ? () -> false : alternateMode;
     }
 
 

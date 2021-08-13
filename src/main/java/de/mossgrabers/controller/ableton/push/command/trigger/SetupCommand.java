@@ -20,7 +20,7 @@ import de.mossgrabers.framework.utils.ButtonEvent;
  */
 public class SetupCommand extends AbstractTriggerCommand<PushControlSurface, PushConfiguration>
 {
-    private boolean isPush2;
+    private final boolean isPush2;
 
 
     /**

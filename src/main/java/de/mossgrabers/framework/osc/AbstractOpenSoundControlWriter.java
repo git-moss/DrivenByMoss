@@ -197,7 +197,7 @@ public abstract class AbstractOpenSoundControlWriter implements IOpenSoundContro
 
         // Convert the value to a list in case it is not already one
         final List<?> list;
-        if (value instanceof List<?> l)
+        if (value instanceof final List<?> l)
             list = l;
         else if (value instanceof Boolean)
             list = Collections.singletonList (Integer.valueOf (((Boolean) value).booleanValue () ? 1 : 0));
@@ -234,7 +234,7 @@ public abstract class AbstractOpenSoundControlWriter implements IOpenSoundContro
         if (value1 == null)
             return value2 == null;
 
-        if (value1 instanceof List<?> l1 && value2 instanceof List<?> l2)
+        if (value1 instanceof final List<?> l1 && value2 instanceof final List<?> l2)
         {
             final int size1 = l1.size ();
             final int size2 = l2.size ();

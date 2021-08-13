@@ -27,7 +27,7 @@ public class ParameterComponent extends MenuComponent
     private final String  paramName;
     private final String  paramValueText;
     private final int     paramValue;
-    private int           modulatedParamValue;
+    private final int     modulatedParamValue;
     private final boolean isTouched;
 
 
@@ -208,14 +208,10 @@ public class ParameterComponent extends MenuComponent
     {
         if (this == obj)
             return true;
-        if (!super.equals (obj))
-            return false;
-        if (this.getClass () != obj.getClass ())
+        if (!super.equals (obj) || this.getClass () != obj.getClass ())
             return false;
         final ParameterComponent other = (ParameterComponent) obj;
-        if (this.isTouched != other.isTouched)
-            return false;
-        if (this.modulatedParamValue != other.modulatedParamValue)
+        if (this.isTouched != other.isTouched || this.modulatedParamValue != other.modulatedParamValue)
             return false;
         if (this.paramName == null)
         {

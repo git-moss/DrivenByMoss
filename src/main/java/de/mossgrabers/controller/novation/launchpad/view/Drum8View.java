@@ -33,7 +33,7 @@ public class Drum8View extends AbstractDrum8View<LaunchpadControlSurface, Launch
 
     /** {@inheritDoc} */
     @Override
-    protected boolean handleNoteAreaButtonCombinations (INoteClip clip, int channel, int step, int row, int note, int velocity, int accentVelocity)
+    protected boolean handleNoteAreaButtonCombinations (final INoteClip clip, final int channel, final int step, final int row, final int note, final int velocity, final int accentVelocity)
     {
         final boolean isUpPressed = this.surface.isPressed (ButtonID.UP);
         if (isUpPressed || this.surface.isPressed (ButtonID.DOWN))

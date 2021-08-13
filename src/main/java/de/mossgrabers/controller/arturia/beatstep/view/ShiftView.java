@@ -26,7 +26,7 @@ import de.mossgrabers.framework.view.Views;
  */
 public class ShiftView extends AbstractView<BeatstepControlSurface, BeatstepConfiguration> implements BeatstepView
 {
-    private static final Views []                                      VIEWS =
+    private static final Views []                                            VIEWS =
     {
         Views.TRACK,
         Views.DEVICE,
@@ -36,7 +36,7 @@ public class ShiftView extends AbstractView<BeatstepControlSurface, BeatstepConf
         Views.SESSION
     };
 
-    private PlayCommand<BeatstepControlSurface, BeatstepConfiguration> playCommand;
+    private final PlayCommand<BeatstepControlSurface, BeatstepConfiguration> playCommand;
 
 
     /**

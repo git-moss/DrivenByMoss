@@ -40,7 +40,7 @@ public class PlayView extends AbstractPlayView<MaschineControlSurface, MaschineC
     private final MaschineConfiguration configuration;
     private final int                   numColumns;
     private boolean                     isShifted      = false;
-    private int                         sequencerSteps = 16;
+    private final int                   sequencerSteps = 16;
     private int                         selectedNote   = -1;
     protected IStepInfo                 copyNote;
     private boolean                     isChordActive;
@@ -376,11 +376,8 @@ public class PlayView extends AbstractPlayView<MaschineControlSurface, MaschineC
      */
     protected void handleSequencerArea (final int index, final int x, final int y, final int velocity)
     {
-        if (this.selectedNote == -1)
-            return;
-
         // Toggle the note on up, so we can intercept the long presses
-        if (velocity != 0)
+        if (this.selectedNote == -1 || velocity != 0)
             return;
 
         final INoteClip clip = this.drumView.getClip ();

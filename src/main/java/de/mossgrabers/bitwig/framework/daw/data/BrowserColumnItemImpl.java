@@ -38,7 +38,7 @@ public class BrowserColumnItemImpl extends AbstractItemImpl implements IBrowserC
         item.exists ().markInterested ();
         item.name ().markInterested ();
         item.isSelected ().markInterested ();
-        if (item instanceof BrowserFilterItem filterItem)
+        if (item instanceof final BrowserFilterItem filterItem)
             filterItem.hitCount ().markInterested ();
     }
 
@@ -50,7 +50,7 @@ public class BrowserColumnItemImpl extends AbstractItemImpl implements IBrowserC
         Util.setIsSubscribed (this.item.exists (), enable);
         Util.setIsSubscribed (this.item.name (), enable);
         Util.setIsSubscribed (this.item.isSelected (), enable);
-        if (this.item instanceof BrowserFilterItem filterItem)
+        if (this.item instanceof final BrowserFilterItem filterItem)
             Util.setIsSubscribed (filterItem.hitCount (), enable);
     }
 
@@ -99,7 +99,7 @@ public class BrowserColumnItemImpl extends AbstractItemImpl implements IBrowserC
     @Override
     public int getHitCount ()
     {
-        return this.item instanceof BrowserFilterItem filterItem ? this.safeGetInteger (filterItem.hitCount ()) : 0;
+        return this.item instanceof final BrowserFilterItem filterItem ? this.safeGetInteger (filterItem.hitCount ()) : 0;
     }
 
 

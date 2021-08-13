@@ -46,13 +46,13 @@ public class NoteMode extends BaseMode<IItem> implements INoteMode
     }
 
 
-    private final IHost    host;
-    private Page           page            = Page.NOTE;
-    private INoteClip      clip            = null;
-    private List<GridStep> notes           = new ArrayList<> ();
-    private long           lastValueChange = 0;
-    private boolean        started         = false;
-    private final Object   startLock       = new Object ();
+    private final IHost          host;
+    private Page                 page            = Page.NOTE;
+    private INoteClip            clip            = null;
+    private final List<GridStep> notes           = new ArrayList<> ();
+    private long                 lastValueChange = 0;
+    private boolean              started         = false;
+    private final Object         startLock       = new Object ();
 
 
     /**
@@ -636,11 +636,9 @@ public class NoteMode extends BaseMode<IItem> implements INoteMode
                         break;
                 }
 
-                if ((index == 0) || (index == 1 && this.host.supports (Capability.NOTE_EDIT_EXPRESSIONS)))
+                if (index == 0 || index == 1 && this.host.supports (Capability.NOTE_EDIT_EXPRESSIONS))
                     return SLMkIIIColorManager.SLMKIII_DARK_GREY;
-                if (index == 2 && this.host.supports (Capability.NOTE_EDIT_REPEAT))
-                    return SLMkIIIColorManager.SLMKIII_DARK_GREY;
-                if (index == 7 && this.host.supports (Capability.NOTE_EDIT_RECCURRENCE))
+                if (index == 2 && this.host.supports (Capability.NOTE_EDIT_REPEAT) || index == 7 && this.host.supports (Capability.NOTE_EDIT_RECCURRENCE))
                     return SLMkIIIColorManager.SLMKIII_DARK_GREY;
 
                 return SLMkIIIColorManager.SLMKIII_BLACK;
@@ -979,7 +977,7 @@ public class NoteMode extends BaseMode<IItem> implements INoteMode
                         String label = "   -";
                         final boolean active = i < recurrenceLength;
                         if (active)
-                            label = (i + 1) + ": " + (isOn ? "On" : "Off");
+                            label = i + 1 + ": " + (isOn ? "On" : "Off");
                         d.setCell (0, i, label);
 
                         d.setPropertyColor (i, 0, active ? SLMkIIIColorManager.SLMKIII_ROSE : SLMkIIIColorManager.SLMKIII_BLACK);

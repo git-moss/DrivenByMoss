@@ -39,7 +39,7 @@ public class SendMode extends AbstractTrackMode
         "SndF"
     };
 
-    private int                    sendIndex;
+    private final int              sendIndex;
 
 
     /**

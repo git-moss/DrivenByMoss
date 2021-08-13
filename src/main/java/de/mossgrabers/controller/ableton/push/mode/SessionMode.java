@@ -44,8 +44,8 @@ public class SessionMode extends AbstractTrackMode
     }
 
 
-    private RowDisplayMode rowDisplayMode;
-    private ISceneBank     sceneBank;
+    private RowDisplayMode   rowDisplayMode;
+    private final ISceneBank sceneBank;
 
 
     /**

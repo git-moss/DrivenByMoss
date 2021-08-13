@@ -48,7 +48,7 @@ public class GenericFlexiControlSurface extends AbstractControlSurface<GenericFl
 
     private long                                          lastReceived    = 0;
     private int                                           lastCCReceived  = -1;
-    private int []                                        lastCCValues    = new int [128];
+    private final int []                                  lastCCValues    = new int [128];
 
     private boolean                                       isShiftPressed  = false;
     private boolean                                       isUpdatingValue = false;

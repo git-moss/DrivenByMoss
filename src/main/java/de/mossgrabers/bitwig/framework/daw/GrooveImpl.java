@@ -24,8 +24,8 @@ import java.util.Map;
  */
 public class GrooveImpl implements IGroove
 {
-    private Groove                             groove;
-    private Map<GrooveParameterID, IParameter> parameters = new EnumMap<> (GrooveParameterID.class);
+    private final Groove                             groove;
+    private final Map<GrooveParameterID, IParameter> parameters = new EnumMap<> (GrooveParameterID.class);
 
 
     /**

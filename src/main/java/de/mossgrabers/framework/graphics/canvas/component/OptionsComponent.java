@@ -27,7 +27,7 @@ public class OptionsComponent implements IComponent
 
     private final String         headerBottom;
     private final String         headerTop;
-    private boolean              isBottomHeaderSelected;
+    private final boolean        isBottomHeaderSelected;
 
 
     /**
@@ -115,9 +115,7 @@ public class OptionsComponent implements IComponent
     {
         if (this == obj)
             return true;
-        if (obj == null)
-            return false;
-        if (this.getClass () != obj.getClass ())
+        if (obj == null || this.getClass () != obj.getClass ())
             return false;
         final OptionsComponent other = (OptionsComponent) obj;
         if (this.footer == null)

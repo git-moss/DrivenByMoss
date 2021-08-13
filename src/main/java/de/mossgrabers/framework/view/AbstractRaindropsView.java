@@ -79,10 +79,7 @@ public abstract class AbstractRaindropsView<S extends IControlSurface<C>, C exte
     @Override
     public void onGridNote (final int note, final int velocity)
     {
-        if (!this.isActive ())
-            return;
-
-        if (velocity == 0)
+        if (!this.isActive () || velocity == 0)
             return;
 
         final int index = note - 36;
@@ -170,10 +167,7 @@ public abstract class AbstractRaindropsView<S extends IControlSurface<C>, C exte
     @Override
     public void onOctaveDown (final ButtonEvent event)
     {
-        if (event != ButtonEvent.DOWN)
-            return;
-
-        if (!this.isActive ())
+        if (event != ButtonEvent.DOWN || !this.isActive ())
             return;
 
         if (this.surface.isShiftPressed ())
@@ -198,10 +192,7 @@ public abstract class AbstractRaindropsView<S extends IControlSurface<C>, C exte
     @Override
     public void onOctaveUp (final ButtonEvent event)
     {
-        if (event != ButtonEvent.DOWN)
-            return;
-
-        if (!this.isActive ())
+        if (event != ButtonEvent.DOWN || !this.isActive ())
             return;
 
         if (this.surface.isShiftPressed ())
@@ -264,9 +255,7 @@ public abstract class AbstractRaindropsView<S extends IControlSurface<C>, C exte
 
     protected int getNoteDistanceToTheRight (final int row, final int start, final int length)
     {
-        if (row < 0)
-            return -1;
-        if (start < 0 || start >= length)
+        if (row < 0 || start < 0 || start >= length)
             return -1;
         int step = start;
         int counter = 0;
@@ -287,9 +276,7 @@ public abstract class AbstractRaindropsView<S extends IControlSurface<C>, C exte
 
     protected int getNoteDistanceToTheLeft (final int row, final int start, final int length)
     {
-        if (row < 0)
-            return -1;
-        if (start < 0 || start >= length)
+        if (row < 0 || start < 0 || start >= length)
             return -1;
         final int s = start == 0 ? length - 1 : start - 1;
         int step = s;

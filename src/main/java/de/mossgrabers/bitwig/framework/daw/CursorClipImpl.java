@@ -37,12 +37,12 @@ import java.util.List;
 public class CursorClipImpl implements INoteClip
 {
     private final ControllerHost     host;
-    private IValueChanger            valueChanger;
-    private int                      numSteps;
-    private int                      numRows;
+    private final IValueChanger      valueChanger;
+    private final int                numSteps;
+    private final int                numRows;
 
     private final IStepInfo [] [] [] launcherData;
-    private PinnableCursorClip       launcherClip;
+    private final PinnableCursorClip launcherClip;
     private int                      editPage  = 0;
     private double                   stepLength;
     private final List<GridStep>     editSteps = new ArrayList<> ();
@@ -739,7 +739,7 @@ public class CursorClipImpl implements INoteClip
 
     /** {@inheritDoc} */
     @Override
-    public void setOccurrence (int channel, int step, int row, NoteOccurrenceType occurrence)
+    public void setOccurrence (final int channel, final int step, final int row, final NoteOccurrenceType occurrence)
     {
         final StepInfoImpl stepInfo = this.getUpdateableStep (channel, step, row);
         stepInfo.setOccurrence (occurrence);
@@ -786,7 +786,7 @@ public class CursorClipImpl implements INoteClip
 
     /** {@inheritDoc} */
     @Override
-    public void updateRecurrenceMask (int channel, int step, int row, int mask)
+    public void updateRecurrenceMask (final int channel, final int step, final int row, final int mask)
     {
         final StepInfoImpl stepInfo = this.getUpdateableStep (channel, step, row);
         stepInfo.setRecurrenceMask (mask);
@@ -800,7 +800,7 @@ public class CursorClipImpl implements INoteClip
 
     /** {@inheritDoc} */
     @Override
-    public void updateIsRepeatEnabled (int channel, int step, int row, boolean isEnabled)
+    public void updateIsRepeatEnabled (final int channel, final int step, final int row, final boolean isEnabled)
     {
         final StepInfoImpl stepInfo = this.getUpdateableStep (channel, step, row);
         stepInfo.setIsRepeatEnabled (isEnabled);
@@ -821,7 +821,7 @@ public class CursorClipImpl implements INoteClip
 
     /** {@inheritDoc} */
     @Override
-    public void updateRepeatCount (int channel, int step, int row, int value)
+    public void updateRepeatCount (final int channel, final int step, final int row, final int value)
     {
         final int v = Math.min (127, Math.max (-127, value));
         final StepInfoImpl stepInfo = this.getUpdateableStep (channel, step, row);
@@ -843,7 +843,7 @@ public class CursorClipImpl implements INoteClip
 
     /** {@inheritDoc} */
     @Override
-    public void updateRepeatCurve (int channel, int step, int row, double value)
+    public void updateRepeatCurve (final int channel, final int step, final int row, final double value)
     {
         final double v = Math.min (1.0, Math.max (-1.0, value));
         final StepInfoImpl stepInfo = this.getUpdateableStep (channel, step, row);
@@ -865,7 +865,7 @@ public class CursorClipImpl implements INoteClip
 
     /** {@inheritDoc} */
     @Override
-    public void updateRepeatVelocityCurve (int channel, int step, int row, double velocityCurve)
+    public void updateRepeatVelocityCurve (final int channel, final int step, final int row, final double velocityCurve)
     {
         final double vc = Math.min (1.0, Math.max (-1.0, velocityCurve));
         final StepInfoImpl stepInfo = this.getUpdateableStep (channel, step, row);
@@ -887,7 +887,7 @@ public class CursorClipImpl implements INoteClip
 
     /** {@inheritDoc} */
     @Override
-    public void updateRepeatVelocityEnd (int channel, int step, int row, double velocityEnd)
+    public void updateRepeatVelocityEnd (final int channel, final int step, final int row, final double velocityEnd)
     {
         final double ve = Math.min (1.0, Math.max (-1.0, velocityEnd));
         final StepInfoImpl stepInfo = this.getUpdateableStep (channel, step, row);

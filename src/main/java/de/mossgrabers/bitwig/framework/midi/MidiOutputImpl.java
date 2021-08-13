@@ -17,7 +17,7 @@ import com.bitwig.extension.controller.api.MidiOut;
  */
 class MidiOutputImpl extends AbstractMidiOutputImpl
 {
-    private MidiOut port;
+    private final MidiOut port;
 
 
     /**

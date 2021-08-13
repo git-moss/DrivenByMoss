@@ -20,7 +20,7 @@ import de.mossgrabers.framework.utils.ButtonEvent;
  */
 public class TrackSelectCommand extends AbstractTriggerCommand<APCminiControlSurface, APCminiConfiguration>
 {
-    private int index;
+    private final int index;
 
 
     /**

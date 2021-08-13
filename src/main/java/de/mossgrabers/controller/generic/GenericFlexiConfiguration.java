@@ -268,11 +268,11 @@ public class GenericFlexiConfiguration extends AbstractConfiguration
     private IEnumSetting                             selectedModeSetting;
     private IStringSetting                           fileSetting;
 
-    private CommandSlot []                           commandSlots                 = new CommandSlot [NUM_SLOTS];
+    private final CommandSlot []                     commandSlots                 = new CommandSlot [NUM_SLOTS];
 
     private IValueObserver<FlexiCommand>             commandObserver;
     private String                                   filename;
-    private Object                                   syncMapUpdate                = new Object ();
+    private final Object                             syncMapUpdate                = new Object ();
     private int []                                   keyMap;
     private int                                      selectedSlot                 = 0;
 
@@ -281,9 +281,9 @@ public class GenericFlexiConfiguration extends AbstractConfiguration
     private String                                   learnMidiChannelValue        = null;
     private boolean                                  learnResolution              = false;
 
-    private AtomicBoolean                            doNotFire                    = new AtomicBoolean (false);
-    private AtomicBoolean                            commandIsUpdating            = new AtomicBoolean (false);
-    private String []                                assignableFunctionActions    = new String [8];
+    private final AtomicBoolean                      doNotFire                    = new AtomicBoolean (false);
+    private final AtomicBoolean                      commandIsUpdating            = new AtomicBoolean (false);
+    private final String []                          assignableFunctionActions    = new String [8];
 
     private String                                   selectedMode                 = MODES.get (0);
 

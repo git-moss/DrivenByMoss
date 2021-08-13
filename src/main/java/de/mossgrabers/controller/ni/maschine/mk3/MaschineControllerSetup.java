@@ -409,7 +409,7 @@ public class MaschineControllerSetup extends AbstractControllerSetup<MaschineCon
         }, MaschineControlSurface.SAMPLING);
 
         // Browser
-        this.addButton (ButtonID.ADD_TRACK, this.maschine.hasCursorKeys () ? (this.maschine == Maschine.STUDIO || this.maschine == Maschine.MK2 ? "ALL/SAVE" : "FILE") : "PROJECT", new ProjectButtonCommand (this.model, surface), MaschineControlSurface.PROJECT);
+        this.addButton (ButtonID.ADD_TRACK, this.maschine.hasCursorKeys () ? this.maschine == Maschine.STUDIO || this.maschine == Maschine.MK2 ? "ALL/SAVE" : "FILE" : "PROJECT", new ProjectButtonCommand (this.model, surface), MaschineControlSurface.PROJECT);
         this.addButton (ButtonID.ADD_EFFECT, this.maschine.hasCursorKeys () ? "SETTINGS" : "FAVORITES", new AddDeviceCommand (this.model, surface), MaschineControlSurface.FAVORITES);
         this.addButton (ButtonID.BROWSE, this.maschine == Maschine.STUDIO || this.maschine == Maschine.MK2 ? "BROWSE" : "BROWSER", new BrowserCommand<> (this.model, surface, ButtonID.SHIFT, ButtonID.SELECT)
         {

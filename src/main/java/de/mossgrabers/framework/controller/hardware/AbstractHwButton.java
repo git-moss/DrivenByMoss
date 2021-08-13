@@ -22,7 +22,7 @@ public abstract class AbstractHwButton extends AbstractHwInputControl implements
 {
     private static final int               BUTTON_STATE_INTERVAL = 300;
 
-    private TimeoutOptimizer               optimizer;
+    private final TimeoutOptimizer         optimizer;
 
     protected TriggerCommand               command;
     protected IHwLight                     light;

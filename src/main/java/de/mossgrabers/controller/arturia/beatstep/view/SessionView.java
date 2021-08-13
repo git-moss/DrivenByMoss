@@ -20,7 +20,7 @@ import de.mossgrabers.framework.featuregroup.AbstractView;
  */
 public class SessionView extends AbstractView<BeatstepControlSurface, BeatstepConfiguration> implements BeatstepView
 {
-    private TrackEditing extensions;
+    private final TrackEditing extensions;
 
 
     /**

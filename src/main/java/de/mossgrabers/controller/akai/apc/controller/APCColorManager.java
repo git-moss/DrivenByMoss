@@ -113,7 +113,7 @@ public class APCColorManager extends ColorManager
     public static final String COLOR_KEY_SELECTED              = "COLOR_KEY_SELECTED";
     public static final String BUTTON_STATE_BLINK              = "BUTTON_STATE_BLINK";
 
-    private boolean            isMkII;
+    private final boolean      isMkII;
 
 
     /**

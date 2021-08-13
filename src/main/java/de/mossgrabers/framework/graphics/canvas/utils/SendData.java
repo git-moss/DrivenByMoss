@@ -113,14 +113,10 @@ public class SendData
     {
         if (this == obj)
             return true;
-        if (obj == null)
-            return false;
-        if (this.getClass () != obj.getClass ())
+        if (obj == null || this.getClass () != obj.getClass ())
             return false;
         final SendData other = (SendData) obj;
-        if (this.edited != other.edited)
-            return false;
-        if (this.modulatedValue != other.modulatedValue)
+        if (this.edited != other.edited || this.modulatedValue != other.modulatedValue)
             return false;
         if (this.name == null)
         {

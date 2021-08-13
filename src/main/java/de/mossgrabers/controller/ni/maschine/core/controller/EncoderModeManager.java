@@ -254,7 +254,7 @@ public class EncoderModeManager<S extends IControlSurface<C>, C extends Configur
             case TEMPORARY_LOCK:
             case TEMPORARY_TUNE:
                 final IView activeView = this.surface.getViewManager ().getActive ();
-                if (activeView instanceof IMaschineView maschineView)
+                if (activeView instanceof final IMaschineView maschineView)
                     maschineView.changeOption (this.temporaryEncoderMode, value);
                 break;
 

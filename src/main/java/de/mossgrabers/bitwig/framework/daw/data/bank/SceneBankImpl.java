@@ -79,7 +79,7 @@ public class SceneBankImpl extends AbstractItemBankImpl<SceneBank, IScene> imple
 
     /** {@inheritDoc} */
     @Override
-    public void scrollTo (int position, boolean adjustPage)
+    public void scrollTo (final int position, final boolean adjustPage)
     {
         this.slotBank.scrollTo (position, adjustPage);
         super.scrollTo (position, adjustPage);
@@ -88,7 +88,7 @@ public class SceneBankImpl extends AbstractItemBankImpl<SceneBank, IScene> imple
 
     /** {@inheritDoc} */
     @Override
-    public void selectItemAtPosition (int position)
+    public void selectItemAtPosition (final int position)
     {
         this.slotBank.selectItemAtPosition (position);
         super.selectItemAtPosition (position);

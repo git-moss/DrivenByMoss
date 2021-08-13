@@ -57,8 +57,8 @@ public class HostImpl implements IHost
     private static final List<IDeviceMetadata> instrumentsMetadata  = new ArrayList<> ();
     private static final List<IDeviceMetadata> audioEffectsMetadata = new ArrayList<> ();
 
-    private ControllerHost                     host;
-    private List<IUsbDevice>                   usbDevices           = new ArrayList<> ();
+    private final ControllerHost               host;
+    private final List<IUsbDevice>             usbDevices           = new ArrayList<> ();
 
 
     /**

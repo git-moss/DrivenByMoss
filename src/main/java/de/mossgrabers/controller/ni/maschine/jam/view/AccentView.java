@@ -99,7 +99,7 @@ public class AccentView extends AbstractView<MaschineJamControlSurface, Maschine
         if (activeID == Views.CONTROL)
             return;
         final IView view = viewManager.get (activeID);
-        if (view instanceof IMaschineView maschineView)
+        if (view instanceof final IMaschineView maschineView)
             maschineView.changeOption (temporaryEncoderMode, control);
     }
 }

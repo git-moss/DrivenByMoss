@@ -30,7 +30,7 @@ import java.util.List;
  */
 public class BitwigSetupFactory implements ISetupFactory
 {
-    private ControllerHost                     controllerHost;
+    private final ControllerHost               controllerHost;
 
     private static final List<ArpeggiatorMode> ARP_MODES = Arrays.asList (ArpeggiatorMode.values ());
 

@@ -59,7 +59,7 @@ public class ModelImpl extends AbstractModel
 
     private final ControllerHost           controllerHost;
     private final CursorTrack              bwCursorTrack;
-    private Track                          rootTrackGroup;
+    private final Track                    rootTrackGroup;
     private final BooleanValue             masterTrackEqualsValue;
     private final Map<Integer, ISceneBank> sceneBanks              = new HashMap<> (1);
 

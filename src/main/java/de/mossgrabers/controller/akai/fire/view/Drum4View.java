@@ -184,10 +184,7 @@ public class Drum4View extends AbstractDrum4View<FireControlSurface, FireConfigu
     @Override
     public void onSelectKnobValue (final int value)
     {
-        if (!this.primary.hasDrumPads ())
-            return;
-
-        if (this.blockSelectKnob)
+        if (!this.primary.hasDrumPads () || this.blockSelectKnob)
             return;
 
         final boolean isUp = this.model.getValueChanger ().isIncrease (value);
@@ -266,7 +263,7 @@ public class Drum4View extends AbstractDrum4View<FireControlSurface, FireConfigu
     {
         this.primary.getDrumPadBank ().getItem (index).select ();
         final IMode activeMode = this.surface.getModeManager ().getActive ();
-        if (activeMode instanceof FireLayerMode fireLayerMode)
+        if (activeMode instanceof final FireLayerMode fireLayerMode)
             fireLayerMode.parametersAdjusted ();
     }
 }

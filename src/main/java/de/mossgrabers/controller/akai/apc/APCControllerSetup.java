@@ -261,7 +261,7 @@ public class APCControllerSetup extends AbstractControllerSetup<APCControlSurfac
             this.addButton (stopButtonID, "Stop " + (i + 1), new APCStopClipCommand (i, this.model, surface), i, APCControlSurface.APC_BUTTON_CLIP_STOP, () -> {
 
                 final IView view = viewManager.getActive ();
-                if (view instanceof AbstractSequencerView<?, ?> sequencerView)
+                if (view instanceof final AbstractSequencerView<?, ?> sequencerView)
                     return sequencerView.getResolutionIndex () == index ? 1 : 0;
                 return surface.isPressed (stopButtonID) ? 1 : 0;
 

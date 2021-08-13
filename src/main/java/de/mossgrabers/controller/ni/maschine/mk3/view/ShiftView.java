@@ -86,7 +86,7 @@ public class ShiftView extends BaseView
                 break;
 
             case 8:
-                if (clip.doesExist () && clip instanceof INoteClip noteClip)
+                if (clip.doesExist () && clip instanceof final INoteClip noteClip)
                 {
                     noteClip.clearAll ();
                     display.notify ("Clear all notes");
@@ -106,7 +106,7 @@ public class ShiftView extends BaseView
                 break;
 
             case 12:
-                if (clip.doesExist () && clip instanceof INoteClip noteClip)
+                if (clip.doesExist () && clip instanceof final INoteClip noteClip)
                 {
                     noteClip.transpose (-1);
                     display.notify ("Transpose: -1");
@@ -114,7 +114,7 @@ public class ShiftView extends BaseView
                 break;
 
             case 13:
-                if (clip.doesExist () && clip instanceof INoteClip noteClip)
+                if (clip.doesExist () && clip instanceof final INoteClip noteClip)
                 {
                     noteClip.transpose (1);
                     display.notify ("Transpose: 1");
@@ -122,7 +122,7 @@ public class ShiftView extends BaseView
                 break;
 
             case 14:
-                if (clip.doesExist () && clip instanceof INoteClip noteClip)
+                if (clip.doesExist () && clip instanceof final INoteClip noteClip)
                 {
                     noteClip.transpose (-12);
                     display.notify ("Transpose: -12");
@@ -130,7 +130,7 @@ public class ShiftView extends BaseView
                 break;
 
             case 15:
-                if (clip.doesExist () && clip instanceof INoteClip noteClip)
+                if (clip.doesExist () && clip instanceof final INoteClip noteClip)
                 {
                     noteClip.transpose (12);
                     display.notify ("Transpose: 12");

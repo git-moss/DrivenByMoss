@@ -207,10 +207,7 @@ public class DeviceHandler extends AbstractHandler
 
     private void scrollParameterPage (final KnobMode knobMode, final MidiValue value)
     {
-        if (isAbsolute (knobMode))
-            return;
-
-        if (!this.increaseKnobMovement ())
+        if (isAbsolute (knobMode) || !this.increaseKnobMovement ())
             return;
 
         final ICursorDevice cursorDevice = this.model.getCursorDevice ();
@@ -225,10 +222,7 @@ public class DeviceHandler extends AbstractHandler
 
     private void scrollParameterBank (final KnobMode knobMode, final MidiValue value)
     {
-        if (isAbsolute (knobMode))
-            return;
-
-        if (!this.increaseKnobMovement ())
+        if (isAbsolute (knobMode) || !this.increaseKnobMovement ())
             return;
 
         final ICursorDevice cursorDevice = this.model.getCursorDevice ();
@@ -254,10 +248,7 @@ public class DeviceHandler extends AbstractHandler
 
     private void scrollDevice (final KnobMode knobMode, final MidiValue value)
     {
-        if (isAbsolute (knobMode))
-            return;
-
-        if (!this.increaseKnobMovement ())
+        if (isAbsolute (knobMode) || !this.increaseKnobMovement ())
             return;
 
         final ICursorDevice cursorDevice = this.model.getCursorDevice ();

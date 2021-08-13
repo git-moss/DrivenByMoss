@@ -20,7 +20,7 @@ import de.mossgrabers.framework.view.TransposeView;
  */
 public class OctaveCommand extends AbstractTriggerCommand<PushControlSurface, PushConfiguration>
 {
-    private boolean isUp;
+    private final boolean isUp;
 
 
     /**
@@ -43,7 +43,7 @@ public class OctaveCommand extends AbstractTriggerCommand<PushControlSurface, Pu
     public void execute (final ButtonEvent event, final int velocity)
     {
         final IView activeView = this.surface.getViewManager ().getActive ();
-        if (activeView instanceof TransposeView transposeView)
+        if (activeView instanceof final TransposeView transposeView)
         {
             if (this.isUp)
                 transposeView.onOctaveUp (event);

@@ -27,7 +27,7 @@ import java.util.Optional;
  */
 public class ConfiguredRecordCommand<S extends IControlSurface<C>, C extends Configuration> extends AbstractTriggerCommand<S, C>
 {
-    private ShiftMode shiftMode;
+    private final ShiftMode shiftMode;
 
 
     private enum ShiftMode

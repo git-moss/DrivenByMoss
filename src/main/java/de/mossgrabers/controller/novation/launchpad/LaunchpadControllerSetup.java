@@ -786,7 +786,7 @@ public class LaunchpadControllerSetup extends AbstractControllerSetup<LaunchpadC
         final ITrackBank tbe = this.model.getEffectTrackBank ();
         final ICursorDevice cursorDevice = this.model.getCursorDevice ();
         final IView view = viewManager.getActive ();
-        final int selSend = view instanceof SendsView sendsView ? sendsView.getSelectedSend () : -1;
+        final int selSend = view instanceof final SendsView sendsView ? sendsView.getSelectedSend () : -1;
         final boolean isSession = view instanceof SessionView && !isVolume && !isPan && !isSends;
 
         final boolean isEffect = this.model.isEffectTrackBankActive ();

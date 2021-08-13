@@ -139,7 +139,7 @@ public class DeviceModule extends AbstractModule
         writer.sendOSC (deviceAddress + "parameters", device.isParameterPageSectionVisible (), dump);
         writer.sendOSC (deviceAddress + "window", device.isWindowOpen (), dump);
 
-        if (device instanceof IEqualizerDevice equalizer)
+        if (device instanceof final IEqualizerDevice equalizer)
         {
             for (int i = 0; i < equalizer.getBandCount (); i++)
             {
@@ -153,7 +153,7 @@ public class DeviceModule extends AbstractModule
             return;
         }
 
-        if (device instanceof ICursorDevice cursorDevice)
+        if (device instanceof final ICursorDevice cursorDevice)
         {
             final int positionInBank = device.getIndex ();
             final IDeviceBank deviceBank = cursorDevice.getDeviceBank ();
@@ -501,7 +501,7 @@ public class DeviceModule extends AbstractModule
             switch (command)
             {
                 case "parent":
-                    if (device.doesExist () && device instanceof ICursorDevice cursorDevice)
+                    if (device.doesExist () && device instanceof final ICursorDevice cursorDevice)
                     {
                         cursorDevice.selectParent ();
                         cursorDevice.selectChannel ();
@@ -592,9 +592,7 @@ public class DeviceModule extends AbstractModule
 
             case "send":
                 final int sendNo = Integer.parseInt (path.removeFirst ()) - 1;
-                if (path.isEmpty ())
-                    return;
-                if (!TAG_VOLUME.equals (path.removeFirst ()))
+                if (path.isEmpty () || !TAG_VOLUME.equals (path.removeFirst ()))
                     return;
                 final ISend send = layer.getSendBank ().getItem (sendNo);
                 if (path.isEmpty ())

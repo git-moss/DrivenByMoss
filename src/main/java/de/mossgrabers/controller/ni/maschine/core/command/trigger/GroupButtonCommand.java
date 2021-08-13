@@ -118,7 +118,7 @@ public class GroupButtonCommand<S extends IControlSurface<C>, C extends Configur
         if (this.surface.isPressed (ButtonID.GROOVE))
         {
             final IView active = this.surface.getViewManager ().getActive ();
-            if (active instanceof AbstractSequencerView<?, ?> sequencerView)
+            if (active instanceof final AbstractSequencerView<?, ?> sequencerView)
                 sequencerView.setResolutionIndex (this.index);
             return;
         }
@@ -176,7 +176,7 @@ public class GroupButtonCommand<S extends IControlSurface<C>, C extends Configur
         if (this.surface.isPressed (ButtonID.GROOVE))
         {
             final IView active = this.surface.getViewManager ().getActive ();
-            if (active instanceof AbstractSequencerView<?, ?> sequencerView)
+            if (active instanceof final AbstractSequencerView<?, ?> sequencerView)
                 return sequencerView.getResolutionIndex () == this.index ? MaschineColorManager.COLOR_GREEN : MaschineColorManager.COLOR_DARK_GREY;
             return MaschineColorManager.COLOR_BLACK;
         }

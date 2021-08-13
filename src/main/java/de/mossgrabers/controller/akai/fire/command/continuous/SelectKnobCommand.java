@@ -109,7 +109,7 @@ public class SelectKnobCommand extends AbstractContinuousCommand<FireControlSurf
         }
 
         final IView activeView = this.surface.getViewManager ().getActive ();
-        if (activeView instanceof IFireView fireView)
+        if (activeView instanceof final IFireView fireView)
             fireView.onSelectKnobValue (value);
     }
 

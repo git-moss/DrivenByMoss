@@ -244,10 +244,7 @@ public class BrowserHandler extends AbstractHandler
 
     private void scrollBrowserTabs (final KnobMode knobMode, final MidiValue value)
     {
-        if (isAbsolute (knobMode))
-            return;
-
-        if (!this.increaseKnobMovement ())
+        if (isAbsolute (knobMode) || !this.increaseKnobMovement ())
             return;
 
         final IBrowser browser = this.model.getBrowser ();

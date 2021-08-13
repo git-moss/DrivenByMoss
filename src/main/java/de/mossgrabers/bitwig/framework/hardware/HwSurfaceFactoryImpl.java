@@ -48,7 +48,7 @@ public class HwSurfaceFactoryImpl implements IHwSurfaceFactory
     private final HardwareSurface hardwareSurface;
 
     private int                   lightCounter = 0;
-    private long                  startup      = System.currentTimeMillis ();
+    private final long            startup      = System.currentTimeMillis ();
     private boolean               startupDone  = false;
 
 

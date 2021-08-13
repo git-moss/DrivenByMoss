@@ -17,7 +17,7 @@ import java.util.List;
  */
 public class ModelInfo
 {
-    private String                 notification;
+    private final String           notification;
     private final List<IComponent> components;
 
 
@@ -74,9 +74,7 @@ public class ModelInfo
     {
         if (this == obj)
             return true;
-        if (obj == null)
-            return false;
-        if (this.getClass () != obj.getClass ())
+        if (obj == null || this.getClass () != obj.getClass ())
             return false;
         final ModelInfo other = (ModelInfo) obj;
         if (this.components == null)

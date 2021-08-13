@@ -96,9 +96,7 @@ public class ChordsView extends AbstractChordView<LaunchpadControlSurface, Launc
     @Override
     public void onButton (final ButtonID buttonID, final ButtonEvent event, final int velocity)
     {
-        if (!ButtonID.isSceneButton (buttonID) || event != ButtonEvent.DOWN)
-            return;
-        if (!this.model.canSelectedTrackHoldNotes ())
+        if (!ButtonID.isSceneButton (buttonID) || event != ButtonEvent.DOWN || !this.model.canSelectedTrackHoldNotes ())
             return;
 
         final ITextDisplay display = this.surface.getTextDisplay ();

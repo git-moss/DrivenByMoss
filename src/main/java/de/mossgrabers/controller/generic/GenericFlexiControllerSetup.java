@@ -385,9 +385,7 @@ public class GenericFlexiControllerSetup extends AbstractControllerSetup<Generic
 
     private boolean testVolumeIndication (final Set<FlexiCommand> commands, final FlexiCommand [] allCommands, final int trackIndex, final boolean hasTrackSel)
     {
-        if (hasTrackSel && commands.contains (FlexiCommand.TRACK_SELECTED_SET_VOLUME_TRACK))
-            return true;
-        if (commands.contains (allCommands[FlexiCommand.TRACK_1_SET_VOLUME.ordinal () + trackIndex]))
+        if (hasTrackSel && commands.contains (FlexiCommand.TRACK_SELECTED_SET_VOLUME_TRACK) || commands.contains (allCommands[FlexiCommand.TRACK_1_SET_VOLUME.ordinal () + trackIndex]))
             return true;
         return commands.contains (allCommands[FlexiCommand.MODES_KNOB1.ordinal () + trackIndex]) && this.getSurface ().getModeManager ().isActive (Modes.VOLUME);
     }
@@ -395,9 +393,7 @@ public class GenericFlexiControllerSetup extends AbstractControllerSetup<Generic
 
     private boolean testPanIndication (final Set<FlexiCommand> commands, final FlexiCommand [] allCommands, final int trackIndex, final boolean hasTrackSel)
     {
-        if (hasTrackSel && commands.contains (FlexiCommand.TRACK_SELECTED_SET_PANORAMA))
-            return true;
-        if (commands.contains (allCommands[FlexiCommand.TRACK_1_SET_PANORAMA.ordinal () + trackIndex]))
+        if (hasTrackSel && commands.contains (FlexiCommand.TRACK_SELECTED_SET_PANORAMA) || commands.contains (allCommands[FlexiCommand.TRACK_1_SET_PANORAMA.ordinal () + trackIndex]))
             return true;
         return commands.contains (allCommands[FlexiCommand.MODES_KNOB1.ordinal () + trackIndex]) && this.getSurface ().getModeManager ().isActive (Modes.PAN);
     }
@@ -408,9 +404,7 @@ public class GenericFlexiControllerSetup extends AbstractControllerSetup<Generic
         final ModeManager modeManager = this.getSurface ().getModeManager ();
         if (hasTrackSel)
         {
-            if (commands.contains (allCommands[FlexiCommand.TRACK_SELECTED_SET_SEND_1.ordinal () + sendIndex]))
-                return true;
-            if (modeManager.isActive (Modes.TRACK) && sendIndex < 6)
+            if (commands.contains (allCommands[FlexiCommand.TRACK_SELECTED_SET_SEND_1.ordinal () + sendIndex]) || modeManager.isActive (Modes.TRACK) && sendIndex < 6)
                 return true;
         }
         if (commands.contains (allCommands[FlexiCommand.TRACK_1_SET_SEND_1.ordinal () + sendIndex * sendPageSize + trackIndex]))

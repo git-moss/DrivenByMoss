@@ -16,7 +16,7 @@ import de.mossgrabers.framework.daw.midi.IMidiOutput;
  */
 public class MCUSegmentDisplay extends AbstractTextDisplay
 {
-    private int [] transportBuffer = new int [10];
+    private final int [] transportBuffer = new int [10];
 
 
     /**

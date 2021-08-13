@@ -25,7 +25,7 @@ import de.mossgrabers.framework.utils.ButtonEvent;
  */
 public class ScaleLayoutMode extends BaseMode<IItem>
 {
-    private Scales scales;
+    private final Scales scales;
 
 
     /**

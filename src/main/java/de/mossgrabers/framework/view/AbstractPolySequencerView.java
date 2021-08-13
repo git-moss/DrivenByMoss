@@ -171,11 +171,8 @@ public abstract class AbstractPolySequencerView<S extends IControlSurface<C>, C 
         }
 
         // Only allow playing the notes if there is no clip
-        if (!this.isActive ())
-            return;
-
         // Toggle the note on up, so we can intercept the long presses (but not yet used)
-        if (velocity > 0)
+        if (!this.isActive () || velocity > 0)
             return;
 
         this.handleSequencerArea (x, y);

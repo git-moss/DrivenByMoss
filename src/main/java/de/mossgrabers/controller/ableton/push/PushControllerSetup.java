@@ -508,7 +508,7 @@ public class PushControllerSetup extends AbstractControllerSetup<PushControlSurf
             if (viewManager.isActive (Views.SESSION))
                 return this.model.getCurrentTrackBank ().canScrollPageBackwards ();
             final IView activeView = viewManager.getActive ();
-            final INoteClip clip = activeView instanceof AbstractSequencerView<?, ?> sequencerView && !(activeView instanceof ClipView) ? sequencerView.getClip () : null;
+            final INoteClip clip = activeView instanceof final AbstractSequencerView<?, ?> sequencerView && !(activeView instanceof ClipView) ? sequencerView.getClip () : null;
             return clip != null && clip.doesExist () && clip.canScrollStepsBackwards ();
 
         }, ColorManager.BUTTON_STATE_OFF, ColorManager.BUTTON_STATE_ON);
@@ -517,7 +517,7 @@ public class PushControllerSetup extends AbstractControllerSetup<PushControlSurf
             if (viewManager.isActive (Views.SESSION))
                 return this.model.getCurrentTrackBank ().canScrollPageForwards ();
             final IView activeView = viewManager.getActive ();
-            final INoteClip clip = activeView instanceof AbstractSequencerView<?, ?> sequencerView && !(activeView instanceof ClipView) ? sequencerView.getClip () : null;
+            final INoteClip clip = activeView instanceof final AbstractSequencerView<?, ?> sequencerView && !(activeView instanceof ClipView) ? sequencerView.getClip () : null;
             return clip != null && clip.doesExist () && clip.canScrollStepsForwards ();
 
         }, ColorManager.BUTTON_STATE_OFF, ColorManager.BUTTON_STATE_ON);
@@ -541,11 +541,11 @@ public class PushControllerSetup extends AbstractControllerSetup<PushControlSurf
 
         this.addButton (ButtonID.OCTAVE_DOWN, "Octave Down", new OctaveCommand (false, this.model, surface), PushControlSurface.PUSH_BUTTON_OCTAVE_DOWN, () -> {
             final IView activeView = viewManager.getActive ();
-            return activeView instanceof TransposeView transposeView && transposeView.isOctaveDownButtonOn ();
+            return activeView instanceof final TransposeView transposeView && transposeView.isOctaveDownButtonOn ();
         }, ColorManager.BUTTON_STATE_OFF, ColorManager.BUTTON_STATE_ON);
         this.addButton (ButtonID.OCTAVE_UP, "Octave Up", new OctaveCommand (true, this.model, surface), PushControlSurface.PUSH_BUTTON_OCTAVE_UP, () -> {
             final IView activeView = viewManager.getActive ();
-            return activeView instanceof TransposeView transposeView && transposeView.isOctaveUpButtonOn ();
+            return activeView instanceof final TransposeView transposeView && transposeView.isOctaveUpButtonOn ();
         }, ColorManager.BUTTON_STATE_OFF, ColorManager.BUTTON_STATE_ON);
 
         if (this.isPush2)

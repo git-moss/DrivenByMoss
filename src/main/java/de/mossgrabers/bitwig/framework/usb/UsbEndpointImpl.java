@@ -23,8 +23,8 @@ import com.bitwig.extension.controller.api.UsbTransferDirection;
  */
 public class UsbEndpointImpl implements IUsbEndpoint
 {
-    private IHost   host;
-    private UsbPipe endpoint;
+    private final IHost   host;
+    private final UsbPipe endpoint;
 
 
     /**

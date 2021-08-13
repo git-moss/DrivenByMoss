@@ -24,7 +24,7 @@ import de.mossgrabers.framework.utils.StringUtils;
 public class MidiClipComponent implements IComponent
 {
     private final INoteClip clip;
-    private int             quartersPerMeasure;
+    private final int       quartersPerMeasure;
 
 
     /**
