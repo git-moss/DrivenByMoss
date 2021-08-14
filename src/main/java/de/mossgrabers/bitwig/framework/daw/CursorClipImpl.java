@@ -1188,6 +1188,11 @@ public class CursorClipImpl implements INoteClip
                 // Lazily create an updatable object and keep it
                 if (stepInfos[channel][step] == null)
                     stepInfos[channel][step] = new IStepInfo [this.numRows];
+                if (row >= this.numRows)
+                {
+                    this.host.errorln ("Requested row (" + row + " is outside of the range of the number of rows (" + this.numRows + ").");
+                    return new StepInfoImpl ();
+                }
                 if (stepInfos[channel][step][row] == null)
                     stepInfos[channel][step][row] = new StepInfoImpl ();
                 return (StepInfoImpl) stepInfos[channel][step][row];
@@ -1219,6 +1224,7 @@ public class CursorClipImpl implements INoteClip
      */
     private IStepInfo [] [] [] getStepInfos ()
     {
+        // Note: Keep this in a function in case the issue with arranger clips gets ever fixed
         return this.launcherData;
     }
 }

@@ -101,6 +101,7 @@ public class LaunchkeyMiniMk3ColorManager extends ColorManager
         this.registerColorIndex (AbstractSequencerView.COLOR_STEP_HILITE_CONTENT, LAUNCHKEY_COLOR_GREEN_HI);
         this.registerColorIndex (AbstractSequencerView.COLOR_STEP_MUTED, LAUNCHKEY_COLOR_GREY_MD);
         this.registerColorIndex (AbstractSequencerView.COLOR_STEP_MUTED_CONT, LAUNCHKEY_COLOR_GREY_LO);
+        this.registerColorIndex (AbstractSequencerView.COLOR_STEP_SELECTED, LAUNCHKEY_COLOR_WHITE);
         this.registerColorIndex (AbstractSequencerView.COLOR_NO_CONTENT, LAUNCHKEY_COLOR_BLACK);
         this.registerColorIndex (AbstractSequencerView.COLOR_CONTENT, LAUNCHKEY_COLOR_BLUE_HI);
         this.registerColorIndex (AbstractSequencerView.COLOR_CONTENT_CONT, LAUNCHKEY_COLOR_BLUE_ORCHID);

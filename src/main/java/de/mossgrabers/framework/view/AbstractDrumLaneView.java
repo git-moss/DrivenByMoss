@@ -15,9 +15,11 @@ import de.mossgrabers.framework.daw.INoteClip;
 import de.mossgrabers.framework.daw.IStepInfo;
 import de.mossgrabers.framework.daw.StepState;
 import de.mossgrabers.framework.daw.constants.Resolution;
+import de.mossgrabers.framework.daw.data.GridStep;
 import de.mossgrabers.framework.daw.data.IDrumDevice;
 import de.mossgrabers.framework.utils.ButtonEvent;
 
+import java.util.List;
 import java.util.Optional;
 
 
@@ -120,17 +122,27 @@ public abstract class AbstractDrumLaneView<S extends IControlSurface<C>, C exten
     protected boolean handleNoteAreaButtonCombinations (final INoteClip clip, final int channel, final int step, final int row, final int note, final int velocity, final int accentVelocity)
     {
         // Handle note duplicate function
-        final IHwButton duplicateButton = this.surface.getButton (ButtonID.DUPLICATE);
-        if (duplicateButton != null && duplicateButton.isPressed ())
+        if (this.isButtonCombination (ButtonID.DUPLICATE))
         {
             if (velocity == 0)
             {
-                duplicateButton.setConsumed ();
                 final IStepInfo noteStep = clip.getStep (channel, step, note);
                 if (noteStep.getState () == StepState.START)
                     this.copyNote = noteStep;
                 else if (this.copyNote != null)
                     clip.setStep (channel, step, note, this.copyNote);
+            }
+            return true;
+        }
+
+        if (this.isButtonCombination (ButtonID.MUTE))
+        {
+            if (velocity == 0)
+            {
+                final IStepInfo stepInfo = clip.getStep (channel, step, note);
+                final StepState isSet = stepInfo.getState ();
+                if (isSet == StepState.START)
+                    this.getClip ().updateMuteState (channel, step, note, !stepInfo.isMuted ());
             }
             return true;
         }
@@ -179,10 +191,11 @@ public abstract class AbstractDrumLaneView<S extends IControlSurface<C>, C exten
         final int hiStep = this.isInXRange (step) ? step % this.clipCols : -1;
         final int offsetY = this.scales.getDrumOffset ();
         final int editMidiChannel = this.configuration.getMidiEditChannel ();
+        final List<GridStep> editNotes = this.getEditNotes ();
         for (int sound = 0; sound < this.lanes; sound++)
         {
             final int noteRow = offsetY + sound;
-            final Optional<ColorEx> drumPadColor = this.getDrumPadColor (this.primary, sound);
+            final Optional<ColorEx> drumPadColor = this.getPadColor (this.primary, sound);
             for (int col = 0; col < this.clipCols; col++)
             {
                 final IStepInfo stepInfo = clip.getStep (editMidiChannel, col, noteRow);
@@ -191,7 +204,7 @@ public abstract class AbstractDrumLaneView<S extends IControlSurface<C>, C exten
                 int y = this.lanes - 1 - sound;
                 if (col >= this.numColumns)
                     y += this.lanes;
-                padGrid.lightEx (x, y, this.getStepColor (stepInfo, hilite, drumPadColor));
+                padGrid.lightEx (x, y, this.getStepColor (stepInfo, hilite, drumPadColor, editMidiChannel, col, noteRow, editNotes));
             }
         }
     }

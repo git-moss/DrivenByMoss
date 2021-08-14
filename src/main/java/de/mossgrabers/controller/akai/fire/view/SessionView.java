@@ -14,6 +14,7 @@ import de.mossgrabers.framework.daw.data.IScene;
 import de.mossgrabers.framework.daw.data.ISlot;
 import de.mossgrabers.framework.daw.data.ITrack;
 import de.mossgrabers.framework.daw.data.bank.ISceneBank;
+import de.mossgrabers.framework.daw.data.bank.ITrackBank;
 import de.mossgrabers.framework.utils.ButtonEvent;
 import de.mossgrabers.framework.view.AbstractSessionView;
 import de.mossgrabers.framework.view.TransposeView;
@@ -112,9 +113,11 @@ public class SessionView extends AbstractSessionView<FireControlSurface, FireCon
     @Override
     public void onButton (final ButtonID buttonID, final ButtonEvent event, final int velocity)
     {
+        final ITrackBank trackBank = this.model.getCurrentTrackBank ();
+
         if (ButtonID.isSceneButton (buttonID) && this.surface.isPressed (ButtonID.ALT))
         {
-            this.model.getCurrentTrackBank ().stop ();
+            trackBank.stop ();
             return;
         }
 
@@ -122,12 +125,12 @@ public class SessionView extends AbstractSessionView<FireControlSurface, FireCon
         {
             case ARROW_LEFT:
                 if (event == ButtonEvent.DOWN)
-                    this.model.getCurrentTrackBank ().selectPreviousPage ();
+                    trackBank.selectPreviousPage ();
                 break;
 
             case ARROW_RIGHT:
                 if (event == ButtonEvent.DOWN)
-                    this.model.getCurrentTrackBank ().selectNextPage ();
+                    trackBank.selectNextPage ();
                 break;
 
             default:
@@ -142,6 +145,8 @@ public class SessionView extends AbstractSessionView<FireControlSurface, FireCon
     protected boolean handleButtonCombinations (final ITrack track, final ISlot slot)
     {
         final boolean result = super.handleButtonCombinations (track, slot);
+        if (result)
+            return true;
 
         // Stop clip with normal stop button
         if (this.isButtonCombination (ButtonID.STOP))
@@ -152,11 +157,17 @@ public class SessionView extends AbstractSessionView<FireControlSurface, FireCon
 
         final FireConfiguration configuration = this.surface.getConfiguration ();
         if (this.isButtonCombination (ButtonID.DELETE) && configuration.isDeleteModeActive ())
+        {
             configuration.toggleDeleteModeActive ();
-        else if (this.isButtonCombination (ButtonID.DUPLICATE) && configuration.isDuplicateModeActive () && (!slot.doesExist () || !slot.hasContent ()))
+            return true;
+        }
+        if (this.isButtonCombination (ButtonID.DUPLICATE) && configuration.isDuplicateModeActive () && (!slot.doesExist () || !slot.hasContent ()))
+        {
             configuration.toggleDuplicateModeActive ();
+            return true;
+        }
 
-        return result;
+        return false;
     }
 
 

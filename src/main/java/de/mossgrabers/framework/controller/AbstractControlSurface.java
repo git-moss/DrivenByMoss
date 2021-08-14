@@ -57,7 +57,7 @@ public abstract class AbstractControlSurface<C extends Configuration> implements
 {
     private static final String                           SHOULD_BE_HANDLED_IN_FRAMEWORK = " should be handled in framework...";
 
-    protected static final int                            BUTTON_STATE_INTERVAL          = 400;
+    protected static final int                            BUTTON_STATE_INTERVAL          = 500;
     protected static final int                            NUM_NOTES                      = 128;
     protected static final int                            NUM_INFOS                      = 256;
 

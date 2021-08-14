@@ -12,6 +12,7 @@ import de.mossgrabers.framework.daw.INoteClip;
 import de.mossgrabers.framework.daw.IStepInfo;
 import de.mossgrabers.framework.daw.StepState;
 import de.mossgrabers.framework.daw.constants.Resolution;
+import de.mossgrabers.framework.daw.data.GridStep;
 import de.mossgrabers.framework.featuregroup.AbstractFeatureGroup;
 import de.mossgrabers.framework.featuregroup.AbstractView;
 import de.mossgrabers.framework.featuregroup.IMode;
@@ -19,6 +20,9 @@ import de.mossgrabers.framework.featuregroup.ModeManager;
 import de.mossgrabers.framework.mode.INoteMode;
 import de.mossgrabers.framework.mode.Modes;
 import de.mossgrabers.framework.utils.ButtonEvent;
+
+import java.util.Collections;
+import java.util.List;
 
 
 /**
@@ -39,6 +43,8 @@ public abstract class AbstractSequencerView<S extends IControlSurface<C>, C exte
     public static final String    COLOR_STEP_MUTED             = "COLOR_STEP_MUTED";
     /** The color for a continued muted step. */
     public static final String    COLOR_STEP_MUTED_CONT        = "COLOR_STEP_MUTED_CONT";
+    /** The color for a selected step. */
+    public static final String    COLOR_STEP_SELECTED          = "COLOR_STEP_SELECTED";
     /** The color for a step with no content. */
     public static final String    COLOR_NO_CONTENT             = "COLOR_NO_CONTENT";
     /** The color for a step with content. */
@@ -387,5 +393,26 @@ public abstract class AbstractSequencerView<S extends IControlSurface<C>, C exte
         final IMode mode = modeManager.get (Modes.NOTE);
         if (mode instanceof final INoteMode noteMode)
             noteMode.clearNotes ();
+    }
+
+
+    protected List<GridStep> getEditNotes ()
+    {
+        final ModeManager modeManager = this.surface.getModeManager ();
+        final IMode mode = modeManager.get (Modes.NOTE);
+        if (mode instanceof final INoteMode noteMode)
+            return noteMode.getNotes ();
+        return Collections.emptyList ();
+    }
+
+
+    protected static boolean isEdit (final int channel, final int step, final int note, final List<GridStep> editNotes)
+    {
+        for (final GridStep editNote: editNotes)
+        {
+            if (editNote.getChannel () == channel && editNote.getStep () == step && editNote.getNote () == note)
+                return true;
+        }
+        return false;
     }
 }

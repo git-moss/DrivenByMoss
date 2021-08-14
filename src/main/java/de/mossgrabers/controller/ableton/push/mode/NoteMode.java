@@ -124,6 +124,14 @@ public class NoteMode extends BaseMode<IItem> implements INoteMode
 
     /** {@inheritDoc} */
     @Override
+    public List<GridStep> getNotes ()
+    {
+        return new ArrayList<> (this.notes);
+    }
+
+
+    /** {@inheritDoc} */
+    @Override
     public void onFirstRow (final int index, final ButtonEvent event)
     {
         if (event != ButtonEvent.UP)
@@ -385,9 +393,6 @@ public class NoteMode extends BaseMode<IItem> implements INoteMode
     @Override
     public void onKnobValue (final int index, final int value)
     {
-        if (this.notes.isEmpty ())
-            return;
-
         for (final GridStep noteInfo: this.notes)
         {
             final int channel = noteInfo.getChannel ();

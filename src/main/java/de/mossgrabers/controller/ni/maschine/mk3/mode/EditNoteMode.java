@@ -14,11 +14,12 @@ import de.mossgrabers.framework.daw.IStepInfo;
 import de.mossgrabers.framework.daw.NoteOccurrenceType;
 import de.mossgrabers.framework.daw.constants.Capability;
 import de.mossgrabers.framework.daw.data.GridStep;
+import de.mossgrabers.framework.mode.INoteMode;
 import de.mossgrabers.framework.scale.Scales;
 import de.mossgrabers.framework.utils.StringUtils;
 
+import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Collections;
 import java.util.List;
 
 
@@ -27,7 +28,7 @@ import java.util.List;
  *
  * @author J&uuml;rgen Mo&szlig;graber
  */
-public class EditNoteMode extends BaseMode
+public class EditNoteMode extends BaseMode implements INoteMode
 {
     /** The duration parameter. */
     public static final int            DURATION         = 1;
@@ -83,9 +84,7 @@ public class EditNoteMode extends BaseMode
     private final IHost                host;
 
     private INoteClip                  clip             = null;
-    private int                        channel          = 0;
-    private int                        step             = 0;
-    private int                        note             = 60;
+    private final List<GridStep>       notes            = new ArrayList<> ();
 
     private int                        selectedPage     = 0;
 
@@ -105,20 +104,52 @@ public class EditNoteMode extends BaseMode
     }
 
 
-    /**
-     * Set the values.
-     *
-     * @param clip The clip to edit
-     * @param channel The MIDI channel
-     * @param step The step to edit
-     * @param note The note to edit
-     */
-    public void setValues (final INoteClip clip, final int channel, final int step, final int note)
+    /** {@inheritDoc} */
+    @Override
+    public void clearNotes ()
     {
-        this.clip = clip;
-        this.channel = channel;
-        this.step = step;
-        this.note = note;
+        this.notes.clear ();
+    }
+
+
+    /** {@inheritDoc} */
+    @Override
+    public void setNote (final INoteClip clip, final int channel, final int step, final int note)
+    {
+        this.notes.clear ();
+        this.addNote (clip, channel, step, note);
+    }
+
+
+    /** {@inheritDoc} */
+    @Override
+    public void addNote (final INoteClip clip, final int channel, final int step, final int note)
+    {
+        if (this.clip != clip)
+        {
+            this.notes.clear ();
+            this.clip = clip;
+        }
+
+        // Is the note already edited? Remove it.
+        for (final GridStep gridStep: this.notes)
+        {
+            if (gridStep.getChannel () == channel && gridStep.getStep () == step && gridStep.getNote () == note)
+            {
+                this.notes.remove (gridStep);
+                return;
+            }
+        }
+
+        this.notes.add (new GridStep (channel, step, note));
+    }
+
+
+    /** {@inheritDoc} */
+    @Override
+    public List<GridStep> getNotes ()
+    {
+        return new ArrayList<> (this.notes);
     }
 
 
@@ -126,169 +157,17 @@ public class EditNoteMode extends BaseMode
     @Override
     public void onKnobValue (final int index, final int value)
     {
-        if (this.clip == null)
-            return;
-
-        final int idx = index < 0 ? this.selectedParam : index;
-
-        final boolean hasMCUDisplay = this.surface.getMaschine ().hasMCUDisplay ();
-        final IStepInfo stepInfo = this.clip.getStep (this.channel, this.step, this.note);
-
-        switch (idx + 10 * this.selectedPage)
+        for (final GridStep noteInfo: this.notes)
         {
-            case DURATION:
-            case DURATION2:
-            case DURATION3:
-            case DURATION4:
-            case DURATION5:
-            case DURATION6:
-                this.clip.changeStepDuration (this.channel, this.step, this.note, value);
-                if (!hasMCUDisplay)
-                    this.mvHelper.delayDisplay ( () -> "Duration: " + StringUtils.formatMeasures (this.model.getTransport ().getQuartersPerMeasure (), stepInfo.getDuration (), 0, true));
-                break;
+            final int channel = noteInfo.getChannel ();
+            final int step = noteInfo.getStep ();
+            final int note = noteInfo.getNote ();
 
-            case VELOCITY:
-            case VELOCITY2:
-                this.clip.changeStepVelocity (this.channel, this.step, this.note, value);
-                if (!hasMCUDisplay)
-                    this.mvHelper.delayDisplay ( () -> "Velocity: " + StringUtils.formatPercentage (stepInfo.getVelocity ()));
-                break;
-
-            case GAIN:
-                if (this.host.supports (Capability.NOTE_EDIT_EXPRESSIONS))
-                {
-                    this.clip.changeStepGain (this.channel, this.step, this.note, value);
-                    if (!hasMCUDisplay)
-                        this.mvHelper.delayDisplay ( () -> "Gain: " + StringUtils.formatPercentage (stepInfo.getGain ()));
-                }
-                break;
-
-            case PANORAMA:
-                if (this.host.supports (Capability.NOTE_EDIT_EXPRESSIONS))
-                {
-                    this.clip.changeStepPan (this.channel, this.step, this.note, value);
-                    if (!hasMCUDisplay)
-                        this.mvHelper.delayDisplay ( () -> "Panorama: " + StringUtils.formatPercentage (stepInfo.getPan () * 2.0 - 1.0));
-                }
-                break;
-
-            case PITCH:
-                if (this.host.supports (Capability.NOTE_EDIT_EXPRESSIONS))
-                {
-                    this.clip.changeStepTranspose (this.channel, this.step, this.note, value);
-                    if (!hasMCUDisplay)
-                        this.mvHelper.delayDisplay ( () -> "Pitch: " + String.format ("%.1f", Double.valueOf (stepInfo.getTranspose () * 48.0 - 24.0)));
-                }
-                break;
-
-            case PRESSURE:
-                if (this.host.supports (Capability.NOTE_EDIT_EXPRESSIONS))
-                {
-                    this.clip.changeStepPressure (this.channel, this.step, this.note, value);
-                    if (!hasMCUDisplay)
-                        this.mvHelper.delayDisplay ( () -> "Pressure: " + StringUtils.formatPercentage (stepInfo.getPressure ()));
-                }
-                break;
-
-            case TIMBRE:
-                if (this.host.supports (Capability.NOTE_EDIT_EXPRESSIONS))
-                {
-                    this.clip.changeStepTimbre (this.channel, this.step, this.note, value);
-                    if (!hasMCUDisplay)
-                        this.mvHelper.delayDisplay ( () -> "Timbre: " + StringUtils.formatPercentage (stepInfo.getTimbre ()));
-                }
-                break;
-
-            case VELOCITY_SPREAD:
-                if (this.host.supports (Capability.NOTE_EDIT_VELOCITY_SPREAD))
-                {
-                    this.clip.changeVelocitySpread (this.channel, this.step, this.note, value);
-                    if (!hasMCUDisplay)
-                        this.mvHelper.delayDisplay ( () -> "Velocity Spread: " + StringUtils.formatPercentage (stepInfo.getVelocitySpread ()));
-                }
-                break;
-
-            case RELEASE_VELOCITY:
-                if (this.host.supports (Capability.NOTE_EDIT_RELEASE_VELOCITY))
-                {
-                    this.clip.changeStepReleaseVelocity (this.channel, this.step, this.note, value);
-                    if (!hasMCUDisplay)
-                        this.mvHelper.delayDisplay ( () -> "Release Velocity: " + StringUtils.formatPercentage (stepInfo.getReleaseVelocity ()));
-                }
-                break;
-
-            case CHANCE:
-                if (this.host.supports (Capability.NOTE_EDIT_CHANCE))
-                {
-                    this.clip.changeChance (this.channel, this.step, this.note, value);
-                    if (!hasMCUDisplay)
-                        this.mvHelper.delayDisplay ( () -> "Chance: " + StringUtils.formatPercentage (stepInfo.getChance ()));
-                }
-                break;
-
-            case OCCURRENCE:
-                if (this.host.supports (Capability.NOTE_EDIT_OCCURRENCE))
-                {
-                    final boolean increase = this.model.getValueChanger ().isIncrease (value);
-                    this.clip.setPrevNextOccurrence (this.channel, this.step, this.note, increase);
-                    if (!hasMCUDisplay)
-                        this.mvHelper.delayDisplay ( () -> "Occurrence: " + StringUtils.optimizeName (stepInfo.getOccurrence ().getName (), 8));
-                }
-                break;
-
-            case VELOCITY_END:
-                if (this.host.supports (Capability.NOTE_EDIT_REPEAT))
-                {
-                    this.clip.changeRepeatVelocityEnd (this.channel, this.step, this.note, value);
-                    if (!hasMCUDisplay)
-                        this.mvHelper.delayDisplay ( () -> "Velocity End: " + StringUtils.formatPercentage (stepInfo.getRepeatVelocityEnd ()));
-                }
-                break;
-
-            case VELOCITY_CURVE:
-                if (this.host.supports (Capability.NOTE_EDIT_REPEAT))
-                {
-                    this.clip.changeRepeatVelocityCurve (this.channel, this.step, this.note, value);
-                    if (!hasMCUDisplay)
-                        this.mvHelper.delayDisplay ( () -> "Velocity Curve: " + StringUtils.formatPercentage (stepInfo.getRepeatVelocityCurve ()));
-                }
-                break;
-
-            case COUNT:
-                if (this.host.supports (Capability.NOTE_EDIT_REPEAT))
-                {
-                    this.clip.changeRepeatCount (this.channel, this.step, this.note, value);
-                    if (!hasMCUDisplay)
-                        this.mvHelper.delayDisplay ( () -> "Repeat Count: " + stepInfo.getFormattedRepeatCount ());
-                }
-                break;
-
-            case CURVE:
-                if (this.host.supports (Capability.NOTE_EDIT_REPEAT))
-                {
-                    this.clip.changeRepeatCurve (this.channel, this.step, this.note, value);
-                    if (!hasMCUDisplay)
-                        this.mvHelper.delayDisplay ( () -> "Repeat Curve: " + StringUtils.formatPercentage (stepInfo.getRepeatCurve ()));
-                }
-                break;
-
-            default:
-                return;
-        }
-    }
-
-
-    /** {@inheritDoc} */
-    @Override
-    public void onKnobTouch (final int index, final boolean isTouched)
-    {
-        if (this.clip == null)
-            return;
-
-        if (isTouched && this.surface.isDeletePressed ())
-        {
-            this.surface.setTriggerConsumed (ButtonID.DELETE);
             final int idx = index < 0 ? this.selectedParam : index;
+
+            final boolean hasMCUDisplay = this.surface.getMaschine ().hasMCUDisplay ();
+            final IStepInfo stepInfo = this.clip.getStep (channel, step, note);
+
             switch (idx + 10 * this.selectedPage)
             {
                 case DURATION:
@@ -297,87 +176,252 @@ public class EditNoteMode extends BaseMode
                 case DURATION4:
                 case DURATION5:
                 case DURATION6:
-                    this.clip.updateStepDuration (this.channel, this.step, this.note, 1.0);
+                    this.clip.changeStepDuration (channel, step, note, value);
+                    if (!hasMCUDisplay)
+                        this.mvHelper.delayDisplay ( () -> "Duration: " + StringUtils.formatMeasures (this.model.getTransport ().getQuartersPerMeasure (), stepInfo.getDuration (), 0, true));
                     break;
 
                 case VELOCITY:
                 case VELOCITY2:
-                    this.clip.updateStepVelocity (this.channel, this.step, this.note, 1.0);
+                    this.clip.changeStepVelocity (channel, step, note, value);
+                    if (!hasMCUDisplay)
+                        this.mvHelper.delayDisplay ( () -> "Velocity: " + StringUtils.formatPercentage (stepInfo.getVelocity ()));
                     break;
 
                 case GAIN:
                     if (this.host.supports (Capability.NOTE_EDIT_EXPRESSIONS))
-                        this.clip.updateStepGain (this.channel, this.step, this.note, 0.5);
+                    {
+                        this.clip.changeStepGain (channel, step, note, value);
+                        if (!hasMCUDisplay)
+                            this.mvHelper.delayDisplay ( () -> "Gain: " + StringUtils.formatPercentage (stepInfo.getGain ()));
+                    }
                     break;
 
                 case PANORAMA:
                     if (this.host.supports (Capability.NOTE_EDIT_EXPRESSIONS))
-                        this.clip.updateStepPan (this.channel, this.step, this.note, 0);
+                    {
+                        this.clip.changeStepPan (channel, step, note, value);
+                        if (!hasMCUDisplay)
+                            this.mvHelper.delayDisplay ( () -> "Panorama: " + StringUtils.formatPercentage (stepInfo.getPan () * 2.0 - 1.0));
+                    }
                     break;
 
                 case PITCH:
                     if (this.host.supports (Capability.NOTE_EDIT_EXPRESSIONS))
-                        this.clip.updateStepTranspose (this.channel, this.step, this.note, 0);
+                    {
+                        this.clip.changeStepTranspose (channel, step, note, value);
+                        if (!hasMCUDisplay)
+                            this.mvHelper.delayDisplay ( () -> "Pitch: " + String.format ("%.1f", Double.valueOf (stepInfo.getTranspose () * 48.0 - 24.0)));
+                    }
                     break;
 
                 case PRESSURE:
                     if (this.host.supports (Capability.NOTE_EDIT_EXPRESSIONS))
-                        this.clip.updateStepPressure (this.channel, this.step, this.note, 0);
+                    {
+                        this.clip.changeStepPressure (channel, step, note, value);
+                        if (!hasMCUDisplay)
+                            this.mvHelper.delayDisplay ( () -> "Pressure: " + StringUtils.formatPercentage (stepInfo.getPressure ()));
+                    }
                     break;
 
                 case TIMBRE:
                     if (this.host.supports (Capability.NOTE_EDIT_EXPRESSIONS))
-                        this.clip.updateStepTimbre (this.channel, this.step, this.note, 0);
+                    {
+                        this.clip.changeStepTimbre (channel, step, note, value);
+                        if (!hasMCUDisplay)
+                            this.mvHelper.delayDisplay ( () -> "Timbre: " + StringUtils.formatPercentage (stepInfo.getTimbre ()));
+                    }
                     break;
 
                 case VELOCITY_SPREAD:
                     if (this.host.supports (Capability.NOTE_EDIT_VELOCITY_SPREAD))
-                        this.clip.updateVelocitySpread (this.channel, this.step, this.note, 0);
+                    {
+                        this.clip.changeVelocitySpread (channel, step, note, value);
+                        if (!hasMCUDisplay)
+                            this.mvHelper.delayDisplay ( () -> "Velocity Spread: " + StringUtils.formatPercentage (stepInfo.getVelocitySpread ()));
+                    }
                     break;
 
                 case RELEASE_VELOCITY:
                     if (this.host.supports (Capability.NOTE_EDIT_RELEASE_VELOCITY))
-                        this.clip.updateStepReleaseVelocity (this.channel, this.step, this.note, 1.0);
+                    {
+                        this.clip.changeStepReleaseVelocity (channel, step, note, value);
+                        if (!hasMCUDisplay)
+                            this.mvHelper.delayDisplay ( () -> "Release Velocity: " + StringUtils.formatPercentage (stepInfo.getReleaseVelocity ()));
+                    }
                     break;
 
                 case CHANCE:
                     if (this.host.supports (Capability.NOTE_EDIT_CHANCE))
-                        this.clip.updateChance (this.channel, this.step, this.note, 1.0);
+                    {
+                        this.clip.changeChance (channel, step, note, value);
+                        if (!hasMCUDisplay)
+                            this.mvHelper.delayDisplay ( () -> "Chance: " + StringUtils.formatPercentage (stepInfo.getChance ()));
+                    }
                     break;
 
                 case OCCURRENCE:
                     if (this.host.supports (Capability.NOTE_EDIT_OCCURRENCE))
-                        this.clip.setOccurrence (this.channel, this.step, this.note, NoteOccurrenceType.ALWAYS);
+                    {
+                        final boolean increase = this.model.getValueChanger ().isIncrease (value);
+                        this.clip.setPrevNextOccurrence (channel, step, note, increase);
+                        if (!hasMCUDisplay)
+                            this.mvHelper.delayDisplay ( () -> "Occurrence: " + StringUtils.optimizeName (stepInfo.getOccurrence ().getName (), 8));
+                    }
                     break;
 
                 case VELOCITY_END:
                     if (this.host.supports (Capability.NOTE_EDIT_REPEAT))
-                        this.clip.updateRepeatVelocityEnd (this.channel, this.step, this.note, 0);
+                    {
+                        this.clip.changeRepeatVelocityEnd (channel, step, note, value);
+                        if (!hasMCUDisplay)
+                            this.mvHelper.delayDisplay ( () -> "Velocity End: " + StringUtils.formatPercentage (stepInfo.getRepeatVelocityEnd ()));
+                    }
                     break;
 
                 case VELOCITY_CURVE:
                     if (this.host.supports (Capability.NOTE_EDIT_REPEAT))
-                        this.clip.updateRepeatVelocityCurve (this.channel, this.step, this.note, 0);
+                    {
+                        this.clip.changeRepeatVelocityCurve (channel, step, note, value);
+                        if (!hasMCUDisplay)
+                            this.mvHelper.delayDisplay ( () -> "Velocity Curve: " + StringUtils.formatPercentage (stepInfo.getRepeatVelocityCurve ()));
+                    }
                     break;
 
                 case COUNT:
                     if (this.host.supports (Capability.NOTE_EDIT_REPEAT))
-                        this.clip.updateRepeatCount (this.channel, this.step, this.note, 0);
+                    {
+                        this.clip.changeRepeatCount (channel, step, note, value);
+                        if (!hasMCUDisplay)
+                            this.mvHelper.delayDisplay ( () -> "Repeat Count: " + stepInfo.getFormattedRepeatCount ());
+                    }
                     break;
 
                 case CURVE:
                     if (this.host.supports (Capability.NOTE_EDIT_REPEAT))
-                        this.clip.updateRepeatCurve (this.channel, this.step, this.note, 0);
+                    {
+                        this.clip.changeRepeatCurve (channel, step, note, value);
+                        if (!hasMCUDisplay)
+                            this.mvHelper.delayDisplay ( () -> "Repeat Curve: " + StringUtils.formatPercentage (stepInfo.getRepeatCurve ()));
+                    }
                     break;
 
                 default:
                     return;
             }
+        }
+    }
+
+
+    /** {@inheritDoc} */
+    @Override
+    public void onKnobTouch (final int index, final boolean isTouched)
+    {
+        if (this.notes.isEmpty ())
+            return;
+
+        if (isTouched && this.surface.isDeletePressed ())
+        {
+            this.surface.setTriggerConsumed (ButtonID.DELETE);
+
+            final int idx = index < 0 ? this.selectedParam : index;
+
+            for (final GridStep noteInfo: this.notes)
+            {
+                final int channel = noteInfo.getChannel ();
+                final int step = noteInfo.getStep ();
+                final int note = noteInfo.getNote ();
+
+                switch (idx + 10 * this.selectedPage)
+                {
+                    case DURATION:
+                    case DURATION2:
+                    case DURATION3:
+                    case DURATION4:
+                    case DURATION5:
+                    case DURATION6:
+                        this.clip.updateStepDuration (channel, step, note, 1.0);
+                        break;
+
+                    case VELOCITY:
+                    case VELOCITY2:
+                        this.clip.updateStepVelocity (channel, step, note, 1.0);
+                        break;
+
+                    case GAIN:
+                        if (this.host.supports (Capability.NOTE_EDIT_EXPRESSIONS))
+                            this.clip.updateStepGain (channel, step, note, 0.5);
+                        break;
+
+                    case PANORAMA:
+                        if (this.host.supports (Capability.NOTE_EDIT_EXPRESSIONS))
+                            this.clip.updateStepPan (channel, step, note, 0);
+                        break;
+
+                    case PITCH:
+                        if (this.host.supports (Capability.NOTE_EDIT_EXPRESSIONS))
+                            this.clip.updateStepTranspose (channel, step, note, 0);
+                        break;
+
+                    case PRESSURE:
+                        if (this.host.supports (Capability.NOTE_EDIT_EXPRESSIONS))
+                            this.clip.updateStepPressure (channel, step, note, 0);
+                        break;
+
+                    case TIMBRE:
+                        if (this.host.supports (Capability.NOTE_EDIT_EXPRESSIONS))
+                            this.clip.updateStepTimbre (channel, step, note, 0);
+                        break;
+
+                    case VELOCITY_SPREAD:
+                        if (this.host.supports (Capability.NOTE_EDIT_VELOCITY_SPREAD))
+                            this.clip.updateVelocitySpread (channel, step, note, 0);
+                        break;
+
+                    case RELEASE_VELOCITY:
+                        if (this.host.supports (Capability.NOTE_EDIT_RELEASE_VELOCITY))
+                            this.clip.updateStepReleaseVelocity (channel, step, note, 1.0);
+                        break;
+
+                    case CHANCE:
+                        if (this.host.supports (Capability.NOTE_EDIT_CHANCE))
+                            this.clip.updateChance (channel, step, note, 1.0);
+                        break;
+
+                    case OCCURRENCE:
+                        if (this.host.supports (Capability.NOTE_EDIT_OCCURRENCE))
+                            this.clip.setOccurrence (channel, step, note, NoteOccurrenceType.ALWAYS);
+                        break;
+
+                    case VELOCITY_END:
+                        if (this.host.supports (Capability.NOTE_EDIT_REPEAT))
+                            this.clip.updateRepeatVelocityEnd (channel, step, note, 0);
+                        break;
+
+                    case VELOCITY_CURVE:
+                        if (this.host.supports (Capability.NOTE_EDIT_REPEAT))
+                            this.clip.updateRepeatVelocityCurve (channel, step, note, 0);
+                        break;
+
+                    case COUNT:
+                        if (this.host.supports (Capability.NOTE_EDIT_REPEAT))
+                            this.clip.updateRepeatCount (channel, step, note, 0);
+                        break;
+
+                    case CURVE:
+                        if (this.host.supports (Capability.NOTE_EDIT_REPEAT))
+                            this.clip.updateRepeatCurve (channel, step, note, 0);
+                        break;
+
+                    default:
+                        return;
+                }
+            }
             return;
         }
 
         if (isTouched)
-            this.clip.startEdit (Collections.singletonList (new GridStep (this.channel, this.step, this.note)));
+            this.clip.startEdit (this.notes);
         else
             this.clip.stopEdit ();
     }
@@ -389,9 +433,26 @@ public class EditNoteMode extends BaseMode
     {
         final ITextDisplay d = this.surface.getTextDisplay ().clear ();
 
-        final IStepInfo stepInfo = this.clip == null ? null : this.clip.getStep (this.channel, this.step, this.note);
+        if (this.notes.isEmpty ())
+        {
+            d.setBlock (0, 0, "Please select");
+            d.setBlock (0, 1, "a note...");
+            d.allDone ();
+            return;
+        }
 
-        d.setCell (0, 0, "Note").setCell (1, 0, stepInfo == null ? "-" : Integer.toString (this.step + 1) + ":" + Scales.formatNoteAndOctave (this.note, -3));
+        final GridStep noteInfo = this.notes.get (0);
+        final int channel = noteInfo.getChannel ();
+        final int step = noteInfo.getStep ();
+        final int note = noteInfo.getNote ();
+
+        final IStepInfo stepInfo = this.clip.getStep (channel, step, note);
+        d.setCell (0, 0, "Note");
+
+        if (this.notes.size () > 1)
+            d.setCell (1, 0, "*:" + this.notes.size ());
+        else
+            d.setCell (1, 0, stepInfo == null ? "-" : Integer.toString (step + 1) + ":" + Scales.formatNoteAndOctave (note, -3));
 
         d.setCell (0, 1, this.mark ("Length", DURATION + this.selectedPage * 10));
         if (stepInfo == null)

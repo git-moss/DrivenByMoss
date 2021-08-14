@@ -109,6 +109,7 @@ public class LaunchpadColorManager extends ColorManager
         this.registerColorIndex (AbstractSequencerView.COLOR_STEP_HILITE_CONTENT, LAUNCHPAD_COLOR_GREEN_HI);
         this.registerColorIndex (AbstractSequencerView.COLOR_STEP_MUTED, LAUNCHPAD_COLOR_GREY_MD);
         this.registerColorIndex (AbstractSequencerView.COLOR_STEP_MUTED_CONT, LAUNCHPAD_COLOR_GREY_LO);
+        this.registerColorIndex (AbstractSequencerView.COLOR_STEP_SELECTED, LAUNCHPAD_COLOR_WHITE);
         this.registerColorIndex (AbstractSequencerView.COLOR_NO_CONTENT, LAUNCHPAD_COLOR_BLACK);
         this.registerColorIndex (AbstractSequencerView.COLOR_CONTENT, LAUNCHPAD_COLOR_BLUE_HI);
         this.registerColorIndex (AbstractSequencerView.COLOR_CONTENT_CONT, LAUNCHPAD_COLOR_BLUE_ORCHID);

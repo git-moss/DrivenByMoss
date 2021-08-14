@@ -7,25 +7,33 @@ package de.mossgrabers.controller.ni.maschine.mk3.view;
 import de.mossgrabers.controller.ni.maschine.core.MaschineColorManager;
 import de.mossgrabers.controller.ni.maschine.mk3.MaschineConfiguration;
 import de.mossgrabers.controller.ni.maschine.mk3.controller.MaschineControlSurface;
-import de.mossgrabers.controller.ni.maschine.mk3.mode.EditNoteMode;
 import de.mossgrabers.framework.configuration.AbstractConfiguration;
 import de.mossgrabers.framework.controller.ButtonID;
+import de.mossgrabers.framework.controller.color.ColorEx;
 import de.mossgrabers.framework.controller.display.IDisplay;
 import de.mossgrabers.framework.controller.grid.IPadGrid;
 import de.mossgrabers.framework.controller.hardware.IHwButton;
+import de.mossgrabers.framework.daw.DAWColor;
 import de.mossgrabers.framework.daw.IModel;
 import de.mossgrabers.framework.daw.INoteClip;
 import de.mossgrabers.framework.daw.IStepInfo;
 import de.mossgrabers.framework.daw.StepState;
 import de.mossgrabers.framework.daw.constants.Resolution;
+import de.mossgrabers.framework.daw.data.GridStep;
+import de.mossgrabers.framework.daw.data.ITrack;
 import de.mossgrabers.framework.daw.midi.IMidiInput;
+import de.mossgrabers.framework.featuregroup.IMode;
 import de.mossgrabers.framework.featuregroup.ModeManager;
+import de.mossgrabers.framework.mode.INoteMode;
 import de.mossgrabers.framework.mode.Modes;
 import de.mossgrabers.framework.scale.Scales;
 import de.mossgrabers.framework.utils.ButtonEvent;
 import de.mossgrabers.framework.view.AbstractPlayView;
 import de.mossgrabers.framework.view.AbstractSequencerView;
 
+import java.util.Collections;
+import java.util.List;
+import java.util.Optional;
 import java.util.function.IntUnaryOperator;
 
 
@@ -36,13 +44,14 @@ import java.util.function.IntUnaryOperator;
  */
 public class PlayView extends AbstractPlayView<MaschineControlSurface, MaschineConfiguration>
 {
+    private static final int            SEQUENCER_STEPS = 16;
+
     private final DrumView              drumView;
     private final MaschineConfiguration configuration;
     private final int                   numColumns;
-    private boolean                     isShifted      = false;
-    private final int                   sequencerSteps = 16;
-    private int                         selectedNote   = -1;
-    protected IStepInfo                 copyNote;
+    private boolean                     isShifted       = false;
+    private int                         selectedNote    = -1;
+    private IStepInfo                   copyNote;
     private boolean                     isChordActive;
 
 
@@ -155,10 +164,13 @@ public class PlayView extends AbstractPlayView<MaschineControlSurface, MaschineC
     protected void drawSequencerSteps (final INoteClip clip, final boolean isActive, final int noteRow, final IntUnaryOperator yModifier)
     {
         final int step = clip.getCurrentStep ();
-        final int hiStep = this.isInXRange (step) ? step % this.sequencerSteps : -1;
-        final int editMidiChannel = this.configuration.getMidiEditChannel ();
+        final int hiStep = this.isInXRange (step) ? step % PlayView.SEQUENCER_STEPS : -1;
+        final int channel = this.configuration.getMidiEditChannel ();
+
+        final List<GridStep> editNotes = this.getEditNotes ();
+
         final IPadGrid padGrid = this.surface.getPadGrid ();
-        for (int col = 0; col < this.sequencerSteps; col++)
+        for (int col = 0; col < PlayView.SEQUENCER_STEPS; col++)
         {
             final int x = col % this.numColumns;
             int y = col / this.numColumns;
@@ -171,9 +183,10 @@ public class PlayView extends AbstractPlayView<MaschineControlSurface, MaschineC
                 continue;
             }
 
-            final IStepInfo stepInfo = clip.getStep (editMidiChannel, col, noteRow);
+            final IStepInfo stepInfo = clip.getStep (channel, col, noteRow);
             final boolean hilite = col == hiStep;
-            padGrid.lightEx (x, y, isActive ? this.getStepColor (stepInfo, hilite, noteRow) : AbstractSequencerView.COLOR_NO_CONTENT);
+
+            padGrid.lightEx (x, y, this.getStepColor (isActive, stepInfo, hilite, channel, col, noteRow, editNotes));
         }
     }
 
@@ -196,34 +209,47 @@ public class PlayView extends AbstractPlayView<MaschineControlSurface, MaschineC
     /**
      * Get the color for a step.
      *
+     * @param isActive If the sequencer is active
      * @param stepInfo The information about the step
      * @param hilite The step should be highlighted
+     * @param channel The MIDI channel
+     * @param step The step of the note
      * @param note The note of the step
+     * @param editNotes The currently edited notes
      * @return The color
      */
-    protected String getStepColor (final IStepInfo stepInfo, final boolean hilite, final int note)
+    protected String getStepColor (final boolean isActive, final IStepInfo stepInfo, final boolean hilite, final int channel, final int step, final int note, final List<GridStep> editNotes)
     {
+        if (!isActive)
+            return AbstractSequencerView.COLOR_NO_CONTENT;
+
+        final Optional<ITrack> track = this.model.getCurrentTrackBank ().getSelectedItem ();
+
         switch (stepInfo.getState ())
         {
             case START:
                 if (hilite)
                     return AbstractSequencerView.COLOR_STEP_HILITE_CONTENT;
+                if (isEdit (channel, step, note, editNotes))
+                    return AbstractSequencerView.COLOR_STEP_SELECTED;
                 if (stepInfo.isMuted ())
-                    return AbstractSequencerView.COLOR_STEP_MUTED_CONT;
-                return AbstractSequencerView.COLOR_CONTENT;
+                    return AbstractSequencerView.COLOR_STEP_MUTED;
+                return track.isPresent () ? DAWColor.getColorIndex (ColorEx.darker (track.get ().getColor ())) : AbstractSequencerView.COLOR_CONTENT;
 
             case CONTINUE:
                 if (hilite)
                     return AbstractSequencerView.COLOR_STEP_HILITE_CONTENT;
+                if (isEdit (channel, step, note, editNotes))
+                    return AbstractSequencerView.COLOR_STEP_SELECTED;
                 if (stepInfo.isMuted ())
-                    return AbstractSequencerView.COLOR_STEP_MUTED;
-                return AbstractSequencerView.COLOR_CONTENT_CONT;
+                    return AbstractSequencerView.COLOR_STEP_MUTED_CONT;
+                return track.isPresent () ? DAWColor.getColorIndex (ColorEx.darker (track.get ().getColor ())) : AbstractSequencerView.COLOR_CONTENT_CONT;
 
             case OFF:
             default:
                 if (hilite)
                     return AbstractSequencerView.COLOR_STEP_HILITE_NO_CONTENT;
-                return this.getPadColor (note, this.model.getCursorTrack ());
+                return AbstractSequencerView.COLOR_NO_CONTENT;
         }
     }
 
@@ -404,12 +430,18 @@ public class PlayView extends AbstractPlayView<MaschineControlSurface, MaschineC
      */
     protected boolean handleSequencerAreaButtonCombinations (final INoteClip clip, final int channel, final int step, final int note, final int velocity)
     {
-        final ModeManager modeManager = this.surface.getModeManager ();
-        if (modeManager.isActive (Modes.NOTE))
+        if (this.isButtonCombination (ButtonID.MUTE))
         {
-            final StepState isSet = clip.getStep (channel, step, note).getState ();
+            final IStepInfo noteStep = clip.getStep (channel, step, note);
+            if (noteStep.getState () == StepState.START)
+                clip.updateMuteState (channel, step, note, !noteStep.isMuted ());
+            return true;
+        }
+
+        if (this.surface.getModeManager ().isActive (Modes.NOTE))
+        {
             this.model.getHost ().showNotification ("Note " + Scales.formatNoteAndOctave (note, -3) + " - Step " + Integer.toString (step + 1));
-            ((EditNoteMode) modeManager.get (Modes.NOTE)).setValues (isSet == StepState.START ? clip : null, channel, step, note);
+            this.editNote (clip, channel, step, note, true);
             return true;
         }
 
@@ -457,5 +489,55 @@ public class PlayView extends AbstractPlayView<MaschineControlSurface, MaschineC
         this.configuration.setScale (this.scales.getScale ().getName ());
         this.configuration.setScaleBase (Scales.BASES.get (this.scales.getScaleOffset ()));
         this.configuration.setScaleLayout (this.scales.getScaleLayout ().getName ());
+    }
+
+
+    protected List<GridStep> getEditNotes ()
+    {
+        final ModeManager modeManager = this.surface.getModeManager ();
+        final IMode mode = modeManager.get (Modes.NOTE);
+        if (mode instanceof final INoteMode noteMode)
+            return noteMode.getNotes ();
+        return Collections.emptyList ();
+    }
+
+
+    protected static boolean isEdit (final int channel, final int step, final int note, final List<GridStep> editNotes)
+    {
+        for (final GridStep editNote: editNotes)
+        {
+            if (editNote.getChannel () == channel && editNote.getStep () == step && editNote.getNote () == note)
+                return true;
+        }
+        return false;
+    }
+
+
+    /**
+     * Show edit mode and set or add note.
+     *
+     * @param clip The MIDI clip
+     * @param channel The MIDI channel of the note
+     * @param step The step of the note
+     * @param mappedNote The real note
+     * @param addNote Add the note to the edited notes otherwise clear the already selected and add
+     *            only the new one
+     */
+    protected void editNote (final INoteClip clip, final int channel, final int step, final int mappedNote, final boolean addNote)
+    {
+        final StepState state = clip.getStep (channel, step, mappedNote).getState ();
+        if (state != StepState.START)
+            return;
+
+        final ModeManager modeManager = this.surface.getModeManager ();
+        final IMode mode = modeManager.get (Modes.NOTE);
+        if (mode instanceof final INoteMode noteMode)
+        {
+            if (addNote)
+                noteMode.addNote (clip, channel, step, mappedNote);
+            else
+                noteMode.setNote (clip, channel, step, mappedNote);
+            modeManager.setActive (Modes.NOTE);
+        }
     }
 }

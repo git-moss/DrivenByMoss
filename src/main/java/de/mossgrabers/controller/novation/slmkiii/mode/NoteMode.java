@@ -1018,4 +1018,12 @@ public class NoteMode extends BaseMode<IItem> implements INoteMode
         display.setPropertyColor (index, 0, color);
         display.setPropertyColor (index, 1, color);
     }
+
+
+    /** {@inheritDoc} */
+    @Override
+    public List<GridStep> getNotes ()
+    {
+        return this.notes;
+    }
 }

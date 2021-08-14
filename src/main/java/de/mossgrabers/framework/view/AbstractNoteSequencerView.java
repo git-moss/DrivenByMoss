@@ -14,10 +14,12 @@ import de.mossgrabers.framework.daw.INoteClip;
 import de.mossgrabers.framework.daw.IStepInfo;
 import de.mossgrabers.framework.daw.StepState;
 import de.mossgrabers.framework.daw.constants.Resolution;
-import de.mossgrabers.framework.daw.data.ITrack;
+import de.mossgrabers.framework.daw.data.GridStep;
 import de.mossgrabers.framework.scale.Scale;
 import de.mossgrabers.framework.scale.Scales;
 import de.mossgrabers.framework.utils.ButtonEvent;
+
+import java.util.List;
 
 
 /**
@@ -76,7 +78,7 @@ public abstract class AbstractNoteSequencerView<S extends IControlSurface<C>, C 
      * @param surface The surface
      * @param model The model
      * @param numDisplayCols The number of grid columns
-     * @param numSequencerRows The number of seuqencer rows
+     * @param numSequencerRows The number of sequencer rows
      * @param useDawColors True to use the color of the current track for coloring the octaves
      */
     protected AbstractNoteSequencerView (final String name, final S surface, final IModel model, final int numDisplayCols, final int numSequencerRows, final boolean useDawColors)
@@ -169,15 +171,22 @@ public abstract class AbstractNoteSequencerView<S extends IControlSurface<C>, C 
     protected boolean handleSequencerAreaButtonCombinations (final INoteClip clip, final int channel, final int step, final int row, final int note, final int velocity)
     {
         // Handle note duplicate function
-        final IHwButton duplicateButton = this.surface.getButton (ButtonID.DUPLICATE);
-        if (duplicateButton != null && duplicateButton.isPressed ())
+        if (this.isButtonCombination (ButtonID.DUPLICATE))
         {
-            duplicateButton.setConsumed ();
             final IStepInfo noteStep = clip.getStep (channel, step, note);
             if (noteStep.getState () == StepState.START)
                 this.copyNote = noteStep;
             else if (this.copyNote != null)
                 clip.setStep (channel, step, note, this.copyNote);
+            return true;
+        }
+
+        if (this.isButtonCombination (ButtonID.MUTE))
+        {
+            final IStepInfo stepInfo = clip.getStep (channel, step, note);
+            final StepState isSet = stepInfo.getState ();
+            if (isSet == StepState.START)
+                this.getClip ().updateMuteState (channel, step, note, !stepInfo.isMuted ());
             return true;
         }
 
@@ -257,21 +266,19 @@ public abstract class AbstractNoteSequencerView<S extends IControlSurface<C>, C 
             return;
         }
 
-        final ITrack cursorTrack = this.model.getCursorTrack ();
-
         // Steps with notes
         final INoteClip clip = this.getClip ();
         final int step = clip.getCurrentStep ();
         final int hiStep = this.isInXRange (step) ? step % this.numDisplayCols : -1;
         final int editMidiChannel = this.configuration.getMidiEditChannel ();
+        final List<GridStep> editNotes = this.getEditNotes ();
         for (int x = 0; x < this.numDisplayCols; x++)
         {
             for (int y = 0; y < this.numSequencerRows; y++)
             {
-                // 0: not set, 1: note continues playing, 2: start of note
                 final int map = this.keyManager.map (y);
                 final IStepInfo stepInfo = map < 0 ? null : clip.getStep (editMidiChannel, x, map);
-                gridPad.lightEx (x, this.numDisplayRows - 1 - y, this.getStepColor (stepInfo, x == hiStep, y, cursorTrack));
+                gridPad.lightEx (x, this.numDisplayRows - 1 - y, this.getStepColor (stepInfo, x == hiStep, editMidiChannel, x, y, map, editNotes));
             }
         }
 
@@ -294,11 +301,14 @@ public abstract class AbstractNoteSequencerView<S extends IControlSurface<C>, C 
      *
      * @param stepInfo The information about the step
      * @param hilite The step should be highlighted
+     * @param channel The MIDI channel
+     * @param step The step of the note
+     * @param pad The pad
      * @param note The note of the step
-     * @param track A track from which to use the color
+     * @param editNotes The currently edited notes
      * @return The color
      */
-    protected String getStepColor (final IStepInfo stepInfo, final boolean hilite, final int note, final ITrack track)
+    protected String getStepColor (final IStepInfo stepInfo, final boolean hilite, final int channel, final int step, final int pad, final int note, final List<GridStep> editNotes)
     {
         final StepState state = stepInfo == null ? StepState.OFF : stepInfo.getState ();
         switch (state)
@@ -306,6 +316,8 @@ public abstract class AbstractNoteSequencerView<S extends IControlSurface<C>, C 
             case START:
                 if (hilite)
                     return COLOR_STEP_HILITE_CONTENT;
+                if (isEdit (channel, step, note, editNotes))
+                    return COLOR_STEP_SELECTED;
                 if (stepInfo != null && stepInfo.isMuted ())
                     return COLOR_STEP_MUTED;
                 return COLOR_CONTENT;
@@ -313,6 +325,8 @@ public abstract class AbstractNoteSequencerView<S extends IControlSurface<C>, C 
             case CONTINUE:
                 if (hilite)
                     return COLOR_STEP_HILITE_CONTENT;
+                if (isEdit (channel, step, note, editNotes))
+                    return COLOR_STEP_SELECTED;
                 if (stepInfo != null && stepInfo.isMuted ())
                     return COLOR_STEP_MUTED_CONT;
                 return COLOR_CONTENT_CONT;
@@ -321,7 +335,7 @@ public abstract class AbstractNoteSequencerView<S extends IControlSurface<C>, C 
             default:
                 if (hilite)
                     return COLOR_STEP_HILITE_NO_CONTENT;
-                return this.getPadColor (note, this.useDawColors ? track : null);
+                return this.getPadColor (pad, this.useDawColors ? this.model.getCursorTrack () : null);
         }
     }
 

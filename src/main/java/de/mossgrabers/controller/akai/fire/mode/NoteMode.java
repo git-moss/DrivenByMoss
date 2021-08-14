@@ -20,11 +20,12 @@ import de.mossgrabers.framework.daw.data.GridStep;
 import de.mossgrabers.framework.daw.data.IItem;
 import de.mossgrabers.framework.featuregroup.AbstractMode;
 import de.mossgrabers.framework.featuregroup.IView;
+import de.mossgrabers.framework.mode.INoteMode;
 import de.mossgrabers.framework.scale.Scales;
 import de.mossgrabers.framework.utils.StringUtils;
 import de.mossgrabers.framework.view.AbstractSequencerView;
 
-import java.util.Collections;
+import java.util.ArrayList;
 import java.util.List;
 
 
@@ -33,7 +34,7 @@ import java.util.List;
  *
  * @author J&uuml;rgen Mo&szlig;graber
  */
-public class NoteMode extends AbstractMode<FireControlSurface, FireConfiguration, IItem>
+public class NoteMode extends AbstractMode<FireControlSurface, FireConfiguration, IItem> implements INoteMode
 {
     protected static final List<ContinuousID> KNOB_IDS = ContinuousID.createSequentialList (ContinuousID.KNOB1, 4);
     static
@@ -41,12 +42,9 @@ public class NoteMode extends AbstractMode<FireControlSurface, FireConfiguration
         KNOB_IDS.add (ContinuousID.VIEW_SELECTION);
     }
 
-    private final IHost host;
-
-    private INoteClip   clip    = null;
-    private int         channel = 0;
-    private int         step    = 0;
-    private int         note    = 60;
+    private final IHost          host;
+    private INoteClip            clip  = null;
+    private final List<GridStep> notes = new ArrayList<> ();
 
 
     /**
@@ -63,20 +61,52 @@ public class NoteMode extends AbstractMode<FireControlSurface, FireConfiguration
     }
 
 
-    /**
-     * Set the values.
-     *
-     * @param clip The clip to edit
-     * @param channel The MIDI channel
-     * @param step The step to edit
-     * @param note The note to edit
-     */
-    public void setValues (final INoteClip clip, final int channel, final int step, final int note)
+    /** {@inheritDoc} */
+    @Override
+    public void clearNotes ()
     {
-        this.clip = clip;
-        this.channel = channel;
-        this.step = step;
-        this.note = note;
+        this.notes.clear ();
+    }
+
+
+    /** {@inheritDoc} */
+    @Override
+    public void setNote (final INoteClip clip, final int channel, final int step, final int note)
+    {
+        this.notes.clear ();
+        this.addNote (clip, channel, step, note);
+    }
+
+
+    /** {@inheritDoc} */
+    @Override
+    public void addNote (final INoteClip clip, final int channel, final int step, final int note)
+    {
+        if (this.clip != clip)
+        {
+            this.notes.clear ();
+            this.clip = clip;
+        }
+
+        // Is the note already edited? Remove it.
+        for (final GridStep gridStep: this.notes)
+        {
+            if (gridStep.getChannel () == channel && gridStep.getStep () == step && gridStep.getNote () == note)
+            {
+                this.notes.remove (gridStep);
+                return;
+            }
+        }
+
+        this.notes.add (new GridStep (channel, step, note));
+    }
+
+
+    /** {@inheritDoc} */
+    @Override
+    public List<GridStep> getNotes ()
+    {
+        return new ArrayList<> (this.notes);
     }
 
 
@@ -90,7 +120,7 @@ public class NoteMode extends AbstractMode<FireControlSurface, FireConfiguration
         this.isKnobTouched[index] = isTouched;
         if (isTouched)
         {
-            this.clip.startEdit (Collections.singletonList (new GridStep (this.channel, this.step, this.note)));
+            this.clip.startEdit (this.notes);
             this.preventNoteDeletion ();
         }
         else
@@ -102,62 +132,66 @@ public class NoteMode extends AbstractMode<FireControlSurface, FireConfiguration
     @Override
     public void onKnobValue (final int index, final int value)
     {
-        if (this.clip == null)
-            return;
-
-        switch (index)
+        for (final GridStep noteInfo: this.notes)
         {
-            case 0:
-                if (this.surface.isPressed (ButtonID.ALT))
-                {
+            final int channel = noteInfo.getChannel ();
+            final int step = noteInfo.getStep ();
+            final int note = noteInfo.getNote ();
+
+            switch (index)
+            {
+                case 0:
+                    if (this.surface.isPressed (ButtonID.ALT))
+                    {
+                        if (this.host.supports (Capability.NOTE_EDIT_EXPRESSIONS))
+                            this.clip.changeStepPressure (channel, step, note, value);
+                    }
+                    else
+                    {
+                        if (this.host.supports (Capability.NOTE_EDIT_EXPRESSIONS))
+                            this.clip.changeStepGain (channel, step, note, value);
+                    }
+                    break;
+
+                case 1:
+                    if (this.surface.isPressed (ButtonID.ALT))
+                    {
+                        if (this.host.supports (Capability.NOTE_EDIT_EXPRESSIONS))
+                            this.clip.changeStepTimbre (channel, step, note, value);
+                    }
+                    else
+                    {
+                        if (this.host.supports (Capability.NOTE_EDIT_EXPRESSIONS))
+                            this.clip.changeStepPan (channel, step, note, value);
+                    }
+                    break;
+
+                case 2:
+                    this.clip.changeStepDuration (channel, step, note, value);
+                    break;
+
+                case 3:
+                    if (this.surface.isPressed (ButtonID.ALT))
+                    {
+                        if (this.host.supports (Capability.NOTE_EDIT_RELEASE_VELOCITY))
+                            this.clip.changeStepReleaseVelocity (channel, step, note, value);
+                    }
+                    else
+                        this.clip.changeStepVelocity (channel, step, note, value);
+                    break;
+
+                // This is the select knob
+                case 4:
                     if (this.host.supports (Capability.NOTE_EDIT_EXPRESSIONS))
-                        this.clip.changeStepPressure (this.channel, this.step, this.note, value);
-                }
-                else
-                {
-                    if (this.host.supports (Capability.NOTE_EDIT_EXPRESSIONS))
-                        this.clip.changeStepGain (this.channel, this.step, this.note, value);
-                }
-                break;
+                    {
+                        this.clip.changeStepTranspose (channel, step, note, value);
+                        this.preventNoteDeletion ();
+                    }
+                    break;
 
-            case 1:
-                if (this.surface.isPressed (ButtonID.ALT))
-                {
-                    if (this.host.supports (Capability.NOTE_EDIT_EXPRESSIONS))
-                        this.clip.changeStepTimbre (this.channel, this.step, this.note, value);
-                }
-                else
-                {
-                    if (this.host.supports (Capability.NOTE_EDIT_EXPRESSIONS))
-                        this.clip.changeStepPan (this.channel, this.step, this.note, value);
-                }
-                break;
-
-            case 2:
-                this.clip.changeStepDuration (this.channel, this.step, this.note, value);
-                break;
-
-            case 3:
-                if (this.surface.isPressed (ButtonID.ALT))
-                {
-                    if (this.host.supports (Capability.NOTE_EDIT_RELEASE_VELOCITY))
-                        this.clip.changeStepReleaseVelocity (this.channel, this.step, this.note, value);
-                }
-                else
-                    this.clip.changeStepVelocity (this.channel, this.step, this.note, value);
-                break;
-
-            // This is the select knob
-            case 4:
-                if (this.host.supports (Capability.NOTE_EDIT_EXPRESSIONS))
-                {
-                    this.clip.changeStepTranspose (this.channel, this.step, this.note, value);
-                    this.preventNoteDeletion ();
-                }
-                break;
-
-            default:
-                return;
+                default:
+                    return;
+            }
         }
     }
 
@@ -183,15 +217,23 @@ public class NoteMode extends AbstractMode<FireControlSurface, FireConfiguration
         int value = -1;
         final String desc;
 
-        if (this.clip == null)
+        if (this.notes.isEmpty ())
         {
             desc = "Select a note";
         }
         else
         {
-            desc = "Step: " + (this.step + 1) + " - " + Scales.formatNoteAndOctave (this.note, -3);
+            final GridStep noteInfo = this.notes.get (0);
+            final int channel = noteInfo.getChannel ();
+            final int step = noteInfo.getStep ();
+            final int note = noteInfo.getNote ();
 
-            final IStepInfo stepInfo = this.clip.getStep (this.channel, this.step, this.note);
+            if (this.notes.size () > 1)
+                desc = "Step: * - " + this.notes.size ();
+            else
+                desc = "Step: " + (step + 1) + " - " + Scales.formatNoteAndOctave (note, -3);
+
+            final IStepInfo stepInfo = this.clip.getStep (channel, step, note);
             final IValueChanger valueChanger = this.model.getValueChanger ();
 
             switch (this.getTouchedKnob ())
@@ -286,7 +328,14 @@ public class NoteMode extends AbstractMode<FireControlSurface, FireConfiguration
      */
     public void resetTranspose ()
     {
-        if (this.clip != null && this.host.supports (Capability.NOTE_EDIT_EXPRESSIONS))
-            this.clip.updateStepTranspose (this.channel, this.step, this.note, 0);
+        if (!this.host.supports (Capability.NOTE_EDIT_EXPRESSIONS))
+            return;
+        for (final GridStep noteInfo: this.notes)
+        {
+            final int channel = noteInfo.getChannel ();
+            final int step = noteInfo.getStep ();
+            final int note = noteInfo.getNote ();
+            this.clip.updateStepTranspose (channel, step, note, 0);
+        }
     }
 }

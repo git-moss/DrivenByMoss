@@ -13,11 +13,13 @@ import de.mossgrabers.framework.controller.grid.IPadGrid;
 import de.mossgrabers.framework.daw.IModel;
 import de.mossgrabers.framework.daw.INoteClip;
 import de.mossgrabers.framework.daw.IStepInfo;
+import de.mossgrabers.framework.daw.data.GridStep;
 import de.mossgrabers.framework.daw.data.IDrumDevice;
 import de.mossgrabers.framework.utils.ButtonEvent;
 import de.mossgrabers.framework.view.AbstractDrumView;
 import de.mossgrabers.framework.view.Views;
 
+import java.util.List;
 import java.util.Optional;
 
 
@@ -117,15 +119,17 @@ public class DrumView extends AbstractDrumView<LaunchkeyMiniMk3ControlSurface, L
         final int offsetY = this.scales.getDrumOffset ();
         final int editMidiChannel = this.configuration.getMidiEditChannel ();
         final int selPad = this.getSelectedPad ();
+        final List<GridStep> editNotes = this.getEditNotes ();
         for (int col = 0; col < DrumView.NUM_DISPLAY_COLS; col++)
         {
-            final IStepInfo stepInfo = clip.getStep (editMidiChannel, col, offsetY + selPad);
+            final int noteRow = offsetY + selPad;
+            final IStepInfo stepInfo = clip.getStep (editMidiChannel, col, noteRow);
             final boolean hilite = col == hiStep;
             final int x = col % GRID_COLUMNS;
             final int y = col / GRID_COLUMNS;
 
-            final Optional<ColorEx> rowColor = this.getDrumPadColor (primary, this.selectedPad);
-            padGrid.lightEx (x, y, this.getStepColor (stepInfo, hilite, rowColor));
+            final Optional<ColorEx> rowColor = this.getPadColor (primary, this.selectedPad);
+            padGrid.lightEx (x, y, this.getStepColor (stepInfo, hilite, rowColor, editMidiChannel, col, noteRow, editNotes));
         }
     }
 

@@ -7,7 +7,6 @@ package de.mossgrabers.controller.ni.maschine.mk3.view;
 import de.mossgrabers.controller.ni.maschine.core.MaschineColorManager;
 import de.mossgrabers.controller.ni.maschine.mk3.MaschineConfiguration;
 import de.mossgrabers.controller.ni.maschine.mk3.controller.MaschineControlSurface;
-import de.mossgrabers.controller.ni.maschine.mk3.mode.EditNoteMode;
 import de.mossgrabers.framework.controller.ButtonID;
 import de.mossgrabers.framework.controller.grid.IPadGrid;
 import de.mossgrabers.framework.daw.IModel;
@@ -135,7 +134,7 @@ public class DrumView extends AbstractDrumView<MaschineControlSurface, MaschineC
             final INoteClip clip = this.getClip ();
             final boolean isActive = this.isActive ();
             final IDrumDevice primary = this.model.getDrumDevice ();
-            this.drawSequencerSteps (clip, isActive, this.scales.getDrumOffset () + this.selectedPad, this.getDrumPadColor (primary, this.selectedPad), y -> 3 - y);
+            this.drawSequencerSteps (clip, isActive, this.scales.getDrumOffset () + this.selectedPad, this.getPadColor (primary, this.selectedPad), y -> 3 - y);
             return;
         }
 
@@ -242,16 +241,15 @@ public class DrumView extends AbstractDrumView<MaschineControlSurface, MaschineC
             final IStepInfo stepInfo = clip.getStep (channel, step, note);
             final StepState isSet = stepInfo.getState ();
             if (isSet == StepState.START)
-                this.model.getCursorClip ().updateMuteState (channel, step, note, !stepInfo.isMuted ());
+                this.getClip ().updateMuteState (channel, step, note, !stepInfo.isMuted ());
             return true;
         }
 
         final ModeManager modeManager = this.surface.getModeManager ();
         if (modeManager.isActive (Modes.NOTE))
         {
-            final StepState isSet = clip.getStep (channel, step, note).getState ();
             this.model.getHost ().showNotification ("Note " + Scales.formatNoteAndOctave (note, -3) + " - Step " + Integer.toString (step + 1));
-            ((EditNoteMode) modeManager.get (Modes.NOTE)).setValues (isSet == StepState.START ? clip : null, channel, step, note);
+            this.editNote (clip, channel, step, note, true);
             return true;
         }
 

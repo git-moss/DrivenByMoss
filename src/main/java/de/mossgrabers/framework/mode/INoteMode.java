@@ -5,6 +5,9 @@
 package de.mossgrabers.framework.mode;
 
 import de.mossgrabers.framework.daw.INoteClip;
+import de.mossgrabers.framework.daw.data.GridStep;
+
+import java.util.List;
 
 
 /**
@@ -40,4 +43,12 @@ public interface INoteMode
      * Clear all edit notes.
      */
     void clearNotes ();
+
+
+    /**
+     * Get the currently edited notes.
+     *
+     * @return The notes
+     */
+    List<GridStep> getNotes ();
 }
