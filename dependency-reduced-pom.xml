@@ -4,7 +4,7 @@
   <groupId>de.mossgrabers</groupId>
   <artifactId>DrivenByMoss</artifactId>
   <name>DrivenByMoss</name>
-  <version>13.6.0</version>
+  <version>13.6.1</version>
   <build>
     <plugins>
       <plugin>
@@ -19,7 +19,7 @@
             <configuration>
               <rules>
                 <requireMavenVersion>
-                  <version>3.6.3</version>
+                  <version>3.8.2</version>
                 </requireMavenVersion>
               </rules>
             </configuration>
@@ -139,14 +139,14 @@
       <url>file:///${project.basedir}/maven-local-repository</url>
     </repository>
     <repository>
-      <id>bitwig</id>
-      <name>Bitwig Maven Repository</name>
-      <url>https://maven.bitwig.com</url>
-    </repository>
-    <repository>
       <id>MavenCentral</id>
       <name>Maven Central Repository</name>
       <url>https://mvnrepository.com</url>
+    </repository>
+    <repository>
+      <id>bitwig</id>
+      <name>Bitwig Maven Repository</name>
+      <url>https://maven.bitwig.com</url>
     </repository>
   </repositories>
   <dependencies>

@@ -452,9 +452,8 @@ public abstract class AbstractSessionView<S extends IControlSurface<C>, C extend
         if (slot.hasContent ())
         {
             final int blinkColor = this.clipColorHasContent.getBlinkColor ();
-            if (blinkColor > 0 && this.useClipColor && colorIndex != null)
-                return new LightInfo (cm.getColorIndex (colorIndex), slot.isSelected () ? blinkColor : -1, this.clipColorHasContent.isFast ());
-            return new LightInfo (this.clipColorHasContent.getColor (), slot.isSelected () ? blinkColor : -1, this.clipColorHasContent.isFast ());
+            final int color = this.useClipColor && colorIndex != null ? cm.getColorIndex (colorIndex) : this.clipColorHasContent.getColor ();
+            return new LightInfo (color, slot.isSelected () ? blinkColor : -1, this.clipColorHasContent.isFast ());
         }
 
         return isArmed && this.surface.getConfiguration ().isDrawRecordStripe () ? this.clipColorIsRecArmed : this.clipColorHasNoContent;
