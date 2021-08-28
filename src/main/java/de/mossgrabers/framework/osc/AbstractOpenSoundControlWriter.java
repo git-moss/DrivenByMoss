@@ -199,8 +199,8 @@ public abstract class AbstractOpenSoundControlWriter implements IOpenSoundContro
         final List<?> list;
         if (value instanceof final List<?> l)
             list = l;
-        else if (value instanceof Boolean)
-            list = Collections.singletonList (Integer.valueOf (((Boolean) value).booleanValue () ? 1 : 0));
+        else if (value instanceof final Boolean booleanValue)
+            list = Collections.singletonList (Integer.valueOf (booleanValue.booleanValue () ? 1 : 0));
         else
             list = Collections.singletonList (value);
 

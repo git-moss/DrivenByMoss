@@ -8,8 +8,10 @@ import de.mossgrabers.bitwig.framework.BitwigSetupFactory;
 import de.mossgrabers.bitwig.framework.configuration.SettingsUIImpl;
 import de.mossgrabers.bitwig.framework.daw.HostImpl;
 import de.mossgrabers.bitwig.framework.extension.AbstractControllerExtensionDefinition;
+import de.mossgrabers.controller.novation.launchkey.mini.LaunchkeyMiniMk3Configuration;
 import de.mossgrabers.controller.novation.launchkey.mini.LaunchkeyMiniMk3ControllerDefinition;
 import de.mossgrabers.controller.novation.launchkey.mini.LaunchkeyMiniMk3ControllerSetup;
+import de.mossgrabers.controller.novation.launchkey.mini.controller.LaunchkeyMiniMk3ControlSurface;
 import de.mossgrabers.framework.controller.IControllerSetup;
 
 import com.bitwig.extension.controller.api.ControllerHost;
@@ -20,7 +22,7 @@ import com.bitwig.extension.controller.api.ControllerHost;
  *
  * @author J&uuml;rgen Mo&szlig;graber
  */
-public class LaunchkeyMiniMk3ControllerExtensionDefinition extends AbstractControllerExtensionDefinition
+public class LaunchkeyMiniMk3ControllerExtensionDefinition extends AbstractControllerExtensionDefinition<LaunchkeyMiniMk3ControlSurface, LaunchkeyMiniMk3Configuration>
 {
     private static final LaunchkeyMiniMk3ControllerDefinition DEFINITION = new LaunchkeyMiniMk3ControllerDefinition ();
 
@@ -36,7 +38,7 @@ public class LaunchkeyMiniMk3ControllerExtensionDefinition extends AbstractContr
 
     /** {@inheritDoc} */
     @Override
-    protected IControllerSetup<?, ?> getControllerSetup (final ControllerHost host)
+    protected IControllerSetup<LaunchkeyMiniMk3ControlSurface, LaunchkeyMiniMk3Configuration> getControllerSetup (final ControllerHost host)
     {
         return new LaunchkeyMiniMk3ControllerSetup (new HostImpl (host), new BitwigSetupFactory (host), new SettingsUIImpl (host, host.getPreferences ()), new SettingsUIImpl (host, host.getDocumentState ()));
     }

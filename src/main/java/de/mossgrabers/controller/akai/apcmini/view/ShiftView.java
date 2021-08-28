@@ -165,7 +165,7 @@ public class ShiftView extends AbstractView<APCminiControlSurface, APCminiConfig
                 this.surface.getDisplay ().notify ("Start/Stop");
                 break;
             case 55:
-                this.model.getTransport ().record ();
+                this.model.getTransport ().startRecording ();
                 this.surface.getDisplay ().notify ("Record");
                 break;
             case 47:

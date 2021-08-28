@@ -82,7 +82,7 @@ public class ConfiguredRecordCommand<S extends IControlSurface<C>, C extends Con
         switch (recordMode)
         {
             case RECORD_ARRANGER:
-                this.model.getTransport ().record ();
+                this.model.getTransport ().startRecording ();
                 break;
             case RECORD_CLIP:
                 final Optional<ISlot> slot = this.model.getSelectedSlot ();
@@ -90,7 +90,7 @@ public class ConfiguredRecordCommand<S extends IControlSurface<C>, C extends Con
                     return;
                 final ISlot s = slot.get ();
                 if (!s.isRecording ())
-                    s.record ();
+                    s.startRecording ();
                 s.launch ();
                 break;
             case NEW_CLIP:

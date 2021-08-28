@@ -102,7 +102,7 @@ public class EmptySlot extends EmptyItem implements ISlot
 
     /** {@inheritDoc} */
     @Override
-    public void record ()
+    public void startRecording ()
     {
         // Intentionally empty
     }

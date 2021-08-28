@@ -272,7 +272,7 @@ public class ModelImpl extends AbstractModel
     public void recordNoteClip (final ITrack track, final ISlot slot)
     {
         if (!slot.isRecording ())
-            slot.record ();
+            slot.startRecording ();
         slot.launch ();
     }
 

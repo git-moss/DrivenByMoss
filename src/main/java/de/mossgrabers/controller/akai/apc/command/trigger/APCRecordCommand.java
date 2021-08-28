@@ -36,7 +36,7 @@ public class APCRecordCommand extends NewCommand<APCControlSurface, APCConfigura
     public void executeNormal (final ButtonEvent event)
     {
         if (event == ButtonEvent.DOWN)
-            this.model.getTransport ().record ();
+            this.model.getTransport ().startRecording ();
     }
 
 

@@ -6,7 +6,6 @@ package de.mossgrabers.framework.parameterprovider.track;
 
 import de.mossgrabers.framework.daw.IModel;
 import de.mossgrabers.framework.daw.data.IParameter;
-import de.mossgrabers.framework.daw.data.bank.ITrackBank;
 
 
 /**
@@ -17,17 +16,6 @@ import de.mossgrabers.framework.daw.data.bank.ITrackBank;
  */
 public class CrossfadeParameterProvider extends AbstractTrackParameterProvider
 {
-    /**
-     * Constructor.
-     *
-     * @param bank The bank from which to get the parameters
-     */
-    public CrossfadeParameterProvider (final ITrackBank bank)
-    {
-        super (bank);
-    }
-
-
     /**
      * Constructor.
      *

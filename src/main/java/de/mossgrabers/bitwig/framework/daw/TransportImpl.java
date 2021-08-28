@@ -173,7 +173,7 @@ public class TransportImpl implements ITransport
 
     /** {@inheritDoc} */
     @Override
-    public void record ()
+    public void startRecording ()
     {
         this.transport.record ();
     }

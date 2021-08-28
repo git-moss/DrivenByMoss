@@ -8,8 +8,10 @@ import de.mossgrabers.bitwig.framework.BitwigSetupFactory;
 import de.mossgrabers.bitwig.framework.configuration.SettingsUIImpl;
 import de.mossgrabers.bitwig.framework.daw.HostImpl;
 import de.mossgrabers.bitwig.framework.extension.AbstractControllerExtensionDefinition;
+import de.mossgrabers.controller.ni.maschine.jam.MaschineJamConfiguration;
 import de.mossgrabers.controller.ni.maschine.jam.MaschineJamControllerDefinition;
 import de.mossgrabers.controller.ni.maschine.jam.MaschineJamControllerSetup;
+import de.mossgrabers.controller.ni.maschine.jam.controller.MaschineJamControlSurface;
 import de.mossgrabers.framework.controller.IControllerSetup;
 
 import com.bitwig.extension.controller.api.ControllerHost;
@@ -20,7 +22,7 @@ import com.bitwig.extension.controller.api.ControllerHost;
  *
  * @author J&uuml;rgen Mo&szlig;graber
  */
-public class MaschineJamExtensionDefinition extends AbstractControllerExtensionDefinition
+public class MaschineJamExtensionDefinition extends AbstractControllerExtensionDefinition<MaschineJamControlSurface, MaschineJamConfiguration>
 {
     /**
      * Constructor.
@@ -33,7 +35,7 @@ public class MaschineJamExtensionDefinition extends AbstractControllerExtensionD
 
     /** {@inheritDoc} */
     @Override
-    protected IControllerSetup<?, ?> getControllerSetup (final ControllerHost host)
+    protected IControllerSetup<MaschineJamControlSurface, MaschineJamConfiguration> getControllerSetup (final ControllerHost host)
     {
         return new MaschineJamControllerSetup (new HostImpl (host), new BitwigSetupFactory (host), new SettingsUIImpl (host, host.getPreferences ()), new SettingsUIImpl (host, host.getDocumentState ()));
     }

@@ -47,12 +47,11 @@ public class NoteMode extends BaseMode<IItem> implements INoteMode
 
 
     private final IHost          host;
-    private Page                 page            = Page.NOTE;
-    private INoteClip            clip            = null;
-    private final List<GridStep> notes           = new ArrayList<> ();
-    private long                 lastValueChange = 0;
-    private boolean              started         = false;
-    private final Object         startLock       = new Object ();
+    private Page                 page      = Page.NOTE;
+    private INoteClip            clip      = null;
+    private final List<GridStep> notes     = new ArrayList<> ();
+    private boolean              started   = false;
+    private final Object         startLock = new Object ();
 
 
     /**
@@ -413,10 +412,11 @@ public class NoteMode extends BaseMode<IItem> implements INoteMode
         }
 
         // Ugly workaround for knobs not having touch support...
-        this.lastValueChange = System.currentTimeMillis ();
+        final long lastValueChange = System.currentTimeMillis ();
+
         this.host.scheduleTask ( () -> {
 
-            if (System.currentTimeMillis () - this.lastValueChange > 400)
+            if (System.currentTimeMillis () - lastValueChange > 400)
             {
                 synchronized (this.startLock)
                 {

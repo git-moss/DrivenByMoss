@@ -207,7 +207,7 @@ public class TransportHandler extends AbstractHandler
             // Transport: Toggle Record
             case TRANSPORT_TOGGLE_RECORD:
                 if (isButtonPressed)
-                    this.model.getTransport ().record ();
+                    this.model.getTransport ().startRecording ();
                 break;
 
             // Transport: Toggle Arranger Overdub

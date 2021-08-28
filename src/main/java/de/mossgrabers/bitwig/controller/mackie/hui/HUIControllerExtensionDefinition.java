@@ -8,8 +8,10 @@ import de.mossgrabers.bitwig.framework.BitwigSetupFactory;
 import de.mossgrabers.bitwig.framework.configuration.SettingsUIImpl;
 import de.mossgrabers.bitwig.framework.daw.HostImpl;
 import de.mossgrabers.bitwig.framework.extension.AbstractControllerExtensionDefinition;
+import de.mossgrabers.controller.mackie.hui.HUIConfiguration;
 import de.mossgrabers.controller.mackie.hui.HUIControllerDefinition;
 import de.mossgrabers.controller.mackie.hui.HUIControllerSetup;
+import de.mossgrabers.controller.mackie.hui.controller.HUIControlSurface;
 import de.mossgrabers.framework.controller.IControllerSetup;
 
 import com.bitwig.extension.controller.api.ControllerHost;
@@ -20,7 +22,7 @@ import com.bitwig.extension.controller.api.ControllerHost;
  *
  * @author J&uuml;rgen Mo&szlig;graber
  */
-public class HUIControllerExtensionDefinition extends AbstractControllerExtensionDefinition
+public class HUIControllerExtensionDefinition extends AbstractControllerExtensionDefinition<HUIControlSurface, HUIConfiguration>
 {
     private final int numHUIDevices;
 
@@ -39,7 +41,7 @@ public class HUIControllerExtensionDefinition extends AbstractControllerExtensio
 
     /** {@inheritDoc} */
     @Override
-    protected IControllerSetup<?, ?> getControllerSetup (final ControllerHost host)
+    protected IControllerSetup<HUIControlSurface, HUIConfiguration> getControllerSetup (final ControllerHost host)
     {
         return new HUIControllerSetup (new HostImpl (host), new BitwigSetupFactory (host), new SettingsUIImpl (host, host.getPreferences ()), new SettingsUIImpl (host, host.getDocumentState ()), this.numHUIDevices);
     }

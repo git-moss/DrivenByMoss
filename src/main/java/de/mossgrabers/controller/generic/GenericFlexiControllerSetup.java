@@ -402,14 +402,12 @@ public class GenericFlexiControllerSetup extends AbstractControllerSetup<Generic
     private boolean testSendIndication (final Set<FlexiCommand> commands, final FlexiCommand [] allCommands, final int trackIndex, final boolean hasTrackSel, final int sendPageSize, final int sendIndex)
     {
         final ModeManager modeManager = this.getSurface ().getModeManager ();
-        if (hasTrackSel)
-        {
-            if (commands.contains (allCommands[FlexiCommand.TRACK_SELECTED_SET_SEND_1.ordinal () + sendIndex]) || modeManager.isActive (Modes.TRACK) && sendIndex < 6)
-                return true;
-        }
+        if (hasTrackSel && commands.contains (allCommands[FlexiCommand.TRACK_SELECTED_SET_SEND_1.ordinal () + sendIndex]) || modeManager.isActive (Modes.TRACK) && sendIndex < 6)
+            return true;
         if (commands.contains (allCommands[FlexiCommand.TRACK_1_SET_SEND_1.ordinal () + sendIndex * sendPageSize + trackIndex]))
             return true;
         return modeManager.isActive (Modes.get (Modes.SEND1, sendIndex));
+
     }
 
 

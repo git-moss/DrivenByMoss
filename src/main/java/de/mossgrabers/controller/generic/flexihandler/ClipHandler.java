@@ -137,7 +137,7 @@ public class ClipHandler extends AbstractHandler
                 {
                     final Optional<ISlot> selectedSlot = this.model.getSelectedSlot ();
                     if (selectedSlot.isPresent ())
-                        selectedSlot.get ().record ();
+                        selectedSlot.get ().startRecording ();
                 }
                 break;
 

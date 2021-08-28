@@ -57,7 +57,7 @@ public interface ITransport extends IObserverManagement
     /**
      * Start arranger recording.
      */
-    void record ();
+    void startRecording ();
 
 
     /**

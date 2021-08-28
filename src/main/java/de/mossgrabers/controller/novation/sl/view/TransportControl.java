@@ -76,7 +76,7 @@ public class TransportControl
 
             case 5:
                 if (event == ButtonEvent.DOWN)
-                    this.model.getTransport ().record ();
+                    this.model.getTransport ().startRecording ();
                 break;
 
             case 6:

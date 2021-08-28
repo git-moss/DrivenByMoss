@@ -96,7 +96,7 @@ public class ShiftView extends AbstractView<BeatstepControlSurface, BeatstepConf
 
             // Record
             case 1:
-                this.model.getTransport ().record ();
+                this.model.getTransport ().startRecording ();
                 break;
 
             // Repeat

@@ -57,6 +57,6 @@ public class RecordCommand<S extends IControlSurface<C>, C extends Configuration
         if (isShiftPressed && !flipRecord || !isShiftPressed && flipRecord)
             this.model.getTransport ().toggleLauncherOverdub ();
         else
-            this.model.getTransport ().record ();
+            this.model.getTransport ().startRecording ();
     }
 }

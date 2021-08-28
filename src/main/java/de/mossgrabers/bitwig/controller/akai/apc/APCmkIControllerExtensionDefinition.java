@@ -8,8 +8,10 @@ import de.mossgrabers.bitwig.framework.BitwigSetupFactory;
 import de.mossgrabers.bitwig.framework.configuration.SettingsUIImpl;
 import de.mossgrabers.bitwig.framework.daw.HostImpl;
 import de.mossgrabers.bitwig.framework.extension.AbstractControllerExtensionDefinition;
+import de.mossgrabers.controller.akai.apc.APCConfiguration;
 import de.mossgrabers.controller.akai.apc.APCControllerDefinition;
 import de.mossgrabers.controller.akai.apc.APCControllerSetup;
+import de.mossgrabers.controller.akai.apc.controller.APCControlSurface;
 import de.mossgrabers.framework.controller.IControllerSetup;
 
 import com.bitwig.extension.controller.api.ControllerHost;
@@ -20,7 +22,7 @@ import com.bitwig.extension.controller.api.ControllerHost;
  *
  * @author J&uuml;rgen Mo&szlig;graber
  */
-public class APCmkIControllerExtensionDefinition extends AbstractControllerExtensionDefinition
+public class APCmkIControllerExtensionDefinition extends AbstractControllerExtensionDefinition<APCControlSurface, APCConfiguration>
 {
     /**
      * Constructor.
@@ -33,7 +35,7 @@ public class APCmkIControllerExtensionDefinition extends AbstractControllerExten
 
     /** {@inheritDoc} */
     @Override
-    protected IControllerSetup<?, ?> getControllerSetup (final ControllerHost host)
+    protected IControllerSetup<APCControlSurface, APCConfiguration> getControllerSetup (final ControllerHost host)
     {
         return new APCControllerSetup (new HostImpl (host), new BitwigSetupFactory (host), new SettingsUIImpl (host, host.getPreferences ()), new SettingsUIImpl (host, host.getDocumentState ()), false);
     }
