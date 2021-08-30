@@ -19,7 +19,7 @@
             <configuration>
               <rules>
                 <requireMavenVersion>
-                  <version>3.8.2</version>
+                  <version>3.8.1</version>
                 </requireMavenVersion>
               </rules>
             </configuration>
@@ -130,6 +130,30 @@
         <configuration>
           <generateBackupPoms>false</generateBackupPoms>
         </configuration>
+      </plugin>
+      <plugin>
+        <artifactId>maven-clean-plugin</artifactId>
+        <version>3.1.0</version>
+      </plugin>
+      <plugin>
+        <artifactId>maven-resources-plugin</artifactId>
+        <version>3.2.0</version>
+      </plugin>
+      <plugin>
+        <artifactId>maven-deploy-plugin</artifactId>
+        <version>3.0.0-M1</version>
+      </plugin>
+      <plugin>
+        <artifactId>maven-install-plugin</artifactId>
+        <version>3.0.0-M1</version>
+      </plugin>
+      <plugin>
+        <artifactId>maven-site-plugin</artifactId>
+        <version>3.9.1</version>
+      </plugin>
+      <plugin>
+        <artifactId>maven-surefire-plugin</artifactId>
+        <version>3.0.0-M5</version>
       </plugin>
     </plugins>
   </build>
