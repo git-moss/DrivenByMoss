@@ -91,7 +91,7 @@ public class ShiftView extends AbstractView<BeatstepControlSurface, BeatstepConf
         {
             // Play
             case 0:
-                this.playCommand.executeNormal (ButtonEvent.DOWN);
+                this.playCommand.executeNormal (ButtonEvent.UP);
                 break;
 
             // Record
