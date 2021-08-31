@@ -3,12 +3,13 @@
   <groupId>de.mossgrabers</groupId>
   <artifactId>nativefilechooser</artifactId>
   <versioning>
-    <release>1.2</release>
+    <release>1.3</release>
     <versions>
       <version>1.0</version>
       <version>1.1</version>
       <version>1.2</version>
+      <version>1.3</version>
     </versions>
-    <lastUpdated>20210825193627</lastUpdated>
+    <lastUpdated>20210831190645</lastUpdated>
   </versioning>
 </metadata>
