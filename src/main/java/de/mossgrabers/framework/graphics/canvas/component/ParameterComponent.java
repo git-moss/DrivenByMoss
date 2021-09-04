@@ -117,7 +117,7 @@ public class ParameterComponent extends MenuComponent
      */
     public ParameterComponent (final String menuName, final boolean isMenuSelected, final String name, final ChannelType type, final ColorEx color, final boolean isSelected, final String paramName, final int paramValue, final int modulatedParamValue, final String paramValueText, final boolean isTouched)
     {
-        super (menuName, isMenuSelected, name, ChannelSelectComponent.getIcon (type), color, isSelected, true);
+        super (menuName, isMenuSelected, name, ChannelSelectComponent.getIcon (type, false), color, isSelected, true);
 
         this.paramName = paramName;
         this.paramValue = paramValue;

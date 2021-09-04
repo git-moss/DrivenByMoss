@@ -490,19 +490,24 @@ public class GenericFlexiControlSurface extends AbstractControlSurface<GenericFl
         }
 
         final IMidiOutput output = this.getMidiOutput ();
+        final int midiChannel = slot.getMidiChannel ();
+
+        // Cannot reflect "All" setting
+        if (midiChannel > 15)
+            return;
 
         switch (slot.getType ())
         {
             case CommandSlot.TYPE_NOTE:
-                output.sendNoteEx (slot.getMidiChannel (), slot.getNumber (), value);
+                output.sendNoteEx (midiChannel, slot.getNumber (), value);
                 break;
 
             case CommandSlot.TYPE_CC:
-                output.sendCCEx (slot.getMidiChannel (), slot.getNumber (), value);
+                output.sendCCEx (midiChannel, slot.getNumber (), value);
                 break;
 
             case CommandSlot.TYPE_PITCH_BEND:
-                output.sendPitchbend (slot.getMidiChannel (), 0, value);
+                output.sendPitchbend (midiChannel, 0, value);
                 break;
 
             default:

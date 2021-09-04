@@ -17,6 +17,7 @@ import de.mossgrabers.framework.controller.valuechanger.IValueChanger;
 import de.mossgrabers.framework.daw.IModel;
 import de.mossgrabers.framework.daw.IProject;
 import de.mossgrabers.framework.daw.constants.Capability;
+import de.mossgrabers.framework.daw.data.ICursorTrack;
 import de.mossgrabers.framework.daw.data.IMasterTrack;
 import de.mossgrabers.framework.daw.data.ITrack;
 import de.mossgrabers.framework.daw.data.empty.EmptyParameter;
@@ -167,12 +168,14 @@ public class MasterMode extends BaseMode<ITrack>
         final int vuR = valueChanger.toDisplayValue (enableVUMeters ? master.getVuRight () : 0);
         final int vuL = valueChanger.toDisplayValue (enableVUMeters ? master.getVuLeft () : 0);
 
-        display.addChannelElement (TAG_VOLUME, false, master.getName (), ChannelType.MASTER, master.getColor (), master.isSelected (), valueChanger.toDisplayValue (master.getVolume ()), valueChanger.toDisplayValue (master.getModulatedVolume ()), this.isKnobTouched[0] ? master.getVolumeStr (8) : "", valueChanger.toDisplayValue (master.getPan ()), valueChanger.toDisplayValue (master.getModulatedPan ()), this.isKnobTouched[1] ? master.getPanStr (8) : "", vuL, vuR, master.isMute (), master.isSolo (), master.isRecArm (), master.isActivated (), 0);
+        final ICursorTrack cursorTrack = this.model.getCursorTrack ();
+
+        display.addChannelElement (TAG_VOLUME, false, master.getName (), ChannelType.MASTER, master.getColor (), master.isSelected (), valueChanger.toDisplayValue (master.getVolume ()), valueChanger.toDisplayValue (master.getModulatedVolume ()), this.isKnobTouched[0] ? master.getVolumeStr (8) : "", valueChanger.toDisplayValue (master.getPan ()), valueChanger.toDisplayValue (master.getModulatedPan ()), this.isKnobTouched[1] ? master.getPanStr (8) : "", vuL, vuR, master.isMute (), master.isSolo (), master.isRecArm (), master.isActivated (), 0, master.isSelected () && cursorTrack.isPinned ());
         display.addChannelSelectorElement ("Pan", false, "", null, ColorEx.BLACK, false, master.isActivated ());
 
         if (this.model.getHost ().supports (Capability.CUE_VOLUME))
         {
-            display.addChannelElement ("Cue Volume", false, "Cue", ChannelType.MASTER, ColorEx.GRAY, false, valueChanger.toDisplayValue (project.getCueVolume ()), -1, this.isKnobTouched[2] ? project.getCueVolumeStr (8) : "", valueChanger.toDisplayValue (project.getCueMix ()), -1, this.isKnobTouched[3] ? project.getCueMixStr (8) : "", 0, 0, false, false, false, true, 0);
+            display.addChannelElement ("Cue Volume", false, "Cue", ChannelType.MASTER, ColorEx.GRAY, false, valueChanger.toDisplayValue (project.getCueVolume ()), -1, this.isKnobTouched[2] ? project.getCueVolumeStr (8) : "", valueChanger.toDisplayValue (project.getCueMix ()), -1, this.isKnobTouched[3] ? project.getCueMixStr (8) : "", 0, 0, false, false, false, true, 0, false);
             display.addChannelSelectorElement ("Cue Mix", false, "", null, ColorEx.BLACK, false, true);
         }
         else

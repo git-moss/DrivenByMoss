@@ -72,10 +72,11 @@ public class ChannelComponent extends ChannelSelectComponent
      * @param isArm True if recording is armed
      * @param isActive True if channel is activated
      * @param crossfadeMode The cross-fader mode: 0 = A, 1 = AB, B = 2, -1 turns it off
+     * @param isPinned True if the channel is pinned
      */
-    public ChannelComponent (final double editType, final String menuName, final boolean isMenuSelected, final String name, final ColorEx color, final boolean isSelected, final ChannelType type, final double volumeValue, final double modulatedVolumeValue, final String volumeText, final double panValue, final double modulatedPanValue, final String panText, final double vuValueLeft, final double vuValueRight, final boolean isMute, final boolean isSolo, final boolean isArm, final boolean isActive, final double crossfadeMode)
+    public ChannelComponent (final double editType, final String menuName, final boolean isMenuSelected, final String name, final ColorEx color, final boolean isSelected, final ChannelType type, final double volumeValue, final double modulatedVolumeValue, final String volumeText, final double panValue, final double modulatedPanValue, final String panText, final double vuValueLeft, final double vuValueRight, final boolean isMute, final boolean isSolo, final boolean isArm, final boolean isActive, final double crossfadeMode, final boolean isPinned)
     {
-        super (type, menuName, isMenuSelected, name, color, isSelected, isActive);
+        super (type, menuName, isMenuSelected, name, color, isSelected, isActive, isPinned);
 
         this.type = type;
         this.isActive = isActive;
@@ -379,8 +380,7 @@ public class ChannelComponent extends ChannelSelectComponent
         temp = Double.doubleToLongBits (this.vuValueLeft);
         result = prime * result + (int) (temp ^ temp >>> 32);
         temp = Double.doubleToLongBits (this.vuValueRight);
-        result = prime * result + (int) (temp ^ temp >>> 32);
-        return result;
+        return prime * result + (int) (temp ^ temp >>> 32);
     }
 
 
@@ -390,12 +390,24 @@ public class ChannelComponent extends ChannelSelectComponent
     {
         if (this == obj)
             return true;
-        if (!super.equals (obj) || this.getClass () != obj.getClass ())
+        if (!super.equals (obj) || (this.getClass () != obj.getClass ()))
             return false;
         final ChannelComponent other = (ChannelComponent) obj;
-        if (Double.doubleToLongBits (this.crossfadeMode) != Double.doubleToLongBits (other.crossfadeMode) || Double.doubleToLongBits (this.editType) != Double.doubleToLongBits (other.editType) || this.isActive != other.isActive || this.isArm != other.isArm)
+        if (Double.doubleToLongBits (this.crossfadeMode) != Double.doubleToLongBits (other.crossfadeMode))
             return false;
-        if (this.isMute != other.isMute || this.isSolo != other.isSolo || Double.doubleToLongBits (this.modulatedPanValue) != Double.doubleToLongBits (other.modulatedPanValue) || Double.doubleToLongBits (this.modulatedVolumeValue) != Double.doubleToLongBits (other.modulatedVolumeValue))
+        if (Double.doubleToLongBits (this.editType) != Double.doubleToLongBits (other.editType))
+            return false;
+        if (this.isActive != other.isActive)
+            return false;
+        if (this.isArm != other.isArm)
+            return false;
+        if (this.isMute != other.isMute)
+            return false;
+        if (this.isSolo != other.isSolo)
+            return false;
+        if (Double.doubleToLongBits (this.modulatedPanValue) != Double.doubleToLongBits (other.modulatedPanValue))
+            return false;
+        if (Double.doubleToLongBits (this.modulatedVolumeValue) != Double.doubleToLongBits (other.modulatedVolumeValue))
             return false;
         if (this.panText == null)
         {
@@ -404,7 +416,9 @@ public class ChannelComponent extends ChannelSelectComponent
         }
         else if (!this.panText.equals (other.panText))
             return false;
-        if (Double.doubleToLongBits (this.panValue) != Double.doubleToLongBits (other.panValue) || this.type != other.type)
+        if (Double.doubleToLongBits (this.panValue) != Double.doubleToLongBits (other.panValue))
+            return false;
+        if (this.type != other.type)
             return false;
         if (this.volumeText == null)
         {
@@ -413,7 +427,9 @@ public class ChannelComponent extends ChannelSelectComponent
         }
         else if (!this.volumeText.equals (other.volumeText))
             return false;
-        if (Double.doubleToLongBits (this.volumeValue) != Double.doubleToLongBits (other.volumeValue) || Double.doubleToLongBits (this.vuValueLeft) != Double.doubleToLongBits (other.vuValueLeft))
+        if (Double.doubleToLongBits (this.volumeValue) != Double.doubleToLongBits (other.volumeValue))
+            return false;
+        if (Double.doubleToLongBits (this.vuValueLeft) != Double.doubleToLongBits (other.vuValueLeft))
             return false;
         return Double.doubleToLongBits (this.vuValueRight) == Double.doubleToLongBits (other.vuValueRight);
     }
