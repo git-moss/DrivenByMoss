@@ -41,19 +41,11 @@ public class MaschineJamTapTempoCommand extends TapTempoCommand<MaschineJamContr
 
     /** {@inheritDoc} */
     @Override
-    public void executeShifted (final ButtonEvent event)
-    {
-        super.execute (event, 127);
-    }
-
-
-    /** {@inheritDoc} */
-    @Override
     public void execute (final ButtonEvent event, final int velocity)
     {
         if (this.surface.isShiftPressed ())
         {
-            this.executeShifted (event);
+            this.executeNormal (event);
             return;
         }
 

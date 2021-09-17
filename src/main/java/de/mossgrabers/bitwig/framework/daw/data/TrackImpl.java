@@ -5,6 +5,8 @@
 package de.mossgrabers.bitwig.framework.daw.data;
 
 import de.mossgrabers.bitwig.framework.daw.ApplicationImpl;
+import de.mossgrabers.bitwig.framework.daw.HostImpl;
+import de.mossgrabers.bitwig.framework.daw.ModelImpl;
 import de.mossgrabers.bitwig.framework.daw.data.bank.SlotBankImpl;
 import de.mossgrabers.framework.controller.valuechanger.IValueChanger;
 import de.mossgrabers.framework.daw.IHost;
@@ -17,6 +19,9 @@ import de.mossgrabers.framework.observer.INoteObserver;
 
 import com.bitwig.extension.controller.api.BooleanValue;
 import com.bitwig.extension.controller.api.CursorTrack;
+import com.bitwig.extension.controller.api.Device;
+import com.bitwig.extension.controller.api.DeviceBank;
+import com.bitwig.extension.controller.api.DeviceMatcher;
 import com.bitwig.extension.controller.api.PlayingNote;
 import com.bitwig.extension.controller.api.Track;
 
@@ -51,6 +56,7 @@ public class TrackImpl extends ChannelImpl implements ITrack
     private final CursorTrack        cursorTrack;
     private final IHost              host;
     private final IParameter         crossfadeParameter;
+    private final Device             drumMachineDevice;
 
 
     /**
@@ -94,6 +100,12 @@ public class TrackImpl extends ChannelImpl implements ITrack
         this.crossfadeParameter = new CrossfadeParameter (valueChanger, track, index);
         this.slotBank = new SlotBankImpl (host, valueChanger, this, track.clipLauncherSlotBank (), numScenes);
 
+        final DeviceMatcher drumMachineDeviceMatcher = ((HostImpl) host).getControllerHost ().createBitwigDeviceMatcher (ModelImpl.INSTRUMENT_DRUM_MACHINE);
+        final DeviceBank drumDeviceBank = track.createDeviceBank (1);
+        drumDeviceBank.setDeviceMatcher (drumMachineDeviceMatcher);
+        this.drumMachineDevice = drumDeviceBank.getItemAt (0);
+        this.drumMachineDevice.exists ().markInterested ();
+
         Arrays.fill (this.noteCache, NOTE_OFF);
     }
 
@@ -115,8 +127,9 @@ public class TrackImpl extends ChannelImpl implements ITrack
         Util.setIsSubscribed (this.track.canHoldAudioData (), enable);
         Util.setIsSubscribed (this.track.isStopped (), enable);
         Util.setIsSubscribed (this.track.playingNotes (), enable);
-
         this.slotBank.enableObservers (enable);
+
+        Util.setIsSubscribed (this.drumMachineDevice.exists (), enable);
     }
 
 
@@ -349,6 +362,14 @@ public class TrackImpl extends ChannelImpl implements ITrack
     {
         if (this.doesExist ())
             this.track.endOfDeviceChainInsertionPoint ().insertBitwigDevice (EqualizerDeviceImpl.ID_BITWIG_EQ_PLUS);
+    }
+
+
+    /** {@inheritDoc} */
+    @Override
+    public boolean hasDrumDevice ()
+    {
+        return this.drumMachineDevice.exists ().get ();
     }
 
 

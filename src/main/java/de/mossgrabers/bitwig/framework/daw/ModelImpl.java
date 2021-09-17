@@ -55,7 +55,8 @@ import java.util.UUID;
  */
 public class ModelImpl extends AbstractModel
 {
-    private static final UUID              INSTRUMENT_DRUM_MACHINE = UUID.fromString ("8ea97e45-0255-40fd-bc7e-94419741e9d1");
+    /** The UUID of the Drum Device. */
+    public static final UUID               INSTRUMENT_DRUM_MACHINE = UUID.fromString ("8ea97e45-0255-40fd-bc7e-94419741e9d1");
 
     private final ControllerHost           controllerHost;
     private final CursorTrack              bwCursorTrack;

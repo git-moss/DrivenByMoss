@@ -71,7 +71,6 @@ public abstract class AbstractTextDisplay implements ITextDisplay
         this.notificationMessage = this.emptyLine;
 
         this.currentMessage = new String [this.noOfLines];
-
         this.message = new String [this.noOfLines];
         this.fullRows = new String [this.noOfLines];
         this.cells = new String [this.noOfLines * this.noOfCells];

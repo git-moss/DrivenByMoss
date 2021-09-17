@@ -599,7 +599,7 @@ public class GenericFlexiConfiguration extends AbstractConfiguration
             if (slot.getCommand () != FlexiCommand.OFF && slot.getType () == type && (type == CommandSlot.TYPE_PITCH_BEND || slot.getNumber () == number))
             {
                 final int channel = slot.getMidiChannel ();
-                if ((channel == midiChannel || channel == 16))
+                if (channel == midiChannel || channel == 16)
                     return i;
             }
         }

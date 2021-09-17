@@ -5,7 +5,7 @@
 package de.mossgrabers.framework.controller.color;
 
 /**
- * Some helper constans for Color.
+ * Some helper constants for Color.
  *
  * @author J&uuml;rgen Mo&szlig;graber
  */
@@ -73,7 +73,7 @@ public class ColorEx
     /**
      * Constructor.
      *
-     * @param color The red, gree and blue components (0..1)
+     * @param color The red, green and blue components (0..1)
      */
     public ColorEx (final double [] color)
     {
@@ -178,7 +178,7 @@ public class ColorEx
     /**
      * Convert the internal color state to 3 integer RGB values.
      *
-     * @return The 3 int (0-127) values
+     * @return The 3 integer (0-127) values
      */
     public int [] toIntRGB127 ()
     {

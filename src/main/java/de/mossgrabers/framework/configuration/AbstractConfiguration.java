@@ -362,7 +362,7 @@ public abstract class AbstractConfiguration implements Configuration
     private boolean                                   enableVUMeters              = false;
     private BehaviorOnStop                            behaviorOnStop              = BehaviorOnStop.MOVE_PLAY_CURSOR;
     protected boolean                                 flipSession                 = false;
-    private boolean                                   selectClipOnLaunch          = true;
+    protected boolean                                 selectClipOnLaunch          = true;
     private boolean                                   drawRecordStripe            = true;
     private int                                       convertAftertouch           = 0;
     /** Accent button active. */

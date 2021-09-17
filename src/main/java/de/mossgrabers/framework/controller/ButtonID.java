@@ -27,6 +27,8 @@ public enum ButtonID
     FORWARD,
     /** Button loop toggle button. */
     LOOP,
+    /** Button playback follow toggle button. */
+    FOLLOW,
     /** Button to toggle the repeat button. */
     REPEAT,
     /** Button punch in button. */
@@ -66,6 +68,8 @@ public enum ButtonID
     QUANTIZE,
     /** The Audio conversion button. */
     CONVERT,
+    /** The Launch Quantization button. */
+    LAUNCH_QUANTIZATION,
 
     /** The Undo button. */
     UNDO,
@@ -179,6 +183,8 @@ public enum ButtonID
     SCENE7,
     /** The button to execute scene 8. */
     SCENE8,
+    /** The button for inserting a scene. */
+    INSERT_SCENE,
 
     /** The button for octave down. */
     OCTAVE_DOWN,
@@ -218,6 +224,8 @@ public enum ButtonID
     AUTOMATION_EDITOR,
     /** The button to toggle the device. */
     TOGGLE_DEVICE,
+    /** The button to pin the device. */
+    PIN_DEVICE,
     /** Toggle the groove parameters. */
     GROOVE,
     /** The Flip channels button. */
@@ -636,7 +644,136 @@ public enum ButtonID
     /** Pad 87. */
     PAD87,
     /** Pad 88. */
-    PAD88;
+    PAD88,
+
+    /** More pads 1. */
+    MORE_PADS1,
+    /** More pads 2. */
+    MORE_PADS2,
+    /** More pads 3. */
+    MORE_PADS3,
+    /** More pads 4. */
+    MORE_PADS4,
+    /** More pads 5. */
+    MORE_PADS5,
+    /** More pads 6. */
+    MORE_PADS6,
+    /** More pads 7. */
+    MORE_PADS7,
+    /** More pads 8. */
+    MORE_PADS8,
+    /** More pads 9. */
+    MORE_PADS9,
+    /** More pads 10. */
+    MORE_PADS10,
+    /** More pads 11. */
+    MORE_PADS11,
+    /** More pads 12. */
+    MORE_PADS12,
+    /** More pads 13. */
+    MORE_PADS13,
+    /** More pads 14. */
+    MORE_PADS14,
+    /** More pads 15. */
+    MORE_PADS15,
+    /** More pads 16. */
+    MORE_PADS16,
+    /** More pads 17. */
+    MORE_PADS17,
+    /** More pads 18. */
+    MORE_PADS18,
+    /** More pads 19. */
+    MORE_PADS19,
+    /** More pads 20. */
+    MORE_PADS20,
+    /** More pads 21. */
+    MORE_PADS21,
+    /** More pads 22. */
+    MORE_PADS22,
+    /** More pads 23. */
+    MORE_PADS23,
+    /** More pads 24. */
+    MORE_PADS24,
+    /** More pads 25. */
+    MORE_PADS25,
+    /** More pads 26. */
+    MORE_PADS26,
+    /** More pads 27. */
+    MORE_PADS27,
+    /** More pads 28. */
+    MORE_PADS28,
+    /** More pads 29. */
+    MORE_PADS29,
+    /** More pads 30. */
+    MORE_PADS30,
+    /** More pads 31. */
+    MORE_PADS31,
+    /** More pads 32. */
+    MORE_PADS32,
+    /** More pads 33. */
+    MORE_PADS33,
+    /** More pads 34. */
+    MORE_PADS34,
+    /** More pads 35. */
+    MORE_PADS35,
+    /** More pads 36. */
+    MORE_PADS36,
+    /** More pads 37. */
+    MORE_PADS37,
+    /** More pads 38. */
+    MORE_PADS38,
+    /** More pads 39. */
+    MORE_PADS39,
+    /** More pads 40. */
+    MORE_PADS40,
+    /** More pads 41. */
+    MORE_PADS41,
+    /** More pads 42. */
+    MORE_PADS42,
+    /** More pads 43. */
+    MORE_PADS43,
+    /** More pads 44. */
+    MORE_PADS44,
+    /** More pads 45. */
+    MORE_PADS45,
+    /** More pads 46. */
+    MORE_PADS46,
+    /** More pads 47. */
+    MORE_PADS47,
+    /** More pads 48. */
+    MORE_PADS48,
+    /** More pads 49. */
+    MORE_PADS49,
+    /** More pads 50. */
+    MORE_PADS50,
+    /** More pads 51. */
+    MORE_PADS51,
+    /** More pads 52. */
+    MORE_PADS52,
+    /** More pads 53. */
+    MORE_PADS53,
+    /** More pads 54. */
+    MORE_PADS54,
+    /** More pads 55. */
+    MORE_PADS55,
+    /** More pads 56. */
+    MORE_PADS56,
+    /** More pads 57. */
+    MORE_PADS57,
+    /** More pads 58. */
+    MORE_PADS58,
+    /** More pads 59. */
+    MORE_PADS59,
+    /** More pads 60. */
+    MORE_PADS60,
+    /** More pads 61. */
+    MORE_PADS61,
+    /** More pads 62. */
+    MORE_PADS62,
+    /** More pads 63. */
+    MORE_PADS63,
+    /** More pads 64. */
+    MORE_PADS64;
 
 
     /**

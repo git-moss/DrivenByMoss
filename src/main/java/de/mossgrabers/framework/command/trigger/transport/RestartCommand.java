@@ -7,53 +7,48 @@ package de.mossgrabers.framework.command.trigger.transport;
 import de.mossgrabers.framework.command.core.AbstractTriggerCommand;
 import de.mossgrabers.framework.configuration.Configuration;
 import de.mossgrabers.framework.controller.IControlSurface;
-import de.mossgrabers.framework.controller.display.IDisplay;
 import de.mossgrabers.framework.daw.IModel;
 import de.mossgrabers.framework.daw.ITransport;
 import de.mossgrabers.framework.utils.ButtonEvent;
 
 
 /**
- * Command to tap the tempo.
+ * Command to handle the restart button.
  *
  * @param <S> The type of the control surface
  * @param <C> The type of the configuration
  *
  * @author J&uuml;rgen Mo&szlig;graber
  */
-public class TapTempoCommand<S extends IControlSurface<C>, C extends Configuration> extends AbstractTriggerCommand<S, C>
+public class RestartCommand<S extends IControlSurface<C>, C extends Configuration> extends AbstractTriggerCommand<S, C>
 {
+    protected final ITransport transport;
+
+
     /**
      * Constructor.
      *
      * @param model The model
      * @param surface The surface
      */
-    public TapTempoCommand (final IModel model, final S surface)
+    public RestartCommand (final IModel model, final S surface)
     {
         super (model, surface);
+
+        this.transport = this.model.getTransport ();
     }
 
 
     /** {@inheritDoc} */
     @Override
-    public void executeNormal (final ButtonEvent event)
+    public void execute (final ButtonEvent event, final int velocity)
     {
         if (event != ButtonEvent.DOWN)
             return;
-        final ITransport transport = this.model.getTransport ();
-        transport.tapTempo ();
-        final IDisplay display = this.surface.getDisplay ();
-        if (display != null)
-            display.notify (String.format ("Tempo: %.02f", Double.valueOf (transport.getTempo ())));
-    }
 
-
-    /** {@inheritDoc} */
-    @Override
-    public void executeShifted (final ButtonEvent event)
-    {
-        if (event == ButtonEvent.UP)
-            this.model.getTransport ().toggleMetronome ();
+        if (this.transport.isPlaying ())
+            this.transport.stopAndRewind ();
+        else
+            this.transport.play ();
     }
 }

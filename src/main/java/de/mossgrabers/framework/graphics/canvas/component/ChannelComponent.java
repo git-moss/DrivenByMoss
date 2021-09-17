@@ -390,24 +390,12 @@ public class ChannelComponent extends ChannelSelectComponent
     {
         if (this == obj)
             return true;
-        if (!super.equals (obj) || (this.getClass () != obj.getClass ()))
+        if (!super.equals (obj) || this.getClass () != obj.getClass ())
             return false;
         final ChannelComponent other = (ChannelComponent) obj;
-        if (Double.doubleToLongBits (this.crossfadeMode) != Double.doubleToLongBits (other.crossfadeMode))
+        if (Double.doubleToLongBits (this.crossfadeMode) != Double.doubleToLongBits (other.crossfadeMode) || Double.doubleToLongBits (this.editType) != Double.doubleToLongBits (other.editType) || this.isActive != other.isActive || this.isArm != other.isArm)
             return false;
-        if (Double.doubleToLongBits (this.editType) != Double.doubleToLongBits (other.editType))
-            return false;
-        if (this.isActive != other.isActive)
-            return false;
-        if (this.isArm != other.isArm)
-            return false;
-        if (this.isMute != other.isMute)
-            return false;
-        if (this.isSolo != other.isSolo)
-            return false;
-        if (Double.doubleToLongBits (this.modulatedPanValue) != Double.doubleToLongBits (other.modulatedPanValue))
-            return false;
-        if (Double.doubleToLongBits (this.modulatedVolumeValue) != Double.doubleToLongBits (other.modulatedVolumeValue))
+        if ((this.isMute != other.isMute) || (this.isSolo != other.isSolo) || (Double.doubleToLongBits (this.modulatedPanValue) != Double.doubleToLongBits (other.modulatedPanValue)) || (Double.doubleToLongBits (this.modulatedVolumeValue) != Double.doubleToLongBits (other.modulatedVolumeValue)))
             return false;
         if (this.panText == null)
         {

@@ -130,7 +130,75 @@ public enum ContinuousID
     /** The modulation wheel. */
     MODULATION_WHEEL,
     /** The modulation wheel. */
-    PITCHBEND_WHEEL;
+    PITCHBEND_WHEEL,
+
+    /** Knob 1 controlling send 1. */
+    SEND1_KNOB1,
+    /** Knob 2 controlling send 1. */
+    SEND1_KNOB2,
+    /** Knob 3 controlling send 1. */
+    SEND1_KNOB3,
+    /** Knob 4 controlling send 1. */
+    SEND1_KNOB4,
+    /** Knob 5 controlling send 1. */
+    SEND1_KNOB5,
+    /** Knob 6 controlling send 1. */
+    SEND1_KNOB6,
+    /** Knob 7 controlling send 1. */
+    SEND1_KNOB7,
+    /** Knob 8 controlling send 1. */
+    SEND1_KNOB8,
+
+    /** Knob 1 controlling send 2. */
+    SEND2_KNOB1,
+    /** Knob 2 controlling send 2. */
+    SEND2_KNOB2,
+    /** Knob 3 controlling send 2. */
+    SEND2_KNOB3,
+    /** Knob 4 controlling send 2. */
+    SEND2_KNOB4,
+    /** Knob 5 controlling send 2. */
+    SEND2_KNOB5,
+    /** Knob 6 controlling send 2. */
+    SEND2_KNOB6,
+    /** Knob 7 controlling send 2. */
+    SEND2_KNOB7,
+    /** Knob 8 controlling send 2. */
+    SEND2_KNOB8,
+
+    /** Knob 1 controlling send 3. */
+    SEND3_KNOB1,
+    /** Knob 2 controlling send 3. */
+    SEND3_KNOB2,
+    /** Knob 3 controlling send 3. */
+    SEND3_KNOB3,
+    /** Knob 4 controlling send 3. */
+    SEND3_KNOB4,
+    /** Knob 5 controlling send 3. */
+    SEND3_KNOB5,
+    /** Knob 6 controlling send 3. */
+    SEND3_KNOB6,
+    /** Knob 7 controlling send 3. */
+    SEND3_KNOB7,
+    /** Knob 8 controlling send 3. */
+    SEND3_KNOB8,
+
+    /** Knob 1 controlling send 4. */
+    SEND4_KNOB1,
+    /** Knob 2 controlling send 4. */
+    SEND4_KNOB2,
+    /** Knob 3 controlling send 4. */
+    SEND4_KNOB3,
+    /** Knob 4 controlling send 4. */
+    SEND4_KNOB4,
+    /** Knob 5 controlling send 4. */
+    SEND4_KNOB5,
+    /** Knob 6 controlling send 4. */
+    SEND4_KNOB6,
+    /** Knob 7 controlling send 4. */
+    SEND4_KNOB7,
+    /** Knob 8 controlling send 4. */
+    SEND4_KNOB8;
 
 
     /**

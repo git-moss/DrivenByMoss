@@ -90,6 +90,14 @@ public class ProjectImpl implements IProject
 
     /** {@inheritDoc} */
     @Override
+    public void createScene ()
+    {
+        this.project.createScene ();
+    }
+
+
+    /** {@inheritDoc} */
+    @Override
     public void createSceneFromPlayingLauncherClips ()
     {
         this.project.createSceneFromPlayingLauncherClips ();
