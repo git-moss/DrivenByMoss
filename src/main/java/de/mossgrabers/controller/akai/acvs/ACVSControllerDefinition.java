@@ -9,6 +9,7 @@ import de.mossgrabers.framework.utils.OperatingSystem;
 import de.mossgrabers.framework.utils.Pair;
 
 import java.util.List;
+import java.util.UUID;
 
 
 /**
@@ -19,14 +20,15 @@ import java.util.List;
  */
 public class ACVSControllerDefinition extends DefaultControllerDefinition
 {
+    private static final UUID EXTENSION_ID = UUID.fromString ("CE97B67C-FFB7-4309-AFF2-45193C0C87A3");
+
+
     /**
      * Constructor.
-     *
-     * @param acvsDevice The specific device supporting the ACVS protocol
      */
-    public ACVSControllerDefinition (final ACVSDevice acvsDevice)
+    public ACVSControllerDefinition ()
     {
-        super (acvsDevice.getUuid (), acvsDevice.getName (), "Akai", 1, 1);
+        super (EXTENSION_ID, "MPC Live I/II, One, Force", "Akai", 2, 1);
     }
 
 
@@ -35,25 +37,14 @@ public class ACVSControllerDefinition extends DefaultControllerDefinition
     public List<Pair<String [], String []>> getMidiDiscoveryPairs (final OperatingSystem os)
     {
         final List<Pair<String [], String []>> midiDiscoveryPairs = super.getMidiDiscoveryPairs (os);
-        switch (os)
+        midiDiscoveryPairs.add (this.addDeviceDiscoveryPair (new String []
         {
-            case WINDOWS:
-                midiDiscoveryPairs.addAll (this.createDeviceDiscoveryPairs ("Akai Network - DAW Control"));
-                break;
-
-            case MAC:
-                // TODO Test
-                midiDiscoveryPairs.addAll (this.createDeviceDiscoveryPairs ("Akai Network - DAW Control"));
-                break;
-
-            case LINUX:
-                // Not supported
-                break;
-
-            default:
-                // Not supported
-                break;
-        }
+            "Akai Network - DAW Control",
+            "Akai Network - MIDI"
+        }, new String []
+        {
+            "Akai Network - DAW Control"
+        }));
         return midiDiscoveryPairs;
     }
 }

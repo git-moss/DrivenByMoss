@@ -62,7 +62,7 @@ import de.mossgrabers.framework.featuregroup.IMode;
 import de.mossgrabers.framework.featuregroup.ModeManager;
 import de.mossgrabers.framework.featuregroup.ViewManager;
 import de.mossgrabers.framework.mode.Modes;
-import de.mossgrabers.framework.mode.track.VolumeMode;
+import de.mossgrabers.framework.mode.track.TrackVolumeMode;
 import de.mossgrabers.framework.scale.Scales;
 import de.mossgrabers.framework.utils.ButtonEvent;
 import de.mossgrabers.framework.view.ColorView;
@@ -382,7 +382,7 @@ public class SLMkIIIControllerSetup extends AbstractControllerSetup<SLMkIIIContr
         }
 
         // Volume faders which can be turned off in the settings...
-        final VolumeMode<SLMkIIIControlSurface, SLMkIIIConfiguration> volumeMode = new VolumeMode<> (surface, this.model, true, ContinuousID.createSequentialList (ContinuousID.FADER1, 8));
+        final TrackVolumeMode<SLMkIIIControlSurface, SLMkIIIConfiguration> volumeMode = new TrackVolumeMode<> (surface, this.model, true, ContinuousID.createSequentialList (ContinuousID.FADER1, 8));
         volumeMode.onActivate ();
         this.configuration.addSettingObserver (SLMkIIIConfiguration.ENABLE_FADERS, () -> {
             if (this.configuration.areFadersEnabled ())

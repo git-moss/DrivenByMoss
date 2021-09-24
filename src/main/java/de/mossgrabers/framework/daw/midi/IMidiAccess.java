@@ -32,7 +32,7 @@ public interface IMidiAccess
      * Create a MIDI input. Uses the first input.
      *
      * @param name The name to use for the input
-     * @param filters The filters to regiser for
+     * @param filters The filters to register for
      * @return The created input
      */
     IMidiInput createInput (String name, String... filters);

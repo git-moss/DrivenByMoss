@@ -15,7 +15,7 @@ import java.util.List;
 
 
 /**
- * The configuration settings for MPC.
+ * The configuration settings for AVCS devices.
  *
  * @author J&uuml;rgen Mo&szlig;graber
  */
@@ -30,8 +30,20 @@ public class ACVSConfiguration extends AbstractConfiguration
         "Scenes"
     };
 
-    private IEnumSetting           launchClipsOrScenesSetting;
-    private boolean                launchClips;
+    private static final String [] ACVS_DEVICE;
+    static
+    {
+        final ACVSDevice [] values = ACVSDevice.values ();
+        ACVS_DEVICE = new String [values.length];
+        for (int i = 0; i < values.length; i++)
+            ACVS_DEVICE[i] = values[i].getName ();
+    }
+
+    private IEnumSetting launchClipsOrScenesSetting;
+    private boolean      launchClips;
+
+    private IEnumSetting acvsDeviceSetting;
+    private ACVSDevice   acvsDevice = ACVSDevice.MPC_LIVE_ONE;
 
 
     /**
@@ -54,9 +66,20 @@ public class ACVSConfiguration extends AbstractConfiguration
     public void init (final ISettingsUI globalSettings, final ISettingsUI documentSettings)
     {
         ///////////////////////////
-        // Transport
+        // Hardware
 
-        this.activateBehaviourOnStopSetting (globalSettings);
+        this.acvsDeviceSetting = globalSettings.getEnumSetting ("Device", CATEGORY_HARDWARE_SETUP, ACVS_DEVICE, ACVSDevice.MPC_LIVE_ONE.getName ());
+        final String acvsDeviceName = this.acvsDeviceSetting.get ();
+        final ACVSDevice [] values = ACVSDevice.values ();
+        for (final ACVSDevice value: values)
+        {
+            if (value.getName ().equals (acvsDeviceName))
+            {
+                this.acvsDevice = value;
+                break;
+            }
+        }
+        this.acvsDeviceSetting.setEnabled (false);
 
         ///////////////////////////
         // Session
@@ -66,6 +89,11 @@ public class ACVSConfiguration extends AbstractConfiguration
             this.launchClips = SCENE_CLIPS_OPTIONS[0].equals (value);
             this.notifyObservers (LAUNCH_CLIPS_OR_SCENES);
         });
+
+        ///////////////////////////
+        // Transport
+
+        this.activateBehaviourOnStopSetting (globalSettings);
 
         ///////////////////////////
         // Play and Sequence
@@ -98,5 +126,39 @@ public class ACVSConfiguration extends AbstractConfiguration
     public boolean isLaunchClips ()
     {
         return this.launchClips;
+    }
+
+
+    /**
+     * Set the active ACVS device.
+     *
+     * @param acvsDevice The ACVS device to active
+     */
+    public void setACVSActiveDevice (final ACVSDevice acvsDevice)
+    {
+        this.acvsDeviceSetting.set (acvsDevice.getName ());
+    }
+
+
+    /**
+     * Get the active ACVS device.
+     *
+     * @return The active ACVS device
+     */
+    public ACVSDevice getACVSActiveDevice ()
+    {
+        return this.acvsDevice;
+    }
+
+
+    /**
+     * Check if the given ACVS device is the one currently connected.
+     *
+     * @param acvsDevice The device to compare
+     * @return True if the given ACVS device is the active one
+     */
+    public boolean isActiveACVSDevice (final ACVSDevice acvsDevice)
+    {
+        return this.acvsDevice == acvsDevice;
     }
 }

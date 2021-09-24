@@ -11,7 +11,6 @@ import de.mossgrabers.bitwig.framework.extension.AbstractControllerExtensionDefi
 import de.mossgrabers.controller.akai.acvs.ACVSConfiguration;
 import de.mossgrabers.controller.akai.acvs.ACVSControllerDefinition;
 import de.mossgrabers.controller.akai.acvs.ACVSControllerSetup;
-import de.mossgrabers.controller.akai.acvs.ACVSDevice;
 import de.mossgrabers.controller.akai.acvs.controller.ACVSControlSurface;
 import de.mossgrabers.framework.controller.IControllerSetup;
 
@@ -19,18 +18,19 @@ import com.bitwig.extension.controller.api.ControllerHost;
 
 
 /**
- * Definition class for the Akai MPC Live I and II.
+ * Definition class for the Akai devices supporting the ACVS protocol. Currently, the MPC Live I,
+ * II, One, X and Force.
  *
  * @author J&uuml;rgen Mo&szlig;graber
  */
-public class MPCLiveControllerExtensionDefinition extends AbstractControllerExtensionDefinition<ACVSControlSurface, ACVSConfiguration>
+public class ACVSLiveControllerExtensionDefinition extends AbstractControllerExtensionDefinition<ACVSControlSurface, ACVSConfiguration>
 {
     /**
      * Constructor.
      */
-    public MPCLiveControllerExtensionDefinition ()
+    public ACVSLiveControllerExtensionDefinition ()
     {
-        super (new ACVSControllerDefinition (ACVSDevice.MPC_LIVE));
+        super (new ACVSControllerDefinition ());
     }
 
 
@@ -38,6 +38,6 @@ public class MPCLiveControllerExtensionDefinition extends AbstractControllerExte
     @Override
     protected IControllerSetup<ACVSControlSurface, ACVSConfiguration> getControllerSetup (final ControllerHost host)
     {
-        return new ACVSControllerSetup (ACVSDevice.MPC_LIVE, new HostImpl (host), new BitwigSetupFactory (host), new SettingsUIImpl (host, host.getPreferences ()), new SettingsUIImpl (host, host.getDocumentState ()));
+        return new ACVSControllerSetup (new HostImpl (host), new BitwigSetupFactory (host), new SettingsUIImpl (host, host.getPreferences ()), new SettingsUIImpl (host, host.getDocumentState ()));
     }
 }

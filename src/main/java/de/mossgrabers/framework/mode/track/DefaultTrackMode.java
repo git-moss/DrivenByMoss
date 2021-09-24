@@ -4,13 +4,16 @@
 
 package de.mossgrabers.framework.mode.track;
 
+import de.mossgrabers.framework.command.trigger.clip.TemporaryNewCommand;
 import de.mossgrabers.framework.configuration.Configuration;
+import de.mossgrabers.framework.controller.ButtonID;
 import de.mossgrabers.framework.controller.ContinuousID;
 import de.mossgrabers.framework.controller.IControlSurface;
 import de.mossgrabers.framework.daw.IModel;
 import de.mossgrabers.framework.daw.data.ITrack;
 import de.mossgrabers.framework.daw.data.bank.ITrackBank;
 import de.mossgrabers.framework.featuregroup.AbstractMode;
+import de.mossgrabers.framework.utils.ButtonEvent;
 
 import java.util.List;
 import java.util.Optional;
@@ -25,7 +28,7 @@ import java.util.function.BooleanSupplier;
  *
  * @author J&uuml;rgen Mo&szlig;graber
  */
-public class DefaultTrackMode<S extends IControlSurface<C>, C extends Configuration> extends AbstractMode<S, C, ITrack>
+public abstract class DefaultTrackMode<S extends IControlSurface<C>, C extends Configuration> extends AbstractMode<S, C, ITrack>
 {
     /**
      * Constructor.
@@ -100,5 +103,62 @@ public class DefaultTrackMode<S extends IControlSurface<C>, C extends Configurat
     {
         final ITrackBank tb = this.model.getCurrentTrackBank ();
         return index < 0 ? tb.getSelectedItem () : Optional.of (tb.getItem (index));
+    }
+
+
+    /**
+     * Test for button combinations like Delete, Duplicate and New.
+     *
+     * @param track The track to apply the button combinations
+     * @return True if a button combination was detected and the applied method was executed
+     */
+    protected boolean isButtonCombination (final ITrack track)
+    {
+        if (this.isButtonCombination (ButtonID.DELETE))
+        {
+            track.remove ();
+            return true;
+        }
+
+        if (this.isButtonCombination (ButtonID.DUPLICATE))
+        {
+            track.duplicate ();
+            return true;
+        }
+
+        if (this.isButtonCombination (ButtonID.NEW))
+        {
+            new TemporaryNewCommand<> (track.getIndex (), this.model, this.surface).execute ();
+            return true;
+        }
+
+        return false;
+    }
+
+
+    /** {@inheritDoc} */
+    @Override
+    public void onButton (final int row, final int index, final ButtonEvent event)
+    {
+        if (event != ButtonEvent.DOWN || row != 0)
+            return;
+        final Optional<ITrack> trackOpt = this.getTrack (index);
+        if (trackOpt.isEmpty ())
+            return;
+
+        final ITrack track = trackOpt.get ();
+        if (!this.isButtonCombination (track))
+            this.executeMethod (track);
+    }
+
+
+    /**
+     * Execute the button row 1 method.
+     *
+     * @param track The track for which to execute the method
+     */
+    protected void executeMethod (final ITrack track)
+    {
+        track.select ();
     }
 }

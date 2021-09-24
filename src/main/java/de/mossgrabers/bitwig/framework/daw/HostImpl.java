@@ -129,6 +129,14 @@ public class HostImpl implements IHost
 
     /** {@inheritDoc} */
     @Override
+    public void restart ()
+    {
+        this.host.restart ();
+    }
+
+
+    /** {@inheritDoc} */
+    @Override
     public void scheduleTask (final Runnable task, final long delay)
     {
         this.host.scheduleTask (task, delay);

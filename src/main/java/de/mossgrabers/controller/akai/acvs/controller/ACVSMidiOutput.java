@@ -8,6 +8,10 @@ import de.mossgrabers.controller.akai.acvs.ACVSDevice;
 import de.mossgrabers.framework.controller.color.ColorEx;
 import de.mossgrabers.framework.daw.midi.IMidiOutput;
 
+import java.util.HashMap;
+import java.util.Map;
+import java.util.Optional;
+
 
 /**
  * Wraps the MIDI output and adds helper methods for the ACVS system exclusive commands.
@@ -17,30 +21,37 @@ import de.mossgrabers.framework.daw.midi.IMidiOutput;
 public class ACVSMidiOutput implements IMidiOutput
 {
     /** The ID of the ping message. */
-    public static final int   MESSAGE_ID_PING  = 0x00;
+    public static final int                    MESSAGE_ID_PING  = 0x00;
     /** The ID of the pong message. */
-    public static final int   MESSAGE_ID_PONG  = 0x01;
+    public static final int                    MESSAGE_ID_PONG  = 0x01;
     /** The ID of the text message. */
-    public static final int   MESSAGE_ID_TEXT  = 0x10;
+    public static final int                    MESSAGE_ID_TEXT  = 0x10;
     /** The ID of the color message. */
-    public static final int   MESSAGE_ID_COLOR = 0x11;
+    public static final int                    MESSAGE_ID_COLOR = 0x11;
 
-    private final byte []     pingMessage      =
+    private static final Map<Byte, ACVSDevice> ID_DEVICE_MAP    = new HashMap<> ();
+    static
+    {
+        for (final ACVSDevice acvsDevice: ACVSDevice.values ())
+            ID_DEVICE_MAP.put (Byte.valueOf (acvsDevice.getId ()), acvsDevice);
+    }
+
+    private final byte []     pingMessage   =
     {
         (byte) 0xF0,
         0x47,
         0x00,
-        0x00,                                         // Overwritten with the device ID
+        0x3B,
         MESSAGE_ID_PING,
         (byte) 0xF7
     };
 
-    private final byte []     messageHeader    =
+    private final byte []     messageHeader =
     {
         (byte) 0xF0,
         0x47,
         0x00,
-        0x00                                          // Overwritten with the device ID
+        0x3B
     };
 
     private final IMidiOutput output;
@@ -49,15 +60,13 @@ public class ACVSMidiOutput implements IMidiOutput
     /**
      * Constructor.
      *
-     * @param acvsDevice The specific ACVS device
      * @param output The MIDI output to wrap
+     * @param acvsDevice The device to set as the active (connected) one
      */
-    public ACVSMidiOutput (final ACVSDevice acvsDevice, final IMidiOutput output)
+    public ACVSMidiOutput (final IMidiOutput output, final ACVSDevice acvsDevice)
     {
         this.output = output;
-
-        this.pingMessage[3] = acvsDevice.getId ();
-        this.messageHeader[3] = acvsDevice.getId ();
+        this.setActiveDeviceID (acvsDevice);
     }
 
 
@@ -65,22 +74,31 @@ public class ACVSMidiOutput implements IMidiOutput
      * Get the content from a ACVS message.
      *
      * @param data The system exclusive message from which to get the content
-     * @return The content or an empty array if it is not an ACVS message
+     * @return The ACVS message or null if it is not a ACVS message
      */
-    public int [] getMessageContent (final int [] data)
+    public Optional<ACVSMessage> getMessageContent (final int [] data)
     {
         final int contentLength = data.length - this.messageHeader.length - 1;
         if (contentLength <= 0 || data[data.length - 1] != 0xF7)
-            return new int [0];
+            return Optional.empty ();
+
+        ACVSDevice acvsDevice = ACVSDevice.MPC_LIVE_ONE;
+
         for (int i = 0; i < this.messageHeader.length; i++)
         {
-            if (this.messageHeader[i] != (byte) data[i])
-                return new int [0];
+            if (i == 3)
+            {
+                acvsDevice = ID_DEVICE_MAP.get (Byte.valueOf ((byte) data[i]));
+                if (acvsDevice == null)
+                    return Optional.empty ();
+            }
+            else if (this.messageHeader[i] != (byte) data[i])
+                return Optional.empty ();
         }
 
-        final int [] result = new int [contentLength];
-        System.arraycopy (data, this.messageHeader.length, result, 0, contentLength);
-        return result;
+        final int [] result = new int [contentLength - 1];
+        System.arraycopy (data, this.messageHeader.length + 1, result, 0, contentLength - 1);
+        return Optional.of (new ACVSMessage (acvsDevice, data[this.messageHeader.length], result));
     }
 
 
@@ -125,7 +143,7 @@ public class ACVSMidiOutput implements IMidiOutput
     {
         final byte [] data = new byte [5];
         // Item ID MSB / LSB
-        data[0] = (byte) (itemID >> 7 & 0x7F);
+        data[0] = (byte) (itemID >> 8 & 0x7F);
         data[1] = (byte) (itemID & 0x7F);
         // RGB
         final int [] rgb = color.toIntRGB127 ();
@@ -263,5 +281,18 @@ public class ACVSMidiOutput implements IMidiOutput
     public void sendSysex (final String data)
     {
         this.output.sendSysex (data);
+    }
+
+
+    /**
+     * Set the ID of the currently active ACVS device on the messages.
+     *
+     * @param acvsDevice The device to set as the active (connected) one
+     */
+    private void setActiveDeviceID (final ACVSDevice acvsDevice)
+    {
+        final byte id = acvsDevice.getId ();
+        this.pingMessage[3] = id;
+        this.messageHeader[3] = id;
     }
 }

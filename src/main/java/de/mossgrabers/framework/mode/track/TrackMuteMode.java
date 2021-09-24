@@ -7,6 +7,7 @@ package de.mossgrabers.framework.mode.track;
 import de.mossgrabers.framework.configuration.Configuration;
 import de.mossgrabers.framework.controller.IControlSurface;
 import de.mossgrabers.framework.daw.IModel;
+import de.mossgrabers.framework.daw.data.ITrack;
 
 
 /**
@@ -17,7 +18,7 @@ import de.mossgrabers.framework.daw.IModel;
  *
  * @author J&uuml;rgen Mo&szlig;graber
  */
-public class MuteMode<S extends IControlSurface<C>, C extends Configuration> extends DefaultTrackMode<S, C>
+public class TrackMuteMode<S extends IControlSurface<C>, C extends Configuration> extends DefaultTrackMode<S, C>
 {
     /**
      * Constructor.
@@ -25,8 +26,16 @@ public class MuteMode<S extends IControlSurface<C>, C extends Configuration> ext
      * @param surface The surface
      * @param model The model
      */
-    public MuteMode (final S surface, final IModel model)
+    public TrackMuteMode (final S surface, final IModel model)
     {
-        super ("Mute", surface, model, true);
+        super ("Track Mute", surface, model, true);
+    }
+
+
+    /** {@inheritDoc} */
+    @Override
+    protected void executeMethod (final ITrack track)
+    {
+        track.toggleMute ();
     }
 }

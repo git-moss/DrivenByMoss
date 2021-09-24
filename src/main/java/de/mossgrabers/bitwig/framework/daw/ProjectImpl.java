@@ -116,6 +116,16 @@ public class ProjectImpl implements IProject
 
     /** {@inheritDoc} */
     @Override
+    public void load ()
+    {
+        final Action action = this.application.getAction ("Open");
+        if (action != null)
+            action.invoke ();
+    }
+
+
+    /** {@inheritDoc} */
+    @Override
     public IParameter getCueVolumeParameter ()
     {
         return this.cueVolumeParameter;

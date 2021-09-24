@@ -58,7 +58,12 @@ public class ACVSDisplay extends AbstractTextDisplay
     /** Loop length. */
     public static final int                ITEM_ID_LOOP_LENGTH                  = 0x312;
 
-    private static final int               ITEM_ID_MAX                          = ITEM_ID_LOOP_LENGTH + 1;
+    /** Device parameter name for the OLED display. */
+    public static final int                ITEM_ID_DEVICE_PARAM_NAME1           = 0x1210;
+    /** Device parameter value for the display. */
+    public static final int                ITEM_ID_DEVICE_PARAM_VALUE1          = 0x122F;
+
+    private static final int               ITEM_ID_MAX                          = ITEM_ID_DEVICE_PARAM_VALUE1 + 16 + 1;
 
     private final ColorEx []               currentColor;
     private final ColorEx []               color;

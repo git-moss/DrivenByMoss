@@ -393,15 +393,11 @@ public class TransportImpl implements ITransport
     {
         switch (mode)
         {
-            case TRIM_READ:
-            case READ:
+            case TRIM_READ, READ:
                 this.transport.isArrangerAutomationWriteEnabled ().set (false);
                 break;
 
-            case WRITE:
-            case TOUCH:
-            case LATCH:
-            case LATCH_PREVIEW:
+            case WRITE, TOUCH, LATCH, LATCH_PREVIEW:
                 this.transport.isArrangerAutomationWriteEnabled ().set (true);
                 this.transport.automationWriteMode ().set (mode.getIdentifier ());
                 break;

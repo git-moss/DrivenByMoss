@@ -28,9 +28,6 @@ import de.mossgrabers.controller.novation.launchpad.definition.ILaunchpadControl
 import de.mossgrabers.controller.novation.launchpad.definition.button.ButtonSetup;
 import de.mossgrabers.controller.novation.launchpad.definition.button.LaunchpadButton;
 import de.mossgrabers.controller.novation.launchpad.definition.button.LaunchpadButtonInfo;
-import de.mossgrabers.controller.novation.launchpad.mode.RecArmMode;
-import de.mossgrabers.controller.novation.launchpad.mode.SendMode;
-import de.mossgrabers.controller.novation.launchpad.mode.StopClipMode;
 import de.mossgrabers.controller.novation.launchpad.view.ChordsView;
 import de.mossgrabers.controller.novation.launchpad.view.DeviceView;
 import de.mossgrabers.controller.novation.launchpad.view.Drum4View;
@@ -57,7 +54,6 @@ import de.mossgrabers.framework.command.trigger.Direction;
 import de.mossgrabers.framework.command.trigger.application.UndoCommand;
 import de.mossgrabers.framework.command.trigger.clip.NewCommand;
 import de.mossgrabers.framework.command.trigger.clip.QuantizeCommand;
-import de.mossgrabers.framework.command.trigger.clip.TemporaryNewCommand;
 import de.mossgrabers.framework.command.trigger.transport.MetronomeCommand;
 import de.mossgrabers.framework.command.trigger.transport.RecordCommand;
 import de.mossgrabers.framework.command.trigger.view.SelectPlayViewCommand;
@@ -87,13 +83,15 @@ import de.mossgrabers.framework.daw.midi.IMidiOutput;
 import de.mossgrabers.framework.featuregroup.IView;
 import de.mossgrabers.framework.featuregroup.ModeManager;
 import de.mossgrabers.framework.featuregroup.ViewManager;
-import de.mossgrabers.framework.mode.DummyMode;
 import de.mossgrabers.framework.mode.Modes;
-import de.mossgrabers.framework.mode.track.DefaultTrackMode;
-import de.mossgrabers.framework.mode.track.MuteMode;
-import de.mossgrabers.framework.mode.track.PanMode;
-import de.mossgrabers.framework.mode.track.SoloMode;
-import de.mossgrabers.framework.mode.track.VolumeMode;
+import de.mossgrabers.framework.mode.track.TrackMuteMode;
+import de.mossgrabers.framework.mode.track.TrackPanMode;
+import de.mossgrabers.framework.mode.track.TrackRecArmMode;
+import de.mossgrabers.framework.mode.track.TrackSelectMode;
+import de.mossgrabers.framework.mode.track.TrackSendMode;
+import de.mossgrabers.framework.mode.track.TrackSoloMode;
+import de.mossgrabers.framework.mode.track.TrackStopClipMode;
+import de.mossgrabers.framework.mode.track.TrackVolumeMode;
 import de.mossgrabers.framework.utils.ButtonEvent;
 import de.mossgrabers.framework.view.BrowserView;
 import de.mossgrabers.framework.view.TempoView;
@@ -207,15 +205,15 @@ public class LaunchpadControllerSetup extends AbstractControllerSetup<LaunchpadC
     {
         final LaunchpadControlSurface surface = this.getSurface ();
         final ModeManager modeManager = surface.getModeManager ();
-        modeManager.register (Modes.REC_ARM, new RecArmMode (surface, this.model));
-        modeManager.register (Modes.TRACK_SELECT, new DefaultTrackMode<> (Modes.NAME_TRACK, surface, this.model, true));
-        modeManager.register (Modes.MUTE, new MuteMode<> (surface, this.model));
-        modeManager.register (Modes.SOLO, new SoloMode<> (surface, this.model));
-        modeManager.register (Modes.VOLUME, new VolumeMode<> (surface, this.model, true));
-        modeManager.register (Modes.PAN, new PanMode<> (surface, this.model, true));
-        modeManager.register (Modes.SEND, new SendMode (surface, this.model));
-        modeManager.register (Modes.STOP_CLIP, new StopClipMode (surface, this.model));
-        modeManager.register (Modes.DUMMY, new DummyMode<> (surface, this.model));
+        modeManager.register (Modes.REC_ARM, new TrackRecArmMode<> (surface, this.model));
+        modeManager.register (Modes.TRACK_SELECT, new TrackSelectMode<> (surface, this.model));
+        modeManager.register (Modes.MUTE, new TrackMuteMode<> (surface, this.model));
+        modeManager.register (Modes.SOLO, new TrackSoloMode<> (surface, this.model));
+        modeManager.register (Modes.VOLUME, new TrackVolumeMode<> (surface, this.model, true));
+        modeManager.register (Modes.PAN, new TrackPanMode<> (surface, this.model, true));
+        modeManager.register (Modes.SEND, new TrackSendMode<> (-1, surface, this.model, true));
+        modeManager.register (Modes.STOP_CLIP, new TrackStopClipMode<> (surface, this.model));
+        modeManager.register (Modes.DUMMY, new TrackSelectMode<> (surface, this.model));
     }
 
 
@@ -859,31 +857,19 @@ public class LaunchpadControllerSetup extends AbstractControllerSetup<LaunchpadC
         final LaunchpadControlSurface surface = this.getSurface ();
         switch (surface.getViewManager ().getActiveID ())
         {
-            case SESSION:
-            case TRACK_VOLUME:
-            case TRACK_PAN:
-            case TRACK_SENDS:
-            case MIX:
+            case SESSION, TRACK_VOLUME, TRACK_PAN, TRACK_SENDS, MIX:
                 return LaunchpadColorManager.LAUNCHPAD_COLOR_LIME;
 
-            case PLAY:
-            case CHORDS:
-            case PIANO:
-            case DRUM64:
+            case PLAY, CHORDS, PIANO, DRUM64:
                 return LaunchpadColorManager.LAUNCHPAD_COLOR_AMBER;
 
-            case SEQUENCER:
-            case POLY_SEQUENCER:
-            case RAINDROPS:
+            case SEQUENCER, POLY_SEQUENCER, RAINDROPS:
                 return LaunchpadColorManager.LAUNCHPAD_COLOR_YELLOW;
 
-            case DRUM:
-            case DRUM4:
-            case DRUM8:
+            case DRUM, DRUM4, DRUM8:
                 return LaunchpadColorManager.LAUNCHPAD_COLOR_OCEAN_HI;
 
-            case DEVICE:
-            case BROWSER:
+            case DEVICE, BROWSER:
                 return LaunchpadColorManager.LAUNCHPAD_COLOR_TURQUOISE;
 
             case PROJECT:
@@ -894,6 +880,7 @@ public class LaunchpadControllerSetup extends AbstractControllerSetup<LaunchpadC
 
             case TEMPO:
                 return LaunchpadColorManager.LAUNCHPAD_COLOR_BLUE_HI;
+
             case SHUFFLE:
                 return LaunchpadColorManager.LAUNCHPAD_COLOR_PINK_HI;
 
@@ -905,57 +892,6 @@ public class LaunchpadControllerSetup extends AbstractControllerSetup<LaunchpadC
 
     private void handleTrackSelection (final ButtonEvent event, final int index)
     {
-        if (event != ButtonEvent.DOWN)
-            return;
-
-        final ITrack track = this.model.getCurrentTrackBank ().getItem (index);
-
-        if (this.isButtonCombination (ButtonID.DELETE))
-        {
-            track.remove ();
-            return;
-        }
-
-        if (this.isButtonCombination (ButtonID.DUPLICATE))
-        {
-            track.duplicate ();
-            return;
-        }
-
-        if (this.isButtonCombination (ButtonID.NEW))
-        {
-            new TemporaryNewCommand<> (index, this.model, this.getSurface ()).execute ();
-            return;
-        }
-
-        final ModeManager modeManager = this.getSurface ().getModeManager ();
-        if (modeManager.isActive (Modes.REC_ARM))
-            track.toggleRecArm ();
-        else if (modeManager.isActive (Modes.MUTE))
-            track.toggleMute ();
-        else if (modeManager.isActive (Modes.SOLO))
-            track.toggleSolo ();
-        else if (modeManager.isActive (Modes.STOP_CLIP))
-            track.stop ();
-        else
-            track.select ();
-    }
-
-
-    /**
-     * Tests if the button is pressed. If yes, the button UP event is consumed.
-     *
-     * @param buttonID The button to test
-     * @return True if button is pressed
-     */
-    private boolean isButtonCombination (final ButtonID buttonID)
-    {
-        final LaunchpadControlSurface surface = this.getSurface ();
-        if (surface.isPressed (buttonID))
-        {
-            surface.setTriggerConsumed (buttonID);
-            return true;
-        }
-        return false;
+        this.getSurface ().getModeManager ().getActive ().onButton (0, index, event);
     }
 }

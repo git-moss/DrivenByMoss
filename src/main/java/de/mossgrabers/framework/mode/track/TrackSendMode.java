@@ -27,7 +27,7 @@ import java.util.function.BooleanSupplier;
  *
  * @author J&uuml;rgen Mo&szlig;graber
  */
-public class SendMode<S extends IControlSurface<C>, C extends Configuration> extends DefaultTrackMode<S, C>
+public class TrackSendMode<S extends IControlSurface<C>, C extends Configuration> extends DefaultTrackMode<S, C>
 {
     protected int sendIndex;
 
@@ -41,7 +41,7 @@ public class SendMode<S extends IControlSurface<C>, C extends Configuration> ext
      * @param isAbsolute If true the value change is happening with a setter otherwise relative
      *            change method is used
      */
-    public SendMode (final int sendIndex, final S surface, final IModel model, final boolean isAbsolute)
+    public TrackSendMode (final int sendIndex, final S surface, final IModel model, final boolean isAbsolute)
     {
         this (sendIndex, surface, model, isAbsolute, null);
     }
@@ -57,7 +57,7 @@ public class SendMode<S extends IControlSurface<C>, C extends Configuration> ext
      *            change method is used
      * @param controls The IDs of the knobs or faders to control this mode
      */
-    public SendMode (final int sendIndex, final S surface, final IModel model, final boolean isAbsolute, final List<ContinuousID> controls)
+    public TrackSendMode (final int sendIndex, final S surface, final IModel model, final boolean isAbsolute, final List<ContinuousID> controls)
     {
         this (sendIndex, surface, model, isAbsolute, controls, surface::isShiftPressed);
     }
@@ -75,7 +75,7 @@ public class SendMode<S extends IControlSurface<C>, C extends Configuration> ext
      * @param isAlternativeFunction Callback function to execute the secondary function, e.g. a
      *            shift button
      */
-    public SendMode (final int sendIndex, final S surface, final IModel model, final boolean isAbsolute, final List<ContinuousID> controls, final BooleanSupplier isAlternativeFunction)
+    public TrackSendMode (final int sendIndex, final S surface, final IModel model, final boolean isAbsolute, final List<ContinuousID> controls, final BooleanSupplier isAlternativeFunction)
     {
         super ("Send", surface, model, isAbsolute, controls, isAlternativeFunction);
 

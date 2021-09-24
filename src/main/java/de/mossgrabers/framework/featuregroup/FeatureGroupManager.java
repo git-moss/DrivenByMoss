@@ -35,7 +35,7 @@ public class FeatureGroupManager<E extends Enum<E>, F extends IFeatureGroup>
 
 
     /**
-     * Construcor
+     * Constructor.
      *
      * @param clazz The specific class of the feature group
      */

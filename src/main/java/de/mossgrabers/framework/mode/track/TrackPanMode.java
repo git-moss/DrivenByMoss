@@ -5,12 +5,12 @@
 package de.mossgrabers.framework.mode.track;
 
 import de.mossgrabers.framework.configuration.Configuration;
+import de.mossgrabers.framework.controller.ButtonID;
 import de.mossgrabers.framework.controller.ContinuousID;
 import de.mossgrabers.framework.controller.IControlSurface;
 import de.mossgrabers.framework.daw.IModel;
 import de.mossgrabers.framework.daw.data.ITrack;
-import de.mossgrabers.framework.mode.Modes;
-import de.mossgrabers.framework.parameterprovider.track.VolumeParameterProvider;
+import de.mossgrabers.framework.parameterprovider.track.PanParameterProvider;
 
 import java.util.List;
 import java.util.Optional;
@@ -18,14 +18,14 @@ import java.util.function.BooleanSupplier;
 
 
 /**
- * The volume mode. The knobs control the volumes of the tracks on the current track page.
+ * The pan mode. The knobs control the panorama of the tracks on the current track page.
  *
  * @param <S> The type of the control surface
  * @param <C> The type of the configuration
  *
  * @author J&uuml;rgen Mo&szlig;graber
  */
-public class VolumeMode<S extends IControlSurface<C>, C extends Configuration> extends DefaultTrackMode<S, C>
+public class TrackPanMode<S extends IControlSurface<C>, C extends Configuration> extends DefaultTrackMode<S, C>
 {
     /**
      * Constructor.
@@ -35,7 +35,7 @@ public class VolumeMode<S extends IControlSurface<C>, C extends Configuration> e
      * @param isAbsolute If true the value change is happening with a setter otherwise relative
      *            change method is used
      */
-    public VolumeMode (final S surface, final IModel model, final boolean isAbsolute)
+    public TrackPanMode (final S surface, final IModel model, final boolean isAbsolute)
     {
         this (surface, model, isAbsolute, null);
     }
@@ -50,7 +50,7 @@ public class VolumeMode<S extends IControlSurface<C>, C extends Configuration> e
      *            change method is used
      * @param controls The IDs of the knobs or faders to control this mode
      */
-    public VolumeMode (final S surface, final IModel model, final boolean isAbsolute, final List<ContinuousID> controls)
+    public TrackPanMode (final S surface, final IModel model, final boolean isAbsolute, final List<ContinuousID> controls)
     {
         this (surface, model, isAbsolute, controls, surface::isShiftPressed);
     }
@@ -67,12 +67,12 @@ public class VolumeMode<S extends IControlSurface<C>, C extends Configuration> e
      * @param isAlternativeFunction Callback function to execute the secondary function, e.g. a
      *            shift button
      */
-    public VolumeMode (final S surface, final IModel model, final boolean isAbsolute, final List<ContinuousID> controls, final BooleanSupplier isAlternativeFunction)
+    public TrackPanMode (final S surface, final IModel model, final boolean isAbsolute, final List<ContinuousID> controls, final BooleanSupplier isAlternativeFunction)
     {
-        super (Modes.NAME_VOLUME, surface, model, isAbsolute, controls, isAlternativeFunction);
+        super ("Panorama", surface, model, isAbsolute, controls, isAlternativeFunction);
 
         if (controls != null)
-            this.setParameterProvider (new VolumeParameterProvider (model));
+            this.setParameterProvider (new PanParameterProvider (model));
     }
 
 
@@ -85,9 +85,9 @@ public class VolumeMode<S extends IControlSurface<C>, C extends Configuration> e
             return;
         final ITrack t = track.get ();
         if (this.isAbsolute)
-            t.setVolume (value);
+            t.setPan (value);
         else
-            t.changeVolume (value);
+            t.changePan (value);
     }
 
 
@@ -100,9 +100,15 @@ public class VolumeMode<S extends IControlSurface<C>, C extends Configuration> e
             return;
 
         final ITrack t = track.get ();
+        if (!t.doesExist ())
+            return;
+
         if (isTouched && this.surface.isDeletePressed ())
-            t.resetVolume ();
-        t.touchVolume (isTouched);
+        {
+            this.surface.setTriggerConsumed (ButtonID.DELETE);
+            t.resetPan ();
+        }
+        t.touchPan (isTouched);
     }
 
 
@@ -111,6 +117,6 @@ public class VolumeMode<S extends IControlSurface<C>, C extends Configuration> e
     public int getKnobValue (final int index)
     {
         final Optional<ITrack> track = this.getTrack (index);
-        return track.isEmpty () ? -1 : track.get ().getVolume ();
+        return track.isEmpty () ? -1 : track.get ().getPan ();
     }
 }

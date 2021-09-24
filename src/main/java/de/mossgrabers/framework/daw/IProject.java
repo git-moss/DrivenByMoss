@@ -57,6 +57,12 @@ public interface IProject extends IObserverManagement
 
 
     /**
+     * Show the load project dialog.
+     */
+    void load ();
+
+
+    /**
      * Get the cue mix parameter.
      *
      * @return The cue mix parameter

@@ -10,7 +10,7 @@ import de.mossgrabers.framework.controller.display.ITextDisplay;
 import de.mossgrabers.framework.daw.IModel;
 import de.mossgrabers.framework.daw.data.ITrack;
 import de.mossgrabers.framework.daw.data.bank.ITrackBank;
-import de.mossgrabers.framework.mode.track.PanMode;
+import de.mossgrabers.framework.mode.track.TrackPanMode;
 import de.mossgrabers.framework.utils.StringUtils;
 
 import java.util.Arrays;
@@ -21,7 +21,7 @@ import java.util.Arrays;
  *
  * @author J&uuml;rgen Mo&szlig;graber
  */
-public class MaschinePanMode extends PanMode<MaschineControlSurface, MaschineConfiguration>
+public class MaschinePanMode extends TrackPanMode<MaschineControlSurface, MaschineConfiguration>
 {
     /**
      * Constructor.

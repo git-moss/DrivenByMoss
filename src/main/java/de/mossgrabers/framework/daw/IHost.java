@@ -44,6 +44,12 @@ public interface IHost
 
 
     /**
+     * Restart the extension.
+     */
+    void restart ();
+
+
+    /**
      * Schedules the given task for execution after the given delay.
      *
      * @param task The task to execute
@@ -186,7 +192,7 @@ public interface IHost
 
 
     /**
-     * Get the metadata of the audiu effect which can be created.
+     * Get the metadata of the audio effect which can be created.
      *
      * @return The metadata
      */

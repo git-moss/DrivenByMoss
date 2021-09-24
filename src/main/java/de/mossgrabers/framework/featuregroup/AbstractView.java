@@ -185,23 +185,6 @@ public abstract class AbstractView<S extends IControlSurface<C>, C extends Confi
 
 
     /**
-     * Tests if the button is pressed. If yes, the button UP event is consumed.
-     *
-     * @param buttonID The button to test
-     * @return True if button is pressed
-     */
-    protected boolean isButtonCombination (final ButtonID buttonID)
-    {
-        if (this.surface.isPressed (buttonID))
-        {
-            this.surface.setTriggerConsumed (buttonID);
-            return true;
-        }
-        return false;
-    }
-
-
-    /**
      * Simulate pressing a button by sending a button down and up event.
      *
      * @param buttonID The ID of the button to trigger

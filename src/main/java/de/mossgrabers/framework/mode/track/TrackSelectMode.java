@@ -10,14 +10,14 @@ import de.mossgrabers.framework.daw.IModel;
 
 
 /**
- * The track solo mode.
+ * The track select mode.
  *
  * @param <S> The type of the control surface
  * @param <C> The type of the configuration
  *
  * @author J&uuml;rgen Mo&szlig;graber
  */
-public class SoloMode<S extends IControlSurface<C>, C extends Configuration> extends DefaultTrackMode<S, C>
+public class TrackSelectMode<S extends IControlSurface<C>, C extends Configuration> extends DefaultTrackMode<S, C>
 {
     /**
      * Constructor.
@@ -25,8 +25,8 @@ public class SoloMode<S extends IControlSurface<C>, C extends Configuration> ext
      * @param surface The surface
      * @param model The model
      */
-    public SoloMode (final S surface, final IModel model)
+    public TrackSelectMode (final S surface, final IModel model)
     {
-        super ("Solo", surface, model, true);
+        super ("Track Select", surface, model, true);
     }
 }

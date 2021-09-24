@@ -61,6 +61,40 @@ public enum ContinuousID
     /** Knob 8. */
     KNOB8,
 
+    /** Volume Knob 1. */
+    VOLUME_KNOB1,
+    /** Volume Knob 2. */
+    VOLUME_KNOB2,
+    /** Volume Knob 3. */
+    VOLUME_KNOB3,
+    /** Volume Knob 4. */
+    VOLUME_KNOB4,
+    /** Volume Knob 5. */
+    VOLUME_KNOB5,
+    /** Volume Knob 6. */
+    VOLUME_KNOB6,
+    /** Volume Knob 7. */
+    VOLUME_KNOB7,
+    /** Volume Knob 8. */
+    VOLUME_KNOB8,
+
+    /** Parameter Knob 1. */
+    PARAM_KNOB1,
+    /** Parameter Knob 2. */
+    PARAM_KNOB2,
+    /** Parameter Knob 3. */
+    PARAM_KNOB3,
+    /** Parameter Knob 4. */
+    PARAM_KNOB4,
+    /** Parameter Knob 5. */
+    PARAM_KNOB5,
+    /** Parameter Knob 6. */
+    PARAM_KNOB6,
+    /** Parameter Knob 7. */
+    PARAM_KNOB7,
+    /** Parameter Knob 8. */
+    PARAM_KNOB8,
+
     /** The tempo knob. */
     TEMPO,
     /** The play position knob. */

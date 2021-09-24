@@ -77,6 +77,8 @@ public enum ButtonID
     REDO,
     /** The button to save the current project. */
     SAVE,
+    /** The button to show the open project dialog. */
+    LOAD,
 
     /** The button for cursor arrow down. */
     ARROW_DOWN,
@@ -103,6 +105,10 @@ public enum ButtonID
     PAN_SEND,
     /** The button for sends. */
     SENDS,
+    /** The button for crossfade A. */
+    CROSSFADE_A,
+    /** The button for crossfade B. */
+    CROSSFADE_B,
     /** The Clip button. */
     CLIP,
     /** The Browse button. */
@@ -352,6 +358,40 @@ public enum ButtonID
     ROW_SELECT_7,
     /** Button select row 8 button. */
     ROW_SELECT_8,
+
+    /** Button select track 1 button. */
+    TRACK_SELECT_1,
+    /** Button select track 2 button. */
+    TRACK_SELECT_2,
+    /** Button select track 3 button. */
+    TRACK_SELECT_3,
+    /** Button select track 4 button. */
+    TRACK_SELECT_4,
+    /** Button select track 5 button. */
+    TRACK_SELECT_5,
+    /** Button select track 6 button. */
+    TRACK_SELECT_6,
+    /** Button select track 7 button. */
+    TRACK_SELECT_7,
+    /** Button select track 8 button. */
+    TRACK_SELECT_8,
+
+    /** Button assign track 1 button. */
+    TRACK_ASSIGN_1,
+    /** Button assign track 2 button. */
+    TRACK_ASSIGN_2,
+    /** Button assign track 3 button. */
+    TRACK_ASSIGN_3,
+    /** Button assign track 4 button. */
+    TRACK_ASSIGN_4,
+    /** Button assign track 5 button. */
+    TRACK_ASSIGN_5,
+    /** Button assign track 6 button. */
+    TRACK_ASSIGN_6,
+    /** Button assign track 7 button. */
+    TRACK_ASSIGN_7,
+    /** Button assign track 8 button. */
+    TRACK_ASSIGN_8,
 
     /** The automation off button. */
     AUTOMATION_OFF,

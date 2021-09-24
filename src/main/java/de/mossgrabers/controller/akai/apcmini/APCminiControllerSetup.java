@@ -38,9 +38,9 @@ import de.mossgrabers.framework.featuregroup.ModeManager;
 import de.mossgrabers.framework.featuregroup.ViewManager;
 import de.mossgrabers.framework.mode.Modes;
 import de.mossgrabers.framework.mode.device.ParameterMode;
-import de.mossgrabers.framework.mode.track.PanMode;
-import de.mossgrabers.framework.mode.track.SendMode;
-import de.mossgrabers.framework.mode.track.VolumeMode;
+import de.mossgrabers.framework.mode.track.TrackPanMode;
+import de.mossgrabers.framework.mode.track.TrackSendMode;
+import de.mossgrabers.framework.mode.track.TrackVolumeMode;
 import de.mossgrabers.framework.view.Views;
 
 import java.util.HashMap;
@@ -153,10 +153,10 @@ public class APCminiControllerSetup extends AbstractControllerSetup<APCminiContr
     {
         final APCminiControlSurface surface = this.getSurface ();
         final ModeManager modeManager = surface.getModeManager ();
-        modeManager.register (Modes.VOLUME, new VolumeMode<> (surface, this.model, true, FADER_IDS));
-        modeManager.register (Modes.PAN, new PanMode<> (surface, this.model, true, FADER_IDS));
+        modeManager.register (Modes.VOLUME, new TrackVolumeMode<> (surface, this.model, true, FADER_IDS));
+        modeManager.register (Modes.PAN, new TrackPanMode<> (surface, this.model, true, FADER_IDS));
         for (int i = 0; i < 8; i++)
-            modeManager.register (Modes.get (Modes.SEND1, i), new SendMode<> (i, surface, this.model, true, FADER_IDS));
+            modeManager.register (Modes.get (Modes.SEND1, i), new TrackSendMode<> (i, surface, this.model, true, FADER_IDS));
         modeManager.register (Modes.DEVICE_PARAMS, new ParameterMode<> (surface, this.model, true, FADER_IDS));
 
         modeManager.setDefaultID (Modes.VOLUME);

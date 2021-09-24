@@ -30,7 +30,10 @@ import de.mossgrabers.framework.daw.data.bank.ISendBank;
 import de.mossgrabers.framework.daw.data.bank.ISlotBank;
 import de.mossgrabers.framework.daw.data.bank.ITrackBank;
 import de.mossgrabers.framework.featuregroup.AbstractMode;
+import de.mossgrabers.framework.mode.Modes;
 
+import java.util.EnumMap;
+import java.util.Map;
 import java.util.Optional;
 
 
@@ -42,6 +45,17 @@ import java.util.Optional;
  */
 public class ControlMode extends AbstractMode<ACVSControlSurface, ACVSConfiguration, IChannel>
 {
+    private static final Map<Modes, Integer> MODE_COLORS = new EnumMap<> (Modes.class);
+    static
+    {
+        MODE_COLORS.put (Modes.MUTE, Integer.valueOf (ACVSColorManager.COLOR_ORANGE));
+        MODE_COLORS.put (Modes.SOLO, Integer.valueOf (ACVSColorManager.COLOR_BLUE));
+        MODE_COLORS.put (Modes.REC_ARM, Integer.valueOf (ACVSColorManager.COLOR_RED));
+        MODE_COLORS.put (Modes.STOP_CLIP, Integer.valueOf (ACVSColorManager.COLOR_GREEN));
+        MODE_COLORS.put (Modes.CROSSFADE_MODE_A, Integer.valueOf (ACVSColorManager.COLOR_LIGHT_ORANGE));
+        MODE_COLORS.put (Modes.CROSSFADE_MODE_B, Integer.valueOf (ACVSColorManager.COLOR_RED));
+    }
+
     private int currentMaxScene = 0;
 
 
@@ -62,7 +76,10 @@ public class ControlMode extends AbstractMode<ACVSControlSurface, ACVSConfigurat
     public void updateDisplay ()
     {
         final ACVSDisplay d = (ACVSDisplay) this.surface.getDisplay ();
-        final boolean isMPC = this.surface.getAcvsDevice () != ACVSDevice.FORCE;
+        final ACVSConfiguration configuration = this.surface.getConfiguration ();
+        final boolean isForce = configuration.isActiveACVSDevice (ACVSDevice.FORCE);
+        final boolean isMPC = !isForce;
+        final boolean isMPC_X = configuration.isActiveACVSDevice (ACVSDevice.MPC_X);
 
         final ITrackBank tb = this.model.getCurrentTrackBank ();
         final ICursorDevice device = this.model.getCursorDevice ();
@@ -102,7 +119,19 @@ public class ControlMode extends AbstractMode<ACVSControlSurface, ACVSConfigurat
             d.setScreenItem (ScreenItem.get (ScreenItem.DEVICE_PARAM1_ENABLED, i), param.doesExist () ? 127 : 0);
             d.setScreenItem (ScreenItem.get (ScreenItem.DEVICE_PARAM1_VALUE, i), param.getValue ());
 
-            d.setScreenItem (ScreenItem.get (ScreenItem.MPC_KNOBSTYLE1_COLOR, i), param.doesExist () ? 1 : 0);
+            if (isForce || isMPC_X)
+            {
+                d.setScreenItem (ScreenItem.get (ScreenItem.KNOBSTYLE1_COLOR, 8 + i), param.doesExist () ? 1 : 0);
+                d.setScreenItem (ScreenItem.get (ScreenItem.KNOB_VALUE1, 8 + i), param.getValue ());
+                d.setRow (ACVSDisplay.ITEM_ID_DEVICE_PARAM_NAME1 + 8 + i, param.getName ());
+                d.setRow (ACVSDisplay.ITEM_ID_DEVICE_PARAM_VALUE1 + 8 + i, param.getDisplayedValue ());
+
+                final ITrack track = tb.getItem (i);
+                d.setScreenItem (ScreenItem.get (ScreenItem.KNOBSTYLE1_COLOR, i), track.doesExist () ? 1 : 0);
+                d.setScreenItem (ScreenItem.get (ScreenItem.KNOB_VALUE1, i), track.getVolume ());
+                d.setRow (ACVSDisplay.ITEM_ID_DEVICE_PARAM_NAME1 + i, track.getName ());
+                d.setRow (ACVSDisplay.ITEM_ID_DEVICE_PARAM_VALUE1 + i, track.getVolumeStr ());
+            }
         }
 
         // Set transport data
@@ -114,9 +143,8 @@ public class ControlMode extends AbstractMode<ACVSControlSurface, ACVSConfigurat
         d.setRow (ACVSDisplay.ITEM_ID_LOOP_START, "");
         d.setRow (ACVSDisplay.ITEM_ID_LOOP_LENGTH, "");
 
-        if (isMPC)
-            this.sendAdditionalMPCParameters (d);
-        else
+        this.sendAdditionalMPCParameters (d);
+        if (!isMPC)
             this.sendAdditionalForceParameters (d);
 
         d.allDone ();
@@ -141,8 +169,9 @@ public class ControlMode extends AbstractMode<ACVSControlSurface, ACVSConfigurat
         d.setRow (ACVSDisplay.ITEM_ID_TRACK_HEADER_FIRST + trackIndex, track.getName ());
         d.setColor (ACVSDisplay.ITEM_ID_TRACK_HEADER_FIRST + trackIndex, track.getColor ());
         d.setRow (ACVSDisplay.ITEM_ID_TRACK_FADER_LEVEL_FIRST + trackIndex, track.getVolumeStr ());
-        // TODO Not showing up
-        d.setRow (ACVSDisplay.ITEM_ID_TRACK_PEAK_LEVEL_FIRST + trackIndex, "red");
+
+        // ITEM_ID_TRACK_PEAK_LEVEL_FIRST - not showing up
+
         d.setRow (ACVSDisplay.ITEM_ID_TRACK_PAN_FIRST + trackIndex, track.getPanStr ());
 
         d.setScreenItem (ScreenItem.get (ScreenItem.TRACK1_SELECT, trackIndex), track.isSelected () ? 127 : 0);
@@ -226,7 +255,8 @@ public class ControlMode extends AbstractMode<ACVSControlSurface, ACVSConfigurat
             }
             else
             {
-                // TODO Force
+                d.setScreenItem (ScreenItem.get (ScreenItem.FORCE_PAD1_STATE, position), slotState);
+                d.setScreenItem (ScreenItem.get (ScreenItem.FORCE_PAD1_COLOR, position), slotColor);
             }
         }
     }
@@ -251,55 +281,38 @@ public class ControlMode extends AbstractMode<ACVSControlSurface, ACVSConfigurat
             d.setScreenItem (ScreenItem.get (ScreenItem.SCENE1_SELECT, sceneIndex), scene.isSelected () ? 127 : 0);
         }
 
-        // Scene on pads
-        if (this.surface.getConfiguration ().isLaunchClips ())
-            return;
-
-        for (int sceneIndex = 0; sceneIndex < 4; sceneIndex++)
+        if (isMPC)
         {
-            final IScene scene = sceneBank.getItem (sceneIndex);
-            final int sceneColor = scene.doesExist () ? this.colorManager.getColorIndex (DAWColor.getColorIndex (scene.getColor ())) : ACVSColorManager.COLOR_BLACK;
+            // Scene on pads
+            if (this.surface.getConfiguration ().isLaunchClips ())
+                return;
 
-            if (isMPC)
+            for (int sceneIndex = 0; sceneIndex < 8; sceneIndex++)
             {
-                d.setScreenItem (ScreenItem.get (ScreenItem.MPC_PAD1_STATE, sceneIndex), 2);
-                d.setScreenItem (ScreenItem.get (ScreenItem.MPC_PAD1_COLOR, sceneIndex), sceneColor);
+                final IScene scene = sceneBank.getItem (sceneIndex);
+                final int sceneColor = scene.doesExist () ? this.colorManager.getColorIndex (DAWColor.getColorIndex (scene.getColor ())) : ACVSColorManager.COLOR_BLACK;
+                final int offset = sceneIndex < 4 ? 0 : 4;
+                d.setScreenItem (ScreenItem.get (ScreenItem.MPC_PAD1_STATE, offset + sceneIndex), 2);
+                d.setScreenItem (ScreenItem.get (ScreenItem.MPC_PAD1_COLOR, offset + sceneIndex), sceneColor);
             }
-            else
-            {
-                // TODO Force
-            }
-        }
 
-        for (int sceneIndex = 4; sceneIndex < 8; sceneIndex++)
-        {
-            final IScene scene = sceneBank.getItem (sceneIndex);
-            final int sceneColor = scene.doesExist () ? this.colorManager.getColorIndex (DAWColor.getColorIndex (scene.getColor ())) : ACVSColorManager.COLOR_BLACK;
-
-            if (isMPC)
-            {
-                d.setScreenItem (ScreenItem.get (ScreenItem.MPC_PAD1_STATE, 4 + sceneIndex), 2);
-                d.setScreenItem (ScreenItem.get (ScreenItem.MPC_PAD1_COLOR, 4 + sceneIndex), sceneColor);
-            }
-            else
-            {
-                // TODO Force
-            }
-        }
-
-        for (int padIndex = 0; padIndex < 4; padIndex++)
-        {
-            if (isMPC)
+            for (int padIndex = 0; padIndex < 4; padIndex++)
             {
                 d.setScreenItem (ScreenItem.get (ScreenItem.MPC_PAD1_STATE, 16 + padIndex), 0);
                 d.setScreenItem (ScreenItem.get (ScreenItem.MPC_PAD1_COLOR, 16 + padIndex), ACVSColorManager.COLOR_BLACK);
                 d.setScreenItem (ScreenItem.get (ScreenItem.MPC_PAD1_STATE, 24 + padIndex), 0);
                 d.setScreenItem (ScreenItem.get (ScreenItem.MPC_PAD1_COLOR, 24 + padIndex), ACVSColorManager.COLOR_BLACK);
             }
-            else
-            {
-                // TODO Force
-            }
+            return;
+        }
+
+        for (int sceneIndex = 0; sceneIndex < 8; sceneIndex++)
+        {
+            final IScene scene = sceneBank.getItem (sceneIndex);
+            int color = 0;
+            if (scene.doesExist ())
+                color = scene.isSelected () ? 1 : 2;
+            d.setScreenItem (ScreenItem.get (ScreenItem.FORCE_SCENE1, sceneIndex), color);
         }
     }
 
@@ -321,8 +334,10 @@ public class ControlMode extends AbstractMode<ACVSControlSurface, ACVSConfigurat
         // ScreenItem.MPC_CAPTURE_MIDI - not supported
         // ScreenItem.MPC_ABLETON_LINK - not supported
 
-        d.setScreenItem (ScreenItem.MPC_ARRANGE_OVERDUB, transport.isArrangerOverdub () ? 127 : 0);
-        d.setScreenItem (ScreenItem.MPC_ARRANGER_AUTOMATION_ARM, transport.isWritingArrangerAutomation () ? 127 : 0);
+        final boolean isOverdub = this.surface.isShiftPressed () ? transport.isLauncherOverdub () : transport.isArrangerOverdub ();
+        d.setScreenItem (ScreenItem.MPC_ARRANGE_OVERDUB, isOverdub ? 127 : 0);
+        final boolean isAutomation = this.surface.isShiftPressed () ? transport.isWritingClipLauncherAutomation () : transport.isWritingArrangerAutomation ();
+        d.setScreenItem (ScreenItem.MPC_ARRANGER_AUTOMATION_ARM, isAutomation ? 127 : 0);
         d.setScreenItem (ScreenItem.MPC_LOOP_SWITCH, transport.isLoop () ? 127 : 0);
         d.setScreenItem (ScreenItem.MPC_LAUNCH_QUANTIZE, convertLaunchQuantization (transport.getDefaultLaunchQuantization ()));
         d.setScreenItem (ScreenItem.MPC_ARRANGEMENT_SESSION, application.isArrangeLayout () ? 1 : 0);
@@ -344,7 +359,57 @@ public class ControlMode extends AbstractMode<ACVSControlSurface, ACVSConfigurat
      */
     private void sendAdditionalForceParameters (final ACVSDisplay d)
     {
-        // TODO Force
+        final Modes activeMode = this.surface.getTrackModeManager ().getActiveID ();
+        final int modeColor = MODE_COLORS.getOrDefault (activeMode, Integer.valueOf (ACVSColorManager.COLOR_BLACK)).intValue ();
+
+        for (int trackIndex = 0; trackIndex < 8; trackIndex++)
+        {
+            final ITrack track = this.model.getTrackBank ().getItem (trackIndex);
+
+            int color;
+            if (this.surface.isShiftPressed ())
+            {
+                if (LaunchQuantization.values ()[trackIndex] == this.model.getTransport ().getDefaultLaunchQuantization ())
+                    color = ACVSColorManager.COLOR_SILVER;
+                else
+                    color = ACVSColorManager.COLOR_BLACK;
+            }
+            else
+            {
+                if (!track.doesExist ())
+                    color = ACVSColorManager.COLOR_BLACK;
+                else
+                    color = track.isSelected () ? ACVSColorManager.COLOR_SILVER : this.colorManager.getColorIndex (DAWColor.getColorIndex (track.getColor ()));
+            }
+
+            d.setScreenItem (ScreenItem.get (ScreenItem.FORCE_TRACK1_COLOR, trackIndex), color);
+
+            switch (activeMode)
+            {
+                case CROSSFADE_MODE_A:
+                    final double value1 = this.model.getValueChanger ().toNormalizedValue (track.getCrossfadeParameter ().getValue ());
+                    color = value1 < 0.1 ? modeColor : ACVSColorManager.COLOR_BLACK;
+                    break;
+                case CROSSFADE_MODE_B:
+                    final double value2 = this.model.getValueChanger ().toNormalizedValue (track.getCrossfadeParameter ().getValue ());
+                    color = value2 > 0.9 ? modeColor : ACVSColorManager.COLOR_BLACK;
+                    break;
+                case MUTE:
+                    color = track.isMute () ? modeColor : ACVSColorManager.COLOR_BLACK;
+                    break;
+                case SOLO:
+                    color = track.isSolo () ? modeColor : ACVSColorManager.COLOR_BLACK;
+                    break;
+                case REC_ARM:
+                    color = track.isRecArm () ? modeColor : ACVSColorManager.COLOR_BLACK;
+                    break;
+                case STOP_CLIP:
+                default:
+                    color = modeColor;
+                    break;
+            }
+            d.setScreenItem (ScreenItem.get (ScreenItem.FORCE_TRACK1_ASSIGN, trackIndex), color);
+        }
     }
 
 
@@ -522,5 +587,59 @@ public class ControlMode extends AbstractMode<ACVSControlSurface, ACVSConfigurat
                 maxScene = i + 1;
         }
         return maxScene;
+    }
+
+
+    /** {@inheritDoc} */
+    @Override
+    public void selectPreviousItem ()
+    {
+        if (this.surface.isShiftPressed ())
+            this.model.getTrackBank ().selectPreviousPage ();
+        else
+            this.model.getTrackBank ().scrollBackwards ();
+    }
+
+
+    /** {@inheritDoc} */
+    @Override
+    public void selectNextItem ()
+    {
+        if (this.surface.isShiftPressed ())
+            this.model.getTrackBank ().selectNextPage ();
+        else
+            this.model.getTrackBank ().scrollForwards ();
+    }
+
+
+    /** {@inheritDoc} */
+    @Override
+    public boolean hasPreviousItem ()
+    {
+        return this.model.getTrackBank ().canScrollBackwards ();
+    }
+
+
+    /** {@inheritDoc} */
+    @Override
+    public boolean hasNextItem ()
+    {
+        return this.model.getTrackBank ().canScrollForwards ();
+    }
+
+
+    /** {@inheritDoc} */
+    @Override
+    public boolean hasPreviousItemPage ()
+    {
+        return this.model.getTrackBank ().canScrollPageBackwards ();
+    }
+
+
+    /** {@inheritDoc} */
+    @Override
+    public boolean hasNextItemPage ()
+    {
+        return this.model.getTrackBank ().canScrollPageForwards ();
     }
 }
