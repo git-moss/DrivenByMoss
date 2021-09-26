@@ -185,7 +185,7 @@ public class ACVSControllerSetup extends AbstractControllerSetup<ACVSControlSurf
         final ITrackBank tb = this.model.getTrackBank ();
         final ICursorDevice cursorDevice = this.model.getCursorDevice ();
         final ACVSControlSurface surface = this.getSurface ();
-        final boolean isMPC = !this.configuration.isActiveACVSDevice (ACVSDevice.FORCE);
+        final boolean isForce = this.configuration.isActiveACVSDevice (ACVSDevice.FORCE);
 
         for (int i = 0; i < 8; i++)
         {
@@ -262,10 +262,10 @@ public class ACVSControllerSetup extends AbstractControllerSetup<ACVSControlSurf
 
         this.registerMPCTouchDisplayTriggerCommands (surface, cursorDevice, tb);
 
-        if (isMPC)
-            this.registerMPCTriggerCommands (surface, cursorDevice, tb);
-        else
+        if (isForce)
             this.registerForceTriggerCommands (surface, tb);
+        else
+            this.registerMPCTriggerCommands (surface, cursorDevice, tb);
     }
 
 
@@ -738,7 +738,7 @@ public class ACVSControllerSetup extends AbstractControllerSetup<ACVSControlSurf
 
         this.addRelativeKnob (ContinuousID.PLAY_POSITION, "Position", new PlayPositionCommand<> (this.model, surface), BindType.CC, 0x0A, 0);
 
-        if (this.configuration.isActiveACVSDevice (ACVSDevice.FORCE))
+        if (this.configuration.isActiveACVSDevice (ACVSDevice.FORCE) || this.configuration.isActiveACVSDevice (ACVSDevice.MPC_X))
         {
             final IMidiInput midiInput = surface.getMidiInput ();
             for (int i = 0; i < 8; i++)
@@ -746,7 +746,6 @@ public class ACVSControllerSetup extends AbstractControllerSetup<ACVSControlSurf
                 final int index = i;
 
                 final IHwRelativeKnob volumeKnob = this.addRelativeKnob (ContinuousID.get (ContinuousID.VOLUME_KNOB1, i), "Volume " + (i + 1), null, BindType.CC, 0x0D, i);
-                volumeKnob.bind (tb.getItem (i).getVolumeParameter ());
                 volumeKnob.bindTouch ( (event, velocity) -> {
 
                     if (event == ButtonEvent.LONG)
@@ -758,9 +757,9 @@ public class ACVSControllerSetup extends AbstractControllerSetup<ACVSControlSurf
                         volumeParameter.resetValue ();
 
                 }, midiInput, BindType.NOTE, 0x0D, i);
+                volumeKnob.setIndexInGroup (i);
 
                 final IHwRelativeKnob paramKnob = this.addRelativeKnob (ContinuousID.get (ContinuousID.PARAM_KNOB1, i), "Param " + (i + 1), null, BindType.CC, 0x0D, 8 + i);
-                paramKnob.bind (cursorDevice.getParameterBank ().getItem (i));
                 paramKnob.bindTouch ( (event, velocity) -> {
 
                     if (event == ButtonEvent.LONG)
@@ -772,6 +771,7 @@ public class ACVSControllerSetup extends AbstractControllerSetup<ACVSControlSurf
                         parameter.resetValue ();
 
                 }, midiInput, BindType.NOTE, 0x0D, 8 + i);
+                paramKnob.setIndexInGroup (i);
             }
 
             this.addFader (ContinuousID.CROSSFADER, "Crossfader", null, BindType.CC, 0x0D, 16, false).bind (this.model.getTransport ().getCrossfadeParameter ());

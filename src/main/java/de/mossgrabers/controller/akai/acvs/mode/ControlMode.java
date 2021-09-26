@@ -10,6 +10,7 @@ import de.mossgrabers.controller.akai.acvs.controller.ACVSColorManager;
 import de.mossgrabers.controller.akai.acvs.controller.ACVSControlSurface;
 import de.mossgrabers.controller.akai.acvs.controller.ACVSDisplay;
 import de.mossgrabers.controller.akai.acvs.controller.ScreenItem;
+import de.mossgrabers.framework.controller.ContinuousID;
 import de.mossgrabers.framework.controller.color.ColorEx;
 import de.mossgrabers.framework.daw.DAWColor;
 import de.mossgrabers.framework.daw.IApplication;
@@ -31,8 +32,12 @@ import de.mossgrabers.framework.daw.data.bank.ISlotBank;
 import de.mossgrabers.framework.daw.data.bank.ITrackBank;
 import de.mossgrabers.framework.featuregroup.AbstractMode;
 import de.mossgrabers.framework.mode.Modes;
+import de.mossgrabers.framework.parameterprovider.device.BankParameterProvider;
+import de.mossgrabers.framework.parameterprovider.special.CombinedParameterProvider;
+import de.mossgrabers.framework.parameterprovider.track.VolumeParameterProvider;
 
 import java.util.EnumMap;
+import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 
@@ -68,6 +73,14 @@ public class ControlMode extends AbstractMode<ACVSControlSurface, ACVSConfigurat
     public ControlMode (final ACVSControlSurface surface, final IModel model)
     {
         super ("Control", surface, model);
+
+        final List<ContinuousID> knobs = ContinuousID.createSequentialList (ContinuousID.VOLUME_KNOB1, 8);
+        knobs.addAll (ContinuousID.createSequentialList (ContinuousID.PARAM_KNOB1, 8));
+        this.setControls (knobs);
+
+        final VolumeParameterProvider provider1 = new VolumeParameterProvider (model.getTrackBank ());
+        final BankParameterProvider provider2 = new BankParameterProvider (model.getCursorDevice ().getParameterBank ());
+        this.setParameterProvider (new CombinedParameterProvider (provider1, provider2));
     }
 
 
