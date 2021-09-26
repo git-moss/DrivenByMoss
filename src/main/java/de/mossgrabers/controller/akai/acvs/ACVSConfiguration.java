@@ -104,6 +104,7 @@ public class ACVSConfiguration extends AbstractConfiguration
         // Workflow
 
         this.activateExcludeDeactivatedItemsSetting (globalSettings);
+        this.activateNewClipLengthSetting (globalSettings);
     }
 
 

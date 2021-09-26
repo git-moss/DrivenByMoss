@@ -206,7 +206,7 @@ public class PushControllerSetup extends AbstractControllerSetup<PushControlSurf
         }
         ms.setNumMarkers (8);
         ms.setHasFlatTrackList (false);
-        this.model = this.factory.createModel (this.colorManager, this.valueChanger, this.scales, ms);
+        this.model = this.factory.createModel (this.configuration, this.colorManager, this.valueChanger, this.scales, ms);
         this.sceneBank64 = this.model.createSceneBank (64);
 
         final ITrackBank trackBank = this.model.getTrackBank ();
@@ -233,7 +233,7 @@ public class PushControllerSetup extends AbstractControllerSetup<PushControlSurf
         final IMidiAccess midiAccess = this.factory.createMidiAccess ();
         final IMidiOutput output = midiAccess.createOutput ();
         final IMidiInput input = midiAccess.createInput ("Pads", "80????" /* Note off */,
-                "90????" /* Note on */, "B040??" /* Sustainpedal */);
+                "90????" /* Note on */, "B040??" /* Sustain pedal */);
         final PushControlSurface surface = new PushControlSurface (this.host, this.colorManager, this.configuration, output, input);
         this.surfaces.add (surface);
 

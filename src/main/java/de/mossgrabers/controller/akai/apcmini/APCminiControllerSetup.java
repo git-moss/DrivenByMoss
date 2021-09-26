@@ -129,7 +129,7 @@ public class APCminiControllerSetup extends AbstractControllerSetup<APCminiContr
     protected void createModel ()
     {
         final ModelSetup ms = new ModelSetup ();
-        this.model = this.factory.createModel (this.colorManager, this.valueChanger, this.scales, ms);
+        this.model = this.factory.createModel (this.configuration, this.colorManager, this.valueChanger, this.scales, ms);
         final ITrackBank trackBank = this.model.getTrackBank ();
         trackBank.setIndication (true);
         trackBank.addSelectionObserver ( (index, value) -> this.handleTrackChange (value));

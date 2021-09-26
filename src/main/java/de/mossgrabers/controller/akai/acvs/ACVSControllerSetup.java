@@ -105,7 +105,7 @@ public class ACVSControllerSetup extends AbstractControllerSetup<ACVSControlSurf
         ms.setHasFullFlatTrackList (true);
         ms.setNumSends (4);
 
-        this.model = this.factory.createModel (this.colorManager, this.valueChanger, this.scales, ms);
+        this.model = this.factory.createModel (this.configuration, this.colorManager, this.valueChanger, this.scales, ms);
         this.model.getTrackBank ().setIndication (true);
     }
 
@@ -265,7 +265,7 @@ public class ACVSControllerSetup extends AbstractControllerSetup<ACVSControlSurf
         if (isMPC)
             this.registerMPCTriggerCommands (surface, cursorDevice, tb);
         else
-            this.registerForceTriggerCommands (surface, cursorDevice, tb);
+            this.registerForceTriggerCommands (surface, tb);
     }
 
 
@@ -386,7 +386,8 @@ public class ACVSControllerSetup extends AbstractControllerSetup<ACVSControlSurf
 
         this.addReceiveButton (ButtonID.STOP_ALL_CLIPS, "Stop all clips", tb::stop, 0x0A, ACVSControlSurface.NOTE_MPC_STOP_ALL_CLIPS);
         this.addReceiveButton (ButtonID.INSERT_SCENE, "Insert scene", this.model.getProject ()::createScene, 0x0A, ACVSControlSurface.NOTE_MPC_INSERT_SCENE);
-        this.addReceiveButton (ButtonID.F1, "Record", transport::startRecording, 0x0A, ACVSControlSurface.NOTE_MPC_ARRANGE_RECORD);
+        final NewCommand<ACVSControlSurface, ACVSConfiguration> newCommand = new NewCommand<> (this.model, surface);
+        this.addReceiveButton (ButtonID.NEW, "REC (New)", newCommand::execute, 0x0A, ACVSControlSurface.NOTE_MPC_ARRANGE_RECORD, false);
 
         // NOTE_MPC_TOGGLE_CLIP_SCENE_LAUNCH - from where is this triggered?
     }
@@ -489,10 +490,9 @@ public class ACVSControllerSetup extends AbstractControllerSetup<ACVSControlSurf
      * Register MPC specific trigger commands issued from buttons
      *
      * @param surface The control surface
-     * @param cursorDevice The cursor device
      * @param tb The track bank
      */
-    private void registerForceTriggerCommands (final ACVSControlSurface surface, final ICursorDevice cursorDevice, final ITrackBank tb)
+    private void registerForceTriggerCommands (final ACVSControlSurface surface, final ITrackBank tb)
     {
         final ITrackBank trackBank = this.model.getTrackBank ();
         final ITransport transport = this.model.getTransport ();

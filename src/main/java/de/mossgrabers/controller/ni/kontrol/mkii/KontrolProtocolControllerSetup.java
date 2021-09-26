@@ -180,7 +180,7 @@ public class KontrolProtocolControllerSetup extends AbstractControllerSetup<Kont
         ms.setNumDeviceLayers (0);
         ms.setNumDrumPadLayers (0);
         ms.setNumMarkers (0);
-        this.model = this.factory.createModel (this.colorManager, this.valueChanger, this.scales, ms);
+        this.model = this.factory.createModel (this.configuration, this.colorManager, this.valueChanger, this.scales, ms);
     }
 
 

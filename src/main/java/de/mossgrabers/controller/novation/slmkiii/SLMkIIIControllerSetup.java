@@ -128,7 +128,7 @@ public class SLMkIIIControllerSetup extends AbstractControllerSetup<SLMkIIIContr
         ms.setHasFullFlatTrackList (true);
         ms.setNumScenes (2);
         ms.setNumSends (8);
-        this.model = this.factory.createModel (this.colorManager, this.valueChanger, this.scales, ms);
+        this.model = this.factory.createModel (this.configuration, this.colorManager, this.valueChanger, this.scales, ms);
         this.model.getTrackBank ().setIndication (true);
     }
 

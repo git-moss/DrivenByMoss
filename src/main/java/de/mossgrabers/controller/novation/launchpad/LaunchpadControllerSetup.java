@@ -180,7 +180,7 @@ public class LaunchpadControllerSetup extends AbstractControllerSetup<LaunchpadC
         final ModelSetup ms = new ModelSetup ();
         ms.enableDrum64Device (true);
         ms.setHasFullFlatTrackList (this.configuration.areMasterTracksIncluded ());
-        this.model = this.factory.createModel (this.colorManager, this.valueChanger, this.scales, ms);
+        this.model = this.factory.createModel (this.configuration, this.colorManager, this.valueChanger, this.scales, ms);
     }
 
 

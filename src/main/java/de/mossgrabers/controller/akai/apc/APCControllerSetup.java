@@ -135,7 +135,7 @@ public class APCControllerSetup extends AbstractControllerSetup<APCControlSurfac
         final ModelSetup ms = new ModelSetup ();
         ms.setNumScenes (5);
         ms.setNumDrumPadLayers (12);
-        this.model = this.factory.createModel (this.colorManager, this.valueChanger, this.scales, ms);
+        this.model = this.factory.createModel (this.configuration, this.colorManager, this.valueChanger, this.scales, ms);
         final ITrackBank trackBank = this.model.getTrackBank ();
         trackBank.setIndication (true);
         trackBank.addSelectionObserver ( (index, isSelected) -> this.handleTrackChange (isSelected));

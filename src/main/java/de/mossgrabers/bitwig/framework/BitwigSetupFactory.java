@@ -7,6 +7,7 @@ package de.mossgrabers.bitwig.framework;
 import de.mossgrabers.bitwig.framework.daw.HostImpl;
 import de.mossgrabers.bitwig.framework.daw.ModelImpl;
 import de.mossgrabers.bitwig.framework.midi.MidiDeviceImpl;
+import de.mossgrabers.framework.configuration.Configuration;
 import de.mossgrabers.framework.controller.ISetupFactory;
 import de.mossgrabers.framework.controller.color.ColorManager;
 import de.mossgrabers.framework.controller.valuechanger.IValueChanger;
@@ -48,7 +49,7 @@ public class BitwigSetupFactory implements ISetupFactory
 
     /** {@inheritDoc} */
     @Override
-    public IModel createModel (final ColorManager colorManager, final IValueChanger valueChanger, final Scales scales, final ModelSetup modelSetup)
+    public IModel createModel (final Configuration configuration, final ColorManager colorManager, final IValueChanger valueChanger, final Scales scales, final ModelSetup modelSetup)
     {
         final DataSetup dataSetup = new DataSetup (new HostImpl (this.controllerHost), valueChanger, colorManager);
         return new ModelImpl (modelSetup, dataSetup, this.controllerHost, scales);

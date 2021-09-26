@@ -157,7 +157,7 @@ public class MaschineJamControllerSetup extends AbstractControllerSetup<Maschine
     {
         final ModelSetup ms = new ModelSetup ();
         ms.enableDrum64Device (true);
-        this.model = this.factory.createModel (this.colorManager, this.valueChanger, this.scales, ms);
+        this.model = this.factory.createModel (this.configuration, this.colorManager, this.valueChanger, this.scales, ms);
 
         final ITrackBank trackBank = this.model.getTrackBank ();
         trackBank.setIndication (true);

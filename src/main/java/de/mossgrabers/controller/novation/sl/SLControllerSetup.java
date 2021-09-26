@@ -35,8 +35,8 @@ import de.mossgrabers.framework.controller.ContinuousID;
 import de.mossgrabers.framework.controller.ISetupFactory;
 import de.mossgrabers.framework.controller.hardware.BindType;
 import de.mossgrabers.framework.controller.hardware.IHwRelativeKnob;
-import de.mossgrabers.framework.controller.valuechanger.TwosComplementValueChanger;
 import de.mossgrabers.framework.controller.valuechanger.RelativeEncoding;
+import de.mossgrabers.framework.controller.valuechanger.TwosComplementValueChanger;
 import de.mossgrabers.framework.daw.IHost;
 import de.mossgrabers.framework.daw.ModelSetup;
 import de.mossgrabers.framework.daw.data.bank.IParameterBank;
@@ -124,7 +124,7 @@ public class SLControllerSetup extends AbstractControllerSetup<SLControlSurface,
         final ModelSetup ms = new ModelSetup ();
         ms.setHasFullFlatTrackList (true);
         ms.setNumSends (6);
-        this.model = this.factory.createModel (this.colorManager, this.valueChanger, this.scales, ms);
+        this.model = this.factory.createModel (this.configuration, this.colorManager, this.valueChanger, this.scales, ms);
     }
 
 

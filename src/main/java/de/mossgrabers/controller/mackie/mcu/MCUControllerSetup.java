@@ -75,8 +75,8 @@ import de.mossgrabers.framework.controller.OutputID;
 import de.mossgrabers.framework.controller.hardware.BindType;
 import de.mossgrabers.framework.controller.hardware.IHwFader;
 import de.mossgrabers.framework.controller.hardware.IHwRelativeKnob;
-import de.mossgrabers.framework.controller.valuechanger.TwosComplementValueChanger;
 import de.mossgrabers.framework.controller.valuechanger.RelativeEncoding;
+import de.mossgrabers.framework.controller.valuechanger.TwosComplementValueChanger;
 import de.mossgrabers.framework.daw.GrooveParameterID;
 import de.mossgrabers.framework.daw.IApplication;
 import de.mossgrabers.framework.daw.IHost;
@@ -229,7 +229,7 @@ public class MCUControllerSetup extends AbstractControllerSetup<MCUControlSurfac
         ms.setNumDeviceLayers (0);
         ms.setNumDrumPadLayers (0);
         ms.setNumMarkers (8 * this.numMCUDevices);
-        this.model = this.factory.createModel (this.colorManager, this.valueChanger, this.scales, ms);
+        this.model = this.factory.createModel (this.configuration, this.colorManager, this.valueChanger, this.scales, ms);
 
         final ITrackBank trackBank = this.model.getTrackBank ();
         trackBank.setIndication (true);

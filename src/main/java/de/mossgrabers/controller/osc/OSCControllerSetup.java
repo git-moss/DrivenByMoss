@@ -109,7 +109,7 @@ public class OSCControllerSetup extends AbstractControllerSetup<IControlSurface<
         ms.setNumUserPageSize (bankPageSize);
         ms.setNumMarkers (bankPageSize);
 
-        this.model = this.factory.createModel (this.colorManager, this.valueChanger, this.scales, ms);
+        this.model = this.factory.createModel (this.configuration, this.colorManager, this.valueChanger, this.scales, ms);
     }
 
 

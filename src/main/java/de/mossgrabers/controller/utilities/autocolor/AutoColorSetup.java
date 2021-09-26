@@ -90,7 +90,7 @@ public class AutoColorSetup extends AbstractControllerSetup<IControlSurface<Auto
 
         ms.setNumTracks (MAX_TRACKS);
 
-        this.model = this.factory.createModel (this.colorManager, this.valueChanger, this.scales, ms);
+        this.model = this.factory.createModel (this.configuration, this.colorManager, this.valueChanger, this.scales, ms);
 
         this.autoColor.setTrackBank (this.model.getTrackBank ());
     }

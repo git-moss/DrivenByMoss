@@ -4,8 +4,6 @@
 
 package de.mossgrabers.bitwig.framework.daw;
 
-import static java.util.stream.Collectors.toList;
-
 import de.mossgrabers.bitwig.framework.daw.DeviceMetadataImpl.PluginType;
 import de.mossgrabers.bitwig.framework.graphics.BitmapImpl;
 import de.mossgrabers.bitwig.framework.graphics.ImageImpl;
@@ -353,7 +351,7 @@ public class HostImpl implements IHost
     {
         try (final BufferedReader reader = new BufferedReader (new InputStreamReader (HostImpl.class.getClassLoader ().getResourceAsStream ("devices/" + fileName))))
         {
-            return reader.lines ().collect (toList ());
+            return reader.lines ().toList ();
         }
         catch (final IOException ex)
         {

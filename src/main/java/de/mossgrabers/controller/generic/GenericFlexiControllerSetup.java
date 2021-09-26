@@ -46,9 +46,9 @@ import de.mossgrabers.framework.featuregroup.ModeManager;
 import de.mossgrabers.framework.mode.Modes;
 import de.mossgrabers.framework.mode.device.BrowserMode;
 import de.mossgrabers.framework.mode.device.ParameterMode;
+import de.mossgrabers.framework.mode.track.TrackMode;
 import de.mossgrabers.framework.mode.track.TrackPanMode;
 import de.mossgrabers.framework.mode.track.TrackSendMode;
-import de.mossgrabers.framework.mode.track.TrackMode;
 import de.mossgrabers.framework.mode.track.TrackVolumeMode;
 import de.mossgrabers.framework.observer.IValueObserver;
 import de.mossgrabers.framework.scale.Scales;
@@ -177,7 +177,7 @@ public class GenericFlexiControllerSetup extends AbstractControllerSetup<Generic
         final ModelSetup ms = new ModelSetup ();
         ms.enableDrumDevice (false);
         ms.setNumMarkers (8);
-        this.model = this.factory.createModel (this.colorManager, this.valueChanger, this.scales, ms);
+        this.model = this.factory.createModel (this.configuration, this.colorManager, this.valueChanger, this.scales, ms);
     }
 
 

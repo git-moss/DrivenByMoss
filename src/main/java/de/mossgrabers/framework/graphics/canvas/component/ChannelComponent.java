@@ -404,7 +404,7 @@ public class ChannelComponent extends ChannelSelectComponent
         }
         else if (!this.panText.equals (other.panText))
             return false;
-        if ((Double.doubleToLongBits (this.panValue) != Double.doubleToLongBits (other.panValue)) || (this.type != other.type))
+        if (Double.doubleToLongBits (this.panValue) != Double.doubleToLongBits (other.panValue) || this.type != other.type)
             return false;
         if (this.volumeText == null)
         {
@@ -413,9 +413,7 @@ public class ChannelComponent extends ChannelSelectComponent
         }
         else if (!this.volumeText.equals (other.volumeText))
             return false;
-        if (Double.doubleToLongBits (this.volumeValue) != Double.doubleToLongBits (other.volumeValue))
-            return false;
-        if (Double.doubleToLongBits (this.vuValueLeft) != Double.doubleToLongBits (other.vuValueLeft))
+        if ((Double.doubleToLongBits (this.volumeValue) != Double.doubleToLongBits (other.volumeValue)) || (Double.doubleToLongBits (this.vuValueLeft) != Double.doubleToLongBits (other.vuValueLeft)))
             return false;
         return Double.doubleToLongBits (this.vuValueRight) == Double.doubleToLongBits (other.vuValueRight);
     }

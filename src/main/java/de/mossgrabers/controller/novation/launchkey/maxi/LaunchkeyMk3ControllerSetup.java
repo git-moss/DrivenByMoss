@@ -134,7 +134,7 @@ public class LaunchkeyMk3ControllerSetup extends AbstractControllerSetup<Launchk
         ms.setNumParamPages (16);
         ms.setNumScenes (2);
         ms.setNumSends (2);
-        this.model = this.factory.createModel (this.colorManager, this.valueChanger, this.scales, ms);
+        this.model = this.factory.createModel (this.configuration, this.colorManager, this.valueChanger, this.scales, ms);
         this.model.getTrackBank ().setIndication (true);
     }
 

@@ -128,7 +128,7 @@ public class FireControllerSetup extends AbstractControllerSetup<FireControlSurf
         ms.setNumResults (3);
         ms.setHasFullFlatTrackList (true);
 
-        this.model = this.factory.createModel (this.colorManager, this.valueChanger, this.scales, ms);
+        this.model = this.factory.createModel (this.configuration, this.colorManager, this.valueChanger, this.scales, ms);
 
         final ITrackBank trackBank = this.model.getTrackBank ();
         trackBank.setIndication (true);

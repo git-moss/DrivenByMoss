@@ -118,7 +118,7 @@ public class LaunchkeyMiniMk3ControllerSetup extends AbstractControllerSetup<Lau
         ms.setHasFullFlatTrackList (this.configuration.areMasterTracksIncluded ());
         ms.setNumScenes (2);
         ms.setNumSends (8);
-        this.model = this.factory.createModel (this.colorManager, this.valueChanger, this.scales, ms);
+        this.model = this.factory.createModel (this.configuration, this.colorManager, this.valueChanger, this.scales, ms);
         this.model.getTrackBank ().setIndication (true);
     }
 

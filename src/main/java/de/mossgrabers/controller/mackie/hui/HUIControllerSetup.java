@@ -152,7 +152,7 @@ public class HUIControllerSetup extends AbstractControllerSetup<HUIControlSurfac
         ms.setNumDeviceLayers (0);
         ms.setNumDrumPadLayers (0);
         ms.setNumMarkers (8 * this.numHUIDevices);
-        this.model = this.factory.createModel (this.colorManager, this.valueChanger, this.scales, ms);
+        this.model = this.factory.createModel (this.configuration, this.colorManager, this.valueChanger, this.scales, ms);
 
         this.model.getTrackBank ().setIndication (true);
     }

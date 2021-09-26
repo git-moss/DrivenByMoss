@@ -100,7 +100,7 @@ public class Kontrol1ControllerSetup extends AbstractControllerSetup<Kontrol1Con
     {
         final ModelSetup ms = new ModelSetup ();
         ms.setNumDrumPadLayers (128);
-        this.model = this.factory.createModel (this.colorManager, this.valueChanger, this.scales, ms);
+        this.model = this.factory.createModel (this.configuration, this.colorManager, this.valueChanger, this.scales, ms);
         this.model.getDrumDevice ().getDrumPadBank ().setIndication (true);
     }
 
