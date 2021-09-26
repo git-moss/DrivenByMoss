@@ -74,13 +74,17 @@ public class ControlMode extends AbstractMode<ACVSControlSurface, ACVSConfigurat
     {
         super ("Control", surface, model);
 
-        final List<ContinuousID> knobs = ContinuousID.createSequentialList (ContinuousID.VOLUME_KNOB1, 8);
-        knobs.addAll (ContinuousID.createSequentialList (ContinuousID.PARAM_KNOB1, 8));
-        this.setControls (knobs);
+        final ACVSConfiguration configuration = this.surface.getConfiguration ();
+        if (configuration.isActiveACVSDevice (ACVSDevice.FORCE) || configuration.isActiveACVSDevice (ACVSDevice.MPC_X))
+        {
+            final List<ContinuousID> knobs = ContinuousID.createSequentialList (ContinuousID.VOLUME_KNOB1, 8);
+            knobs.addAll (ContinuousID.createSequentialList (ContinuousID.PARAM_KNOB1, 8));
+            this.setControls (knobs);
 
-        final VolumeParameterProvider provider1 = new VolumeParameterProvider (model.getTrackBank ());
-        final BankParameterProvider provider2 = new BankParameterProvider (model.getCursorDevice ().getParameterBank ());
-        this.setParameterProvider (new CombinedParameterProvider (provider1, provider2));
+            final VolumeParameterProvider provider1 = new VolumeParameterProvider (model.getTrackBank ());
+            final BankParameterProvider provider2 = new BankParameterProvider (model.getCursorDevice ().getParameterBank ());
+            this.setParameterProvider (new CombinedParameterProvider (provider1, provider2));
+        }
     }
 
 
