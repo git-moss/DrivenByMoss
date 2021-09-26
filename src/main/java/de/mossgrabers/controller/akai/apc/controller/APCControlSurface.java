@@ -115,7 +115,7 @@ public class APCControlSurface extends AbstractControlSurface<APCConfiguration>
     public static final int     LED_MODE_VOLUME                = 2;
     public static final int     LED_MODE_PAN                   = 3;
 
-    private boolean             isMkII;
+    private final boolean       isMkII;
     private final int []        knobCache                      = new int [128];
 
 

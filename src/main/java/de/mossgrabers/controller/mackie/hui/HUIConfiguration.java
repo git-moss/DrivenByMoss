@@ -81,7 +81,7 @@ public class HUIConfiguration extends AbstractConfiguration
     private boolean                touchChannel;
     private boolean                sendPing;
 
-    private int []                 assignableFunctions     = new int [10];
+    private final int []           assignableFunctions     = new int [10];
 
 
     /**

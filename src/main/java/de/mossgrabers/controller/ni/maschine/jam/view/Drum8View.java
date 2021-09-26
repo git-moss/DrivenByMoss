@@ -4,11 +4,13 @@
 
 package de.mossgrabers.controller.ni.maschine.jam.view;
 
+import de.mossgrabers.controller.ni.maschine.core.command.trigger.EncoderMode;
+import de.mossgrabers.controller.ni.maschine.core.view.IMaschineView;
 import de.mossgrabers.controller.ni.maschine.jam.MaschineJamConfiguration;
-import de.mossgrabers.controller.ni.maschine.jam.command.trigger.EncoderMode;
 import de.mossgrabers.controller.ni.maschine.jam.controller.MaschineJamControlSurface;
 import de.mossgrabers.framework.controller.ButtonID;
 import de.mossgrabers.framework.daw.IModel;
+import de.mossgrabers.framework.daw.INoteClip;
 import de.mossgrabers.framework.utils.ButtonEvent;
 import de.mossgrabers.framework.view.AbstractDrum8View;
 
@@ -18,7 +20,7 @@ import de.mossgrabers.framework.view.AbstractDrum8View;
  *
  * @author J&uuml;rgen Mo&szlig;graber
  */
-public class Drum8View extends AbstractDrum8View<MaschineJamControlSurface, MaschineJamConfiguration> implements IMaschineJamView
+public class Drum8View extends AbstractDrum8View<MaschineJamControlSurface, MaschineJamConfiguration> implements IMaschineView
 {
     /**
      * Constructor.
@@ -92,5 +94,21 @@ public class Drum8View extends AbstractDrum8View<MaschineJamControlSurface, Masc
                 super.onButton (buttonID, event, velocity);
                 break;
         }
+    }
+
+
+    /** {@inheritDoc} */
+    @Override
+    protected boolean handleNoteAreaButtonCombinations (final INoteClip clip, final int channel, final int step, final int row, final int note, final int velocity, final int accentVelocity)
+    {
+        final boolean isSelectPressed = this.surface.isSelectPressed ();
+        if (isSelectPressed)
+        {
+            if (velocity > 0)
+                this.handleSequencerAreaRepeatOperator (clip, channel, step, note, velocity, isSelectPressed);
+            return true;
+        }
+
+        return super.handleNoteAreaButtonCombinations (clip, channel, step, row, note, velocity, accentVelocity);
     }
 }

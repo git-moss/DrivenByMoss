@@ -113,7 +113,7 @@ public class APCColorManager extends ColorManager
     public static final String COLOR_KEY_SELECTED              = "COLOR_KEY_SELECTED";
     public static final String BUTTON_STATE_BLINK              = "BUTTON_STATE_BLINK";
 
-    private boolean            isMkII;
+    private final boolean      isMkII;
 
 
     /**
@@ -138,6 +138,9 @@ public class APCColorManager extends ColorManager
 
         this.registerColorIndex (AbstractSequencerView.COLOR_STEP_HILITE_NO_CONTENT, isMkII ? APC_MKII_COLOR_GREEN_HI : APC_COLOR_GREEN);
         this.registerColorIndex (AbstractSequencerView.COLOR_STEP_HILITE_CONTENT, isMkII ? APC_MKII_COLOR_GREEN_LO : APC_COLOR_GREEN);
+        this.registerColorIndex (AbstractSequencerView.COLOR_STEP_MUTED, isMkII ? APC_MKII_COLOR_GREY_MD : APC_COLOR_GREEN);
+        this.registerColorIndex (AbstractSequencerView.COLOR_STEP_MUTED_CONT, isMkII ? APC_MKII_COLOR_GREY_LO : APC_COLOR_GREEN);
+        this.registerColorIndex (AbstractSequencerView.COLOR_STEP_SELECTED, isMkII ? APC_MKII_COLOR_WHITE : APC_COLOR_GREEN);
         this.registerColorIndex (AbstractSequencerView.COLOR_NO_CONTENT, isMkII ? APC_MKII_COLOR_BLACK : APC_COLOR_BLACK);
         this.registerColorIndex (AbstractSequencerView.COLOR_CONTENT, isMkII ? APC_MKII_COLOR_BLUE_HI : APC_COLOR_RED);
         this.registerColorIndex (AbstractSequencerView.COLOR_CONTENT_CONT, isMkII ? APC_MKII_COLOR_BLUE_LO : APC_COLOR_RED);

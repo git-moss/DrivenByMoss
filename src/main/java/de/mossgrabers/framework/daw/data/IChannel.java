@@ -266,6 +266,14 @@ public interface IChannel extends IItem
 
 
     /**
+     * True if muted by another tracks' solo.
+     *
+     * @return True if muted.
+     */
+    boolean isMutedBySolo ();
+
+
+    /**
      * Get the Mono VU value.
      *
      * @return The VU value
@@ -287,6 +295,24 @@ public interface IChannel extends IItem
      * @return The right VU value
      */
     int getVuRight ();
+
+
+    /**
+     * Get the maximum peak of the left VU value. This takes the maximum of the left VU value since
+     * the first call. If a volume change happened since the last call the value is reset.
+     *
+     * @return The left VU value peak
+     */
+    int getVuPeakLeft ();
+
+
+    /**
+     * Get the maximum peak of the right VU value. This takes the maximum of the right VU value
+     * since the first call. If a volume change happened since the last call the value is reset.
+     *
+     * @return The right VU value peak
+     */
+    int getVuPeakRight ();
 
 
     /**

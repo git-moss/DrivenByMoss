@@ -48,7 +48,7 @@ public class GenericFlexiControlSurface extends AbstractControlSurface<GenericFl
 
     private long                                          lastReceived    = 0;
     private int                                           lastCCReceived  = -1;
-    private int []                                        lastCCValues    = new int [128];
+    private final int []                                  lastCCValues    = new int [128];
 
     private boolean                                       isShiftPressed  = false;
     private boolean                                       isUpdatingValue = false;
@@ -185,7 +185,7 @@ public class GenericFlexiControlSurface extends AbstractControlSurface<GenericFl
             case 0x80:
             case 0x90:
                 this.configuration.setLearnValues (GenericFlexiConfiguration.OPTIONS_TYPE.get (CommandSlot.TYPE_NOTE + 1), data1, channel, false);
-                this.handleCommand (this.configuration.getSlotCommand (CommandSlot.TYPE_NOTE, data1, channel), MidiValue.get (data2, false));
+                this.handleCommand (this.configuration.getSlotCommand (CommandSlot.TYPE_NOTE, data1, channel), MidiValue.get (code == 0x80 ? 0 : data2, false));
                 break;
 
             // Program Change
@@ -267,6 +267,7 @@ public class GenericFlexiControlSurface extends AbstractControlSurface<GenericFl
             }
         }
 
+        // No Hi-Res
         if (slotIndex == -1)
         {
             final Optional<Pair<Integer, CommandSlot>> optional = this.configuration.getSlot (CommandSlot.TYPE_CC, data1, channel);
@@ -489,19 +490,24 @@ public class GenericFlexiControlSurface extends AbstractControlSurface<GenericFl
         }
 
         final IMidiOutput output = this.getMidiOutput ();
+        final int midiChannel = slot.getMidiChannel ();
+
+        // Cannot reflect "All" setting
+        if (midiChannel > 15)
+            return;
 
         switch (slot.getType ())
         {
             case CommandSlot.TYPE_NOTE:
-                output.sendNoteEx (slot.getMidiChannel (), slot.getNumber (), value);
+                output.sendNoteEx (midiChannel, slot.getNumber (), value);
                 break;
 
             case CommandSlot.TYPE_CC:
-                output.sendCCEx (slot.getMidiChannel (), slot.getNumber (), value);
+                output.sendCCEx (midiChannel, slot.getNumber (), value);
                 break;
 
             case CommandSlot.TYPE_PITCH_BEND:
-                output.sendPitchbend (slot.getMidiChannel (), 0, value);
+                output.sendPitchbend (midiChannel, 0, value);
                 break;
 
             default:

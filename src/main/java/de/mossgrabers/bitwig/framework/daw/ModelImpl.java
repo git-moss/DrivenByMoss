@@ -55,11 +55,12 @@ import java.util.UUID;
  */
 public class ModelImpl extends AbstractModel
 {
-    private static final UUID              INSTRUMENT_DRUM_MACHINE = UUID.fromString ("8ea97e45-0255-40fd-bc7e-94419741e9d1");
+    /** The UUID of the Drum Device. */
+    public static final UUID               INSTRUMENT_DRUM_MACHINE = UUID.fromString ("8ea97e45-0255-40fd-bc7e-94419741e9d1");
 
     private final ControllerHost           controllerHost;
     private final CursorTrack              bwCursorTrack;
-    private Track                          rootTrackGroup;
+    private final Track                    rootTrackGroup;
     private final BooleanValue             masterTrackEqualsValue;
     private final Map<Integer, ISceneBank> sceneBanks              = new HashMap<> (1);
 
@@ -78,14 +79,15 @@ public class ModelImpl extends AbstractModel
 
         this.controllerHost = controllerHost;
 
-        final Application app = controllerHost.createApplication ();
-        this.application = new ApplicationImpl (app);
+        final Application bwApplication = controllerHost.createApplication ();
+        final Arranger bwArranger = controllerHost.createArranger ();
+
+        this.application = new ApplicationImpl (bwApplication, bwArranger);
         final Project proj = controllerHost.getProject ();
         this.rootTrackGroup = proj.getRootTrackGroup ();
-        this.project = new ProjectImpl (this.valueChanger, proj, app);
+        this.project = new ProjectImpl (this.valueChanger, proj, bwApplication);
 
         this.transport = new TransportImpl (controllerHost, this.application, this.valueChanger);
-        final Arranger bwArranger = controllerHost.createArranger ();
         this.arranger = new ArrangerImpl (bwArranger);
         final int numMarkers = modelSetup.getNumMarkers ();
         if (numMarkers > 0)
@@ -271,7 +273,7 @@ public class ModelImpl extends AbstractModel
     public void recordNoteClip (final ITrack track, final ISlot slot)
     {
         if (!slot.isRecording ())
-            slot.record ();
+            slot.startRecording ();
         slot.launch ();
     }
 

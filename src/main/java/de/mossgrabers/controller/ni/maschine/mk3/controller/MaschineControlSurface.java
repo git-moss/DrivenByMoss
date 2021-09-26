@@ -105,6 +105,32 @@ public class MaschineControlSurface extends AbstractMaschineControlSurface<Masch
     public static final int PAGE_LEFT         = 110;
     public static final int PAGE_RIGHT        = 111;
 
+    //
+    // Specific Maschine Studio controls
+    //
+
+    public static final int EDIT_COPY         = 112;
+    public static final int EDIT_PASTE        = 113;
+    public static final int EDIT_NOTE         = 114;
+    public static final int EDIT_NUDGE        = 115;
+    public static final int EDIT_UNDO         = 116;
+    public static final int EDIT_REDO         = 117;
+    public static final int EDIT_QUANTIZE     = 118;
+    public static final int EDIT_CLEAR        = 119;
+
+    public static final int MONITOR_IN1       = 120;
+    public static final int MONITOR_IN2       = 121;
+    public static final int MONITOR_IN3       = 122;
+    public static final int MONITOR_IN4       = 123;
+    public static final int MONITOR_MST       = 124;
+    public static final int MONITOR_GRP       = 125;
+    public static final int MONITOR_SND       = 126;
+    public static final int MONITOR_CUE       = 127;
+    public static final int MONITOR_ENCODER   = 10;
+
+    public static final int NAVIGATE_BACK     = 11;
+    public static final int METRO             = 14;
+
     private int             ribbonValue       = -1;
 
 
@@ -120,7 +146,7 @@ public class MaschineControlSurface extends AbstractMaschineControlSurface<Masch
      */
     public MaschineControlSurface (final IHost host, final ColorManager colorManager, final Maschine maschine, final MaschineConfiguration configuration, final IMidiOutput output, final IMidiInput input)
     {
-        super (host, configuration, colorManager, maschine, output, input, new MaschinePadGrid (colorManager, output), 800, maschine.getHeight ());
+        super (host, configuration, colorManager, maschine, output, input, new MaschinePadGrid (colorManager, output), maschine.getWidth (), maschine.getHeight ());
     }
 
 

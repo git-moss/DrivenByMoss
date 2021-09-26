@@ -259,9 +259,7 @@ public class LabelComponent implements IComponent
     {
         if (this == obj)
             return true;
-        if (obj == null)
-            return false;
-        if (this.getClass () != obj.getClass ())
+        if (obj == null || this.getClass () != obj.getClass ())
             return false;
         final LabelComponent other = (LabelComponent) obj;
         if (this.backgroundColor == null)
@@ -278,11 +276,7 @@ public class LabelComponent implements IComponent
         }
         else if (!this.icon.equals (other.icon))
             return false;
-        if (this.isActive != other.isActive)
-            return false;
-        if (this.isSelected != other.isSelected)
-            return false;
-        if (this.layout != other.layout)
+        if (this.isActive != other.isActive || this.isSelected != other.isSelected || this.layout != other.layout)
             return false;
         if (this.text == null)
         {

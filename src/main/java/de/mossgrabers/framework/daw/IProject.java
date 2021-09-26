@@ -36,6 +36,14 @@ public interface IProject extends IObserverManagement
 
 
     /**
+     * Creates a new empty scene as the last scene in the project.
+     *
+     * @since API version 13
+     */
+    void createScene ();
+
+
+    /**
      * Creates a new scene (using an existing empty scene if possible) from the clips that are
      * currently playing in the clip launcher.
      */
@@ -46,6 +54,12 @@ public interface IProject extends IObserverManagement
      * Save the current project.
      */
     void save ();
+
+
+    /**
+     * Show the load project dialog.
+     */
+    void load ();
 
 
     /**
@@ -130,7 +144,7 @@ public interface IProject extends IObserverManagement
     /**
      * Get the cue mix as a formatted text
      *
-     * @param limit Limit the text to this length
+     * @param limit Limit the text to this l@Override ength
      * @return The cue mix text
      */
     String getCueMixStr (int limit);

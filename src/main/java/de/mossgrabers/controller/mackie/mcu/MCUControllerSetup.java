@@ -75,8 +75,8 @@ import de.mossgrabers.framework.controller.OutputID;
 import de.mossgrabers.framework.controller.hardware.BindType;
 import de.mossgrabers.framework.controller.hardware.IHwFader;
 import de.mossgrabers.framework.controller.hardware.IHwRelativeKnob;
-import de.mossgrabers.framework.controller.valuechanger.DefaultValueChanger;
 import de.mossgrabers.framework.controller.valuechanger.RelativeEncoding;
+import de.mossgrabers.framework.controller.valuechanger.TwosComplementValueChanger;
 import de.mossgrabers.framework.daw.GrooveParameterID;
 import de.mossgrabers.framework.daw.IApplication;
 import de.mossgrabers.framework.daw.IHost;
@@ -170,7 +170,7 @@ public class MCUControllerSetup extends AbstractControllerSetup<MCUControlSurfac
         Arrays.fill (this.masterVuValues, -1);
 
         this.colorManager = new MCUColorManager ();
-        this.valueChanger = new DefaultValueChanger (16241 + 1, 10);
+        this.valueChanger = new TwosComplementValueChanger (16241 + 1, 10);
         this.configuration = new MCUConfiguration (host, this.valueChanger, numMCUDevices, factory.getArpeggiatorModes ());
     }
 
@@ -194,8 +194,8 @@ public class MCUControllerSetup extends AbstractControllerSetup<MCUControlSurfac
             this.updateSegmentDisplay ();
 
             final IMode activeOrTempMode = modeManager.getActive ();
-            if (activeOrTempMode instanceof BaseMode)
-                ((BaseMode<?>) activeOrTempMode).updateKnobLEDs ();
+            if (activeOrTempMode instanceof final BaseMode<?> baseMode)
+                baseMode.updateKnobLEDs ();
         });
     }
 
@@ -229,7 +229,7 @@ public class MCUControllerSetup extends AbstractControllerSetup<MCUControlSurfac
         ms.setNumDeviceLayers (0);
         ms.setNumDrumPadLayers (0);
         ms.setNumMarkers (8 * this.numMCUDevices);
-        this.model = this.factory.createModel (this.colorManager, this.valueChanger, this.scales, ms);
+        this.model = this.factory.createModel (this.configuration, this.colorManager, this.valueChanger, this.scales, ms);
 
         final ITrackBank trackBank = this.model.getTrackBank ();
         trackBank.setIndication (true);
@@ -826,10 +826,7 @@ public class MCUControllerSetup extends AbstractControllerSetup<MCUControlSurfac
 
     private void updateMode (final Modes mode)
     {
-        if (mode == null)
-            return;
-
-        if (!this.configuration.hasAssignmentDisplay ())
+        if (mode == null || !this.configuration.hasAssignmentDisplay ())
             return;
 
         for (int index = 0; index < this.numMCUDevices; index++)

@@ -25,8 +25,8 @@ import java.util.Optional;
  */
 public class DeviceView extends AbstractView<BeatstepControlSurface, BeatstepConfiguration> implements BeatstepView
 {
-    private TrackEditing extensions;
-    private boolean      isLayer;
+    private final TrackEditing extensions;
+    private boolean            isLayer;
 
 
     /**
@@ -62,10 +62,7 @@ public class DeviceView extends AbstractView<BeatstepControlSurface, BeatstepCon
     @Override
     public void onGridNote (final int note, final int velocity)
     {
-        if (velocity == 0)
-            return;
-
-        if (!this.model.hasSelectedDevice ())
+        if (velocity == 0 || !this.model.hasSelectedDevice ())
             return;
 
         final ICursorDevice cd = this.model.getCursorDevice ();

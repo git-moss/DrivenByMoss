@@ -38,10 +38,7 @@ public class SequencerView extends AbstractNoteSequencerView<APCminiControlSurfa
     @Override
     public void onSelectTrack (final int index, final ButtonEvent event)
     {
-        if (event != ButtonEvent.DOWN)
-            return;
-
-        if (!this.isActive ())
+        if (event != ButtonEvent.DOWN || !this.isActive ())
             return;
 
         switch (index)

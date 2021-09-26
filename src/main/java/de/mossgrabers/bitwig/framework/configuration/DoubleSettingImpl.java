@@ -18,7 +18,7 @@ import com.bitwig.extension.controller.api.Setting;
  */
 public class DoubleSettingImpl extends AbstractSetting implements IDoubleSetting
 {
-    private SettableRangedValue rangedValue;
+    private final SettableRangedValue rangedValue;
 
 
     /**

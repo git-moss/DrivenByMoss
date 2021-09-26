@@ -35,7 +35,7 @@ public class DefaultGraphicsDimensions implements IGraphicsDimensions
     /** Where the controls drawing area starts. */
     private final double        controlsTop;
 
-    private int                 maxParameterValue;
+    private final int           maxParameterValue;
 
 
     /**

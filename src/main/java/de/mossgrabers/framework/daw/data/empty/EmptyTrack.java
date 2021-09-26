@@ -220,4 +220,12 @@ public class EmptyTrack extends EmptyChannel implements ITrack
     {
         // Intentionally empty
     }
+
+
+    /** {@inheritDoc} */
+    @Override
+    public boolean hasDrumDevice ()
+    {
+        return false;
+    }
 }

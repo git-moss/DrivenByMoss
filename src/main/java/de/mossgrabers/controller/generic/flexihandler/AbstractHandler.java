@@ -6,9 +6,9 @@ package de.mossgrabers.controller.generic.flexihandler;
 
 import de.mossgrabers.controller.generic.GenericFlexiConfiguration;
 import de.mossgrabers.controller.generic.controller.GenericFlexiControlSurface;
+import de.mossgrabers.controller.generic.flexihandler.utils.KnobMode;
 import de.mossgrabers.controller.generic.flexihandler.utils.MidiValue;
 import de.mossgrabers.framework.MVHelper;
-import de.mossgrabers.framework.controller.valuechanger.DefaultValueChanger;
 import de.mossgrabers.framework.controller.valuechanger.IValueChanger;
 import de.mossgrabers.framework.daw.IModel;
 
@@ -20,24 +20,18 @@ import de.mossgrabers.framework.daw.IModel;
  */
 public abstract class AbstractHandler implements IFlexiCommandHandler
 {
-    protected static final int                                                      KNOB_MODE_ABSOLUTE        = 0;
-    protected static final int                                                      KNOB_MODE_RELATIVE1       = 1;
-    protected static final int                                                      KNOB_MODE_RELATIVE2       = 2;
-    protected static final int                                                      KNOB_MODE_RELATIVE3       = 3;
-    protected static final int                                                      KNOB_MODE_ABSOLUTE_TOGGLE = 4;
-
-    protected static final int                                                      SCROLL_RATE               = 6;
+    protected static final int                                                      SCROLL_RATE     = 6;
 
     protected final IValueChanger                                                   absoluteLowResValueChanger;
-    protected final IValueChanger                                                   relative2ValueChanger;
-    protected final IValueChanger                                                   relative3ValueChanger;
+    protected final IValueChanger                                                   signedBitRelativeValueChanger;
+    protected final IValueChanger                                                   offsetBinaryRelativeValueChanger;
 
     protected final IModel                                                          model;
     protected final MVHelper<GenericFlexiControlSurface, GenericFlexiConfiguration> mvHelper;
     protected final GenericFlexiControlSurface                                      surface;
     protected final GenericFlexiConfiguration                                       configuration;
 
-    private int                                                                     movementCounter           = 0;
+    private int                                                                     movementCounter = 0;
 
 
     /**
@@ -46,18 +40,19 @@ public abstract class AbstractHandler implements IFlexiCommandHandler
      * @param model The model
      * @param surface The surface
      * @param configuration The configuration
-     * @param relative2ValueChanger The relative value changer variant 2
-     * @param relative3ValueChanger The relative value changer variant 3
+     * @param absoluteLowResValueChanger The default absolute value changer in low res mode
+     * @param signedBitRelativeValueChanger The signed bit relative value changer
+     * @param offsetBinaryRelativeValueChanger The offset binary relative value changer
      */
-    protected AbstractHandler (final IModel model, final GenericFlexiControlSurface surface, final GenericFlexiConfiguration configuration, final IValueChanger relative2ValueChanger, final IValueChanger relative3ValueChanger)
+    protected AbstractHandler (final IModel model, final GenericFlexiControlSurface surface, final GenericFlexiConfiguration configuration, final IValueChanger absoluteLowResValueChanger, final IValueChanger signedBitRelativeValueChanger, final IValueChanger offsetBinaryRelativeValueChanger)
     {
         this.model = model;
         this.surface = surface;
         this.configuration = configuration;
         this.mvHelper = new MVHelper<> (model, surface);
-        this.absoluteLowResValueChanger = new DefaultValueChanger (128, 1);
-        this.relative2ValueChanger = relative2ValueChanger;
-        this.relative3ValueChanger = relative3ValueChanger;
+        this.absoluteLowResValueChanger = absoluteLowResValueChanger;
+        this.signedBitRelativeValueChanger = signedBitRelativeValueChanger;
+        this.offsetBinaryRelativeValueChanger = offsetBinaryRelativeValueChanger;
     }
 
 
@@ -67,36 +62,36 @@ public abstract class AbstractHandler implements IFlexiCommandHandler
     }
 
 
-    protected IValueChanger getRelativeValueChanger (final int knobMode)
+    protected IValueChanger getRelativeValueChanger (final KnobMode knobMode)
     {
         switch (knobMode)
         {
             default:
-            case KNOB_MODE_RELATIVE1:
+            case RELATIVE_TWOS_COMPLEMENT:
                 return this.model.getValueChanger ();
-            case KNOB_MODE_RELATIVE2:
-                return this.relative2ValueChanger;
-            case KNOB_MODE_RELATIVE3:
-                return this.relative3ValueChanger;
+            case RELATIVE_SIGNED_BIT:
+                return this.signedBitRelativeValueChanger;
+            case RELATIVE_OFFSET_BINARY:
+                return this.offsetBinaryRelativeValueChanger;
         }
     }
 
 
-    protected boolean isIncrease (final int knobMode, final MidiValue control)
+    protected boolean isIncrease (final KnobMode knobMode, final MidiValue control)
     {
         return this.getRelativeValueChanger (knobMode).calcKnobChange (control.getValue ()) > 0;
     }
 
 
     /**
-     * Return if the given knob mode is one of the absoulte ones.
+     * Return if the given knob mode is one of the absolute ones.
      *
      * @param knobMode The knob mode to test
      * @return True if it is an absolute mode
      */
-    public static boolean isAbsolute (final int knobMode)
+    public static boolean isAbsolute (final KnobMode knobMode)
     {
-        return knobMode == KNOB_MODE_ABSOLUTE || knobMode == KNOB_MODE_ABSOLUTE_TOGGLE;
+        return knobMode == KnobMode.ABSOLUTE || knobMode == KnobMode.ABSOLUTE_TOGGLE;
     }
 
 
@@ -107,9 +102,9 @@ public abstract class AbstractHandler implements IFlexiCommandHandler
      * @param value The value to test
      * @return True if pressed
      */
-    protected boolean isButtonPressed (final int knobMode, final MidiValue value)
+    protected boolean isButtonPressed (final KnobMode knobMode, final MidiValue value)
     {
-        return knobMode == KNOB_MODE_ABSOLUTE_TOGGLE || knobMode == KNOB_MODE_ABSOLUTE && value.isPositive ();
+        return knobMode == KnobMode.ABSOLUTE_TOGGLE || knobMode == KnobMode.ABSOLUTE && value.isPositive ();
     }
 
 

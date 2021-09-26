@@ -17,7 +17,7 @@ import de.mossgrabers.framework.daw.IModel;
  */
 public class TouchpadCommand extends AbstractContinuousCommand<SLControlSurface, SLConfiguration>
 {
-    private boolean isXDirection;
+    private final boolean isXDirection;
 
 
     /**

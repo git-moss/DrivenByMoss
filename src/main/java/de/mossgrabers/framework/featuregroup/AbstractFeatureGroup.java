@@ -102,4 +102,21 @@ public abstract class AbstractFeatureGroup<S extends IControlSurface<C>, C exten
         if (cursorTrack.doesExist ())
             viewManager.setPreferredView (cursorTrack.getPosition (), viewID);
     }
+
+
+    /**
+     * Tests if the button is pressed. If yes, the button UP event is consumed.
+     *
+     * @param buttonID The button to test
+     * @return True if button is pressed
+     */
+    protected boolean isButtonCombination (final ButtonID buttonID)
+    {
+        if (this.surface.isPressed (buttonID))
+        {
+            this.surface.setTriggerConsumed (buttonID);
+            return true;
+        }
+        return false;
+    }
 }

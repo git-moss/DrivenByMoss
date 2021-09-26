@@ -52,6 +52,12 @@ public class SceneView extends BaseView
             return;
         }
 
+        if (this.isButtonCombination (ButtonID.SELECT))
+        {
+            scene.select ();
+            return;
+        }
+
         if (this.surface.getConfiguration ().isSelectClipOnLaunch ())
             scene.select ();
         scene.launch ();

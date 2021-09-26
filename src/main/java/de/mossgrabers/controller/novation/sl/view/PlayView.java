@@ -13,6 +13,7 @@ import de.mossgrabers.framework.controller.ButtonID;
 import de.mossgrabers.framework.daw.IModel;
 import de.mossgrabers.framework.daw.INoteClip;
 import de.mossgrabers.framework.daw.ITransport;
+import de.mossgrabers.framework.daw.StepState;
 import de.mossgrabers.framework.daw.constants.Resolution;
 import de.mossgrabers.framework.daw.data.IChannel;
 import de.mossgrabers.framework.daw.data.IDrumDevice;
@@ -36,13 +37,13 @@ import java.util.Optional;
  */
 public class PlayView extends AbstractSequencerView<SLControlSurface, SLConfiguration> implements SLView
 {
-    private static final int NUM_DISPLAY_COLS = 16;
-    private static final int NOTE_VELOCITY    = 127;
+    private static final int       NUM_DISPLAY_COLS = 16;
+    private static final int       NOTE_VELOCITY    = 127;
 
-    private int              selectedPad;
-    private boolean          isPlayMode;
-    protected int []         pressedKeys;
-    private TransportControl transportControl;
+    private int                    selectedPad;
+    private boolean                isPlayMode;
+    protected int []               pressedKeys;
+    private final TransportControl transportControl;
 
 
     /**
@@ -262,11 +263,8 @@ public class PlayView extends AbstractSequencerView<SLControlSurface, SLConfigur
         final int buttonIDOrdinal = buttonID.ordinal ();
 
         // Button row 1: Launch Scene
-        if (buttonIDOrdinal >= ButtonID.ROW1_1.ordinal () && buttonIDOrdinal <= ButtonID.ROW1_8.ordinal ())
-            return SLControlSurface.MKII_BUTTON_STATE_OFF;
-
         // Button row 2: Track toggles
-        if (buttonIDOrdinal >= ButtonID.ROW2_1.ordinal () && buttonIDOrdinal <= ButtonID.ROW2_8.ordinal ())
+        if (buttonIDOrdinal >= ButtonID.ROW1_1.ordinal () && buttonIDOrdinal <= ButtonID.ROW1_8.ordinal () || buttonIDOrdinal >= ButtonID.ROW2_1.ordinal () && buttonIDOrdinal <= ButtonID.ROW2_8.ordinal ())
             return SLControlSurface.MKII_BUTTON_STATE_OFF;
 
         final Modes mode = this.surface.getModeManager ().getActiveID ();
@@ -362,9 +360,9 @@ public class PlayView extends AbstractSequencerView<SLControlSurface, SLConfigur
         if (col >= PlayView.NUM_DISPLAY_COLS)
             return SLControlSurface.MKII_BUTTON_STATE_OFF;
 
-        final int isSet = clip.getStep (editMidiChannel, col, offsetY + this.selectedPad).getState ();
+        final StepState isSet = clip.getStep (editMidiChannel, col, offsetY + this.selectedPad).getState ();
         final boolean hilite = col == hiStep;
-        return exists && (isSet > 0 || hilite) ? SLControlSurface.MKII_BUTTON_STATE_ON : SLControlSurface.MKII_BUTTON_STATE_OFF;
+        return exists && (isSet != StepState.OFF || hilite) ? SLControlSurface.MKII_BUTTON_STATE_ON : SLControlSurface.MKII_BUTTON_STATE_OFF;
     }
 
 
@@ -422,11 +420,8 @@ public class PlayView extends AbstractSequencerView<SLControlSurface, SLConfigur
         final int offsetY = this.scales.getDrumOffset ();
 
         // Playing note?
-        if (this.pressedKeys[offsetY + index] > 0)
-            return SLControlSurface.MKII_BUTTON_STATE_ON;
-
         // Selected?
-        if (this.selectedPad == index)
+        if (this.pressedKeys[offsetY + index] > 0 || this.selectedPad == index)
             return SLControlSurface.MKII_BUTTON_STATE_ON;
 
         // Exists and active?

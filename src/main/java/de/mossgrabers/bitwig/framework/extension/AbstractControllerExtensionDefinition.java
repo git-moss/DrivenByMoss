@@ -4,6 +4,8 @@
 
 package de.mossgrabers.bitwig.framework.extension;
 
+import de.mossgrabers.framework.configuration.Configuration;
+import de.mossgrabers.framework.controller.IControlSurface;
 import de.mossgrabers.framework.controller.IControllerDefinition;
 import de.mossgrabers.framework.controller.IControllerSetup;
 import de.mossgrabers.framework.usb.UsbMatcher;
@@ -31,9 +33,12 @@ import java.util.UUID;
 /**
  * Some reoccurring functions for the extension definition.
  *
+ * @param <C> The type of the configuration
+ * @param <S> The type of the control surface
+ *
  * @author J&uuml;rgen Mo&szlig;graber
  */
-public abstract class AbstractControllerExtensionDefinition extends ControllerExtensionDefinition
+public abstract class AbstractControllerExtensionDefinition<S extends IControlSurface<C>, C extends Configuration> extends ControllerExtensionDefinition
 {
     private final IControllerDefinition definition;
 
@@ -70,7 +75,7 @@ public abstract class AbstractControllerExtensionDefinition extends ControllerEx
     @Override
     public String getHelpFilePath ()
     {
-        return "Help.html";
+        return "DrivenByMoss-Manual.pdf";
     }
 
 
@@ -111,7 +116,7 @@ public abstract class AbstractControllerExtensionDefinition extends ControllerEx
     @Override
     public int getRequiredAPIVersion ()
     {
-        return 12;
+        return 14;
     }
 
 
@@ -183,7 +188,7 @@ public abstract class AbstractControllerExtensionDefinition extends ControllerEx
      * @param host The host
      * @return The controller setup
      */
-    protected abstract IControllerSetup<?, ?> getControllerSetup (final ControllerHost host);
+    protected abstract IControllerSetup<S, C> getControllerSetup (final ControllerHost host);
 
 
     private static UsbDeviceMatcher createDeviceMatcher (final String name, final short vendor, final short productID, final UsbInterfaceMatcher... interfaceMatchers)

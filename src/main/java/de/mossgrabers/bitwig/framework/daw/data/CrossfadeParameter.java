@@ -25,8 +25,7 @@ public class CrossfadeParameter extends AbstractParameterImpl
     }
 
 
-    private final IValueChanger valueChanger;
-    private final Track         track;
+    private final Track track;
 
 
     /**
@@ -38,9 +37,8 @@ public class CrossfadeParameter extends AbstractParameterImpl
      */
     public CrossfadeParameter (final IValueChanger valueChanger, final Track track, final int index)
     {
-        super (index);
+        super (valueChanger, index);
 
-        this.valueChanger = valueChanger;
         this.track = track;
     }
 
@@ -124,14 +122,6 @@ public class CrossfadeParameter extends AbstractParameterImpl
 
     /** {@inheritDoc} */
     @Override
-    public void setValue (final int value)
-    {
-        this.setValue (this.valueChanger, value);
-    }
-
-
-    /** {@inheritDoc} */
-    @Override
     public void setValue (final IValueChanger valueChanger, final int value)
     {
         this.setNormalizedValue (valueChanger.toNormalizedValue (value));
@@ -143,14 +133,6 @@ public class CrossfadeParameter extends AbstractParameterImpl
     public void setValueImmediatly (final int value)
     {
         this.setValue (value);
-    }
-
-
-    /** {@inheritDoc} */
-    @Override
-    public void changeValue (final int control)
-    {
-        this.changeValue (this.valueChanger, control);
     }
 
 

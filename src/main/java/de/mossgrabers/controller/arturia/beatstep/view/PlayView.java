@@ -22,7 +22,7 @@ import de.mossgrabers.framework.view.Views;
  */
 public class PlayView extends AbstractPlayView<BeatstepControlSurface, BeatstepConfiguration> implements BeatstepView
 {
-    private TrackEditing extensions;
+    private final TrackEditing extensions;
 
 
     /**

@@ -11,20 +11,20 @@ package de.mossgrabers.framework.daw;
  */
 public interface IStepInfo
 {
-    /** Constant for getStep result for note off. */
-    int NOTE_OFF      = 0;
-    /** Constant for getStep result for note continue. */
-    int NOTE_CONTINUE = 1;
-    /** Constant for getStep result for note start. */
-    int NOTE_START    = 2;
-
-
     /**
      * Get state.
      *
-     * @return 0: not set, 1: note continues playing, 2: start of note, see the defined constants
+     * @return The state of the step
      */
-    int getState ();
+    StepState getState ();
+
+
+    /**
+     * Is the note muted?
+     *
+     * @return If true the note is muted
+     */
+    boolean isMuted ();
 
 
     /**
@@ -41,6 +41,14 @@ public interface IStepInfo
      * @return The velocity of the note
      */
     double getVelocity ();
+
+
+    /**
+     * Get the velocity spread of the note.
+     *
+     * @return The velocity spread of the note
+     */
+    double getVelocitySpread ();
 
 
     /**
@@ -89,4 +97,108 @@ public interface IStepInfo
      * @return The gain of the note
      */
     double getGain ();
+
+
+    /**
+     * Is chance (a random value to play the note) enabled?
+     *
+     * @return True if enabled
+     */
+    boolean isChanceEnabled ();
+
+
+    /**
+     * Get the chance (random value) that the note is played.
+     *
+     * @return The chance in the range of [0..1]
+     */
+    double getChance ();
+
+
+    /**
+     * Is occurrence (condition if the note is played) enabled?
+     *
+     * @return True if enabled
+     */
+    boolean isOccurrenceEnabled ();
+
+
+    /**
+     * Get the occurrence.
+     *
+     * @return The occurrence
+     */
+    NoteOccurrenceType getOccurrence ();
+
+
+    /**
+     * Is recurrence enabled?
+     *
+     * @return True if enabled
+     */
+    boolean isRecurrenceEnabled ();
+
+
+    /**
+     * Get the length of the recurrence.
+     *
+     * @return The length, [1..8], 1=Off
+     */
+    int getRecurrenceLength ();
+
+
+    /**
+     * Get the mask for the recurrence.
+     *
+     * @return Field of bits, cycle N -> bit N; max 8 cycles
+     */
+    int getRecurrenceMask ();
+
+
+    /**
+     * Are repeats enabled.
+     *
+     * @return True if enabled
+     */
+    boolean isRepeatEnabled ();
+
+
+    /**
+     * Get the number of repeats.
+     *
+     * @return The number of repeats
+     */
+    int getRepeatCount ();
+
+
+    /**
+     * Get the number of repeats formatted as a text.
+     *
+     * @return The text
+     */
+    String getFormattedRepeatCount ();
+
+
+    /**
+     * Get the repeat curve.
+     *
+     * @return The curve
+     */
+    double getRepeatCurve ();
+
+
+    /**
+     * Get the repeat velocity curve between the start and end velocity.
+     *
+     * @return The repeat velocity curve
+     */
+    double getRepeatVelocityCurve ();
+
+
+    /**
+     * Get the repeat velocity end.
+     *
+     * @return The repeat velocity end
+     */
+    double getRepeatVelocityEnd ();
 }

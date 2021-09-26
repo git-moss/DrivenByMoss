@@ -172,14 +172,10 @@ public class SendsComponent extends ChannelSelectComponent
     {
         if (this == obj)
             return true;
-        if (!super.equals (obj))
-            return false;
-        if (this.getClass () != obj.getClass ())
+        if (!super.equals (obj) || this.getClass () != obj.getClass ())
             return false;
         final SendsComponent other = (SendsComponent) obj;
-        if (this.isExMode != other.isExMode)
-            return false;
-        if (this.isSendActive != other.isSendActive)
+        if (this.isExMode != other.isExMode || this.isSendActive != other.isSendActive)
             return false;
         return Arrays.equals (this.sendData, other.sendData);
     }

@@ -8,6 +8,7 @@ import de.mossgrabers.controller.generic.controller.CommandCategory;
 import de.mossgrabers.controller.generic.controller.FlexiCommand;
 import de.mossgrabers.controller.generic.flexihandler.AbstractHandler;
 import de.mossgrabers.controller.generic.flexihandler.utils.CommandSlot;
+import de.mossgrabers.controller.generic.flexihandler.utils.KnobMode;
 import de.mossgrabers.framework.configuration.AbstractConfiguration;
 import de.mossgrabers.framework.configuration.IActionSetting;
 import de.mossgrabers.framework.configuration.IEnumSetting;
@@ -68,15 +69,6 @@ public class GenericFlexiConfiguration extends AbstractConfiguration
     private static final String                      CATEGORY_OPTIONS             = "Options";
 
     private static final String []                   NAMES                        = FlexiCommand.getNames ();
-
-    private static final String []                   OPTIONS_KNOBMODE             =
-    {
-        "Absolute (push button: Button down > 0, button up = 0)",
-        "Relative (1-64 increments, 127-65 decrements)",
-        "Relative (65-127 increments, 63-0 decrements)",
-        "Relative (1-63 increments, 65-127 decrements)",
-        "Absolute (toggle button: 1st press > 0, 2nd press = 0)"
-    };
 
     /** The types. */
     public static final List<String>                 OPTIONS_TYPE                 = List.of ("Off", "CC", "Note", "Program Change", "Pitchbend", "MMC");
@@ -251,6 +243,7 @@ public class GenericFlexiConfiguration extends AbstractConfiguration
     );
     // @formatter:on
 
+    private static final List<String>                CONTROLLER_CHANNELS          = KEYBOARD_CHANNELS.subList (1, KEYBOARD_CHANNELS.size ());
     private static final List<String>                OPTIONS_RESOLUTION           = List.of ("7-bit", "14-bit");
 
     /** A setting of a slot has changed. */
@@ -276,11 +269,11 @@ public class GenericFlexiConfiguration extends AbstractConfiguration
     private IEnumSetting                             selectedModeSetting;
     private IStringSetting                           fileSetting;
 
-    private CommandSlot []                           commandSlots                 = new CommandSlot [NUM_SLOTS];
+    private final CommandSlot []                     commandSlots                 = new CommandSlot [NUM_SLOTS];
 
     private IValueObserver<FlexiCommand>             commandObserver;
     private String                                   filename;
-    private Object                                   syncMapUpdate                = new Object ();
+    private final Object                             syncMapUpdate                = new Object ();
     private int []                                   keyMap;
     private int                                      selectedSlot                 = 0;
 
@@ -289,9 +282,9 @@ public class GenericFlexiConfiguration extends AbstractConfiguration
     private String                                   learnMidiChannelValue        = null;
     private boolean                                  learnResolution              = false;
 
-    private AtomicBoolean                            doNotFire                    = new AtomicBoolean (false);
-    private AtomicBoolean                            commandIsUpdating            = new AtomicBoolean (false);
-    private String []                                assignableFunctionActions    = new String [8];
+    private final AtomicBoolean                      doNotFire                    = new AtomicBoolean (false);
+    private final AtomicBoolean                      commandIsUpdating            = new AtomicBoolean (false);
+    private final String []                          assignableFunctionActions    = new String [8];
 
     private String                                   selectedMode                 = MODES.get (0);
 
@@ -375,9 +368,11 @@ public class GenericFlexiConfiguration extends AbstractConfiguration
 
         this.typeSetting = globalSettings.getEnumSetting ("Type:", category, OPTIONS_TYPE, OPTIONS_TYPE.get (0));
         this.numberSetting = globalSettings.getEnumSetting ("Number:", category, NUMBER_NAMES, NUMBER_NAMES.get (0));
-        this.midiChannelSetting = globalSettings.getEnumSetting ("Midi Channel:", category, OPTIONS_MIDI_CHANNEL, OPTIONS_MIDI_CHANNEL[0]);
+        this.midiChannelSetting = globalSettings.getEnumSetting ("Midi Channel:", category, CONTROLLER_CHANNELS, CONTROLLER_CHANNELS.get (0));
         this.resolutionSetting = globalSettings.getEnumSetting ("Resolution:", category, OPTIONS_RESOLUTION, OPTIONS_RESOLUTION.get (0));
-        this.knobModeSetting = globalSettings.getEnumSetting ("Knob Mode:", category, OPTIONS_KNOBMODE, OPTIONS_KNOBMODE[0]);
+
+        final String [] knobModeLabels = KnobMode.getLabels ();
+        this.knobModeSetting = globalSettings.getEnumSetting ("Knob Mode:", category, knobModeLabels, knobModeLabels[0]);
 
         ///////////////////////////////////////////////
         // Selected Slot - MIDI device update
@@ -442,7 +437,7 @@ public class GenericFlexiConfiguration extends AbstractConfiguration
             this.clearNoteMap ();
         });
         this.midiChannelSetting.addValueObserver (value -> {
-            this.getSelectedSlot ().setMidiChannel (AbstractConfiguration.lookupIndex (OPTIONS_MIDI_CHANNEL, value));
+            this.getSelectedSlot ().setMidiChannel (AbstractConfiguration.lookupIndex (CONTROLLER_CHANNELS, value));
             this.clearNoteMap ();
         });
         this.resolutionSetting.addValueObserver (value -> {
@@ -466,7 +461,7 @@ public class GenericFlexiConfiguration extends AbstractConfiguration
 
         });
         this.knobModeSetting.addValueObserver (value -> {
-            this.getSelectedSlot ().setKnobMode (AbstractConfiguration.lookupIndex (OPTIONS_KNOBMODE, value));
+            this.getSelectedSlot ().setKnobMode (KnobMode.lookupByLabel (value));
             this.fixKnobMode ();
         });
         this.sendValueSetting.addValueObserver (value -> this.getSelectedSlot ().setSendValue (AbstractConfiguration.lookupIndex (AbstractConfiguration.ON_OFF_OPTIONS, value) > 0));
@@ -556,7 +551,7 @@ public class GenericFlexiConfiguration extends AbstractConfiguration
         if (!command.isTrigger ())
             return;
         if (!AbstractHandler.isAbsolute (slot.getKnobMode ()) || slot.getType () == CommandSlot.TYPE_MMC)
-            this.knobModeSetting.set (OPTIONS_KNOBMODE[0]);
+            this.knobModeSetting.set (KnobMode.ABSOLUTE.getLabel ());
     }
 
 
@@ -601,8 +596,12 @@ public class GenericFlexiConfiguration extends AbstractConfiguration
         for (int i = 0; i < this.commandSlots.length; i++)
         {
             final CommandSlot slot = this.commandSlots[i];
-            if (slot.getCommand () != FlexiCommand.OFF && slot.getType () == type && slot.getMidiChannel () == midiChannel && (type == CommandSlot.TYPE_PITCH_BEND || slot.getNumber () == number))
-                return i;
+            if (slot.getCommand () != FlexiCommand.OFF && slot.getType () == type && (type == CommandSlot.TYPE_PITCH_BEND || slot.getNumber () == number))
+            {
+                final int channel = slot.getMidiChannel ();
+                if (channel == midiChannel || channel == 16)
+                    return i;
+            }
         }
         return -1;
     }
@@ -621,8 +620,12 @@ public class GenericFlexiConfiguration extends AbstractConfiguration
         for (int i = 0; i < this.commandSlots.length; i++)
         {
             final CommandSlot slot = this.commandSlots[i];
-            if (slot.getCommand () != FlexiCommand.OFF && slot.getType () == type && slot.getMidiChannel () == midiChannel && (type == CommandSlot.TYPE_PITCH_BEND || slot.getNumber () == number))
-                return Optional.of (new Pair<> (Integer.valueOf (i), slot));
+            if (slot.getCommand () != FlexiCommand.OFF && slot.getType () == type && (type == CommandSlot.TYPE_PITCH_BEND || slot.getNumber () == number))
+            {
+                final int channel = slot.getMidiChannel ();
+                if (channel == midiChannel || channel == 16)
+                    return Optional.of (new Pair<> (Integer.valueOf (i), slot));
+            }
         }
         return Optional.empty ();
     }
@@ -800,7 +803,7 @@ public class GenericFlexiConfiguration extends AbstractConfiguration
             props.put (slotName + TAG_NUMBER, Integer.toString (slot.getNumber ()));
             props.put (slotName + TAG_MIDI_CHANNEL, Integer.toString (slot.getMidiChannel ()));
             props.put (slotName + TAG_RESOLUTION, Boolean.toString (slot.getResolution ()));
-            props.put (slotName + TAG_KNOB_MODE, Integer.toString (slot.getKnobMode ()));
+            props.put (slotName + TAG_KNOB_MODE, Integer.toString (slot.getKnobMode ().ordinal ()));
             props.put (slotName + TAG_COMMAND, slot.getCommand ().getName ());
             props.put (slotName + TAG_SEND_VALUE, Boolean.toString (slot.isSendValue ()));
             props.put (slotName + TAG_SEND_VALUE_WHEN_RECEIVED, Boolean.toString (slot.isSendValueWhenReceived ()));
@@ -848,7 +851,7 @@ public class GenericFlexiConfiguration extends AbstractConfiguration
                 slot.setNumber (numberProperty == null ? 0 : Integer.parseInt (numberProperty));
                 slot.setMidiChannel (midiChannelProperty == null ? 0 : Integer.parseInt (midiChannelProperty));
                 slot.setResolution (Boolean.parseBoolean (props.getProperty (slotName + TAG_RESOLUTION)));
-                slot.setKnobMode (knobModeProperty == null ? 0 : Integer.parseInt (knobModeProperty));
+                slot.setKnobMode (readKnobMode (knobModeProperty));
                 slot.setCommand (command);
                 slot.setSendValue (Boolean.parseBoolean (props.getProperty (slotName + TAG_SEND_VALUE)));
                 slot.setSendValueWhenReceived (Boolean.parseBoolean (props.getProperty (slotName + TAG_SEND_VALUE_WHEN_RECEIVED)));
@@ -971,7 +974,7 @@ public class GenericFlexiConfiguration extends AbstractConfiguration
      */
     private void setMidiChannel (final int value)
     {
-        this.midiChannelSetting.set (OPTIONS_MIDI_CHANNEL[value]);
+        this.midiChannelSetting.set (CONTROLLER_CHANNELS.get (value));
     }
 
 
@@ -991,9 +994,9 @@ public class GenericFlexiConfiguration extends AbstractConfiguration
      *
      * @param value The index
      */
-    private void setKnobMode (final int value)
+    private void setKnobMode (final KnobMode value)
     {
-        this.knobModeSetting.set (OPTIONS_KNOBMODE[value]);
+        this.knobModeSetting.set (value.getLabel ());
     }
 
 
@@ -1053,5 +1056,23 @@ public class GenericFlexiConfiguration extends AbstractConfiguration
         }
         final String [] array = functionsNames.toArray (new String [functionsNames.size ()]);
         return settingsUI.getEnumSetting (functionCategory + ":", settingCategory, array, array[0]);
+    }
+
+
+    private static KnobMode readKnobMode (final String knobModeProperty)
+    {
+        if (knobModeProperty == null)
+            return KnobMode.ABSOLUTE;
+
+        try
+        {
+            final int knobModeID = Integer.parseInt (knobModeProperty);
+            final KnobMode [] knobModeValues = KnobMode.values ();
+            return knobModeID < knobModeValues.length ? knobModeValues[knobModeID] : KnobMode.ABSOLUTE;
+        }
+        catch (final NumberFormatException ex)
+        {
+            return KnobMode.ABSOLUTE;
+        }
     }
 }

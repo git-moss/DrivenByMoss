@@ -90,6 +90,14 @@ public class ProjectImpl implements IProject
 
     /** {@inheritDoc} */
     @Override
+    public void createScene ()
+    {
+        this.project.createScene ();
+    }
+
+
+    /** {@inheritDoc} */
+    @Override
     public void createSceneFromPlayingLauncherClips ()
     {
         this.project.createSceneFromPlayingLauncherClips ();
@@ -101,6 +109,16 @@ public class ProjectImpl implements IProject
     public void save ()
     {
         final Action action = this.application.getAction ("Save");
+        if (action != null)
+            action.invoke ();
+    }
+
+
+    /** {@inheritDoc} */
+    @Override
+    public void load ()
+    {
+        final Action action = this.application.getAction ("Open");
         if (action != null)
             action.invoke ();
     }

@@ -5,6 +5,8 @@
 package de.mossgrabers.bitwig.framework.daw.data;
 
 import de.mossgrabers.bitwig.framework.daw.ApplicationImpl;
+import de.mossgrabers.bitwig.framework.daw.HostImpl;
+import de.mossgrabers.bitwig.framework.daw.ModelImpl;
 import de.mossgrabers.bitwig.framework.daw.data.bank.SlotBankImpl;
 import de.mossgrabers.framework.controller.valuechanger.IValueChanger;
 import de.mossgrabers.framework.daw.IHost;
@@ -17,6 +19,9 @@ import de.mossgrabers.framework.observer.INoteObserver;
 
 import com.bitwig.extension.controller.api.BooleanValue;
 import com.bitwig.extension.controller.api.CursorTrack;
+import com.bitwig.extension.controller.api.Device;
+import com.bitwig.extension.controller.api.DeviceBank;
+import com.bitwig.extension.controller.api.DeviceMatcher;
 import com.bitwig.extension.controller.api.PlayingNote;
 import com.bitwig.extension.controller.api.Track;
 
@@ -33,20 +38,25 @@ import java.util.concurrent.CopyOnWriteArraySet;
  */
 public class TrackImpl extends ChannelImpl implements ITrack
 {
-    protected static final int       NOTE_OFF      = 0;
-    protected static final int       NOTE_ON       = 1;
-    protected static final int       NOTE_ON_NEW   = 2;
+    protected static final int       NOTE_OFF          = 0;
+    protected static final int       NOTE_ON           = 1;
+    protected static final int       NOTE_ON_NEW       = 2;
+
+    private static final String      MONITOR_MODE_OFF  = "OFF";
+    private static final String      MONITOR_MODE_ON   = "ON";
+    private static final String      MONITOR_MODE_AUTO = "AUTO";
 
     protected final Track            track;
 
     private final BooleanValue       isTopGroup;
     private final ApplicationImpl    application;
     private final ISlotBank          slotBank;
-    private final int []             noteCache     = new int [128];
-    private final Set<INoteObserver> noteObservers = new CopyOnWriteArraySet<> ();
+    private final int []             noteCache         = new int [128];
+    private final Set<INoteObserver> noteObservers     = new CopyOnWriteArraySet<> ();
     private final CursorTrack        cursorTrack;
     private final IHost              host;
     private final IParameter         crossfadeParameter;
+    private final Device             drumMachineDevice;
 
 
     /**
@@ -76,8 +86,8 @@ public class TrackImpl extends ChannelImpl implements ITrack
         track.position ().markInterested ();
         track.isGroup ().markInterested ();
         track.arm ().markInterested ();
-        track.monitor ().markInterested ();
-        track.autoMonitor ().markInterested ();
+        track.isMonitoring ().markInterested ();
+        track.monitorMode ().markInterested ();
         track.crossFadeMode ().markInterested ();
         track.canHoldNoteData ().markInterested ();
         track.canHoldAudioData ().markInterested ();
@@ -89,6 +99,12 @@ public class TrackImpl extends ChannelImpl implements ITrack
 
         this.crossfadeParameter = new CrossfadeParameter (valueChanger, track, index);
         this.slotBank = new SlotBankImpl (host, valueChanger, this, track.clipLauncherSlotBank (), numScenes);
+
+        final DeviceMatcher drumMachineDeviceMatcher = ((HostImpl) host).getControllerHost ().createBitwigDeviceMatcher (ModelImpl.INSTRUMENT_DRUM_MACHINE);
+        final DeviceBank drumDeviceBank = track.createDeviceBank (1);
+        drumDeviceBank.setDeviceMatcher (drumMachineDeviceMatcher);
+        this.drumMachineDevice = drumDeviceBank.getItemAt (0);
+        this.drumMachineDevice.exists ().markInterested ();
 
         Arrays.fill (this.noteCache, NOTE_OFF);
     }
@@ -104,15 +120,16 @@ public class TrackImpl extends ChannelImpl implements ITrack
         Util.setIsSubscribed (this.track.position (), enable);
         Util.setIsSubscribed (this.track.isGroup (), enable);
         Util.setIsSubscribed (this.track.arm (), enable);
-        Util.setIsSubscribed (this.track.monitor (), enable);
-        Util.setIsSubscribed (this.track.autoMonitor (), enable);
+        Util.setIsSubscribed (this.track.isMonitoring (), enable);
+        Util.setIsSubscribed (this.track.monitorMode (), enable);
         Util.setIsSubscribed (this.track.crossFadeMode (), enable);
         Util.setIsSubscribed (this.track.canHoldNoteData (), enable);
         Util.setIsSubscribed (this.track.canHoldAudioData (), enable);
         Util.setIsSubscribed (this.track.isStopped (), enable);
         Util.setIsSubscribed (this.track.playingNotes (), enable);
-
         this.slotBank.enableObservers (enable);
+
+        Util.setIsSubscribed (this.drumMachineDevice.exists (), enable);
     }
 
 
@@ -207,7 +224,7 @@ public class TrackImpl extends ChannelImpl implements ITrack
     @Override
     public boolean isMonitor ()
     {
-        return this.track.monitor ().get ();
+        return this.track.isMonitoring ().get ();
     }
 
 
@@ -215,7 +232,7 @@ public class TrackImpl extends ChannelImpl implements ITrack
     @Override
     public void setMonitor (final boolean value)
     {
-        this.track.monitor ().set (value);
+        this.track.monitorMode ().set (MONITOR_MODE_ON);
     }
 
 
@@ -223,7 +240,7 @@ public class TrackImpl extends ChannelImpl implements ITrack
     @Override
     public void toggleMonitor ()
     {
-        this.track.monitor ().toggle ();
+        this.track.monitorMode ().set (this.isMonitor () ? MONITOR_MODE_OFF : MONITOR_MODE_ON);
     }
 
 
@@ -231,7 +248,7 @@ public class TrackImpl extends ChannelImpl implements ITrack
     @Override
     public boolean isAutoMonitor ()
     {
-        return this.track.autoMonitor ().get ();
+        return MONITOR_MODE_AUTO.equalsIgnoreCase (this.track.monitorMode ().get ());
     }
 
 
@@ -239,7 +256,7 @@ public class TrackImpl extends ChannelImpl implements ITrack
     @Override
     public void setAutoMonitor (final boolean value)
     {
-        this.track.autoMonitor ().set (value);
+        this.track.monitorMode ().set (value ? MONITOR_MODE_AUTO : MONITOR_MODE_OFF);
     }
 
 
@@ -247,7 +264,7 @@ public class TrackImpl extends ChannelImpl implements ITrack
     @Override
     public void toggleAutoMonitor ()
     {
-        this.track.autoMonitor ().toggle ();
+        this.setAutoMonitor (!this.isAutoMonitor ());
     }
 
 
@@ -345,6 +362,14 @@ public class TrackImpl extends ChannelImpl implements ITrack
     {
         if (this.doesExist ())
             this.track.endOfDeviceChainInsertionPoint ().insertBitwigDevice (EqualizerDeviceImpl.ID_BITWIG_EQ_PLUS);
+    }
+
+
+    /** {@inheritDoc} */
+    @Override
+    public boolean hasDrumDevice ()
+    {
+        return this.drumMachineDevice.exists ().get ();
     }
 
 

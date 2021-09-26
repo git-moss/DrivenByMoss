@@ -23,7 +23,7 @@ import com.bitwig.extension.api.graphics.Image;
  */
 public class GraphicsContextImpl implements IGraphicsContext
 {
-    private GraphicsOutput gc;
+    private final GraphicsOutput gc;
 
 
     /**

@@ -10,6 +10,7 @@ import de.mossgrabers.framework.controller.IControlSurface;
 import de.mossgrabers.framework.controller.grid.IPadGrid;
 import de.mossgrabers.framework.daw.IModel;
 import de.mossgrabers.framework.daw.INoteClip;
+import de.mossgrabers.framework.daw.StepState;
 import de.mossgrabers.framework.daw.constants.Resolution;
 import de.mossgrabers.framework.daw.data.ITrack;
 import de.mossgrabers.framework.scale.Scales;
@@ -78,10 +79,7 @@ public abstract class AbstractRaindropsView<S extends IControlSurface<C>, C exte
     @Override
     public void onGridNote (final int note, final int velocity)
     {
-        if (!this.isActive ())
-            return;
-
-        if (velocity == 0)
+        if (!this.isActive () || velocity == 0)
             return;
 
         final int index = note - 36;
@@ -169,10 +167,7 @@ public abstract class AbstractRaindropsView<S extends IControlSurface<C>, C exte
     @Override
     public void onOctaveDown (final ButtonEvent event)
     {
-        if (event != ButtonEvent.DOWN)
-            return;
-
-        if (!this.isActive ())
+        if (event != ButtonEvent.DOWN || !this.isActive ())
             return;
 
         if (this.surface.isShiftPressed ())
@@ -197,10 +192,7 @@ public abstract class AbstractRaindropsView<S extends IControlSurface<C>, C exte
     @Override
     public void onOctaveUp (final ButtonEvent event)
     {
-        if (event != ButtonEvent.DOWN)
-            return;
-
-        if (!this.isActive ())
+        if (event != ButtonEvent.DOWN || !this.isActive ())
             return;
 
         if (this.surface.isShiftPressed ())
@@ -247,14 +239,14 @@ public abstract class AbstractRaindropsView<S extends IControlSurface<C>, C exte
         final int editMidiChannel = this.configuration.getMidiEditChannel ();
         for (step = 0; step < length; step++)
         {
-            if (clip.getStep (editMidiChannel, step, row).getState () > 0)
+            if (clip.getStep (editMidiChannel, step, row).getState () != StepState.OFF)
                 break;
         }
         if (step >= length)
             return -1;
         for (int step2 = step + 1; step2 < length; step2++)
         {
-            if (clip.getStep (editMidiChannel, step2, row).getState () > 0)
+            if (clip.getStep (editMidiChannel, step2, row).getState () != StepState.OFF)
                 return step2 - step;
         }
         return -1;
@@ -263,9 +255,7 @@ public abstract class AbstractRaindropsView<S extends IControlSurface<C>, C exte
 
     protected int getNoteDistanceToTheRight (final int row, final int start, final int length)
     {
-        if (row < 0)
-            return -1;
-        if (start < 0 || start >= length)
+        if (row < 0 || start < 0 || start >= length)
             return -1;
         int step = start;
         int counter = 0;
@@ -273,7 +263,7 @@ public abstract class AbstractRaindropsView<S extends IControlSurface<C>, C exte
         final int editMidiChannel = this.configuration.getMidiEditChannel ();
         do
         {
-            if (clip.getStep (editMidiChannel, step, row).getState () > 0)
+            if (clip.getStep (editMidiChannel, step, row).getState () != StepState.OFF)
                 return counter;
             step++;
             counter++;
@@ -286,9 +276,7 @@ public abstract class AbstractRaindropsView<S extends IControlSurface<C>, C exte
 
     protected int getNoteDistanceToTheLeft (final int row, final int start, final int length)
     {
-        if (row < 0)
-            return -1;
-        if (start < 0 || start >= length)
+        if (row < 0 || start < 0 || start >= length)
             return -1;
         final int s = start == 0 ? length - 1 : start - 1;
         int step = s;
@@ -297,7 +285,7 @@ public abstract class AbstractRaindropsView<S extends IControlSurface<C>, C exte
         final int editMidiChannel = this.configuration.getMidiEditChannel ();
         do
         {
-            if (clip.getStep (editMidiChannel, step, row).getState () > 0)
+            if (clip.getStep (editMidiChannel, step, row).getState () != StepState.OFF)
                 return counter;
             step--;
             counter++;

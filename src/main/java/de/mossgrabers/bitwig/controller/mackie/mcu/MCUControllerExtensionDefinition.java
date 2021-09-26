@@ -8,8 +8,10 @@ import de.mossgrabers.bitwig.framework.BitwigSetupFactory;
 import de.mossgrabers.bitwig.framework.configuration.SettingsUIImpl;
 import de.mossgrabers.bitwig.framework.daw.HostImpl;
 import de.mossgrabers.bitwig.framework.extension.AbstractControllerExtensionDefinition;
+import de.mossgrabers.controller.mackie.mcu.MCUConfiguration;
 import de.mossgrabers.controller.mackie.mcu.MCUControllerDefinition;
 import de.mossgrabers.controller.mackie.mcu.MCUControllerSetup;
+import de.mossgrabers.controller.mackie.mcu.controller.MCUControlSurface;
 import de.mossgrabers.framework.controller.IControllerSetup;
 
 import com.bitwig.extension.controller.api.ControllerHost;
@@ -20,7 +22,7 @@ import com.bitwig.extension.controller.api.ControllerHost;
  *
  * @author J&uuml;rgen Mo&szlig;graber
  */
-abstract class MCUControllerExtensionDefinition extends AbstractControllerExtensionDefinition
+abstract class MCUControllerExtensionDefinition extends AbstractControllerExtensionDefinition<MCUControlSurface, MCUConfiguration>
 {
     private final int numMCUDevices;
 
@@ -39,7 +41,7 @@ abstract class MCUControllerExtensionDefinition extends AbstractControllerExtens
 
     /** {@inheritDoc} */
     @Override
-    protected IControllerSetup<?, ?> getControllerSetup (final ControllerHost host)
+    protected IControllerSetup<MCUControlSurface, MCUConfiguration> getControllerSetup (final ControllerHost host)
     {
         return new MCUControllerSetup (new HostImpl (host), new BitwigSetupFactory (host), new SettingsUIImpl (host, host.getPreferences ()), new SettingsUIImpl (host, host.getDocumentState ()), this.numMCUDevices);
     }

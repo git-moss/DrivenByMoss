@@ -26,9 +26,9 @@ public class DeviceMetadataImpl implements IDeviceMetadata
     }
 
 
-    private String     name;
-    private String     id;
-    private PluginType pluginType;
+    private final String     name;
+    private final String     id;
+    private final PluginType pluginType;
 
 
     /**

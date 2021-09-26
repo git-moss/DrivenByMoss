@@ -24,9 +24,9 @@ import java.util.Date;
  */
 public abstract class BaseMode<B extends IItem> extends AbstractMode<APCControlSurface, APCConfiguration, B>
 {
-    private boolean isKnobMoving;
-    private long    moveStartTime;
-    private int     ledMode;
+    private boolean   isKnobMoving;
+    private long      moveStartTime;
+    private final int ledMode;
 
 
     /**

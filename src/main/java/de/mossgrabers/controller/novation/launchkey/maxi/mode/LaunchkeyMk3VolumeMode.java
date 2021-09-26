@@ -14,7 +14,7 @@ import de.mossgrabers.framework.daw.data.ICursorTrack;
 import de.mossgrabers.framework.daw.data.IMasterTrack;
 import de.mossgrabers.framework.daw.data.ITrack;
 import de.mossgrabers.framework.daw.data.bank.ITrackBank;
-import de.mossgrabers.framework.mode.track.VolumeMode;
+import de.mossgrabers.framework.mode.track.TrackVolumeMode;
 
 import java.util.List;
 
@@ -24,7 +24,7 @@ import java.util.List;
  *
  * @author J&uuml;rgen Mo&szlig;graber
  */
-public class LaunchkeyMk3VolumeMode extends VolumeMode<LaunchkeyMk3ControlSurface, LaunchkeyMk3Configuration>
+public class LaunchkeyMk3VolumeMode extends TrackVolumeMode<LaunchkeyMk3ControlSurface, LaunchkeyMk3Configuration>
 {
     private final boolean areKnobs;
 

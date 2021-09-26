@@ -9,6 +9,7 @@ import de.mossgrabers.controller.novation.launchpad.controller.LaunchpadColorMan
 import de.mossgrabers.controller.novation.launchpad.controller.LaunchpadControlSurface;
 import de.mossgrabers.framework.controller.ButtonID;
 import de.mossgrabers.framework.daw.IModel;
+import de.mossgrabers.framework.daw.INoteClip;
 import de.mossgrabers.framework.view.AbstractNoteSequencerView;
 
 
@@ -44,5 +45,22 @@ public class SequencerView extends AbstractNoteSequencerView<LaunchpadControlSur
 
         final int scene = buttonID.ordinal () - ButtonID.SCENE1.ordinal ();
         return scene == 7 - this.selectedResolutionIndex ? LaunchpadColorManager.LAUNCHPAD_COLOR_YELLOW : LaunchpadColorManager.LAUNCHPAD_COLOR_GREEN;
+    }
+
+
+    /** {@inheritDoc} */
+    @Override
+    protected boolean handleSequencerAreaButtonCombinations (final INoteClip clip, final int channel, final int step, final int row, final int note, final int velocity)
+    {
+        final boolean isUpPressed = this.surface.isPressed (ButtonID.UP);
+        if (isUpPressed || this.surface.isPressed (ButtonID.DOWN))
+        {
+            this.surface.setTriggerConsumed (isUpPressed ? ButtonID.UP : ButtonID.DOWN);
+            if (velocity > 0)
+                this.handleSequencerAreaRepeatOperator (clip, channel, step, note, velocity, isUpPressed);
+            return true;
+        }
+
+        return super.handleSequencerAreaButtonCombinations (clip, channel, step, row, note, velocity);
     }
 }

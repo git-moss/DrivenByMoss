@@ -77,16 +77,17 @@ public class ClipView extends BaseView
             return;
         }
 
-        if (configuration.isSelectClipOnLaunch ())
-            slot.select ();
-
-        if (!track.get ().isRecArm ())
+        // Select clip
+        if (this.isButtonCombination (ButtonID.SELECT))
         {
-            slot.launch ();
+            slot.select ();
             return;
         }
 
-        if (slot.hasContent ())
+        if (configuration.isSelectClipOnLaunch ())
+            slot.select ();
+
+        if (!track.get ().isRecArm () || slot.hasContent ())
         {
             slot.launch ();
             return;

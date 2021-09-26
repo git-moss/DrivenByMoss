@@ -165,7 +165,7 @@ public class ShiftView extends AbstractView<APCminiControlSurface, APCminiConfig
                 this.surface.getDisplay ().notify ("Start/Stop");
                 break;
             case 55:
-                this.model.getTransport ().record ();
+                this.model.getTransport ().startRecording ();
                 this.surface.getDisplay ().notify ("Record");
                 break;
             case 47:
@@ -179,7 +179,7 @@ public class ShiftView extends AbstractView<APCminiControlSurface, APCminiConfig
 
             // Navigation
             case 62:
-                this.onNew ();
+                this.newCommand.execute ();
                 this.surface.getDisplay ().notify ("New clip");
                 break;
             case 54:
@@ -424,12 +424,6 @@ public class ShiftView extends AbstractView<APCminiControlSurface, APCminiConfig
             default:
                 return ColorManager.BUTTON_STATE_OFF;
         }
-    }
-
-
-    private void onNew ()
-    {
-        this.newCommand.executeNormal (ButtonEvent.DOWN);
     }
 
 

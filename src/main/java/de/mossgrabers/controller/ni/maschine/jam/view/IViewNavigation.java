@@ -16,7 +16,7 @@ public interface IViewNavigation
 {
     /**
      * Can be scrolled?
-     * 
+     *
      * @param direction The direction to check
      * @return True if it can be scrolled
      */

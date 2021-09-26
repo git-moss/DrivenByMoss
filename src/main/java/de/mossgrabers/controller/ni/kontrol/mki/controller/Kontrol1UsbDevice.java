@@ -424,14 +424,14 @@ public class Kontrol1UsbDevice
     private UIChangeCallback                   callback;
 
     private int                                mainEncoderValue;
-    private int []                             encoderValues             = new int [8];
+    private final int []                       encoderValues             = new int [8];
     private int                                firstNote                 = 48;
 
-    private byte []                            buttonStates              = new byte [21];
-    private byte []                            oldButtonStates           = new byte [21];
+    private final byte []                      buttonStates              = new byte [21];
+    private final byte []                      oldButtonStates           = new byte [21];
 
-    private byte []                            keyColors                 = new byte [88 * 3];
-    private byte []                            oldKeyColors              = new byte [88 * 3];
+    private final byte []                      keyColors                 = new byte [88 * 3];
+    private final byte []                      oldKeyColors              = new byte [88 * 3];
 
     private final boolean [] []                dots                      = new boolean [2] [72];
     private final int [] []                    bars                      = new int [9] [9];

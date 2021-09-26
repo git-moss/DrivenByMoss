@@ -22,10 +22,10 @@ import com.bitwig.extension.controller.api.CursorBrowserItem;
  */
 public class BrowserColumnImpl extends AbstractItemImpl implements IBrowserColumn
 {
-    private final BrowserFilterColumn column;
-    private IBrowserColumnItem []     items;
-    private BrowserItemBank<?>        itemBank;
-    private CursorBrowserFilterItem   cursorResult;
+    private final BrowserFilterColumn     column;
+    private final IBrowserColumnItem []   items;
+    private final BrowserItemBank<?>      itemBank;
+    private final CursorBrowserFilterItem cursorResult;
 
 
     /**

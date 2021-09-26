@@ -20,7 +20,7 @@ import com.bitwig.extension.controller.api.Setting;
  */
 public class ColorSettingImpl extends AbstractSetting implements IColorSetting
 {
-    private SettableColorValue colorValue;
+    private final SettableColorValue colorValue;
 
 
     /**

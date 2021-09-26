@@ -186,7 +186,6 @@ public abstract class AbstractMode<S extends IControlSurface<C>, C extends Confi
      * Set the parameters controlled by this mode if used with the given button combination.
      *
      * @param buttonID The ID of the button which can activate the given parameters
-     *
      * @param parameterProvider Interface to get a number of parameters
      */
     protected void setParameterProvider (final ButtonID buttonID, final IParameterProvider parameterProvider)

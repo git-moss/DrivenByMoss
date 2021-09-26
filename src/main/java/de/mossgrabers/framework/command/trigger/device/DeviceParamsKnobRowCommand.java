@@ -23,9 +23,9 @@ import java.util.Date;
  */
 public class DeviceParamsKnobRowCommand<S extends IControlSurface<C>, C extends Configuration> extends AbstractContinuousCommand<S, C>
 {
-    private int     index;
-    private long    moveStartTime;
-    private boolean isKnobMoving;
+    private final int index;
+    private long      moveStartTime;
+    private boolean   isKnobMoving;
 
 
     /**

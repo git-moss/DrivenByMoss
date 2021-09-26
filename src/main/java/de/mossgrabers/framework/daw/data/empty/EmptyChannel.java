@@ -174,6 +174,22 @@ public class EmptyChannel extends EmptyItem implements IChannel
 
     /** {@inheritDoc} */
     @Override
+    public int getVuPeakLeft ()
+    {
+        return 0;
+    }
+
+
+    /** {@inheritDoc} */
+    @Override
+    public int getVuPeakRight ()
+    {
+        return 0;
+    }
+
+
+    /** {@inheritDoc} */
+    @Override
     public void enableObservers (final boolean enable)
     {
         // Intentionally empty
@@ -313,6 +329,14 @@ public class EmptyChannel extends EmptyItem implements IChannel
     public void toggleSolo ()
     {
         // Intentionally empty
+    }
+
+
+    /** {@inheritDoc} */
+    @Override
+    public boolean isMutedBySolo ()
+    {
+        return false;
     }
 
 

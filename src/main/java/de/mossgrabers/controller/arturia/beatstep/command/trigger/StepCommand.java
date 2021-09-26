@@ -19,7 +19,7 @@ import de.mossgrabers.framework.view.Views;
  */
 public class StepCommand extends AbstractTriggerCommand<BeatstepControlSurface, BeatstepConfiguration>
 {
-    private int step;
+    private final int step;
 
 
     /**

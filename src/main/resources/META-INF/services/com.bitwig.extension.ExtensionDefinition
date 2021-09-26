@@ -4,6 +4,7 @@ de.mossgrabers.bitwig.controller.akai.apc.APCmkIControllerExtensionDefinition
 de.mossgrabers.bitwig.controller.akai.apc.APCmkIIControllerExtensionDefinition
 de.mossgrabers.bitwig.controller.akai.apcmini.APCminiControllerExtensionDefinition
 de.mossgrabers.bitwig.controller.akai.fire.FireControllerExtensionDefinition
+de.mossgrabers.bitwig.controller.akai.acvs.ACVSLiveControllerExtensionDefinition
 de.mossgrabers.bitwig.controller.arturia.beatstep.BeatstepControllerExtensionDefinition
 de.mossgrabers.bitwig.controller.generic.GenericFlexiControllerExtensionDefinition
 de.mossgrabers.bitwig.controller.mackie.hui.HUIController0ExtenderExtensionDefinition
@@ -34,6 +35,7 @@ de.mossgrabers.bitwig.controller.ni.maschine.jam.MaschineJamExtensionDefinition
 de.mossgrabers.bitwig.controller.ni.maschine.mk3.MaschineMk2ExtensionDefinition
 de.mossgrabers.bitwig.controller.ni.maschine.mk3.MaschineMk3ExtensionDefinition
 de.mossgrabers.bitwig.controller.ni.maschine.mk3.MaschinePlusExtensionDefinition
+de.mossgrabers.bitwig.controller.ni.maschine.mk3.MaschineStudioExtensionDefinition
 de.mossgrabers.bitwig.controller.ni.maschine.mk3.MaschineMikroMk3ExtensionDefinition
 de.mossgrabers.bitwig.controller.utilities.autocolor.AutoColorExtensionDefinition
 de.mossgrabers.bitwig.controller.utilities.midimonitor.MidiMonitorExtensionDefinition

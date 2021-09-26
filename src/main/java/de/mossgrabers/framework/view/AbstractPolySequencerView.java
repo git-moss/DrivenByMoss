@@ -9,15 +9,19 @@ import de.mossgrabers.framework.controller.ButtonID;
 import de.mossgrabers.framework.controller.IControlSurface;
 import de.mossgrabers.framework.controller.grid.IPadGrid;
 import de.mossgrabers.framework.controller.hardware.IHwButton;
+import de.mossgrabers.framework.daw.DefaultStepInfo;
 import de.mossgrabers.framework.daw.IModel;
 import de.mossgrabers.framework.daw.INoteClip;
 import de.mossgrabers.framework.daw.IStepInfo;
+import de.mossgrabers.framework.daw.StepState;
 import de.mossgrabers.framework.daw.constants.Resolution;
+import de.mossgrabers.framework.daw.data.GridStep;
 import de.mossgrabers.framework.daw.data.ITrack;
 import de.mossgrabers.framework.daw.data.bank.ITrackBank;
 import de.mossgrabers.framework.utils.ButtonEvent;
 
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 
@@ -38,8 +42,8 @@ public abstract class AbstractPolySequencerView<S extends IControlSurface<C>, C 
     protected final int                   sequencerSteps;
     protected final Map<Integer, Integer> noteMemory          = new HashMap<> ();
     protected int                         copyStep            = -1;
-    private int                           numColumns;
-    private int                           numRows;
+    protected int                         numColumns;
+    protected int                         numRows;
 
 
     /**
@@ -104,6 +108,7 @@ public abstract class AbstractPolySequencerView<S extends IControlSurface<C>, C 
         this.keyManager.clearPressedKeys ();
         this.scales.decOctave ();
         this.updateNoteMapping ();
+        this.clearEditNotes ();
         this.surface.getDisplay ().notify (this.scales.getRangeText ());
     }
 
@@ -130,6 +135,7 @@ public abstract class AbstractPolySequencerView<S extends IControlSurface<C>, C 
         this.keyManager.clearPressedKeys ();
         this.scales.incOctave ();
         this.updateNoteMapping ();
+        this.clearEditNotes ();
         this.surface.getDisplay ().notify (this.scales.getRangeText ());
     }
 
@@ -169,11 +175,8 @@ public abstract class AbstractPolySequencerView<S extends IControlSurface<C>, C 
         }
 
         // Only allow playing the notes if there is no clip
-        if (!this.isActive ())
-            return;
-
         // Toggle the note on up, so we can intercept the long presses (but not yet used)
-        if (velocity > 0)
+        if (!this.isActive () || velocity > 0)
             return;
 
         this.handleSequencerArea (x, y);
@@ -218,11 +221,11 @@ public abstract class AbstractPolySequencerView<S extends IControlSurface<C>, C 
         if (this.handleSequencerAreaButtonCombinations (clip, channel, step))
             return;
 
-        if (this.getStep (clip, step) > 0)
+        if (this.getStep (clip, step).getState () != StepState.OFF)
         {
             for (int row = 0; row < 128; row++)
             {
-                if (clip.getStep (channel, step, row).getState () > 0)
+                if (clip.getStep (channel, step, row).getState () != StepState.OFF)
                     clip.clearStep (channel, step, row);
             }
         }
@@ -254,7 +257,7 @@ public abstract class AbstractPolySequencerView<S extends IControlSurface<C>, C 
         // Handle note duplicate function
         if (this.isButtonCombination (ButtonID.DUPLICATE))
         {
-            if (this.getStep (clip, step) == IStepInfo.NOTE_START)
+            if (this.getStep (clip, step).getState () == StepState.START)
                 this.copyStep = step;
             else if (this.copyStep >= 0)
             {
@@ -264,6 +267,18 @@ public abstract class AbstractPolySequencerView<S extends IControlSurface<C>, C 
                     if (stepInfo != null && stepInfo.getVelocity () > 0)
                         clip.setStep (channel, step, row, stepInfo);
                 }
+            }
+            return true;
+        }
+
+        if (this.isButtonCombination (ButtonID.MUTE))
+        {
+            for (int note = 0; note < 128; note++)
+            {
+                final IStepInfo stepInfo = clip.getStep (channel, step, note);
+                final StepState isSet = stepInfo.getState ();
+                if (isSet == StepState.START)
+                    this.getClip ().updateMuteState (channel, step, note, !stepInfo.isMuted ());
             }
             return true;
         }
@@ -282,7 +297,7 @@ public abstract class AbstractPolySequencerView<S extends IControlSurface<C>, C 
                 final double duration = length * Resolution.getValueAt (this.getResolutionIndex ());
 
                 // Create new note(s)
-                if (this.getStep (clip, s) != IStepInfo.NOTE_START)
+                if (this.getStep (clip, s).getState () != StepState.START)
                 {
                     for (int row = 0; row < 128; row++)
                     {
@@ -300,7 +315,7 @@ public abstract class AbstractPolySequencerView<S extends IControlSurface<C>, C 
                 for (int row = 0; row < 128; row++)
                 {
                     final IStepInfo stepInfo = clip.getStep (channel, s, row);
-                    if (stepInfo != null && stepInfo.getState () == IStepInfo.NOTE_START)
+                    if (stepInfo != null && stepInfo.getState () == StepState.START)
                         clip.updateStepDuration (channel, s, row, duration);
                 }
 
@@ -331,13 +346,14 @@ public abstract class AbstractPolySequencerView<S extends IControlSurface<C>, C 
 
         // Paint the sequencer steps
         final int hiStep = this.isInXRange (step) ? step % this.sequencerSteps : -1;
+        final List<GridStep> editNotes = this.getEditNotes ();
         for (int col = 0; col < this.sequencerSteps; col++)
         {
-            final int isSet = this.getStep (clip, col);
+            final IStepInfo stepInfo = this.getStep (clip, col);
             final boolean hilite = col == hiStep;
             final int x = col % this.numColumns;
             final int y = col / this.numColumns;
-            padGrid.lightEx (x, y, isActive ? this.getStepColor (isSet, hilite) : AbstractSequencerView.COLOR_NO_CONTENT);
+            padGrid.lightEx (x, y, isActive ? this.getStepColor (stepInfo, hilite, col, editNotes) : AbstractSequencerView.COLOR_NO_CONTENT);
         }
 
         // Paint the play part
@@ -366,21 +382,28 @@ public abstract class AbstractPolySequencerView<S extends IControlSurface<C>, C 
      *
      * @param clip The clip which contains the notes
      * @param col The column/step to check
-     * @return 0: All notes are off, 1: at least 1 note continues playing, 2: at least 1 note starts
-     *         at this step, see the defined constants
+     * @return The aggregated about the step aggregated from all notes at that step
      */
-    protected int getStep (final INoteClip clip, final int col)
+    protected IStepInfo getStep (final INoteClip clip, final int col)
     {
-        int result = IStepInfo.NOTE_OFF;
+        final DefaultStepInfo result = new DefaultStepInfo ();
+
+        boolean isMuted = true;
+
         final int editMidiChannel = this.configuration.getMidiEditChannel ();
         for (int row = 0; row < 128; row++)
         {
-            final int r = clip.getStep (editMidiChannel, col, row).getState ();
-            if (r == IStepInfo.NOTE_START)
-                return r;
-            if (r == IStepInfo.NOTE_CONTINUE)
-                result = IStepInfo.NOTE_CONTINUE;
+            final IStepInfo stepInfo = clip.getStep (editMidiChannel, col, row);
+            final StepState r = stepInfo.getState ();
+            if (r == StepState.START)
+                result.setState (StepState.START);
+            else if (r == StepState.CONTINUE && result.getState () != StepState.START)
+                result.setState (StepState.CONTINUE);
+
+            if ((r == StepState.START || r == StepState.CONTINUE) && !stepInfo.isMuted ())
+                isMuted = false;
         }
+        result.setMuted (isMuted);
         return result;
     }
 
@@ -388,22 +411,40 @@ public abstract class AbstractPolySequencerView<S extends IControlSurface<C>, C 
     /**
      * Get the step color.
      *
-     * @param isSet True if the note is set
+     * @param stepInfo The note info
      * @param hilite True if note should be highlighted
+     * @param step The step
+     * @param editNotes The currently edited notes
      * @return The color identifier
      */
-    protected String getStepColor (final int isSet, final boolean hilite)
+    protected String getStepColor (final IStepInfo stepInfo, final boolean hilite, final int step, final List<GridStep> editNotes)
     {
-        switch (isSet)
+        final int channel = this.configuration.getMidiEditChannel ();
+
+        switch (stepInfo.getState ())
         {
-            // Note continues
-            case IStepInfo.NOTE_CONTINUE:
-                return hilite ? AbstractSequencerView.COLOR_STEP_HILITE_CONTENT : AbstractSequencerView.COLOR_CONTENT_CONT;
             // Note starts
-            case IStepInfo.NOTE_START:
-                return hilite ? AbstractSequencerView.COLOR_STEP_HILITE_CONTENT : AbstractSequencerView.COLOR_CONTENT;
+            case START:
+                if (hilite)
+                    return COLOR_STEP_HILITE_CONTENT;
+                if (isChordEdit (channel, step, editNotes))
+                    return COLOR_STEP_SELECTED;
+                if (stepInfo.isMuted ())
+                    return COLOR_STEP_MUTED;
+                return COLOR_CONTENT;
+
+            // Note continues
+            case CONTINUE:
+                if (hilite)
+                    return COLOR_STEP_HILITE_CONTENT;
+                if (isChordEdit (channel, step, editNotes))
+                    return COLOR_STEP_SELECTED;
+                if (stepInfo.isMuted ())
+                    return COLOR_STEP_MUTED_CONT;
+                return COLOR_CONTENT_CONT;
+
             // Empty
-            case IStepInfo.NOTE_OFF:
+            case OFF:
             default:
                 return hilite ? AbstractSequencerView.COLOR_STEP_HILITE_NO_CONTENT : AbstractSequencerView.COLOR_NO_CONTENT;
         }
@@ -428,5 +469,16 @@ public abstract class AbstractPolySequencerView<S extends IControlSurface<C>, C 
             return this.getPadColor (note, this.useDawColors ? track : null);
         }
         return AbstractPlayView.COLOR_OFF;
+    }
+
+
+    protected static boolean isChordEdit (final int channel, final int step, final List<GridStep> editNotes)
+    {
+        for (final GridStep editNote: editNotes)
+        {
+            if (editNote.getChannel () == channel && editNote.getStep () == step)
+                return true;
+        }
+        return false;
     }
 }

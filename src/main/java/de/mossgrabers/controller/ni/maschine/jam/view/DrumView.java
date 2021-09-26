@@ -5,8 +5,9 @@
 package de.mossgrabers.controller.ni.maschine.jam.view;
 
 import de.mossgrabers.controller.ni.maschine.core.MaschineColorManager;
+import de.mossgrabers.controller.ni.maschine.core.command.trigger.EncoderMode;
+import de.mossgrabers.controller.ni.maschine.core.view.IMaschineView;
 import de.mossgrabers.controller.ni.maschine.jam.MaschineJamConfiguration;
-import de.mossgrabers.controller.ni.maschine.jam.command.trigger.EncoderMode;
 import de.mossgrabers.controller.ni.maschine.jam.controller.MaschineJamControlSurface;
 import de.mossgrabers.framework.command.trigger.Direction;
 import de.mossgrabers.framework.controller.ButtonID;
@@ -23,7 +24,7 @@ import de.mossgrabers.framework.view.Views;
  *
  * @author J&uuml;rgen Mo&szlig;graber
  */
-public class DrumView extends AbstractDrumView<MaschineJamControlSurface, MaschineJamConfiguration> implements IMaschineJamView, IViewNavigation
+public class DrumView extends AbstractDrumView<MaschineJamControlSurface, MaschineJamConfiguration> implements IMaschineView, IViewNavigation
 {
     /**
      * Constructor.
@@ -162,5 +163,21 @@ public class DrumView extends AbstractDrumView<MaschineJamControlSurface, Maschi
                 return this.isOctaveDownButtonOn ();
         }
         return false;
+    }
+
+
+    /** {@inheritDoc} */
+    @Override
+    protected boolean handleSequencerAreaButtonCombinations (final INoteClip clip, final int channel, final int step, final int note, final int velocity)
+    {
+        final boolean isSelectPressed = this.surface.isSelectPressed ();
+        if (isSelectPressed)
+        {
+            if (velocity > 0)
+                this.handleSequencerAreaRepeatOperator (clip, channel, step, note, velocity, isSelectPressed);
+            return true;
+        }
+
+        return super.handleSequencerAreaButtonCombinations (clip, channel, step, note, velocity);
     }
 }

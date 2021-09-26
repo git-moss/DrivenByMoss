@@ -26,7 +26,7 @@ import java.util.Optional;
  */
 public class ParameterPageBankImpl extends AbstractBank<String> implements IParameterPageBank
 {
-    private CursorRemoteControlsPage remoteControls;
+    private final CursorRemoteControlsPage remoteControls;
 
 
     /**

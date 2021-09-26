@@ -25,6 +25,10 @@ public enum Modes
     PAN,
     /** Edit cross-fader settings of all tracks. */
     CROSSFADER,
+    /** Edit cross-fader setting A of all tracks. */
+    CROSSFADE_MODE_A,
+    /** Edit cross-fader setting B of all tracks. */
+    CROSSFADE_MODE_B,
     /** Mode to arm tracks for recording. */
     REC_ARM,
     /** Mode to select tracks. */

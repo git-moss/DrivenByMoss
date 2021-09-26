@@ -26,7 +26,7 @@ import de.mossgrabers.framework.controller.ButtonID;
 import de.mossgrabers.framework.controller.ContinuousID;
 import de.mossgrabers.framework.controller.ISetupFactory;
 import de.mossgrabers.framework.controller.hardware.BindType;
-import de.mossgrabers.framework.controller.valuechanger.DefaultValueChanger;
+import de.mossgrabers.framework.controller.valuechanger.TwosComplementValueChanger;
 import de.mossgrabers.framework.daw.IHost;
 import de.mossgrabers.framework.daw.ModelSetup;
 import de.mossgrabers.framework.daw.data.bank.ITrackBank;
@@ -38,9 +38,9 @@ import de.mossgrabers.framework.featuregroup.ModeManager;
 import de.mossgrabers.framework.featuregroup.ViewManager;
 import de.mossgrabers.framework.mode.Modes;
 import de.mossgrabers.framework.mode.device.ParameterMode;
-import de.mossgrabers.framework.mode.track.PanMode;
-import de.mossgrabers.framework.mode.track.SendMode;
-import de.mossgrabers.framework.mode.track.VolumeMode;
+import de.mossgrabers.framework.mode.track.TrackPanMode;
+import de.mossgrabers.framework.mode.track.TrackSendMode;
+import de.mossgrabers.framework.mode.track.TrackVolumeMode;
 import de.mossgrabers.framework.view.Views;
 
 import java.util.HashMap;
@@ -111,7 +111,7 @@ public class APCminiControllerSetup extends AbstractControllerSetup<APCminiContr
         super (factory, host, globalSettings, documentSettings);
 
         this.colorManager = new APCminiColorManager ();
-        this.valueChanger = new DefaultValueChanger (128, 1);
+        this.valueChanger = new TwosComplementValueChanger (128, 1);
         this.configuration = new APCminiConfiguration (host, this.valueChanger, factory.getArpeggiatorModes ());
     }
 
@@ -129,7 +129,7 @@ public class APCminiControllerSetup extends AbstractControllerSetup<APCminiContr
     protected void createModel ()
     {
         final ModelSetup ms = new ModelSetup ();
-        this.model = this.factory.createModel (this.colorManager, this.valueChanger, this.scales, ms);
+        this.model = this.factory.createModel (this.configuration, this.colorManager, this.valueChanger, this.scales, ms);
         final ITrackBank trackBank = this.model.getTrackBank ();
         trackBank.setIndication (true);
         trackBank.addSelectionObserver ( (index, value) -> this.handleTrackChange (value));
@@ -153,10 +153,10 @@ public class APCminiControllerSetup extends AbstractControllerSetup<APCminiContr
     {
         final APCminiControlSurface surface = this.getSurface ();
         final ModeManager modeManager = surface.getModeManager ();
-        modeManager.register (Modes.VOLUME, new VolumeMode<> (surface, this.model, true, FADER_IDS));
-        modeManager.register (Modes.PAN, new PanMode<> (surface, this.model, true, FADER_IDS));
+        modeManager.register (Modes.VOLUME, new TrackVolumeMode<> (surface, this.model, true, FADER_IDS));
+        modeManager.register (Modes.PAN, new TrackPanMode<> (surface, this.model, true, FADER_IDS));
         for (int i = 0; i < 8; i++)
-            modeManager.register (Modes.get (Modes.SEND1, i), new SendMode<> (i, surface, this.model, true, FADER_IDS));
+            modeManager.register (Modes.get (Modes.SEND1, i), new TrackSendMode<> (i, surface, this.model, true, FADER_IDS));
         modeManager.register (Modes.DEVICE_PARAMS, new ParameterMode<> (surface, this.model, true, FADER_IDS));
 
         modeManager.setDefaultID (Modes.VOLUME);
@@ -228,9 +228,9 @@ public class APCminiControllerSetup extends AbstractControllerSetup<APCminiContr
 
             this.addButton (ButtonID.get (ButtonID.ROW_SELECT_1, i), ROW_NAMES[i], new TrackSelectCommand (i, this.model, surface), APCminiControlSurface.APC_BUTTON_TRACK_BUTTON1 + i, () -> {
                 final IView view = viewManager.getActive ();
-                if (view instanceof APCminiView)
+                if (view instanceof final APCminiView miniView)
                 {
-                    final int trackButtonColor = ((APCminiView) view).getTrackButtonColor (index);
+                    final int trackButtonColor = miniView.getTrackButtonColor (index);
                     // Track buttons are only red!
                     return trackButtonColor > 0 ? APCminiColorManager.APC_COLOR_RED : 0;
                 }

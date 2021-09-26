@@ -28,7 +28,7 @@ import java.util.Optional;
  */
 public class SelectTrackSendOrClipLengthCommand extends AbstractTriggerCommand<APCControlSurface, APCConfiguration>
 {
-    private int index;
+    private final int index;
 
 
     /**

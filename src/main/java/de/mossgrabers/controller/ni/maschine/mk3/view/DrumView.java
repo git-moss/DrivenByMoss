@@ -7,12 +7,12 @@ package de.mossgrabers.controller.ni.maschine.mk3.view;
 import de.mossgrabers.controller.ni.maschine.core.MaschineColorManager;
 import de.mossgrabers.controller.ni.maschine.mk3.MaschineConfiguration;
 import de.mossgrabers.controller.ni.maschine.mk3.controller.MaschineControlSurface;
-import de.mossgrabers.controller.ni.maschine.mk3.mode.EditNoteMode;
 import de.mossgrabers.framework.controller.ButtonID;
 import de.mossgrabers.framework.controller.grid.IPadGrid;
 import de.mossgrabers.framework.daw.IModel;
 import de.mossgrabers.framework.daw.INoteClip;
 import de.mossgrabers.framework.daw.IStepInfo;
+import de.mossgrabers.framework.daw.StepState;
 import de.mossgrabers.framework.daw.data.IDrumDevice;
 import de.mossgrabers.framework.featuregroup.ModeManager;
 import de.mossgrabers.framework.mode.Modes;
@@ -134,7 +134,7 @@ public class DrumView extends AbstractDrumView<MaschineControlSurface, MaschineC
             final INoteClip clip = this.getClip ();
             final boolean isActive = this.isActive ();
             final IDrumDevice primary = this.model.getDrumDevice ();
-            this.drawSequencerSteps (clip, isActive, this.scales.getDrumOffset () + this.selectedPad, this.getDrumPadColor (primary, this.selectedPad), y -> 3 - y);
+            this.drawSequencerSteps (clip, isActive, this.scales.getDrumOffset () + this.selectedPad, this.getPadColor (primary, this.selectedPad), y -> 3 - y);
             return;
         }
 
@@ -225,14 +225,39 @@ public class DrumView extends AbstractDrumView<MaschineControlSurface, MaschineC
 
     /** {@inheritDoc} */
     @Override
+    protected void handleSequencerArea (final int index, final int x, final int y, final int offsetY, final int velocity)
+    {
+        final int yMod = 3 - y;
+        super.handleSequencerArea (index, x, yMod, offsetY, velocity);
+    }
+
+
+    /** {@inheritDoc} */
+    @Override
     protected boolean handleSequencerAreaButtonCombinations (final INoteClip clip, final int channel, final int step, final int note, final int velocity)
     {
+        if (this.isButtonCombination (ButtonID.MUTE))
+        {
+            final IStepInfo stepInfo = clip.getStep (channel, step, note);
+            final StepState isSet = stepInfo.getState ();
+            if (isSet == StepState.START)
+                this.getClip ().updateMuteState (channel, step, note, !stepInfo.isMuted ());
+            return true;
+        }
+
         final ModeManager modeManager = this.surface.getModeManager ();
         if (modeManager.isActive (Modes.NOTE))
         {
-            final int isSet = clip.getStep (channel, step, note).getState ();
             this.model.getHost ().showNotification ("Note " + Scales.formatNoteAndOctave (note, -3) + " - Step " + Integer.toString (step + 1));
-            ((EditNoteMode) modeManager.get (Modes.NOTE)).setValues (isSet == IStepInfo.NOTE_START ? clip : null, channel, step, note);
+            this.editNote (clip, channel, step, note, true);
+            return true;
+        }
+
+        final boolean isSelectPressed = this.surface.isSelectPressed ();
+        if (isSelectPressed)
+        {
+            if (velocity > 0)
+                this.handleSequencerAreaRepeatOperator (clip, channel, step, note, velocity, isSelectPressed);
             return true;
         }
 
@@ -242,9 +267,10 @@ public class DrumView extends AbstractDrumView<MaschineControlSurface, MaschineC
 
     /** {@inheritDoc} */
     @Override
-    protected void handleSequencerArea (final int index, final int x, final int y, final int offsetY, final int velocity)
+    protected int getPadIndex (final int step)
     {
-        final int yMod = 3 - y;
-        super.handleSequencerArea (index, x, yMod, offsetY, velocity);
+        final int x = step % this.numColumns;
+        final int y = step / this.numColumns;
+        return y * this.numColumns + x;
     }
 }

@@ -19,7 +19,7 @@ import de.mossgrabers.framework.featuregroup.IView;
  */
 public class KnobRowViewCommand extends AbstractContinuousCommand<BeatstepControlSurface, BeatstepConfiguration>
 {
-    private int index;
+    private final int index;
 
 
     /**

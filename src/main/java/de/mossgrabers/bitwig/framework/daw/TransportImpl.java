@@ -83,6 +83,7 @@ public class TransportImpl implements ITransport
         this.transport.clipLauncherPostRecordingAction ().markInterested ();
         this.transport.getClipLauncherPostRecordingTimeOffset ().markInterested ();
         this.transport.defaultLaunchQuantization ().markInterested ();
+        this.transport.isFillModeActive ().markInterested ();
 
         this.crossfadeParameter = new ParameterImpl (valueChanger, this.transport.crossfade ());
         this.metronomeVolumeParameter = new RangedValueImpl ("Metronome Volume", valueChanger, this.transport.metronomeVolume ());
@@ -116,6 +117,7 @@ public class TransportImpl implements ITransport
         Util.setIsSubscribed (this.transport.clipLauncherPostRecordingAction (), enable);
         Util.setIsSubscribed (this.transport.getClipLauncherPostRecordingTimeOffset (), enable);
         Util.setIsSubscribed (this.transport.defaultLaunchQuantization (), enable);
+        Util.setIsSubscribed (this.transport.isFillModeActive (), enable);
 
         this.crossfadeParameter.enableObservers (enable);
         this.metronomeVolumeParameter.enableObservers (enable);
@@ -171,7 +173,7 @@ public class TransportImpl implements ITransport
 
     /** {@inheritDoc} */
     @Override
-    public void record ()
+    public void startRecording ()
     {
         this.transport.record ();
     }
@@ -391,15 +393,11 @@ public class TransportImpl implements ITransport
     {
         switch (mode)
         {
-            case TRIM_READ:
-            case READ:
+            case TRIM_READ, READ:
                 this.transport.isArrangerAutomationWriteEnabled ().set (false);
                 break;
 
-            case WRITE:
-            case TOUCH:
-            case LATCH:
-            case LATCH_PREVIEW:
+            case WRITE, TOUCH, LATCH, LATCH_PREVIEW:
                 this.transport.isArrangerAutomationWriteEnabled ().set (true);
                 this.transport.automationWriteMode ().set (mode.getIdentifier ());
                 break;
@@ -775,5 +773,29 @@ public class TransportImpl implements ITransport
     public void setDefaultLaunchQuantization (final LaunchQuantization launchQuantization)
     {
         this.transport.defaultLaunchQuantization ().set (launchQuantization.getValue ());
+    }
+
+
+    /** {@inheritDoc} */
+    @Override
+    public boolean isFillModeActive ()
+    {
+        return this.transport.isFillModeActive ().get ();
+    }
+
+
+    /** {@inheritDoc} */
+    @Override
+    public void setFillModeActive (final boolean isActive)
+    {
+        this.transport.isFillModeActive ().set (isActive);
+    }
+
+
+    /** {@inheritDoc} */
+    @Override
+    public void toggleFillModeActive ()
+    {
+        this.transport.isFillModeActive ().toggle ();
     }
 }

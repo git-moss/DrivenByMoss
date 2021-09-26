@@ -59,7 +59,7 @@ public class OSCConfiguration extends AbstractOpenSoundControlConfiguration
     private int                    sendPort                  = 9000;
     private ValueResolution        valueResolution           = ValueResolution.LOW;
     private int                    bankPageSize              = 8;
-    private String []              assignableFunctionActions = new String [8];
+    private final String []        assignableFunctionActions = new String [8];
 
 
     /**

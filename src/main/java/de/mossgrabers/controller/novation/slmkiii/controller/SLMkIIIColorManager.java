@@ -34,7 +34,7 @@ public class SLMkIIIColorManager extends ColorManager
     public static final int    SLMKIII_RED              = 5;
     public static final int    SLMKIII_DARK_RED         = 6;
     public static final int    SLMKIII_RED_HALF         = 7;
-    public static final int    SLMKIII_SKIN             = 8;
+    public static final int    SLMKIII_ROSE             = 8;
     public static final int    SLMKIII_ORANGE           = 9;
     public static final int    SLMKIII_DARK_BROWN       = 10;
     public static final int    SLMKIII_ORANGE_HALF      = 11;
@@ -112,6 +112,17 @@ public class SLMkIIIColorManager extends ColorManager
         this.registerColorIndex (AbstractFeatureGroup.BUTTON_COLOR_ON, SLMKIII_WHITE);
         this.registerColorIndex (AbstractMode.BUTTON_COLOR_HI, SLMKIII_WHITE_HALF);
 
+        this.registerColorIndex (AbstractSequencerView.COLOR_STEP_HILITE_NO_CONTENT, SLMkIIIColorManager.SLMKIII_DARK_GREEN);
+        this.registerColorIndex (AbstractSequencerView.COLOR_STEP_HILITE_CONTENT, SLMkIIIColorManager.SLMKIII_GREEN);
+        this.registerColorIndex (AbstractSequencerView.COLOR_STEP_MUTED, SLMkIIIColorManager.SLMKIII_GREY);
+        this.registerColorIndex (AbstractSequencerView.COLOR_STEP_MUTED_CONT, SLMkIIIColorManager.SLMKIII_DARK_GREY);
+        this.registerColorIndex (AbstractSequencerView.COLOR_STEP_SELECTED, SLMkIIIColorManager.SLMKIII_YELLOW);
+        this.registerColorIndex (AbstractSequencerView.COLOR_NO_CONTENT, SLMkIIIColorManager.SLMKIII_BLACK);
+        this.registerColorIndex (AbstractSequencerView.COLOR_CONTENT, SLMkIIIColorManager.SLMKIII_BLUE);
+        this.registerColorIndex (AbstractSequencerView.COLOR_CONTENT_CONT, SLMkIIIColorManager.SLMKIII_DARK_BLUE);
+        this.registerColorIndex (AbstractSequencerView.COLOR_PAGE, SLMkIIIColorManager.SLMKIII_WHITE);
+        this.registerColorIndex (AbstractSequencerView.COLOR_ACTIVE_PAGE, SLMkIIIColorManager.SLMKIII_GREEN);
+        this.registerColorIndex (AbstractSequencerView.COLOR_SELECTED_PAGE, SLMkIIIColorManager.SLMKIII_BLUE_METAL);
         this.registerColorIndex (AbstractSequencerView.COLOR_RESOLUTION, SLMkIIIColorManager.SLMKIII_ORANGE_HALF);
         this.registerColorIndex (AbstractSequencerView.COLOR_RESOLUTION_SELECTED, SLMkIIIColorManager.SLMKIII_ORANGE);
         this.registerColorIndex (AbstractSequencerView.COLOR_RESOLUTION_OFF, SLMKIII_BLACK);
@@ -159,7 +170,7 @@ public class SLMkIIIColorManager extends ColorManager
         this.registerColorIndex (DAWColor.DAW_COLOR_LIGHT_PURPLE, SLMKIII_PURPLE);
 
         this.registerColorIndex (DAWColor.DAW_COLOR_LIGHT_PINK, SLMKIII_PINK_LIGHT);
-        this.registerColorIndex (DAWColor.DAW_COLOR_ROSE, SLMKIII_SKIN);
+        this.registerColorIndex (DAWColor.DAW_COLOR_ROSE, SLMKIII_ROSE);
         this.registerColorIndex (DAWColor.DAW_COLOR_REDDISH_BROWN, SLMKIII_DARK_RED);
         this.registerColorIndex (DAWColor.DAW_COLOR_LIGHT_BROWN, SLMKIII_AMBER_HALF);
         this.registerColorIndex (DAWColor.DAW_COLOR_LIGHT_GREEN, SLMKIII_GREEN_LIGHT);
@@ -195,7 +206,7 @@ public class SLMkIIIColorManager extends ColorManager
         this.registerColor (SLMKIII_RED, ColorEx.RED);
         this.registerColor (SLMKIII_DARK_RED, ColorEx.DARK_RED);
         this.registerColor (SLMKIII_RED_HALF, ColorEx.evenDarker (ColorEx.RED));
-        this.registerColor (SLMKIII_SKIN, ColorEx.SKIN);
+        this.registerColor (SLMKIII_ROSE, ColorEx.SKIN);
         this.registerColor (SLMKIII_ORANGE, ColorEx.ORANGE);
         this.registerColor (SLMKIII_DARK_BROWN, ColorEx.DARK_BROWN);
         this.registerColor (SLMKIII_ORANGE_HALF, ColorEx.evenDarker (ColorEx.ORANGE));

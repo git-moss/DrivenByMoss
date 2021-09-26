@@ -37,7 +37,7 @@ public class TapTempoCommand<S extends IControlSurface<C>, C extends Configurati
 
     /** {@inheritDoc} */
     @Override
-    public void execute (final ButtonEvent event, final int velocity)
+    public void executeNormal (final ButtonEvent event)
     {
         if (event != ButtonEvent.DOWN)
             return;
@@ -46,5 +46,14 @@ public class TapTempoCommand<S extends IControlSurface<C>, C extends Configurati
         final IDisplay display = this.surface.getDisplay ();
         if (display != null)
             display.notify (String.format ("Tempo: %.02f", Double.valueOf (transport.getTempo ())));
+    }
+
+
+    /** {@inheritDoc} */
+    @Override
+    public void executeShifted (final ButtonEvent event)
+    {
+        if (event == ButtonEvent.UP)
+            this.model.getTransport ().toggleMetronome ();
     }
 }

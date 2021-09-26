@@ -4,6 +4,7 @@
 
 package de.mossgrabers.controller.ni.maschine.mk3;
 
+import de.mossgrabers.controller.ni.maschine.core.RibbonMode;
 import de.mossgrabers.framework.configuration.AbstractConfiguration;
 import de.mossgrabers.framework.configuration.IEnumSetting;
 import de.mossgrabers.framework.configuration.ISettingsUI;
@@ -23,32 +24,12 @@ import java.util.List;
 public class MaschineConfiguration extends AbstractConfiguration
 {
     /** Setting for the ribbon mode. */
-    public static final Integer      RIBBON_MODE                    = Integer.valueOf (50);
-
-    /** Use ribbon for pitch bend down. */
-    public static final int          RIBBON_MODE_PITCH_DOWN         = 0;
-    /** Use ribbon for pitch bend up. */
-    public static final int          RIBBON_MODE_PITCH_UP           = 1;
-    /** Use ribbon for pitch bend down/up. */
-    public static final int          RIBBON_MODE_PITCH_DOWN_UP      = 2;
-    /** Use ribbon for MIDI CC 1. */
-    public static final int          RIBBON_MODE_CC_1               = 3;
-    /** Use ribbon for MIDI CC 11. */
-    public static final int          RIBBON_MODE_CC_11              = 4;
-    /** Use ribbon for master volume. */
-    public static final int          RIBBON_MODE_MASTER_VOLUME      = 5;
-    /** Use ribbon for note repeat period. */
-    public static final int          RIBBON_MODE_NOTE_REPEAT_PERIOD = 6;
-    /** Use ribbon for note repeat length. */
-    public static final int          RIBBON_MODE_NOTE_REPEAT_LENGTH = 7;
-
-    /** The ribbon mode names. */
-    public static final List<String> RIBBON_MODE_VALUES             = List.of ("Pitch Down", "Pitch Up", "Pitch Down/Up", "Modulation (CC 1)", "Expression (CC 11)", "Master Volume", "Note Repeat: Period", "Note Repeat: Length");
+    public static final Integer RIBBON_MODE = Integer.valueOf (50);
 
     /** What does the ribbon send? **/
-    private int                      ribbonMode                     = RIBBON_MODE_PITCH_DOWN;
+    private RibbonMode          ribbonMode  = RibbonMode.PITCH_DOWN;
 
-    private IEnumSetting             ribbonModeSetting;
+    private IEnumSetting        ribbonModeSetting;
 
 
     /**
@@ -95,9 +76,10 @@ public class MaschineConfiguration extends AbstractConfiguration
         this.activateAccentValueSetting (globalSettings);
         this.activateQuantizeAmountSetting (globalSettings);
 
-        this.ribbonModeSetting = globalSettings.getEnumSetting ("Ribbon Mode", CATEGORY_PLAY_AND_SEQUENCE, RIBBON_MODE_VALUES, RIBBON_MODE_VALUES.get (0));
+        final String [] ribbonModeNames = RibbonMode.getNames ();
+        this.ribbonModeSetting = globalSettings.getEnumSetting ("Ribbon Mode", CATEGORY_PLAY_AND_SEQUENCE, ribbonModeNames, ribbonModeNames[0]);
         this.ribbonModeSetting.addValueObserver (value -> {
-            this.ribbonMode = lookupIndex (RIBBON_MODE_VALUES, value);
+            this.ribbonMode = RibbonMode.lookupByName (value);
             this.notifyObservers (RIBBON_MODE);
         });
         this.isSettingActive.add (RIBBON_MODE);
@@ -127,9 +109,9 @@ public class MaschineConfiguration extends AbstractConfiguration
      *
      * @param mode The functionality for the ribbon
      */
-    public void setRibbonMode (final int mode)
+    public void setRibbonMode (final RibbonMode mode)
     {
-        this.ribbonModeSetting.set (RIBBON_MODE_VALUES.get (mode));
+        this.ribbonModeSetting.set (mode.getName ());
     }
 
 
@@ -138,7 +120,7 @@ public class MaschineConfiguration extends AbstractConfiguration
      *
      * @return The functionality for the ribbon
      */
-    public int getRibbonMode ()
+    public RibbonMode getRibbonMode ()
     {
         return this.ribbonMode;
     }

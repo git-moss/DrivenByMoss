@@ -25,7 +25,7 @@ import de.mossgrabers.framework.view.AbstractSequencerView;
  */
 public class ScenePlayView extends AbstractView<PushControlSurface, PushConfiguration>
 {
-    private ISceneBank sceneBank;
+    private final ISceneBank sceneBank;
 
 
     /**

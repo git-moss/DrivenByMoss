@@ -23,7 +23,7 @@ public final class ResourceHandler
 
 
     /**
-     * Initialise the handler.
+     * Initialize the handler.
      *
      * @param host The controller host
      */
@@ -58,6 +58,7 @@ public final class ResourceHandler
         addSVGImage ("device/device_note.svg");
         addSVGImage ("device/device_plugin.svg");
 
+        addSVGImage ("pin.svg");
         addSVGImage ("user.svg");
     }
 

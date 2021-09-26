@@ -226,4 +226,12 @@ public interface ITrack extends IChannel
      * Add an equalizer device to this track.
      */
     void addEqualizerDevice ();
+
+
+    /**
+     * Does the track contain a drum device?
+     *
+     * @return True if it contains a drum device
+     */
+    boolean hasDrumDevice ();
 }

@@ -9,6 +9,9 @@ import de.mossgrabers.controller.ni.maschine.mk3.view.DrumView;
 import de.mossgrabers.framework.controller.ButtonID;
 import de.mossgrabers.framework.controller.display.ITextDisplay;
 import de.mossgrabers.framework.daw.IModel;
+import de.mossgrabers.framework.featuregroup.ViewManager;
+import de.mossgrabers.framework.mode.INoteMode;
+import de.mossgrabers.framework.mode.Modes;
 import de.mossgrabers.framework.scale.Scales;
 import de.mossgrabers.framework.utils.ButtonEvent;
 import de.mossgrabers.framework.view.Views;
@@ -47,12 +50,14 @@ public class DrumConfigurationMode extends BaseMode
         final Scales scales = this.model.getScales ();
         final boolean inc = this.model.getValueChanger ().isIncrease (value);
 
+        final ViewManager viewManager = this.surface.getViewManager ();
         switch (idx)
         {
             case 6:
             case 7:
-                ((DrumView) this.surface.getViewManager ().get (Views.DRUM)).changeOctave (ButtonEvent.DOWN, inc, scales.getDrumDefaultOffset (), true, false);
-                this.surface.getViewManager ().get (Views.DRUM).updateNoteMapping ();
+                ((DrumView) viewManager.get (Views.DRUM)).changeOctave (ButtonEvent.DOWN, inc, scales.getDrumDefaultOffset (), true, false);
+                viewManager.get (Views.DRUM).updateNoteMapping ();
+                ((INoteMode) this.surface.getModeManager ().get (Modes.NOTE)).clearNotes ();
                 break;
 
             default:
@@ -77,6 +82,7 @@ public class DrumConfigurationMode extends BaseMode
                 case 7:
                     ((DrumView) this.surface.getViewManager ().get (Views.DRUM)).resetOctave ();
                     this.surface.getViewManager ().get (Views.DRUM).updateNoteMapping ();
+                    ((INoteMode) this.surface.getModeManager ().get (Modes.NOTE)).clearNotes ();
                     break;
 
                 default:

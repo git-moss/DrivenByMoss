@@ -38,8 +38,11 @@ public enum ContinuousID
     /** The crossfader. */
     CROSSFADER,
 
-    /** The Mastertrack knob. */
+    /** The master track knob. */
     MASTER_KNOB,
+
+    /** A monitor knob. */
+    MONITOR_KNOB,
 
     /** Knob 1. */
     KNOB1,
@@ -57,6 +60,40 @@ public enum ContinuousID
     KNOB7,
     /** Knob 8. */
     KNOB8,
+
+    /** Volume Knob 1. */
+    VOLUME_KNOB1,
+    /** Volume Knob 2. */
+    VOLUME_KNOB2,
+    /** Volume Knob 3. */
+    VOLUME_KNOB3,
+    /** Volume Knob 4. */
+    VOLUME_KNOB4,
+    /** Volume Knob 5. */
+    VOLUME_KNOB5,
+    /** Volume Knob 6. */
+    VOLUME_KNOB6,
+    /** Volume Knob 7. */
+    VOLUME_KNOB7,
+    /** Volume Knob 8. */
+    VOLUME_KNOB8,
+
+    /** Parameter Knob 1. */
+    PARAM_KNOB1,
+    /** Parameter Knob 2. */
+    PARAM_KNOB2,
+    /** Parameter Knob 3. */
+    PARAM_KNOB3,
+    /** Parameter Knob 4. */
+    PARAM_KNOB4,
+    /** Parameter Knob 5. */
+    PARAM_KNOB5,
+    /** Parameter Knob 6. */
+    PARAM_KNOB6,
+    /** Parameter Knob 7. */
+    PARAM_KNOB7,
+    /** Parameter Knob 8. */
+    PARAM_KNOB8,
 
     /** The tempo knob. */
     TEMPO,
@@ -127,7 +164,75 @@ public enum ContinuousID
     /** The modulation wheel. */
     MODULATION_WHEEL,
     /** The modulation wheel. */
-    PITCHBEND_WHEEL;
+    PITCHBEND_WHEEL,
+
+    /** Knob 1 controlling send 1. */
+    SEND1_KNOB1,
+    /** Knob 2 controlling send 1. */
+    SEND1_KNOB2,
+    /** Knob 3 controlling send 1. */
+    SEND1_KNOB3,
+    /** Knob 4 controlling send 1. */
+    SEND1_KNOB4,
+    /** Knob 5 controlling send 1. */
+    SEND1_KNOB5,
+    /** Knob 6 controlling send 1. */
+    SEND1_KNOB6,
+    /** Knob 7 controlling send 1. */
+    SEND1_KNOB7,
+    /** Knob 8 controlling send 1. */
+    SEND1_KNOB8,
+
+    /** Knob 1 controlling send 2. */
+    SEND2_KNOB1,
+    /** Knob 2 controlling send 2. */
+    SEND2_KNOB2,
+    /** Knob 3 controlling send 2. */
+    SEND2_KNOB3,
+    /** Knob 4 controlling send 2. */
+    SEND2_KNOB4,
+    /** Knob 5 controlling send 2. */
+    SEND2_KNOB5,
+    /** Knob 6 controlling send 2. */
+    SEND2_KNOB6,
+    /** Knob 7 controlling send 2. */
+    SEND2_KNOB7,
+    /** Knob 8 controlling send 2. */
+    SEND2_KNOB8,
+
+    /** Knob 1 controlling send 3. */
+    SEND3_KNOB1,
+    /** Knob 2 controlling send 3. */
+    SEND3_KNOB2,
+    /** Knob 3 controlling send 3. */
+    SEND3_KNOB3,
+    /** Knob 4 controlling send 3. */
+    SEND3_KNOB4,
+    /** Knob 5 controlling send 3. */
+    SEND3_KNOB5,
+    /** Knob 6 controlling send 3. */
+    SEND3_KNOB6,
+    /** Knob 7 controlling send 3. */
+    SEND3_KNOB7,
+    /** Knob 8 controlling send 3. */
+    SEND3_KNOB8,
+
+    /** Knob 1 controlling send 4. */
+    SEND4_KNOB1,
+    /** Knob 2 controlling send 4. */
+    SEND4_KNOB2,
+    /** Knob 3 controlling send 4. */
+    SEND4_KNOB3,
+    /** Knob 4 controlling send 4. */
+    SEND4_KNOB4,
+    /** Knob 5 controlling send 4. */
+    SEND4_KNOB5,
+    /** Knob 6 controlling send 4. */
+    SEND4_KNOB6,
+    /** Knob 7 controlling send 4. */
+    SEND4_KNOB7,
+    /** Knob 8 controlling send 4. */
+    SEND4_KNOB8;
 
 
     /**

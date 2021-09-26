@@ -19,8 +19,8 @@ import java.util.Optional;
  */
 public class TrackEditing
 {
-    private BeatstepControlSurface surface;
-    private IModel                 model;
+    private final BeatstepControlSurface surface;
+    private final IModel                 model;
 
 
     /**

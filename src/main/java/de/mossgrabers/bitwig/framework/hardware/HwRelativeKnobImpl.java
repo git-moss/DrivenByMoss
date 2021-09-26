@@ -11,7 +11,7 @@ import de.mossgrabers.framework.command.core.TriggerCommand;
 import de.mossgrabers.framework.controller.hardware.AbstractHwContinuousControl;
 import de.mossgrabers.framework.controller.hardware.BindType;
 import de.mossgrabers.framework.controller.hardware.IHwRelativeKnob;
-import de.mossgrabers.framework.controller.valuechanger.DefaultValueChanger;
+import de.mossgrabers.framework.controller.valuechanger.TwosComplementValueChanger;
 import de.mossgrabers.framework.controller.valuechanger.RelativeEncoding;
 import de.mossgrabers.framework.daw.data.IParameter;
 import de.mossgrabers.framework.daw.midi.IMidiInput;
@@ -30,14 +30,14 @@ import com.bitwig.extension.controller.api.RelativeHardwareKnob;
  */
 public class HwRelativeKnobImpl extends AbstractHwContinuousControl implements IHwRelativeKnob
 {
-    private final RelativeHardwareKnob     hardwareKnob;
-    private final ControllerHost           controllerHost;
-    private final RelativeEncoding         encoding;
-    private RelativeHardwarControlBindable defaultAction;
-    private RelativeHardwarControlBindable defaultSimpleParameterAction;
-    private RelativeHardwareControlBinding binding;
-    private IParameter                     parameter;
-    private boolean                        shouldAdaptSensitivity = true;
+    private final RelativeHardwareKnob           hardwareKnob;
+    private final ControllerHost                 controllerHost;
+    private final RelativeEncoding               encoding;
+    private final RelativeHardwarControlBindable defaultAction;
+    private final RelativeHardwarControlBindable defaultSimpleParameterAction;
+    private RelativeHardwareControlBinding       binding;
+    private IParameter                           parameter;
+    private boolean                              shouldAdaptSensitivity = true;
 
 
     /**
@@ -104,8 +104,8 @@ public class HwRelativeKnobImpl extends AbstractHwContinuousControl implements I
             this.binding.removeBinding ();
 
         // Remove the previously bound Bitwig parameter
-        if (this.parameter instanceof ParameterImpl)
-            HwUtils.enableObservers (false, this.hardwareKnob, (ParameterImpl) this.parameter);
+        if (this.parameter instanceof final ParameterImpl param)
+            HwUtils.enableObservers (false, this.hardwareKnob, param);
 
         final HardwareBindable target;
         if (parameter == null)
@@ -116,11 +116,10 @@ public class HwRelativeKnobImpl extends AbstractHwContinuousControl implements I
         else
         {
             // Is parameter a real Bitwig parameter? If yes, map it.
-            if (parameter instanceof ParameterImpl)
+            if (parameter instanceof final ParameterImpl param)
             {
-                final ParameterImpl parameterImpl = (ParameterImpl) parameter;
-                target = parameterImpl.getParameter ();
-                HwUtils.enableObservers (true, this.hardwareKnob, parameterImpl);
+                target = param.getParameter ();
+                HwUtils.enableObservers (true, this.hardwareKnob, param);
             }
             else
                 target = this.defaultSimpleParameterAction;
@@ -203,7 +202,7 @@ public class HwRelativeKnobImpl extends AbstractHwContinuousControl implements I
     @Override
     public void setSensitivity (final double sensitivity)
     {
-        this.hardwareKnob.setSensitivity (DefaultValueChanger.rescale (sensitivity));
+        this.hardwareKnob.setSensitivity (TwosComplementValueChanger.rescale (sensitivity));
     }
 
 

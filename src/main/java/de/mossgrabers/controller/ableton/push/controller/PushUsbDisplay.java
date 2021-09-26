@@ -56,8 +56,8 @@ public class PushUsbDisplay
     private final IMemoryBlock             imageBlock;
     private final byte []                  byteStore        = new byte [DATA_SZ];
 
-    private Object                         sendLock         = new Object ();
-    private Object                         bufferUpdateLock = new Object ();
+    private final Object                   sendLock         = new Object ();
+    private final Object                   bufferUpdateLock = new Object ();
     private final ScheduledExecutorService sendExecutor     = Executors.newSingleThreadScheduledExecutor ();
 
 

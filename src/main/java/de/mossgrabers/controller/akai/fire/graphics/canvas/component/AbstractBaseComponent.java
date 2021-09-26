@@ -54,9 +54,7 @@ public abstract class AbstractBaseComponent implements IComponent
     {
         if (this == obj)
             return true;
-        if (obj == null)
-            return false;
-        if (this.getClass () != obj.getClass ())
+        if (obj == null || this.getClass () != obj.getClass ())
             return false;
         final AbstractBaseComponent other = (AbstractBaseComponent) obj;
         if (this.label == null)

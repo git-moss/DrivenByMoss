@@ -63,7 +63,7 @@ import de.mossgrabers.framework.controller.ISetupFactory;
 import de.mossgrabers.framework.controller.color.ColorManager;
 import de.mossgrabers.framework.controller.hardware.BindType;
 import de.mossgrabers.framework.controller.hardware.IHwAbsoluteKnob;
-import de.mossgrabers.framework.controller.valuechanger.DefaultValueChanger;
+import de.mossgrabers.framework.controller.valuechanger.TwosComplementValueChanger;
 import de.mossgrabers.framework.daw.IHost;
 import de.mossgrabers.framework.daw.ITransport;
 import de.mossgrabers.framework.daw.ModelSetup;
@@ -79,7 +79,7 @@ import de.mossgrabers.framework.featuregroup.ModeManager;
 import de.mossgrabers.framework.featuregroup.ViewManager;
 import de.mossgrabers.framework.mode.Modes;
 import de.mossgrabers.framework.mode.device.ParameterMode;
-import de.mossgrabers.framework.mode.track.VolumeMode;
+import de.mossgrabers.framework.mode.track.TrackVolumeMode;
 import de.mossgrabers.framework.scale.Scales;
 import de.mossgrabers.framework.utils.Timeout;
 import de.mossgrabers.framework.view.AbstractSequencerView;
@@ -114,7 +114,7 @@ public class APCControllerSetup extends AbstractControllerSetup<APCControlSurfac
 
         this.isMkII = isMkII;
         this.colorManager = new APCColorManager (isMkII);
-        this.valueChanger = new DefaultValueChanger (128, 1);
+        this.valueChanger = new TwosComplementValueChanger (128, 1);
         this.configuration = new APCConfiguration (host, this.valueChanger, factory.getArpeggiatorModes ());
     }
 
@@ -135,7 +135,7 @@ public class APCControllerSetup extends AbstractControllerSetup<APCControlSurfac
         final ModelSetup ms = new ModelSetup ();
         ms.setNumScenes (5);
         ms.setNumDrumPadLayers (12);
-        this.model = this.factory.createModel (this.colorManager, this.valueChanger, this.scales, ms);
+        this.model = this.factory.createModel (this.configuration, this.colorManager, this.valueChanger, this.scales, ms);
         final ITrackBank trackBank = this.model.getTrackBank ();
         trackBank.setIndication (true);
         trackBank.addSelectionObserver ( (index, isSelected) -> this.handleTrackChange (isSelected));
@@ -261,8 +261,8 @@ public class APCControllerSetup extends AbstractControllerSetup<APCControlSurfac
             this.addButton (stopButtonID, "Stop " + (i + 1), new APCStopClipCommand (i, this.model, surface), i, APCControlSurface.APC_BUTTON_CLIP_STOP, () -> {
 
                 final IView view = viewManager.getActive ();
-                if (view instanceof AbstractSequencerView)
-                    return ((AbstractSequencerView<?, ?>) view).getResolutionIndex () == index ? 1 : 0;
+                if (view instanceof final AbstractSequencerView<?, ?> sequencerView)
+                    return sequencerView.getResolutionIndex () == index ? 1 : 0;
                 return surface.isPressed (stopButtonID) ? 1 : 0;
 
             }, ColorManager.BUTTON_STATE_OFF, ColorManager.BUTTON_STATE_ON);
@@ -336,7 +336,7 @@ public class APCControllerSetup extends AbstractControllerSetup<APCControlSurfac
             deviceKnob.disableTakeOver ();
         }
 
-        new VolumeMode<> (surface, this.model, true, ContinuousID.createSequentialList (ContinuousID.FADER1, 8)).onActivate ();
+        new TrackVolumeMode<> (surface, this.model, true, ContinuousID.createSequentialList (ContinuousID.FADER1, 8)).onActivate ();
         new ParameterMode<> (surface, this.model, true, ContinuousID.createSequentialList (ContinuousID.DEVICE_KNOB1, 8)).onActivate ();
 
         if (this.isMkII)

@@ -23,15 +23,15 @@ import java.util.Map;
  */
 public class AutoColorConfiguration extends AbstractConfiguration
 {
-    private static final String   CATEGORY_AUTO_COLOR = "Auto Color";
+    private static final String         CATEGORY_AUTO_COLOR = "Auto Color";
 
     /** ID for dis-/enabling the auto color setting. */
-    public static final Integer   ENABLE_AUTO_COLOR   = Integer.valueOf (50);
+    public static final Integer         ENABLE_AUTO_COLOR   = Integer.valueOf (50);
     /** First ID for all auto color settings. NOTE: All colors increase from that value! */
-    public static final Integer   COLOR_REGEX         = Integer.valueOf (100);
+    public static final Integer         COLOR_REGEX         = Integer.valueOf (100);
 
-    private boolean               enableAutoColor;
-    private Map<DAWColor, String> colorRegEx          = new EnumMap<> (DAWColor.class);
+    private boolean                     enableAutoColor;
+    private final Map<DAWColor, String> colorRegEx          = new EnumMap<> (DAWColor.class);
 
 
     /**

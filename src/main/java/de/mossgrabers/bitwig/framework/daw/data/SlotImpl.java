@@ -209,7 +209,7 @@ public class SlotImpl extends AbstractItemImpl implements ISlot
 
     /** {@inheritDoc} */
     @Override
-    public void record ()
+    public void startRecording ()
     {
         this.slot.record ();
     }

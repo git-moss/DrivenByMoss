@@ -24,7 +24,7 @@ import de.mossgrabers.framework.utils.ButtonEvent;
  */
 public class RibbonMode extends BaseMode<IItem>
 {
-    private static final int []    MIDI_CCS          =
+    private static final int []     MIDI_CCS          =
     {
         1,
         11,
@@ -32,7 +32,7 @@ public class RibbonMode extends BaseMode<IItem>
         64
     };
 
-    private static final String [] TOP_HEADERS       =
+    private static final String []  TOP_HEADERS       =
     {
         "CC",
         "",
@@ -44,7 +44,7 @@ public class RibbonMode extends BaseMode<IItem>
         ""
     };
 
-    private static final String [] CC_SELECT         =
+    private static final String []  CC_SELECT         =
     {
         "",
         "",
@@ -56,7 +56,7 @@ public class RibbonMode extends BaseMode<IItem>
         ""
     };
 
-    private static final String [] BOTTOM_HEADERS    =
+    private static final String []  BOTTOM_HEADERS    =
     {
         "Function",
         "",
@@ -68,7 +68,7 @@ public class RibbonMode extends BaseMode<IItem>
         ""
     };
 
-    private static final String [] FUNCTION_NAMES    =
+    private static final String []  FUNCTION_NAMES    =
     {
         "Pitchbend",
         "CC",
@@ -80,7 +80,7 @@ public class RibbonMode extends BaseMode<IItem>
         "Length"
     };
 
-    private static final int []    FUNCTION_IDS      =
+    private static final int []     FUNCTION_IDS      =
     {
         PushConfiguration.RIBBON_MODE_PITCH,
         PushConfiguration.RIBBON_MODE_CC,
@@ -89,14 +89,14 @@ public class RibbonMode extends BaseMode<IItem>
         PushConfiguration.RIBBON_MODE_FADER
     };
 
-    private static final String [] NOTE_REPEAT_NAMES =
+    private static final String []  NOTE_REPEAT_NAMES =
     {
         "Off",
         "Period",
         "Length"
     };
 
-    private PushConfiguration      configuration;
+    private final PushConfiguration configuration;
 
 
     /**

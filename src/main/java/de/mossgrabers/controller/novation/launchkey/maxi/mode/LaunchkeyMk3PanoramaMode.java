@@ -13,7 +13,7 @@ import de.mossgrabers.framework.daw.IModel;
 import de.mossgrabers.framework.daw.data.ICursorTrack;
 import de.mossgrabers.framework.daw.data.ITrack;
 import de.mossgrabers.framework.daw.data.bank.ITrackBank;
-import de.mossgrabers.framework.mode.track.PanMode;
+import de.mossgrabers.framework.mode.track.TrackPanMode;
 
 import java.util.List;
 
@@ -23,7 +23,7 @@ import java.util.List;
  *
  * @author J&uuml;rgen Mo&szlig;graber
  */
-public class LaunchkeyMk3PanoramaMode extends PanMode<LaunchkeyMk3ControlSurface, LaunchkeyMk3Configuration>
+public class LaunchkeyMk3PanoramaMode extends TrackPanMode<LaunchkeyMk3ControlSurface, LaunchkeyMk3Configuration>
 {
     /**
      * Constructor.

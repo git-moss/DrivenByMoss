@@ -50,7 +50,7 @@ public class Push1Display extends AbstractTextDisplay
         "F0 47 7F 15 1B 00 45 00 "
     };
 
-    private int                    maxParameterValue;
+    private final int              maxParameterValue;
 
 
     /**

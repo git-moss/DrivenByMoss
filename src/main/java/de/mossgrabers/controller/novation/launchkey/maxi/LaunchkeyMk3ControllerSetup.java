@@ -45,7 +45,7 @@ import de.mossgrabers.framework.controller.color.ColorEx;
 import de.mossgrabers.framework.controller.hardware.BindType;
 import de.mossgrabers.framework.controller.hardware.IHwButton;
 import de.mossgrabers.framework.controller.hardware.IHwLight;
-import de.mossgrabers.framework.controller.valuechanger.DefaultValueChanger;
+import de.mossgrabers.framework.controller.valuechanger.TwosComplementValueChanger;
 import de.mossgrabers.framework.daw.IHost;
 import de.mossgrabers.framework.daw.ITransport;
 import de.mossgrabers.framework.daw.ModelSetup;
@@ -109,7 +109,7 @@ public class LaunchkeyMk3ControllerSetup extends AbstractControllerSetup<Launchk
         super (factory, host, globalSettings, documentSettings);
 
         this.colorManager = new LaunchkeyMk3ColorManager ();
-        this.valueChanger = new DefaultValueChanger (128, 1);
+        this.valueChanger = new TwosComplementValueChanger (128, 1);
         this.configuration = new LaunchkeyMk3Configuration (host, this.valueChanger, factory.getArpeggiatorModes ());
     }
 
@@ -134,7 +134,7 @@ public class LaunchkeyMk3ControllerSetup extends AbstractControllerSetup<Launchk
         ms.setNumParamPages (16);
         ms.setNumScenes (2);
         ms.setNumSends (2);
-        this.model = this.factory.createModel (this.colorManager, this.valueChanger, this.scales, ms);
+        this.model = this.factory.createModel (this.configuration, this.colorManager, this.valueChanger, this.scales, ms);
         this.model.getTrackBank ().setIndication (true);
     }
 

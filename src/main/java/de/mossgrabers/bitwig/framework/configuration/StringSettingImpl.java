@@ -18,7 +18,7 @@ import com.bitwig.extension.controller.api.Setting;
  */
 public class StringSettingImpl extends AbstractSetting implements IStringSetting
 {
-    private SettableStringValue stringValue;
+    private final SettableStringValue stringValue;
 
 
     /**

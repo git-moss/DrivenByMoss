@@ -6,13 +6,9 @@ package de.mossgrabers.controller.ableton.push.view;
 
 import de.mossgrabers.controller.ableton.push.PushConfiguration;
 import de.mossgrabers.controller.ableton.push.controller.PushControlSurface;
-import de.mossgrabers.controller.ableton.push.mode.NoteMode;
 import de.mossgrabers.framework.controller.ButtonID;
 import de.mossgrabers.framework.daw.IModel;
 import de.mossgrabers.framework.daw.INoteClip;
-import de.mossgrabers.framework.daw.IStepInfo;
-import de.mossgrabers.framework.featuregroup.ModeManager;
-import de.mossgrabers.framework.mode.Modes;
 import de.mossgrabers.framework.utils.ButtonEvent;
 import de.mossgrabers.framework.view.AbstractDrum4View;
 
@@ -63,16 +59,9 @@ public class Drum4View extends AbstractDrum4View<PushControlSurface, PushConfigu
         final int stepX = 8 * (1 - y / 4) + x;
         final int stepY = this.scales.getDrumOffset () + sound;
 
-        final int editMidiChannel = this.configuration.getMidiEditChannel ();
+        final int channel = this.configuration.getMidiEditChannel ();
         final INoteClip clip = this.getClip ();
-        final int state = clip.getStep (editMidiChannel, stepX, stepY).getState ();
-        if (state != IStepInfo.NOTE_START)
-            return;
-
-        final ModeManager modeManager = this.surface.getModeManager ();
-        final NoteMode noteMode = (NoteMode) modeManager.get (Modes.NOTE);
-        noteMode.setValues (clip, editMidiChannel, stepX, stepY);
-        modeManager.setActive (Modes.NOTE);
+        this.editNote (clip, channel, stepX, stepY, false);
     }
 
 
@@ -91,5 +80,29 @@ public class Drum4View extends AbstractDrum4View<PushControlSurface, PushConfigu
         }
 
         super.onButton (buttonID, event, velocity);
+    }
+
+
+    /** {@inheritDoc} */
+    @Override
+    protected boolean handleNoteAreaButtonCombinations (final INoteClip clip, final int channel, final int step, final int row, final int note, final int velocity, final int accentVelocity)
+    {
+        final boolean isSelectPressed = this.surface.isSelectPressed ();
+
+        if (this.surface.isShiftPressed ())
+        {
+            if (velocity > 0)
+                this.handleSequencerAreaRepeatOperator (clip, channel, step, note, velocity, !isSelectPressed);
+            return true;
+        }
+
+        if (isSelectPressed)
+        {
+            if (velocity > 0)
+                this.editNote (clip, channel, step, note, true);
+            return true;
+        }
+
+        return super.handleNoteAreaButtonCombinations (clip, channel, step, row, note, velocity, accentVelocity);
     }
 }

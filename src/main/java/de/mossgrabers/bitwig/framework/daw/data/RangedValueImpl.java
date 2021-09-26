@@ -19,7 +19,6 @@ import com.bitwig.extension.controller.api.StringValue;
  */
 public class RangedValueImpl extends AbstractParameterImpl
 {
-    protected final IValueChanger       valueChanger;
     protected final SettableRangedValue rangedValue;
     protected final String              name;
 
@@ -52,13 +51,11 @@ public class RangedValueImpl extends AbstractParameterImpl
      */
     public RangedValueImpl (final String name, final IValueChanger valueChanger, final SettableRangedValue rangedValue, final int index)
     {
-        super (index);
+        super (valueChanger, index);
 
         this.name = name;
 
-        this.valueChanger = valueChanger;
         this.rangedValue = rangedValue;
-
         this.rangedValue.markInterested ();
         this.rangedValue.displayedValue ().markInterested ();
     }
@@ -124,14 +121,6 @@ public class RangedValueImpl extends AbstractParameterImpl
 
     /** {@inheritDoc} */
     @Override
-    public void setValue (final int value)
-    {
-        this.setValue (this.valueChanger, value);
-    }
-
-
-    /** {@inheritDoc} */
-    @Override
     public void setValue (final IValueChanger valueChanger, final int value)
     {
         this.rangedValue.set (Integer.valueOf (value), Integer.valueOf (valueChanger.getUpperBound ()));
@@ -151,14 +140,6 @@ public class RangedValueImpl extends AbstractParameterImpl
     public void setValueImmediatly (final int value)
     {
         this.rangedValue.setImmediately (this.valueChanger.toNormalizedValue (value));
-    }
-
-
-    /** {@inheritDoc} */
-    @Override
-    public void changeValue (final int value)
-    {
-        this.changeValue (this.valueChanger, value);
     }
 
 

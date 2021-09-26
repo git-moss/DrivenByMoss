@@ -133,12 +133,12 @@ public enum Scale
     // @formatter:on
 
 
-    private String                 name;
-    private int []                 intervals;
-    private Set<Integer>           scaleKeys    = new HashSet<> (7);
-    private Map<Integer, Integer>  indexInScale = new HashMap<> (7);
+    private String                      name;
+    private int []                      intervals;
+    private final Set<Integer>          scaleKeys    = new HashSet<> (7);
+    private final Map<Integer, Integer> indexInScale = new HashMap<> (7);
 
-    private static final String [] SCALE_NAMES;
+    private static final String []      SCALE_NAMES;
     static
     {
         final Scale [] values = Scale.values ();

@@ -21,7 +21,7 @@ import de.mossgrabers.framework.featuregroup.IMode;
  */
 public class FaderRowModeCommand<S extends IControlSurface<C>, C extends Configuration> extends AbstractPitchbendCommand<S, C>
 {
-    private int index;
+    private final int index;
 
 
     /**

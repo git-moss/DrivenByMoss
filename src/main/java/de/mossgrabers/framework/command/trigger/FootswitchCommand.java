@@ -64,10 +64,7 @@ public class FootswitchCommand<S extends IControlSurface<C>, C extends Configura
     @Override
     public void execute (final ButtonEvent event, final int velocity)
     {
-        if (this.handleViewCommand (event))
-            return;
-
-        if (event != ButtonEvent.DOWN)
+        if (this.handleViewCommand (event) || event != ButtonEvent.DOWN)
             return;
 
         switch (this.getSetting ())
@@ -198,7 +195,7 @@ public class FootswitchCommand<S extends IControlSurface<C>, C extends Configura
             {
                 // If there is no clip in the selected slot, create a clip and begin record
                 // mode. Releasing it ends record mode.
-                this.newCommand.execute (event, 127);
+                this.newCommand.execute ();
                 slot.select ();
                 this.model.getTransport ().setLauncherOverdub (true);
             }

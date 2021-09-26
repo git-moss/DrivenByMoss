@@ -20,10 +20,10 @@ public class FaderConfig
     /** The fader combines a bar of several dots and a single dot in a different color. */
     public static final int TYPE_DUAL   = 3;
 
-    private int             type;
-    private int             color;
-    private int             value;
-    private int             dualValue;
+    private final int       type;
+    private final int       color;
+    private final int       value;
+    private final int       dualValue;
 
 
     /**

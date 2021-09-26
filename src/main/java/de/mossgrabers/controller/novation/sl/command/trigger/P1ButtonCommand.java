@@ -19,7 +19,7 @@ import de.mossgrabers.framework.utils.ButtonEvent;
  */
 public class P1ButtonCommand extends AbstractTriggerCommand<SLControlSurface, SLConfiguration>
 {
-    private boolean isUp;
+    private final boolean isUp;
 
 
     /**

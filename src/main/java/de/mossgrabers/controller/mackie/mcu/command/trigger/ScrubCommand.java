@@ -18,7 +18,7 @@ import de.mossgrabers.framework.utils.ButtonEvent;
  */
 public class ScrubCommand extends AbstractTriggerCommand<MCUControlSurface, MCUConfiguration>
 {
-    private ModeSwitcher switcher;
+    private final ModeSwitcher switcher;
 
 
     /**

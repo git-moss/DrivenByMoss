@@ -16,11 +16,13 @@ public enum Maschine
     /** Maschine Mikro Mk3. */
     MIKRO_MK3("Maschine Mikro Mk3", "1700", false, false, false, false, 440),
     /** Maschine Mk2. */
-    MK2("Maschine Mk2", "0000", false, true, true, true, 800),
+    MK2("Maschine Mk2", "0000", false, true, true, true, 714),
     /** Maschine Mk3. */
     MK3("Maschine Mk3", "1600", true, true, true, true, 800),
     /** Maschine+. */
-    PLUS("Maschine+", "1820", true, true, true, true, 800);
+    PLUS("Maschine+", "1820", true, true, true, true, 800),
+    /** Maschine Studio. */
+    STUDIO("Maschine Studio", "1300", false, true, true, true, 700);
 
 
     private static final String MESSAGE_SHIFT_DOWN       = "F0002109%s4D5000014D01F7";
@@ -119,6 +121,17 @@ public enum Maschine
     public boolean hasCursorKeys ()
     {
         return this.hasCursorKeys;
+    }
+
+
+    /**
+     * Get the width of the simulator window
+     *
+     * @return The height
+     */
+    public double getWidth ()
+    {
+        return this == Maschine.STUDIO ? 1150 : 800;
     }
 
 

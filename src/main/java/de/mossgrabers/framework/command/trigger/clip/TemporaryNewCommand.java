@@ -20,7 +20,7 @@ import de.mossgrabers.framework.daw.IModel;
  */
 public class TemporaryNewCommand<S extends IControlSurface<C>, C extends Configuration> extends NewCommand<S, C>
 {
-    private int clipLength;
+    private final int clipLength;
 
 
     /**
@@ -41,6 +41,7 @@ public class TemporaryNewCommand<S extends IControlSurface<C>, C extends Configu
     @Override
     protected int getClipLength ()
     {
-        return this.clipLength;
+        final double quartersPerMeasure = this.model.getTransport ().getQuartersPerMeasure ();
+        return (int) (this.clipLength < 2 ? Math.pow (2, this.clipLength) : Math.pow (2, this.clipLength - 2.0) * quartersPerMeasure);
     }
 }

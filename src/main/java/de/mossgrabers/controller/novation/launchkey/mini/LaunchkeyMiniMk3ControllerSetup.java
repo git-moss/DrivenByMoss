@@ -31,7 +31,7 @@ import de.mossgrabers.framework.controller.color.ColorEx;
 import de.mossgrabers.framework.controller.hardware.BindType;
 import de.mossgrabers.framework.controller.hardware.IHwAbsoluteKnob;
 import de.mossgrabers.framework.controller.hardware.IHwLight;
-import de.mossgrabers.framework.controller.valuechanger.DefaultValueChanger;
+import de.mossgrabers.framework.controller.valuechanger.TwosComplementValueChanger;
 import de.mossgrabers.framework.daw.IHost;
 import de.mossgrabers.framework.daw.ITransport;
 import de.mossgrabers.framework.daw.ModelSetup;
@@ -47,9 +47,9 @@ import de.mossgrabers.framework.featuregroup.ViewManager;
 import de.mossgrabers.framework.mode.Modes;
 import de.mossgrabers.framework.mode.device.ParameterMode;
 import de.mossgrabers.framework.mode.device.UserMode;
-import de.mossgrabers.framework.mode.track.PanMode;
-import de.mossgrabers.framework.mode.track.SendMode;
-import de.mossgrabers.framework.mode.track.VolumeMode;
+import de.mossgrabers.framework.mode.track.TrackPanMode;
+import de.mossgrabers.framework.mode.track.TrackSendMode;
+import de.mossgrabers.framework.mode.track.TrackVolumeMode;
 import de.mossgrabers.framework.scale.Scales;
 import de.mossgrabers.framework.view.Views;
 
@@ -94,7 +94,7 @@ public class LaunchkeyMiniMk3ControllerSetup extends AbstractControllerSetup<Lau
         super (factory, host, globalSettings, documentSettings);
 
         this.colorManager = new LaunchkeyMiniMk3ColorManager ();
-        this.valueChanger = new DefaultValueChanger (128, 1);
+        this.valueChanger = new TwosComplementValueChanger (128, 1);
         this.configuration = new LaunchkeyMiniMk3Configuration (host, this.valueChanger, factory.getArpeggiatorModes ());
     }
 
@@ -118,7 +118,7 @@ public class LaunchkeyMiniMk3ControllerSetup extends AbstractControllerSetup<Lau
         ms.setHasFullFlatTrackList (this.configuration.areMasterTracksIncluded ());
         ms.setNumScenes (2);
         ms.setNumSends (8);
-        this.model = this.factory.createModel (this.colorManager, this.valueChanger, this.scales, ms);
+        this.model = this.factory.createModel (this.configuration, this.colorManager, this.valueChanger, this.scales, ms);
         this.model.getTrackBank ().setIndication (true);
     }
 
@@ -162,10 +162,10 @@ public class LaunchkeyMiniMk3ControllerSetup extends AbstractControllerSetup<Lau
 
         final BooleanSupplier offSupplier = () -> false;
 
-        modeManager.register (Modes.VOLUME, new VolumeMode<> (surface, this.model, true, AbstractMode.DEFAULT_KNOB_IDS, offSupplier));
-        modeManager.register (Modes.PAN, new PanMode<> (surface, this.model, true, AbstractMode.DEFAULT_KNOB_IDS, offSupplier));
-        modeManager.register (Modes.SEND1, new SendMode<> (0, surface, this.model, true, AbstractMode.DEFAULT_KNOB_IDS, offSupplier));
-        modeManager.register (Modes.SEND2, new SendMode<> (1, surface, this.model, true, AbstractMode.DEFAULT_KNOB_IDS, offSupplier));
+        modeManager.register (Modes.VOLUME, new TrackVolumeMode<> (surface, this.model, true, AbstractMode.DEFAULT_KNOB_IDS, offSupplier));
+        modeManager.register (Modes.PAN, new TrackPanMode<> (surface, this.model, true, AbstractMode.DEFAULT_KNOB_IDS, offSupplier));
+        modeManager.register (Modes.SEND1, new TrackSendMode<> (0, surface, this.model, true, AbstractMode.DEFAULT_KNOB_IDS, offSupplier));
+        modeManager.register (Modes.SEND2, new TrackSendMode<> (1, surface, this.model, true, AbstractMode.DEFAULT_KNOB_IDS, offSupplier));
         modeManager.register (Modes.DEVICE_PARAMS, new ParameterMode<> (surface, this.model, true, AbstractMode.DEFAULT_KNOB_IDS, offSupplier));
         modeManager.register (Modes.USER, new UserMode<> (surface, this.model, true, ContinuousID.createSequentialList (ContinuousID.DEVICE_KNOB1, 8), offSupplier));
     }
@@ -200,9 +200,9 @@ public class LaunchkeyMiniMk3ControllerSetup extends AbstractControllerSetup<Lau
         final ConfiguredRecordCommand<LaunchkeyMiniMk3ControlSurface, LaunchkeyMiniMk3Configuration> recordCommand = new ConfiguredRecordCommand<> (this.model, surface);
         this.addButton (ButtonID.RECORD, "Record", recordCommand, 15, LaunchkeyMiniMk3ControlSurface.LAUNCHKEY_RECORD, recordCommand::isLit);
 
-        final ModeCursorCommand<LaunchkeyMiniMk3ControlSurface, LaunchkeyMiniMk3Configuration> leftCommand = new ModeCursorCommand<> (Direction.LEFT, this.model, surface);
+        final ModeCursorCommand<LaunchkeyMiniMk3ControlSurface, LaunchkeyMiniMk3Configuration> leftCommand = new ModeCursorCommand<> (Direction.LEFT, this.model, surface, true);
         this.addButton (ButtonID.MOVE_TRACK_LEFT, "Previous", leftCommand, 15, LaunchkeyMiniMk3ControlSurface.LAUNCHKEY_LEFT, leftCommand::canScroll);
-        final ModeCursorCommand<LaunchkeyMiniMk3ControlSurface, LaunchkeyMiniMk3Configuration> rightCommand = new ModeCursorCommand<> (Direction.RIGHT, this.model, surface);
+        final ModeCursorCommand<LaunchkeyMiniMk3ControlSurface, LaunchkeyMiniMk3Configuration> rightCommand = new ModeCursorCommand<> (Direction.RIGHT, this.model, surface, true);
         this.addButton (ButtonID.MOVE_TRACK_RIGHT, "Next", rightCommand, 15, LaunchkeyMiniMk3ControlSurface.LAUNCHKEY_RIGHT, rightCommand::canScroll);
 
         // Scene buttons

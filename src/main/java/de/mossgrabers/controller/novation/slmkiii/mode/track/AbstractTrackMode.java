@@ -4,10 +4,12 @@
 
 package de.mossgrabers.controller.novation.slmkiii.mode.track;
 
+import de.mossgrabers.controller.novation.slmkiii.SLMkIIIConfiguration;
 import de.mossgrabers.controller.novation.slmkiii.controller.SLMkIIIColorManager;
 import de.mossgrabers.controller.novation.slmkiii.controller.SLMkIIIControlSurface;
 import de.mossgrabers.controller.novation.slmkiii.controller.SLMkIIIDisplay;
 import de.mossgrabers.controller.novation.slmkiii.mode.BaseMode;
+import de.mossgrabers.framework.command.trigger.clip.NewCommand;
 import de.mossgrabers.framework.controller.ButtonID;
 import de.mossgrabers.framework.daw.DAWColor;
 import de.mossgrabers.framework.daw.IModel;
@@ -34,9 +36,9 @@ import java.util.Optional;
  */
 public abstract class AbstractTrackMode extends BaseMode<ITrack>
 {
-    protected final List<Pair<String, Boolean>> menu      = new ArrayList<> ();
+    protected final List<Pair<String, Boolean>>                           menu      = new ArrayList<> ();
 
-    private static final String []              MODE_MENU =
+    private static final String []                                        MODE_MENU =
     {
         "Track",
         "Volume",
@@ -48,7 +50,7 @@ public abstract class AbstractTrackMode extends BaseMode<ITrack>
         "Send 5"
     };
 
-    private static final Modes []               MODES     =
+    private static final Modes []                                         MODES     =
     {
         Modes.TRACK,
         Modes.VOLUME,
@@ -59,6 +61,8 @@ public abstract class AbstractTrackMode extends BaseMode<ITrack>
         Modes.SEND4,
         Modes.SEND5
     };
+
+    private final NewCommand<SLMkIIIControlSurface, SLMkIIIConfiguration> newCommand;
 
 
     /**
@@ -71,6 +75,8 @@ public abstract class AbstractTrackMode extends BaseMode<ITrack>
     protected AbstractTrackMode (final String name, final SLMkIIIControlSurface surface, final IModel model)
     {
         super (name, surface, model, model.getCurrentTrackBank ());
+
+        this.newCommand = new NewCommand<> (model, surface);
 
         model.addTrackBankObserver (this::switchBanks);
 
@@ -151,6 +157,9 @@ public abstract class AbstractTrackMode extends BaseMode<ITrack>
                 if (selectedTrack.isPresent ())
                     this.surface.getViewManager ().setActive (Views.COLOR);
                 break;
+            case 4:
+                this.newCommand.execute ();
+                break;
             case 5:
                 this.model.getTrackBank ().addChannel (ChannelType.INSTRUMENT);
                 break;
@@ -207,7 +216,6 @@ public abstract class AbstractTrackMode extends BaseMode<ITrack>
                         return SLMkIIIColorManager.SLMKIII_BLACK;
                     return SLMkIIIColorManager.SLMKIII_RED_HALF;
                 case ROW1_4:
-                case ROW1_5:
                     return SLMkIIIColorManager.SLMKIII_BLACK;
 
                 default:
@@ -318,8 +326,8 @@ public abstract class AbstractTrackMode extends BaseMode<ITrack>
         d.setPropertyColor (3, 2, SLMkIIIColorManager.SLMKIII_BLACK);
         d.setPropertyValue (3, 1, 0);
 
-        d.setCell (3, 4, "");
-        d.setPropertyColor (4, 2, SLMkIIIColorManager.SLMKIII_BLACK);
+        d.setCell (3, 4, "New Clip");
+        d.setPropertyColor (4, 2, SLMkIIIColorManager.SLMKIII_RED);
         d.setPropertyValue (4, 1, 0);
 
         d.setCell (3, 5, "Add Instr");

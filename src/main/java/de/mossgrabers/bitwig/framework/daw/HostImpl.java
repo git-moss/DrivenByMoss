@@ -4,8 +4,6 @@
 
 package de.mossgrabers.bitwig.framework.daw;
 
-import static java.util.stream.Collectors.toList;
-
 import de.mossgrabers.bitwig.framework.daw.DeviceMetadataImpl.PluginType;
 import de.mossgrabers.bitwig.framework.graphics.BitmapImpl;
 import de.mossgrabers.bitwig.framework.graphics.ImageImpl;
@@ -57,8 +55,8 @@ public class HostImpl implements IHost
     private static final List<IDeviceMetadata> instrumentsMetadata  = new ArrayList<> ();
     private static final List<IDeviceMetadata> audioEffectsMetadata = new ArrayList<> ();
 
-    private ControllerHost                     host;
-    private List<IUsbDevice>                   usbDevices           = new ArrayList<> ();
+    private final ControllerHost               host;
+    private final List<IUsbDevice>             usbDevices           = new ArrayList<> ();
 
 
     /**
@@ -99,12 +97,14 @@ public class HostImpl implements IHost
             case NOTE_REPEAT_USE_PRESSURE_TO_VELOCITY:
                 return true;
 
+            case NOTE_EDIT_MUTE:
+            case NOTE_EDIT_VELOCITY_SPREAD:
             case NOTE_EDIT_RELEASE_VELOCITY:
-            case NOTE_EDIT_PRESSURE:
-            case NOTE_EDIT_TIMBRE:
-            case NOTE_EDIT_PANORAMA:
-            case NOTE_EDIT_TRANSPOSE:
-            case NOTE_EDIT_GAIN:
+            case NOTE_EDIT_EXPRESSIONS:
+            case NOTE_EDIT_REPEAT:
+            case NOTE_EDIT_CHANCE:
+            case NOTE_EDIT_OCCURRENCE:
+            case NOTE_EDIT_RECCURRENCE:
                 return true;
 
             case QUANTIZE_INPUT_NOTE_LENGTH:
@@ -122,6 +122,14 @@ public class HostImpl implements IHost
                 return true;
         }
         return false;
+    }
+
+
+    /** {@inheritDoc} */
+    @Override
+    public void restart ()
+    {
+        this.host.restart ();
     }
 
 
@@ -192,7 +200,7 @@ public class HostImpl implements IHost
 
     /** {@inheritDoc} */
     @Override
-    public IOpenSoundControlMessage createOSCMessage (final String address, final List<Object> values)
+    public IOpenSoundControlMessage createOSCMessage (final String address, final List<?> values)
     {
         return new OpenSoundControlMessageImpl (address, values);
     }
@@ -343,7 +351,7 @@ public class HostImpl implements IHost
     {
         try (final BufferedReader reader = new BufferedReader (new InputStreamReader (HostImpl.class.getClassLoader ().getResourceAsStream ("devices/" + fileName))))
         {
-            return reader.lines ().collect (toList ());
+            return reader.lines ().toList ();
         }
         catch (final IOException ex)
         {

@@ -20,7 +20,7 @@ import de.mossgrabers.framework.utils.StringUtils;
  *
  * @author J&uuml;rgen Mo&szlig;graber
  */
-public class SLVolumeMode extends de.mossgrabers.framework.mode.track.VolumeMode<SLControlSurface, SLConfiguration>
+public class SLVolumeMode extends de.mossgrabers.framework.mode.track.TrackVolumeMode<SLControlSurface, SLConfiguration>
 {
     /**
      * Constructor.

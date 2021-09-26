@@ -87,7 +87,7 @@ public interface ISlot extends IItem
     /**
      * Record a clip.
      */
-    void record ();
+    void startRecording ();
 
 
     /**

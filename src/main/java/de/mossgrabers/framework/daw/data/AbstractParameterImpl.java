@@ -4,6 +4,7 @@
 
 package de.mossgrabers.framework.daw.data;
 
+import de.mossgrabers.framework.controller.valuechanger.IValueChanger;
 import de.mossgrabers.framework.utils.StringUtils;
 
 
@@ -14,22 +15,28 @@ import de.mossgrabers.framework.utils.StringUtils;
  */
 public abstract class AbstractParameterImpl extends AbstractItemImpl implements IParameter
 {
+    protected final IValueChanger valueChanger;
+
+
     /**
      * Constructor.
      *
+     * @param valueChanger The value changer
      * @param index The index of the item in a page
      */
-    protected AbstractParameterImpl (final int index)
+    protected AbstractParameterImpl (final IValueChanger valueChanger, final int index)
     {
         super (index);
+
+        this.valueChanger = valueChanger;
     }
 
 
     /** {@inheritDoc} */
     @Override
-    public String getDisplayedValue (final int limit)
+    public int getPosition ()
     {
-        return StringUtils.optimizeName (this.getDisplayedValue (), limit);
+        return -1;
     }
 
 
@@ -43,7 +50,39 @@ public abstract class AbstractParameterImpl extends AbstractItemImpl implements 
 
     /** {@inheritDoc} */
     @Override
-    public void setValue (final int value)
+    public final void setValue (final int value)
+    {
+        this.setValue (this.valueChanger, value);
+    }
+
+
+    /** {@inheritDoc} */
+    @Override
+    public void setValue (final IValueChanger valueChanger, final int value)
+    {
+        // Intentionally empty
+    }
+
+
+    /** {@inheritDoc} */
+    @Override
+    public void setNormalizedValue (final double value)
+    {
+        // Intentionally empty
+    }
+
+
+    /** {@inheritDoc} */
+    @Override
+    public final void changeValue (final int control)
+    {
+        this.changeValue (this.valueChanger, control);
+    }
+
+
+    /** {@inheritDoc} */
+    @Override
+    public void changeValue (final IValueChanger valueChanger, final int value)
     {
         // Intentionally empty
     }
@@ -59,7 +98,7 @@ public abstract class AbstractParameterImpl extends AbstractItemImpl implements 
 
     /** {@inheritDoc} */
     @Override
-    public void changeValue (final int value)
+    public void inc (final double increment)
     {
         // Intentionally empty
     }
@@ -86,6 +125,22 @@ public abstract class AbstractParameterImpl extends AbstractItemImpl implements 
     public int getModulatedValue ()
     {
         return this.getValue ();
+    }
+
+
+    /** {@inheritDoc} */
+    @Override
+    public String getDisplayedValue ()
+    {
+        return "";
+    }
+
+
+    /** {@inheritDoc} */
+    @Override
+    public String getDisplayedValue (final int limit)
+    {
+        return StringUtils.optimizeName (this.getDisplayedValue (), limit);
     }
 
 

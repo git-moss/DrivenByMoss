@@ -18,7 +18,7 @@ import com.bitwig.extension.controller.api.Signal;
  */
 public class SignalSettingImpl extends AbstractSetting implements ISignalSetting
 {
-    private Signal signalValue;
+    private final Signal signalValue;
 
 
     /**

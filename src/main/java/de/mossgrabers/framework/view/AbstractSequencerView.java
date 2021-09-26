@@ -9,10 +9,20 @@ import de.mossgrabers.framework.controller.ButtonID;
 import de.mossgrabers.framework.controller.IControlSurface;
 import de.mossgrabers.framework.daw.IModel;
 import de.mossgrabers.framework.daw.INoteClip;
+import de.mossgrabers.framework.daw.IStepInfo;
+import de.mossgrabers.framework.daw.StepState;
 import de.mossgrabers.framework.daw.constants.Resolution;
+import de.mossgrabers.framework.daw.data.GridStep;
 import de.mossgrabers.framework.featuregroup.AbstractFeatureGroup;
 import de.mossgrabers.framework.featuregroup.AbstractView;
+import de.mossgrabers.framework.featuregroup.IMode;
+import de.mossgrabers.framework.featuregroup.ModeManager;
+import de.mossgrabers.framework.mode.INoteMode;
+import de.mossgrabers.framework.mode.Modes;
 import de.mossgrabers.framework.utils.ButtonEvent;
+
+import java.util.Collections;
+import java.util.List;
 
 
 /**
@@ -27,8 +37,14 @@ public abstract class AbstractSequencerView<S extends IControlSurface<C>, C exte
 {
     /** The color for highlighting a step with no content. */
     public static final String    COLOR_STEP_HILITE_NO_CONTENT = "COLOR_STEP_HILITE_NO_CONTENT";
-    /** The color for highlighting a step with with content. */
+    /** The color for highlighting a step with content. */
     public static final String    COLOR_STEP_HILITE_CONTENT    = "COLOR_STEP_HILITE_CONTENT";
+    /** The color for a muted step. */
+    public static final String    COLOR_STEP_MUTED             = "COLOR_STEP_MUTED";
+    /** The color for a continued muted step. */
+    public static final String    COLOR_STEP_MUTED_CONT        = "COLOR_STEP_MUTED_CONT";
+    /** The color for a selected step. */
+    public static final String    COLOR_STEP_SELECTED          = "COLOR_STEP_SELECTED";
     /** The color for a step with no content. */
     public static final String    COLOR_NO_CONTENT             = "COLOR_NO_CONTENT";
     /** The color for a step with content. */
@@ -152,6 +168,7 @@ public abstract class AbstractSequencerView<S extends IControlSurface<C>, C exte
         final INoteClip clip = this.getClip ();
         clip.scrollStepsPageBackwards ();
         this.mvHelper.notifyEditPage (clip);
+        this.clearEditNotes ();
     }
 
 
@@ -167,6 +184,7 @@ public abstract class AbstractSequencerView<S extends IControlSurface<C>, C exte
         final INoteClip clip = this.getClip ();
         clip.scrollStepsPageForward ();
         this.mvHelper.notifyEditPage (clip);
+        this.clearEditNotes ();
     }
 
 
@@ -283,6 +301,39 @@ public abstract class AbstractSequencerView<S extends IControlSurface<C>, C exte
 
 
     /**
+     * Handle repeat operator quick change. If repeat count is off it is set to 4 otherwise it is
+     * increased or decreased depending on the parameter.
+     *
+     * @param clip The sequenced MIDI clip
+     * @param channel The MIDI channel of the note
+     * @param step The step in the current page in the clip
+     * @param note The note in the current page of the pad in the clip
+     * @param velocity The velocity
+     * @param increase True to increase otherwise decrease
+     */
+    protected void handleSequencerAreaRepeatOperator (final INoteClip clip, final int channel, final int step, final int note, final int velocity, final boolean increase)
+    {
+        final IStepInfo stepInfo = clip.getStep (channel, step, note);
+        if (stepInfo.getState () == StepState.OFF)
+            clip.toggleStep (channel, step, note, velocity);
+        final boolean isOff = !stepInfo.isRepeatEnabled ();
+        if (isOff)
+            clip.updateIsRepeatEnabled (channel, step, note, true);
+        int repeatCount = stepInfo.getRepeatCount ();
+        repeatCount = increase ? Math.min (127, repeatCount + 1) : Math.max (-127, repeatCount - 1);
+        clip.updateRepeatCount (channel, step, note, repeatCount);
+        String repeatCountStr;
+        if (repeatCount > 0)
+            repeatCountStr = Integer.toString (repeatCount + 1);
+        else if (repeatCount == 0)
+            repeatCountStr = "Off";
+        else
+            repeatCountStr = "1/" + Integer.toString (1 - repeatCount);
+        this.surface.getDisplay ().notify ("Note repeat: " + repeatCountStr);
+    }
+
+
+    /**
      * Check if there is a note clip to edit.
      *
      * @return Returns true if the selected track can hold notes and the selected clip exists
@@ -301,5 +352,67 @@ public abstract class AbstractSequencerView<S extends IControlSurface<C>, C exte
     public void setSequencerActive (final boolean isSequencerActive)
     {
         this.isSequencerActive = isSequencerActive;
+    }
+
+
+    /**
+     * Show edit mode and set or add note.
+     *
+     * @param clip The MIDI clip
+     * @param channel The MIDI channel of the note
+     * @param step The step of the note
+     * @param mappedNote The real note
+     * @param addNote Add the note to the edited notes otherwise clear the already selected and add
+     *            only the new one
+     */
+    protected void editNote (final INoteClip clip, final int channel, final int step, final int mappedNote, final boolean addNote)
+    {
+        final StepState state = clip.getStep (channel, step, mappedNote).getState ();
+        if (state != StepState.START)
+            return;
+
+        final ModeManager modeManager = this.surface.getModeManager ();
+        final IMode mode = modeManager.get (Modes.NOTE);
+        if (mode instanceof final INoteMode noteMode)
+        {
+            if (addNote)
+                noteMode.addNote (clip, channel, step, mappedNote);
+            else
+                noteMode.setNote (clip, channel, step, mappedNote);
+            modeManager.setActive (Modes.NOTE);
+        }
+    }
+
+
+    /**
+     * Clear all edit notes.
+     */
+    protected void clearEditNotes ()
+    {
+        final ModeManager modeManager = this.surface.getModeManager ();
+        final IMode mode = modeManager.get (Modes.NOTE);
+        if (mode instanceof final INoteMode noteMode)
+            noteMode.clearNotes ();
+    }
+
+
+    protected List<GridStep> getEditNotes ()
+    {
+        final ModeManager modeManager = this.surface.getModeManager ();
+        final IMode mode = modeManager.get (Modes.NOTE);
+        if (mode instanceof final INoteMode noteMode)
+            return noteMode.getNotes ();
+        return Collections.emptyList ();
+    }
+
+
+    protected static boolean isEdit (final int channel, final int step, final int note, final List<GridStep> editNotes)
+    {
+        for (final GridStep editNote: editNotes)
+        {
+            if (editNote.getChannel () == channel && editNote.getStep () == step && editNote.getNote () == note)
+                return true;
+        }
+        return false;
     }
 }

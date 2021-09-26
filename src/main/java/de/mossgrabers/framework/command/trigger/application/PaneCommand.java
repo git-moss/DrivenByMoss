@@ -36,7 +36,7 @@ public class PaneCommand<S extends IControlSurface<C>, C extends Configuration> 
     }
 
 
-    private Panels panel;
+    private final Panels panel;
 
 
     /**
@@ -83,7 +83,7 @@ public class PaneCommand<S extends IControlSurface<C>, C extends Configuration> 
     @Override
     public void executeShifted (final ButtonEvent event)
     {
-        if (event == ButtonEvent.DOWN && this.panel == Panels.DEVICE)
+        if (event == ButtonEvent.DOWN)
             this.model.getApplication ().toggleDevices ();
     }
 }

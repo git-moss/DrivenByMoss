@@ -16,6 +16,7 @@ import de.mossgrabers.controller.novation.slmkiii.controller.SLMkIIILightGuide;
 import de.mossgrabers.controller.novation.slmkiii.controller.SLMkIIIScales;
 import de.mossgrabers.controller.novation.slmkiii.mode.BaseMode;
 import de.mossgrabers.controller.novation.slmkiii.mode.BrowserMode;
+import de.mossgrabers.controller.novation.slmkiii.mode.NoteMode;
 import de.mossgrabers.controller.novation.slmkiii.mode.OptionsMode;
 import de.mossgrabers.controller.novation.slmkiii.mode.SequencerResolutionMode;
 import de.mossgrabers.controller.novation.slmkiii.mode.device.ParametersMode;
@@ -31,7 +32,7 @@ import de.mossgrabers.framework.command.core.NopCommand;
 import de.mossgrabers.framework.command.trigger.Direction;
 import de.mossgrabers.framework.command.trigger.ShiftCommand;
 import de.mossgrabers.framework.command.trigger.mode.ButtonRowModeCommand;
-import de.mossgrabers.framework.command.trigger.mode.CursorCommand;
+import de.mossgrabers.framework.command.trigger.mode.ModeCursorCommand;
 import de.mossgrabers.framework.command.trigger.mode.ModeSelectCommand;
 import de.mossgrabers.framework.command.trigger.transport.RecordCommand;
 import de.mossgrabers.framework.command.trigger.transport.StopCommand;
@@ -47,7 +48,7 @@ import de.mossgrabers.framework.controller.ISetupFactory;
 import de.mossgrabers.framework.controller.OutputID;
 import de.mossgrabers.framework.controller.color.ColorEx;
 import de.mossgrabers.framework.controller.hardware.BindType;
-import de.mossgrabers.framework.controller.valuechanger.DefaultValueChanger;
+import de.mossgrabers.framework.controller.valuechanger.TwosComplementValueChanger;
 import de.mossgrabers.framework.daw.IHost;
 import de.mossgrabers.framework.daw.ITransport;
 import de.mossgrabers.framework.daw.ModelSetup;
@@ -61,7 +62,7 @@ import de.mossgrabers.framework.featuregroup.IMode;
 import de.mossgrabers.framework.featuregroup.ModeManager;
 import de.mossgrabers.framework.featuregroup.ViewManager;
 import de.mossgrabers.framework.mode.Modes;
-import de.mossgrabers.framework.mode.track.VolumeMode;
+import de.mossgrabers.framework.mode.track.TrackVolumeMode;
 import de.mossgrabers.framework.scale.Scales;
 import de.mossgrabers.framework.utils.ButtonEvent;
 import de.mossgrabers.framework.view.ColorView;
@@ -103,7 +104,7 @@ public class SLMkIIIControllerSetup extends AbstractControllerSetup<SLMkIIIContr
         super (factory, host, globalSettings, documentSettings);
 
         this.colorManager = new SLMkIIIColorManager ();
-        this.valueChanger = new DefaultValueChanger (1024, 8);
+        this.valueChanger = new TwosComplementValueChanger (1024, 8);
         this.configuration = new SLMkIIIConfiguration (host, this.valueChanger, factory.getArpeggiatorModes ());
     }
 
@@ -127,7 +128,7 @@ public class SLMkIIIControllerSetup extends AbstractControllerSetup<SLMkIIIContr
         ms.setHasFullFlatTrackList (true);
         ms.setNumScenes (2);
         ms.setNumSends (8);
-        this.model = this.factory.createModel (this.colorManager, this.valueChanger, this.scales, ms);
+        this.model = this.factory.createModel (this.configuration, this.colorManager, this.valueChanger, this.scales, ms);
         this.model.getTrackBank ().setIndication (true);
     }
 
@@ -176,6 +177,7 @@ public class SLMkIIIControllerSetup extends AbstractControllerSetup<SLMkIIIContr
 
         modeManager.register (Modes.FUNCTIONS, new OptionsMode (surface, this.model));
         modeManager.register (Modes.GROOVE, new SequencerResolutionMode (surface, this.model));
+        modeManager.register (Modes.NOTE, new NoteMode (surface, this.model));
     }
 
 
@@ -278,9 +280,9 @@ public class SLMkIIIControllerSetup extends AbstractControllerSetup<SLMkIIIContr
                 surface.toggleMuteSolo ();
         }, 15, SLMkIIIControlSurface.MKIII_BUTTONS_DOWN, () -> !surface.isMuteSolo () ? SLMkIIIColorManager.SLMKIII_RED : SLMkIIIColorManager.SLMKIII_RED_HALF);
 
-        final CursorCommand<SLMkIIIControlSurface, SLMkIIIConfiguration> cursorLeftCommand = new CursorCommand<> (Direction.LEFT, this.model, surface);
+        final ModeCursorCommand<SLMkIIIControlSurface, SLMkIIIConfiguration> cursorLeftCommand = new ModeCursorCommand<> (Direction.LEFT, this.model, surface, true);
         this.addButton (ButtonID.ARROW_LEFT, "Left", cursorLeftCommand, 15, SLMkIIIControlSurface.MKIII_TRACK_LEFT, () -> getCursorColor (modeManager, cursorLeftCommand));
-        final CursorCommand<SLMkIIIControlSurface, SLMkIIIConfiguration> cursorRightCommand = new CursorCommand<> (Direction.RIGHT, this.model, surface);
+        final ModeCursorCommand<SLMkIIIControlSurface, SLMkIIIConfiguration> cursorRightCommand = new ModeCursorCommand<> (Direction.RIGHT, this.model, surface, true);
         this.addButton (ButtonID.ARROW_RIGHT, "Right", cursorRightCommand, 15, SLMkIIIControlSurface.MKIII_TRACK_RIGHT, () -> getCursorColor (modeManager, cursorRightCommand));
 
         for (int i = 0; i < 2; i++)
@@ -380,7 +382,7 @@ public class SLMkIIIControllerSetup extends AbstractControllerSetup<SLMkIIIContr
         }
 
         // Volume faders which can be turned off in the settings...
-        final VolumeMode<SLMkIIIControlSurface, SLMkIIIConfiguration> volumeMode = new VolumeMode<> (surface, this.model, true, ContinuousID.createSequentialList (ContinuousID.FADER1, 8));
+        final TrackVolumeMode<SLMkIIIControlSurface, SLMkIIIConfiguration> volumeMode = new TrackVolumeMode<> (surface, this.model, true, ContinuousID.createSequentialList (ContinuousID.FADER1, 8));
         volumeMode.onActivate ();
         this.configuration.addSettingObserver (SLMkIIIConfiguration.ENABLE_FADERS, () -> {
             if (this.configuration.areFadersEnabled ())
@@ -657,7 +659,7 @@ public class SLMkIIIControllerSetup extends AbstractControllerSetup<SLMkIIIContr
      * @param cursorCommand The cursor command
      * @return The color index
      */
-    private static int getCursorColor (final ModeManager modeManager, final CursorCommand<SLMkIIIControlSurface, SLMkIIIConfiguration> cursorCommand)
+    private static int getCursorColor (final ModeManager modeManager, final ModeCursorCommand<SLMkIIIControlSurface, SLMkIIIConfiguration> cursorCommand)
     {
         if (!cursorCommand.canScroll ())
             return SLMkIIIColorManager.SLMKIII_BLACK;

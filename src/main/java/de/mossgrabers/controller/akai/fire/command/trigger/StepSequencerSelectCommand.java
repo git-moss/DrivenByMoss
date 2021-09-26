@@ -12,6 +12,7 @@ import de.mossgrabers.framework.daw.IModel;
 import de.mossgrabers.framework.daw.data.ITrack;
 import de.mossgrabers.framework.featuregroup.ModeManager;
 import de.mossgrabers.framework.featuregroup.ViewManager;
+import de.mossgrabers.framework.mode.INoteMode;
 import de.mossgrabers.framework.mode.Modes;
 import de.mossgrabers.framework.utils.ButtonEvent;
 import de.mossgrabers.framework.view.Views;
@@ -41,29 +42,36 @@ public class StepSequencerSelectCommand extends ViewMultiSelectCommand<FireContr
     @Override
     public void executeNormal (final ButtonEvent event)
     {
+        final ModeManager modeManager = this.surface.getModeManager ();
+
         // Toggle note mode
         if (this.surface.isPressed (ButtonID.ALT))
         {
             if (event == ButtonEvent.DOWN)
             {
-                this.surface.setTriggerConsumed (ButtonID.DRUM);
-                final ModeManager modeManager = this.surface.getModeManager ();
+                this.surface.setTriggerConsumed (ButtonID.ALT);
                 if (modeManager.isActive (Modes.NOTE))
                     modeManager.restore ();
                 else
                     modeManager.setActive (Modes.NOTE);
                 this.surface.getDisplay ().notify ("Edit Notes: " + (modeManager.isActive (Modes.NOTE) ? "On" : "Off"));
+                ((INoteMode) modeManager.get (Modes.NOTE)).clearNotes ();
             }
             return;
         }
 
         super.executeNormal (event);
 
-        final ITrack cursorTrack = this.model.getCursorTrack ();
-        if (cursorTrack.doesExist ())
+        if (event == ButtonEvent.UP)
         {
-            final ViewManager viewManager = this.surface.getViewManager ();
-            viewManager.setPreferredView (cursorTrack.getPosition (), viewManager.getActiveID ());
+            ((INoteMode) modeManager.get (Modes.NOTE)).clearNotes ();
+
+            final ITrack cursorTrack = this.model.getCursorTrack ();
+            if (cursorTrack.doesExist ())
+            {
+                final ViewManager viewManager = this.surface.getViewManager ();
+                viewManager.setPreferredView (cursorTrack.getPosition (), viewManager.getActiveID ());
+            }
         }
     }
 

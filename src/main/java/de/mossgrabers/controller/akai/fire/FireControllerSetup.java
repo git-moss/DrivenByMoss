@@ -54,7 +54,7 @@ import de.mossgrabers.framework.controller.color.ColorEx;
 import de.mossgrabers.framework.controller.color.ColorManager;
 import de.mossgrabers.framework.controller.hardware.BindType;
 import de.mossgrabers.framework.controller.hardware.IHwRelativeKnob;
-import de.mossgrabers.framework.controller.valuechanger.DefaultValueChanger;
+import de.mossgrabers.framework.controller.valuechanger.TwosComplementValueChanger;
 import de.mossgrabers.framework.daw.IHost;
 import de.mossgrabers.framework.daw.ITransport;
 import de.mossgrabers.framework.daw.ModelSetup;
@@ -70,9 +70,8 @@ import de.mossgrabers.framework.featuregroup.ModeManager;
 import de.mossgrabers.framework.featuregroup.ViewManager;
 import de.mossgrabers.framework.mode.Modes;
 import de.mossgrabers.framework.observer.IParametersAdjustObserver;
+import de.mossgrabers.framework.utils.ButtonEvent;
 import de.mossgrabers.framework.view.Views;
-
-import java.util.function.IntSupplier;
 
 
 /**
@@ -106,7 +105,7 @@ public class FireControllerSetup extends AbstractControllerSetup<FireControlSurf
         super (factory, host, globalSettings, documentSettings);
 
         this.colorManager = new FireColorManager ();
-        this.valueChanger = new DefaultValueChanger (1024, 10);
+        this.valueChanger = new TwosComplementValueChanger (1024, 10);
         this.configuration = new FireConfiguration (host, this.valueChanger, factory.getArpeggiatorModes ());
     }
 
@@ -129,7 +128,7 @@ public class FireControllerSetup extends AbstractControllerSetup<FireControlSurf
         ms.setNumResults (3);
         ms.setHasFullFlatTrackList (true);
 
-        this.model = this.factory.createModel (this.colorManager, this.valueChanger, this.scales, ms);
+        this.model = this.factory.createModel (this.configuration, this.colorManager, this.valueChanger, this.scales, ms);
 
         final ITrackBank trackBank = this.model.getTrackBank ();
         trackBank.setIndication (true);
@@ -281,12 +280,12 @@ public class FireControllerSetup extends AbstractControllerSetup<FireControlSurf
             return 0;
         }, FireColorManager.BUTTON_STATE_ON2, FireColorManager.BUTTON_STATE_HI2, ColorManager.BUTTON_STATE_HI);
 
-        this.addButton (ButtonID.SHIFT, "SHIFT", new ToggleShiftViewCommand<> (this.model, surface), FireControlSurface.FIRE_SHIFT, (IntSupplier) null, FireColorManager.BUTTON_STATE_ON2, FireColorManager.BUTTON_STATE_HI2);
+        this.addButton (ButtonID.SHIFT, "SHIFT", new ToggleShiftViewCommand<> (this.model, surface), FireControlSurface.FIRE_SHIFT, () -> viewManager.isActive (Views.SHIFT) || surface.isShiftPressed () ? 1 : 0, FireColorManager.BUTTON_STATE_ON2, FireColorManager.BUTTON_STATE_HI2);
         this.addButton (ButtonID.ALT, "ALT", (event, velocity) -> {
 
             final IMode activeMode = modeManager.getActive ();
-            if (activeMode instanceof IParametersAdjustObserver)
-                ((IParametersAdjustObserver) activeMode).parametersAdjusted ();
+            if (activeMode instanceof final IParametersAdjustObserver observer)
+                observer.parametersAdjusted ();
 
         }, FireControlSurface.FIRE_ALT);
 
@@ -299,7 +298,7 @@ public class FireControllerSetup extends AbstractControllerSetup<FireControlSurf
         this.addButton (ButtonID.ARROW_RIGHT, "GRID\nRIGHT", new FireViewButtonCommand (ButtonID.ARROW_RIGHT, this.model, surface), FireControlSurface.FIRE_GRID_RIGHT);
 
         this.addButton (ButtonID.ARROW_UP, "PATTERN\nUP", (event, velocity) -> {
-            if (velocity == 0)
+            if (event != ButtonEvent.UP)
                 return;
             if (surface.isPressed (ButtonID.ALT))
             {
@@ -310,7 +309,7 @@ public class FireControllerSetup extends AbstractControllerSetup<FireControlSurf
             this.model.getCursorTrack ().getSlotBank ().selectNextItem ();
         }, FireControlSurface.FIRE_PAT_UP);
         this.addButton (ButtonID.ARROW_DOWN, "PATTERN\nDOWN", (event, velocity) -> {
-            if (velocity == 0)
+            if (event != ButtonEvent.UP)
                 return;
             if (surface.isPressed (ButtonID.ALT))
             {
@@ -332,7 +331,7 @@ public class FireControllerSetup extends AbstractControllerSetup<FireControlSurf
             final int index = i;
             surface.createLight (OutputID.get (OutputID.LED5, i), () -> {
                 final IView activeView = viewManager.getActive ();
-                return activeView instanceof IFireView ? ((IFireView) activeView).getSoloButtonColor (index) : 0;
+                return activeView instanceof final IFireView fireView ? fireView.getSoloButtonColor (index) : 0;
             }, color -> surface.setTrigger (0, 0x28 + index, color), state -> {
                 switch (state)
                 {

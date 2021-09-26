@@ -18,7 +18,7 @@ import com.bitwig.extension.controller.api.ControllerHost;
  */
 public class MidiDeviceImpl implements IMidiAccess
 {
-    private ControllerHost host;
+    private final ControllerHost host;
 
 
     /**

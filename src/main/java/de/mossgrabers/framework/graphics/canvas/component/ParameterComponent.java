@@ -27,7 +27,7 @@ public class ParameterComponent extends MenuComponent
     private final String  paramName;
     private final String  paramValueText;
     private final int     paramValue;
-    private int           modulatedParamValue;
+    private final int     modulatedParamValue;
     private final boolean isTouched;
 
 
@@ -117,7 +117,7 @@ public class ParameterComponent extends MenuComponent
      */
     public ParameterComponent (final String menuName, final boolean isMenuSelected, final String name, final ChannelType type, final ColorEx color, final boolean isSelected, final String paramName, final int paramValue, final int modulatedParamValue, final String paramValueText, final boolean isTouched)
     {
-        super (menuName, isMenuSelected, name, ChannelSelectComponent.getIcon (type), color, isSelected, true);
+        super (menuName, isMenuSelected, name, ChannelSelectComponent.getIcon (type, false), color, isSelected, true);
 
         this.paramName = paramName;
         this.paramValue = paramValue;
@@ -208,14 +208,10 @@ public class ParameterComponent extends MenuComponent
     {
         if (this == obj)
             return true;
-        if (!super.equals (obj))
-            return false;
-        if (this.getClass () != obj.getClass ())
+        if (!super.equals (obj) || this.getClass () != obj.getClass ())
             return false;
         final ParameterComponent other = (ParameterComponent) obj;
-        if (this.isTouched != other.isTouched)
-            return false;
-        if (this.modulatedParamValue != other.modulatedParamValue)
+        if (this.isTouched != other.isTouched || this.modulatedParamValue != other.modulatedParamValue)
             return false;
         if (this.paramName == null)
         {

@@ -16,7 +16,7 @@ import de.mossgrabers.framework.mode.Modes;
  */
 public class ModeSwitcher
 {
-    private MCUControlSurface surface;
+    private final MCUControlSurface surface;
 
 
     /**

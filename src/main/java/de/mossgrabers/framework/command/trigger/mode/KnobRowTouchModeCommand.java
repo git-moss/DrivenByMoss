@@ -22,7 +22,7 @@ import de.mossgrabers.framework.utils.ButtonEvent;
  */
 public class KnobRowTouchModeCommand<S extends IControlSurface<C>, C extends Configuration> extends AbstractTriggerCommand<S, C>
 {
-    private int index;
+    private final int index;
 
 
     /**

@@ -17,7 +17,7 @@ import de.mossgrabers.framework.parameterprovider.track.SendParameterProvider;
  */
 public class SendMode extends BaseMode<ITrack>
 {
-    private int sendIndex;
+    private final int sendIndex;
 
 
     /**

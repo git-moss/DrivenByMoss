@@ -9,6 +9,7 @@ import de.mossgrabers.controller.ni.kontrol.mki.controller.Kontrol1ControlSurfac
 import de.mossgrabers.framework.controller.grid.ILightGuide;
 import de.mossgrabers.framework.daw.DAWColor;
 import de.mossgrabers.framework.daw.IModel;
+import de.mossgrabers.framework.daw.constants.Capability;
 import de.mossgrabers.framework.daw.data.IChannel;
 import de.mossgrabers.framework.daw.data.IDrumDevice;
 import de.mossgrabers.framework.daw.data.bank.IDrumPadBank;
@@ -54,7 +55,7 @@ public class ControlView extends AbstractPlayView<Kontrol1ControlSurface, Kontro
     {
         final ILightGuide lightGuide = this.surface.getLightGuide ();
 
-        if (this.model.canSelectedTrackHoldNotes ())
+        if (this.model.getHost ().supports (Capability.HAS_DRUM_DEVICE) && this.model.canSelectedTrackHoldNotes ())
         {
             final IDrumDevice primary = this.model.getDrumDevice ();
             if (primary.hasDrumPads ())

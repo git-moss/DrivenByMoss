@@ -44,6 +44,12 @@ public interface IHost
 
 
     /**
+     * Restart the extension.
+     */
+    void restart ();
+
+
+    /**
      * Schedules the given task for execution after the given delay.
      *
      * @param task The task to execute
@@ -121,7 +127,7 @@ public interface IHost
      * @param values The values for the message
      * @return The created message
      */
-    IOpenSoundControlMessage createOSCMessage (String address, List<Object> values);
+    IOpenSoundControlMessage createOSCMessage (String address, List<?> values);
 
 
     /**
@@ -186,7 +192,7 @@ public interface IHost
 
 
     /**
-     * Get the metadata of the audiu effect which can be created.
+     * Get the metadata of the audio effect which can be created.
      *
      * @return The metadata
      */

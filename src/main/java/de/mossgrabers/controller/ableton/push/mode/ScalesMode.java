@@ -28,7 +28,7 @@ import de.mossgrabers.framework.utils.Pair;
  */
 public class ScalesMode extends BaseMode<IItem>
 {
-    private Scales scales;
+    private final Scales scales;
 
 
     /**
@@ -49,10 +49,7 @@ public class ScalesMode extends BaseMode<IItem>
     @Override
     public void onKnobValue (final int index, final int value)
     {
-        if (index != 0)
-            return;
-
-        if (!this.increaseKnobMovement ())
+        if (index != 0 || !this.increaseKnobMovement ())
             return;
 
         this.scales.changeScale (value);

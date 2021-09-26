@@ -8,8 +8,10 @@ import de.mossgrabers.bitwig.framework.BitwigSetupFactory;
 import de.mossgrabers.bitwig.framework.configuration.SettingsUIImpl;
 import de.mossgrabers.bitwig.framework.daw.HostImpl;
 import de.mossgrabers.bitwig.framework.extension.AbstractControllerExtensionDefinition;
+import de.mossgrabers.controller.novation.slmkiii.SLMkIIIConfiguration;
 import de.mossgrabers.controller.novation.slmkiii.SLMkIIIControllerDefinition;
 import de.mossgrabers.controller.novation.slmkiii.SLMkIIIControllerSetup;
+import de.mossgrabers.controller.novation.slmkiii.controller.SLMkIIIControlSurface;
 import de.mossgrabers.framework.controller.IControllerSetup;
 
 import com.bitwig.extension.controller.api.ControllerHost;
@@ -20,7 +22,7 @@ import com.bitwig.extension.controller.api.ControllerHost;
  *
  * @author J&uuml;rgen Mo&szlig;graber
  */
-public class SLMkIIIControllerExtensionDefinition extends AbstractControllerExtensionDefinition
+public class SLMkIIIControllerExtensionDefinition extends AbstractControllerExtensionDefinition<SLMkIIIControlSurface, SLMkIIIConfiguration>
 {
     /**
      * Constructor.
@@ -33,7 +35,7 @@ public class SLMkIIIControllerExtensionDefinition extends AbstractControllerExte
 
     /** {@inheritDoc} */
     @Override
-    protected IControllerSetup<?, ?> getControllerSetup (final ControllerHost host)
+    protected IControllerSetup<SLMkIIIControlSurface, SLMkIIIConfiguration> getControllerSetup (final ControllerHost host)
     {
         return new SLMkIIIControllerSetup (new HostImpl (host), new BitwigSetupFactory (host), new SettingsUIImpl (host, host.getPreferences ()), new SettingsUIImpl (host, host.getDocumentState ()));
     }

@@ -28,10 +28,10 @@ import de.mossgrabers.framework.configuration.ISettingsUI;
 import de.mossgrabers.framework.controller.AbstractControllerSetup;
 import de.mossgrabers.framework.controller.ISetupFactory;
 import de.mossgrabers.framework.controller.color.ColorManager;
-import de.mossgrabers.framework.controller.valuechanger.DefaultValueChanger;
 import de.mossgrabers.framework.controller.valuechanger.IValueChanger;
-import de.mossgrabers.framework.controller.valuechanger.Relative2ValueChanger;
-import de.mossgrabers.framework.controller.valuechanger.Relative3ValueChanger;
+import de.mossgrabers.framework.controller.valuechanger.OffsetBinaryRelativeValueChanger;
+import de.mossgrabers.framework.controller.valuechanger.SignedBitRelativeValueChanger;
+import de.mossgrabers.framework.controller.valuechanger.TwosComplementValueChanger;
 import de.mossgrabers.framework.daw.IHost;
 import de.mossgrabers.framework.daw.ModelSetup;
 import de.mossgrabers.framework.daw.data.IMasterTrack;
@@ -46,10 +46,10 @@ import de.mossgrabers.framework.featuregroup.ModeManager;
 import de.mossgrabers.framework.mode.Modes;
 import de.mossgrabers.framework.mode.device.BrowserMode;
 import de.mossgrabers.framework.mode.device.ParameterMode;
-import de.mossgrabers.framework.mode.track.PanMode;
-import de.mossgrabers.framework.mode.track.SendMode;
 import de.mossgrabers.framework.mode.track.TrackMode;
-import de.mossgrabers.framework.mode.track.VolumeMode;
+import de.mossgrabers.framework.mode.track.TrackPanMode;
+import de.mossgrabers.framework.mode.track.TrackSendMode;
+import de.mossgrabers.framework.mode.track.TrackVolumeMode;
 import de.mossgrabers.framework.observer.IValueObserver;
 import de.mossgrabers.framework.scale.Scales;
 import de.mossgrabers.framework.utils.FileEx;
@@ -71,12 +71,13 @@ import java.util.Set;
  */
 public class GenericFlexiControllerSetup extends AbstractControllerSetup<GenericFlexiControlSurface, GenericFlexiConfiguration> implements IValueObserver<FlexiCommand>
 {
-    private static final String     PROGRAM_NONE          = "None";
+    private static final String     PROGRAM_NONE                     = "None";
 
-    private final IValueChanger     relative2ValueChanger = new Relative2ValueChanger (128, 1);
-    private final IValueChanger     relative3ValueChanger = new Relative3ValueChanger (128, 1);
+    private final IValueChanger     absoluteLowResValueChanger       = new TwosComplementValueChanger (128, 1);
+    private final IValueChanger     signedBitRelativeValueChanger    = new SignedBitRelativeValueChanger (16384, 100);
+    private final IValueChanger     offsetBinaryRelativeValueChanger = new OffsetBinaryRelativeValueChanger (16384, 100);
 
-    private final List<ProgramBank> banks                 = new ArrayList<> ();
+    private final List<ProgramBank> banks                            = new ArrayList<> ();
 
 
     /**
@@ -92,7 +93,7 @@ public class GenericFlexiControllerSetup extends AbstractControllerSetup<Generic
         super (factory, host, globalSettings, documentSettings);
 
         this.colorManager = new ColorManager ();
-        this.valueChanger = new DefaultValueChanger (16384, 1);
+        this.valueChanger = new TwosComplementValueChanger (16384, 100);
         this.configuration = new GenericFlexiConfiguration (host, this.valueChanger, factory.getArpeggiatorModes ());
     }
 
@@ -176,7 +177,7 @@ public class GenericFlexiControllerSetup extends AbstractControllerSetup<Generic
         final ModelSetup ms = new ModelSetup ();
         ms.enableDrumDevice (false);
         ms.setNumMarkers (8);
-        this.model = this.factory.createModel (this.colorManager, this.valueChanger, this.scales, ms);
+        this.model = this.factory.createModel (this.configuration, this.colorManager, this.valueChanger, this.scales, ms);
     }
 
 
@@ -230,10 +231,10 @@ public class GenericFlexiControllerSetup extends AbstractControllerSetup<Generic
         final GenericFlexiControlSurface surface = this.getSurface ();
         final ModeManager modeManager = surface.getModeManager ();
         modeManager.register (Modes.TRACK, new TrackMode<> (surface, this.model, true));
-        modeManager.register (Modes.VOLUME, new VolumeMode<> (surface, this.model, true));
-        modeManager.register (Modes.PAN, new PanMode<> (surface, this.model, true));
+        modeManager.register (Modes.VOLUME, new TrackVolumeMode<> (surface, this.model, true));
+        modeManager.register (Modes.PAN, new TrackPanMode<> (surface, this.model, true));
         for (int i = 0; i < 8; i++)
-            modeManager.register (Modes.get (Modes.SEND1, i), new SendMode<> (i, surface, this.model, true));
+            modeManager.register (Modes.get (Modes.SEND1, i), new TrackSendMode<> (i, surface, this.model, true));
         modeManager.register (Modes.DEVICE_PARAMS, new ParameterMode<> (surface, this.model, true));
         modeManager.register (Modes.BROWSER, new BrowserMode<> (surface, this.model));
 
@@ -286,8 +287,9 @@ public class GenericFlexiControllerSetup extends AbstractControllerSetup<Generic
     protected void updateRelativeKnobSensitivity ()
     {
         final int knobSensitivity = this.getSurface ().isKnobSensitivitySlow () ? this.configuration.getKnobSensitivitySlow () : this.configuration.getKnobSensitivityDefault ();
-        this.relative2ValueChanger.setSensitivity (knobSensitivity);
-        this.relative3ValueChanger.setSensitivity (knobSensitivity);
+        this.absoluteLowResValueChanger.setSensitivity (knobSensitivity);
+        this.signedBitRelativeValueChanger.setSensitivity (knobSensitivity);
+        this.offsetBinaryRelativeValueChanger.setSensitivity (knobSensitivity);
 
         super.updateRelativeKnobSensitivity ();
     }
@@ -300,22 +302,22 @@ public class GenericFlexiControllerSetup extends AbstractControllerSetup<Generic
      */
     private void registerHandlers (final GenericFlexiControlSurface surface)
     {
-        surface.registerHandler (new GlobalHandler (this.model, surface, this.configuration, this.relative2ValueChanger, this.relative3ValueChanger));
-        surface.registerHandler (new TransportHandler (this.model, surface, this.configuration, this.relative2ValueChanger, this.relative3ValueChanger));
-        surface.registerHandler (new LayoutHandler (this.model, surface, this.configuration, this.relative2ValueChanger, this.relative3ValueChanger));
-        surface.registerHandler (new TrackHandler (this.model, surface, this.configuration, this.relative2ValueChanger, this.relative3ValueChanger));
-        surface.registerHandler (new FxTrackHandler (this.model, surface, this.configuration, this.relative2ValueChanger, this.relative3ValueChanger));
-        surface.registerHandler (new MasterHandler (this.model, surface, this.configuration, this.relative2ValueChanger, this.relative3ValueChanger));
-        surface.registerHandler (new DeviceHandler (this.model, surface, this.configuration, this.relative2ValueChanger, this.relative3ValueChanger));
-        surface.registerHandler (new BrowserHandler (this.model, surface, this.configuration, this.relative2ValueChanger, this.relative3ValueChanger));
-        surface.registerHandler (new SceneHandler (this.model, surface, this.configuration, this.relative2ValueChanger, this.relative3ValueChanger));
-        surface.registerHandler (new ClipHandler (this.model, surface, this.configuration, this.relative2ValueChanger, this.relative3ValueChanger));
-        surface.registerHandler (new MarkerHandler (this.model, surface, this.configuration, this.relative2ValueChanger, this.relative3ValueChanger));
-        surface.registerHandler (new ModesHandler (this.model, surface, this.configuration, this.relative2ValueChanger, this.relative3ValueChanger, this.host));
-        surface.registerHandler (new MidiCCHandler (this.model, surface, this.configuration, this.relative2ValueChanger, this.relative3ValueChanger));
-        surface.registerHandler (new NoteInputHandler (this.model, surface, this.configuration, this.relative2ValueChanger, this.relative3ValueChanger));
-        surface.registerHandler (new UserHandler (this.model, surface, this.configuration, this.relative2ValueChanger, this.relative3ValueChanger));
-        surface.registerHandler (new ActionHandler (this.model, surface, this.configuration, this.relative2ValueChanger, this.relative3ValueChanger));
+        surface.registerHandler (new GlobalHandler (this.model, surface, this.configuration, this.absoluteLowResValueChanger, this.signedBitRelativeValueChanger, this.offsetBinaryRelativeValueChanger));
+        surface.registerHandler (new TransportHandler (this.model, surface, this.configuration, this.absoluteLowResValueChanger, this.signedBitRelativeValueChanger, this.offsetBinaryRelativeValueChanger));
+        surface.registerHandler (new LayoutHandler (this.model, surface, this.configuration, this.absoluteLowResValueChanger, this.signedBitRelativeValueChanger, this.offsetBinaryRelativeValueChanger));
+        surface.registerHandler (new TrackHandler (this.model, surface, this.configuration, this.absoluteLowResValueChanger, this.signedBitRelativeValueChanger, this.offsetBinaryRelativeValueChanger));
+        surface.registerHandler (new FxTrackHandler (this.model, surface, this.configuration, this.absoluteLowResValueChanger, this.signedBitRelativeValueChanger, this.offsetBinaryRelativeValueChanger));
+        surface.registerHandler (new MasterHandler (this.model, surface, this.configuration, this.absoluteLowResValueChanger, this.signedBitRelativeValueChanger, this.offsetBinaryRelativeValueChanger));
+        surface.registerHandler (new DeviceHandler (this.model, surface, this.configuration, this.absoluteLowResValueChanger, this.signedBitRelativeValueChanger, this.offsetBinaryRelativeValueChanger));
+        surface.registerHandler (new BrowserHandler (this.model, surface, this.configuration, this.absoluteLowResValueChanger, this.signedBitRelativeValueChanger, this.offsetBinaryRelativeValueChanger));
+        surface.registerHandler (new SceneHandler (this.model, surface, this.configuration, this.absoluteLowResValueChanger, this.signedBitRelativeValueChanger, this.offsetBinaryRelativeValueChanger));
+        surface.registerHandler (new ClipHandler (this.model, surface, this.configuration, this.absoluteLowResValueChanger, this.signedBitRelativeValueChanger, this.offsetBinaryRelativeValueChanger));
+        surface.registerHandler (new MarkerHandler (this.model, surface, this.configuration, this.absoluteLowResValueChanger, this.signedBitRelativeValueChanger, this.offsetBinaryRelativeValueChanger));
+        surface.registerHandler (new ModesHandler (this.model, surface, this.configuration, this.absoluteLowResValueChanger, this.signedBitRelativeValueChanger, this.offsetBinaryRelativeValueChanger, this.host));
+        surface.registerHandler (new MidiCCHandler (this.model, surface, this.configuration, this.absoluteLowResValueChanger, this.signedBitRelativeValueChanger, this.offsetBinaryRelativeValueChanger));
+        surface.registerHandler (new NoteInputHandler (this.model, surface, this.configuration, this.absoluteLowResValueChanger, this.signedBitRelativeValueChanger, this.offsetBinaryRelativeValueChanger));
+        surface.registerHandler (new UserHandler (this.model, surface, this.configuration, this.absoluteLowResValueChanger, this.signedBitRelativeValueChanger, this.offsetBinaryRelativeValueChanger));
+        surface.registerHandler (new ActionHandler (this.model, surface, this.configuration, this.absoluteLowResValueChanger, this.signedBitRelativeValueChanger, this.offsetBinaryRelativeValueChanger));
     }
 
 
@@ -383,9 +385,7 @@ public class GenericFlexiControllerSetup extends AbstractControllerSetup<Generic
 
     private boolean testVolumeIndication (final Set<FlexiCommand> commands, final FlexiCommand [] allCommands, final int trackIndex, final boolean hasTrackSel)
     {
-        if (hasTrackSel && commands.contains (FlexiCommand.TRACK_SELECTED_SET_VOLUME_TRACK))
-            return true;
-        if (commands.contains (allCommands[FlexiCommand.TRACK_1_SET_VOLUME.ordinal () + trackIndex]))
+        if (hasTrackSel && commands.contains (FlexiCommand.TRACK_SELECTED_SET_VOLUME_TRACK) || commands.contains (allCommands[FlexiCommand.TRACK_1_SET_VOLUME.ordinal () + trackIndex]))
             return true;
         return commands.contains (allCommands[FlexiCommand.MODES_KNOB1.ordinal () + trackIndex]) && this.getSurface ().getModeManager ().isActive (Modes.VOLUME);
     }
@@ -393,9 +393,7 @@ public class GenericFlexiControllerSetup extends AbstractControllerSetup<Generic
 
     private boolean testPanIndication (final Set<FlexiCommand> commands, final FlexiCommand [] allCommands, final int trackIndex, final boolean hasTrackSel)
     {
-        if (hasTrackSel && commands.contains (FlexiCommand.TRACK_SELECTED_SET_PANORAMA))
-            return true;
-        if (commands.contains (allCommands[FlexiCommand.TRACK_1_SET_PANORAMA.ordinal () + trackIndex]))
+        if (hasTrackSel && commands.contains (FlexiCommand.TRACK_SELECTED_SET_PANORAMA) || commands.contains (allCommands[FlexiCommand.TRACK_1_SET_PANORAMA.ordinal () + trackIndex]))
             return true;
         return commands.contains (allCommands[FlexiCommand.MODES_KNOB1.ordinal () + trackIndex]) && this.getSurface ().getModeManager ().isActive (Modes.PAN);
     }
@@ -404,16 +402,12 @@ public class GenericFlexiControllerSetup extends AbstractControllerSetup<Generic
     private boolean testSendIndication (final Set<FlexiCommand> commands, final FlexiCommand [] allCommands, final int trackIndex, final boolean hasTrackSel, final int sendPageSize, final int sendIndex)
     {
         final ModeManager modeManager = this.getSurface ().getModeManager ();
-        if (hasTrackSel)
-        {
-            if (commands.contains (allCommands[FlexiCommand.TRACK_SELECTED_SET_SEND_1.ordinal () + sendIndex]))
-                return true;
-            if (modeManager.isActive (Modes.TRACK) && sendIndex < 6)
-                return true;
-        }
+        if (hasTrackSel && commands.contains (allCommands[FlexiCommand.TRACK_SELECTED_SET_SEND_1.ordinal () + sendIndex]) || modeManager.isActive (Modes.TRACK) && sendIndex < 6)
+            return true;
         if (commands.contains (allCommands[FlexiCommand.TRACK_1_SET_SEND_1.ordinal () + sendIndex * sendPageSize + trackIndex]))
             return true;
         return modeManager.isActive (Modes.get (Modes.SEND1, sendIndex));
+
     }
 
 

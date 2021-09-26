@@ -14,7 +14,7 @@ import java.nio.ByteBuffer;
  */
 public class MemoryBlockImpl implements IMemoryBlock
 {
-    private MemoryBlock memoryBlock;
+    private final MemoryBlock memoryBlock;
 
 
     /**

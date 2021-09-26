@@ -486,7 +486,7 @@
         <reaction>ondown</reaction>
       </button>
       <button version="1" id="Select">
-        <controller>87</controller>
+        <controller>90</controller>
         <channel>0</channel>
         <off>0</off>
         <on>127</on>

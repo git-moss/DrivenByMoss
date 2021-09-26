@@ -23,7 +23,7 @@ import com.bitwig.extension.controller.api.TrackBank;
  */
 public class EffectTrackBankImpl extends AbstractTrackBankImpl
 {
-    private ITrackBank audioInstrumentTrackBank;
+    private final ITrackBank audioInstrumentTrackBank;
 
 
     /**

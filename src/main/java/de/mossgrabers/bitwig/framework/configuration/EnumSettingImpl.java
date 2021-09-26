@@ -18,7 +18,7 @@ import com.bitwig.extension.controller.api.Setting;
  */
 public class EnumSettingImpl extends AbstractSetting implements IEnumSetting
 {
-    private SettableEnumValue enumValue;
+    private final SettableEnumValue enumValue;
 
 
     /**

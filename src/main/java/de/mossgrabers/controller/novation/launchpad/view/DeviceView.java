@@ -20,7 +20,7 @@ import de.mossgrabers.framework.utils.ButtonEvent;
  */
 public class DeviceView extends AbstractFaderView
 {
-    private ICursorDevice cursorDevice;
+    private final ICursorDevice cursorDevice;
 
 
     /**

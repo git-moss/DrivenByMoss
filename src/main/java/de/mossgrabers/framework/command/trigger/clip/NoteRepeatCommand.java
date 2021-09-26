@@ -26,7 +26,29 @@ import de.mossgrabers.framework.view.Views;
  */
 public class NoteRepeatCommand<S extends IControlSurface<C>, C extends Configuration> extends AbstractTriggerCommand<S, C>
 {
-    private final boolean isMode;
+    private enum EditMode
+    {
+        NONE,
+        MODE,
+        VIEW
+    }
+
+
+    private final EditMode editMode;
+
+
+    /**
+     * Constructor.
+     *
+     * @param model The model
+     * @param surface The surface
+     */
+    public NoteRepeatCommand (final IModel model, final S surface)
+    {
+        super (model, surface);
+
+        this.editMode = EditMode.NONE;
+    }
 
 
     /**
@@ -41,7 +63,7 @@ public class NoteRepeatCommand<S extends IControlSurface<C>, C extends Configura
     {
         super (model, surface);
 
-        this.isMode = isMode;
+        this.editMode = isMode ? EditMode.MODE : EditMode.VIEW;
     }
 
 
@@ -49,6 +71,13 @@ public class NoteRepeatCommand<S extends IControlSurface<C>, C extends Configura
     @Override
     public void execute (final ButtonEvent event, final int velocity)
     {
+        if (this.editMode == EditMode.NONE)
+        {
+            if (event == ButtonEvent.UP)
+                this.surface.getConfiguration ().toggleNoteRepeatActive ();
+            return;
+        }
+
         if (!this.handleEditModeActivation (event))
             this.surface.getConfiguration ().toggleNoteRepeatActive ();
     }
@@ -62,9 +91,10 @@ public class NoteRepeatCommand<S extends IControlSurface<C>, C extends Configura
      */
     protected boolean handleEditModeActivation (final ButtonEvent event)
     {
+        final boolean isMode = this.editMode == EditMode.MODE;
         if (event == ButtonEvent.LONG || event == ButtonEvent.DOWN && this.surface.isShiftPressed ())
         {
-            if (this.isMode)
+            if (isMode)
                 this.surface.getModeManager ().setTemporary (Modes.REPEAT_NOTE);
             else
                 this.surface.getViewManager ().setActive (Views.REPEAT_NOTE);
@@ -75,7 +105,7 @@ public class NoteRepeatCommand<S extends IControlSurface<C>, C extends Configura
         if (event != ButtonEvent.UP)
             return true;
 
-        if (this.isMode)
+        if (isMode)
         {
             final ModeManager modeManager = this.surface.getModeManager ();
             if (modeManager.isActive (Modes.REPEAT_NOTE))

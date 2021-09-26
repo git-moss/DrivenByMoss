@@ -11,7 +11,7 @@ import de.mossgrabers.framework.daw.IModel;
 import de.mossgrabers.framework.daw.data.ISend;
 import de.mossgrabers.framework.daw.data.ITrack;
 import de.mossgrabers.framework.daw.data.bank.ITrackBank;
-import de.mossgrabers.framework.mode.track.SendMode;
+import de.mossgrabers.framework.mode.track.TrackSendMode;
 import de.mossgrabers.framework.utils.StringUtils;
 
 import java.util.Arrays;
@@ -22,7 +22,7 @@ import java.util.Arrays;
  *
  * @author J&uuml;rgen Mo&szlig;graber
  */
-public class MaschineSendMode extends SendMode<MaschineControlSurface, MaschineConfiguration>
+public class MaschineSendMode extends TrackSendMode<MaschineControlSurface, MaschineConfiguration>
 {
     /**
      * Constructor.

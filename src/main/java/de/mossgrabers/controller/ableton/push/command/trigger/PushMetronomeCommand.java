@@ -22,7 +22,7 @@ import de.mossgrabers.framework.utils.ButtonEvent;
  */
 public class PushMetronomeCommand extends MetronomeCommand<PushControlSurface, PushConfiguration>
 {
-    private ModeManager modeManager;
+    private final ModeManager modeManager;
 
 
     /**

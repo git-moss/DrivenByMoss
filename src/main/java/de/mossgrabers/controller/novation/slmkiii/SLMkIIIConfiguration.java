@@ -60,6 +60,7 @@ public class SLMkIIIConfiguration extends AbstractConfiguration
         this.activateExcludeDeactivatedItemsSetting (globalSettings);
         this.activateBehaviourOnStopSetting (globalSettings);
         this.activateNewClipLengthSetting (globalSettings);
+        this.activateKnobSpeedSetting (globalSettings);
 
         final IEnumSetting enableFadersSetting = globalSettings.getEnumSetting ("Enable Faders", CATEGORY_WORKFLOW, ON_OFF_OPTIONS, ON_OFF_OPTIONS[1]);
         enableFadersSetting.addValueObserver (value -> {

@@ -27,6 +27,8 @@ public enum ButtonID
     FORWARD,
     /** Button loop toggle button. */
     LOOP,
+    /** Button playback follow toggle button. */
+    FOLLOW,
     /** Button to toggle the repeat button. */
     REPEAT,
     /** Button punch in button. */
@@ -39,9 +41,11 @@ public enum ButtonID
     NUDGE_PLUS,
     /** The button for Nudge negative. */
     NUDGE_MINUS,
-    /** The Tap Tempo button button. */
+    /** The Tap Tempo button. */
     TAP_TEMPO,
-    /** The Metronome button button. */
+    /** The Swing button. */
+    SWING,
+    /** The Metronome button. */
     METRONOME,
     /** Toggle scrubbing. */
     SCRUB,
@@ -56,21 +60,25 @@ public enum ButtonID
     FIXED_LENGTH,
     /** The duplicate button. */
     DUPLICATE,
-    /** The Delete button button. */
+    /** The Delete button. */
     DELETE,
-    /** The Double button button. */
+    /** The Double button. */
     DOUBLE,
-    /** The Quantize button button. */
+    /** The Quantize button. */
     QUANTIZE,
     /** The Audio conversion button. */
     CONVERT,
+    /** The Launch Quantization button. */
+    LAUNCH_QUANTIZATION,
 
-    /** The Undo button button. */
+    /** The Undo button. */
     UNDO,
     /** Button to redo a button. */
     REDO,
     /** The button to save the current project. */
     SAVE,
+    /** The button to show the open project dialog. */
+    LOAD,
 
     /** The button for cursor arrow down. */
     ARROW_DOWN,
@@ -85,21 +93,25 @@ public enum ButtonID
     /** The Page right button. */
     PAGE_RIGHT,
 
-    /** The Device button button. */
+    /** The Device button. */
     DEVICE,
-    /** The Track button button. */
+    /** The Track button. */
     TRACK,
     /** The master track button. */
     MASTERTRACK,
-    /** The Volume button button. */
+    /** The Volume button. */
     VOLUME,
-    /** The Pan and Send button button. */
+    /** The Pan and Send button. */
     PAN_SEND,
     /** The button for sends. */
     SENDS,
-    /** The Clip button button. */
+    /** The button for crossfade A. */
+    CROSSFADE_A,
+    /** The button for crossfade B. */
+    CROSSFADE_B,
+    /** The Clip button. */
     CLIP,
-    /** The Browse button button. */
+    /** The Browse button. */
     BROWSE,
     /** The button to toggle markers. */
     MARKER,
@@ -108,24 +120,24 @@ public enum ButtonID
     /** The zoom state button. */
     ZOOM,
 
-    /** The Shift button button. */
+    /** The Shift button. */
     SHIFT,
-    /** The Select button button. */
+    /** The Select button. */
     SELECT,
-    /** The Control button button. */
+    /** The Control button. */
     CONTROL,
-    /** The Alternate button button. */
+    /** The Alternate button. */
     ALT,
-    /** The Enter (confirm) button button. */
+    /** The Enter (confirm) button. */
     ENTER,
-    /** The Cancel button button. */
+    /** The Cancel button. */
     CANCEL,
 
     /** The edit Scales button. */
     SCALES,
     /** The accent button. */
     ACCENT,
-    /** The Layout button button. */
+    /** The Layout button. */
     LAYOUT,
 
     /** The button for User. */
@@ -141,6 +153,11 @@ public enum ButtonID
     SOLO,
     /** The button for arming record. */
     REC_ARM,
+
+    /** The button to copy something. */
+    COPY,
+    /** The button to paste something copied. */
+    PASTE,
 
     /** The add effect button. */
     ADD_EFFECT,
@@ -172,6 +189,8 @@ public enum ButtonID
     SCENE7,
     /** The button to execute scene 8. */
     SCENE8,
+    /** The button for inserting a scene. */
+    INSERT_SCENE,
 
     /** The button for octave down. */
     OCTAVE_DOWN,
@@ -211,6 +230,8 @@ public enum ButtonID
     AUTOMATION_EDITOR,
     /** The button to toggle the device. */
     TOGGLE_DEVICE,
+    /** The button to pin the device. */
+    PIN_DEVICE,
     /** Toggle the groove parameters. */
     GROOVE,
     /** The Flip channels button. */
@@ -337,6 +358,40 @@ public enum ButtonID
     ROW_SELECT_7,
     /** Button select row 8 button. */
     ROW_SELECT_8,
+
+    /** Button select track 1 button. */
+    TRACK_SELECT_1,
+    /** Button select track 2 button. */
+    TRACK_SELECT_2,
+    /** Button select track 3 button. */
+    TRACK_SELECT_3,
+    /** Button select track 4 button. */
+    TRACK_SELECT_4,
+    /** Button select track 5 button. */
+    TRACK_SELECT_5,
+    /** Button select track 6 button. */
+    TRACK_SELECT_6,
+    /** Button select track 7 button. */
+    TRACK_SELECT_7,
+    /** Button select track 8 button. */
+    TRACK_SELECT_8,
+
+    /** Button assign track 1 button. */
+    TRACK_ASSIGN_1,
+    /** Button assign track 2 button. */
+    TRACK_ASSIGN_2,
+    /** Button assign track 3 button. */
+    TRACK_ASSIGN_3,
+    /** Button assign track 4 button. */
+    TRACK_ASSIGN_4,
+    /** Button assign track 5 button. */
+    TRACK_ASSIGN_5,
+    /** Button assign track 6 button. */
+    TRACK_ASSIGN_6,
+    /** Button assign track 7 button. */
+    TRACK_ASSIGN_7,
+    /** Button assign track 8 button. */
+    TRACK_ASSIGN_8,
 
     /** The automation off button. */
     AUTOMATION_OFF,
@@ -629,7 +684,136 @@ public enum ButtonID
     /** Pad 87. */
     PAD87,
     /** Pad 88. */
-    PAD88;
+    PAD88,
+
+    /** More pads 1. */
+    MORE_PADS1,
+    /** More pads 2. */
+    MORE_PADS2,
+    /** More pads 3. */
+    MORE_PADS3,
+    /** More pads 4. */
+    MORE_PADS4,
+    /** More pads 5. */
+    MORE_PADS5,
+    /** More pads 6. */
+    MORE_PADS6,
+    /** More pads 7. */
+    MORE_PADS7,
+    /** More pads 8. */
+    MORE_PADS8,
+    /** More pads 9. */
+    MORE_PADS9,
+    /** More pads 10. */
+    MORE_PADS10,
+    /** More pads 11. */
+    MORE_PADS11,
+    /** More pads 12. */
+    MORE_PADS12,
+    /** More pads 13. */
+    MORE_PADS13,
+    /** More pads 14. */
+    MORE_PADS14,
+    /** More pads 15. */
+    MORE_PADS15,
+    /** More pads 16. */
+    MORE_PADS16,
+    /** More pads 17. */
+    MORE_PADS17,
+    /** More pads 18. */
+    MORE_PADS18,
+    /** More pads 19. */
+    MORE_PADS19,
+    /** More pads 20. */
+    MORE_PADS20,
+    /** More pads 21. */
+    MORE_PADS21,
+    /** More pads 22. */
+    MORE_PADS22,
+    /** More pads 23. */
+    MORE_PADS23,
+    /** More pads 24. */
+    MORE_PADS24,
+    /** More pads 25. */
+    MORE_PADS25,
+    /** More pads 26. */
+    MORE_PADS26,
+    /** More pads 27. */
+    MORE_PADS27,
+    /** More pads 28. */
+    MORE_PADS28,
+    /** More pads 29. */
+    MORE_PADS29,
+    /** More pads 30. */
+    MORE_PADS30,
+    /** More pads 31. */
+    MORE_PADS31,
+    /** More pads 32. */
+    MORE_PADS32,
+    /** More pads 33. */
+    MORE_PADS33,
+    /** More pads 34. */
+    MORE_PADS34,
+    /** More pads 35. */
+    MORE_PADS35,
+    /** More pads 36. */
+    MORE_PADS36,
+    /** More pads 37. */
+    MORE_PADS37,
+    /** More pads 38. */
+    MORE_PADS38,
+    /** More pads 39. */
+    MORE_PADS39,
+    /** More pads 40. */
+    MORE_PADS40,
+    /** More pads 41. */
+    MORE_PADS41,
+    /** More pads 42. */
+    MORE_PADS42,
+    /** More pads 43. */
+    MORE_PADS43,
+    /** More pads 44. */
+    MORE_PADS44,
+    /** More pads 45. */
+    MORE_PADS45,
+    /** More pads 46. */
+    MORE_PADS46,
+    /** More pads 47. */
+    MORE_PADS47,
+    /** More pads 48. */
+    MORE_PADS48,
+    /** More pads 49. */
+    MORE_PADS49,
+    /** More pads 50. */
+    MORE_PADS50,
+    /** More pads 51. */
+    MORE_PADS51,
+    /** More pads 52. */
+    MORE_PADS52,
+    /** More pads 53. */
+    MORE_PADS53,
+    /** More pads 54. */
+    MORE_PADS54,
+    /** More pads 55. */
+    MORE_PADS55,
+    /** More pads 56. */
+    MORE_PADS56,
+    /** More pads 57. */
+    MORE_PADS57,
+    /** More pads 58. */
+    MORE_PADS58,
+    /** More pads 59. */
+    MORE_PADS59,
+    /** More pads 60. */
+    MORE_PADS60,
+    /** More pads 61. */
+    MORE_PADS61,
+    /** More pads 62. */
+    MORE_PADS62,
+    /** More pads 63. */
+    MORE_PADS63,
+    /** More pads 64. */
+    MORE_PADS64;
 
 
     /**

@@ -12,6 +12,7 @@ import de.mossgrabers.framework.controller.valuechanger.IValueChanger;
 import de.mossgrabers.framework.daw.DAWColor;
 import de.mossgrabers.framework.daw.IApplication;
 import de.mossgrabers.framework.daw.IHost;
+import de.mossgrabers.framework.daw.data.IDeviceMetadata;
 import de.mossgrabers.framework.daw.data.ITrack;
 import de.mossgrabers.framework.daw.data.bank.ISlotBank;
 import de.mossgrabers.framework.daw.data.bank.ITrackBank;
@@ -22,6 +23,9 @@ import com.bitwig.extension.controller.api.ClipLauncherSlotBank;
 import com.bitwig.extension.controller.api.CursorTrack;
 import com.bitwig.extension.controller.api.Track;
 import com.bitwig.extension.controller.api.TrackBank;
+
+import java.util.Collections;
+import java.util.List;
 
 
 /**
@@ -65,7 +69,7 @@ public abstract class AbstractTrackBankImpl extends AbstractChannelBankImpl<Trac
         for (int i = 0; i < this.getPageSize (); i++)
             this.items.add (new TrackImpl (host, valueChanger, application, (CursorTrack) cursorTrack.getTrack (), rootGroup, trackBank.getItemAt (i), i, this.numSends, this.numScenes));
 
-        this.sceneBank = new SceneBankImpl (host, valueChanger, this.numScenes == 0 ? null : trackBank.sceneBank (), this.numScenes);
+        this.sceneBank = new SceneBankImpl (host, valueChanger, this.numScenes == 0 ? null : trackBank.sceneBank (), this.numScenes, cursorTrack);
 
         // Note: cursorIndex is defined for all banks but currently only works for track banks
         trackBank.cursorIndex ().addValueObserver (index -> {
@@ -161,14 +165,27 @@ public abstract class AbstractTrackBankImpl extends AbstractChannelBankImpl<Trac
     @Override
     public void addChannel (final ChannelType type, final String name)
     {
-        final DAWColor color = DAWColor.getNextColor ();
-        this.addChannel (type, name, color.getColor ());
+        this.addChannel (type, name, DAWColor.getNextColor ().getColor ());
     }
 
 
     /** {@inheritDoc} */
     @Override
     public void addChannel (final ChannelType type, final String name, final ColorEx color)
+    {
+        this.addChannel (type, name, color, Collections.emptyList ());
+    }
+
+
+    /** {@inheritDoc} */
+    @Override
+    public void addChannel (final ChannelType type, final String name, final List<IDeviceMetadata> devices)
+    {
+        this.addChannel (type, name, DAWColor.getNextColor ().getColor (), devices);
+    }
+
+
+    private void addChannel (final ChannelType type, final String name, final ColorEx color, final List<IDeviceMetadata> devices)
     {
         this.addTrack (type);
 
@@ -185,6 +202,9 @@ public abstract class AbstractTrackBankImpl extends AbstractChannelBankImpl<Trac
                 this.cursorTrack.setColor (color);
 
             this.bank.get ().scrollIntoView (this.cursorTrack.getPosition ());
+
+            for (final IDeviceMetadata device: devices)
+                this.cursorTrack.addDevice (device);
 
         }, 300);
     }

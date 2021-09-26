@@ -67,7 +67,7 @@ public interface IControllerSetup<S extends IControlSurface<C>, C extends Config
      *
      * @return The surfaces
      */
-    List<IControlSurface<?>> getSurfaces ();
+    List<S> getSurfaces ();
 
 
     /**

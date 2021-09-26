@@ -8,8 +8,10 @@ import de.mossgrabers.bitwig.framework.BitwigSetupFactory;
 import de.mossgrabers.bitwig.framework.configuration.SettingsUIImpl;
 import de.mossgrabers.bitwig.framework.daw.HostImpl;
 import de.mossgrabers.bitwig.framework.extension.AbstractControllerExtensionDefinition;
+import de.mossgrabers.controller.generic.GenericFlexiConfiguration;
 import de.mossgrabers.controller.generic.GenericFlexiControllerDefinition;
 import de.mossgrabers.controller.generic.GenericFlexiControllerSetup;
+import de.mossgrabers.controller.generic.controller.GenericFlexiControlSurface;
 import de.mossgrabers.framework.controller.IControllerSetup;
 
 import com.bitwig.extension.controller.api.ControllerHost;
@@ -20,7 +22,7 @@ import com.bitwig.extension.controller.api.ControllerHost;
  *
  * @author J&uuml;rgen Mo&szlig;graber
  */
-public class GenericFlexiControllerExtensionDefinition extends AbstractControllerExtensionDefinition
+public class GenericFlexiControllerExtensionDefinition extends AbstractControllerExtensionDefinition<GenericFlexiControlSurface, GenericFlexiConfiguration>
 {
     /**
      * Constructor.
@@ -33,7 +35,7 @@ public class GenericFlexiControllerExtensionDefinition extends AbstractControlle
 
     /** {@inheritDoc} */
     @Override
-    protected IControllerSetup<?, ?> getControllerSetup (final ControllerHost host)
+    protected IControllerSetup<GenericFlexiControlSurface, GenericFlexiConfiguration> getControllerSetup (final ControllerHost host)
     {
         return new GenericFlexiControllerSetup (new HostImpl (host), new BitwigSetupFactory (host), new SettingsUIImpl (host, host.getPreferences ()), new SettingsUIImpl (host, host.getDocumentState ()));
     }

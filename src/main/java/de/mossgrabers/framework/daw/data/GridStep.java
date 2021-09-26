@@ -4,9 +4,6 @@
 
 package de.mossgrabers.framework.daw.data;
 
-import de.mossgrabers.framework.daw.INoteClip;
-
-
 /**
  * The position of a step in a grid.
  *
@@ -14,57 +11,23 @@ import de.mossgrabers.framework.daw.INoteClip;
  */
 public class GridStep
 {
-    private INoteClip clip    = null;
-    private int       channel = 0;
-    private int       step    = 0;
-    private int       note    = 60;
+    private final int channel;
+    private final int step;
+    private final int note;
 
 
     /**
-     * Set the values.
+     * Constructor.
      *
-     * @param clip The clip to edit
      * @param channel The MIDI channel
      * @param step The step to edit
      * @param note The note to edit
      */
-    public void set (final INoteClip clip, final int channel, final int step, final int note)
+    public GridStep (final int channel, final int step, final int note)
     {
-        this.clip = clip;
         this.channel = channel;
         this.step = step;
         this.note = note;
-    }
-
-
-    /**
-     * Clears the clip. isSet will return false after calling this method.
-     */
-    public void reset ()
-    {
-        this.clip = null;
-    }
-
-
-    /**
-     * Returns true if the data is set (clip is not null)
-     *
-     * @return True if set.
-     */
-    public boolean isSet ()
-    {
-        return this.clip != null;
-    }
-
-
-    /**
-     * Get the clip which cootains the step position.
-     *
-     * @return The clip
-     */
-    public INoteClip getClip ()
-    {
-        return this.clip;
     }
 
 

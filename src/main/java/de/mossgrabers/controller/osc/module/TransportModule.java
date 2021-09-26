@@ -115,7 +115,7 @@ public class TransportModule extends AbstractModule
                 break;
 
             case "record":
-                this.transport.record ();
+                this.transport.startRecording ();
                 break;
 
             case "overdub":

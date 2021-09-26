@@ -17,7 +17,7 @@ import com.bitwig.extension.controller.api.Arranger;
  */
 public class ArrangerImpl implements IArranger
 {
-    private Arranger arranger;
+    private final Arranger arranger;
 
 
     /**

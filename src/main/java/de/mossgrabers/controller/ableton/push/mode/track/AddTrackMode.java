@@ -20,6 +20,8 @@ import de.mossgrabers.framework.featuregroup.AbstractFeatureGroup;
 import de.mossgrabers.framework.utils.ButtonEvent;
 import de.mossgrabers.framework.utils.StringUtils;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Optional;
 
 
@@ -52,40 +54,41 @@ public class AddTrackMode extends BaseMode<IItem>
         if (event != ButtonEvent.UP)
             return;
 
+        final PushConfiguration conf = this.surface.getConfiguration ();
+        final List<IDeviceMetadata> devices = new ArrayList<> ();
+        final ChannelType channelType;
+        String channelName = null;
+
         if (index < 4)
         {
-            String channelName = null;
-            final Optional<IDeviceMetadata> audioFavorite;
+            channelType = ChannelType.AUDIO;
             if (index > 0)
             {
-                final PushConfiguration conf = this.surface.getConfiguration ();
-                audioFavorite = conf.getAudioFavorite (index - 1);
+                final Optional<IDeviceMetadata> audioFavorite = conf.getAudioFavorite (index - 1);
                 if (audioFavorite.isPresent ())
-                    channelName = audioFavorite.get ().getName ();
+                {
+                    final IDeviceMetadata deviceMetadata = audioFavorite.get ();
+                    devices.add (deviceMetadata);
+                    channelName = deviceMetadata.getName ();
+                }
             }
-            else
-                audioFavorite = Optional.empty ();
-
-            this.model.getTrackBank ().addChannel (ChannelType.AUDIO, channelName);
-            if (audioFavorite.isPresent ())
-                this.surface.scheduleTask ( () -> this.model.getCursorTrack ().addDevice (audioFavorite.get ()), 300);
         }
         else
         {
-            this.model.getApplication ().addEffectTrack ();
-
+            channelType = ChannelType.EFFECT;
             if (index > 4)
             {
-                this.surface.scheduleTask ( () -> {
-
-                    final PushConfiguration conf = this.surface.getConfiguration ();
-                    final Optional<IDeviceMetadata> effectFavorite = conf.getEffectFavorite (index - 5);
-                    if (effectFavorite.isPresent ())
-                        this.model.getCursorTrack ().addDevice (effectFavorite.get ());
-
-                }, 300);
+                final Optional<IDeviceMetadata> effectFavorite = conf.getEffectFavorite (index - 5);
+                if (effectFavorite.isPresent ())
+                {
+                    final IDeviceMetadata deviceMetadata = effectFavorite.get ();
+                    devices.add (deviceMetadata);
+                    channelName = deviceMetadata.getName ();
+                }
             }
         }
+
+        this.model.getTrackBank ().addChannel (channelType, channelName, devices);
 
         this.surface.getModeManager ().restore ();
     }
@@ -99,23 +102,21 @@ public class AddTrackMode extends BaseMode<IItem>
             return;
 
         String channelName = null;
-        final Optional<IDeviceMetadata> instrumentFavorite;
+        final List<IDeviceMetadata> devices = new ArrayList<> ();
         if (index > 0)
         {
             final PushConfiguration conf = this.surface.getConfiguration ();
-            instrumentFavorite = conf.getInstrumentFavorite (index - 1);
+            final Optional<IDeviceMetadata> instrumentFavorite = conf.getInstrumentFavorite (index - 1);
             if (instrumentFavorite.isPresent ())
-                channelName = instrumentFavorite.get ().getName ();
+            {
+                final IDeviceMetadata deviceMetadata = instrumentFavorite.get ();
+                devices.add (deviceMetadata);
+                channelName = deviceMetadata.getName ();
+            }
         }
-        else
-            instrumentFavorite = Optional.empty ();
 
-        this.model.getTrackBank ().addChannel (ChannelType.INSTRUMENT, channelName);
-        if (instrumentFavorite.isPresent ())
-            this.surface.scheduleTask ( () -> this.model.getCursorTrack ().addDevice (instrumentFavorite.get ()), 300);
-
+        this.model.getTrackBank ().addChannel (ChannelType.INSTRUMENT, channelName, devices);
         this.surface.getModeManager ().restore ();
-
     }
 
 

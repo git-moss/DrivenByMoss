@@ -17,7 +17,7 @@ import de.mossgrabers.framework.utils.StringUtils;
  */
 public abstract class AbstractTextDisplay implements ITextDisplay
 {
-    /** Time to keep a notification displayed in ms. */
+    /** Time to keep a notification displayed in milliseconds. */
     public static final int  NOTIFICATION_TIME    = 1000;
 
     protected IHost          host;
@@ -71,7 +71,6 @@ public abstract class AbstractTextDisplay implements ITextDisplay
         this.notificationMessage = this.emptyLine;
 
         this.currentMessage = new String [this.noOfLines];
-
         this.message = new String [this.noOfLines];
         this.fullRows = new String [this.noOfLines];
         this.cells = new String [this.noOfLines * this.noOfCells];
@@ -258,17 +257,20 @@ public abstract class AbstractTextDisplay implements ITextDisplay
 
     protected void notifyOnDisplay (final String message)
     {
-        final String msg;
+        final StringBuilder msg = new StringBuilder ();
         if (this.centerNotification)
         {
             final int padLength = (this.noOfCharacters - message.length ()) / 2 + 1;
             final String padding = padLength > 0 ? this.emptyLine.substring (0, padLength) : "";
-            msg = padding + message + padding;
+            msg.append (padding).append (message).append (padding);
         }
         else
-            msg = message + this.emptyLine;
+            msg.append (message);
 
-        this.notificationMessage = msg.substring (0, Math.min (this.noOfCharacters, msg.length ()));
+        // Pad enough spaces at the to fill all lines...
+        for (int row = 0; row < this.noOfLines; row++)
+            msg.append (this.emptyLine);
+        this.notificationMessage = msg.toString ();
 
         synchronized (this.notificationLock)
         {
@@ -303,9 +305,12 @@ public abstract class AbstractTextDisplay implements ITextDisplay
         {
             if (this.isNotificationActive > 0)
             {
-                this.updateLine (0, this.notificationMessage);
-                for (int row = 1; row < this.noOfLines; row++)
-                    this.updateLine (row, this.emptyLine);
+                for (int row = 0; row < this.noOfLines; row++)
+                {
+                    final int pos = row * this.noOfCharacters;
+                    final int length = this.notificationMessage.length ();
+                    this.updateLine (row, StringUtils.pad (pos < length ? this.notificationMessage.substring (pos, Math.min (length, pos + this.noOfCharacters)) : "", this.noOfCharacters));
+                }
                 return;
             }
         }

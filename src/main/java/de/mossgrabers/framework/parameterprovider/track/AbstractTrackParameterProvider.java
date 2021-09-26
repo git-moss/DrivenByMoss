@@ -59,7 +59,8 @@ public abstract class AbstractTrackParameterProvider extends AbstractParameterPr
 
         // Monitor switching between the instrument/audio and effect track banks - must always be
         // active!
-        this.model.addTrackBankObserver (this);
+        if (this.model != null)
+            this.model.addTrackBankObserver (this);
     }
 
 

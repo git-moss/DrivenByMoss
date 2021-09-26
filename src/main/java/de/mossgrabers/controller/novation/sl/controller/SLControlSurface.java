@@ -117,7 +117,7 @@ public class SLControlSurface extends AbstractControlSurface<SLConfiguration>
     private static final String SYSEX_AUTOMAP_ON           = SYSEX_HEADER + "01 01 F7";
     private static final String SYSEX_AUTOMAP_OFF          = SYSEX_HEADER + "01 00 F7";
 
-    private boolean             isMkII;
+    private final boolean       isMkII;
     private boolean             isTransportActive;
     private int                 lastCC94Value;
     private boolean             isDAWConnected             = false;

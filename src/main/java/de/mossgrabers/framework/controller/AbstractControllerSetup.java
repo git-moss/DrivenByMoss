@@ -97,7 +97,7 @@ public abstract class AbstractControllerSetup<S extends IControlSurface<C>, C ex
 
     /** {@inheritDoc} */
     @Override
-    public List<IControlSurface<?>> getSurfaces ()
+    public List<S> getSurfaces ()
     {
         return new ArrayList<> (this.surfaces);
     }

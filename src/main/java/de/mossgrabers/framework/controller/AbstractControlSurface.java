@@ -55,45 +55,45 @@ import java.util.function.Supplier;
  */
 public abstract class AbstractControlSurface<C extends Configuration> implements IControlSurface<C>
 {
-    private static final String                     SHOULD_BE_HANDLED_IN_FRAMEWORK = " should be handled in framework...";
+    private static final String                           SHOULD_BE_HANDLED_IN_FRAMEWORK = " should be handled in framework...";
 
-    protected static final int                      BUTTON_STATE_INTERVAL          = 400;
-    protected static final int                      NUM_NOTES                      = 128;
-    protected static final int                      NUM_INFOS                      = 256;
+    protected static final int                            BUTTON_STATE_INTERVAL          = 500;
+    protected static final int                            NUM_NOTES                      = 128;
+    protected static final int                            NUM_INFOS                      = 256;
 
-    protected final IHost                           host;
-    protected final IHwSurfaceFactory               surfaceFactory;
-    protected final C                               configuration;
-    protected final ColorManager                    colorManager;
-    protected final IMidiOutput                     output;
-    protected final IMidiInput                      input;
+    protected final IHost                                 host;
+    protected final IHwSurfaceFactory                     surfaceFactory;
+    protected final C                                     configuration;
+    protected final ColorManager                          colorManager;
+    protected final IMidiOutput                           output;
+    protected final IMidiInput                            input;
 
-    protected final int                             surfaceID;
+    protected final int                                   surfaceID;
 
-    protected final ViewManager                     viewManager                    = new ViewManager ();
-    protected final ModeManager                     modeManager                    = new ModeManager ();
+    protected final ViewManager                           viewManager                    = new ViewManager ();
+    protected final ModeManager                           modeManager                    = new ModeManager ();
 
-    protected int                                   defaultMidiChannel             = 0;
+    protected int                                         defaultMidiChannel             = 0;
 
-    private Map<ContinuousID, IHwContinuousControl> continuous                     = new EnumMap<> (ContinuousID.class);
-    private Map<ButtonID, IHwButton>                buttons                        = new EnumMap<> (ButtonID.class);
-    private Map<OutputID, IHwLight>                 lights                         = new EnumMap<> (OutputID.class);
-    protected List<ITextDisplay>                    textDisplays                   = new ArrayList<> (1);
-    protected List<IGraphicDisplay>                 graphicsDisplays               = new ArrayList<> (1);
+    private final Map<ContinuousID, IHwContinuousControl> continuous                     = new EnumMap<> (ContinuousID.class);
+    private final Map<ButtonID, IHwButton>                buttons                        = new EnumMap<> (ButtonID.class);
+    private final Map<OutputID, IHwLight>                 lights                         = new EnumMap<> (OutputID.class);
+    protected List<ITextDisplay>                          textDisplays                   = new ArrayList<> (1);
+    protected List<IGraphicDisplay>                       graphicsDisplays               = new ArrayList<> (1);
 
-    protected final IPadGrid                        padGrid;
-    protected ILightGuide                           lightGuide;
+    protected final IPadGrid                              padGrid;
+    protected ILightGuide                                 lightGuide;
 
-    private int []                                  keyTranslationTable;
+    private int []                                        keyTranslationTable;
 
-    private final DummyDisplay                      dummyDisplay;
-    private IHwPianoKeyboard                        pianoKeyboard;
+    private final DummyDisplay                            dummyDisplay;
+    private IHwPianoKeyboard                              pianoKeyboard;
 
-    private final Object                            updateCounterLock              = new Object ();
-    private int                                     updateCounter                  = 0;
+    private final Object                                  updateCounterLock              = new Object ();
+    private int                                           updateCounter                  = 0;
 
-    private boolean                                 knobSensitivityIsSlow          = false;
-    private final List<ISensitivityCallback>        knobSensitivityObservers       = new ArrayList<> ();
+    private boolean                                       knobSensitivityIsSlow          = false;
+    private final List<ISensitivityCallback>              knobSensitivityObservers       = new ArrayList<> ();
 
 
     /**
@@ -105,8 +105,8 @@ public abstract class AbstractControlSurface<C extends Configuration> implements
      * @param output The MIDI output
      * @param input The MIDI input
      * @param padGrid The pads if any, may be null
-     * @param width The physical width of the controller device in mm
-     * @param height The physical height of the controller device in mm
+     * @param width The physical width of the controller device in millimeter
+     * @param height The physical height of the controller device in millimeter
      */
     protected AbstractControlSurface (final IHost host, final C configuration, final ColorManager colorManager, final IMidiOutput output, final IMidiInput input, final IPadGrid padGrid, final double width, final double height)
     {
@@ -462,8 +462,8 @@ public abstract class AbstractControlSurface<C extends Configuration> implements
         final List<IHwRelativeKnob> relativeKnobs = new ArrayList<> ();
 
         this.continuous.forEach ( (id, control) -> {
-            if (control instanceof IHwRelativeKnob)
-                relativeKnobs.add ((IHwRelativeKnob) control);
+            if (control instanceof final IHwRelativeKnob knob)
+                relativeKnobs.add (knob);
         });
 
         return relativeKnobs;

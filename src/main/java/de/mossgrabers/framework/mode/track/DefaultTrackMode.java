@@ -4,13 +4,16 @@
 
 package de.mossgrabers.framework.mode.track;
 
+import de.mossgrabers.framework.command.trigger.clip.TemporaryNewCommand;
 import de.mossgrabers.framework.configuration.Configuration;
+import de.mossgrabers.framework.controller.ButtonID;
 import de.mossgrabers.framework.controller.ContinuousID;
 import de.mossgrabers.framework.controller.IControlSurface;
 import de.mossgrabers.framework.daw.IModel;
 import de.mossgrabers.framework.daw.data.ITrack;
 import de.mossgrabers.framework.daw.data.bank.ITrackBank;
 import de.mossgrabers.framework.featuregroup.AbstractMode;
+import de.mossgrabers.framework.utils.ButtonEvent;
 
 import java.util.List;
 import java.util.Optional;
@@ -25,7 +28,7 @@ import java.util.function.BooleanSupplier;
  *
  * @author J&uuml;rgen Mo&szlig;graber
  */
-public class DefaultTrackMode<S extends IControlSurface<C>, C extends Configuration> extends AbstractMode<S, C, ITrack>
+public abstract class DefaultTrackMode<S extends IControlSurface<C>, C extends Configuration> extends AbstractMode<S, C, ITrack>
 {
     /**
      * Constructor.
@@ -36,7 +39,7 @@ public class DefaultTrackMode<S extends IControlSurface<C>, C extends Configurat
      * @param isAbsolute If true the value change is happening with a setter otherwise relative
      *            change method is used
      */
-    public DefaultTrackMode (final String name, final S surface, final IModel model, final boolean isAbsolute)
+    protected DefaultTrackMode (final String name, final S surface, final IModel model, final boolean isAbsolute)
     {
         this (name, surface, model, isAbsolute, null);
     }
@@ -52,7 +55,7 @@ public class DefaultTrackMode<S extends IControlSurface<C>, C extends Configurat
      *            change method is used
      * @param controls The IDs of the knobs or faders to control this mode
      */
-    public DefaultTrackMode (final String name, final S surface, final IModel model, final boolean isAbsolute, final List<ContinuousID> controls)
+    protected DefaultTrackMode (final String name, final S surface, final IModel model, final boolean isAbsolute, final List<ContinuousID> controls)
     {
         this (name, surface, model, isAbsolute, controls, surface::isShiftPressed);
     }
@@ -70,7 +73,7 @@ public class DefaultTrackMode<S extends IControlSurface<C>, C extends Configurat
      * @param isAlternativeFunction Callback function to execute the secondary function, e.g. a
      *            shift button
      */
-    public DefaultTrackMode (final String name, final S surface, final IModel model, final boolean isAbsolute, final List<ContinuousID> controls, final BooleanSupplier isAlternativeFunction)
+    protected DefaultTrackMode (final String name, final S surface, final IModel model, final boolean isAbsolute, final List<ContinuousID> controls, final BooleanSupplier isAlternativeFunction)
     {
         super (name, surface, model, isAbsolute, model.getCurrentTrackBank (), controls, isAlternativeFunction);
 
@@ -100,5 +103,62 @@ public class DefaultTrackMode<S extends IControlSurface<C>, C extends Configurat
     {
         final ITrackBank tb = this.model.getCurrentTrackBank ();
         return index < 0 ? tb.getSelectedItem () : Optional.of (tb.getItem (index));
+    }
+
+
+    /**
+     * Test for button combinations like Delete, Duplicate and New.
+     *
+     * @param track The track to apply the button combinations
+     * @return True if a button combination was detected and the applied method was executed
+     */
+    protected boolean isButtonCombination (final ITrack track)
+    {
+        if (this.isButtonCombination (ButtonID.DELETE))
+        {
+            track.remove ();
+            return true;
+        }
+
+        if (this.isButtonCombination (ButtonID.DUPLICATE))
+        {
+            track.duplicate ();
+            return true;
+        }
+
+        if (this.isButtonCombination (ButtonID.NEW))
+        {
+            new TemporaryNewCommand<> (track.getIndex (), this.model, this.surface).execute ();
+            return true;
+        }
+
+        return false;
+    }
+
+
+    /** {@inheritDoc} */
+    @Override
+    public void onButton (final int row, final int index, final ButtonEvent event)
+    {
+        if (event != ButtonEvent.DOWN || row != 0)
+            return;
+        final Optional<ITrack> trackOpt = this.getTrack (index);
+        if (trackOpt.isEmpty ())
+            return;
+
+        final ITrack track = trackOpt.get ();
+        if (!this.isButtonCombination (track))
+            this.executeMethod (track);
+    }
+
+
+    /**
+     * Execute the button row 1 method.
+     *
+     * @param track The track for which to execute the method
+     */
+    protected void executeMethod (final ITrack track)
+    {
+        track.select ();
     }
 }

@@ -41,7 +41,7 @@ import com.bitwig.extension.controller.api.RelativeHardwareValueMatcher;
  */
 public class MidiInputImpl implements IMidiInput
 {
-    private MidiIn        port;
+    private final MidiIn  port;
     private NoteInputImpl defaultNoteInput;
 
 
@@ -51,7 +51,7 @@ public class MidiInputImpl implements IMidiInput
      * @param portNumber The number of the MIDI input port
      * @param host The Bitwig host
      * @param name the name of the note input as it appears in the track input choosers in Bitwig
-     *            Studio
+     *            Studio, set to null to not create a note input
      * @param filters a filter string formatted as hexadecimal value with `?` as wildcard. For
      *            example `80????` would match note-off on channel 1 (0). When this parameter is
      *            {@null}, a standard filter will be used to forward note-related messages on
