@@ -90,6 +90,7 @@ import de.mossgrabers.controller.ableton.push.view.SequencerView;
 import de.mossgrabers.controller.ableton.push.view.SessionView;
 import de.mossgrabers.framework.command.aftertouch.AftertouchViewCommand;
 import de.mossgrabers.framework.command.continuous.KnobRowModeCommand;
+import de.mossgrabers.framework.command.core.PitchbendCommand;
 import de.mossgrabers.framework.command.trigger.BrowserCommand;
 import de.mossgrabers.framework.command.trigger.Direction;
 import de.mossgrabers.framework.command.trigger.FootswitchCommand;
@@ -185,9 +186,8 @@ public class PushControllerSetup extends AbstractControllerSetup<PushControlSurf
         super.flush ();
 
         final PushControlSurface surface = this.getSurface ();
-        surface.getDisplay ().cancelNotification ();
 
-        final de.mossgrabers.framework.command.core.PitchbendCommand pitchbendCommand = surface.getContinuous (ContinuousID.TOUCHSTRIP).getPitchbendCommand ();
+        final PitchbendCommand pitchbendCommand = surface.getContinuous (ContinuousID.TOUCHSTRIP).getPitchbendCommand ();
         if (pitchbendCommand != null)
             pitchbendCommand.updateValue ();
     }

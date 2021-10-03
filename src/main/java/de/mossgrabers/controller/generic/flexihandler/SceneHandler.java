@@ -54,6 +54,7 @@ public class SceneHandler extends AbstractHandler
             FlexiCommand.SCENE_8_LAUNCH_SCENE,
             FlexiCommand.SCENE_SELECT_PREVIOUS_BANK,
             FlexiCommand.SCENE_SELECT_NEXT_BANK,
+            FlexiCommand.SCENE_CREATE_SCENE,
             FlexiCommand.SCENE_CREATE_SCENE_FROM_PLAYING_CLIPS
         };
     }
@@ -102,6 +103,12 @@ public class SceneHandler extends AbstractHandler
             case SCENE_SELECT_NEXT_BANK:
                 if (isButtonPressed)
                     this.model.getSceneBank ().selectNextPage ();
+                break;
+
+            // Scene: Create Scene
+            case SCENE_CREATE_SCENE:
+                if (isButtonPressed)
+                    this.model.getProject ().createScene ();
                 break;
 
             // Scene: Create Scene from playing Clips

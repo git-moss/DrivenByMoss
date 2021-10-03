@@ -90,6 +90,11 @@ public class SceneModule extends AbstractModule
                     this.model.getProject ().createSceneFromPlayingLauncherClips ();
                 break;
 
+            case "add":
+                if (isTrigger (value))
+                    this.model.getProject ().createScene ();
+                break;
+
             default:
                 final int sceneIndex = Integer.parseInt (sceneCommand);
                 final IScene scene = sceneBank.getItem (sceneIndex - 1);

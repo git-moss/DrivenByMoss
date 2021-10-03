@@ -91,7 +91,7 @@ public abstract class AbstractItemImpl implements IItem
     @Override
     public boolean isSelected ()
     {
-        return this.selected;
+        return this.doesExist () && this.selected;
     }
 
 

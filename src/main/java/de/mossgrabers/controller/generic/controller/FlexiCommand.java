@@ -501,6 +501,7 @@ public enum FlexiCommand
     SCENE_8_LAUNCH_SCENE(CommandCategory.SCENE, "Scene 8: Launch Scene", true),
     SCENE_SELECT_PREVIOUS_BANK(CommandCategory.SCENE, "Scene: Select Previous Bank", true),
     SCENE_SELECT_NEXT_BANK(CommandCategory.SCENE, "Scene: Select Next Bank", true),
+    SCENE_CREATE_SCENE(CommandCategory.SCENE, "Scene: Create Scene", true),
     SCENE_CREATE_SCENE_FROM_PLAYING_CLIPS(CommandCategory.SCENE, "Scene: Create Scene from playing Clips", true),
 
     CLIP_TOGGLE_PIN(CommandCategory.CLIP, "Clip: Toggle Pin", true),

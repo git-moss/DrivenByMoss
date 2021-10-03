@@ -40,6 +40,21 @@ public class DuplicateCommand<S extends IControlSurface<C>, C extends Configurat
 
     /** {@inheritDoc} */
     @Override
+    public void execute (final ButtonEvent event, final int velocity)
+    {
+        if (this.surface.isSelectPressed ())
+        {
+            if (event == ButtonEvent.UP)
+                this.model.getProject ().createScene ();
+            return;
+        }
+
+        super.execute (event, velocity);
+    }
+
+
+    /** {@inheritDoc} */
+    @Override
     public void executeNormal (final ButtonEvent event)
     {
         if (event != ButtonEvent.UP)

@@ -71,7 +71,7 @@ public abstract class AbstractGraphicDisplay implements IGraphicDisplay
     public static final int                GRID_ELEMENT_LIST               = 8;
 
     /** Timeout for displaying the notification message. */
-    private static final int               TIMEOUT                         = 2;
+    private static final int               TIMEOUT                         = 1;
 
     private final AtomicInteger            counter                         = new AtomicInteger ();
     private final ScheduledExecutorService executor                        = Executors.newSingleThreadScheduledExecutor ();
