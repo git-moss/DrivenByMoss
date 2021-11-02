@@ -86,6 +86,41 @@ public class LaunchkeyMk3ControllerDefinition extends DefaultControllerDefinitio
                 break;
 
             case LINUX:
+                // Kernel 5.13+
+                midiDiscoveryPairs.add (this.addDeviceDiscoveryPair (new String []
+                {
+                    "Launchkey MK3 25 LKMK3 DAW Out",
+                    "Launchkey MK3 25 LKMK3 MIDI Out"
+                }, new String []
+                {
+                    "Launchkey MK3 25 LKMK3 DAW In"
+                }));
+                midiDiscoveryPairs.add (this.addDeviceDiscoveryPair (new String []
+                {
+                    "Launchkey MK3 37 LKMK3 DAW Out",
+                    "Launchkey MK3 37 LKMK3 MIDI Out"
+                }, new String []
+                {
+                    "Launchkey MK3 37 LKMK3 DAW In"
+                }));
+                midiDiscoveryPairs.add (this.addDeviceDiscoveryPair (new String []
+                {
+                    "Launchkey MK3 49 LKMK3 DAW Out",
+                    "Launchkey MK3 49 LKMK3 MIDI Out"
+                }, new String []
+                {
+                    "Launchkey MK3 49 LKMK3 DAW In"
+                }));
+                midiDiscoveryPairs.add (this.addDeviceDiscoveryPair (new String []
+                {
+                    "Launchkey MK3 61 LKMK3 DAW Out",
+                    "Launchkey MK3 61 LKMK3 MIDI Out"
+                }, new String []
+                {
+                    "Launchkey MK3 61 LKMK3 DAW In"
+                }));
+
+                // Kernel prior 5.13
                 midiDiscoveryPairs.add (this.addDeviceDiscoveryPair (new String []
                 {
                     "Launchkey MK3 25 MIDI 2",

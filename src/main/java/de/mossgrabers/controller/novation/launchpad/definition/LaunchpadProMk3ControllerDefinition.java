@@ -84,6 +84,7 @@ public class LaunchpadProMk3ControllerDefinition extends AbstractLaunchpadDefini
 
             case LINUX:
                 midiDiscoveryPairs.add (this.addDeviceDiscoveryPair ("Launchpad Pro MK3 MIDI 1", "Launchpad Pro MK3 MIDI 1"));
+                midiDiscoveryPairs.add (this.addDeviceDiscoveryPair ("Launchpad Pro MK3 LPProMK3 DAW", "Launchpad Pro MK3 LPProMK3 DAW"));
                 break;
 
             case MAC:
