@@ -250,7 +250,7 @@ public class GenericFlexiConfiguration extends AbstractConfiguration
     static final Integer                             SLOT_CHANGE                  = Integer.valueOf (1000);
 
     /** The number of command slots. */
-    public static final int                          NUM_SLOTS                    = 200;
+    public static final int                          NUM_SLOTS                    = 300;
 
     private IEnumSetting                             slotSelectionSetting;
     private IEnumSetting                             typeSetting;
