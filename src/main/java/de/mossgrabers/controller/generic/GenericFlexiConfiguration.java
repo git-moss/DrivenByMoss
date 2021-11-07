@@ -836,8 +836,13 @@ public class GenericFlexiConfiguration extends AbstractConfiguration
                 final String slotName = "SLOT" + i + "_";
                 final CommandSlot slot = this.commandSlots[i];
 
+                final String typeProperty = props.getProperty (slotName + TAG_TYPE);
+                if (typeProperty == null)
+                    continue;
+
+                int type = Integer.parseInt (typeProperty);
+
                 final FlexiCommand command = FlexiCommand.lookupByName (props.getProperty (slotName + TAG_COMMAND));
-                int type = Integer.parseInt (props.getProperty (slotName + TAG_TYPE));
 
                 // For backwards compatibility
                 if (command == FlexiCommand.OFF)

@@ -28,7 +28,7 @@ public class CommandSlot
     /** The MMC type. */
     public static final int TYPE_MMC              = 4;
 
-    private int             type                  = -1;
+    private int             type                  = TYPE_OFF;
     private int             number                = 0;
     private int             midiChannel           = 0;
     private boolean         isHighRes             = false;

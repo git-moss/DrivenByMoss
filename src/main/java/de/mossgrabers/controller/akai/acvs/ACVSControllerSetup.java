@@ -15,6 +15,7 @@ import de.mossgrabers.framework.command.core.NopCommand;
 import de.mossgrabers.framework.command.core.TriggerCommand;
 import de.mossgrabers.framework.command.trigger.Direction;
 import de.mossgrabers.framework.command.trigger.ShiftCommand;
+import de.mossgrabers.framework.command.trigger.application.DuplicateCommand;
 import de.mossgrabers.framework.command.trigger.application.LoadCommand;
 import de.mossgrabers.framework.command.trigger.application.OverdubCommand;
 import de.mossgrabers.framework.command.trigger.application.PanelLayoutCommand;
@@ -283,7 +284,10 @@ public class ACVSControllerSetup extends AbstractControllerSetup<ACVSControlSurf
         if (surface.isPressed (ButtonID.F2))
             slot.remove ();
         else if (surface.isPressed (ButtonID.DUPLICATE))
+        {
+            surface.setTriggerConsumed (ButtonID.DUPLICATE);
             slot.duplicate ();
+        }
         else
             slot.launch ();
     }
@@ -303,7 +307,10 @@ public class ACVSControllerSetup extends AbstractControllerSetup<ACVSControlSurf
         if (surface.isPressed (ButtonID.F2))
             scene.remove ();
         else if (surface.isPressed (ButtonID.DUPLICATE))
+        {
+            surface.setTriggerConsumed (ButtonID.DUPLICATE);
             scene.duplicate ();
+        }
         else
             scene.launch ();
     }
@@ -449,7 +456,7 @@ public class ACVSControllerSetup extends AbstractControllerSetup<ACVSControlSurf
         // NOTE_MPC_MAIN - blocked by hardware, not sent
 
         this.addButton (ButtonID.UNDO, "Undo", new UndoCommand<> (this.model, surface), 0x0C, ACVSControlSurface.NOTE_MPC_UNDO, () -> surface.isPressed (ButtonID.UNDO) ? 1 : 0, ACVSColorManager.BUTTON_UNDO_STATE_ON, ACVSColorManager.BUTTON_UNDO_STATE_HI);
-        this.addButton (ButtonID.DUPLICATE, "COPY", NopCommand.INSTANCE, 0x0C, ACVSControlSurface.NOTE_MPC_COPY);
+        this.addButton (ButtonID.DUPLICATE, "COPY", new DuplicateCommand<> (this.model, surface), 0x0C, ACVSControlSurface.NOTE_MPC_COPY);
         this.addButton (ButtonID.TAP_TEMPO, "Tap Tempo", new TapTempoCommand<> (this.model, surface), 0x0C, ACVSControlSurface.NOTE_MPC_TAP, () -> surface.isPressed (ButtonID.TAP_TEMPO) ? 1 : 0, ACVSColorManager.BUTTON_UNDO_STATE_ON, ACVSColorManager.BUTTON_UNDO_STATE_HI);
         this.addButton (ButtonID.RECORD, "REC", new RecordCommand<> (this.model, surface), 0x0C, ACVSControlSurface.NOTE_MPC_REC, transport::isRecording);
         this.addButton (ButtonID.OVERDUB, "OVERDUB", new OverdubCommand<> (this.model, surface), 0x0C, ACVSControlSurface.NOTE_MPC_OVERDUB, () -> surface.isShiftPressed () ? transport.isLauncherOverdub () : transport.isArrangerOverdub ());
@@ -525,7 +532,10 @@ public class ACVSControllerSetup extends AbstractControllerSetup<ACVSControlSurf
                 if (surface.isPressed (ButtonID.F2))
                     track.remove ();
                 else if (surface.isPressed (ButtonID.DUPLICATE))
+                {
+                    surface.setTriggerConsumed (ButtonID.DUPLICATE);
                     track.duplicate ();
+                }
                 else
                     track.select ();
 
@@ -624,7 +634,7 @@ public class ACVSControllerSetup extends AbstractControllerSetup<ACVSControlSurf
         // Does currently nothing but could be used...
         this.addButton (ButtonID.NOTE_EDITOR, "EDIT", NopCommand.INSTANCE, 0x0C, ACVSControlSurface.NOTE_FORCE_EDIT);
 
-        this.addButton (ButtonID.DUPLICATE, "COPY", NopCommand.INSTANCE, 0x0C, ACVSControlSurface.NOTE_FORCE_COPY);
+        this.addButton (ButtonID.DUPLICATE, "COPY", new DuplicateCommand<> (this.model, surface), 0x0C, ACVSControlSurface.NOTE_FORCE_COPY);
         this.addButton (ButtonID.F2, "ERASE", NopCommand.INSTANCE, 0x0C, ACVSControlSurface.NOTE_FORCE_DELETE);
 
         // Does currently nothing but could be used...
