@@ -399,7 +399,8 @@ public class TransportImpl implements ITransport
 
             case WRITE, TOUCH, LATCH, LATCH_PREVIEW:
                 this.transport.isArrangerAutomationWriteEnabled ().set (true);
-                this.transport.automationWriteMode ().set (mode.getIdentifier ());
+                final String identifier = mode == AutomationMode.LATCH_PREVIEW ? AutomationMode.LATCH.getIdentifier () : mode.getIdentifier ();
+                this.transport.automationWriteMode ().set (identifier);
                 break;
 
             default:
