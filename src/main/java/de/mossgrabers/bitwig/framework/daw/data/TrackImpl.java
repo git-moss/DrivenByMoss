@@ -85,6 +85,7 @@ public class TrackImpl extends ChannelImpl implements ITrack
         track.trackType ().markInterested ();
         track.position ().markInterested ();
         track.isGroup ().markInterested ();
+        track.isGroupExpanded ().markInterested ();
         track.arm ().markInterested ();
         track.isMonitoring ().markInterested ();
         track.monitorMode ().markInterested ();
@@ -119,6 +120,7 @@ public class TrackImpl extends ChannelImpl implements ITrack
         Util.setIsSubscribed (this.track.trackType (), enable);
         Util.setIsSubscribed (this.track.position (), enable);
         Util.setIsSubscribed (this.track.isGroup (), enable);
+        Util.setIsSubscribed (this.track.isGroupExpanded (), enable);
         Util.setIsSubscribed (this.track.arm (), enable);
         Util.setIsSubscribed (this.track.isMonitoring (), enable);
         Util.setIsSubscribed (this.track.monitorMode (), enable);
@@ -185,6 +187,22 @@ public class TrackImpl extends ChannelImpl implements ITrack
     public boolean isGroup ()
     {
         return this.track.isGroup ().get ();
+    }
+
+
+    /** {@inheritDoc} */
+    @Override
+    public boolean isGroupExpanded ()
+    {
+        return this.track.isGroupExpanded ().get ();
+    }
+
+
+    /** {@inheritDoc} */
+    @Override
+    public void toggleGroupExpanded ()
+    {
+        this.track.isGroupExpanded ().toggle ();
     }
 
 

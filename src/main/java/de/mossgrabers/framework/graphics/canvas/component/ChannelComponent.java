@@ -413,7 +413,7 @@ public class ChannelComponent extends ChannelSelectComponent
         }
         else if (!this.volumeText.equals (other.volumeText))
             return false;
-        if ((Double.doubleToLongBits (this.volumeValue) != Double.doubleToLongBits (other.volumeValue)) || (Double.doubleToLongBits (this.vuValueLeft) != Double.doubleToLongBits (other.vuValueLeft)))
+        if (Double.doubleToLongBits (this.volumeValue) != Double.doubleToLongBits (other.volumeValue) || Double.doubleToLongBits (this.vuValueLeft) != Double.doubleToLongBits (other.vuValueLeft))
             return false;
         return Double.doubleToLongBits (this.vuValueRight) == Double.doubleToLongBits (other.vuValueRight);
     }

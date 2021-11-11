@@ -344,7 +344,41 @@ public interface ITransport extends IObserverManagement
 
 
     /**
-     * Set punch-in dis/enabled in the transport.
+     * Get the loop start position formatted as measures and beats.
+     *
+     * @return The formatted text
+     */
+    String getLoopStartBeatText ();
+
+
+    /**
+     * Changes the loop start position.
+     *
+     * @param increase If true move to the right otherwise left
+     * @param slow Change slowly
+     */
+    void changeLoopStart (boolean increase, boolean slow);
+
+
+    /**
+     * Get the loop length formatted as measures and beats.
+     *
+     * @return The formatted text
+     */
+    String getLoopLengthBeatText ();
+
+
+    /**
+     * Changes the loop length position.
+     *
+     * @param increase If true move to the right otherwise left
+     * @param slow Change slowly
+     */
+    void changeLoopLength (boolean increase, boolean slow);
+
+
+    /**
+     * Set punch-in dis-/enabled in the transport.
      *
      * @param enable True to enable
      */

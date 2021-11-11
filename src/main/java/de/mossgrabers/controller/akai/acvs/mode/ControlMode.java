@@ -155,10 +155,8 @@ public class ControlMode extends AbstractMode<ACVSControlSurface, ACVSConfigurat
         final ITransport transport = this.model.getTransport ();
         d.setRow (ACVSDisplay.ITEM_ID_TEMPO, transport.getTempoParameter ().getDisplayedValue ());
         d.setRow (ACVSDisplay.ITEM_ID_ARRANGEMENT_POSITION, transport.getBeatText ().split (":")[0].replace ('.', ':'));
-
-        // Not available
-        d.setRow (ACVSDisplay.ITEM_ID_LOOP_START, "");
-        d.setRow (ACVSDisplay.ITEM_ID_LOOP_LENGTH, "");
+        d.setRow (ACVSDisplay.ITEM_ID_LOOP_START, transport.getLoopStartBeatText ().split (":")[0].replace ('.', ':'));
+        d.setRow (ACVSDisplay.ITEM_ID_LOOP_LENGTH, transport.getLoopLengthBeatText ().split (":")[0].replace ('.', ':'));
 
         this.sendAdditionalMPCParameters (d);
         if (!isMPC)

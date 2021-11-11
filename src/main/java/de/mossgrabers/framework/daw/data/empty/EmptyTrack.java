@@ -48,6 +48,22 @@ public class EmptyTrack extends EmptyChannel implements ITrack
 
     /** {@inheritDoc} */
     @Override
+    public boolean isGroupExpanded ()
+    {
+        return false;
+    }
+
+
+    /** {@inheritDoc} */
+    @Override
+    public void toggleGroupExpanded ()
+    {
+        // Intentionally empty
+    }
+
+
+    /** {@inheritDoc} */
+    @Override
     public boolean hasParent ()
     {
         return false;

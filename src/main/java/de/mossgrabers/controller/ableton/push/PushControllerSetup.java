@@ -473,7 +473,21 @@ public class PushControllerSetup extends AbstractControllerSetup<PushControlSurf
         this.addButton (ButtonID.QUANTIZE, "Quantize", new PushQuantizeCommand (this.model, surface), PushControlSurface.PUSH_BUTTON_QUANTIZE);
         this.addButton (ButtonID.DELETE, "Delete", new DeleteCommand<> (this.model, surface), PushControlSurface.PUSH_BUTTON_DELETE);
         this.addButton (ButtonID.DOUBLE, "Double Loop", new DoubleCommand<> (this.model, surface), PushControlSurface.PUSH_BUTTON_DOUBLE);
-        this.addButton (ButtonID.UNDO, "Undo", new UndoCommand<> (this.model, surface), PushControlSurface.PUSH_BUTTON_UNDO);
+        this.addButton (ButtonID.UNDO, "Undo", new UndoCommand<> (this.model, surface), PushControlSurface.PUSH_BUTTON_UNDO, () -> {
+
+            if (surface.isShiftPressed ())
+            {
+                if (!this.model.getApplication ().canRedo ())
+                    return 0;
+            }
+            else
+            {
+                if (!this.model.getApplication ().canUndo ())
+                    return 0;
+            }
+            return surface.getButton (ButtonID.UNDO).isPressed () ? 2 : 1;
+
+        }, ColorManager.BUTTON_STATE_OFF, ColorManager.BUTTON_STATE_ON, ColorManager.BUTTON_STATE_HI);
 
         this.addButton (ButtonID.AUTOMATION, "Automate", new PushAutomationCommand (this.model, surface), PushControlSurface.PUSH_BUTTON_AUTOMATION, () -> {
 

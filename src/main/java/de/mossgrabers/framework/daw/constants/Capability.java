@@ -11,9 +11,6 @@ package de.mossgrabers.framework.daw.constants;
  */
 public enum Capability
 {
-    /** The API provides support for adding and deleting markers. */
-    MARKERS,
-
     /** The API provides support for editing note repeat note lengths. */
     NOTE_REPEAT_LENGTH,
     /** The API provides support for editing note repeat swing factor. */

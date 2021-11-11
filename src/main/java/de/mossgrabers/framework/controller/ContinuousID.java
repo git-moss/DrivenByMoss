@@ -149,6 +149,8 @@ public enum ContinuousID
     MOVE_TRANSPORT,
     /** Move the loop. */
     MOVE_LOOP,
+    /** Change the loop length. */
+    LOOP_LENGTH,
     /** Move the track selection. */
     MOVE_TRACK,
     /** Move the track bank selection. */

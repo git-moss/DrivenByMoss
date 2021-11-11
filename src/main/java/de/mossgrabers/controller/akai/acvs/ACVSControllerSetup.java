@@ -10,6 +10,8 @@ import de.mossgrabers.controller.akai.acvs.controller.ACVSControlSurface;
 import de.mossgrabers.controller.akai.acvs.controller.ACVSDisplay;
 import de.mossgrabers.controller.akai.acvs.mode.ControlMode;
 import de.mossgrabers.controller.akai.acvs.view.ControlView;
+import de.mossgrabers.framework.command.continuous.LoopLengthCommand;
+import de.mossgrabers.framework.command.continuous.LoopPositionCommand;
 import de.mossgrabers.framework.command.continuous.PlayPositionCommand;
 import de.mossgrabers.framework.command.core.NopCommand;
 import de.mossgrabers.framework.command.core.TriggerCommand;
@@ -193,7 +195,7 @@ public class ACVSControllerSetup extends AbstractControllerSetup<ACVSControlSurf
             final ButtonID selectID = ButtonID.get (ButtonID.ROW_SELECT_1, i);
             String label = "Track Select " + (i + 1);
             final int index = i;
-            this.addReceiveButton (selectID, label, () -> tb.getItem (index).select (), 0, ACVSControlSurface.NOTE_TRACK1_SELECT + i);
+            this.addReceiveButton (selectID, label, () -> this.selectTrack (tb, index), 0, ACVSControlSurface.NOTE_TRACK1_SELECT + i);
 
             final ButtonID stopID = ButtonID.get (ButtonID.ROW1_1, i);
             label = "Track Stop " + (i + 1);
@@ -271,6 +273,22 @@ public class ACVSControllerSetup extends AbstractControllerSetup<ACVSControlSurf
 
 
     /**
+     * Select a track. If it is a group and already selected, toggle the expanded state.
+     *
+     * @param tb The track bank of the track
+     * @param index The index of the track
+     */
+    protected void selectTrack (final ITrackBank tb, final int index)
+    {
+        final ITrack item = tb.getItem (index);
+        if (item.isGroup () && item.isSelected ())
+            item.toggleGroupExpanded ();
+        else
+            item.select ();
+    }
+
+
+    /**
      * Select, start, delete or duplicate a clip.
      *
      * @param surface The surface
@@ -326,7 +344,7 @@ public class ACVSControllerSetup extends AbstractControllerSetup<ACVSControlSurf
     private void registerMPCTouchDisplayTriggerCommands (final ACVSControlSurface surface, final ICursorDevice cursorDevice, final ITrackBank tb)
     {
         final ITransport transport = this.model.getTransport ();
-        this.addReceiveButton (ButtonID.METRONOME, "Metronome", transport::toggleMetronome, 0x0A, ACVSControlSurface.NOTE_MPC_METRONOME, true);
+        this.addReceiveButton (ButtonID.METRONOME, "Metronome", transport::toggleMetronome, 0x0A, ACVSControlSurface.NOTE_METRONOME, true);
 
         // NOTE_MPC_CAPTURE_MIDI - not supported
         // NOTE_MPC_ABLETON_LINK - not supported
@@ -336,35 +354,35 @@ public class ACVSControllerSetup extends AbstractControllerSetup<ACVSControlSurf
                 transport.toggleLauncherOverdub ();
             else
                 transport.toggleOverdub ();
-        }, 0x0A, ACVSControlSurface.NOTE_MPC_ARRANGE_OVERDUB, true);
+        }, 0x0A, ACVSControlSurface.NOTE_ARRANGE_OVERDUB, true);
 
         this.addReceiveButton (ButtonID.AUTOMATION_WRITE, "Automation", () -> {
             if (surface.isShiftPressed ())
                 transport.toggleWriteClipLauncherAutomation ();
             else
                 transport.toggleWriteArrangerAutomation ();
-        }, 0x0A, ACVSControlSurface.NOTE_MPC_ARRANGER_AUTOMATION_ARM, true);
-        this.addReceiveButton (ButtonID.LOOP, "Loop", transport::toggleLoop, 0x0A, ACVSControlSurface.NOTE_MPC_LOOP_SWITCH, true);
+        }, 0x0A, ACVSControlSurface.NOTE_ARRANGER_AUTOMATION_ARM, true);
+        this.addReceiveButton (ButtonID.LOOP, "Loop", transport::toggleLoop, 0x0A, ACVSControlSurface.NOTE_LOOP_SWITCH, true);
 
         this.addReceiveButton (ButtonID.LAUNCH_QUANTIZATION, "Launch Quantize", (event, velocity) -> {
             if (event == ButtonEvent.DOWN || event == ButtonEvent.UP)
                 transport.setDefaultLaunchQuantization (convertLaunchQuantization (velocity));
-        }, 0x0A, ACVSControlSurface.NOTE_MPC_LAUNCH_QUANTIZE);
+        }, 0x0A, ACVSControlSurface.NOTE_LAUNCH_QUANTIZE);
 
         this.addReceiveButton (ButtonID.LAYOUT_ARRANGE, "Arrange / Session", (event, velocity) -> {
             if (event == ButtonEvent.DOWN)
                 this.model.getApplication ().setPanelLayout (velocity == 0 ? IApplication.PANEL_LAYOUT_ARRANGE : IApplication.PANEL_LAYOUT_MIX);
-        }, 0x0A, ACVSControlSurface.NOTE_MPC_TOGGLE_ARRANGE_SESSION);
-        this.addReceiveButton (ButtonID.FOLLOW, "Follow", this.model.getArranger ()::togglePlaybackFollow, 0x0A, ACVSControlSurface.NOTE_MPC_FOLLOW, true);
+        }, 0x0A, ACVSControlSurface.NOTE_TOGGLE_ARRANGE_SESSION);
+        this.addReceiveButton (ButtonID.FOLLOW, "Follow", this.model.getArranger ()::togglePlaybackFollow, 0x0A, ACVSControlSurface.NOTE_FOLLOW, true);
 
         // NOTE_MPC_CLIP_DEV_VIEW - from where is this triggered?
 
-        this.addReceiveButton (ButtonID.PIN_DEVICE, "Pin Device", cursorDevice::togglePinned, 0x0A, ACVSControlSurface.NOTE_MPC_DEVICE_LOCK, true);
+        this.addReceiveButton (ButtonID.PIN_DEVICE, "Pin Device", cursorDevice::togglePinned, 0x0A, ACVSControlSurface.NOTE_DEVICE_LOCK, true);
 
         // NOTE_MPC_DETAILED_VIEW - from where is this triggered?
 
-        this.addReceiveButton (ButtonID.NUDGE_MINUS, "Nudge Down", () -> transport.setTempo (transport.getTempo () - 1), 0x0A, ACVSControlSurface.NOTE_MPC_NUDGE_DOWN, false);
-        this.addReceiveButton (ButtonID.NUDGE_PLUS, "Nudge Up", () -> transport.setTempo (transport.getTempo () + 1), 0x0A, ACVSControlSurface.NOTE_MPC_NUDGE_UP, false);
+        this.addReceiveButton (ButtonID.NUDGE_MINUS, "Nudge Down", () -> transport.setTempo (transport.getTempo () - 1), 0x0A, ACVSControlSurface.NOTE_NUDGE_DOWN, false);
+        this.addReceiveButton (ButtonID.NUDGE_PLUS, "Nudge Up", () -> transport.setTempo (transport.getTempo () + 1), 0x0A, ACVSControlSurface.NOTE_NUDGE_UP, false);
 
         this.addReceiveButton (ButtonID.DELETE, "Delete", () -> {
             final Optional<ITrack> selectedTrack = tb.getSelectedItem ();
@@ -373,7 +391,7 @@ public class ACVSControllerSetup extends AbstractControllerSetup<ACVSControlSurf
             final Optional<ISlot> selectedSlot = selectedTrack.get ().getSlotBank ().getSelectedItem ();
             if (selectedSlot.isPresent ())
                 selectedSlot.get ().remove ();
-        }, 0x0A, ACVSControlSurface.NOTE_MPC_DELETE, true);
+        }, 0x0A, ACVSControlSurface.NOTE_DELETE, true);
 
         this.addButton (surface, ButtonID.F3, "QUANTIZE INTERVAL", (event, velocity) -> {
 
@@ -383,18 +401,18 @@ public class ACVSControllerSetup extends AbstractControllerSetup<ACVSControlSurf
                 this.configuration.setQuantizeAmount (quant);
             }
 
-        }, 0x0A, ACVSControlSurface.NOTE_MPC_QUANTIZE_INTERVAL, -1, false, null);
+        }, 0x0A, ACVSControlSurface.NOTE_QUANTIZE_INTERVAL, -1, false, null);
 
-        this.addReceiveButton (ButtonID.QUANTIZE, "Quantize", () -> this.model.getCursorClip ().quantize (this.configuration.getQuantizeAmount () / 100.0), 0x0A, ACVSControlSurface.NOTE_MPC_QUANTIZE, true);
+        this.addReceiveButton (ButtonID.QUANTIZE, "Quantize", () -> this.model.getCursorClip ().quantize (this.configuration.getQuantizeAmount () / 100.0), 0x0A, ACVSControlSurface.NOTE_QUANTIZE, true);
 
         // NOTE_MPC_DOUBLE - from where is this triggered?
         // NOTE_MPC_NEW - from where is this triggered?
         // NOTE_MPC_BACK_TO_ARRANGEMENT - from where is this triggered?
 
-        this.addReceiveButton (ButtonID.STOP_ALL_CLIPS, "Stop all clips", tb::stop, 0x0A, ACVSControlSurface.NOTE_MPC_STOP_ALL_CLIPS);
-        this.addReceiveButton (ButtonID.INSERT_SCENE, "Insert scene", this.model.getProject ()::createScene, 0x0A, ACVSControlSurface.NOTE_MPC_INSERT_SCENE);
+        this.addReceiveButton (ButtonID.STOP_ALL_CLIPS, "Stop all clips", tb::stop, 0x0A, ACVSControlSurface.NOTE_STOP_ALL_CLIPS);
+        this.addReceiveButton (ButtonID.INSERT_SCENE, "Insert scene", this.model.getProject ()::createScene, 0x0A, ACVSControlSurface.NOTE_INSERT_SCENE);
         final NewCommand<ACVSControlSurface, ACVSConfiguration> newCommand = new NewCommand<> (this.model, surface);
-        this.addReceiveButton (ButtonID.NEW, "REC (New)", newCommand::execute, 0x0A, ACVSControlSurface.NOTE_MPC_ARRANGE_RECORD, false);
+        this.addReceiveButton (ButtonID.NEW, "REC (New)", newCommand::execute, 0x0A, ACVSControlSurface.NOTE_ARRANGE_RECORD, false);
 
         // NOTE_MPC_TOGGLE_CLIP_SCENE_LAUNCH - from where is this triggered?
     }
@@ -455,7 +473,22 @@ public class ACVSControllerSetup extends AbstractControllerSetup<ACVSControlSurf
 
         // NOTE_MPC_MAIN - blocked by hardware, not sent
 
-        this.addButton (ButtonID.UNDO, "Undo", new UndoCommand<> (this.model, surface), 0x0C, ACVSControlSurface.NOTE_MPC_UNDO, () -> surface.isPressed (ButtonID.UNDO) ? 1 : 0, ACVSColorManager.BUTTON_UNDO_STATE_ON, ACVSColorManager.BUTTON_UNDO_STATE_HI);
+        this.addButton (ButtonID.UNDO, "Undo", new UndoCommand<> (this.model, surface), 0x0C, ACVSControlSurface.NOTE_MPC_UNDO, () -> {
+
+            if (surface.isShiftPressed ())
+            {
+                if (!this.model.getApplication ().canRedo ())
+                    return 0;
+            }
+            else
+            {
+                if (!this.model.getApplication ().canUndo ())
+                    return 0;
+            }
+            return surface.getButton (ButtonID.UNDO).isPressed () ? 2 : 1;
+
+        }, ColorManager.BUTTON_STATE_OFF, ACVSColorManager.BUTTON_UNDO_STATE_ON, ACVSColorManager.BUTTON_UNDO_STATE_HI);
+
         this.addButton (ButtonID.DUPLICATE, "COPY", new DuplicateCommand<> (this.model, surface), 0x0C, ACVSControlSurface.NOTE_MPC_COPY);
         this.addButton (ButtonID.TAP_TEMPO, "Tap Tempo", new TapTempoCommand<> (this.model, surface), 0x0C, ACVSControlSurface.NOTE_MPC_TAP, () -> surface.isPressed (ButtonID.TAP_TEMPO) ? 1 : 0, ACVSColorManager.BUTTON_UNDO_STATE_ON, ACVSColorManager.BUTTON_UNDO_STATE_HI);
         this.addButton (ButtonID.RECORD, "REC", new RecordCommand<> (this.model, surface), 0x0C, ACVSControlSurface.NOTE_MPC_REC, transport::isRecording);
@@ -650,7 +683,21 @@ public class ACVSControllerSetup extends AbstractControllerSetup<ACVSControlSurf
         this.addButton (ButtonID.PLAY, "PLAY", new PlayCommand<> (this.model, surface), 0x0C, ACVSControlSurface.NOTE_FORCE_PLAY, transport::isPlaying);
         this.addButton (ButtonID.STOP, "STOP", new StopCommand<> (this.model, surface), 0x0C, ACVSControlSurface.NOTE_FORCE_STOP, () -> !transport.isPlaying ());
         this.addButton (ButtonID.RECORD, "REC", new RecordCommand<> (this.model, surface), 0x0C, ACVSControlSurface.NOTE_FORCE_REC, transport::isRecording);
-        this.addButton (ButtonID.UNDO, "UNDO", new UndoCommand<> (this.model, surface), 0x0C, ACVSControlSurface.NOTE_FORCE_UNDO, () -> surface.isPressed (ButtonID.UNDO) ? 1 : 0, ACVSColorManager.BUTTON_UNDO_STATE_ON, ACVSColorManager.BUTTON_UNDO_STATE_HI);
+        this.addButton (ButtonID.UNDO, "UNDO", new UndoCommand<> (this.model, surface), 0x0C, ACVSControlSurface.NOTE_FORCE_UNDO, () -> {
+
+            if (surface.isShiftPressed ())
+            {
+                if (!this.model.getApplication ().canRedo ())
+                    return 0;
+            }
+            else
+            {
+                if (!this.model.getApplication ().canUndo ())
+                    return 0;
+            }
+            return surface.getButton (ButtonID.UNDO).isPressed () ? 2 : 1;
+
+        }, ColorManager.BUTTON_STATE_OFF, ACVSColorManager.BUTTON_UNDO_STATE_ON, ACVSColorManager.BUTTON_UNDO_STATE_HI);
         this.addButton (ButtonID.LOAD, "LOAD", new LoadCommand<> (this.model, surface), 0x0C, ACVSControlSurface.NOTE_FORCE_LOAD);
         this.addButton (ButtonID.SAVE, "SAVE", new SaveCommand<> (this.model, surface), 0x0C, ACVSControlSurface.NOTE_FORCE_SAVE);
 
@@ -746,7 +793,9 @@ public class ACVSControllerSetup extends AbstractControllerSetup<ACVSControlSurf
             knob.setIndexInGroup (i);
         }
 
-        this.addRelativeKnob (ContinuousID.PLAY_POSITION, "Position", new PlayPositionCommand<> (this.model, surface), BindType.CC, 0x0A, 0);
+        this.addRelativeKnob (ContinuousID.PLAY_POSITION, "Position", new PlayPositionCommand<> (this.model, surface), BindType.CC, 0x0A, ACVSControlSurface.CC_PLAY_POSITION);
+        this.addRelativeKnob (ContinuousID.MOVE_LOOP, "Loop Start", new LoopPositionCommand<> (this.model, surface), BindType.CC, 0x0A, ACVSControlSurface.CC_MOVE_LOOP);
+        this.addRelativeKnob (ContinuousID.LOOP_LENGTH, "Loop Length", new LoopLengthCommand<> (this.model, surface), BindType.CC, 0x0A, ACVSControlSurface.CC_LOOP_LENGTH);
 
         if (this.configuration.isActiveACVSDevice (ACVSDevice.FORCE) || this.configuration.isActiveACVSDevice (ACVSDevice.MPC_X))
         {

@@ -103,9 +103,11 @@ public interface IApplication extends IObserverManagement
 
 
     /**
-     * Sends a redo command to the DAW.
+     * Check if there is an action to undo.
+     *
+     * @return True if there is an action to undo
      */
-    void redo ();
+    boolean canUndo ();
 
 
     /**
@@ -115,15 +117,29 @@ public interface IApplication extends IObserverManagement
 
 
     /**
+     * Check if there is an action to redo.
+     *
+     * @return True if there is an action to redo
+     */
+    boolean canRedo ();
+
+
+    /**
+     * Sends a redo command to the DAW.
+     */
+    void redo ();
+
+
+    /**
      * Duplicates the active selection in the DAW if applicable.
      */
-    public void duplicate ();
+    void duplicate ();
 
 
     /**
      * Deletes the selected items in the DAW if applicable.
      */
-    public void deleteSelection ();
+    void deleteSelection ();
 
 
     /**

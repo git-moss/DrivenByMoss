@@ -86,9 +86,6 @@ public class HostImpl implements IHost
     {
         switch (capability)
         {
-            case MARKERS:
-                return false;
-
             case NOTE_REPEAT_LENGTH:
             case NOTE_REPEAT_SWING:
             case NOTE_REPEAT_MODE:

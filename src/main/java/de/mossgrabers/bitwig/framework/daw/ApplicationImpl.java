@@ -36,6 +36,8 @@ public class ApplicationImpl implements IApplication
         this.application = application;
         this.arranger = arranger;
 
+        this.application.canUndo ().markInterested ();
+        this.application.canRedo ().markInterested ();
         this.application.hasActiveEngine ().markInterested ();
         this.application.panelLayout ().markInterested ();
         this.application.recordQuantizationGrid ().markInterested ();
@@ -47,6 +49,8 @@ public class ApplicationImpl implements IApplication
     @Override
     public void enableObservers (final boolean enable)
     {
+        Util.setIsSubscribed (this.application.canUndo (), enable);
+        Util.setIsSubscribed (this.application.canRedo (), enable);
         Util.setIsSubscribed (this.application.hasActiveEngine (), enable);
         Util.setIsSubscribed (this.application.panelLayout (), enable);
         Util.setIsSubscribed (this.application.recordQuantizationGrid (), enable);
@@ -222,9 +226,9 @@ public class ApplicationImpl implements IApplication
 
     /** {@inheritDoc} */
     @Override
-    public void redo ()
+    public boolean canUndo ()
     {
-        this.application.redo ();
+        return this.application.canUndo ().get ();
     }
 
 
@@ -233,6 +237,22 @@ public class ApplicationImpl implements IApplication
     public void undo ()
     {
         this.application.undo ();
+    }
+
+
+    /** {@inheritDoc} */
+    @Override
+    public boolean canRedo ()
+    {
+        return this.application.canRedo ().get ();
+    }
+
+
+    /** {@inheritDoc} */
+    @Override
+    public void redo ()
+    {
+        this.application.redo ();
     }
 
 

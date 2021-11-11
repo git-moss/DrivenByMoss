@@ -26,159 +26,163 @@ import java.util.Optional;
 public class ACVSControlSurface extends AbstractControlSurface<ACVSConfiguration>
 {
     /** Expect a pong every 5 seconds. */
-    private static final int    HEARTBEAT_TIMEOUT                 = 5000;
+    private static final int    HEARTBEAT_TIMEOUT                = 5000;
 
     /** Send a ping every 3 seconds. */
-    private static final int    PING_INTERVAL                     = 3000;
+    private static final int    PING_INTERVAL                    = 3000;
 
     ///////////////////////////////////////////////////////////////////
     // Commands sent from the MPC/Force Touch display on channel 0x00
     ///////////////////////////////////////////////////////////////////
 
     // 0-7
-    public static final int     NOTE_TRACK1_SELECT                = 0;
+    public static final int     NOTE_TRACK1_SELECT               = 0;
 
     // 16-23
-    public static final int     NOTE_TRACK1_STOP                  = 16;
+    public static final int     NOTE_TRACK1_STOP                 = 16;
 
     // 24-87
-    public static final int     NOTE_CLIP1_LAUNCH                 = 24;
+    public static final int     NOTE_CLIP1_LAUNCH                = 24;
 
     // 88-95
-    public static final int     NOTE_SCENE1                       = 88;
+    public static final int     NOTE_SCENE1                      = 88;
 
-    public static final int     NOTE_SOLO                         = 0;
-    public static final int     NOTE_MUTE                         = 1;
-    public static final int     NOTE_CUE                          = 2;
-    public static final int     NOTE_CROSSFADER                   = 4;
-    public static final int     NOTE_REC_ARM                      = 5;
+    public static final int     NOTE_SOLO                        = 0;
+    public static final int     NOTE_MUTE                        = 1;
+    public static final int     NOTE_CUE                         = 2;
+    public static final int     NOTE_CROSSFADER                  = 4;
+    public static final int     NOTE_REC_ARM                     = 5;
 
-    public static final int     NOTE_TOGGLE_DEVICE                = 0;
-    public static final int     NOTE_PREV_DEVICE                  = 1;
-    public static final int     NOTE_NEXT_DEVICE                  = 2;
-    public static final int     NOTE_PREV_BANK                    = 3;
-    public static final int     NOTE_NEXT_BANK                    = 4;
+    public static final int     NOTE_TOGGLE_DEVICE               = 0;
+    public static final int     NOTE_PREV_DEVICE                 = 1;
+    public static final int     NOTE_NEXT_DEVICE                 = 2;
+    public static final int     NOTE_PREV_BANK                   = 3;
+    public static final int     NOTE_NEXT_BANK                   = 4;
 
     ///////////////////////////////////////////////////////////////////
-    // Additional commands sent from MPC Touch display on channel 0x0A
+    // Additional commands sent from Touch display on channel 0x0A
     ///////////////////////////////////////////////////////////////////
 
-    public static final int     NOTE_MPC_METRONOME                = 0;
-    public static final int     NOTE_MPC_CAPTURE_MIDI             = 1;
-    public static final int     NOTE_MPC_ABLETON_LINK             = 2;
-    public static final int     NOTE_MPC_ARRANGE_OVERDUB          = 3;
-    public static final int     NOTE_MPC_ARRANGER_AUTOMATION_ARM  = 4;
-    public static final int     NOTE_MPC_LOOP_SWITCH              = 5;
-    public static final int     NOTE_MPC_LAUNCH_QUANTIZE          = 6;
-    public static final int     NOTE_MPC_TOGGLE_ARRANGE_SESSION   = 7;
-    public static final int     NOTE_MPC_FOLLOW                   = 8;
-    public static final int     NOTE_MPC_CLIP_DEV_VIEW            = 9;
-    public static final int     NOTE_MPC_DEVICE_LOCK              = 10;
-    public static final int     NOTE_MPC_DETAILED_VIEW            = 11;
-    public static final int     NOTE_MPC_NUDGE_DOWN               = 12;
-    public static final int     NOTE_MPC_NUDGE_UP                 = 13;
-    public static final int     NOTE_MPC_DELETE                   = 14;
-    public static final int     NOTE_MPC_QUANTIZE_INTERVAL        = 15;
-    public static final int     NOTE_MPC_QUANTIZE                 = 16;
-    public static final int     NOTE_MPC_DOUBLE                   = 17;
-    public static final int     NOTE_MPC_NEW                      = 18;
-    public static final int     NOTE_MPC_BACK_TO_ARRANGEMENT      = 19;
-    public static final int     NOTE_MPC_STOP_ALL_CLIPS           = 20;
-    public static final int     NOTE_MPC_INSERT_SCENE             = 21;
-    public static final int     NOTE_MPC_ARRANGE_RECORD           = 22;
-    public static final int     NOTE_MPC_TOGGLE_CLIP_SCENE_LAUNCH = 23;
+    public static final int     NOTE_METRONOME                   = 0;
+    public static final int     NOTE_CAPTURE_MIDI                = 1;
+    public static final int     NOTE_ABLETON_LINK                = 2;
+    public static final int     NOTE_ARRANGE_OVERDUB             = 3;
+    public static final int     NOTE_ARRANGER_AUTOMATION_ARM     = 4;
+    public static final int     NOTE_LOOP_SWITCH                 = 5;
+    public static final int     NOTE_LAUNCH_QUANTIZE             = 6;
+    public static final int     NOTE_TOGGLE_ARRANGE_SESSION      = 7;
+    public static final int     NOTE_FOLLOW                      = 8;
+    public static final int     NOTE_CLIP_DEV_VIEW               = 9;
+    public static final int     NOTE_DEVICE_LOCK                 = 10;
+    public static final int     NOTE_DETAILED_VIEW               = 11;
+    public static final int     NOTE_NUDGE_DOWN                  = 12;
+    public static final int     NOTE_NUDGE_UP                    = 13;
+    public static final int     NOTE_DELETE                      = 14;
+    public static final int     NOTE_QUANTIZE_INTERVAL           = 15;
+    public static final int     NOTE_QUANTIZE                    = 16;
+    public static final int     NOTE_DOUBLE                      = 17;
+    public static final int     NOTE_NEW                         = 18;
+    public static final int     NOTE_BACK_TO_ARRANGEMENT         = 19;
+    public static final int     NOTE_STOP_ALL_CLIPS              = 20;
+    public static final int     NOTE_INSERT_SCENE                = 21;
+    public static final int     NOTE_ARRANGE_RECORD              = 22;
+    public static final int     NOTE_TOGGLE_CLIP_SCENE_LAUNCH    = 23;
+
+    public static final int     CC_PLAY_POSITION                 = 0;
+    public static final int     CC_MOVE_LOOP                     = 1;
+    public static final int     CC_LOOP_LENGTH                   = 2;
 
     ///////////////////////////////////////////////////////////////////
     // Commands sent from MPC buttons on channel 0x0C
     ///////////////////////////////////////////////////////////////////
 
-    public static final int     NOTE_MPC_LAUNCH_CLIP_OR_SCENE1    = 0;
+    public static final int     NOTE_MPC_LAUNCH_CLIP_OR_SCENE1   = 0;
 
-    public static final int     NOTE_MPC_BANK_A                   = 64;
-    public static final int     NOTE_MPC_BANK_B                   = 65;
-    public static final int     NOTE_MPC_BANK_C                   = 66;
-    public static final int     NOTE_MPC_BANK_D                   = 67;
-    public static final int     NOTE_MPC_NOTE_REPEAT              = 68;
-    public static final int     NOTE_MPC_FULL_LEVEL               = 69;
-    public static final int     NOTE_MPC_16_LEVEL                 = 70;
-    public static final int     NOTE_MPC_ERASE                    = 71;
-    public static final int     NOTE_MPC_SHIFT                    = 72;
-    public static final int     NOTE_MPC_MAIN                     = 73;
-    public static final int     NOTE_MPC_UNDO                     = 74;
-    public static final int     NOTE_MPC_COPY                     = 75;
-    public static final int     NOTE_MPC_TAP                      = 76;
-    public static final int     NOTE_MPC_REC                      = 77;
-    public static final int     NOTE_MPC_OVERDUB                  = 78;
-    public static final int     NOTE_MPC_STOP                     = 79;
-    public static final int     NOTE_MPC_PLAY                     = 80;
-    public static final int     NOTE_MPC_PLAY_START               = 81;
+    public static final int     NOTE_MPC_BANK_A                  = 64;
+    public static final int     NOTE_MPC_BANK_B                  = 65;
+    public static final int     NOTE_MPC_BANK_C                  = 66;
+    public static final int     NOTE_MPC_BANK_D                  = 67;
+    public static final int     NOTE_MPC_NOTE_REPEAT             = 68;
+    public static final int     NOTE_MPC_FULL_LEVEL              = 69;
+    public static final int     NOTE_MPC_16_LEVEL                = 70;
+    public static final int     NOTE_MPC_ERASE                   = 71;
+    public static final int     NOTE_MPC_SHIFT                   = 72;
+    public static final int     NOTE_MPC_MAIN                    = 73;
+    public static final int     NOTE_MPC_UNDO                    = 74;
+    public static final int     NOTE_MPC_COPY                    = 75;
+    public static final int     NOTE_MPC_TAP                     = 76;
+    public static final int     NOTE_MPC_REC                     = 77;
+    public static final int     NOTE_MPC_OVERDUB                 = 78;
+    public static final int     NOTE_MPC_STOP                    = 79;
+    public static final int     NOTE_MPC_PLAY                    = 80;
+    public static final int     NOTE_MPC_PLAY_START              = 81;
 
-    public static final int     NOTE_MPC_CURSOR_UP                = 106;
-    public static final int     NOTE_MPC_CURSOR_DOWN              = 107;
-    public static final int     NOTE_MPC_CURSOR_LEFT              = 108;
-    public static final int     NOTE_MPC_CURSOR_RIGHT             = 109;
+    public static final int     NOTE_MPC_CURSOR_UP               = 106;
+    public static final int     NOTE_MPC_CURSOR_DOWN             = 107;
+    public static final int     NOTE_MPC_CURSOR_LEFT             = 108;
+    public static final int     NOTE_MPC_CURSOR_RIGHT            = 109;
 
     // Only MPC-X
-    public static final int     NOTE_MPC_LEFT                     = 82;
-    public static final int     NOTE_MPC_RIGHT                    = 83;
+    public static final int     NOTE_MPC_LEFT                    = 82;
+    public static final int     NOTE_MPC_RIGHT                   = 83;
 
     ///////////////////////////////////////////////////////////////////
     // Commands sent from Force buttons on channel 0x0C
     ///////////////////////////////////////////////////////////////////
 
     // 0-7
-    public static final int     NOTE_FORCE_TRACK_SELECT1          = 0;
+    public static final int     NOTE_FORCE_TRACK_SELECT1         = 0;
     // 8-15
-    public static final int     NOTE_FORCE_TRACK_ASSIGN1          = 8;
+    public static final int     NOTE_FORCE_TRACK_ASSIGN1         = 8;
     // 16-79
-    public static final int     NOTE_FORCE_LAUNCH_CLIP_OR_SCENE1  = 16;
+    public static final int     NOTE_FORCE_LAUNCH_CLIP_OR_SCENE1 = 16;
     // 80-87
-    public static final int     NOTE_FORCE_LAUNCH_SCENE1          = 80;
-    public static final int     NOTE_FORCE_MASTER                 = 88;
-    public static final int     NOTE_FORCE_STOP_ALL_CLIPS         = 89;
-    public static final int     NOTE_FORCE_LAUNCH                 = 91;
-    public static final int     NOTE_FORCE_NOTE                   = 92;
-    public static final int     NOTE_FORCE_STEP_SEQ               = 93;
-    public static final int     NOTE_FORCE_CLIP_SELECT            = 94;
-    public static final int     NOTE_FORCE_EDIT                   = 95;
-    public static final int     NOTE_FORCE_COPY                   = 96;
-    public static final int     NOTE_FORCE_DELETE                 = 97;
-    public static final int     NOTE_FORCE_ARP                    = 98;
-    public static final int     NOTE_FORCE_TAP_TEMPO              = 99;
-    public static final int     NOTE_FORCE_MUTE                   = 100;
-    public static final int     NOTE_FORCE_SOLO                   = 101;
-    public static final int     NOTE_FORCE_REC_ARM                = 102;
-    public static final int     NOTE_FORCE_CLIP_STOP              = 103;
-    public static final int     NOTE_FORCE_PLAY                   = 104;
-    public static final int     NOTE_FORCE_STOP                   = 105;
-    public static final int     NOTE_FORCE_REC                    = 106;
-    public static final int     NOTE_FORCE_UNDO                   = 107;
-    public static final int     NOTE_FORCE_LOAD                   = 108;
-    public static final int     NOTE_FORCE_SAVE                   = 109;
-    public static final int     NOTE_FORCE_MATRIX                 = 110;
-    public static final int     NOTE_FORCE_CLIP                   = 111;
-    public static final int     NOTE_FORCE_MIXER                  = 112;
-    public static final int     NOTE_FORCE_NAVIGATE               = 113;
-    public static final int     NOTE_FORCE_SHIFT                  = 114;
-    public static final int     NOTE_FORCE_CURSOR_UP              = 115;
-    public static final int     NOTE_FORCE_CURSOR_DOWN            = 116;
-    public static final int     NOTE_FORCE_CURSOR_LEFT            = 117;
-    public static final int     NOTE_FORCE_CURSOR_RIGHT           = 118;
-    public static final int     NOTE_FORCE_ASSIGN_A               = 119;
-    public static final int     NOTE_FORCE_ASSIGN_B               = 120;
+    public static final int     NOTE_FORCE_LAUNCH_SCENE1         = 80;
+    public static final int     NOTE_FORCE_MASTER                = 88;
+    public static final int     NOTE_FORCE_STOP_ALL_CLIPS        = 89;
+    public static final int     NOTE_FORCE_LAUNCH                = 91;
+    public static final int     NOTE_FORCE_NOTE                  = 92;
+    public static final int     NOTE_FORCE_STEP_SEQ              = 93;
+    public static final int     NOTE_FORCE_CLIP_SELECT           = 94;
+    public static final int     NOTE_FORCE_EDIT                  = 95;
+    public static final int     NOTE_FORCE_COPY                  = 96;
+    public static final int     NOTE_FORCE_DELETE                = 97;
+    public static final int     NOTE_FORCE_ARP                   = 98;
+    public static final int     NOTE_FORCE_TAP_TEMPO             = 99;
+    public static final int     NOTE_FORCE_MUTE                  = 100;
+    public static final int     NOTE_FORCE_SOLO                  = 101;
+    public static final int     NOTE_FORCE_REC_ARM               = 102;
+    public static final int     NOTE_FORCE_CLIP_STOP             = 103;
+    public static final int     NOTE_FORCE_PLAY                  = 104;
+    public static final int     NOTE_FORCE_STOP                  = 105;
+    public static final int     NOTE_FORCE_REC                   = 106;
+    public static final int     NOTE_FORCE_UNDO                  = 107;
+    public static final int     NOTE_FORCE_LOAD                  = 108;
+    public static final int     NOTE_FORCE_SAVE                  = 109;
+    public static final int     NOTE_FORCE_MATRIX                = 110;
+    public static final int     NOTE_FORCE_CLIP                  = 111;
+    public static final int     NOTE_FORCE_MIXER                 = 112;
+    public static final int     NOTE_FORCE_NAVIGATE              = 113;
+    public static final int     NOTE_FORCE_SHIFT                 = 114;
+    public static final int     NOTE_FORCE_CURSOR_UP             = 115;
+    public static final int     NOTE_FORCE_CURSOR_DOWN           = 116;
+    public static final int     NOTE_FORCE_CURSOR_LEFT           = 117;
+    public static final int     NOTE_FORCE_CURSOR_RIGHT          = 118;
+    public static final int     NOTE_FORCE_ASSIGN_A              = 119;
+    public static final int     NOTE_FORCE_ASSIGN_B              = 120;
 
-    public static final int     CC_VOLUME                         = 0;
-    public static final int     CC_PAN                            = 1;
-    public static final int     CC_SEND1_LEVEL                    = 3;
-    public static final int     CC_SEND2_LEVEL                    = 4;
-    public static final int     CC_SEND3_LEVEL                    = 5;
-    public static final int     CC_SEND4_LEVEL                    = 6;
+    public static final int     CC_VOLUME                        = 0;
+    public static final int     CC_PAN                           = 1;
+    public static final int     CC_SEND1_LEVEL                   = 3;
+    public static final int     CC_SEND2_LEVEL                   = 4;
+    public static final int     CC_SEND3_LEVEL                   = 5;
+    public static final int     CC_SEND4_LEVEL                   = 6;
 
-    public static final int     CC_PARAM1_VALUE                   = 0;
+    public static final int     CC_PARAM1_VALUE                  = 0;
 
-    private long                lastPong                          = 0;
-    private ITextMessageHandler textMessageHandler                = null;
-    private final ModeManager   trackModeManager                  = new ModeManager ();
+    private long                lastPong                         = 0;
+    private ITextMessageHandler textMessageHandler               = null;
+    private final ModeManager   trackModeManager                 = new ModeManager ();
 
 
     /**

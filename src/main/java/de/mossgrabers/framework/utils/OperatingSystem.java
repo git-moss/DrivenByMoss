@@ -25,6 +25,7 @@ public enum OperatingSystem
     /** No idea. */
     OTHER;
 
+
     private static OperatingSystem os = OTHER;
 
     static
@@ -47,6 +48,7 @@ public enum OperatingSystem
             }
         }
     }
+
 
     /**
      * Get the OS we are running on.

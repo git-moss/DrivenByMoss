@@ -40,7 +40,7 @@ public class MarkerImpl extends AbstractItemImpl implements IMarker
         this.marker = marker;
 
         marker.exists ().markInterested ();
-        marker.getName ().markInterested ();
+        marker.name ().markInterested ();
         marker.getColor ().markInterested ();
         marker.position ().markInterested ();
     }
@@ -51,7 +51,7 @@ public class MarkerImpl extends AbstractItemImpl implements IMarker
     public void enableObservers (final boolean enable)
     {
         Util.setIsSubscribed (this.marker.exists (), enable);
-        Util.setIsSubscribed (this.marker.getName (), enable);
+        Util.setIsSubscribed (this.marker.name (), enable);
         Util.setIsSubscribed (this.marker.getColor (), enable);
         Util.setIsSubscribed (this.marker.position (), enable);
     }
@@ -69,7 +69,7 @@ public class MarkerImpl extends AbstractItemImpl implements IMarker
     @Override
     public String getName ()
     {
-        return this.marker.getName ().get ();
+        return this.marker.name ().get ();
     }
 
 
@@ -77,7 +77,7 @@ public class MarkerImpl extends AbstractItemImpl implements IMarker
     @Override
     public String getName (final int limit)
     {
-        return this.marker.getName ().getLimited (limit);
+        return this.marker.name ().getLimited (limit);
     }
 
 
@@ -85,7 +85,7 @@ public class MarkerImpl extends AbstractItemImpl implements IMarker
     @Override
     public void addNameObserver (final IValueObserver<String> observer)
     {
-        this.marker.getName ().addValueObserver (observer::update);
+        this.marker.name ().addValueObserver (observer::update);
     }
 
 
@@ -110,7 +110,7 @@ public class MarkerImpl extends AbstractItemImpl implements IMarker
     @Override
     public void removeMarker ()
     {
-        // TODO API extension required - https://github.com/teotigraphix/Framework4Bitwig/issues/215
+        this.marker.deleteObject ();
     }
 
 

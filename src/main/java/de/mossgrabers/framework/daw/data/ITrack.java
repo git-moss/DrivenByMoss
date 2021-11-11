@@ -26,6 +26,20 @@ public interface ITrack extends IChannel
 
 
     /**
+     * Is the track a group and if yes, is it expanded?
+     *
+     * @return True if expanded
+     */
+    boolean isGroupExpanded ();
+
+
+    /**
+     * Expand or collapse the group.
+     */
+    void toggleGroupExpanded ();
+
+
+    /**
      * Returns true if there is a parent track.
      *
      * @return True if there is a parent track otherwise it is a top level track
