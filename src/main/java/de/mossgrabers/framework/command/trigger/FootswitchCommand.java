@@ -41,16 +41,21 @@ public class FootswitchCommand<S extends IControlSurface<C>, C extends Configura
     private final TapTempoCommand<S, C> tapTempoCommand;
     private final PlayCommand<S, C>     playCommand;
 
+    protected final int                 index;
+
 
     /**
      * Constructor.
      *
      * @param model The model
      * @param surface The surface
+     * @param index The index of the footswitch
      */
-    public FootswitchCommand (final IModel model, final S surface)
+    public FootswitchCommand (final IModel model, final S surface, final int index)
     {
         super (model, surface);
+
+        this.index = index;
 
         this.newCommand = new NewCommand<> (model, surface);
         this.recordCommand = new RecordCommand<> (model, surface);
@@ -121,7 +126,7 @@ public class FootswitchCommand<S extends IControlSurface<C>, C extends Configura
      */
     protected int getSetting ()
     {
-        return this.surface.getConfiguration ().getFootswitch2 ();
+        return this.surface.getConfiguration ().getFootswitch (this.index);
     }
 
 

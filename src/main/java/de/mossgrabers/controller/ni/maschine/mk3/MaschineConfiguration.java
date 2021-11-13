@@ -4,6 +4,7 @@
 
 package de.mossgrabers.controller.ni.maschine.mk3;
 
+import de.mossgrabers.controller.ni.maschine.Maschine;
 import de.mossgrabers.controller.ni.maschine.core.RibbonMode;
 import de.mossgrabers.framework.configuration.AbstractConfiguration;
 import de.mossgrabers.framework.configuration.IEnumSetting;
@@ -26,6 +27,8 @@ public class MaschineConfiguration extends AbstractConfiguration
     /** Setting for the ribbon mode. */
     public static final Integer RIBBON_MODE = Integer.valueOf (50);
 
+    private final Maschine      maschine;
+
     /** What does the ribbon send? **/
     private RibbonMode          ribbonMode  = RibbonMode.PITCH_DOWN;
 
@@ -38,10 +41,13 @@ public class MaschineConfiguration extends AbstractConfiguration
      * @param host The DAW host
      * @param valueChanger The value changer
      * @param arpeggiatorModes The available arpeggiator modes
+     * @param maschine The type of Maschine
      */
-    public MaschineConfiguration (final IHost host, final IValueChanger valueChanger, final List<ArpeggiatorMode> arpeggiatorModes)
+    public MaschineConfiguration (final IHost host, final IValueChanger valueChanger, final List<ArpeggiatorMode> arpeggiatorModes, final Maschine maschine)
     {
         super (host, valueChanger, arpeggiatorModes);
+
+        this.maschine = maschine;
     }
 
 
@@ -96,6 +102,19 @@ public class MaschineConfiguration extends AbstractConfiguration
         this.activateExcludeDeactivatedItemsSetting (globalSettings);
         this.activateNewClipLengthSetting (globalSettings);
         this.activateKnobSpeedSetting (globalSettings);
+
+        final int footswitches = this.maschine.getFootswitches ();
+        if (footswitches >= 2)
+        {
+            this.activateFootswitchSetting (globalSettings, 0, "Footswitch (Tip)");
+            this.activateFootswitchSetting (globalSettings, 1, "Footswitch (Ring)");
+
+            if (footswitches == 4)
+            {
+                this.activateFootswitchSetting (globalSettings, 2, "Footswitch 2 (Tip)");
+                this.activateFootswitchSetting (globalSettings, 3, "Footswitch 2 (Ring)");
+            }
+        }
 
         ///////////////////////////
         // Pads

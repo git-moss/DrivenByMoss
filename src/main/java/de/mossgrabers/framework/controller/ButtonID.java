@@ -482,6 +482,10 @@ public enum ButtonID
     FOOTSWITCH1,
     /** The second footswitch. */
     FOOTSWITCH2,
+    /** The third footswitch. */
+    FOOTSWITCH3,
+    /** The fourth footswitch. */
+    FOOTSWITCH4,
 
     /** Function key 1. */
     F1,

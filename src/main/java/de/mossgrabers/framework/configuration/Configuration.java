@@ -323,11 +323,12 @@ public interface Configuration
 
 
     /**
-     * Get the functionality of the foot-switch 2.
-     *
-     * @return The functionality of the foot-switch 2.
+     * Get the functionality of a footswitch.
+     * 
+     * @param index The index of the footswitch
+     * @return The functionality of the footswitch.
      */
-    int getFootswitch2 ();
+    int getFootswitch (int index);
 
 
     /**

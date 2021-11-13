@@ -12,17 +12,17 @@ package de.mossgrabers.controller.ni.maschine;
 public enum Maschine
 {
     /** Maschine JAM. */
-    JAM("Maschine JAM", "1500", true, false, true, true, 440),
+    JAM("Maschine JAM", "1500", true, false, true, true, 440, 2),
     /** Maschine Mikro Mk3. */
-    MIKRO_MK3("Maschine Mikro Mk3", "1700", false, false, false, false, 440),
+    MIKRO_MK3("Maschine Mikro Mk3", "1700", false, false, false, false, 440, 0),
     /** Maschine Mk2. */
-    MK2("Maschine Mk2", "0000", false, true, true, true, 714),
+    MK2("Maschine Mk2", "0000", false, true, true, true, 714, 0),
     /** Maschine Mk3. */
-    MK3("Maschine Mk3", "1600", true, true, true, true, 800),
+    MK3("Maschine Mk3", "1600", true, true, true, true, 800, 2),
     /** Maschine+. */
-    PLUS("Maschine+", "1820", true, true, true, true, 800),
+    PLUS("Maschine+", "1820", true, true, true, true, 800, 2),
     /** Maschine Studio. */
-    STUDIO("Maschine Studio", "1300", false, true, true, true, 700);
+    STUDIO("Maschine Studio", "1300", false, true, true, true, 700, 4);
 
 
     private static final String MESSAGE_SHIFT_DOWN       = "F0002109%s4D5000014D01F7";
@@ -36,6 +36,7 @@ public enum Maschine
     private final boolean       hasGroupButtons;
     private final boolean       hasCursorKeys;
     private final int           height;
+    private final int           footswitches;
 
     private final String        messageShiftDown;
     private final String        messageShiftUp;
@@ -52,8 +53,9 @@ public enum Maschine
      * @param hasGroupButtons Does it have group buttons?
      * @param hasCursorKeys Does the device have cursor keys?
      * @param height The height of the simulator window
+     * @param footswitches The number of available footswitch on the Maschine
      */
-    private Maschine (final String name, final String maschineID, final boolean hasShift, final boolean hasMCUDisplay, final boolean hasGroupButtons, final boolean hasCursorKeys, final int height)
+    private Maschine (final String name, final String maschineID, final boolean hasShift, final boolean hasMCUDisplay, final boolean hasGroupButtons, final boolean hasCursorKeys, final int height, final int footswitches)
     {
         this.name = name;
         this.maschineID = maschineID;
@@ -62,6 +64,7 @@ public enum Maschine
         this.hasGroupButtons = hasGroupButtons;
         this.hasCursorKeys = hasCursorKeys;
         this.height = height;
+        this.footswitches = footswitches;
 
         this.messageShiftDown = String.format (MESSAGE_SHIFT_DOWN, this.maschineID);
         this.messageShiftUp = String.format (MESSAGE_SHIFT_UP, this.maschineID);
@@ -143,6 +146,17 @@ public enum Maschine
     public int getHeight ()
     {
         return this.height;
+    }
+
+
+    /**
+     * Get the number of foot switches on the Maschine.
+     * 
+     * @return The number
+     */
+    public int getFootswitches ()
+    {
+        return this.footswitches;
     }
 
 

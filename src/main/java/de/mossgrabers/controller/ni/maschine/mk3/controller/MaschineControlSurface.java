@@ -28,6 +28,11 @@ public class MaschineControlSurface extends AbstractMaschineControlSurface<Masch
     public static final int TOUCHSTRIP        = 1;
     public static final int TOUCHSTRIP_TOUCH  = 2;
 
+    public static final int FOOTSWITCH1_TIP   = 3;
+    public static final int FOOTSWITCH1_RING  = 4;
+    public static final int FOOTSWITCH2_TIP   = 5;
+    public static final int FOOTSWITCH2_RING  = 6;
+
     public static final int ENCODER           = 7;
     public static final int ENCODER_PUSH      = 8;
     public static final int ENCODER_TOUCH     = 9;

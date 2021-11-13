@@ -338,7 +338,8 @@ public class MaschineJamControllerSetup extends AbstractControllerSetup<Maschine
             }
         }, MaschineJamControlSurface.BROWSE, this.model.getBrowser ()::isActive);
 
-        this.addButton (ButtonID.FOOTSWITCH1, "Foot Controller", new FootswitchCommand<> (this.model, surface), MaschineJamControlSurface.FOOTSWITCH);
+        this.addButton (ButtonID.FOOTSWITCH1, "Foot Controller (Tip)", new FootswitchCommand<> (this.model, surface, 0), MaschineJamControlSurface.FOOTSWITCH_TIP);
+        this.addButton (ButtonID.FOOTSWITCH2, "Foot Controller (Ring)", new FootswitchCommand<> (this.model, surface, 1), MaschineJamControlSurface.FOOTSWITCH_RING);
     }
 
 

@@ -23,7 +23,6 @@ import de.mossgrabers.framework.utils.ButtonEvent;
  */
 public class AssignableCommand extends FootswitchCommand<MCUControlSurface, MCUConfiguration>
 {
-    private final int            index;
     private final ModeSwitcher   switcher;
     private final MCUFlipCommand flipCommand;
 
@@ -37,9 +36,8 @@ public class AssignableCommand extends FootswitchCommand<MCUControlSurface, MCUC
      */
     public AssignableCommand (final int index, final IModel model, final MCUControlSurface surface)
     {
-        super (model, surface);
+        super (model, surface, index);
 
-        this.index = index;
         this.switcher = new ModeSwitcher (surface);
         this.flipCommand = new MCUFlipCommand (model, surface);
     }

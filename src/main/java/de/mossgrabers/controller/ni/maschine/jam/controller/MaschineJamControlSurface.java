@@ -23,6 +23,9 @@ import de.mossgrabers.framework.daw.midi.IMidiOutput;
 public class MaschineJamControlSurface extends AbstractMaschineControlSurface<MaschineJamConfiguration>
 {
     // MIDI CC
+    public static final int             FOOTSWITCH_TIP     = 3;
+    public static final int             FOOTSWITCH_RING    = 4;
+
     public static final int             FADER1             = 8;
     public static final int             FADER2             = 9;
     public static final int             FADER3             = 10;

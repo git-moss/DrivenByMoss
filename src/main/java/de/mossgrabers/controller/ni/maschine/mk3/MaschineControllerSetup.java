@@ -59,6 +59,7 @@ import de.mossgrabers.framework.command.core.NopCommand;
 import de.mossgrabers.framework.command.core.TriggerCommand;
 import de.mossgrabers.framework.command.trigger.BrowserCommand;
 import de.mossgrabers.framework.command.trigger.Direction;
+import de.mossgrabers.framework.command.trigger.FootswitchCommand;
 import de.mossgrabers.framework.command.trigger.application.LayoutCommand;
 import de.mossgrabers.framework.command.trigger.application.OverdubCommand;
 import de.mossgrabers.framework.command.trigger.application.PaneCommand;
@@ -163,7 +164,7 @@ public class MaschineControllerSetup extends AbstractControllerSetup<MaschineCon
         this.maschine = maschine;
         this.colorManager = new MaschineColorManager ();
         this.valueChanger = new TwosComplementValueChanger (128, 1);
-        this.configuration = new MaschineConfiguration (host, this.valueChanger, factory.getArpeggiatorModes ());
+        this.configuration = new MaschineConfiguration (host, this.valueChanger, factory.getArpeggiatorModes (), maschine);
     }
 
 
@@ -495,6 +496,20 @@ public class MaschineControllerSetup extends AbstractControllerSetup<MaschineCon
 
         if (this.maschine == Maschine.STUDIO)
             this.registerMaschineStudioButtons (surface);
+
+        // Register foot switches
+        final int footswitches = this.maschine.getFootswitches ();
+        if (footswitches >= 2)
+        {
+            this.addButton (ButtonID.FOOTSWITCH1, "Foot Controller (Tip)", new FootswitchCommand<> (this.model, surface, 0), MaschineControlSurface.FOOTSWITCH1_TIP);
+            this.addButton (ButtonID.FOOTSWITCH2, "Foot Controller (Ring)", new FootswitchCommand<> (this.model, surface, 1), MaschineControlSurface.FOOTSWITCH1_RING);
+
+            if (footswitches == 4)
+            {
+                this.addButton (ButtonID.FOOTSWITCH3, "Foot Controller 2 (Tip)", new FootswitchCommand<> (this.model, surface, 2), MaschineControlSurface.FOOTSWITCH2_TIP);
+                this.addButton (ButtonID.FOOTSWITCH4, "Foot Controller 2 (Ring)", new FootswitchCommand<> (this.model, surface, 3), MaschineControlSurface.FOOTSWITCH2_RING);
+            }
+        }
     }
 
 

@@ -85,6 +85,7 @@ public class MaschineJamConfiguration extends AbstractConfiguration
         this.activateExcludeDeactivatedItemsSetting (globalSettings);
         this.activateNewClipLengthSetting (globalSettings);
         this.activateKnobSpeedSetting (globalSettings);
-        this.activateFootswitchSetting (globalSettings, 0);
+        this.activateFootswitchSetting (globalSettings, 0, "Footswitch (Tip)");
+        this.activateFootswitchSetting (globalSettings, 1, "Footswitch (Ring)");
     }
 }
