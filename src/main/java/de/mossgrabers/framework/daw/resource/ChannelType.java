@@ -13,17 +13,19 @@ public enum ChannelType
 {
     /** A Track of unknown type. */
     UNKNOWN,
-    /** Audio Track. */
+    /** Audio track. */
     AUDIO,
-    /** Instrument Track. */
+    /** Instrument track. */
     INSTRUMENT,
-    /** Hybrid Track (Audio + MIDI). */
+    /** Hybrid track (Audio + MIDI). */
     HYBRID,
-    /** A group Track. */
+    /** A group track. */
     GROUP,
-    /** An effect Track. */
+    /** An open group track. */
+    GROUP_OPEN,
+    /** An effect track. */
     EFFECT,
-    /** The master Track. */
+    /** The master track. */
     MASTER,
     /** A device layer. */
     LAYER

@@ -10,6 +10,10 @@ import de.mossgrabers.framework.daw.IHost;
 import de.mossgrabers.framework.graphics.DefaultGraphicsDimensions;
 import de.mossgrabers.framework.graphics.IBitmap;
 
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+import java.util.concurrent.TimeUnit;
+
 
 /**
  * The display of Push 2.
@@ -19,6 +23,7 @@ import de.mossgrabers.framework.graphics.IBitmap;
 public class Push2Display extends AbstractGraphicDisplay
 {
     private final PushUsbDisplay usbDisplay;
+    private boolean              isShutdown = false;
 
 
     /**
@@ -54,10 +59,27 @@ public class Push2Display extends AbstractGraphicDisplay
     {
         this.setMessage (3, "Please start " + this.host.getName () + " to play...");
         this.send ();
-        if (this.usbDisplay != null)
-            this.usbDisplay.shutdown ();
 
-        super.shutdown ();
+        this.isShutdown = true;
+
+        final ExecutorService executor = Executors.newSingleThreadExecutor ();
+        executor.execute ( () -> {
+
+            if (this.usbDisplay != null)
+                this.usbDisplay.shutdown ();
+            super.shutdown ();
+
+        });
+        executor.shutdown ();
+        try
+        {
+            executor.awaitTermination (10, TimeUnit.SECONDS);
+        }
+        catch (final InterruptedException ex)
+        {
+            this.host.error ("Display shutdown interrupted.", ex);
+            Thread.currentThread ().interrupt ();
+        }
     }
 
 
@@ -65,7 +87,7 @@ public class Push2Display extends AbstractGraphicDisplay
     @Override
     protected void send (final IBitmap image)
     {
-        if (this.usbDisplay != null)
+        if (!this.isShutdown && this.usbDisplay != null)
             this.usbDisplay.send (image);
     }
 }

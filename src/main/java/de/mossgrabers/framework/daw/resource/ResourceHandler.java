@@ -41,6 +41,7 @@ public final class ResourceHandler
         addSVGImage ("track/crossfade_ab.svg");
         addSVGImage ("track/crossfade_b.svg");
         addSVGImage ("track/group_track.svg");
+        addSVGImage ("track/group_track_open.svg");
         addSVGImage ("track/hybrid_track.svg");
         addSVGImage ("track/instrument_track.svg");
         addSVGImage ("track/master_track.svg");

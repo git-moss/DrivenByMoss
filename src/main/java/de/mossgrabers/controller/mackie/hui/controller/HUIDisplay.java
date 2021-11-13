@@ -10,6 +10,8 @@ import de.mossgrabers.framework.daw.midi.IMidiOutput;
 import de.mossgrabers.framework.utils.LatestTaskExecutor;
 import de.mossgrabers.framework.utils.StringUtils;
 
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 import java.util.concurrent.TimeUnit;
 
 
@@ -85,15 +87,32 @@ public class HUIDisplay extends AbstractTextDisplay
     {
         this.notifyOnDisplay ("Please start " + this.host.getName () + "...");
 
-        // Prevent further sends
-        this.executor.shutdown ();
+        final ExecutorService shutdownExecutor = Executors.newSingleThreadExecutor ();
+        shutdownExecutor.execute ( () -> {
+
+            // Prevent further sends
+            this.executor.shutdown ();
+            try
+            {
+                if (!this.executor.awaitTermination (5, TimeUnit.SECONDS))
+                    this.host.error ("HUI display send executor did not end in 5 seconds.");
+            }
+            catch (final InterruptedException ex)
+            {
+                this.host.error ("HUI display send executor interrupted.", ex);
+                Thread.currentThread ().interrupt ();
+            }
+
+        });
+        shutdownExecutor.shutdown ();
         try
         {
-            this.executor.awaitTermination (5, TimeUnit.SECONDS);
+            if (!shutdownExecutor.awaitTermination (10, TimeUnit.SECONDS))
+                this.host.error ("HUI display shutdown executor did not end in 10 seconds.");
         }
         catch (final InterruptedException ex)
         {
-            this.host.error ("HUI display send executor did not end in 10 seconds. Interrupted.", ex);
+            this.host.error ("Display shutdown interrupted.", ex);
             Thread.currentThread ().interrupt ();
         }
     }

@@ -87,6 +87,7 @@ public class TrackType
             case INSTRUMENT:
                 return MIDI;
             case GROUP:
+            case GROUP_OPEN:
                 return GROUP;
             case EFFECT:
                 return RETURN_BUS;

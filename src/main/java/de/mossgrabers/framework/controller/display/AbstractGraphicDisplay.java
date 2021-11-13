@@ -139,11 +139,12 @@ public abstract class AbstractGraphicDisplay implements IGraphicDisplay
         this.executor.shutdown ();
         try
         {
-            this.executor.awaitTermination (5, TimeUnit.SECONDS);
+            if (!this.executor.awaitTermination (5, TimeUnit.SECONDS))
+                this.host.error ("Display send executor did not end in 5 seconds.");
         }
         catch (final InterruptedException ex)
         {
-            this.host.error ("USB display send executor did not end in 10 seconds. Interrupted.", ex);
+            this.host.error ("Display send executor interrupted.", ex);
             Thread.currentThread ().interrupt ();
         }
     }

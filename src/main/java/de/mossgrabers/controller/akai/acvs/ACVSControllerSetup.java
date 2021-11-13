@@ -195,7 +195,7 @@ public class ACVSControllerSetup extends AbstractControllerSetup<ACVSControlSurf
             final ButtonID selectID = ButtonID.get (ButtonID.ROW_SELECT_1, i);
             String label = "Track Select " + (i + 1);
             final int index = i;
-            this.addReceiveButton (selectID, label, () -> this.selectTrack (tb, index), 0, ACVSControlSurface.NOTE_TRACK1_SELECT + i);
+            this.addReceiveButton (selectID, label, () -> tb.getItem (index).selectOrExpandGroup (), 0, ACVSControlSurface.NOTE_TRACK1_SELECT + i);
 
             final ButtonID stopID = ButtonID.get (ButtonID.ROW1_1, i);
             label = "Track Stop " + (i + 1);
@@ -269,22 +269,6 @@ public class ACVSControllerSetup extends AbstractControllerSetup<ACVSControlSurf
             this.registerForceTriggerCommands (surface, tb);
         else
             this.registerMPCTriggerCommands (surface, cursorDevice, tb);
-    }
-
-
-    /**
-     * Select a track. If it is a group and already selected, toggle the expanded state.
-     *
-     * @param tb The track bank of the track
-     * @param index The index of the track
-     */
-    protected void selectTrack (final ITrackBank tb, final int index)
-    {
-        final ITrack item = tb.getItem (index);
-        if (item.isGroup () && item.isSelected ())
-            item.toggleGroupExpanded ();
-        else
-            item.select ();
     }
 
 
@@ -545,8 +529,7 @@ public class ACVSControllerSetup extends AbstractControllerSetup<ACVSControlSurf
 
             // Select one of the current eight tracks. The selected track will be highlighted white.
             // Sets the Global Launch Quantization to the value shown beneath the corresponding
-            // button
-            // (None, 8, 4, ...). The current value will be lit white while Shift is held.
+            // button (None, 8, 4, ...). The current value will be lit white while Shift is held.
 
             this.addButton (surface, ButtonID.get (ButtonID.TRACK_SELECT_1, i), "TRACK SELECT " + (i + 1), (event, velocity) -> {
 
@@ -570,7 +553,7 @@ public class ACVSControllerSetup extends AbstractControllerSetup<ACVSControlSurf
                     track.duplicate ();
                 }
                 else
-                    track.select ();
+                    track.selectOrExpandGroup ();
 
             }, 0x0C, ACVSControlSurface.NOTE_FORCE_TRACK_SELECT1 + i, -1, false, null);
 

@@ -159,7 +159,7 @@
         <reaction>ondown</reaction>
       </button>
       <footswitch version="1" id="FSwRing">
-        <controller>65</controller>
+        <controller>4</controller>
         <channel>0</channel>
         <off>0</off>
         <on>127</on>
@@ -167,7 +167,7 @@
         <reaction>ondown</reaction>
       </footswitch>
       <footswitch version="1" id="FSwTip">
-        <controller>64</controller>
+        <controller>3</controller>
         <channel>0</channel>
         <off>0</off>
         <on>127</on>
@@ -439,6 +439,7 @@
         <reaction>ondown</reaction>
       </button>
       <pedal version="1" id="Pedal">
+        <disabled />
         <controller>11</controller>
         <channel>0</channel>
         <min>0</min>

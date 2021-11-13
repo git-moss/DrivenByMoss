@@ -144,6 +144,10 @@ public enum Modes
     POSITION,
     /** Tempo mode. */
     TEMPO,
+    /** Loop start mode. */
+    LOOP_START,
+    /** Loop length mode. */
+    LOOP_LENGTH,
     /** A user mode. */
     USER,
     /** A mode that does nothing. */

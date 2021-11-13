@@ -115,6 +115,7 @@ public class GroupButtonCommand<S extends IControlSurface<C>, C extends Configur
             return;
         }
 
+        // Set sequencer resolution
         if (this.surface.isPressed (ButtonID.GROOVE))
         {
             final IView active = this.surface.getViewManager ().getActive ();
@@ -123,8 +124,8 @@ public class GroupButtonCommand<S extends IControlSurface<C>, C extends Configur
             return;
         }
 
-        // Track selection
-        track.select ();
+        // Track selection or group expansion
+        track.selectOrExpandGroup ();
     }
 
 

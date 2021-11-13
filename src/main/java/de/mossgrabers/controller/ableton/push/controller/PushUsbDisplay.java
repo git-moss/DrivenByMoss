@@ -175,14 +175,26 @@ public class PushUsbDisplay
             this.sendExecutor.shutdown ();
             try
             {
-                this.sendExecutor.awaitTermination (5, TimeUnit.SECONDS);
+                if (!this.sendExecutor.awaitTermination (5, TimeUnit.SECONDS))
+                    this.host.error ("USB Send executor did not end in 5 seconds.");
             }
             catch (final InterruptedException ex)
             {
-                this.host.error ("USB Send executor did not end in 10 seconds. Interrupted.", ex);
+                this.host.error ("USB Send executor interrupted.", ex);
                 Thread.currentThread ().interrupt ();
             }
         }
+    }
+
+
+    /**
+     * Check if the send executor is shutdown.
+     *
+     * @return True if shutdown
+     */
+    public boolean isShutdown ()
+    {
+        return this.sendExecutor.isShutdown ();
     }
 
 

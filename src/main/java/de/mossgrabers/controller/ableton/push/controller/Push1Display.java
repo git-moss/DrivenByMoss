@@ -41,6 +41,10 @@ public class Push1Display extends AbstractTextDisplay
     public static final String     DEGREE        = Character.toString ((char) 9);
     /** Push character for a right arrow. */
     public static final String     RIGHT_ARROW   = Character.toString ((char) 30);
+    /** Push character for a folder icon. */
+    public static final String     FOLDER        = Character.toString ((char) 7);
+    /** Push character for three rows. */
+    public static final String     THREE_ROWS    = Character.toString ((char) 2);
 
     private static final String [] SYSEX_MESSAGE =
     {

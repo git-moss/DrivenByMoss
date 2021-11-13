@@ -689,35 +689,35 @@
         <reaction>ondown</reaction>
       </button>
       <button version="1" id="FSw1">
-        <controller>64</controller>
+        <controller>5</controller>
         <channel>0</channel>
         <off>0</off>
         <on>127</on>
-        <behavior onIfDown="on">toggle</behavior>
+        <behavior onIfDown="on">gate</behavior>
         <reaction>ondown</reaction>
       </button>
       <button version="1" id="FSw1Ring">
-        <controller>65</controller>
+        <controller>6</controller>
         <channel>0</channel>
         <off>0</off>
         <on>127</on>
-        <behavior onIfDown="on">toggle</behavior>
+        <behavior onIfDown="on">gate</behavior>
         <reaction>ondown</reaction>
       </button>
       <button version="1" id="FSw2">
-        <controller>66</controller>
+        <controller>3</controller>
         <channel>0</channel>
         <off>0</off>
         <on>127</on>
-        <behavior onIfDown="on">toggle</behavior>
+        <behavior onIfDown="on">gate</behavior>
         <reaction>ondown</reaction>
       </button>
       <button version="1" id="FSw2Ring">
-        <controller>67</controller>
+        <controller>4</controller>
         <channel>0</channel>
         <off>0</off>
         <on>127</on>
-        <behavior onIfDown="on">toggle</behavior>
+        <behavior onIfDown="on">gate</behavior>
         <reaction>ondown</reaction>
       </button>
     </controls>

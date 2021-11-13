@@ -32,6 +32,8 @@ import de.mossgrabers.controller.ni.maschine.mk3.controller.StudioEncoderModeMan
 import de.mossgrabers.controller.ni.maschine.mk3.mode.BrowseMode;
 import de.mossgrabers.controller.ni.maschine.mk3.mode.DrumConfigurationMode;
 import de.mossgrabers.controller.ni.maschine.mk3.mode.EditNoteMode;
+import de.mossgrabers.controller.ni.maschine.mk3.mode.LoopLengthMode;
+import de.mossgrabers.controller.ni.maschine.mk3.mode.LoopStartMode;
 import de.mossgrabers.controller.ni.maschine.mk3.mode.MaschinePanMode;
 import de.mossgrabers.controller.ni.maschine.mk3.mode.MaschineParametersMode;
 import de.mossgrabers.controller.ni.maschine.mk3.mode.MaschineSendMode;
@@ -235,8 +237,10 @@ public class MaschineControllerSetup extends AbstractControllerSetup<MaschineCon
         for (int i = 0; i < 8; i++)
             modeManager.register (Modes.get (Modes.SEND1, i), new MaschineSendMode (i, surface, this.model));
 
-        modeManager.register (Modes.POSITION, new PositionMode (surface, this.model));
         modeManager.register (Modes.TEMPO, new TempoMode (surface, this.model));
+        modeManager.register (Modes.POSITION, new PositionMode (surface, this.model));
+        modeManager.register (Modes.LOOP_START, new LoopStartMode (surface, this.model));
+        modeManager.register (Modes.LOOP_LENGTH, new LoopLengthMode (surface, this.model));
 
         modeManager.register (Modes.REPEAT_NOTE, new NoteRepeatMode (surface, this.model));
         modeManager.register (Modes.SCALES, new PlayConfigurationMode (surface, this.model));
@@ -387,7 +391,7 @@ public class MaschineControllerSetup extends AbstractControllerSetup<MaschineCon
 
         // Encoder Modes
         this.addButton (ButtonID.VOLUME, "VOLUME", new VolumePanSendCommand (this.model, surface), MaschineControlSurface.VOLUME, () -> Modes.isTrackMode (modeManager.getActiveID ()));
-        this.addButton (ButtonID.SWING, "SWING", new SwingCommand (this.model, surface), MaschineControlSurface.SWING, () -> modeManager.isActive (Modes.POSITION));
+        this.addButton (ButtonID.SWING, "SWING", new SwingCommand (this.model, surface), MaschineControlSurface.SWING, () -> modeManager.isActive (Modes.POSITION, Modes.LOOP_START, Modes.LOOP_LENGTH));
         this.addButton (ButtonID.TEMPO_TOUCH, "TEMPO", new TempoCommand (this.model, surface), MaschineControlSurface.TEMPO, () -> modeManager.isActive (Modes.TEMPO));
         this.addButton (ButtonID.DEVICE, "PLUG-IN", (event, velocity) -> {
 

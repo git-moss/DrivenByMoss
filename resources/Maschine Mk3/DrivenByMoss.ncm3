@@ -167,7 +167,7 @@
         <reaction>ondown</reaction>
       </button>
       <footswitch version="1" id="FSwRing">
-        <controller>65</controller>
+        <controller>4</controller>
         <channel>0</channel>
         <off>0</off>
         <on>127</on>
@@ -175,7 +175,7 @@
         <reaction>ondown</reaction>
       </footswitch>
       <footswitch version="1" id="FSwTip">
-        <controller>64</controller>
+        <controller>3</controller>
         <channel>0</channel>
         <off>0</off>
         <on>127</on>
@@ -691,7 +691,7 @@
         <button version="1" id="Button7">
           <name>User Params</name>
           <mcu-button>28</mcu-button>
-          <behavior>gate</behavior>
+          <behavior onIfDown="on">gate</behavior>
           <reaction>ondown</reaction>
         </button>
         <button version="1" id="Button8">

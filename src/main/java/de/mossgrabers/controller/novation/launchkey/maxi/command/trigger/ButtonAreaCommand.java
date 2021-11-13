@@ -10,16 +10,14 @@ import de.mossgrabers.controller.novation.launchkey.maxi.controller.LaunchkeyMk3
 import de.mossgrabers.framework.command.core.AbstractTriggerCommand;
 import de.mossgrabers.framework.command.core.TriggerCommand;
 import de.mossgrabers.framework.command.trigger.track.RecArmCommand;
-import de.mossgrabers.framework.command.trigger.track.SelectCommand;
 import de.mossgrabers.framework.daw.DAWColor;
 import de.mossgrabers.framework.daw.IModel;
 import de.mossgrabers.framework.daw.data.ITrack;
-import de.mossgrabers.framework.daw.data.bank.ITrackBank;
 import de.mossgrabers.framework.utils.ButtonEvent;
 
 
 /**
- * Command to trigger the 8 buttons for select and rec arm.
+ * Command to trigger the 8 buttons for select and record arm.
  *
  * @author J&uuml;rgen Mo&szlig;graber
  */
@@ -28,7 +26,6 @@ public class ButtonAreaCommand extends AbstractTriggerCommand<LaunchkeyMk3Contro
     private static boolean       isSelect = true;
 
     private final int            column;
-    private final TriggerCommand selectCommand;
     private final TriggerCommand recArmCommand;
 
 
@@ -44,8 +41,6 @@ public class ButtonAreaCommand extends AbstractTriggerCommand<LaunchkeyMk3Contro
         super (model, surface);
 
         this.column = column;
-
-        this.selectCommand = new SelectCommand<> (column, model, surface);
         this.recArmCommand = new RecArmCommand<> (column, model, surface);
     }
 
@@ -55,7 +50,7 @@ public class ButtonAreaCommand extends AbstractTriggerCommand<LaunchkeyMk3Contro
     public void execute (final ButtonEvent event, final int velocity)
     {
         if (isSelect)
-            this.selectCommand.execute (event, velocity);
+            this.getColumnTrack ().selectOrExpandGroup ();
         else
             this.recArmCommand.execute (event, velocity);
     }
@@ -68,8 +63,7 @@ public class ButtonAreaCommand extends AbstractTriggerCommand<LaunchkeyMk3Contro
      */
     public int getButtonColor ()
     {
-        final ITrackBank tb = this.model.getCurrentTrackBank ();
-        final ITrack t = tb.getItem (this.column);
+        final ITrack t = this.getColumnTrack ();
         final int color;
         if (!t.doesExist ())
             color = LaunchkeyMk3ColorManager.LAUNCHKEY_COLOR_BLACK;
@@ -78,6 +72,12 @@ public class ButtonAreaCommand extends AbstractTriggerCommand<LaunchkeyMk3Contro
         else
             color = t.isRecArm () ? LaunchkeyMk3ColorManager.LAUNCHKEY_COLOR_RED : LaunchkeyMk3ColorManager.LAUNCHKEY_COLOR_GREY_LO;
         return t.isSelected () ? 0x1000 + color : color;
+    }
+
+
+    private ITrack getColumnTrack ()
+    {
+        return this.model.getCurrentTrackBank ().getItem (this.column);
     }
 
 

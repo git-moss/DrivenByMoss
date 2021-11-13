@@ -220,7 +220,8 @@ public class ControlView extends ControlOnlyView<SLControlSurface, SLConfigurati
     @Override
     public void onButtonRow3 (final int index, final ButtonEvent event)
     {
-        this.selectTrack (index);
+        if (event == ButtonEvent.UP)
+            this.model.getCurrentTrackBank ().getItem (index).selectOrExpandGroup ();
     }
 
 

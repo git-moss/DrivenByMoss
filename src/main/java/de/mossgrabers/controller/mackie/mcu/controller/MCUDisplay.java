@@ -11,6 +11,8 @@ import de.mossgrabers.framework.daw.midi.IMidiOutput;
 import de.mossgrabers.framework.utils.LatestTaskExecutor;
 import de.mossgrabers.framework.utils.StringUtils;
 
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 import java.util.concurrent.TimeUnit;
 
 
@@ -30,6 +32,7 @@ public class MCUDisplay extends AbstractTextDisplay
     private final boolean               hasMaster;
 
     private final LatestTaskExecutor [] executors                      = new LatestTaskExecutor [4];
+    private boolean                     isShutdown                     = false;
 
 
     /**
@@ -50,7 +53,7 @@ public class MCUDisplay extends AbstractTextDisplay
         this.hasMaster = hasMaster;
         this.isExtender = isMCUExtender;
 
-        for (int i = 0; i < 4; i++)
+        for (int i = 0; i < this.executors.length; i++)
             this.executors[i] = new LatestTaskExecutor ();
     }
 
@@ -91,10 +94,10 @@ public class MCUDisplay extends AbstractTextDisplay
     @Override
     public void writeLine (final int row, final String text)
     {
-        final LatestTaskExecutor executor = this.executors[row + (this.isFirstDisplay ? 0 : 2)];
-        if (executor.isShutdown ())
+        if (this.isShutdown)
             return;
 
+        final LatestTaskExecutor executor = this.executors[row + (this.isFirstDisplay ? 0 : 2)];
         executor.execute ( () -> {
             try
             {
@@ -124,21 +127,43 @@ public class MCUDisplay extends AbstractTextDisplay
     @Override
     public void shutdown ()
     {
+        if (this.isShutdown)
+            return;
+
         this.notifyOnDisplay ("Please start " + this.host.getName () + "...");
 
         // Prevent further sends
-        for (int i = 0; i < 4; i++)
+        this.isShutdown = true;
+
+        final ExecutorService shutdownExecutor = Executors.newSingleThreadExecutor ();
+        shutdownExecutor.execute ( () -> {
+
+            for (int i = 0; i < this.executors.length; i++)
+            {
+                this.executors[i].shutdown ();
+                try
+                {
+                    if (!this.executors[i].awaitTermination (5, TimeUnit.SECONDS))
+                        this.host.error ("MCU display send executor did not end in 5 seconds.");
+                }
+                catch (final InterruptedException ex)
+                {
+                    this.host.error ("MCU display send executor interrupted.", ex);
+                    Thread.currentThread ().interrupt ();
+                }
+            }
+
+        });
+        shutdownExecutor.shutdown ();
+        try
         {
-            this.executors[i].shutdown ();
-            try
-            {
-                this.executors[i].awaitTermination (5, TimeUnit.SECONDS);
-            }
-            catch (final InterruptedException ex)
-            {
-                this.host.error ("USB display send executor did not end in 10 seconds. Interrupted.", ex);
-                Thread.currentThread ().interrupt ();
-            }
+            if (!shutdownExecutor.awaitTermination (10, TimeUnit.SECONDS))
+                this.host.error ("MCU display shutdown executor did not end in 10 seconds.");
+        }
+        catch (final InterruptedException ex)
+        {
+            this.host.error ("Display shutdown interrupted.", ex);
+            Thread.currentThread ().interrupt ();
         }
     }
 }

@@ -126,12 +126,8 @@ public abstract class AbstractTrackMode extends BaseMode<ITrack>
             return;
         }
 
-        // Normal behavior
-        final Optional<ITrack> selTrack = tb.getSelectedItem ();
-        if (selTrack.isPresent () && selTrack.get ().getIndex () == index)
-            this.surface.getButton (ButtonID.ARROW_UP).getCommand ().execute (ButtonEvent.DOWN, 127);
-        else
-            track.select ();
+        // Select track or expand group
+        track.selectOrExpandGroup ();
     }
 
 

@@ -64,10 +64,19 @@ public class SelectCommand extends AbstractTriggerCommand<MCUControlSurface, MCU
         if (event == ButtonEvent.UP)
         {
             final ITrack track = trackBank.getItem (this.channel);
-            if (track.isSelected () && !configuration.isTrackNavigationFlat ())
-                track.enter ();
-            else
+            if (!track.isSelected ())
+            {
                 track.select ();
+                return;
+            }
+
+            if (configuration.isTrackNavigationFlat ())
+            {
+                if (track.isGroup ())
+                    track.toggleGroupExpanded ();
+            }
+            else
+                track.enter ();
         }
         else if (event == ButtonEvent.LONG && !configuration.isTrackNavigationFlat ())
         {

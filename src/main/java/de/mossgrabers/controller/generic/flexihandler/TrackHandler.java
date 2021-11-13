@@ -636,8 +636,7 @@ public class TrackHandler extends AbstractHandler
             case TRACK_8_SELECT:
                 if (isButtonPressed)
                 {
-                    final ITrack track = trackBank.getItem (command.ordinal () - FlexiCommand.TRACK_1_SELECT.ordinal ());
-                    track.select ();
+                    trackBank.getItem (command.ordinal () - FlexiCommand.TRACK_1_SELECT.ordinal ()).selectOrExpandGroup ();
                     this.mvHelper.notifySelectedTrack ();
                 }
                 break;

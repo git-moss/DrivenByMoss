@@ -35,8 +35,13 @@ public class PlayPositionKnobCommand extends PlayPositionCommand<PushControlSurf
     @Override
     public void execute (final int value)
     {
-        super.execute (value);
+        if (this.surface.isSelectPressed ())
+        {
+            this.transport.changeLoopLength (this.model.getValueChanger ().isIncrease (value), this.surface.isKnobSensitivitySlow ());
+            return;
+        }
 
+        super.execute (value);
         this.displayPosition ();
     }
 
@@ -46,6 +51,14 @@ public class PlayPositionKnobCommand extends PlayPositionCommand<PushControlSurf
     public void execute (final ButtonEvent event, final int velocity)
     {
         final boolean activate = event != ButtonEvent.UP;
+
+        if (this.surface.isSelectPressed ())
+        {
+            if (activate)
+                this.mvHelper.delayDisplay ( () -> "Loop Length: " + this.transport.getLoopLengthBeatText ());
+            return;
+        }
+
         this.transport.setTempoIndication (activate);
         if (activate)
             this.displayPosition ();

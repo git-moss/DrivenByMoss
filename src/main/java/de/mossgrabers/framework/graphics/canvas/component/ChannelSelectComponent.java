@@ -24,6 +24,7 @@ public class ChannelSelectComponent extends MenuComponent
         ICONS.put (ChannelType.AUDIO, "track/audio_track.svg");
         ICONS.put (ChannelType.INSTRUMENT, "track/instrument_track.svg");
         ICONS.put (ChannelType.GROUP, "track/group_track.svg");
+        ICONS.put (ChannelType.GROUP_OPEN, "track/group_track_open.svg");
         ICONS.put (ChannelType.EFFECT, "track/return_track.svg");
         ICONS.put (ChannelType.HYBRID, "track/hybrid_track.svg");
         ICONS.put (ChannelType.MASTER, "track/master_track.svg");

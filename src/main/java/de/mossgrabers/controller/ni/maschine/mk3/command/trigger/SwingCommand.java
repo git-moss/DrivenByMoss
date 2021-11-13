@@ -7,7 +7,7 @@ package de.mossgrabers.controller.ni.maschine.mk3.command.trigger;
 import de.mossgrabers.controller.ni.maschine.mk3.MaschineConfiguration;
 import de.mossgrabers.controller.ni.maschine.mk3.controller.MaschineControlSurface;
 import de.mossgrabers.controller.ni.maschine.mk3.mode.EditNoteMode;
-import de.mossgrabers.framework.command.trigger.mode.ModeSelectCommand;
+import de.mossgrabers.framework.command.trigger.mode.ModeMultiSelectCommand;
 import de.mossgrabers.framework.daw.IModel;
 import de.mossgrabers.framework.featuregroup.ModeManager;
 import de.mossgrabers.framework.mode.Modes;
@@ -20,7 +20,7 @@ import de.mossgrabers.framework.view.Views;
  *
  * @author J&uuml;rgen Mo&szlig;graber
  */
-public class SwingCommand extends ModeSelectCommand<MaschineControlSurface, MaschineConfiguration>
+public class SwingCommand extends ModeMultiSelectCommand<MaschineControlSurface, MaschineConfiguration>
 {
     /**
      * Constructor.
@@ -30,7 +30,7 @@ public class SwingCommand extends ModeSelectCommand<MaschineControlSurface, Masc
      */
     public SwingCommand (final IModel model, final MaschineControlSurface surface)
     {
-        super (model, surface, Modes.POSITION);
+        super (model, surface, Modes.POSITION, Modes.LOOP_START, Modes.LOOP_LENGTH);
     }
 
 

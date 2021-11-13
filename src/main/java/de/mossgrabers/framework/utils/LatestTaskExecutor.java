@@ -4,10 +4,15 @@
 
 package de.mossgrabers.framework.utils;
 
-import java.util.concurrent.Executor;
+import java.util.Collection;
+import java.util.List;
+import java.util.concurrent.Callable;
+import java.util.concurrent.ExecutionException;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
+import java.util.concurrent.Future;
 import java.util.concurrent.TimeUnit;
+import java.util.concurrent.TimeoutException;
 import java.util.concurrent.atomic.AtomicReference;
 
 
@@ -17,7 +22,7 @@ import java.util.concurrent.atomic.AtomicReference;
  *
  * @author J&uuml;rgen Mo&szlig;graber
  */
-public class LatestTaskExecutor implements Executor
+public class LatestTaskExecutor implements ExecutorService
 {
     private final AtomicReference<Runnable> lastTask = new AtomicReference<> ();
     private final ExecutorService           executor;
@@ -45,38 +50,98 @@ public class LatestTaskExecutor implements Executor
     }
 
 
-    /**
-     * Shutdown the executor.
-     */
+    /** {@inheritDoc} */
+    @Override
     public void shutdown ()
     {
         this.executor.shutdown ();
     }
 
 
-    /**
-     * Returns {@code true} if this executor has been shut down.
-     *
-     * @return {@code true} if this executor has been shut down
-     */
+    /** {@inheritDoc} */
+    @Override
     public boolean isShutdown ()
     {
         return this.executor.isShutdown ();
     }
 
 
-    /**
-     * Blocks until all tasks have completed execution after a shutdown request, or the timeout
-     * occurs, or the current thread is interrupted, whichever happens first.
-     *
-     * @param timeout the maximum time to wait
-     * @param unit the time unit of the timeout argument
-     * @return {@code true} if this executor terminated and {@code false} if the timeout elapsed
-     *         before termination
-     * @throws InterruptedException if interrupted while waiting
-     */
+    /** {@inheritDoc} */
+    @Override
     public boolean awaitTermination (final long timeout, final TimeUnit unit) throws InterruptedException
     {
         return this.executor.awaitTermination (timeout, unit);
+    }
+
+
+    /** {@inheritDoc} */
+    @Override
+    public List<Runnable> shutdownNow ()
+    {
+        return this.executor.shutdownNow ();
+    }
+
+
+    /** {@inheritDoc} */
+    @Override
+    public boolean isTerminated ()
+    {
+        return this.executor.isTerminated ();
+    }
+
+
+    /** {@inheritDoc} */
+    @Override
+    public <T> Future<T> submit (final Callable<T> task)
+    {
+        throw new RuntimeException ("Use execute instead.");
+    }
+
+
+    /** {@inheritDoc} */
+    @Override
+    public <T> Future<T> submit (final Runnable task, final T result)
+    {
+        throw new RuntimeException ("Use execute instead.");
+    }
+
+
+    /** {@inheritDoc} */
+    @Override
+    public Future<?> submit (final Runnable task)
+    {
+        throw new RuntimeException ("Use execute instead.");
+    }
+
+
+    /** {@inheritDoc} */
+    @Override
+    public <T> List<Future<T>> invokeAll (final Collection<? extends Callable<T>> tasks) throws InterruptedException
+    {
+        throw new RuntimeException ("Use execute instead.");
+    }
+
+
+    /** {@inheritDoc} */
+    @Override
+    public <T> List<Future<T>> invokeAll (final Collection<? extends Callable<T>> tasks, final long timeout, final TimeUnit unit) throws InterruptedException
+    {
+        throw new RuntimeException ("Use execute instead.");
+    }
+
+
+    /** {@inheritDoc} */
+    @Override
+    public <T> T invokeAny (final Collection<? extends Callable<T>> tasks) throws InterruptedException, ExecutionException
+    {
+        throw new RuntimeException ("Use execute instead.");
+    }
+
+
+    /** {@inheritDoc} */
+    @Override
+    public <T> T invokeAny (final Collection<? extends Callable<T>> tasks, final long timeout, final TimeUnit unit) throws InterruptedException, ExecutionException, TimeoutException
+    {
+        throw new RuntimeException ("Use execute instead.");
     }
 }

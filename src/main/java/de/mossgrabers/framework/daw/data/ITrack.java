@@ -34,6 +34,20 @@ public interface ITrack extends IChannel
 
 
     /**
+     * Select the item. If it is already selected and is a group the expanded state is toggled.
+     */
+    default void selectOrExpandGroup ()
+    {
+        if (!this.doesExist ())
+            return;
+        if (!this.isSelected ())
+            this.select ();
+        else if (this.isGroup ())
+            this.toggleGroupExpanded ();
+    }
+
+
+    /**
      * Expand or collapse the group.
      */
     void toggleGroupExpanded ();

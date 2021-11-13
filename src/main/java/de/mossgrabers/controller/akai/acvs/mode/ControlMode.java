@@ -504,6 +504,7 @@ public class ControlMode extends AbstractMode<ACVSControlSurface, ACVSConfigurat
                 return 4;
 
             case GROUP:
+            case GROUP_OPEN:
                 return 7;
 
             case EFFECT:

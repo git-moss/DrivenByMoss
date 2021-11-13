@@ -159,6 +159,6 @@ public abstract class DefaultTrackMode<S extends IControlSurface<C>, C extends C
      */
     protected void executeMethod (final ITrack track)
     {
-        track.select ();
+        track.selectOrExpandGroup ();
     }
 }

@@ -347,7 +347,7 @@ public class TrackModule extends AbstractModule
             case TAG_SELECT:
             case TAG_SELECTED:
                 if (isTrigger (value))
-                    track.select ();
+                    track.selectOrExpandGroup ();
                 break;
 
             case TAG_DUPLICATE:

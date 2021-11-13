@@ -603,7 +603,7 @@
         <reaction>ondown</reaction>
       </button>
       <footswitch version="1" id="FswRing">
-        <controller>112</controller>
+        <controller>4</controller>
         <channel>0</channel>
         <off>0</off>
         <on>127</on>
@@ -611,7 +611,7 @@
         <reaction>ondown</reaction>
       </footswitch>
       <footswitch version="1" id="FswTip">
-        <controller>66</controller>
+        <controller>3</controller>
         <channel>0</channel>
         <off>0</off>
         <on>127</on>
@@ -11963,7 +11963,7 @@
         </knob>
         <led version="1" id="TstAIDX">
           <display type="0">
-            <unit color-type="1" color-mode="0" color-on-index="16" color-off-index="1" />
+            <unit color-type="1" color-mode="0" color-on-index="8" color-off-index="1" />
           </display>
           <controller>8</controller>
           <channel>0</channel>
@@ -11987,7 +11987,7 @@
         </knob>
         <led version="1" id="TstBIDX">
           <display type="0">
-            <unit color-type="1" color-mode="0" color-on-index="16" color-off-index="1" />
+            <unit color-type="1" color-mode="0" color-on-index="4" color-off-index="1" />
           </display>
           <controller>9</controller>
           <channel>0</channel>
@@ -12011,7 +12011,7 @@
         </knob>
         <led version="1" id="TstCIDX">
           <display type="0">
-            <unit color-type="1" color-mode="0" color-on-index="16" color-off-index="1" />
+            <unit color-type="1" color-mode="0" color-on-index="18" color-off-index="1" />
           </display>
           <controller>10</controller>
           <channel>0</channel>
@@ -12030,7 +12030,7 @@
           <bipolar>off</bipolar>
           <min>0</min>
           <max>127</max>
-          <ledPattern>0</ledPattern>
+          <ledPattern>1</ledPattern>
           <behavior>none</behavior>
         </knob>
         <led version="1" id="TstDIDX">
@@ -12054,7 +12054,7 @@
           <bipolar>off</bipolar>
           <min>0</min>
           <max>127</max>
-          <ledPattern>0</ledPattern>
+          <ledPattern>1</ledPattern>
           <behavior>none</behavior>
         </knob>
         <led version="1" id="TstEIDX">
@@ -12078,7 +12078,7 @@
           <bipolar>off</bipolar>
           <min>0</min>
           <max>127</max>
-          <ledPattern>0</ledPattern>
+          <ledPattern>1</ledPattern>
           <behavior>none</behavior>
         </knob>
         <led version="1" id="TstFIDX">
@@ -12102,7 +12102,7 @@
           <bipolar>off</bipolar>
           <min>0</min>
           <max>127</max>
-          <ledPattern>0</ledPattern>
+          <ledPattern>1</ledPattern>
           <behavior>none</behavior>
         </knob>
         <led version="1" id="TstGIDX">
@@ -12126,7 +12126,7 @@
           <bipolar>off</bipolar>
           <min>0</min>
           <max>127</max>
-          <ledPattern>0</ledPattern>
+          <ledPattern>1</ledPattern>
           <behavior>none</behavior>
         </knob>
         <led version="1" id="TstHIDX">

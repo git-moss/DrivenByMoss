@@ -52,7 +52,7 @@ public class SelectView extends BaseView
             return;
         }
 
-        track.select ();
+        track.selectOrExpandGroup ();
         this.mvHelper.notifySelectedTrack ();
     }
 
