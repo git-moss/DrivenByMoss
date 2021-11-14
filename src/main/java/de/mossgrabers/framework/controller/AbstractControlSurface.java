@@ -865,8 +865,9 @@ public abstract class AbstractControlSurface<C extends Configuration> implements
      */
     protected void handleNoteOn (final int data1, final int data2)
     {
-        // Handled by bind framework
-        this.host.error ("Midi Note on " + data1 + SHOULD_BE_HANDLED_IN_FRAMEWORK);
+        // Handled by bind framework.
+        // Since Bitwig 4.1 notes are also sent to this method no matter if bound or not, therefore
+        // do not show the warning message any more...
     }
 
 
