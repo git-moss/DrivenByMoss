@@ -90,7 +90,7 @@ public class SelectTrackSendOrClipLengthCommand extends AbstractTriggerCommand<A
             return;
         }
 
-        this.model.getCurrentTrackBank ().getItem (this.index).select ();
+        this.model.getCurrentTrackBank ().getItem (this.index).selectOrExpandGroup ();
     }
 
 

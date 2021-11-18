@@ -383,10 +383,7 @@ public abstract class AbstractTrackMode extends BaseMode<ITrack>
             final boolean enableVUMeters = config.isEnableVUMeters ();
             final int vuR = valueChanger.toDisplayValue (enableVUMeters ? t.getVuRight () : 0);
             final int vuL = valueChanger.toDisplayValue (enableVUMeters ? t.getVuLeft () : 0);
-            ChannelType type = t.getType ();
-            if (type == ChannelType.GROUP && t.isGroupExpanded ())
-                type = ChannelType.GROUP_OPEN;
-            display.addChannelElement (selectedMenu, topMenu, isTopMenuOn, t.doesExist () ? t.getName (12) : "", type, t.getColor (), t.isSelected (), valueChanger.toDisplayValue (t.getVolume ()), valueChanger.toDisplayValue (t.getModulatedVolume ()), isVolume && this.isKnobTouched[i] ? t.getVolumeStr (8) : "", valueChanger.toDisplayValue (t.getPan ()), valueChanger.toDisplayValue (t.getModulatedPan ()), isPan && this.isKnobTouched[i] ? t.getPanStr (8) : "", vuL, vuR, t.isMute (), t.isSolo (), t.isRecArm (), t.isActivated (), crossfadeMode, t.isSelected () && cursorTrack.isPinned ());
+            display.addChannelElement (selectedMenu, topMenu, isTopMenuOn, t.doesExist () ? t.getName (12) : "", updateType (t), t.getColor (), t.isSelected (), valueChanger.toDisplayValue (t.getVolume ()), valueChanger.toDisplayValue (t.getModulatedVolume ()), isVolume && this.isKnobTouched[i] ? t.getVolumeStr (8) : "", valueChanger.toDisplayValue (t.getPan ()), valueChanger.toDisplayValue (t.getModulatedPan ()), isPan && this.isKnobTouched[i] ? t.getPanStr (8) : "", vuL, vuR, t.isMute (), t.isSolo (), t.isRecArm (), t.isActivated (), crossfadeMode, t.isSelected () && cursorTrack.isPinned ());
         }
     }
 
@@ -495,5 +492,18 @@ public abstract class AbstractTrackMode extends BaseMode<ITrack>
         if (this.model.getHost ().supports (Capability.HAS_CROSSFADER))
             return (int) Math.round (this.model.getValueChanger ().toNormalizedValue (track.getCrossfadeParameter ().getValue ()) * 2.0);
         return -1;
+    }
+
+
+    /**
+     * Update the group type, if it is an opened group.
+     *
+     * @param track The track for which to get the type
+     * @return The type
+     */
+    protected ChannelType updateType (final ITrack track)
+    {
+        final ChannelType type = track.getType ();
+        return type == ChannelType.GROUP && track.isGroupExpanded () ? ChannelType.GROUP_OPEN : type;
     }
 }

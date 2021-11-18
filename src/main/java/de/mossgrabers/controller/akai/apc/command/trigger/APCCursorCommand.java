@@ -10,6 +10,7 @@ import de.mossgrabers.framework.command.trigger.Direction;
 import de.mossgrabers.framework.command.trigger.mode.CursorCommand;
 import de.mossgrabers.framework.daw.IModel;
 import de.mossgrabers.framework.mode.Modes;
+import de.mossgrabers.framework.utils.ButtonEvent;
 
 
 /**
@@ -29,6 +30,8 @@ public class APCCursorCommand extends CursorCommand<APCControlSurface, APCConfig
     public APCCursorCommand (final Direction direction, final IModel model, final APCControlSurface surface)
     {
         super (direction, model, surface, false);
+
+        this.triggerEvent = ButtonEvent.UP;
     }
 
 

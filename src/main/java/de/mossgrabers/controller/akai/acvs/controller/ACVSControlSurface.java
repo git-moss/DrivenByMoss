@@ -183,6 +183,7 @@ public class ACVSControlSurface extends AbstractControlSurface<ACVSConfiguration
     private long                lastPong                         = 0;
     private ITextMessageHandler textMessageHandler               = null;
     private final ModeManager   trackModeManager                 = new ModeManager ();
+    private boolean             isShutdown                       = false;
 
 
     /**
@@ -221,6 +222,9 @@ public class ACVSControlSurface extends AbstractControlSurface<ACVSConfiguration
      */
     public void sendPing ()
     {
+        if (this.isShutdown)
+            return;
+
         if (System.currentTimeMillis () - this.lastPong > HEARTBEAT_TIMEOUT && this.lastPong > 0)
         {
             this.lastPong = 0;
@@ -326,6 +330,9 @@ public class ACVSControlSurface extends AbstractControlSurface<ACVSConfiguration
     @Override
     protected void internalShutdown ()
     {
+        this.isShutdown = true;
+        this.host.println ("Stop sending ping.");
+
         final ACVSDisplay d = (ACVSDisplay) this.getDisplay ();
 
         d.setScreenItem (ScreenItem.TRACK_NUMBER_OF_SCENES, 0);
