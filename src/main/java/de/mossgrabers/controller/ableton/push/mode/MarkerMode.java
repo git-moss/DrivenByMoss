@@ -103,6 +103,24 @@ public class MarkerMode extends BaseMode<IMarker>
 
     /** {@inheritDoc} */
     @Override
+    public void selectNextItem ()
+    {
+        // Since markers do not have a selected state we can only scroll the page
+        this.bank.selectNextPage ();
+    }
+
+
+    /** {@inheritDoc} */
+    @Override
+    public void selectPreviousItem ()
+    {
+        // Since markers do not have a selected state we can only scroll the page
+        this.bank.selectPreviousPage ();
+    }
+
+
+    /** {@inheritDoc} */
+    @Override
     public void updateDisplay1 (final ITextDisplay display)
     {
         display.setCell (2, 0, "Markers:");
