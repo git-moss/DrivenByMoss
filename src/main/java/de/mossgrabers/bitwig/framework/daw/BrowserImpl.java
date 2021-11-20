@@ -67,6 +67,8 @@ public class BrowserImpl extends AbstractBrowser
         this.browser.selectedContentTypeIndex ().markInterested ();
         this.browser.selectedContentTypeName ().markInterested ();
         this.browser.contentTypeNames ().markInterested ();
+        this.browser.shouldAudition ().markInterested ();
+        this.browser.canAudition ().markInterested ();
 
         this.filterColumns = new BrowserFilterColumn []
         {
@@ -252,6 +254,23 @@ public class BrowserImpl extends AbstractBrowser
     public void selectNextResult ()
     {
         this.cursorResult.selectNext ();
+    }
+
+
+    /** {@inheritDoc} */
+    @Override
+    public boolean isPreviewEnabled()
+    {
+        return this.browser.shouldAudition().get();
+    }
+
+
+    /** {@inheritDoc} */
+    @Override
+    public void setPreviewEnabled(boolean value)
+    {
+        if(this.browser.canAudition().get())
+            this.browser.shouldAudition().set(value);
     }
 
 

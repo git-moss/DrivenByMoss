@@ -276,4 +276,18 @@ public interface IBrowser extends IObserverManagement
      * @return The info text
      */
     String getInfoText ();
+
+    /**
+     * Tells whether preview is enabled
+     *
+     * @return True is preview is enabled
+     */
+    boolean isPreviewEnabled();
+
+    /**
+     * Activate or deactivate preview
+     *
+     * @param value Should preview for the selected item be enabled or not
+     */
+    void setPreviewEnabled(boolean value);
 }

@@ -149,7 +149,12 @@ public class DeviceBrowserMode extends BaseMode<IItem>
         if (event != ButtonEvent.DOWN)
             return;
         if (this.isPush2)
-            this.selectNext (index, 1);
+        {
+            if (this.surface.isShiftPressed () && index == 7)
+                togglePreviewMode();
+            else
+                this.selectNext (index, 1);
+        }
         else
             this.selectPrevious (index, 1);
     }
@@ -164,7 +169,12 @@ public class DeviceBrowserMode extends BaseMode<IItem>
         if (this.isPush2)
             this.selectPrevious (index, 1);
         else
-            this.selectNext (index, 1);
+        {
+            if (this.surface.isShiftPressed () && index == 6)
+                togglePreviewMode();
+            else
+                this.selectNext (index, 1);
+        }
     }
 
 
@@ -190,6 +200,9 @@ public class DeviceBrowserMode extends BaseMode<IItem>
                 final String info1 = infoText.length () > 17 ? infoText.substring (0, 17) : infoText;
                 final String info2 = infoText.length () > 17 ? infoText.substring (17, infoText.length ()) : "";
                 display.setCell (0, 7, selectedContentType).setBlock (3, 0, info1).setBlock (3, 1, info2);
+
+                final String previewIndication = "Preview: " + (browser.isPreviewEnabled() ? "On" : "Off");
+                display.setCell (3, 7, previewIndication);
 
                 final String sel1 = selectedResult.length () > 17 ? selectedResult.substring (0, 17) : selectedResult;
                 final String sel2 = selectedResult.length () > 17 ? selectedResult.substring (17, selectedResult.length ()) : "";
@@ -265,7 +278,9 @@ public class DeviceBrowserMode extends BaseMode<IItem>
                     final String menuBottomName = getColumnName (column);
                     display.addOptionElement (headerTopName, column.isEmpty () ? "" : column.get ().getName (), i == this.filterColumn, headerBottomName, menuBottomName, !menuBottomName.equals (" "), false);
                 }
-                display.addOptionElement ("", browser.getSelectedContentType (), this.filterColumn == -1, "", "", false, false);
+
+                final String previewIndication = "Preview: " + (browser.isPreviewEnabled() ? "On" : "Off");
+                display.addOptionElement ("", browser.getSelectedContentType (), this.filterColumn == -1, "", previewIndication, browser.isPreviewEnabled(), false);
                 break;
 
             case DeviceBrowserMode.SELECTION_PRESET:
@@ -482,5 +497,12 @@ public class DeviceBrowserMode extends BaseMode<IItem>
             return "";
         final IBrowserColumn browserColumn = column.get ();
         return browserColumn.getCursorName ().equals (browserColumn.getWildcard ()) ? " " : browserColumn.getCursorName (12);
+    }
+
+    private void togglePreviewMode ()
+    {
+        final IBrowser browser = this.model.getBrowser ();
+        if (browser.isActive ())
+            browser.setPreviewEnabled(!browser.isPreviewEnabled());
     }
 }
