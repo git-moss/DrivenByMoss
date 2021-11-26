@@ -68,7 +68,7 @@ public class MenuComponent implements IComponent
             return;
 
         final double menuHeight = 2 * info.getDimensions ().getMenuHeight ();
-        this.footer.draw (info.withBounds (info.getBounds ().getHeight () - menuHeight, menuHeight));
+        this.footer.draw (info.withBounds (info.getBounds ().height () - menuHeight, menuHeight));
     }
 
 

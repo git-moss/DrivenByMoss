@@ -523,16 +523,16 @@ public class ChannelImpl extends AbstractDeviceChainImpl<Channel> implements ICh
         try
         {
             final DeviceMetadataImpl dm = (DeviceMetadataImpl) metadata;
-            switch (dm.getPluginType ())
+            switch (dm.pluginType ())
             {
                 case BITWIG:
-                    insertionPoint.insertBitwigDevice (UUID.fromString (dm.getId ()));
+                    insertionPoint.insertBitwigDevice (UUID.fromString (dm.id ()));
                     break;
                 case VST2:
-                    insertionPoint.insertVST2Device (Integer.parseInt (dm.getId ()));
+                    insertionPoint.insertVST2Device (Integer.parseInt (dm.id ()));
                     break;
                 case VST3:
-                    insertionPoint.insertVST3Device (dm.getId ());
+                    insertionPoint.insertVST3Device (dm.id ());
                     break;
             }
         }

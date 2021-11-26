@@ -151,7 +151,7 @@ public enum Maschine
 
     /**
      * Get the number of foot switches on the Maschine.
-     * 
+     *
      * @return The number
      */
     public int getFootswitches ()

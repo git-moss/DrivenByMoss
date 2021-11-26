@@ -16,7 +16,7 @@ public interface IBounds
      *
      * @return The value
      */
-    double getLeft ();
+    double left ();
 
 
     /**
@@ -24,7 +24,7 @@ public interface IBounds
      *
      * @return The value
      */
-    double getTop ();
+    double top ();
 
 
     /**
@@ -32,7 +32,7 @@ public interface IBounds
      *
      * @return The value
      */
-    double getWidth ();
+    double width ();
 
 
     /**
@@ -40,5 +40,5 @@ public interface IBounds
      *
      * @return The value
      */
-    double getHeight ();
+    double height ();
 }

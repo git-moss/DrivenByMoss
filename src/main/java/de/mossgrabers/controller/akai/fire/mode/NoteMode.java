@@ -91,7 +91,7 @@ public class NoteMode extends AbstractMode<FireControlSurface, FireConfiguration
         // Is the note already edited? Remove it.
         for (final GridStep gridStep: this.notes)
         {
-            if (gridStep.getChannel () == channel && gridStep.getStep () == step && gridStep.getNote () == note)
+            if (gridStep.channel () == channel && gridStep.step () == step && gridStep.note () == note)
             {
                 this.notes.remove (gridStep);
                 return;
@@ -134,9 +134,9 @@ public class NoteMode extends AbstractMode<FireControlSurface, FireConfiguration
     {
         for (final GridStep noteInfo: this.notes)
         {
-            final int channel = noteInfo.getChannel ();
-            final int step = noteInfo.getStep ();
-            final int note = noteInfo.getNote ();
+            final int channel = noteInfo.channel ();
+            final int step = noteInfo.step ();
+            final int note = noteInfo.note ();
 
             switch (index)
             {
@@ -224,9 +224,9 @@ public class NoteMode extends AbstractMode<FireControlSurface, FireConfiguration
         else
         {
             final GridStep noteInfo = this.notes.get (0);
-            final int channel = noteInfo.getChannel ();
-            final int step = noteInfo.getStep ();
-            final int note = noteInfo.getNote ();
+            final int channel = noteInfo.channel ();
+            final int step = noteInfo.step ();
+            final int note = noteInfo.note ();
 
             if (this.notes.size () > 1)
                 desc = "Step: * - " + this.notes.size ();
@@ -332,9 +332,9 @@ public class NoteMode extends AbstractMode<FireControlSurface, FireConfiguration
             return;
         for (final GridStep noteInfo: this.notes)
         {
-            final int channel = noteInfo.getChannel ();
-            final int step = noteInfo.getStep ();
-            final int note = noteInfo.getNote ();
+            final int channel = noteInfo.channel ();
+            final int step = noteInfo.step ();
+            final int note = noteInfo.note ();
             this.clip.updateStepTranspose (channel, step, note, 0);
         }
     }

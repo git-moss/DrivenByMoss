@@ -90,15 +90,15 @@ public class LabelComponent implements IComponent
             if (this.layout == LabelLayout.SMALL_HEADER)
             {
                 // Remove the 2 pixels of the previous menus border line
-                info.getContext ().fillRectangle (bounds.getLeft () - separatorSize, menuHeight - 2, separatorSize, 1, configuration.getColorBorder ());
+                info.getContext ().fillRectangle (bounds.left () - separatorSize, menuHeight - 2, separatorSize, 1, configuration.getColorBorder ());
             }
             return;
         }
 
-        final double left = bounds.getLeft ();
-        final double top = bounds.getTop ();
-        final double width = bounds.getWidth ();
-        final double height = bounds.getHeight ();
+        final double left = bounds.left ();
+        final double top = bounds.top ();
+        final double width = bounds.width ();
+        final double height = bounds.height ();
 
         final IGraphicsContext gc = info.getContext ();
         if (this.layout == LabelLayout.SMALL_HEADER)
@@ -128,10 +128,10 @@ public class LabelComponent implements IComponent
         final IGraphicsContext gc = info.getContext ();
         final IGraphicsDimensions dimensions = info.getDimensions ();
         final IGraphicsConfiguration configuration = info.getConfiguration ();
-        final double left = info.getBounds ().getLeft ();
-        final double width = info.getBounds ().getWidth ();
-        final double top = info.getBounds ().getTop ();
-        final double height = info.getBounds ().getHeight ();
+        final double left = info.getBounds ().left ();
+        final double width = info.getBounds ().width ();
+        final double top = info.getBounds ().top ();
+        final double height = info.getBounds ().height ();
 
         final double unit = dimensions.getUnit ();
         final double doubleUnit = dimensions.getDoubleUnit ();

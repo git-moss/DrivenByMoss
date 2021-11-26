@@ -66,9 +66,9 @@ public class SendsComponent extends ChannelSelectComponent
         final IGraphicsContext gc = info.getContext ();
         final IGraphicsDimensions dimensions = info.getDimensions ();
         final IGraphicsConfiguration configuration = info.getConfiguration ();
-        final double left = info.getBounds ().getLeft ();
-        final double width = info.getBounds ().getWidth ();
-        final double height = info.getBounds ().getHeight ();
+        final double left = info.getBounds ().left ();
+        final double width = info.getBounds ().width ();
+        final double height = info.getBounds ().height ();
 
         final double separatorSize = dimensions.getSeparatorSize ();
         final double menuHeight = dimensions.getMenuHeight ();
@@ -98,7 +98,7 @@ public class SendsComponent extends ChannelSelectComponent
         final double faderLeft = left + inset;
         for (final SendData element: this.sendData)
         {
-            final String n = element.getName ();
+            final String n = element.name ();
             if (n.length () == 0)
                 break;
 
@@ -106,15 +106,15 @@ public class SendsComponent extends ChannelSelectComponent
             topy += sendRowHeight;
             gc.fillRectangle (faderLeft, topy + separatorSize, sliderWidth, sliderHeight, borderColor);
 
-            final double valueWidth = element.getValue () * sliderWidth / dimensions.getParameterUpperBound ();
-            final int modulatedValue = element.getModulatedValue ();
+            final double valueWidth = element.value () * sliderWidth / dimensions.getParameterUpperBound ();
+            final int modulatedValue = element.modulatedValue ();
             final boolean isSendModulated = modulatedValue != -1;
             final double modulatedValueWidth = isSendModulated ? (double) (modulatedValue * sliderWidth / dimensions.getParameterUpperBound ()) : valueWidth;
             final double faderTop = topy + separatorSize + 1;
             gc.fillRectangle (faderLeft + 1, faderTop, modulatedValueWidth - 1, sliderHeight - 2, faderColor);
 
-            final String text = element.getText ();
-            if (element.isEdited ())
+            final String text = element.text ();
+            if (element.edited ())
             {
                 final boolean isTouched = text != null && text.length () > 0;
                 final double w = isTouched ? 3 : 1;
@@ -133,7 +133,7 @@ public class SendsComponent extends ChannelSelectComponent
         {
             topy += sendRowHeight;
 
-            final String text = element.getText ();
+            final String text = element.text ();
             if (text.length () > 0)
             {
                 final double volumeTextTop = topy + sliderHeight + 1 + (this.isExMode ? 0 : separatorSize);

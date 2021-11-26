@@ -11,8 +11,12 @@ import de.mossgrabers.framework.daw.data.IDeviceMetadata;
  * Default implementation for device metadata.
  *
  * @author J&uuml;rgen Mo&szlig;graber
+ *
+ * @param name The name of the plugin
+ * @param id The ID of the plugin
+ * @param pluginType The type
  */
-public class DeviceMetadataImpl implements IDeviceMetadata
+public record DeviceMetadataImpl (String name, String id, PluginType pluginType) implements IDeviceMetadata
 {
     /** The type of the plug-in. */
     public enum PluginType
@@ -26,62 +30,12 @@ public class DeviceMetadataImpl implements IDeviceMetadata
     }
 
 
-    private final String     name;
-    private final String     id;
-    private final PluginType pluginType;
-
-
-    /**
-     * Constructor.
-     *
-     * @param name The name of the plugin
-     * @param id The ID of the plugin
-     * @param pluginType The type
-     */
-    public DeviceMetadataImpl (final String name, final String id, final PluginType pluginType)
-    {
-        this.name = name;
-        this.id = id;
-        this.pluginType = pluginType;
-    }
-
-
     /** {@inheritDoc} */
     @Override
-    public String getName ()
-    {
-        return this.name;
-    }
-
-
-    /** {@inheritDoc} */
-    @Override
-    public String getFullName ()
+    public String fullName ()
     {
         if (this.pluginType == PluginType.BITWIG)
             return this.name;
         return String.format ("%s (%s)", this.name, this.pluginType);
-    }
-
-
-    /**
-     * Get the ID.
-     *
-     * @return The ID
-     */
-    public String getId ()
-    {
-        return this.id;
-    }
-
-
-    /**
-     * Get the type of the plugin.
-     *
-     * @return The type
-     */
-    public PluginType getPluginType ()
-    {
-        return this.pluginType;
     }
 }

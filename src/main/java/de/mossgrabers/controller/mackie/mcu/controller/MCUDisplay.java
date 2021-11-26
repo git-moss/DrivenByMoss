@@ -138,12 +138,12 @@ public class MCUDisplay extends AbstractTextDisplay
         final ExecutorService shutdownExecutor = Executors.newSingleThreadExecutor ();
         shutdownExecutor.execute ( () -> {
 
-            for (int i = 0; i < this.executors.length; i++)
+            for (final LatestTaskExecutor executor: this.executors)
             {
-                this.executors[i].shutdown ();
+                executor.shutdown ();
                 try
                 {
-                    if (!this.executors[i].awaitTermination (5, TimeUnit.SECONDS))
+                    if (!executor.awaitTermination (5, TimeUnit.SECONDS))
                         this.host.error ("MCU display send executor did not end in 5 seconds.");
                 }
                 catch (final InterruptedException ex)

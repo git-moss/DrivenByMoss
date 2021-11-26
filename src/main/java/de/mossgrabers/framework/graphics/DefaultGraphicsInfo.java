@@ -86,7 +86,7 @@ public class DefaultGraphicsInfo implements IGraphicsInfo
     @Override
     public IGraphicsInfo withBounds (final double top, final double height)
     {
-        return this.withBounds (this.bounds.getLeft (), top, this.bounds.getWidth (), height);
+        return this.withBounds (this.bounds.left (), top, this.bounds.width (), height);
     }
 
 

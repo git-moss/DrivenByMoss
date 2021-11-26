@@ -16,7 +16,7 @@ public interface IDeviceMetadata
      *
      * @return The name
      */
-    String getName ();
+    String name ();
 
 
     /**
@@ -24,5 +24,5 @@ public interface IDeviceMetadata
      *
      * @return The full name
      */
-    String getFullName ();
+    String fullName ();
 }

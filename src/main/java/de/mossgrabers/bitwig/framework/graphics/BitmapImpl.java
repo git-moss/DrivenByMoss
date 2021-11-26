@@ -17,24 +17,12 @@ import java.nio.ByteBuffer;
 /**
  * Implementation of a bitmap.
  *
+ * @param bitmap The Bitwig bitmap
+ *
  * @author J&uuml;rgen Mo&szlig;graber
  */
-public class BitmapImpl implements IBitmap
+public record BitmapImpl (Bitmap bitmap) implements IBitmap
 {
-    private final Bitmap bitmap;
-
-
-    /**
-     * Constructor.
-     *
-     * @param bitmap The Bitwig bitmap
-     */
-    public BitmapImpl (final Bitmap bitmap)
-    {
-        this.bitmap = bitmap;
-    }
-
-
     /** {@inheritDoc} */
     @Override
     public void setDisplayWindowTitle (final String title)
@@ -65,16 +53,5 @@ public class BitmapImpl implements IBitmap
     {
         final ByteBuffer imageBuffer = this.bitmap.getMemoryBlock ().createByteBuffer ();
         encoder.encode (imageBuffer, this.bitmap.getWidth (), this.bitmap.getHeight ());
-    }
-
-
-    /**
-     * Get the Bitwig bitmap.
-     *
-     * @return The bitmap
-     */
-    public Bitmap getBitmap ()
-    {
-        return this.bitmap;
     }
 }

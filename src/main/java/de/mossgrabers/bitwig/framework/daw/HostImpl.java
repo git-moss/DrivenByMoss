@@ -92,7 +92,6 @@ public class HostImpl implements IHost
             case NOTE_REPEAT_OCTAVES:
             case NOTE_REPEAT_IS_FREE_RUNNING:
             case NOTE_REPEAT_USE_PRESSURE_TO_VELOCITY:
-                return true;
 
             case NOTE_EDIT_MUTE:
             case NOTE_EDIT_VELOCITY_SPREAD:
@@ -102,14 +101,11 @@ public class HostImpl implements IHost
             case NOTE_EDIT_CHANCE:
             case NOTE_EDIT_OCCURRENCE:
             case NOTE_EDIT_RECCURRENCE:
-                return true;
 
             case QUANTIZE_INPUT_NOTE_LENGTH:
             case QUANTIZE_AMOUNT:
-                return true;
 
             case CUE_VOLUME:
-                return true;
 
             case HAS_SLOT_CHAINS:
             case HAS_DRUM_DEVICE:

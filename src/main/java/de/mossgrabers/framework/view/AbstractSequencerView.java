@@ -410,7 +410,7 @@ public abstract class AbstractSequencerView<S extends IControlSurface<C>, C exte
     {
         for (final GridStep editNote: editNotes)
         {
-            if (editNote.getChannel () == channel && editNote.getStep () == step && editNote.getNote () == note)
+            if (editNote.channel () == channel && editNote.step () == step && editNote.note () == note)
                 return true;
         }
         return false;

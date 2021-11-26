@@ -13,34 +13,11 @@ import com.bitwig.extension.api.graphics.Image;
  * An implementation for an image.
  *
  * @author J&uuml;rgen Mo&szlig;graber
+ *
+ * @param image The Bitwig image
  */
-public class ImageImpl implements IImage
+public record ImageImpl (Image image) implements IImage
 {
-    private final Image image;
-
-
-    /**
-     * Constructor.
-     *
-     * @param image The Bitwig image
-     */
-    public ImageImpl (final Image image)
-    {
-        this.image = image;
-    }
-
-
-    /**
-     * Get the encapsulated Bitwig image.
-     *
-     * @return The image
-     */
-    public Image getImage ()
-    {
-        return this.image;
-    }
-
-
     /** {@inheritDoc} */
     @Override
     public double getWidth ()

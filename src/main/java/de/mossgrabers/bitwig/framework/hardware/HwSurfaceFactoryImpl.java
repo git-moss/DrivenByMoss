@@ -168,7 +168,7 @@ public class HwSurfaceFactoryImpl implements IHwSurfaceFactory
     public IHwGraphicsDisplay createGraphicsDisplay (final int surfaceID, final OutputID outputID, final IBitmap bitmap)
     {
         final String id = createID (surfaceID, outputID.name ());
-        return new HwGraphicsDisplayImpl (this.hardwareSurface.createHardwarePixelDisplay (id, ((BitmapImpl) bitmap).getBitmap ()));
+        return new HwGraphicsDisplayImpl (this.hardwareSurface.createHardwarePixelDisplay (id, ((BitmapImpl) bitmap).bitmap ()));
     }
 
 

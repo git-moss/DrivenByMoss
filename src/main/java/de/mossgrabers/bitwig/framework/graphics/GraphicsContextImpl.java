@@ -239,7 +239,7 @@ public class GraphicsContextImpl implements IGraphicsContext
     @Override
     public void drawImage (final IImage icon, final double x, final double y)
     {
-        this.gc.drawImage (((ImageImpl) icon).getImage (), x, y);
+        this.gc.drawImage (((ImageImpl) icon).image (), x, y);
     }
 
 
@@ -251,7 +251,7 @@ public class GraphicsContextImpl implements IGraphicsContext
         try
         {
             this.setColor (maskColor);
-            final Image image = imageImpl.getImage ();
+            final Image image = imageImpl.image ();
             this.gc.mask (image, x, y);
             this.gc.fill ();
         }

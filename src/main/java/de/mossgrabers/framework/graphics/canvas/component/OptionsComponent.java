@@ -70,8 +70,8 @@ public class OptionsComponent implements IComponent
         this.header.draw (info.withBounds (0, menuHeight));
 
         final IBounds bounds = info.getBounds ();
-        final double left = bounds.getLeft ();
-        final double height = bounds.getHeight ();
+        final double left = bounds.left ();
+        final double height = bounds.height ();
 
         this.footer.draw (info.withBounds (height - menuHeight, menuHeight));
 

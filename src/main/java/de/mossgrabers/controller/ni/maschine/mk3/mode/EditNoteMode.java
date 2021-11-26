@@ -134,7 +134,7 @@ public class EditNoteMode extends BaseMode implements INoteMode
         // Is the note already edited? Remove it.
         for (final GridStep gridStep: this.notes)
         {
-            if (gridStep.getChannel () == channel && gridStep.getStep () == step && gridStep.getNote () == note)
+            if (gridStep.channel () == channel && gridStep.step () == step && gridStep.note () == note)
             {
                 this.notes.remove (gridStep);
                 return;
@@ -159,9 +159,9 @@ public class EditNoteMode extends BaseMode implements INoteMode
     {
         for (final GridStep noteInfo: this.notes)
         {
-            final int channel = noteInfo.getChannel ();
-            final int step = noteInfo.getStep ();
-            final int note = noteInfo.getNote ();
+            final int channel = noteInfo.channel ();
+            final int step = noteInfo.step ();
+            final int note = noteInfo.note ();
 
             final int idx = index < 0 ? this.selectedParam : index;
 
@@ -328,9 +328,9 @@ public class EditNoteMode extends BaseMode implements INoteMode
 
             for (final GridStep noteInfo: this.notes)
             {
-                final int channel = noteInfo.getChannel ();
-                final int step = noteInfo.getStep ();
-                final int note = noteInfo.getNote ();
+                final int channel = noteInfo.channel ();
+                final int step = noteInfo.step ();
+                final int note = noteInfo.note ();
 
                 switch (idx + 10 * this.selectedPage)
                 {
@@ -442,9 +442,9 @@ public class EditNoteMode extends BaseMode implements INoteMode
         }
 
         final GridStep noteInfo = this.notes.get (0);
-        final int channel = noteInfo.getChannel ();
-        final int step = noteInfo.getStep ();
-        final int note = noteInfo.getNote ();
+        final int channel = noteInfo.channel ();
+        final int step = noteInfo.step ();
+        final int note = noteInfo.note ();
 
         final IStepInfo stepInfo = this.clip.getStep (channel, step, note);
         d.setCell (0, 0, "Note");

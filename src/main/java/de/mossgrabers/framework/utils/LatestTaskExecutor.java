@@ -94,7 +94,7 @@ public class LatestTaskExecutor implements ExecutorService
     @Override
     public <T> Future<T> submit (final Callable<T> task)
     {
-        throw new RuntimeException ("Use execute instead.");
+        throw new LatestTaskException ();
     }
 
 
@@ -102,7 +102,7 @@ public class LatestTaskExecutor implements ExecutorService
     @Override
     public <T> Future<T> submit (final Runnable task, final T result)
     {
-        throw new RuntimeException ("Use execute instead.");
+        throw new LatestTaskException ();
     }
 
 
@@ -110,7 +110,7 @@ public class LatestTaskExecutor implements ExecutorService
     @Override
     public Future<?> submit (final Runnable task)
     {
-        throw new RuntimeException ("Use execute instead.");
+        throw new LatestTaskException ();
     }
 
 
@@ -118,7 +118,7 @@ public class LatestTaskExecutor implements ExecutorService
     @Override
     public <T> List<Future<T>> invokeAll (final Collection<? extends Callable<T>> tasks) throws InterruptedException
     {
-        throw new RuntimeException ("Use execute instead.");
+        throw new LatestTaskException ();
     }
 
 
@@ -126,7 +126,7 @@ public class LatestTaskExecutor implements ExecutorService
     @Override
     public <T> List<Future<T>> invokeAll (final Collection<? extends Callable<T>> tasks, final long timeout, final TimeUnit unit) throws InterruptedException
     {
-        throw new RuntimeException ("Use execute instead.");
+        throw new LatestTaskException ();
     }
 
 
@@ -134,7 +134,7 @@ public class LatestTaskExecutor implements ExecutorService
     @Override
     public <T> T invokeAny (final Collection<? extends Callable<T>> tasks) throws InterruptedException, ExecutionException
     {
-        throw new RuntimeException ("Use execute instead.");
+        throw new LatestTaskException ();
     }
 
 
@@ -142,6 +142,6 @@ public class LatestTaskExecutor implements ExecutorService
     @Override
     public <T> T invokeAny (final Collection<? extends Callable<T>> tasks, final long timeout, final TimeUnit unit) throws InterruptedException, ExecutionException, TimeoutException
     {
-        throw new RuntimeException ("Use execute instead.");
+        throw new LatestTaskException ();
     }
 }

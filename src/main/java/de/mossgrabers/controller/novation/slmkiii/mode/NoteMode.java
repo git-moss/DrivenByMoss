@@ -98,7 +98,7 @@ public class NoteMode extends BaseMode<IItem> implements INoteMode
         // Is the note already edited? Remove it.
         for (final GridStep gridStep: this.notes)
         {
-            if (gridStep.getChannel () == channel && gridStep.getStep () == step && gridStep.getNote () == note)
+            if (gridStep.channel () == channel && gridStep.step () == step && gridStep.note () == note)
             {
                 this.notes.remove (gridStep);
                 return;
@@ -118,9 +118,9 @@ public class NoteMode extends BaseMode<IItem> implements INoteMode
 
         for (final GridStep noteInfo: this.notes)
         {
-            final int channel = noteInfo.getChannel ();
-            final int step = noteInfo.getStep ();
-            final int note = noteInfo.getNote ();
+            final int channel = noteInfo.channel ();
+            final int step = noteInfo.step ();
+            final int note = noteInfo.note ();
 
             final IStepInfo stepInfo = this.clip.getStep (channel, step, note);
 
@@ -261,9 +261,9 @@ public class NoteMode extends BaseMode<IItem> implements INoteMode
 
         for (final GridStep noteInfo: this.notes)
         {
-            final int channel = noteInfo.getChannel ();
-            final int step = noteInfo.getStep ();
-            final int note = noteInfo.getNote ();
+            final int channel = noteInfo.channel ();
+            final int step = noteInfo.step ();
+            final int note = noteInfo.note ();
 
             switch (this.page)
             {
@@ -442,9 +442,9 @@ public class NoteMode extends BaseMode<IItem> implements INoteMode
         final IValueChanger valueChanger = this.model.getValueChanger ();
 
         final GridStep noteInfo = this.notes.get (0);
-        final int channel = noteInfo.getChannel ();
-        final int step = noteInfo.getStep ();
-        final int note = noteInfo.getNote ();
+        final int channel = noteInfo.channel ();
+        final int step = noteInfo.step ();
+        final int note = noteInfo.note ();
         final IStepInfo stepInfo = this.clip.getStep (channel, step, note);
 
         switch (this.page)
@@ -564,9 +564,9 @@ public class NoteMode extends BaseMode<IItem> implements INoteMode
 
         for (final GridStep noteInfo: this.notes)
         {
-            final int channel = noteInfo.getChannel ();
-            final int step = noteInfo.getStep ();
-            final int note = noteInfo.getNote ();
+            final int channel = noteInfo.channel ();
+            final int step = noteInfo.step ();
+            final int note = noteInfo.note ();
 
             final IStepInfo stepInfo = this.clip.getStep (channel, step, note);
 
@@ -655,9 +655,9 @@ public class NoteMode extends BaseMode<IItem> implements INoteMode
 
         for (final GridStep noteInfo: this.notes)
         {
-            final int channel = noteInfo.getChannel ();
-            final int step = noteInfo.getStep ();
-            final int note = noteInfo.getNote ();
+            final int channel = noteInfo.channel ();
+            final int step = noteInfo.step ();
+            final int note = noteInfo.note ();
 
             switch (this.page)
             {
@@ -814,9 +814,9 @@ public class NoteMode extends BaseMode<IItem> implements INoteMode
         else
         {
             final GridStep noteInfo = this.notes.get (0);
-            final int channel = noteInfo.getChannel ();
-            final int step = noteInfo.getStep ();
-            final int note = noteInfo.getNote ();
+            final int channel = noteInfo.channel ();
+            final int step = noteInfo.step ();
+            final int note = noteInfo.note ();
 
             final IStepInfo stepInfo = this.clip.getStep (channel, step, note);
 

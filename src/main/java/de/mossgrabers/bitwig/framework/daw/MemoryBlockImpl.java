@@ -11,34 +11,11 @@ import java.nio.ByteBuffer;
  * Wrapper to a block of memory in Bitwig API.
  *
  * @author J&uuml;rgen Mo&szlig;graber
+ *
+ * @param memoryBlock The memory block to wrap
  */
-public class MemoryBlockImpl implements IMemoryBlock
+public record MemoryBlockImpl (MemoryBlock memoryBlock) implements IMemoryBlock
 {
-    private final MemoryBlock memoryBlock;
-
-
-    /**
-     * Constructor.
-     *
-     * @param memoryBlock The memory block to wrap
-     */
-    public MemoryBlockImpl (final MemoryBlock memoryBlock)
-    {
-        this.memoryBlock = memoryBlock;
-    }
-
-
-    /**
-     * Get the Bitwig memory block.
-     *
-     * @return The memory block
-     */
-    public MemoryBlock getMemoryBlock ()
-    {
-        return this.memoryBlock;
-    }
-
-
     /** {@inheritDoc} */
     @Override
     public ByteBuffer createByteBuffer ()

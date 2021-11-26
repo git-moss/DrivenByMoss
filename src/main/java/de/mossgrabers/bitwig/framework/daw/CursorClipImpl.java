@@ -1087,7 +1087,7 @@ public class CursorClipImpl implements INoteClip
     public void stopEdit ()
     {
         for (final GridStep editStep: this.editSteps)
-            this.sendClipData (editStep.getChannel (), editStep.getStep (), editStep.getNote ());
+            this.sendClipData (editStep.channel (), editStep.step (), editStep.note ());
         this.editSteps.clear ();
     }
 
@@ -1096,9 +1096,9 @@ public class CursorClipImpl implements INoteClip
     {
         if (this.editSteps.isEmpty ())
             return;
-        final int channel = editStep.getChannel ();
-        final int step = editStep.getStep ();
-        final int note = editStep.getNote ();
+        final int channel = editStep.channel ();
+        final int step = editStep.step ();
+        final int note = editStep.note ();
         this.sendClipData (channel, step, note);
         this.host.scheduleTask ( () -> this.delayedUpdate (new GridStep (channel, step, note)), 100);
     }
@@ -1161,7 +1161,7 @@ public class CursorClipImpl implements INoteClip
         for (final GridStep editStep: this.editSteps)
         {
             // Is the note among the currently edited ones?
-            if (editStep.getChannel () == channel && editStep.getStep () == step && editStep.getNote () == note)
+            if (editStep.channel () == channel && editStep.step () == step && editStep.note () == note)
                 return;
         }
 

@@ -383,7 +383,7 @@ public abstract class AbstractConfiguration implements Configuration
     private boolean                                   autoSelectDrum              = false;
     private boolean                                   turnOffEmptyDrumPads        = false;
     private int                                       actionForRecArmedPad        = 0;
-    private int []                                    footswitch                  = new int [NUMBER_OF_FOOTSWITCHES];
+    private final int []                                    footswitch                  = new int [NUMBER_OF_FOOTSWITCHES];
     private final boolean []                          browserDisplayFilter        =
     {
         true,
@@ -754,7 +754,7 @@ public abstract class AbstractConfiguration implements Configuration
 
     /** {@inheritDoc} */
     @Override
-    public int getFootswitch (int index)
+    public int getFootswitch (final int index)
     {
         return this.footswitch[index];
     }
@@ -1812,7 +1812,7 @@ public abstract class AbstractConfiguration implements Configuration
     {
         final String [] deviceNames = new String [deviceMetadata.size ()];
         for (int i = 0; i < deviceNames.length; i++)
-            deviceNames[i] = deviceMetadata.get (i).getFullName ();
+            deviceNames[i] = deviceMetadata.get (i).fullName ();
         return deviceNames;
     }
 }

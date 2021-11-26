@@ -49,7 +49,7 @@ public class UsbEndpointImpl implements IUsbEndpoint
 
         try
         {
-            ((UsbOutputPipe) this.endpoint).write (((MemoryBlockImpl) memoryBlock).getMemoryBlock (), timeout);
+            ((UsbOutputPipe) this.endpoint).write (((MemoryBlockImpl) memoryBlock).memoryBlock (), timeout);
         }
         catch (final RuntimeException ex)
         {
@@ -69,7 +69,7 @@ public class UsbEndpointImpl implements IUsbEndpoint
 
         try
         {
-            ((UsbInputPipe) this.endpoint).readAsync (((MemoryBlockImpl) memoryBlock).getMemoryBlock (), callback::process, timeout);
+            ((UsbInputPipe) this.endpoint).readAsync (((MemoryBlockImpl) memoryBlock).memoryBlock (), callback::process, timeout);
         }
         catch (final RuntimeException ex)
         {

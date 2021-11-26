@@ -476,7 +476,7 @@ public abstract class AbstractPolySequencerView<S extends IControlSurface<C>, C 
     {
         for (final GridStep editNote: editNotes)
         {
-            if (editNote.getChannel () == channel && editNote.getStep () == step)
+            if (editNote.channel () == channel && editNote.step () == step)
                 return true;
         }
         return false;
