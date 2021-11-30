@@ -88,6 +88,28 @@ public interface IBrowser extends IObserverManagement
 
 
     /**
+     * Is browser preview enabled?
+     *
+     * @return True, if enabled
+     */
+    boolean isPreviewEnabled ();
+
+
+    /**
+     * Toggle browser preview on/off.
+     */
+    void togglePreviewEnabled ();
+
+
+    /**
+     * Set browser preview on/off.
+     *
+     * @param isEnabled True to enable
+     */
+    void setPreviewEnabled (boolean isEnabled);
+
+
+    /**
      * Open the browser to browse for items replacing the given one.
      *
      * @param item The item to replace

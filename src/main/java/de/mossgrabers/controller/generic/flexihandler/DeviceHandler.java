@@ -56,6 +56,14 @@ public class DeviceHandler extends AbstractHandler
             FlexiCommand.DEVICE_SCROLL_DEVICES,
             FlexiCommand.DEVICE_SELECT_PREVIOUS_PARAMETER_PAGE,
             FlexiCommand.DEVICE_SELECT_NEXT_PARAMETER_PAGE,
+            FlexiCommand.DEVICE_SELECT_PARAMETER_PAGE_1,
+            FlexiCommand.DEVICE_SELECT_PARAMETER_PAGE_2,
+            FlexiCommand.DEVICE_SELECT_PARAMETER_PAGE_3,
+            FlexiCommand.DEVICE_SELECT_PARAMETER_PAGE_4,
+            FlexiCommand.DEVICE_SELECT_PARAMETER_PAGE_5,
+            FlexiCommand.DEVICE_SELECT_PARAMETER_PAGE_6,
+            FlexiCommand.DEVICE_SELECT_PARAMETER_PAGE_7,
+            FlexiCommand.DEVICE_SELECT_PARAMETER_PAGE_8,
             FlexiCommand.DEVICE_SCROLL_PARAMETER_PAGES,
             FlexiCommand.DEVICE_SELECT_PREVIOUS_PARAMETER_BANK,
             FlexiCommand.DEVICE_SELECT_NEXT_PARAMETER_BANK,
@@ -104,6 +112,16 @@ public class DeviceHandler extends AbstractHandler
             case DEVICE_SET_PARAMETER_7:
             case DEVICE_SET_PARAMETER_8:
                 return cursorDevice.getParameterBank ().getItem (command.ordinal () - FlexiCommand.DEVICE_SET_PARAMETER_1.ordinal ()).getValue ();
+
+            case DEVICE_SELECT_PARAMETER_PAGE_1:
+            case DEVICE_SELECT_PARAMETER_PAGE_2:
+            case DEVICE_SELECT_PARAMETER_PAGE_3:
+            case DEVICE_SELECT_PARAMETER_PAGE_4:
+            case DEVICE_SELECT_PARAMETER_PAGE_5:
+            case DEVICE_SELECT_PARAMETER_PAGE_6:
+            case DEVICE_SELECT_PARAMETER_PAGE_7:
+            case DEVICE_SELECT_PARAMETER_PAGE_8:
+                return cursorDevice.getParameterBank ().getItem (command.ordinal () - FlexiCommand.DEVICE_SELECT_PARAMETER_PAGE_1.ordinal ()).isSelected () ? 127 : 0;
 
             default:
                 return -1;
@@ -168,6 +186,22 @@ public class DeviceHandler extends AbstractHandler
                 if (isButtonPressed)
                     cursorDevice.getParameterBank ().scrollForwards ();
                 break;
+
+            case DEVICE_SELECT_PARAMETER_PAGE_1:
+            case DEVICE_SELECT_PARAMETER_PAGE_2:
+            case DEVICE_SELECT_PARAMETER_PAGE_3:
+            case DEVICE_SELECT_PARAMETER_PAGE_4:
+            case DEVICE_SELECT_PARAMETER_PAGE_5:
+            case DEVICE_SELECT_PARAMETER_PAGE_6:
+            case DEVICE_SELECT_PARAMETER_PAGE_7:
+            case DEVICE_SELECT_PARAMETER_PAGE_8:
+                if (isButtonPressed)
+                {
+                    cursorDevice.getParameterPageBank ().selectPage (command.ordinal () - FlexiCommand.DEVICE_SELECT_PARAMETER_PAGE_1.ordinal ());
+                    this.mvHelper.notifySelectedDeviceAndParameterPage ();
+                }
+                break;
+
             case DEVICE_SCROLL_PARAMETER_PAGES:
                 this.scrollParameterPage (knobMode, value);
                 break;

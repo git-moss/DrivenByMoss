@@ -178,6 +178,9 @@ public class FootswitchCommand<S extends IControlSurface<C>, C extends Configura
      */
     private void handleLooper (final ButtonEvent event)
     {
+        if (event == ButtonEvent.LONG)
+            return;
+
         final ITrack cursorTrack = this.model.getCursorTrack ();
         if (!cursorTrack.doesExist ())
         {
@@ -188,28 +191,18 @@ public class FootswitchCommand<S extends IControlSurface<C>, C extends Configura
         final ISlotBank slotBank = cursorTrack.getSlotBank ();
         final Optional<ISlot> selectedSlot = slotBank.getSelectedItem ();
         final ISlot slot = selectedSlot.isEmpty () ? slotBank.getItem (0) : selectedSlot.get ();
-        if (event == ButtonEvent.DOWN)
+
+        final boolean isDown = event == ButtonEvent.DOWN;
+        if (isDown && !slot.hasContent ())
         {
-            if (slot.hasContent ())
-            {
-                // If there is a clip in the selected slot, enable (not toggle)
-                // LauncherOverdub.
-                this.model.getTransport ().setLauncherOverdub (true);
-            }
-            else
-            {
-                // If there is no clip in the selected slot, create a clip and begin record
-                // mode. Releasing it ends record mode.
-                this.newCommand.execute ();
-                slot.select ();
-                this.model.getTransport ().setLauncherOverdub (true);
-            }
+            // If there is no clip in the selected slot, create a clip and begin record
+            // mode. Releasing it ends record mode.
+            this.newCommand.execute ();
+            slot.select ();
         }
-        else
-        {
-            // Releasing it would turn off LauncherOverdub.
-            this.model.getTransport ().setLauncherOverdub (false);
-        }
+
+        this.model.getTransport ().setLauncherOverdub (isDown);
+
         // Start transport if not already playing
         slot.launch ();
     }

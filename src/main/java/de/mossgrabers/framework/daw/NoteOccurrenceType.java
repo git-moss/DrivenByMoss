@@ -21,6 +21,10 @@ public enum NoteOccurrenceType
     PREV("With Previous"),
     /** Without previous mode. */
     NOT_PREV("Without Previous"),
+    /** With previous channel. */
+    PREV_CHANNEL("With Prev Channel"),
+    /** Without previous channel. */
+    NOT_PREV_CHANNEL("Without Prev Channel"),
     /** With previous key mode. */
     PREV_KEY("With Prev Key"),
     /** Without previous key mode. */

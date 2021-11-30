@@ -5,13 +5,16 @@
 package de.mossgrabers.controller.ableton.push.mode.device;
 
 import de.mossgrabers.controller.ableton.push.controller.Push1Display;
+import de.mossgrabers.controller.ableton.push.controller.PushColorManager;
 import de.mossgrabers.controller.ableton.push.controller.PushControlSurface;
 import de.mossgrabers.controller.ableton.push.mode.BaseMode;
 import de.mossgrabers.framework.controller.ButtonID;
+import de.mossgrabers.framework.controller.color.ColorEx;
 import de.mossgrabers.framework.controller.display.IGraphicDisplay;
 import de.mossgrabers.framework.controller.display.ITextDisplay;
 import de.mossgrabers.framework.daw.IBrowser;
 import de.mossgrabers.framework.daw.IModel;
+import de.mossgrabers.framework.daw.constants.Capability;
 import de.mossgrabers.framework.daw.data.IBrowserColumn;
 import de.mossgrabers.framework.daw.data.IBrowserColumnItem;
 import de.mossgrabers.framework.daw.data.IItem;
@@ -148,6 +151,13 @@ public class DeviceBrowserMode extends BaseMode<IItem>
     {
         if (event != ButtonEvent.DOWN)
             return;
+
+        if (this.surface.isShiftPressed () && index == 7)
+        {
+            this.model.getBrowser ().togglePreviewEnabled ();
+            return;
+        }
+
         if (this.isPush2)
             this.selectNext (index, 1);
         else
@@ -182,18 +192,36 @@ public class DeviceBrowserMode extends BaseMode<IItem>
                 String selectedContentType = browser.getSelectedContentType ();
                 if (this.filterColumn == -1)
                     selectedContentType = Push1Display.SELECT_ARROW + selectedContentType;
+                display.setCell (0, 7, selectedContentType);
 
+                display.setBlock (2, 2, "Selection:");
                 String selectedResult = browser.getSelectedResult ();
-                selectedResult = selectedResult == null || selectedResult.isBlank () ? "Selection: None" : "Selection: " + selectedResult;
+                selectedResult = selectedResult == null || selectedResult.isBlank () ? "None" : selectedResult;
 
-                final String infoText = browser.getInfoText ();
-                final String info1 = infoText.length () > 17 ? infoText.substring (0, 17) : infoText;
-                final String info2 = infoText.length () > 17 ? infoText.substring (17, infoText.length ()) : "";
-                display.setCell (0, 7, selectedContentType).setBlock (3, 0, info1).setBlock (3, 1, info2);
+                String [] infoText = browser.getInfoText ().split (":");
+                infoText = new String []
+                {
+                    infoText[0] + ":",
+                    infoText.length == 1 ? "" : infoText[1].trim ()
+                };
+
+                String info1 = infoText[0].length () > 17 ? infoText[0].substring (0, 17) : infoText[0];
+                String info2 = infoText[0].length () > 17 ? infoText[0].substring (17, infoText[0].length ()) : "";
+                display.setBlock (2, 0, info1).setBlock (2, 1, info2);
+
+                info1 = infoText[1].length () > 17 ? infoText[1].substring (0, 17) : infoText[1];
+                info2 = infoText[1].length () > 17 ? infoText[1].substring (17, infoText[1].length ()) : "";
+                display.setBlock (3, 0, info1).setBlock (3, 1, info2);
 
                 final String sel1 = selectedResult.length () > 17 ? selectedResult.substring (0, 17) : selectedResult;
                 final String sel2 = selectedResult.length () > 17 ? selectedResult.substring (17, selectedResult.length ()) : "";
-                display.setBlock (3, 2, sel1).setBlock (3, 3, sel2);
+                display.setBlock (3, 2, sel1).setCell (3, 6, sel2);
+
+                if (this.model.getHost ().supports (Capability.HAS_BROWSER_PREVIEW))
+                {
+                    display.setCell (2, 7, "Preview:");
+                    display.setCell (3, 7, browser.isPreviewEnabled () ? "On" : "Off");
+                }
 
                 for (int i = 0; i < 7; i++)
                 {
@@ -265,7 +293,11 @@ public class DeviceBrowserMode extends BaseMode<IItem>
                     final String menuBottomName = getColumnName (column);
                     display.addOptionElement (headerTopName, column.isEmpty () ? "" : column.get ().getName (), i == this.filterColumn, headerBottomName, menuBottomName, !menuBottomName.equals (" "), false);
                 }
-                display.addOptionElement ("", browser.getSelectedContentType (), this.filterColumn == -1, "", "", false, false);
+
+                final boolean supportsPreview = this.model.getHost ().supports (Capability.HAS_BROWSER_PREVIEW);
+                final String bottomMenu = supportsPreview ? "Preview" : "";
+                final ColorEx menuBottomColor = browser.isPreviewEnabled () ? ColorEx.ORANGE : ColorEx.GRAY;
+                display.addOptionElement ("", browser.getSelectedContentType (), this.filterColumn == -1, null, "", bottomMenu, false, supportsPreview ? menuBottomColor : null, false);
                 break;
 
             case DeviceBrowserMode.SELECTION_PRESET:
@@ -327,7 +359,11 @@ public class DeviceBrowserMode extends BaseMode<IItem>
         if (index >= 0)
         {
             if (index == 7)
+            {
+                if (this.surface.isShiftPressed () && this.model.getHost ().supports (Capability.HAS_BROWSER_PREVIEW))
+                    return this.model.getBrowser ().isPreviewEnabled () ? PushColorManager.PUSH_ORANGE_HI : PushColorManager.PUSH_ORANGE_LO;
                 return AbstractFeatureGroup.BUTTON_COLOR_ON;
+            }
             final Optional<IBrowserColumn> col = this.getFilterColumn (index);
             return col.isPresent () && col.get ().doesExist () ? AbstractFeatureGroup.BUTTON_COLOR_ON : AbstractFeatureGroup.BUTTON_COLOR_OFF;
         }

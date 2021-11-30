@@ -67,6 +67,7 @@ public class BrowserImpl extends AbstractBrowser
         this.browser.selectedContentTypeIndex ().markInterested ();
         this.browser.selectedContentTypeName ().markInterested ();
         this.browser.contentTypeNames ().markInterested ();
+        this.browser.shouldAudition ().markInterested ();
 
         this.filterColumns = new BrowserFilterColumn []
         {
@@ -98,6 +99,7 @@ public class BrowserImpl extends AbstractBrowser
         Util.setIsSubscribed (this.browser.selectedContentTypeIndex (), enable);
         Util.setIsSubscribed (this.browser.selectedContentTypeName (), enable);
         Util.setIsSubscribed (this.browser.contentTypeNames (), enable);
+        Util.setIsSubscribed (this.browser.shouldAudition (), enable);
 
         for (final IBrowserColumn column: this.columnData)
             column.enableObservers (enable);
@@ -154,6 +156,30 @@ public class BrowserImpl extends AbstractBrowser
     public String [] getContentTypeNames ()
     {
         return this.browser.contentTypeNames ().get ();
+    }
+
+
+    /** {@inheritDoc} */
+    @Override
+    public boolean isPreviewEnabled ()
+    {
+        return this.browser.shouldAudition ().get ();
+    }
+
+
+    /** {@inheritDoc} */
+    @Override
+    public void togglePreviewEnabled ()
+    {
+        this.browser.shouldAudition ().toggle ();
+    }
+
+
+    /** {@inheritDoc} */
+    @Override
+    public void setPreviewEnabled (final boolean isEnabled)
+    {
+        this.browser.shouldAudition ().set (isEnabled);
     }
 
 

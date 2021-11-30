@@ -125,6 +125,7 @@ public class HUIConfiguration extends AbstractConfiguration
         this.activateExcludeDeactivatedItemsSetting (globalSettings);
         this.activateZoomStateSetting (globalSettings);
         this.activateChannelTouchSetting (globalSettings);
+        this.activateNewClipLengthSetting (globalSettings);
     }
 
 

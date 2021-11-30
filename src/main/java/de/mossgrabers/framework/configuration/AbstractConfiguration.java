@@ -383,7 +383,7 @@ public abstract class AbstractConfiguration implements Configuration
     private boolean                                   autoSelectDrum              = false;
     private boolean                                   turnOffEmptyDrumPads        = false;
     private int                                       actionForRecArmedPad        = 0;
-    private final int []                                    footswitch                  = new int [NUMBER_OF_FOOTSWITCHES];
+    private final int []                              footswitch                  = new int [NUMBER_OF_FOOTSWITCHES];
     private final boolean []                          browserDisplayFilter        =
     {
         true,

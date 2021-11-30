@@ -58,5 +58,7 @@ public enum Capability
     /** If the DAW supports track/device pinning. */
     HAS_PINNING,
     /** The host has a dedicated send bank. */
-    HAS_EFFECT_BANK
+    HAS_EFFECT_BANK,
+    /** The host supports browser preview. */
+    HAS_BROWSER_PREVIEW
 }

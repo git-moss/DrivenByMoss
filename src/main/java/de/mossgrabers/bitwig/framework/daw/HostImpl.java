@@ -112,6 +112,7 @@ public class HostImpl implements IHost
             case HAS_CROSSFADER:
             case HAS_PINNING:
             case HAS_EFFECT_BANK:
+            case HAS_BROWSER_PREVIEW:
                 return true;
         }
         return false;
