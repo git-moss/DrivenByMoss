@@ -58,7 +58,8 @@ public class OSCConfiguration extends AbstractOpenSoundControlConfiguration
     private String                 sendHost                  = DEFAULT_SERVER;
     private int                    sendPort                  = 9000;
     private ValueResolution        valueResolution           = ValueResolution.LOW;
-    private int                    bankPageSize              = 8;
+    private int                    ScenebankPageSize              = 5;
+    private int                    TrackbankPageSize              = 8;
     private final String []        assignableFunctionActions = new String [8];
 
 
@@ -116,8 +117,10 @@ public class OSCConfiguration extends AbstractOpenSoundControlConfiguration
         final String [] pageSize = new String [200];
         for (int i = 0; i < pageSize.length; i++)
             pageSize[i] = Integer.toString (i + 1);
-        final IEnumSetting bankPageSizeSetting = globalSettings.getEnumSetting ("Bank Page Size (requires restart)", CATEGORY_PROTOCOL, pageSize, pageSize[7]);
-        this.bankPageSize = Integer.parseInt (bankPageSizeSetting.get ());
+        final IEnumSetting ScenebankPageSizeSetting = globalSettings.getEnumSetting ("Scene Page Size (requires restart)", CATEGORY_PROTOCOL, pageSize, pageSize[4]);
+        final IEnumSetting TrackbankPageSizeSetting = globalSettings.getEnumSetting ("Track Page Size (requires restart)", CATEGORY_PROTOCOL, pageSize, pageSize[7]);
+        this.ScenebankPageSize = Integer.parseInt (ScenebankPageSizeSetting.get ());
+        this.TrackbankPageSize = Integer.parseInt (TrackbankPageSizeSetting.get ());
 
         ///////////////////////////
         // Transport
@@ -198,13 +201,23 @@ public class OSCConfiguration extends AbstractOpenSoundControlConfiguration
 
 
     /**
-     * Get the bank page size.
+     * Get the Tack page size.
      *
      * @return The bank page size
      */
-    public int getBankPageSize ()
+    public int getTrackBankPageSize ()
     {
-        return this.bankPageSize;
+        return this.TrackbankPageSize;
+    }
+
+    /**
+     * Get the Scene page size.
+     *
+     * @return The bank page size
+     */
+    public int getSceneBankPageSize ()
+    {
+        return this.ScenebankPageSize;
     }
 
 

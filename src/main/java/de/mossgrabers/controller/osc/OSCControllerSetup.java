@@ -93,14 +93,15 @@ public class OSCControllerSetup extends AbstractControllerSetup<IControlSurface<
     @Override
     protected void createModel ()
     {
-        final int bankPageSize = this.configuration.getBankPageSize ();
+        final int bankPageSize = this.configuration.getTrackBankPageSize ();
+        final int ScenebankPageSize = this.configuration.getSceneBankPageSize ();
 
         final ModelSetup ms = new ModelSetup ();
         ms.enableDevice (DeviceID.FIRST_INSTRUMENT);
         ms.enableDevice (DeviceID.EQ);
         ms.setHasFlatTrackList (false);
         ms.setNumTracks (bankPageSize);
-        ms.setNumScenes (bankPageSize);
+        ms.setNumScenes (ScenebankPageSize);
         ms.setNumSends (bankPageSize);
         ms.setNumDevicesInBank (bankPageSize);
         ms.setNumDeviceLayers (bankPageSize);
