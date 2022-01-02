@@ -1,5 +1,5 @@
 // Written by Jürgen Moßgraber - mossgrabers.de
-// (c) 2017-2021
+// (c) 2017-2022
 // Licensed under LGPLv3 - http://www.gnu.org/licenses/lgpl-3.0.txt
 
 package de.mossgrabers.framework.daw.midi;
@@ -9,8 +9,22 @@ package de.mossgrabers.framework.daw.midi;
  *
  * @author J&uuml;rgen Mo&szlig;graber
  */
-public abstract class AbstractMidiOutputImpl implements IMidiOutput
+public abstract class AbstractMidiOutput implements IMidiOutput
 {
+    /** The MIDI status byte for MPE Zone 1. */
+    public static final int    ZONE_1                                  = 0xB0;
+    /** The MIDI status byte for MPE Zone 2. */
+    public static final int    ZONE_2                                  = 0xBF;
+
+    protected static final int REGISTERED_PARAMETER_NUMBER_MSB         = 0x65;
+    protected static final int REGISTERED_PARAMETER_NUMBER_LSB         = 0x64;
+    protected static final int DATA_ENTRY_MPE                          = 0x06;
+    protected static final int PARAMETER_MPE_CONFIG_MSB                = 0x00;
+    protected static final int PARAMETER_MPE_CONFIG_LSB                = 0x06;
+    protected static final int PARAMETER_MPE_PITCHBEND_SENSITIVITY_MSB = 0x00;
+    protected static final int PARAMETER_MPE_PITCHBEND_SENSITIVITY_LSB = 0x00;
+
+
     /** {@inheritDoc} */
     @Override
     public void sendCC (final int cc, final int value)
@@ -106,6 +120,27 @@ public abstract class AbstractMidiOutputImpl implements IMidiOutput
         this.sendCCEx (channel, 0, bankMSB);
         this.sendCCEx (channel, 32, bankLSB);
         this.sendMidiShort (0xC0 + channel, value, 0);
+    }
+
+
+    /** {@inheritDoc} */
+    @Override
+    public void configureMPE (final int zone, final int numberOfChannels)
+    {
+        this.sendMidiShort (zone, 79, 0);
+        this.sendMidiShort (zone, REGISTERED_PARAMETER_NUMBER_MSB, PARAMETER_MPE_CONFIG_MSB);
+        this.sendMidiShort (zone, REGISTERED_PARAMETER_NUMBER_LSB, PARAMETER_MPE_CONFIG_LSB);
+        this.sendMidiShort (zone, DATA_ENTRY_MPE, numberOfChannels);
+    }
+
+
+    /** {@inheritDoc} */
+    @Override
+    public void sendMPEPitchbendRange (final int zone, final int range)
+    {
+        this.sendMidiShort (zone, REGISTERED_PARAMETER_NUMBER_MSB, PARAMETER_MPE_PITCHBEND_SENSITIVITY_MSB);
+        this.sendMidiShort (zone, REGISTERED_PARAMETER_NUMBER_LSB, PARAMETER_MPE_PITCHBEND_SENSITIVITY_LSB);
+        this.sendMidiShort (zone, DATA_ENTRY_MPE, range);
     }
 
 

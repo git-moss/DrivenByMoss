@@ -1,5 +1,5 @@
 // Written by Jürgen Moßgraber - mossgrabers.de
-// (c) 2017-2021
+// (c) 2017-2022
 // Licensed under LGPLv3 - http://www.gnu.org/licenses/lgpl-3.0.txt
 
 package de.mossgrabers.framework.daw.midi;
@@ -48,4 +48,20 @@ public interface INoteInput
      * @return The note repeat object
      */
     INoteRepeat getNoteRepeat ();
+
+
+    /**
+     * Enable MPE (MIDI Polyphonic Expression) on the note input.
+     *
+     * @param enable True to enable MPE zone 1
+     */
+    void enableMPE (boolean enable);
+
+
+    /**
+     * Disable MPE on the note input.
+     *
+     * @param pitchBendRange The range of the pitch bend messages (1-96)
+     */
+    void setMPEPitchBendSensitivity (int pitchBendRange);
 }

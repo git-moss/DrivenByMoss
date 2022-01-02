@@ -1,11 +1,10 @@
 // Written by Jürgen Moßgraber - mossgrabers.de
-// (c) 2017-2021
+// (c) 2017-2022
 // Licensed under LGPLv3 - http://www.gnu.org/licenses/lgpl-3.0.txt
 
 package de.mossgrabers.bitwig.framework.midi;
 
-import de.mossgrabers.framework.daw.midi.INoteInput;
-import de.mossgrabers.framework.daw.midi.INoteRepeat;
+import de.mossgrabers.framework.daw.midi.AbstractNoteInput;
 
 import com.bitwig.extension.controller.api.NoteInput;
 
@@ -15,10 +14,9 @@ import com.bitwig.extension.controller.api.NoteInput;
  *
  * @author J&uuml;rgen Mo&szlig;graber
  */
-class NoteInputImpl implements INoteInput
+class NoteInputImpl extends AbstractNoteInput
 {
-    private final NoteInput   noteInput;
-    private final INoteRepeat noteRepeat;
+    private final NoteInput noteInput;
 
 
     /**
@@ -53,16 +51,26 @@ class NoteInputImpl implements INoteInput
     }
 
 
-    /** {@inheritDoc} */
-    @Override
-    public INoteRepeat getNoteRepeat ()
+    void sendRawMidiEvent (final int status, final int data1, final int data2)
     {
-        return this.noteRepeat;
+        this.noteInput.sendRawMidiEvent (status, data1, data2);
     }
 
 
-    public void sendRawMidiEvent (final int status, final int data1, final int data2)
+    /** {@inheritDoc} */
+    @Override
+    public void enableMPE (final boolean enable)
     {
-        this.noteInput.sendRawMidiEvent (status, data1, data2);
+        this.isMPEEnabled = enable;
+        this.noteInput.setUseExpressiveMidi (enable, 0, this.mpePitchBendSensitivity);
+    }
+
+
+    /** {@inheritDoc} */
+    @Override
+    public void setMPEPitchBendSensitivity (final int pitchBendRange)
+    {
+        this.mpePitchBendSensitivity = pitchBendRange;
+        this.noteInput.setUseExpressiveMidi (this.isMPEEnabled, 0, this.mpePitchBendSensitivity);
     }
 }

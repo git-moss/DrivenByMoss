@@ -1,10 +1,10 @@
 // Written by Jürgen Moßgraber - mossgrabers.de
-// (c) 2017-2021
+// (c) 2017-2022
 // Licensed under LGPLv3 - http://www.gnu.org/licenses/lgpl-3.0.txt
 
 package de.mossgrabers.bitwig.framework.midi;
 
-import de.mossgrabers.framework.daw.midi.AbstractMidiOutputImpl;
+import de.mossgrabers.framework.daw.midi.AbstractMidiOutput;
 
 import com.bitwig.extension.controller.api.ControllerHost;
 import com.bitwig.extension.controller.api.MidiOut;
@@ -15,7 +15,7 @@ import com.bitwig.extension.controller.api.MidiOut;
  *
  * @author J&uuml;rgen Mo&szlig;graber
  */
-class MidiOutputImpl extends AbstractMidiOutputImpl
+class MidiOutputImpl extends AbstractMidiOutput
 {
     private final MidiOut port;
 

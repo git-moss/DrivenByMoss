@@ -1,9 +1,10 @@
 // Written by Jürgen Moßgraber - mossgrabers.de
-// (c) 2017-2021
+// (c) 2017-2022
 // Licensed under LGPLv3 - http://www.gnu.org/licenses/lgpl-3.0.txt
 
 package de.mossgrabers.framework.view;
 
+import de.mossgrabers.controller.ni.maschine.core.MaschineColorManager;
 import de.mossgrabers.framework.configuration.Configuration;
 import de.mossgrabers.framework.controller.ButtonID;
 import de.mossgrabers.framework.controller.IControlSurface;
@@ -379,6 +380,16 @@ public abstract class AbstractDrumView<S extends IControlSurface<C>, C extends C
      */
     protected void handleLoopArea (final int pad, final int velocity)
     {
+        final boolean isAccentActive = this.configuration.isAccentActive ();
+        if (isAccentActive)
+        {
+            if (velocity == 0)
+                return;
+            final int selPad = (3 - pad / 4) * 4 + pad % 4;
+            this.configuration.setFixedAccentValue ((selPad + 1) * 8 - 1);
+            return;
+        }
+
         // Button pressed?
         if (velocity > 0)
         {
@@ -838,6 +849,25 @@ public abstract class AbstractDrumView<S extends IControlSurface<C>, C extends C
      */
     protected void drawPages (final INoteClip clip, final boolean isActive)
     {
+        final boolean isAccentActive = this.configuration.isAccentActive ();
+        if (isAccentActive)
+        {
+            int selectedVelocityPad = 15 - this.configuration.getFixedAccentValue () / 8;
+            final int selY = selectedVelocityPad / 4;
+            final int selX = selectedVelocityPad % 4;
+            selectedVelocityPad = selY * 4 + 3 - selX;
+
+            final IPadGrid padGrid = this.surface.getPadGrid ();
+            for (int pad = 0; pad < 16; pad++)
+            {
+                final int x = this.playColumns + pad % this.playColumns;
+                final int y = this.sequencerLines + pad / this.playColumns;
+                padGrid.lightEx (x, y, pad == selectedVelocityPad ? MaschineColorManager.COLOR_GREEN : MaschineColorManager.COLOR_LIME_LO);
+            }
+
+            return;
+        }
+
         final int step = clip.getCurrentStep ();
         final int lengthOfOnePad = this.getLengthOfOnePage (this.sequencerSteps);
         final double loopStart = clip.getLoopStart ();

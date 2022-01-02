@@ -1,5 +1,5 @@
 // Written by Jürgen Moßgraber - mossgrabers.de
-// (c) 2017-2021
+// (c) 2017-2022
 // Licensed under LGPLv3 - http://www.gnu.org/licenses/lgpl-3.0.txt
 
 package de.mossgrabers.controller.generic;
@@ -39,9 +39,11 @@ import de.mossgrabers.framework.daw.data.ITrack;
 import de.mossgrabers.framework.daw.data.bank.IParameterBank;
 import de.mossgrabers.framework.daw.data.bank.ISendBank;
 import de.mossgrabers.framework.daw.data.bank.ITrackBank;
+import de.mossgrabers.framework.daw.midi.AbstractMidiOutput;
 import de.mossgrabers.framework.daw.midi.IMidiAccess;
 import de.mossgrabers.framework.daw.midi.IMidiInput;
 import de.mossgrabers.framework.daw.midi.IMidiOutput;
+import de.mossgrabers.framework.daw.midi.INoteInput;
 import de.mossgrabers.framework.featuregroup.ModeManager;
 import de.mossgrabers.framework.mode.Modes;
 import de.mossgrabers.framework.mode.device.BrowserMode;
@@ -188,36 +190,17 @@ public class GenericFlexiControllerSetup extends AbstractControllerSetup<Generic
         final IMidiAccess midiAccess = this.factory.createMidiAccess ();
         final IMidiOutput output = midiAccess.createOutput ();
 
-        final int keyboardChannel = this.configuration.getKeyboardChannel ();
-        final IMidiInput input;
-        if (keyboardChannel < 0)
-        {
-            // Does not create a default note input if set to null
-            input = midiAccess.createInput (null);
-        }
+        final String inputName;
+        if (this.configuration.isMPEEndabled ())
+            inputName = "Generic Flexi (MPE)";
         else
-        {
-            final String midiChannel;
-            if (keyboardChannel >= 16)
-                midiChannel = "?";
-            else
-                midiChannel = Integer.toHexString (keyboardChannel).toUpperCase (Locale.US);
+            inputName = this.configuration.getKeyboardChannel () < 0 ? null : "Generic Flexi";
 
-            final List<String> filters = new ArrayList<> ();
-            Collections.addAll (filters, "8" + midiChannel + "????", "9" + midiChannel + "????", "A" + midiChannel + "????", "D" + midiChannel + "????");
-            if (this.configuration.isKeyboardRouteModulation ())
-                filters.add ("B" + midiChannel + "01??");
-            if (this.configuration.isKeyboardRouteSustain ())
-                filters.add ("B" + midiChannel + "40??");
-            if (this.configuration.isKeyboardRoutePitchbend ())
-                filters.add ("E" + midiChannel + "????");
-
-            input = midiAccess.createInput ("Generic Flexi", filters.toArray (new String [filters.size ()]));
-        }
+        final List<String> filters = this.getMidiFilters ();
+        final IMidiInput input = midiAccess.createInput (inputName, filters.toArray (new String [filters.size ()]));
 
         final GenericFlexiControlSurface surface = new GenericFlexiControlSurface (this.host, this.configuration, this.colorManager, output, input);
         this.surfaces.add (surface);
-
         this.registerHandlers (surface);
 
         this.configuration.setCommandObserver (this);
@@ -260,9 +243,30 @@ public class GenericFlexiControllerSetup extends AbstractControllerSetup<Generic
 
         surface.getModeManager ().addChangeListener ( (oldMode, newMode) -> this.updateIndication ());
 
+        // Handle configuration changes
         this.createNoteRepeatObservers (this.configuration, surface);
-
         this.configuration.registerDeactivatedItemsHandler (this.model);
+        this.configuration.addSettingObserver (GenericFlexiConfiguration.ENABLED_MPE_ZONES, () -> surface.scheduleTask ( () -> {
+
+            final INoteInput input = surface.getMidiInput ().getDefaultNoteInput ();
+            final IMidiOutput output = surface.getMidiOutput ();
+
+            final boolean mpeEnabled = this.configuration.isMPEEndabled ();
+            input.enableMPE (mpeEnabled);
+            // Enable MPE zone 1 with all 15 channels
+            output.configureMPE (AbstractMidiOutput.ZONE_1, mpeEnabled ? 15 : 0);
+            // Disable MPE zone
+            output.configureMPE (AbstractMidiOutput.ZONE_2, 0);
+
+        }, 2000));
+
+        this.configuration.addSettingObserver (GenericFlexiConfiguration.MPE_PITCHBEND_RANGE, () -> surface.scheduleTask ( () -> {
+            final INoteInput input = surface.getMidiInput ().getDefaultNoteInput ();
+            final IMidiOutput output = surface.getMidiOutput ();
+            final int mpePitchBendRange = this.configuration.getMPEPitchBendRange ();
+            input.setMPEPitchBendSensitivity (mpePitchBendRange);
+            output.sendMPEPitchbendRange (AbstractMidiOutput.ZONE_1, mpePitchBendRange);
+        }, 2000));
 
         this.activateBrowserObserver (Modes.BROWSER);
     }
@@ -338,6 +342,34 @@ public class GenericFlexiControllerSetup extends AbstractControllerSetup<Generic
     public void update (final FlexiCommand value)
     {
         this.updateIndication ();
+    }
+
+
+    private List<String> getMidiFilters ()
+    {
+        final boolean isMPEEndabled = this.configuration.isMPEEndabled ();
+        final int keyboardChannel = this.configuration.getKeyboardChannel ();
+
+        // Keyboard is off?
+        if (keyboardChannel < 0 && !isMPEEndabled)
+            return Collections.emptyList ();
+
+        final String midiChannel = isMPEEndabled || keyboardChannel >= 16 ? "?" : Integer.toHexString (keyboardChannel).toUpperCase (Locale.US);
+
+        final List<String> filters = new ArrayList<> ();
+
+        Collections.addAll (filters, "8" + midiChannel + "????", "9" + midiChannel + "????", "A" + midiChannel + "????", "D" + midiChannel + "????");
+
+        if (this.configuration.isKeyboardRouteModulation ())
+            filters.add ("B" + midiChannel + "01??");
+        if (this.configuration.isKeyboardRouteSustain ())
+            filters.add ("B" + midiChannel + "40??");
+        if (this.configuration.isKeyboardRouteTimbre ())
+            filters.add ("B" + midiChannel + "4A??");
+        if (this.configuration.isKeyboardRoutePitchbend () || isMPEEndabled)
+            filters.add ("E" + midiChannel + "????");
+
+        return filters;
     }
 
 

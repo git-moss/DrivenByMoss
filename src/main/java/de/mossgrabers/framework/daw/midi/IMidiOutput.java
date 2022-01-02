@@ -1,5 +1,5 @@
 // Written by Jürgen Moßgraber - mossgrabers.de
-// (c) 2017-2021
+// (c) 2017-2022
 // Licensed under LGPLv3 - http://www.gnu.org/licenses/lgpl-3.0.txt
 
 package de.mossgrabers.framework.daw.midi;
@@ -141,4 +141,22 @@ public interface IMidiOutput
      * @param data The data to send, formatted as a hex string, e.g. F0 7E 7F 06 01 F7
      */
     void sendSysex (String data);
+
+
+    /**
+     * Configure one MPE zone with all 15 channels.
+     *
+     * @param zone The zone
+     * @param numberOfChannels The number of channels (0-15)
+     */
+    void configureMPE (int zone, int numberOfChannels);
+
+
+    /**
+     * Set up Pitch bend range.
+     *
+     * @param zone The zone for which to setup the pitch bend sensitivity
+     * @param range The pitch bend range (1-96)
+     */
+    void sendMPEPitchbendRange (int zone, int range);
 }

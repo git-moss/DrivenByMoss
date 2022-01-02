@@ -1,5 +1,5 @@
 // Written by Jürgen Moßgraber - mossgrabers.de
-// (c) 2017-2021
+// (c) 2017-2022
 // Licensed under LGPLv3 - http://www.gnu.org/licenses/lgpl-3.0.txt
 
 package de.mossgrabers.controller.akai.acvs.controller;
@@ -294,5 +294,21 @@ public class ACVSMidiOutput implements IMidiOutput
         final byte id = acvsDevice.getId ();
         this.pingMessage[3] = id;
         this.messageHeader[3] = id;
+    }
+
+
+    /** {@inheritDoc} */
+    @Override
+    public void configureMPE (final int zone, final int numberOfChannels)
+    {
+        // Not used
+    }
+
+
+    /** {@inheritDoc} */
+    @Override
+    public void sendMPEPitchbendRange (final int zone, final int range)
+    {
+        // Not used
     }
 }
