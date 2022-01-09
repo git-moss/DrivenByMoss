@@ -1,5 +1,5 @@
 // Written by Jürgen Moßgraber - mossgrabers.de
-// (c) 2017-2022
+// (c) 2017-2021
 // Licensed under LGPLv3 - http://www.gnu.org/licenses/lgpl-3.0.txt
 
 package de.mossgrabers.controller.osc.module;
@@ -47,7 +47,8 @@ public class ActionModule extends AbstractModule
     {
         return new String []
         {
-            "action"
+            "action",
+            "actionID"
         };
     }
 
@@ -56,20 +57,29 @@ public class ActionModule extends AbstractModule
     @Override
     public void execute (final String command, final LinkedList<String> path, final Object value) throws IllegalParameterException, UnknownCommandException, MissingCommandException
     {
-        if (!"action".equals (command))
-            throw new UnknownCommandException (command);
-
-        final String subCommand = getSubCommand (path);
-        try
+        switch (command)
         {
-            final int actionNo = Math.min (7, Math.max (0, Integer.parseInt (subCommand) - 1));
-            final String assignableActionID = this.configuration.getAssignableAction (actionNo);
-            if (assignableActionID != null)
-                this.model.getApplication ().invokeAction (assignableActionID);
-        }
-        catch (final NumberFormatException ex)
-        {
-            throw new UnknownCommandException (subCommand);
+            case "action":
+                final String subCommand = getSubCommand (path);                
+                try
+                {
+                    final int actionNo = Math.min (7, Math.max (0, Integer.parseInt (subCommand) - 1));
+                    final String assignableActionID = this.configuration.getAssignableAction (actionNo);
+                    if (assignableActionID != null)
+                        this.model.getApplication ().invokeAction (assignableActionID);
+                }
+                catch (final NumberFormatException ex)
+                {
+                    throw new UnknownCommandException (subCommand);
+                }
+                break;
+            
+            case "actionID":
+                this.model.getApplication ().invokeAction( value.toString() );
+                break;
+                
+            default:
+                throw new UnknownCommandException (command);
         }
     }
 }
