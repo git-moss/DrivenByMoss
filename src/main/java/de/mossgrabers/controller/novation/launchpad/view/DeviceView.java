@@ -42,6 +42,7 @@ public class DeviceView extends AbstractFaderView
     public void setupFader (final int index)
     {
         this.surface.setupFader (index, LaunchpadColorManager.DAW_INDICATOR_COLORS.get (index).intValue (), false);
+        this.onValueKnob( index, this.getFaderValue(index) );  //FIX -- issue with catch mode by initializing fader value at setup
     }
 
 
@@ -49,7 +50,8 @@ public class DeviceView extends AbstractFaderView
     @Override
     public void onValueKnob (final int index, final int value)
     {
-        this.cursorDevice.getParameterBank ().getItem (index).setValue (value);
+        this.cursorDevice.getParameterBank ().getItem (index).setValueImmediatly( value ); //FIX -- issue with relative scaling mode by always forcing actual value
+        this.cursorDevice.getParameterBank ().getItem (index).setValue( value );
     }
 
 
