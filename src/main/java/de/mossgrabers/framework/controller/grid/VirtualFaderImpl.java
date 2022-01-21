@@ -52,6 +52,8 @@ public class VirtualFaderImpl implements IVirtualFader
     private int                         moveTimerDelay;
     private int                         moveDestination;
 
+    private int                         moveTargetValue;
+    private boolean                     isKnobType;
 
     /**
      * Constructor. Does not update a slider on the grid. Use getColorState method to draw the fader
@@ -125,6 +127,12 @@ public class VirtualFaderImpl implements IVirtualFader
         this.moveDelay = SPEED_SCALE[velocity];
         this.moveTimerDelay = SPEED_SCALE[SPEED_SCALE.length - 1 - velocity];
 
+        // compensate for parameter type detection delay
+        this.moveTimerDelay -= 1;
+
+        // reset paramter type detection flag
+        this.isKnobType = false;
+        
         final int min = row * PAD_VALUE_AMOUNT;
         final int max = Math.min (127, (row + 1) * PAD_VALUE_AMOUNT - 1);
         int newDestination = this.smoothFaderValue (row, max);
@@ -152,14 +160,35 @@ public class VirtualFaderImpl implements IVirtualFader
     {
         final int current = this.callback.getValue ();
         if (current < this.moveDestination)
-            this.callback.setValue (Math.min (current + this.moveDelay, this.moveDestination));
+            this.moveTargetValue = Math.min (current + this.moveDelay, this.moveDestination);
         else if (current > this.moveDestination)
-            this.callback.setValue (Math.max (current - this.moveDelay, this.moveDestination));
+            this.moveTargetValue = Math.max (current - this.moveDelay, this.moveDestination);
         else
             return;
 
-        this.host.scheduleTask (this::moveFaderToDestination, this.moveTimerDelay);
+        this.callback.setValue ( this.moveTargetValue );
+
+        // YIELD to Bitwig to allow the parameter value to update properly
+        this.host.scheduleTask(this::moveFaderToDestinationCallback, 1);
     }
+
+    protected void moveFaderToDestinationCallback ()
+    {
+        final int updatedValue = this.callback.getValue();
+
+        // Compare updated parameter value to target update value, if different it means that the parameter is
+        // either a boolean or selection list type and the destination value should be force set
+        if( !this.isKnobType && updatedValue != this.moveTargetValue ) 
+        {
+            this.callback.setValue( this.moveDestination );
+        } 
+        else 
+        {
+            this.isKnobType = true;
+            this.host.scheduleTask(this::moveFaderToDestination, this.moveTimerDelay);
+        }
+    }
+
 
 
     /**
