@@ -322,7 +322,7 @@ public class MCUConfiguration extends AbstractConfiguration
         });
         this.isSettingActive.add (DISPLAY_TRACK_NAMES);
 
-        final IEnumSetting useVertZoomForModesSetting = settingsUI.getEnumSetting ("Use vertical zoom to change tracks", CATEGORY_HARDWARE_SETUP, ON_OFF_OPTIONS, ON_OFF_OPTIONS[0]);
+        final IEnumSetting useVertZoomForModesSetting = settingsUI.getEnumSetting ("Use vertical zoom to change modes", CATEGORY_HARDWARE_SETUP, ON_OFF_OPTIONS, ON_OFF_OPTIONS[0]);
         useVertZoomForModesSetting.addValueObserver (value -> {
             this.useVertZoomForModes = "On".equals (value);
             this.notifyObservers (USE_VERT_ZOOM_FOR_MODES);

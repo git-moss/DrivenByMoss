@@ -54,7 +54,7 @@ public interface ILaunchpadControllerDefinition
     /**
      * Get the command to switch to program mode.
      *
-     * @return The commad as formatted string with hex values
+     * @return The command as formatted string with hex values
      */
     String getProgramModeCommand ();
 
