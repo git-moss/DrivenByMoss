@@ -102,9 +102,7 @@ public class SelectKnobCommand extends AbstractContinuousCommand<FireControlSurf
         if (this.surface.isPressed (ButtonID.METRONOME))
         {
             this.surface.setTriggerConsumed (ButtonID.METRONOME);
-            final ITransport transport = this.model.getTransport ();
-            transport.changePosition (this.model.getValueChanger ().isIncrease (value), this.surface.isPressed (ButtonID.SHIFT));
-            this.mvHelper.notifyPlayPosition ();
+            handlePlayPosition (value);
             return;
         }
 
@@ -156,6 +154,19 @@ public class SelectKnobCommand extends AbstractContinuousCommand<FireControlSurf
             userMode.selectNextItem ();
         else
             userMode.selectPreviousItem ();
+    }
+
+
+    /**
+     * Move the play position.
+     *
+     * @param value The knob value
+     */
+    private void handlePlayPosition (final int value)
+    {
+        final ITransport transport = this.model.getTransport ();
+        transport.changePosition (this.model.getValueChanger ().isIncrease (value), this.surface.isPressed (ButtonID.SHIFT));
+        this.mvHelper.notifyPlayPosition ();
     }
 
 

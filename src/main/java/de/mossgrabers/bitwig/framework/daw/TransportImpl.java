@@ -514,6 +514,26 @@ public class TransportImpl implements ITransport
 
     /** {@inheritDoc} */
     @Override
+    public void selectLoopStart ()
+    {
+        final double beats = this.transport.arrangerLoopStart ().get ();
+        if (beats >= 0)
+            this.transport.setPosition (beats);
+    }
+
+
+    /** {@inheritDoc} */
+    @Override
+    public void selectLoopEnd ()
+    {
+        double pos = this.transport.arrangerLoopStart ().get ();
+        if (pos >= 0)
+            this.transport.setPosition (pos + this.transport.arrangerLoopDuration ().get ());
+    }
+
+
+    /** {@inheritDoc} */
+    @Override
     public String getLoopLengthBeatText ()
     {
         return this.transport.arrangerLoopDuration ().getFormatted (BEAT_LENGTH_FORMATTER);

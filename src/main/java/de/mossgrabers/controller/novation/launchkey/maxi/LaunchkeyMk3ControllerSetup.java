@@ -192,6 +192,7 @@ public class LaunchkeyMk3ControllerSetup extends AbstractControllerSetup<Launchk
         modeManager.register (Modes.SEND1, new LaunchkeyMk3SendMode (0, surface, this.model, AbstractMode.DEFAULT_KNOB_IDS));
         modeManager.register (Modes.SEND2, new LaunchkeyMk3SendMode (1, surface, this.model, AbstractMode.DEFAULT_KNOB_IDS));
         modeManager.register (Modes.DEVICE_PARAMS, new LaunchkeyMk3ParameterMode (surface, this.model, AbstractMode.DEFAULT_KNOB_IDS));
+        // Layer send X IDs are used for custom modes
         modeManager.register (Modes.DEVICE_LAYER_SEND1, new CustomMode (1, surface, this.model));
         modeManager.register (Modes.DEVICE_LAYER_SEND2, new CustomMode (2, surface, this.model));
         modeManager.register (Modes.DEVICE_LAYER_SEND3, new CustomMode (3, surface, this.model));

@@ -5,13 +5,13 @@
 package de.mossgrabers.controller.akai.fire.view;
 
 import de.mossgrabers.controller.akai.fire.FireConfiguration;
-import de.mossgrabers.controller.akai.fire.command.continuous.SelectKnobCommand;
 import de.mossgrabers.controller.akai.fire.controller.FireColorManager;
 import de.mossgrabers.controller.akai.fire.controller.FireControlSurface;
 import de.mossgrabers.framework.controller.ButtonID;
 import de.mossgrabers.framework.controller.grid.IPadGrid;
 import de.mossgrabers.framework.daw.DAWColor;
 import de.mossgrabers.framework.daw.IModel;
+import de.mossgrabers.framework.daw.ITransport;
 import de.mossgrabers.framework.daw.data.ITrack;
 import de.mossgrabers.framework.daw.data.bank.ITrackBank;
 import de.mossgrabers.framework.featuregroup.AbstractView;
@@ -178,12 +178,20 @@ public class MixView extends AbstractView<FireControlSurface, FireConfiguration>
                 this.model.getCurrentTrackBank ().selectNextPage ();
                 break;
 
+            case SCENE1:
+                this.model.getTransport ().selectLoopStart ();
+                break;
+
             case SCENE2:
                 this.model.getProject ().clearMute ();
                 break;
 
             case SCENE3:
                 this.model.getProject ().clearSolo ();
+                break;
+
+            case SCENE4:
+                this.model.getTransport ().selectLoopEnd ();
                 break;
 
             default:
@@ -197,7 +205,8 @@ public class MixView extends AbstractView<FireControlSurface, FireConfiguration>
     @Override
     public void onSelectKnobValue (final int value)
     {
-        final boolean isInc = this.model.getValueChanger ().isIncrease (value);
-        SelectKnobCommand.handleTrackSelection (this.surface, this.model.getTrackBank (), isInc);
+        final ITransport transport = this.model.getTransport ();
+        transport.changePosition (this.model.getValueChanger ().isIncrease (value), this.surface.isPressed (ButtonID.SHIFT));
+        this.mvHelper.notifyPlayPosition ();
     }
 }

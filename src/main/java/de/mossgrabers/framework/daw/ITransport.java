@@ -361,6 +361,18 @@ public interface ITransport extends IObserverManagement
 
 
     /**
+     * Set the play position to the start of the arranger loop, if a loop is set.
+     */
+    void selectLoopStart ();
+
+
+    /**
+     * Set the play position to the end of the arranger loop, if a loop is set.
+     */
+    void selectLoopEnd ();
+
+
+    /**
      * Get the loop length formatted as measures and beats.
      *
      * @return The formatted text
