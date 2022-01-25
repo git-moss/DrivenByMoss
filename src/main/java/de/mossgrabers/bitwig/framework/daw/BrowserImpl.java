@@ -242,7 +242,7 @@ public class BrowserImpl extends AbstractBrowser
             return;
 
         // Delay a bit to give the previous browser the chance to shutdown
-        this.host.scheduleTask (insertionPoint::browse, 400);
+        this.host.scheduleTask (insertionPoint::browse, 0);
     }
 
 
