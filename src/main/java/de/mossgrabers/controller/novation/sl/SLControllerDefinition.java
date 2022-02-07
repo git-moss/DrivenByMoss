@@ -24,7 +24,6 @@ public class SLControllerDefinition extends DefaultControllerDefinition
 
     private final boolean     isMkII;
 
-
     /**
      * Constructor.
      *
@@ -44,41 +43,61 @@ public class SLControllerDefinition extends DefaultControllerDefinition
         final List<Pair<String [], String []>> midiDiscoveryPairs = super.getMidiDiscoveryPairs (os);
         if (this.isMkII)
         {
-            if (os == OperatingSystem.MAC)
+            switch (os)
             {
-                midiDiscoveryPairs.add (this.addDeviceDiscoveryPair (new String []
-                {
-                    "SL MkII MIDI 2",
-                    "SL MkII MIDI 1"
-                }, new String []
-                {
-                    "SL MkII MIDI 2"
-                }));
+                case WINDOWS:
+                    midiDiscoveryPairs.add (this.addDeviceDiscoveryPair (new String []
+                    {
+                        "MIDIIN2 (SL MkII)",
+                        "SL MkII"
+                    }, new String []
+                    {
+                        "MIDIOUT2 (SL MkII)"
+                    }));
+                    break;
+
+                case MAC:
+                    midiDiscoveryPairs.add (this.addDeviceDiscoveryPair (new String []
+                    {
+                        "SL MkII MIDI 2",
+                        "SL MkII MIDI 1"
+                    }, new String []
+                    {
+                        "SL MkII MIDI 2"
+                    }));
+                    break;
+
+                default:
+                case LINUX:
+                    midiDiscoveryPairs.add (this.addDeviceDiscoveryPair (new String []
+                    {
+                        "MIDIIN2 (SL MkII)",
+                        "SL MkII"
+                    }, new String []
+                    {
+                        "MIDIOUT2 (SL MkII)"
+                    }));
+                    midiDiscoveryPairs.add (this.addDeviceDiscoveryPair (new String []
+                    {
+                        "SL MkII MIDI 2",
+                        "SL MkII MIDI 1"
+                    }, new String []
+                    {
+                        "SL MkII MIDI 2"
+                    }));
+                    break;
             }
-            else
-            {
-                // WINDOWS + Linux
-                midiDiscoveryPairs.add (this.addDeviceDiscoveryPair (new String []
-                {
-                    "MIDIIN2 (SL MkII)",
-                    "SL MkII"
-                }, new String []
-                {
-                    "MIDIOUT2 (SL MkII)"
-                }));
-            }
+            return midiDiscoveryPairs;
         }
-        else
+
+        midiDiscoveryPairs.add (this.addDeviceDiscoveryPair (new String []
         {
-            midiDiscoveryPairs.add (this.addDeviceDiscoveryPair (new String []
-            {
-                "ReMOTE SL Port 2",
-                "ReMOTE SL Port 1"
-            }, new String []
-            {
-                "ReMOTE SL Port 2"
-            }));
-        }
+            "ReMOTE SL Port 2",
+            "ReMOTE SL Port 1"
+        }, new String []
+        {
+            "ReMOTE SL Port 2"
+        }));
         return midiDiscoveryPairs;
     }
 }

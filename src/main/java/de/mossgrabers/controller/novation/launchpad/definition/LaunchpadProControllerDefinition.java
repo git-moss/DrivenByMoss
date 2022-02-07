@@ -28,7 +28,6 @@ public class LaunchpadProControllerDefinition extends AbstractLaunchpadDefinitio
     private static final UUID   EXTENSION_ID = UUID.fromString ("80B63970-64F1-11E5-A837-0800200C9A66");
     private static final String SYSEX_HEADER = "F0 00 20 29 02 10 ";
 
-
     /**
      * Constructor.
      */
@@ -72,6 +71,7 @@ public class LaunchpadProControllerDefinition extends AbstractLaunchpadDefinitio
 
             case LINUX:
                 midiDiscoveryPairs.add (this.addDeviceDiscoveryPair ("Launchpad Pro MIDI 2", "Launchpad Pro MIDI 2"));
+                midiDiscoveryPairs.add (this.addDeviceDiscoveryPair ("Launchpad Pro Standalone Port", "Launchpad Pro Standalone Port"));
                 break;
 
             case MAC:
