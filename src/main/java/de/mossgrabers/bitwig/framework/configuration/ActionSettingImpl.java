@@ -18,39 +18,78 @@ import java.util.Map;
  *
  * @author J&uuml;rgen Mo&szlig;graber
  */
-public class ActionSettingImpl extends AbstractSetting implements IActionSetting
+public class ActionSettingImpl implements IActionSetting
 {
-    private final SettableEnumValue   enumValue;
-    private final Map<String, String> actionsMap;
+    private final SettableEnumValue              categorySetting;
+    private final Map<String, String>            actionsMap;
+    private final Map<String, SettableEnumValue> categoryActionsSettings;
+    private final Map<String, String>            actionCategories;
+    private IValueObserver<String>               observer;
 
 
     /**
      * Constructor.
      *
-     * @param enumValue The enumeration value
+     * @param categorySetting The action category enumeration
+     * @param categoryActionsSettings The category to action name map
      * @param actionsMap The action map for looking up the ID of the selected action
+     * @param actionCategories
      */
-    public ActionSettingImpl (final SettableEnumValue enumValue, final Map<String, String> actionsMap)
+    public ActionSettingImpl (final SettableEnumValue categorySetting, final Map<String, SettableEnumValue> categoryActionsSettings, final Map<String, String> actionsMap, final Map<String, String> actionCategories)
     {
-        super ((Setting) enumValue);
-
-        this.enumValue = enumValue;
+        this.categorySetting = categorySetting;
+        this.categoryActionsSettings = categoryActionsSettings;
         this.actionsMap = actionsMap;
+        this.actionCategories = actionCategories;
+
+        this.categorySetting.addValueObserver (category -> {
+
+            final SettableEnumValue categoryActionsSetting = this.categoryActionsSettings.get (category);
+            if (categoryActionsSetting == null)
+                return;
+
+            // Only show the actions list of the category
+            for (final SettableEnumValue setting: this.categoryActionsSettings.values ())
+            {
+                if (setting == categoryActionsSetting)
+                    ((Setting) setting).show ();
+                else
+                    ((Setting) setting).hide ();
+            }
+
+        });
     }
 
 
     /** {@inheritDoc} */
     @Override
-    public void set (final String value)
+    public void set (final String actionID)
     {
-        for (final Map.Entry<String, String> entry: this.actionsMap.entrySet ())
+        final String category = this.actionCategories.get (actionID);
+        final String actionName = this.actionsMap.get (actionID);
+
+        // Could only happen if actions would be removed
+        if (category == null || actionName == null)
+            return;
+
+        // Select the category of the action
+        this.categorySetting.set (category);
+
+        final SettableEnumValue categoryActionsSetting = this.categoryActionsSettings.get (category);
+        if (categoryActionsSetting == null)
+            return;
+
+        // Only show the actions list of the category
+        for (final SettableEnumValue setting: this.categoryActionsSettings.values ())
         {
-            if (entry.getValue ().equals (value))
-            {
-                this.enumValue.set (entry.getKey ());
-                break;
-            }
+            if (setting == categoryActionsSetting)
+                ((Setting) setting).show ();
+            else
+                ((Setting) setting).hide ();
         }
+
+        // Finally select the action
+        categoryActionsSetting.set (actionName);
     }
 
 
@@ -58,7 +97,20 @@ public class ActionSettingImpl extends AbstractSetting implements IActionSetting
     @Override
     public String get ()
     {
-        return this.actionsMap.get (this.enumValue.get ());
+        // Get the setting for the selected category
+        final String selectedCategory = this.categorySetting.get ();
+        final SettableEnumValue setting = this.categoryActionsSettings.get (selectedCategory);
+        if (setting == null)
+            return this.actionsMap.keySet ().iterator ().next ();
+
+        // Get and return the ID of the selected action
+        final String actionName = setting.get ();
+        for (final Map.Entry<String, String> e: this.actionsMap.entrySet ())
+        {
+            if (e.getValue ().equals (actionName))
+                return e.getKey ();
+        }
+        return this.actionsMap.keySet ().iterator ().next ();
     }
 
 
@@ -66,9 +118,35 @@ public class ActionSettingImpl extends AbstractSetting implements IActionSetting
     @Override
     public void addValueObserver (final IValueObserver<String> observer)
     {
-        this.enumValue.addValueObserver (observer::update);
+        this.observer = observer;
+
+        this.categorySetting.addValueObserver (value -> notifyOberserver ());
+        for (final SettableEnumValue setting: this.categoryActionsSettings.values ())
+            setting.addValueObserver (value -> notifyOberserver ());
 
         // Directly fire the current value
-        observer.update (this.enumValue.get ());
+        observer.update (this.get ());
+    }
+
+
+    private void notifyOberserver ()
+    {
+        this.observer.update (this.get ());
+    }
+
+
+    /** {@inheritDoc} */
+    @Override
+    public void setEnabled (final boolean enable)
+    {
+        // Not used, implement if required
+    }
+
+
+    /** {@inheritDoc} */
+    @Override
+    public void setVisible (final boolean visible)
+    {
+        // Not used, implement if required
     }
 }

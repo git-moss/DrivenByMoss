@@ -16,12 +16,15 @@ import de.mossgrabers.framework.configuration.IStringSetting;
 import de.mossgrabers.framework.controller.color.ColorEx;
 
 import com.bitwig.extension.controller.api.Action;
+import com.bitwig.extension.controller.api.ActionCategory;
 import com.bitwig.extension.controller.api.Application;
 import com.bitwig.extension.controller.api.ControllerHost;
+import com.bitwig.extension.controller.api.SettableEnumValue;
 import com.bitwig.extension.controller.api.Settings;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.TreeMap;
 
 
 /**
@@ -31,10 +34,12 @@ import java.util.Map;
  */
 public class SettingsUIImpl implements ISettingsUI
 {
-    private final ControllerHost      host;
-    private final Settings            preferences;
-    private final Map<String, String> actionsList = new HashMap<> ();
-    private String []                 formattedActions;
+    private final ControllerHost         host;
+    private final Settings               preferences;
+    private String []                    categoryNames;
+    private final Map<String, String []> categoriesActionIDs = new HashMap<> ();
+    private final Map<String, String>    actionCategories    = new HashMap<> ();
+    private final Map<String, String>    actionIDsNames      = new HashMap<> ();
 
 
     /**
@@ -112,19 +117,49 @@ public class SettingsUIImpl implements ISettingsUI
     @Override
     public IActionSetting getActionSetting (final String label, final String category)
     {
-        // Has to be here since it must be executed in init()!
-        if (this.formattedActions == null)
+        // Has to be here since it must be executed in the initialize method!
+        this.prepareActions ();
+
+        final String cat = category + " - " + label;
+
+        final SettableEnumValue categorySetting = this.preferences.getEnumSetting (label + ": Category", cat, this.categoryNames, this.categoryNames[0]);
+        final Map<String, SettableEnumValue> categoryActionsSettings = new TreeMap<> ();
+
+        for (final String categoryName: this.categoryNames)
         {
-            final Application application = this.host.createApplication ();
-            final Action [] actions = application.getActions ();
-            this.formattedActions = new String [actions.length];
-            for (var i = 0; i < actions.length; i++)
-            {
-                this.formattedActions[i] = actions[i].getCategory ().getName () + ": " + actions[i].getName ();
-                this.actionsList.put (this.formattedActions[i], actions[i].getId ());
-            }
+            final String [] actionNames = this.categoriesActionIDs.get (categoryName);
+            categoryActionsSettings.put (categoryName, this.preferences.getEnumSetting (label + ": " + categoryName + " Actions", cat, actionNames, actionNames[0]));
         }
 
-        return new ActionSettingImpl (this.preferences.getEnumSetting (label, category, this.formattedActions, this.formattedActions[0]), this.actionsList);
+        return new ActionSettingImpl (categorySetting, categoryActionsSettings, this.actionIDsNames, this.actionCategories);
+    }
+
+
+    private synchronized void prepareActions ()
+    {
+        if (this.categoryNames != null)
+            return;
+
+        final Application application = this.host.createApplication ();
+        final ActionCategory [] categories = application.getActionCategories ();
+        this.categoryNames = new String [categories.length];
+
+        for (int i = 0; i < categories.length; i++)
+        {
+            final String categoryName = categories[i].getName ();
+            this.categoryNames[i] = categoryName;
+
+            final Action [] actions = categories[i].getActions ();
+            final String [] actionNames = new String [actions.length];
+
+            for (int j = 0; j < actions.length; j++)
+            {
+                actionNames[j] = actions[j].getName ();
+                this.actionIDsNames.put (actions[j].getId (), actionNames[j]);
+                this.actionCategories.put (actions[j].getId (), categoryName);
+            }
+
+            this.categoriesActionIDs.put (categoryName, actionNames);
+        }
     }
 }
