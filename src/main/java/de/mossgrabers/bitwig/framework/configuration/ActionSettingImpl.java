@@ -120,9 +120,9 @@ public class ActionSettingImpl implements IActionSetting
     {
         this.observer = observer;
 
-        this.categorySetting.addValueObserver (value -> notifyOberserver ());
+        this.categorySetting.addValueObserver (value -> this.notifyOberserver ());
         for (final SettableEnumValue setting: this.categoryActionsSettings.values ())
-            setting.addValueObserver (value -> notifyOberserver ());
+            setting.addValueObserver (value -> this.notifyOberserver ());
 
         // Directly fire the current value
         observer.update (this.get ());

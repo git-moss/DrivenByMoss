@@ -24,6 +24,7 @@ public class SLControllerDefinition extends DefaultControllerDefinition
 
     private final boolean     isMkII;
 
+
     /**
      * Constructor.
      *

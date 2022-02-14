@@ -526,7 +526,7 @@ public class TransportImpl implements ITransport
     @Override
     public void selectLoopEnd ()
     {
-        double pos = this.transport.arrangerLoopStart ().get ();
+        final double pos = this.transport.arrangerLoopStart ().get ();
         if (pos >= 0)
             this.transport.setPosition (pos + this.transport.arrangerLoopDuration ().get ());
     }

@@ -21,6 +21,7 @@ public class LaunchpadMiniMkIIIControllerDefinition extends AbstractLaunchpadDef
     private static final UUID   EXTENSION_ID = UUID.fromString ("A17B269D-2641-452F-B5A2-81BBACDA0D17");
     private static final String SYSEX_HEADER = "F0 00 20 29 02 0D ";
 
+
     /**
      * Constructor.
      */

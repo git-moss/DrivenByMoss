@@ -102,7 +102,7 @@ public class SelectKnobCommand extends AbstractContinuousCommand<FireControlSurf
         if (this.surface.isPressed (ButtonID.METRONOME))
         {
             this.surface.setTriggerConsumed (ButtonID.METRONOME);
-            handlePlayPosition (value);
+            this.handlePlayPosition (value);
             return;
         }
 
