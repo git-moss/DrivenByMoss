@@ -90,6 +90,7 @@ public class LaunchpadConfiguration extends AbstractConfiguration
         this.activateExcludeDeactivatedItemsSetting (globalSettings);
         this.activateIncludeMasterSetting (globalSettings);
         this.activateNewClipLengthSetting (globalSettings);
+        this.activateAutoBrowserInterface (globalSettings);
 
         ///////////////////////////
         // Pad Sensitivity

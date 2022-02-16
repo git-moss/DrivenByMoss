@@ -53,7 +53,7 @@ public class SelectDeviceViewCommand extends AbstractTriggerCommand<LaunchpadCon
         }
 
         final IBrowser browser = this.model.getBrowser ();
-        if (viewManager.isActive (Views.BROWSER))
+        if (viewManager.isActive (Views.BROWSER) || browser.isActive () )
         {
             browser.stopBrowsing (false);
             viewManager.setActive (Views.DEVICE);

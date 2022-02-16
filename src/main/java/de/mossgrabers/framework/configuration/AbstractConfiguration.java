@@ -125,6 +125,9 @@ public abstract class AbstractConfiguration implements Configuration
     /** Setting for the footswitch functionality. */
     public static final Integer      FOOTSWITCH_4                      = Integer.valueOf (41);
 
+    /** Setting for auto-browser interface setting. */
+    public static final Integer      ACTIVATE_AUTO_BROWSER_VIEW        = Integer.valueOf (42);
+
     // Implementation IDs start at 50
 
     protected static final String    CATEGORY_DRUMS                    = "Drum Sequencer";
@@ -351,6 +354,7 @@ public abstract class AbstractConfiguration implements Configuration
     private IEnumSetting                              noteRepeatModeSetting;
     private IEnumSetting                              noteRepeatOctaveSetting;
     private IEnumSetting                              midiEditChannelSetting;
+    private IEnumSetting                              browserAutoViewSetting;
     private final List<IEnumSetting>                  instrumentSettings          = new ArrayList<> (7);
     private final List<IEnumSetting>                  audioSettings               = new ArrayList<> (3);
     private final List<IEnumSetting>                  effectSettings              = new ArrayList<> (3);
@@ -414,10 +418,11 @@ public abstract class AbstractConfiguration implements Configuration
 
     private boolean                                   isDeleteActive              = false;
     private boolean                                   isDuplicateActive           = false;
-
+    
     private RecordFunction                            recordButtonFunction        = RecordFunction.RECORD_ARRANGER;
     private RecordFunction                            shiftedRecordButtonFunction = RecordFunction.NEW_CLIP;
 
+    private boolean                                   browserAutoView               = true;
 
     /**
      * Constructor.
@@ -1334,6 +1339,31 @@ public abstract class AbstractConfiguration implements Configuration
     }
 
 
+    /**
+     * Activate the auto-browser interface state change.
+     *
+     * @param settingsUI The settings
+     */
+    protected void activateAutoBrowserInterface (final ISettingsUI settingsUI)
+    {
+        this.browserAutoViewSetting = settingsUI.getEnumSetting ("Enable Auto-Browser View", CATEGORY_WORKFLOW, ON_OFF_OPTIONS, ON_OFF_OPTIONS[1]);
+        this.browserAutoViewSetting.addValueObserver (value -> {
+            this.browserAutoView = "On".equals (value);
+            this.notifyObservers (ACTIVATE_AUTO_BROWSER_VIEW);
+        });
+
+        this.isSettingActive.add (ACTIVATE_AUTO_BROWSER_VIEW);
+    }    
+
+    /** {@inheritDoc} */
+    @Override
+    public boolean isAutoBrowserViewActive ()
+    {
+        return this.browserAutoView;
+    }
+    
+    
+    
     /**
      * Activate the knob speed settings.
      *

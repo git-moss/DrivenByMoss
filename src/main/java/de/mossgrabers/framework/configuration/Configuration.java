@@ -497,4 +497,11 @@ public interface Configuration
      * @return The function index
      */
     RecordFunction getShiftedRecordButtonFunction ();
+
+    /**
+     * Get the auto browser view setting.
+     *
+     * @return True if auto browser view is enabled
+     */
+    boolean isAutoBrowserViewActive ();
 }
