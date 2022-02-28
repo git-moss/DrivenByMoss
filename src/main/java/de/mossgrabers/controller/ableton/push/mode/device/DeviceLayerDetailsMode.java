@@ -12,7 +12,9 @@ import de.mossgrabers.framework.controller.display.IGraphicDisplay;
 import de.mossgrabers.framework.controller.display.ITextDisplay;
 import de.mossgrabers.framework.daw.IModel;
 import de.mossgrabers.framework.daw.data.IChannel;
+import de.mossgrabers.framework.daw.data.ICursorDevice;
 import de.mossgrabers.framework.daw.data.ILayer;
+import de.mossgrabers.framework.daw.data.bank.IBank;
 import de.mossgrabers.framework.daw.data.bank.IDrumPadBank;
 import de.mossgrabers.framework.featuregroup.AbstractFeatureGroup;
 import de.mossgrabers.framework.featuregroup.AbstractMode;
@@ -41,6 +43,31 @@ public class DeviceLayerDetailsMode extends BaseMode<ILayer>
     public DeviceLayerDetailsMode (final PushControlSurface surface, final IModel model)
     {
         super ("Layer details", surface, model, model.getCursorDevice ().getLayerBank ());
+
+        final ICursorDevice cursorDevice = model.getCursorDevice ();
+
+        final ViewManager viewManager = surface.getViewManager ();
+        viewManager.addChangeListener ( (previousID, activeID) -> {
+
+            final IBank<ILayer> bank;
+            switch (activeID)
+            {
+                case DRUM:
+                    bank = cursorDevice.getDrumPadBank ();
+                    break;
+                case DRUM64:
+                    bank = this.model.getDrumDevice64 ().getDrumPadBank ();
+                    break;
+                case COLOR:
+                    // Do not switch banks if view is left for color selection
+                    return;
+                default:
+                    bank = cursorDevice.getLayerBank ();
+                    break;
+            }
+            this.switchBanks (bank);
+
+        });
     }
 
 
@@ -115,26 +142,33 @@ public class DeviceLayerDetailsMode extends BaseMode<ILayer>
         if (index >= 0)
         {
             final IChannel channel = channelOpt.get ();
+            String colorID;
             switch (index)
             {
                 case 0:
-                    return this.colorManager.getColorIndex (channel.isActivated () ? PushColorManager.PUSH_YELLOW_MD : PushColorManager.PUSH_YELLOW_LO);
+                    colorID = channel.isActivated () ? PushColorManager.PUSH_YELLOW_MD : PushColorManager.PUSH_YELLOW_LO;
+                    break;
                 case 2:
-                    return this.colorManager.getColorIndex (channel.isMute () ? PushColorManager.PUSH_ORANGE_HI : PushColorManager.PUSH_ORANGE_LO);
+                    colorID = channel.isMute () ? PushColorManager.PUSH_ORANGE_HI : PushColorManager.PUSH_ORANGE_LO;
+                    break;
                 case 3:
-                    return this.colorManager.getColorIndex (channel.isSolo () ? PushColorManager.PUSH_ORANGE_HI : PushColorManager.PUSH_ORANGE_LO);
+                    colorID = channel.isSolo () ? PushColorManager.PUSH_ORANGE_HI : PushColorManager.PUSH_ORANGE_LO;
+                    break;
                 case 7:
-                    return this.colorManager.getColorIndex (PushColorManager.PUSH_GREEN_HI);
+                    colorID = PushColorManager.PUSH_GREEN_HI;
+                    break;
                 default:
-                    return this.colorManager.getColorIndex (PushColorManager.PUSH_BLACK);
+                    colorID = PushColorManager.PUSH_BLACK;
+                    break;
             }
+            return this.colorManager.getColorIndex (colorID);
         }
 
         index = this.isButtonRow (1, buttonID);
         if (index >= 0)
         {
             if (index >= 6)
-                return this.model.getColorManager ().getColorIndex (this.bank instanceof IDrumPadBank ? AbstractMode.BUTTON_COLOR2_ON : AbstractFeatureGroup.BUTTON_COLOR_OFF);
+                return this.colorManager.getColorIndex (this.bank instanceof IDrumPadBank ? AbstractMode.BUTTON_COLOR2_ON : AbstractFeatureGroup.BUTTON_COLOR_OFF);
             return this.isPush2 ? PushColorManager.PUSH2_COLOR_BLACK : PushColorManager.PUSH1_COLOR_BLACK;
         }
 
@@ -168,8 +202,11 @@ public class DeviceLayerDetailsMode extends BaseMode<ILayer>
         display.setCell (3, 4, "");
         display.setCell (2, 5, "");
         display.setCell (3, 5, "");
-        display.setCell (0, 6, "Clr Mute");
-        display.setCell (0, 7, "Clr Solo");
+        if (this.bank instanceof IDrumPadBank)
+        {
+            display.setCell (0, 6, "Clr Mute");
+            display.setCell (0, 7, "Clr Solo");
+        }
         display.setCell (2, 7, "Select");
         display.setCell (3, 7, "Color");
     }
@@ -194,7 +231,15 @@ public class DeviceLayerDetailsMode extends BaseMode<ILayer>
         display.addOptionElement ("", "", false, "", "Solo", channel.isSolo (), false);
         display.addEmptyElement ();
         display.addEmptyElement ();
-        display.addOptionElement ("", "Clear Mute", false, "", "", false, false);
-        display.addOptionElement ("", "Clear Solo", false, "", "Select Color", false, false);
+        if (this.bank instanceof IDrumPadBank)
+        {
+            display.addOptionElement ("", "Clear Mute", false, "", "", false, false);
+            display.addOptionElement ("", "Clear Solo", false, "", "Select Color", false, false);
+        }
+        else
+        {
+            display.addEmptyElement ();
+            display.addEmptyElement ();
+        }
     }
 }

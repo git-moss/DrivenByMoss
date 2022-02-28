@@ -12,6 +12,7 @@ import de.mossgrabers.framework.controller.color.ColorEx;
 import de.mossgrabers.framework.daw.IHost;
 import de.mossgrabers.framework.daw.IModel;
 import de.mossgrabers.framework.daw.constants.DeviceID;
+import de.mossgrabers.framework.daw.data.EqualizerBandType;
 import de.mossgrabers.framework.daw.data.IChannel;
 import de.mossgrabers.framework.daw.data.ICursorDevice;
 import de.mossgrabers.framework.daw.data.IEqualizerDevice;
@@ -145,7 +146,7 @@ public class DeviceModule extends AbstractModule
             {
                 final int oneplus = i + 1;
 
-                writer.sendOSC (deviceAddress + "type/" + oneplus + "/value", equalizer.getType (i), dump);
+                writer.sendOSC (deviceAddress + "type/" + oneplus + "/value", equalizer.getTypeID (i).name ().toLowerCase (), dump);
                 this.flushParameterData (writer, deviceAddress + "gain/" + oneplus + "/", equalizer.getGain (i), dump);
                 this.flushParameterData (writer, deviceAddress + "freq/" + oneplus + "/", equalizer.getFrequency (i), dump);
                 this.flushParameterData (writer, deviceAddress + "q/" + oneplus + "/", equalizer.getQ (i), dump);
@@ -416,7 +417,7 @@ public class DeviceModule extends AbstractModule
                 try
                 {
                     final int bandNo = Integer.parseInt (subCommand1) - 1;
-                    equalizerDevice.setType (bandNo, toString (value));
+                    equalizerDevice.setType (bandNo, EqualizerBandType.valueOf (toString (value).toUpperCase ()));
                 }
                 catch (final NumberFormatException ex)
                 {

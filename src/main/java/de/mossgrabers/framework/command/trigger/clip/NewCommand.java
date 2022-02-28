@@ -65,7 +65,12 @@ public class NewCommand<S extends IControlSurface<C>, C extends Configuration> e
     }
 
 
-    private void handleExecute (final boolean enableOverdub)
+    /**
+     * Execute the new command.
+     *
+     * @param enableOverdub True to enable overdub for the new clip
+     */
+    public void handleExecute (final boolean enableOverdub)
     {
         final ITrack cursorTrack = this.model.getCursorTrack ();
         if (!cursorTrack.doesExist ())

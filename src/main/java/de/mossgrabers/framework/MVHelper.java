@@ -11,6 +11,7 @@ import de.mossgrabers.framework.daw.IModel;
 import de.mossgrabers.framework.daw.INoteClip;
 import de.mossgrabers.framework.daw.ITransport;
 import de.mossgrabers.framework.daw.data.ICursorDevice;
+import de.mossgrabers.framework.daw.data.IParameter;
 import de.mossgrabers.framework.daw.data.ITrack;
 import de.mossgrabers.framework.daw.data.bank.IParameterBank;
 import de.mossgrabers.framework.daw.data.bank.ITrackBank;
@@ -129,6 +130,18 @@ public class MVHelper<S extends IControlSurface<C>, C extends Configuration>
             return "Page: " + NONE;
 
         });
+    }
+
+
+    /**
+     * Display the name and value of the given parameter.
+     *
+     * @param parameter The parameter to display
+     */
+    public void notifyParameter (final IParameter parameter)
+    {
+        if (parameter.doesExist ())
+            this.delayDisplay ( () -> parameter.getName () + ": " + parameter.getDisplayedValue ());
     }
 
 

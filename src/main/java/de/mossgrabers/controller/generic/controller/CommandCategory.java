@@ -15,6 +15,7 @@ public enum CommandCategory
     BROWSER("Browser"),
     CLIP("Clip"),
     DEVICE("Device"),
+    EQ("EQ"),
     FX_TRACK("FX Track"),
     GLOBAL("Global"),
     LAYOUT("Layout"),

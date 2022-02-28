@@ -20,21 +20,30 @@ public interface IEqualizerDevice extends ISpecificDevice
 
 
     /**
-     * Get the type values.
+     * Get the type value.
      *
      * @param index 0 .. number of frequency bands - 1
      * @return The parameter
      */
-    String getType (int index);
+    EqualizerBandType getTypeID (int index);
 
 
     /**
-     * Set the type values.
+     * Set the type value.
      *
      * @param index 0 .. number of frequency bands - 1
      * @param type The type
      */
-    void setType (int index, String type);
+    void setType (int index, EqualizerBandType type);
+
+
+    /**
+     * Get one of the type parameters.
+     *
+     * @param index 0 .. number of frequency bands - 1
+     * @return The parameter
+     */
+    IParameter getType (int index);
 
 
     /**
@@ -47,7 +56,7 @@ public interface IEqualizerDevice extends ISpecificDevice
 
 
     /**
-     * Get one of the frquency parameters.
+     * Get one of the frequency parameters.
      *
      * @param index 0 .. number of frequency bands - 1
      * @return The parameter

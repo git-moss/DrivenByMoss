@@ -4,6 +4,7 @@
 
 package de.mossgrabers.framework.view;
 
+import de.mossgrabers.controller.ableton.push.mode.device.DeviceLayerDetailsMode;
 import de.mossgrabers.framework.configuration.Configuration;
 import de.mossgrabers.framework.controller.ButtonID;
 import de.mossgrabers.framework.controller.IControlSurface;
@@ -15,8 +16,11 @@ import de.mossgrabers.framework.daw.IModel;
 import de.mossgrabers.framework.daw.data.ILayer;
 import de.mossgrabers.framework.daw.data.IMasterTrack;
 import de.mossgrabers.framework.daw.data.ITrack;
+import de.mossgrabers.framework.daw.data.bank.IBank;
 import de.mossgrabers.framework.featuregroup.AbstractFeatureGroup;
 import de.mossgrabers.framework.featuregroup.AbstractView;
+import de.mossgrabers.framework.featuregroup.IMode;
+import de.mossgrabers.framework.mode.Modes;
 
 import java.util.Optional;
 
@@ -136,7 +140,8 @@ public class ColorView<S extends IControlSurface<C>, C extends Configuration> ex
                     break;
 
                 case MODE_LAYER:
-                    final Optional<?> selectedItem = this.model.getCursorDevice ().getLayerBank ().getSelectedItem ();
+                    final IBank<? extends ILayer> layerBank = this.getLayerBank ();
+                    final Optional<?> selectedItem = layerBank.getSelectedItem ();
                     if (selectedItem.isPresent ())
                         ((ILayer) selectedItem.get ()).setColor (entry);
                     break;
@@ -157,5 +162,12 @@ public class ColorView<S extends IControlSurface<C>, C extends Configuration> ex
     public String getButtonColorID (final ButtonID buttonID)
     {
         return AbstractFeatureGroup.BUTTON_COLOR_OFF;
+    }
+
+
+    private IBank<? extends ILayer> getLayerBank ()
+    {
+        final IMode mode = this.surface.getModeManager ().get (Modes.DEVICE_LAYER_DETAILS);
+        return ((DeviceLayerDetailsMode) mode).getBank ();
     }
 }

@@ -10,6 +10,7 @@ import de.mossgrabers.controller.generic.flexihandler.ActionHandler;
 import de.mossgrabers.controller.generic.flexihandler.BrowserHandler;
 import de.mossgrabers.controller.generic.flexihandler.ClipHandler;
 import de.mossgrabers.controller.generic.flexihandler.DeviceHandler;
+import de.mossgrabers.controller.generic.flexihandler.EqHandler;
 import de.mossgrabers.controller.generic.flexihandler.FxTrackHandler;
 import de.mossgrabers.controller.generic.flexihandler.GlobalHandler;
 import de.mossgrabers.controller.generic.flexihandler.LayoutHandler;
@@ -34,6 +35,7 @@ import de.mossgrabers.framework.controller.valuechanger.SignedBitRelativeValueCh
 import de.mossgrabers.framework.controller.valuechanger.TwosComplementValueChanger;
 import de.mossgrabers.framework.daw.IHost;
 import de.mossgrabers.framework.daw.ModelSetup;
+import de.mossgrabers.framework.daw.constants.DeviceID;
 import de.mossgrabers.framework.daw.data.IMasterTrack;
 import de.mossgrabers.framework.daw.data.ITrack;
 import de.mossgrabers.framework.daw.data.bank.IParameterBank;
@@ -179,6 +181,7 @@ public class GenericFlexiControllerSetup extends AbstractControllerSetup<Generic
         final ModelSetup ms = new ModelSetup ();
         ms.enableDrumDevice (false);
         ms.setNumMarkers (8);
+        ms.enableDevice (DeviceID.EQ);
         this.model = this.factory.createModel (this.configuration, this.colorManager, this.valueChanger, this.scales, ms);
     }
 
@@ -313,6 +316,7 @@ public class GenericFlexiControllerSetup extends AbstractControllerSetup<Generic
         surface.registerHandler (new FxTrackHandler (this.model, surface, this.configuration, this.absoluteLowResValueChanger, this.signedBitRelativeValueChanger, this.offsetBinaryRelativeValueChanger));
         surface.registerHandler (new MasterHandler (this.model, surface, this.configuration, this.absoluteLowResValueChanger, this.signedBitRelativeValueChanger, this.offsetBinaryRelativeValueChanger));
         surface.registerHandler (new DeviceHandler (this.model, surface, this.configuration, this.absoluteLowResValueChanger, this.signedBitRelativeValueChanger, this.offsetBinaryRelativeValueChanger));
+        surface.registerHandler (new EqHandler (this.model, surface, this.configuration, this.absoluteLowResValueChanger, this.signedBitRelativeValueChanger, this.offsetBinaryRelativeValueChanger));
         surface.registerHandler (new BrowserHandler (this.model, surface, this.configuration, this.absoluteLowResValueChanger, this.signedBitRelativeValueChanger, this.offsetBinaryRelativeValueChanger));
         surface.registerHandler (new SceneHandler (this.model, surface, this.configuration, this.absoluteLowResValueChanger, this.signedBitRelativeValueChanger, this.offsetBinaryRelativeValueChanger));
         surface.registerHandler (new ClipHandler (this.model, surface, this.configuration, this.absoluteLowResValueChanger, this.signedBitRelativeValueChanger, this.offsetBinaryRelativeValueChanger));

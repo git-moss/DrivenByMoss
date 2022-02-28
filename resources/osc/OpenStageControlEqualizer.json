@@ -1,5 +1,8 @@
 {
-  "session": {
+  "version": "1.9.7",
+  "type": "session",
+  "createdWith": "Open Stage Control",
+  "content": {
     "type": "root",
     "id": "root",
     "linkId": "",
@@ -62,7 +65,8 @@
                 "keyRepeat": true,
                 "keyType": "keydown",
                 "typeTags": "",
-                "ignoreDefaults": false
+                "ignoreDefaults": false,
+                "comments": ""
               },
               {
                 "type": "variable",
@@ -75,7 +79,10 @@
                 "preArgs": "",
                 "typeTags": "",
                 "target": "",
-                "ignoreDefaults": false
+                "ignoreDefaults": false,
+                "comments": "",
+                "decimals": 2,
+                "bypass": false
               },
               {
                 "type": "panel",
@@ -101,7 +108,6 @@
                     "origin": 0,
                     "visible": true,
                     "expand": "false",
-                    "colorBg": "auto",
                     "colorText": "auto",
                     "colorWidget": "auto",
                     "colorStroke": "auto",
@@ -117,7 +123,11 @@
                     },
                     "script": "",
                     "target": "",
-                    "ignoreDefaults": false
+                    "comments": "",
+                    "lineWidth": "auto",
+                    "html": "",
+                    "dots": false,
+                    "bars": false
                   },
                   {
                     "type": "multixy",
@@ -150,12 +160,10 @@
                     "logScaleX": false,
                     "logScaleY": false,
                     "sensitivity": 1,
-                    "touchAddress": "",
                     "decimals": 2,
                     "visible": true,
                     "interaction": true,
                     "expand": "false",
-                    "colorBg": "auto",
                     "colorText": "auto",
                     "colorWidget": "auto",
                     "colorStroke": "auto",
@@ -166,7 +174,11 @@
                     "padding": "auto",
                     "script": "",
                     "typeTags": "",
-                    "ignoreDefaults": false
+                    "ignoreDefaults": false,
+                    "comments": "",
+                    "lineWidth": "auto",
+                    "html": "",
+                    "ephemeral": false
                   }
                 ],
                 "top": 10,
@@ -206,7 +218,11 @@
                 "verticalTabs": false,
                 "script": "",
                 "typeTags": "",
-                "ignoreDefaults": false
+                "ignoreDefaults": false,
+                "comments": "",
+                "lineWidth": "auto",
+                "html": "",
+                "contain": true
               },
               {
                 "type": "panel",
@@ -300,7 +316,6 @@
                         "width": "auto",
                         "height": "auto",
                         "expand": "false",
-                        "colorBg": "auto",
                         "colorText": "auto",
                         "colorWidget": "auto",
                         "colorStroke": "auto",
@@ -330,7 +345,12 @@
                           "Notch": "notch",
                           "Highcut": "highcut",
                           "Highshelf": "highshelf"
-                        }
+                        },
+                        "comments": "",
+                        "lineWidth": "auto",
+                        "html": "",
+                        "label": "auto",
+                        "icon": "true"
                       },
                       {
                         "type": "knob",
@@ -342,7 +362,6 @@
                         "width": 80,
                         "height": 80,
                         "expand": false,
-                        "colorBg": "auto",
                         "colorText": "auto",
                         "colorWidget": "auto",
                         "colorStroke": "auto",
@@ -377,7 +396,10 @@
                         "target": [],
                         "ignoreDefaults": false,
                         "bypass": false,
-                        "touchAddress": ""
+                        "comments": "",
+                        "lineWidth": "auto",
+                        "html": "",
+                        "design": "default"
                       },
                       {
                         "type": "panel",
@@ -428,7 +450,6 @@
                             "width": "30%",
                             "height": "auto",
                             "expand": "false",
-                            "colorBg": "auto",
                             "colorText": "auto",
                             "colorWidget": "auto",
                             "colorStroke": "auto",
@@ -447,9 +468,11 @@
                             "script": "",
                             "address": "auto",
                             "preArgs": "",
-                            "typeTags": "",
                             "target": "",
-                            "ignoreDefaults": false
+                            "comments": "",
+                            "lineWidth": "auto",
+                            "html": "",
+                            "decimals": 2
                           },
                           {
                             "type": "text",
@@ -460,7 +483,6 @@
                             "width": "70%",
                             "height": 30,
                             "expand": "false",
-                            "colorBg": "auto",
                             "colorText": "auto",
                             "colorWidget": "auto",
                             "colorStroke": "auto",
@@ -479,12 +501,18 @@
                             "script": "",
                             "address": "/eq/freq/@{parent.variables.band_no}/valueStr",
                             "preArgs": "",
-                            "typeTags": "",
                             "target": "",
-                            "ignoreDefaults": false
+                            "comments": "",
+                            "lineWidth": "auto",
+                            "html": "",
+                            "decimals": 2
                           }
                         ],
-                        "tabs": []
+                        "tabs": [],
+                        "comments": "",
+                        "lineWidth": "auto",
+                        "html": "",
+                        "contain": true
                       },
                       {
                         "type": "knob",
@@ -496,7 +524,6 @@
                         "width": 80,
                         "height": 80,
                         "expand": "false",
-                        "colorBg": "auto",
                         "colorText": "auto",
                         "colorWidget": "auto",
                         "colorStroke": "auto",
@@ -531,7 +558,10 @@
                         "target": [],
                         "ignoreDefaults": false,
                         "bypass": false,
-                        "touchAddress": ""
+                        "comments": "",
+                        "lineWidth": "auto",
+                        "html": "",
+                        "design": "default"
                       },
                       {
                         "type": "panel",
@@ -582,7 +612,6 @@
                             "width": "30%",
                             "height": "auto",
                             "expand": "false",
-                            "colorBg": "auto",
                             "colorText": "auto",
                             "colorWidget": "auto",
                             "colorStroke": "auto",
@@ -601,9 +630,11 @@
                             "script": "",
                             "address": "auto",
                             "preArgs": "",
-                            "typeTags": "",
                             "target": "",
-                            "ignoreDefaults": false
+                            "comments": "",
+                            "lineWidth": "auto",
+                            "html": "",
+                            "decimals": 2
                           },
                           {
                             "type": "text",
@@ -614,7 +645,6 @@
                             "width": "70%",
                             "height": 30,
                             "expand": "false",
-                            "colorBg": "auto",
                             "colorText": "auto",
                             "colorWidget": "auto",
                             "colorStroke": "auto",
@@ -633,12 +663,18 @@
                             "script": "",
                             "address": "/eq/gain/@{parent.variables.band_no}/valueStr",
                             "preArgs": "",
-                            "typeTags": "",
                             "target": "",
-                            "ignoreDefaults": false
+                            "comments": "",
+                            "lineWidth": "auto",
+                            "html": "",
+                            "decimals": 2
                           }
                         ],
-                        "tabs": []
+                        "tabs": [],
+                        "comments": "",
+                        "lineWidth": "auto",
+                        "html": "",
+                        "contain": true
                       },
                       {
                         "type": "knob",
@@ -650,7 +686,6 @@
                         "width": 80,
                         "height": 80,
                         "expand": "false",
-                        "colorBg": "auto",
                         "colorText": "auto",
                         "colorWidget": "auto",
                         "colorStroke": "auto",
@@ -667,8 +702,8 @@
                         "angle": 270,
                         "doubleTap": true,
                         "range": {
-                          "min": 0,
-                          "max": 127
+                          "min": 127,
+                          "max": 0
                         },
                         "logScale": false,
                         "sensitivity": 1,
@@ -685,7 +720,10 @@
                         "target": [],
                         "ignoreDefaults": false,
                         "bypass": false,
-                        "touchAddress": ""
+                        "comments": "",
+                        "lineWidth": "auto",
+                        "html": "",
+                        "design": "default"
                       },
                       {
                         "type": "panel",
@@ -736,7 +774,6 @@
                             "width": "30%",
                             "height": "auto",
                             "expand": "false",
-                            "colorBg": "auto",
                             "colorText": "auto",
                             "colorWidget": "auto",
                             "colorStroke": "auto",
@@ -755,9 +792,11 @@
                             "script": "",
                             "address": "auto",
                             "preArgs": "",
-                            "typeTags": "",
                             "target": "",
-                            "ignoreDefaults": false
+                            "comments": "",
+                            "lineWidth": "auto",
+                            "html": "",
+                            "decimals": 2
                           },
                           {
                             "type": "text",
@@ -768,7 +807,6 @@
                             "width": "70%",
                             "height": 30,
                             "expand": "false",
-                            "colorBg": "auto",
                             "colorText": "auto",
                             "colorWidget": "auto",
                             "colorStroke": "auto",
@@ -787,12 +825,18 @@
                             "script": "",
                             "address": "/eq/q/@{parent.variables.band_no}/valueStr",
                             "preArgs": "",
-                            "typeTags": "",
                             "target": "",
-                            "ignoreDefaults": false
+                            "comments": "",
+                            "lineWidth": "auto",
+                            "html": "",
+                            "decimals": 2
                           }
                         ],
-                        "tabs": []
+                        "tabs": [],
+                        "comments": "",
+                        "lineWidth": "auto",
+                        "html": "",
+                        "contain": true
                       },
                       {
                         "type": "script",
@@ -811,7 +855,8 @@
                         "decimals": 2,
                         "target": "",
                         "ignoreDefaults": false,
-                        "bypass": false
+                        "bypass": false,
+                        "comments": ""
                       },
                       {
                         "type": "script",
@@ -830,7 +875,8 @@
                         "decimals": 2,
                         "target": "",
                         "ignoreDefaults": false,
-                        "bypass": false
+                        "bypass": false,
+                        "comments": ""
                       },
                       {
                         "type": "script",
@@ -849,10 +895,15 @@
                         "decimals": 2,
                         "target": "",
                         "ignoreDefaults": false,
-                        "bypass": false
+                        "bypass": false,
+                        "comments": ""
                       }
                     ],
-                    "tabs": []
+                    "tabs": [],
+                    "comments": "",
+                    "lineWidth": "auto",
+                    "html": "",
+                    "contain": true
                   },
                   {
                     "type": "clone",
@@ -865,7 +916,6 @@
                     "visible": true,
                     "interaction": true,
                     "expand": "false",
-                    "colorBg": "auto",
                     "css": "",
                     "props": {
                       "variables": {
@@ -873,7 +923,9 @@
                       },
                       "id": "band_strip_2"
                     },
-                    "label": "",
+                    "comments": "",
+                    "script": "",
+                    "address": "auto",
                     "variables": "@{parent.variables}"
                   },
                   {
@@ -887,7 +939,6 @@
                     "visible": true,
                     "interaction": true,
                     "expand": "false",
-                    "colorBg": "auto",
                     "css": "",
                     "props": {
                       "variables": {
@@ -895,7 +946,9 @@
                       },
                       "id": "band_strip_3"
                     },
-                    "label": "",
+                    "comments": "",
+                    "script": "",
+                    "address": "auto",
                     "variables": "@{parent.variables}"
                   },
                   {
@@ -909,7 +962,6 @@
                     "visible": true,
                     "interaction": true,
                     "expand": "false",
-                    "colorBg": "auto",
                     "css": "",
                     "props": {
                       "variables": {
@@ -917,7 +969,9 @@
                       },
                       "id": "band_strip_4"
                     },
-                    "label": "",
+                    "comments": "",
+                    "script": "",
+                    "address": "auto",
                     "variables": "@{parent.variables}"
                   },
                   {
@@ -931,7 +985,6 @@
                     "visible": true,
                     "interaction": true,
                     "expand": "false",
-                    "colorBg": "auto",
                     "css": "",
                     "props": {
                       "variables": {
@@ -939,7 +992,9 @@
                       },
                       "id": "band_strip_5"
                     },
-                    "label": "",
+                    "comments": "",
+                    "script": "",
+                    "address": "auto",
                     "variables": "@{parent.variables}"
                   },
                   {
@@ -953,7 +1008,6 @@
                     "visible": true,
                     "interaction": true,
                     "expand": "false",
-                    "colorBg": "auto",
                     "css": "",
                     "props": {
                       "variables": {
@@ -961,7 +1015,9 @@
                       },
                       "id": "band_strip_6"
                     },
-                    "label": "",
+                    "comments": "",
+                    "script": "",
+                    "address": "auto",
                     "variables": "@{parent.variables}"
                   },
                   {
@@ -975,7 +1031,6 @@
                     "visible": true,
                     "interaction": true,
                     "expand": "false",
-                    "colorBg": "auto",
                     "css": "",
                     "props": {
                       "variables": {
@@ -983,7 +1038,9 @@
                       },
                       "id": "band_strip_7"
                     },
-                    "label": "",
+                    "comments": "",
+                    "script": "",
+                    "address": "auto",
                     "variables": "@{parent.variables}"
                   },
                   {
@@ -997,7 +1054,6 @@
                     "visible": true,
                     "interaction": true,
                     "expand": "false",
-                    "colorBg": "auto",
                     "css": "",
                     "props": {
                       "variables": {
@@ -1005,11 +1061,17 @@
                       },
                       "id": "band_strip_8"
                     },
-                    "label": "",
+                    "comments": "",
+                    "script": "",
+                    "address": "auto",
                     "variables": "@{parent.variables}"
                   }
                 ],
-                "tabs": []
+                "tabs": [],
+                "comments": "",
+                "lineWidth": "auto",
+                "html": "",
+                "contain": true
               },
               {
                 "type": "button",
@@ -1021,7 +1083,6 @@
                 "width": "auto",
                 "height": "auto",
                 "expand": "false",
-                "colorBg": "auto",
                 "colorText": "auto",
                 "colorWidget": "auto",
                 "colorStroke": "auto",
@@ -1047,7 +1108,12 @@
                 "decimals": 0,
                 "target": [],
                 "ignoreDefaults": false,
-                "bypass": false
+                "bypass": false,
+                "comments": "",
+                "lineWidth": "auto",
+                "html": "",
+                "vertical": false,
+                "wrap": false
               }
             ],
             "tabs": [],
@@ -1072,7 +1138,11 @@
             "verticalTabs": false,
             "script": "",
             "typeTags": "",
-            "ignoreDefaults": false
+            "ignoreDefaults": false,
+            "comments": "",
+            "lineWidth": "auto",
+            "html": "",
+            "contain": true
           }
         ],
         "tabs": [],
@@ -1093,7 +1163,10 @@
         "verticalTabs": false,
         "script": "",
         "typeTags": "",
-        "ignoreDefaults": false
+        "ignoreDefaults": false,
+        "comments": "",
+        "html": "",
+        "contain": true
       }
     ],
     "scroll": true,
@@ -1112,8 +1185,12 @@
     "script": "",
     "typeTags": "",
     "ignoreDefaults": false,
-    "widgets": []
-  },
-  "version": "1.0.2",
-  "type": "Open Stage Control session"
+    "widgets": [],
+    "visible": true,
+    "comments": "",
+    "width": "auto",
+    "height": "auto",
+    "html": "",
+    "contain": true
+  }
 }

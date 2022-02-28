@@ -76,132 +76,132 @@ public class GenericFlexiConfiguration extends AbstractConfiguration
 
     // @formatter:off
     static final List<String>                        NUMBER_NAMES              = List.of (
-        "0  CC Bank Select",
-        "1  MMC Stop, CC Modulation",
-        "2  MMC Play, CC Breath Controller",
-        "3  MMC Deferred Play",
-        "4  MMC Fast Forward, CC Foot Controller",
-        "5  MMC Rewind, CC Portamento Time",
-        "6  MMC Punch In, CC Data Entry MSB",
-        "7  MMC Punch Out, CC Volume",
-        "8  MMC Record Pause, CC Balance",
-        "9  MMC Play Pause   ",
-        "10 MMC Eject, CC Pan",
-        "11 MMC Chase, CC Expression",
-        "12 CC Effect Controller 1",
-        "13 CC Effect Controller 2",
-        "14 -",
-        "15 -",
-        "16  -",
-        "17  -",
-        "18  -",
-        "19  -",
-        "20  -",
-        "21  -",
-        "22  -",
-        "23  -",
-        "24  -",
-        "25  -",
-        "26  -",
-        "27  -",
-        "28  -",
-        "29  -",
-        "30  -",
-        "31  -",
-        "32  -",
-        "33  -",
-        "34  -",
-        "35  -",
-        "36  -",
-        "37  -",
-        "38  -",
-        "39  -",
-        "40  -",
-        "41  -",
-        "42  -",
-        "43  -",
-        "44  -",
-        "45  -",
-        "46  -",
-        "47  -",
-        "48  -",
-        "49  -",
-        "50  -",
-        "51  -",
-        "52  -",
-        "53  -",
-        "54  -",
-        "55  -",
-        "56  -",
-        "57  -",
-        "58  -",
-        "59  -",
-        "60  -",
-        "61  -",
-        "62  -",
-        "63  -",
-        "64  CC Damper Pedal",
-        "65  CC Portamento On/Off Switch",
-        "66  CC Sostenuto On/Off Switch",
-        "67  CC Soft Pedal On/Off Switch",
+        "00  MMC Reserved for extensions, CC Bank Select (MSB)",
+        "01  MMC Stop, CC Modulation Wheel (MSB)",
+        "02  MMC Play, CC Breath Controller (MSB)",
+        "03  MMC Deferred play, CC Undefined (MSB)",
+        "04  MMC Fast forward, CC Foot Controller (MSB)",
+        "05  MMC Rewind, CC Portamento Time (MSB)",
+        "06  MMC Record strobe, CC Data Entry (MSB)",
+        "07  MMC Record exit, CC Channel Volume (MSB)",
+        "08  MMC Record pause, CC Balance (MSB)",
+        "09  MMC Pause, CC Undefined (MSB)",
+        "10  MMC Eject, CC Pan (MSB)",
+        "11  MMC Chase, CC Expression (MSB)",
+        "12  MMC Command error reset, CC Effect Control 1 (MSB)",
+        "13  MMC MMC reset, CC Effect Control 2 (MSB)",
+        "14  MMC Write, CC Undefined (MSB)",
+        "15  MMC Masked write, CC Undefined (MSB)",
+        "16  MMC Read, CC General Purpose Controller 1 (MSB)",
+        "17  MMC Update, CC General Purpose Controller 2 (MSB)",
+        "18  MMC Locate, CC General Purpose Controller 3 (MSB)",
+        "19  MMC Variable play, CC General Purpose Controller 4 (MSB)",
+        "20  MMC Search, CC Undefined (MSB)",
+        "21  MMC Shuttle, CC Undefined (MSB)",
+        "22  MMC Step, CC Undefined (MSB)",
+        "23  MMC Assign system master, CC Undefined (MSB)",
+        "24  MMC Generator command, CC Undefined (MSB)",
+        "25  MMC Midi time code command, CC Undefined (MSB)",
+        "26  MMC Move, CC Undefined (MSB)",
+        "27  MMC Add, CC Undefined (MSB)",
+        "28  MMC Subtract, CC Undefined (MSB)",
+        "29  MMC Drop frame adjust, CC Undefined (MSB)",
+        "30  MMC Procedure, CC Undefined (MSB)",
+        "31  MMC Event, CC Undefined (MSB)",
+        "32  MMC Group, CC Bank Select (LSB)",
+        "33  MMC Command segment, CC Modulation Wheel (LSB)",
+        "34  MMC Deferred variable play, CC Breath Controller (LSB)",
+        "35  MMC Record strobe variable, CC Undefined (LSB)",
+        "36  CC Foot Controller (LSB)",
+        "37  CC Portamento Time (LSB)",
+        "38  CC Data Entry (LSB)",
+        "39  CC Channel Volume (LSB)",
+        "30  CC Balance (LSB)",
+        "41  CC Undefined (LSB)",
+        "42  CC Pan (LSB)",
+        "43  CC Expression (LSB)",
+        "44  CC Effect Control 1 (LSB)",
+        "45  CC Effect Control 2 (LSB)",
+        "46  CC Undefined (LSB)",
+        "47  CC Undefined (LSB)",
+        "48  CC General Purpose Controller 1 (LSB)",
+        "49  CC General Purpose Controller 2 (LSB)",
+        "50  CC General Purpose Controller 3 (LSB)",
+        "51  CC General Purpose Controller 4 (LSB)",
+        "52  CC Undefined (LSB)",
+        "53  CC Undefined (LSB)",
+        "54  CC Undefined (LSB)",
+        "55  CC Undefined (LSB)",
+        "56  CC Undefined (LSB)",
+        "57  CC Undefined (LSB)",
+        "58  CC Undefined (LSB)",
+        "59  CC Undefined (LSB)",
+        "60  CC Undefined (LSB)",
+        "61  CC Undefined (LSB)",
+        "62  CC Undefined (LSB)",
+        "63  CC Undefined (LSB)",
+        "64  CC Sustain Pedal",
+        "65  CC Portamento On/Off",
+        "66  CC Sostenuto",
+        "67  CC Soft Pedal",
         "68  CC Legato Footswitch",
         "69  CC Hold 2",
-        "70  CC Sound Controller 1",
-        "71  CC Sound Controller 2",
-        "72  CC Sound Controller 3",
-        "73  CC Sound Controller 4",
-        "74  CC Sound Controller 5",
-        "75  CC Sound Controller 6",
-        "76  CC Sound Controller 7",
-        "77  CC Sound Controller 8",
-        "78  CC Sound Controller 9",
+        "70  CC Sound Controller 1 - Sound Variation",
+        "71  CC Sound Controller 2 - Timbre/Harmonic Intensity",
+        "72  CC Sound Controller 3 - Release Time",
+        "73  CC Sound Controller 4 - Attack Time",
+        "74  CC Sound Controller 5 - Brightness",
+        "75  CC Sound Controller 6 - Decay Time",
+        "76  CC Sound Controller 7 - Vibrato Rate",
+        "77  CC Sound Controller 8 - Vibrato Depth",
+        "78  CC Sound Controller 9 - Vibrato Delay",
         "79  CC Sound Controller 10",
-        "80  CC General Purpose",
-        "81  CC General Purpose",
-        "82  CC General Purpose",
-        "83  CC General Purpose",
-        "84  CC Portamento",
-        "85  -",
-        "86  -",
-        "87  -",
-        "88  -",
-        "89  -",
-        "90  -",
-        "91  CC Effect 1 Depth",
-        "92  CC Effect 2 Depth",
-        "93  CC Effect 3 Depth",
-        "94  CC Effect 4 Depth",
-        "95  CC Effect 5 Depth",
-        "96  CC (+1) Data Increment",
-        "97  CC (-1) Data Decrement",
-        "98  CC NRPN LSB",
-        "99  CC NRPN MSB",
-        "100 CC RPN LSB",
-        "101 CC RPN MSB",
-        "102 -",
-        "103 -",
-        "104 -",
-        "105 -",
-        "106 -",
-        "107 -",
-        "108 -",
-        "109 -",
-        "110 -",
-        "111 -",
-        "112 -",
-        "113 -",
-        "114 -",
-        "115 -",
-        "116 -",
-        "117 -",
-        "118 -",
-        "119 -",
+        "80  CC General Purpose 5",
+        "81  CC General Purpose 6",
+        "82  CC General Purpose 7",
+        "83  CC General Purpose 8",
+        "84  CC Portamento Control",
+        "85  CC Undefined",
+        "86  CC Undefined",
+        "87  CC Undefined",
+        "88  CC High Resolution Velocity Prefix",
+        "89  CC Undefined",
+        "90  CC Undefined",
+        "91  CC Effect 1 Depth - Reverb Send Level",
+        "92  CC Effect 2 Depth - Tremolo Depth",
+        "93  CC Effect 3 Depth - Chorus Send Level",
+        "94  CC Effect 4 Depth - Celeste [Detune] Depth",
+        "95  CC Effect 5 Depth - Phaser Depth",
+        "96  CC Data Increment",
+        "97  CC Data Decrement",
+        "98  CC Non-Registered Parameter Number (NRPN) LSB",
+        "99  CC Non-Registered Parameter Number (NRPN) MSB",
+        "100 CC Registered Parameter Number (RPN) LSB",
+        "101 CC Registered Parameter Number (RPN) MSB",
+        "102 CC Undefined",
+        "103 CC Undefined",
+        "104 CC Undefined",
+        "105 CC Undefined",
+        "106 CC Undefined",
+        "107 CC Undefined",
+        "108 CC Undefined",
+        "109 CC Undefined",
+        "110 CC Undefined",
+        "111 CC Undefined",
+        "112 CC Undefined",
+        "113 CC Undefined",
+        "114 CC Undefined",
+        "115 CC Undefined",
+        "116 CC Undefined",
+        "117 CC Undefined",
+        "118 CC Undefined",
+        "119 CC Undefined",
         "120 CC All Sound Off",
         "121 CC Reset All Controllers",
         "122 CC Local On/Off Switch",
         "123 CC All Notes Off",
-        "124 CC Omni Mode Off",
-        "125 CC Omni Mode On",
+        "124 MMC Wait, CC Omni Mode Off",
+        "125 MMC Resume, CC Omni Mode On",
         "126 CC Mono Mode",
         "127 CC Poly Mode"
     );
@@ -428,8 +428,8 @@ public class GenericFlexiConfiguration extends AbstractConfiguration
 
             // High resolution is only true for pitchbend as the default
             final int number = AbstractConfiguration.lookupIndex (NUMBER_NAMES, this.numberSetting.get ());
-            final boolean isHighRes = type == CommandSlot.TYPE_PITCH_BEND || type == CommandSlot.TYPE_CC && number < 32;
-            this.resolutionSetting.set (OPTIONS_RESOLUTION.get (isHighRes ? 1 : 0));
+            if (type != CommandSlot.TYPE_PITCH_BEND && (type != CommandSlot.TYPE_CC || number >= 32))
+                this.resolutionSetting.set (OPTIONS_RESOLUTION.get (0));
 
             this.clearNoteMap ();
             this.updateVisibility (!OPTIONS_TYPE.get (0).equals (value));
@@ -891,56 +891,59 @@ public class GenericFlexiConfiguration extends AbstractConfiguration
      */
     public void importFrom (final File importFile) throws IOException
     {
-        try
-        {
-            final Properties props = new Properties ();
-            try (final Reader reader = new FileReader (importFile))
-            {
-                props.load (reader);
-            }
-
-            for (int i = 0; i < this.commandSlots.length; i++)
-            {
-                final String slotName = "SLOT" + i + "_";
-                final CommandSlot slot = this.commandSlots[i];
-
-                final String typeProperty = props.getProperty (slotName + TAG_TYPE);
-                if (typeProperty == null)
-                    continue;
-
-                int type = Integer.parseInt (typeProperty);
-
-                final FlexiCommand command = FlexiCommand.lookupByName (props.getProperty (slotName + TAG_COMMAND));
-
-                // For backwards compatibility
-                if (command == FlexiCommand.OFF)
-                    type = CommandSlot.TYPE_OFF;
-
-                final String numberProperty = props.getProperty (slotName + TAG_NUMBER);
-                final String midiChannelProperty = props.getProperty (slotName + TAG_MIDI_CHANNEL);
-                final String knobModeProperty = props.getProperty (slotName + TAG_KNOB_MODE);
-
-                slot.setType (type);
-                slot.setNumber (numberProperty == null ? 0 : Integer.parseInt (numberProperty));
-                slot.setMidiChannel (midiChannelProperty == null ? 0 : Integer.parseInt (midiChannelProperty));
-                slot.setResolution (Boolean.parseBoolean (props.getProperty (slotName + TAG_RESOLUTION)));
-                slot.setKnobMode (readKnobMode (knobModeProperty));
-                slot.setCommand (command);
-                slot.setSendValue (Boolean.parseBoolean (props.getProperty (slotName + TAG_SEND_VALUE)));
-                slot.setSendValueWhenReceived (Boolean.parseBoolean (props.getProperty (slotName + TAG_SEND_VALUE_WHEN_RECEIVED)));
-            }
-        }
-        catch (final IOException | NumberFormatException ex)
-        {
-            this.host.error ("Could not import from file.", ex);
-            this.host.showNotification ("Could not import from file. Check Script Console for detailed error.");
-            return;
-        }
-
-        this.clearNoteMap ();
-
         this.slotSelectionSetting.set ("1");
-        this.selectSlot ("1");
+
+        this.host.scheduleTask ( () -> {
+            try
+            {
+                final Properties props = new Properties ();
+                try (final Reader reader = new FileReader (importFile))
+                {
+                    props.load (reader);
+                }
+
+                for (int i = 0; i < this.commandSlots.length; i++)
+                {
+                    final String slotName = "SLOT" + i + "_";
+                    final CommandSlot slot = this.commandSlots[i];
+
+                    final String typeProperty = props.getProperty (slotName + TAG_TYPE);
+                    if (typeProperty == null)
+                        continue;
+
+                    int type = Integer.parseInt (typeProperty);
+
+                    final FlexiCommand command = FlexiCommand.lookupByName (props.getProperty (slotName + TAG_COMMAND));
+
+                    // For backwards compatibility
+                    if (command == FlexiCommand.OFF)
+                        type = CommandSlot.TYPE_OFF;
+
+                    final String numberProperty = props.getProperty (slotName + TAG_NUMBER);
+                    final String midiChannelProperty = props.getProperty (slotName + TAG_MIDI_CHANNEL);
+                    final String knobModeProperty = props.getProperty (slotName + TAG_KNOB_MODE);
+
+                    slot.setType (type);
+                    slot.setNumber (numberProperty == null ? 0 : Integer.parseInt (numberProperty));
+                    slot.setMidiChannel (midiChannelProperty == null ? 0 : Integer.parseInt (midiChannelProperty));
+                    slot.setResolution (Boolean.parseBoolean (props.getProperty (slotName + TAG_RESOLUTION)));
+                    slot.setKnobMode (readKnobMode (knobModeProperty));
+                    slot.setCommand (command);
+                    slot.setSendValue (Boolean.parseBoolean (props.getProperty (slotName + TAG_SEND_VALUE)));
+                    slot.setSendValueWhenReceived (Boolean.parseBoolean (props.getProperty (slotName + TAG_SEND_VALUE_WHEN_RECEIVED)));
+                }
+            }
+            catch (final IOException | NumberFormatException ex)
+            {
+                this.host.error ("Could not import from file.", ex);
+                this.host.showNotification ("Could not import from file. Check Script Console for detailed error.");
+                return;
+            }
+
+            this.clearNoteMap ();
+
+            this.selectSlot ("1");
+        }, 1000);
     }
 
 

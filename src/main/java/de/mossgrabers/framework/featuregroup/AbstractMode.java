@@ -534,6 +534,17 @@ public abstract class AbstractMode<S extends IControlSurface<C>, C extends Confi
 
 
     /**
+     * Get the bank.
+     *
+     * @return The bank, might be null
+     */
+    public IBank<B> getBank ()
+    {
+        return this.bank;
+    }
+
+
+    /**
      * Set the binding to default handler for the parameter bank controlled by this mode.
      */
     private void unbindControls ()

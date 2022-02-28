@@ -47,6 +47,7 @@ public class DeviceTypes
         DEVICES.put ("Channel Filter", TypeIcon.ICON_NOTE);
         DEVICES.put ("Channel Map", TypeIcon.ICON_NOTE);
         DEVICES.put ("Chorus", TypeIcon.ICON_WAVE);
+        DEVICES.put ("Chorus+", TypeIcon.ICON_WAVE);
         DEVICES.put ("Comb", TypeIcon.ICON_WAVE);
         DEVICES.put ("Compressor", TypeIcon.ICON_WAVE);
         DEVICES.put ("DC Offset", TypeIcon.ICON_WAVE);
@@ -71,6 +72,7 @@ public class DeviceTypes
         DEVICES.put ("EQ-DJ", TypeIcon.ICON_WAVE);
         DEVICES.put ("Filter", TypeIcon.ICON_WAVE);
         DEVICES.put ("Flanger", TypeIcon.ICON_WAVE);
+        DEVICES.put ("Flanger+", TypeIcon.ICON_WAVE);
         DEVICES.put ("FM-4", TypeIcon.ICON_INSTRUMENT);
         DEVICES.put ("Freq Shifter", TypeIcon.ICON_WAVE);
         DEVICES.put ("FX Grid", TypeIcon.ICON_WAVE);
@@ -109,6 +111,7 @@ public class DeviceTypes
         DEVICES.put ("Peak Limiter", TypeIcon.ICON_WAVE);
         DEVICES.put ("Phase-4", TypeIcon.ICON_INSTRUMENT);
         DEVICES.put ("Phaser", TypeIcon.ICON_WAVE);
+        DEVICES.put ("Phaser+", TypeIcon.ICON_WAVE);
         DEVICES.put ("Pitch Shifter", TypeIcon.ICON_WAVE);
         DEVICES.put ("Poly Grid", TypeIcon.ICON_INSTRUMENT);
         DEVICES.put ("Polysynth", TypeIcon.ICON_INSTRUMENT);

@@ -6,6 +6,7 @@ package de.mossgrabers.bitwig.framework.daw.data;
 
 import de.mossgrabers.framework.controller.valuechanger.IValueChanger;
 import de.mossgrabers.framework.daw.IHost;
+import de.mossgrabers.framework.daw.data.EqualizerBandType;
 import de.mossgrabers.framework.daw.data.IEqualizerDevice;
 import de.mossgrabers.framework.daw.data.IParameter;
 
@@ -14,6 +15,7 @@ import com.bitwig.extension.controller.api.Parameter;
 import com.bitwig.extension.controller.api.SpecificBitwigDevice;
 
 import java.util.ArrayList;
+import java.util.EnumMap;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -29,27 +31,27 @@ import java.util.UUID;
 public class EqualizerDeviceImpl extends SpecificDeviceImpl implements IEqualizerDevice
 {
     /** The ID of the Bitwig EQ+ plugin. */
-    public static final UUID                  ID_BITWIG_EQ_PLUS = UUID.fromString ("e4815188-ba6f-4d14-bcfc-2dcb8f778ccb");
+    public static final UUID                                 ID_BITWIG_EQ_PLUS = UUID.fromString ("e4815188-ba6f-4d14-bcfc-2dcb8f778ccb");
 
-    private static final Map<String, String>  EQ_TYPES          = new HashMap<> ();
-    private static final Map<String, Integer> EQ_TYPE_INDICES   = new HashMap<> ();
+    private static final Map<String, EqualizerBandType>      EQ_TYPES          = new HashMap<> ();
+    private static final EnumMap<EqualizerBandType, Integer> EQ_TYPE_INDICES   = new EnumMap<> (EqualizerBandType.class);
     static
     {
-        EQ_TYPES.put ("Off", "off");
-        EQ_TYPES.put ("High-c", "highcut");
-        EQ_TYPES.put ("Low-s", "lowshelf");
-        EQ_TYPES.put ("Low-c", "lowcut");
-        EQ_TYPES.put ("High-s", "highshelf");
-        EQ_TYPES.put ("Bell", "bell");
-        EQ_TYPES.put ("Notch", "notch");
+        EQ_TYPES.put ("Off", EqualizerBandType.OFF);
+        EQ_TYPES.put ("Low-c", EqualizerBandType.LOWCUT);
+        EQ_TYPES.put ("Low-s", EqualizerBandType.LOWSHELF);
+        EQ_TYPES.put ("Bell", EqualizerBandType.BELL);
+        EQ_TYPES.put ("High-c", EqualizerBandType.HIGHCUT);
+        EQ_TYPES.put ("High-s", EqualizerBandType.HIGHSHELF);
+        EQ_TYPES.put ("Notch", EqualizerBandType.NOTCH);
 
-        EQ_TYPE_INDICES.put ("off", Integer.valueOf (0));
-        EQ_TYPE_INDICES.put ("lowcut", Integer.valueOf (3));
-        EQ_TYPE_INDICES.put ("lowshelf", Integer.valueOf (6));
-        EQ_TYPE_INDICES.put ("bell", Integer.valueOf (7));
-        EQ_TYPE_INDICES.put ("highcut", Integer.valueOf (10));
-        EQ_TYPE_INDICES.put ("highshelf", Integer.valueOf (13));
-        EQ_TYPE_INDICES.put ("notch", Integer.valueOf (14));
+        EQ_TYPE_INDICES.put (EqualizerBandType.OFF, Integer.valueOf (0));
+        EQ_TYPE_INDICES.put (EqualizerBandType.LOWCUT, Integer.valueOf (3));
+        EQ_TYPE_INDICES.put (EqualizerBandType.LOWSHELF, Integer.valueOf (6));
+        EQ_TYPE_INDICES.put (EqualizerBandType.BELL, Integer.valueOf (7));
+        EQ_TYPE_INDICES.put (EqualizerBandType.HIGHCUT, Integer.valueOf (10));
+        EQ_TYPE_INDICES.put (EqualizerBandType.HIGHSHELF, Integer.valueOf (13));
+        EQ_TYPE_INDICES.put (EqualizerBandType.NOTCH, Integer.valueOf (14));
     }
 
     private static final int       NUMBER_OF_BANDS = 8;
@@ -102,25 +104,33 @@ public class EqualizerDeviceImpl extends SpecificDeviceImpl implements IEqualize
 
     /** {@inheritDoc} */
     @Override
-    public String getType (final int index)
+    public EqualizerBandType getTypeID (final int index)
     {
         final String typeName = this.types.get (index).getDisplayedValue ();
-        for (final Entry<String, String> e: EQ_TYPES.entrySet ())
+        for (final Entry<String, EqualizerBandType> e: EQ_TYPES.entrySet ())
         {
             if (typeName.startsWith (e.getKey ()))
                 return e.getValue ();
         }
-        return "off";
+        return EqualizerBandType.OFF;
     }
 
 
     /** {@inheritDoc} */
     @Override
-    public void setType (final int index, final String type)
+    public void setType (final int index, final EqualizerBandType typeID)
     {
         final IParameter param = this.types.get (index);
-        final Integer v = EQ_TYPE_INDICES.get (type);
+        final Integer v = EQ_TYPE_INDICES.get (typeID);
         ((ParameterImpl) param).getParameter ().set (v == null ? Integer.valueOf (0) : v, Integer.valueOf (15));
+    }
+
+
+    /** {@inheritDoc} */
+    @Override
+    public IParameter getType (final int index)
+    {
+        return this.types.get (index);
     }
 
 

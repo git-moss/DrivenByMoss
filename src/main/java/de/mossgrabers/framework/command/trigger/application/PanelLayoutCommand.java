@@ -35,6 +35,20 @@ public class PanelLayoutCommand<S extends IControlSurface<C>, C extends Configur
 
     /** {@inheritDoc} */
     @Override
+    public void execute (final ButtonEvent event, final int velocity)
+    {
+        if (this.surface.isSelectPressed ())
+        {
+            if (event == ButtonEvent.DOWN)
+                this.model.getCursorDevice ().toggleExpanded ();
+            return;
+        }
+        super.execute (event, velocity);
+    }
+
+
+    /** {@inheritDoc} */
+    @Override
     public void executeNormal (final ButtonEvent event)
     {
         if (event == ButtonEvent.DOWN)

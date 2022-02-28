@@ -40,6 +40,6 @@ public class Kontrol1PlayCommand extends PlayCommand<Kontrol1ControlSurface, Kon
     public void executeShifted (final ButtonEvent event)
     {
         if (event == ButtonEvent.DOWN)
-            this.newCommand.executeNormal (event);
+            this.newCommand.handleExecute (true);
     }
 }

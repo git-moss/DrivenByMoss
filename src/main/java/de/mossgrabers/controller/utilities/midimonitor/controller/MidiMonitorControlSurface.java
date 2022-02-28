@@ -19,9 +19,7 @@ import de.mossgrabers.framework.utils.StringUtils;
  */
 public class MidiMonitorControlSurface extends AbstractControlSurface<MidiMonitorConfiguration>
 {
-    private static final String    GENERAL_PURPOSE = "General Purpose";
-
-    private static final String [] SPACES          =
+    private static final String [] SPACES      =
     {
         "",
         " ",
@@ -39,152 +37,172 @@ public class MidiMonitorControlSurface extends AbstractControlSurface<MidiMonito
         "             "
     };
 
-    static final String []         CC_NAMES        =
+    private static final String [] SYSEX_NAMES =
     {
-        "Bank Select",
-        "Modulation",
-        "Breath Controller",
-        "Deferred Play",
-        "Foot Controller",
-        "Portamento Time",
-        "Data Entry MSB",
-        "Volume",
-        "Balance",
-        "Play Pause",
-        "Pan",
-        "Expression",
-        "Effect Controller 1",
-        "Effect Controller 2",
-        "14",
-        "15",
-        "16",
-        "17",
-        "18",
-        "19",
-        "20",
-        "21",
-        "22",
-        "23",
-        "24",
-        "25",
-        "26",
-        "27",
-        "28",
-        "29",
-        "30",
-        "31",
-        "32",
-        "33",
-        "34",
-        "35",
-        "36",
-        "37",
-        "38",
-        "39",
-        "30",
-        "41",
-        "42",
-        "43",
-        "44",
-        "45",
-        "46",
-        "47",
-        "48",
-        "49",
-        "50",
-        "51",
-        "52",
-        "53",
-        "54",
-        "55",
-        "56",
-        "57",
-        "58",
-        "59",
-        "60",
-        "61",
-        "62",
-        "63",
-        "Damper Pedal",
-        "Portamento On/Off Switch",
-        "Sostenuto On/Off Switch",
-        "Soft Pedal On/Off Switch",
-        "Legato Footswitch",
-        "Hold 2",
-        "Sound Controller 1",
-        "Sound Controller 2",
-        "Sound Controller 3",
-        "Sound Controller 4",
-        "Sound Controller 5",
-        "Sound Controller 6",
-        "Sound Controller 7",
-        "Sound Controller 8",
-        "Sound Controller 9",
-        "Sound Controller 10",
-        GENERAL_PURPOSE,
-        GENERAL_PURPOSE,
-        GENERAL_PURPOSE,
-        GENERAL_PURPOSE,
-        "Portamento",
-        "85",
-        "86",
-        "87",
-        "88",
-        "89",
-        "90",
-        "Effect 1 Depth",
-        "Effect 2 Depth",
-        "Effect 3 Depth",
-        "Effect 4 Depth",
-        "Effect 5 Depth",
-        "(+1) Data Increment",
-        "(-1) Data Decrement",
-        "NRPN LSB",
-        "NRPN MSB",
-        "RPN LSB",
-        "RPN MSB",
-        "102",
-        "103",
-        "104",
-        "105",
-        "106",
-        "107",
-        "108",
-        "109",
-        "110",
-        "111",
-        "112",
-        "113",
-        "114",
-        "115",
-        "116",
-        "117",
-        "118",
-        "119",
-        "All Sound Off",
-        "Reset All Controllers",
-        "Local On/Off Switch",
-        "All Notes Off",
-        "Omni Mode Off",
-        "Omni Mode On",
-        "Mono Mode",
-        "Poly Mode"
+        "F0: Start of System Exclusive Status Byte",
+        "F1: MIDI Time Code Quarter Frame",
+        "F2: Song Position Pointer",
+        "F3: Song Select",
+        "F4: Undefined",
+        "F5: Undefined",
+        "F6: Tune Request",
+        "F7: End of System Exclusive",
+        "F8: Timing Clock",
+        "F9: Undefined",
+        "FA: Start",
+        "FB: Continue",
+        "FC: Stop",
+        "FD: Undefined",
+        "FE: Active Sensing",
+        "FF: System Reset"
     };
 
-    static final String []         MMC_NAMES       = new String [128];
+    private static final String [] CC_NAMES    =
+    {
+        "00 Bank Select (MSB)",
+        "01 Modulation Wheel (MSB)",
+        "02 Breath Controller (MSB)",
+        "03 Undefined (MSB)",
+        "04 Foot Controller (MSB)",
+        "05 Portamento Time (MSB)",
+        "06 Data Entry (MSB)",
+        "07 Channel Volume (MSB)",
+        "08 Balance (MSB)",
+        "09 Undefined (MSB)",
+        "10 Pan (MSB)",
+        "11 Expression (MSB)",
+        "12 Effect Control 1 (MSB)",
+        "13 Effect Control 2 (MSB)",
+        "14 Undefined (MSB)",
+        "15 Undefined (MSB)",
+        "16 General Purpose Controller 1 (MSB)",
+        "17 General Purpose Controller 2 (MSB)",
+        "18 General Purpose Controller 3 (MSB)",
+        "19 General Purpose Controller 4 (MSB)",
+        "20 Undefined (MSB)",
+        "21 Undefined (MSB)",
+        "22 Undefined (MSB)",
+        "23 Undefined (MSB)",
+        "24 Undefined (MSB)",
+        "25 Undefined (MSB)",
+        "26 Undefined (MSB)",
+        "27 Undefined (MSB)",
+        "28 Undefined (MSB)",
+        "29 Undefined (MSB)",
+        "30 Undefined (MSB)",
+        "31 Undefined (MSB)",
+        "32 Bank Select (LSB)",
+        "33 Modulation Wheel (LSB)",
+        "34 Breath Controller (LSB)",
+        "35 Undefined (LSB)",
+        "36 Foot Controller (LSB)",
+        "37 Portamento Time (LSB)",
+        "38 Data Entry (LSB)",
+        "39 Channel Volume (LSB)",
+        "30 Balance (LSB)",
+        "41 Undefined (LSB)",
+        "42 Pan (LSB)",
+        "43 Expression (LSB)",
+        "44 Effect Control 1 (LSB)",
+        "45 Effect Control 2 (LSB)",
+        "46 Undefined (LSB)",
+        "47 Undefined (LSB)",
+        "48 General Purpose Controller 1 (LSB)",
+        "49 General Purpose Controller 2 (LSB)",
+        "50 General Purpose Controller 3 (LSB)",
+        "51 General Purpose Controller 4 (LSB)",
+        "52 Undefined (LSB)",
+        "53 Undefined (LSB)",
+        "54 Undefined (LSB)",
+        "55 Undefined (LSB)",
+        "56 Undefined (LSB)",
+        "57 Undefined (LSB)",
+        "58 Undefined (LSB)",
+        "59 Undefined (LSB)",
+        "60 Undefined (LSB)",
+        "61 Undefined (LSB)",
+        "62 Undefined (LSB)",
+        "63 Undefined (LSB)",
+        "64 Sustain Pedal",
+        "65 Portamento On/Off",
+        "66 Sostenuto",
+        "67 Soft Pedal",
+        "68 Legato Footswitch",
+        "69 Hold 2",
+        "70 Sound Controller 1 - Sound Variation",
+        "71 Sound Controller 2 - Timbre/Harmonic Intensity",
+        "72 Sound Controller 3 - Release Time",
+        "73 Sound Controller 4 - Attack Time",
+        "74 Sound Controller 5 - Brightness",
+        "75 Sound Controller 6 - Decay Time",
+        "76 Sound Controller 7 - Vibrato Rate",
+        "77 Sound Controller 8 - Vibrato Depth",
+        "78 Sound Controller 9 - Vibrato Delay",
+        "79 Sound Controller 10",
+        "80 General Purpose 5",
+        "81 General Purpose 6",
+        "82 General Purpose 7",
+        "83 General Purpose 8",
+        "84 Portamento Control",
+        "85 Undefined",
+        "86 Undefined",
+        "87 Undefined",
+        "88 High Resolution Velocity Prefix",
+        "89 Undefined",
+        "90 Undefined",
+        "91 Effect 1 Depth - Reverb Send Level",
+        "92 Effect 2 Depth - Tremolo Depth",
+        "93 Effect 3 Depth - Chorus Send Level",
+        "94 Effect 4 Depth - Celeste [Detune] Depth",
+        "95 Effect 5 Depth - Phaser Depth",
+        "96 Data Increment",
+        "97 Data Decrement",
+        "98 Non-Registered Parameter Number (NRPN) LSB",
+        "99 Non-Registered Parameter Number (NRPN) MSB",
+        "100 Registered Parameter Number (RPN) LSB",
+        "101 Registered Parameter Number (RPN) MSB",
+        "102 Undefined",
+        "103 Undefined",
+        "104 Undefined",
+        "105 Undefined",
+        "106 Undefined",
+        "107 Undefined",
+        "108 Undefined",
+        "109 Undefined",
+        "110 Undefined",
+        "111 Undefined",
+        "112 Undefined",
+        "113 Undefined",
+        "114 Undefined",
+        "115 Undefined",
+        "116 Undefined",
+        "117 Undefined",
+        "118 Undefined",
+        "119 Undefined",
+        "120 All Sound Off",
+        "121 Reset All Controllers",
+        "122 Local On/Off Switch",
+        "123 All Notes Off",
+        "124 Omni Mode Off",
+        "125 Omni Mode On",
+        "126 Mono Mode",
+        "127 Poly Mode"
+    };
+
+    static final String []         MMC_NAMES   = new String [128];
     static
     {
         MMC_NAMES[0x00] = "Reserved for extensions";
         MMC_NAMES[0x01] = "Stop";
-        MMC_NAMES[0x02] = "Play ";
-        MMC_NAMES[0x03] = "Deferred play ";
-        MMC_NAMES[0x04] = "Fast forward ";
-        MMC_NAMES[0x05] = "Rewind ";
+        MMC_NAMES[0x02] = "Play";
+        MMC_NAMES[0x03] = "Deferred play";
+        MMC_NAMES[0x04] = "Fast forward";
+        MMC_NAMES[0x05] = "Rewind";
         MMC_NAMES[0x06] = "Record strobe";
-        MMC_NAMES[0x07] = "Recordexit";
+        MMC_NAMES[0x07] = "Record exit";
         MMC_NAMES[0x08] = "Record pause";
-        MMC_NAMES[0x09] = "Pause ";
-        MMC_NAMES[0x0a] = "Eject ";
+        MMC_NAMES[0x09] = "Pause";
+        MMC_NAMES[0x0a] = "Eject";
         MMC_NAMES[0x0b] = "Chase";
         MMC_NAMES[0x0c] = "Command error reset";
         MMC_NAMES[0x0d] = "MMC reset";
@@ -193,10 +211,10 @@ public class MidiMonitorControlSurface extends AbstractControlSurface<MidiMonito
         MMC_NAMES[0x42] = "Read";
         MMC_NAMES[0x43] = "Update";
         MMC_NAMES[0x44] = "Locate";
-        MMC_NAMES[0x45] = "Variable play ";
-        MMC_NAMES[0x46] = "Search ";
-        MMC_NAMES[0x47] = "Shuttle ";
-        MMC_NAMES[0x48] = "Step ";
+        MMC_NAMES[0x45] = "Variable play";
+        MMC_NAMES[0x46] = "Search";
+        MMC_NAMES[0x47] = "Shuttle";
+        MMC_NAMES[0x48] = "Step";
         MMC_NAMES[0x49] = "Assign system master";
         MMC_NAMES[0x4a] = "Generator command";
         MMC_NAMES[0x4b] = "Midi time code command";
@@ -208,7 +226,7 @@ public class MidiMonitorControlSurface extends AbstractControlSurface<MidiMonito
         MMC_NAMES[0x51] = "Event";
         MMC_NAMES[0x52] = "Group";
         MMC_NAMES[0x53] = "Command segment";
-        MMC_NAMES[0x54] = "Deferred variable play ";
+        MMC_NAMES[0x54] = "Deferred variable play";
         MMC_NAMES[0x55] = "Record strobe variable";
         MMC_NAMES[0x7c] = "Wait";
         MMC_NAMES[0x7f] = "Resume";
@@ -273,7 +291,7 @@ public class MidiMonitorControlSurface extends AbstractControlSurface<MidiMonito
                 this.log (status, data1, data2, channel, "Program Change");
                 break;
 
-            // Channel After-touch
+            // Channel Aftertouch
             case 0xD0:
                 this.log (status, data1, data2, channel, "Channel Pressure (Aftertouch)");
                 break;
@@ -283,15 +301,10 @@ public class MidiMonitorControlSurface extends AbstractControlSurface<MidiMonito
                 this.log (status, data1, data2, channel, "Pitchbend");
                 break;
 
-            // System Realtime - Active Sense
+            // System Realtime
             case 0xF0:
                 if (!this.configuration.isFilterSystemRealtimeEnabled ())
-                {
-                    if (channel == 14)
-                        this.log (status, data1, data2, channel, "System Realtime - Active Sense");
-                    else
-                        this.log (status, data1, data2, channel, "System Realtime");
-                }
+                    this.log (status, data1, data2, channel, SYSEX_NAMES[channel]);
                 break;
 
             default:
