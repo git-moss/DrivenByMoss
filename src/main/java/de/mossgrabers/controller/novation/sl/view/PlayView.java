@@ -20,6 +20,7 @@ import de.mossgrabers.framework.daw.data.IDrumDevice;
 import de.mossgrabers.framework.daw.data.ITrack;
 import de.mossgrabers.framework.daw.data.bank.IDrumPadBank;
 import de.mossgrabers.framework.daw.data.bank.ITrackBank;
+import de.mossgrabers.framework.daw.midi.MidiConstants;
 import de.mossgrabers.framework.featuregroup.ModeManager;
 import de.mossgrabers.framework.mode.Modes;
 import de.mossgrabers.framework.utils.ButtonEvent;
@@ -397,7 +398,7 @@ public class PlayView extends AbstractSequencerView<SLControlSurface, SLConfigur
             // Mark selected note
             this.pressedKeys[offsetY + this.selectedPad] = velocity;
 
-            this.surface.sendMidiEvent (0x90, this.keyManager.map (note), velocity);
+            this.surface.sendMidiEvent (MidiConstants.CMD_NOTE_ON, this.keyManager.map (note), velocity);
         }
         else
         {

@@ -110,8 +110,8 @@ public class ParameterView extends BaseView
 
         final ICursorDevice cursorDevice = this.model.getCursorDevice ();
         final boolean doesExist = cursorDevice.doesExist ();
-        padGrid.lightEx (0, 0, doesExist && cursorDevice.canSelectPreviousFX () ? MaschineColorManager.COLOR_ROSE : MaschineColorManager.COLOR_BLACK);
-        padGrid.lightEx (1, 0, doesExist && cursorDevice.canSelectNextFX () ? MaschineColorManager.COLOR_ROSE : MaschineColorManager.COLOR_BLACK);
+        padGrid.lightEx (0, 0, doesExist && cursorDevice.canSelectPrevious () ? MaschineColorManager.COLOR_ROSE : MaschineColorManager.COLOR_BLACK);
+        padGrid.lightEx (1, 0, doesExist && cursorDevice.canSelectNext () ? MaschineColorManager.COLOR_ROSE : MaschineColorManager.COLOR_BLACK);
 
         final IParameterBank parameterBank = cursorDevice.getParameterBank ();
         padGrid.lightEx (2, 0, doesExist && parameterBank.canScrollBackwards () ? MaschineColorManager.COLOR_SKIN : MaschineColorManager.COLOR_BLACK);

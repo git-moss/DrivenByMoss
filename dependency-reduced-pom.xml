@@ -4,7 +4,7 @@
   <groupId>de.mossgrabers</groupId>
   <artifactId>DrivenByMoss</artifactId>
   <name>DrivenByMoss</name>
-  <version>15.6.0</version>
+  <version>16.0.0</version>
   <build>
     <plugins>
       <plugin>
@@ -72,6 +72,12 @@
                 </filter>
                 <filter>
                   <artifact>purejavahidapi:*</artifact>
+                  <excludes>
+                    <exclude>META-INF/*</exclude>
+                  </excludes>
+                </filter>
+                <filter>
+                  <artifact>com.badlogicgames.*:*</artifact>
                   <excludes>
                     <exclude>META-INF/*</exclude>
                   </excludes>

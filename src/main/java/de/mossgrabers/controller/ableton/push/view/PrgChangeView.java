@@ -10,6 +10,7 @@ import de.mossgrabers.controller.ableton.push.controller.PushControlSurface;
 import de.mossgrabers.framework.controller.ButtonID;
 import de.mossgrabers.framework.controller.grid.IPadGrid;
 import de.mossgrabers.framework.daw.IModel;
+import de.mossgrabers.framework.daw.midi.MidiConstants;
 import de.mossgrabers.framework.featuregroup.AbstractView;
 import de.mossgrabers.framework.utils.ButtonEvent;
 
@@ -88,10 +89,10 @@ public class PrgChangeView extends AbstractView<PushControlSurface, PushConfigur
         {
             this.bankNumber = newBank;
             this.isToggled = false;
-            this.surface.sendMidiEvent (0xB0, 32, this.bankNumber);
+            this.surface.sendMidiEvent (MidiConstants.CMD_CC, 32, this.bankNumber);
             // Forces the bank change
             if (this.programNumber != -1)
-                this.surface.sendMidiEvent (0xC0, this.programNumber, 0);
+                this.surface.sendMidiEvent (MidiConstants.CMD_PROGRAM_CHANGE, this.programNumber, 0);
         }
     }
 
@@ -142,6 +143,6 @@ public class PrgChangeView extends AbstractView<PushControlSurface, PushConfigur
         if (velocity == 0)
             return;
         this.programNumber = note - 36 + (this.isToggled ? 64 : 0);
-        this.surface.sendMidiEvent (0xC0, this.programNumber, 0);
+        this.surface.sendMidiEvent (MidiConstants.CMD_PROGRAM_CHANGE, this.programNumber, 0);
     }
 }

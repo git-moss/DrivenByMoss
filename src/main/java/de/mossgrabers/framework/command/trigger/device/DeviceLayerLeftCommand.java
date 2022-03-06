@@ -92,6 +92,6 @@ public class DeviceLayerLeftCommand<S extends IControlSurface<C>, C extends Conf
         final ICursorDevice cd = this.model.getCursorDevice ();
         final IChannelBank<ILayer> bank = cd.getLayerBank ();
         final Optional<ILayer> layer = bank.getSelectedItem ();
-        return cd.hasLayers () && layer.isPresent () ? bank.canScrollBackwards () : cd.canSelectPreviousFX ();
+        return cd.hasLayers () && layer.isPresent () ? bank.canScrollBackwards () : cd.canSelectPrevious ();
     }
 }

@@ -89,7 +89,7 @@ public class CursorDeviceImpl extends SpecificDeviceImpl implements ICursorDevic
 
     /** {@inheritDoc} */
     @Override
-    public boolean canSelectPreviousFX ()
+    public boolean canSelectPrevious ()
     {
         return this.cursorDevice.hasPrevious ().get ();
     }
@@ -97,7 +97,7 @@ public class CursorDeviceImpl extends SpecificDeviceImpl implements ICursorDevic
 
     /** {@inheritDoc} */
     @Override
-    public boolean canSelectNextFX ()
+    public boolean canSelectNext ()
     {
         return this.cursorDevice.hasNext ().get ();
     }

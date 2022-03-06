@@ -9,6 +9,7 @@ import de.mossgrabers.controller.akai.apc.controller.APCControlSurface;
 import de.mossgrabers.framework.controller.ButtonID;
 import de.mossgrabers.framework.controller.color.ColorManager;
 import de.mossgrabers.framework.daw.IModel;
+import de.mossgrabers.framework.daw.midi.MidiConstants;
 import de.mossgrabers.framework.utils.ButtonEvent;
 import de.mossgrabers.framework.view.AbstractPlayView;
 import de.mossgrabers.framework.view.Views;
@@ -44,7 +45,7 @@ public class PlayView extends AbstractPlayView<APCControlSurface, APCConfigurati
 
         final int mapped = this.keyManager.map (note);
         if (mapped != -1)
-            this.surface.sendMidiEvent (0x90, mapped, velocity);
+            this.surface.sendMidiEvent (MidiConstants.CMD_NOTE_ON, mapped, velocity);
     }
 
 

@@ -88,10 +88,10 @@ public class DeviceConfigView extends AbstractView<LaunchkeyMk3ControlSurface, L
                 return LaunchkeyMk3ColorManager.LAUNCHKEY_COLOR_BLACK;
 
             case ARROW_UP:
-                return cursorDevice.canSelectPreviousFX () ? LaunchkeyMk3ColorManager.LAUNCHKEY_COLOR_MAGENTA_LO : LaunchkeyMk3ColorManager.LAUNCHKEY_COLOR_GREY_LO;
+                return cursorDevice.canSelectPrevious () ? LaunchkeyMk3ColorManager.LAUNCHKEY_COLOR_MAGENTA_LO : LaunchkeyMk3ColorManager.LAUNCHKEY_COLOR_GREY_LO;
 
             case ARROW_DOWN:
-                return cursorDevice.canSelectNextFX () ? LaunchkeyMk3ColorManager.LAUNCHKEY_COLOR_MAGENTA_LO : LaunchkeyMk3ColorManager.LAUNCHKEY_COLOR_GREY_LO;
+                return cursorDevice.canSelectNext () ? LaunchkeyMk3ColorManager.LAUNCHKEY_COLOR_MAGENTA_LO : LaunchkeyMk3ColorManager.LAUNCHKEY_COLOR_GREY_LO;
 
             default:
                 // Not used

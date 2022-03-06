@@ -18,6 +18,7 @@ import de.mossgrabers.framework.daw.data.ITrack;
 import de.mossgrabers.framework.daw.midi.IMidiInput;
 import de.mossgrabers.framework.daw.midi.INoteInput;
 import de.mossgrabers.framework.daw.midi.INoteRepeat;
+import de.mossgrabers.framework.daw.midi.MidiConstants;
 import de.mossgrabers.framework.featuregroup.AbstractView;
 import de.mossgrabers.framework.osc.IOpenSoundControlWriter;
 import de.mossgrabers.framework.scale.Scales;
@@ -213,7 +214,7 @@ public class MidiModule extends AbstractModule
                             numValue = conf.isAccentActive () ? conf.getFixedAccentValue () : numValue;
                         final int data0 = this.model.getScales ().getDrumMatrix ()[note];
                         if (data0 >= 0)
-                            input.sendRawMidiEvent (0x90 + midiChannel, data0, numValue);
+                            input.sendRawMidiEvent (MidiConstants.CMD_NOTE_ON + midiChannel, data0, numValue);
                         break;
                 }
                 break;
@@ -225,7 +226,7 @@ public class MidiModule extends AbstractModule
                     return;
                 }
                 final int cc = Integer.parseInt (path.removeFirst ());
-                input.sendRawMidiEvent (0xB0 + midiChannel, cc, toInteger (value));
+                input.sendRawMidiEvent (MidiConstants.CMD_CC + midiChannel, cc, toInteger (value));
                 break;
 
             case "aftertouch":
@@ -234,15 +235,15 @@ public class MidiModule extends AbstractModule
                     numValue = conf.isAccentActive () ? conf.getFixedAccentValue () : numValue;
                 if (path.isEmpty ())
                 {
-                    input.sendRawMidiEvent (0xD0 + midiChannel, 0, numValue);
+                    input.sendRawMidiEvent (MidiConstants.CMD_CHANNEL_AFTERTOUCH + midiChannel, 0, numValue);
                     return;
                 }
                 final int note = Integer.parseInt (path.removeFirst ());
-                input.sendRawMidiEvent (0xA0 + midiChannel, this.surface.getKeyTranslationTable ()[note], numValue);
+                input.sendRawMidiEvent (MidiConstants.CMD_POLY_AFTERTOUCH + midiChannel, this.surface.getKeyTranslationTable ()[note], numValue);
                 break;
 
             case "pitchbend":
-                input.sendRawMidiEvent (0xE0 + midiChannel, 0, toInteger (value));
+                input.sendRawMidiEvent (MidiConstants.CMD_PITCHBEND + midiChannel, 0, toInteger (value));
                 break;
 
             default:
@@ -275,7 +276,7 @@ public class MidiModule extends AbstractModule
         final int [] keyTranslationMatrix = this.surface.getKeyTranslationTable ();
         final int data0 = keyTranslationMatrix[note];
         if (data0 >= 0)
-            input.sendRawMidiEvent (0x90 + midiChannel, data0, value);
+            input.sendRawMidiEvent (MidiConstants.CMD_NOTE_ON + midiChannel, data0, value);
 
         // Mark selected notes
         for (int i = 0; i < 128; i++)

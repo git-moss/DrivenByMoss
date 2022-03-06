@@ -14,6 +14,7 @@ import de.mossgrabers.framework.controller.display.ITextDisplay;
 import de.mossgrabers.framework.controller.grid.IPadGrid;
 import de.mossgrabers.framework.daw.IModel;
 import de.mossgrabers.framework.daw.midi.IMidiInput;
+import de.mossgrabers.framework.daw.midi.MidiConstants;
 import de.mossgrabers.framework.scale.Scales;
 import de.mossgrabers.framework.utils.ButtonEvent;
 import de.mossgrabers.framework.view.AbstractChordView;
@@ -190,17 +191,17 @@ public class ChordsView extends AbstractChordView<LaunchpadControlSurface, Launc
                     // Sustain
                     case 0:
                         this.isSustain = isDown;
-                        midiInput.sendRawMidiEvent (0xB0, 64, this.isSustain ? 127 : 0);
+                        midiInput.sendRawMidiEvent (MidiConstants.CMD_CC, 64, this.isSustain ? 127 : 0);
                         return;
 
                     // Pitch
                     case 1:
                         this.isPitchDown = isDown;
-                        midiInput.sendRawMidiEvent (0xE0, 0, this.isPitchDown ? Math.abs (velocity / 2 - 63) : 64);
+                        midiInput.sendRawMidiEvent (MidiConstants.CMD_PITCHBEND, 0, this.isPitchDown ? Math.abs (velocity / 2 - 63) : 64);
                         return;
                     case 2:
                         this.isPitchUp = isDown;
-                        midiInput.sendRawMidiEvent (0xE0, 0, this.isPitchUp ? 64 + velocity / 2 : 64);
+                        midiInput.sendRawMidiEvent (MidiConstants.CMD_PITCHBEND, 0, this.isPitchUp ? 64 + velocity / 2 : 64);
                         return;
 
                     // Modulation
@@ -208,7 +209,7 @@ public class ChordsView extends AbstractChordView<LaunchpadControlSurface, Launc
                         if (isDown)
                         {
                             this.isModulation = pos - 3;
-                            midiInput.sendRawMidiEvent (0xB0, 1, MODULATION_INTENSITIES[this.isModulation]);
+                            midiInput.sendRawMidiEvent (MidiConstants.CMD_CC, 1, MODULATION_INTENSITIES[this.isModulation]);
                         }
                         return;
                 }

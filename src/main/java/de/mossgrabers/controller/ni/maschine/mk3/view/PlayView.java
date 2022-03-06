@@ -22,6 +22,7 @@ import de.mossgrabers.framework.daw.constants.Resolution;
 import de.mossgrabers.framework.daw.data.GridStep;
 import de.mossgrabers.framework.daw.data.ITrack;
 import de.mossgrabers.framework.daw.midi.IMidiInput;
+import de.mossgrabers.framework.daw.midi.MidiConstants;
 import de.mossgrabers.framework.featuregroup.IMode;
 import de.mossgrabers.framework.featuregroup.ModeManager;
 import de.mossgrabers.framework.mode.INoteMode;
@@ -325,8 +326,8 @@ public class PlayView extends AbstractPlayView<MaschineControlSurface, MaschineC
                     // Send additional chord notes to the DAW
                     final IMidiInput input = this.surface.getMidiInput ();
                     final int channel = this.configuration.getMidiEditChannel ();
-                    input.sendRawMidiEvent (0x90 + channel, thirdChord[0], velocity);
-                    input.sendRawMidiEvent (0x90 + channel, thirdChord[1], velocity);
+                    input.sendRawMidiEvent (MidiConstants.CMD_NOTE_ON + channel, thirdChord[0], velocity);
+                    input.sendRawMidiEvent (MidiConstants.CMD_NOTE_ON + channel, thirdChord[1], velocity);
                 }
             }
 

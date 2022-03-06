@@ -208,14 +208,14 @@ public class ShiftView extends AbstractView<APCminiControlSurface, APCminiConfig
 
             // Device up/down
             case 32:
-                if (cursorDevice.canSelectPreviousFX ())
+                if (cursorDevice.canSelectPrevious ())
                 {
                     cursorDevice.selectPrevious ();
                     this.surface.getDisplay ().notify ("Device: " + cursorDevice.getName ());
                 }
                 break;
             case 33:
-                if (cursorDevice.canSelectNextFX ())
+                if (cursorDevice.canSelectNext ())
                 {
                     cursorDevice.selectNext ();
                     this.surface.getDisplay ().notify ("Device: " + cursorDevice.getName ());

@@ -11,6 +11,7 @@ import de.mossgrabers.framework.controller.color.ColorManager;
 import de.mossgrabers.framework.controller.grid.IPadGrid;
 import de.mossgrabers.framework.daw.IBrowser;
 import de.mossgrabers.framework.daw.IModel;
+import de.mossgrabers.framework.daw.midi.MidiConstants;
 import de.mossgrabers.framework.featuregroup.AbstractView;
 
 
@@ -145,16 +146,16 @@ public class BrowserView<S extends IControlSurface<C>, C extends Configuration> 
                 break;
 
             case 38:
-                this.surface.sendMidiEvent (0x90, 48, velocity);
+                this.surface.sendMidiEvent (MidiConstants.CMD_NOTE_ON, 48, velocity);
                 break;
             case 39:
-                this.surface.sendMidiEvent (0x90, 60, velocity);
+                this.surface.sendMidiEvent (MidiConstants.CMD_NOTE_ON, 60, velocity);
                 break;
             case 40:
-                this.surface.sendMidiEvent (0x90, 72, velocity);
+                this.surface.sendMidiEvent (MidiConstants.CMD_NOTE_ON, 72, velocity);
                 break;
             case 41:
-                this.surface.sendMidiEvent (0x90, 84, velocity);
+                this.surface.sendMidiEvent (MidiConstants.CMD_NOTE_ON, 84, velocity);
                 break;
 
             default:

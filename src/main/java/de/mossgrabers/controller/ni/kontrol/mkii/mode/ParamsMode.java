@@ -75,7 +75,7 @@ public class ParamsMode extends ParameterMode<KontrolProtocolControlSurface, Kon
         switch (index)
         {
             case KontrolProtocolControlSurface.KONTROL_NAVIGATE_BANKS:
-                return (this.cursorDevice.canSelectPreviousFX () ? 1 : 0) + (this.cursorDevice.canSelectNextFX () ? 2 : 0);
+                return (this.cursorDevice.canSelectPrevious () ? 1 : 0) + (this.cursorDevice.canSelectNext () ? 2 : 0);
             case KontrolProtocolControlSurface.KONTROL_NAVIGATE_TRACKS:
                 return configuration.isFlipTrackClipNavigation () ? scrollScenesState : scrollTracksState;
             case KontrolProtocolControlSurface.KONTROL_NAVIGATE_CLIPS:

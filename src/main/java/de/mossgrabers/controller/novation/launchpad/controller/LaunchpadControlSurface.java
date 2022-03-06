@@ -17,6 +17,7 @@ import de.mossgrabers.framework.daw.IHost;
 import de.mossgrabers.framework.daw.midi.DeviceInquiry;
 import de.mossgrabers.framework.daw.midi.IMidiInput;
 import de.mossgrabers.framework.daw.midi.IMidiOutput;
+import de.mossgrabers.framework.daw.midi.MidiConstants;
 import de.mossgrabers.framework.utils.ButtonEvent;
 import de.mossgrabers.framework.utils.StringUtils;
 import de.mossgrabers.framework.view.Views;
@@ -112,10 +113,10 @@ public class LaunchpadControlSurface extends AbstractControlSurface<LaunchpadCon
         {
             final int code = status & 0xF0;
             // Note off
-            if (code == 0x80 || code == 0x90)
+            if (code == MidiConstants.CMD_NOTE_OFF || code == MidiConstants.CMD_NOTE_ON)
             {
                 final int translated = this.padGrid.translateToGrid (data1);
-                this.handleGridNote (code == 0x80 || data2 == 0 ? ButtonEvent.UP : ButtonEvent.DOWN, translated, data2);
+                this.handleGridNote (code == MidiConstants.CMD_NOTE_OFF || data2 == 0 ? ButtonEvent.UP : ButtonEvent.DOWN, translated, data2);
                 return;
             }
         }

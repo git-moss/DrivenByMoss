@@ -199,8 +199,12 @@ public class ModelImpl extends AbstractModel
         // User bank
         final int numUserPages = modelSetup.getNumUserPages ();
         final int numUserPageSize = modelSetup.getNumUserPageSize ();
-        final UserControlBank userControls = this.controllerHost.createUserControls (numUserPages * numUserPageSize);
-        this.userParameterBank = new UserParameterBankImpl (this.host, this.valueChanger, userControls, numUserPages, numUserPageSize);
+        final int numUserControls = numUserPages * numUserPageSize;
+        if (numUserControls > 0)
+        {
+            final UserControlBank userControls = this.controllerHost.createUserControls (numUserControls);
+            this.userParameterBank = new UserParameterBankImpl (this.host, this.valueChanger, userControls, numUserPages, numUserPageSize);
+        }
 
         final int numResults = this.modelSetup.getNumResults ();
         if (numResults > 0)

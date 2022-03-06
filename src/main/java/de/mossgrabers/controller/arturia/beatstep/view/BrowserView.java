@@ -10,6 +10,7 @@ import de.mossgrabers.controller.arturia.beatstep.controller.BeatstepControlSurf
 import de.mossgrabers.framework.controller.grid.IPadGrid;
 import de.mossgrabers.framework.daw.IBrowser;
 import de.mossgrabers.framework.daw.IModel;
+import de.mossgrabers.framework.daw.midi.MidiConstants;
 import de.mossgrabers.framework.featuregroup.AbstractView;
 
 
@@ -113,28 +114,28 @@ public class BrowserView extends AbstractView<BeatstepControlSurface, BeatstepCo
 
             // Notes for preview
             case 2:
-                this.surface.sendMidiEvent (0x90, 12, velocity);
+                this.surface.sendMidiEvent (MidiConstants.CMD_NOTE_ON, 12, velocity);
                 break;
             case 3:
-                this.surface.sendMidiEvent (0x90, 24, velocity);
+                this.surface.sendMidiEvent (MidiConstants.CMD_NOTE_ON, 24, velocity);
                 break;
             case 4:
-                this.surface.sendMidiEvent (0x90, 36, velocity);
+                this.surface.sendMidiEvent (MidiConstants.CMD_NOTE_ON, 36, velocity);
                 break;
             case 5:
-                this.surface.sendMidiEvent (0x90, 48, velocity);
+                this.surface.sendMidiEvent (MidiConstants.CMD_NOTE_ON, 48, velocity);
                 break;
             case 10:
-                this.surface.sendMidiEvent (0x90, 60, velocity);
+                this.surface.sendMidiEvent (MidiConstants.CMD_NOTE_ON, 60, velocity);
                 break;
             case 11:
-                this.surface.sendMidiEvent (0x90, 72, velocity);
+                this.surface.sendMidiEvent (MidiConstants.CMD_NOTE_ON, 72, velocity);
                 break;
             case 12:
-                this.surface.sendMidiEvent (0x90, 84, velocity);
+                this.surface.sendMidiEvent (MidiConstants.CMD_NOTE_ON, 84, velocity);
                 break;
             case 13:
-                this.surface.sendMidiEvent (0x90, 96, velocity);
+                this.surface.sendMidiEvent (MidiConstants.CMD_NOTE_ON, 96, velocity);
                 break;
 
             // Not used

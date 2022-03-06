@@ -8,6 +8,7 @@ import de.mossgrabers.framework.configuration.Configuration;
 import de.mossgrabers.framework.controller.IControlSurface;
 import de.mossgrabers.framework.daw.IModel;
 import de.mossgrabers.framework.daw.midi.IMidiInput;
+import de.mossgrabers.framework.daw.midi.MidiConstants;
 
 
 /**
@@ -91,6 +92,6 @@ public class AbstractChordView<S extends IControlSurface<C>, C extends Configura
         if (velocity > 0)
             vel = config.isAccentActive () ? config.getFixedAccentValue () : velocity;
         for (final int element: chord)
-            input.sendRawMidiEvent (0x90 + channel, element, vel);
+            input.sendRawMidiEvent (MidiConstants.CMD_NOTE_ON + channel, element, vel);
     }
 }

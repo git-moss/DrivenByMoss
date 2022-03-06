@@ -12,7 +12,7 @@ import de.mossgrabers.framework.daw.data.bank.IDeviceBank;
  *
  * @author J&uuml;rgen Mo&szlig;graber
  */
-public interface ICursorDevice extends ISpecificDevice, IPinnable
+public interface ICursorDevice extends ISpecificDevice, ICursor
 {
     /**
      * Select the parent of the device.
@@ -24,34 +24,6 @@ public interface ICursorDevice extends ISpecificDevice, IPinnable
      * Select the channel which hosts the device.
      */
     void selectChannel ();
-
-
-    /**
-     * Is there a previous device?
-     *
-     * @return True if there is a previous device
-     */
-    boolean canSelectPreviousFX ();
-
-
-    /**
-     * Is there a next device?
-     *
-     * @return True if there is a next device
-     */
-    boolean canSelectNextFX ();
-
-
-    /**
-     * Select the previous device (if any).
-     */
-    void selectPrevious ();
-
-
-    /**
-     * Select the next device (if any).
-     */
-    void selectNext ();
 
 
     /**

@@ -217,7 +217,7 @@ public class ParameterMode<S extends IControlSurface<C>, C extends Configuration
     {
         if (this.isAlternativeFunction.getAsBoolean ())
             return this.cursorDevice.getDeviceBank ().canScrollPageBackwards ();
-        return this.cursorDevice.canSelectPreviousFX ();
+        return this.cursorDevice.canSelectPrevious ();
     }
 
 
@@ -227,6 +227,6 @@ public class ParameterMode<S extends IControlSurface<C>, C extends Configuration
     {
         if (this.isAlternativeFunction.getAsBoolean ())
             return this.cursorDevice.getDeviceBank ().canScrollPageForwards ();
-        return this.cursorDevice.canSelectNextFX ();
+        return this.cursorDevice.canSelectNext ();
     }
 }

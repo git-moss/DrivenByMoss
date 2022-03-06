@@ -13,6 +13,7 @@ import de.mossgrabers.framework.daw.IModel;
 import de.mossgrabers.framework.daw.constants.Resolution;
 import de.mossgrabers.framework.daw.data.ITrack;
 import de.mossgrabers.framework.daw.midi.INoteRepeat;
+import de.mossgrabers.framework.daw.midi.MidiConstants;
 import de.mossgrabers.framework.utils.ButtonEvent;
 
 
@@ -49,23 +50,23 @@ public class TouchstripCommand extends AbstractContinuousCommand<MaschineControl
         switch (ribbonMode)
         {
             case PITCH_DOWN:
-                this.surface.sendMidiEvent (0xE0, 0, (127 - value) / 2);
+                this.surface.sendMidiEvent (MidiConstants.CMD_PITCHBEND, 0, (127 - value) / 2);
                 break;
 
             case PITCH_UP:
-                this.surface.sendMidiEvent (0xE0, 0, 64 + value / 2);
+                this.surface.sendMidiEvent (MidiConstants.CMD_PITCHBEND, 0, 64 + value / 2);
                 break;
 
             case PITCH_DOWN_UP:
-                this.surface.sendMidiEvent (0xE0, 0, value);
+                this.surface.sendMidiEvent (MidiConstants.CMD_PITCHBEND, 0, value);
                 break;
 
             case CC_1:
-                this.surface.sendMidiEvent (0xB0, 1, value);
+                this.surface.sendMidiEvent (MidiConstants.CMD_CC, 1, value);
                 break;
 
             case CC_11:
-                this.surface.sendMidiEvent (0xB0, 11, value);
+                this.surface.sendMidiEvent (MidiConstants.CMD_CC, 11, value);
                 break;
 
             case MASTER_VOLUME:
@@ -106,12 +107,12 @@ public class TouchstripCommand extends AbstractContinuousCommand<MaschineControl
             case PITCH_DOWN:
             case PITCH_UP:
                 this.ribbonValue = 0;
-                this.surface.sendMidiEvent (0xE0, 0, 64);
+                this.surface.sendMidiEvent (MidiConstants.CMD_PITCHBEND, 0, 64);
                 break;
 
             case PITCH_DOWN_UP:
                 this.ribbonValue = 64;
-                this.surface.sendMidiEvent (0xE0, 0, 64);
+                this.surface.sendMidiEvent (MidiConstants.CMD_PITCHBEND, 0, 64);
                 break;
 
             case CC_1:

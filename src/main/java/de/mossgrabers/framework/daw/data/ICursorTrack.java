@@ -9,7 +9,7 @@ package de.mossgrabers.framework.daw.data;
  *
  * @author J&uuml;rgen Mo&szlig;graber
  */
-public interface ICursorTrack extends ITrack, IPinnable
+public interface ICursorTrack extends ITrack, ICursor
 {
     // Intentionally empty
 }

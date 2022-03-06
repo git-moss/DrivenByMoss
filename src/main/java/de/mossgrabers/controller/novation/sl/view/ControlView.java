@@ -17,6 +17,7 @@ import de.mossgrabers.framework.daw.ITransport;
 import de.mossgrabers.framework.daw.data.ICursorDevice;
 import de.mossgrabers.framework.daw.data.ITrack;
 import de.mossgrabers.framework.daw.data.bank.ITrackBank;
+import de.mossgrabers.framework.daw.midi.MidiConstants;
 import de.mossgrabers.framework.featuregroup.ModeManager;
 import de.mossgrabers.framework.mode.Modes;
 import de.mossgrabers.framework.utils.ButtonEvent;
@@ -440,9 +441,9 @@ public class ControlView extends ControlOnlyView<SLControlSurface, SLConfigurati
                 case ROW2_6:
                     return this.model.getCursorDevice ().isEnabled () ? SLControlSurface.MKII_BUTTON_STATE_ON : SLControlSurface.MKII_BUTTON_STATE_OFF;
                 case ROW2_7:
-                    return isNoOverlayMode && cd.canSelectPreviousFX () ? SLControlSurface.MKII_BUTTON_STATE_ON : SLControlSurface.MKII_BUTTON_STATE_OFF;
+                    return isNoOverlayMode && cd.canSelectPrevious () ? SLControlSurface.MKII_BUTTON_STATE_ON : SLControlSurface.MKII_BUTTON_STATE_OFF;
                 case ROW2_8:
-                    return isNoOverlayMode && cd.canSelectNextFX () ? SLControlSurface.MKII_BUTTON_STATE_ON : SLControlSurface.MKII_BUTTON_STATE_OFF;
+                    return isNoOverlayMode && cd.canSelectNext () ? SLControlSurface.MKII_BUTTON_STATE_ON : SLControlSurface.MKII_BUTTON_STATE_OFF;
 
                 default:
                     // Fall through
@@ -513,6 +514,6 @@ public class ControlView extends ControlOnlyView<SLControlSurface, SLConfigurati
             return;
         }
 
-        this.surface.sendMidiEvent (0x90, note, velocity);
+        this.surface.sendMidiEvent (MidiConstants.CMD_NOTE_ON, note, velocity);
     }
 }

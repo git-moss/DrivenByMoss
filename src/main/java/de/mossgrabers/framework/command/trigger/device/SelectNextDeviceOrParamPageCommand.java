@@ -59,7 +59,7 @@ public class SelectNextDeviceOrParamPageCommand<S extends IControlSurface<C>, C 
     public boolean canExecute ()
     {
         if (this.surface.isShiftPressed ())
-            return this.model.getCursorDevice ().canSelectNextFX ();
+            return this.model.getCursorDevice ().canSelectNext ();
 
         return this.model.getCursorDevice ().getParameterBank ().canScrollForwards ();
     }

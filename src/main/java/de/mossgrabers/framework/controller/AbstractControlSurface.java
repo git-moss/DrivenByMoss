@@ -28,6 +28,7 @@ import de.mossgrabers.framework.daw.IHost;
 import de.mossgrabers.framework.daw.midi.IMidiInput;
 import de.mossgrabers.framework.daw.midi.IMidiOutput;
 import de.mossgrabers.framework.daw.midi.INoteInput;
+import de.mossgrabers.framework.daw.midi.MidiConstants;
 import de.mossgrabers.framework.featuregroup.IView;
 import de.mossgrabers.framework.featuregroup.ModeManager;
 import de.mossgrabers.framework.featuregroup.ViewManager;
@@ -777,38 +778,31 @@ public abstract class AbstractControlSurface<C extends Configuration> implements
 
         switch (code)
         {
-            // Note off
-            case 0x80:
+            case MidiConstants.CMD_NOTE_OFF:
                 this.handleNoteOff (data1, data2);
                 break;
 
-            // Note on
-            case 0x90:
+            case MidiConstants.CMD_NOTE_ON:
                 this.handleNoteOn (data1, data2);
                 break;
 
-            // Polyphonic Aftertouch
-            case 0xA0:
+            case MidiConstants.CMD_POLY_AFTERTOUCH:
                 this.handlePolyAftertouch (data1, data2);
                 break;
 
-            // CC
-            case 0xB0:
+            case MidiConstants.CMD_CC:
                 this.handleCC (data1, data2);
                 break;
 
-            // Program Change
-            case 0xC0:
+            case MidiConstants.CMD_PROGRAM_CHANGE:
                 this.handleProgramChange (channel, data1, data2);
                 break;
 
-            // Channel Aftertouch
-            case 0xD0:
+            case MidiConstants.CMD_CHANNEL_AFTERTOUCH:
                 this.handleChannelAftertouch (data1);
                 break;
 
-            // Pitch Bend
-            case 0xE0:
+            case MidiConstants.CMD_PITCHBEND:
                 this.handlePitchbend (data1, data2);
                 break;
 

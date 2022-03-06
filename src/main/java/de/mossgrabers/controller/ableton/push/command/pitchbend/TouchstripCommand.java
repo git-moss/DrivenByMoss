@@ -11,6 +11,7 @@ import de.mossgrabers.framework.daw.IModel;
 import de.mossgrabers.framework.daw.constants.Resolution;
 import de.mossgrabers.framework.daw.data.ITrack;
 import de.mossgrabers.framework.daw.midi.INoteRepeat;
+import de.mossgrabers.framework.daw.midi.MidiConstants;
 import de.mossgrabers.framework.view.Views;
 
 
@@ -73,35 +74,35 @@ public class TouchstripCommand extends AbstractPitchbendCommand<PushControlSurfa
         switch (config.getRibbonMode ())
         {
             case PushConfiguration.RIBBON_MODE_PITCH:
-                this.surface.sendMidiEvent (0xE0, data1, data2);
+                this.surface.sendMidiEvent (MidiConstants.CMD_PITCHBEND, data1, data2);
                 break;
 
             case PushConfiguration.RIBBON_MODE_CC:
-                this.surface.sendMidiEvent (0xB0, config.getRibbonModeCCVal (), data2);
+                this.surface.sendMidiEvent (MidiConstants.CMD_CC, config.getRibbonModeCCVal (), data2);
                 this.pitchValue = data2;
                 break;
 
             case PushConfiguration.RIBBON_MODE_CC_PB:
                 if (data2 > 64)
-                    this.surface.sendMidiEvent (0xE0, data1, data2);
+                    this.surface.sendMidiEvent (MidiConstants.CMD_PITCHBEND, data1, data2);
                 else if (data2 < 64)
-                    this.surface.sendMidiEvent (0xB0, config.getRibbonModeCCVal (), 127 - data2 * 2);
+                    this.surface.sendMidiEvent (MidiConstants.CMD_CC, config.getRibbonModeCCVal (), 127 - data2 * 2);
                 else
                 {
-                    this.surface.sendMidiEvent (0xE0, data1, data2);
-                    this.surface.sendMidiEvent (0xB0, config.getRibbonModeCCVal (), 0);
+                    this.surface.sendMidiEvent (MidiConstants.CMD_PITCHBEND, data1, data2);
+                    this.surface.sendMidiEvent (MidiConstants.CMD_CC, config.getRibbonModeCCVal (), 0);
                 }
                 break;
 
             case PushConfiguration.RIBBON_MODE_PB_CC:
                 if (data2 > 64)
-                    this.surface.sendMidiEvent (0xB0, config.getRibbonModeCCVal (), (data2 - 64) * 2);
+                    this.surface.sendMidiEvent (MidiConstants.CMD_CC, config.getRibbonModeCCVal (), (data2 - 64) * 2);
                 else if (data2 < 64)
-                    this.surface.sendMidiEvent (0xE0, data1, data2);
+                    this.surface.sendMidiEvent (MidiConstants.CMD_PITCHBEND, data1, data2);
                 else
                 {
-                    this.surface.sendMidiEvent (0xE0, data1, data2);
-                    this.surface.sendMidiEvent (0xB0, config.getRibbonModeCCVal (), 0);
+                    this.surface.sendMidiEvent (MidiConstants.CMD_PITCHBEND, data1, data2);
+                    this.surface.sendMidiEvent (MidiConstants.CMD_CC, config.getRibbonModeCCVal (), 0);
                 }
                 break;
 

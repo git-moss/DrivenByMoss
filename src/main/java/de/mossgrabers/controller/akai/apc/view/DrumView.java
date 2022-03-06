@@ -14,6 +14,7 @@ import de.mossgrabers.framework.daw.IModel;
 import de.mossgrabers.framework.daw.INoteClip;
 import de.mossgrabers.framework.daw.StepState;
 import de.mossgrabers.framework.daw.data.IChannel;
+import de.mossgrabers.framework.daw.midi.MidiConstants;
 import de.mossgrabers.framework.featuregroup.ModeManager;
 import de.mossgrabers.framework.mode.Modes;
 import de.mossgrabers.framework.utils.ButtonEvent;
@@ -92,7 +93,7 @@ public class DrumView extends AbstractDrumView<APCControlSurface, APCConfigurati
     @Override
     public void playNote (final int note, final int velocity)
     {
-        this.surface.sendMidiEvent (0x90, note, velocity);
+        this.surface.sendMidiEvent (MidiConstants.CMD_NOTE_ON, note, velocity);
     }
 
 

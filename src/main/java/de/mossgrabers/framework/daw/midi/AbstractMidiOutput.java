@@ -29,7 +29,7 @@ public abstract class AbstractMidiOutput implements IMidiOutput
     @Override
     public void sendCC (final int cc, final int value)
     {
-        this.sendMidiShort (0xB0, cc, value);
+        this.sendMidiShort (MidiConstants.CMD_CC, cc, value);
     }
 
 
@@ -37,7 +37,7 @@ public abstract class AbstractMidiOutput implements IMidiOutput
     @Override
     public void sendCCEx (final int channel, final int cc, final int value)
     {
-        this.sendMidiShort (0xB0 + channel, cc, value);
+        this.sendMidiShort (MidiConstants.CMD_CC + channel, cc, value);
     }
 
 
@@ -45,7 +45,7 @@ public abstract class AbstractMidiOutput implements IMidiOutput
     @Override
     public void sendNote (final int note, final int velocity)
     {
-        this.sendMidiShort (0x90, note, velocity);
+        this.sendMidiShort (MidiConstants.CMD_NOTE_ON, note, velocity);
     }
 
 
@@ -53,7 +53,7 @@ public abstract class AbstractMidiOutput implements IMidiOutput
     @Override
     public void sendNoteEx (final int channel, final int note, final int velocity)
     {
-        this.sendMidiShort (0x90 + channel, note, velocity);
+        this.sendMidiShort (MidiConstants.CMD_NOTE_ON + channel, note, velocity);
     }
 
 
@@ -61,7 +61,7 @@ public abstract class AbstractMidiOutput implements IMidiOutput
     @Override
     public void sendPolyphonicAftertouch (final int data1, final int data2)
     {
-        this.sendMidiShort (0xA0, data1, data2);
+        this.sendMidiShort (MidiConstants.CMD_POLY_AFTERTOUCH, data1, data2);
     }
 
 
@@ -69,7 +69,7 @@ public abstract class AbstractMidiOutput implements IMidiOutput
     @Override
     public void sendPolyphonicAftertouch (final int channel, final int data1, final int data2)
     {
-        this.sendMidiShort (0xA0 + channel, data1, data2);
+        this.sendMidiShort (MidiConstants.CMD_POLY_AFTERTOUCH + channel, data1, data2);
     }
 
 
@@ -77,7 +77,7 @@ public abstract class AbstractMidiOutput implements IMidiOutput
     @Override
     public void sendChannelAftertouch (final int data1, final int data2)
     {
-        this.sendMidiShort (0xD0, data1, data2);
+        this.sendMidiShort (MidiConstants.CMD_CHANNEL_AFTERTOUCH, data1, data2);
     }
 
 
@@ -85,7 +85,7 @@ public abstract class AbstractMidiOutput implements IMidiOutput
     @Override
     public void sendChannelAftertouch (final int channel, final int data1, final int data2)
     {
-        this.sendMidiShort (0xD0 + channel, data1, data2);
+        this.sendMidiShort (MidiConstants.CMD_CHANNEL_AFTERTOUCH + channel, data1, data2);
     }
 
 
@@ -93,7 +93,7 @@ public abstract class AbstractMidiOutput implements IMidiOutput
     @Override
     public void sendPitchbend (final int data1, final int data2)
     {
-        this.sendMidiShort (0xE0, data1, data2);
+        this.sendMidiShort (MidiConstants.CMD_PITCHBEND, data1, data2);
     }
 
 
@@ -101,7 +101,7 @@ public abstract class AbstractMidiOutput implements IMidiOutput
     @Override
     public void sendPitchbend (final int channel, final int data1, final int data2)
     {
-        this.sendMidiShort (0xE0 + channel, data1, data2);
+        this.sendMidiShort (MidiConstants.CMD_PITCHBEND + channel, data1, data2);
     }
 
 
@@ -119,7 +119,7 @@ public abstract class AbstractMidiOutput implements IMidiOutput
     {
         this.sendCCEx (channel, 0, bankMSB);
         this.sendCCEx (channel, 32, bankLSB);
-        this.sendMidiShort (0xC0 + channel, value, 0);
+        this.sendMidiShort (MidiConstants.CMD_PROGRAM_CHANGE + channel, value, 0);
     }
 
 

@@ -14,7 +14,7 @@ import de.mossgrabers.framework.daw.IHost;
  */
 public class VirtualFaderImpl implements IVirtualFader
 {
-    private static final int            PAD_VALUE_AMOUNT = 16;
+    private static final int            PAD_VALUE_AMOUNT       = 16;
 
     // @formatter:off
     private static final int [] SPEED_SCALE          =
@@ -46,13 +46,13 @@ public class VirtualFaderImpl implements IVirtualFader
 
     private int                         color;
     private boolean                     isPanorama;
-    private final int []                colorStates      = new int [8];
+    private final int []                colorStates            = new int [8];
 
     private int                         moveDelay;
     private int                         moveTimerDelay;
     private int                         moveDestination;
-
     private int                         moveTargetValue;
+    private boolean                     moveDirectionIsUpwards = true;
     private boolean                     isKnobType;
 
 
@@ -134,17 +134,34 @@ public class VirtualFaderImpl implements IVirtualFader
         // Reset parameter type detection flag
         this.isKnobType = false;
 
+        // Calculate the bounds of the destination pad
         final int min = row * PAD_VALUE_AMOUNT;
         final int max = Math.min (127, (row + 1) * PAD_VALUE_AMOUNT - 1);
         int newDestination = this.smoothFaderValue (row, max);
 
-        // Support stepping through 4 values
+        // Support stepping through 4 values on the destination pad
         if (min <= this.moveDestination && this.moveDestination <= max)
         {
             final int step = (this.moveDestination - min) / 4;
-            newDestination = min + 4 * (step + 2) - 1;
-            if (newDestination > max)
-                newDestination = min;
+
+            if (this.moveDirectionIsUpwards)
+            {
+                newDestination = min + 4 * (step + 2) - 1;
+                if (newDestination > max)
+                {
+                    newDestination = min + 4 * step - 1;
+                    this.moveDirectionIsUpwards = false;
+                }
+            }
+            else
+            {
+                newDestination = min + 4 * (step - 1) + 1;
+                if (newDestination < min)
+                {
+                    newDestination = min + 4 * (step + 2) - 1;
+                    this.moveDirectionIsUpwards = true;
+                }
+            }
         }
         else if (row == 0)
         {
@@ -160,12 +177,12 @@ public class VirtualFaderImpl implements IVirtualFader
     protected void moveFaderToDestination ()
     {
         final int current = this.callback.getValue ();
-        if (current < this.moveDestination)
-            this.moveTargetValue = Math.min (current + this.moveDelay, this.moveDestination);
-        else if (current > this.moveDestination)
-            this.moveTargetValue = Math.max (current - this.moveDelay, this.moveDestination);
-        else
+
+        if (current == this.moveDestination)
             return;
+
+        this.moveDirectionIsUpwards = current < this.moveDestination;
+        this.moveTargetValue = this.moveDirectionIsUpwards ? Math.min (current + this.moveDelay, this.moveDestination) : Math.max (current - this.moveDelay, this.moveDestination);
 
         this.callback.setValue (this.moveTargetValue);
 

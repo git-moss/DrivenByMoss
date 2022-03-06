@@ -13,6 +13,7 @@ import de.mossgrabers.framework.controller.color.ColorManager;
 import de.mossgrabers.framework.daw.IHost;
 import de.mossgrabers.framework.daw.midi.IMidiInput;
 import de.mossgrabers.framework.daw.midi.IMidiOutput;
+import de.mossgrabers.framework.daw.midi.MidiConstants;
 import de.mossgrabers.framework.mode.Modes;
 import de.mossgrabers.framework.utils.Pair;
 import de.mossgrabers.framework.utils.StringUtils;
@@ -182,24 +183,21 @@ public class GenericFlexiControlSurface extends AbstractControlSurface<GenericFl
         switch (code)
         {
             // Note on/off
-            case 0x80:
-            case 0x90:
+            case MidiConstants.CMD_NOTE_OFF:
+            case MidiConstants.CMD_NOTE_ON:
                 this.configuration.setLearnValues (GenericFlexiConfiguration.OPTIONS_TYPE.get (CommandSlot.TYPE_NOTE + 1), data1, channel, false);
-                this.handleCommand (this.configuration.getSlotCommand (CommandSlot.TYPE_NOTE, data1, channel), MidiValue.get (code == 0x80 ? 0 : data2, false));
+                this.handleCommand (this.configuration.getSlotCommand (CommandSlot.TYPE_NOTE, data1, channel), MidiValue.get (code == MidiConstants.CMD_NOTE_OFF ? 0 : data2, false));
                 break;
 
-            // Program Change
-            case 0xC0:
+            case MidiConstants.CMD_PROGRAM_CHANGE:
                 this.handleProgramChange (channel, data1);
                 break;
 
-            // CC
-            case 0xB0:
+            case MidiConstants.CMD_CC:
                 this.handleCC (channel, data1, data2);
                 break;
 
-            // Pitch-bend
-            case 0xE0:
+            case MidiConstants.CMD_PITCHBEND:
                 this.configuration.setLearnValues (GenericFlexiConfiguration.OPTIONS_TYPE.get (CommandSlot.TYPE_PITCH_BEND + 1), data1, channel, true);
                 this.handleCommand (this.configuration.getSlotCommand (CommandSlot.TYPE_PITCH_BEND, data1, channel), MidiValue.get (data1 + data2 * 128, true));
                 break;

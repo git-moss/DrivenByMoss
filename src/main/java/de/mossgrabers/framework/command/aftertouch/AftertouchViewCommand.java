@@ -8,6 +8,7 @@ import de.mossgrabers.framework.command.core.AbstractAftertouchCommand;
 import de.mossgrabers.framework.configuration.Configuration;
 import de.mossgrabers.framework.controller.IControlSurface;
 import de.mossgrabers.framework.daw.IModel;
+import de.mossgrabers.framework.daw.midi.MidiConstants;
 import de.mossgrabers.framework.featuregroup.IView;
 
 import java.util.List;
@@ -58,17 +59,17 @@ public class AftertouchViewCommand<S extends IControlSurface<C>, C extends Confi
                 final int n = this.view.getKeyManager ().getMidiNoteFromGrid (note);
                 if (n == -1)
                     return;
-                this.surface.sendMidiEvent (0xA0, n, value);
+                this.surface.sendMidiEvent (MidiConstants.CMD_POLY_AFTERTOUCH, n, value);
                 break;
 
             case -1:
                 // Convert to Channel Aftertouch
-                this.surface.sendMidiEvent (0xD0, value, 0);
+                this.surface.sendMidiEvent (MidiConstants.CMD_CHANNEL_AFTERTOUCH, value, 0);
                 break;
 
             default:
                 // MIDI CC
-                this.surface.sendMidiEvent (0xB0, convertAftertouch, value);
+                this.surface.sendMidiEvent (MidiConstants.CMD_CC, convertAftertouch, value);
                 break;
         }
     }

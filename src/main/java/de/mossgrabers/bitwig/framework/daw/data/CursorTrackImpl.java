@@ -51,7 +51,41 @@ public class CursorTrackImpl extends TrackImpl implements ICursorTrack
     {
         super.enableObservers (enable);
 
+        Util.setIsSubscribed (this.cursorTrack.hasPrevious (), enable);
+        Util.setIsSubscribed (this.cursorTrack.hasNext (), enable);
         Util.setIsSubscribed (this.isPinnedAttr, enable);
+    }
+
+
+    /** {@inheritDoc} */
+    @Override
+    public void selectPrevious ()
+    {
+        this.cursorTrack.selectPrevious ();
+    }
+
+
+    /** {@inheritDoc} */
+    @Override
+    public boolean canSelectPrevious ()
+    {
+        return this.cursorTrack.hasPrevious ().get ();
+    }
+
+
+    /** {@inheritDoc} */
+    @Override
+    public boolean canSelectNext ()
+    {
+        return this.cursorTrack.hasNext ().get ();
+    }
+
+
+    /** {@inheritDoc} */
+    @Override
+    public void selectNext ()
+    {
+        this.cursorTrack.selectNext ();
     }
 
 

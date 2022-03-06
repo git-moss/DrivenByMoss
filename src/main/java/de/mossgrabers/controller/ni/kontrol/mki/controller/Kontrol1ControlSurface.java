@@ -306,7 +306,7 @@ public class Kontrol1ControlSurface extends AbstractControlSurface<Kontrol1Confi
 
 
     /**
-     * Send the LED stati to the device.
+     * Send the LED status to the device.
      */
     public void updateButtonLEDs ()
     {
@@ -315,7 +315,7 @@ public class Kontrol1ControlSurface extends AbstractControlSurface<Kontrol1Confi
 
 
     /**
-     * Send the key LED stati updates to the device.
+     * Send the key LED status updates to the device.
      */
     public void updateKeyLEDs ()
     {

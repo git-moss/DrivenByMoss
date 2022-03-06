@@ -58,6 +58,7 @@ import de.mossgrabers.framework.daw.midi.DeviceInquiry;
 import de.mossgrabers.framework.daw.midi.IMidiAccess;
 import de.mossgrabers.framework.daw.midi.IMidiInput;
 import de.mossgrabers.framework.daw.midi.IMidiOutput;
+import de.mossgrabers.framework.daw.midi.MidiConstants;
 import de.mossgrabers.framework.featuregroup.IMode;
 import de.mossgrabers.framework.featuregroup.ModeManager;
 import de.mossgrabers.framework.featuregroup.ViewManager;
@@ -150,7 +151,7 @@ public class SLMkIIIControllerSetup extends AbstractControllerSetup<SLMkIIIContr
 
         keyboardInput.setMidiCallback ( (status, data1, data2) -> {
             final int code = status & 0xF0;
-            if (code == 0x80 || code == 0x90)
+            if (code == MidiConstants.CMD_NOTE_OFF || code == MidiConstants.CMD_NOTE_ON)
                 lightGuide.updateKeyboardNote (data1, data2);
         });
     }

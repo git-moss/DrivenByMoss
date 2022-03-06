@@ -143,8 +143,8 @@ public class LaunchpadCursorCommand extends CursorCommand<LaunchpadControlSurfac
 
             case DEVICE:
                 final ICursorDevice cursorDevice = this.model.getCursorDevice ();
-                this.canScrollUp = cursorDevice.canSelectPreviousFX ();
-                this.canScrollDown = cursorDevice.canSelectNextFX ();
+                this.canScrollUp = cursorDevice.canSelectPrevious ();
+                this.canScrollDown = cursorDevice.canSelectNext ();
                 final IParameterBank parameterBank = cursorDevice.getParameterBank ();
                 this.canScrollLeft = parameterBank.canScrollPageBackwards ();
                 this.canScrollRight = parameterBank.canScrollPageForwards ();

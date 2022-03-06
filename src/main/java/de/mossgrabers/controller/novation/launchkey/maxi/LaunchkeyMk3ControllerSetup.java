@@ -52,6 +52,7 @@ import de.mossgrabers.framework.daw.ModelSetup;
 import de.mossgrabers.framework.daw.midi.IMidiAccess;
 import de.mossgrabers.framework.daw.midi.IMidiInput;
 import de.mossgrabers.framework.daw.midi.IMidiOutput;
+import de.mossgrabers.framework.daw.midi.MidiConstants;
 import de.mossgrabers.framework.featuregroup.AbstractMode;
 import de.mossgrabers.framework.featuregroup.ModeManager;
 import de.mossgrabers.framework.featuregroup.ViewManager;
@@ -150,8 +151,8 @@ public class LaunchkeyMk3ControllerSetup extends AbstractControllerSetup<Launchk
         final List<String> filters = new ArrayList<> ();
         for (int i = 0; i < 15; i++)
         {
-            filters.add (StringUtils.toHexStr (0x80 + i) + "????");
-            filters.add (StringUtils.toHexStr (0x90 + i) + "????");
+            filters.add (StringUtils.toHexStr (MidiConstants.CMD_NOTE_OFF + i) + "????");
+            filters.add (StringUtils.toHexStr (MidiConstants.CMD_NOTE_ON + i) + "????");
         }
         final IMidiInput input = midiAccess.createInput ("Pads", filters.toArray (new String [filters.size ()]));
         final IMidiInput inputKeys = midiAccess.createInput (1, "Keyboard", "8?????" /* Note off */,

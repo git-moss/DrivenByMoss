@@ -13,12 +13,13 @@ import de.mossgrabers.framework.controller.ButtonID;
 import de.mossgrabers.framework.controller.ContinuousID;
 import de.mossgrabers.framework.controller.color.ColorManager;
 import de.mossgrabers.framework.controller.hardware.IHwButton;
-import de.mossgrabers.framework.controller.valuechanger.TwosComplementValueChanger;
 import de.mossgrabers.framework.controller.valuechanger.SignedBit2RelativeValueChanger;
+import de.mossgrabers.framework.controller.valuechanger.TwosComplementValueChanger;
 import de.mossgrabers.framework.daw.IHost;
 import de.mossgrabers.framework.daw.IModel;
 import de.mossgrabers.framework.daw.midi.IMidiInput;
 import de.mossgrabers.framework.daw.midi.IMidiOutput;
+import de.mossgrabers.framework.daw.midi.MidiConstants;
 import de.mossgrabers.framework.utils.ButtonEvent;
 
 import java.util.Arrays;
@@ -405,7 +406,7 @@ public class HUIControlSurface extends AbstractControlSurface<HUIConfiguration>
     protected void handleMidi (final int status, final int data1, final int data2)
     {
         final int code = status & 0xF0;
-        if (code != 0xB0)
+        if (code != MidiConstants.CMD_CC)
             return;
 
         switch (data1)

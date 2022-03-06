@@ -12,6 +12,7 @@ import de.mossgrabers.controller.generic.flexihandler.utils.KnobMode;
 import de.mossgrabers.controller.generic.flexihandler.utils.MidiValue;
 import de.mossgrabers.framework.controller.valuechanger.IValueChanger;
 import de.mossgrabers.framework.daw.IModel;
+import de.mossgrabers.framework.daw.midi.MidiConstants;
 
 
 /**
@@ -320,7 +321,7 @@ public class MidiCCHandler extends AbstractHandler
                 int val = value.getValue ();
                 if (value.isHighRes ())
                     val = val % 128;
-                this.surface.getMidiInput ().sendRawMidiEvent (0xB0, command.ordinal () - FlexiCommand.MIDI_CC_0.ordinal (), val);
+                this.surface.getMidiInput ().sendRawMidiEvent (MidiConstants.CMD_CC, command.ordinal () - FlexiCommand.MIDI_CC_0.ordinal (), val);
                 break;
 
             default:

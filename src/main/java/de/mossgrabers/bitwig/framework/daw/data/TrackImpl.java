@@ -47,13 +47,13 @@ public class TrackImpl extends ChannelImpl implements ITrack
     private static final String      MONITOR_MODE_AUTO = "AUTO";
 
     protected final Track            track;
+    protected final CursorTrack      cursorTrack;
 
     private final BooleanValue       isTopGroup;
     private final ApplicationImpl    application;
     private final ISlotBank          slotBank;
     private final int []             noteCache         = new int [128];
     private final Set<INoteObserver> noteObservers     = new CopyOnWriteArraySet<> ();
-    private final CursorTrack        cursorTrack;
     private final IHost              host;
     private final IParameter         crossfadeParameter;
     private final Device             drumMachineDevice;
