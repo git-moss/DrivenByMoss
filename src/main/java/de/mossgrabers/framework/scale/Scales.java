@@ -99,7 +99,8 @@ public class Scales
     private ScaleLayout                 scaleLayout              = ScaleLayout.FOURTH_UP;
     private Orientation                 orientation              = Orientation.ORIENT_UP;
     private boolean                     chromaticOn              = false;
-    private int                         shift                    = 3;
+    private int                         scaleShift               = 3;
+    private int                         semitoneShift            = 5;
     private int                         octave                   = 0;
     private int                         drumOffset;
     private int                         drumDefaultOffset;
@@ -329,23 +330,23 @@ public class Scales
         {
             case FOURTH_UP:
             case FOURTH_RIGHT:
-                this.setPlayShift (3);
+                this.setPlayShift (3, 5);
                 break;
             case THIRD_UP:
             case THIRD_RIGHT:
-                this.setPlayShift (2);
+                this.setPlayShift (2, 4);
                 break;
             case SEQUENT_UP:
-                this.setPlayShift (this.numRows);
+                this.setPlayShift (this.numRows, this.numRows);
                 break;
             case SEQUENT_RIGHT:
-                this.setPlayShift (this.numColumns);
+                this.setPlayShift (this.numColumns, this.numColumns);
                 break;
             case EIGHT_UP:
             case EIGHT_RIGHT:
             case EIGHT_UP_CENTER:
             case EIGHT_RIGHT_CENTER:
-                this.setPlayShift (7);
+                this.setPlayShift (7, 12);
                 break;
         }
     }
@@ -622,13 +623,15 @@ public class Scales
 
 
     /**
-     * Sets the number of scale steps that the notes in the next rows are shifted (e.g. 4).
+     * Sets the number of scale and semitone steps that the notes in the next rows are shifted (e.g. 4).
      *
-     * @param shift The steps
+     * @param scaleShift The steps
+     * @param semitoneShift The steps
      */
-    public void setPlayShift (final int shift)
+    public void setPlayShift (final int scaleShift, final int semitoneShift)
     {
-        this.shift = shift;
+        this.scaleShift = scaleShift;
+        this.semitoneShift = semitoneShift;
         this.generateMatrices ();
     }
 
@@ -638,9 +641,19 @@ public class Scales
      *
      * @return The steps
      */
-    public int getPlayShift ()
+    public int getScaleShift ()
     {
-        return this.shift;
+        return this.scaleShift;
+    }
+
+    /**
+     * Get the number of semitones the notes in the next rows are shifted in chromatic mode
+     *
+     * @return The number of semitone
+     */
+    public int getSemitoneShift ()
+    {
+        return this.semitoneShift;
     }
 
 
@@ -1070,7 +1083,7 @@ public class Scales
         this.chordGrids.clear ();
         for (final Scale scale: Scale.values ())
         {
-            this.scaleGrids.put (scale, new ScaleGrid (scale, this.scaleLayout, this.orientation, this.numRows, this.numColumns, this.shift));
+            this.scaleGrids.put (scale, new ScaleGrid (scale, this.scaleLayout, this.orientation, this.numRows, this.numColumns, this.scaleShift, this.semitoneShift));
             this.chordGrids.put (scale, new ChordGrid (scale, this.numRows, this.numColumns));
         }
     }

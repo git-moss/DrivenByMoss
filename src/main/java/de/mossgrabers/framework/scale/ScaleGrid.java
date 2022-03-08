@@ -36,8 +36,9 @@ class ScaleGrid
      * @param rows The number of rows of the grid
      * @param cols The number of columns of the grid
      * @param shift The number of scale steps that the notes in the next rows are shifted (e.g. 4)
+     * @param semitoneShift The number of semitones the notes in the next rows are shifted in chromatic mode
      */
-    public ScaleGrid (final Scale scale, final ScaleLayout layout, final Orientation orientation, final int rows, final int cols, final int shift)
+    public ScaleGrid (final Scale scale, final ScaleLayout layout, final Orientation orientation, final int rows, final int cols, final int shift, final int semitoneShift)
     {
         final int size = cols * rows;
         this.matrix = new int [size];
@@ -48,11 +49,6 @@ class ScaleGrid
         final int len = intervals.length;
 
         final boolean isUp = orientation == Orientation.ORIENT_UP;
-        final int shiftedNote;
-        if (shift == rows)
-            shiftedNote = rows;
-        else
-            shiftedNote = shift == 7 ? 12 : cols - shift;
         final int centerOffset = layout == ScaleLayout.EIGHT_UP_CENTER || layout == ScaleLayout.EIGHT_RIGHT_CENTER ? -3 : 0;
 
         for (int row = 0; row < rows; row++)
@@ -79,7 +75,7 @@ class ScaleGrid
 
                 final int index = row * cols + column;
                 this.matrix[index] = oct * 12 + intervals[offset % len];
-                this.chromatic[index] = y * shiftedNote + x;
+                this.chromatic[index] = y * semitoneShift + x;
             }
         }
     }
