@@ -186,7 +186,7 @@ public class ModelImpl extends AbstractModel
                     specificDevice = new KompleteDevice (this.host, this.valueChanger, device);
                     break;
                 case EQ:
-                    specificDevice = new EqualizerDeviceImpl (this.host, this.valueChanger, device);
+                    specificDevice = new EqualizerDeviceImpl (this.host, this.valueChanger, device, numParamPages, numParams);
                     break;
                 default:
                     specificDevice = new SpecificDeviceImpl (this.host, this.valueChanger, device, numSends, numParamPages, numParams, numDevicesInBank, numDeviceLayers, numDrumPadLayers);

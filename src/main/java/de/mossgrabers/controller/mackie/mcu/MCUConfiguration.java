@@ -77,6 +77,7 @@ public class MCUConfiguration extends AbstractConfiguration
     private static final String       CATEGORY_ASSIGNABLE_BUTTONS             = "Assignable buttons";
 
     private static final String       DEVICE_SELECT                           = "<Select a profile>";
+    private static final String       DEVICE_BEHRINGER_X_TOUCH                = "Behringer X-Touch";
     private static final String       DEVICE_BEHRINGER_X_TOUCH_ONE            = "Behringer X-Touch One";
     private static final String       DEVICE_ICON_PLATFORM_M                  = "icon Platform M / M+";
     private static final String       DEVICE_ICON_QCON_PRO_X                  = "icon QConPro X";
@@ -86,6 +87,7 @@ public class MCUConfiguration extends AbstractConfiguration
     private static final String []    DEVICE_OPTIONS                          =
     {
         DEVICE_SELECT,
+        DEVICE_BEHRINGER_X_TOUCH,
         DEVICE_BEHRINGER_X_TOUCH_ONE,
         DEVICE_ICON_PLATFORM_M,
         DEVICE_ICON_QCON_PRO_X,
@@ -350,6 +352,7 @@ public class MCUConfiguration extends AbstractConfiguration
             switch (value)
             {
                 case DEVICE_MACKIE_MCU_PRO:
+                case DEVICE_BEHRINGER_X_TOUCH:
                     hasDisplay1Setting.set (ON_OFF_OPTIONS[1]);
                     hasDisplay2Setting.set (ON_OFF_OPTIONS[0]);
                     hasSegmentDisplaySetting.set (ON_OFF_OPTIONS[1]);

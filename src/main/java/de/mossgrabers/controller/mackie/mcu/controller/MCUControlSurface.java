@@ -313,7 +313,7 @@ public class MCUControlSurface extends AbstractControlSurface<MCUConfiguration>
             case VUMODE_LED:
                 for (int i = 0; i < 8; i++)
                 {
-                    // resets the leds (and vu-meters on the display?)
+                    // resets the LEDs (and VU-meters on the display?)
                     out.sendChannelAftertouch (0 + (i << 4), 0);
                     out.sendSysex (SYSEX_HDR + "20 0" + i + " 01 F7");
                 }

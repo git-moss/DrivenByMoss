@@ -17,7 +17,8 @@ import java.util.Optional;
 
 
 /**
- * Command to duplicate an object (clip, track, ...) depending on the context.
+ * Command to duplicate the selected clip and start playback, if any. Creates a new scene if used
+ * with Select.
  *
  * @param <S> The type of the control surface
  * @param <C> The type of the configuration

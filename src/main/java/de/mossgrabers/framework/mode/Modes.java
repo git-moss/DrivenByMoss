@@ -66,6 +66,10 @@ public enum Modes
 
     /** Edit device parameters. */
     DEVICE_PARAMS,
+    /** Edit device parameters of the EQ. */
+    EQ_DEVICE_PARAMS,
+    /** Edit device parameters of the first instrument. */
+    INSTRUMENT_DEVICE_PARAMS,
     /** Edit device slot chains. */
     DEVICE_CHAINS,
 

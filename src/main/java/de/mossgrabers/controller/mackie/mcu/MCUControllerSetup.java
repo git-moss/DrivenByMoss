@@ -8,7 +8,6 @@ import de.mossgrabers.controller.mackie.mcu.command.continuous.PlayPositionTempo
 import de.mossgrabers.controller.mackie.mcu.command.trigger.AssignableCommand;
 import de.mossgrabers.controller.mackie.mcu.command.trigger.DevicesCommand;
 import de.mossgrabers.controller.mackie.mcu.command.trigger.FaderTouchCommand;
-import de.mossgrabers.controller.mackie.mcu.command.trigger.GrooveCommand;
 import de.mossgrabers.controller.mackie.mcu.command.trigger.KeyCommand;
 import de.mossgrabers.controller.mackie.mcu.command.trigger.KeyCommand.Key;
 import de.mossgrabers.controller.mackie.mcu.command.trigger.MCUCursorCommand;
@@ -44,7 +43,6 @@ import de.mossgrabers.framework.command.trigger.BrowserCommand;
 import de.mossgrabers.framework.command.trigger.Direction;
 import de.mossgrabers.framework.command.trigger.MarkerCommand;
 import de.mossgrabers.framework.command.trigger.ShiftCommand;
-import de.mossgrabers.framework.command.trigger.application.DuplicateCommand;
 import de.mossgrabers.framework.command.trigger.application.LayoutCommand;
 import de.mossgrabers.framework.command.trigger.application.OverdubCommand;
 import de.mossgrabers.framework.command.trigger.application.PaneCommand;
@@ -77,15 +75,15 @@ import de.mossgrabers.framework.controller.hardware.IHwFader;
 import de.mossgrabers.framework.controller.hardware.IHwRelativeKnob;
 import de.mossgrabers.framework.controller.valuechanger.RelativeEncoding;
 import de.mossgrabers.framework.controller.valuechanger.TwosComplementValueChanger;
-import de.mossgrabers.framework.daw.GrooveParameterID;
 import de.mossgrabers.framework.daw.IApplication;
 import de.mossgrabers.framework.daw.IHost;
+import de.mossgrabers.framework.daw.IProject;
 import de.mossgrabers.framework.daw.ITransport;
 import de.mossgrabers.framework.daw.ModelSetup;
 import de.mossgrabers.framework.daw.constants.AutomationMode;
+import de.mossgrabers.framework.daw.constants.DeviceID;
 import de.mossgrabers.framework.daw.data.ICursorDevice;
 import de.mossgrabers.framework.daw.data.IMasterTrack;
-import de.mossgrabers.framework.daw.data.IParameter;
 import de.mossgrabers.framework.daw.data.ITrack;
 import de.mossgrabers.framework.daw.data.bank.ITrackBank;
 import de.mossgrabers.framework.daw.midi.IMidiAccess;
@@ -96,6 +94,7 @@ import de.mossgrabers.framework.featuregroup.IMode;
 import de.mossgrabers.framework.featuregroup.ModeManager;
 import de.mossgrabers.framework.mode.MasterVolumeMode;
 import de.mossgrabers.framework.mode.Modes;
+import de.mossgrabers.framework.utils.ButtonEvent;
 import de.mossgrabers.framework.view.ControlOnlyView;
 import de.mossgrabers.framework.view.Views;
 
@@ -139,6 +138,9 @@ public class MCUControllerSetup extends AbstractControllerSetup<MCUControlSurfac
         MODE_ACRONYMS.put (Modes.DEVICE_PARAMS, "DC");
         MODE_ACRONYMS.put (Modes.BROWSER, "BR");
         MODE_ACRONYMS.put (Modes.MARKERS, "MK");
+        MODE_ACRONYMS.put (Modes.EQ_DEVICE_PARAMS, "EQ");
+        MODE_ACRONYMS.put (Modes.INSTRUMENT_DEVICE_PARAMS, "IT");
+        MODE_ACRONYMS.put (Modes.USER, "US");
     }
 
     private static final Set<Modes> VALUE_MODES      = EnumSet.of (Modes.VOLUME, Modes.PAN, Modes.TRACK, Modes.SEND1, Modes.SEND2, Modes.SEND3, Modes.SEND4, Modes.SEND5, Modes.SEND6, Modes.SEND7, Modes.SEND8, Modes.DEVICE_PARAMS);
@@ -207,6 +209,8 @@ public class MCUControllerSetup extends AbstractControllerSetup<MCUControlSurfac
         final ModelSetup ms = new ModelSetup ();
 
         ms.enableDrumDevice (false);
+        ms.enableDevice (DeviceID.EQ);
+        ms.enableDevice (DeviceID.FIRST_INSTRUMENT);
 
         if (this.configuration.shouldPinFXTracksToLastController ())
         {
@@ -278,6 +282,8 @@ public class MCUControllerSetup extends AbstractControllerSetup<MCUControlSurfac
             modeManager.register (Modes.MASTER, new MasterMode (surface, this.model));
 
             modeManager.register (Modes.DEVICE_PARAMS, new DeviceParamsMode (surface, this.model));
+            modeManager.register (Modes.EQ_DEVICE_PARAMS, new DeviceParamsMode ("Equalizer", this.model.getSpecificDevice (DeviceID.EQ), surface, this.model));
+            modeManager.register (Modes.INSTRUMENT_DEVICE_PARAMS, new DeviceParamsMode ("First Instrument", this.model.getSpecificDevice (DeviceID.FIRST_INSTRUMENT), surface, this.model));
             modeManager.register (Modes.USER, new UserMode (surface, this.model));
             modeManager.register (Modes.BROWSER, new DeviceBrowserMode (surface, this.model));
             modeManager.register (Modes.MARKERS, new MarkerMode (surface, this.model));
@@ -409,13 +415,11 @@ public class MCUControllerSetup extends AbstractControllerSetup<MCUControlSurfac
                 this.addButton (surface, ButtonID.PAN_SEND, "Pan", new ModeSelectCommand<> (this.model, surface, Modes.PAN), 0, MCUControlSurface.MCU_MODE_PAN, () -> modeManager.isActive (Modes.PAN));
                 this.addButton (surface, ButtonID.SENDS, "Sends", new SendSelectCommand (this.model, surface), 0, MCUControlSurface.MCU_MODE_SENDS, () -> Modes.isSendMode (modeManager.getActiveID ()));
                 this.addButton (surface, ButtonID.DEVICE, "Device", new DevicesCommand (this.model, surface), 0, MCUControlSurface.MCU_MODE_PLUGIN, () -> surface.getButton (ButtonID.SELECT).isPressed () ? cursorDevice.isPinned () : modeManager.isActive (Modes.DEVICE_PARAMS, Modes.USER));
+                this.addButton (surface, ButtonID.PAGE_LEFT, "EQ", new ModeSelectCommand<> (this.model, surface, Modes.EQ_DEVICE_PARAMS), 0, MCUControlSurface.MCU_MODE_EQ, () -> modeManager.isActive (Modes.EQ_DEVICE_PARAMS));
+                this.addButton (surface, ButtonID.PAGE_RIGHT, "INST", new ModeSelectCommand<> (this.model, surface, Modes.INSTRUMENT_DEVICE_PARAMS), 0, MCUControlSurface.MCU_MODE_DYN, () -> modeManager.isActive (Modes.INSTRUMENT_DEVICE_PARAMS));
 
-                final MCUMoveTrackBankCommand leftTrackCommand = new MCUMoveTrackBankCommand (this.model, surface, true, true);
-                final MCUMoveTrackBankCommand rightTrackCommand = new MCUMoveTrackBankCommand (this.model, surface, true, false);
-                this.addButton (surface, ButtonID.PAGE_LEFT, "Left", leftTrackCommand, 0, MCUControlSurface.MCU_MODE_EQ);
-                this.addButton (surface, ButtonID.PAGE_RIGHT, TAG_RIGHT, rightTrackCommand, 0, MCUControlSurface.MCU_MODE_DYN);
-                this.addButton (surface, ButtonID.MOVE_TRACK_LEFT, "Left", leftTrackCommand, 0, MCUControlSurface.MCU_TRACK_LEFT);
-                this.addButton (surface, ButtonID.MOVE_TRACK_RIGHT, TAG_RIGHT, rightTrackCommand, 0, MCUControlSurface.MCU_TRACK_RIGHT);
+                this.addButton (surface, ButtonID.MOVE_TRACK_LEFT, "Left", new MCUMoveTrackBankCommand (this.model, surface, true, true), 0, MCUControlSurface.MCU_TRACK_LEFT);
+                this.addButton (surface, ButtonID.MOVE_TRACK_RIGHT, TAG_RIGHT, new MCUMoveTrackBankCommand (this.model, surface, true, false), 0, MCUControlSurface.MCU_TRACK_RIGHT);
 
                 // Automation
                 this.addButton (surface, ButtonID.AUTOMATION_TRIM, "Trim", new AutomationModeCommand<> (AutomationMode.TRIM_READ, this.model, surface), 0, MCUControlSurface.MCU_TRIM, () -> !t.isWritingArrangerAutomation () && t.getAutomationWriteMode () == AutomationMode.TRIM_READ);
@@ -440,13 +444,22 @@ public class MCUControllerSetup extends AbstractControllerSetup<MCUControlSurfac
                 // Utilities
                 this.addButton (surface, ButtonID.BROWSE, "Browse", new BrowserCommand<> (this.model, surface), 0, MCUControlSurface.MCU_USER, () -> modeManager.isActive (Modes.BROWSER));
                 this.addButton (surface, ButtonID.METRONOME, "Metronome", new MetronomeCommand<> (this.model, surface, false), 0, MCUControlSurface.MCU_CLICK, () -> surface.getButton (ButtonID.SHIFT).isPressed () ? t.isMetronomeTicksOn () : t.isMetronomeOn ());
-                this.addButton (surface, ButtonID.GROOVE, "Groove", new GrooveCommand (this.model, surface), 0, MCUControlSurface.MCU_SOLO, () -> {
-                    final IParameter parameter = this.model.getGroove ().getParameter (GrooveParameterID.ENABLED);
-                    return parameter != null && parameter.getValue () > 0;
-                });
+
+                final IProject project = this.model.getProject ();
+                this.addButton (surface, ButtonID.GROOVE, "Solo Defeat", (event, velocity) -> {
+                    if (event != ButtonEvent.DOWN)
+                        return;
+                    if (surface.isShiftPressed ())
+                        project.clearMute ();
+                    else
+                        project.clearSolo ();
+                }, 0, MCUControlSurface.MCU_SOLO, () -> surface.isShiftPressed () ? project.hasMute () : project.hasSolo ());
                 this.addButton (surface, ButtonID.OVERDUB, "Overdub", new OverdubCommand<> (this.model, surface), 0, MCUControlSurface.MCU_REPLACE, () -> (surface.getButton (ButtonID.SHIFT).isPressed () ? t.isLauncherOverdub () : t.isArrangerOverdub ()));
                 this.addButton (surface, ButtonID.TAP_TEMPO, "Tap Tempo", new TapTempoCommand<> (this.model, surface), 0, MCUControlSurface.MCU_NUDGE);
-                this.addButton (surface, ButtonID.DUPLICATE, "Duplicate", new DuplicateCommand<> (this.model, surface), 0, MCUControlSurface.MCU_DROP);
+                this.addButton (surface, ButtonID.DUPLICATE, "Duplicate", (event, velocity) -> {
+                    if (event == ButtonEvent.DOWN)
+                        this.model.getCursorTrack ().duplicate ();
+                }, 0, MCUControlSurface.MCU_DROP);
 
                 this.addButton (surface, ButtonID.DEVICE_ON_OFF, "Device On/Off", new DeviceOnOffCommand<> (this.model, surface), MCUControlSurface.MCU_F8);
 

@@ -130,7 +130,7 @@ public class MCUDisplay extends AbstractTextDisplay
         if (this.isShutdown)
             return;
 
-        this.notifyOnDisplay ("Please start " + this.host.getName () + "...");
+        this.notifyOnDisplay ("Please start " + this.host.getName () + " ...     ");
 
         // Prevent further sends
         this.isShutdown = true;

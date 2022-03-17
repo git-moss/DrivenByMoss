@@ -8,7 +8,10 @@ import de.mossgrabers.controller.mackie.mcu.MCUConfiguration;
 import de.mossgrabers.controller.mackie.mcu.controller.MCUControlSurface;
 import de.mossgrabers.framework.command.trigger.track.MoveTrackBankCommand;
 import de.mossgrabers.framework.daw.IModel;
+import de.mossgrabers.framework.daw.constants.DeviceID;
+import de.mossgrabers.framework.daw.data.ISpecificDevice;
 import de.mossgrabers.framework.daw.data.bank.ITrackBank;
+import de.mossgrabers.framework.featuregroup.ModeManager;
 import de.mossgrabers.framework.mode.Modes;
 import de.mossgrabers.framework.utils.ButtonEvent;
 
@@ -31,6 +34,29 @@ public class MCUMoveTrackBankCommand extends MoveTrackBankCommand<MCUControlSurf
     public MCUMoveTrackBankCommand (final IModel model, final MCUControlSurface surface, final boolean moveBy1, final boolean moveLeft)
     {
         super (model, surface, Modes.DEVICE_PARAMS, moveBy1, moveLeft);
+    }
+
+
+    /** {@inheritDoc} */
+    @Override
+    public void executeNormal (final ButtonEvent event)
+    {
+        if (event != ButtonEvent.DOWN)
+            return;
+
+        final ModeManager modeManager = this.surface.getModeManager ();
+        final boolean isEqMode = modeManager.isActive (Modes.EQ_DEVICE_PARAMS);
+        if (isEqMode || modeManager.isActive (Modes.INSTRUMENT_DEVICE_PARAMS))
+        {
+            final ISpecificDevice device = this.model.getSpecificDevice (isEqMode ? DeviceID.EQ : DeviceID.FIRST_INSTRUMENT);
+            if (this.moveBy1)
+            {
+                this.handleBankMovement (device.getParameterBank ());
+            }
+            return;
+        }
+
+        super.executeNormal (event);
     }
 
 

@@ -96,7 +96,7 @@ public abstract class AbstractHandler implements IFlexiCommandHandler
 
 
     /**
-     * Test if a button is pressed. Can only true for absolute modes.
+     * Test if a button is pressed. Can only be true for absolute modes.
      *
      * @param knobMode The knob/button mode
      * @param value The value to test
