@@ -36,7 +36,8 @@ import java.util.Optional;
  */
 public abstract class BaseMode<B extends IItem> extends AbstractMode<MCUControlSurface, MCUConfiguration, B>
 {
-    private final boolean useFxBank;
+    private final boolean          useFxBank;
+    private final MCUConfiguration configuration;
 
 
     /**
@@ -64,8 +65,8 @@ public abstract class BaseMode<B extends IItem> extends AbstractMode<MCUControlS
     {
         super (name, surface, model, true, bank, DEFAULT_KNOB_IDS);
 
-        final MCUConfiguration configuration = this.surface.getConfiguration ();
-        this.useFxBank = configuration.shouldPinFXTracksToLastController () && this.surface.getSurfaceID () == configuration.getNumMCUDevices () - 1;
+        this.configuration = this.surface.getConfiguration ();
+        this.useFxBank = this.configuration.shouldPinFXTracksToLastController () && this.surface.getSurfaceID () == this.configuration.getNumMCUDevices () - 1;
     }
 
 
@@ -223,5 +224,11 @@ public abstract class BaseMode<B extends IItem> extends AbstractMode<MCUControlS
     protected int getExtenderOffset ()
     {
         return this.useFxBank ? 0 : this.surface.getExtenderOffset ();
+    }
+
+
+    protected int getTextLength ()
+    {
+        return this.configuration.shouldUse7Characters () ? 7 : 6;
     }
 }

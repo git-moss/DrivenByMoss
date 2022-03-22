@@ -57,6 +57,10 @@ public class MCUConfiguration extends AbstractConfiguration
     public static final Integer       MASTER_VU_METER                         = Integer.valueOf (63);
     /** Pin FX tracks to last controller. */
     public static final Integer       PIN_FXTRACKS_TO_LAST_CONTROLLER         = Integer.valueOf (64);
+    /** Support X-Touch display back-light colors. */
+    public static final Integer       X_TOUCH_DISPLAY_COLORS                  = Integer.valueOf (65);
+    /** Use 7 characters instead of 6 and a space character. */
+    public static final Integer       USE_7_CHARACTERS                        = Integer.valueOf (66);
 
     /** Use a Function button to switch to previous mode. */
     public static final int           FOOTSWITCH_2_PREV_MODE                  = 15;
@@ -192,6 +196,8 @@ public class MCUConfiguration extends AbstractConfiguration
     private boolean                   useVertZoomForModes;
     private boolean                   useFadersAsKnobs;
     private boolean                   masterVuMeter;
+    private boolean                   displayColors;
+    private boolean                   use7Characters;
     private boolean                   touchChannel;
     private final int []              assignableFunctions                     = new int [7];
     private final String []           assignableFunctionActions               = new String [7];
@@ -347,11 +353,40 @@ public class MCUConfiguration extends AbstractConfiguration
         });
         this.isSettingActive.add (MASTER_VU_METER);
 
+        final IEnumSetting displayColorsSetting = settingsUI.getEnumSetting ("Display colors (Behringer X-Touch)", CATEGORY_HARDWARE_SETUP, ON_OFF_OPTIONS, ON_OFF_OPTIONS[0]);
+        displayColorsSetting.addValueObserver (value -> {
+            this.displayColors = "On".equals (value);
+            this.notifyObservers (X_TOUCH_DISPLAY_COLORS);
+        });
+        this.isSettingActive.add (X_TOUCH_DISPLAY_COLORS);
+
+        final IEnumSetting use7CharactersSetting = settingsUI.getEnumSetting ("Use 7 characters (instead of 6 and a blank character)", CATEGORY_HARDWARE_SETUP, ON_OFF_OPTIONS, ON_OFF_OPTIONS[0]);
+        use7CharactersSetting.addValueObserver (value -> {
+            this.use7Characters = "On".equals (value);
+            this.notifyObservers (USE_7_CHARACTERS);
+        });
+        this.isSettingActive.add (USE_7_CHARACTERS);
+
         // Activate at the end, so all settings are created
         profileSetting.addValueObserver (value -> {
             switch (value)
             {
                 case DEVICE_MACKIE_MCU_PRO:
+                    hasDisplay1Setting.set (ON_OFF_OPTIONS[1]);
+                    hasDisplay2Setting.set (ON_OFF_OPTIONS[0]);
+                    hasSegmentDisplaySetting.set (ON_OFF_OPTIONS[1]);
+                    hasAssignmentDisplaySetting.set (ON_OFF_OPTIONS[1]);
+                    this.hasMotorFadersSetting.set (ON_OFF_OPTIONS[1]);
+                    hasOnly1FaderSetting.set (ON_OFF_OPTIONS[0]);
+                    this.displayTrackNamesSetting.set (ON_OFF_OPTIONS[1]);
+                    useVertZoomForModesSetting.set (ON_OFF_OPTIONS[0]);
+                    this.useFadersAsKnobsSetting.set (ON_OFF_OPTIONS[0]);
+                    this.setVUMetersEnabled (true);
+                    masterVuMeterSetting.set (ON_OFF_OPTIONS[0]);
+                    displayColorsSetting.set (ON_OFF_OPTIONS[0]);
+                    use7CharactersSetting.set (ON_OFF_OPTIONS[0]);
+                    break;
+
                 case DEVICE_BEHRINGER_X_TOUCH:
                     hasDisplay1Setting.set (ON_OFF_OPTIONS[1]);
                     hasDisplay2Setting.set (ON_OFF_OPTIONS[0]);
@@ -364,6 +399,8 @@ public class MCUConfiguration extends AbstractConfiguration
                     this.useFadersAsKnobsSetting.set (ON_OFF_OPTIONS[0]);
                     this.setVUMetersEnabled (true);
                     masterVuMeterSetting.set (ON_OFF_OPTIONS[0]);
+                    displayColorsSetting.set (ON_OFF_OPTIONS[1]);
+                    use7CharactersSetting.set (ON_OFF_OPTIONS[1]);
                     break;
 
                 case DEVICE_BEHRINGER_X_TOUCH_ONE:
@@ -378,6 +415,8 @@ public class MCUConfiguration extends AbstractConfiguration
                     this.useFadersAsKnobsSetting.set (ON_OFF_OPTIONS[0]);
                     this.setVUMetersEnabled (true);
                     masterVuMeterSetting.set (ON_OFF_OPTIONS[0]);
+                    displayColorsSetting.set (ON_OFF_OPTIONS[0]);
+                    use7CharactersSetting.set (ON_OFF_OPTIONS[1]);
                     break;
 
                 case DEVICE_ICON_PLATFORM_M:
@@ -392,6 +431,8 @@ public class MCUConfiguration extends AbstractConfiguration
                     this.useFadersAsKnobsSetting.set (ON_OFF_OPTIONS[0]);
                     this.setVUMetersEnabled (false);
                     masterVuMeterSetting.set (ON_OFF_OPTIONS[0]);
+                    displayColorsSetting.set (ON_OFF_OPTIONS[0]);
+                    use7CharactersSetting.set (ON_OFF_OPTIONS[0]);
                     break;
 
                 case DEVICE_ICON_QCON_PRO_X:
@@ -406,6 +447,8 @@ public class MCUConfiguration extends AbstractConfiguration
                     this.useFadersAsKnobsSetting.set (ON_OFF_OPTIONS[0]);
                     this.setVUMetersEnabled (true);
                     masterVuMeterSetting.set (ON_OFF_OPTIONS[1]);
+                    displayColorsSetting.set (ON_OFF_OPTIONS[0]);
+                    use7CharactersSetting.set (ON_OFF_OPTIONS[0]);
                     break;
 
                 case DEVICE_ZOOM_R16:
@@ -420,6 +463,8 @@ public class MCUConfiguration extends AbstractConfiguration
                     this.useFadersAsKnobsSetting.set (ON_OFF_OPTIONS[1]);
                     this.setVUMetersEnabled (false);
                     masterVuMeterSetting.set (ON_OFF_OPTIONS[0]);
+                    displayColorsSetting.set (ON_OFF_OPTIONS[0]);
+                    use7CharactersSetting.set (ON_OFF_OPTIONS[0]);
                     break;
 
                 default:
@@ -698,13 +743,37 @@ public class MCUConfiguration extends AbstractConfiguration
 
 
     /**
-     * Returns true if master VU should be enabled.
+     * Returns true if master VU (icon QCon Pro X) should be enabled.
      *
      * @return True if master VU should be enabled
      */
     public boolean hasMasterVU ()
     {
         return this.masterVuMeter;
+    }
+
+
+    /**
+     * Returns true if display back-light colors (X-Touch) should be enabled.
+     *
+     * @return True if display back-light colors should be enabled
+     */
+    public boolean hasDisplayColors ()
+    {
+        return this.displayColors;
+    }
+
+
+    /**
+     * Returns true if 7 characters should be used in the display instead of 6 characters and a
+     * blank character. Makes sense for devices which do not have one large display but 8 separate
+     * ones which have a space in between already.
+     *
+     * @return True if enabled
+     */
+    public boolean shouldUse7Characters ()
+    {
+        return this.use7Characters;
     }
 
 

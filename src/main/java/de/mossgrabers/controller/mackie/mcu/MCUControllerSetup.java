@@ -347,6 +347,15 @@ public class MCUControllerSetup extends AbstractControllerSetup<MCUControlSurfac
             }
         });
 
+        this.configuration.addSettingObserver (MCUConfiguration.USE_7_CHARACTERS, () -> {
+            final boolean shouldUse7Characters = this.configuration.shouldUse7Characters ();
+            for (int index = 0; index < this.numMCUDevices; index++)
+            {
+                final MCUControlSurface surface = this.getSurface (index);
+                ((MCUDisplay) surface.getTextDisplay ()).insertSpace (!shouldUse7Characters);
+            }
+        });
+
         this.configuration.registerDeactivatedItemsHandler (this.model);
 
         this.activateBrowserObserver (Modes.BROWSER);

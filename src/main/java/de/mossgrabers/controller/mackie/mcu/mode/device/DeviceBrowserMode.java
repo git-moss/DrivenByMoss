@@ -6,6 +6,7 @@ package de.mossgrabers.controller.mackie.mcu.mode.device;
 
 import de.mossgrabers.controller.mackie.mcu.controller.MCUControlSurface;
 import de.mossgrabers.controller.mackie.mcu.mode.BaseMode;
+import de.mossgrabers.framework.controller.color.ColorEx;
 import de.mossgrabers.framework.controller.display.ITextDisplay;
 import de.mossgrabers.framework.daw.IBrowser;
 import de.mossgrabers.framework.daw.IModel;
@@ -25,12 +26,24 @@ import java.util.Optional;
  */
 public class DeviceBrowserMode extends BaseMode<IItem>
 {
-    private static final int SELECTION_OFF    = 0;
-    private static final int SELECTION_PRESET = 1;
-    private static final int SELECTION_FILTER = 2;
+    private static final int        SELECTION_OFF    = 0;
+    private static final int        SELECTION_PRESET = 1;
+    private static final int        SELECTION_FILTER = 2;
 
-    private int              selectionMode    = SELECTION_OFF;
-    private int              filterColumn     = -1;
+    private static final ColorEx [] COLORS           =
+    {
+        ColorEx.SKY_BLUE,
+        ColorEx.SKY_BLUE,
+        ColorEx.SKY_BLUE,
+        ColorEx.SKY_BLUE,
+        ColorEx.SKY_BLUE,
+        ColorEx.SKY_BLUE,
+        ColorEx.SKY_BLUE,
+        ColorEx.SKY_BLUE
+    };
+
+    private int                     selectionMode    = SELECTION_OFF;
+    private int                     filterColumn     = -1;
 
 
     /**
@@ -76,6 +89,8 @@ public class DeviceBrowserMode extends BaseMode<IItem>
     @Override
     public void updateDisplay ()
     {
+        this.surface.sendDisplayColor (COLORS);
+
         final IBrowser browser = this.model.getBrowser ();
         final ITextDisplay d = this.surface.getTextDisplay ();
         final boolean isPresetSession = browser.isPresetContentType ();
@@ -88,6 +103,7 @@ public class DeviceBrowserMode extends BaseMode<IItem>
 
         d.clear ();
 
+        final int textLength = this.getTextLength ();
         switch (this.selectionMode)
         {
             case SELECTION_OFF:
@@ -101,7 +117,7 @@ public class DeviceBrowserMode extends BaseMode<IItem>
                         final IBrowserColumn browserColumn = column.get ();
                         if (browserColumn.doesCursorExist ())
                             value = browserColumn.getCursorName ().equals (browserColumn.getWildcard ()) ? "-" : browserColumn.getCursorName ();
-                        name = StringUtils.shortenAndFixASCII (browserColumn.getName (), 6);
+                        name = StringUtils.shortenAndFixASCII (browserColumn.getName (), textLength);
                     }
                     d.setCell (0, i, name).setCell (1, i, value);
                 }

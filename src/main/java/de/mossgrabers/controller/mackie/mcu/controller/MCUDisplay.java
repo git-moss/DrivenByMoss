@@ -33,6 +33,7 @@ public class MCUDisplay extends AbstractTextDisplay
 
     private final LatestTaskExecutor [] executors                      = new LatestTaskExecutor [4];
     private boolean                     isShutdown                     = false;
+    private boolean                     insertSpace                    = true;
 
 
     /**
@@ -58,13 +59,29 @@ public class MCUDisplay extends AbstractTextDisplay
     }
 
 
+    /**
+     * If enabled, shortens the cell content by 1 and adds a blank character instead.
+     *
+     * @param enable
+     */
+    public void insertSpace (final boolean enable)
+    {
+        this.insertSpace = enable;
+    }
+
+
     /** {@inheritDoc} */
     @Override
     public ITextDisplay setCell (final int row, final int column, final String value)
     {
         try
         {
-            this.cells[row * this.noOfCells + column] = StringUtils.pad (value, this.charactersOfCell - 1) + " ";
+            final String content;
+            if (this.insertSpace)
+                content = StringUtils.pad (value, this.charactersOfCell - 1) + " ";
+            else
+                content = StringUtils.pad (value, this.charactersOfCell);
+            this.cells[row * this.noOfCells + column] = content;
         }
         catch (final ArrayIndexOutOfBoundsException ex)
         {

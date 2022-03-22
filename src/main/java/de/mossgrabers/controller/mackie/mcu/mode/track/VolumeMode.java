@@ -5,6 +5,7 @@
 package de.mossgrabers.controller.mackie.mcu.mode.track;
 
 import de.mossgrabers.controller.mackie.mcu.controller.MCUControlSurface;
+import de.mossgrabers.framework.controller.color.ColorEx;
 import de.mossgrabers.framework.controller.display.ITextDisplay;
 import de.mossgrabers.framework.daw.IModel;
 import de.mossgrabers.framework.daw.data.ITrack;
@@ -71,12 +72,17 @@ public class VolumeMode extends AbstractTrackMode
         final ITextDisplay d = this.surface.getTextDisplay ();
         final ITrackBank tb = this.getTrackBank ();
         final int extenderOffset = this.getExtenderOffset ();
+        final ColorEx [] colors = new ColorEx [8];
+        final int textLength = this.getTextLength ();
         for (int i = 0; i < 8; i++)
         {
             final ITrack t = tb.getItem (extenderOffset + i);
-            d.setCell (1, i, t.getVolumeStr (6));
+            d.setCell (1, i, t.getVolumeStr (textLength));
+            colors[i] = t.getColor ();
         }
         d.done (1);
+
+        this.surface.sendDisplayColor (colors);
     }
 
 

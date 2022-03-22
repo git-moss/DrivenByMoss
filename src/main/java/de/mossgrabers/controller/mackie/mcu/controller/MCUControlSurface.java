@@ -7,6 +7,7 @@ package de.mossgrabers.controller.mackie.mcu.controller;
 import de.mossgrabers.controller.mackie.mcu.MCUConfiguration;
 import de.mossgrabers.framework.controller.AbstractControlSurface;
 import de.mossgrabers.framework.controller.ButtonID;
+import de.mossgrabers.framework.controller.color.ColorEx;
 import de.mossgrabers.framework.controller.color.ColorManager;
 import de.mossgrabers.framework.daw.IHost;
 import de.mossgrabers.framework.daw.midi.IMidiInput;
@@ -188,6 +189,7 @@ public class MCUControlSurface extends AbstractControlSurface<MCUConfiguration>
 
     private int                           activeVuMode             = VUMODE_LED;
     private final int []                  knobValues               = new int [8];
+    private byte []                       currentDisplayColors     = new byte [8];
 
     private final List<MCUControlSurface> surfaces;
     private final int                     extenderOffset;
@@ -215,6 +217,7 @@ public class MCUControlSurface extends AbstractControlSurface<MCUConfiguration>
         this.isMainDevice = isMainDevice;
 
         Arrays.fill (this.knobValues, -1);
+        Arrays.fill (this.currentDisplayColors, (byte) -1);
     }
 
 
@@ -231,6 +234,11 @@ public class MCUControlSurface extends AbstractControlSurface<MCUConfiguration>
         output.sendChannelAftertouch (1, 0, 0);
         output.sendChannelAftertouch (1, 0x10, 0);
         output.sendPitchbend (8, 0, 0);
+
+        final ColorEx [] colors = new ColorEx [8];
+        for (int i = 0; i < 8; i++)
+            colors[i] = ColorEx.WHITE;
+        sendDisplayColor (colors);
 
         super.internalShutdown ();
     }
@@ -305,9 +313,10 @@ public class MCUControlSurface extends AbstractControlSurface<MCUConfiguration>
             else
                 this.activeVuMode = VUMODE_LED;
         }
-        final IMidiOutput out = this.getMidiOutput ();
+
         // The MCU changes the VU-meter mode when receiving the corresponding system exclusive
         // message
+        final IMidiOutput out = this.getMidiOutput ();
         switch (this.activeVuMode)
         {
             case VUMODE_LED:
@@ -318,12 +327,14 @@ public class MCUControlSurface extends AbstractControlSurface<MCUConfiguration>
                     out.sendSysex (SYSEX_HDR + "20 0" + i + " 01 F7");
                 }
                 break;
+
             case VUMODE_LED_AND_LCD:
                 for (int i = 0; i < 8; i++)
                 {
                     out.sendChannelAftertouch (0 + (i << 4), 0);
                     out.sendSysex (SYSEX_HDR + "20 0" + i + " 03 F7");
                 }
+
                 break;
             case VUMODE_LCD:
                 for (int i = 0; i < 8; i++)
@@ -332,6 +343,7 @@ public class MCUControlSurface extends AbstractControlSurface<MCUConfiguration>
                     out.sendSysex (SYSEX_HDR + "20 0" + i + " 06 F7");
                 }
                 break;
+
             case VUMODE_OFF:
                 for (int i = 0; i < 8; i++)
                 {
@@ -339,10 +351,78 @@ public class MCUControlSurface extends AbstractControlSurface<MCUConfiguration>
                     out.sendSysex (SYSEX_HDR + "20 0" + i + " 00 F7");
                 }
                 break;
+
             default:
                 // Not used
                 break;
         }
+    }
+
+
+    /**
+     * Sets the display back-light colors of a X-Touch (Extender).
+     *
+     * @param colors The colors to set, must be exactly 8
+     */
+    public void sendDisplayColor (final ColorEx [] colors)
+    {
+        if (!this.configuration.hasDisplayColors ())
+            return;
+
+        final byte [] displayColors = new byte [8];
+        for (int i = 0; i < 8; i++)
+            displayColors[i] = toIndex (colors[i] == null ? ColorEx.BLACK : colors[i]);
+
+        if (Arrays.compare (displayColors, this.currentDisplayColors) == 0)
+            return;
+
+        this.currentDisplayColors = displayColors;
+
+        final byte [] sysexMessage = new byte [15];
+        sysexMessage[0] = (byte) 0xF0;
+        sysexMessage[1] = 0x00;
+        sysexMessage[2] = 0x00;
+        sysexMessage[3] = 0x66;
+        sysexMessage[4] = this.isMainDevice ? (byte) 0x14 : (byte) 0x15;
+        sysexMessage[5] = 0x72;
+        for (int i = 0; i < 8; i++)
+            sysexMessage[6 + i] = displayColors[i];
+        sysexMessage[14] = (byte) 0xF7;
+        this.getMidiOutput ().sendSysex (sysexMessage);
+    }
+
+
+    /**
+     * Convert a RGB color to a color index (0-7).
+     * <ul>
+     * <li>0 - black : 0, 0, 0
+     * <li>1 - blue : 0, 0, 1
+     * <li>2 - green : 0, 1, 0
+     * <li>3 - cyan : 0, 1, 1
+     * <li>4 - red : 1, 0, 0
+     * <li>5 - pink : 1, 0, 1
+     * <li>6 - yellow: 1, 1, 0
+     * <li>7 - white : 1, 1, 1
+     * </ul>
+     *
+     * @param color The color to transform
+     * @return The color index
+     */
+    private static byte toIndex (final ColorEx color)
+    {
+        double red = color.getRed ();
+        double green = color.getGreen ();
+        double blue = color.getBlue ();
+        if (red < 0.5 && green < 0.5 && blue < 0.5 && (red > 0 || green > 0 || blue > 0))
+        {
+            // Use white for dim colors
+            return 7;
+        }
+
+        final int hasRed = red >= 0.5 ? 1 : 0;
+        final int hasGreen = green >= 0.5 ? 1 : 0;
+        final int hasBlue = blue >= 0.5 ? 1 : 0;
+        return (byte) (hasBlue * 4 + hasGreen * 2 + hasRed);
     }
 
 

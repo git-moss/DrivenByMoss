@@ -6,6 +6,7 @@ package de.mossgrabers.controller.mackie.mcu.mode.device;
 
 import de.mossgrabers.controller.mackie.mcu.controller.MCUControlSurface;
 import de.mossgrabers.controller.mackie.mcu.mode.BaseMode;
+import de.mossgrabers.framework.controller.color.ColorEx;
 import de.mossgrabers.framework.controller.display.ITextDisplay;
 import de.mossgrabers.framework.daw.IModel;
 import de.mossgrabers.framework.daw.data.IEqualizerDevice;
@@ -28,7 +29,19 @@ import java.util.Optional;
  */
 public class DeviceParamsMode extends BaseMode<IParameter>
 {
-    private final ISpecificDevice device;
+    private final ISpecificDevice   device;
+
+    private static final ColorEx [] COLORS =
+    {
+        ColorEx.SKY_BLUE,
+        ColorEx.SKY_BLUE,
+        ColorEx.SKY_BLUE,
+        ColorEx.SKY_BLUE,
+        ColorEx.SKY_BLUE,
+        ColorEx.SKY_BLUE,
+        ColorEx.SKY_BLUE,
+        ColorEx.SKY_BLUE
+    };
 
 
     /**
@@ -122,6 +135,8 @@ public class DeviceParamsMode extends BaseMode<IParameter>
 
         final ITextDisplay d = this.surface.getTextDisplay ().clear ();
 
+        this.surface.sendDisplayColor (COLORS);
+
         if (!this.device.doesExist ())
         {
             d.notify ("Please select a device...    ");
@@ -131,10 +146,11 @@ public class DeviceParamsMode extends BaseMode<IParameter>
         // Row 1 & 2
         final int extenderOffset = this.surface.getExtenderOffset ();
         final IParameterBank parameterBank = this.device.getParameterBank ();
+        final int textLength = this.getTextLength ();
         for (int i = 0; i < 8; i++)
         {
             final IParameter param = parameterBank.getItem (extenderOffset + i);
-            d.setCell (0, i, param.doesExist () ? StringUtils.shortenAndFixASCII (param.getName (6), 6) : "").setCell (1, i, StringUtils.shortenAndFixASCII (param.getDisplayedValue (6), 6));
+            d.setCell (0, i, param.doesExist () ? StringUtils.shortenAndFixASCII (param.getName (6), 6) : "").setCell (1, i, StringUtils.shortenAndFixASCII (param.getDisplayedValue (textLength), textLength));
         }
 
         d.allDone ();

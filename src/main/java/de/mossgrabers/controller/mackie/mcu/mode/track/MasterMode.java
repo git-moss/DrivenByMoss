@@ -6,6 +6,7 @@ package de.mossgrabers.controller.mackie.mcu.mode.track;
 
 import de.mossgrabers.controller.mackie.mcu.controller.MCUControlSurface;
 import de.mossgrabers.controller.mackie.mcu.mode.BaseMode;
+import de.mossgrabers.framework.controller.color.ColorEx;
 import de.mossgrabers.framework.controller.display.ITextDisplay;
 import de.mossgrabers.framework.daw.IApplication;
 import de.mossgrabers.framework.daw.IModel;
@@ -95,9 +96,7 @@ public class MasterMode extends BaseMode<ITrack>
                 this.model.getMasterTrack ().resetPan ();
                 break;
 
-            case 2:
-            case 3:
-            case 4:
+            case 2, 3, 4:
                 this.model.getApplication ().toggleEngineActive ();
                 break;
 
@@ -129,10 +128,22 @@ public class MasterMode extends BaseMode<ITrack>
         final String projectName = StringUtils.fixASCII (this.model.getProject ().getName ());
         final IMasterTrack master = this.model.getMasterTrack ();
 
+        final ColorEx [] colors = new ColorEx [8];
+        colors[0] = master.getColor ();
+        colors[1] = master.getColor ();
+        colors[2] = ColorEx.SKY_BLUE;
+        colors[3] = ColorEx.SKY_BLUE;
+        colors[4] = ColorEx.SKY_BLUE;
+        colors[5] = ColorEx.WHITE;
+        colors[6] = ColorEx.WHITE;
+        colors[7] = ColorEx.WHITE;
+        this.surface.sendDisplayColor (colors);
+
+        final int textLength = this.getTextLength ();
         final IApplication application = this.model.getApplication ();
         d.setCell (0, 0, "Volume").setCell (0, 1, "Pan").setBlock (0, 1, "Audio Engine:").setCell (0, 4, application.isEngineActive () ? " On" : " Off");
         d.setCell (0, 5, "Prjct:").setBlock (0, 3, projectName);
-        d.setCell (1, 0, master.getVolumeStr (6)).setCell (1, 1, master.getPanStr (6)).setBlock (1, 1, application.isEngineActive () ? "  Turn off" : "  Turn on");
+        d.setCell (1, 0, master.getVolumeStr (textLength)).setCell (1, 1, master.getPanStr (textLength)).setBlock (1, 1, application.isEngineActive () ? "  Turn off" : "  Turn on");
         d.setCell (1, 6, " <<").setCell (1, 7, " >>").allDone ();
     }
 

@@ -6,6 +6,7 @@ package de.mossgrabers.controller.mackie.mcu.mode.device;
 
 import de.mossgrabers.controller.mackie.mcu.controller.MCUControlSurface;
 import de.mossgrabers.controller.mackie.mcu.mode.BaseMode;
+import de.mossgrabers.framework.controller.color.ColorEx;
 import de.mossgrabers.framework.controller.display.ITextDisplay;
 import de.mossgrabers.framework.daw.IModel;
 import de.mossgrabers.framework.daw.data.IParameter;
@@ -22,6 +23,19 @@ import de.mossgrabers.framework.utils.StringUtils;
  */
 public class UserMode extends BaseMode<IParameter>
 {
+    private static final ColorEx [] COLORS =
+    {
+        ColorEx.WHITE,
+        ColorEx.WHITE,
+        ColorEx.WHITE,
+        ColorEx.WHITE,
+        ColorEx.WHITE,
+        ColorEx.WHITE,
+        ColorEx.WHITE,
+        ColorEx.WHITE
+    };
+
+
     /**
      * Constructor.
      *
@@ -66,13 +80,16 @@ public class UserMode extends BaseMode<IParameter>
 
         final ITextDisplay d = this.surface.getTextDisplay ().clear ();
 
+        this.surface.sendDisplayColor (COLORS);
+
         // Row 1 & 2
         final int extenderOffset = this.surface.getExtenderOffset ();
         final IParameterBank parameterBank = this.model.getUserParameterBank ();
+        final int textLength = this.getTextLength ();
         for (int i = 0; i < 8; i++)
         {
             final IParameter param = parameterBank.getItem (extenderOffset + i);
-            d.setCell (0, i, param.doesExist () ? StringUtils.shortenAndFixASCII (param.getName (6), 6) : "").setCell (1, i, StringUtils.shortenAndFixASCII (param.getDisplayedValue (6), 6));
+            d.setCell (0, i, param.doesExist () ? StringUtils.shortenAndFixASCII (param.getName (textLength), textLength) : "").setCell (1, i, StringUtils.shortenAndFixASCII (param.getDisplayedValue (textLength), textLength));
         }
 
         d.allDone ();

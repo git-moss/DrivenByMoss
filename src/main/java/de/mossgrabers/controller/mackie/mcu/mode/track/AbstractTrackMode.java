@@ -46,7 +46,7 @@ public abstract class AbstractTrackMode extends BaseMode<ITrack>
         for (int i = 0; i < 8; i++)
         {
             final ITrack t = tb.getItem (extenderOffset + i);
-            d.setCell (0, i, StringUtils.shortenAndFixASCII (t.getName (), 6));
+            d.setCell (0, i, StringUtils.shortenAndFixASCII (t.getName (), this.getTextLength ()));
         }
         d.done (0);
 

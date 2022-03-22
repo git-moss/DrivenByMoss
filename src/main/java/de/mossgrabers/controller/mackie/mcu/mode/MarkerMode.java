@@ -5,6 +5,7 @@
 package de.mossgrabers.controller.mackie.mcu.mode;
 
 import de.mossgrabers.controller.mackie.mcu.controller.MCUControlSurface;
+import de.mossgrabers.framework.controller.color.ColorEx;
 import de.mossgrabers.framework.controller.display.ITextDisplay;
 import de.mossgrabers.framework.daw.IModel;
 import de.mossgrabers.framework.daw.data.IMarker;
@@ -45,17 +46,22 @@ public class MarkerMode extends BaseMode<IMarker>
     {
         final ITextDisplay d = this.surface.getTextDisplay ().clear ();
 
+        final ColorEx [] colors = new ColorEx [8];
         final IMarkerBank markerBank = this.model.getMarkerBank ();
         final int extenderOffset = this.surface.getExtenderOffset ();
+        final int textLength = this.getTextLength ();
         for (int i = 0; i < 8; i++)
         {
             final IMarker marker = markerBank.getItem (extenderOffset + i);
             if (!marker.doesExist ())
                 continue;
-            final String name = StringUtils.shortenAndFixASCII (marker.getName (), 6);
+            final String name = StringUtils.shortenAndFixASCII (marker.getName (), textLength);
             d.setCell (0, i, name);
+            colors[i] = marker.getColor ();
         }
         d.allDone ();
+
+        this.surface.sendDisplayColor (colors);
     }
 
 

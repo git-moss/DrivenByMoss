@@ -5,6 +5,7 @@
 package de.mossgrabers.controller.mackie.mcu.mode.track;
 
 import de.mossgrabers.controller.mackie.mcu.controller.MCUControlSurface;
+import de.mossgrabers.framework.controller.color.ColorEx;
 import de.mossgrabers.framework.controller.display.ITextDisplay;
 import de.mossgrabers.framework.daw.IModel;
 import de.mossgrabers.framework.daw.data.ITrack;
@@ -86,6 +87,8 @@ public class SendMode extends AbstractTrackMode
         if (!this.drawTrackHeader ())
             return;
 
+        final ColorEx [] colors = new ColorEx [8];
+
         final ITextDisplay d = this.surface.getTextDisplay ();
         final ITrackBank tb = this.getTrackBank ();
         if (!tb.canEditSend (this.sendIndex))
@@ -94,14 +97,17 @@ public class SendMode extends AbstractTrackMode
             return;
         }
         final int extenderOffset = this.getExtenderOffset ();
+        final int textLength = this.getTextLength ();
         for (int i = 0; i < 8; i++)
         {
             final ITrack t = tb.getItem (extenderOffset + i);
             final ISendBank sendBank = t.getSendBank ();
-            d.setCell (1, i, this.sendIndex < sendBank.getPageSize () ? sendBank.getItem (this.sendIndex).getDisplayedValue (6) : "");
+            d.setCell (1, i, this.sendIndex < sendBank.getPageSize () ? sendBank.getItem (this.sendIndex).getDisplayedValue (textLength) : "");
+            colors[i] = t.getColor ();
         }
         d.done (1);
 
+        this.surface.sendDisplayColor (colors);
     }
 
 
@@ -124,13 +130,14 @@ public class SendMode extends AbstractTrackMode
         final ITextDisplay d = this.surface.getTextDisplay ();
         final ITrackBank tb = this.getTrackBank ();
         final int extenderOffset = this.getExtenderOffset ();
+        final int textLength = this.getTextLength ();
         for (int i = 0; i < 8; i++)
         {
             final ITrack t = tb.getItem (extenderOffset + i);
             if (t.doesExist ())
             {
                 final ISendBank sendBank = t.getSendBank ();
-                d.setCell (0, i, StringUtils.shortenAndFixASCII (this.sendIndex < sendBank.getPageSize () ? sendBank.getItem (this.sendIndex).getName (6) : "", 6));
+                d.setCell (0, i, StringUtils.shortenAndFixASCII (this.sendIndex < sendBank.getPageSize () ? sendBank.getItem (this.sendIndex).getName (textLength) : "", textLength));
             }
             else
                 d.clearCell (0, i);

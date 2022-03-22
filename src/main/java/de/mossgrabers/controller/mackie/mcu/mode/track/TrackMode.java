@@ -5,6 +5,7 @@
 package de.mossgrabers.controller.mackie.mcu.mode.track;
 
 import de.mossgrabers.controller.mackie.mcu.controller.MCUControlSurface;
+import de.mossgrabers.framework.controller.color.ColorEx;
 import de.mossgrabers.framework.controller.display.ITextDisplay;
 import de.mossgrabers.framework.daw.IModel;
 import de.mossgrabers.framework.daw.data.ISend;
@@ -87,16 +88,21 @@ public class TrackMode extends AbstractTrackMode
             return;
         }
 
-        final boolean displayTrackNames = this.surface.getConfiguration ().isDisplayTrackNames ();
-        if (!displayTrackNames)
-        {
-            d.setCell (0, 0, "Volume");
-            d.setCell (0, 1, "Pan");
-        }
-
         final ITrack t = selectedTrack.get ();
-        d.setCell (1, 0, t.getVolumeStr (6));
-        d.setCell (1, 1, t.getPanStr (6));
+
+        final int textLength = this.getTextLength ();
+
+        final boolean displayTrackNames = this.surface.getConfiguration ().isDisplayTrackNames ();
+        d.setCell (0, 0, displayTrackNames ? StringUtils.shortenAndFixASCII (t.getName (), textLength) : "Volume");
+        d.setCell (0, 1, "Pan");
+
+        final ColorEx [] colors = new ColorEx [8];
+
+        d.setCell (1, 0, t.getVolumeStr (textLength));
+        d.setCell (1, 1, t.getPanStr (textLength));
+
+        colors[0] = t.getColor ();
+        colors[1] = t.getColor ();
 
         final int sendStart = 2;
         final int sendCount = 6;
@@ -104,22 +110,26 @@ public class TrackMode extends AbstractTrackMode
         final ISendBank sendBank = t.getSendBank ();
         for (int i = 0; i < sendCount; i++)
         {
+            colors[sendStart + i] = ColorEx.BLACK;
+
             final int pos = sendStart + i;
             if (!isEffectTrackBankActive && i < sendBank.getItemCount ())
             {
                 final ISend send = sendBank.getItem (i);
                 if (send.doesExist ())
                 {
-                    if (!displayTrackNames)
-                        d.setCell (0, pos, StringUtils.fixASCII (send.getName ()));
-                    d.setCell (1, pos, send.getDisplayedValue (6));
+                    d.setCell (0, pos, StringUtils.fixASCII (send.getName (textLength)));
+                    d.setCell (1, pos, send.getDisplayedValue (textLength));
+
+                    colors[sendStart + i] = t.getColor ();
                 }
             }
         }
 
-        if (!displayTrackNames)
-            d.done (0);
+        d.done (0);
         d.done (1);
+
+        this.surface.sendDisplayColor (colors);
     }
 
 
