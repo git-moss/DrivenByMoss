@@ -93,14 +93,12 @@ public class NoteRepeatMode extends BaseMode<IItem>
         final IValueChanger valueChanger = this.model.getValueChanger ();
         switch (index)
         {
-            case 0:
-            case 1:
+            case 0, 1:
                 final int sel = Resolution.change (Resolution.getMatch (configuration.getNoteRepeatPeriod ().getValue ()), valueChanger.isIncrease (value));
                 configuration.setNoteRepeatPeriod (Resolution.values ()[sel]);
                 break;
 
-            case 2:
-            case 3:
+            case 2, 3:
                 if (this.host.supports (Capability.NOTE_REPEAT_LENGTH))
                 {
                     final int sel2 = Resolution.change (Resolution.getMatch (configuration.getNoteRepeatLength ().getValue ()), valueChanger.calcKnobChange (value) > 0);
@@ -134,7 +132,7 @@ public class NoteRepeatMode extends BaseMode<IItem>
     @Override
     public void onKnobTouch (final int index, final boolean isTouched)
     {
-        this.isKnobTouched[index] = isTouched;
+        this.setTouchedKnob (index, isTouched);
 
         if (isTouched && this.surface.isDeletePressed ())
         {
@@ -176,19 +174,22 @@ public class NoteRepeatMode extends BaseMode<IItem>
 
         switch (index)
         {
-            case 0:
-            case 1:
+            case 0, 1:
                 final int sel = Resolution.change (Resolution.getMatch (this.noteRepeat.getPeriod ()), index == 1);
                 configuration.setNoteRepeatPeriod (Resolution.values ()[sel]);
                 break;
 
-            case 2:
-            case 3:
+            case 2, 3:
                 if (this.host.supports (Capability.NOTE_REPEAT_LENGTH))
                 {
                     final int sel2 = Resolution.change (Resolution.getMatch (this.noteRepeat.getNoteLength ()), index == 3);
                     configuration.setNoteRepeatLength (Resolution.values ()[sel2]);
                 }
+                break;
+
+            case 4:
+                if (this.host.supports (Capability.NOTE_REPEAT_LATCH))
+                    this.noteRepeat.toggleLatchActive ();
                 break;
 
             case 5:
@@ -243,8 +244,7 @@ public class NoteRepeatMode extends BaseMode<IItem>
             switch (index)
             {
                 default:
-                case 0:
-                case 1:
+                case 0, 1:
                     return onColor;
                 case 2:
                     return this.host.supports (Capability.NOTE_REPEAT_LENGTH) ? onColor : offColor;
@@ -252,6 +252,8 @@ public class NoteRepeatMode extends BaseMode<IItem>
                     return this.host.supports (Capability.NOTE_REPEAT_LENGTH) ? onColor : offColor;
 
                 case 4:
+                    if (this.host.supports (Capability.NOTE_REPEAT_LATCH))
+                        return this.noteRepeat.isLatchActive () ? hiColor : onColor;
                     return offColor;
 
                 case 5:
@@ -309,6 +311,9 @@ public class NoteRepeatMode extends BaseMode<IItem>
             }
         }
 
+        if (this.host.supports (Capability.NOTE_REPEAT_LATCH))
+            display.setCell (3, 4, " Latch");
+
         final int upperBound = this.model.getValueChanger ().getUpperBound ();
         if (this.host.supports (Capability.NOTE_REPEAT_MODE))
         {
@@ -326,7 +331,7 @@ public class NoteRepeatMode extends BaseMode<IItem>
 
         if (this.host.supports (Capability.NOTE_REPEAT_OCTAVES))
         {
-            final String bottomMenu = this.host.supports (Capability.NOTE_REPEAT_IS_FREE_RUNNING) ? "Sync" : "";
+            final String bottomMenu = this.host.supports (Capability.NOTE_REPEAT_IS_FREE_RUNNING) ? "  Sync" : "";
             final int octaves = this.noteRepeat.getOctaves ();
             final int value = octaves * upperBound / 8;
             display.setCell (0, 6, "Octaves");
@@ -369,7 +374,10 @@ public class NoteRepeatMode extends BaseMode<IItem>
             display.addEmptyElement ();
         }
 
-        display.addEmptyElement ();
+        if (this.host.supports (Capability.NOTE_REPEAT_LATCH))
+            display.addOptionElement ("", "", false, "", "Latch", this.noteRepeat.isLatchActive (), false);
+        else
+            display.addEmptyElement ();
 
         final int upperBound = this.model.getValueChanger ().getUpperBound ();
         if (this.host.supports (Capability.NOTE_REPEAT_MODE))
@@ -381,7 +389,7 @@ public class NoteRepeatMode extends BaseMode<IItem>
             final List<ArpeggiatorMode> arpeggiatorModes = configuration.getArpeggiatorModes ();
             final int modeIndex = configuration.lookupArpeggiatorModeIndex (mode);
             final int value = modeIndex * upperBound / (arpeggiatorModes.size () - 1);
-            display.addParameterElementWithPlainMenu ("", false, bottomMenu, null, isBottomMenuEnabled, "Mode", value, StringUtils.optimizeName (mode.getName (), 8), this.isKnobTouched[5], -1);
+            display.addParameterElementWithPlainMenu ("", false, bottomMenu, null, isBottomMenuEnabled, "Mode", value, StringUtils.optimizeName (mode.getName (), 8), this.isKnobTouched (5), -1);
         }
         else
             display.addEmptyElement ();
@@ -392,7 +400,7 @@ public class NoteRepeatMode extends BaseMode<IItem>
             final boolean isBottomMenuEnabled = !this.noteRepeat.isFreeRunning ();
             final int octaves = this.noteRepeat.getOctaves ();
             final int value = octaves * upperBound / 8;
-            display.addParameterElementWithPlainMenu ("", false, bottomMenu, null, isBottomMenuEnabled, "Octaves", value, Integer.toString (octaves), this.isKnobTouched[6], -1);
+            display.addParameterElementWithPlainMenu ("", false, bottomMenu, null, isBottomMenuEnabled, "Octaves", value, Integer.toString (octaves), this.isKnobTouched (6), -1);
         }
         else
             display.addEmptyElement ();
@@ -403,7 +411,7 @@ public class NoteRepeatMode extends BaseMode<IItem>
             final IParameter shuffleParam = groove.getParameter (GrooveParameterID.SHUFFLE_AMOUNT);
             final IParameter enabledParam = groove.getParameter (GrooveParameterID.ENABLED);
             final int value = enabledParam.getValue ();
-            display.addParameterElementWithPlainMenu ("Groove " + enabledParam.getDisplayedValue (8), value != 0, "Shuffle", null, this.noteRepeat.isShuffle (), shuffleParam.getName (10), shuffleParam.getValue (), shuffleParam.getDisplayedValue (8), this.isKnobTouched[7], -1);
+            display.addParameterElementWithPlainMenu ("Groove " + enabledParam.getDisplayedValue (8), value != 0, "Shuffle", null, this.noteRepeat.isShuffle (), shuffleParam.getName (10), shuffleParam.getValue (), shuffleParam.getDisplayedValue (8), this.isKnobTouched (7), -1);
         }
         else
             display.addEmptyElement ();

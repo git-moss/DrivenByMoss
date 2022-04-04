@@ -48,7 +48,7 @@ public class UserMode extends BaseMode<IParameter>
     @Override
     public void onKnobTouch (final int index, final boolean isTouched)
     {
-        this.isKnobTouched[index] = isTouched;
+        this.setTouchedKnob (index, isTouched);
 
         final IParameter param = this.bank.getItem (index);
         if (isTouched && this.surface.isDeletePressed ())
@@ -157,7 +157,7 @@ public class UserMode extends BaseMode<IParameter>
             final String parameterName = exists ? param.getName (9) : "";
             final int parameterValue = valueChanger.toDisplayValue (exists ? param.getValue () : 0);
             final String parameterValueStr = exists ? param.getDisplayedValue (8) : "";
-            final boolean parameterIsActive = this.isKnobTouched[i];
+            final boolean parameterIsActive = this.isKnobTouched (i);
             final int parameterModulatedValue = valueChanger.toDisplayValue (exists ? param.getModulatedValue () : -1);
 
             display.addParameterElement ("", false, userPageNames[i], "USER", isBottomMenuOn ? ColorEx.WHITE : ColorEx.GRAY, isBottomMenuOn, parameterName, parameterValue, parameterValueStr, parameterIsActive, parameterModulatedValue);

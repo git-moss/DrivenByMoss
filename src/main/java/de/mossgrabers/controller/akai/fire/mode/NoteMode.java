@@ -114,10 +114,10 @@ public class NoteMode extends AbstractMode<FireControlSurface, FireConfiguration
     @Override
     public void onKnobTouch (final int index, final boolean isTouched)
     {
-        if (this.clip == null || this.isKnobTouched[index] == isTouched)
+        if (this.clip == null || this.isKnobTouched (index) == isTouched)
             return;
 
-        this.isKnobTouched[index] = isTouched;
+        this.setTouchedKnob (index, isTouched);
         if (isTouched)
         {
             this.clip.startEdit (this.notes);

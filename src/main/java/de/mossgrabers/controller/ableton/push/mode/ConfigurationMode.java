@@ -45,7 +45,7 @@ public class ConfigurationMode extends BaseMode<IItem>
     @Override
     public void onKnobTouch (final int index, final boolean isTouched)
     {
-        this.isKnobTouched[index] = isTouched;
+        this.setTouchedKnob (index, isTouched);
     }
 
 

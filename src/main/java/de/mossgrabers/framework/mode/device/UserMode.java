@@ -65,7 +65,7 @@ public class UserMode<S extends IControlSurface<C>, C extends Configuration> ext
     @Override
     public void onKnobTouch (final int index, final boolean isTouched)
     {
-        this.isKnobTouched[index] = isTouched;
+        this.setTouchedKnob (index, isTouched);
 
         final IParameter param = this.model.getUserParameterBank ().getItem (index);
         if (!param.doesExist ())

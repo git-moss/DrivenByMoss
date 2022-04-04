@@ -190,9 +190,10 @@ public class DeviceLayerDetailsMode extends BaseMode<ILayer>
         final IChannel channel = channelOpt.get ();
 
         final String layerName = channel.getName ();
-        display.setBlock (0, 0, "Layer: " + layerName);
-        if (layerName.length () > 10)
-            display.setBlock (0, 1, layerName.substring (10));
+        final String firstBlock = "Layer: " + layerName;
+        display.setBlock (0, 0, firstBlock);
+        if (layerName.length () > 17)
+            display.setBlock (0, 1, firstBlock.substring (17).trim ());
         display.setCell (2, 0, "Active").setCell (3, 0, channel.isActivated () ? "On" : "Off");
         display.setCell (2, 1, "");
         display.setCell (3, 1, "");

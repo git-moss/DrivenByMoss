@@ -742,7 +742,7 @@ public class NoteMode extends BaseMode<IItem> implements INoteMode
             final boolean isOneNote = size == 1;
 
             final String stepBottomMenu = isOneNote ? "Step: " + (step + 1) : "Notes: " + size;
-            display.addParameterElementWithPlainMenu (MENU[0], this.page == Page.NOTE, stepBottomMenu, null, false, "Length", -1, this.formatLength (stepInfo.getDuration ()), this.isKnobTouched[0], -1);
+            display.addParameterElementWithPlainMenu (MENU[0], this.page == Page.NOTE, stepBottomMenu, null, false, "Length", -1, this.formatLength (stepInfo.getDuration ()), this.isKnobTouched (0), -1);
             final boolean hasExpressions = this.host.supports (Capability.NOTE_EDIT_EXPRESSIONS);
 
             final String topMenu = hasExpressions ? MENU[1] : " ";
@@ -751,7 +751,7 @@ public class NoteMode extends BaseMode<IItem> implements INoteMode
             if (this.host.supports (Capability.NOTE_EDIT_MUTE))
             {
                 final int value = stepInfo.isMuted () ? valueChanger.getUpperBound () : 0;
-                display.addParameterElementWithPlainMenu (topMenu, isTopMenuOn, bottomMenu, null, false, "Is Muted?", value, stepInfo.isMuted () ? "Yes" : "No", this.isKnobTouched[1], value);
+                display.addParameterElementWithPlainMenu (topMenu, isTopMenuOn, bottomMenu, null, false, "Is Muted?", value, stepInfo.isMuted () ? "Yes" : "No", this.isKnobTouched (1), value);
             }
             else
                 display.addParameterElementWithPlainMenu (topMenu, isTopMenuOn, bottomMenu, null, false, null, -1, null, false, -1);
@@ -762,13 +762,13 @@ public class NoteMode extends BaseMode<IItem> implements INoteMode
             case NOTE:
                 final double noteVelocity = stepInfo.getVelocity ();
                 final int parameterValue = valueChanger.fromNormalizedValue (noteVelocity);
-                display.addParameterElementWithPlainMenu (this.host.supports (Capability.NOTE_EDIT_REPEAT) ? MENU[2] : " ", false, null, null, false, "Velocity", parameterValue, StringUtils.formatPercentage (noteVelocity), this.isKnobTouched[2], parameterValue);
+                display.addParameterElementWithPlainMenu (this.host.supports (Capability.NOTE_EDIT_REPEAT) ? MENU[2] : " ", false, null, null, false, "Velocity", parameterValue, StringUtils.formatPercentage (noteVelocity), this.isKnobTouched (2), parameterValue);
 
                 if (this.host.supports (Capability.NOTE_EDIT_VELOCITY_SPREAD))
                 {
                     final double noteVelocitySpread = stepInfo.getVelocitySpread ();
                     final int parameterSpreadValue = valueChanger.fromNormalizedValue (noteVelocitySpread);
-                    display.addParameterElementWithPlainMenu (MENU[3], false, null, null, false, "Vel-Spread", parameterSpreadValue, StringUtils.formatPercentage (noteVelocitySpread), this.isKnobTouched[3], parameterSpreadValue);
+                    display.addParameterElementWithPlainMenu (MENU[3], false, null, null, false, "Vel-Spread", parameterSpreadValue, StringUtils.formatPercentage (noteVelocitySpread), this.isKnobTouched (3), parameterSpreadValue);
                 }
                 else
                     display.addEmptyElement (true);
@@ -777,7 +777,7 @@ public class NoteMode extends BaseMode<IItem> implements INoteMode
                 {
                     final double noteReleaseVelocity = stepInfo.getReleaseVelocity ();
                     final int parameterReleaseValue = valueChanger.fromNormalizedValue (noteReleaseVelocity);
-                    display.addParameterElementWithPlainMenu (MENU[4], false, null, null, false, "R-Velocity", parameterReleaseValue, StringUtils.formatPercentage (noteReleaseVelocity), this.isKnobTouched[4], parameterReleaseValue);
+                    display.addParameterElementWithPlainMenu (MENU[4], false, null, null, false, "R-Velocity", parameterReleaseValue, StringUtils.formatPercentage (noteReleaseVelocity), this.isKnobTouched (4), parameterReleaseValue);
                 }
                 else
                     display.addEmptyElement (true);
@@ -786,7 +786,7 @@ public class NoteMode extends BaseMode<IItem> implements INoteMode
                 {
                     final double chance = stepInfo.getChance ();
                     final int chanceValue = valueChanger.fromNormalizedValue (chance);
-                    display.addParameterElementWithPlainMenu (MENU[5], false, stepInfo.isChanceEnabled () ? "On" : "Off", null, false, "Chance", chanceValue, StringUtils.formatPercentage (chance), this.isKnobTouched[5], chanceValue);
+                    display.addParameterElementWithPlainMenu (MENU[5], false, stepInfo.isChanceEnabled () ? "On" : "Off", null, false, "Chance", chanceValue, StringUtils.formatPercentage (chance), this.isKnobTouched (5), chanceValue);
                 }
                 else
                     display.addEmptyElement (true);
@@ -794,7 +794,7 @@ public class NoteMode extends BaseMode<IItem> implements INoteMode
                 if (this.host.supports (Capability.NOTE_EDIT_OCCURRENCE))
                 {
                     final NoteOccurrenceType occurrence = stepInfo.getOccurrence ();
-                    display.addParameterElementWithPlainMenu (MENU[6], false, stepInfo.isOccurrenceEnabled () ? "On" : "Off", null, false, "Occurrence", -1, StringUtils.optimizeName (occurrence.getName (), 9), this.isKnobTouched[6], -1);
+                    display.addParameterElementWithPlainMenu (MENU[6], false, stepInfo.isOccurrenceEnabled () ? "On" : "Off", null, false, "Occurrence", -1, StringUtils.optimizeName (occurrence.getName (), 9), this.isKnobTouched (6), -1);
                 }
                 else
                     display.addEmptyElement (true);
@@ -804,7 +804,7 @@ public class NoteMode extends BaseMode<IItem> implements INoteMode
                     final int recurrence = stepInfo.getRecurrenceLength ();
                     final String recurrenceStr = recurrence < 2 ? "Off" : Integer.toString (recurrence);
                     final int recurrenceVal = (recurrence - 1) * (this.model.getValueChanger ().getUpperBound () - 1) / 7;
-                    display.addParameterElementWithPlainMenu (MENU[7], false, stepInfo.isRecurrenceEnabled () ? "On" : "Off", null, false, "Recurrence", recurrenceVal, recurrenceStr, this.isKnobTouched[7], recurrenceVal);
+                    display.addParameterElementWithPlainMenu (MENU[7], false, stepInfo.isRecurrenceEnabled () ? "On" : "Off", null, false, "Recurrence", recurrenceVal, recurrenceStr, this.isKnobTouched (7), recurrenceVal);
                 }
                 else
                     display.addEmptyElement (true);
@@ -816,23 +816,23 @@ public class NoteMode extends BaseMode<IItem> implements INoteMode
 
                 final double noteGain = stepInfo.getGain ();
                 final int parameterGainValue = Math.min (1023, valueChanger.fromNormalizedValue (noteGain));
-                display.addParameterElementWithPlainMenu (MENU[3], false, null, null, false, "Gain", parameterGainValue, StringUtils.formatPercentage (noteGain), this.isKnobTouched[3], parameterGainValue);
+                display.addParameterElementWithPlainMenu (MENU[3], false, null, null, false, "Gain", parameterGainValue, StringUtils.formatPercentage (noteGain), this.isKnobTouched (3), parameterGainValue);
 
                 final double notePan = stepInfo.getPan ();
                 final int parameterPanValue = valueChanger.fromNormalizedValue ((notePan + 1.0) / 2.0);
-                display.addParameterElementWithPlainMenu (MENU[4], false, null, null, false, "Pan", parameterPanValue, StringUtils.formatPercentage (notePan), this.isKnobTouched[4], parameterPanValue);
+                display.addParameterElementWithPlainMenu (MENU[4], false, null, null, false, "Pan", parameterPanValue, StringUtils.formatPercentage (notePan), this.isKnobTouched (4), parameterPanValue);
 
                 final double noteTranspose = stepInfo.getTranspose ();
                 final int parameterTransposeValue = valueChanger.fromNormalizedValue ((noteTranspose + 24.0) / 48.0);
-                display.addParameterElementWithPlainMenu (MENU[5], false, null, null, false, "Pitch", parameterTransposeValue, String.format ("%.1f", Double.valueOf (noteTranspose)), this.isKnobTouched[5], parameterTransposeValue);
+                display.addParameterElementWithPlainMenu (MENU[5], false, null, null, false, "Pitch", parameterTransposeValue, String.format ("%.1f", Double.valueOf (noteTranspose)), this.isKnobTouched (5), parameterTransposeValue);
 
                 final double noteTimbre = stepInfo.getTimbre ();
                 final int parameterTimbreValue = valueChanger.fromNormalizedValue ((noteTimbre + 1.0) / 2.0);
-                display.addParameterElementWithPlainMenu (MENU[6], false, null, null, false, "Timbre", parameterTimbreValue, StringUtils.formatPercentage (noteTimbre), this.isKnobTouched[6], parameterTimbreValue);
+                display.addParameterElementWithPlainMenu (MENU[6], false, null, null, false, "Timbre", parameterTimbreValue, StringUtils.formatPercentage (noteTimbre), this.isKnobTouched (6), parameterTimbreValue);
 
                 final double notePressure = stepInfo.getPressure ();
                 final int parameterPressureValue = valueChanger.fromNormalizedValue (notePressure);
-                display.addParameterElementWithPlainMenu (MENU[7], this.page == Page.RECCURRENCE_PATTERN, null, null, false, "Pressure", parameterPressureValue, StringUtils.formatPercentage (notePressure), this.isKnobTouched[7], parameterPressureValue);
+                display.addParameterElementWithPlainMenu (MENU[7], this.page == Page.RECCURRENCE_PATTERN, null, null, false, "Pressure", parameterPressureValue, StringUtils.formatPercentage (notePressure), this.isKnobTouched (7), parameterPressureValue);
                 break;
 
             case REPEAT:
@@ -841,19 +841,19 @@ public class NoteMode extends BaseMode<IItem> implements INoteMode
                 final int repeatCount = stepInfo.getRepeatCount ();
                 final String repeatCountValue = stepInfo.getFormattedRepeatCount ();
                 final int rc = (repeatCount + 127) * (this.model.getValueChanger ().getUpperBound () - 1) / 254;
-                display.addParameterElementWithPlainMenu (MENU[3], false, stepInfo.isRepeatEnabled () ? "On" : "Off", null, false, "Count", rc, repeatCountValue, this.isKnobTouched[3], rc);
+                display.addParameterElementWithPlainMenu (MENU[3], false, stepInfo.isRepeatEnabled () ? "On" : "Off", null, false, "Count", rc, repeatCountValue, this.isKnobTouched (3), rc);
 
                 final double repeatCurve = stepInfo.getRepeatCurve ();
                 final int repeatCurveValue = valueChanger.fromNormalizedValue ((repeatCurve + 1.0) / 2.0);
-                display.addParameterElementWithPlainMenu (MENU[4], false, null, null, false, "Curve", repeatCurveValue, StringUtils.formatPercentage (repeatCurve), this.isKnobTouched[4], repeatCurveValue);
+                display.addParameterElementWithPlainMenu (MENU[4], false, null, null, false, "Curve", repeatCurveValue, StringUtils.formatPercentage (repeatCurve), this.isKnobTouched (4), repeatCurveValue);
 
                 final double repeatVelocityCurve = stepInfo.getRepeatVelocityCurve ();
                 final int repeatVelocityCurveValue = valueChanger.fromNormalizedValue ((repeatVelocityCurve + 1.0) / 2.0);
-                display.addParameterElementWithPlainMenu (MENU[5], false, null, null, false, "Vel. Curve", repeatVelocityCurveValue, StringUtils.formatPercentage (repeatVelocityCurve), this.isKnobTouched[5], repeatVelocityCurveValue);
+                display.addParameterElementWithPlainMenu (MENU[5], false, null, null, false, "Vel. Curve", repeatVelocityCurveValue, StringUtils.formatPercentage (repeatVelocityCurve), this.isKnobTouched (5), repeatVelocityCurveValue);
 
                 final double repeatVelocityEnd = stepInfo.getRepeatVelocityEnd ();
                 final int repeatVelocityEndValue = valueChanger.fromNormalizedValue ((repeatVelocityEnd + 1.0) / 2.0);
-                display.addParameterElementWithPlainMenu (MENU[6], false, null, null, false, "Vel. End", repeatVelocityEndValue, StringUtils.formatPercentage (repeatVelocityEnd), this.isKnobTouched[6], repeatVelocityEndValue);
+                display.addParameterElementWithPlainMenu (MENU[6], false, null, null, false, "Vel. End", repeatVelocityEndValue, StringUtils.formatPercentage (repeatVelocityEnd), this.isKnobTouched (6), repeatVelocityEndValue);
 
                 display.addParameterElementWithPlainMenu (MENU[7], false, null, null, false, null, -1, null, false, -1);
                 break;
@@ -876,7 +876,7 @@ public class NoteMode extends BaseMode<IItem> implements INoteMode
                         final int recurrence = stepInfo.getRecurrenceLength ();
                         final String recurrenceStr = recurrence < 2 ? "Off" : Integer.toString (recurrence);
                         final int recurrenceVal = (recurrence - 1) * (this.model.getValueChanger ().getUpperBound () - 1) / 7;
-                        display.addParameterElementWithPlainMenu (MENU[i], i == 7, label, color, false, "Recurrence", recurrenceVal, recurrenceStr, this.isKnobTouched[7], recurrenceVal);
+                        display.addParameterElementWithPlainMenu (MENU[i], i == 7, label, color, false, "Recurrence", recurrenceVal, recurrenceStr, this.isKnobTouched (7), recurrenceVal);
                     }
                     else
                         display.addParameterElementWithPlainMenu (MENU[i], i == 7, label, color, false, null, -1, null, false, -1);

@@ -4,6 +4,7 @@
 
 package de.mossgrabers.framework.featuregroup;
 
+import de.mossgrabers.framework.parameterprovider.IParameterProvider;
 import de.mossgrabers.framework.utils.ButtonEvent;
 
 import java.util.Optional;
@@ -61,11 +62,28 @@ public interface IMode extends IFeatureGroup
 
 
     /**
+     * Set the index of the touched knob.
+     *
+     * @param knobIndex The index
+     * @param isTouched True if touched otherwise false
+     */
+    void setTouchedKnob (int knobIndex, boolean isTouched);
+
+
+    /**
      * Get the index of the touched knob, if any.
      *
      * @return The index or -1 if none is touched
      */
     int getTouchedKnob ();
+
+
+    /**
+     * Get the index of the last touched knob, if any.
+     *
+     * @return The index or -1 if none was touched in this mode so far
+     */
+    int getLastTouchedKnob ();
 
 
     /**
@@ -177,4 +195,12 @@ public interface IMode extends IFeatureGroup
      * @return The formatted range
      */
     String formatPageRange (final String format);
+
+
+    /**
+     * Get the currently active parameter provider, depending on pressed buttons.
+     *
+     * @return The active parameter provider, might be null if none is set
+     */
+    IParameterProvider getParameterProvider ();
 }

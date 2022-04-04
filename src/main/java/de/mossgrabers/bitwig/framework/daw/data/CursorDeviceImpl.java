@@ -167,6 +167,32 @@ public class CursorDeviceImpl extends SpecificDeviceImpl implements ICursorDevic
 
     /** {@inheritDoc} */
     @Override
+    public void swapWithPrevious ()
+    {
+        final int index = this.getIndex ();
+        if (index == 0)
+            return;
+        final DeviceImpl prevDevice = (DeviceImpl) this.deviceBank.getItem (index - 1);
+        this.device.afterDeviceInsertionPoint ().moveDevices (prevDevice.device);
+        prevDevice.device.selectInEditor ();
+    }
+
+
+    /** {@inheritDoc} */
+    @Override
+    public void swapWithNext ()
+    {
+        final int index = this.getIndex ();
+        if (index == 7)
+            return;
+        final DeviceImpl nextDevice = (DeviceImpl) this.deviceBank.getItem (index + 1);
+        this.device.beforeDeviceInsertionPoint ().moveDevices (nextDevice.device);
+        nextDevice.device.selectInEditor ();
+    }
+
+
+    /** {@inheritDoc} */
+    @Override
     public String [] getSlotChains ()
     {
         return this.cursorDevice.slotNames ().get ();

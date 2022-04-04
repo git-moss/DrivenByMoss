@@ -623,7 +623,8 @@ public class Scales
 
 
     /**
-     * Sets the number of scale and semitone steps that the notes in the next rows are shifted (e.g. 4).
+     * Sets the number of scale and semitone steps that the notes in the next rows are shifted (e.g.
+     * 4).
      *
      * @param scaleShift The steps
      * @param semitoneShift The steps
@@ -645,6 +646,7 @@ public class Scales
     {
         return this.scaleShift;
     }
+
 
     /**
      * Get the number of semitones the notes in the next rows are shifted in chromatic mode

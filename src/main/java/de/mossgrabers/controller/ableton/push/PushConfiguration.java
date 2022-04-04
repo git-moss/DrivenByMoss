@@ -115,6 +115,8 @@ public class PushConfiguration extends AbstractConfiguration implements IGraphic
     public static final int         RIBBON_MODE_PB_CC               = 3;
     /** Use ribbon as volume fader. */
     public static final int         RIBBON_MODE_FADER               = 4;
+    /** Use ribbon to change the last touched parameter. */
+    public static final int         RIBBON_MODE_LAST_TOUCHED        = 5;
 
     /** Use ribbon not for note repeat settings. */
     public static final int         NOTE_REPEAT_OFF                 = 0;
@@ -132,7 +134,8 @@ public class PushConfiguration extends AbstractConfiguration implements IGraphic
         "CC",
         "CC/Pitch",
         "Pitch/CC",
-        "Fader"
+        "Fader",
+        "Last Touched"
     };
 
     private static final String []  RIBBON_NOTE_REPEAT_VALUES       =

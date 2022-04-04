@@ -9,9 +9,12 @@ import de.mossgrabers.controller.ableton.push.controller.PushControlSurface;
 import de.mossgrabers.framework.command.core.AbstractPitchbendCommand;
 import de.mossgrabers.framework.daw.IModel;
 import de.mossgrabers.framework.daw.constants.Resolution;
+import de.mossgrabers.framework.daw.data.IParameter;
 import de.mossgrabers.framework.daw.data.ITrack;
 import de.mossgrabers.framework.daw.midi.INoteRepeat;
 import de.mossgrabers.framework.daw.midi.MidiConstants;
+import de.mossgrabers.framework.featuregroup.IMode;
+import de.mossgrabers.framework.parameterprovider.IParameterProvider;
 import de.mossgrabers.framework.view.Views;
 
 
@@ -71,6 +74,19 @@ public class TouchstripCommand extends AbstractPitchbendCommand<PushControlSurfa
             return;
         }
 
+        this.handleRibbonMode (data1, data2, config);
+    }
+
+
+    /**
+     * Handle the ribbon mode action.
+     *
+     * @param data1 The pitchbend data1 value
+     * @param data2 The pitchbend data2 value
+     * @param config The configuration
+     */
+    protected void handleRibbonMode (final int data1, final int data2, final PushConfiguration config)
+    {
         switch (config.getRibbonMode ())
         {
             case PushConfiguration.RIBBON_MODE_PITCH:
@@ -108,6 +124,28 @@ public class TouchstripCommand extends AbstractPitchbendCommand<PushControlSurfa
 
             case PushConfiguration.RIBBON_MODE_FADER:
                 this.model.getCursorTrack ().setVolume (this.model.getValueChanger ().toDAWValue (data2));
+                return;
+
+            case PushConfiguration.RIBBON_MODE_LAST_TOUCHED:
+                final IMode activeMode = this.surface.getModeManager ().getActive ();
+                if (activeMode != null)
+                {
+                    final int touchedKnob = activeMode.getLastTouchedKnob ();
+                    if (touchedKnob < 0)
+                    {
+                        this.surface.getMidiOutput ().sendPitchbend (0, 0);
+                        return;
+                    }
+                    final IParameterProvider parameterProvider = activeMode.getParameterProvider ();
+                    if (parameterProvider == null)
+                    {
+                        this.surface.getMidiOutput ().sendPitchbend (0, 0);
+                        return;
+                    }
+                    final IParameter parameter = parameterProvider.get (touchedKnob);
+                    if (parameter != null && parameter.doesExist ())
+                        parameter.setValue (this.model.getValueChanger ().toDAWValue (data2));
+                }
                 return;
 
             default:
@@ -152,6 +190,30 @@ public class TouchstripCommand extends AbstractPitchbendCommand<PushControlSurfa
             case PushConfiguration.RIBBON_MODE_FADER:
                 final ITrack t = this.model.getCursorTrack ();
                 this.surface.setRibbonValue (this.model.getValueChanger ().toMidiValue (t.getVolume ()));
+                break;
+
+            case PushConfiguration.RIBBON_MODE_LAST_TOUCHED:
+                final IMode activeMode = this.surface.getModeManager ().getActive ();
+                if (activeMode == null)
+                {
+                    this.surface.setRibbonValue (0);
+                    return;
+                }
+                final int touchedKnob = activeMode.getLastTouchedKnob ();
+                if (touchedKnob < 0)
+                {
+                    this.surface.setRibbonValue (0);
+                    return;
+                }
+                final IParameterProvider parameterProvider = activeMode.getParameterProvider ();
+                if (parameterProvider == null)
+                {
+                    this.surface.setRibbonValue (0);
+                    return;
+                }
+                final IParameter parameter = parameterProvider.get (touchedKnob);
+                int v = parameter != null && parameter.doesExist () ? this.model.getValueChanger ().toMidiValue (parameter.getValue ()) : 0;
+                this.surface.setRibbonValue (v);
                 break;
 
             default:

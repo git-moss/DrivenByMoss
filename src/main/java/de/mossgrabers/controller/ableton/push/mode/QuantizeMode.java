@@ -127,7 +127,7 @@ public class QuantizeMode extends BaseMode<IItem>
         if (this.model.getHost ().supports (Capability.QUANTIZE_AMOUNT))
         {
             final int quantizeAmount = this.surface.getConfiguration ().getQuantizeAmount ();
-            display.addParameterElement (" ", false, "", (ChannelType) null, null, false, "Qunt Amnt", quantizeAmount * 1023 / 100, quantizeAmount + "%", this.isKnobTouched[0], -1);
+            display.addParameterElement (" ", false, "", (ChannelType) null, null, false, "Qunt Amnt", quantizeAmount * 1023 / 100, quantizeAmount + "%", this.isKnobTouched (0), -1);
         }
         else
             display.addEmptyElement (true);
@@ -147,11 +147,7 @@ public class QuantizeMode extends BaseMode<IItem>
 
         switch (index)
         {
-            case 0:
-            case 1:
-            case 2:
-            case 3:
-            case 4:
+            case 0, 1, 2, 3, 4:
                 cursorTrack.setRecordQuantizationGrid (RecordQuantization.values ()[index]);
                 break;
 

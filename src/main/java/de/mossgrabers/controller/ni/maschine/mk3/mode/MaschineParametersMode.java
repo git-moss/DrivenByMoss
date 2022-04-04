@@ -17,8 +17,6 @@ import de.mossgrabers.framework.mode.device.SelectedDeviceMode;
 import de.mossgrabers.framework.parameterprovider.device.BankParameterProvider;
 import de.mossgrabers.framework.utils.StringUtils;
 
-import java.util.Arrays;
-
 
 /**
  * Mode for editing the parameters of the selected device.
@@ -40,8 +38,7 @@ public class MaschineParametersMode extends SelectedDeviceMode<MaschineControlSu
         if (surface.getMaschine ().hasMCUDisplay ())
             this.setParameterProvider (new BankParameterProvider (this.bank));
 
-        this.isKnobTouched = new boolean [9];
-        Arrays.fill (this.isKnobTouched, false);
+        this.initTouchedStates (9);
     }
 
 
@@ -77,7 +74,7 @@ public class MaschineParametersMode extends SelectedDeviceMode<MaschineControlSu
     @Override
     public void onKnobTouch (final int index, final boolean isTouched)
     {
-        this.isKnobTouched[index] = isTouched;
+        this.setTouchedKnob (index, isTouched);
 
         if (index < 8)
             super.onKnobTouch (index, isTouched);

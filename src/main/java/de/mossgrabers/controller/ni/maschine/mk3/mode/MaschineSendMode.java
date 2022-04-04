@@ -14,8 +14,6 @@ import de.mossgrabers.framework.daw.data.bank.ITrackBank;
 import de.mossgrabers.framework.mode.track.TrackSendMode;
 import de.mossgrabers.framework.utils.StringUtils;
 
-import java.util.Arrays;
-
 
 /**
  * Mode for editing a send volume parameter of all tracks.
@@ -35,8 +33,7 @@ public class MaschineSendMode extends TrackSendMode<MaschineControlSurface, Masc
     {
         super (sendIndex, surface, model, false, surface.getMaschine ().hasMCUDisplay () ? DEFAULT_KNOB_IDS : null);
 
-        this.isKnobTouched = new boolean [9];
-        Arrays.fill (this.isKnobTouched, false);
+        this.initTouchedStates (9);
     }
 
 
@@ -64,7 +61,7 @@ public class MaschineSendMode extends TrackSendMode<MaschineControlSurface, Masc
     @Override
     public void onKnobTouch (final int index, final boolean isTouched)
     {
-        this.isKnobTouched[index] = isTouched;
+        this.setTouchedKnob (index, isTouched);
 
         if (index < 8)
             super.onKnobTouch (index, isTouched);

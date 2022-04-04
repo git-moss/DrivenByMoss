@@ -23,6 +23,8 @@ public enum Capability
     NOTE_REPEAT_IS_FREE_RUNNING,
     /** The API provides support for editing note repeat use pressure. */
     NOTE_REPEAT_USE_PRESSURE_TO_VELOCITY,
+    /** The API provides support for latching notes. */
+    NOTE_REPEAT_LATCH,
 
     /** The API provides support for editing a notes' mute state. */
     NOTE_EDIT_MUTE,

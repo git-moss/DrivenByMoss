@@ -961,7 +961,7 @@ public class PushControllerSetup extends AbstractControllerSetup<PushControlSurf
         }
 
         final int ribbonMode = this.configuration.getRibbonMode ();
-        if (ribbonMode == PushConfiguration.RIBBON_MODE_CC || ribbonMode == PushConfiguration.RIBBON_MODE_FADER)
+        if (ribbonMode == PushConfiguration.RIBBON_MODE_CC || ribbonMode == PushConfiguration.RIBBON_MODE_FADER || ribbonMode == PushConfiguration.RIBBON_MODE_LAST_TOUCHED)
             surface.setRibbonMode (PushControlSurface.PUSH_RIBBON_VOLUME);
         else
             surface.setRibbonMode (PushControlSurface.PUSH_RIBBON_PITCHBEND);

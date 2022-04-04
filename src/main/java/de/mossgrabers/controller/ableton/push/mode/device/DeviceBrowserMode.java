@@ -91,7 +91,7 @@ public class DeviceBrowserMode extends BaseMode<IItem>
     @Override
     public void onKnobValue (final int index, final int value)
     {
-        if (!this.isKnobTouched[index])
+        if (!this.isKnobTouched (index))
             return;
 
         if (this.increaseKnobMovement ())
@@ -104,11 +104,9 @@ public class DeviceBrowserMode extends BaseMode<IItem>
     public void onKnobTouch (final int index, final boolean isTouched)
     {
         // Make sure that only 1 knob gets changed in browse mode to prevent weird behavior
-        for (int i = 0; i < this.isKnobTouched.length; i++)
-            if (this.isKnobTouched[i] && i != index)
-                return;
-
-        this.isKnobTouched[index] = isTouched;
+        if (this.isAnyKnobTouched () && !this.isKnobTouched (index))
+            return;
+        this.setTouchedKnob (index, isTouched);
 
         Optional<IBrowserColumn> fc;
         if (isTouched)

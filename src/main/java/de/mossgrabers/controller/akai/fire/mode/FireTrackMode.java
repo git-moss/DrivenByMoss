@@ -114,12 +114,7 @@ public class FireTrackMode extends TrackMode<FireControlSurface, FireConfigurati
                     isPan = true;
                     break;
 
-                case SEND1:
-                case SEND2:
-                case SEND3:
-                case SEND4:
-                case SEND5:
-                case SEND6:
+                case SEND1, SEND2, SEND3, SEND4, SEND5, SEND6:
                     final int sendIndex = this.selectedParameter.ordinal () - Modes.SEND1.ordinal ();
                     label = getSendLabel (sendBank, sendIndex);
                     value = getSendValue (sendBank, sendIndex);
@@ -162,7 +157,7 @@ public class FireTrackMode extends TrackMode<FireControlSurface, FireConfigurati
     {
         this.selectedParameter = this.surface.isPressed (ButtonID.ALT) ? ALT_MODES[index] : MODES[index];
 
-        this.isKnobTouched[index] = isTouched;
+        this.setTouchedKnob (index, isTouched);
 
         final Optional<ITrack> trackOptional = this.model.getCurrentTrackBank ().getSelectedItem ();
         if (!trackOptional.isPresent ())
@@ -183,12 +178,7 @@ public class FireTrackMode extends TrackMode<FireControlSurface, FireConfigurati
                 track.touchPan (isTouched);
                 break;
 
-            case SEND1:
-            case SEND2:
-            case SEND3:
-            case SEND4:
-            case SEND5:
-            case SEND6:
+            case SEND1, SEND2, SEND3, SEND4, SEND5, SEND6:
                 final int sendIndex = this.selectedParameter.ordinal () - Modes.SEND1.ordinal ();
                 final ISend item = track.getSendBank ().getItem (sendIndex);
                 if (isTouched && this.surface.isDeletePressed ())

@@ -123,7 +123,7 @@ public class TrackMode extends AbstractTrackMode
                 final boolean enableVUMeters = config.isEnableVUMeters ();
                 final int vuR = valueChanger.toDisplayValue (enableVUMeters ? t.getVuRight () : 0);
                 final int vuL = valueChanger.toDisplayValue (enableVUMeters ? t.getVuLeft () : 0);
-                display.addChannelElement (topMenu, topMenuSelected, bottomMenu, this.updateType (t), bottomMenuColor, isBottomMenuOn, valueChanger.toDisplayValue (t.getVolume ()), valueChanger.toDisplayValue (t.getModulatedVolume ()), this.isKnobTouched[0] ? t.getVolumeStr (8) : "", valueChanger.toDisplayValue (t.getPan ()), valueChanger.toDisplayValue (t.getModulatedPan ()), this.isKnobTouched[1] ? t.getPanStr (8) : "", vuL, vuR, t.isMute (), t.isSolo (), t.isRecArm (), t.isActivated (), crossfadeMode, cursorTrack.isPinned ());
+                display.addChannelElement (topMenu, topMenuSelected, bottomMenu, this.updateType (t), bottomMenuColor, isBottomMenuOn, valueChanger.toDisplayValue (t.getVolume ()), valueChanger.toDisplayValue (t.getModulatedVolume ()), this.isKnobTouched (0) ? t.getVolumeStr (8) : "", valueChanger.toDisplayValue (t.getPan ()), valueChanger.toDisplayValue (t.getModulatedPan ()), this.isKnobTouched (1) ? t.getPanStr (8) : "", vuL, vuR, t.isMute (), t.isSolo (), t.isRecArm (), t.isActivated (), crossfadeMode, cursorTrack.isPinned ());
             }
             else if (sendsIndex == i)
             {
@@ -139,7 +139,7 @@ public class TrackMode extends AbstractTrackMode
                         if (send != null)
                         {
                             final boolean exists = send.doesExist ();
-                            sendData[j] = new SendData (send.getName (), exists && this.isKnobTouched[4 + j] ? send.getDisplayedValue (8) : "", valueChanger.toDisplayValue (exists ? send.getValue () : 0), valueChanger.toDisplayValue (exists ? send.getModulatedValue () : 0), true);
+                            sendData[j] = new SendData (send.getName (), exists && this.isKnobTouched (4 + j) ? send.getDisplayedValue (8) : "", valueChanger.toDisplayValue (exists ? send.getValue () : 0), valueChanger.toDisplayValue (exists ? send.getModulatedValue () : 0), true);
                             continue;
                         }
                     }

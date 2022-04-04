@@ -33,9 +33,10 @@ public class DeviceImpl extends AbstractItemImpl implements IDevice
 
         this.device = device;
 
-        device.exists ().markInterested ();
-        device.position ().markInterested ();
-        device.name ().markInterested ();
+        this.device.exists ().markInterested ();
+        this.device.isEnabled ().markInterested ();
+        this.device.position ().markInterested ();
+        this.device.name ().markInterested ();
     }
 
 
@@ -44,6 +45,7 @@ public class DeviceImpl extends AbstractItemImpl implements IDevice
     public void enableObservers (final boolean enable)
     {
         Util.setIsSubscribed (this.device.exists (), enable);
+        Util.setIsSubscribed (this.device.isEnabled (), enable);
         Util.setIsSubscribed (this.device.position (), enable);
         Util.setIsSubscribed (this.device.name (), enable);
     }
@@ -94,6 +96,22 @@ public class DeviceImpl extends AbstractItemImpl implements IDevice
     public void select ()
     {
         this.device.selectInEditor ();
+    }
+
+
+    /** {@inheritDoc} */
+    @Override
+    public boolean isEnabled ()
+    {
+        return this.device.isEnabled ().get ();
+    }
+
+
+    /** {@inheritDoc} */
+    @Override
+    public void toggleEnabledState ()
+    {
+        this.device.isEnabled ().toggle ();
     }
 
 

@@ -45,6 +45,8 @@ public class Push1Display extends AbstractTextDisplay
     public static final String     FOLDER        = Character.toString ((char) 7);
     /** Push character for three rows. */
     public static final String     THREE_ROWS    = Character.toString ((char) 2);
+    /** Push character for the division sign. */
+    public static final String     DIVISION      = Character.toString ((char) 24);
 
     private static final String [] SYSEX_MESSAGE =
     {

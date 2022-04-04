@@ -64,7 +64,7 @@ public class MasterMode extends BaseMode<ITrack>
     @Override
     public void onKnobTouch (final int index, final boolean isTouched)
     {
-        this.isKnobTouched[index] = isTouched;
+        this.setTouchedKnob (index, isTouched);
 
         if (index == 0)
             this.model.getMasterTrack ().touchVolume (isTouched);

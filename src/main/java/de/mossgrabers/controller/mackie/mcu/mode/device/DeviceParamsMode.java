@@ -58,7 +58,7 @@ public class DeviceParamsMode extends BaseMode<IParameter>
 
     /**
      * Constructor.
-     * 
+     *
      * @param name The name of the mode
      * @param device The device to edit
      * @param surface The control surface
@@ -119,7 +119,7 @@ public class DeviceParamsMode extends BaseMode<IParameter>
     @Override
     public void onKnobTouch (final int index, final boolean isTouched)
     {
-        this.isKnobTouched[index] = isTouched;
+        this.setTouchedKnob (index, isTouched);
 
         final IParameter param = this.device.getParameterBank ().getItem (index);
         if (param.doesExist ())

@@ -58,7 +58,7 @@ public class SendMode extends AbstractTrackMode
     @Override
     public void onKnobTouch (final int index, final boolean isTouched)
     {
-        this.isKnobTouched[index] = isTouched;
+        this.setTouchedKnob (index, isTouched);
 
         final int channel = this.getExtenderOffset () + index;
         final ITrack t = this.getTrackBank ().getItem (channel);

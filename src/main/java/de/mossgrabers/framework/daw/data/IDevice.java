@@ -12,13 +12,27 @@ package de.mossgrabers.framework.daw.data;
 public interface IDevice extends IItem
 {
     /**
-     * Delete the channel.
+     * Returns true if the device is enabled.
+     *
+     * @return True if the device is enabled
+     */
+    boolean isEnabled ();
+
+
+    /**
+     * Toggle the device on/off.
+     */
+    void toggleEnabledState ();
+
+
+    /**
+     * Delete the device.
      */
     void remove ();
 
 
     /**
-     * Duplicate the channel.
+     * Duplicate the device.
      */
     void duplicate ();
 }

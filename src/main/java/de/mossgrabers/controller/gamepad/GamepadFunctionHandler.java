@@ -28,15 +28,15 @@ import java.util.Optional;
  */
 public class GamepadFunctionHandler implements IGamepadCallback
 {
-    private final GamepadControlSurface                             surface;
-    private final IModel                                            model;
-    private final GamepadConfiguration                              configuration;
-    private final IMidiInput                                        input;
-    private final INoteRepeat                                       noteRepeat;
+    private final GamepadControlSurface                                   surface;
+    private final IModel                                                  model;
+    private final GamepadConfiguration                                    configuration;
+    private final IMidiInput                                              input;
+    private final INoteRepeat                                             noteRepeat;
 
     private final NewCommand<GamepadControlSurface, GamepadConfiguration> newCommand;
 
-    private final boolean []                                        playingNotes = new boolean [128];
+    private final boolean []                                              playingNotes = new boolean [128];
 
 
     /**

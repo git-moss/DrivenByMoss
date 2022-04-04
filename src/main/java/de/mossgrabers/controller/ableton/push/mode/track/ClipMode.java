@@ -54,7 +54,7 @@ public class ClipMode extends AbstractTrackMode
     @Override
     public void onKnobTouch (final int index, final boolean isTouched)
     {
-        this.isKnobTouched[index] = isTouched;
+        this.setTouchedKnob (index, isTouched);
 
         if (index == 7 && isTouched && this.surface.isDeletePressed ())
         {
@@ -175,14 +175,14 @@ public class ClipMode extends AbstractTrackMode
         final boolean canPin = this.model.getHost ().supports (Capability.HAS_PINNING);
         final boolean isPinned = canPin && clip instanceof final INoteClip noteClip && noteClip.isPinned ();
 
-        display.addParameterElement (canPin ? "Pin clip" : "", isPinned, t0.getName (), this.updateType (t0), t0.getColor (), t0.isSelected (), "Play Start", -1, this.formatMeasures (clip.getPlayStart (), 1), this.isKnobTouched[0], -1);
-        display.addParameterElement ("", false, t1.getName (), this.updateType (t1), t1.getColor (), t1.isSelected (), "Play End", -1, this.formatMeasures (clip.getPlayEnd (), 1), this.isKnobTouched[1], -1);
-        display.addParameterElement ("", false, t2.getName (), this.updateType (t2), t2.getColor (), t2.isSelected (), "Loop Start", -1, this.formatMeasures (clip.getLoopStart (), 1), this.isKnobTouched[2], -1);
-        display.addParameterElement ("", false, t3.getName (), this.updateType (t3), t3.getColor (), t3.isSelected (), "Loop Lngth", -1, this.formatMeasures (clip.getLoopLength (), 0), this.isKnobTouched[3], -1);
-        display.addParameterElement ("", false, t4.getName (), this.updateType (t4), t4.getColor (), t4.isSelected (), "Loop", -1, clip.isLoopEnabled () ? "On" : "Off", this.isKnobTouched[4], -1);
+        display.addParameterElement (canPin ? "Pin clip" : "", isPinned, t0.getName (), this.updateType (t0), t0.getColor (), t0.isSelected (), "Play Start", -1, this.formatMeasures (clip.getPlayStart (), 1), this.isKnobTouched (0), -1);
+        display.addParameterElement ("", false, t1.getName (), this.updateType (t1), t1.getColor (), t1.isSelected (), "Play End", -1, this.formatMeasures (clip.getPlayEnd (), 1), this.isKnobTouched (1), -1);
+        display.addParameterElement ("", false, t2.getName (), this.updateType (t2), t2.getColor (), t2.isSelected (), "Loop Start", -1, this.formatMeasures (clip.getLoopStart (), 1), this.isKnobTouched (2), -1);
+        display.addParameterElement ("", false, t3.getName (), this.updateType (t3), t3.getColor (), t3.isSelected (), "Loop Lngth", -1, this.formatMeasures (clip.getLoopLength (), 0), this.isKnobTouched (3), -1);
+        display.addParameterElement ("", false, t4.getName (), this.updateType (t4), t4.getColor (), t4.isSelected (), "Loop", -1, clip.isLoopEnabled () ? "On" : "Off", this.isKnobTouched (4), -1);
         display.addParameterElement ("", false, t5.getName (), this.updateType (t5), t5.getColor (), t5.isSelected (), "", -1, "", false, -1);
-        display.addParameterElement ("", false, t6.getName (), this.updateType (t6), t6.getColor (), t6.isSelected (), "Shuffle", -1, clip.isShuffleEnabled () ? "On" : "Off", this.isKnobTouched[6], -1);
-        display.addParameterElement ("Select color", false, t7.getName (), this.updateType (t7), t7.getColor (), t7.isSelected (), "Accent", -1, clip.getFormattedAccent (), this.isKnobTouched[7], -1);
+        display.addParameterElement ("", false, t6.getName (), this.updateType (t6), t6.getColor (), t6.isSelected (), "Shuffle", -1, clip.isShuffleEnabled () ? "On" : "Off", this.isKnobTouched (6), -1);
+        display.addParameterElement ("Select color", false, t7.getName (), this.updateType (t7), t7.getColor (), t7.isSelected (), "Accent", -1, clip.getFormattedAccent (), this.isKnobTouched (7), -1);
     }
 
 

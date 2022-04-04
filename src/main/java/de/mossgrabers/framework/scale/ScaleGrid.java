@@ -36,7 +36,8 @@ class ScaleGrid
      * @param rows The number of rows of the grid
      * @param cols The number of columns of the grid
      * @param shift The number of scale steps that the notes in the next rows are shifted (e.g. 4)
-     * @param semitoneShift The number of semitones the notes in the next rows are shifted in chromatic mode
+     * @param semitoneShift The number of semitones the notes in the next rows are shifted in
+     *            chromatic mode
      */
     public ScaleGrid (final Scale scale, final ScaleLayout layout, final Orientation orientation, final int rows, final int cols, final int shift, final int semitoneShift)
     {

@@ -18,7 +18,6 @@ import de.mossgrabers.framework.daw.data.IItem;
 import de.mossgrabers.framework.featuregroup.AbstractMode;
 import de.mossgrabers.framework.utils.StringUtils;
 
-import java.util.Arrays;
 import java.util.Locale;
 
 
@@ -39,8 +38,7 @@ public class BrowserMode extends AbstractMode<FireControlSurface, FireConfigurat
     {
         super ("Browser", surface, model, false);
 
-        this.isKnobTouched = new boolean [9];
-        Arrays.fill (this.isKnobTouched, false);
+        this.initTouchedStates (9);
     }
 
 
@@ -98,10 +96,10 @@ public class BrowserMode extends AbstractMode<FireControlSurface, FireConfigurat
         // Make sure that only 1 knob gets changed in browse mode to prevent weird behavior. Also
         // ignore the 8th element which does not have touch
         for (int i = 0; i < 8; i++)
-            if (this.isKnobTouched[i] && i != idx)
+            if (this.isKnobTouched (i) && i != idx)
                 return;
 
-        this.isKnobTouched[idx] = isTouched;
+        this.setTouchedKnob (idx, isTouched);
     }
 
 

@@ -4,6 +4,10 @@
 
 package de.mossgrabers.framework.daw.resource;
 
+import java.util.EnumMap;
+import java.util.Map;
+
+
 /**
  * The different types of channels.
  *
@@ -28,5 +32,32 @@ public enum ChannelType
     /** The master track. */
     MASTER,
     /** A device layer. */
-    LAYER
+    LAYER;
+
+
+    private static final Map<ChannelType, String> LABELS = new EnumMap<> (ChannelType.class);
+    static
+    {
+        LABELS.put (UNKNOWN, "Unknown");
+        LABELS.put (AUDIO, "Audio");
+        LABELS.put (INSTRUMENT, "Instrument");
+        LABELS.put (HYBRID, "Hybrid");
+        LABELS.put (GROUP, "Group");
+        LABELS.put (GROUP_OPEN, "Group");
+        LABELS.put (EFFECT, "Effect");
+        LABELS.put (MASTER, "Master");
+        LABELS.put (LAYER, "Layer");
+    }
+
+
+    /**
+     * Get the label of the given channel type.
+     *
+     * @param channelType THe channel type for which to get a label
+     * @return The label
+     */
+    public static String getLabel (ChannelType channelType)
+    {
+        return LABELS.get (channelType);
+    }
 }

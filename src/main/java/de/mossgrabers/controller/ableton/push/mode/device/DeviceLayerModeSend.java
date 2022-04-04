@@ -54,7 +54,7 @@ public class DeviceLayerModeSend extends DeviceLayerMode
     @Override
     public void onKnobTouch (final int index, final boolean isTouched)
     {
-        this.isKnobTouched[index] = isTouched;
+        this.setTouchedKnob (index, isTouched);
 
         // Drum Pad Bank has size of 16, layers only 8
         final int offset = this.getDrumPadIndex ();
@@ -127,7 +127,7 @@ public class DeviceLayerModeSend extends DeviceLayerMode
                 final int sendPos = sendOffset + j;
                 final ISend send = layer.getSendBank ().getItem (sendPos);
                 final boolean exists = send.doesExist ();
-                sendData[j] = new SendData (send.getName (), exists && this.sendIndex == sendPos && this.isKnobTouched[i] ? send.getDisplayedValue () : "", exists ? send.getValue () : 0, exists ? send.getModulatedValue () : 0, this.sendIndex == sendPos);
+                sendData[j] = new SendData (send.getName (), exists && this.sendIndex == sendPos && this.isKnobTouched (i) ? send.getDisplayedValue () : "", exists ? send.getValue () : 0, exists ? send.getModulatedValue () : 0, this.sendIndex == sendPos);
             }
 
             display.addSendsElement (topMenu, isTopMenuOn, layer.doesExist () ? layer.getName () : "", ChannelType.LAYER, this.bank.getItem (offset + i).getColor (), layer.isSelected (), sendData, false, layer.isActivated (), layer.isActivated ());

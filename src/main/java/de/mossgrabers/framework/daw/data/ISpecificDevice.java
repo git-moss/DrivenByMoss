@@ -27,20 +27,6 @@ public interface ISpecificDevice extends IDevice
 
 
     /**
-     * Returns true if the device is enabled.
-     *
-     * @return True if the device is enabled
-     */
-    boolean isEnabled ();
-
-
-    /**
-     * Toggle the device on/off.
-     */
-    void toggleEnabledState ();
-
-
-    /**
      * Returns true if the device is a non-DAW plugin.
      *
      * @return True if the device is a non-DAW plugin

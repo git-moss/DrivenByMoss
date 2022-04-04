@@ -31,7 +31,7 @@ class NoteInputImpl extends AbstractNoteInput
         // directly into Bitwig
         noteInput.setShouldConsumeEvents (false);
 
-        this.noteRepeat = new NoteRepeatImpl (this.noteInput.arpeggiator ());
+        this.noteRepeat = new NoteRepeatImpl (this.noteInput.arpeggiator (), this.noteInput.noteLatch ());
     }
 
 

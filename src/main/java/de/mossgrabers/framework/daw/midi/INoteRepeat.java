@@ -145,4 +145,26 @@ public interface INoteRepeat extends IObserverManagement
      * Toggle the free running state.
      */
     void toggleIsFreeRunning ();
+
+
+    /**
+     * Toggle if note latch is active.
+     */
+    void toggleLatchActive ();
+
+
+    /**
+     * True if note latch is enabled.
+     *
+     * @return True if note latch is enabled
+     */
+    boolean isLatchActive ();
+
+
+    /**
+     * Set de-/active note latch.
+     *
+     * @param active True to activate
+     */
+    void setLatchActive (boolean active);
 }

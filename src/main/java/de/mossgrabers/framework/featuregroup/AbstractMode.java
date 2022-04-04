@@ -57,7 +57,9 @@ public abstract class AbstractMode<S extends IControlSurface<C>, C extends Confi
     protected List<ContinuousID>                controls;
     protected boolean                           isAbsolute;
     protected boolean                           isActive;
-    protected boolean []                        isKnobTouched;
+
+    private boolean []                          isKnobTouched;
+    private int                                 lastTouchedKnob;
 
 
     /**
@@ -166,7 +168,13 @@ public abstract class AbstractMode<S extends IControlSurface<C>, C extends Confi
     protected void setControls (final List<ContinuousID> controls)
     {
         this.controls = controls == null ? Collections.emptyList () : controls;
-        this.isKnobTouched = new boolean [this.controls.size ()];
+        this.initTouchedStates (this.controls.size ());
+    }
+
+
+    protected final void initTouchedStates (final int size)
+    {
+        this.isKnobTouched = new boolean [size];
         Arrays.fill (this.isKnobTouched, false);
     }
 
@@ -302,6 +310,16 @@ public abstract class AbstractMode<S extends IControlSurface<C>, C extends Confi
 
     /** {@inheritDoc} */
     @Override
+    public void setTouchedKnob (final int knobIndex, final boolean isTouched)
+    {
+        this.isKnobTouched[knobIndex] = isTouched;
+        if (isTouched)
+            this.lastTouchedKnob = knobIndex;
+    }
+
+
+    /** {@inheritDoc} */
+    @Override
     public boolean isAnyKnobTouched ()
     {
         for (final boolean isTouched: this.isKnobTouched)
@@ -331,6 +349,14 @@ public abstract class AbstractMode<S extends IControlSurface<C>, C extends Confi
     public boolean isKnobTouched (final int index)
     {
         return index < this.isKnobTouched.length && this.isKnobTouched[index];
+    }
+
+
+    /** {@inheritDoc} */
+    @Override
+    public int getLastTouchedKnob ()
+    {
+        return this.lastTouchedKnob;
     }
 
 
@@ -517,11 +543,8 @@ public abstract class AbstractMode<S extends IControlSurface<C>, C extends Confi
     }
 
 
-    /**
-     * Get the currently active parameter provider, depending on pressed buttons.
-     *
-     * @return The active parameter provider, might be null if none is set
-     */
+    /** {@inheritDoc} */
+    @Override
     public IParameterProvider getParameterProvider ()
     {
         for (final Entry<ButtonID, IParameterProvider> entry: this.parameterProviders.entrySet ())

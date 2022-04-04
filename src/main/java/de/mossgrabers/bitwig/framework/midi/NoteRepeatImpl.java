@@ -12,6 +12,7 @@ import de.mossgrabers.framework.utils.FrameworkException;
 import com.bitwig.extension.controller.api.Arpeggiator;
 import com.bitwig.extension.controller.api.EnumDefinition;
 import com.bitwig.extension.controller.api.EnumValueDefinition;
+import com.bitwig.extension.controller.api.NoteLatch;
 
 import java.util.Locale;
 
@@ -24,16 +25,19 @@ import java.util.Locale;
 public class NoteRepeatImpl implements INoteRepeat
 {
     private final Arpeggiator noteRepeat;
+    private final NoteLatch   noteLatch;
 
 
     /**
      * Constructor.
      *
      * @param arpeggiator The Bitwig arpeggiator object
+     * @param noteLatch The Bitwig note latch object
      */
-    public NoteRepeatImpl (final Arpeggiator arpeggiator)
+    public NoteRepeatImpl (final Arpeggiator arpeggiator, final NoteLatch noteLatch)
     {
         this.noteRepeat = arpeggiator;
+        this.noteLatch = noteLatch;
 
         this.noteRepeat.isEnabled ().markInterested ();
         this.noteRepeat.rate ().markInterested ();
@@ -43,6 +47,8 @@ public class NoteRepeatImpl implements INoteRepeat
         this.noteRepeat.mode ().markInterested ();
         this.noteRepeat.octaves ().markInterested ();
         this.noteRepeat.isFreeRunning ().markInterested ();
+
+        this.noteLatch.isEnabled ().markInterested ();
 
         // Test if all arpeggiator modes are covered by the enumeration
         final EnumDefinition enumDefinition = this.noteRepeat.mode ().enumDefinition ();
@@ -68,6 +74,7 @@ public class NoteRepeatImpl implements INoteRepeat
         Util.setIsSubscribed (this.noteRepeat.mode (), enable);
         Util.setIsSubscribed (this.noteRepeat.octaves (), enable);
         Util.setIsSubscribed (this.noteRepeat.isFreeRunning (), enable);
+        Util.setIsSubscribed (this.noteLatch.isEnabled (), enable);
     }
 
 
@@ -207,5 +214,29 @@ public class NoteRepeatImpl implements INoteRepeat
     public void toggleIsFreeRunning ()
     {
         this.noteRepeat.isFreeRunning ().toggle ();
+    }
+
+
+    /** {@inheritDoc} */
+    @Override
+    public void toggleLatchActive ()
+    {
+        this.noteLatch.isEnabled ().toggle ();
+    }
+
+
+    /** {@inheritDoc} */
+    @Override
+    public boolean isLatchActive ()
+    {
+        return this.noteLatch.isEnabled ().get ();
+    }
+
+
+    /** {@inheritDoc} */
+    @Override
+    public void setLatchActive (final boolean active)
+    {
+        this.noteLatch.isEnabled ().set (active);
     }
 }

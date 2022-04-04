@@ -104,7 +104,7 @@ public class DeviceParamsMode extends BaseMode<IParameter>
     @Override
     public void onKnobTouch (final int index, final boolean isTouched)
     {
-        this.isKnobTouched[index] = isTouched;
+        this.setTouchedKnob (index, isTouched);
 
         final ICursorDevice cd = this.model.getCursorDevice ();
         final IParameter param = cd.getParameterBank ().getItem (index);
@@ -139,18 +139,23 @@ public class DeviceParamsMode extends BaseMode<IParameter>
             }
 
             // Duplicate device
-            if (this.surface.isPressed (ButtonID.DUPLICATE))
+            if (this.isButtonCombination (ButtonID.DUPLICATE))
             {
-                this.surface.setTriggerConsumed (ButtonID.DUPLICATE);
                 cd.duplicate ();
                 return;
             }
 
             // Delete device
-            if (this.surface.isPressed (ButtonID.DELETE))
+            if (this.isButtonCombination (ButtonID.DELETE))
             {
-                this.surface.setTriggerConsumed (ButtonID.DELETE);
                 cd.getDeviceBank ().getItem (index).remove ();
+                return;
+            }
+
+            // Disable/Enable device
+            if (this.isButtonCombination (ButtonID.MUTE))
+            {
+                cd.getDeviceBank ().getItem (index).toggleEnabledState ();
                 return;
             }
 
@@ -392,6 +397,8 @@ public class DeviceParamsMode extends BaseMode<IParameter>
                 {
                     if (i == cd.getIndex ())
                         sb.append (Push1Display.SELECT_ARROW);
+                    if (!device.isEnabled ())
+                        sb.append (Push1Display.DIVISION);
                     sb.append (device.getName ());
                 }
                 display.setCell (3, i, sb.toString ());
@@ -417,8 +424,9 @@ public class DeviceParamsMode extends BaseMode<IParameter>
         if (!this.checkExists2 (display, cd))
             return;
 
-        final String color = this.model.getCurrentTrackBank ().getSelectedChannelColorEntry ();
-        final ColorEx bottomMenuColor = DAWColor.getColorEntry (color);
+        final String channelColor = this.model.getCurrentTrackBank ().getSelectedChannelColorEntry ();
+        final ColorEx bottomMenuColor = DAWColor.getColorEntry (channelColor);
+        final ColorEx colorBackground = this.surface.getConfiguration ().getColorBackground ();
 
         final IDeviceBank deviceBank = cd.getDeviceBank ();
         final IParameterBank parameterBank = cd.getParameterBank ();
@@ -433,12 +441,15 @@ public class DeviceParamsMode extends BaseMode<IParameter>
             String bottomMenu;
             final String bottomMenuIcon;
             boolean isBottomMenuOn;
+            ColorEx color = bottomMenuColor;
             if (this.showDevices)
             {
-                final IDevice item = deviceBank.getItem (i);
-                bottomMenuIcon = item.getName ();
-                bottomMenu = item.doesExist () ? item.getName (12) : "";
+                final IDevice device = deviceBank.getItem (i);
+                bottomMenuIcon = device.getName ();
+                bottomMenu = device.doesExist () ? device.getName (12) : "";
                 isBottomMenuOn = i == cd.getIndex ();
+                if (!device.isEnabled ())
+                    color = colorBackground;
             }
             else
             {
@@ -455,10 +466,10 @@ public class DeviceParamsMode extends BaseMode<IParameter>
             final String parameterName = exists ? param.getName (9) : "";
             final int parameterValue = valueChanger.toDisplayValue (exists ? param.getValue () : 0);
             final String parameterValueStr = exists ? param.getDisplayedValue (8) : "";
-            final boolean parameterIsActive = this.isKnobTouched[i];
+            final boolean parameterIsActive = this.isKnobTouched (i);
             final int parameterModulatedValue = valueChanger.toDisplayValue (exists ? param.getModulatedValue () : -1);
 
-            display.addParameterElement (this.hostMenu[i], isTopMenuOn, bottomMenu, bottomMenuIcon, bottomMenuColor, isBottomMenuOn, parameterName, parameterValue, parameterValueStr, parameterIsActive, parameterModulatedValue);
+            display.addParameterElement (this.hostMenu[i], isTopMenuOn, bottomMenu, bottomMenuIcon, color, isBottomMenuOn, parameterName, parameterValue, parameterValueStr, parameterIsActive, parameterModulatedValue);
         }
     }
 
@@ -468,7 +479,14 @@ public class DeviceParamsMode extends BaseMode<IParameter>
     public void selectPreviousItem ()
     {
         if (this.showDevices)
-            this.model.getCursorDevice ().getDeviceBank ().selectPreviousItem ();
+        {
+            final ICursorDevice cursorDevice = this.model.getCursorDevice ();
+            if (this.surface.isShiftPressed ())
+                cursorDevice.swapWithPrevious ();
+            else
+                cursorDevice.getDeviceBank ().selectPreviousItem ();
+            return;
+        }
         super.selectPreviousItem ();
     }
 
@@ -478,7 +496,14 @@ public class DeviceParamsMode extends BaseMode<IParameter>
     public void selectNextItem ()
     {
         if (this.showDevices)
-            this.model.getCursorDevice ().getDeviceBank ().selectNextItem ();
+        {
+            final ICursorDevice cursorDevice = this.model.getCursorDevice ();
+            if (this.surface.isShiftPressed ())
+                cursorDevice.swapWithNext ();
+            else
+                cursorDevice.getDeviceBank ().selectNextItem ();
+            return;
+        }
         super.selectNextItem ();
     }
 
@@ -528,7 +553,12 @@ public class DeviceParamsMode extends BaseMode<IParameter>
     public boolean hasPreviousItemPage ()
     {
         if (this.showDevices)
-            return this.model.getCursorDevice ().getDeviceBank ().canScrollPageBackwards ();
+        {
+            final ICursorDevice cursorDevice = this.model.getCursorDevice ();
+            if (this.surface.isShiftPressed ())
+                return cursorDevice.getIndex () > 0;
+            return cursorDevice.getDeviceBank ().canScrollPageBackwards ();
+        }
         return super.hasPreviousItemPage ();
     }
 
@@ -538,7 +568,12 @@ public class DeviceParamsMode extends BaseMode<IParameter>
     public boolean hasNextItemPage ()
     {
         if (this.showDevices)
-            return this.model.getCursorDevice ().getDeviceBank ().canScrollPageForwards ();
+        {
+            final ICursorDevice cursorDevice = this.model.getCursorDevice ();
+            if (this.surface.isShiftPressed ())
+                return cursorDevice.getIndex () < 7;
+            return cursorDevice.getDeviceBank ().canScrollPageForwards ();
+        }
         return super.hasNextItemPage ();
     }
 

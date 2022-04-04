@@ -41,8 +41,10 @@ import java.io.PrintWriter;
 import java.io.StringWriter;
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Optional;
+import java.util.Set;
 
 
 /**
@@ -52,11 +54,44 @@ import java.util.Optional;
  */
 public class HostImpl implements IHost
 {
-    private static final List<IDeviceMetadata> instrumentsMetadata  = new ArrayList<> ();
-    private static final List<IDeviceMetadata> audioEffectsMetadata = new ArrayList<> ();
+    private static final List<IDeviceMetadata> INSTRUMENT_METADATA    = new ArrayList<> ();
+    private static final List<IDeviceMetadata> AUDIO_EFFECTS_METADATA = new ArrayList<> ();
+    private static final Set<Capability>       CAPABILITIES           = new HashSet<> ();
 
-    private final ControllerHost               host;
-    private final List<IUsbDevice>             usbDevices           = new ArrayList<> ();
+    static
+    {
+        CAPABILITIES.add (Capability.NOTE_REPEAT_LENGTH);
+        CAPABILITIES.add (Capability.NOTE_REPEAT_SWING);
+        CAPABILITIES.add (Capability.NOTE_REPEAT_MODE);
+        CAPABILITIES.add (Capability.NOTE_REPEAT_OCTAVES);
+        CAPABILITIES.add (Capability.NOTE_REPEAT_IS_FREE_RUNNING);
+        CAPABILITIES.add (Capability.NOTE_REPEAT_USE_PRESSURE_TO_VELOCITY);
+        CAPABILITIES.add (Capability.NOTE_REPEAT_LATCH);
+
+        CAPABILITIES.add (Capability.NOTE_EDIT_MUTE);
+        CAPABILITIES.add (Capability.NOTE_EDIT_VELOCITY_SPREAD);
+        CAPABILITIES.add (Capability.NOTE_EDIT_RELEASE_VELOCITY);
+        CAPABILITIES.add (Capability.NOTE_EDIT_EXPRESSIONS);
+        CAPABILITIES.add (Capability.NOTE_EDIT_REPEAT);
+        CAPABILITIES.add (Capability.NOTE_EDIT_CHANCE);
+        CAPABILITIES.add (Capability.NOTE_EDIT_OCCURRENCE);
+        CAPABILITIES.add (Capability.NOTE_EDIT_RECCURRENCE);
+
+        CAPABILITIES.add (Capability.QUANTIZE_INPUT_NOTE_LENGTH);
+        CAPABILITIES.add (Capability.QUANTIZE_AMOUNT);
+
+        CAPABILITIES.add (Capability.CUE_VOLUME);
+
+        CAPABILITIES.add (Capability.HAS_SLOT_CHAINS);
+        CAPABILITIES.add (Capability.HAS_DRUM_DEVICE);
+        CAPABILITIES.add (Capability.HAS_CROSSFADER);
+        CAPABILITIES.add (Capability.HAS_PINNING);
+        CAPABILITIES.add (Capability.HAS_EFFECT_BANK);
+        CAPABILITIES.add (Capability.HAS_BROWSER_PREVIEW);
+    }
+
+    private final ControllerHost   host;
+    private final List<IUsbDevice> usbDevices = new ArrayList<> ();
 
 
     /**
@@ -84,38 +119,7 @@ public class HostImpl implements IHost
     @Override
     public boolean supports (final Capability capability)
     {
-        switch (capability)
-        {
-            case NOTE_REPEAT_LENGTH:
-            case NOTE_REPEAT_SWING:
-            case NOTE_REPEAT_MODE:
-            case NOTE_REPEAT_OCTAVES:
-            case NOTE_REPEAT_IS_FREE_RUNNING:
-            case NOTE_REPEAT_USE_PRESSURE_TO_VELOCITY:
-
-            case NOTE_EDIT_MUTE:
-            case NOTE_EDIT_VELOCITY_SPREAD:
-            case NOTE_EDIT_RELEASE_VELOCITY:
-            case NOTE_EDIT_EXPRESSIONS:
-            case NOTE_EDIT_REPEAT:
-            case NOTE_EDIT_CHANCE:
-            case NOTE_EDIT_OCCURRENCE:
-            case NOTE_EDIT_RECCURRENCE:
-
-            case QUANTIZE_INPUT_NOTE_LENGTH:
-            case QUANTIZE_AMOUNT:
-
-            case CUE_VOLUME:
-
-            case HAS_SLOT_CHAINS:
-            case HAS_DRUM_DEVICE:
-            case HAS_CROSSFADER:
-            case HAS_PINNING:
-            case HAS_EFFECT_BANK:
-            case HAS_BROWSER_PREVIEW:
-                return true;
-        }
-        return false;
+        return CAPABILITIES.contains (capability);
     }
 
 
@@ -282,7 +286,7 @@ public class HostImpl implements IHost
     @Override
     public List<IDeviceMetadata> getInstrumentMetadata ()
     {
-        return new ArrayList<> (instrumentsMetadata);
+        return new ArrayList<> (INSTRUMENT_METADATA);
     }
 
 
@@ -290,26 +294,26 @@ public class HostImpl implements IHost
     @Override
     public List<IDeviceMetadata> getAudioEffectMetadata ()
     {
-        return new ArrayList<> (audioEffectsMetadata);
+        return new ArrayList<> (AUDIO_EFFECTS_METADATA);
     }
 
 
     private static void readDeviceFiles ()
     {
-        synchronized (instrumentsMetadata)
+        synchronized (INSTRUMENT_METADATA)
         {
-            if (!instrumentsMetadata.isEmpty ())
+            if (!INSTRUMENT_METADATA.isEmpty ())
                 return;
 
             readDeviceFile ("Instruments.txt").forEach (line -> {
                 final Optional<IDeviceMetadata> dm = parseDeviceLine (line);
                 if (dm.isPresent ())
-                    instrumentsMetadata.add (dm.get ());
+                    INSTRUMENT_METADATA.add (dm.get ());
             });
             readDeviceFile ("AudioEffects.txt").forEach (line -> {
                 final Optional<IDeviceMetadata> dm = parseDeviceLine (line);
                 if (dm.isPresent ())
-                    audioEffectsMetadata.add (dm.get ());
+                    AUDIO_EFFECTS_METADATA.add (dm.get ());
             });
         }
     }

@@ -52,7 +52,7 @@ public class AccentMode extends BaseMode<IItem>
     @Override
     public void onKnobTouch (final int index, final boolean isTouched)
     {
-        this.isKnobTouched[index] = isTouched;
+        this.setTouchedKnob (index, isTouched);
     }
 
 
@@ -73,6 +73,6 @@ public class AccentMode extends BaseMode<IItem>
         final int fixedAccentValue = this.surface.getConfiguration ().getFixedAccentValue ();
         final IValueChanger valueChanger = this.model.getValueChanger ();
         for (int i = 0; i < 8; i++)
-            display.addParameterElement (i == 7 ? TAG_ACCENT : "", i == 7 ? valueChanger.toDisplayValue (valueChanger.toDAWValue (fixedAccentValue)) : 0, i == 7 ? Integer.toString (fixedAccentValue) : "", this.isKnobTouched[i], -1);
+            display.addParameterElement (i == 7 ? TAG_ACCENT : "", i == 7 ? valueChanger.toDisplayValue (valueChanger.toDAWValue (fixedAccentValue)) : 0, i == 7 ? Integer.toString (fixedAccentValue) : "", this.isKnobTouched (i), -1);
     }
 }

@@ -51,7 +51,7 @@ public class TrackMode extends AbstractTrackMode
             return;
         final ITrack track = selectedTrack.get ();
 
-        this.isKnobTouched[index] = isTouched;
+        this.setTouchedKnob (index, isTouched);
 
         switch (index)
         {

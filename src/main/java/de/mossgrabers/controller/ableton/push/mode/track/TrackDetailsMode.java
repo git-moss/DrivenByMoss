@@ -16,6 +16,7 @@ import de.mossgrabers.framework.daw.constants.Capability;
 import de.mossgrabers.framework.daw.data.ICursorTrack;
 import de.mossgrabers.framework.daw.data.ITrack;
 import de.mossgrabers.framework.daw.data.bank.ITrackBank;
+import de.mossgrabers.framework.daw.resource.ChannelType;
 import de.mossgrabers.framework.featuregroup.AbstractFeatureGroup;
 import de.mossgrabers.framework.featuregroup.ViewManager;
 import de.mossgrabers.framework.utils.ButtonEvent;
@@ -239,9 +240,10 @@ public class TrackDetailsMode extends BaseMode<ITrack>
         }
 
         final String trackName = cursorTrack.getName ();
-        display.setBlock (0, 0, getTrackTitle (cursorTrack) + trackName);
-        if (trackName.length () > 10)
-            display.setBlock (0, 1, trackName.substring (10));
+        final String firstBlock = getTrackTitle (cursorTrack) + trackName;
+        display.setBlock (0, 0, firstBlock);
+        if (firstBlock.length () > 17)
+            display.setBlock (0, 1, firstBlock.substring (17).trim ());
         display.setCell (2, 0, "Active").setCell (3, 0, cursorTrack.isActivated () ? "On" : "Off");
         display.setCell (2, 1, "Rec Arm");
         display.setCell (3, 1, cursorTrack.isRecArm () ? "On" : "Off");
@@ -298,6 +300,6 @@ public class TrackDetailsMode extends BaseMode<ITrack>
      */
     private static String getTrackTitle (final ITrack track)
     {
-        return track.hasParent () ? "Child Track: " : "Track: ";
+        return ChannelType.getLabel (track.getType ()) + " Track: ";
     }
 }

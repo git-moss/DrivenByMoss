@@ -55,7 +55,6 @@ public class SpecificDeviceImpl extends DeviceImpl implements ISpecificDevice
     {
         super (device, -1);
 
-        this.device.isEnabled ().markInterested ();
         this.device.isPlugin ().markInterested ();
         this.device.isExpanded ().markInterested ();
         this.device.isRemoteControlsSectionVisible ().markInterested ();
@@ -101,7 +100,6 @@ public class SpecificDeviceImpl extends DeviceImpl implements ISpecificDevice
     {
         super.enableObservers (enable);
 
-        Util.setIsSubscribed (this.device.isEnabled (), enable);
         Util.setIsSubscribed (this.device.isPlugin (), enable);
         Util.setIsSubscribed (this.device.isExpanded (), enable);
         Util.setIsSubscribed (this.device.isRemoteControlsSectionVisible (), enable);
@@ -127,22 +125,6 @@ public class SpecificDeviceImpl extends DeviceImpl implements ISpecificDevice
     public String getID ()
     {
         return "";
-    }
-
-
-    /** {@inheritDoc} */
-    @Override
-    public boolean isEnabled ()
-    {
-        return this.device.isEnabled ().get ();
-    }
-
-
-    /** {@inheritDoc} */
-    @Override
-    public void toggleEnabledState ()
-    {
-        this.device.isEnabled ().toggle ();
     }
 
 

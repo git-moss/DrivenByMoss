@@ -70,7 +70,7 @@ public class SetupMode extends BaseMode<IItem>
     @Override
     public void onKnobTouch (final int index, final boolean isTouched)
     {
-        this.isKnobTouched[index] = isTouched;
+        this.setTouchedKnob (index, isTouched);
 
         if (!isTouched || !this.surface.isDeletePressed ())
             return;
@@ -151,11 +151,11 @@ public class SetupMode extends BaseMode<IItem>
 
         display.addOptionElement ("", "Setup", true, "", "", false, true);
         display.addOptionElement ("Brightness", "Info", false, "", "", false, true);
-        display.addParameterElement (" ", false, "", (ChannelType) null, null, false, "Display", displayBrightness * 1023 / 100, displayBrightness + "%", this.isKnobTouched[2], -1);
-        display.addParameterElement (" ", false, "", (ChannelType) null, null, false, "LEDs", ledBrightness * 1023 / 100, ledBrightness + "%", this.isKnobTouched[3], -1);
+        display.addParameterElement (" ", false, "", (ChannelType) null, null, false, "Display", displayBrightness * 1023 / 100, displayBrightness + "%", this.isKnobTouched (2), -1);
+        display.addParameterElement (" ", false, "", (ChannelType) null, null, false, "LEDs", ledBrightness * 1023 / 100, ledBrightness + "%", this.isKnobTouched (3), -1);
         display.addOptionElement ("        Pads", " ", false, "", "", false, true);
-        display.addParameterElement (" ", false, "", (ChannelType) null, null, false, "Sensitivity", padSensitivity * 1023 / 10, Integer.toString (padSensitivity), this.isKnobTouched[5], -1);
-        display.addParameterElement (" ", false, "", (ChannelType) null, null, false, "Gain", padGain * 1023 / 10, Integer.toString (padGain), this.isKnobTouched[6], -1);
-        display.addParameterElement (" ", false, "", (ChannelType) null, null, false, "Dynamics", padDynamics * 1023 / 10, Integer.toString (padDynamics), this.isKnobTouched[7], -1);
+        display.addParameterElement (" ", false, "", (ChannelType) null, null, false, "Sensitivity", padSensitivity * 1023 / 10, Integer.toString (padSensitivity), this.isKnobTouched (5), -1);
+        display.addParameterElement (" ", false, "", (ChannelType) null, null, false, "Gain", padGain * 1023 / 10, Integer.toString (padGain), this.isKnobTouched (6), -1);
+        display.addParameterElement (" ", false, "", (ChannelType) null, null, false, "Dynamics", padDynamics * 1023 / 10, Integer.toString (padDynamics), this.isKnobTouched (7), -1);
     }
 }

@@ -238,7 +238,7 @@ public class MCUControlSurface extends AbstractControlSurface<MCUConfiguration>
         final ColorEx [] colors = new ColorEx [8];
         for (int i = 0; i < 8; i++)
             colors[i] = ColorEx.WHITE;
-        sendDisplayColor (colors);
+        this.sendDisplayColor (colors);
 
         super.internalShutdown ();
     }
@@ -410,9 +410,9 @@ public class MCUControlSurface extends AbstractControlSurface<MCUConfiguration>
      */
     private static byte toIndex (final ColorEx color)
     {
-        double red = color.getRed ();
-        double green = color.getGreen ();
-        double blue = color.getBlue ();
+        final double red = color.getRed ();
+        final double green = color.getGreen ();
+        final double blue = color.getBlue ();
         if (red < 0.5 && green < 0.5 && blue < 0.5 && (red > 0 || green > 0 || blue > 0))
         {
             // Use white for dim colors

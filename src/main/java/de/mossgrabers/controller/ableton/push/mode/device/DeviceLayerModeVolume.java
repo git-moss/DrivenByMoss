@@ -45,7 +45,7 @@ public class DeviceLayerModeVolume extends DeviceLayerMode
     @Override
     public void onKnobTouch (final int index, final boolean isTouched)
     {
-        this.isKnobTouched[index] = isTouched;
+        this.setTouchedKnob (index, isTouched);
 
         // Drum Pad Bank has size of 16, layers only 8
         final int offset = this.getDrumPadIndex ();

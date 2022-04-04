@@ -13,8 +13,6 @@ import de.mossgrabers.framework.daw.data.bank.ITrackBank;
 import de.mossgrabers.framework.mode.track.TrackVolumeMode;
 import de.mossgrabers.framework.utils.StringUtils;
 
-import java.util.Arrays;
-
 
 /**
  * Mode for editing a volume parameter of all tracks.
@@ -36,8 +34,7 @@ public class MaschineVolumeMode extends TrackVolumeMode<MaschineControlSurface, 
     {
         super (surface, model, false, surface.getMaschine ().hasMCUDisplay () ? DEFAULT_KNOB_IDS : null);
 
-        this.isKnobTouched = new boolean [9];
-        Arrays.fill (this.isKnobTouched, false);
+        this.initTouchedStates (9);
     }
 
 
@@ -55,7 +52,7 @@ public class MaschineVolumeMode extends TrackVolumeMode<MaschineControlSurface, 
                 name = ">" + name;
             d.setCell (0, i, name);
 
-            if (this.displayVU && !this.isKnobTouched[i] && !(this.isKnobTouched[8] && t.isSelected ()))
+            if (this.displayVU && !this.isKnobTouched (i) && !(this.isKnobTouched (8) && t.isSelected ()))
             {
                 final int steps = (int) Math.round (this.model.getValueChanger ().toNormalizedValue (t.getVu ()) * 6);
                 d.setCell (1, i, StringUtils.pad ("", steps, '>'));
@@ -71,7 +68,7 @@ public class MaschineVolumeMode extends TrackVolumeMode<MaschineControlSurface, 
     @Override
     public void onKnobTouch (final int index, final boolean isTouched)
     {
-        this.isKnobTouched[index] = isTouched;
+        this.setTouchedKnob (index, isTouched);
 
         if (index < 8)
             super.onKnobTouch (index, isTouched);

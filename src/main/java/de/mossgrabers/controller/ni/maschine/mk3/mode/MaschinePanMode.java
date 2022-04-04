@@ -13,8 +13,6 @@ import de.mossgrabers.framework.daw.data.bank.ITrackBank;
 import de.mossgrabers.framework.mode.track.TrackPanMode;
 import de.mossgrabers.framework.utils.StringUtils;
 
-import java.util.Arrays;
-
 
 /**
  * Mode for editing a pan parameter of all tracks.
@@ -33,8 +31,7 @@ public class MaschinePanMode extends TrackPanMode<MaschineControlSurface, Maschi
     {
         super (surface, model, false, surface.getMaschine ().hasMCUDisplay () ? DEFAULT_KNOB_IDS : null);
 
-        this.isKnobTouched = new boolean [9];
-        Arrays.fill (this.isKnobTouched, false);
+        this.initTouchedStates (9);
     }
 
 
@@ -61,7 +58,7 @@ public class MaschinePanMode extends TrackPanMode<MaschineControlSurface, Maschi
     @Override
     public void onKnobTouch (final int index, final boolean isTouched)
     {
-        this.isKnobTouched[index] = isTouched;
+        this.setTouchedKnob (index, isTouched);
 
         if (index < 8)
             super.onKnobTouch (index, isTouched);
