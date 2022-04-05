@@ -481,10 +481,7 @@ public class DeviceParamsMode extends BaseMode<IParameter>
         if (this.showDevices)
         {
             final ICursorDevice cursorDevice = this.model.getCursorDevice ();
-            if (this.surface.isShiftPressed ())
-                cursorDevice.swapWithPrevious ();
-            else
-                cursorDevice.getDeviceBank ().selectPreviousItem ();
+            cursorDevice.getDeviceBank ().selectPreviousItem ();
             return;
         }
         super.selectPreviousItem ();
@@ -498,10 +495,7 @@ public class DeviceParamsMode extends BaseMode<IParameter>
         if (this.showDevices)
         {
             final ICursorDevice cursorDevice = this.model.getCursorDevice ();
-            if (this.surface.isShiftPressed ())
-                cursorDevice.swapWithNext ();
-            else
-                cursorDevice.getDeviceBank ().selectNextItem ();
+            cursorDevice.getDeviceBank ().selectNextItem ();
             return;
         }
         super.selectNextItem ();
@@ -513,7 +507,14 @@ public class DeviceParamsMode extends BaseMode<IParameter>
     public void selectPreviousItemPage ()
     {
         if (this.showDevices)
-            this.model.getCursorDevice ().getDeviceBank ().selectPreviousPage ();
+        {
+            final ICursorDevice cursorDevice = this.model.getCursorDevice ();
+            if (this.surface.isShiftPressed ())
+                cursorDevice.swapWithPrevious ();
+            else
+                cursorDevice.getDeviceBank ().selectPreviousPage ();
+            return;
+        }
         super.selectPreviousItemPage ();
     }
 
@@ -523,7 +524,14 @@ public class DeviceParamsMode extends BaseMode<IParameter>
     public void selectNextItemPage ()
     {
         if (this.showDevices)
-            this.model.getCursorDevice ().getDeviceBank ().selectNextPage ();
+        {
+            final ICursorDevice cursorDevice = this.model.getCursorDevice ();
+            if (this.surface.isShiftPressed ())
+                cursorDevice.swapWithNext ();
+            else
+                cursorDevice.getDeviceBank ().selectNextPage ();
+            return;
+        }
         super.selectNextItemPage ();
     }
 

@@ -381,7 +381,7 @@ public class DeviceBrowserMode extends BaseMode<IItem>
 
     /** {@inheritDoc} */
     @Override
-    public void selectPreviousItem ()
+    public void selectPreviousItemPage ()
     {
         this.resetFilterColumn ();
         this.model.getBrowser ().previousContentType ();
@@ -390,7 +390,7 @@ public class DeviceBrowserMode extends BaseMode<IItem>
 
     /** {@inheritDoc} */
     @Override
-    public void selectNextItem ()
+    public void selectNextItemPage ()
     {
         this.resetFilterColumn ();
         this.model.getBrowser ().nextContentType ();

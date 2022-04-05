@@ -224,6 +224,30 @@ public abstract class AbstractTrackMode extends BaseMode<ITrack>
     }
 
 
+    /** {@inheritDoc} */
+    @Override
+    public void selectPreviousItemPage ()
+    {
+        final ICursorTrack cursorTrack = this.model.getCursorTrack ();
+        if (this.surface.isShiftPressed ())
+            cursorTrack.swapWithPrevious ();
+        else
+            super.selectPreviousItemPage ();
+    }
+
+
+    /** {@inheritDoc} */
+    @Override
+    public void selectNextItemPage ()
+    {
+        final ICursorTrack cursorTrack = this.model.getCursorTrack ();
+        if (this.surface.isShiftPressed ())
+            cursorTrack.swapWithNext ();
+        else
+            super.selectNextItemPage ();
+    }
+
+
     /**
      * Handle the selection of a send effect.
      *

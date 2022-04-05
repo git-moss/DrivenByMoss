@@ -37,4 +37,18 @@ public interface ICursor extends IPinnable
      * Select the next item.
      */
     void selectNext ();
+
+
+    /**
+     * Moves the cursor item to the left in the item chain (swaps it position with the previous
+     * item). If there is no item before this, nothing happens.
+     */
+    void swapWithPrevious ();
+
+
+    /**
+     * Moves the item to the right in the item chain (swaps it position with the following item). If
+     * there is no item after this, nothing happens.
+     */
+    void swapWithNext ();
 }

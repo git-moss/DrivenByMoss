@@ -35,20 +35,6 @@ public interface ICursorDevice extends ISpecificDevice, ICursor
 
 
     /**
-     * Moves the device to the left in the device chain (swaps it position with the previous
-     * device). If there is no device before this, nothing happens.
-     */
-    void swapWithPrevious ();
-
-
-    /**
-     * Moves the device to the right in the device chain (swaps it position with the following
-     * device). If there is no device after this, nothing happens.
-     */
-    void swapWithNext ();
-
-
-    /**
      * Get the names of slot chains of a device.
      *
      * @return The names or an empty array

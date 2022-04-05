@@ -5,9 +5,11 @@
 package de.mossgrabers.bitwig.framework.daw.data;
 
 import de.mossgrabers.bitwig.framework.daw.ApplicationImpl;
+import de.mossgrabers.bitwig.framework.daw.ModelImpl;
 import de.mossgrabers.framework.controller.valuechanger.IValueChanger;
 import de.mossgrabers.framework.daw.IHost;
 import de.mossgrabers.framework.daw.data.ICursorTrack;
+import de.mossgrabers.framework.daw.data.bank.ITrackBank;
 
 import com.bitwig.extension.controller.api.CursorTrack;
 import com.bitwig.extension.controller.api.SettableBooleanValue;
@@ -21,12 +23,14 @@ import com.bitwig.extension.controller.api.Track;
  */
 public class CursorTrackImpl extends TrackImpl implements ICursorTrack
 {
+    private final ModelImpl            model;
     private final SettableBooleanValue isPinnedAttr;
 
 
     /**
      * Constructor.
-     *
+     * 
+     * @param model The model to retrieve the current track bank
      * @param host The DAW host
      * @param valueChanger The valueChanger
      * @param application The application
@@ -35,12 +39,13 @@ public class CursorTrackImpl extends TrackImpl implements ICursorTrack
      * @param numSends The number of sends of a bank
      * @param numScenes The number of scenes of a bank
      */
-    public CursorTrackImpl (final IHost host, final IValueChanger valueChanger, final CursorTrack cursorTrack, final Track rootGroup, final ApplicationImpl application, final int numSends, final int numScenes)
+    public CursorTrackImpl (final ModelImpl model, final IHost host, final IValueChanger valueChanger, final CursorTrack cursorTrack, final Track rootGroup, final ApplicationImpl application, final int numSends, final int numScenes)
     {
         super (host, valueChanger, application, cursorTrack, rootGroup, cursorTrack, -1, numSends, numScenes);
 
-        this.isPinnedAttr = cursorTrack.isPinned ();
+        this.model = model;
 
+        this.isPinnedAttr = cursorTrack.isPinned ();
         this.isPinnedAttr.markInterested ();
     }
 
@@ -54,6 +59,14 @@ public class CursorTrackImpl extends TrackImpl implements ICursorTrack
         Util.setIsSubscribed (this.cursorTrack.hasPrevious (), enable);
         Util.setIsSubscribed (this.cursorTrack.hasNext (), enable);
         Util.setIsSubscribed (this.isPinnedAttr, enable);
+    }
+
+
+    /** {@inheritDoc} */
+    @Override
+    public int getIndex ()
+    {
+        return this.getPosition () % this.model.getCurrentTrackBank ().getPageSize ();
     }
 
 
@@ -86,6 +99,38 @@ public class CursorTrackImpl extends TrackImpl implements ICursorTrack
     public void selectNext ()
     {
         this.cursorTrack.selectNext ();
+    }
+
+
+    /** {@inheritDoc} */
+    @Override
+    public void swapWithPrevious ()
+    {
+        final ITrackBank tb = this.model.getCurrentTrackBank ();
+        if (tb == null)
+            return;
+        final int index = this.getIndex ();
+        if (index == 0)
+            return;
+        final TrackImpl prevTrack = (TrackImpl) tb.getItem (index - 1);
+        this.track.afterTrackInsertionPoint ().moveTracks (prevTrack.track);
+        prevTrack.track.selectInEditor ();
+    }
+
+
+    /** {@inheritDoc} */
+    @Override
+    public void swapWithNext ()
+    {
+        final ITrackBank tb = this.model.getCurrentTrackBank ();
+        if (tb == null)
+            return;
+        final int index = this.getIndex ();
+        if (index == tb.getPageSize () - 1)
+            return;
+        final TrackImpl nextTrack = (TrackImpl) tb.getItem (index + 1);
+        this.track.beforeTrackInsertionPoint ().moveTracks (nextTrack.track);
+        nextTrack.track.selectInEditor ();
     }
 
 

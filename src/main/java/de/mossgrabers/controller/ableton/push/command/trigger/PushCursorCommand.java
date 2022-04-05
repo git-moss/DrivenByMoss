@@ -10,6 +10,7 @@ import de.mossgrabers.framework.command.trigger.Direction;
 import de.mossgrabers.framework.command.trigger.mode.CursorCommand;
 import de.mossgrabers.framework.daw.IModel;
 import de.mossgrabers.framework.daw.data.bank.ISceneBank;
+import de.mossgrabers.framework.featuregroup.IMode;
 import de.mossgrabers.framework.view.Views;
 
 
@@ -69,11 +70,46 @@ public class PushCursorCommand extends CursorCommand<PushControlSurface, PushCon
 
     /** {@inheritDoc} */
     @Override
+    protected void scrollLeft ()
+    {
+        final IMode activeMode = this.surface.getModeManager ().getActive ();
+        if (activeMode != null)
+            activeMode.selectPreviousItemPage ();
+    }
+
+
+    /** {@inheritDoc} */
+    @Override
+    protected void scrollRight ()
+    {
+        final IMode activeMode = this.surface.getModeManager ().getActive ();
+        if (activeMode != null)
+            activeMode.selectNextItemPage ();
+    }
+
+
+    /** {@inheritDoc} */
+    @Override
     protected ISceneBank getSceneBank ()
     {
         if (this.isScenePlay ())
             return this.sceneBank64;
         return this.model.getCurrentTrackBank ().getSceneBank ();
+    }
+
+
+    /** {@inheritDoc} */
+    @Override
+    protected void updateArrowStates ()
+    {
+        final ISceneBank sceneBank = this.getSceneBank ();
+        this.canScrollUp = sceneBank.canScrollBackwards ();
+        this.canScrollDown = sceneBank.canScrollForwards ();
+
+        final IMode mode = this.surface.getModeManager ().getActive ();
+        final boolean shiftPressed = this.surface.isShiftPressed ();
+        this.canScrollLeft = mode != null && (shiftPressed ? mode.hasPreviousItem () : mode.hasPreviousItemPage ());
+        this.canScrollRight = mode != null && (shiftPressed ? mode.hasNextItem () : mode.hasNextItemPage ());
     }
 
 

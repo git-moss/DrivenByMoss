@@ -103,7 +103,7 @@ public class ModelImpl extends AbstractModel
         // Create track banks
 
         this.bwCursorTrack = controllerHost.createCursorTrack ("MyCursorTrackID", "The Cursor Track", numSends, numScenes, true);
-        this.cursorTrack = new CursorTrackImpl (this.host, this.valueChanger, this.bwCursorTrack, this.rootTrackGroup, (ApplicationImpl) this.application, numSends, numScenes);
+        this.cursorTrack = new CursorTrackImpl (this, this.host, this.valueChanger, this.bwCursorTrack, this.rootTrackGroup, (ApplicationImpl) this.application, numSends, numScenes);
 
         final MasterTrack master = controllerHost.createMasterTrack (0);
         this.masterTrack = new MasterTrackImpl (this.host, this.valueChanger, master, this.bwCursorTrack, this.rootTrackGroup, (ApplicationImpl) this.application);
