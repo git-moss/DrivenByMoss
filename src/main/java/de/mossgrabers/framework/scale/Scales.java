@@ -350,7 +350,8 @@ public class Scales
                 break;
             case STAGGERED_UP:
             case STAGGERED_RIGHT:
-                this.setPlayShift (this.selectedScale.getIntervals().length / 2 - 1, 5);
+                this.setPlayShift (5, 5);
+//                this.setPlayShift (this.selectedScale.getIntervals().length / 2 - 1, 5);
 //                this.setPlayShift (((this.selectedScale.getIntervals().length / 2 + 1) & ~1) - 1, 5);
                 break;
         }
