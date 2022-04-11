@@ -31,14 +31,20 @@ public enum ScaleLayout
     EIGHT_UP_CENTER("8th ^ centered"),
     /** Eighth steps centered to the right. */
     EIGHT_RIGHT_CENTER("8th > centered"),
-
+    /** Upwards by a fixed number of semitones. */
     ISOMORPHIC_UP("Isomorphic ^"),
-    ISOMORPHIC_RIGHT("Isomorphic >");
+    /** Same as ISOMORPHIC_UP but with rows and columns transposed. */
+    ISOMORPHIC_RIGHT("Isomorphic >"),
+    /** Upward by one less than half the scale. */
+    STAGGERED_UP("Staggered ^"),
+    /** Same as STAGGERED_UP but with rows and columns transposed. */
+    STAGGERED_RIGHT("Staggered >");
 
-    private static final String [] scaleLayoutNames = new String [12];
+    private static final String [] scaleLayoutNames;
     static
     {
         final ScaleLayout [] values = ScaleLayout.values ();
+        scaleLayoutNames = new String [values.length];
         for (int i = 0; i < values.length; i++)
             scaleLayoutNames[i] = values[i].name;
     }

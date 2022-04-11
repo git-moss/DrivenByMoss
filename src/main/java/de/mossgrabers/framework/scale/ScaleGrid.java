@@ -61,7 +61,15 @@ class ScaleGrid
                 final int index = row * cols + column;
 
                 if (layout == ScaleLayout.ISOMORPHIC_UP || layout == ScaleLayout.ISOMORPHIC_RIGHT) {
-                    this.matrix[index] = x * shift + y * semitoneShift - 4;
+                    // We could repurpose the shift parameters as fixed semitone deltas dx, dy:
+                    // this.matrix[index] = x * shift + y * semitoneShift - 4;
+                    // But that is not very flexible without dedicated configuration for dx, dy.
+                    // Provide at least some alternatives for now by using the selected scale's first and median steps
+                    // as deltas.
+                    this.matrix[index] = x * intervals[1] + y * intervals[intervals.length / 2] - 4;
+                } else if (layout == ScaleLayout.STAGGERED_UP || layout == ScaleLayout.STAGGERED_RIGHT) {
+                    final int step = x * 2 + y * shift;
+                    this.matrix[index] = 12 * (step / len) + intervals[step % len];
                 } else {
                     int s = shift;
                     // Fix 8th layout for scales which do not have 7 steps

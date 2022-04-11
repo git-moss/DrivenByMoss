@@ -128,7 +128,10 @@ public enum Scale
     MESSIAEN_6("Messiaen 6", new int []                { 0, 2, 4, 5, 6, 8, 10, 11 }),
 
     /** The Messiaen 7 scale. */
-    MESSIAEN_7("Messiaen 7", new int []                { 0, 1, 2, 3, 5, 6, 7, 8, 9, 11 });
+    MESSIAEN_7("Messiaen 7", new int []                { 0, 1, 2, 3, 5, 6, 7, 8, 9, 11 }),
+
+    /** The 12-tone Chromatic scale. */
+    CHROMATIC("Chromatic", new int[]                   { 0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11 });
 
     // @formatter:on
 
