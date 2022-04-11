@@ -31,11 +31,11 @@ public enum ScaleLayout
     EIGHT_UP_CENTER("8th ^ centered"),
     /** Eighth steps centered to the right. */
     EIGHT_RIGHT_CENTER("8th > centered"),
-    /** Upwards by a fixed number of semitones. */
-    ISOMORPHIC_UP("Isomorphic ^"),
-    /** Same as ISOMORPHIC_UP but with rows and columns transposed. */
-    ISOMORPHIC_RIGHT("Isomorphic >"),
-    /** Upward by one less than half the scale. */
+    /** Upward by one less than half the scale, right by scale steps. */
+    FOLDED_UP("Folded ^"),
+    /** Same as FOLDED_UP but with rows and columns transposed. */
+    FOLDED_RIGHT("Folded >"),
+    /** Upward by one less than half the scale (ensuring odd), right by two scale steps. */
     STAGGERED_UP("Staggered ^"),
     /** Same as STAGGERED_UP but with rows and columns transposed. */
     STAGGERED_RIGHT("Staggered >");
