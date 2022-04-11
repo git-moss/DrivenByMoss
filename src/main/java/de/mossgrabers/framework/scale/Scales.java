@@ -350,9 +350,9 @@ public class Scales
                 break;
             case STAGGERED_UP:
             case STAGGERED_RIGHT:
-                this.setPlayShift (5, 5);
-//                this.setPlayShift (this.selectedScale.getIntervals().length / 2 - 1, 5);
-//                this.setPlayShift (((this.selectedScale.getIntervals().length / 2 + 1) & ~1) - 1, 5);
+                // Note, scaleShift is dynamically determined by ScaleGrid depending on scale. It isn't calculated
+                // here because scale could change without a subsequent layout change to refresh the computed value.
+                this.setPlayShift (0, 5);
                 break;
         }
     }
