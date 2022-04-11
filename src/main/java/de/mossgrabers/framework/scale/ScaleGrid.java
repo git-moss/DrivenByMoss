@@ -60,9 +60,10 @@ class ScaleGrid
                 final int x = isUp ? column : row;
                 final int index = row * cols + column;
 
-                if (layout == ScaleLayout.FOLDED_UP || layout == ScaleLayout.FOLDED_RIGHT) {
-                    final int step = x + y * shift;
-                    this.matrix[index] = 12 * (step / len) + intervals[step % len];
+                if (layout == ScaleLayout.ISOMORPHIC_UP || layout == ScaleLayout.ISOMORPHIC_RIGHT) {
+                    // We could repurpose the shift parameters as fixed semitone deltas dx, dy:
+                    //  this.matrix[index] = x * shift + y * semitoneShift - 4;
+
                 } else if (layout == ScaleLayout.STAGGERED_UP || layout == ScaleLayout.STAGGERED_RIGHT) {
                     final int step = x * 2 + y * shift;
                     this.matrix[index] = 12 * (step / len) + intervals[step % len];

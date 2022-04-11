@@ -348,10 +348,6 @@ public class Scales
             case EIGHT_RIGHT_CENTER:
                 this.setPlayShift (7, 12);
                 break;
-            case FOLDED_UP:
-            case FOLDED_RIGHT:
-                this.setPlayShift (this.selectedScale.getIntervals().length / 2 - 1, 5);
-                break;
             case STAGGERED_UP:
             case STAGGERED_RIGHT:
                 this.setPlayShift (this.selectedScale.getIntervals().length / 2 - 1, 5);
