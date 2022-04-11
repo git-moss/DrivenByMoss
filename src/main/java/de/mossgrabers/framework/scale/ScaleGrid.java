@@ -57,16 +57,17 @@ class ScaleGrid
         int dy = shift;
 
         // Fix 8th layout for scales which do not have 7 steps
-        if (shift == 7) {
+        if (shift == 7)
             dy = len;
-        }
 
-        if (layout == ScaleLayout.STAGGERED_UP || layout == ScaleLayout.STAGGERED_RIGHT) {
+        if (layout == ScaleLayout.STAGGERED_UP || layout == ScaleLayout.STAGGERED_RIGHT)
+        {
             dx = 2;
             // Staggered layout steps right by + 2, so on the row above a nice symmetry is produced by octave - 2.
             // Divide until shift is odd to evenly distribute the full scale and ensure all steps are included.
             dy = len - 2;
-            while (dy > 1 && (dy & 1) == 0) {
+            while (dy > 1 && (dy & 1) == 0)
+            {
                 dy /= 2;
             }
         }
@@ -83,7 +84,8 @@ class ScaleGrid
                 int oct = offset / len;
 
                 // Fix negative values introduced by centerOffset
-                if (offset < 0) {
+                if (offset < 0)
+                {
                     offset = len + offset;
                     oct = offset / len - 1;
                 }
