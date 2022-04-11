@@ -58,24 +58,27 @@ class ScaleGrid
             {
                 final int y = isUp ? row : column;
                 final int x = isUp ? column : row;
-
-                int s = shift;
-                // Fix 8th layout for scales which do not have 7 steps
-                if (shift == 7)
-                    s = len;
-                int offset = y * s + x + centerOffset;
-
-                int oct = offset / len;
-
-                // Fix negative values introduced by centerOffset
-                if (offset < 0)
-                {
-                    offset = len + offset;
-                    oct = offset / len - 1;
-                }
-
                 final int index = row * cols + column;
-                this.matrix[index] = oct * 12 + intervals[offset % len];
+
+                if (layout == ScaleLayout.ISOMORPHIC_UP || layout == ScaleLayout.ISOMORPHIC_RIGHT) {
+                    this.matrix[index] = x * shift + y * semitoneShift - 4;
+                } else {
+                    int s = shift;
+                    // Fix 8th layout for scales which do not have 7 steps
+                    if (shift == 7)
+                        s = len;
+                    int offset = y * s + x + centerOffset;
+
+                    int oct = offset / len;
+
+                    // Fix negative values introduced by centerOffset
+                    if (offset < 0) {
+                        offset = len + offset;
+                        oct = offset / len - 1;
+                    }
+
+                    this.matrix[index] = oct * 12 + intervals[offset % len];
+                }
                 this.chromatic[index] = y * semitoneShift + x;
             }
         }

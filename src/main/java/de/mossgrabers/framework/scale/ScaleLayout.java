@@ -30,10 +30,12 @@ public enum ScaleLayout
     /** Eighth steps centered upwards. */
     EIGHT_UP_CENTER("8th ^ centered"),
     /** Eighth steps centered to the right. */
-    EIGHT_RIGHT_CENTER("8th > centered");
+    EIGHT_RIGHT_CENTER("8th > centered"),
 
+    ISOMORPHIC_UP("Isomorphic ^"),
+    ISOMORPHIC_RIGHT("Isomorphic >");
 
-    private static final String [] scaleLayoutNames = new String [10];
+    private static final String [] scaleLayoutNames = new String [12];
     static
     {
         final ScaleLayout [] values = ScaleLayout.values ();

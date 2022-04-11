@@ -348,6 +348,10 @@ public class Scales
             case EIGHT_RIGHT_CENTER:
                 this.setPlayShift (7, 12);
                 break;
+            case ISOMORPHIC_UP:
+            case ISOMORPHIC_RIGHT:
+                this.setPlayShift (2, 5);
+                break;
         }
     }
 
