@@ -31,9 +31,9 @@ public enum ScaleLayout
     EIGHT_UP_CENTER("8th ^ centered"),
     /** Eighth steps centered to the right. */
     EIGHT_RIGHT_CENTER("8th > centered"),
-    /** Upward by five scale steps, right by two steps. */
+    /** Upward by ~five steps and rightward by two steps. (dx = 2, dy = 5) */
     STAGGERED_UP("Staggered ^"),
-    /** Same as STAGGERED_UP but with rows and columns transposed. */
+    /** Rightward by ~five steps and upward by two steps. (dx = 5, dy = 2) */
     STAGGERED_RIGHT("Staggered >");
 
     private static final String [] scaleLayoutNames;

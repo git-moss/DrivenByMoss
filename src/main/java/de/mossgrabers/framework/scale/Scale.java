@@ -130,7 +130,7 @@ public enum Scale
     /** The Messiaen 7 scale. */
     MESSIAEN_7("Messiaen 7", new int []                { 0, 1, 2, 3, 5, 6, 7, 8, 9, 11 }),
 
-    /** The 12-tone Chromatic scale; can be usefully mapped by scale mode. Stagger layout makes this highly playable. */
+    /** The 12-tone Chromatic scale; can be usefully mapped by scale mode. Staggered layout makes this very playable. */
     CHROMATIC("Chromatic", new int[]                   { 0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11 });
 
     // @formatter:on
