@@ -27,7 +27,6 @@ public class GamepadControllerInputThread implements Runnable
 {
     private static final long                    INTERVAL           = 1;
 
-    private Thread                               worker;
     private final AtomicBoolean                  running            = new AtomicBoolean (false);
 
     private final IHost                          host;
@@ -59,8 +58,7 @@ public class GamepadControllerInputThread implements Runnable
      */
     public void start ()
     {
-        this.worker = new Thread (this);
-        this.worker.start ();
+        new Thread (this).start ();
     }
 
 

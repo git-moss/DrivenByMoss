@@ -40,7 +40,7 @@ public class SLMkIIISendMode extends AbstractTrackMode
 
         this.sendIndex = sendIndex;
 
-        final SendParameterProvider parameterProvider = new SendParameterProvider (model, sendIndex);
+        final SendParameterProvider parameterProvider = new SendParameterProvider (model, sendIndex, 0);
         this.setParameterProvider (parameterProvider);
         this.setParameterProvider (ButtonID.DELETE, new ResetParameterProvider (parameterProvider));
     }

@@ -48,7 +48,7 @@ public class SendMode extends AbstractTrackMode
         else
         {
             final int surfaceID = surface.getSurfaceID ();
-            parameterProvider = new RangeFilterParameterProvider (new SendParameterProvider (model, sendIndex), surfaceID * 8, 8);
+            parameterProvider = new RangeFilterParameterProvider (new SendParameterProvider (model, sendIndex, 0), surfaceID * 8, 8);
         }
         this.setParameterProvider (parameterProvider);
     }
@@ -84,8 +84,7 @@ public class SendMode extends AbstractTrackMode
         }
 
         this.drawDisplay2 ();
-        if (!this.drawTrackHeader ())
-            return;
+        this.drawTrackHeader ();
 
         final ColorEx [] colors = new ColorEx [8];
 
@@ -113,19 +112,18 @@ public class SendMode extends AbstractTrackMode
 
     /** {@inheritDoc} */
     @Override
-    protected boolean drawTrackHeader ()
+    protected void drawTrackHeader ()
     {
         if (this.model.isEffectTrackBankActive ())
         {
             this.surface.getModeManager ().setActive (Modes.TRACK);
-            return true;
+            return;
         }
 
-        if (!super.drawTrackHeader ())
-            return false;
+        super.drawTrackHeader ();
 
         if (this.surface.getConfiguration ().isDisplayTrackNames ())
-            return true;
+            return;
 
         final ITextDisplay d = this.surface.getTextDisplay ();
         final ITrackBank tb = this.getTrackBank ();
@@ -143,7 +141,6 @@ public class SendMode extends AbstractTrackMode
                 d.clearCell (0, i);
         }
         d.done (0);
-        return true;
     }
 
 

@@ -204,9 +204,19 @@ public class SessionView extends AbstractSessionView<LaunchkeyMiniMk3ControlSurf
                 return;
 
             if (index == 0)
-                sceneBank.selectPreviousPage ();
+            {
+                if (this.padMode == null)
+                    sceneBank.selectPreviousPage ();
+                else
+                    sceneBank.scrollBackwards ();
+            }
             else
-                sceneBank.selectNextPage ();
+            {
+                if (this.padMode == null)
+                    sceneBank.selectNextPage ();
+                else
+                    sceneBank.scrollForwards ();
+            }
             return;
         }
 

@@ -41,6 +41,13 @@ public class MarkerCommand<S extends IControlSurface<C>, C extends Configuration
     {
         if (event != ButtonEvent.DOWN)
             return;
+
+        if (this.surface.isSelectPressed ())
+        {
+            this.model.getMarkerBank ().addMarker ();
+            return;
+        }
+
         final ModeManager modeManager = this.surface.getModeManager ();
         if (modeManager.isActive (Modes.MARKERS))
             modeManager.restore ();

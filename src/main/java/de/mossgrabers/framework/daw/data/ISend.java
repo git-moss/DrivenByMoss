@@ -4,6 +4,9 @@
 
 package de.mossgrabers.framework.daw.data;
 
+import de.mossgrabers.framework.controller.color.ColorEx;
+
+
 /**
  * Interface to a send.
  *
@@ -11,5 +14,10 @@ package de.mossgrabers.framework.daw.data;
  */
 public interface ISend extends IParameter
 {
-    // Intentionally empty
+    /**
+     * Get the color of the send channel.
+     *
+     * @return The color in RGB
+     */
+    ColorEx getColor ();
 }

@@ -57,8 +57,7 @@ public class TrackView extends AbstractView<BeatstepControlSurface, BeatstepConf
         switch (index)
         {
             // Send 5 - 6
-            case 12:
-            case 13:
+            case 12, 13:
                 if (!this.model.isEffectTrackBankActive ())
                     selectedTrack.get ().getSendBank ().getItem (index - 8).changeValue (value);
                 break;

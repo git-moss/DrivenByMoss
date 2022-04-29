@@ -21,10 +21,10 @@ import de.mossgrabers.framework.utils.ButtonEvent;
  */
 public class WindCommand<S extends IControlSurface<C>, C extends Configuration> extends AbstractTriggerCommand<S, C>
 {
-    private final boolean isFastForwarding;
+    protected final boolean isFastForwarding;
 
-    private boolean       isRewinding;
-    private boolean       isForwarding;
+    private boolean         isRewinding;
+    private boolean         isForwarding;
 
 
     /**

@@ -10,6 +10,7 @@ import de.mossgrabers.framework.daw.IHost;
 import de.mossgrabers.framework.daw.data.ICursorDevice;
 import de.mossgrabers.framework.daw.data.bank.IDeviceBank;
 
+import com.bitwig.extension.controller.api.Device;
 import com.bitwig.extension.controller.api.DeviceBank;
 import com.bitwig.extension.controller.api.PinnableCursorDevice;
 
@@ -21,9 +22,11 @@ import com.bitwig.extension.controller.api.PinnableCursorDevice;
  */
 public class CursorDeviceImpl extends SpecificDeviceImpl implements ICursorDevice
 {
-    private final PinnableCursorDevice cursorDevice;
+    private static final int           NUM_DEVICES_LARGE_BANK = 100;
 
+    private final PinnableCursorDevice cursorDevice;
     private final IDeviceBank          deviceBank;
+    private final DeviceBank           largeDeviceBank;
 
 
     /**
@@ -44,6 +47,7 @@ public class CursorDeviceImpl extends SpecificDeviceImpl implements ICursorDevic
         super (host, valueChanger, cursorDevice, numSends, numParamPages, numParams, numDevicesInBank, numDeviceLayers, numDrumPadLayers);
 
         this.cursorDevice = cursorDevice;
+        this.largeDeviceBank = cursorDevice.channel ().createDeviceBank (NUM_DEVICES_LARGE_BANK);
 
         final int checkedNumDevices = numDevicesInBank >= 0 ? numDevicesInBank : 8;
 
@@ -169,12 +173,12 @@ public class CursorDeviceImpl extends SpecificDeviceImpl implements ICursorDevic
     @Override
     public void swapWithPrevious ()
     {
-        final int index = this.getIndex ();
-        if (index == 0)
+        final int position = this.getPosition ();
+        if (position == 0)
             return;
-        final DeviceImpl prevDevice = (DeviceImpl) this.deviceBank.getItem (index - 1);
-        this.device.afterDeviceInsertionPoint ().moveDevices (prevDevice.device);
-        prevDevice.device.selectInEditor ();
+        final Device prevDevice = this.largeDeviceBank.getItemAt (position - 1);
+        this.device.afterDeviceInsertionPoint ().moveDevices (prevDevice);
+        prevDevice.selectInEditor ();
     }
 
 
@@ -182,12 +186,12 @@ public class CursorDeviceImpl extends SpecificDeviceImpl implements ICursorDevic
     @Override
     public void swapWithNext ()
     {
-        final int index = this.getIndex ();
-        if (index == 7)
+        final int position = this.getPosition ();
+        if (position >= NUM_DEVICES_LARGE_BANK - 1)
             return;
-        final DeviceImpl nextDevice = (DeviceImpl) this.deviceBank.getItem (index + 1);
-        this.device.beforeDeviceInsertionPoint ().moveDevices (nextDevice.device);
-        nextDevice.device.selectInEditor ();
+        final Device nextDevice = this.largeDeviceBank.getItemAt (position + 1);
+        this.device.beforeDeviceInsertionPoint ().moveDevices (nextDevice);
+        nextDevice.selectInEditor ();
     }
 
 

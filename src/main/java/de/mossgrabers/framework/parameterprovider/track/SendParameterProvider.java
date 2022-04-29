@@ -9,6 +9,8 @@ import de.mossgrabers.framework.daw.data.IParameter;
 import de.mossgrabers.framework.daw.data.ITrack;
 import de.mossgrabers.framework.daw.data.bank.ISendBank;
 import de.mossgrabers.framework.daw.data.empty.EmptyParameter;
+import de.mossgrabers.framework.observer.IItemSelectionObserver;
+import de.mossgrabers.framework.observer.IParametersAdjustObserver;
 
 import java.util.Optional;
 
@@ -19,33 +21,46 @@ import java.util.Optional;
  *
  * @author J&uuml;rgen Mo&szlig;graber
  */
-public class SendParameterProvider extends AbstractTrackParameterProvider
+public class SendParameterProvider extends AbstractTrackParameterProvider implements IItemSelectionObserver
 {
     private final int sendIndex;
-
-
-    /**
-     * Constructor. Provides all sends of the currently selected track.
-     *
-     * @param model Uses the current track bank from this model to get the parameters
-     */
-    public SendParameterProvider (final IModel model)
-    {
-        this (model, -1);
-    }
+    private final int sendOffset;
 
 
     /**
      * Constructor. Provides one send parameter of all tracks.
      *
      * @param model Uses the current track bank from this model to get the parameters
-     * @param sendIndex The index of the send to provide
+     * @param sendIndex The index of the send to provide, set to -1 to provide all sends of the
+     *            selected track
+     * @param sendOffset If all sends are provided they can be offset by this value
      */
-    public SendParameterProvider (final IModel model, final int sendIndex)
+    public SendParameterProvider (final IModel model, final int sendIndex, final int sendOffset)
     {
         super (model);
 
         this.sendIndex = sendIndex;
+        this.sendOffset = sendOffset;
+    }
+
+
+    /** {@inheritDoc} */
+    @Override
+    public void addParametersObserver (final IParametersAdjustObserver observer)
+    {
+        super.addParametersObserver (observer);
+        if (this.sendIndex == -1)
+            this.bank.addSelectionObserver (this);
+    }
+
+
+    /** {@inheritDoc} */
+    @Override
+    public void removeParametersObserver (final IParametersAdjustObserver observer)
+    {
+        if (this.sendIndex == -1)
+            this.bank.removeSelectionObserver (this);
+        super.removeParametersObserver (observer);
     }
 
 
@@ -59,10 +74,20 @@ public class SendParameterProvider extends AbstractTrackParameterProvider
             if (track.isEmpty ())
                 return EmptyParameter.INSTANCE;
             final ISendBank sendBank = track.get ().getSendBank ();
-            return sendBank.getItemCount () > 0 ? sendBank.getItem (index) : EmptyParameter.INSTANCE;
+            final int idx = this.sendOffset + index;
+            return idx < sendBank.getItemCount () ? sendBank.getItem (idx) : EmptyParameter.INSTANCE;
         }
 
         final ISendBank sendBank = this.bank.getItem (index).getSendBank ();
-        return sendBank.getItemCount () == 0 ? EmptyParameter.INSTANCE : sendBank.getItem (this.sendIndex);
+        final int idx = this.sendOffset + this.sendIndex;
+        return sendBank.getItemCount () == 0 ? EmptyParameter.INSTANCE : sendBank.getItem (idx);
+    }
+
+
+    /** {@inheritDoc} */
+    @Override
+    public void call (final int index, final boolean isSelected)
+    {
+        this.notifyParametersObservers ();
     }
 }

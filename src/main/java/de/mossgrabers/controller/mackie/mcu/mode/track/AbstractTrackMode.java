@@ -35,7 +35,10 @@ public abstract class AbstractTrackMode extends BaseMode<ITrack>
     }
 
 
-    protected boolean drawTrackHeader ()
+    /**
+     * Fill the track name row in the display.
+     */
+    protected void drawTrackHeader ()
     {
         final ITrackBank tb = this.getTrackBank ();
         final int extenderOffset = this.getExtenderOffset ();
@@ -49,7 +52,5 @@ public abstract class AbstractTrackMode extends BaseMode<ITrack>
             d.setCell (0, i, StringUtils.shortenAndFixASCII (t.getName (), this.getTextLength ()));
         }
         d.done (0);
-
-        return true;
     }
 }

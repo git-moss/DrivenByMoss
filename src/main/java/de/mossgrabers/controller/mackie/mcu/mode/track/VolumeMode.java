@@ -66,8 +66,7 @@ public class VolumeMode extends AbstractTrackMode
             return;
 
         this.drawDisplay2 ();
-        if (!this.drawTrackHeader ())
-            return;
+        this.drawTrackHeader ();
 
         final ITextDisplay d = this.surface.getTextDisplay ();
         final ITrackBank tb = this.getTrackBank ();
@@ -78,7 +77,7 @@ public class VolumeMode extends AbstractTrackMode
         {
             final ITrack t = tb.getItem (extenderOffset + i);
             d.setCell (1, i, t.getVolumeStr (textLength));
-            colors[i] = t.getColor ();
+            colors[i] = preventBlack (t.doesExist (), t.getColor ());
         }
         d.done (1);
 
@@ -88,13 +87,12 @@ public class VolumeMode extends AbstractTrackMode
 
     /** {@inheritDoc} */
     @Override
-    protected boolean drawTrackHeader ()
+    protected void drawTrackHeader ()
     {
-        if (!super.drawTrackHeader ())
-            return false;
+        super.drawTrackHeader ();
 
         if (this.surface.getConfiguration ().isDisplayTrackNames ())
-            return true;
+            return;
 
         final ITrackBank tb = this.getTrackBank ();
         final ITextDisplay d = this.surface.getTextDisplay ();
@@ -107,8 +105,6 @@ public class VolumeMode extends AbstractTrackMode
                 d.clearCell (0, i);
         }
         d.done (0);
-
-        return true;
     }
 
 

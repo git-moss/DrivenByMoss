@@ -82,7 +82,7 @@ public class TrackSendMode<S extends IControlSurface<C>, C extends Configuration
         this.sendIndex = sendIndex;
 
         if (controls != null)
-            this.setParameterProvider (new SendParameterProvider (model, sendIndex));
+            this.setParameterProvider (new SendParameterProvider (model, sendIndex, 0));
     }
 
 

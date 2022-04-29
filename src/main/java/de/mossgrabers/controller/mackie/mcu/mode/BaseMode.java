@@ -9,6 +9,7 @@ import de.mossgrabers.controller.mackie.mcu.MCUControllerSetup;
 import de.mossgrabers.controller.mackie.mcu.controller.MCUControlSurface;
 import de.mossgrabers.framework.controller.ButtonID;
 import de.mossgrabers.framework.controller.ContinuousID;
+import de.mossgrabers.framework.controller.color.ColorEx;
 import de.mossgrabers.framework.controller.display.ITextDisplay;
 import de.mossgrabers.framework.daw.IModel;
 import de.mossgrabers.framework.daw.data.ICursorDevice;
@@ -130,6 +131,11 @@ public abstract class BaseMode<B extends IItem> extends AbstractMode<MCUControlS
     }
 
 
+    /**
+     * Implement to reset one of the controlled parameters.
+     *
+     * @param index The index of the parameter
+     */
     protected abstract void resetParameter (final int index);
 
 
@@ -164,6 +170,9 @@ public abstract class BaseMode<B extends IItem> extends AbstractMode<MCUControlS
     public abstract void updateKnobLEDs ();
 
 
+    /**
+     * Fill the second display of the iCON QCon Pro.
+     */
     protected void drawDisplay2 ()
     {
         if (!this.surface.getConfiguration ().hasDisplay2 ())
@@ -230,5 +239,18 @@ public abstract class BaseMode<B extends IItem> extends AbstractMode<MCUControlS
     protected int getTextLength ()
     {
         return this.configuration.shouldUse7Characters () ? 7 : 6;
+    }
+
+
+    /**
+     * Prevents an item (track, device, ...) to vanish if it exists but its' color is set to black.
+     *
+     * @param doesExist The existence flag
+     * @param color The color to check
+     * @return The given color or gray to prevent black
+     */
+    protected static ColorEx preventBlack (final boolean doesExist, final ColorEx color)
+    {
+        return doesExist && ColorEx.BLACK.equals (color) ? ColorEx.GRAY : color;
     }
 }

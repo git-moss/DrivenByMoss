@@ -14,6 +14,7 @@ import de.mossgrabers.controller.mackie.mcu.command.trigger.MCUCursorCommand;
 import de.mossgrabers.controller.mackie.mcu.command.trigger.MCUFlipCommand;
 import de.mossgrabers.controller.mackie.mcu.command.trigger.MCUMoveTrackBankCommand;
 import de.mossgrabers.controller.mackie.mcu.command.trigger.MCURecordCommand;
+import de.mossgrabers.controller.mackie.mcu.command.trigger.MCUWindCommand;
 import de.mossgrabers.controller.mackie.mcu.command.trigger.ScrubCommand;
 import de.mossgrabers.controller.mackie.mcu.command.trigger.SelectCommand;
 import de.mossgrabers.controller.mackie.mcu.command.trigger.SendSelectCommand;
@@ -62,7 +63,6 @@ import de.mossgrabers.framework.command.trigger.transport.PunchOutCommand;
 import de.mossgrabers.framework.command.trigger.transport.StopCommand;
 import de.mossgrabers.framework.command.trigger.transport.TapTempoCommand;
 import de.mossgrabers.framework.command.trigger.transport.ToggleLoopCommand;
-import de.mossgrabers.framework.command.trigger.transport.WindCommand;
 import de.mossgrabers.framework.configuration.AbstractConfiguration;
 import de.mossgrabers.framework.configuration.ISettingsUI;
 import de.mossgrabers.framework.controller.AbstractControllerSetup;
@@ -381,8 +381,8 @@ public class MCUControllerSetup extends AbstractControllerSetup<MCUControlSurfac
 
                 // Navigation
 
-                final WindCommand<MCUControlSurface, MCUConfiguration> rewindCommand = new WindCommand<> (this.model, surface, false);
-                final WindCommand<MCUControlSurface, MCUConfiguration> forwardCommand = new WindCommand<> (this.model, surface, true);
+                final MCUWindCommand rewindCommand = new MCUWindCommand (this.model, surface, false);
+                final MCUWindCommand forwardCommand = new MCUWindCommand (this.model, surface, true);
                 this.addButton (surface, ButtonID.REWIND, "<<", rewindCommand, 0, MCUControlSurface.MCU_REWIND, rewindCommand::isRewinding);
                 this.addButton (surface, ButtonID.FORWARD, ">>", forwardCommand, 0, MCUControlSurface.MCU_FORWARD, forwardCommand::isForwarding);
                 this.addButton (surface, ButtonID.LOOP, "Loop", new ToggleLoopCommand<> (this.model, surface), 0, MCUControlSurface.MCU_REPEAT, t::isLoop);

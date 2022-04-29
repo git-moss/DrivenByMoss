@@ -53,14 +53,16 @@ public class MCUConfiguration extends AbstractConfiguration
     public static final Integer       USE_FADERS_AS_KNOBS                     = Integer.valueOf (61);
     /** Select the channel when touching it's fader. */
     public static final Integer       TOUCH_CHANNEL                           = Integer.valueOf (62);
+    /** Activate volume mode when touching a volume fader. */
+    public static final Integer       TOUCH_CHANNEL_VOLUME_MODE               = Integer.valueOf (63);
     /** iCON specific Master VU meter. */
-    public static final Integer       MASTER_VU_METER                         = Integer.valueOf (63);
+    public static final Integer       MASTER_VU_METER                         = Integer.valueOf (64);
     /** Pin FX tracks to last controller. */
-    public static final Integer       PIN_FXTRACKS_TO_LAST_CONTROLLER         = Integer.valueOf (64);
+    public static final Integer       PIN_FXTRACKS_TO_LAST_CONTROLLER         = Integer.valueOf (65);
     /** Support X-Touch display back-light colors. */
-    public static final Integer       X_TOUCH_DISPLAY_COLORS                  = Integer.valueOf (65);
+    public static final Integer       X_TOUCH_DISPLAY_COLORS                  = Integer.valueOf (66);
     /** Use 7 characters instead of 6 and a space character. */
-    public static final Integer       USE_7_CHARACTERS                        = Integer.valueOf (66);
+    public static final Integer       USE_7_CHARACTERS                        = Integer.valueOf (67);
 
     /** Use a Function button to switch to previous mode. */
     public static final int           FOOTSWITCH_2_PREV_MODE                  = 15;
@@ -199,6 +201,7 @@ public class MCUConfiguration extends AbstractConfiguration
     private boolean                   displayColors;
     private boolean                   use7Characters;
     private boolean                   touchChannel;
+    private boolean                   touchChannelVolumeMode;
     private final int []              assignableFunctions                     = new int [7];
     private final String []           assignableFunctionActions               = new String [7];
     private final MCUDeviceType []    deviceTyes;
@@ -573,6 +576,13 @@ public class MCUConfiguration extends AbstractConfiguration
             this.notifyObservers (TOUCH_CHANNEL);
         });
         this.isSettingActive.add (TOUCH_CHANNEL);
+
+        final IEnumSetting touchChannelVolumeModeSetting = settingsUI.getEnumSetting ("Activate Volume mode on Fader Touch", CATEGORY_WORKFLOW, ON_OFF_OPTIONS, ON_OFF_OPTIONS[1]);
+        touchChannelVolumeModeSetting.addValueObserver (value -> {
+            this.touchChannelVolumeMode = "On".equals (value);
+            this.notifyObservers (TOUCH_CHANNEL_VOLUME_MODE);
+        });
+        this.isSettingActive.add (TOUCH_CHANNEL_VOLUME_MODE);
     }
 
 
@@ -829,6 +839,17 @@ public class MCUConfiguration extends AbstractConfiguration
     public boolean isTouchChannel ()
     {
         return this.touchChannel;
+    }
+
+
+    /**
+     * Returns true if touching the channel fader should activate volume mode.
+     *
+     * @return True if touching the channel fader should activate volume mode
+     */
+    public boolean isTouchChannelVolumeMode ()
+    {
+        return this.touchChannelVolumeMode;
     }
 
 

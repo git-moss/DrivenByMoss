@@ -53,11 +53,8 @@ public class MarkerMode extends BaseMode<IMarker>
         for (int i = 0; i < 8; i++)
         {
             final IMarker marker = markerBank.getItem (extenderOffset + i);
-            if (!marker.doesExist ())
-                continue;
-            final String name = StringUtils.shortenAndFixASCII (marker.getName (), textLength);
-            d.setCell (0, i, name);
-            colors[i] = marker.getColor ();
+            d.setCell (0, i, StringUtils.shortenAndFixASCII (marker.getName (), textLength));
+            colors[i] = preventBlack (marker.doesExist (), marker.getColor ());
         }
         d.allDone ();
 

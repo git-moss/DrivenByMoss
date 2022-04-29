@@ -4,6 +4,7 @@
 
 package de.mossgrabers.framework.daw.data.empty;
 
+import de.mossgrabers.framework.controller.color.ColorEx;
 import de.mossgrabers.framework.daw.data.ISend;
 
 
@@ -25,5 +26,13 @@ public class EmptySend extends EmptyParameter implements ISend
     private EmptySend ()
     {
         // Intentionally empty
+    }
+
+
+    /** {@inheritDoc} */
+    @Override
+    public ColorEx getColor ()
+    {
+        return ColorEx.BLACK;
     }
 }

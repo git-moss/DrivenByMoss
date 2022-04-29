@@ -33,6 +33,6 @@ public class SendMode extends BaseMode<ITrack>
 
         this.sendIndex = sendIndex;
 
-        this.setParameterProvider (new SendParameterProvider (model, this.sendIndex));
+        this.setParameterProvider (new SendParameterProvider (model, this.sendIndex, 0));
     }
 }

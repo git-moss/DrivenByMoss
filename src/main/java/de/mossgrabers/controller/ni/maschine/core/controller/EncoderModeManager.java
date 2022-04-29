@@ -7,7 +7,6 @@ package de.mossgrabers.controller.ni.maschine.core.controller;
 import de.mossgrabers.controller.ni.maschine.core.command.trigger.EncoderMode;
 import de.mossgrabers.controller.ni.maschine.core.view.IMaschineView;
 import de.mossgrabers.framework.MVHelper;
-import de.mossgrabers.framework.command.continuous.PlayPositionCommand;
 import de.mossgrabers.framework.command.continuous.SwingCommand;
 import de.mossgrabers.framework.command.continuous.TempoCommand;
 import de.mossgrabers.framework.command.core.ContinuousCommand;
@@ -21,6 +20,7 @@ import de.mossgrabers.framework.daw.data.ICursorDevice;
 import de.mossgrabers.framework.daw.data.IMasterTrack;
 import de.mossgrabers.framework.daw.data.IParameter;
 import de.mossgrabers.framework.daw.data.ITrack;
+import de.mossgrabers.framework.daw.data.PlayPositionParameter;
 import de.mossgrabers.framework.featuregroup.IView;
 
 import java.util.EnumMap;
@@ -38,7 +38,8 @@ import java.util.Optional;
  */
 public class EncoderModeManager<S extends IControlSurface<C>, C extends Configuration> implements ContinuousCommand
 {
-    private static final Map<EncoderMode, String> MODE_LABELS = new EnumMap<> (EncoderMode.class);
+    private static final Map<EncoderMode, String> MODE_LABELS         = new EnumMap<> (EncoderMode.class);
+    private static final Map<EncoderMode, String> TOGGLED_MODE_LABELS = new EnumMap<> (EncoderMode.class);
     static
     {
         MODE_LABELS.put (EncoderMode.OFF, "Off");
@@ -51,21 +52,33 @@ public class EncoderModeManager<S extends IControlSurface<C>, C extends Configur
         MODE_LABELS.put (EncoderMode.CUE_MIX, "Cue: Mix");
         MODE_LABELS.put (EncoderMode.TEMPORARY_TEMPO, "Tempo");
         MODE_LABELS.put (EncoderMode.TEMPORARY_SWING, "Swing");
-        MODE_LABELS.put (EncoderMode.TEMPORARY_PLAY_POSITION, "Play Position");
+        MODE_LABELS.put (EncoderMode.PLAY_POSITION, "Play Position");
+
+        TOGGLED_MODE_LABELS.put (EncoderMode.OFF, "Off");
+        TOGGLED_MODE_LABELS.put (EncoderMode.MASTER_VOLUME, "Master: Panorama");
+        TOGGLED_MODE_LABELS.put (EncoderMode.MASTER_PANORAMA, "Master: Panorama");
+        TOGGLED_MODE_LABELS.put (EncoderMode.SELECTED_TRACK_VOLUME, "Selected track: Panorama");
+        TOGGLED_MODE_LABELS.put (EncoderMode.SELECTED_TRACK_PANORAMA, "Selected track: Panorama");
+        TOGGLED_MODE_LABELS.put (EncoderMode.METRONOME_VOLUME, "Metronome: Volume");
+        TOGGLED_MODE_LABELS.put (EncoderMode.CUE_VOLUME, "Cue: Mix");
+        TOGGLED_MODE_LABELS.put (EncoderMode.CUE_MIX, "Cue: Mix");
+        TOGGLED_MODE_LABELS.put (EncoderMode.TEMPORARY_TEMPO, "Tempo");
+        TOGGLED_MODE_LABELS.put (EncoderMode.TEMPORARY_SWING, "Swing");
+        TOGGLED_MODE_LABELS.put (EncoderMode.PLAY_POSITION, "Play Position");
     }
 
-    protected final IHwContinuousControl    encoder;
-    protected final IModel                  model;
-    protected final S                       surface;
-    protected final MVHelper<S, C>          mvHelper;
+    protected final IHwContinuousControl encoder;
+    protected final IModel               model;
+    protected final S                    surface;
+    protected final MVHelper<S, C>       mvHelper;
 
-    private EncoderMode                     activeEncoderMode    = null;
-    private EncoderMode                     temporaryEncoderMode = null;
-    private boolean                         isFunctionToggled    = false;
+    private EncoderMode                  activeEncoderMode    = null;
+    private EncoderMode                  temporaryEncoderMode = null;
+    private boolean                      isFunctionToggled    = false;
 
-    private final TempoCommand<S, C>        tempoCommand;
-    private final SwingCommand<S, C>        swingCommand;
-    private final PlayPositionCommand<S, C> playPositionCommand;
+    private final TempoCommand<S, C>     tempoCommand;
+    private final SwingCommand<S, C>     swingCommand;
+    private final PlayPositionParameter  playPositionParameter;
 
 
     /**
@@ -84,7 +97,7 @@ public class EncoderModeManager<S extends IControlSurface<C>, C extends Configur
 
         this.tempoCommand = new TempoCommand<> (model, surface);
         this.swingCommand = new SwingCommand<> (model, surface);
-        this.playPositionCommand = new PlayPositionCommand<> (model, surface);
+        this.playPositionParameter = new PlayPositionParameter (model.getValueChanger (), model.getTransport (), surface);
 
         this.model.getTrackBank ().addSelectionObserver ( (index, isSelected) -> this.handleTrackChange (isSelected));
     }
@@ -175,8 +188,11 @@ public class EncoderModeManager<S extends IControlSurface<C>, C extends Configur
                 parameter = null;
                 break;
 
-            case SELECTED_TRACK_VOLUME:
-            case SELECTED_TRACK_PANORAMA:
+            case PLAY_POSITION:
+                parameter = this.playPositionParameter;
+                break;
+
+            case SELECTED_TRACK_VOLUME, SELECTED_TRACK_PANORAMA:
                 final Optional<ITrack> selectedTrack = this.model.getTrackBank ().getSelectedItem ();
                 if (selectedTrack.isEmpty ())
                     return;
@@ -188,15 +204,13 @@ public class EncoderModeManager<S extends IControlSurface<C>, C extends Configur
                 parameter = this.model.getTransport ().getMetronomeVolumeParameter ();
                 break;
 
-            case CUE_VOLUME:
-            case CUE_MIX:
+            case CUE_VOLUME, CUE_MIX:
                 final IProject project = this.model.getProject ();
                 parameter = this.isFunctionToggled || this.activeEncoderMode == EncoderMode.CUE_MIX ? project.getCueMixParameter () : project.getCueVolumeParameter ();
                 break;
 
             default:
-            case MASTER_VOLUME:
-            case MASTER_PANORAMA:
+            case MASTER_VOLUME, MASTER_PANORAMA:
                 final IMasterTrack masterTrack = this.model.getMasterTrack ();
                 parameter = this.isFunctionToggled || this.activeEncoderMode == EncoderMode.MASTER_PANORAMA ? masterTrack.getPanParameter () : masterTrack.getVolumeParameter ();
                 break;
@@ -209,7 +223,7 @@ public class EncoderModeManager<S extends IControlSurface<C>, C extends Configur
 
     protected void notifyMode ()
     {
-        this.mvHelper.delayDisplay ( () -> MODE_LABELS.get (this.activeEncoderMode));
+        this.mvHelper.delayDisplay ( () -> this.isFunctionToggled ? TOGGLED_MODE_LABELS.get (this.activeEncoderMode) : MODE_LABELS.get (this.activeEncoderMode));
     }
 
 
@@ -245,14 +259,7 @@ public class EncoderModeManager<S extends IControlSurface<C>, C extends Configur
                 this.swingCommand.execute (value);
                 break;
 
-            case TEMPORARY_PLAY_POSITION:
-                this.playPositionCommand.execute (value);
-                break;
-
-            case TEMPORARY_PERFORM:
-            case TEMPORARY_NOTES:
-            case TEMPORARY_LOCK:
-            case TEMPORARY_TUNE:
+            case TEMPORARY_PERFORM, TEMPORARY_NOTES, TEMPORARY_LOCK, TEMPORARY_TUNE:
                 final IView activeView = this.surface.getViewManager ().getActive ();
                 if (activeView instanceof final IMaschineView maschineView)
                     maschineView.changeOption (this.temporaryEncoderMode, value);

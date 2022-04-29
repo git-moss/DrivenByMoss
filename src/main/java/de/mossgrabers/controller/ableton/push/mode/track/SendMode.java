@@ -41,7 +41,7 @@ public class SendMode extends AbstractTrackMode
 
         this.sendIndex = sendIndex;
 
-        this.setParameterProvider (new SendParameterProvider (model, this.sendIndex));
+        this.setParameterProvider (new SendParameterProvider (model, this.sendIndex, 0));
     }
 
 

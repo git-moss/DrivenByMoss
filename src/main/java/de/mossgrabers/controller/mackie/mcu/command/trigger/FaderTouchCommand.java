@@ -68,22 +68,25 @@ public class FaderTouchCommand extends SelectCommand
         final int pos = this.surface.getSurfaceID () * 8 + this.index;
 
         // Temporarily enable volume mode
-        if (isTouched)
+        if (configuration.isTouchChannelVolumeMode ())
         {
-            if (!hasTouchedFader ())
+            if (isTouched)
             {
-                if (modeManager.isActive (Modes.VOLUME))
-                    modeManager.setPreviousID (Modes.VOLUME);
-                else
-                    modeManager.setActive (Modes.VOLUME);
+                if (!hasTouchedFader ())
+                {
+                    if (modeManager.isActive (Modes.VOLUME))
+                        modeManager.setPreviousID (Modes.VOLUME);
+                    else
+                        modeManager.setActive (Modes.VOLUME);
+                }
+                setTouchedFader (pos, true);
             }
-            setTouchedFader (pos, true);
-        }
-        else
-        {
-            setTouchedFader (pos, false);
-            if (!hasTouchedFader ())
-                modeManager.restore ();
+            else
+            {
+                setTouchedFader (pos, false);
+                if (!hasTouchedFader ())
+                    modeManager.restore ();
+            }
         }
     }
 

@@ -17,12 +17,12 @@ public enum EncoderMode
     MASTER_VOLUME,
     /** The encoder controls the panorama of the master channel. */
     MASTER_PANORAMA,
+    /** The encoder controls the volume of the metronome. */
+    METRONOME_VOLUME,
     /** The encoder controls the volume of the selected track. */
     SELECTED_TRACK_VOLUME,
     /** The encoder controls the panorama of the selected track. */
     SELECTED_TRACK_PANORAMA,
-    /** The encoder controls the volume of the metronome. */
-    METRONOME_VOLUME,
     /** The encoder controls the volume of the cue output. */
     CUE_VOLUME,
     /** The encoder controls the mix of the cue output. */
@@ -31,8 +31,8 @@ public enum EncoderMode
     TEMPORARY_TEMPO,
     /** The encoder controls the swing - temporary mode. */
     TEMPORARY_SWING,
-    /** The encoder controls the play position - temporary mode. */
-    TEMPORARY_PLAY_POSITION,
+    /** The encoder controls the play position. */
+    PLAY_POSITION,
     /** The encoder controls the view parameter assigned to perform - temporary mode. */
     TEMPORARY_PERFORM,
     /** The encoder controls the view parameter assigned to notes - temporary mode. */

@@ -91,7 +91,7 @@ public class ModelImpl extends AbstractModel
         this.arranger = new ArrangerImpl (bwArranger);
         final int numMarkers = modelSetup.getNumMarkers ();
         if (numMarkers > 0)
-            this.markerBank = new MarkerBankImpl (this.host, this.valueChanger, bwArranger.createCueMarkerBank (numMarkers), numMarkers, this.transport);
+            this.markerBank = new MarkerBankImpl (this.host, this.valueChanger, bwArranger, numMarkers, this.transport);
 
         this.mixer = new MixerImpl (controllerHost.createMixer ());
         this.groove = new GrooveImpl (controllerHost, this.valueChanger);

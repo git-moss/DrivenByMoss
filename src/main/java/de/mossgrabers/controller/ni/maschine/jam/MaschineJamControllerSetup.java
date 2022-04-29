@@ -11,7 +11,6 @@ import de.mossgrabers.controller.ni.maschine.core.command.trigger.MaschineMonito
 import de.mossgrabers.controller.ni.maschine.core.controller.EncoderModeManager;
 import de.mossgrabers.controller.ni.maschine.jam.command.trigger.MaschineJamAuxCommand;
 import de.mossgrabers.controller.ni.maschine.jam.command.trigger.MaschineJamControlCommand;
-import de.mossgrabers.controller.ni.maschine.jam.command.trigger.MaschineJamGridCommand;
 import de.mossgrabers.controller.ni.maschine.jam.command.trigger.MaschineJamLevelCommand;
 import de.mossgrabers.controller.ni.maschine.jam.command.trigger.MaschineJamMacroCommand;
 import de.mossgrabers.controller.ni.maschine.jam.command.trigger.MaschineJamMuteCommand;
@@ -53,6 +52,7 @@ import de.mossgrabers.framework.command.trigger.BrowserCommand;
 import de.mossgrabers.framework.command.trigger.FootswitchCommand;
 import de.mossgrabers.framework.command.trigger.clip.DoubleCommand;
 import de.mossgrabers.framework.command.trigger.clip.FillModeNoteRepeatCommand;
+import de.mossgrabers.framework.command.trigger.clip.QuantizeCommand;
 import de.mossgrabers.framework.command.trigger.transport.AutomationCommand;
 import de.mossgrabers.framework.command.trigger.transport.ConfiguredRecordCommand;
 import de.mossgrabers.framework.command.trigger.transport.PlayCommand;
@@ -366,8 +366,8 @@ public class MaschineJamControllerSetup extends AbstractControllerSetup<Maschine
 
         final MaschineMonitorEncoderCommand<MaschineJamControlSurface, MaschineJamConfiguration> encoderCommandMaster = new MaschineMonitorEncoderCommand<> (this.encoderManager, EncoderMode.MASTER_VOLUME, this.model, surface);
         this.addButton (ButtonID.MASTERTRACK, "MST", encoderCommandMaster, MaschineJamControlSurface.MASTER, encoderCommandMaster::isLit);
-        final MaschineMonitorEncoderCommand<MaschineJamControlSurface, MaschineJamConfiguration> encoderCommandSelectedTrack = new MaschineMonitorEncoderCommand<> (this.encoderManager, EncoderMode.SELECTED_TRACK_VOLUME, this.model, surface);
-        this.addButton (ButtonID.ALT, "GRP", encoderCommandSelectedTrack, MaschineJamControlSurface.GROUP, encoderCommandSelectedTrack::isLit);
+        final MaschineMonitorEncoderCommand<MaschineJamControlSurface, MaschineJamConfiguration> encoderCommandPlayPosition = new MaschineMonitorEncoderCommand<> (this.encoderManager, EncoderMode.PLAY_POSITION, this.model, surface);
+        this.addButton (ButtonID.ALT, "GRP", encoderCommandPlayPosition, MaschineJamControlSurface.GROUP, encoderCommandPlayPosition::isLit);
         final MaschineMonitorEncoderCommand<MaschineJamControlSurface, MaschineJamConfiguration> encoderCommandMetronome = new MaschineMonitorEncoderCommand<> (this.encoderManager, EncoderMode.METRONOME_VOLUME, this.model, surface);
         this.addButton (ButtonID.METRONOME, "IN 1", encoderCommandMetronome, MaschineJamControlSurface.IN, encoderCommandMetronome::isLit);
         final MaschineMonitorEncoderCommand<MaschineJamControlSurface, MaschineJamConfiguration> encoderCommandCue = new MaschineMonitorEncoderCommand<> (this.encoderManager, EncoderMode.CUE_VOLUME, this.model, surface);
@@ -389,7 +389,7 @@ public class MaschineJamControllerSetup extends AbstractControllerSetup<Maschine
 
         this.addButton (ButtonID.TAP_TEMPO, "TEMPO", new MaschineJamTapTempoCommand (this.encoderManager, this.model, surface), MaschineJamControlSurface.TEMPO);
         this.addButton (ButtonID.ACCENT, "SWING", new MaschineJamSwingCommand (this.encoderManager, this.model, surface), MaschineJamControlSurface.SWING, () -> this.model.getGroove ().getParameter (GrooveParameterID.ENABLED).getValue () > 0);
-        this.addButton (ButtonID.GROOVE, "GRID", new MaschineJamGridCommand (this.encoderManager, this.model, surface), MaschineJamControlSurface.GRID);
+        this.addButton (ButtonID.GROOVE, "GRID", new QuantizeCommand<> (this.model, surface), MaschineJamControlSurface.GRID);
 
         this.addButton (ButtonID.ROW1_1, "PERFORM", new MaschineJamViewCommand (this.encoderManager, EncoderMode.TEMPORARY_PERFORM, this.model, surface), MaschineJamControlSurface.PERFORM);
         this.addButton (ButtonID.ROW1_2, "NOTES", new MaschineJamViewCommand (this.encoderManager, EncoderMode.TEMPORARY_NOTES, this.model, surface), MaschineJamControlSurface.NOTES);

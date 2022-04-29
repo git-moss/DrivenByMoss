@@ -40,6 +40,7 @@ public class FireControllerDefinition extends DefaultControllerDefinition
         {
             case WINDOWS:
                 midiDiscoveryPairs.addAll (this.createWindowsDeviceDiscoveryPairs ("%sFL STUDIO FIRE", "%sFL STUDIO FIRE"));
+                midiDiscoveryPairs.addAll (this.createDeviceDiscoveryPairs ("Akai Fire"));
                 break;
 
             case LINUX:

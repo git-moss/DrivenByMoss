@@ -4,11 +4,13 @@
 
 package de.mossgrabers.bitwig.framework.daw.data;
 
+import de.mossgrabers.framework.controller.color.ColorEx;
 import de.mossgrabers.framework.controller.valuechanger.IValueChanger;
 import de.mossgrabers.framework.daw.data.ISend;
 import de.mossgrabers.framework.daw.data.bank.ISendBank;
 
 import com.bitwig.extension.controller.api.Send;
+import com.bitwig.extension.controller.api.SettableColorValue;
 
 
 /**
@@ -19,6 +21,7 @@ import com.bitwig.extension.controller.api.Send;
 public class SendImpl extends ParameterImpl implements ISend
 {
     private final ISendBank sendBank;
+    private final Send      send;
 
 
     /**
@@ -34,6 +37,20 @@ public class SendImpl extends ParameterImpl implements ISend
         super (valueChanger, send, index);
 
         this.sendBank = sendBank;
+
+        this.send = send;
+
+        this.send.sendChannelColor ().markInterested ();
+    }
+
+
+    /** {@inheritDoc} */
+    @Override
+    public void enableObservers (final boolean enable)
+    {
+        super.enableObservers (enable);
+
+        Util.setIsSubscribed (this.send.sendChannelColor (), enable);
     }
 
 
@@ -50,5 +67,14 @@ public class SendImpl extends ParameterImpl implements ISend
     public void select ()
     {
         // Sends cannot be selected but should also not crash
+    }
+
+
+    /** {@inheritDoc} */
+    @Override
+    public ColorEx getColor ()
+    {
+        final SettableColorValue color = this.send.sendChannelColor ();
+        return new ColorEx (color.red (), color.green (), color.blue ());
     }
 }

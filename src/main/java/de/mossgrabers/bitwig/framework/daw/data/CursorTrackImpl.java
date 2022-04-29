@@ -5,6 +5,7 @@
 package de.mossgrabers.bitwig.framework.daw.data;
 
 import de.mossgrabers.bitwig.framework.daw.ApplicationImpl;
+import de.mossgrabers.bitwig.framework.daw.HostImpl;
 import de.mossgrabers.bitwig.framework.daw.ModelImpl;
 import de.mossgrabers.framework.controller.valuechanger.IValueChanger;
 import de.mossgrabers.framework.daw.IHost;
@@ -14,6 +15,7 @@ import de.mossgrabers.framework.daw.data.bank.ITrackBank;
 import com.bitwig.extension.controller.api.CursorTrack;
 import com.bitwig.extension.controller.api.SettableBooleanValue;
 import com.bitwig.extension.controller.api.Track;
+import com.bitwig.extension.controller.api.TrackBank;
 
 
 /**
@@ -23,8 +25,11 @@ import com.bitwig.extension.controller.api.Track;
  */
 public class CursorTrackImpl extends TrackImpl implements ICursorTrack
 {
+    private static final int           NUM_TRACKS_LARGE_BANK = 400;
+
     private final ModelImpl            model;
     private final SettableBooleanValue isPinnedAttr;
+    private final TrackBank            largeTrackBank;
 
 
     /**
@@ -44,6 +49,8 @@ public class CursorTrackImpl extends TrackImpl implements ICursorTrack
         super (host, valueChanger, application, cursorTrack, rootGroup, cursorTrack, -1, numSends, numScenes);
 
         this.model = model;
+
+        this.largeTrackBank = ((HostImpl) host).getControllerHost ().createTrackBank (NUM_TRACKS_LARGE_BANK, 0, 0, true);
 
         this.isPinnedAttr = cursorTrack.isPinned ();
         this.isPinnedAttr.markInterested ();
@@ -109,12 +116,12 @@ public class CursorTrackImpl extends TrackImpl implements ICursorTrack
         final ITrackBank tb = this.model.getCurrentTrackBank ();
         if (tb == null)
             return;
-        final int index = this.getIndex ();
-        if (index == 0)
+        final int position = this.getPosition ();
+        if (position == 0)
             return;
-        final TrackImpl prevTrack = (TrackImpl) tb.getItem (index - 1);
-        this.track.afterTrackInsertionPoint ().moveTracks (prevTrack.track);
-        prevTrack.track.selectInEditor ();
+        final Track prevTrack = this.largeTrackBank.getItemAt (position - 1);
+        this.track.afterTrackInsertionPoint ().moveTracks (prevTrack);
+        prevTrack.selectInEditor ();
     }
 
 
@@ -125,12 +132,12 @@ public class CursorTrackImpl extends TrackImpl implements ICursorTrack
         final ITrackBank tb = this.model.getCurrentTrackBank ();
         if (tb == null)
             return;
-        final int index = this.getIndex ();
-        if (index == tb.getPageSize () - 1)
+        final int position = this.getPosition ();
+        if (position >= NUM_TRACKS_LARGE_BANK - 1)
             return;
-        final TrackImpl nextTrack = (TrackImpl) tb.getItem (index + 1);
-        this.track.beforeTrackInsertionPoint ().moveTracks (nextTrack.track);
-        nextTrack.track.selectInEditor ();
+        final Track nextTrack = this.largeTrackBank.getItemAt (position + 1);
+        this.track.beforeTrackInsertionPoint ().moveTracks (nextTrack);
+        nextTrack.selectInEditor ();
     }
 
 

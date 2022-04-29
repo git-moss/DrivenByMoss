@@ -41,7 +41,7 @@ public class SendMode extends DefaultTrackMode<KontrolProtocolControlSurface, Ko
         super ("Send", surface, model, false);
 
         this.setControls (controls);
-        final SendParameterProvider pp = new SendParameterProvider (model);
+        final SendParameterProvider pp = new SendParameterProvider (model, -1, 0);
         this.setParameterProvider (new CombinedParameterProvider (pp, pp));
 
         model.getTrackBank ().addSelectionObserver ( (index, isSelected) -> this.parametersAdjusted ());
