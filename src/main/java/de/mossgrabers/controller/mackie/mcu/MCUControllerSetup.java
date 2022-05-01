@@ -224,6 +224,7 @@ public class MCUControllerSetup extends AbstractControllerSetup<MCUControlSurfac
 
         ms.setHasFlatTrackList (this.configuration.isTrackNavigationFlat ());
         ms.setHasFullFlatTrackList (this.configuration.shouldIncludeFXTracksInTrackBank ());
+        ms.setNumSends (14);
         // This is required to make the new clip function work!
         ms.setNumScenes (8);
         ms.setNumFilterColumnEntries (8);

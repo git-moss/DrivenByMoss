@@ -149,7 +149,7 @@ public class TrackMode extends AbstractTrackMode
         }
         else if (extenderOffset == 8 && !isEffectTrackBankActive)
         {
-            for (int i = 0; i < 2; i++)
+            for (int i = 0; i < 8; i++)
             {
                 if (i < sendBank.getItemCount ())
                 {
@@ -211,7 +211,7 @@ public class TrackMode extends AbstractTrackMode
         }
         else if (extenderOffset == 8)
         {
-            for (int i = 0; i < 2; i++)
+            for (int i = 0; i < 8; i++)
             {
                 final int value;
                 if (!isEffectTrackBankActive && i < sendBank.getItemCount ())
@@ -220,8 +220,6 @@ public class TrackMode extends AbstractTrackMode
                     value = 0;
                 this.surface.setKnobLED (i, MCUControlSurface.KNOB_LED_MODE_WRAP, value, upperBound);
             }
-            for (int i = 2; i < 8; i++)
-                this.surface.setKnobLED (i, MCUControlSurface.KNOB_LED_MODE_WRAP, 0, upperBound);
         }
     }
 
@@ -256,8 +254,7 @@ public class TrackMode extends AbstractTrackMode
         }
         else if (extenderOffset == 8 && !isEffectTrackBankActive)
         {
-            if (index < 2)
-                track.getSendBank ().getItem (6 + index).resetValue ();
+            track.getSendBank ().getItem (6 + index).resetValue ();
         }
     }
 
