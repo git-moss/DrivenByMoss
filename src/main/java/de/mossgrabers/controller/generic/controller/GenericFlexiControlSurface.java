@@ -183,8 +183,7 @@ public class GenericFlexiControlSurface extends AbstractControlSurface<GenericFl
         switch (code)
         {
             // Note on/off
-            case MidiConstants.CMD_NOTE_OFF:
-            case MidiConstants.CMD_NOTE_ON:
+            case MidiConstants.CMD_NOTE_OFF, MidiConstants.CMD_NOTE_ON:
                 this.configuration.setLearnValues (GenericFlexiConfiguration.OPTIONS_TYPE.get (CommandSlot.TYPE_NOTE + 1), data1, channel, false);
                 this.handleCommand (this.configuration.getSlotCommand (CommandSlot.TYPE_NOTE, data1, channel), MidiValue.get (code == MidiConstants.CMD_NOTE_OFF ? 0 : data2, false));
                 break;

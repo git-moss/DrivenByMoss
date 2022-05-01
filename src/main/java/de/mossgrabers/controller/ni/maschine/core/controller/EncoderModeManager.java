@@ -13,13 +13,16 @@ import de.mossgrabers.framework.command.core.ContinuousCommand;
 import de.mossgrabers.framework.configuration.Configuration;
 import de.mossgrabers.framework.controller.IControlSurface;
 import de.mossgrabers.framework.controller.hardware.IHwContinuousControl;
+import de.mossgrabers.framework.controller.valuechanger.IValueChanger;
 import de.mossgrabers.framework.daw.IBrowser;
 import de.mossgrabers.framework.daw.IModel;
 import de.mossgrabers.framework.daw.IProject;
+import de.mossgrabers.framework.daw.ITransport;
 import de.mossgrabers.framework.daw.data.ICursorDevice;
 import de.mossgrabers.framework.daw.data.IMasterTrack;
 import de.mossgrabers.framework.daw.data.IParameter;
 import de.mossgrabers.framework.daw.data.ITrack;
+import de.mossgrabers.framework.daw.data.LoopStartParameter;
 import de.mossgrabers.framework.daw.data.PlayPositionParameter;
 import de.mossgrabers.framework.featuregroup.IView;
 
@@ -64,7 +67,7 @@ public class EncoderModeManager<S extends IControlSurface<C>, C extends Configur
         TOGGLED_MODE_LABELS.put (EncoderMode.CUE_MIX, "Cue: Mix");
         TOGGLED_MODE_LABELS.put (EncoderMode.TEMPORARY_TEMPO, "Tempo");
         TOGGLED_MODE_LABELS.put (EncoderMode.TEMPORARY_SWING, "Swing");
-        TOGGLED_MODE_LABELS.put (EncoderMode.PLAY_POSITION, "Play Position");
+        TOGGLED_MODE_LABELS.put (EncoderMode.PLAY_POSITION, "Loop Start");
     }
 
     protected final IHwContinuousControl encoder;
@@ -79,6 +82,7 @@ public class EncoderModeManager<S extends IControlSurface<C>, C extends Configur
     private final TempoCommand<S, C>     tempoCommand;
     private final SwingCommand<S, C>     swingCommand;
     private final PlayPositionParameter  playPositionParameter;
+    private final LoopStartParameter     loopStartParameter;
 
 
     /**
@@ -97,7 +101,10 @@ public class EncoderModeManager<S extends IControlSurface<C>, C extends Configur
 
         this.tempoCommand = new TempoCommand<> (model, surface);
         this.swingCommand = new SwingCommand<> (model, surface);
-        this.playPositionParameter = new PlayPositionParameter (model.getValueChanger (), model.getTransport (), surface);
+        final IValueChanger valueChanger = model.getValueChanger ();
+        final ITransport transport = model.getTransport ();
+        this.playPositionParameter = new PlayPositionParameter (valueChanger, transport, surface);
+        this.loopStartParameter = new LoopStartParameter (valueChanger, transport, surface);
 
         this.model.getTrackBank ().addSelectionObserver ( (index, isSelected) -> this.handleTrackChange (isSelected));
     }
@@ -189,7 +196,7 @@ public class EncoderModeManager<S extends IControlSurface<C>, C extends Configur
                 break;
 
             case PLAY_POSITION:
-                parameter = this.playPositionParameter;
+                parameter = this.isFunctionToggled ? this.loopStartParameter : this.playPositionParameter;
                 break;
 
             case SELECTED_TRACK_VOLUME, SELECTED_TRACK_PANORAMA:

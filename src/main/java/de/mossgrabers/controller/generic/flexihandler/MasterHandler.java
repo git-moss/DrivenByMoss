@@ -74,16 +74,13 @@ public class MasterHandler extends AbstractHandler
             case MASTER_SET_PANORAMA:
                 return masterTrack.getPan ();
 
-            case MASTER_TOGGLE_MUTE:
-            case MASTER_SET_MUTE:
+            case MASTER_TOGGLE_MUTE, MASTER_SET_MUTE:
                 return masterTrack.isMute () ? 127 : 0;
 
-            case MASTER_TOGGLE_SOLO:
-            case MASTER_SET_SOLO:
+            case MASTER_TOGGLE_SOLO, MASTER_SET_SOLO:
                 return masterTrack.isSolo () ? 127 : 0;
 
-            case MASTER_TOGGLE_ARM:
-            case MASTER_SET_ARM:
+            case MASTER_TOGGLE_ARM, MASTER_SET_ARM:
                 return masterTrack.isRecArm () ? 127 : 0;
 
             case MASTER_CROSSFADER:
