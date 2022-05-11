@@ -63,7 +63,11 @@ import de.mossgrabers.framework.view.Views;
  */
 public class Kontrol1ControllerSetup extends AbstractControllerSetup<Kontrol1ControlSurface, Kontrol1Configuration>
 {
-    private final int modelIndex;
+    // Put this on channel 16 to not conflict with real MIDI messages like the modulation wheel,
+    // expression, etc.
+    private static final int CHANNEL = 15;
+
+    private final int        modelIndex;
 
 
     /**
@@ -114,9 +118,9 @@ public class Kontrol1ControllerSetup extends AbstractControllerSetup<Kontrol1Con
 
         final IMidiAccess midiAccess = this.factory.createMidiAccess ();
         final IMidiInput input = midiAccess.createInput ("Komplete Kontrol 1",
-                "80????" /* Note off */, "90????" /* Note on */, "B040??",
-                "B001??" /* Sustain pedal + Modulation */, "D0????" /* Channel After-touch */,
-                "E0????" /* Pitch-bend */);
+                "80????" /* Note off */, "90????" /* Note on */, "B001??", "B040??",
+                "B00B??" /* Modulation, Sustain pedal, Expression */,
+                "D0????" /* Channel After-touch */, "E0????" /* Pitch-bend */);
 
         final Kontrol1ControlSurface surface = new Kontrol1ControlSurface (this.host, this.colorManager, this.configuration, input, usbDevice);
         usbDevice.setCallback (surface);
@@ -139,7 +143,6 @@ public class Kontrol1ControllerSetup extends AbstractControllerSetup<Kontrol1Con
         modeManager.register (Modes.VOLUME, new VolumeMode (surface, this.model));
         modeManager.register (Modes.DEVICE_PARAMS, new ParamsMode (surface, this.model));
         modeManager.register (Modes.BROWSER, new BrowseMode (surface, this.model));
-
         modeManager.register (Modes.SCALES, new ScaleMode (surface, this.model));
     }
 
@@ -182,36 +185,35 @@ public class Kontrol1ControllerSetup extends AbstractControllerSetup<Kontrol1Con
         final Kontrol1ControlSurface surface = this.getSurface ();
         final ITransport t = this.model.getTransport ();
 
-        this.addButton (ButtonID.SCALES, "Scales", new ScaleButtonCommand (this.model, surface), Kontrol1ControlSurface.BUTTON_SCALE, this.configuration::isScaleIsActive);
-        this.addButton (ButtonID.METRONOME, "Metronome", new MetronomeCommand<> (this.model, surface, false), Kontrol1ControlSurface.BUTTON_ARP, () -> surface.isShiftPressed () && t.isMetronomeTicksOn () || !surface.isShiftPressed () && t.isMetronomeOn ());
+        this.addButton (ButtonID.SCALES, "Scales", new ScaleButtonCommand (this.model, surface), CHANNEL, Kontrol1ControlSurface.BUTTON_SCALE, this.configuration::isScaleIsActive);
+        this.addButton (ButtonID.METRONOME, "Metronome", new MetronomeCommand<> (this.model, surface, false), CHANNEL, Kontrol1ControlSurface.BUTTON_ARP, () -> surface.isShiftPressed () && t.isMetronomeTicksOn () || !surface.isShiftPressed () && t.isMetronomeOn ());
 
-        this.addButton (ButtonID.PLAY, "PLAY", new Kontrol1PlayCommand (this.model, surface), Kontrol1ControlSurface.BUTTON_PLAY, t::isPlaying);
-        this.addButton (ButtonID.RECORD, "REC", new RecordCommand<> (this.model, surface), Kontrol1ControlSurface.BUTTON_REC, t::isRecording);
-        this.addButton (ButtonID.STOP, "STOP", new StopCommand<> (this.model, surface), Kontrol1ControlSurface.BUTTON_STOP, () -> !t.isPlaying ());
-        this.addButton (ButtonID.REWIND, "RWD", new WindCommand<> (this.model, surface, false), Kontrol1ControlSurface.BUTTON_RWD, () -> surface.isPressed (ButtonID.REWIND));
-        this.addButton (ButtonID.FORWARD, "FFW", new WindCommand<> (this.model, surface, true), Kontrol1ControlSurface.BUTTON_FWD, () -> surface.isPressed (ButtonID.FORWARD));
-        this.addButton (ButtonID.LOOP, "LOOP", new ToggleLoopCommand<> (this.model, surface), Kontrol1ControlSurface.BUTTON_LOOP, t::isLoop);
+        this.addButton (ButtonID.PLAY, "PLAY", new Kontrol1PlayCommand (this.model, surface), CHANNEL, Kontrol1ControlSurface.BUTTON_PLAY, t::isPlaying);
+        this.addButton (ButtonID.RECORD, "REC", new RecordCommand<> (this.model, surface), CHANNEL, Kontrol1ControlSurface.BUTTON_REC, t::isRecording);
+        this.addButton (ButtonID.STOP, "STOP", new StopCommand<> (this.model, surface), CHANNEL, Kontrol1ControlSurface.BUTTON_STOP, () -> !t.isPlaying ());
+        this.addButton (ButtonID.REWIND, "RWD", new WindCommand<> (this.model, surface, false), CHANNEL, Kontrol1ControlSurface.BUTTON_RWD, () -> surface.isPressed (ButtonID.REWIND));
+        this.addButton (ButtonID.FORWARD, "FFW", new WindCommand<> (this.model, surface, true), CHANNEL, Kontrol1ControlSurface.BUTTON_FWD, () -> surface.isPressed (ButtonID.FORWARD));
+        this.addButton (ButtonID.LOOP, "LOOP", new ToggleLoopCommand<> (this.model, surface), CHANNEL, Kontrol1ControlSurface.BUTTON_LOOP, t::isLoop);
 
-        this.addButton (ButtonID.PAGE_LEFT, "Left", new ModeMultiSelectCommand<> (this.model, surface, Modes.DEVICE_PARAMS, Modes.VOLUME, Modes.TRACK), Kontrol1ControlSurface.BUTTON_PAGE_LEFT);
-        this.addButton (ButtonID.PAGE_RIGHT, "Right", new ModeMultiSelectCommand<> (this.model, surface, Modes.TRACK, Modes.VOLUME, Modes.DEVICE_PARAMS), Kontrol1ControlSurface.BUTTON_PAGE_RIGHT);
+        this.addButton (ButtonID.PAGE_LEFT, "Left", new ModeMultiSelectCommand<> (this.model, surface, Modes.DEVICE_PARAMS, Modes.VOLUME, Modes.TRACK), CHANNEL, Kontrol1ControlSurface.BUTTON_PAGE_LEFT);
+        this.addButton (ButtonID.PAGE_RIGHT, "Right", new ModeMultiSelectCommand<> (this.model, surface, Modes.TRACK, Modes.VOLUME, Modes.DEVICE_PARAMS), CHANNEL, Kontrol1ControlSurface.BUTTON_PAGE_RIGHT);
 
-        // Put this on channel 16 to not conflict with the modulation wheel
-        this.addButton (ButtonID.MASTERTRACK, "Encoder", new MainEncoderButtonCommand (this.model, surface), 15, Kontrol1ControlSurface.BUTTON_MAIN_ENCODER);
+        this.addButton (ButtonID.MASTERTRACK, "Encoder", new MainEncoderButtonCommand (this.model, surface), CHANNEL, Kontrol1ControlSurface.BUTTON_MAIN_ENCODER);
 
         final Kontrol1CursorCommand commandDown = new Kontrol1CursorCommand (Direction.DOWN, this.model, surface);
-        this.addButton (ButtonID.ARROW_DOWN, "Down", commandDown, Kontrol1ControlSurface.BUTTON_NAVIGATE_DOWN, commandDown::canScroll);
+        this.addButton (ButtonID.ARROW_DOWN, "Down", commandDown, CHANNEL, Kontrol1ControlSurface.BUTTON_NAVIGATE_DOWN, commandDown::canScroll);
         final Kontrol1CursorCommand commandUp = new Kontrol1CursorCommand (Direction.UP, this.model, surface);
-        this.addButton (ButtonID.ARROW_UP, "Up", commandUp, Kontrol1ControlSurface.BUTTON_NAVIGATE_UP, commandUp::canScroll);
+        this.addButton (ButtonID.ARROW_UP, "Up", commandUp, CHANNEL, Kontrol1ControlSurface.BUTTON_NAVIGATE_UP, commandUp::canScroll);
         final Kontrol1CursorCommand commandLeft = new Kontrol1CursorCommand (Direction.LEFT, this.model, surface);
-        this.addButton (ButtonID.ARROW_LEFT, "Left", commandLeft, Kontrol1ControlSurface.BUTTON_NAVIGATE_LEFT, commandLeft::canScroll);
+        this.addButton (ButtonID.ARROW_LEFT, "Left", commandLeft, CHANNEL, Kontrol1ControlSurface.BUTTON_NAVIGATE_LEFT, commandLeft::canScroll);
         final Kontrol1CursorCommand commandRight = new Kontrol1CursorCommand (Direction.RIGHT, this.model, surface);
-        this.addButton (ButtonID.ARROW_RIGHT, "Right", commandRight, Kontrol1ControlSurface.BUTTON_NAVIGATE_RIGHT, commandRight::canScroll);
+        this.addButton (ButtonID.ARROW_RIGHT, "Right", commandRight, CHANNEL, Kontrol1ControlSurface.BUTTON_NAVIGATE_RIGHT, commandRight::canScroll);
 
-        this.addButton (ButtonID.MUTE, "Back", new BackButtonCommand (this.model, surface), Kontrol1ControlSurface.BUTTON_BACK, () -> this.getModeColor (ButtonID.MUTE));
-        this.addButton (ButtonID.SOLO, "Enter", new EnterButtonCommand (this.model, surface), Kontrol1ControlSurface.BUTTON_ENTER, () -> this.getModeColor (ButtonID.SOLO));
+        this.addButton (ButtonID.MUTE, "Back", new BackButtonCommand (this.model, surface), CHANNEL, Kontrol1ControlSurface.BUTTON_BACK, () -> this.getModeColor (ButtonID.MUTE));
+        this.addButton (ButtonID.SOLO, "Enter", new EnterButtonCommand (this.model, surface), CHANNEL, Kontrol1ControlSurface.BUTTON_ENTER, () -> this.getModeColor (ButtonID.SOLO));
 
-        this.addButton (ButtonID.BROWSE, "Browse", new BrowserCommand<> (this.model, surface, ButtonID.SHIFT, null), Kontrol1ControlSurface.BUTTON_BROWSE, () -> this.getModeColor (ButtonID.BROWSE));
-        this.addButton (ButtonID.SHIFT, "Shift", NopCommand.INSTANCE, Kontrol1ControlSurface.BUTTON_SHIFT);
+        this.addButton (ButtonID.BROWSE, "Browse", new BrowserCommand<> (this.model, surface, ButtonID.SHIFT, null), CHANNEL, Kontrol1ControlSurface.BUTTON_BROWSE, () -> this.getModeColor (ButtonID.BROWSE));
+        this.addButton (ButtonID.SHIFT, "Shift", NopCommand.INSTANCE, CHANNEL, Kontrol1ControlSurface.BUTTON_SHIFT);
     }
 
 
@@ -224,12 +226,12 @@ public class Kontrol1ControllerSetup extends AbstractControllerSetup<Kontrol1Con
 
         for (int i = 0; i < 8; i++)
         {
-            final IHwRelativeKnob knob = this.addRelativeKnob (ContinuousID.get (ContinuousID.KNOB1, i), "Knob " + (i + 1), new KnobRowModeCommand<> (i, this.model, surface), Kontrol1ControlSurface.ENCODER_1 + i);
-            knob.bindTouch (new KnobRowTouchModeCommand<> (i, this.model, surface), input, BindType.CC, 0, Kontrol1ControlSurface.TOUCH_ENCODER_1 + i);
+            final IHwRelativeKnob knob = this.addRelativeKnob (ContinuousID.get (ContinuousID.KNOB1, i), "Knob " + (i + 1), new KnobRowModeCommand<> (i, this.model, surface), BindType.CC, CHANNEL, Kontrol1ControlSurface.ENCODER_1 + i);
+            knob.bindTouch (new KnobRowTouchModeCommand<> (i, this.model, surface), input, BindType.CC, CHANNEL, Kontrol1ControlSurface.TOUCH_ENCODER_1 + i);
             knob.setIndexInGroup (i);
         }
 
-        this.addRelativeKnob (ContinuousID.MASTER_KNOB, "Master", new MainEncoderCommand (this.model, surface), Kontrol1ControlSurface.MAIN_ENCODER);
+        this.addRelativeKnob (ContinuousID.MASTER_KNOB, "Master", new MainEncoderCommand (this.model, surface), BindType.CC, CHANNEL, Kontrol1ControlSurface.MAIN_ENCODER);
 
         surface.addPianoKeyboard (25, input, true);
     }

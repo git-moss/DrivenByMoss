@@ -879,8 +879,13 @@ public class MCUControllerSetup extends AbstractControllerSetup<MCUControlSurfac
             return;
 
         final ModeManager modeManager = this.getSurface ().getModeManager ();
-        if (modeManager.isActive (Modes.MASTER))
-            modeManager.setActive (Modes.TRACK);
+        if (modeManager.isActive (Modes.MASTER) && !this.model.getMasterTrack ().isSelected ())
+        {
+            if (Modes.isTrackMode (modeManager.getPreviousID ()))
+                modeManager.restore ();
+            else
+                modeManager.setActive (Modes.TRACK);
+        }
     }
 
 
