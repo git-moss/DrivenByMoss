@@ -22,6 +22,9 @@ import de.mossgrabers.framework.daw.data.bank.ITrackBank;
 import de.mossgrabers.framework.daw.resource.ChannelType;
 import de.mossgrabers.framework.osc.IOpenSoundControlWriter;
 
+import de.mossgrabers.framework.daw.data.IParameter;
+import de.mossgrabers.framework.daw.data.ICursorDevice;
+
 import java.util.LinkedList;
 import java.util.Locale;
 import java.util.Optional;
@@ -443,6 +446,42 @@ public class TrackModule extends AbstractModule
                         cursorTrack.setPinned (isTrigger (value));
                 }
                 break;
+
+            case "params":
+                 final String sParamPageNumber = getSubCommand (path);
+                  try
+                  {
+                      final int paramPageNumber = Integer.parseInt (sParamPageNumber) - 1;
+
+                      final String sParamNumber = getSubCommand (path);
+                      try
+                      {
+                          final int paramNumber = Integer.parseInt (sParamNumber) - 1;
+                          final String finalCommand = getSubCommand (path);
+                          final ICursorDevice cd = this.model.getCursorDevice ();
+
+                          switch (finalCommand)
+                          {
+                              case "value":
+                                  final IParameter param = cd.getParameterBank ().getItem (paramNumber);
+                                  param.setValue (toInteger (value));
+                                  break;
+
+                              default:
+                                  throw new UnknownCommandException (command);
+                          }
+
+                          track.selectOrExpandGroup ();
+                          cd.getParameterPageBank ().selectPage (paramPageNumber);
+                      }
+                      catch (final NumberFormatException ex) { }
+                  }
+                  catch (final NumberFormatException ex) { }
+
+
+
+
+              break;
 
             default:
                 throw new UnknownCommandException (command);
