@@ -31,13 +31,11 @@ import de.mossgrabers.framework.mode.Modes;
  */
 public class ElectraOneControllerSetup extends AbstractControllerSetup<ElectraOneControlSurface, ElectraOneConfiguration>
 {
-    private static final String TAG_RIGHT                   = "Right";
-
+    // TODO
     /** State for button LED on. */
-    public static final int     ElectraOne_BUTTON_STATE_ON  = 127;
+    public static final int ElectraOne_BUTTON_STATE_ON  = 127;
     /** State for button LED off. */
-    public static final int     ElectraOne_BUTTON_STATE_OFF = 0;
-
+    public static final int ElectraOne_BUTTON_STATE_OFF = 0;
 
     /**
      * Constructor.
@@ -46,8 +44,6 @@ public class ElectraOneControllerSetup extends AbstractControllerSetup<ElectraOn
      * @param factory The factory
      * @param globalSettings The global settings
      * @param documentSettings The document (project) specific settings
-     * @param numElectraOneDevices The number of ElectraOne devices (main device + extenders) to
-     *            support
      */
     public ElectraOneControllerSetup (final IHost host, final ISetupFactory factory, final ISettingsUI globalSettings, final ISettingsUI documentSettings)
     {

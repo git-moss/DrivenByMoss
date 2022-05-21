@@ -60,12 +60,17 @@ public class ElectraOneControllerDefinition extends DefaultControllerDefinition
                 }));
                 break;
 
-            case LINUX:
-                // TODO
-                break;
-
             default:
-                // TODO
+            case LINUX:
+                pairs.add (this.addDeviceDiscoveryPair (new String []
+                {
+                    "Electra Controller Electra Port",
+                    "Electra Controller Electra CTRL"
+                }, new String []
+                {
+                    "Electra Controller Electra Port",
+                    "Electra Controller Electra CTRL"
+                }));
                 break;
         }
 
