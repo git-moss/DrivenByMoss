@@ -6,12 +6,19 @@ package de.mossgrabers.bitwig.framework.osc;
 
 import de.mossgrabers.framework.osc.IOpenSoundControlClient;
 import de.mossgrabers.framework.osc.IOpenSoundControlMessage;
+import de.mossgrabers.bitwig.framework.daw.ModelImpl;
+import de.mossgrabers.framework.daw.IModel;
+import de.mossgrabers.framework.daw.data.ITrack;
+import de.mossgrabers.framework.daw.data.ICursorDevice;
+import de.mossgrabers.framework.daw.data.bank.IParameterPageBank;
 
 import com.bitwig.extension.api.opensoundcontrol.OscConnection;
 
 import java.io.IOException;
 import java.util.List;
-
+import java.util.Optional;
+// import java.io.File;
+// import java.io.FileWriter;
 
 /**
  * Implementation of an OSC server connection (the client).
@@ -40,6 +47,39 @@ public class OpenSoundControlClientImpl implements IOpenSoundControlClient
     {
         final String address = message.getAddress ();
         final Object [] values = message.getValues ();
+
+        if (address.startsWith("/device/param/") && address.endsWith("/value"))
+        {
+          final String sParamNumber = address.replace("/device/param/", "").replace("/value", "");
+          Integer paramNumber = Integer.parseInt(sParamNumber);
+
+          //Get a reference to the model
+          ModelImpl model = ModelImpl.sharedModel;
+
+          final ITrack cursorTrack = model.getCursorTrack ();
+          final Integer trackNumber = cursorTrack.getPosition() + 1;
+
+          final ICursorDevice cursorDevice = model.getCursorDevice();
+          final IParameterPageBank pageBank = cursorDevice.getParameterPageBank ();
+          final Integer pageIndex = pageBank.getSelectedItemIndex () + 1;
+
+          final String newAddress = "/track/" + trackNumber.toString() + "/params/" + pageIndex.toString() + "/" + paramNumber.toString() + "/value";
+
+          this.connection.sendMessage (newAddress, values);
+
+          // FileWriter myWriter = new FileWriter("/Users/bjorn/Desktop/filename.txt", true);
+          // myWriter.write("Got device param update for parameter # ");
+          // myWriter.write(paramNumber.toString());
+          // myWriter.write("\n");
+          //
+          // myWriter.write("New address: ");
+          // myWriter.write(newAddress);
+          //
+          // myWriter.write("\n\n");
+          //
+          // myWriter.close();
+        }
+
         this.connection.sendMessage (address, values);
     }
 

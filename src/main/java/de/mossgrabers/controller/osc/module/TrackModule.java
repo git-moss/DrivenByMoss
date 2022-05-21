@@ -39,7 +39,6 @@ public class TrackModule extends AbstractModule
 {
     private final OSCConfiguration configuration;
 
-
     /**
      * Constructor.
      *
@@ -464,19 +463,22 @@ public class TrackModule extends AbstractModule
                           {
                               case "value":
                                   final IParameter param = cd.getParameterBank ().getItem (paramNumber);
+                                  track.selectOrExpandGroup ();
+                                  cd.getParameterPageBank ().selectPage (paramPageNumber);
                                   param.setValue (toInteger (value));
                                   break;
 
                               default:
                                   throw new UnknownCommandException (command);
                           }
-
-                          track.selectOrExpandGroup ();
-                          cd.getParameterPageBank ().selectPage (paramPageNumber);
                       }
-                      catch (final NumberFormatException ex) { }
+                      catch (final NumberFormatException ex) {
+                          throw new NumberFormatException (command);
+                      }
                   }
-                  catch (final NumberFormatException ex) { }
+                  catch (final NumberFormatException ex) {
+                      throw new NumberFormatException (command);
+                  }
 
 
 

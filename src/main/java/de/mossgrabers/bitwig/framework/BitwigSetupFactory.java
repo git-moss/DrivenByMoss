@@ -52,7 +52,9 @@ public class BitwigSetupFactory implements ISetupFactory
     public IModel createModel (final Configuration configuration, final ColorManager colorManager, final IValueChanger valueChanger, final Scales scales, final ModelSetup modelSetup)
     {
         final DataSetup dataSetup = new DataSetup (new HostImpl (this.controllerHost), valueChanger, colorManager);
-        return new ModelImpl (modelSetup, dataSetup, this.controllerHost, scales);
+        ModelImpl.sharedModel = new ModelImpl (modelSetup, dataSetup, this.controllerHost, scales);
+        return ModelImpl.sharedModel;
+        // return new ModelImpl (modelSetup, dataSetup, this.controllerHost, scales);
     }
 
 

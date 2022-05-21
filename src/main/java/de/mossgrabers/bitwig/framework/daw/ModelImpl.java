@@ -64,6 +64,8 @@ public class ModelImpl extends AbstractModel
     private final BooleanValue             masterTrackEqualsValue;
     private final Map<Integer, ISceneBank> sceneBanks              = new HashMap<> (1);
 
+    public static ModelImpl                 sharedModel;
+
 
     /**
      * Constructor.
