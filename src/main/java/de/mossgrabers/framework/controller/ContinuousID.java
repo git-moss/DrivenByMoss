@@ -78,6 +78,23 @@ public enum ContinuousID
     /** Volume Knob 8. */
     VOLUME_KNOB8,
 
+    /** Panorama Knob 1. */
+    PAN_KNOB1,
+    /** Panorama Knob 2. */
+    PAN_KNOB2,
+    /** Panorama Knob 3. */
+    PAN_KNOB3,
+    /** Panorama Knob 4. */
+    PAN_KNOB4,
+    /** Panorama Knob 5. */
+    PAN_KNOB5,
+    /** Panorama Knob 6. */
+    PAN_KNOB6,
+    /** Panorama Knob 7. */
+    PAN_KNOB7,
+    /** Panorama Knob 8. */
+    PAN_KNOB8,
+
     /** Parameter Knob 1. */
     PARAM_KNOB1,
     /** Parameter Knob 2. */
@@ -234,7 +251,41 @@ public enum ContinuousID
     /** Knob 7 controlling send 4. */
     SEND4_KNOB7,
     /** Knob 8 controlling send 4. */
-    SEND4_KNOB8;
+    SEND4_KNOB8,
+
+    /** Knob 1 controlling send 5. */
+    SEND5_KNOB1,
+    /** Knob 2 controlling send 5. */
+    SEND5_KNOB2,
+    /** Knob 3 controlling send 5. */
+    SEND5_KNOB3,
+    /** Knob 4 controlling send 5. */
+    SEND5_KNOB4,
+    /** Knob 5 controlling send 5. */
+    SEND5_KNOB5,
+    /** Knob 6 controlling send 5. */
+    SEND5_KNOB6,
+    /** Knob 7 controlling send 5. */
+    SEND5_KNOB7,
+    /** Knob 8 controlling send 5. */
+    SEND5_KNOB8,
+
+    /** Knob 1 controlling send 6. */
+    SEND6_KNOB1,
+    /** Knob 2 controlling send 6. */
+    SEND6_KNOB2,
+    /** Knob 3 controlling send 6. */
+    SEND6_KNOB3,
+    /** Knob 4 controlling send 6. */
+    SEND6_KNOB4,
+    /** Knob 5 controlling send 6. */
+    SEND6_KNOB5,
+    /** Knob 6 controlling send 6. */
+    SEND6_KNOB6,
+    /** Knob 7 controlling send 6. */
+    SEND6_KNOB7,
+    /** Knob 8 controlling send 6. */
+    SEND6_KNOB8;
 
 
     /**

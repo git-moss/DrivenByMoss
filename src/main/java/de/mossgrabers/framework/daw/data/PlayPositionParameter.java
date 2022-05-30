@@ -16,8 +16,8 @@ import de.mossgrabers.framework.daw.ITransport;
  */
 public class PlayPositionParameter extends AbstractParameterImpl
 {
-    private final ITransport         transport;
-    private final IControlSurface<?> surface;
+    protected final ITransport         transport;
+    protected final IControlSurface<?> surface;
 
 
     /**

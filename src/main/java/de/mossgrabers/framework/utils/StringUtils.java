@@ -4,6 +4,8 @@
 
 package de.mossgrabers.framework.utils;
 
+import de.mossgrabers.framework.controller.color.ColorEx;
+
 import java.nio.ByteBuffer;
 
 
@@ -221,9 +223,26 @@ public class StringUtils
      */
     public static String toHexStr (final int [] data)
     {
+        return toHexStr (data, true);
+    }
+
+
+    /**
+     * Convert the bytes to a hex string.
+     *
+     * @param data The data to convert
+     * @param addSpace True to add a space character after each hex number
+     * @return The hex string
+     */
+    public static String toHexStr (final int [] data, final boolean addSpace)
+    {
         final StringBuilder sysex = new StringBuilder ();
         for (final int d: data)
-            sysex.append (toHexStr (d)).append (' ');
+        {
+            sysex.append (toHexStr (d));
+            if (addSpace)
+                sysex.append (' ');
+        }
         return sysex.toString ();
     }
 
@@ -411,5 +430,17 @@ public class StringUtils
 
         final int millis = (int) ((time - ((hours * 60 + minutes) * 60 + seconds)) * 1000);
         return String.format (longFormat, Integer.valueOf (hours), Integer.valueOf (minutes), Integer.valueOf (seconds), Integer.valueOf (millis));
+    }
+
+
+    /**
+     * Format the color as a 3 byte hex number, e.g. FFFFFF.
+     *
+     * @param color THe color to format
+     * @return The formatted color
+     */
+    public static String formatColor (final ColorEx color)
+    {
+        return toHexStr (color.toIntRGB255 (), false);
     }
 }

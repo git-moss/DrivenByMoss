@@ -145,18 +145,6 @@ public enum DAWColor
     /**
      * Get the color ID that is assigned to the given RGB values.
      *
-     * @param color The color
-     * @return The ID or the COLOR_OFF ID if none is mapped
-     */
-    public static String getColorIndex (final ColorEx color)
-    {
-        return getColorIndex (color.toDoubleRGB ());
-    }
-
-
-    /**
-     * Get the color ID that is assigned to the given RGB values.
-     *
      * @param rgb The red, green and blue value
      * @return The ID or the COLOR_OFF ID if none is mapped
      */
@@ -176,10 +164,21 @@ public enum DAWColor
      */
     public static String getColorIndex (final double red, final double green, final double blue)
     {
+        return getColorIndex (new ColorEx (red, green, blue));
+    }
+
+
+    /**
+     * Get the color ID that is assigned to the given RGB values.
+     *
+     * @param color The color
+     * @return The ID or the COLOR_OFF ID if none is mapped
+     */
+    public static String getColorIndex (final ColorEx color)
+    {
         final DAWColor [] values = DAWColor.values ();
         DAWColor cid = values[0];
         double minError = 5.0;
-        final ColorEx color = new ColorEx (red, green, blue);
         for (int i = 1; i < values.length; i++)
         {
             final double error = ColorEx.calcDistance (values[i].getColor (), color);

@@ -166,6 +166,8 @@ public enum Modes
     public static final String      NAME_VOLUME         = "Volume";
     /** The name of the Panorama mode. */
     public static final String      NAME_PANORAMA       = "Panorama";
+    /** The name of the Sends mode. */
+    public static final String      NAME_SENDS          = "Sends";
     /** The name of the Crossfade mode. */
     public static final String      NAME_CROSSFADE      = "Crossfade";
     /** The name of the Parameters mode. */

@@ -5,6 +5,7 @@
 package de.mossgrabers.controller.electra.one;
 
 import de.mossgrabers.framework.configuration.AbstractConfiguration;
+import de.mossgrabers.framework.configuration.IEnumSetting;
 import de.mossgrabers.framework.configuration.ISettingsUI;
 import de.mossgrabers.framework.controller.valuechanger.IValueChanger;
 import de.mossgrabers.framework.daw.IHost;
@@ -20,15 +21,11 @@ import java.util.List;
  */
 public class ElectraOneConfiguration extends AbstractConfiguration
 {
-    // TODO
-    // /** Zoom state. */
-    // public static final Integer ZOOM_STATE = Integer.valueOf (50);
-    //
-    // private static final String CATEGORY_EXTENDER_SETUP = "Extender Setup (requires restart)";
-    //
-    // private IEnumSetting zoomStateSetting;
-    //
-    // private boolean zoomState;
+    /** Display log state. */
+    public static final Integer LOG_TO_CONSOLE        = Integer.valueOf (50);
+
+    private boolean             isLogToConsoleEnabled = false;
+
 
     /**
      * Constructor.
@@ -67,6 +64,23 @@ public class ElectraOneConfiguration extends AbstractConfiguration
 
     private void activateHardwareSettings (final ISettingsUI settingsUI)
     {
-        // TODO
+        final IEnumSetting logToConsoleSetting = settingsUI.getEnumSetting ("Write Electra.One logging messages to console", CATEGORY_HARDWARE_SETUP, ON_OFF_OPTIONS, ON_OFF_OPTIONS[0]);
+        logToConsoleSetting.addValueObserver (value -> {
+            this.isLogToConsoleEnabled = "On".equals (value);
+            this.notifyObservers (LOG_TO_CONSOLE);
+        });
+
+        this.isSettingActive.add (LOG_TO_CONSOLE);
+    }
+
+
+    /**
+     * Is logging to console enabled?
+     * 
+     * @return True if enabled
+     */
+    public boolean isLogToConsoleEnabled ()
+    {
+        return this.isLogToConsoleEnabled;
     }
 }

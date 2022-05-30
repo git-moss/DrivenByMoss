@@ -371,6 +371,30 @@ public class ColorEx
 
 
     /**
+     * Calculate the color from the palette which is the closest to the given color.
+     *
+     * @param color The color
+     * @param palette The palette to pick one color from
+     * @return The color from the palette
+     */
+    public static ColorEx getClosestColor (final ColorEx color, final ColorEx [] palette)
+    {
+        double minError = 5.0;
+        ColorEx closest = color;
+        for (int i = 1; i < palette.length; i++)
+        {
+            final double error = ColorEx.calcDistance (palette[i], color);
+            if (error < minError)
+            {
+                closest = palette[i];
+                minError = error;
+            }
+        }
+        return closest;
+    }
+
+
+    /**
      * Calculate the difference between colors. See https://www.compuphase.com/cmetric.htm
      *
      * @param color1 The first color
@@ -473,6 +497,17 @@ public class ColorEx
     public double getBlue ()
     {
         return this.blueValue;
+    }
+
+
+    /**
+     * Is this a gray value?
+     *
+     * @return True if all RGB values contain the same value
+     */
+    public boolean isGrayscale ()
+    {
+        return this.redValue == this.greenValue && this.greenValue == this.blueValue;
     }
 
 

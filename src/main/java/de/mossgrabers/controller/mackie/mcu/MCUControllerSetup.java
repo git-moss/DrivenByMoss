@@ -887,11 +887,4 @@ public class MCUControllerSetup extends AbstractControllerSetup<MCUControlSurfac
                 modeManager.setActive (Modes.TRACK);
         }
     }
-
-
-    private static int getButtonColor (final MCUControlSurface surface, final ButtonID buttonID)
-    {
-        final IMode mode = surface.getModeManager ().getActive ();
-        return mode == null ? 0 : mode.getButtonColor (buttonID);
-    }
 }

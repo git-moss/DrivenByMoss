@@ -4,7 +4,7 @@
   <groupId>de.mossgrabers</groupId>
   <artifactId>DrivenByMoss</artifactId>
   <name>DrivenByMoss</name>
-  <version>16.3.2</version>
+  <version>17.0.0</version>
   <build>
     <plugins>
       <plugin>
@@ -86,6 +86,12 @@
                   <artifact>de.mossgrabers:nativefilechooser</artifact>
                   <excludes>
                     <exclude>META-INF/*</exclude>
+                  </excludes>
+                </filter>
+                <filter>
+                  <artifact>com.fasterxml.jackson.core:*</artifact>
+                  <excludes>
+                    <exclude>META-INF/**</exclude>
                   </excludes>
                 </filter>
               </filters>

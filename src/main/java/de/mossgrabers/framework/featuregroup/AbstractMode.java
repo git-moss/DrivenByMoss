@@ -530,6 +530,32 @@ public abstract class AbstractMode<S extends IControlSurface<C>, C extends Confi
 
 
     /**
+     * Test if the given button ID is part of one of the button rows (ROW1_1 to ROW_6_8). If yes it
+     * returns the row.
+     *
+     * @param buttonID The button ID
+     * @return The index of the button row (zero based) or -1 if the button is not a row button.
+     */
+    protected int getButtonRow (final ButtonID buttonID)
+    {
+        final int ordinal = buttonID.ordinal ();
+        if (ordinal >= ButtonID.ROW1_1.ordinal () && ordinal <= ButtonID.ROW1_8.ordinal ())
+            return 0;
+        if (ordinal >= ButtonID.ROW2_1.ordinal () && ordinal <= ButtonID.ROW2_8.ordinal ())
+            return 1;
+        if (ordinal >= ButtonID.ROW3_1.ordinal () && ordinal <= ButtonID.ROW3_8.ordinal ())
+            return 2;
+        if (ordinal >= ButtonID.ROW4_1.ordinal () && ordinal <= ButtonID.ROW4_8.ordinal ())
+            return 3;
+        if (ordinal >= ButtonID.ROW5_1.ordinal () && ordinal <= ButtonID.ROW5_8.ordinal ())
+            return 4;
+        if (ordinal >= ButtonID.ROW6_1.ordinal () && ordinal <= ButtonID.ROW6_8.ordinal ())
+            return 5;
+        return -1;
+    }
+
+
+    /**
      * Update the binding to the parameter bank controlled by this mode.
      */
     protected void bindControls ()

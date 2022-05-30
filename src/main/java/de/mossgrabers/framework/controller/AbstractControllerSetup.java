@@ -1357,4 +1357,18 @@ public abstract class AbstractControllerSetup<S extends IControlSurface<C>, C ex
 
         });
     }
+
+
+    /**
+     * Get the button color index from the active mode. Returns 0 if there is no active mode.
+     *
+     * @param surface The surface
+     * @param buttonID The ID of the button for which to get the color
+     * @return The index of the color
+     */
+    protected int getButtonColor (final S surface, final ButtonID buttonID)
+    {
+        final IMode mode = surface.getModeManager ().getActive ();
+        return mode == null ? 0 : mode.getButtonColor (buttonID);
+    }
 }

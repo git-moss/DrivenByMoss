@@ -5,34 +5,39 @@
 package de.mossgrabers.framework.parameterprovider.special;
 
 import de.mossgrabers.framework.daw.data.IParameter;
+import de.mossgrabers.framework.daw.data.empty.EmptyParameter;
 import de.mossgrabers.framework.parameterprovider.AbstractParameterProvider;
 import de.mossgrabers.framework.parameterprovider.IParameterProvider;
 
 
 /**
- * Combines two parameter providers into one.
+ * Combines several parameter providers into one.
  *
  * @author J&uuml;rgen Mo&szlig;graber
  */
 public class CombinedParameterProvider extends AbstractParameterProvider
 {
-    private final IParameterProvider first;
-    private final IParameterProvider second;
+    private final IParameterProvider [] providers;
+    private final int                   overallSize;
 
 
     /**
      * Constructor.
      *
-     * @param first The first parameter provider
-     * @param second The second parameter provider
+     * @param providers The parameter providers to combine
      */
-    public CombinedParameterProvider (final IParameterProvider first, final IParameterProvider second)
+    public CombinedParameterProvider (final IParameterProvider... providers)
     {
-        this.first = first;
-        this.second = second;
+        this.providers = providers;
 
-        this.first.addParametersObserver (this::observerCallback);
-        this.second.addParametersObserver (this::observerCallback);
+        int size = 0;
+        for (final IParameterProvider provider: this.providers)
+        {
+            provider.addParametersObserver (this::observerCallback);
+            size += provider.size ();
+        }
+
+        this.overallSize = size;
     }
 
 
@@ -40,7 +45,7 @@ public class CombinedParameterProvider extends AbstractParameterProvider
     @Override
     public int size ()
     {
-        return this.first.size () + this.second.size ();
+        return this.overallSize;
     }
 
 
@@ -52,8 +57,15 @@ public class CombinedParameterProvider extends AbstractParameterProvider
     @Override
     public IParameter get (final int index)
     {
-        final int size = this.first.size ();
-        return index < size ? this.first.get (index) : this.second.get (index - size);
+        int pos = index;
+        for (final IParameterProvider provider: this.providers)
+        {
+            final int size = provider.size ();
+            if (pos < size)
+                return provider.get (pos);
+            pos -= size;
+        }
+        return EmptyParameter.INSTANCE;
     }
 
 

@@ -747,11 +747,4 @@ public class HUIControllerSetup extends AbstractControllerSetup<HUIControlSurfac
                 sendBank.getItem (j).setIndication (mode.ordinal () - Modes.SEND1.ordinal () == j);
         }
     }
-
-
-    private static int getButtonColor (final HUIControlSurface surface, final ButtonID buttonID)
-    {
-        final IMode mode = surface.getModeManager ().getActive ();
-        return mode == null ? 0 : mode.getButtonColor (buttonID);
-    }
 }

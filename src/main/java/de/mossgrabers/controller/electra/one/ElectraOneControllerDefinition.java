@@ -19,6 +19,9 @@ import java.util.UUID;
  */
 public class ElectraOneControllerDefinition extends DefaultControllerDefinition
 {
+    private static final String ELECTRA_CONTROLLER_ELECTRA_CTRL = "Electra Controller Electra CTRL";
+
+
     /**
      * Constructor.
      */
@@ -52,11 +55,11 @@ public class ElectraOneControllerDefinition extends DefaultControllerDefinition
                 pairs.add (this.addDeviceDiscoveryPair (new String []
                 {
                     "Electra Controller Electra Port 1",
-                    "Electra Controller Electra CTRL"
+                    ELECTRA_CONTROLLER_ELECTRA_CTRL
                 }, new String []
                 {
                     "Electra Controller Electra Port 1",
-                    "Electra Controller Electra CTRL"
+                    ELECTRA_CONTROLLER_ELECTRA_CTRL
                 }));
                 break;
 
@@ -65,11 +68,11 @@ public class ElectraOneControllerDefinition extends DefaultControllerDefinition
                 pairs.add (this.addDeviceDiscoveryPair (new String []
                 {
                     "Electra Controller Electra Port",
-                    "Electra Controller Electra CTRL"
+                    ELECTRA_CONTROLLER_ELECTRA_CTRL
                 }, new String []
                 {
                     "Electra Controller Electra Port",
-                    "Electra Controller Electra CTRL"
+                    ELECTRA_CONTROLLER_ELECTRA_CTRL
                 }));
                 break;
         }

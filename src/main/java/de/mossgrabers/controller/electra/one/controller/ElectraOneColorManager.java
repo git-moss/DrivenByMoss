@@ -8,6 +8,9 @@ import de.mossgrabers.framework.controller.ButtonID;
 import de.mossgrabers.framework.controller.color.ColorEx;
 import de.mossgrabers.framework.controller.color.ColorManager;
 
+import java.util.HashMap;
+import java.util.Map;
+
 
 /**
  * Different colors to use for the Electra.ONe.
@@ -17,6 +20,31 @@ import de.mossgrabers.framework.controller.color.ColorManager;
 @SuppressWarnings("javadoc")
 public class ElectraOneColorManager extends ColorManager
 {
+    /** State for button LED on. */
+    public static final int                    COLOR_BUTTON_STATE_ON  = 127;
+    /** State for button LED off. */
+    public static final int                    COLOR_BUTTON_STATE_OFF = 0;
+
+    public static final ColorEx                WHITE                  = ColorEx.fromRGB (0xFF, 0xFF, 0xFF);
+    public static final ColorEx                RED                    = ColorEx.fromRGB (0xF4, 0x5C, 0x51);
+    public static final ColorEx                ORANGE                 = ColorEx.fromRGB (0xF4, 0x95, 0x00);
+    public static final ColorEx                BLUE                   = ColorEx.fromRGB (0x52, 0x9D, 0xEC);
+    public static final ColorEx                GREEN                  = ColorEx.fromRGB (0x03, 0xA5, 0x98);
+    public static final ColorEx                PURPLE                 = ColorEx.fromRGB (0xC4, 0x47, 0x95);
+
+    /** The available Electra.One color palette. */
+    public static final ColorEx []             PALETTE                =
+    {
+        WHITE,
+        RED,
+        ORANGE,
+        BLUE,
+        GREEN,
+        PURPLE
+    };
+
+    private static final Map<ColorEx, ColorEx> PALETTE_MAP            = new HashMap<> ();
+
     // TODO
     // public static final int LAUNCHKEY_COLOR_BLACK = 0;
     // public static final int LAUNCHKEY_COLOR_GREY_LO = 1;
@@ -28,6 +56,7 @@ public class ElectraOneColorManager extends ColorManager
     // public static final int LAUNCHKEY_COLOR_RED_LO = 7;
     // public static final int LAUNCHKEY_COLOR_RED_AMBER = 8;
     // public static final int LAUNCHKEY_COLOR_AMBER_HI = 9;
+
 
     /**
      * Constructor.
@@ -109,14 +138,15 @@ public class ElectraOneColorManager extends ColorManager
         // this.registerColorIndex (DAWColor.DAW_COLOR_BLUISH_GREEN, LAUNCHKEY_COLOR_SPRING_HI);
         // this.registerColorIndex (DAWColor.DAW_COLOR_GREEN_BLUE, LAUNCHKEY_COLOR_TURQUOISE_CYAN);
         // this.registerColorIndex (DAWColor.DAW_COLOR_LIGHT_BLUE, LAUNCHKEY_COLOR_OCEAN_HI);
-        //
-        // this.registerColorIndex (ColorManager.BUTTON_STATE_OFF, 0);
-        // this.registerColorIndex (ColorManager.BUTTON_STATE_ON, 1);
-        // this.registerColorIndex (ColorManager.BUTTON_STATE_HI, 127);
-        //
-        // for (int i = 0; i < 128; i++)
-        // this.registerColor (i, ColorEx.BLACK);
-        //
+
+        this.registerColorIndex (ColorManager.BUTTON_STATE_OFF, COLOR_BUTTON_STATE_OFF);
+        this.registerColorIndex (ColorManager.BUTTON_STATE_ON, COLOR_BUTTON_STATE_ON);
+        this.registerColorIndex (ColorManager.BUTTON_STATE_HI, COLOR_BUTTON_STATE_ON);
+
+        for (int i = 0; i < 127; i++)
+            this.registerColor (i, ColorEx.BLACK);
+        this.registerColor (127, ColorEx.WHITE);
+
         // this.registerColor (LAUNCHKEY_COLOR_BLACK, ColorEx.BLACK);
         // this.registerColor (LAUNCHKEY_COLOR_GREY_LO, DAWColor.DAW_COLOR_LIGHT_GRAY.getColor ());
         // this.registerColor (LAUNCHKEY_COLOR_GREY_MD, DAWColor.DAW_COLOR_GRAY_HALF.getColor ());
@@ -215,5 +245,18 @@ public class ElectraOneColorManager extends ColorManager
         // default:
         return super.getColor (colorIndex, buttonID);
         // }
+    }
+
+
+    /**
+     * Calculate the color from the palette which is the closest to the given color. Calculated
+     * colors are cached.
+     *
+     * @param color The color
+     * @return The color from the palette
+     */
+    public static ColorEx getClosestPaletteColor (final ColorEx color)
+    {
+        return PALETTE_MAP.computeIfAbsent (color, c -> c.isGrayscale () ? ColorEx.WHITE : ColorEx.getClosestColor (c, PALETTE));
     }
 }
