@@ -106,7 +106,6 @@ public class ScaleLayoutMode extends BaseMode<IItem>
             display.addOptionElement ("", "", false, i == 0 ? "Scale layout" : "", names[i].replace (" ^", ""), pos == i / 2, false);
 
         display.addOptionElement ("", "", false, "", "", false, false);
-        display.addOptionElement ("", "", false, "", "", false, false);
         display.addOptionElement ("", "", false, "", sl % 2 == 0 ? "Horizontal" : "Vertical", false, false);
     }
 }

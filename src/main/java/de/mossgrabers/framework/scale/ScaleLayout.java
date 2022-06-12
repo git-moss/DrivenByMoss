@@ -36,6 +36,7 @@ public enum ScaleLayout
     /** Rightward by ~five steps and upward by two steps. (dx = 5, dy = 2) */
     STAGGERED_RIGHT("Staggered >");
 
+
     private static final String [] scaleLayoutNames;
     static
     {

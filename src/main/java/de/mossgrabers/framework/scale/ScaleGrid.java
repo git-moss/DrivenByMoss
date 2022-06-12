@@ -63,13 +63,12 @@ class ScaleGrid
         if (layout == ScaleLayout.STAGGERED_UP || layout == ScaleLayout.STAGGERED_RIGHT)
         {
             dx = 2;
-            // Staggered layout steps right by + 2, so on the row above a nice symmetry is produced by octave - 2.
-            // Divide until shift is odd to evenly distribute the full scale and ensure all steps are included.
+            // Staggered layout steps right by + 2, so on the row above a nice symmetry is produced
+            // by octave - 2. Divide until shift is odd to evenly distribute the full scale and
+            // ensure all steps are included.
             dy = len - 2;
             while (dy > 1 && (dy & 1) == 0)
-            {
                 dy /= 2;
-            }
         }
 
         for (int row = 0; row < rows; row++)

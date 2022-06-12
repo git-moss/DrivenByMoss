@@ -19,9 +19,6 @@ public enum Scale
 {
     // @formatter:off
 
-    /** The 12-tone Chromatic scale; this is usefully mapped by scale mode. */
-    CHROMATIC("Chromatic", new int[]                   { 0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11 }),
-
     /** The Major scale. */
     MAJOR("Major", new int []                          { 0, 2, 4, 5, 7, 9, 11 }),
 

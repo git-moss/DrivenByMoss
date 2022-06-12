@@ -142,9 +142,7 @@ public class ScaleMode extends AbstractKontrol1Mode<IItem>
     {
         switch (buttonID)
         {
-            case MUTE:
-            case SOLO:
-            case BROWSE:
+            case MUTE, SOLO, BROWSE:
                 return ColorManager.BUTTON_STATE_ON;
             default:
                 return ColorManager.BUTTON_STATE_OFF;

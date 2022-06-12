@@ -904,7 +904,7 @@ public abstract class AbstractConfiguration implements Configuration
     protected void activateScaleSetting (final ISettingsUI settingsUI)
     {
         final String [] scaleNames = Scale.getNames ();
-        this.scaleSetting = settingsUI.getEnumSetting ("Scale", CATEGORY_SCALES, scaleNames, Scale.MAJOR.getName());
+        this.scaleSetting = settingsUI.getEnumSetting ("Scale", CATEGORY_SCALES, scaleNames, Scale.MAJOR.getName ());
         this.scaleSetting.addValueObserver (value -> {
             this.scale = value;
             this.notifyObservers (SCALES_SCALE);
