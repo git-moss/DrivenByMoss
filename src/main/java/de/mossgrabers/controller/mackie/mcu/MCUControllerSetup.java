@@ -3,6 +3,9 @@
 // Licensed under LGPLv3 - http://www.gnu.org/licenses/lgpl-3.0.txt
 
 package de.mossgrabers.controller.mackie.mcu;
+// AG!
+import de.mossgrabers.framework.command.trigger.device.SelectNextDeviceOrParamPageCommand;
+import de.mossgrabers.framework.command.trigger.device.SelectPreviousDeviceOrParamPageCommand;
 
 import de.mossgrabers.controller.mackie.mcu.command.continuous.PlayPositionTempoCommand;
 import de.mossgrabers.controller.mackie.mcu.command.trigger.AssignableCommand;
@@ -283,8 +286,13 @@ public class MCUControllerSetup extends AbstractControllerSetup<MCUControlSurfac
             modeManager.register (Modes.MASTER, new MasterMode (surface, this.model));
 
             modeManager.register (Modes.DEVICE_PARAMS, new DeviceParamsMode (surface, this.model));
+
+            // AG!
+            if( !this.configuration.isRemappedEqInstToDevicePageLeftRight() ) {
             modeManager.register (Modes.EQ_DEVICE_PARAMS, new DeviceParamsMode ("Equalizer", this.model.getSpecificDevice (DeviceID.EQ), surface, this.model));
             modeManager.register (Modes.INSTRUMENT_DEVICE_PARAMS, new DeviceParamsMode ("First Instrument", this.model.getSpecificDevice (DeviceID.FIRST_INSTRUMENT), surface, this.model));
+            }
+
             modeManager.register (Modes.USER, new UserMode (surface, this.model));
             modeManager.register (Modes.BROWSER, new DeviceBrowserMode (surface, this.model));
             modeManager.register (Modes.MARKERS, new MarkerMode (surface, this.model));
@@ -406,8 +414,19 @@ public class MCUControllerSetup extends AbstractControllerSetup<MCUControlSurfac
                 this.addButton (surface, ButtonID.TEMPO_TICKS, "Tempo Ticks", new TempoTicksCommand (this.model, surface), 0, MCUControlSurface.MCU_SMPTE_BEATS, this.configuration::isDisplayTicks);
 
                 // Functions
+                if( this.configuration.isRemappedSoloToShift() ) {
+                    this.addButton (surface, ButtonID.SHIFT, "Solo > Shift", new ShiftCommand<> (this.model, surface), 0, MCUControlSurface.MCU_SOLO); // AG! remap SOLO to SHIFT
+                } else {
                 this.addButton (surface, ButtonID.SHIFT, "Shift", new ShiftCommand<> (this.model, surface), 0, MCUControlSurface.MCU_SHIFT);
+                }
+                if( this.configuration.isRemappedClickToOption() ) {
+                     this.addButton (surface, ButtonID.SELECT, "Click > Option", NopCommand.INSTANCE, 0, MCUControlSurface.MCU_CLICK);  // since click is remapped to option
+                     this.addButton (surface, ButtonID.METRONOME, "Metronome", NopCommand.INSTANCE, 0, MCUControlSurface.MCU_OPTION);   //   map metronome to options (the controller shouldn't have a default one)
+                } else {
                 this.addButton (surface, ButtonID.SELECT, "Option", NopCommand.INSTANCE, 0, MCUControlSurface.MCU_OPTION);
+                    this.addButton (surface, ButtonID.METRONOME, "Metronome", new MetronomeCommand<> (this.model, surface, false), 0, MCUControlSurface.MCU_CLICK, () -> surface.getButton (ButtonID.SHIFT).isPressed () ? t.isMetronomeTicksOn () : t.isMetronomeOn ());
+                }
+
                 this.addButton (surface, ButtonID.PUNCH_IN, "Punch In", new PunchInCommand<> (this.model, surface), 0, MCUControlSurface.MCU_F6, t::isPunchInEnabled);
                 this.addButton (surface, ButtonID.PUNCH_OUT, "Punch Out", new PunchOutCommand<> (this.model, surface), 0, MCUControlSurface.MCU_F7, t::isPunchOutEnabled);
 
@@ -425,8 +444,22 @@ public class MCUControllerSetup extends AbstractControllerSetup<MCUControlSurfac
                 this.addButton (surface, ButtonID.PAN_SEND, "Pan", new ModeSelectCommand<> (this.model, surface, Modes.PAN), 0, MCUControlSurface.MCU_MODE_PAN, () -> modeManager.isActive (Modes.PAN));
                 this.addButton (surface, ButtonID.SENDS, "Sends", new SendSelectCommand (this.model, surface), 0, MCUControlSurface.MCU_MODE_SENDS, () -> Modes.isSendMode (modeManager.getActiveID ()));
                 this.addButton (surface, ButtonID.DEVICE, "Device", new DevicesCommand (this.model, surface), 0, MCUControlSurface.MCU_MODE_PLUGIN, () -> surface.getButton (ButtonID.SELECT).isPressed () ? cursorDevice.isPinned () : modeManager.isActive (Modes.DEVICE_PARAMS, Modes.USER));
+             
+             
+                // AG!
+                if( this.configuration.isRemappedEqInstToDevicePageLeftRight() ) {
+                    System.out.println("Remapped EQ Inst");
+                    final SelectPreviousDeviceOrParamPageCommand<MCUControlSurface, MCUConfiguration> selectPreviousDeviceOrParamPageCommand = new SelectPreviousDeviceOrParamPageCommand<> (this.model, surface);
+                    this.addButton (ButtonID.PAGE_LEFT, "EQ :: <- BANK", selectPreviousDeviceOrParamPageCommand, MCUControlSurface.MCU_MODE_EQ, () -> modeManager.isActive (Modes.DEVICE_PARAMS) && selectPreviousDeviceOrParamPageCommand.canExecute());
+                
+                    final SelectNextDeviceOrParamPageCommand<MCUControlSurface, MCUConfiguration> selectNextDeviceOrParamPageCommand = new SelectNextDeviceOrParamPageCommand<> (this.model, surface);
+                    this.addButton (ButtonID.PAGE_RIGHT, "INST :: BANK ->", selectNextDeviceOrParamPageCommand, MCUControlSurface.MCU_MODE_DYN, () -> modeManager.isActive (Modes.DEVICE_PARAMS) && selectNextDeviceOrParamPageCommand.canExecute());
+                } else {
+                    System.out.println("Regular Eq Inst");
                 this.addButton (surface, ButtonID.PAGE_LEFT, "EQ", new ModeSelectCommand<> (this.model, surface, Modes.EQ_DEVICE_PARAMS), 0, MCUControlSurface.MCU_MODE_EQ, () -> modeManager.isActive (Modes.EQ_DEVICE_PARAMS));
                 this.addButton (surface, ButtonID.PAGE_RIGHT, "INST", new ModeSelectCommand<> (this.model, surface, Modes.INSTRUMENT_DEVICE_PARAMS), 0, MCUControlSurface.MCU_MODE_DYN, () -> modeManager.isActive (Modes.INSTRUMENT_DEVICE_PARAMS));
+                }
+
 
                 this.addButton (surface, ButtonID.MOVE_TRACK_LEFT, "Left", new MCUMoveTrackBankCommand (this.model, surface, true, true), 0, MCUControlSurface.MCU_TRACK_LEFT);
                 this.addButton (surface, ButtonID.MOVE_TRACK_RIGHT, TAG_RIGHT, new MCUMoveTrackBankCommand (this.model, surface, true, false), 0, MCUControlSurface.MCU_TRACK_RIGHT);
@@ -457,7 +490,7 @@ public class MCUControllerSetup extends AbstractControllerSetup<MCUControlSurfac
 
                 final IProject project = this.model.getProject ();
                 this.addButton (surface, ButtonID.GROOVE, "Solo Defeat", (event, velocity) -> {
-                    if (event != ButtonEvent.DOWN)
+                    if (event != ButtonEvent.DOWN || this.configuration.isRemappedSoloToShift())
                         return;
                     if (surface.isShiftPressed ())
                         project.clearMute ();
@@ -465,7 +498,16 @@ public class MCUControllerSetup extends AbstractControllerSetup<MCUControlSurfac
                         project.clearSolo ();
                 }, 0, MCUControlSurface.MCU_SOLO, () -> surface.isShiftPressed () ? project.hasMute () : project.hasSolo ());
                 this.addButton (surface, ButtonID.OVERDUB, "Overdub", new OverdubCommand<> (this.model, surface), 0, MCUControlSurface.MCU_REPLACE, () -> (surface.getButton (ButtonID.SHIFT).isPressed () ? t.isLauncherOverdub () : t.isArrangerOverdub ()));
+                
+                // AG!
+                // if( this.configuration.isRemappedSoloToShift() ) {
+                //     //
+                //     // REMAP TAP TEMPO TO BANK RIGHT
+                //     //
+                //     this.addButton (surface, ButtonID.TAP_TEMPO, "Bank Right", new MCUMoveTrackBankCommand (this.model, surface, false, false), MCUControlSurface.MCU_NUDGE);
+                // } else
                 this.addButton (surface, ButtonID.TAP_TEMPO, "Tap Tempo", new TapTempoCommand<> (this.model, surface), 0, MCUControlSurface.MCU_NUDGE);
+                
                 this.addButton (surface, ButtonID.DUPLICATE, "Duplicate", (event, velocity) -> {
                     if (event == ButtonEvent.DOWN)
                         this.model.getCursorTrack ().duplicate ();
@@ -490,7 +532,13 @@ public class MCUControllerSetup extends AbstractControllerSetup<MCUControlSurfac
 
                 // Only MCU
                 this.addButton (surface, ButtonID.SAVE, "Save", new SaveCommand<> (this.model, surface), MCUControlSurface.MCU_SAVE);
+
+                // if( this.configuration.isRemappedSoloToShift() ) {
+                //     // REMAP MARKER TO BANK LEFT
+                //     this.addButton (surface, ButtonID.MARKER, "Marker > Bank Left", new MCUMoveTrackBankCommand (this.model, surface, false, true), MCUControlSurface.MCU_MARKER);
+                // } else
                 this.addButton (surface, ButtonID.MARKER, "Marker", new MarkerCommand<> (this.model, surface), 0, MCUControlSurface.MCU_MARKER, () -> surface.getButton (ButtonID.SHIFT).isPressed () ? this.model.getArranger ().areCueMarkersVisible () : modeManager.isActive (Modes.MARKERS));
+                
                 this.addButton (surface, ButtonID.TOGGLE_VU, "Toggle VU", new ToggleVUCommand<> (this.model, surface), 0, MCUControlSurface.MCU_EDIT, () -> this.configuration.isEnableVUMeters ());
 
                 this.addLight (surface, OutputID.LED1, 0, MCUControlSurface.MCU_SMPTE_LED, () -> this.configuration.isDisplayTicks () ? 2 : 0);
@@ -506,10 +554,10 @@ public class MCUControllerSetup extends AbstractControllerSetup<MCUControlSurfac
 
                 final int labelIndex = 8 * (this.numMCUDevices - index - 1) + i + 1;
 
-                this.addButton (surface, row1ButtonID, "Rec Arm " + labelIndex, new ButtonRowModeCommand<> (1, i, this.model, surface), MCUControlSurface.MCU_ARM1 + i, () -> this.getButtonColor (surface, row1ButtonID));
-                this.addButton (surface, row2ButtonID, "Solo " + labelIndex, new ButtonRowModeCommand<> (2, i, this.model, surface), MCUControlSurface.MCU_SOLO1 + i, () -> this.getButtonColor (surface, row2ButtonID));
-                this.addButton (surface, row3ButtonID, "Mute " + labelIndex, new ButtonRowModeCommand<> (3, i, this.model, surface), MCUControlSurface.MCU_MUTE1 + i, () -> this.getButtonColor (surface, row3ButtonID));
-                this.addButton (surface, row4ButtonID, "Select " + labelIndex, new SelectCommand (i, this.model, surface), MCUControlSurface.MCU_SELECT1 + i, () -> this.getButtonColor (surface, row4ButtonID));
+                this.addButton (surface, row1ButtonID, "Rec Arm " + labelIndex, new ButtonRowModeCommand<> (1, i, this.model, surface), MCUControlSurface.MCU_ARM1 + i, () -> getButtonColor (surface, row1ButtonID));
+                this.addButton (surface, row2ButtonID, "Solo " + labelIndex, new ButtonRowModeCommand<> (2, i, this.model, surface), MCUControlSurface.MCU_SOLO1 + i, () -> getButtonColor (surface, row2ButtonID));
+                this.addButton (surface, row3ButtonID, "Mute " + labelIndex, new ButtonRowModeCommand<> (3, i, this.model, surface), MCUControlSurface.MCU_MUTE1 + i, () -> getButtonColor (surface, row3ButtonID));
+                this.addButton (surface, row4ButtonID, "Select " + labelIndex, new SelectCommand (i, this.model, surface), MCUControlSurface.MCU_SELECT1 + i, () -> getButtonColor (surface, row4ButtonID));
             }
         }
     }
@@ -865,5 +913,33 @@ public class MCUControllerSetup extends AbstractControllerSetup<MCUControlSurfac
     protected BindType getTriggerBindType (final ButtonID buttonID)
     {
         return BindType.NOTE;
+    }
+
+
+    /**
+     * Handle a track selection change.
+     *
+     * @param isSelected Has the track been selected?
+     */
+    private void handleTrackChange (final boolean isSelected)
+    {
+        if (!isSelected)
+            return;
+
+        final ModeManager modeManager = this.getSurface ().getModeManager ();
+        if (modeManager.isActive (Modes.MASTER) && !this.model.getMasterTrack ().isSelected ())
+        {
+            if (Modes.isTrackMode (modeManager.getPreviousID ()))
+                modeManager.restore ();
+            else
+                modeManager.setActive (Modes.TRACK);
+        }
+    }
+
+
+    private static int getButtonColor (final MCUControlSurface surface, final ButtonID buttonID)
+    {
+        final IMode mode = surface.getModeManager ().getActive ();
+        return mode == null ? 0 : mode.getButtonColor (buttonID);
     }
 }
