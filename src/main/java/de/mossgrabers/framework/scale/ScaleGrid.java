@@ -52,19 +52,35 @@ class ScaleGrid
         final boolean isUp = orientation == Orientation.ORIENT_UP;
         final int centerOffset = layout == ScaleLayout.EIGHT_UP_CENTER || layout == ScaleLayout.EIGHT_RIGHT_CENTER ? -3 : 0;
 
+        // Axis deltas, in scale steps.
+        int dx = 1;
+        int dy = shift;
+
+        // Fix 8th layout for scales which do not have 7 steps
+        if (shift == 7)
+            dy = len;
+
+        if (layout == ScaleLayout.STAGGERED_UP || layout == ScaleLayout.STAGGERED_RIGHT)
+        {
+            dx = 2;
+            // Staggered layout steps right by + 2, so on the row above a nice symmetry is produced by octave - 2.
+            // Divide until shift is odd to evenly distribute the full scale and ensure all steps are included.
+            dy = len - 2;
+            while (dy > 1 && (dy & 1) == 0)
+            {
+                dy /= 2;
+            }
+        }
+
         for (int row = 0; row < rows; row++)
         {
             for (int column = 0; column < cols; column++)
             {
                 final int y = isUp ? row : column;
                 final int x = isUp ? column : row;
+                final int index = row * cols + column;
 
-                int s = shift;
-                // Fix 8th layout for scales which do not have 7 steps
-                if (shift == 7)
-                    s = len;
-                int offset = y * s + x + centerOffset;
-
+                int offset = y * dy + x * dx + centerOffset;
                 int oct = offset / len;
 
                 // Fix negative values introduced by centerOffset
@@ -74,7 +90,6 @@ class ScaleGrid
                     oct = offset / len - 1;
                 }
 
-                final int index = row * cols + column;
                 this.matrix[index] = oct * 12 + intervals[offset % len];
                 this.chromatic[index] = y * semitoneShift + x;
             }

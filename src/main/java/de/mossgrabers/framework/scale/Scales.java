@@ -348,6 +348,12 @@ public class Scales
             case EIGHT_RIGHT_CENTER:
                 this.setPlayShift (7, 12);
                 break;
+            case STAGGERED_UP:
+            case STAGGERED_RIGHT:
+                // Note, scaleShift is dynamically determined by ScaleGrid depending on scale. It isn't calculated
+                // here because scale could change without a subsequent layout change to refresh the computed value.
+                this.setPlayShift (0, 5);
+                break;
         }
     }
 
