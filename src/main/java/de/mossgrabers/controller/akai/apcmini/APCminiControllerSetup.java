@@ -298,32 +298,7 @@ public class APCminiControllerSetup extends AbstractControllerSetup<APCminiContr
     {
         final APCminiControlSurface surface = this.getSurface ();
         surface.getModeManager ().setActive (Modes.VOLUME);
-        surface.getViewManager ().setActive (Views.PLAY);
+        surface.getViewManager ().setActive (this.configuration.getPreferredNoteView ());
         this.host.scheduleTask (surface.getPadGrid ()::forceFlush, 1000);
-    }
-
-
-    /**
-     * Handle a track selection change.
-     *
-     * @param isSelected Has the track been selected?
-     */
-    private void handleTrackChange (final boolean isSelected)
-    {
-        if (!isSelected)
-            return;
-
-        final APCminiControlSurface surface = this.getSurface ();
-        final ViewManager viewManager = surface.getViewManager ();
-        if (viewManager.isActive (Views.PLAY))
-            viewManager.getActive ().updateNoteMapping ();
-
-        if (viewManager.isActive (Views.PLAY))
-            viewManager.getActive ().updateNoteMapping ();
-
-        // Reset drum octave because the drum pad bank is also reset
-        this.scales.resetDrumOctave ();
-        if (viewManager.isActive (Views.DRUM))
-            viewManager.get (Views.DRUM).updateNoteMapping ();
     }
 }

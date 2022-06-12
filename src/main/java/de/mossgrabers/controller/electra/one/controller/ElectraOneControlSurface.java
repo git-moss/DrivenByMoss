@@ -133,7 +133,7 @@ public class ElectraOneControlSurface extends AbstractControlSurface<ElectraOneC
 
     /**
      * Set the title of a group element.
-     * 
+     *
      * @param groupID The element starting from 1, increasing from left to right, top to bottom
      * @param cache The cache to use
      * @param title The title to set
@@ -184,12 +184,12 @@ public class ElectraOneControlSurface extends AbstractControlSurface<ElectraOneC
             return;
         cache[controlID] = json;
 
-        byte [] command = new byte [4];
+        final byte [] command = new byte [4];
         command[0] = SYSEX_UPDATE_ELEMENT[0];
         command[1] = SYSEX_UPDATE_ELEMENT[1];
         command[2] = (byte) (controlID & 0x7F);
         command[3] = (byte) (controlID >> 7);
-        sendText (command, json);
+        this.sendText (command, json);
     }
 
 

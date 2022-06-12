@@ -6,6 +6,7 @@ package de.mossgrabers.controller.ni.kontrol.mkii.mode;
 
 import de.mossgrabers.controller.ni.kontrol.mkii.KontrolProtocolConfiguration;
 import de.mossgrabers.controller.ni.kontrol.mkii.TrackType;
+import de.mossgrabers.controller.ni.kontrol.mkii.controller.KontrolProtocol;
 import de.mossgrabers.controller.ni.kontrol.mkii.controller.KontrolProtocolControlSurface;
 import de.mossgrabers.framework.controller.ContinuousID;
 import de.mossgrabers.framework.controller.valuechanger.IValueChanger;
@@ -121,7 +122,7 @@ public class SendMode extends DefaultTrackMode<KontrolProtocolControlSurface, Ko
             this.surface.sendKontrolTrackSysEx (KontrolProtocolControlSurface.KONTROL_TRACK_RECARM, 0, i);
             this.surface.sendKontrolTrackSysEx (KontrolProtocolControlSurface.KONTROL_TRACK_VOLUME_TEXT, 0, i, send.getDisplayedValue (8));
             this.surface.sendKontrolTrackSysEx (KontrolProtocolControlSurface.KONTROL_TRACK_PAN_TEXT, 0, i, send.getDisplayedValue (8));
-            final String n = selectedTrack.isPresent () ? getName (selectedTrack.get (), send) : "";
+            final String n = selectedTrack.isPresent () ? this.getLabel (selectedTrack.get (), send) : "";
             this.surface.sendKontrolTrackSysEx (KontrolProtocolControlSurface.KONTROL_TRACK_NAME, 0, i, n);
 
             final int j = 2 * i;
@@ -168,8 +169,13 @@ public class SendMode extends DefaultTrackMode<KontrolProtocolControlSurface, Ko
     }
 
 
-    private static String getName (final ITrack track, final ISend send)
+    private String getLabel (final ITrack track, final ISend send)
     {
-        return "Track " + (track.getPosition () + 1) + "\nFX " + (send.getPosition () + 1) + "\n\n" + send.getName ();
+        final String n = send.doesExist () ? send.getName () : "None";
+
+        if (this.surface.getProtocolVersion () == KontrolProtocol.VERSION_1)
+            return "S" + (send.getPosition () + 1) + ": " + n;
+
+        return "Track " + (track.getPosition () + 1) + "\nFX " + (send.getPosition () + 1) + "\n\n" + n;
     }
 }

@@ -9,6 +9,7 @@ import de.mossgrabers.framework.configuration.ISettingsUI;
 import de.mossgrabers.framework.controller.valuechanger.IValueChanger;
 import de.mossgrabers.framework.daw.IHost;
 import de.mossgrabers.framework.daw.midi.ArpeggiatorMode;
+import de.mossgrabers.framework.view.Views;
 
 import java.util.List;
 
@@ -20,6 +21,15 @@ import java.util.List;
  */
 public class APCConfiguration extends AbstractConfiguration
 {
+    private static final Views [] PREFERRED_NOTE_VIEWS =
+    {
+        Views.PLAY,
+        Views.DRUM,
+        Views.SEQUENCER,
+        Views.RAINDROPS
+    };
+
+
     /**
      * Constructor.
      *
@@ -49,6 +59,7 @@ public class APCConfiguration extends AbstractConfiguration
         // Play and Sequence
 
         this.activateQuantizeAmountSetting (globalSettings);
+        this.activatePreferredNoteViewSetting (globalSettings, PREFERRED_NOTE_VIEWS);
 
         ///////////////////////////
         // Workflow

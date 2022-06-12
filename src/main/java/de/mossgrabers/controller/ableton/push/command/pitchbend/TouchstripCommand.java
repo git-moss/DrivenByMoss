@@ -212,7 +212,7 @@ public class TouchstripCommand extends AbstractPitchbendCommand<PushControlSurfa
                     return;
                 }
                 final IParameter parameter = parameterProvider.get (touchedKnob);
-                int v = parameter != null && parameter.doesExist () ? this.model.getValueChanger ().toMidiValue (parameter.getValue ()) : 0;
+                final int v = parameter != null && parameter.doesExist () ? this.model.getValueChanger ().toMidiValue (parameter.getValue ()) : 0;
                 this.surface.setRibbonValue (v);
                 break;
 

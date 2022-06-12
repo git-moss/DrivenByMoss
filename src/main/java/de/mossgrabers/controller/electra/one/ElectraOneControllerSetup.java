@@ -211,10 +211,10 @@ public class ElectraOneControllerSetup extends AbstractControllerSetup<ElectraOn
 
             final int labelIndex = i + 1;
 
-            this.addButton (surface, row1ButtonID, "Rec Arm " + labelIndex, new ButtonRowModeCommand<> (0, i, this.model, surface), ElectraOneControlSurface.ELECTRA_ONE_ARM1 + i, () -> getButtonColor (surface, row1ButtonID));
-            this.addButton (surface, row3ButtonID, "Mute " + labelIndex, new ButtonRowModeCommand<> (1, i, this.model, surface), ElectraOneControlSurface.ELECTRA_ONE_MUTE1 + i, () -> getButtonColor (surface, row2ButtonID));
-            this.addButton (surface, row2ButtonID, "Solo " + labelIndex, new ButtonRowModeCommand<> (2, i, this.model, surface), ElectraOneControlSurface.ELECTRA_ONE_SOLO1 + i, () -> getButtonColor (surface, row3ButtonID));
-            this.addButton (surface, row4ButtonID, "Select " + labelIndex, new ButtonRowModeCommand<> (3, i, this.model, surface), ElectraOneControlSurface.ELECTRA_ONE_SELECT1 + i, () -> getButtonColor (surface, row4ButtonID));
+            this.addButton (surface, row1ButtonID, "Rec Arm " + labelIndex, new ButtonRowModeCommand<> (0, i, this.model, surface), ElectraOneControlSurface.ELECTRA_ONE_ARM1 + i, () -> this.getButtonColor (surface, row1ButtonID));
+            this.addButton (surface, row3ButtonID, "Mute " + labelIndex, new ButtonRowModeCommand<> (1, i, this.model, surface), ElectraOneControlSurface.ELECTRA_ONE_MUTE1 + i, () -> this.getButtonColor (surface, row2ButtonID));
+            this.addButton (surface, row2ButtonID, "Solo " + labelIndex, new ButtonRowModeCommand<> (2, i, this.model, surface), ElectraOneControlSurface.ELECTRA_ONE_SOLO1 + i, () -> this.getButtonColor (surface, row3ButtonID));
+            this.addButton (surface, row4ButtonID, "Select " + labelIndex, new ButtonRowModeCommand<> (3, i, this.model, surface), ElectraOneControlSurface.ELECTRA_ONE_SELECT1 + i, () -> this.getButtonColor (surface, row4ButtonID));
         }
     }
 
@@ -283,26 +283,5 @@ public class ElectraOneControllerSetup extends AbstractControllerSetup<ElectraOn
 
         surface.getViewManager ().setActive (Views.CONTROL);
         surface.getModeManager ().setActive (Modes.VOLUME);
-    }
-
-
-    /**
-     * Handle a track selection change.
-     *
-     * @param isSelected Has the track been selected?
-     */
-    private void handleTrackChange (final boolean isSelected)
-    {
-        if (!isSelected)
-            return;
-
-        final ModeManager modeManager = this.getSurface ().getModeManager ();
-        if (modeManager.isActive (Modes.MASTER) && !this.model.getMasterTrack ().isSelected ())
-        {
-            if (Modes.isTrackMode (modeManager.getPreviousID ()))
-                modeManager.restore ();
-            else
-                modeManager.setActive (Modes.TRACK);
-        }
     }
 }

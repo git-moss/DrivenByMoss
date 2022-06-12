@@ -116,6 +116,6 @@ public class UserMode extends BaseMode<IParameter>
     protected void resetParameter (final int index)
     {
         final int extenderOffset = this.surface.getExtenderOffset ();
-        this.model.getUserParameterBank ().getItem (extenderOffset + index).resetValue ();
+        this.resetParameter (this.model.getUserParameterBank ().getItem (extenderOffset + index));
     }
 }

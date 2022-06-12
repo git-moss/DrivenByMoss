@@ -10,6 +10,7 @@ import de.mossgrabers.framework.configuration.ISettingsUI;
 import de.mossgrabers.framework.controller.valuechanger.IValueChanger;
 import de.mossgrabers.framework.daw.IHost;
 import de.mossgrabers.framework.daw.midi.ArpeggiatorMode;
+import de.mossgrabers.framework.view.Views;
 
 import java.util.List;
 
@@ -22,17 +23,25 @@ import java.util.List;
 public class APCminiConfiguration extends AbstractConfiguration
 {
     /** Default function of the faders. */
-    public static final Integer       FADER_CTRL         = Integer.valueOf (50);
+    public static final Integer       FADER_CTRL           = Integer.valueOf (50);
     /** Default function of the track buttons. */
-    public static final Integer       SOFT_KEYS          = Integer.valueOf (51);
+    public static final Integer       SOFT_KEYS            = Integer.valueOf (51);
 
-    private static final List<String> FADER_CTRL_OPTIONS = List.of ("Volume", "Pan", "Send 1", "Send 2", "Send 3", "Send 4", "Send 5", "Send 6", "Send 7", "Send 8", "Device");
+    private static final List<String> FADER_CTRL_OPTIONS   = List.of ("Volume", "Pan", "Send 1", "Send 2", "Send 3", "Send 4", "Send 5", "Send 6", "Send 7", "Send 8", "Device");
 
     /** The names of the track button functions. */
-    public static final List<String>  SOFT_KEYS_OPTIONS  = List.of ("Clip Stop", "Solo", "Rec Arm", "Mute", "Select");
+    public static final List<String>  SOFT_KEYS_OPTIONS    = List.of ("Clip Stop", "Solo", "Rec Arm", "Mute", "Select");
 
-    private String                    faderCtrl          = FADER_CTRL_OPTIONS.get (0);
-    private String                    softKeys           = SOFT_KEYS_OPTIONS.get (0);
+    private static final Views []     PREFERRED_NOTE_VIEWS =
+    {
+        Views.PLAY,
+        Views.DRUM,
+        Views.SEQUENCER,
+        Views.RAINDROPS
+    };
+
+    private String                    faderCtrl            = FADER_CTRL_OPTIONS.get (0);
+    private String                    softKeys             = SOFT_KEYS_OPTIONS.get (0);
 
     private IEnumSetting              faderCtrlSetting;
     private IEnumSetting              softKeysSetting;
@@ -67,6 +76,7 @@ public class APCminiConfiguration extends AbstractConfiguration
         // Play and Sequence
 
         this.activateQuantizeAmountSetting (globalSettings);
+        this.activatePreferredNoteViewSetting (globalSettings, PREFERRED_NOTE_VIEWS);
 
         ///////////////////////////
         // Workflow

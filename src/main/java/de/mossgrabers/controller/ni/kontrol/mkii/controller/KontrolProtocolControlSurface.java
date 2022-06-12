@@ -181,7 +181,7 @@ public class KontrolProtocolControlSurface extends AbstractControlSurface<Kontro
 
 
     /**
-     * Initialise the handshake with the NIHIA.
+     * Initialize the handshake with the NIHIA.
      */
     public void initHandshake ()
     {

@@ -5,7 +5,6 @@
 package de.mossgrabers.framework.view;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
@@ -143,7 +142,7 @@ public enum Views
 
 
     /**
-     * Initialise.
+     * Initialize.
      */
     public static void init ()
     {
@@ -173,8 +172,10 @@ public enum Views
 
         NOTE_VIEWS.add (SEQUENCER);
         NOTE_VIEWS.add (RAINDROPS);
+        NOTE_VIEWS.add (POLY_SEQUENCER);
         NOTE_VIEW_NAMES.put (NAME_SEQUENCER, SEQUENCER);
         NOTE_VIEW_NAMES.put (NAME_RAINDROPS, RAINDROPS);
+        NOTE_VIEW_NAMES.put (NAME_POLY_SEQUENCER, POLY_SEQUENCER);
 
         SEQUENCER_VIEWS.add (SEQUENCER);
         SEQUENCER_VIEWS.add (RAINDROPS);
@@ -222,19 +223,6 @@ public enum Views
 
 
     /**
-     * Get the note view names.
-     *
-     * @return The names
-     */
-    public static String [] getNoteViewNames ()
-    {
-        final String [] array = NOTE_VIEW_NAMES.keySet ().toArray (new String [NOTE_VIEW_NAMES.size ()]);
-        Arrays.sort (array);
-        return array;
-    }
-
-
-    /**
      * Get the note view at the given index.
      *
      * @param name The name of the note view
@@ -243,6 +231,23 @@ public enum Views
     public static Views getNoteView (final String name)
     {
         return NOTE_VIEW_NAMES.get (name);
+    }
+
+
+    /**
+     * Get the note view name.
+     *
+     * @param view The view ID
+     * @return The note view name
+     */
+    public static String getNoteViewName (final Views view)
+    {
+        for (final Map.Entry<String, Views> e: NOTE_VIEW_NAMES.entrySet ())
+        {
+            if (e.getValue () == view)
+                return e.getKey ();
+        }
+        return "Missing view name";
     }
 
 

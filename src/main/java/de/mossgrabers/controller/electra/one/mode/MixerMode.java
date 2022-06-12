@@ -211,7 +211,7 @@ public class MixerMode extends DefaultTrackMode<ElectraOneControlSurface, Electr
                     exists = true;
                     volume = track.getVolume ();
                     pan = track.getPan ();
-                    title = (track.getPosition () + 1) + ": " + track.getName ();
+                    title = track.getPosition () + 1 + ": " + track.getName ();
                     color = ElectraOneColorManager.getClosestPaletteColor (track.getColor ());
                 }
             }

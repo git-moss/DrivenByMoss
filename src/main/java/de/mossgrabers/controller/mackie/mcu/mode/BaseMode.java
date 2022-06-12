@@ -15,6 +15,7 @@ import de.mossgrabers.framework.daw.IModel;
 import de.mossgrabers.framework.daw.data.ICursorDevice;
 import de.mossgrabers.framework.daw.data.IItem;
 import de.mossgrabers.framework.daw.data.IMasterTrack;
+import de.mossgrabers.framework.daw.data.IParameter;
 import de.mossgrabers.framework.daw.data.ITrack;
 import de.mossgrabers.framework.daw.data.bank.IBank;
 import de.mossgrabers.framework.daw.data.bank.ITrackBank;
@@ -252,5 +253,25 @@ public abstract class BaseMode<B extends IItem> extends AbstractMode<MCUControlS
     protected static ColorEx preventBlack (final boolean doesExist, final ColorEx color)
     {
         return doesExist && ColorEx.BLACK.equals (color) ? ColorEx.GRAY : color;
+    }
+
+
+    /**
+     * Set a parameter to different values depending on the state of modifier keys. Control
+     * minimizes the value, alternate maximizes the value and shift centers it. Without any modifier
+     * button the value is reset.
+     *
+     * @param parameter The parameter to modify
+     */
+    protected void resetParameter (final IParameter parameter)
+    {
+        if (this.surface.isPressed (ButtonID.CONTROL))
+            parameter.setNormalizedValue (0);
+        else if (this.surface.isShiftPressed ())
+            parameter.setNormalizedValue (0.5);
+        else if (this.surface.isPressed (ButtonID.ALT))
+            parameter.setNormalizedValue (1);
+        else
+            parameter.resetValue ();
     }
 }

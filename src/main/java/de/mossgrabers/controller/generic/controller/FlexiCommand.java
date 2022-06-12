@@ -48,6 +48,8 @@ public enum FlexiCommand
     TRANSPORT_TAP_TEMPO(CommandCategory.TRANSPORT, "Transport: Tap Tempo", true),
     TRANSPORT_MOVE_PLAY_CURSOR(CommandCategory.TRANSPORT, "Transport: Move Play Cursor", false),
 
+    LAYOUT_ARRANGER_ZOOM_IN(CommandCategory.LAYOUT, "Layout: Zoom in arranger timeline", true),
+    LAYOUT_ARRANGER_ZOOM_OUT(CommandCategory.LAYOUT, "Layout: Zoom out arranger timeline", true),
     LAYOUT_SET_ARRANGE_LAYOUT(CommandCategory.LAYOUT, "Layout: Set Arrange Layout", true),
     LAYOUT_SET_MIX_LAYOUT(CommandCategory.LAYOUT, "Layout: Set Mix Layout", true),
     LAYOUT_SET_EDIT_LAYOUT(CommandCategory.LAYOUT, "Layout: Set Edit Layout", true),

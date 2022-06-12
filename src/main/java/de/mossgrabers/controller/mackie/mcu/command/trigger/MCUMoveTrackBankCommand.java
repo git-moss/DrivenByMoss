@@ -78,13 +78,13 @@ public class MCUMoveTrackBankCommand extends AbstractTriggerCommand<MCUControlSu
         switch (activeID)
         {
             case EQ_DEVICE_PARAMS, INSTRUMENT_DEVICE_PARAMS, DEVICE_PARAMS:
-                final ISpecificDevice device = getDevice (activeID);
+                final ISpecificDevice device = this.getDevice (activeID);
                 if (this.moveBy1)
                 {
                     this.handleBankMovement (device.getParameterBank ());
                     return;
                 }
-                if (device instanceof ICursorDevice cursorDevice)
+                if (device instanceof final ICursorDevice cursorDevice)
                 {
                     if (this.moveLeft)
                         cursorDevice.selectPrevious ();

@@ -8,6 +8,9 @@ import de.mossgrabers.controller.mackie.mcu.controller.MCUControlSurface;
 import de.mossgrabers.framework.featuregroup.ModeManager;
 import de.mossgrabers.framework.mode.Modes;
 
+import java.util.EnumMap;
+import java.util.Map;
+
 
 /**
  * Helper class for cycling through modes.
@@ -16,7 +19,23 @@ import de.mossgrabers.framework.mode.Modes;
  */
 public class ModeSwitcher
 {
-    private final MCUControlSurface surface;
+    private final MCUControlSurface        surface;
+
+    private static final Map<Modes, Modes> PREV_MODES = new EnumMap<> (Modes.class);
+    private static final Map<Modes, Modes> NEXT_MODES = new EnumMap<> (Modes.class);
+
+    static
+    {
+        PREV_MODES.put (Modes.PAN, Modes.VOLUME);
+        PREV_MODES.put (Modes.VOLUME, Modes.TRACK);
+        PREV_MODES.put (Modes.TRACK, Modes.DEVICE_PARAMS);
+        PREV_MODES.put (Modes.DEVICE_PARAMS, Modes.PAN);
+
+        NEXT_MODES.put (Modes.TRACK, Modes.VOLUME);
+        NEXT_MODES.put (Modes.VOLUME, Modes.PAN);
+        NEXT_MODES.put (Modes.PAN, Modes.DEVICE_PARAMS);
+        NEXT_MODES.put (Modes.DEVICE_PARAMS, Modes.TRACK);
+    }
 
 
     /**
@@ -36,27 +55,8 @@ public class ModeSwitcher
     public void scrollUp ()
     {
         final ModeManager modeManager = this.surface.getModeManager ();
-        final Modes activeModeId = modeManager.getActiveID ();
-        if (Modes.PAN == activeModeId)
-        {
-            modeManager.setActive (Modes.VOLUME);
-            this.surface.getDisplay ().notify ("Volume");
-        }
-        else if (Modes.VOLUME == activeModeId)
-        {
-            modeManager.setActive (Modes.TRACK);
-            this.surface.getDisplay ().notify ("Track");
-        }
-        else if (Modes.TRACK == activeModeId)
-        {
-            modeManager.setActive (Modes.DEVICE_PARAMS);
-            this.surface.getDisplay ().notify ("Parameters");
-        }
-        else
-        {
-            modeManager.setActive (Modes.PAN);
-            this.surface.getDisplay ().notify ("Panorama");
-        }
+        modeManager.setActive (PREV_MODES.getOrDefault (modeManager.getActiveID (), Modes.PAN));
+        this.surface.getHost ().showNotification (modeManager.getActive ().getName ());
     }
 
 
@@ -66,26 +66,7 @@ public class ModeSwitcher
     public void scrollDown ()
     {
         final ModeManager modeManager = this.surface.getModeManager ();
-        final Modes activeModeId = modeManager.getActiveID ();
-        if (Modes.PAN == activeModeId)
-        {
-            modeManager.setActive (Modes.DEVICE_PARAMS);
-            this.surface.getDisplay ().notify ("Parameters");
-        }
-        else if (Modes.VOLUME == activeModeId)
-        {
-            modeManager.setActive (Modes.PAN);
-            this.surface.getDisplay ().notify ("Panorama");
-        }
-        else if (Modes.TRACK == activeModeId)
-        {
-            modeManager.setActive (Modes.VOLUME);
-            this.surface.getDisplay ().notify ("Volume");
-        }
-        else
-        {
-            modeManager.setActive (Modes.TRACK);
-            this.surface.getDisplay ().notify ("Track");
-        }
+        modeManager.setActive (NEXT_MODES.getOrDefault (modeManager.getActiveID (), Modes.TRACK));
+        this.surface.getHost ().showNotification (modeManager.getActive ().getName ());
     }
 }

@@ -883,7 +883,7 @@ public class PushControllerSetup extends AbstractControllerSetup<PushControlSurf
     public void startup ()
     {
         final PushControlSurface surface = this.getSurface ();
-        surface.getViewManager ().setActive (this.configuration.getDefaultNoteView ());
+        surface.getViewManager ().setActive (this.configuration.getPreferredNoteView ());
 
         surface.sendPressureMode (true);
         surface.getMidiOutput ().sendSysex (DeviceInquiry.createQuery ());
@@ -907,44 +907,6 @@ public class PushControllerSetup extends AbstractControllerSetup<PushControlSurf
             this.updateRibbonMode ();
 
         this.getSurface ().getDisplay ().cancelNotification ();
-    }
-
-
-    /**
-     * Handle a track selection change.
-     *
-     * @param isSelected Has the track been selected?
-     */
-    private void handleTrackChange (final boolean isSelected)
-    {
-        if (!isSelected)
-            return;
-
-        final PushControlSurface surface = this.getSurface ();
-        final ViewManager viewManager = surface.getViewManager ();
-        final ModeManager modeManager = surface.getModeManager ();
-
-        // Recall last used view (if we are not in session mode)
-        if (!viewManager.isActive (Views.SESSION))
-        {
-            final ITrack cursorTrack = this.model.getCursorTrack ();
-            if (cursorTrack.doesExist ())
-            {
-                final Views preferredView = viewManager.getPreferredView (cursorTrack.getPosition ());
-                viewManager.setActive (preferredView == null ? this.configuration.getDefaultNoteView () : preferredView);
-            }
-        }
-
-        if (modeManager.isActive (Modes.MASTER))
-            modeManager.setActive (Modes.TRACK);
-
-        if (viewManager.isActive (Views.PLAY))
-            viewManager.getActive ().updateNoteMapping ();
-
-        // Reset drum octave because the drum pad bank is also reset
-        this.scales.resetDrumOctave ();
-        if (viewManager.isActive (Views.DRUM))
-            viewManager.get (Views.DRUM).updateNoteMapping ();
     }
 
 

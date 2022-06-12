@@ -70,12 +70,10 @@ public class PushConfiguration extends AbstractConfiguration implements IGraphic
 
     /** Setting for stopping automation recording on knob release. */
     public static final Integer     STOP_AUTOMATION_ON_KNOB_RELEASE = Integer.valueOf (61);
-    /** Setting for the default note view. */
-    public static final Integer     DEFAULT_NOTE_VIEW               = Integer.valueOf (62);
     /** Mode debug. */
-    public static final Integer     DEBUG_MODE                      = Integer.valueOf (63);
+    public static final Integer     DEBUG_MODE                      = Integer.valueOf (62);
     /** Push 2 display debug window. */
-    public static final Integer     DEBUG_WINDOW                    = Integer.valueOf (64);
+    public static final Integer     DEBUG_WINDOW                    = Integer.valueOf (63);
 
     /** Background color of an element. */
     public static final Integer     COLOR_BACKGROUND                = Integer.valueOf (70);
@@ -152,6 +150,20 @@ public class PushConfiguration extends AbstractConfiguration implements IGraphic
         "Scenes"
     };
 
+    private static final Views []   PREFERRED_NOTE_VIEWS            =
+    {
+        Views.PLAY,
+        Views.CHORDS,
+        Views.PIANO,
+        Views.DRUM64,
+        Views.DRUM,
+        Views.DRUM4,
+        Views.DRUM8,
+        Views.SEQUENCER,
+        Views.RAINDROPS,
+        Views.POLY_SEQUENCER
+    };
+
     /** Debug modes. */
     private static final Set<Modes> DEBUG_MODES                     = EnumSet.noneOf (Modes.class);
 
@@ -214,7 +226,6 @@ public class PushConfiguration extends AbstractConfiguration implements IGraphic
     private boolean         isMuteLongPressed           = false;
     private boolean         isMuteSoloLocked            = false;
 
-    private Views           defaultNoteView             = Views.PLAY;
     private boolean         displayScenesClips;
     private boolean         isScenesClipView;
 
@@ -334,7 +345,7 @@ public class PushConfiguration extends AbstractConfiguration implements IGraphic
         this.activateAccentActiveSetting (globalSettings);
         this.activateAccentValueSetting (globalSettings);
         this.activateQuantizeAmountSetting (globalSettings);
-        this.activateDefaultNoteViewSetting (globalSettings);
+        this.activatePreferredNoteViewSetting (globalSettings, PREFERRED_NOTE_VIEWS);
         this.activateMidiEditChannelSetting (documentSettings);
 
         ///////////////////////////
@@ -355,7 +366,6 @@ public class PushConfiguration extends AbstractConfiguration implements IGraphic
         this.activateStopAutomationOnKnobReleaseSetting (globalSettings);
         this.activateNewClipLengthSetting (globalSettings);
         this.activateKnobSpeedSetting (globalSettings);
-
         this.activateUserPageNamesSetting (documentSettings);
 
         ///////////////////////////
@@ -925,17 +935,6 @@ public class PushConfiguration extends AbstractConfiguration implements IGraphic
     }
 
 
-    /**
-     * Get the default note view.
-     *
-     * @return The default note view
-     */
-    public Views getDefaultNoteView ()
-    {
-        return this.defaultNoteView;
-    }
-
-
     /** {@inheritDoc} */
     @Override
     public ColorEx getColorBackground ()
@@ -1234,22 +1233,6 @@ public class PushConfiguration extends AbstractConfiguration implements IGraphic
         this.padDynamicsSetting.addValueObserver (value -> {
             this.padDynamics = value.intValue ();
             this.notifyObservers (PAD_DYNAMICS);
-        });
-    }
-
-
-    /**
-     * Activate the default note view setting.
-     *
-     * @param settingsUI The settings
-     */
-    private void activateDefaultNoteViewSetting (final ISettingsUI settingsUI)
-    {
-        final String [] noteViewNames = Views.getNoteViewNames ();
-        final IEnumSetting defaultNoteViewSetting = settingsUI.getEnumSetting ("Default note view", CATEGORY_PLAY_AND_SEQUENCE, noteViewNames, Views.NAME_PLAY);
-        defaultNoteViewSetting.addValueObserver (value -> {
-            this.defaultNoteView = Views.getNoteView (value);
-            this.notifyObservers (DEFAULT_NOTE_VIEW);
         });
     }
 

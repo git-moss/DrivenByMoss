@@ -506,10 +506,10 @@ public class MCUControllerSetup extends AbstractControllerSetup<MCUControlSurfac
 
                 final int labelIndex = 8 * (this.numMCUDevices - index - 1) + i + 1;
 
-                this.addButton (surface, row1ButtonID, "Rec Arm " + labelIndex, new ButtonRowModeCommand<> (1, i, this.model, surface), MCUControlSurface.MCU_ARM1 + i, () -> getButtonColor (surface, row1ButtonID));
-                this.addButton (surface, row2ButtonID, "Solo " + labelIndex, new ButtonRowModeCommand<> (2, i, this.model, surface), MCUControlSurface.MCU_SOLO1 + i, () -> getButtonColor (surface, row2ButtonID));
-                this.addButton (surface, row3ButtonID, "Mute " + labelIndex, new ButtonRowModeCommand<> (3, i, this.model, surface), MCUControlSurface.MCU_MUTE1 + i, () -> getButtonColor (surface, row3ButtonID));
-                this.addButton (surface, row4ButtonID, "Select " + labelIndex, new SelectCommand (i, this.model, surface), MCUControlSurface.MCU_SELECT1 + i, () -> getButtonColor (surface, row4ButtonID));
+                this.addButton (surface, row1ButtonID, "Rec Arm " + labelIndex, new ButtonRowModeCommand<> (1, i, this.model, surface), MCUControlSurface.MCU_ARM1 + i, () -> this.getButtonColor (surface, row1ButtonID));
+                this.addButton (surface, row2ButtonID, "Solo " + labelIndex, new ButtonRowModeCommand<> (2, i, this.model, surface), MCUControlSurface.MCU_SOLO1 + i, () -> this.getButtonColor (surface, row2ButtonID));
+                this.addButton (surface, row3ButtonID, "Mute " + labelIndex, new ButtonRowModeCommand<> (3, i, this.model, surface), MCUControlSurface.MCU_MUTE1 + i, () -> this.getButtonColor (surface, row3ButtonID));
+                this.addButton (surface, row4ButtonID, "Select " + labelIndex, new SelectCommand (i, this.model, surface), MCUControlSurface.MCU_SELECT1 + i, () -> this.getButtonColor (surface, row4ButtonID));
             }
         }
     }
@@ -865,26 +865,5 @@ public class MCUControllerSetup extends AbstractControllerSetup<MCUControlSurfac
     protected BindType getTriggerBindType (final ButtonID buttonID)
     {
         return BindType.NOTE;
-    }
-
-
-    /**
-     * Handle a track selection change.
-     *
-     * @param isSelected Has the track been selected?
-     */
-    private void handleTrackChange (final boolean isSelected)
-    {
-        if (!isSelected)
-            return;
-
-        final ModeManager modeManager = this.getSurface ().getModeManager ();
-        if (modeManager.isActive (Modes.MASTER) && !this.model.getMasterTrack ().isSelected ())
-        {
-            if (Modes.isTrackMode (modeManager.getPreviousID ()))
-                modeManager.restore ();
-            else
-                modeManager.setActive (Modes.TRACK);
-        }
     }
 }

@@ -76,7 +76,7 @@ public class ElectraOneConfiguration extends AbstractConfiguration
 
     /**
      * Is logging to console enabled?
-     * 
+     *
      * @return True if enabled
      */
     public boolean isLogToConsoleEnabled ()

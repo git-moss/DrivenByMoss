@@ -241,20 +241,20 @@ public class TrackMode extends AbstractTrackMode
             switch (index)
             {
                 case 0:
-                    track.resetVolume ();
+                    this.resetParameter (track.getVolumeParameter ());
                     break;
                 case 1:
-                    track.resetPan ();
+                    this.resetParameter (track.getPanParameter ());
                     break;
                 default:
                     if (!this.model.isEffectTrackBankActive ())
-                        track.getSendBank ().getItem (index - 2).resetValue ();
+                        this.resetParameter (track.getSendBank ().getItem (index - 2));
                     break;
             }
         }
         else if (extenderOffset == 8 && !isEffectTrackBankActive)
         {
-            track.getSendBank ().getItem (6 + index).resetValue ();
+            this.resetParameter (track.getSendBank ().getItem (6 + index));
         }
     }
 

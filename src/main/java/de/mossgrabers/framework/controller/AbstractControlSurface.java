@@ -954,6 +954,17 @@ public abstract class AbstractControlSurface<C extends Configuration> implements
     }
 
 
+    /**
+     * Get the host.
+     *
+     * @return The host
+     */
+    public IHost getHost ()
+    {
+        return this.host;
+    }
+
+
     /** {@inheritDoc} */
     @Override
     public boolean isKnobSensitivitySlow ()

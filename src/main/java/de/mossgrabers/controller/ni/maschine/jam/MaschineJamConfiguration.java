@@ -10,6 +10,7 @@ import de.mossgrabers.framework.controller.valuechanger.IValueChanger;
 import de.mossgrabers.framework.daw.IHost;
 import de.mossgrabers.framework.daw.constants.Capability;
 import de.mossgrabers.framework.daw.midi.ArpeggiatorMode;
+import de.mossgrabers.framework.view.Views;
 
 import java.util.List;
 
@@ -21,6 +22,21 @@ import java.util.List;
  */
 public class MaschineJamConfiguration extends AbstractConfiguration
 {
+    private static final Views [] PREFERRED_NOTE_VIEWS =
+    {
+        Views.PLAY,
+        Views.CHORDS,
+        Views.PIANO,
+        Views.DRUM64,
+        Views.DRUM,
+        Views.DRUM4,
+        Views.DRUM8,
+        Views.SEQUENCER,
+        Views.RAINDROPS,
+        Views.POLY_SEQUENCER
+    };
+
+
     /**
      * Constructor.
      *
@@ -64,6 +80,7 @@ public class MaschineJamConfiguration extends AbstractConfiguration
         this.activateAccentActiveSetting (globalSettings);
         this.activateAccentValueSetting (globalSettings);
         this.activateQuantizeAmountSetting (globalSettings);
+        this.activatePreferredNoteViewSetting (globalSettings, PREFERRED_NOTE_VIEWS);
 
         ///////////////////////////
         // Drum Sequencer

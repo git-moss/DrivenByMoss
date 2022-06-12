@@ -130,6 +130,6 @@ public class PanMode extends AbstractTrackMode
     protected void resetParameter (final int index)
     {
         final int extenderOffset = this.getExtenderOffset ();
-        this.getTrackBank ().getItem (extenderOffset + index).resetPan ();
+        this.resetParameter (this.getTrackBank ().getItem (extenderOffset + index).getPanParameter ());
     }
 }

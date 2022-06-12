@@ -177,6 +177,6 @@ public class DeviceParamsMode extends BaseMode<IParameter>
     protected void resetParameter (final int index)
     {
         final int extenderOffset = this.surface.getExtenderOffset ();
-        this.device.getParameterBank ().getItem (extenderOffset + index).resetValue ();
+        this.resetParameter (this.device.getParameterBank ().getItem (extenderOffset + index));
     }
 }

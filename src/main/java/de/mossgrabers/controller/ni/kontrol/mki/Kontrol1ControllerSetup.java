@@ -44,11 +44,9 @@ import de.mossgrabers.framework.controller.valuechanger.TwosComplementValueChang
 import de.mossgrabers.framework.daw.IHost;
 import de.mossgrabers.framework.daw.ITransport;
 import de.mossgrabers.framework.daw.ModelSetup;
-import de.mossgrabers.framework.daw.data.IDrumDevice;
 import de.mossgrabers.framework.daw.data.bank.ITrackBank;
 import de.mossgrabers.framework.daw.midi.IMidiAccess;
 import de.mossgrabers.framework.daw.midi.IMidiInput;
-import de.mossgrabers.framework.featuregroup.IView;
 import de.mossgrabers.framework.featuregroup.ModeManager;
 import de.mossgrabers.framework.featuregroup.ViewManager;
 import de.mossgrabers.framework.mode.Modes;
@@ -244,35 +242,6 @@ public class Kontrol1ControllerSetup extends AbstractControllerSetup<Kontrol1Con
         final Kontrol1ControlSurface surface = this.getSurface ();
         surface.getViewManager ().setActive (Views.CONTROL);
         surface.getModeManager ().setActive (Modes.TRACK);
-    }
-
-
-    /**
-     * Handle a track selection change.
-     *
-     * @param isSelected Has the track been selected?
-     */
-    private void handleTrackChange (final boolean isSelected)
-    {
-        if (!isSelected)
-            return;
-
-        this.host.scheduleTask ( () -> {
-            final Kontrol1ControlSurface surface = this.getSurface ();
-            final IView activeView = surface.getViewManager ().getActive ();
-            if (activeView != null)
-            {
-                activeView.updateNoteMapping ();
-                activeView.drawGrid ();
-            }
-
-            if (this.model.canSelectedTrackHoldNotes ())
-            {
-                final IDrumDevice primary = this.model.getDrumDevice ();
-                if (primary.hasDrumPads ())
-                    primary.getDrumPadBank ().scrollTo (0);
-            }
-        }, 100);
     }
 
 

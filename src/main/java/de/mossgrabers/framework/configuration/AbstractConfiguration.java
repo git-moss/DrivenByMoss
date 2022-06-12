@@ -24,13 +24,13 @@ import de.mossgrabers.framework.view.Views;
 
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Optional;
 import java.util.Set;
+import java.util.concurrent.ConcurrentHashMap;
 
 
 /**
@@ -74,7 +74,7 @@ public abstract class AbstractConfiguration implements Configuration
     public static final Integer      NEW_CLIP_LENGTH                   = Integer.valueOf (15);
     /** Setting for turning off empty drum pads (otherwise orange). */
     public static final Integer      TURN_OFF_EMPTY_DRUM_PADS          = Integer.valueOf (16);
-    /** Setting for action for rec armed pad. */
+    /** Setting for action for record armed pad. */
     public static final Integer      ACTION_FOR_REC_ARMED_PAD          = Integer.valueOf (17);
     /** Setting for displaying browser column 1. */
     public static final Integer      BROWSER_DISPLAY_FILTER1           = Integer.valueOf (18);
@@ -124,6 +124,8 @@ public abstract class AbstractConfiguration implements Configuration
     public static final Integer      FOOTSWITCH_3                      = Integer.valueOf (40);
     /** Setting for the footswitch functionality. */
     public static final Integer      FOOTSWITCH_4                      = Integer.valueOf (41);
+    /** Preferred note view. */
+    public static final Integer      PREFERRED_NOTE_VIEW               = Integer.valueOf (42);
 
     // Implementation IDs start at 50
 
@@ -358,7 +360,7 @@ public abstract class AbstractConfiguration implements Configuration
     private String []                                 effectNames;
     private String []                                 instrumentNames;
 
-    private final Map<Integer, Set<ISettingObserver>> observers                   = new HashMap<> ();
+    private final Map<Integer, Set<ISettingObserver>> observers                   = new ConcurrentHashMap<> ();
     protected final Set<Integer>                      dontNotifyAll               = new HashSet<> ();
     protected final Set<Integer>                      isSettingActive             = new HashSet<> ();
     protected IValueChanger                           valueChanger;
@@ -417,6 +419,7 @@ public abstract class AbstractConfiguration implements Configuration
 
     private RecordFunction                            recordButtonFunction        = RecordFunction.RECORD_ARRANGER;
     private RecordFunction                            shiftedRecordButtonFunction = RecordFunction.NEW_CLIP;
+    private Views                                     preferredNoteView           = Views.PLAY;
 
 
     /**
@@ -1521,6 +1524,28 @@ public abstract class AbstractConfiguration implements Configuration
     }
 
 
+    /**
+     * Activate the preferred note view setting.
+     *
+     * @param settingsUI The settings
+     * @param views The available views for selection
+     */
+    protected void activatePreferredNoteViewSetting (final ISettingsUI settingsUI, final Views [] views)
+    {
+        final String [] labels = new String [views.length];
+        for (int i = 0; i < views.length; i++)
+            labels[i] = Views.getNoteViewName (views[i]);
+
+        final IEnumSetting preferredNoteViewSetting = settingsUI.getEnumSetting ("Default note view", CATEGORY_PLAY_AND_SEQUENCE, labels, labels[0]);
+        preferredNoteViewSetting.addValueObserver (value -> {
+            this.preferredNoteView = Views.getNoteView (value);
+            this.notifyObservers (PREFERRED_NOTE_VIEW);
+        });
+
+        this.isSettingActive.add (PREFERRED_NOTE_VIEW);
+    }
+
+
     /** {@inheritDoc} */
     @Override
     public void notifyAllObservers ()
@@ -1666,6 +1691,14 @@ public abstract class AbstractConfiguration implements Configuration
     public RecordFunction getShiftedRecordButtonFunction ()
     {
         return this.shiftedRecordButtonFunction;
+    }
+
+
+    /** {@inheritDoc} */
+    @Override
+    public Views getPreferredNoteView ()
+    {
+        return this.preferredNoteView;
     }
 
 

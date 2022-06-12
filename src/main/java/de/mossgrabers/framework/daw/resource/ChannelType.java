@@ -56,7 +56,7 @@ public enum ChannelType
      * @param channelType THe channel type for which to get a label
      * @return The label
      */
-    public static String getLabel (ChannelType channelType)
+    public static String getLabel (final ChannelType channelType)
     {
         return LABELS.get (channelType);
     }

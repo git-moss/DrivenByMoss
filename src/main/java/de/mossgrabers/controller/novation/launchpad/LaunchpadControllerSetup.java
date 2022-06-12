@@ -767,7 +767,7 @@ public class LaunchpadControllerSetup extends AbstractControllerSetup<LaunchpadC
     public void startup ()
     {
         final LaunchpadControlSurface surface = this.getSurface ();
-        surface.getViewManager ().setActive (Views.PLAY);
+        surface.getViewManager ().setActive (this.configuration.getPreferredNoteView ());
         surface.getModeManager ().setActive (Modes.DUMMY);
     }
 
@@ -815,40 +815,16 @@ public class LaunchpadControllerSetup extends AbstractControllerSetup<LaunchpadC
     }
 
 
-    /**
-     * Handle a track selection change.
-     *
-     * @param isSelected Has the track been selected?
-     */
-    private void handleTrackChange (final boolean isSelected)
+    /** {@inheritDoc} */
+    @Override
+    protected void handleTrackChange (final boolean isSelected)
     {
         if (!isSelected)
             return;
 
-        final ViewManager viewManager = this.getSurface ().getViewManager ();
-
         // Do not leave Mix view if track selection changes
-        if (viewManager.isActive (Views.MIX, Views.TRACK_PAN, Views.TRACK_VOLUME, Views.TRACK_SENDS))
-            return;
-
-        // Recall last used view (if we are not in session mode)
-        if (!viewManager.isActive (Views.SESSION))
-        {
-            final ITrack cursorTrack = this.model.getCursorTrack ();
-            if (cursorTrack.doesExist ())
-            {
-                final Views preferredView = viewManager.getPreferredView (cursorTrack.getPosition ());
-                viewManager.setActive (preferredView == null ? Views.PLAY : preferredView);
-            }
-        }
-
-        if (viewManager.isActive (Views.PLAY))
-            viewManager.getActive ().updateNoteMapping ();
-
-        // Reset drum octave because the drum pad bank is also reset
-        this.scales.resetDrumOctave ();
-        if (viewManager.isActive (Views.DRUM))
-            viewManager.get (Views.DRUM).updateNoteMapping ();
+        if (!this.getSurface ().getViewManager ().isActive (Views.MIX, Views.TRACK_PAN, Views.TRACK_VOLUME, Views.TRACK_SENDS))
+            super.handleTrackChange (isSelected);
     }
 
 

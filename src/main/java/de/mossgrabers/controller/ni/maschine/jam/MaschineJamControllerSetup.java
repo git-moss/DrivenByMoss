@@ -214,11 +214,11 @@ public class MaschineJamControllerSetup extends AbstractControllerSetup<Maschine
         viewManager.register (Views.CHORDS, new ChordsView (surface, this.model));
         viewManager.register (Views.PIANO, new PianoView (surface, this.model));
         viewManager.register (Views.DRUM64, new Drum64View (surface, this.model));
-        viewManager.register (Views.SEQUENCER, new SequencerView (surface, this.model));
         viewManager.register (Views.DRUM, new DrumView (surface, this.model));
         viewManager.register (Views.DRUM4, new Drum4View (surface, this.model));
         viewManager.register (Views.DRUM8, new Drum8View (surface, this.model));
         viewManager.register (Views.RAINDROPS, new RaindropsView (surface, this.model));
+        viewManager.register (Views.SEQUENCER, new SequencerView (surface, this.model));
         viewManager.register (Views.POLY_SEQUENCER, new PolySequencerView (surface, this.model));
         viewManager.register (Views.TEMPO, new TempoView<> (surface, this.model, MaschineColorManager.COLOR_BLUE, MaschineColorManager.COLOR_WHITE, MaschineColorManager.COLOR_BLACK));
         viewManager.register (Views.SHUFFLE, new ShuffleView<> (surface, this.model, MaschineColorManager.COLOR_PINK, MaschineColorManager.COLOR_WHITE, MaschineColorManager.COLOR_BLACK));
@@ -570,39 +570,6 @@ public class MaschineJamControllerSetup extends AbstractControllerSetup<Maschine
         final int vuRight = this.valueChanger.toMidiValue (track.getVuRight ());
         midiOutput.sendCC (MaschineJamControlSurface.STRIP_LEFT, vuLeft);
         midiOutput.sendCC (MaschineJamControlSurface.STRIP_RIGHT, vuRight);
-    }
-
-
-    /**
-     * Handle a track selection change.
-     *
-     * @param isSelected Has the track been selected?
-     */
-    private void handleTrackChange (final boolean isSelected)
-    {
-        if (!isSelected)
-            return;
-
-        final MaschineJamControlSurface surface = this.getSurface ();
-        final ViewManager viewManager = surface.getViewManager ();
-
-        if (!viewManager.isActive (Views.SESSION))
-        {
-            final ITrack cursorTrack = this.model.getCursorTrack ();
-            if (cursorTrack.doesExist ())
-            {
-                final Views preferredView = viewManager.getPreferredView (cursorTrack.getPosition ());
-                viewManager.setActive (preferredView == null ? Views.PLAY : preferredView);
-            }
-        }
-
-        if (viewManager.isActive (Views.PLAY))
-            viewManager.getActive ().updateNoteMapping ();
-
-        // Reset drum octave because the drum pad bank is also reset
-        this.scales.resetDrumOctave ();
-        if (viewManager.isActive (Views.DRUM))
-            viewManager.get (Views.DRUM).updateNoteMapping ();
     }
 
 

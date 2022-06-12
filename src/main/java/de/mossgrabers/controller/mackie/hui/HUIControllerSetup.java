@@ -257,20 +257,20 @@ public class HUIControllerSetup extends AbstractControllerSetup<HUIControlSurfac
                 this.addButtonHUI (surface, ButtonID.get (ButtonID.ROW1_1, channel), "VSelect " + (channel + 1), new ButtonRowModeCommand<> (0, channel, this.model, surface), HUIControlSurface.HUI_VSELECT1 + channel * 8);
 
                 final ButtonID selectButtonID = ButtonID.get (ButtonID.ROW_SELECT_1, channel);
-                this.addButtonHUI (surface, selectButtonID, "Select " + (channel + 1), new SelectCommand<> (channelIdx, this.model, surface), HUIControlSurface.HUI_SELECT1 + channel * 8, () -> getButtonColor (surface, selectButtonID));
+                this.addButtonHUI (surface, selectButtonID, "Select " + (channel + 1), new SelectCommand<> (channelIdx, this.model, surface), HUIControlSurface.HUI_SELECT1 + channel * 8, () -> this.getButtonColor (surface, selectButtonID));
 
                 final ButtonID muteButtonID = ButtonID.get (ButtonID.ROW4_1, channel);
-                this.addButtonHUI (surface, muteButtonID, "Mute " + (channel + 1), new MuteCommand<> (channelIdx, this.model, surface), HUIControlSurface.HUI_MUTE1 + channel * 8, () -> getButtonColor (surface, muteButtonID));
+                this.addButtonHUI (surface, muteButtonID, "Mute " + (channel + 1), new MuteCommand<> (channelIdx, this.model, surface), HUIControlSurface.HUI_MUTE1 + channel * 8, () -> this.getButtonColor (surface, muteButtonID));
 
                 final ButtonID soloButtonID = ButtonID.get (ButtonID.ROW3_1, channel);
-                this.addButtonHUI (surface, soloButtonID, "Solo " + (channel + 1), new SoloCommand<> (channelIdx, this.model, surface), HUIControlSurface.HUI_SOLO1 + channel * 8, () -> getButtonColor (surface, soloButtonID));
+                this.addButtonHUI (surface, soloButtonID, "Solo " + (channel + 1), new SoloCommand<> (channelIdx, this.model, surface), HUIControlSurface.HUI_SOLO1 + channel * 8, () -> this.getButtonColor (surface, soloButtonID));
 
                 // HUI_INSERT1 is used on icon for selection
                 final ButtonID insertButtonID = ButtonID.get (ButtonID.ROW5_1, channel);
-                this.addButtonHUI (surface, insertButtonID, "Insert " + (channel + 1), new SelectCommand<> (channelIdx, this.model, surface), HUIControlSurface.HUI_INSERT1 + channel * 8, () -> getButtonColor (surface, insertButtonID));
+                this.addButtonHUI (surface, insertButtonID, "Insert " + (channel + 1), new SelectCommand<> (channelIdx, this.model, surface), HUIControlSurface.HUI_INSERT1 + channel * 8, () -> this.getButtonColor (surface, insertButtonID));
 
                 final ButtonID recArmButtonID = ButtonID.get (ButtonID.ROW2_1, channel);
-                this.addButtonHUI (surface, recArmButtonID, "Arm " + (channel + 1), new RecArmCommand<> (channelIdx, this.model, surface), HUIControlSurface.HUI_ARM1 + channel * 8, () -> getButtonColor (surface, recArmButtonID));
+                this.addButtonHUI (surface, recArmButtonID, "Arm " + (channel + 1), new RecArmCommand<> (channelIdx, this.model, surface), HUIControlSurface.HUI_ARM1 + channel * 8, () -> this.getButtonColor (surface, recArmButtonID));
 
                 // HUI_AUTO1, not supported
             }

@@ -84,17 +84,18 @@ public class MasterMode extends BaseMode<ITrack>
             return;
         }
 
-        if (event != ButtonEvent.UP || row > 0)
+        final int extenderOffset = this.getExtenderOffset ();
+        if (extenderOffset > 0 || event != ButtonEvent.UP || row > 0)
             return;
 
         switch (index)
         {
             case 0:
-                this.model.getMasterTrack ().resetVolume ();
+                this.resetParameter (this.model.getMasterTrack ().getVolumeParameter ());
                 break;
 
             case 1:
-                this.model.getMasterTrack ().resetPan ();
+                this.resetParameter (this.model.getMasterTrack ().getPanParameter ());
                 break;
 
             case 2, 3, 4:
@@ -184,6 +185,14 @@ public class MasterMode extends BaseMode<ITrack>
     @Override
     public void updateKnobLEDs ()
     {
+        final int extenderOffset = this.getExtenderOffset ();
+        if (extenderOffset > 0)
+        {
+            for (int i = 0; i < 8; i++)
+                this.surface.setKnobLED (i, MCUControlSurface.KNOB_LED_MODE_WRAP, 0, 0);
+            return;
+        }
+
         final IMasterTrack masterTrack = this.model.getMasterTrack ();
         final int upperBound = this.model.getValueChanger ().getUpperBound ();
         this.surface.setKnobLED (0, MCUControlSurface.KNOB_LED_MODE_WRAP, masterTrack.getVolume (), upperBound);
@@ -197,18 +206,6 @@ public class MasterMode extends BaseMode<ITrack>
     @Override
     protected void resetParameter (final int index)
     {
-        final IMasterTrack masterTrack = this.model.getMasterTrack ();
-        switch (index)
-        {
-            case 0:
-                masterTrack.resetVolume ();
-                break;
-            case 1:
-                masterTrack.resetPan ();
-                break;
-            default:
-                // Intentionally empty
-                break;
-        }
+        // Not used
     }
 }

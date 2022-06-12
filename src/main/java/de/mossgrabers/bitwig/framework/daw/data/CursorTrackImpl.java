@@ -34,7 +34,7 @@ public class CursorTrackImpl extends TrackImpl implements ICursorTrack
 
     /**
      * Constructor.
-     * 
+     *
      * @param model The model to retrieve the current track bank
      * @param host The DAW host
      * @param valueChanger The valueChanger

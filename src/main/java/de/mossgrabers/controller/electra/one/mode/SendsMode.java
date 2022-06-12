@@ -176,7 +176,7 @@ public class SendsMode extends DefaultTrackMode<ElectraOneControlSurface, Electr
                         sendNames[s] = send.getName ();
                         sendExists[s] = send.doesExist ();
                     }
-                    title = (track.getPosition () + 1) + ": " + track.getName ();
+                    title = track.getPosition () + 1 + ": " + track.getName ();
                     color = ElectraOneColorManager.getClosestPaletteColor (track.getColor ());
                 }
             }

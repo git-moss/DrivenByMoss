@@ -667,7 +667,7 @@ public class APCControllerSetup extends AbstractControllerSetup<APCControlSurfac
     {
         final APCControlSurface surface = this.getSurface ();
         surface.getModeManager ().setActive (Modes.PAN);
-        surface.getViewManager ().setActive (Views.PLAY);
+        surface.getViewManager ().setActive (this.configuration.getPreferredNoteView ());
     }
 
 
@@ -713,39 +713,6 @@ public class APCControllerSetup extends AbstractControllerSetup<APCControlSurfac
             surface.setLED (APCControlSurface.APC_KNOB_DEVICE_KNOB_LED_1 + i, item.doesExist () ? APCControlSurface.LED_MODE_SINGLE : APCControlSurface.LED_MODE_VOLUME);
             surface.setLED (APCControlSurface.APC_KNOB_DEVICE_KNOB_1 + i, item.doesExist () ? item.getValue () : 0);
         }
-    }
-
-
-    /**
-     * Handle a track selection change.
-     *
-     * @param isSelected Has the track been selected?
-     */
-    private void handleTrackChange (final boolean isSelected)
-    {
-        if (!isSelected)
-            return;
-
-        final APCControlSurface surface = this.getSurface ();
-        // Recall last used view (if we are not in session mode)
-        final ViewManager viewManager = surface.getViewManager ();
-        if (viewManager.getActiveIDIgnoreTemporary () != Views.SESSION)
-        {
-            final ITrack cursorTrack = this.model.getCursorTrack ();
-            if (cursorTrack.doesExist ())
-            {
-                final Views preferredView = viewManager.getPreferredView (cursorTrack.getPosition ());
-                viewManager.setActive (preferredView == null ? Views.PLAY : preferredView);
-            }
-        }
-
-        if (viewManager.isActive (Views.PLAY))
-            viewManager.getActive ().updateNoteMapping ();
-
-        // Reset drum octave because the drum pad bank is also reset
-        this.scales.resetDrumOctave ();
-        if (viewManager.isActive (Views.DRUM))
-            viewManager.get (Views.DRUM).updateNoteMapping ();
     }
 
 

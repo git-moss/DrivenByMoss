@@ -22,6 +22,7 @@ import de.mossgrabers.framework.controller.valuechanger.RelativeEncoding;
 import de.mossgrabers.framework.daw.IHost;
 import de.mossgrabers.framework.daw.IModel;
 import de.mossgrabers.framework.daw.constants.Capability;
+import de.mossgrabers.framework.daw.data.ITrack;
 import de.mossgrabers.framework.daw.midi.IMidiInput;
 import de.mossgrabers.framework.daw.midi.INoteInput;
 import de.mossgrabers.framework.daw.midi.INoteRepeat;
@@ -1370,5 +1371,66 @@ public abstract class AbstractControllerSetup<S extends IControlSurface<C>, C ex
     {
         final IMode mode = surface.getModeManager ().getActive ();
         return mode == null ? 0 : mode.getButtonColor (buttonID);
+    }
+
+
+    /**
+     * Handle a track selection change.
+     *
+     * @param isSelected Has the track been selected?
+     */
+    protected void handleTrackChange (final boolean isSelected)
+    {
+        if (!isSelected)
+            return;
+        this.updateView ();
+        this.updateMode ();
+    }
+
+
+    /**
+     * Update the used view.
+     */
+    protected void updateView ()
+    {
+        final S surface = this.getSurface ();
+        final ViewManager viewManager = surface.getViewManager ();
+
+        // Recall last used view (if we are not in session mode)
+        if (!viewManager.isActive (Views.SESSION))
+        {
+            final ITrack cursorTrack = this.model.getCursorTrack ();
+            if (cursorTrack.doesExist ())
+            {
+                final Views preferredView = viewManager.getPreferredView (cursorTrack.getPosition ());
+                final Views featureGroupID = preferredView == null ? this.configuration.getPreferredNoteView () : preferredView;
+                if (viewManager.get (featureGroupID) != null)
+                    viewManager.setActive (featureGroupID);
+            }
+        }
+
+        // Reset drum octave because the drum pad bank is also reset
+        this.scales.resetDrumOctave ();
+        if (viewManager.isActive (Views.DRUM))
+            viewManager.get (Views.DRUM).updateNoteMapping ();
+        else if (viewManager.isActive (Views.PLAY))
+            viewManager.getActive ().updateNoteMapping ();
+    }
+
+
+    /**
+     * Update the used mode.
+     */
+    protected void updateMode ()
+    {
+        final S surface = this.getSurface ();
+        final ModeManager modeManager = surface.getModeManager ();
+        if (modeManager.isActive (Modes.MASTER) && !this.model.getMasterTrack ().isSelected ())
+        {
+            if (Modes.isTrackMode (modeManager.getPreviousID ()))
+                modeManager.restore ();
+            else
+                modeManager.setActive (Modes.TRACK);
+        }
     }
 }

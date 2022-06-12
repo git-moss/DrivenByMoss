@@ -12,6 +12,7 @@ import de.mossgrabers.framework.controller.valuechanger.IValueChanger;
 import de.mossgrabers.framework.daw.IHost;
 import de.mossgrabers.framework.daw.constants.Capability;
 import de.mossgrabers.framework.daw.midi.ArpeggiatorMode;
+import de.mossgrabers.framework.view.Views;
 
 import java.util.List;
 
@@ -23,13 +24,23 @@ import java.util.List;
  */
 public class FireConfiguration extends AbstractConfiguration
 {
-    /** Setting for the pad brightness. */
-    public static final Integer PAD_BRIGHTNESS = Integer.valueOf (50);
-    /** Setting for the pad color saturation. */
-    public static final Integer PAD_SATURATION = Integer.valueOf (51);
+    private static final Views [] PREFERRED_NOTE_VIEWS =
+    {
+        Views.PLAY,
+        Views.PIANO,
+        Views.DRUM64,
+        Views.DRUM4,
+        Views.SEQUENCER,
+        Views.POLY_SEQUENCER
+    };
 
-    private int                 padBrightness  = 100;
-    private int                 padSaturation  = 100;
+    /** Setting for the pad brightness. */
+    public static final Integer   PAD_BRIGHTNESS       = Integer.valueOf (50);
+    /** Setting for the pad color saturation. */
+    public static final Integer   PAD_SATURATION       = Integer.valueOf (51);
+
+    private int                   padBrightness        = 100;
+    private int                   padSaturation        = 100;
 
 
     /**
@@ -89,6 +100,7 @@ public class FireConfiguration extends AbstractConfiguration
         this.activateAccentValueSetting (globalSettings);
         this.activateQuantizeAmountSetting (globalSettings);
         this.activateMidiEditChannelSetting (documentSettings);
+        this.activatePreferredNoteViewSetting (globalSettings, PREFERRED_NOTE_VIEWS);
 
         ///////////////////////////
         // Drum Sequencer

@@ -329,12 +329,8 @@ public class GenericFlexiControllerSetup extends AbstractControllerSetup<Generic
     }
 
 
-    /**
-     * Handle a track selection change.
-     *
-     * @param isSelected Has the track been selected?
-     */
-    private void handleTrackChange (final boolean isSelected)
+    @Override
+    protected void handleTrackChange (final boolean isSelected)
     {
         if (isSelected)
             this.update (null);

@@ -321,7 +321,7 @@ public class KontrolProtocolControllerSetup extends AbstractControllerSetup<Kont
             knob1.setIndexInGroup (i);
 
             final int knobMidi2 = KontrolProtocolControlSurface.KONTROL_TRACK_PAN + i;
-            final IHwRelativeKnob knob2 = this.addRelativeKnob (ContinuousID.get (ContinuousID.FADER1, i), "Fader " + (i + 1), null, BindType.CC, 15, KontrolProtocolControlSurface.KONTROL_TRACK_PAN + i);
+            final IHwRelativeKnob knob2 = this.addRelativeKnob (ContinuousID.get (ContinuousID.FADER1, i), "Fader " + (i + 1), null, BindType.CC, 15, knobMidi2);
             knob2.addOutput ( () -> this.getKnobValue (knobMidi2), value -> surface.setTrigger (15, knobMidi2, value));
             knob2.setIndexInGroup (i);
         }

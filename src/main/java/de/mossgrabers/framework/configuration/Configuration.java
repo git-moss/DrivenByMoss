@@ -9,6 +9,7 @@ import de.mossgrabers.framework.configuration.AbstractConfiguration.RecordFuncti
 import de.mossgrabers.framework.daw.constants.Resolution;
 import de.mossgrabers.framework.daw.midi.ArpeggiatorMode;
 import de.mossgrabers.framework.observer.ISettingObserver;
+import de.mossgrabers.framework.view.Views;
 
 import java.util.List;
 
@@ -497,4 +498,12 @@ public interface Configuration
      * @return The function index
      */
     RecordFunction getShiftedRecordButtonFunction ();
+
+
+    /**
+     * Get the preferred note view.
+     *
+     * @return The preferred note view
+     */
+    Views getPreferredNoteView ();
 }

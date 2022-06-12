@@ -1219,28 +1219,6 @@ public class MaschineControllerSetup extends AbstractControllerSetup<MaschineCon
     }
 
 
-    /**
-     * Handle a track selection change.
-     *
-     * @param isSelected Has the track been selected?
-     */
-    private void handleTrackChange (final boolean isSelected)
-    {
-        if (!isSelected)
-            return;
-
-        final MaschineControlSurface surface = this.getSurface ();
-        final ViewManager viewManager = surface.getViewManager ();
-        if (viewManager.isActive (Views.PLAY))
-            viewManager.getActive ().updateNoteMapping ();
-
-        // Reset drum octave because the drum pad bank is also reset
-        this.scales.resetDrumOctave ();
-        if (viewManager.isActive (Views.DRUM))
-            viewManager.get (Views.DRUM).updateNoteMapping ();
-    }
-
-
     private boolean isRibbonMode (final Set<RibbonMode> modes)
     {
         return modes.contains (this.configuration.getRibbonMode ());

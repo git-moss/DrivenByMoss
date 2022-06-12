@@ -174,6 +174,6 @@ public class SendMode extends AbstractTrackMode
         final int extenderOffset = this.getExtenderOffset ();
         final ISendBank sendBank = this.getTrackBank ().getItem (extenderOffset + index).getSendBank ();
         if (this.sendIndex < sendBank.getPageSize ())
-            sendBank.getItem (this.sendIndex).resetValue ();
+            this.resetParameter (sendBank.getItem (this.sendIndex));
     }
 }

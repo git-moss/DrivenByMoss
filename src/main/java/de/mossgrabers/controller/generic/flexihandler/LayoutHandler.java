@@ -44,6 +44,8 @@ public class LayoutHandler extends AbstractHandler
     {
         return new FlexiCommand []
         {
+            FlexiCommand.LAYOUT_ARRANGER_ZOOM_IN,
+            FlexiCommand.LAYOUT_ARRANGER_ZOOM_OUT,
             FlexiCommand.LAYOUT_SET_ARRANGE_LAYOUT,
             FlexiCommand.LAYOUT_SET_MIX_LAYOUT,
             FlexiCommand.LAYOUT_SET_EDIT_LAYOUT,
@@ -75,6 +77,9 @@ public class LayoutHandler extends AbstractHandler
     {
         switch (command)
         {
+            case LAYOUT_ARRANGER_ZOOM_IN, LAYOUT_ARRANGER_ZOOM_OUT:
+                return 0;
+
             case LAYOUT_SET_ARRANGE_LAYOUT:
                 return this.model.getApplication ().isArrangeLayout () ? 127 : 0;
 
@@ -134,6 +139,15 @@ public class LayoutHandler extends AbstractHandler
 
         switch (command)
         {
+            case LAYOUT_ARRANGER_ZOOM_IN:
+                if (isButtonPressed)
+                    this.model.getApplication ().zoomIn ();
+                break;
+
+            case LAYOUT_ARRANGER_ZOOM_OUT:
+                this.model.getApplication ().zoomOut ();
+                break;
+
             // Layout: Set Arrange Layout
             case LAYOUT_SET_ARRANGE_LAYOUT:
                 if (isButtonPressed)

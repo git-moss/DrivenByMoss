@@ -59,7 +59,6 @@ import de.mossgrabers.framework.daw.IHost;
 import de.mossgrabers.framework.daw.ITransport;
 import de.mossgrabers.framework.daw.ModelSetup;
 import de.mossgrabers.framework.daw.constants.DeviceID;
-import de.mossgrabers.framework.daw.data.ITrack;
 import de.mossgrabers.framework.daw.data.bank.ITrackBank;
 import de.mossgrabers.framework.daw.midi.IMidiAccess;
 import de.mossgrabers.framework.daw.midi.IMidiInput;
@@ -515,7 +514,7 @@ public class FireControllerSetup extends AbstractControllerSetup<FireControlSurf
     public void startup ()
     {
         final FireControlSurface surface = this.getSurface ();
-        surface.getViewManager ().setActive (Views.PLAY);
+        surface.getViewManager ().setActive (this.configuration.getPreferredNoteView ());
         surface.getModeManager ().setActive (Modes.TRACK);
 
         this.modeSelectCommand.activateMode (Modes.TRACK);
@@ -536,39 +535,5 @@ public class FireControllerSetup extends AbstractControllerSetup<FireControlSurf
     private void onViewChange ()
     {
         this.getSurface ().getDisplay ().cancelNotification ();
-    }
-
-
-    /**
-     * Handle a track selection change.
-     *
-     * @param isSelected Has the track been selected?
-     */
-    private void handleTrackChange (final boolean isSelected)
-    {
-        if (!isSelected)
-            return;
-
-        final FireControlSurface surface = this.getSurface ();
-        final ViewManager viewManager = surface.getViewManager ();
-
-        // Recall last used view (if we are not in session mode)
-        if (!viewManager.isActive (Views.SESSION) && !viewManager.isActive (Views.MIX))
-        {
-            final ITrack cursorTrack = this.model.getCursorTrack ();
-            if (cursorTrack.doesExist ())
-            {
-                final Views preferredView = viewManager.getPreferredView (cursorTrack.getPosition ());
-                viewManager.setActive (preferredView == null ? Views.PLAY : preferredView);
-            }
-        }
-
-        if (viewManager.isActive (Views.PLAY))
-            viewManager.getActive ().updateNoteMapping ();
-
-        // Reset drum octave because the drum pad bank is also reset
-        this.scales.resetDrumOctave ();
-        if (viewManager.isActive (Views.DRUM4))
-            viewManager.get (Views.DRUM4).updateNoteMapping ();
     }
 }

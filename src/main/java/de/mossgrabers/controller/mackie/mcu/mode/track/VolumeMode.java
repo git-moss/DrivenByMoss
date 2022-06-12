@@ -128,6 +128,6 @@ public class VolumeMode extends AbstractTrackMode
     protected void resetParameter (final int index)
     {
         final int extenderOffset = this.getExtenderOffset ();
-        this.getTrackBank ().getItem (extenderOffset + index).resetVolume ();
+        this.resetParameter (this.getTrackBank ().getItem (extenderOffset + index).getVolumeParameter ());
     }
 }
