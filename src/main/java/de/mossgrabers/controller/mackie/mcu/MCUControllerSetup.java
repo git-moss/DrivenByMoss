@@ -486,7 +486,6 @@ public class MCUControllerSetup extends AbstractControllerSetup<MCUControlSurfac
 
                 // Utilities
                 this.addButton (surface, ButtonID.BROWSE, "Browse", new BrowserCommand<> (this.model, surface), 0, MCUControlSurface.MCU_USER, () -> modeManager.isActive (Modes.BROWSER));
-                this.addButton (surface, ButtonID.METRONOME, "Metronome", new MetronomeCommand<> (this.model, surface, false), 0, MCUControlSurface.MCU_CLICK, () -> surface.getButton (ButtonID.SHIFT).isPressed () ? t.isMetronomeTicksOn () : t.isMetronomeOn ());
 
                 final IProject project = this.model.getProject ();
                 this.addButton (surface, ButtonID.GROOVE, "Solo Defeat", (event, velocity) -> {
@@ -913,33 +912,5 @@ public class MCUControllerSetup extends AbstractControllerSetup<MCUControlSurfac
     protected BindType getTriggerBindType (final ButtonID buttonID)
     {
         return BindType.NOTE;
-    }
-
-
-    /**
-     * Handle a track selection change.
-     *
-     * @param isSelected Has the track been selected?
-     */
-    private void handleTrackChange (final boolean isSelected)
-    {
-        if (!isSelected)
-            return;
-
-        final ModeManager modeManager = this.getSurface ().getModeManager ();
-        if (modeManager.isActive (Modes.MASTER) && !this.model.getMasterTrack ().isSelected ())
-        {
-            if (Modes.isTrackMode (modeManager.getPreviousID ()))
-                modeManager.restore ();
-            else
-                modeManager.setActive (Modes.TRACK);
-        }
-    }
-
-
-    private static int getButtonColor (final MCUControlSurface surface, final ButtonID buttonID)
-    {
-        final IMode mode = surface.getModeManager ().getActive ();
-        return mode == null ? 0 : mode.getButtonColor (buttonID);
     }
 }
