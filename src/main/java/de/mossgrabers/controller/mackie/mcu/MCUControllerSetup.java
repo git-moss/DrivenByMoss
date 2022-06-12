@@ -497,14 +497,6 @@ public class MCUControllerSetup extends AbstractControllerSetup<MCUControlSurfac
                         project.clearSolo ();
                 }, 0, MCUControlSurface.MCU_SOLO, () -> surface.isShiftPressed () ? project.hasMute () : project.hasSolo ());
                 this.addButton (surface, ButtonID.OVERDUB, "Overdub", new OverdubCommand<> (this.model, surface), 0, MCUControlSurface.MCU_REPLACE, () -> (surface.getButton (ButtonID.SHIFT).isPressed () ? t.isLauncherOverdub () : t.isArrangerOverdub ()));
-                
-                // AG!
-                // if( this.configuration.isRemappedSoloToShift() ) {
-                //     //
-                //     // REMAP TAP TEMPO TO BANK RIGHT
-                //     //
-                //     this.addButton (surface, ButtonID.TAP_TEMPO, "Bank Right", new MCUMoveTrackBankCommand (this.model, surface, false, false), MCUControlSurface.MCU_NUDGE);
-                // } else
                 this.addButton (surface, ButtonID.TAP_TEMPO, "Tap Tempo", new TapTempoCommand<> (this.model, surface), 0, MCUControlSurface.MCU_NUDGE);
                 
                 this.addButton (surface, ButtonID.DUPLICATE, "Duplicate", (event, velocity) -> {
@@ -532,10 +524,6 @@ public class MCUControllerSetup extends AbstractControllerSetup<MCUControlSurfac
                 // Only MCU
                 this.addButton (surface, ButtonID.SAVE, "Save", new SaveCommand<> (this.model, surface), MCUControlSurface.MCU_SAVE);
 
-                // if( this.configuration.isRemappedSoloToShift() ) {
-                //     // REMAP MARKER TO BANK LEFT
-                //     this.addButton (surface, ButtonID.MARKER, "Marker > Bank Left", new MCUMoveTrackBankCommand (this.model, surface, false, true), MCUControlSurface.MCU_MARKER);
-                // } else
                 this.addButton (surface, ButtonID.MARKER, "Marker", new MarkerCommand<> (this.model, surface), 0, MCUControlSurface.MCU_MARKER, () -> surface.getButton (ButtonID.SHIFT).isPressed () ? this.model.getArranger ().areCueMarkersVisible () : modeManager.isActive (Modes.MARKERS));
                 
                 this.addButton (surface, ButtonID.TOGGLE_VU, "Toggle VU", new ToggleVUCommand<> (this.model, surface), 0, MCUControlSurface.MCU_EDIT, () -> this.configuration.isEnableVUMeters ());
