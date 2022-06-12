@@ -174,7 +174,7 @@ public class CursorDeviceImpl extends SpecificDeviceImpl implements ICursorDevic
     public void swapWithPrevious ()
     {
         final int position = this.getPosition ();
-        if (position == 0)
+        if (position <= 0) // had an instance where it was < 0
             return;
         final Device prevDevice = this.largeDeviceBank.getItemAt (position - 1);
         this.device.afterDeviceInsertionPoint ().moveDevices (prevDevice);
