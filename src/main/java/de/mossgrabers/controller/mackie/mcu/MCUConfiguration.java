@@ -63,6 +63,10 @@ public class MCUConfiguration extends AbstractConfiguration
     public static final Integer       X_TOUCH_DISPLAY_COLORS                  = Integer.valueOf (66);
     /** Use 7 characters instead of 6 and a space character. */
     public static final Integer       USE_7_CHARACTERS                        = Integer.valueOf (67);
+    /** AG! Alternate mappings */
+    public static final Integer       REMAP_SOLO_TO_SHIFT                     = Integer.valueOf (68);
+    public static final Integer       REMAP_CLICK_TO_OPTION                   = Integer.valueOf (69);
+    public static final Integer       REMAP_EQ_INST_TO_DEVICE_PAGE_LEFT_RIGHT = Integer.valueOf (70);
 
     /** Use a Function button to switch to previous mode. */
     public static final int           FOOTSWITCH_2_PREV_MODE                  = 15;
@@ -84,6 +88,7 @@ public class MCUConfiguration extends AbstractConfiguration
 
     private static final String       DEVICE_SELECT                           = "<Select a profile>";
     private static final String       DEVICE_BEHRINGER_X_TOUCH                = "Behringer X-Touch";
+    private static final String       DEVICE_BEHRINGER_X_TOUCH_MINI           = "Behringer X-Touch Mini";
     private static final String       DEVICE_BEHRINGER_X_TOUCH_ONE            = "Behringer X-Touch One";
     private static final String       DEVICE_ICON_PLATFORM_M                  = "icon Platform M / M+";
     private static final String       DEVICE_ICON_QCON_PRO_X                  = "icon QConPro X";
@@ -95,6 +100,7 @@ public class MCUConfiguration extends AbstractConfiguration
         DEVICE_SELECT,
         DEVICE_BEHRINGER_X_TOUCH,
         DEVICE_BEHRINGER_X_TOUCH_ONE,
+        DEVICE_BEHRINGER_X_TOUCH_MINI,
         DEVICE_ICON_PLATFORM_M,
         DEVICE_ICON_QCON_PRO_X,
         DEVICE_MACKIE_MCU_PRO,
@@ -200,6 +206,11 @@ public class MCUConfiguration extends AbstractConfiguration
     private boolean                   masterVuMeter;
     private boolean                   displayColors;
     private boolean                   use7Characters;
+    //AG!
+    private boolean                   remapSoloToShift;
+    private boolean                   remapClickToOption;
+    private boolean                   remapEqInstToDevicePageLeftRight;
+
     private boolean                   touchChannel;
     private boolean                   touchChannelVolumeMode;
     private final int []              assignableFunctions                     = new int [7];
@@ -279,6 +290,17 @@ public class MCUConfiguration extends AbstractConfiguration
         this.activateBrowserSettings (globalSettings);
     }
 
+    // AG!
+    public boolean isRemappedSoloToShift() {
+        return this.remapSoloToShift;
+    }
+    public boolean isRemappedClickToOption() {
+        return this.remapClickToOption;
+    }
+    public boolean isRemappedEqInstToDevicePageLeftRight() {
+        //this.host.println("EQ/Inst Remapped: " + this.remapEqInstToDevicePageLeftRight);
+        return this.remapEqInstToDevicePageLeftRight;
+    }
 
     private void activateHardwareSettings (final ISettingsUI settingsUI)
     {
@@ -370,6 +392,31 @@ public class MCUConfiguration extends AbstractConfiguration
         });
         this.isSettingActive.add (USE_7_CHARACTERS);
 
+        //AG! Alternate mappings
+        
+        final IEnumSetting remapSoloToShiftSetting = settingsUI.getEnumSetting ("Remap Solo to Shit", CATEGORY_HARDWARE_SETUP, ON_OFF_OPTIONS, ON_OFF_OPTIONS[0]);
+        remapSoloToShiftSetting.addValueObserver (value -> {
+            this.remapSoloToShift = "On".equals (value);
+            this.notifyObservers (REMAP_SOLO_TO_SHIFT);
+        });
+        this.isSettingActive.add (REMAP_SOLO_TO_SHIFT);
+
+        final IEnumSetting remapClickToOptionSetting = settingsUI.getEnumSetting ("Remap Click to Option", CATEGORY_HARDWARE_SETUP, ON_OFF_OPTIONS, ON_OFF_OPTIONS[0]);
+        remapClickToOptionSetting.addValueObserver (value -> {
+            this.remapClickToOption = "On".equals (value);
+            this.notifyObservers (REMAP_CLICK_TO_OPTION);
+        });
+        this.isSettingActive.add (REMAP_CLICK_TO_OPTION);
+
+        final IEnumSetting remapEqInstToDevicePageLeftRightSetting = settingsUI.getEnumSetting ("Remap Eq/Inst to Device Page Left/Right", CATEGORY_HARDWARE_SETUP, ON_OFF_OPTIONS, ON_OFF_OPTIONS[0]);
+        remapEqInstToDevicePageLeftRightSetting.addValueObserver (value -> {
+            this.remapEqInstToDevicePageLeftRight = "On".equals (value);
+            this.notifyObservers (REMAP_EQ_INST_TO_DEVICE_PAGE_LEFT_RIGHT);
+        });
+        this.isSettingActive.add (REMAP_EQ_INST_TO_DEVICE_PAGE_LEFT_RIGHT);
+
+
+
         // Activate at the end, so all settings are created
         profileSetting.addValueObserver (value -> {
             switch (value)
@@ -388,6 +435,9 @@ public class MCUConfiguration extends AbstractConfiguration
                     masterVuMeterSetting.set (ON_OFF_OPTIONS[0]);
                     displayColorsSetting.set (ON_OFF_OPTIONS[0]);
                     use7CharactersSetting.set (ON_OFF_OPTIONS[0]);
+                    remapSoloToShiftSetting.set(ON_OFF_OPTIONS[0]);
+                    remapClickToOptionSetting.set(ON_OFF_OPTIONS[0]);
+                    remapEqInstToDevicePageLeftRightSetting.set(ON_OFF_OPTIONS[0]);
                     break;
 
                 case DEVICE_BEHRINGER_X_TOUCH:
@@ -404,6 +454,9 @@ public class MCUConfiguration extends AbstractConfiguration
                     masterVuMeterSetting.set (ON_OFF_OPTIONS[0]);
                     displayColorsSetting.set (ON_OFF_OPTIONS[1]);
                     use7CharactersSetting.set (ON_OFF_OPTIONS[1]);
+                    remapSoloToShiftSetting.set(ON_OFF_OPTIONS[0]);
+                    remapClickToOptionSetting.set(ON_OFF_OPTIONS[0]);
+                    remapEqInstToDevicePageLeftRightSetting.set(ON_OFF_OPTIONS[0]);
                     break;
 
                 case DEVICE_BEHRINGER_X_TOUCH_ONE:
@@ -420,6 +473,9 @@ public class MCUConfiguration extends AbstractConfiguration
                     masterVuMeterSetting.set (ON_OFF_OPTIONS[0]);
                     displayColorsSetting.set (ON_OFF_OPTIONS[0]);
                     use7CharactersSetting.set (ON_OFF_OPTIONS[1]);
+                    remapSoloToShiftSetting.set(ON_OFF_OPTIONS[0]);
+                    remapClickToOptionSetting.set(ON_OFF_OPTIONS[0]);
+                    remapEqInstToDevicePageLeftRightSetting.set(ON_OFF_OPTIONS[0]);
                     break;
 
                 case DEVICE_ICON_PLATFORM_M:
@@ -436,6 +492,9 @@ public class MCUConfiguration extends AbstractConfiguration
                     masterVuMeterSetting.set (ON_OFF_OPTIONS[0]);
                     displayColorsSetting.set (ON_OFF_OPTIONS[0]);
                     use7CharactersSetting.set (ON_OFF_OPTIONS[0]);
+                    remapSoloToShiftSetting.set(ON_OFF_OPTIONS[0]);
+                    remapClickToOptionSetting.set(ON_OFF_OPTIONS[0]);
+                    remapEqInstToDevicePageLeftRightSetting.set(ON_OFF_OPTIONS[0]);
                     break;
 
                 case DEVICE_ICON_QCON_PRO_X:
@@ -452,6 +511,9 @@ public class MCUConfiguration extends AbstractConfiguration
                     masterVuMeterSetting.set (ON_OFF_OPTIONS[1]);
                     displayColorsSetting.set (ON_OFF_OPTIONS[0]);
                     use7CharactersSetting.set (ON_OFF_OPTIONS[0]);
+                    remapSoloToShiftSetting.set(ON_OFF_OPTIONS[0]);
+                    remapClickToOptionSetting.set(ON_OFF_OPTIONS[0]);
+                    remapEqInstToDevicePageLeftRightSetting.set(ON_OFF_OPTIONS[0]);
                     break;
 
                 case DEVICE_ZOOM_R16:
@@ -468,6 +530,28 @@ public class MCUConfiguration extends AbstractConfiguration
                     masterVuMeterSetting.set (ON_OFF_OPTIONS[0]);
                     displayColorsSetting.set (ON_OFF_OPTIONS[0]);
                     use7CharactersSetting.set (ON_OFF_OPTIONS[0]);
+                    remapSoloToShiftSetting.set(ON_OFF_OPTIONS[0]);
+                    remapClickToOptionSetting.set(ON_OFF_OPTIONS[0]);
+                    remapEqInstToDevicePageLeftRightSetting.set(ON_OFF_OPTIONS[0]);
+                    break;
+
+                case DEVICE_BEHRINGER_X_TOUCH_MINI:
+                    hasDisplay1Setting.set (ON_OFF_OPTIONS[0]);
+                    hasDisplay2Setting.set (ON_OFF_OPTIONS[0]);
+                    hasSegmentDisplaySetting.set (ON_OFF_OPTIONS[0]);
+                    hasAssignmentDisplaySetting.set (ON_OFF_OPTIONS[0]);
+                    this.hasMotorFadersSetting.set (ON_OFF_OPTIONS[0]);
+                    hasOnly1FaderSetting.set (ON_OFF_OPTIONS[0]);
+                    this.displayTrackNamesSetting.set (ON_OFF_OPTIONS[0]);
+                    useVertZoomForModesSetting.set (ON_OFF_OPTIONS[0]);
+                    this.useFadersAsKnobsSetting.set (ON_OFF_OPTIONS[0]);
+                    this.setVUMetersEnabled (false);
+                    masterVuMeterSetting.set (ON_OFF_OPTIONS[0]);
+                    displayColorsSetting.set (ON_OFF_OPTIONS[0]);
+                    use7CharactersSetting.set (ON_OFF_OPTIONS[0]);
+                    remapSoloToShiftSetting.set(ON_OFF_OPTIONS[1]);
+                    remapClickToOptionSetting.set(ON_OFF_OPTIONS[1]);
+                    remapEqInstToDevicePageLeftRightSetting.set(ON_OFF_OPTIONS[1]);
                     break;
 
                 default:
