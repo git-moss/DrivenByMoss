@@ -4,6 +4,7 @@
 
 package de.mossgrabers.framework.parameterprovider.track;
 
+import de.mossgrabers.framework.controller.color.ColorEx;
 import de.mossgrabers.framework.daw.IModel;
 import de.mossgrabers.framework.daw.data.IChannel;
 import de.mossgrabers.framework.daw.data.IParameter;
@@ -12,6 +13,7 @@ import de.mossgrabers.framework.daw.data.ITrack;
 import de.mossgrabers.framework.daw.data.bank.ISendBank;
 import de.mossgrabers.framework.daw.data.bank.ITrackBank;
 import de.mossgrabers.framework.daw.data.empty.EmptyParameter;
+import de.mossgrabers.framework.daw.data.empty.EmptySend;
 import de.mossgrabers.framework.observer.IItemSelectionObserver;
 import de.mossgrabers.framework.observer.IParametersAdjustObserver;
 
@@ -54,6 +56,22 @@ public class SelectedTrackParameterProvider extends AbstractTrackParameterProvid
     {
         final Optional<ITrack> selectedTrack = this.bank.getSelectedItem ();
         return selectedTrack.isEmpty () ? EmptyParameter.INSTANCE : this.getInternal (index, selectedTrack.get ());
+    }
+
+
+    /** {@inheritDoc} */
+    @Override
+    public Optional<ColorEx> getColor (final int index)
+    {
+        final Optional<ITrack> selectedTrack = this.bank.getSelectedItem ();
+        if (selectedTrack.isEmpty ())
+            return Optional.empty ();
+
+        final ITrack channel = selectedTrack.get ();
+        if (index < 2)
+            return Optional.of (channel.getColor ());
+
+        return Optional.ofNullable (this.getSend (index - 2, channel).getColor ());
     }
 
 
@@ -124,7 +142,7 @@ public class SelectedTrackParameterProvider extends AbstractTrackParameterProvid
                 return selectedChannel.getPanParameter ();
 
             default:
-                return this.handleSends (index - 2, selectedChannel);
+                return this.getSend (index - 2, selectedChannel);
         }
     }
 
@@ -136,18 +154,18 @@ public class SelectedTrackParameterProvider extends AbstractTrackParameterProvid
      * @param selectedChannel The selected channel, not null
      * @return The parameter
      */
-    protected IParameter handleSends (final int sendIndex, final IChannel selectedChannel)
+    protected ISend getSend (final int sendIndex, final IChannel selectedChannel)
     {
         final ISendBank sendBank = selectedChannel.getSendBank ();
         if (this.model != null && this.model.isEffectTrackBankActive ())
-            return EmptyParameter.INSTANCE;
+            return EmptySend.INSTANCE;
         try
         {
             return this.getSend (sendIndex, sendBank);
         }
         catch (final IndexOutOfBoundsException ex)
         {
-            return EmptyParameter.INSTANCE;
+            return EmptySend.INSTANCE;
         }
     }
 

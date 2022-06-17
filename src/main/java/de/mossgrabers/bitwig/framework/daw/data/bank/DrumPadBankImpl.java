@@ -73,7 +73,10 @@ public class DrumPadBankImpl extends AbstractChannelBankImpl<DrumPadBank, ILayer
             this.getItem (i).enableObservers (enable);
 
         if (this.bank.isPresent ())
+        {
+            Util.setIsSubscribed (this.bank.get ().hasMutedPads (), enable);
             Util.setIsSubscribed (this.bank.get ().hasSoloedPads (), enable);
+        }
     }
 
 
@@ -119,6 +122,14 @@ public class DrumPadBankImpl extends AbstractChannelBankImpl<DrumPadBank, ILayer
     public boolean hasSoloedPads ()
     {
         return this.bank.isPresent () && this.bank.get ().hasSoloedPads ().get ();
+    }
+
+
+    /** {@inheritDoc} */
+    @Override
+    public boolean hasMutedPads ()
+    {
+        return this.bank.isPresent () && this.bank.get ().hasMutedPads ().get ();
     }
 
 

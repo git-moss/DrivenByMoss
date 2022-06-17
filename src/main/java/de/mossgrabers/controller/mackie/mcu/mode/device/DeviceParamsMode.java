@@ -6,18 +6,16 @@ package de.mossgrabers.controller.mackie.mcu.mode.device;
 
 import de.mossgrabers.controller.mackie.mcu.controller.MCUControlSurface;
 import de.mossgrabers.controller.mackie.mcu.mode.BaseMode;
-import de.mossgrabers.framework.controller.color.ColorEx;
-import de.mossgrabers.framework.controller.display.ITextDisplay;
 import de.mossgrabers.framework.daw.IModel;
 import de.mossgrabers.framework.daw.data.IEqualizerDevice;
 import de.mossgrabers.framework.daw.data.IParameter;
 import de.mossgrabers.framework.daw.data.ISpecificDevice;
 import de.mossgrabers.framework.daw.data.ITrack;
-import de.mossgrabers.framework.daw.data.bank.IParameterBank;
 import de.mossgrabers.framework.daw.data.bank.ITrackBank;
+import de.mossgrabers.framework.parameterprovider.IParameterProvider;
 import de.mossgrabers.framework.parameterprovider.device.BankParameterProvider;
 import de.mossgrabers.framework.parameterprovider.special.RangeFilterParameterProvider;
-import de.mossgrabers.framework.utils.StringUtils;
+import de.mossgrabers.framework.parameterprovider.track.VolumeParameterProvider;
 
 import java.util.Optional;
 
@@ -29,19 +27,7 @@ import java.util.Optional;
  */
 public class DeviceParamsMode extends BaseMode<IParameter>
 {
-    private final ISpecificDevice   device;
-
-    private static final ColorEx [] COLORS =
-    {
-        ColorEx.SKY_BLUE,
-        ColorEx.SKY_BLUE,
-        ColorEx.SKY_BLUE,
-        ColorEx.SKY_BLUE,
-        ColorEx.SKY_BLUE,
-        ColorEx.SKY_BLUE,
-        ColorEx.SKY_BLUE,
-        ColorEx.SKY_BLUE
-    };
+    private final ISpecificDevice device;
 
 
     /**
@@ -70,16 +56,23 @@ public class DeviceParamsMode extends BaseMode<IParameter>
 
         this.device = device;
 
-        final int surfaceID = surface.getSurfaceID ();
-        this.setParameterProvider (new RangeFilterParameterProvider (new BankParameterProvider (device.getParameterBank ()), surfaceID * 8, 8));
-
-        if (this.device instanceof IEqualizerDevice)
+        final IParameterProvider parameterProvider;
+        if (this.pinFXtoLastDevice)
+            parameterProvider = new VolumeParameterProvider (model.getEffectTrackBank ());
+        else
         {
-            this.model.getTrackBank ().addSelectionObserver (this::trackSelectionChanged);
-            final ITrackBank effectTrackBank = this.model.getEffectTrackBank ();
-            if (effectTrackBank != null)
-                effectTrackBank.addSelectionObserver (this::trackSelectionChanged);
+            final int surfaceID = surface.getSurfaceID ();
+            parameterProvider = new RangeFilterParameterProvider (new BankParameterProvider (device.getParameterBank ()), surfaceID * 8, 8);
+
+            if (this.device instanceof IEqualizerDevice)
+            {
+                this.model.getTrackBank ().addSelectionObserver (this::trackSelectionChanged);
+                final ITrackBank effectTrackBank = this.model.getEffectTrackBank ();
+                if (effectTrackBank != null)
+                    effectTrackBank.addSelectionObserver (this::trackSelectionChanged);
+            }
         }
+        this.setParameterProvider (parameterProvider);
     }
 
 
@@ -117,66 +110,11 @@ public class DeviceParamsMode extends BaseMode<IParameter>
 
     /** {@inheritDoc} */
     @Override
-    public void onKnobTouch (final int index, final boolean isTouched)
+    protected void drawTrackNameHeader ()
     {
-        this.setTouchedKnob (index, isTouched);
-
-        final IParameter param = this.device.getParameterBank ().getItem (index);
-        if (param.doesExist ())
-            param.touchValue (isTouched);
-    }
-
-
-    /** {@inheritDoc} */
-    @Override
-    public void updateDisplay ()
-    {
-        this.drawDisplay2 ();
-
-        final ITextDisplay d = this.surface.getTextDisplay ().clear ();
-
-        this.surface.sendDisplayColor (COLORS);
-
-        if (!this.device.doesExist ())
-        {
-            d.notify ("Please select a device...    ");
-            return;
-        }
-
-        // Row 1 & 2
-        final int extenderOffset = this.surface.getExtenderOffset ();
-        final IParameterBank parameterBank = this.device.getParameterBank ();
-        final int textLength = this.getTextLength ();
-        for (int i = 0; i < 8; i++)
-        {
-            final IParameter param = parameterBank.getItem (extenderOffset + i);
-            d.setCell (0, i, param.doesExist () ? StringUtils.shortenAndFixASCII (param.getName (6), 6) : "").setCell (1, i, StringUtils.shortenAndFixASCII (param.getDisplayedValue (textLength), textLength));
-        }
-
-        d.allDone ();
-    }
-
-
-    /** {@inheritDoc} */
-    @Override
-    public void updateKnobLEDs ()
-    {
-        final int upperBound = this.model.getValueChanger ().getUpperBound ();
-        final int extenderOffset = this.surface.getExtenderOffset ();
-        final IParameterBank parameterBank = this.device.getParameterBank ();
-        for (int i = 0; i < 8; i++)
-        {
-            final IParameter param = parameterBank.getItem (extenderOffset + i);
-            this.surface.setKnobLED (i, MCUControlSurface.KNOB_LED_MODE_SINGLE_DOT, param.doesExist () ? Math.max (1, param.getValue ()) : 0, upperBound);
-        }
-    }
-
-
-    /** {@inheritDoc} */
-    @Override
-    protected void resetParameter (final int index)
-    {
-        final int extenderOffset = this.surface.getExtenderOffset ();
-        this.resetParameter (this.device.getParameterBank ().getItem (extenderOffset + index));
+        if (this.pinFXtoLastDevice)
+            super.drawTrackNameHeader ();
+        else
+            this.drawParameterHeader ();
     }
 }

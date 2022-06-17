@@ -184,6 +184,7 @@ public enum Modes
     private static final Set<Modes> TRACK_MODES         = EnumSet.range (Modes.TRACK, Modes.STOP_CLIP);
     private static final Set<Modes> LAYER_MODES         = EnumSet.range (Modes.DEVICE_LAYER, Modes.DEVICE_LAYER_DETAILS);
     private static final Set<Modes> SEND_MODES          = EnumSet.range (Modes.SEND1, Modes.SEND8);
+    private static final Set<Modes> LAYER_SEND_MODES    = EnumSet.range (Modes.DEVICE_LAYER_SEND1, Modes.DEVICE_LAYER_SEND8);
     private static final Set<Modes> MIX_MODES           = EnumSet.range (Modes.TRACK, Modes.SEND);
     private static final Set<Modes> MASTER_MODES        = EnumSet.of (Modes.MASTER, Modes.MASTER_TEMP, Modes.FRAME);
 
@@ -247,6 +248,18 @@ public enum Modes
     public static boolean isLayerMode (final Modes modeId)
     {
         return LAYER_MODES.contains (modeId);
+    }
+
+
+    /**
+     * Returns true if the given mode ID is one of the layer send modes.
+     *
+     * @param modeId The mode ID to test
+     * @return True if it is a layer send mode
+     */
+    public static boolean isLayerSendMode (final Modes modeId)
+    {
+        return LAYER_SEND_MODES.contains (modeId);
     }
 
 

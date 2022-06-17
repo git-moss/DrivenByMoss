@@ -75,7 +75,7 @@ public class PushTrackParameterProvider extends SelectedTrackParameterProvider i
                 return EmptyParameter.INSTANCE;
             default:
                 final int sendOffset = this.configuration.isSendsAreToggled () ? 0 : 4;
-                return this.handleSends (index - sendOffset, selectedChannel);
+                return this.getSend (index - sendOffset, selectedChannel);
         }
     }
 

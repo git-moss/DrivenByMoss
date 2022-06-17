@@ -6,9 +6,12 @@ package de.mossgrabers.controller.akai.fire.mode;
 
 import de.mossgrabers.controller.akai.fire.controller.FireControlSurface;
 import de.mossgrabers.framework.controller.ButtonID;
+import de.mossgrabers.framework.controller.color.ColorEx;
 import de.mossgrabers.framework.daw.data.IParameter;
 import de.mossgrabers.framework.parameterprovider.IParameterProvider;
 import de.mossgrabers.framework.parameterprovider.special.AbstractWrapperProvider;
+
+import java.util.Optional;
 
 
 /**
@@ -49,5 +52,13 @@ public class Fire4KnobProvider extends AbstractWrapperProvider
     public IParameter get (final int index)
     {
         return this.parameterProvider.get (this.surface.isPressed (ButtonID.ALT) ? 4 + index : index);
+    }
+
+
+    /** {@inheritDoc} */
+    @Override
+    public Optional<ColorEx> getColor (final int index)
+    {
+        return this.parameterProvider.getColor (this.surface.isPressed (ButtonID.ALT) ? 4 + index : index);
     }
 }

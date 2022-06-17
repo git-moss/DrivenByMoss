@@ -97,6 +97,21 @@ public class MCUMoveTrackBankCommand extends AbstractTriggerCommand<MCUControlSu
                 this.handleBankMovement (this.model.getMarkerBank ());
                 break;
 
+            case DEVICE_LAYER:
+            case DEVICE_LAYER_VOLUME:
+            case DEVICE_LAYER_PAN:
+            case DEVICE_LAYER_SEND1:
+            case DEVICE_LAYER_SEND2:
+            case DEVICE_LAYER_SEND3:
+            case DEVICE_LAYER_SEND4:
+            case DEVICE_LAYER_SEND5:
+            case DEVICE_LAYER_SEND6:
+            case DEVICE_LAYER_SEND7:
+            case DEVICE_LAYER_SEND8:
+                final ICursorDevice cursorDevice = this.model.getCursorDevice ();
+                this.handleBankMovement (cursorDevice.hasDrumPads () ? cursorDevice.getDrumPadBank () : cursorDevice.getLayerBank ());
+                break;
+
             default:
                 this.handleBankMovement (this.model.getCurrentTrackBank ());
                 break;

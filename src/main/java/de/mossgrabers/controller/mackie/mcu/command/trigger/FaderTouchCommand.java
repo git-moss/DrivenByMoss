@@ -7,6 +7,7 @@ package de.mossgrabers.controller.mackie.mcu.command.trigger;
 import de.mossgrabers.controller.mackie.mcu.MCUConfiguration;
 import de.mossgrabers.controller.mackie.mcu.controller.MCUControlSurface;
 import de.mossgrabers.framework.daw.IModel;
+import de.mossgrabers.framework.daw.data.IItem;
 import de.mossgrabers.framework.featuregroup.ModeManager;
 import de.mossgrabers.framework.mode.Modes;
 import de.mossgrabers.framework.utils.ButtonEvent;
@@ -53,31 +54,38 @@ public class FaderTouchCommand extends SelectCommand
             return;
         }
 
-        // Select channel
-        if (configuration.isTouchChannel () && event == ButtonEvent.DOWN)
-            this.getTrackBank ().getItem (this.channel).select ();
-
         final ModeManager modeManager = this.surface.getModeManager ();
+        final boolean isLayerMode = Modes.isLayerMode (modeManager.getActiveID ());
+
+        // Select channel or layer
+        if (configuration.isTouchChannel () && event == ButtonEvent.DOWN)
+        {
+            final IItem item = isLayerMode ? this.model.getCursorDevice ().getLayerBank ().getItem (this.channel) : this.getTrackBank ().getItem (this.channel);
+            item.select ();
+        }
+
         if (configuration.useFadersAsKnobs ())
         {
             modeManager.getActive ().onKnobTouch (this.index, isTouched);
             return;
         }
-        modeManager.get (Modes.VOLUME).onKnobTouch (this.index, isTouched);
+
+        final Modes volumeMode = isLayerMode ? Modes.DEVICE_LAYER_VOLUME : Modes.VOLUME;
+        modeManager.get (volumeMode).onKnobTouch (this.index, isTouched);
 
         final int pos = this.surface.getSurfaceID () * 8 + this.index;
 
-        // Temporarily enable volume mode
+        // Temporarily enable (layer) volume mode
         if (configuration.isTouchChannelVolumeMode ())
         {
             if (isTouched)
             {
                 if (!hasTouchedFader ())
                 {
-                    if (modeManager.isActive (Modes.VOLUME))
-                        modeManager.setPreviousID (Modes.VOLUME);
+                    if (modeManager.isActive (volumeMode))
+                        modeManager.setPreviousID (volumeMode);
                     else
-                        modeManager.setActive (Modes.VOLUME);
+                        modeManager.setActive (volumeMode);
                 }
                 setTouchedFader (pos, true);
             }

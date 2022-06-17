@@ -4,12 +4,14 @@
 
 package de.mossgrabers.framework.parameterprovider.special;
 
+import de.mossgrabers.framework.controller.color.ColorEx;
 import de.mossgrabers.framework.daw.data.IParameter;
 import de.mossgrabers.framework.daw.data.empty.EmptyParameter;
 import de.mossgrabers.framework.observer.IParametersAdjustObserver;
 import de.mossgrabers.framework.parameterprovider.IParameterProvider;
 
 import java.util.Collections;
+import java.util.Optional;
 import java.util.Set;
 
 
@@ -55,5 +57,13 @@ public record EmptyParameterProvider (int size) implements IParameterProvider
     public Set<IParametersAdjustObserver> removeParametersObservers ()
     {
         return Collections.emptySet ();
+    }
+
+
+    /** {@inheritDoc} */
+    @Override
+    public Optional<ColorEx> getColor (final int index)
+    {
+        return Optional.empty ();
     }
 }

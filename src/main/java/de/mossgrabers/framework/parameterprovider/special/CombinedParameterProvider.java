@@ -4,10 +4,13 @@
 
 package de.mossgrabers.framework.parameterprovider.special;
 
+import de.mossgrabers.framework.controller.color.ColorEx;
 import de.mossgrabers.framework.daw.data.IParameter;
 import de.mossgrabers.framework.daw.data.empty.EmptyParameter;
 import de.mossgrabers.framework.parameterprovider.AbstractParameterProvider;
 import de.mossgrabers.framework.parameterprovider.IParameterProvider;
+
+import java.util.Optional;
 
 
 /**
@@ -66,6 +69,22 @@ public class CombinedParameterProvider extends AbstractParameterProvider
             pos -= size;
         }
         return EmptyParameter.INSTANCE;
+    }
+
+
+    /** {@inheritDoc} */
+    @Override
+    public Optional<ColorEx> getColor (final int index)
+    {
+        int pos = index;
+        for (final IParameterProvider provider: this.providers)
+        {
+            final int size = provider.size ();
+            if (pos < size)
+                return provider.getColor (pos);
+            pos -= size;
+        }
+        return Optional.empty ();
     }
 
 

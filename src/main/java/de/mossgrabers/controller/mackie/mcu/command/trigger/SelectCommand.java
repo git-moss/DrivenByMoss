@@ -12,11 +12,15 @@ import de.mossgrabers.framework.controller.ButtonID;
 import de.mossgrabers.framework.controller.display.ITextDisplay;
 import de.mossgrabers.framework.daw.IModel;
 import de.mossgrabers.framework.daw.data.ICursorDevice;
+import de.mossgrabers.framework.daw.data.ILayer;
 import de.mossgrabers.framework.daw.data.ITrack;
 import de.mossgrabers.framework.daw.data.bank.ITrackBank;
 import de.mossgrabers.framework.featuregroup.ModeManager;
 import de.mossgrabers.framework.mode.Modes;
 import de.mossgrabers.framework.utils.ButtonEvent;
+
+import java.util.EnumMap;
+import java.util.Map;
 
 
 /**
@@ -26,6 +30,35 @@ import de.mossgrabers.framework.utils.ButtonEvent;
  */
 public class SelectCommand extends AbstractTriggerCommand<MCUControlSurface, MCUConfiguration>
 {
+    private static final Map<Modes, Modes> TRACK_LAYER_MODE_MAP = new EnumMap<> (Modes.class);
+    private static final Map<Modes, Modes> LAYER_TRACK_MODE_MAP = new EnumMap<> (Modes.class);
+    static
+    {
+        TRACK_LAYER_MODE_MAP.put (Modes.TRACK, Modes.DEVICE_LAYER);
+        TRACK_LAYER_MODE_MAP.put (Modes.VOLUME, Modes.DEVICE_LAYER_VOLUME);
+        TRACK_LAYER_MODE_MAP.put (Modes.PAN, Modes.DEVICE_LAYER_PAN);
+        TRACK_LAYER_MODE_MAP.put (Modes.SEND1, Modes.DEVICE_LAYER_SEND1);
+        TRACK_LAYER_MODE_MAP.put (Modes.SEND2, Modes.DEVICE_LAYER_SEND2);
+        TRACK_LAYER_MODE_MAP.put (Modes.SEND3, Modes.DEVICE_LAYER_SEND3);
+        TRACK_LAYER_MODE_MAP.put (Modes.SEND4, Modes.DEVICE_LAYER_SEND4);
+        TRACK_LAYER_MODE_MAP.put (Modes.SEND5, Modes.DEVICE_LAYER_SEND5);
+        TRACK_LAYER_MODE_MAP.put (Modes.SEND6, Modes.DEVICE_LAYER_SEND6);
+        TRACK_LAYER_MODE_MAP.put (Modes.SEND7, Modes.DEVICE_LAYER_SEND7);
+        TRACK_LAYER_MODE_MAP.put (Modes.SEND8, Modes.DEVICE_LAYER_SEND8);
+
+        LAYER_TRACK_MODE_MAP.put (Modes.DEVICE_LAYER, Modes.TRACK);
+        LAYER_TRACK_MODE_MAP.put (Modes.DEVICE_LAYER_VOLUME, Modes.VOLUME);
+        LAYER_TRACK_MODE_MAP.put (Modes.DEVICE_LAYER_PAN, Modes.PAN);
+        LAYER_TRACK_MODE_MAP.put (Modes.DEVICE_LAYER_SEND1, Modes.SEND1);
+        LAYER_TRACK_MODE_MAP.put (Modes.DEVICE_LAYER_SEND2, Modes.SEND2);
+        LAYER_TRACK_MODE_MAP.put (Modes.DEVICE_LAYER_SEND3, Modes.SEND3);
+        LAYER_TRACK_MODE_MAP.put (Modes.DEVICE_LAYER_SEND4, Modes.SEND4);
+        LAYER_TRACK_MODE_MAP.put (Modes.DEVICE_LAYER_SEND5, Modes.SEND5);
+        LAYER_TRACK_MODE_MAP.put (Modes.DEVICE_LAYER_SEND6, Modes.SEND6);
+        LAYER_TRACK_MODE_MAP.put (Modes.DEVICE_LAYER_SEND7, Modes.SEND7);
+        LAYER_TRACK_MODE_MAP.put (Modes.DEVICE_LAYER_SEND8, Modes.SEND8);
+    }
+
     private final boolean useFxBank;
 
     protected final int   index;
@@ -58,32 +91,76 @@ public class SelectCommand extends AbstractTriggerCommand<MCUControlSurface, MCU
         if (this.handleButtonCombinations (event))
             return;
 
-        final MCUConfiguration configuration = this.surface.getConfiguration ();
-
-        final ITrackBank trackBank = this.getTrackBank ();
         if (event == ButtonEvent.UP)
-        {
-            final ITrack track = trackBank.getItem (this.channel);
-            if (!track.isSelected ())
-            {
-                track.select ();
-                return;
-            }
+            this.handleSelectEnter ();
+        else if (event == ButtonEvent.LONG)
+            this.handleLeave ();
+    }
 
-            if (configuration.isTrackNavigationFlat ())
-            {
-                if (track.isGroup ())
-                    track.toggleGroupExpanded ();
-            }
+
+    private void handleSelectEnter ()
+    {
+        final ICursorDevice cursorDevice = this.model.getCursorDevice ();
+        final ModeManager modeManager = this.surface.getModeManager ();
+
+        // If layer modes are active select the layer...
+        if (Modes.isLayerMode (modeManager.getActiveID ()))
+        {
+            final ILayer layer = cursorDevice.getLayerBank ().getItem (this.channel);
+            if (!layer.isSelected ())
+                layer.select ();
+            return;
+        }
+
+        // Select the track if not already selected...
+        final ITrackBank trackBank = this.getTrackBank ();
+        final ITrack track = trackBank.getItem (this.channel);
+        if (!track.isSelected ())
+        {
+            track.select ();
+            return;
+        }
+
+        // If the track is a group dive in...
+        if (track.isGroup ())
+        {
+            if (this.surface.getConfiguration ().isTrackNavigationFlat ())
+                track.toggleGroupExpanded ();
             else
                 track.enter ();
+            return;
         }
-        else if (event == ButtonEvent.LONG && !configuration.isTrackNavigationFlat ())
+
+        // If the tracks cursor device has layers dive in...
+        if (cursorDevice.hasLayers ())
         {
-            trackBank.selectParent ();
-            for (int i = 0; i < 8; i++)
-                this.surface.setTriggerConsumed (ButtonID.get (ButtonID.ROW_SELECT_1, i));
+            final Modes layerMode = TRACK_LAYER_MODE_MAP.get (modeManager.getActiveID ());
+            if (layerMode != null)
+                modeManager.setActive (layerMode);
         }
+    }
+
+
+    private void handleLeave ()
+    {
+        // If layer modes are active switch back to track mode...
+        final ModeManager modeManager = this.surface.getModeManager ();
+        if (Modes.isLayerMode (modeManager.getActiveID ()))
+        {
+            final Modes trackMode = LAYER_TRACK_MODE_MAP.get (modeManager.getActiveID ());
+            if (trackMode != null)
+                modeManager.setActive (trackMode);
+        }
+        else
+        {
+            // ... otherwise leave the track group
+            if (!this.surface.getConfiguration ().isTrackNavigationFlat ())
+                this.getTrackBank ().selectParent ();
+        }
+
+        // Consume upcoming the button up event
+        for (int i = 0; i < 8; i++)
+            this.surface.setTriggerConsumed (ButtonID.get (ButtonID.ROW_SELECT_1, i));
     }
 
 
@@ -92,19 +169,8 @@ public class SelectCommand extends AbstractTriggerCommand<MCUControlSurface, MCU
         // Select Send channels if Send button is pressed
         if (this.surface.isPressed (ButtonID.SENDS))
         {
-            if (event != ButtonEvent.DOWN)
-                return true;
-
-            final ITextDisplay display = this.surface.getTextDisplay ();
-            final ITrackBank effectTrackBank = this.model.getEffectTrackBank ();
-            if (effectTrackBank != null && effectTrackBank.getItem (this.channel).doesExist ())
-            {
-                this.surface.getModeManager ().setActive (Modes.get (Modes.SEND1, this.index));
-                display.notify ("Send channel " + (this.channel + 1) + " selected.");
-            }
-            else
-                display.notify ("Send channel " + (this.channel + 1) + " does not exist.");
-            this.surface.setTriggerConsumed (ButtonID.SENDS);
+            if (event == ButtonEvent.DOWN)
+                this.handleSendSelection ();
             return true;
         }
 
@@ -141,6 +207,23 @@ public class SelectCommand extends AbstractTriggerCommand<MCUControlSurface, MCU
         }
 
         return false;
+    }
+
+
+    private void handleSendSelection ()
+    {
+        final ITextDisplay display = this.surface.getTextDisplay ();
+        final ITrackBank effectTrackBank = this.model.getEffectTrackBank ();
+        if (effectTrackBank != null && effectTrackBank.getItem (this.channel).doesExist ())
+        {
+            final ModeManager modeManager = this.surface.getModeManager ();
+            final boolean isLayerMode = Modes.isLayerMode (modeManager.getActiveID ());
+            modeManager.setActive (Modes.get (isLayerMode ? Modes.DEVICE_LAYER_SEND1 : Modes.SEND1, this.index));
+            display.notify ("Send channel " + (this.channel + 1) + " selected.");
+        }
+        else
+            display.notify ("Send channel " + (this.channel + 1) + " does not exist.");
+        this.surface.setTriggerConsumed (ButtonID.SENDS);
     }
 
 

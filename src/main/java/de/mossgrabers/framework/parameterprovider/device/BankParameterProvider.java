@@ -4,11 +4,14 @@
 
 package de.mossgrabers.framework.parameterprovider.device;
 
+import de.mossgrabers.framework.controller.color.ColorEx;
 import de.mossgrabers.framework.daw.data.IParameter;
 import de.mossgrabers.framework.daw.data.bank.IBank;
 import de.mossgrabers.framework.observer.IBankPageObserver;
 import de.mossgrabers.framework.observer.IParametersAdjustObserver;
 import de.mossgrabers.framework.parameterprovider.AbstractParameterProvider;
+
+import java.util.Optional;
 
 
 /**
@@ -50,6 +53,14 @@ public class BankParameterProvider extends AbstractParameterProvider implements 
     public IParameter get (final int index)
     {
         return this.bank.getItem (index);
+    }
+
+
+    /** {@inheritDoc} */
+    @Override
+    public Optional<ColorEx> getColor (final int index)
+    {
+        return Optional.empty ();
     }
 
 

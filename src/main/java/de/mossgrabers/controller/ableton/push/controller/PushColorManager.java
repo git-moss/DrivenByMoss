@@ -677,8 +677,7 @@ public class PushColorManager extends ColorManager
             {
                 case PLAY:
                     return this.colorByIndex.get (Integer.valueOf (colorIndex == 1 ? PUSH2_COLOR2_GREY_LO : PUSH2_COLOR2_GREEN_HI));
-                case AUTOMATION:
-                case RECORD:
+                case AUTOMATION, RECORD:
                     int col = PUSH2_COLOR2_AMBER;
                     if (colorIndex == 1)
                         col = PUSH2_COLOR2_GREY_LO;

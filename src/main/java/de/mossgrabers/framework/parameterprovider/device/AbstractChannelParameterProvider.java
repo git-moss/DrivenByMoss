@@ -4,11 +4,14 @@
 
 package de.mossgrabers.framework.parameterprovider.device;
 
+import de.mossgrabers.framework.controller.color.ColorEx;
 import de.mossgrabers.framework.daw.data.IChannel;
 import de.mossgrabers.framework.daw.data.bank.IChannelBank;
 import de.mossgrabers.framework.observer.IBankPageObserver;
 import de.mossgrabers.framework.observer.IParametersAdjustObserver;
 import de.mossgrabers.framework.parameterprovider.AbstractParameterProvider;
+
+import java.util.Optional;
 
 
 /**
@@ -70,5 +73,13 @@ public abstract class AbstractChannelParameterProvider<B extends IChannelBank<C>
     public void pageAdjusted ()
     {
         this.notifyParametersObservers ();
+    }
+
+
+    /** {@inheritDoc} */
+    @Override
+    public Optional<ColorEx> getColor (final int index)
+    {
+        return Optional.of (this.bank.getItem (index).getColor ());
     }
 }

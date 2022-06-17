@@ -2,23 +2,23 @@
 // (c) 2017-2022
 // Licensed under LGPLv3 - http://www.gnu.org/licenses/lgpl-3.0.txt
 
-package de.mossgrabers.controller.mackie.mcu.mode.track;
+package de.mossgrabers.controller.mackie.mcu.mode.layer;
 
 import de.mossgrabers.controller.mackie.mcu.controller.MCUControlSurface;
 import de.mossgrabers.framework.daw.IModel;
 import de.mossgrabers.framework.mode.Modes;
 import de.mossgrabers.framework.parameterprovider.IParameterProvider;
+import de.mossgrabers.framework.parameterprovider.device.SendLayerOrDrumPadParameterProvider;
 import de.mossgrabers.framework.parameterprovider.special.RangeFilterParameterProvider;
-import de.mossgrabers.framework.parameterprovider.track.SendParameterProvider;
 import de.mossgrabers.framework.parameterprovider.track.VolumeParameterProvider;
 
 
 /**
- * Mode for editing a Send volumes.
+ * Mode for editing Layer Send volumes.
  *
  * @author J&uuml;rgen Mo&szlig;graber
  */
-public class SendMode extends AbstractTrackMode
+public class LayerSendMode extends AbstractLayerMode
 {
     /**
      * Constructor.
@@ -27,9 +27,9 @@ public class SendMode extends AbstractTrackMode
      * @param model The model
      * @param sendIndex The index of the send
      */
-    public SendMode (final MCUControlSurface surface, final IModel model, final int sendIndex)
+    public LayerSendMode (final MCUControlSurface surface, final IModel model, final int sendIndex)
     {
-        super (Modes.NAME_SENDS, surface, model);
+        super (Modes.NAME_LAYER_SENDS, surface, model);
 
         final IParameterProvider parameterProvider;
         if (this.pinFXtoLastDevice)
@@ -37,22 +37,8 @@ public class SendMode extends AbstractTrackMode
         else
         {
             final int surfaceID = surface.getSurfaceID ();
-            parameterProvider = new RangeFilterParameterProvider (new SendParameterProvider (model, sendIndex, 0), surfaceID * 8, 8);
+            parameterProvider = new RangeFilterParameterProvider (new SendLayerOrDrumPadParameterProvider (model.getCursorDevice (), sendIndex), surfaceID * 8, 8);
         }
         this.setParameterProvider (parameterProvider);
-    }
-
-
-    /** {@inheritDoc} */
-    @Override
-    public void updateKnobLEDs ()
-    {
-        if (this.model.isEffectTrackBankActive ())
-        {
-            this.surface.getModeManager ().setActive (Modes.TRACK);
-            return;
-        }
-
-        super.updateKnobLEDs ();
     }
 }

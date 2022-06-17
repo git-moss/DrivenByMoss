@@ -7,22 +7,21 @@ package de.mossgrabers.controller.mackie.mcu.command.trigger;
 import de.mossgrabers.controller.mackie.mcu.MCUConfiguration;
 import de.mossgrabers.controller.mackie.mcu.controller.MCUControlSurface;
 import de.mossgrabers.framework.command.core.AbstractTriggerCommand;
-import de.mossgrabers.framework.command.trigger.mode.ModeMultiSelectCommand;
-import de.mossgrabers.framework.controller.ButtonID;
+import de.mossgrabers.framework.command.trigger.mode.ModeSelectCommand;
 import de.mossgrabers.framework.daw.IModel;
 import de.mossgrabers.framework.mode.Modes;
 import de.mossgrabers.framework.utils.ButtonEvent;
 
 
 /**
- * Command to switch to the track/layer modes.
+ * Command to switch to the panorama modes.
  *
  * @author J&uuml;rgen Mo&szlig;graber
  */
-public class TracksCommand extends AbstractTriggerCommand<MCUControlSurface, MCUConfiguration>
+public class PanCommand extends AbstractTriggerCommand<MCUControlSurface, MCUConfiguration>
 {
-    private final ModeMultiSelectCommand<MCUControlSurface, MCUConfiguration> trackModesCommand;
-    private final ModeMultiSelectCommand<MCUControlSurface, MCUConfiguration> layerModesCommand;
+    private final ModeSelectCommand<MCUControlSurface, MCUConfiguration> trackModesCommand;
+    private final ModeSelectCommand<MCUControlSurface, MCUConfiguration> layerModesCommand;
 
 
     /**
@@ -31,12 +30,12 @@ public class TracksCommand extends AbstractTriggerCommand<MCUControlSurface, MCU
      * @param model The model
      * @param surface The surface
      */
-    public TracksCommand (final IModel model, final MCUControlSurface surface)
+    public PanCommand (final IModel model, final MCUControlSurface surface)
     {
         super (model, surface);
 
-        this.trackModesCommand = new ModeMultiSelectCommand<> (model, surface, Modes.VOLUME, Modes.TRACK);
-        this.layerModesCommand = new ModeMultiSelectCommand<> (model, surface, Modes.DEVICE_LAYER_VOLUME, Modes.DEVICE_LAYER);
+        this.trackModesCommand = new ModeSelectCommand<> (model, surface, Modes.PAN);
+        this.layerModesCommand = new ModeSelectCommand<> (model, surface, Modes.DEVICE_LAYER_PAN);
     }
 
 
@@ -44,13 +43,6 @@ public class TracksCommand extends AbstractTriggerCommand<MCUControlSurface, MCU
     @Override
     public void execute (final ButtonEvent event, final int velocity)
     {
-        if (this.surface.isPressed (ButtonID.SELECT))
-        {
-            if (event == ButtonEvent.DOWN)
-                this.model.getCursorTrack ().togglePinned ();
-            return;
-        }
-
         if (Modes.isLayerMode (this.surface.getModeManager ().getActiveID ()))
             this.layerModesCommand.execute (event, velocity);
         else

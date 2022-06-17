@@ -4,11 +4,12 @@
 
 package de.mossgrabers.framework.parameterprovider.track;
 
+import de.mossgrabers.framework.controller.color.ColorEx;
 import de.mossgrabers.framework.daw.IModel;
-import de.mossgrabers.framework.daw.data.IParameter;
+import de.mossgrabers.framework.daw.data.ISend;
 import de.mossgrabers.framework.daw.data.ITrack;
 import de.mossgrabers.framework.daw.data.bank.ISendBank;
-import de.mossgrabers.framework.daw.data.empty.EmptyParameter;
+import de.mossgrabers.framework.daw.data.empty.EmptySend;
 import de.mossgrabers.framework.observer.IItemSelectionObserver;
 import de.mossgrabers.framework.observer.IParametersAdjustObserver;
 
@@ -66,21 +67,29 @@ public class SendParameterProvider extends AbstractTrackParameterProvider implem
 
     /** {@inheritDoc} */
     @Override
-    public IParameter get (final int index)
+    public ISend get (final int index)
     {
         if (this.sendIndex == -1)
         {
             final Optional<ITrack> track = this.bank.getSelectedItem ();
             if (track.isEmpty ())
-                return EmptyParameter.INSTANCE;
+                return EmptySend.INSTANCE;
             final ISendBank sendBank = track.get ().getSendBank ();
             final int idx = this.sendOffset + index;
-            return idx < sendBank.getItemCount () ? sendBank.getItem (idx) : EmptyParameter.INSTANCE;
+            return idx < sendBank.getItemCount () ? sendBank.getItem (idx) : EmptySend.INSTANCE;
         }
 
         final ISendBank sendBank = this.bank.getItem (index).getSendBank ();
         final int idx = this.sendOffset + this.sendIndex;
-        return sendBank.getItemCount () == 0 ? EmptyParameter.INSTANCE : sendBank.getItem (idx);
+        return sendBank.getItemCount () == 0 ? EmptySend.INSTANCE : sendBank.getItem (idx);
+    }
+
+
+    /** {@inheritDoc} */
+    @Override
+    public Optional<ColorEx> getColor (final int index)
+    {
+        return Optional.ofNullable (this.get (index).getColor ());
     }
 
 

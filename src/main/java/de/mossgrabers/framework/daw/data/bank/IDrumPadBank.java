@@ -30,6 +30,14 @@ public interface IDrumPadBank extends ILayerBank
 
 
     /**
+     * Check if a pad of the drum pad bank is muted.
+     *
+     * @return True if a pad is muted
+     */
+    boolean hasMutedPads ();
+
+
+    /**
      * Check if a pad of the drum pad bank is soloed.
      *
      * @return True if a pad is soloed

@@ -23,19 +23,6 @@ import de.mossgrabers.framework.utils.StringUtils;
  */
 public class UserMode extends BaseMode<IParameter>
 {
-    private static final ColorEx [] COLORS =
-    {
-        ColorEx.WHITE,
-        ColorEx.WHITE,
-        ColorEx.WHITE,
-        ColorEx.WHITE,
-        ColorEx.WHITE,
-        ColorEx.WHITE,
-        ColorEx.WHITE,
-        ColorEx.WHITE
-    };
-
-
     /**
      * Constructor.
      *
@@ -80,7 +67,7 @@ public class UserMode extends BaseMode<IParameter>
 
         final ITextDisplay d = this.surface.getTextDisplay ().clear ();
 
-        this.surface.sendDisplayColor (COLORS);
+        final ColorEx [] colors = new ColorEx [8];
 
         // Row 1 & 2
         final int extenderOffset = this.surface.getExtenderOffset ();
@@ -90,9 +77,12 @@ public class UserMode extends BaseMode<IParameter>
         {
             final IParameter param = parameterBank.getItem (extenderOffset + i);
             d.setCell (0, i, param.doesExist () ? StringUtils.shortenAndFixASCII (param.getName (textLength), textLength) : "").setCell (1, i, StringUtils.shortenAndFixASCII (param.getDisplayedValue (textLength), textLength));
+            colors[i] = param.doesExist () ? ColorEx.WHITE : ColorEx.BLACK;
         }
 
         d.allDone ();
+
+        this.surface.sendDisplayColor (colors);
     }
 
 
