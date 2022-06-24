@@ -362,6 +362,8 @@ public class GenericFlexiControllerSetup extends AbstractControllerSetup<Generic
 
         if (this.configuration.isKeyboardRouteModulation ())
             filters.add ("B" + midiChannel + "01??");
+        if (this.configuration.isKeyboardRouteExpression ())
+            filters.add ("B" + midiChannel + "0B??");
         if (this.configuration.isKeyboardRouteSustain ())
             filters.add ("B" + midiChannel + "40??");
         if (this.configuration.isKeyboardRouteTimbre ())

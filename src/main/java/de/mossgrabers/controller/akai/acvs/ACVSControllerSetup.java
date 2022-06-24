@@ -780,44 +780,43 @@ public class ACVSControllerSetup extends AbstractControllerSetup<ACVSControlSurf
         this.addRelativeKnob (ContinuousID.MOVE_LOOP, "Loop Start", new LoopPositionCommand<> (this.model, surface), BindType.CC, 0x0A, ACVSControlSurface.CC_MOVE_LOOP);
         this.addRelativeKnob (ContinuousID.LOOP_LENGTH, "Loop Length", new LoopLengthCommand<> (this.model, surface), BindType.CC, 0x0A, ACVSControlSurface.CC_LOOP_LENGTH);
 
-        if (this.configuration.isActiveACVSDevice (ACVSDevice.FORCE) || this.configuration.isActiveACVSDevice (ACVSDevice.MPC_X))
+        final IMidiInput midiInput = surface.getMidiInput ();
+        for (int i = 0; i < 8; i++)
         {
-            final IMidiInput midiInput = surface.getMidiInput ();
-            for (int i = 0; i < 8; i++)
-            {
-                final int index = i;
+            final int index = i;
 
-                final IHwRelativeKnob volumeKnob = this.addRelativeKnob (ContinuousID.get (ContinuousID.VOLUME_KNOB1, i), "Volume " + (i + 1), null, BindType.CC, 0x0D, i);
-                volumeKnob.bindTouch ( (event, velocity) -> {
+            final ContinuousID volumeKnobID = ContinuousID.get (ContinuousID.VOLUME_KNOB1, i);
+            final IHwRelativeKnob volumeKnob = this.addRelativeKnob (volumeKnobID, "Volume " + (i + 1), value -> tb.getItem (index).changeVolume (value), BindType.CC, 0x0D, i);
+            volumeKnob.bindTouch ( (event, velocity) -> {
 
-                    if (event == ButtonEvent.LONG)
-                        return;
-                    final IParameter volumeParameter = tb.getItem (index).getVolumeParameter ();
-                    final boolean isBeingTouched = event == ButtonEvent.DOWN;
-                    volumeParameter.touchValue (isBeingTouched);
-                    if (isBeingTouched && surface.isPressed (ButtonID.F2))
-                        volumeParameter.resetValue ();
+                if (event == ButtonEvent.LONG)
+                    return;
+                final IParameter volumeParameter = tb.getItem (index).getVolumeParameter ();
+                final boolean isBeingTouched = event == ButtonEvent.DOWN;
+                volumeParameter.touchValue (isBeingTouched);
+                if (isBeingTouched && surface.isPressed (ButtonID.F2))
+                    volumeParameter.resetValue ();
 
-                }, midiInput, BindType.NOTE, 0x0D, i);
-                volumeKnob.setIndexInGroup (i);
+            }, midiInput, BindType.NOTE, 0x0D, i);
+            volumeKnob.setIndexInGroup (i);
 
-                final IHwRelativeKnob paramKnob = this.addRelativeKnob (ContinuousID.get (ContinuousID.PARAM_KNOB1, i), "Param " + (i + 1), null, BindType.CC, 0x0D, 8 + i);
-                paramKnob.bindTouch ( (event, velocity) -> {
+            final ContinuousID paramKnobID = ContinuousID.get (ContinuousID.PARAM_KNOB1, i);
+            final IHwRelativeKnob paramKnob = this.addRelativeKnob (paramKnobID, "Param " + (i + 1), value -> cursorDevice.getParameterBank ().getItem (index).changeValue (value), BindType.CC, 0x0D, 8 + i);
+            paramKnob.bindTouch ( (event, velocity) -> {
 
-                    if (event == ButtonEvent.LONG)
-                        return;
-                    final IParameter parameter = cursorDevice.getParameterBank ().getItem (index);
-                    final boolean isBeingTouched = event == ButtonEvent.DOWN;
-                    parameter.touchValue (isBeingTouched);
-                    if (isBeingTouched && surface.isPressed (ButtonID.F2))
-                        parameter.resetValue ();
+                if (event == ButtonEvent.LONG)
+                    return;
+                final IParameter parameter = cursorDevice.getParameterBank ().getItem (index);
+                final boolean isBeingTouched = event == ButtonEvent.DOWN;
+                parameter.touchValue (isBeingTouched);
+                if (isBeingTouched && surface.isPressed (ButtonID.F2))
+                    parameter.resetValue ();
 
-                }, midiInput, BindType.NOTE, 0x0D, 8 + i);
-                paramKnob.setIndexInGroup (i);
-            }
-
-            this.addFader (ContinuousID.CROSSFADER, "Crossfader", null, BindType.CC, 0x0D, 16, false).bind (this.model.getTransport ().getCrossfadeParameter ());
+            }, midiInput, BindType.NOTE, 0x0D, 8 + i);
+            paramKnob.setIndexInGroup (i);
         }
+
+        this.addFader (ContinuousID.CROSSFADER, "Crossfader", null, BindType.CC, 0x0D, 16, false).bind (this.model.getTransport ().getCrossfadeParameter ());
     }
 
 

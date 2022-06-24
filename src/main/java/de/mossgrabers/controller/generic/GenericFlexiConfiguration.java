@@ -300,6 +300,7 @@ public class GenericFlexiConfiguration extends AbstractConfiguration
     private int                                      keyboardChannel              = 0;
     private boolean                                  keyboardRouteTimbre          = false;
     private boolean                                  keyboardRouteModulation      = true;
+    private boolean                                  keyboardRouteExpression      = false;
     private boolean                                  keyboardRouteSustain         = true;
     private boolean                                  keyboardRoutePitchbend       = true;
 
@@ -494,6 +495,9 @@ public class GenericFlexiConfiguration extends AbstractConfiguration
 
         final IEnumSetting routeModulationSetting = globalSettings.getEnumSetting ("Route Modulation (CC01)", CATEGORY_KEYBOARD, AbstractConfiguration.ON_OFF_OPTIONS, AbstractConfiguration.ON_OFF_OPTIONS[1]);
         this.keyboardRouteModulation = "On".equals (routeModulationSetting.get ());
+
+        final IEnumSetting routeExpressionSetting = globalSettings.getEnumSetting ("Route Expression (CC11)", CATEGORY_KEYBOARD, AbstractConfiguration.ON_OFF_OPTIONS, AbstractConfiguration.ON_OFF_OPTIONS[0]);
+        this.keyboardRouteExpression = "On".equals (routeExpressionSetting.get ());
 
         final IEnumSetting routeSustainSetting = globalSettings.getEnumSetting ("Route Sustain (CC64)", CATEGORY_KEYBOARD, AbstractConfiguration.ON_OFF_OPTIONS, AbstractConfiguration.ON_OFF_OPTIONS[1]);
         this.keyboardRouteSustain = "On".equals (routeSustainSetting.get ());
@@ -787,6 +791,17 @@ public class GenericFlexiConfiguration extends AbstractConfiguration
     public boolean isKeyboardRouteModulation ()
     {
         return this.keyboardRouteModulation;
+    }
+
+
+    /**
+     * Should CC expression directly routed to the DAW?
+     *
+     * @return True to route
+     */
+    public boolean isKeyboardRouteExpression ()
+    {
+        return this.keyboardRouteExpression;
     }
 
 

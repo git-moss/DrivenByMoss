@@ -96,7 +96,6 @@ public class ControlMode extends AbstractMode<ACVSControlSurface, ACVSConfigurat
         final ACVSConfiguration configuration = this.surface.getConfiguration ();
         final boolean isForce = configuration.isActiveACVSDevice (ACVSDevice.FORCE);
         final boolean isMPC = !isForce;
-        final boolean isMPC_X = configuration.isActiveACVSDevice (ACVSDevice.MPC_X);
 
         final ITrackBank tb = this.model.getCurrentTrackBank ();
         final ICursorDevice device = this.model.getCursorDevice ();
@@ -136,19 +135,20 @@ public class ControlMode extends AbstractMode<ACVSControlSurface, ACVSConfigurat
             d.setScreenItem (ScreenItem.get (ScreenItem.DEVICE_PARAM1_ENABLED, i), param.doesExist () ? 127 : 0);
             d.setScreenItem (ScreenItem.get (ScreenItem.DEVICE_PARAM1_VALUE, i), param.getValue ());
 
-            if (isForce || isMPC_X)
-            {
-                d.setScreenItem (ScreenItem.get (ScreenItem.KNOBSTYLE1_COLOR, 8 + i), param.doesExist () ? 1 : 0);
-                d.setScreenItem (ScreenItem.get (ScreenItem.KNOB_VALUE1, 8 + i), param.getValue ());
-                d.setRow (ACVSDisplay.ITEM_ID_DEVICE_PARAM_NAME1 + 8 + i, param.getName ());
-                d.setRow (ACVSDisplay.ITEM_ID_DEVICE_PARAM_VALUE1 + 8 + i, param.getDisplayedValue ());
+            // Labels for Q-Link knobs
 
-                final ITrack track = tb.getItem (i);
-                d.setScreenItem (ScreenItem.get (ScreenItem.KNOBSTYLE1_COLOR, i), track.doesExist () ? 1 : 0);
-                d.setScreenItem (ScreenItem.get (ScreenItem.KNOB_VALUE1, i), track.getVolume ());
-                d.setRow (ACVSDisplay.ITEM_ID_DEVICE_PARAM_NAME1 + i, track.getName ());
-                d.setRow (ACVSDisplay.ITEM_ID_DEVICE_PARAM_VALUE1 + i, track.getVolumeStr ());
-            }
+            // Q-Link rows 3 + 4 are device parameters
+            d.setScreenItem (ScreenItem.get (ScreenItem.KNOBSTYLE1_COLOR, 8 + i), param.doesExist () ? 1 : 0);
+            d.setScreenItem (ScreenItem.get (ScreenItem.KNOB_VALUE1, 8 + i), param.getValue ());
+            d.setRow (ACVSDisplay.ITEM_ID_DEVICE_PARAM_NAME1 + 8 + i, param.getName ());
+            d.setRow (ACVSDisplay.ITEM_ID_DEVICE_PARAM_VALUE1 + 8 + i, param.getDisplayedValue ());
+
+            // Q-Link rows 1 + 2 are track levels
+            final ITrack track = tb.getItem (i);
+            d.setScreenItem (ScreenItem.get (ScreenItem.KNOBSTYLE1_COLOR, i), track.doesExist () ? 1 : 0);
+            d.setScreenItem (ScreenItem.get (ScreenItem.KNOB_VALUE1, i), track.getVolume ());
+            d.setRow (ACVSDisplay.ITEM_ID_DEVICE_PARAM_NAME1 + i, track.getName ());
+            d.setRow (ACVSDisplay.ITEM_ID_DEVICE_PARAM_VALUE1 + i, track.getVolumeStr ());
         }
 
         // Set transport data
@@ -503,8 +503,7 @@ public class ControlMode extends AbstractMode<ACVSControlSurface, ACVSConfigurat
             case HYBRID:
                 return 4;
 
-            case GROUP:
-            case GROUP_OPEN:
+            case GROUP, GROUP_OPEN:
                 return 7;
 
             case EFFECT:
