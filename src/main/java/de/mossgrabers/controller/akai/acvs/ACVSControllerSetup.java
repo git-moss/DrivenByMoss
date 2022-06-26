@@ -54,7 +54,9 @@ import de.mossgrabers.framework.daw.data.IParameter;
 import de.mossgrabers.framework.daw.data.IScene;
 import de.mossgrabers.framework.daw.data.ISlot;
 import de.mossgrabers.framework.daw.data.ITrack;
+import de.mossgrabers.framework.daw.data.bank.IParameterBank;
 import de.mossgrabers.framework.daw.data.bank.ISceneBank;
+import de.mossgrabers.framework.daw.data.bank.ISendBank;
 import de.mossgrabers.framework.daw.data.bank.ITrackBank;
 import de.mossgrabers.framework.daw.midi.IMidiAccess;
 import de.mossgrabers.framework.daw.midi.IMidiInput;
@@ -734,6 +736,7 @@ public class ACVSControllerSetup extends AbstractControllerSetup<ACVSControlSurf
     {
         final ITrackBank tb = this.model.getTrackBank ();
         final ICursorDevice cursorDevice = this.model.getCursorDevice ();
+        final IParameterBank parameterBank = cursorDevice.getParameterBank ();
         final ACVSControlSurface surface = this.getSurface ();
 
         for (int i = 0; i < 8; i++)
@@ -742,38 +745,47 @@ public class ACVSControllerSetup extends AbstractControllerSetup<ACVSControlSurf
 
             ContinuousID contID = ContinuousID.get (ContinuousID.FADER1, i);
             String label = "Volume " + (i + 1);
-            final IHwFader fader = this.addFader (contID, label, value -> tb.getItem (index).setVolume (value), BindType.CC, i + 1, ACVSControlSurface.CC_VOLUME);
+            final ITrack track = tb.getItem (index);
+            final ISendBank sendBank = track.getSendBank ();
+            final IHwFader fader = this.addFader (contID, label, track::setVolume, BindType.CC, i + 1, ACVSControlSurface.CC_VOLUME);
             fader.setIndexInGroup (i);
+            track.setVolumeIndication (true);
 
             contID = ContinuousID.get (ContinuousID.KNOB1, i);
             label = "Pan " + (i + 1);
-            IHwAbsoluteKnob knob = this.addAbsoluteKnob (contID, label, value -> tb.getItem (index).setPan (value), BindType.CC, i + 1, ACVSControlSurface.CC_PAN);
+            IHwAbsoluteKnob knob = this.addAbsoluteKnob (contID, label, track::setPan, BindType.CC, i + 1, ACVSControlSurface.CC_PAN);
             knob.setIndexInGroup (i);
+            track.setPanIndication (true);
 
             contID = ContinuousID.get (ContinuousID.SEND1_KNOB1, i);
             label = "Send 1 - " + (i + 1);
-            knob = this.addAbsoluteKnob (contID, label, value -> tb.getItem (index).getSendBank ().getItem (0).setValue (value), BindType.CC, i + 1, ACVSControlSurface.CC_SEND1_LEVEL);
+            knob = this.addAbsoluteKnob (contID, label, value -> sendBank.getItem (0).setValue (value), BindType.CC, i + 1, ACVSControlSurface.CC_SEND1_LEVEL);
             knob.setIndexInGroup (i);
+            sendBank.getItem (0).setIndication (true);
 
             contID = ContinuousID.get (ContinuousID.SEND2_KNOB1, i);
             label = "Send 2 - " + (i + 1);
-            knob = this.addAbsoluteKnob (contID, label, value -> tb.getItem (index).getSendBank ().getItem (1).setValue (value), BindType.CC, i + 1, ACVSControlSurface.CC_SEND2_LEVEL);
+            knob = this.addAbsoluteKnob (contID, label, value -> sendBank.getItem (1).setValue (value), BindType.CC, i + 1, ACVSControlSurface.CC_SEND2_LEVEL);
             knob.setIndexInGroup (i);
+            sendBank.getItem (1).setIndication (true);
 
             contID = ContinuousID.get (ContinuousID.SEND3_KNOB1, i);
             label = "Send 3 - " + (i + 1);
-            knob = this.addAbsoluteKnob (contID, label, value -> tb.getItem (index).getSendBank ().getItem (2).setValue (value), BindType.CC, i + 1, ACVSControlSurface.CC_SEND3_LEVEL);
+            knob = this.addAbsoluteKnob (contID, label, value -> sendBank.getItem (2).setValue (value), BindType.CC, i + 1, ACVSControlSurface.CC_SEND3_LEVEL);
             knob.setIndexInGroup (i);
+            sendBank.getItem (2).setIndication (true);
 
             contID = ContinuousID.get (ContinuousID.SEND4_KNOB1, i);
             label = "Send 4 - " + (i + 1);
-            knob = this.addAbsoluteKnob (contID, label, value -> tb.getItem (index).getSendBank ().getItem (3).setValue (value), BindType.CC, i + 1, ACVSControlSurface.CC_SEND4_LEVEL);
+            knob = this.addAbsoluteKnob (contID, label, value -> sendBank.getItem (3).setValue (value), BindType.CC, i + 1, ACVSControlSurface.CC_SEND4_LEVEL);
             knob.setIndexInGroup (i);
+            sendBank.getItem (3).setIndication (true);
 
             contID = ContinuousID.get (ContinuousID.DEVICE_KNOB1, i);
             label = "Device Knob " + (i + 1);
-            knob = this.addAbsoluteKnob (contID, label, value -> cursorDevice.getParameterBank ().getItem (index).setValue (value), BindType.CC, 0x09, ACVSControlSurface.CC_PARAM1_VALUE + i);
+            knob = this.addAbsoluteKnob (contID, label, value -> parameterBank.getItem (index).setValue (value), BindType.CC, 0x09, ACVSControlSurface.CC_PARAM1_VALUE + i);
             knob.setIndexInGroup (i);
+            parameterBank.getItem (index).setIndication (true);
         }
 
         this.addRelativeKnob (ContinuousID.PLAY_POSITION, "Position", new PlayPositionCommand<> (this.model, surface), BindType.CC, 0x0A, ACVSControlSurface.CC_PLAY_POSITION);
