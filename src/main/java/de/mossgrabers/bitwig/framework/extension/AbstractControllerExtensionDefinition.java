@@ -116,7 +116,7 @@ public abstract class AbstractControllerExtensionDefinition<S extends IControlSu
     @Override
     public int getRequiredAPIVersion ()
     {
-        return 15;
+        return 17;
     }
 
 

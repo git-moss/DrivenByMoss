@@ -19,7 +19,6 @@ import de.mossgrabers.framework.daw.data.bank.ITrackBank;
 import de.mossgrabers.framework.daw.resource.ChannelType;
 import de.mossgrabers.framework.observer.IIndexedValueObserver;
 
-import com.bitwig.extension.controller.api.ClipLauncherSlotBank;
 import com.bitwig.extension.controller.api.CursorTrack;
 import com.bitwig.extension.controller.api.Track;
 import com.bitwig.extension.controller.api.TrackBank;
@@ -94,13 +93,7 @@ public abstract class AbstractTrackBankImpl extends AbstractChannelBankImpl<Trac
             return;
 
         final TrackBank trackBank = this.bank.get ();
-
-        for (int index = 0; index < this.getPageSize (); index++)
-        {
-            final ClipLauncherSlotBank bank = trackBank.getItemAt (index).clipLauncherSlotBank ();
-            if (bank != null)
-                bank.setIndication (enable);
-        }
+        trackBank.setShouldShowClipLauncherFeedback (enable);
     }
 
 
