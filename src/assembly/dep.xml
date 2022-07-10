@@ -8,10 +8,17 @@
     <fileSets>
         <fileSet>
             <directory>${project.basedir}</directory>
-            <outputDirectory></outputDirectory>
+            <outputDirectory>/</outputDirectory>
             <includes>
                 <include>LICENSE*</include>
                 <include>DrivenByMoss-Manual.pdf</include>
+            </includes>
+        </fileSet>
+        <fileSet>
+            <directory>${project.basedir}/target/generated-sources/license/</directory>
+            <outputDirectory>/</outputDirectory>
+            <includes>
+                <include>THIRD-PARTY.txt</include>
             </includes>
         </fileSet>
         <fileSet>

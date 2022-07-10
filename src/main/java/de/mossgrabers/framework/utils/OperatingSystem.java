@@ -51,6 +51,17 @@ public enum OperatingSystem
 
 
     /**
+     * Returns true if the operating system is MacOS no matter if it is Intel or ARM based.
+     *
+     * @return True if MacOS
+     */
+    public static boolean isMacOS ()
+    {
+        return os == MAC || os == MAC_ARM;
+    }
+
+
+    /**
      * Get the OS we are running on.
      *
      * @return The OS enumeration

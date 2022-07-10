@@ -12,6 +12,14 @@
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 	</properties>
 
+	<licenses>
+		<license>
+			<name>LGPL-2.1-or-later</name>
+			<url>https://www.gnu.org/licenses/old-licenses/lgpl-2.1</url>
+			<distribution>repo</distribution>
+		</license>
+	</licenses>
+
 	<repositories>
 		<repository>
 			<id>MavenCentral</id>

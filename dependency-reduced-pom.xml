@@ -5,6 +5,13 @@
   <artifactId>DrivenByMoss</artifactId>
   <name>DrivenByMoss</name>
   <version>17.0.0</version>
+  <licenses>
+    <license>
+      <name>LGPL-2.1-or-later</name>
+      <url>https://www.gnu.org/licenses/old-licenses/lgpl-2.1</url>
+      <distribution>repo</distribution>
+    </license>
+  </licenses>
   <build>
     <plugins>
       <plugin>
@@ -141,6 +148,26 @@
         <version>2.8.1</version>
         <configuration>
           <generateBackupPoms>false</generateBackupPoms>
+        </configuration>
+      </plugin>
+      <plugin>
+        <groupId>org.codehaus.mojo</groupId>
+        <artifactId>license-maven-plugin</artifactId>
+        <version>2.0.0</version>
+        <executions>
+          <execution>
+            <id>add-third-party</id>
+            <goals>
+              <goal>add-third-party</goal>
+            </goals>
+          </execution>
+        </executions>
+        <configuration>
+          <sortArtifactByName>true</sortArtifactByName>
+          <licenseMerges>
+            <licenseMerge>The Apache Software License, Version 2.0|Apache License, Version 2.0|Apache Public License 2.0|Apache-2.0</licenseMerge>
+          </licenseMerges>
+          <excludedGroups>com\.bitwig.*|de\.mossgrabers.*</excludedGroups>
         </configuration>
       </plugin>
       <plugin>

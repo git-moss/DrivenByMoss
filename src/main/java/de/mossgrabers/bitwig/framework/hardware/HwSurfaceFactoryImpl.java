@@ -188,8 +188,8 @@ public class HwSurfaceFactoryImpl implements IHwSurfaceFactory
     @Override
     public void flush ()
     {
-        // Workaround for state not updated on first startup on Macos 11
-        if (OperatingSystem.get () == OperatingSystem.MAC && !this.startupDone && System.currentTimeMillis () - this.startup > 10000)
+        // Workaround for state not updated on first startup on MacOs 11
+        if (OperatingSystem.isMacOS () && !this.startupDone && System.currentTimeMillis () - this.startup > 10000)
         {
             this.hardwareSurface.invalidateHardwareOutputState ();
             this.startupDone = true;

@@ -269,7 +269,15 @@ public abstract class BaseMode<B extends IItem> extends AbstractMode<MCUControlS
         {
             final IParameter parameter = parameterProvider.get (i);
             if (parameter.doesExist ())
-                this.surface.setKnobLED (i, knobLedModes[i], parameter.getValue (), upperBound);
+            {
+                int value = parameter.getValue ();
+
+                // Prevent LEDs to be turned off when full left
+                if (knobLedModes[i] == MCUControlSurface.KNOB_LED_MODE_BOOST_CUT && value == 0)
+                    value = 1;
+
+                this.surface.setKnobLED (i, knobLedModes[i], value, upperBound);
+            }
             else
                 this.surface.setKnobLED (i, MCUControlSurface.KNOB_LED_MODE_WRAP, 0, upperBound);
         }
