@@ -28,7 +28,6 @@ public class HidDeviceImpl implements IHidDevice
     private HidDevice hidDevice;
     private boolean   isOpen;
 
-
     /**
      * Constructor.
      *
@@ -44,6 +43,8 @@ public class HidDeviceImpl implements IHidDevice
         try
         {
             this.hidDevice = PureJavaHidApi.openDevice (hidDeviceInfo.get ());
+            if (this.hidDevice == null)
+                throw new IOException ("openDevice returned null.");
             this.isOpen = true;
             this.hidDevice.setDeviceRemovalListener (source -> this.isOpen = false);
         }
