@@ -55,7 +55,7 @@
 		<dependency>
 			<groupId>purejavahidapi</groupId>
 			<artifactId>purejavahidapi</artifactId>
-			<version>0.0.18</version>
+			<version>0.0.19</version>
 		</dependency>
 		<dependency>
 			<artifactId>nativefilechooser</artifactId>
