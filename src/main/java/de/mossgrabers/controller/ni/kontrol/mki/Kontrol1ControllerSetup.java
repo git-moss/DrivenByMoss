@@ -52,6 +52,7 @@ import de.mossgrabers.framework.featuregroup.ViewManager;
 import de.mossgrabers.framework.mode.Modes;
 import de.mossgrabers.framework.scale.Scales;
 import de.mossgrabers.framework.view.Views;
+import purejavahidapi.PureJavaHidApi;
 
 
 /**
@@ -313,5 +314,15 @@ public class Kontrol1ControllerSetup extends AbstractControllerSetup<Kontrol1Con
         surface.getContinuous (ContinuousID.MODULATION_WHEEL).setBounds (96.0, 219.5, 37.75, 68.5);
 
         surface.getPianoKeyboard ().setBounds (196.5, 211.0, 558.75, 88.75);
+    }
+
+
+    /** {@inheritDoc} */
+    @Override
+    public void exit ()
+    {
+        super.exit ();
+
+        PureJavaHidApi.cleanup ();
     }
 }

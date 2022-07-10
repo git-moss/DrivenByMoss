@@ -47,4 +47,10 @@ public interface IHidDevice
      * @return The number of bytes scheduled for transmission or -1 if the call failed
      */
     int sendFeatureReport (byte reportID, IMemoryBlock memoryBlock);
+
+
+    /**
+     * Closes the device.
+     */
+    void close ();
 }
