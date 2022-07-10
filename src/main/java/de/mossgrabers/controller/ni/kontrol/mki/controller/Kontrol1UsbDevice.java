@@ -719,11 +719,15 @@ public class Kontrol1UsbDevice
 
 
     /**
-     * Stop sending USB data.
+     * Stop sending USB data and close USB device.
      */
     public void shutdown ()
     {
+        if (this.hidDevice == null)
+            return;
+        final IHidDevice device = this.hidDevice;
         this.hidDevice = null;
+        device.close ();
     }
 
 

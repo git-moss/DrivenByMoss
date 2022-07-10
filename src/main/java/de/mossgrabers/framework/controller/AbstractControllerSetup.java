@@ -156,6 +156,7 @@ public abstract class AbstractControllerSetup<S extends IControlSurface<C>, C ex
         this.configuration.clearSettingObservers ();
         for (final S surface: this.surfaces)
             surface.shutdown ();
+        this.host.releaseUsbDevices ();
         this.host.println ("Exited.");
     }
 

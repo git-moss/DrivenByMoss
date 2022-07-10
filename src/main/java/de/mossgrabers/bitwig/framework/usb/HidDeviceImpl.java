@@ -54,13 +54,15 @@ public class HidDeviceImpl implements IHidDevice
     }
 
 
-    /**
-     * Closes the device.
-     */
+    /** {@inheritDoc} */
+    @Override
     public void close ()
     {
         if (this.isOpen)
+        {
+            this.isOpen = false;
             this.hidDevice.close ();
+        }
     }
 
 
