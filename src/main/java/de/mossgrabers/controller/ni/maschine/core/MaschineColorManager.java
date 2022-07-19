@@ -96,6 +96,7 @@ public class MaschineColorManager extends ColorManager
         this.registerColorIndex (AbstractSequencerView.COLOR_STEP_SELECTED, COLOR_YELLOW);
 
         this.registerColorIndex (AbstractSequencerView.COLOR_NO_CONTENT, COLOR_BLACK);
+        this.registerColorIndex (AbstractSequencerView.COLOR_NO_CONTENT_4, COLOR_BLACK);
         this.registerColorIndex (AbstractSequencerView.COLOR_CONTENT, COLOR_BLUE);
         this.registerColorIndex (AbstractSequencerView.COLOR_CONTENT_CONT, COLOR_BLUE_LO);
 

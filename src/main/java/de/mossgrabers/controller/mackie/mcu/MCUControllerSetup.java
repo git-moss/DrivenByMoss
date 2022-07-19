@@ -227,7 +227,7 @@ public class MCUControllerSetup extends AbstractControllerSetup<MCUControlSurfac
     {
         final ModelSetup ms = new ModelSetup ();
 
-        ms.enableDrumDevice (false);
+        ms.enableMainDrumDevice (false);
         ms.enableDevice (DeviceID.EQ);
         ms.enableDevice (DeviceID.FIRST_INSTRUMENT);
 

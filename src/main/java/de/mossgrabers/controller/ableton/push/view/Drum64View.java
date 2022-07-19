@@ -47,7 +47,7 @@ public class Drum64View extends AbstractDrum64View<PushControlSurface, PushConfi
     {
         if (this.isButtonCombination (ButtonID.BROWSE))
         {
-            final IDrumDevice primary = this.model.getDrumDevice64 ();
+            final IDrumDevice primary = this.model.getDrumDevice (64);
             if (primary.hasDrumPads ())
                 this.model.getBrowser ().replace (primary.getDrumPadBank ().getItem (playedPad));
             return;
@@ -72,7 +72,7 @@ public class Drum64View extends AbstractDrum64View<PushControlSurface, PushConfi
     protected void handleSelectButton (final int playedPad)
     {
         // Do we have drum pads?
-        final IDrumDevice primary = this.model.getDrumDevice64 ();
+        final IDrumDevice primary = this.model.getDrumDevice (64);
         if (!primary.hasDrumPads ())
             return;
         final ICursorDevice cd = this.model.getCursorDevice ();

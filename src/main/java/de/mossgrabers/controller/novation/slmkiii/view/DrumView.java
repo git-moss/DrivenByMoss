@@ -15,6 +15,7 @@ import de.mossgrabers.framework.daw.INoteClip;
 import de.mossgrabers.framework.daw.IStepInfo;
 import de.mossgrabers.framework.daw.data.GridStep;
 import de.mossgrabers.framework.daw.data.IDrumDevice;
+import de.mossgrabers.framework.daw.data.bank.IDrumPadBank;
 import de.mossgrabers.framework.featuregroup.ModeManager;
 import de.mossgrabers.framework.mode.Modes;
 import de.mossgrabers.framework.utils.ButtonEvent;
@@ -113,6 +114,8 @@ public class DrumView extends AbstractDrumView<SLMkIIIControlSurface, SLMkIIICon
     {
         final IPadGrid padGrid = this.surface.getPadGrid ();
         final IDrumDevice primary = this.model.getDrumDevice ();
+        final IDrumPadBank drumPadBank = primary.getDrumPadBank ();
+
         if (this.isPlayMode)
         {
             for (int y = 0; y < 2; y++)
@@ -120,7 +123,7 @@ public class DrumView extends AbstractDrumView<SLMkIIIControlSurface, SLMkIIICon
                 for (int x = 0; x < 8; x++)
                 {
                     final int index = 8 * y + x;
-                    padGrid.lightEx (x, 1 - y, this.getDrumPadColor (index, primary, false));
+                    padGrid.lightEx (x, 1 - y, this.getDrumPadColor (index, drumPadBank, false));
                 }
             }
             return;

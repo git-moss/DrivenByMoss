@@ -1052,7 +1052,7 @@ public abstract class AbstractConfiguration implements Configuration
      */
     protected void activateSelectClipOnLaunchSetting (final ISettingsUI settingsUI)
     {
-        final IEnumSetting selectClipOnLaunchSetting = settingsUI.getEnumSetting ("Select clip/scene on launch", CATEGORY_SESSION, ON_OFF_OPTIONS, ON_OFF_OPTIONS[0]);
+        final IEnumSetting selectClipOnLaunchSetting = settingsUI.getEnumSetting ("Select clip/scene on launch", CATEGORY_SESSION, ON_OFF_OPTIONS, ON_OFF_OPTIONS[1]);
         selectClipOnLaunchSetting.addValueObserver (value -> {
             this.selectClipOnLaunch = "On".equals (value);
             this.notifyObservers (SELECT_CLIP_ON_LAUNCH);

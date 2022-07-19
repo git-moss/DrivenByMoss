@@ -31,7 +31,7 @@ public class PlaySelectCommand extends ViewMultiSelectCommand<FireControlSurface
      */
     public PlaySelectCommand (final IModel model, final FireControlSurface surface)
     {
-        super (model, surface, true, Views.PLAY, Views.PIANO);
+        super (model, surface, true, ButtonEvent.UP, Views.PLAY, Views.PIANO);
     }
 
 
@@ -39,6 +39,9 @@ public class PlaySelectCommand extends ViewMultiSelectCommand<FireControlSurface
     @Override
     public void executeNormal (final ButtonEvent event)
     {
+        if (event != ButtonEvent.UP)
+            return;
+
         if (this.surface.isPressed (ButtonID.ALT))
         {
             this.model.getCursorClip ().quantize (1);
@@ -46,14 +49,25 @@ public class PlaySelectCommand extends ViewMultiSelectCommand<FireControlSurface
             return;
         }
 
+        final ITrack cursorTrack = this.model.getCursorTrack ();
+        final boolean doesExist = cursorTrack.doesExist ();
+        final int position = cursorTrack.getPosition ();
+
+        final ViewManager viewManager = this.surface.getViewManager ();
+        if (viewManager.isActive (Views.SESSION, Views.MIX) && doesExist)
+        {
+            final Views preferredView = viewManager.getPreferredView (position);
+            if (preferredView != null && this.viewIds.contains (preferredView))
+            {
+                viewManager.setActive (preferredView);
+                return;
+            }
+        }
+
         super.executeNormal (event);
 
-        final ITrack cursorTrack = this.model.getCursorTrack ();
-        if (cursorTrack.doesExist ())
-        {
-            final ViewManager viewManager = this.surface.getViewManager ();
-            viewManager.setPreferredView (cursorTrack.getPosition (), viewManager.getActiveID ());
-        }
+        if (doesExist)
+            viewManager.setPreferredView (position, viewManager.getActiveID ());
     }
 
 

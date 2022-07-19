@@ -129,7 +129,7 @@ public interface IClip extends IObserverManagement
     /**
      * Get the length of the loop.
      *
-     * @return The length of the loop
+     * @return The length of the loop in beats (quarters)
      */
     double getLoopLength ();
 
@@ -139,7 +139,7 @@ public interface IClip extends IObserverManagement
      *
      * @param length The length of the loop
      */
-    void setLoopLength (int length);
+    void setLoopLength (double length);
 
 
     /**

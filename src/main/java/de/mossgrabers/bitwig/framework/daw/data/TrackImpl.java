@@ -391,6 +391,14 @@ public class TrackImpl extends ChannelImpl implements ITrack
     }
 
 
+    /** {@inheritDoc} */
+    @Override
+    public void launchLastClipImmediately ()
+    {
+        this.track.launchLastClipWithOptions ("none", "continue_immediately");
+    }
+
+
     /**
      * Add a note observer.
      *

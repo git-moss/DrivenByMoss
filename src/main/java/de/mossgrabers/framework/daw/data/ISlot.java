@@ -85,6 +85,20 @@ public interface ISlot extends IItem
 
 
     /**
+     * Launch the clip immediately without any quantization.
+     */
+    void launchImmediately ();
+
+
+    /**
+     * Check if the slot was launched with immediately option and resets that state.
+     *
+     * @return True if it was launched with immediately option
+     */
+    boolean testAndClearLaunchedImmediately ();
+
+
+    /**
      * Record a clip.
      */
     void startRecording ();

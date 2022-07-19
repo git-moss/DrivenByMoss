@@ -142,6 +142,7 @@ public class APCColorManager extends ColorManager
         this.registerColorIndex (AbstractSequencerView.COLOR_STEP_MUTED_CONT, isMkII ? APC_MKII_COLOR_GREY_LO : APC_COLOR_GREEN);
         this.registerColorIndex (AbstractSequencerView.COLOR_STEP_SELECTED, isMkII ? APC_MKII_COLOR_WHITE : APC_COLOR_GREEN);
         this.registerColorIndex (AbstractSequencerView.COLOR_NO_CONTENT, isMkII ? APC_MKII_COLOR_BLACK : APC_COLOR_BLACK);
+        this.registerColorIndex (AbstractSequencerView.COLOR_NO_CONTENT_4, isMkII ? APC_MKII_COLOR_BLACK : APC_COLOR_BLACK);
         this.registerColorIndex (AbstractSequencerView.COLOR_CONTENT, isMkII ? APC_MKII_COLOR_BLUE_HI : APC_COLOR_RED);
         this.registerColorIndex (AbstractSequencerView.COLOR_CONTENT_CONT, isMkII ? APC_MKII_COLOR_BLUE_LO : APC_COLOR_RED);
         this.registerColorIndex (AbstractSequencerView.COLOR_PAGE, isMkII ? APC_MKII_COLOR_WHITE : APC_COLOR_GREEN);

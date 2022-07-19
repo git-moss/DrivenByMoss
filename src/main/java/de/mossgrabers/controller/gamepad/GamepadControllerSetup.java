@@ -62,7 +62,7 @@ public class GamepadControllerSetup extends AbstractControllerSetup<GamepadContr
     protected void createModel ()
     {
         final ModelSetup ms = new ModelSetup ();
-        ms.enableDrumDevice (false);
+        ms.enableMainDrumDevice (false);
         ms.setNumTracks (1);
         ms.setNumScenes (100);
         ms.setNumSends (0);

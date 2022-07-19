@@ -148,6 +148,13 @@ public class SessionView extends AbstractSessionView<FireControlSurface, FireCon
         if (result)
             return true;
 
+        // Select the clip (without playback)
+        if (this.isButtonCombination (ButtonID.ALT))
+        {
+            slot.select ();
+            return true;
+        }
+
         // Stop clip with normal stop button
         if (this.isButtonCombination (ButtonID.STOP))
         {
@@ -161,6 +168,7 @@ public class SessionView extends AbstractSessionView<FireControlSurface, FireCon
             configuration.toggleDeleteModeActive ();
             return true;
         }
+
         if (this.isButtonCombination (ButtonID.DUPLICATE) && configuration.isDuplicateModeActive () && (!slot.doesExist () || !slot.hasContent ()))
         {
             configuration.toggleDuplicateModeActive ();

@@ -7,9 +7,10 @@ package de.mossgrabers.controller.akai.fire.command.trigger;
 import de.mossgrabers.controller.akai.fire.FireConfiguration;
 import de.mossgrabers.controller.akai.fire.controller.FireControlSurface;
 import de.mossgrabers.controller.akai.fire.view.SessionView;
-import de.mossgrabers.framework.command.trigger.view.ViewMultiSelectCommand;
+import de.mossgrabers.framework.command.core.AbstractTriggerCommand;
 import de.mossgrabers.framework.daw.IModel;
 import de.mossgrabers.framework.featuregroup.IView;
+import de.mossgrabers.framework.featuregroup.ViewManager;
 import de.mossgrabers.framework.utils.ButtonEvent;
 import de.mossgrabers.framework.view.Views;
 
@@ -20,8 +21,11 @@ import de.mossgrabers.framework.view.Views;
  *
  * @author J&uuml;rgen Mo&szlig;graber
  */
-public class SessionSelectCommand extends ViewMultiSelectCommand<FireControlSurface, FireConfiguration>
+public class SessionSelectCommand extends AbstractTriggerCommand<FireControlSurface, FireConfiguration>
 {
+    private Views sessionViewID = Views.SESSION;
+
+
     /**
      * Constructor.
      *
@@ -30,7 +34,26 @@ public class SessionSelectCommand extends ViewMultiSelectCommand<FireControlSurf
      */
     public SessionSelectCommand (final IModel model, final FireControlSurface surface)
     {
-        super (model, surface, true, Views.SESSION, Views.MIX);
+        super (model, surface);
+    }
+
+
+    /** {@inheritDoc}} */
+    @Override
+    public void executeNormal (final ButtonEvent event)
+    {
+        if (event != ButtonEvent.DOWN)
+            return;
+
+        final ViewManager viewManager = this.surface.getViewManager ();
+
+        if (viewManager.isActive (Views.SESSION))
+            this.sessionViewID = Views.MIX;
+        else if (viewManager.isActive (Views.MIX))
+            this.sessionViewID = Views.SESSION;
+
+        viewManager.setActive (this.sessionViewID);
+        this.surface.getDisplay ().notify (viewManager.get (this.sessionViewID).getName ());
     }
 
 

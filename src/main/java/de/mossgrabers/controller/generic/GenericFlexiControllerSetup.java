@@ -179,7 +179,7 @@ public class GenericFlexiControllerSetup extends AbstractControllerSetup<Generic
     protected void createModel ()
     {
         final ModelSetup ms = new ModelSetup ();
-        ms.enableDrumDevice (false);
+        ms.enableMainDrumDevice (false);
         ms.setNumMarkers (8);
         ms.enableDevice (DeviceID.EQ);
         this.model = this.factory.createModel (this.configuration, this.colorManager, this.valueChanger, this.scales, ms);

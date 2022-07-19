@@ -47,6 +47,8 @@ public abstract class AbstractSequencerView<S extends IControlSurface<C>, C exte
     public static final String    COLOR_STEP_SELECTED          = "COLOR_STEP_SELECTED";
     /** The color for a step with no content. */
     public static final String    COLOR_NO_CONTENT             = "COLOR_NO_CONTENT";
+    /** The color for a step with no content (2nd four group). */
+    public static final String    COLOR_NO_CONTENT_4           = "COLOR_NO_CONTENT_4";
     /** The color for a step with content. */
     public static final String    COLOR_CONTENT                = "COLOR_CONTENT";
     /** The color for a step with content which is not the start of the note. */
@@ -209,7 +211,7 @@ public abstract class AbstractSequencerView<S extends IControlSurface<C>, C exte
         this.selectedResolutionIndex = Math.min (Math.max (0, selectedResolutionIndex), 7);
         final Resolution resolution = Resolution.values ()[this.selectedResolutionIndex];
         this.getClip ().setStepLength (resolution.getValue ());
-        this.surface.getDisplay ().notify ("Grid resolution: " + resolution.getName ());
+        this.surface.getDisplay ().notify ("Grid res.: " + resolution.getName ());
     }
 
 

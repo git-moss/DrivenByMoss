@@ -285,7 +285,7 @@ public abstract class AbstractNoteSequencerView<S extends IControlSurface<C>, C 
         if (this.numDisplayRows - this.numSequencerRows <= 0)
             return;
 
-        // CLip Pages on the top
+        // Clip Pages on the top
         final int lengthOfOnePad = this.getLengthOfOnePage (this.numDisplayCols);
         final double loopStart = clip.getLoopStart ();
         final int loopStartPad = (int) Math.ceil (loopStart / lengthOfOnePad);

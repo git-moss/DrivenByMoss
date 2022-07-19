@@ -143,7 +143,7 @@ public abstract class AbstractDrumView<S extends IControlSurface<C>, C extends C
     {
         super.onActivate ();
 
-        this.model.getDrumDevice ().getDrumPadBank ().setIndication (true);
+        this.getDrumDevice ().getDrumPadBank ().setIndication (true);
 
         this.registerButtonMonitors (this.buttonSelect);
         this.registerButtonMonitors (this.buttonSolo);
@@ -159,7 +159,7 @@ public abstract class AbstractDrumView<S extends IControlSurface<C>, C extends C
     {
         super.onDeactivate ();
 
-        this.model.getDrumDevice ().getDrumPadBank ().setIndication (false);
+        this.getDrumDevice ().getDrumPadBank ().setIndication (false);
 
         this.unregisterButtonMonitors (this.buttonSelect);
         this.unregisterButtonMonitors (this.buttonSolo);
@@ -436,17 +436,10 @@ public abstract class AbstractDrumView<S extends IControlSurface<C>, C extends C
             return;
         }
 
+        final IDrumDevice primary = this.getDrumDevice ();
+
         // halfColumns x playLines Drum Pad Grid
-        final IDrumDevice primary = this.model.getDrumDevice ();
-        final boolean isRecording = this.model.hasRecordingState ();
-        for (int y = 0; y < this.playRows; y++)
-        {
-            for (int x = 0; x < this.playColumns; x++)
-            {
-                final int index = this.playColumns * y + x;
-                padGrid.lightEx (x, this.allRows - 1 - y, this.getDrumPadColor (index, primary, isRecording));
-            }
-        }
+        this.drawDrumPads (padGrid, primary.getDrumPadBank ());
 
         if (this.sequencerLines > 0)
         {
@@ -454,6 +447,26 @@ public abstract class AbstractDrumView<S extends IControlSurface<C>, C extends C
             final boolean isActive = this.isActive ();
             this.drawPages (clip, isActive);
             this.drawSequencerSteps (clip, isActive, this.scales.getDrumOffset () + this.selectedPad, this.getPadColor (primary, this.selectedPad));
+        }
+    }
+
+
+    /**
+     * Draw the drum pad block.
+     *
+     * @param padGrid The pad grid
+     * @param drumPadBank The bank with drum pads to draw
+     */
+    protected void drawDrumPads (final IPadGrid padGrid, final IDrumPadBank drumPadBank)
+    {
+        final boolean isRecording = this.model.hasRecordingState ();
+        for (int y = 0; y < this.playRows; y++)
+        {
+            for (int x = 0; x < this.playColumns; x++)
+            {
+                final int index = this.playColumns * y + x;
+                padGrid.lightEx (x, this.allRows - 1 - y, this.getDrumPadColor (index, drumPadBank, isRecording));
+            }
         }
     }
 
@@ -475,7 +488,7 @@ public abstract class AbstractDrumView<S extends IControlSurface<C>, C extends C
     }
 
 
-    protected String getDrumPadColor (final int index, final IDrumDevice primary, final boolean isRecording)
+    protected String getDrumPadColor (final int index, final IDrumPadBank drumPadBank, final boolean isRecording)
     {
         final int offsetY = this.scales.getDrumOffset ();
 
@@ -488,7 +501,6 @@ public abstract class AbstractDrumView<S extends IControlSurface<C>, C extends C
             return AbstractDrumView.COLOR_PAD_SELECTED;
 
         // Exists and active?
-        final IDrumPadBank drumPadBank = primary.getDrumPadBank ();
         final IChannel drumPad = drumPadBank.getItem (index);
         if (!drumPad.doesExist () || !drumPad.isActivated ())
             return this.surface.getConfiguration ().isTurnOffEmptyDrumPads () ? AbstractDrumView.COLOR_PAD_OFF : AbstractDrumView.COLOR_PAD_NO_CONTENT;
@@ -532,7 +544,9 @@ public abstract class AbstractDrumView<S extends IControlSurface<C>, C extends C
 
             // Empty
             default:
-                return hilite ? COLOR_STEP_HILITE_NO_CONTENT : COLOR_NO_CONTENT;
+                if (hilite)
+                    return COLOR_STEP_HILITE_NO_CONTENT;
+                return (step / 4) % 2 == 1 ? COLOR_NO_CONTENT_4 : COLOR_NO_CONTENT;
         }
     }
 
@@ -541,7 +555,18 @@ public abstract class AbstractDrumView<S extends IControlSurface<C>, C extends C
     @Override
     public void updateNoteMapping ()
     {
-        this.delayedUpdateNoteMapping (this.canPadsBeTurnedOn () ? this.scales.getDrumMatrix () : EMPTY_TABLE);
+        this.delayedUpdateNoteMapping (this.canPadsBeTurnedOn () ? this.getDrumMatrix () : EMPTY_TABLE);
+    }
+
+
+    /**
+     * Get the drum matrix to use.
+     *
+     * @return The drum matrix
+     */
+    protected int [] getDrumMatrix ()
+    {
+        return this.scales.getDrumMatrix ();
     }
 
 
@@ -611,7 +636,7 @@ public abstract class AbstractDrumView<S extends IControlSurface<C>, C extends C
         this.updateNoteMapping ();
         if (notify)
             this.surface.getDisplay ().notify (this.scales.getDrumRangeText ());
-        this.model.getDrumDevice ().getDrumPadBank ().scrollTo (this.scales.getDrumOffset (), adjustPage);
+        this.getDrumDevice ().getDrumPadBank ().scrollTo (this.scales.getDrumOffset (), adjustPage);
         this.clearEditNotes ();
     }
 
@@ -624,7 +649,7 @@ public abstract class AbstractDrumView<S extends IControlSurface<C>, C extends C
         this.keyManager.clearPressedKeys ();
         this.scales.resetDrumOctave ();
         this.updateNoteMapping ();
-        this.model.getDrumDevice ().getDrumPadBank ().scrollTo (this.scales.getDrumOffset (), true);
+        this.getDrumDevice ().getDrumPadBank ().scrollTo (this.scales.getDrumOffset (), true);
     }
 
 
@@ -667,7 +692,7 @@ public abstract class AbstractDrumView<S extends IControlSurface<C>, C extends C
         {
             this.surface.setTriggerConsumed (this.buttonBrowse);
 
-            final IDrumDevice primary = this.model.getDrumDevice ();
+            final IDrumDevice primary = this.getDrumDevice ();
             if (!primary.hasDrumPads ())
                 return;
 
@@ -761,7 +786,7 @@ public abstract class AbstractDrumView<S extends IControlSurface<C>, C extends C
     protected void handleMuteButton (final int playedPad)
     {
         this.surface.setTriggerConsumed (this.buttonMute);
-        this.model.getDrumDevice ().getDrumPadBank ().getItem (playedPad).toggleMute ();
+        this.getDrumDevice ().getDrumPadBank ().getItem (playedPad).toggleMute ();
     }
 
 
@@ -773,7 +798,7 @@ public abstract class AbstractDrumView<S extends IControlSurface<C>, C extends C
     protected void handleSoloButton (final int playedPad)
     {
         this.surface.setTriggerConsumed (this.buttonSolo);
-        this.model.getDrumDevice ().getDrumPadBank ().getItem (playedPad).toggleSolo ();
+        this.getDrumDevice ().getDrumPadBank ().getItem (playedPad).toggleSolo ();
     }
 
 
@@ -785,7 +810,7 @@ public abstract class AbstractDrumView<S extends IControlSurface<C>, C extends C
     protected void handleSelectButton (final int playedPad)
     {
         this.surface.setTriggerConsumed (this.buttonSelect);
-        this.model.getDrumDevice ().getDrumPadBank ().getItem (playedPad).select ();
+        this.getDrumDevice ().getDrumPadBank ().getItem (playedPad).select ();
     }
 
 
@@ -819,7 +844,7 @@ public abstract class AbstractDrumView<S extends IControlSurface<C>, C extends C
      * @param isActive Is there an active clip?
      * @param noteRow The note for which to draw the row
      * @param rowColor The color to use the notes of the row
-     * @param yModifier Flips the Y order if true
+     * @param yModifier Option to change the order or row number
      */
     protected void drawSequencerSteps (final INoteClip clip, final boolean isActive, final int noteRow, final Optional<ColorEx> rowColor, final IntUnaryOperator yModifier)
     {
@@ -925,7 +950,7 @@ public abstract class AbstractDrumView<S extends IControlSurface<C>, C extends C
         this.selectedPad = selectedPad;
         this.clearEditNotes ();
         if (velocity > 0)
-            this.model.getDrumDevice ().getDrumPadBank ().getItem (selectedPad).select ();
+            this.getDrumDevice ().getDrumPadBank ().getItem (selectedPad).select ();
     }
 
 
@@ -947,6 +972,17 @@ public abstract class AbstractDrumView<S extends IControlSurface<C>, C extends C
     public void repositionBankPage ()
     {
         if (this.scrollPosition >= 0)
-            this.model.getDrumDevice ().getDrumPadBank ().scrollTo (this.scrollPosition);
+            this.getDrumDevice ().getDrumPadBank ().scrollTo (this.scrollPosition);
+    }
+
+
+    /**
+     * Get the drum device to use.
+     *
+     * @return The drum device
+     */
+    protected IDrumDevice getDrumDevice ()
+    {
+        return this.model.getDrumDevice ();
     }
 }

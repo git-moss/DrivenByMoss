@@ -1398,7 +1398,7 @@ public abstract class AbstractControllerSetup<S extends IControlSurface<C>, C ex
         final ViewManager viewManager = surface.getViewManager ();
 
         // Recall last used view (if we are not in session mode)
-        if (!viewManager.isActive (Views.SESSION))
+        if (!viewManager.isActive (Views.SESSION, Views.MIX))
         {
             final ITrack cursorTrack = this.model.getCursorTrack ();
             if (cursorTrack.doesExist ())

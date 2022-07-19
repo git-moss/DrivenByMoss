@@ -39,7 +39,7 @@ public class Drum64View extends AbstractDrum64View<MaschineJamControlSurface, Ma
     {
         if (this.isButtonCombination (ButtonID.BROWSE))
         {
-            final IDrumDevice primary = this.model.getDrumDevice64 ();
+            final IDrumDevice primary = this.model.getDrumDevice (64);
             if (primary.hasDrumPads ())
                 this.model.getBrowser ().replace (primary.getDrumPadBank ().getItem (playedPad));
             return;
@@ -55,8 +55,7 @@ public class Drum64View extends AbstractDrum64View<MaschineJamControlSurface, Ma
     {
         switch (buttonID)
         {
-            case ARROW_LEFT:
-            case ARROW_RIGHT:
+            case ARROW_LEFT, ARROW_RIGHT:
                 // Not used
                 break;
 
@@ -80,14 +79,13 @@ public class Drum64View extends AbstractDrum64View<MaschineJamControlSurface, Ma
     {
         switch (direction)
         {
-            case LEFT:
-            case RIGHT:
-                return false;
             case UP:
                 return this.isOctaveUpButtonOn ();
             case DOWN:
                 return this.isOctaveDownButtonOn ();
+            case LEFT, RIGHT:
+            default:
+                return false;
         }
-        return false;
     }
 }

@@ -485,7 +485,7 @@ public class Scales
 
 
     /**
-     * Resetss the octave offset for the drum layout.
+     * Resets the octave offset for the drum layout.
      */
     public void resetDrumOctave ()
     {

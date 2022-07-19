@@ -33,6 +33,20 @@ public abstract class AbstractItemBank<T extends IItem> extends AbstractBank<T>
     }
 
 
+    /**
+     * Constructor. The size of the elements to store/cache is identical to the page size. Use for
+     * pre-configured lists.
+     *
+     * @param host The DAW host
+     * @param pageSize The number of elements in a page of the bank
+     * @param items The bank items
+     */
+    protected AbstractItemBank (final IHost host, final int pageSize, final List<T> items)
+    {
+        super (host, pageSize, items);
+    }
+
+
     /** {@inheritDoc} */
     @Override
     public boolean hasExistingItems ()
@@ -50,7 +64,7 @@ public abstract class AbstractItemBank<T extends IItem> extends AbstractBank<T>
     @Override
     public Optional<T> getSelectedItem ()
     {
-        for (int i = 0; i < this.pageSize; i++)
+        for (int i = 0; i < this.getPageSize (); i++)
         {
             final T item = this.getItem (i);
             if (item.isSelected ())
@@ -65,7 +79,7 @@ public abstract class AbstractItemBank<T extends IItem> extends AbstractBank<T>
     public List<T> getSelectedItems ()
     {
         final List<T> selection = new ArrayList<> ();
-        for (int i = 0; i < this.pageSize; i++)
+        for (int i = 0; i < this.getPageSize (); i++)
         {
             final T item = this.getItem (i);
             if (item.isSelected ())
@@ -81,7 +95,7 @@ public abstract class AbstractItemBank<T extends IItem> extends AbstractBank<T>
     {
         if (position < 0 || position >= this.getItemCount ())
             return;
-        final int ps = this.pageSize;
+        final int ps = this.getPageSize ();
         this.scrollTo (position / ps * ps);
         this.host.scheduleTask ( () -> {
 
@@ -104,7 +118,7 @@ public abstract class AbstractItemBank<T extends IItem> extends AbstractBank<T>
     @Override
     public int getPositionOfLastItem ()
     {
-        for (int i = this.pageSize - 1; i >= 0; i--)
+        for (int i = this.getPageSize () - 1; i >= 0; i--)
         {
             final T item = this.getItem (i);
             if (item.doesExist ())
@@ -134,6 +148,6 @@ public abstract class AbstractItemBank<T extends IItem> extends AbstractBank<T>
     {
         final Optional<T> sel = this.getSelectedItem ();
         final int selIndex = sel.isPresent () ? sel.get ().getIndex () : -1;
-        return selIndex >= 0 && selIndex < this.pageSize - 1 && this.getItem (selIndex + 1).doesExist () || this.canScrollPageForwards ();
+        return selIndex >= 0 && selIndex < this.getPageSize () - 1 && this.getItem (selIndex + 1).doesExist () || this.canScrollPageForwards ();
     }
 }

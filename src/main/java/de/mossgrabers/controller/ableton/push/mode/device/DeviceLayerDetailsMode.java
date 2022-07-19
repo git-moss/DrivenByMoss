@@ -56,7 +56,7 @@ public class DeviceLayerDetailsMode extends BaseMode<ILayer>
                     bank = cursorDevice.getDrumPadBank ();
                     break;
                 case DRUM64:
-                    bank = this.model.getDrumDevice64 ().getDrumPadBank ();
+                    bank = this.model.getDrumDevice (64).getDrumPadBank ();
                     break;
                 case COLOR:
                     // Do not switch banks if view is left for color selection

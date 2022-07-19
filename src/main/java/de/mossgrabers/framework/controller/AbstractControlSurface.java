@@ -834,7 +834,7 @@ public abstract class AbstractControlSurface<C extends Configuration> implements
      */
     protected void handlePitchbend (final int data1, final int data2)
     {
-        this.host.error ("Pitchbend should be handled in framework...");
+        this.host.error ("Pitchbend" + SHOULD_BE_HANDLED_IN_FRAMEWORK);
     }
 
 
@@ -846,8 +846,9 @@ public abstract class AbstractControlSurface<C extends Configuration> implements
      */
     protected void handleNoteOff (final int data1, final int data2)
     {
-        // Handled by bind framework
-        this.host.error ("Midi Note off " + data1 + SHOULD_BE_HANDLED_IN_FRAMEWORK);
+        // Handled by bind framework.
+        // Since Bitwig 4.1 notes are also sent to this method no matter if bound or not, therefore
+        // do not show the warning message any more...
     }
 
 

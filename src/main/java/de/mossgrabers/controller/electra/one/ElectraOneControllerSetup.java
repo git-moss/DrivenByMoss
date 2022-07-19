@@ -88,7 +88,7 @@ public class ElectraOneControllerSetup extends AbstractControllerSetup<ElectraOn
     {
         final ModelSetup ms = new ModelSetup ();
 
-        ms.enableDrumDevice (false);
+        ms.enableMainDrumDevice (false);
         // TODO ms.enableDevice (DeviceID.EQ);
 
         ms.setNumTracks (5);

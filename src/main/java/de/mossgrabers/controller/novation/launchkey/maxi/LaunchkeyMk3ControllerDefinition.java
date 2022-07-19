@@ -60,9 +60,9 @@ public class LaunchkeyMk3ControllerDefinition extends DefaultControllerDefinitio
                 break;
 
             case MAC:
-                for (int i = 0; i < KEY_SIZES.length; i++)
+                for (final int element: KEY_SIZES)
                 {
-                    final String deviceName = "Launchkey MK3 " + KEY_SIZES[i];
+                    final String deviceName = "Launchkey MK3 " + element;
                     midiDiscoveryPairs.add (this.addDeviceDiscoveryPair (new String []
                     {
                         deviceName + " LKMK3 DAW Out",
@@ -75,9 +75,9 @@ public class LaunchkeyMk3ControllerDefinition extends DefaultControllerDefinitio
                 break;
 
             case LINUX:
-                for (int i = 0; i < KEY_SIZES.length; i++)
+                for (final int element: KEY_SIZES)
                 {
-                    final String deviceName = "Launchkey MK3 " + KEY_SIZES[i];
+                    final String deviceName = "Launchkey MK3 " + element;
 
                     // Kernel 5.13+
                     midiDiscoveryPairs.add (this.addDeviceDiscoveryPair (new String []
@@ -100,7 +100,7 @@ public class LaunchkeyMk3ControllerDefinition extends DefaultControllerDefinitio
                     }));
 
                     // Reaper specific
-                    final String deviceID = "L" + KEY_SIZES[i];
+                    final String deviceID = "L" + element;
                     midiDiscoveryPairs.add (this.addDeviceDiscoveryPair (new String []
                     {
                         deviceID + " [hw:1,0,1]",

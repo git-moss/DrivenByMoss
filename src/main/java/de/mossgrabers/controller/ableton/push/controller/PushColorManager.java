@@ -499,6 +499,7 @@ public class PushColorManager extends ColorManager
         this.registerColorIndex (AbstractSequencerView.COLOR_STEP_SELECTED, isPush2 ? PUSH2_COLOR2_YELLOW_HI : PUSH1_COLOR2_YELLOW_HI);
 
         this.registerColorIndex (AbstractSequencerView.COLOR_NO_CONTENT, isPush2 ? PUSH2_COLOR2_BLACK : PUSH1_COLOR2_BLACK);
+        this.registerColorIndex (AbstractSequencerView.COLOR_NO_CONTENT_4, isPush2 ? PUSH2_COLOR2_BLACK : PUSH1_COLOR2_BLACK);
         this.registerColorIndex (AbstractSequencerView.COLOR_CONTENT, isPush2 ? PUSH2_COLOR2_BLUE_HI : PUSH1_COLOR2_BLUE_HI);
         this.registerColorIndex (AbstractSequencerView.COLOR_CONTENT_CONT, isPush2 ? PUSH2_COLOR2_BLUE_LO : PUSH1_COLOR2_BLUE_LO);
         this.registerColorIndex (AbstractSequencerView.COLOR_PAGE, isPush2 ? PUSH2_COLOR2_WHITE : PUSH1_COLOR2_WHITE);

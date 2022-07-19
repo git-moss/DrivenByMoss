@@ -7,10 +7,15 @@ package de.mossgrabers.controller.akai.fire.controller;
 import de.mossgrabers.controller.akai.fire.FireConfiguration;
 import de.mossgrabers.framework.controller.AbstractControlSurface;
 import de.mossgrabers.framework.controller.ButtonID;
+import de.mossgrabers.framework.controller.OutputID;
+import de.mossgrabers.framework.controller.color.ColorEx;
 import de.mossgrabers.framework.controller.color.ColorManager;
+import de.mossgrabers.framework.controller.display.IGraphicDisplay;
 import de.mossgrabers.framework.daw.IHost;
 import de.mossgrabers.framework.daw.midi.IMidiInput;
 import de.mossgrabers.framework.daw.midi.IMidiOutput;
+import de.mossgrabers.framework.graphics.canvas.component.LabelComponent;
+import de.mossgrabers.framework.graphics.canvas.component.LabelComponent.LabelLayout;
 
 
 /**
@@ -119,6 +124,24 @@ public class FireControlSurface extends AbstractControlSurface<FireConfiguration
 
     /** {@inheritDoc} */
     @Override
+    protected void internalShutdown ()
+    {
+        final IGraphicDisplay display = this.getGraphicsDisplay ();
+        display.addElement (new LabelComponent ("Goodbye", null, ColorEx.BLACK, false, false, LabelLayout.PLAIN));
+        display.send ();
+
+        for (int i = 4; i < 8; i++)
+            this.getLight (OutputID.get (OutputID.LED1, i)).turnOff ();
+
+        // Switch off knob mode LEDs
+        this.setTrigger (0, 0x1B, 16);
+
+        super.internalShutdown ();
+    }
+
+
+    /** {@inheritDoc} */
+    @Override
     public FirePadGrid getPadGrid ()
     {
         return (FirePadGrid) this.padGrid;
@@ -138,5 +161,17 @@ public class FireControlSurface extends AbstractControlSurface<FireConfiguration
 
         for (int i = 0; i < this.padGrid.getRows () * this.padGrid.getCols (); i++)
             this.getButton (ButtonID.get (ButtonID.PAD1, i)).getLight ().forceFlush ();
+    }
+
+
+    /** {@inheritDoc} */
+    @Override
+    public boolean isDeletePressed ()
+    {
+        // Use mode button as delete button for resetting knobs
+        final boolean pressed = this.isPressed (ButtonID.BANK_RIGHT);
+        if (pressed)
+            this.setTriggerConsumed (ButtonID.BANK_RIGHT);
+        return pressed;
     }
 }

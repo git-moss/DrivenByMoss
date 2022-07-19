@@ -17,6 +17,7 @@ import de.mossgrabers.framework.daw.data.ITrack;
 import de.mossgrabers.framework.daw.data.bank.IMarkerBank;
 import de.mossgrabers.framework.daw.data.bank.IParameterBank;
 import de.mossgrabers.framework.daw.data.bank.ISceneBank;
+import de.mossgrabers.framework.daw.data.bank.ISlotBank;
 import de.mossgrabers.framework.daw.data.bank.ITrackBank;
 import de.mossgrabers.framework.observer.IValueObserver;
 import de.mossgrabers.framework.scale.Scales;
@@ -161,11 +162,12 @@ public interface IModel
 
 
     /**
-     * Get the first drum device of the track and monitors 64 layers.
+     * Get the first drum device of the track which monitors the given number of drum pads.
      *
+     * @param pageSize The size of the drum pad page
      * @return The device
      */
-    IDrumDevice getDrumDevice64 ();
+    IDrumDevice getDrumDevice (int pageSize);
 
 
     /**
@@ -285,6 +287,15 @@ public interface IModel
      * @return The scene bank
      */
     ISceneBank createSceneBank (final int numScenes);
+
+
+    /**
+     * Creates a new bank for monitoring slots on the cursor track.
+     *
+     * @param numSlots The number of slots in a bank page
+     * @return The slot bank
+     */
+    ISlotBank createSlotBank (int numSlots);
 
 
     /**

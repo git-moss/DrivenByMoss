@@ -201,4 +201,12 @@ public interface IStepInfo
      * @return The repeat velocity end
      */
     double getRepeatVelocityEnd ();
+
+
+    /**
+     * Creates a copy of this object.
+     *
+     * @return The cloned object
+     */
+    IStepInfo createCopy ();
 }

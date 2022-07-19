@@ -80,6 +80,7 @@ import de.mossgrabers.framework.daw.data.bank.ITrackBank;
 import de.mossgrabers.framework.daw.midi.IMidiAccess;
 import de.mossgrabers.framework.daw.midi.IMidiInput;
 import de.mossgrabers.framework.daw.midi.IMidiOutput;
+import de.mossgrabers.framework.featuregroup.IMode;
 import de.mossgrabers.framework.featuregroup.IView;
 import de.mossgrabers.framework.featuregroup.ModeManager;
 import de.mossgrabers.framework.featuregroup.ViewManager;
@@ -178,7 +179,7 @@ public class LaunchpadControllerSetup extends AbstractControllerSetup<LaunchpadC
     protected void createModel ()
     {
         final ModelSetup ms = new ModelSetup ();
-        ms.enableDrum64Device (true);
+        ms.enableDrum64Device ();
         ms.setHasFullFlatTrackList (this.configuration.areMasterTracksIncluded ());
         this.model = this.factory.createModel (this.configuration, this.colorManager, this.valueChanger, this.scales, ms);
     }
@@ -868,6 +869,8 @@ public class LaunchpadControllerSetup extends AbstractControllerSetup<LaunchpadC
 
     private void handleTrackSelection (final ButtonEvent event, final int index)
     {
-        this.getSurface ().getModeManager ().getActive ().onButton (0, index, event);
+        final IMode active = this.getSurface ().getModeManager ().getActive ();
+        if (active != null)
+            active.onButton (0, index, event);
     }
 }

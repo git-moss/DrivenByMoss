@@ -35,7 +35,7 @@ public class DrumSequencerSelectCommand extends ViewMultiSelectCommand<FireContr
      */
     public DrumSequencerSelectCommand (final IModel model, final FireControlSurface surface)
     {
-        super (model, surface, true, Views.DRUM4, Views.DRUM64);
+        super (model, surface, true, ButtonEvent.UP, Views.DRUM, Views.DRUM4, Views.DRUM64);
     }
 
 
@@ -43,37 +43,45 @@ public class DrumSequencerSelectCommand extends ViewMultiSelectCommand<FireContr
     @Override
     public void executeNormal (final ButtonEvent event)
     {
+        if (event != ButtonEvent.UP)
+            return;
+
         final ModeManager modeManager = this.surface.getModeManager ();
 
         // Toggle note mode
         if (this.surface.isPressed (ButtonID.ALT))
         {
-            if (event == ButtonEvent.DOWN)
-            {
-                this.surface.setTriggerConsumed (ButtonID.ALT);
-                if (modeManager.isActive (Modes.NOTE))
-                    modeManager.restore ();
-                else
-                    modeManager.setActive (Modes.NOTE);
-                this.surface.getDisplay ().notify ("Edit Notes: " + (modeManager.isActive (Modes.NOTE) ? "On" : "Off"));
-                ((INoteMode) modeManager.get (Modes.NOTE)).clearNotes ();
-            }
+            this.surface.setTriggerConsumed (ButtonID.ALT);
+            if (modeManager.isActive (Modes.NOTE))
+                modeManager.restore ();
+            else
+                modeManager.setActive (Modes.NOTE);
+            this.surface.getDisplay ().notify ("Edit Notes: " + (modeManager.isActive (Modes.NOTE) ? "On" : "Off"));
+            ((INoteMode) modeManager.get (Modes.NOTE)).clearNotes ();
             return;
+        }
+
+        ((INoteMode) modeManager.get (Modes.NOTE)).clearNotes ();
+
+        final ITrack cursorTrack = this.model.getCursorTrack ();
+        final boolean doesExist = cursorTrack.doesExist ();
+        final int position = cursorTrack.getPosition ();
+
+        final ViewManager viewManager = this.surface.getViewManager ();
+        if (viewManager.isActive (Views.SESSION, Views.MIX) && doesExist)
+        {
+            final Views preferredView = viewManager.getPreferredView (position);
+            if (preferredView != null && this.viewIds.contains (preferredView))
+            {
+                viewManager.setActive (preferredView);
+                return;
+            }
         }
 
         super.executeNormal (event);
 
-        if (event == ButtonEvent.UP)
-        {
-            ((INoteMode) modeManager.get (Modes.NOTE)).clearNotes ();
-
-            final ITrack cursorTrack = this.model.getCursorTrack ();
-            if (cursorTrack.doesExist ())
-            {
-                final ViewManager viewManager = this.surface.getViewManager ();
-                viewManager.setPreferredView (cursorTrack.getPosition (), viewManager.getActiveID ());
-            }
-        }
+        if (doesExist)
+            viewManager.setPreferredView (position, viewManager.getActiveID ());
     }
 
 

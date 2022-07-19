@@ -172,7 +172,7 @@ public class KontrolProtocolControllerSetup extends AbstractControllerSetup<Kont
     protected void createModel ()
     {
         final ModelSetup ms = new ModelSetup ();
-        ms.enableDrumDevice (false);
+        ms.enableMainDrumDevice (false);
         ms.enableDevice (DeviceID.NI_KOMPLETE);
         ms.setHasFullFlatTrackList (true);
         ms.setNumFilterColumnEntries (0);

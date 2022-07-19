@@ -57,6 +57,7 @@ public class APCminiColorManager extends ColorManager
         this.registerColorIndex (AbstractSequencerView.COLOR_STEP_MUTED_CONT, APC_COLOR_GREEN);
         this.registerColorIndex (AbstractSequencerView.COLOR_STEP_SELECTED, APC_COLOR_GREEN);
         this.registerColorIndex (AbstractSequencerView.COLOR_NO_CONTENT, APC_COLOR_BLACK);
+        this.registerColorIndex (AbstractSequencerView.COLOR_NO_CONTENT_4, APC_COLOR_BLACK);
         this.registerColorIndex (AbstractSequencerView.COLOR_CONTENT, APC_COLOR_RED);
         this.registerColorIndex (AbstractSequencerView.COLOR_CONTENT_CONT, APC_COLOR_RED);
         this.registerColorIndex (AbstractSequencerView.COLOR_PAGE, APC_COLOR_YELLOW);

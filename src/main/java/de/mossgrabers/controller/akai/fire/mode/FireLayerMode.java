@@ -12,9 +12,9 @@ import de.mossgrabers.framework.controller.ContinuousID;
 import de.mossgrabers.framework.controller.display.IGraphicDisplay;
 import de.mossgrabers.framework.daw.IModel;
 import de.mossgrabers.framework.daw.data.IChannel;
+import de.mossgrabers.framework.daw.data.IDrumDevice;
 import de.mossgrabers.framework.daw.data.ILayer;
 import de.mossgrabers.framework.daw.data.ISend;
-import de.mossgrabers.framework.daw.data.ISpecificDevice;
 import de.mossgrabers.framework.daw.data.bank.ISendBank;
 import de.mossgrabers.framework.featuregroup.AbstractMode;
 import de.mossgrabers.framework.mode.Modes;
@@ -73,7 +73,7 @@ public class FireLayerMode extends AbstractMode<FireControlSurface, FireConfigur
         super (name, surface, model);
 
         this.setControls (ContinuousID.createSequentialList (ContinuousID.KNOB1, 4));
-        this.setParameterProvider (new Fire4KnobProvider (surface, new SelectedLayerOrDrumPadParameterProvider (this.model.getDrumDevice ())));
+        this.setParameterProvider (new Fire4KnobProvider (surface, new SelectedLayerOrDrumPadParameterProvider (this.getDrumDevice ())));
     }
 
 
@@ -92,8 +92,7 @@ public class FireLayerMode extends AbstractMode<FireControlSurface, FireConfigur
         int vuRight = -1;
         boolean isPan = false;
 
-        final ISpecificDevice cd = this.model.getDrumDevice ();
-        final Optional<ILayer> channelOptional = cd.getLayerBank ().getSelectedItem ();
+        final Optional<ILayer> channelOptional = this.getDrumDevice ().getLayerBank ().getSelectedItem ();
         if (channelOptional.isPresent ())
         {
             final IChannel channel = channelOptional.get ();
@@ -167,8 +166,7 @@ public class FireLayerMode extends AbstractMode<FireControlSurface, FireConfigur
 
         this.setTouchedKnob (index, isTouched);
 
-        final ISpecificDevice cd = this.model.getDrumDevice ();
-        final Optional<ILayer> channelOptional = cd.getLayerBank ().getSelectedItem ();
+        final Optional<ILayer> channelOptional = this.getDrumDevice ().getLayerBank ().getSelectedItem ();
         if (!channelOptional.isPresent ())
             return;
 
@@ -224,5 +222,11 @@ public class FireLayerMode extends AbstractMode<FireControlSurface, FireConfigur
             return 0;
         final ISend send = sendBank.getItem (index);
         return send.doesExist () ? send.getValue () : 0;
+    }
+
+
+    private IDrumDevice getDrumDevice ()
+    {
+        return this.model.getDrumDevice (16);
     }
 }

@@ -5,6 +5,7 @@
 package de.mossgrabers.bitwig.framework.daw;
 
 import de.mossgrabers.framework.daw.DefaultStepInfo;
+import de.mossgrabers.framework.daw.IStepInfo;
 import de.mossgrabers.framework.daw.NoteOccurrenceType;
 import de.mossgrabers.framework.daw.StepState;
 
@@ -25,6 +26,17 @@ public class StepInfoImpl extends DefaultStepInfo
     public StepInfoImpl ()
     {
         // Intentionally empty
+    }
+
+
+    /**
+     * Copy constructor.
+     *
+     * @param sourceInfo The source step info
+     */
+    protected StepInfoImpl (final StepInfoImpl sourceInfo)
+    {
+        super (sourceInfo);
     }
 
 
@@ -74,5 +86,13 @@ public class StepInfoImpl extends DefaultStepInfo
         this.repeatCurve = stepInfo.repeatCurve ();
         this.repeatVelocityCurve = stepInfo.repeatVelocityCurve ();
         this.repeatVelocityEnd = stepInfo.repeatVelocityEnd ();
+    }
+
+
+    /** {@inheritDoc} */
+    @Override
+    public IStepInfo createCopy ()
+    {
+        return new StepInfoImpl (this);
     }
 }

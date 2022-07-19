@@ -26,7 +26,7 @@ public class ModelSetup
     private int                  numSends               = 8;
 
     private boolean              wantsDrumDevice        = true;
-    private boolean              wantsDrum64Device      = false;
+    private int []               additionalDrumDevices  = {};
 
     private int                  numDevicesInBank       = 8;
     private int                  numDeviceLayers        = 8;
@@ -59,20 +59,33 @@ public class ModelSetup
      *
      * @param wantsDrumDevice True to enable
      */
-    public void enableDrumDevice (final boolean wantsDrumDevice)
+    public void enableMainDrumDevice (final boolean wantsDrumDevice)
     {
         this.wantsDrumDevice = wantsDrumDevice;
     }
 
 
     /**
+     * Enables the drum 64 device (disabled by default).
+     */
+    public void enableDrum64Device ()
+    {
+        this.setAdditionalDrumDevices (new int []
+        {
+            64
+        });
+    }
+
+
+    /**
      * Dis-/enable the drum 64 device (disabled by default).
      *
-     * @param wantsDrum64Device True to enable, requires drum device to be enabled as well
+     * @param additionalDrumDevices Add additional drum pad bank sizes which are different from the
+     *            main one
      */
-    public void enableDrum64Device (final boolean wantsDrum64Device)
+    public void setAdditionalDrumDevices (final int [] additionalDrumDevices)
     {
-        this.wantsDrum64Device = wantsDrum64Device;
+        this.additionalDrumDevices = additionalDrumDevices;
     }
 
 
@@ -446,7 +459,7 @@ public class ModelSetup
      *
      * @return True if a drum device should be created
      */
-    public boolean wantsDrumDevice ()
+    public boolean wantsMainDrumDevice ()
     {
         return this.wantsDrumDevice;
     }
@@ -457,9 +470,9 @@ public class ModelSetup
      *
      * @return True if a drum 64 device should be created
      */
-    public boolean wantsDrum64Device ()
+    public int [] wantsAdditionalDrumDevices ()
     {
-        return this.wantsDrum64Device;
+        return this.additionalDrumDevices;
     }
 
 

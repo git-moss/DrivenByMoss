@@ -269,7 +269,7 @@ public class CursorClipImpl implements INoteClip
 
     /** {@inheritDoc} */
     @Override
-    public void setLoopLength (final int length)
+    public void setLoopLength (final double length)
     {
         this.getClip ().getLoopLength ().set (length);
     }
@@ -431,17 +431,19 @@ public class CursorClipImpl implements INoteClip
     @Override
     public void setStep (final int channel, final int step, final int row, final IStepInfo noteStep)
     {
-        this.setStep (channel, step, row, (int) (noteStep.getVelocity () * 127), 0.25);
+        final IStepInfo noteStepCopy = noteStep.createCopy ();
+
+        this.setStep (channel, step, row, (int) (noteStepCopy.getVelocity () * 127), 0.25);
         this.host.scheduleTask ( () -> {
 
-            this.updateStepVelocity (channel, step, row, noteStep.getVelocity ());
-            this.updateStepDuration (channel, step, row, noteStep.getDuration ());
-            this.updateStepGain (channel, step, row, noteStep.getGain ());
-            this.updateStepPan (channel, step, row, noteStep.getPan ());
-            this.updateStepPressure (channel, step, row, noteStep.getPressure ());
-            this.updateStepReleaseVelocity (channel, step, row, noteStep.getReleaseVelocity ());
-            this.updateStepTimbre (channel, step, row, noteStep.getTimbre ());
-            this.updateStepTranspose (channel, step, row, noteStep.getTranspose ());
+            this.updateStepVelocity (channel, step, row, noteStepCopy.getVelocity ());
+            this.updateStepDuration (channel, step, row, noteStepCopy.getDuration ());
+            this.updateStepGain (channel, step, row, noteStepCopy.getGain ());
+            this.updateStepPan (channel, step, row, noteStepCopy.getPan ());
+            this.updateStepPressure (channel, step, row, noteStepCopy.getPressure ());
+            this.updateStepReleaseVelocity (channel, step, row, noteStepCopy.getReleaseVelocity ());
+            this.updateStepTimbre (channel, step, row, noteStepCopy.getTimbre ());
+            this.updateStepTranspose (channel, step, row, noteStepCopy.getTranspose ());
 
         }, 100);
     }

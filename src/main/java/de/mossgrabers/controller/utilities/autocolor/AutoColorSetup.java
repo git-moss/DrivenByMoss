@@ -72,7 +72,7 @@ public class AutoColorSetup extends AbstractControllerSetup<IControlSurface<Auto
     {
         final ModelSetup ms = new ModelSetup ();
 
-        ms.enableDrumDevice (false);
+        ms.enableMainDrumDevice (false);
 
         ms.setNumDeviceLayers (0);
         ms.setNumDevicesInBank (0);

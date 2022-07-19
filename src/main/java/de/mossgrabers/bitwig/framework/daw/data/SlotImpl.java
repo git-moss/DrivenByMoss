@@ -23,6 +23,7 @@ public class SlotImpl extends AbstractItemImpl implements ISlot
 {
     private final ITrack           track;
     private final ClipLauncherSlot slot;
+    private boolean                isLaunchedImmediately = false;
 
 
     /**
@@ -203,7 +204,27 @@ public class SlotImpl extends AbstractItemImpl implements ISlot
     @Override
     public void launch ()
     {
+        this.isLaunchedImmediately = false;
         this.slot.launch ();
+    }
+
+
+    /** {@inheritDoc} */
+    @Override
+    public void launchImmediately ()
+    {
+        this.isLaunchedImmediately = true;
+        this.slot.launchWithOptions ("none", "continue_immediately");
+    }
+
+
+    /** {@inheritDoc} */
+    @Override
+    public boolean testAndClearLaunchedImmediately ()
+    {
+        final boolean isImmediately = this.isLaunchedImmediately;
+        this.isLaunchedImmediately = false;
+        return isImmediately;
     }
 
 

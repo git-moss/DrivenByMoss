@@ -219,4 +219,12 @@ public class EmptyStepInfo implements IStepInfo
     {
         return 0;
     }
+
+
+    /** {@inheritDoc} */
+    @Override
+    public IStepInfo createCopy ()
+    {
+        return INSTANCE;
+    }
 }

@@ -48,6 +48,39 @@ public class DefaultStepInfo implements IStepInfo
     }
 
 
+    /**
+     * Copy constructor.
+     *
+     * @param sourceInfo The source step info
+     */
+    protected DefaultStepInfo (final DefaultStepInfo sourceInfo)
+    {
+        this.state = sourceInfo.state;
+        this.duration = sourceInfo.duration;
+        this.velocity = sourceInfo.velocity;
+        this.velocitySpread = sourceInfo.velocitySpread;
+        this.releaseVelocity = sourceInfo.releaseVelocity;
+        this.pressure = sourceInfo.pressure;
+        this.timbre = sourceInfo.timbre;
+        this.pan = sourceInfo.pan;
+        this.transpose = sourceInfo.transpose;
+        this.gain = sourceInfo.gain;
+        this.isChanceEnabled = sourceInfo.isChanceEnabled;
+        this.chance = sourceInfo.chance;
+        this.isOccurrenceEnabled = sourceInfo.isOccurrenceEnabled;
+        this.occurrence = sourceInfo.occurrence;
+        this.isRecurrenceEnabled = sourceInfo.isRecurrenceEnabled;
+        this.recurrenceLength = sourceInfo.recurrenceLength;
+        this.recurrenceMask = sourceInfo.recurrenceMask;
+        this.isRepeatEnabled = sourceInfo.isRepeatEnabled;
+        this.repeatCount = sourceInfo.repeatCount;
+        this.repeatCurve = sourceInfo.repeatCurve;
+        this.repeatVelocityCurve = sourceInfo.repeatVelocityCurve;
+        this.repeatVelocityEnd = sourceInfo.repeatVelocityEnd;
+        this.isMuted = sourceInfo.isMuted;
+    }
+
+
     /** {@inheritDoc} */
     @Override
     public StepState getState ()
@@ -242,6 +275,14 @@ public class DefaultStepInfo implements IStepInfo
     public double getRepeatVelocityEnd ()
     {
         return this.repeatVelocityEnd;
+    }
+
+
+    /** {@inheritDoc} */
+    @Override
+    public IStepInfo createCopy ()
+    {
+        return new DefaultStepInfo (this);
     }
 
 

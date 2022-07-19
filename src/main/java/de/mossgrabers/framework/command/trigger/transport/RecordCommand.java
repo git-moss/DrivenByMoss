@@ -8,7 +8,12 @@ import de.mossgrabers.framework.command.core.AbstractTriggerCommand;
 import de.mossgrabers.framework.configuration.Configuration;
 import de.mossgrabers.framework.controller.IControlSurface;
 import de.mossgrabers.framework.daw.IModel;
+import de.mossgrabers.framework.daw.ITransport;
+import de.mossgrabers.framework.daw.data.ISlot;
+import de.mossgrabers.framework.daw.data.ITrack;
 import de.mossgrabers.framework.utils.ButtonEvent;
+
+import java.util.Optional;
 
 
 /**
@@ -54,9 +59,29 @@ public class RecordCommand<S extends IControlSurface<C>, C extends Configuration
     protected void handleExecute (final boolean isShiftPressed)
     {
         final boolean flipRecord = this.surface.getConfiguration ().isFlipRecord ();
+        final ITransport transport = this.model.getTransport ();
         if (isShiftPressed && !flipRecord || !isShiftPressed && flipRecord)
-            this.model.getTransport ().toggleLauncherOverdub ();
+        {
+            // If the selected clip is recording, stop the recording instead of toggling the
+            // launcher overdub
+            final Optional<ITrack> selectedTrack = this.model.getCurrentTrackBank ().getSelectedItem ();
+            if (selectedTrack.isPresent ())
+            {
+                final Optional<ISlot> selectedSlot = selectedTrack.get ().getSlotBank ().getSelectedItem ();
+                if (selectedSlot.isPresent ())
+                {
+                    final ISlot slot = selectedSlot.get ();
+                    if (slot.isRecording ())
+                    {
+                        slot.launch ();
+                        return;
+                    }
+                }
+            }
+
+            transport.toggleLauncherOverdub ();
+        }
         else
-            this.model.getTransport ().startRecording ();
+            transport.startRecording ();
     }
 }

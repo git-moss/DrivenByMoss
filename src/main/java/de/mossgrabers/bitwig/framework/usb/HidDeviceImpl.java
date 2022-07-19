@@ -28,6 +28,7 @@ public class HidDeviceImpl implements IHidDevice
     private HidDevice hidDevice;
     private boolean   isOpen;
 
+
     /**
      * Constructor.
      *

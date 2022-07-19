@@ -244,4 +244,12 @@ public class EmptyTrack extends EmptyChannel implements ITrack
     {
         return false;
     }
+
+
+    /** {@inheritDoc} */
+    @Override
+    public void launchLastClipImmediately ()
+    {
+        // Intentionally empty
+    }
 }

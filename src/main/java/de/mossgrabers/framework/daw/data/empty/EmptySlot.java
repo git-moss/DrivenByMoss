@@ -102,6 +102,23 @@ public class EmptySlot extends EmptyItem implements ISlot
 
     /** {@inheritDoc} */
     @Override
+    public void launchImmediately ()
+    {
+        // Intentionally empty
+    }
+
+
+    /** {@inheritDoc} */
+    @Override
+    public boolean testAndClearLaunchedImmediately ()
+    {
+        // Intentionally empty
+        return false;
+    }
+
+
+    /** {@inheritDoc} */
+    @Override
     public void startRecording ()
     {
         // Intentionally empty

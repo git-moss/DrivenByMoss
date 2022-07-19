@@ -13,6 +13,7 @@ import de.mossgrabers.bitwig.framework.daw.data.MasterTrackImpl;
 import de.mossgrabers.bitwig.framework.daw.data.SpecificDeviceImpl;
 import de.mossgrabers.bitwig.framework.daw.data.bank.EffectTrackBankImpl;
 import de.mossgrabers.bitwig.framework.daw.data.bank.MarkerBankImpl;
+import de.mossgrabers.bitwig.framework.daw.data.bank.SlotBankImpl;
 import de.mossgrabers.bitwig.framework.daw.data.bank.TrackBankImpl;
 import de.mossgrabers.bitwig.framework.daw.data.bank.UserParameterBankImpl;
 import de.mossgrabers.framework.daw.AbstractModel;
@@ -20,10 +21,12 @@ import de.mossgrabers.framework.daw.DataSetup;
 import de.mossgrabers.framework.daw.INoteClip;
 import de.mossgrabers.framework.daw.ModelSetup;
 import de.mossgrabers.framework.daw.constants.DeviceID;
+import de.mossgrabers.framework.daw.data.ICursorTrack;
 import de.mossgrabers.framework.daw.data.ISlot;
 import de.mossgrabers.framework.daw.data.ISpecificDevice;
 import de.mossgrabers.framework.daw.data.ITrack;
 import de.mossgrabers.framework.daw.data.bank.ISceneBank;
+import de.mossgrabers.framework.daw.data.bank.ISlotBank;
 import de.mossgrabers.framework.scale.Scales;
 import de.mossgrabers.framework.utils.FrameworkException;
 
@@ -63,6 +66,7 @@ public class ModelImpl extends AbstractModel
     private final Track                    rootTrackGroup;
     private final BooleanValue             masterTrackEqualsValue;
     private final Map<Integer, ISceneBank> sceneBanks              = new HashMap<> (1);
+    private final Map<Integer, ISlotBank>  slotBanks               = new HashMap<> (1);
 
 
     /**
@@ -141,7 +145,7 @@ public class ModelImpl extends AbstractModel
         this.cursorDevice = new CursorDeviceImpl (this.host, this.valueChanger, mainCursorDevice, numSends, numParamPages, numParams, numDevicesInBank, numDeviceLayers, numDrumPadLayers);
 
         // Drum Machine
-        if (modelSetup.wantsDrumDevice ())
+        if (modelSetup.wantsMainDrumDevice ())
         {
             final DeviceMatcher drumMachineDeviceMatcher = controllerHost.createBitwigDeviceMatcher (INSTRUMENT_DRUM_MACHINE);
             final DeviceBank drumDeviceBank = this.bwCursorTrack.createDeviceBank (1);
@@ -149,48 +153,38 @@ public class ModelImpl extends AbstractModel
             final Device drumMachineDevice = drumDeviceBank.getItemAt (0);
             this.drumDevice = new DrumDeviceImpl (this.host, this.valueChanger, drumMachineDevice, numSends, numParamPages, numParams, numDevicesInBank, numDeviceLayers, numDrumPadLayers);
 
-            // Drum Machine 64 pads
-            if (modelSetup.wantsDrum64Device ())
-                this.drumDevice64 = new DrumDeviceImpl (this.host, this.valueChanger, drumMachineDevice, 0, 0, 0, -1, 64, 64);
+            // Additional drum machines with different drum pad page sizes
+            final int [] additionalDrumDevicePageSizes = modelSetup.wantsAdditionalDrumDevices ();
+            for (final int pageSize: additionalDrumDevicePageSizes)
+            {
+                final DrumDeviceImpl addDrumDevice = new DrumDeviceImpl (this.host, this.valueChanger, drumMachineDevice, numSends, 0, 0, -1, pageSize, pageSize);
+                this.additionalDrumDevices.put (Integer.valueOf (pageSize), addDrumDevice);
+            }
         }
 
         for (final DeviceID deviceID: modelSetup.getDeviceIDs ())
         {
-            final DeviceMatcher deviceMatcher;
+            final ISpecificDevice specificDevice;
             switch (deviceID)
             {
                 case FIRST_INSTRUMENT:
-                    deviceMatcher = controllerHost.createInstrumentMatcher ();
+                    final Device instrumentDevice = this.createDevice (controllerHost.createInstrumentMatcher ());
+                    specificDevice = new SpecificDeviceImpl (this.host, this.valueChanger, instrumentDevice, numSends, numParamPages, numParams, numDevicesInBank, numDeviceLayers, numDrumPadLayers);
                     break;
 
                 case EQ:
-                    deviceMatcher = controllerHost.createBitwigDeviceMatcher (UUID.fromString ("e4815188-ba6f-4d14-bcfc-2dcb8f778ccb"));
+                    final Device eqDevice = this.createDevice (controllerHost.createBitwigDeviceMatcher (UUID.fromString ("e4815188-ba6f-4d14-bcfc-2dcb8f778ccb")));
+                    specificDevice = new EqualizerDeviceImpl (this.host, this.valueChanger, eqDevice, numParamPages, numParams);
                     break;
 
                 case NI_KOMPLETE:
-                    deviceMatcher = controllerHost.createVST2DeviceMatcher (KompleteDevice.VST2_KOMPLETE_ID);
+                    final Device kompleteDevice = this.createDevice (controllerHost.createVST2DeviceMatcher (KompleteDevice.VST2_KOMPLETE_ID));
+                    specificDevice = new KompleteDevice (this.host, this.valueChanger, kompleteDevice);
                     break;
 
                 default:
                     // Impossible to reach
                     throw new FrameworkException ("Unknown device ID.");
-            }
-            final DeviceBank deviceBank = this.bwCursorTrack.createDeviceBank (1);
-            deviceBank.setDeviceMatcher (deviceMatcher);
-            final Device device = deviceBank.getItemAt (0);
-
-            final ISpecificDevice specificDevice;
-            switch (deviceID)
-            {
-                case NI_KOMPLETE:
-                    specificDevice = new KompleteDevice (this.host, this.valueChanger, device);
-                    break;
-                case EQ:
-                    specificDevice = new EqualizerDeviceImpl (this.host, this.valueChanger, device, numParamPages, numParams);
-                    break;
-                default:
-                    specificDevice = new SpecificDeviceImpl (this.host, this.valueChanger, device, numSends, numParamPages, numParams, numDevicesInBank, numDeviceLayers, numDrumPadLayers);
-                    break;
             }
 
             this.specificDevices.put (deviceID, specificDevice);
@@ -216,6 +210,20 @@ public class ModelImpl extends AbstractModel
         this.currentTrackBank = this.trackBank;
 
         controllerHost.scheduleTask (this::flushWorkaround, 4000);
+    }
+
+
+    /**
+     * Create a device bank with the given matcher which contains exactly one device.
+     *
+     * @param deviceMatcher The device matcher to apply
+     * @return The device
+     */
+    private Device createDevice (final DeviceMatcher deviceMatcher)
+    {
+        final DeviceBank deviceBank = this.bwCursorTrack.createDeviceBank (1);
+        deviceBank.setDeviceMatcher (deviceMatcher);
+        return deviceBank.getItemAt (0);
     }
 
 
@@ -248,6 +256,20 @@ public class ModelImpl extends AbstractModel
             final TrackBank tb = this.controllerHost.createMainTrackBank (1, this.modelSetup.getNumSends (), numScenes);
             tb.followCursorTrack (this.bwCursorTrack);
             return new TrackBankImpl (this.host, (ApplicationImpl) this.application, this.valueChanger, tb, (CursorTrackImpl) this.cursorTrack, this.rootTrackGroup, 1, numScenes, 0).getSceneBank ();
+        });
+    }
+
+
+    /** {@inheritDoc} */
+    @Override
+    public ISlotBank createSlotBank (final int numSlots)
+    {
+        return this.slotBanks.computeIfAbsent (Integer.valueOf (numSlots), key -> {
+
+            final CursorTrack ct = this.controllerHost.createCursorTrack ("CursorTrackID" + numSlots, "Cursor Track for " + numSlots + "Slots", 0, numSlots, true);
+            final ICursorTrack cursorTrack = new CursorTrackImpl (this, this.host, this.valueChanger, ct, this.rootTrackGroup, (ApplicationImpl) this.application, 0, numSlots);
+            return new SlotBankImpl (this.host, this.valueChanger, cursorTrack, ct.clipLauncherSlotBank (), numSlots);
+
         });
     }
 

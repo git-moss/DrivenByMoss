@@ -118,6 +118,7 @@ public class SLMkIIIColorManager extends ColorManager
         this.registerColorIndex (AbstractSequencerView.COLOR_STEP_MUTED_CONT, SLMkIIIColorManager.SLMKIII_DARK_GREY);
         this.registerColorIndex (AbstractSequencerView.COLOR_STEP_SELECTED, SLMkIIIColorManager.SLMKIII_YELLOW);
         this.registerColorIndex (AbstractSequencerView.COLOR_NO_CONTENT, SLMkIIIColorManager.SLMKIII_BLACK);
+        this.registerColorIndex (AbstractSequencerView.COLOR_NO_CONTENT_4, SLMkIIIColorManager.SLMKIII_BLACK);
         this.registerColorIndex (AbstractSequencerView.COLOR_CONTENT, SLMkIIIColorManager.SLMKIII_BLUE);
         this.registerColorIndex (AbstractSequencerView.COLOR_CONTENT_CONT, SLMkIIIColorManager.SLMKIII_DARK_BLUE);
         this.registerColorIndex (AbstractSequencerView.COLOR_PAGE, SLMkIIIColorManager.SLMKIII_WHITE);

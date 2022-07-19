@@ -29,6 +29,7 @@ import de.mossgrabers.controller.akai.fire.mode.FireUserMode;
 import de.mossgrabers.controller.akai.fire.mode.NoteMode;
 import de.mossgrabers.controller.akai.fire.view.Drum4View;
 import de.mossgrabers.controller.akai.fire.view.DrumView64;
+import de.mossgrabers.controller.akai.fire.view.DrumXoXView;
 import de.mossgrabers.controller.akai.fire.view.IFireView;
 import de.mossgrabers.controller.akai.fire.view.MixView;
 import de.mossgrabers.controller.akai.fire.view.PianoView;
@@ -114,7 +115,6 @@ public class FireControllerSetup extends AbstractControllerSetup<FireControlSurf
     protected void createModel ()
     {
         final ModelSetup ms = new ModelSetup ();
-        ms.enableDrum64Device (true);
         ms.enableDevice (DeviceID.FIRST_INSTRUMENT);
         ms.setNumTracks (16);
         ms.setNumScenes (4);
@@ -126,6 +126,11 @@ public class FireControllerSetup extends AbstractControllerSetup<FireControlSurf
         ms.setNumFilterColumnEntries (3);
         ms.setNumResults (3);
         ms.setHasFullFlatTrackList (true);
+        ms.setAdditionalDrumDevices (new int []
+        {
+            64,
+            16
+        });
 
         this.model = this.factory.createModel (this.configuration, this.colorManager, this.valueChanger, this.scales, ms);
 
@@ -192,6 +197,7 @@ public class FireControllerSetup extends AbstractControllerSetup<FireControlSurf
         viewManager.register (Views.PLAY, new PlayView (surface, this.model));
         viewManager.register (Views.PIANO, new PianoView (surface, this.model));
 
+        viewManager.register (Views.DRUM, new DrumXoXView (surface, this.model));
         viewManager.register (Views.DRUM4, new Drum4View (surface, this.model));
         viewManager.register (Views.DRUM64, new DrumView64 (surface, this.model));
 
@@ -253,7 +259,7 @@ public class FireControllerSetup extends AbstractControllerSetup<FireControlSurf
             if (viewManager.isActive (Views.POLY_SEQUENCER))
                 return 2;
             return surface.isShiftPressed () && surface.getConfiguration ().isAccentActive () ? 1 : 0;
-        }, FireColorManager.BUTTON_STATE_ON2, FireColorManager.BUTTON_STATE_HI2, ColorManager.BUTTON_STATE_HI);
+        }, FireColorManager.BUTTON_STATE_ON2, FireColorManager.BUTTON_STATE_HI2, ColorManager.BUTTON_STATE_ON);
 
         this.addButton (ButtonID.NOTE, "NOTE", new PlaySelectCommand (this.model, surface), FireControlSurface.FIRE_NOTE, () -> {
             if (viewManager.isActive (Views.PLAY))
@@ -261,15 +267,17 @@ public class FireControllerSetup extends AbstractControllerSetup<FireControlSurf
             if (viewManager.isActive (Views.PIANO))
                 return 2;
             return 0;
-        }, FireColorManager.BUTTON_STATE_ON2, FireColorManager.BUTTON_STATE_HI2, ColorManager.BUTTON_STATE_HI);
+        }, FireColorManager.BUTTON_STATE_ON2, FireColorManager.BUTTON_STATE_HI2, ColorManager.BUTTON_STATE_ON);
 
         this.addButton (ButtonID.DRUM, "DRUM", new DrumSequencerSelectCommand (this.model, surface), FireControlSurface.FIRE_DRUM, () -> {
-            if (viewManager.isActive (Views.DRUM4))
+            if (viewManager.isActive (Views.DRUM))
                 return 1;
-            if (viewManager.isActive (Views.DRUM64))
+            if (viewManager.isActive (Views.DRUM4))
                 return 2;
-            return surface.isPressed (ButtonID.DRUM) ? 1 : 0;
-        }, FireColorManager.BUTTON_STATE_ON2, FireColorManager.BUTTON_STATE_HI2, ColorManager.BUTTON_STATE_HI);
+            if (viewManager.isActive (Views.DRUM64))
+                return 3;
+            return 0;
+        }, FireColorManager.BUTTON_STATE_ON2, FireColorManager.BUTTON_STATE_HI2, ColorManager.BUTTON_STATE_ON, ColorManager.BUTTON_STATE_HI);
 
         this.addButton (ButtonID.SESSION, "PERFORM", new SessionSelectCommand (this.model, surface), FireControlSurface.FIRE_PERFORM, () -> {
             if (viewManager.isActive (Views.SESSION))
@@ -277,7 +285,7 @@ public class FireControllerSetup extends AbstractControllerSetup<FireControlSurf
             if (viewManager.isActive (Views.MIX))
                 return 2;
             return 0;
-        }, FireColorManager.BUTTON_STATE_ON2, FireColorManager.BUTTON_STATE_HI2, ColorManager.BUTTON_STATE_HI);
+        }, FireColorManager.BUTTON_STATE_ON2, FireColorManager.BUTTON_STATE_HI2, ColorManager.BUTTON_STATE_ON);
 
         this.addButton (ButtonID.SHIFT, "SHIFT", new ToggleShiftViewCommand<> (this.model, surface), FireControlSurface.FIRE_SHIFT, () -> viewManager.isActive (Views.SHIFT) || surface.isShiftPressed () ? 1 : 0, FireColorManager.BUTTON_STATE_ON2, FireColorManager.BUTTON_STATE_HI2);
         this.addButton (ButtonID.ALT, "ALT", (event, velocity) -> {
