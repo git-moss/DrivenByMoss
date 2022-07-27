@@ -50,30 +50,27 @@ public class PushConfiguration extends AbstractConfiguration implements IGraphic
     /** Setting for the ribbon mode note repeat. */
     public static final Integer     RIBBON_MODE_NOTE_REPEAT         = Integer.valueOf (52);
 
-    /** Setting for toggling the sends. */
-    public static final Integer     TOGGLING_SENDS                  = Integer.valueOf (53);
-
     /** Setting for the velocity curve. */
-    public static final Integer     VELOCITY_CURVE                  = Integer.valueOf (54);
+    public static final Integer     VELOCITY_CURVE                  = Integer.valueOf (53);
     /** Setting for the pad threshold. */
-    public static final Integer     PAD_THRESHOLD                   = Integer.valueOf (55);
+    public static final Integer     PAD_THRESHOLD                   = Integer.valueOf (54);
     /** Setting for the display brightness. */
-    public static final Integer     DISPLAY_BRIGHTNESS              = Integer.valueOf (56);
+    public static final Integer     DISPLAY_BRIGHTNESS              = Integer.valueOf (55);
     /** Setting for the pad LED brightness. */
-    public static final Integer     LED_BRIGHTNESS                  = Integer.valueOf (57);
+    public static final Integer     LED_BRIGHTNESS                  = Integer.valueOf (56);
     /** Setting for the pad sensitivity. */
-    public static final Integer     PAD_SENSITIVITY                 = Integer.valueOf (58);
+    public static final Integer     PAD_SENSITIVITY                 = Integer.valueOf (57);
     /** Setting for the pad gain. */
-    public static final Integer     PAD_GAIN                        = Integer.valueOf (59);
+    public static final Integer     PAD_GAIN                        = Integer.valueOf (58);
     /** Setting for the pad dynamics. */
-    public static final Integer     PAD_DYNAMICS                    = Integer.valueOf (60);
+    public static final Integer     PAD_DYNAMICS                    = Integer.valueOf (59);
 
     /** Setting for stopping automation recording on knob release. */
-    public static final Integer     STOP_AUTOMATION_ON_KNOB_RELEASE = Integer.valueOf (61);
+    public static final Integer     STOP_AUTOMATION_ON_KNOB_RELEASE = Integer.valueOf (60);
     /** Mode debug. */
-    public static final Integer     DEBUG_MODE                      = Integer.valueOf (62);
+    public static final Integer     DEBUG_MODE                      = Integer.valueOf (61);
     /** Push 2 display debug window. */
-    public static final Integer     DEBUG_WINDOW                    = Integer.valueOf (63);
+    public static final Integer     DEBUG_WINDOW                    = Integer.valueOf (62);
 
     /** Background color of an element. */
     public static final Integer     COLOR_BACKGROUND                = Integer.valueOf (70);
@@ -244,7 +241,6 @@ public class PushConfiguration extends AbstractConfiguration implements IGraphic
     private int             padThreshold                = 20;
 
     // Only Push 2
-    private boolean         sendsAreToggled             = false;
     private int             displayBrightness           = 255;
     private int             ledBrightness               = 127;
     private int             padSensitivity              = 5;
@@ -662,29 +658,6 @@ public class PushConfiguration extends AbstractConfiguration implements IGraphic
     public boolean isStopAutomationOnKnobRelease ()
     {
         return this.stopAutomationOnKnobRelease;
-    }
-
-
-    /**
-     * Are the sends toggled (5-8)?
-     *
-     * @return True if toggled
-     */
-    public boolean isSendsAreToggled ()
-    {
-        return this.sendsAreToggled;
-    }
-
-
-    /**
-     * Set that the sends are toggled (5-8).
-     *
-     * @param sendsAreToggled True if toggled
-     */
-    public void setSendsAreToggled (final boolean sendsAreToggled)
-    {
-        this.sendsAreToggled = sendsAreToggled;
-        this.notifyObservers (TOGGLING_SENDS);
     }
 
 

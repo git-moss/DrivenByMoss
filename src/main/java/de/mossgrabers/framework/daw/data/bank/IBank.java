@@ -151,7 +151,7 @@ public interface IBank<T> extends IObserverManagement
      * Scrolls the bank page so that the item at the given position becomes visible as part of the
      * page. The position is the absolute index of the item in all the items the bank contains.
      *
-     * @param position The position of the item to scroll to. The position is automaticaly adjusted
+     * @param position The position of the item to scroll to. The position is automatically adjusted
      *            to the beginning of a page
      */
     void scrollTo (int position);

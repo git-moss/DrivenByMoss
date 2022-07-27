@@ -96,25 +96,25 @@ public class SendsComponent extends ChannelSelectComponent
         final ColorEx faderColor = this.modifyIfOff (configuration.getColorFader ());
         final ColorEx editColor = this.modifyIfOff (configuration.getColorEdit ());
         final double faderLeft = left + inset;
-        for (final SendData element: this.sendData)
+        for (final SendData send: this.sendData)
         {
-            final String n = element.name ();
-            if (n.length () == 0)
+            final String sendName = send.name ();
+            if (sendName.length () == 0)
                 break;
 
-            gc.drawTextInBounds (n, faderLeft, topy + separatorSize, sliderWidth, sendRowHeight, Align.LEFT, textColor, sendRowHeight);
+            gc.drawTextInBounds (sendName, faderLeft, topy + separatorSize, sliderWidth, sendRowHeight, Align.LEFT, textColor, sendRowHeight);
             topy += sendRowHeight;
             gc.fillRectangle (faderLeft, topy + separatorSize, sliderWidth, sliderHeight, borderColor);
 
-            final double valueWidth = element.value () * sliderWidth / dimensions.getParameterUpperBound ();
-            final int modulatedValue = element.modulatedValue ();
+            final double valueWidth = send.value () * sliderWidth / dimensions.getParameterUpperBound ();
+            final int modulatedValue = send.modulatedValue ();
             final boolean isSendModulated = modulatedValue != -1;
             final double modulatedValueWidth = isSendModulated ? (double) (modulatedValue * sliderWidth / dimensions.getParameterUpperBound ()) : valueWidth;
             final double faderTop = topy + separatorSize + 1;
             gc.fillRectangle (faderLeft + 1, faderTop, modulatedValueWidth - 1, sliderHeight - 2, faderColor);
 
-            final String text = element.text ();
-            if (element.edited ())
+            final String text = send.text ();
+            if (send.edited ())
             {
                 final boolean isTouched = text != null && text.length () > 0;
                 final double w = isTouched ? 3 : 1;

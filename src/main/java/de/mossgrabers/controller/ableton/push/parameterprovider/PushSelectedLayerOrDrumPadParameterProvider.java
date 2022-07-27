@@ -9,7 +9,6 @@ import de.mossgrabers.framework.daw.data.IChannel;
 import de.mossgrabers.framework.daw.data.IParameter;
 import de.mossgrabers.framework.daw.data.ISpecificDevice;
 import de.mossgrabers.framework.daw.data.empty.EmptyParameter;
-import de.mossgrabers.framework.observer.IParametersAdjustObserver;
 import de.mossgrabers.framework.observer.ISettingObserver;
 import de.mossgrabers.framework.parameterprovider.device.SelectedLayerOrDrumPadParameterProvider;
 
@@ -40,27 +39,6 @@ public class PushSelectedLayerOrDrumPadParameterProvider extends SelectedLayerOr
 
     /** {@inheritDoc} */
     @Override
-    public void addParametersObserver (final IParametersAdjustObserver observer)
-    {
-        super.addParametersObserver (observer);
-
-        this.configuration.addSettingObserver (PushConfiguration.TOGGLING_SENDS, this);
-    }
-
-
-    /** {@inheritDoc} */
-    @Override
-    public void removeParametersObserver (final IParametersAdjustObserver observer)
-    {
-        super.removeParametersObserver (observer);
-
-        if (this.hasObservers ())
-            this.configuration.removeSettingObserver (PushConfiguration.TOGGLING_SENDS, this);
-    }
-
-
-    /** {@inheritDoc} */
-    @Override
     protected IParameter getInternal (final int index, final IChannel selectedChannel)
     {
         if (index < 2 || !this.configuration.isPush2 ())
@@ -68,12 +46,10 @@ public class PushSelectedLayerOrDrumPadParameterProvider extends SelectedLayerOr
 
         switch (index)
         {
-            case 2:
-            case 3:
+            case 2, 3:
                 return EmptyParameter.INSTANCE;
             default:
-                final int sendOffset = this.configuration.isSendsAreToggled () ? 0 : 4;
-                return this.handleSends (index - sendOffset, selectedChannel);
+                return this.handleSends (index - 4, selectedChannel);
         }
     }
 

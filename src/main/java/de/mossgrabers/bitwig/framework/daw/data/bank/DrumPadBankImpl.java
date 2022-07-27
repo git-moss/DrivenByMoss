@@ -140,4 +140,20 @@ public class DrumPadBankImpl extends AbstractChannelBankImpl<DrumPadBank, ILayer
         if (this.bank.isPresent ())
             this.bank.get ().setIndication (enable);
     }
+
+
+    /** {@inheritDoc} */
+    @Override
+    public boolean canEditSend (final int sendIndex)
+    {
+        return this.getItem (0).getSendBank ().getItem (sendIndex).doesExist ();
+    }
+
+
+    /** {@inheritDoc} */
+    @Override
+    public String getEditSendName (final int sendIndex)
+    {
+        return this.getItem (0).getSendBank ().getItem (sendIndex).getName ();
+    }
 }

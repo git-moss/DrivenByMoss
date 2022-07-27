@@ -114,4 +114,20 @@ public class LayerBankImpl extends AbstractChannelBankImpl<DeviceLayerBank, ILay
     {
         return this.cursorDeviceLayer.hasNext ().get ();
     }
+
+
+    /** {@inheritDoc} */
+    @Override
+    public boolean canEditSend (final int sendIndex)
+    {
+        return this.getItem (0).getSendBank ().getItem (sendIndex).doesExist ();
+    }
+
+
+    /** {@inheritDoc} */
+    @Override
+    public String getEditSendName (final int sendIndex)
+    {
+        return this.getItem (0).getSendBank ().getItem (sendIndex).getName ();
+    }
 }

@@ -9,6 +9,7 @@ import de.mossgrabers.framework.controller.valuechanger.IValueChanger;
 import de.mossgrabers.framework.daw.IHost;
 import de.mossgrabers.framework.daw.data.ISend;
 import de.mossgrabers.framework.daw.data.bank.ISendBank;
+import de.mossgrabers.framework.daw.data.empty.EmptySend;
 
 import com.bitwig.extension.controller.api.SendBank;
 
@@ -38,5 +39,18 @@ public class SendBankImpl extends AbstractItemBankImpl<SendBank, ISend> implemen
         final SendBank sb = this.bank.get ();
         for (int i = 0; i < this.getPageSize (); i++)
             this.items.add (new SendImpl (this, this.valueChanger, sb.getItemAt (i), i));
+    }
+
+
+    /** {@inheritDoc} */
+    @Override
+    public ISend getItem (final int index)
+    {
+        // TODO API extension required - https://github.com/teotigraphix/Framework4Bitwig/issues/290
+        // Remove when implemented
+        if (this.getPageSize () == 0)
+            return EmptySend.INSTANCE;
+
+        return this.items.get (index);
     }
 }

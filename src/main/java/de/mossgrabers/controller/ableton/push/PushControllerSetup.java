@@ -203,6 +203,7 @@ public class PushControllerSetup extends AbstractControllerSetup<PushControlSurf
         {
             ms.setNumFilterColumnEntries (48);
             ms.setNumResults (48);
+            ms.setNumSends (4);
         }
         ms.setNumMarkers (8);
         ms.setHasFlatTrackList (false);

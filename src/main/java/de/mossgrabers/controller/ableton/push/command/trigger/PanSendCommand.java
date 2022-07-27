@@ -41,7 +41,7 @@ public class PanSendCommand extends AbstractTriggerCommand<PushControlSurface, P
             return;
 
         final ModeManager modeManager = this.surface.getModeManager ();
-        final Modes currentMode = modeManager.getActiveID ();
+        final Modes currentMode = modeManager.getActiveIDIgnoreTemporary ();
 
         // Layer mode selection for Push 1
         Modes mode;
@@ -58,10 +58,6 @@ public class PanSendCommand extends AbstractTriggerCommand<PushControlSurface, P
                 mode = Modes.get (currentMode, 1);
                 // Wrap
                 if (mode.ordinal () < Modes.DEVICE_LAYER_PAN.ordinal () || mode.ordinal () > Modes.DEVICE_LAYER_SEND8.ordinal ())
-                    mode = Modes.DEVICE_LAYER_PAN;
-                // Check if Send channel exists
-                final ITrackBank tb = this.model.getTrackBank ();
-                if (mode.ordinal () < Modes.DEVICE_LAYER_SEND1.ordinal () || mode.ordinal () > Modes.DEVICE_LAYER_SEND8.ordinal () || tb.canEditSend (mode.ordinal () - Modes.DEVICE_LAYER_SEND1.ordinal ()))
                     mode = Modes.DEVICE_LAYER_PAN;
             }
             modeManager.setActive (mode);

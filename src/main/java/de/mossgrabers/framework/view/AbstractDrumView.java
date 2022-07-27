@@ -546,7 +546,7 @@ public abstract class AbstractDrumView<S extends IControlSurface<C>, C extends C
             default:
                 if (hilite)
                     return COLOR_STEP_HILITE_NO_CONTENT;
-                return (step / 4) % 2 == 1 ? COLOR_NO_CONTENT_4 : COLOR_NO_CONTENT;
+                return step / 4 % 2 == 1 ? COLOR_NO_CONTENT_4 : COLOR_NO_CONTENT;
         }
     }
 

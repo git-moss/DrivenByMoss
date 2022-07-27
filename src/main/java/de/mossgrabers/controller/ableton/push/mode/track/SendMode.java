@@ -12,6 +12,7 @@ import de.mossgrabers.framework.controller.valuechanger.IValueChanger;
 import de.mossgrabers.framework.daw.IModel;
 import de.mossgrabers.framework.daw.data.ISend;
 import de.mossgrabers.framework.daw.data.ITrack;
+import de.mossgrabers.framework.daw.data.bank.ISendBank;
 import de.mossgrabers.framework.daw.data.bank.ITrackBank;
 import de.mossgrabers.framework.graphics.canvas.utils.SendData;
 import de.mossgrabers.framework.parameterprovider.track.SendParameterProvider;
@@ -75,17 +76,16 @@ public class SendMode extends AbstractTrackMode
         final ITrackBank tb = this.model.getCurrentTrackBank ();
         final IValueChanger valueChanger = this.model.getValueChanger ();
 
-        final int sendOffset = this.surface.getConfiguration ().isSendsAreToggled () ? 4 : 0;
         for (int i = 0; i < 8; i++)
         {
             final ITrack t = tb.getItem (i);
+            final ISendBank sendBank = t.getSendBank ();
             final SendData [] sendData = new SendData [4];
             for (int j = 0; j < 4; j++)
             {
-                final int sendPos = sendOffset + j;
-                final ISend send = t.getSendBank ().getItem (sendPos);
+                final ISend send = sendBank.getItem (j);
                 final boolean exists = send != null && send.doesExist ();
-                sendData[j] = new SendData (exists ? send.getName () : " ", exists && this.sendIndex == sendPos && this.isKnobTouched (i) ? send.getDisplayedValue (8) : "", valueChanger.toDisplayValue (exists ? send.getValue () : -1), valueChanger.toDisplayValue (exists ? send.getModulatedValue () : -1), this.sendIndex == sendPos);
+                sendData[j] = new SendData (exists ? send.getName () : "", exists && this.sendIndex == j && this.isKnobTouched (i) ? send.getDisplayedValue (8) : "", valueChanger.toDisplayValue (exists ? send.getValue () : -1), valueChanger.toDisplayValue (exists ? send.getModulatedValue () : -1), this.sendIndex == j);
             }
             final Pair<String, Boolean> pair = this.menu.get (i);
             display.addSendsElement (pair.getKey (), pair.getValue ().booleanValue (), t.doesExist () ? t.getName () : "", this.updateType (t), t.getColor (), t.isSelected (), sendData, false, t.isActivated (), t.isActivated ());

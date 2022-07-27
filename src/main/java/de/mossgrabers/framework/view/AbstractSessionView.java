@@ -469,7 +469,7 @@ public abstract class AbstractSessionView<S extends IControlSurface<C>, C extend
             return new LightInfo (color, slot.isSelected () ? blinkColor : -1, this.clipColorHasContent.isFast ());
         }
 
-        return isArmed && this.surface.getConfiguration ().isDrawRecordStripe () ? this.clipColorIsRecArmed : this.clipColorHasNoContent;
+        return slot.doesExist () && isArmed && this.surface.getConfiguration ().isDrawRecordStripe () ? this.clipColorIsRecArmed : this.clipColorHasNoContent;
     }
 
 

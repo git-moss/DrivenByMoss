@@ -37,10 +37,13 @@ public class EffectTrackBankImpl extends AbstractTrackBankImpl
      * @param application The application
      * @param numFxTracks The number of FX track of a bank page
      * @param numScenes The number of scenes of a bank page
+     * @param numSends The number of sends in a bank page
      * @param audioInstrumentTrackBank The track bank which monitors the audio and instrument tracks
      */
-    public EffectTrackBankImpl (final IHost host, final IValueChanger valueChanger, final TrackBank effectTrackBank, final CursorTrackImpl cursorTrack, final Track rootGroup, final ApplicationImpl application, final int numFxTracks, final int numScenes, final ITrackBank audioInstrumentTrackBank)
+    public EffectTrackBankImpl (final IHost host, final IValueChanger valueChanger, final TrackBank effectTrackBank, final CursorTrackImpl cursorTrack, final Track rootGroup, final ApplicationImpl application, final int numFxTracks, final int numScenes, final int numSends, final ITrackBank audioInstrumentTrackBank)
     {
+        // TODO API extension required - https://github.com/teotigraphix/Framework4Bitwig/issues/290
+        // Set last parameter to numSends when implemented
         super (host, valueChanger, effectTrackBank, cursorTrack, rootGroup, application, numFxTracks, numScenes, 0);
 
         if (this.bank.isPresent ())
@@ -62,7 +65,7 @@ public class EffectTrackBankImpl extends AbstractTrackBankImpl
     @Override
     public boolean canEditSend (final int sendIndex)
     {
-        // Sends don't have sends.
+        // TODO API extension required - https://github.com/teotigraphix/Framework4Bitwig/issues/290
         return false;
     }
 
@@ -71,6 +74,7 @@ public class EffectTrackBankImpl extends AbstractTrackBankImpl
     @Override
     public String getEditSendName (final int sendIndex)
     {
+        // TODO API extension required - https://github.com/teotigraphix/Framework4Bitwig/issues/290
         return "";
     }
 

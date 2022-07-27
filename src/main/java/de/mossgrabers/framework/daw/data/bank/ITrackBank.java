@@ -44,25 +44,6 @@ public interface ITrackBank extends IChannelBank<ITrack>
 
 
     /**
-     * Check if there is a send at the given index, which can be edited.
-     *
-     * @param sendIndex The index of the send
-     * @return True if there is a send to edit
-     */
-    boolean canEditSend (int sendIndex);
-
-
-    /**
-     * DAWs which can put different sends in a slot can return here a name to be displayed for a
-     * slot.
-     *
-     * @param sendIndex The index of the send
-     * @return The name to display
-     */
-    String getEditSendName (int sendIndex);
-
-
-    /**
      * Add an observer for the items name.
      *
      * @param observer The observer to notify on a name change

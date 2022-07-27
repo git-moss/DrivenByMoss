@@ -50,7 +50,6 @@ public class StepSequencerSelectCommand extends ViewMultiSelectCommand<FireContr
         // Toggle note mode
         if (this.surface.isPressed (ButtonID.ALT))
         {
-            this.surface.setTriggerConsumed (ButtonID.ALT);
             if (modeManager.isActive (Modes.NOTE))
                 modeManager.restore ();
             else

@@ -4,7 +4,6 @@
 
 package de.mossgrabers.controller.ableton.push.mode.device;
 
-import de.mossgrabers.controller.ableton.push.PushConfiguration;
 import de.mossgrabers.controller.ableton.push.controller.PushControlSurface;
 import de.mossgrabers.controller.ableton.push.parameterprovider.PushSendLayerOrDrumPadParameterProvider;
 import de.mossgrabers.framework.controller.ButtonID;
@@ -15,6 +14,7 @@ import de.mossgrabers.framework.daw.IModel;
 import de.mossgrabers.framework.daw.data.IChannel;
 import de.mossgrabers.framework.daw.data.ILayer;
 import de.mossgrabers.framework.daw.data.ISend;
+import de.mossgrabers.framework.daw.data.bank.ISendBank;
 import de.mossgrabers.framework.daw.resource.ChannelType;
 import de.mossgrabers.framework.graphics.canvas.utils.SendData;
 import de.mossgrabers.framework.mode.Modes;
@@ -90,7 +90,8 @@ public class DeviceLayerModeSend extends DeviceLayerMode
             {
                 final IChannel layer = this.bank.getItem (offset + i);
                 final boolean exists = layer.doesExist ();
-                final ISend send = layer.getSendBank ().getItem (this.sendIndex);
+                final ISendBank sendBank = layer.getSendBank ();
+                final ISend send = sendBank.getItem (this.sendIndex);
                 display.setCell (0, i, exists ? send.getName () : "").setCell (1, i, send.getDisplayedValue (8));
                 if (exists)
                     display.setCell (2, i, send.getValue (), Format.FORMAT_VALUE);
@@ -107,11 +108,8 @@ public class DeviceLayerModeSend extends DeviceLayerMode
     {
         this.updateMenuItems (5 + this.sendIndex % 4);
 
-        final PushConfiguration config = this.surface.getConfiguration ();
-
         // Drum Pad Bank has size of 16, layers only 8
         final int offset = this.getDrumPadIndex ();
-        final int sendOffset = config.isSendsAreToggled () ? 4 : 0;
         for (int i = 0; i < 8; i++)
         {
             final IChannel layer = this.bank.getItem (offset + i);
@@ -122,12 +120,12 @@ public class DeviceLayerModeSend extends DeviceLayerMode
 
             // Channel info
             final SendData [] sendData = new SendData [4];
+            final ISendBank sendBank = layer.getSendBank ();
             for (int j = 0; j < 4; j++)
             {
-                final int sendPos = sendOffset + j;
-                final ISend send = layer.getSendBank ().getItem (sendPos);
+                final ISend send = sendBank.getItem (j);
                 final boolean exists = send.doesExist ();
-                sendData[j] = new SendData (send.getName (), exists && this.sendIndex == sendPos && this.isKnobTouched (i) ? send.getDisplayedValue () : "", exists ? send.getValue () : 0, exists ? send.getModulatedValue () : 0, this.sendIndex == sendPos);
+                sendData[j] = new SendData (send.getName (), exists && this.sendIndex == j && this.isKnobTouched (i) ? send.getDisplayedValue () : "", exists ? send.getValue () : 0, exists ? send.getModulatedValue () : 0, this.sendIndex == j);
             }
 
             display.addSendsElement (topMenu, isTopMenuOn, layer.doesExist () ? layer.getName () : "", ChannelType.LAYER, this.bank.getItem (offset + i).getColor (), layer.isSelected (), sendData, false, layer.isActivated (), layer.isActivated ());

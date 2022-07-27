@@ -66,17 +66,13 @@ public class TrackMode extends AbstractTrackMode
 
             final int sendStart = 2;
             final int sendCount = 6;
-            final boolean isEffectTrackBankActive = this.model.isEffectTrackBankActive ();
             final ISendBank sendBank = t.getSendBank ();
             for (int i = 0; i < sendCount; i++)
             {
                 final int pos = sendStart + i;
-                if (!isEffectTrackBankActive)
-                {
-                    final ISend send = sendBank.getItem (i);
-                    if (send.doesExist ())
-                        display.setCell (0, pos, send.getName ()).setCell (1, pos, send.getDisplayedValue (8)).setCell (2, pos, send.getValue (), Format.FORMAT_VALUE);
-                }
+                final ISend send = sendBank.getItem (i);
+                if (send.doesExist ())
+                    display.setCell (0, pos, send.getName ()).setCell (1, pos, send.getDisplayedValue (8)).setCell (2, pos, send.getValue (), Format.FORMAT_VALUE);
             }
         }
 
@@ -93,7 +89,7 @@ public class TrackMode extends AbstractTrackMode
 
         // Get the index at which to draw the Sends element
         final int selectedIndex = selectedTrack.isEmpty () ? -1 : selectedTrack.get ().getIndex ();
-        int sendsIndex = selectedTrack.isEmpty () || this.model.isEffectTrackBankActive () ? -1 : selectedTrack.get ().getIndex () + 1;
+        int sendsIndex = selectedTrack.isEmpty () ? -1 : selectedTrack.get ().getIndex () + 1;
         if (sendsIndex == 8)
             sendsIndex = 6;
 
@@ -133,9 +129,7 @@ public class TrackMode extends AbstractTrackMode
                 {
                     if (selTrack != null)
                     {
-                        final int sendOffset = config.isSendsAreToggled () ? 4 : 0;
-                        final int sendPos = sendOffset + j;
-                        final ISend send = selTrack.getSendBank ().getItem (sendPos);
+                        final ISend send = selTrack.getSendBank ().getItem (j);
                         if (send != null)
                         {
                             final boolean exists = send.doesExist ();

@@ -18,6 +18,7 @@ import de.mossgrabers.framework.daw.constants.Capability;
 import de.mossgrabers.framework.daw.data.ICursorTrack;
 import de.mossgrabers.framework.daw.data.IParameter;
 import de.mossgrabers.framework.daw.data.ITrack;
+import de.mossgrabers.framework.daw.data.bank.ISendBank;
 import de.mossgrabers.framework.daw.data.bank.ITrackBank;
 import de.mossgrabers.framework.daw.resource.ChannelType;
 import de.mossgrabers.framework.featuregroup.ModeManager;
@@ -197,26 +198,40 @@ public abstract class AbstractTrackMode extends BaseMode<ITrack>
                 break;
 
             case 3:
-                if (!this.model.isEffectTrackBankActive ())
+                final boolean isShift = this.surface.isShiftPressed ();
+                for (int i = 0; i < tb.getPageSize (); i++)
                 {
-                    config.setSendsAreToggled (!config.isSendsAreToggled ());
-                    if (!modeManager.isActive (Modes.TRACK))
-                        modeManager.setActive (Modes.get (Modes.SEND1, config.isSendsAreToggled () ? 4 : 0));
+                    final ISendBank sendBank = tb.getItem (i).getSendBank ();
+                    if (isShift)
+                    {
+                        if (sendBank.canScrollPageBackwards ())
+                            sendBank.selectPreviousPage ();
+                        else
+                            sendBank.scrollTo (sendBank.getItemCount () / 4 * 4);
+                    }
+                    else
+                    {
+                        if (sendBank.canScrollPageForwards ())
+                            sendBank.selectNextPage ();
+                        else
+                            sendBank.scrollTo (0);
+                    }
                 }
+                this.bindControls ();
                 break;
 
             case 7:
                 if (!this.model.isEffectTrackBankActive ())
                 {
                     if (this.lastSendIsAccessible ())
-                        this.handleSendEffect (config.isSendsAreToggled () ? 7 : 3);
+                        this.handleSendEffect (3);
                     else
                         this.model.getTrackBank ().selectParent ();
                 }
                 break;
 
             default:
-                this.handleSendEffect (index - (config.isSendsAreToggled () ? 0 : 4));
+                this.handleSendEffect (index - 4);
                 break;
         }
 
@@ -305,7 +320,6 @@ public abstract class AbstractTrackMode extends BaseMode<ITrack>
                 }
 
                 final ModeManager modeManager = this.surface.getModeManager ();
-                final boolean sendsAreToggled = config.isSendsAreToggled ();
                 switch (index)
                 {
                     case 0:
@@ -315,18 +329,18 @@ public abstract class AbstractTrackMode extends BaseMode<ITrack>
                     case 2:
                         return modeManager.isActive (Modes.CROSSFADER) ? PushColorManager.PUSH2_COLOR2_WHITE : PushColorManager.PUSH2_COLOR_BLACK;
                     case 4:
-                        final Modes sendMode1 = sendsAreToggled ? Modes.SEND5 : Modes.SEND1;
+                        final Modes sendMode1 = Modes.SEND1;
                         return modeManager.isActive (sendMode1) ? PushColorManager.PUSH2_COLOR2_WHITE : PushColorManager.PUSH2_COLOR_BLACK;
                     case 5:
-                        final Modes sendMode2 = sendsAreToggled ? Modes.SEND6 : Modes.SEND2;
+                        final Modes sendMode2 = Modes.SEND2;
                         return modeManager.isActive (sendMode2) ? PushColorManager.PUSH2_COLOR2_WHITE : PushColorManager.PUSH2_COLOR_BLACK;
                     case 6:
-                        final Modes sendMode3 = sendsAreToggled ? Modes.SEND7 : Modes.SEND3;
+                        final Modes sendMode3 = Modes.SEND3;
                         return modeManager.isActive (sendMode3) ? PushColorManager.PUSH2_COLOR2_WHITE : PushColorManager.PUSH2_COLOR_BLACK;
                     case 7:
                         if (this.lastSendIsAccessible ())
                         {
-                            final Modes sendMode4 = sendsAreToggled ? Modes.SEND8 : Modes.SEND4;
+                            final Modes sendMode4 = Modes.SEND4;
                             return modeManager.isActive (sendMode4) ? PushColorManager.PUSH2_COLOR2_WHITE : PushColorManager.PUSH2_COLOR_BLACK;
                         }
                         return tb.hasParent () ? PushColorManager.PUSH2_COLOR2_WHITE : PushColorManager.PUSH2_COLOR_BLACK;
@@ -464,8 +478,6 @@ public abstract class AbstractTrackMode extends BaseMode<ITrack>
 
     protected void updateTrackMenu (final int selectedMenu)
     {
-        final PushConfiguration config = this.surface.getConfiguration ();
-
         this.menu.get (0).set ("Volume", Boolean.valueOf (selectedMenu - 1 == 0));
         this.menu.get (1).set ("Pan", Boolean.valueOf (selectedMenu - 1 == 1));
         this.menu.get (2).set (this.model.getHost ().supports (Capability.HAS_CROSSFADER) ? "Crossfader" : " ", Boolean.valueOf (selectedMenu - 1 == 2));
@@ -478,15 +490,16 @@ public abstract class AbstractTrackMode extends BaseMode<ITrack>
             return;
         }
 
-        final boolean sendsAreToggled = config.isSendsAreToggled ();
+        final ITrackBank currentTrackBank = this.model.getCurrentTrackBank ();
+        final Optional<ITrack> selectedItem = currentTrackBank.getSelectedItem ();
+        final ISendBank sendBank = (selectedItem.isPresent () ? selectedItem.get () : currentTrackBank.getItem (0)).getSendBank ();
+        final int start = Math.max (0, sendBank.getScrollPosition ()) + 1;
+        this.menu.get (3).set (String.format ("Sends %d-%d", Integer.valueOf (start), Integer.valueOf (start + 3)), Boolean.FALSE);
 
-        this.menu.get (3).set (sendsAreToggled ? "Sends 5-8" : "Sends 1-4", Boolean.valueOf (sendsAreToggled));
-
-        final ITrackBank tb = this.model.getCurrentTrackBank ();
-        final int sendOffset = sendsAreToggled ? 4 : 0;
+        final ITrackBank tb = currentTrackBank;
         for (int i = 0; i < 4; i++)
         {
-            final String sendName = tb.getEditSendName (sendOffset + i);
+            final String sendName = tb.getEditSendName (i);
             final boolean exists = !sendName.isEmpty ();
             this.menu.get (4 + i).set (exists ? sendName : " ", Boolean.valueOf (exists && 4 + i == selectedMenu - 1));
         }

@@ -44,4 +44,23 @@ public interface IChannelBank<T extends IChannel> extends IBank<T>
      * @param enable True to enable
      */
     void setIndication (final boolean enable);
+
+
+    /**
+     * Check if there is a send at the given index, which can be edited.
+     *
+     * @param sendIndex The index of the send
+     * @return True if there is a send to edit
+     */
+    boolean canEditSend (int sendIndex);
+
+
+    /**
+     * DAWs which can put different sends in a slot can return here a name to be displayed for a
+     * slot.
+     *
+     * @param sendIndex The index of the send
+     * @return The name to display
+     */
+    String getEditSendName (int sendIndex);
 }

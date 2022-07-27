@@ -81,7 +81,7 @@ public class DeviceLayerModePan extends DeviceLayerMode
                 final IChannel layer = this.bank.getItem (offset + i);
                 display.setCell (0, i, layer.doesExist () ? "Pan" : "").setCell (1, i, layer.getPanStr (8));
                 if (layer.doesExist ())
-                    display.setCell (2, i, layer.getPan (), Format.FORMAT_VALUE);
+                    display.setCell (2, i, layer.getPan (), Format.FORMAT_PAN);
             }
         }
 
