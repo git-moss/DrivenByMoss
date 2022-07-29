@@ -73,7 +73,7 @@ public class MaschineConfiguration extends AbstractConfiguration
 
         this.activateRecordButtonSetting (globalSettings);
         this.activateShiftedRecordButtonSetting (globalSettings);
-        this.activateBehaviourOnStopSetting (globalSettings);
+        this.activateBehaviourOnPauseSetting (globalSettings);
 
         ///////////////////////////
         // Play and Sequence

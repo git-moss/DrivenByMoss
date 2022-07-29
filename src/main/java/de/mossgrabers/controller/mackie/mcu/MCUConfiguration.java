@@ -257,6 +257,7 @@ public class MCUConfiguration extends AbstractConfiguration
         // Transport
 
         this.activateBehaviourOnStopSetting (globalSettings);
+        this.activateBehaviourOnPauseSetting (globalSettings);
         this.activateFlipRecordSetting (globalSettings);
 
         ///////////////////////////

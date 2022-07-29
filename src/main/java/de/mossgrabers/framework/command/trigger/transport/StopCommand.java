@@ -81,12 +81,13 @@ public class StopCommand<S extends IControlSurface<C>, C extends Configuration> 
                 this.transport.stopAndRewind ();
                 break;
 
-            case MOVE_PLAY_CURSOR:
-                this.transport.play ();
+            case STOP:
+                this.transport.stop ();
                 break;
 
             case PAUSE:
-                this.transport.stop ();
+                if (this.transport.isPlaying ())
+                    this.transport.play ();
                 break;
         }
     }

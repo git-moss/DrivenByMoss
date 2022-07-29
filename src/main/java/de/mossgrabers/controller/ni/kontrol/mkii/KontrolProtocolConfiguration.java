@@ -51,6 +51,7 @@ public class KontrolProtocolConfiguration extends AbstractConfiguration
         // Transport
 
         this.activateBehaviourOnStopSetting (globalSettings);
+        this.activateBehaviourOnPauseSetting (globalSettings);
         this.activateRecordButtonSetting (globalSettings);
         this.activateShiftedRecordButtonSetting (globalSettings);
 

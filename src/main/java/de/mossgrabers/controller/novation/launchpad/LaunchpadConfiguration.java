@@ -83,7 +83,7 @@ public class LaunchpadConfiguration extends AbstractConfiguration
         ///////////////////////////
         // Transport
 
-        this.activateBehaviourOnStopSetting (globalSettings);
+        this.activateBehaviourOnPauseSetting (globalSettings);
         this.activateFlipSessionSetting (globalSettings);
 
         ///////////////////////////

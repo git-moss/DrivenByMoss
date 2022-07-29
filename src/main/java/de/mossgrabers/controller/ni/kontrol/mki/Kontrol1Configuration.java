@@ -62,6 +62,7 @@ public class Kontrol1Configuration extends AbstractConfiguration
         // Transport
 
         this.activateBehaviourOnStopSetting (globalSettings);
+        this.activateBehaviourOnPauseSetting (globalSettings);
         this.activateFlipRecordSetting (globalSettings);
 
         ///////////////////////////

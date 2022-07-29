@@ -118,6 +118,7 @@ public class HUIConfiguration extends AbstractConfiguration
         // Transport
 
         this.activateBehaviourOnStopSetting (globalSettings);
+        this.activateBehaviourOnPauseSetting (globalSettings);
 
         ///////////////////////////
         // Workflow

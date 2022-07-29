@@ -41,6 +41,7 @@ public class LaunchkeyMk3Configuration extends AbstractConfiguration
         // Transport
 
         this.activateBehaviourOnStopSetting (globalSettings);
+        this.activateBehaviourOnPauseSetting (globalSettings);
         this.activateRecordButtonSetting (globalSettings);
         this.activateShiftedRecordButtonSetting (globalSettings);
         this.activateNewClipLengthSetting (globalSettings);

@@ -94,6 +94,7 @@ public class ACVSConfiguration extends AbstractConfiguration
         // Transport
 
         this.activateBehaviourOnStopSetting (globalSettings);
+        this.activateBehaviourOnPauseSetting (globalSettings);
 
         ///////////////////////////
         // Play and Sequence

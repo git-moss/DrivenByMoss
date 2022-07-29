@@ -52,80 +52,82 @@ public abstract class AbstractConfiguration implements Configuration
     public static final Integer      ENABLE_VU_METERS                  = Integer.valueOf (4);
     /** ID for behavior on stop setting. */
     public static final Integer      BEHAVIOUR_ON_STOP                 = Integer.valueOf (5);
+    /** ID for behavior on pause setting. */
+    public static final Integer      BEHAVIOUR_ON_PAUSE                = Integer.valueOf (6);
     /** ID for flipping the session grid setting. */
-    public static final Integer      FLIP_SESSION                      = Integer.valueOf (6);
+    public static final Integer      FLIP_SESSION                      = Integer.valueOf (7);
     /** ID for selecting the clip on launch setting. */
-    public static final Integer      SELECT_CLIP_ON_LAUNCH             = Integer.valueOf (7);
+    public static final Integer      SELECT_CLIP_ON_LAUNCH             = Integer.valueOf (8);
     /** ID for drawing record stripes setting. */
-    public static final Integer      DRAW_RECORD_STRIPE                = Integer.valueOf (8);
+    public static final Integer      DRAW_RECORD_STRIPE                = Integer.valueOf (9);
     /** ID for converting the aftertouch data setting. */
-    public static final Integer      CONVERT_AFTERTOUCH                = Integer.valueOf (9);
+    public static final Integer      CONVERT_AFTERTOUCH                = Integer.valueOf (10);
     /** ID for activating the fixed accent setting. */
-    public static final Integer      ACTIVATE_FIXED_ACCENT             = Integer.valueOf (10);
+    public static final Integer      ACTIVATE_FIXED_ACCENT             = Integer.valueOf (11);
     /** ID for the value of the fixed accent setting. */
-    public static final Integer      FIXED_ACCENT_VALUE                = Integer.valueOf (11);
+    public static final Integer      FIXED_ACCENT_VALUE                = Integer.valueOf (12);
     /** ID for the quantize amount setting. */
-    public static final Integer      QUANTIZE_AMOUNT                   = Integer.valueOf (12);
+    public static final Integer      QUANTIZE_AMOUNT                   = Integer.valueOf (13);
     /** ID for the flip recording setting. */
-    public static final Integer      FLIP_RECORD                       = Integer.valueOf (13);
+    public static final Integer      FLIP_RECORD                       = Integer.valueOf (14);
     /** Setting for automatic selecting the drum channel. */
-    public static final Integer      AUTO_SELECT_DRUM                  = Integer.valueOf (14);
+    public static final Integer      AUTO_SELECT_DRUM                  = Integer.valueOf (15);
     /** Setting for new clip length. */
-    public static final Integer      NEW_CLIP_LENGTH                   = Integer.valueOf (15);
+    public static final Integer      NEW_CLIP_LENGTH                   = Integer.valueOf (16);
     /** Setting for turning off empty drum pads (otherwise orange). */
-    public static final Integer      TURN_OFF_EMPTY_DRUM_PADS          = Integer.valueOf (16);
+    public static final Integer      TURN_OFF_EMPTY_DRUM_PADS          = Integer.valueOf (17);
     /** Setting for action for record armed pad. */
-    public static final Integer      ACTION_FOR_REC_ARMED_PAD          = Integer.valueOf (17);
+    public static final Integer      ACTION_FOR_REC_ARMED_PAD          = Integer.valueOf (18);
     /** Setting for displaying browser column 1. */
-    public static final Integer      BROWSER_DISPLAY_FILTER1           = Integer.valueOf (18);
+    public static final Integer      BROWSER_DISPLAY_FILTER1           = Integer.valueOf (19);
     /** Setting for displaying browser column 2. */
-    public static final Integer      BROWSER_DISPLAY_FILTER2           = Integer.valueOf (19);
+    public static final Integer      BROWSER_DISPLAY_FILTER2           = Integer.valueOf (20);
     /** Setting for displaying browser column 3. */
-    public static final Integer      BROWSER_DISPLAY_FILTER3           = Integer.valueOf (20);
+    public static final Integer      BROWSER_DISPLAY_FILTER3           = Integer.valueOf (21);
     /** Setting for displaying browser column 4. */
-    public static final Integer      BROWSER_DISPLAY_FILTER4           = Integer.valueOf (21);
+    public static final Integer      BROWSER_DISPLAY_FILTER4           = Integer.valueOf (22);
     /** Setting for displaying browser column 5. */
-    public static final Integer      BROWSER_DISPLAY_FILTER5           = Integer.valueOf (22);
+    public static final Integer      BROWSER_DISPLAY_FILTER5           = Integer.valueOf (23);
     /** Setting for displaying browser column 6. */
-    public static final Integer      BROWSER_DISPLAY_FILTER6           = Integer.valueOf (23);
+    public static final Integer      BROWSER_DISPLAY_FILTER6           = Integer.valueOf (24);
     /** Setting for displaying browser column 7. */
-    public static final Integer      BROWSER_DISPLAY_FILTER7           = Integer.valueOf (24);
+    public static final Integer      BROWSER_DISPLAY_FILTER7           = Integer.valueOf (25);
     /** Setting for displaying browser column 8. */
-    public static final Integer      BROWSER_DISPLAY_FILTER8           = Integer.valueOf (25);
+    public static final Integer      BROWSER_DISPLAY_FILTER8           = Integer.valueOf (26);
     /** The speed of a knob. */
-    public static final Integer      KNOB_SENSITIVITY_DEFAULT          = Integer.valueOf (26);
+    public static final Integer      KNOB_SENSITIVITY_DEFAULT          = Integer.valueOf (27);
     /** The speed of a knob in slow mode. */
-    public static final Integer      KNOB_SENSITIVITY_SLOW             = Integer.valueOf (27);
+    public static final Integer      KNOB_SENSITIVITY_SLOW             = Integer.valueOf (28);
     /** Turn noterepeat on/off. */
-    public static final Integer      NOTEREPEAT_ACTIVE                 = Integer.valueOf (28);
+    public static final Integer      NOTEREPEAT_ACTIVE                 = Integer.valueOf (29);
     /** The note repeat period. */
-    public static final Integer      NOTEREPEAT_PERIOD                 = Integer.valueOf (29);
+    public static final Integer      NOTEREPEAT_PERIOD                 = Integer.valueOf (30);
     /** The note repeat length. */
-    public static final Integer      NOTEREPEAT_LENGTH                 = Integer.valueOf (30);
+    public static final Integer      NOTEREPEAT_LENGTH                 = Integer.valueOf (31);
     /** The note repeat mode. */
-    public static final Integer      NOTEREPEAT_MODE                   = Integer.valueOf (31);
+    public static final Integer      NOTEREPEAT_MODE                   = Integer.valueOf (32);
     /** The note repeat octave. */
-    public static final Integer      NOTEREPEAT_OCTAVE                 = Integer.valueOf (32);
+    public static final Integer      NOTEREPEAT_OCTAVE                 = Integer.valueOf (33);
     /** The MIDI channel to use for editing sequencer notes. */
-    public static final Integer      MIDI_EDIT_CHANNEL                 = Integer.valueOf (33);
+    public static final Integer      MIDI_EDIT_CHANNEL                 = Integer.valueOf (34);
     /** Setting for excluding deactivated tracks. */
-    public static final Integer      EXCLUDE_DEACTIVATED_ITEMS         = Integer.valueOf (34);
+    public static final Integer      EXCLUDE_DEACTIVATED_ITEMS         = Integer.valueOf (35);
     /** Setting for different record button functions. */
-    public static final Integer      RECORD_BUTTON_FUNCTION            = Integer.valueOf (35);
+    public static final Integer      RECORD_BUTTON_FUNCTION            = Integer.valueOf (36);
     /** Setting for different record button functions in combination with shift. */
-    public static final Integer      SHIFTED_RECORD_BUTTON_FUNCTION    = Integer.valueOf (36);
+    public static final Integer      SHIFTED_RECORD_BUTTON_FUNCTION    = Integer.valueOf (37);
     /** Show tracks hierarchical (instead of flat) if enabled. */
-    public static final Integer      HIERARCHICAL_TRACKS               = Integer.valueOf (37);
+    public static final Integer      HIERARCHICAL_TRACKS               = Integer.valueOf (38);
     /** Setting for the footswitch functionality. */
-    public static final Integer      FOOTSWITCH_1                      = Integer.valueOf (38);
+    public static final Integer      FOOTSWITCH_1                      = Integer.valueOf (39);
     /** Setting for the footswitch functionality. */
-    public static final Integer      FOOTSWITCH_2                      = Integer.valueOf (39);
+    public static final Integer      FOOTSWITCH_2                      = Integer.valueOf (40);
     /** Setting for the footswitch functionality. */
-    public static final Integer      FOOTSWITCH_3                      = Integer.valueOf (40);
+    public static final Integer      FOOTSWITCH_3                      = Integer.valueOf (41);
     /** Setting for the footswitch functionality. */
-    public static final Integer      FOOTSWITCH_4                      = Integer.valueOf (41);
+    public static final Integer      FOOTSWITCH_4                      = Integer.valueOf (42);
     /** Preferred note view. */
-    public static final Integer      PREFERRED_NOTE_VIEW               = Integer.valueOf (42);
+    public static final Integer      PREFERRED_NOTE_VIEW               = Integer.valueOf (43);
 
     // Implementation IDs start at 50
 
@@ -205,10 +207,10 @@ public abstract class AbstractConfiguration implements Configuration
 
 
     /** The behavior when the stop button is pressed. */
-    public enum BehaviorOnStop
+    public enum TransportBehavior
     {
         /** Keep the play cursor at the current position on stop. */
-        MOVE_PLAY_CURSOR,
+        STOP,
         /** Move the cursor back to zero on stop. */
         RETURN_TO_ZERO,
         /** Only pause on stop. */
@@ -239,9 +241,9 @@ public abstract class AbstractConfiguration implements Configuration
         "32 Bars"
     };
 
-    private static final String []   BEHAVIOUR_ON_STOP_VALUES    =
+    private static final String []   TRANSPORT_BEHAVIOUR_VALUES  =
     {
-        "Move play cursor",
+        "Stop",
         "Return to Zero",
         "Pause"
     };
@@ -370,7 +372,8 @@ public abstract class AbstractConfiguration implements Configuration
     private boolean                                   scaleInKey                  = true;
     private String                                    scaleLayout                 = "4th ^";
     private boolean                                   enableVUMeters              = false;
-    private BehaviorOnStop                            behaviorOnStop              = BehaviorOnStop.MOVE_PLAY_CURSOR;
+    private TransportBehavior                         behaviorOnStop              = TransportBehavior.STOP;
+    private TransportBehavior                         behaviorOnPause             = TransportBehavior.PAUSE;
     protected boolean                                 flipSession                 = false;
     protected boolean                                 selectClipOnLaunch          = true;
     private boolean                                   drawRecordStripe            = true;
@@ -634,9 +637,17 @@ public abstract class AbstractConfiguration implements Configuration
 
     /** {@inheritDoc} */
     @Override
-    public BehaviorOnStop getBehaviourOnStop ()
+    public TransportBehavior getBehaviourOnStop ()
     {
         return this.behaviorOnStop;
+    }
+
+
+    /** {@inheritDoc} */
+    @Override
+    public TransportBehavior getBehaviourOnPause ()
+    {
+        return this.behaviorOnPause;
     }
 
 
@@ -1018,13 +1029,30 @@ public abstract class AbstractConfiguration implements Configuration
      */
     protected void activateBehaviourOnStopSetting (final ISettingsUI settingsUI)
     {
-        final IEnumSetting behaviourOnStopSetting = settingsUI.getEnumSetting ("Behaviour on Stop", CATEGORY_TRANSPORT, BEHAVIOUR_ON_STOP_VALUES, BEHAVIOUR_ON_STOP_VALUES[0]);
+        final IEnumSetting behaviourOnStopSetting = settingsUI.getEnumSetting ("Behaviour on Stop", CATEGORY_TRANSPORT, TRANSPORT_BEHAVIOUR_VALUES, TRANSPORT_BEHAVIOUR_VALUES[0]);
         behaviourOnStopSetting.addValueObserver (value -> {
-            this.behaviorOnStop = BehaviorOnStop.values ()[lookupIndex (BEHAVIOUR_ON_STOP_VALUES, value)];
+            this.behaviorOnStop = TransportBehavior.values ()[lookupIndex (TRANSPORT_BEHAVIOUR_VALUES, value)];
             this.notifyObservers (BEHAVIOUR_ON_STOP);
         });
 
         this.isSettingActive.add (BEHAVIOUR_ON_STOP);
+    }
+
+
+    /**
+     * Activate the behavior on pause setting.
+     *
+     * @param settingsUI The settings
+     */
+    protected void activateBehaviourOnPauseSetting (final ISettingsUI settingsUI)
+    {
+        final IEnumSetting behaviourOnPauseSetting = settingsUI.getEnumSetting ("Behaviour on Pause", CATEGORY_TRANSPORT, TRANSPORT_BEHAVIOUR_VALUES, TRANSPORT_BEHAVIOUR_VALUES[0]);
+        behaviourOnPauseSetting.addValueObserver (value -> {
+            this.behaviorOnPause = TransportBehavior.values ()[lookupIndex (TRANSPORT_BEHAVIOUR_VALUES, value)];
+            this.notifyObservers (BEHAVIOUR_ON_PAUSE);
+        });
+
+        this.isSettingActive.add (BEHAVIOUR_ON_PAUSE);
     }
 
 

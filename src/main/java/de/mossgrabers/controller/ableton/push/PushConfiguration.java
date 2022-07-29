@@ -332,7 +332,7 @@ public class PushConfiguration extends AbstractConfiguration implements IGraphic
         ///////////////////////////
         // Transport
 
-        this.activateBehaviourOnStopSetting (globalSettings);
+        this.activateBehaviourOnPauseSetting (globalSettings);
         this.activateFlipRecordSetting (globalSettings);
 
         ///////////////////////////
