@@ -261,6 +261,14 @@ public interface Configuration
 
 
     /**
+     * Should the drum pads sound with or without using a combination button?
+     *
+     * @return True if use combination button
+     */
+    boolean isCombinationButtonToSoundDrumPads ();
+
+
+    /**
      * Returns true if draw record stripe is enabled.
      *
      * @return True if draw record stripe is enabled.

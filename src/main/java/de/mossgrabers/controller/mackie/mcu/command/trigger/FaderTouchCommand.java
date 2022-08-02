@@ -40,34 +40,34 @@ public class FaderTouchCommand extends SelectCommand
     @Override
     public void executeNormal (final ButtonEvent event)
     {
-        final MCUConfiguration configuration = this.surface.getConfiguration ();
-        if (event == ButtonEvent.LONG || configuration.useFadersAsKnobs ())
+        if (event == ButtonEvent.LONG)
             return;
-
-        final boolean isTouched = event == ButtonEvent.DOWN;
-
-        // Master Channel
-        if (this.index == 8)
-        {
-            if (isTouched && configuration.isTouchChannel ())
-                this.model.getMasterTrack ().select ();
-            return;
-        }
 
         final ModeManager modeManager = this.surface.getModeManager ();
-        final boolean isLayerMode = Modes.isLayerMode (modeManager.getActiveID ());
-
-        // Select channel or layer
-        if (configuration.isTouchChannel () && event == ButtonEvent.DOWN)
-        {
-            final IItem item = isLayerMode ? this.model.getCursorDevice ().getLayerBank ().getItem (this.channel) : this.getTrackBank ().getItem (this.channel);
-            item.select ();
-        }
+        final MCUConfiguration configuration = this.surface.getConfiguration ();
+        final boolean isTouched = event == ButtonEvent.DOWN;
 
         if (configuration.useFadersAsKnobs ())
         {
             modeManager.getActive ().onKnobTouch (this.index, isTouched);
             return;
+        }
+
+        // Master Channel
+        if (this.index == 8)
+        {
+            if (isTouched && configuration.isTouchSelectsChannel ())
+                this.model.getMasterTrack ().select ();
+            modeManager.get (Modes.MASTER).onKnobTouch (0, isTouched);
+            return;
+        }
+
+        // Select channel or layer
+        final boolean isLayerMode = Modes.isLayerMode (modeManager.getActiveID ());
+        if (isTouched && configuration.isTouchSelectsChannel ())
+        {
+            final IItem item = isLayerMode ? this.model.getCursorDevice ().getLayerBank ().getItem (this.channel) : this.getTrackBank ().getItem (this.channel);
+            item.select ();
         }
 
         final Modes volumeMode = isLayerMode ? Modes.DEVICE_LAYER_VOLUME : Modes.VOLUME;

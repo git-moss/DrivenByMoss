@@ -717,7 +717,10 @@ public abstract class AbstractDrumView<S extends IControlSurface<C>, C extends C
      */
     protected boolean isSelectTrigger ()
     {
-        return this.surface.isPressed (this.buttonSelect);
+        final boolean pressed = this.surface.isPressed (this.buttonSelect);
+        if (this.configuration.isCombinationButtonToSoundDrumPads ())
+            return !pressed;
+        return pressed;
     }
 
 

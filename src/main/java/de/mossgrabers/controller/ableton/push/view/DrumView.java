@@ -106,9 +106,10 @@ public class DrumView extends AbstractDrumView<PushControlSurface, PushConfigura
             return;
         }
 
-        // Only activate layer mode if not one of the layer modes is already active
+        // Only activate layer mode if not one of the layer modes is already active and browser is
+        // off
         final ModeManager modeManager = this.surface.getModeManager ();
-        if (!Modes.isLayerMode (modeManager.getActiveID ()))
+        if (!Modes.isLayerMode (modeManager.getActiveID ()) && !this.model.getBrowser ().isActive ())
             modeManager.setActive (Modes.DEVICE_LAYER);
 
         drumPad.select ();

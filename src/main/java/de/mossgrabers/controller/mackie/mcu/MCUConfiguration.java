@@ -52,7 +52,7 @@ public class MCUConfiguration extends AbstractConfiguration
     /** Use the faders like the editing knobs. */
     public static final Integer       USE_FADERS_AS_KNOBS                     = Integer.valueOf (61);
     /** Select the channel when touching it's fader. */
-    public static final Integer       TOUCH_CHANNEL                           = Integer.valueOf (62);
+    public static final Integer       TOUCH_SELECTS_CHANNEL                   = Integer.valueOf (62);
     /** Activate volume mode when touching a volume fader. */
     public static final Integer       TOUCH_CHANNEL_VOLUME_MODE               = Integer.valueOf (63);
     /** iCON specific Master VU meter. */
@@ -200,7 +200,7 @@ public class MCUConfiguration extends AbstractConfiguration
     private boolean                   masterVuMeter;
     private boolean                   displayColors;
     private boolean                   use7Characters;
-    private boolean                   touchChannel;
+    private boolean                   touchSelectsChannel;
     private boolean                   touchChannelVolumeMode;
     private final int []              assignableFunctions                     = new int [7];
     private final String []           assignableFunctionActions               = new String [7];
@@ -571,12 +571,12 @@ public class MCUConfiguration extends AbstractConfiguration
      */
     protected void activateChannelTouchSetting (final ISettingsUI settingsUI)
     {
-        final IEnumSetting touchChannelSetting = settingsUI.getEnumSetting ("Select Channel on Fader Touch", CATEGORY_WORKFLOW, ON_OFF_OPTIONS, ON_OFF_OPTIONS[1]);
-        touchChannelSetting.addValueObserver (value -> {
-            this.touchChannel = "On".equals (value);
-            this.notifyObservers (TOUCH_CHANNEL);
+        final IEnumSetting touchSelectsChannelSetting = settingsUI.getEnumSetting ("Select Channel on Fader Touch", CATEGORY_WORKFLOW, ON_OFF_OPTIONS, ON_OFF_OPTIONS[1]);
+        touchSelectsChannelSetting.addValueObserver (value -> {
+            this.touchSelectsChannel = "On".equals (value);
+            this.notifyObservers (TOUCH_SELECTS_CHANNEL);
         });
-        this.isSettingActive.add (TOUCH_CHANNEL);
+        this.isSettingActive.add (TOUCH_SELECTS_CHANNEL);
 
         final IEnumSetting touchChannelVolumeModeSetting = settingsUI.getEnumSetting ("Activate Volume mode on Fader Touch", CATEGORY_WORKFLOW, ON_OFF_OPTIONS, ON_OFF_OPTIONS[1]);
         touchChannelVolumeModeSetting.addValueObserver (value -> {
@@ -837,9 +837,9 @@ public class MCUConfiguration extends AbstractConfiguration
      *
      * @return True if touching the channel fader should select the track
      */
-    public boolean isTouchChannel ()
+    public boolean isTouchSelectsChannel ()
     {
-        return this.touchChannel;
+        return this.touchSelectsChannel;
     }
 
 

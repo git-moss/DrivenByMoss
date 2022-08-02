@@ -108,6 +108,7 @@ public class FireConfiguration extends AbstractConfiguration
 
         if (this.host.supports (Capability.HAS_DRUM_DEVICE))
             this.activateTurnOffEmptyDrumPadsSetting (globalSettings);
+        this.activateUseCombinationButtonToSoundSetting (globalSettings);
 
         ///////////////////////////
         // Workflow
