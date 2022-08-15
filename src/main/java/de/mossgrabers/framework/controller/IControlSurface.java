@@ -11,6 +11,7 @@ import de.mossgrabers.framework.controller.display.IGraphicDisplay;
 import de.mossgrabers.framework.controller.display.ITextDisplay;
 import de.mossgrabers.framework.controller.grid.ILightGuide;
 import de.mossgrabers.framework.controller.grid.IPadGrid;
+import de.mossgrabers.framework.controller.hardware.BindType;
 import de.mossgrabers.framework.controller.hardware.IHwAbsoluteKnob;
 import de.mossgrabers.framework.controller.hardware.IHwButton;
 import de.mossgrabers.framework.controller.hardware.IHwContinuousControl;
@@ -289,6 +290,17 @@ public interface IControlSurface<C extends Configuration>
      * @param value The color / brightness depending on the controller
      */
     void setTrigger (int channel, int cc, int value);
+
+
+    /**
+     * Update the lighting of a trigger (if the trigger has light).
+     *
+     * @param bindType The bind type
+     * @param channel The MIDI channel to use
+     * @param cc The trigger
+     * @param value The color / brightness depending on the controller
+     */
+    void setTrigger (BindType bindType, int channel, int cc, int value);
 
 
     /**

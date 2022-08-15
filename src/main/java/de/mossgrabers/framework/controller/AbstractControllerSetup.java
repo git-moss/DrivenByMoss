@@ -772,16 +772,16 @@ public abstract class AbstractControllerSetup<S extends IControlSurface<C>, C ex
         if (midiControl < 0)
             return;
         final IMidiInput midiInput = surface.getMidiInput ();
-        final BindType triggerBindType = this.getTriggerBindType (buttonID);
+        final BindType bindType = this.getTriggerBindType (buttonID);
         if (value == -1)
-            button.bind (midiInput, triggerBindType, midiInputChannel, midiControl);
+            button.bind (midiInput, bindType, midiInputChannel, midiControl);
         else
-            button.bind (midiInput, triggerBindType, midiInputChannel, midiControl, value);
+            button.bind (midiInput, bindType, midiInputChannel, midiControl, value);
         if (hasLight)
         {
             final IntSupplier intSupplier = () -> button.isPressed () ? 1 : 0;
             final IntSupplier supp = supplier == null ? intSupplier : supplier;
-            this.addLight (surface, null, buttonID, button, midiOutputChannel, midiControl, supp, colorIds);
+            this.addLight (surface, null, buttonID, button, bindType, midiOutputChannel, midiControl, supp, colorIds);
         }
     }
 
@@ -812,7 +812,8 @@ public abstract class AbstractControllerSetup<S extends IControlSurface<C>, C ex
             button.bind ( (event, velocity) -> command.execute (event, index));
             if (midiControl < 0)
                 continue;
-            button.bind (surface.getMidiInput (), this.getTriggerBindType (buttonID), midiChannel, midiControl, startValue + i);
+            final BindType bindType = this.getTriggerBindType (buttonID);
+            button.bind (surface.getMidiInput (), bindType, midiChannel, midiControl, startValue + i);
 
             final IntSupplier supp;
             if (supplier == null)
@@ -820,7 +821,7 @@ public abstract class AbstractControllerSetup<S extends IControlSurface<C>, C ex
             else
                 supp = () -> supplier.process (index);
 
-            this.addLight (surface, null, buttonID, button, midiChannel, midiControl, supp, colorIds);
+            this.addLight (surface, null, buttonID, button, bindType, midiChannel, midiControl, supp, colorIds);
         }
     }
 
@@ -837,7 +838,7 @@ public abstract class AbstractControllerSetup<S extends IControlSurface<C>, C ex
      */
     protected void addLight (final S surface, final OutputID outputID, final int midiChannel, final int midiControl, final IntSupplier supplier, final String... colorIds)
     {
-        this.addLight (surface, outputID, null, null, midiChannel, midiControl, supplier, colorIds);
+        this.addLight (surface, outputID, null, null, null, midiChannel, midiControl, supplier, colorIds);
     }
 
 
@@ -848,12 +849,13 @@ public abstract class AbstractControllerSetup<S extends IControlSurface<C>, C ex
      * @param outputID The ID of the light (for later access)
      * @param buttonID The ID of the button (for later access)
      * @param button The button to assign it to, may be null
+     * @param bindType The bind type used if the light is bound to a control widget
      * @param midiChannel The MIDI channel
      * @param midiControl The MIDI CC or note
      * @param supplier The supplier for the color state of the light
      * @param colorIds The color IDs to map to the states
      */
-    protected void addLight (final S surface, final OutputID outputID, final ButtonID buttonID, final IHwButton button, final int midiChannel, final int midiControl, final IntSupplier supplier, final String... colorIds)
+    protected void addLight (final S surface, final OutputID outputID, final ButtonID buttonID, final IHwButton button, final BindType bindType, final int midiChannel, final int midiControl, final IntSupplier supplier, final String... colorIds)
     {
         surface.createLight (outputID, () -> {
             final int state = supplier.getAsInt ();
@@ -861,7 +863,7 @@ public abstract class AbstractControllerSetup<S extends IControlSurface<C>, C ex
             if (colorIds == null || colorIds.length == 0)
                 return state;
             return this.colorManager.getColorIndex (state < 0 ? ColorManager.BUTTON_STATE_OFF : colorIds[state]);
-        }, color -> surface.setTrigger (midiChannel, midiControl, color), state -> this.colorManager.getColor (state, buttonID), button);
+        }, color -> surface.setTrigger (bindType, midiChannel, midiControl, color), state -> this.colorManager.getColor (state, buttonID), button);
     }
 
 
