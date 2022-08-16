@@ -14,21 +14,16 @@ import java.util.List;
 
 
 /**
- * The configuration settings for Launchkey Mini Mk3.
+ * The configuration settings for LaunchControl XL.
  *
  * @author J&uuml;rgen Mo&szlig;graber
  */
 public class LaunchControlXLConfiguration extends AbstractConfiguration
 {
-    public enum ToggleMode
-    {
-        MUTE,
-        SOLO,
-        REC_ARM
-    }
+    /** Active template. */
+    public static final Integer ACTIVE_TEMPLATE = Integer.valueOf (50);
 
-
-    private ToggleMode buttonFunction = ToggleMode.MUTE;
+    private int                 templateID      = -1;
 
 
     /**
@@ -49,36 +44,32 @@ public class LaunchControlXLConfiguration extends AbstractConfiguration
     public void init (final ISettingsUI globalSettings, final ISettingsUI documentSettings)
     {
         ///////////////////////////
-        // Transport
-
-        this.activateBehaviourOnPauseSetting (globalSettings);
-        this.activateRecordButtonSetting (globalSettings);
-        this.activateShiftedRecordButtonSetting (globalSettings);
-        this.activateNewClipLengthSetting (globalSettings);
-
-        ///////////////////////////
         // Workflow
 
         this.activateExcludeDeactivatedItemsSetting (globalSettings);
-        this.activateIncludeMasterSetting (globalSettings);
-        this.activateSelectClipOnLaunchSetting (globalSettings);
     }
 
 
     /**
-     * @return the buttonFunction
+     * Set the active template on the device (0-15).
+     *
+     * @param templateID The ID to set
      */
-    public ToggleMode getButtonFunction ()
+    public void setTemplate (final int templateID)
     {
-        return this.buttonFunction;
+        this.templateID = templateID;
+
+        this.notifyObservers (ACTIVE_TEMPLATE);
     }
 
 
     /**
-     * @param buttonFunction the buttonFunction to set
+     * Get the active template on the device (0-15).
+     *
+     * @return The ID to set
      */
-    public void setButtonFunction (final ToggleMode buttonFunction)
+    public int getTemplate ()
     {
-        this.buttonFunction = buttonFunction;
+        return this.templateID;
     }
 }

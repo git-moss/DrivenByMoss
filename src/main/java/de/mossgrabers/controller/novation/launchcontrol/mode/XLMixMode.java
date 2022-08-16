@@ -9,12 +9,14 @@ import de.mossgrabers.framework.daw.IModel;
 import de.mossgrabers.framework.daw.data.ITrack;
 import de.mossgrabers.framework.daw.data.bank.ITrackBank;
 import de.mossgrabers.framework.featuregroup.AbstractMode;
+import de.mossgrabers.framework.featuregroup.ModeManager;
+import de.mossgrabers.framework.mode.Modes;
+import de.mossgrabers.framework.parameterprovider.device.BankParameterProvider;
 import de.mossgrabers.framework.parameterprovider.special.CombinedParameterProvider;
 import de.mossgrabers.framework.parameterprovider.track.PanParameterProvider;
 import de.mossgrabers.framework.parameterprovider.track.SendParameterProvider;
 import de.mossgrabers.framework.utils.ButtonEvent;
 
-import java.util.ArrayList;
 import java.util.List;
 
 
@@ -25,13 +27,11 @@ import java.util.List;
  */
 public class XLMixMode extends AbstractMode<LaunchControlXLControlSurface, LaunchControlXLConfiguration, ITrack>
 {
-    private static final List<ContinuousID> KNOB_CONTROLS = new ArrayList<> (24);
-    static
-    {
-        KNOB_CONTROLS.addAll (ContinuousID.createSequentialList (ContinuousID.SEND1_KNOB1, 8));
-        KNOB_CONTROLS.addAll (ContinuousID.createSequentialList (ContinuousID.SEND2_KNOB1, 8));
-        KNOB_CONTROLS.addAll (ContinuousID.createSequentialList (ContinuousID.PAN_KNOB1, 8));
-    }
+    private final CombinedParameterProvider parameterProviderWithPan;
+    private final CombinedParameterProvider parameterProviderWithDeviceParams;
+
+    private boolean                   isDeviceActive = false;
+    private boolean                   wasLong        = false;
 
 
     /**
@@ -39,12 +39,20 @@ public class XLMixMode extends AbstractMode<LaunchControlXLControlSurface, Launc
      *
      * @param surface The control surface
      * @param model The model
+     * @param controls The IDs of the knobs or faders to control this mode
      */
-    public XLMixMode (final LaunchControlXLControlSurface surface, final IModel model)
+    public XLMixMode (final LaunchControlXLControlSurface surface, final IModel model, final List<ContinuousID> controls)
     {
-        super ("Send A, B & Panorama", surface, model, true, model.getTrackBank (), KNOB_CONTROLS);
+        super ("Send A, B & Panorama", surface, model, true, model.getTrackBank (), controls);
 
-        this.setParameterProvider (new CombinedParameterProvider (new SendParameterProvider (model, 0, 0), new SendParameterProvider (model, 1, 0), new PanParameterProvider (model)));
+        final SendParameterProvider sendParameterProvider1 = new SendParameterProvider (model, 0, 0);
+        final SendParameterProvider sendParameterProvider2 = new SendParameterProvider (model, 1, 0);
+        final PanParameterProvider panParameterProvider = new PanParameterProvider (model);
+        final BankParameterProvider deviceParameterProvider = new BankParameterProvider (this.model.getCursorDevice ().getParameterBank ());
+
+        this.parameterProviderWithPan = new CombinedParameterProvider (sendParameterProvider1, sendParameterProvider2, panParameterProvider);
+        this.parameterProviderWithDeviceParams = new CombinedParameterProvider (sendParameterProvider1, sendParameterProvider2, deviceParameterProvider);
+        this.setParameterProvider (this.parameterProviderWithPan);
     }
 
 
@@ -52,20 +60,43 @@ public class XLMixMode extends AbstractMode<LaunchControlXLControlSurface, Launc
     @Override
     public void onButton (final int row, final int index, final ButtonEvent event)
     {
-        if (event != ButtonEvent.UP || row != 0)
+        if (row != 0)
             return;
 
-        final ITrack track = this.model.getTrackBank ().getItem (index);
-        if (track.doesExist ())
-        {
-            if (track.isSelected () && track.isGroup ())
-            {
-                track.toggleGroupExpanded ();
-                return;
-            }
+        final ModeManager modeManager = this.surface.getFaderModeManager ();
 
-            track.select ();
-            this.mvHelper.notifySelectedTrack ();
+        if (event == ButtonEvent.DOWN)
+        {
+            modeManager.setTemporary (Modes.MASTER);
+            this.wasLong = false;
+            return;
+        }
+
+        if (event == ButtonEvent.LONG)
+        {
+            this.wasLong = true;
+            return;
+        }
+
+        if (event == ButtonEvent.UP)
+        {
+            modeManager.restore ();
+
+            if (this.wasLong)
+                return;
+
+            final ITrack track = this.model.getTrackBank ().getItem (index);
+            if (track.doesExist ())
+            {
+                if (track.isSelected () && track.isGroup ())
+                {
+                    track.toggleGroupExpanded ();
+                    return;
+                }
+
+                track.select ();
+                this.mvHelper.notifySelectedTrack ();
+            }
         }
     }
 
@@ -75,7 +106,8 @@ public class XLMixMode extends AbstractMode<LaunchControlXLControlSurface, Launc
     public int getKnobValue (final int index)
     {
         final int row = index / 8;
-        final ITrack track = this.model.getTrackBank ().getItem (index % 8);
+        final int column = index % 8;
+        final ITrack track = this.model.getTrackBank ().getItem (column);
         switch (row)
         {
             case 0:
@@ -83,6 +115,8 @@ public class XLMixMode extends AbstractMode<LaunchControlXLControlSurface, Launc
             case 1:
                 return track.getSendBank ().getItem (1).getValue ();
             case 2:
+                if (this.isDeviceActive)
+                    return this.model.getCursorDevice ().getParameterBank ().getItem (column).getValue ();
                 return track.getPan ();
             default:
                 return 0;
@@ -146,5 +180,82 @@ public class XLMixMode extends AbstractMode<LaunchControlXLControlSurface, Launc
         for (int i = 0; i < 8; i++)
             canScroll |= trackBank.getItem (i).getSendBank ().canScrollPageForwards ();
         return canScroll;
+    }
+
+
+    /** {@inheritDoc} */
+    @Override
+    public void selectPreviousItemPage ()
+    {
+        if (this.isButtonCombination (ButtonID.DEVICE))
+        {
+            this.model.getCursorDevice ().selectPrevious ();
+            this.mvHelper.notifySelectedDevice ();
+            return;
+        }
+
+        super.selectPreviousItemPage ();
+        this.mvHelper.notifySelectedTrack ();
+    }
+
+
+    /** {@inheritDoc} */
+    @Override
+    public void selectNextItemPage ()
+    {
+        if (this.isButtonCombination (ButtonID.DEVICE))
+        {
+            this.model.getCursorDevice ().selectNext ();
+            this.mvHelper.notifySelectedDevice ();
+            return;
+        }
+
+        super.selectNextItemPage ();
+        this.mvHelper.notifySelectedTrack ();
+    }
+
+
+    /** {@inheritDoc} */
+    @Override
+    public boolean hasPreviousItemPage ()
+    {
+        if (this.surface.isPressed (ButtonID.DEVICE))
+            return this.model.getCursorDevice ().canSelectPrevious ();
+
+        return super.hasPreviousItemPage ();
+    }
+
+
+    /** {@inheritDoc} */
+    @Override
+    public boolean hasNextItemPage ()
+    {
+        if (this.surface.isPressed (ButtonID.DEVICE))
+            return this.model.getCursorDevice ().canSelectNext ();
+
+        return super.hasNextItemPage ();
+    }
+
+
+    /**
+     * Toggle between panorama and device parameters control on 3rd row.
+     */
+    public void toggleDeviceActive ()
+    {
+        this.isDeviceActive = !this.isDeviceActive;
+
+        this.setParameterProvider (this.isDeviceActive ? this.parameterProviderWithDeviceParams : this.parameterProviderWithPan);
+        this.bindControls ();
+    }
+
+
+    /**
+     * Are device parameters active?
+     *
+     * @return True if active otherwise panorama is active
+     */
+    public boolean isDeviceActive ()
+    {
+        return this.isDeviceActive;
     }
 }
