@@ -15,7 +15,7 @@ import de.mossgrabers.framework.daw.IModel;
 import de.mossgrabers.framework.daw.data.IBrowserColumn;
 import de.mossgrabers.framework.daw.data.IBrowserColumnItem;
 import de.mossgrabers.framework.daw.data.IItem;
-import de.mossgrabers.framework.featuregroup.AbstractMode;
+import de.mossgrabers.framework.featuregroup.AbstractParameterMode;
 import de.mossgrabers.framework.utils.StringUtils;
 
 import java.util.Locale;
@@ -26,7 +26,7 @@ import java.util.Locale;
  *
  * @author J&uuml;rgen Mo&szlig;graber
  */
-public class BrowserMode extends AbstractMode<FireControlSurface, FireConfiguration, IItem>
+public class BrowserMode extends AbstractParameterMode<FireControlSurface, FireConfiguration, IItem>
 {
     /**
      * Constructor.

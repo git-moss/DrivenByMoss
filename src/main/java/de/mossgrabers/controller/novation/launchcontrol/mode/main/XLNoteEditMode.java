@@ -6,6 +6,7 @@ import de.mossgrabers.controller.novation.launchcontrol.controller.LaunchControl
 import de.mossgrabers.controller.novation.launchcontrol.mode.buttons.XLDrumSequencerMode;
 import de.mossgrabers.controller.novation.launchcontrol.mode.buttons.XLTemporaryButtonMode;
 import de.mossgrabers.framework.controller.ButtonID;
+import de.mossgrabers.framework.controller.ContinuousID;
 import de.mossgrabers.framework.controller.display.IDisplay;
 import de.mossgrabers.framework.controller.valuechanger.IValueChanger;
 import de.mossgrabers.framework.daw.IHost;
@@ -18,15 +19,22 @@ import de.mossgrabers.framework.daw.constants.DeviceID;
 import de.mossgrabers.framework.daw.data.IChannel;
 import de.mossgrabers.framework.daw.data.IDrumDevice;
 import de.mossgrabers.framework.daw.data.IItem;
+import de.mossgrabers.framework.daw.data.ILayer;
 import de.mossgrabers.framework.daw.data.ISpecificDevice;
 import de.mossgrabers.framework.daw.data.bank.IDrumPadBank;
 import de.mossgrabers.framework.featuregroup.ModeManager;
 import de.mossgrabers.framework.mode.Modes;
+import de.mossgrabers.framework.parameterprovider.IParameterProvider;
+import de.mossgrabers.framework.parameterprovider.device.BankParameterProvider;
+import de.mossgrabers.framework.parameterprovider.special.CombinedParameterProvider;
+import de.mossgrabers.framework.parameterprovider.special.NullParameterProvider;
 import de.mossgrabers.framework.scale.Scales;
 import de.mossgrabers.framework.utils.ButtonEvent;
 import de.mossgrabers.framework.utils.KeyManager;
 import de.mossgrabers.framework.utils.StringUtils;
 import de.mossgrabers.framework.view.sequencer.AbstractDrumView;
+
+import java.util.List;
 
 
 /**
@@ -43,8 +51,9 @@ public class XLNoteEditMode extends XLAbstractMainMode<IItem>
     private final ISpecificDevice              firstInstrument;
     private final Scales                       scales;
     private final KeyManager                   keyManager;
+    private final IParameterProvider           parameterProviderDeviceParamsOnly;
+    private final IParameterProvider           nullParameterProvider;
 
-    private int                                channel = 0;
     private int                                note;
 
 
@@ -55,14 +64,16 @@ public class XLNoteEditMode extends XLAbstractMainMode<IItem>
      * @param model The model
      * @param clipRows The rows of the monitored clip
      * @param clipCols The columns of the monitored clip
+     * @param controls The IDs of the knobs or faders to control this mode
      */
-    public XLNoteEditMode (final LaunchControlXLControlSurface surface, final IModel model, final int clipRows, final int clipCols)
+    public XLNoteEditMode (final LaunchControlXLControlSurface surface, final IModel model, final int clipRows, final int clipCols, final List<ContinuousID> controls)
     {
-        super ("Drum Sequencer", surface, model, null, null);
+        super ("Drum Sequencer", surface, model, null, controls);
 
         this.host = model.getHost ();
 
         this.scales = model.getScales ();
+        this.scales.setDrumDefaultOffset (8);
         this.keyManager = new KeyManager (model, this.scales, surface.getPadGrid ());
 
         this.configuration = this.surface.getConfiguration ();
@@ -75,21 +86,13 @@ public class XLNoteEditMode extends XLAbstractMainMode<IItem>
 
         this.defaultMode = Modes.DRUM_SEQUENCER;
 
+        final BankParameterProvider deviceParameterProvider = new BankParameterProvider (this.firstInstrument.getParameterBank ());
+
+        this.parameterProviderDeviceParamsOnly = new CombinedParameterProvider (new NullParameterProvider (16), deviceParameterProvider);
+        this.nullParameterProvider = new NullParameterProvider (24);
+
         // Force clip creation
         this.getClip ();
-    }
-
-
-    /**
-     * Set the values.
-     *
-     * @param channel The MIDI channel
-     * @param note The note to edit
-     */
-    public void setValues (final int channel, final int note)
-    {
-        this.channel = channel;
-        this.note = note;
     }
 
 
@@ -102,7 +105,8 @@ public class XLNoteEditMode extends XLAbstractMainMode<IItem>
         final int column = index % 8;
 
         final INoteClip clip = this.getClip ();
-        final IStepInfo stepInfo = clip.getStep (this.channel, column, this.note);
+        final int channel = this.configuration.getMidiEditChannel ();
+        final IStepInfo stepInfo = clip.getStep (channel, column, this.note);
         if (stepInfo.getState () == StepState.OFF)
             return;
 
@@ -116,7 +120,7 @@ public class XLNoteEditMode extends XLAbstractMainMode<IItem>
             case 0:
                 if (this.host.supports (Capability.NOTE_EDIT_CHANCE))
                 {
-                    clip.updateChance (this.channel, column, this.note, normalizedValue);
+                    clip.updateChance (channel, column, this.note, normalizedValue);
                     display.notify (String.format ("Chance: %d%%", Integer.valueOf ((int) Math.round (normalizedValue * 100))));
                 }
                 break;
@@ -125,7 +129,7 @@ public class XLNoteEditMode extends XLAbstractMainMode<IItem>
                 if (this.host.supports (Capability.NOTE_EDIT_REPEAT))
                 {
                     final int v = (int) Math.round ((value - 64) / 4.26);
-                    clip.updateRepeatCount (this.channel, column, this.note, v);
+                    clip.updateRepeatCount (channel, column, this.note, v);
                     display.notify ("Repeat Count: " + stepInfo.getFormattedRepeatCount ());
                 }
                 break;
@@ -134,13 +138,13 @@ public class XLNoteEditMode extends XLAbstractMainMode<IItem>
                 if (this.host.supports (Capability.NOTE_EDIT_EXPRESSIONS))
                 {
                     final double pan = normalizedValue * 2.0 - 1.0;
-                    clip.updateStepPan (this.channel, column, this.note, pan);
+                    clip.updateStepPan (channel, column, this.note, pan);
                     display.notify ("Panorama: " + StringUtils.formatPercentage (pan));
                 }
                 break;
 
             case 3:
-                clip.updateStepVelocity (this.channel, column, this.note, normalizedValue);
+                clip.updateStepVelocity (channel, column, this.note, normalizedValue);
                 display.notify ("Velocity: " + StringUtils.formatPercentage (normalizedValue));
                 break;
 
@@ -157,8 +161,9 @@ public class XLNoteEditMode extends XLAbstractMainMode<IItem>
         final int row = index / 8;
         final int column = index % 8;
 
+        final int channel = this.configuration.getMidiEditChannel ();
         final INoteClip clip = this.getClip ();
-        final IStepInfo stepInfo = clip.getStep (this.channel, column, this.note);
+        final IStepInfo stepInfo = clip.getStep (channel, column, this.note);
         final IValueChanger valueChanger = this.model.getValueChanger ();
 
         if (stepInfo.getState () == StepState.OFF)
@@ -233,32 +238,13 @@ public class XLNoteEditMode extends XLAbstractMainMode<IItem>
 
     /** {@inheritDoc} */
     @Override
-    protected void handleRow0 (final int index, final ButtonEvent event)
+    protected void executeRow0 (final int index)
     {
-        final ModeManager modeManager = this.surface.getFaderModeManager ();
-
-        if (event == ButtonEvent.DOWN)
-        {
-            modeManager.setTemporary (Modes.MASTER);
-            this.wasLong = false;
-            return;
-        }
-
-        if (event == ButtonEvent.LONG)
-        {
-            this.wasLong = true;
-            return;
-        }
-
-        if (event == ButtonEvent.UP)
-        {
-            modeManager.restore ();
-
-            if (this.wasLong)
-                return;
-
-            ((XLDrumSequencerMode) this.surface.getTrackButtonModeManager ().get (Modes.DRUM_SEQUENCER)).setSelectedPad (index);
-        }
+        this.note = this.model.getScales ().getDrumOffset () + index;
+        ((XLDrumSequencerMode) this.surface.getTrackButtonModeManager ().get (Modes.DRUM_SEQUENCER)).setSelectedPad (index);
+        final ILayer item = this.model.getDrumDevice ().getDrumPadBank ().getItem (index);
+        if (item.doesExist ())
+            this.host.showNotification ("Drum Pad: " + item.getName ());
     }
 
 
@@ -266,7 +252,51 @@ public class XLNoteEditMode extends XLAbstractMainMode<IItem>
     @Override
     protected void handleRow2 (final int index, final ButtonEvent event)
     {
-        // TODO
+        final ModeManager trackButtonModeManager = this.surface.getTrackButtonModeManager ();
+
+        switch (index)
+        {
+            // Device button
+            case 0:
+                if (event == ButtonEvent.DOWN)
+                {
+                    trackButtonModeManager.setTemporary (Modes.INSTRUMENT_DEVICE_PARAMS);
+                    return;
+                }
+
+                if (event == ButtonEvent.UP)
+                {
+                    if (!((XLTemporaryButtonMode) trackButtonModeManager.get (Modes.INSTRUMENT_DEVICE_PARAMS)).hasBeenUsed ())
+                        this.toggleDeviceActive ();
+                    trackButtonModeManager.restore ();
+                }
+                break;
+
+            // Mute button
+            case 1:
+                final Modes activeIDIgnoreTemporary = trackButtonModeManager.getActiveIDIgnoreTemporary ();
+                final Modes modeID = activeIDIgnoreTemporary == Modes.DEVICE_LAYER_MUTE ? Modes.DRUM_SEQUENCER : Modes.DEVICE_LAYER_MUTE;
+                this.alternativeModeSelect (event, modeID, Modes.CONFIGURATION);
+                break;
+
+            // Solo button
+            case 2:
+                final Modes activeIDIgnoreTemporary2 = trackButtonModeManager.getActiveIDIgnoreTemporary ();
+                final Modes modeID2 = activeIDIgnoreTemporary2 == Modes.DEVICE_LAYER_SOLO ? Modes.DRUM_SEQUENCER : Modes.DEVICE_LAYER_SOLO;
+                this.alternativeModeSelect (event, modeID2, Modes.CLIP);
+                break;
+
+            // Record Arm button
+            case 3:
+                final Modes activeIDIgnoreTemporary3 = trackButtonModeManager.getActiveIDIgnoreTemporary ();
+                final Modes modeID3 = activeIDIgnoreTemporary3 == Modes.LOOP_LENGTH ? Modes.DRUM_SEQUENCER : Modes.LOOP_LENGTH;
+                this.alternativeModeSelect (event, modeID3, Modes.TRANSPORT);
+                break;
+
+            default:
+                // Not used
+                break;
+        }
     }
 
 
@@ -281,16 +311,20 @@ public class XLNoteEditMode extends XLAbstractMainMode<IItem>
                 return this.surface.getConfiguration ().isDeviceActive () ? 127 : 0;
 
             case MUTE:
-                return trackModeManager.isActive (Modes.MUTE) ? 127 : 0;
+                return trackModeManager.isActive (Modes.DEVICE_LAYER_MUTE) ? 127 : 0;
 
             case SOLO:
-                return trackModeManager.isActive (Modes.SOLO) ? 127 : 0;
+                return trackModeManager.isActive (Modes.DEVICE_LAYER_SOLO) ? 127 : 0;
 
             case REC_ARM:
-                return trackModeManager.isActive (Modes.REC_ARM) ? 127 : 0;
+                return trackModeManager.isActive (Modes.LOOP_LENGTH) ? 127 : 0;
 
             case ROW1_1, ROW1_2, ROW1_3, ROW1_4, ROW1_5, ROW1_6, ROW1_7, ROW1_8:
                 final int index = buttonID.ordinal () - ButtonID.ROW1_1.ordinal ();
+
+                if (this.surface.isPressed (ButtonID.REC_ARM))
+                    return super.getTransportButtonColor (index);
+
                 final boolean isRecording = this.model.hasRecordingState ();
                 final IDrumDevice drumDevice = this.model.getDrumDevice ();
                 final String drumPadColor = this.getDrumPadColor (index, drumDevice.getDrumPadBank (), isRecording);
@@ -307,9 +341,43 @@ public class XLNoteEditMode extends XLAbstractMainMode<IItem>
      *
      * @return The clip
      */
-    private final INoteClip getClip ()
+    public final INoteClip getClip ()
     {
         return this.model.getNoteClip (this.clipCols, this.clipRows);
+    }
+
+
+    /** {@inheritDoc} */
+    @Override
+    public void selectPreviousItem ()
+    {
+        this.scales.decDrumOctave ();
+        this.host.showNotification (this.scales.getDrumRangeText ());
+    }
+
+
+    /** {@inheritDoc} */
+    @Override
+    public void selectNextItem ()
+    {
+        this.scales.incDrumOctave ();
+        this.host.showNotification (this.scales.getDrumRangeText ());
+    }
+
+
+    /** {@inheritDoc} */
+    @Override
+    public boolean hasPreviousItem ()
+    {
+        return this.scales.canScrollDrumOctaveDown ();
+    }
+
+
+    /** {@inheritDoc} */
+    @Override
+    public boolean hasNextItem ()
+    {
+        return this.scales.canScrollDrumOctaveUp ();
     }
 
 
@@ -419,5 +487,17 @@ public class XLNoteEditMode extends XLAbstractMainMode<IItem>
         if (drumPad.isMute () || drumPadBank.hasSoloedPads () && !drumPad.isSolo ())
             return AbstractDrumView.COLOR_PAD_MUTED;
         return AbstractDrumView.COLOR_PAD_HAS_CONTENT;
+    }
+
+
+    /**
+     * Toggle between panorama and device parameters control on 3rd row.
+     */
+    public void toggleDeviceActive ()
+    {
+        this.configuration.toggleDeviceActive ();
+
+        this.setParameterProvider (this.configuration.isDeviceActive () ? this.parameterProviderDeviceParamsOnly : this.nullParameterProvider);
+        this.bindControls ();
     }
 }

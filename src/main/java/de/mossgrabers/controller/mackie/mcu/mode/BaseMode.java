@@ -22,7 +22,7 @@ import de.mossgrabers.framework.daw.data.bank.IBank;
 import de.mossgrabers.framework.daw.data.bank.IChannelBank;
 import de.mossgrabers.framework.daw.data.bank.ITrackBank;
 import de.mossgrabers.framework.daw.data.empty.EmptyTrack;
-import de.mossgrabers.framework.featuregroup.AbstractMode;
+import de.mossgrabers.framework.featuregroup.AbstractParameterMode;
 import de.mossgrabers.framework.featuregroup.ModeManager;
 import de.mossgrabers.framework.mode.Modes;
 import de.mossgrabers.framework.parameterprovider.IParameterProvider;
@@ -39,7 +39,7 @@ import java.util.Optional;
  *
  * @author J&uuml;rgen Mo&szlig;graber
  */
-public abstract class BaseMode<B extends IItem> extends AbstractMode<MCUControlSurface, MCUConfiguration, B>
+public abstract class BaseMode<B extends IItem> extends AbstractParameterMode<MCUControlSurface, MCUConfiguration, B>
 {
     protected static final ColorEx [] COLORS_WHITE        =
     {
@@ -132,7 +132,7 @@ public abstract class BaseMode<B extends IItem> extends AbstractMode<MCUControlS
             // the last device if setting is enabled
             final ModeManager modeManager = this.surface.getModeManager ();
             final boolean isLayerMode = Modes.isLayerMode (this.surface.getModeManager ().getActiveID ());
-            parameterProvider = ((AbstractMode<?, ?, ?>) modeManager.get (isLayerMode ? Modes.DEVICE_LAYER_VOLUME : Modes.VOLUME)).getParameterProvider ();
+            parameterProvider = ((AbstractParameterMode<?, ?, ?>) modeManager.get (isLayerMode ? Modes.DEVICE_LAYER_VOLUME : Modes.VOLUME)).getParameterProvider ();
         }
         for (int i = 0; i < this.controls.size (); i++)
             this.surface.getContinuous (ContinuousID.get (ContinuousID.FADER1, i)).bind (parameterProvider.get (i));

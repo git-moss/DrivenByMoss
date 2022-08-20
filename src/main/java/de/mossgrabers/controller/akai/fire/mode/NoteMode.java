@@ -18,7 +18,7 @@ import de.mossgrabers.framework.daw.IStepInfo;
 import de.mossgrabers.framework.daw.constants.Capability;
 import de.mossgrabers.framework.daw.data.GridStep;
 import de.mossgrabers.framework.daw.data.IItem;
-import de.mossgrabers.framework.featuregroup.AbstractMode;
+import de.mossgrabers.framework.featuregroup.AbstractParameterMode;
 import de.mossgrabers.framework.featuregroup.IView;
 import de.mossgrabers.framework.mode.INoteMode;
 import de.mossgrabers.framework.scale.Scales;
@@ -34,7 +34,7 @@ import java.util.List;
  *
  * @author J&uuml;rgen Mo&szlig;graber
  */
-public class NoteMode extends AbstractMode<FireControlSurface, FireConfiguration, IItem> implements INoteMode
+public class NoteMode extends AbstractParameterMode<FireControlSurface, FireConfiguration, IItem> implements INoteMode
 {
     protected static final List<ContinuousID> KNOB_IDS = ContinuousID.createSequentialList (ContinuousID.KNOB1, 4);
     static

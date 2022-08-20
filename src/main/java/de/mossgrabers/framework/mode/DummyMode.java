@@ -9,7 +9,7 @@ import de.mossgrabers.framework.controller.ContinuousID;
 import de.mossgrabers.framework.controller.IControlSurface;
 import de.mossgrabers.framework.daw.IModel;
 import de.mossgrabers.framework.daw.data.IItem;
-import de.mossgrabers.framework.featuregroup.AbstractMode;
+import de.mossgrabers.framework.featuregroup.AbstractParameterMode;
 import de.mossgrabers.framework.parameterprovider.special.EmptyParameterProvider;
 
 import java.util.List;
@@ -23,7 +23,7 @@ import java.util.List;
  *
  * @author J&uuml;rgen Mo&szlig;graber
  */
-public class DummyMode<S extends IControlSurface<C>, C extends Configuration> extends AbstractMode<S, C, IItem>
+public class DummyMode<S extends IControlSurface<C>, C extends Configuration> extends AbstractParameterMode<S, C, IItem>
 {
     /**
      * Constructor.

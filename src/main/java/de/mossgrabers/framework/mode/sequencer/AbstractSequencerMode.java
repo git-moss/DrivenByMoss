@@ -1,17 +1,11 @@
 package de.mossgrabers.framework.mode.sequencer;
 
 import de.mossgrabers.framework.configuration.Configuration;
-import de.mossgrabers.framework.controller.ButtonID;
 import de.mossgrabers.framework.controller.IControlSurface;
 import de.mossgrabers.framework.daw.IModel;
 import de.mossgrabers.framework.daw.INoteClip;
 import de.mossgrabers.framework.daw.constants.Resolution;
-import de.mossgrabers.framework.featuregroup.AbstractFeatureGroup;
-import de.mossgrabers.framework.featuregroup.IMode;
-import de.mossgrabers.framework.parameterprovider.IParameterProvider;
-import de.mossgrabers.framework.utils.ButtonEvent;
-
-import java.util.Optional;
+import de.mossgrabers.framework.featuregroup.AbstractMode;
 
 
 /**
@@ -22,7 +16,7 @@ import java.util.Optional;
  *
  * @author J&uuml;rgen Mo&szlig;graber
  */
-public abstract class AbstractSequencerMode<S extends IControlSurface<C>, C extends Configuration> extends AbstractFeatureGroup<S, C> implements IMode
+public abstract class AbstractSequencerMode<S extends IControlSurface<C>, C extends Configuration> extends AbstractMode<S, C>
 {
     protected final int     clipRows;
     protected final int     clipCols;
@@ -37,13 +31,15 @@ public abstract class AbstractSequencerMode<S extends IControlSurface<C>, C exte
      * @param name The name of the view
      * @param surface The surface
      * @param model The model
+     * @param isAbsolute If true the value change is happening with a setter otherwise relative
+     *            change method is used
      * @param clipRows The rows of the monitored clip
      * @param clipCols The columns of the monitored clip
      * @param useDawColors True to use the DAW color of items for coloring (for full RGB devices)
      */
-    protected AbstractSequencerMode (final String name, final S surface, final IModel model, final int clipRows, final int clipCols, final boolean useDawColors)
+    protected AbstractSequencerMode (final String name, final S surface, final IModel model, final boolean isAbsolute, final int clipRows, final int clipCols, final boolean useDawColors)
     {
-        super (name, surface, model);
+        super (name, surface, model, isAbsolute);
 
         this.clipRows = clipRows;
         this.clipCols = clipCols;
@@ -59,220 +55,9 @@ public abstract class AbstractSequencerMode<S extends IControlSurface<C>, C exte
     @Override
     public void onActivate ()
     {
+        super.onActivate ();
+
         this.getClip ().setStepLength (Resolution.getValueAt (this.selectedResolutionIndex));
-    }
-
-
-    /** {@inheritDoc} */
-    @Override
-    public void onDeactivate ()
-    {
-        // Intentionally empty
-    }
-
-
-    /** {@inheritDoc} */
-    @Override
-    public int getButtonColor (final ButtonID buttonID)
-    {
-        // Intentionally empty
-        return 0;
-    }
-
-
-    /** {@inheritDoc} */
-    @Override
-    public void updateDisplay ()
-    {
-        // Intentionally empty
-    }
-
-
-    /** {@inheritDoc} */
-    @Override
-    public void onKnobValue (final int index, final int value)
-    {
-        // Intentionally empty
-    }
-
-
-    /** {@inheritDoc} */
-    @Override
-    public int getKnobValue (final int index)
-    {
-        // Intentionally empty
-        return 0;
-    }
-
-
-    /** {@inheritDoc} */
-    @Override
-    public void onKnobTouch (final int index, final boolean isTouched)
-    {
-        // Intentionally empty
-    }
-
-
-    /** {@inheritDoc} */
-    @Override
-    public boolean isAnyKnobTouched ()
-    {
-        // Intentionally empty
-        return false;
-    }
-
-
-    /** {@inheritDoc} */
-    @Override
-    public void setTouchedKnob (final int knobIndex, final boolean isTouched)
-    {
-        // Intentionally empty
-    }
-
-
-    /** {@inheritDoc} */
-    @Override
-    public int getTouchedKnob ()
-    {
-        // Intentionally empty
-        return 0;
-    }
-
-
-    /** {@inheritDoc} */
-    @Override
-    public int getLastTouchedKnob ()
-    {
-        // Intentionally empty
-        return 0;
-    }
-
-
-    /** {@inheritDoc} */
-    @Override
-    public boolean isKnobTouched (final int index)
-    {
-        // Intentionally empty
-        return false;
-    }
-
-
-    /** {@inheritDoc} */
-    @Override
-    public void onButton (final int row, final int index, final ButtonEvent event)
-    {
-        // Intentionally empty
-    }
-
-
-    /** {@inheritDoc} */
-    @Override
-    public void selectItem (final int index)
-    {
-        // Intentionally empty
-    }
-
-
-    /** {@inheritDoc} */
-    @Override
-    public Optional<String> getSelectedItemName ()
-    {
-        // Intentionally empty
-        return Optional.empty ();
-    }
-
-
-    /** {@inheritDoc} */
-    @Override
-    public void selectPreviousItem ()
-    {
-        // Intentionally empty
-    }
-
-
-    /** {@inheritDoc} */
-    @Override
-    public void selectNextItem ()
-    {
-        // Intentionally empty
-    }
-
-
-    /** {@inheritDoc} */
-    @Override
-    public void selectPreviousItemPage ()
-    {
-        // Intentionally empty
-    }
-
-
-    /** {@inheritDoc} */
-    @Override
-    public void selectNextItemPage ()
-    {
-        // Intentionally empty
-    }
-
-
-    /** {@inheritDoc} */
-    @Override
-    public void selectItemPage (final int page)
-    {
-        // Intentionally empty
-    }
-
-
-    /** {@inheritDoc} */
-    @Override
-    public boolean hasPreviousItem ()
-    {
-        // Intentionally empty
-        return false;
-    }
-
-
-    /** {@inheritDoc} */
-    @Override
-    public boolean hasNextItem ()
-    {
-        // Intentionally empty
-        return false;
-    }
-
-
-    /** {@inheritDoc} */
-    @Override
-    public boolean hasPreviousItemPage ()
-    {
-        // Intentionally empty
-        return false;
-    }
-
-
-    /** {@inheritDoc} */
-    @Override
-    public boolean hasNextItemPage ()
-    {
-        // Intentionally empty
-        return false;
-    }
-
-
-    /** {@inheritDoc} */
-    @Override
-    public String formatPageRange (final String format)
-    {
-        // Intentionally empty
-        return null;
-    }
-
-
-    /** {@inheritDoc} */
-    @Override
-    public IParameterProvider getParameterProvider ()
-    {
-        // Intentionally empty
-        return null;
     }
 
 
@@ -284,5 +69,23 @@ public abstract class AbstractSequencerMode<S extends IControlSurface<C>, C exte
     public final INoteClip getClip ()
     {
         return this.model.getNoteClip (this.clipCols, this.clipRows);
+    }
+
+
+    /**
+     * @return the selectedResolutionIndex
+     */
+    public int getSelectedResolutionIndex ()
+    {
+        return this.selectedResolutionIndex;
+    }
+
+
+    /**
+     * @param selectedResolutionIndex the selectedResolutionIndex to set
+     */
+    public void setSelectedResolutionIndex (final int selectedResolutionIndex)
+    {
+        this.selectedResolutionIndex = selectedResolutionIndex;
     }
 }

@@ -53,7 +53,7 @@ import de.mossgrabers.framework.daw.midi.IMidiAccess;
 import de.mossgrabers.framework.daw.midi.IMidiInput;
 import de.mossgrabers.framework.daw.midi.IMidiOutput;
 import de.mossgrabers.framework.daw.midi.MidiConstants;
-import de.mossgrabers.framework.featuregroup.AbstractMode;
+import de.mossgrabers.framework.featuregroup.AbstractParameterMode;
 import de.mossgrabers.framework.featuregroup.ModeManager;
 import de.mossgrabers.framework.featuregroup.ViewManager;
 import de.mossgrabers.framework.mode.Modes;
@@ -188,11 +188,11 @@ public class LaunchkeyMk3ControllerSetup extends AbstractControllerSetup<Launchk
         final LaunchkeyMk3ControlSurface surface = this.getSurface ();
         final ModeManager modeManager = surface.getModeManager ();
 
-        modeManager.register (Modes.VOLUME, new LaunchkeyMk3VolumeMode (surface, this.model, AbstractMode.DEFAULT_KNOB_IDS));
-        modeManager.register (Modes.PAN, new LaunchkeyMk3PanoramaMode (surface, this.model, AbstractMode.DEFAULT_KNOB_IDS));
-        modeManager.register (Modes.SEND1, new LaunchkeyMk3SendMode (0, surface, this.model, AbstractMode.DEFAULT_KNOB_IDS));
-        modeManager.register (Modes.SEND2, new LaunchkeyMk3SendMode (1, surface, this.model, AbstractMode.DEFAULT_KNOB_IDS));
-        modeManager.register (Modes.DEVICE_PARAMS, new LaunchkeyMk3ParameterMode (surface, this.model, AbstractMode.DEFAULT_KNOB_IDS));
+        modeManager.register (Modes.VOLUME, new LaunchkeyMk3VolumeMode (surface, this.model, AbstractParameterMode.DEFAULT_KNOB_IDS));
+        modeManager.register (Modes.PAN, new LaunchkeyMk3PanoramaMode (surface, this.model, AbstractParameterMode.DEFAULT_KNOB_IDS));
+        modeManager.register (Modes.SEND1, new LaunchkeyMk3SendMode (0, surface, this.model, AbstractParameterMode.DEFAULT_KNOB_IDS));
+        modeManager.register (Modes.SEND2, new LaunchkeyMk3SendMode (1, surface, this.model, AbstractParameterMode.DEFAULT_KNOB_IDS));
+        modeManager.register (Modes.DEVICE_PARAMS, new LaunchkeyMk3ParameterMode (surface, this.model, AbstractParameterMode.DEFAULT_KNOB_IDS));
         // Layer send X IDs are used for custom modes
         modeManager.register (Modes.DEVICE_LAYER_SEND1, new CustomMode (1, surface, this.model));
         modeManager.register (Modes.DEVICE_LAYER_SEND2, new CustomMode (2, surface, this.model));

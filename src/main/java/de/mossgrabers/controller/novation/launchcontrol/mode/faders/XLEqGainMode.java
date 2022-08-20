@@ -11,7 +11,7 @@ import de.mossgrabers.framework.daw.IModel;
 import de.mossgrabers.framework.daw.constants.DeviceID;
 import de.mossgrabers.framework.daw.data.IEqualizerDevice;
 import de.mossgrabers.framework.daw.data.IParameter;
-import de.mossgrabers.framework.featuregroup.AbstractMode;
+import de.mossgrabers.framework.featuregroup.AbstractParameterMode;
 import de.mossgrabers.framework.parameterprovider.special.FixedParameterProvider;
 
 import java.util.ArrayList;
@@ -23,7 +23,7 @@ import java.util.List;
  *
  * @author J&uuml;rgen Mo&szlig;graber
  */
-public class XLEqGainMode extends AbstractMode<LaunchControlXLControlSurface, LaunchControlXLConfiguration, IParameter>
+public class XLEqGainMode extends AbstractParameterMode<LaunchControlXLControlSurface, LaunchControlXLConfiguration, IParameter>
 {
     private final IEqualizerDevice eqDevice;
     private final List<IParameter> parameters;

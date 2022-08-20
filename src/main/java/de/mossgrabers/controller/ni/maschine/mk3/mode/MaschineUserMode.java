@@ -9,7 +9,7 @@ import de.mossgrabers.controller.ni.maschine.mk3.controller.MaschineControlSurfa
 import de.mossgrabers.framework.controller.display.ITextDisplay;
 import de.mossgrabers.framework.daw.IModel;
 import de.mossgrabers.framework.daw.data.IParameter;
-import de.mossgrabers.framework.featuregroup.AbstractMode;
+import de.mossgrabers.framework.featuregroup.AbstractParameterMode;
 import de.mossgrabers.framework.parameterprovider.device.BankParameterProvider;
 import de.mossgrabers.framework.utils.StringUtils;
 
@@ -19,7 +19,7 @@ import de.mossgrabers.framework.utils.StringUtils;
  *
  * @author J&uuml;rgen Mo&szlig;graber
  */
-public class MaschineUserMode extends AbstractMode<MaschineControlSurface, MaschineConfiguration, IParameter>
+public class MaschineUserMode extends AbstractParameterMode<MaschineControlSurface, MaschineConfiguration, IParameter>
 {
     private int selParam = 0;
 

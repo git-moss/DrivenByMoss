@@ -45,9 +45,20 @@ public class LaunchControlXLConfiguration extends AbstractConfiguration
     public void init (final ISettingsUI globalSettings, final ISettingsUI documentSettings)
     {
         ///////////////////////////
+        // Transport
+
+        this.activateBehaviourOnPauseSetting (globalSettings);
+
+        ///////////////////////////
+        // Play & Sequence
+
+        this.activateMidiEditChannelSetting (globalSettings);
+
+        ///////////////////////////
         // Workflow
 
         this.activateExcludeDeactivatedItemsSetting (globalSettings);
+        this.activateNewClipLengthSetting (globalSettings);
     }
 
 

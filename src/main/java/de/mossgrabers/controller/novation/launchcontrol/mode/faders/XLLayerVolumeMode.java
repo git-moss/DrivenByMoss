@@ -11,7 +11,7 @@ import de.mossgrabers.framework.daw.IModel;
 import de.mossgrabers.framework.daw.constants.DeviceID;
 import de.mossgrabers.framework.daw.data.ILayer;
 import de.mossgrabers.framework.daw.data.ISpecificDevice;
-import de.mossgrabers.framework.featuregroup.AbstractMode;
+import de.mossgrabers.framework.featuregroup.AbstractParameterMode;
 import de.mossgrabers.framework.mode.Modes;
 import de.mossgrabers.framework.parameterprovider.device.VolumeLayerOrDrumPadParameterProvider;
 
@@ -23,7 +23,7 @@ import java.util.List;
  *
  * @author J&uuml;rgen Mo&szlig;graber
  */
-public class XLLayerVolumeMode extends AbstractMode<LaunchControlXLControlSurface, LaunchControlXLConfiguration, ILayer>
+public class XLLayerVolumeMode extends AbstractParameterMode<LaunchControlXLControlSurface, LaunchControlXLConfiguration, ILayer>
 {
     final ISpecificDevice firstInstrument;
 

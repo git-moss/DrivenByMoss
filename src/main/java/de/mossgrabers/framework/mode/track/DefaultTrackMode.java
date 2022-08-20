@@ -12,7 +12,7 @@ import de.mossgrabers.framework.controller.IControlSurface;
 import de.mossgrabers.framework.daw.IModel;
 import de.mossgrabers.framework.daw.data.ITrack;
 import de.mossgrabers.framework.daw.data.bank.ITrackBank;
-import de.mossgrabers.framework.featuregroup.AbstractMode;
+import de.mossgrabers.framework.featuregroup.AbstractParameterMode;
 import de.mossgrabers.framework.utils.ButtonEvent;
 
 import java.util.List;
@@ -28,7 +28,7 @@ import java.util.function.BooleanSupplier;
  *
  * @author J&uuml;rgen Mo&szlig;graber
  */
-public abstract class DefaultTrackMode<S extends IControlSurface<C>, C extends Configuration> extends AbstractMode<S, C, ITrack>
+public abstract class DefaultTrackMode<S extends IControlSurface<C>, C extends Configuration> extends AbstractParameterMode<S, C, ITrack>
 {
     /**
      * Constructor.

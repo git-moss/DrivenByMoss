@@ -38,43 +38,20 @@ public abstract class XLAbstractTrackMode extends XLAbstractMainMode<ITrack>
 
     /** {@inheritDoc} */
     @Override
-    protected void handleRow0 (final int index, final ButtonEvent event)
+    protected void executeRow0 (final int index)
     {
-        final ModeManager modeManager = this.surface.getFaderModeManager ();
+        final ITrack track = this.model.getTrackBank ().getItem (index);
+        if (!track.doesExist ())
+            return;
 
-        if (event == ButtonEvent.DOWN)
+        if (track.isSelected () && track.isGroup ())
         {
-            modeManager.setTemporary (Modes.MASTER);
-            this.wasLong = false;
+            track.toggleGroupExpanded ();
             return;
         }
 
-        if (event == ButtonEvent.LONG)
-        {
-            this.wasLong = true;
-            return;
-        }
-
-        if (event == ButtonEvent.UP)
-        {
-            modeManager.restore ();
-
-            if (this.wasLong)
-                return;
-
-            final ITrack track = this.model.getTrackBank ().getItem (index);
-            if (track.doesExist ())
-            {
-                if (track.isSelected () && track.isGroup ())
-                {
-                    track.toggleGroupExpanded ();
-                    return;
-                }
-
-                track.select ();
-                this.mvHelper.notifySelectedTrack ();
-            }
-        }
+        track.select ();
+        this.mvHelper.notifySelectedTrack ();
     }
 
 
@@ -146,6 +123,10 @@ public abstract class XLAbstractTrackMode extends XLAbstractMainMode<ITrack>
 
             case ROW1_1, ROW1_2, ROW1_3, ROW1_4, ROW1_5, ROW1_6, ROW1_7, ROW1_8:
                 final int index = buttonID.ordinal () - ButtonID.ROW1_1.ordinal ();
+
+                if (this.surface.isPressed (ButtonID.REC_ARM))
+                    return super.getTransportButtonColor (index);
+
                 final ITrack track = this.model.getTrackBank ().getItem (index);
                 if (track.doesExist ())
                     return track.isSelected () ? LaunchControlXLColorManager.LAUNCHCONTROL_COLOR_YELLOW : LaunchControlXLColorManager.LAUNCHCONTROL_COLOR_YELLOW_LO;

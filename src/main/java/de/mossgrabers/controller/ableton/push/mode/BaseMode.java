@@ -12,7 +12,7 @@ import de.mossgrabers.framework.daw.IModel;
 import de.mossgrabers.framework.daw.ITransport;
 import de.mossgrabers.framework.daw.data.IItem;
 import de.mossgrabers.framework.daw.data.bank.IBank;
-import de.mossgrabers.framework.featuregroup.AbstractMode;
+import de.mossgrabers.framework.featuregroup.AbstractParameterMode;
 import de.mossgrabers.framework.utils.ButtonEvent;
 
 
@@ -23,7 +23,7 @@ import de.mossgrabers.framework.utils.ButtonEvent;
  *
  * @author J&uuml;rgen Mo&szlig;graber
  */
-public abstract class BaseMode<B extends IItem> extends AbstractMode<PushControlSurface, PushConfiguration, B>
+public abstract class BaseMode<B extends IItem> extends AbstractParameterMode<PushControlSurface, PushConfiguration, B>
 {
     protected static final int SCROLL_RATE     = 8;
 

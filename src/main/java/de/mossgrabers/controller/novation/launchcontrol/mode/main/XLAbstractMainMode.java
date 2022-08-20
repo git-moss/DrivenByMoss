@@ -1,14 +1,19 @@
 package de.mossgrabers.controller.novation.launchcontrol.mode.main;
 
 import de.mossgrabers.controller.novation.launchcontrol.LaunchControlXLConfiguration;
+import de.mossgrabers.controller.novation.launchcontrol.controller.LaunchControlXLColorManager;
 import de.mossgrabers.controller.novation.launchcontrol.controller.LaunchControlXLControlSurface;
 import de.mossgrabers.controller.novation.launchcontrol.mode.IXLMode;
 import de.mossgrabers.controller.novation.launchcontrol.mode.buttons.XLTemporaryButtonMode;
+import de.mossgrabers.framework.command.trigger.clip.NewCommand;
+import de.mossgrabers.framework.command.trigger.transport.ChangeTempoCommand;
+import de.mossgrabers.framework.controller.ButtonID;
 import de.mossgrabers.framework.controller.ContinuousID;
 import de.mossgrabers.framework.daw.IModel;
+import de.mossgrabers.framework.daw.ITransport;
 import de.mossgrabers.framework.daw.data.IItem;
 import de.mossgrabers.framework.daw.data.bank.IBank;
-import de.mossgrabers.framework.featuregroup.AbstractMode;
+import de.mossgrabers.framework.featuregroup.AbstractParameterMode;
 import de.mossgrabers.framework.featuregroup.ModeManager;
 import de.mossgrabers.framework.mode.Modes;
 import de.mossgrabers.framework.utils.ButtonEvent;
@@ -23,12 +28,17 @@ import java.util.List;
  *
  * @author J&uuml;rgen Mo&szlig;graber
  */
-public abstract class XLAbstractMainMode<B extends IItem> extends AbstractMode<LaunchControlXLControlSurface, LaunchControlXLConfiguration, B> implements IXLMode
+public abstract class XLAbstractMainMode<B extends IItem> extends AbstractParameterMode<LaunchControlXLControlSurface, LaunchControlXLConfiguration, B> implements IXLMode
 {
-    protected Modes   defaultMode = Modes.MUTE;
+    protected Modes                                                                               defaultMode   = Modes.MUTE;
+    protected Modes                                                                               trackMode;
 
-    private Modes     trackMode;
-    protected boolean wasLong     = false;
+    private boolean                                                                               wasLong       = false;
+    private boolean                                                                               transportUsed = false;
+
+    private final NewCommand<LaunchControlXLControlSurface, LaunchControlXLConfiguration>         newCommand;
+    private final ChangeTempoCommand<LaunchControlXLControlSurface, LaunchControlXLConfiguration> tempoDown;
+    private final ChangeTempoCommand<LaunchControlXLControlSurface, LaunchControlXLConfiguration> tempoUp;
 
 
     /**
@@ -43,6 +53,10 @@ public abstract class XLAbstractMainMode<B extends IItem> extends AbstractMode<L
     protected XLAbstractMainMode (final String name, final LaunchControlXLControlSurface surface, final IModel model, final IBank<B> bank, final List<ContinuousID> controls)
     {
         super (name, surface, model, true, bank, controls);
+
+        this.newCommand = new NewCommand<> (model, surface);
+        this.tempoDown = new ChangeTempoCommand<> (false, model, surface);
+        this.tempoUp = new ChangeTempoCommand<> (true, model, surface);
     }
 
 
@@ -63,7 +77,49 @@ public abstract class XLAbstractMainMode<B extends IItem> extends AbstractMode<L
      * @param index The index of the button
      * @param event The button event
      */
-    protected abstract void handleRow0 (final int index, final ButtonEvent event);
+    protected void handleRow0 (final int index, final ButtonEvent event)
+    {
+        final ModeManager modeManager = this.surface.getFaderModeManager ();
+        switch (event)
+        {
+            case DOWN:
+                if (this.surface.isPressed (ButtonID.REC_ARM))
+                {
+                    this.transportUsed = true;
+                    this.handleTransport (index, event);
+                    return;
+                }
+
+                this.transportUsed = false;
+                this.wasLong = false;
+                modeManager.setTemporary (Modes.MASTER);
+                break;
+
+            case LONG:
+                this.wasLong = true;
+                break;
+
+            case UP:
+                if (this.transportUsed)
+                {
+                    this.handleTransport (index, event);
+                    return;
+                }
+
+                modeManager.restore ();
+                if (!this.wasLong)
+                    this.executeRow0 (index);
+                break;
+        }
+    }
+
+
+    /**
+     * Implement for the specific function of the 1st row to execute.
+     *
+     * @param index The button index of the row
+     */
+    protected abstract void executeRow0 (final int index);
 
 
     /**
@@ -115,5 +171,72 @@ public abstract class XLAbstractMainMode<B extends IItem> extends AbstractMode<L
         this.trackMode = this.surface.getTrackButtonModeManager ().getActiveID ();
 
         super.onDeactivate ();
+    }
+
+
+    private void handleTransport (final int index, final ButtonEvent event)
+    {
+        final ITransport transport = this.model.getTransport ();
+        switch (index)
+        {
+            // New clip
+            case 0:
+                if (event == ButtonEvent.DOWN)
+                    this.newCommand.handleExecute (false);
+                break;
+
+            // Toggle Launcher Overdub
+            case 1:
+                if (event == ButtonEvent.DOWN)
+                    transport.toggleLauncherOverdub ();
+                break;
+
+            // Decrease tempo
+            case 2:
+                this.tempoDown.execute (event, event == ButtonEvent.DOWN ? 127 : 0);
+                break;
+
+            // Increase tempo
+            case 3:
+                this.tempoUp.execute (event, event == ButtonEvent.DOWN ? 127 : 0);
+                break;
+
+            // Toggle Clip Automation Write
+            case 6:
+                if (event == ButtonEvent.DOWN)
+                    transport.toggleWriteClipLauncherAutomation ();
+                break;
+
+            default:
+                break;
+        }
+    }
+
+
+    protected int getTransportButtonColor (final int index)
+    {
+        final ITransport transport = this.model.getTransport ();
+
+        switch (index)
+        {
+            // New clip
+            case 0:
+                return LaunchControlXLColorManager.LAUNCHCONTROL_COLOR_YELLOW_LO;
+
+            // Toggle Launcher Overdub
+            case 1:
+                return transport.isLauncherOverdub () ? LaunchControlXLColorManager.LAUNCHCONTROL_COLOR_AMBER : LaunchControlXLColorManager.LAUNCHCONTROL_COLOR_AMBER_LO;
+
+            // Tempo
+            case 2, 3:
+                return LaunchControlXLColorManager.LAUNCHCONTROL_COLOR_GREEN_LO;
+
+            // Toggle Clip Automation Write
+            case 6:
+                return transport.isWritingClipLauncherAutomation () ? LaunchControlXLColorManager.LAUNCHCONTROL_COLOR_RED : LaunchControlXLColorManager.LAUNCHCONTROL_COLOR_RED_LO;
+
+            default:
+                return LaunchControlXLColorManager.LAUNCHCONTROL_COLOR_BLACK;
+        }
     }
 }

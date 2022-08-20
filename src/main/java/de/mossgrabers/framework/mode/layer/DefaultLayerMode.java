@@ -12,7 +12,7 @@ import de.mossgrabers.framework.daw.IModel;
 import de.mossgrabers.framework.daw.constants.DeviceID;
 import de.mossgrabers.framework.daw.data.ILayer;
 import de.mossgrabers.framework.daw.data.ISpecificDevice;
-import de.mossgrabers.framework.featuregroup.AbstractMode;
+import de.mossgrabers.framework.featuregroup.AbstractParameterMode;
 import de.mossgrabers.framework.utils.ButtonEvent;
 
 import java.util.List;
@@ -28,7 +28,7 @@ import java.util.function.BooleanSupplier;
  *
  * @author J&uuml;rgen Mo&szlig;graber
  */
-public abstract class DefaultLayerMode<S extends IControlSurface<C>, C extends Configuration> extends AbstractMode<S, C, ILayer>
+public abstract class DefaultLayerMode<S extends IControlSurface<C>, C extends Configuration> extends AbstractParameterMode<S, C, ILayer>
 {
     private final ISpecificDevice firstInstrument;
 

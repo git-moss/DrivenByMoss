@@ -30,7 +30,7 @@ import de.mossgrabers.framework.daw.data.bank.ISceneBank;
 import de.mossgrabers.framework.daw.data.bank.ISendBank;
 import de.mossgrabers.framework.daw.data.bank.ISlotBank;
 import de.mossgrabers.framework.daw.data.bank.ITrackBank;
-import de.mossgrabers.framework.featuregroup.AbstractMode;
+import de.mossgrabers.framework.featuregroup.AbstractParameterMode;
 import de.mossgrabers.framework.mode.Modes;
 import de.mossgrabers.framework.parameterprovider.device.BankParameterProvider;
 import de.mossgrabers.framework.parameterprovider.special.CombinedParameterProvider;
@@ -48,7 +48,7 @@ import java.util.Optional;
  *
  * @author J&uuml;rgen Mo&szlig;graber
  */
-public class ControlMode extends AbstractMode<ACVSControlSurface, ACVSConfiguration, IChannel>
+public class ControlMode extends AbstractParameterMode<ACVSControlSurface, ACVSConfiguration, IChannel>
 {
     private static final Map<Modes, Integer> MODE_COLORS = new EnumMap<> (Modes.class);
     static

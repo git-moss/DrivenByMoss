@@ -9,7 +9,7 @@ import de.mossgrabers.controller.akai.apc.controller.APCControlSurface;
 import de.mossgrabers.framework.daw.IModel;
 import de.mossgrabers.framework.daw.data.IItem;
 import de.mossgrabers.framework.daw.data.bank.IBank;
-import de.mossgrabers.framework.featuregroup.AbstractMode;
+import de.mossgrabers.framework.featuregroup.AbstractParameterMode;
 import de.mossgrabers.framework.utils.ButtonEvent;
 
 import java.util.Date;
@@ -22,7 +22,7 @@ import java.util.Date;
  *
  * @author J&uuml;rgen Mo&szlig;graber
  */
-public abstract class BaseMode<B extends IItem> extends AbstractMode<APCControlSurface, APCConfiguration, B>
+public abstract class BaseMode<B extends IItem> extends AbstractParameterMode<APCControlSurface, APCConfiguration, B>
 {
     private boolean   isKnobMoving;
     private long      moveStartTime;

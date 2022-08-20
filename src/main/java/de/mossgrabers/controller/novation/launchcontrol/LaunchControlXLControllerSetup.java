@@ -11,8 +11,10 @@ import de.mossgrabers.controller.novation.launchcontrol.mode.XLDummyMode;
 import de.mossgrabers.controller.novation.launchcontrol.mode.buttons.XLDrumSequencerMode;
 import de.mossgrabers.controller.novation.launchcontrol.mode.buttons.XLLayerMuteMode;
 import de.mossgrabers.controller.novation.launchcontrol.mode.buttons.XLLayerSoloMode;
+import de.mossgrabers.controller.novation.launchcontrol.mode.buttons.XLLoopLengthMode;
 import de.mossgrabers.controller.novation.launchcontrol.mode.buttons.XLScenesMode;
 import de.mossgrabers.controller.novation.launchcontrol.mode.buttons.XLSelectDeviceParamsPageMode;
+import de.mossgrabers.controller.novation.launchcontrol.mode.buttons.XLSequencerResolutionMode;
 import de.mossgrabers.controller.novation.launchcontrol.mode.buttons.XLTrackMuteMode;
 import de.mossgrabers.controller.novation.launchcontrol.mode.buttons.XLTrackRecArmMode;
 import de.mossgrabers.controller.novation.launchcontrol.mode.buttons.XLTrackSoloMode;
@@ -156,7 +158,7 @@ public class LaunchControlXLControllerSetup extends AbstractControllerSetup<Laun
         modeManager.register (Modes.SEND, new XLTrackMixMode (surface, this.model, KNOB_CONTROLS));
         modeManager.register (Modes.EQ_DEVICE_PARAMS, new XLEqMode (surface, this.model, KNOB_CONTROLS));
         modeManager.register (Modes.DEVICE_LAYER, new XLLayerMixMode (surface, this.model, KNOB_CONTROLS));
-        final XLNoteEditMode noteEditMode = new XLNoteEditMode (surface, this.model, 127, 8);
+        final XLNoteEditMode noteEditMode = new XLNoteEditMode (surface, this.model, 127, 8, KNOB_CONTROLS);
         modeManager.register (Modes.NOTE, noteEditMode);
         modeManager.register (Modes.DUMMY, new XLDummyMode (surface, this.model, KNOB_CONTROLS));
 
@@ -171,6 +173,8 @@ public class LaunchControlXLControllerSetup extends AbstractControllerSetup<Laun
         trackModeManager.register (Modes.DEVICE_LAYER_MUTE, new XLLayerMuteMode (surface, this.model));
         trackModeManager.register (Modes.DEVICE_LAYER_SOLO, new XLLayerSoloMode (surface, this.model));
         trackModeManager.register (Modes.DRUM_SEQUENCER, new XLDrumSequencerMode (surface, this.model));
+        trackModeManager.register (Modes.LOOP_LENGTH, new XLLoopLengthMode (surface, this.model));
+        trackModeManager.register (Modes.CONFIGURATION, new XLSequencerResolutionMode (surface, this.model));
 
         final ModeManager faderManager = surface.getFaderModeManager ();
         faderManager.register (Modes.VOLUME, new TrackVolumeMode<> (surface, this.model, true, FADER_IDS));

@@ -45,7 +45,7 @@ public class XLDrumSequencerMode extends AbstractSequencerMode<LaunchControlXLCo
      */
     public XLDrumSequencerMode (final LaunchControlXLControlSurface surface, final IModel model)
     {
-        super ("Drum Sequencer", surface, model, 127, 8, false);
+        super ("Drum Sequencer", surface, model, true, 127, 8, false);
 
         this.configuration = this.surface.getConfiguration ();
         this.scales = model.getScales ();

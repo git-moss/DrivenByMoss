@@ -33,7 +33,6 @@ public class XLLayerMixMode extends XLAbstractMainMode<ILayer>
     private final LaunchControlXLConfiguration configuration;
 
     private final ISpecificDevice              firstInstrument;
-    private boolean                            wasLong = false;
 
 
     /**
@@ -90,37 +89,14 @@ public class XLLayerMixMode extends XLAbstractMainMode<ILayer>
 
     /** {@inheritDoc} */
     @Override
-    protected void handleRow0 (final int index, final ButtonEvent event)
+    protected void executeRow0 (final int index)
     {
-        final ModeManager modeManager = this.surface.getFaderModeManager ();
-
-        if (event == ButtonEvent.DOWN)
-        {
-            modeManager.setTemporary (Modes.MASTER);
-            this.wasLong = false;
+        final ILayer layer = this.bank.getItem (index);
+        if (!layer.doesExist ())
             return;
-        }
 
-        if (event == ButtonEvent.LONG)
-        {
-            this.wasLong = true;
-            return;
-        }
-
-        if (event == ButtonEvent.UP)
-        {
-            modeManager.restore ();
-
-            if (this.wasLong)
-                return;
-
-            final ILayer layer = this.bank.getItem (index);
-            if (layer.doesExist ())
-            {
-                layer.select ();
-                this.mvHelper.notifySelectedLayer ();
-            }
-        }
+        layer.select ();
+        this.mvHelper.notifySelectedLayer ();
     }
 
 
@@ -192,6 +168,10 @@ public class XLLayerMixMode extends XLAbstractMainMode<ILayer>
 
             case ROW1_1, ROW1_2, ROW1_3, ROW1_4, ROW1_5, ROW1_6, ROW1_7, ROW1_8:
                 final int index = buttonID.ordinal () - ButtonID.ROW1_1.ordinal ();
+
+                if (this.surface.isPressed (ButtonID.REC_ARM))
+                    return super.getTransportButtonColor (index);
+
                 final ILayer layer = this.bank.getItem (index);
                 if (layer.doesExist ())
                     return layer.isSelected () ? LaunchControlXLColorManager.LAUNCHCONTROL_COLOR_YELLOW : LaunchControlXLColorManager.LAUNCHCONTROL_COLOR_YELLOW_LO;

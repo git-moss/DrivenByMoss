@@ -10,7 +10,7 @@ import de.mossgrabers.framework.controller.ContinuousID;
 import de.mossgrabers.framework.controller.IControlSurface;
 import de.mossgrabers.framework.daw.IModel;
 import de.mossgrabers.framework.daw.data.IItem;
-import de.mossgrabers.framework.featuregroup.AbstractMode;
+import de.mossgrabers.framework.featuregroup.AbstractParameterMode;
 import de.mossgrabers.framework.parameterprovider.special.FixedParameterProvider;
 
 import java.util.Collections;
@@ -24,7 +24,7 @@ import java.util.Collections;
  *
  * @author J&uuml;rgen Mo&szlig;graber
  */
-public class MasterVolumeMode<S extends IControlSurface<C>, C extends Configuration> extends AbstractMode<S, C, IItem>
+public class MasterVolumeMode<S extends IControlSurface<C>, C extends Configuration> extends AbstractParameterMode<S, C, IItem>
 {
     /**
      * Constructor.

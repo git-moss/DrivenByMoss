@@ -41,7 +41,7 @@ import de.mossgrabers.framework.daw.data.bank.ITrackBank;
 import de.mossgrabers.framework.daw.midi.IMidiAccess;
 import de.mossgrabers.framework.daw.midi.IMidiInput;
 import de.mossgrabers.framework.daw.midi.IMidiOutput;
-import de.mossgrabers.framework.featuregroup.AbstractMode;
+import de.mossgrabers.framework.featuregroup.AbstractParameterMode;
 import de.mossgrabers.framework.featuregroup.ModeManager;
 import de.mossgrabers.framework.featuregroup.ViewManager;
 import de.mossgrabers.framework.mode.Modes;
@@ -162,11 +162,11 @@ public class LaunchkeyMiniMk3ControllerSetup extends AbstractControllerSetup<Lau
 
         final BooleanSupplier offSupplier = () -> false;
 
-        modeManager.register (Modes.VOLUME, new TrackVolumeMode<> (surface, this.model, true, AbstractMode.DEFAULT_KNOB_IDS, offSupplier));
-        modeManager.register (Modes.PAN, new TrackPanMode<> (surface, this.model, true, AbstractMode.DEFAULT_KNOB_IDS, offSupplier));
-        modeManager.register (Modes.SEND1, new TrackSendMode<> (0, surface, this.model, true, AbstractMode.DEFAULT_KNOB_IDS, offSupplier));
-        modeManager.register (Modes.SEND2, new TrackSendMode<> (1, surface, this.model, true, AbstractMode.DEFAULT_KNOB_IDS, offSupplier));
-        modeManager.register (Modes.DEVICE_PARAMS, new ParameterMode<> (surface, this.model, true, AbstractMode.DEFAULT_KNOB_IDS, offSupplier));
+        modeManager.register (Modes.VOLUME, new TrackVolumeMode<> (surface, this.model, true, AbstractParameterMode.DEFAULT_KNOB_IDS, offSupplier));
+        modeManager.register (Modes.PAN, new TrackPanMode<> (surface, this.model, true, AbstractParameterMode.DEFAULT_KNOB_IDS, offSupplier));
+        modeManager.register (Modes.SEND1, new TrackSendMode<> (0, surface, this.model, true, AbstractParameterMode.DEFAULT_KNOB_IDS, offSupplier));
+        modeManager.register (Modes.SEND2, new TrackSendMode<> (1, surface, this.model, true, AbstractParameterMode.DEFAULT_KNOB_IDS, offSupplier));
+        modeManager.register (Modes.DEVICE_PARAMS, new ParameterMode<> (surface, this.model, true, AbstractParameterMode.DEFAULT_KNOB_IDS, offSupplier));
         modeManager.register (Modes.USER, new UserMode<> (surface, this.model, true, ContinuousID.createSequentialList (ContinuousID.DEVICE_KNOB1, 8), offSupplier));
     }
 

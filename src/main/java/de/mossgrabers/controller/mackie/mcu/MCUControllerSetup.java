@@ -95,7 +95,7 @@ import de.mossgrabers.framework.daw.data.bank.ITrackBank;
 import de.mossgrabers.framework.daw.midi.IMidiAccess;
 import de.mossgrabers.framework.daw.midi.IMidiInput;
 import de.mossgrabers.framework.daw.midi.IMidiOutput;
-import de.mossgrabers.framework.featuregroup.AbstractMode;
+import de.mossgrabers.framework.featuregroup.AbstractParameterMode;
 import de.mossgrabers.framework.featuregroup.IMode;
 import de.mossgrabers.framework.featuregroup.ModeManager;
 import de.mossgrabers.framework.mode.MasterVolumeMode;
@@ -372,7 +372,7 @@ public class MCUControllerSetup extends AbstractControllerSetup<MCUControlSurfac
             for (int index = 0; index < this.numMCUDevices; index++)
             {
                 final MCUControlSurface surface = this.getSurface (index);
-                final AbstractMode<?, ?, ?> mode = (AbstractMode<?, ?, ?>) surface.getModeManager ().getActive ();
+                final AbstractParameterMode<?, ?, ?> mode = (AbstractParameterMode<?, ?, ?>) surface.getModeManager ().getActive ();
                 if (mode != null)
                     mode.parametersAdjusted ();
             }

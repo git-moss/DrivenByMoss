@@ -16,7 +16,7 @@ import de.mossgrabers.framework.daw.data.IDrumDevice;
 import de.mossgrabers.framework.daw.data.ILayer;
 import de.mossgrabers.framework.daw.data.ISend;
 import de.mossgrabers.framework.daw.data.bank.ISendBank;
-import de.mossgrabers.framework.featuregroup.AbstractMode;
+import de.mossgrabers.framework.featuregroup.AbstractParameterMode;
 import de.mossgrabers.framework.mode.Modes;
 import de.mossgrabers.framework.parameterprovider.device.SelectedLayerOrDrumPadParameterProvider;
 
@@ -28,7 +28,7 @@ import java.util.Optional;
  *
  * @author J&uuml;rgen Mo&szlig;graber
  */
-public class FireLayerMode extends AbstractMode<FireControlSurface, FireConfiguration, ILayer>
+public class FireLayerMode extends AbstractParameterMode<FireControlSurface, FireConfiguration, ILayer>
 {
     private static final Modes [] MODES             =
     {
