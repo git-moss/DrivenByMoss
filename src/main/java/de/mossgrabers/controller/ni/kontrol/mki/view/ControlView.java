@@ -14,8 +14,8 @@ import de.mossgrabers.framework.daw.data.IChannel;
 import de.mossgrabers.framework.daw.data.IDrumDevice;
 import de.mossgrabers.framework.daw.data.bank.IDrumPadBank;
 import de.mossgrabers.framework.scale.Scales;
-import de.mossgrabers.framework.view.AbstractDrumView;
 import de.mossgrabers.framework.view.AbstractPlayView;
+import de.mossgrabers.framework.view.sequencer.AbstractDrumView;
 
 
 /**

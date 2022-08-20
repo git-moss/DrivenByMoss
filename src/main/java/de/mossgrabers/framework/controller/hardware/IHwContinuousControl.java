@@ -123,6 +123,18 @@ public interface IHwContinuousControl extends IHwInputControl
 
 
     /**
+     * Clear the output cache state.
+     */
+    void forceFlush ();
+
+
+    /**
+     * Switch off the output.
+     */
+    void turnOff ();
+
+
+    /**
      * If this control is part of group of related controls then this specifies the index in that
      * group.
      *

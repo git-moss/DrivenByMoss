@@ -8,7 +8,7 @@ import de.mossgrabers.controller.arturia.beatstep.BeatstepConfiguration;
 import de.mossgrabers.controller.arturia.beatstep.controller.BeatstepControlSurface;
 import de.mossgrabers.framework.daw.IModel;
 import de.mossgrabers.framework.daw.constants.Resolution;
-import de.mossgrabers.framework.view.AbstractSequencerView;
+import de.mossgrabers.framework.view.sequencer.AbstractSequencerView;
 
 
 /**

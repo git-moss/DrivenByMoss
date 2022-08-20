@@ -134,6 +134,25 @@ public abstract class AbstractHwContinuousControl extends AbstractHwInputControl
 
     /** {@inheritDoc} */
     @Override
+    public void forceFlush ()
+    {
+        this.outputValue = -1;
+    }
+
+
+    /** {@inheritDoc} */
+    @Override
+    public void turnOff ()
+    {
+        this.supplier = null;
+        this.outputValue = -1;
+        if (this.consumer != null)
+            this.consumer.accept (0);
+    }
+
+
+    /** {@inheritDoc} */
+    @Override
     public void update ()
     {
         if (this.supplier == null)

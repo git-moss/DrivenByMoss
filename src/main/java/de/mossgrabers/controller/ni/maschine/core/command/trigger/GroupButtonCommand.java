@@ -18,7 +18,7 @@ import de.mossgrabers.framework.featuregroup.IView;
 import de.mossgrabers.framework.featuregroup.ModeManager;
 import de.mossgrabers.framework.mode.Modes;
 import de.mossgrabers.framework.utils.ButtonEvent;
-import de.mossgrabers.framework.view.AbstractSequencerView;
+import de.mossgrabers.framework.view.sequencer.AbstractSequencerView;
 
 import java.util.Optional;
 

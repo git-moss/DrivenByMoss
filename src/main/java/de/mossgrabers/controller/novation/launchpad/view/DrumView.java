@@ -14,7 +14,7 @@ import de.mossgrabers.framework.daw.INoteClip;
 import de.mossgrabers.framework.daw.constants.Resolution;
 import de.mossgrabers.framework.daw.midi.INoteRepeat;
 import de.mossgrabers.framework.utils.ButtonEvent;
-import de.mossgrabers.framework.view.AbstractDrumView;
+import de.mossgrabers.framework.view.sequencer.AbstractDrumView;
 
 
 /**

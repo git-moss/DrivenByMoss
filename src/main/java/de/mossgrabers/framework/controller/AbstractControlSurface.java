@@ -669,6 +669,9 @@ public abstract class AbstractControlSurface<C extends Configuration> implements
             if (light != null)
                 light.turnOff ();
         });
+
+        this.continuous.forEach ( (id, control) -> control.turnOff ());
+
         this.surfaceFactory.flush ();
     }
 
@@ -699,6 +702,9 @@ public abstract class AbstractControlSurface<C extends Configuration> implements
             if (light != null)
                 light.forceFlush ();
         });
+
+        // Refresh all knob/fader LEDs
+        this.continuous.forEach ( (id, control) -> control.forceFlush ());
 
         // Flush additional lights which are not assigned to a button
         this.lights.forEach ( (outputID, light) -> light.forceFlush ());

@@ -12,10 +12,10 @@ import de.mossgrabers.framework.daw.DAWColor;
 import de.mossgrabers.framework.featuregroup.AbstractFeatureGroup;
 import de.mossgrabers.framework.featuregroup.AbstractMode;
 import de.mossgrabers.framework.scale.Scales;
-import de.mossgrabers.framework.view.AbstractDrumView;
 import de.mossgrabers.framework.view.AbstractPlayView;
-import de.mossgrabers.framework.view.AbstractSequencerView;
 import de.mossgrabers.framework.view.AbstractSessionView;
+import de.mossgrabers.framework.view.sequencer.AbstractDrumView;
+import de.mossgrabers.framework.view.sequencer.AbstractSequencerView;
 
 
 /**

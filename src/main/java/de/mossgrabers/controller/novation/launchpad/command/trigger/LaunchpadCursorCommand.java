@@ -30,10 +30,10 @@ import de.mossgrabers.framework.scale.Scale;
 import de.mossgrabers.framework.scale.Scales;
 import de.mossgrabers.framework.utils.ButtonEvent;
 import de.mossgrabers.framework.utils.FrameworkException;
-import de.mossgrabers.framework.view.AbstractDrumView;
-import de.mossgrabers.framework.view.AbstractSequencerView;
 import de.mossgrabers.framework.view.TransposeView;
 import de.mossgrabers.framework.view.Views;
+import de.mossgrabers.framework.view.sequencer.AbstractDrumView;
+import de.mossgrabers.framework.view.sequencer.AbstractSequencerView;
 
 import java.util.Optional;
 

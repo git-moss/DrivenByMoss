@@ -82,9 +82,9 @@ import de.mossgrabers.framework.mode.device.ParameterMode;
 import de.mossgrabers.framework.mode.track.TrackVolumeMode;
 import de.mossgrabers.framework.scale.Scales;
 import de.mossgrabers.framework.utils.Timeout;
-import de.mossgrabers.framework.view.AbstractSequencerView;
 import de.mossgrabers.framework.view.TempoView;
 import de.mossgrabers.framework.view.Views;
+import de.mossgrabers.framework.view.sequencer.AbstractSequencerView;
 
 import java.util.Optional;
 
@@ -227,7 +227,7 @@ public class APCControllerSetup extends AbstractControllerSetup<APCControlSurfac
                 @Override
                 protected void displayMode ()
                 {
-                    ((UserMode) modeManager.get (Modes.USER)).displayPageName ();
+                    ((UserMode) this.modeManager.get (Modes.USER)).displayPageName ();
                 }
             }, APCControlSurface.APC_BUTTON_SEND_B, () -> modeManager.isActive (Modes.USER), ColorManager.BUTTON_STATE_OFF, ColorManager.BUTTON_STATE_ON);
         }

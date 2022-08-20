@@ -19,10 +19,10 @@ import de.mossgrabers.framework.featuregroup.IView;
 import de.mossgrabers.framework.featuregroup.ViewManager;
 import de.mossgrabers.framework.utils.ButtonEvent;
 import de.mossgrabers.framework.utils.StringUtils;
-import de.mossgrabers.framework.view.AbstractSequencerView;
 import de.mossgrabers.framework.view.ColorSelectMode;
 import de.mossgrabers.framework.view.ColorView;
 import de.mossgrabers.framework.view.Views;
+import de.mossgrabers.framework.view.sequencer.AbstractSequencerView;
 
 
 /**

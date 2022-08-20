@@ -2,7 +2,7 @@
 // (c) 2017-2022
 // Licensed under LGPLv3 - http://www.gnu.org/licenses/lgpl-3.0.txt
 
-package de.mossgrabers.framework.view;
+package de.mossgrabers.framework.view.sequencer;
 
 import de.mossgrabers.framework.configuration.Configuration;
 import de.mossgrabers.framework.controller.ButtonID;
@@ -70,15 +70,14 @@ public abstract class AbstractSequencerView<S extends IControlSurface<C>, C exte
     /** The color for selected transposition. */
     public static final String    COLOR_TRANSPOSE_SELECTED     = "COLOR_TRANSPOSE_SELECTED";
 
+    protected final int           clipRows;
+    protected final int           clipCols;
+    protected final boolean       useDawColors;
+
     protected int                 numSequencerRows;
     protected int                 selectedResolutionIndex;
     protected final Configuration configuration;
     protected boolean             isNoteEdited                 = false;
-    protected final boolean       useDawColors;
-
-    protected final int           clipRows;
-    protected final int           clipCols;
-
     private boolean               isSequencerActive;
 
 

@@ -342,7 +342,7 @@ public interface INoteClip extends IClip, IPinnable
      * @param channel The MIDI channel
      * @param step The step
      * @param row The note row
-     * @param chance The chance to set
+     * @param chance The chance to set (0..1)
      */
     void updateChance (int channel, int step, int row, double chance);
 

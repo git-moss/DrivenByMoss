@@ -28,7 +28,7 @@ import java.util.Optional;
  *
  * @author J&uuml;rgen Mo&szlig;graber
  */
-public class DeviceLayerModeSend extends DeviceLayerMode
+public class DeviceLayerSendMode extends DeviceLayerMode
 {
     private final int sendIndex;
 
@@ -40,7 +40,7 @@ public class DeviceLayerModeSend extends DeviceLayerMode
      * @param model The model
      * @param sendIndex The index of the send
      */
-    public DeviceLayerModeSend (final PushControlSurface surface, final IModel model, final int sendIndex)
+    public DeviceLayerSendMode (final PushControlSurface surface, final IModel model, final int sendIndex)
     {
         super (Modes.NAME_LAYER_SENDS, surface, model);
 

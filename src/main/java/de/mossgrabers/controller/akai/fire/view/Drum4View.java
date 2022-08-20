@@ -18,7 +18,7 @@ import de.mossgrabers.framework.featuregroup.IMode;
 import de.mossgrabers.framework.featuregroup.ModeManager;
 import de.mossgrabers.framework.mode.Modes;
 import de.mossgrabers.framework.utils.ButtonEvent;
-import de.mossgrabers.framework.view.AbstractDrum4View;
+import de.mossgrabers.framework.view.sequencer.AbstractDrum4View;
 
 import java.util.Optional;
 

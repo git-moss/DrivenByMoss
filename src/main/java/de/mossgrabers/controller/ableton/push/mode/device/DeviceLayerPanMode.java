@@ -24,7 +24,7 @@ import java.util.Optional;
  *
  * @author J&uuml;rgen Mo&szlig;graber
  */
-public class DeviceLayerModePan extends DeviceLayerMode
+public class DeviceLayerPanMode extends DeviceLayerMode
 {
     /**
      * Constructor.
@@ -32,7 +32,7 @@ public class DeviceLayerModePan extends DeviceLayerMode
      * @param surface The control surface
      * @param model The model
      */
-    public DeviceLayerModePan (final PushControlSurface surface, final IModel model)
+    public DeviceLayerPanMode (final PushControlSurface surface, final IModel model)
     {
         super (Modes.NAME_LAYER_PANORAMA, surface, model);
 

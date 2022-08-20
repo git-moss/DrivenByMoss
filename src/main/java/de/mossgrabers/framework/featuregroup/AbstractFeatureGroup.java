@@ -40,7 +40,7 @@ public abstract class AbstractFeatureGroup<S extends IControlSurface<C>, C exten
     /**
      * Constructor.
      *
-     * @param name The name of the view
+     * @param name The name of the feature group
      * @param surface The surface
      * @param model The model
      */

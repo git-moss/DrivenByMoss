@@ -1,13 +1,13 @@
-package de.mossgrabers.controller.novation.launchcontrol.mode;
+package de.mossgrabers.controller.novation.launchcontrol.mode.buttons;
 
 import de.mossgrabers.controller.novation.launchcontrol.LaunchControlXLConfiguration;
+import de.mossgrabers.controller.novation.launchcontrol.controller.LaunchControlXLColorManager;
 import de.mossgrabers.controller.novation.launchcontrol.controller.LaunchControlXLControlSurface;
 import de.mossgrabers.framework.command.trigger.transport.PlayCommand;
 import de.mossgrabers.framework.command.trigger.transport.WindCommand;
+import de.mossgrabers.framework.controller.ButtonID;
 import de.mossgrabers.framework.daw.IModel;
 import de.mossgrabers.framework.daw.ITransport;
-import de.mossgrabers.framework.daw.data.ITrack;
-import de.mossgrabers.framework.featuregroup.AbstractMode;
 import de.mossgrabers.framework.utils.ButtonEvent;
 
 
@@ -16,13 +16,11 @@ import de.mossgrabers.framework.utils.ButtonEvent;
  *
  * @author J&uuml;rgen Mo&szlig;graber
  */
-public class XLTransportMode extends AbstractMode<LaunchControlXLControlSurface, LaunchControlXLConfiguration, ITrack>
+public class XLTransportMode extends XLTemporaryButtonMode
 {
-    private boolean                                                                  transportHasBeenSelected = false;
-
-    private WindCommand<LaunchControlXLControlSurface, LaunchControlXLConfiguration> rwdCommand;
-    private WindCommand<LaunchControlXLControlSurface, LaunchControlXLConfiguration> fwdCommand;
-    private PlayCommand<LaunchControlXLControlSurface, LaunchControlXLConfiguration> playCommand;
+    private final WindCommand<LaunchControlXLControlSurface, LaunchControlXLConfiguration> rwdCommand;
+    private final WindCommand<LaunchControlXLControlSurface, LaunchControlXLConfiguration> fwdCommand;
+    private final PlayCommand<LaunchControlXLControlSurface, LaunchControlXLConfiguration> playCommand;
 
 
     /**
@@ -33,7 +31,7 @@ public class XLTransportMode extends AbstractMode<LaunchControlXLControlSurface,
      */
     public XLTransportMode (final LaunchControlXLControlSurface surface, final IModel model)
     {
-        super ("Select Device Page", surface, model);
+        super ("Transport", surface, model);
 
         this.rwdCommand = new WindCommand<> (model, surface, false);
         this.fwdCommand = new WindCommand<> (model, surface, true);
@@ -48,7 +46,7 @@ public class XLTransportMode extends AbstractMode<LaunchControlXLControlSurface,
         if (row != 0)
             return;
 
-        this.transportHasBeenSelected = true;
+        this.setHasBeenUsed ();
 
         final ITransport transport = this.model.getTransport ();
 
@@ -94,21 +92,31 @@ public class XLTransportMode extends AbstractMode<LaunchControlXLControlSurface,
 
     /** {@inheritDoc} */
     @Override
-    public void onActivate ()
+    public int getButtonColor (final ButtonID buttonID)
     {
-        super.onActivate ();
+        final int index = buttonID.ordinal () - ButtonID.ROW2_1.ordinal ();
+        if (index < 0 || index >= 8)
+            return LaunchControlXLColorManager.LAUNCHCONTROL_COLOR_BLACK;
 
-        this.transportHasBeenSelected = false;
-    }
-
-
-    /**
-     * Has a transport function been executed during the last active phase of the mode?
-     *
-     * @return True if a page has been selected
-     */
-    public boolean hasTransportBeenSelected ()
-    {
-        return this.transportHasBeenSelected;
+        final ITransport transport = this.model.getTransport ();
+        switch (index)
+        {
+            case 0:
+                return transport.isPlaying () ? LaunchControlXLColorManager.LAUNCHCONTROL_COLOR_GREEN : LaunchControlXLColorManager.LAUNCHCONTROL_COLOR_GREEN_LO;
+            case 1:
+                return transport.isRecording () ? LaunchControlXLColorManager.LAUNCHCONTROL_COLOR_RED : LaunchControlXLColorManager.LAUNCHCONTROL_COLOR_RED_LO;
+            case 2, 3:
+                return LaunchControlXLColorManager.LAUNCHCONTROL_COLOR_AMBER_LO;
+            case 4:
+                return transport.isLoop () ? LaunchControlXLColorManager.LAUNCHCONTROL_COLOR_YELLOW : LaunchControlXLColorManager.LAUNCHCONTROL_COLOR_YELLOW_LO;
+            case 5:
+                return transport.isMetronomeOn () ? LaunchControlXLColorManager.LAUNCHCONTROL_COLOR_GREEN : LaunchControlXLColorManager.LAUNCHCONTROL_COLOR_GREEN_LO;
+            case 6:
+                return transport.isWritingArrangerAutomation () ? LaunchControlXLColorManager.LAUNCHCONTROL_COLOR_RED : LaunchControlXLColorManager.LAUNCHCONTROL_COLOR_RED_LO;
+            case 7:
+                return LaunchControlXLColorManager.LAUNCHCONTROL_COLOR_AMBER_LO;
+            default:
+                return LaunchControlXLColorManager.LAUNCHCONTROL_COLOR_BLACK;
+        }
     }
 }

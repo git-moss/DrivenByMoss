@@ -23,7 +23,7 @@ import de.mossgrabers.framework.featuregroup.IView;
 import de.mossgrabers.framework.mode.INoteMode;
 import de.mossgrabers.framework.scale.Scales;
 import de.mossgrabers.framework.utils.StringUtils;
-import de.mossgrabers.framework.view.AbstractSequencerView;
+import de.mossgrabers.framework.view.sequencer.AbstractSequencerView;
 
 import java.util.ArrayList;
 import java.util.List;

@@ -7,8 +7,8 @@ package de.mossgrabers.controller.ableton.push.view;
 import de.mossgrabers.controller.ableton.push.PushConfiguration;
 import de.mossgrabers.controller.ableton.push.controller.PushControlSurface;
 import de.mossgrabers.framework.daw.IModel;
-import de.mossgrabers.framework.view.AbstractRaindropsView;
 import de.mossgrabers.framework.view.Views;
+import de.mossgrabers.framework.view.sequencer.AbstractRaindropsView;
 
 
 /**

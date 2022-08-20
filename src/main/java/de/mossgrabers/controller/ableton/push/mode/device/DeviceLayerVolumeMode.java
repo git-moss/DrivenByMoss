@@ -25,7 +25,7 @@ import java.util.Optional;
  *
  * @author J&uuml;rgen Mo&szlig;graber
  */
-public class DeviceLayerModeVolume extends DeviceLayerMode
+public class DeviceLayerVolumeMode extends DeviceLayerMode
 {
     /**
      * Constructor.
@@ -33,7 +33,7 @@ public class DeviceLayerModeVolume extends DeviceLayerMode
      * @param surface The control surface
      * @param model The model
      */
-    public DeviceLayerModeVolume (final PushControlSurface surface, final IModel model)
+    public DeviceLayerVolumeMode (final PushControlSurface surface, final IModel model)
     {
         super (Modes.NAME_LAYER_VOLUME, surface, model);
 

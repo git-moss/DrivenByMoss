@@ -11,9 +11,12 @@ import de.mossgrabers.framework.daw.IModel;
 import de.mossgrabers.framework.daw.INoteClip;
 import de.mossgrabers.framework.daw.ITransport;
 import de.mossgrabers.framework.daw.data.ICursorDevice;
+import de.mossgrabers.framework.daw.data.ILayer;
 import de.mossgrabers.framework.daw.data.IParameter;
+import de.mossgrabers.framework.daw.data.IScene;
 import de.mossgrabers.framework.daw.data.ITrack;
 import de.mossgrabers.framework.daw.data.bank.IParameterBank;
+import de.mossgrabers.framework.daw.data.bank.ISceneBank;
 import de.mossgrabers.framework.daw.data.bank.ITrackBank;
 import de.mossgrabers.framework.featuregroup.IMode;
 
@@ -87,6 +90,24 @@ public class MVHelper<S extends IControlSurface<C>, C extends Configuration>
 
             final ICursorDevice cursorDevice = this.model.getCursorDevice ();
             return "Selected device: " + (cursorDevice.doesExist () ? cursorDevice.getName () : NONE);
+
+        });
+    }
+
+
+    /**
+     * Display the name of the selected layer if any.
+     */
+    public void notifySelectedLayer ()
+    {
+        final ICursorDevice cursorDevice = this.model.getCursorDevice ();
+        if (!cursorDevice.doesExist () || !cursorDevice.hasLayers ())
+            return;
+
+        this.delayDisplay ( () -> {
+
+            final Optional<ILayer> selectedLayer = cursorDevice.getLayerBank ().getSelectedItem ();
+            return "Selected layer: " + (selectedLayer.isPresent () ? selectedLayer.get ().getName () : NONE);
 
         });
     }
@@ -171,6 +192,38 @@ public class MVHelper<S extends IControlSurface<C>, C extends Configuration>
 
             final Optional<String> selectedItemName = mode.getSelectedItemName ();
             return selectedItemName.isPresent () ? selectedItemName.get () : NONE;
+
+        });
+    }
+
+
+    /**
+     * Display the scene range in the current page.
+     */
+    public void notifyScenePage ()
+    {
+        this.delayDisplay ( () -> {
+
+            final ISceneBank sceneBank = this.model.getSceneBank ();
+            int lastScene = -1;
+            for (int i = sceneBank.getPageSize () - 1; i >= 0; i--)
+            {
+                if (sceneBank.getItem (i).doesExist ())
+                {
+                    lastScene = i;
+                    break;
+                }
+            }
+
+            if (lastScene == -1)
+                return "No scenes";
+
+            final IScene first = sceneBank.getItem (0);
+            final String firstText = String.format ("%d: %s", Integer.valueOf (first.getPosition () + 1), first.getName ());
+            if (lastScene == 0)
+                return firstText;
+            final IScene last = sceneBank.getItem (lastScene);
+            return firstText + String.format (" - %d: %s", Integer.valueOf (last.getPosition () + 1), last.getName ());
 
         });
     }

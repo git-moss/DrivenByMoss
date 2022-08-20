@@ -169,6 +169,22 @@ public class LaunchControlXLControlSurface extends AbstractControlSurface<Launch
 
 
     /**
+     * Set the LED of a knob for the factory templates.
+     *
+     * @param row The row of the knob (0-2)
+     * @param column The column of the knob (0-7)
+     * @param green The intensity of green (0-3)
+     * @param red The intensity of red (0-3)
+     */
+    public void setKnobLEDColor (final int row, final int column, final int green, final int red)
+    {
+        final int midiChannel = this.configuration.getTemplate ();
+        if (midiChannel >= 8)
+            this.setKnobLED (midiChannel, 13 + row + column * 16, green, red);
+    }
+
+
+    /**
      * Set the LED of a knob.
      *
      * @param channel The MIDI channel (number of the template)
@@ -176,7 +192,7 @@ public class LaunchControlXLControlSurface extends AbstractControlSurface<Launch
      * @param green The green intensity 0-3
      * @param red The red intensity 0-3
      */
-    public void setKnobLED (final int channel, final int note, final int green, final int red)
+    private void setKnobLED (final int channel, final int note, final int green, final int red)
     {
         final int g = Math.min (3, Math.max (0, green));
         final int r = Math.min (3, Math.max (0, red));

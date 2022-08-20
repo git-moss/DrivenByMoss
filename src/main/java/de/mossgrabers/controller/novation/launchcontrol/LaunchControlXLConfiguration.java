@@ -24,6 +24,7 @@ public class LaunchControlXLConfiguration extends AbstractConfiguration
     public static final Integer ACTIVE_TEMPLATE = Integer.valueOf (50);
 
     private int                 templateID      = -1;
+    private boolean             isDeviceActive  = false;
 
 
     /**
@@ -71,5 +72,25 @@ public class LaunchControlXLConfiguration extends AbstractConfiguration
     public int getTemplate ()
     {
         return this.templateID;
+    }
+
+
+    /**
+     * Are device parameters active?
+     *
+     * @return True if active otherwise panorama is active
+     */
+    public boolean isDeviceActive ()
+    {
+        return this.isDeviceActive;
+    }
+
+
+    /**
+     * Toggle between panorama and device parameters control on 3rd row.
+     */
+    public void toggleDeviceActive ()
+    {
+        this.isDeviceActive = !this.isDeviceActive;
     }
 }

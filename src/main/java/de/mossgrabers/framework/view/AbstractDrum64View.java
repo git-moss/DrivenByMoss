@@ -17,6 +17,7 @@ import de.mossgrabers.framework.daw.data.bank.ITrackBank;
 import de.mossgrabers.framework.featuregroup.AbstractView;
 import de.mossgrabers.framework.scale.Scales;
 import de.mossgrabers.framework.utils.ButtonEvent;
+import de.mossgrabers.framework.view.sequencer.AbstractDrumView;
 
 import java.util.Optional;
 

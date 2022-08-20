@@ -14,8 +14,8 @@ import java.util.Optional;
 
 
 /**
- * Get a number of parameters. This implementation provides all panorama parameters of the layers of
- * the current device.
+ * Get a number of parameters. This implementation provides send parameters of the layers of the
+ * current device.
  *
  * @author J&uuml;rgen Mo&szlig;graber
  */

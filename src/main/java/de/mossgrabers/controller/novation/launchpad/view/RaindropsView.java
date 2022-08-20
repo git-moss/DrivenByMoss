@@ -9,7 +9,7 @@ import de.mossgrabers.controller.novation.launchpad.controller.LaunchpadColorMan
 import de.mossgrabers.controller.novation.launchpad.controller.LaunchpadControlSurface;
 import de.mossgrabers.framework.controller.ButtonID;
 import de.mossgrabers.framework.daw.IModel;
-import de.mossgrabers.framework.view.AbstractRaindropsView;
+import de.mossgrabers.framework.view.sequencer.AbstractRaindropsView;
 
 
 /**

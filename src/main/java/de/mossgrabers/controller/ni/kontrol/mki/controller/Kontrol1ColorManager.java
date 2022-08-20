@@ -10,8 +10,8 @@ import de.mossgrabers.framework.controller.color.ColorManager;
 import de.mossgrabers.framework.controller.grid.IPadGrid;
 import de.mossgrabers.framework.daw.DAWColor;
 import de.mossgrabers.framework.scale.Scales;
-import de.mossgrabers.framework.view.AbstractDrumView;
 import de.mossgrabers.framework.view.AbstractPlayView;
+import de.mossgrabers.framework.view.sequencer.AbstractDrumView;
 
 
 /**

@@ -2,7 +2,7 @@
 // (c) 2017-2022
 // Licensed under LGPLv3 - http://www.gnu.org/licenses/lgpl-3.0.txt
 
-package de.mossgrabers.framework.view;
+package de.mossgrabers.framework.view.sequencer;
 
 import de.mossgrabers.framework.configuration.Configuration;
 import de.mossgrabers.framework.controller.ButtonID;
@@ -18,6 +18,7 @@ import de.mossgrabers.framework.daw.data.GridStep;
 import de.mossgrabers.framework.scale.Scale;
 import de.mossgrabers.framework.scale.Scales;
 import de.mossgrabers.framework.utils.ButtonEvent;
+import de.mossgrabers.framework.view.TransposeView;
 
 import java.util.List;
 

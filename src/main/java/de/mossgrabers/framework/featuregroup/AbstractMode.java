@@ -565,7 +565,10 @@ public abstract class AbstractMode<S extends IControlSurface<C>, C extends Confi
 
         final IParameterProvider parameterProvider = this.getParameterProvider ();
         for (int i = 0; i < this.controls.size (); i++)
-            this.surface.getContinuous (this.controls.get (i)).bind (parameterProvider.get (i));
+        {
+            final IParameter parameter = parameterProvider.get (i);
+            this.surface.getContinuous (this.controls.get (i)).bind (parameter);
+        }
     }
 
 

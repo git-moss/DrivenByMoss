@@ -23,9 +23,9 @@ import de.mossgrabers.framework.utils.ButtonEvent;
  */
 public class ModeSelectCommand<S extends IControlSurface<C>, C extends Configuration> extends AbstractTriggerCommand<S, C>
 {
-    private final ModeManager modeManager;
-    private final Modes       modeId;
-    private final boolean     toggle;
+    protected final ModeManager modeManager;
+    protected final Modes       modeId;
+    protected final boolean     toggle;
 
 
     /**

@@ -12,7 +12,7 @@ import de.mossgrabers.framework.daw.IModel;
 import de.mossgrabers.framework.daw.INoteClip;
 import de.mossgrabers.framework.daw.data.IChannel;
 import de.mossgrabers.framework.utils.ButtonEvent;
-import de.mossgrabers.framework.view.AbstractDrumView;
+import de.mossgrabers.framework.view.sequencer.AbstractDrumView;
 
 
 /**

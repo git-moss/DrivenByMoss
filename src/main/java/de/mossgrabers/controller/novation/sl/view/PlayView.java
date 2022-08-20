@@ -24,8 +24,8 @@ import de.mossgrabers.framework.daw.midi.MidiConstants;
 import de.mossgrabers.framework.featuregroup.ModeManager;
 import de.mossgrabers.framework.mode.Modes;
 import de.mossgrabers.framework.utils.ButtonEvent;
-import de.mossgrabers.framework.view.AbstractSequencerView;
 import de.mossgrabers.framework.view.Views;
+import de.mossgrabers.framework.view.sequencer.AbstractSequencerView;
 
 import java.util.Arrays;
 import java.util.Optional;

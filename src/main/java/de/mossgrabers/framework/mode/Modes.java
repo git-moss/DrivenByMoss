@@ -97,6 +97,10 @@ public enum Modes
     DEVICE_LAYER_SEND8,
     /** Edit layer details. */
     DEVICE_LAYER_DETAILS,
+    /** Layer mute. */
+    DEVICE_LAYER_MUTE,
+    /** Layer solo. */
+    DEVICE_LAYER_SOLO,
 
     /** Browser mode. */
     BROWSER,
@@ -157,7 +161,9 @@ public enum Modes
     /** A mode that does nothing. */
     DUMMY,
     /** A mode to select options for adding a track. */
-    ADD_TRACK;
+    ADD_TRACK,
+    /** A drum sequencer mode. */
+    DRUM_SEQUENCER;
 
 
     /** The name of the Track mode. */

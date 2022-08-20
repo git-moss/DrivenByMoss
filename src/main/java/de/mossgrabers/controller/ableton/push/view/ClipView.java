@@ -14,7 +14,7 @@ import de.mossgrabers.framework.daw.INoteClip;
 import de.mossgrabers.framework.daw.constants.Resolution;
 import de.mossgrabers.framework.featuregroup.AbstractFeatureGroup;
 import de.mossgrabers.framework.utils.ButtonEvent;
-import de.mossgrabers.framework.view.AbstractSequencerView;
+import de.mossgrabers.framework.view.sequencer.AbstractSequencerView;
 
 
 /**

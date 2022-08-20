@@ -13,7 +13,7 @@ import de.mossgrabers.framework.daw.StepState;
 import de.mossgrabers.framework.daw.data.ITrack;
 import de.mossgrabers.framework.mode.Modes;
 import de.mossgrabers.framework.utils.ButtonEvent;
-import de.mossgrabers.framework.view.AbstractPolySequencerView;
+import de.mossgrabers.framework.view.sequencer.AbstractPolySequencerView;
 
 
 /**

@@ -1,20 +1,15 @@
-package de.mossgrabers.controller.novation.launchcontrol.mode;
+package de.mossgrabers.controller.novation.launchcontrol.mode.main;
 
-import de.mossgrabers.controller.novation.launchcontrol.LaunchControlXLConfiguration;
 import de.mossgrabers.controller.novation.launchcontrol.controller.LaunchControlXLColorManager;
 import de.mossgrabers.controller.novation.launchcontrol.controller.LaunchControlXLControlSurface;
+import de.mossgrabers.controller.novation.launchcontrol.mode.buttons.XLTemporaryButtonMode;
 import de.mossgrabers.framework.controller.ButtonID;
 import de.mossgrabers.framework.controller.ContinuousID;
 import de.mossgrabers.framework.daw.IModel;
 import de.mossgrabers.framework.daw.data.ITrack;
 import de.mossgrabers.framework.daw.data.bank.ITrackBank;
-import de.mossgrabers.framework.featuregroup.AbstractMode;
 import de.mossgrabers.framework.featuregroup.ModeManager;
 import de.mossgrabers.framework.mode.Modes;
-import de.mossgrabers.framework.parameterprovider.device.BankParameterProvider;
-import de.mossgrabers.framework.parameterprovider.special.CombinedParameterProvider;
-import de.mossgrabers.framework.parameterprovider.track.PanParameterProvider;
-import de.mossgrabers.framework.parameterprovider.track.SendParameterProvider;
 import de.mossgrabers.framework.utils.ButtonEvent;
 
 import java.util.List;
@@ -25,44 +20,26 @@ import java.util.List;
  *
  * @author J&uuml;rgen Mo&szlig;graber
  */
-public class XLMixMode extends AbstractMode<LaunchControlXLControlSurface, LaunchControlXLConfiguration, ITrack>
+public abstract class XLAbstractTrackMode extends XLAbstractMainMode<ITrack>
 {
-    private final CombinedParameterProvider parameterProviderWithPan;
-    private final CombinedParameterProvider parameterProviderWithDeviceParams;
-
-    private boolean                   isDeviceActive = false;
-    private boolean                   wasLong        = false;
-
-
     /**
      * Constructor.
      *
+     * @param name The name of the mode
      * @param surface The control surface
      * @param model The model
      * @param controls The IDs of the knobs or faders to control this mode
      */
-    public XLMixMode (final LaunchControlXLControlSurface surface, final IModel model, final List<ContinuousID> controls)
+    protected XLAbstractTrackMode (final String name, final LaunchControlXLControlSurface surface, final IModel model, final List<ContinuousID> controls)
     {
-        super ("Send A, B & Panorama", surface, model, true, model.getTrackBank (), controls);
-
-        final SendParameterProvider sendParameterProvider1 = new SendParameterProvider (model, 0, 0);
-        final SendParameterProvider sendParameterProvider2 = new SendParameterProvider (model, 1, 0);
-        final PanParameterProvider panParameterProvider = new PanParameterProvider (model);
-        final BankParameterProvider deviceParameterProvider = new BankParameterProvider (this.model.getCursorDevice ().getParameterBank ());
-
-        this.parameterProviderWithPan = new CombinedParameterProvider (sendParameterProvider1, sendParameterProvider2, panParameterProvider);
-        this.parameterProviderWithDeviceParams = new CombinedParameterProvider (sendParameterProvider1, sendParameterProvider2, deviceParameterProvider);
-        this.setParameterProvider (this.parameterProviderWithPan);
+        super (name, surface, model, model.getTrackBank (), controls);
     }
 
 
     /** {@inheritDoc} */
     @Override
-    public void onButton (final int row, final int index, final ButtonEvent event)
+    protected void handleRow0 (final int index, final ButtonEvent event)
     {
-        if (row != 0)
-            return;
-
         final ModeManager modeManager = this.surface.getFaderModeManager ();
 
         if (event == ButtonEvent.DOWN)
@@ -103,23 +80,47 @@ public class XLMixMode extends AbstractMode<LaunchControlXLControlSurface, Launc
 
     /** {@inheritDoc} */
     @Override
-    public int getKnobValue (final int index)
+    protected void handleRow2 (final int index, final ButtonEvent event)
     {
-        final int row = index / 8;
-        final int column = index % 8;
-        final ITrack track = this.model.getTrackBank ().getItem (column);
-        switch (row)
+        final ModeManager trackButtonModeManager = this.surface.getTrackButtonModeManager ();
+
+        switch (index)
         {
+            // Device button
             case 0:
-                return track.getSendBank ().getItem (0).getValue ();
+                if (event == ButtonEvent.DOWN)
+                {
+                    trackButtonModeManager.setTemporary (Modes.DEVICE_PARAMS);
+                    return;
+                }
+
+                if (event == ButtonEvent.UP)
+                {
+                    if (!((XLTemporaryButtonMode) trackButtonModeManager.get (Modes.DEVICE_PARAMS)).hasBeenUsed ())
+                        ((XLTrackMixMode) this.surface.getModeManager ().get (Modes.SEND)).toggleDeviceActive ();
+                    trackButtonModeManager.restore ();
+                }
+                break;
+
+            // Mute button
             case 1:
-                return track.getSendBank ().getItem (1).getValue ();
+                if (event == ButtonEvent.DOWN)
+                    trackButtonModeManager.setActive (Modes.MUTE);
+                break;
+
+            // Solo button
             case 2:
-                if (this.isDeviceActive)
-                    return this.model.getCursorDevice ().getParameterBank ().getItem (column).getValue ();
-                return track.getPan ();
+                this.alternativeModeSelect (event, Modes.SOLO, Modes.CLIP);
+                break;
+
+            // Record Arm button
+            case 3:
+                this.alternativeModeSelect (event, Modes.REC_ARM, Modes.TRANSPORT);
+                break;
+
             default:
-                return 0;
+                // Not used
+                break;
         }
     }
 
@@ -128,14 +129,31 @@ public class XLMixMode extends AbstractMode<LaunchControlXLControlSurface, Launc
     @Override
     public int getButtonColor (final ButtonID buttonID)
     {
-        final int index = buttonID.ordinal () - ButtonID.ROW1_1.ordinal ();
-        if (index >= 0 && index < 8)
+        final ModeManager trackModeManager = this.surface.getTrackButtonModeManager ();
+        switch (buttonID)
         {
-            final ITrack track = this.model.getTrackBank ().getItem (index);
-            if (track.doesExist ())
-                return track.isSelected () ? LaunchControlXLColorManager.LAUNCHCONTROL_COLOR_YELLOW : LaunchControlXLColorManager.LAUNCHCONTROL_COLOR_YELLOW_LO;
+            case DEVICE:
+                return this.surface.getConfiguration ().isDeviceActive () ? 127 : 0;
+
+            case MUTE:
+                return trackModeManager.isActive (Modes.MUTE) ? 127 : 0;
+
+            case SOLO:
+                return trackModeManager.isActive (Modes.SOLO) ? 127 : 0;
+
+            case REC_ARM:
+                return trackModeManager.isActive (Modes.REC_ARM) ? 127 : 0;
+
+            case ROW1_1, ROW1_2, ROW1_3, ROW1_4, ROW1_5, ROW1_6, ROW1_7, ROW1_8:
+                final int index = buttonID.ordinal () - ButtonID.ROW1_1.ordinal ();
+                final ITrack track = this.model.getTrackBank ().getItem (index);
+                if (track.doesExist ())
+                    return track.isSelected () ? LaunchControlXLColorManager.LAUNCHCONTROL_COLOR_YELLOW : LaunchControlXLColorManager.LAUNCHCONTROL_COLOR_YELLOW_LO;
+                return LaunchControlXLColorManager.LAUNCHCONTROL_COLOR_BLACK;
+
+            default:
+                return LaunchControlXLColorManager.LAUNCHCONTROL_COLOR_BLACK;
         }
-        return LaunchControlXLColorManager.LAUNCHCONTROL_COLOR_BLACK;
     }
 
 
@@ -189,8 +207,19 @@ public class XLMixMode extends AbstractMode<LaunchControlXLControlSurface, Launc
     {
         if (this.isButtonCombination (ButtonID.DEVICE))
         {
+            if (this.surface.getTrackButtonModeManager ().getActive () instanceof final XLTemporaryButtonMode tempMode)
+                tempMode.setHasBeenUsed ();
             this.model.getCursorDevice ().selectPrevious ();
             this.mvHelper.notifySelectedDevice ();
+            return;
+        }
+
+        if (this.isButtonCombination (ButtonID.SOLO))
+        {
+            if (this.surface.getTrackButtonModeManager ().getActive () instanceof final XLTemporaryButtonMode tempMode)
+                tempMode.setHasBeenUsed ();
+            this.model.getSceneBank ().selectPreviousPage ();
+            this.mvHelper.notifyScenePage ();
             return;
         }
 
@@ -203,10 +232,21 @@ public class XLMixMode extends AbstractMode<LaunchControlXLControlSurface, Launc
     @Override
     public void selectNextItemPage ()
     {
-        if (this.isButtonCombination (ButtonID.DEVICE))
+        if (this.surface.isPressed (ButtonID.DEVICE))
         {
+            if (this.surface.getTrackButtonModeManager ().getActive () instanceof final XLTemporaryButtonMode tempMode)
+                tempMode.setHasBeenUsed ();
             this.model.getCursorDevice ().selectNext ();
             this.mvHelper.notifySelectedDevice ();
+            return;
+        }
+
+        if (this.surface.isPressed (ButtonID.SOLO))
+        {
+            if (this.surface.getTrackButtonModeManager ().getActive () instanceof final XLTemporaryButtonMode tempMode)
+                tempMode.setHasBeenUsed ();
+            this.model.getSceneBank ().selectNextPage ();
+            this.mvHelper.notifyScenePage ();
             return;
         }
 
@@ -222,6 +262,9 @@ public class XLMixMode extends AbstractMode<LaunchControlXLControlSurface, Launc
         if (this.surface.isPressed (ButtonID.DEVICE))
             return this.model.getCursorDevice ().canSelectPrevious ();
 
+        if (this.surface.isPressed (ButtonID.SOLO))
+            return this.model.getSceneBank ().canScrollPageBackwards ();
+
         return super.hasPreviousItemPage ();
     }
 
@@ -233,29 +276,9 @@ public class XLMixMode extends AbstractMode<LaunchControlXLControlSurface, Launc
         if (this.surface.isPressed (ButtonID.DEVICE))
             return this.model.getCursorDevice ().canSelectNext ();
 
+        if (this.surface.isPressed (ButtonID.SOLO))
+            return this.model.getSceneBank ().canScrollPageForwards ();
+
         return super.hasNextItemPage ();
-    }
-
-
-    /**
-     * Toggle between panorama and device parameters control on 3rd row.
-     */
-    public void toggleDeviceActive ()
-    {
-        this.isDeviceActive = !this.isDeviceActive;
-
-        this.setParameterProvider (this.isDeviceActive ? this.parameterProviderWithDeviceParams : this.parameterProviderWithPan);
-        this.bindControls ();
-    }
-
-
-    /**
-     * Are device parameters active?
-     *
-     * @return True if active otherwise panorama is active
-     */
-    public boolean isDeviceActive ()
-    {
-        return this.isDeviceActive;
     }
 }

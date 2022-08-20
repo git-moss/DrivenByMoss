@@ -19,7 +19,7 @@ import de.mossgrabers.framework.daw.data.bank.IDrumPadBank;
 import de.mossgrabers.framework.featuregroup.ModeManager;
 import de.mossgrabers.framework.mode.Modes;
 import de.mossgrabers.framework.utils.ButtonEvent;
-import de.mossgrabers.framework.view.AbstractDrumView;
+import de.mossgrabers.framework.view.sequencer.AbstractDrumView;
 
 import java.util.List;
 import java.util.Optional;

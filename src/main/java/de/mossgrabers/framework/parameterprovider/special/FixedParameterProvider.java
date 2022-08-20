@@ -10,6 +10,7 @@ import de.mossgrabers.framework.observer.IParametersAdjustObserver;
 import de.mossgrabers.framework.parameterprovider.IParameterProvider;
 
 import java.util.Collections;
+import java.util.List;
 import java.util.Optional;
 import java.util.Set;
 
@@ -32,6 +33,17 @@ public class FixedParameterProvider implements IParameterProvider
     public FixedParameterProvider (final IParameter... parameters)
     {
         this.parameters = parameters;
+    }
+
+
+    /**
+     * Constructor.
+     *
+     * @param parameters The fixed parameters
+     */
+    public FixedParameterProvider (final List<IParameter> parameters)
+    {
+        this.parameters = parameters.toArray (new IParameter [parameters.size ()]);
     }
 
 

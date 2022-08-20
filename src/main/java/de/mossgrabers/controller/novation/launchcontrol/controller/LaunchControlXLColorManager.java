@@ -8,6 +8,8 @@ import de.mossgrabers.framework.controller.color.ColorEx;
 import de.mossgrabers.framework.controller.color.ColorManager;
 import de.mossgrabers.framework.daw.DAWColor;
 import de.mossgrabers.framework.featuregroup.AbstractFeatureGroup;
+import de.mossgrabers.framework.view.sequencer.AbstractDrumView;
+import de.mossgrabers.framework.view.sequencer.AbstractSequencerView;
 
 
 /**
@@ -42,6 +44,24 @@ public class LaunchControlXLColorManager extends ColorManager
         this.registerColorIndex (ColorManager.BUTTON_STATE_OFF, 0);
         this.registerColorIndex (ColorManager.BUTTON_STATE_ON, 1);
         this.registerColorIndex (ColorManager.BUTTON_STATE_HI, 127);
+
+        this.registerColorIndex (AbstractSequencerView.COLOR_STEP_HILITE_NO_CONTENT, LAUNCHCONTROL_COLOR_GREEN_LO);
+        this.registerColorIndex (AbstractSequencerView.COLOR_STEP_HILITE_CONTENT, LAUNCHCONTROL_COLOR_GREEN);
+        this.registerColorIndex (AbstractSequencerView.COLOR_STEP_MUTED, LAUNCHCONTROL_COLOR_RED);
+        this.registerColorIndex (AbstractSequencerView.COLOR_STEP_MUTED_CONT, LAUNCHCONTROL_COLOR_RED_LO);
+        this.registerColorIndex (AbstractSequencerView.COLOR_STEP_SELECTED, LAUNCHCONTROL_COLOR_YELLOW);
+        this.registerColorIndex (AbstractSequencerView.COLOR_NO_CONTENT, LAUNCHCONTROL_COLOR_BLACK);
+        this.registerColorIndex (AbstractSequencerView.COLOR_NO_CONTENT_4, LAUNCHCONTROL_COLOR_BLACK);
+        this.registerColorIndex (AbstractSequencerView.COLOR_CONTENT, LAUNCHCONTROL_COLOR_AMBER);
+        this.registerColorIndex (AbstractSequencerView.COLOR_CONTENT_CONT, LAUNCHCONTROL_COLOR_AMBER_LO);
+
+        this.registerColorIndex (AbstractDrumView.COLOR_PAD_OFF, LAUNCHCONTROL_COLOR_BLACK);
+        this.registerColorIndex (AbstractDrumView.COLOR_PAD_RECORD, LAUNCHCONTROL_COLOR_RED);
+        this.registerColorIndex (AbstractDrumView.COLOR_PAD_PLAY, LAUNCHCONTROL_COLOR_GREEN);
+        this.registerColorIndex (AbstractDrumView.COLOR_PAD_SELECTED, LAUNCHCONTROL_COLOR_YELLOW);
+        this.registerColorIndex (AbstractDrumView.COLOR_PAD_MUTED, LAUNCHCONTROL_COLOR_AMBER_LO);
+        this.registerColorIndex (AbstractDrumView.COLOR_PAD_HAS_CONTENT, LAUNCHCONTROL_COLOR_YELLOW_LO);
+        this.registerColorIndex (AbstractDrumView.COLOR_PAD_NO_CONTENT, LAUNCHCONTROL_COLOR_BLACK);
 
         for (int i = 0; i < 128; i++)
             this.registerColor (i, ColorEx.BLACK);

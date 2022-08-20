@@ -9,7 +9,7 @@ import de.mossgrabers.controller.novation.launchpad.controller.LaunchpadControlS
 import de.mossgrabers.framework.controller.ButtonID;
 import de.mossgrabers.framework.daw.IModel;
 import de.mossgrabers.framework.daw.INoteClip;
-import de.mossgrabers.framework.view.AbstractDrum8View;
+import de.mossgrabers.framework.view.sequencer.AbstractDrum8View;
 
 
 /**

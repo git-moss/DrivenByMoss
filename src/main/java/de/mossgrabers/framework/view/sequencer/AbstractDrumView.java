@@ -2,7 +2,7 @@
 // (c) 2017-2022
 // Licensed under LGPLv3 - http://www.gnu.org/licenses/lgpl-3.0.txt
 
-package de.mossgrabers.framework.view;
+package de.mossgrabers.framework.view.sequencer;
 
 import de.mossgrabers.controller.ni.maschine.core.MaschineColorManager;
 import de.mossgrabers.framework.configuration.Configuration;
@@ -26,6 +26,7 @@ import de.mossgrabers.framework.daw.data.ITrack;
 import de.mossgrabers.framework.daw.data.bank.IDrumPadBank;
 import de.mossgrabers.framework.daw.data.bank.ITrackBank;
 import de.mossgrabers.framework.utils.ButtonEvent;
+import de.mossgrabers.framework.view.TransposeView;
 
 import java.util.List;
 import java.util.Optional;
