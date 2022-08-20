@@ -21,7 +21,6 @@ public class LaunchControlXLControllerDefinition extends DefaultControllerDefini
 {
     private static final UUID EXTENSION_ID = UUID.fromString ("5AFA5045-FF92-4737-A091-5B371CD5E529");
 
-
     /**
      * Constructor.
      */
@@ -44,25 +43,12 @@ public class LaunchControlXLControllerDefinition extends DefaultControllerDefini
                 break;
 
             case MAC:
-                // TODO
-                midiDiscoveryPairs.add (this.addDeviceDiscoveryPair (new String []
-                {
-                    "Launch Control XL"
-                }, new String []
-                {
-                    "Launch Control XL"
-                }));
+                midiDiscoveryPairs.add (this.addDeviceDiscoveryPair ("Launch Control XL"));
                 break;
 
             case LINUX:
-                // TODO
-                midiDiscoveryPairs.add (this.addDeviceDiscoveryPair (new String []
-                {
-                    "Launch Control XL"
-                }, new String []
-                {
-                    "Launch Control XL"
-                }));
+                midiDiscoveryPairs.add (this.addDeviceDiscoveryPair ("Launch Control XL"));
+                midiDiscoveryPairs.add (this.addDeviceDiscoveryPair ("Launch Control XL Launch Contro"));
                 break;
         }
         return midiDiscoveryPairs;
