@@ -21,6 +21,7 @@ public class LaunchControlXLControllerDefinition extends DefaultControllerDefini
 {
     private static final UUID EXTENSION_ID = UUID.fromString ("5AFA5045-FF92-4737-A091-5B371CD5E529");
 
+
     /**
      * Constructor.
      */

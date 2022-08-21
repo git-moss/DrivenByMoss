@@ -16,7 +16,9 @@ import de.mossgrabers.framework.daw.data.bank.IBank;
 import de.mossgrabers.framework.featuregroup.AbstractParameterMode;
 import de.mossgrabers.framework.featuregroup.ModeManager;
 import de.mossgrabers.framework.mode.Modes;
+import de.mossgrabers.framework.parameterprovider.IParameterProvider;
 import de.mossgrabers.framework.utils.ButtonEvent;
+import de.mossgrabers.framework.utils.FrameworkException;
 
 import java.util.List;
 
@@ -30,8 +32,12 @@ import java.util.List;
  */
 public abstract class XLAbstractMainMode<B extends IItem> extends AbstractParameterMode<LaunchControlXLControlSurface, LaunchControlXLConfiguration, B> implements IXLMode
 {
+    protected final LaunchControlXLConfiguration                                                  configuration;
     protected Modes                                                                               defaultMode   = Modes.MUTE;
     protected Modes                                                                               trackMode;
+
+    private IParameterProvider                                                                    parameterProvider;
+    private IParameterProvider                                                                    parameterProviderWithDeviceParams;
 
     private boolean                                                                               wasLong       = false;
     private boolean                                                                               transportUsed = false;
@@ -54,9 +60,37 @@ public abstract class XLAbstractMainMode<B extends IItem> extends AbstractParame
     {
         super (name, surface, model, true, bank, controls);
 
+        this.configuration = this.surface.getConfiguration ();
+
         this.newCommand = new NewCommand<> (model, surface);
         this.tempoDown = new ChangeTempoCommand<> (false, model, surface);
         this.tempoUp = new ChangeTempoCommand<> (true, model, surface);
+    }
+
+
+    /**
+     * Initialize the parameter providers.
+     *
+     * @param parameterProvider The default parameter provider for the knobs
+     * @param parameterProviderWithDeviceParams As above but with the 3rd row as parameter control
+     */
+    protected void setParameterProviders (final IParameterProvider parameterProvider, final IParameterProvider parameterProviderWithDeviceParams)
+    {
+        this.parameterProvider = parameterProvider;
+        this.parameterProviderWithDeviceParams = parameterProviderWithDeviceParams;
+        this.setParameterProvider (parameterProvider);
+    }
+
+
+    /**
+     * Toggle between panorama and device parameters control on 3rd row.
+     */
+    public void toggleDeviceActive ()
+    {
+        this.configuration.toggleDeviceActive ();
+
+        this.setParameterProvider (this.configuration.isDeviceActive () ? this.parameterProviderWithDeviceParams : this.parameterProvider);
+        this.bindControls ();
     }
 
 
@@ -158,6 +192,12 @@ public abstract class XLAbstractMainMode<B extends IItem> extends AbstractParame
     @Override
     public void onActivate ()
     {
+        if (this.parameterProviderWithDeviceParams == null || this.parameterProvider == null)
+            throw new FrameworkException ("Parameter providers must be initialized for XLAbstractMainMode! Call setParameterProviders.");
+
+        // Make sure there is the correct provider if the settings has changed in another main mode
+        this.setParameterProvider (this.configuration.isDeviceActive () ? this.parameterProviderWithDeviceParams : this.parameterProvider);
+
         this.surface.getTrackButtonModeManager ().setActive (this.trackMode == null ? this.defaultMode : this.trackMode);
 
         super.onActivate ();
@@ -207,6 +247,12 @@ public abstract class XLAbstractMainMode<B extends IItem> extends AbstractParame
                     transport.toggleWriteClipLauncherAutomation ();
                 break;
 
+            // Toggle plugin window
+            case 7:
+                if (event == ButtonEvent.DOWN)
+                    this.model.getCursorDevice ().toggleWindowOpen ();
+                break;
+
             default:
                 break;
         }
@@ -234,6 +280,9 @@ public abstract class XLAbstractMainMode<B extends IItem> extends AbstractParame
             // Toggle Clip Automation Write
             case 6:
                 return transport.isWritingClipLauncherAutomation () ? LaunchControlXLColorManager.LAUNCHCONTROL_COLOR_RED : LaunchControlXLColorManager.LAUNCHCONTROL_COLOR_RED_LO;
+
+            case 7:
+                return this.model.getCursorDevice ().isWindowOpen () ? LaunchControlXLColorManager.LAUNCHCONTROL_COLOR_GREEN : LaunchControlXLColorManager.LAUNCHCONTROL_COLOR_GREEN_LO;
 
             default:
                 return LaunchControlXLColorManager.LAUNCHCONTROL_COLOR_BLACK;

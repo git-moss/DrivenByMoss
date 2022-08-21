@@ -1,6 +1,5 @@
 package de.mossgrabers.controller.novation.launchcontrol.mode.main;
 
-import de.mossgrabers.controller.novation.launchcontrol.LaunchControlXLConfiguration;
 import de.mossgrabers.controller.novation.launchcontrol.controller.LaunchControlXLColorManager;
 import de.mossgrabers.controller.novation.launchcontrol.controller.LaunchControlXLControlSurface;
 import de.mossgrabers.controller.novation.launchcontrol.mode.buttons.XLTemporaryButtonMode;
@@ -12,6 +11,7 @@ import de.mossgrabers.framework.daw.data.ILayer;
 import de.mossgrabers.framework.daw.data.ISpecificDevice;
 import de.mossgrabers.framework.featuregroup.ModeManager;
 import de.mossgrabers.framework.mode.Modes;
+import de.mossgrabers.framework.parameterprovider.IParameterProvider;
 import de.mossgrabers.framework.parameterprovider.device.BankParameterProvider;
 import de.mossgrabers.framework.parameterprovider.device.PanLayerOrDrumPadParameterProvider;
 import de.mossgrabers.framework.parameterprovider.device.SendLayerOrDrumPadParameterProvider;
@@ -28,11 +28,7 @@ import java.util.List;
  */
 public class XLLayerMixMode extends XLAbstractMainMode<ILayer>
 {
-    private final CombinedParameterProvider    parameterProviderWithPan;
-    private final CombinedParameterProvider    parameterProviderWithDeviceParams;
-    private final LaunchControlXLConfiguration configuration;
-
-    private final ISpecificDevice              firstInstrument;
+    private final ISpecificDevice firstInstrument;
 
 
     /**
@@ -48,17 +44,18 @@ public class XLLayerMixMode extends XLAbstractMainMode<ILayer>
 
         this.defaultMode = Modes.DEVICE_LAYER_MUTE;
 
-        this.configuration = this.surface.getConfiguration ();
         this.firstInstrument = model.getSpecificDevice (DeviceID.FIRST_INSTRUMENT);
 
-        final SendLayerOrDrumPadParameterProvider sendParameterProvider1 = new SendLayerOrDrumPadParameterProvider (this.firstInstrument, 0);
-        final SendLayerOrDrumPadParameterProvider sendParameterProvider2 = new SendLayerOrDrumPadParameterProvider (this.firstInstrument, 1);
-        final PanLayerOrDrumPadParameterProvider panParameterProvider = new PanLayerOrDrumPadParameterProvider (this.firstInstrument);
-        final BankParameterProvider deviceParameterProvider = new BankParameterProvider (this.firstInstrument.getParameterBank ());
+        final IParameterProvider sendParameterProvider1 = new SendLayerOrDrumPadParameterProvider (this.firstInstrument, 0);
+        final IParameterProvider sendParameterProvider2 = new SendLayerOrDrumPadParameterProvider (this.firstInstrument, 1);
+        final IParameterProvider panParameterProvider = new PanLayerOrDrumPadParameterProvider (this.firstInstrument);
+        final IParameterProvider deviceParameterProvider = new BankParameterProvider (this.firstInstrument.getParameterBank ());
 
-        this.parameterProviderWithPan = new CombinedParameterProvider (sendParameterProvider1, sendParameterProvider2, panParameterProvider);
-        this.parameterProviderWithDeviceParams = new CombinedParameterProvider (sendParameterProvider1, sendParameterProvider2, deviceParameterProvider);
-        this.setParameterProvider (this.parameterProviderWithPan);
+        this.setParameterProviders (
+                // Control sends and pan
+                new CombinedParameterProvider (sendParameterProvider1, sendParameterProvider2, panParameterProvider),
+                // Control sends and device parameters
+                new CombinedParameterProvider (sendParameterProvider1, sendParameterProvider2, deviceParameterProvider));
 
         this.firstInstrument.addHasDrumPadsObserver (hasDrumPads -> this.parametersAdjusted ());
     }
@@ -316,18 +313,6 @@ public class XLLayerMixMode extends XLAbstractMainMode<ILayer>
     }
 
 
-    /**
-     * Toggle between panorama and device parameters control on 3rd row.
-     */
-    public void toggleDeviceActive ()
-    {
-        this.configuration.toggleDeviceActive ();
-
-        this.setParameterProvider (this.configuration.isDeviceActive () ? this.parameterProviderWithDeviceParams : this.parameterProviderWithPan);
-        this.bindControls ();
-    }
-
-
     /** {@inheritDoc} */
     @Override
     public void parametersAdjusted ()
@@ -335,16 +320,5 @@ public class XLLayerMixMode extends XLAbstractMainMode<ILayer>
         this.switchBanks (this.firstInstrument.hasDrumPads () ? this.firstInstrument.getDrumPadBank () : this.firstInstrument.getLayerBank ());
 
         super.parametersAdjusted ();
-    }
-
-
-    /** {@inheritDoc} */
-    @Override
-    public void onActivate ()
-    {
-        // Make sure there is the correct provider if the settings has changed in another main mode
-        this.setParameterProvider (this.configuration.isDeviceActive () ? this.parameterProviderWithDeviceParams : this.parameterProviderWithPan);
-
-        super.onActivate ();
     }
 }

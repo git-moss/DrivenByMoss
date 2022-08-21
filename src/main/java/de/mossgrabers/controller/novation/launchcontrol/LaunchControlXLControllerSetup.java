@@ -12,6 +12,7 @@ import de.mossgrabers.controller.novation.launchcontrol.mode.buttons.XLDrumSeque
 import de.mossgrabers.controller.novation.launchcontrol.mode.buttons.XLLayerMuteMode;
 import de.mossgrabers.controller.novation.launchcontrol.mode.buttons.XLLayerSoloMode;
 import de.mossgrabers.controller.novation.launchcontrol.mode.buttons.XLLoopLengthMode;
+import de.mossgrabers.controller.novation.launchcontrol.mode.buttons.XLNoteSequencerMode;
 import de.mossgrabers.controller.novation.launchcontrol.mode.buttons.XLScenesMode;
 import de.mossgrabers.controller.novation.launchcontrol.mode.buttons.XLSelectDeviceParamsPageMode;
 import de.mossgrabers.controller.novation.launchcontrol.mode.buttons.XLSequencerResolutionMode;
@@ -21,6 +22,7 @@ import de.mossgrabers.controller.novation.launchcontrol.mode.buttons.XLTrackSolo
 import de.mossgrabers.controller.novation.launchcontrol.mode.buttons.XLTransportMode;
 import de.mossgrabers.controller.novation.launchcontrol.mode.faders.XLEqGainMode;
 import de.mossgrabers.controller.novation.launchcontrol.mode.faders.XLLayerVolumeMode;
+import de.mossgrabers.controller.novation.launchcontrol.mode.main.XLDrumPadEditMode;
 import de.mossgrabers.controller.novation.launchcontrol.mode.main.XLEqMode;
 import de.mossgrabers.controller.novation.launchcontrol.mode.main.XLLayerMixMode;
 import de.mossgrabers.controller.novation.launchcontrol.mode.main.XLNoteEditMode;
@@ -158,8 +160,10 @@ public class LaunchControlXLControllerSetup extends AbstractControllerSetup<Laun
         modeManager.register (Modes.SEND, new XLTrackMixMode (surface, this.model, KNOB_CONTROLS));
         modeManager.register (Modes.EQ_DEVICE_PARAMS, new XLEqMode (surface, this.model, KNOB_CONTROLS));
         modeManager.register (Modes.DEVICE_LAYER, new XLLayerMixMode (surface, this.model, KNOB_CONTROLS));
+        final XLDrumPadEditMode drumPadEditMode = new XLDrumPadEditMode (surface, this.model, 127, 8, KNOB_CONTROLS);
+        modeManager.register (Modes.DRUM_SEQUENCER, drumPadEditMode);
         final XLNoteEditMode noteEditMode = new XLNoteEditMode (surface, this.model, 127, 8, KNOB_CONTROLS);
-        modeManager.register (Modes.NOTE, noteEditMode);
+        modeManager.register (Modes.NOTE_SEQUENCER, noteEditMode);
         modeManager.register (Modes.DUMMY, new XLDummyMode (surface, this.model, KNOB_CONTROLS));
 
         final ModeManager trackModeManager = surface.getTrackButtonModeManager ();
@@ -173,6 +177,7 @@ public class LaunchControlXLControllerSetup extends AbstractControllerSetup<Laun
         trackModeManager.register (Modes.DEVICE_LAYER_MUTE, new XLLayerMuteMode (surface, this.model));
         trackModeManager.register (Modes.DEVICE_LAYER_SOLO, new XLLayerSoloMode (surface, this.model));
         trackModeManager.register (Modes.DRUM_SEQUENCER, new XLDrumSequencerMode (surface, this.model));
+        trackModeManager.register (Modes.NOTE_SEQUENCER, new XLNoteSequencerMode (surface, this.model));
         trackModeManager.register (Modes.LOOP_LENGTH, new XLLoopLengthMode (surface, this.model));
         trackModeManager.register (Modes.CONFIGURATION, new XLSequencerResolutionMode (surface, this.model));
 
@@ -181,7 +186,8 @@ public class LaunchControlXLControllerSetup extends AbstractControllerSetup<Laun
         faderManager.register (Modes.MASTER, new MasterAndFXVolumeMode<> (surface, this.model, true, FADER_IDS));
         faderManager.register (Modes.EQ_DEVICE_PARAMS, new XLEqGainMode (surface, this.model, FADER_IDS));
         faderManager.register (Modes.DEVICE_LAYER, new XLLayerVolumeMode (surface, this.model, FADER_IDS));
-        faderManager.register (Modes.NOTE, noteEditMode);
+        faderManager.register (Modes.DRUM_SEQUENCER, drumPadEditMode);
+        faderManager.register (Modes.NOTE_SEQUENCER, noteEditMode);
         faderManager.register (Modes.DUMMY, new DummyMode<> (surface, this.model, FADER_IDS));
     }
 
@@ -459,9 +465,16 @@ public class LaunchControlXLControllerSetup extends AbstractControllerSetup<Laun
 
             // Factory mode 4 - Drum Sequencer
             case 11:
-                mode = Modes.NOTE;
-                faderMode = Modes.NOTE;
+                mode = Modes.DRUM_SEQUENCER;
+                faderMode = Modes.DRUM_SEQUENCER;
                 message = "Drum Sequencer";
+                break;
+
+            // Factory mode 5 - Note Sequencer
+            case 12:
+                mode = Modes.NOTE_SEQUENCER;
+                faderMode = Modes.NOTE_SEQUENCER;
+                message = "Note Sequencer";
                 break;
 
             default:

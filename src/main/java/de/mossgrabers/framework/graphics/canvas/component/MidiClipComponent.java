@@ -129,10 +129,10 @@ public class MidiClipComponent implements IComponent
         }
 
         // Draw the notes
-        final int lowerRowWithData = this.clip.getLowerRowWithData ();
+        final int lowerRowWithData = this.clip.getLowestRowWithData ();
         if (lowerRowWithData == -1)
             return;
-        final int upperRowWithData = this.clip.getUpperRowWithData ();
+        final int upperRowWithData = this.clip.getHighestRowWithData ();
         // Display at least 4 rows
         final int range = Math.max (4, 1 + upperRowWithData - lowerRowWithData);
         final double stepHeight = noteAreaHeight / range;

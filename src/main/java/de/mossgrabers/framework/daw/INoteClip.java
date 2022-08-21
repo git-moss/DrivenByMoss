@@ -105,6 +105,17 @@ public interface INoteClip extends IClip, IPinnable
 
 
     /**
+     * Moves the step to a different row.
+     *
+     * @param channel The MIDI channel
+     * @param step The step
+     * @param row The note row
+     * @param newRow The new note row
+     */
+    void moveStepY (int channel, int step, int row, int newRow);
+
+
+    /**
      * If there is a note started at this position, it will update the mute state of the note.
      *
      * @param channel The MIDI channel
@@ -590,7 +601,7 @@ public interface INoteClip extends IClip, IPinnable
      *
      * @return The lowest row or -1 if all rows are empty
      */
-    int getLowerRowWithData ();
+    int getLowestRowWithData ();
 
 
     /**
@@ -598,7 +609,7 @@ public interface INoteClip extends IClip, IPinnable
      *
      * @return The highest row or -1 if all rows are empty
      */
-    int getUpperRowWithData ();
+    int getHighestRowWithData ();
 
 
     /**
@@ -607,7 +618,7 @@ public interface INoteClip extends IClip, IPinnable
      * @param channel The MIDI channel
      * @return The lowest row or -1 if all rows are empty
      */
-    int getLowerRowWithData (int channel);
+    int getLowestRowWithData (int channel);
 
 
     /**
@@ -616,7 +627,17 @@ public interface INoteClip extends IClip, IPinnable
      * @param channel The MIDI channel
      * @return The highest row or -1 if all rows are empty
      */
-    int getUpperRowWithData (int channel);
+    int getHighestRowWithData (int channel);
+
+
+    /**
+     * Get the highest row (note) which contains data of a step.
+     *
+     * @param channel The MIDI channel
+     * @param step The step
+     * @return The highest note or -1 if all rows are empty
+     */
+    int getHighestRow (int channel, int step);
 
 
     /**

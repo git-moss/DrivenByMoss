@@ -4,7 +4,9 @@ import de.mossgrabers.framework.configuration.Configuration;
 import de.mossgrabers.framework.controller.ContinuousID;
 import de.mossgrabers.framework.controller.IControlSurface;
 import de.mossgrabers.framework.daw.IModel;
+import de.mossgrabers.framework.daw.data.bank.ITrackBank;
 import de.mossgrabers.framework.parameterprovider.special.CombinedParameterProvider;
+import de.mossgrabers.framework.parameterprovider.special.EmptyParameterProvider;
 import de.mossgrabers.framework.parameterprovider.special.FixedParameterProvider;
 import de.mossgrabers.framework.parameterprovider.special.RangeFilterParameterProvider;
 import de.mossgrabers.framework.parameterprovider.track.VolumeParameterProvider;
@@ -40,9 +42,10 @@ public class MasterAndFXVolumeMode<S extends IControlSurface<C>, C extends Confi
         if (numnFXTracks < 0)
             throw new FrameworkException ("Number of controls must be at least 2.");
 
+        final ITrackBank effectTrackBank = this.model.getEffectTrackBank ();
         this.setParameterProvider (new CombinedParameterProvider (
                 // N FX track volumes
-                new RangeFilterParameterProvider (new VolumeParameterProvider (this.model.getEffectTrackBank ()), 0, numnFXTracks),
+                effectTrackBank == null ? new EmptyParameterProvider (numnFXTracks) : new RangeFilterParameterProvider (new VolumeParameterProvider (effectTrackBank), 0, numnFXTracks),
                 // Metronome volume
                 new FixedParameterProvider (this.model.getTransport ().getMetronomeVolumeParameter ()),
                 // Master volume

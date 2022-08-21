@@ -1,10 +1,10 @@
 package de.mossgrabers.controller.novation.launchcontrol.mode.main;
 
-import de.mossgrabers.controller.novation.launchcontrol.LaunchControlXLConfiguration;
 import de.mossgrabers.controller.novation.launchcontrol.controller.LaunchControlXLControlSurface;
 import de.mossgrabers.framework.controller.ContinuousID;
 import de.mossgrabers.framework.daw.IModel;
 import de.mossgrabers.framework.daw.data.ITrack;
+import de.mossgrabers.framework.parameterprovider.IParameterProvider;
 import de.mossgrabers.framework.parameterprovider.device.BankParameterProvider;
 import de.mossgrabers.framework.parameterprovider.special.CombinedParameterProvider;
 import de.mossgrabers.framework.parameterprovider.track.PanParameterProvider;
@@ -20,11 +20,6 @@ import java.util.List;
  */
 public class XLTrackMixMode extends XLAbstractTrackMode
 {
-    private final CombinedParameterProvider    parameterProviderWithPan;
-    private final CombinedParameterProvider    parameterProviderWithDeviceParams;
-    private final LaunchControlXLConfiguration configuration = this.surface.getConfiguration ();
-
-
     /**
      * Constructor.
      *
@@ -36,14 +31,16 @@ public class XLTrackMixMode extends XLAbstractTrackMode
     {
         super ("Send A, B & Panorama", surface, model, controls);
 
-        final SendParameterProvider sendParameterProvider1 = new SendParameterProvider (model, 0, 0);
-        final SendParameterProvider sendParameterProvider2 = new SendParameterProvider (model, 1, 0);
-        final PanParameterProvider panParameterProvider = new PanParameterProvider (model);
-        final BankParameterProvider deviceParameterProvider = new BankParameterProvider (this.model.getCursorDevice ().getParameterBank ());
+        final IParameterProvider sendParameterProvider1 = new SendParameterProvider (model, 0, 0);
+        final IParameterProvider sendParameterProvider2 = new SendParameterProvider (model, 1, 0);
+        final IParameterProvider panParameterProvider = new PanParameterProvider (model);
+        final IParameterProvider deviceParameterProvider = new BankParameterProvider (this.model.getCursorDevice ().getParameterBank ());
 
-        this.parameterProviderWithPan = new CombinedParameterProvider (sendParameterProvider1, sendParameterProvider2, panParameterProvider);
-        this.parameterProviderWithDeviceParams = new CombinedParameterProvider (sendParameterProvider1, sendParameterProvider2, deviceParameterProvider);
-        this.setParameterProvider (this.parameterProviderWithPan);
+        this.setParameterProviders (
+                // Control sends and pan
+                new CombinedParameterProvider (sendParameterProvider1, sendParameterProvider2, panParameterProvider),
+                // Control sends and device parameters
+                new CombinedParameterProvider (sendParameterProvider1, sendParameterProvider2, deviceParameterProvider));
     }
 
 
@@ -102,28 +99,5 @@ public class XLTrackMixMode extends XLAbstractTrackMode
                 return;
         }
         this.surface.setKnobLEDColor (row, column, green, red);
-    }
-
-
-    /**
-     * Toggle between panorama and device parameters control on 3rd row.
-     */
-    public void toggleDeviceActive ()
-    {
-        this.configuration.toggleDeviceActive ();
-
-        this.setParameterProvider (this.configuration.isDeviceActive () ? this.parameterProviderWithDeviceParams : this.parameterProviderWithPan);
-        this.bindControls ();
-    }
-
-
-    /** {@inheritDoc} */
-    @Override
-    public void onActivate ()
-    {
-        // Make sure there is the correct provider if the settings has changed in another main mode
-        this.setParameterProvider (this.configuration.isDeviceActive () ? this.parameterProviderWithDeviceParams : this.parameterProviderWithPan);
-
-        super.onActivate ();
     }
 }

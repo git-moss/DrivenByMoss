@@ -74,7 +74,7 @@ public abstract class XLAbstractTrackMode extends XLAbstractMainMode<ITrack>
                 if (event == ButtonEvent.UP)
                 {
                     if (!((XLTemporaryButtonMode) trackButtonModeManager.get (Modes.DEVICE_PARAMS)).hasBeenUsed ())
-                        ((XLTrackMixMode) this.surface.getModeManager ().get (Modes.SEND)).toggleDeviceActive ();
+                        this.toggleDeviceActive ();
                     trackButtonModeManager.restore ();
                 }
                 break;

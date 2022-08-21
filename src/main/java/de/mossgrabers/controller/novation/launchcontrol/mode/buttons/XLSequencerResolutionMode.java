@@ -2,7 +2,7 @@ package de.mossgrabers.controller.novation.launchcontrol.mode.buttons;
 
 import de.mossgrabers.controller.novation.launchcontrol.controller.LaunchControlXLColorManager;
 import de.mossgrabers.controller.novation.launchcontrol.controller.LaunchControlXLControlSurface;
-import de.mossgrabers.controller.novation.launchcontrol.mode.main.XLNoteEditMode;
+import de.mossgrabers.controller.novation.launchcontrol.mode.main.XLBaseNoteEditMode;
 import de.mossgrabers.framework.controller.ButtonID;
 import de.mossgrabers.framework.daw.IModel;
 import de.mossgrabers.framework.daw.INoteClip;
@@ -57,7 +57,7 @@ public class XLSequencerResolutionMode extends XLTemporaryButtonMode
 
     private INoteClip getClip ()
     {
-        return ((XLNoteEditMode) this.surface.getModeManager ().get (Modes.NOTE)).getClip ();
+        return ((XLBaseNoteEditMode) this.surface.getModeManager ().get (Modes.NOTE)).getClip ();
     }
 
 

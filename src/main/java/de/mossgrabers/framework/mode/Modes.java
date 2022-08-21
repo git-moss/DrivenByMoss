@@ -163,7 +163,9 @@ public enum Modes
     /** A mode to select options for adding a track. */
     ADD_TRACK,
     /** A drum sequencer mode. */
-    DRUM_SEQUENCER;
+    DRUM_SEQUENCER,
+    /** A note sequencer mode. */
+    NOTE_SEQUENCER;
 
 
     /** The name of the Track mode. */

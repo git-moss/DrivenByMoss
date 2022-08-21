@@ -8,6 +8,9 @@ import de.mossgrabers.framework.daw.data.IEqualizerDevice;
 import de.mossgrabers.framework.daw.data.IParameter;
 import de.mossgrabers.framework.daw.data.ITrack;
 import de.mossgrabers.framework.daw.data.bank.ITrackBank;
+import de.mossgrabers.framework.parameterprovider.IParameterProvider;
+import de.mossgrabers.framework.parameterprovider.device.BankParameterProvider;
+import de.mossgrabers.framework.parameterprovider.special.CombinedParameterProvider;
 import de.mossgrabers.framework.parameterprovider.special.FixedParameterProvider;
 
 import java.util.ArrayList;
@@ -38,21 +41,28 @@ public class XLEqMode extends XLAbstractTrackMode
 
         this.eqDevice = (IEqualizerDevice) model.getSpecificDevice (DeviceID.EQ);
 
-        final List<IParameter> parameters = new ArrayList<> (24);
+        final List<IParameter> eqParameters = new ArrayList<> (24);
+        final List<IParameter> frequencyParameters = new ArrayList<> (8);
         for (int i = 0; i < 8; i++)
-            parameters.add (this.eqDevice.getType (i));
+            eqParameters.add (this.eqDevice.getType (i));
         for (int i = 0; i < 8; i++)
-            parameters.add (this.eqDevice.getQ (i));
+            eqParameters.add (this.eqDevice.getQ (i));
         for (int i = 0; i < 8; i++)
-            parameters.add (this.eqDevice.getFrequency (i));
+            frequencyParameters.add (this.eqDevice.getFrequency (i));
+        final IParameterProvider eqParameterProvider = new FixedParameterProvider (eqParameters);
+        final IParameterProvider frequencyParameterProvider = new FixedParameterProvider (frequencyParameters);
+        final IParameterProvider deviceParameterProvider = new BankParameterProvider (this.model.getCursorDevice ().getParameterBank ());
 
-        this.setParameterProvider (new FixedParameterProvider (parameters));
+        this.setParameterProviders (
+                // Control EQ type, Q and frequency
+                new CombinedParameterProvider (eqParameterProvider, frequencyParameterProvider),
+                // Control EQ type, Q and device parameters
+                new CombinedParameterProvider (eqParameterProvider, deviceParameterProvider));
 
         this.model.getTrackBank ().addSelectionObserver (this::trackSelectionChanged);
         final ITrackBank effectTrackBank = this.model.getEffectTrackBank ();
         if (effectTrackBank != null)
             effectTrackBank.addSelectionObserver (this::trackSelectionChanged);
-
     }
 
 
@@ -69,6 +79,8 @@ public class XLEqMode extends XLAbstractTrackMode
             case 1:
                 return this.eqDevice.getQ (column).getValue ();
             case 2:
+                if (this.configuration.isDeviceActive ())
+                    return this.model.getCursorDevice ().getParameterBank ().getItem (column).getValue ();
                 return this.eqDevice.getFrequency (column).getValue ();
             default:
                 return 0;
@@ -108,6 +120,8 @@ public class XLEqMode extends XLAbstractTrackMode
                         red = 2;
                         break;
                     case NOTCH:
+                        red = 3;
+                        green = 3;
                         break;
                     default:
                     case OFF:
@@ -124,7 +138,10 @@ public class XLEqMode extends XLAbstractTrackMode
             // EQ frequency in amber
             case 2:
                 green = value == 0 ? 0 : value / 42 + 1;
-                red = green;
+                if (this.configuration.isDeviceActive ())
+                    red = green == 0 ? 0 : 1;
+                else
+                    red = green;
                 break;
 
             default:
@@ -139,9 +156,9 @@ public class XLEqMode extends XLAbstractTrackMode
     @Override
     public void onActivate ()
     {
-        super.onActivate ();
-
         this.trackSelectionChanged (-1, true);
+
+        super.onActivate ();
     }
 
 
