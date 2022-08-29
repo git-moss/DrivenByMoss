@@ -45,6 +45,13 @@ public class LaunchControlXLConfiguration extends AbstractConfiguration
     public void init (final ISettingsUI globalSettings, final ISettingsUI documentSettings)
     {
         ///////////////////////////
+        // Scale
+
+        this.activateScaleSetting (documentSettings);
+        this.activateScaleBaseSetting (documentSettings);
+        this.activateScaleInScaleSetting (documentSettings);
+
+        ///////////////////////////
         // Transport
 
         this.activateBehaviourOnPauseSetting (globalSettings);

@@ -59,7 +59,7 @@ public class ChordsView extends AbstractChordView<MaschineJamControlSurface, Mas
                     this.scales.nextScaleOffset ();
                 else
                     this.scales.prevScaleOffset ();
-                this.mvHelper.delayDisplay ( () -> "Scale Offset: " + Scales.BASES.get (this.scales.getScaleOffset ()));
+                this.mvHelper.delayDisplay ( () -> "Scale Offset: " + Scales.BASES.get (this.scales.getScaleOffsetIndex ()));
                 break;
 
             case TEMPORARY_LOCK:

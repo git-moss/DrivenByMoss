@@ -2,7 +2,6 @@ package de.mossgrabers.controller.novation.launchcontrol.mode.main;
 
 import de.mossgrabers.controller.novation.launchcontrol.controller.LaunchControlXLColorManager;
 import de.mossgrabers.controller.novation.launchcontrol.controller.LaunchControlXLControlSurface;
-import de.mossgrabers.controller.novation.launchcontrol.mode.buttons.XLDrumSequencerMode;
 import de.mossgrabers.controller.novation.launchcontrol.mode.buttons.XLTemporaryButtonMode;
 import de.mossgrabers.framework.controller.ButtonID;
 import de.mossgrabers.framework.controller.ContinuousID;
@@ -15,10 +14,8 @@ import de.mossgrabers.framework.daw.IStepInfo;
 import de.mossgrabers.framework.daw.StepState;
 import de.mossgrabers.framework.daw.constants.Capability;
 import de.mossgrabers.framework.daw.constants.DeviceID;
-import de.mossgrabers.framework.daw.data.IChannel;
 import de.mossgrabers.framework.daw.data.IItem;
 import de.mossgrabers.framework.daw.data.ISpecificDevice;
-import de.mossgrabers.framework.daw.data.bank.IDrumPadBank;
 import de.mossgrabers.framework.featuregroup.ModeManager;
 import de.mossgrabers.framework.mode.Modes;
 import de.mossgrabers.framework.parameterprovider.IParameterProvider;
@@ -29,7 +26,6 @@ import de.mossgrabers.framework.scale.Scales;
 import de.mossgrabers.framework.utils.ButtonEvent;
 import de.mossgrabers.framework.utils.KeyManager;
 import de.mossgrabers.framework.utils.StringUtils;
-import de.mossgrabers.framework.view.sequencer.AbstractDrumView;
 
 import java.util.List;
 
@@ -74,7 +70,6 @@ public abstract class XLBaseNoteEditMode extends XLAbstractMainMode<IItem>
 
         this.firstInstrument = model.getSpecificDevice (DeviceID.FIRST_INSTRUMENT);
         final IParameterProvider deviceParameterProvider = new BankParameterProvider (this.firstInstrument.getParameterBank ());
-
         this.setParameterProviders (new NullParameterProvider (24), new CombinedParameterProvider (new NullParameterProvider (16), deviceParameterProvider));
 
         // Force clip creation
@@ -150,21 +145,19 @@ public abstract class XLBaseNoteEditMode extends XLAbstractMainMode<IItem>
         final int channel = this.configuration.getMidiEditChannel ();
         final INoteClip clip = this.getClip ();
         final int noteRow = this.getNoteRow (channel, column);
-        if (noteRow < 0)
-            return 0;
-        final IStepInfo stepInfo = clip.getStep (channel, column, noteRow);
+        final IStepInfo stepInfo = noteRow < 0 ? null : clip.getStep (channel, column, noteRow);
         final IValueChanger valueChanger = this.model.getValueChanger ();
-
-        if (stepInfo.getState () == StepState.OFF)
-            return 0;
 
         switch (row)
         {
             case 0:
-                this.getKnobValueRow0 (noteRow, stepInfo);
-                return 0;
+                if (stepInfo == null || stepInfo.getState () == StepState.OFF)
+                    return 0;
+                return this.getKnobValueRow0 (noteRow, stepInfo);
 
             case 1:
+                if (stepInfo == null || stepInfo.getState () == StepState.OFF)
+                    return 0;
                 if (this.host.supports (Capability.NOTE_EDIT_REPEAT))
                 {
                     final int repeatCount = stepInfo.getRepeatCount ();
@@ -176,11 +169,15 @@ public abstract class XLBaseNoteEditMode extends XLAbstractMainMode<IItem>
                 if (this.configuration.isDeviceActive ())
                     return this.firstInstrument.getParameterBank ().getItem (column).getValue ();
 
+                if (stepInfo == null || stepInfo.getState () == StepState.OFF)
+                    return 0;
                 if (this.host.supports (Capability.NOTE_EDIT_EXPRESSIONS))
                     return valueChanger.fromNormalizedValue ((stepInfo.getPan () + 1.0) / 2.0);
                 return 0;
 
             case 3:
+                if (stepInfo == null || stepInfo.getState () == StepState.OFF)
+                    return 0;
                 return (int) (stepInfo.getVelocity () * 127);
 
             default:
@@ -251,21 +248,21 @@ public abstract class XLBaseNoteEditMode extends XLAbstractMainMode<IItem>
             // Mute button
             case 1:
                 final Modes activeIDIgnoreTemporary = trackButtonModeManager.getActiveIDIgnoreTemporary ();
-                final Modes modeID = activeIDIgnoreTemporary == Modes.DEVICE_LAYER_MUTE ? Modes.DRUM_SEQUENCER : Modes.DEVICE_LAYER_MUTE;
+                final Modes modeID = activeIDIgnoreTemporary == Modes.DEVICE_LAYER_MUTE ? getSequencerMode () : Modes.DEVICE_LAYER_MUTE;
                 this.alternativeModeSelect (event, modeID, Modes.CONFIGURATION);
                 break;
 
             // Solo button
             case 2:
                 final Modes activeIDIgnoreTemporary2 = trackButtonModeManager.getActiveIDIgnoreTemporary ();
-                final Modes modeID2 = activeIDIgnoreTemporary2 == Modes.DEVICE_LAYER_SOLO ? Modes.DRUM_SEQUENCER : Modes.DEVICE_LAYER_SOLO;
+                final Modes modeID2 = activeIDIgnoreTemporary2 == Modes.DEVICE_LAYER_SOLO ? getSequencerMode () : Modes.DEVICE_LAYER_SOLO;
                 this.alternativeModeSelect (event, modeID2, Modes.CLIP);
                 break;
 
             // Record Arm button
             case 3:
                 final Modes activeIDIgnoreTemporary3 = trackButtonModeManager.getActiveIDIgnoreTemporary ();
-                final Modes modeID3 = activeIDIgnoreTemporary3 == Modes.LOOP_LENGTH ? Modes.DRUM_SEQUENCER : Modes.LOOP_LENGTH;
+                final Modes modeID3 = activeIDIgnoreTemporary3 == Modes.LOOP_LENGTH ? getSequencerMode () : Modes.LOOP_LENGTH;
                 this.alternativeModeSelect (event, modeID3, Modes.TRANSPORT);
                 break;
 
@@ -274,6 +271,14 @@ public abstract class XLBaseNoteEditMode extends XLAbstractMainMode<IItem>
                 break;
         }
     }
+
+
+    /**
+     * Get the mode for the sequencer button row.
+     *
+     * @return The mode
+     */
+    protected abstract Modes getSequencerMode ();
 
 
     /** {@inheritDoc} */
@@ -361,40 +366,6 @@ public abstract class XLBaseNoteEditMode extends XLAbstractMainMode<IItem>
 
     /** {@inheritDoc} */
     @Override
-    public void selectPreviousItem ()
-    {
-        this.scales.decDrumOctave ();
-        this.host.showNotification (this.scales.getDrumRangeText ());
-    }
-
-
-    /** {@inheritDoc} */
-    @Override
-    public void selectNextItem ()
-    {
-        this.scales.incDrumOctave ();
-        this.host.showNotification (this.scales.getDrumRangeText ());
-    }
-
-
-    /** {@inheritDoc} */
-    @Override
-    public boolean hasPreviousItem ()
-    {
-        return this.scales.canScrollDrumOctaveDown ();
-    }
-
-
-    /** {@inheritDoc} */
-    @Override
-    public boolean hasNextItem ()
-    {
-        return this.scales.canScrollDrumOctaveUp ();
-    }
-
-
-    /** {@inheritDoc} */
-    @Override
     public void selectPreviousItemPage ()
     {
         if (this.isButtonCombination (ButtonID.DEVICE))
@@ -474,30 +445,5 @@ public abstract class XLBaseNoteEditMode extends XLAbstractMainMode<IItem>
             return this.model.getSceneBank ().canScrollPageForwards ();
 
         return true;
-    }
-
-
-    protected String getDrumPadColor (final int index, final IDrumPadBank drumPadBank, final boolean isRecording)
-    {
-        final int offsetY = this.scales.getDrumOffset ();
-
-        // Playing note?
-        if (this.keyManager.isKeyPressed (offsetY + index))
-            return isRecording ? AbstractDrumView.COLOR_PAD_RECORD : AbstractDrumView.COLOR_PAD_PLAY;
-
-        // Selected?
-        final int selectedPad = ((XLDrumSequencerMode) this.surface.getTrackButtonModeManager ().get (Modes.DRUM_SEQUENCER)).getSelectedPad ();
-        if (selectedPad == index)
-            return AbstractDrumView.COLOR_PAD_SELECTED;
-
-        // Exists and active?
-        final IChannel drumPad = drumPadBank.getItem (index);
-        if (!drumPad.doesExist () || !drumPad.isActivated ())
-            return this.surface.getConfiguration ().isTurnOffEmptyDrumPads () ? AbstractDrumView.COLOR_PAD_OFF : AbstractDrumView.COLOR_PAD_NO_CONTENT;
-
-        // Muted or soloed?
-        if (drumPad.isMute () || drumPadBank.hasSoloedPads () && !drumPad.isSolo ())
-            return AbstractDrumView.COLOR_PAD_MUTED;
-        return AbstractDrumView.COLOR_PAD_HAS_CONTENT;
     }
 }

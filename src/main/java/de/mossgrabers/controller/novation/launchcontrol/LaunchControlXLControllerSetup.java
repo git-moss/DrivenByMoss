@@ -146,6 +146,7 @@ public class LaunchControlXLControllerSetup extends AbstractControllerSetup<Laun
         super.createObservers ();
 
         this.configuration.registerDeactivatedItemsHandler (this.model);
+        this.createScaleObservers (this.configuration);
         this.configuration.addSettingObserver (LaunchControlXLConfiguration.ACTIVE_TEMPLATE, this::activateTemplate);
     }
 
@@ -199,9 +200,9 @@ public class LaunchControlXLControllerSetup extends AbstractControllerSetup<Laun
         final LaunchControlXLControlSurface surface = this.getSurface ();
         final ModeManager trackModeManager = surface.getTrackButtonModeManager ();
 
-        final ModeCursorCommand<LaunchControlXLControlSurface, LaunchControlXLConfiguration> upCommand = new ModeCursorCommand<> (Direction.LEFT, this.model, surface, true);
+        final ModeCursorCommand<LaunchControlXLControlSurface, LaunchControlXLConfiguration> upCommand = new ModeCursorCommand<> (Direction.LEFT, this.model, surface, false);
         this.createButton (ButtonID.MOVE_BANK_LEFT, "Send Previous", upCommand, LaunchControlXLControlSurface.LAUNCHCONTROL_SEND_PREV, upCommand::canScroll);
-        final ModeCursorCommand<LaunchControlXLControlSurface, LaunchControlXLConfiguration> downCommand = new ModeCursorCommand<> (Direction.RIGHT, this.model, surface, true);
+        final ModeCursorCommand<LaunchControlXLControlSurface, LaunchControlXLConfiguration> downCommand = new ModeCursorCommand<> (Direction.RIGHT, this.model, surface, false);
         this.createButton (ButtonID.MOVE_BANK_RIGHT, "Send Next", downCommand, LaunchControlXLControlSurface.LAUNCHCONTROL_SEND_NEXT, downCommand::canScroll);
 
         final ModeCursorCommand<LaunchControlXLControlSurface, LaunchControlXLConfiguration> leftCommand = new ModeCursorCommand<> (Direction.DOWN, this.model, surface, false);

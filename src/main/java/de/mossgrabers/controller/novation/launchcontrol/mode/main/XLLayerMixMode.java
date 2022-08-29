@@ -186,6 +186,7 @@ public class XLLayerMixMode extends XLAbstractMainMode<ILayer>
     {
         for (int i = 0; i < 8; i++)
             this.bank.getItem (i).getSendBank ().selectPreviousPage ();
+        this.mvHelper.notifySelectedSends (this.bank.getItem (0).getSendBank ());
     }
 
 
@@ -195,6 +196,7 @@ public class XLLayerMixMode extends XLAbstractMainMode<ILayer>
     {
         for (int i = 0; i < 8; i++)
             this.bank.getItem (i).getSendBank ().selectNextPage ();
+        this.mvHelper.notifySelectedSends (this.bank.getItem (0).getSendBank ());
     }
 
 

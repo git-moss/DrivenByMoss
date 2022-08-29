@@ -358,12 +358,12 @@ public class PlayView extends AbstractPlayView<MaschineControlSurface, MaschineC
 
             case 8:
                 this.scales.prevScaleOffset ();
-                display.notify (Scales.BASES.get (this.scales.getScaleOffset ()));
+                display.notify (Scales.BASES.get (this.scales.getScaleOffsetIndex ()));
                 break;
 
             case 9:
                 this.scales.nextScaleOffset ();
-                display.notify (Scales.BASES.get (this.scales.getScaleOffset ()));
+                display.notify (Scales.BASES.get (this.scales.getScaleOffsetIndex ()));
                 break;
 
             case 12:
@@ -488,7 +488,7 @@ public class PlayView extends AbstractPlayView<MaschineControlSurface, MaschineC
     {
         this.updateNoteMapping ();
         this.configuration.setScale (this.scales.getScale ().getName ());
-        this.configuration.setScaleBase (Scales.BASES.get (this.scales.getScaleOffset ()));
+        this.configuration.setScaleBase (Scales.BASES.get (this.scales.getScaleOffsetIndex ()));
         this.configuration.setScaleLayout (this.scales.getScaleLayout ().getName ());
     }
 

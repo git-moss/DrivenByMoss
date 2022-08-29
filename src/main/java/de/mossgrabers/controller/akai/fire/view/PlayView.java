@@ -153,7 +153,7 @@ public class PlayView extends AbstractPlayView<FireControlSurface, FireConfigura
             if (isAltPressed)
             {
                 this.scales.prevScaleOffset ();
-                this.mvHelper.delayDisplay ( () -> Scales.BASES.get (this.scales.getScaleOffset ()));
+                this.mvHelper.delayDisplay ( () -> Scales.BASES.get (this.scales.getScaleOffsetIndex ()));
             }
             else
             {
@@ -182,7 +182,7 @@ public class PlayView extends AbstractPlayView<FireControlSurface, FireConfigura
             if (isAltPressed)
             {
                 this.scales.nextScaleOffset ();
-                this.mvHelper.delayDisplay ( () -> Scales.BASES.get (this.scales.getScaleOffset ()));
+                this.mvHelper.delayDisplay ( () -> Scales.BASES.get (this.scales.getScaleOffsetIndex ()));
             }
             else
             {

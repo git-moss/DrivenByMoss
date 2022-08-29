@@ -7,9 +7,12 @@ import de.mossgrabers.framework.daw.IModel;
 import de.mossgrabers.framework.daw.INoteClip;
 import de.mossgrabers.framework.daw.IStepInfo;
 import de.mossgrabers.framework.daw.constants.Capability;
+import de.mossgrabers.framework.daw.data.IChannel;
 import de.mossgrabers.framework.daw.data.IDrumDevice;
 import de.mossgrabers.framework.daw.data.ILayer;
+import de.mossgrabers.framework.daw.data.bank.IDrumPadBank;
 import de.mossgrabers.framework.mode.Modes;
+import de.mossgrabers.framework.view.sequencer.AbstractDrumView;
 
 import java.util.List;
 
@@ -92,5 +95,72 @@ public class XLDrumPadEditMode extends XLBaseNoteEditMode
         final IDrumDevice drumDevice = this.model.getDrumDevice ();
         final String drumPadColor = this.getDrumPadColor (index, drumDevice.getDrumPadBank (), isRecording);
         return this.colorManager.getColorIndex (drumPadColor);
+    }
+
+
+    /** {@inheritDoc} */
+    @Override
+    public void selectPreviousItem ()
+    {
+        this.scales.decDrumOctave ();
+        this.host.showNotification (this.scales.getDrumRangeText ());
+    }
+
+
+    /** {@inheritDoc} */
+    @Override
+    public void selectNextItem ()
+    {
+        this.scales.incDrumOctave ();
+        this.host.showNotification (this.scales.getDrumRangeText ());
+    }
+
+
+    /** {@inheritDoc} */
+    @Override
+    public boolean hasPreviousItem ()
+    {
+        return this.scales.canScrollDrumOctaveDown ();
+    }
+
+
+    /** {@inheritDoc} */
+    @Override
+    public boolean hasNextItem ()
+    {
+        return this.scales.canScrollDrumOctaveUp ();
+    }
+
+
+    private String getDrumPadColor (final int index, final IDrumPadBank drumPadBank, final boolean isRecording)
+    {
+        final int offsetY = this.scales.getDrumOffset ();
+
+        // Playing note?
+        if (this.keyManager.isKeyPressed (offsetY + index))
+            return isRecording ? AbstractDrumView.COLOR_PAD_RECORD : AbstractDrumView.COLOR_PAD_PLAY;
+
+        // Selected?
+        final int selectedPad = ((XLDrumSequencerMode) this.surface.getTrackButtonModeManager ().get (Modes.DRUM_SEQUENCER)).getSelectedPad ();
+        if (selectedPad == index)
+            return AbstractDrumView.COLOR_PAD_SELECTED;
+
+        // Exists and active?
+        final IChannel drumPad = drumPadBank.getItem (index);
+        if (!drumPad.doesExist () || !drumPad.isActivated ())
+            return this.surface.getConfiguration ().isTurnOffEmptyDrumPads () ? AbstractDrumView.COLOR_PAD_OFF : AbstractDrumView.COLOR_PAD_NO_CONTENT;
+
+        // Muted or soloed?
+        if (drumPad.isMute () || drumPadBank.hasSoloedPads () && !drumPad.isSolo ())
+            return AbstractDrumView.COLOR_PAD_MUTED;
+        return AbstractDrumView.COLOR_PAD_HAS_CONTENT;
+    }
+
+
+    /** {@inheritDoc} */
+    @Override
+    protected Modes getSequencerMode ()
+    {
+        return Modes.DRUM_SEQUENCER;
     }
 }

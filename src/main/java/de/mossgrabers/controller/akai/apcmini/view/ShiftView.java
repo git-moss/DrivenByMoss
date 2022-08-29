@@ -79,7 +79,7 @@ public class ShiftView extends AbstractView<APCminiControlSurface, APCminiConfig
     public void drawGrid ()
     {
         // Draw the keyboard
-        final int scaleOffset = this.scales.getScaleOffset ();
+        final int scaleOffset = this.scales.getScaleOffsetIndex ();
         // 0'C', 1'G', 2'D', 3'A', 4'E', 5'B', 6'F', 7'Bb', 8'Eb', 9'Ab', 10'Db', 11'Gb'
         final IPadGrid padGrid = this.surface.getPadGrid ();
         for (int i = 7; i < 64; i++)
@@ -247,7 +247,7 @@ public class ShiftView extends AbstractView<APCminiControlSurface, APCminiConfig
                 final int pos = TRANSLATE[n];
                 if (pos == -1)
                     return;
-                this.scales.setScaleOffset (pos);
+                this.scales.setScaleOffsetByIndex (pos);
                 this.surface.getConfiguration ().setScaleBase (Scales.BASES.get (pos));
                 this.surface.getDisplay ().notify (Scales.BASES.get (pos));
                 this.surface.getViewManager ().getActive ().updateNoteMapping ();

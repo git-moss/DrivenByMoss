@@ -82,7 +82,7 @@ public class SLMkIIILightGuide extends LightGuideImpl
 
         final Scales scales = this.model.getScales ();
 
-        this.keyboardScales.setScaleOffset (scales.getScaleOffset ());
+        this.keyboardScales.setScaleOffsetByIndex (scales.getScaleOffsetIndex ());
         this.keyboardScales.setScale (scales.getScale ());
 
         final ITrack cursorTrack = this.model.getCursorTrack ();

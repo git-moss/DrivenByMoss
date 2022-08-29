@@ -71,7 +71,7 @@ public class ScalesMode extends BaseMode<IItem>
                 this.scales.prevScale ();
         }
         else if (index > 0 && index < 7)
-            this.scales.setScaleOffset (index - 1);
+            this.scales.setScaleOffsetByIndex (index - 1);
         this.update ();
     }
 
@@ -87,7 +87,7 @@ public class ScalesMode extends BaseMode<IItem>
                 return this.colorManager.getColorIndex (PushColorManager.PUSH_ORANGE_LO);
             if (index == 7)
                 return this.colorManager.getColorIndex (AbstractFeatureGroup.BUTTON_COLOR_OFF);
-            final int offset = this.scales.getScaleOffset ();
+            final int offset = this.scales.getScaleOffsetIndex ();
             return this.colorManager.getColorIndex (offset == index - 1 ? AbstractMode.BUTTON_COLOR_HI : AbstractFeatureGroup.BUTTON_COLOR_ON);
         }
 
@@ -96,7 +96,7 @@ public class ScalesMode extends BaseMode<IItem>
         {
             if (index == 0 || index == 7)
                 return this.isPush2 ? PushColorManager.PUSH2_COLOR2_AMBER : PushColorManager.PUSH1_COLOR2_AMBER;
-            final int offset = this.scales.getScaleOffset ();
+            final int offset = this.scales.getScaleOffsetIndex ();
             return this.colorManager.getColorIndex (offset == index - 1 + 6 ? AbstractMode.BUTTON_COLOR2_HI : AbstractMode.BUTTON_COLOR2_ON);
         }
 
@@ -120,7 +120,7 @@ public class ScalesMode extends BaseMode<IItem>
         else if (index == 7)
             this.scales.toggleChromatic ();
         else
-            this.scales.setScaleOffset (index + 5);
+            this.scales.setScaleOffsetByIndex (index + 5);
         this.update ();
     }
 
@@ -139,7 +139,7 @@ public class ScalesMode extends BaseMode<IItem>
 
         display.setBlock (0, 3, this.scales.getRangeText ());
 
-        final int offset = this.scales.getScaleOffset ();
+        final int offset = this.scales.getScaleOffsetIndex ();
         for (int i = 0; i < 6; i++)
         {
             display.setCell (2, i + 1, "  " + (offset == i ? Push1Display.SELECT_ARROW : " ") + Scales.BASES.get (i));
@@ -156,7 +156,7 @@ public class ScalesMode extends BaseMode<IItem>
         final int selIndex = this.scales.getScale ().ordinal ();
         display.addListElement (6, Scale.getNames (), selIndex);
 
-        final int offset = this.scales.getScaleOffset ();
+        final int offset = this.scales.getScaleOffsetIndex ();
         final String rangeText = this.scales.getRangeText ();
         for (int i = 0; i < 6; i++)
             display.addOptionElement (i == 3 ? "Note range: " + rangeText : "", Scales.BASES.get (6 + i), offset == 6 + i, "", Scales.BASES.get (i), offset == i, false);
@@ -170,7 +170,7 @@ public class ScalesMode extends BaseMode<IItem>
         this.surface.getViewManager ().getActive ().updateNoteMapping ();
         final PushConfiguration config = this.surface.getConfiguration ();
         config.setScale (this.scales.getScale ().getName ());
-        config.setScaleBase (Scales.BASES.get (this.scales.getScaleOffset ()));
+        config.setScaleBase (Scales.BASES.get (this.scales.getScaleOffsetIndex ()));
         config.setScaleInKey (!this.scales.isChromatic ());
     }
 }

@@ -9,6 +9,7 @@ import de.mossgrabers.framework.daw.IModel;
 import de.mossgrabers.framework.daw.data.ISend;
 import de.mossgrabers.framework.daw.data.ITrack;
 import de.mossgrabers.framework.daw.data.bank.ISendBank;
+import de.mossgrabers.framework.daw.data.bank.ITrackBank;
 import de.mossgrabers.framework.daw.data.empty.EmptySend;
 import de.mossgrabers.framework.observer.IItemSelectionObserver;
 import de.mossgrabers.framework.observer.IParametersAdjustObserver;
@@ -50,8 +51,21 @@ public class SendParameterProvider extends AbstractTrackParameterProvider implem
     public void addParametersObserver (final IParametersAdjustObserver observer)
     {
         super.addParametersObserver (observer);
+
         if (this.sendIndex == -1)
             this.bank.addSelectionObserver (this);
+        else
+        {
+            ITrackBank trackBank = this.model.getTrackBank ();
+            for (int i = 0; i < trackBank.getPageSize (); i++)
+                trackBank.getItem (i).getSendBank ().addPageObserver (this);
+            trackBank = this.model.getEffectTrackBank ();
+            if (trackBank != null)
+            {
+                for (int i = 0; i < trackBank.getPageSize (); i++)
+                    trackBank.getItem (i).getSendBank ().addPageObserver (this);
+            }
+        }
     }
 
 
@@ -61,6 +75,19 @@ public class SendParameterProvider extends AbstractTrackParameterProvider implem
     {
         if (this.sendIndex == -1)
             this.bank.removeSelectionObserver (this);
+        else
+        {
+            ITrackBank trackBank = this.model.getTrackBank ();
+            for (int i = 0; i < trackBank.getPageSize (); i++)
+                trackBank.getItem (i).getSendBank ().removePageObserver (this);
+            trackBank = this.model.getEffectTrackBank ();
+            if (trackBank != null)
+            {
+                for (int i = 0; i < trackBank.getPageSize (); i++)
+                    trackBank.getItem (i).getSendBank ().removePageObserver (this);
+            }
+        }
+
         super.removeParametersObserver (observer);
     }
 

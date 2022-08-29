@@ -145,6 +145,7 @@ public abstract class XLAbstractTrackMode extends XLAbstractMainMode<ITrack>
         final ITrackBank trackBank = this.model.getTrackBank ();
         for (int i = 0; i < 8; i++)
             trackBank.getItem (i).getSendBank ().selectPreviousPage ();
+        this.mvHelper.notifySelectedSends (trackBank.getItem (0).getSendBank ());
     }
 
 
@@ -155,6 +156,7 @@ public abstract class XLAbstractTrackMode extends XLAbstractMainMode<ITrack>
         final ITrackBank trackBank = this.model.getTrackBank ();
         for (int i = 0; i < 8; i++)
             trackBank.getItem (i).getSendBank ().selectNextPage ();
+        this.mvHelper.notifySelectedSends (trackBank.getItem (0).getSendBank ());
     }
 
 

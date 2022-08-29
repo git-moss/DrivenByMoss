@@ -258,7 +258,7 @@ public class Scales
      */
     public void prevScaleOffset ()
     {
-        this.setScaleOffset (this.scaleOffset - 1);
+        this.setScaleOffsetByIndex (this.scaleOffset - 1);
     }
 
 
@@ -267,16 +267,27 @@ public class Scales
      */
     public void nextScaleOffset ()
     {
-        this.setScaleOffset (this.scaleOffset + 1);
+        this.setScaleOffsetByIndex (this.scaleOffset + 1);
     }
 
 
     /**
-     * Get the base note (offset) to use for the current scale.
+     * Get the base note offset to use for the current scale.
      *
-     * @return The offset
+     * @return The index of the offset
      */
     public int getScaleOffset ()
+    {
+        return Scales.OFFSETS[this.scaleOffset];
+    }
+
+
+    /**
+     * Get the index of the base note (offset) to use for the current scale.
+     *
+     * @return The index of the offset
+     */
+    public int getScaleOffsetIndex ()
     {
         return this.scaleOffset;
     }
@@ -285,11 +296,11 @@ public class Scales
     /**
      * Set the base note (offset) to use for the current scale.
      *
-     * @param scaleOffset The offset
+     * @param scaleOffsetIndex The index of the offset
      */
-    public void setScaleOffset (final int scaleOffset)
+    public void setScaleOffsetByIndex (final int scaleOffsetIndex)
     {
-        this.scaleOffset = Math.max (0, Math.min (scaleOffset, Scales.OFFSETS.length - 1));
+        this.scaleOffset = Math.max (0, Math.min (scaleOffsetIndex, Scales.OFFSETS.length - 1));
     }
 
 
@@ -718,6 +729,35 @@ public class Scales
                 return true;
         }
         return false;
+    }
+
+
+    /**
+     * Get the MIDI note which is the closest in the active scale.
+     *
+     * @param midiNote The MIDI note (0-127)
+     * @return The closest MIDI note in the scale (0-127)
+     */
+    public int getNearestNoteInScale (final int midiNote)
+    {
+        int noteInOctave = toNoteInOctave (midiNote);
+
+        int diff = 12;
+        int resultNoteInOctave = 0;
+        for (final int interval: this.selectedScale.getIntervals ())
+        {
+            final int newDiff = Math.abs (interval - noteInOctave);
+            if (Math.abs (interval - noteInOctave) < diff)
+            {
+                diff = newDiff;
+                resultNoteInOctave = interval;
+            }
+            if (diff == 0)
+                break;
+        }
+
+        final int octaves = midiNote / 12 * 12;
+        return octaves + (resultNoteInOctave + Scales.OFFSETS[this.scaleOffset]) % 12;
     }
 
 

@@ -91,7 +91,7 @@ public class ShiftView extends AbstractView<APCControlSurface, APCConfiguration>
         padGrid.light (36 + 39, APCColorManager.COLOR_KEY_BLACK);
 
         // Draw the keyboard
-        final int scaleOffset = this.model.getScales ().getScaleOffset ();
+        final int scaleOffset = this.model.getScales ().getScaleOffsetIndex ();
         // 0'C', 1'G', 2'D', 3'A', 4'E', 5'B', 6'F', 7'Bb', 8'Eb', 9'Ab', 10'Db', 11'Gb'
         padGrid.light (36, scaleOffset == 0 ? APCColorManager.COLOR_KEY_SELECTED : APCColorManager.COLOR_KEY_WHITE);
         padGrid.light (36 + 1, scaleOffset == 2 ? APCColorManager.COLOR_KEY_SELECTED : APCColorManager.COLOR_KEY_WHITE);
@@ -150,7 +150,7 @@ public class ShiftView extends AbstractView<APCControlSurface, APCConfiguration>
         final int pos = TRANSLATE[index];
         if (pos == -1)
             return;
-        this.model.getScales ().setScaleOffset (pos);
+        this.model.getScales ().setScaleOffsetByIndex (pos);
         this.surface.getConfiguration ().setScaleBase (Scales.BASES.get (pos));
         this.surface.getDisplay ().notify (Scales.BASES.get (pos));
         this.surface.getViewManager ().getActive ().updateNoteMapping ();

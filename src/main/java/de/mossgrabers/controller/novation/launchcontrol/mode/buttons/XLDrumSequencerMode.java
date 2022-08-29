@@ -50,8 +50,6 @@ public class XLDrumSequencerMode extends AbstractSequencerMode<LaunchControlXLCo
         this.configuration = this.surface.getConfiguration ();
         this.scales = model.getScales ();
 
-        // TODO implement note sequencer
-
         this.sequencerLines = 1;
         this.numColumns = this.clipCols;
         this.sequencerSteps = this.sequencerLines * this.numColumns;

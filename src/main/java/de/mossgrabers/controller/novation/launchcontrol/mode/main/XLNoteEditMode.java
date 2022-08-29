@@ -49,10 +49,14 @@ public class XLNoteEditMode extends XLBaseNoteEditMode
     protected void executeRow0 (final int index)
     {
         final int channel = this.configuration.getMidiEditChannel ();
-        final int noteRow = this.getNoteRow (channel, index);
+        int noteRow = this.getNoteRow (channel, index);
         final INoteClip clip = this.getClip ();
         if (noteRow == -1)
-            clip.toggleStep (channel, index, 64, 127);
+        {
+            // Use the note of the currently selected scale base
+            noteRow = 60 + this.scales.getScaleOffset ();
+            clip.toggleStep (channel, index, noteRow, 127);
+        }
         else
             clip.clearStep (channel, index, noteRow);
     }
@@ -63,7 +67,9 @@ public class XLNoteEditMode extends XLBaseNoteEditMode
     protected void handleKnobRow0 (final INoteClip clip, final int channel, final int column, final int noteRow, final double normalizedValue)
     {
         // Move (transpose) the note up and down
-        final int newNote = (int) Math.round (normalizedValue * 126);
+        int newNote = (int) Math.round (normalizedValue * 126);
+        if (!this.scales.isChromatic ())
+            newNote = this.scales.getNearestNoteInScale (newNote);
         this.getClip ().moveStepY (channel, column, noteRow, newNote);
         this.surface.getDisplay ().notify ("Note: " + Scales.formatNoteAndOctave (newNote, -3));
     }
@@ -84,5 +90,49 @@ public class XLNoteEditMode extends XLBaseNoteEditMode
         final int channel = this.configuration.getMidiEditChannel ();
         final int noteRow = this.getNoteRow (channel, index);
         return noteRow < 0 ? LaunchControlXLColorManager.LAUNCHCONTROL_COLOR_BLACK : LaunchControlXLColorManager.LAUNCHCONTROL_COLOR_AMBER;
+    }
+
+
+    /** {@inheritDoc} */
+    @Override
+    public void selectPreviousItem ()
+    {
+        this.scales.prevScale ();
+        this.configuration.setScale (this.scales.getScale ().getName ());
+        this.mvHelper.notifyScale (this.scales);
+    }
+
+
+    /** {@inheritDoc} */
+    @Override
+    public void selectNextItem ()
+    {
+        this.scales.nextScale ();
+        this.configuration.setScale (this.scales.getScale ().getName ());
+        this.mvHelper.notifyScale (this.scales);
+    }
+
+
+    /** {@inheritDoc} */
+    @Override
+    public boolean hasPreviousItem ()
+    {
+        return this.scales.hasPrevScale ();
+    }
+
+
+    /** {@inheritDoc} */
+    @Override
+    public boolean hasNextItem ()
+    {
+        return this.scales.hasNextScale ();
+    }
+
+
+    /** {@inheritDoc} */
+    @Override
+    protected Modes getSequencerMode ()
+    {
+        return Modes.NOTE_SEQUENCER;
     }
 }

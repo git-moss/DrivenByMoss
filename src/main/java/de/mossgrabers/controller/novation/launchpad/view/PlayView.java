@@ -135,14 +135,14 @@ public class PlayView extends AbstractPlayView<LaunchpadControlSurface, Launchpa
                 display.notify (isChromatic ? "Chromatic" : "In Key");
                 break;
             case SCENE7:
-                this.scales.setScaleOffset (this.scales.getScaleOffset () + 1);
-                name = Scales.BASES.get (this.scales.getScaleOffset ());
+                this.scales.setScaleOffsetByIndex (this.scales.getScaleOffsetIndex () + 1);
+                name = Scales.BASES.get (this.scales.getScaleOffsetIndex ());
                 this.surface.getConfiguration ().setScaleBase (name);
                 display.notify (name);
                 break;
             case SCENE8:
-                this.scales.setScaleOffset (this.scales.getScaleOffset () - 1);
-                name = Scales.BASES.get (this.scales.getScaleOffset ());
+                this.scales.setScaleOffsetByIndex (this.scales.getScaleOffsetIndex () - 1);
+                name = Scales.BASES.get (this.scales.getScaleOffsetIndex ());
                 this.surface.getConfiguration ().setScaleBase (name);
                 display.notify (name);
                 break;

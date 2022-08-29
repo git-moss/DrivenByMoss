@@ -60,7 +60,7 @@ public class SequencerView extends AbstractNoteSequencerView<MaschineJamControlS
                     this.scales.nextScaleOffset ();
                 else
                     this.scales.prevScaleOffset ();
-                this.mvHelper.delayDisplay ( () -> "Scale Offset: " + Scales.BASES.get (this.scales.getScaleOffset ()));
+                this.mvHelper.delayDisplay ( () -> "Scale Offset: " + Scales.BASES.get (this.scales.getScaleOffsetIndex ()));
                 break;
 
             case TEMPORARY_LOCK:
@@ -151,7 +151,7 @@ public class SequencerView extends AbstractNoteSequencerView<MaschineJamControlS
     {
         final MaschineJamConfiguration config = this.surface.getConfiguration ();
         config.setScale (this.scales.getScale ().getName ());
-        config.setScaleBase (Scales.BASES.get (this.scales.getScaleOffset ()));
+        config.setScaleBase (Scales.BASES.get (this.scales.getScaleOffsetIndex ()));
         config.setScaleInKey (!this.scales.isChromatic ());
         config.setScaleLayout (this.scales.getScaleLayout ().getName ());
 

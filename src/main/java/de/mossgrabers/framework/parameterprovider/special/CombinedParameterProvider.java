@@ -7,10 +7,12 @@ package de.mossgrabers.framework.parameterprovider.special;
 import de.mossgrabers.framework.controller.color.ColorEx;
 import de.mossgrabers.framework.daw.data.IParameter;
 import de.mossgrabers.framework.daw.data.empty.EmptyParameter;
-import de.mossgrabers.framework.parameterprovider.AbstractParameterProvider;
+import de.mossgrabers.framework.observer.IParametersAdjustObserver;
 import de.mossgrabers.framework.parameterprovider.IParameterProvider;
 
+import java.util.HashSet;
 import java.util.Optional;
+import java.util.Set;
 
 
 /**
@@ -18,7 +20,7 @@ import java.util.Optional;
  *
  * @author J&uuml;rgen Mo&szlig;graber
  */
-public class CombinedParameterProvider extends AbstractParameterProvider
+public class CombinedParameterProvider implements IParameterProvider
 {
     private final IParameterProvider [] providers;
     private final int                   overallSize;
@@ -35,11 +37,7 @@ public class CombinedParameterProvider extends AbstractParameterProvider
 
         int size = 0;
         for (final IParameterProvider provider: this.providers)
-        {
-            provider.addParametersObserver (this::observerCallback);
             size += provider.size ();
-        }
-
         this.overallSize = size;
     }
 
@@ -88,8 +86,31 @@ public class CombinedParameterProvider extends AbstractParameterProvider
     }
 
 
-    private void observerCallback ()
+    /** {@inheritDoc} */
+    @Override
+    public void addParametersObserver (final IParametersAdjustObserver observer)
     {
-        this.notifyParametersObservers ();
+        for (final IParameterProvider provider: this.providers)
+            provider.addParametersObserver (observer);
+    }
+
+
+    /** {@inheritDoc} */
+    @Override
+    public void removeParametersObserver (final IParametersAdjustObserver observer)
+    {
+        for (final IParameterProvider provider: this.providers)
+            provider.removeParametersObserver (observer);
+    }
+
+
+    /** {@inheritDoc} */
+    @Override
+    public Set<IParametersAdjustObserver> removeParametersObservers ()
+    {
+        final Set<IParametersAdjustObserver> observers = new HashSet<> ();
+        for (final IParameterProvider provider: this.providers)
+            observers.addAll (provider.removeParametersObservers ());
+        return observers;
     }
 }

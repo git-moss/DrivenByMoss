@@ -9,32 +9,24 @@ import de.mossgrabers.controller.novation.launchcontrol.controller.LaunchControl
 import de.mossgrabers.controller.novation.launchcontrol.controller.LaunchControlXLControlSurface;
 import de.mossgrabers.framework.configuration.Configuration;
 import de.mossgrabers.framework.controller.ButtonID;
-import de.mossgrabers.framework.controller.color.ColorEx;
-import de.mossgrabers.framework.daw.DAWColor;
 import de.mossgrabers.framework.daw.IModel;
 import de.mossgrabers.framework.daw.INoteClip;
 import de.mossgrabers.framework.daw.IStepInfo;
+import de.mossgrabers.framework.daw.StepState;
 import de.mossgrabers.framework.mode.sequencer.AbstractSequencerMode;
-import de.mossgrabers.framework.scale.Scales;
 import de.mossgrabers.framework.utils.ButtonEvent;
 import de.mossgrabers.framework.view.sequencer.AbstractSequencerView;
 
-import java.util.Optional;
-
 
 /**
- * The drum sequencer with 1 row of 8 steps.
+ * The note sequencer with 8 steps.
  *
  * @author J&uuml;rgen Mo&szlig;graber
  */
 public class XLNoteSequencerMode extends AbstractSequencerMode<LaunchControlXLControlSurface, LaunchControlXLConfiguration>
 {
     protected int                 numColumns;
-    protected int                 sequencerSteps;
-    protected int                 sequencerLines;
     protected final Configuration configuration;
-    protected int                 selectedPad = 0;
-    protected final Scales        scales;
 
 
     /**
@@ -45,25 +37,10 @@ public class XLNoteSequencerMode extends AbstractSequencerMode<LaunchControlXLCo
      */
     public XLNoteSequencerMode (final LaunchControlXLControlSurface surface, final IModel model)
     {
-        super ("Drum Sequencer", surface, model, true, 127, 8, false);
+        super ("Note Sequencer", surface, model, true, 127, 8, false);
 
         this.configuration = this.surface.getConfiguration ();
-        this.scales = model.getScales ();
-
-        this.sequencerLines = 1;
         this.numColumns = this.clipCols;
-        this.sequencerSteps = this.sequencerLines * this.numColumns;
-    }
-
-
-    /**
-     * Set the selected drum pad.
-     *
-     * @param selectedPad The pad index (1-8)
-     */
-    public void setSelectedPad (final int selectedPad)
-    {
-        this.selectedPad = selectedPad;
     }
 
 
@@ -76,8 +53,7 @@ public class XLNoteSequencerMode extends AbstractSequencerMode<LaunchControlXLCo
             return LaunchControlXLColorManager.LAUNCHCONTROL_COLOR_BLACK;
 
         final INoteClip clip = this.getClip ();
-        final int noteRow = this.scales.getDrumOffset () + this.selectedPad;
-        return this.getSequencerStepColor (clip, noteRow, index, Optional.empty ());
+        return this.getSequencerStepColor (clip, index);
     }
 
 
@@ -89,8 +65,11 @@ public class XLNoteSequencerMode extends AbstractSequencerMode<LaunchControlXLCo
             return;
 
         final int channel = this.configuration.getMidiEditChannel ();
-        final int noteRow = this.scales.getDrumOffset () + this.selectedPad;
-        this.getClip ().toggleStep (channel, index, noteRow, 127);
+        final INoteClip clip = this.getClip ();
+        int highestRow = clip.getHighestRow (channel, index);
+        final IStepInfo step = clip.getStep (channel, index, highestRow);
+        if (step.getState () == StepState.START)
+            clip.updateMuteState (channel, index, highestRow, !step.isMuted ());
     }
 
 
@@ -98,26 +77,26 @@ public class XLNoteSequencerMode extends AbstractSequencerMode<LaunchControlXLCo
      * Draw the sequencer steps.
      *
      * @param clip The clip
-     * @param noteRow The note for which to draw the row
      * @param column The step column
-     * @param rowColor The color to use the notes of the row
      * @return The color index
      */
-    protected int getSequencerStepColor (final INoteClip clip, final int noteRow, final int column, final Optional<ColorEx> rowColor)
+    protected int getSequencerStepColor (final INoteClip clip, final int column)
     {
         final int step = clip.getCurrentStep ();
-        final int hiStep = this.isInXRange (step) ? step % this.sequencerSteps : -1;
-        final int editMidiChannel = this.configuration.getMidiEditChannel ();
-        final IStepInfo stepInfo = clip.getStep (editMidiChannel, column, noteRow);
+        final int hiStep = this.isInXRange (step) ? step % this.numColumns : -1;
         final boolean hilite = column == hiStep;
-        final String colorID = this.isActive () ? this.getStepColor (stepInfo, hilite, rowColor, column) : AbstractSequencerView.COLOR_NO_CONTENT;
+
+        final int channel = this.configuration.getMidiEditChannel ();
+        int highestRow = clip.getHighestRow (channel, column);
+        final IStepInfo stepInfo = clip.getStep (channel, column, highestRow);
+
+        String colorID;
+        if (stepInfo.getState () == StepState.START && stepInfo.isMuted ())
+            colorID = hilite ? AbstractSequencerView.COLOR_STEP_HILITE_CONTENT : AbstractSequencerView.COLOR_STEP_MUTED;
+        else
+            colorID = hilite ? AbstractSequencerView.COLOR_STEP_HILITE_NO_CONTENT : AbstractSequencerView.COLOR_NO_CONTENT;
+
         return this.colorManager.getColorIndex (colorID);
-    }
-
-
-    private boolean isActive ()
-    {
-        return this.model.canSelectedTrackHoldNotes () && this.getClip ().doesExist ();
     }
 
 
@@ -133,43 +112,5 @@ public class XLNoteSequencerMode extends AbstractSequencerMode<LaunchControlXLCo
         final int stepSize = clip.getNumSteps ();
         final int start = clip.getEditPage () * stepSize;
         return x >= start && x < start + stepSize;
-    }
-
-
-    protected String getStepColor (final IStepInfo stepInfo, final boolean hilite, final Optional<ColorEx> rowColor, final int step)
-    {
-        switch (stepInfo.getState ())
-        {
-            // Note starts
-            case START:
-                if (hilite)
-                    return AbstractSequencerView.COLOR_STEP_HILITE_CONTENT;
-                if (stepInfo.isMuted ())
-                    return AbstractSequencerView.COLOR_STEP_MUTED;
-                return rowColor.isPresent () && this.useDawColors ? DAWColor.getColorIndex (rowColor.get ()) : AbstractSequencerView.COLOR_CONTENT;
-
-            // Note continues
-            case CONTINUE:
-                if (hilite)
-                    return AbstractSequencerView.COLOR_STEP_HILITE_CONTENT;
-                if (stepInfo.isMuted ())
-                    return AbstractSequencerView.COLOR_STEP_MUTED_CONT;
-                return rowColor.isPresent () && this.useDawColors ? DAWColor.getColorIndex (ColorEx.darker (rowColor.get ())) : AbstractSequencerView.COLOR_CONTENT_CONT;
-
-            // Empty
-            default:
-                if (hilite)
-                    return AbstractSequencerView.COLOR_STEP_HILITE_NO_CONTENT;
-                return step / 4 % 2 == 1 ? AbstractSequencerView.COLOR_NO_CONTENT_4 : AbstractSequencerView.COLOR_NO_CONTENT;
-        }
-    }
-
-
-    /**
-     * @return the selectedPad
-     */
-    public int getSelectedPad ()
-    {
-        return this.selectedPad;
     }
 }

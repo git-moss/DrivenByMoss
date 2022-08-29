@@ -258,7 +258,7 @@ public abstract class AbstractPlayView<S extends IControlSurface<C>, C extends C
         this.updateNoteMapping ();
         final C config = this.surface.getConfiguration ();
         config.setScale (this.scales.getScale ().getName ());
-        config.setScaleBase (Scales.BASES.get (this.scales.getScaleOffset ()));
+        config.setScaleBase (Scales.BASES.get (this.scales.getScaleOffsetIndex ()));
         config.setScaleInKey (!this.scales.isChromatic ());
         config.setScaleLayout (this.scales.getScaleLayout ().getName ());
     }

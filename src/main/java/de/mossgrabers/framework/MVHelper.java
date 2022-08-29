@@ -17,8 +17,10 @@ import de.mossgrabers.framework.daw.data.IScene;
 import de.mossgrabers.framework.daw.data.ITrack;
 import de.mossgrabers.framework.daw.data.bank.IParameterBank;
 import de.mossgrabers.framework.daw.data.bank.ISceneBank;
+import de.mossgrabers.framework.daw.data.bank.ISendBank;
 import de.mossgrabers.framework.daw.data.bank.ITrackBank;
 import de.mossgrabers.framework.featuregroup.IMode;
+import de.mossgrabers.framework.scale.Scales;
 
 import java.util.Optional;
 import java.util.function.Supplier;
@@ -76,6 +78,22 @@ public class MVHelper<S extends IControlSurface<C>, C extends Configuration>
                 return SELECTED_TRACK_NONE;
 
             return t.getPosition () + 1 + ": " + t.getName ();
+
+        });
+    }
+
+
+    /**
+     * Display the range of the sends page.
+     * 
+     * @param sendBank The send bank
+     */
+    public void notifySelectedSends (final ISendBank sendBank)
+    {
+        this.delayDisplay ( () -> {
+
+            final int scrollPosition = sendBank.getScrollPosition () + 1;
+            return "Sends: " + scrollPosition + "-" + (scrollPosition + 1);
 
         });
     }
@@ -260,12 +278,28 @@ public class MVHelper<S extends IControlSurface<C>, C extends Configuration>
 
 
     /**
+     * Display the currently selected scale.
+     *
+     * @param scales The scales
+     */
+    public void notifyScale (final Scales scales)
+    {
+        this.delayDisplay ( () -> "Scale: " + scales.getScale ().getName ());
+    }
+
+
+    /**
      * Notify a text after 200ms.
      *
      * @param supplier The supplier to provide the text
      */
     public void delayDisplay (final Supplier<String> supplier)
     {
-        this.surface.scheduleTask ( () -> this.display.notify (supplier.get ()), DISPLAY_DELAY);
+        this.surface.scheduleTask ( () -> {
+
+            final String message = supplier.get ();
+            this.display.notify (message);
+
+        }, DISPLAY_DELAY);
     }
 }
