@@ -7,6 +7,7 @@ package de.mossgrabers.controller.akai.apcmini.controller;
 import de.mossgrabers.controller.akai.apcmini.APCminiConfiguration;
 import de.mossgrabers.framework.controller.AbstractControlSurface;
 import de.mossgrabers.framework.controller.color.ColorManager;
+import de.mossgrabers.framework.controller.hardware.BindType;
 import de.mossgrabers.framework.daw.IHost;
 import de.mossgrabers.framework.daw.midi.IMidiInput;
 import de.mossgrabers.framework.daw.midi.IMidiOutput;
@@ -80,7 +81,7 @@ public class APCminiControlSurface extends AbstractControlSurface<APCminiConfigu
 
     /** {@inheritDoc} */
     @Override
-    public void setTrigger (final int channel, final int cc, final int state)
+    public void setTrigger (final BindType bindType, final int channel, final int cc, final int state)
     {
         // Shift has no light
         if (cc == APC_BUTTON_SHIFT)

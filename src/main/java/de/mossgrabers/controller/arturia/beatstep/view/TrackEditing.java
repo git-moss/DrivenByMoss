@@ -84,10 +84,7 @@ public class TrackEditing
                 break;
 
             // Send 1 - 4
-            case 8:
-            case 9:
-            case 10:
-            case 11:
+            case 8, 9, 10, 11:
                 if (!this.model.isEffectTrackBankActive ())
                     selectedTrack.get ().getSendBank ().getItem (index - 8).changeValue (value);
                 break;

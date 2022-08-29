@@ -12,6 +12,7 @@ import de.mossgrabers.framework.controller.ButtonID;
 import de.mossgrabers.framework.controller.color.ColorManager;
 import de.mossgrabers.framework.controller.grid.IVirtualFader;
 import de.mossgrabers.framework.controller.grid.VirtualFaderImpl;
+import de.mossgrabers.framework.controller.hardware.BindType;
 import de.mossgrabers.framework.controller.hardware.IHwButton;
 import de.mossgrabers.framework.daw.IHost;
 import de.mossgrabers.framework.daw.midi.DeviceInquiry;
@@ -239,7 +240,7 @@ public class LaunchpadControlSurface extends AbstractControlSurface<LaunchpadCon
 
     /** {@inheritDoc} */
     @Override
-    public void setTrigger (final int channel, final int cc, final int state)
+    public void setTrigger (final BindType bindType, final int channel, final int cc, final int state)
     {
         if (!this.isPro () && (cc == LAUNCHPAD_BUTTON_SCENE1 || cc == LAUNCHPAD_BUTTON_SCENE2 || cc == LAUNCHPAD_BUTTON_SCENE3 || cc == LAUNCHPAD_BUTTON_SCENE4 || cc == LAUNCHPAD_BUTTON_SCENE5 || cc == LAUNCHPAD_BUTTON_SCENE6 || cc == LAUNCHPAD_BUTTON_SCENE7 || cc == LAUNCHPAD_BUTTON_SCENE8))
             this.output.sendNote (cc, state);

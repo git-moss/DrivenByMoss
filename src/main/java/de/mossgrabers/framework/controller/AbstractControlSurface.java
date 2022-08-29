@@ -629,7 +629,7 @@ public abstract class AbstractControlSurface<C extends Configuration> implements
     @Override
     public void setTrigger (final int channel, final int cc, final int state)
     {
-        this.setTrigger (null, this.defaultMidiChannel, cc, state);
+        this.setTrigger (null, channel, cc, state);
     }
 
 
@@ -637,7 +637,10 @@ public abstract class AbstractControlSurface<C extends Configuration> implements
     @Override
     public void setTrigger (final BindType bindType, final int channel, final int cc, final int value)
     {
-        // Overwrite to support trigger LEDs
+        if (bindType == BindType.NOTE)
+            this.output.sendNoteEx (channel, cc, value);
+        else
+            this.output.sendCCEx (channel, cc, value);
     }
 
 

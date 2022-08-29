@@ -12,6 +12,7 @@ import de.mossgrabers.framework.controller.AbstractControlSurface;
 import de.mossgrabers.framework.controller.ButtonID;
 import de.mossgrabers.framework.controller.ContinuousID;
 import de.mossgrabers.framework.controller.color.ColorManager;
+import de.mossgrabers.framework.controller.hardware.BindType;
 import de.mossgrabers.framework.controller.hardware.IHwButton;
 import de.mossgrabers.framework.controller.valuechanger.SignedBit2RelativeValueChanger;
 import de.mossgrabers.framework.controller.valuechanger.TwosComplementValueChanger;
@@ -354,7 +355,7 @@ public class HUIControlSurface extends AbstractControlSurface<HUIConfiguration>
 
     /** {@inheritDoc} */
     @Override
-    public void setTrigger (final int channel, final int cc, final int value)
+    public void setTrigger (final BindType bindType, final int channel, final int cc, final int value)
     {
         // Select the zone
         this.output.sendCC (0x0C, cc / 8);

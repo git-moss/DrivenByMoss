@@ -158,14 +158,6 @@ public class SLMkIIIControlSurface extends AbstractControlSurface<SLMkIIIConfigu
 
     /** {@inheritDoc} */
     @Override
-    public void setTrigger (final int channel, final int cc, final int value)
-    {
-        this.output.sendCCEx (channel, cc, value);
-    }
-
-
-    /** {@inheritDoc} */
-    @Override
     protected void internalShutdown ()
     {
         super.internalShutdown ();

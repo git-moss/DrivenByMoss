@@ -153,14 +153,6 @@ public class APCControlSurface extends AbstractControlSurface<APCConfiguration>
     }
 
 
-    /** {@inheritDoc} */
-    @Override
-    public void setTrigger (final int channel, final int cc, final int state)
-    {
-        this.output.sendNoteEx (channel, cc, state);
-    }
-
-
     /**
      * Set an LED ring on the device. Values are cached and only sent if changed.
      *

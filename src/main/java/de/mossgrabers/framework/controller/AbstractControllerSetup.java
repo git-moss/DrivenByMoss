@@ -1396,23 +1396,17 @@ public abstract class AbstractControllerSetup<S extends IControlSurface<C>, C ex
      */
     protected void updateView ()
     {
-        final S surface = this.getSurface ();
-        final ViewManager viewManager = surface.getViewManager ();
+        this.recallLastView ();
+        this.resetDrumOctave ();
+    }
 
-        // Recall last used view (if we are not in session mode)
-        if (!viewManager.isActive (Views.SESSION, Views.MIX))
-        {
-            final ITrack cursorTrack = this.model.getCursorTrack ();
-            if (cursorTrack.doesExist ())
-            {
-                final Views preferredView = viewManager.getPreferredView (cursorTrack.getPosition ());
-                final Views featureGroupID = preferredView == null ? this.configuration.getPreferredNoteView () : preferredView;
-                if (viewManager.get (featureGroupID) != null)
-                    viewManager.setActive (featureGroupID);
-            }
-        }
 
-        // Reset drum octave because the drum pad bank is also reset
+    /**
+     * Reset drum octave because the drum pad bank is also reset.
+     */
+    protected void resetDrumOctave ()
+    {
+        final ViewManager viewManager = this.getSurface ().getViewManager ();
         this.scales.resetDrumOctave ();
         if (viewManager.isActive (Views.DRUM))
             viewManager.get (Views.DRUM).updateNoteMapping ();
@@ -1422,12 +1416,31 @@ public abstract class AbstractControllerSetup<S extends IControlSurface<C>, C ex
 
 
     /**
+     * Recall last used view (if we are not in session mode).
+     */
+    protected void recallLastView ()
+    {
+        final ViewManager viewManager = this.getSurface ().getViewManager ();
+        if (viewManager.isActive (Views.SESSION, Views.MIX))
+            return;
+
+        final ITrack cursorTrack = this.model.getCursorTrack ();
+        if (cursorTrack.doesExist ())
+        {
+            final Views preferredView = viewManager.getPreferredView (cursorTrack.getPosition ());
+            final Views featureGroupID = preferredView == null ? this.configuration.getPreferredNoteView () : preferredView;
+            if (viewManager.get (featureGroupID) != null)
+                viewManager.setActive (featureGroupID);
+        }
+    }
+
+
+    /**
      * Update the used mode.
      */
     protected void updateMode ()
     {
-        final S surface = this.getSurface ();
-        final ModeManager modeManager = surface.getModeManager ();
+        final ModeManager modeManager = this.getSurface ().getModeManager ();
         if (modeManager.isActive (Modes.MASTER) && !this.model.getMasterTrack ().isSelected ())
         {
             if (Modes.isTrackMode (modeManager.getPreviousID ()))

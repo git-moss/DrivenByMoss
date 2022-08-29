@@ -212,14 +212,6 @@ public class MaschineJamControlSurface extends AbstractMaschineControlSurface<Ma
 
     /** {@inheritDoc} */
     @Override
-    public void setTrigger (final int channel, final int cc, final int state)
-    {
-        this.output.sendCCEx (channel, cc, state);
-    }
-
-
-    /** {@inheritDoc} */
-    @Override
     protected void internalShutdown ()
     {
         this.setupFaders (EMPTY);

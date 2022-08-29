@@ -118,12 +118,4 @@ public class BeatstepControlSurface extends AbstractControlSurface<BeatstepConfi
     {
         return this.isShift;
     }
-
-
-    /** {@inheritDoc} */
-    @Override
-    public void setTrigger (final int channel, final int cc, final int state)
-    {
-        this.output.sendCCEx (channel, cc, state);
-    }
 }

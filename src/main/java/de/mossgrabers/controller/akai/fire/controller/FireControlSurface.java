@@ -11,6 +11,7 @@ import de.mossgrabers.framework.controller.OutputID;
 import de.mossgrabers.framework.controller.color.ColorEx;
 import de.mossgrabers.framework.controller.color.ColorManager;
 import de.mossgrabers.framework.controller.display.IGraphicDisplay;
+import de.mossgrabers.framework.controller.hardware.BindType;
 import de.mossgrabers.framework.daw.IHost;
 import de.mossgrabers.framework.daw.midi.IMidiInput;
 import de.mossgrabers.framework.daw.midi.IMidiOutput;
@@ -106,14 +107,6 @@ public class FireControlSurface extends AbstractControlSurface<FireConfiguration
 
     /** {@inheritDoc} */
     @Override
-    public void setTrigger (final int channel, final int cc, final int value)
-    {
-        this.output.sendCCEx (channel, cc, value);
-    }
-
-
-    /** {@inheritDoc} */
-    @Override
     protected void flushHardware ()
     {
         super.flushHardware ();
@@ -173,5 +166,13 @@ public class FireControlSurface extends AbstractControlSurface<FireConfiguration
         if (pressed)
             this.setTriggerConsumed (ButtonID.BANK_RIGHT);
         return pressed;
+    }
+
+
+    /** {@inheritDoc} */
+    @Override
+    public void setTrigger (final BindType bindType, final int channel, final int cc, final int value)
+    {
+        this.output.sendCCEx (channel, cc, value);
     }
 }

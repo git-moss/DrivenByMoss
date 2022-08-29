@@ -109,6 +109,15 @@ public class BeatstepControllerSetup extends AbstractControllerSetup<BeatstepCon
 
     /** {@inheritDoc} */
     @Override
+    protected void recallLastView ()
+    {
+        // Prevent view change on track change, which is confusing on the Beatstep since it leaves
+        // Track view
+    }
+
+
+    /** {@inheritDoc} */
+    @Override
     protected void createSurface ()
     {
         final IMidiAccess midiAccess = this.factory.createMidiAccess ();

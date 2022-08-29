@@ -84,14 +84,6 @@ public class XjamControlSurface extends AbstractControlSurface<XjamConfiguration
     }
 
 
-    /** {@inheritDoc} */
-    @Override
-    public void setTrigger (final int channel, final int cc, final int value)
-    {
-        // TODO
-    }
-
-
     /**
      * Send the LED status to the device.
      */

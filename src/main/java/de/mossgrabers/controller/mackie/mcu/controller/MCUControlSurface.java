@@ -244,14 +244,6 @@ public class MCUControlSurface extends AbstractControlSurface<MCUConfiguration>
     }
 
 
-    /** {@inheritDoc} */
-    @Override
-    public void setTrigger (final int channel, final int cc, final int value)
-    {
-        this.output.sendNoteEx (channel, cc, value);
-    }
-
-
     /**
      * Check if a button should be updated by the main update routine.
      *

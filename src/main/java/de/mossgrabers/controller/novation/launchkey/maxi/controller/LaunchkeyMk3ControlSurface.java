@@ -223,14 +223,6 @@ public class LaunchkeyMk3ControlSurface extends AbstractControlSurface<Launchkey
     }
 
 
-    /** {@inheritDoc} */
-    @Override
-    public void setTrigger (final int channel, final int cc, final int state)
-    {
-        this.output.sendCCEx (channel, cc, state);
-    }
-
-
     /**
      * Set the launchkey to DAW mode.
      */

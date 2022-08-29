@@ -8,6 +8,7 @@ import de.mossgrabers.controller.ni.kontrol.mkii.KontrolProtocolConfiguration;
 import de.mossgrabers.controller.ni.kontrol.mkii.TrackType;
 import de.mossgrabers.framework.controller.AbstractControlSurface;
 import de.mossgrabers.framework.controller.color.ColorManager;
+import de.mossgrabers.framework.controller.hardware.BindType;
 import de.mossgrabers.framework.daw.IHost;
 import de.mossgrabers.framework.daw.midi.IMidiInput;
 import de.mossgrabers.framework.daw.midi.IMidiOutput;
@@ -210,7 +211,7 @@ public class KontrolProtocolControlSurface extends AbstractControlSurface<Kontro
 
     /** {@inheritDoc} */
     @Override
-    public void setTrigger (final int channel, final int cc, final int value)
+    public void setTrigger (final BindType bindType, final int channel, final int cc, final int value)
     {
         this.sendCommand (cc, value);
     }

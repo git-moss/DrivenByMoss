@@ -123,14 +123,6 @@ public class ElectraOneControlSurface extends AbstractControlSurface<ElectraOneC
     }
 
 
-    /** {@inheritDoc} */
-    @Override
-    public void setTrigger (final int channel, final int cc, final int value)
-    {
-        this.output.sendCCEx (channel, cc, value);
-    }
-
-
     /**
      * Set the title of a group element.
      *

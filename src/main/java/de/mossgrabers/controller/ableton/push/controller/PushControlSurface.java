@@ -523,14 +523,6 @@ public class PushControlSurface extends AbstractControlSurface<PushConfiguration
     }
 
 
-    /** {@inheritDoc} */
-    @Override
-    public void setTrigger (final int channel, final int cc, final int value)
-    {
-        this.output.sendCCEx (channel, cc, value);
-    }
-
-
     /**
      * Set the ribbon mode on the Push controller.
      *

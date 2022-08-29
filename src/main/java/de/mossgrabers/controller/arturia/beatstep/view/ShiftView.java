@@ -73,7 +73,7 @@ public class ShiftView extends AbstractView<BeatstepControlSurface, BeatstepConf
         padGrid.light (48, BeatstepColorManager.BEATSTEP_BUTTON_STATE_PINK);
         padGrid.light (49, BeatstepColorManager.BEATSTEP_BUTTON_STATE_BLUE);
         padGrid.light (50, BeatstepColorManager.BEATSTEP_BUTTON_STATE_OFF);
-        padGrid.light (51, BeatstepColorManager.BEATSTEP_BUTTON_STATE_PINK);
+        padGrid.light (51, this.model.getCursorDevice ().isWindowOpen () ? BeatstepColorManager.BEATSTEP_BUTTON_STATE_PINK : BeatstepColorManager.BEATSTEP_BUTTON_STATE_BLUE);
     }
 
 

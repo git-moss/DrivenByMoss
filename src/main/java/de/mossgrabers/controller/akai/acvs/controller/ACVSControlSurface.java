@@ -296,14 +296,6 @@ public class ACVSControlSurface extends AbstractControlSurface<ACVSConfiguration
     }
 
 
-    /** {@inheritDoc} */
-    @Override
-    public void setTrigger (final int channel, final int cc, final int value)
-    {
-        this.output.sendNoteEx (channel, cc, value);
-    }
-
-
     /**
      * Get the cast ACVS output.
      *
