@@ -2,10 +2,12 @@ package de.mossgrabers.controller.novation.launchcontrol.mode.main;
 
 import de.mossgrabers.controller.novation.launchcontrol.controller.LaunchControlXLColorManager;
 import de.mossgrabers.controller.novation.launchcontrol.controller.LaunchControlXLControlSurface;
+import de.mossgrabers.framework.controller.ButtonID;
 import de.mossgrabers.framework.controller.ContinuousID;
 import de.mossgrabers.framework.daw.IModel;
 import de.mossgrabers.framework.daw.INoteClip;
 import de.mossgrabers.framework.daw.IStepInfo;
+import de.mossgrabers.framework.daw.constants.Capability;
 import de.mossgrabers.framework.mode.Modes;
 import de.mossgrabers.framework.scale.Scales;
 
@@ -66,6 +68,16 @@ public class XLNoteEditMode extends XLBaseNoteEditMode
     @Override
     protected void handleKnobRow0 (final INoteClip clip, final int channel, final int column, final int noteRow, final double normalizedValue)
     {
+        if (this.surface.isPressed (ButtonID.REC_ARM))
+        {
+            if (this.host.supports (Capability.NOTE_EDIT_CHANCE))
+            {
+                clip.updateStepChance (channel, column, noteRow, normalizedValue);
+                this.surface.getDisplay ().notify (String.format ("Chance: %d%%", Integer.valueOf ((int) Math.round (normalizedValue * 100))));
+            }
+            return;
+        }
+
         // Move (transpose) the note up and down
         int newNote = (int) Math.round (normalizedValue * 126);
         if (!this.scales.isChromatic ())
@@ -79,6 +91,13 @@ public class XLNoteEditMode extends XLBaseNoteEditMode
     @Override
     protected int getKnobValueRow0 (final int noteRow, final IStepInfo stepInfo)
     {
+        if (this.surface.isPressed (ButtonID.REC_ARM))
+        {
+            if (this.host.supports (Capability.NOTE_EDIT_CHANCE))
+                return (int) (stepInfo.getChance () * 127);
+            return 0;
+        }
+
         return noteRow;
     }
 

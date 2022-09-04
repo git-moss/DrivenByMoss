@@ -71,7 +71,7 @@ public class XLDrumPadEditMode extends XLBaseNoteEditMode
     {
         if (this.host.supports (Capability.NOTE_EDIT_CHANCE))
         {
-            clip.updateChance (channel, column, noteRow, normalizedValue);
+            clip.updateStepChance (channel, column, noteRow, normalizedValue);
             this.surface.getDisplay ().notify (String.format ("Chance: %d%%", Integer.valueOf ((int) Math.round (normalizedValue * 100))));
         }
     }

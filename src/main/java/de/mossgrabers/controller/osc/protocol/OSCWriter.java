@@ -12,7 +12,9 @@ import de.mossgrabers.framework.osc.AbstractOpenSoundControlWriter;
 import de.mossgrabers.framework.osc.IOpenSoundControlClient;
 
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 
 /**
@@ -22,6 +24,15 @@ import java.util.List;
  */
 public class OSCWriter extends AbstractOpenSoundControlWriter
 {
+    private static final Set<String> HEARTBEAT_MESSAGES = new HashSet<> (3);
+
+    static
+    {
+        HEARTBEAT_MESSAGES.add ("/update");
+        HEARTBEAT_MESSAGES.add ("/time/str");
+        HEARTBEAT_MESSAGES.add ("/beat/str");
+    }
+
     private final List<IModule> modules = new ArrayList<> ();
 
 
@@ -47,6 +58,14 @@ public class OSCWriter extends AbstractOpenSoundControlWriter
             return;
         this.modules.forEach (module -> module.flush (dump));
         this.flush ("/update");
+    }
+
+
+    /** {@inheritDoc} */
+    @Override
+    protected boolean isHeartbeatMessage (final String address)
+    {
+        return HEARTBEAT_MESSAGES.contains (address);
     }
 
 

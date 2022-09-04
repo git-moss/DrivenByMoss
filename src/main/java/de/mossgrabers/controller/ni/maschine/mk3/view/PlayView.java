@@ -435,7 +435,7 @@ public class PlayView extends AbstractPlayView<MaschineControlSurface, MaschineC
         {
             final IStepInfo noteStep = clip.getStep (channel, step, note);
             if (noteStep.getState () == StepState.START)
-                clip.updateMuteState (channel, step, note, !noteStep.isMuted ());
+                clip.updateStepMuteState (channel, step, note, !noteStep.isMuted ());
             return true;
         }
 

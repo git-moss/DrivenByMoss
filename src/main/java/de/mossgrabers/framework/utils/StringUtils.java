@@ -7,6 +7,9 @@ package de.mossgrabers.framework.utils;
 import de.mossgrabers.framework.controller.color.ColorEx;
 
 import java.nio.ByteBuffer;
+import java.text.DecimalFormat;
+import java.text.DecimalFormatSymbols;
+import java.util.Locale;
 
 
 /**
@@ -109,12 +112,10 @@ public class StringUtils
                     case 'ä':
                         str.append ("ae");
                         break;
-                    case 'Ö':
-                    case '\u0152':
+                    case 'Ö', '\u0152':
                         str.append ("Oe");
                         break;
-                    case 'ö':
-                    case '\u0153':
+                    case 'ö', '\u0153':
                         str.append ("oe");
                         break;
                     case 'Ü':
@@ -335,7 +336,9 @@ public class StringUtils
      */
     public static String formatPercentage (final double noteVelocity)
     {
-        return String.format ("%.01f%%", Double.valueOf (noteVelocity * 100.0));
+        final DecimalFormat df = new DecimalFormat ("0", DecimalFormatSymbols.getInstance (Locale.ENGLISH));
+        df.setMaximumFractionDigits (1);
+        return df.format (Double.valueOf (noteVelocity * 100.0)) + "%";
     }
 
 

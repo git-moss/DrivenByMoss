@@ -69,7 +69,7 @@ public class XLNoteSequencerMode extends AbstractSequencerMode<LaunchControlXLCo
         int highestRow = clip.getHighestRow (channel, index);
         final IStepInfo step = clip.getStep (channel, index, highestRow);
         if (step.getState () == StepState.START)
-            clip.updateMuteState (channel, index, highestRow, !step.isMuted ());
+            clip.updateStepMuteState (channel, index, highestRow, !step.isMuted ());
     }
 
 

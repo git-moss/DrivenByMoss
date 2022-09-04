@@ -134,6 +134,7 @@ public class APCControllerSetup extends AbstractControllerSetup<APCControlSurfac
         final ModelSetup ms = new ModelSetup ();
         ms.setNumScenes (5);
         ms.setNumDrumPadLayers (12);
+        ms.setNumMarkers (8);
         this.model = this.factory.createModel (this.configuration, this.colorManager, this.valueChanger, this.scales, ms);
         final ITrackBank trackBank = this.model.getTrackBank ();
         trackBank.setIndication (true);

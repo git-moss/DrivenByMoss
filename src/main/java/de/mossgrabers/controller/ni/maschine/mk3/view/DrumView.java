@@ -241,7 +241,7 @@ public class DrumView extends AbstractDrumView<MaschineControlSurface, MaschineC
             final IStepInfo stepInfo = clip.getStep (channel, step, note);
             final StepState isSet = stepInfo.getState ();
             if (isSet == StepState.START)
-                this.getClip ().updateMuteState (channel, step, note, !stepInfo.isMuted ());
+                this.getClip ().updateStepMuteState (channel, step, note, !stepInfo.isMuted ());
             return true;
         }
 

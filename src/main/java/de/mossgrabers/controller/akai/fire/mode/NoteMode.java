@@ -167,14 +167,20 @@ public class NoteMode extends AbstractParameterMode<FireControlSurface, FireConf
                     break;
 
                 case 2:
-                    this.clip.changeStepDuration (channel, step, note, value);
+                    if (this.surface.isPressed (ButtonID.ALT))
+                    {
+                        if (this.host.supports (Capability.NOTE_EDIT_CHANCE))
+                            this.clip.changeStepChance (channel, step, note, value);
+                    }
+                    else
+                        this.clip.changeStepDuration (channel, step, note, value);
                     break;
 
                 case 3:
                     if (this.surface.isPressed (ButtonID.ALT))
                     {
-                        if (this.host.supports (Capability.NOTE_EDIT_RELEASE_VELOCITY))
-                            this.clip.changeStepReleaseVelocity (channel, step, note, value);
+                        if (this.host.supports (Capability.NOTE_EDIT_VELOCITY_SPREAD))
+                            this.clip.changeStepVelocitySpread (channel, step, note, value);
                     }
                     else
                         this.clip.changeStepVelocity (channel, step, note, value);
@@ -275,17 +281,27 @@ public class NoteMode extends AbstractParameterMode<FireControlSurface, FireConf
                     break;
 
                 case 2:
-                    paramLine = this.formatLength (stepInfo.getDuration ());
+                    if (this.surface.isPressed (ButtonID.ALT))
+                    {
+                        if (this.host.supports (Capability.NOTE_EDIT_CHANCE))
+                        {
+                            final double noteChance = stepInfo.getChance ();
+                            value = valueChanger.fromNormalizedValue (noteChance);
+                            paramLine = "Chnce: " + StringUtils.formatPercentage (noteChance);
+                        }
+                    }
+                    else
+                        paramLine = this.formatLength (stepInfo.getDuration ());
                     break;
 
                 case 3:
                     if (this.surface.isPressed (ButtonID.ALT))
                     {
-                        if (this.host.supports (Capability.NOTE_EDIT_RELEASE_VELOCITY))
+                        if (this.host.supports (Capability.NOTE_EDIT_VELOCITY_SPREAD))
                         {
-                            final double noteReleaseVelocity = stepInfo.getReleaseVelocity ();
-                            value = valueChanger.fromNormalizedValue (noteReleaseVelocity);
-                            paramLine = "RelVel: " + StringUtils.formatPercentage (noteReleaseVelocity);
+                            final double noteVelocitySpread = stepInfo.getVelocitySpread ();
+                            value = valueChanger.fromNormalizedValue (noteVelocitySpread);
+                            paramLine = "VelSpr: " + StringUtils.formatPercentage (noteVelocitySpread);
                         }
                     }
                     else

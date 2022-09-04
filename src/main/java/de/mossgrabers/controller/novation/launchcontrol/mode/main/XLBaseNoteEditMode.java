@@ -106,10 +106,20 @@ public abstract class XLBaseNoteEditMode extends XLAbstractMainMode<IItem>
                 break;
 
             case 1:
+                if (this.surface.isPressed (ButtonID.REC_ARM))
+                {
+                    if (this.host.supports (Capability.NOTE_EDIT_VELOCITY_SPREAD))
+                    {
+                        clip.updateStepVelocitySpread (channel, column, noteRow, normalizedValue);
+                        this.surface.getDisplay ().notify (String.format ("Velocity Spread: %d%%", Integer.valueOf ((int) Math.round (normalizedValue * 100))));
+                    }
+                    return;
+                }
+
                 if (this.host.supports (Capability.NOTE_EDIT_REPEAT))
                 {
                     final int v = (int) Math.round ((value - 64) / 4.26);
-                    clip.updateRepeatCount (channel, column, noteRow, v);
+                    clip.updateStepRepeatCount (channel, column, noteRow, v);
                     display.notify ("Repeat Count: " + stepInfo.getFormattedRepeatCount ());
                 }
                 break;
@@ -158,6 +168,12 @@ public abstract class XLBaseNoteEditMode extends XLAbstractMainMode<IItem>
             case 1:
                 if (stepInfo == null || stepInfo.getState () == StepState.OFF)
                     return 0;
+                if (this.surface.isPressed (ButtonID.REC_ARM))
+                {
+                    if (this.host.supports (Capability.NOTE_EDIT_VELOCITY_SPREAD))
+                        return valueChanger.fromNormalizedValue (stepInfo.getVelocitySpread ());
+                    return 0;
+                }
                 if (this.host.supports (Capability.NOTE_EDIT_REPEAT))
                 {
                     final int repeatCount = stepInfo.getRepeatCount ();
@@ -171,6 +187,7 @@ public abstract class XLBaseNoteEditMode extends XLAbstractMainMode<IItem>
 
                 if (stepInfo == null || stepInfo.getState () == StepState.OFF)
                     return 0;
+
                 if (this.host.supports (Capability.NOTE_EDIT_EXPRESSIONS))
                     return valueChanger.fromNormalizedValue ((stepInfo.getPan () + 1.0) / 2.0);
                 return 0;

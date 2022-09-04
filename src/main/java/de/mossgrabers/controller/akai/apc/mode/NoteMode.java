@@ -93,10 +93,10 @@ public class NoteMode extends BaseMode<IItem>
                 break;
 
             case 2:
-                if (this.host.supports (Capability.NOTE_EDIT_RELEASE_VELOCITY))
+                if (this.host.supports (Capability.NOTE_EDIT_VELOCITY_SPREAD))
                 {
-                    this.clip.updateStepReleaseVelocity (this.channel, this.step, this.note, normalizedValue);
-                    display.notify ("Release Velocity: " + StringUtils.formatPercentage (normalizedValue));
+                    this.clip.updateStepVelocitySpread (this.channel, this.step, this.note, normalizedValue);
+                    display.notify ("Velocity Spread: " + StringUtils.formatPercentage (normalizedValue));
                 }
                 break;
 
@@ -118,11 +118,10 @@ public class NoteMode extends BaseMode<IItem>
                 break;
 
             case 5:
-                if (this.host.supports (Capability.NOTE_EDIT_EXPRESSIONS))
+                if (this.host.supports (Capability.NOTE_EDIT_CHANCE))
                 {
-                    final double pitch = normalizedValue * 48.0 - 24.0;
-                    this.clip.updateStepTranspose (this.channel, this.step, this.note, pitch);
-                    display.notify ("Pitch: " + String.format ("%.1f", Double.valueOf (pitch)));
+                    this.clip.updateStepChance (this.channel, this.step, this.note, normalizedValue);
+                    display.notify ("Chance: " + StringUtils.formatPercentage (normalizedValue));
                 }
                 break;
 
@@ -174,8 +173,8 @@ public class NoteMode extends BaseMode<IItem>
                 return valueChanger.fromNormalizedValue (stepInfo.getVelocity ());
 
             case 2:
-                if (this.host.supports (Capability.NOTE_EDIT_RELEASE_VELOCITY))
-                    return valueChanger.fromNormalizedValue (stepInfo.getReleaseVelocity ());
+                if (this.host.supports (Capability.NOTE_EDIT_VELOCITY_SPREAD))
+                    return valueChanger.fromNormalizedValue (stepInfo.getVelocitySpread ());
                 return -1;
 
             case 3:
@@ -189,8 +188,8 @@ public class NoteMode extends BaseMode<IItem>
                 return -1;
 
             case 5:
-                if (this.host.supports (Capability.NOTE_EDIT_EXPRESSIONS))
-                    return valueChanger.fromNormalizedValue ((stepInfo.getTranspose () + 24.0) / 48.0);
+                if (this.host.supports (Capability.NOTE_EDIT_CHANCE))
+                    return valueChanger.fromNormalizedValue ((stepInfo.getChance ()));
                 return -1;
 
             case 6:

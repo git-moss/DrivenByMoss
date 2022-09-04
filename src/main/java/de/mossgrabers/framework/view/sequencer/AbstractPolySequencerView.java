@@ -281,7 +281,7 @@ public abstract class AbstractPolySequencerView<S extends IControlSurface<C>, C 
                 final IStepInfo stepInfo = clip.getStep (channel, step, note);
                 final StepState isSet = stepInfo.getState ();
                 if (isSet == StepState.START)
-                    this.getClip ().updateMuteState (channel, step, note, !stepInfo.isMuted ());
+                    this.getClip ().updateStepMuteState (channel, step, note, !stepInfo.isMuted ());
             }
             return true;
         }

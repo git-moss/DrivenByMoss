@@ -152,17 +152,17 @@ public class NoteMode extends BaseMode<IItem> implements INoteMode
                     {
                         case 5:
                             if (this.host.supports (Capability.NOTE_EDIT_CHANCE))
-                                this.clip.updateIsChanceEnabled (channel, step, note, !stepInfo.isChanceEnabled ());
+                                this.clip.updateStepIsChanceEnabled (channel, step, note, !stepInfo.isChanceEnabled ());
                             break;
 
                         case 6:
                             if (this.host.supports (Capability.NOTE_EDIT_OCCURRENCE))
-                                this.clip.updateIsOccurrenceEnabled (channel, step, note, !stepInfo.isOccurrenceEnabled ());
+                                this.clip.updateStepIsOccurrenceEnabled (channel, step, note, !stepInfo.isOccurrenceEnabled ());
                             break;
 
                         case 7:
                             if (this.host.supports (Capability.NOTE_EDIT_RECCURRENCE))
-                                this.clip.updateIsRecurrenceEnabled (channel, step, note, !stepInfo.isRecurrenceEnabled ());
+                                this.clip.updateStepIsRecurrenceEnabled (channel, step, note, !stepInfo.isRecurrenceEnabled ());
                             break;
 
                         default:
@@ -175,7 +175,7 @@ public class NoteMode extends BaseMode<IItem> implements INoteMode
 
                 case REPEAT:
                     if (index == 3 && this.host.supports (Capability.NOTE_EDIT_REPEAT))
-                        this.clip.updateIsRepeatEnabled (channel, step, note, !stepInfo.isRepeatEnabled ());
+                        this.clip.updateStepIsRepeatEnabled (channel, step, note, !stepInfo.isRepeatEnabled ());
                     break;
 
                 case RECCURRENCE_PATTERN:
@@ -187,7 +187,7 @@ public class NoteMode extends BaseMode<IItem> implements INoteMode
                             mask &= ~bitVal;
                         else
                             mask |= bitVal;
-                        this.clip.updateRecurrenceMask (channel, step, note, mask);
+                        this.clip.updateStepRecurrenceMask (channel, step, note, mask);
                     }
                     break;
             }
@@ -257,7 +257,7 @@ public class NoteMode extends BaseMode<IItem> implements INoteMode
                                 break;
 
                             case 1:
-                                this.clip.updateMuteState (channel, step, note, false);
+                                this.clip.updateStepMuteState (channel, step, note, false);
                                 break;
 
                             case 2:
@@ -266,7 +266,7 @@ public class NoteMode extends BaseMode<IItem> implements INoteMode
 
                             case 3:
                                 if (this.host.supports (Capability.NOTE_EDIT_VELOCITY_SPREAD))
-                                    this.clip.updateVelocitySpread (channel, step, note, 0);
+                                    this.clip.updateStepVelocitySpread (channel, step, note, 0);
                                 break;
 
                             case 4:
@@ -276,17 +276,17 @@ public class NoteMode extends BaseMode<IItem> implements INoteMode
 
                             case 5:
                                 if (this.host.supports (Capability.NOTE_EDIT_CHANCE))
-                                    this.clip.updateChance (channel, step, note, 1.0);
+                                    this.clip.updateStepChance (channel, step, note, 1.0);
                                 break;
 
                             case 6:
                                 if (this.host.supports (Capability.NOTE_EDIT_OCCURRENCE))
-                                    this.clip.setOccurrence (channel, step, note, NoteOccurrenceType.ALWAYS);
+                                    this.clip.setStepOccurrence (channel, step, note, NoteOccurrenceType.ALWAYS);
                                 break;
 
                             case 7:
                                 if (this.host.supports (Capability.NOTE_EDIT_RECCURRENCE))
-                                    this.clip.updateRecurrenceLength (channel, step, note, 1);
+                                    this.clip.updateStepRecurrenceLength (channel, step, note, 1);
                                 break;
 
                             default:
@@ -302,7 +302,7 @@ public class NoteMode extends BaseMode<IItem> implements INoteMode
                                 break;
 
                             case 1:
-                                this.clip.updateMuteState (channel, step, note, false);
+                                this.clip.updateStepMuteState (channel, step, note, false);
                                 break;
 
                             case 3:
@@ -343,27 +343,27 @@ public class NoteMode extends BaseMode<IItem> implements INoteMode
                                 break;
 
                             case 1:
-                                this.clip.updateMuteState (channel, step, note, false);
+                                this.clip.updateStepMuteState (channel, step, note, false);
                                 break;
 
                             case 3:
                                 if (this.host.supports (Capability.NOTE_EDIT_REPEAT))
-                                    this.clip.updateRepeatCount (channel, step, note, 0);
+                                    this.clip.updateStepRepeatCount (channel, step, note, 0);
                                 break;
 
                             case 4:
                                 if (this.host.supports (Capability.NOTE_EDIT_REPEAT))
-                                    this.clip.updateRepeatCurve (channel, step, note, 0);
+                                    this.clip.updateStepRepeatCurve (channel, step, note, 0);
                                 break;
 
                             case 5:
                                 if (this.host.supports (Capability.NOTE_EDIT_REPEAT))
-                                    this.clip.updateRepeatVelocityCurve (channel, step, note, 0);
+                                    this.clip.updateStepRepeatVelocityCurve (channel, step, note, 0);
                                 break;
 
                             case 6:
                                 if (this.host.supports (Capability.NOTE_EDIT_REPEAT))
-                                    this.clip.updateRepeatVelocityEnd (channel, step, note, 0);
+                                    this.clip.updateStepRepeatVelocityEnd (channel, step, note, 0);
                                 break;
 
                             default:
@@ -373,7 +373,7 @@ public class NoteMode extends BaseMode<IItem> implements INoteMode
 
                     case RECCURRENCE_PATTERN:
                         if (index == 7 && this.host.supports (Capability.NOTE_EDIT_RECCURRENCE))
-                            this.clip.updateRecurrenceLength (channel, step, note, 1);
+                            this.clip.updateStepRecurrenceLength (channel, step, note, 1);
                         break;
 
                     default:
@@ -410,7 +410,7 @@ public class NoteMode extends BaseMode<IItem> implements INoteMode
 
                         case 1:
                             if (this.host.supports (Capability.NOTE_EDIT_MUTE))
-                                this.clip.changeMuteState (channel, step, note, value);
+                                this.clip.changeStepMuteState (channel, step, note, value);
                             break;
 
                         case 2:
@@ -419,7 +419,7 @@ public class NoteMode extends BaseMode<IItem> implements INoteMode
 
                         case 3:
                             if (this.host.supports (Capability.NOTE_EDIT_VELOCITY_SPREAD))
-                                this.clip.changeVelocitySpread (channel, step, note, value);
+                                this.clip.changeStepVelocitySpread (channel, step, note, value);
                             break;
 
                         case 4:
@@ -429,20 +429,20 @@ public class NoteMode extends BaseMode<IItem> implements INoteMode
 
                         case 5:
                             if (this.host.supports (Capability.NOTE_EDIT_CHANCE))
-                                this.clip.changeChance (channel, step, note, value);
+                                this.clip.changeStepChance (channel, step, note, value);
                             break;
 
                         case 6:
                             if (this.host.supports (Capability.NOTE_EDIT_OCCURRENCE))
                             {
                                 final boolean increase = this.model.getValueChanger ().isIncrease (value);
-                                this.clip.setPrevNextOccurrence (channel, step, note, increase);
+                                this.clip.setStepPrevNextOccurrence (channel, step, note, increase);
                             }
                             break;
 
                         case 7:
                             if (this.host.supports (Capability.NOTE_EDIT_RECCURRENCE))
-                                this.clip.changeRecurrenceLength (channel, step, note, value);
+                                this.clip.changeStepRecurrenceLength (channel, step, note, value);
                             break;
 
                         default:
@@ -459,7 +459,7 @@ public class NoteMode extends BaseMode<IItem> implements INoteMode
 
                         case 1:
                             if (this.host.supports (Capability.NOTE_EDIT_MUTE))
-                                this.clip.changeMuteState (channel, step, note, value);
+                                this.clip.changeStepMuteState (channel, step, note, value);
                             break;
 
                         case 3:
@@ -501,27 +501,27 @@ public class NoteMode extends BaseMode<IItem> implements INoteMode
 
                         case 1:
                             if (this.host.supports (Capability.NOTE_EDIT_MUTE))
-                                this.clip.changeMuteState (channel, step, note, value);
+                                this.clip.changeStepMuteState (channel, step, note, value);
                             break;
 
                         case 3:
                             if (this.host.supports (Capability.NOTE_EDIT_REPEAT))
-                                this.clip.changeRepeatCount (channel, step, note, value);
+                                this.clip.changeStepRepeatCount (channel, step, note, value);
                             break;
 
                         case 4:
                             if (this.host.supports (Capability.NOTE_EDIT_REPEAT))
-                                this.clip.changeRepeatCurve (channel, step, note, value);
+                                this.clip.changeStepRepeatCurve (channel, step, note, value);
                             break;
 
                         case 5:
                             if (this.host.supports (Capability.NOTE_EDIT_REPEAT))
-                                this.clip.changeRepeatVelocityCurve (channel, step, note, value);
+                                this.clip.changeStepRepeatVelocityCurve (channel, step, note, value);
                             break;
 
                         case 6:
                             if (this.host.supports (Capability.NOTE_EDIT_REPEAT))
-                                this.clip.changeRepeatVelocityEnd (channel, step, note, value);
+                                this.clip.changeStepRepeatVelocityEnd (channel, step, note, value);
                             break;
 
                         default:
@@ -531,7 +531,7 @@ public class NoteMode extends BaseMode<IItem> implements INoteMode
 
                 case RECCURRENCE_PATTERN:
                     if (index == 7 && this.host.supports (Capability.NOTE_EDIT_RECCURRENCE))
-                        this.clip.changeRecurrenceLength (channel, step, note, value);
+                        this.clip.changeStepRecurrenceLength (channel, step, note, value);
                     break;
             }
         }

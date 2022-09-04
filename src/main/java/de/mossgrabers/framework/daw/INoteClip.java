@@ -123,7 +123,7 @@ public interface INoteClip extends IClip, IPinnable
      * @param row The note row
      * @param isMuted Is the note muted?
      */
-    void updateMuteState (int channel, int step, int row, boolean isMuted);
+    void updateStepMuteState (int channel, int step, int row, boolean isMuted);
 
 
     /**
@@ -134,7 +134,7 @@ public interface INoteClip extends IClip, IPinnable
      * @param row The note row
      * @param control The change value
      */
-    void changeMuteState (int channel, int step, int row, int control);
+    void changeStepMuteState (int channel, int step, int row, int control);
 
 
     /**
@@ -189,7 +189,7 @@ public interface INoteClip extends IClip, IPinnable
      * @param row The note row
      * @param velocitySpread The velocity spread of the note
      */
-    void updateVelocitySpread (int channel, int step, int row, double velocitySpread);
+    void updateStepVelocitySpread (int channel, int step, int row, double velocitySpread);
 
 
     /**
@@ -200,7 +200,7 @@ public interface INoteClip extends IClip, IPinnable
      * @param row The note row
      * @param control The change value
      */
-    void changeVelocitySpread (int channel, int step, int row, int control);
+    void changeStepVelocitySpread (int channel, int step, int row, int control);
 
 
     /**
@@ -344,7 +344,7 @@ public interface INoteClip extends IClip, IPinnable
      * @param row The note row
      * @param isEnabled True to enabled
      */
-    void updateIsChanceEnabled (int channel, int step, int row, boolean isEnabled);
+    void updateStepIsChanceEnabled (int channel, int step, int row, boolean isEnabled);
 
 
     /**
@@ -355,7 +355,7 @@ public interface INoteClip extends IClip, IPinnable
      * @param row The note row
      * @param chance The chance to set (0..1)
      */
-    void updateChance (int channel, int step, int row, double chance);
+    void updateStepChance (int channel, int step, int row, double chance);
 
 
     /**
@@ -366,7 +366,7 @@ public interface INoteClip extends IClip, IPinnable
      * @param row The note row
      * @param control The change value
      */
-    void changeChance (int channel, int step, int row, int control);
+    void changeStepChance (int channel, int step, int row, int control);
 
 
     /**
@@ -378,7 +378,7 @@ public interface INoteClip extends IClip, IPinnable
      * @param row The note row
      * @param isEnabled True to enabled
      */
-    void updateIsOccurrenceEnabled (int channel, int step, int row, boolean isEnabled);
+    void updateStepIsOccurrenceEnabled (int channel, int step, int row, boolean isEnabled);
 
 
     /**
@@ -390,7 +390,7 @@ public interface INoteClip extends IClip, IPinnable
      * @param row The note row
      * @param increase True to increase otherwise decrease
      */
-    void setPrevNextOccurrence (int channel, int step, int row, boolean increase);
+    void setStepPrevNextOccurrence (int channel, int step, int row, boolean increase);
 
 
     /**
@@ -402,7 +402,7 @@ public interface INoteClip extends IClip, IPinnable
      * @param row The note row
      * @param occurrence The occurrence to set
      */
-    void setOccurrence (int channel, int step, int row, NoteOccurrenceType occurrence);
+    void setStepOccurrence (int channel, int step, int row, NoteOccurrenceType occurrence);
 
 
     /**
@@ -414,7 +414,7 @@ public interface INoteClip extends IClip, IPinnable
      * @param row The note row
      * @param isEnabled True to enabled
      */
-    void updateIsRecurrenceEnabled (int channel, int step, int row, boolean isEnabled);
+    void updateStepIsRecurrenceEnabled (int channel, int step, int row, boolean isEnabled);
 
 
     /**
@@ -426,7 +426,7 @@ public interface INoteClip extends IClip, IPinnable
      * @param row The note row
      * @param recurrenceLength The recurrence length to set
      */
-    void updateRecurrenceLength (int channel, int step, int row, int recurrenceLength);
+    void updateStepRecurrenceLength (int channel, int step, int row, int recurrenceLength);
 
 
     /**
@@ -437,7 +437,7 @@ public interface INoteClip extends IClip, IPinnable
      * @param row The note row
      * @param mask The recurrence length to set
      */
-    void updateRecurrenceMask (int channel, int step, int row, int mask);
+    void updateStepRecurrenceMask (int channel, int step, int row, int mask);
 
 
     /**
@@ -449,7 +449,7 @@ public interface INoteClip extends IClip, IPinnable
      * @param row The note row
      * @param control The change value
      */
-    void changeRecurrenceLength (int channel, int step, int row, int control);
+    void changeStepRecurrenceLength (int channel, int step, int row, int control);
 
 
     /**
@@ -461,7 +461,7 @@ public interface INoteClip extends IClip, IPinnable
      * @param row The note row
      * @param isEnabled True to enabled
      */
-    void updateIsRepeatEnabled (int channel, int step, int row, boolean isEnabled);
+    void updateStepIsRepeatEnabled (int channel, int step, int row, boolean isEnabled);
 
 
     /**
@@ -472,7 +472,7 @@ public interface INoteClip extends IClip, IPinnable
      * @param row The note row
      * @param value The value
      */
-    void updateRepeatCount (int channel, int step, int row, int value);
+    void updateStepRepeatCount (int channel, int step, int row, int value);
 
 
     /**
@@ -483,7 +483,7 @@ public interface INoteClip extends IClip, IPinnable
      * @param row The note row
      * @param control The change value
      */
-    void changeRepeatCount (int channel, int step, int row, int control);
+    void changeStepRepeatCount (int channel, int step, int row, int control);
 
 
     /**
@@ -494,7 +494,7 @@ public interface INoteClip extends IClip, IPinnable
      * @param row The note row
      * @param value The value
      */
-    void updateRepeatCurve (int channel, int step, int row, double value);
+    void updateStepRepeatCurve (int channel, int step, int row, double value);
 
 
     /**
@@ -505,7 +505,7 @@ public interface INoteClip extends IClip, IPinnable
      * @param row The note row
      * @param control The change value
      */
-    void changeRepeatCurve (int channel, int step, int row, int control);
+    void changeStepRepeatCurve (int channel, int step, int row, int control);
 
 
     /**
@@ -517,7 +517,7 @@ public interface INoteClip extends IClip, IPinnable
      * @param row The note row
      * @param value The value
      */
-    void updateRepeatVelocityCurve (int channel, int step, int row, double value);
+    void updateStepRepeatVelocityCurve (int channel, int step, int row, double value);
 
 
     /**
@@ -529,7 +529,7 @@ public interface INoteClip extends IClip, IPinnable
      * @param row The note row
      * @param control The change value
      */
-    void changeRepeatVelocityCurve (int channel, int step, int row, int control);
+    void changeStepRepeatVelocityCurve (int channel, int step, int row, int control);
 
 
     /**
@@ -541,7 +541,7 @@ public interface INoteClip extends IClip, IPinnable
      * @param row The note row
      * @param value The value
      */
-    void updateRepeatVelocityEnd (int channel, int step, int row, double value);
+    void updateStepRepeatVelocityEnd (int channel, int step, int row, double value);
 
 
     /**
@@ -553,7 +553,7 @@ public interface INoteClip extends IClip, IPinnable
      * @param row The note row
      * @param control The change value
      */
-    void changeRepeatVelocityEnd (int channel, int step, int row, int control);
+    void changeStepRepeatVelocityEnd (int channel, int step, int row, int control);
 
 
     /**

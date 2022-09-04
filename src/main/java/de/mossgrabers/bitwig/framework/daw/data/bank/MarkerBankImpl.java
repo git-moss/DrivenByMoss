@@ -104,7 +104,7 @@ public class MarkerBankImpl extends AbstractItemBankImpl<CueMarkerBank, IMarker>
     {
         final double playPosition = ((TransportImpl) this.transport).getTransport ().getPosition ().get ();
 
-        double closest = 0;
+        double closest = -1;
         double distance = 0;
         for (int i = 0; i < NUM_LARGE_MARKER_BANK; i++)
         {
@@ -120,7 +120,7 @@ public class MarkerBankImpl extends AbstractItemBankImpl<CueMarkerBank, IMarker>
             }
         }
 
-        if (closest > 0)
+        if (closest >= 0)
             this.transport.setPosition (closest);
     }
 }

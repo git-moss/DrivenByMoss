@@ -236,7 +236,7 @@ public class EditNoteMode extends BaseMode implements INoteMode
                 case VELOCITY_SPREAD:
                     if (this.host.supports (Capability.NOTE_EDIT_VELOCITY_SPREAD))
                     {
-                        this.clip.changeVelocitySpread (channel, step, note, value);
+                        this.clip.changeStepVelocitySpread (channel, step, note, value);
                         if (!hasMCUDisplay)
                             this.mvHelper.delayDisplay ( () -> "Velocity Spread: " + StringUtils.formatPercentage (stepInfo.getVelocitySpread ()));
                     }
@@ -254,7 +254,7 @@ public class EditNoteMode extends BaseMode implements INoteMode
                 case CHANCE:
                     if (this.host.supports (Capability.NOTE_EDIT_CHANCE))
                     {
-                        this.clip.changeChance (channel, step, note, value);
+                        this.clip.changeStepChance (channel, step, note, value);
                         if (!hasMCUDisplay)
                             this.mvHelper.delayDisplay ( () -> "Chance: " + StringUtils.formatPercentage (stepInfo.getChance ()));
                     }
@@ -264,7 +264,7 @@ public class EditNoteMode extends BaseMode implements INoteMode
                     if (this.host.supports (Capability.NOTE_EDIT_OCCURRENCE))
                     {
                         final boolean increase = this.model.getValueChanger ().isIncrease (value);
-                        this.clip.setPrevNextOccurrence (channel, step, note, increase);
+                        this.clip.setStepPrevNextOccurrence (channel, step, note, increase);
                         if (!hasMCUDisplay)
                             this.mvHelper.delayDisplay ( () -> "Occurrence: " + StringUtils.optimizeName (stepInfo.getOccurrence ().getName (), 8));
                     }
@@ -273,7 +273,7 @@ public class EditNoteMode extends BaseMode implements INoteMode
                 case VELOCITY_END:
                     if (this.host.supports (Capability.NOTE_EDIT_REPEAT))
                     {
-                        this.clip.changeRepeatVelocityEnd (channel, step, note, value);
+                        this.clip.changeStepRepeatVelocityEnd (channel, step, note, value);
                         if (!hasMCUDisplay)
                             this.mvHelper.delayDisplay ( () -> "Velocity End: " + StringUtils.formatPercentage (stepInfo.getRepeatVelocityEnd ()));
                     }
@@ -282,7 +282,7 @@ public class EditNoteMode extends BaseMode implements INoteMode
                 case VELOCITY_CURVE:
                     if (this.host.supports (Capability.NOTE_EDIT_REPEAT))
                     {
-                        this.clip.changeRepeatVelocityCurve (channel, step, note, value);
+                        this.clip.changeStepRepeatVelocityCurve (channel, step, note, value);
                         if (!hasMCUDisplay)
                             this.mvHelper.delayDisplay ( () -> "Velocity Curve: " + StringUtils.formatPercentage (stepInfo.getRepeatVelocityCurve ()));
                     }
@@ -291,7 +291,7 @@ public class EditNoteMode extends BaseMode implements INoteMode
                 case COUNT:
                     if (this.host.supports (Capability.NOTE_EDIT_REPEAT))
                     {
-                        this.clip.changeRepeatCount (channel, step, note, value);
+                        this.clip.changeStepRepeatCount (channel, step, note, value);
                         if (!hasMCUDisplay)
                             this.mvHelper.delayDisplay ( () -> "Repeat Count: " + stepInfo.getFormattedRepeatCount ());
                     }
@@ -300,7 +300,7 @@ public class EditNoteMode extends BaseMode implements INoteMode
                 case CURVE:
                     if (this.host.supports (Capability.NOTE_EDIT_REPEAT))
                     {
-                        this.clip.changeRepeatCurve (channel, step, note, value);
+                        this.clip.changeStepRepeatCurve (channel, step, note, value);
                         if (!hasMCUDisplay)
                             this.mvHelper.delayDisplay ( () -> "Repeat Curve: " + StringUtils.formatPercentage (stepInfo.getRepeatCurve ()));
                     }
@@ -375,7 +375,7 @@ public class EditNoteMode extends BaseMode implements INoteMode
 
                     case VELOCITY_SPREAD:
                         if (this.host.supports (Capability.NOTE_EDIT_VELOCITY_SPREAD))
-                            this.clip.updateVelocitySpread (channel, step, note, 0);
+                            this.clip.updateStepVelocitySpread (channel, step, note, 0);
                         break;
 
                     case RELEASE_VELOCITY:
@@ -385,32 +385,32 @@ public class EditNoteMode extends BaseMode implements INoteMode
 
                     case CHANCE:
                         if (this.host.supports (Capability.NOTE_EDIT_CHANCE))
-                            this.clip.updateChance (channel, step, note, 1.0);
+                            this.clip.updateStepChance (channel, step, note, 1.0);
                         break;
 
                     case OCCURRENCE:
                         if (this.host.supports (Capability.NOTE_EDIT_OCCURRENCE))
-                            this.clip.setOccurrence (channel, step, note, NoteOccurrenceType.ALWAYS);
+                            this.clip.setStepOccurrence (channel, step, note, NoteOccurrenceType.ALWAYS);
                         break;
 
                     case VELOCITY_END:
                         if (this.host.supports (Capability.NOTE_EDIT_REPEAT))
-                            this.clip.updateRepeatVelocityEnd (channel, step, note, 0);
+                            this.clip.updateStepRepeatVelocityEnd (channel, step, note, 0);
                         break;
 
                     case VELOCITY_CURVE:
                         if (this.host.supports (Capability.NOTE_EDIT_REPEAT))
-                            this.clip.updateRepeatVelocityCurve (channel, step, note, 0);
+                            this.clip.updateStepRepeatVelocityCurve (channel, step, note, 0);
                         break;
 
                     case COUNT:
                         if (this.host.supports (Capability.NOTE_EDIT_REPEAT))
-                            this.clip.updateRepeatCount (channel, step, note, 0);
+                            this.clip.updateStepRepeatCount (channel, step, note, 0);
                         break;
 
                     case CURVE:
                         if (this.host.supports (Capability.NOTE_EDIT_REPEAT))
-                            this.clip.updateRepeatCurve (channel, step, note, 0);
+                            this.clip.updateStepRepeatCurve (channel, step, note, 0);
                         break;
 
                     default:
