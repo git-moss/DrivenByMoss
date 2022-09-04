@@ -122,7 +122,8 @@ public abstract class AbstractDrumView<S extends IControlSurface<C>, C extends C
         this.allRows = this.sequencerLines + this.playRows;
         this.numColumns = numColumns;
         this.sequencerSteps = numSequencerLines * this.numColumns;
-        this.playColumns = 4; // This layout is currently fixed to a 4 width
+        // This layout is currently fixed to a 4 width
+        this.playColumns = 4;
 
         final ITrackBank tb = model.getTrackBank ();
         tb.addSelectionObserver ( (index, isSelected) -> this.keyManager.clearPressedKeys ());

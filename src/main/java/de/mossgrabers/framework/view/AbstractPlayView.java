@@ -214,6 +214,11 @@ public abstract class AbstractPlayView<S extends IControlSurface<C>, C extends C
     }
 
 
+    /**
+     * Get the scale matrix to apply to the mapping table. Allows to block specific notes.
+     *
+     * @return The matrix (size of 127)
+     */
     protected int [] getMapping ()
     {
         if (!this.model.canSelectedTrackHoldNotes ())
@@ -234,6 +239,11 @@ public abstract class AbstractPlayView<S extends IControlSurface<C>, C extends C
     }
 
 
+    /**
+     * Get the note mapping matrix as a table based on the current scale settings.
+     *
+     * @return The mapping table
+     */
     protected int [] getScaleMatrix ()
     {
         return this.scales.getNoteMatrix ();

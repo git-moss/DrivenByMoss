@@ -8,13 +8,12 @@ import de.mossgrabers.controller.novation.launchpad.LaunchpadConfiguration;
 import de.mossgrabers.controller.novation.launchpad.controller.LaunchpadColorManager;
 import de.mossgrabers.controller.novation.launchpad.controller.LaunchpadControlSurface;
 import de.mossgrabers.framework.controller.ButtonID;
-import de.mossgrabers.framework.controller.grid.IPadGrid;
 import de.mossgrabers.framework.daw.IModel;
 import de.mossgrabers.framework.daw.INoteClip;
 import de.mossgrabers.framework.daw.constants.Resolution;
 import de.mossgrabers.framework.daw.midi.INoteRepeat;
 import de.mossgrabers.framework.utils.ButtonEvent;
-import de.mossgrabers.framework.view.sequencer.AbstractDrumView;
+import de.mossgrabers.framework.view.sequencer.AbstractDrumExView;
 
 
 /**
@@ -22,13 +21,8 @@ import de.mossgrabers.framework.view.sequencer.AbstractDrumView;
  *
  * @author J&uuml;rgen Mo&szlig;graber
  */
-public class DrumView extends AbstractDrumView<LaunchpadControlSurface, LaunchpadConfiguration>
+public class DrumView extends AbstractDrumExView<LaunchpadControlSurface, LaunchpadConfiguration>
 {
-    private boolean extraButtonsOn     = false;
-    private boolean noteRepeatPeriodOn = false;
-    private boolean noteRepeatLengthOn = false;
-
-
     /**
      * Constructor.
      *
@@ -108,68 +102,11 @@ public class DrumView extends AbstractDrumView<LaunchpadControlSurface, Launchpa
         if (pad == 15)
         {
             if (velocity > 0)
-                this.extraButtonsOn = !this.extraButtonsOn;
+                this.toggleExtraButtons ();
             return;
         }
 
-        if (!this.extraButtonsOn || pad < 8)
-        {
-            super.handleLoopArea (pad, velocity);
-            return;
-        }
-
-        if (velocity == 0)
-            return;
-
-        final LaunchpadConfiguration configuration = this.surface.getConfiguration ();
-
-        switch (pad)
-        {
-            case 12:
-                configuration.toggleNoteRepeatActive ();
-                break;
-            case 13:
-                this.noteRepeatPeriodOn = !this.noteRepeatPeriodOn;
-                if (this.noteRepeatPeriodOn)
-                    this.noteRepeatLengthOn = false;
-                break;
-            case 14:
-                this.noteRepeatLengthOn = !this.noteRepeatLengthOn;
-                if (this.noteRepeatLengthOn)
-                    this.noteRepeatPeriodOn = false;
-                break;
-            default:
-                // Not used
-                break;
-        }
-    }
-
-
-    /** {@inheritDoc} */
-    @Override
-    protected void drawPages (final INoteClip clip, final boolean isActive)
-    {
-        super.drawPages (clip, isActive);
-
-        // Draw the extra buttons
-
-        final IPadGrid padGrid = this.surface.getPadGrid ();
-
-        if (this.extraButtonsOn)
-        {
-            padGrid.lightEx (4, 6, this.isSelectTrigger () ? LaunchpadColorManager.LAUNCHPAD_COLOR_WHITE : LaunchpadColorManager.LAUNCHPAD_COLOR_GREY_LO);
-            padGrid.lightEx (5, 6, this.isMuteTrigger () ? LaunchpadColorManager.LAUNCHPAD_COLOR_YELLOW_HI : LaunchpadColorManager.LAUNCHPAD_COLOR_YELLOW_LO);
-            padGrid.lightEx (6, 6, this.isSoloTrigger () ? LaunchpadColorManager.LAUNCHPAD_COLOR_BLUE_HI : LaunchpadColorManager.LAUNCHPAD_COLOR_BLUE_LO);
-            padGrid.lightEx (7, 6, this.isBrowseTrigger () ? LaunchpadColorManager.LAUNCHPAD_COLOR_CYAN_HI : LaunchpadColorManager.LAUNCHPAD_COLOR_CYAN_LO);
-
-            final INoteRepeat noteRepeat = this.surface.getMidiInput ().getDefaultNoteInput ().getNoteRepeat ();
-
-            padGrid.lightEx (4, 7, noteRepeat.isActive () ? LaunchpadColorManager.LAUNCHPAD_COLOR_ORCHID_HI : LaunchpadColorManager.LAUNCHPAD_COLOR_ORCHID_LO);
-            padGrid.lightEx (5, 7, this.noteRepeatPeriodOn ? LaunchpadColorManager.LAUNCHPAD_COLOR_SKY_HI : LaunchpadColorManager.LAUNCHPAD_COLOR_SKY_LO);
-            padGrid.lightEx (6, 7, this.noteRepeatLengthOn ? LaunchpadColorManager.LAUNCHPAD_COLOR_PINK_HI : LaunchpadColorManager.LAUNCHPAD_COLOR_PINK_LO);
-        }
-
-        padGrid.lightEx (7, 7, this.extraButtonsOn ? LaunchpadColorManager.LAUNCHPAD_COLOR_RED_HI : LaunchpadColorManager.LAUNCHPAD_COLOR_RED_LO);
+        super.handleLoopArea (pad, velocity);
     }
 
 

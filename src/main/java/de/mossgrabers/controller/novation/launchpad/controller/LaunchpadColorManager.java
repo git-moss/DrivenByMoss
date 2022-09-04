@@ -12,6 +12,7 @@ import de.mossgrabers.framework.featuregroup.AbstractFeatureGroup;
 import de.mossgrabers.framework.scale.Scales;
 import de.mossgrabers.framework.view.AbstractPlayView;
 import de.mossgrabers.framework.view.BrowserView;
+import de.mossgrabers.framework.view.sequencer.AbstractDrumExView;
 import de.mossgrabers.framework.view.sequencer.AbstractDrumView;
 import de.mossgrabers.framework.view.sequencer.AbstractSequencerView;
 
@@ -117,7 +118,6 @@ public class LaunchpadColorManager extends ColorManager
         this.registerColorIndex (AbstractSequencerView.COLOR_PAGE, LAUNCHPAD_COLOR_WHITE);
         this.registerColorIndex (AbstractSequencerView.COLOR_ACTIVE_PAGE, LAUNCHPAD_COLOR_GREEN);
         this.registerColorIndex (AbstractSequencerView.COLOR_SELECTED_PAGE, LAUNCHPAD_COLOR_BLUE_ORCHID);
-
         this.registerColorIndex (AbstractSequencerView.COLOR_RESOLUTION, LAUNCHPAD_COLOR_GREEN);
         this.registerColorIndex (AbstractSequencerView.COLOR_RESOLUTION_SELECTED, LAUNCHPAD_COLOR_YELLOW);
         this.registerColorIndex (AbstractSequencerView.COLOR_RESOLUTION_OFF, LAUNCHPAD_COLOR_BLACK);
@@ -129,6 +129,23 @@ public class LaunchpadColorManager extends ColorManager
         this.registerColorIndex (AbstractDrumView.COLOR_PAD_MUTED, LAUNCHPAD_COLOR_AMBER_LO);
         this.registerColorIndex (AbstractDrumView.COLOR_PAD_HAS_CONTENT, LAUNCHPAD_COLOR_YELLOW_HI);
         this.registerColorIndex (AbstractDrumView.COLOR_PAD_NO_CONTENT, LAUNCHPAD_COLOR_YELLOW_LO);
+
+        this.registerColorIndex (AbstractDrumExView.COLOR_EX_SELECT_ON, LAUNCHPAD_COLOR_WHITE);
+        this.registerColorIndex (AbstractDrumExView.COLOR_EX_SELECT_OFF, LAUNCHPAD_COLOR_GREY_LO);
+        this.registerColorIndex (AbstractDrumExView.COLOR_EX_MUTE_ON, LAUNCHPAD_COLOR_YELLOW_HI);
+        this.registerColorIndex (AbstractDrumExView.COLOR_EX_MUTE_OFF, LAUNCHPAD_COLOR_YELLOW_LO);
+        this.registerColorIndex (AbstractDrumExView.COLOR_EX_SOLO_ON, LAUNCHPAD_COLOR_BLUE_HI);
+        this.registerColorIndex (AbstractDrumExView.COLOR_EX_SOLO_OFF, LAUNCHPAD_COLOR_BLUE_LO);
+        this.registerColorIndex (AbstractDrumExView.COLOR_EX_BROWSE_ON, LAUNCHPAD_COLOR_CYAN_HI);
+        this.registerColorIndex (AbstractDrumExView.COLOR_EX_BROWSE_OFF, LAUNCHPAD_COLOR_CYAN_LO);
+        this.registerColorIndex (AbstractDrumExView.COLOR_EX_NOTE_REPEAT_ON, LAUNCHPAD_COLOR_ORCHID_HI);
+        this.registerColorIndex (AbstractDrumExView.COLOR_EX_NOTE_REPEAT_OFF, LAUNCHPAD_COLOR_ORCHID_LO);
+        this.registerColorIndex (AbstractDrumExView.COLOR_EX_NOTE_REPEAT_PERIOD_ON, LAUNCHPAD_COLOR_SKY_HI);
+        this.registerColorIndex (AbstractDrumExView.COLOR_EX_NOTE_REPEAT_PERIOD_OFF, LAUNCHPAD_COLOR_SKY_LO);
+        this.registerColorIndex (AbstractDrumExView.COLOR_EX_NOTE_REPEAT_LENGTH_ON, LAUNCHPAD_COLOR_PINK_HI);
+        this.registerColorIndex (AbstractDrumExView.COLOR_EX_NOTE_REPEAT_LENGTH_OFF, LAUNCHPAD_COLOR_PINK_LO);
+        this.registerColorIndex (AbstractDrumExView.COLOR_EX_TOGGLE_ON, LAUNCHPAD_COLOR_RED_HI);
+        this.registerColorIndex (AbstractDrumExView.COLOR_EX_TOGGLE_OFF, LAUNCHPAD_COLOR_RED_LO);
 
         this.registerColorIndex (AbstractPlayView.COLOR_PLAY, LAUNCHPAD_COLOR_GREEN_HI);
         this.registerColorIndex (AbstractPlayView.COLOR_RECORD, LAUNCHPAD_COLOR_RED_HI);

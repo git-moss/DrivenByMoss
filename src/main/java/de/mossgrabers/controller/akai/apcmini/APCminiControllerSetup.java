@@ -120,7 +120,7 @@ public class APCminiControllerSetup extends AbstractControllerSetup<APCminiContr
     @Override
     protected void createScales ()
     {
-        this.scales = new APCminiScales (this.valueChanger, 36, 100, 8, 8);
+        this.scales = new APCminiScales (this.valueChanger);
     }
 
 

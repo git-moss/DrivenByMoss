@@ -77,22 +77,26 @@ public class PlayView extends AbstractPlayView<LaunchpadControlSurface, Launchpa
     @Override
     public int getButtonColor (final ButtonID buttonID)
     {
-        if (this.model.canSelectedTrackHoldNotes ())
+        if (!this.model.canSelectedTrackHoldNotes ())
+            return LaunchpadColorManager.LAUNCHPAD_COLOR_BLACK;
+
+        switch (buttonID)
         {
-            if (buttonID == ButtonID.SCENE1 || buttonID == ButtonID.SCENE2 || buttonID == ButtonID.SCENE7 || buttonID == ButtonID.SCENE8)
+            case SCENE1, SCENE2, SCENE7, SCENE8:
                 return LaunchpadColorManager.LAUNCHPAD_COLOR_OCEAN_HI;
 
-            if (buttonID == ButtonID.SCENE4)
+            case SCENE4:
                 return this.playControls ? LaunchpadColorManager.LAUNCHPAD_COLOR_GREEN_HI : LaunchpadColorManager.LAUNCHPAD_COLOR_GREEN_LO;
 
-            if (buttonID == ButtonID.SCENE5)
+            case SCENE5:
                 return LaunchpadColorManager.LAUNCHPAD_COLOR_AMBER_LO;
 
-            if (buttonID == ButtonID.SCENE6)
+            case SCENE6:
                 return this.scales.isChromatic () ? LaunchpadColorManager.LAUNCHPAD_COLOR_WHITE : LaunchpadColorManager.LAUNCHPAD_COLOR_GREY_LO;
-        }
 
-        return LaunchpadColorManager.LAUNCHPAD_COLOR_BLACK;
+            default:
+                return LaunchpadColorManager.LAUNCHPAD_COLOR_BLACK;
+        }
     }
 
 

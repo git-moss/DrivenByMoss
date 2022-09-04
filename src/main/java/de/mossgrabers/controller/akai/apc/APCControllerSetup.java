@@ -18,6 +18,7 @@ import de.mossgrabers.controller.akai.apc.command.trigger.SessionRecordCommand;
 import de.mossgrabers.controller.akai.apc.command.trigger.StopAllClipsOrBrowseCommand;
 import de.mossgrabers.controller.akai.apc.controller.APCColorManager;
 import de.mossgrabers.controller.akai.apc.controller.APCControlSurface;
+import de.mossgrabers.controller.akai.apc.controller.APCScales;
 import de.mossgrabers.controller.akai.apc.mode.BrowserMode;
 import de.mossgrabers.controller.akai.apc.mode.NoteMode;
 import de.mossgrabers.controller.akai.apc.mode.PanMode;
@@ -80,11 +81,9 @@ import de.mossgrabers.framework.featuregroup.ViewManager;
 import de.mossgrabers.framework.mode.Modes;
 import de.mossgrabers.framework.mode.device.ParameterMode;
 import de.mossgrabers.framework.mode.track.TrackVolumeMode;
-import de.mossgrabers.framework.scale.Scales;
 import de.mossgrabers.framework.utils.Timeout;
 import de.mossgrabers.framework.view.TempoView;
 import de.mossgrabers.framework.view.Views;
-import de.mossgrabers.framework.view.sequencer.AbstractSequencerView;
 
 import java.util.Optional;
 
@@ -123,7 +122,7 @@ public class APCControllerSetup extends AbstractControllerSetup<APCControlSurfac
     @Override
     protected void createScales ()
     {
-        this.scales = new Scales (this.valueChanger, 36, 76, 8, 5);
+        this.scales = new APCScales (this.valueChanger);
         this.scales.setDrumDefaultOffset (12);
     }
 
@@ -148,8 +147,8 @@ public class APCControllerSetup extends AbstractControllerSetup<APCControlSurfac
     {
         final IMidiAccess midiAccess = this.factory.createMidiAccess ();
         final IMidiOutput output = midiAccess.createOutput ();
-        final IMidiInput input = midiAccess.createInput (this.isMkII ? "Akai APC40 mkII" : "Akai APC40",
-                "B040??" /* Sustain pedal */);
+        final IMidiInput input = midiAccess.createInput ("Pads", "80????" /* Note off */,
+                "90????" /* Note on */, "B040??" /* Sustain pedal */);
         final APCControlSurface surface = new APCControlSurface (this.host, this.colorManager, this.configuration, output, input, this.isMkII);
         this.surfaces.add (surface);
     }
@@ -161,7 +160,10 @@ public class APCControllerSetup extends AbstractControllerSetup<APCControlSurfac
     {
         super.createObservers ();
 
+        final APCControlSurface surface = this.getSurface ();
+
         this.createScaleObservers (this.configuration);
+        this.createNoteRepeatObservers (this.configuration, surface);
 
         this.configuration.registerDeactivatedItemsHandler (this.model);
 
@@ -258,14 +260,8 @@ public class APCControllerSetup extends AbstractControllerSetup<APCControlSurfac
             }
 
             final ButtonID stopButtonID = ButtonID.get (ButtonID.ROW6_1, i);
-            this.addButton (stopButtonID, "Stop " + (i + 1), new APCStopClipCommand (i, this.model, surface), i, APCControlSurface.APC_BUTTON_CLIP_STOP, () -> {
-
-                final IView view = viewManager.getActive ();
-                if (view instanceof final AbstractSequencerView<?, ?> sequencerView)
-                    return sequencerView.getResolutionIndex () == index ? 1 : 0;
-                return surface.isPressed (stopButtonID) ? 1 : 0;
-
-            }, ColorManager.BUTTON_STATE_OFF, ColorManager.BUTTON_STATE_ON);
+            final APCStopClipCommand apcStopClipCommand = new APCStopClipCommand (i, this.model, surface);
+            this.addButton (stopButtonID, "Stop " + (i + 1), apcStopClipCommand, i, APCControlSurface.APC_BUTTON_CLIP_STOP, () -> apcStopClipCommand.getButtonColor (stopButtonID), ColorManager.BUTTON_STATE_OFF, ColorManager.BUTTON_STATE_ON);
         }
 
         if (this.isMkII)

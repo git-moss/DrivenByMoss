@@ -6,7 +6,9 @@ package de.mossgrabers.controller.akai.apc.command.trigger;
 
 import de.mossgrabers.controller.akai.apc.APCConfiguration;
 import de.mossgrabers.controller.akai.apc.controller.APCControlSurface;
+import de.mossgrabers.controller.akai.apc.view.DrumView;
 import de.mossgrabers.framework.command.trigger.clip.StopClipCommand;
+import de.mossgrabers.framework.controller.ButtonID;
 import de.mossgrabers.framework.daw.IModel;
 import de.mossgrabers.framework.featuregroup.IView;
 import de.mossgrabers.framework.utils.ButtonEvent;
@@ -43,6 +45,11 @@ public class APCStopClipCommand extends StopClipCommand<APCControlSurface, APCCo
 
         // Set the step resolution in sequencer modes
         final IView view = this.surface.getViewManager ().getActive ();
+        if (view instanceof DrumView drumView)
+        {
+            drumView.handleStopButtons (this.index);
+            return;
+        }
         if (view instanceof final AbstractSequencerView<?, ?> sequencerView)
         {
             sequencerView.setResolutionIndex (this.index);
@@ -50,5 +57,25 @@ public class APCStopClipCommand extends StopClipCommand<APCControlSurface, APCCo
         }
 
         super.executeNormal (ButtonEvent.DOWN);
+    }
+
+
+    /**
+     * Get the color for the stop buttons.
+     * 
+     * @param stopButtonID The ID of the stop button
+     * @return The color index
+     */
+    public int getButtonColor (final ButtonID stopButtonID)
+    {
+        final IView view = this.surface.getViewManager ().getActive ();
+
+        if (view instanceof DrumView drumView)
+            return drumView.getStopButtonColor (this.index);
+
+        if (view instanceof final AbstractSequencerView<?, ?> sequencerView)
+            return sequencerView.getResolutionIndex () == this.index ? 1 : 0;
+
+        return this.surface.isPressed (stopButtonID) ? 1 : 0;
     }
 }

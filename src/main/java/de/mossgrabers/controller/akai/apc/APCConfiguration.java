@@ -8,6 +8,7 @@ import de.mossgrabers.framework.configuration.AbstractConfiguration;
 import de.mossgrabers.framework.configuration.ISettingsUI;
 import de.mossgrabers.framework.controller.valuechanger.IValueChanger;
 import de.mossgrabers.framework.daw.IHost;
+import de.mossgrabers.framework.daw.constants.Capability;
 import de.mossgrabers.framework.daw.midi.ArpeggiatorMode;
 import de.mossgrabers.framework.view.Views;
 
@@ -56,17 +57,40 @@ public class APCConfiguration extends AbstractConfiguration
         this.activateScaleLayoutSetting (documentSettings);
 
         ///////////////////////////
+        // Note Repeat
+
+        this.activateNoteRepeatSetting (documentSettings);
+
+        ///////////////////////////
+        // Session
+
+        this.activateSelectClipOnLaunchSetting (globalSettings);
+        this.activateDrawRecordStripeSetting (globalSettings);
+        this.activateActionForRecArmedPad (globalSettings);
+
+        ///////////////////////////
         // Play and Sequence
 
         this.activateQuantizeAmountSetting (globalSettings);
         this.activatePreferredNoteViewSetting (globalSettings, PREFERRED_NOTE_VIEWS);
 
         ///////////////////////////
+        // Transport
+
+        this.activateBehaviourOnPauseSetting (globalSettings);
+
+        ///////////////////////////
+        // Drum Sequencer
+
+        if (this.host.supports (Capability.HAS_DRUM_DEVICE))
+        {
+            this.activateTurnOffEmptyDrumPadsSetting (globalSettings);
+        }
+
+        ///////////////////////////
         // Workflow
 
         this.activateExcludeDeactivatedItemsSetting (globalSettings);
-        this.activateBehaviourOnPauseSetting (globalSettings);
-        this.activateSelectClipOnLaunchSetting (globalSettings);
         this.activateNewClipLengthSetting (globalSettings);
     }
 }

@@ -13,6 +13,7 @@ import de.mossgrabers.framework.featuregroup.AbstractFeatureGroup;
 import de.mossgrabers.framework.scale.Scales;
 import de.mossgrabers.framework.view.AbstractPlayView;
 import de.mossgrabers.framework.view.AbstractSessionView;
+import de.mossgrabers.framework.view.sequencer.AbstractDrumExView;
 import de.mossgrabers.framework.view.sequencer.AbstractDrumView;
 import de.mossgrabers.framework.view.sequencer.AbstractSequencerView;
 
@@ -156,6 +157,23 @@ public class APCColorManager extends ColorManager
         this.registerColorIndex (AbstractDrumView.COLOR_PAD_MUTED, isMkII ? APC_MKII_COLOR_AMBER_LO : APC_COLOR_BLACK);
         this.registerColorIndex (AbstractDrumView.COLOR_PAD_HAS_CONTENT, isMkII ? APC_MKII_COLOR_YELLOW_HI : APC_COLOR_YELLOW);
         this.registerColorIndex (AbstractDrumView.COLOR_PAD_NO_CONTENT, isMkII ? APC_MKII_COLOR_YELLOW_LO : APC_COLOR_BLACK);
+
+        this.registerColorIndex (AbstractDrumExView.COLOR_EX_SELECT_ON, isMkII ? APC_MKII_COLOR_WHITE : APC_COLOR_GREEN_BLINK);
+        this.registerColorIndex (AbstractDrumExView.COLOR_EX_SELECT_OFF, isMkII ? APC_MKII_COLOR_GREY_LO : APC_COLOR_GREEN);
+        this.registerColorIndex (AbstractDrumExView.COLOR_EX_MUTE_ON, isMkII ? APC_MKII_COLOR_YELLOW_HI : APC_COLOR_RED_BLINK);
+        this.registerColorIndex (AbstractDrumExView.COLOR_EX_MUTE_OFF, isMkII ? APC_MKII_COLOR_YELLOW_LO : APC_COLOR_RED);
+        this.registerColorIndex (AbstractDrumExView.COLOR_EX_SOLO_ON, isMkII ? APC_MKII_COLOR_BLUE_HI : APC_COLOR_YELLOW_BLINK);
+        this.registerColorIndex (AbstractDrumExView.COLOR_EX_SOLO_OFF, isMkII ? APC_MKII_COLOR_BLUE_LO : APC_COLOR_YELLOW);
+        this.registerColorIndex (AbstractDrumExView.COLOR_EX_BROWSE_ON, isMkII ? APC_MKII_COLOR_CYAN_HI : APC_COLOR_GREEN_BLINK);
+        this.registerColorIndex (AbstractDrumExView.COLOR_EX_BROWSE_OFF, isMkII ? APC_MKII_COLOR_CYAN_LO : APC_COLOR_GREEN);
+        this.registerColorIndex (AbstractDrumExView.COLOR_EX_NOTE_REPEAT_ON, isMkII ? APC_MKII_COLOR_ORCHID_HI : APC_COLOR_RED_BLINK);
+        this.registerColorIndex (AbstractDrumExView.COLOR_EX_NOTE_REPEAT_OFF, isMkII ? APC_MKII_COLOR_ORCHID_LO : APC_COLOR_RED);
+        this.registerColorIndex (AbstractDrumExView.COLOR_EX_NOTE_REPEAT_PERIOD_ON, isMkII ? APC_MKII_COLOR_SKY_HI : APC_COLOR_YELLOW_BLINK);
+        this.registerColorIndex (AbstractDrumExView.COLOR_EX_NOTE_REPEAT_PERIOD_OFF, isMkII ? APC_MKII_COLOR_SKY_LO : APC_COLOR_YELLOW);
+        this.registerColorIndex (AbstractDrumExView.COLOR_EX_NOTE_REPEAT_LENGTH_ON, isMkII ? APC_MKII_COLOR_PINK_HI : APC_COLOR_GREEN_BLINK);
+        this.registerColorIndex (AbstractDrumExView.COLOR_EX_NOTE_REPEAT_LENGTH_OFF, isMkII ? APC_MKII_COLOR_PINK_LO : APC_COLOR_GREEN);
+        this.registerColorIndex (AbstractDrumExView.COLOR_EX_TOGGLE_ON, isMkII ? APC_MKII_COLOR_BLACK : APC_COLOR_BLACK);
+        this.registerColorIndex (AbstractDrumExView.COLOR_EX_TOGGLE_OFF, isMkII ? APC_MKII_COLOR_BLACK : APC_COLOR_BLACK);
 
         this.registerColorIndex (AbstractPlayView.COLOR_PLAY, isMkII ? APC_MKII_COLOR_GREEN : APC_COLOR_GREEN);
         this.registerColorIndex (AbstractPlayView.COLOR_RECORD, isMkII ? APC_MKII_COLOR_RED : APC_COLOR_RED);
