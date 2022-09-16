@@ -311,7 +311,7 @@ public class LaunchpadControllerSetup extends AbstractControllerSetup<LaunchpadC
 
         final LaunchpadButtonInfo userInfo = buttonSetup.get (LaunchpadButton.USER);
         if (!userInfo.isVirtual ())
-            this.addButton (ButtonID.USER, "User", new ViewMultiSelectCommand<> (this.model, surface, true, Views.USER), userInfo.getControl (), () -> viewManager.isActive (Views.USER) ? LaunchpadColorManager.LAUNCHPAD_COLOR_MAGENTA : LaunchpadColorManager.LAUNCHPAD_COLOR_GREY_LO);
+            this.addButton (ButtonID.USER, "User", new ViewMultiSelectCommand<> (this.model, surface, Views.USER), userInfo.getControl (), () -> viewManager.isActive (Views.USER) ? LaunchpadColorManager.LAUNCHPAD_COLOR_MAGENTA : LaunchpadColorManager.LAUNCHPAD_COLOR_GREY_LO);
 
         final LaunchpadButtonInfo projectInfo = buttonSetup.get (LaunchpadButton.PROJECT);
         if (!projectInfo.isVirtual ())
@@ -365,9 +365,9 @@ public class LaunchpadControllerSetup extends AbstractControllerSetup<LaunchpadC
                 this.addButton (ButtonID.get (ButtonID.ROW1_1, i), "Track Select " + (i + 1), (event, velocity) -> this.handleTrackSelection (event, index), LaunchpadControlSurface.LAUNCHPAD_TRACK1 + i, () -> this.getTrackModeColorIndex (index));
             }
 
-            this.addButton (ButtonID.NOTE, "Note", new SelectPlayViewCommand<> (this.model, surface, true, PLAY_VIEWS, ALL_PLAY_VIEWS), buttonSetup.get (LaunchpadButton.NOTE).getControl (), () -> this.getViewStateColor (LaunchpadColorManager.LAUNCHPAD_COLOR_AMBER_HI, PLAY_VIEWS));
-            this.addButton (ButtonID.DRUM, "Drum Seq", new SelectPlayViewCommand<> (this.model, surface, true, DRUM_VIEWS, ALL_PLAY_VIEWS), 95, () -> this.getViewStateColor (LaunchpadColorManager.LAUNCHPAD_COLOR_OCEAN_HI, DRUM_VIEWS));
-            this.addButton (ButtonID.SEQUENCER, "Sequencer", new SelectPlayViewCommand<> (this.model, surface, true, SEQUENCER_VIEWS, ALL_PLAY_VIEWS), 97, () -> this.getViewStateColor (LaunchpadColorManager.LAUNCHPAD_COLOR_YELLOW_HI, SEQUENCER_VIEWS));
+            this.addButton (ButtonID.NOTE, "Note", new SelectPlayViewCommand<> (this.model, surface, PLAY_VIEWS, ALL_PLAY_VIEWS), buttonSetup.get (LaunchpadButton.NOTE).getControl (), () -> this.getViewStateColor (LaunchpadColorManager.LAUNCHPAD_COLOR_AMBER_HI, PLAY_VIEWS));
+            this.addButton (ButtonID.DRUM, "Drum Seq", new SelectPlayViewCommand<> (this.model, surface, DRUM_VIEWS, ALL_PLAY_VIEWS), 95, () -> this.getViewStateColor (LaunchpadColorManager.LAUNCHPAD_COLOR_OCEAN_HI, DRUM_VIEWS));
+            this.addButton (ButtonID.SEQUENCER, "Sequencer", new SelectPlayViewCommand<> (this.model, surface, SEQUENCER_VIEWS, ALL_PLAY_VIEWS), 97, () -> this.getViewStateColor (LaunchpadColorManager.LAUNCHPAD_COLOR_YELLOW_HI, SEQUENCER_VIEWS));
             this.addButton (ButtonID.NEW, "New", new NewCommand<> (this.model, surface), LaunchpadControlSurface.PRO3_LAUNCHPAD_FIXED_LENGTH, () -> surface.isPressed (ButtonID.NEW) ? LaunchpadColorManager.LAUNCHPAD_COLOR_AMBER_HI : LaunchpadColorManager.LAUNCHPAD_COLOR_AMBER_LO);
         }
         else
@@ -378,7 +378,7 @@ public class LaunchpadControllerSetup extends AbstractControllerSetup<LaunchpadC
         surface.createLight (OutputID.LED1, () -> {
 
             final ITrack cursorTrack = this.model.getCursorTrack ();
-            return cursorTrack.doesExist () ? this.colorManager.getColorIndex (DAWColor.getColorIndex (cursorTrack.getColor ())) : 0;
+            return cursorTrack.doesExist () ? this.colorManager.getColorIndex (DAWColor.getColorID (cursorTrack.getColor ())) : 0;
 
         }, color -> this.definition.setLogoColor (surface, color), state -> this.colorManager.getColor (state, null), null);
 
@@ -505,7 +505,7 @@ public class LaunchpadControllerSetup extends AbstractControllerSetup<LaunchpadC
         if (modeManager.isActive (Modes.STOP_CLIP))
             return surface.isPressed (ButtonID.get (ButtonID.PAD1, index)) ? LaunchpadColorManager.LAUNCHPAD_COLOR_RED : LaunchpadColorManager.LAUNCHPAD_COLOR_ROSE;
 
-        return this.colorManager.getColorIndex (DAWColor.getColorIndex (track.getColor ()));
+        return this.colorManager.getColorIndex (DAWColor.getColorID (track.getColor ()));
     }
 
 

@@ -104,7 +104,7 @@ public class DrumXoXView extends AbstractDrumView<FireControlSurface, FireConfig
 
         this.buttonSelect = ButtonID.ALT;
 
-        this.slotBank = this.model.createSlotBank (this.playColumns);
+        this.slotBank = this.model.getSlotBank (this.playColumns);
     }
 
 

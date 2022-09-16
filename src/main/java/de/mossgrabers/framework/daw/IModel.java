@@ -281,21 +281,22 @@ public interface IModel
 
 
     /**
-     * Creates a new bank for monitoring scenes.
+     * Get a new bank for monitoring scenes. Needs to be called once during initialization.
      *
      * @param numScenes The number of scenes in a bank page
      * @return The scene bank
      */
-    ISceneBank createSceneBank (final int numScenes);
+    ISceneBank getSceneBank (final int numScenes);
 
 
     /**
-     * Creates a new bank for monitoring slots on the cursor track.
+     * Get a new bank for monitoring slots on the cursor track. Needs to be called once during
+     * initialization.
      *
      * @param numSlots The number of slots in a bank page
      * @return The slot bank
      */
-    ISlotBank createSlotBank (int numSlots);
+    ISlotBank getSlotBank (int numSlots);
 
 
     /**

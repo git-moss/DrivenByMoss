@@ -127,7 +127,7 @@ public class APCControlSurface extends AbstractControlSurface<APCConfiguration>
      * @param configuration The configuration
      * @param output The MIDI output
      * @param input The MIDI input
-     * @param isMkII
+     * @param isMkII True if is mkII
      */
     public APCControlSurface (final IHost host, final ColorManager colorManager, final APCConfiguration configuration, final IMidiOutput output, final IMidiInput input, final boolean isMkII)
     {

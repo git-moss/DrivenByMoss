@@ -235,7 +235,7 @@ public class PlayView extends AbstractPlayView<MaschineControlSurface, MaschineC
                     return AbstractSequencerView.COLOR_STEP_SELECTED;
                 if (stepInfo.isMuted ())
                     return AbstractSequencerView.COLOR_STEP_MUTED;
-                return track.isPresent () ? DAWColor.getColorIndex (ColorEx.darker (track.get ().getColor ())) : AbstractSequencerView.COLOR_CONTENT;
+                return track.isPresent () ? DAWColor.getColorID (ColorEx.darker (track.get ().getColor ())) : AbstractSequencerView.COLOR_CONTENT;
 
             case CONTINUE:
                 if (hilite)
@@ -244,7 +244,7 @@ public class PlayView extends AbstractPlayView<MaschineControlSurface, MaschineC
                     return AbstractSequencerView.COLOR_STEP_SELECTED;
                 if (stepInfo.isMuted ())
                     return AbstractSequencerView.COLOR_STEP_MUTED_CONT;
-                return track.isPresent () ? DAWColor.getColorIndex (ColorEx.darker (track.get ().getColor ())) : AbstractSequencerView.COLOR_CONTENT_CONT;
+                return track.isPresent () ? DAWColor.getColorID (ColorEx.darker (track.get ().getColor ())) : AbstractSequencerView.COLOR_CONTENT_CONT;
 
             case OFF:
             default:

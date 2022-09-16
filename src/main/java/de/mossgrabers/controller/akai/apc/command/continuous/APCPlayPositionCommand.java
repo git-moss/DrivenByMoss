@@ -6,8 +6,8 @@ package de.mossgrabers.controller.akai.apc.command.continuous;
 
 import de.mossgrabers.controller.akai.apc.APCConfiguration;
 import de.mossgrabers.controller.akai.apc.controller.APCControlSurface;
+import de.mossgrabers.framework.command.TempoCommand;
 import de.mossgrabers.framework.command.continuous.PlayPositionCommand;
-import de.mossgrabers.framework.command.continuous.TempoCommand;
 import de.mossgrabers.framework.controller.ButtonID;
 import de.mossgrabers.framework.daw.IModel;
 import de.mossgrabers.framework.featuregroup.ViewManager;

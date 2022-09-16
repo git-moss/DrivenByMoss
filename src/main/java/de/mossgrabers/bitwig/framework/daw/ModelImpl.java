@@ -250,7 +250,7 @@ public class ModelImpl extends AbstractModel
 
     /** {@inheritDoc} */
     @Override
-    public ISceneBank createSceneBank (final int numScenes)
+    public ISceneBank getSceneBank (final int numScenes)
     {
         return this.sceneBanks.computeIfAbsent (Integer.valueOf (numScenes), key -> {
             final TrackBank tb = this.controllerHost.createMainTrackBank (1, this.modelSetup.getNumSends (), numScenes);
@@ -262,7 +262,7 @@ public class ModelImpl extends AbstractModel
 
     /** {@inheritDoc} */
     @Override
-    public ISlotBank createSlotBank (final int numSlots)
+    public ISlotBank getSlotBank (final int numSlots)
     {
         return this.slotBanks.computeIfAbsent (Integer.valueOf (numSlots), key -> {
 

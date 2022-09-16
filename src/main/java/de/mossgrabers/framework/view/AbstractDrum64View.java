@@ -202,7 +202,7 @@ public abstract class AbstractDrum64View<S extends IControlSurface<C>, C extends
 
     protected String getPadContentColor (final IChannel drumPad)
     {
-        return DAWColor.getColorIndex (drumPad.getColor ());
+        return DAWColor.getColorID (drumPad.getColor ());
     }
 
 

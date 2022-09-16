@@ -207,7 +207,7 @@ public class SLMkIIIColorManager extends ColorManager
         this.registerColor (SLMKIII_RED, ColorEx.RED);
         this.registerColor (SLMKIII_DARK_RED, ColorEx.DARK_RED);
         this.registerColor (SLMKIII_RED_HALF, ColorEx.evenDarker (ColorEx.RED));
-        this.registerColor (SLMKIII_ROSE, ColorEx.SKIN);
+        this.registerColor (SLMKIII_ROSE, ColorEx.ROSE);
         this.registerColor (SLMKIII_ORANGE, ColorEx.ORANGE);
         this.registerColor (SLMKIII_DARK_BROWN, ColorEx.DARK_BROWN);
         this.registerColor (SLMKIII_ORANGE_HALF, ColorEx.evenDarker (ColorEx.ORANGE));

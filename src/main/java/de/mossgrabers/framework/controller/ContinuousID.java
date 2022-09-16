@@ -285,7 +285,78 @@ public enum ContinuousID
     /** Knob 7 controlling send 6. */
     SEND6_KNOB7,
     /** Knob 8 controlling send 6. */
-    SEND6_KNOB8;
+    SEND6_KNOB8,
+
+    /** Knob 1 controlling EQ type. */
+    EQ_TYPE_KNOB1,
+    /** Knob 2 controlling EQ type. */
+    EQ_TYPE_KNOB2,
+    /** Knob 3 controlling EQ type. */
+    EQ_TYPE_KNOB3,
+    /** Knob 4 controlling EQ type. */
+    EQ_TYPE_KNOB4,
+    /** Knob 5 controlling EQ type. */
+    EQ_TYPE_KNOB5,
+    /** Knob 6 controlling EQ type. */
+    EQ_TYPE_KNOB6,
+    /** Knob 7 controlling EQ type. */
+    EQ_TYPE_KNOB7,
+    /** Knob 8 controlling EQ type. */
+    EQ_TYPE_KNOB8,
+
+    /** Knob 1 controlling EQ Q. */
+    EQ_Q_KNOB1,
+    /** Knob 2 controlling EQ Q. */
+    EQ_Q_KNOB2,
+    /** Knob 3 controlling EQ Q. */
+    EQ_Q_KNOB3,
+    /** Knob 4 controlling EQ Q. */
+    EQ_Q_KNOB4,
+    /** Knob 5 controlling EQ Q. */
+    EQ_Q_KNOB5,
+    /** Knob 6 controlling EQ Q. */
+    EQ_Q_KNOB6,
+    /** Knob 7 controlling EQ Q. */
+    EQ_Q_KNOB7,
+    /** Knob 8 controlling EQ Q. */
+    EQ_Q_KNOB8,
+
+    /** Knob 1 controlling EQ frequency. */
+    EQ_FREQUENCY_KNOB1,
+    /** Knob 2 controlling EQ frequency. */
+    EQ_FREQUENCY_KNOB2,
+    /** Knob 3 controlling EQ frequency. */
+    EQ_FREQUENCY_KNOB3,
+    /** Knob 4 controlling EQ frequency. */
+    EQ_FREQUENCY_KNOB4,
+    /** Knob 5 controlling EQ frequency. */
+    EQ_FREQUENCY_KNOB5,
+    /** Knob 6 controlling EQ frequency. */
+    EQ_FREQUENCY_KNOB6,
+    /** Knob 7 controlling EQ frequency. */
+    EQ_FREQUENCY_KNOB7,
+    /** Knob 8 controlling EQ frequency. */
+    EQ_FREQUENCY_KNOB8,
+
+    /** Knob 1 controlling EQ gain. */
+    EQ_GAIN_KNOB1,
+    /** Knob 2 controlling EQ gain. */
+    EQ_GAIN_KNOB2,
+    /** Knob 3 controlling EQ gain. */
+    EQ_GAIN_KNOB3,
+    /** Knob 4 controlling EQ gain. */
+    EQ_GAIN_KNOB4,
+    /** Knob 5 controlling EQ gain. */
+    EQ_GAIN_KNOB5,
+    /** Knob 6 controlling EQ gain. */
+    EQ_GAIN_KNOB6,
+    /** Knob 7 controlling EQ gain. */
+    EQ_GAIN_KNOB7,
+    /** Knob 8 controlling EQ gain. */
+    EQ_GAIN_KNOB8,
+
+    /** Cue knob. */
+    CUE;
 
 
     /**

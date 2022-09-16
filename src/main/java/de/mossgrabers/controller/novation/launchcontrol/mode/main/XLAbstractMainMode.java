@@ -5,8 +5,8 @@ import de.mossgrabers.controller.novation.launchcontrol.controller.LaunchControl
 import de.mossgrabers.controller.novation.launchcontrol.controller.LaunchControlXLControlSurface;
 import de.mossgrabers.controller.novation.launchcontrol.mode.IXLMode;
 import de.mossgrabers.controller.novation.launchcontrol.mode.buttons.XLTemporaryButtonMode;
+import de.mossgrabers.framework.command.TempoCommand;
 import de.mossgrabers.framework.command.trigger.clip.NewCommand;
-import de.mossgrabers.framework.command.trigger.transport.ChangeTempoCommand;
 import de.mossgrabers.framework.controller.ButtonID;
 import de.mossgrabers.framework.controller.ContinuousID;
 import de.mossgrabers.framework.daw.IModel;
@@ -32,19 +32,19 @@ import java.util.List;
  */
 public abstract class XLAbstractMainMode<B extends IItem> extends AbstractParameterMode<LaunchControlXLControlSurface, LaunchControlXLConfiguration, B> implements IXLMode
 {
-    protected final LaunchControlXLConfiguration                                                  configuration;
-    protected Modes                                                                               defaultMode   = Modes.MUTE;
-    protected Modes                                                                               trackMode;
+    protected final LaunchControlXLConfiguration                                            configuration;
+    protected Modes                                                                         defaultMode   = Modes.MUTE;
+    protected Modes                                                                         trackMode;
 
-    private IParameterProvider                                                                    parameterProvider;
-    private IParameterProvider                                                                    parameterProviderWithDeviceParams;
+    private IParameterProvider                                                              parameterProvider;
+    private IParameterProvider                                                              parameterProviderWithDeviceParams;
 
-    private boolean                                                                               wasLong       = false;
-    private boolean                                                                               transportUsed = false;
+    private boolean                                                                         wasLong       = false;
+    private boolean                                                                         transportUsed = false;
 
-    private final NewCommand<LaunchControlXLControlSurface, LaunchControlXLConfiguration>         newCommand;
-    private final ChangeTempoCommand<LaunchControlXLControlSurface, LaunchControlXLConfiguration> tempoDown;
-    private final ChangeTempoCommand<LaunchControlXLControlSurface, LaunchControlXLConfiguration> tempoUp;
+    private final NewCommand<LaunchControlXLControlSurface, LaunchControlXLConfiguration>   newCommand;
+    private final TempoCommand<LaunchControlXLControlSurface, LaunchControlXLConfiguration> tempoDown;
+    private final TempoCommand<LaunchControlXLControlSurface, LaunchControlXLConfiguration> tempoUp;
 
 
     /**
@@ -63,8 +63,8 @@ public abstract class XLAbstractMainMode<B extends IItem> extends AbstractParame
         this.configuration = this.surface.getConfiguration ();
 
         this.newCommand = new NewCommand<> (model, surface);
-        this.tempoDown = new ChangeTempoCommand<> (false, model, surface);
-        this.tempoUp = new ChangeTempoCommand<> (true, model, surface);
+        this.tempoDown = new TempoCommand<> (false, model, surface);
+        this.tempoUp = new TempoCommand<> (true, model, surface);
     }
 
 

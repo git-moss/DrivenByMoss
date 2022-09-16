@@ -56,7 +56,7 @@ public class ShiftView extends AbstractView<FireControlSurface, FireConfiguratio
         final INoteRepeat noteRepeat = this.surface.getMidiInput ().getDefaultNoteInput ().getNoteRepeat ();
 
         // - on/off
-        padGrid.light (84, DAWColor.getColorIndex ((noteRepeat.isActive () ? DAWColor.DAW_COLOR_GREEN : DAWColor.DAW_COLOR_GRAY).getColor ()));
+        padGrid.light (84, DAWColor.getColorID ((noteRepeat.isActive () ? DAWColor.DAW_COLOR_GREEN : DAWColor.DAW_COLOR_GRAY).getColor ()));
 
         // Octave
         if (host.supports (Capability.NOTE_REPEAT_OCTAVES))
@@ -64,10 +64,10 @@ public class ShiftView extends AbstractView<FireControlSurface, FireConfiguratio
             final int octaves = noteRepeat.getOctaves ();
             for (int i = 0; i < 4; i++)
             {
-                padGrid.light (36 + i, DAWColor.getColorIndex ((octaves == i ? DAWColor.DAW_COLOR_GREEN : DAWColor.DAW_COLOR_GRAY).getColor ()));
-                padGrid.light (52 + i, DAWColor.getColorIndex ((octaves == 4 + i ? DAWColor.DAW_COLOR_GREEN : DAWColor.DAW_COLOR_GRAY).getColor ()));
+                padGrid.light (36 + i, DAWColor.getColorID ((octaves == i ? DAWColor.DAW_COLOR_GREEN : DAWColor.DAW_COLOR_GRAY).getColor ()));
+                padGrid.light (52 + i, DAWColor.getColorID ((octaves == 4 + i ? DAWColor.DAW_COLOR_GREEN : DAWColor.DAW_COLOR_GRAY).getColor ()));
             }
-            padGrid.light (68, DAWColor.getColorIndex ((octaves == 8 ? DAWColor.DAW_COLOR_GREEN : DAWColor.DAW_COLOR_GRAY).getColor ()));
+            padGrid.light (68, DAWColor.getColorID ((octaves == 8 ? DAWColor.DAW_COLOR_GREEN : DAWColor.DAW_COLOR_GRAY).getColor ()));
         }
         else
         {
@@ -87,40 +87,40 @@ public class ShiftView extends AbstractView<FireControlSurface, FireConfiguratio
         // Dec/Inc Arp Mode
         if (host.supports (Capability.NOTE_REPEAT_MODE))
         {
-            padGrid.light (86, DAWColor.getColorIndex (ColorEx.WHITE));
-            padGrid.light (87, DAWColor.getColorIndex (ColorEx.WHITE));
+            padGrid.light (86, DAWColor.getColorID (ColorEx.WHITE));
+            padGrid.light (87, DAWColor.getColorID (ColorEx.WHITE));
         }
         else
         {
-            padGrid.light (86, DAWColor.getColorIndex (ColorEx.BLACK));
-            padGrid.light (87, DAWColor.getColorIndex (ColorEx.BLACK));
+            padGrid.light (86, DAWColor.getColorID (ColorEx.BLACK));
+            padGrid.light (87, DAWColor.getColorID (ColorEx.BLACK));
         }
 
         // Note Repeat period
         final int periodIndex = Resolution.getMatch (noteRepeat.getPeriod ());
-        padGrid.light (88, DAWColor.getColorIndex ((periodIndex == 0 ? DAWColor.DAW_COLOR_GREEN : DAWColor.DAW_COLOR_BLUE).getColor ()));
-        padGrid.light (72, DAWColor.getColorIndex ((periodIndex == 2 ? DAWColor.DAW_COLOR_GREEN : DAWColor.DAW_COLOR_BLUE).getColor ()));
-        padGrid.light (56, DAWColor.getColorIndex ((periodIndex == 4 ? DAWColor.DAW_COLOR_GREEN : DAWColor.DAW_COLOR_BLUE).getColor ()));
-        padGrid.light (40, DAWColor.getColorIndex ((periodIndex == 6 ? DAWColor.DAW_COLOR_GREEN : DAWColor.DAW_COLOR_BLUE).getColor ()));
+        padGrid.light (88, DAWColor.getColorID ((periodIndex == 0 ? DAWColor.DAW_COLOR_GREEN : DAWColor.DAW_COLOR_BLUE).getColor ()));
+        padGrid.light (72, DAWColor.getColorID ((periodIndex == 2 ? DAWColor.DAW_COLOR_GREEN : DAWColor.DAW_COLOR_BLUE).getColor ()));
+        padGrid.light (56, DAWColor.getColorID ((periodIndex == 4 ? DAWColor.DAW_COLOR_GREEN : DAWColor.DAW_COLOR_BLUE).getColor ()));
+        padGrid.light (40, DAWColor.getColorID ((periodIndex == 6 ? DAWColor.DAW_COLOR_GREEN : DAWColor.DAW_COLOR_BLUE).getColor ()));
 
-        padGrid.light (89, DAWColor.getColorIndex ((periodIndex == 1 ? DAWColor.DAW_COLOR_GREEN : DAWColor.DAW_COLOR_PINK).getColor ()));
-        padGrid.light (73, DAWColor.getColorIndex ((periodIndex == 3 ? DAWColor.DAW_COLOR_GREEN : DAWColor.DAW_COLOR_PINK).getColor ()));
-        padGrid.light (57, DAWColor.getColorIndex ((periodIndex == 5 ? DAWColor.DAW_COLOR_GREEN : DAWColor.DAW_COLOR_PINK).getColor ()));
-        padGrid.light (41, DAWColor.getColorIndex ((periodIndex == 7 ? DAWColor.DAW_COLOR_GREEN : DAWColor.DAW_COLOR_PINK).getColor ()));
+        padGrid.light (89, DAWColor.getColorID ((periodIndex == 1 ? DAWColor.DAW_COLOR_GREEN : DAWColor.DAW_COLOR_PINK).getColor ()));
+        padGrid.light (73, DAWColor.getColorID ((periodIndex == 3 ? DAWColor.DAW_COLOR_GREEN : DAWColor.DAW_COLOR_PINK).getColor ()));
+        padGrid.light (57, DAWColor.getColorID ((periodIndex == 5 ? DAWColor.DAW_COLOR_GREEN : DAWColor.DAW_COLOR_PINK).getColor ()));
+        padGrid.light (41, DAWColor.getColorID ((periodIndex == 7 ? DAWColor.DAW_COLOR_GREEN : DAWColor.DAW_COLOR_PINK).getColor ()));
 
         // Note Repeat length
         if (this.model.getHost ().supports (Capability.NOTE_REPEAT_LENGTH))
         {
             final int lengthIndex = Resolution.getMatch (noteRepeat.getNoteLength ());
-            padGrid.light (90, DAWColor.getColorIndex ((lengthIndex == 0 ? DAWColor.DAW_COLOR_GREEN : DAWColor.DAW_COLOR_BLUE).getColor ()));
-            padGrid.light (74, DAWColor.getColorIndex ((lengthIndex == 2 ? DAWColor.DAW_COLOR_GREEN : DAWColor.DAW_COLOR_BLUE).getColor ()));
-            padGrid.light (58, DAWColor.getColorIndex ((lengthIndex == 4 ? DAWColor.DAW_COLOR_GREEN : DAWColor.DAW_COLOR_BLUE).getColor ()));
-            padGrid.light (42, DAWColor.getColorIndex ((lengthIndex == 6 ? DAWColor.DAW_COLOR_GREEN : DAWColor.DAW_COLOR_BLUE).getColor ()));
+            padGrid.light (90, DAWColor.getColorID ((lengthIndex == 0 ? DAWColor.DAW_COLOR_GREEN : DAWColor.DAW_COLOR_BLUE).getColor ()));
+            padGrid.light (74, DAWColor.getColorID ((lengthIndex == 2 ? DAWColor.DAW_COLOR_GREEN : DAWColor.DAW_COLOR_BLUE).getColor ()));
+            padGrid.light (58, DAWColor.getColorID ((lengthIndex == 4 ? DAWColor.DAW_COLOR_GREEN : DAWColor.DAW_COLOR_BLUE).getColor ()));
+            padGrid.light (42, DAWColor.getColorID ((lengthIndex == 6 ? DAWColor.DAW_COLOR_GREEN : DAWColor.DAW_COLOR_BLUE).getColor ()));
 
-            padGrid.light (91, DAWColor.getColorIndex ((lengthIndex == 1 ? DAWColor.DAW_COLOR_GREEN : DAWColor.DAW_COLOR_PINK).getColor ()));
-            padGrid.light (75, DAWColor.getColorIndex ((lengthIndex == 3 ? DAWColor.DAW_COLOR_GREEN : DAWColor.DAW_COLOR_PINK).getColor ()));
-            padGrid.light (59, DAWColor.getColorIndex ((lengthIndex == 5 ? DAWColor.DAW_COLOR_GREEN : DAWColor.DAW_COLOR_PINK).getColor ()));
-            padGrid.light (43, DAWColor.getColorIndex ((lengthIndex == 7 ? DAWColor.DAW_COLOR_GREEN : DAWColor.DAW_COLOR_PINK).getColor ()));
+            padGrid.light (91, DAWColor.getColorID ((lengthIndex == 1 ? DAWColor.DAW_COLOR_GREEN : DAWColor.DAW_COLOR_PINK).getColor ()));
+            padGrid.light (75, DAWColor.getColorID ((lengthIndex == 3 ? DAWColor.DAW_COLOR_GREEN : DAWColor.DAW_COLOR_PINK).getColor ()));
+            padGrid.light (59, DAWColor.getColorID ((lengthIndex == 5 ? DAWColor.DAW_COLOR_GREEN : DAWColor.DAW_COLOR_PINK).getColor ()));
+            padGrid.light (43, DAWColor.getColorID ((lengthIndex == 7 ? DAWColor.DAW_COLOR_GREEN : DAWColor.DAW_COLOR_PINK).getColor ()));
         }
         else
         {
@@ -139,7 +139,7 @@ public class ShiftView extends AbstractView<FireControlSurface, FireConfiguratio
         final FireConfiguration configuration = this.surface.getConfiguration ();
         final int clipLengthIndex = configuration.getNewClipLength ();
         for (int i = 0; i < 8; i++)
-            padGrid.light (44 + i, DAWColor.getColorIndex ((i == clipLengthIndex ? DAWColor.DAW_COLOR_RED : DAWColor.DAW_COLOR_LIGHT_ORANGE).getColor ()));
+            padGrid.light (44 + i, DAWColor.getColorID ((i == clipLengthIndex ? DAWColor.DAW_COLOR_RED : DAWColor.DAW_COLOR_LIGHT_ORANGE).getColor ()));
 
         // Not used
         for (int i = 0; i < 8; i++)
@@ -166,9 +166,9 @@ public class ShiftView extends AbstractView<FireControlSurface, FireConfiguratio
             padGrid.light (95, FireColorManager.FIRE_COLOR_DARK_RED);
 
         // Add tracks
-        padGrid.light (97, DAWColor.getColorIndex (ColorEx.ORANGE));
-        padGrid.light (98, DAWColor.getColorIndex (ColorEx.BLUE));
-        padGrid.light (99, DAWColor.getColorIndex (ColorEx.PINK));
+        padGrid.light (97, DAWColor.getColorID (ColorEx.ORANGE));
+        padGrid.light (98, DAWColor.getColorID (ColorEx.BLUE));
+        padGrid.light (99, DAWColor.getColorID (ColorEx.PINK));
     }
 
 

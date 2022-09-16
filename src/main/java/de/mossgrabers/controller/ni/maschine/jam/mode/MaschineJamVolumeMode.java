@@ -50,7 +50,7 @@ public class MaschineJamVolumeMode extends TrackVolumeMode<MaschineJamControlSur
         if (!track.doesExist ())
             return FADER_OFF;
 
-        final String c = DAWColor.getColorIndex (track.getColor ());
+        final String c = DAWColor.getColorID (track.getColor ());
         final int color = this.colorManager.getColorIndex (c);
         final int value = this.model.getValueChanger ().toMidiValue (track.getVolume ());
 

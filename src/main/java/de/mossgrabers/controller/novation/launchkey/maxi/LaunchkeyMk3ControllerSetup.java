@@ -350,7 +350,7 @@ public class LaunchkeyMk3ControllerSetup extends AbstractControllerSetup<Launchk
     private void createViewButton (final ButtonID buttonID, final OutputID outputID, final String label, final Views view, final int viewIndex)
     {
         final LaunchkeyMk3ControlSurface surface = this.getSurface ();
-        final ViewMultiSelectCommand<LaunchkeyMk3ControlSurface, LaunchkeyMk3Configuration> viewSelectCommand = new ViewMultiSelectCommand<> (this.model, surface, true, view);
+        final ViewMultiSelectCommand<LaunchkeyMk3ControlSurface, LaunchkeyMk3Configuration> viewSelectCommand = new ViewMultiSelectCommand<> (this.model, surface, view);
         this.addButton (surface, buttonID, label, (event, velocity) -> {
             viewSelectCommand.executeNormal (event);
             if (event == ButtonEvent.DOWN)

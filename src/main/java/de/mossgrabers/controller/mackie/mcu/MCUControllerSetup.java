@@ -13,7 +13,6 @@ import de.mossgrabers.controller.mackie.mcu.command.trigger.KeyCommand.Key;
 import de.mossgrabers.controller.mackie.mcu.command.trigger.MCUCursorCommand;
 import de.mossgrabers.controller.mackie.mcu.command.trigger.MCUFlipCommand;
 import de.mossgrabers.controller.mackie.mcu.command.trigger.MCUMoveTrackBankCommand;
-import de.mossgrabers.controller.mackie.mcu.command.trigger.MCURecordCommand;
 import de.mossgrabers.controller.mackie.mcu.command.trigger.MCUWindCommand;
 import de.mossgrabers.controller.mackie.mcu.command.trigger.PanCommand;
 import de.mossgrabers.controller.mackie.mcu.command.trigger.ScrubCommand;
@@ -65,6 +64,7 @@ import de.mossgrabers.framework.command.trigger.transport.MetronomeCommand;
 import de.mossgrabers.framework.command.trigger.transport.PlayCommand;
 import de.mossgrabers.framework.command.trigger.transport.PunchInCommand;
 import de.mossgrabers.framework.command.trigger.transport.PunchOutCommand;
+import de.mossgrabers.framework.command.trigger.transport.RecordCommand;
 import de.mossgrabers.framework.command.trigger.transport.StopCommand;
 import de.mossgrabers.framework.command.trigger.transport.TapTempoCommand;
 import de.mossgrabers.framework.command.trigger.transport.ToggleLoopCommand;
@@ -419,7 +419,7 @@ public class MCUControllerSetup extends AbstractControllerSetup<MCUControlSurfac
                 this.addButton (surface, ButtonID.LOOP, "Loop", new ToggleLoopCommand<> (this.model, surface), 0, MCUControlSurface.MCU_REPEAT, t::isLoop);
                 this.addButton (surface, ButtonID.STOP, "Stop", new StopCommand<> (this.model, surface), 0, MCUControlSurface.MCU_STOP, () -> !t.isPlaying ());
                 this.addButton (surface, ButtonID.PLAY, "Play", new PlayCommand<> (this.model, surface), 0, MCUControlSurface.MCU_PLAY, t::isPlaying);
-                this.addButton (surface, ButtonID.RECORD, "Record", new MCURecordCommand (this.model, surface), 0, MCUControlSurface.MCU_RECORD, () -> {
+                this.addButton (surface, ButtonID.RECORD, "Record", new RecordCommand<> (this.model, surface), 0, MCUControlSurface.MCU_RECORD, () -> {
                     final boolean isOn = this.isRecordShifted (surface) ? t.isLauncherOverdub () : t.isRecording ();
                     return isOn ? MCU_BUTTON_STATE_ON : MCU_BUTTON_STATE_OFF;
                 });

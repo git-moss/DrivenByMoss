@@ -70,7 +70,7 @@ public class PanView extends AbstractFaderView implements IVirtualFaderCallback
     public void setupFader (final int index)
     {
         final ITrack track = this.model.getCurrentTrackBank ().getItem (index);
-        final int color = track.doesExist () ? this.colorManager.getColorIndex (DAWColor.getColorIndex (track.getColor ())) : 0;
+        final int color = track.doesExist () ? this.colorManager.getColorIndex (DAWColor.getColorID (track.getColor ())) : 0;
         this.surface.setupFader (index, color, true);
         this.surface.setFaderValue (index, track.getPan ());
     }
@@ -82,7 +82,7 @@ public class PanView extends AbstractFaderView implements IVirtualFaderCallback
     {
         final IMasterTrack track = this.model.getMasterTrack ();
 
-        final int color = track.doesExist () ? this.colorManager.getColorIndex (DAWColor.getColorIndex (track.getColor ())) : 0;
+        final int color = track.doesExist () ? this.colorManager.getColorIndex (DAWColor.getColorID (track.getColor ())) : 0;
         this.masterFader.setup (color, true);
         this.masterFader.setValue (track.getPan ());
 

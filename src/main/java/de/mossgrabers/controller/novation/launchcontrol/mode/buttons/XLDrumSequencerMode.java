@@ -146,7 +146,7 @@ public class XLDrumSequencerMode extends AbstractSequencerMode<LaunchControlXLCo
                     return AbstractSequencerView.COLOR_STEP_HILITE_CONTENT;
                 if (stepInfo.isMuted ())
                     return AbstractSequencerView.COLOR_STEP_MUTED;
-                return rowColor.isPresent () && this.useDawColors ? DAWColor.getColorIndex (rowColor.get ()) : AbstractSequencerView.COLOR_CONTENT;
+                return rowColor.isPresent () && this.useDawColors ? DAWColor.getColorID (rowColor.get ()) : AbstractSequencerView.COLOR_CONTENT;
 
             // Note continues
             case CONTINUE:
@@ -154,7 +154,7 @@ public class XLDrumSequencerMode extends AbstractSequencerMode<LaunchControlXLCo
                     return AbstractSequencerView.COLOR_STEP_HILITE_CONTENT;
                 if (stepInfo.isMuted ())
                     return AbstractSequencerView.COLOR_STEP_MUTED_CONT;
-                return rowColor.isPresent () && this.useDawColors ? DAWColor.getColorIndex (ColorEx.darker (rowColor.get ())) : AbstractSequencerView.COLOR_CONTENT_CONT;
+                return rowColor.isPresent () && this.useDawColors ? DAWColor.getColorID (ColorEx.darker (rowColor.get ())) : AbstractSequencerView.COLOR_CONTENT_CONT;
 
             // Empty
             default:

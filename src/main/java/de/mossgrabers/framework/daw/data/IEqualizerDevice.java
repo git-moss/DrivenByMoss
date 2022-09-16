@@ -4,6 +4,10 @@
 
 package de.mossgrabers.framework.daw.data;
 
+import java.util.ArrayList;
+import java.util.List;
+
+
 /**
  * Interface to a equalizer device.
  *
@@ -43,7 +47,21 @@ public interface IEqualizerDevice extends ISpecificDevice
      * @param index 0 .. number of frequency bands - 1
      * @return The parameter
      */
-    IParameter getType (int index);
+    IParameter getTypeParameter (int index);
+
+
+    /**
+     * Get the type parameters.
+     *
+     * @return The parameters
+     */
+    default List<IParameter> getTypeParameters ()
+    {
+        final List<IParameter> parameters = new ArrayList<> (8);
+        for (int i = 0; i < 8; i++)
+            parameters.add (this.getTypeParameter (i));
+        return parameters;
+    }
 
 
     /**
@@ -52,7 +70,21 @@ public interface IEqualizerDevice extends ISpecificDevice
      * @param index 0 .. number of frequency bands - 1
      * @return The parameter
      */
-    IParameter getGain (int index);
+    IParameter getGainParameter (int index);
+
+
+    /**
+     * Get the gain parameters.
+     *
+     * @return The parameters
+     */
+    default List<IParameter> getGainParameters ()
+    {
+        final List<IParameter> parameters = new ArrayList<> (8);
+        for (int i = 0; i < 8; i++)
+            parameters.add (this.getGainParameter (i));
+        return parameters;
+    }
 
 
     /**
@@ -61,7 +93,21 @@ public interface IEqualizerDevice extends ISpecificDevice
      * @param index 0 .. number of frequency bands - 1
      * @return The parameter
      */
-    IParameter getFrequency (int index);
+    IParameter getFrequencyParameter (int index);
+
+
+    /**
+     * Get the frequency parameters.
+     *
+     * @return The parameters
+     */
+    default List<IParameter> getFrequencyParameters ()
+    {
+        final List<IParameter> parameters = new ArrayList<> (8);
+        for (int i = 0; i < 8; i++)
+            parameters.add (this.getFrequencyParameter (i));
+        return parameters;
+    }
 
 
     /**
@@ -70,5 +116,19 @@ public interface IEqualizerDevice extends ISpecificDevice
      * @param index 0 .. number of frequency bands - 1
      * @return The parameter
      */
-    IParameter getQ (int index);
+    IParameter getQParameter (int index);
+
+
+    /**
+     * Get the Q parameters.
+     *
+     * @return The parameters
+     */
+    default List<IParameter> getQParameters ()
+    {
+        final List<IParameter> parameters = new ArrayList<> (8);
+        for (int i = 0; i < 8; i++)
+            parameters.add (this.getQParameter (i));
+        return parameters;
+    }
 }

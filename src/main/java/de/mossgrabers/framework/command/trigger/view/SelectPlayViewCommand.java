@@ -36,12 +36,11 @@ public class SelectPlayViewCommand<S extends IControlSurface<C>, C extends Confi
      *
      * @param model The model
      * @param surface The surface
-     * @param displayName Displays a popup with the views name if true
      * @param viewIds The list with IDs of the views to select
      */
-    public SelectPlayViewCommand (final IModel model, final S surface, final boolean displayName, final Views... viewIds)
+    public SelectPlayViewCommand (final IModel model, final S surface, final Views... viewIds)
     {
-        this (model, surface, displayName, viewIds, viewIds);
+        this (model, surface, viewIds, viewIds);
     }
 
 
@@ -50,13 +49,12 @@ public class SelectPlayViewCommand<S extends IControlSurface<C>, C extends Confi
      *
      * @param model The model
      * @param surface The surface
-     * @param displayName Displays a popup with the views name if true
      * @param viewIds The list with IDs of the views to select
      * @param allViewIds The views for checking for previous play views
      */
-    public SelectPlayViewCommand (final IModel model, final S surface, final boolean displayName, final Views [] viewIds, final Views [] allViewIds)
+    public SelectPlayViewCommand (final IModel model, final S surface, final Views [] viewIds, final Views [] allViewIds)
     {
-        super (model, surface, displayName, viewIds);
+        super (model, surface, viewIds);
 
         this.allViewIds.addAll (Arrays.asList (allViewIds));
     }

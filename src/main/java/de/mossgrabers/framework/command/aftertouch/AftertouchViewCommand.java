@@ -5,13 +5,12 @@
 package de.mossgrabers.framework.command.aftertouch;
 
 import de.mossgrabers.framework.command.core.AbstractAftertouchCommand;
+import de.mossgrabers.framework.configuration.AbstractConfiguration;
 import de.mossgrabers.framework.configuration.Configuration;
 import de.mossgrabers.framework.controller.IControlSurface;
 import de.mossgrabers.framework.daw.IModel;
 import de.mossgrabers.framework.daw.midi.MidiConstants;
 import de.mossgrabers.framework.featuregroup.IView;
-
-import java.util.List;
 
 
 /**
@@ -49,21 +48,21 @@ public class AftertouchViewCommand<S extends IControlSurface<C>, C extends Confi
         final int convertAftertouch = config.getConvertAftertouch ();
         switch (convertAftertouch)
         {
-            case -3:
-                // Filter poly aftertouch
+            // Filter poly aftertouch
+            case AbstractConfiguration.AFTERTOUCH_CONVERT_OFF:
                 break;
 
-            case -2:
-                // Translate notes of Poly aftertouch to current note mapping and only allow
-                // aftertouch for pads with notes
+            // Translate notes of Poly aftertouch to current note mapping and only allow aftertouch
+            // for pads with notes
+            case AbstractConfiguration.AFTERTOUCH_CONVERT_POLY:
                 final int n = this.view.getKeyManager ().getMidiNoteFromGrid (note);
                 if (n == -1)
                     return;
                 this.surface.sendMidiEvent (MidiConstants.CMD_POLY_AFTERTOUCH, n, value);
                 break;
 
-            case -1:
-                // Convert to Channel Aftertouch
+            // Convert to Channel Aftertouch
+            case AbstractConfiguration.AFTERTOUCH_CONVERT_CHANNEL:
                 this.surface.sendMidiEvent (MidiConstants.CMD_CHANNEL_AFTERTOUCH, value, 0);
                 break;
 
@@ -79,11 +78,13 @@ public class AftertouchViewCommand<S extends IControlSurface<C>, C extends Confi
     @Override
     public void onChannelAftertouch (final int value)
     {
-        final Configuration config = this.surface.getConfiguration ();
-        if (config.getConvertAftertouch () == -2)
+        final int convertAftertouch = this.surface.getConfiguration ().getConvertAftertouch ();
+        if (convertAftertouch == AbstractConfiguration.AFTERTOUCH_CONVERT_OFF)
+            return;
+
+        if (convertAftertouch == AbstractConfiguration.AFTERTOUCH_CONVERT_POLY)
         {
-            final List<Integer> keys = this.view.getKeyManager ().getPressedKeys ();
-            for (final Integer key: keys)
+            for (final Integer key: this.view.getKeyManager ().getPressedKeys ())
                 this.onPolyAftertouch (key.intValue (), value);
         }
         else

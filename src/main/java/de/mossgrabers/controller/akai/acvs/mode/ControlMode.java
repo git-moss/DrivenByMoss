@@ -305,7 +305,7 @@ public class ControlMode extends AbstractParameterMode<ACVSControlSurface, ACVSC
             for (int sceneIndex = 0; sceneIndex < 8; sceneIndex++)
             {
                 final IScene scene = sceneBank.getItem (sceneIndex);
-                final int sceneColor = scene.doesExist () ? this.colorManager.getColorIndex (DAWColor.getColorIndex (scene.getColor ())) : ACVSColorManager.COLOR_BLACK;
+                final int sceneColor = scene.doesExist () ? this.colorManager.getColorIndex (DAWColor.getColorID (scene.getColor ())) : ACVSColorManager.COLOR_BLACK;
                 final int offset = sceneIndex < 4 ? 0 : 4;
                 d.setScreenItem (ScreenItem.get (ScreenItem.MPC_PAD1_STATE, offset + sceneIndex), 2);
                 d.setScreenItem (ScreenItem.get (ScreenItem.MPC_PAD1_COLOR, offset + sceneIndex), sceneColor);
@@ -394,7 +394,7 @@ public class ControlMode extends AbstractParameterMode<ACVSControlSurface, ACVSC
                 if (!track.doesExist ())
                     color = ACVSColorManager.COLOR_BLACK;
                 else
-                    color = track.isSelected () ? ACVSColorManager.COLOR_SILVER : this.colorManager.getColorIndex (DAWColor.getColorIndex (track.getColor ()));
+                    color = track.isSelected () ? ACVSColorManager.COLOR_SILVER : this.colorManager.getColorIndex (DAWColor.getColorID (track.getColor ()));
             }
 
             d.setScreenItem (ScreenItem.get (ScreenItem.FORCE_TRACK1_COLOR, trackIndex), color);
@@ -563,7 +563,7 @@ public class ControlMode extends AbstractParameterMode<ACVSControlSurface, ACVSC
             return ACVSColorManager.COLOR_BLACK;
 
         final ColorEx color = slot.getColor ();
-        return this.colorManager.getColorIndex (DAWColor.getColorIndex (color));
+        return this.colorManager.getColorIndex (DAWColor.getColorID (color));
     }
 
 

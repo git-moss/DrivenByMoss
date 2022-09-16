@@ -53,7 +53,7 @@ public class MaschineJamTrackMode extends TrackMode<MaschineJamControlSurface, M
         if (!track.doesExist ())
             return FADER_OFF;
 
-        final String c = DAWColor.getColorIndex (track.getColor ());
+        final String c = DAWColor.getColorID (track.getColor ());
         final int color = this.colorManager.getColorIndex (c);
 
         switch (index)

@@ -12,7 +12,8 @@ import java.util.Map;
 
 
 /**
- * Manages color indices by IDs.
+ * Manages colors. Color indices can be identified by a text identifier. The second lookup handles
+ * the mapping from color indices to the real color values as ColorEx objects.
  *
  * @author J&uuml;rgen Mo&szlig;graber
  */

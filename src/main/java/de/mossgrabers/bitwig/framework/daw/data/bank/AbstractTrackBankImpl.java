@@ -133,9 +133,6 @@ public abstract class AbstractTrackBankImpl extends AbstractChannelBankImpl<Trac
      */
     private void handleBankSelection (final int index)
     {
-        if (index < 0)
-            return;
-
         for (int i = 0; i < this.getPageSize (); i++)
         {
             final boolean isSelected = index == i;

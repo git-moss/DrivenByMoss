@@ -188,7 +188,7 @@ public class MaschineColorManager extends ColorManager
         this.registerColor (COLOR_ORANGE_LO, ColorEx.DARK_ORANGE);
         this.registerColor (COLOR_PURPLE, ColorEx.PURPLE);
         this.registerColor (COLOR_PURPLE_LO, ColorEx.PURPLE);
-        this.registerColor (COLOR_SKIN, ColorEx.SKIN);
+        this.registerColor (COLOR_SKIN, ColorEx.ROSE);
     }
 
 
@@ -202,7 +202,7 @@ public class MaschineColorManager extends ColorManager
      */
     public int dimOrHighlightColor (final ColorEx color, final boolean isSelected)
     {
-        final int colorIndex = this.getColorIndex (DAWColor.getColorIndex (color));
+        final int colorIndex = this.getColorIndex (DAWColor.getColorID (color));
         if (isSelected)
             return colorIndex == MaschineColorManager.COLOR_DARK_GREY ? MaschineColorManager.COLOR_WHITE : colorIndex;
         return colorIndex / 8 * 8 + 5;

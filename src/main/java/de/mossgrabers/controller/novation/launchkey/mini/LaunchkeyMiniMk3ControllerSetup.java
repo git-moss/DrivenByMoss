@@ -230,7 +230,7 @@ public class LaunchkeyMiniMk3ControllerSetup extends AbstractControllerSetup<Lau
     private void createViewButton (final ButtonID buttonID, final OutputID outputID, final String label, final Views view, final int viewIndex)
     {
         final LaunchkeyMiniMk3ControlSurface surface = this.getSurface ();
-        final ViewMultiSelectCommand<LaunchkeyMiniMk3ControlSurface, LaunchkeyMiniMk3Configuration> viewSelectCommand = new ViewMultiSelectCommand<> (this.model, surface, true, view);
+        final ViewMultiSelectCommand<LaunchkeyMiniMk3ControlSurface, LaunchkeyMiniMk3Configuration> viewSelectCommand = new ViewMultiSelectCommand<> (this.model, surface, view);
         this.addButton (surface, buttonID, label, (event, velocity) -> {
             viewSelectCommand.executeNormal (event);
             surface.getPadGrid ().setView (view);

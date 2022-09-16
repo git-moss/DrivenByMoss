@@ -118,7 +118,7 @@ public class SendsView extends AbstractFaderView
     public void setupFader (final int index)
     {
         final ITrack track = this.model.getCurrentTrackBank ().getItem (index);
-        final int color = this.colorManager.getColorIndex (DAWColor.getColorIndex (track.getColor ()));
+        final int color = this.colorManager.getColorIndex (DAWColor.getColorID (track.getColor ()));
         this.surface.setupFader (index, color, false);
 
         final ISend send = track.getSendBank ().getItem (this.selectedSend);

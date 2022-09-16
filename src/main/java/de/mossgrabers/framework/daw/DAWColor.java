@@ -148,9 +148,9 @@ public enum DAWColor
      * @param rgb The red, green and blue value
      * @return The ID or the COLOR_OFF ID if none is mapped
      */
-    public static String getColorIndex (final double [] rgb)
+    public static String getColorID (final double [] rgb)
     {
-        return getColorIndex (rgb[0], rgb[1], rgb[2]);
+        return getColorID (rgb[0], rgb[1], rgb[2]);
     }
 
 
@@ -162,9 +162,9 @@ public enum DAWColor
      * @param blue The blue value
      * @return The ID or the COLOR_OFF ID if none is mapped
      */
-    public static String getColorIndex (final double red, final double green, final double blue)
+    public static String getColorID (final double red, final double green, final double blue)
     {
-        return getColorIndex (new ColorEx (red, green, blue));
+        return getColorID (new ColorEx (red, green, blue));
     }
 
 
@@ -174,7 +174,7 @@ public enum DAWColor
      * @param color The color
      * @return The ID or the COLOR_OFF ID if none is mapped
      */
-    public static String getColorIndex (final ColorEx color)
+    public static String getColorID (final ColorEx color)
     {
         final DAWColor [] values = DAWColor.values ();
         DAWColor cid = values[0];

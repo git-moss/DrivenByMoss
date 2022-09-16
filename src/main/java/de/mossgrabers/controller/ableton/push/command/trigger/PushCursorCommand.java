@@ -27,16 +27,15 @@ public class PushCursorCommand extends CursorCommand<PushControlSurface, PushCon
     /**
      * Constructor.
      *
-     * @param sceneBank The 64 entry scene bank
      * @param direction The direction of the pushed cursor arrow
      * @param model The model
      * @param surface The surface
      */
-    public PushCursorCommand (final ISceneBank sceneBank, final Direction direction, final IModel model, final PushControlSurface surface)
+    public PushCursorCommand (final Direction direction, final IModel model, final PushControlSurface surface)
     {
         super (direction, model, surface, false);
 
-        this.sceneBank64 = sceneBank;
+        this.sceneBank64 = model.getSceneBank (64);
     }
 
 

@@ -7,6 +7,7 @@ package de.mossgrabers.controller.osc.module;
 import de.mossgrabers.controller.osc.exception.IllegalParameterException;
 import de.mossgrabers.controller.osc.exception.MissingCommandException;
 import de.mossgrabers.controller.osc.exception.UnknownCommandException;
+import de.mossgrabers.framework.controller.color.ColorEx;
 import de.mossgrabers.framework.daw.IHost;
 import de.mossgrabers.framework.daw.IModel;
 import de.mossgrabers.framework.daw.data.IScene;
@@ -133,6 +134,11 @@ public class SceneModule extends AbstractModule
             this.writer.sendOSC (sceneAddress + TAG_EXISTS, scene.doesExist (), dump);
             this.writer.sendOSC (sceneAddress + TAG_NAME, scene.getName (), dump);
             this.writer.sendOSC (sceneAddress + TAG_SELECTED, scene.isSelected (), dump);
+
+            ColorEx color = scene.getColor ();
+            if (color == null)
+                color = ColorEx.BLACK;
+            this.writer.sendOSCColor (sceneAddress + TAG_COLOR, color.getRed (), color.getGreen (), color.getBlue (), dump);
         }
     }
 }

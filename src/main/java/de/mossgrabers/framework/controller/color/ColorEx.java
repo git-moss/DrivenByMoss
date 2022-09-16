@@ -44,7 +44,7 @@ public class ColorEx
     /** Color pink. */
     public static final ColorEx PINK        = ColorEx.fromRGB (255, 0, 220);
     /** Color skin. */
-    public static final ColorEx SKIN        = ColorEx.fromRGB (255, 127, 127);
+    public static final ColorEx ROSE        = ColorEx.fromRGB (255, 127, 127);
     /** Color brown. */
     public static final ColorEx BROWN       = ColorEx.fromRGB (183, 73, 0);
     /** Color dark brown. */
@@ -61,6 +61,8 @@ public class ColorEx
     public static final ColorEx DARK_PURPLE = ColorEx.evenDarker (PURPLE);
     /** Color red wine. */
     public static final ColorEx RED_WINE    = ColorEx.fromRGB (123, 42, 57);
+    /** Color cyan. */
+    public static final ColorEx CYAN        = ColorEx.fromRGB (0, 255, 255);
 
     private static final double FACTOR      = 0.7;
     private static final double FACTOR2     = 0.4;
@@ -375,18 +377,32 @@ public class ColorEx
      *
      * @param color The color
      * @param palette The palette to pick one color from
-     * @return The color from the palette
+     * @return The closest color from the palette
      */
     public static ColorEx getClosestColor (final ColorEx color, final ColorEx [] palette)
     {
+        return palette[getClosestColorIndex (color, palette)];
+    }
+
+
+    /**
+     * Calculate the color from the palette which is the closest to the given color and return the
+     * index.
+     *
+     * @param color The color
+     * @param palette The palette to pick one color from
+     * @return The index of the closest color from the palette
+     */
+    public static int getClosestColorIndex (final ColorEx color, final ColorEx [] palette)
+    {
         double minError = 5.0;
-        ColorEx closest = color;
-        for (int i = 1; i < palette.length; i++)
+        int closest = 0;
+        for (int i = 0; i < palette.length; i++)
         {
             final double error = ColorEx.calcDistance (palette[i], color);
             if (error < minError)
             {
-                closest = palette[i];
+                closest = i;
                 minError = error;
             }
         }

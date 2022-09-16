@@ -41,14 +41,10 @@ public class XLEqMode extends XLAbstractTrackMode
 
         this.eqDevice = (IEqualizerDevice) model.getSpecificDevice (DeviceID.EQ);
 
-        final List<IParameter> eqParameters = new ArrayList<> (24);
-        final List<IParameter> frequencyParameters = new ArrayList<> (8);
-        for (int i = 0; i < 8; i++)
-            eqParameters.add (this.eqDevice.getType (i));
-        for (int i = 0; i < 8; i++)
-            eqParameters.add (this.eqDevice.getQ (i));
-        for (int i = 0; i < 8; i++)
-            frequencyParameters.add (this.eqDevice.getFrequency (i));
+        final List<IParameter> eqParameters = new ArrayList<> (16);
+        eqParameters.addAll (this.eqDevice.getTypeParameters ());
+        eqParameters.addAll (this.eqDevice.getQParameters ());
+        final List<IParameter> frequencyParameters = this.eqDevice.getFrequencyParameters ();
         final IParameterProvider eqParameterProvider = new FixedParameterProvider (eqParameters);
         final IParameterProvider frequencyParameterProvider = new FixedParameterProvider (frequencyParameters);
         final IParameterProvider deviceParameterProvider = new BankParameterProvider (this.model.getCursorDevice ().getParameterBank ());
@@ -75,13 +71,13 @@ public class XLEqMode extends XLAbstractTrackMode
         switch (row)
         {
             case 0:
-                return this.eqDevice.getType (column).getValue ();
+                return this.eqDevice.getTypeParameter (column).getValue ();
             case 1:
-                return this.eqDevice.getQ (column).getValue ();
+                return this.eqDevice.getQParameter (column).getValue ();
             case 2:
                 if (this.configuration.isDeviceActive ())
                     return this.model.getCursorDevice ().getParameterBank ().getItem (column).getValue ();
-                return this.eqDevice.getFrequency (column).getValue ();
+                return this.eqDevice.getFrequencyParameter (column).getValue ();
             default:
                 return 0;
         }

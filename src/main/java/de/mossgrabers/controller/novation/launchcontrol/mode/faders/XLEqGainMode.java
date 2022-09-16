@@ -14,7 +14,6 @@ import de.mossgrabers.framework.daw.data.IParameter;
 import de.mossgrabers.framework.featuregroup.AbstractParameterMode;
 import de.mossgrabers.framework.parameterprovider.special.FixedParameterProvider;
 
-import java.util.ArrayList;
 import java.util.List;
 
 
@@ -41,10 +40,7 @@ public class XLEqGainMode extends AbstractParameterMode<LaunchControlXLControlSu
         super ("EQ Gain", surface, model, true, model.getCursorDevice ().getParameterBank (), controls);
 
         this.eqDevice = (IEqualizerDevice) model.getSpecificDevice (DeviceID.EQ);
-
-        this.parameters = new ArrayList<> (8);
-        for (int i = 0; i < 8; i++)
-            this.parameters.add (this.eqDevice.getGain (i));
+        this.parameters = this.eqDevice.getGainParameters ();
 
         this.setParameterProvider (new FixedParameterProvider (this.parameters));
     }

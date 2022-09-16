@@ -178,7 +178,7 @@ public class SessionView extends AbstractSessionView<LaunchpadControlSurface, La
             final IScene s = sceneBank.getItem (index);
 
             if (s.doesExist ())
-                return DAWColor.getColorIndex (s.getColor ());
+                return DAWColor.getColorID (s.getColor ());
         }
 
         return AbstractFeatureGroup.BUTTON_COLOR_OFF;

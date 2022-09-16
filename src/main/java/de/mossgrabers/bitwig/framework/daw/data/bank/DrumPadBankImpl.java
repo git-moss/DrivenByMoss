@@ -95,7 +95,7 @@ public class DrumPadBankImpl extends AbstractChannelBankImpl<DrumPadBank, ILayer
         final Optional<ILayer> sel = this.getSelectedItem ();
         if (sel.isEmpty ())
             return DAWColor.COLOR_OFF.name ();
-        return DAWColor.getColorIndex (sel.get ().getColor ());
+        return DAWColor.getColorID (sel.get ().getColor ());
     }
 
 

@@ -46,7 +46,10 @@ public class EncodedColorLightState extends InternalHardwareLightState
             return HardwareLightVisualState.createForColor (Color.blackColor (), Color.whiteColor ());
 
         final int colorIndex = this.encodedColorState & 0xFF;
-        final int blinkColorIndex = this.encodedColorState >> 8 & 0xFF;
+        int blinkColorIndex = this.encodedColorState >> 8 & 0xFF;
+        if (blinkColorIndex == 128)
+            blinkColorIndex = -1;
+
         final boolean blinkFast = (this.encodedColorState >> 16 & 1) > 0;
 
         final ColorEx colorEx = this.stateToColorFunction.apply (colorIndex);

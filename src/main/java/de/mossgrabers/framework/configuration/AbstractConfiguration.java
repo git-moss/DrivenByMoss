@@ -220,6 +220,13 @@ public abstract class AbstractConfiguration implements Configuration
     }
 
 
+    /** Aftertouch conversion is set to off. */
+    public static final int        AFTERTOUCH_CONVERT_OFF       = -3;
+    /** Aftertouch conversion is set to poly aftertouch. */
+    public static final int        AFTERTOUCH_CONVERT_POLY      = -2;
+    /** Aftertouch conversion is set to channel aftertouch. */
+    public static final int        AFTERTOUCH_CONVERT_CHANNEL   = -1;
+
     private static final String [] AFTERTOUCH_CONVERSION_VALUES = new String [131];
     static
     {

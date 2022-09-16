@@ -75,7 +75,7 @@ public class MixView extends AbstractView<LaunchpadControlSurface, LaunchpadConf
                 final boolean hasSends = track.getSendBank ().getItemCount () > 0;
 
                 // Volume
-                padGrid.light (92 + i, this.colorManager.getColorIndex (DAWColor.getColorIndex (track.getColor ())));
+                padGrid.light (92 + i, this.colorManager.getColorIndex (DAWColor.getColorID (track.getColor ())));
                 // Panorama
                 padGrid.light (84 + i, isSelected ? LaunchpadColorManager.LAUNCHPAD_COLOR_SKY_HI : LaunchpadColorManager.LAUNCHPAD_COLOR_GREY_LO);
                 // Send 1

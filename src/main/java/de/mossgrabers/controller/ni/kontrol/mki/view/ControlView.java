@@ -90,7 +90,7 @@ public class ControlView extends AbstractPlayView<Kontrol1ControlSurface, Kontro
         // Muted or soloed?
         if (drumPad.isMute () || drumPadBank.hasSoloedPads () && !drumPad.isSolo ())
             return AbstractDrumView.COLOR_PAD_MUTED;
-        return DAWColor.getColorIndex (drumPad.getColor ());
+        return DAWColor.getColorID (drumPad.getColor ());
     }
 
 

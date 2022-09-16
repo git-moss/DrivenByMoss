@@ -140,7 +140,7 @@ public class ClipView extends BaseView
                 else if (item.isStopQueued ())
                     padGrid.lightEx (x, y, MaschineColorManager.COLOR_GREEN_LO);
                 else
-                    padGrid.lightEx (x, y, DAWColor.getColorIndex (item.getColor ()));
+                    padGrid.lightEx (x, y, DAWColor.getColorID (item.getColor ()));
             }
             else
                 padGrid.lightEx (x, y, AbstractFeatureGroup.BUTTON_COLOR_OFF);

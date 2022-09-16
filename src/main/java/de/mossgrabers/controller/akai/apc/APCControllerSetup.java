@@ -251,14 +251,7 @@ public class APCControllerSetup extends AbstractControllerSetup<APCControlSurfac
             this.addButton (ButtonID.get (ButtonID.ROW4_1, i), "Arm " + (i + 1), new RecArmCommand<> (i, this.model, surface), i, APCControlSurface.APC_BUTTON_RECORD_ARM, () -> this.getButtonState (index, APCControlSurface.APC_BUTTON_RECORD_ARM) ? 1 : 0, ColorManager.BUTTON_STATE_OFF, ColorManager.BUTTON_STATE_ON);
 
             if (this.isMkII)
-            {
-                this.addButton (ButtonID.get (ButtonID.ROW5_1, i), "X-fade " + (i + 1), new CrossfadeModeCommand<> (i, this.model, surface), i, APCControlSurface.APC_BUTTON_A_B, () -> {
-                    final ITrackBank tb = this.model.getCurrentTrackBank ();
-                    final ITrack track = tb.getItem (index);
-                    final boolean trackExists = track.doesExist ();
-                    return getCrossfadeButtonColor (track, trackExists);
-                }, ColorManager.BUTTON_STATE_OFF, ColorManager.BUTTON_STATE_ON, APCColorManager.BUTTON_STATE_BLINK);
-            }
+                this.addButton (ButtonID.get (ButtonID.ROW5_1, i), "X-fade " + (i + 1), new CrossfadeModeCommand<> (i, this.model, surface), i, APCControlSurface.APC_BUTTON_A_B, () -> getCrossfadeButtonColor (index), ColorManager.BUTTON_STATE_OFF, ColorManager.BUTTON_STATE_ON, APCColorManager.BUTTON_STATE_BLINK);
 
             final ButtonID stopButtonID = ButtonID.get (ButtonID.ROW6_1, i);
             final APCStopClipCommand apcStopClipCommand = new APCStopClipCommand (i, this.model, surface);
@@ -668,9 +661,10 @@ public class APCControllerSetup extends AbstractControllerSetup<APCControlSurfac
     }
 
 
-    private static int getCrossfadeButtonColor (final ITrack track, final boolean trackExists)
+    private int getCrossfadeButtonColor (final int index)
     {
-        if (!trackExists)
+        final ITrack track = this.model.getCurrentTrackBank ().getItem (index);
+        if (!track.doesExist ())
             return 0;
 
         final String crossfadeMode = track.getCrossfadeParameter ().getDisplayedValue ();
@@ -764,7 +758,7 @@ public class APCControllerSetup extends AbstractControllerSetup<APCControlSurfac
 
             case APCControlSurface.APC_BUTTON_RECORD_ARM:
                 if (isShift)
-                    return getCrossfadeButtonColor (track, trackExists) > 0;
+                    return getCrossfadeButtonColor (index) > 0;
                 return trackExists && track.isRecArm ();
 
             default:

@@ -13,7 +13,7 @@ import java.util.UUID;
 
 
 /**
- * Definition class for the Novation SL controller extension.
+ * Definition class for the Akai APC40 mkI/mkII controller extension.
  *
  * @author J&uuml;rgen Mo&szlig;graber
  */

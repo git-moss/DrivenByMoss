@@ -115,6 +115,8 @@ public enum Views
     public static final String              NAME_DRUM8          = "Drum 8";
     /** The name of the drum 64 view. */
     public static final String              NAME_DRUM64         = "Drum 64";
+    /** The name of the scene play view. */
+    public static final String              NAME_SCENE_PLAY     = "Scene Play";
     /** The name of the sequencer view. */
     public static final String              NAME_SEQUENCER      = "Sequencer";
     /** The name of the raindrops view. */

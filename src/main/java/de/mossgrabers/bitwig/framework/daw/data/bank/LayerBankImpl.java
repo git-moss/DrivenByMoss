@@ -88,7 +88,7 @@ public class LayerBankImpl extends AbstractChannelBankImpl<DeviceLayerBank, ILay
         final Optional<ILayer> sel = this.getSelectedItem ();
         if (sel.isEmpty ())
             return DAWColor.COLOR_OFF.name ();
-        return DAWColor.getColorIndex (sel.get ().getColor ());
+        return DAWColor.getColorID (sel.get ().getColor ());
     }
 
 

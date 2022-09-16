@@ -37,12 +37,11 @@ public class ViewMultiSelectCommand<S extends IControlSurface<C>, C extends Conf
      *
      * @param model The model
      * @param surface The surface
-     * @param displayName Displays a popup with the views name if true
      * @param viewIds The list with IDs of the views to select
      */
-    public ViewMultiSelectCommand (final IModel model, final S surface, final boolean displayName, final Views... viewIds)
+    public ViewMultiSelectCommand (final IModel model, final S surface, final Views... viewIds)
     {
-        this (model, surface, displayName, ButtonEvent.DOWN, viewIds);
+        this (model, surface, true, ButtonEvent.DOWN, viewIds);
     }
 
 

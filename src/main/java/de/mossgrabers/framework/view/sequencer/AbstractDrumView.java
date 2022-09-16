@@ -516,7 +516,7 @@ public abstract class AbstractDrumView<S extends IControlSurface<C>, C extends C
 
     protected String getPadContentColor (final IChannel drumPad)
     {
-        return this.useDawColors ? DAWColor.getColorIndex (drumPad.getColor ()) : AbstractDrumView.COLOR_PAD_HAS_CONTENT;
+        return this.useDawColors ? DAWColor.getColorID (drumPad.getColor ()) : AbstractDrumView.COLOR_PAD_HAS_CONTENT;
     }
 
 
@@ -532,7 +532,7 @@ public abstract class AbstractDrumView<S extends IControlSurface<C>, C extends C
                     return COLOR_STEP_SELECTED;
                 if (stepInfo.isMuted ())
                     return COLOR_STEP_MUTED;
-                return rowColor.isPresent () && this.useDawColors ? DAWColor.getColorIndex (rowColor.get ()) : COLOR_CONTENT;
+                return rowColor.isPresent () && this.useDawColors ? DAWColor.getColorID (rowColor.get ()) : COLOR_CONTENT;
 
             // Note continues
             case CONTINUE:
@@ -542,7 +542,7 @@ public abstract class AbstractDrumView<S extends IControlSurface<C>, C extends C
                     return COLOR_STEP_SELECTED;
                 if (stepInfo.isMuted ())
                     return COLOR_STEP_MUTED_CONT;
-                return rowColor.isPresent () && this.useDawColors ? DAWColor.getColorIndex (ColorEx.darker (rowColor.get ())) : COLOR_CONTENT_CONT;
+                return rowColor.isPresent () && this.useDawColors ? DAWColor.getColorID (ColorEx.darker (rowColor.get ())) : COLOR_CONTENT_CONT;
 
             // Empty
             default:

@@ -9,6 +9,7 @@ import de.mossgrabers.framework.daw.midi.IMidiOutput;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Map.Entry;
 import java.util.TreeMap;
 
 
@@ -70,7 +71,31 @@ public abstract class BlinkingPadGrid extends PadGridImpl
     /**
      * Send the changes including blinking pad changes to the controller.
      */
-    protected abstract void updateController ();
+    protected void updateController ()
+    {
+        for (final Entry<Integer, LightInfo> e: this.padInfos.entrySet ())
+        {
+            final Integer note = e.getKey ();
+            final LightInfo info = e.getValue ();
+            this.sendPadUpdate (note.intValue (), info.getColor ());
+
+            if (info.getBlinkColor () > 0)
+                this.blinkingLights.put (note, info);
+            else
+                this.blinkingLights.remove (note);
+        }
+
+        // Toggle blink colors every 600ms
+        if (!this.checkBlinking ())
+            return;
+        for (final Entry<Integer, LightInfo> value: this.blinkingLights.entrySet ())
+        {
+            final LightInfo info = value.getValue ();
+            final int colorIndex = this.isBlink ? info.getBlinkColor () : info.getColor ();
+            final int note = value.getKey ().intValue ();
+            this.sendPadUpdate (note, colorIndex);
+        }
+    }
 
 
     /** {@inheritDoc} */
@@ -107,5 +132,17 @@ public abstract class BlinkingPadGrid extends PadGridImpl
             return true;
         }
         return false;
+    }
+
+
+    /**
+     * Send the update to the controller.
+     * 
+     * @param note The MIDI note to send
+     * @param colorIndex The index of the color to send
+     */
+    protected void sendPadUpdate (final int note, final int colorIndex)
+    {
+        this.output.sendNoteEx (0, note, colorIndex);
     }
 }

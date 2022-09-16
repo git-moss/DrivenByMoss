@@ -147,9 +147,9 @@ public class DeviceModule extends AbstractModule
                 final int oneplus = i + 1;
 
                 writer.sendOSC (deviceAddress + "type/" + oneplus + "/value", equalizer.getTypeID (i).name ().toLowerCase (), dump);
-                this.flushParameterData (writer, deviceAddress + "gain/" + oneplus + "/", equalizer.getGain (i), dump);
-                this.flushParameterData (writer, deviceAddress + "freq/" + oneplus + "/", equalizer.getFrequency (i), dump);
-                this.flushParameterData (writer, deviceAddress + "q/" + oneplus + "/", equalizer.getQ (i), dump);
+                this.flushParameterData (writer, deviceAddress + "gain/" + oneplus + "/", equalizer.getGainParameter (i), dump);
+                this.flushParameterData (writer, deviceAddress + "freq/" + oneplus + "/", equalizer.getFrequencyParameter (i), dump);
+                this.flushParameterData (writer, deviceAddress + "q/" + oneplus + "/", equalizer.getQParameter (i), dump);
             }
             return;
         }
@@ -430,7 +430,7 @@ public class DeviceModule extends AbstractModule
                 try
                 {
                     final int bandNo = Integer.parseInt (subCommand2) - 1;
-                    equalizerDevice.getGain (bandNo).setValue (toInteger (value));
+                    equalizerDevice.getGainParameter (bandNo).setValue (toInteger (value));
                 }
                 catch (final NumberFormatException ex)
                 {
@@ -443,7 +443,7 @@ public class DeviceModule extends AbstractModule
                 try
                 {
                     final int bandNo = Integer.parseInt (subCommand3) - 1;
-                    equalizerDevice.getFrequency (bandNo).setValue (toInteger (value));
+                    equalizerDevice.getFrequencyParameter (bandNo).setValue (toInteger (value));
                 }
                 catch (final NumberFormatException ex)
                 {
@@ -456,7 +456,7 @@ public class DeviceModule extends AbstractModule
                 try
                 {
                     final int bandNo = Integer.parseInt (subCommand4) - 1;
-                    equalizerDevice.getQ (bandNo).setValue (toInteger (value));
+                    equalizerDevice.getQParameter (bandNo).setValue (toInteger (value));
                 }
                 catch (final NumberFormatException ex)
                 {

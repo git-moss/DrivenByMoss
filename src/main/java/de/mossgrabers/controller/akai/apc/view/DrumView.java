@@ -91,7 +91,7 @@ public class DrumView extends AbstractDrumExView<APCControlSurface, APCConfigura
     @Override
     protected String getPadContentColor (final IChannel drumPad)
     {
-        return this.surface.isMkII () ? DAWColor.getColorIndex (drumPad.getColor ()) : AbstractDrumView.COLOR_PAD_HAS_CONTENT;
+        return this.surface.isMkII () ? DAWColor.getColorID (drumPad.getColor ()) : AbstractDrumView.COLOR_PAD_HAS_CONTENT;
     }
 
 

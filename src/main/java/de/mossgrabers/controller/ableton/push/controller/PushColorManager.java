@@ -14,6 +14,7 @@ import de.mossgrabers.framework.featuregroup.AbstractFeatureGroup;
 import de.mossgrabers.framework.featuregroup.AbstractMode;
 import de.mossgrabers.framework.scale.Scales;
 import de.mossgrabers.framework.view.AbstractPlayView;
+import de.mossgrabers.framework.view.ScenePlayView;
 import de.mossgrabers.framework.view.AbstractSessionView;
 import de.mossgrabers.framework.view.sequencer.AbstractDrumView;
 import de.mossgrabers.framework.view.sequencer.AbstractSequencerView;
@@ -526,6 +527,8 @@ public class PushColorManager extends ColorManager
         this.registerColorIndex (AbstractSessionView.COLOR_SCENE, isPush2 ? PushColorManager.PUSH2_COLOR_SCENE_GREEN : PushColorManager.PUSH1_COLOR_SCENE_GREEN);
         this.registerColorIndex (AbstractSessionView.COLOR_SELECTED_SCENE, isPush2 ? PushColorManager.PUSH2_COLOR_SCENE_GREEN_HI : PushColorManager.PUSH1_COLOR_SCENE_GREEN_HI);
         this.registerColorIndex (AbstractSessionView.COLOR_SCENE_OFF, isPush2 ? PUSH2_COLOR2_BLACK : PUSH1_COLOR2_BLACK);
+
+        this.registerColorIndex (ScenePlayView.COLOR_SELECTED_PLAY_SCENE, isPush2 ? PUSH2_COLOR2_WHITE : PUSH1_COLOR2_WHITE);
 
         this.registerColorIndex (IPadGrid.GRID_OFF, isPush2 ? PUSH2_COLOR2_BLACK : PUSH1_COLOR2_BLACK);
 

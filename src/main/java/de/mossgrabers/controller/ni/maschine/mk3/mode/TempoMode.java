@@ -6,7 +6,7 @@ package de.mossgrabers.controller.ni.maschine.mk3.mode;
 
 import de.mossgrabers.controller.ni.maschine.mk3.MaschineConfiguration;
 import de.mossgrabers.controller.ni.maschine.mk3.controller.MaschineControlSurface;
-import de.mossgrabers.framework.command.continuous.TempoCommand;
+import de.mossgrabers.framework.command.TempoCommand;
 import de.mossgrabers.framework.controller.display.ITextDisplay;
 import de.mossgrabers.framework.daw.IModel;
 import de.mossgrabers.framework.daw.ITransport;

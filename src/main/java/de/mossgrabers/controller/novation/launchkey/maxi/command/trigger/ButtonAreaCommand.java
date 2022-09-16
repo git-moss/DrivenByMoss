@@ -68,7 +68,7 @@ public class ButtonAreaCommand extends AbstractTriggerCommand<LaunchkeyMk3Contro
         if (!t.doesExist ())
             color = LaunchkeyMk3ColorManager.LAUNCHKEY_COLOR_BLACK;
         else if (isSelect)
-            color = this.model.getColorManager ().getColorIndex (DAWColor.getColorIndex (t.getColor ()));
+            color = this.model.getColorManager ().getColorIndex (DAWColor.getColorID (t.getColor ()));
         else
             color = t.isRecArm () ? LaunchkeyMk3ColorManager.LAUNCHKEY_COLOR_RED : LaunchkeyMk3ColorManager.LAUNCHKEY_COLOR_GREY_LO;
         return t.isSelected () ? 0x1000 + color : color;

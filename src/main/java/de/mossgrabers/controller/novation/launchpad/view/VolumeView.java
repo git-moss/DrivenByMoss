@@ -71,7 +71,7 @@ public class VolumeView extends AbstractFaderView implements IVirtualFaderCallba
     {
         final IMasterTrack track = this.model.getMasterTrack ();
 
-        final int color = track.doesExist () ? this.colorManager.getColorIndex (DAWColor.getColorIndex (track.getColor ())) : 0;
+        final int color = track.doesExist () ? this.colorManager.getColorIndex (DAWColor.getColorID (track.getColor ())) : 0;
         this.masterFader.setup (color, false);
         this.masterFader.setValue (track.getVolume ());
 
@@ -96,7 +96,7 @@ public class VolumeView extends AbstractFaderView implements IVirtualFaderCallba
     public void setupFader (final int index)
     {
         final ITrack track = this.model.getCurrentTrackBank ().getItem (index);
-        final int color = this.colorManager.getColorIndex (DAWColor.getColorIndex (track.getColor ()));
+        final int color = this.colorManager.getColorIndex (DAWColor.getColorID (track.getColor ()));
         this.surface.setupFader (index, color, false);
         this.surface.setFaderValue (index, track.getVolume ());
     }

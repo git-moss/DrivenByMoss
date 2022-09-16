@@ -81,7 +81,7 @@ public class SceneView extends BaseView
                 if (item.isSelected ())
                     padGrid.lightEx (x, y, MaschineColorManager.COLOR_WHITE);
                 else
-                    padGrid.lightEx (x, y, DAWColor.getColorIndex (item.getColor ()));
+                    padGrid.lightEx (x, y, DAWColor.getColorID (item.getColor ()));
             }
             else
                 padGrid.lightEx (x, y, AbstractFeatureGroup.BUTTON_COLOR_OFF);

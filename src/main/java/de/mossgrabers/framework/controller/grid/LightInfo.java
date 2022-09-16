@@ -149,7 +149,12 @@ public final class LightInfo
      */
     private void encode ()
     {
-        final int codeBlinkColor = this.blinkColor << 8;
+        if (this.color < 0 || this.color > 127)
+            throw new FrameworkException ("Color indices must be in the range of [0..127] but is " + this.color + "!");
+        if (this.blinkColor > 127)
+            throw new FrameworkException ("Color indices may not be larger than 127 but blink index is " + this.blinkColor + "!");
+
+        final int codeBlinkColor = this.blinkColor < 0 ? 1 << 15 : this.blinkColor << 8;
         final int codeFast = this.fast ? 1 << 16 : 0;
         this.encoded = codeFast + codeBlinkColor + this.color;
     }

@@ -70,7 +70,7 @@ public class SoloView extends BaseView
             final int y = 3 - i / 4;
             if (item.doesExist ())
             {
-                final int colorIndex = this.colorManager.getColorIndex (DAWColor.getColorIndex (item.getColor ()));
+                final int colorIndex = this.colorManager.getColorIndex (DAWColor.getColorID (item.getColor ()));
                 if (item.isSolo ())
                     padGrid.lightEx (x, y, colorIndex, MaschineColorManager.COLOR_WHITE, false);
                 else

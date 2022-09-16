@@ -77,7 +77,7 @@ public class SessionView extends AbstractSessionView<APCControlSurface, APCConfi
         if (s.isSelected ())
             return AbstractSessionView.COLOR_SELECTED_SCENE;
 
-        return this.useClipColor ? DAWColor.getColorIndex (s.getColor ()) : AbstractSessionView.COLOR_SCENE;
+        return this.useClipColor ? DAWColor.getColorID (s.getColor ()) : AbstractSessionView.COLOR_SCENE;
     }
 
 

@@ -53,13 +53,12 @@ public class SessionMode extends AbstractTrackMode
      *
      * @param surface The control surface
      * @param model The model
-     * @param sceneBank The scene bank to monitor
      */
-    public SessionMode (final PushControlSurface surface, final IModel model, final ISceneBank sceneBank)
+    public SessionMode (final PushControlSurface surface, final IModel model)
     {
         super ("Session", surface, model);
 
-        this.sceneBank = sceneBank;
+        this.sceneBank = model.getSceneBank (64);
 
         this.rowDisplayMode = this.isPush2 ? RowDisplayMode.ALL : RowDisplayMode.UPPER;
     }

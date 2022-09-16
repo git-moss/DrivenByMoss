@@ -211,7 +211,7 @@ public class MaschineControllerSetup extends AbstractControllerSetup<MaschineCon
     {
         final IMidiAccess midiAccess = this.factory.createMidiAccess ();
         final IMidiOutput output = midiAccess.createOutput ();
-        final IMidiInput input = midiAccess.createInput (this.maschine.getName (), "80????", "90????", "A0????", "D0????");
+        final IMidiInput input = midiAccess.createInput (this.maschine.getName (), "80????", "90????");
         final MaschineControlSurface surface = new MaschineControlSurface (this.host, this.colorManager, this.maschine, this.configuration, output, input);
         this.surfaces.add (surface);
 
@@ -441,10 +441,10 @@ public class MaschineControllerSetup extends AbstractControllerSetup<MaschineCon
         // Pad modes
         this.addButton (ButtonID.ACCENT, "ACCENT", new ToggleFixedVelCommand (this.model, surface), MaschineControlSurface.FIXED_VEL, this.configuration::isAccentActive);
 
-        this.addButton (ButtonID.SCENE1, "SCENE", new ViewMultiSelectCommand<> (this.model, surface, true, Views.SCENE_PLAY), MaschineControlSurface.SCENE, () -> viewManager.isActive (Views.SCENE_PLAY));
-        this.addButton (ButtonID.CLIP, "PATTERN", new ViewMultiSelectCommand<> (this.model, surface, true, Views.CLIP), MaschineControlSurface.PATTERN, () -> viewManager.isActive (Views.CLIP));
+        this.addButton (ButtonID.SCENE1, "SCENE", new ViewMultiSelectCommand<> (this.model, surface, Views.SCENE_PLAY), MaschineControlSurface.SCENE, () -> viewManager.isActive (Views.SCENE_PLAY));
+        this.addButton (ButtonID.CLIP, "PATTERN", new ViewMultiSelectCommand<> (this.model, surface, Views.CLIP), MaschineControlSurface.PATTERN, () -> viewManager.isActive (Views.CLIP));
         this.addButton (ButtonID.NOTE, "EVENTS", new ModeSelectCommand<> (this.model, surface, Modes.NOTE, true), MaschineControlSurface.EVENTS, () -> modeManager.isActive (Modes.NOTE));
-        this.addButton (ButtonID.TOGGLE_DEVICE, this.maschine == Maschine.STUDIO || this.maschine == Maschine.MK2 ? "NAVIGATE" : "VARIATION", new ViewMultiSelectCommand<> (this.model, surface, true, Views.DEVICE), MaschineControlSurface.VARIATION, () -> viewManager.isActive (Views.DEVICE));
+        this.addButton (ButtonID.TOGGLE_DEVICE, this.maschine == Maschine.STUDIO || this.maschine == Maschine.MK2 ? "NAVIGATE" : "VARIATION", new ViewMultiSelectCommand<> (this.model, surface, Views.DEVICE), MaschineControlSurface.VARIATION, () -> viewManager.isActive (Views.DEVICE));
         this.addButton (ButtonID.DUPLICATE, "DUPLICATE", NopCommand.INSTANCE, MaschineControlSurface.DUPLICATE);
 
         if (this.maschine.hasGroupButtons ())
@@ -469,9 +469,9 @@ public class MaschineControllerSetup extends AbstractControllerSetup<MaschineCon
         }
         else
         {
-            this.addButton (ButtonID.SELECT, "SELECT", new ViewMultiSelectCommand<> (this.model, surface, true, Views.TRACK_SELECT), MaschineControlSurface.SELECT, () -> viewManager.isActive (Views.TRACK_SELECT));
-            this.addButton (ButtonID.SOLO, "SOLO", new ViewMultiSelectCommand<> (this.model, surface, true, Views.TRACK_SOLO), MaschineControlSurface.SOLO, () -> viewManager.isActive (Views.TRACK_SOLO));
-            this.addButton (ButtonID.MUTE, "MUTE", new ViewMultiSelectCommand<> (this.model, surface, true, Views.TRACK_MUTE), MaschineControlSurface.MUTE, () -> viewManager.isActive (Views.TRACK_MUTE));
+            this.addButton (ButtonID.SELECT, "SELECT", new ViewMultiSelectCommand<> (this.model, surface, Views.TRACK_SELECT), MaschineControlSurface.SELECT, () -> viewManager.isActive (Views.TRACK_SELECT));
+            this.addButton (ButtonID.SOLO, "SOLO", new ViewMultiSelectCommand<> (this.model, surface, Views.TRACK_SOLO), MaschineControlSurface.SOLO, () -> viewManager.isActive (Views.TRACK_SOLO));
+            this.addButton (ButtonID.MUTE, "MUTE", new ViewMultiSelectCommand<> (this.model, surface, Views.TRACK_MUTE), MaschineControlSurface.MUTE, () -> viewManager.isActive (Views.TRACK_MUTE));
         }
 
         final KeyboardCommand keyboardCommand = new KeyboardCommand (this.model, surface);

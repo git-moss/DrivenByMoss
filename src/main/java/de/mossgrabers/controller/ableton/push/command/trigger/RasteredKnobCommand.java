@@ -7,8 +7,7 @@ package de.mossgrabers.controller.ableton.push.command.trigger;
 import de.mossgrabers.controller.ableton.push.PushConfiguration;
 import de.mossgrabers.controller.ableton.push.controller.PushControlSurface;
 import de.mossgrabers.controller.ableton.push.mode.device.DeviceBrowserMode;
-import de.mossgrabers.framework.command.continuous.TempoCommand;
-import de.mossgrabers.framework.command.core.TriggerCommand;
+import de.mossgrabers.framework.command.TempoCommand;
 import de.mossgrabers.framework.daw.IModel;
 import de.mossgrabers.framework.featuregroup.ModeManager;
 import de.mossgrabers.framework.mode.Modes;
@@ -20,7 +19,7 @@ import de.mossgrabers.framework.utils.ButtonEvent;
  *
  * @author J&uuml;rgen Mo&szlig;graber
  */
-public class RasteredKnobCommand extends TempoCommand<PushControlSurface, PushConfiguration> implements TriggerCommand
+public class RasteredKnobCommand extends TempoCommand<PushControlSurface, PushConfiguration>
 {
     /**
      * Constructor.
