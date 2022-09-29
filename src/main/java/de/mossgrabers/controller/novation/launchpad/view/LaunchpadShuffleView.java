@@ -6,7 +6,7 @@ import de.mossgrabers.controller.novation.launchpad.controller.LaunchpadControlS
 import de.mossgrabers.framework.daw.GrooveParameterID;
 import de.mossgrabers.framework.daw.IGroove;
 import de.mossgrabers.framework.daw.IModel;
-import de.mossgrabers.framework.daw.data.IParameter;
+import de.mossgrabers.framework.parameter.IParameter;
 import de.mossgrabers.framework.view.ShuffleView;
 
 

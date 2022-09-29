@@ -68,7 +68,6 @@ import de.mossgrabers.framework.controller.valuechanger.TwosComplementValueChang
 import de.mossgrabers.framework.daw.IHost;
 import de.mossgrabers.framework.daw.ITransport;
 import de.mossgrabers.framework.daw.ModelSetup;
-import de.mossgrabers.framework.daw.data.IParameter;
 import de.mossgrabers.framework.daw.data.ITrack;
 import de.mossgrabers.framework.daw.data.bank.IParameterBank;
 import de.mossgrabers.framework.daw.data.bank.ITrackBank;
@@ -81,6 +80,7 @@ import de.mossgrabers.framework.featuregroup.ViewManager;
 import de.mossgrabers.framework.mode.Modes;
 import de.mossgrabers.framework.mode.device.ParameterMode;
 import de.mossgrabers.framework.mode.track.TrackVolumeMode;
+import de.mossgrabers.framework.parameter.IParameter;
 import de.mossgrabers.framework.utils.Timeout;
 import de.mossgrabers.framework.view.TempoView;
 import de.mossgrabers.framework.view.Views;
@@ -251,7 +251,7 @@ public class APCControllerSetup extends AbstractControllerSetup<APCControlSurfac
             this.addButton (ButtonID.get (ButtonID.ROW4_1, i), "Arm " + (i + 1), new RecArmCommand<> (i, this.model, surface), i, APCControlSurface.APC_BUTTON_RECORD_ARM, () -> this.getButtonState (index, APCControlSurface.APC_BUTTON_RECORD_ARM) ? 1 : 0, ColorManager.BUTTON_STATE_OFF, ColorManager.BUTTON_STATE_ON);
 
             if (this.isMkII)
-                this.addButton (ButtonID.get (ButtonID.ROW5_1, i), "X-fade " + (i + 1), new CrossfadeModeCommand<> (i, this.model, surface), i, APCControlSurface.APC_BUTTON_A_B, () -> getCrossfadeButtonColor (index), ColorManager.BUTTON_STATE_OFF, ColorManager.BUTTON_STATE_ON, APCColorManager.BUTTON_STATE_BLINK);
+                this.addButton (ButtonID.get (ButtonID.ROW5_1, i), "X-fade " + (i + 1), new CrossfadeModeCommand<> (i, this.model, surface), i, APCControlSurface.APC_BUTTON_A_B, () -> this.getCrossfadeButtonColor (index), ColorManager.BUTTON_STATE_OFF, ColorManager.BUTTON_STATE_ON, APCColorManager.BUTTON_STATE_BLINK);
 
             final ButtonID stopButtonID = ButtonID.get (ButtonID.ROW6_1, i);
             final APCStopClipCommand apcStopClipCommand = new APCStopClipCommand (i, this.model, surface);
@@ -758,7 +758,7 @@ public class APCControllerSetup extends AbstractControllerSetup<APCControlSurfac
 
             case APCControlSurface.APC_BUTTON_RECORD_ARM:
                 if (isShift)
-                    return getCrossfadeButtonColor (index) > 0;
+                    return this.getCrossfadeButtonColor (index) > 0;
                 return trackExists && track.isRecArm ();
 
             default:

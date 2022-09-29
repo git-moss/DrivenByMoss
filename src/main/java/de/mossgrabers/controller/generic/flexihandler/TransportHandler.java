@@ -16,7 +16,7 @@ import de.mossgrabers.framework.controller.valuechanger.IValueChanger;
 import de.mossgrabers.framework.daw.IModel;
 import de.mossgrabers.framework.daw.ITransport;
 import de.mossgrabers.framework.daw.constants.AutomationMode;
-import de.mossgrabers.framework.daw.data.IParameter;
+import de.mossgrabers.framework.parameter.IParameter;
 import de.mossgrabers.framework.utils.ButtonEvent;
 
 

@@ -15,8 +15,8 @@ import de.mossgrabers.framework.daw.IModel;
 import de.mossgrabers.framework.daw.constants.DeviceID;
 import de.mossgrabers.framework.daw.data.EqualizerBandType;
 import de.mossgrabers.framework.daw.data.IEqualizerDevice;
-import de.mossgrabers.framework.daw.data.IParameter;
 import de.mossgrabers.framework.daw.data.ITrack;
+import de.mossgrabers.framework.parameter.IParameter;
 
 
 /**

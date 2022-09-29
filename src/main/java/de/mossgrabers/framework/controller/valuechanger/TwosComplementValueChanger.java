@@ -168,9 +168,9 @@ public class TwosComplementValueChanger implements IValueChanger
 
     /** {@inheritDoc} */
     @Override
-    public double toNormalizedValue (final int value)
+    public double toNormalizedValue (final double value)
     {
-        return Math.min ((double) value / (this.getUpperBound () - 1), 1.0);
+        return Math.min (value / (this.getUpperBound () - 1), 1.0);
     }
 
 

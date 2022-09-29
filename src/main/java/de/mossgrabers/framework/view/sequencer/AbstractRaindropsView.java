@@ -9,8 +9,9 @@ import de.mossgrabers.framework.controller.ButtonID;
 import de.mossgrabers.framework.controller.IControlSurface;
 import de.mossgrabers.framework.controller.grid.IPadGrid;
 import de.mossgrabers.framework.daw.IModel;
-import de.mossgrabers.framework.daw.INoteClip;
-import de.mossgrabers.framework.daw.StepState;
+import de.mossgrabers.framework.daw.clip.INoteClip;
+import de.mossgrabers.framework.daw.clip.NotePosition;
+import de.mossgrabers.framework.daw.clip.StepState;
 import de.mossgrabers.framework.daw.constants.Resolution;
 import de.mossgrabers.framework.daw.data.ITrack;
 import de.mossgrabers.framework.scale.Scales;
@@ -93,6 +94,9 @@ public abstract class AbstractRaindropsView<S extends IControlSurface<C>, C exte
         final int distance = this.getNoteDistance (this.keyManager.map (x), length);
         final int editMidiChannel = this.configuration.getMidiEditChannel ();
         clip.clearRow (editMidiChannel, this.keyManager.map (x));
+
+        final NotePosition notePosition = new NotePosition (editMidiChannel, 0, 0);
+
         if (distance == -1 || distance != (y == 0 ? 1 : y * 2))
         {
             final int offset = clip.getCurrentStep () % stepSize;
@@ -102,7 +106,11 @@ public abstract class AbstractRaindropsView<S extends IControlSurface<C>, C exte
             {
                 // Only support 32 measures at 1/32t
                 if (i < MAX_STEPS)
-                    clip.setStep (editMidiChannel, i, this.keyManager.map (x), this.configuration.isAccentActive () ? this.configuration.getFixedAccentValue () : velocity, Resolution.getValueAt (this.selectedResolutionIndex));
+                {
+                    notePosition.setStep (i);
+                    notePosition.setNote (this.keyManager.map (x));
+                    clip.setStep (notePosition, this.configuration.isAccentActive () ? this.configuration.getFixedAccentValue () : velocity, Resolution.getValueAt (this.selectedResolutionIndex));
+                }
             }
         }
     }
@@ -237,17 +245,19 @@ public abstract class AbstractRaindropsView<S extends IControlSurface<C>, C exte
             return -1;
         int step;
         final INoteClip clip = this.getClip ();
-        final int editMidiChannel = this.configuration.getMidiEditChannel ();
+        final NotePosition notePosition = new NotePosition (this.configuration.getMidiEditChannel (), 0, row);
         for (step = 0; step < length; step++)
         {
-            if (clip.getStep (editMidiChannel, step, row).getState () != StepState.OFF)
+            notePosition.setStep (step);
+            if (clip.getStep (notePosition).getState () != StepState.OFF)
                 break;
         }
         if (step >= length)
             return -1;
         for (int step2 = step + 1; step2 < length; step2++)
         {
-            if (clip.getStep (editMidiChannel, step2, row).getState () != StepState.OFF)
+            notePosition.setStep (step2);
+            if (clip.getStep (notePosition).getState () != StepState.OFF)
                 return step2 - step;
         }
         return -1;
@@ -261,10 +271,11 @@ public abstract class AbstractRaindropsView<S extends IControlSurface<C>, C exte
         int step = start;
         int counter = 0;
         final INoteClip clip = this.getClip ();
-        final int editMidiChannel = this.configuration.getMidiEditChannel ();
+        final NotePosition notePosition = new NotePosition (this.configuration.getMidiEditChannel (), 0, row);
         do
         {
-            if (clip.getStep (editMidiChannel, step, row).getState () != StepState.OFF)
+            notePosition.setStep (step);
+            if (clip.getStep (notePosition).getState () != StepState.OFF)
                 return counter;
             step++;
             counter++;
@@ -283,10 +294,11 @@ public abstract class AbstractRaindropsView<S extends IControlSurface<C>, C exte
         int step = s;
         int counter = 0;
         final INoteClip clip = this.getClip ();
-        final int editMidiChannel = this.configuration.getMidiEditChannel ();
+        final NotePosition notePosition = new NotePosition (this.configuration.getMidiEditChannel (), 0, row);
         do
         {
-            if (clip.getStep (editMidiChannel, step, row).getState () != StepState.OFF)
+            notePosition.setStep (step);
+            if (clip.getStep (notePosition).getState () != StepState.OFF)
                 return counter;
             step--;
             counter++;

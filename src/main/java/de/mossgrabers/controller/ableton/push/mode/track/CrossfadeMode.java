@@ -10,10 +10,10 @@ import de.mossgrabers.framework.controller.display.Format;
 import de.mossgrabers.framework.controller.display.IGraphicDisplay;
 import de.mossgrabers.framework.controller.display.ITextDisplay;
 import de.mossgrabers.framework.daw.IModel;
-import de.mossgrabers.framework.daw.data.IParameter;
 import de.mossgrabers.framework.daw.data.ITrack;
 import de.mossgrabers.framework.daw.data.bank.ITrackBank;
 import de.mossgrabers.framework.mode.Modes;
+import de.mossgrabers.framework.parameter.IParameter;
 import de.mossgrabers.framework.parameterprovider.track.CrossfadeParameterProvider;
 
 import java.util.HashMap;

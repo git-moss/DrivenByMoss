@@ -8,7 +8,7 @@ import de.mossgrabers.controller.electra.one.controller.ElectraOneControlSurface
 import de.mossgrabers.framework.controller.IControlSurface;
 import de.mossgrabers.framework.controller.valuechanger.IValueChanger;
 import de.mossgrabers.framework.daw.ITransport;
-import de.mossgrabers.framework.daw.data.PlayPositionParameter;
+import de.mossgrabers.framework.parameter.PlayPositionParameter;
 
 
 /**

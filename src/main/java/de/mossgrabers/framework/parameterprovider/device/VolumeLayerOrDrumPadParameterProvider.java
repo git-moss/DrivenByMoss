@@ -4,8 +4,8 @@
 
 package de.mossgrabers.framework.parameterprovider.device;
 
-import de.mossgrabers.framework.daw.data.IParameter;
 import de.mossgrabers.framework.daw.data.ISpecificDevice;
+import de.mossgrabers.framework.parameter.IParameter;
 
 
 /**

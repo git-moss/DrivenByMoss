@@ -10,7 +10,7 @@ import de.mossgrabers.controller.ni.maschine.jam.controller.MaschineJamControlSu
 import de.mossgrabers.framework.controller.ButtonID;
 import de.mossgrabers.framework.controller.grid.IPadGrid;
 import de.mossgrabers.framework.daw.IModel;
-import de.mossgrabers.framework.daw.INoteClip;
+import de.mossgrabers.framework.daw.clip.INoteClip;
 import de.mossgrabers.framework.daw.data.bank.ISceneBank;
 import de.mossgrabers.framework.daw.data.bank.ITrackBank;
 import de.mossgrabers.framework.featuregroup.AbstractView;

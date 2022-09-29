@@ -7,10 +7,10 @@ package de.mossgrabers.controller.ableton.push.parameterprovider;
 import de.mossgrabers.controller.ableton.push.PushConfiguration;
 import de.mossgrabers.framework.daw.IModel;
 import de.mossgrabers.framework.daw.data.IChannel;
-import de.mossgrabers.framework.daw.data.IParameter;
 import de.mossgrabers.framework.daw.data.ITrack;
 import de.mossgrabers.framework.daw.data.empty.EmptyParameter;
 import de.mossgrabers.framework.observer.ISettingObserver;
+import de.mossgrabers.framework.parameter.IParameter;
 import de.mossgrabers.framework.parameterprovider.track.SelectedTrackParameterProvider;
 
 

@@ -4,8 +4,8 @@
 
 package de.mossgrabers.framework.mode;
 
-import de.mossgrabers.framework.daw.INoteClip;
-import de.mossgrabers.framework.daw.data.GridStep;
+import de.mossgrabers.framework.daw.clip.INoteClip;
+import de.mossgrabers.framework.daw.clip.NotePosition;
 
 import java.util.List;
 
@@ -21,22 +21,18 @@ public interface INoteMode
      * Set a note for editing.
      *
      * @param clip The clip to edit
-     * @param channel The MIDI channel
-     * @param step The step to edit
-     * @param note The note to edit
+     * @param notePosition The position of the note
      */
-    void setNote (INoteClip clip, int channel, int step, int note);
+    void setNote (INoteClip clip, NotePosition notePosition);
 
 
     /**
      * Add a note for editing.
      *
      * @param clip The clip to edit
-     * @param channel The MIDI channel
-     * @param step The step to edit
-     * @param note The note to edit
+     * @param notePosition The position of the note
      */
-    void addNote (INoteClip clip, int channel, int step, int note);
+    void addNote (INoteClip clip, NotePosition notePosition);
 
 
     /**
@@ -50,5 +46,22 @@ public interface INoteMode
      *
      * @return The notes
      */
-    List<GridStep> getNotes ();
+    List<NotePosition> getNotes ();
+
+
+    /**
+     * Get the clip.
+     *
+     * @return The clip
+     */
+    INoteClip getClip ();
+
+
+    /**
+     * Get the positions of the notes to edit for a given parameter.
+     * 
+     * @param parameterIndex The index of the parameter for which to get the note position
+     * @return The note positions
+     */
+    List<NotePosition> getNotePosition (int parameterIndex);
 }

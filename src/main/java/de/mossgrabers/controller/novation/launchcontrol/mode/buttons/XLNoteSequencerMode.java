@@ -10,9 +10,10 @@ import de.mossgrabers.controller.novation.launchcontrol.controller.LaunchControl
 import de.mossgrabers.framework.configuration.Configuration;
 import de.mossgrabers.framework.controller.ButtonID;
 import de.mossgrabers.framework.daw.IModel;
-import de.mossgrabers.framework.daw.INoteClip;
-import de.mossgrabers.framework.daw.IStepInfo;
-import de.mossgrabers.framework.daw.StepState;
+import de.mossgrabers.framework.daw.clip.INoteClip;
+import de.mossgrabers.framework.daw.clip.IStepInfo;
+import de.mossgrabers.framework.daw.clip.NotePosition;
+import de.mossgrabers.framework.daw.clip.StepState;
 import de.mossgrabers.framework.mode.sequencer.AbstractSequencerMode;
 import de.mossgrabers.framework.utils.ButtonEvent;
 import de.mossgrabers.framework.view.sequencer.AbstractSequencerView;
@@ -64,12 +65,13 @@ public class XLNoteSequencerMode extends AbstractSequencerMode<LaunchControlXLCo
         if (event != ButtonEvent.UP)
             return;
 
-        final int channel = this.configuration.getMidiEditChannel ();
         final INoteClip clip = this.getClip ();
-        int highestRow = clip.getHighestRow (channel, index);
-        final IStepInfo step = clip.getStep (channel, index, highestRow);
+        final int channel = this.configuration.getMidiEditChannel ();
+        final int highestRow = clip.getHighestRow (channel, index);
+        final NotePosition notePosition = new NotePosition (channel, index, highestRow);
+        final IStepInfo step = clip.getStep (notePosition);
         if (step.getState () == StepState.START)
-            clip.updateStepMuteState (channel, index, highestRow, !step.isMuted ());
+            clip.updateStepMuteState (notePosition, !step.isMuted ());
     }
 
 
@@ -87,8 +89,9 @@ public class XLNoteSequencerMode extends AbstractSequencerMode<LaunchControlXLCo
         final boolean hilite = column == hiStep;
 
         final int channel = this.configuration.getMidiEditChannel ();
-        int highestRow = clip.getHighestRow (channel, column);
-        final IStepInfo stepInfo = clip.getStep (channel, column, highestRow);
+        final int highestRow = clip.getHighestRow (channel, column);
+        final NotePosition notePosition = new NotePosition (channel, column, highestRow);
+        final IStepInfo stepInfo = clip.getStep (notePosition);
 
         String colorID;
         if (stepInfo.getState () == StepState.START && stepInfo.isMuted ())

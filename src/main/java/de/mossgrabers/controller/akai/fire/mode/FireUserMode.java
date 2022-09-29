@@ -10,9 +10,9 @@ import de.mossgrabers.controller.akai.fire.graphics.canvas.component.TitleValueC
 import de.mossgrabers.framework.controller.ContinuousID;
 import de.mossgrabers.framework.controller.display.IGraphicDisplay;
 import de.mossgrabers.framework.daw.IModel;
-import de.mossgrabers.framework.daw.data.IParameter;
 import de.mossgrabers.framework.daw.data.bank.IParameterBank;
 import de.mossgrabers.framework.mode.device.UserMode;
+import de.mossgrabers.framework.parameter.IParameter;
 
 
 /**

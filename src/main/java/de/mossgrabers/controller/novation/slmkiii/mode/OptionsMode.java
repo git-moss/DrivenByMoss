@@ -8,9 +8,9 @@ import de.mossgrabers.controller.novation.slmkiii.controller.SLMkIIIColorManager
 import de.mossgrabers.controller.novation.slmkiii.controller.SLMkIIIControlSurface;
 import de.mossgrabers.controller.novation.slmkiii.controller.SLMkIIIDisplay;
 import de.mossgrabers.framework.controller.ButtonID;
-import de.mossgrabers.framework.daw.IClip;
 import de.mossgrabers.framework.daw.IModel;
 import de.mossgrabers.framework.daw.ITransport;
+import de.mossgrabers.framework.daw.clip.IClip;
 import de.mossgrabers.framework.daw.data.IItem;
 import de.mossgrabers.framework.daw.data.IMasterTrack;
 import de.mossgrabers.framework.utils.ButtonEvent;

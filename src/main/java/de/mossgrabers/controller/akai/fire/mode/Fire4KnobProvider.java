@@ -7,7 +7,7 @@ package de.mossgrabers.controller.akai.fire.mode;
 import de.mossgrabers.controller.akai.fire.controller.FireControlSurface;
 import de.mossgrabers.framework.controller.ButtonID;
 import de.mossgrabers.framework.controller.color.ColorEx;
-import de.mossgrabers.framework.daw.data.IParameter;
+import de.mossgrabers.framework.parameter.IParameter;
 import de.mossgrabers.framework.parameterprovider.IParameterProvider;
 import de.mossgrabers.framework.parameterprovider.special.AbstractWrapperProvider;
 

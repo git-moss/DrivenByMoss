@@ -9,8 +9,8 @@ import de.mossgrabers.framework.controller.ButtonID;
 import de.mossgrabers.framework.controller.ContinuousID;
 import de.mossgrabers.framework.controller.IControlSurface;
 import de.mossgrabers.framework.daw.IModel;
-import de.mossgrabers.framework.daw.data.IParameter;
 import de.mossgrabers.framework.featuregroup.AbstractParameterMode;
+import de.mossgrabers.framework.parameter.IParameter;
 import de.mossgrabers.framework.parameterprovider.device.BankParameterProvider;
 
 import java.util.List;

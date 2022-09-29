@@ -27,7 +27,7 @@ public class LaunchControlXLControllerDefinition extends DefaultControllerDefini
      */
     public LaunchControlXLControllerDefinition ()
     {
-        super (EXTENSION_ID, "LaunchControl XL", "Novation", 1, 1);
+        super (EXTENSION_ID, "Launch Control XL", "Novation", 1, 1);
     }
 
 
@@ -40,7 +40,7 @@ public class LaunchControlXLControllerDefinition extends DefaultControllerDefini
         {
             default:
             case WINDOWS:
-                midiDiscoveryPairs.addAll (this.createWindowsDeviceDiscoveryPairs ("Launch Control XL%s", "Launch Control XL%s"));
+                midiDiscoveryPairs.addAll (this.createWindowsDeviceDiscoveryPairs ("%sLaunch Control XL", "%sLaunch Control XL"));
                 break;
 
             case MAC:

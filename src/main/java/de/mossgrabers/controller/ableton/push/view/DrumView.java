@@ -8,7 +8,8 @@ import de.mossgrabers.controller.ableton.push.PushConfiguration;
 import de.mossgrabers.controller.ableton.push.controller.PushControlSurface;
 import de.mossgrabers.framework.controller.ButtonID;
 import de.mossgrabers.framework.daw.IModel;
-import de.mossgrabers.framework.daw.INoteClip;
+import de.mossgrabers.framework.daw.clip.INoteClip;
+import de.mossgrabers.framework.daw.clip.NotePosition;
 import de.mossgrabers.framework.daw.data.ICursorDevice;
 import de.mossgrabers.framework.daw.data.IDrumDevice;
 import de.mossgrabers.framework.daw.data.IDrumPad;
@@ -58,9 +59,9 @@ public class DrumView extends AbstractDrumView<PushControlSurface, PushConfigura
         final int x = index % GRID_COLUMNS;
         final int stepX = GRID_COLUMNS * (this.allRows - 1 - y) + x;
         final int stepY = this.scales.getDrumOffset () + this.getSelectedPad ();
-        final int channel = this.configuration.getMidiEditChannel ();
-        final INoteClip clip = this.getClip ();
-        this.editNote (clip, channel, stepX, stepY, false);
+
+        final NotePosition notePosition = new NotePosition (this.configuration.getMidiEditChannel (), stepX, stepY);
+        this.editNote (this.getClip (), notePosition, false);
     }
 
 
@@ -148,23 +149,23 @@ public class DrumView extends AbstractDrumView<PushControlSurface, PushConfigura
 
     /** {@inheritDoc} */
     @Override
-    protected boolean handleSequencerAreaButtonCombinations (final INoteClip clip, final int channel, final int step, final int note, final int velocity)
+    protected boolean handleSequencerAreaButtonCombinations (final INoteClip clip, final NotePosition notePosition, final int velocity)
     {
         final boolean isSelectPressed = this.surface.isSelectPressed ();
 
         if (this.surface.isShiftPressed ())
         {
             if (velocity > 0)
-                this.handleSequencerAreaRepeatOperator (clip, channel, step, note, velocity, !isSelectPressed);
+                this.handleSequencerAreaRepeatOperator (clip, notePosition, velocity, !isSelectPressed);
             return true;
         }
 
         if (isSelectPressed)
         {
-            this.editNote (clip, channel, step, note, true);
+            this.editNote (clip, notePosition, true);
             return true;
         }
 
-        return super.handleSequencerAreaButtonCombinations (clip, channel, step, note, velocity);
+        return super.handleSequencerAreaButtonCombinations (clip, notePosition, velocity);
     }
 }

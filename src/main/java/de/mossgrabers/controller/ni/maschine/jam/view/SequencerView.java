@@ -11,7 +11,8 @@ import de.mossgrabers.controller.ni.maschine.jam.controller.MaschineJamControlSu
 import de.mossgrabers.framework.command.trigger.Direction;
 import de.mossgrabers.framework.controller.ButtonID;
 import de.mossgrabers.framework.daw.IModel;
-import de.mossgrabers.framework.daw.INoteClip;
+import de.mossgrabers.framework.daw.clip.INoteClip;
+import de.mossgrabers.framework.daw.clip.NotePosition;
 import de.mossgrabers.framework.scale.Scales;
 import de.mossgrabers.framework.utils.ButtonEvent;
 import de.mossgrabers.framework.view.Views;
@@ -133,17 +134,17 @@ public class SequencerView extends AbstractNoteSequencerView<MaschineJamControlS
 
     /** {@inheritDoc} */
     @Override
-    protected boolean handleSequencerAreaButtonCombinations (final INoteClip clip, final int channel, final int step, final int row, final int note, final int velocity)
+    protected boolean handleSequencerAreaButtonCombinations (final INoteClip clip, final NotePosition notePosition, final int row, final int velocity)
     {
         final boolean isSelectPressed = this.surface.isSelectPressed ();
         if (isSelectPressed)
         {
             if (velocity > 0)
-                this.handleSequencerAreaRepeatOperator (clip, channel, step, note, velocity, isSelectPressed);
+                this.handleSequencerAreaRepeatOperator (clip, notePosition, velocity, isSelectPressed);
             return true;
         }
 
-        return super.handleSequencerAreaButtonCombinations (clip, channel, step, row, note, velocity);
+        return super.handleSequencerAreaButtonCombinations (clip, notePosition, row, velocity);
     }
 
 

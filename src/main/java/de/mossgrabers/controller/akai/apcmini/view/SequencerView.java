@@ -9,7 +9,7 @@ import de.mossgrabers.controller.akai.apcmini.controller.APCminiControlSurface;
 import de.mossgrabers.framework.controller.ButtonID;
 import de.mossgrabers.framework.controller.color.ColorManager;
 import de.mossgrabers.framework.daw.IModel;
-import de.mossgrabers.framework.daw.INoteClip;
+import de.mossgrabers.framework.daw.clip.INoteClip;
 import de.mossgrabers.framework.scale.Scales;
 import de.mossgrabers.framework.utils.ButtonEvent;
 import de.mossgrabers.framework.view.sequencer.AbstractNoteSequencerView;

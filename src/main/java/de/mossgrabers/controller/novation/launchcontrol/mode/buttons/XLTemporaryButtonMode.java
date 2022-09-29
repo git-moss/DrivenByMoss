@@ -3,8 +3,8 @@ package de.mossgrabers.controller.novation.launchcontrol.mode.buttons;
 import de.mossgrabers.controller.novation.launchcontrol.LaunchControlXLConfiguration;
 import de.mossgrabers.controller.novation.launchcontrol.controller.LaunchControlXLControlSurface;
 import de.mossgrabers.framework.daw.IModel;
-import de.mossgrabers.framework.daw.data.IParameter;
 import de.mossgrabers.framework.featuregroup.AbstractParameterMode;
+import de.mossgrabers.framework.parameter.IParameter;
 
 
 /**

@@ -5,9 +5,10 @@
 package de.mossgrabers.framework.graphics.canvas.component;
 
 import de.mossgrabers.framework.controller.color.ColorEx;
-import de.mossgrabers.framework.daw.INoteClip;
-import de.mossgrabers.framework.daw.IStepInfo;
-import de.mossgrabers.framework.daw.StepState;
+import de.mossgrabers.framework.daw.clip.INoteClip;
+import de.mossgrabers.framework.daw.clip.IStepInfo;
+import de.mossgrabers.framework.daw.clip.NotePosition;
+import de.mossgrabers.framework.daw.clip.StepState;
 import de.mossgrabers.framework.graphics.Align;
 import de.mossgrabers.framework.graphics.IGraphicsConfiguration;
 import de.mossgrabers.framework.graphics.IGraphicsContext;
@@ -139,18 +140,23 @@ public class MidiClipComponent implements IComponent
 
         final double fontSize = gc.calculateFontSize ("G#5", stepHeight, stepWidth, 12.0);
 
+        final NotePosition notePosition = new NotePosition ();
+
         for (int row = 0; row < range; row++)
         {
+            notePosition.setNote (lowerRowWithData + row);
             gc.fillRectangle (left, top + (range - row - 1) * stepHeight, width, 1, dividersColor);
 
             for (int step = 0; step < numSteps; step++)
             {
-                final int note = lowerRowWithData + row;
+                notePosition.setStep (step);
 
                 // Get step, check for length
                 for (int channel = 0; channel < 16; channel++)
                 {
-                    final IStepInfo stepInfo = this.clip.getStep (channel, step, note);
+                    notePosition.setChannel (channel);
+
+                    final IStepInfo stepInfo = this.clip.getStep (notePosition);
                     final StepState stepState = stepInfo.getState ();
                     if (stepState == StepState.OFF)
                         continue;
@@ -169,7 +175,7 @@ public class MidiClipComponent implements IComponent
 
                     if (isStart && fontSize > 0)
                     {
-                        final String text = channel + 1 + ": " + Scales.formatDrumNote (note);
+                        final String text = channel + 1 + ": " + Scales.formatDrumNote (notePosition.getNote ());
                         final ColorEx textColor = ColorEx.calcContrastColor (noteColor);
                         gc.drawTextInBounds (text, x, top + (range - row - 1) * stepHeight + 2, w - 1, stepHeight - 3, Align.CENTER, textColor, fontSize);
                     }

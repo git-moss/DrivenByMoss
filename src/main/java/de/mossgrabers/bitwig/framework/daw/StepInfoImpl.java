@@ -4,10 +4,10 @@
 
 package de.mossgrabers.bitwig.framework.daw;
 
-import de.mossgrabers.framework.daw.DefaultStepInfo;
-import de.mossgrabers.framework.daw.IStepInfo;
-import de.mossgrabers.framework.daw.NoteOccurrenceType;
-import de.mossgrabers.framework.daw.StepState;
+import de.mossgrabers.framework.daw.clip.DefaultStepInfo;
+import de.mossgrabers.framework.daw.clip.IStepInfo;
+import de.mossgrabers.framework.daw.clip.NoteOccurrenceType;
+import de.mossgrabers.framework.daw.clip.StepState;
 
 import com.bitwig.extension.controller.api.NoteOccurrence;
 import com.bitwig.extension.controller.api.NoteStep;

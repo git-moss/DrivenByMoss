@@ -11,11 +11,11 @@ import de.mossgrabers.framework.controller.color.ColorEx;
 import de.mossgrabers.framework.controller.grid.IPadGrid;
 import de.mossgrabers.framework.controller.hardware.IHwButton;
 import de.mossgrabers.framework.daw.IModel;
-import de.mossgrabers.framework.daw.INoteClip;
-import de.mossgrabers.framework.daw.IStepInfo;
-import de.mossgrabers.framework.daw.StepState;
+import de.mossgrabers.framework.daw.clip.INoteClip;
+import de.mossgrabers.framework.daw.clip.IStepInfo;
+import de.mossgrabers.framework.daw.clip.NotePosition;
+import de.mossgrabers.framework.daw.clip.StepState;
 import de.mossgrabers.framework.daw.constants.Resolution;
-import de.mossgrabers.framework.daw.data.GridStep;
 import de.mossgrabers.framework.daw.data.IDrumDevice;
 import de.mossgrabers.framework.utils.ButtonEvent;
 
@@ -93,17 +93,16 @@ public abstract class AbstractDrumLaneView<S extends IControlSurface<C>, C exten
 
         final int sound = y % this.lanes + this.scales.getDrumOffset ();
         final int laneOffset = (this.allRows - 1 - y) / this.lanes * this.numColumns;
-        final int col = laneOffset + x;
-
-        final int channel = this.configuration.getMidiEditChannel ();
         final int vel = this.configuration.isAccentActive () ? this.configuration.getFixedAccentValue () : this.surface.getButton (ButtonID.get (ButtonID.PAD1, index)).getPressedVelocity ();
-        final INoteClip clip = this.getClip ();
 
-        if (this.handleNoteAreaButtonCombinations (clip, channel, col, y, sound, velocity, vel))
+        final NotePosition notePosition = new NotePosition (this.configuration.getMidiEditChannel (), laneOffset + x, sound);
+
+        final INoteClip clip = this.getClip ();
+        if (this.handleNoteAreaButtonCombinations (clip, notePosition, y, velocity, vel))
             return;
 
         if (velocity == 0)
-            clip.toggleStep (channel, col, sound, vel);
+            clip.toggleStep (notePosition, vel);
     }
 
 
@@ -111,26 +110,24 @@ public abstract class AbstractDrumLaneView<S extends IControlSurface<C>, C exten
      * Handle button combinations on the note area of the sequencer.
      *
      * @param clip The sequenced MIDI clip
-     * @param channel The MIDI channel of the note
+     * @param notePosition The position of the note
      * @param row The row in the current page in the clip
-     * @param note The note in the current page of the pad in the clip
-     * @param step The step in the current page in the clip
      * @param velocity The velocity
      * @param accentVelocity The velocity or accent value
      * @return True if handled
      */
-    protected boolean handleNoteAreaButtonCombinations (final INoteClip clip, final int channel, final int step, final int row, final int note, final int velocity, final int accentVelocity)
+    protected boolean handleNoteAreaButtonCombinations (final INoteClip clip, final NotePosition notePosition, final int row, final int velocity, final int accentVelocity)
     {
         // Handle note duplicate function
         if (this.isButtonCombination (ButtonID.DUPLICATE))
         {
             if (velocity == 0)
             {
-                final IStepInfo noteStep = clip.getStep (channel, step, note);
+                final IStepInfo noteStep = clip.getStep (notePosition);
                 if (noteStep.getState () == StepState.START)
                     this.copyNote = noteStep;
                 else if (this.copyNote != null)
-                    clip.setStep (channel, step, note, this.copyNote);
+                    clip.setStep (notePosition, this.copyNote);
             }
             return true;
         }
@@ -139,10 +136,10 @@ public abstract class AbstractDrumLaneView<S extends IControlSurface<C>, C exten
         {
             if (velocity == 0)
             {
-                final IStepInfo stepInfo = clip.getStep (channel, step, note);
+                final IStepInfo stepInfo = clip.getStep (notePosition);
                 final StepState isSet = stepInfo.getState ();
                 if (isSet == StepState.START)
-                    this.getClip ().updateStepMuteState (channel, step, note, !stepInfo.isMuted ());
+                    clip.updateStepMuteState (notePosition, !stepInfo.isMuted ());
             }
             return true;
         }
@@ -150,6 +147,9 @@ public abstract class AbstractDrumLaneView<S extends IControlSurface<C>, C exten
         // Change length of a note or create a new one with a length
         final int laneOffset = (this.allRows - row - 1) / this.lanes * this.numColumns;
         final int offset = row * this.numColumns;
+        final NotePosition np = new NotePosition (notePosition);
+        final int step = np.getStep ();
+        final int note = np.getNote ();
         for (int s = 0; s < step; s++)
         {
             final IHwButton button = this.surface.getButton (ButtonID.get (ButtonID.PAD1, offset + s));
@@ -159,11 +159,12 @@ public abstract class AbstractDrumLaneView<S extends IControlSurface<C>, C exten
                 button.setConsumed ();
                 final int length = step - start + 1;
                 final double duration = length * Resolution.getValueAt (this.getResolutionIndex ());
-                final StepState state = note < 0 ? StepState.OFF : clip.getStep (channel, start, note).getState ();
+                np.setStep (start);
+                final StepState state = note < 0 ? StepState.OFF : clip.getStep (np).getState ();
                 if (state == StepState.START)
-                    clip.updateStepDuration (channel, start, note, duration);
+                    clip.updateStepDuration (np, duration);
                 else
-                    clip.setStep (channel, start, note, accentVelocity, duration);
+                    clip.setStep (np, accentVelocity, duration);
                 return true;
             }
         }
@@ -190,21 +191,22 @@ public abstract class AbstractDrumLaneView<S extends IControlSurface<C>, C exten
         // Paint the sequencer steps
         final int hiStep = this.isInXRange (step) ? step % this.clipCols : -1;
         final int offsetY = this.scales.getDrumOffset ();
-        final int editMidiChannel = this.configuration.getMidiEditChannel ();
-        final List<GridStep> editNotes = this.getEditNotes ();
+        final List<NotePosition> editNotes = this.getEditNotes ();
+        final NotePosition position = new NotePosition (this.configuration.getMidiEditChannel (), 0, 0);
         for (int sound = 0; sound < this.lanes; sound++)
         {
-            final int noteRow = offsetY + sound;
+            position.setNote (offsetY + sound);
             final Optional<ColorEx> drumPadColor = this.getPadColor (this.primary, sound);
             for (int col = 0; col < this.clipCols; col++)
             {
-                final IStepInfo stepInfo = clip.getStep (editMidiChannel, col, noteRow);
+                position.setStep (col);
+                final IStepInfo stepInfo = clip.getStep (position);
                 final boolean hilite = col == hiStep;
                 final int x = col % this.numColumns;
                 int y = this.lanes - 1 - sound;
                 if (col >= this.numColumns)
                     y += this.lanes;
-                padGrid.lightEx (x, y, this.getStepColor (stepInfo, hilite, drumPadColor, editMidiChannel, col, noteRow, editNotes));
+                padGrid.lightEx (x, y, this.getStepColor (stepInfo, hilite, drumPadColor, position.getChannel (), col, position.getNote (), editNotes));
             }
         }
     }

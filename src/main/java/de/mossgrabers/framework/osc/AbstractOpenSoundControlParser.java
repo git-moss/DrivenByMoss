@@ -4,10 +4,10 @@
 
 package de.mossgrabers.framework.osc;
 
-import de.mossgrabers.framework.daw.IClip;
 import de.mossgrabers.framework.daw.IHost;
 import de.mossgrabers.framework.daw.IModel;
 import de.mossgrabers.framework.daw.ITransport;
+import de.mossgrabers.framework.daw.clip.IClip;
 import de.mossgrabers.framework.daw.data.IMasterTrack;
 import de.mossgrabers.framework.daw.midi.IMidiInput;
 import de.mossgrabers.framework.scale.Scales;

@@ -10,11 +10,11 @@ import de.mossgrabers.framework.controller.grid.IPadGrid;
 import de.mossgrabers.framework.daw.IHost;
 import de.mossgrabers.framework.daw.IModel;
 import de.mossgrabers.framework.daw.data.ICursorDevice;
-import de.mossgrabers.framework.daw.data.IParameter;
 import de.mossgrabers.framework.daw.data.bank.IParameterBank;
 import de.mossgrabers.framework.featuregroup.AbstractFeatureGroup;
 import de.mossgrabers.framework.mode.Modes;
 import de.mossgrabers.framework.mode.device.SelectedDeviceMode;
+import de.mossgrabers.framework.parameter.IParameter;
 
 import java.util.Optional;
 

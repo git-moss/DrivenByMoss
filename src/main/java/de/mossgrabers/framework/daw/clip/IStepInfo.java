@@ -2,7 +2,7 @@
 // (c) 2017-2022
 // Licensed under LGPLv3 - http://www.gnu.org/licenses/lgpl-3.0.txt
 
-package de.mossgrabers.framework.daw;
+package de.mossgrabers.framework.daw.clip;
 
 /**
  * Interface to the data about a note in a sequencer step.
@@ -166,7 +166,7 @@ public interface IStepInfo
     /**
      * Get the number of repeats.
      *
-     * @return The number of repeats
+     * @return The number of repeats in the range of [-127..127]
      */
     int getRepeatCount ();
 

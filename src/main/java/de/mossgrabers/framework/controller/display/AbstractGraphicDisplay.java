@@ -7,7 +7,7 @@ package de.mossgrabers.framework.controller.display;
 import de.mossgrabers.framework.controller.color.ColorEx;
 import de.mossgrabers.framework.controller.hardware.IHwGraphicsDisplay;
 import de.mossgrabers.framework.daw.IHost;
-import de.mossgrabers.framework.daw.INoteClip;
+import de.mossgrabers.framework.daw.clip.INoteClip;
 import de.mossgrabers.framework.daw.data.IScene;
 import de.mossgrabers.framework.daw.data.ISlot;
 import de.mossgrabers.framework.daw.data.ITrack;

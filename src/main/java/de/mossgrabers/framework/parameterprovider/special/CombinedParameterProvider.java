@@ -5,12 +5,14 @@
 package de.mossgrabers.framework.parameterprovider.special;
 
 import de.mossgrabers.framework.controller.color.ColorEx;
-import de.mossgrabers.framework.daw.data.IParameter;
 import de.mossgrabers.framework.daw.data.empty.EmptyParameter;
 import de.mossgrabers.framework.observer.IParametersAdjustObserver;
+import de.mossgrabers.framework.parameter.IParameter;
 import de.mossgrabers.framework.parameterprovider.IParameterProvider;
 
+import java.util.Arrays;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Optional;
 import java.util.Set;
 
@@ -22,8 +24,8 @@ import java.util.Set;
  */
 public class CombinedParameterProvider implements IParameterProvider
 {
-    private final IParameterProvider [] providers;
-    private final int                   overallSize;
+    private final List<IParameterProvider> providers;
+    private final int                      overallSize;
 
 
     /**
@@ -32,6 +34,17 @@ public class CombinedParameterProvider implements IParameterProvider
      * @param providers The parameter providers to combine
      */
     public CombinedParameterProvider (final IParameterProvider... providers)
+    {
+        this (Arrays.asList (providers));
+    }
+
+
+    /**
+     * Constructor.
+     *
+     * @param providers The parameter providers to combine
+     */
+    public CombinedParameterProvider (final List<IParameterProvider> providers)
     {
         this.providers = providers;
 

@@ -8,7 +8,7 @@ import de.mossgrabers.framework.controller.valuechanger.IValueChanger;
 import de.mossgrabers.framework.daw.IHost;
 import de.mossgrabers.framework.daw.data.EqualizerBandType;
 import de.mossgrabers.framework.daw.data.IEqualizerDevice;
-import de.mossgrabers.framework.daw.data.IParameter;
+import de.mossgrabers.framework.parameter.IParameter;
 
 import com.bitwig.extension.controller.api.Device;
 import com.bitwig.extension.controller.api.Parameter;

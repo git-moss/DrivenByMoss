@@ -779,8 +779,7 @@ public abstract class AbstractControllerSetup<S extends IControlSurface<C>, C ex
             button.bind (midiInput, bindType, midiInputChannel, midiControl, value);
         if (hasLight)
         {
-            final IntSupplier intSupplier = () -> button.isPressed () ? 1 : 0;
-            final IntSupplier supp = supplier == null ? intSupplier : supplier;
+            final IntSupplier supp = supplier == null ? new ButtonPressedSupplier (button) : supplier;
             this.addLight (surface, null, buttonID, button, bindType, midiOutputChannel, midiControl, supp, colorIds);
         }
     }
@@ -814,13 +813,7 @@ public abstract class AbstractControllerSetup<S extends IControlSurface<C>, C ex
                 continue;
             final BindType bindType = this.getTriggerBindType (buttonID);
             button.bind (surface.getMidiInput (), bindType, midiChannel, midiControl, startValue + i);
-
-            final IntSupplier supp;
-            if (supplier == null)
-                supp = () -> button.isPressed () ? 1 : 0;
-            else
-                supp = () -> supplier.process (index);
-
+            final IntSupplier supp = supplier == null ? new ButtonPressedSupplier (button) : () -> supplier.process (index);
             this.addLight (surface, null, buttonID, button, bindType, midiChannel, midiControl, supp, colorIds);
         }
     }
@@ -1447,6 +1440,32 @@ public abstract class AbstractControllerSetup<S extends IControlSurface<C>, C ex
                 modeManager.restore ();
             else
                 modeManager.setActive (Modes.TRACK);
+        }
+    }
+
+
+    /** Supplier for a buttons' pressed state. */
+    private class ButtonPressedSupplier implements IntSupplier
+    {
+        private final IHwButton button;
+
+
+        /**
+         * Constructor.
+         *
+         * @param button The hardware button
+         */
+        ButtonPressedSupplier (final IHwButton button)
+        {
+            this.button = button;
+        }
+
+
+        /** {@inheritDoc} */
+        @Override
+        public int getAsInt ()
+        {
+            return this.button.isPressed () ? 1 : 0;
         }
     }
 }

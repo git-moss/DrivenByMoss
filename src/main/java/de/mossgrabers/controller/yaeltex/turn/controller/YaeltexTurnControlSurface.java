@@ -8,6 +8,7 @@ import de.mossgrabers.controller.yaeltex.turn.YaeltexTurnConfiguration;
 import de.mossgrabers.framework.controller.AbstractControlSurface;
 import de.mossgrabers.framework.controller.color.ColorEx;
 import de.mossgrabers.framework.controller.color.ColorManager;
+import de.mossgrabers.framework.controller.hardware.BindType;
 import de.mossgrabers.framework.daw.IHost;
 import de.mossgrabers.framework.daw.midi.IMidiInput;
 import de.mossgrabers.framework.daw.midi.IMidiOutput;
@@ -23,29 +24,29 @@ import java.util.Arrays;
 @SuppressWarnings("javadoc")
 public class YaeltexTurnControlSurface extends AbstractControlSurface<YaeltexTurnConfiguration>
 {
+    // Zero based!
     public static final int  MIDI_CHANNEL_MAIN          = 15;
-    public static final int  MIDI_CHANNEL_TRACK_BUTTONS = 14;
     public static final int  MIDI_CHANNEL_SET_COLOR     = 13;
     public static final int  MIDI_CHANNEL_SET_INTENSITY = 12;
 
     // MIDI Notes on MIDI channel 16
-    public static final int  BUTTON_CLIPS               = 88;
-    public static final int  BUTTON_USR                 = 89;
-    public static final int  BUTTON_PLAY                = 90;
-    public static final int  BUTTON_REC                 = 91;
-    public static final int  BUTTON_LOOP                = 92;
-    public static final int  BUTTON_LEFT                = 93;
-    public static final int  BUTTON_SELECT              = 94;
-    public static final int  BUTTON_SHIFT               = 95;
+    public static final int  BUTTON_CLIPS               = 8;
+    public static final int  BUTTON_USR                 = 9;
+    public static final int  BUTTON_PLAY                = 10;
+    public static final int  BUTTON_REC                 = 11;
+    public static final int  BUTTON_LOOP                = 12;
+    public static final int  BUTTON_LEFT                = 13;
+    public static final int  BUTTON_SELECT              = 14;
+    public static final int  BUTTON_SHIFT               = 15;
 
-    public static final int  BUTTON_SESSION             = 80;
-    public static final int  BUTTON_TRK                 = 81;
-    public static final int  BUTTON_STOP                = 82;
-    public static final int  BUTTON_OVERDUB             = 83;
-    public static final int  BUTTON_TAP_TEMPO           = 84;
-    public static final int  BUTTON_RIGHT               = 85;
-    public static final int  BUTTON_UP                  = 86;
-    public static final int  BUTTON_DOWN                = 87;
+    public static final int  BUTTON_SESSION             = 0;
+    public static final int  BUTTON_TRK                 = 1;
+    public static final int  BUTTON_STOP                = 2;
+    public static final int  BUTTON_OVERDUB             = 3;
+    public static final int  BUTTON_TAP_TEMPO           = 4;
+    public static final int  BUTTON_RIGHT               = 5;
+    public static final int  BUTTON_UP                  = 6;
+    public static final int  BUTTON_DOWN                = 7;
 
     // MIDI Notes on MIDI channel 15
     public static final int  BUTTON_ROW1_1              = 70;
@@ -82,7 +83,7 @@ public class YaeltexTurnControlSurface extends AbstractControlSurface<YaeltexTur
      */
     public YaeltexTurnControlSurface (final IHost host, final ColorManager colorManager, final YaeltexTurnConfiguration configuration, final IMidiOutput output, final IMidiInput input)
     {
-        super (host, configuration, colorManager, output, input, new YaeltexTurnPadGrid (colorManager, output), 800, 480);
+        super (host, configuration, colorManager, output, input, new YaeltexTurnPadGrid (colorManager, output), 700, 860);
 
         this.defaultMidiChannel = MIDI_CHANNEL_MAIN;
 
@@ -132,5 +133,21 @@ public class YaeltexTurnControlSurface extends AbstractControlSurface<YaeltexTur
 
         for (int i = 0; i < 32; i++)
             this.setLED (KNOB_DIGITAL_ROW1 + i, 0, ColorEx.BLACK);
+    }
+
+
+    /** {@inheritDoc} */
+    @Override
+    public void setTrigger (final BindType bindType, final int channel, final int cc, final int value)
+    {
+        if (bindType == BindType.CC || channel != YaeltexTurnControlSurface.MIDI_CHANNEL_MAIN)
+            super.setTrigger (bindType, channel, cc, value);
+        else
+        {
+            // Little trick to identify values which need an intensity
+            final boolean isLow = value >= 128;
+            this.output.sendNoteEx (YaeltexTurnControlSurface.MIDI_CHANNEL_MAIN, cc, isLow ? value - 128 : value);
+            this.output.sendNoteEx (YaeltexTurnControlSurface.MIDI_CHANNEL_SET_INTENSITY, cc, isLow ? 0 : 127);
+        }
     }
 }

@@ -14,19 +14,26 @@ import de.mossgrabers.framework.controller.display.ITextDisplay;
 import de.mossgrabers.framework.controller.valuechanger.IValueChanger;
 import de.mossgrabers.framework.daw.IHost;
 import de.mossgrabers.framework.daw.IModel;
-import de.mossgrabers.framework.daw.INoteClip;
-import de.mossgrabers.framework.daw.IStepInfo;
-import de.mossgrabers.framework.daw.NoteOccurrenceType;
+import de.mossgrabers.framework.daw.clip.INoteClip;
+import de.mossgrabers.framework.daw.clip.IStepInfo;
+import de.mossgrabers.framework.daw.clip.NoteOccurrenceType;
+import de.mossgrabers.framework.daw.clip.NotePosition;
 import de.mossgrabers.framework.daw.constants.Capability;
-import de.mossgrabers.framework.daw.data.GridStep;
 import de.mossgrabers.framework.daw.data.IItem;
+import de.mossgrabers.framework.daw.data.empty.EmptyParameter;
 import de.mossgrabers.framework.mode.INoteMode;
+import de.mossgrabers.framework.mode.NoteEditor;
+import de.mossgrabers.framework.parameter.NoteAttribute;
+import de.mossgrabers.framework.parameter.NoteParameter;
+import de.mossgrabers.framework.parameterprovider.IParameterProvider;
+import de.mossgrabers.framework.parameterprovider.special.FixedParameterProvider;
 import de.mossgrabers.framework.scale.Scales;
 import de.mossgrabers.framework.utils.ButtonEvent;
 import de.mossgrabers.framework.utils.StringUtils;
 
-import java.util.ArrayList;
+import java.util.EnumMap;
 import java.util.List;
+import java.util.Map;
 
 
 /**
@@ -61,10 +68,10 @@ public class NoteMode extends BaseMode<IItem> implements INoteMode
     }
 
 
-    private final IHost          host;
-    private Page                 page  = Page.NOTE;
-    private INoteClip            clip  = null;
-    private final List<GridStep> notes = new ArrayList<> ();
+    private final IHost                         host;
+    private Page                                page               = Page.NOTE;
+    private final NoteEditor                    noteEditor;
+    private final Map<Page, IParameterProvider> pageParamProviders = new EnumMap<> (Page.class);
 
 
     /**
@@ -78,55 +85,86 @@ public class NoteMode extends BaseMode<IItem> implements INoteMode
         super ("Note", surface, model);
 
         this.host = this.model.getHost ();
-    }
+        this.noteEditor = new NoteEditor ();
 
+        final IValueChanger valueChanger = model.getValueChanger ();
 
-    /** {@inheritDoc} */
-    @Override
-    public void clearNotes ()
-    {
-        this.notes.clear ();
-    }
+        final NoteParameter durationParameter = new NoteParameter (NoteAttribute.DURATION, null, model, this, valueChanger);
+        final NoteParameter muteParameter = new NoteParameter (NoteAttribute.MUTE, null, model, this, valueChanger);
 
+        this.pageParamProviders.put (Page.NOTE, new FixedParameterProvider (
+                // Duration
+                durationParameter,
+                // Mute
+                muteParameter,
+                // Velocity
+                new NoteParameter (NoteAttribute.VELOCITY, null, model, this, valueChanger),
+                // Velocity Spread
+                new NoteParameter (NoteAttribute.VELOCITY_SPREAD, null, model, this, valueChanger),
+                // Release Velocity
+                new NoteParameter (NoteAttribute.RELEASE_VELOCITY, null, model, this, valueChanger),
+                // Chance
+                new NoteParameter (NoteAttribute.CHANCE, null, model, this, valueChanger),
+                // Occurrence
+                new NoteParameter (NoteAttribute.OCCURRENCE, null, model, this, valueChanger),
+                // Recurrence
+                new NoteParameter (NoteAttribute.RECURRENCE_LENGTH, null, model, this, valueChanger)));
 
-    /** {@inheritDoc} */
-    @Override
-    public void setNote (final INoteClip clip, final int channel, final int step, final int note)
-    {
-        this.notes.clear ();
-        this.addNote (clip, channel, step, note);
-    }
+        this.pageParamProviders.put (Page.EXPRESSIONS, new FixedParameterProvider (
+                // Duration
+                durationParameter,
+                // Mute
+                muteParameter,
+                // -
+                EmptyParameter.INSTANCE,
+                // Gain
+                new NoteParameter (NoteAttribute.GAIN, null, model, this, valueChanger),
+                // Panorama
+                new NoteParameter (NoteAttribute.PANORAMA, null, model, this, valueChanger),
+                // Transpose
+                new NoteParameter (NoteAttribute.TRANSPOSE, null, model, this, valueChanger),
+                // Timbre
+                new NoteParameter (NoteAttribute.TIMBRE, null, model, this, valueChanger),
+                // Pressure
+                new NoteParameter (NoteAttribute.PRESSURE, null, model, this, valueChanger)));
 
+        this.pageParamProviders.put (Page.REPEAT, new FixedParameterProvider (
+                // Duration
+                durationParameter,
+                // Mute
+                muteParameter,
+                // -
+                EmptyParameter.INSTANCE,
+                // Repeat
+                new NoteParameter (NoteAttribute.REPEAT, null, model, this, valueChanger),
+                // Repeat Curve
+                new NoteParameter (NoteAttribute.REPEAT_CURVE, null, model, this, valueChanger),
+                // Repeat Velocity Curve
+                new NoteParameter (NoteAttribute.REPEAT_VELOCITY_CURVE, null, model, this, valueChanger),
+                // Repeat Velocity End
+                new NoteParameter (NoteAttribute.REPEAT_VELOCITY_END, null, model, this, valueChanger),
+                // -
+                EmptyParameter.INSTANCE));
 
-    /** {@inheritDoc} */
-    @Override
-    public void addNote (final INoteClip clip, final int channel, final int step, final int note)
-    {
-        if (this.clip != clip)
-        {
-            this.notes.clear ();
-            this.clip = clip;
-        }
+        this.pageParamProviders.put (Page.RECCURRENCE_PATTERN, new FixedParameterProvider (
+                // -
+                EmptyParameter.INSTANCE,
+                // -
+                EmptyParameter.INSTANCE,
+                // -
+                EmptyParameter.INSTANCE,
+                // -
+                EmptyParameter.INSTANCE,
+                // -
+                EmptyParameter.INSTANCE,
+                // -
+                EmptyParameter.INSTANCE,
+                // -
+                EmptyParameter.INSTANCE,
+                // Recurrence Length
+                new NoteParameter (NoteAttribute.RECURRENCE_LENGTH, null, model, this, valueChanger)));
 
-        // Is the note already edited? Remove it.
-        for (final GridStep gridStep: this.notes)
-        {
-            if (gridStep.channel () == channel && gridStep.step () == step && gridStep.note () == note)
-            {
-                this.notes.remove (gridStep);
-                return;
-            }
-        }
-
-        this.notes.add (new GridStep (channel, step, note));
-    }
-
-
-    /** {@inheritDoc} */
-    @Override
-    public List<GridStep> getNotes ()
-    {
-        return new ArrayList<> (this.notes);
+        this.rebind ();
     }
 
 
@@ -137,13 +175,11 @@ public class NoteMode extends BaseMode<IItem> implements INoteMode
         if (event != ButtonEvent.UP)
             return;
 
-        for (final GridStep noteInfo: this.notes)
+        final INoteClip clip = this.noteEditor.getClip ();
+        final List<NotePosition> notes = this.noteEditor.getNotes ();
+        for (final NotePosition notePosition: notes)
         {
-            final int channel = noteInfo.channel ();
-            final int step = noteInfo.step ();
-            final int note = noteInfo.note ();
-
-            final IStepInfo stepInfo = this.clip.getStep (channel, step, note);
+            final IStepInfo stepInfo = clip.getStep (notePosition);
 
             switch (this.page)
             {
@@ -152,17 +188,17 @@ public class NoteMode extends BaseMode<IItem> implements INoteMode
                     {
                         case 5:
                             if (this.host.supports (Capability.NOTE_EDIT_CHANCE))
-                                this.clip.updateStepIsChanceEnabled (channel, step, note, !stepInfo.isChanceEnabled ());
+                                clip.updateStepIsChanceEnabled (notePosition, !stepInfo.isChanceEnabled ());
                             break;
 
                         case 6:
                             if (this.host.supports (Capability.NOTE_EDIT_OCCURRENCE))
-                                this.clip.updateStepIsOccurrenceEnabled (channel, step, note, !stepInfo.isOccurrenceEnabled ());
+                                clip.updateStepIsOccurrenceEnabled (notePosition, !stepInfo.isOccurrenceEnabled ());
                             break;
 
                         case 7:
-                            if (this.host.supports (Capability.NOTE_EDIT_RECCURRENCE))
-                                this.clip.updateStepIsRecurrenceEnabled (channel, step, note, !stepInfo.isRecurrenceEnabled ());
+                            if (this.host.supports (Capability.NOTE_EDIT_RECURRENCE))
+                                clip.updateStepIsRecurrenceEnabled (notePosition, !stepInfo.isRecurrenceEnabled ());
                             break;
 
                         default:
@@ -175,20 +211,12 @@ public class NoteMode extends BaseMode<IItem> implements INoteMode
 
                 case REPEAT:
                     if (index == 3 && this.host.supports (Capability.NOTE_EDIT_REPEAT))
-                        this.clip.updateStepIsRepeatEnabled (channel, step, note, !stepInfo.isRepeatEnabled ());
+                        clip.updateStepIsRepeatEnabled (notePosition, !stepInfo.isRepeatEnabled ());
                     break;
 
                 case RECCURRENCE_PATTERN:
-                    if (this.host.supports (Capability.NOTE_EDIT_RECCURRENCE))
-                    {
-                        int mask = stepInfo.getRecurrenceMask ();
-                        final int bitVal = 1 << index;
-                        if ((mask & bitVal) > 0)
-                            mask &= ~bitVal;
-                        else
-                            mask |= bitVal;
-                        this.clip.updateStepRecurrenceMask (channel, step, note, mask);
-                    }
+                    if (this.host.supports (Capability.NOTE_EDIT_RECURRENCE))
+                        clip.updateStepRecurrenceMaskToggleBit (notePosition, index);
                     break;
             }
         }
@@ -219,7 +247,7 @@ public class NoteMode extends BaseMode<IItem> implements INoteMode
                 break;
 
             case 7:
-                if (this.host.supports (Capability.NOTE_EDIT_RECCURRENCE))
+                if (this.host.supports (Capability.NOTE_EDIT_RECURRENCE))
                     this.page = Page.RECCURRENCE_PATTERN;
                 break;
 
@@ -227,6 +255,8 @@ public class NoteMode extends BaseMode<IItem> implements INoteMode
                 // Not used:
                 break;
         }
+
+        this.rebind ();
     }
 
 
@@ -234,307 +264,22 @@ public class NoteMode extends BaseMode<IItem> implements INoteMode
     @Override
     public void onKnobTouch (final int index, final boolean isTouched)
     {
-        if (this.notes.isEmpty ())
+        final List<NotePosition> notes = this.noteEditor.getNotes ();
+        if (notes.isEmpty ())
             return;
 
         if (isTouched && this.surface.isDeletePressed ())
         {
             this.surface.setTriggerConsumed (ButtonID.DELETE);
-
-            for (final GridStep noteInfo: this.notes)
-            {
-                final int channel = noteInfo.channel ();
-                final int step = noteInfo.step ();
-                final int note = noteInfo.note ();
-
-                switch (this.page)
-                {
-                    case NOTE:
-                        switch (index)
-                        {
-                            case 0:
-                                this.clip.updateStepDuration (channel, step, note, 1.0);
-                                break;
-
-                            case 1:
-                                this.clip.updateStepMuteState (channel, step, note, false);
-                                break;
-
-                            case 2:
-                                this.clip.updateStepVelocity (channel, step, note, 1.0);
-                                break;
-
-                            case 3:
-                                if (this.host.supports (Capability.NOTE_EDIT_VELOCITY_SPREAD))
-                                    this.clip.updateStepVelocitySpread (channel, step, note, 0);
-                                break;
-
-                            case 4:
-                                if (this.host.supports (Capability.NOTE_EDIT_RELEASE_VELOCITY))
-                                    this.clip.updateStepReleaseVelocity (channel, step, note, 1.0);
-                                break;
-
-                            case 5:
-                                if (this.host.supports (Capability.NOTE_EDIT_CHANCE))
-                                    this.clip.updateStepChance (channel, step, note, 1.0);
-                                break;
-
-                            case 6:
-                                if (this.host.supports (Capability.NOTE_EDIT_OCCURRENCE))
-                                    this.clip.setStepOccurrence (channel, step, note, NoteOccurrenceType.ALWAYS);
-                                break;
-
-                            case 7:
-                                if (this.host.supports (Capability.NOTE_EDIT_RECCURRENCE))
-                                    this.clip.updateStepRecurrenceLength (channel, step, note, 1);
-                                break;
-
-                            default:
-                                return;
-                        }
-                        break;
-
-                    case EXPRESSIONS:
-                        switch (index)
-                        {
-                            case 0:
-                                this.clip.updateStepDuration (channel, step, note, 1.0);
-                                break;
-
-                            case 1:
-                                this.clip.updateStepMuteState (channel, step, note, false);
-                                break;
-
-                            case 3:
-                                if (this.host.supports (Capability.NOTE_EDIT_EXPRESSIONS))
-                                    this.clip.updateStepGain (channel, step, note, 0.5);
-                                break;
-
-                            case 4:
-                                if (this.host.supports (Capability.NOTE_EDIT_EXPRESSIONS))
-                                    this.clip.updateStepPan (channel, step, note, 0);
-                                break;
-
-                            case 5:
-                                if (this.host.supports (Capability.NOTE_EDIT_EXPRESSIONS))
-                                    this.clip.updateStepTranspose (channel, step, note, 0);
-                                break;
-
-                            case 6:
-                                if (this.host.supports (Capability.NOTE_EDIT_EXPRESSIONS))
-                                    this.clip.updateStepTimbre (channel, step, note, 0);
-                                break;
-
-                            case 7:
-                                if (this.host.supports (Capability.NOTE_EDIT_EXPRESSIONS))
-                                    this.clip.updateStepPressure (channel, step, note, 0);
-                                break;
-
-                            default:
-                                return;
-                        }
-                        break;
-
-                    case REPEAT:
-                        switch (index)
-                        {
-                            case 0:
-                                this.clip.updateStepDuration (channel, step, note, 1.0);
-                                break;
-
-                            case 1:
-                                this.clip.updateStepMuteState (channel, step, note, false);
-                                break;
-
-                            case 3:
-                                if (this.host.supports (Capability.NOTE_EDIT_REPEAT))
-                                    this.clip.updateStepRepeatCount (channel, step, note, 0);
-                                break;
-
-                            case 4:
-                                if (this.host.supports (Capability.NOTE_EDIT_REPEAT))
-                                    this.clip.updateStepRepeatCurve (channel, step, note, 0);
-                                break;
-
-                            case 5:
-                                if (this.host.supports (Capability.NOTE_EDIT_REPEAT))
-                                    this.clip.updateStepRepeatVelocityCurve (channel, step, note, 0);
-                                break;
-
-                            case 6:
-                                if (this.host.supports (Capability.NOTE_EDIT_REPEAT))
-                                    this.clip.updateStepRepeatVelocityEnd (channel, step, note, 0);
-                                break;
-
-                            default:
-                                return;
-                        }
-                        break;
-
-                    case RECCURRENCE_PATTERN:
-                        if (index == 7 && this.host.supports (Capability.NOTE_EDIT_RECCURRENCE))
-                            this.clip.updateStepRecurrenceLength (channel, step, note, 1);
-                        break;
-
-                    default:
-                        return;
-                }
-            }
+            this.defaultParameterProvider.get (index).resetValue ();
+            return;
         }
 
+        final INoteClip clip = this.noteEditor.getClip ();
         if (isTouched)
-            this.clip.startEdit (this.notes);
+            clip.startEdit (notes);
         else
-            this.clip.stopEdit ();
-    }
-
-
-    /** {@inheritDoc} */
-    @Override
-    public void onKnobValue (final int index, final int value)
-    {
-        for (final GridStep noteInfo: this.notes)
-        {
-            final int channel = noteInfo.channel ();
-            final int step = noteInfo.step ();
-            final int note = noteInfo.note ();
-
-            switch (this.page)
-            {
-                case NOTE:
-                    switch (index)
-                    {
-                        case 0:
-                            this.clip.changeStepDuration (channel, step, note, value);
-                            break;
-
-                        case 1:
-                            if (this.host.supports (Capability.NOTE_EDIT_MUTE))
-                                this.clip.changeStepMuteState (channel, step, note, value);
-                            break;
-
-                        case 2:
-                            this.clip.changeStepVelocity (channel, step, note, value);
-                            break;
-
-                        case 3:
-                            if (this.host.supports (Capability.NOTE_EDIT_VELOCITY_SPREAD))
-                                this.clip.changeStepVelocitySpread (channel, step, note, value);
-                            break;
-
-                        case 4:
-                            if (this.host.supports (Capability.NOTE_EDIT_RELEASE_VELOCITY))
-                                this.clip.changeStepReleaseVelocity (channel, step, note, value);
-                            break;
-
-                        case 5:
-                            if (this.host.supports (Capability.NOTE_EDIT_CHANCE))
-                                this.clip.changeStepChance (channel, step, note, value);
-                            break;
-
-                        case 6:
-                            if (this.host.supports (Capability.NOTE_EDIT_OCCURRENCE))
-                            {
-                                final boolean increase = this.model.getValueChanger ().isIncrease (value);
-                                this.clip.setStepPrevNextOccurrence (channel, step, note, increase);
-                            }
-                            break;
-
-                        case 7:
-                            if (this.host.supports (Capability.NOTE_EDIT_RECCURRENCE))
-                                this.clip.changeStepRecurrenceLength (channel, step, note, value);
-                            break;
-
-                        default:
-                            return;
-                    }
-                    break;
-
-                case EXPRESSIONS:
-                    switch (index)
-                    {
-                        case 0:
-                            this.clip.changeStepDuration (channel, step, note, value);
-                            break;
-
-                        case 1:
-                            if (this.host.supports (Capability.NOTE_EDIT_MUTE))
-                                this.clip.changeStepMuteState (channel, step, note, value);
-                            break;
-
-                        case 3:
-                            if (this.host.supports (Capability.NOTE_EDIT_EXPRESSIONS))
-                                this.clip.changeStepGain (channel, step, note, value);
-                            break;
-
-                        case 4:
-                            if (this.host.supports (Capability.NOTE_EDIT_EXPRESSIONS))
-                                this.clip.changeStepPan (channel, step, note, value);
-                            break;
-
-                        case 5:
-                            if (this.host.supports (Capability.NOTE_EDIT_EXPRESSIONS))
-                                this.clip.changeStepTranspose (channel, step, note, value);
-                            break;
-
-                        case 6:
-                            if (this.host.supports (Capability.NOTE_EDIT_EXPRESSIONS))
-                                this.clip.changeStepTimbre (channel, step, note, value);
-                            break;
-
-                        case 7:
-                            if (this.host.supports (Capability.NOTE_EDIT_EXPRESSIONS))
-                                this.clip.changeStepPressure (channel, step, note, value);
-                            break;
-
-                        default:
-                            return;
-                    }
-                    break;
-
-                case REPEAT:
-                    switch (index)
-                    {
-                        case 0:
-                            this.clip.changeStepDuration (channel, step, note, value);
-                            break;
-
-                        case 1:
-                            if (this.host.supports (Capability.NOTE_EDIT_MUTE))
-                                this.clip.changeStepMuteState (channel, step, note, value);
-                            break;
-
-                        case 3:
-                            if (this.host.supports (Capability.NOTE_EDIT_REPEAT))
-                                this.clip.changeStepRepeatCount (channel, step, note, value);
-                            break;
-
-                        case 4:
-                            if (this.host.supports (Capability.NOTE_EDIT_REPEAT))
-                                this.clip.changeStepRepeatCurve (channel, step, note, value);
-                            break;
-
-                        case 5:
-                            if (this.host.supports (Capability.NOTE_EDIT_REPEAT))
-                                this.clip.changeStepRepeatVelocityCurve (channel, step, note, value);
-                            break;
-
-                        case 6:
-                            if (this.host.supports (Capability.NOTE_EDIT_REPEAT))
-                                this.clip.changeStepRepeatVelocityEnd (channel, step, note, value);
-                            break;
-
-                        default:
-                            return;
-                    }
-                    break;
-
-                case RECCURRENCE_PATTERN:
-                    if (index == 7 && this.host.supports (Capability.NOTE_EDIT_RECCURRENCE))
-                        this.clip.changeStepRecurrenceLength (channel, step, note, value);
-                    break;
-            }
-        }
+            clip.stopEdit ();
     }
 
 
@@ -542,18 +287,15 @@ public class NoteMode extends BaseMode<IItem> implements INoteMode
     @Override
     public void updateDisplay1 (final ITextDisplay display)
     {
-        if (this.notes.isEmpty ())
+        final List<NotePosition> notes = this.noteEditor.getNotes ();
+        if (notes.isEmpty ())
         {
             display.setRow (1, "                     Please selecta note...                         ");
             return;
         }
 
-        final GridStep noteInfo = this.notes.get (0);
-        final int channel = noteInfo.channel ();
-        final int step = noteInfo.step ();
-        final int note = noteInfo.note ();
-
-        final IStepInfo stepInfo = this.clip.getStep (channel, step, note);
+        final NotePosition notePosition = notes.get (0);
+        final IStepInfo stepInfo = this.noteEditor.getClip ().getStep (notePosition);
 
         if (this.page != Page.RECCURRENCE_PATTERN)
         {
@@ -562,10 +304,10 @@ public class NoteMode extends BaseMode<IItem> implements INoteMode
             if (stepInfo.isMuted ())
                 display.setCell (2, 1, " MUTED");
 
-            final int size = this.notes.size ();
+            final int size = notes.size ();
             final boolean isOneNote = size == 1;
-            display.setCell (3, 0, isOneNote ? "Step: " + (step + 1) : "Notes: " + size);
-            display.setCell (3, 1, isOneNote ? Scales.formatNoteAndOctave (note, -3) : "*");
+            display.setCell (3, 0, isOneNote ? "Step: " + (notePosition.getStep () + 1) : "Notes: " + size);
+            display.setCell (3, 1, isOneNote ? Scales.formatNoteAndOctave (notePosition.getNote (), -3) : "*");
         }
 
         final IValueChanger valueChanger = this.model.getValueChanger ();
@@ -617,7 +359,7 @@ public class NoteMode extends BaseMode<IItem> implements INoteMode
                     display.setCell (3, 6, stepInfo.isOccurrenceEnabled () ? ON : OFF);
                 }
 
-                if (this.host.supports (Capability.NOTE_EDIT_RECCURRENCE))
+                if (this.host.supports (Capability.NOTE_EDIT_RECURRENCE))
                 {
                     final int recurrence = stepInfo.getRecurrenceLength ();
                     final String recurrenceStr = recurrence < 2 ? "Off" : Integer.toString (recurrence);
@@ -720,34 +462,30 @@ public class NoteMode extends BaseMode<IItem> implements INoteMode
     @Override
     public void updateDisplay2 (final IGraphicDisplay display)
     {
-        if (this.notes.isEmpty ())
+        final List<NotePosition> notes = this.noteEditor.getNotes ();
+        if (notes.isEmpty ())
         {
             for (int i = 0; i < 8; i++)
                 display.addOptionElement (i == 2 ? "Please select a note to edit..." : "", "", false, "", "", false, true);
             return;
         }
 
-        final GridStep noteInfo = this.notes.get (0);
-        final int channel = noteInfo.channel ();
-        final int step = noteInfo.step ();
-        final int note = noteInfo.note ();
-
-        final IStepInfo stepInfo = this.clip.getStep (channel, step, note);
-
+        final NotePosition notePosition = notes.get (0);
+        final IStepInfo stepInfo = this.noteEditor.getClip ().getStep (notePosition);
         final IValueChanger valueChanger = this.model.getValueChanger ();
 
         if (this.page != Page.RECCURRENCE_PATTERN)
         {
-            final int size = this.notes.size ();
+            final int size = notes.size ();
             final boolean isOneNote = size == 1;
 
-            final String stepBottomMenu = isOneNote ? "Step: " + (step + 1) : "Notes: " + size;
+            final String stepBottomMenu = isOneNote ? "Step: " + (notePosition.getStep () + 1) : "Notes: " + size;
             display.addParameterElementWithPlainMenu (MENU[0], this.page == Page.NOTE, stepBottomMenu, null, false, "Length", -1, this.formatLength (stepInfo.getDuration ()), this.isKnobTouched (0), -1);
             final boolean hasExpressions = this.host.supports (Capability.NOTE_EDIT_EXPRESSIONS);
 
             final String topMenu = hasExpressions ? MENU[1] : " ";
             final boolean isTopMenuOn = hasExpressions && this.page == Page.EXPRESSIONS;
-            final String bottomMenu = isOneNote ? Scales.formatNoteAndOctave (note, -3) : "*";
+            final String bottomMenu = isOneNote ? Scales.formatNoteAndOctave (notePosition.getNote (), -3) : "*";
             if (this.host.supports (Capability.NOTE_EDIT_MUTE))
             {
                 final int value = stepInfo.isMuted () ? valueChanger.getUpperBound () : 0;
@@ -799,7 +537,7 @@ public class NoteMode extends BaseMode<IItem> implements INoteMode
                 else
                     display.addEmptyElement (true);
 
-                if (this.host.supports (Capability.NOTE_EDIT_RECCURRENCE))
+                if (this.host.supports (Capability.NOTE_EDIT_RECURRENCE))
                 {
                     final int recurrence = stepInfo.getRecurrenceLength ();
                     final String recurrenceStr = recurrence < 2 ? "Off" : Integer.toString (recurrence);
@@ -890,16 +628,14 @@ public class NoteMode extends BaseMode<IItem> implements INoteMode
     @Override
     public int getButtonColor (final ButtonID buttonID)
     {
-        if (this.notes.isEmpty ())
+        final List<NotePosition> notes = this.noteEditor.getNotes ();
+        if (notes.isEmpty ())
             return this.colorManager.getColorIndex (PushColorManager.PUSH_BLACK);
 
-        for (final GridStep noteInfo: this.notes)
+        final INoteClip clip = this.noteEditor.getClip ();
+        for (final NotePosition notePosition: notes)
         {
-            final int channel = noteInfo.channel ();
-            final int step = noteInfo.step ();
-            final int note = noteInfo.note ();
-
-            final IStepInfo stepInfo = this.clip.getStep (channel, step, note);
+            final IStepInfo stepInfo = clip.getStep (notePosition);
 
             int index = this.isButtonRow (0, buttonID);
             if (index >= 0)
@@ -911,7 +647,7 @@ public class NoteMode extends BaseMode<IItem> implements INoteMode
                             return this.colorManager.getColorIndex (stepInfo.isChanceEnabled () ? PushColorManager.PUSH_ORANGE_HI : PushColorManager.PUSH_ORANGE_LO);
                         if (index == 6 && this.host.supports (Capability.NOTE_EDIT_OCCURRENCE))
                             return this.colorManager.getColorIndex (stepInfo.isOccurrenceEnabled () ? PushColorManager.PUSH_ORANGE_HI : PushColorManager.PUSH_ORANGE_LO);
-                        if (index == 7 && this.host.supports (Capability.NOTE_EDIT_RECCURRENCE))
+                        if (index == 7 && this.host.supports (Capability.NOTE_EDIT_RECURRENCE))
                             return this.colorManager.getColorIndex (stepInfo.isRecurrenceEnabled () ? PushColorManager.PUSH_ORANGE_HI : PushColorManager.PUSH_ORANGE_LO);
                         break;
 
@@ -964,7 +700,7 @@ public class NoteMode extends BaseMode<IItem> implements INoteMode
 
                 if (index == 0 || index == 1 && this.host.supports (Capability.NOTE_EDIT_EXPRESSIONS))
                     return this.colorManager.getColorIndex (PushColorManager.PUSH_GREY_LO_2);
-                if (index == 2 && this.host.supports (Capability.NOTE_EDIT_REPEAT) || index == 7 && this.host.supports (Capability.NOTE_EDIT_RECCURRENCE))
+                if (index == 2 && this.host.supports (Capability.NOTE_EDIT_REPEAT) || index == 7 && this.host.supports (Capability.NOTE_EDIT_RECURRENCE))
                     return this.colorManager.getColorIndex (PushColorManager.PUSH_GREY_LO_2);
 
                 return this.colorManager.getColorIndex (PushColorManager.PUSH_BLACK_2);
@@ -984,5 +720,60 @@ public class NoteMode extends BaseMode<IItem> implements INoteMode
     private String formatLength (final double duration)
     {
         return StringUtils.formatMeasures (this.model.getTransport ().getQuartersPerMeasure (), duration, 0, true);
+    }
+
+
+    /** {@inheritDoc} */
+    @Override
+    public INoteClip getClip ()
+    {
+        return this.noteEditor.getClip ();
+    }
+
+
+    /** {@inheritDoc} */
+    @Override
+    public void clearNotes ()
+    {
+        this.noteEditor.clearNotes ();
+    }
+
+
+    /** {@inheritDoc} */
+    @Override
+    public void setNote (final INoteClip clip, final NotePosition notePosition)
+    {
+        this.noteEditor.setNote (clip, notePosition);
+    }
+
+
+    /** {@inheritDoc} */
+    @Override
+    public void addNote (final INoteClip clip, final NotePosition notePosition)
+    {
+        this.noteEditor.addNote (clip, notePosition);
+    }
+
+
+    /** {@inheritDoc} */
+    @Override
+    public List<NotePosition> getNotes ()
+    {
+        return this.noteEditor.getNotes ();
+    }
+
+
+    /** {@inheritDoc} */
+    @Override
+    public List<NotePosition> getNotePosition (final int parameterIndex)
+    {
+        return this.noteEditor.getNotePosition (parameterIndex);
+    }
+
+
+    private void rebind ()
+    {
+        this.setParameterProvider (this.pageParamProviders.get (this.page));
+        this.bindControls ();
     }
 }

@@ -5,8 +5,8 @@
 package de.mossgrabers.framework.parameterprovider.special;
 
 import de.mossgrabers.framework.controller.color.ColorEx;
-import de.mossgrabers.framework.daw.data.IParameter;
 import de.mossgrabers.framework.observer.IParametersAdjustObserver;
+import de.mossgrabers.framework.parameter.IParameter;
 import de.mossgrabers.framework.parameterprovider.IParameterProvider;
 
 import java.util.Collections;

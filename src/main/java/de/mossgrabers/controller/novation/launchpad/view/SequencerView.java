@@ -9,7 +9,8 @@ import de.mossgrabers.controller.novation.launchpad.controller.LaunchpadColorMan
 import de.mossgrabers.controller.novation.launchpad.controller.LaunchpadControlSurface;
 import de.mossgrabers.framework.controller.ButtonID;
 import de.mossgrabers.framework.daw.IModel;
-import de.mossgrabers.framework.daw.INoteClip;
+import de.mossgrabers.framework.daw.clip.INoteClip;
+import de.mossgrabers.framework.daw.clip.NotePosition;
 import de.mossgrabers.framework.view.sequencer.AbstractNoteSequencerView;
 
 
@@ -50,17 +51,17 @@ public class SequencerView extends AbstractNoteSequencerView<LaunchpadControlSur
 
     /** {@inheritDoc} */
     @Override
-    protected boolean handleSequencerAreaButtonCombinations (final INoteClip clip, final int channel, final int step, final int row, final int note, final int velocity)
+    protected boolean handleSequencerAreaButtonCombinations (final INoteClip clip, final NotePosition notePosition, final int row, final int velocity)
     {
         final boolean isUpPressed = this.surface.isPressed (ButtonID.UP);
         if (isUpPressed || this.surface.isPressed (ButtonID.DOWN))
         {
             this.surface.setTriggerConsumed (isUpPressed ? ButtonID.UP : ButtonID.DOWN);
             if (velocity > 0)
-                this.handleSequencerAreaRepeatOperator (clip, channel, step, note, velocity, isUpPressed);
+                this.handleSequencerAreaRepeatOperator (clip, notePosition, velocity, isUpPressed);
             return true;
         }
 
-        return super.handleSequencerAreaButtonCombinations (clip, channel, step, row, note, velocity);
+        return super.handleSequencerAreaButtonCombinations (clip, notePosition, row, velocity);
     }
 }

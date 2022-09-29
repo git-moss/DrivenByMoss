@@ -9,7 +9,7 @@ import de.mossgrabers.controller.novation.slmkiii.controller.SLMkIIIControlSurfa
 import de.mossgrabers.controller.novation.slmkiii.controller.SLMkIIIDisplay;
 import de.mossgrabers.framework.controller.ButtonID;
 import de.mossgrabers.framework.daw.IModel;
-import de.mossgrabers.framework.daw.data.IParameter;
+import de.mossgrabers.framework.parameter.IParameter;
 import de.mossgrabers.framework.parameterprovider.device.BankParameterProvider;
 import de.mossgrabers.framework.utils.ButtonEvent;
 import de.mossgrabers.framework.utils.StringUtils;

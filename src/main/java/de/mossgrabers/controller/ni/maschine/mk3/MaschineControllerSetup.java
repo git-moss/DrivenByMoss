@@ -658,18 +658,10 @@ public class MaschineControllerSetup extends AbstractControllerSetup<MaschineCon
             case PAN:
                 return surface.isPressed (arrowButton) ? MaschineColorManager.COLOR_SKY : MaschineColorManager.COLOR_SKY_LO;
 
-            case SEND1:
-            case SEND2:
-            case SEND3:
-            case SEND4:
-            case SEND5:
-            case SEND6:
-            case SEND7:
-            case SEND8:
+            case SEND1, SEND2, SEND3, SEND4, SEND5, SEND6, SEND7, SEND8:
                 return surface.isPressed (arrowButton) ? MaschineColorManager.COLOR_WHITE : MaschineColorManager.COLOR_YELLOW;
 
-            case DEVICE_PARAMS:
-            case USER:
+            case DEVICE_PARAMS, USER:
                 return surface.isPressed (arrowButton) ? MaschineColorManager.COLOR_PINK : MaschineColorManager.COLOR_PINK_LO;
 
             case BROWSER:
@@ -772,8 +764,7 @@ public class MaschineControllerSetup extends AbstractControllerSetup<MaschineCon
             case MK2:
                 this.layoutMk2 ();
                 break;
-            case MK3:
-            case PLUS:
+            case MK3, PLUS:
                 this.layoutMk3 ();
                 break;
             case STUDIO:
@@ -1174,8 +1165,7 @@ public class MaschineControllerSetup extends AbstractControllerSetup<MaschineCon
                     case MASTER_PANORAMA:
                         value = this.valueChanger.toMidiValue (this.model.getMasterTrack ().getPan ());
                         break;
-                    case SELECTED_TRACK_VOLUME:
-                    case SELECTED_TRACK_PANORAMA:
+                    case SELECTED_TRACK_VOLUME, SELECTED_TRACK_PANORAMA:
                         final ITrack track;
                         final Optional<ITrack> trackOptional = this.model.getTrackBank ().getSelectedItem ();
                         if (trackOptional.isPresent ())

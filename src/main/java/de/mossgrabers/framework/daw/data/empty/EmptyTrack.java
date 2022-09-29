@@ -5,9 +5,9 @@
 package de.mossgrabers.framework.daw.data.empty;
 
 import de.mossgrabers.framework.daw.constants.RecordQuantization;
-import de.mossgrabers.framework.daw.data.IParameter;
 import de.mossgrabers.framework.daw.data.ITrack;
 import de.mossgrabers.framework.daw.data.bank.ISlotBank;
+import de.mossgrabers.framework.parameter.IParameter;
 
 
 /**

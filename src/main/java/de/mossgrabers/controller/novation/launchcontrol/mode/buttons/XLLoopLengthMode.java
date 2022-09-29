@@ -6,7 +6,7 @@ import de.mossgrabers.controller.novation.launchcontrol.controller.LaunchControl
 import de.mossgrabers.controller.novation.launchcontrol.mode.main.XLBaseNoteEditMode;
 import de.mossgrabers.framework.controller.ButtonID;
 import de.mossgrabers.framework.daw.IModel;
-import de.mossgrabers.framework.daw.INoteClip;
+import de.mossgrabers.framework.daw.clip.INoteClip;
 import de.mossgrabers.framework.daw.constants.Resolution;
 import de.mossgrabers.framework.featuregroup.AbstractMode;
 import de.mossgrabers.framework.mode.Modes;

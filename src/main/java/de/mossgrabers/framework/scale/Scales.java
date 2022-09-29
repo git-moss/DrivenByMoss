@@ -708,7 +708,7 @@ public class Scales
      * @param midiNote The MIDI note to convert
      * @return The note in the octave
      */
-    private int toNoteInOctave (final int midiNote)
+    public int toNoteInOctave (final int midiNote)
     {
         // Add 12 to prevent negative values
         return (12 + midiNote - Scales.OFFSETS[this.scaleOffset]) % 12;
@@ -740,7 +740,7 @@ public class Scales
      */
     public int getNearestNoteInScale (final int midiNote)
     {
-        int noteInOctave = toNoteInOctave (midiNote);
+        final int noteInOctave = this.toNoteInOctave (midiNote);
 
         int diff = 12;
         int resultNoteInOctave = 0;

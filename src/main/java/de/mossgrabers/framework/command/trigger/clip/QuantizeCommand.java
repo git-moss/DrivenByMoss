@@ -8,8 +8,8 @@ import de.mossgrabers.framework.command.core.AbstractTriggerCommand;
 import de.mossgrabers.framework.configuration.Configuration;
 import de.mossgrabers.framework.controller.ButtonID;
 import de.mossgrabers.framework.controller.IControlSurface;
-import de.mossgrabers.framework.daw.IClip;
 import de.mossgrabers.framework.daw.IModel;
+import de.mossgrabers.framework.daw.clip.IClip;
 import de.mossgrabers.framework.daw.data.ITrack;
 import de.mossgrabers.framework.utils.ButtonEvent;
 

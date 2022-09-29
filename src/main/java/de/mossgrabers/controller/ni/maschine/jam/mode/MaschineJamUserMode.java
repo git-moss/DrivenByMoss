@@ -10,8 +10,8 @@ import de.mossgrabers.controller.ni.maschine.jam.controller.FaderConfig;
 import de.mossgrabers.controller.ni.maschine.jam.controller.MaschineJamControlSurface;
 import de.mossgrabers.framework.controller.ContinuousID;
 import de.mossgrabers.framework.daw.IModel;
-import de.mossgrabers.framework.daw.data.IParameter;
 import de.mossgrabers.framework.mode.device.UserMode;
+import de.mossgrabers.framework.parameter.IParameter;
 
 
 /**

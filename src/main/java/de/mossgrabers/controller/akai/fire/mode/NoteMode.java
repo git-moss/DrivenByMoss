@@ -9,23 +9,22 @@ import de.mossgrabers.controller.akai.fire.controller.FireControlSurface;
 import de.mossgrabers.controller.akai.fire.graphics.canvas.component.TitleValueComponent;
 import de.mossgrabers.framework.controller.ButtonID;
 import de.mossgrabers.framework.controller.ContinuousID;
+import de.mossgrabers.framework.controller.display.IDisplay;
 import de.mossgrabers.framework.controller.display.IGraphicDisplay;
 import de.mossgrabers.framework.controller.valuechanger.IValueChanger;
-import de.mossgrabers.framework.daw.IHost;
 import de.mossgrabers.framework.daw.IModel;
-import de.mossgrabers.framework.daw.INoteClip;
-import de.mossgrabers.framework.daw.IStepInfo;
-import de.mossgrabers.framework.daw.constants.Capability;
-import de.mossgrabers.framework.daw.data.GridStep;
+import de.mossgrabers.framework.daw.clip.INoteClip;
+import de.mossgrabers.framework.daw.clip.NotePosition;
 import de.mossgrabers.framework.daw.data.IItem;
-import de.mossgrabers.framework.featuregroup.AbstractParameterMode;
 import de.mossgrabers.framework.featuregroup.IView;
-import de.mossgrabers.framework.mode.INoteMode;
+import de.mossgrabers.framework.mode.AbstractNoteParameterMode;
+import de.mossgrabers.framework.parameter.IParameter;
+import de.mossgrabers.framework.parameter.NoteAttribute;
+import de.mossgrabers.framework.parameter.NoteParameter;
+import de.mossgrabers.framework.parameterprovider.special.FixedParameterProvider;
 import de.mossgrabers.framework.scale.Scales;
-import de.mossgrabers.framework.utils.StringUtils;
 import de.mossgrabers.framework.view.sequencer.AbstractSequencerView;
 
-import java.util.ArrayList;
 import java.util.List;
 
 
@@ -34,7 +33,7 @@ import java.util.List;
  *
  * @author J&uuml;rgen Mo&szlig;graber
  */
-public class NoteMode extends AbstractParameterMode<FireControlSurface, FireConfiguration, IItem> implements INoteMode
+public class NoteMode extends AbstractNoteParameterMode<FireControlSurface, FireConfiguration, IItem>
 {
     protected static final List<ContinuousID> KNOB_IDS = ContinuousID.createSequentialList (ContinuousID.KNOB1, 4);
     static
@@ -42,9 +41,9 @@ public class NoteMode extends AbstractParameterMode<FireControlSurface, FireConf
         KNOB_IDS.add (ContinuousID.VIEW_SELECTION);
     }
 
-    private final IHost          host;
-    private INoteClip            clip  = null;
-    private final List<GridStep> notes = new ArrayList<> ();
+    private final FixedParameterProvider provider;
+    private final FixedParameterProvider altProvider;
+    private final NoteParameter          transposeParameter;
 
 
     /**
@@ -57,56 +56,37 @@ public class NoteMode extends AbstractParameterMode<FireControlSurface, FireConf
     {
         super ("Note Edit", surface, model, false, null, KNOB_IDS);
 
-        this.host = this.model.getHost ();
-    }
+        final IValueChanger valueChanger = model.getValueChanger ();
+        final IDisplay display = surface.getDisplay ();
 
+        this.transposeParameter = new NoteParameter (NoteAttribute.TRANSPOSE, display, model, this, valueChanger);
 
-    /** {@inheritDoc} */
-    @Override
-    public void clearNotes ()
-    {
-        this.notes.clear ();
-    }
+        this.provider = new FixedParameterProvider (
+                // Gain
+                new NoteParameter (NoteAttribute.GAIN, null, model, this, valueChanger),
+                // Panorama
+                new NoteParameter (NoteAttribute.PANORAMA, null, model, this, valueChanger),
+                // Duration
+                new NoteParameter (NoteAttribute.DURATION, null, model, this, valueChanger),
+                // Velocity
+                new NoteParameter (NoteAttribute.VELOCITY, null, model, this, valueChanger),
+                // Transpose
+                this.transposeParameter);
 
+        this.altProvider = new FixedParameterProvider (
+                // Pressure
+                new NoteParameter (NoteAttribute.PRESSURE, null, model, this, valueChanger),
+                // Timbre
+                new NoteParameter (NoteAttribute.TIMBRE, null, model, this, valueChanger),
+                // Chance
+                new NoteParameter (NoteAttribute.CHANCE, null, model, this, valueChanger),
+                // Velocity Spread
+                new NoteParameter (NoteAttribute.VELOCITY_SPREAD, null, model, this, valueChanger),
+                // Repeat Count
+                new NoteParameter (NoteAttribute.REPEAT, display, model, this, valueChanger));
 
-    /** {@inheritDoc} */
-    @Override
-    public void setNote (final INoteClip clip, final int channel, final int step, final int note)
-    {
-        this.notes.clear ();
-        this.addNote (clip, channel, step, note);
-    }
-
-
-    /** {@inheritDoc} */
-    @Override
-    public void addNote (final INoteClip clip, final int channel, final int step, final int note)
-    {
-        if (this.clip != clip)
-        {
-            this.notes.clear ();
-            this.clip = clip;
-        }
-
-        // Is the note already edited? Remove it.
-        for (final GridStep gridStep: this.notes)
-        {
-            if (gridStep.channel () == channel && gridStep.step () == step && gridStep.note () == note)
-            {
-                this.notes.remove (gridStep);
-                return;
-            }
-        }
-
-        this.notes.add (new GridStep (channel, step, note));
-    }
-
-
-    /** {@inheritDoc} */
-    @Override
-    public List<GridStep> getNotes ()
-    {
-        return new ArrayList<> (this.notes);
+        this.setParameterProvider (this.provider);
+        this.setParameterProvider (ButtonID.ALT, this.altProvider);
     }
 
 
@@ -114,91 +94,19 @@ public class NoteMode extends AbstractParameterMode<FireControlSurface, FireConf
     @Override
     public void onKnobTouch (final int index, final boolean isTouched)
     {
-        if (this.clip == null || this.isKnobTouched (index) == isTouched)
+        final INoteClip clip = this.getClip ();
+
+        if (clip == null || this.isKnobTouched (index) == isTouched)
             return;
 
         this.setTouchedKnob (index, isTouched);
         if (isTouched)
         {
-            this.clip.startEdit (this.notes);
+            clip.startEdit (this.getNotes ());
             this.preventNoteDeletion ();
         }
         else
-            this.clip.stopEdit ();
-    }
-
-
-    /** {@inheritDoc} */
-    @Override
-    public void onKnobValue (final int index, final int value)
-    {
-        for (final GridStep noteInfo: this.notes)
-        {
-            final int channel = noteInfo.channel ();
-            final int step = noteInfo.step ();
-            final int note = noteInfo.note ();
-
-            switch (index)
-            {
-                case 0:
-                    if (this.surface.isPressed (ButtonID.ALT))
-                    {
-                        if (this.host.supports (Capability.NOTE_EDIT_EXPRESSIONS))
-                            this.clip.changeStepPressure (channel, step, note, value);
-                    }
-                    else
-                    {
-                        if (this.host.supports (Capability.NOTE_EDIT_EXPRESSIONS))
-                            this.clip.changeStepGain (channel, step, note, value);
-                    }
-                    break;
-
-                case 1:
-                    if (this.surface.isPressed (ButtonID.ALT))
-                    {
-                        if (this.host.supports (Capability.NOTE_EDIT_EXPRESSIONS))
-                            this.clip.changeStepTimbre (channel, step, note, value);
-                    }
-                    else
-                    {
-                        if (this.host.supports (Capability.NOTE_EDIT_EXPRESSIONS))
-                            this.clip.changeStepPan (channel, step, note, value);
-                    }
-                    break;
-
-                case 2:
-                    if (this.surface.isPressed (ButtonID.ALT))
-                    {
-                        if (this.host.supports (Capability.NOTE_EDIT_CHANCE))
-                            this.clip.changeStepChance (channel, step, note, value);
-                    }
-                    else
-                        this.clip.changeStepDuration (channel, step, note, value);
-                    break;
-
-                case 3:
-                    if (this.surface.isPressed (ButtonID.ALT))
-                    {
-                        if (this.host.supports (Capability.NOTE_EDIT_VELOCITY_SPREAD))
-                            this.clip.changeStepVelocitySpread (channel, step, note, value);
-                    }
-                    else
-                        this.clip.changeStepVelocity (channel, step, note, value);
-                    break;
-
-                // This is the select knob
-                case 4:
-                    if (this.host.supports (Capability.NOTE_EDIT_EXPRESSIONS))
-                    {
-                        this.clip.changeStepTranspose (channel, step, note, value);
-                        this.preventNoteDeletion ();
-                    }
-                    break;
-
-                default:
-                    return;
-            }
-        }
+            clip.stopEdit ();
     }
 
 
@@ -217,125 +125,34 @@ public class NoteMode extends AbstractParameterMode<FireControlSurface, FireConf
     @Override
     public void updateDisplay ()
     {
-        final IGraphicDisplay display = this.surface.getGraphicsDisplay ();
+        final String desc;
+        final List<NotePosition> notes = this.getNotes ();
+        if (notes.isEmpty ())
+            desc = "Select a note";
+        else if (notes.size () > 1)
+            desc = "Step: * - " + notes.size ();
+        else
+        {
+            final NotePosition notePosition = notes.get (0);
+            desc = "Step: " + (notePosition.getStep () + 1) + " - " + Scales.formatNoteAndOctave (notePosition.getNote (), -3);
+        }
 
         String paramLine = "";
         int value = -1;
-        final String desc;
-
-        if (this.notes.isEmpty ())
+        final int touchedKnob = this.getTouchedKnob ();
+        if (touchedKnob != -1)
         {
-            desc = "Select a note";
-        }
-        else
-        {
-            final GridStep noteInfo = this.notes.get (0);
-            final int channel = noteInfo.channel ();
-            final int step = noteInfo.step ();
-            final int note = noteInfo.note ();
-
-            if (this.notes.size () > 1)
-                desc = "Step: * - " + this.notes.size ();
-            else
-                desc = "Step: " + (step + 1) + " - " + Scales.formatNoteAndOctave (note, -3);
-
-            final IStepInfo stepInfo = this.clip.getStep (channel, step, note);
-            final IValueChanger valueChanger = this.model.getValueChanger ();
-
-            switch (this.getTouchedKnob ())
+            final IParameter parameter = (this.surface.isPressed (ButtonID.ALT) ? this.altProvider : this.provider).get (touchedKnob);
+            if (parameter != null)
             {
-                case 0:
-                    if (this.host.supports (Capability.NOTE_EDIT_EXPRESSIONS))
-                    {
-                        if (this.surface.isPressed (ButtonID.ALT))
-                        {
-                            final double pressure = stepInfo.getPressure ();
-                            value = valueChanger.fromNormalizedValue (pressure);
-                            paramLine = "Prssr: " + StringUtils.formatPercentage (pressure);
-                        }
-                        else
-                        {
-                            final double noteGain = stepInfo.getGain ();
-                            value = Math.min (1023, valueChanger.fromNormalizedValue (noteGain));
-                            paramLine = "Gain: " + StringUtils.formatPercentage (noteGain);
-                        }
-                    }
-                    break;
-
-                case 1:
-                    if (this.host.supports (Capability.NOTE_EDIT_EXPRESSIONS))
-                    {
-                        if (this.surface.isPressed (ButtonID.ALT))
-                        {
-                            final double noteTimbre = stepInfo.getTimbre ();
-                            value = valueChanger.fromNormalizedValue ((noteTimbre + 1.0) / 2.0);
-                            paramLine = "Timbre: " + StringUtils.formatPercentage (noteTimbre);
-                        }
-                        else
-                        {
-                            final double notePan = stepInfo.getPan ();
-                            value = valueChanger.fromNormalizedValue ((notePan + 1.0) / 2.0);
-                            paramLine = "Pan: " + StringUtils.formatPercentage (notePan);
-                        }
-                    }
-                    break;
-
-                case 2:
-                    if (this.surface.isPressed (ButtonID.ALT))
-                    {
-                        if (this.host.supports (Capability.NOTE_EDIT_CHANCE))
-                        {
-                            final double noteChance = stepInfo.getChance ();
-                            value = valueChanger.fromNormalizedValue (noteChance);
-                            paramLine = "Chnce: " + StringUtils.formatPercentage (noteChance);
-                        }
-                    }
-                    else
-                        paramLine = this.formatLength (stepInfo.getDuration ());
-                    break;
-
-                case 3:
-                    if (this.surface.isPressed (ButtonID.ALT))
-                    {
-                        if (this.host.supports (Capability.NOTE_EDIT_VELOCITY_SPREAD))
-                        {
-                            final double noteVelocitySpread = stepInfo.getVelocitySpread ();
-                            value = valueChanger.fromNormalizedValue (noteVelocitySpread);
-                            paramLine = "VelSpr: " + StringUtils.formatPercentage (noteVelocitySpread);
-                        }
-                    }
-                    else
-                    {
-                        final double noteVelocity = stepInfo.getVelocity ();
-                        value = valueChanger.fromNormalizedValue (noteVelocity);
-                        paramLine = "Vel.: " + StringUtils.formatPercentage (noteVelocity);
-                    }
-                    break;
-
-                // This is the select knob
-                case 4:
-                    if (this.host.supports (Capability.NOTE_EDIT_EXPRESSIONS))
-                    {
-                        final double noteTranspose = stepInfo.getTranspose ();
-                        value = valueChanger.fromNormalizedValue ((noteTranspose + 24.0) / 48.0);
-                        paramLine = "Pitch: " + String.format ("%.1f", Double.valueOf (noteTranspose));
-                    }
-                    break;
-
-                default:
-                    // That's all...
-                    break;
+                value = parameter.getValue ();
+                paramLine = parameter.getName (5) + ": " + parameter.getDisplayedValue ();
             }
         }
 
+        final IGraphicDisplay display = this.surface.getGraphicsDisplay ();
         display.addElement (new TitleValueComponent (desc, paramLine, value, false));
         display.send ();
-    }
-
-
-    private String formatLength (final double duration)
-    {
-        return StringUtils.formatMeasures (this.model.getTransport ().getQuartersPerMeasure (), duration, 0, true);
     }
 
 
@@ -344,14 +161,6 @@ public class NoteMode extends AbstractParameterMode<FireControlSurface, FireConf
      */
     public void resetTranspose ()
     {
-        if (!this.host.supports (Capability.NOTE_EDIT_EXPRESSIONS))
-            return;
-        for (final GridStep noteInfo: this.notes)
-        {
-            final int channel = noteInfo.channel ();
-            final int step = noteInfo.step ();
-            final int note = noteInfo.note ();
-            this.clip.updateStepTranspose (channel, step, note, 0);
-        }
+        this.transposeParameter.resetValue ();
     }
 }

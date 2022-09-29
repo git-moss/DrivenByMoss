@@ -2,16 +2,16 @@ package de.mossgrabers.controller.novation.launchcontrol.mode.main;
 
 import de.mossgrabers.controller.novation.launchcontrol.controller.LaunchControlXLControlSurface;
 import de.mossgrabers.controller.novation.launchcontrol.mode.buttons.XLDrumSequencerMode;
+import de.mossgrabers.framework.controller.ButtonID;
 import de.mossgrabers.framework.controller.ContinuousID;
 import de.mossgrabers.framework.daw.IModel;
-import de.mossgrabers.framework.daw.INoteClip;
-import de.mossgrabers.framework.daw.IStepInfo;
-import de.mossgrabers.framework.daw.constants.Capability;
 import de.mossgrabers.framework.daw.data.IChannel;
 import de.mossgrabers.framework.daw.data.IDrumDevice;
 import de.mossgrabers.framework.daw.data.ILayer;
 import de.mossgrabers.framework.daw.data.bank.IDrumPadBank;
 import de.mossgrabers.framework.mode.Modes;
+import de.mossgrabers.framework.parameterprovider.IParameterProvider;
+import de.mossgrabers.framework.parameterprovider.special.CombinedParameterProvider;
 import de.mossgrabers.framework.view.sequencer.AbstractDrumView;
 
 import java.util.List;
@@ -42,6 +42,13 @@ public class XLDrumPadEditMode extends XLBaseNoteEditMode
 
         this.defaultMode = Modes.DRUM_SEQUENCER;
         this.note = this.model.getScales ().getDrumOffset ();
+
+        final IParameterProvider noteEditProvider = new CombinedParameterProvider (this.chanceParameterProvider, this.repeatParameterProvider, this.panParameterProvider);
+        final IParameterProvider noteEditWithDeviceParamsProvider = new CombinedParameterProvider (this.chanceParameterProvider, this.repeatParameterProvider, this.deviceParameterProvider);
+        final IParameterProvider shiftedParameterProvider = new CombinedParameterProvider (this.chanceParameterProvider, this.velocitySpreadParameterProvider, this.panParameterProvider);
+
+        this.setParameterProviders (noteEditProvider, noteEditWithDeviceParamsProvider);
+        this.setParameterProvider (ButtonID.REC_ARM, shiftedParameterProvider);
     }
 
 
@@ -62,28 +69,6 @@ public class XLDrumPadEditMode extends XLBaseNoteEditMode
         final ILayer item = this.model.getDrumDevice ().getDrumPadBank ().getItem (index);
         if (item.doesExist ())
             this.host.showNotification ("Drum Pad: " + item.getName ());
-    }
-
-
-    /** {@inheritDoc} */
-    @Override
-    protected void handleKnobRow0 (final INoteClip clip, final int channel, final int column, final int noteRow, final double normalizedValue)
-    {
-        if (this.host.supports (Capability.NOTE_EDIT_CHANCE))
-        {
-            clip.updateStepChance (channel, column, noteRow, normalizedValue);
-            this.surface.getDisplay ().notify (String.format ("Chance: %d%%", Integer.valueOf ((int) Math.round (normalizedValue * 100))));
-        }
-    }
-
-
-    /** {@inheritDoc} */
-    @Override
-    protected int getKnobValueRow0 (final int noteRow, final IStepInfo stepInfo)
-    {
-        if (this.host.supports (Capability.NOTE_EDIT_CHANCE))
-            return (int) (stepInfo.getChance () * 127);
-        return 0;
     }
 
 

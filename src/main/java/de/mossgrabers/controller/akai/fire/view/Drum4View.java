@@ -9,8 +9,9 @@ import de.mossgrabers.controller.akai.fire.controller.FireControlSurface;
 import de.mossgrabers.controller.akai.fire.mode.FireLayerMode;
 import de.mossgrabers.framework.controller.ButtonID;
 import de.mossgrabers.framework.daw.IModel;
-import de.mossgrabers.framework.daw.INoteClip;
-import de.mossgrabers.framework.daw.StepState;
+import de.mossgrabers.framework.daw.clip.INoteClip;
+import de.mossgrabers.framework.daw.clip.NotePosition;
+import de.mossgrabers.framework.daw.clip.StepState;
 import de.mossgrabers.framework.daw.data.IDrumPad;
 import de.mossgrabers.framework.daw.data.ILayer;
 import de.mossgrabers.framework.daw.data.bank.IDrumPadBank;
@@ -62,8 +63,9 @@ public class Drum4View extends AbstractDrum4View<FireControlSurface, FireConfigu
         final int channel = this.configuration.getMidiEditChannel ();
         final int vel = this.configuration.isAccentActive () ? this.configuration.getFixedAccentValue () : this.surface.getButton (ButtonID.get (ButtonID.PAD1, index)).getPressedVelocity ();
         final INoteClip clip = this.getClip ();
+        final NotePosition notePosition = new NotePosition (channel, step, sound);
 
-        if (this.handleNoteAreaButtonCombinations (clip, channel, step, y, sound, velocity, vel))
+        if (this.handleNoteAreaButtonCombinations (clip, notePosition, y, velocity, vel))
             return;
 
         // Handle note editor mode
@@ -73,9 +75,9 @@ public class Drum4View extends AbstractDrum4View<FireControlSurface, FireConfigu
             if (modeManager.isActive (Modes.NOTE))
             {
                 // Store existing note for editing
-                final StepState state = clip.getStep (channel, step, sound).getState ();
+                final StepState state = clip.getStep (notePosition).getState ();
                 if (state == StepState.START)
-                    this.editNote (clip, channel, step, sound, true);
+                    this.editNote (clip, notePosition, true);
                 return;
             }
         }
@@ -88,7 +90,7 @@ public class Drum4View extends AbstractDrum4View<FireControlSurface, FireConfigu
         }
 
         if (velocity == 0)
-            clip.toggleStep (channel, step, sound, vel);
+            clip.toggleStep (notePosition, vel);
     }
 
 
@@ -106,10 +108,7 @@ public class Drum4View extends AbstractDrum4View<FireControlSurface, FireConfigu
     {
         switch (buttonID)
         {
-            case SCENE1:
-            case SCENE2:
-            case SCENE3:
-            case SCENE4:
+            case SCENE1, SCENE2, SCENE3, SCENE4:
                 final int scene = buttonID.ordinal () - ButtonID.SCENE1.ordinal ();
                 if (this.primary.hasDrumPads ())
                 {
@@ -163,19 +162,28 @@ public class Drum4View extends AbstractDrum4View<FireControlSurface, FireConfigu
 
         if (!ButtonID.isSceneButton (buttonID))
             return;
+
         final int index = 3 - (buttonID.ordinal () - ButtonID.SCENE1.ordinal ());
-        if (this.primary.hasDrumPads ())
+        if (!this.primary.hasDrumPads ())
+            return;
+
+        final IDrumPad item = this.primary.getDrumPadBank ().getItem (index);
+        if (!item.doesExist ())
+            return;
+
+        if (this.surface.isPressed (ButtonID.SHIFT))
         {
-            final IDrumPad item = this.primary.getDrumPadBank ().getItem (index);
-            if (!item.doesExist ())
-                return;
-            if (this.surface.isPressed (ButtonID.SHIFT))
-                item.toggleSolo ();
-            else if (this.surface.isPressed (ButtonID.ALT))
-                this.surface.getDisplay ().notify (item.getName ());
-            else
-                item.toggleMute ();
+            item.toggleSolo ();
+            return;
         }
+
+        if (this.surface.isPressed (ButtonID.ALT))
+        {
+            this.surface.getDisplay ().notify (item.getName ());
+            return;
+        }
+
+        item.toggleMute ();
     }
 
 
@@ -216,7 +224,7 @@ public class Drum4View extends AbstractDrum4View<FireControlSurface, FireConfigu
 
     /** {@inheritDoc} */
     @Override
-    protected boolean handleNoteAreaButtonCombinations (final INoteClip clip, final int channel, final int step, final int row, final int note, final int velocity, final int accentVelocity)
+    protected boolean handleNoteAreaButtonCombinations (final INoteClip clip, final NotePosition notePosition, final int row, final int velocity, final int accentVelocity)
     {
         if (this.isButtonCombination (ButtonID.BROWSE))
         {
@@ -239,11 +247,11 @@ public class Drum4View extends AbstractDrum4View<FireControlSurface, FireConfigu
         {
             this.surface.setTriggerConsumed (isUpPressed ? ButtonID.ARROW_UP : ButtonID.ARROW_DOWN);
             if (velocity > 0)
-                this.handleSequencerAreaRepeatOperator (clip, channel, step, note, velocity, isUpPressed);
+                this.handleSequencerAreaRepeatOperator (clip, notePosition, velocity, isUpPressed);
             return true;
         }
 
-        return super.handleNoteAreaButtonCombinations (clip, channel, step, row, note, velocity, accentVelocity);
+        return super.handleNoteAreaButtonCombinations (clip, notePosition, row, velocity, accentVelocity);
     }
 
 

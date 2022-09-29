@@ -15,12 +15,12 @@ import de.mossgrabers.framework.command.trigger.track.ToggleTrackBanksCommand;
 import de.mossgrabers.framework.controller.valuechanger.IValueChanger;
 import de.mossgrabers.framework.daw.IModel;
 import de.mossgrabers.framework.daw.data.ICursorTrack;
-import de.mossgrabers.framework.daw.data.IParameter;
 import de.mossgrabers.framework.daw.data.ISend;
 import de.mossgrabers.framework.daw.data.ITrack;
 import de.mossgrabers.framework.daw.data.bank.ISendBank;
 import de.mossgrabers.framework.daw.data.bank.ITrackBank;
 import de.mossgrabers.framework.daw.resource.ChannelType;
+import de.mossgrabers.framework.parameter.IParameter;
 import de.mossgrabers.framework.utils.ButtonEvent;
 
 import java.util.Optional;

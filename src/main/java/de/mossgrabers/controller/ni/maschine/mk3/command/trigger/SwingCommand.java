@@ -11,6 +11,7 @@ import de.mossgrabers.framework.command.trigger.mode.ModeMultiSelectCommand;
 import de.mossgrabers.framework.daw.IModel;
 import de.mossgrabers.framework.featuregroup.ModeManager;
 import de.mossgrabers.framework.mode.Modes;
+import de.mossgrabers.framework.parameter.NoteAttribute;
 import de.mossgrabers.framework.utils.ButtonEvent;
 import de.mossgrabers.framework.view.Views;
 
@@ -46,8 +47,8 @@ public class SwingCommand extends ModeMultiSelectCommand<MaschineControlSurface,
             if (event == ButtonEvent.DOWN)
             {
                 final EditNoteMode mode = (EditNoteMode) modeManager.get (Modes.NOTE);
-                final boolean isPanorama = mode.getSelectedItem () == EditNoteMode.PANORAMA;
-                mode.selectItem (isPanorama ? EditNoteMode.DURATION : EditNoteMode.PANORAMA);
+                final boolean isPanorama = mode.getActiveParameter () == NoteAttribute.PANORAMA;
+                mode.selectActiveParameter (isPanorama ? NoteAttribute.DURATION : NoteAttribute.PANORAMA);
                 this.surface.getDisplay ().notify (isPanorama ? "Duration" : "Panorama");
             }
             return;

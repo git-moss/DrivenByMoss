@@ -4,7 +4,7 @@
 
 package de.mossgrabers.framework.parameterprovider.special;
 
-import de.mossgrabers.framework.daw.data.IParameter;
+import de.mossgrabers.framework.parameter.IParameter;
 
 
 /**

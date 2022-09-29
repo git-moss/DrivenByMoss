@@ -12,9 +12,9 @@ import de.mossgrabers.framework.controller.display.ITextDisplay;
 import de.mossgrabers.framework.daw.IModel;
 import de.mossgrabers.framework.daw.data.ICursorTrack;
 import de.mossgrabers.framework.daw.data.IMasterTrack;
-import de.mossgrabers.framework.daw.data.IParameter;
 import de.mossgrabers.framework.daw.data.bank.IParameterBank;
 import de.mossgrabers.framework.mode.device.ParameterMode;
+import de.mossgrabers.framework.parameter.IParameter;
 
 import java.util.List;
 

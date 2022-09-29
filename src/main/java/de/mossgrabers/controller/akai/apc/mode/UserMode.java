@@ -6,7 +6,7 @@ package de.mossgrabers.controller.akai.apc.mode;
 
 import de.mossgrabers.controller.akai.apc.controller.APCControlSurface;
 import de.mossgrabers.framework.daw.IModel;
-import de.mossgrabers.framework.daw.data.IParameter;
+import de.mossgrabers.framework.parameter.IParameter;
 import de.mossgrabers.framework.parameterprovider.device.BankParameterProvider;
 
 

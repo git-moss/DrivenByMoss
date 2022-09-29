@@ -3,7 +3,7 @@ package de.mossgrabers.framework.mode.sequencer;
 import de.mossgrabers.framework.configuration.Configuration;
 import de.mossgrabers.framework.controller.IControlSurface;
 import de.mossgrabers.framework.daw.IModel;
-import de.mossgrabers.framework.daw.INoteClip;
+import de.mossgrabers.framework.daw.clip.INoteClip;
 import de.mossgrabers.framework.daw.constants.Resolution;
 import de.mossgrabers.framework.featuregroup.AbstractMode;
 

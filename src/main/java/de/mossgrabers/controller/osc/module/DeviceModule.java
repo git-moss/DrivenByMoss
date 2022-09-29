@@ -18,7 +18,6 @@ import de.mossgrabers.framework.daw.data.ICursorDevice;
 import de.mossgrabers.framework.daw.data.IDevice;
 import de.mossgrabers.framework.daw.data.IEqualizerDevice;
 import de.mossgrabers.framework.daw.data.ILayer;
-import de.mossgrabers.framework.daw.data.IParameter;
 import de.mossgrabers.framework.daw.data.ISend;
 import de.mossgrabers.framework.daw.data.ISpecificDevice;
 import de.mossgrabers.framework.daw.data.ITrack;
@@ -30,6 +29,7 @@ import de.mossgrabers.framework.daw.data.bank.IParameterPageBank;
 import de.mossgrabers.framework.daw.data.bank.ISendBank;
 import de.mossgrabers.framework.daw.data.empty.EmptyLayer;
 import de.mossgrabers.framework.osc.IOpenSoundControlWriter;
+import de.mossgrabers.framework.parameter.IParameter;
 
 import java.util.LinkedList;
 import java.util.Optional;
@@ -136,7 +136,7 @@ public class DeviceModule extends AbstractModule
     {
         writer.sendOSC (deviceAddress + TAG_EXISTS, device.doesExist (), dump);
         writer.sendOSC (deviceAddress + TAG_NAME, device.getName (), dump);
-        writer.sendOSC (deviceAddress + "bypass", !device.isEnabled (), dump);
+        writer.sendOSC (deviceAddress + TAG_BYPASS, !device.isEnabled (), dump);
         writer.sendOSC (deviceAddress + "expand", device.isExpanded (), dump);
         writer.sendOSC (deviceAddress + "parameters", device.isParameterPageSectionVisible (), dump);
         writer.sendOSC (deviceAddress + "window", device.isWindowOpen (), dump);
@@ -166,7 +166,7 @@ public class DeviceModule extends AbstractModule
                 final String siblingAddress = deviceAddress + "sibling/" + oneplus + "/";
                 writer.sendOSC (siblingAddress + TAG_EXISTS, siblingDevice.doesExist (), dump);
                 writer.sendOSC (siblingAddress + TAG_NAME, siblingDevice.getName (), dump);
-                writer.sendOSC (siblingAddress + "bypass", !siblingDevice.isEnabled (), dump);
+                writer.sendOSC (siblingAddress + TAG_BYPASS, !siblingDevice.isEnabled (), dump);
                 writer.sendOSC (siblingAddress + TAG_SELECTED, i == positionInBank, dump);
             }
         }
@@ -330,7 +330,7 @@ public class DeviceModule extends AbstractModule
                 device.remove ();
                 break;
 
-            case "bypass":
+            case TAG_BYPASS:
                 device.toggleEnabledState ();
                 break;
 

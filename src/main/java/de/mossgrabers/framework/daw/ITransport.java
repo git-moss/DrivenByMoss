@@ -7,8 +7,8 @@ package de.mossgrabers.framework.daw;
 import de.mossgrabers.framework.daw.constants.AutomationMode;
 import de.mossgrabers.framework.daw.constants.LaunchQuantization;
 import de.mossgrabers.framework.daw.constants.PostRecordingAction;
-import de.mossgrabers.framework.daw.data.IParameter;
 import de.mossgrabers.framework.observer.IObserverManagement;
+import de.mossgrabers.framework.parameter.IParameter;
 
 import java.util.Arrays;
 

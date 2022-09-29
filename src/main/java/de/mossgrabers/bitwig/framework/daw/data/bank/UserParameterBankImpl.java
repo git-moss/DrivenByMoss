@@ -7,10 +7,10 @@ package de.mossgrabers.bitwig.framework.daw.data.bank;
 import de.mossgrabers.bitwig.framework.daw.data.ParameterImpl;
 import de.mossgrabers.framework.controller.valuechanger.IValueChanger;
 import de.mossgrabers.framework.daw.IHost;
-import de.mossgrabers.framework.daw.data.IParameter;
 import de.mossgrabers.framework.daw.data.bank.AbstractBank;
 import de.mossgrabers.framework.daw.data.bank.IParameterBank;
 import de.mossgrabers.framework.observer.IItemSelectionObserver;
+import de.mossgrabers.framework.parameter.IParameter;
 
 import com.bitwig.extension.controller.api.UserControlBank;
 

@@ -11,8 +11,8 @@ import de.mossgrabers.controller.ni.maschine.jam.controller.MaschineJamControlSu
 import de.mossgrabers.framework.controller.ContinuousID;
 import de.mossgrabers.framework.daw.IModel;
 import de.mossgrabers.framework.daw.data.ICursorDevice;
-import de.mossgrabers.framework.daw.data.IParameter;
 import de.mossgrabers.framework.mode.device.ParameterMode;
+import de.mossgrabers.framework.parameter.IParameter;
 
 
 /**

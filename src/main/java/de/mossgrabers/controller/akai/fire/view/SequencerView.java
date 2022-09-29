@@ -8,8 +8,9 @@ import de.mossgrabers.controller.akai.fire.FireConfiguration;
 import de.mossgrabers.controller.akai.fire.controller.FireControlSurface;
 import de.mossgrabers.framework.controller.ButtonID;
 import de.mossgrabers.framework.daw.IModel;
-import de.mossgrabers.framework.daw.INoteClip;
-import de.mossgrabers.framework.daw.StepState;
+import de.mossgrabers.framework.daw.clip.INoteClip;
+import de.mossgrabers.framework.daw.clip.NotePosition;
+import de.mossgrabers.framework.daw.clip.StepState;
 import de.mossgrabers.framework.daw.data.ITrack;
 import de.mossgrabers.framework.featuregroup.ModeManager;
 import de.mossgrabers.framework.mode.Modes;
@@ -52,12 +53,11 @@ public class SequencerView extends AbstractNoteSequencerView<FireControlSurface,
             {
                 // Store existing note for editing
                 final INoteClip clip = this.getClip ();
-                final int channel = this.configuration.getMidiEditChannel ();
                 final int mappedY = this.keyManager.map (y);
-
-                final StepState state = clip.getStep (channel, x, mappedY).getState ();
+                final NotePosition notePosition = new NotePosition (this.configuration.getMidiEditChannel (), x, mappedY);
+                final StepState state = clip.getStep (notePosition).getState ();
                 if (state == StepState.START)
-                    this.editNote (clip, channel, x, mappedY, true);
+                    this.editNote (clip, notePosition, true);
                 return;
             }
         }
@@ -232,17 +232,17 @@ public class SequencerView extends AbstractNoteSequencerView<FireControlSurface,
 
     /** {@inheritDoc} */
     @Override
-    protected boolean handleSequencerAreaButtonCombinations (final INoteClip clip, final int channel, final int step, final int row, final int note, final int velocity)
+    protected boolean handleSequencerAreaButtonCombinations (final INoteClip clip, final NotePosition notePosition, final int row, final int velocity)
     {
         final boolean isUpPressed = this.surface.isPressed (ButtonID.ARROW_UP);
         if (isUpPressed || this.surface.isPressed (ButtonID.ARROW_DOWN))
         {
             this.surface.setTriggerConsumed (isUpPressed ? ButtonID.ARROW_UP : ButtonID.ARROW_DOWN);
             if (velocity > 0)
-                this.handleSequencerAreaRepeatOperator (clip, channel, step, note, velocity, isUpPressed);
+                this.handleSequencerAreaRepeatOperator (clip, notePosition, velocity, isUpPressed);
             return true;
         }
 
-        return super.handleSequencerAreaButtonCombinations (clip, channel, step, row, note, velocity);
+        return super.handleSequencerAreaButtonCombinations (clip, notePosition, row, velocity);
     }
 }

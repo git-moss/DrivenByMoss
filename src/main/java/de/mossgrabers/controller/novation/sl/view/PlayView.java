@@ -11,9 +11,10 @@ import de.mossgrabers.controller.novation.sl.controller.SLControlSurface;
 import de.mossgrabers.controller.novation.sl.mode.device.SLParameterMode;
 import de.mossgrabers.framework.controller.ButtonID;
 import de.mossgrabers.framework.daw.IModel;
-import de.mossgrabers.framework.daw.INoteClip;
 import de.mossgrabers.framework.daw.ITransport;
-import de.mossgrabers.framework.daw.StepState;
+import de.mossgrabers.framework.daw.clip.INoteClip;
+import de.mossgrabers.framework.daw.clip.NotePosition;
+import de.mossgrabers.framework.daw.clip.StepState;
 import de.mossgrabers.framework.daw.constants.Resolution;
 import de.mossgrabers.framework.daw.data.IChannel;
 import de.mossgrabers.framework.daw.data.IDrumDevice;
@@ -356,12 +357,12 @@ public class PlayView extends AbstractSequencerView<SLControlSurface, SLConfigur
         final int step = clip.getCurrentStep ();
         final int hiStep = this.isInXRange (step) ? step % PlayView.NUM_DISPLAY_COLS : -1;
         final int offsetY = this.scales.getDrumOffset ();
-        final int editMidiChannel = this.configuration.getMidiEditChannel ();
 
         if (col >= PlayView.NUM_DISPLAY_COLS)
             return SLControlSurface.MKII_BUTTON_STATE_OFF;
 
-        final StepState isSet = clip.getStep (editMidiChannel, col, offsetY + this.selectedPad).getState ();
+        final NotePosition notePosition = new NotePosition (this.configuration.getMidiEditChannel (), col, offsetY + this.selectedPad);
+        final StepState isSet = clip.getStep (notePosition).getState ();
         final boolean hilite = col == hiStep;
         return exists && (isSet != StepState.OFF || hilite) ? SLControlSurface.MKII_BUTTON_STATE_ON : SLControlSurface.MKII_BUTTON_STATE_OFF;
     }
@@ -403,7 +404,10 @@ public class PlayView extends AbstractSequencerView<SLControlSurface, SLConfigur
         else
         {
             if (velocity != 0)
-                this.getClip ().toggleStep (this.configuration.getMidiEditChannel (), index < 8 ? index + 8 : index - 8, offsetY + this.selectedPad, this.configuration.isAccentActive () ? this.configuration.getFixedAccentValue () : velocity);
+            {
+                final NotePosition notePosition = new NotePosition (this.configuration.getMidiEditChannel (), index < 8 ? index + 8 : index - 8, offsetY + this.selectedPad);
+                this.getClip ().toggleStep (notePosition, this.configuration.isAccentActive () ? this.configuration.getFixedAccentValue () : velocity);
+            }
         }
     }
 

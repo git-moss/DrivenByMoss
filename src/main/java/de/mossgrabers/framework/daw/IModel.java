@@ -6,6 +6,7 @@ package de.mossgrabers.framework.daw;
 
 import de.mossgrabers.framework.controller.color.ColorManager;
 import de.mossgrabers.framework.controller.valuechanger.IValueChanger;
+import de.mossgrabers.framework.daw.clip.INoteClip;
 import de.mossgrabers.framework.daw.constants.DeviceID;
 import de.mossgrabers.framework.daw.data.ICursorDevice;
 import de.mossgrabers.framework.daw.data.ICursorTrack;

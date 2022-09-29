@@ -12,12 +12,12 @@ import de.mossgrabers.framework.controller.valuechanger.IValueChanger;
 import de.mossgrabers.framework.daw.IHost;
 import de.mossgrabers.framework.daw.data.IChannel;
 import de.mossgrabers.framework.daw.data.IDeviceMetadata;
-import de.mossgrabers.framework.daw.data.IParameter;
 import de.mossgrabers.framework.daw.data.bank.ISendBank;
 import de.mossgrabers.framework.daw.data.empty.EmptyParameter;
 import de.mossgrabers.framework.daw.data.empty.EmptySendBank;
 import de.mossgrabers.framework.daw.resource.ChannelType;
 import de.mossgrabers.framework.observer.IValueObserver;
+import de.mossgrabers.framework.parameter.IParameter;
 
 import com.bitwig.extension.controller.api.Channel;
 import com.bitwig.extension.controller.api.InsertionPoint;

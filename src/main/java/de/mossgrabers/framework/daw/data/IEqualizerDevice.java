@@ -4,6 +4,8 @@
 
 package de.mossgrabers.framework.daw.data;
 
+import de.mossgrabers.framework.parameter.IParameter;
+
 import java.util.ArrayList;
 import java.util.List;
 

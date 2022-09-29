@@ -5,10 +5,10 @@
 package de.mossgrabers.framework.parameterprovider.device;
 
 import de.mossgrabers.framework.daw.data.IChannel;
-import de.mossgrabers.framework.daw.data.IParameter;
 import de.mossgrabers.framework.daw.data.ISpecificDevice;
 import de.mossgrabers.framework.daw.data.bank.ISendBank;
 import de.mossgrabers.framework.daw.data.empty.EmptyParameter;
+import de.mossgrabers.framework.parameter.IParameter;
 
 import java.util.Optional;
 

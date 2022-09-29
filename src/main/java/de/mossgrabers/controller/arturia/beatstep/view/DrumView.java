@@ -8,8 +8,9 @@ import de.mossgrabers.controller.arturia.beatstep.controller.BeatstepColorManage
 import de.mossgrabers.controller.arturia.beatstep.controller.BeatstepControlSurface;
 import de.mossgrabers.framework.controller.grid.IPadGrid;
 import de.mossgrabers.framework.daw.IModel;
-import de.mossgrabers.framework.daw.INoteClip;
-import de.mossgrabers.framework.daw.StepState;
+import de.mossgrabers.framework.daw.clip.INoteClip;
+import de.mossgrabers.framework.daw.clip.NotePosition;
+import de.mossgrabers.framework.daw.clip.StepState;
 import de.mossgrabers.framework.daw.constants.Resolution;
 import de.mossgrabers.framework.daw.data.IChannel;
 import de.mossgrabers.framework.daw.data.IDrumDevice;
@@ -113,7 +114,10 @@ public class DrumView extends BaseSequencerView
         else
         {
             if (velocity != 0)
-                this.getClip ().toggleStep (this.configuration.getMidiEditChannel (), index < 8 ? index + 8 : index - 8, offsetY + this.selectedPad, this.configuration.isAccentActive () ? this.configuration.getFixedAccentValue () : velocity);
+            {
+                final NotePosition notePosition = new NotePosition (this.configuration.getMidiEditChannel (), index < 8 ? index + 8 : index - 8, offsetY + this.selectedPad);
+                this.getClip ().toggleStep (notePosition, this.configuration.isAccentActive () ? this.configuration.getFixedAccentValue () : velocity);
+            }
         }
     }
 
@@ -156,10 +160,11 @@ public class DrumView extends BaseSequencerView
         final int step = clip.getCurrentStep ();
         final int hiStep = this.isInXRange (step) ? step % DrumView.NUM_DISPLAY_COLS : -1;
         final int offsetY = this.scales.getDrumOffset ();
-        final int editMidiChannel = this.configuration.getMidiEditChannel ();
+        final NotePosition notePosition = new NotePosition (this.configuration.getMidiEditChannel (), 0, offsetY + this.selectedPad);
         for (int col = 0; col < DrumView.NUM_DISPLAY_COLS; col++)
         {
-            final StepState stepState = clip.getStep (editMidiChannel, col, offsetY + this.selectedPad).getState ();
+            notePosition.setStep (col);
+            final StepState stepState = clip.getStep (notePosition).getState ();
             final boolean hilite = col == hiStep;
             final int x = col % 8;
             final int y = col / 8;

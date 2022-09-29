@@ -4,12 +4,18 @@
 
 package de.mossgrabers.controller.yaeltex.turn.controller;
 
+import de.mossgrabers.framework.controller.ButtonID;
 import de.mossgrabers.framework.controller.color.ColorEx;
 import de.mossgrabers.framework.controller.color.ColorManager;
 import de.mossgrabers.framework.controller.grid.IPadGrid;
 import de.mossgrabers.framework.daw.DAWColor;
 import de.mossgrabers.framework.featuregroup.AbstractFeatureGroup;
+import de.mossgrabers.framework.parameter.NoteAttribute;
 import de.mossgrabers.framework.view.ScenePlayView;
+import de.mossgrabers.framework.view.sequencer.AbstractSequencerView;
+
+import java.util.EnumMap;
+import java.util.Map;
 
 
 /**
@@ -20,9 +26,9 @@ import de.mossgrabers.framework.view.ScenePlayView;
 @SuppressWarnings("javadoc")
 public class YaeltexTurnColorManager extends ColorManager
 {
-    private static final ColorEx [] COLOR_TABLE                     =
+    public static final ColorEx []                  COLOR_TABLE            =
     {
-        ColorEx.fromRGB (0x00, 0x00, 0x00),                                                          // 00
+        ColorEx.fromRGB (0x00, 0x00, 0x00),                                                                      // 00
         ColorEx.fromRGB (0xf2, 0xc, 0xc),
         ColorEx.fromRGB (0xf2, 0x58, 0x58),
         ColorEx.fromRGB (0xf2, 0xa5, 0xa5),
@@ -32,7 +38,7 @@ public class YaeltexTurnColorManager extends ColorManager
         ColorEx.fromRGB (0xf2, 0x4d, 0xc),
         ColorEx.fromRGB (0xf2, 0x84, 0x58),
         ColorEx.fromRGB (0xf2, 0xbb, 0xa5),
-        ColorEx.fromRGB (0xf2, 0x6e, 0xc),                                                           // 10
+        ColorEx.fromRGB (0xf2, 0x6e, 0xc),                                                                       // 10
         ColorEx.fromRGB (0xf2, 0x9a, 0x58),
         ColorEx.fromRGB (0xf2, 0xc6, 0xa5),
         ColorEx.fromRGB (0xf2, 0x8f, 0xc),
@@ -42,7 +48,7 @@ public class YaeltexTurnColorManager extends ColorManager
         ColorEx.fromRGB (0xf2, 0xc6, 0x58),
         ColorEx.fromRGB (0xf2, 0xdc, 0xa5),
         ColorEx.fromRGB (0xf2, 0xd1, 0xc),
-        ColorEx.fromRGB (0xf2, 0xdc, 0x58),                                                          // 20
+        ColorEx.fromRGB (0xf2, 0xdc, 0x58),                                                                      // 20
         ColorEx.fromRGB (0xf2, 0xe7, 0xa5),
         ColorEx.fromRGB (0xf2, 0xf2, 0xc),
         ColorEx.fromRGB (0xf2, 0xf2, 0x58),
@@ -52,7 +58,7 @@ public class YaeltexTurnColorManager extends ColorManager
         ColorEx.fromRGB (0xd1, 0xf2, 0xa5),
         ColorEx.fromRGB (0xb0, 0xf2, 0xc),
         ColorEx.fromRGB (0xc6, 0xf2, 0x58),
-        ColorEx.fromRGB (0xb0, 0xf2, 0xa5),                                                          // 30
+        ColorEx.fromRGB (0xb0, 0xf2, 0xa5),                                                                      // 30
         ColorEx.fromRGB (0x8f, 0xf2, 0xc),
         ColorEx.fromRGB (0xb0, 0xf2, 0x58),
         ColorEx.fromRGB (0x8f, 0xf2, 0xa5),
@@ -62,7 +68,7 @@ public class YaeltexTurnColorManager extends ColorManager
         ColorEx.fromRGB (0x4d, 0xf2, 0xc),
         ColorEx.fromRGB (0x84, 0xf2, 0x58),
         ColorEx.fromRGB (0x4d, 0xf2, 0xa5),
-        ColorEx.fromRGB (0x2c, 0xf2, 0xc),                                                           // 40
+        ColorEx.fromRGB (0x2c, 0xf2, 0xc),                                                                       // 40
         ColorEx.fromRGB (0x6e, 0xf2, 0x58),
         ColorEx.fromRGB (0x2c, 0xf2, 0xa5),
         ColorEx.fromRGB (0xc, 0xf2, 0xc),
@@ -72,7 +78,7 @@ public class YaeltexTurnColorManager extends ColorManager
         ColorEx.fromRGB (0x58, 0xf2, 0x6e),
         ColorEx.fromRGB (0xc, 0xf2, 0xb0),
         ColorEx.fromRGB (0xc, 0xf2, 0x4d),
-        ColorEx.fromRGB (0x58, 0xf2, 0x84),                                                          // 50
+        ColorEx.fromRGB (0x58, 0xf2, 0x84),                                                                      // 50
         ColorEx.fromRGB (0xc, 0xf2, 0xbb),
         ColorEx.fromRGB (0xc, 0xf2, 0x6e),
         ColorEx.fromRGB (0x58, 0xf2, 0x9a),
@@ -82,7 +88,7 @@ public class YaeltexTurnColorManager extends ColorManager
         ColorEx.fromRGB (0xc, 0xf2, 0xd1),
         ColorEx.fromRGB (0xc, 0xf2, 0xb0),
         ColorEx.fromRGB (0x58, 0xf2, 0xc6),
-        ColorEx.fromRGB (0xc, 0xf2, 0xdc),                                                           // 60
+        ColorEx.fromRGB (0xc, 0xf2, 0xdc),                                                                       // 60
         ColorEx.fromRGB (0xc, 0xf2, 0xd1),
         ColorEx.fromRGB (0x58, 0xf2, 0xdc),
         ColorEx.fromRGB (0xc, 0xf2, 0xe7),
@@ -92,7 +98,7 @@ public class YaeltexTurnColorManager extends ColorManager
         ColorEx.fromRGB (0xc, 0xd1, 0xf2),
         ColorEx.fromRGB (0x58, 0xdc, 0xf2),
         ColorEx.fromRGB (0xc, 0xe7, 0xf2),
-        ColorEx.fromRGB (0xc, 0xb0, 0xf2),                                                           // 70
+        ColorEx.fromRGB (0xc, 0xb0, 0xf2),                                                                       // 70
         ColorEx.fromRGB (0x58, 0xc6, 0xf2),
         ColorEx.fromRGB (0xc, 0xdc, 0xf2),
         ColorEx.fromRGB (0xc, 0x8f, 0xf2),
@@ -102,7 +108,7 @@ public class YaeltexTurnColorManager extends ColorManager
         ColorEx.fromRGB (0x58, 0x9a, 0xf2),
         ColorEx.fromRGB (0xc, 0xc6, 0xf2),
         ColorEx.fromRGB (0xc, 0x4d, 0xf2),
-        ColorEx.fromRGB (0x58, 0x84, 0xf2),                                                          // 80
+        ColorEx.fromRGB (0x58, 0x84, 0xf2),                                                                      // 80
         ColorEx.fromRGB (0xc, 0xbb, 0xf2),
         ColorEx.fromRGB (0xc, 0x2c, 0xf2),
         ColorEx.fromRGB (0x58, 0x6e, 0xf2),
@@ -112,7 +118,7 @@ public class YaeltexTurnColorManager extends ColorManager
         ColorEx.fromRGB (0xc, 0xa5, 0xf2),
         ColorEx.fromRGB (0x2c, 0xc, 0xf2),
         ColorEx.fromRGB (0x6e, 0x58, 0xf2),
-        ColorEx.fromRGB (0x2c, 0xa5, 0xf2),                                                          // 90
+        ColorEx.fromRGB (0x2c, 0xa5, 0xf2),                                                                      // 90
         ColorEx.fromRGB (0x4d, 0xc, 0xf2),
         ColorEx.fromRGB (0x84, 0x58, 0xf2),
         ColorEx.fromRGB (0x4d, 0xa5, 0xf2),
@@ -122,7 +128,7 @@ public class YaeltexTurnColorManager extends ColorManager
         ColorEx.fromRGB (0x8f, 0xc, 0xf2),
         ColorEx.fromRGB (0xb0, 0x58, 0xf2),
         ColorEx.fromRGB (0x8f, 0xa5, 0xf2),
-        ColorEx.fromRGB (0xb0, 0xc, 0xf2),                                                           // 100
+        ColorEx.fromRGB (0xb0, 0xc, 0xf2),                                                                       // 100
         ColorEx.fromRGB (0xc6, 0x58, 0xf2),
         ColorEx.fromRGB (0xb0, 0xa5, 0xf2),
         ColorEx.fromRGB (0xd1, 0xc, 0xf2),
@@ -132,7 +138,7 @@ public class YaeltexTurnColorManager extends ColorManager
         ColorEx.fromRGB (0xf2, 0x58, 0xf2),
         ColorEx.fromRGB (0xf2, 0xa5, 0xf2),
         ColorEx.fromRGB (0xf2, 0xc, 0xd1),
-        ColorEx.fromRGB (0xf2, 0x58, 0xdc),                                                          // 110
+        ColorEx.fromRGB (0xf2, 0x58, 0xdc),                                                                      // 110
         ColorEx.fromRGB (0xf2, 0xa5, 0xe7),
         ColorEx.fromRGB (0xf2, 0xc, 0xb0),
         ColorEx.fromRGB (0xf2, 0x58, 0xc6),
@@ -142,7 +148,7 @@ public class YaeltexTurnColorManager extends ColorManager
         ColorEx.fromRGB (0xf2, 0xa5, 0xd1),
         ColorEx.fromRGB (0xf2, 0xc, 0x6e),
         ColorEx.fromRGB (0xf2, 0x58, 0x9a),
-        ColorEx.fromRGB (0xf2, 0xa5, 0xc6),                                                          // 120
+        ColorEx.fromRGB (0xf2, 0xa5, 0xc6),                                                                      // 120
         ColorEx.fromRGB (0xf2, 0xc, 0x4d),
         ColorEx.fromRGB (0xf2, 0x58, 0x84),
         ColorEx.fromRGB (0xf2, 0xa5, 0xbb),
@@ -152,15 +158,66 @@ public class YaeltexTurnColorManager extends ColorManager
         ColorEx.fromRGB (0xf0, 0xf0, 0xf0)
     };
 
-    public static final String      BUTTON_STATE_CROSS_A            = "BUTTON_STATE_CROSS_A";
-    public static final String      BUTTON_STATE_CROSS_B            = "BUTTON_STATE_CROSS_B";
-    public static final String      BUTTON_STATE_STOP_ON            = "BUTTON_STATE_STOP_ON";
-    public static final String      BUTTON_STATE_REC_ARM_ON         = "BUTTON_STATE_REC_ARM_ON";
-    public static final String      BUTTON_STATE_SOLO_ON            = "BUTTON_STATE_SOLO_ON";
-    public static final String      BUTTON_STATE_MUTE_ON            = "BUTTON_STATE_MUTE_ON";
-    public static final String      BUTTON_STATE_SELECT_ON          = "BUTTON_STATE_SELECT_ON";
-    public static final String      BUTTON_STATE_SELECT_HI          = "BUTTON_STATE_SELECT_HI";
-    public static final String      BUTTON_STATE_NEW_CLIP_LENGTH_ON = "BUTTON_STATE_NEW_CLIP_LENGTH";
+    public static final int                         BLACK                  = getIndexFor (ColorEx.BLACK);
+    public static final int                         WHITE                  = getIndexFor (ColorEx.WHITE);
+    public static final int                         LIGHT_GRAY             = getIndexFor (ColorEx.LIGHT_GRAY);
+    public static final int                         GRAY                   = getIndexFor (ColorEx.GRAY);
+    public static final int                         DARK_GRAY              = getIndexFor (ColorEx.DARK_GRAY);
+    public static final int                         RED                    = getIndexFor (ColorEx.RED);
+    public static final int                         DARK_RED               = getIndexFor (ColorEx.DARK_RED);
+    public static final int                         GREEN                  = getIndexFor (ColorEx.GREEN);
+    public static final int                         DARK_GREEN             = getIndexFor (ColorEx.DARK_GREEN);
+    public static final int                         BLUE                   = getIndexFor (ColorEx.BLUE);
+    public static final int                         DARK_BLUE              = getIndexFor (ColorEx.DARK_BLUE);
+    public static final int                         YELLOW                 = getIndexFor (ColorEx.YELLOW);
+    public static final int                         DARK_YELLOW            = getIndexFor (ColorEx.DARK_YELLOW);
+    public static final int                         ORANGE                 = getIndexFor (ColorEx.ORANGE);
+    public static final int                         DARK_ORANGE            = getIndexFor (ColorEx.DARK_ORANGE);
+    public static final int                         PINK                   = getIndexFor (ColorEx.PINK);
+    public static final int                         ROSE                   = getIndexFor (ColorEx.ROSE);
+    public static final int                         BROWN                  = getIndexFor (ColorEx.BROWN);
+    public static final int                         DARK_BROWN             = getIndexFor (ColorEx.DARK_BROWN);
+    public static final int                         MINT                   = getIndexFor (ColorEx.MINT);
+    public static final int                         OLIVE                  = getIndexFor (ColorEx.OLIVE);
+    public static final int                         SKY_BLUE               = getIndexFor (ColorEx.SKY_BLUE);
+    public static final int                         PURPLE                 = getIndexFor (ColorEx.PURPLE);
+    public static final int                         DARK_PURPLE            = getIndexFor (ColorEx.DARK_PURPLE);
+    public static final int                         RED_WINE               = getIndexFor (ColorEx.RED_WINE);
+    public static final int                         CYAN                   = getIndexFor (ColorEx.CYAN);
+
+    public static final String                      BUTTON_STATE_SHIFT     = "BUTTON_STATE_SHIFT";
+    public static final String                      BUTTON_STATE_SELECT    = "BUTTON_STATE_SELECT";
+    public static final String                      BUTTON_STATE_SESSION   = "BUTTON_STATE_SESSION";
+    public static final String                      BUTTON_STATE_TRACK     = "BUTTON_STATE_TRACK";
+    public static final String                      BUTTON_STATE_LAYER     = "BUTTON_STATE_LAYER";
+    public static final String                      BUTTON_STATE_PLAY      = "BUTTON_STATE_PLAY";
+    public static final String                      BUTTON_STATE_STOP      = "BUTTON_STATE_STOP";
+    public static final String                      BUTTON_STATE_REC       = "BUTTON_STATE_REC";
+    public static final String                      BUTTON_STATE_OVERDUB   = "BUTTON_STATE_OVERDUB";
+    public static final String                      BUTTON_STATE_LOOP      = "BUTTON_STATE_LOOP";
+    public static final String                      BUTTON_STATE_TAP_TEMPO = "BUTTON_STATE_TAP_TEMPO";
+    public static final String                      BUTTON_STATE_ARROW     = "BUTTON_STATE_ARROW";
+
+    public static final Map<NoteAttribute, Integer> NOTE_PARAM_COLORS      = new EnumMap<> (NoteAttribute.class);
+    static
+    {
+        NOTE_PARAM_COLORS.put (NoteAttribute.PITCH, Integer.valueOf (WHITE));
+        NOTE_PARAM_COLORS.put (NoteAttribute.GAIN, Integer.valueOf (OLIVE));
+        NOTE_PARAM_COLORS.put (NoteAttribute.PANORAMA, Integer.valueOf (GRAY));
+        NOTE_PARAM_COLORS.put (NoteAttribute.DURATION, Integer.valueOf (BROWN));
+        NOTE_PARAM_COLORS.put (NoteAttribute.VELOCITY, Integer.valueOf (RED));
+        NOTE_PARAM_COLORS.put (NoteAttribute.RELEASE_VELOCITY, Integer.valueOf (CYAN));
+        NOTE_PARAM_COLORS.put (NoteAttribute.VELOCITY_SPREAD, Integer.valueOf (GREEN));
+        NOTE_PARAM_COLORS.put (NoteAttribute.MUTE, Integer.valueOf (MINT));
+        NOTE_PARAM_COLORS.put (NoteAttribute.CHANCE, Integer.valueOf (BLUE));
+        NOTE_PARAM_COLORS.put (NoteAttribute.PRESSURE, Integer.valueOf (YELLOW));
+        NOTE_PARAM_COLORS.put (NoteAttribute.TIMBRE, Integer.valueOf (RED_WINE));
+        NOTE_PARAM_COLORS.put (NoteAttribute.OCCURRENCE, Integer.valueOf (SKY_BLUE));
+        NOTE_PARAM_COLORS.put (NoteAttribute.REPEAT, Integer.valueOf (ORANGE));
+        NOTE_PARAM_COLORS.put (NoteAttribute.REPEAT_CURVE, Integer.valueOf (ROSE));
+        NOTE_PARAM_COLORS.put (NoteAttribute.REPEAT_VELOCITY_CURVE, Integer.valueOf (PINK));
+        NOTE_PARAM_COLORS.put (NoteAttribute.REPEAT_VELOCITY_END, Integer.valueOf (PURPLE));
+    }
 
 
     /**
@@ -168,70 +225,43 @@ public class YaeltexTurnColorManager extends ColorManager
      */
     public YaeltexTurnColorManager ()
     {
-        final int indexBlack = getIndexFor (ColorEx.BLACK);
-        final int indexWhite = getIndexFor (ColorEx.WHITE);
-        final int indexLightGray = getIndexFor (ColorEx.LIGHT_GRAY);
-        final int indexGray = getIndexFor (ColorEx.GRAY);
-        final int indexDarkGray = getIndexFor (ColorEx.DARK_GRAY);
-        final int indexRed = getIndexFor (ColorEx.RED);
-        final int indexDarkRed = getIndexFor (ColorEx.DARK_RED);
-        final int indexGreen = getIndexFor (ColorEx.GREEN);
-        final int indexDarkGreen = getIndexFor (ColorEx.DARK_GREEN);
-        final int indexBlue = getIndexFor (ColorEx.BLUE);
-        final int indexDarkBlue = getIndexFor (ColorEx.DARK_BLUE);
-        final int indexYellow = getIndexFor (ColorEx.YELLOW);
-        final int indexDarkYellow = getIndexFor (ColorEx.DARK_YELLOW);
-        final int indexOrange = getIndexFor (ColorEx.ORANGE);
-        final int indexDarkOrange = getIndexFor (ColorEx.DARK_ORANGE);
-        final int indexPink = getIndexFor (ColorEx.PINK);
-        final int indexRose = getIndexFor (ColorEx.ROSE);
-        final int indexBrown = getIndexFor (ColorEx.BROWN);
-        final int indexDarkBrown = getIndexFor (ColorEx.DARK_BROWN);
-        final int indexMint = getIndexFor (ColorEx.MINT);
-        final int indexOlive = getIndexFor (ColorEx.OLIVE);
-        final int indexSkyBlue = getIndexFor (ColorEx.SKY_BLUE);
-        final int indexPurple = getIndexFor (ColorEx.PURPLE);
-        final int indexDarkPurple = getIndexFor (ColorEx.DARK_PURPLE);
-        final int indexRedWine = getIndexFor (ColorEx.RED_WINE);
-        final int indexCyan = getIndexFor (ColorEx.CYAN);
-
         this.registerColorIndex (ColorManager.BUTTON_STATE_OFF, 0);
         this.registerColorIndex (ColorManager.BUTTON_STATE_ON, 0);
         this.registerColorIndex (ColorManager.BUTTON_STATE_HI, 127);
 
-        this.registerColorIndex (AbstractFeatureGroup.BUTTON_COLOR_OFF, indexBlack);
-        this.registerColorIndex (ScenePlayView.COLOR_SELECTED_PLAY_SCENE, indexWhite);
+        this.registerColorIndex (AbstractFeatureGroup.BUTTON_COLOR_OFF, BLACK);
+        this.registerColorIndex (ScenePlayView.COLOR_SELECTED_PLAY_SCENE, WHITE);
 
-        this.registerColorIndex (BUTTON_STATE_CROSS_A, indexBlue);
-        this.registerColorIndex (BUTTON_STATE_CROSS_B, indexCyan);
-        this.registerColorIndex (BUTTON_STATE_STOP_ON, indexDarkGray);
-        this.registerColorIndex (BUTTON_STATE_REC_ARM_ON, indexRed);
-        this.registerColorIndex (BUTTON_STATE_SOLO_ON, indexYellow);
-        this.registerColorIndex (BUTTON_STATE_MUTE_ON, indexOrange);
-        this.registerColorIndex (BUTTON_STATE_SELECT_ON, indexWhite);
-        this.registerColorIndex (BUTTON_STATE_SELECT_HI, indexYellow);
-        this.registerColorIndex (BUTTON_STATE_NEW_CLIP_LENGTH_ON, indexBlue);
+        this.registerColorIndex (BUTTON_STATE_SHIFT, WHITE);
+        this.registerColorIndex (BUTTON_STATE_SELECT, WHITE);
+        this.registerColorIndex (BUTTON_STATE_SESSION, WHITE);
+        this.registerColorIndex (BUTTON_STATE_TRACK, PURPLE);
+        this.registerColorIndex (BUTTON_STATE_LAYER, DARK_YELLOW);
+        this.registerColorIndex (BUTTON_STATE_PLAY, GREEN);
+        this.registerColorIndex (BUTTON_STATE_STOP, GRAY);
+        this.registerColorIndex (BUTTON_STATE_REC, RED);
+        this.registerColorIndex (BUTTON_STATE_OVERDUB, ORANGE);
+        this.registerColorIndex (BUTTON_STATE_LOOP, CYAN);
+        this.registerColorIndex (BUTTON_STATE_TAP_TEMPO, WHITE);
+        this.registerColorIndex (BUTTON_STATE_ARROW, BLUE);
+
+        this.registerColorIndex (AbstractSequencerView.COLOR_STEP_HILITE_NO_CONTENT, GREEN);
+        this.registerColorIndex (AbstractSequencerView.COLOR_STEP_HILITE_CONTENT, GREEN);
+        this.registerColorIndex (AbstractSequencerView.COLOR_STEP_MUTED, DARK_GRAY);
+        this.registerColorIndex (AbstractSequencerView.COLOR_STEP_MUTED_CONT, DARK_GRAY);
+        this.registerColorIndex (AbstractSequencerView.COLOR_STEP_SELECTED, WHITE);
+        this.registerColorIndex (AbstractSequencerView.COLOR_NO_CONTENT, BLACK);
+        this.registerColorIndex (AbstractSequencerView.COLOR_NO_CONTENT_4, BLACK);
+        this.registerColorIndex (AbstractSequencerView.COLOR_CONTENT, BLUE);
+        this.registerColorIndex (AbstractSequencerView.COLOR_CONTENT_CONT, CYAN);
 
         // TODO
 
-        // this.registerColorIndex (AbstractSequencerView.COLOR_STEP_HILITE_NO_CONTENT,
-        // COLOR_GREEN_HI);
-        // this.registerColorIndex (AbstractSequencerView.COLOR_STEP_HILITE_CONTENT,
-        // COLOR_GREEN_LO);
-        // this.registerColorIndex (AbstractSequencerView.COLOR_STEP_MUTED, indexDarkGray);
-        // this.registerColorIndex (AbstractSequencerView.COLOR_STEP_MUTED_CONT, COLOR_GREY_LO);
-        // this.registerColorIndex (AbstractSequencerView.COLOR_STEP_SELECTED, COLOR_WHITE);
-        // this.registerColorIndex (AbstractSequencerView.COLOR_NO_CONTENT, indexBlack);
-        // this.registerColorIndex (AbstractSequencerView.COLOR_NO_CONTENT_4, indexBlack);
-        // this.registerColorIndex (AbstractSequencerView.COLOR_CONTENT, getIndexFor
-        // (ColorEx.BLUE)_HI);
-        // this.registerColorIndex (AbstractSequencerView.COLOR_CONTENT_CONT, getIndexFor
-        // (ColorEx.BLUE)_LO);
         // this.registerColorIndex (AbstractSequencerView.COLOR_PAGE, COLOR_WHITE);
         // this.registerColorIndex (AbstractSequencerView.COLOR_ACTIVE_PAGE, COLOR_GREEN_HI);
         // this.registerColorIndex (AbstractSequencerView.COLOR_SELECTED_PAGE, getIndexFor
         // (ColorEx.BLUE)_LO);
-        //
+
         // this.registerColorIndex (AbstractDrumView.COLOR_PAD_OFF, indexBlack);
         // this.registerColorIndex (AbstractDrumView.COLOR_PAD_RECORD, COLOR_RED_HI);
         // this.registerColorIndex (AbstractDrumView.COLOR_PAD_PLAY, COLOR_GREEN_HI);
@@ -264,7 +294,7 @@ public class YaeltexTurnColorManager extends ColorManager
         // this.registerColorIndex (AbstractDrumExView.COLOR_EX_TOGGLE_ON, indexBlack);
         // this.registerColorIndex (AbstractDrumExView.COLOR_EX_TOGGLE_OFF, indexBlack);
 
-        this.registerColorIndex (IPadGrid.GRID_OFF, indexBlack);
+        this.registerColorIndex (IPadGrid.GRID_OFF, BLACK);
 
         for (int i = 0; i < 128; i++)
             this.registerColor (i, COLOR_TABLE[i]);
@@ -278,13 +308,65 @@ public class YaeltexTurnColorManager extends ColorManager
     }
 
 
+    /** {@inheritDoc} */
+    @Override
+    public ColorEx getColor (final int colorIndex, final ButtonID buttonID)
+    {
+        final ColorEx color;
+        switch (buttonID)
+        {
+            case PLAY:
+                color = ColorEx.GREEN;
+                break;
+
+            case SHIFT, SELECT, CLIP, SESSION, TAP_TEMPO:
+                color = ColorEx.WHITE;
+                break;
+
+            case TRACK:
+                color = ColorEx.PURPLE;
+                break;
+
+            case USER:
+                color = ColorEx.DARK_YELLOW;
+                break;
+
+            case STOP:
+                color = ColorEx.GRAY;
+                break;
+
+            case RECORD:
+                color = ColorEx.RED;
+                break;
+
+            case OVERDUB:
+                color = ColorEx.ORANGE;
+                break;
+
+            case LOOP:
+                color = ColorEx.CYAN;
+                break;
+
+            case ARROW_DOWN, ARROW_UP, ARROW_LEFT, ARROW_RIGHT:
+                color = ColorEx.BLUE;
+                break;
+
+            default:
+                return super.getColor (colorIndex, buttonID);
+        }
+
+        // Little trick to identify values which need an intensity
+        return colorIndex < 128 ? color : ColorEx.evenDarker (color);
+    }
+
+
     /**
      * Get the index in the color palette which is closest to the given color.
      *
      * @param color The color for which to get the color index.
      * @return The index with the closest color
      */
-    public static final int getIndexFor (ColorEx color)
+    public static final int getIndexFor (final ColorEx color)
     {
         return ColorEx.getClosestColorIndex (color, COLOR_TABLE);
     }

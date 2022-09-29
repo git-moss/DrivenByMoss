@@ -61,8 +61,7 @@ public class PushControllerDefinition extends DefaultControllerDefinition
                     midiDiscoveryPairs.addAll (this.createWindowsDeviceDiscoveryPairs ("MIDIIN2 (%sAbleton Push)", "MIDIOUT2 (%sAbleton Push)"));
                 break;
 
-            case LINUX:
-            case MAC:
+            case LINUX, MAC:
                 midiDiscoveryPairs.add (this.addDeviceDiscoveryPair (this.isMkII ? "Ableton Push 2 Live Port" : "Ableton Push User Port"));
                 break;
 

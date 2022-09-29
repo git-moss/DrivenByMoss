@@ -10,11 +10,11 @@ import de.mossgrabers.framework.controller.IControlSurface;
 import de.mossgrabers.framework.controller.grid.IPadGrid;
 import de.mossgrabers.framework.controller.hardware.IHwButton;
 import de.mossgrabers.framework.daw.IModel;
-import de.mossgrabers.framework.daw.INoteClip;
-import de.mossgrabers.framework.daw.IStepInfo;
-import de.mossgrabers.framework.daw.StepState;
+import de.mossgrabers.framework.daw.clip.INoteClip;
+import de.mossgrabers.framework.daw.clip.IStepInfo;
+import de.mossgrabers.framework.daw.clip.NotePosition;
+import de.mossgrabers.framework.daw.clip.StepState;
 import de.mossgrabers.framework.daw.constants.Resolution;
-import de.mossgrabers.framework.daw.data.GridStep;
 import de.mossgrabers.framework.scale.Scale;
 import de.mossgrabers.framework.scale.Scales;
 import de.mossgrabers.framework.utils.ButtonEvent;
@@ -146,15 +146,15 @@ public abstract class AbstractNoteSequencerView<S extends IControlSurface<C>, C 
             return;
 
         final INoteClip clip = this.getClip ();
-        final int channel = this.configuration.getMidiEditChannel ();
         final int mappedY = this.keyManager.map (y);
+        final NotePosition notePosition = new NotePosition (this.configuration.getMidiEditChannel (), x, mappedY);
         final int vel = this.configuration.isAccentActive () ? this.configuration.getFixedAccentValue () : this.surface.getButton (ButtonID.get (ButtonID.PAD1, index)).getPressedVelocity ();
 
-        if (this.handleSequencerAreaButtonCombinations (clip, channel, x, y, mappedY, vel))
+        if (this.handleSequencerAreaButtonCombinations (clip, notePosition, y, vel))
             return;
 
         if (mappedY >= 0)
-            clip.toggleStep (channel, x, mappedY, vel);
+            clip.toggleStep (notePosition, vel);
     }
 
 
@@ -162,50 +162,52 @@ public abstract class AbstractNoteSequencerView<S extends IControlSurface<C>, C 
      * Handle button combinations on the note area of the sequencer.
      *
      * @param clip The sequenced MIDI clip
-     * @param channel The MIDI channel of the note
-     * @param step The step in the current page in the clip
+     * @param notePosition The position of the note
      * @param row The row in the current page in the clip
-     * @param note The note in the current page of the pad in the clip
      * @param velocity The velocity
      * @return True if handled
      */
-    protected boolean handleSequencerAreaButtonCombinations (final INoteClip clip, final int channel, final int step, final int row, final int note, final int velocity)
+    protected boolean handleSequencerAreaButtonCombinations (final INoteClip clip, final NotePosition notePosition, final int row, final int velocity)
     {
         // Handle note duplicate function
         if (this.isButtonCombination (ButtonID.DUPLICATE))
         {
-            final IStepInfo noteStep = clip.getStep (channel, step, note);
+            final IStepInfo noteStep = clip.getStep (notePosition);
             if (noteStep.getState () == StepState.START)
                 this.copyNote = noteStep;
             else if (this.copyNote != null)
-                clip.setStep (channel, step, note, this.copyNote);
+                clip.setStep (notePosition, this.copyNote);
             return true;
         }
 
         if (this.isButtonCombination (ButtonID.MUTE))
         {
-            final IStepInfo stepInfo = clip.getStep (channel, step, note);
+            final IStepInfo stepInfo = clip.getStep (notePosition);
             final StepState isSet = stepInfo.getState ();
             if (isSet == StepState.START)
-                this.getClip ().updateStepMuteState (channel, step, note, !stepInfo.isMuted ());
+                clip.updateStepMuteState (notePosition, !stepInfo.isMuted ());
             return true;
         }
 
         // Change length of a note or create a new one with a length
         final int offset = row * clip.getNumSteps ();
+        final NotePosition np = new NotePosition (notePosition);
+        final int step = np.getStep ();
+        final int note = np.getNote ();
         for (int s = 0; s < step; s++)
         {
             final IHwButton button = this.surface.getButton (ButtonID.get (ButtonID.PAD1, offset + s));
             if (button.isLongPressed ())
             {
+                np.setStep (s);
                 button.setConsumed ();
                 final int length = step - s + 1;
                 final double duration = length * Resolution.getValueAt (this.getResolutionIndex ());
-                final StepState state = note < 0 ? StepState.OFF : clip.getStep (channel, s, note).getState ();
+                final StepState state = note < 0 ? StepState.OFF : clip.getStep (np).getState ();
                 if (state == StepState.START)
-                    clip.updateStepDuration (channel, s, note, duration);
+                    clip.updateStepDuration (np, duration);
                 else
-                    clip.setStep (channel, s, note, velocity, duration);
+                    clip.setStep (np, velocity, duration);
                 return true;
             }
         }
@@ -271,15 +273,17 @@ public abstract class AbstractNoteSequencerView<S extends IControlSurface<C>, C 
         final INoteClip clip = this.getClip ();
         final int step = clip.getCurrentStep ();
         final int hiStep = this.isInXRange (step) ? step % this.numDisplayCols : -1;
-        final int editMidiChannel = this.configuration.getMidiEditChannel ();
-        final List<GridStep> editNotes = this.getEditNotes ();
+        final List<NotePosition> editNotes = this.getEditNotes ();
+        final NotePosition notePosition = new NotePosition (this.configuration.getMidiEditChannel (), 0, 0);
         for (int x = 0; x < this.numDisplayCols; x++)
         {
+            notePosition.setStep (x);
             for (int y = 0; y < this.numSequencerRows; y++)
             {
                 final int map = this.keyManager.map (y);
-                final IStepInfo stepInfo = map < 0 ? null : clip.getStep (editMidiChannel, x, map);
-                gridPad.lightEx (x, this.numDisplayRows - 1 - y, this.getStepColor (stepInfo, x == hiStep, editMidiChannel, x, y, map, editNotes));
+                notePosition.setNote (map);
+                final IStepInfo stepInfo = map < 0 ? null : clip.getStep (notePosition);
+                gridPad.lightEx (x, this.numDisplayRows - 1 - y, this.getStepColor (stepInfo, x == hiStep, notePosition.getChannel (), x, y, map, editNotes));
             }
         }
 
@@ -309,7 +313,7 @@ public abstract class AbstractNoteSequencerView<S extends IControlSurface<C>, C 
      * @param editNotes The currently edited notes
      * @return The color
      */
-    protected String getStepColor (final IStepInfo stepInfo, final boolean hilite, final int channel, final int step, final int pad, final int note, final List<GridStep> editNotes)
+    protected String getStepColor (final IStepInfo stepInfo, final boolean hilite, final int channel, final int step, final int pad, final int note, final List<NotePosition> editNotes)
     {
         final StepState state = stepInfo == null ? StepState.OFF : stepInfo.getState ();
         switch (state)

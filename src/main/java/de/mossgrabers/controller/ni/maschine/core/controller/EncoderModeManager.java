@@ -20,11 +20,11 @@ import de.mossgrabers.framework.daw.IProject;
 import de.mossgrabers.framework.daw.ITransport;
 import de.mossgrabers.framework.daw.data.ICursorDevice;
 import de.mossgrabers.framework.daw.data.IMasterTrack;
-import de.mossgrabers.framework.daw.data.IParameter;
 import de.mossgrabers.framework.daw.data.ITrack;
-import de.mossgrabers.framework.daw.data.LoopStartParameter;
-import de.mossgrabers.framework.daw.data.PlayPositionParameter;
 import de.mossgrabers.framework.featuregroup.IView;
+import de.mossgrabers.framework.parameter.IParameter;
+import de.mossgrabers.framework.parameter.LoopStartParameter;
+import de.mossgrabers.framework.parameter.PlayPositionParameter;
 
 import java.util.EnumMap;
 import java.util.Map;

@@ -5,6 +5,7 @@
 package de.mossgrabers.framework.daw.data;
 
 import de.mossgrabers.framework.controller.color.ColorEx;
+import de.mossgrabers.framework.parameter.IParameter;
 
 
 /**

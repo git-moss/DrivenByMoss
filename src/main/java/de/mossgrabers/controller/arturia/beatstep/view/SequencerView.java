@@ -8,8 +8,9 @@ import de.mossgrabers.controller.arturia.beatstep.controller.BeatstepColorManage
 import de.mossgrabers.controller.arturia.beatstep.controller.BeatstepControlSurface;
 import de.mossgrabers.framework.controller.grid.IPadGrid;
 import de.mossgrabers.framework.daw.IModel;
-import de.mossgrabers.framework.daw.INoteClip;
-import de.mossgrabers.framework.daw.StepState;
+import de.mossgrabers.framework.daw.clip.INoteClip;
+import de.mossgrabers.framework.daw.clip.NotePosition;
+import de.mossgrabers.framework.daw.clip.StepState;
 import de.mossgrabers.framework.daw.constants.Resolution;
 import de.mossgrabers.framework.daw.data.ITrack;
 import de.mossgrabers.framework.daw.data.bank.ITrackBank;
@@ -115,10 +116,10 @@ public class SequencerView extends BaseSequencerView
             if (velocity != 0)
             {
                 final int step = index < 8 ? index + 8 : index - 8;
-                final int vel = this.configuration.isAccentActive () ? this.configuration.getFixedAccentValue () : velocity;
                 final int y = this.offsetY + this.selectedPad;
                 final int map = this.scales.getNoteMatrix ()[y];
-                this.getClip ().toggleStep (this.configuration.getMidiEditChannel (), step, map, vel);
+                final NotePosition notePosition = new NotePosition (this.configuration.getMidiEditChannel (), step, map);
+                this.getClip ().toggleStep (notePosition, this.configuration.isAccentActive () ? this.configuration.getFixedAccentValue () : velocity);
             }
         }
     }
@@ -156,12 +157,12 @@ public class SequencerView extends BaseSequencerView
             // Paint the sequencer steps
             final int step = clip.getCurrentStep ();
             final int hiStep = this.isInXRange (step) ? step % SequencerView.NUM_DISPLAY_COLS : -1;
-            final int editMidiChannel = this.configuration.getMidiEditChannel ();
+            final NotePosition notePosition = new NotePosition (this.configuration.getMidiEditChannel (), 0, 0);
             for (int col = 0; col < SequencerView.NUM_DISPLAY_COLS; col++)
             {
-                final int y = this.offsetY + this.selectedPad;
-                final int map = this.scales.getNoteMatrix ()[y];
-                final StepState stepState = clip.getStep (editMidiChannel, col, map).getState ();
+                notePosition.setStep (col);
+                notePosition.setNote (this.scales.getNoteMatrix ()[this.offsetY + this.selectedPad]);
+                final StepState stepState = clip.getStep (notePosition).getState ();
                 padGrid.lightEx (col % 8, 1 - col / 8, getSequencerColor (stepState, col == hiStep));
             }
         }

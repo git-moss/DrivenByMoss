@@ -9,11 +9,11 @@ import de.mossgrabers.controller.ableton.push.controller.PushControlSurface;
 import de.mossgrabers.framework.command.core.AbstractPitchbendCommand;
 import de.mossgrabers.framework.daw.IModel;
 import de.mossgrabers.framework.daw.constants.Resolution;
-import de.mossgrabers.framework.daw.data.IParameter;
 import de.mossgrabers.framework.daw.data.ITrack;
 import de.mossgrabers.framework.daw.midi.INoteRepeat;
 import de.mossgrabers.framework.daw.midi.MidiConstants;
 import de.mossgrabers.framework.featuregroup.IMode;
+import de.mossgrabers.framework.parameter.IParameter;
 import de.mossgrabers.framework.parameterprovider.IParameterProvider;
 import de.mossgrabers.framework.view.Views;
 

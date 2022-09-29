@@ -4,8 +4,8 @@
 
 package de.mossgrabers.framework.daw.data.empty;
 
-import de.mossgrabers.framework.daw.data.AbstractParameterImpl;
-import de.mossgrabers.framework.daw.data.IParameter;
+import de.mossgrabers.framework.parameter.AbstractParameterImpl;
+import de.mossgrabers.framework.parameter.IParameter;
 
 
 /**

@@ -10,7 +10,7 @@ import de.mossgrabers.controller.osc.exception.UnknownCommandException;
 import de.mossgrabers.framework.controller.color.ColorEx;
 import de.mossgrabers.framework.daw.IHost;
 import de.mossgrabers.framework.daw.IModel;
-import de.mossgrabers.framework.daw.INoteClip;
+import de.mossgrabers.framework.daw.clip.INoteClip;
 import de.mossgrabers.framework.daw.data.ICursorTrack;
 import de.mossgrabers.framework.daw.data.ISlot;
 import de.mossgrabers.framework.daw.data.bank.ISlotBank;

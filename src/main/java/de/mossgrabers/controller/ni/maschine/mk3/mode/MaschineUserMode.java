@@ -8,8 +8,8 @@ import de.mossgrabers.controller.ni.maschine.mk3.MaschineConfiguration;
 import de.mossgrabers.controller.ni.maschine.mk3.controller.MaschineControlSurface;
 import de.mossgrabers.framework.controller.display.ITextDisplay;
 import de.mossgrabers.framework.daw.IModel;
-import de.mossgrabers.framework.daw.data.IParameter;
 import de.mossgrabers.framework.featuregroup.AbstractParameterMode;
+import de.mossgrabers.framework.parameter.IParameter;
 import de.mossgrabers.framework.parameterprovider.device.BankParameterProvider;
 import de.mossgrabers.framework.utils.StringUtils;
 

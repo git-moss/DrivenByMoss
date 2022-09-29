@@ -11,10 +11,10 @@ import de.mossgrabers.controller.ni.kontrol.mkii.controller.KontrolProtocolContr
 import de.mossgrabers.framework.controller.ContinuousID;
 import de.mossgrabers.framework.controller.valuechanger.IValueChanger;
 import de.mossgrabers.framework.daw.IModel;
-import de.mossgrabers.framework.daw.data.IParameter;
 import de.mossgrabers.framework.daw.data.bank.IDeviceBank;
 import de.mossgrabers.framework.daw.data.bank.IParameterPageBank;
 import de.mossgrabers.framework.mode.device.ParameterMode;
+import de.mossgrabers.framework.parameter.IParameter;
 import de.mossgrabers.framework.parameterprovider.device.BankParameterProvider;
 import de.mossgrabers.framework.parameterprovider.special.CombinedParameterProvider;
 import de.mossgrabers.framework.utils.StringUtils;

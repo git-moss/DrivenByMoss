@@ -11,6 +11,7 @@ import de.mossgrabers.framework.command.trigger.mode.ModeSelectCommand;
 import de.mossgrabers.framework.daw.IModel;
 import de.mossgrabers.framework.featuregroup.ModeManager;
 import de.mossgrabers.framework.mode.Modes;
+import de.mossgrabers.framework.parameter.NoteAttribute;
 import de.mossgrabers.framework.utils.ButtonEvent;
 import de.mossgrabers.framework.view.Views;
 
@@ -46,8 +47,8 @@ public class TempoCommand extends ModeSelectCommand<MaschineControlSurface, Masc
             if (event == ButtonEvent.DOWN)
             {
                 final EditNoteMode mode = (EditNoteMode) modeManager.get (Modes.NOTE);
-                final boolean isTranspose = mode.getSelectedItem () == EditNoteMode.PITCH;
-                mode.selectItem (isTranspose ? EditNoteMode.PRESSURE : EditNoteMode.PITCH);
+                final boolean isTranspose = mode.getActiveParameter () == NoteAttribute.TRANSPOSE;
+                mode.selectActiveParameter (isTranspose ? NoteAttribute.PRESSURE : NoteAttribute.TRANSPOSE);
                 this.surface.getDisplay ().notify (isTranspose ? "Pressure" : "Pitch");
             }
             return;

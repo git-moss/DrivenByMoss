@@ -179,8 +179,17 @@ public class FireControllerSetup extends AbstractControllerSetup<FireControlSurf
         modeManager.register (Modes.VOLUME, new FireTrackMixerMode (surface, this.model));
         modeManager.register (Modes.DEVICE_PARAMS, new FireParameterMode (surface, this.model));
         modeManager.register (Modes.USER, new FireUserMode (surface, this.model));
-        modeManager.register (Modes.NOTE, new NoteMode (surface, this.model));
         modeManager.register (Modes.BROWSER, new BrowserMode (surface, this.model));
+
+        // Note mode needs the ALT button to exist
+        this.addButton (ButtonID.ALT, "ALT", (event, velocity) -> {
+
+            final IMode activeMode = modeManager.getActive ();
+            if (activeMode instanceof final IParametersAdjustObserver observer)
+                observer.parametersAdjusted ();
+
+        }, FireControlSurface.FIRE_ALT);
+        modeManager.register (Modes.NOTE, new NoteMode (surface, this.model));
     }
 
 
@@ -288,13 +297,6 @@ public class FireControllerSetup extends AbstractControllerSetup<FireControlSurf
         }, FireColorManager.BUTTON_STATE_ON2, FireColorManager.BUTTON_STATE_HI2, ColorManager.BUTTON_STATE_ON);
 
         this.addButton (ButtonID.SHIFT, "SHIFT", new ToggleShiftViewCommand<> (this.model, surface), FireControlSurface.FIRE_SHIFT, () -> viewManager.isActive (Views.SHIFT) || surface.isShiftPressed () ? 1 : 0, FireColorManager.BUTTON_STATE_ON2, FireColorManager.BUTTON_STATE_HI2);
-        this.addButton (ButtonID.ALT, "ALT", (event, velocity) -> {
-
-            final IMode activeMode = modeManager.getActive ();
-            if (activeMode instanceof final IParametersAdjustObserver observer)
-                observer.parametersAdjusted ();
-
-        }, FireControlSurface.FIRE_ALT);
 
         this.addButton (ButtonID.SELECT, "SELECT", new FireSelectButtonCommand (this.model, surface), FireControlSurface.SELECT);
         this.addButton (ButtonID.BROWSE, "BROWSER", new FireBrowserCommand (this.model, surface), FireControlSurface.FIRE_BROWSER, () -> modeManager.isActive (Modes.BROWSER));

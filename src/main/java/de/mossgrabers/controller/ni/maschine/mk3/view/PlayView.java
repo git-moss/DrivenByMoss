@@ -15,11 +15,11 @@ import de.mossgrabers.framework.controller.grid.IPadGrid;
 import de.mossgrabers.framework.controller.hardware.IHwButton;
 import de.mossgrabers.framework.daw.DAWColor;
 import de.mossgrabers.framework.daw.IModel;
-import de.mossgrabers.framework.daw.INoteClip;
-import de.mossgrabers.framework.daw.IStepInfo;
-import de.mossgrabers.framework.daw.StepState;
+import de.mossgrabers.framework.daw.clip.INoteClip;
+import de.mossgrabers.framework.daw.clip.IStepInfo;
+import de.mossgrabers.framework.daw.clip.NotePosition;
+import de.mossgrabers.framework.daw.clip.StepState;
 import de.mossgrabers.framework.daw.constants.Resolution;
-import de.mossgrabers.framework.daw.data.GridStep;
 import de.mossgrabers.framework.daw.data.ITrack;
 import de.mossgrabers.framework.daw.midi.IMidiInput;
 import de.mossgrabers.framework.daw.midi.MidiConstants;
@@ -167,12 +167,15 @@ public class PlayView extends AbstractPlayView<MaschineControlSurface, MaschineC
         final int step = clip.getCurrentStep ();
         final int hiStep = this.isInXRange (step) ? step % PlayView.SEQUENCER_STEPS : -1;
         final int channel = this.configuration.getMidiEditChannel ();
+        final NotePosition notePosition = new NotePosition (channel, 0, noteRow);
 
-        final List<GridStep> editNotes = this.getEditNotes ();
+        final List<NotePosition> editNotes = this.getEditNotes ();
 
         final IPadGrid padGrid = this.surface.getPadGrid ();
         for (int col = 0; col < PlayView.SEQUENCER_STEPS; col++)
         {
+            notePosition.setStep (col);
+
             final int x = col % this.numColumns;
             int y = col / this.numColumns;
             if (yModifier != null)
@@ -184,10 +187,10 @@ public class PlayView extends AbstractPlayView<MaschineControlSurface, MaschineC
                 continue;
             }
 
-            final IStepInfo stepInfo = clip.getStep (channel, col, noteRow);
+            final IStepInfo stepInfo = clip.getStep (notePosition);
             final boolean hilite = col == hiStep;
 
-            padGrid.lightEx (x, y, this.getStepColor (isActive, stepInfo, hilite, channel, col, noteRow, editNotes));
+            padGrid.lightEx (x, y, this.getStepColor (isActive, stepInfo, hilite, notePosition, editNotes));
         }
     }
 
@@ -213,13 +216,11 @@ public class PlayView extends AbstractPlayView<MaschineControlSurface, MaschineC
      * @param isActive If the sequencer is active
      * @param stepInfo The information about the step
      * @param hilite The step should be highlighted
-     * @param channel The MIDI channel
-     * @param step The step of the note
-     * @param note The note of the step
+     * @param notePosition The position of the note
      * @param editNotes The currently edited notes
      * @return The color
      */
-    protected String getStepColor (final boolean isActive, final IStepInfo stepInfo, final boolean hilite, final int channel, final int step, final int note, final List<GridStep> editNotes)
+    protected String getStepColor (final boolean isActive, final IStepInfo stepInfo, final boolean hilite, final NotePosition notePosition, final List<NotePosition> editNotes)
     {
         if (!isActive)
             return AbstractSequencerView.COLOR_NO_CONTENT;
@@ -231,7 +232,7 @@ public class PlayView extends AbstractPlayView<MaschineControlSurface, MaschineC
             case START:
                 if (hilite)
                     return AbstractSequencerView.COLOR_STEP_HILITE_CONTENT;
-                if (isEdit (channel, step, note, editNotes))
+                if (isEdit (notePosition, editNotes))
                     return AbstractSequencerView.COLOR_STEP_SELECTED;
                 if (stepInfo.isMuted ())
                     return AbstractSequencerView.COLOR_STEP_MUTED;
@@ -240,7 +241,7 @@ public class PlayView extends AbstractPlayView<MaschineControlSurface, MaschineC
             case CONTINUE:
                 if (hilite)
                     return AbstractSequencerView.COLOR_STEP_HILITE_CONTENT;
-                if (isEdit (channel, step, note, editNotes))
+                if (isEdit (notePosition, editNotes))
                     return AbstractSequencerView.COLOR_STEP_SELECTED;
                 if (stepInfo.isMuted ())
                     return AbstractSequencerView.COLOR_STEP_MUTED_CONT;
@@ -412,10 +413,11 @@ public class PlayView extends AbstractPlayView<MaschineControlSurface, MaschineC
         final int step = this.numColumns * (3 - y) + x;
         final int vel = this.configuration.isAccentActive () ? this.configuration.getFixedAccentValue () : this.surface.getButton (ButtonID.get (ButtonID.PAD1, index)).getPressedVelocity ();
 
-        if (this.handleSequencerAreaButtonCombinations (clip, channel, step, this.selectedNote, vel))
+        final NotePosition notePosition = new NotePosition (channel, step, this.selectedNote);
+        if (this.handleSequencerAreaButtonCombinations (clip, notePosition, vel))
             return;
 
-        clip.toggleStep (channel, step, this.selectedNote, vel);
+        clip.toggleStep (notePosition, vel);
     }
 
 
@@ -423,26 +425,24 @@ public class PlayView extends AbstractPlayView<MaschineControlSurface, MaschineC
      * Handle button combinations in the sequencer area.
      *
      * @param clip The sequenced MIDI clip
-     * @param channel The MIDI channel of the note
-     * @param step The step in the current page in the clip
-     * @param note The note in the current page of the pad in the clip
+     * @param notePosition The position of the note
      * @param velocity The velocity
      * @return True if handled
      */
-    protected boolean handleSequencerAreaButtonCombinations (final INoteClip clip, final int channel, final int step, final int note, final int velocity)
+    protected boolean handleSequencerAreaButtonCombinations (final INoteClip clip, final NotePosition notePosition, final int velocity)
     {
         if (this.isButtonCombination (ButtonID.MUTE))
         {
-            final IStepInfo noteStep = clip.getStep (channel, step, note);
+            final IStepInfo noteStep = clip.getStep (notePosition);
             if (noteStep.getState () == StepState.START)
-                clip.updateStepMuteState (channel, step, note, !noteStep.isMuted ());
+                clip.updateStepMuteState (notePosition, !noteStep.isMuted ());
             return true;
         }
 
         if (this.surface.getModeManager ().isActive (Modes.NOTE))
         {
-            this.model.getHost ().showNotification ("Note " + Scales.formatNoteAndOctave (note, -3) + " - Step " + Integer.toString (step + 1));
-            this.editNote (clip, channel, step, note, true);
+            this.model.getHost ().showNotification ("Note " + Scales.formatNoteAndOctave (notePosition.getNote (), -3) + " - Step " + Integer.toString (notePosition.getStep () + 1));
+            this.editNote (clip, notePosition, true);
             return true;
         }
 
@@ -451,17 +451,22 @@ public class PlayView extends AbstractPlayView<MaschineControlSurface, MaschineC
         if (duplicateButton != null && duplicateButton.isPressed ())
         {
             duplicateButton.setConsumed ();
-            final IStepInfo noteStep = clip.getStep (channel, step, note);
+            final IStepInfo noteStep = clip.getStep (notePosition);
             if (noteStep.getState () == StepState.START)
                 this.copyNote = noteStep;
             else if (this.copyNote != null)
-                clip.setStep (channel, step, note, this.copyNote);
+                clip.setStep (notePosition, this.copyNote);
             return true;
         }
 
         // Change length of a note or create a new one with a length
+        final NotePosition np = new NotePosition (notePosition);
+        final int step = np.getStep ();
+        final int note = np.getNote ();
         for (int s = step - 1; s >= 0; s--)
         {
+            np.setStep (s);
+
             final int x = s % this.numColumns;
             final int y = s / this.numColumns;
             final int pad = y * this.numColumns + x;
@@ -471,11 +476,11 @@ public class PlayView extends AbstractPlayView<MaschineControlSurface, MaschineC
                 button.setConsumed ();
                 final int length = step - s + 1;
                 final double duration = length * Resolution.getValueAt (this.drumView.getResolutionIndex ());
-                final StepState state = note < 0 ? StepState.OFF : clip.getStep (channel, s, note).getState ();
+                final StepState state = note < 0 ? StepState.OFF : clip.getStep (np).getState ();
                 if (state == StepState.START)
-                    clip.updateStepDuration (channel, s, note, duration);
+                    clip.updateStepDuration (np, duration);
                 else
-                    clip.setStep (channel, s, note, velocity, duration);
+                    clip.setStep (np, velocity, duration);
                 return true;
             }
         }
@@ -493,7 +498,7 @@ public class PlayView extends AbstractPlayView<MaschineControlSurface, MaschineC
     }
 
 
-    protected List<GridStep> getEditNotes ()
+    protected List<NotePosition> getEditNotes ()
     {
         final ModeManager modeManager = this.surface.getModeManager ();
         final IMode mode = modeManager.get (Modes.NOTE);
@@ -503,11 +508,11 @@ public class PlayView extends AbstractPlayView<MaschineControlSurface, MaschineC
     }
 
 
-    protected static boolean isEdit (final int channel, final int step, final int note, final List<GridStep> editNotes)
+    protected static boolean isEdit (final NotePosition notePosition, final List<NotePosition> editNotes)
     {
-        for (final GridStep editNote: editNotes)
+        for (final NotePosition editNote: editNotes)
         {
-            if (editNote.channel () == channel && editNote.step () == step && editNote.note () == note)
+            if (editNote.equals (notePosition))
                 return true;
         }
         return false;
@@ -518,15 +523,13 @@ public class PlayView extends AbstractPlayView<MaschineControlSurface, MaschineC
      * Show edit mode and set or add note.
      *
      * @param clip The MIDI clip
-     * @param channel The MIDI channel of the note
-     * @param step The step of the note
-     * @param mappedNote The real note
+     * @param notePosition The position of the note
      * @param addNote Add the note to the edited notes otherwise clear the already selected and add
      *            only the new one
      */
-    protected void editNote (final INoteClip clip, final int channel, final int step, final int mappedNote, final boolean addNote)
+    protected void editNote (final INoteClip clip, final NotePosition notePosition, final boolean addNote)
     {
-        final StepState state = clip.getStep (channel, step, mappedNote).getState ();
+        final StepState state = clip.getStep (notePosition).getState ();
         if (state != StepState.START)
             return;
 
@@ -535,9 +538,9 @@ public class PlayView extends AbstractPlayView<MaschineControlSurface, MaschineC
         if (mode instanceof final INoteMode noteMode)
         {
             if (addNote)
-                noteMode.addNote (clip, channel, step, mappedNote);
+                noteMode.addNote (clip, notePosition);
             else
-                noteMode.setNote (clip, channel, step, mappedNote);
+                noteMode.setNote (clip, notePosition);
             modeManager.setActive (Modes.NOTE);
         }
     }

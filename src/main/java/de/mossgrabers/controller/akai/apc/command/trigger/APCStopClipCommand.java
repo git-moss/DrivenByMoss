@@ -45,7 +45,7 @@ public class APCStopClipCommand extends StopClipCommand<APCControlSurface, APCCo
 
         // Set the step resolution in sequencer modes
         final IView view = this.surface.getViewManager ().getActive ();
-        if (view instanceof DrumView drumView)
+        if (view instanceof final DrumView drumView)
         {
             drumView.handleStopButtons (this.index);
             return;
@@ -62,7 +62,7 @@ public class APCStopClipCommand extends StopClipCommand<APCControlSurface, APCCo
 
     /**
      * Get the color for the stop buttons.
-     * 
+     *
      * @param stopButtonID The ID of the stop button
      * @return The color index
      */
@@ -70,7 +70,7 @@ public class APCStopClipCommand extends StopClipCommand<APCControlSurface, APCCo
     {
         final IView view = this.surface.getViewManager ().getActive ();
 
-        if (view instanceof DrumView drumView)
+        if (view instanceof final DrumView drumView)
             return drumView.getStopButtonColor (this.index);
 
         if (view instanceof final AbstractSequencerView<?, ?> sequencerView)

@@ -41,7 +41,7 @@ public enum Capability
     /** Supports editing of note occurrence. */
     NOTE_EDIT_OCCURRENCE,
     /** Supports editing of note recurrence. */
-    NOTE_EDIT_RECCURRENCE,
+    NOTE_EDIT_RECURRENCE,
 
     /** The API provides support quantizing the note lengths of MIDI input. */
     QUANTIZE_INPUT_NOTE_LENGTH,

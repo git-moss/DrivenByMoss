@@ -75,7 +75,7 @@ public class HostImpl implements IHost
         CAPABILITIES.add (Capability.NOTE_EDIT_REPEAT);
         CAPABILITIES.add (Capability.NOTE_EDIT_CHANCE);
         CAPABILITIES.add (Capability.NOTE_EDIT_OCCURRENCE);
-        CAPABILITIES.add (Capability.NOTE_EDIT_RECCURRENCE);
+        CAPABILITIES.add (Capability.NOTE_EDIT_RECURRENCE);
 
         CAPABILITIES.add (Capability.QUANTIZE_INPUT_NOTE_LENGTH);
         CAPABILITIES.add (Capability.QUANTIZE_AMOUNT);

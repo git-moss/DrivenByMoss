@@ -11,8 +11,8 @@ import de.mossgrabers.framework.command.core.PitchbendCommand;
 import de.mossgrabers.framework.controller.hardware.AbstractHwContinuousControl;
 import de.mossgrabers.framework.controller.hardware.BindType;
 import de.mossgrabers.framework.controller.hardware.IHwAbsoluteControl;
-import de.mossgrabers.framework.daw.data.IParameter;
 import de.mossgrabers.framework.daw.midi.IMidiInput;
+import de.mossgrabers.framework.parameter.IParameter;
 
 import com.bitwig.extension.controller.api.AbsoluteHardwarControlBindable;
 import com.bitwig.extension.controller.api.AbsoluteHardwareControl;

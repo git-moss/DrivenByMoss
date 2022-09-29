@@ -2,7 +2,7 @@
 // (c) 2017-2022
 // Licensed under LGPLv3 - http://www.gnu.org/licenses/lgpl-3.0.txt
 
-package de.mossgrabers.framework.daw;
+package de.mossgrabers.framework.daw.clip;
 
 /**
  * Enumeration for the state of a step.

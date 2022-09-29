@@ -9,7 +9,7 @@ import de.mossgrabers.controller.mackie.mcu.controller.MCUControlSurface;
 import de.mossgrabers.framework.command.core.AbstractTriggerCommand;
 import de.mossgrabers.framework.daw.GrooveParameterID;
 import de.mossgrabers.framework.daw.IModel;
-import de.mossgrabers.framework.daw.data.IParameter;
+import de.mossgrabers.framework.parameter.IParameter;
 import de.mossgrabers.framework.utils.ButtonEvent;
 
 

@@ -8,7 +8,7 @@ import de.mossgrabers.bitwig.framework.daw.data.ParameterImpl;
 import de.mossgrabers.bitwig.framework.daw.data.Util;
 import de.mossgrabers.framework.controller.valuechanger.IValueChanger;
 import de.mossgrabers.framework.daw.IProject;
-import de.mossgrabers.framework.daw.data.IParameter;
+import de.mossgrabers.framework.parameter.IParameter;
 
 import com.bitwig.extension.controller.api.Action;
 import com.bitwig.extension.controller.api.Application;

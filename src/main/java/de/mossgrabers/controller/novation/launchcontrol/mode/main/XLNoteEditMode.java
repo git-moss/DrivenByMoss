@@ -4,13 +4,20 @@ import de.mossgrabers.controller.novation.launchcontrol.controller.LaunchControl
 import de.mossgrabers.controller.novation.launchcontrol.controller.LaunchControlXLControlSurface;
 import de.mossgrabers.framework.controller.ButtonID;
 import de.mossgrabers.framework.controller.ContinuousID;
+import de.mossgrabers.framework.controller.display.IDisplay;
+import de.mossgrabers.framework.controller.valuechanger.IValueChanger;
 import de.mossgrabers.framework.daw.IModel;
-import de.mossgrabers.framework.daw.INoteClip;
-import de.mossgrabers.framework.daw.IStepInfo;
-import de.mossgrabers.framework.daw.constants.Capability;
+import de.mossgrabers.framework.daw.clip.INoteClip;
+import de.mossgrabers.framework.daw.clip.NotePosition;
 import de.mossgrabers.framework.mode.Modes;
-import de.mossgrabers.framework.scale.Scales;
+import de.mossgrabers.framework.parameter.IParameter;
+import de.mossgrabers.framework.parameter.NoteAttribute;
+import de.mossgrabers.framework.parameter.NoteParameter;
+import de.mossgrabers.framework.parameterprovider.IParameterProvider;
+import de.mossgrabers.framework.parameterprovider.special.CombinedParameterProvider;
+import de.mossgrabers.framework.parameterprovider.special.FixedParameterProvider;
 
+import java.util.ArrayList;
 import java.util.List;
 
 
@@ -35,6 +42,20 @@ public class XLNoteEditMode extends XLBaseNoteEditMode
         super ("Note Sequencer", surface, model, clipRows, clipCols, controls);
 
         this.defaultMode = Modes.NOTE_SEQUENCER;
+
+        final IValueChanger valueChanger = this.model.getValueChanger ();
+        final IDisplay display = surface.getDisplay ();
+        final List<IParameter> pitchParameters = new ArrayList<> (8);
+        for (int i = 0; i < 8; i++)
+            pitchParameters.add (new NoteParameter (i, NoteAttribute.PITCH, display, model, this, valueChanger));
+        final IParameterProvider pitchParameterProvider = new FixedParameterProvider (pitchParameters);
+
+        final IParameterProvider noteEditProvider = new CombinedParameterProvider (pitchParameterProvider, this.repeatParameterProvider, this.panParameterProvider);
+        final IParameterProvider noteEditWithDeviceParamsProvider = new CombinedParameterProvider (pitchParameterProvider, this.repeatParameterProvider, this.deviceParameterProvider);
+        final IParameterProvider shiftedParameterProvider = new CombinedParameterProvider (this.chanceParameterProvider, this.velocitySpreadParameterProvider, this.panParameterProvider);
+
+        this.setParameterProviders (noteEditProvider, noteEditWithDeviceParamsProvider);
+        this.setParameterProvider (ButtonID.REC_ARM, shiftedParameterProvider);
     }
 
 
@@ -56,49 +77,10 @@ public class XLNoteEditMode extends XLBaseNoteEditMode
         if (noteRow == -1)
         {
             // Use the note of the currently selected scale base
-            noteRow = 60 + this.scales.getScaleOffset ();
-            clip.toggleStep (channel, index, noteRow, 127);
+            clip.toggleStep (new NotePosition (channel, index, 60 + this.scales.getScaleOffset ()), 127);
         }
         else
-            clip.clearStep (channel, index, noteRow);
-    }
-
-
-    /** {@inheritDoc} */
-    @Override
-    protected void handleKnobRow0 (final INoteClip clip, final int channel, final int column, final int noteRow, final double normalizedValue)
-    {
-        if (this.surface.isPressed (ButtonID.REC_ARM))
-        {
-            if (this.host.supports (Capability.NOTE_EDIT_CHANCE))
-            {
-                clip.updateStepChance (channel, column, noteRow, normalizedValue);
-                this.surface.getDisplay ().notify (String.format ("Chance: %d%%", Integer.valueOf ((int) Math.round (normalizedValue * 100))));
-            }
-            return;
-        }
-
-        // Move (transpose) the note up and down
-        int newNote = (int) Math.round (normalizedValue * 126);
-        if (!this.scales.isChromatic ())
-            newNote = this.scales.getNearestNoteInScale (newNote);
-        this.getClip ().moveStepY (channel, column, noteRow, newNote);
-        this.surface.getDisplay ().notify ("Note: " + Scales.formatNoteAndOctave (newNote, -3));
-    }
-
-
-    /** {@inheritDoc} */
-    @Override
-    protected int getKnobValueRow0 (final int noteRow, final IStepInfo stepInfo)
-    {
-        if (this.surface.isPressed (ButtonID.REC_ARM))
-        {
-            if (this.host.supports (Capability.NOTE_EDIT_CHANCE))
-                return (int) (stepInfo.getChance () * 127);
-            return 0;
-        }
-
-        return noteRow;
+            clip.clearStep (new NotePosition (channel, index, noteRow));
     }
 
 

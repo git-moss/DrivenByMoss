@@ -137,7 +137,7 @@ public abstract class BlinkingPadGrid extends PadGridImpl
 
     /**
      * Send the update to the controller.
-     * 
+     *
      * @param note The MIDI note to send
      * @param colorIndex The index of the color to send
      */

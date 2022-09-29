@@ -7,12 +7,14 @@ package de.mossgrabers.framework.view.sequencer;
 import de.mossgrabers.framework.configuration.Configuration;
 import de.mossgrabers.framework.controller.ButtonID;
 import de.mossgrabers.framework.controller.IControlSurface;
+import de.mossgrabers.framework.controller.color.ColorEx;
+import de.mossgrabers.framework.daw.DAWColor;
 import de.mossgrabers.framework.daw.IModel;
-import de.mossgrabers.framework.daw.INoteClip;
-import de.mossgrabers.framework.daw.IStepInfo;
-import de.mossgrabers.framework.daw.StepState;
+import de.mossgrabers.framework.daw.clip.INoteClip;
+import de.mossgrabers.framework.daw.clip.IStepInfo;
+import de.mossgrabers.framework.daw.clip.NotePosition;
+import de.mossgrabers.framework.daw.clip.StepState;
 import de.mossgrabers.framework.daw.constants.Resolution;
-import de.mossgrabers.framework.daw.data.GridStep;
 import de.mossgrabers.framework.featuregroup.AbstractFeatureGroup;
 import de.mossgrabers.framework.featuregroup.AbstractView;
 import de.mossgrabers.framework.featuregroup.IMode;
@@ -23,6 +25,7 @@ import de.mossgrabers.framework.utils.ButtonEvent;
 
 import java.util.Collections;
 import java.util.List;
+import java.util.Optional;
 
 
 /**
@@ -306,23 +309,21 @@ public abstract class AbstractSequencerView<S extends IControlSurface<C>, C exte
      * increased or decreased depending on the parameter.
      *
      * @param clip The sequenced MIDI clip
-     * @param channel The MIDI channel of the note
-     * @param step The step in the current page in the clip
-     * @param note The note in the current page of the pad in the clip
+     * @param notePosition The position of the note
      * @param velocity The velocity
      * @param increase True to increase otherwise decrease
      */
-    protected void handleSequencerAreaRepeatOperator (final INoteClip clip, final int channel, final int step, final int note, final int velocity, final boolean increase)
+    protected void handleSequencerAreaRepeatOperator (final INoteClip clip, final NotePosition notePosition, final int velocity, final boolean increase)
     {
-        final IStepInfo stepInfo = clip.getStep (channel, step, note);
+        final IStepInfo stepInfo = clip.getStep (notePosition);
         if (stepInfo.getState () == StepState.OFF)
-            clip.toggleStep (channel, step, note, velocity);
+            clip.toggleStep (notePosition, velocity);
         final boolean isOff = !stepInfo.isRepeatEnabled ();
         if (isOff)
-            clip.updateStepIsRepeatEnabled (channel, step, note, true);
+            clip.updateStepIsRepeatEnabled (notePosition, true);
         int repeatCount = stepInfo.getRepeatCount ();
         repeatCount = increase ? Math.min (127, repeatCount + 1) : Math.max (-127, repeatCount - 1);
-        clip.updateStepRepeatCount (channel, step, note, repeatCount);
+        clip.updateStepRepeatCount (notePosition, repeatCount);
         String repeatCountStr;
         if (repeatCount > 0)
             repeatCountStr = Integer.toString (repeatCount + 1);
@@ -360,15 +361,13 @@ public abstract class AbstractSequencerView<S extends IControlSurface<C>, C exte
      * Show edit mode and set or add note.
      *
      * @param clip The MIDI clip
-     * @param channel The MIDI channel of the note
-     * @param step The step of the note
-     * @param mappedNote The real note
+     * @param notePosition The position of the note
      * @param addNote Add the note to the edited notes otherwise clear the already selected and add
      *            only the new one
      */
-    protected void editNote (final INoteClip clip, final int channel, final int step, final int mappedNote, final boolean addNote)
+    protected void editNote (final INoteClip clip, final NotePosition notePosition, final boolean addNote)
     {
-        final StepState state = clip.getStep (channel, step, mappedNote).getState ();
+        final StepState state = clip.getStep (notePosition).getState ();
         if (state != StepState.START)
             return;
 
@@ -377,9 +376,9 @@ public abstract class AbstractSequencerView<S extends IControlSurface<C>, C exte
         if (mode instanceof final INoteMode noteMode)
         {
             if (addNote)
-                noteMode.addNote (clip, channel, step, mappedNote);
+                noteMode.addNote (clip, notePosition);
             else
-                noteMode.setNote (clip, channel, step, mappedNote);
+                noteMode.setNote (clip, notePosition);
             modeManager.setActive (Modes.NOTE);
         }
     }
@@ -397,7 +396,7 @@ public abstract class AbstractSequencerView<S extends IControlSurface<C>, C exte
     }
 
 
-    protected List<GridStep> getEditNotes ()
+    protected List<NotePosition> getEditNotes ()
     {
         final ModeManager modeManager = this.surface.getModeManager ();
         final IMode mode = modeManager.get (Modes.NOTE);
@@ -407,13 +406,46 @@ public abstract class AbstractSequencerView<S extends IControlSurface<C>, C exte
     }
 
 
-    protected static boolean isEdit (final int channel, final int step, final int note, final List<GridStep> editNotes)
+    protected static boolean isEdit (final int channel, final int step, final int note, final List<NotePosition> editNotes)
     {
-        for (final GridStep editNote: editNotes)
+        for (final NotePosition editNote: editNotes)
         {
-            if (editNote.channel () == channel && editNote.step () == step && editNote.note () == note)
+            if (editNote.getChannel () == channel && editNote.getStep () == step && editNote.getNote () == note)
                 return true;
         }
         return false;
+    }
+
+
+    protected String getStepColor (final IStepInfo stepInfo, final boolean hilite, final Optional<ColorEx> rowColor, final int channel, final int step, final int note, final List<NotePosition> editNotes)
+    {
+        switch (stepInfo.getState ())
+        {
+            // Note starts
+            case START:
+                if (hilite)
+                    return COLOR_STEP_HILITE_CONTENT;
+                if (isEdit (channel, step, note, editNotes))
+                    return COLOR_STEP_SELECTED;
+                if (stepInfo.isMuted ())
+                    return COLOR_STEP_MUTED;
+                return rowColor.isPresent () && this.useDawColors ? DAWColor.getColorID (rowColor.get ()) : COLOR_CONTENT;
+
+            // Note continues
+            case CONTINUE:
+                if (hilite)
+                    return COLOR_STEP_HILITE_CONTENT;
+                if (isEdit (channel, step, note, editNotes))
+                    return COLOR_STEP_SELECTED;
+                if (stepInfo.isMuted ())
+                    return COLOR_STEP_MUTED_CONT;
+                return rowColor.isPresent () && this.useDawColors ? DAWColor.getColorID (ColorEx.darker (rowColor.get ())) : COLOR_CONTENT_CONT;
+
+            // Empty
+            default:
+                if (hilite)
+                    return COLOR_STEP_HILITE_NO_CONTENT;
+                return step / 4 % 2 == 1 ? COLOR_NO_CONTENT_4 : COLOR_NO_CONTENT;
+        }
     }
 }

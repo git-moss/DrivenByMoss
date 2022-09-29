@@ -13,9 +13,10 @@ import de.mossgrabers.framework.controller.color.ColorEx;
 import de.mossgrabers.framework.controller.grid.IPadGrid;
 import de.mossgrabers.framework.controller.grid.LightInfo;
 import de.mossgrabers.framework.daw.IModel;
-import de.mossgrabers.framework.daw.INoteClip;
-import de.mossgrabers.framework.daw.IStepInfo;
-import de.mossgrabers.framework.daw.StepState;
+import de.mossgrabers.framework.daw.clip.INoteClip;
+import de.mossgrabers.framework.daw.clip.IStepInfo;
+import de.mossgrabers.framework.daw.clip.NotePosition;
+import de.mossgrabers.framework.daw.clip.StepState;
 import de.mossgrabers.framework.daw.constants.Resolution;
 import de.mossgrabers.framework.daw.data.IDrumDevice;
 import de.mossgrabers.framework.daw.data.IDrumPad;
@@ -201,21 +202,25 @@ public class DrumXoXView extends AbstractDrumView<FireControlSurface, FireConfig
                 final int drumPad = this.scales.getDrumOffset () + this.selectedPad;
                 if (drumPad != -1)
                 {
-                    final int channel = this.configuration.getMidiEditChannel ();
+                    final NotePosition notePosition = new NotePosition (this.configuration.getMidiEditChannel (), 0, drumPad);
                     if (this.sourceNotes.isEmpty ())
                     {
                         for (int step = 0; step < this.sequencerSteps; step++)
-                            this.sourceNotes.add (clip.getStep (channel, step, drumPad).createCopy ());
+                        {
+                            notePosition.setStep (step);
+                            this.sourceNotes.add (clip.getStep (notePosition).createCopy ());
+                        }
                     }
                     else
                     {
                         for (int step = 0; step < this.sourceNotes.size (); step++)
                         {
+                            notePosition.setStep (step);
                             final IStepInfo noteStep = this.sourceNotes.get (step);
                             if (noteStep.getVelocity () == 0)
-                                clip.clearStep (channel, step, drumPad);
+                                clip.clearStep (notePosition);
                             else
-                                clip.setStep (channel, step, drumPad, noteStep);
+                                clip.setStep (notePosition, noteStep);
                         }
                         this.sourceNotes.clear ();
                     }
@@ -406,21 +411,23 @@ public class DrumXoXView extends AbstractDrumView<FireControlSurface, FireConfig
                 final int drumPad = this.scales.getDrumOffset () + this.selectedPad;
                 if (drumPad != -1)
                 {
-                    final int channel = this.configuration.getMidiEditChannel ();
-
-                    final IStepInfo firstStep = clip.getStep (channel, 0, drumPad).createCopy ();
+                    final NotePosition notePosition = new NotePosition (this.configuration.getMidiEditChannel (), 0, drumPad);
+                    final IStepInfo firstStep = clip.getStep (notePosition).createCopy ();
                     for (int step = 1; step < this.sequencerSteps; step++)
                     {
-                        final IStepInfo noteStep = clip.getStep (channel, step, drumPad);
+                        notePosition.setStep (step);
+                        final IStepInfo noteStep = clip.getStep (notePosition);
+                        notePosition.setStep (step - 1);
                         if (noteStep.getVelocity () == 0)
-                            clip.clearStep (channel, step - 1, drumPad);
+                            clip.clearStep (notePosition);
                         else
-                            clip.setStep (channel, step - 1, drumPad, noteStep);
+                            clip.setStep (notePosition, noteStep);
                     }
+                    notePosition.setStep (this.sequencerSteps - 1);
                     if (firstStep.getVelocity () == 0)
-                        clip.clearStep (channel, this.sequencerSteps - 1, drumPad);
+                        clip.clearStep (notePosition);
                     else
-                        clip.setStep (channel, this.sequencerSteps - 1, drumPad, firstStep);
+                        clip.setStep (notePosition, firstStep);
                 }
             }
             else if (this.surface.isPressed (ButtonID.ALT))
@@ -440,21 +447,23 @@ public class DrumXoXView extends AbstractDrumView<FireControlSurface, FireConfig
                 final int drumPad = this.scales.getDrumOffset () + this.selectedPad;
                 if (drumPad != -1)
                 {
-                    final int channel = this.configuration.getMidiEditChannel ();
-
-                    final IStepInfo lastStep = clip.getStep (channel, this.sequencerSteps - 1, drumPad).createCopy ();
+                    final NotePosition notePosition = new NotePosition (this.configuration.getMidiEditChannel (), this.sequencerSteps - 1, drumPad);
+                    final IStepInfo lastStep = clip.getStep (notePosition).createCopy ();
                     for (int step = 0; step < this.sequencerSteps - 1; step++)
                     {
-                        final IStepInfo noteStep = clip.getStep (channel, step, drumPad);
+                        notePosition.setStep (step);
+                        final IStepInfo noteStep = clip.getStep (notePosition);
+                        notePosition.setStep (step + 1);
                         if (noteStep.getVelocity () == 0)
-                            clip.clearStep (channel, step + 1, drumPad);
+                            clip.clearStep (notePosition);
                         else
-                            clip.setStep (channel, step + 1, drumPad, noteStep);
+                            clip.setStep (notePosition, noteStep);
                     }
+                    notePosition.setStep (0);
                     if (lastStep.getVelocity () == 0)
-                        clip.clearStep (channel, 0, drumPad);
+                        clip.clearStep (notePosition);
                     else
-                        clip.setStep (channel, 0, drumPad, lastStep);
+                        clip.setStep (notePosition, lastStep);
                 }
             }
             else if (this.surface.isPressed (ButtonID.ALT))
@@ -498,15 +507,13 @@ public class DrumXoXView extends AbstractDrumView<FireControlSurface, FireConfig
             if (modeManager.isActive (Modes.NOTE))
             {
                 // Store existing note for editing
-                final INoteClip clip = this.getClip ();
-                final int channel = this.configuration.getMidiEditChannel ();
-
                 final int sound = offsetY + this.selectedPad;
                 final int step = this.numColumns * (this.allRows - 1 - y) + x;
-
-                final StepState state = clip.getStep (channel, step, sound).getState ();
+                final NotePosition notePosition = new NotePosition (this.configuration.getMidiEditChannel (), step, sound);
+                final INoteClip clip = this.getClip ();
+                final StepState state = clip.getStep (notePosition).getState ();
                 if (state == StepState.START)
-                    this.editNote (clip, channel, step, sound, true);
+                    this.editNote (clip, notePosition, true);
                 return;
             }
         }
@@ -648,18 +655,18 @@ public class DrumXoXView extends AbstractDrumView<FireControlSurface, FireConfig
 
     /** {@inheritDoc} */
     @Override
-    protected boolean handleSequencerAreaButtonCombinations (final INoteClip clip, final int channel, final int step, final int note, final int velocity)
+    protected boolean handleSequencerAreaButtonCombinations (final INoteClip clip, final NotePosition notePosition, final int velocity)
     {
         final boolean isUpPressed = this.surface.isPressed (ButtonID.ARROW_UP);
         if (isUpPressed || this.surface.isPressed (ButtonID.ARROW_DOWN))
         {
             this.surface.setTriggerConsumed (isUpPressed ? ButtonID.ARROW_UP : ButtonID.ARROW_DOWN);
             if (velocity > 0)
-                this.handleSequencerAreaRepeatOperator (clip, channel, step, note, velocity, isUpPressed);
+                this.handleSequencerAreaRepeatOperator (clip, notePosition, velocity, isUpPressed);
             return true;
         }
 
-        return super.handleSequencerAreaButtonCombinations (clip, channel, step, note, velocity);
+        return super.handleSequencerAreaButtonCombinations (clip, notePosition, velocity);
     }
 
 

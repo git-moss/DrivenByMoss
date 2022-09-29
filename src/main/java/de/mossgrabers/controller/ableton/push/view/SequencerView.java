@@ -8,7 +8,8 @@ import de.mossgrabers.controller.ableton.push.PushConfiguration;
 import de.mossgrabers.controller.ableton.push.controller.PushControlSurface;
 import de.mossgrabers.framework.controller.ButtonID;
 import de.mossgrabers.framework.daw.IModel;
-import de.mossgrabers.framework.daw.INoteClip;
+import de.mossgrabers.framework.daw.clip.INoteClip;
+import de.mossgrabers.framework.daw.clip.NotePosition;
 import de.mossgrabers.framework.view.Views;
 import de.mossgrabers.framework.view.sequencer.AbstractNoteSequencerView;
 
@@ -46,34 +47,30 @@ public class SequencerView extends AbstractNoteSequencerView<PushControlSurface,
         if (y >= this.numSequencerRows)
             return;
 
-        final int step = index % 8;
-        final INoteClip clip = this.getClip ();
-        final int mappedNote = this.keyManager.map (y);
-        final int channel = this.configuration.getMidiEditChannel ();
-
-        this.editNote (clip, channel, step, mappedNote, false);
+        final NotePosition notePosition = new NotePosition (this.configuration.getMidiEditChannel (), index % 8, this.keyManager.map (y));
+        this.editNote (this.getClip (), notePosition, false);
     }
 
 
     /** {@inheritDoc} */
     @Override
-    protected boolean handleSequencerAreaButtonCombinations (final INoteClip clip, final int channel, final int step, final int row, final int note, final int velocity)
+    protected boolean handleSequencerAreaButtonCombinations (final INoteClip clip, final NotePosition notePosition, final int row, final int velocity)
     {
         final boolean isSelectPressed = this.surface.isSelectPressed ();
 
         if (this.surface.isShiftPressed ())
         {
             if (velocity > 0)
-                this.handleSequencerAreaRepeatOperator (clip, channel, step, note, velocity, !isSelectPressed);
+                this.handleSequencerAreaRepeatOperator (clip, notePosition, velocity, !isSelectPressed);
             return true;
         }
 
         if (isSelectPressed)
         {
-            this.editNote (clip, channel, step, note, true);
+            this.editNote (clip, notePosition, true);
             return true;
         }
 
-        return super.handleSequencerAreaButtonCombinations (clip, channel, step, row, note, velocity);
+        return super.handleSequencerAreaButtonCombinations (clip, notePosition, row, velocity);
     }
 }

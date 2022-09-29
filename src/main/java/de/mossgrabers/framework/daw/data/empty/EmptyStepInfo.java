@@ -4,9 +4,9 @@
 
 package de.mossgrabers.framework.daw.data.empty;
 
-import de.mossgrabers.framework.daw.IStepInfo;
-import de.mossgrabers.framework.daw.NoteOccurrenceType;
-import de.mossgrabers.framework.daw.StepState;
+import de.mossgrabers.framework.daw.clip.IStepInfo;
+import de.mossgrabers.framework.daw.clip.NoteOccurrenceType;
+import de.mossgrabers.framework.daw.clip.StepState;
 
 
 /**

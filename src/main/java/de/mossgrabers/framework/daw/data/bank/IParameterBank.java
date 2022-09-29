@@ -4,7 +4,7 @@
 
 package de.mossgrabers.framework.daw.data.bank;
 
-import de.mossgrabers.framework.daw.data.IParameter;
+import de.mossgrabers.framework.parameter.IParameter;
 
 
 /**

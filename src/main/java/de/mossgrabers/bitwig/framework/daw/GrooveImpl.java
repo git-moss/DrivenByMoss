@@ -8,7 +8,7 @@ import de.mossgrabers.bitwig.framework.daw.data.ParameterImpl;
 import de.mossgrabers.framework.controller.valuechanger.IValueChanger;
 import de.mossgrabers.framework.daw.GrooveParameterID;
 import de.mossgrabers.framework.daw.IGroove;
-import de.mossgrabers.framework.daw.data.IParameter;
+import de.mossgrabers.framework.parameter.IParameter;
 
 import com.bitwig.extension.controller.api.ControllerHost;
 import com.bitwig.extension.controller.api.Groove;

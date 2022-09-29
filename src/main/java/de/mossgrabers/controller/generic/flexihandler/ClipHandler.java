@@ -12,8 +12,8 @@ import de.mossgrabers.controller.generic.flexihandler.utils.KnobMode;
 import de.mossgrabers.controller.generic.flexihandler.utils.MidiValue;
 import de.mossgrabers.framework.command.trigger.clip.NewCommand;
 import de.mossgrabers.framework.controller.valuechanger.IValueChanger;
-import de.mossgrabers.framework.daw.IClip;
 import de.mossgrabers.framework.daw.IModel;
+import de.mossgrabers.framework.daw.clip.IClip;
 import de.mossgrabers.framework.daw.data.ISlot;
 
 import java.util.Optional;

@@ -9,9 +9,9 @@ import de.mossgrabers.controller.osc.exception.MissingCommandException;
 import de.mossgrabers.controller.osc.exception.UnknownCommandException;
 import de.mossgrabers.framework.daw.IHost;
 import de.mossgrabers.framework.daw.IModel;
-import de.mossgrabers.framework.daw.data.IParameter;
 import de.mossgrabers.framework.daw.data.bank.IParameterBank;
 import de.mossgrabers.framework.osc.IOpenSoundControlWriter;
+import de.mossgrabers.framework.parameter.IParameter;
 
 import java.util.LinkedList;
 

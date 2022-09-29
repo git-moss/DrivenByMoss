@@ -51,16 +51,6 @@ public class SelectKnobCommand extends AbstractContinuousCommand<FireControlSurf
     {
         final ModeManager modeManager = this.surface.getModeManager ();
 
-        // In note mode use it to change the transposition
-        if (modeManager.isActive (Modes.NOTE))
-        {
-            final IMode mode = modeManager.get (Modes.NOTE);
-            mode.onKnobTouch (4, true);
-            mode.onKnobValue (4, value);
-            this.checkUntouch (4);
-            return;
-        }
-
         if (modeManager.isActive (Modes.BROWSER))
         {
             final IMode mode = modeManager.get (Modes.BROWSER);
@@ -74,7 +64,7 @@ public class SelectKnobCommand extends AbstractContinuousCommand<FireControlSurf
         if (this.surface.isPressed (ButtonID.ALT))
         {
             final boolean isInc = this.model.getValueChanger ().isIncrease (value);
-            if (modeManager.isActive (Modes.TRACK, Modes.VOLUME, Modes.DEVICE_LAYER, Modes.DEVICE_LAYER_VOLUME))
+            if (modeManager.isActive (Modes.TRACK, Modes.VOLUME, Modes.DEVICE_LAYER, Modes.DEVICE_LAYER_VOLUME, Modes.NOTE))
                 handleTrackSelection (this.surface, this.model.getTrackBank (), isInc);
             else if (modeManager.isActive (Modes.DEVICE_PARAMS))
                 this.handleDevicePageSelection (isInc);

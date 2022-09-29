@@ -5,7 +5,7 @@
 package de.mossgrabers.framework.parameterprovider.track;
 
 import de.mossgrabers.framework.daw.IModel;
-import de.mossgrabers.framework.daw.data.IParameter;
+import de.mossgrabers.framework.parameter.IParameter;
 
 
 /**

@@ -12,8 +12,9 @@ import de.mossgrabers.framework.controller.ButtonID;
 import de.mossgrabers.framework.controller.color.ColorEx;
 import de.mossgrabers.framework.daw.DAWColor;
 import de.mossgrabers.framework.daw.IModel;
-import de.mossgrabers.framework.daw.INoteClip;
-import de.mossgrabers.framework.daw.IStepInfo;
+import de.mossgrabers.framework.daw.clip.INoteClip;
+import de.mossgrabers.framework.daw.clip.IStepInfo;
+import de.mossgrabers.framework.daw.clip.NotePosition;
 import de.mossgrabers.framework.mode.sequencer.AbstractSequencerMode;
 import de.mossgrabers.framework.scale.Scales;
 import de.mossgrabers.framework.utils.ButtonEvent;
@@ -88,9 +89,9 @@ public class XLDrumSequencerMode extends AbstractSequencerMode<LaunchControlXLCo
         if (event != ButtonEvent.UP)
             return;
 
-        final int channel = this.configuration.getMidiEditChannel ();
         final int noteRow = this.scales.getDrumOffset () + this.selectedPad;
-        this.getClip ().toggleStep (channel, index, noteRow, 127);
+        final NotePosition notePosition = new NotePosition (this.configuration.getMidiEditChannel (), index, noteRow);
+        this.getClip ().toggleStep (notePosition, 127);
     }
 
 
@@ -107,8 +108,8 @@ public class XLDrumSequencerMode extends AbstractSequencerMode<LaunchControlXLCo
     {
         final int step = clip.getCurrentStep ();
         final int hiStep = this.isInXRange (step) ? step % this.sequencerSteps : -1;
-        final int editMidiChannel = this.configuration.getMidiEditChannel ();
-        final IStepInfo stepInfo = clip.getStep (editMidiChannel, column, noteRow);
+        final NotePosition notePosition = new NotePosition (this.configuration.getMidiEditChannel (), column, noteRow);
+        final IStepInfo stepInfo = clip.getStep (notePosition);
         final boolean hilite = column == hiStep;
         final String colorID = this.isActive () ? this.getStepColor (stepInfo, hilite, rowColor, column) : AbstractSequencerView.COLOR_NO_CONTENT;
         return this.colorManager.getColorIndex (colorID);

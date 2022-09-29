@@ -8,9 +8,9 @@ import de.mossgrabers.controller.ni.maschine.core.MaschineColorManager;
 import de.mossgrabers.controller.ni.maschine.mk3.controller.MaschineControlSurface;
 import de.mossgrabers.framework.controller.display.IDisplay;
 import de.mossgrabers.framework.controller.grid.IPadGrid;
-import de.mossgrabers.framework.daw.IClip;
 import de.mossgrabers.framework.daw.IModel;
-import de.mossgrabers.framework.daw.INoteClip;
+import de.mossgrabers.framework.daw.clip.IClip;
+import de.mossgrabers.framework.daw.clip.INoteClip;
 
 
 /**

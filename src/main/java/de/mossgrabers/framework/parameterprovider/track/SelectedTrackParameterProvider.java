@@ -7,7 +7,6 @@ package de.mossgrabers.framework.parameterprovider.track;
 import de.mossgrabers.framework.controller.color.ColorEx;
 import de.mossgrabers.framework.daw.IModel;
 import de.mossgrabers.framework.daw.data.IChannel;
-import de.mossgrabers.framework.daw.data.IParameter;
 import de.mossgrabers.framework.daw.data.ISend;
 import de.mossgrabers.framework.daw.data.ITrack;
 import de.mossgrabers.framework.daw.data.bank.ISendBank;
@@ -16,6 +15,7 @@ import de.mossgrabers.framework.daw.data.empty.EmptyParameter;
 import de.mossgrabers.framework.daw.data.empty.EmptySend;
 import de.mossgrabers.framework.observer.IItemSelectionObserver;
 import de.mossgrabers.framework.observer.IParametersAdjustObserver;
+import de.mossgrabers.framework.parameter.IParameter;
 
 import java.util.Optional;
 

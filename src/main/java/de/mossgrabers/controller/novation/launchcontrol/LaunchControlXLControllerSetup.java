@@ -157,6 +157,8 @@ public class LaunchControlXLControllerSetup extends AbstractControllerSetup<Laun
     {
         final LaunchControlXLControlSurface surface = this.getSurface ();
 
+        this.createButton (ButtonID.REC_ARM, "REC ARM", new ButtonRowModeCommand<> (2, 3, this.model, surface), LaunchControlXLControlSurface.LAUNCHCONTROL_RECORD_ARM, () -> this.getModeColor (ButtonID.REC_ARM));
+
         final ModeManager modeManager = surface.getModeManager ();
         modeManager.register (Modes.SEND, new XLTrackMixMode (surface, this.model, KNOB_CONTROLS));
         modeManager.register (Modes.EQ_DEVICE_PARAMS, new XLEqMode (surface, this.model, KNOB_CONTROLS));
@@ -213,7 +215,6 @@ public class LaunchControlXLControllerSetup extends AbstractControllerSetup<Laun
         this.createButton (ButtonID.DEVICE, "DEVICE", new ButtonRowModeCommand<> (2, 0, this.model, surface), LaunchControlXLControlSurface.LAUNCHCONTROL_DEVICE, () -> this.getModeColor (ButtonID.DEVICE));
         this.createButton (ButtonID.MUTE, "MUTE", new ButtonRowModeCommand<> (2, 1, this.model, surface), LaunchControlXLControlSurface.LAUNCHCONTROL_MUTE, () -> this.getModeColor (ButtonID.MUTE));
         this.createButton (ButtonID.SOLO, "SOLO", new ButtonRowModeCommand<> (2, 2, this.model, surface), LaunchControlXLControlSurface.LAUNCHCONTROL_SOLO, () -> this.getModeColor (ButtonID.SOLO));
-        this.createButton (ButtonID.REC_ARM, "REC ARM", new ButtonRowModeCommand<> (2, 3, this.model, surface), LaunchControlXLControlSurface.LAUNCHCONTROL_RECORD_ARM, () -> this.getModeColor (ButtonID.REC_ARM));
 
         for (int i = 0; i < 4; i++)
         {

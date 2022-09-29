@@ -7,10 +7,10 @@ package de.mossgrabers.framework.daw.data.empty;
 import de.mossgrabers.framework.controller.color.ColorEx;
 import de.mossgrabers.framework.daw.data.IChannel;
 import de.mossgrabers.framework.daw.data.IDeviceMetadata;
-import de.mossgrabers.framework.daw.data.IParameter;
 import de.mossgrabers.framework.daw.data.bank.ISendBank;
 import de.mossgrabers.framework.daw.resource.ChannelType;
 import de.mossgrabers.framework.observer.IValueObserver;
+import de.mossgrabers.framework.parameter.IParameter;
 
 
 /**

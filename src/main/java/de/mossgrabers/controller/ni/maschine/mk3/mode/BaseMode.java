@@ -6,9 +6,12 @@ package de.mossgrabers.controller.ni.maschine.mk3.mode;
 
 import de.mossgrabers.controller.ni.maschine.mk3.MaschineConfiguration;
 import de.mossgrabers.controller.ni.maschine.mk3.controller.MaschineControlSurface;
+import de.mossgrabers.framework.controller.ContinuousID;
 import de.mossgrabers.framework.daw.IModel;
 import de.mossgrabers.framework.daw.data.IItem;
 import de.mossgrabers.framework.featuregroup.AbstractParameterMode;
+
+import java.util.List;
 
 
 /**
@@ -31,6 +34,20 @@ public abstract class BaseMode extends AbstractParameterMode<MaschineControlSurf
     protected BaseMode (final String name, final MaschineControlSurface surface, final IModel model)
     {
         super (name, surface, model, false);
+    }
+
+
+    /**
+     * Constructor.
+     *
+     * @param name The name of the mode
+     * @param surface The control surface
+     * @param model The model
+     * @param controls The IDs of the knobs or faders to control this mode
+     */
+    protected BaseMode (final String name, final MaschineControlSurface surface, final IModel model, final List<ContinuousID> controls)
+    {
+        super (name, surface, model, false, null, controls);
     }
 
 

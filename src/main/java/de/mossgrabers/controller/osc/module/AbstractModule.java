@@ -7,12 +7,12 @@ package de.mossgrabers.controller.osc.module;
 import de.mossgrabers.controller.osc.exception.IllegalParameterException;
 import de.mossgrabers.controller.osc.exception.MissingCommandException;
 import de.mossgrabers.framework.controller.color.ColorEx;
-import de.mossgrabers.framework.daw.IClip;
 import de.mossgrabers.framework.daw.IHost;
 import de.mossgrabers.framework.daw.IModel;
-import de.mossgrabers.framework.daw.data.IParameter;
+import de.mossgrabers.framework.daw.clip.IClip;
 import de.mossgrabers.framework.daw.data.ISend;
 import de.mossgrabers.framework.osc.IOpenSoundControlWriter;
+import de.mossgrabers.framework.parameter.IParameter;
 
 import java.util.LinkedList;
 import java.util.Optional;
@@ -40,6 +40,7 @@ public abstract class AbstractModule implements IModule
     protected static final String     TAG_INDICATE      = "indicate";
     protected static final String     TAG_TOUCHED       = "touched";
     protected static final String     TAG_COLOR         = "color";
+    protected static final String     TAG_BYPASS        = "bypass";
     protected static final String     TAG_PARAM         = "param";
     protected static final String     TAG_MIXER         = "mixer";
     protected static final String     TAG_PREROLL       = "preroll";

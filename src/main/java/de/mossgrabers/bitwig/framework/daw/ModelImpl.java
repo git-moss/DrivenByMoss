@@ -18,8 +18,8 @@ import de.mossgrabers.bitwig.framework.daw.data.bank.TrackBankImpl;
 import de.mossgrabers.bitwig.framework.daw.data.bank.UserParameterBankImpl;
 import de.mossgrabers.framework.daw.AbstractModel;
 import de.mossgrabers.framework.daw.DataSetup;
-import de.mossgrabers.framework.daw.INoteClip;
 import de.mossgrabers.framework.daw.ModelSetup;
+import de.mossgrabers.framework.daw.clip.INoteClip;
 import de.mossgrabers.framework.daw.constants.DeviceID;
 import de.mossgrabers.framework.daw.data.ICursorTrack;
 import de.mossgrabers.framework.daw.data.ISlot;
@@ -278,7 +278,7 @@ public class ModelImpl extends AbstractModel
     @Override
     public INoteClip getNoteClip (final int cols, final int rows)
     {
-        return this.cursorClips.computeIfAbsent (cols + "-" + rows, k -> new CursorClipImpl (this.controllerHost, this.bwCursorTrack, this.valueChanger, cols, rows));
+        return this.cursorClips.computeIfAbsent (cols + "-" + rows, k -> new CursorClipImpl (this.host, this.bwCursorTrack, this.valueChanger, cols, rows));
     }
 
 

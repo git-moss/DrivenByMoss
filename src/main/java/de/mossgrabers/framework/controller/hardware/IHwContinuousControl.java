@@ -7,8 +7,8 @@ package de.mossgrabers.framework.controller.hardware;
 import de.mossgrabers.framework.command.core.ContinuousCommand;
 import de.mossgrabers.framework.command.core.PitchbendCommand;
 import de.mossgrabers.framework.command.core.TriggerCommand;
-import de.mossgrabers.framework.daw.data.IParameter;
 import de.mossgrabers.framework.daw.midi.IMidiInput;
+import de.mossgrabers.framework.parameter.IParameter;
 
 import java.util.function.IntConsumer;
 import java.util.function.IntSupplier;

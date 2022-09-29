@@ -4,8 +4,8 @@
 
 package de.mossgrabers.framework.daw;
 
-import de.mossgrabers.framework.daw.data.IParameter;
 import de.mossgrabers.framework.observer.IObserverManagement;
+import de.mossgrabers.framework.parameter.IParameter;
 
 
 /**

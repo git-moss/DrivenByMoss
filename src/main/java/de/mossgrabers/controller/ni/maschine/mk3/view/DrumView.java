@@ -10,9 +10,10 @@ import de.mossgrabers.controller.ni.maschine.mk3.controller.MaschineControlSurfa
 import de.mossgrabers.framework.controller.ButtonID;
 import de.mossgrabers.framework.controller.grid.IPadGrid;
 import de.mossgrabers.framework.daw.IModel;
-import de.mossgrabers.framework.daw.INoteClip;
-import de.mossgrabers.framework.daw.IStepInfo;
-import de.mossgrabers.framework.daw.StepState;
+import de.mossgrabers.framework.daw.clip.INoteClip;
+import de.mossgrabers.framework.daw.clip.IStepInfo;
+import de.mossgrabers.framework.daw.clip.NotePosition;
+import de.mossgrabers.framework.daw.clip.StepState;
 import de.mossgrabers.framework.daw.data.IDrumDevice;
 import de.mossgrabers.framework.featuregroup.ModeManager;
 import de.mossgrabers.framework.mode.Modes;
@@ -234,22 +235,22 @@ public class DrumView extends AbstractDrumView<MaschineControlSurface, MaschineC
 
     /** {@inheritDoc} */
     @Override
-    protected boolean handleSequencerAreaButtonCombinations (final INoteClip clip, final int channel, final int step, final int note, final int velocity)
+    protected boolean handleSequencerAreaButtonCombinations (final INoteClip clip, final NotePosition notePosition, final int velocity)
     {
         if (this.isButtonCombination (ButtonID.MUTE))
         {
-            final IStepInfo stepInfo = clip.getStep (channel, step, note);
+            final IStepInfo stepInfo = clip.getStep (notePosition);
             final StepState isSet = stepInfo.getState ();
             if (isSet == StepState.START)
-                this.getClip ().updateStepMuteState (channel, step, note, !stepInfo.isMuted ());
+                this.getClip ().updateStepMuteState (notePosition, !stepInfo.isMuted ());
             return true;
         }
 
         final ModeManager modeManager = this.surface.getModeManager ();
         if (modeManager.isActive (Modes.NOTE))
         {
-            this.model.getHost ().showNotification ("Note " + Scales.formatNoteAndOctave (note, -3) + " - Step " + Integer.toString (step + 1));
-            this.editNote (clip, channel, step, note, true);
+            this.model.getHost ().showNotification ("Note " + Scales.formatNoteAndOctave (notePosition.getNote (), -3) + " - Step " + Integer.toString (notePosition.getStep () + 1));
+            this.editNote (clip, notePosition, true);
             return true;
         }
 
@@ -257,11 +258,11 @@ public class DrumView extends AbstractDrumView<MaschineControlSurface, MaschineC
         if (isSelectPressed)
         {
             if (velocity > 0)
-                this.handleSequencerAreaRepeatOperator (clip, channel, step, note, velocity, isSelectPressed);
+                this.handleSequencerAreaRepeatOperator (clip, notePosition, velocity, isSelectPressed);
             return true;
         }
 
-        return super.handleSequencerAreaButtonCombinations (clip, channel, step, note, velocity);
+        return super.handleSequencerAreaButtonCombinations (clip, notePosition, velocity);
     }
 
 

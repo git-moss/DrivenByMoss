@@ -8,8 +8,9 @@ import de.mossgrabers.controller.akai.fire.FireConfiguration;
 import de.mossgrabers.controller.akai.fire.controller.FireControlSurface;
 import de.mossgrabers.framework.controller.ButtonID;
 import de.mossgrabers.framework.daw.IModel;
-import de.mossgrabers.framework.daw.INoteClip;
-import de.mossgrabers.framework.daw.StepState;
+import de.mossgrabers.framework.daw.clip.INoteClip;
+import de.mossgrabers.framework.daw.clip.NotePosition;
+import de.mossgrabers.framework.daw.clip.StepState;
 import de.mossgrabers.framework.daw.data.ITrack;
 import de.mossgrabers.framework.mode.Modes;
 import de.mossgrabers.framework.utils.ButtonEvent;
@@ -151,10 +152,12 @@ public class PolySequencerView extends AbstractPolySequencerView<FireControlSurf
     {
         if (this.surface.getModeManager ().isActive (Modes.NOTE))
         {
+            final NotePosition notePosition = new NotePosition (channel, step, 0);
             for (int row = 0; row < 128; row++)
             {
-                if (clip.getStep (channel, step, row).getState () == StepState.START)
-                    this.editNote (clip, channel, step, row, true);
+                notePosition.setNote (row);
+                if (clip.getStep (notePosition).getState () == StepState.START)
+                    this.editNote (clip, notePosition, true);
             }
             return true;
         }

@@ -6,6 +6,7 @@ package de.mossgrabers.framework.daw.data;
 
 import de.mossgrabers.framework.daw.constants.RecordQuantization;
 import de.mossgrabers.framework.daw.data.bank.ISlotBank;
+import de.mossgrabers.framework.parameter.IParameter;
 
 import java.util.Arrays;
 

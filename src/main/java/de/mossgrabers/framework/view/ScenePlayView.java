@@ -93,7 +93,7 @@ public class ScenePlayView<S extends IControlSurface<C>, C extends Configuration
 
     /**
      * Handle buttons combinations on the grid, e.g. delete, duplicate.
-     * 
+     *
      * @param scene The scene which was pressed
      * @return True if handled
      */
