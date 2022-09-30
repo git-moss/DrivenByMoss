@@ -190,7 +190,7 @@ public class SequencerView extends AbstractNoteSequencerView<FireControlSurface,
         }
         else if (isAltPressed)
         {
-            this.setResolutionIndex (this.selectedResolutionIndex - 1);
+            this.setResolutionIndex (this.getResolutionIndex () - 1);
         }
         else
         {
@@ -219,7 +219,7 @@ public class SequencerView extends AbstractNoteSequencerView<FireControlSurface,
         }
         else if (isAltPressed)
         {
-            this.setResolutionIndex (this.selectedResolutionIndex + 1);
+            this.setResolutionIndex (this.getResolutionIndex () + 1);
         }
         else
         {

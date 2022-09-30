@@ -377,13 +377,14 @@ public class NoteParameter extends AbstractParameterImpl
                     // Move (transpose) the note up and down
                     final int offset = this.valueChanger.isIncrease (value) ? 1 : -1;
                     int newNote = notePosition.getNote ();
+                    final boolean isChromatic = this.scales.isChromatic ();
                     do
                     {
                         newNote += offset;
                         // No more scale notes found?
                         if (newNote < 0 || newNote > 127)
                             return;
-                    } while (!this.scales.isChromatic () && !this.scales.isInScale (this.scales.toNoteInOctave (newNote)));
+                    } while (!isChromatic && !this.scales.isInScale (this.scales.toNoteInOctave (newNote)));
 
                     clip.moveStepY (notePosition, newNote);
                     this.notify ("Note: %s", Scales.formatNoteAndOctave (newNote, -3));

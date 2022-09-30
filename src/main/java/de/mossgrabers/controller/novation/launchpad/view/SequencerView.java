@@ -45,7 +45,7 @@ public class SequencerView extends AbstractNoteSequencerView<LaunchpadControlSur
             return LaunchpadColorManager.LAUNCHPAD_COLOR_BLACK;
 
         final int scene = buttonID.ordinal () - ButtonID.SCENE1.ordinal ();
-        return scene == 7 - this.selectedResolutionIndex ? LaunchpadColorManager.LAUNCHPAD_COLOR_YELLOW : LaunchpadColorManager.LAUNCHPAD_COLOR_GREEN;
+        return scene == 7 - this.getResolutionIndex () ? LaunchpadColorManager.LAUNCHPAD_COLOR_YELLOW : LaunchpadColorManager.LAUNCHPAD_COLOR_GREEN;
     }
 
 

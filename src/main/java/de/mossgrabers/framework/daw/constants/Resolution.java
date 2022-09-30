@@ -88,7 +88,7 @@ public enum Resolution
     /**
      * Get the value of the resolution.
      *
-     * @param index The index of the resolution enum
+     * @param index The index of the resolution enumeration
      * @return The value
      */
     public static double getValueAt (final int index)
@@ -100,7 +100,7 @@ public enum Resolution
     /**
      * Get the name of the resolution.
      *
-     * @param index The index of the resolution enum
+     * @param index The index of the resolution enumeration
      * @return The name
      */
     public static String getNameAt (final int index)

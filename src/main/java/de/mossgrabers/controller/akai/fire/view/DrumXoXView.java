@@ -145,13 +145,13 @@ public class DrumXoXView extends AbstractDrumView<FireControlSurface, FireConfig
         // Draw loop length
         if (this.isEditLoopRange ())
         {
-            int numberOfActiveSteps = (int) Math.floor (clip.getLoopLength () / Resolution.getValueAt (this.selectedResolutionIndex));
+            int numberOfActiveSteps = (int) Math.floor (clip.getLoopLength () / Resolution.getValueAt (this.getResolutionIndex ()));
             numberOfActiveSteps -= clip.getEditPage () * this.sequencerSteps;
 
             final IPadGrid padGrid = this.surface.getPadGrid ();
+            String color;
             for (int col = 0; col < this.sequencerSteps; col++)
             {
-                final String color;
                 final boolean isFourth = (col + 1) % 4 == 0;
                 if (col < numberOfActiveSteps)
                     color = isFourth ? AbstractSequencerView.COLOR_ACTIVE_PAGE : AbstractSequencerView.COLOR_PAGE;
@@ -431,7 +431,7 @@ public class DrumXoXView extends AbstractDrumView<FireControlSurface, FireConfig
                 }
             }
             else if (this.surface.isPressed (ButtonID.ALT))
-                this.setResolutionIndex (this.selectedResolutionIndex - 1);
+                this.setResolutionIndex (this.getResolutionIndex () - 1);
             else
             {
                 clip.scrollStepsPageBackwards ();
@@ -467,7 +467,7 @@ public class DrumXoXView extends AbstractDrumView<FireControlSurface, FireConfig
                 }
             }
             else if (this.surface.isPressed (ButtonID.ALT))
-                this.setResolutionIndex (this.selectedResolutionIndex + 1);
+                this.setResolutionIndex (this.getResolutionIndex () + 1);
             else
             {
                 clip.scrollStepsPageForward ();
@@ -495,8 +495,7 @@ public class DrumXoXView extends AbstractDrumView<FireControlSurface, FireConfig
             int steps = (1 - y) * this.numColumns + x + 1;
             final INoteClip clip = this.getClip ();
             steps += clip.getEditPage () * this.sequencerSteps;
-            final double beats = steps * Resolution.getValueAt (this.selectedResolutionIndex);
-            clip.setLoopLength (beats);
+            clip.setLoopLength (steps * Resolution.getValueAt (this.getResolutionIndex ()));
             return;
         }
 

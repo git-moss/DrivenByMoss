@@ -43,6 +43,6 @@ public class RaindropsView extends AbstractRaindropsView<LaunchpadControlSurface
             return 0;
 
         final int scene = buttonID.ordinal () - ButtonID.SCENE1.ordinal ();
-        return scene == 7 - this.selectedResolutionIndex ? LaunchpadColorManager.LAUNCHPAD_COLOR_YELLOW : LaunchpadColorManager.LAUNCHPAD_COLOR_GREEN;
+        return scene == 7 - this.getResolutionIndex () ? LaunchpadColorManager.LAUNCHPAD_COLOR_YELLOW : LaunchpadColorManager.LAUNCHPAD_COLOR_GREEN;
     }
 }

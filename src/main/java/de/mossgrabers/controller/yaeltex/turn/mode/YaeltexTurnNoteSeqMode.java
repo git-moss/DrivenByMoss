@@ -22,6 +22,7 @@ import de.mossgrabers.framework.parameterprovider.IParameterProvider;
 import de.mossgrabers.framework.parameterprovider.special.CombinedParameterProvider;
 import de.mossgrabers.framework.parameterprovider.special.FixedParameterProvider;
 import de.mossgrabers.framework.parameterprovider.special.NullParameterProvider;
+import de.mossgrabers.framework.scale.Scales;
 import de.mossgrabers.framework.view.Views;
 
 import java.util.ArrayList;
@@ -38,7 +39,7 @@ import java.util.Map;
  */
 public class YaeltexTurnNoteSeqMode extends YaeltexTurnTrackMixMode implements INoteMode
 {
-    private static final NoteAttribute []                NOTE_ATTRIBUTES         =
+    private static final NoteAttribute []                NOTE_ATTRIBUTES   =
     {
         NoteAttribute.PITCH,
         NoteAttribute.GAIN,
@@ -58,10 +59,9 @@ public class YaeltexTurnNoteSeqMode extends YaeltexTurnTrackMixMode implements I
         NoteAttribute.REPEAT_VELOCITY_END
     };
 
-    private final Map<NoteAttribute, IParameterProvider> noteEditProviders       = new EnumMap<> (NoteAttribute.class);
+    private final Map<NoteAttribute, IParameterProvider> noteEditProviders = new EnumMap<> (NoteAttribute.class);
     private final YaeltexTurnConfiguration               configuration;
-    private NoteAttribute                                noteEditParameter       = NoteAttribute.PITCH;
-    private int                                          selectedResolutionIndex = 4;
+    private NoteAttribute                                noteEditParameter = NoteAttribute.PITCH;
 
 
     /**
@@ -91,16 +91,6 @@ public class YaeltexTurnNoteSeqMode extends YaeltexTurnTrackMixMode implements I
         this.providers.add (0, new NullParameterProvider (32));
 
         this.rebind ();
-    }
-
-
-    /** {@inheritDoc} */
-    @Override
-    public void onActivate ()
-    {
-        this.selectedResolutionIndex = Resolution.getMatch (this.getClip ().getStepLength ());
-
-        super.onActivate ();
     }
 
 
@@ -137,15 +127,43 @@ public class YaeltexTurnNoteSeqMode extends YaeltexTurnTrackMixMode implements I
 
         if (row == 2 || row == 3)
         {
-            // Intentionally empty
-            return;
+            final Scales scales = this.model.getScales ();
+            final int scaleIndex = 2 * index + row - 2;
+            final IDisplay display = this.surface.getDisplay ();
+            switch (scaleIndex)
+            {
+                case 0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11:
+                    scales.setScaleOffsetByName (Scales.NOTE_NAMES.get (scaleIndex));
+                    final String scaleBase = Scales.BASES.get (scales.getScaleOffsetIndex ());
+                    this.configuration.setScaleBase (scaleBase);
+                    display.notify (scaleBase);
+                    return;
+                case 13:
+                    final boolean isInKey = !this.configuration.isScaleInKey ();
+                    this.configuration.setScaleInKey (isInKey);
+                    display.notify (isInKey ? "In Key" : "Chromatic");
+                    return;
+                case 14:
+                    scales.prevScale ();
+                    final String prevScale = scales.getScale ().getName ();
+                    this.surface.getConfiguration ().setScale (prevScale);
+                    display.notify (prevScale);
+                    return;
+                case 15:
+                    scales.nextScale ();
+                    final String nextScale = scales.getScale ().getName ();
+                    this.surface.getConfiguration ().setScale (nextScale);
+                    display.notify (nextScale);
+                    return;
+                default:
+                    return;
+            }
         }
 
         final INoteClip clip = this.getClip ();
 
         if (row == 4)
         {
-            this.selectedResolutionIndex = index;
             final Resolution resolution = Resolution.values ()[index];
             clip.setStepLength (resolution.getValue ());
             host.showNotification ("Grid res.: " + resolution.getName ());
@@ -164,7 +182,7 @@ public class YaeltexTurnNoteSeqMode extends YaeltexTurnTrackMixMode implements I
     protected int getButtonShiftColor (final ButtonID buttonID)
     {
         int noteParamIndex = -1;
-        int onOffIndex = -1;
+        int scaleIndex = -1;
         switch (buttonID)
         {
             case ROW1_1, ROW1_2, ROW1_3, ROW1_4, ROW1_5, ROW1_6, ROW1_7, ROW1_8:
@@ -174,14 +192,15 @@ public class YaeltexTurnNoteSeqMode extends YaeltexTurnTrackMixMode implements I
                 noteParamIndex = 2 * (buttonID.ordinal () - ButtonID.ROW2_1.ordinal ()) + 1;
                 break;
             case ROW3_1, ROW3_2, ROW3_3, ROW3_4, ROW3_5, ROW3_6, ROW3_7, ROW3_8:
-                onOffIndex = 2 * (buttonID.ordinal () - ButtonID.ROW3_1.ordinal ());
+                scaleIndex = 2 * (buttonID.ordinal () - ButtonID.ROW3_1.ordinal ());
                 break;
             case ROW4_1, ROW4_2, ROW4_3, ROW4_4, ROW4_5, ROW4_6, ROW4_7, ROW4_8:
-                onOffIndex = 2 * (buttonID.ordinal () - ButtonID.ROW4_1.ordinal ()) + 1;
+                scaleIndex = 2 * (buttonID.ordinal () - ButtonID.ROW4_1.ordinal ()) + 1;
                 break;
             case ROW5_1, ROW5_2, ROW5_3, ROW5_4, ROW5_5, ROW5_6, ROW5_7, ROW5_8:
                 final int index = buttonID.ordinal () - ButtonID.ROW5_1.ordinal ();
-                return this.selectedResolutionIndex == index ? YaeltexTurnColorManager.GREEN : YaeltexTurnColorManager.WHITE;
+                final int selectedResolutionIndex = Resolution.getMatch (this.getClip ().getStepLength ());
+                return selectedResolutionIndex == index ? YaeltexTurnColorManager.GREEN : YaeltexTurnColorManager.WHITE;
             case ROW6_1, ROW6_2, ROW6_3, ROW6_4, ROW6_5, ROW6_6, ROW6_7, ROW6_8:
                 final int page = buttonID.ordinal () - ButtonID.ROW6_1.ordinal ();
                 return this.getClip ().getEditPage () == page ? YaeltexTurnColorManager.BLUE : YaeltexTurnColorManager.WHITE;
@@ -192,11 +211,22 @@ public class YaeltexTurnNoteSeqMode extends YaeltexTurnTrackMixMode implements I
         if (noteParamIndex != -1)
             return YaeltexTurnColorManager.NOTE_PARAM_COLORS.get (NOTE_ATTRIBUTES[noteParamIndex]).intValue ();
 
-        if (onOffIndex != -1)
+        if (scaleIndex != -1)
         {
-            if (NOTE_ATTRIBUTES[onOffIndex] == NoteAttribute.CHANCE || NOTE_ATTRIBUTES[onOffIndex] == NoteAttribute.OCCURRENCE || NOTE_ATTRIBUTES[onOffIndex] == NoteAttribute.REPEAT)
-                return YaeltexTurnColorManager.NOTE_PARAM_COLORS.get (NOTE_ATTRIBUTES[onOffIndex]).intValue ();
-            return 0;
+            switch (scaleIndex)
+            {
+                case 0, 2, 4, 5, 7, 9, 11:
+                    return this.model.getScales ().getScaleOffset () == scaleIndex ? YaeltexTurnColorManager.GREEN : YaeltexTurnColorManager.WHITE;
+                case 1, 3, 6, 8, 10:
+                    return this.model.getScales ().getScaleOffset () == scaleIndex ? YaeltexTurnColorManager.GREEN : YaeltexTurnColorManager.BLUE;
+                default:
+                case 12:
+                    return YaeltexTurnColorManager.BLACK;
+                case 13:
+                    return this.model.getScales ().isChromatic () ? YaeltexTurnColorManager.GRAY : YaeltexTurnColorManager.CYAN;
+                case 14, 15:
+                    return YaeltexTurnColorManager.PINK;
+            }
         }
 
         return 0;

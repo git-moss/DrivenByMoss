@@ -58,7 +58,7 @@ public abstract class BaseSequencerView extends AbstractSequencerView<BeatstepCo
             return;
 
         final boolean isInc = value >= 65;
-        this.selectedResolutionIndex = Resolution.change (this.selectedResolutionIndex, isInc);
-        this.getClip ().setStepLength (Resolution.getValueAt (this.selectedResolutionIndex));
+        final int selectedResolutionIndex = Resolution.change (this.getResolutionIndex (), isInc);
+        this.getClip ().setStepLength (Resolution.getValueAt (selectedResolutionIndex));
     }
 }

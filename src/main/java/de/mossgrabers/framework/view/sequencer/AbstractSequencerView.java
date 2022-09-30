@@ -78,7 +78,6 @@ public abstract class AbstractSequencerView<S extends IControlSurface<C>, C exte
     protected final boolean       useDawColors;
 
     protected int                 numSequencerRows;
-    protected int                 selectedResolutionIndex;
     protected final Configuration configuration;
     protected boolean             isNoteEdited                 = false;
     private boolean               isSequencerActive;
@@ -118,24 +117,11 @@ public abstract class AbstractSequencerView<S extends IControlSurface<C>, C exte
         this.clipRows = clipRows;
         this.clipCols = clipCols;
         this.useDawColors = useDawColors;
+        this.numSequencerRows = numSequencerRows;
 
         this.configuration = this.surface.getConfiguration ();
 
-        this.selectedResolutionIndex = 4;
-
-        this.numSequencerRows = numSequencerRows;
-
         this.getClip ();
-    }
-
-
-    /** {@inheritDoc} */
-    @Override
-    public void onActivate ()
-    {
-        super.onActivate ();
-
-        this.getClip ().setStepLength (Resolution.getValueAt (this.selectedResolutionIndex));
     }
 
 
@@ -210,8 +196,8 @@ public abstract class AbstractSequencerView<S extends IControlSurface<C>, C exte
      */
     public void setResolutionIndex (final int selectedResolutionIndex)
     {
-        this.selectedResolutionIndex = Math.min (Math.max (0, selectedResolutionIndex), 7);
-        final Resolution resolution = Resolution.values ()[this.selectedResolutionIndex];
+        final int resolutionIndex = Math.min (Math.max (0, selectedResolutionIndex), 7);
+        final Resolution resolution = Resolution.values ()[resolutionIndex];
         this.getClip ().setStepLength (resolution.getValue ());
         this.surface.getDisplay ().notify ("Grid res.: " + resolution.getName ());
     }
@@ -224,7 +210,7 @@ public abstract class AbstractSequencerView<S extends IControlSurface<C>, C exte
      */
     public int getResolutionIndex ()
     {
-        return this.selectedResolutionIndex;
+        return Resolution.getMatch (this.getClip ().getStepLength ());
     }
 
 
@@ -238,7 +224,7 @@ public abstract class AbstractSequencerView<S extends IControlSurface<C>, C exte
         if (!ButtonID.isSceneButton (buttonID))
             return AbstractFeatureGroup.BUTTON_COLOR_OFF;
 
-        return buttonID == ButtonID.get (ButtonID.SCENE1, 7 - this.selectedResolutionIndex) ? AbstractSequencerView.COLOR_RESOLUTION_SELECTED : AbstractSequencerView.COLOR_RESOLUTION;
+        return buttonID == ButtonID.get (ButtonID.SCENE1, 7 - this.getResolutionIndex ()) ? AbstractSequencerView.COLOR_RESOLUTION_SELECTED : AbstractSequencerView.COLOR_RESOLUTION;
     }
 
 
@@ -275,7 +261,7 @@ public abstract class AbstractSequencerView<S extends IControlSurface<C>, C exte
      */
     protected int getLengthOfOnePage (final int numOfSteps)
     {
-        return (int) Math.floor (numOfSteps * Resolution.getValueAt (this.selectedResolutionIndex));
+        return (int) Math.floor (numOfSteps * Resolution.getValueAt (this.getResolutionIndex ()));
     }
 
 

@@ -139,12 +139,12 @@ public class PlayView extends AbstractSequencerView<SLControlSurface, SLConfigur
 
             case 2:
                 this.changeResolution (0);
-                this.surface.getDisplay ().notify (Resolution.getNameAt (this.selectedResolutionIndex));
+                this.surface.getDisplay ().notify (Resolution.getNameAt (this.getResolutionIndex ()));
                 break;
 
             case 3:
                 this.changeResolution (127);
-                this.surface.getDisplay ().notify (Resolution.getNameAt (this.selectedResolutionIndex));
+                this.surface.getDisplay ().notify (Resolution.getNameAt (this.getResolutionIndex ()));
                 break;
 
             case 4:
@@ -457,8 +457,8 @@ public class PlayView extends AbstractSequencerView<SLControlSurface, SLConfigur
     private void changeResolution (final int value)
     {
         final boolean isInc = value >= 65;
-        this.selectedResolutionIndex = Resolution.change (this.selectedResolutionIndex, isInc);
-        this.getClip ().setStepLength (Resolution.getValueAt (this.selectedResolutionIndex));
+        final int selectedResolutionIndex = Resolution.change (this.getResolutionIndex (), isInc);
+        this.getClip ().setStepLength (Resolution.getValueAt (selectedResolutionIndex));
     }
 
 

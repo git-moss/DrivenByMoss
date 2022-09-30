@@ -254,13 +254,11 @@ public class YaeltexTurnColorManager extends ColorManager
         this.registerColorIndex (AbstractSequencerView.COLOR_NO_CONTENT_4, BLACK);
         this.registerColorIndex (AbstractSequencerView.COLOR_CONTENT, BLUE);
         this.registerColorIndex (AbstractSequencerView.COLOR_CONTENT_CONT, CYAN);
+        this.registerColorIndex (AbstractSequencerView.COLOR_PAGE, WHITE);
+        this.registerColorIndex (AbstractSequencerView.COLOR_ACTIVE_PAGE, GREEN);
+        this.registerColorIndex (AbstractSequencerView.COLOR_SELECTED_PAGE, BLUE);
 
         // TODO
-
-        // this.registerColorIndex (AbstractSequencerView.COLOR_PAGE, COLOR_WHITE);
-        // this.registerColorIndex (AbstractSequencerView.COLOR_ACTIVE_PAGE, COLOR_GREEN_HI);
-        // this.registerColorIndex (AbstractSequencerView.COLOR_SELECTED_PAGE, getIndexFor
-        // (ColorEx.BLUE)_LO);
 
         // this.registerColorIndex (AbstractDrumView.COLOR_PAD_OFF, indexBlack);
         // this.registerColorIndex (AbstractDrumView.COLOR_PAD_RECORD, COLOR_RED_HI);

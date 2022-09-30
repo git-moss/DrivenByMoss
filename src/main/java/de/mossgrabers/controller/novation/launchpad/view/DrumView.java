@@ -69,7 +69,7 @@ public class DrumView extends AbstractDrumExView<LaunchpadControlSurface, Launch
 
         if (!this.isActive ())
             return LaunchpadColorManager.LAUNCHPAD_COLOR_BLACK;
-        return scene == 7 - this.selectedResolutionIndex ? LaunchpadColorManager.LAUNCHPAD_COLOR_YELLOW : LaunchpadColorManager.LAUNCHPAD_COLOR_GREEN;
+        return scene == 7 - this.getResolutionIndex () ? LaunchpadColorManager.LAUNCHPAD_COLOR_YELLOW : LaunchpadColorManager.LAUNCHPAD_COLOR_GREEN;
     }
 
 

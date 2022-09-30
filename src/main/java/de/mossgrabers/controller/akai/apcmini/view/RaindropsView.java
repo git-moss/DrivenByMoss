@@ -65,7 +65,7 @@ public class RaindropsView extends AbstractRaindropsView<APCminiControlSurface, 
         final int index = buttonID.ordinal () - ButtonID.SCENE1.ordinal ();
         final int res = 7 - index;
         final boolean isKeyboardEnabled = this.model.canSelectedTrackHoldNotes ();
-        return isKeyboardEnabled && res == this.selectedResolutionIndex ? ColorManager.BUTTON_STATE_ON : ColorManager.BUTTON_STATE_OFF;
+        return isKeyboardEnabled && res == this.getResolutionIndex () ? ColorManager.BUTTON_STATE_ON : ColorManager.BUTTON_STATE_OFF;
     }
 
 

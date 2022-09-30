@@ -139,7 +139,7 @@ public class Drum4View extends AbstractDrum4View<FireControlSurface, FireConfigu
         if (buttonID == ButtonID.ARROW_LEFT)
         {
             if (this.surface.isPressed (ButtonID.ALT))
-                this.setResolutionIndex (this.selectedResolutionIndex - 1);
+                this.setResolutionIndex (this.getResolutionIndex () - 1);
             else
             {
                 clip.scrollStepsPageBackwards ();
@@ -151,7 +151,7 @@ public class Drum4View extends AbstractDrum4View<FireControlSurface, FireConfigu
         if (buttonID == ButtonID.ARROW_RIGHT)
         {
             if (this.surface.isPressed (ButtonID.ALT))
-                this.setResolutionIndex (this.selectedResolutionIndex + 1);
+                this.setResolutionIndex (this.getResolutionIndex () + 1);
             else
             {
                 clip.scrollStepsPageForward ();

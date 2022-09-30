@@ -94,7 +94,7 @@ public class PolySequencerView extends AbstractPolySequencerView<FireControlSurf
         {
             case ARROW_LEFT:
                 if (this.surface.isPressed (ButtonID.ALT))
-                    this.setResolutionIndex (this.selectedResolutionIndex - 1);
+                    this.setResolutionIndex (this.getResolutionIndex () - 1);
                 else
                 {
                     clip.scrollStepsPageBackwards ();
@@ -104,7 +104,7 @@ public class PolySequencerView extends AbstractPolySequencerView<FireControlSurf
 
             case ARROW_RIGHT:
                 if (this.surface.isPressed (ButtonID.ALT))
-                    this.setResolutionIndex (this.selectedResolutionIndex + 1);
+                    this.setResolutionIndex (this.getResolutionIndex () + 1);
                 else
                 {
                     clip.scrollStepsPageForward ();

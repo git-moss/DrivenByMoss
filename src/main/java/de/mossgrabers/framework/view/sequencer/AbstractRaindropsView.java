@@ -90,7 +90,8 @@ public abstract class AbstractRaindropsView<S extends IControlSurface<C>, C exte
         final int stepSize = y == 0 ? 1 : 2 * y;
 
         final INoteClip clip = this.getClip ();
-        final int length = (int) Math.floor (clip.getLoopLength () / Resolution.getValueAt (this.selectedResolutionIndex));
+        final double resolutionLength = Resolution.getValueAt (this.getResolutionIndex ());
+        final int length = (int) Math.floor (clip.getLoopLength () / resolutionLength);
         final int distance = this.getNoteDistance (this.keyManager.map (x), length);
         final int editMidiChannel = this.configuration.getMidiEditChannel ();
         clip.clearRow (editMidiChannel, this.keyManager.map (x));
@@ -109,7 +110,7 @@ public abstract class AbstractRaindropsView<S extends IControlSurface<C>, C exte
                 {
                     notePosition.setStep (i);
                     notePosition.setNote (this.keyManager.map (x));
-                    clip.setStep (notePosition, this.configuration.isAccentActive () ? this.configuration.getFixedAccentValue () : velocity, Resolution.getValueAt (this.selectedResolutionIndex));
+                    clip.setStep (notePosition, this.configuration.isAccentActive () ? this.configuration.getFixedAccentValue () : velocity, resolutionLength);
                 }
             }
         }
@@ -133,7 +134,7 @@ public abstract class AbstractRaindropsView<S extends IControlSurface<C>, C exte
         final ITrack cursorTrack = this.useDawColors ? this.model.getCursorTrack () : null;
 
         final INoteClip clip = this.getClip ();
-        final int length = (int) Math.floor (clip.getLoopLength () / Resolution.getValueAt (this.selectedResolutionIndex));
+        final int length = (int) Math.floor (clip.getLoopLength () / Resolution.getValueAt (this.getResolutionIndex ()));
         final int step = clip.getCurrentStep ();
         for (int x = 0; x < AbstractRaindropsView.NUM_DISPLAY_COLS; x++)
         {
