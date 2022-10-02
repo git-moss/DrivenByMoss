@@ -72,7 +72,7 @@ public class XLNoteEditMode extends XLBaseNoteEditMode
     protected void executeRow0 (final int index)
     {
         final int channel = this.configuration.getMidiEditChannel ();
-        int noteRow = this.getNoteRow (channel, index);
+        final int noteRow = this.getNoteRow (channel, index);
         final INoteClip clip = this.getClip ();
         if (noteRow == -1)
         {

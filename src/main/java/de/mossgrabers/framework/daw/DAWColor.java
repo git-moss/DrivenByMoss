@@ -181,7 +181,7 @@ public enum DAWColor
         double minError = 5.0;
         for (int i = 1; i < values.length; i++)
         {
-            final double error = ColorEx.calcDistance (values[i].getColor (), color);
+            final double error = ColorEx.calcDistance (values[i].getColor (), color, true);
             if (error < minError)
             {
                 cid = values[i];

@@ -138,7 +138,7 @@ public enum Resolution
      * Get the resolution which matches the given value (the difference is less than 0.001).
      *
      * @param value A resolution value
-     * @return The index
+     * @return The index (ordinal) of the resolution
      */
     public static int getMatch (final double value)
     {

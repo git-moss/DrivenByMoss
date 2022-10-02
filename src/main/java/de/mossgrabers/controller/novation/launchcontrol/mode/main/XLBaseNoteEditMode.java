@@ -381,7 +381,7 @@ public abstract class XLBaseNoteEditMode extends XLAbstractMainMode<IItem> imple
 
     /** {@inheritDoc} */
     @Override
-    public void setNote (INoteClip clip, NotePosition notePosition)
+    public void setNote (final INoteClip clip, final NotePosition notePosition)
     {
         throw new UnsupportedOperationException ();
     }
@@ -389,7 +389,7 @@ public abstract class XLBaseNoteEditMode extends XLAbstractMainMode<IItem> imple
 
     /** {@inheritDoc} */
     @Override
-    public void addNote (INoteClip clip, NotePosition notePosition)
+    public void addNote (final INoteClip clip, final NotePosition notePosition)
     {
         throw new UnsupportedOperationException ();
     }

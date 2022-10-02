@@ -823,42 +823,50 @@ public enum ButtonID
     /**
      * Get an offset button ID, e.g. to get F4 set F1 and 3 as parameters.
      *
-     * @param bid The base button ID
+     * @param buttonID The base button ID
      * @param offset The offset
      * @return The offset button
      */
-    public static ButtonID get (final ButtonID bid, final int offset)
+    public static ButtonID get (final ButtonID buttonID, final int offset)
     {
-        return ButtonID.values ()[bid.ordinal () + offset];
+        return ButtonID.values ()[buttonID.ordinal () + offset];
     }
 
 
     /**
      * Test if the given button ID belongs to a scene button.
      *
-     * @param bid The button ID to test
+     * @param buttonID The button ID to test
      * @return True if it is a scene button
      */
-    public static boolean isSceneButton (final ButtonID bid)
+    public static boolean isSceneButton (final ButtonID buttonID)
     {
-        if (bid == null)
-            return false;
-        final int ordinal = bid.ordinal ();
-        return ordinal >= SCENE1.ordinal () && ordinal <= SCENE8.ordinal ();
+        return isInRange (buttonID, ButtonID.SCENE1, 8);
     }
 
 
     /**
      * Test if the given button ID belongs to a pad.
      *
-     * @param bid The button ID to test
+     * @param buttonID The button ID to test
      * @return True if it is a pad
      */
-    public static boolean isPad (final ButtonID bid)
+    public static boolean isPad (final ButtonID buttonID)
     {
-        if (bid == null)
-            return false;
-        final int ordinal = bid.ordinal ();
-        return ordinal >= PAD1.ordinal () && ordinal <= PAD88.ordinal ();
+        return isInRange (buttonID, ButtonID.PAD1, 88);
+    }
+
+
+    /**
+     * Test if the given button ID belongs to a pad.
+     *
+     * @param buttonID The ID of the button to test
+     * @param firstButtonID The ID of the first button in the range
+     * @param length The number of buttons in the range
+     * @return True if it is in the range
+     */
+    public static boolean isInRange (final ButtonID buttonID, final ButtonID firstButtonID, final int length)
+    {
+        return buttonID != null && ButtonID.get (firstButtonID, length - 1).ordinal () - buttonID.ordinal () >= 0;
     }
 }

@@ -395,11 +395,27 @@ public class ColorEx
      */
     public static int getClosestColorIndex (final ColorEx color, final ColorEx [] palette)
     {
+        return getClosestColorIndex (color, palette, true);
+    }
+
+
+    /**
+     * Calculate the color from the palette which is the closest to the given color and return the
+     * index.
+     *
+     * @param color The color
+     * @param palette The palette to pick one color from
+     * @param useColorMetric If true uses color metrics to calculate the distance, see
+     *            https://www.compuphase.com/cmetric.htm
+     * @return The index of the closest color from the palette
+     */
+    public static int getClosestColorIndex (final ColorEx color, final ColorEx [] palette, final boolean useColorMetric)
+    {
         double minError = 5.0;
         int closest = 0;
         for (int i = 0; i < palette.length; i++)
         {
-            final double error = ColorEx.calcDistance (palette[i], color);
+            final double error = ColorEx.calcDistance (palette[i], color, useColorMetric);
             if (error < minError)
             {
                 closest = i;
@@ -415,11 +431,13 @@ public class ColorEx
      *
      * @param color1 The first color
      * @param color2 The second color
+     * @param useColorMetric If true uses color metrics to calculate the distance, see
+     *            https://www.compuphase.com/cmetric.htm
      * @return The distance
      */
-    public static double calcDistance (final ColorEx color1, final ColorEx color2)
+    public static double calcDistance (final ColorEx color1, final ColorEx color2, final boolean useColorMetric)
     {
-        return calcDistance (color1.toDoubleRGB (), color2.toDoubleRGB ());
+        return calcDistance (color1.toDoubleRGB (), color2.toDoubleRGB (), useColorMetric);
     }
 
 
@@ -428,15 +446,23 @@ public class ColorEx
      *
      * @param color1 The first color
      * @param color2 The second color
+     * @param useColorMetric If true uses color metrics to calculate the distance, see
+     *            https://www.compuphase.com/cmetric.htm
      * @return The distance
      */
-    public static double calcDistance (final double [] color1, final double [] color2)
+    public static double calcDistance (final double [] color1, final double [] color2, final boolean useColorMetric)
     {
-        final double rmean = (color1[0] + color2[0]) / 2.0;
         final double deltaR = color1[0] - color2[0];
         final double deltaG = color1[1] - color2[1];
         final double deltaB = color1[2] - color2[2];
-        return Math.sqrt ((2.0 + rmean) * deltaR * deltaR + 4.0 * deltaG * deltaG + (2.99609375 - rmean) * deltaB * deltaB);
+
+        if (useColorMetric)
+        {
+            final double rmean = (color1[0] + color2[0]) / 2.0;
+            return Math.sqrt ((2.0 + rmean) * deltaR * deltaR + 4.0 * deltaG * deltaG + (2.99609375 - rmean) * deltaB * deltaB);
+        }
+
+        return Math.abs (deltaR) + Math.abs (deltaG) + Math.abs (deltaB);
     }
 
 

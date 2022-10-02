@@ -505,6 +505,15 @@ public class ChannelImpl extends AbstractDeviceChainImpl<Channel> implements ICh
 
     /** {@inheritDoc} */
     @Override
+    public void addEqualizerDevice ()
+    {
+        if (this.doesExist ())
+            this.deviceChain.endOfDeviceChainInsertionPoint ().insertBitwigDevice (EqualizerDeviceImpl.ID_BITWIG_EQ_PLUS);
+    }
+
+
+    /** {@inheritDoc} */
+    @Override
     public void addColorObserver (final IValueObserver<ColorEx> observer)
     {
         this.deviceChain.color ().addValueObserver ( (red, green, blue) -> observer.update (new ColorEx (red, green, blue)));

@@ -243,7 +243,7 @@
                         "disabled": false
                     },
                     "rotation_feedback": {
-                        "mode": 3,
+                        "mode": 2,
                         "source": 7,
                         "channel": 15,
                         "message": 2,
@@ -329,7 +329,7 @@
                         "disabled": false
                     },
                     "rotation_feedback": {
-                        "mode": 3,
+                        "mode": 2,
                         "source": 7,
                         "channel": 15,
                         "message": 2,
@@ -415,7 +415,7 @@
                         "disabled": false
                     },
                     "rotation_feedback": {
-                        "mode": 3,
+                        "mode": 2,
                         "source": 7,
                         "channel": 15,
                         "message": 2,
@@ -500,7 +500,7 @@
                         "qstbn_note": 0
                     },
                     "rotation_feedback": {
-                        "mode": 3,
+                        "mode": 2,
                         "source": 7,
                         "channel": 15,
                         "message": 2,
@@ -1592,7 +1592,7 @@
                         "qstbn_note": 0
                     },
                     "rotation_feedback": {
-                        "mode": 3,
+                        "mode": 2,
                         "source": 7,
                         "channel": 15,
                         "message": 2,
@@ -1676,7 +1676,7 @@
                         "qstbn_note": 0
                     },
                     "rotation_feedback": {
-                        "mode": 3,
+                        "mode": 2,
                         "source": 7,
                         "channel": 15,
                         "message": 2,
@@ -1760,7 +1760,7 @@
                         "qstbn_note": 0
                     },
                     "rotation_feedback": {
-                        "mode": 3,
+                        "mode": 2,
                         "source": 7,
                         "channel": 15,
                         "message": 2,
@@ -1844,7 +1844,7 @@
                         "qstbn_note": 0
                     },
                     "rotation_feedback": {
-                        "mode": 3,
+                        "mode": 2,
                         "source": 7,
                         "channel": 15,
                         "message": 2,

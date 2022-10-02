@@ -45,6 +45,11 @@ public class YaeltexTurnConfiguration extends AbstractConfiguration
         this.activateScaleInScaleSetting (documentSettings);
 
         ///////////////////////////
+        // Note Repeat
+
+        this.activateNoteRepeatSetting (documentSettings);
+
+        ///////////////////////////
         // Transport
 
         this.activateBehaviourOnPauseSetting (globalSettings);

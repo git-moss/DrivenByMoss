@@ -45,6 +45,15 @@ public interface IMode extends IFeatureGroup
 
 
     /**
+     * Get the color for a knob or fader, which is controlled by the mode.
+     *
+     * @param index The index of the knob
+     * @return A color index
+     */
+    int getKnobColor (int index);
+
+
+    /**
      * A knob has been touched.
      *
      * @param index The index of the knob

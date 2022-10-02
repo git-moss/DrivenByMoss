@@ -37,8 +37,8 @@ public class NoteParameter extends AbstractParameterImpl
     private final INoteMode                         callback;
     private final IDisplay                          display;
     private final Scales                            scales;
-    private NoteAttribute                           noteAttribute;
-    private int                                     parameterIndex;
+    private final NoteAttribute                     noteAttribute;
+    private final int                               parameterIndex;
 
     private static final Map<NoteAttribute, String> ATTRIBUTE_NAMES = new EnumMap<> (NoteAttribute.class);
     static
@@ -66,7 +66,7 @@ public class NoteParameter extends AbstractParameterImpl
 
     /**
      * Constructor. The parameter index is ignored.
-     * 
+     *
      * @param noteAttribute The initial note attribute to edit with the parameter
      * @param display The display for notifications, might be null
      * @param model The transport
@@ -81,7 +81,7 @@ public class NoteParameter extends AbstractParameterImpl
 
     /**
      * Constructor.
-     * 
+     *
      * @param parameterIndex The index for identifying the parameter
      * @param noteAttribute The initial note attribute to edit with the parameter
      * @param display The display for notifications, might be null

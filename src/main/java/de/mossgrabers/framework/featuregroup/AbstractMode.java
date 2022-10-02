@@ -114,6 +114,14 @@ public abstract class AbstractMode<S extends IControlSurface<C>, C extends Confi
     }
 
 
+    /** {@inheritDoc} */
+    @Override
+    public int getKnobColor (final int index)
+    {
+        return 0;
+    }
+
+
     /**
      * Initializes the touch states to the given size.
      *

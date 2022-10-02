@@ -29,8 +29,8 @@ import java.util.List;
  */
 public class NoteMode extends BaseMode<IItem> implements INoteMode
 {
-    private final NoteEditor       noteEditor;
-    private FixedParameterProvider fixedParameterProvider;
+    private final NoteEditor             noteEditor;
+    private final FixedParameterProvider fixedParameterProvider;
 
 
     /**

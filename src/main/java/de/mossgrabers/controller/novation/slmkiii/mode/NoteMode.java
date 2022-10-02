@@ -244,7 +244,7 @@ public class NoteMode extends BaseMode<IItem> implements INoteMode
         if (notes.isEmpty ())
             return SLMkIIIColorManager.SLMKIII_BLACK;
 
-        int index = this.isButtonRow (0, buttonID);
+        final int index = this.isButtonRow (0, buttonID);
         if (index >= 0)
         {
             final IStepInfo stepInfo = this.noteEditor.getClip ().getStep (notes.get (0));

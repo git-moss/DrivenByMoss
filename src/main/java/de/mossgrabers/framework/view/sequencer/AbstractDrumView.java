@@ -914,6 +914,17 @@ public abstract class AbstractDrumView<S extends IControlSurface<C>, C extends C
      * Set the selected pad.
      *
      * @param selectedPad The selected pad
+     */
+    public void setSelectedPad (final int selectedPad)
+    {
+        this.setSelectedPad (selectedPad, 127);
+    }
+
+
+    /**
+     * Set the selected pad.
+     *
+     * @param selectedPad The selected pad
      * @param velocity The velocity
      */
     protected void setSelectedPad (final int selectedPad, final int velocity)
@@ -933,7 +944,7 @@ public abstract class AbstractDrumView<S extends IControlSurface<C>, C extends C
      *
      * @return The selected pad
      */
-    protected int getSelectedPad ()
+    public int getSelectedPad ()
     {
         return this.selectedPad;
     }

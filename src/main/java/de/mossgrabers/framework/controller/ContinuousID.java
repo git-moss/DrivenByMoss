@@ -386,4 +386,21 @@ public enum ContinuousID
             ids.add (get (firstID, i));
         return ids;
     }
+
+
+    /**
+     * Get the index of the given continuous control in a range.
+     *
+     * @param continuousID The ID of the continuous control to test
+     * @param firstContinuousID The ID of the first control in the range
+     * @param length The number of controls in the range (1-based)
+     * @return The index of the control in the range, -1 if it is not part of the range
+     */
+    public static int isInRange (final ContinuousID continuousID, final ContinuousID firstContinuousID, final int length)
+    {
+        if (continuousID == null)
+            return -1;
+        final int diff = ContinuousID.get (firstContinuousID, length - 1).ordinal () - continuousID.ordinal ();
+        return diff >= 0 ? diff : -1;
+    }
 }

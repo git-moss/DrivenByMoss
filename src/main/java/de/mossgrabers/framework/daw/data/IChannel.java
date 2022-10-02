@@ -356,4 +356,10 @@ public interface IChannel extends IItem
      * @param metadata The metadata of the device to add
      */
     void addDevice (IDeviceMetadata metadata);
+
+
+    /**
+     * Add an equalizer device to this channels' device chain.
+     */
+    void addEqualizerDevice ();
 }

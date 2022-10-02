@@ -28,7 +28,7 @@ public final class NotePosition
 
     /**
      * Default constructor.
-     * 
+     *
      * @param notePosition The note position to use to initialize the values
      */
     public NotePosition (final NotePosition notePosition)
@@ -153,7 +153,7 @@ public final class NotePosition
         if (obj == null || this.getClass () != obj.getClass ())
             return false;
         final NotePosition other = (NotePosition) obj;
-        if ((this.channel != other.channel) || (this.note != other.note))
+        if (this.channel != other.channel || this.note != other.note)
             return false;
         return this.step == other.step;
     }

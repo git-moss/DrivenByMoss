@@ -33,7 +33,7 @@ public class YaeltexTurnModeCursorCommand extends ModeCursorCommand<YaeltexTurnC
      */
     public YaeltexTurnModeCursorCommand (final Direction direction, final IModel model, final YaeltexTurnControlSurface surface)
     {
-        super (direction, model, surface);
+        super (direction, model, surface, false);
 
         this.rewindCommand = new WindCommand<> (this.model, surface, false);
         this.forwardCommand = new WindCommand<> (this.model, surface, true);

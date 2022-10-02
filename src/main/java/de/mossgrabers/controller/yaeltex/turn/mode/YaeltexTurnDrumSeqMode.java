@@ -1,6 +1,5 @@
 package de.mossgrabers.controller.yaeltex.turn.mode;
 
-import de.mossgrabers.controller.yaeltex.turn.YaeltexTurnConfiguration;
 import de.mossgrabers.controller.yaeltex.turn.controller.YaeltexTurnColorManager;
 import de.mossgrabers.controller.yaeltex.turn.controller.YaeltexTurnControlSurface;
 import de.mossgrabers.controller.yaeltex.turn.view.MonophonicSequencerView;
@@ -21,7 +20,6 @@ import de.mossgrabers.framework.parameterprovider.IParameterProvider;
 import de.mossgrabers.framework.parameterprovider.special.CombinedParameterProvider;
 import de.mossgrabers.framework.parameterprovider.special.FixedParameterProvider;
 import de.mossgrabers.framework.parameterprovider.special.NullParameterProvider;
-import de.mossgrabers.framework.scale.Scales;
 import de.mossgrabers.framework.view.Views;
 
 import java.util.ArrayList;
@@ -32,15 +30,15 @@ import java.util.Map;
 
 
 /**
- * Track mix mode with note sequencer editing for the Yaeltex Turn.
+ * Drum Machine mix mode with drum sequencer editing for the Yaeltex Turn.
  *
  * @author J&uuml;rgen Mo&szlig;graber
  */
-public class YaeltexTurnNoteSeqMode extends YaeltexTurnTrackMixMode implements INoteMode
+public class YaeltexTurnDrumSeqMode extends YaeltexTurnDrumMixMode implements INoteMode
 {
     private static final NoteAttribute []                NOTE_ATTRIBUTES   =
     {
-        NoteAttribute.PITCH,
+        NoteAttribute.TRANSPOSE,
         NoteAttribute.GAIN,
         NoteAttribute.PANORAMA,
         NoteAttribute.DURATION,
@@ -59,8 +57,7 @@ public class YaeltexTurnNoteSeqMode extends YaeltexTurnTrackMixMode implements I
     };
 
     private final Map<NoteAttribute, IParameterProvider> noteEditProviders = new EnumMap<> (NoteAttribute.class);
-    private final YaeltexTurnConfiguration               configuration;
-    private NoteAttribute                                noteEditParameter = NoteAttribute.PITCH;
+    private NoteAttribute                                noteEditParameter = NoteAttribute.TRANSPOSE;
 
 
     /**
@@ -70,11 +67,9 @@ public class YaeltexTurnNoteSeqMode extends YaeltexTurnTrackMixMode implements I
      * @param model The model
      * @param controls The IDs of the knobs or faders to control this mode
      */
-    public YaeltexTurnNoteSeqMode (final YaeltexTurnControlSurface surface, final IModel model, final List<ContinuousID> controls)
+    public YaeltexTurnDrumSeqMode (final YaeltexTurnControlSurface surface, final IModel model, final List<ContinuousID> controls)
     {
-        super ("Monophonic Sequencer", surface, model, controls);
-
-        this.configuration = this.surface.getConfiguration ();
+        super ("Drum Sequencer", surface, model, controls);
 
         final IValueChanger valueChanger = model.getValueChanger ();
         final IDisplay display = surface.getDisplay ();
@@ -126,37 +121,8 @@ public class YaeltexTurnNoteSeqMode extends YaeltexTurnTrackMixMode implements I
 
         if (row == 2 || row == 3)
         {
-            final Scales scales = this.model.getScales ();
-            final int scaleIndex = 2 * index + row - 2;
-            final IDisplay display = this.surface.getDisplay ();
-            switch (scaleIndex)
-            {
-                case 0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11:
-                    scales.setScaleOffsetByName (Scales.NOTE_NAMES.get (scaleIndex));
-                    final String scaleBase = Scales.BASES.get (scales.getScaleOffsetIndex ());
-                    this.configuration.setScaleBase (scaleBase);
-                    display.notify (scaleBase);
-                    return;
-                case 13:
-                    final boolean isInKey = !this.configuration.isScaleInKey ();
-                    this.configuration.setScaleInKey (isInKey);
-                    display.notify (isInKey ? "In Key" : "Chromatic");
-                    return;
-                case 14:
-                    scales.prevScale ();
-                    final String prevScale = scales.getScale ().getName ();
-                    this.surface.getConfiguration ().setScale (prevScale);
-                    display.notify (prevScale);
-                    return;
-                case 15:
-                    scales.nextScale ();
-                    final String nextScale = scales.getScale ().getName ();
-                    this.surface.getConfiguration ().setScale (nextScale);
-                    display.notify (nextScale);
-                    return;
-                default:
-                    return;
-            }
+            // Row not used
+            return;
         }
 
         final INoteClip clip = this.getClip ();
@@ -210,23 +176,9 @@ public class YaeltexTurnNoteSeqMode extends YaeltexTurnTrackMixMode implements I
         if (noteParamIndex != -1)
             return YaeltexTurnColorManager.NOTE_PARAM_COLORS.get (NOTE_ATTRIBUTES[noteParamIndex]).intValue ();
 
+        // Row not used
         if (scaleIndex != -1)
-        {
-            switch (scaleIndex)
-            {
-                case 0, 2, 4, 5, 7, 9, 11:
-                    return this.model.getScales ().getScaleOffset () == scaleIndex ? YaeltexTurnColorManager.GREEN : YaeltexTurnColorManager.WHITE;
-                case 1, 3, 6, 8, 10:
-                    return this.model.getScales ().getScaleOffset () == scaleIndex ? YaeltexTurnColorManager.GREEN : YaeltexTurnColorManager.BLUE;
-                default:
-                case 12:
-                    return YaeltexTurnColorManager.BLACK;
-                case 13:
-                    return this.model.getScales ().isChromatic () ? YaeltexTurnColorManager.GRAY : YaeltexTurnColorManager.CYAN;
-                case 14, 15:
-                    return YaeltexTurnColorManager.PINK;
-            }
-        }
+            return YaeltexTurnColorManager.BLACK;
 
         return 0;
     }
@@ -277,7 +229,8 @@ public class YaeltexTurnNoteSeqMode extends YaeltexTurnTrackMixMode implements I
     public List<NotePosition> getNotePosition (final int parameterIndex)
     {
         final int channel = this.configuration.getMidiEditChannel ();
-        final int noteRow = this.getClip ().getHighestRow (channel, parameterIndex);
+        final int noteRow = this.scales.getDrumOffset () + this.getDrumView ().getSelectedPad ();
+
         if (noteRow == -1)
             return Collections.emptyList ();
         return Collections.singletonList (new NotePosition (channel, parameterIndex, noteRow));

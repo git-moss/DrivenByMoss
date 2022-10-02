@@ -232,14 +232,6 @@ public class EmptyTrack extends EmptyChannel implements ITrack
 
     /** {@inheritDoc} */
     @Override
-    public void addEqualizerDevice ()
-    {
-        // Intentionally empty
-    }
-
-
-    /** {@inheritDoc} */
-    @Override
     public boolean hasDrumDevice ()
     {
         return false;

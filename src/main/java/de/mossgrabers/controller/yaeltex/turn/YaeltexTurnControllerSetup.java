@@ -6,9 +6,11 @@ package de.mossgrabers.controller.yaeltex.turn;
 
 import de.mossgrabers.controller.yaeltex.turn.command.trigger.YaeltexTurnModeCursorCommand;
 import de.mossgrabers.controller.yaeltex.turn.command.trigger.YaeltexTurnRecordCommand;
+import de.mossgrabers.controller.yaeltex.turn.command.trigger.YaeltexTurnTapTempoCommand;
 import de.mossgrabers.controller.yaeltex.turn.controller.YaeltexTurnColorManager;
 import de.mossgrabers.controller.yaeltex.turn.controller.YaeltexTurnControlSurface;
-import de.mossgrabers.controller.yaeltex.turn.mode.IYaeltexKnobMode;
+import de.mossgrabers.controller.yaeltex.turn.mode.YaeltexTurnDrumMixMode;
+import de.mossgrabers.controller.yaeltex.turn.mode.YaeltexTurnDrumSeqMode;
 import de.mossgrabers.controller.yaeltex.turn.mode.YaeltexTurnNoteSeqMode;
 import de.mossgrabers.controller.yaeltex.turn.mode.YaeltexTurnTrackMixMode;
 import de.mossgrabers.controller.yaeltex.turn.view.DrumView;
@@ -24,7 +26,6 @@ import de.mossgrabers.framework.command.trigger.mode.ModeSelectCommand;
 import de.mossgrabers.framework.command.trigger.transport.PlayCommand;
 import de.mossgrabers.framework.command.trigger.transport.RecordCommand;
 import de.mossgrabers.framework.command.trigger.transport.StopCommand;
-import de.mossgrabers.framework.command.trigger.transport.TapTempoCommand;
 import de.mossgrabers.framework.command.trigger.transport.ToggleLoopCommand;
 import de.mossgrabers.framework.configuration.ISettingsUI;
 import de.mossgrabers.framework.controller.AbstractControllerSetup;
@@ -106,7 +107,7 @@ public class YaeltexTurnControllerSetup extends AbstractControllerSetup<YaeltexT
     protected void createScales ()
     {
         this.scales = new Scales (this.valueChanger, 36, 68, 8, 4);
-        this.scales.setDrumDefaultOffset (12);
+        this.scales.setDrumDefaultOffset (8);
     }
 
 
@@ -153,8 +154,7 @@ public class YaeltexTurnControllerSetup extends AbstractControllerSetup<YaeltexT
 
         this.configuration.registerDeactivatedItemsHandler (this.model);
         this.createScaleObservers (this.configuration);
-
-        this.getSurface ().getModeManager ().addChangeListener ( (previousMode, activeMode) -> this.onModeChange (activeMode));
+        this.createNoteRepeatObservers (this.configuration, this.getSurface ());
     }
 
 
@@ -167,10 +167,8 @@ public class YaeltexTurnControllerSetup extends AbstractControllerSetup<YaeltexT
 
         modeManager.register (Modes.TRACK, new YaeltexTurnTrackMixMode (surface, this.model, CONTINUOUS_CONTROLS));
         modeManager.register (Modes.NOTE_SEQUENCER, new YaeltexTurnNoteSeqMode (surface, this.model, CONTINUOUS_CONTROLS));
-
-        // TODO
-        // Modes.DEVICE_LAYER
-        // Modes.DRUM_SEQUENCER
+        modeManager.register (Modes.DEVICE_LAYER, new YaeltexTurnDrumMixMode (surface, this.model, CONTINUOUS_CONTROLS));
+        modeManager.register (Modes.DRUM_SEQUENCER, new YaeltexTurnDrumSeqMode (surface, this.model, CONTINUOUS_CONTROLS));
     }
 
 
@@ -214,8 +212,8 @@ public class YaeltexTurnControllerSetup extends AbstractControllerSetup<YaeltexT
         this.addButton (ButtonID.CLIP, "clips", (event, velocity) -> this.toggleSequencer (event), channel, YaeltexTurnControlSurface.BUTTON_CLIPS, clipIntensity);
         this.addButton (ButtonID.SESSION, "session", (event, velocity) -> this.toggleSession (event), channel, YaeltexTurnControlSurface.BUTTON_SESSION, sessionIntensity);
         // TODO
-        this.addButton (ButtonID.USER, "usr", new ModeSelectCommand<> (this.model, surface, Modes.DEVICE_LAYER), channel, YaeltexTurnControlSurface.BUTTON_USR, () -> modeManager.isActive (Modes.DEVICE_LAYER));
-        this.addButton (ButtonID.TRACK, "trk", (event, velocity) -> this.toggleTrackAndLayer (event), channel, YaeltexTurnControlSurface.BUTTON_TRK, () -> modeManager.isActive (Modes.TRACK) ? 1 : 0, YaeltexTurnColorManager.BUTTON_STATE_TRACK, YaeltexTurnColorManager.BUTTON_STATE_LAYER);
+        this.addButton (ButtonID.USER, "usr", new ModeSelectCommand<> (this.model, surface, Modes.DEVICE_LAYER), channel, YaeltexTurnControlSurface.BUTTON_USR);
+        this.addButton (ButtonID.TRACK, "trk", (event, velocity) -> this.toggleTrackAndLayer (event), channel, YaeltexTurnControlSurface.BUTTON_TRK, () -> modeManager.isActive (Modes.TRACK, Modes.NOTE_SEQUENCER) ? 1 : 0, YaeltexTurnColorManager.BUTTON_STATE_TRACK, YaeltexTurnColorManager.BUTTON_STATE_LAYER);
 
         // Transport
 
@@ -234,7 +232,7 @@ public class YaeltexTurnControllerSetup extends AbstractControllerSetup<YaeltexT
         this.addButton (ButtonID.RECORD, "rec", recordCommand, channel, YaeltexTurnControlSurface.BUTTON_REC, recIntensity);
         this.addButton (ButtonID.OVERDUB, "overdub", overdubCommand, channel, YaeltexTurnControlSurface.BUTTON_OVERDUB, overdubIntensity);
         this.addButton (ButtonID.LOOP, "loop", new ToggleLoopCommand<> (this.model, surface), channel, YaeltexTurnControlSurface.BUTTON_LOOP, loopIntensity);
-        this.addButton (ButtonID.TAP_TEMPO, "tap tempo", new TapTempoCommand<> (this.model, surface), channel, YaeltexTurnControlSurface.BUTTON_TAP_TEMPO, tapTempoIntensity);
+        this.addButton (ButtonID.TAP_TEMPO, "tap tempo", new YaeltexTurnTapTempoCommand (this.model, surface), channel, YaeltexTurnControlSurface.BUTTON_TAP_TEMPO, tapTempoIntensity);
 
         final YaeltexTurnModeCursorCommand leftCommand = new YaeltexTurnModeCursorCommand (Direction.LEFT, this.model, surface);
         final YaeltexTurnModeCursorCommand rightCommand = new YaeltexTurnModeCursorCommand (Direction.RIGHT, this.model, surface);
@@ -522,11 +520,10 @@ public class YaeltexTurnControllerSetup extends AbstractControllerSetup<YaeltexT
 
         final YaeltexTurnControlSurface surface = this.getSurface ();
         final IMode mode = surface.getModeManager ().getActive ();
-        if (mode instanceof final IYaeltexKnobMode yMode)
-        {
-            for (int i = 0; i < 32; i++)
-                surface.setLED (YaeltexTurnControlSurface.KNOB_DIGITAL_ROW1 + i, mode.getKnobValue (i), yMode.getKnobColor (i));
-        }
+        if (mode == null)
+            return;
+        for (int i = 0; i < 32; i++)
+            surface.setLED (YaeltexTurnControlSurface.KNOB_DIGITAL_ROW1 + i, mode.getKnobValue (i), mode.getKnobColor (i));
     }
 
 
@@ -535,34 +532,6 @@ public class YaeltexTurnControllerSetup extends AbstractControllerSetup<YaeltexT
     protected BindType getTriggerBindType (final ButtonID buttonID)
     {
         return BindType.NOTE;
-    }
-
-
-    /**
-     * Keep the matching view in sync to the selected mode
-     *
-     * @param activeMode The newly activated mode
-     */
-    private void onModeChange (final Modes activeMode)
-    {
-        final ViewManager viewManager = this.getSurface ().getViewManager ();
-
-        switch (activeMode)
-        {
-            case TRACK, DEVICE_LAYER:
-                viewManager.setActive (this.sessionView);
-                break;
-
-            case NOTE_SEQUENCER, DRUM_SEQUENCER:
-                if (viewManager.isActive (Views.SESSION, Views.SCENE_PLAY))
-                    this.sessionView = viewManager.getActiveID ();
-                viewManager.setActive (activeMode == Modes.NOTE_SEQUENCER ? Views.SEQUENCER : Views.DRUM);
-                break;
-
-            default:
-                // Not used
-                break;
-        }
     }
 
 
@@ -576,14 +545,34 @@ public class YaeltexTurnControllerSetup extends AbstractControllerSetup<YaeltexT
         if (event != ButtonEvent.DOWN)
             return;
 
-        final ModeManager modeManager = this.getSurface ().getModeManager ();
+        final YaeltexTurnControlSurface surface = this.getSurface ();
+        final ModeManager modeManager = surface.getModeManager ();
 
+        final Modes mode;
         if (modeManager.isActive (Modes.TRACK, Modes.NOTE_SEQUENCER))
-            modeManager.setActive (modeManager.isActive (Modes.TRACK) ? Modes.NOTE_SEQUENCER : Modes.TRACK);
+            mode = modeManager.isActive (Modes.TRACK) ? Modes.NOTE_SEQUENCER : Modes.TRACK;
         else
-            modeManager.setActive (modeManager.isActive (Modes.DEVICE_LAYER) ? Modes.DRUM_SEQUENCER : Modes.DEVICE_LAYER);
-
+            mode = modeManager.isActive (Modes.DEVICE_LAYER) ? Modes.DRUM_SEQUENCER : Modes.DEVICE_LAYER;
+        modeManager.setActive (mode);
         this.host.showNotification (modeManager.getActive ().getName ());
+
+        // Sync view
+        final Views view;
+        switch (mode)
+        {
+            case NOTE_SEQUENCER:
+                view = Views.SEQUENCER;
+                break;
+
+            case DRUM_SEQUENCER:
+                view = Views.DRUM;
+                break;
+
+            default:
+                view = this.sessionView;
+                break;
+        }
+        surface.getViewManager ().setActive (view);
     }
 
 
@@ -599,12 +588,16 @@ public class YaeltexTurnControllerSetup extends AbstractControllerSetup<YaeltexT
 
         final ViewManager viewManager = this.getSurface ().getViewManager ();
         if (viewManager.isActive (Views.SESSION, Views.SCENE_PLAY))
-        {
-            viewManager.setActive (viewManager.isActive (Views.SESSION) ? Views.SCENE_PLAY : Views.SESSION);
-            this.host.showNotification (viewManager.getActive ().getName ());
-        }
-        else
-            this.toggleSequencer (event);
+            this.sessionView = viewManager.isActive (Views.SESSION) ? Views.SCENE_PLAY : Views.SESSION;
+        viewManager.setActive (this.sessionView);
+        this.host.showNotification (viewManager.getActive ().getName ());
+
+        // Sync mode
+        final ModeManager modeManager = this.getSurface ().getModeManager ();
+        if (modeManager.isActive (Modes.NOTE_SEQUENCER))
+            modeManager.setActive (Modes.TRACK);
+        else if (modeManager.isActive (Modes.DRUM_SEQUENCER))
+            modeManager.setActive (Modes.DEVICE_LAYER);
     }
 
 
@@ -618,17 +611,33 @@ public class YaeltexTurnControllerSetup extends AbstractControllerSetup<YaeltexT
         if (event != ButtonEvent.DOWN)
             return;
 
-        final ModeManager modeManager = this.getSurface ().getModeManager ();
+        final YaeltexTurnControlSurface surface = this.getSurface ();
+        final ModeManager modeManager = surface.getModeManager ();
+        final Modes mode;
         if (modeManager.isActive (Modes.TRACK, Modes.NOTE_SEQUENCER))
-        {
-            modeManager.setActive (modeManager.isActive (Modes.TRACK) ? Modes.DEVICE_LAYER : Modes.DRUM_SEQUENCER);
-            this.host.showNotification (modeManager.getActive ().getName ());
-        }
+            mode = modeManager.isActive (Modes.TRACK) ? Modes.DEVICE_LAYER : Modes.DRUM_SEQUENCER;
         else
+            mode = modeManager.isActive (Modes.DEVICE_LAYER) ? Modes.TRACK : Modes.NOTE_SEQUENCER;
+        modeManager.setActive (mode);
+        this.host.showNotification (modeManager.getActive ().getName ());
+
+        // Sync view
+        final Views view;
+        switch (mode)
         {
-            modeManager.setActive (modeManager.isActive (Modes.DEVICE_LAYER) ? Modes.TRACK : Modes.NOTE_SEQUENCER);
-            this.host.showNotification (modeManager.getActive ().getName ());
+            case NOTE_SEQUENCER:
+                view = Views.SEQUENCER;
+                break;
+
+            case DRUM_SEQUENCER:
+                view = Views.DRUM;
+                break;
+
+            default:
+                view = this.sessionView;
+                break;
         }
+        surface.getViewManager ().setActive (view);
     }
 
 

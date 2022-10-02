@@ -59,7 +59,7 @@ public interface INoteMode
 
     /**
      * Get the positions of the notes to edit for a given parameter.
-     * 
+     *
      * @param parameterIndex The index of the parameter for which to get the note position
      * @return The note positions
      */

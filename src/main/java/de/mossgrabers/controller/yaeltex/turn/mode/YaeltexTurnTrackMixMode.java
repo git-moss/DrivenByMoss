@@ -36,7 +36,7 @@ import java.util.Optional;
  *
  * @author J&uuml;rgen Mo&szlig;graber
  */
-public class YaeltexTurnTrackMixMode extends AbstractParameterMode<YaeltexTurnControlSurface, YaeltexTurnConfiguration, ITrack> implements IYaeltexKnobMode
+public class YaeltexTurnTrackMixMode extends AbstractParameterMode<YaeltexTurnControlSurface, YaeltexTurnConfiguration, ITrack>
 {
     private final IEqualizerDevice           eqDevice;
 
@@ -121,21 +121,12 @@ public class YaeltexTurnTrackMixMode extends AbstractParameterMode<YaeltexTurnCo
 
     /** {@inheritDoc} */
     @Override
-    public ColorEx getKnobColor (final int index)
+    public int getKnobColor (final int index)
     {
         final int row = index / 8;
         final int column = index % 8;
-
-        final ITrack track = this.model.getTrackBank ().getItem (column);
-        switch (row)
-        {
-            case 0, 1, 2:
-                return track.getColor ();
-            case 3:
-                return ColorEx.WHITE;
-            default:
-                return ColorEx.BLACK;
-        }
+        final ColorEx color = row < 3 ? this.model.getTrackBank ().getItem (column).getColor () : ColorEx.WHITE;
+        return YaeltexTurnColorManager.getIndexFor (color);
     }
 
 

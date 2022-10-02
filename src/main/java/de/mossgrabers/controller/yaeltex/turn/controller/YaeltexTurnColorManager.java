@@ -12,6 +12,7 @@ import de.mossgrabers.framework.daw.DAWColor;
 import de.mossgrabers.framework.featuregroup.AbstractFeatureGroup;
 import de.mossgrabers.framework.parameter.NoteAttribute;
 import de.mossgrabers.framework.view.ScenePlayView;
+import de.mossgrabers.framework.view.sequencer.AbstractDrumView;
 import de.mossgrabers.framework.view.sequencer.AbstractSequencerView;
 
 import java.util.EnumMap;
@@ -26,7 +27,7 @@ import java.util.Map;
 @SuppressWarnings("javadoc")
 public class YaeltexTurnColorManager extends ColorManager
 {
-    public static final ColorEx []                  COLOR_TABLE            =
+    private static final ColorEx []                 COLOR_TABLE            =
     {
         ColorEx.fromRGB (0x00, 0x00, 0x00),                                                                      // 00
         ColorEx.fromRGB (0xf2, 0xc, 0xc),
@@ -158,23 +159,23 @@ public class YaeltexTurnColorManager extends ColorManager
         ColorEx.fromRGB (0xf0, 0xf0, 0xf0)
     };
 
-    public static final int                         BLACK                  = getIndexFor (ColorEx.BLACK);
-    public static final int                         WHITE                  = getIndexFor (ColorEx.WHITE);
+    public static final int                         BLACK                  = 0;
+    public static final int                         WHITE                  = 127;
     public static final int                         LIGHT_GRAY             = getIndexFor (ColorEx.LIGHT_GRAY);
     public static final int                         GRAY                   = getIndexFor (ColorEx.GRAY);
-    public static final int                         DARK_GRAY              = getIndexFor (ColorEx.DARK_GRAY);
-    public static final int                         RED                    = getIndexFor (ColorEx.RED);
+    public static final int                         DARK_GRAY              = 12;
+    public static final int                         RED                    = 1;
     public static final int                         DARK_RED               = getIndexFor (ColorEx.DARK_RED);
     public static final int                         GREEN                  = getIndexFor (ColorEx.GREEN);
-    public static final int                         DARK_GREEN             = getIndexFor (ColorEx.DARK_GREEN);
+    public static final int                         DARK_GREEN             = 51;
     public static final int                         BLUE                   = getIndexFor (ColorEx.BLUE);
     public static final int                         DARK_BLUE              = getIndexFor (ColorEx.DARK_BLUE);
     public static final int                         YELLOW                 = getIndexFor (ColorEx.YELLOW);
     public static final int                         DARK_YELLOW            = getIndexFor (ColorEx.DARK_YELLOW);
-    public static final int                         ORANGE                 = getIndexFor (ColorEx.ORANGE);
+    public static final int                         ORANGE                 = 7;
     public static final int                         DARK_ORANGE            = getIndexFor (ColorEx.DARK_ORANGE);
     public static final int                         PINK                   = getIndexFor (ColorEx.PINK);
-    public static final int                         ROSE                   = getIndexFor (ColorEx.ROSE);
+    public static final int                         ROSE                   = 3;
     public static final int                         BROWN                  = getIndexFor (ColorEx.BROWN);
     public static final int                         DARK_BROWN             = getIndexFor (ColorEx.DARK_BROWN);
     public static final int                         MINT                   = getIndexFor (ColorEx.MINT);
@@ -202,6 +203,7 @@ public class YaeltexTurnColorManager extends ColorManager
     static
     {
         NOTE_PARAM_COLORS.put (NoteAttribute.PITCH, Integer.valueOf (WHITE));
+        NOTE_PARAM_COLORS.put (NoteAttribute.TRANSPOSE, Integer.valueOf (WHITE));
         NOTE_PARAM_COLORS.put (NoteAttribute.GAIN, Integer.valueOf (OLIVE));
         NOTE_PARAM_COLORS.put (NoteAttribute.PANORAMA, Integer.valueOf (GRAY));
         NOTE_PARAM_COLORS.put (NoteAttribute.DURATION, Integer.valueOf (BROWN));
@@ -258,39 +260,13 @@ public class YaeltexTurnColorManager extends ColorManager
         this.registerColorIndex (AbstractSequencerView.COLOR_ACTIVE_PAGE, GREEN);
         this.registerColorIndex (AbstractSequencerView.COLOR_SELECTED_PAGE, BLUE);
 
-        // TODO
-
-        // this.registerColorIndex (AbstractDrumView.COLOR_PAD_OFF, indexBlack);
-        // this.registerColorIndex (AbstractDrumView.COLOR_PAD_RECORD, COLOR_RED_HI);
-        // this.registerColorIndex (AbstractDrumView.COLOR_PAD_PLAY, COLOR_GREEN_HI);
-        // this.registerColorIndex (AbstractDrumView.COLOR_PAD_SELECTED, getIndexFor
-        // (ColorEx.BLUE)_HI);
-        // this.registerColorIndex (AbstractDrumView.COLOR_PAD_MUTED, COLOR_AMBER_LO);
-        // this.registerColorIndex (AbstractDrumView.COLOR_PAD_HAS_CONTENT, COLOR_YELLOW_HI);
-        // this.registerColorIndex (AbstractDrumView.COLOR_PAD_NO_CONTENT, COLOR_YELLOW_LO);
-        //
-        // this.registerColorIndex (AbstractDrumExView.COLOR_EX_SELECT_ON, COLOR_WHITE);
-        // this.registerColorIndex (AbstractDrumExView.COLOR_EX_SELECT_OFF, COLOR_GREY_LO);
-        // this.registerColorIndex (AbstractDrumExView.COLOR_EX_MUTE_ON, COLOR_YELLOW_HI);
-        // this.registerColorIndex (AbstractDrumExView.COLOR_EX_MUTE_OFF, COLOR_YELLOW_LO);
-        // this.registerColorIndex (AbstractDrumExView.COLOR_EX_SOLO_ON, getIndexFor
-        // (ColorEx.BLUE)_HI);
-        // this.registerColorIndex (AbstractDrumExView.COLOR_EX_SOLO_OFF, getIndexFor
-        // (ColorEx.BLUE)_LO);
-        // this.registerColorIndex (AbstractDrumExView.COLOR_EX_BROWSE_ON, indexCyan_HI);
-        // this.registerColorIndex (AbstractDrumExView.COLOR_EX_BROWSE_OFF, indexCyan_LO);
-        // this.registerColorIndex (AbstractDrumExView.COLOR_EX_NOTE_REPEAT_ON, COLOR_ORCHID_HI);
-        // this.registerColorIndex (AbstractDrumExView.COLOR_EX_NOTE_REPEAT_OFF, COLOR_ORCHID_LO);
-        // this.registerColorIndex (AbstractDrumExView.COLOR_EX_NOTE_REPEAT_PERIOD_ON,
-        // COLOR_SKY_HI);
-        // this.registerColorIndex (AbstractDrumExView.COLOR_EX_NOTE_REPEAT_PERIOD_OFF,
-        // COLOR_SKY_LO);
-        // this.registerColorIndex (AbstractDrumExView.COLOR_EX_NOTE_REPEAT_LENGTH_ON,
-        // COLOR_PINK_HI);
-        // this.registerColorIndex (AbstractDrumExView.COLOR_EX_NOTE_REPEAT_LENGTH_OFF,
-        // COLOR_PINK_LO);
-        // this.registerColorIndex (AbstractDrumExView.COLOR_EX_TOGGLE_ON, indexBlack);
-        // this.registerColorIndex (AbstractDrumExView.COLOR_EX_TOGGLE_OFF, indexBlack);
+        this.registerColorIndex (AbstractDrumView.COLOR_PAD_OFF, BLACK);
+        this.registerColorIndex (AbstractDrumView.COLOR_PAD_RECORD, RED);
+        this.registerColorIndex (AbstractDrumView.COLOR_PAD_PLAY, GREEN);
+        this.registerColorIndex (AbstractDrumView.COLOR_PAD_SELECTED, WHITE);
+        this.registerColorIndex (AbstractDrumView.COLOR_PAD_MUTED, DARK_GRAY);
+        this.registerColorIndex (AbstractDrumView.COLOR_PAD_HAS_CONTENT, YELLOW);
+        this.registerColorIndex (AbstractDrumView.COLOR_PAD_NO_CONTENT, BLACK);
 
         this.registerColorIndex (IPadGrid.GRID_OFF, BLACK);
 

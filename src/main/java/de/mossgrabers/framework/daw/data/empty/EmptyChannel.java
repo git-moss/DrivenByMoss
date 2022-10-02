@@ -394,4 +394,12 @@ public class EmptyChannel extends EmptyItem implements IChannel
     {
         // Intentionally empty
     }
+
+
+    /** {@inheritDoc} */
+    @Override
+    public void addEqualizerDevice ()
+    {
+        // Intentionally empty
+    }
 }
