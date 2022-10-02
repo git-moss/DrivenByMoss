@@ -14,7 +14,6 @@ import de.mossgrabers.framework.daw.IModel;
 import de.mossgrabers.framework.daw.clip.INoteClip;
 import de.mossgrabers.framework.daw.clip.IStepInfo;
 import de.mossgrabers.framework.daw.clip.NotePosition;
-import de.mossgrabers.framework.daw.constants.Capability;
 import de.mossgrabers.framework.daw.data.IItem;
 import de.mossgrabers.framework.daw.data.empty.EmptyParameter;
 import de.mossgrabers.framework.mode.INoteMode;
@@ -181,17 +180,17 @@ public class NoteMode extends BaseMode<IItem> implements INoteMode
                     break;
 
                 case 1:
-                    if (this.host.supports (Capability.NOTE_EDIT_EXPRESSIONS))
+                    if (this.host.supports (NoteAttribute.TIMBRE))
                         this.page = Page.EXPRESSIONS;
                     break;
 
                 case 2:
-                    if (this.host.supports (Capability.NOTE_EDIT_REPEAT))
+                    if (this.host.supports (NoteAttribute.REPEAT))
                         this.page = Page.REPEAT;
                     break;
 
                 case 3:
-                    if (this.host.supports (Capability.NOTE_EDIT_RECURRENCE))
+                    if (this.host.supports (NoteAttribute.RECURRENCE_LENGTH))
                         this.page = Page.RECCURRENCE_PATTERN;
                     break;
 
@@ -212,17 +211,17 @@ public class NoteMode extends BaseMode<IItem> implements INoteMode
                 switch (index)
                 {
                     case 5:
-                        if (this.host.supports (Capability.NOTE_EDIT_CHANCE))
+                        if (this.host.supports (NoteAttribute.CHANCE))
                             clip.updateStepIsChanceEnabled (notePosition, !stepInfo.isChanceEnabled ());
                         break;
 
                     case 6:
-                        if (this.host.supports (Capability.NOTE_EDIT_OCCURRENCE))
+                        if (this.host.supports (NoteAttribute.OCCURRENCE))
                             clip.updateStepIsOccurrenceEnabled (notePosition, !stepInfo.isOccurrenceEnabled ());
                         break;
 
                     case 7:
-                        if (this.host.supports (Capability.NOTE_EDIT_RECURRENCE))
+                        if (this.host.supports (NoteAttribute.RECURRENCE_LENGTH))
                             clip.updateStepIsRecurrenceEnabled (notePosition, !stepInfo.isRecurrenceEnabled ());
                         break;
 
@@ -230,7 +229,7 @@ public class NoteMode extends BaseMode<IItem> implements INoteMode
                         return;
                 }
             }
-            else if (this.page == Page.REPEAT && index == 4 && this.host.supports (Capability.NOTE_EDIT_REPEAT))
+            else if (this.page == Page.REPEAT && index == 4 && this.host.supports (NoteAttribute.REPEAT))
                 clip.updateStepIsRepeatEnabled (notePosition, !stepInfo.isRepeatEnabled ());
         }
     }
@@ -265,18 +264,18 @@ public class NoteMode extends BaseMode<IItem> implements INoteMode
             {
                 if (index == this.page.ordinal ())
                     return SLMkIIIColorManager.SLMKIII_GREEN;
-                if (this.host.supports (Capability.NOTE_EDIT_EXPRESSIONS))
+                if (this.host.supports (NoteAttribute.TIMBRE))
                     return SLMkIIIColorManager.SLMKIII_GREY;
                 return SLMkIIIColorManager.SLMKIII_BLACK;
             }
 
             if (this.page == Page.NOTE)
             {
-                if (index == 5 && this.host.supports (Capability.NOTE_EDIT_CHANCE))
+                if (index == 5 && this.host.supports (NoteAttribute.CHANCE))
                     return stepInfo.isChanceEnabled () ? SLMkIIIColorManager.SLMKIII_AMBER : SLMkIIIColorManager.SLMKIII_AMBER_HALF;
-                if (index == 6 && this.host.supports (Capability.NOTE_EDIT_OCCURRENCE))
+                if (index == 6 && this.host.supports (NoteAttribute.OCCURRENCE))
                     return stepInfo.isOccurrenceEnabled () ? SLMkIIIColorManager.SLMKIII_AMBER : SLMkIIIColorManager.SLMKIII_AMBER_HALF;
-                if (index == 7 && this.host.supports (Capability.NOTE_EDIT_RECURRENCE))
+                if (index == 7 && this.host.supports (NoteAttribute.RECURRENCE_LENGTH))
                     return stepInfo.isRecurrenceEnabled () ? SLMkIIIColorManager.SLMKIII_AMBER : SLMkIIIColorManager.SLMKIII_AMBER_HALF;
             }
             else if (this.page == Page.REPEAT && index == 4)
@@ -339,7 +338,7 @@ public class NoteMode extends BaseMode<IItem> implements INoteMode
                     d.setCell (1, 2, StringUtils.formatPercentage (stepInfo.getVelocity ()));
                     d.setPropertyColor (2, 2, SLMkIIIColorManager.SLMKIII_BLACK);
 
-                    final boolean supportsVelocitySpread = this.host.supports (Capability.NOTE_EDIT_VELOCITY_SPREAD);
+                    final boolean supportsVelocitySpread = this.host.supports (NoteAttribute.VELOCITY_SPREAD);
                     setColor (d, 3, supportsVelocitySpread);
                     d.setPropertyColor (3, 2, SLMkIIIColorManager.SLMKIII_BLACK);
                     if (supportsVelocitySpread)
@@ -348,7 +347,7 @@ public class NoteMode extends BaseMode<IItem> implements INoteMode
                         d.setCell (1, 3, StringUtils.formatPercentage (stepInfo.getVelocitySpread ()));
                     }
 
-                    final boolean supportsReleaseVelocity = this.host.supports (Capability.NOTE_EDIT_RELEASE_VELOCITY);
+                    final boolean supportsReleaseVelocity = this.host.supports (NoteAttribute.RELEASE_VELOCITY);
                     setColor (d, 4, supportsReleaseVelocity);
                     d.setPropertyColor (4, 2, SLMkIIIColorManager.SLMKIII_BLACK);
                     if (supportsReleaseVelocity)
@@ -357,7 +356,7 @@ public class NoteMode extends BaseMode<IItem> implements INoteMode
                         d.setCell (1, 4, StringUtils.formatPercentage (stepInfo.getReleaseVelocity ()));
                     }
 
-                    final boolean supportsChance = this.host.supports (Capability.NOTE_EDIT_CHANCE);
+                    final boolean supportsChance = this.host.supports (NoteAttribute.CHANCE);
                     setColor (d, 5, supportsChance);
                     if (supportsChance)
                     {
@@ -369,7 +368,7 @@ public class NoteMode extends BaseMode<IItem> implements INoteMode
                         d.setPropertyValue (5, 1, stepInfo.isChanceEnabled () ? 1 : 0);
                     }
 
-                    final boolean supportsOccurrence = this.host.supports (Capability.NOTE_EDIT_OCCURRENCE);
+                    final boolean supportsOccurrence = this.host.supports (NoteAttribute.OCCURRENCE);
                     d.setPropertyColor (6, 0, supportsOccurrence ? SLMkIIIColorManager.SLMKIII_ROSE : SLMkIIIColorManager.SLMKIII_BLACK);
                     d.setPropertyColor (6, 1, SLMkIIIColorManager.SLMKIII_BLACK);
                     if (supportsOccurrence)
@@ -382,7 +381,7 @@ public class NoteMode extends BaseMode<IItem> implements INoteMode
                         d.setPropertyValue (6, 1, stepInfo.isOccurrenceEnabled () ? 1 : 0);
                     }
 
-                    final boolean supportsRecurrence = this.host.supports (Capability.NOTE_EDIT_RECURRENCE);
+                    final boolean supportsRecurrence = this.host.supports (NoteAttribute.RECURRENCE_LENGTH);
                     setColor (d, 7, supportsRecurrence);
                     if (supportsRecurrence)
                     {
@@ -398,7 +397,7 @@ public class NoteMode extends BaseMode<IItem> implements INoteMode
                     break;
 
                 case EXPRESSIONS:
-                    if (this.host.supports (Capability.NOTE_EDIT_EXPRESSIONS))
+                    if (this.host.supports (NoteAttribute.TIMBRE))
                     {
                         for (int i = 3; i < 8; i++)
                             d.setPropertyColor (i, 2, SLMkIIIColorManager.SLMKIII_BLACK);

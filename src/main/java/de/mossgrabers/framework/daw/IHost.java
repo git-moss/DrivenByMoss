@@ -13,6 +13,7 @@ import de.mossgrabers.framework.osc.IOpenSoundControlCallback;
 import de.mossgrabers.framework.osc.IOpenSoundControlClient;
 import de.mossgrabers.framework.osc.IOpenSoundControlMessage;
 import de.mossgrabers.framework.osc.IOpenSoundControlServer;
+import de.mossgrabers.framework.parameter.NoteAttribute;
 import de.mossgrabers.framework.usb.IUsbDevice;
 import de.mossgrabers.framework.usb.UsbException;
 
@@ -41,6 +42,15 @@ public interface IHost
      * @return True if the DAW supports editing
      */
     boolean supports (Capability capability);
+
+
+    /**
+     * Returns true if the DAW supports editing a specific note attribute.
+     *
+     * @param noteAttribute The note attribute to check
+     * @return True if the DAW supports editing
+     */
+    boolean supports (NoteAttribute noteAttribute);
 
 
     /**

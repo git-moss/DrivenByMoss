@@ -96,7 +96,7 @@ public class YaeltexTurnControllerSetup extends AbstractControllerSetup<YaeltexT
     {
         super (factory, host, globalSettings, documentSettings);
 
-        this.colorManager = new YaeltexTurnColorManager ();
+        this.colorManager = new YaeltexTurnColorManager (host);
         this.valueChanger = new TwosComplementValueChanger (128, 1);
         this.configuration = new YaeltexTurnConfiguration (host, this.valueChanger, factory.getArpeggiatorModes ());
     }

@@ -23,6 +23,7 @@ import de.mossgrabers.framework.osc.IOpenSoundControlCallback;
 import de.mossgrabers.framework.osc.IOpenSoundControlClient;
 import de.mossgrabers.framework.osc.IOpenSoundControlMessage;
 import de.mossgrabers.framework.osc.IOpenSoundControlServer;
+import de.mossgrabers.framework.parameter.NoteAttribute;
 import de.mossgrabers.framework.usb.IUsbDevice;
 import de.mossgrabers.framework.usb.UsbException;
 import de.mossgrabers.framework.utils.ConsoleLogger;
@@ -68,15 +69,6 @@ public class HostImpl implements IHost
         CAPABILITIES.add (Capability.NOTE_REPEAT_USE_PRESSURE_TO_VELOCITY);
         CAPABILITIES.add (Capability.NOTE_REPEAT_LATCH);
 
-        CAPABILITIES.add (Capability.NOTE_EDIT_MUTE);
-        CAPABILITIES.add (Capability.NOTE_EDIT_VELOCITY_SPREAD);
-        CAPABILITIES.add (Capability.NOTE_EDIT_RELEASE_VELOCITY);
-        CAPABILITIES.add (Capability.NOTE_EDIT_EXPRESSIONS);
-        CAPABILITIES.add (Capability.NOTE_EDIT_REPEAT);
-        CAPABILITIES.add (Capability.NOTE_EDIT_CHANCE);
-        CAPABILITIES.add (Capability.NOTE_EDIT_OCCURRENCE);
-        CAPABILITIES.add (Capability.NOTE_EDIT_RECURRENCE);
-
         CAPABILITIES.add (Capability.QUANTIZE_INPUT_NOTE_LENGTH);
         CAPABILITIES.add (Capability.QUANTIZE_AMOUNT);
 
@@ -120,6 +112,15 @@ public class HostImpl implements IHost
     public boolean supports (final Capability capability)
     {
         return CAPABILITIES.contains (capability);
+    }
+
+
+    /** {@inheritDoc} */
+    @Override
+    public boolean supports (final NoteAttribute noteAttribute)
+    {
+        // All note attributes are supported
+        return true;
     }
 
 

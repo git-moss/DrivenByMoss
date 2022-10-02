@@ -14,7 +14,6 @@ import de.mossgrabers.framework.daw.clip.IStepInfo;
 import de.mossgrabers.framework.daw.clip.NoteOccurrenceType;
 import de.mossgrabers.framework.daw.clip.NotePosition;
 import de.mossgrabers.framework.daw.clip.StepState;
-import de.mossgrabers.framework.daw.constants.Capability;
 import de.mossgrabers.framework.mode.INoteMode;
 import de.mossgrabers.framework.scale.Scales;
 import de.mossgrabers.framework.utils.StringUtils;
@@ -119,6 +118,9 @@ public class NoteParameter extends AbstractParameterImpl
         if (stepInfo.getState () == StepState.OFF)
             return 0;
 
+        if (!this.host.supports (this.noteAttribute))
+            return 0;
+
         double normalizedValue = 0;
         switch (this.noteAttribute)
         {
@@ -127,13 +129,11 @@ public class NoteParameter extends AbstractParameterImpl
                 break;
 
             case GAIN:
-                if (this.host.supports (Capability.NOTE_EDIT_EXPRESSIONS))
-                    normalizedValue = stepInfo.getGain ();
+                normalizedValue = stepInfo.getGain ();
                 break;
 
             case PANORAMA:
-                if (this.host.supports (Capability.NOTE_EDIT_EXPRESSIONS))
-                    normalizedValue = (stepInfo.getPan () + 1.0) / 2.0;
+                normalizedValue = (stepInfo.getPan () + 1.0) / 2.0;
                 break;
 
             case DURATION:
@@ -145,8 +145,7 @@ public class NoteParameter extends AbstractParameterImpl
                 break;
 
             case RELEASE_VELOCITY:
-                if (this.host.supports (Capability.NOTE_EDIT_RELEASE_VELOCITY))
-                    normalizedValue = stepInfo.getReleaseVelocity ();
+                normalizedValue = stepInfo.getReleaseVelocity ();
                 break;
 
             case VELOCITY_SPREAD:
@@ -158,59 +157,45 @@ public class NoteParameter extends AbstractParameterImpl
                 break;
 
             case PRESSURE:
-                if (this.host.supports (Capability.NOTE_EDIT_EXPRESSIONS))
-                    normalizedValue = stepInfo.getPressure ();
+                normalizedValue = stepInfo.getPressure ();
                 break;
 
             case TIMBRE:
-                if (this.host.supports (Capability.NOTE_EDIT_EXPRESSIONS))
-                    normalizedValue = stepInfo.getTimbre ();
+                normalizedValue = stepInfo.getTimbre ();
                 break;
 
             case TRANSPOSE:
-                if (this.host.supports (Capability.NOTE_EDIT_EXPRESSIONS))
-                    normalizedValue = (stepInfo.getTranspose () + 24.0) / 48.0;
+                normalizedValue = (stepInfo.getTranspose () + 24.0) / 48.0;
                 break;
 
             case CHANCE:
-                if (this.host.supports (Capability.NOTE_EDIT_CHANCE))
-                    normalizedValue = stepInfo.getChance ();
+                normalizedValue = stepInfo.getChance ();
                 break;
 
             case REPEAT:
-                if (this.host.supports (Capability.NOTE_EDIT_REPEAT))
-                    normalizedValue = (stepInfo.getRepeatCount () + 127.0) / 254.0;
+                normalizedValue = (stepInfo.getRepeatCount () + 127.0) / 254.0;
                 break;
 
             case REPEAT_CURVE:
-                if (this.host.supports (Capability.NOTE_EDIT_REPEAT))
-                    normalizedValue = stepInfo.getRepeatCurve ();
+                normalizedValue = stepInfo.getRepeatCurve ();
                 break;
 
             case REPEAT_VELOCITY_CURVE:
-                if (this.host.supports (Capability.NOTE_EDIT_REPEAT))
-                    normalizedValue = stepInfo.getRepeatVelocityCurve ();
+                normalizedValue = stepInfo.getRepeatVelocityCurve ();
                 break;
 
             case REPEAT_VELOCITY_END:
-                if (this.host.supports (Capability.NOTE_EDIT_REPEAT))
-                    normalizedValue = (stepInfo.getRepeatVelocityEnd () + 1) / 2.0;
+                normalizedValue = (stepInfo.getRepeatVelocityEnd () + 1) / 2.0;
                 break;
 
             case OCCURRENCE:
-                if (this.host.supports (Capability.NOTE_EDIT_OCCURRENCE))
-                {
-                    final int occurrence = stepInfo.getOccurrence ().ordinal ();
-                    normalizedValue = occurrence / (double) NoteOccurrenceType.values ().length;
-                }
+                final int occurrence = stepInfo.getOccurrence ().ordinal ();
+                normalizedValue = occurrence / (double) NoteOccurrenceType.values ().length;
                 break;
 
             case RECURRENCE_LENGTH:
-                if (this.host.supports (Capability.NOTE_EDIT_RECURRENCE))
-                {
-                    final int occurrence = stepInfo.getRecurrenceLength () - 1;
-                    normalizedValue = occurrence / (double) 7;
-                }
+                final int recurrence = stepInfo.getRecurrenceLength () - 1;
+                normalizedValue = recurrence / (double) 7;
                 break;
 
             default:
@@ -233,6 +218,9 @@ public class NoteParameter extends AbstractParameterImpl
     @Override
     public void setNormalizedValue (final double normalizedValue)
     {
+        if (!this.host.supports (this.noteAttribute))
+            return;
+
         final INoteClip clip = this.callback.getClip ();
         for (final NotePosition notePosition: this.callback.getNotePosition (this.parameterIndex))
         {
@@ -252,20 +240,14 @@ public class NoteParameter extends AbstractParameterImpl
                     break;
 
                 case GAIN:
-                    if (this.host.supports (Capability.NOTE_EDIT_EXPRESSIONS))
-                    {
-                        clip.updateStepGain (notePosition, normalizedValue);
-                        this.notify ("Gain: %s", StringUtils.formatPercentage (normalizedValue));
-                    }
+                    clip.updateStepGain (notePosition, normalizedValue);
+                    this.notify ("Gain: %s", StringUtils.formatPercentage (normalizedValue));
                     break;
 
                 case PANORAMA:
-                    if (this.host.supports (Capability.NOTE_EDIT_EXPRESSIONS))
-                    {
-                        final double pan = normalizedValue * 2.0 - 1.0;
-                        clip.updateStepPan (notePosition, pan);
-                        this.notify ("Panorama: %s", StringUtils.formatPercentage (pan));
-                    }
+                    final double pan = normalizedValue * 2.0 - 1.0;
+                    clip.updateStepPan (notePosition, pan);
+                    this.notify ("Panorama: %s", StringUtils.formatPercentage (pan));
                     break;
 
                 case DURATION:
@@ -283,19 +265,13 @@ public class NoteParameter extends AbstractParameterImpl
                     break;
 
                 case RELEASE_VELOCITY:
-                    if (this.host.supports (Capability.NOTE_EDIT_RELEASE_VELOCITY))
-                    {
-                        clip.updateStepReleaseVelocity (notePosition, normalizedValue);
-                        this.notify ("Release Velocity: %s", StringUtils.formatPercentage (normalizedValue));
-                    }
+                    clip.updateStepReleaseVelocity (notePosition, normalizedValue);
+                    this.notify ("Release Velocity: %s", StringUtils.formatPercentage (normalizedValue));
                     break;
 
                 case VELOCITY_SPREAD:
-                    if (this.host.supports (Capability.NOTE_EDIT_VELOCITY_SPREAD))
-                    {
-                        clip.updateStepVelocitySpread (notePosition, normalizedValue);
-                        this.notify ("Velocity Spread: %d%%", Integer.valueOf ((int) Math.round (normalizedValue * 100)));
-                    }
+                    clip.updateStepVelocitySpread (notePosition, normalizedValue);
+                    this.notify ("Velocity Spread: %d%%", Integer.valueOf ((int) Math.round (normalizedValue * 100)));
                     break;
 
                 case MUTE:
@@ -305,40 +281,28 @@ public class NoteParameter extends AbstractParameterImpl
                     break;
 
                 case PRESSURE:
-                    if (this.host.supports (Capability.NOTE_EDIT_EXPRESSIONS))
-                    {
-                        clip.updateStepPressure (notePosition, normalizedValue);
-                        this.notify ("Pressure: %s", StringUtils.formatPercentage (normalizedValue));
-                    }
+                    clip.updateStepPressure (notePosition, normalizedValue);
+                    this.notify ("Pressure: %s", StringUtils.formatPercentage (normalizedValue));
                     break;
 
                 case TIMBRE:
-                    if (this.host.supports (Capability.NOTE_EDIT_EXPRESSIONS))
-                    {
-                        clip.updateStepTimbre (notePosition, normalizedValue);
-                        this.notify ("Timbre: %s", StringUtils.formatPercentage (normalizedValue));
-                    }
+                    clip.updateStepTimbre (notePosition, normalizedValue);
+                    this.notify ("Timbre: %s", StringUtils.formatPercentage (normalizedValue));
                     break;
 
                 case TRANSPOSE:
                     throw new UnsupportedOperationException ();
 
                 case CHANCE:
-                    if (this.host.supports (Capability.NOTE_EDIT_CHANCE))
-                    {
-                        clip.updateStepChance (notePosition, normalizedValue);
-                        this.notify ("Chance: %s", StringUtils.formatPercentage (stepInfo.getChance ()));
-                    }
+                    clip.updateStepChance (notePosition, normalizedValue);
+                    this.notify ("Chance: %s", StringUtils.formatPercentage (stepInfo.getChance ()));
                     break;
 
                 case REPEAT:
-                    if (this.host.supports (Capability.NOTE_EDIT_REPEAT))
-                    {
-                        // The range is limited to 1/16 to 16 to make it controllable with an
-                        // absolute knob!
-                        clip.updateStepRepeatCount (notePosition, (int) Math.round ((normalizedValue - 0.5) * 30));
-                        this.notify ("Repeat: %s", stepInfo.getFormattedRepeatCount ());
-                    }
+                    // The range is limited to 1/16 to 16 to make it controllable with an
+                    // absolute knob!
+                    clip.updateStepRepeatCount (notePosition, (int) Math.round ((normalizedValue - 0.5) * 30));
+                    this.notify ("Repeat: %s", stepInfo.getFormattedRepeatCount ());
                     break;
 
                 case REPEAT_CURVE:
@@ -364,6 +328,9 @@ public class NoteParameter extends AbstractParameterImpl
     @Override
     public void changeValue (final IValueChanger valueChanger, final int value)
     {
+        if (!this.host.supports (this.noteAttribute))
+            return;
+
         final INoteClip clip = this.callback.getClip ();
         for (final NotePosition notePosition: this.callback.getNotePosition (this.parameterIndex))
         {
@@ -391,19 +358,13 @@ public class NoteParameter extends AbstractParameterImpl
                     break;
 
                 case GAIN:
-                    if (this.host.supports (Capability.NOTE_EDIT_EXPRESSIONS))
-                    {
-                        clip.changeStepGain (notePosition, value);
-                        this.delayedNotify ("Gain: %s", () -> StringUtils.formatPercentage (stepInfo.getGain ()));
-                    }
+                    clip.changeStepGain (notePosition, value);
+                    this.delayedNotify ("Gain: %s", () -> StringUtils.formatPercentage (stepInfo.getGain ()));
                     break;
 
                 case PANORAMA:
-                    if (this.host.supports (Capability.NOTE_EDIT_EXPRESSIONS))
-                    {
-                        clip.changeStepPan (notePosition, value);
-                        this.delayedNotify ("Pan: %s", () -> StringUtils.formatPercentage (stepInfo.getPan ()));
-                    }
+                    clip.changeStepPan (notePosition, value);
+                    this.delayedNotify ("Pan: %s", () -> StringUtils.formatPercentage (stepInfo.getPan ()));
                     break;
 
                 case DURATION:
@@ -417,109 +378,70 @@ public class NoteParameter extends AbstractParameterImpl
                     break;
 
                 case RELEASE_VELOCITY:
-                    if (this.host.supports (Capability.NOTE_EDIT_RELEASE_VELOCITY))
-                    {
-                        clip.changeStepReleaseVelocity (notePosition, value);
-                        this.delayedNotify ("Release Velocity: %s", () -> StringUtils.formatPercentage (stepInfo.getReleaseVelocity ()));
-                    }
+                    clip.changeStepReleaseVelocity (notePosition, value);
+                    this.delayedNotify ("Release Velocity: %s", () -> StringUtils.formatPercentage (stepInfo.getReleaseVelocity ()));
                     break;
 
                 case VELOCITY_SPREAD:
-                    if (this.host.supports (Capability.NOTE_EDIT_VELOCITY_SPREAD))
-                    {
-                        clip.changeStepVelocitySpread (notePosition, value);
-                        this.delayedNotify ("Vel. Spread: %s", () -> StringUtils.formatPercentage (stepInfo.getVelocitySpread ()));
-                    }
+                    clip.changeStepVelocitySpread (notePosition, value);
+                    this.delayedNotify ("Vel. Spread: %s", () -> StringUtils.formatPercentage (stepInfo.getVelocitySpread ()));
                     break;
 
                 case MUTE:
-                    if (this.host.supports (Capability.NOTE_EDIT_MUTE))
-                    {
-                        clip.changeStepMuteState (notePosition, value);
-                        this.delayedNotify ("Mute: %s", () -> stepInfo.isMuted () ? "Yes" : "No");
-                    }
+                    clip.changeStepMuteState (notePosition, value);
+                    this.delayedNotify ("Mute: %s", () -> stepInfo.isMuted () ? "Yes" : "No");
                     break;
 
                 case PRESSURE:
-                    if (this.host.supports (Capability.NOTE_EDIT_EXPRESSIONS))
-                    {
-                        clip.changeStepPressure (notePosition, value);
-                        this.delayedNotify ("Pressure: %s", () -> StringUtils.formatPercentage (stepInfo.getPressure ()));
-                    }
+                    clip.changeStepPressure (notePosition, value);
+                    this.delayedNotify ("Pressure: %s", () -> StringUtils.formatPercentage (stepInfo.getPressure ()));
                     break;
 
                 case TIMBRE:
-                    if (this.host.supports (Capability.NOTE_EDIT_EXPRESSIONS))
-                    {
-                        clip.changeStepTimbre (notePosition, value);
-                        this.delayedNotify ("Timbre: %s", () -> StringUtils.formatPercentage (stepInfo.getTimbre ()));
-                    }
+                    clip.changeStepTimbre (notePosition, value);
+                    this.delayedNotify ("Timbre: %s", () -> StringUtils.formatPercentage (stepInfo.getTimbre ()));
                     break;
 
                 case TRANSPOSE:
-                    if (this.host.supports (Capability.NOTE_EDIT_EXPRESSIONS))
-                    {
-                        clip.changeStepTranspose (notePosition, value);
-                        this.delayedNotify ("Pitch: %s", () -> String.format ("%.1f", Double.valueOf (stepInfo.getTranspose ())));
-                    }
+                    clip.changeStepTranspose (notePosition, value);
+                    this.delayedNotify ("Pitch: %s", () -> String.format ("%.1f", Double.valueOf (stepInfo.getTranspose ())));
                     break;
 
                 case CHANCE:
-                    if (this.host.supports (Capability.NOTE_EDIT_CHANCE))
-                    {
-                        clip.changeStepChance (notePosition, value);
-                        this.delayedNotify ("Chance: %s", () -> StringUtils.formatPercentage (stepInfo.getChance ()));
-                    }
+                    clip.changeStepChance (notePosition, value);
+                    this.delayedNotify ("Chance: %s", () -> StringUtils.formatPercentage (stepInfo.getChance ()));
                     break;
 
                 case REPEAT:
-                    if (this.host.supports (Capability.NOTE_EDIT_REPEAT))
-                    {
-                        clip.changeStepRepeatCount (notePosition, value);
-                        this.delayedNotify ("Repeat: %s", stepInfo::getFormattedRepeatCount);
-                    }
+                    clip.changeStepRepeatCount (notePosition, value);
+                    this.delayedNotify ("Repeat: %s", stepInfo::getFormattedRepeatCount);
                     break;
 
                 case REPEAT_CURVE:
-                    if (this.host.supports (Capability.NOTE_EDIT_REPEAT))
-                    {
-                        clip.changeStepRepeatCurve (notePosition, value);
-                        this.delayedNotify ("Curve: %s", () -> StringUtils.formatPercentage (stepInfo.getRepeatCurve ()));
-                    }
+                    clip.changeStepRepeatCurve (notePosition, value);
+                    this.delayedNotify ("Curve: %s", () -> StringUtils.formatPercentage (stepInfo.getRepeatCurve ()));
                     break;
 
                 case REPEAT_VELOCITY_CURVE:
-                    if (this.host.supports (Capability.NOTE_EDIT_REPEAT))
-                    {
-                        clip.changeStepRepeatVelocityCurve (notePosition, value);
-                        this.delayedNotify ("Vel-Crve: %s", () -> StringUtils.formatPercentage (stepInfo.getRepeatVelocityCurve ()));
-                    }
+                    clip.changeStepRepeatVelocityCurve (notePosition, value);
+                    this.delayedNotify ("Vel-Crve: %s", () -> StringUtils.formatPercentage (stepInfo.getRepeatVelocityCurve ()));
                     break;
 
                 case REPEAT_VELOCITY_END:
-                    if (this.host.supports (Capability.NOTE_EDIT_REPEAT))
-                    {
-                        clip.changeStepRepeatVelocityEnd (notePosition, value);
-                        this.delayedNotify ("Vel. End: %s", () -> StringUtils.formatPercentage (stepInfo.getRepeatVelocityEnd ()));
-                    }
+                    clip.changeStepRepeatVelocityEnd (notePosition, value);
+                    this.delayedNotify ("Vel. End: %s", () -> StringUtils.formatPercentage (stepInfo.getRepeatVelocityEnd ()));
                     break;
 
                 case OCCURRENCE:
-                    if (this.host.supports (Capability.NOTE_EDIT_OCCURRENCE))
-                    {
-                        final boolean increase = this.valueChanger.isIncrease (value);
-                        clip.setStepPrevNextOccurrence (notePosition, increase);
-                        this.delayedNotify ("Occurrence: %s", () -> stepInfo.getOccurrence ().getName ());
-                    }
+                    final boolean increase = this.valueChanger.isIncrease (value);
+                    clip.setStepPrevNextOccurrence (notePosition, increase);
+                    this.delayedNotify ("Occurrence: %s", () -> stepInfo.getOccurrence ().getName ());
                     break;
 
                 case RECURRENCE_LENGTH:
-                    if (this.host.supports (Capability.NOTE_EDIT_RECURRENCE))
-                    {
-                        clip.changeStepRecurrenceLength (notePosition, value);
-                        final int recurrence = stepInfo.getRecurrenceLength ();
-                        this.delayedNotify ("Recurrence: %s", () -> recurrence < 2 ? "Off" : Integer.toString (recurrence));
-                    }
+                    clip.changeStepRecurrenceLength (notePosition, value);
+                    final int recurrence = stepInfo.getRecurrenceLength ();
+                    this.delayedNotify ("Recurrence: %s", () -> recurrence < 2 ? "Off" : Integer.toString (recurrence));
                     break;
             }
         }
@@ -546,6 +468,9 @@ public class NoteParameter extends AbstractParameterImpl
     @Override
     public void resetValue ()
     {
+        if (!this.host.supports (this.noteAttribute))
+            return;
+
         final INoteClip clip = this.callback.getClip ();
         for (final NotePosition notePosition: this.callback.getNotePosition (this.parameterIndex))
         {
@@ -562,13 +487,11 @@ public class NoteParameter extends AbstractParameterImpl
                     break;
 
                 case GAIN:
-                    if (this.host.supports (Capability.NOTE_EDIT_EXPRESSIONS))
-                        clip.updateStepGain (notePosition, 0.5);
+                    clip.updateStepGain (notePosition, 0.5);
                     break;
 
                 case PANORAMA:
-                    if (this.host.supports (Capability.NOTE_EDIT_EXPRESSIONS))
-                        clip.updateStepPan (notePosition, 0);
+                    clip.updateStepPan (notePosition, 0);
                     break;
 
                 case DURATION:
@@ -580,13 +503,11 @@ public class NoteParameter extends AbstractParameterImpl
                     break;
 
                 case RELEASE_VELOCITY:
-                    if (this.host.supports (Capability.NOTE_EDIT_RELEASE_VELOCITY))
-                        clip.updateStepReleaseVelocity (notePosition, 1.0);
+                    clip.updateStepReleaseVelocity (notePosition, 1.0);
                     break;
 
                 case VELOCITY_SPREAD:
-                    if (this.host.supports (Capability.NOTE_EDIT_VELOCITY_SPREAD))
-                        clip.updateStepVelocitySpread (notePosition, 0);
+                    clip.updateStepVelocitySpread (notePosition, 0);
                     break;
 
                 case MUTE:
@@ -594,53 +515,43 @@ public class NoteParameter extends AbstractParameterImpl
                     break;
 
                 case PRESSURE:
-                    if (this.host.supports (Capability.NOTE_EDIT_EXPRESSIONS))
-                        clip.updateStepPressure (notePosition, 0);
+                    clip.updateStepPressure (notePosition, 0);
                     break;
 
                 case TIMBRE:
-                    if (this.host.supports (Capability.NOTE_EDIT_EXPRESSIONS))
-                        clip.updateStepTimbre (notePosition, 0);
+                    clip.updateStepTimbre (notePosition, 0);
                     break;
 
                 case TRANSPOSE:
-                    if (this.host.supports (Capability.NOTE_EDIT_EXPRESSIONS))
-                        clip.updateStepTranspose (notePosition, 0);
+                    clip.updateStepTranspose (notePosition, 0);
                     break;
 
                 case CHANCE:
-                    if (this.host.supports (Capability.NOTE_EDIT_CHANCE))
-                        clip.updateStepChance (notePosition, 1.0);
+                    clip.updateStepChance (notePosition, 1.0);
                     break;
 
                 case REPEAT:
-                    if (this.host.supports (Capability.NOTE_EDIT_REPEAT))
-                        clip.updateStepRepeatCount (notePosition, 0);
+                    clip.updateStepRepeatCount (notePosition, 0);
                     break;
 
                 case REPEAT_CURVE:
-                    if (this.host.supports (Capability.NOTE_EDIT_REPEAT))
-                        clip.updateStepRepeatCurve (notePosition, 0);
+                    clip.updateStepRepeatCurve (notePosition, 0);
                     break;
 
                 case REPEAT_VELOCITY_CURVE:
-                    if (this.host.supports (Capability.NOTE_EDIT_REPEAT))
-                        clip.updateStepRepeatVelocityCurve (notePosition, 0);
+                    clip.updateStepRepeatVelocityCurve (notePosition, 0);
                     break;
 
                 case REPEAT_VELOCITY_END:
-                    if (this.host.supports (Capability.NOTE_EDIT_REPEAT))
-                        clip.updateStepRepeatVelocityEnd (notePosition, 0);
+                    clip.updateStepRepeatVelocityEnd (notePosition, 0);
                     break;
 
                 case OCCURRENCE:
-                    if (this.host.supports (Capability.NOTE_EDIT_OCCURRENCE))
-                        clip.setStepOccurrence (notePosition, NoteOccurrenceType.ALWAYS);
+                    clip.setStepOccurrence (notePosition, NoteOccurrenceType.ALWAYS);
                     break;
 
                 case RECURRENCE_LENGTH:
-                    if (this.host.supports (Capability.NOTE_EDIT_RECURRENCE))
-                        clip.updateStepRecurrenceLength (notePosition, 1);
+                    clip.updateStepRecurrenceLength (notePosition, 1);
                     break;
             }
         }
@@ -651,6 +562,9 @@ public class NoteParameter extends AbstractParameterImpl
     @Override
     public String getDisplayedValue ()
     {
+        if (!this.host.supports (this.noteAttribute))
+            return "";
+
         final INoteClip clip = this.callback.getClip ();
         final List<NotePosition> notePositions = this.callback.getNotePosition (this.parameterIndex);
         if (notePositions.isEmpty ())
@@ -668,14 +582,10 @@ public class NoteParameter extends AbstractParameterImpl
                 return Scales.formatNoteAndOctave (notePosition.getNote (), -3);
 
             case GAIN:
-                if (this.host.supports (Capability.NOTE_EDIT_EXPRESSIONS))
-                    return StringUtils.formatPercentage (stepInfo.getGain ());
-                break;
+                return StringUtils.formatPercentage (stepInfo.getGain ());
 
             case PANORAMA:
-                if (this.host.supports (Capability.NOTE_EDIT_EXPRESSIONS))
-                    return StringUtils.formatPercentage (stepInfo.getPan ());
-                break;
+                return StringUtils.formatPercentage (stepInfo.getPan ());
 
             case DURATION:
                 return this.formatLength (stepInfo.getDuration ());
@@ -684,70 +594,44 @@ public class NoteParameter extends AbstractParameterImpl
                 return StringUtils.formatPercentage (stepInfo.getVelocity ());
 
             case RELEASE_VELOCITY:
-                if (this.host.supports (Capability.NOTE_EDIT_RELEASE_VELOCITY))
-                    return StringUtils.formatPercentage (stepInfo.getReleaseVelocity ());
-                break;
+                return StringUtils.formatPercentage (stepInfo.getReleaseVelocity ());
 
             case VELOCITY_SPREAD:
-                if (this.host.supports (Capability.NOTE_EDIT_VELOCITY_SPREAD))
-                    return StringUtils.formatPercentage (stepInfo.getVelocitySpread ());
-                break;
+                return StringUtils.formatPercentage (stepInfo.getVelocitySpread ());
 
             case MUTE:
                 return String.format ("Mute: %s", stepInfo.isMuted () ? "Yes" : "No");
 
             case PRESSURE:
-                if (this.host.supports (Capability.NOTE_EDIT_EXPRESSIONS))
-                    return StringUtils.formatPercentage (stepInfo.getPressure ());
-                break;
+                return StringUtils.formatPercentage (stepInfo.getPressure ());
 
             case TIMBRE:
-                if (this.host.supports (Capability.NOTE_EDIT_EXPRESSIONS))
-                    return StringUtils.formatPercentage (stepInfo.getTimbre ());
-                break;
+                return StringUtils.formatPercentage (stepInfo.getTimbre ());
 
             case TRANSPOSE:
-                if (this.host.supports (Capability.NOTE_EDIT_EXPRESSIONS))
-                    return String.format ("%.1f", Double.valueOf (stepInfo.getTranspose ()));
-                break;
+                return String.format ("%.1f", Double.valueOf (stepInfo.getTranspose ()));
 
             case CHANCE:
-                if (this.host.supports (Capability.NOTE_EDIT_CHANCE))
-                    return StringUtils.formatPercentage (stepInfo.getChance ());
-                break;
+                return StringUtils.formatPercentage (stepInfo.getChance ());
 
             case REPEAT:
-                if (this.host.supports (Capability.NOTE_EDIT_REPEAT))
-                    return stepInfo.getFormattedRepeatCount ();
-                break;
+                return stepInfo.getFormattedRepeatCount ();
 
             case REPEAT_CURVE:
-                if (this.host.supports (Capability.NOTE_EDIT_REPEAT))
-                    return StringUtils.formatPercentage (stepInfo.getRepeatCurve ());
-                break;
+                return StringUtils.formatPercentage (stepInfo.getRepeatCurve ());
 
             case REPEAT_VELOCITY_CURVE:
-                if (this.host.supports (Capability.NOTE_EDIT_REPEAT))
-                    return StringUtils.formatPercentage (stepInfo.getRepeatVelocityCurve ());
-                break;
+                return StringUtils.formatPercentage (stepInfo.getRepeatVelocityCurve ());
 
             case REPEAT_VELOCITY_END:
-                if (this.host.supports (Capability.NOTE_EDIT_REPEAT))
-                    return StringUtils.formatPercentage (stepInfo.getRepeatVelocityEnd ());
-                break;
+                return StringUtils.formatPercentage (stepInfo.getRepeatVelocityEnd ());
 
             case OCCURRENCE:
-                if (this.host.supports (Capability.NOTE_EDIT_OCCURRENCE))
-                    return stepInfo.getOccurrence ().getName ();
-                break;
+                return stepInfo.getOccurrence ().getName ();
 
             case RECURRENCE_LENGTH:
-                if (this.host.supports (Capability.NOTE_EDIT_RECURRENCE))
-                {
-                    final int recurrence = stepInfo.getRecurrenceLength ();
-                    return recurrence < 2 ? "Off" : Integer.toString (recurrence);
-                }
-                break;
+                final int recurrence = stepInfo.getRecurrenceLength ();
+                return recurrence < 2 ? "Off" : Integer.toString (recurrence);
         }
 
         return "";

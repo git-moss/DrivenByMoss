@@ -14,7 +14,6 @@ import de.mossgrabers.framework.daw.IModel;
 import de.mossgrabers.framework.daw.clip.INoteClip;
 import de.mossgrabers.framework.daw.clip.IStepInfo;
 import de.mossgrabers.framework.daw.clip.NotePosition;
-import de.mossgrabers.framework.daw.constants.Capability;
 import de.mossgrabers.framework.daw.data.empty.EmptyParameter;
 import de.mossgrabers.framework.mode.INoteMode;
 import de.mossgrabers.framework.mode.NoteEditor;
@@ -227,16 +226,16 @@ public class EditNoteMode extends BaseMode implements INoteMode
             case NOTE:
                 d.setCell (0, 3, this.mark ("Velocity", 3)).setCell (1, 3, stepInfo == null ? "-" : StringUtils.formatPercentage (stepInfo.getVelocity ()));
 
-                if (this.host.supports (Capability.NOTE_EDIT_VELOCITY_SPREAD))
+                if (this.host.supports (NoteAttribute.VELOCITY_SPREAD))
                     d.setCell (0, 4, this.mark ("Spread", 4)).setCell (1, 4, stepInfo == null ? "-" : StringUtils.formatPercentage (stepInfo.getVelocitySpread ()));
 
-                if (this.host.supports (Capability.NOTE_EDIT_RELEASE_VELOCITY))
+                if (this.host.supports (NoteAttribute.RELEASE_VELOCITY))
                     d.setCell (0, 5, this.mark ("R-Vel", 5)).setCell (1, 5, stepInfo == null ? "-" : StringUtils.formatPercentage (stepInfo.getReleaseVelocity ()));
 
-                if (this.host.supports (Capability.NOTE_EDIT_CHANCE))
+                if (this.host.supports (NoteAttribute.CHANCE))
                     d.setCell (0, 6, this.mark ("Chance", 6)).setCell (1, 6, stepInfo == null ? "-" : StringUtils.formatPercentage (stepInfo.getChance ()));
 
-                if (this.host.supports (Capability.NOTE_EDIT_OCCURRENCE))
+                if (this.host.supports (NoteAttribute.OCCURRENCE))
                     d.setCell (0, 7, this.mark ("Occurnce", 7)).setCell (1, 7, stepInfo == null ? "-" : StringUtils.optimizeName (stepInfo.getOccurrence ().getName (), 8));
 
                 break;
@@ -300,7 +299,7 @@ public class EditNoteMode extends BaseMode implements INoteMode
     @Override
     public void selectPreviousItemPage ()
     {
-        if (this.host.supports (Capability.NOTE_EDIT_EXPRESSIONS))
+        if (this.host.supports (NoteAttribute.TIMBRE))
         {
             if (this.page == Page.EXPRESSIONS)
                 this.page = Page.NOTE;
@@ -315,7 +314,7 @@ public class EditNoteMode extends BaseMode implements INoteMode
     @Override
     public void selectNextItemPage ()
     {
-        if (this.host.supports (Capability.NOTE_EDIT_EXPRESSIONS))
+        if (this.host.supports (NoteAttribute.TIMBRE))
         {
             if (this.page == Page.NOTE)
                 this.page = Page.EXPRESSIONS;
@@ -330,7 +329,7 @@ public class EditNoteMode extends BaseMode implements INoteMode
     @Override
     public boolean hasPreviousItemPage ()
     {
-        return this.host.supports (Capability.NOTE_EDIT_EXPRESSIONS) && this.page.ordinal () > 0;
+        return this.host.supports (NoteAttribute.TIMBRE) && this.page.ordinal () > 0;
     }
 
 
@@ -338,7 +337,7 @@ public class EditNoteMode extends BaseMode implements INoteMode
     @Override
     public boolean hasNextItemPage ()
     {
-        return this.host.supports (Capability.NOTE_EDIT_EXPRESSIONS) && this.page.ordinal () < Page.REPEAT.ordinal ();
+        return this.host.supports (NoteAttribute.TIMBRE) && this.page.ordinal () < Page.REPEAT.ordinal ();
     }
 
 

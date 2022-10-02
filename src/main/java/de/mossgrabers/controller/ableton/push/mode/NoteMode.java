@@ -18,7 +18,6 @@ import de.mossgrabers.framework.daw.clip.INoteClip;
 import de.mossgrabers.framework.daw.clip.IStepInfo;
 import de.mossgrabers.framework.daw.clip.NoteOccurrenceType;
 import de.mossgrabers.framework.daw.clip.NotePosition;
-import de.mossgrabers.framework.daw.constants.Capability;
 import de.mossgrabers.framework.daw.data.IItem;
 import de.mossgrabers.framework.daw.data.empty.EmptyParameter;
 import de.mossgrabers.framework.mode.INoteMode;
@@ -187,17 +186,17 @@ public class NoteMode extends BaseMode<IItem> implements INoteMode
                     switch (index)
                     {
                         case 5:
-                            if (this.host.supports (Capability.NOTE_EDIT_CHANCE))
+                            if (this.host.supports (NoteAttribute.CHANCE))
                                 clip.updateStepIsChanceEnabled (notePosition, !stepInfo.isChanceEnabled ());
                             break;
 
                         case 6:
-                            if (this.host.supports (Capability.NOTE_EDIT_OCCURRENCE))
+                            if (this.host.supports (NoteAttribute.OCCURRENCE))
                                 clip.updateStepIsOccurrenceEnabled (notePosition, !stepInfo.isOccurrenceEnabled ());
                             break;
 
                         case 7:
-                            if (this.host.supports (Capability.NOTE_EDIT_RECURRENCE))
+                            if (this.host.supports (NoteAttribute.RECURRENCE_LENGTH))
                                 clip.updateStepIsRecurrenceEnabled (notePosition, !stepInfo.isRecurrenceEnabled ());
                             break;
 
@@ -210,12 +209,12 @@ public class NoteMode extends BaseMode<IItem> implements INoteMode
                     break;
 
                 case REPEAT:
-                    if (index == 3 && this.host.supports (Capability.NOTE_EDIT_REPEAT))
+                    if (index == 3 && this.host.supports (NoteAttribute.REPEAT))
                         clip.updateStepIsRepeatEnabled (notePosition, !stepInfo.isRepeatEnabled ());
                     break;
 
                 case RECCURRENCE_PATTERN:
-                    if (this.host.supports (Capability.NOTE_EDIT_RECURRENCE))
+                    if (this.host.supports (NoteAttribute.RECURRENCE_LENGTH))
                         clip.updateStepRecurrenceMaskToggleBit (notePosition, index);
                     break;
             }
@@ -237,17 +236,17 @@ public class NoteMode extends BaseMode<IItem> implements INoteMode
                 break;
 
             case 1:
-                if (this.host.supports (Capability.NOTE_EDIT_EXPRESSIONS))
+                if (this.host.supports (NoteAttribute.TIMBRE))
                     this.page = Page.EXPRESSIONS;
                 break;
 
             case 2:
-                if (this.host.supports (Capability.NOTE_EDIT_REPEAT))
+                if (this.host.supports (NoteAttribute.REPEAT))
                     this.page = Page.REPEAT;
                 break;
 
             case 7:
-                if (this.host.supports (Capability.NOTE_EDIT_RECURRENCE))
+                if (this.host.supports (NoteAttribute.RECURRENCE_LENGTH))
                     this.page = Page.RECCURRENCE_PATTERN;
                 break;
 
@@ -323,7 +322,7 @@ public class NoteMode extends BaseMode<IItem> implements INoteMode
                 display.setCell (1, 2, StringUtils.formatPercentage (noteVelocity));
                 display.setCell (2, 2, parameterValue, Format.FORMAT_VALUE);
 
-                if (this.host.supports (Capability.NOTE_EDIT_VELOCITY_SPREAD))
+                if (this.host.supports (NoteAttribute.VELOCITY_SPREAD))
                 {
                     final double noteVelocitySpread = stepInfo.getVelocitySpread ();
                     final int parameterSpreadValue = valueChanger.fromNormalizedValue (noteVelocitySpread);
@@ -332,7 +331,7 @@ public class NoteMode extends BaseMode<IItem> implements INoteMode
                     display.setCell (2, 3, parameterSpreadValue, Format.FORMAT_VALUE);
                 }
 
-                if (this.host.supports (Capability.NOTE_EDIT_RELEASE_VELOCITY))
+                if (this.host.supports (NoteAttribute.RELEASE_VELOCITY))
                 {
                     final double noteReleaseVelocity = stepInfo.getReleaseVelocity ();
                     final int parameterReleaseValue = valueChanger.fromNormalizedValue (noteReleaseVelocity);
@@ -341,7 +340,7 @@ public class NoteMode extends BaseMode<IItem> implements INoteMode
                     display.setCell (2, 4, parameterReleaseValue, Format.FORMAT_VALUE);
                 }
 
-                if (this.host.supports (Capability.NOTE_EDIT_CHANCE))
+                if (this.host.supports (NoteAttribute.CHANCE))
                 {
                     final double chance = stepInfo.getChance ();
                     final int chanceValue = valueChanger.fromNormalizedValue (chance);
@@ -351,7 +350,7 @@ public class NoteMode extends BaseMode<IItem> implements INoteMode
                     display.setCell (3, 5, stepInfo.isChanceEnabled () ? ON : OFF);
                 }
 
-                if (this.host.supports (Capability.NOTE_EDIT_OCCURRENCE))
+                if (this.host.supports (NoteAttribute.OCCURRENCE))
                 {
                     final NoteOccurrenceType occurrence = stepInfo.getOccurrence ();
                     display.setCell (0, 6, "Occurnce");
@@ -359,7 +358,7 @@ public class NoteMode extends BaseMode<IItem> implements INoteMode
                     display.setCell (3, 6, stepInfo.isOccurrenceEnabled () ? ON : OFF);
                 }
 
-                if (this.host.supports (Capability.NOTE_EDIT_RECURRENCE))
+                if (this.host.supports (NoteAttribute.RECURRENCE_LENGTH))
                 {
                     final int recurrence = stepInfo.getRecurrenceLength ();
                     final String recurrenceStr = recurrence < 2 ? "Off" : Integer.toString (recurrence);
@@ -372,7 +371,7 @@ public class NoteMode extends BaseMode<IItem> implements INoteMode
                 break;
 
             case EXPRESSIONS:
-                if (this.host.supports (Capability.NOTE_EDIT_EXPRESSIONS))
+                if (this.host.supports (NoteAttribute.TIMBRE))
                 {
                     display.setCell (0, 2, "EXPRESS:");
 
@@ -481,12 +480,12 @@ public class NoteMode extends BaseMode<IItem> implements INoteMode
 
             final String stepBottomMenu = isOneNote ? "Step: " + (notePosition.getStep () + 1) : "Notes: " + size;
             display.addParameterElementWithPlainMenu (MENU[0], this.page == Page.NOTE, stepBottomMenu, null, false, "Length", -1, this.formatLength (stepInfo.getDuration ()), this.isKnobTouched (0), -1);
-            final boolean hasExpressions = this.host.supports (Capability.NOTE_EDIT_EXPRESSIONS);
+            final boolean hasExpressions = this.host.supports (NoteAttribute.TIMBRE);
 
             final String topMenu = hasExpressions ? MENU[1] : " ";
             final boolean isTopMenuOn = hasExpressions && this.page == Page.EXPRESSIONS;
             final String bottomMenu = isOneNote ? Scales.formatNoteAndOctave (notePosition.getNote (), -3) : "*";
-            if (this.host.supports (Capability.NOTE_EDIT_MUTE))
+            if (this.host.supports (NoteAttribute.MUTE))
             {
                 final int value = stepInfo.isMuted () ? valueChanger.getUpperBound () : 0;
                 display.addParameterElementWithPlainMenu (topMenu, isTopMenuOn, bottomMenu, null, false, "Is Muted?", value, stepInfo.isMuted () ? "Yes" : "No", this.isKnobTouched (1), value);
@@ -500,9 +499,9 @@ public class NoteMode extends BaseMode<IItem> implements INoteMode
             case NOTE:
                 final double noteVelocity = stepInfo.getVelocity ();
                 final int parameterValue = valueChanger.fromNormalizedValue (noteVelocity);
-                display.addParameterElementWithPlainMenu (this.host.supports (Capability.NOTE_EDIT_REPEAT) ? MENU[2] : " ", false, null, null, false, "Velocity", parameterValue, StringUtils.formatPercentage (noteVelocity), this.isKnobTouched (2), parameterValue);
+                display.addParameterElementWithPlainMenu (this.host.supports (NoteAttribute.REPEAT) ? MENU[2] : " ", false, null, null, false, "Velocity", parameterValue, StringUtils.formatPercentage (noteVelocity), this.isKnobTouched (2), parameterValue);
 
-                if (this.host.supports (Capability.NOTE_EDIT_VELOCITY_SPREAD))
+                if (this.host.supports (NoteAttribute.VELOCITY_SPREAD))
                 {
                     final double noteVelocitySpread = stepInfo.getVelocitySpread ();
                     final int parameterSpreadValue = valueChanger.fromNormalizedValue (noteVelocitySpread);
@@ -511,7 +510,7 @@ public class NoteMode extends BaseMode<IItem> implements INoteMode
                 else
                     display.addEmptyElement (true);
 
-                if (this.host.supports (Capability.NOTE_EDIT_RELEASE_VELOCITY))
+                if (this.host.supports (NoteAttribute.RELEASE_VELOCITY))
                 {
                     final double noteReleaseVelocity = stepInfo.getReleaseVelocity ();
                     final int parameterReleaseValue = valueChanger.fromNormalizedValue (noteReleaseVelocity);
@@ -520,7 +519,7 @@ public class NoteMode extends BaseMode<IItem> implements INoteMode
                 else
                     display.addEmptyElement (true);
 
-                if (this.host.supports (Capability.NOTE_EDIT_CHANCE))
+                if (this.host.supports (NoteAttribute.CHANCE))
                 {
                     final double chance = stepInfo.getChance ();
                     final int chanceValue = valueChanger.fromNormalizedValue (chance);
@@ -529,7 +528,7 @@ public class NoteMode extends BaseMode<IItem> implements INoteMode
                 else
                     display.addEmptyElement (true);
 
-                if (this.host.supports (Capability.NOTE_EDIT_OCCURRENCE))
+                if (this.host.supports (NoteAttribute.OCCURRENCE))
                 {
                     final NoteOccurrenceType occurrence = stepInfo.getOccurrence ();
                     display.addParameterElementWithPlainMenu (MENU[6], false, stepInfo.isOccurrenceEnabled () ? "On" : "Off", null, false, "Occurrence", -1, StringUtils.optimizeName (occurrence.getName (), 9), this.isKnobTouched (6), -1);
@@ -537,7 +536,7 @@ public class NoteMode extends BaseMode<IItem> implements INoteMode
                 else
                     display.addEmptyElement (true);
 
-                if (this.host.supports (Capability.NOTE_EDIT_RECURRENCE))
+                if (this.host.supports (NoteAttribute.RECURRENCE_LENGTH))
                 {
                     final int recurrence = stepInfo.getRecurrenceLength ();
                     final String recurrenceStr = recurrence < 2 ? "Off" : Integer.toString (recurrence);
@@ -643,11 +642,11 @@ public class NoteMode extends BaseMode<IItem> implements INoteMode
                 switch (this.page)
                 {
                     case NOTE:
-                        if (index == 5 && this.host.supports (Capability.NOTE_EDIT_CHANCE))
+                        if (index == 5 && this.host.supports (NoteAttribute.CHANCE))
                             return this.colorManager.getColorIndex (stepInfo.isChanceEnabled () ? PushColorManager.PUSH_ORANGE_HI : PushColorManager.PUSH_ORANGE_LO);
-                        if (index == 6 && this.host.supports (Capability.NOTE_EDIT_OCCURRENCE))
+                        if (index == 6 && this.host.supports (NoteAttribute.OCCURRENCE))
                             return this.colorManager.getColorIndex (stepInfo.isOccurrenceEnabled () ? PushColorManager.PUSH_ORANGE_HI : PushColorManager.PUSH_ORANGE_LO);
-                        if (index == 7 && this.host.supports (Capability.NOTE_EDIT_RECURRENCE))
+                        if (index == 7 && this.host.supports (NoteAttribute.RECURRENCE_LENGTH))
                             return this.colorManager.getColorIndex (stepInfo.isRecurrenceEnabled () ? PushColorManager.PUSH_ORANGE_HI : PushColorManager.PUSH_ORANGE_LO);
                         break;
 
@@ -698,9 +697,9 @@ public class NoteMode extends BaseMode<IItem> implements INoteMode
                         break;
                 }
 
-                if (index == 0 || index == 1 && this.host.supports (Capability.NOTE_EDIT_EXPRESSIONS))
+                if (index == 0 || index == 1 && this.host.supports (NoteAttribute.TIMBRE))
                     return this.colorManager.getColorIndex (PushColorManager.PUSH_GREY_LO_2);
-                if (index == 2 && this.host.supports (Capability.NOTE_EDIT_REPEAT) || index == 7 && this.host.supports (Capability.NOTE_EDIT_RECURRENCE))
+                if (index == 2 && this.host.supports (NoteAttribute.REPEAT) || index == 7 && this.host.supports (NoteAttribute.RECURRENCE_LENGTH))
                     return this.colorManager.getColorIndex (PushColorManager.PUSH_GREY_LO_2);
 
                 return this.colorManager.getColorIndex (PushColorManager.PUSH_BLACK_2);

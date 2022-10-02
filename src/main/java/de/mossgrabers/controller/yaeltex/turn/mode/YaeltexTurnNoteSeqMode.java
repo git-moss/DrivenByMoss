@@ -41,13 +41,13 @@ public class YaeltexTurnNoteSeqMode extends YaeltexTurnTrackMixMode implements I
     private static final NoteAttribute []                NOTE_ATTRIBUTES   =
     {
         NoteAttribute.PITCH,
-        NoteAttribute.GAIN,
-        NoteAttribute.PANORAMA,
+        NoteAttribute.MUTE,
         NoteAttribute.DURATION,
         NoteAttribute.VELOCITY,
         NoteAttribute.RELEASE_VELOCITY,
         NoteAttribute.VELOCITY_SPREAD,
-        NoteAttribute.MUTE,
+        NoteAttribute.GAIN,
+        NoteAttribute.PANORAMA,
         NoteAttribute.PRESSURE,
         NoteAttribute.TIMBRE,
         NoteAttribute.CHANCE,
@@ -105,7 +105,7 @@ public class YaeltexTurnNoteSeqMode extends YaeltexTurnTrackMixMode implements I
     @Override
     public int getKnobColor (final int index)
     {
-        return YaeltexTurnColorManager.NOTE_PARAM_COLORS.get (this.noteEditParameter).intValue ();
+        return ((YaeltexTurnColorManager) this.colorManager).getParamColor (this.noteEditParameter);
     }
 
 
@@ -118,6 +118,8 @@ public class YaeltexTurnNoteSeqMode extends YaeltexTurnTrackMixMode implements I
         if (row == 0 || row == 1)
         {
             final int noteParamIndex = 2 * index + row;
+            if (!host.supports (NOTE_ATTRIBUTES[noteParamIndex]))
+                return;
             this.noteEditParameter = NOTE_ATTRIBUTES[noteParamIndex];
             this.rebind ();
             host.showNotification (this.noteEditProviders.get (this.noteEditParameter).get (0).getName ());
@@ -208,7 +210,7 @@ public class YaeltexTurnNoteSeqMode extends YaeltexTurnTrackMixMode implements I
                 break;
         }
         if (noteParamIndex != -1)
-            return YaeltexTurnColorManager.NOTE_PARAM_COLORS.get (NOTE_ATTRIBUTES[noteParamIndex]).intValue ();
+            return ((YaeltexTurnColorManager) this.colorManager).getParamColor (NOTE_ATTRIBUTES[noteParamIndex]);
 
         if (scaleIndex != -1)
         {
