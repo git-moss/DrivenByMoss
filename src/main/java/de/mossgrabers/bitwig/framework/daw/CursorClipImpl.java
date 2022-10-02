@@ -434,19 +434,19 @@ public class CursorClipImpl implements INoteClip
     @Override
     public void setStep (final NotePosition notePosition, final IStepInfo noteStep)
     {
+        final NotePosition destinationPosition = new NotePosition (notePosition);
         final IStepInfo noteStepCopy = noteStep.createCopy ();
 
-        this.setStep (notePosition, (int) (noteStepCopy.getVelocity () * 127), 0.25);
+        this.setStep (destinationPosition, (int) (noteStepCopy.getVelocity () * 127), noteStepCopy.getDuration ());
         this.host.scheduleTask ( () -> {
 
-            this.updateStepVelocity (notePosition, noteStepCopy.getVelocity ());
-            this.updateStepDuration (notePosition, noteStepCopy.getDuration ());
-            this.updateStepGain (notePosition, noteStepCopy.getGain ());
-            this.updateStepPan (notePosition, noteStepCopy.getPan ());
-            this.updateStepPressure (notePosition, noteStepCopy.getPressure ());
-            this.updateStepReleaseVelocity (notePosition, noteStepCopy.getReleaseVelocity ());
-            this.updateStepTimbre (notePosition, noteStepCopy.getTimbre ());
-            this.updateStepTranspose (notePosition, noteStepCopy.getTranspose ());
+            this.updateStepVelocity (destinationPosition, noteStepCopy.getVelocity ());
+            this.updateStepGain (destinationPosition, noteStepCopy.getGain ());
+            this.updateStepPan (destinationPosition, noteStepCopy.getPan ());
+            this.updateStepPressure (destinationPosition, noteStepCopy.getPressure ());
+            this.updateStepReleaseVelocity (destinationPosition, noteStepCopy.getReleaseVelocity ());
+            this.updateStepTimbre (destinationPosition, noteStepCopy.getTimbre ());
+            this.updateStepTranspose (destinationPosition, noteStepCopy.getTranspose ());
 
         }, 100);
     }

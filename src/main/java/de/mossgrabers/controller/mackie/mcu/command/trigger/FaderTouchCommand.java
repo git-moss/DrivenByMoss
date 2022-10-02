@@ -47,18 +47,18 @@ public class FaderTouchCommand extends SelectCommand
         final MCUConfiguration configuration = this.surface.getConfiguration ();
         final boolean isTouched = event == ButtonEvent.DOWN;
 
-        if (configuration.useFadersAsKnobs ())
-        {
-            modeManager.getActive ().onKnobTouch (this.index, isTouched);
-            return;
-        }
-
         // Master Channel
         if (this.index == 8)
         {
             if (isTouched && configuration.isTouchSelectsChannel ())
                 this.model.getMasterTrack ().select ();
             modeManager.get (Modes.MASTER).onKnobTouch (0, isTouched);
+            return;
+        }
+
+        if (configuration.useFadersAsKnobs ())
+        {
+            modeManager.getActive ().onKnobTouch (this.index, isTouched);
             return;
         }
 

@@ -271,12 +271,13 @@ public abstract class AbstractPolySequencerView<S extends IControlSurface<C>, C 
                 final NotePosition copyPosition = new NotePosition (channel, this.copyStep, 0);
                 for (int row = 0; row < 128; row++)
                 {
-                    notePosition.setNote (row);
                     copyPosition.setNote (row);
-
                     final IStepInfo stepInfo = clip.getStep (copyPosition);
                     if (stepInfo != null && stepInfo.getVelocity () > 0)
+                    {
+                        notePosition.setNote (row);
                         clip.setStep (notePosition, stepInfo);
+                    }
                 }
             }
             return true;

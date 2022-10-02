@@ -505,7 +505,7 @@ public class MCUControllerSetup extends AbstractControllerSetup<MCUControlSurfac
                 this.addButton (surface, ButtonID.ALT, "Alt", NopCommand.INSTANCE, MCUControlSurface.MCU_ALT);
 
                 // Fader Controls
-                this.addButton (surface, ButtonID.FLIP, "Flip", new MCUFlipCommand (this.model, surface), 0, MCUControlSurface.MCU_FLIP, this.model::isEffectTrackBankActive);
+                this.addButton (surface, ButtonID.FLIP, "Flip", new MCUFlipCommand (this.model, surface), 0, MCUControlSurface.MCU_FLIP, this::isFlipped);
                 this.addButton (surface, ButtonID.CANCEL, "Cancel", new KeyCommand (Key.ESCAPE, this.model, surface), MCUControlSurface.MCU_CANCEL);
                 this.addButton (surface, ButtonID.ENTER, "Enter", new KeyCommand (Key.ENTER, this.model, surface), MCUControlSurface.MCU_ENTER);
 
@@ -932,5 +932,13 @@ public class MCUControllerSetup extends AbstractControllerSetup<MCUControlSurfac
     protected BindType getTriggerBindType (final ButtonID buttonID)
     {
         return BindType.NOTE;
+    }
+
+
+    private boolean isFlipped ()
+    {
+        if (this.getSurface ().isShiftPressed ())
+            return this.model.isEffectTrackBankActive ();
+        return this.configuration.useFadersAsKnobs ();
     }
 }
