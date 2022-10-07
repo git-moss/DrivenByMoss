@@ -867,6 +867,6 @@ public enum ButtonID
      */
     public static boolean isInRange (final ButtonID buttonID, final ButtonID firstButtonID, final int length)
     {
-        return buttonID != null && ButtonID.get (firstButtonID, length - 1).ordinal () - buttonID.ordinal () >= 0;
+        return buttonID != null && ButtonID.get (firstButtonID, length - 1).ordinal () >= buttonID.ordinal () && buttonID.ordinal () >= firstButtonID.ordinal ();
     }
 }
