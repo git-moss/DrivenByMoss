@@ -127,14 +127,35 @@ public class StringUtils
                     case 'ß':
                         str.append ("ss");
                         break;
-                    case 'é':
+                    case 'é', 'ê':
                         str.append ("e");
+                        break;
+                    case 'ī', 'ï':
+                        str.append ("i");
+                        break;
+                    case 'ā':
+                        str.append ("a");
                         break;
                     case '→':
                         str.append ("->");
                         break;
                     case '♯':
                         str.append ("#");
+                        break;
+                    case '\u2013':
+                        str.append ("-");
+                        break;
+                    case '¼':
+                        str.append ("1/4");
+                        break;
+                    case '⅕':
+                        str.append ("1/5");
+                        break;
+                    case '⅙':
+                        str.append ("1/6");
+                        break;
+                    case '’':
+                        str.append ("'");
                         break;
                     default:
                         str.append ("?");

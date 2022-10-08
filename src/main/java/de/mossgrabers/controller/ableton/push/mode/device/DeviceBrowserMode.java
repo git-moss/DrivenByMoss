@@ -194,7 +194,7 @@ public class DeviceBrowserMode extends BaseMode<IItem>
 
                 display.setBlock (2, 2, "Selection:");
                 String selectedResult = browser.getSelectedResult ();
-                selectedResult = selectedResult == null || selectedResult.isBlank () ? "None" : selectedResult;
+                selectedResult = selectedResult == null || selectedResult.isBlank () ? "None" : StringUtils.shortenAndFixASCII (selectedResult, 18);
 
                 String [] infoText = browser.getInfoText ().split (":");
                 infoText = new String []
@@ -243,7 +243,7 @@ public class DeviceBrowserMode extends BaseMode<IItem>
                 for (int i = 0; i < 16; i++)
                 {
                     if (i < results.length)
-                        display.setBlock (i % 4, i / 4, (results[i].isSelected () ? Push1Display.SELECT_ARROW : " ") + results[i].getName (16));
+                        display.setBlock (i % 4, i / 4, (results[i].isSelected () ? Push1Display.SELECT_ARROW : " ") + StringUtils.shortenAndFixASCII (results[i].getName (), 16));
                     else
                         display.setBlock (i % 4, i / 4, "");
                 }
@@ -253,7 +253,7 @@ public class DeviceBrowserMode extends BaseMode<IItem>
                 final IBrowserColumnItem [] items = browser.getFilterColumn (this.filterColumn).getItems ();
                 for (int i = 0; i < 16; i++)
                 {
-                    String text = (items[i].isSelected () ? Push1Display.SELECT_ARROW : " ") + items[i].getName () + "                ";
+                    String text = (items[i].isSelected () ? Push1Display.SELECT_ARROW : " ") + StringUtils.shortenAndFixASCII (items[i].getName (), 18) + "                ";
                     if (!items[i].getName ().isEmpty ())
                     {
                         final String hitStr = "(" + items[i].getHitCount () + ")";

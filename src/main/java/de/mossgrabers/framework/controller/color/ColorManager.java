@@ -98,7 +98,7 @@ public class ColorManager
 
 
     /**
-     * Get the color index which is registered with the given key.
+     * Get the color which is registered at the given index.
      *
      * @param colorIndex The color index
      * @param buttonID The ID of the button in case button LEDs have a different color range
