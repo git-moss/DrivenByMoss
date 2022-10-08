@@ -8,6 +8,7 @@ import de.mossgrabers.controller.mackie.mcu.MCUConfiguration;
 import de.mossgrabers.controller.mackie.mcu.controller.MCUControlSurface;
 import de.mossgrabers.framework.command.continuous.PlayPositionCommand;
 import de.mossgrabers.framework.controller.ButtonID;
+import de.mossgrabers.framework.daw.IBrowser;
 import de.mossgrabers.framework.daw.IModel;
 
 
@@ -35,6 +36,16 @@ public class PlayPositionTempoCommand extends PlayPositionCommand<MCUControlSurf
     public void execute (final int value)
     {
         final boolean increase = this.model.getValueChanger ().isIncrease (value);
+
+        final IBrowser browser = this.model.getBrowser ();
+        if (browser.isActive ())
+        {
+            if (increase)
+                browser.selectNextResult ();
+            else
+                browser.selectPreviousResult ();
+            return;
+        }
 
         if (this.surface.isPressed (ButtonID.SELECT))
         {

@@ -116,7 +116,7 @@ public class GenericFlexiConfiguration extends AbstractConfiguration
         "37  CC Portamento Time (LSB)",
         "38  CC Data Entry (LSB)",
         "39  CC Channel Volume (LSB)",
-        "30  CC Balance (LSB)",
+        "40  CC Balance (LSB)",
         "41  CC Undefined (LSB)",
         "42  CC Pan (LSB)",
         "43  CC Expression (LSB)",

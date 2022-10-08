@@ -7,7 +7,9 @@ package de.mossgrabers.controller.mackie.mcu.command.trigger;
 import de.mossgrabers.controller.mackie.mcu.MCUConfiguration;
 import de.mossgrabers.controller.mackie.mcu.controller.MCUControlSurface;
 import de.mossgrabers.framework.command.core.AbstractTriggerCommand;
+import de.mossgrabers.framework.daw.IBrowser;
 import de.mossgrabers.framework.daw.IModel;
+import de.mossgrabers.framework.daw.data.ICursorDevice;
 import de.mossgrabers.framework.utils.ButtonEvent;
 
 
@@ -34,7 +36,18 @@ public class ZoomCommand extends AbstractTriggerCommand<MCUControlSurface, MCUCo
     @Override
     public void execute (final ButtonEvent event, final int velocity)
     {
-        if (event == ButtonEvent.DOWN)
-            this.surface.getConfiguration ().toggleZoomState ();
+        if (event != ButtonEvent.DOWN)
+            return;
+
+        final IBrowser browser = this.model.getBrowser ();
+        if (browser.isActive ())
+        {
+            final ICursorDevice cursorDevice = this.model.getCursorDevice ();
+            if (cursorDevice.doesExist ())
+                browser.replace (cursorDevice);
+            return;
+        }
+
+        this.surface.getConfiguration ().toggleZoomState ();
     }
 }

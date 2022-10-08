@@ -8,6 +8,7 @@ import de.mossgrabers.controller.mackie.mcu.MCUConfiguration;
 import de.mossgrabers.controller.mackie.mcu.controller.MCUControlSurface;
 import de.mossgrabers.framework.command.core.AbstractTriggerCommand;
 import de.mossgrabers.framework.command.trigger.Direction;
+import de.mossgrabers.framework.daw.IBrowser;
 import de.mossgrabers.framework.daw.IModel;
 import de.mossgrabers.framework.utils.ButtonEvent;
 
@@ -45,6 +46,27 @@ public class MCUCursorCommand extends AbstractTriggerCommand<MCUControlSurface, 
     {
         if (event != ButtonEvent.UP)
             return;
+
+        final IBrowser browser = this.model.getBrowser ();
+        if (browser.isActive ())
+        {
+            switch (this.direction)
+            {
+                case LEFT:
+                    browser.insertBeforeCursorDevice ();
+                    break;
+                case RIGHT:
+                    browser.insertAfterCursorDevice ();
+                    break;
+                case UP:
+                    browser.nextContentType ();
+                    break;
+                case DOWN:
+                    browser.previousContentType ();
+                    break;
+            }
+            return;
+        }
 
         switch (this.direction)
         {
