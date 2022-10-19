@@ -432,6 +432,7 @@ public abstract class AbstractConfiguration implements Configuration
     private RecordFunction                            recordButtonFunction                = RecordFunction.RECORD_ARRANGER;
     private RecordFunction                            shiftedRecordButtonFunction         = RecordFunction.NEW_CLIP;
     private Views                                     preferredNoteView                   = Views.PLAY;
+    protected Views                                   preferredAudioView                  = Views.PLAY;
     private boolean                                   useCombinationButtonToSoundDrumPads = false;
 
 
@@ -1762,6 +1763,14 @@ public abstract class AbstractConfiguration implements Configuration
     public Views getPreferredNoteView ()
     {
         return this.preferredNoteView;
+    }
+
+
+    /** {@inheritDoc} */
+    @Override
+    public Views getPreferredAudioView ()
+    {
+        return this.preferredAudioView;
     }
 
 

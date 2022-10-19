@@ -522,4 +522,12 @@ public interface Configuration
      * @return The preferred note view
      */
     Views getPreferredNoteView ();
+
+
+    /**
+     * Get the preferred audio view.
+     *
+     * @return The preferred note view
+     */
+    Views getPreferredAudioView ();
 }

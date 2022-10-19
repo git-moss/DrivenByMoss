@@ -86,7 +86,7 @@ public class ModelImpl extends AbstractModel
         final Application bwApplication = controllerHost.createApplication ();
         final Arranger bwArranger = controllerHost.createArranger ();
 
-        this.application = new ApplicationImpl (bwApplication, bwArranger);
+        this.application = new ApplicationImpl (bwApplication, bwArranger, this.valueChanger);
         final Project proj = controllerHost.getProject ();
         this.rootTrackGroup = proj.getRootTrackGroup ();
         this.project = new ProjectImpl (this.valueChanger, proj, bwApplication);
@@ -178,7 +178,9 @@ public class ModelImpl extends AbstractModel
                     break;
 
                 case NI_KOMPLETE:
-                    final Device kompleteDevice = this.createDevice (controllerHost.createVST2DeviceMatcher (KompleteDevice.VST2_KOMPLETE_ID));
+                    final DeviceMatcher vst2DeviceMatcher = controllerHost.createVST2DeviceMatcher (KompleteDevice.VST2_KOMPLETE_ID);
+                    final DeviceMatcher vst3DeviceMatcher = controllerHost.createVST3DeviceMatcher (KompleteDevice.VST3_KOMPLETE_ID);
+                    final Device kompleteDevice = this.createDevice (controllerHost.createOrDeviceMatcher (vst2DeviceMatcher, vst3DeviceMatcher));
                     specificDevice = new KompleteDevice (this.host, this.valueChanger, kompleteDevice);
                     break;
 

@@ -55,6 +55,7 @@ public abstract class AbstractDrumExView<S extends IControlSurface<C>, C extends
     protected boolean          extraButtonsOn                  = false;
     protected boolean          noteRepeatPeriodOn              = false;
     protected boolean          noteRepeatLengthOn              = false;
+    protected boolean          useExtraToggleButton            = true;
     protected int              firstExtraPad;
 
 
@@ -155,6 +156,7 @@ public abstract class AbstractDrumExView<S extends IControlSurface<C>, C extends
             padGrid.lightEx (6, row, this.colorManager.getColorIndex (this.noteRepeatLengthOn ? COLOR_EX_NOTE_REPEAT_LENGTH_ON : COLOR_EX_NOTE_REPEAT_LENGTH_OFF));
         }
 
-        padGrid.lightEx (7, this.allRows - 1, this.colorManager.getColorIndex (this.extraButtonsOn ? COLOR_EX_TOGGLE_ON : COLOR_EX_TOGGLE_OFF));
+        if (this.useExtraToggleButton || this.extraButtonsOn)
+            padGrid.lightEx (7, this.allRows - 1, this.colorManager.getColorIndex (this.extraButtonsOn ? COLOR_EX_TOGGLE_ON : COLOR_EX_TOGGLE_OFF));
     }
 }

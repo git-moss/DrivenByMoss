@@ -62,7 +62,15 @@ public class UserHandler extends AbstractHandler
             FlexiCommand.USER_TOGGLE_PARAMETER_5,
             FlexiCommand.USER_TOGGLE_PARAMETER_6,
             FlexiCommand.USER_TOGGLE_PARAMETER_7,
-            FlexiCommand.USER_TOGGLE_PARAMETER_8
+            FlexiCommand.USER_TOGGLE_PARAMETER_8,
+            FlexiCommand.USER_RESET_PARAMETER_1,
+            FlexiCommand.USER_RESET_PARAMETER_2,
+            FlexiCommand.USER_RESET_PARAMETER_3,
+            FlexiCommand.USER_RESET_PARAMETER_4,
+            FlexiCommand.USER_RESET_PARAMETER_5,
+            FlexiCommand.USER_RESET_PARAMETER_6,
+            FlexiCommand.USER_RESET_PARAMETER_7,
+            FlexiCommand.USER_RESET_PARAMETER_8
         };
     }
 
@@ -77,24 +85,10 @@ public class UserHandler extends AbstractHandler
 
         switch (command)
         {
-            case USER_SET_PARAMETER_1:
-            case USER_SET_PARAMETER_2:
-            case USER_SET_PARAMETER_3:
-            case USER_SET_PARAMETER_4:
-            case USER_SET_PARAMETER_5:
-            case USER_SET_PARAMETER_6:
-            case USER_SET_PARAMETER_7:
-            case USER_SET_PARAMETER_8:
+            case USER_SET_PARAMETER_1, USER_SET_PARAMETER_2, USER_SET_PARAMETER_3, USER_SET_PARAMETER_4, USER_SET_PARAMETER_5, USER_SET_PARAMETER_6, USER_SET_PARAMETER_7, USER_SET_PARAMETER_8:
                 return userParameterBank.getItem (command.ordinal () - FlexiCommand.USER_SET_PARAMETER_1.ordinal ()).getValue ();
 
-            case USER_TOGGLE_PARAMETER_1:
-            case USER_TOGGLE_PARAMETER_2:
-            case USER_TOGGLE_PARAMETER_3:
-            case USER_TOGGLE_PARAMETER_4:
-            case USER_TOGGLE_PARAMETER_5:
-            case USER_TOGGLE_PARAMETER_6:
-            case USER_TOGGLE_PARAMETER_7:
-            case USER_TOGGLE_PARAMETER_8:
+            case USER_TOGGLE_PARAMETER_1, USER_TOGGLE_PARAMETER_2, USER_TOGGLE_PARAMETER_3, USER_TOGGLE_PARAMETER_4, USER_TOGGLE_PARAMETER_5, USER_TOGGLE_PARAMETER_6, USER_TOGGLE_PARAMETER_7, USER_TOGGLE_PARAMETER_8:
                 final int value = userParameterBank.getItem (command.ordinal () - FlexiCommand.USER_TOGGLE_PARAMETER_1.ordinal ()).getValue ();
                 return value > 0 ? 127 : 0;
 
@@ -114,16 +108,8 @@ public class UserHandler extends AbstractHandler
 
         switch (command)
         {
-            case USER_SET_PARAMETER_1:
-            case USER_SET_PARAMETER_2:
-            case USER_SET_PARAMETER_3:
-            case USER_SET_PARAMETER_4:
-            case USER_SET_PARAMETER_5:
-            case USER_SET_PARAMETER_6:
-            case USER_SET_PARAMETER_7:
-            case USER_SET_PARAMETER_8:
-                final int index = command.ordinal () - FlexiCommand.USER_SET_PARAMETER_1.ordinal ();
-                final IParameter userParam = userParameterBank.getItem (index);
+            case USER_SET_PARAMETER_1, USER_SET_PARAMETER_2, USER_SET_PARAMETER_3, USER_SET_PARAMETER_4, USER_SET_PARAMETER_5, USER_SET_PARAMETER_6, USER_SET_PARAMETER_7, USER_SET_PARAMETER_8:
+                final IParameter userParam = userParameterBank.getItem (command.ordinal () - FlexiCommand.USER_SET_PARAMETER_1.ordinal ());
                 final int val = value.getValue ();
                 if (isAbsolute (knobMode))
                     userParam.setValue (this.getAbsoluteValueChanger (value), val);
@@ -131,14 +117,12 @@ public class UserHandler extends AbstractHandler
                     userParam.changeValue (this.getRelativeValueChanger (knobMode), val);
                 break;
 
-            case USER_TOGGLE_PARAMETER_1:
-            case USER_TOGGLE_PARAMETER_2:
-            case USER_TOGGLE_PARAMETER_3:
-            case USER_TOGGLE_PARAMETER_4:
-            case USER_TOGGLE_PARAMETER_5:
-            case USER_TOGGLE_PARAMETER_6:
-            case USER_TOGGLE_PARAMETER_7:
-            case USER_TOGGLE_PARAMETER_8:
+            case USER_RESET_PARAMETER_1, USER_RESET_PARAMETER_2, USER_RESET_PARAMETER_3, USER_RESET_PARAMETER_4, USER_RESET_PARAMETER_5, USER_RESET_PARAMETER_6, USER_RESET_PARAMETER_7, USER_RESET_PARAMETER_8:
+                if (this.isButtonPressed (knobMode, value))
+                    userParameterBank.getItem (command.ordinal () - FlexiCommand.USER_RESET_PARAMETER_1.ordinal ()).resetValue ();
+                break;
+
+            case USER_TOGGLE_PARAMETER_1, USER_TOGGLE_PARAMETER_2, USER_TOGGLE_PARAMETER_3, USER_TOGGLE_PARAMETER_4, USER_TOGGLE_PARAMETER_5, USER_TOGGLE_PARAMETER_6, USER_TOGGLE_PARAMETER_7, USER_TOGGLE_PARAMETER_8:
                 final IParameter userToggleParam = userParameterBank.getItem (command.ordinal () - FlexiCommand.USER_TOGGLE_PARAMETER_1.ordinal ());
                 if (this.isButtonPressed (knobMode, value))
                 {

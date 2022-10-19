@@ -299,6 +299,7 @@ public class PushConfiguration extends AbstractConfiguration implements IGraphic
         super (host, valueChanger, arpeggiatorModes);
 
         this.isPush2 = isPush2;
+        this.preferredAudioView = Views.CLIP;
 
         this.dontNotifyAll.add (DEBUG_WINDOW);
     }

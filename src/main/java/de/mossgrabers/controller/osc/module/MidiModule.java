@@ -231,8 +231,6 @@ public class MidiModule extends AbstractModule
 
             case "aftertouch":
                 int numValue = toInteger (value);
-                if (numValue > 0)
-                    numValue = conf.isAccentActive () ? conf.getFixedAccentValue () : numValue;
                 if (path.isEmpty ())
                 {
                     input.sendRawMidiEvent (MidiConstants.CMD_CHANNEL_AFTERTOUCH + midiChannel, 0, numValue);

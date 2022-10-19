@@ -187,6 +187,7 @@ public abstract class AbstractModule implements IModule
     {
         final boolean isSend = fxParam instanceof ISend;
 
+        writer.sendOSC (fxAddress + TAG_EXISTS, fxParam.doesExist (), dump);
         writer.sendOSC (fxAddress + TAG_NAME, fxParam.getName (), dump);
         writer.sendOSC (fxAddress + (isSend ? "volumeStr" : "valueStr"), fxParam.getDisplayedValue (), dump);
         writer.sendOSC (fxAddress + (isSend ? TAG_VOLUME : "value"), fxParam.getValue (), dump);

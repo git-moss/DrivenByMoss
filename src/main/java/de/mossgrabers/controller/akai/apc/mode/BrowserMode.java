@@ -85,7 +85,7 @@ public class BrowserMode extends BaseMode<IItem>
 
     /** {@inheritDoc} */
     @Override
-    public void selectPreviousItem ()
+    public void selectPreviousItemPage ()
     {
         this.model.getBrowser ().previousContentType ();
     }
@@ -93,7 +93,7 @@ public class BrowserMode extends BaseMode<IItem>
 
     /** {@inheritDoc} */
     @Override
-    public void selectNextItem ()
+    public void selectNextItemPage ()
     {
         this.model.getBrowser ().nextContentType ();
     }

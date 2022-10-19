@@ -75,7 +75,14 @@ public class DeviceHandler extends AbstractHandler
             FlexiCommand.DEVICE_SET_PARAMETER_5,
             FlexiCommand.DEVICE_SET_PARAMETER_6,
             FlexiCommand.DEVICE_SET_PARAMETER_7,
-            FlexiCommand.DEVICE_SET_PARAMETER_8
+            FlexiCommand.DEVICE_SET_PARAMETER_8,
+            FlexiCommand.DEVICE_RESET_PARAMETER_2,
+            FlexiCommand.DEVICE_RESET_PARAMETER_3,
+            FlexiCommand.DEVICE_RESET_PARAMETER_4,
+            FlexiCommand.DEVICE_RESET_PARAMETER_5,
+            FlexiCommand.DEVICE_RESET_PARAMETER_6,
+            FlexiCommand.DEVICE_RESET_PARAMETER_7,
+            FlexiCommand.DEVICE_RESET_PARAMETER_8
         };
     }
 
@@ -103,24 +110,10 @@ public class DeviceHandler extends AbstractHandler
             case DEVICE_TOGGLE_PARAMETERS:
                 return cursorDevice.isParameterPageSectionVisible () ? 127 : 0;
 
-            case DEVICE_SET_PARAMETER_1:
-            case DEVICE_SET_PARAMETER_2:
-            case DEVICE_SET_PARAMETER_3:
-            case DEVICE_SET_PARAMETER_4:
-            case DEVICE_SET_PARAMETER_5:
-            case DEVICE_SET_PARAMETER_6:
-            case DEVICE_SET_PARAMETER_7:
-            case DEVICE_SET_PARAMETER_8:
+            case DEVICE_SET_PARAMETER_1, DEVICE_SET_PARAMETER_2, DEVICE_SET_PARAMETER_3, DEVICE_SET_PARAMETER_4, DEVICE_SET_PARAMETER_5, DEVICE_SET_PARAMETER_6, DEVICE_SET_PARAMETER_7, DEVICE_SET_PARAMETER_8:
                 return cursorDevice.getParameterBank ().getItem (command.ordinal () - FlexiCommand.DEVICE_SET_PARAMETER_1.ordinal ()).getValue ();
 
-            case DEVICE_SELECT_PARAMETER_PAGE_1:
-            case DEVICE_SELECT_PARAMETER_PAGE_2:
-            case DEVICE_SELECT_PARAMETER_PAGE_3:
-            case DEVICE_SELECT_PARAMETER_PAGE_4:
-            case DEVICE_SELECT_PARAMETER_PAGE_5:
-            case DEVICE_SELECT_PARAMETER_PAGE_6:
-            case DEVICE_SELECT_PARAMETER_PAGE_7:
-            case DEVICE_SELECT_PARAMETER_PAGE_8:
+            case DEVICE_SELECT_PARAMETER_PAGE_1, DEVICE_SELECT_PARAMETER_PAGE_2, DEVICE_SELECT_PARAMETER_PAGE_3, DEVICE_SELECT_PARAMETER_PAGE_4, DEVICE_SELECT_PARAMETER_PAGE_5, DEVICE_SELECT_PARAMETER_PAGE_6, DEVICE_SELECT_PARAMETER_PAGE_7, DEVICE_SELECT_PARAMETER_PAGE_8:
                 return cursorDevice.getParameterBank ().getItem (command.ordinal () - FlexiCommand.DEVICE_SELECT_PARAMETER_PAGE_1.ordinal ()).isSelected () ? 127 : 0;
 
             default:
@@ -187,14 +180,7 @@ public class DeviceHandler extends AbstractHandler
                     cursorDevice.getParameterBank ().scrollForwards ();
                 break;
 
-            case DEVICE_SELECT_PARAMETER_PAGE_1:
-            case DEVICE_SELECT_PARAMETER_PAGE_2:
-            case DEVICE_SELECT_PARAMETER_PAGE_3:
-            case DEVICE_SELECT_PARAMETER_PAGE_4:
-            case DEVICE_SELECT_PARAMETER_PAGE_5:
-            case DEVICE_SELECT_PARAMETER_PAGE_6:
-            case DEVICE_SELECT_PARAMETER_PAGE_7:
-            case DEVICE_SELECT_PARAMETER_PAGE_8:
+            case DEVICE_SELECT_PARAMETER_PAGE_1, DEVICE_SELECT_PARAMETER_PAGE_2, DEVICE_SELECT_PARAMETER_PAGE_3, DEVICE_SELECT_PARAMETER_PAGE_4, DEVICE_SELECT_PARAMETER_PAGE_5, DEVICE_SELECT_PARAMETER_PAGE_6, DEVICE_SELECT_PARAMETER_PAGE_7, DEVICE_SELECT_PARAMETER_PAGE_8:
                 if (isButtonPressed)
                 {
                     cursorDevice.getParameterPageBank ().selectPage (command.ordinal () - FlexiCommand.DEVICE_SELECT_PARAMETER_PAGE_1.ordinal ());
@@ -222,15 +208,14 @@ public class DeviceHandler extends AbstractHandler
                 break;
 
             // Device: Set Parameter 1-8
-            case DEVICE_SET_PARAMETER_1:
-            case DEVICE_SET_PARAMETER_2:
-            case DEVICE_SET_PARAMETER_3:
-            case DEVICE_SET_PARAMETER_4:
-            case DEVICE_SET_PARAMETER_5:
-            case DEVICE_SET_PARAMETER_6:
-            case DEVICE_SET_PARAMETER_7:
-            case DEVICE_SET_PARAMETER_8:
+            case DEVICE_SET_PARAMETER_1, DEVICE_SET_PARAMETER_2, DEVICE_SET_PARAMETER_3, DEVICE_SET_PARAMETER_4, DEVICE_SET_PARAMETER_5, DEVICE_SET_PARAMETER_6, DEVICE_SET_PARAMETER_7, DEVICE_SET_PARAMETER_8:
                 this.handleParameter (knobMode, command.ordinal () - FlexiCommand.DEVICE_SET_PARAMETER_1.ordinal (), value);
+                break;
+
+            // Device: Reset Parameter 1-8
+            case DEVICE_RESET_PARAMETER_1, DEVICE_RESET_PARAMETER_2, DEVICE_RESET_PARAMETER_3, DEVICE_RESET_PARAMETER_4, DEVICE_RESET_PARAMETER_5, DEVICE_RESET_PARAMETER_6, DEVICE_RESET_PARAMETER_7, DEVICE_RESET_PARAMETER_8:
+                if (isButtonPressed)
+                    cursorDevice.getParameterBank ().getItem (command.ordinal () - FlexiCommand.DEVICE_RESET_PARAMETER_1.ordinal ()).resetValue ();
                 break;
 
             default:

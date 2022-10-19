@@ -1420,10 +1420,11 @@ public abstract class AbstractControllerSetup<S extends IControlSurface<C>, C ex
         final ITrack cursorTrack = this.model.getCursorTrack ();
         if (cursorTrack.doesExist ())
         {
-            final Views preferredView = viewManager.getPreferredView (cursorTrack.getPosition ());
-            final Views featureGroupID = preferredView == null ? this.configuration.getPreferredNoteView () : preferredView;
-            if (viewManager.get (featureGroupID) != null)
-                viewManager.setActive (featureGroupID);
+            Views preferredView = viewManager.getPreferredView (cursorTrack.getPosition ());
+            if (preferredView == null)
+                preferredView = cursorTrack.canHoldNotes () ? this.configuration.getPreferredNoteView () : this.configuration.getPreferredAudioView ();
+            if (viewManager.get (preferredView) != null)
+                viewManager.setActive (preferredView);
         }
     }
 

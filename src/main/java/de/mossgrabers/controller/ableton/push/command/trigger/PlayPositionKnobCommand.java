@@ -67,6 +67,6 @@ public class PlayPositionKnobCommand extends PlayPositionCommand<PushControlSurf
 
     private void displayPosition ()
     {
-        this.surface.getDisplay ().notify (this.transport.getPositionText ());
+        this.surface.getDisplay ().notify (this.transport.getBeatText () + " - " + this.transport.getPositionText ());
     }
 }

@@ -40,6 +40,8 @@ public class DrumView extends AbstractDrumExView<APCControlSurface, APCConfigura
     {
         super ("Drum", surface, model, 2, 3, surface.isMkII ());
 
+        this.useExtraToggleButton = false;
+
         this.buttonSelect = ButtonID.PAD13;
         this.buttonMute = ButtonID.PAD14;
         this.buttonSolo = ButtonID.PAD15;

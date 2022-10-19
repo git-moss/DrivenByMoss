@@ -124,14 +124,7 @@ public class ModesHandler extends AbstractHandler
 
         switch (command)
         {
-            case MODES_KNOB1:
-            case MODES_KNOB2:
-            case MODES_KNOB3:
-            case MODES_KNOB4:
-            case MODES_KNOB5:
-            case MODES_KNOB6:
-            case MODES_KNOB7:
-            case MODES_KNOB8:
+            case MODES_KNOB1, MODES_KNOB2, MODES_KNOB3, MODES_KNOB4, MODES_KNOB5, MODES_KNOB6, MODES_KNOB7, MODES_KNOB8:
                 return mode.getKnobValue (command.ordinal () - FlexiCommand.MODES_KNOB1.ordinal ());
 
             default:
@@ -152,25 +145,11 @@ public class ModesHandler extends AbstractHandler
 
         switch (command)
         {
-            case MODES_KNOB1:
-            case MODES_KNOB2:
-            case MODES_KNOB3:
-            case MODES_KNOB4:
-            case MODES_KNOB5:
-            case MODES_KNOB6:
-            case MODES_KNOB7:
-            case MODES_KNOB8:
+            case MODES_KNOB1, MODES_KNOB2, MODES_KNOB3, MODES_KNOB4, MODES_KNOB5, MODES_KNOB6, MODES_KNOB7, MODES_KNOB8:
                 this.changeModeValue (knobMode, command.ordinal () - FlexiCommand.MODES_KNOB1.ordinal (), value);
                 break;
 
-            case MODES_BUTTON1:
-            case MODES_BUTTON2:
-            case MODES_BUTTON3:
-            case MODES_BUTTON4:
-            case MODES_BUTTON5:
-            case MODES_BUTTON6:
-            case MODES_BUTTON7:
-            case MODES_BUTTON8:
+            case MODES_BUTTON1, MODES_BUTTON2, MODES_BUTTON3, MODES_BUTTON4, MODES_BUTTON5, MODES_BUTTON6, MODES_BUTTON7, MODES_BUTTON8:
                 if (isButtonPressed)
                 {
                     mode.selectItem (command.ordinal () - FlexiCommand.MODES_BUTTON1.ordinal ());

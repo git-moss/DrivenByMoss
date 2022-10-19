@@ -5,6 +5,7 @@
 package de.mossgrabers.framework.daw;
 
 import de.mossgrabers.framework.observer.IObserverManagement;
+import de.mossgrabers.framework.parameter.IParameter;
 
 
 /**
@@ -261,6 +262,14 @@ public interface IApplication extends IObserverManagement
 
 
     /**
+     * Get the zoom parameter.
+     *
+     * @return The parameter
+     */
+    IParameter getZoomParameter ();
+
+
+    /**
      * Decrease the track height.
      */
     void decTrackHeight ();
@@ -270,6 +279,14 @@ public interface IApplication extends IObserverManagement
      * Increase the track height.
      */
     void incTrackHeight ();
+
+
+    /**
+     * Get the track height parameter.
+     *
+     * @return The parameter
+     */
+    IParameter getTrackHeightParameter ();
 
 
     /**

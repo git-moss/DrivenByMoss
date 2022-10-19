@@ -39,5 +39,6 @@ public class MasterVolumeMode<S extends IControlSurface<C>, C extends Configurat
 
         this.setParameterProvider (new FixedParameterProvider (this.model.getMasterTrack ().getVolumeParameter ()));
         this.setParameterProvider (ButtonID.SHIFT, new FixedParameterProvider (this.model.getTransport ().getMetronomeVolumeParameter ()));
+        this.setParameterProvider (ButtonID.SELECT, new FixedParameterProvider (this.model.getApplication ().getZoomParameter ()));
     }
 }

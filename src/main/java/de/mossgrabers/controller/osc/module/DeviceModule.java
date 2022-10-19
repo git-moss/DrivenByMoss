@@ -186,6 +186,7 @@ public class DeviceModule extends AbstractModule
             final String pageName = parameterPageBank.getItem (i);
             final String pageAddress = deviceAddress + "page/" + oneplus + "/";
             writer.sendOSC (pageAddress, pageName, dump);
+            writer.sendOSC (pageAddress + TAG_EXISTS, !pageName.isBlank (), dump);
             writer.sendOSC (pageAddress + TAG_NAME, pageName, dump);
             writer.sendOSC (pageAddress + TAG_SELECTED, selectedParameterPage == i, dump);
         }

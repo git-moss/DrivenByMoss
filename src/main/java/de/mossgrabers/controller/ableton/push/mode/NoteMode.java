@@ -42,10 +42,10 @@ import java.util.Map;
  */
 public class NoteMode extends BaseMode<IItem> implements INoteMode
 {
-    private static final String    OFF  = "  Off";
-    private static final String    ON   = "   On";
+    private static final String    OFF                = "  Off";
+    private static final String    ON                 = "   On";
 
-    private static final String [] MENU =
+    private static final String [] MENU               =
     {
         "Common",
         "Expressions",
@@ -55,6 +55,18 @@ public class NoteMode extends BaseMode<IItem> implements INoteMode
         " ",
         " ",
         "Recurr. Pattern"
+    };
+
+    private static final String [] RECURRENCE_PRESETS =
+    {
+        "First",
+        "Not first",
+        " ",
+        "Last",
+        "Not last",
+        " ",
+        "Odd",
+        "Even",
     };
 
 
@@ -215,7 +227,45 @@ public class NoteMode extends BaseMode<IItem> implements INoteMode
 
                 case RECCURRENCE_PATTERN:
                     if (this.host.supports (NoteAttribute.RECURRENCE_LENGTH))
-                        clip.updateStepRecurrenceMaskToggleBit (notePosition, index);
+                    {
+                        if (this.surface.isShiftPressed ())
+                        {
+                            switch (index)
+                            {
+                                // First
+                                case 0:
+                                    clip.updateStepRecurrenceMask (notePosition, 1);
+                                    break;
+                                // Not first
+                                case 1:
+                                    clip.updateStepRecurrenceMask (notePosition, 254);
+                                    break;
+                                // Last
+                                case 3:
+                                    final int lastRecurrence = 1 << stepInfo.getRecurrenceLength () - 1;
+                                    clip.updateStepRecurrenceMask (notePosition, lastRecurrence);
+                                    break;
+                                // Not last
+                                case 4:
+                                    final int notLastRecurrence = (1 << stepInfo.getRecurrenceLength () - 1) - 1;
+                                    clip.updateStepRecurrenceMask (notePosition, notLastRecurrence);
+                                    break;
+                                // Even
+                                case 6:
+                                    clip.updateStepRecurrenceMask (notePosition, 85);
+                                    break;
+                                // Odd
+                                case 7:
+                                    clip.updateStepRecurrenceMask (notePosition, 170);
+                                    break;
+                                // Not used
+                                default:
+                                    break;
+                            }
+                        }
+                        else
+                            clip.updateStepRecurrenceMaskToggleBit (notePosition, index);
+                    }
                     break;
             }
         }
@@ -435,12 +485,18 @@ public class NoteMode extends BaseMode<IItem> implements INoteMode
                 final int mask = stepInfo.getRecurrenceMask ();
                 for (int i = 0; i < 8; i++)
                 {
-                    final boolean isOn = (mask & 1 << i) > 0;
                     String label = "   -";
-                    if (i < recurrenceLength)
+                    if (this.surface.isShiftPressed ())
+                        label = RECURRENCE_PRESETS[i];
+                    else
                     {
-                        label = isOn ? ON : OFF;
+                        final boolean isOn = (mask & 1 << i) > 0;
+                        if (i < recurrenceLength)
+                        {
+                            label = isOn ? ON : OFF;
+                        }
                     }
+
                     if (i == 7)
                     {
                         final int recurrence = stepInfo.getRecurrenceLength ();
@@ -600,14 +656,24 @@ public class NoteMode extends BaseMode<IItem> implements INoteMode
                 final int mask = stepInfo.getRecurrenceMask ();
                 for (int i = 0; i < 8; i++)
                 {
-                    final boolean isOn = (mask & 1 << i) > 0;
                     ColorEx color = ColorEx.BLACK;
                     String label = "-";
-                    if (i < recurrenceLength)
+
+                    if (this.surface.isShiftPressed ())
                     {
-                        color = isOn ? ColorEx.ORANGE : null;
-                        label = isOn ? "On" : "Off";
+                        color = RECURRENCE_PRESETS[i].isBlank () ? ColorEx.BLACK : ColorEx.GRAY;
+                        label = RECURRENCE_PRESETS[i];
                     }
+                    else
+                    {
+                        final boolean isOn = (mask & 1 << i) > 0;
+                        if (i < recurrenceLength)
+                        {
+                            color = isOn ? ColorEx.ORANGE : null;
+                            label = isOn ? "On" : "Off";
+                        }
+                    }
+
                     if (i == 7)
                     {
                         final int recurrence = stepInfo.getRecurrenceLength ();
@@ -659,6 +725,9 @@ public class NoteMode extends BaseMode<IItem> implements INoteMode
                         break;
 
                     case RECCURRENCE_PATTERN:
+                        if (this.surface.isShiftPressed ())
+                            return this.colorManager.getColorIndex (RECURRENCE_PRESETS[index].isBlank () ? PushColorManager.PUSH_BLACK : PushColorManager.PUSH_GREEN_LO);
+
                         final int recurrenceLength = stepInfo.getRecurrenceLength ();
                         final int mask = stepInfo.getRecurrenceMask ();
                         final boolean isOn = (mask & 1 << index) > 0;
