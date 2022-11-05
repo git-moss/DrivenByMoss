@@ -120,6 +120,20 @@ public abstract class AbstractPlayView<S extends IControlSurface<C>, C extends C
         final int note = this.keyManager.map (key);
         if (note != -1)
             this.keyManager.setAllKeysPressed (note, velocity);
+
+        this.playNote (note, velocity);
+    }
+
+
+    /**
+     * Hook for playing notes with grids which do not use MIDI notes.
+     *
+     * @param note The note to play (or stop)
+     * @param velocity The velocity of the note (0 = off)
+     */
+    protected void playNote (final int note, final int velocity)
+    {
+        // Intentionally empty
     }
 
 

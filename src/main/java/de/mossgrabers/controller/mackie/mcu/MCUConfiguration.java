@@ -25,72 +25,72 @@ import java.util.List;
  */
 public class MCUConfiguration extends AbstractConfiguration
 {
-    private static final String       MCU_DEVICE_1_LEFT                       = "MCU Device 1 - left";
+    private static final String       MCU_DEVICE_1_LEFT                     = "MCU Device 1 - left";
 
     /** Zoom state. */
-    public static final Integer       ZOOM_STATE                              = Integer.valueOf (50);
+    public static final Integer       ZOOM_STATE                            = Integer.valueOf (50);
     /** Display time or beats. */
-    public static final Integer       DISPLAY_MODE_TIME_OR_BEATS              = Integer.valueOf (51);
+    public static final Integer       DISPLAY_MODE_TIME_OR_BEATS            = Integer.valueOf (51);
     /** Display mode tempo or ticks. */
-    public static final Integer       DISPLAY_MODE_TICKS_OR_TEMPO             = Integer.valueOf (52);
+    public static final Integer       DISPLAY_MODE_TICKS_OR_TEMPO           = Integer.valueOf (52);
     /** Has a display. */
-    public static final Integer       HAS_DISPLAY1                            = Integer.valueOf (53);
+    public static final Integer       HAS_DISPLAY1                          = Integer.valueOf (53);
     /** Has a second display. */
-    public static final Integer       HAS_DISPLAY2                            = Integer.valueOf (54);
+    public static final Integer       HAS_DISPLAY2                          = Integer.valueOf (54);
     /** Has a segment display. */
-    public static final Integer       HAS_SEGMENT_DISPLAY                     = Integer.valueOf (55);
+    public static final Integer       HAS_SEGMENT_DISPLAY                   = Integer.valueOf (55);
     /** Has an assignment display. */
-    public static final Integer       HAS_ASSIGNMENT_DISPLAY                  = Integer.valueOf (56);
+    public static final Integer       HAS_ASSIGNMENT_DISPLAY                = Integer.valueOf (56);
     /** Has motor faders. */
-    public static final Integer       HAS_MOTOR_FADERS                        = Integer.valueOf (57);
+    public static final Integer       HAS_MOTOR_FADERS                      = Integer.valueOf (57);
     /** Has only 1 fader. */
-    public static final Integer       HAS_ONLY_1_FADER                        = Integer.valueOf (58);
+    public static final Integer       HAS_ONLY_1_FADER                      = Integer.valueOf (58);
     /** Display track names in 1st display. */
-    public static final Integer       DISPLAY_TRACK_NAMES                     = Integer.valueOf (59);
+    public static final Integer       DISPLAY_TRACK_NAMES                   = Integer.valueOf (59);
     /** Replace the vertical zoom with mode change. */
-    public static final Integer       USE_VERT_ZOOM_FOR_MODES                 = Integer.valueOf (60);
+    public static final Integer       USE_VERT_ZOOM_FOR_MODES               = Integer.valueOf (60);
     /** Use the faders like the editing knobs. */
-    public static final Integer       USE_FADERS_AS_KNOBS                     = Integer.valueOf (61);
+    public static final Integer       USE_FADERS_AS_KNOBS                   = Integer.valueOf (61);
     /** Select the channel when touching it's fader. */
-    public static final Integer       TOUCH_SELECTS_CHANNEL                   = Integer.valueOf (62);
+    public static final Integer       TOUCH_SELECTS_CHANNEL                 = Integer.valueOf (62);
     /** Activate volume mode when touching a volume fader. */
-    public static final Integer       TOUCH_CHANNEL_VOLUME_MODE               = Integer.valueOf (63);
+    public static final Integer       TOUCH_CHANNEL_VOLUME_MODE             = Integer.valueOf (63);
     /** iCON specific Master VU meter. */
-    public static final Integer       MASTER_VU_METER                         = Integer.valueOf (64);
+    public static final Integer       MASTER_VU_METER                       = Integer.valueOf (64);
     /** Pin FX tracks to last controller. */
-    public static final Integer       PIN_FXTRACKS_TO_LAST_CONTROLLER         = Integer.valueOf (65);
+    public static final Integer       PIN_FXTRACKS_TO_LAST_CONTROLLER       = Integer.valueOf (65);
     /** Support X-Touch display back-light colors. */
-    public static final Integer       X_TOUCH_DISPLAY_COLORS                  = Integer.valueOf (66);
+    public static final Integer       X_TOUCH_DISPLAY_COLORS                = Integer.valueOf (66);
     /** Use 7 characters instead of 6 and a space character. */
-    public static final Integer       USE_7_CHARACTERS                        = Integer.valueOf (67);
+    public static final Integer       USE_7_CHARACTERS                      = Integer.valueOf (67);
 
     /** Use a Function button to switch to previous mode. */
-    public static final int           FOOTSWITCH_2_PREV_MODE                  = 15;
+    public static final int           FOOTSWITCH_PREV_MODE                  = 15;
     /** Use a Function button to switch to next mode. */
-    public static final int           FOOTSWITCH_2_NEXT_MODE                  = 16;
+    public static final int           FOOTSWITCH_NEXT_MODE                  = 16;
     /** Use a Function button to switch to Marker mode. */
-    public static final int           FOOTSWITCH_2_SHOW_MARKER_MODE           = 17;
+    public static final int           FOOTSWITCH_SHOW_MARKER_MODE           = 17;
     /** Toggle use faders like editing knobs. */
-    public static final int           FOOTSWITCH_2_USE_FADERS_LIKE_EDIT_KNOBS = 18;
+    public static final int           FOOTSWITCH_USE_FADERS_LIKE_EDIT_KNOBS = 18;
     /** Use a Function button to toggle motor faders on/off. */
-    public static final int           FOOTSWITCH_2_TOGGLE_MOTOR_FADERS_ON_OFF = 19;
+    public static final int           FOOTSWITCH_TOGGLE_MOTOR_FADERS_ON_OFF = 19;
     /** Use a Function button to execute an action. */
-    public static final int           FOOTSWITCH_2_ACTION                     = 20;
+    public static final int           FOOTSWITCH_ACTION                     = 20;
 
-    private static final String       CATEGORY_EXTENDER_SETUP                 = "Extender Setup (requires restart)";
-    private static final String       CATEGORY_SEGMENT_DISPLAY                = "Segment Display";
-    private static final String       CATEGORY_TRACKS                         = "Tracks (requires restart)";
-    private static final String       CATEGORY_ASSIGNABLE_BUTTONS             = "Assignable buttons";
+    private static final String       CATEGORY_EXTENDER_SETUP               = "Extender Setup (requires restart)";
+    private static final String       CATEGORY_SEGMENT_DISPLAY              = "Segment Display";
+    private static final String       CATEGORY_TRACKS                       = "Tracks (requires restart)";
+    private static final String       CATEGORY_ASSIGNABLE_BUTTONS           = "Assignable buttons";
 
-    private static final String       DEVICE_SELECT                           = "<Select a profile>";
-    private static final String       DEVICE_BEHRINGER_X_TOUCH                = "Behringer X-Touch";
-    private static final String       DEVICE_BEHRINGER_X_TOUCH_ONE            = "Behringer X-Touch One";
-    private static final String       DEVICE_ICON_PLATFORM_M                  = "icon Platform M / M+";
-    private static final String       DEVICE_ICON_QCON_PRO_X                  = "icon QConPro X";
-    private static final String       DEVICE_MACKIE_MCU_PRO                   = "Mackie MCU Pro";
-    private static final String       DEVICE_ZOOM_R16                         = "Zoom R16";
+    private static final String       DEVICE_SELECT                         = "<Select a profile>";
+    private static final String       DEVICE_BEHRINGER_X_TOUCH              = "Behringer X-Touch";
+    private static final String       DEVICE_BEHRINGER_X_TOUCH_ONE          = "Behringer X-Touch One";
+    private static final String       DEVICE_ICON_PLATFORM_M                = "icon Platform M / M+";
+    private static final String       DEVICE_ICON_QCON_PRO_X                = "icon QConPro X";
+    private static final String       DEVICE_MACKIE_MCU_PRO                 = "Mackie MCU Pro";
+    private static final String       DEVICE_ZOOM_R16                       = "Zoom R16";
 
-    private static final String []    DEVICE_OPTIONS                          =
+    private static final String []    DEVICE_OPTIONS                        =
     {
         DEVICE_SELECT,
         DEVICE_BEHRINGER_X_TOUCH,
@@ -101,7 +101,7 @@ public class MCUConfiguration extends AbstractConfiguration
         DEVICE_ZOOM_R16
     };
 
-    private static final String []    ASSIGNABLE_VALUES                       =
+    private static final String []    ASSIGNABLE_VALUES                     =
     {
         "Toggle Play",
         "Toggle Record",
@@ -126,7 +126,7 @@ public class MCUConfiguration extends AbstractConfiguration
         "Action"
     };
 
-    private static final String []    ASSIGNABLE_BUTTON_NAMES                 =
+    private static final String []    ASSIGNABLE_BUTTON_NAMES               =
     {
         "Footswitch 1",
         "Footswitch 2",
@@ -137,26 +137,26 @@ public class MCUConfiguration extends AbstractConfiguration
         "F5"
     };
 
-    private static final String []    TIME_OR_BEATS_OPTIONS                   =
+    private static final String []    TIME_OR_BEATS_OPTIONS                 =
     {
         "Time",
         "Beats"
     };
 
-    private static final String []    TEMPO_OR_TICKS_OPTIONS                  =
+    private static final String []    TEMPO_OR_TICKS_OPTIONS                =
     {
         "Ticks",
         "Tempo"
     };
 
-    private static final String []    MCU_DEVICE_TYPE_OPTIONS                 =
+    private static final String []    MCU_DEVICE_TYPE_OPTIONS               =
     {
         "Main",
         "Extender",
         "Mackie Extender"
     };
 
-    private static final String [] [] MCU_DEVICE_DESCRIPTORS                  =
+    private static final String [] [] MCU_DEVICE_DESCRIPTORS                =
     {
         {
             "MCU Device 1"
@@ -202,8 +202,8 @@ public class MCUConfiguration extends AbstractConfiguration
     private boolean                   use7Characters;
     private boolean                   touchSelectsChannel;
     private boolean                   touchChannelVolumeMode;
-    private final int []              assignableFunctions                     = new int [7];
-    private final String []           assignableFunctionActions               = new String [7];
+    private final int []              assignableFunctions                   = new int [7];
+    private final String []           assignableFunctionActions             = new String [7];
     private final MCUDeviceType []    deviceTyes;
     private boolean                   includeFXTracksInTrackBank;
     private boolean                   pinFXTracksToLastController;

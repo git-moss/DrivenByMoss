@@ -51,17 +51,17 @@ public class AssignableCommand extends FootswitchCommand<MCUControlSurface, MCUC
 
         switch (this.getSetting ())
         {
-            case MCUConfiguration.FOOTSWITCH_2_PREV_MODE:
+            case MCUConfiguration.FOOTSWITCH_PREV_MODE:
                 if (event == ButtonEvent.DOWN)
                     this.switcher.scrollDown ();
                 break;
 
-            case MCUConfiguration.FOOTSWITCH_2_NEXT_MODE:
+            case MCUConfiguration.FOOTSWITCH_NEXT_MODE:
                 if (event == ButtonEvent.DOWN)
                     this.switcher.scrollUp ();
                 break;
 
-            case MCUConfiguration.FOOTSWITCH_2_SHOW_MARKER_MODE:
+            case MCUConfiguration.FOOTSWITCH_SHOW_MARKER_MODE:
                 if (event != ButtonEvent.DOWN)
                     return;
                 final ModeManager modeManager = this.surface.getModeManager ();
@@ -74,18 +74,18 @@ public class AssignableCommand extends FootswitchCommand<MCUControlSurface, MCUC
                     this.surface.getDisplay ().notify (mode.getName ());
                 break;
 
-            case MCUConfiguration.FOOTSWITCH_2_USE_FADERS_LIKE_EDIT_KNOBS:
+            case MCUConfiguration.FOOTSWITCH_USE_FADERS_LIKE_EDIT_KNOBS:
                 this.flipCommand.executeNormal (event);
                 break;
 
-            case MCUConfiguration.FOOTSWITCH_2_TOGGLE_MOTOR_FADERS_ON_OFF:
+            case MCUConfiguration.FOOTSWITCH_TOGGLE_MOTOR_FADERS_ON_OFF:
                 if (event != ButtonEvent.DOWN)
                     return;
                 configuration.toggleMotorFaders ();
                 this.mvHelper.delayDisplay ( () -> "Motor Faders: " + (configuration.hasMotorFaders () ? "On" : "Off"));
                 break;
 
-            case MCUConfiguration.FOOTSWITCH_2_ACTION:
+            case MCUConfiguration.FOOTSWITCH_ACTION:
                 if (event != ButtonEvent.DOWN)
                     return;
                 final String assignableActionID = configuration.getAssignableAction (this.index);
@@ -117,44 +117,44 @@ public class AssignableCommand extends FootswitchCommand<MCUControlSurface, MCUC
     {
         switch (this.getSetting ())
         {
-            case AbstractConfiguration.FOOTSWITCH_2_TOGGLE_PLAY:
+            case AbstractConfiguration.FOOTSWITCH_TOGGLE_PLAY:
                 return this.model.getTransport ().isPlaying ();
 
-            case AbstractConfiguration.FOOTSWITCH_2_TOGGLE_RECORD:
+            case AbstractConfiguration.FOOTSWITCH_TOGGLE_RECORD:
                 return this.model.getTransport ().isRecording ();
 
-            case AbstractConfiguration.FOOTSWITCH_2_TOGGLE_CLIP_OVERDUB:
+            case AbstractConfiguration.FOOTSWITCH_TOGGLE_CLIP_OVERDUB:
                 return this.model.getTransport ().isLauncherOverdub ();
 
-            case AbstractConfiguration.FOOTSWITCH_2_PANEL_LAYOUT_ARRANGE:
+            case AbstractConfiguration.FOOTSWITCH_PANEL_LAYOUT_ARRANGE:
                 return IApplication.PANEL_LAYOUT_ARRANGE.equals (this.model.getApplication ().getPanelLayout ());
 
-            case AbstractConfiguration.FOOTSWITCH_2_PANEL_LAYOUT_MIX:
+            case AbstractConfiguration.FOOTSWITCH_PANEL_LAYOUT_MIX:
                 return IApplication.PANEL_LAYOUT_MIX.equals (this.model.getApplication ().getPanelLayout ());
 
-            case AbstractConfiguration.FOOTSWITCH_2_PANEL_LAYOUT_EDIT:
+            case AbstractConfiguration.FOOTSWITCH_PANEL_LAYOUT_EDIT:
                 return IApplication.PANEL_LAYOUT_EDIT.equals (this.model.getApplication ().getPanelLayout ());
 
-            case MCUConfiguration.FOOTSWITCH_2_SHOW_MARKER_MODE:
+            case MCUConfiguration.FOOTSWITCH_SHOW_MARKER_MODE:
                 return this.surface.getModeManager ().isActive (Modes.MARKERS);
 
-            case MCUConfiguration.FOOTSWITCH_2_USE_FADERS_LIKE_EDIT_KNOBS:
+            case MCUConfiguration.FOOTSWITCH_USE_FADERS_LIKE_EDIT_KNOBS:
                 return this.surface.getConfiguration ().useFadersAsKnobs ();
 
-            case MCUConfiguration.FOOTSWITCH_2_TOGGLE_MOTOR_FADERS_ON_OFF:
+            case MCUConfiguration.FOOTSWITCH_TOGGLE_MOTOR_FADERS_ON_OFF:
                 return this.surface.getConfiguration ().hasMotorFaders ();
 
-            case AbstractConfiguration.FOOTSWITCH_2_UNDO:
-            case AbstractConfiguration.FOOTSWITCH_2_TAP_TEMPO:
-            case AbstractConfiguration.FOOTSWITCH_2_NEW_BUTTON:
-            case AbstractConfiguration.FOOTSWITCH_2_CLIP_BASED_LOOPER:
-            case AbstractConfiguration.FOOTSWITCH_2_STOP_ALL_CLIPS:
-            case AbstractConfiguration.FOOTSWITCH_2_ADD_INSTRUMENT_TRACK:
-            case AbstractConfiguration.FOOTSWITCH_2_ADD_AUDIO_TRACK:
-            case AbstractConfiguration.FOOTSWITCH_2_ADD_EFFECT_TRACK:
-            case AbstractConfiguration.FOOTSWITCH_2_QUANTIZE:
-            case MCUConfiguration.FOOTSWITCH_2_PREV_MODE:
-            case MCUConfiguration.FOOTSWITCH_2_NEXT_MODE:
+            case AbstractConfiguration.FOOTSWITCH_UNDO:
+            case AbstractConfiguration.FOOTSWITCH_TAP_TEMPO:
+            case AbstractConfiguration.FOOTSWITCH_NEW_BUTTON:
+            case AbstractConfiguration.FOOTSWITCH_CLIP_BASED_LOOPER:
+            case AbstractConfiguration.FOOTSWITCH_STOP_ALL_CLIPS:
+            case AbstractConfiguration.FOOTSWITCH_ADD_INSTRUMENT_TRACK:
+            case AbstractConfiguration.FOOTSWITCH_ADD_AUDIO_TRACK:
+            case AbstractConfiguration.FOOTSWITCH_ADD_EFFECT_TRACK:
+            case AbstractConfiguration.FOOTSWITCH_QUANTIZE:
+            case MCUConfiguration.FOOTSWITCH_PREV_MODE:
+            case MCUConfiguration.FOOTSWITCH_NEXT_MODE:
             default:
                 return false;
         }

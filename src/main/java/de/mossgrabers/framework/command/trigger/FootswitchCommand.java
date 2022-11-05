@@ -19,6 +19,7 @@ import de.mossgrabers.framework.daw.clip.IClip;
 import de.mossgrabers.framework.daw.data.ISlot;
 import de.mossgrabers.framework.daw.data.ITrack;
 import de.mossgrabers.framework.daw.data.bank.ISlotBank;
+import de.mossgrabers.framework.daw.midi.MidiConstants;
 import de.mossgrabers.framework.daw.resource.ChannelType;
 import de.mossgrabers.framework.utils.ButtonEvent;
 
@@ -69,47 +70,64 @@ public class FootswitchCommand<S extends IControlSurface<C>, C extends Configura
     @Override
     public void execute (final ButtonEvent event, final int velocity)
     {
-        if (this.handleViewCommand (event) || event != ButtonEvent.DOWN)
+        if (this.handleViewCommand (event) || event == ButtonEvent.LONG)
             return;
+
+        final boolean isDown = event == ButtonEvent.DOWN;
 
         switch (this.getSetting ())
         {
-            case AbstractConfiguration.FOOTSWITCH_2_STOP_ALL_CLIPS:
-                this.model.getCurrentTrackBank ().stop ();
+            case AbstractConfiguration.FOOTSWITCH_STOP_ALL_CLIPS:
+                if (isDown)
+                    this.model.getCurrentTrackBank ().stop ();
                 break;
 
-            case AbstractConfiguration.FOOTSWITCH_2_TOGGLE_CLIP_OVERDUB:
-                this.model.getTransport ().toggleLauncherOverdub ();
+            case AbstractConfiguration.FOOTSWITCH_TOGGLE_CLIP_OVERDUB:
+                if (isDown)
+                    this.model.getTransport ().toggleLauncherOverdub ();
                 break;
 
-            case AbstractConfiguration.FOOTSWITCH_2_PANEL_LAYOUT_ARRANGE:
-                this.model.getApplication ().setPanelLayout (IApplication.PANEL_LAYOUT_ARRANGE);
+            case AbstractConfiguration.FOOTSWITCH_PANEL_LAYOUT_ARRANGE:
+                if (isDown)
+                    this.model.getApplication ().setPanelLayout (IApplication.PANEL_LAYOUT_ARRANGE);
                 break;
 
-            case AbstractConfiguration.FOOTSWITCH_2_PANEL_LAYOUT_MIX:
-                this.model.getApplication ().setPanelLayout (IApplication.PANEL_LAYOUT_MIX);
+            case AbstractConfiguration.FOOTSWITCH_PANEL_LAYOUT_MIX:
+                if (isDown)
+                    this.model.getApplication ().setPanelLayout (IApplication.PANEL_LAYOUT_MIX);
                 break;
 
-            case AbstractConfiguration.FOOTSWITCH_2_PANEL_LAYOUT_EDIT:
-                this.model.getApplication ().setPanelLayout (IApplication.PANEL_LAYOUT_EDIT);
+            case AbstractConfiguration.FOOTSWITCH_PANEL_LAYOUT_EDIT:
+                if (isDown)
+                    this.model.getApplication ().setPanelLayout (IApplication.PANEL_LAYOUT_EDIT);
                 break;
 
-            case AbstractConfiguration.FOOTSWITCH_2_ADD_INSTRUMENT_TRACK:
-                this.model.getTrackBank ().addChannel (ChannelType.INSTRUMENT);
+            case AbstractConfiguration.FOOTSWITCH_ADD_INSTRUMENT_TRACK:
+                if (isDown)
+                    this.model.getTrackBank ().addChannel (ChannelType.INSTRUMENT);
                 break;
 
-            case AbstractConfiguration.FOOTSWITCH_2_ADD_AUDIO_TRACK:
-                this.model.getTrackBank ().addChannel (ChannelType.AUDIO);
+            case AbstractConfiguration.FOOTSWITCH_ADD_AUDIO_TRACK:
+                if (isDown)
+                    this.model.getTrackBank ().addChannel (ChannelType.AUDIO);
                 break;
 
-            case AbstractConfiguration.FOOTSWITCH_2_ADD_EFFECT_TRACK:
-                this.model.getApplication ().addEffectTrack ();
+            case AbstractConfiguration.FOOTSWITCH_ADD_EFFECT_TRACK:
+                if (isDown)
+                    this.model.getApplication ().addEffectTrack ();
                 break;
 
-            case AbstractConfiguration.FOOTSWITCH_2_QUANTIZE:
-                final IClip clip = this.model.getCursorClip ();
-                if (clip.doesExist ())
-                    clip.quantize (this.surface.getConfiguration ().getQuantizeAmount () / 100.0);
+            case AbstractConfiguration.FOOTSWITCH_QUANTIZE:
+                if (isDown)
+                {
+                    final IClip clip = this.model.getCursorClip ();
+                    if (clip.doesExist ())
+                        clip.quantize (this.surface.getConfiguration ().getQuantizeAmount () / 100.0);
+                }
+                break;
+
+            case AbstractConfiguration.FOOTSWITCH_SUSTAIN_PEDAL:
+                this.surface.getMidiInput ().sendRawMidiEvent (MidiConstants.CMD_CC, 64, isDown ? 127 : 0);
                 break;
 
             default:
@@ -140,27 +158,27 @@ public class FootswitchCommand<S extends IControlSurface<C>, C extends Configura
     {
         switch (this.getSetting ())
         {
-            case AbstractConfiguration.FOOTSWITCH_2_TOGGLE_PLAY:
+            case AbstractConfiguration.FOOTSWITCH_TOGGLE_PLAY:
                 this.playCommand.execute (event, 127);
                 break;
 
-            case AbstractConfiguration.FOOTSWITCH_2_TOGGLE_RECORD:
+            case AbstractConfiguration.FOOTSWITCH_TOGGLE_RECORD:
                 this.recordCommand.execute (event, 127);
                 break;
 
-            case AbstractConfiguration.FOOTSWITCH_2_UNDO:
+            case AbstractConfiguration.FOOTSWITCH_UNDO:
                 this.undoCommand.execute (event, 127);
                 break;
 
-            case AbstractConfiguration.FOOTSWITCH_2_TAP_TEMPO:
+            case AbstractConfiguration.FOOTSWITCH_TAP_TEMPO:
                 this.tapTempoCommand.execute (event, 127);
                 break;
 
-            case AbstractConfiguration.FOOTSWITCH_2_NEW_BUTTON:
+            case AbstractConfiguration.FOOTSWITCH_NEW_BUTTON:
                 this.newCommand.execute (event, 127);
                 break;
 
-            case AbstractConfiguration.FOOTSWITCH_2_CLIP_BASED_LOOPER:
+            case AbstractConfiguration.FOOTSWITCH_CLIP_BASED_LOOPER:
                 this.handleLooper (event);
                 break;
 

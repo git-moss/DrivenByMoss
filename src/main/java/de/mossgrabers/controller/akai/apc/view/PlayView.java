@@ -36,12 +36,10 @@ public class PlayView extends AbstractPlayView<APCControlSurface, APCConfigurati
 
     /** {@inheritDoc} */
     @Override
-    public void onGridNote (final int note, final int velocity)
+    protected void playNote (final int note, final int velocity)
     {
-        if (!this.model.canSelectedTrackHoldNotes ())
+        if (this.surface.isMkII ())
             return;
-
-        super.onGridNote (note, velocity);
 
         final int mapped = this.keyManager.map (note);
         if (mapped != -1)

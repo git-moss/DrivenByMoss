@@ -30,6 +30,8 @@ public class APCConfiguration extends AbstractConfiguration
         Views.RAINDROPS
     };
 
+    private final boolean         isMkII;
+
 
     /**
      * Constructor.
@@ -37,10 +39,13 @@ public class APCConfiguration extends AbstractConfiguration
      * @param host The DAW host
      * @param valueChanger The value changer
      * @param arpeggiatorModes The available arpeggiator modes
+     * @param isMkII True if is MkII
      */
-    public APCConfiguration (final IHost host, final IValueChanger valueChanger, final List<ArpeggiatorMode> arpeggiatorModes)
+    public APCConfiguration (final IHost host, final IValueChanger valueChanger, final List<ArpeggiatorMode> arpeggiatorModes, final boolean isMkII)
     {
         super (host, valueChanger, arpeggiatorModes);
+
+        this.isMkII = isMkII;
     }
 
 
@@ -83,14 +88,15 @@ public class APCConfiguration extends AbstractConfiguration
         // Drum Sequencer
 
         if (this.host.supports (Capability.HAS_DRUM_DEVICE))
-        {
             this.activateTurnOffEmptyDrumPadsSetting (globalSettings);
-        }
 
         ///////////////////////////
         // Workflow
 
         this.activateExcludeDeactivatedItemsSetting (globalSettings);
         this.activateNewClipLengthSetting (globalSettings);
+        this.activateFootswitchSetting (globalSettings, 0, "Footswitch 1");
+        if (!this.isMkII)
+            this.activateFootswitchSetting (globalSettings, 1, "Footswitch 2");
     }
 }

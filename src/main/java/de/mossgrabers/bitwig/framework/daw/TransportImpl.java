@@ -84,6 +84,7 @@ public class TransportImpl implements ITransport
         this.transport.isMetronomeAudibleDuringPreRoll ().markInterested ();
         this.transport.preRoll ().markInterested ();
         this.transport.getPosition ().markInterested ();
+        this.transport.playStartPosition ().markInterested ();
         this.transport.arrangerLoopStart ().markInterested ();
         this.transport.arrangerLoopDuration ().markInterested ();
         this.transport.clipLauncherPostRecordingAction ().markInterested ();
@@ -120,6 +121,7 @@ public class TransportImpl implements ITransport
         Util.setIsSubscribed (this.transport.isMetronomeAudibleDuringPreRoll (), enable);
         Util.setIsSubscribed (this.transport.preRoll (), enable);
         Util.setIsSubscribed (this.transport.getPosition (), enable);
+        Util.setIsSubscribed (this.transport.playStartPosition (), enable);
         Util.setIsSubscribed (this.transport.arrangerLoopStart (), enable);
         Util.setIsSubscribed (this.transport.arrangerLoopDuration (), enable);
         Util.setIsSubscribed (this.transport.clipLauncherPostRecordingAction (), enable);
@@ -482,7 +484,9 @@ public class TransportImpl implements ITransport
     @Override
     public void setPosition (final double beats)
     {
-        this.transport.getPosition ().set (beats);
+        this.transport.playStartPosition ().set (beats);
+        if (this.transport.isPlaying ().get ())
+            this.transport.jumpToPlayStartPosition ();
     }
 
 
@@ -491,7 +495,14 @@ public class TransportImpl implements ITransport
     public void changePosition (final boolean increase, final boolean slow)
     {
         final double frac = slow ? TransportConstants.INC_FRACTION_TIME_SLOW : TransportConstants.INC_FRACTION_TIME;
-        this.transport.getPosition ().inc (increase ? frac : -frac);
+        final double position = this.transport.playStartPosition ().get ();
+        double newPos = Math.max (0, position + (increase ? frac : -frac));
+
+        // Adjust to resolution
+        final double intPosition = Math.floor (newPos / frac);
+        newPos = intPosition * frac;
+
+        this.setPosition (newPos);
     }
 
 

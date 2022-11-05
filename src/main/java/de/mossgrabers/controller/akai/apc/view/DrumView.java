@@ -16,6 +16,7 @@ import de.mossgrabers.framework.daw.clip.NotePosition;
 import de.mossgrabers.framework.daw.clip.StepState;
 import de.mossgrabers.framework.daw.constants.Resolution;
 import de.mossgrabers.framework.daw.data.IChannel;
+import de.mossgrabers.framework.daw.midi.MidiConstants;
 import de.mossgrabers.framework.featuregroup.ModeManager;
 import de.mossgrabers.framework.mode.Modes;
 import de.mossgrabers.framework.utils.ButtonEvent;
@@ -195,5 +196,18 @@ public class DrumView extends AbstractDrumExView<APCControlSurface, APCConfigura
             return this.configuration.getNoteRepeatLength ().ordinal () == index ? 1 : 0;
 
         return this.getResolutionIndex () == index ? 1 : 0;
+    }
+
+
+    /** {@inheritDoc} */
+    @Override
+    protected void playNote (final int note, final int velocity)
+    {
+        if (this.surface.isMkII ())
+            return;
+
+        final int mapped = this.keyManager.map (note);
+        if (mapped != -1)
+            this.surface.sendMidiEvent (MidiConstants.CMD_NOTE_ON, mapped, velocity);
     }
 }

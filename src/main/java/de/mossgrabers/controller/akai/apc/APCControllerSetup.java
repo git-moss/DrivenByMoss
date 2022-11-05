@@ -32,12 +32,12 @@ import de.mossgrabers.controller.akai.apc.view.SessionView;
 import de.mossgrabers.controller.akai.apc.view.ShiftView;
 import de.mossgrabers.framework.command.continuous.KnobRowModeCommand;
 import de.mossgrabers.framework.command.trigger.Direction;
+import de.mossgrabers.framework.command.trigger.FootswitchCommand;
 import de.mossgrabers.framework.command.trigger.application.PaneCommand;
 import de.mossgrabers.framework.command.trigger.application.PaneCommand.Panels;
 import de.mossgrabers.framework.command.trigger.application.PanelLayoutCommand;
 import de.mossgrabers.framework.command.trigger.application.RedoCommand;
 import de.mossgrabers.framework.command.trigger.application.UndoCommand;
-import de.mossgrabers.framework.command.trigger.clip.NewCommand;
 import de.mossgrabers.framework.command.trigger.device.DeviceLayerLeftCommand;
 import de.mossgrabers.framework.command.trigger.device.DeviceLayerRightCommand;
 import de.mossgrabers.framework.command.trigger.device.DeviceOnOffCommand;
@@ -105,7 +105,7 @@ public class APCControllerSetup extends AbstractControllerSetup<APCControlSurfac
      * @param factory The factory
      * @param globalSettings The global settings
      * @param documentSettings The document (project) specific settings
-     * @param isMkII True if is mkII
+     * @param isMkII True if is MkII
      */
     public APCControllerSetup (final IHost host, final ISetupFactory factory, final ISettingsUI globalSettings, final ISettingsUI documentSettings, final boolean isMkII)
     {
@@ -114,7 +114,7 @@ public class APCControllerSetup extends AbstractControllerSetup<APCControlSurfac
         this.isMkII = isMkII;
         this.colorManager = new APCColorManager (isMkII);
         this.valueChanger = new TwosComplementValueChanger (128, 1);
-        this.configuration = new APCConfiguration (host, this.valueChanger, factory.getArpeggiatorModes ());
+        this.configuration = new APCConfiguration (host, this.valueChanger, factory.getArpeggiatorModes (), isMkII);
     }
 
 
@@ -149,7 +149,7 @@ public class APCControllerSetup extends AbstractControllerSetup<APCControlSurfac
         final IMidiAccess midiAccess = this.factory.createMidiAccess ();
         final IMidiOutput output = midiAccess.createOutput ();
         final IMidiInput input = midiAccess.createInput ("Pads", "80????" /* Note off */,
-                "90????" /* Note on */, "B040??" /* Sustain pedal */);
+                "90????" /* Note on */);
         final APCControlSurface surface = new APCControlSurface (this.host, this.colorManager, this.configuration, output, input, this.isMkII);
         this.surfaces.add (surface);
     }
@@ -269,7 +269,6 @@ public class APCControllerSetup extends AbstractControllerSetup<APCControlSurfac
         else
         {
             this.addButton (ButtonID.STOP, "STOP", new StopCommand<> (this.model, surface), APCControlSurface.APC_BUTTON_STOP, () -> !t.isPlaying (), ColorManager.BUTTON_STATE_OFF, ColorManager.BUTTON_STATE_ON);
-            this.addButton (ButtonID.NEW, "Footswitch", new NewCommand<> (this.model, surface), APCControlSurface.APC_FOOTSWITCH_2);
         }
 
         this.addButton (ButtonID.CLIP, this.isMkII ? "SESSION" : "MIDI OVERDUB", new SessionRecordCommand (this.model, surface), this.isMkII ? APCControlSurface.APC_BUTTON_SESSION : APCControlSurface.APC_BUTTON_MIDI_OVERDUB, t::isLauncherOverdub, ColorManager.BUTTON_STATE_OFF, ColorManager.BUTTON_STATE_ON);
@@ -295,6 +294,10 @@ public class APCControllerSetup extends AbstractControllerSetup<APCControlSurfac
             final ButtonID sceneButtonID = ButtonID.get (ButtonID.SCENE1, i);
             this.addButton (sceneButtonID, "Scene " + (i + 1), new ViewButtonCommand<> (sceneButtonID, surface), APCControlSurface.APC_BUTTON_SCENE_LAUNCH_1 + i, new FeatureGroupButtonColorSupplier (viewManager, sceneButtonID));
         }
+
+        this.addButton (ButtonID.FOOTSWITCH1, "Foot Controller 1", new FootswitchCommand<> (this.model, surface, 0), APCControlSurface.APC_FOOTSWITCH_1);
+        if (!this.isMkII)
+            this.addButton (ButtonID.FOOTSWITCH2, "Foot Controller 2", new FootswitchCommand<> (this.model, surface, 1), APCControlSurface.APC_FOOTSWITCH_2);
     }
 
 
@@ -413,6 +416,9 @@ public class APCControllerSetup extends AbstractControllerSetup<APCControlSurfac
             surface.getButton (ButtonID.SCENE3).setBounds (500.75, 137.5, 36.0, 18.5);
             surface.getButton (ButtonID.SCENE4).setBounds (500.75, 165.5, 36.0, 18.5);
             surface.getButton (ButtonID.SCENE5).setBounds (500.75, 194.5, 36.0, 18.5);
+
+            surface.getButton (ButtonID.FOOTSWITCH1).setBounds (670, 1.25, 37.5, 21.0);
+
             surface.getButton (ButtonID.STOP_ALL_CLIPS).setBounds (502.25, 227.25, 33.25, 18.75);
             surface.getButton (ButtonID.MASTERTRACK).setBounds (500.75, 263.0, 36.0, 15.75);
 
@@ -605,7 +611,8 @@ public class APCControllerSetup extends AbstractControllerSetup<APCControlSurfac
             surface.getButton (ButtonID.SCENE4).setBounds (428.25, 184.75, 33.0, 32.0);
             surface.getButton (ButtonID.SCENE5).setBounds (428.25, 228.0, 33.0, 32.0);
 
-            surface.getButton (ButtonID.NEW).setBounds (715.5, 1.25, 37.5, 21.0);
+            surface.getButton (ButtonID.FOOTSWITCH1).setBounds (670, 1.25, 37.5, 21.0);
+            surface.getButton (ButtonID.FOOTSWITCH2).setBounds (715.5, 1.25, 37.5, 21.0);
 
             surface.getButton (ButtonID.SHIFT).setBounds (508.25, 270.75, 33.25, 15.0);
             surface.getButton (ButtonID.PLAY).setBounds (551.0, 536.75, 32.5, 20.0);
@@ -711,6 +718,8 @@ public class APCControllerSetup extends AbstractControllerSetup<APCControlSurfac
     @Override
     protected BindType getTriggerBindType (final ButtonID buttonID)
     {
+        if (buttonID == ButtonID.FOOTSWITCH1 || buttonID == ButtonID.FOOTSWITCH2)
+            return BindType.CC;
         return BindType.NOTE;
     }
 
