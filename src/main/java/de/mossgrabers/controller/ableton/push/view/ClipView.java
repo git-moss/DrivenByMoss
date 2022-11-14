@@ -82,7 +82,7 @@ public class ClipView extends AbstractSequencerView<PushControlSurface, PushConf
             final IClip clip = this.getClip ();
             clip.setLoopStart (newStart);
             clip.setLoopLength ((int) ((end - start) * quartersPerPad));
-            clip.setPlayRange (newStart, end * quartersPerPad);
+            clip.setPlayStart(newStart);
 
             this.loopPadPressed = -1;
         }
@@ -103,15 +103,22 @@ public class ClipView extends AbstractSequencerView<PushControlSurface, PushConf
         final double start = clip.getLoopStart ();
         final int loopStartPad = (int) Math.floor (Math.max (0, start) / quartersPerPad);
         final int loopEndPad = (int) Math.ceil (Math.min (maxQuarters, start + clip.getLoopLength ()) / quartersPerPad);
+        final int clipEndPad = (int) Math.ceil (Math.min (maxQuarters, clip.getPlayEnd()) / quartersPerPad);
         final boolean isPush2 = this.surface.getConfiguration ().isPush2 ();
         final int white = isPush2 ? PushColorManager.PUSH2_COLOR2_WHITE : PushColorManager.PUSH1_COLOR2_WHITE;
         final int green = isPush2 ? PushColorManager.PUSH2_COLOR2_GREEN : PushColorManager.PUSH1_COLOR2_GREEN;
         final int off = isPush2 ? PushColorManager.PUSH2_COLOR_BLACK : PushColorManager.PUSH1_COLOR_BLACK;
+        final int available = isPush2 ? PushColorManager.PUSH2_COLOR2_GREY_MD : PushColorManager.PUSH1_COLOR2_GREY_MD;
+
         for (int pad = 0; pad < 64; pad++)
         {
             final int color;
-            if (pad >= loopStartPad && pad < loopEndPad)
+            if (pad < loopStartPad)
+                color = available;
+            else if (pad < loopEndPad)
                 color = pad == currentMeasure ? green : white;
+            else if (pad < clipEndPad)
+                color = available;
             else
                 color = off;
             this.surface.getPadGrid ().lightEx (pad % 8, pad / 8, color, -1, false);
