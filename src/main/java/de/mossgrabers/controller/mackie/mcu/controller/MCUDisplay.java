@@ -54,6 +54,8 @@ public class MCUDisplay extends AbstractTextDisplay
         this.hasMaster = hasMaster;
         this.isExtender = isMCUExtender;
 
+        this.centerNotification = false;
+
         for (int i = 0; i < this.executors.length; i++)
             this.executors[i] = new LatestTaskExecutor ();
     }
@@ -147,7 +149,7 @@ public class MCUDisplay extends AbstractTextDisplay
         if (this.isShutdown)
             return;
 
-        this.notifyOnDisplay ("Please start " + this.host.getName () + " ...     ");
+        this.notifyOnDisplay ("Please  start " + this.host.getName () + " ...     ");
 
         // Prevent further sends
         this.isShutdown = true;

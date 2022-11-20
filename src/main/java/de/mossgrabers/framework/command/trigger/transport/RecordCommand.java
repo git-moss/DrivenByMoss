@@ -114,6 +114,26 @@ public class RecordCommand<S extends IControlSurface<C>, C extends Configuration
     }
 
 
+    /** {@inheritDoc} */
+    @Override
+    public void executeNormal (final ButtonEvent event)
+    {
+        // Backwards compatibility to old interface, e.g. Launchpad ShiftView
+        if (event == ButtonEvent.DOWN)
+            this.handleExecute (false);
+    }
+
+
+    /** {@inheritDoc} */
+    @Override
+    public void executeShifted (final ButtonEvent event)
+    {
+        // Backwards compatibility to old interface, e.g. Launchpad ShiftView
+        if (event == ButtonEvent.DOWN)
+            this.handleExecute (true);
+    }
+
+
     protected void handleExecute (final boolean isShiftPressed)
     {
         final boolean flipRecord = this.surface.getConfiguration ().isFlipRecord ();

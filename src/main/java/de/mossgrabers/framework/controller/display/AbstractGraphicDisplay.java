@@ -126,6 +126,17 @@ public abstract class AbstractGraphicDisplay implements IGraphicDisplay
 
     /** {@inheritDoc} */
     @Override
+    public boolean isNotificationActive ()
+    {
+        synchronized (this.counterSync)
+        {
+            return this.counter.get () > 0;
+        }
+    }
+
+
+    /** {@inheritDoc} */
+    @Override
     public void showDebugWindow ()
     {
         this.image.showDisplayWindow ();

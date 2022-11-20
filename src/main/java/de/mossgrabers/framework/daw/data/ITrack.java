@@ -50,6 +50,14 @@ public interface ITrack extends IChannel
 
     /**
      * Expand or collapse the group.
+     *
+     * @param isExpanded True to expand the group otherwise collapse it
+     */
+    void setGroupExpanded (boolean isExpanded);
+
+
+    /**
+     * Toggle the expanded state of the group.
      */
     void toggleGroupExpanded ();
 

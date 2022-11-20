@@ -130,6 +130,8 @@ public abstract class AbstractConfiguration implements Configuration
     public static final Integer      FOOTSWITCH_4                    = Integer.valueOf (43);
     /** Preferred note view. */
     public static final Integer      PREFERRED_NOTE_VIEW             = Integer.valueOf (44);
+    /** Start with session view if active. */
+    public static final Integer      START_WITH_SESSION_VIEW         = Integer.valueOf (45);
 
     // Implementation IDs start at 50
 
@@ -444,6 +446,7 @@ public abstract class AbstractConfiguration implements Configuration
     private RecordFunction                            shiftedRecordButtonFunction         = RecordFunction.NEW_CLIP;
     private Views                                     preferredNoteView                   = Views.PLAY;
     protected Views                                   preferredAudioView                  = Views.PLAY;
+    private boolean                                   startWithSessionView                = false;
     private boolean                                   useCombinationButtonToSoundDrumPads = false;
 
 
@@ -1621,6 +1624,23 @@ public abstract class AbstractConfiguration implements Configuration
     }
 
 
+    /**
+     * Activate the start with session view setting.
+     *
+     * @param settingsUI The settings
+     */
+    protected void activateStartWithSessionViewSetting (final ISettingsUI settingsUI)
+    {
+        final IEnumSetting startWithSessionViewSetting = settingsUI.getEnumSetting ("Start with session view", CATEGORY_PLAY_AND_SEQUENCE, ON_OFF_OPTIONS, ON_OFF_OPTIONS[0]);
+        startWithSessionViewSetting.addValueObserver (value -> {
+            this.startWithSessionView = "On".equals (value);
+            this.notifyObservers (START_WITH_SESSION_VIEW);
+        });
+
+        this.isSettingActive.add (START_WITH_SESSION_VIEW);
+    }
+
+
     /** {@inheritDoc} */
     @Override
     public void notifyAllObservers ()
@@ -1782,6 +1802,14 @@ public abstract class AbstractConfiguration implements Configuration
     public Views getPreferredAudioView ()
     {
         return this.preferredAudioView;
+    }
+
+
+    /** {@inheritDoc} */
+    @Override
+    public boolean shouldStartWithSessionView ()
+    {
+        return this.startWithSessionView;
     }
 
 

@@ -1036,7 +1036,7 @@ public class Scales
     public String getDrumRangeText ()
     {
         final int s = this.getDrumOffset ();
-        return Scales.formatDrumNote (s) + " to " + Scales.formatDrumNote (s + 15);
+        return "Offset: " + (s - this.drumNoteStart) + " (" + Scales.formatDrumNote (s) + ")";
     }
 
 

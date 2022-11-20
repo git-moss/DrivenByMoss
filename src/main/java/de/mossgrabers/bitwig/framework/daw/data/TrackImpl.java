@@ -200,6 +200,14 @@ public class TrackImpl extends ChannelImpl implements ITrack
 
     /** {@inheritDoc} */
     @Override
+    public void setGroupExpanded (final boolean isExpanded)
+    {
+        this.track.isGroupExpanded ().set (isExpanded);
+    }
+
+
+    /** {@inheritDoc} */
+    @Override
     public void toggleGroupExpanded ()
     {
         this.track.isGroupExpanded ().toggle ();

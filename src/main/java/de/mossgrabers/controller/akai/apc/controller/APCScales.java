@@ -23,6 +23,8 @@ public class APCScales extends Scales
     public APCScales (final IValueChanger valueChanger)
     {
         super (valueChanger, 36, 76, 8, 5);
+
+        this.setDrumNoteEnd (76);
     }
 
 

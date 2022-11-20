@@ -230,7 +230,7 @@ public class MidiModule extends AbstractModule
                 break;
 
             case "aftertouch":
-                int numValue = toInteger (value);
+                final int numValue = toInteger (value);
                 if (path.isEmpty ())
                 {
                     input.sendRawMidiEvent (MidiConstants.CMD_CHANNEL_AFTERTOUCH + midiChannel, 0, numValue);

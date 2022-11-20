@@ -13,6 +13,7 @@ import de.mossgrabers.controller.generic.flexihandler.DeviceHandler;
 import de.mossgrabers.controller.generic.flexihandler.EqHandler;
 import de.mossgrabers.controller.generic.flexihandler.FxTrackHandler;
 import de.mossgrabers.controller.generic.flexihandler.GlobalHandler;
+import de.mossgrabers.controller.generic.flexihandler.LayerHandler;
 import de.mossgrabers.controller.generic.flexihandler.LayoutHandler;
 import de.mossgrabers.controller.generic.flexihandler.MarkerHandler;
 import de.mossgrabers.controller.generic.flexihandler.MasterHandler;
@@ -316,6 +317,7 @@ public class GenericFlexiControllerSetup extends AbstractControllerSetup<Generic
         surface.registerHandler (new FxTrackHandler (this.model, surface, this.configuration, this.absoluteLowResValueChanger, this.signedBitRelativeValueChanger, this.offsetBinaryRelativeValueChanger));
         surface.registerHandler (new MasterHandler (this.model, surface, this.configuration, this.absoluteLowResValueChanger, this.signedBitRelativeValueChanger, this.offsetBinaryRelativeValueChanger));
         surface.registerHandler (new DeviceHandler (this.model, surface, this.configuration, this.absoluteLowResValueChanger, this.signedBitRelativeValueChanger, this.offsetBinaryRelativeValueChanger));
+        surface.registerHandler (new LayerHandler (this.model, surface, this.configuration, this.absoluteLowResValueChanger, this.signedBitRelativeValueChanger, this.offsetBinaryRelativeValueChanger));
         surface.registerHandler (new EqHandler (this.model, surface, this.configuration, this.absoluteLowResValueChanger, this.signedBitRelativeValueChanger, this.offsetBinaryRelativeValueChanger));
         surface.registerHandler (new BrowserHandler (this.model, surface, this.configuration, this.absoluteLowResValueChanger, this.signedBitRelativeValueChanger, this.offsetBinaryRelativeValueChanger));
         surface.registerHandler (new SceneHandler (this.model, surface, this.configuration, this.absoluteLowResValueChanger, this.signedBitRelativeValueChanger, this.offsetBinaryRelativeValueChanger));

@@ -77,6 +77,7 @@ public class APCminiConfiguration extends AbstractConfiguration
 
         this.activateQuantizeAmountSetting (globalSettings);
         this.activatePreferredNoteViewSetting (globalSettings, PREFERRED_NOTE_VIEWS);
+        this.activateStartWithSessionViewSetting (globalSettings);
 
         ///////////////////////////
         // Workflow

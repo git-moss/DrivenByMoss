@@ -201,13 +201,9 @@ public class DrumView extends AbstractDrumExView<APCControlSurface, APCConfigura
 
     /** {@inheritDoc} */
     @Override
-    protected void playNote (final int note, final int velocity)
+    protected void playNote (final int drumPad, final int velocity)
     {
-        if (this.surface.isMkII ())
-            return;
-
-        final int mapped = this.keyManager.map (note);
-        if (mapped != -1)
-            this.surface.sendMidiEvent (MidiConstants.CMD_NOTE_ON, mapped, velocity);
+        if (!this.surface.isMkII ())
+            this.surface.sendMidiEvent (MidiConstants.CMD_NOTE_ON, drumPad, velocity);
     }
 }

@@ -130,7 +130,7 @@ public class Kontrol1Display extends AbstractTextDisplay
     {
         synchronized (this.notificationLock)
         {
-            if (this.isNotificationActive <= 0)
+            if (this.notificationTimeout <= 0)
                 this.usbDevice.setBar (column, hasBorder, value, this.maxParameterValue);
         }
     }
@@ -147,7 +147,7 @@ public class Kontrol1Display extends AbstractTextDisplay
     {
         synchronized (this.notificationLock)
         {
-            if (this.isNotificationActive <= 0)
+            if (this.notificationTimeout <= 0)
                 this.usbDevice.setPanBar (column, hasBorder, value, this.maxParameterValue);
         }
     }
@@ -163,8 +163,8 @@ public class Kontrol1Display extends AbstractTextDisplay
 
         synchronized (this.notificationLock)
         {
-            final boolean isRunning = this.isNotificationActive > 0;
-            this.isNotificationActive = AbstractTextDisplay.NOTIFICATION_TIME;
+            final boolean isRunning = this.notificationTimeout > 0;
+            this.notificationTimeout = AbstractTextDisplay.NOTIFICATION_TIME;
             this.clear ();
             this.flush ();
 

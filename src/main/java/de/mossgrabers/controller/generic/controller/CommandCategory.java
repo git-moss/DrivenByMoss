@@ -18,6 +18,7 @@ public enum CommandCategory
     EQ("EQ"),
     FX_TRACK("FX Track"),
     GLOBAL("Global"),
+    LAYER("Layer"),
     LAYOUT("Layout"),
     MARKER("Marker"),
     MASTER("Master"),

@@ -882,7 +882,7 @@ public class PushControllerSetup extends AbstractControllerSetup<PushControlSurf
     public void startup ()
     {
         final PushControlSurface surface = this.getSurface ();
-        surface.getViewManager ().setActive (this.configuration.getPreferredNoteView ());
+        surface.getViewManager ().setActive (this.configuration.shouldStartWithSessionView () ? Views.SESSION : this.configuration.getPreferredNoteView ());
 
         surface.sendPressureMode (true);
         surface.getMidiOutput ().sendSysex (DeviceInquiry.createQuery ());

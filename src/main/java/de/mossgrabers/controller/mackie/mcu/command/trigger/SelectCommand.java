@@ -127,7 +127,10 @@ public class SelectCommand extends AbstractTriggerCommand<MCUControlSurface, MCU
             if (this.surface.getConfiguration ().isTrackNavigationFlat ())
                 track.toggleGroupExpanded ();
             else
+            {
+                track.setGroupExpanded (true);
                 track.enter ();
+            }
             return;
         }
 
@@ -179,6 +182,17 @@ public class SelectCommand extends AbstractTriggerCommand<MCUControlSurface, MCU
         {
             if (event == ButtonEvent.DOWN)
                 this.getTrackBank ().getItem (this.channel).stop ();
+            return true;
+        }
+
+        if (this.surface.isPressed (ButtonID.CONTROL))
+        {
+            if (event == ButtonEvent.DOWN)
+            {
+                final ITrack track = this.getTrackBank ().getItem (this.channel);
+                if (track.isGroup ())
+                    track.toggleGroupExpanded ();
+            }
             return true;
         }
 

@@ -530,4 +530,12 @@ public interface Configuration
      * @return The preferred note view
      */
     Views getPreferredAudioView ();
+
+
+    /**
+     * Should the session view be activated on startup (instead of a play view)?
+     *
+     * @return True if session view should be active
+     */
+    boolean shouldStartWithSessionView ();
 }

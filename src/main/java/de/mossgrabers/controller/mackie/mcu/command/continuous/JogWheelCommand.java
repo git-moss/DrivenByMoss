@@ -13,11 +13,11 @@ import de.mossgrabers.framework.daw.IModel;
 
 
 /**
- * Command to change the time (play position).
+ * Different commands to execute with the jog wheel depending on used combination keys.
  *
  * @author J&uuml;rgen Mo&szlig;graber
  */
-public class PlayPositionTempoCommand extends PlayPositionCommand<MCUControlSurface, MCUConfiguration>
+public class JogWheelCommand extends PlayPositionCommand<MCUControlSurface, MCUConfiguration>
 {
     /**
      * Constructor.
@@ -25,7 +25,7 @@ public class PlayPositionTempoCommand extends PlayPositionCommand<MCUControlSurf
      * @param model The model
      * @param surface The surface
      */
-    public PlayPositionTempoCommand (final IModel model, final MCUControlSurface surface)
+    public JogWheelCommand (final IModel model, final MCUControlSurface surface)
     {
         super (model, surface);
     }
@@ -37,6 +37,7 @@ public class PlayPositionTempoCommand extends PlayPositionCommand<MCUControlSurf
     {
         final boolean increase = this.model.getValueChanger ().isIncrease (value);
 
+        // Scroll results in Browser
         final IBrowser browser = this.model.getBrowser ();
         if (browser.isActive ())
         {
@@ -47,12 +48,28 @@ public class PlayPositionTempoCommand extends PlayPositionCommand<MCUControlSurf
             return;
         }
 
+        // Change tempo with Select button
         if (this.surface.isPressed (ButtonID.SELECT))
         {
             this.model.getTransport ().changeTempo (increase, this.surface.isKnobSensitivitySlow ());
             return;
         }
 
+        // Change Loop start with Control button
+        if (this.surface.isPressed (ButtonID.CONTROL))
+        {
+            this.model.getTransport ().changeLoopStart (increase, this.surface.isKnobSensitivitySlow ());
+            return;
+        }
+
+        // Change Loop length with ALT button
+        if (this.surface.isPressed (ButtonID.ALT))
+        {
+            this.model.getTransport ().changeLoopLength (increase, this.surface.isKnobSensitivitySlow ());
+            return;
+        }
+
+        // Zoom Arranger with Left/Right Cursor button
         if (this.surface.isPressed (ButtonID.ARROW_LEFT) || this.surface.isPressed (ButtonID.ARROW_RIGHT))
         {
             this.surface.setTriggerConsumed (ButtonID.ARROW_LEFT);
@@ -65,6 +82,7 @@ public class PlayPositionTempoCommand extends PlayPositionCommand<MCUControlSurf
             return;
         }
 
+        // Increase/decrease track heights with Up/Down Cursor button
         if (this.surface.isPressed (ButtonID.ARROW_UP) || this.surface.isPressed (ButtonID.ARROW_DOWN))
         {
             this.surface.setTriggerConsumed (ButtonID.ARROW_UP);

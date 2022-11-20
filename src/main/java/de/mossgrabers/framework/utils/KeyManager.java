@@ -17,7 +17,12 @@ import java.util.Optional;
 
 
 /**
- * Manages pressed keys and drum pads.
+ * Manages pressed keys and drum pads on a grid. Note: There are 3 types of notes: 1) the MIDI notes
+ * (or even CC) sent from the hardware devices grid (or keyboard), 2) the MIDI note which should be
+ * used instead on the grid (normally this starts with MIDI note 36, e.g. an 8x8 grid uses [36..99]
+ * to make coding independent from the hardware and 3) the note which is active according to the
+ * active note map (e.g. different scale layouts). This class uses notes as input from 2) to store
+ * pressed states for 3).
  *
  * @author J&uuml;rgen Mo&szlig;graber
  */
@@ -70,7 +75,7 @@ public class KeyManager implements INoteObserver
     /**
      * Set a pressed key.
      *
-     * @param key The key to set
+     * @param key The key to set (this is a MIDI note)
      * @param velocity The velocity
      */
     public void setKeyPressed (final int key, final int velocity)
@@ -82,7 +87,7 @@ public class KeyManager implements INoteObserver
     /**
      * Loop over all pads since the note can be present multiple time.
      *
-     * @param key The key to set
+     * @param key The key to set (this is a MIDI note)
      * @param velocity The velocity
      */
     public void setAllKeysPressed (final int key, final int velocity)
@@ -146,10 +151,19 @@ public class KeyManager implements INoteObserver
      */
     public int getMidiNoteFromGrid (final int note)
     {
-        if (this.padGrid == null)
-            return -1;
-        final int translated = this.padGrid.translateToGrid (note);
-        return translated < 0 ? -1 : this.noteMap[translated];
+        return this.padGrid == null ? -1 : this.map (this.padGrid.translateToGrid (note));
+    }
+
+
+    /**
+     * Get the mapped note from the current note matrix.
+     *
+     * @param note The note which is assigned to a pad
+     * @return The note which should be used instead according to the active note map
+     */
+    public int map (final int note)
+    {
+        return note < 0 ? -1 : this.noteMap[note];
     }
 
 
@@ -162,18 +176,6 @@ public class KeyManager implements INoteObserver
     public String getColor (final int pad)
     {
         return this.scales.getColor (this.noteMap, pad);
-    }
-
-
-    /**
-     * Get the mapped note from the current note matrix.
-     *
-     * @param note The note
-     * @return The translated note
-     */
-    public int map (final int note)
-    {
-        return this.noteMap[note];
     }
 
 

@@ -79,6 +79,7 @@ public class LaunchpadConfiguration extends AbstractConfiguration
         this.activateAccentValueSetting (globalSettings);
         this.activateQuantizeAmountSetting (globalSettings);
         this.activatePreferredNoteViewSetting (globalSettings, PREFERRED_NOTE_VIEWS);
+        this.activateStartWithSessionViewSetting (globalSettings);
 
         ///////////////////////////
         // Transport

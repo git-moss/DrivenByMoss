@@ -42,7 +42,7 @@ public class MVHelper<S extends IControlSurface<C>, C extends Configuration>
 {
     private static final String SELECTED_TRACK_NONE = "Selected track: None";
     private static final String NONE                = "None";
-    private static final int    DISPLAY_DELAY       = 100;
+    private static final int    DISPLAY_DELAY       = 200;
 
     private final IModel        model;
     private final ITransport    transport;
@@ -193,15 +193,21 @@ public class MVHelper<S extends IControlSurface<C>, C extends Configuration>
         this.delayDisplay ( () -> {
 
             final ICursorDevice cursorDevice = this.model.getCursorDevice ();
-            if (cursorDevice.doesExist ())
+            if (!cursorDevice.doesExist ())
+                return "No device selected";
+
+            String text = cursorDevice.getName ();
+
+            final Optional<String> selectedItem = cursorDevice.getParameterPageBank ().getSelectedItem ();
+            if (selectedItem.isPresent ())
             {
-                final Optional<String> selectedItem = cursorDevice.getParameterPageBank ().getSelectedItem ();
-                if (selectedItem.isPresent ())
-                    return cursorDevice.getName () + " - " + selectedItem.get ();
+                String pageName = selectedItem.get ();
+                if (pageName == null || pageName.isBlank ())
+                    pageName = "None";
+                text += " - " + pageName;
             }
 
-            return "No device selected";
-
+            return text;
         });
     }
 

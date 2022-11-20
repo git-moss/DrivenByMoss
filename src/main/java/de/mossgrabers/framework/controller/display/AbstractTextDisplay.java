@@ -18,7 +18,7 @@ import de.mossgrabers.framework.utils.StringUtils;
 public abstract class AbstractTextDisplay implements ITextDisplay
 {
     /** Time to keep a notification displayed in milliseconds. */
-    public static final int  NOTIFICATION_TIME    = 1000;
+    public static final int  NOTIFICATION_TIME   = 1000;
 
     protected IHost          host;
     protected IMidiOutput    output;
@@ -30,9 +30,9 @@ public abstract class AbstractTextDisplay implements ITextDisplay
 
     protected final String   emptyLine;
     protected String         notificationMessage;
-    protected boolean        centerNotification   = true;
-    protected int            isNotificationActive = 0;
-    protected final Object   notificationLock     = new Object ();
+    protected boolean        centerNotification  = true;
+    protected int            notificationTimeout = 0;
+    protected final Object   notificationLock    = new Object ();
 
     private final String     emptyCell;
     protected String []      currentMessage;
@@ -250,7 +250,18 @@ public abstract class AbstractTextDisplay implements ITextDisplay
     {
         synchronized (this.notificationLock)
         {
-            this.isNotificationActive = 0;
+            this.notificationTimeout = 0;
+        }
+    }
+
+
+    /** {@inheritDoc} */
+    @Override
+    public boolean isNotificationActive ()
+    {
+        synchronized (this.notificationLock)
+        {
+            return this.notificationTimeout > 0;
         }
     }
 
@@ -267,15 +278,15 @@ public abstract class AbstractTextDisplay implements ITextDisplay
         else
             msg.append (message);
 
-        // Pad enough spaces at the to fill all lines...
+        // Pad enough spaces at the end to fill all lines...
         for (int row = 0; row < this.noOfLines; row++)
             msg.append (this.emptyLine);
         this.notificationMessage = msg.toString ();
 
         synchronized (this.notificationLock)
         {
-            final boolean isRunning = this.isNotificationActive > 0;
-            this.isNotificationActive = AbstractTextDisplay.NOTIFICATION_TIME;
+            final boolean isRunning = this.notificationTimeout > 0;
+            this.notificationTimeout = AbstractTextDisplay.NOTIFICATION_TIME;
             this.flush ();
             if (!isRunning)
                 this.host.scheduleTask (this::watch, 100);
@@ -287,9 +298,9 @@ public abstract class AbstractTextDisplay implements ITextDisplay
     {
         synchronized (this.notificationLock)
         {
-            this.isNotificationActive -= 100;
+            this.notificationTimeout -= 100;
 
-            if (this.isNotificationActive <= 0)
+            if (this.notificationTimeout <= 0)
                 this.forceFlush ();
             else
                 this.host.scheduleTask (this::watch, 100);
@@ -303,7 +314,7 @@ public abstract class AbstractTextDisplay implements ITextDisplay
     {
         synchronized (this.notificationLock)
         {
-            if (this.isNotificationActive > 0)
+            if (this.notificationTimeout > 0)
             {
                 for (int row = 0; row < this.noOfLines; row++)
                 {

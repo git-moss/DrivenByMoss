@@ -4,7 +4,7 @@
 
 package de.mossgrabers.controller.mackie.mcu;
 
-import de.mossgrabers.controller.mackie.mcu.command.continuous.PlayPositionTempoCommand;
+import de.mossgrabers.controller.mackie.mcu.command.continuous.JogWheelCommand;
 import de.mossgrabers.controller.mackie.mcu.command.trigger.AssignableCommand;
 import de.mossgrabers.controller.mackie.mcu.command.trigger.DevicesCommand;
 import de.mossgrabers.controller.mackie.mcu.command.trigger.FaderTouchCommand;
@@ -579,7 +579,7 @@ public class MCUControllerSetup extends AbstractControllerSetup<MCUControlSurfac
 
             if (this.configuration.getDeviceType (index) == MCUDeviceType.MAIN)
             {
-                this.addRelativeKnob (surface, ContinuousID.PLAY_POSITION, "Jog Wheel", new PlayPositionTempoCommand (this.model, surface), MCUControlSurface.MCU_CC_JOG, RelativeEncoding.SIGNED_BIT);
+                this.addRelativeKnob (surface, ContinuousID.PLAY_POSITION, "Jog Wheel", new JogWheelCommand (this.model, surface), MCUControlSurface.MCU_CC_JOG, RelativeEncoding.SIGNED_BIT);
 
                 final IHwFader master = this.addFader (surface, ContinuousID.FADER_MASTER, "Master", null, 8);
                 master.bindTouch (new FaderTouchCommand (8, this.model, surface), input, BindType.NOTE, 0, MCUControlSurface.MCU_FADER_MASTER);

@@ -102,6 +102,7 @@ public class FireConfiguration extends AbstractConfiguration
         this.activateQuantizeAmountSetting (globalSettings);
         this.activateMidiEditChannelSetting (documentSettings);
         this.activatePreferredNoteViewSetting (globalSettings, PREFERRED_NOTE_VIEWS);
+        this.activateStartWithSessionViewSetting (globalSettings);
 
         ///////////////////////////
         // Drum Sequencer

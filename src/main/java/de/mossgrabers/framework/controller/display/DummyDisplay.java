@@ -147,6 +147,14 @@ public class DummyDisplay implements ITextDisplay
 
     /** {@inheritDoc} */
     @Override
+    public boolean isNotificationActive ()
+    {
+        return false;
+    }
+
+
+    /** {@inheritDoc} */
+    @Override
     public void flush ()
     {
         // Intentionally empty

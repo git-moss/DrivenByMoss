@@ -26,6 +26,14 @@ public interface IDisplay
 
 
     /**
+     * Check if a notification is active.
+     *
+     * @return True if a notification is active
+     */
+    boolean isNotificationActive ();
+
+
+    /**
      * If there is any cleanup necessary.
      */
     void shutdown ();

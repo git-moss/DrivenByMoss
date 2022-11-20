@@ -55,7 +55,8 @@ public class MasterHandler extends AbstractHandler
             FlexiCommand.MASTER_SET_SOLO,
             FlexiCommand.MASTER_TOGGLE_ARM,
             FlexiCommand.MASTER_SET_ARM,
-            FlexiCommand.MASTER_CROSSFADER
+            FlexiCommand.MASTER_CROSSFADER,
+            FlexiCommand.MASTER_SELECT
         };
     }
 
@@ -85,6 +86,9 @@ public class MasterHandler extends AbstractHandler
 
             case MASTER_CROSSFADER:
                 return this.model.getTransport ().getCrossfade ();
+
+            case MASTER_SELECT:
+                return masterTrack.isSelected () ? 127 : 0;
 
             default:
                 return -1;
@@ -148,6 +152,15 @@ public class MasterHandler extends AbstractHandler
             // Master: Cross-fader
             case MASTER_CROSSFADER:
                 this.changeMasterCrossfader (knobMode, value);
+                break;
+
+            // Master: Select
+            case MASTER_SELECT:
+                if (isButtonPressed)
+                {
+                    this.model.getMasterTrack ().select ();
+                    this.mvHelper.notifySelectedTrack ();
+                }
                 break;
 
             default:

@@ -361,9 +361,16 @@ public class MCUControlSurface extends AbstractControlSurface<MCUConfiguration>
         if (!this.configuration.hasDisplayColors ())
             return;
 
+        ColorEx [] cs = colors;
+        if (this.isMainDevice && this.getTextDisplay ().isNotificationActive ())
+        {
+            cs = new ColorEx [8];
+            Arrays.fill (cs, ColorEx.WHITE);
+        }
+
         final byte [] displayColors = new byte [8];
         for (int i = 0; i < 8; i++)
-            displayColors[i] = toIndex (colors[i] == null ? ColorEx.BLACK : colors[i]);
+            displayColors[i] = toIndex (cs[i] == null ? ColorEx.BLACK : cs[i]);
 
         if (Arrays.compare (displayColors, this.currentDisplayColors) == 0)
             return;

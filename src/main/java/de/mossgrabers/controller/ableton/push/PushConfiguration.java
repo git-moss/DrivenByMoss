@@ -343,6 +343,7 @@ public class PushConfiguration extends AbstractConfiguration implements IGraphic
         this.activateAccentValueSetting (globalSettings);
         this.activateQuantizeAmountSetting (globalSettings);
         this.activatePreferredNoteViewSetting (globalSettings, PREFERRED_NOTE_VIEWS);
+        this.activateStartWithSessionViewSetting (globalSettings);
         this.activateMidiEditChannelSetting (documentSettings);
 
         ///////////////////////////

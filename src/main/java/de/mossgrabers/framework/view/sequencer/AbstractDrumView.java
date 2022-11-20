@@ -625,10 +625,10 @@ public abstract class AbstractDrumView<S extends IControlSurface<C>, C extends C
     /**
      * Hook for playing notes with grids which do not use MIDI notes.
      *
-     * @param note The note to play
+     * @param drumPad The drum pad to play
      * @param velocity The velocity of the note
      */
-    protected void playNote (final int note, final int velocity)
+    protected void playNote (final int drumPad, final int velocity)
     {
         // Intentionally empty
     }

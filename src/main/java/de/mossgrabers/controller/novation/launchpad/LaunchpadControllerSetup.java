@@ -768,7 +768,7 @@ public class LaunchpadControllerSetup extends AbstractControllerSetup<LaunchpadC
     public void startup ()
     {
         final LaunchpadControlSurface surface = this.getSurface ();
-        surface.getViewManager ().setActive (this.configuration.getPreferredNoteView ());
+        surface.getViewManager ().setActive (this.configuration.shouldStartWithSessionView () ? Views.SESSION : this.configuration.getPreferredNoteView ());
         surface.getModeManager ().setActive (Modes.DUMMY);
     }
 

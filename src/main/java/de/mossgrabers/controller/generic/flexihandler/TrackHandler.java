@@ -293,272 +293,85 @@ public class TrackHandler extends AbstractHandler
 
         switch (command)
         {
-            case TRACK_1_SELECT:
-            case TRACK_2_SELECT:
-            case TRACK_3_SELECT:
-            case TRACK_4_SELECT:
-            case TRACK_5_SELECT:
-            case TRACK_6_SELECT:
-            case TRACK_7_SELECT:
-            case TRACK_8_SELECT:
+            case TRACK_1_SELECT, TRACK_2_SELECT, TRACK_3_SELECT, TRACK_4_SELECT, TRACK_5_SELECT, TRACK_6_SELECT, TRACK_7_SELECT, TRACK_8_SELECT:
                 return trackBank.getItem (command.ordinal () - FlexiCommand.TRACK_1_SELECT.ordinal ()).isSelected () ? 127 : 0;
 
-            case TRACK_1_TOGGLE_ACTIVE:
-            case TRACK_2_TOGGLE_ACTIVE:
-            case TRACK_3_TOGGLE_ACTIVE:
-            case TRACK_4_TOGGLE_ACTIVE:
-            case TRACK_5_TOGGLE_ACTIVE:
-            case TRACK_6_TOGGLE_ACTIVE:
-            case TRACK_7_TOGGLE_ACTIVE:
-            case TRACK_8_TOGGLE_ACTIVE:
+            case TRACK_1_TOGGLE_ACTIVE, TRACK_2_TOGGLE_ACTIVE, TRACK_3_TOGGLE_ACTIVE, TRACK_4_TOGGLE_ACTIVE, TRACK_5_TOGGLE_ACTIVE, TRACK_6_TOGGLE_ACTIVE, TRACK_7_TOGGLE_ACTIVE, TRACK_8_TOGGLE_ACTIVE:
                 return trackBank.getItem (command.ordinal () - FlexiCommand.TRACK_1_TOGGLE_ACTIVE.ordinal ()).isActivated () ? 127 : 0;
-            case TRACK_1_SET_ACTIVE:
-            case TRACK_2_SET_ACTIVE:
-            case TRACK_3_SET_ACTIVE:
-            case TRACK_4_SET_ACTIVE:
-            case TRACK_5_SET_ACTIVE:
-            case TRACK_6_SET_ACTIVE:
-            case TRACK_7_SET_ACTIVE:
-            case TRACK_8_SET_ACTIVE:
+
+            case TRACK_1_SET_ACTIVE, TRACK_2_SET_ACTIVE, TRACK_3_SET_ACTIVE, TRACK_4_SET_ACTIVE, TRACK_5_SET_ACTIVE, TRACK_6_SET_ACTIVE, TRACK_7_SET_ACTIVE, TRACK_8_SET_ACTIVE:
                 return trackBank.getItem (command.ordinal () - FlexiCommand.TRACK_1_SET_ACTIVE.ordinal ()).isActivated () ? 127 : 0;
 
-            case TRACK_SELECTED_TOGGLE_ACTIVE:
-            case TRACK_SELECTED_SET_ACTIVE:
+            case TRACK_SELECTED_TOGGLE_ACTIVE, TRACK_SELECTED_SET_ACTIVE:
                 return cursorTrack.doesExist () && cursorTrack.isActivated () ? 127 : 0;
 
-            case TRACK_1_SET_VOLUME:
-            case TRACK_2_SET_VOLUME:
-            case TRACK_3_SET_VOLUME:
-            case TRACK_4_SET_VOLUME:
-            case TRACK_5_SET_VOLUME:
-            case TRACK_6_SET_VOLUME:
-            case TRACK_7_SET_VOLUME:
-            case TRACK_8_SET_VOLUME:
+            case TRACK_1_SET_VOLUME, TRACK_2_SET_VOLUME, TRACK_3_SET_VOLUME, TRACK_4_SET_VOLUME, TRACK_5_SET_VOLUME, TRACK_6_SET_VOLUME, TRACK_7_SET_VOLUME, TRACK_8_SET_VOLUME:
                 return trackBank.getItem (command.ordinal () - FlexiCommand.TRACK_1_SET_VOLUME.ordinal ()).getVolume ();
 
             case TRACK_SELECTED_SET_VOLUME_TRACK:
                 return cursorTrack.doesExist () ? cursorTrack.getVolume () : 0;
 
-            case TRACK_1_SET_PANORAMA:
-            case TRACK_2_SET_PANORAMA:
-            case TRACK_3_SET_PANORAMA:
-            case TRACK_4_SET_PANORAMA:
-            case TRACK_5_SET_PANORAMA:
-            case TRACK_6_SET_PANORAMA:
-            case TRACK_7_SET_PANORAMA:
-            case TRACK_8_SET_PANORAMA:
+            case TRACK_1_SET_PANORAMA, TRACK_2_SET_PANORAMA, TRACK_3_SET_PANORAMA, TRACK_4_SET_PANORAMA, TRACK_5_SET_PANORAMA, TRACK_6_SET_PANORAMA, TRACK_7_SET_PANORAMA, TRACK_8_SET_PANORAMA:
                 return trackBank.getItem (command.ordinal () - FlexiCommand.TRACK_1_SET_PANORAMA.ordinal ()).getPan ();
 
             case TRACK_SELECTED_SET_PANORAMA:
                 return cursorTrack.doesExist () ? cursorTrack.getPan () : 0;
 
-            case TRACK_1_TOGGLE_MUTE:
-            case TRACK_2_TOGGLE_MUTE:
-            case TRACK_3_TOGGLE_MUTE:
-            case TRACK_4_TOGGLE_MUTE:
-            case TRACK_5_TOGGLE_MUTE:
-            case TRACK_6_TOGGLE_MUTE:
-            case TRACK_7_TOGGLE_MUTE:
-            case TRACK_8_TOGGLE_MUTE:
+            case TRACK_1_TOGGLE_MUTE, TRACK_2_TOGGLE_MUTE, TRACK_3_TOGGLE_MUTE, TRACK_4_TOGGLE_MUTE, TRACK_5_TOGGLE_MUTE, TRACK_6_TOGGLE_MUTE, TRACK_7_TOGGLE_MUTE, TRACK_8_TOGGLE_MUTE:
                 return trackBank.getItem (command.ordinal () - FlexiCommand.TRACK_1_TOGGLE_MUTE.ordinal ()).isMute () ? 127 : 0;
-            case TRACK_1_SET_MUTE:
-            case TRACK_2_SET_MUTE:
-            case TRACK_3_SET_MUTE:
-            case TRACK_4_SET_MUTE:
-            case TRACK_5_SET_MUTE:
-            case TRACK_6_SET_MUTE:
-            case TRACK_7_SET_MUTE:
-            case TRACK_8_SET_MUTE:
+            case TRACK_1_SET_MUTE, TRACK_2_SET_MUTE, TRACK_3_SET_MUTE, TRACK_4_SET_MUTE, TRACK_5_SET_MUTE, TRACK_6_SET_MUTE, TRACK_7_SET_MUTE, TRACK_8_SET_MUTE:
                 return trackBank.getItem (command.ordinal () - FlexiCommand.TRACK_1_SET_MUTE.ordinal ()).isMute () ? 127 : 0;
-
-            case TRACK_SELECTED_TOGGLE_MUTE:
-            case TRACK_SELECTED_SET_MUTE:
+            case TRACK_SELECTED_TOGGLE_MUTE, TRACK_SELECTED_SET_MUTE:
                 return cursorTrack.doesExist () && cursorTrack.isMute () ? 127 : 0;
 
-            case TRACK_1_TOGGLE_SOLO:
-            case TRACK_2_TOGGLE_SOLO:
-            case TRACK_3_TOGGLE_SOLO:
-            case TRACK_4_TOGGLE_SOLO:
-            case TRACK_5_TOGGLE_SOLO:
-            case TRACK_6_TOGGLE_SOLO:
-            case TRACK_7_TOGGLE_SOLO:
-            case TRACK_8_TOGGLE_SOLO:
+            case TRACK_1_TOGGLE_SOLO, TRACK_2_TOGGLE_SOLO, TRACK_3_TOGGLE_SOLO, TRACK_4_TOGGLE_SOLO, TRACK_5_TOGGLE_SOLO, TRACK_6_TOGGLE_SOLO, TRACK_7_TOGGLE_SOLO, TRACK_8_TOGGLE_SOLO:
                 return trackBank.getItem (command.ordinal () - FlexiCommand.TRACK_1_TOGGLE_SOLO.ordinal ()).isSolo () ? 127 : 0;
-            case TRACK_1_SET_SOLO:
-            case TRACK_2_SET_SOLO:
-            case TRACK_3_SET_SOLO:
-            case TRACK_4_SET_SOLO:
-            case TRACK_5_SET_SOLO:
-            case TRACK_6_SET_SOLO:
-            case TRACK_7_SET_SOLO:
-            case TRACK_8_SET_SOLO:
+            case TRACK_1_SET_SOLO, TRACK_2_SET_SOLO, TRACK_3_SET_SOLO, TRACK_4_SET_SOLO, TRACK_5_SET_SOLO, TRACK_6_SET_SOLO, TRACK_7_SET_SOLO, TRACK_8_SET_SOLO:
                 return trackBank.getItem (command.ordinal () - FlexiCommand.TRACK_1_SET_SOLO.ordinal ()).isSolo () ? 127 : 0;
-
-            case TRACK_SELECTED_TOGGLE_SOLO:
-            case TRACK_SELECTED_SET_SOLO:
+            case TRACK_SELECTED_TOGGLE_SOLO, TRACK_SELECTED_SET_SOLO:
                 return cursorTrack.doesExist () && cursorTrack.isSolo () ? 127 : 0;
 
-            case TRACK_1_TOGGLE_ARM:
-            case TRACK_2_TOGGLE_ARM:
-            case TRACK_3_TOGGLE_ARM:
-            case TRACK_4_TOGGLE_ARM:
-            case TRACK_5_TOGGLE_ARM:
-            case TRACK_6_TOGGLE_ARM:
-            case TRACK_7_TOGGLE_ARM:
-            case TRACK_8_TOGGLE_ARM:
+            case TRACK_1_TOGGLE_ARM, TRACK_2_TOGGLE_ARM, TRACK_3_TOGGLE_ARM, TRACK_4_TOGGLE_ARM, TRACK_5_TOGGLE_ARM, TRACK_6_TOGGLE_ARM, TRACK_7_TOGGLE_ARM, TRACK_8_TOGGLE_ARM:
                 return trackBank.getItem (command.ordinal () - FlexiCommand.TRACK_1_TOGGLE_ARM.ordinal ()).isRecArm () ? 127 : 0;
-            case TRACK_1_SET_ARM:
-            case TRACK_2_SET_ARM:
-            case TRACK_3_SET_ARM:
-            case TRACK_4_SET_ARM:
-            case TRACK_5_SET_ARM:
-            case TRACK_6_SET_ARM:
-            case TRACK_7_SET_ARM:
-            case TRACK_8_SET_ARM:
+            case TRACK_1_SET_ARM, TRACK_2_SET_ARM, TRACK_3_SET_ARM, TRACK_4_SET_ARM, TRACK_5_SET_ARM, TRACK_6_SET_ARM, TRACK_7_SET_ARM, TRACK_8_SET_ARM:
                 return trackBank.getItem (command.ordinal () - FlexiCommand.TRACK_1_SET_ARM.ordinal ()).isRecArm () ? 127 : 0;
-
-            case TRACK_SELECTED_TOGGLE_ARM:
-            case TRACK_SELECTED_SET_ARM:
+            case TRACK_SELECTED_TOGGLE_ARM, TRACK_SELECTED_SET_ARM:
                 return cursorTrack.doesExist () && cursorTrack.isRecArm () ? 127 : 0;
 
-            case TRACK_1_TOGGLE_MONITOR:
-            case TRACK_2_TOGGLE_MONITOR:
-            case TRACK_3_TOGGLE_MONITOR:
-            case TRACK_4_TOGGLE_MONITOR:
-            case TRACK_5_TOGGLE_MONITOR:
-            case TRACK_6_TOGGLE_MONITOR:
-            case TRACK_7_TOGGLE_MONITOR:
-            case TRACK_8_TOGGLE_MONITOR:
+            case TRACK_1_TOGGLE_MONITOR, TRACK_2_TOGGLE_MONITOR, TRACK_3_TOGGLE_MONITOR, TRACK_4_TOGGLE_MONITOR, TRACK_5_TOGGLE_MONITOR, TRACK_6_TOGGLE_MONITOR, TRACK_7_TOGGLE_MONITOR, TRACK_8_TOGGLE_MONITOR:
                 return trackBank.getItem (command.ordinal () - FlexiCommand.TRACK_1_TOGGLE_MONITOR.ordinal ()).isMonitor () ? 127 : 0;
-            case TRACK_1_SET_MONITOR:
-            case TRACK_2_SET_MONITOR:
-            case TRACK_3_SET_MONITOR:
-            case TRACK_4_SET_MONITOR:
-            case TRACK_5_SET_MONITOR:
-            case TRACK_6_SET_MONITOR:
-            case TRACK_7_SET_MONITOR:
-            case TRACK_8_SET_MONITOR:
+            case TRACK_1_SET_MONITOR, TRACK_2_SET_MONITOR, TRACK_3_SET_MONITOR, TRACK_4_SET_MONITOR, TRACK_5_SET_MONITOR, TRACK_6_SET_MONITOR, TRACK_7_SET_MONITOR, TRACK_8_SET_MONITOR:
                 return trackBank.getItem (command.ordinal () - FlexiCommand.TRACK_1_SET_MONITOR.ordinal ()).isMonitor () ? 127 : 0;
-
-            case TRACK_SELECTED_TOGGLE_MONITOR:
-            case TRACK_SELECTED_SET_MONITOR:
+            case TRACK_SELECTED_TOGGLE_MONITOR, TRACK_SELECTED_SET_MONITOR:
                 return cursorTrack.doesExist () && cursorTrack.isMonitor () ? 127 : 0;
 
-            case TRACK_1_TOGGLE_AUTO_MONITOR:
-            case TRACK_2_TOGGLE_AUTO_MONITOR:
-            case TRACK_3_TOGGLE_AUTO_MONITOR:
-            case TRACK_4_TOGGLE_AUTO_MONITOR:
-            case TRACK_5_TOGGLE_AUTO_MONITOR:
-            case TRACK_6_TOGGLE_AUTO_MONITOR:
-            case TRACK_7_TOGGLE_AUTO_MONITOR:
-            case TRACK_8_TOGGLE_AUTO_MONITOR:
+            case TRACK_1_TOGGLE_AUTO_MONITOR, TRACK_2_TOGGLE_AUTO_MONITOR, TRACK_3_TOGGLE_AUTO_MONITOR, TRACK_4_TOGGLE_AUTO_MONITOR, TRACK_5_TOGGLE_AUTO_MONITOR, TRACK_6_TOGGLE_AUTO_MONITOR, TRACK_7_TOGGLE_AUTO_MONITOR, TRACK_8_TOGGLE_AUTO_MONITOR:
                 return trackBank.getItem (command.ordinal () - FlexiCommand.TRACK_1_TOGGLE_AUTO_MONITOR.ordinal ()).isAutoMonitor () ? 127 : 0;
-            case TRACK_1_SET_AUTO_MONITOR:
-            case TRACK_2_SET_AUTO_MONITOR:
-            case TRACK_3_SET_AUTO_MONITOR:
-            case TRACK_4_SET_AUTO_MONITOR:
-            case TRACK_5_SET_AUTO_MONITOR:
-            case TRACK_6_SET_AUTO_MONITOR:
-            case TRACK_7_SET_AUTO_MONITOR:
-            case TRACK_8_SET_AUTO_MONITOR:
+            case TRACK_1_SET_AUTO_MONITOR, TRACK_2_SET_AUTO_MONITOR, TRACK_3_SET_AUTO_MONITOR, TRACK_4_SET_AUTO_MONITOR, TRACK_5_SET_AUTO_MONITOR, TRACK_6_SET_AUTO_MONITOR, TRACK_7_SET_AUTO_MONITOR, TRACK_8_SET_AUTO_MONITOR:
                 return trackBank.getItem (command.ordinal () - FlexiCommand.TRACK_1_SET_AUTO_MONITOR.ordinal ()).isAutoMonitor () ? 127 : 0;
-
-            case TRACK_SELECTED_TOGGLE_AUTO_MONITOR:
-            case TRACK_SELECTED_SET_AUTO_MONITOR:
+            case TRACK_SELECTED_TOGGLE_AUTO_MONITOR, TRACK_SELECTED_SET_AUTO_MONITOR:
                 return cursorTrack.doesExist () && cursorTrack.isAutoMonitor () ? 127 : 0;
 
-            case TRACK_SELECTED_TOGGLE_PIN:
-            case TRACK_SELECTED_SET_PIN:
+            case TRACK_SELECTED_TOGGLE_PIN, TRACK_SELECTED_SET_PIN:
                 return cursorTrack.doesExist () && cursorTrack.isPinned () ? 127 : 0;
 
-            case TRACK_1_SET_SEND_1:
-            case TRACK_2_SET_SEND_1:
-            case TRACK_3_SET_SEND_1:
-            case TRACK_4_SET_SEND_1:
-            case TRACK_5_SET_SEND_1:
-            case TRACK_6_SET_SEND_1:
-            case TRACK_7_SET_SEND_1:
-            case TRACK_8_SET_SEND_1:
+            case TRACK_1_SET_SEND_1, TRACK_2_SET_SEND_1, TRACK_3_SET_SEND_1, TRACK_4_SET_SEND_1, TRACK_5_SET_SEND_1, TRACK_6_SET_SEND_1, TRACK_7_SET_SEND_1, TRACK_8_SET_SEND_1:
                 return this.getSendValue (command.ordinal () - FlexiCommand.TRACK_1_SET_SEND_1.ordinal (), 0);
-
-            case TRACK_1_SET_SEND_2:
-            case TRACK_2_SET_SEND_2:
-            case TRACK_3_SET_SEND_2:
-            case TRACK_4_SET_SEND_2:
-            case TRACK_5_SET_SEND_2:
-            case TRACK_6_SET_SEND_2:
-            case TRACK_7_SET_SEND_2:
-            case TRACK_8_SET_SEND_2:
+            case TRACK_1_SET_SEND_2, TRACK_2_SET_SEND_2, TRACK_3_SET_SEND_2, TRACK_4_SET_SEND_2, TRACK_5_SET_SEND_2, TRACK_6_SET_SEND_2, TRACK_7_SET_SEND_2, TRACK_8_SET_SEND_2:
                 return this.getSendValue (command.ordinal () - FlexiCommand.TRACK_1_SET_SEND_2.ordinal (), 1);
-
-            case TRACK_1_SET_SEND_3:
-            case TRACK_2_SET_SEND_3:
-            case TRACK_3_SET_SEND_3:
-            case TRACK_4_SET_SEND_3:
-            case TRACK_5_SET_SEND_3:
-            case TRACK_6_SET_SEND_3:
-            case TRACK_7_SET_SEND_3:
-            case TRACK_8_SET_SEND_3:
+            case TRACK_1_SET_SEND_3, TRACK_2_SET_SEND_3, TRACK_3_SET_SEND_3, TRACK_4_SET_SEND_3, TRACK_5_SET_SEND_3, TRACK_6_SET_SEND_3, TRACK_7_SET_SEND_3, TRACK_8_SET_SEND_3:
                 return this.getSendValue (command.ordinal () - FlexiCommand.TRACK_1_SET_SEND_3.ordinal (), 2);
-
-            case TRACK_1_SET_SEND_4:
-            case TRACK_2_SET_SEND_4:
-            case TRACK_3_SET_SEND_4:
-            case TRACK_4_SET_SEND_4:
-            case TRACK_5_SET_SEND_4:
-            case TRACK_6_SET_SEND_4:
-            case TRACK_7_SET_SEND_4:
-            case TRACK_8_SET_SEND_4:
+            case TRACK_1_SET_SEND_4, TRACK_2_SET_SEND_4, TRACK_3_SET_SEND_4, TRACK_4_SET_SEND_4, TRACK_5_SET_SEND_4, TRACK_6_SET_SEND_4, TRACK_7_SET_SEND_4, TRACK_8_SET_SEND_4:
                 return this.getSendValue (command.ordinal () - FlexiCommand.TRACK_1_SET_SEND_4.ordinal (), 3);
-
-            case TRACK_1_SET_SEND_5:
-            case TRACK_2_SET_SEND_5:
-            case TRACK_3_SET_SEND_5:
-            case TRACK_4_SET_SEND_5:
-            case TRACK_5_SET_SEND_5:
-            case TRACK_6_SET_SEND_5:
-            case TRACK_7_SET_SEND_5:
-            case TRACK_8_SET_SEND_5:
+            case TRACK_1_SET_SEND_5, TRACK_2_SET_SEND_5, TRACK_3_SET_SEND_5, TRACK_4_SET_SEND_5, TRACK_5_SET_SEND_5, TRACK_6_SET_SEND_5, TRACK_7_SET_SEND_5, TRACK_8_SET_SEND_5:
                 return this.getSendValue (command.ordinal () - FlexiCommand.TRACK_1_SET_SEND_5.ordinal (), 4);
-
-            case TRACK_1_SET_SEND_6:
-            case TRACK_2_SET_SEND_6:
-            case TRACK_3_SET_SEND_6:
-            case TRACK_4_SET_SEND_6:
-            case TRACK_5_SET_SEND_6:
-            case TRACK_6_SET_SEND_6:
-            case TRACK_7_SET_SEND_6:
-            case TRACK_8_SET_SEND_6:
+            case TRACK_1_SET_SEND_6, TRACK_2_SET_SEND_6, TRACK_3_SET_SEND_6, TRACK_4_SET_SEND_6, TRACK_5_SET_SEND_6, TRACK_6_SET_SEND_6, TRACK_7_SET_SEND_6, TRACK_8_SET_SEND_6:
                 return this.getSendValue (command.ordinal () - FlexiCommand.TRACK_1_SET_SEND_6.ordinal (), 5);
-
-            case TRACK_1_SET_SEND_7:
-            case TRACK_2_SET_SEND_7:
-            case TRACK_3_SET_SEND_7:
-            case TRACK_4_SET_SEND_7:
-            case TRACK_5_SET_SEND_7:
-            case TRACK_6_SET_SEND_7:
-            case TRACK_7_SET_SEND_7:
-            case TRACK_8_SET_SEND_7:
+            case TRACK_1_SET_SEND_7, TRACK_2_SET_SEND_7, TRACK_3_SET_SEND_7, TRACK_4_SET_SEND_7, TRACK_5_SET_SEND_7, TRACK_6_SET_SEND_7, TRACK_7_SET_SEND_7, TRACK_8_SET_SEND_7:
                 return this.getSendValue (command.ordinal () - FlexiCommand.TRACK_1_SET_SEND_7.ordinal (), 6);
-
-            case TRACK_1_SET_SEND_8:
-            case TRACK_2_SET_SEND_8:
-            case TRACK_3_SET_SEND_8:
-            case TRACK_4_SET_SEND_8:
-            case TRACK_5_SET_SEND_8:
-            case TRACK_6_SET_SEND_8:
-            case TRACK_7_SET_SEND_8:
-            case TRACK_8_SET_SEND_8:
+            case TRACK_1_SET_SEND_8, TRACK_2_SET_SEND_8, TRACK_3_SET_SEND_8, TRACK_4_SET_SEND_8, TRACK_5_SET_SEND_8, TRACK_6_SET_SEND_8, TRACK_7_SET_SEND_8, TRACK_8_SET_SEND_8:
                 return this.getSendValue (command.ordinal () - FlexiCommand.TRACK_1_SET_SEND_8.ordinal (), 7);
-
-            case TRACK_SELECTED_SET_SEND_1:
-            case TRACK_SELECTED_SET_SEND_2:
-            case TRACK_SELECTED_SET_SEND_3:
-            case TRACK_SELECTED_SET_SEND_4:
-            case TRACK_SELECTED_SET_SEND_5:
-            case TRACK_SELECTED_SET_SEND_6:
-            case TRACK_SELECTED_SET_SEND_7:
-            case TRACK_SELECTED_SET_SEND_8:
+            case TRACK_SELECTED_SET_SEND_1, TRACK_SELECTED_SET_SEND_2, TRACK_SELECTED_SET_SEND_3, TRACK_SELECTED_SET_SEND_4, TRACK_SELECTED_SET_SEND_5, TRACK_SELECTED_SET_SEND_6, TRACK_SELECTED_SET_SEND_7, TRACK_SELECTED_SET_SEND_8:
                 return this.getSendValue (-1, command.ordinal () - FlexiCommand.TRACK_SELECTED_SET_SEND_1.ordinal ());
 
             default:
@@ -626,14 +439,7 @@ public class TrackHandler extends AbstractHandler
                 break;
 
             // Track 1-8: Select
-            case TRACK_1_SELECT:
-            case TRACK_2_SELECT:
-            case TRACK_3_SELECT:
-            case TRACK_4_SELECT:
-            case TRACK_5_SELECT:
-            case TRACK_6_SELECT:
-            case TRACK_7_SELECT:
-            case TRACK_8_SELECT:
+            case TRACK_1_SELECT, TRACK_2_SELECT, TRACK_3_SELECT, TRACK_4_SELECT, TRACK_5_SELECT, TRACK_6_SELECT, TRACK_7_SELECT, TRACK_8_SELECT:
                 if (isButtonPressed)
                 {
                     trackBank.getItem (command.ordinal () - FlexiCommand.TRACK_1_SELECT.ordinal ()).selectOrExpandGroup ();
@@ -642,26 +448,12 @@ public class TrackHandler extends AbstractHandler
                 break;
 
             // Track 1-8: Toggle Active
-            case TRACK_1_TOGGLE_ACTIVE:
-            case TRACK_2_TOGGLE_ACTIVE:
-            case TRACK_3_TOGGLE_ACTIVE:
-            case TRACK_4_TOGGLE_ACTIVE:
-            case TRACK_5_TOGGLE_ACTIVE:
-            case TRACK_6_TOGGLE_ACTIVE:
-            case TRACK_7_TOGGLE_ACTIVE:
-            case TRACK_8_TOGGLE_ACTIVE:
+            case TRACK_1_TOGGLE_ACTIVE, TRACK_2_TOGGLE_ACTIVE, TRACK_3_TOGGLE_ACTIVE, TRACK_4_TOGGLE_ACTIVE, TRACK_5_TOGGLE_ACTIVE, TRACK_6_TOGGLE_ACTIVE, TRACK_7_TOGGLE_ACTIVE, TRACK_8_TOGGLE_ACTIVE:
                 if (isButtonPressed)
                     trackBank.getItem (command.ordinal () - FlexiCommand.TRACK_1_TOGGLE_ACTIVE.ordinal ()).toggleIsActivated ();
                 break;
             // Track 1-8: Set Active
-            case TRACK_1_SET_ACTIVE:
-            case TRACK_2_SET_ACTIVE:
-            case TRACK_3_SET_ACTIVE:
-            case TRACK_4_SET_ACTIVE:
-            case TRACK_5_SET_ACTIVE:
-            case TRACK_6_SET_ACTIVE:
-            case TRACK_7_SET_ACTIVE:
-            case TRACK_8_SET_ACTIVE:
+            case TRACK_1_SET_ACTIVE, TRACK_2_SET_ACTIVE, TRACK_3_SET_ACTIVE, TRACK_4_SET_ACTIVE, TRACK_5_SET_ACTIVE, TRACK_6_SET_ACTIVE, TRACK_7_SET_ACTIVE, TRACK_8_SET_ACTIVE:
                 if (isButtonPressed)
                     trackBank.getItem (command.ordinal () - FlexiCommand.TRACK_1_SET_ACTIVE.ordinal ()).setIsActivated (value.isPositive ());
                 break;
@@ -675,14 +467,7 @@ public class TrackHandler extends AbstractHandler
                 break;
 
             // Track 1-8: Set Volume
-            case TRACK_1_SET_VOLUME:
-            case TRACK_2_SET_VOLUME:
-            case TRACK_3_SET_VOLUME:
-            case TRACK_4_SET_VOLUME:
-            case TRACK_5_SET_VOLUME:
-            case TRACK_6_SET_VOLUME:
-            case TRACK_7_SET_VOLUME:
-            case TRACK_8_SET_VOLUME:
+            case TRACK_1_SET_VOLUME, TRACK_2_SET_VOLUME, TRACK_3_SET_VOLUME, TRACK_4_SET_VOLUME, TRACK_5_SET_VOLUME, TRACK_6_SET_VOLUME, TRACK_7_SET_VOLUME, TRACK_8_SET_VOLUME:
                 this.changeTrackVolume (knobMode, command.ordinal () - FlexiCommand.TRACK_1_SET_VOLUME.ordinal (), value);
                 break;
             // Track Selected: Set Volume Track
@@ -691,14 +476,7 @@ public class TrackHandler extends AbstractHandler
                 break;
 
             // Track 1-8: Set Panorama
-            case TRACK_1_SET_PANORAMA:
-            case TRACK_2_SET_PANORAMA:
-            case TRACK_3_SET_PANORAMA:
-            case TRACK_4_SET_PANORAMA:
-            case TRACK_5_SET_PANORAMA:
-            case TRACK_6_SET_PANORAMA:
-            case TRACK_7_SET_PANORAMA:
-            case TRACK_8_SET_PANORAMA:
+            case TRACK_1_SET_PANORAMA, TRACK_2_SET_PANORAMA, TRACK_3_SET_PANORAMA, TRACK_4_SET_PANORAMA, TRACK_5_SET_PANORAMA, TRACK_6_SET_PANORAMA, TRACK_7_SET_PANORAMA, TRACK_8_SET_PANORAMA:
                 this.changeTrackPanorama (knobMode, command.ordinal () - FlexiCommand.TRACK_1_SET_PANORAMA.ordinal (), value);
                 break;
             // Track Selected: Set Panorama
@@ -707,26 +485,12 @@ public class TrackHandler extends AbstractHandler
                 break;
 
             // Track 1-8: Toggle Mute
-            case TRACK_1_TOGGLE_MUTE:
-            case TRACK_2_TOGGLE_MUTE:
-            case TRACK_3_TOGGLE_MUTE:
-            case TRACK_4_TOGGLE_MUTE:
-            case TRACK_5_TOGGLE_MUTE:
-            case TRACK_6_TOGGLE_MUTE:
-            case TRACK_7_TOGGLE_MUTE:
-            case TRACK_8_TOGGLE_MUTE:
+            case TRACK_1_TOGGLE_MUTE, TRACK_2_TOGGLE_MUTE, TRACK_3_TOGGLE_MUTE, TRACK_4_TOGGLE_MUTE, TRACK_5_TOGGLE_MUTE, TRACK_6_TOGGLE_MUTE, TRACK_7_TOGGLE_MUTE, TRACK_8_TOGGLE_MUTE:
                 if (isButtonPressed)
                     trackBank.getItem (command.ordinal () - FlexiCommand.TRACK_1_TOGGLE_MUTE.ordinal ()).toggleMute ();
                 break;
             // Track 1-8: Set Mute
-            case TRACK_1_SET_MUTE:
-            case TRACK_2_SET_MUTE:
-            case TRACK_3_SET_MUTE:
-            case TRACK_4_SET_MUTE:
-            case TRACK_5_SET_MUTE:
-            case TRACK_6_SET_MUTE:
-            case TRACK_7_SET_MUTE:
-            case TRACK_8_SET_MUTE:
+            case TRACK_1_SET_MUTE, TRACK_2_SET_MUTE, TRACK_3_SET_MUTE, TRACK_4_SET_MUTE, TRACK_5_SET_MUTE, TRACK_6_SET_MUTE, TRACK_7_SET_MUTE, TRACK_8_SET_MUTE:
                 if (isButtonPressed)
                     trackBank.getItem (command.ordinal () - FlexiCommand.TRACK_1_SET_MUTE.ordinal ()).setMute (value.isPositive ());
                 break;
@@ -742,26 +506,12 @@ public class TrackHandler extends AbstractHandler
                 break;
 
             // Track 1-8: Toggle Solo
-            case TRACK_1_TOGGLE_SOLO:
-            case TRACK_2_TOGGLE_SOLO:
-            case TRACK_3_TOGGLE_SOLO:
-            case TRACK_4_TOGGLE_SOLO:
-            case TRACK_5_TOGGLE_SOLO:
-            case TRACK_6_TOGGLE_SOLO:
-            case TRACK_7_TOGGLE_SOLO:
-            case TRACK_8_TOGGLE_SOLO:
+            case TRACK_1_TOGGLE_SOLO, TRACK_2_TOGGLE_SOLO, TRACK_3_TOGGLE_SOLO, TRACK_4_TOGGLE_SOLO, TRACK_5_TOGGLE_SOLO, TRACK_6_TOGGLE_SOLO, TRACK_7_TOGGLE_SOLO, TRACK_8_TOGGLE_SOLO:
                 if (isButtonPressed)
                     trackBank.getItem (command.ordinal () - FlexiCommand.TRACK_1_TOGGLE_SOLO.ordinal ()).toggleSolo ();
                 break;
             // Track 1-8: Set Solo
-            case TRACK_1_SET_SOLO:
-            case TRACK_2_SET_SOLO:
-            case TRACK_3_SET_SOLO:
-            case TRACK_4_SET_SOLO:
-            case TRACK_5_SET_SOLO:
-            case TRACK_6_SET_SOLO:
-            case TRACK_7_SET_SOLO:
-            case TRACK_8_SET_SOLO:
+            case TRACK_1_SET_SOLO, TRACK_2_SET_SOLO, TRACK_3_SET_SOLO, TRACK_4_SET_SOLO, TRACK_5_SET_SOLO, TRACK_6_SET_SOLO, TRACK_7_SET_SOLO, TRACK_8_SET_SOLO:
                 if (isButtonPressed)
                     trackBank.getItem (command.ordinal () - FlexiCommand.TRACK_1_SET_SOLO.ordinal ()).setSolo (value.isPositive ());
                 break;
@@ -777,26 +527,12 @@ public class TrackHandler extends AbstractHandler
                 break;
 
             // Track 1-8: Toggle Arm
-            case TRACK_1_TOGGLE_ARM:
-            case TRACK_2_TOGGLE_ARM:
-            case TRACK_3_TOGGLE_ARM:
-            case TRACK_4_TOGGLE_ARM:
-            case TRACK_5_TOGGLE_ARM:
-            case TRACK_6_TOGGLE_ARM:
-            case TRACK_7_TOGGLE_ARM:
-            case TRACK_8_TOGGLE_ARM:
+            case TRACK_1_TOGGLE_ARM, TRACK_2_TOGGLE_ARM, TRACK_3_TOGGLE_ARM, TRACK_4_TOGGLE_ARM, TRACK_5_TOGGLE_ARM, TRACK_6_TOGGLE_ARM, TRACK_7_TOGGLE_ARM, TRACK_8_TOGGLE_ARM:
                 if (isButtonPressed)
                     trackBank.getItem (command.ordinal () - FlexiCommand.TRACK_1_TOGGLE_ARM.ordinal ()).toggleRecArm ();
                 break;
             // Track 1-8: Set Arm
-            case TRACK_1_SET_ARM:
-            case TRACK_2_SET_ARM:
-            case TRACK_3_SET_ARM:
-            case TRACK_4_SET_ARM:
-            case TRACK_5_SET_ARM:
-            case TRACK_6_SET_ARM:
-            case TRACK_7_SET_ARM:
-            case TRACK_8_SET_ARM:
+            case TRACK_1_SET_ARM, TRACK_2_SET_ARM, TRACK_3_SET_ARM, TRACK_4_SET_ARM, TRACK_5_SET_ARM, TRACK_6_SET_ARM, TRACK_7_SET_ARM, TRACK_8_SET_ARM:
                 if (isButtonPressed)
                     trackBank.getItem (command.ordinal () - FlexiCommand.TRACK_1_SET_ARM.ordinal ()).setRecArm (value.isPositive ());
                 break;
@@ -812,26 +548,12 @@ public class TrackHandler extends AbstractHandler
                 break;
 
             // Track 1-8: Toggle Monitor
-            case TRACK_1_TOGGLE_MONITOR:
-            case TRACK_2_TOGGLE_MONITOR:
-            case TRACK_3_TOGGLE_MONITOR:
-            case TRACK_4_TOGGLE_MONITOR:
-            case TRACK_5_TOGGLE_MONITOR:
-            case TRACK_6_TOGGLE_MONITOR:
-            case TRACK_7_TOGGLE_MONITOR:
-            case TRACK_8_TOGGLE_MONITOR:
+            case TRACK_1_TOGGLE_MONITOR, TRACK_2_TOGGLE_MONITOR, TRACK_3_TOGGLE_MONITOR, TRACK_4_TOGGLE_MONITOR, TRACK_5_TOGGLE_MONITOR, TRACK_6_TOGGLE_MONITOR, TRACK_7_TOGGLE_MONITOR, TRACK_8_TOGGLE_MONITOR:
                 if (isButtonPressed)
                     trackBank.getItem (command.ordinal () - FlexiCommand.TRACK_1_TOGGLE_MONITOR.ordinal ()).toggleMonitor ();
                 break;
             // Track 1-8: Set Monitor
-            case TRACK_1_SET_MONITOR:
-            case TRACK_2_SET_MONITOR:
-            case TRACK_3_SET_MONITOR:
-            case TRACK_4_SET_MONITOR:
-            case TRACK_5_SET_MONITOR:
-            case TRACK_6_SET_MONITOR:
-            case TRACK_7_SET_MONITOR:
-            case TRACK_8_SET_MONITOR:
+            case TRACK_1_SET_MONITOR, TRACK_2_SET_MONITOR, TRACK_3_SET_MONITOR, TRACK_4_SET_MONITOR, TRACK_5_SET_MONITOR, TRACK_6_SET_MONITOR, TRACK_7_SET_MONITOR, TRACK_8_SET_MONITOR:
                 if (isButtonPressed)
                     trackBank.getItem (command.ordinal () - FlexiCommand.TRACK_1_SET_MONITOR.ordinal ()).setMonitor (value.isPositive ());
                 break;
@@ -847,26 +569,12 @@ public class TrackHandler extends AbstractHandler
                 break;
 
             // Track 1: Toggle Auto Monitor
-            case TRACK_1_TOGGLE_AUTO_MONITOR:
-            case TRACK_2_TOGGLE_AUTO_MONITOR:
-            case TRACK_3_TOGGLE_AUTO_MONITOR:
-            case TRACK_4_TOGGLE_AUTO_MONITOR:
-            case TRACK_5_TOGGLE_AUTO_MONITOR:
-            case TRACK_6_TOGGLE_AUTO_MONITOR:
-            case TRACK_7_TOGGLE_AUTO_MONITOR:
-            case TRACK_8_TOGGLE_AUTO_MONITOR:
+            case TRACK_1_TOGGLE_AUTO_MONITOR, TRACK_2_TOGGLE_AUTO_MONITOR, TRACK_3_TOGGLE_AUTO_MONITOR, TRACK_4_TOGGLE_AUTO_MONITOR, TRACK_5_TOGGLE_AUTO_MONITOR, TRACK_6_TOGGLE_AUTO_MONITOR, TRACK_7_TOGGLE_AUTO_MONITOR, TRACK_8_TOGGLE_AUTO_MONITOR:
                 if (isButtonPressed)
                     trackBank.getItem (command.ordinal () - FlexiCommand.TRACK_1_TOGGLE_AUTO_MONITOR.ordinal ()).toggleAutoMonitor ();
                 break;
             // Track 1: Set Auto Monitor
-            case TRACK_1_SET_AUTO_MONITOR:
-            case TRACK_2_SET_AUTO_MONITOR:
-            case TRACK_3_SET_AUTO_MONITOR:
-            case TRACK_4_SET_AUTO_MONITOR:
-            case TRACK_5_SET_AUTO_MONITOR:
-            case TRACK_6_SET_AUTO_MONITOR:
-            case TRACK_7_SET_AUTO_MONITOR:
-            case TRACK_8_SET_AUTO_MONITOR:
+            case TRACK_1_SET_AUTO_MONITOR, TRACK_2_SET_AUTO_MONITOR, TRACK_3_SET_AUTO_MONITOR, TRACK_4_SET_AUTO_MONITOR, TRACK_5_SET_AUTO_MONITOR, TRACK_6_SET_AUTO_MONITOR, TRACK_7_SET_AUTO_MONITOR, TRACK_8_SET_AUTO_MONITOR:
                 if (isButtonPressed)
                     trackBank.getItem (command.ordinal () - FlexiCommand.TRACK_1_SET_AUTO_MONITOR.ordinal ()).setAutoMonitor (value.isPositive ());
                 break;
@@ -893,110 +601,39 @@ public class TrackHandler extends AbstractHandler
                 break;
 
             // Track 1-8: Set Send 1
-            case TRACK_1_SET_SEND_1:
-            case TRACK_2_SET_SEND_1:
-            case TRACK_3_SET_SEND_1:
-            case TRACK_4_SET_SEND_1:
-            case TRACK_5_SET_SEND_1:
-            case TRACK_6_SET_SEND_1:
-            case TRACK_7_SET_SEND_1:
-            case TRACK_8_SET_SEND_1:
+            case TRACK_1_SET_SEND_1, TRACK_2_SET_SEND_1, TRACK_3_SET_SEND_1, TRACK_4_SET_SEND_1, TRACK_5_SET_SEND_1, TRACK_6_SET_SEND_1, TRACK_7_SET_SEND_1, TRACK_8_SET_SEND_1:
                 this.changeSendVolume (command.ordinal () - FlexiCommand.TRACK_1_SET_SEND_1.ordinal (), 0, knobMode, value);
                 break;
-
             // Track 1-8: Set Send 2
-            case TRACK_1_SET_SEND_2:
-            case TRACK_2_SET_SEND_2:
-            case TRACK_3_SET_SEND_2:
-            case TRACK_4_SET_SEND_2:
-            case TRACK_5_SET_SEND_2:
-            case TRACK_6_SET_SEND_2:
-            case TRACK_7_SET_SEND_2:
-            case TRACK_8_SET_SEND_2:
+            case TRACK_1_SET_SEND_2, TRACK_2_SET_SEND_2, TRACK_3_SET_SEND_2, TRACK_4_SET_SEND_2, TRACK_5_SET_SEND_2, TRACK_6_SET_SEND_2, TRACK_7_SET_SEND_2, TRACK_8_SET_SEND_2:
                 this.changeSendVolume (command.ordinal () - FlexiCommand.TRACK_1_SET_SEND_2.ordinal (), 1, knobMode, value);
                 break;
-
             // Track 1-8: Set Send 3
-            case TRACK_1_SET_SEND_3:
-            case TRACK_2_SET_SEND_3:
-            case TRACK_3_SET_SEND_3:
-            case TRACK_4_SET_SEND_3:
-            case TRACK_5_SET_SEND_3:
-            case TRACK_6_SET_SEND_3:
-            case TRACK_7_SET_SEND_3:
-            case TRACK_8_SET_SEND_3:
+            case TRACK_1_SET_SEND_3, TRACK_2_SET_SEND_3, TRACK_3_SET_SEND_3, TRACK_4_SET_SEND_3, TRACK_5_SET_SEND_3, TRACK_6_SET_SEND_3, TRACK_7_SET_SEND_3, TRACK_8_SET_SEND_3:
                 this.changeSendVolume (command.ordinal () - FlexiCommand.TRACK_1_SET_SEND_3.ordinal (), 2, knobMode, value);
                 break;
-
             // Track 1-8: Set Send 4
-            case TRACK_1_SET_SEND_4:
-            case TRACK_2_SET_SEND_4:
-            case TRACK_3_SET_SEND_4:
-            case TRACK_4_SET_SEND_4:
-            case TRACK_5_SET_SEND_4:
-            case TRACK_6_SET_SEND_4:
-            case TRACK_7_SET_SEND_4:
-            case TRACK_8_SET_SEND_4:
+            case TRACK_1_SET_SEND_4, TRACK_2_SET_SEND_4, TRACK_3_SET_SEND_4, TRACK_4_SET_SEND_4, TRACK_5_SET_SEND_4, TRACK_6_SET_SEND_4, TRACK_7_SET_SEND_4, TRACK_8_SET_SEND_4:
                 this.changeSendVolume (command.ordinal () - FlexiCommand.TRACK_1_SET_SEND_4.ordinal (), 3, knobMode, value);
                 break;
-
             // Track 1: Set Send 5
-            case TRACK_1_SET_SEND_5:
-            case TRACK_2_SET_SEND_5:
-            case TRACK_3_SET_SEND_5:
-            case TRACK_4_SET_SEND_5:
-            case TRACK_5_SET_SEND_5:
-            case TRACK_6_SET_SEND_5:
-            case TRACK_7_SET_SEND_5:
-            case TRACK_8_SET_SEND_5:
+            case TRACK_1_SET_SEND_5, TRACK_2_SET_SEND_5, TRACK_3_SET_SEND_5, TRACK_4_SET_SEND_5, TRACK_5_SET_SEND_5, TRACK_6_SET_SEND_5, TRACK_7_SET_SEND_5, TRACK_8_SET_SEND_5:
                 this.changeSendVolume (command.ordinal () - FlexiCommand.TRACK_1_SET_SEND_5.ordinal (), 4, knobMode, value);
                 break;
-
             // Track 1: Set Send 6
-            case TRACK_1_SET_SEND_6:
-            case TRACK_2_SET_SEND_6:
-            case TRACK_3_SET_SEND_6:
-            case TRACK_4_SET_SEND_6:
-            case TRACK_5_SET_SEND_6:
-            case TRACK_6_SET_SEND_6:
-            case TRACK_7_SET_SEND_6:
-            case TRACK_8_SET_SEND_6:
+            case TRACK_1_SET_SEND_6, TRACK_2_SET_SEND_6, TRACK_3_SET_SEND_6, TRACK_4_SET_SEND_6, TRACK_5_SET_SEND_6, TRACK_6_SET_SEND_6, TRACK_7_SET_SEND_6, TRACK_8_SET_SEND_6:
                 this.changeSendVolume (command.ordinal () - FlexiCommand.TRACK_1_SET_SEND_6.ordinal (), 5, knobMode, value);
                 break;
-
             // Track 1-8: Set Send 7
-            case TRACK_1_SET_SEND_7:
-            case TRACK_2_SET_SEND_7:
-            case TRACK_3_SET_SEND_7:
-            case TRACK_4_SET_SEND_7:
-            case TRACK_5_SET_SEND_7:
-            case TRACK_6_SET_SEND_7:
-            case TRACK_7_SET_SEND_7:
-            case TRACK_8_SET_SEND_7:
+            case TRACK_1_SET_SEND_7, TRACK_2_SET_SEND_7, TRACK_3_SET_SEND_7, TRACK_4_SET_SEND_7, TRACK_5_SET_SEND_7, TRACK_6_SET_SEND_7, TRACK_7_SET_SEND_7, TRACK_8_SET_SEND_7:
                 this.changeSendVolume (command.ordinal () - FlexiCommand.TRACK_1_SET_SEND_7.ordinal (), 6, knobMode, value);
                 break;
-
             // Track 1-8: Set Send 8
-            case TRACK_1_SET_SEND_8:
-            case TRACK_2_SET_SEND_8:
-            case TRACK_3_SET_SEND_8:
-            case TRACK_4_SET_SEND_8:
-            case TRACK_5_SET_SEND_8:
-            case TRACK_6_SET_SEND_8:
-            case TRACK_7_SET_SEND_8:
-            case TRACK_8_SET_SEND_8:
+            case TRACK_1_SET_SEND_8, TRACK_2_SET_SEND_8, TRACK_3_SET_SEND_8, TRACK_4_SET_SEND_8, TRACK_5_SET_SEND_8, TRACK_6_SET_SEND_8, TRACK_7_SET_SEND_8, TRACK_8_SET_SEND_8:
                 this.changeSendVolume (command.ordinal () - FlexiCommand.TRACK_1_SET_SEND_8.ordinal (), 7, knobMode, value);
                 break;
-
             // Track Selected: Set Send 1-8
-            case TRACK_SELECTED_SET_SEND_1:
-            case TRACK_SELECTED_SET_SEND_2:
-            case TRACK_SELECTED_SET_SEND_3:
-            case TRACK_SELECTED_SET_SEND_4:
-            case TRACK_SELECTED_SET_SEND_5:
-            case TRACK_SELECTED_SET_SEND_6:
-            case TRACK_SELECTED_SET_SEND_7:
-            case TRACK_SELECTED_SET_SEND_8:
+            case TRACK_SELECTED_SET_SEND_1, TRACK_SELECTED_SET_SEND_2, TRACK_SELECTED_SET_SEND_3, TRACK_SELECTED_SET_SEND_4, TRACK_SELECTED_SET_SEND_5, TRACK_SELECTED_SET_SEND_6, TRACK_SELECTED_SET_SEND_7, TRACK_SELECTED_SET_SEND_8:
                 this.changeSendVolume (-1, command.ordinal () - FlexiCommand.TRACK_SELECTED_SET_SEND_1.ordinal (), knobMode, value);
                 break;
 

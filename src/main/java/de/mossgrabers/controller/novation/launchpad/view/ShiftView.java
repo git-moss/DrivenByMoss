@@ -190,14 +190,7 @@ public class ShiftView extends AbstractView<LaunchpadControlSurface, LaunchpadCo
 
         switch (note)
         {
-            case 36:
-            case 37:
-            case 38:
-            case 39:
-            case 40:
-            case 41:
-            case 42:
-            case 43:
+            case 36, 37, 38, 39, 40, 41, 42, 43:
                 final int newClipLength = note - 36;
                 configuration.setNewClipLength (newClipLength);
                 this.surface.getDisplay ().notify ("New clip length: " + AbstractConfiguration.getNewClipLengthValue (newClipLength));

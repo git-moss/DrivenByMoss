@@ -16,6 +16,9 @@ import de.mossgrabers.framework.daw.data.bank.IBank;
 import de.mossgrabers.framework.daw.data.bank.ITrackBank;
 import de.mossgrabers.framework.mode.Modes;
 import de.mossgrabers.framework.utils.ButtonEvent;
+import de.mossgrabers.framework.utils.StringUtils;
+
+import java.util.Optional;
 
 
 /**
@@ -80,17 +83,15 @@ public class MCUMoveTrackBankCommand extends AbstractTriggerCommand<MCUControlSu
             case EQ_DEVICE_PARAMS, INSTRUMENT_DEVICE_PARAMS, DEVICE_PARAMS:
                 final ISpecificDevice device = this.getDevice (activeID);
                 if (this.moveBy1)
-                {
                     this.handleBankMovement (device.getParameterBank ());
-                    return;
-                }
-                if (device instanceof final ICursorDevice cursorDevice)
+                else if (device instanceof final ICursorDevice cursorDevice)
                 {
                     if (this.moveLeft)
                         cursorDevice.selectPrevious ();
                     else
                         cursorDevice.selectNext ();
                 }
+                this.notifySelectedDeviceAndParameterPage ();
                 break;
 
             case MARKERS:
@@ -164,5 +165,29 @@ public class MCUMoveTrackBankCommand extends AbstractTriggerCommand<MCUControlSu
             default:
                 return this.model.getCursorDevice ();
         }
+    }
+
+
+    private void notifySelectedDeviceAndParameterPage ()
+    {
+        this.mvHelper.delayDisplay ( () -> {
+
+            final ICursorDevice cursorDevice = this.model.getCursorDevice ();
+            if (!cursorDevice.doesExist ())
+                return "No device selected";
+
+            String text = StringUtils.pad (StringUtils.shortenAndFixASCII (cursorDevice.getName (), 27) + " ", 28);
+
+            final Optional<String> selectedItem = cursorDevice.getParameterPageBank ().getSelectedItem ();
+            if (selectedItem.isPresent ())
+            {
+                String pageName = selectedItem.get ();
+                if (pageName == null || pageName.isBlank ())
+                    pageName = "None";
+                text += pageName;
+            }
+
+            return text;
+        });
     }
 }

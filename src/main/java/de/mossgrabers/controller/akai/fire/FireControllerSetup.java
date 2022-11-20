@@ -524,9 +524,8 @@ public class FireControllerSetup extends AbstractControllerSetup<FireControlSurf
     public void startup ()
     {
         final FireControlSurface surface = this.getSurface ();
-        surface.getViewManager ().setActive (this.configuration.getPreferredNoteView ());
+        surface.getViewManager ().setActive (this.configuration.shouldStartWithSessionView () ? Views.SESSION : this.configuration.getPreferredNoteView ());
         surface.getModeManager ().setActive (Modes.TRACK);
-
         this.modeSelectCommand.activateMode (Modes.TRACK);
     }
 

@@ -115,10 +115,7 @@ public class NoteParameter extends AbstractParameterImpl
         if (notePosition.getNote () == -1)
             return 0;
         final IStepInfo stepInfo = clip.getStep (notePosition);
-        if (stepInfo.getState () == StepState.OFF)
-            return 0;
-
-        if (!this.host.supports (this.noteAttribute))
+        if ((stepInfo.getState () == StepState.OFF) || !this.host.supports (this.noteAttribute))
             return 0;
 
         double normalizedValue = 0;

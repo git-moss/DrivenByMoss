@@ -76,6 +76,14 @@ public class DeviceHandler extends AbstractHandler
             FlexiCommand.DEVICE_SET_PARAMETER_6,
             FlexiCommand.DEVICE_SET_PARAMETER_7,
             FlexiCommand.DEVICE_SET_PARAMETER_8,
+            FlexiCommand.DEVICE_TOGGLE_PARAMETER_1,
+            FlexiCommand.DEVICE_TOGGLE_PARAMETER_2,
+            FlexiCommand.DEVICE_TOGGLE_PARAMETER_3,
+            FlexiCommand.DEVICE_TOGGLE_PARAMETER_4,
+            FlexiCommand.DEVICE_TOGGLE_PARAMETER_5,
+            FlexiCommand.DEVICE_TOGGLE_PARAMETER_6,
+            FlexiCommand.DEVICE_TOGGLE_PARAMETER_7,
+            FlexiCommand.DEVICE_TOGGLE_PARAMETER_8,
             FlexiCommand.DEVICE_RESET_PARAMETER_2,
             FlexiCommand.DEVICE_RESET_PARAMETER_3,
             FlexiCommand.DEVICE_RESET_PARAMETER_4,
@@ -112,6 +120,10 @@ public class DeviceHandler extends AbstractHandler
 
             case DEVICE_SET_PARAMETER_1, DEVICE_SET_PARAMETER_2, DEVICE_SET_PARAMETER_3, DEVICE_SET_PARAMETER_4, DEVICE_SET_PARAMETER_5, DEVICE_SET_PARAMETER_6, DEVICE_SET_PARAMETER_7, DEVICE_SET_PARAMETER_8:
                 return cursorDevice.getParameterBank ().getItem (command.ordinal () - FlexiCommand.DEVICE_SET_PARAMETER_1.ordinal ()).getValue ();
+
+            case DEVICE_TOGGLE_PARAMETER_1, DEVICE_TOGGLE_PARAMETER_2, DEVICE_TOGGLE_PARAMETER_3, DEVICE_TOGGLE_PARAMETER_4, DEVICE_TOGGLE_PARAMETER_5, DEVICE_TOGGLE_PARAMETER_6, DEVICE_TOGGLE_PARAMETER_7, DEVICE_TOGGLE_PARAMETER_8:
+                final int value = cursorDevice.getParameterBank ().getItem (command.ordinal () - FlexiCommand.DEVICE_TOGGLE_PARAMETER_1.ordinal ()).getValue ();
+                return value > 0 ? 127 : 0;
 
             case DEVICE_SELECT_PARAMETER_PAGE_1, DEVICE_SELECT_PARAMETER_PAGE_2, DEVICE_SELECT_PARAMETER_PAGE_3, DEVICE_SELECT_PARAMETER_PAGE_4, DEVICE_SELECT_PARAMETER_PAGE_5, DEVICE_SELECT_PARAMETER_PAGE_6, DEVICE_SELECT_PARAMETER_PAGE_7, DEVICE_SELECT_PARAMETER_PAGE_8:
                 return cursorDevice.getParameterBank ().getItem (command.ordinal () - FlexiCommand.DEVICE_SELECT_PARAMETER_PAGE_1.ordinal ()).isSelected () ? 127 : 0;
@@ -210,6 +222,16 @@ public class DeviceHandler extends AbstractHandler
             // Device: Set Parameter 1-8
             case DEVICE_SET_PARAMETER_1, DEVICE_SET_PARAMETER_2, DEVICE_SET_PARAMETER_3, DEVICE_SET_PARAMETER_4, DEVICE_SET_PARAMETER_5, DEVICE_SET_PARAMETER_6, DEVICE_SET_PARAMETER_7, DEVICE_SET_PARAMETER_8:
                 this.handleParameter (knobMode, command.ordinal () - FlexiCommand.DEVICE_SET_PARAMETER_1.ordinal (), value);
+                break;
+
+            // Device: Toggle Parameter 1-8
+            case DEVICE_TOGGLE_PARAMETER_1, DEVICE_TOGGLE_PARAMETER_2, DEVICE_TOGGLE_PARAMETER_3, DEVICE_TOGGLE_PARAMETER_4, DEVICE_TOGGLE_PARAMETER_5, DEVICE_TOGGLE_PARAMETER_6, DEVICE_TOGGLE_PARAMETER_7, DEVICE_TOGGLE_PARAMETER_8:
+                final IParameter toggleParam = cursorDevice.getParameterBank ().getItem (command.ordinal () - FlexiCommand.DEVICE_TOGGLE_PARAMETER_1.ordinal ());
+                if (isButtonPressed)
+                {
+                    final int v = toggleParam.getValue ();
+                    toggleParam.setValue (v > 0 ? 0 : this.model.getValueChanger ().getUpperBound () - 1);
+                }
                 break;
 
             // Device: Reset Parameter 1-8
