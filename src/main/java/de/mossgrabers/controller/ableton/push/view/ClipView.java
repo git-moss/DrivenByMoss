@@ -9,6 +9,7 @@ import de.mossgrabers.controller.ableton.push.controller.PushColorManager;
 import de.mossgrabers.controller.ableton.push.controller.PushControlSurface;
 import de.mossgrabers.framework.controller.ButtonID;
 import de.mossgrabers.framework.daw.IModel;
+import de.mossgrabers.framework.daw.ITransport;
 import de.mossgrabers.framework.daw.clip.IClip;
 import de.mossgrabers.framework.daw.clip.INoteClip;
 import de.mossgrabers.framework.daw.constants.Resolution;
@@ -24,14 +25,17 @@ import de.mossgrabers.framework.view.sequencer.AbstractSequencerView;
  */
 public class ClipView extends AbstractSequencerView<PushControlSurface, PushConfiguration>
 {
-    private int          loopPadPressed = -1;
-    private final int [] padResolutions =
+    private static final int [] PAD_RESOLUTIONS  =
     {
         1,
         4,
         16
     };
-    private int          padResolution  = 0;
+
+    private final ITransport    transport;
+    private int                 padResolution    = 0;
+    private int                 firstPressedPad  = -1;
+    private boolean             hasSecondPressed = false;
 
 
     /**
@@ -43,6 +47,8 @@ public class ClipView extends AbstractSequencerView<PushControlSurface, PushConf
     public ClipView (final PushControlSurface surface, final IModel model)
     {
         super ("Clip", surface, model, 0, 0, true);
+
+        this.transport = model.getTransport ();
     }
 
 
@@ -64,27 +70,38 @@ public class ClipView extends AbstractSequencerView<PushControlSurface, PushConf
 
         // Clip length/loop area
         final int pad = (7 - y) * 8 + x;
-        // Button pressed?
+
+        // On button press...
         if (velocity > 0)
         {
             // Not yet a button pressed, store it
-            if (this.loopPadPressed == -1)
-                this.loopPadPressed = pad;
+            if (this.firstPressedPad == -1)
+                this.firstPressedPad = pad;
+            return;
         }
-        else if (this.loopPadPressed != -1)
+
+        // On button release...
+        final boolean isSecondPad = this.firstPressedPad != pad;
+        if (isSecondPad)
+            this.hasSecondPressed = true;
+        if (isSecondPad || !this.hasSecondPressed)
         {
-            final int start = this.loopPadPressed < pad ? this.loopPadPressed : pad;
-            final int end = (this.loopPadPressed < pad ? pad : this.loopPadPressed) + 1;
+            final int start = this.firstPressedPad < pad ? this.firstPressedPad : pad;
+            final int end = (this.firstPressedPad < pad ? pad : this.firstPressedPad) + 1;
             final double quartersPerPad = this.getQuartersPerPad ();
 
             // Set a new loop between the 2 selected pads
             final double newStart = start * quartersPerPad;
             final IClip clip = this.getClip ();
             clip.setLoopStart (newStart);
-            clip.setLoopLength ((int) ((end - start) * quartersPerPad));
+            clip.setLoopLength (((end - start) * quartersPerPad));
             clip.setPlayRange (newStart, end * quartersPerPad);
+        }
 
-            this.loopPadPressed = -1;
+        if (this.firstPressedPad == pad)
+        {
+            this.firstPressedPad = -1;
+            this.hasSecondPressed = false;
         }
     }
 
@@ -131,7 +148,7 @@ public class ClipView extends AbstractSequencerView<PushControlSurface, PushConf
             return;
 
         this.padResolution = index;
-        this.surface.getDisplay ().notify ("1/" + this.padResolutions[this.padResolution]);
+        this.surface.getDisplay ().notify ("1/" + PAD_RESOLUTIONS[this.padResolution]);
     }
 
 
@@ -151,6 +168,6 @@ public class ClipView extends AbstractSequencerView<PushControlSurface, PushConf
 
     private double getQuartersPerPad ()
     {
-        return this.model.getTransport ().getQuartersPerMeasure () / (double) this.padResolutions[this.padResolution];
+        return this.transport.getQuartersPerMeasure () / (double) PAD_RESOLUTIONS[this.padResolution];
     }
 }

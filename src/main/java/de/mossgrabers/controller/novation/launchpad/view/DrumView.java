@@ -113,15 +113,6 @@ public class DrumView extends AbstractDrumExView<LaunchpadControlSurface, Launch
 
     /** {@inheritDoc} */
     @Override
-    protected int getNumberOfAvailablePages ()
-    {
-        // Remove the last 8 buttons so we can use it for something else if extra buttons are active
-        return super.getNumberOfAvailablePages () - (this.extraButtonsOn ? 8 : 1);
-    }
-
-
-    /** {@inheritDoc} */
-    @Override
     protected boolean handleSequencerAreaButtonCombinations (final INoteClip clip, final NotePosition notePosition, final int velocity)
     {
         final boolean isUpPressed = this.surface.isPressed (ButtonID.UP);

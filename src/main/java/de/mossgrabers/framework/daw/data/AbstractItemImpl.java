@@ -113,6 +113,14 @@ public abstract class AbstractItemImpl implements IItem
 
     /** {@inheritDoc} */
     @Override
+    public void toggleMultiSelect ()
+    {
+        // Cannot be selected but should also not crash
+    }
+
+
+    /** {@inheritDoc} */
+    @Override
     public void addNameObserver (final IValueObserver<String> observer)
     {
         // Intentionally empty

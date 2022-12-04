@@ -57,9 +57,15 @@ public interface IItem extends IObserverManagement
 
 
     /**
-     * Select the item.
+     * Select the item. Removes the selection state from other items.
      */
     void select ();
+
+
+    /**
+     * Toggles the selection state of the item. Keeps selection state of other items.
+     */
+    void toggleMultiSelect ();
 
 
     /**

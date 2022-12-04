@@ -160,6 +160,14 @@ public class ResetParameter implements IParameter
 
     /** {@inheritDoc} */
     @Override
+    public void toggleMultiSelect ()
+    {
+        this.parameter.toggleMultiSelect ();
+    }
+
+
+    /** {@inheritDoc} */
+    @Override
     public String getName (final int limit)
     {
         return StringUtils.optimizeName (this.getName (), limit);
