@@ -62,6 +62,7 @@ public class LaunchpadCursorCommand extends CursorCommand<LaunchpadControlSurfac
     {
         super (direction, model, surface, false);
 
+        this.triggerEvent = ButtonEvent.UP;
         this.scales = this.model.getScales ();
         this.transport = this.model.getTransport ();
     }

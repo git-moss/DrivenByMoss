@@ -489,6 +489,14 @@ public class ChannelImpl extends AbstractDeviceChainImpl<Channel> implements ICh
 
     /** {@inheritDoc} */
     @Override
+    public void toggleMultiSelect ()
+    {
+        // Currently, no multi-select in Bitwig API
+    }
+
+
+    /** {@inheritDoc} */
+    @Override
     public ISendBank getSendBank ()
     {
         return this.sendBank;

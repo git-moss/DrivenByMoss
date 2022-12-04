@@ -112,9 +112,10 @@ public class SelectCommand extends AbstractTriggerCommand<MCUControlSurface, MCU
             return;
         }
 
-        // Select the track if not already selected...
         final ITrackBank trackBank = this.getTrackBank ();
         final ITrack track = trackBank.getItem (this.channel);
+
+        // Select the track if not already selected...
         if (!track.isSelected ())
         {
             track.select ();
@@ -196,6 +197,13 @@ public class SelectCommand extends AbstractTriggerCommand<MCUControlSurface, MCU
             return true;
         }
 
+        if (this.surface.isPressed (ButtonID.ALT))
+        {
+            this.surface.getDisplay ().notify (AbstractConfiguration.getNewClipLengthValue (this.index));
+            this.surface.getConfiguration ().setNewClipLength (this.index);
+            return true;
+        }
+
         if (this.surface.getConfiguration ().hasOnly1Fader ())
         {
             if (event != ButtonEvent.DOWN)
@@ -247,8 +255,8 @@ public class SelectCommand extends AbstractTriggerCommand<MCUControlSurface, MCU
     {
         if (event != ButtonEvent.DOWN || this.index >= 8)
             return;
-        this.surface.getDisplay ().notify (AbstractConfiguration.getNewClipLengthValue (this.index));
-        this.surface.getConfiguration ().setNewClipLength (this.index);
+        // Allow multi selection
+        this.getTrackBank ().getItem (this.channel).toggleMultiSelect ();
     }
 
 
