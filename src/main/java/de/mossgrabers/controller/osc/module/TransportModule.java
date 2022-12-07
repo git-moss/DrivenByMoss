@@ -255,7 +255,7 @@ public class TransportModule extends AbstractModule
                 break;
 
             case TAG_PREROLL:
-                this.transport.setPrerollAsBars (toInteger (value));
+                this.transport.setPrerollMeasures (toInteger (value));
                 break;
 
             case TAG_LAUNCHER:
@@ -299,7 +299,7 @@ public class TransportModule extends AbstractModule
         this.writer.sendOSC ("/click/volume", this.transport.getMetronomeVolume (), dump);
         this.writer.sendOSC ("/click/volumeStr", this.transport.getMetronomeVolumeStr (), dump);
         this.writer.sendOSC ("/click/preroll", this.transport.isPrerollMetronomeEnabled (), dump);
-        this.writer.sendOSC ("/preroll", this.transport.getPrerollAsBars (), dump);
+        this.writer.sendOSC ("/preroll", this.transport.getPrerollMeasures (), dump);
         this.writer.sendOSC ("/tempo/raw", this.transport.getTempo (), dump);
         this.writer.sendOSC ("/crossfade", this.transport.getCrossfade (), dump);
         this.writer.sendOSC ("/autowrite", this.transport.isWritingArrangerAutomation (), dump);

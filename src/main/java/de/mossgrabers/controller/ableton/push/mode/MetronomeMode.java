@@ -11,7 +11,6 @@ import de.mossgrabers.framework.controller.display.IGraphicDisplay;
 import de.mossgrabers.framework.controller.display.ITextDisplay;
 import de.mossgrabers.framework.daw.IModel;
 import de.mossgrabers.framework.daw.ITransport;
-import de.mossgrabers.framework.daw.constants.TransportConstants;
 import de.mossgrabers.framework.daw.data.IItem;
 import de.mossgrabers.framework.featuregroup.AbstractFeatureGroup;
 import de.mossgrabers.framework.featuregroup.AbstractMode;
@@ -25,15 +24,15 @@ import de.mossgrabers.framework.utils.ButtonEvent;
  */
 public class MetronomeMode extends BaseMode<IItem>
 {
-    private static final String [] PREROLLS      =
+    private static final int []    PREROLL_MEASURE =
     {
-        TransportConstants.PREROLL_NONE,
-        TransportConstants.PREROLL_1_BAR,
-        TransportConstants.PREROLL_2_BARS,
-        TransportConstants.PREROLL_4_BARS
+        0,
+        1,
+        2,
+        4
     };
 
-    private static final String [] PREROLL_NAMES =
+    private static final String [] PREROLL_NAMES   =
     {
         "None",
         "1 Bar",
@@ -65,8 +64,8 @@ public class MetronomeMode extends BaseMode<IItem>
         if (event != ButtonEvent.UP)
             return;
 
-        if (index < PREROLLS.length)
-            this.transport.setPreroll (PREROLLS[index]);
+        if (index < PREROLL_MEASURE.length)
+            this.transport.setPrerollMeasures (PREROLL_MEASURE[index]);
         else if (index == 7)
             this.transport.togglePrerollMetronome ();
     }
@@ -79,9 +78,9 @@ public class MetronomeMode extends BaseMode<IItem>
         final int index = this.isButtonRow (0, buttonID);
         if (index >= 0)
         {
-            final String preroll = this.transport.getPreroll ();
-            if (index < PREROLLS.length)
-                return PREROLLS[index].equals (preroll) ? AbstractMode.BUTTON_COLOR_HI : AbstractFeatureGroup.BUTTON_COLOR_ON;
+            final int prerollMeasures = this.transport.getPrerollMeasures ();
+            if (index < PREROLL_MEASURE.length)
+                return PREROLL_MEASURE[index] == prerollMeasures ? AbstractMode.BUTTON_COLOR_HI : AbstractFeatureGroup.BUTTON_COLOR_ON;
             if (index == 7)
                 return this.transport.isPrerollMetronomeEnabled () ? AbstractMode.BUTTON_COLOR2_HI : AbstractFeatureGroup.BUTTON_COLOR_ON;
         }
@@ -96,9 +95,9 @@ public class MetronomeMode extends BaseMode<IItem>
     {
         display.setBlock (2, 0, "Pre-roll");
 
-        final String preroll = this.transport.getPreroll ();
-        for (int i = 0; i < PREROLLS.length; i++)
-            display.setCell (3, i, (PREROLLS[i].equals (preroll) ? Push1Display.SELECT_ARROW : "") + PREROLL_NAMES[i]);
+        final int prerollMeasures = this.transport.getPrerollMeasures ();
+        for (int i = 0; i < PREROLL_MEASURE.length; i++)
+            display.setCell (3, i, (PREROLL_MEASURE[i] == prerollMeasures ? Push1Display.SELECT_ARROW : "") + PREROLL_NAMES[i]);
 
         display.setBlock (2, 2, "   Play Metronome").setBlock (2, 3, "during Pre-roll?");
         display.setCell (3, 7, this.transport.isPrerollMetronomeEnabled () ? "  Yes" : "  No");
@@ -109,9 +108,9 @@ public class MetronomeMode extends BaseMode<IItem>
     @Override
     public void updateDisplay2 (final IGraphicDisplay display)
     {
-        final String preroll = this.transport.getPreroll ();
-        for (int i = 0; i < PREROLLS.length; i++)
-            display.addOptionElement ("", "", false, i == 0 ? "Pre-roll" : "", PREROLL_NAMES[i], PREROLLS[i].equals (preroll), false);
+        final int prerollMeasures = this.transport.getPrerollMeasures ();
+        for (int i = 0; i < PREROLL_MEASURE.length; i++)
+            display.addOptionElement ("", "", false, i == 0 ? "Pre-roll" : "", PREROLL_NAMES[i], PREROLL_MEASURE[i] == prerollMeasures, false);
 
         display.addEmptyElement ();
         display.addOptionElement ("", "", false, "Play Metronome during Pre-Roll?", "", false, false);

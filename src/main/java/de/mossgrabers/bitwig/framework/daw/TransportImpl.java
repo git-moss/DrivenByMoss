@@ -20,6 +20,7 @@ import de.mossgrabers.framework.utils.StringUtils;
 
 import com.bitwig.extension.controller.api.BeatTimeFormatter;
 import com.bitwig.extension.controller.api.ControllerHost;
+import com.bitwig.extension.controller.api.SettableEnumValue;
 import com.bitwig.extension.controller.api.TimeSignatureValue;
 import com.bitwig.extension.controller.api.Transport;
 
@@ -33,6 +34,15 @@ import java.text.DecimalFormat;
  */
 public class TransportImpl implements ITransport
 {
+    /** No preroll. */
+    private static final String            PREROLL_NONE            = "none";
+    /** 1 bar preroll. */
+    private static final String            PREROLL_1_BAR           = "one_bar";
+    /** 2 bar preroll. */
+    private static final String            PREROLL_2_BARS          = "two_bars";
+    /** 4 bar preroll. */
+    private static final String            PREROLL_4_BARS          = "four_bars";
+
     private static final String            ACTION_JUMP_TO_END      = "jump_to_end_of_arrangement";
 
     private static final AutomationMode [] AUTOMATION_MODES        = new AutomationMode []
@@ -716,25 +726,19 @@ public class TransportImpl implements ITransport
 
     /** {@inheritDoc} */
     @Override
-    public String getPreroll ()
+    public int getPrerollMeasures ()
     {
-        return this.transport.preRoll ().get ();
-    }
+        final String preroll = this.transport.preRoll ().get ();
 
-
-    /** {@inheritDoc} */
-    @Override
-    public int getPrerollAsBars ()
-    {
-        switch (this.getPreroll ())
+        switch (preroll)
         {
-            case TransportConstants.PREROLL_NONE:
+            case PREROLL_NONE:
                 return 0;
-            case TransportConstants.PREROLL_1_BAR:
+            case PREROLL_1_BAR:
                 return 1;
-            case TransportConstants.PREROLL_2_BARS:
+            case PREROLL_2_BARS:
                 return 2;
-            case TransportConstants.PREROLL_4_BARS:
+            case PREROLL_4_BARS:
                 return 4;
             default:
                 return 0;
@@ -744,29 +748,22 @@ public class TransportImpl implements ITransport
 
     /** {@inheritDoc} */
     @Override
-    public void setPreroll (final String preroll)
+    public void setPrerollMeasures (final int preroll)
     {
-        this.transport.preRoll ().set (preroll);
-    }
-
-
-    /** {@inheritDoc} */
-    @Override
-    public void setPrerollAsBars (final int preroll)
-    {
+        final SettableEnumValue preRollValue = this.transport.preRoll ();
         switch (preroll)
         {
             case 0:
-                this.setPreroll (TransportConstants.PREROLL_NONE);
+                preRollValue.set (PREROLL_NONE);
                 break;
             case 1:
-                this.setPreroll (TransportConstants.PREROLL_1_BAR);
+                preRollValue.set (PREROLL_1_BAR);
                 break;
             case 2:
-                this.setPreroll (TransportConstants.PREROLL_2_BARS);
+                preRollValue.set (PREROLL_2_BARS);
                 break;
             case 4:
-                this.setPreroll (TransportConstants.PREROLL_4_BARS);
+                preRollValue.set (PREROLL_4_BARS);
                 break;
             default:
                 this.host.errorln ("Unknown Preroll length: " + preroll);
