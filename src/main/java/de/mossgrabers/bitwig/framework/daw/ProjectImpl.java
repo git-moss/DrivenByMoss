@@ -106,6 +106,15 @@ public class ProjectImpl implements IProject
 
     /** {@inheritDoc} */
     @Override
+    public boolean isDirty ()
+    {
+        // Info not available in Bitwig
+        return true;
+    }
+
+
+    /** {@inheritDoc} */
+    @Override
     public void save ()
     {
         final Action action = this.application.getAction ("Save");

@@ -516,7 +516,7 @@ public class MCUControllerSetup extends AbstractControllerSetup<MCUControlSurfac
                 this.addButton (surface, ButtonID.NEW, "New", new NewCommand<> (this.model, surface), -1);
 
                 // Only MCU
-                this.addButton (surface, ButtonID.SAVE, "Save", new SaveCommand<> (this.model, surface), MCUControlSurface.MCU_SAVE);
+                this.addButton (surface, ButtonID.SAVE, "Save", new SaveCommand<> (this.model, surface), 0, MCUControlSurface.MCU_SAVE, () -> this.model.getProject ().isDirty ());
                 this.addButton (surface, ButtonID.MARKER, "Marker", new MarkerCommand<> (this.model, surface), 0, MCUControlSurface.MCU_MARKER, () -> surface.getButton (ButtonID.SHIFT).isPressed () ? this.model.getArranger ().areCueMarkersVisible () : modeManager.isActive (Modes.MARKERS));
                 this.addButton (surface, ButtonID.TOGGLE_VU, "Toggle VU", new ToggleVUCommand<> (this.model, surface), 0, MCUControlSurface.MCU_EDIT, () -> this.configuration.isEnableVUMeters ());
 
