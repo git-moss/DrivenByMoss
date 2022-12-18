@@ -51,6 +51,14 @@ public interface IProject extends IObserverManagement
 
 
     /**
+     * Returns true if the project was modified and needs to be saved.
+     *
+     * @return True if it needs to be saved
+     */
+    boolean isDirty ();
+
+
+    /**
      * Save the current project.
      */
     void save ();

@@ -883,10 +883,15 @@ public class PushControllerSetup extends AbstractControllerSetup<PushControlSurf
     {
         final PushControlSurface surface = this.getSurface ();
 
+        final ViewManager viewManager = surface.getViewManager ();
         if (this.configuration.shouldStartWithSessionView ())
-            surface.getViewManager ().setActive (Views.SESSION);
+            viewManager.setActive (Views.SESSION);
         else
             this.recallLastView ();
+        // This can happen if there is no track in the project
+        // It is required to have a view otherwise the mode is not drawn
+        if (viewManager.getActive () == null)
+            viewManager.setActive (Views.PLAY);
 
         surface.sendPressureMode (true);
         surface.getMidiOutput ().sendSysex (DeviceInquiry.createQuery ());
