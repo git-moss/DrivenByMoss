@@ -121,7 +121,7 @@ public class Drum4View extends AbstractDrum4View<MaschineJamControlSurface, Masc
 
     /** {@inheritDoc} */
     @Override
-    protected boolean handleNoteAreaButtonCombinations (final INoteClip clip, final NotePosition notePosition, final int row, final int velocity, final int accentVelocity)
+    protected boolean handleSequencerAreaButtonCombinations (final INoteClip clip, final NotePosition notePosition, final int row, final int velocity, final int accentVelocity)
     {
         final boolean isSelectPressed = this.surface.isSelectPressed ();
         if (isSelectPressed)
@@ -131,6 +131,6 @@ public class Drum4View extends AbstractDrum4View<MaschineJamControlSurface, Masc
             return true;
         }
 
-        return super.handleNoteAreaButtonCombinations (clip, notePosition, row, velocity, accentVelocity);
+        return super.handleSequencerAreaButtonCombinations (clip, notePosition, row, velocity, accentVelocity);
     }
 }

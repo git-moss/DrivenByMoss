@@ -90,19 +90,32 @@ public abstract class AbstractDrumLaneView<S extends IControlSurface<C>, C exten
         final int index = note - DRUM_START_KEY;
         final int x = index % this.numColumns;
         final int y = index / this.numColumns;
-
         final int sound = y % this.lanes + this.scales.getDrumOffset ();
         final int laneOffset = (this.allRows - 1 - y) / this.lanes * this.numColumns;
         final int vel = this.configuration.isAccentActive () ? this.configuration.getFixedAccentValue () : this.surface.getButton (ButtonID.get (ButtonID.PAD1, index)).getPressedVelocity ();
 
         final NotePosition notePosition = new NotePosition (this.configuration.getMidiEditChannel (), laneOffset + x, sound);
 
-        final INoteClip clip = this.getClip ();
-        if (this.handleNoteAreaButtonCombinations (clip, notePosition, y, velocity, vel))
+        if (this.handleSequencerAreaButtonCombinations (this.getClip (), notePosition, y, velocity, vel))
             return;
 
-        if (velocity == 0)
-            clip.toggleStep (notePosition, vel);
+        this.handleSequencerArea (velocity, vel, notePosition);
+    }
+
+
+    /**
+     * Handle the sequencer area.
+     *
+     * @param velocity The (up or down) velocity
+     * @param downVelocity The previous down velocity
+     * @param notePosition The note position
+     */
+    protected void handleSequencerArea (final int velocity, final int downVelocity, final NotePosition notePosition)
+    {
+        if (velocity != 0)
+            return;
+
+        this.getClip ().toggleStep (notePosition, downVelocity);
     }
 
 
@@ -116,7 +129,7 @@ public abstract class AbstractDrumLaneView<S extends IControlSurface<C>, C exten
      * @param accentVelocity The velocity or accent value
      * @return True if handled
      */
-    protected boolean handleNoteAreaButtonCombinations (final INoteClip clip, final NotePosition notePosition, final int row, final int velocity, final int accentVelocity)
+    protected boolean handleSequencerAreaButtonCombinations (final INoteClip clip, final NotePosition notePosition, final int row, final int velocity, final int accentVelocity)
     {
         // Handle note duplicate function
         if (this.isButtonCombination (ButtonID.DUPLICATE))

@@ -87,9 +87,9 @@ public class ConfiguredRecordCommand<S extends IControlSurface<C>, C extends Con
                 transport.startRecording ();
                 break;
             case RECORD_ARRANGER_AND_ENABLE_AUTOMATION:
-                transport.startRecording ();
                 if (!transport.isWritingArrangerAutomation ())
                     transport.toggleWriteArrangerAutomation ();
+                transport.startRecording ();
                 break;
             case RECORD_CLIP:
                 this.createClip ();

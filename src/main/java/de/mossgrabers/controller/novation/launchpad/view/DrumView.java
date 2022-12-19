@@ -24,6 +24,9 @@ import de.mossgrabers.framework.view.sequencer.AbstractDrumExView;
  */
 public class DrumView extends AbstractDrumExView<LaunchpadControlSurface, LaunchpadConfiguration>
 {
+    private NotePosition noteEditPosition;
+
+
     /**
      * Constructor.
      *
@@ -108,6 +111,48 @@ public class DrumView extends AbstractDrumExView<LaunchpadControlSurface, Launch
         }
 
         super.handleLoopArea (pad, velocity);
+    }
+
+
+    /** {@inheritDoc} */
+    @Override
+    public void onGridNoteLongPress (final int note)
+    {
+        if (!this.isActive ())
+            return;
+
+        final int index = note - DRUM_START_KEY;
+        final int x = index % this.numColumns;
+        final int y = index / this.numColumns;
+        final int offsetY = this.scales.getDrumOffset ();
+
+        // Sequencer steps
+        if (y < this.playRows)
+            return;
+
+        // Remember the long pressed note to use it either for editing or for changing the length of
+        // the note on pad release
+        this.noteEditPosition = new NotePosition (this.configuration.getMidiEditChannel (), this.numColumns * (this.allRows - 1 - y) + x, offsetY + this.selectedPad);
+    }
+
+
+    /** {@inheritDoc} */
+    @Override
+    protected void handleSequencerArea (final int index, final int x, final int y, final int offsetY, final int velocity)
+    {
+        // Toggle the note on up, so we can intercept the long presses
+        if (velocity != 0)
+        {
+            this.noteEditPosition = null;
+            return;
+        }
+
+        // Note: If the length of the note was changed this method will not be called since button
+        // up was consumed! Therefore, always call edit note
+        if (this.noteEditPosition != null)
+            this.editNote (this.getClip (), this.noteEditPosition, false);
+        else
+            super.handleSequencerArea (index, x, y, offsetY, velocity);
     }
 
 

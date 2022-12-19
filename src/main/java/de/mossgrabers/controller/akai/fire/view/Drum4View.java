@@ -65,7 +65,7 @@ public class Drum4View extends AbstractDrum4View<FireControlSurface, FireConfigu
         final INoteClip clip = this.getClip ();
         final NotePosition notePosition = new NotePosition (channel, step, sound);
 
-        if (this.handleNoteAreaButtonCombinations (clip, notePosition, y, velocity, vel))
+        if (this.handleSequencerAreaButtonCombinations (clip, notePosition, y, velocity, vel))
             return;
 
         // Handle note editor mode
@@ -224,7 +224,7 @@ public class Drum4View extends AbstractDrum4View<FireControlSurface, FireConfigu
 
     /** {@inheritDoc} */
     @Override
-    protected boolean handleNoteAreaButtonCombinations (final INoteClip clip, final NotePosition notePosition, final int row, final int velocity, final int accentVelocity)
+    protected boolean handleSequencerAreaButtonCombinations (final INoteClip clip, final NotePosition notePosition, final int row, final int velocity, final int accentVelocity)
     {
         if (this.isButtonCombination (ButtonID.BROWSE))
         {
@@ -251,7 +251,7 @@ public class Drum4View extends AbstractDrum4View<FireControlSurface, FireConfigu
             return true;
         }
 
-        return super.handleNoteAreaButtonCombinations (clip, notePosition, row, velocity, accentVelocity);
+        return super.handleSequencerAreaButtonCombinations (clip, notePosition, row, velocity, accentVelocity);
     }
 
 
