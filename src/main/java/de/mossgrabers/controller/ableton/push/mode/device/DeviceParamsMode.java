@@ -71,6 +71,8 @@ public class DeviceParamsMode extends BaseMode<IParameter>
 
         System.arraycopy (MENU, 0, this.hostMenu, 0, MENU.length);
         final IHost host = this.model.getHost ();
+        if (!host.supports (Capability.HAS_PARAMETER_PAGE_SECTION))
+            this.hostMenu[1] = "";
         if (!host.supports (Capability.HAS_PINNING))
             this.hostMenu[5] = "";
         if (!host.supports (Capability.HAS_SLOT_CHAINS))

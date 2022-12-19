@@ -58,9 +58,9 @@ public class LaunchpadColorManager extends ColorManager
     public static final int           LAUNCHPAD_COLOR_SPRING           = 26;
     public static final int           LAUNCHPAD_COLOR_SPRING_LO        = 27;
     public static final int           LAUNCHPAD_COLOR_SPRING_TURQUOISE = 28;
-    public static final int           LAUNCHPAD_COLOR_TURQUOISE_LO     = 29;
+    public static final int           LAUNCHPAD_COLOR_TURQUOISE_HI     = 29;
     public static final int           LAUNCHPAD_COLOR_TURQUOISE        = 30;
-    public static final int           LAUNCHPAD_COLOR_TURQUOISE_HI     = 31;
+    public static final int           LAUNCHPAD_COLOR_TURQUOISE_LO     = 31;
     public static final int           LAUNCHPAD_COLOR_TURQUOISE_CYAN   = 32;
     public static final int           LAUNCHPAD_COLOR_CYAN_HI          = 33;
     public static final int           LAUNCHPAD_COLOR_CYAN             = 34;

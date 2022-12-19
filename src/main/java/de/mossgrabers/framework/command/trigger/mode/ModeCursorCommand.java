@@ -86,7 +86,7 @@ public class ModeCursorCommand<S extends IControlSurface<C>, C extends Configura
     @Override
     public void execute (final ButtonEvent event, final int velocity)
     {
-        if (event != this.triggerEvent)
+        if (event != this.getTriggerEvent ())
             return;
 
         switch (this.direction)
@@ -199,5 +199,16 @@ public class ModeCursorCommand<S extends IControlSurface<C>, C extends Configura
         final IMode activeMode = this.surface.getModeManager ().getActive ();
         if (activeMode != null)
             activeMode.selectPreviousItemPage ();
+    }
+
+
+    /**
+     * Use a method to make it over-writable.
+     *
+     * @return The button event to trigger execute
+     */
+    protected ButtonEvent getTriggerEvent ()
+    {
+        return this.triggerEvent;
     }
 }

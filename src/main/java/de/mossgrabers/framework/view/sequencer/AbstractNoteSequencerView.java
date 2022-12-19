@@ -301,50 +301,6 @@ public abstract class AbstractNoteSequencerView<S extends IControlSurface<C>, C 
     }
 
 
-    /**
-     * Get the color for a step.
-     *
-     * @param stepInfo The information about the step
-     * @param hilite The step should be highlighted
-     * @param channel The MIDI channel
-     * @param step The step of the note
-     * @param pad The pad
-     * @param note The note of the step
-     * @param editNotes The currently edited notes
-     * @return The color
-     */
-    protected String getStepColor (final IStepInfo stepInfo, final boolean hilite, final int channel, final int step, final int pad, final int note, final List<NotePosition> editNotes)
-    {
-        final StepState state = stepInfo == null ? StepState.OFF : stepInfo.getState ();
-        switch (state)
-        {
-            case START:
-                if (hilite)
-                    return COLOR_STEP_HILITE_CONTENT;
-                if (isEdit (channel, step, note, editNotes))
-                    return COLOR_STEP_SELECTED;
-                if (stepInfo != null && stepInfo.isMuted ())
-                    return COLOR_STEP_MUTED;
-                return COLOR_CONTENT;
-
-            case CONTINUE:
-                if (hilite)
-                    return COLOR_STEP_HILITE_CONTENT;
-                if (isEdit (channel, step, note, editNotes))
-                    return COLOR_STEP_SELECTED;
-                if (stepInfo != null && stepInfo.isMuted ())
-                    return COLOR_STEP_MUTED_CONT;
-                return COLOR_CONTENT_CONT;
-
-            case OFF:
-            default:
-                if (hilite)
-                    return COLOR_STEP_HILITE_NO_CONTENT;
-                return this.getPadColor (pad, this.useDawColors ? this.model.getCursorTrack () : null);
-        }
-    }
-
-
     /** {@inheritDoc} */
     @Override
     public void onOctaveDown (final ButtonEvent event)

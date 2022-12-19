@@ -71,6 +71,7 @@ public class PolySequencerView extends AbstractPolySequencerView<PushControlSurf
         final boolean isSelectPressed = this.surface.isSelectPressed ();
         final NotePosition notePosition = new NotePosition (channel, step, 0);
 
+        // Change note repeat setting for step
         if (this.surface.isShiftPressed ())
         {
             for (int row = 0; row < 128; row++)
@@ -82,6 +83,7 @@ public class PolySequencerView extends AbstractPolySequencerView<PushControlSurf
             return true;
         }
 
+        // Add note to edit notes with SELECT
         if (isSelectPressed)
         {
             for (int row = 0; row < 128; row++)

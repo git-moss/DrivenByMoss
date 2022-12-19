@@ -14,8 +14,8 @@ import de.mossgrabers.framework.featuregroup.AbstractFeatureGroup;
 import de.mossgrabers.framework.featuregroup.AbstractMode;
 import de.mossgrabers.framework.scale.Scales;
 import de.mossgrabers.framework.view.AbstractPlayView;
-import de.mossgrabers.framework.view.ScenePlayView;
 import de.mossgrabers.framework.view.AbstractSessionView;
+import de.mossgrabers.framework.view.ScenePlayView;
 import de.mossgrabers.framework.view.sequencer.AbstractDrumView;
 import de.mossgrabers.framework.view.sequencer.AbstractSequencerView;
 
@@ -493,16 +493,15 @@ public class PushColorManager extends ColorManager
         this.registerColorIndex (AbstractMode.BUTTON_COLOR2_ON, isPush2 ? PUSH2_COLOR2_GREY_LO : PUSH1_COLOR2_GREEN_LO);
         this.registerColorIndex (AbstractMode.BUTTON_COLOR2_HI, isPush2 ? PUSH2_COLOR2_WHITE : PUSH1_COLOR2_YELLOW_HI);
 
+        this.registerColorIndex (AbstractSequencerView.COLOR_NO_CONTENT, isPush2 ? PUSH2_COLOR2_BLACK : PUSH1_COLOR2_BLACK);
+        this.registerColorIndex (AbstractSequencerView.COLOR_NO_CONTENT_4, isPush2 ? PUSH2_COLOR2_BLACK : PUSH1_COLOR2_BLACK);
+        this.registerColorIndex (AbstractSequencerView.COLOR_CONTENT, isPush2 ? PUSH2_COLOR2_BLUE_HI : PUSH1_COLOR2_BLUE_HI);
+        this.registerColorIndex (AbstractSequencerView.COLOR_CONTENT_CONT, isPush2 ? PUSH2_COLOR2_BLUE_LO : PUSH1_COLOR2_BLUE_LO);
         this.registerColorIndex (AbstractSequencerView.COLOR_STEP_HILITE_NO_CONTENT, isPush2 ? PUSH2_COLOR2_GREEN_LO : PUSH1_COLOR2_GREEN_LO);
         this.registerColorIndex (AbstractSequencerView.COLOR_STEP_HILITE_CONTENT, isPush2 ? PUSH2_COLOR2_GREEN_HI : PUSH1_COLOR2_GREEN_HI);
         this.registerColorIndex (AbstractSequencerView.COLOR_STEP_MUTED, isPush2 ? PUSH2_COLOR2_GREY_MD : PUSH1_COLOR2_GREY_MD);
         this.registerColorIndex (AbstractSequencerView.COLOR_STEP_MUTED_CONT, isPush2 ? PUSH2_COLOR2_GREY_LO : PUSH1_COLOR2_GREY_LO);
         this.registerColorIndex (AbstractSequencerView.COLOR_STEP_SELECTED, isPush2 ? PUSH2_COLOR2_YELLOW_HI : PUSH1_COLOR2_YELLOW_HI);
-
-        this.registerColorIndex (AbstractSequencerView.COLOR_NO_CONTENT, isPush2 ? PUSH2_COLOR2_BLACK : PUSH1_COLOR2_BLACK);
-        this.registerColorIndex (AbstractSequencerView.COLOR_NO_CONTENT_4, isPush2 ? PUSH2_COLOR2_BLACK : PUSH1_COLOR2_BLACK);
-        this.registerColorIndex (AbstractSequencerView.COLOR_CONTENT, isPush2 ? PUSH2_COLOR2_BLUE_HI : PUSH1_COLOR2_BLUE_HI);
-        this.registerColorIndex (AbstractSequencerView.COLOR_CONTENT_CONT, isPush2 ? PUSH2_COLOR2_BLUE_LO : PUSH1_COLOR2_BLUE_LO);
         this.registerColorIndex (AbstractSequencerView.COLOR_PAGE, isPush2 ? PUSH2_COLOR2_WHITE : PUSH1_COLOR2_WHITE);
         this.registerColorIndex (AbstractSequencerView.COLOR_ACTIVE_PAGE, isPush2 ? PUSH2_COLOR2_GREEN : PUSH1_COLOR2_GREEN);
         this.registerColorIndex (AbstractSequencerView.COLOR_SELECTED_PAGE, isPush2 ? PUSH2_COLOR2_OCEAN_HI : PUSH1_COLOR2_OCEAN_HI);

@@ -47,6 +47,7 @@ public abstract class AbstractPolySequencerView<S extends IControlSurface<C>, C 
     protected int                         copyStep            = -1;
     protected int                         numColumns;
     protected int                         numRows;
+    protected long                        lastPressedNoteTime = 0;
 
 
     /**
@@ -179,10 +180,8 @@ public abstract class AbstractPolySequencerView<S extends IControlSurface<C>, C 
 
         // Only allow playing the notes if there is no clip
         // Toggle the note on up, so we can intercept the long presses (but not yet used)
-        if (!this.isActive () || velocity > 0)
-            return;
-
-        this.handleSequencerArea (x, y);
+        if (this.isActive ())
+            this.handleSequencerArea (x, y, velocity);
     }
 
 
@@ -195,8 +194,12 @@ public abstract class AbstractPolySequencerView<S extends IControlSurface<C>, C 
     protected void handleNoteArea (final int note, final int velocity)
     {
         // No pressed keys? Clear up the note memory for programming the sequencer...
-        if (!this.keyManager.hasPressedKeys ())
+        final long now = System.currentTimeMillis ();
+        if (now - this.lastPressedNoteTime > 500)
+        {
+            this.lastPressedNoteTime = now;
             this.noteMemory.clear ();
+        }
 
         // Mark selected notes immediately for better performance
         final int mappedNote = this.keyManager.map (note);
@@ -214,9 +217,13 @@ public abstract class AbstractPolySequencerView<S extends IControlSurface<C>, C 
      *
      * @param x The x position of the pad
      * @param y The y position of the pad
+     * @param velocity The velocity
      */
-    protected void handleSequencerArea (final int x, final int y)
+    protected void handleSequencerArea (final int x, final int y, final int velocity)
     {
+        if (velocity != 0)
+            return;
+
         final INoteClip clip = this.getClip ();
         final int step = this.numColumns * (this.numRows - 1 - y) + x;
         final NotePosition notePosition = new NotePosition (this.configuration.getMidiEditChannel (), step, 0);
@@ -224,6 +231,7 @@ public abstract class AbstractPolySequencerView<S extends IControlSurface<C>, C 
         if (this.handleSequencerAreaButtonCombinations (clip, notePosition.getChannel (), step))
             return;
 
+        // Clear all notes on the step, if there is at least one
         if (this.getStep (clip, step).getState () != StepState.OFF)
         {
             for (int row = 0; row < 128; row++)
@@ -232,20 +240,25 @@ public abstract class AbstractPolySequencerView<S extends IControlSurface<C>, C 
                 if (clip.getStep (notePosition).getState () != StepState.OFF)
                     clip.clearStep (notePosition);
             }
+            return;
         }
-        else
+
+        // Create a step and fill it with the memorized notes
+        final boolean isAccentActive = this.configuration.isAccentActive ();
+        boolean notesPresent = false;
+        for (int row = 0; row < 128; row++)
         {
-            for (int row = 0; row < 128; row++)
+            notePosition.setNote (row);
+            final Integer k = Integer.valueOf (row);
+            if (this.noteMemory.containsKey (k))
             {
-                notePosition.setNote (row);
-                final Integer k = Integer.valueOf (row);
-                if (this.noteMemory.containsKey (k))
-                {
-                    final Integer vel = this.noteMemory.get (k);
-                    clip.toggleStep (notePosition, this.configuration.isAccentActive () ? this.configuration.getFixedAccentValue () : vel.intValue ());
-                }
+                final int v = isAccentActive ? this.configuration.getFixedAccentValue () : this.noteMemory.get (k).intValue ();
+                clip.toggleStep (notePosition, v);
+                notesPresent = true;
             }
         }
+        if (!notesPresent)
+            this.surface.getDisplay ().notify ("Play some notes in the lower part first.");
     }
 
 
@@ -296,7 +309,22 @@ public abstract class AbstractPolySequencerView<S extends IControlSurface<C>, C 
             return true;
         }
 
-        // Change length of a note or create a new one with a length
+        return this.changeLengthOfNotes (clip, notePosition);
+    }
+
+
+    /**
+     * Change the length of all notes of the step or create a new one.
+     *
+     * @param clip The clip
+     * @param notePosition The note position
+     * @return At least one note was present and its' length has been changed
+     */
+    protected boolean changeLengthOfNotes (final INoteClip clip, final NotePosition notePosition)
+    {
+        final int step = notePosition.getStep ();
+
+        // Find the step before the current step which is long pressed
         for (int s = step - 1; s >= 0; s--)
         {
             notePosition.setStep (s);
@@ -313,14 +341,15 @@ public abstract class AbstractPolySequencerView<S extends IControlSurface<C>, C 
                 // Create new note(s)
                 if (this.getStep (clip, s).getState () != StepState.START)
                 {
+                    final boolean isAccentActive = this.configuration.isAccentActive ();
                     for (int row = 0; row < 128; row++)
                     {
                         notePosition.setNote (row);
                         final Integer k = Integer.valueOf (row);
                         if (this.noteMemory.containsKey (k))
                         {
-                            final Integer vel = this.noteMemory.get (k);
-                            clip.setStep (notePosition, this.configuration.isAccentActive () ? this.configuration.getFixedAccentValue () : vel.intValue (), duration);
+                            final int velocity = isAccentActive ? this.configuration.getFixedAccentValue () : this.noteMemory.get (k).intValue ();
+                            clip.setStep (notePosition, velocity, duration);
                         }
                     }
                     return true;

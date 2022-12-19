@@ -77,6 +77,8 @@ public enum Views
     USER,
     /** View for note repeat options. */
     REPEAT_NOTE,
+    /** View for editing note parameters. */
+    NOTE_EDIT_VIEW,
     /** View for mixing. */
     MIX,
 

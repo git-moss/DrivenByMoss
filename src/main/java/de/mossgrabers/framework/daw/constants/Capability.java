@@ -42,6 +42,8 @@ public enum Capability
     HAS_CROSSFADER,
     /** If the DAW supports track/device pinning. */
     HAS_PINNING,
+    /** If plugins have a parameter page which can be toggled. */
+    HAS_PARAMETER_PAGE_SECTION,
     /** The host has a dedicated send bank. */
     HAS_EFFECT_BANK,
     /** The host supports browser preview. */

@@ -62,7 +62,6 @@ public class LaunchpadCursorCommand extends CursorCommand<LaunchpadControlSurfac
     {
         super (direction, model, surface, false);
 
-        this.triggerEvent = ButtonEvent.UP;
         this.scales = this.model.getScales ();
         this.transport = this.model.getTransport ();
     }
@@ -170,6 +169,13 @@ public class LaunchpadCursorCommand extends CursorCommand<LaunchpadControlSurfac
                 this.canScrollDown = true;
                 break;
 
+            case NOTE_EDIT_VIEW:
+                this.canScrollLeft = false;
+                this.canScrollRight = false;
+                this.canScrollUp = false;
+                this.canScrollDown = false;
+                break;
+
             default:
                 throw new FrameworkException ("Missing cursor key state handling for view.");
         }
@@ -251,6 +257,10 @@ public class LaunchpadCursorCommand extends CursorCommand<LaunchpadControlSurfac
 
             case PROJECT:
                 this.triggerChangeZoom1 (false);
+                break;
+
+            case NOTE_EDIT_VIEW:
+                // Not used
                 break;
 
             default:
@@ -336,6 +346,10 @@ public class LaunchpadCursorCommand extends CursorCommand<LaunchpadControlSurfac
                 this.triggerChangeZoom1 (true);
                 break;
 
+            case NOTE_EDIT_VIEW:
+                // Not used
+                break;
+
             default:
                 throw new FrameworkException ("Missing cursor key right handling for view.");
         }
@@ -396,6 +410,10 @@ public class LaunchpadCursorCommand extends CursorCommand<LaunchpadControlSurfac
 
             case PROJECT:
                 this.model.getApplication ().incTrackHeight ();
+                break;
+
+            case NOTE_EDIT_VIEW:
+                // Not used
                 break;
 
             default:
@@ -460,6 +478,10 @@ public class LaunchpadCursorCommand extends CursorCommand<LaunchpadControlSurfac
                 this.model.getApplication ().decTrackHeight ();
                 break;
 
+            case NOTE_EDIT_VIEW:
+                // Not used
+                break;
+
             default:
                 throw new FrameworkException ("Missing cursor key down handling for view.");
         }
@@ -501,5 +523,21 @@ public class LaunchpadCursorCommand extends CursorCommand<LaunchpadControlSurfac
             this.model.getApplication ().zoomOut ();
 
         this.surface.scheduleTask ( () -> this.triggerChangeZoom1 (in), REPEAT_SPEED);
+    }
+
+
+    /** {@inheritDoc} */
+    @Override
+    protected ButtonEvent getTriggerEvent ()
+    {
+        final ViewManager viewManager = this.surface.getViewManager ();
+        switch (viewManager.getActiveID ())
+        {
+            case DRUM, SEQUENCER, POLY_SEQUENCER, DRUM4, DRUM8:
+                return ButtonEvent.UP;
+
+            default:
+                return ButtonEvent.DOWN;
+        }
     }
 }

@@ -36,6 +36,7 @@ import de.mossgrabers.controller.novation.launchpad.view.Drum8View;
 import de.mossgrabers.controller.novation.launchpad.view.DrumView;
 import de.mossgrabers.controller.novation.launchpad.view.LaunchpadShuffleView;
 import de.mossgrabers.controller.novation.launchpad.view.MixView;
+import de.mossgrabers.controller.novation.launchpad.view.NoteEditView;
 import de.mossgrabers.controller.novation.launchpad.view.NoteViewSelectView;
 import de.mossgrabers.controller.novation.launchpad.view.PanView;
 import de.mossgrabers.controller.novation.launchpad.view.PianoView;
@@ -54,8 +55,8 @@ import de.mossgrabers.framework.command.trigger.Direction;
 import de.mossgrabers.framework.command.trigger.application.UndoCommand;
 import de.mossgrabers.framework.command.trigger.clip.NewCommand;
 import de.mossgrabers.framework.command.trigger.clip.QuantizeCommand;
+import de.mossgrabers.framework.command.trigger.transport.ConfiguredRecordCommand;
 import de.mossgrabers.framework.command.trigger.transport.MetronomeCommand;
-import de.mossgrabers.framework.command.trigger.transport.RecordCommand;
 import de.mossgrabers.framework.command.trigger.view.SelectPlayViewCommand;
 import de.mossgrabers.framework.command.trigger.view.ViewButtonCommand;
 import de.mossgrabers.framework.command.trigger.view.ViewMultiSelectCommand;
@@ -162,7 +163,7 @@ public class LaunchpadControllerSetup extends AbstractControllerSetup<LaunchpadC
         this.definition = definition;
         this.colorManager = new LaunchpadColorManager ();
         this.valueChanger = new TwosComplementValueChanger (128, 1);
-        this.configuration = new LaunchpadConfiguration (host, this.valueChanger, factory.getArpeggiatorModes (), definition);
+        this.configuration = new LaunchpadConfiguration (host, this.valueChanger, factory.getArpeggiatorModes ());
     }
 
 
@@ -243,6 +244,7 @@ public class LaunchpadControllerSetup extends AbstractControllerSetup<LaunchpadC
         viewManager.register (Views.SHIFT, new ShiftView (surface, this.model));
         viewManager.register (Views.MIX, new MixView (surface, this.model));
         viewManager.register (Views.CONTROL, new NoteViewSelectView (surface, this.model));
+        viewManager.register (Views.NOTE_EDIT_VIEW, new NoteEditView (surface, this.model));
 
         if (this.definition.isPro ())
             viewManager.register (Views.USER, new UserView (surface, this.model));
@@ -333,7 +335,7 @@ public class LaunchpadControllerSetup extends AbstractControllerSetup<LaunchpadC
         this.addButton (ButtonID.QUANTIZE, "Quantize", new QuantizeCommand<> (this.model, surface), buttonSetup.get (LaunchpadButton.QUANTIZE).getControl (), () -> getStateColor (surface, ButtonID.QUANTIZE));
         this.addButton (ButtonID.DUPLICATE, "Duplicate", new LaunchpadDuplicateCommand (this.model, surface), buttonSetup.get (LaunchpadButton.DUPLICATE).getControl (), () -> getDuplicateStateColor (surface));
         this.addButton (ButtonID.PLAY, "Play", new PlayAndNewCommand (this.model, surface), buttonSetup.get (LaunchpadButton.PLAY).getControl (), () -> this.getPlayStateColor (surface));
-        this.addButton (ButtonID.RECORD, "Record", new RecordCommand<> (this.model, surface), buttonSetup.get (LaunchpadButton.RECORD).getControl (), () -> {
+        this.addButton (ButtonID.RECORD, "Record", new ConfiguredRecordCommand<> (this.model, surface), buttonSetup.get (LaunchpadButton.RECORD).getControl (), () -> {
             final boolean isShift = surface.isShiftPressed ();
             final boolean flipRecord = surface.getConfiguration ().isFlipRecord ();
             if (isShift && !flipRecord || !isShift && flipRecord)
@@ -530,6 +532,10 @@ public class LaunchpadControllerSetup extends AbstractControllerSetup<LaunchpadC
                     return LaunchpadColorManager.LAUNCHPAD_COLOR_YELLOW;
                 return LaunchpadColorManager.LAUNCHPAD_COLOR_GREY_LO;
             case SOLO:
+                // Pro Mk3 -> color Click
+                if (this.definition.hasTrackSelectionButtons () && surface.isShiftPressed ())
+                    return this.model.getTransport ().isMetronomeOn () ? LaunchpadColorManager.LAUNCHPAD_COLOR_GREEN : LaunchpadColorManager.LAUNCHPAD_COLOR_GREY_LO;
+
                 if (modeManager.isActive (Modes.SOLO))
                     return LaunchpadColorManager.LAUNCHPAD_COLOR_BLUE;
                 return LaunchpadColorManager.LAUNCHPAD_COLOR_GREY_LO;

@@ -49,7 +49,7 @@ public interface INoteClip extends IClip, IPinnable
 
 
     /**
-     * Get the state of a note.
+     * Get the state of a step.
      *
      * @param position The position of the note
      * @return The step info

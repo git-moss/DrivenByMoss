@@ -18,10 +18,13 @@ import de.mossgrabers.framework.daw.constants.Resolution;
 import de.mossgrabers.framework.featuregroup.AbstractFeatureGroup;
 import de.mossgrabers.framework.featuregroup.AbstractView;
 import de.mossgrabers.framework.featuregroup.IMode;
+import de.mossgrabers.framework.featuregroup.IView;
 import de.mossgrabers.framework.featuregroup.ModeManager;
+import de.mossgrabers.framework.featuregroup.ViewManager;
 import de.mossgrabers.framework.mode.INoteMode;
 import de.mossgrabers.framework.mode.Modes;
 import de.mossgrabers.framework.utils.ButtonEvent;
+import de.mossgrabers.framework.view.Views;
 
 import java.util.Collections;
 import java.util.List;
@@ -357,16 +360,33 @@ public abstract class AbstractSequencerView<S extends IControlSurface<C>, C exte
         if (state != StepState.START)
             return;
 
+        final INoteMode noteMode = this.getNoteEditor ();
+        if (noteMode == null)
+            return;
+        if (addNote)
+            noteMode.addNote (clip, notePosition);
+        else
+            noteMode.setNote (clip, notePosition);
+    }
+
+
+    private INoteMode getNoteEditor ()
+    {
         final ModeManager modeManager = this.surface.getModeManager ();
         final IMode mode = modeManager.get (Modes.NOTE);
         if (mode instanceof final INoteMode noteMode)
         {
-            if (addNote)
-                noteMode.addNote (clip, notePosition);
-            else
-                noteMode.setNote (clip, notePosition);
             modeManager.setActive (Modes.NOTE);
+            return noteMode;
         }
+        final ViewManager viewManager = this.surface.getViewManager ();
+        final IView view = viewManager.get (Views.NOTE_EDIT_VIEW);
+        if (view instanceof final INoteMode noteMode)
+        {
+            viewManager.setTemporary (Views.NOTE_EDIT_VIEW);
+            return noteMode;
+        }
+        return null;
     }
 
 
@@ -375,13 +395,21 @@ public abstract class AbstractSequencerView<S extends IControlSurface<C>, C exte
      */
     protected void clearEditNotes ()
     {
-        final ModeManager modeManager = this.surface.getModeManager ();
-        final IMode mode = modeManager.get (Modes.NOTE);
-        if (mode instanceof final INoteMode noteMode)
+        INoteMode noteMode = null;
+        if (this.surface.getModeManager ().get (Modes.NOTE) instanceof final INoteMode noteMode1)
+            noteMode = noteMode1;
+        else if (this.surface.getViewManager ().get (Views.NOTE_EDIT_VIEW) instanceof final INoteMode noteMode2)
+            noteMode = noteMode2;
+        if (noteMode != null)
             noteMode.clearNotes ();
     }
 
 
+    /**
+     * Get the position of the notes which are currently selected for editing.
+     *
+     * @return THe note positions
+     */
     protected List<NotePosition> getEditNotes ()
     {
         final ModeManager modeManager = this.surface.getModeManager ();
@@ -392,6 +420,15 @@ public abstract class AbstractSequencerView<S extends IControlSurface<C>, C exte
     }
 
 
+    /**
+     * Test if at the given channel / step / note is a note which is selected for editing.
+     *
+     * @param channel A MIDI channel
+     * @param step A sequencer step
+     * @param note A note
+     * @param editNotes The currently edited notes
+     * @return True if there is a note which is edited
+     */
     protected static boolean isEdit (final int channel, final int step, final int note, final List<NotePosition> editNotes)
     {
         for (final NotePosition editNote: editNotes)
@@ -403,33 +440,64 @@ public abstract class AbstractSequencerView<S extends IControlSurface<C>, C exte
     }
 
 
-    protected String getStepColor (final IStepInfo stepInfo, final boolean hilite, final Optional<ColorEx> rowColor, final int channel, final int step, final int note, final List<NotePosition> editNotes)
+    /**
+     * Get the color for a step.
+     *
+     * @param stepInfo The information about the step
+     * @param highlight The step should be highlighted
+     * @param channel The MIDI channel
+     * @param step The step of the note
+     * @param pad The pad
+     * @param note The note of the step
+     * @param editNotes The currently edited notes
+     * @return The color
+     */
+    protected String getStepColor (final IStepInfo stepInfo, final boolean highlight, final int channel, final int step, final int pad, final int note, final List<NotePosition> editNotes)
     {
-        switch (stepInfo.getState ())
+        if (stepInfo == null || stepInfo.getState () == StepState.OFF)
+            return this.getPadColor (pad, this.useDawColors ? this.model.getCursorTrack () : null);
+
+        return this.getStepColor (stepInfo, highlight, Optional.empty (), channel, step, note, editNotes);
+    }
+
+
+    /**
+     * Get the color for a step.
+     *
+     * @param stepInfo The information about the step
+     * @param highlight The step should be highlighted
+     * @param channel The MIDI channel
+     * @param step The step of the note
+     * @param rowColor The color to use for content notes
+     * @param note The note of the step
+     * @param editNotes The currently edited notes
+     * @return The color
+     */
+    protected String getStepColor (final IStepInfo stepInfo, final boolean highlight, final Optional<ColorEx> rowColor, final int channel, final int step, final int note, final List<NotePosition> editNotes)
+    {
+        final StepState state = stepInfo == null ? StepState.OFF : stepInfo.getState ();
+        switch (state)
         {
-            // Note starts
             case START:
-                if (hilite)
+                if (highlight)
                     return COLOR_STEP_HILITE_CONTENT;
                 if (isEdit (channel, step, note, editNotes))
                     return COLOR_STEP_SELECTED;
-                if (stepInfo.isMuted ())
+                if (stepInfo != null && stepInfo.isMuted ())
                     return COLOR_STEP_MUTED;
                 return rowColor.isPresent () && this.useDawColors ? DAWColor.getColorID (rowColor.get ()) : COLOR_CONTENT;
 
-            // Note continues
             case CONTINUE:
-                if (hilite)
+                if (highlight)
                     return COLOR_STEP_HILITE_CONTENT;
                 if (isEdit (channel, step, note, editNotes))
                     return COLOR_STEP_SELECTED;
-                if (stepInfo.isMuted ())
+                if (stepInfo != null && stepInfo.isMuted ())
                     return COLOR_STEP_MUTED_CONT;
                 return rowColor.isPresent () && this.useDawColors ? DAWColor.getColorID (ColorEx.darker (rowColor.get ())) : COLOR_CONTENT_CONT;
 
-            // Empty
             default:
-                if (hilite)
+                if (highlight)
                     return COLOR_STEP_HILITE_NO_CONTENT;
                 return step / 4 % 2 == 1 ? COLOR_NO_CONTENT_4 : COLOR_NO_CONTENT;
         }

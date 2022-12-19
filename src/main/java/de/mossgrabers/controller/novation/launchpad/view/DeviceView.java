@@ -8,6 +8,7 @@ import de.mossgrabers.controller.novation.launchpad.controller.LaunchpadColorMan
 import de.mossgrabers.controller.novation.launchpad.controller.LaunchpadControlSurface;
 import de.mossgrabers.framework.controller.ButtonID;
 import de.mossgrabers.framework.daw.IModel;
+import de.mossgrabers.framework.daw.constants.Capability;
 import de.mossgrabers.framework.daw.data.ICursorDevice;
 import de.mossgrabers.framework.daw.data.bank.IParameterBank;
 import de.mossgrabers.framework.utils.ButtonEvent;
@@ -79,8 +80,41 @@ public class DeviceView extends AbstractFaderView
     @Override
     public void onButton (final ButtonID buttonID, final ButtonEvent event, final int velocity)
     {
-        if (event == ButtonEvent.DOWN && buttonID == ButtonID.SCENE1)
-            this.model.getCursorDevice ().toggleWindowOpen ();
+        if (event != ButtonEvent.DOWN)
+            return;
+
+        if (!this.cursorDevice.doesExist ())
+            return;
+
+        switch (buttonID)
+        {
+            case SCENE1:
+                this.cursorDevice.toggleEnabledState ();
+                break;
+
+            case SCENE3:
+                this.cursorDevice.toggleParameterPageSectionVisible ();
+                break;
+
+            case SCENE4:
+                this.cursorDevice.toggleExpanded ();
+                break;
+
+            case SCENE6:
+                this.cursorDevice.toggleWindowOpen ();
+                break;
+
+            case SCENE8:
+                final boolean isPinned = !this.cursorDevice.isPinned ();
+                this.cursorDevice.setPinned (isPinned);
+                this.model.getCursorTrack ().setPinned (isPinned);
+                this.mvHelper.delayDisplay ( () -> this.cursorDevice.getName () + ": " + (this.cursorDevice.isPinned () ? "Pinned" : "Not pinned"));
+                break;
+
+            default:
+                // Not used
+                break;
+        }
     }
 
 
@@ -88,6 +122,30 @@ public class DeviceView extends AbstractFaderView
     @Override
     public int getButtonColor (final ButtonID buttonID)
     {
-        return buttonID == ButtonID.SCENE1 ? LaunchpadColorManager.LAUNCHPAD_COLOR_AMBER : LaunchpadColorManager.LAUNCHPAD_COLOR_BLACK;
+        switch (buttonID)
+        {
+            case SCENE1:
+                return this.cursorDevice.isEnabled () ? LaunchpadColorManager.LAUNCHPAD_COLOR_YELLOW_HI : LaunchpadColorManager.LAUNCHPAD_COLOR_GREY_LO;
+
+            case SCENE3:
+                if (!this.model.getHost ().supports (Capability.HAS_PARAMETER_PAGE_SECTION))
+                    return LaunchpadColorManager.LAUNCHPAD_COLOR_BLACK;
+                return this.cursorDevice.isParameterPageSectionVisible () ? LaunchpadColorManager.LAUNCHPAD_COLOR_PINK_HI : LaunchpadColorManager.LAUNCHPAD_COLOR_PINK_LO;
+
+            case SCENE4:
+                return this.cursorDevice.isExpanded () ? LaunchpadColorManager.LAUNCHPAD_COLOR_MAGENTA_HI : LaunchpadColorManager.LAUNCHPAD_COLOR_MAGENTA_LO;
+
+            case SCENE6:
+                return this.cursorDevice.isWindowOpen () ? LaunchpadColorManager.LAUNCHPAD_COLOR_AMBER_HI : LaunchpadColorManager.LAUNCHPAD_COLOR_AMBER_LO;
+
+            case SCENE8:
+                if (!this.model.getHost ().supports (Capability.HAS_PINNING))
+                    return LaunchpadColorManager.LAUNCHPAD_COLOR_BLACK;
+                return this.cursorDevice.isPinned () ? LaunchpadColorManager.LAUNCHPAD_COLOR_TURQUOISE_HI : LaunchpadColorManager.LAUNCHPAD_COLOR_TURQUOISE_LO;
+
+            default:
+                // Not used
+                return LaunchpadColorManager.LAUNCHPAD_COLOR_BLACK;
+        }
     }
 }

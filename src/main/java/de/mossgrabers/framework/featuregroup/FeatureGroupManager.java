@@ -175,7 +175,10 @@ public class FeatureGroupManager<E extends Enum<E>, F extends IFeatureGroup>
 
         // Activate the new temporary feature group
         this.temporaryID = featureGroupID;
-        this.get (this.temporaryID).onActivate ();
+        final F featureGroup = this.get (this.temporaryID);
+        if (featureGroup == null)
+            throw new FrameworkException ("Attempt to set the temporary feature group to non-existing: " + featureGroupID);
+        featureGroup.onActivate ();
 
         if (syncSiblings)
             this.connectedManagers.forEach (sibling -> sibling.setActive (featureGroupID, false));

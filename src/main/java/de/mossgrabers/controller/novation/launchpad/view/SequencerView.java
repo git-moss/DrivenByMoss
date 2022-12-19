@@ -21,6 +21,9 @@ import de.mossgrabers.framework.view.sequencer.AbstractNoteSequencerView;
  */
 public class SequencerView extends AbstractNoteSequencerView<LaunchpadControlSurface, LaunchpadConfiguration>
 {
+    private NotePosition noteEditPosition;
+
+
     /**
      * Constructor.
      *
@@ -63,5 +66,43 @@ public class SequencerView extends AbstractNoteSequencerView<LaunchpadControlSur
         }
 
         return super.handleSequencerAreaButtonCombinations (clip, notePosition, row, velocity);
+    }
+
+
+    /** {@inheritDoc} */
+    @Override
+    protected void handleSequencerArea (final int index, final int x, final int y, final int velocity)
+    {
+        // Toggle the note on up, so we can intercept the long presses
+        if (velocity != 0)
+        {
+            this.noteEditPosition = null;
+            return;
+        }
+
+        // Note: If the length of the note was changed this method will not be called since button
+        // up was consumed! Therefore, always call edit note
+        if (this.noteEditPosition != null)
+            this.editNote (this.getClip (), this.noteEditPosition, false);
+        else
+            super.handleSequencerArea (index, x, y, velocity);
+    }
+
+
+    /** {@inheritDoc} */
+    @Override
+    public void onGridNoteLongPress (final int note)
+    {
+        if (!this.isActive ())
+            return;
+
+        final int index = note - 36;
+        final int y = index / 8;
+        if (y >= this.numSequencerRows)
+            return;
+
+        // Remember the long pressed note to use it either for editing or for changing the length of
+        // the note on pad release
+        this.noteEditPosition = new NotePosition (this.configuration.getMidiEditChannel (), index % 8, this.keyManager.map (y));
     }
 }

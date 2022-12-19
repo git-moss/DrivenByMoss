@@ -288,7 +288,10 @@ public class NoteParameter extends AbstractParameterImpl
                     break;
 
                 case TRANSPOSE:
-                    throw new UnsupportedOperationException ();
+                    final double v = normalizedValue * 48.0 - 24.0;
+                    clip.updateStepTranspose (notePosition, v);
+                    this.delayedNotify ("Pitch: %s", () -> String.format ("%.1f", Double.valueOf (v)));
+                    break;
 
                 case CHANCE:
                     clip.updateStepChance (notePosition, normalizedValue);

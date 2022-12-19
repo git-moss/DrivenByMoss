@@ -334,10 +334,16 @@ public abstract class AbstractConfiguration implements Configuration
     {
         /** Record in arranger. */
         RECORD_ARRANGER,
+        /** Record in arranger and enable arranger automation writing. */
+        RECORD_ARRANGER_AND_ENABLE_AUTOMATION,
         /** Record in clip. */
         RECORD_CLIP,
+        /** Record in clip and enable clip automation writing. */
+        RECORD_CLIP_AND_ENABLE_AUTOMATION,
         /** Create a new clip, enable overdub and start playback. */
         NEW_CLIP,
+        /** ... and enable clip automation writing. */
+        NEW_CLIP_AND_ENABLE_AUTOMATION,
         /** Toggle arranger overdub. */
         TOGGLE_ARRANGER_OVERDUB,
         /** Toggle clip overdub. */
@@ -350,8 +356,11 @@ public abstract class AbstractConfiguration implements Configuration
     private static final String []                    RECORD_OPTIONS                      =
     {
         "Record arranger",
+        "Record arranger + enable automation",
         "Record clip",
+        "Record clip + enable automation",
         "New clip",
+        "New clip + enable automation",
         "Toggle arranger overdub",
         "Toggle clip overdub",
         "Toggle rec arm",

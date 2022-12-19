@@ -81,7 +81,7 @@ public class NoteMode extends BaseMode<IItem> implements INoteMode
 
     private final IHost                         host;
     private Page                                page               = Page.NOTE;
-    private final NoteEditor                    noteEditor;
+    private final NoteEditor                    noteEditor         = new NoteEditor ();
     private final Map<Page, IParameterProvider> pageParamProviders = new EnumMap<> (Page.class);
 
 
@@ -96,7 +96,6 @@ public class NoteMode extends BaseMode<IItem> implements INoteMode
         super ("Note", surface, model);
 
         this.host = this.model.getHost ();
-        this.noteEditor = new NoteEditor ();
 
         final IValueChanger valueChanger = model.getValueChanger ();
 

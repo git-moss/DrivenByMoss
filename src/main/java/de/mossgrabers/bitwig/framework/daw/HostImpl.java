@@ -78,6 +78,7 @@ public class HostImpl implements IHost
         CAPABILITIES.add (Capability.HAS_DRUM_DEVICE);
         CAPABILITIES.add (Capability.HAS_CROSSFADER);
         CAPABILITIES.add (Capability.HAS_PINNING);
+        CAPABILITIES.add (Capability.HAS_PARAMETER_PAGE_SECTION);
         CAPABILITIES.add (Capability.HAS_EFFECT_BANK);
         CAPABILITIES.add (Capability.HAS_BROWSER_PREVIEW);
     }

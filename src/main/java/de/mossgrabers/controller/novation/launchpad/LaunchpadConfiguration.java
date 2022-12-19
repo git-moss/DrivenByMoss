@@ -4,7 +4,6 @@
 
 package de.mossgrabers.controller.novation.launchpad;
 
-import de.mossgrabers.controller.novation.launchpad.definition.ILaunchpadControllerDefinition;
 import de.mossgrabers.framework.configuration.AbstractConfiguration;
 import de.mossgrabers.framework.configuration.ISettingsUI;
 import de.mossgrabers.framework.controller.valuechanger.IValueChanger;
@@ -22,7 +21,7 @@ import java.util.List;
  */
 public class LaunchpadConfiguration extends AbstractConfiguration
 {
-    private static final Views []                PREFERRED_NOTE_VIEWS =
+    private static final Views [] PREFERRED_NOTE_VIEWS =
     {
         Views.PLAY,
         Views.CHORDS,
@@ -36,8 +35,6 @@ public class LaunchpadConfiguration extends AbstractConfiguration
         Views.POLY_SEQUENCER
     };
 
-    private final ILaunchpadControllerDefinition definition;
-
 
     /**
      * Constructor.
@@ -45,13 +42,10 @@ public class LaunchpadConfiguration extends AbstractConfiguration
      * @param host The DAW host
      * @param valueChanger The value changer
      * @param arpeggiatorModes The available arpeggiator modes
-     * @param definition The Launchpad definition
      */
-    public LaunchpadConfiguration (final IHost host, final IValueChanger valueChanger, final List<ArpeggiatorMode> arpeggiatorModes, final ILaunchpadControllerDefinition definition)
+    public LaunchpadConfiguration (final IHost host, final IValueChanger valueChanger, final List<ArpeggiatorMode> arpeggiatorModes)
     {
         super (host, valueChanger, arpeggiatorModes);
-
-        this.definition = definition;
     }
 
 
@@ -85,14 +79,14 @@ public class LaunchpadConfiguration extends AbstractConfiguration
         // Transport
 
         this.activateBehaviourOnPauseSetting (globalSettings);
-        this.activateFlipSessionSetting (globalSettings);
+        this.activateRecordButtonSetting (globalSettings);
+        this.activateShiftedRecordButtonSetting (globalSettings);
 
         ///////////////////////////
         // Session
 
+        this.activateFlipSessionSetting (globalSettings);
         this.activateSelectClipOnLaunchSetting (globalSettings);
-        if (this.definition.isPro ())
-            this.activateFlipRecordSetting (globalSettings);
         this.activateActionForRecArmedPad (globalSettings);
 
         ///////////////////////////

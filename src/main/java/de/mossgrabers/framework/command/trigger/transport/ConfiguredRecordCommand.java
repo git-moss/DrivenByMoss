@@ -10,6 +10,7 @@ import de.mossgrabers.framework.configuration.AbstractConfiguration;
 import de.mossgrabers.framework.configuration.Configuration;
 import de.mossgrabers.framework.controller.IControlSurface;
 import de.mossgrabers.framework.daw.IModel;
+import de.mossgrabers.framework.daw.ITransport;
 import de.mossgrabers.framework.daw.data.ISlot;
 import de.mossgrabers.framework.daw.data.ITrack;
 import de.mossgrabers.framework.utils.ButtonEvent;
@@ -79,28 +80,38 @@ public class ConfiguredRecordCommand<S extends IControlSurface<C>, C extends Con
 
         final C configuration = this.surface.getConfiguration ();
         final AbstractConfiguration.RecordFunction recordMode = this.isShifted () ? configuration.getShiftedRecordButtonFunction () : configuration.getRecordButtonFunction ();
+        final ITransport transport = this.model.getTransport ();
         switch (recordMode)
         {
             case RECORD_ARRANGER:
-                this.model.getTransport ().startRecording ();
+                transport.startRecording ();
+                break;
+            case RECORD_ARRANGER_AND_ENABLE_AUTOMATION:
+                transport.startRecording ();
+                if (!transport.isWritingArrangerAutomation ())
+                    transport.toggleWriteArrangerAutomation ();
                 break;
             case RECORD_CLIP:
-                final Optional<ISlot> slot = this.model.getSelectedSlot ();
-                if (slot.isEmpty ())
-                    return;
-                final ISlot s = slot.get ();
-                if (!s.isRecording ())
-                    s.startRecording ();
-                s.launch ();
+                this.createClip ();
+                break;
+            case RECORD_CLIP_AND_ENABLE_AUTOMATION:
+                this.createClip ();
+                if (!transport.isWritingClipLauncherAutomation ())
+                    transport.toggleWriteClipLauncherAutomation ();
                 break;
             case NEW_CLIP:
                 new NewCommand<> (this.model, this.surface).execute ();
                 break;
+            case NEW_CLIP_AND_ENABLE_AUTOMATION:
+                new NewCommand<> (this.model, this.surface).execute ();
+                if (!transport.isWritingClipLauncherAutomation ())
+                    transport.toggleWriteClipLauncherAutomation ();
+                break;
             case TOGGLE_ARRANGER_OVERDUB:
-                this.model.getTransport ().toggleOverdub ();
+                transport.toggleOverdub ();
                 break;
             case TOGGLE_CLIP_OVERDUB:
-                this.model.getTransport ().toggleLauncherOverdub ();
+                transport.toggleLauncherOverdub ();
                 break;
             case TOGGLE_REC_ARM:
                 final Optional<ITrack> selectedTrack = this.model.getCurrentTrackBank ().getSelectedItem ();
@@ -111,6 +122,18 @@ public class ConfiguredRecordCommand<S extends IControlSurface<C>, C extends Con
                 // Intentionally empty
                 break;
         }
+    }
+
+
+    private void createClip ()
+    {
+        final Optional<ISlot> slot = this.model.getSelectedSlot ();
+        if (slot.isEmpty ())
+            return;
+        final ISlot s = slot.get ();
+        if (!s.isRecording ())
+            s.startRecording ();
+        s.launch ();
     }
 
 
@@ -139,11 +162,10 @@ public class ConfiguredRecordCommand<S extends IControlSurface<C>, C extends Con
         final AbstractConfiguration.RecordFunction recordMode = this.isShifted () ? configuration.getShiftedRecordButtonFunction () : configuration.getRecordButtonFunction ();
         switch (recordMode)
         {
-            case RECORD_ARRANGER:
+            case RECORD_ARRANGER, RECORD_ARRANGER_AND_ENABLE_AUTOMATION:
                 return this.model.getTransport ().isRecording ();
 
-            case NEW_CLIP:
-            case RECORD_CLIP:
+            case NEW_CLIP, NEW_CLIP_AND_ENABLE_AUTOMATION, RECORD_CLIP, RECORD_CLIP_AND_ENABLE_AUTOMATION:
                 final Optional<ISlot> slot = this.model.getSelectedSlot ();
                 if (slot.isEmpty ())
                     return false;
