@@ -15,6 +15,11 @@ import de.mossgrabers.framework.daw.midi.IMidiInput;
  */
 public abstract class AbstractHwInputControl extends AbstractHwControl implements IHwInputControl
 {
+    protected IMidiInput input;
+    protected BindType   type;
+    protected int        channel;
+
+
     /**
      * Constructor.
      *

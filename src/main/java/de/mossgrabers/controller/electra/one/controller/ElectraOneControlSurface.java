@@ -6,22 +6,29 @@ package de.mossgrabers.controller.electra.one.controller;
 
 import de.mossgrabers.controller.electra.one.ElectraOneConfiguration;
 import de.mossgrabers.framework.controller.AbstractControlSurface;
+import de.mossgrabers.framework.controller.ContinuousID;
 import de.mossgrabers.framework.controller.color.ColorEx;
 import de.mossgrabers.framework.controller.color.ColorManager;
+import de.mossgrabers.framework.controller.hardware.BindType;
 import de.mossgrabers.framework.daw.IHost;
-import de.mossgrabers.framework.daw.midi.DeviceInquiry;
 import de.mossgrabers.framework.daw.midi.IMidiInput;
 import de.mossgrabers.framework.daw.midi.IMidiOutput;
+import de.mossgrabers.framework.featuregroup.IMode;
 import de.mossgrabers.framework.mode.Modes;
+import de.mossgrabers.framework.utils.FrameworkException;
 import de.mossgrabers.framework.utils.StringUtils;
 
 import com.fasterxml.jackson.core.JsonGenerator;
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.StringWriter;
+import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.List;
 
 
 /**
@@ -32,35 +39,24 @@ import java.util.Arrays;
 @SuppressWarnings("javadoc")
 public class ElectraOneControlSurface extends AbstractControlSurface<ElectraOneConfiguration>
 {
-    public static final int       ELECTRA_ONE_VOLUME1         = 10;
-    public static final int       ELECTRA_ONE_MASTER_VOLUME   = 15;
+    public static final int                ELECTRA_CTRL_1 = 10;
+    public static final int                ELECTRA_ROW_1  = 70;
 
-    public static final int       ELECTRA_ONE_PAN1            = 20;
-    public static final int       ELECTRA_ONE_PLAY_POSITION   = 25;
-
-    public static final int       ELECTRA_ONE_ARM1            = 30;
-    public static final int       ELECTRA_ONE_NEXT_TRACK_PAGE = 35;
-
-    public static final int       ELECTRA_ONE_MUTE1           = 40;
-    public static final int       ELECTRA_ONE_PREV_TRACK_PAGE = 45;
-
-    public static final int       ELECTRA_ONE_SOLO1           = 50;
-    public static final int       ELECTRA_ONE_RECORD          = 55;
-
-    public static final int       ELECTRA_ONE_SELECT1         = 60;
-    public static final int       ELECTRA_ONE_PLAY            = 65;
-
-    public static final int       ELECTRA_ONE_SEND1           = 10;
-    public static final int       ELECTRA_ONE_SEND2           = 20;
-    public static final int       ELECTRA_ONE_SEND3           = 30;
-    public static final int       ELECTRA_ONE_SEND4           = 40;
-    public static final int       ELECTRA_ONE_SEND5           = 50;
-    public static final int       ELECTRA_ONE_SEND6           = 60;
-    public static final int       ELECTRA_ONE_CUE_VOLUME      = 15;
+    /** The IDs for the continuous elements. */
+    public static final List<ContinuousID> KNOB_IDS       = new ArrayList<> ();
+    static
+    {
+        KNOB_IDS.addAll (ContinuousID.createSequentialList (ContinuousID.VOLUME_KNOB1, 6));
+        KNOB_IDS.addAll (ContinuousID.createSequentialList (ContinuousID.PAN_KNOB1, 6));
+        KNOB_IDS.addAll (ContinuousID.createSequentialList (ContinuousID.FADER1, 6));
+        KNOB_IDS.addAll (ContinuousID.createSequentialList (ContinuousID.KNOB1, 6));
+        KNOB_IDS.addAll (ContinuousID.createSequentialList (ContinuousID.PARAM_KNOB1, 6));
+        KNOB_IDS.addAll (ContinuousID.createSequentialList (ContinuousID.DEVICE_KNOB1, 6));
+    }
 
     // Sysex
 
-    private static final byte []  SYSEX_HDR                   =
+    private static final byte []  SYSEX_HDR_BYTE                    =
     {
         (byte) 0xF0,
         0x00,
@@ -68,37 +64,91 @@ public class ElectraOneControlSurface extends AbstractControlSurface<ElectraOneC
         0x45
     };
 
-    private static final byte []  SYSEX_UPDATE_ELEMENT        =
+    private static final int []   SYSEX_HDR_INT                     =
     {
-        0x14,
-        0x07
+        0xF0,
+        0x00,
+        0x21,
+        0x45
     };
 
-    private static final byte []  SYSEX_EXECUTE_LUA           =
+    private static final byte []  SYSEX_INFO_DEVICE                 =
+    {
+        0x02,
+        0x7F
+    };
+
+    private static final byte []  SYSEX_INFO_PRESET_LIST            =
+    {
+        0x02,
+        0x04
+    };
+
+    private static final byte []  SYSEX_RUNTIME_EXECUTE_LUA         =
     {
         0x08,
         0x0D
     };
 
-    private static final int []   SYSEX_LOGGING               =
+    private static final byte []  SYSEX_RUNTIME_SWITCH_PRESET       =
     {
-        0xF0,
-        0x00,
-        0x21,
-        0x45,
-        0x7F,
-        0x00
+        0x09,
+        0x08
     };
 
-    private static final String   LOG_PAGE_CHANGE             = "displayPage: page shown: page=";
-    private static final Modes [] MODES                       =
+    private static final byte []  SYSEX_RUNTIME_CONTROL_UPDATE      =
+    {
+        0x14,
+        0x07
+    };
+
+    private static final byte []  SYSEX_RUNTIME_SET_REPAINT_ENABLED =
+    {
+        0x7F,
+        0x7A
+    };
+
+    private static final byte []  SYSEX_RUNTIME_ENABLE_LOGGER       =
+    {
+        0x7F,
+        0x7D
+    };
+
+    private static final int      CMD_START_POS                     = SYSEX_HDR_INT.length;
+    private static final int      SUB_CMD_START_POS                 = SYSEX_HDR_INT.length + 1;
+
+    // Command categories
+    private static final int      CMD_INFO                          = 0x01;
+    private static final int      CMD_CONTROLLER                    = 0x7E;
+    private static final int      CMD_SYSTEM_CALL                   = 0x7F;
+
+    // IDs for runtime commands
+    private static final int      EVENT_PRESET_SWITCH               = 0x02;
+    private static final int      EVENT_PAGE_SWITCH                 = 0x06;
+
+    // IDs for system commands
+    private static final int      SYSTEM_CALL_LOGGING               = 0x00;
+
+    // IDs for information commands
+    private static final int      INFO_PRESET_LIST                  = 0x04;
+    private static final int      INFO_DEVICE                       = 0x7F;
+
+    private static final Modes [] MODES                             =
     {
         Modes.VOLUME,
-        Modes.SEND
+        Modes.SEND,
+        Modes.DEVICE_PARAMS,
+        Modes.EQ_DEVICE_PARAMS
     };
+
+    private static final String   SET_GROUP_TITLE                   = "sgt(%s,\"%s\")";
 
     private final IMidiInput      ctrlInput;
     private final IMidiOutput     ctrlOutput;
+    private final ObjectMapper    mapper                            = new ObjectMapper ();
+    private int                   bankIndex;
+    private int                   presetIndex;
+    private boolean               isOnline                          = false;
 
 
     /**
@@ -114,7 +164,7 @@ public class ElectraOneControlSurface extends AbstractControlSurface<ElectraOneC
      */
     public ElectraOneControlSurface (final IHost host, final ColorManager colorManager, final ElectraOneConfiguration configuration, final IMidiOutput output, final IMidiInput input, final IMidiInput ctrlInput, final IMidiOutput ctrlOutput)
     {
-        super (host, configuration, colorManager, output, input, null, 1000, 1000);
+        super (host, configuration, colorManager, output, input, null, 100, 200);
 
         this.ctrlInput = ctrlInput;
         this.ctrlOutput = ctrlOutput;
@@ -124,18 +174,31 @@ public class ElectraOneControlSurface extends AbstractControlSurface<ElectraOneC
 
 
     /**
-     * Set the title of a group element.
+     * Set the label of a group element.
      *
      * @param groupID The element starting from 1, increasing from left to right, top to bottom
      * @param cache The cache to use
-     * @param title The title to set
+     * @param label The label to set
      */
-    public void updateGroupTitle (final int groupID, final String [] cache, final String title)
+    public void updateGroupLabel (final int groupID, final String [] cache, final String label)
     {
-        if (title.equals (cache[groupID]))
+        if (!this.isOnline || label.equals (cache[groupID]))
             return;
-        cache[groupID] = title;
-        this.sendLua ("setGroupTitle(" + groupID + ",\"" + title + "\")");
+        cache[groupID] = label;
+        this.sendLua (String.format (SET_GROUP_TITLE, Integer.toString (groupID), label));
+    }
+
+
+    /**
+     * Update a value of an element on the Electra.One.
+     *
+     * @param midiCC The midiCC of the element
+     * @param value The value
+     */
+    public void updateValue (final int midiCC, final int value)
+    {
+        if (this.isOnline)
+            this.output.sendCCEx (15, midiCC, value);
     }
 
 
@@ -148,12 +211,13 @@ public class ElectraOneControlSurface extends AbstractControlSurface<ElectraOneC
      * @param color The color to set
      * @param visibility The visibility to set
      */
-    public void updateElement (final int controlID, final String [] cache, final String name, final ColorEx color, final Boolean visibility)
+    public void updateLabel (final int controlID, final String [] cache, final String name, final ColorEx color, final Boolean visibility)
     {
-        final ObjectMapper mapper = new ObjectMapper ();
+        if (!this.isOnline)
+            return;
 
         final StringWriter writer = new StringWriter ();
-        try (final JsonGenerator generator = mapper.createGenerator (writer))
+        try (final JsonGenerator generator = this.mapper.createGenerator (writer))
         {
             generator.writeStartObject ();
             if (name != null)
@@ -170,18 +234,94 @@ public class ElectraOneControlSurface extends AbstractControlSurface<ElectraOneC
             return;
         }
 
+        final int controlIndex = (controlID - 1) % 36;
         final String json = writer.toString ();
-
-        if (json.equals (cache[controlID]))
+        if (json.equals (cache[controlIndex]))
             return;
-        cache[controlID] = json;
+        cache[controlIndex] = json;
 
         final byte [] command = new byte [4];
-        command[0] = SYSEX_UPDATE_ELEMENT[0];
-        command[1] = SYSEX_UPDATE_ELEMENT[1];
+        command[0] = SYSEX_RUNTIME_CONTROL_UPDATE[0];
+        command[1] = SYSEX_RUNTIME_CONTROL_UPDATE[1];
         command[2] = (byte) (controlID & 0x7F);
         command[3] = (byte) (controlID >> 7);
         this.sendText (command, json);
+    }
+
+
+    /**
+     * Send the current logging setting to the device.
+     */
+    public void setLoggingEnabled ()
+    {
+        final byte [] content = new byte []
+        {
+            (byte) (this.configuration.isLogToConsoleEnabled () ? 0x01 : 0x00),
+            0x00 // reserved
+        };
+
+        this.sendSysex (SYSEX_RUNTIME_ENABLE_LOGGER, content);
+    }
+
+
+    /**
+     * Enable or disable the display repaint process on the device.
+     *
+     * @param enable True to enable
+     */
+    public void setRepaintEnabled (final boolean enable)
+    {
+        final byte [] content = new byte []
+        {
+            (byte) (enable ? 0x01 : 0x00),
+            0x00 // reserved
+        };
+
+        this.sendSysex (SYSEX_RUNTIME_SET_REPAINT_ENABLED, content);
+    }
+
+
+    /**
+     * Send the current logging setting to the device.
+     */
+    public void requestDeviceInfo ()
+    {
+        this.sendSysex (SYSEX_INFO_DEVICE, new byte [0]);
+    }
+
+
+    /**
+     * Request the list of presets installed in the device.
+     */
+    private void requestPresetList ()
+    {
+        this.sendSysex (SYSEX_INFO_PRESET_LIST, new byte [0]);
+    }
+
+
+    /**
+     * Select the DrivenByMoss preset on the device.
+     */
+    public void selectDrivenByMossPreset ()
+    {
+        this.selectPreset (this.bankIndex, this.presetIndex);
+    }
+
+
+    /**
+     * Select a preset on the device.
+     *
+     * @param bank The index of the bank (0-11)
+     * @param preset The index of the preset (0-11)
+     */
+    private void selectPreset (final int bank, final int preset)
+    {
+        this.host.println (String.format ("Selecting preset: %d-%d", Integer.valueOf (bank), Integer.valueOf (preset)));
+        this.sendSysex (SYSEX_RUNTIME_SWITCH_PRESET, new byte []
+        {
+            (byte) bank,
+            (byte) preset
+        });
     }
 
 
@@ -193,12 +333,12 @@ public class ElectraOneControlSurface extends AbstractControlSurface<ElectraOneC
      */
     private void sendLua (final String code)
     {
-        this.sendText (SYSEX_EXECUTE_LUA, code);
+        this.sendText (SYSEX_RUNTIME_EXECUTE_LUA, code);
     }
 
 
     /**
-     * Send a JSON or LUA string to the CTRL output.
+     * Send a JSON or LUA string to the CTRL output. Removes and/or replaces non-ASCII characters.
      *
      * @param command The command bytes
      * @param text The JSON to send
@@ -219,7 +359,7 @@ public class ElectraOneControlSurface extends AbstractControlSurface<ElectraOneC
     {
         try (final ByteArrayOutputStream out = new ByteArrayOutputStream ())
         {
-            out.write (SYSEX_HDR);
+            out.write (SYSEX_HDR_BYTE);
             out.write (command);
             out.write (content);
             out.write ((byte) 0xF7);
@@ -227,7 +367,7 @@ public class ElectraOneControlSurface extends AbstractControlSurface<ElectraOneC
         }
         catch (final IOException ex)
         {
-            this.host.error ("Could not send JSON command.", ex);
+            this.host.error ("Could not schedule JSON command.", ex);
         }
     }
 
@@ -240,31 +380,233 @@ public class ElectraOneControlSurface extends AbstractControlSurface<ElectraOneC
     private void handleSysEx (final String data)
     {
         final int [] byteData = StringUtils.fromHexStr (data);
-        final DeviceInquiry deviceInquiry = new DeviceInquiry (byteData);
-        if (deviceInquiry.isValid ())
-        {
-            // TODO
+
+        if (Arrays.compareUnsigned (SYSEX_HDR_INT, 0, SYSEX_HDR_INT.length, byteData, 0, SYSEX_HDR_INT.length) != 0)
             return;
-        }
 
-        if (Arrays.compareUnsigned (SYSEX_LOGGING, 0, SYSEX_LOGGING.length, byteData, 0, SYSEX_LOGGING.length) == 0)
+        final int subCmdID = byteData[SUB_CMD_START_POS];
+
+        switch (byteData[CMD_START_POS])
         {
-            final String message = new String (byteData, SYSEX_LOGGING.length, byteData.length - SYSEX_LOGGING.length - 1);
-            if (this.configuration.isLogToConsoleEnabled ())
-                this.host.println (message);
+            case CMD_INFO:
+                this.handleSysexCommandsInfo (subCmdID, byteData);
+                break;
 
-            // Bad hack for missing page change event, replace when it becomes available
-            if (message.startsWith (LOG_PAGE_CHANGE))
-            {
-                final String rest = message.substring (LOG_PAGE_CHANGE.length ());
-                final int pos = rest.indexOf (',');
-                if (pos > 0)
+            case CMD_CONTROLLER:
+                this.handleSysexCommandsController (subCmdID, byteData);
+                break;
+
+            case CMD_SYSTEM_CALL:
+                if (subCmdID == SYSTEM_CALL_LOGGING)
+                    this.logMessage (byteData, 6);
+                break;
+
+            default:
+                // Not used
+                break;
+        }
+    }
+
+
+    /**
+     * Handle all sysex messages for controller commands.
+     *
+     * @param commandID The information command ID
+     * @param data The information data
+     */
+    private void handleSysexCommandsController (final int commandID, final int [] data)
+    {
+        switch (commandID)
+        {
+            // Take the extension on-/offline depending on which template is selected
+            case EVENT_PRESET_SWITCH:
+                this.handleOnlineStatus (data[SUB_CMD_START_POS + 1], data[SUB_CMD_START_POS + 2]);
+                break;
+
+            // Change modes if extension is online
+            case EVENT_PAGE_SWITCH:
+                if (this.isOnline)
                 {
-                    final int page = Integer.parseInt (rest.substring (0, pos));
-                    if (page < MODES.length)
+                    final int page = data[SUB_CMD_START_POS + 1];
+                    if (page >= 0 && page < MODES.length)
+                    {
+                        this.host.println ("Switching to mode: " + MODES[page].name ());
                         this.getModeManager ().setActive (MODES[page]);
+                    }
                 }
+                break;
+
+            default:
+                // Ignore
+                break;
+        }
+    }
+
+
+    /**
+     * Handle all sysex messages for info commands.
+     *
+     * @param commandID The information command ID
+     * @param data The information data
+     */
+    private void handleSysexCommandsInfo (final int commandID, final int [] data)
+    {
+        final JsonNode content = this.getContent (data);
+
+        switch (commandID)
+        {
+            case INFO_DEVICE:
+                this.checkFirmwareResult (content);
+                this.requestPresetList ();
+                break;
+
+            case INFO_PRESET_LIST:
+                this.findAndSelectDrivenByMossPreset (content);
+                this.selectDrivenByMossPreset ();
+                break;
+
+            default:
+                // Ignore
+                break;
+        }
+    }
+
+
+    /**
+     * Check if the Firmware on the device is valid.
+     *
+     * @param content The content text
+     */
+    private void checkFirmwareResult (final JsonNode root)
+    {
+        final int version = root.get ("versionSeq").asInt ();
+        final String versionText = root.get ("versionText").asText ();
+        if (version < 300000000)
+            throw new FrameworkException ("Firmware must be at least 3.0 but is " + versionText);
+
+        this.host.println ("Firmware: " + versionText);
+    }
+
+
+    /**
+     * Put the extension in online/offline mode depending on the selected preset.
+     *
+     * @param bank The index of the bank (0-11)
+     * @param preset The index of the preset (0-11)
+     */
+    private void handleOnlineStatus (final int bank, final int preset)
+    {
+        if (this.bankIndex == bank && this.presetIndex == preset)
+            this.setOnline ();
+        else
+        {
+            this.host.println ("Going offline...");
+            this.isOnline = false;
+            this.unbindAllInputControls ();
+        }
+    }
+
+
+    /**
+     * Set the extension online.
+     */
+    private void setOnline ()
+    {
+        this.host.println ("Going online...");
+        this.isOnline = true;
+        this.rebindAllInputControls ();
+
+        final IMode active = this.getModeManager ().getActive ();
+        if (active != null)
+            active.onDeactivate ();
+
+        // Switching templates always selects 1st page
+        this.getModeManager ().setActive (Modes.VOLUME);
+
+        // Refresh all control UIs
+        this.forceFlush ();
+    }
+
+
+    /**
+     * Find the DrivenByMoss template in the template list and store the bank and preset index.
+     *
+     * @param root The JSON structure containing the preset list information
+     */
+    private void findAndSelectDrivenByMossPreset (final JsonNode root)
+    {
+        for (final JsonNode preset: root.get ("presets"))
+        {
+            if ("DrivenByMoss".equals (preset.get ("name").asText ()))
+            {
+                this.bankIndex = preset.get ("bankNumber").asInt ();
+                this.presetIndex = preset.get ("slot").asInt ();
+                this.host.println (String.format ("DrivenByMoss template at: %d-%d", Integer.valueOf (this.bankIndex), Integer.valueOf (this.presetIndex)));
+                return;
             }
         }
+
+        throw new FrameworkException ("The DrivenByMoss template is not installed on the Electra.One.");
+    }
+
+
+    /**
+     * Log an information message to the console if logging is enabled.
+     *
+     * @param data The data to log
+     * @param contentStart The start of the text message to log
+     */
+    private void logMessage (final int [] data, final int contentStart)
+    {
+        if (this.configuration.isLogToConsoleEnabled ())
+            this.host.println (new String (data, contentStart, data.length - contentStart - 1));
+    }
+
+
+    /**
+     * Get and parse the JSON content of an information message
+     *
+     * @param data The data of the information message
+     * @return The root node of the JSON structure
+     */
+    private JsonNode getContent (final int [] data)
+    {
+        final String content = StringUtils.integerArrayToString (SUB_CMD_START_POS + 1, data.length - SUB_CMD_START_POS - 2, data);
+        try
+        {
+            return this.mapper.readValue (content, JsonNode.class);
+        }
+        catch (final JsonProcessingException ex)
+        {
+            throw new FrameworkException ("Could not parse JSON information.", ex);
+        }
+    }
+
+
+    /** {@inheritDoc} */
+    @Override
+    public void setTrigger (final BindType bindType, final int channel, final int cc, final int value)
+    {
+        // Only send MIDI to the device if the DrivenByMoss template is selected
+        if (this.isOnline)
+            super.setTrigger (bindType, channel, cc, value);
+    }
+
+
+    /** {@inheritDoc} */
+    @Override
+    protected void handleMidi (final int status, final int data1, final int data2)
+    {
+        // Not used
+    }
+
+
+    /** {@inheritDoc} */
+    @Override
+    protected void internalFlushHandler ()
+    {
+        this.setRepaintEnabled (false);
+        super.internalFlushHandler ();
+        this.setRepaintEnabled (true);
     }
 }

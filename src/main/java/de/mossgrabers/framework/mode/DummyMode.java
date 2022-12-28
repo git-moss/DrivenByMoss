@@ -26,6 +26,18 @@ import java.util.List;
 public class DummyMode<S extends IControlSurface<C>, C extends Configuration> extends AbstractParameterMode<S, C, IItem>
 {
     /**
+     * Constructor. Does not map any parameters.
+     *
+     * @param surface The control surface
+     * @param model The model
+     */
+    public DummyMode (final S surface, final IModel model)
+    {
+        this (surface, model, null);
+    }
+
+
+    /**
      * Constructor.
      *
      * @param surface The control surface
@@ -37,6 +49,7 @@ public class DummyMode<S extends IControlSurface<C>, C extends Configuration> ex
     {
         super ("Dummy", surface, model, true, null, controls);
 
-        this.setParameterProvider (new EmptyParameterProvider (controls.size ()));
+        if (controls != null)
+            this.setParameterProvider (new EmptyParameterProvider (controls.size ()));
     }
 }

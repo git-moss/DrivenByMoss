@@ -85,6 +85,7 @@ import de.mossgrabers.framework.featuregroup.IMode;
 import de.mossgrabers.framework.featuregroup.IView;
 import de.mossgrabers.framework.featuregroup.ModeManager;
 import de.mossgrabers.framework.featuregroup.ViewManager;
+import de.mossgrabers.framework.mode.DummyMode;
 import de.mossgrabers.framework.mode.Modes;
 import de.mossgrabers.framework.mode.track.TrackMuteMode;
 import de.mossgrabers.framework.mode.track.TrackPanMode;
@@ -215,7 +216,7 @@ public class LaunchpadControllerSetup extends AbstractControllerSetup<LaunchpadC
         modeManager.register (Modes.PAN, new TrackPanMode<> (surface, this.model, true));
         modeManager.register (Modes.SEND, new TrackSendMode<> (-1, surface, this.model, true));
         modeManager.register (Modes.STOP_CLIP, new TrackStopClipMode<> (surface, this.model));
-        modeManager.register (Modes.DUMMY, new TrackSelectMode<> (surface, this.model));
+        modeManager.register (Modes.DUMMY, new DummyMode<> (surface, this.model));
     }
 
 

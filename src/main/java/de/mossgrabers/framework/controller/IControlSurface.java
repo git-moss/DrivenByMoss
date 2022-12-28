@@ -539,15 +539,27 @@ public interface IControlSurface<C extends Configuration>
 
 
     /**
-     * Bind MIDI commands again to the grid.
+     * Unbind MIDI commands from all input controls.
      */
-    void rebindGrid ();
+    void unbindAllInputControls ();
+
+
+    /**
+     * Re-bind MIDI commands from all input controls.
+     */
+    void rebindAllInputControls ();
 
 
     /**
      * Unbind MIDI commands from the grid.
      */
     void unbindGrid ();
+
+
+    /**
+     * Bind MIDI commands again to the grid.
+     */
+    void rebindGrid ();
 
 
     /**

@@ -4,7 +4,6 @@
 
 package de.mossgrabers.controller.electra.one;
 
-import de.mossgrabers.controller.electra.one.controller.ElectraOneControlSurface;
 import de.mossgrabers.framework.controller.IControlSurface;
 import de.mossgrabers.framework.controller.valuechanger.IValueChanger;
 import de.mossgrabers.framework.daw.ITransport;
@@ -46,7 +45,7 @@ public class ElectraOnePlayPositionParameter extends PlayPositionParameter
 
         if (value == 0 || value == 1)
         {
-            this.surface.getMidiOutput ().sendCC (ElectraOneControlSurface.ELECTRA_ONE_PLAY_POSITION, 64);
+            this.surface.getMidiOutput ().sendCCEx (15, 25, 64);
             this.lastScrollValue = 64;
         }
     }

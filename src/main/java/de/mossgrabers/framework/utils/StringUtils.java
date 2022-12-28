@@ -350,6 +350,23 @@ public class StringUtils
 
 
     /**
+     * Interpret the content of an integer array as an ASCII text.
+     *
+     * @param start At which index to start to convert the ASCII text in the array
+     * @param length The number of integers to convert
+     * @param data The integer array
+     * @return The converted ASCII string
+     */
+    public static String integerArrayToString (final int start, final int length, final int [] data)
+    {
+        final StringBuilder sb = new StringBuilder (length);
+        for (int i = 0; i < length; i++)
+            sb.append ((char) data[start + i]);
+        return sb.toString ();
+    }
+
+
+    /**
      * Format a velocity percentage.
      *
      * @param noteVelocity The velocity in the range of 0..1.

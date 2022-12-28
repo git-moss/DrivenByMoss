@@ -236,7 +236,7 @@ public abstract class AbstractControlSurface<C extends Configuration> implements
     {
         final int size = this.padGrid.getRows () * this.padGrid.getCols ();
         for (int i = 0; i < size; i++)
-            this.getButton (ButtonID.get (ButtonID.PAD1, i)).unbind (this.input);
+            this.getButton (ButtonID.get (ButtonID.PAD1, i)).unbind ();
     }
 
 
@@ -489,6 +489,28 @@ public abstract class AbstractControlSurface<C extends Configuration> implements
 
     /** {@inheritDoc} */
     @Override
+    public void unbindAllInputControls ()
+    {
+        for (final IHwContinuousControl control: this.continuous.values ())
+            control.unbind ();
+        for (final IHwButton button: this.buttons.values ())
+            button.unbind ();
+    }
+
+
+    /** {@inheritDoc} */
+    @Override
+    public void rebindAllInputControls ()
+    {
+        for (final IHwContinuousControl control: this.continuous.values ())
+            control.rebind ();
+        for (final IHwButton button: this.buttons.values ())
+            button.rebind ();
+    }
+
+
+    /** {@inheritDoc} */
+    @Override
     public boolean isShiftPressed ()
     {
         return this.isPressed (ButtonID.SHIFT);
@@ -727,9 +749,7 @@ public abstract class AbstractControlSurface<C extends Configuration> implements
 
         try
         {
-            this.updateViewControls ();
-            this.updateGrid ();
-            this.flushHardware ();
+            this.internalFlushHandler ();
         }
         catch (final RuntimeException ex)
         {
@@ -746,6 +766,14 @@ public abstract class AbstractControlSurface<C extends Configuration> implements
             else
                 this.updateCounter = 0;
         }
+    }
+
+
+    protected void internalFlushHandler ()
+    {
+        this.updateViewControls ();
+        this.updateGrid ();
+        this.flushHardware ();
     }
 
 

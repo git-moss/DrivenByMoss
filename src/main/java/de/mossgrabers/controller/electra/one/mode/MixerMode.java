@@ -9,22 +9,21 @@ import de.mossgrabers.controller.electra.one.ElectraOnePlayPositionParameter;
 import de.mossgrabers.controller.electra.one.controller.ElectraOneColorManager;
 import de.mossgrabers.controller.electra.one.controller.ElectraOneControlSurface;
 import de.mossgrabers.framework.controller.ButtonID;
-import de.mossgrabers.framework.controller.ContinuousID;
 import de.mossgrabers.framework.controller.color.ColorEx;
 import de.mossgrabers.framework.daw.IModel;
+import de.mossgrabers.framework.daw.ITransport;
 import de.mossgrabers.framework.daw.data.IMasterTrack;
 import de.mossgrabers.framework.daw.data.ITrack;
-import de.mossgrabers.framework.daw.midi.IMidiOutput;
+import de.mossgrabers.framework.daw.data.empty.EmptyTrack;
 import de.mossgrabers.framework.mode.Modes;
 import de.mossgrabers.framework.mode.track.DefaultTrackMode;
 import de.mossgrabers.framework.parameterprovider.special.CombinedParameterProvider;
+import de.mossgrabers.framework.parameterprovider.special.EmptyParameterProvider;
 import de.mossgrabers.framework.parameterprovider.special.FixedParameterProvider;
 import de.mossgrabers.framework.parameterprovider.track.PanParameterProvider;
 import de.mossgrabers.framework.parameterprovider.track.VolumeParameterProvider;
 import de.mossgrabers.framework.utils.ButtonEvent;
 
-import java.util.Arrays;
-import java.util.List;
 import java.util.Optional;
 
 
@@ -36,15 +35,11 @@ import java.util.Optional;
  */
 public class MixerMode extends DefaultTrackMode<ElectraOneControlSurface, ElectraOneConfiguration>
 {
-    private static final List<ContinuousID> KNOB_IDS = ContinuousID.createSequentialList (ContinuousID.VOLUME_KNOB1, 6);
-    static
-    {
-        KNOB_IDS.addAll (ContinuousID.createSequentialList (ContinuousID.PAN_KNOB1, 6));
-    }
+    private static final int   FIRST_TRACK_GROUP = 433;
 
-    private final int []    valueCache   = new int [128];
-    private final String [] elementCache = new String [37];
-    private final String [] groupCache   = new String [37];
+    private final PageCache    pageCache;
+    private final ITransport   transport;
+    private final IMasterTrack masterTrack;
 
 
     /**
@@ -55,40 +50,49 @@ public class MixerMode extends DefaultTrackMode<ElectraOneControlSurface, Electr
      */
     public MixerMode (final ElectraOneControlSurface surface, final IModel model)
     {
-        super (Modes.NAME_VOLUME, surface, model, true, KNOB_IDS);
+        super (Modes.NAME_VOLUME, surface, model, true, ElectraOneControlSurface.KNOB_IDS);
 
-        final IMasterTrack masterTrack = this.model.getMasterTrack ();
-        this.setParameterProvider (new CombinedParameterProvider (new VolumeParameterProvider (model), new FixedParameterProvider (masterTrack.getVolumeParameter ()), new PanParameterProvider (model), new FixedParameterProvider (new ElectraOnePlayPositionParameter (model.getValueChanger (), model.getTransport (), surface))));
+        this.pageCache = new PageCache (0, surface);
+
+        this.transport = this.model.getTransport ();
+        this.masterTrack = this.model.getMasterTrack ();
+
+        this.setParameterProvider (new CombinedParameterProvider (
+                // Row 1
+                new VolumeParameterProvider (model), new FixedParameterProvider (this.masterTrack.getVolumeParameter ()),
+                // Row 2
+                new PanParameterProvider (model), new FixedParameterProvider (new ElectraOnePlayPositionParameter (model.getValueChanger (), model.getTransport (), surface)),
+                // These 4 rows only contain buttons
+                new EmptyParameterProvider (4 * 6)));
     }
 
 
     /** {@inheritDoc} */
     @Override
-    public void onButton (final int row, final int index, final ButtonEvent event)
+    public void onButton (final int row, final int column, final ButtonEvent event)
     {
-        // These are all toggle buttons sending 127 for on and 0 for off state
-        if (event == ButtonEvent.LONG)
+        if (event != ButtonEvent.DOWN)
             return;
 
-        if (index == 5)
+        if (column == 5)
         {
             switch (row)
             {
                 // Next track page
-                case 0:
+                case 2:
                     this.model.getCurrentTrackBank ().selectNextPage ();
                     break;
                 // Previous track page
-                case 1:
+                case 3:
                     this.model.getCurrentTrackBank ().selectPreviousPage ();
                     break;
                 // Record
-                case 2:
-                    this.model.getTransport ().startRecording ();
+                case 4:
+                    this.transport.startRecording ();
                     break;
                 // Play
-                case 3:
-                    this.model.getTransport ().play ();
+                case 5:
+                    this.transport.play ();
                     break;
 
                 default:
@@ -98,7 +102,7 @@ public class MixerMode extends DefaultTrackMode<ElectraOneControlSurface, Electr
             return;
         }
 
-        final Optional<ITrack> trackOpt = this.getTrack (index);
+        final Optional<ITrack> trackOpt = this.getTrack (column);
         if (trackOpt.isEmpty ())
             return;
 
@@ -106,19 +110,19 @@ public class MixerMode extends DefaultTrackMode<ElectraOneControlSurface, Electr
         switch (row)
         {
             // Record Arm
-            case 0:
+            case 2:
                 track.toggleRecArm ();
                 break;
             // Mute
-            case 1:
+            case 3:
                 track.toggleMute ();
                 break;
             // Solo
-            case 2:
+            case 4:
                 track.toggleSolo ();
                 break;
             // Select
-            case 3:
+            case 5:
                 track.select ();
                 break;
 
@@ -133,58 +137,7 @@ public class MixerMode extends DefaultTrackMode<ElectraOneControlSurface, Electr
     @Override
     public int getButtonColor (final ButtonID buttonID)
     {
-        final int row = this.getButtonRow (buttonID);
-        if (row == -1)
-            return ElectraOneColorManager.COLOR_BUTTON_STATE_OFF;
-
-        final int column = this.isButtonRow (row, buttonID);
-        if (column == 5)
-        {
-            switch (row)
-            {
-                // Next track page
-                case 0:
-                    return this.model.getCurrentTrackBank ().canScrollPageForwards () ? ElectraOneColorManager.COLOR_BUTTON_STATE_ON : ElectraOneColorManager.COLOR_BUTTON_STATE_OFF;
-                // Previous track page
-                case 1:
-                    return this.model.getCurrentTrackBank ().canScrollPageBackwards () ? ElectraOneColorManager.COLOR_BUTTON_STATE_ON : ElectraOneColorManager.COLOR_BUTTON_STATE_OFF;
-                // Record
-                case 2:
-                    return this.model.getTransport ().isRecording () ? ElectraOneColorManager.COLOR_BUTTON_STATE_ON : ElectraOneColorManager.COLOR_BUTTON_STATE_OFF;
-                // Play
-                case 3:
-                    return this.model.getTransport ().isPlaying () ? ElectraOneColorManager.COLOR_BUTTON_STATE_ON : ElectraOneColorManager.COLOR_BUTTON_STATE_OFF;
-
-                default:
-                    // Not used
-                    return ElectraOneColorManager.COLOR_BUTTON_STATE_OFF;
-            }
-        }
-
-        final Optional<ITrack> trackOpt = this.getTrack (column);
-        if (trackOpt.isEmpty ())
-            return ElectraOneColorManager.COLOR_BUTTON_STATE_OFF;
-
-        final ITrack track = trackOpt.get ();
-        switch (row)
-        {
-            // Record Arm
-            case 0:
-                return track.isRecArm () ? ElectraOneColorManager.COLOR_BUTTON_STATE_ON : ElectraOneColorManager.COLOR_BUTTON_STATE_OFF;
-            // Mute
-            case 1:
-                return track.isMute () ? ElectraOneColorManager.COLOR_BUTTON_STATE_ON : ElectraOneColorManager.COLOR_BUTTON_STATE_OFF;
-            // Solo
-            case 2:
-                return track.isSolo () ? ElectraOneColorManager.COLOR_BUTTON_STATE_ON : ElectraOneColorManager.COLOR_BUTTON_STATE_OFF;
-            // Select
-            case 3:
-                return track.isSelected () ? ElectraOneColorManager.COLOR_BUTTON_STATE_ON : ElectraOneColorManager.COLOR_BUTTON_STATE_OFF;
-
-            default:
-                // Not used
-                return ElectraOneColorManager.COLOR_BUTTON_STATE_OFF;
-        }
+        return ElectraOneColorManager.COLOR_BUTTON_STATE_OFF;
     }
 
 
@@ -192,63 +145,33 @@ public class MixerMode extends DefaultTrackMode<ElectraOneControlSurface, Electr
     @Override
     public void updateDisplay ()
     {
-        final IMidiOutput output = this.surface.getMidiOutput ();
-
-        for (int i = 0; i < 5; i++)
+        for (int column = 0; column < 5; column++)
         {
-            boolean exists = false;
-            int volume = 0;
-            int pan = 0;
-            String title = "";
-            ColorEx color = ColorEx.BLACK;
+            final Optional<ITrack> trackOpt = this.getTrack (column);
+            final ITrack track = trackOpt.isPresent () ? trackOpt.get () : EmptyTrack.INSTANCE;
+            final Boolean exists = Boolean.valueOf (track.doesExist ());
 
-            final Optional<ITrack> trackOpt = this.getTrack (i);
-            if (trackOpt.isPresent ())
-            {
-                final ITrack track = trackOpt.get ();
-                if (track.doesExist ())
-                {
-                    exists = true;
-                    volume = track.getVolume ();
-                    pan = track.getPan ();
-                    title = track.getPosition () + 1 + ": " + track.getName ();
-                    color = ElectraOneColorManager.getClosestPaletteColor (track.getColor ());
-                }
-            }
+            this.pageCache.updateGroupLabel (FIRST_TRACK_GROUP + column, track.getPosition () + 1 + ": " + track.getName ());
+            this.pageCache.updateValue (0, column, track.getVolume ());
+            this.pageCache.updateValue (1, column, track.getPan ());
 
-            if (this.valueCache[ElectraOneControlSurface.ELECTRA_ONE_VOLUME1 + i] != volume)
-            {
-                output.sendCCEx (0, ElectraOneControlSurface.ELECTRA_ONE_VOLUME1 + i, volume);
-                this.valueCache[ElectraOneControlSurface.ELECTRA_ONE_VOLUME1 + i] = volume;
-            }
-
-            if (this.valueCache[ElectraOneControlSurface.ELECTRA_ONE_PAN1 + i] != pan)
-            {
-                output.sendCCEx (0, ElectraOneControlSurface.ELECTRA_ONE_PAN1 + i, pan);
-                this.valueCache[ElectraOneControlSurface.ELECTRA_ONE_PAN1 + i] = pan;
-            }
-
-            final int controlID = 1 + i;
-            this.surface.updateElement (controlID, this.elementCache, null, color, Boolean.valueOf (exists));
-            this.surface.updateElement (7 + i, this.elementCache, null, color, Boolean.valueOf (exists));
-            this.surface.updateElement (13 + i, this.elementCache, null, null, Boolean.valueOf (exists));
-            this.surface.updateElement (19 + i, this.elementCache, null, null, Boolean.valueOf (exists));
-            this.surface.updateElement (25 + i, this.elementCache, null, null, Boolean.valueOf (exists));
-            this.surface.updateElement (31 + i, this.elementCache, null, null, Boolean.valueOf (exists));
-            this.surface.updateGroupTitle (controlID, this.groupCache, title);
+            final ColorEx color = track.getColor ();
+            this.pageCache.updateLabel (0, column, null, color, exists);
+            this.pageCache.updateLabel (1, column, null, color, exists);
+            this.pageCache.updateLabel (2, column, null, track.isRecArm () ? ElectraOneColorManager.REC_ARM_ON : ElectraOneColorManager.REC_ARM_OFF, exists);
+            this.pageCache.updateLabel (3, column, null, track.isMute () ? ElectraOneColorManager.MUTE_ON : ElectraOneColorManager.MUTE_OFF, exists);
+            this.pageCache.updateLabel (4, column, null, track.isSolo () ? ElectraOneColorManager.SOLO_ON : ElectraOneColorManager.SOLO_OFF, exists);
+            this.pageCache.updateLabel (5, column, null, track.isSelected () ? ElectraOneColorManager.SELECT_ON : ElectraOneColorManager.SELECT_OFF, exists);
         }
 
-        final IMasterTrack masterTrack = this.model.getMasterTrack ();
-        final int masterVolume = masterTrack.getVolume ();
-        if (this.valueCache[ElectraOneControlSurface.ELECTRA_ONE_MASTER_VOLUME] != masterVolume)
-        {
-            output.sendCCEx (0, ElectraOneControlSurface.ELECTRA_ONE_MASTER_VOLUME, masterVolume);
-            this.valueCache[ElectraOneControlSurface.ELECTRA_ONE_MASTER_VOLUME] = masterVolume;
-        }
+        // Master
+        this.pageCache.updateValue (0, 5, this.masterTrack.getVolume ());
+        this.pageCache.updateLabel (0, 5, null, this.masterTrack.getColor (), null);
 
-        final ColorEx masterColor = ElectraOneColorManager.getClosestPaletteColor (masterTrack.getColor ());
-        this.surface.updateElement (6, this.elementCache, null, masterColor, null);
-        this.surface.updateElement (12, this.elementCache, this.model.getTransport ().getBeatText (), null, null);
+        // Transport
+        this.pageCache.updateLabel (1, 5, this.transport.getBeatText (), null, null);
+        this.pageCache.updateLabel (4, 5, null, this.transport.isRecording () ? ElectraOneColorManager.RECORD_ON : ElectraOneColorManager.RECORD_OFF, null);
+        this.pageCache.updateLabel (5, 5, null, this.transport.isPlaying () ? ElectraOneColorManager.PLAY_ON : ElectraOneColorManager.PLAY_OFF, null);
     }
 
 
@@ -256,9 +179,7 @@ public class MixerMode extends DefaultTrackMode<ElectraOneControlSurface, Electr
     @Override
     public void onActivate ()
     {
-        Arrays.fill (this.valueCache, -1);
-        Arrays.fill (this.elementCache, null);
-        Arrays.fill (this.groupCache, null);
+        this.pageCache.reset ();
 
         super.onActivate ();
     }

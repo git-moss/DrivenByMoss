@@ -150,7 +150,7 @@ public enum ContinuousID
     TRACK_MUTE,
     /** Selection of solo with multiple values. */
     TRACK_SOLO,
-    /** Selection of rec arm with multiple values. */
+    /** Selection of record arm with multiple values. */
     TRACK_ARM,
 
     /** Navigate clips with multiple values. */

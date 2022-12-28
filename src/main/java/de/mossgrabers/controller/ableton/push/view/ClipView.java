@@ -94,7 +94,7 @@ public class ClipView extends AbstractSequencerView<PushControlSurface, PushConf
             final double newStart = start * quartersPerPad;
             final IClip clip = this.getClip ();
             clip.setLoopStart (newStart);
-            clip.setLoopLength (((end - start) * quartersPerPad));
+            clip.setLoopLength ((end - start) * quartersPerPad);
             clip.setPlayRange (newStart, end * quartersPerPad);
         }
 

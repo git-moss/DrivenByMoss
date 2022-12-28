@@ -6,6 +6,8 @@ package de.mossgrabers.controller.electra.one;
 
 import de.mossgrabers.controller.electra.one.controller.ElectraOneColorManager;
 import de.mossgrabers.controller.electra.one.controller.ElectraOneControlSurface;
+import de.mossgrabers.controller.electra.one.mode.DeviceMode;
+import de.mossgrabers.controller.electra.one.mode.EqualizerMode;
 import de.mossgrabers.controller.electra.one.mode.MixerMode;
 import de.mossgrabers.controller.electra.one.mode.SendsMode;
 import de.mossgrabers.framework.command.trigger.mode.ButtonRowModeCommand;
@@ -18,9 +20,8 @@ import de.mossgrabers.framework.controller.hardware.BindType;
 import de.mossgrabers.framework.controller.hardware.IHwAbsoluteKnob;
 import de.mossgrabers.framework.controller.valuechanger.TwosComplementValueChanger;
 import de.mossgrabers.framework.daw.IHost;
-import de.mossgrabers.framework.daw.ITransport;
 import de.mossgrabers.framework.daw.ModelSetup;
-import de.mossgrabers.framework.daw.data.ICursorDevice;
+import de.mossgrabers.framework.daw.constants.DeviceID;
 import de.mossgrabers.framework.daw.data.bank.ITrackBank;
 import de.mossgrabers.framework.daw.midi.IMidiAccess;
 import de.mossgrabers.framework.daw.midi.IMidiInput;
@@ -38,6 +39,27 @@ import de.mossgrabers.framework.view.Views;
  */
 public class ElectraOneControllerSetup extends AbstractControllerSetup<ElectraOneControlSurface, ElectraOneConfiguration>
 {
+    private static final ButtonID []     BUTTON_ROW_IDS =
+    {
+        ButtonID.ROW1_1,
+        ButtonID.ROW2_1,
+        ButtonID.ROW3_1,
+        ButtonID.ROW4_1,
+        ButtonID.ROW5_1,
+        ButtonID.ROW6_1
+    };
+
+    private static final ContinuousID [] CTRL_ROW_IDS   =
+    {
+        ContinuousID.VOLUME_KNOB1,
+        ContinuousID.PAN_KNOB1,
+        ContinuousID.FADER1,
+        ContinuousID.KNOB1,
+        ContinuousID.PARAM_KNOB1,
+        ContinuousID.DEVICE_KNOB1,
+    };
+
+
     /**
      * Constructor.
      *
@@ -58,54 +80,24 @@ public class ElectraOneControllerSetup extends AbstractControllerSetup<ElectraOn
 
     /** {@inheritDoc} */
     @Override
-    public void flush ()
-    {
-        super.flush ();
-
-        // TODO
-        // this.surfaces.forEach (surface -> {
-        // final ModeManager modeManager = surface.getModeManager ();
-        // final Modes mode = modeManager.getActiveID ();
-        // this.updateMode (mode);
-        //
-        // if (mode == null)
-        // return;
-        //
-        // this.updateVUMeters ();
-        // this.updateFaders (surface.isShiftPressed ());
-        // this.updateSegmentDisplay ();
-        //
-        // final IMode activeOrTempMode = modeManager.getActive ();
-        // if (activeOrTempMode instanceof final BaseMode<?> baseMode)
-        // baseMode.updateKnobLEDs ();
-        // });
-    }
-
-
-    /** {@inheritDoc} */
-    @Override
     protected void createModel ()
     {
         final ModelSetup ms = new ModelSetup ();
 
         ms.enableMainDrumDevice (false);
-        // TODO ms.enableDevice (DeviceID.EQ);
+        ms.enableDevice (DeviceID.EQ);
 
         ms.setNumTracks (5);
-
         ms.setHasFlatTrackList (true);
         ms.setHasFullFlatTrackList (true);
         ms.setNumSends (6);
 
-        // TODO
-        ms.setNumScenes (8);
-        ms.setNumFilterColumnEntries (8);
-        ms.setNumResults (8);
-        ms.setNumParamPages (8);
-        ms.setNumParams (8);
+        // Not used (yet)
+        ms.setNumScenes (0);
+        ms.setNumFilterColumnEntries (0);
+        ms.setNumResults (0);
         ms.setNumDeviceLayers (0);
         ms.setNumDrumPadLayers (0);
-        ms.setNumMarkers (8);
 
         this.model = this.factory.createModel (this.configuration, this.colorManager, this.valueChanger, this.scales, ms);
 
@@ -121,13 +113,20 @@ public class ElectraOneControllerSetup extends AbstractControllerSetup<ElectraOn
     {
         final IMidiAccess midiAccess = this.factory.createMidiAccess ();
 
+        // Communication with the controls
         final IMidiOutput output = midiAccess.createOutput (0);
         final IMidiInput input = midiAccess.createInput (0, null);
+
+        // Raw MIDI input on MIDI channels 1-15 (controls use only channel 16)
+        for (int i = 0; i < 15; i++)
+            input.createNoteInput ("Channel " + (i + 1), String.format ("?%X????", Integer.valueOf (i)));
+
+        // Sysex control channel
         final IMidiOutput ctrlOutput = midiAccess.createOutput (1);
         final IMidiInput ctrlInput = midiAccess.createInput (1, null);
+
         final ElectraOneControlSurface surface = new ElectraOneControlSurface (this.host, this.colorManager, this.configuration, output, input, ctrlInput, ctrlOutput);
         this.surfaces.add (surface);
-        // TODO surface.addTextDisplay (new ElectraOneSegmentDisplay (this.host, output));
 
         surface.getModeManager ().setDefaultID (Modes.VOLUME);
     }
@@ -142,11 +141,9 @@ public class ElectraOneControllerSetup extends AbstractControllerSetup<ElectraOn
 
         modeManager.register (Modes.VOLUME, new MixerMode (surface, this.model));
         modeManager.register (Modes.SEND, new SendsMode (surface, this.model));
-
+        modeManager.register (Modes.DEVICE_PARAMS, new DeviceMode (surface, this.model));
+        modeManager.register (Modes.EQ_DEVICE_PARAMS, new EqualizerMode (surface, this.model));
         // TODO
-        // modeManager.register (Modes.DEVICE_PARAMS, new DeviceParamsMode (surface, this.model));
-        // modeManager.register (Modes.EQ_DEVICE_PARAMS, new DeviceParamsMode ("Equalizer",
-        // this.model.getSpecificDevice (DeviceID.EQ), surface, this.model));
         // modeManager.register (Modes.MARKERS, new MarkerMode (surface, this.model));
     }
 
@@ -156,7 +153,7 @@ public class ElectraOneControllerSetup extends AbstractControllerSetup<ElectraOn
     protected void createViews ()
     {
         final ElectraOneControlSurface surface = this.getSurface ();
-        // We need this for triggering updateDispay in the modes
+        // We need this for triggering updateDisplay in the modes
         surface.getViewManager ().register (Views.CONTROL, new DummyView<> ("Control", surface, this.model));
     }
 
@@ -168,6 +165,9 @@ public class ElectraOneControllerSetup extends AbstractControllerSetup<ElectraOn
         super.createObservers ();
 
         this.configuration.registerDeactivatedItemsHandler (this.model);
+
+        final ElectraOneControlSurface surface = this.getSurface ();
+        this.configuration.addSettingObserver (ElectraOneConfiguration.LOG_TO_CONSOLE, surface::setLoggingEnabled);
     }
 
 
@@ -175,46 +175,21 @@ public class ElectraOneControllerSetup extends AbstractControllerSetup<ElectraOn
     @Override
     protected void registerTriggerCommands ()
     {
-        final ITransport t = this.model.getTransport ();
-        final ICursorDevice cursorDevice = this.model.getCursorDevice ();
-
         final ElectraOneControlSurface surface = this.getSurface ();
 
-        // Navigation
-
-        // this.addButton (surface, ButtonID.LOOP, "Loop", new ToggleLoopCommand<> (this.model,
-        // surface), 0, ElectraOneControlSurface.ELECTRA_ONE_REPEAT, t::isLoop);
-        // this.addButton (surface, ButtonID.STOP, "Stop", new StopCommand<> (this.model, surface),
-        // 0, ElectraOneControlSurface.ELECTRA_ONE_STOP, () -> !t.isPlaying ());
-        // this.addButton (surface, ButtonID.PLAY, "Play", new PlayCommand<> (this.model, surface),
-        // 0, ElectraOneControlSurface.ELECTRA_ONE_PLAY, t::isPlaying);
-        // this.addButton (surface, ButtonID.RECORD, "Record", new ElectraOneRecordCommand
-        // (this.model, surface), 0, ElectraOneControlSurface.ELECTRA_ONE_RECORD, () -> {
-        // final boolean isOn = this.isRecordShifted (surface) ? t.isLauncherOverdub () :
-        // t.isRecording ();
-        // return isOn ? ElectraOne_BUTTON_STATE_ON : ElectraOne_BUTTON_STATE_OFF;
-        // });
-        //
-        // this.addButton (surface, ButtonID.MOVE_TRACK_LEFT, "Left", new
-        // ElectraOneMoveTrackBankCommand (this.model, surface, true, true), 0,
-        // ElectraOneControlSurface.ELECTRA_ONE_TRACK_LEFT);
-        // this.addButton (surface, ButtonID.MOVE_TRACK_RIGHT, TAG_RIGHT, new
-        // ElectraOneMoveTrackBankCommand (this.model, surface, true, false), 0,
-        // ElectraOneControlSurface.ELECTRA_ONE_TRACK_RIGHT);
-
-        for (int i = 0; i < 6; i++)
+        for (int row = 0; row < 6; row++)
         {
-            final ButtonID row1ButtonID = ButtonID.get (ButtonID.ROW1_1, i);
-            final ButtonID row2ButtonID = ButtonID.get (ButtonID.ROW2_1, i);
-            final ButtonID row3ButtonID = ButtonID.get (ButtonID.ROW3_1, i);
-            final ButtonID row4ButtonID = ButtonID.get (ButtonID.ROW4_1, i);
+            final ButtonID rowButtonID = BUTTON_ROW_IDS[row];
+            final int rowLabel = row + 1;
 
-            final int labelIndex = i + 1;
-
-            this.addButton (surface, row1ButtonID, "Rec Arm " + labelIndex, new ButtonRowModeCommand<> (0, i, this.model, surface), ElectraOneControlSurface.ELECTRA_ONE_ARM1 + i, () -> this.getButtonColor (surface, row1ButtonID));
-            this.addButton (surface, row3ButtonID, "Mute " + labelIndex, new ButtonRowModeCommand<> (1, i, this.model, surface), ElectraOneControlSurface.ELECTRA_ONE_MUTE1 + i, () -> this.getButtonColor (surface, row2ButtonID));
-            this.addButton (surface, row2ButtonID, "Solo " + labelIndex, new ButtonRowModeCommand<> (2, i, this.model, surface), ElectraOneControlSurface.ELECTRA_ONE_SOLO1 + i, () -> this.getButtonColor (surface, row3ButtonID));
-            this.addButton (surface, row4ButtonID, "Select " + labelIndex, new ButtonRowModeCommand<> (3, i, this.model, surface), ElectraOneControlSurface.ELECTRA_ONE_SELECT1 + i, () -> this.getButtonColor (surface, row4ButtonID));
+            for (int col = 0; col < 6; col++)
+            {
+                final ButtonID buttonID = ButtonID.get (rowButtonID, col);
+                final int colLabel = col + 1;
+                final int cc = ElectraOneControlSurface.ELECTRA_ROW_1 + 10 * row + col;
+                final ButtonRowModeCommand<ElectraOneControlSurface, ElectraOneConfiguration> command = new ButtonRowModeCommand<> (row, col, this.model, surface);
+                this.addButton (surface, buttonID, "Row " + rowLabel + ": " + colLabel, command, 15, cc, () -> this.getButtonColor (surface, buttonID));
+            }
         }
     }
 
@@ -223,46 +198,20 @@ public class ElectraOneControllerSetup extends AbstractControllerSetup<ElectraOn
     @Override
     protected void registerContinuousCommands ()
     {
-        for (int i = 0; i < 6; i++)
+        for (int row = 0; row < 6; row++)
         {
-            // Mixer Mode
-            final IHwAbsoluteKnob volumeKnob = this.addAbsoluteKnob (ContinuousID.get (ContinuousID.VOLUME_KNOB1, i), "Volume " + i, null, ElectraOneControlSurface.ELECTRA_ONE_VOLUME1 + i);
-            volumeKnob.setIndexInGroup (i);
-            volumeKnob.disableTakeOver ();
-            final IHwAbsoluteKnob panKnob = this.addAbsoluteKnob (ContinuousID.get (ContinuousID.PAN_KNOB1, i), "Pan " + i, null, ElectraOneControlSurface.ELECTRA_ONE_PAN1 + i);
-            panKnob.setIndexInGroup (i);
-            panKnob.disableTakeOver ();
-        }
+            final ContinuousID rowCtrlID = CTRL_ROW_IDS[row];
+            final int rowLabel = row + 1;
 
-        for (int i = 0; i < 6; i++)
-        {
-            // Send Mode
-            final IHwAbsoluteKnob send1Knob = this.addAbsoluteKnob (ContinuousID.get (ContinuousID.SEND1_KNOB1, i), "Send 1 " + i, null, BindType.CC, 1, ElectraOneControlSurface.ELECTRA_ONE_SEND1 + i);
-            send1Knob.setIndexInGroup (i);
-            send1Knob.disableTakeOver ();
-            final IHwAbsoluteKnob send2Knob = this.addAbsoluteKnob (ContinuousID.get (ContinuousID.SEND2_KNOB1, i), "Send 2 " + i, null, BindType.CC, 1, ElectraOneControlSurface.ELECTRA_ONE_SEND2 + i);
-            send2Knob.setIndexInGroup (i);
-            send2Knob.disableTakeOver ();
-            // final IHwAbsoluteKnob send3Knob = this.addAbsoluteKnob (ContinuousID.get
-            // (ContinuousID.SEND3_KNOB1, i), "Send 3 " + i, null, BindType.CC, 1,
-            // ElectraOneControlSurface.ELECTRA_ONE_SEND3 + i);
-            // send3Knob.setIndexInGroup (i);
-            // send3Knob.disableTakeOver ();
-            // final IHwAbsoluteKnob send4Knob = this.addAbsoluteKnob (ContinuousID.get
-            // (ContinuousID.SEND4_KNOB1, i), "Send 4 " + i, null, BindType.CC, 1,
-            // ElectraOneControlSurface.ELECTRA_ONE_SEND4 + i);
-            // send4Knob.setIndexInGroup (i);
-            // send4Knob.disableTakeOver ();
-            // final IHwAbsoluteKnob send5Knob = this.addAbsoluteKnob (ContinuousID.get
-            // (ContinuousID.SEND5_KNOB1, i), "Send 5 " + i, null, BindType.CC, 1,
-            // ElectraOneControlSurface.ELECTRA_ONE_SEND5 + i);
-            // send5Knob.setIndexInGroup (i);
-            // send5Knob.disableTakeOver ();
-            // final IHwAbsoluteKnob send6Knob = this.addAbsoluteKnob (ContinuousID.get
-            // (ContinuousID.SEND6_KNOB1, i), "Send 6 " + i, null, BindType.CC, 1,
-            // ElectraOneControlSurface.ELECTRA_ONE_SEND6 + i);
-            // send6Knob.setIndexInGroup (i);
-            // send6Knob.disableTakeOver ();
+            for (int col = 0; col < 6; col++)
+            {
+                final ContinuousID ctrlID = ContinuousID.get (rowCtrlID, col);
+                final int colLabel = col + 1;
+                final int cc = ElectraOneControlSurface.ELECTRA_CTRL_1 + 10 * row + col;
+                final IHwAbsoluteKnob knob = this.addAbsoluteKnob (ctrlID, "Ctrl " + rowLabel + "-" + colLabel, null, BindType.CC, 15, cc);
+                knob.setIndexInGroup (col);
+                knob.disableTakeOver ();
+            }
         }
     }
 
@@ -271,7 +220,29 @@ public class ElectraOneControllerSetup extends AbstractControllerSetup<ElectraOn
     @Override
     protected void layoutControls ()
     {
-        // TODO
+        final ElectraOneControlSurface surface = this.getSurface ();
+
+        final double width = 12;
+        final double height = 10;
+        final double padding = 4;
+        final double offsetY = 7 * (padding + height);
+
+        for (int row = 0; row < 6; row++)
+        {
+            final ContinuousID rowCtrlID = CTRL_ROW_IDS[row];
+            final ButtonID rowButtonID = BUTTON_ROW_IDS[row];
+            for (int col = 0; col < 6; col++)
+            {
+                final double x = padding + col * (padding + width);
+                final double y = padding + row * (padding + height);
+
+                final ContinuousID ctrlID = ContinuousID.get (rowCtrlID, col);
+                surface.getContinuous (ctrlID).setBounds (x, y, width, height);
+
+                final ButtonID buttonID = ButtonID.get (rowButtonID, col);
+                surface.getButton (buttonID).setBounds (x, offsetY + y, width, height);
+            }
+        }
     }
 
 
@@ -280,8 +251,7 @@ public class ElectraOneControllerSetup extends AbstractControllerSetup<ElectraOn
     public void startup ()
     {
         final ElectraOneControlSurface surface = this.getSurface ();
-
         surface.getViewManager ().setActive (Views.CONTROL);
-        surface.getModeManager ().setActive (Modes.VOLUME);
+        surface.requestDeviceInfo ();
     }
 }

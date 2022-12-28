@@ -64,7 +64,7 @@ public class ElectraOneConfiguration extends AbstractConfiguration
 
     private void activateHardwareSettings (final ISettingsUI settingsUI)
     {
-        final IEnumSetting logToConsoleSetting = settingsUI.getEnumSetting ("Write Electra.One logging messages to console", CATEGORY_HARDWARE_SETUP, ON_OFF_OPTIONS, ON_OFF_OPTIONS[0]);
+        final IEnumSetting logToConsoleSetting = settingsUI.getEnumSetting ("Enable Electra.One logging (written to Controller Script Console)", CATEGORY_HARDWARE_SETUP, ON_OFF_OPTIONS, ON_OFF_OPTIONS[0]);
         logToConsoleSetting.addValueObserver (value -> {
             this.isLogToConsoleEnabled = "On".equals (value);
             this.notifyObservers (LOG_TO_CONSOLE);

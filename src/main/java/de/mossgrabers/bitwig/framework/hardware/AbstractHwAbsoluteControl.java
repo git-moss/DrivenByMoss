@@ -37,6 +37,7 @@ public abstract class AbstractHwAbsoluteControl<T extends AbsoluteHardwareContro
     private final AbsoluteHardwarControlBindable defaultSimpleParameterAction;
     private AbsoluteHardwareControlBinding       binding;
     private IParameter                           parameter;
+    private int                                  control;
 
 
     /**
@@ -135,7 +136,30 @@ public abstract class AbstractHwAbsoluteControl<T extends AbsoluteHardwareContro
     @Override
     public void bind (final IMidiInput input, final BindType type, final int channel, final int control)
     {
+        this.input = input;
+        this.type = type;
+        this.channel = channel;
+        this.control = control;
+
         input.bind (this, type, channel, control);
+    }
+
+
+    /** {@inheritDoc} */
+    @Override
+    public void unbind ()
+    {
+        if (this.input != null)
+            this.input.unbind (this);
+    }
+
+
+    /** {@inheritDoc} */
+    @Override
+    public void rebind ()
+    {
+        if (this.input != null)
+            this.input.bind (this, this.type, this.channel, this.control);
     }
 
 

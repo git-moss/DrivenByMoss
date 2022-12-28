@@ -11,7 +11,6 @@ import de.mossgrabers.bitwig.framework.hardware.HwRelativeKnobImpl;
 import de.mossgrabers.framework.controller.hardware.BindException;
 import de.mossgrabers.framework.controller.hardware.BindType;
 import de.mossgrabers.framework.controller.hardware.IHwAbsoluteControl;
-import de.mossgrabers.framework.controller.hardware.IHwAbsoluteKnob;
 import de.mossgrabers.framework.controller.hardware.IHwButton;
 import de.mossgrabers.framework.controller.hardware.IHwFader;
 import de.mossgrabers.framework.controller.hardware.IHwRelativeKnob;
@@ -141,16 +140,6 @@ public class MidiInputImpl implements IMidiInput
 
     /** {@inheritDoc} */
     @Override
-    public void unbind (final IHwButton button)
-    {
-        final HardwareButton hardwareButton = ((HwButtonImpl) button).getHardwareButton ();
-        hardwareButton.pressedAction ().setPressureActionMatcher (null);
-        hardwareButton.releasedAction ().setActionMatcher (null);
-    }
-
-
-    /** {@inheritDoc} */
-    @Override
     public void bind (final IHwButton button, final BindType type, final int channel, final int control, final int value)
     {
         if (type != BindType.CC)
@@ -158,6 +147,16 @@ public class MidiInputImpl implements IMidiInput
 
         final HardwareButton hardwareButton = ((HwButtonImpl) button).getHardwareButton ();
         setAction (hardwareButton.pressedAction (), this.port.createCCActionMatcher (channel, control, value));
+    }
+
+
+    /** {@inheritDoc} */
+    @Override
+    public void unbind (final IHwButton button)
+    {
+        final HardwareButton hardwareButton = ((HwButtonImpl) button).getHardwareButton ();
+        hardwareButton.pressedAction ().setPressureActionMatcher (null);
+        hardwareButton.releasedAction ().setActionMatcher (null);
     }
 
 
@@ -199,17 +198,17 @@ public class MidiInputImpl implements IMidiInput
 
     /** {@inheritDoc} */
     @Override
-    public void bind (final IHwFader fader, final BindType type, final int channel, final int control)
+    public void unbind (final IHwRelativeKnob relativeKnob)
     {
-        this.bind (type, channel, control, ((AbstractHwAbsoluteControl<?>) fader).getHardwareControl ());
+        ((HwRelativeKnobImpl) relativeKnob).getHardwareKnob ().setAdjustValueMatcher (null);
     }
 
 
     /** {@inheritDoc} */
     @Override
-    public void bind (final IHwAbsoluteKnob knob, final BindType type, final int channel, final int control)
+    public void bind (final IHwFader fader, final BindType type, final int channel, final int control)
     {
-        this.bind (type, channel, control, ((AbstractHwAbsoluteControl<?>) knob).getHardwareControl ());
+        this.bind (type, channel, control, ((AbstractHwAbsoluteControl<?>) fader).getHardwareControl ());
     }
 
 
@@ -221,19 +220,31 @@ public class MidiInputImpl implements IMidiInput
     }
 
 
+    /** {@inheritDoc} */
+    @Override
+    public void unbind (final IHwAbsoluteControl absoluteControl)
+    {
+        ((AbstractHwAbsoluteControl<?>) absoluteControl).getHardwareControl ().setAdjustValueMatcher (null);
+    }
+
+
     private void bind (final BindType type, final int channel, final int control, final AbsoluteHardwareControl hardwareControl)
     {
+        final AbsoluteHardwareValueMatcher matcher;
+
         switch (type)
         {
             case CC:
-                hardwareControl.setAdjustValueMatcher (this.port.createAbsoluteCCValueMatcher (channel, control));
+                matcher = this.port.createAbsoluteCCValueMatcher (channel, control);
                 break;
             case PITCHBEND:
-                hardwareControl.setAdjustValueMatcher (this.port.createAbsolutePitchBendValueMatcher (channel));
+                matcher = this.port.createAbsolutePitchBendValueMatcher (channel);
                 break;
             default:
                 throw new BindException (type);
         }
+
+        hardwareControl.setAdjustValueMatcher (matcher);
     }
 
 

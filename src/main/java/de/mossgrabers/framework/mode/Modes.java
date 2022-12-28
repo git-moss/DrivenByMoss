@@ -188,6 +188,8 @@ public enum Modes
     public static final String      NAME_LAYER_PANORAMA = "Layer Panorama";
     /** The name of the Layer Sends mode. */
     public static final String      NAME_LAYER_SENDS    = "Layer Sends";
+    /** The name of the Equalizer mode. */
+    public static final String      NAME_EQUALIZER      = "Equalizer";
 
     private static final Set<Modes> TRACK_MODES         = EnumSet.range (Modes.TRACK, Modes.STOP_CLIP);
     private static final Set<Modes> LAYER_MODES         = EnumSet.range (Modes.DEVICE_LAYER, Modes.DEVICE_LAYER_DETAILS);

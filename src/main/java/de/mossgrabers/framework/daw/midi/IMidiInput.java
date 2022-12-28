@@ -6,7 +6,6 @@ package de.mossgrabers.framework.daw.midi;
 
 import de.mossgrabers.framework.controller.hardware.BindType;
 import de.mossgrabers.framework.controller.hardware.IHwAbsoluteControl;
-import de.mossgrabers.framework.controller.hardware.IHwAbsoluteKnob;
 import de.mossgrabers.framework.controller.hardware.IHwButton;
 import de.mossgrabers.framework.controller.hardware.IHwFader;
 import de.mossgrabers.framework.controller.hardware.IHwRelativeKnob;
@@ -79,14 +78,6 @@ public interface IMidiInput
 
 
     /**
-     * Unbind the button from its MIDI command.
-     *
-     * @param button The button to unbind
-     */
-    void unbind (IHwButton button);
-
-
-    /**
      * Bind a MIDI command coming from a MIDI input to the button.
      *
      * @param button The button to bind
@@ -96,6 +87,14 @@ public interface IMidiInput
      * @param value The specific value of the control to bind to
      */
     void bind (IHwButton button, BindType type, int channel, int control, int value);
+
+
+    /**
+     * Unbind the button from its MIDI command.
+     *
+     * @param button The button to unbind
+     */
+    void unbind (IHwButton button);
 
 
     /**
@@ -112,23 +111,20 @@ public interface IMidiInput
     /**
      * Bind the given absolute knob to a MIDI command received on this MIDI input.
      *
-     * @param absoluteKnob The absolute knob to bind
-     * @param type The MIDI binding type
-     * @param channel The MIDI channel
-     * @param control The MIDI command (CC, Note, ...)
-     */
-    void bind (IHwAbsoluteKnob absoluteKnob, BindType type, int channel, int control);
-
-
-    /**
-     * Bind the given absolute knob to a MIDI command received on this MIDI input.
-     *
      * @param absoluteControl The absolute control to bind
      * @param type The MIDI binding type
      * @param channel The MIDI channel
      * @param control The MIDI command (CC, Note, ...)
      */
     void bind (IHwAbsoluteControl absoluteControl, BindType type, int channel, int control);
+
+
+    /**
+     * Unbind the given absolute control from a MIDI command.
+     *
+     * @param absoluteControl The absolute control to unbind
+     */
+    void unbind (IHwAbsoluteControl absoluteControl);
 
 
     /**
@@ -141,6 +137,14 @@ public interface IMidiInput
      * @param encoding The encoding of the relative value
      */
     void bind (IHwRelativeKnob relativeKnob, BindType type, int channel, int control, RelativeEncoding encoding);
+
+
+    /**
+     * Unbind the given relative knob from a MIDI command.
+     *
+     * @param relativeKnob The relative knob to unbind
+     */
+    void unbind (IHwRelativeKnob relativeKnob);
 
 
     /**

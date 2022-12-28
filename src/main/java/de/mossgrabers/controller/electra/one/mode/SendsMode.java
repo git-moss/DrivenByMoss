@@ -9,23 +9,21 @@ import de.mossgrabers.controller.electra.one.ElectraOnePlayPositionParameter;
 import de.mossgrabers.controller.electra.one.controller.ElectraOneColorManager;
 import de.mossgrabers.controller.electra.one.controller.ElectraOneControlSurface;
 import de.mossgrabers.framework.controller.ButtonID;
-import de.mossgrabers.framework.controller.ContinuousID;
 import de.mossgrabers.framework.controller.color.ColorEx;
 import de.mossgrabers.framework.daw.IModel;
-import de.mossgrabers.framework.daw.IProject;
+import de.mossgrabers.framework.daw.ITransport;
 import de.mossgrabers.framework.daw.data.ISend;
 import de.mossgrabers.framework.daw.data.ITrack;
 import de.mossgrabers.framework.daw.data.bank.ISendBank;
-import de.mossgrabers.framework.daw.midi.IMidiOutput;
+import de.mossgrabers.framework.daw.data.empty.EmptyTrack;
 import de.mossgrabers.framework.mode.Modes;
 import de.mossgrabers.framework.mode.track.DefaultTrackMode;
 import de.mossgrabers.framework.parameterprovider.special.CombinedParameterProvider;
+import de.mossgrabers.framework.parameterprovider.special.EmptyParameterProvider;
 import de.mossgrabers.framework.parameterprovider.special.FixedParameterProvider;
 import de.mossgrabers.framework.parameterprovider.track.SendParameterProvider;
 import de.mossgrabers.framework.utils.ButtonEvent;
 
-import java.util.Arrays;
-import java.util.List;
 import java.util.Optional;
 
 
@@ -36,26 +34,10 @@ import java.util.Optional;
  */
 public class SendsMode extends DefaultTrackMode<ElectraOneControlSurface, ElectraOneConfiguration>
 {
-    // TODO
-    private static final List<ContinuousID> KNOB_IDS = ContinuousID.createSequentialList (ContinuousID.SEND1_KNOB1, 6);
-    static
-    {
-        KNOB_IDS.addAll (ContinuousID.createSequentialList (ContinuousID.SEND2_KNOB1, 6));
-    }
+    private static final int FIRST_TRACK_GROUP = 469;
 
-    private static final int [] SEND_IDS     =
-    {
-        ElectraOneControlSurface.ELECTRA_ONE_SEND1,
-        ElectraOneControlSurface.ELECTRA_ONE_SEND2,
-        ElectraOneControlSurface.ELECTRA_ONE_SEND3,
-        ElectraOneControlSurface.ELECTRA_ONE_SEND4,
-        ElectraOneControlSurface.ELECTRA_ONE_SEND5,
-        ElectraOneControlSurface.ELECTRA_ONE_SEND6
-    };
-
-    private final int []        valueCache   = new int [128];
-    private final String []     elementCache = new String [37];
-    private final String []     groupCache   = new String [37];
+    private final PageCache  pageCache;
+    private final ITransport transport;
 
 
     /**
@@ -66,14 +48,25 @@ public class SendsMode extends DefaultTrackMode<ElectraOneControlSurface, Electr
      */
     public SendsMode (final ElectraOneControlSurface surface, final IModel model)
     {
-        super (Modes.NAME_SENDS, surface, model, true, KNOB_IDS);
+        super (Modes.NAME_SENDS, surface, model, true, ElectraOneControlSurface.KNOB_IDS);
 
-        final IProject project = this.model.getProject ();
+        this.pageCache = new PageCache (1, surface);
+
+        this.transport = this.model.getTransport ();
+
         this.setParameterProvider (new CombinedParameterProvider (
-                // First row
-                new SendParameterProvider (model, 0, 0), new FixedParameterProvider (project.getCueVolumeParameter ()),
-                // Second row
-                new SendParameterProvider (model, 1, 0), new FixedParameterProvider (new ElectraOnePlayPositionParameter (model.getValueChanger (), model.getTransport (), surface))));
+                // Row 1
+                new SendParameterProvider (model, 0, 0), new FixedParameterProvider (this.model.getProject ().getCueVolumeParameter ()),
+                // Row 2
+                new SendParameterProvider (model, 1, 0), new FixedParameterProvider (new ElectraOnePlayPositionParameter (model.getValueChanger (), model.getTransport (), surface)),
+                // Row 3
+                new SendParameterProvider (model, 2, 0), new EmptyParameterProvider (1),
+                // Row 4
+                new SendParameterProvider (model, 3, 0), new EmptyParameterProvider (1),
+                // Row 5
+                new SendParameterProvider (model, 4, 0), new EmptyParameterProvider (1),
+                // Row 6
+                new SendParameterProvider (model, 5, 0), new EmptyParameterProvider (1)));
     }
 
 
@@ -81,27 +74,26 @@ public class SendsMode extends DefaultTrackMode<ElectraOneControlSurface, Electr
     @Override
     public void onButton (final int row, final int index, final ButtonEvent event)
     {
-        // These are all toggle buttons sending 127 for on and 0 for off state
-        if (event == ButtonEvent.LONG || index != 5)
+        if (event != ButtonEvent.DOWN || index != 5)
             return;
 
         switch (row)
         {
             // Next track page
-            case 0:
+            case 2:
                 this.model.getCurrentTrackBank ().selectNextPage ();
                 break;
             // Previous track page
-            case 1:
+            case 3:
                 this.model.getCurrentTrackBank ().selectPreviousPage ();
                 break;
             // Record
-            case 2:
-                this.model.getTransport ().startRecording ();
+            case 4:
+                this.transport.startRecording ();
                 break;
             // Play
-            case 3:
-                this.model.getTransport ().play ();
+            case 5:
+                this.transport.play ();
                 break;
 
             default:
@@ -115,33 +107,7 @@ public class SendsMode extends DefaultTrackMode<ElectraOneControlSurface, Electr
     @Override
     public int getButtonColor (final ButtonID buttonID)
     {
-        final int row = this.getButtonRow (buttonID);
-        if (row == -1)
-            return ElectraOneColorManager.COLOR_BUTTON_STATE_OFF;
-
-        final int column = this.isButtonRow (row, buttonID);
-        if (column != 5)
-            return ElectraOneColorManager.COLOR_BUTTON_STATE_OFF;
-
-        switch (row)
-        {
-            // Next track page
-            case 0:
-                return this.model.getCurrentTrackBank ().canScrollPageForwards () ? ElectraOneColorManager.COLOR_BUTTON_STATE_ON : ElectraOneColorManager.COLOR_BUTTON_STATE_OFF;
-            // Previous track page
-            case 1:
-                return this.model.getCurrentTrackBank ().canScrollPageBackwards () ? ElectraOneColorManager.COLOR_BUTTON_STATE_ON : ElectraOneColorManager.COLOR_BUTTON_STATE_OFF;
-            // Record
-            case 2:
-                return this.model.getTransport ().isRecording () ? ElectraOneColorManager.COLOR_BUTTON_STATE_ON : ElectraOneColorManager.COLOR_BUTTON_STATE_OFF;
-            // Play
-            case 3:
-                return this.model.getTransport ().isPlaying () ? ElectraOneColorManager.COLOR_BUTTON_STATE_ON : ElectraOneColorManager.COLOR_BUTTON_STATE_OFF;
-
-            default:
-                // Not used
-                return ElectraOneColorManager.COLOR_BUTTON_STATE_OFF;
-        }
+        return ElectraOneColorManager.COLOR_BUTTON_STATE_OFF;
     }
 
 
@@ -149,61 +115,30 @@ public class SendsMode extends DefaultTrackMode<ElectraOneControlSurface, Electr
     @Override
     public void updateDisplay ()
     {
-        final IMidiOutput output = this.surface.getMidiOutput ();
-
-        for (int i = 0; i < 5; i++)
+        for (int column = 0; column < 5; column++)
         {
-            final int [] sendsVolumes = new int [6];
-            Arrays.fill (sendsVolumes, 0);
-            String title = "";
-            final String [] sendNames = new String [6];
-            Arrays.fill (sendNames, "");
-            final boolean [] sendExists = new boolean [6];
-            Arrays.fill (sendExists, false);
-            ColorEx color = ColorEx.BLACK;
+            final Optional<ITrack> trackOpt = this.getTrack (column);
+            final ITrack track = trackOpt.isPresent () ? trackOpt.get () : EmptyTrack.INSTANCE;
+            final ColorEx color = track.getColor ();
 
-            final Optional<ITrack> trackOpt = this.getTrack (i);
-            if (trackOpt.isPresent ())
+            this.pageCache.updateGroupLabel (FIRST_TRACK_GROUP + column, track.doesExist () ? track.getPosition () + 1 + ": " + track.getName () : "");
+
+            for (int row = 0; row < 6; row++)
             {
-                final ITrack track = trackOpt.get ();
-                if (track.doesExist ())
-                {
-                    final ISendBank sendBank = track.getSendBank ();
-                    for (int s = 0; s < 6; s++)
-                    {
-                        final ISend send = sendBank.getItem (s);
-                        sendsVolumes[s] = send.getValue ();
-                        sendNames[s] = send.getName ();
-                        sendExists[s] = send.doesExist ();
-                    }
-                    title = track.getPosition () + 1 + ": " + track.getName ();
-                    color = ElectraOneColorManager.getClosestPaletteColor (track.getColor ());
-                }
+                final ISendBank sendBank = track.getSendBank ();
+                final ISend send = sendBank.getItem (row);
+
+                this.pageCache.updateValue (row, column, send.getValue ());
+                this.pageCache.updateLabel (row, column, send.getName (), color, Boolean.valueOf (send.doesExist ()));
             }
 
-            // TODO How to find out about groupIDs?
-            this.surface.updateGroupTitle (72 + i, this.groupCache, title);
+            this.pageCache.updateValue (0, 5, this.model.getProject ().getCueVolume ());
 
-            // for (int sendIndex = 0; sendIndex < 6; sendIndex++)
-            // {
-            // if (this.valueCache[SEND_IDS[sendIndex] + i] != sendsVolumes[sendIndex])
-            // {
-            // output.sendCCEx (1, SEND_IDS[sendIndex] + i, sendsVolumes[sendIndex]);
-            // this.valueCache[SEND_IDS[sendIndex] + i] = sendsVolumes[sendIndex];
-            // }
-            //
-            // this.surface.updateElement (1 + 6 * sendIndex, this.elementCache,
-            // sendNames[sendIndex], color, Boolean.valueOf (sendExists[sendIndex]));
-            // }
+            // Transport
+            this.pageCache.updateLabel (1, 5, this.transport.getBeatText (), null, null);
+            this.pageCache.updateLabel (4, 5, null, this.transport.isRecording () ? ElectraOneColorManager.RECORD_ON : ElectraOneColorManager.RECORD_OFF, null);
+            this.pageCache.updateLabel (5, 5, null, this.transport.isPlaying () ? ElectraOneColorManager.PLAY_ON : ElectraOneColorManager.PLAY_OFF, null);
         }
-
-        // final IProject project = this.model.getProject ();
-        // final int cueVolume = project.getCueVolume ();
-        // if (this.valueCache[ElectraOneControlSurface.ELECTRA_ONE_CUE_VOLUME] != cueVolume)
-        // {
-        // output.sendCCEx (1, ElectraOneControlSurface.ELECTRA_ONE_CUE_VOLUME, cueVolume);
-        // this.valueCache[ElectraOneControlSurface.ELECTRA_ONE_CUE_VOLUME] = cueVolume;
-        // }
     }
 
 
@@ -211,9 +146,7 @@ public class SendsMode extends DefaultTrackMode<ElectraOneControlSurface, Electr
     @Override
     public void onActivate ()
     {
-        Arrays.fill (this.valueCache, -1);
-        Arrays.fill (this.elementCache, null);
-        Arrays.fill (this.groupCache, null);
+        this.pageCache.reset ();
 
         super.onActivate ();
     }

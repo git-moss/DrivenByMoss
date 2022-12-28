@@ -6,7 +6,7 @@ de.mossgrabers.bitwig.controller.akai.apcmini.APCminiControllerExtensionDefiniti
 de.mossgrabers.bitwig.controller.akai.fire.FireControllerExtensionDefinition
 de.mossgrabers.bitwig.controller.akai.acvs.ACVSLiveControllerExtensionDefinition
 de.mossgrabers.bitwig.controller.arturia.beatstep.BeatstepControllerExtensionDefinition
-#de.mossgrabers.bitwig.controller.electra.one.ElectraOneControllerExtensionDefinition
+de.mossgrabers.bitwig.controller.electra.one.ElectraOneControllerExtensionDefinition
 #de.mossgrabers.bitwig.controller.esi.xjam.XjamControllerExtensionDefinition
 de.mossgrabers.bitwig.controller.gamepad.GamepadControllerExtensionDefinition
 de.mossgrabers.bitwig.controller.generic.GenericFlexiControllerExtensionDefinition

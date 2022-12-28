@@ -80,10 +80,7 @@ public class DeviceView extends AbstractFaderView
     @Override
     public void onButton (final ButtonID buttonID, final ButtonEvent event, final int velocity)
     {
-        if (event != ButtonEvent.DOWN)
-            return;
-
-        if (!this.cursorDevice.doesExist ())
+        if (event != ButtonEvent.DOWN || !this.cursorDevice.doesExist ())
             return;
 
         switch (buttonID)
