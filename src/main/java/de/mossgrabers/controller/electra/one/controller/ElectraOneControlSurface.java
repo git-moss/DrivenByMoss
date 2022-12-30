@@ -36,10 +36,11 @@ import java.util.List;
  *
  * @author J&uuml;rgen Mo&szlig;graber
  */
-@SuppressWarnings("javadoc")
 public class ElectraOneControlSurface extends AbstractControlSurface<ElectraOneConfiguration>
 {
+    /** The MIDI CC of the first control on a page. */
     public static final int                ELECTRA_CTRL_1 = 10;
+    /** The MIDI CC of the first button on a page. */
     public static final int                ELECTRA_ROW_1  = 70;
 
     /** The IDs for the continuous elements. */
@@ -138,11 +139,13 @@ public class ElectraOneControlSurface extends AbstractControlSurface<ElectraOneC
         Modes.VOLUME,
         Modes.SEND,
         Modes.DEVICE_PARAMS,
-        Modes.EQ_DEVICE_PARAMS
+        Modes.EQ_DEVICE_PARAMS,
+        Modes.TRANSPORT
     };
 
     private static final String   SET_GROUP_TITLE                   = "sgt(%s,\"%s\")";
 
+    private final List<int []>    sysexChunks                       = new ArrayList<> ();
     private final IMidiInput      ctrlInput;
     private final IMidiOutput     ctrlOutput;
     private final ObjectMapper    mapper                            = new ObjectMapper ();
@@ -177,14 +180,10 @@ public class ElectraOneControlSurface extends AbstractControlSurface<ElectraOneC
      * Set the label of a group element.
      *
      * @param groupID The element starting from 1, increasing from left to right, top to bottom
-     * @param cache The cache to use
      * @param label The label to set
      */
-    public void updateGroupLabel (final int groupID, final String [] cache, final String label)
+    public void updateGroupLabel (final int groupID, final String label)
     {
-        if (!this.isOnline || label.equals (cache[groupID]))
-            return;
-        cache[groupID] = label;
         this.sendLua (String.format (SET_GROUP_TITLE, Integer.toString (groupID), label));
     }
 
@@ -197,8 +196,7 @@ public class ElectraOneControlSurface extends AbstractControlSurface<ElectraOneC
      */
     public void updateValue (final int midiCC, final int value)
     {
-        if (this.isOnline)
-            this.output.sendCCEx (15, midiCC, value);
+        this.output.sendCCEx (15, midiCC, value);
     }
 
 
@@ -206,16 +204,12 @@ public class ElectraOneControlSurface extends AbstractControlSurface<ElectraOneC
      * Sets name, color and visibility of an element on the Electra.One.
      *
      * @param controlID The element starting from 1, increasing from left to right, top to bottom
-     * @param cache The message is only send if the parameters are different from the previous call
      * @param name The name to set
      * @param color The color to set
      * @param visibility The visibility to set
      */
-    public void updateLabel (final int controlID, final String [] cache, final String name, final ColorEx color, final Boolean visibility)
+    public void updateLabel (final int controlID, final String name, final ColorEx color, final Boolean visibility)
     {
-        if (!this.isOnline)
-            return;
-
         final StringWriter writer = new StringWriter ();
         try (final JsonGenerator generator = this.mapper.createGenerator (writer))
         {
@@ -234,18 +228,12 @@ public class ElectraOneControlSurface extends AbstractControlSurface<ElectraOneC
             return;
         }
 
-        final int controlIndex = (controlID - 1) % 36;
-        final String json = writer.toString ();
-        if (json.equals (cache[controlIndex]))
-            return;
-        cache[controlIndex] = json;
-
         final byte [] command = new byte [4];
         command[0] = SYSEX_RUNTIME_CONTROL_UPDATE[0];
         command[1] = SYSEX_RUNTIME_CONTROL_UPDATE[1];
         command[2] = (byte) (controlID & 0x7F);
         command[3] = (byte) (controlID >> 7);
-        this.sendText (command, json);
+        this.sendText (command, writer.toString ());
     }
 
 
@@ -328,7 +316,6 @@ public class ElectraOneControlSurface extends AbstractControlSurface<ElectraOneC
     /**
      * Send LUA code for execution to the Electra.One.
      *
-     * @param elementCache The message is only send if the code is different from the previous call
      * @param code The code to send
      */
     private void sendLua (final String code)
@@ -373,32 +360,82 @@ public class ElectraOneControlSurface extends AbstractControlSurface<ElectraOneC
 
 
     /**
-     * Handle incoming system exclusive data.
+     * Handle incoming system exclusive data. Messages are split up in chunks of 1024 bytes!
      *
-     * @param data The data
+     * @param dataStr The data
      */
-    private void handleSysEx (final String data)
+    private void handleSysEx (final String dataStr)
     {
-        final int [] byteData = StringUtils.fromHexStr (data);
+        final int [] data = StringUtils.fromHexStr (dataStr);
 
-        if (Arrays.compareUnsigned (SYSEX_HDR_INT, 0, SYSEX_HDR_INT.length, byteData, 0, SYSEX_HDR_INT.length) != 0)
+        int [] fullData = null;
+
+        synchronized (this.sysexChunks)
+        {
+            if (data[0] == 0xF0 && !this.sysexChunks.isEmpty ())
+            {
+                this.host.error ("Unsound sysex message without ending F7 received.");
+                this.sysexChunks.clear ();
+            }
+            this.sysexChunks.add (data);
+
+            if (data[data.length - 1] == 0xF7)
+            {
+                fullData = concatChunks ();
+                this.sysexChunks.clear ();
+            }
+        }
+
+        if (fullData != null)
+            this.processSysEx (fullData);
+    }
+
+
+    private int [] concatChunks ()
+    {
+        if (this.sysexChunks.size () == 1)
+            return this.sysexChunks.get (0);
+
+        // Determine the total length of the resulting array
+        int totalLength = 0;
+        for (int [] array: this.sysexChunks)
+            totalLength += array.length;
+
+        // Create a new array to hold the concatenated arrays
+        int [] result = new int [totalLength];
+
+        // Copy the arrays into the result array
+        int offset = 0;
+        for (int [] array: this.sysexChunks)
+        {
+            System.arraycopy (array, 0, result, offset, array.length);
+            offset += array.length;
+        }
+
+        return result;
+    }
+
+
+    private void processSysEx (final int [] data)
+    {
+        if (Arrays.compareUnsigned (SYSEX_HDR_INT, 0, SYSEX_HDR_INT.length, data, 0, SYSEX_HDR_INT.length) != 0)
             return;
 
-        final int subCmdID = byteData[SUB_CMD_START_POS];
+        final int subCmdID = data[SUB_CMD_START_POS];
 
-        switch (byteData[CMD_START_POS])
+        switch (data[CMD_START_POS])
         {
             case CMD_INFO:
-                this.handleSysexCommandsInfo (subCmdID, byteData);
+                this.handleSysexCommandsInfo (subCmdID, data);
                 break;
 
             case CMD_CONTROLLER:
-                this.handleSysexCommandsController (subCmdID, byteData);
+                this.handleSysexCommandsController (subCmdID, data);
                 break;
 
             case CMD_SYSTEM_CALL:
                 if (subCmdID == SYSTEM_CALL_LOGGING)
-                    this.logMessage (byteData, 6);
+                    this.logMessage (data, 6);
                 break;
 
             default:
@@ -452,7 +489,6 @@ public class ElectraOneControlSurface extends AbstractControlSurface<ElectraOneC
     private void handleSysexCommandsInfo (final int commandID, final int [] data)
     {
         final JsonNode content = this.getContent (data);
-
         switch (commandID)
         {
             case INFO_DEVICE:
@@ -475,7 +511,7 @@ public class ElectraOneControlSurface extends AbstractControlSurface<ElectraOneC
     /**
      * Check if the Firmware on the device is valid.
      *
-     * @param content The content text
+     * @param root The JSON with the content
      */
     private void checkFirmwareResult (final JsonNode root)
     {
@@ -601,12 +637,13 @@ public class ElectraOneControlSurface extends AbstractControlSurface<ElectraOneC
     }
 
 
-    /** {@inheritDoc} */
-    @Override
-    protected void internalFlushHandler ()
+    /**
+     * Is the DrivenByMoss preset selected?
+     * 
+     * @return True if selected
+     */
+    public boolean isOnline ()
     {
-        this.setRepaintEnabled (false);
-        super.internalFlushHandler ();
-        this.setRepaintEnabled (true);
+        return this.isOnline;
     }
 }

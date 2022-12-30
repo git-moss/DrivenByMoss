@@ -10,6 +10,7 @@ import de.mossgrabers.controller.electra.one.mode.DeviceMode;
 import de.mossgrabers.controller.electra.one.mode.EqualizerMode;
 import de.mossgrabers.controller.electra.one.mode.MixerMode;
 import de.mossgrabers.controller.electra.one.mode.SendsMode;
+import de.mossgrabers.controller.electra.one.mode.TransportMode;
 import de.mossgrabers.framework.command.trigger.mode.ButtonRowModeCommand;
 import de.mossgrabers.framework.configuration.ISettingsUI;
 import de.mossgrabers.framework.controller.AbstractControllerSetup;
@@ -91,9 +92,11 @@ public class ElectraOneControllerSetup extends AbstractControllerSetup<ElectraOn
         ms.setHasFlatTrackList (true);
         ms.setHasFullFlatTrackList (true);
         ms.setNumSends (6);
+        ms.setNumMarkers (8);
+
+        ms.setNumScenes (6);
 
         // Not used (yet)
-        ms.setNumScenes (0);
         ms.setNumFilterColumnEntries (0);
         ms.setNumResults (0);
         ms.setNumDeviceLayers (0);
@@ -143,8 +146,7 @@ public class ElectraOneControllerSetup extends AbstractControllerSetup<ElectraOn
         modeManager.register (Modes.SEND, new SendsMode (surface, this.model));
         modeManager.register (Modes.DEVICE_PARAMS, new DeviceMode (surface, this.model));
         modeManager.register (Modes.EQ_DEVICE_PARAMS, new EqualizerMode (surface, this.model));
-        // TODO
-        // modeManager.register (Modes.MARKERS, new MarkerMode (surface, this.model));
+        modeManager.register (Modes.TRANSPORT, new TransportMode (surface, this.model));
     }
 
 

@@ -78,6 +78,23 @@ public class ElectraOneColorManager extends ColorManager
     /** Color for a enabled equalizer band. */
     public static final ColorEx BAND_ON                = ColorEx.GREEN;
 
+    /** Color for a disabled metronome. */
+    public static final ColorEx METRONOME_OFF          = ColorEx.DARK_GRAY;
+    /** Color for a enabled metronome. */
+    public static final ColorEx METRONOME_ON           = ColorEx.GREEN;
+    /** Color for a disabled automation. */
+    public static final ColorEx AUTO_OFF               = ColorEx.DARK_GRAY;
+    /** Color for a enabled automation. */
+    public static final ColorEx AUTO_ON                = ColorEx.RED;
+    /** Color for a disabled automation mode. */
+    public static final ColorEx AUTO_MODE_OFF          = ColorEx.DARK_GRAY;
+    /** Color for a enabled automation mode. */
+    public static final ColorEx AUTO_MODE_ON           = ColorEx.ORANGE;
+    /** Color for a disabled marker launch. */
+    public static final ColorEx MARKER_LAUNCH_OFF      = ColorEx.DARK_GRAY;
+    /** Color for a enabled marker launch. */
+    public static final ColorEx MARKER_LAUNCH_ON       = ColorEx.GREEN;
+
 
     /**
      * Constructor.

@@ -5,12 +5,12 @@
 package de.mossgrabers.controller.electra.one.mode;
 
 import de.mossgrabers.controller.electra.one.ElectraOneConfiguration;
-import de.mossgrabers.controller.electra.one.ElectraOnePlayPositionParameter;
 import de.mossgrabers.controller.electra.one.controller.ElectraOneColorManager;
 import de.mossgrabers.controller.electra.one.controller.ElectraOneControlSurface;
 import de.mossgrabers.framework.controller.ButtonID;
 import de.mossgrabers.framework.controller.color.ColorEx;
 import de.mossgrabers.framework.daw.IModel;
+import de.mossgrabers.framework.daw.IProject;
 import de.mossgrabers.framework.daw.ITransport;
 import de.mossgrabers.framework.daw.data.IMasterTrack;
 import de.mossgrabers.framework.daw.data.ITrack;
@@ -35,11 +35,12 @@ import java.util.Optional;
  */
 public class MixerMode extends DefaultTrackMode<ElectraOneControlSurface, ElectraOneConfiguration>
 {
-    private static final int   FIRST_TRACK_GROUP = 433;
+    private static final int   FIRST_TRACK_GROUP = 501;
 
     private final PageCache    pageCache;
     private final ITransport   transport;
     private final IMasterTrack masterTrack;
+    private final IProject     project;
 
 
     /**
@@ -56,12 +57,13 @@ public class MixerMode extends DefaultTrackMode<ElectraOneControlSurface, Electr
 
         this.transport = this.model.getTransport ();
         this.masterTrack = this.model.getMasterTrack ();
+        this.project = this.model.getProject ();
 
         this.setParameterProvider (new CombinedParameterProvider (
                 // Row 1
                 new VolumeParameterProvider (model), new FixedParameterProvider (this.masterTrack.getVolumeParameter ()),
                 // Row 2
-                new PanParameterProvider (model), new FixedParameterProvider (new ElectraOnePlayPositionParameter (model.getValueChanger (), model.getTransport (), surface)),
+                new PanParameterProvider (model), new FixedParameterProvider (this.project.getCueVolumeParameter ()),
                 // These 4 rows only contain buttons
                 new EmptyParameterProvider (4 * 6)));
     }
@@ -156,22 +158,24 @@ public class MixerMode extends DefaultTrackMode<ElectraOneControlSurface, Electr
             this.pageCache.updateValue (1, column, track.getPan ());
 
             final ColorEx color = track.getColor ();
-            this.pageCache.updateLabel (0, column, null, color, exists);
-            this.pageCache.updateLabel (1, column, null, color, exists);
-            this.pageCache.updateLabel (2, column, null, track.isRecArm () ? ElectraOneColorManager.REC_ARM_ON : ElectraOneColorManager.REC_ARM_OFF, exists);
-            this.pageCache.updateLabel (3, column, null, track.isMute () ? ElectraOneColorManager.MUTE_ON : ElectraOneColorManager.MUTE_OFF, exists);
-            this.pageCache.updateLabel (4, column, null, track.isSolo () ? ElectraOneColorManager.SOLO_ON : ElectraOneColorManager.SOLO_OFF, exists);
-            this.pageCache.updateLabel (5, column, null, track.isSelected () ? ElectraOneColorManager.SELECT_ON : ElectraOneColorManager.SELECT_OFF, exists);
+            this.pageCache.updateElement (0, column, null, color, exists);
+            this.pageCache.updateElement (1, column, null, color, exists);
+            this.pageCache.updateElement (2, column, null, track.isRecArm () ? ElectraOneColorManager.REC_ARM_ON : ElectraOneColorManager.REC_ARM_OFF, exists);
+            this.pageCache.updateElement (3, column, null, track.isMute () ? ElectraOneColorManager.MUTE_ON : ElectraOneColorManager.MUTE_OFF, exists);
+            this.pageCache.updateElement (4, column, null, track.isSolo () ? ElectraOneColorManager.SOLO_ON : ElectraOneColorManager.SOLO_OFF, exists);
+            this.pageCache.updateElement (5, column, null, track.isSelected () ? ElectraOneColorManager.SELECT_ON : ElectraOneColorManager.SELECT_OFF, exists);
         }
 
         // Master
+        this.pageCache.updateColor (0, 5, this.masterTrack.getColor ());
         this.pageCache.updateValue (0, 5, this.masterTrack.getVolume ());
-        this.pageCache.updateLabel (0, 5, null, this.masterTrack.getColor (), null);
+        this.pageCache.updateValue (1, 5, this.project.getCueVolume ());
 
         // Transport
-        this.pageCache.updateLabel (1, 5, this.transport.getBeatText (), null, null);
-        this.pageCache.updateLabel (4, 5, null, this.transport.isRecording () ? ElectraOneColorManager.RECORD_ON : ElectraOneColorManager.RECORD_OFF, null);
-        this.pageCache.updateLabel (5, 5, null, this.transport.isPlaying () ? ElectraOneColorManager.PLAY_ON : ElectraOneColorManager.PLAY_OFF, null);
+        this.pageCache.updateColor (4, 5, this.transport.isRecording () ? ElectraOneColorManager.RECORD_ON : ElectraOneColorManager.RECORD_OFF);
+        this.pageCache.updateColor (5, 5, this.transport.isPlaying () ? ElectraOneColorManager.PLAY_ON : ElectraOneColorManager.PLAY_OFF);
+
+        this.pageCache.flush ();
     }
 
 

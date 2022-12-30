@@ -5,13 +5,14 @@
 package de.mossgrabers.controller.electra.one.mode;
 
 import de.mossgrabers.controller.electra.one.ElectraOneConfiguration;
-import de.mossgrabers.controller.electra.one.ElectraOnePlayPositionParameter;
 import de.mossgrabers.controller.electra.one.controller.ElectraOneColorManager;
 import de.mossgrabers.controller.electra.one.controller.ElectraOneControlSurface;
 import de.mossgrabers.framework.controller.ButtonID;
 import de.mossgrabers.framework.controller.color.ColorEx;
 import de.mossgrabers.framework.daw.IModel;
+import de.mossgrabers.framework.daw.IProject;
 import de.mossgrabers.framework.daw.ITransport;
+import de.mossgrabers.framework.daw.data.IMasterTrack;
 import de.mossgrabers.framework.daw.data.ISend;
 import de.mossgrabers.framework.daw.data.ITrack;
 import de.mossgrabers.framework.daw.data.bank.ISendBank;
@@ -34,10 +35,12 @@ import java.util.Optional;
  */
 public class SendsMode extends DefaultTrackMode<ElectraOneControlSurface, ElectraOneConfiguration>
 {
-    private static final int FIRST_TRACK_GROUP = 469;
+    private static final int   FIRST_TRACK_GROUP = 510;
 
-    private final PageCache  pageCache;
-    private final ITransport transport;
+    private final PageCache    pageCache;
+    private final ITransport   transport;
+    private final IMasterTrack masterTrack;
+    private final IProject     project;
 
 
     /**
@@ -53,12 +56,14 @@ public class SendsMode extends DefaultTrackMode<ElectraOneControlSurface, Electr
         this.pageCache = new PageCache (1, surface);
 
         this.transport = this.model.getTransport ();
+        this.masterTrack = this.model.getMasterTrack ();
+        this.project = this.model.getProject ();
 
         this.setParameterProvider (new CombinedParameterProvider (
                 // Row 1
-                new SendParameterProvider (model, 0, 0), new FixedParameterProvider (this.model.getProject ().getCueVolumeParameter ()),
+                new SendParameterProvider (model, 0, 0), new FixedParameterProvider (this.masterTrack.getVolumeParameter ()),
                 // Row 2
-                new SendParameterProvider (model, 1, 0), new FixedParameterProvider (new ElectraOnePlayPositionParameter (model.getValueChanger (), model.getTransport (), surface)),
+                new SendParameterProvider (model, 1, 0), new FixedParameterProvider (this.project.getCueVolumeParameter ()),
                 // Row 3
                 new SendParameterProvider (model, 2, 0), new EmptyParameterProvider (1),
                 // Row 4
@@ -129,16 +134,20 @@ public class SendsMode extends DefaultTrackMode<ElectraOneControlSurface, Electr
                 final ISend send = sendBank.getItem (row);
 
                 this.pageCache.updateValue (row, column, send.getValue ());
-                this.pageCache.updateLabel (row, column, send.getName (), color, Boolean.valueOf (send.doesExist ()));
+                this.pageCache.updateElement (row, column, send.getName (), color, Boolean.valueOf (send.doesExist ()));
             }
 
-            this.pageCache.updateValue (0, 5, this.model.getProject ().getCueVolume ());
+            // Master
+            this.pageCache.updateColor (0, 5, this.masterTrack.getColor ());
+            this.pageCache.updateValue (0, 5, this.masterTrack.getVolume ());
+            this.pageCache.updateValue (1, 5, this.project.getCueVolume ());
 
             // Transport
-            this.pageCache.updateLabel (1, 5, this.transport.getBeatText (), null, null);
-            this.pageCache.updateLabel (4, 5, null, this.transport.isRecording () ? ElectraOneColorManager.RECORD_ON : ElectraOneColorManager.RECORD_OFF, null);
-            this.pageCache.updateLabel (5, 5, null, this.transport.isPlaying () ? ElectraOneColorManager.PLAY_ON : ElectraOneColorManager.PLAY_OFF, null);
+            this.pageCache.updateColor (4, 5, this.transport.isRecording () ? ElectraOneColorManager.RECORD_ON : ElectraOneColorManager.RECORD_OFF);
+            this.pageCache.updateColor (5, 5, this.transport.isPlaying () ? ElectraOneColorManager.PLAY_ON : ElectraOneColorManager.PLAY_OFF);
         }
+
+        this.pageCache.flush ();
     }
 
 

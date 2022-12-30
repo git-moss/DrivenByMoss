@@ -5,11 +5,11 @@
 package de.mossgrabers.controller.electra.one.mode;
 
 import de.mossgrabers.controller.electra.one.ElectraOneConfiguration;
-import de.mossgrabers.controller.electra.one.ElectraOnePlayPositionParameter;
 import de.mossgrabers.controller.electra.one.controller.ElectraOneColorManager;
 import de.mossgrabers.controller.electra.one.controller.ElectraOneControlSurface;
 import de.mossgrabers.framework.controller.ButtonID;
 import de.mossgrabers.framework.daw.IModel;
+import de.mossgrabers.framework.daw.IProject;
 import de.mossgrabers.framework.daw.ITransport;
 import de.mossgrabers.framework.daw.constants.DeviceID;
 import de.mossgrabers.framework.daw.data.EqualizerBandType;
@@ -37,6 +37,7 @@ public class EqualizerMode extends DefaultTrackMode<ElectraOneControlSurface, El
     private final PageCache        pageCache;
     private final ITransport       transport;
     private final IMasterTrack     masterTrack;
+    private final IProject         project;
     private final IEqualizerDevice eqDevice;
 
 
@@ -54,6 +55,7 @@ public class EqualizerMode extends DefaultTrackMode<ElectraOneControlSurface, El
 
         this.transport = this.model.getTransport ();
         this.masterTrack = this.model.getMasterTrack ();
+        this.project = this.model.getProject ();
 
         this.eqDevice = (IEqualizerDevice) this.model.getSpecificDevice (DeviceID.EQ);
 
@@ -62,7 +64,7 @@ public class EqualizerMode extends DefaultTrackMode<ElectraOneControlSurface, El
                 // Row 1
                 emptyProvider, new FixedParameterProvider (this.eqDevice.getTypeParameter (0), this.eqDevice.getFrequencyParameter (0), this.eqDevice.getGainParameter (0), this.eqDevice.getQParameter (0), this.masterTrack.getVolumeParameter ()),
                 // Row 2
-                emptyProvider, new FixedParameterProvider (this.eqDevice.getTypeParameter (1), this.eqDevice.getFrequencyParameter (1), this.eqDevice.getGainParameter (1), this.eqDevice.getQParameter (1), new ElectraOnePlayPositionParameter (model.getValueChanger (), model.getTransport (), surface)),
+                emptyProvider, new FixedParameterProvider (this.eqDevice.getTypeParameter (1), this.eqDevice.getFrequencyParameter (1), this.eqDevice.getGainParameter (1), this.eqDevice.getQParameter (1), this.project.getCueVolumeParameter ()),
                 // Row 3
                 emptyProvider, new FixedParameterProvider (this.eqDevice.getTypeParameter (2), this.eqDevice.getFrequencyParameter (2), this.eqDevice.getGainParameter (2), this.eqDevice.getQParameter (2)), emptyProvider,
                 // Row 4
@@ -136,28 +138,30 @@ public class EqualizerMode extends DefaultTrackMode<ElectraOneControlSurface, El
             final EqualizerBandType typeID = this.eqDevice.getTypeID (row);
             final Boolean exists = Boolean.valueOf (typeID != EqualizerBandType.OFF);
 
-            this.pageCache.updateLabel (row, 0, null, exists.booleanValue () ? ElectraOneColorManager.BAND_ON : ElectraOneColorManager.BAND_OFF, null);
+            this.pageCache.updateColor (row, 0, exists.booleanValue () ? ElectraOneColorManager.BAND_ON : ElectraOneColorManager.BAND_OFF);
 
             this.pageCache.updateValue (row, 1, this.eqDevice.getTypeParameter (row).getValue ());
             this.pageCache.updateValue (row, 2, this.eqDevice.getFrequencyParameter (row).getValue ());
             this.pageCache.updateValue (row, 3, this.eqDevice.getGainParameter (row).getValue ());
             this.pageCache.updateValue (row, 4, this.eqDevice.getQParameter (row).getValue ());
 
-            this.pageCache.updateLabel (row, 2, null, null, exists);
-            this.pageCache.updateLabel (row, 3, null, null, exists);
-            this.pageCache.updateLabel (row, 4, null, null, exists);
+            this.pageCache.updateElement (row, 2, null, null, exists);
+            this.pageCache.updateElement (row, 3, null, null, exists);
+            this.pageCache.updateElement (row, 4, null, null, exists);
         }
 
-        this.pageCache.updateLabel (3, 5, null, this.eqDevice.doesExist () && this.eqDevice.isEnabled () ? ElectraOneColorManager.BAND_ON : ElectraOneColorManager.BAND_OFF, null);
+        this.pageCache.updateColor (3, 5, this.eqDevice.doesExist () && this.eqDevice.isEnabled () ? ElectraOneColorManager.BAND_ON : ElectraOneColorManager.BAND_OFF);
 
         // Master
+        this.pageCache.updateColor (0, 5, this.masterTrack.getColor ());
         this.pageCache.updateValue (0, 5, this.masterTrack.getVolume ());
-        this.pageCache.updateLabel (0, 5, null, this.masterTrack.getColor (), null);
+        this.pageCache.updateValue (1, 5, this.project.getCueVolume ());
 
         // Transport
-        this.pageCache.updateLabel (1, 5, this.transport.getBeatText (), null, null);
-        this.pageCache.updateLabel (4, 5, null, this.transport.isRecording () ? ElectraOneColorManager.RECORD_ON : ElectraOneColorManager.RECORD_OFF, null);
-        this.pageCache.updateLabel (5, 5, null, this.transport.isPlaying () ? ElectraOneColorManager.PLAY_ON : ElectraOneColorManager.PLAY_OFF, null);
+        this.pageCache.updateColor (4, 5, this.transport.isRecording () ? ElectraOneColorManager.RECORD_ON : ElectraOneColorManager.RECORD_OFF);
+        this.pageCache.updateColor (5, 5, this.transport.isPlaying () ? ElectraOneColorManager.PLAY_ON : ElectraOneColorManager.PLAY_OFF);
+
+        this.pageCache.flush ();
     }
 
 

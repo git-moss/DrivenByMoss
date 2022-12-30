@@ -40,6 +40,7 @@ public class MidiMonitorControlSurface extends AbstractControlSurface<MidiMonito
 
     private boolean                printHeader      = true;
     private boolean                printSysexHeader = true;
+    private int                    sysexLengthCount = 0;
 
 
     /**
@@ -106,6 +107,12 @@ public class MidiMonitorControlSurface extends AbstractControlSurface<MidiMonito
     }
 
 
+    /**
+     * Handle MIDI system exclusive messages. Note: this can be called multiple times in chunks of
+     * 1024 bytes!
+     *
+     * @param dataStr The data formatted as hexadecimal numbers
+     */
     private void handleSysEx (final String dataStr)
     {
         if (this.printSysexHeader)
@@ -118,6 +125,13 @@ public class MidiMonitorControlSurface extends AbstractControlSurface<MidiMonito
         }
 
         final int [] data = StringUtils.fromHexStr (dataStr);
+        if (data.length == 0)
+            return;
+
+        if (data[0] == 0xF0)
+            this.sysexLengthCount = 0;
+        this.sysexLengthCount += data.length;
+
         StringBuilder sb = new StringBuilder ("| ");
         for (int i = 0; i < data.length; i++)
         {
@@ -132,10 +146,12 @@ public class MidiMonitorControlSurface extends AbstractControlSurface<MidiMonito
                 sb.append (' ');
         }
 
-        if (sb.length () > 2)
+        if (data[data.length - 1] == 0xF7)
         {
-            if (data.length == 6 && data[0] == 0xF0 && data[1] == 0x7F && data[3] == 0x06 && data[5] == 0xF7)
+            if (this.sysexLengthCount == data.length && data.length == 6 && data[0] == 0xF0 && data[1] == 0x7F && data[3] == 0x06 && data[5] == 0xF7)
                 sb.append (" - MMC ").append (MidiConstants.getMMCNames ()[data[4]]);
+            else
+                sb.append ("(" + this.sysexLengthCount + " bytes)");
             this.host.println (sb.toString ());
         }
     }

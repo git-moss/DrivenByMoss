@@ -5,15 +5,16 @@
 package de.mossgrabers.controller.electra.one.mode;
 
 import de.mossgrabers.controller.electra.one.ElectraOneConfiguration;
-import de.mossgrabers.controller.electra.one.ElectraOnePlayPositionParameter;
 import de.mossgrabers.controller.electra.one.controller.ElectraOneColorManager;
 import de.mossgrabers.controller.electra.one.controller.ElectraOneControlSurface;
 import de.mossgrabers.framework.controller.ButtonID;
 import de.mossgrabers.framework.daw.IModel;
+import de.mossgrabers.framework.daw.IProject;
 import de.mossgrabers.framework.daw.ITransport;
 import de.mossgrabers.framework.daw.data.ICursorDevice;
 import de.mossgrabers.framework.daw.data.ICursorTrack;
 import de.mossgrabers.framework.daw.data.IDevice;
+import de.mossgrabers.framework.daw.data.IMasterTrack;
 import de.mossgrabers.framework.daw.data.bank.IDeviceBank;
 import de.mossgrabers.framework.daw.data.bank.IParameterBank;
 import de.mossgrabers.framework.daw.data.bank.IParameterPageBank;
@@ -36,8 +37,10 @@ import de.mossgrabers.framework.utils.StringUtils;
  */
 public class DeviceMode extends DefaultTrackMode<ElectraOneControlSurface, ElectraOneConfiguration>
 {
-    private final PageCache  pageCache;
-    private final ITransport transport;
+    private final PageCache    pageCache;
+    private final ITransport   transport;
+    private final IMasterTrack masterTrack;
+    private final IProject     project;
 
 
     /**
@@ -53,14 +56,16 @@ public class DeviceMode extends DefaultTrackMode<ElectraOneControlSurface, Elect
         this.pageCache = new PageCache (2, surface);
 
         this.transport = this.model.getTransport ();
+        this.masterTrack = this.model.getMasterTrack ();
+        this.project = this.model.getProject ();
 
         final BankParameterProvider bankParameterProvider = new BankParameterProvider (this.model.getCursorDevice ().getParameterBank ());
         final EmptyParameterProvider emptyParameterProvider = new EmptyParameterProvider (1);
         this.setParameterProvider (new CombinedParameterProvider (
                 // Row 1
-                emptyParameterProvider, new RangeFilterParameterProvider (bankParameterProvider, 0, 4), new FixedParameterProvider (this.model.getMasterTrack ().getVolumeParameter ()),
+                emptyParameterProvider, new RangeFilterParameterProvider (bankParameterProvider, 0, 4), new FixedParameterProvider (this.masterTrack.getVolumeParameter ()),
                 // Row 2
-                emptyParameterProvider, new RangeFilterParameterProvider (bankParameterProvider, 4, 4), new FixedParameterProvider (new ElectraOnePlayPositionParameter (model.getValueChanger (), model.getTransport (), surface)),
+                emptyParameterProvider, new RangeFilterParameterProvider (bankParameterProvider, 4, 4), new FixedParameterProvider (this.project.getCueVolumeParameter ()),
                 // These 4 rows only contain buttons
                 new EmptyParameterProvider (4 * 6)));
     }
@@ -166,7 +171,7 @@ public class DeviceMode extends DefaultTrackMode<ElectraOneControlSurface, Elect
             final boolean exists = param.doesExist ();
             int row = i / 4;
             final int column = 1 + i % 4;
-            this.pageCache.updateLabel (row, column, exists ? StringUtils.fixASCII (param.getName ()) : "", null, Boolean.valueOf (exists));
+            this.pageCache.updateElement (row, column, exists ? StringUtils.fixASCII (param.getName ()) : "", null, Boolean.valueOf (exists));
             this.pageCache.updateValue (row, column, param.getValue ());
 
             // TODO How to set the value text?
@@ -176,24 +181,30 @@ public class DeviceMode extends DefaultTrackMode<ElectraOneControlSurface, Elect
             row += 2;
             final String paramPage = parameterPageBank.getItem (i);
             final boolean isSelected = parameterPageBank.getSelectedItemIndex () == i;
-            this.pageCache.updateLabel (row, column, StringUtils.fixASCII (paramPage), isSelected ? ElectraOneColorManager.PARAM_PAGE_SELECTED : ElectraOneColorManager.PARAM_PAGE, Boolean.valueOf (!paramPage.isBlank ()));
+            this.pageCache.updateElement (row, column, StringUtils.fixASCII (paramPage), isSelected ? ElectraOneColorManager.PARAM_PAGE_SELECTED : ElectraOneColorManager.PARAM_PAGE, Boolean.valueOf (!paramPage.isBlank ()));
 
             // Set device names
             row += 2;
             final IDevice device = siblingBank.getItem (i);
-            this.pageCache.updateLabel (row, column, StringUtils.fixASCII (device.getName ()), cursorDevice.getIndex () == i ? ElectraOneColorManager.DEVICE_SELECTED : ElectraOneColorManager.DEVICE, Boolean.valueOf (device.doesExist ()));
+            this.pageCache.updateElement (row, column, StringUtils.fixASCII (device.getName ()), cursorDevice.getIndex () == i ? ElectraOneColorManager.DEVICE_SELECTED : ElectraOneColorManager.DEVICE, Boolean.valueOf (device.doesExist ()));
         }
 
-        this.pageCache.updateLabel (0, 0, null, cursorDevice.isEnabled () ? ElectraOneColorManager.DEVICE_ON : ElectraOneColorManager.DEVICE_OFF, null);
-        this.pageCache.updateLabel (1, 0, null, cursorDevice.isWindowOpen () ? ElectraOneColorManager.WINDOW_OPEN : ElectraOneColorManager.WINDOW, null);
+        this.pageCache.updateColor (0, 0, cursorDevice.isEnabled () ? ElectraOneColorManager.DEVICE_ON : ElectraOneColorManager.DEVICE_OFF);
+        this.pageCache.updateColor (1, 0, cursorDevice.isWindowOpen () ? ElectraOneColorManager.WINDOW_OPEN : ElectraOneColorManager.WINDOW);
 
-        this.pageCache.updateLabel (2, 5, null, cursorDevice.isPinned () ? ElectraOneColorManager.PINNED_ON : ElectraOneColorManager.PINNED_OFF, null);
-        this.pageCache.updateLabel (3, 5, null, cursorDevice.isExpanded () ? ElectraOneColorManager.EXPANDED_ON : ElectraOneColorManager.EXPANDED_OFF, null);
+        this.pageCache.updateColor (2, 5, cursorDevice.isPinned () ? ElectraOneColorManager.PINNED_ON : ElectraOneColorManager.PINNED_OFF);
+        this.pageCache.updateColor (3, 5, cursorDevice.isExpanded () ? ElectraOneColorManager.EXPANDED_ON : ElectraOneColorManager.EXPANDED_OFF);
+
+        // Master
+        this.pageCache.updateColor (0, 5, this.masterTrack.getColor ());
+        this.pageCache.updateValue (0, 5, this.masterTrack.getVolume ());
+        this.pageCache.updateValue (1, 5, this.project.getCueVolume ());
 
         // Transport
-        this.pageCache.updateLabel (1, 5, this.transport.getBeatText (), null, null);
-        this.pageCache.updateLabel (4, 5, null, this.transport.isRecording () ? ElectraOneColorManager.RECORD_ON : ElectraOneColorManager.RECORD_OFF, null);
-        this.pageCache.updateLabel (5, 5, null, this.transport.isPlaying () ? ElectraOneColorManager.PLAY_ON : ElectraOneColorManager.PLAY_OFF, null);
+        this.pageCache.updateColor (4, 5, this.transport.isRecording () ? ElectraOneColorManager.RECORD_ON : ElectraOneColorManager.RECORD_OFF);
+        this.pageCache.updateColor (5, 5, this.transport.isPlaying () ? ElectraOneColorManager.PLAY_ON : ElectraOneColorManager.PLAY_OFF);
+
+        this.pageCache.flush ();
     }
 
 
