@@ -58,7 +58,7 @@ public class ElectraOneConfiguration extends AbstractConfiguration
         // Workflow
 
         this.activateExcludeDeactivatedItemsSetting (globalSettings);
-        this.activateKnobSpeedSetting (globalSettings);
+        this.activateNewClipLengthSetting (globalSettings);
     }
 
 
