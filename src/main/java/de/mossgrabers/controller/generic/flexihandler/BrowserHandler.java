@@ -1,5 +1,5 @@
 // Written by Jürgen Moßgraber - mossgrabers.de
-// (c) 2017-2022
+// (c) 2017-2023
 // Licensed under LGPLv3 - http://www.gnu.org/licenses/lgpl-3.0.txt
 
 package de.mossgrabers.controller.generic.flexihandler;
@@ -105,32 +105,33 @@ public class BrowserHandler extends AbstractHandler
     {
         final boolean isButtonPressed = this.isButtonPressed (knobMode, value);
 
+        final IBrowser browser = this.model.getBrowser ();
         switch (command)
         {
             // Browser: Browse Presets
             case BROWSER_BROWSE_PRESETS:
                 if (isButtonPressed)
-                    this.model.getBrowser ().replace (this.model.getCursorDevice ());
+                    browser.replace (this.model.getCursorDevice ());
                 break;
             // Browser: Insert Device before current
             case BROWSER_INSERT_DEVICE_BEFORE_CURRENT:
                 if (isButtonPressed)
-                    this.model.getBrowser ().insertBeforeCursorDevice ();
+                    browser.insertBeforeCursorDevice ();
                 break;
             // Browser: Insert Device after current
             case BROWSER_INSERT_DEVICE_AFTER_CURRENT:
                 if (isButtonPressed)
-                    this.model.getBrowser ().insertAfterCursorDevice ();
+                    browser.insertAfterCursorDevice ();
                 break;
             // Browser: Commit Selection
             case BROWSER_COMMIT_SELECTION:
                 if (isButtonPressed)
-                    this.model.getBrowser ().stopBrowsing (true);
+                    browser.stopBrowsing (true);
                 break;
             // Browser: Cancel Selection
             case BROWSER_CANCEL_SELECTION:
                 if (isButtonPressed)
-                    this.model.getBrowser ().stopBrowsing (false);
+                    browser.stopBrowsing (false);
                 break;
 
             // Browser: Select Previous Filter in Column 1-6
@@ -143,7 +144,7 @@ public class BrowserHandler extends AbstractHandler
             case BROWSER_SELECT_PREVIOUS_FILTER_IN_COLUMN_7:
             case BROWSER_SELECT_PREVIOUS_FILTER_IN_COLUMN_8:
                 if (isButtonPressed)
-                    this.model.getBrowser ().selectPreviousFilterItem (command.ordinal () - FlexiCommand.BROWSER_SELECT_PREVIOUS_FILTER_IN_COLUMN_1.ordinal ());
+                    browser.selectPreviousFilterItem (command.ordinal () - FlexiCommand.BROWSER_SELECT_PREVIOUS_FILTER_IN_COLUMN_1.ordinal ());
                 break;
 
             // Browser: Select Next Filter in Column 1-6
@@ -156,7 +157,7 @@ public class BrowserHandler extends AbstractHandler
             case BROWSER_SELECT_NEXT_FILTER_IN_COLUMN_7:
             case BROWSER_SELECT_NEXT_FILTER_IN_COLUMN_8:
                 if (isButtonPressed)
-                    this.model.getBrowser ().selectNextFilterItem (command.ordinal () - FlexiCommand.BROWSER_SELECT_NEXT_FILTER_IN_COLUMN_1.ordinal ());
+                    browser.selectNextFilterItem (command.ordinal () - FlexiCommand.BROWSER_SELECT_NEXT_FILTER_IN_COLUMN_1.ordinal ());
                 break;
 
             case BROWSER_SCROLL_FILTER_IN_COLUMN_1:
@@ -167,7 +168,7 @@ public class BrowserHandler extends AbstractHandler
             case BROWSER_SCROLL_FILTER_IN_COLUMN_6:
             case BROWSER_SCROLL_FILTER_IN_COLUMN_7:
             case BROWSER_SCROLL_FILTER_IN_COLUMN_8:
-                this.scrollFilterColumn (knobMode, command.ordinal () - FlexiCommand.BROWSER_SELECT_NEXT_FILTER_IN_COLUMN_1.ordinal (), value);
+                this.scrollFilterColumn (knobMode, command.ordinal () - FlexiCommand.BROWSER_SCROLL_FILTER_IN_COLUMN_1.ordinal (), value);
                 break;
 
             // Browser: Reset Filter Column 1-6
@@ -180,18 +181,18 @@ public class BrowserHandler extends AbstractHandler
             case BROWSER_RESET_FILTER_COLUMN_7:
             case BROWSER_RESET_FILTER_COLUMN_8:
                 if (isButtonPressed)
-                    this.model.getBrowser ().resetFilterColumn (command.ordinal () - FlexiCommand.BROWSER_RESET_FILTER_COLUMN_1.ordinal ());
+                    browser.resetFilterColumn (command.ordinal () - FlexiCommand.BROWSER_RESET_FILTER_COLUMN_1.ordinal ());
                 break;
 
             // Browser: Select the previous preset
             case BROWSER_SELECT_THE_PREVIOUS_PRESET:
                 if (isButtonPressed)
-                    this.model.getBrowser ().selectPreviousResult ();
+                    browser.selectPreviousResult ();
                 break;
             // Browser: Select the next preset
             case BROWSER_SELECT_THE_NEXT_PRESET:
                 if (isButtonPressed)
-                    this.model.getBrowser ().selectNextResult ();
+                    browser.selectNextResult ();
                 break;
             case BROWSER_SCROLL_PRESETS:
                 this.scrollPresetColumn (knobMode, value);
@@ -199,12 +200,12 @@ public class BrowserHandler extends AbstractHandler
             // Browser: Select the previous tab
             case BROWSER_SELECT_THE_PREVIOUS_TAB:
                 if (isButtonPressed)
-                    this.model.getBrowser ().previousContentType ();
+                    browser.previousContentType ();
                 break;
             // Browser: Select the next tab"
             case BROWSER_SELECT_THE_NEXT_TAB:
                 if (isButtonPressed)
-                    this.model.getBrowser ().nextContentType ();
+                    browser.nextContentType ();
                 break;
             case BROWSER_SCROLL_TABS:
                 this.scrollBrowserTabs (knobMode, value);
