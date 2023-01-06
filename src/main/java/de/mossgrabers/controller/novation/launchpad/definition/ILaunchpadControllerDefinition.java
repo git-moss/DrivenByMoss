@@ -10,6 +10,7 @@ import de.mossgrabers.framework.controller.grid.LightInfo;
 
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 
 
 /**
@@ -99,4 +100,14 @@ public interface ILaunchpadControllerDefinition
      * @return The system exclusive string
      */
     List<String> buildLEDUpdate (Map<Integer, LightInfo> padInfos);
+
+
+    /**
+     * Get the system exclusive command to set the brightness of the pad LEDs. If the device does
+     * not support it the optional is empty. The value parameter is %X and can be replaced with
+     * String.format.
+     *
+     * @return The system exclusive string if supported
+     */
+    Optional<String> getBrightnessSysex ();
 }

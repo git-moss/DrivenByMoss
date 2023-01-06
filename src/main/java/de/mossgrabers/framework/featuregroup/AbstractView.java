@@ -185,11 +185,27 @@ public abstract class AbstractView<S extends IControlSurface<C>, C extends Confi
 
 
     /**
-     * Simulate pressing a button by sending a button down and up event.
+     * Simulate pressing a button by sending a button down and up event to the execute method.
+     *
+     * @param buttonID The ID of the button to trigger
+     * @param velocity The velocity to use
+     */
+    protected void simulateButtonPress (final ButtonID buttonID, final int velocity)
+    {
+        final IHwButton button = this.surface.getButton (buttonID);
+        final AbstractTriggerCommand<?, ?> triggerCommand = (AbstractTriggerCommand<?, ?>) button.getCommand ();
+        triggerCommand.execute (ButtonEvent.DOWN, velocity);
+        if (velocity != 0)
+            triggerCommand.execute (ButtonEvent.UP, 0);
+    }
+
+
+    /**
+     * Simulate pressing a button by sending a button down and up event to the executeNormal method.
      *
      * @param buttonID The ID of the button to trigger
      */
-    protected void simulateButtonPress (final ButtonID buttonID)
+    protected void simulateNormalButtonPress (final ButtonID buttonID)
     {
         final IHwButton button = this.surface.getButton (buttonID);
         final AbstractTriggerCommand<?, ?> triggerCommand = (AbstractTriggerCommand<?, ?>) button.getCommand ();

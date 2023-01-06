@@ -7,6 +7,7 @@ package de.mossgrabers.controller.novation.launchpad.view;
 import de.mossgrabers.controller.novation.launchpad.LaunchpadConfiguration;
 import de.mossgrabers.controller.novation.launchpad.controller.LaunchpadColorManager;
 import de.mossgrabers.controller.novation.launchpad.controller.LaunchpadControlSurface;
+import de.mossgrabers.framework.command.trigger.transport.ConfiguredRecordCommand;
 import de.mossgrabers.framework.configuration.AbstractConfiguration;
 import de.mossgrabers.framework.controller.ButtonID;
 import de.mossgrabers.framework.controller.grid.IPadGrid;
@@ -26,7 +27,10 @@ import de.mossgrabers.framework.utils.ButtonEvent;
  */
 public class ShiftView extends AbstractView<LaunchpadControlSurface, LaunchpadConfiguration>
 {
-    private static final String TAG_ACTIVE = "Active";
+    private static final String                                                    TAG_ACTIVE = "Active";
+
+    final ConfiguredRecordCommand<LaunchpadControlSurface, LaunchpadConfiguration> configuredRecordCommand;
+    final ConfiguredRecordCommand<LaunchpadControlSurface, LaunchpadConfiguration> configuredShiftedRecordCommand;
 
 
     /**
@@ -38,6 +42,9 @@ public class ShiftView extends AbstractView<LaunchpadControlSurface, LaunchpadCo
     public ShiftView (final LaunchpadControlSurface surface, final IModel model)
     {
         super ("Shift", surface, model);
+
+        this.configuredRecordCommand = new ConfiguredRecordCommand<> (false, this.model, surface);
+        this.configuredShiftedRecordCommand = new ConfiguredRecordCommand<> (true, this.model, surface);
     }
 
 
@@ -121,8 +128,8 @@ public class ShiftView extends AbstractView<LaunchpadControlSurface, LaunchpadCo
         }
 
         // Record
-        padGrid.light (44, transport.isRecording () ? LaunchpadColorManager.LAUNCHPAD_COLOR_RED_HI : LaunchpadColorManager.LAUNCHPAD_COLOR_RED_LO);
-        padGrid.light (45, transport.isLauncherOverdub () ? LaunchpadColorManager.LAUNCHPAD_COLOR_ROSE : LaunchpadColorManager.LAUNCHPAD_COLOR_WHITE);
+        padGrid.light (44, this.configuredRecordCommand.isLit () ? LaunchpadColorManager.LAUNCHPAD_COLOR_RED_HI : LaunchpadColorManager.LAUNCHPAD_COLOR_RED_LO);
+        padGrid.light (45, this.configuredShiftedRecordCommand.isLit () ? LaunchpadColorManager.LAUNCHPAD_COLOR_ROSE : LaunchpadColorManager.LAUNCHPAD_COLOR_WHITE);
 
         for (int i = 46; i < 51; i++)
             padGrid.light (i, LaunchpadColorManager.LAUNCHPAD_COLOR_BLACK);
@@ -293,7 +300,7 @@ public class ShiftView extends AbstractView<LaunchpadControlSurface, LaunchpadCo
         switch (note)
         {
             case 92:
-                this.simulateButtonPress (ButtonID.METRONOME);
+                this.simulateNormalButtonPress (ButtonID.METRONOME);
                 this.mvHelper.delayDisplay ( () -> "Metronome: " + (this.model.getTransport ().isMetronomeOn () ? "On" : "Off"));
                 break;
             case 93:
@@ -301,7 +308,7 @@ public class ShiftView extends AbstractView<LaunchpadControlSurface, LaunchpadCo
                 this.surface.getDisplay ().notify ("Tap Tempo");
                 break;
             case 84:
-                this.simulateButtonPress (ButtonID.UNDO);
+                this.simulateNormalButtonPress (ButtonID.UNDO);
                 this.surface.getDisplay ().notify ("Undo");
                 break;
             case 85:
@@ -320,7 +327,7 @@ public class ShiftView extends AbstractView<LaunchpadControlSurface, LaunchpadCo
                 this.simulateShiftedButtonPress (ButtonID.QUANTIZE);
                 break;
             case 68:
-                this.simulateButtonPress (ButtonID.QUANTIZE);
+                this.simulateNormalButtonPress (ButtonID.QUANTIZE);
                 this.surface.getDisplay ().notify ("Quantize");
                 break;
             case 60:
@@ -332,7 +339,7 @@ public class ShiftView extends AbstractView<LaunchpadControlSurface, LaunchpadCo
                 this.surface.getDisplay ().notify ("Double");
                 break;
             case 52:
-                this.simulateButtonPress (ButtonID.PLAY);
+                this.simulateNormalButtonPress (ButtonID.PLAY);
                 this.surface.getDisplay ().notify ("Play");
                 break;
             case 53:
@@ -340,12 +347,12 @@ public class ShiftView extends AbstractView<LaunchpadControlSurface, LaunchpadCo
                 this.surface.getDisplay ().notify ("New");
                 break;
             case 44:
-                this.simulateButtonPress (ButtonID.RECORD);
-                this.surface.getDisplay ().notify ("Arranger record");
+                this.configuredRecordCommand.execute (ButtonEvent.DOWN, 127);
+                this.configuredRecordCommand.execute (ButtonEvent.UP, 0);
                 break;
             case 45:
-                this.simulateShiftedButtonPress (ButtonID.RECORD);
-                this.mvHelper.delayDisplay ( () -> "Overdub launcher clips: " + (this.model.getTransport ().isLauncherOverdub () ? "On" : "Off"));
+                this.configuredShiftedRecordCommand.execute (ButtonEvent.DOWN, 127);
+                this.configuredShiftedRecordCommand.execute (ButtonEvent.UP, 0);
                 break;
             default:
                 // Not used

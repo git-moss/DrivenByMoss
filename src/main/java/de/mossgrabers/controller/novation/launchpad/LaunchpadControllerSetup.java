@@ -164,7 +164,7 @@ public class LaunchpadControllerSetup extends AbstractControllerSetup<LaunchpadC
         this.definition = definition;
         this.colorManager = new LaunchpadColorManager ();
         this.valueChanger = new TwosComplementValueChanger (128, 1);
-        this.configuration = new LaunchpadConfiguration (host, this.valueChanger, factory.getArpeggiatorModes ());
+        this.configuration = new LaunchpadConfiguration (host, this.valueChanger, factory.getArpeggiatorModes (), definition);
     }
 
 
@@ -274,6 +274,9 @@ public class LaunchpadControllerSetup extends AbstractControllerSetup<LaunchpadC
         final ITrackBank trackBank = this.model.getTrackBank ();
         trackBank.addSelectionObserver ( (index, isSelected) -> this.handleTrackChange (isSelected));
 
+        if (this.configuration.canSettingBeObserved (LaunchpadConfiguration.PAD_BRIGHTNESS))
+            this.configuration.addSettingObserver (LaunchpadConfiguration.PAD_BRIGHTNESS, surface::updateBrightness);
+
         this.configuration.registerDeactivatedItemsHandler (this.model);
         this.createScaleObservers (this.configuration);
         this.createNoteRepeatObservers (this.configuration, surface);
@@ -336,13 +339,21 @@ public class LaunchpadControllerSetup extends AbstractControllerSetup<LaunchpadC
         this.addButton (ButtonID.QUANTIZE, "Quantize", new QuantizeCommand<> (this.model, surface), buttonSetup.get (LaunchpadButton.QUANTIZE).getControl (), () -> getStateColor (surface, ButtonID.QUANTIZE));
         this.addButton (ButtonID.DUPLICATE, "Duplicate", new LaunchpadDuplicateCommand (this.model, surface), buttonSetup.get (LaunchpadButton.DUPLICATE).getControl (), () -> getDuplicateStateColor (surface));
         this.addButton (ButtonID.PLAY, "Play", new PlayAndNewCommand (this.model, surface), buttonSetup.get (LaunchpadButton.PLAY).getControl (), () -> this.getPlayStateColor (surface));
-        this.addButton (ButtonID.RECORD, "Record", new ConfiguredRecordCommand<> (this.model, surface), buttonSetup.get (LaunchpadButton.RECORD).getControl (), () -> {
-            final boolean isShift = surface.isShiftPressed ();
-            final boolean flipRecord = surface.getConfiguration ().isFlipRecord ();
-            if (isShift && !flipRecord || !isShift && flipRecord)
-                return transport.isLauncherOverdub () ? LaunchpadColorManager.LAUNCHPAD_COLOR_ROSE : LaunchpadColorManager.LAUNCHPAD_COLOR_RED_AMBER;
-            return transport.isRecording () ? LaunchpadColorManager.LAUNCHPAD_COLOR_RED_HI : LaunchpadColorManager.LAUNCHPAD_COLOR_RED_LO;
-        });
+
+        if (this.definition.isPro ())
+        {
+            final ConfiguredRecordCommand<LaunchpadControlSurface, LaunchpadConfiguration> configuredRecordCommand = new ConfiguredRecordCommand<> (this.model, surface);
+            this.addButton (ButtonID.RECORD, "Record", configuredRecordCommand, buttonSetup.get (LaunchpadButton.RECORD).getControl (), () -> {
+
+                final boolean isShift = surface.isShiftPressed ();
+                final boolean isLit = configuredRecordCommand.isLit (isShift);
+                if (isShift)
+                    return isLit ? LaunchpadColorManager.LAUNCHPAD_COLOR_ROSE : LaunchpadColorManager.LAUNCHPAD_COLOR_RED_AMBER;
+                return isLit ? LaunchpadColorManager.LAUNCHPAD_COLOR_RED_HI : LaunchpadColorManager.LAUNCHPAD_COLOR_RED_LO;
+
+            });
+        }
+
         this.addButton (ButtonID.REC_ARM, "Rec Arm", new RecordArmCommand (this.model, surface), buttonSetup.get (LaunchpadButton.REC_ARM).getControl (), () -> this.getModeColorIndex (ButtonID.REC_ARM));
         this.addButton (ButtonID.TRACK, "Track", new TrackSelectCommand (this.model, surface), buttonSetup.get (LaunchpadButton.TRACK_SELECT).getControl (), () -> this.getModeColorIndex (ButtonID.TRACK));
         this.addButton (ButtonID.MUTE, "Mute", new MuteCommand (this.model, surface), buttonSetup.get (LaunchpadButton.MUTE).getControl (), () -> this.getModeColorIndex (ButtonID.MUTE));

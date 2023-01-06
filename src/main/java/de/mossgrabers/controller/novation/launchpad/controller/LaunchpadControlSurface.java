@@ -24,6 +24,7 @@ import de.mossgrabers.framework.utils.StringUtils;
 import de.mossgrabers.framework.view.Views;
 
 import java.util.Map.Entry;
+import java.util.Optional;
 
 
 /**
@@ -214,6 +215,21 @@ public class LaunchpadControlSurface extends AbstractControlSurface<LaunchpadCon
     public void moveFader (final int index, final int row, final int velocity)
     {
         this.virtualFaders[index].moveTo (row, velocity);
+    }
+
+
+    /**
+     * Send the current brightness setting to the controller device.
+     */
+    public void updateBrightness ()
+    {
+        final Optional<String> brightnessSysex = this.definition.getBrightnessSysex ();
+        if (brightnessSysex.isEmpty ())
+            return;
+
+        final int padBrightness = this.configuration.getPadBrightness ();
+        final String sysexMessage = String.format (brightnessSysex.get (), Integer.valueOf (padBrightness));
+        this.output.sendSysex (sysexMessage);
     }
 
 

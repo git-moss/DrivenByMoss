@@ -153,13 +153,25 @@ public class ConfiguredRecordCommand<S extends IControlSurface<C>, C extends Con
 
     /**
      * Returns true if the record button should be lit depending on the selected function.
-     *
+     * 
      * @return True if lit
      */
     public boolean isLit ()
     {
+        return this.isLit (this.isShifted ());
+    }
+
+
+    /**
+     * Returns true if the record button should be lit depending on the selected function.
+     * 
+     * @param isShifted True if shifted
+     * @return True if lit
+     */
+    public boolean isLit (final boolean isShifted)
+    {
         final C configuration = this.surface.getConfiguration ();
-        final AbstractConfiguration.RecordFunction recordMode = this.isShifted () ? configuration.getShiftedRecordButtonFunction () : configuration.getRecordButtonFunction ();
+        final AbstractConfiguration.RecordFunction recordMode = isShifted ? configuration.getShiftedRecordButtonFunction () : configuration.getRecordButtonFunction ();
         switch (recordMode)
         {
             case RECORD_ARRANGER, RECORD_ARRANGER_AND_ENABLE_AUTOMATION:

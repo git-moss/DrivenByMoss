@@ -4,7 +4,9 @@
 
 package de.mossgrabers.controller.novation.launchpad;
 
+import de.mossgrabers.controller.novation.launchpad.definition.ILaunchpadControllerDefinition;
 import de.mossgrabers.framework.configuration.AbstractConfiguration;
+import de.mossgrabers.framework.configuration.IEnumSetting;
 import de.mossgrabers.framework.configuration.ISettingsUI;
 import de.mossgrabers.framework.controller.valuechanger.IValueChanger;
 import de.mossgrabers.framework.daw.IHost;
@@ -21,7 +23,7 @@ import java.util.List;
  */
 public class LaunchpadConfiguration extends AbstractConfiguration
 {
-    private static final Views [] PREFERRED_NOTE_VIEWS =
+    private static final Views []  PREFERRED_NOTE_VIEWS  =
     {
         Views.PLAY,
         Views.CHORDS,
@@ -35,6 +37,19 @@ public class LaunchpadConfiguration extends AbstractConfiguration
         Views.POLY_SEQUENCER
     };
 
+    /** Setting for the brightness of the pad LEDs. */
+    public static final Integer    PAD_BRIGHTNESS        = Integer.valueOf (50);
+
+    private static final String [] PAD_BRIGHTNESS_VALUES = new String [128];
+    static
+    {
+        for (int i = 0; i < 128; i++)
+            PAD_BRIGHTNESS_VALUES[i] = Integer.toString (i);
+    }
+
+    private final ILaunchpadControllerDefinition definition;
+    private int                                  padBrightness;
+
 
     /**
      * Constructor.
@@ -42,10 +57,13 @@ public class LaunchpadConfiguration extends AbstractConfiguration
      * @param host The DAW host
      * @param valueChanger The value changer
      * @param arpeggiatorModes The available arpeggiator modes
+     * @param definition The Launchpad definitions
      */
-    public LaunchpadConfiguration (final IHost host, final IValueChanger valueChanger, final List<ArpeggiatorMode> arpeggiatorModes)
+    public LaunchpadConfiguration (final IHost host, final IValueChanger valueChanger, final List<ArpeggiatorMode> arpeggiatorModes, final ILaunchpadControllerDefinition definition)
     {
         super (host, valueChanger, arpeggiatorModes);
+
+        this.definition = definition;
     }
 
 
@@ -106,5 +124,30 @@ public class LaunchpadConfiguration extends AbstractConfiguration
         // Pad Sensitivity
 
         this.activateConvertAftertouchSetting (globalSettings);
+        if (!this.definition.getBrightnessSysex ().isEmpty ())
+            this.activatePadBrightnessSetting (globalSettings);
+    }
+
+
+    protected void activatePadBrightnessSetting (final ISettingsUI settingsUI)
+    {
+        final IEnumSetting padBrightnessSetting = settingsUI.getEnumSetting ("Brightness", CATEGORY_PADS, PAD_BRIGHTNESS_VALUES, PAD_BRIGHTNESS_VALUES[127]);
+        padBrightnessSetting.addValueObserver (value -> {
+            this.padBrightness = lookupIndex (PAD_BRIGHTNESS_VALUES, value);
+            this.notifyObservers (PAD_BRIGHTNESS);
+        });
+
+        this.isSettingActive.add (PAD_BRIGHTNESS);
+    }
+
+
+    /**
+     * Get the pad brightness.
+     * 
+     * @return The brightness (0-127)
+     */
+    public int getPadBrightness ()
+    {
+        return this.padBrightness;
     }
 }

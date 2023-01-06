@@ -1566,7 +1566,7 @@ public abstract class AbstractConfiguration implements Configuration
      */
     protected void activateShiftedRecordButtonSetting (final ISettingsUI settingsUI)
     {
-        final IEnumSetting shiftedRecordButtonSetting = settingsUI.getEnumSetting ("Shift + Record button", CATEGORY_TRANSPORT, RECORD_OPTIONS, RECORD_OPTIONS[0]);
+        final IEnumSetting shiftedRecordButtonSetting = settingsUI.getEnumSetting ("Shift + Record button", CATEGORY_TRANSPORT, RECORD_OPTIONS, RECORD_OPTIONS[5]);
         shiftedRecordButtonSetting.addValueObserver (value -> {
             for (int i = 0; i < RECORD_OPTIONS.length; i++)
             {

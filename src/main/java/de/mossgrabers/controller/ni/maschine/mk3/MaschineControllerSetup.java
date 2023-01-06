@@ -113,6 +113,7 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Optional;
 import java.util.Set;
+import java.util.function.BooleanSupplier;
 
 
 /**
@@ -317,7 +318,7 @@ public class MaschineControllerSetup extends AbstractControllerSetup<MaschineCon
         this.addButton (ButtonID.PLAY, "PLAY", new PlayCommand<> (this.model, surface), MaschineControlSurface.PLAY, t::isPlaying);
 
         final ConfiguredRecordCommand<MaschineControlSurface, MaschineConfiguration> recordCommand = new ConfiguredRecordCommand<> (this.model, surface);
-        this.addButton (ButtonID.RECORD, "RECORD", recordCommand, MaschineControlSurface.REC, recordCommand::isLit);
+        this.addButton (ButtonID.RECORD, "RECORD", recordCommand, MaschineControlSurface.REC, (BooleanSupplier) recordCommand::isLit);
         this.addButton (ButtonID.STOP, "STOP", new MaschineStopCommand (this.model, surface), MaschineControlSurface.STOP, () -> !t.isPlaying ());
         this.addButton (ButtonID.LOOP, "LOOP", new ToggleLoopCommand<> (this.model, surface), MaschineControlSurface.RESTART, t::isLoop);
         this.addButton (ButtonID.DELETE, "ERASE", NopCommand.INSTANCE, MaschineControlSurface.ERASE);

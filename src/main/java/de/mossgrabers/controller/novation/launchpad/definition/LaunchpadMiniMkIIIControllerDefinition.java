@@ -8,6 +8,7 @@ import de.mossgrabers.framework.utils.OperatingSystem;
 import de.mossgrabers.framework.utils.Pair;
 
 import java.util.List;
+import java.util.Optional;
 import java.util.UUID;
 
 
@@ -18,8 +19,9 @@ import java.util.UUID;
  */
 public class LaunchpadMiniMkIIIControllerDefinition extends AbstractLaunchpadDefinition
 {
-    private static final UUID   EXTENSION_ID = UUID.fromString ("A17B269D-2641-452F-B5A2-81BBACDA0D17");
-    private static final String SYSEX_HEADER = "F0 00 20 29 02 0D ";
+    private static final UUID             EXTENSION_ID     = UUID.fromString ("A17B269D-2641-452F-B5A2-81BBACDA0D17");
+    private static final String           SYSEX_HEADER     = "F0 00 20 29 02 0D ";
+    private static final Optional<String> BRIGHTNESS_SYSEX = Optional.of ("F0 00 20 29 02 0D 08 %02X F7");
 
 
     /**
@@ -80,5 +82,13 @@ public class LaunchpadMiniMkIIIControllerDefinition extends AbstractLaunchpadDef
     public String getProgramModeCommand ()
     {
         return "0E 01";
+    }
+
+
+    /** {@inheritDoc} */
+    @Override
+    public Optional<String> getBrightnessSysex ()
+    {
+        return BRIGHTNESS_SYSEX;
     }
 }

@@ -92,6 +92,7 @@ import de.mossgrabers.framework.view.TempoView;
 import de.mossgrabers.framework.view.Views;
 
 import java.util.Optional;
+import java.util.function.BooleanSupplier;
 
 
 /**
@@ -283,7 +284,7 @@ public class MaschineJamControllerSetup extends AbstractControllerSetup<Maschine
         }, MaschineJamControlSurface.PLAY, t::isPlaying, ColorManager.BUTTON_STATE_ON, ColorManager.BUTTON_STATE_HI);
 
         final ConfiguredRecordCommand<MaschineJamControlSurface, MaschineJamConfiguration> recordCommand = new ConfiguredRecordCommand<> (this.model, surface);
-        this.addButton (ButtonID.RECORD, "REC", recordCommand, MaschineJamControlSurface.RECORD, recordCommand::isLit);
+        this.addButton (ButtonID.RECORD, "REC", recordCommand, MaschineJamControlSurface.RECORD, (BooleanSupplier) recordCommand::isLit);
 
         this.addButton (ButtonID.PAGE_LEFT, "PAGE LEFT", new MaschineJamPageLeftCommand (this.model, surface), MaschineJamControlSurface.LEFT);
         this.addButton (ButtonID.PAGE_RIGHT, "PAGE RIGHT", new MaschineJamPageRightCommand (this.model, surface), MaschineJamControlSurface.RIGHT);

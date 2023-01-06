@@ -44,15 +44,19 @@ public class BrowserMode<S extends IControlSurface<C>, C extends Configuration> 
         final IBrowser browser = this.model.getBrowser ();
         if (browser == null)
             return;
+
+        final boolean increase = this.model.getValueChanger ().isIncrease (value);
+
         if (index == 7)
         {
-            if (value > 0)
+            if (increase)
                 browser.selectNextResult ();
             else
                 browser.selectPreviousResult ();
             return;
         }
-        if (value > 0)
+
+        if (increase)
             browser.selectNextFilterItem (index);
         else
             browser.selectPreviousFilterItem (index);

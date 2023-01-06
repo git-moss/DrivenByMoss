@@ -15,6 +15,7 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
+import java.util.Optional;
 import java.util.UUID;
 
 
@@ -140,5 +141,13 @@ public abstract class AbstractLaunchpadDefinition extends DefaultControllerDefin
             }
         }
         return Collections.singletonList (sb.append ("F7").toString ());
+    }
+
+
+    /** {@inheritDoc} */
+    @Override
+    public Optional<String> getBrightnessSysex ()
+    {
+        return Optional.empty ();
     }
 }
