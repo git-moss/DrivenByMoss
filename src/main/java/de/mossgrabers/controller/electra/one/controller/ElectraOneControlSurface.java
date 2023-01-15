@@ -6,6 +6,7 @@ package de.mossgrabers.controller.electra.one.controller;
 
 import de.mossgrabers.controller.electra.one.ElectraOneConfiguration;
 import de.mossgrabers.framework.controller.AbstractControlSurface;
+import de.mossgrabers.framework.controller.ButtonID;
 import de.mossgrabers.framework.controller.ContinuousID;
 import de.mossgrabers.framework.controller.color.ColorEx;
 import de.mossgrabers.framework.controller.color.ColorManager;
@@ -55,9 +56,29 @@ public class ElectraOneControlSurface extends AbstractControlSurface<ElectraOneC
         KNOB_IDS.addAll (ContinuousID.createSequentialList (ContinuousID.DEVICE_KNOB1, 6));
     }
 
+    private static final ButtonID []     BUTTON_ROW_IDS                    =
+    {
+        ButtonID.ROW1_1,
+        ButtonID.ROW2_1,
+        ButtonID.ROW3_1,
+        ButtonID.ROW4_1,
+        ButtonID.ROW5_1,
+        ButtonID.ROW6_1
+    };
+
+    private static final ContinuousID [] CTRL_ROW_IDS                      =
+    {
+        ContinuousID.VOLUME_KNOB1,
+        ContinuousID.PAN_KNOB1,
+        ContinuousID.FADER1,
+        ContinuousID.KNOB1,
+        ContinuousID.PARAM_KNOB1,
+        ContinuousID.DEVICE_KNOB1,
+    };
+
     // Sysex
 
-    private static final byte []  SYSEX_HDR_BYTE                    =
+    private static final byte []         SYSEX_HDR_BYTE                    =
     {
         (byte) 0xF0,
         0x00,
@@ -65,7 +86,7 @@ public class ElectraOneControlSurface extends AbstractControlSurface<ElectraOneC
         0x45
     };
 
-    private static final int []   SYSEX_HDR_INT                     =
+    private static final int []          SYSEX_HDR_INT                     =
     {
         0xF0,
         0x00,
@@ -73,68 +94,68 @@ public class ElectraOneControlSurface extends AbstractControlSurface<ElectraOneC
         0x45
     };
 
-    private static final byte []  SYSEX_INFO_DEVICE                 =
+    private static final byte []         SYSEX_INFO_DEVICE                 =
     {
         0x02,
         0x7F
     };
 
-    private static final byte []  SYSEX_INFO_PRESET_LIST            =
+    private static final byte []         SYSEX_INFO_PRESET_LIST            =
     {
         0x02,
         0x04
     };
 
-    private static final byte []  SYSEX_RUNTIME_EXECUTE_LUA         =
+    private static final byte []         SYSEX_RUNTIME_EXECUTE_LUA         =
     {
         0x08,
         0x0D
     };
 
-    private static final byte []  SYSEX_RUNTIME_SWITCH_PRESET       =
+    private static final byte []         SYSEX_RUNTIME_SWITCH_PRESET       =
     {
         0x09,
         0x08
     };
 
-    private static final byte []  SYSEX_RUNTIME_CONTROL_UPDATE      =
+    private static final byte []         SYSEX_RUNTIME_CONTROL_UPDATE      =
     {
         0x14,
         0x07
     };
 
-    private static final byte []  SYSEX_RUNTIME_SET_REPAINT_ENABLED =
+    private static final byte []         SYSEX_RUNTIME_SET_REPAINT_ENABLED =
     {
         0x7F,
         0x7A
     };
 
-    private static final byte []  SYSEX_RUNTIME_ENABLE_LOGGER       =
+    private static final byte []         SYSEX_RUNTIME_ENABLE_LOGGER       =
     {
         0x7F,
         0x7D
     };
 
-    private static final int      CMD_START_POS                     = SYSEX_HDR_INT.length;
-    private static final int      SUB_CMD_START_POS                 = SYSEX_HDR_INT.length + 1;
+    private static final int             CMD_START_POS                     = SYSEX_HDR_INT.length;
+    private static final int             SUB_CMD_START_POS                 = SYSEX_HDR_INT.length + 1;
 
     // Command categories
-    private static final int      CMD_INFO                          = 0x01;
-    private static final int      CMD_CONTROLLER                    = 0x7E;
-    private static final int      CMD_SYSTEM_CALL                   = 0x7F;
+    private static final int             CMD_INFO                          = 0x01;
+    private static final int             CMD_CONTROLLER                    = 0x7E;
+    private static final int             CMD_SYSTEM_CALL                   = 0x7F;
 
     // IDs for runtime commands
-    private static final int      EVENT_PRESET_SWITCH               = 0x02;
-    private static final int      EVENT_PAGE_SWITCH                 = 0x06;
+    private static final int             EVENT_PRESET_SWITCH               = 0x02;
+    private static final int             EVENT_PAGE_SWITCH                 = 0x06;
 
     // IDs for system commands
-    private static final int      SYSTEM_CALL_LOGGING               = 0x00;
+    private static final int             SYSTEM_CALL_LOGGING               = 0x00;
 
     // IDs for information commands
-    private static final int      INFO_PRESET_LIST                  = 0x04;
-    private static final int      INFO_DEVICE                       = 0x7F;
+    private static final int             INFO_PRESET_LIST                  = 0x04;
+    private static final int             INFO_DEVICE                       = 0x7F;
 
-    private static final Modes [] MODES                             =
+    private static final Modes []        MODES                             =
     {
         Modes.VOLUME,
         Modes.SEND,
@@ -143,15 +164,15 @@ public class ElectraOneControlSurface extends AbstractControlSurface<ElectraOneC
         Modes.TRANSPORT
     };
 
-    private static final String   SET_GROUP_TITLE                   = "sgt(%s,\"%s\")";
+    private static final String          SET_GROUP_TITLE                   = "sgt(%s,\"%s\")";
 
-    private final List<int []>    sysexChunks                       = new ArrayList<> ();
-    private final IMidiInput      ctrlInput;
-    private final IMidiOutput     ctrlOutput;
-    private final ObjectMapper    mapper                            = new ObjectMapper ();
-    private int                   bankIndex;
-    private int                   presetIndex;
-    private boolean               isOnline                          = false;
+    private final List<int []>           sysexChunks                       = new ArrayList<> ();
+    private final IMidiInput             ctrlInput;
+    private final IMidiOutput            ctrlOutput;
+    private final ObjectMapper           mapper                            = new ObjectMapper ();
+    private int                          bankIndex;
+    private int                          presetIndex;
+    private boolean                      isOnline                          = false;
 
 
     /**
@@ -645,5 +666,31 @@ public class ElectraOneControlSurface extends AbstractControlSurface<ElectraOneC
     public boolean isOnline ()
     {
         return this.isOnline;
+    }
+
+
+    /**
+     * Get the button ID for an element on the page.
+     *
+     * @param row The row of the button
+     * @param column The column of the button
+     * @return The ID
+     */
+    public static ButtonID getButtonID (final int row, final int column)
+    {
+        return ButtonID.get (BUTTON_ROW_IDS[row], column);
+    }
+
+
+    /**
+     * Get the continuous ID for an element on the page.
+     *
+     * @param row The row of the control
+     * @param column The column of the control
+     * @return The ID
+     */
+    public static ContinuousID getContinuousID (final int row, final int column)
+    {
+        return ContinuousID.get (CTRL_ROW_IDS[row], column);
     }
 }

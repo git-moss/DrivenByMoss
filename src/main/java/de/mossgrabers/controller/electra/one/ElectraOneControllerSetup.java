@@ -40,27 +40,6 @@ import de.mossgrabers.framework.view.Views;
  */
 public class ElectraOneControllerSetup extends AbstractControllerSetup<ElectraOneControlSurface, ElectraOneConfiguration>
 {
-    private static final ButtonID []     BUTTON_ROW_IDS =
-    {
-        ButtonID.ROW1_1,
-        ButtonID.ROW2_1,
-        ButtonID.ROW3_1,
-        ButtonID.ROW4_1,
-        ButtonID.ROW5_1,
-        ButtonID.ROW6_1
-    };
-
-    private static final ContinuousID [] CTRL_ROW_IDS   =
-    {
-        ContinuousID.VOLUME_KNOB1,
-        ContinuousID.PAN_KNOB1,
-        ContinuousID.FADER1,
-        ContinuousID.KNOB1,
-        ContinuousID.PARAM_KNOB1,
-        ContinuousID.DEVICE_KNOB1,
-    };
-
-
     /**
      * Constructor.
      *
@@ -181,12 +160,11 @@ public class ElectraOneControllerSetup extends AbstractControllerSetup<ElectraOn
 
         for (int row = 0; row < 6; row++)
         {
-            final ButtonID rowButtonID = BUTTON_ROW_IDS[row];
             final int rowLabel = row + 1;
 
             for (int col = 0; col < 6; col++)
             {
-                final ButtonID buttonID = ButtonID.get (rowButtonID, col);
+                final ButtonID buttonID = ElectraOneControlSurface.getButtonID (row, col);
                 final int colLabel = col + 1;
                 final int cc = ElectraOneControlSurface.ELECTRA_ROW_1 + 10 * row + col;
                 final ButtonRowModeCommand<ElectraOneControlSurface, ElectraOneConfiguration> command = new ButtonRowModeCommand<> (row, col, this.model, surface);
@@ -202,17 +180,16 @@ public class ElectraOneControllerSetup extends AbstractControllerSetup<ElectraOn
     {
         for (int row = 0; row < 6; row++)
         {
-            final ContinuousID rowCtrlID = CTRL_ROW_IDS[row];
             final int rowLabel = row + 1;
 
             for (int col = 0; col < 6; col++)
             {
-                final ContinuousID ctrlID = ContinuousID.get (rowCtrlID, col);
+                final ContinuousID ctrlID = ElectraOneControlSurface.getContinuousID (row, col);
                 final int colLabel = col + 1;
                 final int cc = ElectraOneControlSurface.ELECTRA_CTRL_1 + 10 * row + col;
                 final IHwAbsoluteKnob knob = this.addAbsoluteKnob (ctrlID, "Ctrl " + rowLabel + "-" + colLabel, null, BindType.CC, 15, cc);
-                knob.setIndexInGroup (col);
-                knob.disableTakeOver ();
+                // Can sadly only be set at startup
+                knob.setIndexInGroup (row * 6 + col);
             }
         }
     }
@@ -231,17 +208,15 @@ public class ElectraOneControllerSetup extends AbstractControllerSetup<ElectraOn
 
         for (int row = 0; row < 6; row++)
         {
-            final ContinuousID rowCtrlID = CTRL_ROW_IDS[row];
-            final ButtonID rowButtonID = BUTTON_ROW_IDS[row];
             for (int col = 0; col < 6; col++)
             {
                 final double x = padding + col * (padding + width);
                 final double y = padding + row * (padding + height);
 
-                final ContinuousID ctrlID = ContinuousID.get (rowCtrlID, col);
+                final ContinuousID ctrlID = ElectraOneControlSurface.getContinuousID (row, col);
                 surface.getContinuous (ctrlID).setBounds (x, y, width, height);
 
-                final ButtonID buttonID = ButtonID.get (rowButtonID, col);
+                final ButtonID buttonID = ElectraOneControlSurface.getButtonID (row, col);
                 surface.getButton (buttonID).setBounds (x, offsetY + y, width, height);
             }
         }

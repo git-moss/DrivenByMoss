@@ -15,7 +15,6 @@ import de.mossgrabers.framework.daw.data.ICursorDevice;
 import de.mossgrabers.framework.mode.device.ParameterMode;
 import de.mossgrabers.framework.parameter.IParameter;
 import de.mossgrabers.framework.parameterprovider.device.BankParameterProvider;
-import de.mossgrabers.framework.utils.StringUtils;
 
 import java.util.Optional;
 
@@ -56,11 +55,9 @@ public class FireParameterMode extends ParameterMode<FireControlSurface, FireCon
 
         if (this.model.hasSelectedDevice ())
         {
-            paramLine = "";
-
             final ICursorDevice cursorDevice = this.model.getCursorDevice ();
             final Optional<String> pageName = cursorDevice.getParameterPageBank ().getSelectedItem ();
-            desc = cursorDevice.getName (5) + ": " + (pageName.isPresent () ? StringUtils.optimizeName (pageName.get (), 5) : "None");
+            desc = pageName.isPresent () ? pageName.get () : "None";
 
             int touchedKnob = this.getTouchedKnob ();
             touchedKnob = this.surface.isPressed (ButtonID.ALT) ? 4 + touchedKnob : touchedKnob;
@@ -74,6 +71,8 @@ public class FireParameterMode extends ParameterMode<FireControlSurface, FireCon
                     paramLine += ": " + p.getDisplayedValue (6);
                 }
             }
+            else
+                paramLine = cursorDevice.getName ();
         }
 
         display.addElement (new TitleValueComponent (desc, paramLine, value, false));

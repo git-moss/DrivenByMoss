@@ -63,7 +63,6 @@ public class MaschineSendMode extends TrackSendMode<MaschineControlSurface, Masc
     {
         this.setTouchedKnob (index, isTouched);
 
-        if (index < 8)
-            super.onKnobTouch (index, isTouched);
+        super.onKnobTouch (index == 8 ? -1 : index, isTouched);
     }
 }
