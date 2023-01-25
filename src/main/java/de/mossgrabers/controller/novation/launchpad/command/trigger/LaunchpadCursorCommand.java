@@ -169,7 +169,7 @@ public class LaunchpadCursorCommand extends CursorCommand<LaunchpadControlSurfac
                 this.canScrollDown = true;
                 break;
 
-            case NOTE_EDIT_VIEW:
+            case NOTE_EDIT_VIEW, CLIP_LENGTH:
                 this.canScrollLeft = false;
                 this.canScrollRight = false;
                 this.canScrollUp = false;

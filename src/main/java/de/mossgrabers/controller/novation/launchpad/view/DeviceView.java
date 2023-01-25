@@ -7,6 +7,7 @@ package de.mossgrabers.controller.novation.launchpad.view;
 import de.mossgrabers.controller.novation.launchpad.controller.LaunchpadColorManager;
 import de.mossgrabers.controller.novation.launchpad.controller.LaunchpadControlSurface;
 import de.mossgrabers.framework.controller.ButtonID;
+import de.mossgrabers.framework.daw.IBrowser;
 import de.mossgrabers.framework.daw.IModel;
 import de.mossgrabers.framework.daw.constants.Capability;
 import de.mossgrabers.framework.daw.data.ICursorDevice;
@@ -89,6 +90,10 @@ public class DeviceView extends AbstractFaderView
                 this.cursorDevice.toggleEnabledState ();
                 break;
 
+            case SCENE2:
+                this.cursorDevice.toggleWindowOpen ();
+                break;
+
             case SCENE3:
                 this.cursorDevice.toggleParameterPageSectionVisible ();
                 break;
@@ -97,15 +102,25 @@ public class DeviceView extends AbstractFaderView
                 this.cursorDevice.toggleExpanded ();
                 break;
 
-            case SCENE6:
-                this.cursorDevice.toggleWindowOpen ();
-                break;
-
-            case SCENE8:
+            case SCENE5:
                 final boolean isPinned = !this.cursorDevice.isPinned ();
                 this.cursorDevice.setPinned (isPinned);
                 this.model.getCursorTrack ().setPinned (isPinned);
                 this.mvHelper.delayDisplay ( () -> this.cursorDevice.getName () + ": " + (this.cursorDevice.isPinned () ? "Pinned" : "Not pinned"));
+                break;
+
+            case SCENE6:
+                break;
+
+            case SCENE7:
+                break;
+
+            case SCENE8:
+                final IBrowser browser = this.model.getBrowser ();
+                if (!this.cursorDevice.doesExist ())
+                    browser.insertAfterCursorDevice ();
+                else
+                    browser.replace (this.cursorDevice);
                 break;
 
             default:
@@ -122,7 +137,10 @@ public class DeviceView extends AbstractFaderView
         switch (buttonID)
         {
             case SCENE1:
-                return this.cursorDevice.isEnabled () ? LaunchpadColorManager.LAUNCHPAD_COLOR_YELLOW_HI : LaunchpadColorManager.LAUNCHPAD_COLOR_GREY_LO;
+                return this.cursorDevice.isEnabled () ? LaunchpadColorManager.LAUNCHPAD_COLOR_GREEN_HI : LaunchpadColorManager.LAUNCHPAD_COLOR_GREY_LO;
+
+            case SCENE2:
+                return this.cursorDevice.isWindowOpen () ? LaunchpadColorManager.LAUNCHPAD_COLOR_AMBER_HI : LaunchpadColorManager.LAUNCHPAD_COLOR_AMBER_LO;
 
             case SCENE3:
                 if (!this.model.getHost ().supports (Capability.HAS_PARAMETER_PAGE_SECTION))
@@ -132,13 +150,13 @@ public class DeviceView extends AbstractFaderView
             case SCENE4:
                 return this.cursorDevice.isExpanded () ? LaunchpadColorManager.LAUNCHPAD_COLOR_MAGENTA_HI : LaunchpadColorManager.LAUNCHPAD_COLOR_MAGENTA_LO;
 
-            case SCENE6:
-                return this.cursorDevice.isWindowOpen () ? LaunchpadColorManager.LAUNCHPAD_COLOR_AMBER_HI : LaunchpadColorManager.LAUNCHPAD_COLOR_AMBER_LO;
-
-            case SCENE8:
+            case SCENE5:
                 if (!this.model.getHost ().supports (Capability.HAS_PINNING))
                     return LaunchpadColorManager.LAUNCHPAD_COLOR_BLACK;
                 return this.cursorDevice.isPinned () ? LaunchpadColorManager.LAUNCHPAD_COLOR_TURQUOISE_HI : LaunchpadColorManager.LAUNCHPAD_COLOR_TURQUOISE_LO;
+
+            case SCENE8:
+                return LaunchpadColorManager.LAUNCHPAD_COLOR_YELLOW;
 
             default:
                 // Not used

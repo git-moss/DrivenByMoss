@@ -64,6 +64,7 @@ public class LaunchpadConfiguration extends AbstractConfiguration
         super (host, valueChanger, arpeggiatorModes);
 
         this.definition = definition;
+        this.preferredAudioView = Views.CLIP_LENGTH;
     }
 
 

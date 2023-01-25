@@ -1621,11 +1621,11 @@ public abstract class AbstractConfiguration implements Configuration
     {
         final String [] labels = new String [views.length];
         for (int i = 0; i < views.length; i++)
-            labels[i] = Views.getNoteViewName (views[i]);
+            labels[i] = Views.getViewName (views[i]);
 
         final IEnumSetting preferredNoteViewSetting = settingsUI.getEnumSetting ("Default note view", CATEGORY_PLAY_AND_SEQUENCE, labels, labels[0]);
         preferredNoteViewSetting.addValueObserver (value -> {
-            this.preferredNoteView = Views.getNoteView (value);
+            this.preferredNoteView = Views.getViewByName (value);
             this.notifyObservers (PREFERRED_NOTE_VIEW);
         });
 

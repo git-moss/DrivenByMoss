@@ -75,7 +75,6 @@ import de.mossgrabers.controller.ableton.push.mode.track.TrackDetailsMode;
 import de.mossgrabers.controller.ableton.push.mode.track.TrackMode;
 import de.mossgrabers.controller.ableton.push.mode.track.VolumeMode;
 import de.mossgrabers.controller.ableton.push.view.ChordsView;
-import de.mossgrabers.controller.ableton.push.view.ClipView;
 import de.mossgrabers.controller.ableton.push.view.Drum4View;
 import de.mossgrabers.controller.ableton.push.view.Drum64View;
 import de.mossgrabers.controller.ableton.push.view.Drum8View;
@@ -143,6 +142,7 @@ import de.mossgrabers.framework.view.ScenePlayView;
 import de.mossgrabers.framework.view.TransposeView;
 import de.mossgrabers.framework.view.Views;
 import de.mossgrabers.framework.view.sequencer.AbstractSequencerView;
+import de.mossgrabers.framework.view.sequencer.ClipLengthView;
 
 import java.util.Optional;
 
@@ -430,7 +430,7 @@ public class PushControllerSetup extends AbstractControllerSetup<PushControlSurf
         viewManager.register (Views.CHORDS, new ChordsView (surface, this.model));
         viewManager.register (Views.PIANO, new PianoView (surface, this.model));
         viewManager.register (Views.PRG_CHANGE, new PrgChangeView (surface, this.model));
-        viewManager.register (Views.CLIP, new ClipView (surface, this.model));
+        viewManager.register (Views.CLIP_LENGTH, new ClipLengthView<> (surface, this.model, true));
         viewManager.register (Views.COLOR, new ColorView<> (surface, this.model));
 
         viewManager.register (Views.SESSION, new SessionView (surface, this.model));
@@ -508,7 +508,7 @@ public class PushControllerSetup extends AbstractControllerSetup<PushControlSurf
             final ButtonID row2ButtonID = ButtonID.get (ButtonID.ROW2_1, i);
             this.addButton (row2ButtonID, "Row 2: " + (i + 1), new ButtonRowModeCommand<> (1, i, this.model, surface), PushControlSurface.PUSH_BUTTON_ROW2_1 + i, () -> this.getModeColor (row2ButtonID));
             final ButtonID sceneButtonID = ButtonID.get (ButtonID.SCENE1, i);
-            this.addButton (sceneButtonID, "Scene " + (i + 1), new ViewButtonCommand<> (sceneButtonID, surface), PushControlSurface.PUSH_BUTTON_SCENE1 + 7 - i, () -> this.getViewColor (sceneButtonID));
+            this.addButton (sceneButtonID, "Scene " + (i + 1), new ViewButtonCommand<> (sceneButtonID, surface), PushControlSurface.PUSH_BUTTON_SCENE1 + 7 - i, () -> this.getButtonColorFromActiveView (sceneButtonID));
         }
 
         this.addButton (ButtonID.SHIFT, "Shift", new ShiftCommand (this.model, surface), PushControlSurface.PUSH_BUTTON_SHIFT);
@@ -521,7 +521,7 @@ public class PushControllerSetup extends AbstractControllerSetup<PushControlSurf
             if (viewManager.isActive (Views.SESSION))
                 return this.model.getCurrentTrackBank ().canScrollPageBackwards ();
             final IView activeView = viewManager.getActive ();
-            final INoteClip clip = activeView instanceof final AbstractSequencerView<?, ?> sequencerView && !(activeView instanceof ClipView) ? sequencerView.getClip () : null;
+            final INoteClip clip = activeView instanceof final AbstractSequencerView<?, ?> sequencerView && !(activeView instanceof ClipLengthView) ? sequencerView.getClip () : null;
             return clip != null && clip.doesExist () && clip.canScrollStepsBackwards ();
 
         }, ColorManager.BUTTON_STATE_OFF, ColorManager.BUTTON_STATE_ON);
@@ -530,7 +530,7 @@ public class PushControllerSetup extends AbstractControllerSetup<PushControlSurf
             if (viewManager.isActive (Views.SESSION))
                 return this.model.getCurrentTrackBank ().canScrollPageForwards ();
             final IView activeView = viewManager.getActive ();
-            final INoteClip clip = activeView instanceof final AbstractSequencerView<?, ?> sequencerView && !(activeView instanceof ClipView) ? sequencerView.getClip () : null;
+            final INoteClip clip = activeView instanceof final AbstractSequencerView<?, ?> sequencerView && !(activeView instanceof ClipLengthView) ? sequencerView.getClip () : null;
             return clip != null && clip.doesExist () && clip.canScrollStepsForwards ();
 
         }, ColorManager.BUTTON_STATE_OFF, ColorManager.BUTTON_STATE_ON);

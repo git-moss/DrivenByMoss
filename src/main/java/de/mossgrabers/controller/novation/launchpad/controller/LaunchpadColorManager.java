@@ -15,6 +15,7 @@ import de.mossgrabers.framework.view.BrowserView;
 import de.mossgrabers.framework.view.sequencer.AbstractDrumExView;
 import de.mossgrabers.framework.view.sequencer.AbstractDrumView;
 import de.mossgrabers.framework.view.sequencer.AbstractSequencerView;
+import de.mossgrabers.framework.view.sequencer.ClipLengthView;
 
 import java.util.List;
 
@@ -91,6 +92,19 @@ public class LaunchpadColorManager extends ColorManager
     public static final int           LAUNCHPAD_COLOR_PINK_LO          = 59;
     public static final int           LAUNCHPAD_COLOR_ORANGE           = 60;
 
+    public static final int           COLOR_VIEW_OFF                   = LAUNCHPAD_COLOR_BLACK;
+    public static final int           COLOR_VIEW_SELECTED              = LAUNCHPAD_COLOR_GREEN;
+    public static final int           COLOR_VIEW_PLAY                  = LAUNCHPAD_COLOR_AMBER;
+    public static final int           COLOR_VIEW_DRUM_SEQUENCER        = LAUNCHPAD_COLOR_BLUE;
+    public static final int           COLOR_VIEW_NOTE_SEQUENCER        = LAUNCHPAD_COLOR_YELLOW;
+    public static final int           COLOR_VIEW_CLIP                  = LAUNCHPAD_COLOR_MAGENTA;
+    public static final int           COLOR_VIEW_MIXER                 = LAUNCHPAD_COLOR_LIME;
+    public static final int           COLOR_VIEW_DEVICE                = LAUNCHPAD_COLOR_TURQUOISE;
+    public static final int           COLOR_VIEW_PROJECT               = LAUNCHPAD_COLOR_CYAN_HI;
+    public static final int           COLOR_VIEW_SHIFT                 = LAUNCHPAD_COLOR_WHITE;
+    public static final int           COLOR_VIEW_TEMPO                 = LAUNCHPAD_COLOR_OCEAN_HI;
+    public static final int           COLOR_VIEW_SHUFFLE               = LAUNCHPAD_COLOR_PINK_HI;
+
     public static final List<Integer> DAW_INDICATOR_COLORS             = List.of (Integer.valueOf (LAUNCHPAD_COLOR_RED), Integer.valueOf (LAUNCHPAD_COLOR_AMBER), Integer.valueOf (LAUNCHPAD_COLOR_YELLOW), Integer.valueOf (LAUNCHPAD_COLOR_SPRING), Integer.valueOf (LAUNCHPAD_COLOR_CYAN), Integer.valueOf (LAUNCHPAD_COLOR_OCEAN), Integer.valueOf (LAUNCHPAD_COLOR_MAGENTA), Integer.valueOf (LAUNCHPAD_COLOR_PINK));
 
 
@@ -150,6 +164,9 @@ public class LaunchpadColorManager extends ColorManager
         this.registerColorIndex (AbstractPlayView.COLOR_PLAY, LAUNCHPAD_COLOR_GREEN_HI);
         this.registerColorIndex (AbstractPlayView.COLOR_RECORD, LAUNCHPAD_COLOR_RED_HI);
         this.registerColorIndex (AbstractPlayView.COLOR_OFF, LAUNCHPAD_COLOR_BLACK);
+
+        this.registerColorIndex (ClipLengthView.COLOR_OUTSIDE, LAUNCHPAD_COLOR_BLACK);
+        this.registerColorIndex (ClipLengthView.COLOR_PART, LAUNCHPAD_COLOR_OCEAN);
 
         this.registerColorIndex (BrowserView.OFF, LAUNCHPAD_COLOR_BLACK);
         this.registerColorIndex (BrowserView.DISCARD, LAUNCHPAD_COLOR_RED);

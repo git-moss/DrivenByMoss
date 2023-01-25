@@ -43,29 +43,36 @@ public class NoteViewSelectView extends AbstractView<LaunchpadControlSurface, La
 
         final IPadGrid padGrid = this.surface.getPadGrid ();
 
-        for (int i = 36; i < 60; i++)
+        // From bottom to top
+
+        for (int i = 36; i < 44; i++)
             padGrid.light (i, LaunchpadColorManager.LAUNCHPAD_COLOR_BLACK);
 
-        padGrid.light (60, previousViewId == Views.SEQUENCER ? LaunchpadColorManager.LAUNCHPAD_COLOR_GREEN : LaunchpadColorManager.LAUNCHPAD_COLOR_AMBER_HI);
-        padGrid.light (61, previousViewId == Views.POLY_SEQUENCER ? LaunchpadColorManager.LAUNCHPAD_COLOR_GREEN : LaunchpadColorManager.LAUNCHPAD_COLOR_AMBER_LO);
-        padGrid.light (62, previousViewId == Views.RAINDROPS ? LaunchpadColorManager.LAUNCHPAD_COLOR_GREEN : LaunchpadColorManager.LAUNCHPAD_COLOR_AMBER);
+        padGrid.light (44, previousViewId == Views.CLIP_LENGTH ? LaunchpadColorManager.COLOR_VIEW_SELECTED : LaunchpadColorManager.COLOR_VIEW_CLIP);
+
+        for (int i = 45; i < 60; i++)
+            padGrid.light (i, LaunchpadColorManager.COLOR_VIEW_OFF);
+
+        padGrid.light (60, previousViewId == Views.SEQUENCER ? LaunchpadColorManager.COLOR_VIEW_SELECTED : LaunchpadColorManager.COLOR_VIEW_NOTE_SEQUENCER);
+        padGrid.light (61, previousViewId == Views.POLY_SEQUENCER ? LaunchpadColorManager.COLOR_VIEW_SELECTED : LaunchpadColorManager.COLOR_VIEW_NOTE_SEQUENCER);
+        padGrid.light (62, previousViewId == Views.RAINDROPS ? LaunchpadColorManager.COLOR_VIEW_SELECTED : LaunchpadColorManager.COLOR_VIEW_NOTE_SEQUENCER);
 
         for (int i = 63; i < 76; i++)
-            padGrid.light (i, LaunchpadColorManager.LAUNCHPAD_COLOR_BLACK);
+            padGrid.light (i, LaunchpadColorManager.COLOR_VIEW_OFF);
 
-        padGrid.light (76, previousViewId == Views.DRUM ? LaunchpadColorManager.LAUNCHPAD_COLOR_GREEN : LaunchpadColorManager.LAUNCHPAD_COLOR_BLUE_HI);
-        padGrid.light (77, previousViewId == Views.DRUM4 ? LaunchpadColorManager.LAUNCHPAD_COLOR_GREEN : LaunchpadColorManager.LAUNCHPAD_COLOR_BLUE);
-        padGrid.light (78, previousViewId == Views.DRUM8 ? LaunchpadColorManager.LAUNCHPAD_COLOR_GREEN : LaunchpadColorManager.LAUNCHPAD_COLOR_BLUE_LO);
+        padGrid.light (76, previousViewId == Views.DRUM ? LaunchpadColorManager.COLOR_VIEW_SELECTED : LaunchpadColorManager.COLOR_VIEW_DRUM_SEQUENCER);
+        padGrid.light (77, previousViewId == Views.DRUM4 ? LaunchpadColorManager.COLOR_VIEW_SELECTED : LaunchpadColorManager.COLOR_VIEW_DRUM_SEQUENCER);
+        padGrid.light (78, previousViewId == Views.DRUM8 ? LaunchpadColorManager.COLOR_VIEW_SELECTED : LaunchpadColorManager.COLOR_VIEW_DRUM_SEQUENCER);
 
         for (int i = 79; i < 92; i++)
-            padGrid.light (i, LaunchpadColorManager.LAUNCHPAD_COLOR_BLACK);
+            padGrid.light (i, LaunchpadColorManager.COLOR_VIEW_OFF);
 
-        padGrid.light (92, previousViewId == Views.PLAY ? LaunchpadColorManager.LAUNCHPAD_COLOR_GREEN : LaunchpadColorManager.LAUNCHPAD_COLOR_RED_HI);
-        padGrid.light (93, previousViewId == Views.PIANO ? LaunchpadColorManager.LAUNCHPAD_COLOR_GREEN : LaunchpadColorManager.LAUNCHPAD_COLOR_RED);
-        padGrid.light (94, previousViewId == Views.DRUM64 ? LaunchpadColorManager.LAUNCHPAD_COLOR_GREEN : LaunchpadColorManager.LAUNCHPAD_COLOR_RED_LO);
+        padGrid.light (92, previousViewId == Views.PLAY ? LaunchpadColorManager.COLOR_VIEW_SELECTED : LaunchpadColorManager.COLOR_VIEW_PLAY);
+        padGrid.light (93, previousViewId == Views.PIANO ? LaunchpadColorManager.COLOR_VIEW_SELECTED : LaunchpadColorManager.COLOR_VIEW_PLAY);
+        padGrid.light (94, previousViewId == Views.DRUM64 ? LaunchpadColorManager.COLOR_VIEW_SELECTED : LaunchpadColorManager.COLOR_VIEW_PLAY);
 
         for (int i = 95; i < 100; i++)
-            padGrid.light (i, LaunchpadColorManager.LAUNCHPAD_COLOR_BLACK);
+            padGrid.light (i, LaunchpadColorManager.COLOR_VIEW_OFF);
     }
 
 
@@ -76,44 +83,53 @@ public class NoteViewSelectView extends AbstractView<LaunchpadControlSurface, La
         if (velocity != 0)
             return;
 
+        final Views viewID;
+
         switch (note)
         {
+            // Play
             case 92:
-                this.setView (Views.PLAY);
-                return;
+                viewID = Views.PLAY;
+                break;
             case 93:
-                this.setView (Views.PIANO);
-                return;
+                viewID = Views.PIANO;
+                break;
             case 94:
-                this.setView (Views.DRUM64);
-                return;
+                viewID = Views.DRUM64;
+                break;
+
+            // Drum Sequencer
             case 76:
-                this.setView (Views.DRUM);
-                return;
+                viewID = Views.DRUM;
+                break;
             case 77:
-                this.setView (Views.DRUM4);
-                return;
+                viewID = Views.DRUM4;
+                break;
             case 78:
-                this.setView (Views.DRUM8);
-                return;
+                viewID = Views.DRUM8;
+                break;
+
+            // Note sequencers
             case 60:
-                this.setView (Views.SEQUENCER);
-                return;
+                viewID = Views.SEQUENCER;
+                break;
             case 61:
-                this.setView (Views.POLY_SEQUENCER);
-                return;
+                viewID = Views.POLY_SEQUENCER;
+                break;
             case 62:
-                this.setView (Views.RAINDROPS);
-                return;
+                viewID = Views.RAINDROPS;
+                break;
+
+            // Clip edit
+            case 44:
+                viewID = Views.CLIP_LENGTH;
+                break;
+
             default:
                 // Not used
-                break;
+                return;
         }
-    }
 
-
-    private void setView (final Views viewID)
-    {
         this.activatePreferredView (viewID);
         this.surface.getDisplay ().notify (this.surface.getViewManager ().get (viewID).getName ());
     }
@@ -123,6 +139,6 @@ public class NoteViewSelectView extends AbstractView<LaunchpadControlSurface, La
     @Override
     public int getButtonColor (final ButtonID buttonID)
     {
-        return LaunchpadColorManager.LAUNCHPAD_COLOR_BLACK;
+        return LaunchpadColorManager.COLOR_VIEW_SELECTED;
     }
 }

@@ -14,7 +14,7 @@ import de.mossgrabers.controller.novation.launchpad.command.trigger.PlayAndNewCo
 import de.mossgrabers.controller.novation.launchpad.command.trigger.ProjectCommand;
 import de.mossgrabers.controller.novation.launchpad.command.trigger.RecordArmCommand;
 import de.mossgrabers.controller.novation.launchpad.command.trigger.SelectDeviceViewCommand;
-import de.mossgrabers.controller.novation.launchpad.command.trigger.SelectNoteViewCommand;
+import de.mossgrabers.controller.novation.launchpad.command.trigger.SelectMainViewCommand;
 import de.mossgrabers.controller.novation.launchpad.command.trigger.SelectSessionViewCommand;
 import de.mossgrabers.controller.novation.launchpad.command.trigger.SendsCommand;
 import de.mossgrabers.controller.novation.launchpad.command.trigger.SoloCommand;
@@ -85,7 +85,6 @@ import de.mossgrabers.framework.featuregroup.IMode;
 import de.mossgrabers.framework.featuregroup.IView;
 import de.mossgrabers.framework.featuregroup.ModeManager;
 import de.mossgrabers.framework.featuregroup.ViewManager;
-import de.mossgrabers.framework.mode.DummyMode;
 import de.mossgrabers.framework.mode.Modes;
 import de.mossgrabers.framework.mode.track.TrackMuteMode;
 import de.mossgrabers.framework.mode.track.TrackPanMode;
@@ -99,8 +98,11 @@ import de.mossgrabers.framework.utils.ButtonEvent;
 import de.mossgrabers.framework.view.BrowserView;
 import de.mossgrabers.framework.view.TempoView;
 import de.mossgrabers.framework.view.Views;
+import de.mossgrabers.framework.view.sequencer.ClipLengthView;
 
+import java.util.HashSet;
 import java.util.Map.Entry;
+import java.util.Set;
 
 
 /**
@@ -133,19 +135,22 @@ public class LaunchpadControllerSetup extends AbstractControllerSetup<LaunchpadC
         Views.DRUM8
     };
 
-    private static final Views []                ALL_PLAY_VIEWS  =
+    private static final Set<Views>              MAIN_VIEWS      = new HashSet<> ();
+
+    static
     {
-        Views.PLAY,
-        Views.CHORDS,
-        Views.PIANO,
-        Views.DRUM64,
-        Views.SEQUENCER,
-        Views.POLY_SEQUENCER,
-        Views.RAINDROPS,
-        Views.DRUM,
-        Views.DRUM4,
-        Views.DRUM8
-    };
+        MAIN_VIEWS.add (Views.PLAY);
+        MAIN_VIEWS.add (Views.CHORDS);
+        MAIN_VIEWS.add (Views.PIANO);
+        MAIN_VIEWS.add (Views.DRUM64);
+        MAIN_VIEWS.add (Views.SEQUENCER);
+        MAIN_VIEWS.add (Views.POLY_SEQUENCER);
+        MAIN_VIEWS.add (Views.RAINDROPS);
+        MAIN_VIEWS.add (Views.DRUM);
+        MAIN_VIEWS.add (Views.DRUM4);
+        MAIN_VIEWS.add (Views.DRUM8);
+        MAIN_VIEWS.add (Views.CLIP_LENGTH);
+    }
 
 
     /**
@@ -216,7 +221,7 @@ public class LaunchpadControllerSetup extends AbstractControllerSetup<LaunchpadC
         modeManager.register (Modes.PAN, new TrackPanMode<> (surface, this.model, true));
         modeManager.register (Modes.SEND, new TrackSendMode<> (-1, surface, this.model, true));
         modeManager.register (Modes.STOP_CLIP, new TrackStopClipMode<> (surface, this.model));
-        modeManager.register (Modes.DUMMY, new DummyMode<> (surface, this.model));
+        modeManager.register (Modes.DUMMY, new TrackSelectMode<> (surface, this.model));
     }
 
 
@@ -226,30 +231,28 @@ public class LaunchpadControllerSetup extends AbstractControllerSetup<LaunchpadC
     {
         final LaunchpadControlSurface surface = this.getSurface ();
         final ViewManager viewManager = surface.getViewManager ();
-        viewManager.register (Views.BROWSER, new BrowserView<> (surface, this.model));
-        viewManager.register (Views.DEVICE, new DeviceView (surface, this.model));
+        viewManager.register (Views.SHIFT, new ShiftView (surface, this.model));
+        viewManager.register (Views.SESSION, new SessionView ("Session", surface, this.model));
+        viewManager.register (Views.PLAY, new PlayView (surface, this.model));
+        viewManager.register (Views.CHORDS, new ChordsView (surface, this.model));
+        viewManager.register (Views.PIANO, new PianoView (surface, this.model));
+        viewManager.register (Views.SEQUENCER, new SequencerView (surface, this.model));
+        viewManager.register (Views.POLY_SEQUENCER, new PolySequencerView (surface, this.model, true));
+        viewManager.register (Views.RAINDROPS, new RaindropsView (surface, this.model));
         viewManager.register (Views.DRUM, new DrumView (surface, this.model));
         viewManager.register (Views.DRUM4, new Drum4View (surface, this.model));
         viewManager.register (Views.DRUM8, new Drum8View (surface, this.model));
         viewManager.register (Views.DRUM64, new Drum64View (surface, this.model));
-        viewManager.register (Views.PLAY, new PlayView (surface, this.model));
-        viewManager.register (Views.CHORDS, new ChordsView (surface, this.model));
-        viewManager.register (Views.PIANO, new PianoView (surface, this.model));
-        viewManager.register (Views.RAINDROPS, new RaindropsView (surface, this.model));
-        viewManager.register (Views.SEQUENCER, new SequencerView (surface, this.model));
-        viewManager.register (Views.POLY_SEQUENCER, new PolySequencerView (surface, this.model, true));
-        viewManager.register (Views.SESSION, new SessionView ("Session", surface, this.model));
+        viewManager.register (Views.DEVICE, new DeviceView (surface, this.model));
+        viewManager.register (Views.USER, new UserView (surface, this.model));
+        viewManager.register (Views.BROWSER, new BrowserView<> (surface, this.model));
         viewManager.register (Views.TRACK_PAN, new PanView (surface, this.model));
         viewManager.register (Views.TRACK_VOLUME, new VolumeView (surface, this.model));
         viewManager.register (Views.TRACK_SENDS, new SendsView (surface, this.model));
-        viewManager.register (Views.SHIFT, new ShiftView (surface, this.model));
         viewManager.register (Views.MIX, new MixView (surface, this.model));
         viewManager.register (Views.CONTROL, new NoteViewSelectView (surface, this.model));
         viewManager.register (Views.NOTE_EDIT_VIEW, new NoteEditView (surface, this.model));
-
-        if (this.definition.isPro ())
-            viewManager.register (Views.USER, new UserView (surface, this.model));
-
+        viewManager.register (Views.CLIP_LENGTH, new ClipLengthView<> (surface, this.model, true));
         viewManager.register (Views.TEMPO, new TempoView<> (surface, this.model, LaunchpadColorManager.LAUNCHPAD_COLOR_BLUE_HI, LaunchpadColorManager.LAUNCHPAD_COLOR_WHITE, LaunchpadColorManager.LAUNCHPAD_COLOR_BLACK));
         viewManager.register (Views.SHUFFLE, new LaunchpadShuffleView (surface, this.model, LaunchpadColorManager.LAUNCHPAD_COLOR_PINK_HI, LaunchpadColorManager.LAUNCHPAD_COLOR_WHITE, LaunchpadColorManager.LAUNCHPAD_COLOR_BLACK));
         viewManager.register (Views.PROJECT, new ProjectView (surface, this.model));
@@ -298,26 +301,21 @@ public class LaunchpadControllerSetup extends AbstractControllerSetup<LaunchpadC
         this.addButton (ButtonID.SHIFT, "Shift", new LaunchpadToggleShiftViewCommand (this.model, surface), buttonSetup.get (LaunchpadButton.SHIFT).getControl (), () -> viewManager.isActive (Views.SHIFT) || surface.isShiftPressed () ? LaunchpadColorManager.LAUNCHPAD_COLOR_WHITE : LaunchpadColorManager.LAUNCHPAD_COLOR_GREY_LO);
 
         final LaunchpadCursorCommand commandUp = new LaunchpadCursorCommand (Direction.UP, this.model, surface);
-        this.addButton (ButtonID.UP, "Up", commandUp, buttonSetup.get (LaunchpadButton.ARROW_UP).getControl (), () -> commandUp.canScroll () ? this.getViewColor () : LaunchpadColorManager.LAUNCHPAD_COLOR_BLACK);
         final LaunchpadCursorCommand commandDown = new LaunchpadCursorCommand (Direction.DOWN, this.model, surface);
-        this.addButton (ButtonID.DOWN, "Down", commandDown, buttonSetup.get (LaunchpadButton.ARROW_DOWN).getControl (), () -> commandDown.canScroll () ? this.getViewColor () : LaunchpadColorManager.LAUNCHPAD_COLOR_BLACK);
         final LaunchpadCursorCommand commandLeft = new LaunchpadCursorCommand (Direction.LEFT, this.model, surface);
-        this.addButton (ButtonID.LEFT, "Left", commandLeft, buttonSetup.get (LaunchpadButton.ARROW_LEFT).getControl (), () -> commandLeft.canScroll () ? this.getViewColor () : LaunchpadColorManager.LAUNCHPAD_COLOR_BLACK);
         final LaunchpadCursorCommand commandRight = new LaunchpadCursorCommand (Direction.RIGHT, this.model, surface);
+        this.addButton (ButtonID.UP, "Up", commandUp, buttonSetup.get (LaunchpadButton.ARROW_UP).getControl (), () -> commandUp.canScroll () ? this.getViewColor () : LaunchpadColorManager.LAUNCHPAD_COLOR_BLACK);
+        this.addButton (ButtonID.DOWN, "Down", commandDown, buttonSetup.get (LaunchpadButton.ARROW_DOWN).getControl (), () -> commandDown.canScroll () ? this.getViewColor () : LaunchpadColorManager.LAUNCHPAD_COLOR_BLACK);
+        this.addButton (ButtonID.LEFT, "Left", commandLeft, buttonSetup.get (LaunchpadButton.ARROW_LEFT).getControl (), () -> commandLeft.canScroll () ? this.getViewColor () : LaunchpadColorManager.LAUNCHPAD_COLOR_BLACK);
         this.addButton (ButtonID.RIGHT, "Right", commandRight, buttonSetup.get (LaunchpadButton.ARROW_RIGHT).getControl (), () -> commandRight.canScroll () ? this.getViewColor () : LaunchpadColorManager.LAUNCHPAD_COLOR_BLACK);
 
         this.addButton (ButtonID.SESSION, "Session", new SelectSessionViewCommand (this.model, surface), buttonSetup.get (LaunchpadButton.SESSION).getControl (), () -> this.getViewStateColor (LaunchpadColorManager.LAUNCHPAD_COLOR_LIME, Views.SESSION, Views.MIX));
-        this.addButton (ButtonID.DEVICE, "Device", new SelectDeviceViewCommand (this.model, surface), buttonSetup.get (LaunchpadButton.DEVICE).getControl (), () -> {
-
-            if (viewManager.isActive (Views.BROWSER) || viewManager.isActive (Views.DEVICE))
-                return LaunchpadColorManager.LAUNCHPAD_COLOR_TURQUOISE;
-            return LaunchpadColorManager.LAUNCHPAD_COLOR_GREY_LO;
-
-        });
+        final SelectDeviceViewCommand selectDeviceViewCommand = new SelectDeviceViewCommand (this.model, surface);
+        this.addButton (ButtonID.DEVICE, "Device", selectDeviceViewCommand, buttonSetup.get (LaunchpadButton.DEVICE).getControl (), selectDeviceViewCommand::getButtonColor);
 
         final LaunchpadButtonInfo userInfo = buttonSetup.get (LaunchpadButton.USER);
         if (!userInfo.isVirtual ())
-            this.addButton (ButtonID.USER, "User", new ViewMultiSelectCommand<> (this.model, surface, Views.USER), userInfo.getControl (), () -> viewManager.isActive (Views.USER) ? LaunchpadColorManager.LAUNCHPAD_COLOR_MAGENTA : LaunchpadColorManager.LAUNCHPAD_COLOR_GREY_LO);
+            this.addButton (ButtonID.USER, "User", new ViewMultiSelectCommand<> (this.model, surface, Views.CLIP_LENGTH), userInfo.getControl (), () -> viewManager.isActive (Views.CLIP_LENGTH) ? LaunchpadColorManager.LAUNCHPAD_COLOR_MAGENTA : LaunchpadColorManager.LAUNCHPAD_COLOR_GREY_LO);
 
         final LaunchpadButtonInfo projectInfo = buttonSetup.get (LaunchpadButton.PROJECT);
         if (!projectInfo.isVirtual ())
@@ -354,6 +352,8 @@ public class LaunchpadControllerSetup extends AbstractControllerSetup<LaunchpadC
             });
         }
 
+        // Mode selection buttons
+
         this.addButton (ButtonID.REC_ARM, "Rec Arm", new RecordArmCommand (this.model, surface), buttonSetup.get (LaunchpadButton.REC_ARM).getControl (), () -> this.getModeColorIndex (ButtonID.REC_ARM));
         this.addButton (ButtonID.TRACK, "Track", new TrackSelectCommand (this.model, surface), buttonSetup.get (LaunchpadButton.TRACK_SELECT).getControl (), () -> this.getModeColorIndex (ButtonID.TRACK));
         this.addButton (ButtonID.MUTE, "Mute", new MuteCommand (this.model, surface), buttonSetup.get (LaunchpadButton.MUTE).getControl (), () -> this.getModeColorIndex (ButtonID.MUTE));
@@ -363,10 +363,12 @@ public class LaunchpadControllerSetup extends AbstractControllerSetup<LaunchpadC
         this.addButton (ButtonID.SENDS, "Sends", new SendsCommand (this.model, surface), buttonSetup.get (LaunchpadButton.SENDS).getControl (), () -> this.getModeColorIndex (ButtonID.SENDS));
         this.addButton (ButtonID.STOP_CLIP, "Stop Clip", new StopClipCommand (this.model, surface), buttonSetup.get (LaunchpadButton.STOP_CLIP).getControl (), () -> this.getModeColorIndex (ButtonID.STOP_CLIP));
 
+        // Scene buttons
+
         for (int i = 0; i < 8; i++)
         {
             final ButtonID buttonID = ButtonID.get (ButtonID.SCENE1, i);
-            this.addButton (buttonID, "Scene " + (i + 1), new ViewButtonCommand<> (buttonID, surface), buttonSetup.get (LaunchpadButton.SCENES.get (i)).getControl (), () -> this.getViewColor (buttonID));
+            this.addButton (buttonID, "Scene " + (i + 1), new ViewButtonCommand<> (buttonID, surface), buttonSetup.get (LaunchpadButton.SCENES.get (i)).getControl (), () -> this.getButtonColorFromActiveView (buttonID));
         }
 
         // Pro Mk3
@@ -379,13 +381,13 @@ public class LaunchpadControllerSetup extends AbstractControllerSetup<LaunchpadC
                 this.addButton (ButtonID.get (ButtonID.ROW1_1, i), "Track Select " + (i + 1), (event, velocity) -> this.handleTrackSelection (event, index), LaunchpadControlSurface.LAUNCHPAD_TRACK1 + i, () -> this.getTrackModeColorIndex (index));
             }
 
-            this.addButton (ButtonID.NOTE, "Note", new SelectPlayViewCommand<> (this.model, surface, PLAY_VIEWS, ALL_PLAY_VIEWS), buttonSetup.get (LaunchpadButton.NOTE).getControl (), () -> this.getViewStateColor (LaunchpadColorManager.LAUNCHPAD_COLOR_AMBER_HI, PLAY_VIEWS));
-            this.addButton (ButtonID.DRUM, "Drum Seq", new SelectPlayViewCommand<> (this.model, surface, DRUM_VIEWS, ALL_PLAY_VIEWS), 95, () -> this.getViewStateColor (LaunchpadColorManager.LAUNCHPAD_COLOR_OCEAN_HI, DRUM_VIEWS));
-            this.addButton (ButtonID.SEQUENCER, "Sequencer", new SelectPlayViewCommand<> (this.model, surface, SEQUENCER_VIEWS, ALL_PLAY_VIEWS), 97, () -> this.getViewStateColor (LaunchpadColorManager.LAUNCHPAD_COLOR_YELLOW_HI, SEQUENCER_VIEWS));
+            this.addButton (ButtonID.NOTE, "Note", new SelectPlayViewCommand<> (this.model, surface, PLAY_VIEWS, MAIN_VIEWS), buttonSetup.get (LaunchpadButton.NOTE).getControl (), () -> this.getViewStateColor (LaunchpadColorManager.LAUNCHPAD_COLOR_AMBER_HI, PLAY_VIEWS));
+            this.addButton (ButtonID.DRUM, "Drum Seq", new SelectPlayViewCommand<> (this.model, surface, DRUM_VIEWS, MAIN_VIEWS), 95, () -> this.getViewStateColor (LaunchpadColorManager.LAUNCHPAD_COLOR_OCEAN_HI, DRUM_VIEWS));
+            this.addButton (ButtonID.SEQUENCER, "Sequencer", new SelectPlayViewCommand<> (this.model, surface, SEQUENCER_VIEWS, MAIN_VIEWS), 97, () -> this.getViewStateColor (LaunchpadColorManager.LAUNCHPAD_COLOR_YELLOW_HI, SEQUENCER_VIEWS));
             this.addButton (ButtonID.NEW, "New", new NewCommand<> (this.model, surface), LaunchpadControlSurface.PRO3_LAUNCHPAD_FIXED_LENGTH, () -> surface.isPressed (ButtonID.NEW) ? LaunchpadColorManager.LAUNCHPAD_COLOR_AMBER_HI : LaunchpadColorManager.LAUNCHPAD_COLOR_AMBER_LO);
         }
         else
-            this.addButton (ButtonID.NOTE, "Note", new SelectNoteViewCommand (this.model, surface), buttonSetup.get (LaunchpadButton.NOTE).getControl (), this::getNoteStateColor);
+            this.addButton (ButtonID.NOTE, "Note", new SelectMainViewCommand (this.model, surface, MAIN_VIEWS), buttonSetup.get (LaunchpadButton.NOTE).getControl (), this::getNoteButtonColor);
 
         // Update the front or logo LED with the color of the current track
 
@@ -396,7 +398,7 @@ public class LaunchpadControllerSetup extends AbstractControllerSetup<LaunchpadC
 
         }, color -> this.definition.setLogoColor (surface, color), state -> this.colorManager.getColor (state, null), null);
 
-        // Workaround for some not redrawn all the time
+        // Workaround for some pads not redrawn all the time
         for (final Entry<ButtonID, IHwButton> entry: surface.getButtons ().entrySet ())
         {
             final ButtonID key = entry.getKey ();
@@ -413,163 +415,13 @@ public class LaunchpadControllerSetup extends AbstractControllerSetup<LaunchpadC
     }
 
 
-    private static int getStateColor (final LaunchpadControlSurface surface, final ButtonID buttonID)
-    {
-        if (surface.isShiftPressed ())
-            return LaunchpadColorManager.LAUNCHPAD_COLOR_GREEN_SPRING;
-        return surface.isPressed (buttonID) ? LaunchpadColorManager.LAUNCHPAD_COLOR_GREEN : LaunchpadColorManager.LAUNCHPAD_COLOR_GREEN_LO;
-    }
-
-
-    private static int get2StateColor (final LaunchpadControlSurface surface, final ButtonID buttonID)
-    {
-        final boolean isPressed = surface.isPressed (buttonID);
-        if (surface.isShiftPressed ())
-            return isPressed ? LaunchpadColorManager.LAUNCHPAD_COLOR_WHITE : LaunchpadColorManager.LAUNCHPAD_COLOR_GREEN_SPRING;
-        return isPressed ? LaunchpadColorManager.LAUNCHPAD_COLOR_GREEN : LaunchpadColorManager.LAUNCHPAD_COLOR_GREEN_LO;
-    }
-
-
-    private int getDeleteStateColor (final LaunchpadControlSurface surface)
-    {
-        if (surface.isShiftPressed ())
-            return this.model.getTransport ().isLoop () ? LaunchpadColorManager.LAUNCHPAD_COLOR_BLUE_HI : LaunchpadColorManager.LAUNCHPAD_COLOR_BLUE_LO;
-        return surface.isPressed (ButtonID.DELETE) ? LaunchpadColorManager.LAUNCHPAD_COLOR_MAGENTA_HI : LaunchpadColorManager.LAUNCHPAD_COLOR_MAGENTA_LO;
-    }
-
-
-    private static int getDuplicateStateColor (final LaunchpadControlSurface surface)
-    {
-        if (surface.isShiftPressed ())
-            return LaunchpadColorManager.LAUNCHPAD_COLOR_BLUE_ORCHID;
-        return LaunchpadColorManager.LAUNCHPAD_COLOR_BLUE;
-    }
-
-
-    private int getPlayStateColor (final LaunchpadControlSurface surface)
-    {
-        if (surface.isShiftPressed ())
-            return surface.isPressed (ButtonID.PLAY) ? LaunchpadColorManager.LAUNCHPAD_COLOR_WHITE : LaunchpadColorManager.LAUNCHPAD_COLOR_GREEN_SPRING;
-        return this.model.getTransport ().isPlaying () ? LaunchpadColorManager.LAUNCHPAD_COLOR_GREEN : LaunchpadColorManager.LAUNCHPAD_COLOR_GREEN_LO;
-    }
-
-
-    private int getNoteStateColor ()
+    private int getNoteButtonColor ()
     {
         final ViewManager viewManager = this.getSurface ().getViewManager ();
-
-        if (viewManager.isActive (Views.DRUM))
-            return LaunchpadColorManager.LAUNCHPAD_COLOR_YELLOW;
-
-        if (viewManager.isActive (Views.SEQUENCER))
-            return LaunchpadColorManager.LAUNCHPAD_COLOR_BLUE;
-
-        if (viewManager.isActive (Views.POLY_SEQUENCER))
-            return LaunchpadColorManager.LAUNCHPAD_COLOR_BLUE_ORCHID;
-
-        if (viewManager.isActive (Views.RAINDROPS))
-            return LaunchpadColorManager.LAUNCHPAD_COLOR_GREEN;
-
-        if (Views.isNoteView (viewManager.getActiveID ()))
-            return LaunchpadColorManager.LAUNCHPAD_COLOR_OCEAN_HI;
-
-        return LaunchpadColorManager.LAUNCHPAD_COLOR_GREY_LO;
-    }
-
-
-    private int getViewStateColor (final int viewColor, final Views... views)
-    {
-        final ViewManager viewManager = this.getSurface ().getViewManager ();
-        for (final Views view: views)
-        {
-            if (viewManager.isActive (view))
-                return viewColor;
-        }
-        return LaunchpadColorManager.LAUNCHPAD_COLOR_GREY_LO;
-    }
-
-
-    private int getTrackModeColorIndex (final int index)
-    {
-        final LaunchpadControlSurface surface = this.getSurface ();
-
-        if (surface.isPressed (ButtonID.NEW))
-            return LaunchpadColorManager.LAUNCHPAD_COLOR_WHITE;
-
-        final ITrackBank tb = this.model.getCurrentTrackBank ();
-        final ModeManager modeManager = surface.getModeManager ();
-
-        final ITrack track = tb.getItem (index);
-
-        if (!track.doesExist ())
-            return LaunchpadColorManager.LAUNCHPAD_COLOR_BLACK;
-
-        if (modeManager.isActive (Modes.REC_ARM))
-            return track.isRecArm () ? LaunchpadColorManager.LAUNCHPAD_COLOR_RED_HI : LaunchpadColorManager.LAUNCHPAD_COLOR_RED_LO;
-
-        if (modeManager.isActive (Modes.TRACK_SELECT))
-            return track.isSelected () ? LaunchpadColorManager.LAUNCHPAD_COLOR_GREEN_HI : LaunchpadColorManager.LAUNCHPAD_COLOR_GREEN_LO;
-
-        if (modeManager.isActive (Modes.MUTE))
-            return track.isMute () ? LaunchpadColorManager.LAUNCHPAD_COLOR_YELLOW_HI : LaunchpadColorManager.LAUNCHPAD_COLOR_YELLOW_LO;
-
-        if (modeManager.isActive (Modes.SOLO))
-            return track.isSolo () ? LaunchpadColorManager.LAUNCHPAD_COLOR_BLUE_HI : LaunchpadColorManager.LAUNCHPAD_COLOR_BLUE_LO;
-
-        if (modeManager.isActive (Modes.STOP_CLIP))
-            return surface.isPressed (ButtonID.get (ButtonID.PAD1, index)) ? LaunchpadColorManager.LAUNCHPAD_COLOR_RED : LaunchpadColorManager.LAUNCHPAD_COLOR_ROSE;
-
-        return this.colorManager.getColorIndex (DAWColor.getColorID (track.getColor ()));
-    }
-
-
-    private int getModeColorIndex (final ButtonID buttonID)
-    {
-        final LaunchpadControlSurface surface = this.getSurface ();
-        final ModeManager modeManager = surface.getModeManager ();
-        final ViewManager viewManager = surface.getViewManager ();
-
-        switch (buttonID)
-        {
-            case REC_ARM:
-                if (modeManager.isActive (Modes.REC_ARM))
-                    return LaunchpadColorManager.LAUNCHPAD_COLOR_RED;
-                return LaunchpadColorManager.LAUNCHPAD_COLOR_GREY_LO;
-            case TRACK:
-                if (modeManager.isActive (Modes.TRACK_SELECT))
-                    return LaunchpadColorManager.LAUNCHPAD_COLOR_GREEN;
-                return LaunchpadColorManager.LAUNCHPAD_COLOR_GREY_LO;
-            case MUTE:
-                if (modeManager.isActive (Modes.MUTE))
-                    return LaunchpadColorManager.LAUNCHPAD_COLOR_YELLOW;
-                return LaunchpadColorManager.LAUNCHPAD_COLOR_GREY_LO;
-            case SOLO:
-                // Pro Mk3 -> color Click
-                if (this.definition.hasTrackSelectionButtons () && surface.isShiftPressed ())
-                    return this.model.getTransport ().isMetronomeOn () ? LaunchpadColorManager.LAUNCHPAD_COLOR_GREEN : LaunchpadColorManager.LAUNCHPAD_COLOR_GREY_LO;
-
-                if (modeManager.isActive (Modes.SOLO))
-                    return LaunchpadColorManager.LAUNCHPAD_COLOR_BLUE;
-                return LaunchpadColorManager.LAUNCHPAD_COLOR_GREY_LO;
-            case VOLUME:
-                if (viewManager.isActive (Views.TRACK_VOLUME))
-                    return LaunchpadColorManager.LAUNCHPAD_COLOR_CYAN;
-                return LaunchpadColorManager.LAUNCHPAD_COLOR_GREY_LO;
-            case PAN_SEND:
-                if (viewManager.isActive (Views.TRACK_PAN))
-                    return LaunchpadColorManager.LAUNCHPAD_COLOR_SKY;
-                return LaunchpadColorManager.LAUNCHPAD_COLOR_GREY_LO;
-            case SENDS:
-                if (viewManager.isActive (Views.TRACK_SENDS))
-                    return LaunchpadColorManager.LAUNCHPAD_COLOR_ORCHID;
-                return LaunchpadColorManager.LAUNCHPAD_COLOR_GREY_LO;
-            case STOP_CLIP:
-                if (modeManager.isActive (Modes.STOP_CLIP))
-                    return LaunchpadColorManager.LAUNCHPAD_COLOR_ROSE;
-                return LaunchpadColorManager.LAUNCHPAD_COLOR_GREY_LO;
-            default:
-                return 0;
-        }
+        final Views activeID = viewManager.getActiveID ();
+        if (activeID == Views.CONTROL)
+            return LaunchpadColorManager.COLOR_VIEW_SELECTED;
+        return MAIN_VIEWS.contains (activeID) ? this.getViewColor () : LaunchpadColorManager.LAUNCHPAD_COLOR_GREY_LO;
     }
 
 
@@ -841,9 +693,133 @@ public class LaunchpadControllerSetup extends AbstractControllerSetup<LaunchpadC
         if (!isSelected)
             return;
 
-        // Do not leave Mix view if track selection changes
-        if (!this.getSurface ().getViewManager ().isActive (Views.MIX, Views.TRACK_PAN, Views.TRACK_VOLUME, Views.TRACK_SENDS))
+        // Do not restore preferred play view view if certain views are active
+        if (!this.getSurface ().getViewManager ().isActive (Views.MIX, Views.TRACK_PAN, Views.TRACK_VOLUME, Views.TRACK_SENDS, Views.DEVICE))
             super.handleTrackChange (isSelected);
+    }
+
+
+    private static int getStateColor (final LaunchpadControlSurface surface, final ButtonID buttonID)
+    {
+        if (surface.isShiftPressed ())
+            return LaunchpadColorManager.LAUNCHPAD_COLOR_GREEN_SPRING;
+        return surface.isPressed (buttonID) ? LaunchpadColorManager.LAUNCHPAD_COLOR_GREEN : LaunchpadColorManager.LAUNCHPAD_COLOR_GREEN_LO;
+    }
+
+
+    private static int get2StateColor (final LaunchpadControlSurface surface, final ButtonID buttonID)
+    {
+        final boolean isPressed = surface.isPressed (buttonID);
+        if (surface.isShiftPressed ())
+            return isPressed ? LaunchpadColorManager.LAUNCHPAD_COLOR_WHITE : LaunchpadColorManager.LAUNCHPAD_COLOR_GREEN_SPRING;
+        return isPressed ? LaunchpadColorManager.LAUNCHPAD_COLOR_GREEN : LaunchpadColorManager.LAUNCHPAD_COLOR_GREEN_LO;
+    }
+
+
+    private int getDeleteStateColor (final LaunchpadControlSurface surface)
+    {
+        if (surface.isShiftPressed ())
+            return this.model.getTransport ().isLoop () ? LaunchpadColorManager.LAUNCHPAD_COLOR_BLUE_HI : LaunchpadColorManager.LAUNCHPAD_COLOR_BLUE_LO;
+        return surface.isPressed (ButtonID.DELETE) ? LaunchpadColorManager.LAUNCHPAD_COLOR_MAGENTA_HI : LaunchpadColorManager.LAUNCHPAD_COLOR_MAGENTA_LO;
+    }
+
+
+    private static int getDuplicateStateColor (final LaunchpadControlSurface surface)
+    {
+        if (surface.isShiftPressed ())
+            return LaunchpadColorManager.LAUNCHPAD_COLOR_BLUE_ORCHID;
+        return LaunchpadColorManager.LAUNCHPAD_COLOR_BLUE;
+    }
+
+
+    private int getPlayStateColor (final LaunchpadControlSurface surface)
+    {
+        if (surface.isShiftPressed ())
+            return surface.isPressed (ButtonID.PLAY) ? LaunchpadColorManager.LAUNCHPAD_COLOR_WHITE : LaunchpadColorManager.LAUNCHPAD_COLOR_GREEN_SPRING;
+        return this.model.getTransport ().isPlaying () ? LaunchpadColorManager.LAUNCHPAD_COLOR_GREEN : LaunchpadColorManager.LAUNCHPAD_COLOR_GREEN_LO;
+    }
+
+
+    private int getViewStateColor (final int viewColor, final Views... views)
+    {
+        final ViewManager viewManager = this.getSurface ().getViewManager ();
+        for (final Views view: views)
+        {
+            if (viewManager.isActive (view))
+                return viewColor;
+        }
+        return LaunchpadColorManager.LAUNCHPAD_COLOR_GREY_LO;
+    }
+
+
+    private int getTrackModeColorIndex (final int index)
+    {
+        final LaunchpadControlSurface surface = this.getSurface ();
+
+        if (surface.isPressed (ButtonID.NEW))
+            return LaunchpadColorManager.LAUNCHPAD_COLOR_WHITE;
+
+        final ITrackBank tb = this.model.getCurrentTrackBank ();
+        final ModeManager modeManager = surface.getModeManager ();
+
+        final ITrack track = tb.getItem (index);
+
+        if (!track.doesExist ())
+            return LaunchpadColorManager.LAUNCHPAD_COLOR_BLACK;
+
+        switch (modeManager.getActiveID ())
+        {
+            case REC_ARM:
+                return track.isRecArm () ? LaunchpadColorManager.LAUNCHPAD_COLOR_RED_HI : LaunchpadColorManager.LAUNCHPAD_COLOR_RED_LO;
+
+            case TRACK_SELECT:
+                return track.isSelected () ? LaunchpadColorManager.LAUNCHPAD_COLOR_GREEN_HI : LaunchpadColorManager.LAUNCHPAD_COLOR_GREEN_LO;
+
+            case MUTE:
+                return track.isMute () ? LaunchpadColorManager.LAUNCHPAD_COLOR_YELLOW_HI : LaunchpadColorManager.LAUNCHPAD_COLOR_YELLOW_LO;
+
+            case SOLO:
+                return track.isSolo () ? LaunchpadColorManager.LAUNCHPAD_COLOR_BLUE_HI : LaunchpadColorManager.LAUNCHPAD_COLOR_BLUE_LO;
+
+            case STOP_CLIP:
+                return surface.isPressed (ButtonID.get (ButtonID.PAD1, index)) ? LaunchpadColorManager.LAUNCHPAD_COLOR_RED : LaunchpadColorManager.LAUNCHPAD_COLOR_ROSE;
+
+            default:
+                return this.colorManager.getColorIndex (DAWColor.getColorID (track.getColor ()));
+        }
+    }
+
+
+    private int getModeColorIndex (final ButtonID buttonID)
+    {
+        final LaunchpadControlSurface surface = this.getSurface ();
+        final ModeManager modeManager = surface.getModeManager ();
+        final ViewManager viewManager = surface.getViewManager ();
+
+        switch (buttonID)
+        {
+            case REC_ARM:
+                return modeManager.isActive (Modes.REC_ARM) ? LaunchpadColorManager.LAUNCHPAD_COLOR_RED : LaunchpadColorManager.LAUNCHPAD_COLOR_GREY_LO;
+            case TRACK:
+                return modeManager.isActive (Modes.TRACK_SELECT) ? LaunchpadColorManager.LAUNCHPAD_COLOR_GREEN : LaunchpadColorManager.LAUNCHPAD_COLOR_GREY_LO;
+            case MUTE:
+                return modeManager.isActive (Modes.MUTE) ? LaunchpadColorManager.LAUNCHPAD_COLOR_YELLOW : LaunchpadColorManager.LAUNCHPAD_COLOR_GREY_LO;
+            case SOLO:
+                // Pro Mk3 -> color Click
+                if (this.definition.hasTrackSelectionButtons () && surface.isShiftPressed ())
+                    return this.model.getTransport ().isMetronomeOn () ? LaunchpadColorManager.LAUNCHPAD_COLOR_GREEN : LaunchpadColorManager.LAUNCHPAD_COLOR_GREY_LO;
+                return modeManager.isActive (Modes.SOLO) ? LaunchpadColorManager.LAUNCHPAD_COLOR_BLUE : LaunchpadColorManager.LAUNCHPAD_COLOR_GREY_LO;
+            case VOLUME:
+                return viewManager.isActive (Views.TRACK_VOLUME) ? LaunchpadColorManager.LAUNCHPAD_COLOR_CYAN : LaunchpadColorManager.LAUNCHPAD_COLOR_GREY_LO;
+            case PAN_SEND:
+                return viewManager.isActive (Views.TRACK_PAN) ? LaunchpadColorManager.LAUNCHPAD_COLOR_SKY : LaunchpadColorManager.LAUNCHPAD_COLOR_GREY_LO;
+            case SENDS:
+                return viewManager.isActive (Views.TRACK_SENDS) ? LaunchpadColorManager.LAUNCHPAD_COLOR_ORCHID : LaunchpadColorManager.LAUNCHPAD_COLOR_GREY_LO;
+            case STOP_CLIP:
+                return modeManager.isActive (Modes.STOP_CLIP) ? LaunchpadColorManager.LAUNCHPAD_COLOR_ROSE : LaunchpadColorManager.LAUNCHPAD_COLOR_GREY_LO;
+            default:
+                return LaunchpadColorManager.LAUNCHPAD_COLOR_BLACK;
+        }
     }
 
 
@@ -853,34 +829,37 @@ public class LaunchpadControllerSetup extends AbstractControllerSetup<LaunchpadC
         switch (surface.getViewManager ().getActiveID ())
         {
             case SESSION, TRACK_VOLUME, TRACK_PAN, TRACK_SENDS, MIX:
-                return LaunchpadColorManager.LAUNCHPAD_COLOR_LIME;
+                return LaunchpadColorManager.COLOR_VIEW_MIXER;
 
             case PLAY, CHORDS, PIANO, DRUM64:
-                return LaunchpadColorManager.LAUNCHPAD_COLOR_AMBER;
+                return LaunchpadColorManager.COLOR_VIEW_PLAY;
 
             case SEQUENCER, POLY_SEQUENCER, RAINDROPS:
-                return LaunchpadColorManager.LAUNCHPAD_COLOR_YELLOW;
+                return LaunchpadColorManager.COLOR_VIEW_NOTE_SEQUENCER;
 
             case DRUM, DRUM4, DRUM8:
-                return LaunchpadColorManager.LAUNCHPAD_COLOR_OCEAN_HI;
+                return LaunchpadColorManager.COLOR_VIEW_DRUM_SEQUENCER;
 
             case DEVICE, BROWSER:
-                return LaunchpadColorManager.LAUNCHPAD_COLOR_TURQUOISE;
+                return LaunchpadColorManager.COLOR_VIEW_DEVICE;
+
+            case CLIP_LENGTH:
+                return LaunchpadColorManager.COLOR_VIEW_CLIP;
 
             case PROJECT:
-                return LaunchpadColorManager.LAUNCHPAD_COLOR_CYAN_HI;
+                return LaunchpadColorManager.COLOR_VIEW_PROJECT;
 
             case SHIFT:
-                return LaunchpadColorManager.LAUNCHPAD_COLOR_WHITE;
+                return LaunchpadColorManager.COLOR_VIEW_SHIFT;
 
             case TEMPO:
-                return LaunchpadColorManager.LAUNCHPAD_COLOR_BLUE_HI;
+                return LaunchpadColorManager.COLOR_VIEW_TEMPO;
 
             case SHUFFLE:
-                return LaunchpadColorManager.LAUNCHPAD_COLOR_PINK_HI;
+                return LaunchpadColorManager.COLOR_VIEW_SHUFFLE;
 
             default:
-                return LaunchpadColorManager.LAUNCHPAD_COLOR_BLACK;
+                return LaunchpadColorManager.COLOR_VIEW_OFF;
         }
     }
 

@@ -1331,7 +1331,7 @@ public abstract class AbstractControllerSetup<S extends IControlSurface<C>, C ex
      * @param buttonID The ID of the button
      * @return A color index
      */
-    protected int getViewColor (final ButtonID buttonID)
+    protected int getButtonColorFromActiveView (final ButtonID buttonID)
     {
         final IView view = this.getSurface ().getViewManager ().getActive ();
         return view == null ? 0 : view.getButtonColor (buttonID);

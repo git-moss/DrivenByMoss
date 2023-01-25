@@ -7,29 +7,40 @@ package de.mossgrabers.controller.novation.launchpad.command.trigger;
 import de.mossgrabers.controller.novation.launchpad.LaunchpadConfiguration;
 import de.mossgrabers.controller.novation.launchpad.controller.LaunchpadControlSurface;
 import de.mossgrabers.framework.command.core.AbstractTriggerCommand;
+import de.mossgrabers.framework.controller.display.IDisplay;
 import de.mossgrabers.framework.daw.IModel;
 import de.mossgrabers.framework.daw.data.ITrack;
 import de.mossgrabers.framework.featuregroup.ViewManager;
 import de.mossgrabers.framework.utils.ButtonEvent;
 import de.mossgrabers.framework.view.Views;
 
+import java.util.Collection;
+import java.util.HashSet;
+import java.util.Set;
+
 
 /**
- * Command to select the session view.
+ * Command to select a view (play, (drum-) sequencers and clip views).
  *
  * @author J&uuml;rgen Mo&szlig;graber
  */
-public class SelectNoteViewCommand extends AbstractTriggerCommand<LaunchpadControlSurface, LaunchpadConfiguration>
+public class SelectMainViewCommand extends AbstractTriggerCommand<LaunchpadControlSurface, LaunchpadConfiguration>
 {
+    private final Set<Views> allViewIds = new HashSet<> ();
+
+
     /**
      * Constructor.
      *
      * @param model The model
      * @param surface The surface
+     * @param allViewIds The views for checking for previous views
      */
-    public SelectNoteViewCommand (final IModel model, final LaunchpadControlSurface surface)
+    public SelectMainViewCommand (final IModel model, final LaunchpadControlSurface surface, final Collection<Views> allViewIds)
     {
         super (model, surface);
+
+        this.allViewIds.addAll (allViewIds);
     }
 
 
@@ -41,19 +52,19 @@ public class SelectNoteViewCommand extends AbstractTriggerCommand<LaunchpadContr
             return;
 
         final ViewManager viewManager = this.surface.getViewManager ();
+        final IDisplay display = this.surface.getDisplay ();
 
         if (viewManager.isActive (Views.CONTROL))
         {
             viewManager.restore ();
-            this.surface.getDisplay ().notify (viewManager.getActive ().getName ());
+            display.notify (viewManager.getActive ().getName ());
             return;
         }
 
-        Views viewID = viewManager.getActiveID ();
-        if (Views.isNoteView (viewID) || Views.isSequencerView (viewID))
+        if (this.allViewIds.contains (viewManager.getActiveID ()))
         {
             viewManager.setActive (Views.CONTROL);
-            this.surface.getDisplay ().notify ("Note / sequencer mode selection");
+            display.notify ("Note / sequencer mode selection");
             return;
         }
 
@@ -61,14 +72,14 @@ public class SelectNoteViewCommand extends AbstractTriggerCommand<LaunchpadContr
         if (!cursorTrack.doesExist ())
         {
             viewManager.setActive (Views.SESSION);
-            this.surface.getDisplay ().notify ("Session");
+            display.notify ("Session");
             return;
         }
 
-        viewID = viewManager.getPreferredView (cursorTrack.getPosition ());
+        Views viewID = viewManager.getPreferredView (cursorTrack.getPosition ());
         if (viewID == null)
             viewID = Views.PLAY;
         viewManager.setActive (viewID);
-        this.surface.getDisplay ().notify (viewManager.get (viewID).getName ());
+        display.notify (viewManager.get (viewID).getName ());
     }
 }

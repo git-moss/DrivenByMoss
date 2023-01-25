@@ -5,11 +5,10 @@
 package de.mossgrabers.controller.novation.launchpad.command.trigger;
 
 import de.mossgrabers.controller.novation.launchpad.LaunchpadConfiguration;
+import de.mossgrabers.controller.novation.launchpad.controller.LaunchpadColorManager;
 import de.mossgrabers.controller.novation.launchpad.controller.LaunchpadControlSurface;
 import de.mossgrabers.framework.command.core.AbstractTriggerCommand;
-import de.mossgrabers.framework.daw.IBrowser;
 import de.mossgrabers.framework.daw.IModel;
-import de.mossgrabers.framework.daw.data.ICursorDevice;
 import de.mossgrabers.framework.featuregroup.ViewManager;
 import de.mossgrabers.framework.utils.ButtonEvent;
 import de.mossgrabers.framework.view.Views;
@@ -43,6 +42,7 @@ public class SelectDeviceViewCommand extends AbstractTriggerCommand<LaunchpadCon
 
         final ViewManager viewManager = this.surface.getViewManager ();
 
+        // Switch to tempo view on Pro with Shift+Device
         if (this.surface.isPro () && this.surface.isShiftPressed ())
         {
             if (viewManager.isActive (Views.SHIFT))
@@ -52,26 +52,20 @@ public class SelectDeviceViewCommand extends AbstractTriggerCommand<LaunchpadCon
             return;
         }
 
-        final IBrowser browser = this.model.getBrowser ();
-        if (viewManager.isActive (Views.BROWSER))
-        {
-            browser.stopBrowsing (false);
-            viewManager.setActive (Views.DEVICE);
-            this.surface.getDisplay ().notify (viewManager.getActive ().getName ());
-            return;
-        }
-
-        if (viewManager.isActive (Views.DEVICE))
-        {
-            final ICursorDevice cursorDevice = this.model.getCursorDevice ();
-            if (this.surface.isShiftPressed () || !cursorDevice.doesExist ())
-                browser.insertAfterCursorDevice ();
-            else
-                browser.replace (cursorDevice);
-            return;
-        }
-
-        viewManager.setActive (Views.DEVICE);
+        // Toggle between device and user parameters mode
+        viewManager.setActive (viewManager.isActive (Views.DEVICE) ? Views.USER : Views.DEVICE);
         this.surface.getDisplay ().notify (viewManager.getActive ().getName ());
+    }
+
+
+    /**
+     * Get the button color LED.
+     *
+     * @return The color index
+     */
+    public int getButtonColor ()
+    {
+        final ViewManager viewManager = this.surface.getViewManager ();
+        return viewManager.isActive (Views.DEVICE, Views.USER) ? LaunchpadColorManager.LAUNCHPAD_COLOR_TURQUOISE : LaunchpadColorManager.LAUNCHPAD_COLOR_GREY_LO;
     }
 }

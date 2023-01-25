@@ -18,6 +18,7 @@ import de.mossgrabers.framework.view.AbstractSessionView;
 import de.mossgrabers.framework.view.ScenePlayView;
 import de.mossgrabers.framework.view.sequencer.AbstractDrumView;
 import de.mossgrabers.framework.view.sequencer.AbstractSequencerView;
+import de.mossgrabers.framework.view.sequencer.ClipLengthView;
 
 
 /**
@@ -466,21 +467,21 @@ public class PushColorManager extends ColorManager
     {
         this.isPush2 = isPush2;
 
-        this.registerColorIndex (PUSH_BLACK, this.isPush2 ? PushColorManager.PUSH2_COLOR_BLACK : PushColorManager.PUSH1_COLOR_BLACK);
-        this.registerColorIndex (PUSH_RED, this.isPush2 ? PushColorManager.PUSH2_COLOR_RED_HI : PushColorManager.PUSH1_COLOR_RED_HI);
-        this.registerColorIndex (PUSH_RED_LO, this.isPush2 ? PushColorManager.PUSH2_COLOR_RED_LO : PushColorManager.PUSH1_COLOR_RED_LO);
-        this.registerColorIndex (PUSH_RED_HI, this.isPush2 ? PushColorManager.PUSH2_COLOR_RED_HI : PushColorManager.PUSH1_COLOR_RED_HI);
-        this.registerColorIndex (PUSH_ORANGE_LO, this.isPush2 ? PushColorManager.PUSH2_COLOR_ORANGE_LO : PushColorManager.PUSH1_COLOR_ORANGE_LO);
-        this.registerColorIndex (PUSH_ORANGE_HI, this.isPush2 ? PushColorManager.PUSH2_COLOR_ORANGE_HI : PushColorManager.PUSH1_COLOR_ORANGE_HI);
-        this.registerColorIndex (PUSH_YELLOW_LO, this.isPush2 ? PushColorManager.PUSH2_COLOR_YELLOW_LO : PushColorManager.PUSH1_COLOR_YELLOW_LO);
-        this.registerColorIndex (PUSH_YELLOW_MD, this.isPush2 ? PushColorManager.PUSH2_COLOR_YELLOW_MD : PushColorManager.PUSH1_COLOR_YELLOW_MD);
-        this.registerColorIndex (PUSH_GREEN_LO, this.isPush2 ? PushColorManager.PUSH2_COLOR_GREEN_LO : PushColorManager.PUSH1_COLOR_GREEN_LO);
-        this.registerColorIndex (PUSH_GREEN_HI, this.isPush2 ? PushColorManager.PUSH2_COLOR_GREEN_HI : PushColorManager.PUSH1_COLOR_GREEN_HI);
+        this.registerColorIndex (PUSH_BLACK, this.isPush2 ? PUSH2_COLOR_BLACK : PUSH1_COLOR_BLACK);
+        this.registerColorIndex (PUSH_RED, this.isPush2 ? PUSH2_COLOR_RED_HI : PUSH1_COLOR_RED_HI);
+        this.registerColorIndex (PUSH_RED_LO, this.isPush2 ? PUSH2_COLOR_RED_LO : PUSH1_COLOR_RED_LO);
+        this.registerColorIndex (PUSH_RED_HI, this.isPush2 ? PUSH2_COLOR_RED_HI : PUSH1_COLOR_RED_HI);
+        this.registerColorIndex (PUSH_ORANGE_LO, this.isPush2 ? PUSH2_COLOR_ORANGE_LO : PUSH1_COLOR_ORANGE_LO);
+        this.registerColorIndex (PUSH_ORANGE_HI, this.isPush2 ? PUSH2_COLOR_ORANGE_HI : PUSH1_COLOR_ORANGE_HI);
+        this.registerColorIndex (PUSH_YELLOW_LO, this.isPush2 ? PUSH2_COLOR_YELLOW_LO : PUSH1_COLOR_YELLOW_LO);
+        this.registerColorIndex (PUSH_YELLOW_MD, this.isPush2 ? PUSH2_COLOR_YELLOW_MD : PUSH1_COLOR_YELLOW_MD);
+        this.registerColorIndex (PUSH_GREEN_LO, this.isPush2 ? PUSH2_COLOR_GREEN_LO : PUSH1_COLOR_GREEN_LO);
+        this.registerColorIndex (PUSH_GREEN_HI, this.isPush2 ? PUSH2_COLOR_GREEN_HI : PUSH1_COLOR_GREEN_HI);
 
-        this.registerColorIndex (PUSH_BLACK_2, this.isPush2 ? PushColorManager.PUSH2_COLOR2_BLACK : PushColorManager.PUSH1_COLOR2_BLACK);
-        this.registerColorIndex (PUSH_WHITE_2, this.isPush2 ? PushColorManager.PUSH2_COLOR2_WHITE : PushColorManager.PUSH1_COLOR2_WHITE);
-        this.registerColorIndex (PUSH_GREY_LO_2, this.isPush2 ? PushColorManager.PUSH2_COLOR2_GREY_LO : PushColorManager.PUSH1_COLOR2_GREY_LO);
-        this.registerColorIndex (PUSH_GREEN_2, this.isPush2 ? PushColorManager.PUSH2_COLOR2_GREEN : PushColorManager.PUSH1_COLOR2_GREEN);
+        this.registerColorIndex (PUSH_BLACK_2, this.isPush2 ? PUSH2_COLOR2_BLACK : PUSH1_COLOR2_BLACK);
+        this.registerColorIndex (PUSH_WHITE_2, this.isPush2 ? PUSH2_COLOR2_WHITE : PUSH1_COLOR2_WHITE);
+        this.registerColorIndex (PUSH_GREY_LO_2, this.isPush2 ? PUSH2_COLOR2_GREY_LO : PUSH1_COLOR2_GREY_LO);
+        this.registerColorIndex (PUSH_GREEN_2, this.isPush2 ? PUSH2_COLOR2_GREEN : PUSH1_COLOR2_GREEN);
 
         this.registerColorIndex (Scales.SCALE_COLOR_OFF, isPush2 ? PUSH2_COLOR2_BLACK : PUSH1_COLOR2_BLACK);
         this.registerColorIndex (Scales.SCALE_COLOR_OCTAVE, isPush2 ? PUSH2_COLOR2_OCEAN_HI : PUSH1_COLOR2_OCEAN_HI);
@@ -505,11 +506,11 @@ public class PushColorManager extends ColorManager
         this.registerColorIndex (AbstractSequencerView.COLOR_PAGE, isPush2 ? PUSH2_COLOR2_WHITE : PUSH1_COLOR2_WHITE);
         this.registerColorIndex (AbstractSequencerView.COLOR_ACTIVE_PAGE, isPush2 ? PUSH2_COLOR2_GREEN : PUSH1_COLOR2_GREEN);
         this.registerColorIndex (AbstractSequencerView.COLOR_SELECTED_PAGE, isPush2 ? PUSH2_COLOR2_OCEAN_HI : PUSH1_COLOR2_OCEAN_HI);
-        this.registerColorIndex (AbstractSequencerView.COLOR_RESOLUTION, isPush2 ? PushColorManager.PUSH2_COLOR_SCENE_ORANGE : PushColorManager.PUSH1_COLOR_SCENE_ORANGE);
-        this.registerColorIndex (AbstractSequencerView.COLOR_RESOLUTION_SELECTED, isPush2 ? PushColorManager.PUSH2_COLOR_SCENE_ORANGE_HI : PushColorManager.PUSH1_COLOR_SCENE_ORANGE_HI);
+        this.registerColorIndex (AbstractSequencerView.COLOR_RESOLUTION, isPush2 ? PUSH2_COLOR_SCENE_ORANGE : PUSH1_COLOR_SCENE_ORANGE);
+        this.registerColorIndex (AbstractSequencerView.COLOR_RESOLUTION_SELECTED, isPush2 ? PUSH2_COLOR_SCENE_ORANGE_HI : PUSH1_COLOR_SCENE_ORANGE_HI);
         this.registerColorIndex (AbstractSequencerView.COLOR_RESOLUTION_OFF, isPush2 ? PUSH2_COLOR2_BLACK : PUSH1_COLOR2_BLACK);
-        this.registerColorIndex (AbstractSequencerView.COLOR_TRANSPOSE, isPush2 ? PushColorManager.PUSH2_COLOR_SCENE_WHITE : PushColorManager.PUSH1_COLOR_SCENE_YELLOW);
-        this.registerColorIndex (AbstractSequencerView.COLOR_TRANSPOSE_SELECTED, isPush2 ? PushColorManager.PUSH2_COLOR_SCENE_YELLOW_HI : PushColorManager.PUSH1_COLOR_SCENE_YELLOW_HI);
+        this.registerColorIndex (AbstractSequencerView.COLOR_TRANSPOSE, isPush2 ? PUSH2_COLOR_SCENE_WHITE : PUSH1_COLOR_SCENE_YELLOW);
+        this.registerColorIndex (AbstractSequencerView.COLOR_TRANSPOSE_SELECTED, isPush2 ? PUSH2_COLOR_SCENE_YELLOW_HI : PUSH1_COLOR_SCENE_YELLOW_HI);
 
         this.registerColorIndex (AbstractDrumView.COLOR_PAD_OFF, isPush2 ? PUSH2_COLOR_BLACK : PUSH1_COLOR_BLACK);
         this.registerColorIndex (AbstractDrumView.COLOR_PAD_RECORD, isPush2 ? PUSH2_COLOR2_RED_HI : PUSH1_COLOR2_RED_HI);
@@ -523,8 +524,11 @@ public class PushColorManager extends ColorManager
         this.registerColorIndex (AbstractPlayView.COLOR_RECORD, isPush2 ? PUSH2_COLOR2_RED_HI : PUSH1_COLOR2_RED_HI);
         this.registerColorIndex (AbstractPlayView.COLOR_OFF, isPush2 ? PUSH2_COLOR2_BLACK : PUSH1_COLOR2_BLACK);
 
-        this.registerColorIndex (AbstractSessionView.COLOR_SCENE, isPush2 ? PushColorManager.PUSH2_COLOR_SCENE_GREEN : PushColorManager.PUSH1_COLOR_SCENE_GREEN);
-        this.registerColorIndex (AbstractSessionView.COLOR_SELECTED_SCENE, isPush2 ? PushColorManager.PUSH2_COLOR_SCENE_GREEN_HI : PushColorManager.PUSH1_COLOR_SCENE_GREEN_HI);
+        this.registerColorIndex (ClipLengthView.COLOR_OUTSIDE, isPush2 ? PUSH2_COLOR_BLACK : PUSH1_COLOR_BLACK);
+        this.registerColorIndex (ClipLengthView.COLOR_PART, isPush2 ? PUSH2_COLOR2_OCEAN_HI : PUSH1_COLOR2_OCEAN_HI);
+
+        this.registerColorIndex (AbstractSessionView.COLOR_SCENE, isPush2 ? PUSH2_COLOR_SCENE_GREEN : PUSH1_COLOR_SCENE_GREEN);
+        this.registerColorIndex (AbstractSessionView.COLOR_SELECTED_SCENE, isPush2 ? PUSH2_COLOR_SCENE_GREEN_HI : PUSH1_COLOR_SCENE_GREEN_HI);
         this.registerColorIndex (AbstractSessionView.COLOR_SCENE_OFF, isPush2 ? PUSH2_COLOR2_BLACK : PUSH1_COLOR2_BLACK);
 
         this.registerColorIndex (ScenePlayView.COLOR_SELECTED_PLAY_SCENE, isPush2 ? PUSH2_COLOR2_WHITE : PUSH1_COLOR2_WHITE);

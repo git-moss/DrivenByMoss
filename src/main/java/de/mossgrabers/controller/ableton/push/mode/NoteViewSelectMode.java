@@ -36,7 +36,7 @@ public class NoteViewSelectMode extends BaseMode<IItem>
         Views.DRUM64,
         null,
         null,
-        Views.CLIP,
+        Views.CLIP_LENGTH,
         Views.PRG_CHANGE
     };
 

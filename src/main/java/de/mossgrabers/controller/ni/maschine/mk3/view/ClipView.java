@@ -20,7 +20,7 @@ import java.util.Optional;
 
 
 /**
- * The Clip view.
+ * The Clip (session) view.
  *
  * @author J&uuml;rgen Mo&szlig;graber
  */

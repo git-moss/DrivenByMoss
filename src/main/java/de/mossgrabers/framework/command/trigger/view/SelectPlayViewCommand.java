@@ -12,7 +12,7 @@ import de.mossgrabers.framework.featuregroup.ViewManager;
 import de.mossgrabers.framework.utils.ButtonEvent;
 import de.mossgrabers.framework.view.Views;
 
-import java.util.Arrays;
+import java.util.Collection;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -37,26 +37,13 @@ public class SelectPlayViewCommand<S extends IControlSurface<C>, C extends Confi
      * @param model The model
      * @param surface The surface
      * @param viewIds The list with IDs of the views to select
-     */
-    public SelectPlayViewCommand (final IModel model, final S surface, final Views... viewIds)
-    {
-        this (model, surface, viewIds, viewIds);
-    }
-
-
-    /**
-     * Constructor.
-     *
-     * @param model The model
-     * @param surface The surface
-     * @param viewIds The list with IDs of the views to select
      * @param allViewIds The views for checking for previous play views
      */
-    public SelectPlayViewCommand (final IModel model, final S surface, final Views [] viewIds, final Views [] allViewIds)
+    public SelectPlayViewCommand (final IModel model, final S surface, final Views [] viewIds, final Collection<Views> allViewIds)
     {
         super (model, surface, viewIds);
 
-        this.allViewIds.addAll (Arrays.asList (allViewIds));
+        this.allViewIds.addAll (allViewIds);
     }
 
 

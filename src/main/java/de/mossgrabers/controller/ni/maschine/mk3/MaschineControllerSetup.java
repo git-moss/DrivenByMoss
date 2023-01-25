@@ -265,7 +265,7 @@ public class MaschineControllerSetup extends AbstractControllerSetup<MaschineCon
         final ViewManager viewManager = surface.getViewManager ();
 
         viewManager.register (Views.SCENE_PLAY, new SceneView (surface, this.model));
-        viewManager.register (Views.CLIP, new ClipView (surface, this.model));
+        viewManager.register (Views.SESSION, new ClipView (surface, this.model));
 
         final DrumView drumView = new DrumView (surface, this.model);
         viewManager.register (Views.DRUM, drumView);
@@ -443,7 +443,7 @@ public class MaschineControllerSetup extends AbstractControllerSetup<MaschineCon
         this.addButton (ButtonID.ACCENT, "ACCENT", new ToggleFixedVelCommand (this.model, surface), MaschineControlSurface.FIXED_VEL, this.configuration::isAccentActive);
 
         this.addButton (ButtonID.SCENE1, "SCENE", new ViewMultiSelectCommand<> (this.model, surface, Views.SCENE_PLAY), MaschineControlSurface.SCENE, () -> viewManager.isActive (Views.SCENE_PLAY));
-        this.addButton (ButtonID.CLIP, "PATTERN", new ViewMultiSelectCommand<> (this.model, surface, Views.CLIP), MaschineControlSurface.PATTERN, () -> viewManager.isActive (Views.CLIP));
+        this.addButton (ButtonID.CLIP, "PATTERN", new ViewMultiSelectCommand<> (this.model, surface, Views.SESSION), MaschineControlSurface.PATTERN, () -> viewManager.isActive (Views.CLIP_LENGTH));
         this.addButton (ButtonID.NOTE, "EVENTS", new ModeSelectCommand<> (this.model, surface, Modes.NOTE, true), MaschineControlSurface.EVENTS, () -> modeManager.isActive (Modes.NOTE));
         this.addButton (ButtonID.TOGGLE_DEVICE, this.maschine == Maschine.STUDIO || this.maschine == Maschine.MK2 ? "NAVIGATE" : "VARIATION", new ViewMultiSelectCommand<> (this.model, surface, Views.DEVICE), MaschineControlSurface.VARIATION, () -> viewManager.isActive (Views.DEVICE));
         this.addButton (ButtonID.DUPLICATE, "DUPLICATE", NopCommand.INSTANCE, MaschineControlSurface.DUPLICATE);

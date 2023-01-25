@@ -224,7 +224,7 @@ public class APCminiControllerSetup extends AbstractControllerSetup<APCminiContr
             final int index = i;
 
             final ButtonID buttonID = ButtonID.get (ButtonID.SCENE1, i);
-            this.addButton (buttonID, COL_NAMES[i], new ViewButtonCommand<> (buttonID, surface), APCminiControlSurface.APC_BUTTON_SCENE_BUTTON1 + i, () -> this.getViewColor (buttonID));
+            this.addButton (buttonID, COL_NAMES[i], new ViewButtonCommand<> (buttonID, surface), APCminiControlSurface.APC_BUTTON_SCENE_BUTTON1 + i, () -> this.getButtonColorFromActiveView (buttonID));
 
             this.addButton (ButtonID.get (ButtonID.ROW_SELECT_1, i), ROW_NAMES[i], new TrackSelectCommand (i, this.model, surface), APCminiControlSurface.APC_BUTTON_TRACK_BUTTON1 + i, () -> {
                 final IView view = viewManager.getActive ();

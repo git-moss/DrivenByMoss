@@ -36,7 +36,7 @@ public enum Views
     /** View sending program changes. */
     PRG_CHANGE,
     /** View for editing the clip length. */
-    CLIP,
+    CLIP_LENGTH,
     /** View for drum sequencing with 4 sounds. */
     DRUM4,
     /** View for drum sequencing with 8 sounds. */
@@ -127,8 +127,10 @@ public enum Views
     public static final String              NAME_POLY_SEQUENCER = "Poly Seq.";
     /** The name of the browser view. */
     public static final String              NAME_BROWSER        = "Browser";
+    /** The name of the clip length view. */
+    public static final String              NAME_CLIP_LENGTH    = "Clip Length";
 
-    private static final Map<String, Views> NOTE_VIEW_NAMES     = new HashMap<> ();
+    private static final Map<String, Views> VIEW_NAMES          = new HashMap<> ();
     private static final List<Views>        NOTE_VIEWS          = new ArrayList<> ();
     private static final Set<Views>         SEQUENCER_VIEWS     = new HashSet<> ();
     private static final Set<Views>         SESSION_VIEWS       = new HashSet<> ();
@@ -158,17 +160,19 @@ public enum Views
         NOTE_VIEWS.add (CHORDS);
         NOTE_VIEWS.add (PIANO);
         NOTE_VIEWS.add (DRUM64);
-        NOTE_VIEW_NAMES.put (NAME_PLAY, PLAY);
-        NOTE_VIEW_NAMES.put (NAME_CHORDS, CHORDS);
-        NOTE_VIEW_NAMES.put (NAME_PIANO, PIANO);
-        NOTE_VIEW_NAMES.put (NAME_DRUM64, DRUM64);
+        VIEW_NAMES.put (NAME_PLAY, PLAY);
+        VIEW_NAMES.put (NAME_CHORDS, CHORDS);
+        VIEW_NAMES.put (NAME_PIANO, PIANO);
+        VIEW_NAMES.put (NAME_DRUM64, DRUM64);
+
+        VIEW_NAMES.put (NAME_CLIP_LENGTH, CLIP_LENGTH);
 
         NOTE_VIEWS.add (DRUM);
         NOTE_VIEWS.add (DRUM4);
         NOTE_VIEWS.add (DRUM8);
-        NOTE_VIEW_NAMES.put (NAME_DRUM, DRUM);
-        NOTE_VIEW_NAMES.put (NAME_DRUM4, DRUM4);
-        NOTE_VIEW_NAMES.put (NAME_DRUM8, DRUM8);
+        VIEW_NAMES.put (NAME_DRUM, DRUM);
+        VIEW_NAMES.put (NAME_DRUM4, DRUM4);
+        VIEW_NAMES.put (NAME_DRUM8, DRUM8);
 
         SEQUENCER_VIEWS.add (DRUM);
         SEQUENCER_VIEWS.add (DRUM4);
@@ -177,9 +181,9 @@ public enum Views
         NOTE_VIEWS.add (SEQUENCER);
         NOTE_VIEWS.add (RAINDROPS);
         NOTE_VIEWS.add (POLY_SEQUENCER);
-        NOTE_VIEW_NAMES.put (NAME_SEQUENCER, SEQUENCER);
-        NOTE_VIEW_NAMES.put (NAME_RAINDROPS, RAINDROPS);
-        NOTE_VIEW_NAMES.put (NAME_POLY_SEQUENCER, POLY_SEQUENCER);
+        VIEW_NAMES.put (NAME_SEQUENCER, SEQUENCER);
+        VIEW_NAMES.put (NAME_RAINDROPS, RAINDROPS);
+        VIEW_NAMES.put (NAME_POLY_SEQUENCER, POLY_SEQUENCER);
 
         SEQUENCER_VIEWS.add (SEQUENCER);
         SEQUENCER_VIEWS.add (RAINDROPS);
@@ -227,26 +231,26 @@ public enum Views
 
 
     /**
-     * Get the note view at the given index.
+     * Get the view by its' name.
      *
      * @param name The name of the note view
      * @return The note view
      */
-    public static Views getNoteView (final String name)
+    public static Views getViewByName (final String name)
     {
-        return NOTE_VIEW_NAMES.get (name);
+        return VIEW_NAMES.get (name);
     }
 
 
     /**
-     * Get the note view name.
+     * Get the view name.
      *
      * @param view The view ID
      * @return The note view name
      */
-    public static String getNoteViewName (final Views view)
+    public static String getViewName (final Views view)
     {
-        for (final Map.Entry<String, Views> e: NOTE_VIEW_NAMES.entrySet ())
+        for (final Map.Entry<String, Views> e: VIEW_NAMES.entrySet ())
         {
             if (e.getValue () == view)
                 return e.getKey ();
