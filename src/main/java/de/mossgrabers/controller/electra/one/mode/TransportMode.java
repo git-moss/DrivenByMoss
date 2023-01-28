@@ -8,7 +8,6 @@ import de.mossgrabers.controller.electra.one.ElectraOneConfiguration;
 import de.mossgrabers.controller.electra.one.controller.ElectraOneColorManager;
 import de.mossgrabers.controller.electra.one.controller.ElectraOneControlSurface;
 import de.mossgrabers.framework.command.trigger.clip.NewCommand;
-import de.mossgrabers.framework.controller.ButtonID;
 import de.mossgrabers.framework.daw.IModel;
 import de.mossgrabers.framework.daw.IProject;
 import de.mossgrabers.framework.daw.ITransport;
@@ -17,11 +16,12 @@ import de.mossgrabers.framework.daw.data.IMarker;
 import de.mossgrabers.framework.daw.data.IMasterTrack;
 import de.mossgrabers.framework.daw.data.ISlot;
 import de.mossgrabers.framework.daw.data.bank.IMarkerBank;
-import de.mossgrabers.framework.mode.track.DefaultTrackMode;
+import de.mossgrabers.framework.parameter.PlayPositionParameter;
 import de.mossgrabers.framework.parameterprovider.special.CombinedParameterProvider;
 import de.mossgrabers.framework.parameterprovider.special.EmptyParameterProvider;
 import de.mossgrabers.framework.parameterprovider.special.FixedParameterProvider;
 import de.mossgrabers.framework.utils.ButtonEvent;
+import de.mossgrabers.framework.utils.StringUtils;
 
 import java.util.Optional;
 
@@ -31,9 +31,8 @@ import java.util.Optional;
  *
  * @author J&uuml;rgen Mo&szlig;graber
  */
-public class TransportMode extends DefaultTrackMode<ElectraOneControlSurface, ElectraOneConfiguration>
+public class TransportMode extends AbstractElectraOneMode
 {
-    private final PageCache                                                     pageCache;
     private final ITransport                                                    transport;
     private final IMasterTrack                                                  masterTrack;
     private final IProject                                                      project;
@@ -50,9 +49,7 @@ public class TransportMode extends DefaultTrackMode<ElectraOneControlSurface, El
      */
     public TransportMode (final ElectraOneControlSurface surface, final IModel model)
     {
-        super ("Transport", surface, model, true, ElectraOneControlSurface.KNOB_IDS);
-
-        this.pageCache = new PageCache (4, surface);
+        super (4, "Transport", surface, model);
 
         this.newCommand = new NewCommand<> (model, surface);
 
@@ -64,11 +61,15 @@ public class TransportMode extends DefaultTrackMode<ElectraOneControlSurface, El
                 // Row 1
                 new EmptyParameterProvider (5), new FixedParameterProvider (this.masterTrack.getVolumeParameter ()),
                 // Row 2
-                new EmptyParameterProvider (5), new FixedParameterProvider (this.project.getCueVolumeParameter ()),
-                // Row 3-5 have only knobs
-                new EmptyParameterProvider (3 * 6),
+                new EmptyParameterProvider (5), new FixedParameterProvider (new PlayPositionParameter (model.getValueChanger (), this.transport, surface)),
+                // Row 3
+                new EmptyParameterProvider (5), new FixedParameterProvider (this.transport.getTempoParameter ()),
+                // Row 4
+                new EmptyParameterProvider (6),
+                // Row 5
+                new EmptyParameterProvider (1), new FixedParameterProvider (this.transport.getMetronomeVolumeParameter ()), new FixedParameterProvider (this.project.getCueVolumeParameter ()), new EmptyParameterProvider (3),
                 // Row 6
-                new EmptyParameterProvider (2), new FixedParameterProvider (this.transport.getMetronomeVolumeParameter ()), new EmptyParameterProvider (3)));
+                new EmptyParameterProvider (6)));
     }
 
 
@@ -78,34 +79,6 @@ public class TransportMode extends DefaultTrackMode<ElectraOneControlSurface, El
     {
         if (event != ButtonEvent.DOWN)
             return;
-
-        if (column == 5)
-        {
-            switch (row)
-            {
-                // Add marker
-                case 2:
-                    this.model.getMarkerBank ().addMarker ();
-                    break;
-                // Toggle marker select/launch
-                case 3:
-                    this.launchMarkers = !this.launchMarkers;
-                    break;
-                // Record
-                case 4:
-                    this.transport.startRecording ();
-                    break;
-                // Play
-                case 5:
-                    this.transport.play ();
-                    break;
-
-                default:
-                    // Not used
-                    break;
-            }
-            return;
-        }
 
         switch (row)
         {
@@ -163,21 +136,26 @@ public class TransportMode extends DefaultTrackMode<ElectraOneControlSurface, El
                 }
                 break;
 
-            case 2, 3:
-                final IMarkerBank markerBank = this.model.getMarkerBank ();
+            case 2:
                 if (column == 0)
+                    this.model.getMarkerBank ().selectPreviousPage ();
+                else if (column < 5)
+                    this.handleMarker (column - 1);
+                break;
+
+            case 3:
+                switch (column)
                 {
-                    if (row == 2)
-                        markerBank.selectNextPage ();
-                    else
-                        markerBank.selectPreviousPage ();
-                    return;
+                    case 0:
+                        this.model.getMarkerBank ().selectNextPage ();
+                        break;
+                    case 5:
+                        this.transport.tapTempo ();
+                        break;
+                    default:
+                        this.handleMarker (4 + column - 1);
+                        break;
                 }
-                final IMarker marker = markerBank.getItem (4 * (row - 2) + column - 1);
-                if (this.launchMarkers)
-                    marker.launch (true);
-                else
-                    marker.select ();
                 break;
 
             case 4:
@@ -186,17 +164,11 @@ public class TransportMode extends DefaultTrackMode<ElectraOneControlSurface, El
                     case 0:
                         this.model.getApplication ().redo ();
                         break;
-                    case 1:
-                        this.transport.tapTempo ();
-                        break;
-                    case 2:
-                        this.transport.changeTempo (false, false);
-                        break;
-                    case 3:
-                        this.transport.changeTempo (true, false);
-                        break;
                     case 4:
-                        this.transport.changePosition (false, false);
+                        this.model.getMarkerBank ().addMarker ();
+                        break;
+                    case 5:
+                        this.transport.startRecording ();
                         break;
                     default:
                         // Not used
@@ -213,14 +185,14 @@ public class TransportMode extends DefaultTrackMode<ElectraOneControlSurface, El
                     case 1:
                         this.transport.toggleMetronome ();
                         break;
-                    case 2:
-                        // Not used
-                        break;
                     case 3:
                         this.transport.toggleOverdub ();
                         break;
                     case 4:
-                        this.transport.changePosition (true, false);
+                        this.launchMarkers = !this.launchMarkers;
+                        break;
+                    case 5:
+                        this.transport.play ();
                         break;
                     default:
                         // Not used
@@ -233,45 +205,47 @@ public class TransportMode extends DefaultTrackMode<ElectraOneControlSurface, El
 
     /** {@inheritDoc} */
     @Override
-    public int getButtonColor (final ButtonID buttonID)
-    {
-        return ElectraOneColorManager.COLOR_BUTTON_STATE_OFF;
-    }
-
-
-    /** {@inheritDoc} */
-    @Override
     public void updateDisplay ()
     {
         final IMarkerBank markerBank = this.model.getMarkerBank ();
         for (int i = 0; i < 4; i++)
         {
             IMarker marker = markerBank.getItem (i);
-            this.pageCache.updateElement (2, 1 + i, marker.getName (), marker.getColor (), Boolean.valueOf ((marker.doesExist ())));
+            this.pageCache.updateElement (2, 1 + i, marker.getName (), marker.getColor (), Boolean.valueOf (marker.doesExist ()));
             marker = markerBank.getItem (4 + i);
-            this.pageCache.updateElement (3, 1 + i, marker.getName (), marker.getColor (), Boolean.valueOf ((marker.doesExist ())));
+            this.pageCache.updateElement (3, 1 + i, marker.getName (), marker.getColor (), Boolean.valueOf (marker.doesExist ()));
         }
 
-        this.pageCache.updateColor (0, 2, this.transport.isWritingArrangerAutomation () ? ElectraOneColorManager.AUTO_ON : ElectraOneColorManager.AUTO_OFF);
-        this.pageCache.updateColor (1, 2, this.transport.isWritingClipLauncherAutomation () ? ElectraOneColorManager.AUTO_ON : ElectraOneColorManager.AUTO_OFF);
-        this.pageCache.updateColor (1, 1, this.transport.isLauncherOverdub () ? ElectraOneColorManager.AUTO_MODE_ON : ElectraOneColorManager.AUTO_MODE_OFF);
-
         final AutomationMode automationWriteMode = this.transport.getAutomationWriteMode ();
+
+        // Row 1
+        this.pageCache.updateColor (0, 2, this.transport.isWritingArrangerAutomation () ? ElectraOneColorManager.AUTO_ON : ElectraOneColorManager.AUTO_OFF);
         this.pageCache.updateColor (0, 3, automationWriteMode == AutomationMode.READ ? ElectraOneColorManager.AUTO_MODE_ON : ElectraOneColorManager.AUTO_MODE_OFF);
         this.pageCache.updateColor (0, 4, automationWriteMode == AutomationMode.WRITE ? ElectraOneColorManager.AUTO_MODE_ON : ElectraOneColorManager.AUTO_MODE_OFF);
+
+        // Row 2
+        this.pageCache.updateColor (1, 1, this.transport.isLauncherOverdub () ? ElectraOneColorManager.AUTO_MODE_ON : ElectraOneColorManager.AUTO_MODE_OFF);
+        this.pageCache.updateColor (1, 2, this.transport.isWritingClipLauncherAutomation () ? ElectraOneColorManager.AUTO_ON : ElectraOneColorManager.AUTO_OFF);
         this.pageCache.updateColor (1, 3, automationWriteMode == AutomationMode.LATCH ? ElectraOneColorManager.AUTO_MODE_ON : ElectraOneColorManager.AUTO_MODE_OFF);
         this.pageCache.updateColor (1, 4, automationWriteMode == AutomationMode.TOUCH ? ElectraOneColorManager.AUTO_MODE_ON : ElectraOneColorManager.AUTO_MODE_OFF);
 
-        this.pageCache.updateColor (3, 5, this.launchMarkers ? ElectraOneColorManager.MARKER_LAUNCH_ON : ElectraOneColorManager.MARKER_LAUNCH_OFF);
+        // Row 3
+        this.pageCache.updateValue (2, 5, 0, this.transport.getTempoParameter ().getDisplayedValue ());
 
+        // Row 5
+        this.pageCache.updateValue (4, 1, this.transport.getMetronomeVolume (), StringUtils.optimizeName (StringUtils.fixASCII (this.transport.getMetronomeVolumeStr ()), 15));
+        this.pageCache.updateValue (4, 2, this.project.getCueVolume (), StringUtils.optimizeName (StringUtils.fixASCII (this.project.getCueVolumeStr ()), 15));
+
+        // Row 6
         this.pageCache.updateColor (5, 1, this.transport.isMetronomeOn () ? ElectraOneColorManager.METRONOME_ON : ElectraOneColorManager.METRONOME_OFF);
-        this.pageCache.updateValue (5, 2, this.transport.getMetronomeVolume ());
         this.pageCache.updateColor (5, 3, this.transport.isArrangerOverdub () ? ElectraOneColorManager.AUTO_MODE_ON : ElectraOneColorManager.AUTO_MODE_OFF);
+        this.pageCache.updateColor (5, 4, this.launchMarkers ? ElectraOneColorManager.MARKER_LAUNCH_ON : ElectraOneColorManager.MARKER_LAUNCH_OFF);
 
         // Master
         this.pageCache.updateColor (0, 5, this.masterTrack.getColor ());
-        this.pageCache.updateValue (0, 5, this.masterTrack.getVolume ());
-        this.pageCache.updateValue (1, 5, this.project.getCueVolume ());
+        this.pageCache.updateValue (0, 5, this.masterTrack.getVolume (), StringUtils.optimizeName (StringUtils.fixASCII (this.masterTrack.getVolumeStr ()), 15));
+        this.pageCache.updateValue (1, 5, 0, StringUtils.optimizeName (StringUtils.fixASCII (this.transport.getBeatText ()), 15));
+        this.pageCache.updateElement (1, 5, StringUtils.optimizeName (StringUtils.fixASCII (this.transport.getPositionText ()), 15), null, null);
 
         // Transport
         this.pageCache.updateColor (4, 5, this.transport.isRecording () ? ElectraOneColorManager.RECORD_ON : ElectraOneColorManager.RECORD_OFF);
@@ -281,12 +255,12 @@ public class TransportMode extends DefaultTrackMode<ElectraOneControlSurface, El
     }
 
 
-    /** {@inheritDoc} */
-    @Override
-    public void onActivate ()
+    private void handleMarker (final int markerIndex)
     {
-        this.pageCache.reset ();
-
-        super.onActivate ();
+        final IMarker marker = this.model.getMarkerBank ().getItem (markerIndex);
+        if (this.launchMarkers)
+            marker.launch (true);
+        else
+            marker.select ();
     }
 }

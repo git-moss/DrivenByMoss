@@ -39,6 +39,8 @@ public class VirtualFaderImpl implements IVirtualFader
     };
     // @formatter:on
 
+    private static final int            LOOP_DELAY             = 6;
+
     private final IHost                 host;
     private final IVirtualFaderCallback callback;
     private final IPadGrid              padGrid;
@@ -125,8 +127,8 @@ public class VirtualFaderImpl implements IVirtualFader
     public void moveTo (final int row, final int velocity)
     {
         // About 3 seconds on softest velocity
-        this.moveDelay = SPEED_SCALE[velocity];
-        this.moveTimerDelay = SPEED_SCALE[SPEED_SCALE.length - 1 - velocity];
+        this.moveDelay = SPEED_SCALE[velocity] * LOOP_DELAY;
+        this.moveTimerDelay = SPEED_SCALE[SPEED_SCALE.length - 1 - velocity] * LOOP_DELAY;
 
         // Compensate for parameter type detection delay
         this.moveTimerDelay -= 1;
@@ -177,7 +179,6 @@ public class VirtualFaderImpl implements IVirtualFader
     protected void moveFaderToDestination ()
     {
         final int current = this.callback.getValue ();
-
         if (current == this.moveDestination)
             return;
 
@@ -187,7 +188,7 @@ public class VirtualFaderImpl implements IVirtualFader
         this.callback.setValue (this.moveTargetValue);
 
         // Delay to allow the parameter value to update properly
-        this.host.scheduleTask (this::moveFaderToDestinationCallback, 1);
+        this.host.scheduleTask (this::moveFaderToDestinationCallback, LOOP_DELAY);
     }
 
 
@@ -197,8 +198,11 @@ public class VirtualFaderImpl implements IVirtualFader
 
         // Compare updated parameter value to target update value, if it is different the parameter
         // is either a boolean or selection list type and the destination value should be force set
+        // It seems that setting USER parameters is slower and LOOP_DELAY needs to be at least 6!
         if (!this.isKnobType && updatedValue != this.moveTargetValue)
         {
+            this.host.println ("FORCED!");
+
             this.callback.setValue (this.moveDestination);
             return;
         }

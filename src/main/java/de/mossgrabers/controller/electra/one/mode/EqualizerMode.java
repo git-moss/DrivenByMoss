@@ -4,12 +4,9 @@
 
 package de.mossgrabers.controller.electra.one.mode;
 
-import de.mossgrabers.controller.electra.one.ElectraOneConfiguration;
 import de.mossgrabers.controller.electra.one.controller.ElectraOneColorManager;
 import de.mossgrabers.controller.electra.one.controller.ElectraOneControlSurface;
-import de.mossgrabers.framework.controller.ButtonID;
 import de.mossgrabers.framework.daw.IModel;
-import de.mossgrabers.framework.daw.IProject;
 import de.mossgrabers.framework.daw.ITransport;
 import de.mossgrabers.framework.daw.constants.DeviceID;
 import de.mossgrabers.framework.daw.data.EqualizerBandType;
@@ -17,12 +14,14 @@ import de.mossgrabers.framework.daw.data.IEqualizerDevice;
 import de.mossgrabers.framework.daw.data.IMasterTrack;
 import de.mossgrabers.framework.daw.data.ITrack;
 import de.mossgrabers.framework.mode.Modes;
-import de.mossgrabers.framework.mode.track.DefaultTrackMode;
+import de.mossgrabers.framework.parameter.IParameter;
+import de.mossgrabers.framework.parameter.PlayPositionParameter;
 import de.mossgrabers.framework.parameterprovider.IParameterProvider;
 import de.mossgrabers.framework.parameterprovider.special.CombinedParameterProvider;
 import de.mossgrabers.framework.parameterprovider.special.EmptyParameterProvider;
 import de.mossgrabers.framework.parameterprovider.special.FixedParameterProvider;
 import de.mossgrabers.framework.utils.ButtonEvent;
+import de.mossgrabers.framework.utils.StringUtils;
 
 import java.util.Optional;
 
@@ -32,12 +31,10 @@ import java.util.Optional;
  *
  * @author J&uuml;rgen Mo&szlig;graber
  */
-public class EqualizerMode extends DefaultTrackMode<ElectraOneControlSurface, ElectraOneConfiguration>
+public class EqualizerMode extends AbstractElectraOneMode
 {
-    private final PageCache        pageCache;
     private final ITransport       transport;
     private final IMasterTrack     masterTrack;
-    private final IProject         project;
     private final IEqualizerDevice eqDevice;
 
 
@@ -49,13 +46,10 @@ public class EqualizerMode extends DefaultTrackMode<ElectraOneControlSurface, El
      */
     public EqualizerMode (final ElectraOneControlSurface surface, final IModel model)
     {
-        super (Modes.NAME_EQUALIZER, surface, model, true, ElectraOneControlSurface.KNOB_IDS);
-
-        this.pageCache = new PageCache (3, surface);
+        super (3, Modes.NAME_EQUALIZER, surface, model);
 
         this.transport = this.model.getTransport ();
         this.masterTrack = this.model.getMasterTrack ();
-        this.project = this.model.getProject ();
 
         this.eqDevice = (IEqualizerDevice) this.model.getSpecificDevice (DeviceID.EQ);
 
@@ -64,7 +58,7 @@ public class EqualizerMode extends DefaultTrackMode<ElectraOneControlSurface, El
                 // Row 1
                 emptyProvider, new FixedParameterProvider (this.eqDevice.getTypeParameter (0), this.eqDevice.getFrequencyParameter (0), this.eqDevice.getGainParameter (0), this.eqDevice.getQParameter (0), this.masterTrack.getVolumeParameter ()),
                 // Row 2
-                emptyProvider, new FixedParameterProvider (this.eqDevice.getTypeParameter (1), this.eqDevice.getFrequencyParameter (1), this.eqDevice.getGainParameter (1), this.eqDevice.getQParameter (1), this.project.getCueVolumeParameter ()),
+                emptyProvider, new FixedParameterProvider (this.eqDevice.getTypeParameter (1), this.eqDevice.getFrequencyParameter (1), this.eqDevice.getGainParameter (1), this.eqDevice.getQParameter (1), new PlayPositionParameter (model.getValueChanger (), this.transport, surface)),
                 // Row 3
                 emptyProvider, new FixedParameterProvider (this.eqDevice.getTypeParameter (2), this.eqDevice.getFrequencyParameter (2), this.eqDevice.getGainParameter (2), this.eqDevice.getQParameter (2)), emptyProvider,
                 // Row 4
@@ -123,14 +117,6 @@ public class EqualizerMode extends DefaultTrackMode<ElectraOneControlSurface, El
 
     /** {@inheritDoc} */
     @Override
-    public int getButtonColor (final ButtonID buttonID)
-    {
-        return ElectraOneColorManager.COLOR_BUTTON_STATE_OFF;
-    }
-
-
-    /** {@inheritDoc} */
-    @Override
     public void updateDisplay ()
     {
         for (int row = 0; row < 6; row++)
@@ -140,10 +126,15 @@ public class EqualizerMode extends DefaultTrackMode<ElectraOneControlSurface, El
 
             this.pageCache.updateColor (row, 0, exists.booleanValue () ? ElectraOneColorManager.BAND_ON : ElectraOneColorManager.BAND_OFF);
 
-            this.pageCache.updateValue (row, 1, this.eqDevice.getTypeParameter (row).getValue ());
-            this.pageCache.updateValue (row, 2, this.eqDevice.getFrequencyParameter (row).getValue ());
-            this.pageCache.updateValue (row, 3, this.eqDevice.getGainParameter (row).getValue ());
-            this.pageCache.updateValue (row, 4, this.eqDevice.getQParameter (row).getValue ());
+            final IParameter typeParameter = this.eqDevice.getTypeParameter (row);
+            final IParameter frequencyParameter = this.eqDevice.getFrequencyParameter (row);
+            final IParameter gainParameter = this.eqDevice.getGainParameter (row);
+            final IParameter qParameter = this.eqDevice.getQParameter (row);
+
+            this.pageCache.updateValue (row, 1, typeParameter.getValue (), StringUtils.optimizeName (StringUtils.fixASCII (typeParameter.getDisplayedValue ()), 15));
+            this.pageCache.updateValue (row, 2, frequencyParameter.getValue (), StringUtils.optimizeName (StringUtils.fixASCII (frequencyParameter.getDisplayedValue ()), 15));
+            this.pageCache.updateValue (row, 3, gainParameter.getValue (), StringUtils.optimizeName (StringUtils.fixASCII (gainParameter.getDisplayedValue ()), 15));
+            this.pageCache.updateValue (row, 4, qParameter.getValue (), StringUtils.optimizeName (StringUtils.fixASCII (qParameter.getDisplayedValue ()), 15));
 
             this.pageCache.updateElement (row, 2, null, null, exists);
             this.pageCache.updateElement (row, 3, null, null, exists);
@@ -154,23 +145,14 @@ public class EqualizerMode extends DefaultTrackMode<ElectraOneControlSurface, El
 
         // Master
         this.pageCache.updateColor (0, 5, this.masterTrack.getColor ());
-        this.pageCache.updateValue (0, 5, this.masterTrack.getVolume ());
-        this.pageCache.updateValue (1, 5, this.project.getCueVolume ());
+        this.pageCache.updateValue (0, 5, this.masterTrack.getVolume (), StringUtils.optimizeName (StringUtils.fixASCII (this.masterTrack.getVolumeStr ()), 15));
+        this.pageCache.updateValue (1, 5, 0, StringUtils.optimizeName (StringUtils.fixASCII (this.transport.getBeatText ()), 15));
+        this.pageCache.updateElement (1, 5, StringUtils.optimizeName (StringUtils.fixASCII (this.transport.getPositionText ()), 15), null, null);
 
         // Transport
         this.pageCache.updateColor (4, 5, this.transport.isRecording () ? ElectraOneColorManager.RECORD_ON : ElectraOneColorManager.RECORD_OFF);
         this.pageCache.updateColor (5, 5, this.transport.isPlaying () ? ElectraOneColorManager.PLAY_ON : ElectraOneColorManager.PLAY_OFF);
 
         this.pageCache.flush ();
-    }
-
-
-    /** {@inheritDoc} */
-    @Override
-    public void onActivate ()
-    {
-        this.pageCache.reset ();
-
-        super.onActivate ();
     }
 }

@@ -51,7 +51,7 @@ public class UserView extends AbstractFaderView
     @Override
     public void onValueKnob (final int index, final int value)
     {
-        this.userParameterBank.getItem (index).setValue (value);
+        this.userParameterBank.getItem (index).setValueImmediatly (value);
     }
 
 

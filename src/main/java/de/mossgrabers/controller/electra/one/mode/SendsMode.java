@@ -4,13 +4,10 @@
 
 package de.mossgrabers.controller.electra.one.mode;
 
-import de.mossgrabers.controller.electra.one.ElectraOneConfiguration;
 import de.mossgrabers.controller.electra.one.controller.ElectraOneColorManager;
 import de.mossgrabers.controller.electra.one.controller.ElectraOneControlSurface;
-import de.mossgrabers.framework.controller.ButtonID;
 import de.mossgrabers.framework.controller.color.ColorEx;
 import de.mossgrabers.framework.daw.IModel;
-import de.mossgrabers.framework.daw.IProject;
 import de.mossgrabers.framework.daw.ITransport;
 import de.mossgrabers.framework.daw.data.IMasterTrack;
 import de.mossgrabers.framework.daw.data.ISend;
@@ -18,12 +15,13 @@ import de.mossgrabers.framework.daw.data.ITrack;
 import de.mossgrabers.framework.daw.data.bank.ISendBank;
 import de.mossgrabers.framework.daw.data.empty.EmptyTrack;
 import de.mossgrabers.framework.mode.Modes;
-import de.mossgrabers.framework.mode.track.DefaultTrackMode;
+import de.mossgrabers.framework.parameter.PlayPositionParameter;
 import de.mossgrabers.framework.parameterprovider.special.CombinedParameterProvider;
 import de.mossgrabers.framework.parameterprovider.special.EmptyParameterProvider;
 import de.mossgrabers.framework.parameterprovider.special.FixedParameterProvider;
 import de.mossgrabers.framework.parameterprovider.track.SendParameterProvider;
 import de.mossgrabers.framework.utils.ButtonEvent;
+import de.mossgrabers.framework.utils.StringUtils;
 
 import java.util.Optional;
 
@@ -33,14 +31,12 @@ import java.util.Optional;
  *
  * @author J&uuml;rgen Mo&szlig;graber
  */
-public class SendsMode extends DefaultTrackMode<ElectraOneControlSurface, ElectraOneConfiguration>
+public class SendsMode extends AbstractElectraOneMode
 {
     private static final int   FIRST_TRACK_GROUP = 510;
 
-    private final PageCache    pageCache;
     private final ITransport   transport;
     private final IMasterTrack masterTrack;
-    private final IProject     project;
 
 
     /**
@@ -51,19 +47,16 @@ public class SendsMode extends DefaultTrackMode<ElectraOneControlSurface, Electr
      */
     public SendsMode (final ElectraOneControlSurface surface, final IModel model)
     {
-        super (Modes.NAME_SENDS, surface, model, true, ElectraOneControlSurface.KNOB_IDS);
-
-        this.pageCache = new PageCache (1, surface);
+        super (1, Modes.NAME_SENDS, surface, model);
 
         this.transport = this.model.getTransport ();
         this.masterTrack = this.model.getMasterTrack ();
-        this.project = this.model.getProject ();
 
         this.setParameterProvider (new CombinedParameterProvider (
                 // Row 1
                 new SendParameterProvider (model, 0, 0), new FixedParameterProvider (this.masterTrack.getVolumeParameter ()),
                 // Row 2
-                new SendParameterProvider (model, 1, 0), new FixedParameterProvider (this.project.getCueVolumeParameter ()),
+                new SendParameterProvider (model, 1, 0), new FixedParameterProvider (new PlayPositionParameter (model.getValueChanger (), this.transport, surface)),
                 // Row 3
                 new SendParameterProvider (model, 2, 0), new EmptyParameterProvider (1),
                 // Row 4
@@ -110,14 +103,6 @@ public class SendsMode extends DefaultTrackMode<ElectraOneControlSurface, Electr
 
     /** {@inheritDoc} */
     @Override
-    public int getButtonColor (final ButtonID buttonID)
-    {
-        return ElectraOneColorManager.COLOR_BUTTON_STATE_OFF;
-    }
-
-
-    /** {@inheritDoc} */
-    @Override
     public void updateDisplay ()
     {
         for (int column = 0; column < 5; column++)
@@ -133,14 +118,15 @@ public class SendsMode extends DefaultTrackMode<ElectraOneControlSurface, Electr
                 final ISendBank sendBank = track.getSendBank ();
                 final ISend send = sendBank.getItem (row);
 
-                this.pageCache.updateValue (row, column, send.getValue ());
+                this.pageCache.updateValue (row, column, send.getValue (), StringUtils.optimizeName (StringUtils.fixASCII (send.getDisplayedValue ()), 15));
                 this.pageCache.updateElement (row, column, send.getName (), color, Boolean.valueOf (send.doesExist ()));
             }
 
             // Master
             this.pageCache.updateColor (0, 5, this.masterTrack.getColor ());
-            this.pageCache.updateValue (0, 5, this.masterTrack.getVolume ());
-            this.pageCache.updateValue (1, 5, this.project.getCueVolume ());
+            this.pageCache.updateValue (0, 5, this.masterTrack.getVolume (), StringUtils.optimizeName (StringUtils.fixASCII (this.masterTrack.getVolumeStr ()), 15));
+            this.pageCache.updateValue (1, 5, 0, StringUtils.optimizeName (StringUtils.fixASCII (this.transport.getBeatText ()), 15));
+            this.pageCache.updateElement (1, 5, StringUtils.optimizeName (StringUtils.fixASCII (this.transport.getPositionText ()), 15), null, null);
 
             // Transport
             this.pageCache.updateColor (4, 5, this.transport.isRecording () ? ElectraOneColorManager.RECORD_ON : ElectraOneColorManager.RECORD_OFF);
@@ -148,15 +134,5 @@ public class SendsMode extends DefaultTrackMode<ElectraOneControlSurface, Electr
         }
 
         this.pageCache.flush ();
-    }
-
-
-    /** {@inheritDoc} */
-    @Override
-    public void onActivate ()
-    {
-        this.pageCache.reset ();
-
-        super.onActivate ();
     }
 }

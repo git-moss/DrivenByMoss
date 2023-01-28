@@ -144,7 +144,7 @@ public class LaunchpadConfiguration extends AbstractConfiguration
 
     /**
      * Get the pad brightness.
-     * 
+     *
      * @return The brightness (0-127)
      */
     public int getPadBrightness ()

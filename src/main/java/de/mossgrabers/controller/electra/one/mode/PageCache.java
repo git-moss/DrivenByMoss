@@ -17,29 +17,31 @@ import java.util.Arrays;
  */
 class PageCache
 {
-    private static final int               NUM_ROWS               = 6;
-    private static final int               NUM_COLS               = 6;
-    private static final int               NUM_GROUPS             = 500;
-    private static final int               GROUP_OFFSET           = 500;
-    private final static long              TIME_TILL_LAST_EDIT    = 200;
+    private static final int               NUM_ROWS                   = 6;
+    private static final int               NUM_COLS                   = 6;
+    private static final int               NUM_GROUPS                 = 500;
+    private static final int               GROUP_OFFSET               = 500;
 
-    private final int [] []                ctrlValueCache         = new int [NUM_ROWS] [NUM_COLS];
-    private final String [] []             ctrlLabelCache         = new String [NUM_ROWS] [NUM_COLS];
-    private final ColorEx [] []            ctrlColorCache         = new ColorEx [NUM_ROWS] [NUM_COLS];
-    private final Boolean [] []            ctrlExistsCache        = new Boolean [NUM_ROWS] [NUM_COLS];
-    private final String []                groupCache             = new String [NUM_GROUPS];
+    private final boolean [] []            ctrlEditing                = new boolean [NUM_ROWS] [NUM_COLS];
 
-    private final int [] []                currentCtrlValueCache  = new int [NUM_ROWS] [NUM_COLS];
-    private final String [] []             currentCtrlLabelCache  = new String [NUM_ROWS] [NUM_COLS];
-    private final ColorEx [] []            currentCtrlColorCache  = new ColorEx [NUM_ROWS] [NUM_COLS];
-    private final Boolean [] []            currentCtrlExistsCache = new Boolean [NUM_ROWS] [NUM_COLS];
-    private final String []                currentGroupCache      = new String [NUM_GROUPS];
+    private final int [] []                ctrlValueCache             = new int [NUM_ROWS] [NUM_COLS];
+    private final String [] []             ctrlValueLabelCache        = new String [NUM_ROWS] [NUM_COLS];
+    private final String [] []             ctrlLabelCache             = new String [NUM_ROWS] [NUM_COLS];
+    private final ColorEx [] []            ctrlColorCache             = new ColorEx [NUM_ROWS] [NUM_COLS];
+    private final Boolean [] []            ctrlExistsCache            = new Boolean [NUM_ROWS] [NUM_COLS];
+    private final String []                groupCache                 = new String [NUM_GROUPS];
 
-    private final Object                   dataLock               = new Object ();
+    private final int [] []                currentCtrlValueCache      = new int [NUM_ROWS] [NUM_COLS];
+    private final String [] []             currentCtrlValueLabelCache = new String [NUM_ROWS] [NUM_COLS];
+    private final String [] []             currentCtrlLabelCache      = new String [NUM_ROWS] [NUM_COLS];
+    private final ColorEx [] []            currentCtrlColorCache      = new ColorEx [NUM_ROWS] [NUM_COLS];
+    private final Boolean [] []            currentCtrlExistsCache     = new Boolean [NUM_ROWS] [NUM_COLS];
+    private final String []                currentGroupCache          = new String [NUM_GROUPS];
+
+    private final Object                   dataLock                   = new Object ();
     private final ElectraOneControlSurface surface;
     private final int                      page;
-    private long                           lastValueEdit          = 0;
-    private boolean                        isDirty                = false;
+    private boolean                        isDirty                    = false;
 
 
     /**
@@ -56,14 +58,29 @@ class PageCache
 
 
     /**
+     * Set the control to be edited.
+     *
+     * @param index The index of the control on the page
+     * @param isEditing True if user is currently editing the value
+     */
+    public void setCtrlEditing (final int index, final boolean isEditing)
+    {
+        final int row = index / 6;
+        final int column = index % 6;
+        this.ctrlEditing[row][column] = isEditing;
+    }
+
+
+    /**
      * Update a value for a control. If it is different then the value in the cache an update is
      * sent to the controller.
      *
      * @param row The row of the control (0-5)
      * @param column The column of the control (0-5)
      * @param value The value to update (0-127)
+     * @param label The label of the value to update (0-127)
      */
-    public void updateValue (final int row, final int column, final int value)
+    public void updateValue (final int row, final int column, final int value, final String label)
     {
         synchronized (this.dataLock)
         {
@@ -71,7 +88,12 @@ class PageCache
             {
                 this.isDirty = true;
                 this.ctrlValueCache[row][column] = value;
-                this.lastValueEdit = System.currentTimeMillis ();
+            }
+
+            if (label != null && !label.equals (this.ctrlValueLabelCache[row][column]))
+            {
+                this.isDirty = true;
+                this.ctrlValueLabelCache[row][column] = label;
             }
         }
     }
@@ -156,22 +178,26 @@ class PageCache
             if (!this.isDirty)
                 return;
 
-            // Only update values if the last value edit was some time ago
-            final long now = System.currentTimeMillis ();
-            if (now - this.lastValueEdit < TIME_TILL_LAST_EDIT)
-                return;
-
             this.surface.setRepaintEnabled (false);
 
-            // Flush values
+            // Flush values and their labels
             for (int row = 0; row < NUM_ROWS; row++)
             {
                 for (int column = 0; column < NUM_COLS; column++)
                 {
-                    if (this.ctrlValueCache[row][column] != this.currentCtrlValueCache[row][column])
+                    // Only update values if value is not currently edited
+                    if (this.ctrlValueCache[row][column] != this.currentCtrlValueCache[row][column] && !this.ctrlEditing[row][column])
                     {
                         this.currentCtrlValueCache[row][column] = this.ctrlValueCache[row][column];
-                        this.surface.updateValue (ElectraOneControlSurface.ELECTRA_CTRL_1 + 10 * row + column, this.currentCtrlValueCache[row][column]);
+                        final int midiCC = ElectraOneControlSurface.ELECTRA_CTRL_1 + 10 * row + column;
+                        this.surface.updateValue (midiCC, this.currentCtrlValueCache[row][column]);
+                    }
+
+                    if (this.ctrlValueLabelCache[row][column] != null && !this.ctrlValueLabelCache[row][column].equals (this.currentCtrlValueLabelCache[row][column]))
+                    {
+                        this.currentCtrlValueLabelCache[row][column] = this.ctrlValueLabelCache[row][column];
+                        final int controlID = this.getControlID (row, column);
+                        this.surface.updateValueLabel (controlID, this.currentCtrlValueLabelCache[row][column]);
                     }
                 }
             }
@@ -204,7 +230,7 @@ class PageCache
 
                     if (label != null || color != null || exists != null)
                     {
-                        final int controlID = this.page * 36 + 6 * row + column + 1;
+                        final int controlID = this.getControlID (row, column);
                         this.surface.updateLabel (controlID, label, color, exists);
 
                         label = null;
@@ -232,12 +258,39 @@ class PageCache
 
 
     /**
+     * Get the ID of the control located at the given row/column.
+     *
+     * @param row The row where the control is located on the page
+     * @param column The column where the control is located on the page
+     * @return The ID of the control
+     */
+    private int getControlID (final int row, final int column)
+    {
+        return this.page * 36 + 6 * row + column + 1;
+    }
+
+
+    /**
+     * Get the index of the control for the control ID.
+     *
+     * @param controlID The ID of a control on the page
+     * @return The index (0-35)
+     */
+    public int getIndex (final int controlID)
+    {
+        return (controlID - 1) % 36;
+    }
+
+
+    /**
      * Clear the cached values.
      */
     public void reset ()
     {
         synchronized (this.dataLock)
         {
+            for (final boolean [] row: this.ctrlEditing)
+                Arrays.fill (row, false);
             for (final int [] row: this.currentCtrlValueCache)
                 Arrays.fill (row, -1);
             for (final String [] row: this.currentCtrlLabelCache)

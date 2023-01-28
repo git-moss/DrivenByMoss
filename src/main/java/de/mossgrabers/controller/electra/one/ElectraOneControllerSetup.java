@@ -18,7 +18,7 @@ import de.mossgrabers.framework.controller.ButtonID;
 import de.mossgrabers.framework.controller.ContinuousID;
 import de.mossgrabers.framework.controller.ISetupFactory;
 import de.mossgrabers.framework.controller.hardware.BindType;
-import de.mossgrabers.framework.controller.hardware.IHwAbsoluteKnob;
+import de.mossgrabers.framework.controller.hardware.IHwContinuousControl;
 import de.mossgrabers.framework.controller.valuechanger.TwosComplementValueChanger;
 import de.mossgrabers.framework.daw.IHost;
 import de.mossgrabers.framework.daw.ModelSetup;
@@ -187,9 +187,14 @@ public class ElectraOneControllerSetup extends AbstractControllerSetup<ElectraOn
                 final ContinuousID ctrlID = ElectraOneControlSurface.getContinuousID (row, col);
                 final int colLabel = col + 1;
                 final int cc = ElectraOneControlSurface.ELECTRA_CTRL_1 + 10 * row + col;
-                final IHwAbsoluteKnob knob = this.addAbsoluteKnob (ctrlID, "Ctrl " + rowLabel + "-" + colLabel, null, BindType.CC, 15, cc);
+                final IHwContinuousControl ctrl;
+                if (row > 0 && col == 5)
+                    ctrl = this.addRelativeKnob (ctrlID, "Ctrl " + rowLabel + "-" + colLabel, null, BindType.CC, 15, cc);
+                else
+                    ctrl = this.addAbsoluteKnob (ctrlID, "Ctrl " + rowLabel + "-" + colLabel, null, BindType.CC, 15, cc);
                 // Can sadly only be set at startup
-                knob.setIndexInGroup (row * 6 + col);
+                if (col < 6)
+                    ctrl.setIndexInGroup (row * 6 + col);
             }
         }
     }

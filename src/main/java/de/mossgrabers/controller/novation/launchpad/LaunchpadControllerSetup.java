@@ -767,7 +767,10 @@ public class LaunchpadControllerSetup extends AbstractControllerSetup<LaunchpadC
         if (!track.doesExist ())
             return LaunchpadColorManager.LAUNCHPAD_COLOR_BLACK;
 
-        switch (modeManager.getActiveID ())
+        final Modes activeID = modeManager.getActiveID ();
+        if (activeID == null)
+            return LaunchpadColorManager.LAUNCHPAD_COLOR_BLACK;
+        switch (activeID)
         {
             case REC_ARM:
                 return track.isRecArm () ? LaunchpadColorManager.LAUNCHPAD_COLOR_RED_HI : LaunchpadColorManager.LAUNCHPAD_COLOR_RED_LO;

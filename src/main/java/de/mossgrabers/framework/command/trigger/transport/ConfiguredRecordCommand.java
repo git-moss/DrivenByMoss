@@ -153,7 +153,7 @@ public class ConfiguredRecordCommand<S extends IControlSurface<C>, C extends Con
 
     /**
      * Returns true if the record button should be lit depending on the selected function.
-     * 
+     *
      * @return True if lit
      */
     public boolean isLit ()
@@ -164,7 +164,7 @@ public class ConfiguredRecordCommand<S extends IControlSurface<C>, C extends Con
 
     /**
      * Returns true if the record button should be lit depending on the selected function.
-     * 
+     *
      * @param isShifted True if shifted
      * @return True if lit
      */

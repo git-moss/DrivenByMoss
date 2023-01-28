@@ -4,12 +4,9 @@
 
 package de.mossgrabers.controller.electra.one.mode;
 
-import de.mossgrabers.controller.electra.one.ElectraOneConfiguration;
 import de.mossgrabers.controller.electra.one.controller.ElectraOneColorManager;
 import de.mossgrabers.controller.electra.one.controller.ElectraOneControlSurface;
-import de.mossgrabers.framework.controller.ButtonID;
 import de.mossgrabers.framework.daw.IModel;
-import de.mossgrabers.framework.daw.IProject;
 import de.mossgrabers.framework.daw.ITransport;
 import de.mossgrabers.framework.daw.data.ICursorDevice;
 import de.mossgrabers.framework.daw.data.ICursorTrack;
@@ -19,8 +16,8 @@ import de.mossgrabers.framework.daw.data.bank.IDeviceBank;
 import de.mossgrabers.framework.daw.data.bank.IParameterBank;
 import de.mossgrabers.framework.daw.data.bank.IParameterPageBank;
 import de.mossgrabers.framework.mode.Modes;
-import de.mossgrabers.framework.mode.track.DefaultTrackMode;
 import de.mossgrabers.framework.parameter.IParameter;
+import de.mossgrabers.framework.parameter.PlayPositionParameter;
 import de.mossgrabers.framework.parameterprovider.device.BankParameterProvider;
 import de.mossgrabers.framework.parameterprovider.special.CombinedParameterProvider;
 import de.mossgrabers.framework.parameterprovider.special.EmptyParameterProvider;
@@ -35,12 +32,10 @@ import de.mossgrabers.framework.utils.StringUtils;
  *
  * @author J&uuml;rgen Mo&szlig;graber
  */
-public class DeviceMode extends DefaultTrackMode<ElectraOneControlSurface, ElectraOneConfiguration>
+public class DeviceMode extends AbstractElectraOneMode
 {
-    private final PageCache    pageCache;
     private final ITransport   transport;
     private final IMasterTrack masterTrack;
-    private final IProject     project;
 
 
     /**
@@ -51,13 +46,10 @@ public class DeviceMode extends DefaultTrackMode<ElectraOneControlSurface, Elect
      */
     public DeviceMode (final ElectraOneControlSurface surface, final IModel model)
     {
-        super (Modes.NAME_PARAMETERS, surface, model, true, ElectraOneControlSurface.KNOB_IDS);
-
-        this.pageCache = new PageCache (2, surface);
+        super (2, Modes.NAME_PARAMETERS, surface, model);
 
         this.transport = this.model.getTransport ();
         this.masterTrack = this.model.getMasterTrack ();
-        this.project = this.model.getProject ();
 
         final BankParameterProvider bankParameterProvider = new BankParameterProvider (this.model.getCursorDevice ().getParameterBank ());
         final EmptyParameterProvider emptyParameterProvider = new EmptyParameterProvider (1);
@@ -65,7 +57,7 @@ public class DeviceMode extends DefaultTrackMode<ElectraOneControlSurface, Elect
                 // Row 1
                 emptyParameterProvider, new RangeFilterParameterProvider (bankParameterProvider, 0, 4), new FixedParameterProvider (this.masterTrack.getVolumeParameter ()),
                 // Row 2
-                emptyParameterProvider, new RangeFilterParameterProvider (bankParameterProvider, 4, 4), new FixedParameterProvider (this.project.getCueVolumeParameter ()),
+                emptyParameterProvider, new RangeFilterParameterProvider (bankParameterProvider, 4, 4), new FixedParameterProvider (new PlayPositionParameter (model.getValueChanger (), this.transport, surface)),
                 // These 4 rows only contain buttons
                 new EmptyParameterProvider (4 * 6)));
     }
@@ -149,14 +141,6 @@ public class DeviceMode extends DefaultTrackMode<ElectraOneControlSurface, Elect
 
     /** {@inheritDoc} */
     @Override
-    public int getButtonColor (final ButtonID buttonID)
-    {
-        return ElectraOneColorManager.COLOR_BUTTON_STATE_OFF;
-    }
-
-
-    /** {@inheritDoc} */
-    @Override
     public void updateDisplay ()
     {
         final ICursorDevice cursorDevice = this.model.getCursorDevice ();
@@ -172,10 +156,7 @@ public class DeviceMode extends DefaultTrackMode<ElectraOneControlSurface, Elect
             int row = i / 4;
             final int column = 1 + i % 4;
             this.pageCache.updateElement (row, column, exists ? StringUtils.fixASCII (param.getName ()) : "", null, Boolean.valueOf (exists));
-            this.pageCache.updateValue (row, column, param.getValue ());
-
-            // TODO How to set the value text?
-            // StringUtils.fixASCII (param.getDisplayedValue (8)), color, exists);
+            this.pageCache.updateValue (row, column, param.getValue (), StringUtils.optimizeName (StringUtils.fixASCII (param.getDisplayedValue ()), 15));
 
             // Set page names
             row += 2;
@@ -197,23 +178,14 @@ public class DeviceMode extends DefaultTrackMode<ElectraOneControlSurface, Elect
 
         // Master
         this.pageCache.updateColor (0, 5, this.masterTrack.getColor ());
-        this.pageCache.updateValue (0, 5, this.masterTrack.getVolume ());
-        this.pageCache.updateValue (1, 5, this.project.getCueVolume ());
+        this.pageCache.updateValue (0, 5, this.masterTrack.getVolume (), StringUtils.optimizeName (StringUtils.fixASCII (this.masterTrack.getVolumeStr ()), 15));
+        this.pageCache.updateValue (1, 5, 0, StringUtils.optimizeName (StringUtils.fixASCII (this.transport.getBeatText ()), 15));
+        this.pageCache.updateElement (1, 5, StringUtils.optimizeName (StringUtils.fixASCII (this.transport.getPositionText ()), 15), null, null);
 
         // Transport
         this.pageCache.updateColor (4, 5, this.transport.isRecording () ? ElectraOneColorManager.RECORD_ON : ElectraOneColorManager.RECORD_OFF);
         this.pageCache.updateColor (5, 5, this.transport.isPlaying () ? ElectraOneColorManager.PLAY_ON : ElectraOneColorManager.PLAY_OFF);
 
         this.pageCache.flush ();
-    }
-
-
-    /** {@inheritDoc} */
-    @Override
-    public void onActivate ()
-    {
-        this.pageCache.reset ();
-
-        super.onActivate ();
     }
 }

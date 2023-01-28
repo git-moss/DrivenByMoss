@@ -157,6 +157,10 @@ public class StringUtils
                     case '’':
                         str.append ("'");
                         break;
+                    // superscript p
+                    case '\u1d3e':
+                        str.append ("p");
+                        break;
                     default:
                         str.append ("?");
                         break;

@@ -5,6 +5,7 @@
 package de.mossgrabers.controller.electra.one.controller;
 
 import de.mossgrabers.controller.electra.one.ElectraOneConfiguration;
+import de.mossgrabers.controller.electra.one.mode.AbstractElectraOneMode;
 import de.mossgrabers.framework.controller.AbstractControlSurface;
 import de.mossgrabers.framework.controller.ButtonID;
 import de.mossgrabers.framework.controller.ContinuousID;
@@ -40,12 +41,15 @@ import java.util.List;
 public class ElectraOneControlSurface extends AbstractControlSurface<ElectraOneConfiguration>
 {
     /** The MIDI CC of the first control on a page. */
-    public static final int                ELECTRA_CTRL_1 = 10;
+    public static final int                ELECTRA_CTRL_1    = 10;
     /** The MIDI CC of the first button on a page. */
-    public static final int                ELECTRA_ROW_1  = 70;
+    public static final int                ELECTRA_ROW_1     = 70;
+
+    // Controller events to subscribe to: page, pots (= knob touch) and buttons
+    private static final int               SUBSCRIBED_EVENTS = 0x01 | 0x08 | 0x20;
 
     /** The IDs for the continuous elements. */
-    public static final List<ContinuousID> KNOB_IDS       = new ArrayList<> ();
+    public static final List<ContinuousID> KNOB_IDS          = new ArrayList<> ();
     static
     {
         KNOB_IDS.addAll (ContinuousID.createSequentialList (ContinuousID.VOLUME_KNOB1, 6));
@@ -124,6 +128,18 @@ public class ElectraOneControlSurface extends AbstractControlSurface<ElectraOneC
         0x07
     };
 
+    private static final byte []         SYSEX_RUNTIME_VALUE_LABEL_UPDATE  =
+    {
+        0x14,
+        0x0E
+    };
+
+    private static final byte []         SYSEX_RUNTIME_SUBSCRIBE_EVENTS    =
+    {
+        0x14,
+        0x79
+    };
+
     private static final byte []         SYSEX_RUNTIME_SET_REPAINT_ENABLED =
     {
         0x7F,
@@ -147,6 +163,7 @@ public class ElectraOneControlSurface extends AbstractControlSurface<ElectraOneC
     // IDs for runtime commands
     private static final int             EVENT_PRESET_SWITCH               = 0x02;
     private static final int             EVENT_PAGE_SWITCH                 = 0x06;
+    private static final int             EVENT_POT_TOUCH                   = 0x0A;
 
     // IDs for system commands
     private static final int             SYSTEM_CALL_LOGGING               = 0x00;
@@ -249,12 +266,23 @@ public class ElectraOneControlSurface extends AbstractControlSurface<ElectraOneC
             return;
         }
 
-        final byte [] command = new byte [4];
-        command[0] = SYSEX_RUNTIME_CONTROL_UPDATE[0];
-        command[1] = SYSEX_RUNTIME_CONTROL_UPDATE[1];
-        command[2] = (byte) (controlID & 0x7F);
-        command[3] = (byte) (controlID >> 7);
-        this.sendText (command, writer.toString ());
+        this.sendText (createCommand (controlID, SYSEX_RUNTIME_CONTROL_UPDATE), writer.toString ());
+    }
+
+
+    /**
+     * Sets the label (description) of a value of an element on the Electra.One.
+     *
+     * @param controlID The element starting from 1, increasing from left to right, top to bottom
+     * @param label The label to set
+     */
+    public void updateValueLabel (final int controlID, final String label)
+    {
+        final byte [] cmd = createCommand (controlID, SYSEX_RUNTIME_VALUE_LABEL_UPDATE);
+        final byte [] command = new byte [cmd.length + 1];
+        System.arraycopy (cmd, 0, command, 0, cmd.length);
+        command[cmd.length] = 0;
+        this.sendText (command, label);
     }
 
 
@@ -381,7 +409,9 @@ public class ElectraOneControlSurface extends AbstractControlSurface<ElectraOneC
 
 
     /**
-     * Handle incoming system exclusive data. Messages are split up in chunks of 1024 bytes!
+     * Handle incoming system exclusive data. Messages are split up in chunks of 1024 bytes! This
+     * method concatenates and stores the parts until the full message is received and then hands it
+     * to the processing.
      *
      * @param dataStr The data
      */
@@ -402,7 +432,7 @@ public class ElectraOneControlSurface extends AbstractControlSurface<ElectraOneC
 
             if (data[data.length - 1] == 0xF7)
             {
-                fullData = concatChunks ();
+                fullData = this.concatChunks ();
                 this.sysexChunks.clear ();
             }
         }
@@ -419,15 +449,15 @@ public class ElectraOneControlSurface extends AbstractControlSurface<ElectraOneC
 
         // Determine the total length of the resulting array
         int totalLength = 0;
-        for (int [] array: this.sysexChunks)
+        for (final int [] array: this.sysexChunks)
             totalLength += array.length;
 
         // Create a new array to hold the concatenated arrays
-        int [] result = new int [totalLength];
+        final int [] result = new int [totalLength];
 
         // Copy the arrays into the result array
         int offset = 0;
-        for (int [] array: this.sysexChunks)
+        for (final int [] array: this.sysexChunks)
         {
             System.arraycopy (array, 0, result, offset, array.length);
             offset += array.length;
@@ -494,6 +524,16 @@ public class ElectraOneControlSurface extends AbstractControlSurface<ElectraOneC
                 }
                 break;
 
+            case EVENT_POT_TOUCH:
+                final IMode active = this.getModeManager ().getActive ();
+                if (active instanceof final AbstractElectraOneMode electraMode)
+                {
+                    final int controlID = (data[SUB_CMD_START_POS + 3] << 7) + data[SUB_CMD_START_POS + 2];
+                    final boolean isTouched = data[SUB_CMD_START_POS + 4] > 0;
+                    electraMode.setEditing (controlID, isTouched);
+                }
+                break;
+
             default:
                 // Ignore
                 break;
@@ -514,6 +554,12 @@ public class ElectraOneControlSurface extends AbstractControlSurface<ElectraOneC
         {
             case INFO_DEVICE:
                 this.checkFirmwareResult (content);
+
+                this.sendSysex (SYSEX_RUNTIME_SUBSCRIBE_EVENTS, new byte []
+                {
+                    SUBSCRIBED_EVENTS
+                });
+
                 this.requestPresetList ();
                 break;
 
@@ -660,7 +706,7 @@ public class ElectraOneControlSurface extends AbstractControlSurface<ElectraOneC
 
     /**
      * Is the DrivenByMoss preset selected?
-     * 
+     *
      * @return True if selected
      */
     public boolean isOnline ()
@@ -692,5 +738,16 @@ public class ElectraOneControlSurface extends AbstractControlSurface<ElectraOneC
     public static ContinuousID getContinuousID (final int row, final int column)
     {
         return ContinuousID.get (CTRL_ROW_IDS[row], column);
+    }
+
+
+    private static final byte [] createCommand (final int controlID, final byte [] commandID)
+    {
+        final byte [] command = new byte [4];
+        command[0] = commandID[0];
+        command[1] = commandID[1];
+        command[2] = (byte) (controlID & 0x7F);
+        command[3] = (byte) (controlID >> 7);
+        return command;
     }
 }
