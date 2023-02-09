@@ -57,7 +57,7 @@ public class XLSequencerResolutionMode extends XLTemporaryButtonMode
 
     private INoteClip getClip ()
     {
-        return ((XLBaseNoteEditMode) this.surface.getModeManager ().get (Modes.NOTE)).getClip ();
+        return ((XLBaseNoteEditMode) this.surface.getModeManager ().get (Modes.NOTE_SEQUENCER)).getClip ();
     }
 
 

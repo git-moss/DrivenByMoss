@@ -118,20 +118,22 @@ public class SendsMode extends AbstractElectraOneMode
                 final ISendBank sendBank = track.getSendBank ();
                 final ISend send = sendBank.getItem (row);
 
-                this.pageCache.updateValue (row, column, send.getValue (), StringUtils.optimizeName (StringUtils.fixASCII (send.getDisplayedValue ()), 15));
-                this.pageCache.updateElement (row, column, send.getName (), color, Boolean.valueOf (send.doesExist ()));
+                final boolean doesExist = send.doesExist ();
+
+                this.pageCache.updateValue (row, column, send.getValue (), doesExist ? StringUtils.optimizeName (StringUtils.fixASCII (send.getDisplayedValue ()), 15) : " ");
+                this.pageCache.updateElement (row, column, send.getName (), doesExist ? color : ColorEx.BLACK, Boolean.TRUE);
             }
-
-            // Master
-            this.pageCache.updateColor (0, 5, this.masterTrack.getColor ());
-            this.pageCache.updateValue (0, 5, this.masterTrack.getVolume (), StringUtils.optimizeName (StringUtils.fixASCII (this.masterTrack.getVolumeStr ()), 15));
-            this.pageCache.updateValue (1, 5, 0, StringUtils.optimizeName (StringUtils.fixASCII (this.transport.getBeatText ()), 15));
-            this.pageCache.updateElement (1, 5, StringUtils.optimizeName (StringUtils.fixASCII (this.transport.getPositionText ()), 15), null, null);
-
-            // Transport
-            this.pageCache.updateColor (4, 5, this.transport.isRecording () ? ElectraOneColorManager.RECORD_ON : ElectraOneColorManager.RECORD_OFF);
-            this.pageCache.updateColor (5, 5, this.transport.isPlaying () ? ElectraOneColorManager.PLAY_ON : ElectraOneColorManager.PLAY_OFF);
         }
+
+        // Master
+        this.pageCache.updateColor (0, 5, this.masterTrack.getColor ());
+        this.pageCache.updateValue (0, 5, this.masterTrack.getVolume (), StringUtils.optimizeName (StringUtils.fixASCII (this.masterTrack.getVolumeStr ()), 15));
+        this.pageCache.updateValue (1, 5, 0, StringUtils.optimizeName (StringUtils.fixASCII (this.transport.getBeatText ()), 15));
+        this.pageCache.updateElement (1, 5, StringUtils.optimizeName (StringUtils.fixASCII (this.transport.getPositionText ()), 15), null, null);
+
+        // Transport
+        this.pageCache.updateColor (4, 5, this.transport.isRecording () ? ElectraOneColorManager.RECORD_ON : ElectraOneColorManager.RECORD_OFF);
+        this.pageCache.updateColor (5, 5, this.transport.isPlaying () ? ElectraOneColorManager.PLAY_ON : ElectraOneColorManager.PLAY_OFF);
 
         this.pageCache.flush ();
     }

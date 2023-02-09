@@ -7,6 +7,7 @@ package de.mossgrabers.controller.ableton.push.command.pitchbend;
 import de.mossgrabers.controller.ableton.push.PushConfiguration;
 import de.mossgrabers.controller.ableton.push.controller.PushControlSurface;
 import de.mossgrabers.framework.command.core.AbstractPitchbendCommand;
+import de.mossgrabers.framework.controller.ButtonID;
 import de.mossgrabers.framework.daw.IModel;
 import de.mossgrabers.framework.daw.constants.Resolution;
 import de.mossgrabers.framework.daw.data.ITrack;
@@ -87,6 +88,10 @@ public class TouchstripCommand extends AbstractPitchbendCommand<PushControlSurfa
      */
     protected void handleRibbonMode (final int data1, final int data2, final PushConfiguration config)
     {
+        final boolean isReset = this.surface.isDeletePressed ();
+        if (isReset)
+            this.surface.setTriggerConsumed (ButtonID.DELETE);
+
         switch (config.getRibbonMode ())
         {
             case PushConfiguration.RIBBON_MODE_PITCH:
@@ -123,28 +128,35 @@ public class TouchstripCommand extends AbstractPitchbendCommand<PushControlSurfa
                 break;
 
             case PushConfiguration.RIBBON_MODE_FADER:
-                this.model.getCursorTrack ().setVolume (this.model.getValueChanger ().toDAWValue (data2));
+                final IParameter volumeParameter = this.model.getCursorTrack ().getVolumeParameter ();
+                if (isReset)
+                    volumeParameter.resetValue ();
+                else
+                    volumeParameter.setValue (this.model.getValueChanger ().toDAWValue (data2));
                 return;
 
             case PushConfiguration.RIBBON_MODE_LAST_TOUCHED:
                 final IMode activeMode = this.surface.getModeManager ().getActive ();
                 if (activeMode != null)
                 {
+                    IParameter parameter = null;
                     final int touchedKnob = activeMode.getLastTouchedKnob ();
-                    if (touchedKnob < 0)
+                    if (touchedKnob >= 0)
                     {
-                        this.surface.getMidiOutput ().sendPitchbend (0, 0);
-                        return;
+                        final IParameterProvider parameterProvider = activeMode.getParameterProvider ();
+                        if (parameterProvider != null)
+                            parameter = parameterProvider.get (touchedKnob);
                     }
-                    final IParameterProvider parameterProvider = activeMode.getParameterProvider ();
-                    if (parameterProvider == null)
-                    {
-                        this.surface.getMidiOutput ().sendPitchbend (0, 0);
-                        return;
-                    }
-                    final IParameter parameter = parameterProvider.get (touchedKnob);
                     if (parameter != null && parameter.doesExist ())
-                        parameter.setValue (this.model.getValueChanger ().toDAWValue (data2));
+                    {
+                        if (isReset)
+                            parameter.resetValue ();
+                        else
+                            parameter.setValue (this.model.getValueChanger ().toDAWValue (data2));
+                    }
+                    else
+                        this.surface.getMidiOutput ().sendPitchbend (0, 0);
+
                 }
                 return;
 

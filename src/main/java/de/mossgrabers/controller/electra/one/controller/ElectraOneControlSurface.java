@@ -30,7 +30,10 @@ import java.io.IOException;
 import java.io.StringWriter;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
+import java.util.Optional;
 
 
 /**
@@ -98,59 +101,29 @@ public class ElectraOneControlSurface extends AbstractControlSurface<ElectraOneC
         0x45
     };
 
-    private static final byte []         SYSEX_INFO_DEVICE                 =
-    {
-        0x02,
-        0x7F
-    };
+    // @formatter:off
+    
+    private static final byte []         SYSEX_INFO_DEVICE                 = { 0x02, 0x7F };
+    private static final byte []         SYSEX_INFO_PRESET_LIST            = { 0x02, 0x04 };
+    private static final byte []         SYSEX_RUNTIME_EXECUTE_LUA         = { 0x08, 0x0D };
+    private static final byte []         SYSEX_RUNTIME_SWITCH_PRESET       = { 0x09, 0x08 };
+    private static final byte []         SYSEX_RUNTIME_SWITCH_PAGE         = { 0x09, 0x0A };
+    private static final byte []         SYSEX_RUNTIME_CONTROL_UPDATE      = { 0x14, 0x07 };
+    private static final byte []         SYSEX_RUNTIME_VALUE_LABEL_UPDATE  = { 0x14, 0x0E };
+    private static final byte []         SYSEX_RUNTIME_SUBSCRIBE_EVENTS    = { 0x14, 0x79 };
+    private static final byte []         SYSEX_RUNTIME_SET_REPAINT_ENABLED = { 0x7F, 0x7A };
+    private static final byte []         SYSEX_RUNTIME_ENABLE_LOGGER       = { 0x7F, 0x7D };
+    
+    private static final int []          TOUCH_PATTERN_SHIFT         = new int [] { 1, 1, 2, 2, 2, 2, 1, 1, 2, 2, 2, 2 };
+    private static final int []          TOUCH_PATTERN_MIXER         = new int [] { 1, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0 };
+    private static final int []          TOUCH_PATTERN_SENDS         = new int [] { 0, 1, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0 };
+    private static final int []          TOUCH_PATTERN_DEVICES       = new int [] { 0, 0, 1, 1, 1, 0, 0, 0, 0, 0, 0, 0 };
+    private static final int []          TOUCH_PATTERN_EQ            = new int [] { 0, 0, 0, 1, 1, 1, 0, 0, 0, 0, 0, 0 };
+    private static final int []          TOUCH_PATTERN_TRANSPORT     = new int [] { 0, 0, 0, 0, 0, 0, 1, 1, 1, 0, 0, 0 };
+    private static final int []          TOUCH_PATTERN_SESSION       = new int [] { 0, 0, 0, 0, 0, 0, 0, 1, 1, 1, 0, 0 };
+    private static final int []          TOUCH_PATTERN_NATIVE_DEVICE = new int [] { 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 1 };
 
-    private static final byte []         SYSEX_INFO_PRESET_LIST            =
-    {
-        0x02,
-        0x04
-    };
-
-    private static final byte []         SYSEX_RUNTIME_EXECUTE_LUA         =
-    {
-        0x08,
-        0x0D
-    };
-
-    private static final byte []         SYSEX_RUNTIME_SWITCH_PRESET       =
-    {
-        0x09,
-        0x08
-    };
-
-    private static final byte []         SYSEX_RUNTIME_CONTROL_UPDATE      =
-    {
-        0x14,
-        0x07
-    };
-
-    private static final byte []         SYSEX_RUNTIME_VALUE_LABEL_UPDATE  =
-    {
-        0x14,
-        0x0E
-    };
-
-    private static final byte []         SYSEX_RUNTIME_SUBSCRIBE_EVENTS    =
-    {
-        0x14,
-        0x79
-    };
-
-    private static final byte []         SYSEX_RUNTIME_SET_REPAINT_ENABLED =
-    {
-        0x7F,
-        0x7A
-    };
-
-    private static final byte []         SYSEX_RUNTIME_ENABLE_LOGGER       =
-    {
-        0x7F,
-        0x7D
-    };
+    // @formatter:on
 
     private static final int             CMD_START_POS                     = SYSEX_HDR_INT.length;
     private static final int             SUB_CMD_START_POS                 = SYSEX_HDR_INT.length + 1;
@@ -178,7 +151,8 @@ public class ElectraOneControlSurface extends AbstractControlSurface<ElectraOneC
         Modes.SEND,
         Modes.DEVICE_PARAMS,
         Modes.EQ_DEVICE_PARAMS,
-        Modes.TRANSPORT
+        Modes.TRANSPORT,
+        Modes.SESSION
     };
 
     private static final String          SET_GROUP_TITLE                   = "sgt(%s,\"%s\")";
@@ -187,9 +161,13 @@ public class ElectraOneControlSurface extends AbstractControlSurface<ElectraOneC
     private final IMidiInput             ctrlInput;
     private final IMidiOutput            ctrlOutput;
     private final ObjectMapper           mapper                            = new ObjectMapper ();
-    private int                          bankIndex;
-    private int                          presetIndex;
+    private final Map<String, Integer>   presetBanks                       = new HashMap<> ();
+    private final Map<String, Integer>   presetIndices                     = new HashMap<> ();
+    private int                          bankIndex                         = -1;
+    private int                          presetIndex                       = -1;
     private boolean                      isOnline                          = false;
+    private int []                       knobStates                        = new int [12];
+    private boolean                      isShiftPressed;
 
 
     /**
@@ -345,6 +323,14 @@ public class ElectraOneControlSurface extends AbstractControlSurface<ElectraOneC
     }
 
 
+    /** {@inheritDoc} */
+    @Override
+    public boolean isShiftPressed ()
+    {
+        return this.isShiftPressed;
+    }
+
+
     /**
      * Select a preset on the device.
      *
@@ -358,6 +344,21 @@ public class ElectraOneControlSurface extends AbstractControlSurface<ElectraOneC
         {
             (byte) bank,
             (byte) preset
+        });
+    }
+
+
+    /**
+     * Select a page of the active preset on the device.
+     *
+     * @param page The index of the preset page (0-11)
+     */
+    private void selectPage (final int page)
+    {
+        this.host.println (String.format ("Selecting page: %d", Integer.valueOf (page)));
+        this.sendSysex (SYSEX_RUNTIME_SWITCH_PAGE, new byte []
+        {
+            (byte) page
         });
     }
 
@@ -528,9 +529,28 @@ public class ElectraOneControlSurface extends AbstractControlSurface<ElectraOneC
                 final IMode active = this.getModeManager ().getActive ();
                 if (active instanceof final AbstractElectraOneMode electraMode)
                 {
+                    final int potID = data[SUB_CMD_START_POS + 1];
                     final int controlID = (data[SUB_CMD_START_POS + 3] << 7) + data[SUB_CMD_START_POS + 2];
-                    final boolean isTouched = data[SUB_CMD_START_POS + 4] > 0;
-                    electraMode.setEditing (controlID, isTouched);
+                    if (potID < 0 || potID >= 12)
+                    {
+                        this.host.error ("Touch event with knob ID outside of range: " + potID);
+                        return;
+                    }
+
+                    this.knobStates[potID] = data[SUB_CMD_START_POS + 4];
+                    electraMode.setEditing (controlID, this.knobStates[potID] > 0);
+
+                    this.matchStates ();
+
+                    // TODO remove
+                    final StringBuilder sb = new StringBuilder ();
+                    for (int i = 0; i < 12; i++)
+                    {
+                        if (i == 6)
+                            sb.append ('\n');
+                        sb.append (this.knobStates[i]).append (' ');
+                    }
+                    this.host.println (sb.toString ());
                 }
                 break;
 
@@ -538,6 +558,104 @@ public class ElectraOneControlSurface extends AbstractControlSurface<ElectraOneC
                 // Ignore
                 break;
         }
+    }
+
+
+    private void matchStates ()
+    {
+        if (compareWithIgnore (this.knobStates, TOUCH_PATTERN_SHIFT))
+        {
+            this.updateShift (true);
+            return;
+        }
+
+        if (Arrays.equals (this.knobStates, TOUCH_PATTERN_MIXER))
+            this.selectPage (0);
+        else if (Arrays.equals (this.knobStates, TOUCH_PATTERN_SENDS))
+            this.selectPage (1);
+        else if (Arrays.equals (this.knobStates, TOUCH_PATTERN_DEVICES))
+            this.selectPage (2);
+        else if (Arrays.equals (this.knobStates, TOUCH_PATTERN_EQ))
+            this.selectPage (3);
+        else if (Arrays.equals (this.knobStates, TOUCH_PATTERN_TRANSPORT))
+            this.selectPage (4);
+        else if (Arrays.equals (this.knobStates, TOUCH_PATTERN_SESSION))
+            this.selectPage (5);
+        else if (Arrays.equals (this.knobStates, TOUCH_PATTERN_NATIVE_DEVICE))
+            this.switchToSpecificDevicePreset ();
+        else
+        {
+            this.updateShift (false);
+            return;
+        }
+
+        // Prevent hanging states
+        Arrays.fill (this.knobStates, 0);
+    }
+
+
+    private void switchToSpecificDevicePreset ()
+    {
+        // If the DrivenByMoss preset is not selected, jump back to it
+        if (!this.isOnline)
+        {
+            this.selectDrivenByMossPreset ();
+            return;
+        }
+
+        // Check if there is a preset with the name of the cursor device, if none is found selected
+        // the device mode
+        if (this.modeManager.getActive () instanceof AbstractElectraOneMode electraMode)
+        {
+            final Optional<String> deviceNameOpt = electraMode.getActiveDeviceName ();
+            if (deviceNameOpt.isPresent ())
+            {
+                final String deviceName = deviceNameOpt.get ();
+                final Integer bank = this.presetBanks.get (deviceName);
+                if (bank == null)
+                {
+                    this.host.println (String.format ("No specific preset found for '%s', switching to device mode.", deviceName));
+                    this.selectPage (2);
+                }
+                else
+                {
+                    final Integer slot = this.presetIndices.get (deviceName);
+                    this.host.println (String.format ("Found preset found for '%s' at %d-%d.", deviceName, bank, slot));
+                    this.selectPreset (bank.intValue (), slot.intValue ());
+                }
+
+                // Prevent hanging states
+                Arrays.fill (this.knobStates, 0);
+            }
+        }
+    }
+
+
+    private void updateShift (final boolean isShift)
+    {
+        this.isShiftPressed = isShift;
+
+        // TODO remove
+        this.host.println ("Shift: " + this.isShiftPressed);
+        this.setKnobSensitivityIsSlow (this.isShiftPressed);
+    }
+
+
+    /**
+     * Compares the two given arrays. If the pattern array contains a 2 at a position it is ignored.
+     *
+     * @param knobStates The state array
+     * @param touchPattern The pattern array
+     * @return True if pattern matches
+     */
+    private static boolean compareWithIgnore (final int [] knobStates, final int [] touchPattern)
+    {
+        for (int i = 0; i < touchPattern.length; i++)
+        {
+            if (touchPattern[i] != 2 && touchPattern[i] != knobStates[i])
+                return false;
+        }
+        return true;
     }
 
 
@@ -640,16 +758,25 @@ public class ElectraOneControlSurface extends AbstractControlSurface<ElectraOneC
     {
         for (final JsonNode preset: root.get ("presets"))
         {
-            if ("DrivenByMoss".equals (preset.get ("name").asText ()))
+            final String presetName = preset.get ("name").asText ();
+            final int bankNumber = preset.get ("bankNumber").asInt ();
+            final int slot = preset.get ("slot").asInt ();
+
+            if ("DrivenByMoss".equals (presetName))
             {
-                this.bankIndex = preset.get ("bankNumber").asInt ();
-                this.presetIndex = preset.get ("slot").asInt ();
+                this.bankIndex = bankNumber;
+                this.presetIndex = slot;
                 this.host.println (String.format ("DrivenByMoss template at: %d-%d", Integer.valueOf (this.bankIndex), Integer.valueOf (this.presetIndex)));
-                return;
+            }
+            else
+            {
+                this.presetBanks.put (presetName, Integer.valueOf (bankNumber));
+                this.presetIndices.put (presetName, Integer.valueOf (slot));
             }
         }
 
-        throw new FrameworkException ("The DrivenByMoss template is not installed on the Electra.One.");
+        if (this.bankIndex == -1)
+            throw new FrameworkException ("The DrivenByMoss template is not installed on the Electra.One.");
     }
 
 

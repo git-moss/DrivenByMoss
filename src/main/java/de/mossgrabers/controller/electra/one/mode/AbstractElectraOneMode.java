@@ -9,7 +9,10 @@ import de.mossgrabers.controller.electra.one.controller.ElectraOneColorManager;
 import de.mossgrabers.controller.electra.one.controller.ElectraOneControlSurface;
 import de.mossgrabers.framework.controller.ButtonID;
 import de.mossgrabers.framework.daw.IModel;
+import de.mossgrabers.framework.daw.data.ICursorDevice;
 import de.mossgrabers.framework.mode.track.DefaultTrackMode;
+
+import java.util.Optional;
 
 
 /**
@@ -81,5 +84,17 @@ public abstract class AbstractElectraOneMode extends DefaultTrackMode<ElectraOne
             return;
         }
         this.onKnobTouch (index, isTouched);
+    }
+
+
+    /**
+     * Get the name of the active device.
+     *
+     * @return The name or an empty optional
+     */
+    public Optional<String> getActiveDeviceName ()
+    {
+        final ICursorDevice cursorDevice = this.model.getCursorDevice ();
+        return cursorDevice.doesExist () ? Optional.of (cursorDevice.getName ()) : Optional.empty ();
     }
 }

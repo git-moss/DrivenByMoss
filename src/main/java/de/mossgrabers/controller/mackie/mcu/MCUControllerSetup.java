@@ -352,8 +352,9 @@ public class MCUControllerSetup extends AbstractControllerSetup<MCUControlSurfac
         }
 
         this.model.getMasterTrack ().addSelectionObserver ( (index, isSelected) -> {
-            if (isSelected)
-                this.getSurface ().getModeManager ().setActive (Modes.MASTER);
+            final ModeManager modeManager = this.getSurface ().getModeManager ();
+            if (isSelected && modeManager.isActive (Modes.TRACK))
+                modeManager.setActive (Modes.MASTER);
         });
 
         this.configuration.addSettingObserver (AbstractConfiguration.ENABLE_VU_METERS, () -> {

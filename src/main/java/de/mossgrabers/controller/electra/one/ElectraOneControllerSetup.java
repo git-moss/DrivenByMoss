@@ -10,6 +10,7 @@ import de.mossgrabers.controller.electra.one.mode.DeviceMode;
 import de.mossgrabers.controller.electra.one.mode.EqualizerMode;
 import de.mossgrabers.controller.electra.one.mode.MixerMode;
 import de.mossgrabers.controller.electra.one.mode.SendsMode;
+import de.mossgrabers.controller.electra.one.mode.SessionMode;
 import de.mossgrabers.controller.electra.one.mode.TransportMode;
 import de.mossgrabers.framework.command.trigger.mode.ButtonRowModeCommand;
 import de.mossgrabers.framework.configuration.ISettingsUI;
@@ -126,6 +127,7 @@ public class ElectraOneControllerSetup extends AbstractControllerSetup<ElectraOn
         modeManager.register (Modes.DEVICE_PARAMS, new DeviceMode (surface, this.model));
         modeManager.register (Modes.EQ_DEVICE_PARAMS, new EqualizerMode (surface, this.model));
         modeManager.register (Modes.TRANSPORT, new TransportMode (surface, this.model));
+        modeManager.register (Modes.SESSION, new SessionMode (surface, this.model));
     }
 
 
