@@ -113,8 +113,9 @@ public class ElectraOneControlSurface extends AbstractControlSurface<ElectraOneC
     private static final byte []         SYSEX_RUNTIME_SUBSCRIBE_EVENTS    = { 0x14, 0x79 };
     private static final byte []         SYSEX_RUNTIME_SET_REPAINT_ENABLED = { 0x7F, 0x7A };
     private static final byte []         SYSEX_RUNTIME_ENABLE_LOGGER       = { 0x7F, 0x7D };
-    
-    private static final int []          TOUCH_PATTERN_SHIFT         = new int [] { 1, 1, 2, 2, 2, 2, 1, 1, 2, 2, 2, 2 };
+
+    // 0 = not touched, 1 = touched, 2 = ignore
+    private static final int []          TOUCH_PATTERN_SHIFT         = new int [] { 1, 1, 2, 2, 2, 2, 1, 2, 2, 2, 2, 2 };
     private static final int []          TOUCH_PATTERN_MIXER         = new int [] { 1, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0 };
     private static final int []          TOUCH_PATTERN_SENDS         = new int [] { 0, 1, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0 };
     private static final int []          TOUCH_PATTERN_DEVICES       = new int [] { 0, 0, 1, 1, 1, 0, 0, 0, 0, 0, 0, 0 };

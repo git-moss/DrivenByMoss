@@ -8,6 +8,7 @@ import de.mossgrabers.controller.electra.one.ElectraOneConfiguration;
 import de.mossgrabers.controller.electra.one.controller.ElectraOneColorManager;
 import de.mossgrabers.controller.electra.one.controller.ElectraOneControlSurface;
 import de.mossgrabers.framework.command.trigger.clip.NewCommand;
+import de.mossgrabers.framework.controller.color.ColorEx;
 import de.mossgrabers.framework.daw.IModel;
 import de.mossgrabers.framework.daw.IProject;
 import de.mossgrabers.framework.daw.ITransport;
@@ -207,15 +208,6 @@ public class TransportMode extends AbstractElectraOneMode
     @Override
     public void updateDisplay ()
     {
-        final IMarkerBank markerBank = this.model.getMarkerBank ();
-        for (int i = 0; i < 4; i++)
-        {
-            IMarker marker = markerBank.getItem (i);
-            this.pageCache.updateElement (2, 1 + i, marker.getName (), marker.getColor (), Boolean.valueOf (marker.doesExist ()));
-            marker = markerBank.getItem (4 + i);
-            this.pageCache.updateElement (3, 1 + i, marker.getName (), marker.getColor (), Boolean.valueOf (marker.doesExist ()));
-        }
-
         final AutomationMode automationWriteMode = this.transport.getAutomationWriteMode ();
 
         // Row 1
@@ -229,8 +221,20 @@ public class TransportMode extends AbstractElectraOneMode
         this.pageCache.updateColor (1, 3, automationWriteMode == AutomationMode.LATCH ? ElectraOneColorManager.AUTO_MODE_ON : ElectraOneColorManager.AUTO_MODE_OFF);
         this.pageCache.updateColor (1, 4, automationWriteMode == AutomationMode.TOUCH ? ElectraOneColorManager.AUTO_MODE_ON : ElectraOneColorManager.AUTO_MODE_OFF);
 
-        // Row 3
+        // Row 3 / 4
         this.pageCache.updateValue (2, 5, 0, this.transport.getTempoParameter ().getDisplayedValue ());
+
+        final IMarkerBank markerBank = this.model.getMarkerBank ();
+        for (int i = 0; i < 4; i++)
+        {
+            IMarker marker = markerBank.getItem (i);
+            boolean doesExist = marker.doesExist ();
+            this.pageCache.updateElement (2, 1 + i, doesExist ? marker.getName () : " ", doesExist ? marker.getColor () : ColorEx.BLACK, Boolean.TRUE);
+
+            marker = markerBank.getItem (4 + i);
+            doesExist = marker.doesExist ();
+            this.pageCache.updateElement (3, 1 + i, doesExist ? marker.getName () : " ", doesExist ? marker.getColor () : ColorEx.BLACK, Boolean.TRUE);
+        }
 
         // Row 5
         this.pageCache.updateValue (4, 1, this.transport.getMetronomeVolume (), StringUtils.optimizeName (StringUtils.fixASCII (this.transport.getMetronomeVolumeStr ()), 15));

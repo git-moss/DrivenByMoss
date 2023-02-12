@@ -4,11 +4,13 @@
 
 package de.mossgrabers.controller.electra.one.mode;
 
+import de.mossgrabers.controller.electra.one.ElectraOneConfiguration;
 import de.mossgrabers.controller.electra.one.controller.ElectraOneColorManager;
 import de.mossgrabers.controller.electra.one.controller.ElectraOneControlSurface;
 import de.mossgrabers.framework.controller.color.ColorEx;
 import de.mossgrabers.framework.daw.IModel;
 import de.mossgrabers.framework.daw.ITransport;
+import de.mossgrabers.framework.daw.clip.IClip;
 import de.mossgrabers.framework.daw.data.IMasterTrack;
 import de.mossgrabers.framework.daw.data.IScene;
 import de.mossgrabers.framework.daw.data.ISlot;
@@ -32,17 +34,56 @@ import de.mossgrabers.framework.utils.StringUtils;
  */
 public class SessionMode extends AbstractElectraOneMode
 {
-    private static final int   FIRST_TRACK_GROUP    = 550;
+    private static final int        FIRST_TRACK_GROUP    = 550;
 
     /** The color for a scene. */
-    public static final String COLOR_SCENE          = "COLOR_SCENE";
+    public static final String      COLOR_SCENE          = "COLOR_SCENE";
     /** The color for a selected scene. */
-    public static final String COLOR_SELECTED_SCENE = "COLOR_SELECTED_SCENE";
+    public static final String      COLOR_SELECTED_SCENE = "COLOR_SELECTED_SCENE";
     /** The color for no scene. */
-    public static final String COLOR_SCENE_OFF      = "COLOR_SELECTED_OFF";
+    public static final String      COLOR_SCENE_OFF      = "COLOR_SELECTED_OFF";
+
+    private static final String []  FUNCTION_NAMES       =
+    {
+        "New",
+        "Delete",
+        "Duplicate",
+        "Quantize",
+        "Stop"
+    };
+
+    private static final String []  NAVIGATION_NAMES     =
+    {
+        "Tracks -",
+        "Tracks +",
+        "",
+        "Scenes -",
+        "Scenes+"
+    };
+
+    private static final ColorEx [] NAVIGATION_COLORS    =
+    {
+        ColorEx.PURPLE,
+        ColorEx.PURPLE,
+        ColorEx.BLACK,
+        ColorEx.OLIVE,
+        ColorEx.OLIVE
+    };
+
+
+    private enum SessionUI
+    {
+        NORMAL,
+        FUNCTIONS,
+        NAVIGATION
+    }
+
 
     private final ITransport   transport;
     private final IMasterTrack masterTrack;
+
+    private SessionUI          sessionUI    = SessionUI.NORMAL;
+    private int                clipFunction = 4;
 
 
     /**
@@ -89,10 +130,10 @@ public class SessionMode extends AbstractElectraOneMode
             switch (row)
             {
                 case 2:
-                    // TODO
+                    this.sessionUI = this.sessionUI == SessionUI.NAVIGATION ? SessionUI.NORMAL : SessionUI.NAVIGATION;
                     break;
                 case 3:
-                    // TODO
+                    this.sessionUI = this.sessionUI == SessionUI.FUNCTIONS ? SessionUI.NORMAL : SessionUI.FUNCTIONS;
                     break;
                 // Record
                 case 4:
@@ -109,17 +150,96 @@ public class SessionMode extends AbstractElectraOneMode
             }
         }
 
+        final ITrackBank tb = this.model.getCurrentTrackBank ();
+        final ISceneBank sceneBank = this.model.getSceneBank ();
+        final ElectraOneConfiguration configuration = this.surface.getConfiguration ();
+
         // Scenes
         if (row == 0)
         {
-            this.model.getSceneBank ().getItem (index).launch ();
+            switch (this.sessionUI)
+            {
+                case NORMAL:
+                    sceneBank.getItem (index).launch ();
+                    break;
+                case FUNCTIONS:
+                    this.clipFunction = index;
+                    break;
+                case NAVIGATION:
+                    if (index == 0)
+                        tb.selectPreviousPage ();
+                    else if (index == 1)
+                        tb.selectNextPage ();
+                    else if (index == 3)
+                        sceneBank.selectPreviousPage ();
+                    else if (index == 4)
+                        sceneBank.selectNextPage ();
+                    break;
+            }
             return;
         }
 
-        final ITrack track = this.model.getTrackBank ().getItem (row - 1);
+        final ITrack track = tb.getItem (row - 1);
         if (!track.doesExist ())
             return;
-        track.getSlotBank ().getItem (index).launch ();
+        final ISlot slot = track.getSlotBank ().getItem (index);
+
+        switch (this.sessionUI)
+        {
+            case NORMAL:
+                if (slot.doesExist () && slot.hasContent ())
+                    slot.launch ();
+                break;
+            case FUNCTIONS:
+                switch (this.clipFunction)
+                {
+                    // New
+                    case 0:
+                        final int lengthInBeats = configuration.getNewClipLenghthInBeats (this.model.getTransport ().getQuartersPerMeasure ());
+                        track.createClip (slot.getIndex (), lengthInBeats);
+                        slot.select ();
+                        break;
+                    // Delete
+                    case 1:
+                        slot.remove ();
+                        break;
+                    // Duplicate
+                    case 2:
+                        slot.duplicate ();
+                        break;
+                    // Quantize
+                    case 3:
+                        slot.select ();
+                        this.surface.scheduleTask ( () -> {
+                            final IClip clip = this.model.getCursorClip ();
+                            if (clip.doesExist ())
+                                clip.quantize (configuration.getQuantizeAmount () / 100.0);
+                        }, 100);
+                        break;
+                    // Stop
+                    default:
+                    case 4:
+                        track.stop ();
+                        break;
+                }
+                break;
+
+            case NAVIGATION:
+                // Calculate page offsets
+                final int numTracks = tb.getPageSize ();
+                final int numScenes = sceneBank.getPageSize ();
+                final int trackPosition = tb.getItem (0).getPosition () / numTracks;
+                final int scenePosition = sceneBank.getScrollPosition () / numScenes;
+                final int selX = trackPosition;
+                final int selY = scenePosition;
+                final int padsX = 5;
+                final int padsY = 5 + 1;
+                final int offsetX = selX / padsX * padsX;
+                final int offsetY = selY / padsY * padsY;
+                tb.scrollTo (offsetX * numTracks + index * padsX);
+                sceneBank.scrollTo (offsetY * numScenes + (row - 1) * padsY);
+                break;
+        }
     }
 
 
@@ -127,23 +247,83 @@ public class SessionMode extends AbstractElectraOneMode
     @Override
     public void updateDisplay ()
     {
+        this.pageCache.updateElement (2, 5, null, this.sessionUI == SessionUI.NAVIGATION ? ColorEx.SKY_BLUE : ColorEx.DARK_GRAY, Boolean.TRUE);
+        this.pageCache.updateElement (3, 5, null, this.sessionUI == SessionUI.FUNCTIONS ? ColorEx.SKY_BLUE : ColorEx.DARK_GRAY, Boolean.TRUE);
+
+        final int columns = 5;
+        final int rows = 5;
+
         final ITrackBank tb = this.model.getCurrentTrackBank ();
         final ISceneBank sceneBank = this.model.getSceneBank ();
 
-        for (int column = 0; column < 5; column++)
+        if (this.sessionUI == SessionUI.NORMAL || this.sessionUI == SessionUI.FUNCTIONS)
         {
-            final IScene scene = sceneBank.getItem (column);
-            this.pageCache.updateGroupLabel (FIRST_TRACK_GROUP + column, scene.doesExist () ? scene.getPosition () + 1 + ": " + scene.getName () : "");
-            this.pageCache.updateElement (0, column, scene.getName (), scene.getColor (), Boolean.valueOf (scene.doesExist ()));
-
-            for (int row = 1; row < 6; row++)
+            for (int column = 0; column < columns; column++)
             {
-                final ITrack t = tb.getItem (row - 1);
-                final boolean isArmed = t.isRecArm ();
+                final IScene scene = sceneBank.getItem (column);
+                this.pageCache.updateGroupLabel (FIRST_TRACK_GROUP + column, scene.doesExist () ? scene.getPosition () + 1 + ": " + scene.getName () : "");
 
-                final ISlotBank slotBank = t.getSlotBank ();
-                final ISlot slot = slotBank.getItem (column);
-                this.pageCache.updateElement (row, column, slot.getName (), this.getPadColor (slot, isArmed), Boolean.valueOf (slot.doesExist ()));
+                if (this.sessionUI == SessionUI.FUNCTIONS)
+                    this.pageCache.updateElement (0, column, FUNCTION_NAMES[column], this.clipFunction == column ? ColorEx.SKY_BLUE : ColorEx.DARK_GRAY, Boolean.TRUE);
+                else
+                    this.pageCache.updateElement (0, column, scene.getName (), scene.getColor (), Boolean.valueOf (scene.doesExist ()));
+
+                for (int row = 1; row < rows + 1; row++)
+                {
+                    final ITrack t = tb.getItem (row - 1);
+                    final boolean isArmed = t.isRecArm ();
+
+                    final ISlotBank slotBank = t.getSlotBank ();
+                    final ISlot slot = slotBank.getItem (column);
+
+                    // Set the track name if the slot doesn't have one
+                    final boolean slotDoesExist = slot.doesExist ();
+                    String slotName = slotDoesExist && slot.hasContent () ? slot.getName () : "-";
+                    if (slotName.isBlank ())
+                        slotName = t.getName ();
+                    this.pageCache.updateElement (row, column, slotName, this.getPadColor (slot, isArmed), Boolean.valueOf (slotDoesExist));
+                }
+            }
+        }
+        else
+        {
+            // Navigation
+
+            for (int column = 0; column < columns; column++)
+            {
+                this.pageCache.updateElement (0, column, NAVIGATION_NAMES[column], NAVIGATION_COLORS[column], Boolean.TRUE);
+
+                final int numTracks = tb.getPageSize ();
+                final int numScenes = sceneBank.getPageSize ();
+                final int sceneCount = sceneBank.getItemCount ();
+                final int trackCount = tb.getItemCount ();
+                final int maxScenePads = sceneCount / numScenes + (sceneCount % numScenes > 0 ? 1 : 0);
+                final int maxTrackPads = trackCount / numTracks + (trackCount % numTracks > 0 ? 1 : 0);
+                final int scenePosition = sceneBank.getScrollPosition ();
+                final int trackPosition = tb.getItem (0).getPosition ();
+                final int sceneSelection = scenePosition / numScenes + (scenePosition % numScenes > 0 ? 1 : 0);
+                final int trackSelection = trackPosition / numTracks + (trackPosition % numTracks > 0 ? 1 : 0);
+                int selX = trackSelection;
+                int selY = sceneSelection;
+                final int padsX = columns;
+                final int padsY = rows;
+                final int offsetX = selX / padsX * padsX;
+                final int offsetY = selY / padsY * padsY;
+                final int maxX = maxTrackPads - offsetX;
+                final int maxY = maxScenePads - offsetY;
+                selX -= offsetX;
+                selY -= offsetY;
+
+                final ColorEx rowColor = column < maxX ? ColorEx.RED : ColorEx.BLACK;
+                for (int y = 0; y < rows; y++)
+                {
+                    final boolean exists = y < maxY;
+                    ColorEx color = exists ? rowColor : ColorEx.BLACK;
+                    if (selX == column && selY == y)
+                        color = ColorEx.ORANGE;
+                    final String n = exists && column < maxX ? String.format ("Sc. %d - Tr. %d", Integer.valueOf (scenePosition + 1 + 5 * column), Integer.valueOf (trackPosition + 1 + 5 * y)) : "-";
+                    this.pageCache.updateElement (y + 1, column, n, color, Boolean.TRUE);
+                }
             }
         }
 
@@ -170,6 +350,9 @@ public class SessionMode extends AbstractElectraOneMode
      */
     public ColorEx getPadColor (final ISlot slot, final boolean isArmed)
     {
+        if (slot.isSelected ())
+            return ColorEx.WHITE;
+
         if (slot.isRecordingQueued ())
             return ColorEx.DARK_RED;
 

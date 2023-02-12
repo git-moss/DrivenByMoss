@@ -6,6 +6,7 @@ package de.mossgrabers.controller.electra.one.mode;
 
 import de.mossgrabers.controller.electra.one.controller.ElectraOneColorManager;
 import de.mossgrabers.controller.electra.one.controller.ElectraOneControlSurface;
+import de.mossgrabers.framework.controller.color.ColorEx;
 import de.mossgrabers.framework.daw.IModel;
 import de.mossgrabers.framework.daw.ITransport;
 import de.mossgrabers.framework.daw.data.ICursorDevice;
@@ -155,19 +156,23 @@ public class DeviceMode extends AbstractElectraOneMode
             final boolean exists = param.doesExist ();
             int row = i / 4;
             final int column = 1 + i % 4;
-            this.pageCache.updateElement (row, column, exists ? StringUtils.fixASCII (param.getName ()) : "", null, Boolean.valueOf (exists));
-            this.pageCache.updateValue (row, column, param.getValue (), StringUtils.optimizeName (StringUtils.fixASCII (param.getDisplayedValue ()), 15));
+            this.pageCache.updateElement (row, column, exists ? StringUtils.fixASCII (param.getName ()) : "", exists ? ColorEx.ORANGE : ColorEx.BLACK, Boolean.TRUE);
+            this.pageCache.updateValue (row, column, param.getValue (), exists ? StringUtils.optimizeName (StringUtils.fixASCII (param.getDisplayedValue ()), 15) : " ");
 
             // Set page names
             row += 2;
             final String paramPage = parameterPageBank.getItem (i);
             final boolean isSelected = parameterPageBank.getSelectedItemIndex () == i;
-            this.pageCache.updateElement (row, column, StringUtils.fixASCII (paramPage), isSelected ? ElectraOneColorManager.PARAM_PAGE_SELECTED : ElectraOneColorManager.PARAM_PAGE, Boolean.valueOf (!paramPage.isBlank ()));
+            final boolean pageExists = !paramPage.isBlank ();
+            final ColorEx color = isSelected ? ElectraOneColorManager.PARAM_PAGE_SELECTED : ElectraOneColorManager.PARAM_PAGE;
+            this.pageCache.updateElement (row, column, pageExists ? StringUtils.fixASCII (paramPage) : " ", pageExists ? color : ColorEx.BLACK, Boolean.TRUE);
 
             // Set device names
             row += 2;
             final IDevice device = siblingBank.getItem (i);
-            this.pageCache.updateElement (row, column, StringUtils.fixASCII (device.getName ()), cursorDevice.getIndex () == i ? ElectraOneColorManager.DEVICE_SELECTED : ElectraOneColorManager.DEVICE, Boolean.valueOf (device.doesExist ()));
+            final boolean deviceExists = device.doesExist ();
+            final ColorEx deviceColor = cursorDevice.getIndex () == i ? ElectraOneColorManager.DEVICE_SELECTED : ElectraOneColorManager.DEVICE;
+            this.pageCache.updateElement (row, column, deviceExists ? StringUtils.fixASCII (device.getName ()) : " ", deviceExists ? deviceColor : ColorEx.BLACK, Boolean.TRUE);
         }
 
         this.pageCache.updateColor (0, 0, cursorDevice.isEnabled () ? ElectraOneColorManager.DEVICE_ON : ElectraOneColorManager.DEVICE_OFF);

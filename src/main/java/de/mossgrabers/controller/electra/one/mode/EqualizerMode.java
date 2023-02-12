@@ -136,9 +136,9 @@ public class EqualizerMode extends AbstractElectraOneMode
             this.pageCache.updateValue (row, 3, gainParameter.getValue (), StringUtils.optimizeName (StringUtils.fixASCII (gainParameter.getDisplayedValue ()), 15));
             this.pageCache.updateValue (row, 4, qParameter.getValue (), StringUtils.optimizeName (StringUtils.fixASCII (qParameter.getDisplayedValue ()), 15));
 
-            this.pageCache.updateElement (row, 2, null, null, exists);
-            this.pageCache.updateElement (row, 3, null, null, exists);
-            this.pageCache.updateElement (row, 4, null, null, exists);
+            this.pageCache.updateElement (row, 2, null, null, Boolean.TRUE);
+            this.pageCache.updateElement (row, 3, null, null, Boolean.TRUE);
+            this.pageCache.updateElement (row, 4, null, null, Boolean.TRUE);
         }
 
         this.pageCache.updateColor (3, 5, this.eqDevice.doesExist () && this.eqDevice.isEnabled () ? ElectraOneColorManager.BAND_ON : ElectraOneColorManager.BAND_OFF);

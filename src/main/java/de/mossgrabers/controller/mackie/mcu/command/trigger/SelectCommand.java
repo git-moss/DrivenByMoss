@@ -11,8 +11,10 @@ import de.mossgrabers.framework.configuration.AbstractConfiguration;
 import de.mossgrabers.framework.controller.ButtonID;
 import de.mossgrabers.framework.controller.display.ITextDisplay;
 import de.mossgrabers.framework.daw.IModel;
+import de.mossgrabers.framework.daw.constants.DeviceID;
 import de.mossgrabers.framework.daw.data.ICursorDevice;
 import de.mossgrabers.framework.daw.data.ILayer;
+import de.mossgrabers.framework.daw.data.ISpecificDevice;
 import de.mossgrabers.framework.daw.data.ITrack;
 import de.mossgrabers.framework.daw.data.bank.ITrackBank;
 import de.mossgrabers.framework.featuregroup.ModeManager;
@@ -100,13 +102,13 @@ public class SelectCommand extends AbstractTriggerCommand<MCUControlSurface, MCU
 
     private void handleSelectEnter ()
     {
-        final ICursorDevice cursorDevice = this.model.getCursorDevice ();
         final ModeManager modeManager = this.surface.getModeManager ();
+        final ISpecificDevice firstDevice = this.model.getSpecificDevice (DeviceID.FIRST_INSTRUMENT);
 
         // If layer modes are active select the layer...
         if (Modes.isLayerMode (modeManager.getActiveID ()))
         {
-            final ILayer layer = cursorDevice.getLayerBank ().getItem (this.channel);
+            final ILayer layer = firstDevice.getLayerBank ().getItem (this.channel);
             if (!layer.isSelected ())
                 layer.select ();
             return;
@@ -136,7 +138,7 @@ public class SelectCommand extends AbstractTriggerCommand<MCUControlSurface, MCU
         }
 
         // If the tracks cursor device has layers dive in...
-        if (cursorDevice.hasLayers ())
+        if (firstDevice.hasLayers ())
         {
             final Modes layerMode = TRACK_LAYER_MODE_MAP.get (modeManager.getActiveID ());
             if (layerMode != null)
