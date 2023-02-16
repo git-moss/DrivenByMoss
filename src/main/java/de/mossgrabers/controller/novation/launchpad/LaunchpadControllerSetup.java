@@ -694,7 +694,7 @@ public class LaunchpadControllerSetup extends AbstractControllerSetup<LaunchpadC
             return;
 
         // Do not restore preferred play view view if certain views are active
-        if (!this.getSurface ().getViewManager ().isActive (Views.MIX, Views.TRACK_PAN, Views.TRACK_VOLUME, Views.TRACK_SENDS, Views.DEVICE))
+        if (!this.getSurface ().getViewManager ().isActive (Views.MIX, Views.USER, Views.TRACK_PAN, Views.TRACK_VOLUME, Views.TRACK_SENDS, Views.DEVICE))
             super.handleTrackChange (isSelected);
     }
 

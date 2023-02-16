@@ -190,6 +190,7 @@ public class SessionMode extends AbstractElectraOneMode
                 if (slot.doesExist () && slot.hasContent ())
                     slot.launch ();
                 break;
+
             case FUNCTIONS:
                 switch (this.clipFunction)
                 {
@@ -236,8 +237,8 @@ public class SessionMode extends AbstractElectraOneMode
                 final int padsY = 5 + 1;
                 final int offsetX = selX / padsX * padsX;
                 final int offsetY = selY / padsY * padsY;
-                tb.scrollTo (offsetX * numTracks + index * padsX);
-                sceneBank.scrollTo (offsetY * numScenes + (row - 1) * padsY);
+                sceneBank.scrollTo (offsetX * numScenes + index * padsY);
+                tb.scrollTo (offsetY * numTracks + (row - 1) * padsX);
                 break;
         }
     }
@@ -278,9 +279,9 @@ public class SessionMode extends AbstractElectraOneMode
 
                     // Set the track name if the slot doesn't have one
                     final boolean slotDoesExist = slot.doesExist ();
-                    String slotName = slotDoesExist && slot.hasContent () ? slot.getName () : "-";
+                    String slotName = slotDoesExist && slot.hasContent () ? slot.getName () : "";
                     if (slotName.isBlank ())
-                        slotName = t.getName ();
+                        slotName = slotDoesExist ? "(" + t.getName () + ")" : "-";
                     this.pageCache.updateElement (row, column, slotName, this.getPadColor (slot, isArmed), Boolean.valueOf (slotDoesExist));
                 }
             }
@@ -322,7 +323,7 @@ public class SessionMode extends AbstractElectraOneMode
                     if (selX == column && selY == y)
                         color = ColorEx.ORANGE;
                     final String n = exists && column < maxX ? String.format ("Sc. %d - Tr. %d", Integer.valueOf (scenePosition + 1 + 5 * column), Integer.valueOf (trackPosition + 1 + 5 * y)) : "-";
-                    this.pageCache.updateElement (y + 1, column, n, color, Boolean.TRUE);
+                    this.pageCache.updateElement (column + 1, y, n, color, Boolean.TRUE);
                 }
             }
         }
