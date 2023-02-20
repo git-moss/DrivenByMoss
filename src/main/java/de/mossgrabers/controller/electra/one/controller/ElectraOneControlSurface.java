@@ -30,6 +30,7 @@ import java.io.IOException;
 import java.io.StringWriter;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -146,29 +147,26 @@ public class ElectraOneControlSurface extends AbstractControlSurface<ElectraOneC
     private static final int             INFO_PRESET_LIST                  = 0x04;
     private static final int             INFO_DEVICE                       = 0x7F;
 
-    private static final Modes []        MODES                             =
+    private static final List<Modes>     MODES                             = new ArrayList<> ();
+    static
     {
-        Modes.VOLUME,
-        Modes.SEND,
-        Modes.DEVICE_PARAMS,
-        Modes.EQ_DEVICE_PARAMS,
-        Modes.TRANSPORT,
-        Modes.SESSION
-    };
+        Collections.addAll (MODES, Modes.VOLUME, Modes.SEND, Modes.DEVICE_PARAMS, Modes.EQ_DEVICE_PARAMS, Modes.TRANSPORT, Modes.SESSION);
+    }
 
-    private static final String          SET_GROUP_TITLE                   = "sgt(%s,\"%s\")";
+    private static final String        SET_GROUP_TITLE = "sgt(%s,\"%s\")";
 
-    private final List<int []>           sysexChunks                       = new ArrayList<> ();
-    private final IMidiInput             ctrlInput;
-    private final IMidiOutput            ctrlOutput;
-    private final ObjectMapper           mapper                            = new ObjectMapper ();
-    private final Map<String, Integer>   presetBanks                       = new HashMap<> ();
-    private final Map<String, Integer>   presetIndices                     = new HashMap<> ();
-    private int                          bankIndex                         = -1;
-    private int                          presetIndex                       = -1;
-    private boolean                      isOnline                          = false;
-    private int []                       knobStates                        = new int [12];
-    private boolean                      isShiftPressed;
+    private final List<int []>         sysexChunks     = new ArrayList<> ();
+    private final IMidiInput           ctrlInput;
+    private final IMidiOutput          ctrlOutput;
+    private final ObjectMapper         mapper          = new ObjectMapper ();
+    private final Map<String, Integer> presetBanks     = new HashMap<> ();
+    private final Map<String, Integer> presetIndices   = new HashMap<> ();
+    private int                        bankIndex       = -1;
+    private int                        presetIndex     = -1;
+    private boolean                    isOnline        = false;
+    private int []                     knobStates      = new int [12];
+    private boolean                    isShiftPressed;
+    private Modes                      activeMode      = null;
 
 
     /**
@@ -518,41 +516,30 @@ public class ElectraOneControlSurface extends AbstractControlSurface<ElectraOneC
                 if (this.isOnline)
                 {
                     final int page = data[SUB_CMD_START_POS + 1];
-                    if (page >= 0 && page < MODES.length)
+                    if (page >= 0 && page < MODES.size ())
                     {
-                        this.host.println ("Switching to mode: " + MODES[page].name ());
-                        this.getModeManager ().setActive (MODES[page]);
+                        final Modes mode = MODES.get (page);
+                        this.host.println ("Switching to mode: " + mode.name ());
+                        this.modeManager.setActive (mode);
                     }
                 }
                 break;
 
             case EVENT_POT_TOUCH:
-                final IMode active = this.getModeManager ().getActive ();
-                if (active instanceof final AbstractElectraOneMode electraMode)
+                final int potID = data[SUB_CMD_START_POS + 1];
+                final int controlID = (data[SUB_CMD_START_POS + 3] << 7) + data[SUB_CMD_START_POS + 2];
+                if (potID < 0 || potID >= 12)
                 {
-                    final int potID = data[SUB_CMD_START_POS + 1];
-                    final int controlID = (data[SUB_CMD_START_POS + 3] << 7) + data[SUB_CMD_START_POS + 2];
-                    if (potID < 0 || potID >= 12)
-                    {
-                        this.host.error ("Touch event with knob ID outside of range: " + potID);
-                        return;
-                    }
-
-                    this.knobStates[potID] = data[SUB_CMD_START_POS + 4];
-                    electraMode.setEditing (controlID, this.knobStates[potID] > 0);
-
-                    this.matchStates ();
-
-                    // TODO remove
-                    final StringBuilder sb = new StringBuilder ();
-                    for (int i = 0; i < 12; i++)
-                    {
-                        if (i == 6)
-                            sb.append ('\n');
-                        sb.append (this.knobStates[i]).append (' ');
-                    }
-                    this.host.println (sb.toString ());
+                    this.host.error ("Touch event with knob ID outside of range: " + potID);
+                    return;
                 }
+
+                this.knobStates[potID] = data[SUB_CMD_START_POS + 4];
+
+                final IMode active = this.modeManager.getActive ();
+                if (active instanceof final AbstractElectraOneMode electraMode)
+                    electraMode.setEditing (controlID, this.knobStates[potID] > 0);
+                this.matchStates ();
                 break;
 
             default:
@@ -635,9 +622,6 @@ public class ElectraOneControlSurface extends AbstractControlSurface<ElectraOneC
     private void updateShift (final boolean isShift)
     {
         this.isShiftPressed = isShift;
-
-        // TODO remove
-        this.host.println ("Shift: " + this.isShiftPressed);
         this.setKnobSensitivityIsSlow (this.isShiftPressed);
     }
 
@@ -721,11 +705,19 @@ public class ElectraOneControlSurface extends AbstractControlSurface<ElectraOneC
         if (this.bankIndex == bank && this.presetIndex == preset)
             this.setOnline ();
         else
-        {
-            this.host.println ("Going offline...");
-            this.isOnline = false;
-            this.unbindAllInputControls ();
-        }
+            this.setOffline ();
+    }
+
+
+    /**
+     * Set the extension online.
+     */
+    private void setOffline ()
+    {
+        this.host.println ("Going offline...");
+        this.isOnline = false;
+        this.activeMode = this.modeManager.getActiveID ();
+        this.modeManager.setActive (Modes.DUMMY);
     }
 
 
@@ -736,17 +728,11 @@ public class ElectraOneControlSurface extends AbstractControlSurface<ElectraOneC
     {
         this.host.println ("Going online...");
         this.isOnline = true;
-        this.rebindAllInputControls ();
 
-        final IMode active = this.getModeManager ().getActive ();
-        if (active != null)
-            active.onDeactivate ();
-
-        // Switching templates always selects 1st page
-        this.getModeManager ().setActive (Modes.VOLUME);
-
-        // Refresh all control UIs
-        this.forceFlush ();
+        if (this.activeMode == null || this.activeMode == Modes.VOLUME)
+            this.modeManager.setActive (Modes.VOLUME);
+        else
+            this.selectPage (MODES.indexOf (this.activeMode));
     }
 
 

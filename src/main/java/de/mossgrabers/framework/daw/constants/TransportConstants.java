@@ -11,15 +11,20 @@ package de.mossgrabers.framework.daw.constants;
  */
 public final class TransportConstants
 {
-    /** 1 beat. */
-    public static final double INC_FRACTION_TIME      = 1.0;
-    /** 1/20th of a beat. */
-    public static final double INC_FRACTION_TIME_SLOW = 1.0 / 16;
+    /** 1 bar. */
+    public static final double INC_FRACTION_TIME        = 1.0 * 4;
+    /** 1/16th of a quarter. */
+    public static final double INC_FRACTION_TIME_SLOW   = 1.0;
+
+    /** 1 percent. */
+    public static final double INC_FRACTION_ACCENT      = 1.0;
+    /** 1/16 percent. */
+    public static final double INC_FRACTION_ACCENT_SLOW = 1.0 / 16;
 
     /** The minimum tempo in BPM. */
-    public static final int    MIN_TEMPO              = 20;
+    public static final int    MIN_TEMPO                = 20;
     /** The maximum tempo in BPM. */
-    public static final int    MAX_TEMPO              = 666;
+    public static final int    MAX_TEMPO                = 666;
 
 
     /**

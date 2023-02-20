@@ -29,6 +29,7 @@ import de.mossgrabers.framework.daw.midi.IMidiAccess;
 import de.mossgrabers.framework.daw.midi.IMidiInput;
 import de.mossgrabers.framework.daw.midi.IMidiOutput;
 import de.mossgrabers.framework.featuregroup.ModeManager;
+import de.mossgrabers.framework.mode.DummyMode;
 import de.mossgrabers.framework.mode.Modes;
 import de.mossgrabers.framework.view.DummyView;
 import de.mossgrabers.framework.view.Views;
@@ -128,6 +129,7 @@ public class ElectraOneControllerSetup extends AbstractControllerSetup<ElectraOn
         modeManager.register (Modes.EQ_DEVICE_PARAMS, new EqualizerMode (surface, this.model));
         modeManager.register (Modes.TRANSPORT, new TransportMode (surface, this.model));
         modeManager.register (Modes.SESSION, new SessionMode (surface, this.model));
+        modeManager.register (Modes.DUMMY, new DummyMode<> (surface, this.model, ElectraOneControlSurface.KNOB_IDS));
     }
 
 

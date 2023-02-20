@@ -346,7 +346,7 @@ public class CursorClipImpl implements INoteClip
     public void changeAccent (final int control, final boolean slow)
     {
         final boolean increase = this.valueChanger.isIncrease (control);
-        final double frac = slow ? TransportConstants.INC_FRACTION_TIME_SLOW : TransportConstants.INC_FRACTION_TIME;
+        final double frac = slow ? TransportConstants.INC_FRACTION_ACCENT_SLOW : TransportConstants.INC_FRACTION_ACCENT;
         this.getClip ().getAccent ().inc (increase ? frac : -frac);
     }
 
