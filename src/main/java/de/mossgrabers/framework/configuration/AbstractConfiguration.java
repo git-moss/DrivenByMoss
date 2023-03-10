@@ -1512,7 +1512,7 @@ public abstract class AbstractConfiguration implements Configuration
                 "8"
             };
 
-            this.noteRepeatOctaveSetting = settingsUI.getEnumSetting ("Octave", CATEGORY_NOTEREPEAT, octaves, octaves[0]);
+            this.noteRepeatOctaveSetting = settingsUI.getEnumSetting ("Octave", CATEGORY_NOTEREPEAT, octaves, octaves[1]);
             this.noteRepeatOctaveSetting.addValueObserver (value -> {
                 this.noteRepeatOctave = Integer.parseInt (value);
                 this.notifyObservers (NOTEREPEAT_OCTAVE);

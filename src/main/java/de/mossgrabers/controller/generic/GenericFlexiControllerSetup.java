@@ -184,6 +184,8 @@ public class GenericFlexiControllerSetup extends AbstractControllerSetup<Generic
         ms.setNumMarkers (8);
         ms.enableDevice (DeviceID.EQ);
         this.model = this.factory.createModel (this.configuration, this.colorManager, this.valueChanger, this.scales, ms);
+
+        this.model.getTrackBank ().setIndication (true);
     }
 
 
