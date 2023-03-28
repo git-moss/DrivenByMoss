@@ -951,7 +951,7 @@
       <current_index>0</current_index>
       <group name="Pad Page A" color-index="9">
         <pad subtype="pressure" version="1" id="Pad10_PRESSURE">
-          <polyat>21</polyat>
+          <polyat>45</polyat>
           <channel>0</channel>
           <min>0</min>
           <max>127</max>
@@ -999,7 +999,7 @@
           <default>0</default>
         </led>
         <pad subtype="pressure" version="1" id="Pad11_PRESSURE">
-          <polyat>22</polyat>
+          <polyat>46</polyat>
           <channel>0</channel>
           <min>0</min>
           <max>127</max>
@@ -1047,7 +1047,7 @@
           <default>0</default>
         </led>
         <pad subtype="pressure" version="1" id="Pad12_PRESSURE">
-          <polyat>23</polyat>
+          <polyat>47</polyat>
           <channel>0</channel>
           <min>0</min>
           <max>127</max>
@@ -1095,7 +1095,7 @@
           <default>0</default>
         </led>
         <pad subtype="pressure" version="1" id="Pad13_PRESSURE">
-          <polyat>24</polyat>
+          <polyat>48</polyat>
           <channel>0</channel>
           <min>0</min>
           <max>127</max>
@@ -1143,7 +1143,7 @@
           <default>0</default>
         </led>
         <pad subtype="pressure" version="1" id="Pad14_PRESSURE">
-          <polyat>25</polyat>
+          <polyat>49</polyat>
           <channel>0</channel>
           <min>0</min>
           <max>127</max>
@@ -1191,7 +1191,7 @@
           <default>0</default>
         </led>
         <pad subtype="pressure" version="1" id="Pad15_PRESSURE">
-          <polyat>26</polyat>
+          <polyat>50</polyat>
           <channel>0</channel>
           <min>0</min>
           <max>127</max>
@@ -1239,7 +1239,7 @@
           <default>0</default>
         </led>
         <pad subtype="pressure" version="1" id="Pad16_PRESSURE">
-          <polyat>27</polyat>
+          <polyat>51</polyat>
           <channel>0</channel>
           <min>0</min>
           <max>127</max>
@@ -1287,7 +1287,7 @@
           <default>0</default>
         </led>
         <pad subtype="pressure" version="1" id="Pad1_PRESSURE">
-          <polyat>12</polyat>
+          <polyat>36</polyat>
           <channel>0</channel>
           <min>0</min>
           <max>127</max>
@@ -1335,7 +1335,7 @@
           <default>0</default>
         </led>
         <pad subtype="pressure" version="1" id="Pad2_PRESSURE">
-          <polyat>13</polyat>
+          <polyat>37</polyat>
           <channel>0</channel>
           <min>0</min>
           <max>127</max>
@@ -1383,7 +1383,7 @@
           <default>0</default>
         </led>
         <pad subtype="pressure" version="1" id="Pad3_PRESSURE">
-          <polyat>14</polyat>
+          <polyat>38</polyat>
           <channel>0</channel>
           <min>0</min>
           <max>127</max>
@@ -1431,7 +1431,7 @@
           <default>0</default>
         </led>
         <pad subtype="pressure" version="1" id="Pad4_PRESSURE">
-          <polyat>15</polyat>
+          <polyat>39</polyat>
           <channel>0</channel>
           <min>0</min>
           <max>127</max>
@@ -1479,7 +1479,7 @@
           <default>0</default>
         </led>
         <pad subtype="pressure" version="1" id="Pad5_PRESSURE">
-          <polyat>16</polyat>
+          <polyat>40</polyat>
           <channel>0</channel>
           <min>0</min>
           <max>127</max>
@@ -1527,7 +1527,7 @@
           <default>0</default>
         </led>
         <pad subtype="pressure" version="1" id="Pad6_PRESSURE">
-          <polyat>17</polyat>
+          <polyat>41</polyat>
           <channel>0</channel>
           <min>0</min>
           <max>127</max>
@@ -1575,7 +1575,7 @@
           <default>0</default>
         </led>
         <pad subtype="pressure" version="1" id="Pad7_PRESSURE">
-          <polyat>18</polyat>
+          <polyat>42</polyat>
           <channel>0</channel>
           <min>0</min>
           <max>127</max>
@@ -1623,7 +1623,7 @@
           <default>0</default>
         </led>
         <pad subtype="pressure" version="1" id="Pad8_PRESSURE">
-          <polyat>19</polyat>
+          <polyat>43</polyat>
           <channel>0</channel>
           <min>0</min>
           <max>127</max>
@@ -1671,7 +1671,7 @@
           <default>0</default>
         </led>
         <pad subtype="pressure" version="1" id="Pad9_PRESSURE">
-          <polyat>20</polyat>
+          <polyat>44</polyat>
           <channel>0</channel>
           <min>0</min>
           <max>127</max>
