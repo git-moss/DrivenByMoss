@@ -220,7 +220,7 @@ public class GenericFlexiConfiguration extends AbstractConfiguration
         "Send 6",
         "Send 7",
         "Send 8",
-        "Parameters"
+        "Device"
     );
 
     /** The MIDI channel options. */

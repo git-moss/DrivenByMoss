@@ -224,7 +224,7 @@ public class GenericFlexiControllerSetup extends AbstractControllerSetup<Generic
         modeManager.register (Modes.PAN, new TrackPanMode<> (surface, this.model, true));
         for (int i = 0; i < 8; i++)
             modeManager.register (Modes.get (Modes.SEND1, i), new TrackSendMode<> (i, surface, this.model, true));
-        modeManager.register (Modes.DEVICE_PARAMS, new ParameterMode<> (surface, this.model, true));
+        modeManager.register (Modes.DEVICE_PARAMS, new ParameterMode<> ("Device", surface, this.model, true, null, surface::isShiftPressed));
         modeManager.register (Modes.BROWSER, new BrowserMode<> (surface, this.model));
 
         modeManager.setDefaultID (Modes.VOLUME);
