@@ -240,4 +240,15 @@ public class DeviceInquiry
     {
         return this.responseType == ResponseType.SHORT ? OFFSET_CONTENT_SHORT : OFFSET_CONTENT_LONG;
     }
+
+
+    /**
+     * Get the whole data packet.
+     *
+     * @return The data
+     */
+    public int [] getData ()
+    {
+        return this.data;
+    }
 }

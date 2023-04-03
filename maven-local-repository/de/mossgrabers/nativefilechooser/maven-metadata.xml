@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<metadata>
+  <groupId>de.mossgrabers</groupId>
+  <artifactId>nativefilechooser</artifactId>
+  <versioning>
+    <release>1.3.1</release>
+    <versions>
+      <version>1.3.1</version>
+    </versions>
+    <lastUpdated>20230403102937</lastUpdated>
+  </versioning>
+</metadata>

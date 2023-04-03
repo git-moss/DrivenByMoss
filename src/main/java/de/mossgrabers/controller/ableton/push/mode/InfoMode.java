@@ -17,7 +17,7 @@ import de.mossgrabers.framework.utils.ButtonEvent;
 
 
 /**
- * Configuration settings for Push 1.
+ * Additional configuration settings for Push 2.
  *
  * @author J&uuml;rgen Mo&szlig;graber
  */

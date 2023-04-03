@@ -9,6 +9,7 @@ import de.mossgrabers.framework.controller.display.IGraphicDisplay;
 import de.mossgrabers.framework.controller.display.ITextDisplay;
 import de.mossgrabers.framework.daw.IModel;
 import de.mossgrabers.framework.daw.data.IItem;
+import de.mossgrabers.framework.utils.StringUtils;
 
 
 /**
@@ -57,7 +58,7 @@ public class ConfigurationMode extends BaseMode<IItem>
         display.setBlock (0, 1, "Velocity Curve").setBlock (1, 1, this.surface.getSelectedVelocityCurve ());
         display.setBlock (0, 3, "Firmware: " + this.surface.getMajorVersion () + "." + this.surface.getMinorVersion ());
         if (this.surface.getConfiguration ().getPadThreshold () < 20)
-            display.setRow (3, " Warning:Low threshold maycause stuck pads ");
+            display.setRow (3, StringUtils.pad ("Low threshold maycause stuck pads!", 68));
     }
 
 

@@ -840,26 +840,26 @@ public class PushControlSurface extends AbstractControlSurface<PushConfiguration
      */
     private void handleDeviceInquiryResponse (final DeviceInquiry deviceInquiry)
     {
-        final int [] revisionLevel = deviceInquiry.getUnspecifiedData ();
-
         if (this.configuration.isPush2 ())
         {
-            if (revisionLevel.length != 10)
+            final int [] unspecifiedData = deviceInquiry.getUnspecifiedData ();
+            if (unspecifiedData.length != 10)
                 return;
 
-            this.majorVersion = revisionLevel[0];
-            this.minorVersion = revisionLevel[1];
-            this.buildNumber = revisionLevel[2] + (revisionLevel[3] << 7);
-            this.serialNumber = revisionLevel[4] + (revisionLevel[5] << 7) + (revisionLevel[6] << 14) + (revisionLevel[7] << 21) + (revisionLevel[8] << 28);
-            this.boardRevision = revisionLevel[9];
+            this.majorVersion = unspecifiedData[0];
+            this.minorVersion = unspecifiedData[1];
+            this.buildNumber = unspecifiedData[2] + (unspecifiedData[3] << 7);
+            this.serialNumber = unspecifiedData[4] + (unspecifiedData[5] << 7) + (unspecifiedData[6] << 14) + (unspecifiedData[7] << 21) + (unspecifiedData[8] << 28);
+            this.boardRevision = unspecifiedData[9];
         }
         else
         {
-            if (revisionLevel.length != 24)
+            final int [] data = deviceInquiry.getData ();
+            if (data.length != 35)
                 return;
 
-            this.majorVersion = revisionLevel[0];
-            this.minorVersion = revisionLevel[2] + revisionLevel[1] * 10;
+            this.majorVersion = data[10] + data[9] * 10;
+            this.minorVersion = data[12] + data[11] * 10;
             this.buildNumber = 0;
             this.serialNumber = 0;
             this.boardRevision = 0;
