@@ -18,7 +18,7 @@ import java.util.Optional;
  * Get a number of parameters. This implementation provides all parameters from the current page of
  * the bank.
  *
- * @author J&uuml;rgen Mo&szlig;graber
+ * @author Jürgen Moßgraber
  */
 public class BankParameterProvider extends AbstractParameterProvider implements IBankPageObserver
 {

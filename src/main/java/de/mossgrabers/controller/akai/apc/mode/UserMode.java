@@ -13,7 +13,7 @@ import de.mossgrabers.framework.parameterprovider.device.BankParameterProvider;
 /**
  * User knob mode.
  *
- * @author J&uuml;rgen Mo&szlig;graber
+ * @author Jürgen Moßgraber
  */
 public class UserMode extends BaseMode<IParameter>
 {

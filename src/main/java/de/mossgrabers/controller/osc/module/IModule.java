@@ -14,7 +14,7 @@ import java.util.LinkedList;
 /**
  * Interface for OSC modules who write / parse OSC commands.
  *
- * @author J&uuml;rgen Mo&szlig;graber
+ * @author Jürgen Moßgraber
  */
 public interface IModule
 {

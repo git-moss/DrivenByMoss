@@ -13,7 +13,7 @@ import de.mossgrabers.framework.utils.StringUtils;
 /**
  * Abstract implementation of a display.
  *
- * @author J&uuml;rgen Mo&szlig;graber
+ * @author Jürgen Moßgraber
  */
 public abstract class AbstractTextDisplay implements ITextDisplay
 {

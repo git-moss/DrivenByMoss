@@ -20,7 +20,7 @@ import java.util.LinkedList;
 /**
  * All global related commands.
  *
- * @author J&uuml;rgen Mo&szlig;graber
+ * @author Jürgen Moßgraber
  */
 public class SceneModule extends AbstractModule
 {
@@ -103,7 +103,11 @@ public class SceneModule extends AbstractModule
                 switch (sceneCommand2)
                 {
                     case "launch":
-                        scene.launch ();
+                        scene.launch (isTrigger (value), false);
+                        break;
+
+                    case "launchAlt":
+                        scene.launch (isTrigger (value), false);
                         break;
 
                     case TAG_DUPLICATE:

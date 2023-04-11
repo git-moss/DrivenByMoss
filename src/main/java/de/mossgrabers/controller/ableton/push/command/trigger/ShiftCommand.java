@@ -16,7 +16,7 @@ import de.mossgrabers.framework.utils.ButtonEvent;
 /**
  * Command to handle the shift button.
  *
- * @author J&uuml;rgen Mo&szlig;graber
+ * @author Jürgen Moßgraber
  */
 public class ShiftCommand extends AbstractTriggerCommand<PushControlSurface, PushConfiguration>
 {

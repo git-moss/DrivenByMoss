@@ -10,7 +10,7 @@ import de.mossgrabers.framework.controller.color.ColorEx;
 /**
  * Interface to color and font configurations for drawing.
  *
- * @author J&uuml;rgen Mo&szlig;graber
+ * @author Jürgen Moßgraber
  */
 public interface IGraphicsConfiguration
 {

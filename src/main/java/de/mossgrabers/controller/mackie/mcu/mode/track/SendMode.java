@@ -16,7 +16,7 @@ import de.mossgrabers.framework.parameterprovider.track.VolumeParameterProvider;
 /**
  * Mode for editing a Send volumes.
  *
- * @author J&uuml;rgen Mo&szlig;graber
+ * @author Jürgen Moßgraber
  */
 public class SendMode extends AbstractTrackMode
 {

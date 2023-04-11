@@ -15,7 +15,7 @@ import de.mossgrabers.framework.daw.ITransport;
 /**
  * The Tempo mode.
  *
- * @author J&uuml;rgen Mo&szlig;graber
+ * @author Jürgen Moßgraber
  */
 public class TempoMode extends BaseMode
 {

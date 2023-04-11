@@ -35,7 +35,7 @@ import java.util.Optional;
 /**
  * Mode for editing device remote control parameters.
  *
- * @author J&uuml;rgen Mo&szlig;graber
+ * @author Jürgen Moßgraber
  */
 public class DeviceParamsMode extends BaseMode<IParameter>
 {

@@ -7,7 +7,7 @@ package de.mossgrabers.framework.scale;
 /**
  * Layouts that can be applied to a scale by using an 8x8 pad grid.
  *
- * @author J&uuml;rgen Mo&szlig;graber
+ * @author Jürgen Moßgraber
  */
 public enum ScaleLayout
 {

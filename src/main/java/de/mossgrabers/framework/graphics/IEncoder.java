@@ -10,7 +10,7 @@ import java.nio.ByteBuffer;
 /**
  * An interface to an image encoder.
  *
- * @author J&uuml;rgen Mo&szlig;graber
+ * @author Jürgen Moßgraber
  */
 public interface IEncoder
 {

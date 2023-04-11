@@ -18,7 +18,7 @@ import java.util.Optional;
 /**
  * Extends panorama layer or drum pad parameter provider with the specific layout of Push 2.
  *
- * @author J&uuml;rgen Mo&szlig;graber
+ * @author Jürgen Moßgraber
  */
 public class PushPanLayerOrDrumPadParameterProvider extends PanLayerOrDrumPadParameterProvider implements IItemSelectionObserver
 {

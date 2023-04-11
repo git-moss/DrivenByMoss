@@ -7,7 +7,7 @@ package de.mossgrabers.framework.daw.midi;
 /**
  * An abstract implementation for a MIDI output
  *
- * @author J&uuml;rgen Mo&szlig;graber
+ * @author Jürgen Moßgraber
  */
 public abstract class AbstractMidiOutput implements IMidiOutput
 {

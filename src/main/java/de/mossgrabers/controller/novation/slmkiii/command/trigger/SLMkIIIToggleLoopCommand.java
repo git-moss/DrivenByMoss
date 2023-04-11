@@ -14,7 +14,7 @@ import de.mossgrabers.framework.utils.ButtonEvent;
 /**
  * Command handle the Loop/Repeat button. Shift + Loop toggles Clip Automation.
  *
- * @author J&uuml;rgen Mo&szlig;graber
+ * @author Jürgen Moßgraber
  */
 public class SLMkIIIToggleLoopCommand extends ToggleLoopCommand<SLMkIIIControlSurface, SLMkIIIConfiguration>
 {

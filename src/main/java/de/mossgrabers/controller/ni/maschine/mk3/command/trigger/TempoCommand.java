@@ -19,7 +19,7 @@ import de.mossgrabers.framework.view.Views;
 /**
  * Command to edit the tempo. Switch between Transpose and Pressure in note edit mode.
  *
- * @author J&uuml;rgen Mo&szlig;graber
+ * @author Jürgen Moßgraber
  */
 public class TempoCommand extends ModeSelectCommand<MaschineControlSurface, MaschineConfiguration>
 {

@@ -20,7 +20,7 @@ import java.util.List;
 /**
  * The Push 1 and Push 2 control surface.
  *
- * @author J&uuml;rgen Mo&szlig;graber
+ * @author Jürgen Moßgraber
  */
 public class PushControlSurface extends AbstractControlSurface<PushConfiguration>
 {

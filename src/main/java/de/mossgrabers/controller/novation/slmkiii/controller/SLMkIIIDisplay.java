@@ -14,7 +14,7 @@ import de.mossgrabers.framework.utils.StringUtils;
 /**
  * The displays of SL MkIII.
  *
- * @author J&uuml;rgen Mo&szlig;graber
+ * @author Jürgen Moßgraber
  */
 public class SLMkIIIDisplay extends AbstractTextDisplay
 {

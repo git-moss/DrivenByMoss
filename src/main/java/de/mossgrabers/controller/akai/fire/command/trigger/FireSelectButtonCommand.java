@@ -19,7 +19,7 @@ import de.mossgrabers.framework.utils.ButtonEvent;
 /**
  * The button of the SELECT knob.
  *
- * @author J&uuml;rgen Mo&szlig;graber
+ * @author Jürgen Moßgraber
  */
 public class FireSelectButtonCommand extends AbstractTriggerCommand<FireControlSurface, FireConfiguration>
 {

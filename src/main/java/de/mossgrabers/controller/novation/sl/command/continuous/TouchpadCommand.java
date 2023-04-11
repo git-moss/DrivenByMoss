@@ -13,7 +13,7 @@ import de.mossgrabers.framework.daw.IModel;
 /**
  * Command to change a device parameter.
  *
- * @author J&uuml;rgen Mo&szlig;graber
+ * @author Jürgen Moßgraber
  */
 public class TouchpadCommand extends AbstractContinuousCommand<SLControlSurface, SLConfiguration>
 {

@@ -7,7 +7,7 @@ package de.mossgrabers.controller.arturia.beatstep.view;
 /**
  * Additional interface for Beatstep views.
  *
- * @author J&uuml;rgen Mo&szlig;graber
+ * @author Jürgen Moßgraber
  */
 public interface BeatstepView
 {

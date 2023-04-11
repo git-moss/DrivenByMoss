@@ -20,7 +20,7 @@ import com.bitwig.extension.controller.api.ControllerHost;
 /**
  * Definition class for the NI Maschine Jam controller.
  *
- * @author J&uuml;rgen Mo&szlig;graber
+ * @author Jürgen Moßgraber
  */
 public class MaschineJamExtensionDefinition extends AbstractControllerExtensionDefinition<MaschineJamControlSurface, MaschineJamConfiguration>
 {

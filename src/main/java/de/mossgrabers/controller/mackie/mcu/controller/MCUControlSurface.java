@@ -20,7 +20,7 @@ import java.util.List;
 /**
  * A control surface which supports the MCU protocol.
  *
- * @author J&uuml;rgen Mo&szlig;graber
+ * @author Jürgen Moßgraber
  */
 @SuppressWarnings("javadoc")
 public class MCUControlSurface extends AbstractControlSurface<MCUConfiguration>

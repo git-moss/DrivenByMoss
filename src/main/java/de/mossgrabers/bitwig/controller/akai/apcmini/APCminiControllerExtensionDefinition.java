@@ -20,7 +20,7 @@ import com.bitwig.extension.controller.api.ControllerHost;
 /**
  * Definition class for the Akai APCmini controller.
  *
- * @author J&uuml;rgen Mo&szlig;graber
+ * @author Jürgen Moßgraber
  */
 public class APCminiControllerExtensionDefinition extends AbstractControllerExtensionDefinition<APCminiControlSurface, APCminiConfiguration>
 {

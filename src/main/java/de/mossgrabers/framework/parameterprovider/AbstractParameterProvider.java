@@ -13,7 +13,7 @@ import java.util.Set;
 /**
  * Get a number of parameters. This abstract implementation provides the management of observers.
  *
- * @author J&uuml;rgen Mo&szlig;graber
+ * @author Jürgen Moßgraber
  */
 public abstract class AbstractParameterProvider implements IParameterProvider
 {

@@ -21,7 +21,7 @@ import java.util.Optional;
 /**
  * Implementation for a HID device.
  *
- * @author J&uuml;rgen Mo&szlig;graber
+ * @author Jürgen Moßgraber
  */
 public class HidDeviceImpl implements IHidDevice
 {

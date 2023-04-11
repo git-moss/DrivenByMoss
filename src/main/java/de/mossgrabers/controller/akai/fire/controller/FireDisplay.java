@@ -17,7 +17,7 @@ import java.util.Arrays;
 /**
  * The display of the Akai Fire.
  *
- * @author J&uuml;rgen Mo&szlig;graber
+ * @author Jürgen Moßgraber
  */
 public class FireDisplay extends AbstractGraphicDisplay
 {

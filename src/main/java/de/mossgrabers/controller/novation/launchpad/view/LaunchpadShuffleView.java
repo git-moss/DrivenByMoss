@@ -13,7 +13,7 @@ import de.mossgrabers.framework.view.ShuffleView;
 /**
  * Displays the current shuffle value of the DAW as a 3 digit number on the grid.
  *
- * @author J&uuml;rgen Mo&szlig;graber
+ * @author Jürgen Moßgraber
  */
 public class LaunchpadShuffleView extends ShuffleView<LaunchpadControlSurface, LaunchpadConfiguration>
 {

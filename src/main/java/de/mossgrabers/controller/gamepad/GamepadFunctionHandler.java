@@ -24,7 +24,7 @@ import java.util.Optional;
 /**
  * Interface for a callback when data from a Gamepad controller is received.
  *
- * @author J&uuml;rgen Mo&szlig;graber
+ * @author Jürgen Moßgraber
  */
 public class GamepadFunctionHandler implements IGamepadCallback
 {
@@ -114,12 +114,9 @@ public class GamepadFunctionHandler implements IGamepadCallback
                     this.model.getCursorTrack ().getSlotBank ().selectNextItem ();
                 break;
             case GamepadConfiguration.FUNCTION_PLAY_CLIP:
-                if (event == ButtonEvent.DOWN)
-                {
-                    final Optional<ISlot> selectedItem = this.model.getCursorTrack ().getSlotBank ().getSelectedItem ();
-                    if (selectedItem.isPresent ())
-                        selectedItem.get ().launch ();
-                }
+                final Optional<ISlot> selectedItem = this.model.getCursorTrack ().getSlotBank ().getSelectedItem ();
+                if (selectedItem.isPresent ())
+                    selectedItem.get ().launch (event == ButtonEvent.DOWN, false);
                 break;
 
             case GamepadConfiguration.FUNCTION_NEW_CLIP:

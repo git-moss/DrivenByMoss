@@ -24,7 +24,7 @@ import java.util.Optional;
  * @param <S> The type of the control surface
  * @param <C> The type of the configuration
  *
- * @author J&uuml;rgen Mo&szlig;graber
+ * @author Jürgen Moßgraber
  */
 public class ConfiguredRecordCommand<S extends IControlSurface<C>, C extends Configuration> extends AbstractTriggerCommand<S, C>
 {
@@ -133,7 +133,7 @@ public class ConfiguredRecordCommand<S extends IControlSurface<C>, C extends Con
         final ISlot s = slot.get ();
         if (!s.isRecording ())
             s.startRecording ();
-        s.launch ();
+        s.launch (true, false);
     }
 
 

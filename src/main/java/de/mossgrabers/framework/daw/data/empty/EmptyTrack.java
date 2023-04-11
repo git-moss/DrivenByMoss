@@ -13,7 +13,7 @@ import de.mossgrabers.framework.parameter.IParameter;
 /**
  * Default data for an empty track.
  *
- * @author J&uuml;rgen Mo&szlig;graber
+ * @author Jürgen Moßgraber
  */
 public class EmptyTrack extends EmptyChannel implements ITrack
 {
@@ -243,13 +243,5 @@ public class EmptyTrack extends EmptyChannel implements ITrack
     public boolean hasDrumDevice ()
     {
         return false;
-    }
-
-
-    /** {@inheritDoc} */
-    @Override
-    public void launchLastClipImmediately ()
-    {
-        // Intentionally empty
     }
 }

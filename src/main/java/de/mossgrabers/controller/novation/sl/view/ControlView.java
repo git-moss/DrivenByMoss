@@ -30,7 +30,7 @@ import java.util.Optional;
 /**
  * The view for controlling the DAW.
  *
- * @author J&uuml;rgen Mo&szlig;graber
+ * @author Jürgen Moßgraber
  */
 public class ControlView extends ControlOnlyView<SLControlSurface, SLConfiguration> implements SLView
 {

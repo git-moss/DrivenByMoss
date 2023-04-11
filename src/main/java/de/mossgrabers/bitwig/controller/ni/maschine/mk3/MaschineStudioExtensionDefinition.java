@@ -21,7 +21,7 @@ import com.bitwig.extension.controller.api.ControllerHost;
 /**
  * Definition class for the NI Maschine Studio controller.
  *
- * @author J&uuml;rgen Mo&szlig;graber
+ * @author Jürgen Moßgraber
  */
 public class MaschineStudioExtensionDefinition extends AbstractControllerExtensionDefinition<MaschineControlSurface, MaschineConfiguration>
 {

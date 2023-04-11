@@ -10,7 +10,7 @@ import de.mossgrabers.framework.utils.FrameworkException;
 /**
  * Info for pad updates.
  *
- * @author J&uuml;rgen Mo&szlig;graber
+ * @author Jürgen Moßgraber
  */
 public final class LightInfo
 {

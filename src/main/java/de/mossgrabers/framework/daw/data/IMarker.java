@@ -10,7 +10,7 @@ import de.mossgrabers.framework.controller.color.ColorEx;
 /**
  * The interface to a marker (on a timeline).
  *
- * @author J&uuml;rgen Mo&szlig;graber
+ * @author Jürgen Moßgraber
  */
 public interface IMarker extends IItem
 {

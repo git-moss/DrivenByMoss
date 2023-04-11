@@ -15,7 +15,7 @@ import de.mossgrabers.framework.view.Views;
 /**
  * Project command.
  *
- * @author J&uuml;rgen Mo&szlig;graber
+ * @author Jürgen Moßgraber
  */
 public class ProjectCommand extends AbstractTriggerCommand<LaunchpadControlSurface, LaunchpadConfiguration>
 {

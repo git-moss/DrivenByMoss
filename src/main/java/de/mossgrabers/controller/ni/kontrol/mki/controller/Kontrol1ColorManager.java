@@ -17,7 +17,7 @@ import de.mossgrabers.framework.view.sequencer.AbstractDrumView;
 /**
  * Different colors to use for the key LEDs of the Kontrol 1.
  *
- * @author J&uuml;rgen Mo&szlig;graber
+ * @author Jürgen Moßgraber
  */
 public class Kontrol1ColorManager extends ColorManager
 {

@@ -24,7 +24,7 @@ import java.util.Optional;
  * active note map (e.g. different scale layouts). This class uses notes as input from 2) to store
  * pressed states for 3).
  *
- * @author J&uuml;rgen Mo&szlig;graber
+ * @author Jürgen Moßgraber
  */
 public class KeyManager implements INoteObserver
 {

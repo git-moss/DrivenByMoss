@@ -11,7 +11,7 @@ import java.util.Map;
 /**
  * Record quantization options.
  *
- * @author J&uuml;rgen Mo&szlig;graber
+ * @author Jürgen Moßgraber
  */
 public enum RecordQuantization
 {

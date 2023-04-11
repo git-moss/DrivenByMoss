@@ -17,7 +17,7 @@ import de.mossgrabers.framework.view.Views;
 /**
  * Command for cursor arrow keys.
  *
- * @author J&uuml;rgen Mo&szlig;graber
+ * @author Jürgen Moßgraber
  */
 public class PushCursorCommand extends CursorCommand<PushControlSurface, PushConfiguration>
 {

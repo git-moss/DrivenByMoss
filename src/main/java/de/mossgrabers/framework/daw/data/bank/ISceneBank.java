@@ -10,7 +10,7 @@ import de.mossgrabers.framework.daw.data.IScene;
 /**
  * Interface to a scene bank.
  *
- * @author J&uuml;rgen Mo&szlig;graber
+ * @author Jürgen Moßgraber
  */
 public interface ISceneBank extends IBank<IScene>
 {

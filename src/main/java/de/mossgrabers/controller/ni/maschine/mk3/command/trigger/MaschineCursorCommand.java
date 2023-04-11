@@ -19,7 +19,7 @@ import de.mossgrabers.framework.utils.ButtonEvent;
 /**
  * Command for navigating mode pages and items. Additional mode switcher for Maschine Studio.
  *
- * @author J&uuml;rgen Mo&szlig;graber
+ * @author Jürgen Moßgraber
  */
 public class MaschineCursorCommand extends ModeCursorCommand<MaschineControlSurface, MaschineConfiguration>
 {

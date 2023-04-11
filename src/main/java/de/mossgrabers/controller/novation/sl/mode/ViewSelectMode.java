@@ -18,7 +18,7 @@ import de.mossgrabers.framework.view.Views;
 /**
  * Mode for selecting the view.
  *
- * @author J&uuml;rgen Mo&szlig;graber
+ * @author Jürgen Moßgraber
  */
 public class ViewSelectMode extends AbstractParameterMode<SLControlSurface, SLConfiguration, IItem>
 {

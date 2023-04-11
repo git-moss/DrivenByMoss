@@ -7,7 +7,7 @@ package de.mossgrabers.framework.utils;
 /**
  * Interface for a combination of integer supplier and consumer.
  *
- * @author J&uuml;rgen Mo&szlig;graber
+ * @author Jürgen Moßgraber
  */
 @FunctionalInterface
 public interface IntConsumerSupplier

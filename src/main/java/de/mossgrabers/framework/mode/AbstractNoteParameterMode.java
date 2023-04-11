@@ -25,7 +25,7 @@ import java.util.List;
  * @param <C> The type of the configuration
  * @param <B> The type of the item bank
  *
- * @author J&uuml;rgen Mo&szlig;graber
+ * @author Jürgen Moßgraber
  */
 public abstract class AbstractNoteParameterMode<S extends IControlSurface<C>, C extends Configuration, B extends IItem> extends AbstractParameterMode<S, C, B> implements INoteMode
 {

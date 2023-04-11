@@ -7,7 +7,7 @@ package de.mossgrabers.controller.ni.maschine.jam.controller;
 /**
  * Configuration of a fader (color, bar type, etc.).
  *
- * @author J&uuml;rgen Mo&szlig;graber
+ * @author Jürgen Moßgraber
  */
 public class FaderConfig
 {

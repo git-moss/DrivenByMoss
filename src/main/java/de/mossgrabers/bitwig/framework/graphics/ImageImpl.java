@@ -12,7 +12,7 @@ import com.bitwig.extension.api.graphics.Image;
 /**
  * An implementation for an image.
  *
- * @author J&uuml;rgen Mo&szlig;graber
+ * @author Jürgen Moßgraber
  *
  * @param image The Bitwig image
  */

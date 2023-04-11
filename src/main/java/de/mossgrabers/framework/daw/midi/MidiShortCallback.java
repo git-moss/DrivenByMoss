@@ -7,7 +7,7 @@ package de.mossgrabers.framework.daw.midi;
 /**
  * Callback for receiving MIDI short messages.
  *
- * @author J&uuml;rgen Mo&szlig;graber
+ * @author Jürgen Moßgraber
  */
 public interface MidiShortCallback
 {

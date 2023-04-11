@@ -20,7 +20,7 @@ import de.mossgrabers.framework.view.sequencer.AbstractSequencerView;
 /**
  * Different colors to use for the pads and buttons of Akai Fire.
  *
- * @author J&uuml;rgen Mo&szlig;graber
+ * @author Jürgen Moßgraber
  */
 public class FireColorManager extends ColorManager
 {

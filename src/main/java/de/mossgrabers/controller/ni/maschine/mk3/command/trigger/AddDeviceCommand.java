@@ -17,7 +17,7 @@ import de.mossgrabers.framework.utils.ButtonEvent;
 /**
  * Command to add a device. If the browser is open it toggles the favorites.
  *
- * @author J&uuml;rgen Mo&szlig;graber
+ * @author Jürgen Moßgraber
  */
 public class AddDeviceCommand extends AddEffectCommand<MaschineControlSurface, MaschineConfiguration>
 {

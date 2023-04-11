@@ -20,7 +20,7 @@ import com.bitwig.extension.controller.api.ControllerHost;
 /**
  * Definition class for Native Instruments Komplete Kontrol 1 S-series controllers.
  *
- * @author J&uuml;rgen Mo&szlig;graber
+ * @author Jürgen Moßgraber
  */
 public abstract class AbstractKontrol1ExtensionDefinition extends AbstractControllerExtensionDefinition<Kontrol1ControlSurface, Kontrol1Configuration>
 {

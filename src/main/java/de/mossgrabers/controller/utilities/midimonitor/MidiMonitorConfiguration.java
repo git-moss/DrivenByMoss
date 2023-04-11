@@ -14,7 +14,7 @@ import de.mossgrabers.framework.daw.IHost;
 /**
  * The configuration settings for the MIDI Monitor implementation.
  *
- * @author J&uuml;rgen Mo&szlig;graber
+ * @author Jürgen Moßgraber
  */
 public class MidiMonitorConfiguration extends AbstractConfiguration
 {

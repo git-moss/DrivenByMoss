@@ -14,7 +14,7 @@ import de.mossgrabers.framework.view.ControlOnlyView;
 /**
  * The view for controlling the DAW.
  *
- * @author J&uuml;rgen Mo&szlig;graber
+ * @author Jürgen Moßgraber
  */
 public class ControlView extends ControlOnlyView<KontrolProtocolControlSurface, KontrolProtocolConfiguration>
 {

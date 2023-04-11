@@ -18,7 +18,7 @@ import de.mossgrabers.framework.view.sequencer.AbstractSequencerView;
 /**
  * Command to dive in the layer / drum pads.
  *
- * @author J&uuml;rgen Mo&szlig;graber
+ * @author Jürgen Moßgraber
  */
 public class PageLeftCommand extends AbstractTriggerCommand<PushControlSurface, PushConfiguration>
 {

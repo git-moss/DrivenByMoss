@@ -13,7 +13,7 @@ import de.mossgrabers.framework.view.Views;
 /**
  * Implementation of the Launchkey grid of pads.
  *
- * @author J&uuml;rgen Mo&szlig;graber
+ * @author Jürgen Moßgraber
  */
 public class LaunchkeyPadGrid extends PadGridImpl
 {

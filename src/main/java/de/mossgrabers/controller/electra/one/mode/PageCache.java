@@ -13,7 +13,7 @@ import java.util.Arrays;
 /**
  * Caches the values and UI information of 36 controls of a mode display page.
  *
- * @author J&uuml;rgen Mo&szlig;graber
+ * @author Jürgen Moßgraber
  */
 class PageCache
 {

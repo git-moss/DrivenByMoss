@@ -15,7 +15,7 @@ import java.util.UUID;
 /**
  * Definition class for the Novation Launchkey Mini Mk3 controller extension.
  *
- * @author J&uuml;rgen Mo&szlig;graber
+ * @author Jürgen Moßgraber
  */
 public class LaunchkeyMiniMk3ControllerDefinition extends DefaultControllerDefinition
 {

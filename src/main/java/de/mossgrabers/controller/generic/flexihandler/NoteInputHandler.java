@@ -26,7 +26,7 @@ import java.util.List;
 /**
  * The handler for master channel commands.
  *
- * @author J&uuml;rgen Mo&szlig;graber
+ * @author Jürgen Moßgraber
  */
 public class NoteInputHandler extends AbstractHandler
 {

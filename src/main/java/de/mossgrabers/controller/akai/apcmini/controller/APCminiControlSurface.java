@@ -16,7 +16,7 @@ import de.mossgrabers.framework.daw.midi.IMidiOutput;
 /**
  * The APC 1 and APC 2 control surface.
  *
- * @author J&uuml;rgen Mo&szlig;graber
+ * @author Jürgen Moßgraber
  */
 @SuppressWarnings("javadoc")
 public class APCminiControlSurface extends AbstractControlSurface<APCminiConfiguration>

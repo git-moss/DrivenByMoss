@@ -13,7 +13,7 @@ import de.mossgrabers.framework.daw.IModel;
 /**
  * Workaround for proprietary value calculation of HUI protocol for the master fader.
  *
- * @author J&uuml;rgen Mo&szlig;graber
+ * @author Jürgen Moßgraber
  */
 public class WorkaroundMasterFader extends MasterFaderAbsoluteCommand<HUIControlSurface, HUIConfiguration>
 {

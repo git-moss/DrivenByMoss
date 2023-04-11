@@ -12,7 +12,7 @@ import java.nio.file.Files;
 /**
  * Some helper functions for files.
  *
- * @author J&uuml;rgen Mo&szlig;graber
+ * @author Jürgen Moßgraber
  */
 public class FileEx extends File
 {

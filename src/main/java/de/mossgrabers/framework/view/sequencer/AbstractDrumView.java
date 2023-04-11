@@ -41,7 +41,7 @@ import java.util.function.IntUnaryOperator;
  * @param <S> The type of the control surface
  * @param <C> The type of the configuration
  *
- * @author J&uuml;rgen Mo&szlig;graber
+ * @author Jürgen Moßgraber
  */
 public abstract class AbstractDrumView<S extends IControlSurface<C>, C extends Configuration> extends AbstractSequencerView<S, C> implements TransposeView, ButtonEventHandler
 {

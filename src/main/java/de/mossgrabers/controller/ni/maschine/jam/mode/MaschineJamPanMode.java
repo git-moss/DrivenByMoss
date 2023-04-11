@@ -19,7 +19,7 @@ import java.util.Optional;
 /**
  * The volume mode.
  *
- * @author J&uuml;rgen Mo&szlig;graber
+ * @author Jürgen Moßgraber
  */
 public class MaschineJamPanMode extends TrackPanMode<MaschineJamControlSurface, MaschineJamConfiguration> implements IMaschineJamMode
 {

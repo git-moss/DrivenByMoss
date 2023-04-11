@@ -7,7 +7,7 @@ package de.mossgrabers.framework.daw.data;
 /**
  * Description of a device.
  *
- * @author J&uuml;rgen Mo&szlig;graber
+ * @author Jürgen Moßgraber
  */
 public interface IDeviceMetadata
 {

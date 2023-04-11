@@ -18,7 +18,7 @@ import java.util.UUID;
  * Note: If the DAW mode on the X is selected to use faders one cannot use the program mode (and
  * mode buttons cannot be configured), therefore we implement the faders ourselves!
  *
- * @author J&uuml;rgen Mo&szlig;graber
+ * @author Jürgen Moßgraber
  */
 public class LaunchpadXControllerDefinition extends AbstractLaunchpadDefinition
 {

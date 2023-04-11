@@ -20,7 +20,7 @@ import java.util.concurrent.atomic.AtomicReference;
  * Executes only one task. When new tasks arrive for execution only the latest one will be stored
  * for execution.
  *
- * @author J&uuml;rgen Mo&szlig;graber
+ * @author Jürgen Moßgraber
  */
 public class LatestTaskExecutor implements ExecutorService
 {

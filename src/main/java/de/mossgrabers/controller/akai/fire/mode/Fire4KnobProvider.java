@@ -18,7 +18,7 @@ import java.util.Optional;
  * Provide access to 8 parameters. If the ALT button is pressed the parameters 5-8 are provided
  * otherwise 1-4.
  *
- * @author J&uuml;rgen Mo&szlig;graber
+ * @author Jürgen Moßgraber
  */
 public class Fire4KnobProvider extends AbstractWrapperProvider
 {

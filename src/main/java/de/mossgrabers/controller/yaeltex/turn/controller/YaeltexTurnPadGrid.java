@@ -12,7 +12,7 @@ import de.mossgrabers.framework.daw.midi.IMidiOutput;
 /**
  * Implementation of the Yaeltex Turn grid of push buttons.
  *
- * @author J&uuml;rgen Mo&szlig;graber
+ * @author Jürgen Moßgraber
  */
 public class YaeltexTurnPadGrid extends BlinkingPadGrid
 {

@@ -10,7 +10,7 @@ import de.mossgrabers.framework.utils.ButtonEvent;
 /**
  * Callback interface for button events.
  *
- * @author J&uuml;rgen Mo&szlig;graber
+ * @author Jürgen Moßgraber
  */
 @FunctionalInterface
 public interface ButtonEventHandler

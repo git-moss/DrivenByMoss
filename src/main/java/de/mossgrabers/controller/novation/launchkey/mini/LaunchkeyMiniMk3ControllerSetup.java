@@ -59,7 +59,7 @@ import java.util.function.BooleanSupplier;
 /**
  * Support for the Novation Launchkey Mini Mk3 controller.
  *
- * @author J&uuml;rgen Mo&szlig;graber
+ * @author Jürgen Moßgraber
  */
 public class LaunchkeyMiniMk3ControllerSetup extends AbstractControllerSetup<LaunchkeyMiniMk3ControlSurface, LaunchkeyMiniMk3Configuration>
 {

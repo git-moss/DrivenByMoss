@@ -15,7 +15,7 @@ import de.mossgrabers.framework.utils.ButtonEvent;
 /**
  * Command for pressing the Back button.
  *
- * @author J&uuml;rgen Mo&szlig;graber
+ * @author Jürgen Moßgraber
  */
 public class BackButtonCommand extends AbstractTriggerCommand<Kontrol1ControlSurface, Kontrol1Configuration>
 {

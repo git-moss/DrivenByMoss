@@ -19,7 +19,7 @@ import java.util.Locale;
 /**
  * Scales mode.
  *
- * @author J&uuml;rgen Mo&szlig;graber
+ * @author Jürgen Moßgraber
  */
 public class ScaleMode extends AbstractKontrol1Mode<IItem>
 {

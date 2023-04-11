@@ -14,7 +14,7 @@ import de.mossgrabers.framework.featuregroup.AbstractMode;
 /**
  * Color states to use for the MCU buttons.
  *
- * @author J&uuml;rgen Mo&szlig;graber
+ * @author Jürgen Moßgraber
  */
 public class MCUColorManager extends ColorManager
 {

@@ -17,7 +17,7 @@ import de.mossgrabers.framework.featuregroup.IView;
 /**
  * Support for the NI Maschine controller series.
  *
- * @author J&uuml;rgen Mo&szlig;graber
+ * @author Jürgen Moßgraber
  */
 public class MaschineJamViewButtonCommand extends ViewButtonCommand<MaschineJamControlSurface, MaschineJamConfiguration>
 {

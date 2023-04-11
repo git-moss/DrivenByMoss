@@ -17,7 +17,7 @@ import de.mossgrabers.framework.utils.ButtonEvent;
 /**
  * Command to display the master mode.
  *
- * @author J&uuml;rgen Mo&szlig;graber
+ * @author Jürgen Moßgraber
  */
 public class MastertrackCommand extends AbstractTriggerCommand<PushControlSurface, PushConfiguration>
 {

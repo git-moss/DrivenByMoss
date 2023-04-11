@@ -7,7 +7,7 @@ package de.mossgrabers.framework.daw.midi;
 /**
  * Interface to a MIDI output
  *
- * @author J&uuml;rgen Mo&szlig;graber
+ * @author Jürgen Moßgraber
  */
 public interface IMidiOutput
 {

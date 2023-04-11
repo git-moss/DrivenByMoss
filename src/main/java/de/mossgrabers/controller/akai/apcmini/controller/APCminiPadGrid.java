@@ -12,7 +12,7 @@ import de.mossgrabers.framework.daw.midi.IMidiOutput;
 /**
  * Implementation of the APCmini grid of pads.
  *
- * @author J&uuml;rgen Mo&szlig;graber
+ * @author Jürgen Moßgraber
  */
 public class APCminiPadGrid extends PadGridImpl
 {

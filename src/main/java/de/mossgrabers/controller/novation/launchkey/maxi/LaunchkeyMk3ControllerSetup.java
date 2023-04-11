@@ -72,7 +72,7 @@ import java.util.function.IntSupplier;
 /**
  * Support for the Novation Launchkey Mk3 controller.
  *
- * @author J&uuml;rgen Mo&szlig;graber
+ * @author Jürgen Moßgraber
  */
 public class LaunchkeyMk3ControllerSetup extends AbstractControllerSetup<LaunchkeyMk3ControlSurface, LaunchkeyMk3Configuration>
 {

@@ -18,7 +18,7 @@ import de.mossgrabers.framework.daw.data.IScene;
 /**
  * The handler for scene commands.
  *
- * @author J&uuml;rgen Mo&szlig;graber
+ * @author Jürgen Moßgraber
  */
 public class SceneHandler extends AbstractHandler
 {
@@ -52,6 +52,14 @@ public class SceneHandler extends AbstractHandler
             FlexiCommand.SCENE_6_LAUNCH_SCENE,
             FlexiCommand.SCENE_7_LAUNCH_SCENE,
             FlexiCommand.SCENE_8_LAUNCH_SCENE,
+            FlexiCommand.SCENE_1_LAUNCH_ALT_SCENE,
+            FlexiCommand.SCENE_2_LAUNCH_ALT_SCENE,
+            FlexiCommand.SCENE_3_LAUNCH_ALT_SCENE,
+            FlexiCommand.SCENE_4_LAUNCH_ALT_SCENE,
+            FlexiCommand.SCENE_5_LAUNCH_ALT_SCENE,
+            FlexiCommand.SCENE_6_LAUNCH_ALT_SCENE,
+            FlexiCommand.SCENE_7_LAUNCH_ALT_SCENE,
+            FlexiCommand.SCENE_8_LAUNCH_ALT_SCENE,
             FlexiCommand.SCENE_SELECT_PREVIOUS_BANK,
             FlexiCommand.SCENE_SELECT_NEXT_BANK,
             FlexiCommand.SCENE_CREATE_SCENE,
@@ -77,19 +85,22 @@ public class SceneHandler extends AbstractHandler
         switch (command)
         {
             // Scene 1-8: Launch Scene
-            case SCENE_1_LAUNCH_SCENE:
-            case SCENE_2_LAUNCH_SCENE:
-            case SCENE_3_LAUNCH_SCENE:
-            case SCENE_4_LAUNCH_SCENE:
-            case SCENE_5_LAUNCH_SCENE:
-            case SCENE_6_LAUNCH_SCENE:
-            case SCENE_7_LAUNCH_SCENE:
-            case SCENE_8_LAUNCH_SCENE:
+            case SCENE_1_LAUNCH_SCENE, SCENE_2_LAUNCH_SCENE, SCENE_3_LAUNCH_SCENE, SCENE_4_LAUNCH_SCENE, SCENE_5_LAUNCH_SCENE, SCENE_6_LAUNCH_SCENE, SCENE_7_LAUNCH_SCENE, SCENE_8_LAUNCH_SCENE:
                 if (isButtonPressed)
                 {
                     final IScene scene = this.model.getSceneBank ().getItem (command.ordinal () - FlexiCommand.SCENE_1_LAUNCH_SCENE.ordinal ());
                     scene.select ();
-                    scene.launch ();
+                    scene.launch (isButtonPressed, false);
+                }
+                break;
+
+            // Scene 1-8: Launch Scene
+            case SCENE_1_LAUNCH_ALT_SCENE, SCENE_2_LAUNCH_ALT_SCENE, SCENE_3_LAUNCH_ALT_SCENE, SCENE_4_LAUNCH_ALT_SCENE, SCENE_5_LAUNCH_ALT_SCENE, SCENE_6_LAUNCH_ALT_SCENE, SCENE_7_LAUNCH_ALT_SCENE, SCENE_8_LAUNCH_ALT_SCENE:
+                if (isButtonPressed)
+                {
+                    final IScene scene = this.model.getSceneBank ().getItem (command.ordinal () - FlexiCommand.SCENE_1_LAUNCH_ALT_SCENE.ordinal ());
+                    scene.select ();
+                    scene.launch (isButtonPressed, true);
                 }
                 break;
 

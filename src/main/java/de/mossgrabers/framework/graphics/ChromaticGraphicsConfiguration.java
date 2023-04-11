@@ -10,7 +10,7 @@ import de.mossgrabers.framework.controller.color.ColorEx;
 /**
  * Graphics configuration for a black and white graphics.
  *
- * @author J&uuml;rgen Mo&szlig;graber
+ * @author Jürgen Moßgraber
  */
 public class ChromaticGraphicsConfiguration implements IGraphicsConfiguration
 {

@@ -7,7 +7,7 @@ package de.mossgrabers.framework.command.trigger;
 /**
  * The direction of the cursor.
  *
- * @author J&uuml;rgen Mo&szlig;graber
+ * @author Jürgen Moßgraber
  */
 public enum Direction
 {

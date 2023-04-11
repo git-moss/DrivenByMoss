@@ -13,7 +13,7 @@ import de.mossgrabers.framework.parameter.IParameter;
  * Get a number of parameters. This implementation provides all volume parameters of the channels of
  * the track bank.
  *
- * @author J&uuml;rgen Mo&szlig;graber
+ * @author Jürgen Moßgraber
  */
 public class VolumeParameterProvider extends AbstractTrackParameterProvider
 {

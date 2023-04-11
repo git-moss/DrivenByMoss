@@ -7,7 +7,7 @@ package de.mossgrabers.framework.daw.constants;
 /**
  * Constants for the transport.
  *
- * @author J&uuml;rgen Mo&szlig;graber
+ * @author Jürgen Moßgraber
  */
 public final class TransportConstants
 {

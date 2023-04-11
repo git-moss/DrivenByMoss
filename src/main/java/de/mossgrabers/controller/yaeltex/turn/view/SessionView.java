@@ -7,6 +7,7 @@ package de.mossgrabers.controller.yaeltex.turn.view;
 import de.mossgrabers.controller.yaeltex.turn.YaeltexTurnConfiguration;
 import de.mossgrabers.controller.yaeltex.turn.controller.YaeltexTurnColorManager;
 import de.mossgrabers.controller.yaeltex.turn.controller.YaeltexTurnControlSurface;
+import de.mossgrabers.framework.controller.ButtonID;
 import de.mossgrabers.framework.controller.color.ColorEx;
 import de.mossgrabers.framework.controller.grid.LightInfo;
 import de.mossgrabers.framework.daw.IModel;
@@ -18,7 +19,7 @@ import de.mossgrabers.framework.view.AbstractSessionView;
 /**
  * Session view.
  *
- * @author J&uuml;rgen Mo&szlig;graber
+ * @author Jürgen Moßgraber
  */
 public class SessionView extends AbstractSessionView<YaeltexTurnControlSurface, YaeltexTurnConfiguration>
 {
@@ -69,20 +70,19 @@ public class SessionView extends AbstractSessionView<YaeltexTurnControlSurface, 
         if (index < 0)
             return true;
 
-        // TODO
-        // // Duplicate the slot with Select button
-        // if (this.isButtonCombination (ButtonID.get (ButtonID.ROW1_1, index)))
-        // {
-        // slot.duplicate ();
-        // return true;
-        // }
-        //
-        // // Delete the slot with Stop Clip button
-        // if (this.isButtonCombination (ButtonID.get (ButtonID.ROW6_1, index)))
-        // {
-        // slot.remove ();
-        // return true;
-        // }
+        // Duplicate the slot with Select button
+        if (this.isButtonCombination (ButtonID.get (ButtonID.ROW1_1, index)))
+        {
+            slot.duplicate ();
+            return true;
+        }
+
+        // Delete the slot with Stop Clip button
+        if (this.isButtonCombination (ButtonID.get (ButtonID.ROW6_1, index)))
+        {
+            slot.remove ();
+            return true;
+        }
 
         return false;
     }

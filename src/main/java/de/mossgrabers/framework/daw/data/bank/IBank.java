@@ -18,7 +18,7 @@ import java.util.Optional;
  *
  * @param <T> The type of the items present in the bank
  *
- * @author J&uuml;rgen Mo&szlig;graber
+ * @author Jürgen Moßgraber
  */
 public interface IBank<T> extends IObserverManagement
 {

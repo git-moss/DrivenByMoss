@@ -20,7 +20,7 @@ import de.mossgrabers.framework.view.Views;
 /**
  * Command for the pad mode button which activates the drum view.
  *
- * @author J&uuml;rgen Mo&szlig;graber
+ * @author Jürgen Moßgraber
  */
 public class PadModeCommand extends AbstractTriggerCommand<MaschineControlSurface, MaschineConfiguration>
 {

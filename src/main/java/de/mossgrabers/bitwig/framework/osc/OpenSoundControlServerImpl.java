@@ -14,7 +14,7 @@ import java.io.IOException;
 /**
  * Implementation of an OSC server.
  *
- * @author J&uuml;rgen Mo&szlig;graber
+ * @author Jürgen Moßgraber
  */
 public class OpenSoundControlServerImpl implements IOpenSoundControlServer
 {

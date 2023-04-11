@@ -19,7 +19,7 @@ import java.util.List;
 /**
  * A component which contains several text items. Each item can be selected.
  *
- * @author J&uuml;rgen Mo&szlig;graber
+ * @author Jürgen Moßgraber
  */
 public class SceneListGridElement implements IComponent
 {

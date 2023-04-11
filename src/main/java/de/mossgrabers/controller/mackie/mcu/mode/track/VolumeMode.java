@@ -15,7 +15,7 @@ import de.mossgrabers.framework.parameterprovider.track.VolumeParameterProvider;
 /**
  * Mode for editing a volume parameter of all tracks.
  *
- * @author J&uuml;rgen Mo&szlig;graber
+ * @author Jürgen Moßgraber
  */
 public class VolumeMode extends AbstractTrackMode
 {

@@ -13,12 +13,13 @@ import de.mossgrabers.framework.daw.IModel;
 import de.mossgrabers.framework.daw.data.ITrack;
 import de.mossgrabers.framework.daw.data.bank.ITrackBank;
 import de.mossgrabers.framework.featuregroup.AbstractFeatureGroup;
+import de.mossgrabers.framework.utils.ButtonEvent;
 
 
 /**
  * The Solo view.
  *
- * @author J&uuml;rgen Mo&szlig;graber
+ * @author Jürgen Moßgraber
  */
 public class SoloView extends BaseView
 {
@@ -36,8 +37,11 @@ public class SoloView extends BaseView
 
     /** {@inheritDoc} */
     @Override
-    protected void executeFunction (final int padIndex)
+    protected void executeFunction (final int padIndex, final ButtonEvent buttonEvent)
     {
+        if (buttonEvent != ButtonEvent.DOWN)
+            return;
+
         final ITrack track = this.model.getCurrentTrackBank ().getItem (padIndex);
 
         if (this.isButtonCombination (ButtonID.DUPLICATE))

@@ -19,7 +19,7 @@ import de.mossgrabers.framework.view.Views;
 /**
  * Mode for selecting the sequencer resolution.
  *
- * @author J&uuml;rgen Mo&szlig;graber
+ * @author Jürgen Moßgraber
  */
 public class SequencerResolutionMode extends BaseMode<IItem>
 {

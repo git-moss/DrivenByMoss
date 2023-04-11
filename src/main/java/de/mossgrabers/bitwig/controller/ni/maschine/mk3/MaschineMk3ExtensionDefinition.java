@@ -21,7 +21,7 @@ import com.bitwig.extension.controller.api.ControllerHost;
 /**
  * Definition class for the NI Maschine Mk3 controller.
  *
- * @author J&uuml;rgen Mo&szlig;graber
+ * @author Jürgen Moßgraber
  */
 public class MaschineMk3ExtensionDefinition extends AbstractControllerExtensionDefinition<MaschineControlSurface, MaschineConfiguration>
 {

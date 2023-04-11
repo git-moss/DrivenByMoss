@@ -17,7 +17,7 @@ import java.util.List;
 /**
  * Base class for configurations which use OSC.
  *
- * @author J&uuml;rgen Mo&szlig;graber
+ * @author Jürgen Moßgraber
  */
 public abstract class AbstractOpenSoundControlConfiguration extends AbstractConfiguration implements IOpenSoundControlConfiguration
 {

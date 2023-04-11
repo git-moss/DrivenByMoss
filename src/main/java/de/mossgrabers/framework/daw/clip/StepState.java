@@ -7,7 +7,7 @@ package de.mossgrabers.framework.daw.clip;
 /**
  * Enumeration for the state of a step.
  *
- * @author J&uuml;rgen Mo&szlig;graber
+ * @author Jürgen Moßgraber
  */
 public enum StepState
 {

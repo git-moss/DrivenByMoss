@@ -20,7 +20,7 @@ import java.util.Arrays;
 /**
  * The LaunchControl XL control surface.
  *
- * @author J&uuml;rgen Mo&szlig;graber
+ * @author Jürgen Moßgraber
  */
 @SuppressWarnings("javadoc")
 public class LaunchControlXLControlSurface extends AbstractControlSurface<LaunchControlXLConfiguration>

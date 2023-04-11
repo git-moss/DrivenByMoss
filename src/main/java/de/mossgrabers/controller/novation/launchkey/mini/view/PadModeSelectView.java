@@ -9,7 +9,9 @@ import de.mossgrabers.controller.novation.launchkey.mini.controller.LaunchkeyMin
 import de.mossgrabers.controller.novation.launchkey.mini.controller.LaunchkeyMiniMk3ControlSurface;
 import de.mossgrabers.framework.command.trigger.clip.QuantizeCommand;
 import de.mossgrabers.framework.controller.ButtonID;
+import de.mossgrabers.framework.controller.display.IDisplay;
 import de.mossgrabers.framework.controller.grid.IPadGrid;
+import de.mossgrabers.framework.daw.IApplication;
 import de.mossgrabers.framework.daw.IModel;
 import de.mossgrabers.framework.daw.ITransport;
 import de.mossgrabers.framework.daw.data.IScene;
@@ -23,7 +25,7 @@ import de.mossgrabers.framework.view.Views;
 /**
  * The pad mode select view.
  *
- * @author J&uuml;rgen Mo&szlig;graber
+ * @author Jürgen Moßgraber
  */
 public class PadModeSelectView extends AbstractView<LaunchkeyMiniMk3ControlSurface, LaunchkeyMiniMk3Configuration>
 {
@@ -92,45 +94,57 @@ public class PadModeSelectView extends AbstractView<LaunchkeyMiniMk3ControlSurfa
         if (velocity == 0)
             return;
 
+        final IDisplay display = this.surface.getDisplay ();
+        final ITransport transport = this.model.getTransport ();
+        final IApplication application = this.model.getApplication ();
+
         final int index = note - 36;
         switch (index)
         {
             case 0, 1, 2, 3, 4, 5:
                 final SessionView view = (SessionView) this.surface.getViewManager ().get (Views.SESSION);
                 view.setPadMode (index == 0 ? null : SessionView.PAD_MODES.get (index - 1));
-                this.surface.getDisplay ().notify (PAD_MODE_NAMES[index]);
+                display.notify (PAD_MODE_NAMES[index]);
                 break;
 
             case 8:
-                this.model.getTransport ().toggleMetronome ();
+                transport.toggleMetronome ();
+                this.mvHelper.delayDisplay ( () -> transport.isMetronomeOn () ? "Metronome: On" : "Metronome: Off");
                 break;
 
             case 9:
-                this.model.getTransport ().tapTempo ();
+                transport.tapTempo ();
+                this.mvHelper.notifyTempo ();
                 break;
 
             case 10:
-                this.model.getApplication ().undo ();
+                application.undo ();
+                display.notify ("Undo");
                 break;
 
             case 11:
-                this.model.getApplication ().redo ();
+                application.redo ();
+                display.notify ("Redo");
                 break;
 
             case 12:
                 this.quantizeCommand.executeNormal (ButtonEvent.UP);
+                display.notify ("Quantize");
                 break;
 
             case 13:
-                this.model.getApplication ().addInstrumentTrack ();
+                application.addInstrumentTrack ();
+                display.notify ("Add Instrument Track");
                 break;
 
             case 14:
-                this.model.getApplication ().addAudioTrack ();
+                application.addAudioTrack ();
+                display.notify ("Add Audio Track");
                 break;
 
             case 15:
-                this.model.getApplication ().addEffectTrack ();
+                application.addEffectTrack ();
+                display.notify ("Add Effect Track");
                 break;
 
             default:
@@ -160,7 +174,7 @@ public class PadModeSelectView extends AbstractView<LaunchkeyMiniMk3ControlSurfa
             final int index = buttonID.ordinal () - ButtonID.SCENE1.ordinal ();
             final IScene scene = sceneBank.getItem (index);
             scene.select ();
-            scene.launch ();
+            scene.launch (true, false);
         }
         else if (event == ButtonEvent.LONG)
             this.isConsumed = true;

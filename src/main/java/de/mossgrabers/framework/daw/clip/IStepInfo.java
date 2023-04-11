@@ -7,7 +7,7 @@ package de.mossgrabers.framework.daw.clip;
 /**
  * Interface to the data about a note in a sequencer step.
  *
- * @author J&uuml;rgen Mo&szlig;graber
+ * @author Jürgen Moßgraber
  */
 public interface IStepInfo
 {

@@ -11,7 +11,7 @@ import de.mossgrabers.framework.scale.Scales;
 /**
  * Changes matrices to different grid note mapping of the Fire.
  *
- * @author J&uuml;rgen Mo&szlig;graber
+ * @author Jürgen Moßgraber
  */
 public class FireScales extends Scales
 {

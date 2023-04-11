@@ -7,7 +7,7 @@ package de.mossgrabers.framework.command.core;
 /**
  * A continuous command is initiated by a knob or fader event.
  *
- * @author J&uuml;rgen Mo&szlig;graber
+ * @author Jürgen Moßgraber
  */
 @FunctionalInterface
 public interface ContinuousCommand

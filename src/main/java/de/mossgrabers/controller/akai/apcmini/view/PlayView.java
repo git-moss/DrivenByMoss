@@ -16,7 +16,7 @@ import de.mossgrabers.framework.view.AbstractPlayView;
 /**
  * The Play view.
  *
- * @author J&uuml;rgen Mo&szlig;graber
+ * @author Jürgen Moßgraber
  */
 public class PlayView extends AbstractPlayView<APCminiControlSurface, APCminiConfiguration> implements APCminiView
 {

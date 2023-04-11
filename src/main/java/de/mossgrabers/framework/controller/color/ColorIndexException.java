@@ -7,7 +7,7 @@ package de.mossgrabers.framework.controller.color;
 /**
  * Exception when a color is already registered under an index or does not exist at that index.
  *
- * @author J&uuml;rgen Mo&szlig;graber
+ * @author Jürgen Moßgraber
  */
 public class ColorIndexException extends RuntimeException
 {

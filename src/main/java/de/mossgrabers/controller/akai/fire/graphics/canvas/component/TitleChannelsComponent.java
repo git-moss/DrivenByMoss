@@ -15,7 +15,7 @@ import java.util.Arrays;
 /**
  * A graphics component with a label and 16 channels (volume/vu/panorama).
  *
- * @author J&uuml;rgen Mo&szlig;graber
+ * @author Jürgen Moßgraber
  */
 public class TitleChannelsComponent extends AbstractBaseComponent
 {

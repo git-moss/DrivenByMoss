@@ -7,7 +7,7 @@ package de.mossgrabers.framework.view;
 /**
  * Helper enumeration for the Color view. Where should the selected color applied to?
  *
- * @author J&uuml;rgen Mo&szlig;graber
+ * @author Jürgen Moßgraber
  */
 public enum ColorSelectMode
 {

@@ -17,7 +17,7 @@ import java.util.Set;
  * Get a number of parameters. This implementation provides all parameters of the layers of the
  * current device.
  *
- * @author J&uuml;rgen Mo&szlig;graber
+ * @author Jürgen Moßgraber
  */
 public abstract class AbstractLayerOrDrumPadParameterProvider extends AbstractChannelParameterProvider<IChannelBank<ILayer>, ILayer> implements IValueObserver<Boolean>
 {

@@ -14,7 +14,7 @@ import java.util.Map;
 /**
  * Get and cache some resources like SVG images.
  *
- * @author J&uuml;rgen Mo&szlig;graber
+ * @author Jürgen Moßgraber
  */
 public final class ResourceHandler
 {

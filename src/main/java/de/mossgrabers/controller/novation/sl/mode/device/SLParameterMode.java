@@ -19,7 +19,7 @@ import de.mossgrabers.framework.utils.StringUtils;
 /**
  * Edit parameters mode.
  *
- * @author J&uuml;rgen Mo&szlig;graber
+ * @author Jürgen Moßgraber
  */
 public class SLParameterMode extends ParameterMode<SLControlSurface, SLConfiguration>
 {

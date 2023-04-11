@@ -8,12 +8,13 @@ import de.mossgrabers.controller.ni.maschine.mk3.MaschineConfiguration;
 import de.mossgrabers.controller.ni.maschine.mk3.controller.MaschineControlSurface;
 import de.mossgrabers.framework.daw.IModel;
 import de.mossgrabers.framework.featuregroup.AbstractView;
+import de.mossgrabers.framework.utils.ButtonEvent;
 
 
 /**
  * Base class for views views.
  *
- * @author J&uuml;rgen Mo&szlig;graber
+ * @author Jürgen Moßgraber
  */
 public abstract class BaseView extends AbstractView<MaschineControlSurface, MaschineConfiguration>
 {
@@ -34,8 +35,7 @@ public abstract class BaseView extends AbstractView<MaschineControlSurface, Masc
     @Override
     public void onGridNote (final int note, final int velocity)
     {
-        if (velocity > 0)
-            this.executeFunction (note - 36);
+        this.executeFunction (note - 36, velocity > 0 ? ButtonEvent.DOWN : ButtonEvent.UP);
     }
 
 
@@ -43,6 +43,7 @@ public abstract class BaseView extends AbstractView<MaschineControlSurface, Masc
      * Implement to execute whatever function the view has.
      *
      * @param padIndex The index of the pressed pad (0-15)
+     * @param buttonEvent Down or up
      */
-    protected abstract void executeFunction (int padIndex);
+    protected abstract void executeFunction (final int padIndex, final ButtonEvent buttonEvent);
 }

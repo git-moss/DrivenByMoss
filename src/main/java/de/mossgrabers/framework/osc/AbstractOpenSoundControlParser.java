@@ -16,7 +16,7 @@ import de.mossgrabers.framework.scale.Scales;
 /**
  * Abstract base class for handling OSC messages.
  *
- * @author J&uuml;rgen Mo&szlig;graber
+ * @author Jürgen Moßgraber
  */
 public abstract class AbstractOpenSoundControlParser implements IOpenSoundControlCallback
 {

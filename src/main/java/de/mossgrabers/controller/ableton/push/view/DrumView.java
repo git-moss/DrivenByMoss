@@ -24,7 +24,7 @@ import de.mossgrabers.framework.view.sequencer.AbstractDrumView;
 /**
  * The Drum view.
  *
- * @author J&uuml;rgen Mo&szlig;graber
+ * @author Jürgen Moßgraber
  */
 public class DrumView extends AbstractDrumView<PushControlSurface, PushConfiguration>
 {

@@ -43,7 +43,7 @@ import java.util.Optional;
 /**
  * Drum machine mix mode for the Yaeltex Turn.
  *
- * @author J&uuml;rgen Mo&szlig;graber
+ * @author Jürgen Moßgraber
  */
 public class YaeltexTurnDrumMixMode extends AbstractParameterMode<YaeltexTurnControlSurface, YaeltexTurnConfiguration, ILayer>
 {

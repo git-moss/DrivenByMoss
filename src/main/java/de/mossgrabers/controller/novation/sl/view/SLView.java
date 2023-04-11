@@ -10,7 +10,7 @@ import de.mossgrabers.framework.utils.ButtonEvent;
 /**
  * Interface to SL specific view methods.
  *
- * @author J&uuml;rgen Mo&szlig;graber
+ * @author Jürgen Moßgraber
  */
 public interface SLView
 {

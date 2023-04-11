@@ -12,7 +12,7 @@ import java.util.List;
  * Contains the description for a USB device to claim and the interfaces/endpoints, which are
  * intended to be used.
  *
- * @author J&uuml;rgen Mo&szlig;graber
+ * @author Jürgen Moßgraber
  */
 public class UsbMatcher
 {

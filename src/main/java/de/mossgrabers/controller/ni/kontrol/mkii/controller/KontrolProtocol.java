@@ -7,7 +7,7 @@ package de.mossgrabers.controller.ni.kontrol.mkii.controller;
 /**
  * Information about the Komplete Kontrol MIDI protocol.
  *
- * @author J&uuml;rgen Mo&szlig;graber
+ * @author Jürgen Moßgraber
  */
 public final class KontrolProtocol
 {

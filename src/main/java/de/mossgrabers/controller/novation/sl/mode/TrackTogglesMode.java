@@ -16,7 +16,7 @@ import de.mossgrabers.framework.mode.track.DefaultTrackMode;
 /**
  * Different track parameters which can be toggled and device navigation mode.
  *
- * @author J&uuml;rgen Mo&szlig;graber
+ * @author Jürgen Moßgraber
  */
 public class TrackTogglesMode extends DefaultTrackMode<SLControlSurface, SLConfiguration>
 {

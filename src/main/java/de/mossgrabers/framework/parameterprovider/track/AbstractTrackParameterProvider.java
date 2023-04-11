@@ -19,7 +19,7 @@ import java.util.Optional;
  * Get a number of parameters. This abstract implementation provides a parameter of the current or
  * the given track bank.
  *
- * @author J&uuml;rgen Mo&szlig;graber
+ * @author Jürgen Moßgraber
  */
 public abstract class AbstractTrackParameterProvider extends AbstractParameterProvider implements IBankPageObserver, IValueObserver<ITrackBank>
 {

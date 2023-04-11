@@ -22,7 +22,7 @@ import com.bitwig.extension.controller.api.ControllerHost;
 /**
  * Extension definition class for devices supporting the Komplete Kontrol MIDI protocol version 2.
  *
- * @author J&uuml;rgen Mo&szlig;graber
+ * @author Jürgen Moßgraber
  */
 public class KontrolProtocolV2ExtensionDefinition extends AbstractControllerExtensionDefinition<KontrolProtocolControlSurface, KontrolProtocolConfiguration>
 {

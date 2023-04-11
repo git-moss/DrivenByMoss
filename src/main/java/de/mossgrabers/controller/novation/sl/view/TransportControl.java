@@ -17,7 +17,7 @@ import de.mossgrabers.framework.utils.ButtonEvent;
 /**
  * Provides an indexed access to commands of the transport control.
  *
- * @author J&uuml;rgen Mo&szlig;graber
+ * @author Jürgen Moßgraber
  */
 public class TransportControl
 {
@@ -114,7 +114,7 @@ public class TransportControl
     {
         if (!this.isRewinding && !this.isForwarding)
         {
-            this.turnOffTransport ();
+            this.turnOffTransport (ButtonEvent.UP);
             return;
         }
         this.model.getTransport ().changePosition (this.isForwarding, false);
@@ -125,38 +125,38 @@ public class TransportControl
     private void onPlay (final ButtonEvent event)
     {
         this.playCommand.executeNormal (event);
-        this.turnOffTransport ();
+        this.turnOffTransport (event);
     }
 
 
     private void onStop (final ButtonEvent event)
     {
         this.stopCommand.executeNormal (event);
-        this.turnOffTransport ();
+        this.turnOffTransport (event);
     }
 
 
     private void onRecord (final ButtonEvent event)
     {
-        // Toggle launcher overdub
-        if (event != ButtonEvent.DOWN)
-            return;
-        this.model.getTransport ().toggleLauncherOverdub ();
-        this.turnOffTransport ();
+        if (event == ButtonEvent.DOWN)
+            this.model.getTransport ().toggleLauncherOverdub ();
+        this.turnOffTransport (event);
     }
 
 
     private void onLoop (final ButtonEvent event)
     {
-        if (event != ButtonEvent.DOWN)
-            return;
-        this.model.getTransport ().toggleLoop ();
-        this.turnOffTransport ();
+        if (event == ButtonEvent.DOWN)
+            this.model.getTransport ().toggleLoop ();
+        this.turnOffTransport (event);
     }
 
 
-    private void turnOffTransport ()
+    private void turnOffTransport (final ButtonEvent event)
     {
+        if (event != ButtonEvent.UP)
+            return;
+
         this.surface.turnOffTransport ();
         final ModeManager modeManager = this.surface.getModeManager ();
         if (modeManager.isActive (Modes.VIEW_SELECT))

@@ -17,13 +17,12 @@ import com.bitwig.extension.controller.api.ColorValue;
 /**
  * Encapsulates the data of a slot.
  *
- * @author J&uuml;rgen Mo&szlig;graber
+ * @author Jürgen Moßgraber
  */
 public class SlotImpl extends AbstractItemImpl implements ISlot
 {
     private final ITrack           track;
     private final ClipLauncherSlot slot;
-    private boolean                isLaunchedImmediately = false;
 
 
     /**
@@ -202,29 +201,21 @@ public class SlotImpl extends AbstractItemImpl implements ISlot
 
     /** {@inheritDoc} */
     @Override
-    public void launch ()
+    public void launch (final boolean isPressed, final boolean isAlternative)
     {
-        this.isLaunchedImmediately = false;
-        this.slot.launch ();
-    }
+        if (isPressed)
+        {
+            if (isAlternative)
+                this.slot.launchAlt ();
+            else
+                this.slot.launch ();
+            return;
+        }
 
-
-    /** {@inheritDoc} */
-    @Override
-    public void launchImmediately ()
-    {
-        this.isLaunchedImmediately = true;
-        this.slot.launchWithOptions ("none", "continue_immediately");
-    }
-
-
-    /** {@inheritDoc} */
-    @Override
-    public boolean testAndClearLaunchedImmediately ()
-    {
-        final boolean isImmediately = this.isLaunchedImmediately;
-        this.isLaunchedImmediately = false;
-        return isImmediately;
+        if (isAlternative)
+            this.slot.launchReleaseAlt ();
+        else
+            this.slot.launchRelease ();
     }
 
 

@@ -13,7 +13,7 @@ import de.mossgrabers.framework.daw.DAWColor;
 /**
  * Different colors to use for the pads and buttons of Akai MPC.
  *
- * @author J&uuml;rgen Mo&szlig;graber
+ * @author Jürgen Moßgraber
  */
 public class ACVSColorManager extends ColorManager
 {

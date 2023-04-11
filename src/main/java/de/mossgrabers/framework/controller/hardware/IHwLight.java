@@ -7,7 +7,7 @@ package de.mossgrabers.framework.controller.hardware;
 /**
  * Interface for a proxy to a light / LED on a hardware controller.
  *
- * @author J&uuml;rgen Mo&szlig;graber
+ * @author Jürgen Moßgraber
  */
 public interface IHwLight extends IHwControl
 {

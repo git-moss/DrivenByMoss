@@ -23,7 +23,7 @@ import java.util.List;
  * The device parameter mode. The knobs control the value of the parameter on the parameter page.
  * device.
  *
- * @author J&uuml;rgen Mo&szlig;graber
+ * @author Jürgen Moßgraber
  */
 public class LaunchkeyMk3ParameterMode extends ParameterMode<LaunchkeyMk3ControlSurface, LaunchkeyMk3Configuration>
 {

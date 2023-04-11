@@ -13,7 +13,7 @@ import de.mossgrabers.framework.daw.ITransport;
 /**
  * The Play Cursor Position mode.
  *
- * @author J&uuml;rgen Mo&szlig;graber
+ * @author Jürgen Moßgraber
  */
 public class PositionMode extends BaseMode
 {

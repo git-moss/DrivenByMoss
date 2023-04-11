@@ -24,7 +24,7 @@ import de.mossgrabers.framework.view.sequencer.ClipLengthView;
 /**
  * Different colors to use for the pads and buttons of Push 1 and Push 2.
  *
- * @author J&uuml;rgen Mo&szlig;graber
+ * @author Jürgen Moßgraber
  */
 @SuppressWarnings("javadoc")
 public class PushColorManager extends ColorManager

@@ -19,7 +19,7 @@ import java.nio.ByteBuffer;
  *
  * @param bitmap The Bitwig bitmap
  *
- * @author J&uuml;rgen Mo&szlig;graber
+ * @author Jürgen Moßgraber
  */
 public record BitmapImpl (Bitmap bitmap) implements IBitmap
 {

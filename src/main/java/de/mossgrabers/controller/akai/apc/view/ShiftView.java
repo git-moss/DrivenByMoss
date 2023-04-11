@@ -24,7 +24,7 @@ import de.mossgrabers.framework.view.Views;
 /**
  * Provides additional features/functions on the grid.
  *
- * @author J&uuml;rgen Mo&szlig;graber
+ * @author Jürgen Moßgraber
  */
 public class ShiftView extends AbstractView<APCControlSurface, APCConfiguration>
 {

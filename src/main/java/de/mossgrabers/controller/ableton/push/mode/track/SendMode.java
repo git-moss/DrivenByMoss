@@ -22,7 +22,7 @@ import de.mossgrabers.framework.utils.Pair;
 /**
  * Mode for editing a Send volumes.
  *
- * @author J&uuml;rgen Mo&szlig;graber
+ * @author Jürgen Moßgraber
  */
 public class SendMode extends AbstractTrackMode
 {
@@ -43,6 +43,17 @@ public class SendMode extends AbstractTrackMode
         this.sendIndex = sendIndex;
 
         this.setParameterProvider (new SendParameterProvider (model, this.sendIndex, 0));
+    }
+
+
+    /** {@inheritDoc} */
+    @Override
+    public void onKnobTouch (final int index, final boolean isTouched)
+    {
+        super.onKnobTouch (index, isTouched);
+
+        if (isTouched && this.surface.isShiftPressed () && this.surface.isSelectPressed () && this.getParameterProvider ().get (index) instanceof final ISend send)
+            send.toggleEnabled ();
     }
 
 
@@ -85,7 +96,7 @@ public class SendMode extends AbstractTrackMode
             {
                 final ISend send = sendBank.getItem (j);
                 final boolean exists = send != null && send.doesExist ();
-                sendData[j] = new SendData (exists ? send.getName () : "", exists && this.sendIndex == j && this.isKnobTouched (i) ? send.getDisplayedValue (8) : "", valueChanger.toDisplayValue (exists ? send.getValue () : -1), valueChanger.toDisplayValue (exists ? send.getModulatedValue () : -1), this.sendIndex == j);
+                sendData[j] = new SendData (send.isEnabled (), exists ? send.getName () : "", exists && this.sendIndex == j && this.isKnobTouched (i) ? send.getDisplayedValue (8) : "", valueChanger.toDisplayValue (exists ? send.getValue () : -1), valueChanger.toDisplayValue (exists ? send.getModulatedValue () : -1), this.sendIndex == j);
             }
             final Pair<String, Boolean> pair = this.menu.get (i);
             display.addSendsElement (pair.getKey (), pair.getValue ().booleanValue (), t.doesExist () ? t.getName () : "", this.updateType (t), t.getColor (), t.isSelected (), sendData, false, t.isActivated (), t.isActivated ());

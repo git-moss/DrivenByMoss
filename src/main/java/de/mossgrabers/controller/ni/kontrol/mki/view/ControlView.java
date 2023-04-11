@@ -21,7 +21,7 @@ import de.mossgrabers.framework.view.sequencer.AbstractDrumView;
 /**
  * The view for controlling the DAW.
  *
- * @author J&uuml;rgen Mo&szlig;graber
+ * @author Jürgen Moßgraber
  */
 public class ControlView extends AbstractPlayView<Kontrol1ControlSurface, Kontrol1Configuration>
 {

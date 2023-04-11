@@ -19,7 +19,7 @@ import de.mossgrabers.framework.view.Views;
  * Command to toggle between the Session orientation (flip). Additional, toggles to birdseye view
  * when used with Shift button.
  *
- * @author J&uuml;rgen Mo&szlig;graber
+ * @author Jürgen Moßgraber
  */
 public class SessionSelectCommand extends AbstractTriggerCommand<FireControlSurface, FireConfiguration>
 {
@@ -64,8 +64,14 @@ public class SessionSelectCommand extends AbstractTriggerCommand<FireControlSurf
         if (event != ButtonEvent.DOWN)
             return;
 
-        final IView view = this.surface.getViewManager ().get (Views.SESSION);
+        final ViewManager viewManager = this.surface.getViewManager ();
+        final IView view = viewManager.get (Views.SESSION);
         if (view instanceof final SessionView sessionView)
+        {
             sessionView.toggleBirdsEyeView ();
+            if (viewManager.isActive (Views.SHIFT))
+                viewManager.restore ();
+            this.surface.getDisplay ().notify (sessionView.isBirdsEyeActive () ? "Birds Eye" : "Clips");
+        }
     }
 }

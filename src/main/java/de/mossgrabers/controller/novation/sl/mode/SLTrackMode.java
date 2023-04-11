@@ -18,7 +18,7 @@ import de.mossgrabers.framework.mode.track.TrackMode;
 /**
  * Edit track parameters mode.
  *
- * @author J&uuml;rgen Mo&szlig;graber
+ * @author Jürgen Moßgraber
  */
 public class SLTrackMode extends TrackMode<SLControlSurface, SLConfiguration>
 {

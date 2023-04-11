@@ -17,7 +17,7 @@ import java.util.Map;
 /**
  * The ACVS display, which is not really a display but a bunch of strings placed in the display.
  *
- * @author J&uuml;rgen Mo&szlig;graber
+ * @author Jürgen Moßgraber
  */
 public class ACVSDisplay extends AbstractTextDisplay
 {

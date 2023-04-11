@@ -13,7 +13,7 @@ import de.mossgrabers.framework.graphics.IGraphicsInfo;
 /**
  * A graphics component with two labels and a volume/panorama bar.
  *
- * @author J&uuml;rgen Mo&szlig;graber
+ * @author Jürgen Moßgraber
  */
 public class TitleValueComponent extends AbstractBaseComponent
 {

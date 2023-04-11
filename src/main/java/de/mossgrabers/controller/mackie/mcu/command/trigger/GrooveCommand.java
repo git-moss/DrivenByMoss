@@ -16,7 +16,7 @@ import de.mossgrabers.framework.utils.ButtonEvent;
 /**
  * Command for toggling the Groove enablement.
  *
- * @author J&uuml;rgen Mo&szlig;graber
+ * @author Jürgen Moßgraber
  */
 public class GrooveCommand extends AbstractTriggerCommand<MCUControlSurface, MCUConfiguration>
 {

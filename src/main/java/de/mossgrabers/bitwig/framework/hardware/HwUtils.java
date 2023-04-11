@@ -15,7 +15,7 @@ import com.bitwig.extension.controller.api.StringValue;
 /**
  * Helper functions for the Bitwig hardware API.
  *
- * @author J&uuml;rgen Mo&szlig;graber
+ * @author Jürgen Moßgraber
  */
 public class HwUtils
 {

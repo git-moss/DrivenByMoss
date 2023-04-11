@@ -7,7 +7,7 @@ package de.mossgrabers.framework.controller.color;
 /**
  * Some helper constants for Color.
  *
- * @author J&uuml;rgen Mo&szlig;graber
+ * @author Jürgen Moßgraber
  */
 public class ColorEx
 {

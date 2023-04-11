@@ -16,7 +16,7 @@ import de.mossgrabers.framework.utils.ButtonEvent;
 /**
  * Command to Setup the hardware of Push 2.
  *
- * @author J&uuml;rgen Mo&szlig;graber
+ * @author Jürgen Moßgraber
  */
 public class SetupCommand extends AbstractTriggerCommand<PushControlSurface, PushConfiguration>
 {

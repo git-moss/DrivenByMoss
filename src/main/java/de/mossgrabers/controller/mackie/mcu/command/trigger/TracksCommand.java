@@ -17,7 +17,7 @@ import de.mossgrabers.framework.utils.ButtonEvent;
 /**
  * Command to switch to the track/layer modes.
  *
- * @author J&uuml;rgen Mo&szlig;graber
+ * @author Jürgen Moßgraber
  */
 public class TracksCommand extends AbstractTriggerCommand<MCUControlSurface, MCUConfiguration>
 {

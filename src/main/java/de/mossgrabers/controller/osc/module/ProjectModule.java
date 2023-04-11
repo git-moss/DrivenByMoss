@@ -18,7 +18,7 @@ import java.util.LinkedList;
 /**
  * All project related commands.
  *
- * @author J&uuml;rgen Mo&szlig;graber
+ * @author Jürgen Moßgraber
  */
 public class ProjectModule extends AbstractModule
 {

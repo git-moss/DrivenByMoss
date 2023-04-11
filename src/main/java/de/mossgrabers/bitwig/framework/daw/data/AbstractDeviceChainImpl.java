@@ -15,7 +15,7 @@ import com.bitwig.extension.controller.api.DeviceChain;
  *
  * @param <T> The exact type
  *
- * @author J&uuml;rgen Mo&szlig;graber
+ * @author Jürgen Moßgraber
  */
 public abstract class AbstractDeviceChainImpl<T extends DeviceChain> extends AbstractItemImpl
 {

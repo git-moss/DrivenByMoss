@@ -7,7 +7,7 @@ package de.mossgrabers.controller.osc.exception;
 /**
  * Exception for a missing OSC (sub-)command.
  *
- * @author J&uuml;rgen Mo&szlig;graber
+ * @author Jürgen Moßgraber
  */
 public class MissingCommandException extends Exception
 {

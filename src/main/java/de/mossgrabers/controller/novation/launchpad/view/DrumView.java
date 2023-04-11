@@ -20,7 +20,7 @@ import de.mossgrabers.framework.view.sequencer.AbstractDrumExView;
 /**
  * The drum sequencer.
  *
- * @author J&uuml;rgen Mo&szlig;graber
+ * @author Jürgen Moßgraber
  */
 public class DrumView extends AbstractDrumExView<LaunchpadControlSurface, LaunchpadConfiguration>
 {

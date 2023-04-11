@@ -15,7 +15,7 @@ import de.mossgrabers.framework.utils.ButtonEvent;
 /**
  * Command to change the play position in the arranger.
  *
- * @author J&uuml;rgen Mo&szlig;graber
+ * @author Jürgen Moßgraber
  */
 public class PlayPositionKnobCommand extends PlayPositionCommand<PushControlSurface, PushConfiguration> implements TriggerCommand
 {

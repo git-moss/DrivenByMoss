@@ -21,7 +21,7 @@ import de.mossgrabers.framework.utils.ButtonEvent;
 /**
  * A view for mixing with track select, mute, solo, rec arm, stop clip, volume and panorama.
  *
- * @author J&uuml;rgen Mo&szlig;graber
+ * @author Jürgen Moßgraber
  */
 public class MixView extends AbstractView<FireControlSurface, FireConfiguration> implements IFireView
 {

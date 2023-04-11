@@ -19,7 +19,7 @@ import java.util.Arrays;
 /**
  * An element in the grid which contains a menu and a channels' sends 1-4 or 5-8.
  *
- * @author J&uuml;rgen Mo&szlig;graber
+ * @author Jürgen Moßgraber
  */
 public class SendsComponent extends ChannelSelectComponent
 {
@@ -86,21 +86,22 @@ public class SendsComponent extends ChannelSelectComponent
         final double sliderHeight = sendRowHeight - 2 * separatorSize;
 
         // Background of slider area
-        final ColorEx backgroundColor = this.modifyIfOff (configuration.getColorBackground ());
-        gc.fillRectangle (this.isExMode ? left - separatorSize : left, t, this.isExMode ? width + separatorSize : width, this.isExMode ? h - 2 : h, this.footer.isSelected () || this.isExMode ? this.modifyIfOff (configuration.getColorBackgroundLighter ()) : backgroundColor);
+        final ColorEx backgroundColor = this.modifyIfOff (true, configuration.getColorBackground ());
+        gc.fillRectangle (this.isExMode ? left - separatorSize : left, t, this.isExMode ? width + separatorSize : width, this.isExMode ? h - 2 : h, this.footer.isSelected () || this.isExMode ? this.modifyIfOff (true, configuration.getColorBackgroundLighter ()) : backgroundColor);
 
         double topy = menuHeight + (this.isExMode ? 0 : separatorSize);
 
-        final ColorEx textColor = this.modifyIfOff (configuration.getColorText ());
-        final ColorEx borderColor = this.modifyIfOff (configuration.getColorBorder ());
-        final ColorEx faderColor = this.modifyIfOff (configuration.getColorFader ());
-        final ColorEx editColor = this.modifyIfOff (configuration.getColorEdit ());
         final double faderLeft = left + inset;
         for (final SendData send: this.sendData)
         {
             final String sendName = send.name ();
             if (sendName.length () == 0)
                 break;
+
+            final ColorEx textColor = this.modifyIfOff (send.enabled (), configuration.getColorText ());
+            final ColorEx borderColor = this.modifyIfOff (send.enabled (), configuration.getColorBorder ());
+            final ColorEx faderColor = this.modifyIfOff (send.enabled (), configuration.getColorFader ());
+            final ColorEx editColor = this.modifyIfOff (send.enabled (), configuration.getColorEdit ());
 
             gc.drawTextInBounds (sendName, faderLeft, topy + separatorSize, sliderWidth, sendRowHeight, Align.LEFT, textColor, sendRowHeight);
             topy += sendRowHeight;
@@ -128,14 +129,17 @@ public class SendsComponent extends ChannelSelectComponent
         final double boxWidth = sliderWidth / 2;
         final double boxLeft = faderLeft + sliderWidth - boxWidth;
         topy = menuHeight;
-        final ColorEx backgroundDarker = this.modifyIfOff (configuration.getColorBackgroundDarker ());
-        for (final SendData element: this.sendData)
+        final ColorEx backgroundDarker = this.modifyIfOff (true, configuration.getColorBackgroundDarker ());
+        for (final SendData send: this.sendData)
         {
             topy += sendRowHeight;
 
-            final String text = element.text ();
+            final String text = send.text ();
             if (text.length () > 0)
             {
+                final ColorEx textColor = this.modifyIfOff (send.enabled (), configuration.getColorText ());
+                final ColorEx borderColor = this.modifyIfOff (send.enabled (), configuration.getColorBorder ());
+
                 final double volumeTextTop = topy + sliderHeight + 1 + (this.isExMode ? 0 : separatorSize);
                 gc.fillRectangle (boxLeft, volumeTextTop, boxWidth, unit, backgroundDarker);
                 gc.strokeRectangle (boxLeft, volumeTextTop, boxWidth - 1, unit, borderColor);
@@ -147,9 +151,9 @@ public class SendsComponent extends ChannelSelectComponent
     }
 
 
-    protected ColorEx modifyIfOff (final ColorEx color)
+    protected ColorEx modifyIfOff (final boolean isEnabled, final ColorEx color)
     {
-        return this.isSendActive ? color : ColorEx.dimToGray (color);
+        return this.isSendActive && isEnabled ? color : ColorEx.dimToGray (color);
     }
 
 

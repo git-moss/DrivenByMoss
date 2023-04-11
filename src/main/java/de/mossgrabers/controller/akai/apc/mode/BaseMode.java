@@ -20,7 +20,7 @@ import java.util.Date;
  *
  * @param <B> The type of the item bank
  *
- * @author J&uuml;rgen Mo&szlig;graber
+ * @author Jürgen Moßgraber
  */
 public abstract class BaseMode<B extends IItem> extends AbstractParameterMode<APCControlSurface, APCConfiguration, B>
 {

@@ -10,7 +10,7 @@ import de.mossgrabers.framework.daw.data.IDeviceMetadata;
 /**
  * Default implementation for device metadata.
  *
- * @author J&uuml;rgen Mo&szlig;graber
+ * @author Jürgen Moßgraber
  *
  * @param name The name of the plugin
  * @param id The ID of the plugin
@@ -23,6 +23,8 @@ public record DeviceMetadataImpl (String name, String id, PluginType pluginType)
     {
         /** A native Bitwig device. */
         BITWIG,
+        /** A CLAP device. */
+        CLAP,
         /** A VST 2 device. */
         VST2,
         /** A VST 3 device. */

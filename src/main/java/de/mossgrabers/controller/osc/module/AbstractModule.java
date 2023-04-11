@@ -23,13 +23,14 @@ import java.util.regex.Pattern;
 /**
  * Abstract implementation of an OSC module.
  *
- * @author J&uuml;rgen Mo&szlig;graber
+ * @author Jürgen Moßgraber
  */
 public abstract class AbstractModule implements IModule
 {
     private static final Pattern      RGB_COLOR_PATTERN = Pattern.compile ("(rgb|RGB)\\((\\d+(\\.\\d+)?),(\\d+(\\.\\d+)?),(\\d+(\\.\\d+)?)\\)");
 
     protected static final String     TAG_EXISTS        = "exists";
+    protected static final String     TAG_ACTIVATED     = "activated";
     protected static final String     TAG_NAME          = "name";
     protected static final String     TAG_SELECTED      = "selected";
     protected static final String     TAG_SELECT        = "select";
@@ -186,6 +187,8 @@ public abstract class AbstractModule implements IModule
     protected void flushParameterData (final IOpenSoundControlWriter writer, final String fxAddress, final IParameter fxParam, final boolean dump)
     {
         final boolean isSend = fxParam instanceof ISend;
+        if (isSend)
+            writer.sendOSC (fxAddress + TAG_ACTIVATED, ((ISend) fxParam).isEnabled (), dump);
 
         writer.sendOSC (fxAddress + TAG_EXISTS, fxParam.doesExist (), dump);
         writer.sendOSC (fxAddress + TAG_NAME, fxParam.getName (), dump);

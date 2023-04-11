@@ -11,7 +11,7 @@ import de.mossgrabers.framework.controller.ButtonID;
  * Interface to a feature group. A feature group has a number of controls (knobs, buttons, etc.) and
  * output elements like a display or LEDs. A feature group has a name and can be de-/activated.
  *
- * @author J&uuml;rgen Mo&szlig;graber
+ * @author Jürgen Moßgraber
  */
 public interface IFeatureGroup
 {

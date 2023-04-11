@@ -14,7 +14,7 @@ import de.mossgrabers.framework.utils.ButtonEvent;
 /**
  * Command for toggling the display header.
  *
- * @author J&uuml;rgen Mo&szlig;graber
+ * @author Jürgen Moßgraber
  */
 public class ToggleDisplayCommand extends AbstractTriggerCommand<MCUControlSurface, MCUConfiguration>
 {

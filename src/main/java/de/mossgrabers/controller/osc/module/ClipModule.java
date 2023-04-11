@@ -23,7 +23,7 @@ import java.util.Optional;
 /**
  * All cursor clip related commands.
  *
- * @author J&uuml;rgen Mo&szlig;graber
+ * @author Jürgen Moßgraber
  */
 public class ClipModule extends AbstractModule
 {
@@ -124,7 +124,11 @@ public class ClipModule extends AbstractModule
         switch (subCommand)
         {
             case "launch":
-                selectedSlot.launch ();
+                selectedSlot.launch (toInteger (value) > 0, false);
+                return;
+
+            case "launchAlt":
+                selectedSlot.launch (toInteger (value) > 0, true);
                 return;
 
             case "record":

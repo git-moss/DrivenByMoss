@@ -7,7 +7,7 @@ package de.mossgrabers.framework.daw;
 /**
  * IDs for all groove parameters.
  *
- * @author J&uuml;rgen Mo&szlig;graber
+ * @author Jürgen Moßgraber
  */
 public enum GrooveParameterID
 {

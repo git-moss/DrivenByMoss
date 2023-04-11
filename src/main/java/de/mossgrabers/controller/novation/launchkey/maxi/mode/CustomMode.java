@@ -16,7 +16,7 @@ import de.mossgrabers.framework.featuregroup.AbstractParameterMode;
 /**
  * Dummy mode for the 4 custom mapping modes. Only displays the custom mode number in the display.
  *
- * @author J&uuml;rgen Mo&szlig;graber
+ * @author Jürgen Moßgraber
  */
 public class CustomMode extends AbstractParameterMode<LaunchkeyMk3ControlSurface, LaunchkeyMk3Configuration, IItem>
 {

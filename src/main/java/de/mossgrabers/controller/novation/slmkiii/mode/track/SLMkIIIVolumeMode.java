@@ -20,7 +20,7 @@ import de.mossgrabers.framework.utils.StringUtils;
 /**
  * Mode for editing a volume parameter of all tracks.
  *
- * @author J&uuml;rgen Mo&szlig;graber
+ * @author Jürgen Moßgraber
  */
 public class SLMkIIIVolumeMode extends AbstractTrackMode
 {

@@ -19,7 +19,7 @@ import de.mossgrabers.framework.parameter.IParameter;
 /**
  * The handler for user commands.
  *
- * @author J&uuml;rgen Mo&szlig;graber
+ * @author Jürgen Moßgraber
  */
 public class UserHandler extends AbstractHandler
 {

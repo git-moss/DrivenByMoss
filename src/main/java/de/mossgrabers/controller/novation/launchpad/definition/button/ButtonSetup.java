@@ -11,7 +11,7 @@ import java.util.Map;
 /**
  * Button configuration for a specific Launchpad version.
  *
- * @author J&uuml;rgen Mo&szlig;graber
+ * @author Jürgen Moßgraber
  */
 public class ButtonSetup
 {

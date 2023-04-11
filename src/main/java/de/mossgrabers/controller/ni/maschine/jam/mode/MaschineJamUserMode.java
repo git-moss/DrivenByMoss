@@ -17,7 +17,7 @@ import de.mossgrabers.framework.parameter.IParameter;
 /**
  * The user parameter mode.
  *
- * @author J&uuml;rgen Mo&szlig;graber
+ * @author Jürgen Moßgraber
  */
 public class MaschineJamUserMode extends UserMode<MaschineJamControlSurface, MaschineJamConfiguration> implements IMaschineJamMode
 {

@@ -54,7 +54,7 @@ import java.util.UUID;
 /**
  * The model which contains all data and access to the DAW.
  *
- * @author J&uuml;rgen Mo&szlig;graber
+ * @author Jürgen Moßgraber
  */
 public class ModelImpl extends AbstractModel
 {
@@ -128,7 +128,7 @@ public class ModelImpl extends AbstractModel
         this.trackBank = new TrackBankImpl (this.host, (ApplicationImpl) this.application, this.valueChanger, tb, (CursorTrackImpl) this.cursorTrack, this.rootTrackGroup, numTracks, numScenes, numSends);
 
         final int numFxTracks = this.modelSetup.getNumFxTracks ();
-        final TrackBank effectTrackBank = controllerHost.createEffectTrackBank (numFxTracks, numScenes);
+        final TrackBank effectTrackBank = controllerHost.createEffectTrackBank (numFxTracks, numSends, numScenes);
         this.effectTrackBank = new EffectTrackBankImpl (this.host, this.valueChanger, effectTrackBank, (CursorTrackImpl) this.cursorTrack, this.rootTrackGroup, (ApplicationImpl) this.application, numFxTracks, numScenes, numSends, this.trackBank);
 
         //////////////////////////////////////////////////////////////////////////////
@@ -290,7 +290,7 @@ public class ModelImpl extends AbstractModel
     {
         track.createClip (slot.getIndex (), lengthInBeats);
         slot.select ();
-        slot.launch ();
+        slot.launch (true, false);
         if (overdub)
             this.transport.setLauncherOverdub (true);
     }
@@ -302,7 +302,7 @@ public class ModelImpl extends AbstractModel
     {
         if (!slot.isRecording ())
             slot.startRecording ();
-        slot.launch ();
+        slot.launch (true, false);
     }
 
 

@@ -13,7 +13,7 @@ import de.mossgrabers.framework.parameterprovider.track.SendParameterProvider;
 /**
  * Panorama knob mode.
  *
- * @author J&uuml;rgen Mo&szlig;graber
+ * @author Jürgen Moßgraber
  */
 public class SendMode extends BaseMode<ITrack>
 {

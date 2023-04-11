@@ -17,7 +17,7 @@ import java.util.List;
 /**
  * Interface to several configuration settings.
  *
- * @author J&uuml;rgen Mo&szlig;graber
+ * @author Jürgen Moßgraber
  */
 public interface Configuration
 {

@@ -29,7 +29,7 @@ import java.util.UUID;
 /**
  * The data of a channel.
  *
- * @author J&uuml;rgen Mo&szlig;graber
+ * @author Jürgen Moßgraber
  */
 public class ChannelImpl extends AbstractDeviceChainImpl<Channel> implements IChannel
 {
@@ -544,6 +544,9 @@ public class ChannelImpl extends AbstractDeviceChainImpl<Channel> implements ICh
             {
                 case BITWIG:
                     insertionPoint.insertBitwigDevice (UUID.fromString (dm.id ()));
+                    break;
+                case CLAP:
+                    insertionPoint.insertCLAPDevice (dm.id ());
                     break;
                 case VST2:
                     insertionPoint.insertVST2Device (Integer.parseInt (dm.id ()));

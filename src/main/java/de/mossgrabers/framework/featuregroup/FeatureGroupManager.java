@@ -19,7 +19,7 @@ import java.util.Map.Entry;
  * @param <E> The specific type of the ID enumeration
  * @param <F> The specific type of the feature group
  *
- * @author J&uuml;rgen Mo&szlig;graber
+ * @author Jürgen Moßgraber
  */
 public class FeatureGroupManager<E extends Enum<E>, F extends IFeatureGroup>
 {

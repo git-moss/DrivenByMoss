@@ -33,7 +33,7 @@ import java.util.Optional;
 /**
  * The Generic Flexi.
  *
- * @author J&uuml;rgen Mo&szlig;graber
+ * @author Jürgen Moßgraber
  */
 public class GenericFlexiControlSurface extends AbstractControlSurface<GenericFlexiConfiguration>
 {

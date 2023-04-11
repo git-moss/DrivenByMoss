@@ -13,7 +13,7 @@ import java.util.Set;
 /**
  * Abstract base class for providers which wrap another provider instance.
  *
- * @author J&uuml;rgen Mo&szlig;graber
+ * @author Jürgen Moßgraber
  */
 public abstract class AbstractWrapperProvider implements IParameterProvider
 {

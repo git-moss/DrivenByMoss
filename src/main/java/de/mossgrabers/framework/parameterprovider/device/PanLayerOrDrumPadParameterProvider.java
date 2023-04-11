@@ -12,7 +12,7 @@ import de.mossgrabers.framework.parameter.IParameter;
  * Get a number of parameters. This implementation provides all panorama parameters of the layers of
  * the current device.
  *
- * @author J&uuml;rgen Mo&szlig;graber
+ * @author Jürgen Moßgraber
  */
 public class PanLayerOrDrumPadParameterProvider extends AbstractLayerOrDrumPadParameterProvider
 {

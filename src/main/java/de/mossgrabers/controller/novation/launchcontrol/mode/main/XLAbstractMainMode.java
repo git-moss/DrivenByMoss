@@ -28,7 +28,7 @@ import java.util.List;
  *
  * @param <B> The type of the item bank
  *
- * @author J&uuml;rgen Mo&szlig;graber
+ * @author Jürgen Moßgraber
  */
 public abstract class XLAbstractMainMode<B extends IItem> extends AbstractParameterMode<LaunchControlXLControlSurface, LaunchControlXLConfiguration, B> implements IXLMode
 {

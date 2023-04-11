@@ -22,7 +22,7 @@ import java.util.Optional;
 /**
  * Mode for editing the panorama of all device layers.
  *
- * @author J&uuml;rgen Mo&szlig;graber
+ * @author Jürgen Moßgraber
  */
 public class DeviceLayerPanMode extends DeviceLayerMode
 {

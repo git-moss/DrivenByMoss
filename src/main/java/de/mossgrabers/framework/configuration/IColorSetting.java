@@ -10,7 +10,7 @@ import de.mossgrabers.framework.controller.color.ColorEx;
 /**
  * A color setting.
  *
- * @author J&uuml;rgen Mo&szlig;graber
+ * @author Jürgen Moßgraber
  */
 public interface IColorSetting extends IValueSetting<ColorEx>
 {

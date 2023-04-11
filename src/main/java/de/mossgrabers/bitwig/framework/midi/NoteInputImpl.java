@@ -12,7 +12,7 @@ import com.bitwig.extension.controller.api.NoteInput;
 /**
  * Implementation for a note input.
  *
- * @author J&uuml;rgen Mo&szlig;graber
+ * @author Jürgen Moßgraber
  */
 class NoteInputImpl extends AbstractNoteInput
 {

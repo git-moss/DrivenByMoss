@@ -7,7 +7,7 @@ package de.mossgrabers.framework.controller.grid;
 /**
  * Interface to a light guide (LEDs above keys).
  *
- * @author J&uuml;rgen Mo&szlig;graber
+ * @author Jürgen Moßgraber
  */
 public interface ILightGuide
 {

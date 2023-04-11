@@ -13,7 +13,7 @@ import java.util.Optional;
 /**
  * Default data for an empty slot bank.
  *
- * @author J&uuml;rgen Mo&szlig;graber
+ * @author Jürgen Moßgraber
  */
 public class EmptySlotBank extends EmptyBank<ISlot> implements ISlotBank
 {

@@ -14,7 +14,7 @@ import de.mossgrabers.framework.daw.IHost;
  *
  * @param <C> The type of the configuration
  *
- * @author J&uuml;rgen Mo&szlig;graber
+ * @author Jürgen Moßgraber
  */
 public class DummyControlSurface<C extends Configuration> extends AbstractControlSurface<C>
 {

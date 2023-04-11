@@ -13,7 +13,7 @@ import de.mossgrabers.framework.utils.ButtonEvent;
 /**
  * Track record arm command.
  *
- * @author J&uuml;rgen Mo&szlig;graber
+ * @author Jürgen Moßgraber
  */
 public class RecordArmCommand extends AbstractTrackCommand
 {

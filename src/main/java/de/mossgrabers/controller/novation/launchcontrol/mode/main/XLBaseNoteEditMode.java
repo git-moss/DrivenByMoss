@@ -37,7 +37,7 @@ import java.util.List;
 /**
  * Base sequencer mode for the LauchControl XL.
  *
- * @author J&uuml;rgen Mo&szlig;graber
+ * @author Jürgen Moßgraber
  */
 public abstract class XLBaseNoteEditMode extends XLAbstractMainMode<IItem> implements INoteMode
 {

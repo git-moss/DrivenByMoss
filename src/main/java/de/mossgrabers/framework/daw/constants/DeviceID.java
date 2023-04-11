@@ -7,7 +7,7 @@ package de.mossgrabers.framework.daw.constants;
 /**
  * Constants for creating specific device monitors.
  *
- * @author J&uuml;rgen Mo&szlig;graber
+ * @author Jürgen Moßgraber
  */
 public enum DeviceID
 {

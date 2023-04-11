@@ -16,7 +16,7 @@ import de.mossgrabers.framework.utils.ButtonEvent;
 /**
  * Command for pressing the Scale button.
  *
- * @author J&uuml;rgen Mo&szlig;graber
+ * @author Jürgen Moßgraber
  */
 public class ScaleButtonCommand extends AbstractTriggerCommand<Kontrol1ControlSurface, Kontrol1Configuration>
 {

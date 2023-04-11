@@ -11,7 +11,7 @@ import java.util.Map;
 /**
  * All available commands.
  *
- * @author J&uuml;rgen Mo&szlig;graber
+ * @author Jürgen Moßgraber
  */
 @SuppressWarnings("javadoc")
 public enum FlexiCommand
@@ -717,6 +717,14 @@ public enum FlexiCommand
     SCENE_6_LAUNCH_SCENE(CommandCategory.SCENE, "Scene 6: Launch Scene", true),
     SCENE_7_LAUNCH_SCENE(CommandCategory.SCENE, "Scene 7: Launch Scene", true),
     SCENE_8_LAUNCH_SCENE(CommandCategory.SCENE, "Scene 8: Launch Scene", true),
+    SCENE_1_LAUNCH_ALT_SCENE(CommandCategory.SCENE, "Scene 1: Launch Scene Alternative", true),
+    SCENE_2_LAUNCH_ALT_SCENE(CommandCategory.SCENE, "Scene 2: Launch Scene Alternative", true),
+    SCENE_3_LAUNCH_ALT_SCENE(CommandCategory.SCENE, "Scene 3: Launch Scene Alternative", true),
+    SCENE_4_LAUNCH_ALT_SCENE(CommandCategory.SCENE, "Scene 4: Launch Scene Alternative", true),
+    SCENE_5_LAUNCH_ALT_SCENE(CommandCategory.SCENE, "Scene 5: Launch Scene Alternative", true),
+    SCENE_6_LAUNCH_ALT_SCENE(CommandCategory.SCENE, "Scene 6: Launch Scene Alternative", true),
+    SCENE_7_LAUNCH_ALT_SCENE(CommandCategory.SCENE, "Scene 7: Launch Scene Alternative", true),
+    SCENE_8_LAUNCH_ALT_SCENE(CommandCategory.SCENE, "Scene 8: Launch Scene Alternative", true),
     SCENE_SELECT_PREVIOUS_BANK(CommandCategory.SCENE, "Scene: Select Previous Bank", true),
     SCENE_SELECT_NEXT_BANK(CommandCategory.SCENE, "Scene: Select Next Bank", true),
     SCENE_CREATE_SCENE(CommandCategory.SCENE, "Scene: Create Scene", true),
@@ -727,6 +735,7 @@ public enum FlexiCommand
     CLIP_NEXT(CommandCategory.CLIP, "Clip: Select next", true),
     CLIP_SCROLL(CommandCategory.CLIP, "Clip: Scroll clips", false),
     CLIP_PLAY(CommandCategory.CLIP, "Clip: Play", true),
+    CLIP_PLAY_ALT(CommandCategory.CLIP, "Clip: Play Alternative", true),
     CLIP_STOP(CommandCategory.CLIP, "Clip: Stop", true),
     CLIP_RECORD(CommandCategory.CLIP, "Clip: Record", true),
     CLIP_NEW(CommandCategory.CLIP, "Clip: New", true),

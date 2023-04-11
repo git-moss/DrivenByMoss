@@ -14,7 +14,7 @@ import com.bitwig.extension.controller.api.Setting;
 /**
  * Bitwig implementation of a string setting.
  *
- * @author J&uuml;rgen Mo&szlig;graber
+ * @author Jürgen Moßgraber
  */
 public class StringSettingImpl extends AbstractSetting implements IStringSetting
 {

@@ -22,7 +22,7 @@ import de.mossgrabers.framework.utils.StringUtils;
 /**
  * Editing the length of note repeat notes.
  *
- * @author J&uuml;rgen Mo&szlig;graber
+ * @author Jürgen Moßgraber
  */
 public class NoteRepeatMode extends BaseMode
 {

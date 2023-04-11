@@ -7,7 +7,7 @@ package de.mossgrabers.framework.daw.midi;
 /**
  * MIDI constants.
  *
- * @author J&uuml;rgen Mo&szlig;graber
+ * @author Jürgen Moßgraber
  */
 public class MidiConstants
 {

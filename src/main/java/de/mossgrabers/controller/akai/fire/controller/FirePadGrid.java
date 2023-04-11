@@ -20,7 +20,7 @@ import java.util.Map.Entry;
 /**
  * Implementation of the Fire grid of pads.
  *
- * @author J&uuml;rgen Mo&szlig;graber
+ * @author Jürgen Moßgraber
  */
 public class FirePadGrid extends BlinkingPadGrid
 {

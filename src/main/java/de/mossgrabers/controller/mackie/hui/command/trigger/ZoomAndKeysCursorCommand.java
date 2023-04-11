@@ -15,7 +15,7 @@ import de.mossgrabers.framework.utils.ButtonEvent;
 /**
  * Command for cursor arrow keys.
  *
- * @author J&uuml;rgen Mo&szlig;graber
+ * @author Jürgen Moßgraber
  */
 public class ZoomAndKeysCursorCommand extends AbstractTriggerCommand<HUIControlSurface, HUIConfiguration>
 {

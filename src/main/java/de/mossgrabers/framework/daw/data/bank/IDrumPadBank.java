@@ -13,7 +13,7 @@ import java.util.Optional;
 /**
  * Interface to a drumpad bank.
  *
- * @author J&uuml;rgen Mo&szlig;graber
+ * @author Jürgen Moßgraber
  */
 public interface IDrumPadBank extends ILayerBank
 {

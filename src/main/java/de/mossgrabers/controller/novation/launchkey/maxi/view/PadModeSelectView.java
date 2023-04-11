@@ -21,7 +21,7 @@ import de.mossgrabers.framework.view.Views;
 /**
  * The pad mode select view.
  *
- * @author J&uuml;rgen Mo&szlig;graber
+ * @author Jürgen Moßgraber
  */
 public class PadModeSelectView extends AbstractView<LaunchkeyMk3ControlSurface, LaunchkeyMk3Configuration>
 {
@@ -98,21 +98,24 @@ public class PadModeSelectView extends AbstractView<LaunchkeyMk3ControlSurface, 
         if (!ButtonID.isSceneButton (buttonID))
             return;
 
-        if (event == ButtonEvent.UP)
+        if (event == ButtonEvent.LONG)
         {
-            this.surface.getViewManager ().restore ();
-
-            if (this.isConsumed)
-                return;
-
-            final ISceneBank sceneBank = this.model.getCurrentTrackBank ().getSceneBank ();
-            final int index = buttonID.ordinal () - ButtonID.SCENE1.ordinal ();
-            final IScene scene = sceneBank.getItem (index);
-            scene.select ();
-            scene.launch ();
-        }
-        else if (event == ButtonEvent.LONG)
             this.isConsumed = true;
+            return;
+        }
+
+        if (event == ButtonEvent.DOWN)
+            return;
+
+        this.surface.getViewManager ().restore ();
+        if (this.isConsumed)
+            return;
+
+        final ISceneBank sceneBank = this.model.getCurrentTrackBank ().getSceneBank ();
+        final int index = buttonID.ordinal () - ButtonID.SCENE1.ordinal ();
+        final IScene scene = sceneBank.getItem (index);
+        scene.select ();
+        scene.launch (true, false);
     }
 
 

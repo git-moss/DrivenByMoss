@@ -19,7 +19,7 @@ import de.mossgrabers.framework.utils.StringUtils;
 /**
  * Mode for editing a panorama parameter of all tracks.
  *
- * @author J&uuml;rgen Mo&szlig;graber
+ * @author Jürgen Moßgraber
  */
 public class SLMkIIIPanMode extends AbstractTrackMode
 {

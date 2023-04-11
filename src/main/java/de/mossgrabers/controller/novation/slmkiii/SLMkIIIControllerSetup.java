@@ -73,7 +73,7 @@ import de.mossgrabers.framework.view.Views;
 /**
  * Support for the Novation SLMkIII controllers.
  *
- * @author J&uuml;rgen Mo&szlig;graber
+ * @author Jürgen Moßgraber
  */
 public class SLMkIIIControllerSetup extends AbstractControllerSetup<SLMkIIIControlSurface, SLMkIIIConfiguration>
 {

@@ -50,7 +50,7 @@ import java.util.Optional;
 /**
  * Support for the Arturia Beatstep and Beatstep Pro controllers.
  *
- * @author J&uuml;rgen Mo&szlig;graber
+ * @author Jürgen Moßgraber
  */
 public class BeatstepControllerSetup extends AbstractControllerSetup<BeatstepControlSurface, BeatstepConfiguration>
 {

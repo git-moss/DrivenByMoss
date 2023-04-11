@@ -19,7 +19,7 @@ import de.mossgrabers.framework.utils.ButtonEvent;
 /**
  * Additional configuration settings for Push 2.
  *
- * @author J&uuml;rgen Mo&szlig;graber
+ * @author Jürgen Moßgraber
  */
 public class InfoMode extends BaseMode<IItem>
 {

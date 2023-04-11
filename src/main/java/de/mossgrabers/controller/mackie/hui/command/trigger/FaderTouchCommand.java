@@ -16,7 +16,7 @@ import de.mossgrabers.framework.utils.ButtonEvent;
 /**
  * A select track command which activates the volume mode temporarily.
  *
- * @author J&uuml;rgen Mo&szlig;graber
+ * @author Jürgen Moßgraber
  */
 public class FaderTouchCommand extends SelectCommand<HUIControlSurface, HUIConfiguration>
 {

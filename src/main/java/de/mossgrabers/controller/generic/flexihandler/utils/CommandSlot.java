@@ -11,7 +11,7 @@ import de.mossgrabers.controller.generic.controller.FlexiCommand;
  * A command slot, which contains a button, knob or slider configuration triggered from CC, a note
  * or program change.
  *
- * @author J&uuml;rgen Mo&szlig;graber
+ * @author Jürgen Moßgraber
  */
 public class CommandSlot
 {

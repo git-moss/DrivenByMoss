@@ -13,7 +13,7 @@ import de.mossgrabers.framework.parameterprovider.track.PanParameterProvider;
 /**
  * Panorama knob mode.
  *
- * @author J&uuml;rgen Mo&szlig;graber
+ * @author Jürgen Moßgraber
  */
 public class PanMode extends BaseMode<ITrack>
 {

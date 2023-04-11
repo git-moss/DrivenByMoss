@@ -17,7 +17,7 @@ import de.mossgrabers.framework.view.Views;
 /**
  * Command to show/hide the shift view. Additionally, returns to previous view.
  *
- * @author J&uuml;rgen Mo&szlig;graber
+ * @author Jürgen Moßgraber
  */
 public class LaunchpadToggleShiftViewCommand extends ToggleShiftViewCommand<LaunchpadControlSurface, LaunchpadConfiguration>
 {

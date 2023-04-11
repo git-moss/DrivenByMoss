@@ -20,7 +20,7 @@ import java.util.List;
 /**
  * Drum sequencer mode for the LauchControl XL.
  *
- * @author J&uuml;rgen Mo&szlig;graber
+ * @author Jürgen Moßgraber
  */
 public class XLDrumPadEditMode extends XLBaseNoteEditMode
 {

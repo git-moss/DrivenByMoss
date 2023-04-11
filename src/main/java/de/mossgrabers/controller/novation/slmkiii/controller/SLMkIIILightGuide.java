@@ -19,7 +19,7 @@ import de.mossgrabers.framework.view.AbstractPlayView;
 /**
  * Implementation of the SLMkIII light guide.
  *
- * @author J&uuml;rgen Mo&szlig;graber
+ * @author Jürgen Moßgraber
  */
 public class SLMkIIILightGuide extends LightGuideImpl
 {

@@ -18,7 +18,7 @@ import de.mossgrabers.framework.view.Views;
 /**
  * Base command for entering a track mode.
  *
- * @author J&uuml;rgen Mo&szlig;graber
+ * @author Jürgen Moßgraber
  */
 public class AbstractTrackCommand extends AbstractTriggerCommand<LaunchpadControlSurface, LaunchpadConfiguration>
 {

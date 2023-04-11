@@ -20,7 +20,7 @@ import com.bitwig.extension.controller.api.ControllerHost;
 /**
  * Definition class for the Electra.One extension.
  *
- * @author J&uuml;rgen Mo&szlig;graber
+ * @author Jürgen Moßgraber
  */
 public class ElectraOneControllerExtensionDefinition extends AbstractControllerExtensionDefinition<ElectraOneControlSurface, ElectraOneConfiguration>
 {

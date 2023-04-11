@@ -16,7 +16,7 @@ import java.util.function.IntFunction;
 /**
  * Creates visual states from encoded colors.
  *
- * @author J&uuml;rgen Mo&szlig;graber
+ * @author Jürgen Moßgraber
  */
 public class EncodedColorLightState extends InternalHardwareLightState
 {

@@ -11,7 +11,7 @@ import java.util.List;
 /**
  * IDs for common continuous controls.
  *
- * @author J&uuml;rgen Mo&szlig;graber
+ * @author Jürgen Moßgraber
  */
 public enum ContinuousID
 {

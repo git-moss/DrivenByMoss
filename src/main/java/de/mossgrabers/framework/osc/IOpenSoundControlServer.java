@@ -10,7 +10,7 @@ import java.io.IOException;
 /**
  * Interface for sending messages to an OSC server.
  *
- * @author J&uuml;rgen Mo&szlig;graber
+ * @author Jürgen Moßgraber
  */
 public interface IOpenSoundControlServer
 {

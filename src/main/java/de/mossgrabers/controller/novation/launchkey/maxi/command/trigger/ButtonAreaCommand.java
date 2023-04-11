@@ -19,7 +19,7 @@ import de.mossgrabers.framework.utils.ButtonEvent;
 /**
  * Command to trigger the 8 buttons for select and record arm.
  *
- * @author J&uuml;rgen Mo&szlig;graber
+ * @author Jürgen Moßgraber
  */
 public class ButtonAreaCommand extends AbstractTriggerCommand<LaunchkeyMk3ControlSurface, LaunchkeyMk3Configuration>
 {

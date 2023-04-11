@@ -26,7 +26,7 @@ import java.util.Optional;
 /**
  * The drum sequencer with 1 row of 8 steps.
  *
- * @author J&uuml;rgen Mo&szlig;graber
+ * @author Jürgen Moßgraber
  */
 public class XLDrumSequencerMode extends AbstractSequencerMode<LaunchControlXLControlSurface, LaunchControlXLConfiguration>
 {

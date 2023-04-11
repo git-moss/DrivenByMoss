@@ -38,7 +38,7 @@ import java.util.Optional;
 /**
  * All device related commands.
  *
- * @author J&uuml;rgen Mo&szlig;graber
+ * @author Jürgen Moßgraber
  */
 public class DeviceModule extends AbstractModule
 {
@@ -209,7 +209,7 @@ public class DeviceModule extends AbstractModule
             return;
 
         writer.sendOSC (deviceAddress + TAG_EXISTS, channel.doesExist (), dump);
-        writer.sendOSC (deviceAddress + "activated", channel.isActivated (), dump);
+        writer.sendOSC (deviceAddress + TAG_ACTIVATED, channel.isActivated (), dump);
         writer.sendOSC (deviceAddress + TAG_SELECTED, channel.isSelected (), dump);
         writer.sendOSC (deviceAddress + TAG_NAME, channel.getName (), dump);
         writer.sendOSC (deviceAddress + "volumeStr", channel.getVolumeStr (), dump);
@@ -601,15 +601,27 @@ public class DeviceModule extends AbstractModule
 
             case "send":
                 final int sendNo = Integer.parseInt (path.removeFirst ()) - 1;
-                if (path.isEmpty () || !TAG_VOLUME.equals (path.removeFirst ()))
-                    return;
-                final ISend send = layer.getSendBank ().getItem (sendNo);
                 if (path.isEmpty ())
-                    send.setValue (toInteger (value));
-                else if (TAG_INDICATE.equals (path.get (0)))
-                    send.setIndication (isTrigger (value));
-                else if (TAG_TOUCHED.equals (path.get (0)))
-                    send.touchValue (isTrigger (value));
+                    return;
+
+                final String cmd = path.removeFirst ();
+                final ISend send = layer.getSendBank ().getItem (sendNo);
+                if (TAG_VOLUME.equals (cmd))
+                {
+                    if (path.isEmpty ())
+                        send.setValue (toInteger (value));
+                    else if (TAG_INDICATE.equals (path.get (0)))
+                        send.setIndication (isTrigger (value));
+                    else if (TAG_TOUCHED.equals (path.get (0)))
+                        send.touchValue (isTrigger (value));
+                }
+                else if (TAG_ACTIVATED.equals (cmd))
+                {
+                    if (isTrigger (value))
+                        send.toggleEnabled ();
+                }
+                else
+                    throw new UnknownCommandException (cmd);
                 break;
 
             case "enter":

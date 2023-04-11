@@ -15,7 +15,7 @@ import com.bitwig.extension.controller.api.StringValue;
 /**
  * Encapsulates the data of a ranged value.
  *
- * @author J&uuml;rgen Mo&szlig;graber
+ * @author Jürgen Moßgraber
  */
 public class RangedValueImpl extends AbstractParameterImpl
 {

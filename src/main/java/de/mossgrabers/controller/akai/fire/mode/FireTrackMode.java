@@ -24,7 +24,7 @@ import java.util.Optional;
 /**
  * The track mode. The knobs control the volume, the panorama and the sends of the selected track.
  *
- * @author J&uuml;rgen Mo&szlig;graber
+ * @author Jürgen Moßgraber
  */
 public class FireTrackMode extends TrackMode<FireControlSurface, FireConfiguration>
 {

@@ -12,7 +12,7 @@ import de.mossgrabers.framework.mode.track.TrackRecArmMode;
 /**
  * The track mute mode. Adds specific button coloring.
  *
- * @author J&uuml;rgen Mo&szlig;graber
+ * @author Jürgen Moßgraber
  */
 public class XLTrackRecArmMode extends TrackRecArmMode<LaunchControlXLControlSurface, LaunchControlXLConfiguration>
 {

@@ -17,7 +17,7 @@ import com.bitwig.extension.controller.api.HardwareSlider;
 /**
  * Implementation of a proxy to a fader on a hardware controller.
  *
- * @author J&uuml;rgen Mo&szlig;graber
+ * @author Jürgen Moßgraber
  */
 public class HwFaderImpl extends AbstractHwAbsoluteControl<HardwareSlider> implements IHwFader
 {

@@ -22,7 +22,7 @@ import java.util.Optional;
 /**
  * Encapsulates the data of a drum pad bank.
  *
- * @author J&uuml;rgen Mo&szlig;graber
+ * @author Jürgen Moßgraber
  */
 public class DrumPadBankImpl extends AbstractChannelBankImpl<DrumPadBank, ILayer> implements IDrumPadBank
 {

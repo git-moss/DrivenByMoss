@@ -21,7 +21,7 @@ import de.mossgrabers.framework.parameter.IParameter;
 /**
  * The handler for master channel commands.
  *
- * @author J&uuml;rgen Mo&szlig;graber
+ * @author Jürgen Moßgraber
  */
 public class MasterHandler extends AbstractHandler
 {

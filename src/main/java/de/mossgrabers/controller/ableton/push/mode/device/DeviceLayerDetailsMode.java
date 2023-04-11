@@ -30,7 +30,7 @@ import java.util.Optional;
 /**
  * Mode for editing details of a layer.
  *
- * @author J&uuml;rgen Mo&szlig;graber
+ * @author Jürgen Moßgraber
  */
 public class DeviceLayerDetailsMode extends BaseMode<ILayer>
 {

@@ -11,7 +11,7 @@ import de.mossgrabers.framework.utils.ButtonEvent;
 /**
  * Mode to select scenes.
  *
- * @author J&uuml;rgen Mo&szlig;graber
+ * @author Jürgen Moßgraber
  */
 public class XLScenesMode extends XLTemporaryButtonMode
 {
@@ -31,16 +31,20 @@ public class XLScenesMode extends XLTemporaryButtonMode
     @Override
     public void onButton (final int row, final int index, final ButtonEvent event)
     {
-        if (row != 0 || event != ButtonEvent.DOWN)
+        if (row != 0 || event == ButtonEvent.LONG)
             return;
-
-        this.setHasBeenUsed ();
 
         final IScene item = this.model.getSceneBank ().getItem (index);
         if (!item.doesExist ())
             return;
-        item.select ();
-        item.launch ();
+
+        final boolean isDown = event == ButtonEvent.DOWN;
+        if (isDown)
+        {
+            this.setHasBeenUsed ();
+            item.select ();
+        }
+        item.launch (isDown, false);
     }
 
 

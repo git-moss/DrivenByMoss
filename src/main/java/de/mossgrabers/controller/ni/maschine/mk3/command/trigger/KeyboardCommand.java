@@ -21,7 +21,7 @@ import de.mossgrabers.framework.view.Views;
  * Command for the keyboard button which activates the play view or toggles chromatic mode if
  * already active.
  *
- * @author J&uuml;rgen Mo&szlig;graber
+ * @author Jürgen Moßgraber
  */
 public class KeyboardCommand extends AbstractTriggerCommand<MaschineControlSurface, MaschineConfiguration>
 {

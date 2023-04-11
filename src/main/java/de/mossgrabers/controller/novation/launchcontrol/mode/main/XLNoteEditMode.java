@@ -24,7 +24,7 @@ import java.util.List;
 /**
  * Note sequencer mode for the LauchControl XL.
  *
- * @author J&uuml;rgen Mo&szlig;graber
+ * @author Jürgen Moßgraber
  */
 public class XLNoteEditMode extends XLBaseNoteEditMode
 {

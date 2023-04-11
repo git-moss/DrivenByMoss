@@ -23,7 +23,7 @@ import de.mossgrabers.framework.view.Views;
 /**
  * Mode to select a view.
  *
- * @author J&uuml;rgen Mo&szlig;graber
+ * @author Jürgen Moßgraber
  */
 public class SessionViewSelectMode extends BaseMode<IItem>
 {
@@ -71,8 +71,7 @@ public class SessionViewSelectMode extends BaseMode<IItem>
 
         switch (index)
         {
-            case 0:
-            case 1:
+            case 0, 1:
                 configuration.setFlipSession (index == 1);
                 this.activateView (VIEWS[index]);
                 break;

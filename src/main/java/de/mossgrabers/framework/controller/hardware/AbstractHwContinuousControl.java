@@ -17,7 +17,7 @@ import java.util.function.IntSupplier;
 /**
  * A control on a hardware controller.
  *
- * @author J&uuml;rgen Mo&szlig;graber
+ * @author Jürgen Moßgraber
  */
 public abstract class AbstractHwContinuousControl extends AbstractHwInputControl implements IHwContinuousControl
 {

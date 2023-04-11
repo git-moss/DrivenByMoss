@@ -35,7 +35,7 @@ import java.util.Set;
 /**
  * Base class for DAW models.
  *
- * @author J&uuml;rgen Mo&szlig;graber
+ * @author Jürgen Moßgraber
  */
 public abstract class AbstractModel implements IModel
 {

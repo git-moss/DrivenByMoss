@@ -27,7 +27,7 @@ import java.util.List;
 /**
  * Factory for creating Bitwig objects.
  *
- * @author J&uuml;rgen Mo&szlig;graber
+ * @author Jürgen Moßgraber
  */
 public class BitwigSetupFactory implements ISetupFactory
 {

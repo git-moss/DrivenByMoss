@@ -11,7 +11,7 @@ import java.util.Map;
 /**
  * An arpeggiator mode.
  *
- * @author J&uuml;rgen Mo&szlig;graber
+ * @author Jürgen Moßgraber
  */
 public enum ArpeggiatorMode
 {

@@ -11,7 +11,7 @@ import de.mossgrabers.framework.controller.valuechanger.IValueChanger;
 /**
  * Configuration parameters for DAW objects.
  *
- * @author J&uuml;rgen Mo&szlig;graber
+ * @author Jürgen Moßgraber
  */
 public class DataSetup
 {

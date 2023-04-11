@@ -20,7 +20,7 @@ import com.bitwig.extension.controller.api.ControllerHost;
 /**
  * Definition class for the Akai OSC controller.
  *
- * @author J&uuml;rgen Mo&szlig;graber
+ * @author Jürgen Moßgraber
  */
 public class OSCControllerExtensionDefinition extends AbstractControllerExtensionDefinition<IControlSurface<OSCConfiguration>, OSCConfiguration>
 {

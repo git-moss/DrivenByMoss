@@ -12,7 +12,7 @@ import de.mossgrabers.framework.observer.IValueObserver;
  * Interface to an item. An item is an object with a name and exists state. It also can be selected
  * and put in banks.
  *
- * @author J&uuml;rgen Mo&szlig;graber
+ * @author Jürgen Moßgraber
  */
 public interface IItem extends IObserverManagement
 {

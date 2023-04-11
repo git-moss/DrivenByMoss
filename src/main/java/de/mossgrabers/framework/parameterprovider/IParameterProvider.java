@@ -15,7 +15,7 @@ import java.util.Set;
 /**
  * Interface to get a number of parameters.
  *
- * @author J&uuml;rgen Mo&szlig;graber
+ * @author Jürgen Moßgraber
  */
 public interface IParameterProvider
 {

@@ -12,7 +12,7 @@ import de.mossgrabers.framework.daw.midi.IMidiOutput;
 /**
  * Implementation of the SL MkIII grid of pads.
  *
- * @author J&uuml;rgen Mo&szlig;graber
+ * @author Jürgen Moßgraber
  */
 public class SLMkIIIPadGrid extends PadGridImpl
 {

@@ -17,7 +17,7 @@ import java.util.Optional;
  *
  * @param <T> The specific item type of the bank item
  *
- * @author J&uuml;rgen Mo&szlig;graber
+ * @author Jürgen Moßgraber
  */
 public abstract class AbstractItemBank<T extends IItem> extends AbstractBank<T>
 {

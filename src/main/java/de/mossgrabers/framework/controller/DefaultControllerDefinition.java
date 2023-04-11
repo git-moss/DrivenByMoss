@@ -17,7 +17,7 @@ import java.util.UUID;
  * Default implementation for a controller definition, which gets all of its settings from the
  * constructor parameters.
  *
- * @author J&uuml;rgen Mo&szlig;graber
+ * @author Jürgen Moßgraber
  */
 public abstract class DefaultControllerDefinition implements IControllerDefinition
 {

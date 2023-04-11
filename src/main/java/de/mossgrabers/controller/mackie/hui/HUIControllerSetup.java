@@ -82,7 +82,7 @@ import java.util.function.IntSupplier;
 /**
  * Support for the Mackie HUI protocol.
  *
- * @author J&uuml;rgen Mo&szlig;graber
+ * @author Jürgen Moßgraber
  */
 public class HUIControllerSetup extends AbstractControllerSetup<HUIControlSurface, HUIConfiguration>
 {

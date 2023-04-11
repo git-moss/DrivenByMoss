@@ -7,7 +7,7 @@ package de.mossgrabers.controller.ni.kontrol.mki.controller;
 /**
  * Callback interface for button and encoder changes.
  *
- * @author J&uuml;rgen Mo&szlig;graber
+ * @author Jürgen Moßgraber
  */
 public interface UIChangeCallback
 {

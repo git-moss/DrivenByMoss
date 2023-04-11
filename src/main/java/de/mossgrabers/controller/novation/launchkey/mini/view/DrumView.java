@@ -27,7 +27,7 @@ import java.util.Optional;
 /**
  * The Drum view.
  *
- * @author J&uuml;rgen Mo&szlig;graber
+ * @author Jürgen Moßgraber
  */
 public class DrumView extends AbstractDrumView<LaunchkeyMiniMk3ControlSurface, LaunchkeyMiniMk3Configuration>
 {

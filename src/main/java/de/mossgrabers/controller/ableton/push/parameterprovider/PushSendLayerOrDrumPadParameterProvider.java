@@ -18,7 +18,7 @@ import java.util.Optional;
 /**
  * Extends send layer or drum pad parameter provider with the specific layout of Push 2.
  *
- * @author J&uuml;rgen Mo&szlig;graber
+ * @author Jürgen Moßgraber
  */
 public class PushSendLayerOrDrumPadParameterProvider extends SendLayerOrDrumPadParameterProvider implements IItemSelectionObserver
 {

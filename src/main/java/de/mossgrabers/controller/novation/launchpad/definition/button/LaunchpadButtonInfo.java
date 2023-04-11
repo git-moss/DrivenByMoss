@@ -7,7 +7,7 @@ package de.mossgrabers.controller.novation.launchpad.definition.button;
 /**
  * Info about a Launchpad button.
  *
- * @author J&uuml;rgen Mo&szlig;graber
+ * @author Jürgen Moßgraber
  */
 public class LaunchpadButtonInfo
 {

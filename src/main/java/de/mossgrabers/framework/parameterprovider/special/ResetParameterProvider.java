@@ -16,7 +16,7 @@ import java.util.Optional;
  * Get a number of parameters. This implementation encapsulates the parameters of a another
  * parameter provider to call reset.
  *
- * @author J&uuml;rgen Mo&szlig;graber
+ * @author Jürgen Moßgraber
  */
 public class ResetParameterProvider extends AbstractWrapperProvider
 {

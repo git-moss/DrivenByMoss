@@ -21,7 +21,7 @@ import com.bitwig.extension.controller.api.SettableIntegerValue;
 /**
  * Encapsulates the data of a parameter bank.
  *
- * @author J&uuml;rgen Mo&szlig;graber
+ * @author Jürgen Moßgraber
  */
 public class ParameterBankImpl extends AbstractItemBank<IParameter> implements IParameterBank
 {

@@ -20,7 +20,7 @@ import java.util.Optional;
 /**
  * The control surface for Akai devices which support the ACVS protocol.
  *
- * @author J&uuml;rgen Mo&szlig;graber
+ * @author Jürgen Moßgraber
  */
 @SuppressWarnings("javadoc")
 public class ACVSControlSurface extends AbstractControlSurface<ACVSConfiguration>

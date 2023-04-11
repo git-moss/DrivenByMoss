@@ -17,7 +17,7 @@ import de.mossgrabers.framework.utils.ButtonEvent;
  *
  * @param <C> The type of the configuration
  *
- * @author J&uuml;rgen Mo&szlig;graber
+ * @author Jürgen Moßgraber
  */
 public abstract class AbstractMaschineControlSurface<C extends Configuration> extends AbstractControlSurface<C>
 {

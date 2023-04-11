@@ -22,7 +22,7 @@ import de.mossgrabers.framework.view.Views;
 /**
  * The Shift view.
  *
- * @author J&uuml;rgen Mo&szlig;graber
+ * @author Jürgen Moßgraber
  */
 public class ShiftView extends AbstractView<BeatstepControlSurface, BeatstepConfiguration> implements BeatstepView
 {

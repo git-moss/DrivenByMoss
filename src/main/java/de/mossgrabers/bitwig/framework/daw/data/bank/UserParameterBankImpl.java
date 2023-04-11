@@ -22,7 +22,7 @@ import java.util.Optional;
 /**
  * Encapsulates the data of a user parameter bank.
  *
- * @author J&uuml;rgen Mo&szlig;graber
+ * @author Jürgen Moßgraber
  */
 public class UserParameterBankImpl extends AbstractBank<IParameter> implements IParameterBank
 {

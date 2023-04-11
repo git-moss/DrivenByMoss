@@ -8,7 +8,7 @@ package de.mossgrabers.framework.controller.valuechanger;
  * E.g. used by the MCU jug wheel (@see RelativeEncoding.SIGNED_BIT).<br/>
  * [0..127] = [0..63,0,-1..-63] speed.
  *
- * @author J&uuml;rgen Mo&szlig;graber
+ * @author Jürgen Moßgraber
  */
 public class SignedBitRelativeValueChanger extends TwosComplementValueChanger
 {

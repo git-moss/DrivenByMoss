@@ -15,7 +15,7 @@ import java.util.List;
 /**
  * Abstract implementation of a browser. Adds functions based on generic interfaces.
  *
- * @author J&uuml;rgen Mo&szlig;graber
+ * @author Jürgen Moßgraber
  */
 public abstract class AbstractBrowser implements IBrowser
 {

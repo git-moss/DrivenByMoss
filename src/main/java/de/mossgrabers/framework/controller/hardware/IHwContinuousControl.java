@@ -17,7 +17,7 @@ import java.util.function.IntSupplier;
 /**
  * A control on a controller surface which sends continuous values.
  *
- * @author J&uuml;rgen Mo&szlig;graber
+ * @author Jürgen Moßgraber
  */
 public interface IHwContinuousControl extends IHwInputControl
 {

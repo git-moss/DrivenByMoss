@@ -15,7 +15,7 @@ import de.mossgrabers.framework.utils.ButtonEvent;
 /**
  * Command to handle the stop button.
  *
- * @author J&uuml;rgen Mo&szlig;graber
+ * @author Jürgen Moßgraber
  */
 public class FireStopCommand extends StopCommand<FireControlSurface, FireConfiguration>
 {

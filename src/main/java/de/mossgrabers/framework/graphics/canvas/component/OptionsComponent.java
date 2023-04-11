@@ -18,7 +18,7 @@ import de.mossgrabers.framework.graphics.canvas.component.LabelComponent.LabelLa
  * the middle two texts can be displayed. The texts are not clipped horizontally and can reach into
  * the next elements.
  *
- * @author J&uuml;rgen Mo&szlig;graber
+ * @author Jürgen Moßgraber
  */
 public class OptionsComponent implements IComponent
 {

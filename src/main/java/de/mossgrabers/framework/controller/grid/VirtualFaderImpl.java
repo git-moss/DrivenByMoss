@@ -10,7 +10,7 @@ import de.mossgrabers.framework.daw.IHost;
 /**
  * Default implementation of a virtual fader.
  *
- * @author J&uuml;rgen Mo&szlig;graber
+ * @author Jürgen Moßgraber
  */
 public class VirtualFaderImpl implements IVirtualFader
 {

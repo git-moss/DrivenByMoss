@@ -14,7 +14,7 @@ import com.bitwig.extension.controller.api.ControllerHost;
 /**
  * Bitwig implementation to access MIDI input and outputs.
  *
- * @author J&uuml;rgen Mo&szlig;graber
+ * @author Jürgen Moßgraber
  */
 public class MidiDeviceImpl implements IMidiAccess
 {

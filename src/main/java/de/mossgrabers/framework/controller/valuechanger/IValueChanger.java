@@ -7,7 +7,7 @@ package de.mossgrabers.framework.controller.valuechanger;
 /**
  * Interface for changing values.
  *
- * @author J&uuml;rgen Mo&szlig;graber
+ * @author Jürgen Moßgraber
  */
 public interface IValueChanger
 {

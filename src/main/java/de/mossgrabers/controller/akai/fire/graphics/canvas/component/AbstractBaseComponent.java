@@ -10,7 +10,7 @@ import de.mossgrabers.framework.graphics.canvas.component.IComponent;
 /**
  * Base class for the Fire graphics components.
  *
- * @author J&uuml;rgen Mo&szlig;graber
+ * @author Jürgen Moßgraber
  */
 public abstract class AbstractBaseComponent implements IComponent
 {

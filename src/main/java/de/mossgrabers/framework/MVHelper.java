@@ -36,7 +36,7 @@ import java.util.function.Supplier;
  * @param <C> The type of the configuration
  * @param <S> The type of the control surface
  *
- * @author J&uuml;rgen Mo&szlig;graber
+ * @author Jürgen Moßgraber
  */
 public class MVHelper<S extends IControlSurface<C>, C extends Configuration>
 {

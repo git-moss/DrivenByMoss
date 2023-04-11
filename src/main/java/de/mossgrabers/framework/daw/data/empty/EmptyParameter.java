@@ -11,7 +11,7 @@ import de.mossgrabers.framework.parameter.IParameter;
 /**
  * Default data for an empty send.
  *
- * @author J&uuml;rgen Mo&szlig;graber
+ * @author Jürgen Moßgraber
  */
 public class EmptyParameter extends AbstractParameterImpl
 {

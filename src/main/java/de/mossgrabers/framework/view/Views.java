@@ -15,7 +15,7 @@ import java.util.Set;
 /**
  * Static view IDs.
  *
- * @author J&uuml;rgen Mo&szlig;graber
+ * @author Jürgen Moßgraber
  */
 public enum Views
 {

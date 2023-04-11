@@ -15,7 +15,7 @@ import de.mossgrabers.framework.featuregroup.IMode;
 /**
  * Command to change the Main encoder.
  *
- * @author J&uuml;rgen Mo&szlig;graber
+ * @author Jürgen Moßgraber
  */
 public class MainEncoderCommand extends MasterVolumeCommand<Kontrol1ControlSurface, Kontrol1Configuration>
 {

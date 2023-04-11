@@ -16,7 +16,7 @@ import de.mossgrabers.framework.daw.IModel;
 /**
  * The handler for action commands.
  *
- * @author J&uuml;rgen Mo&szlig;graber
+ * @author Jürgen Moßgraber
  */
 public class ActionHandler extends AbstractHandler
 {

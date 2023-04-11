@@ -21,7 +21,7 @@ import java.util.Optional;
  * @param <B> The specific Bitwig bank type
  * @param <T> The specific item type of the bank item
  *
- * @author J&uuml;rgen Mo&szlig;graber
+ * @author Jürgen Moßgraber
  */
 public abstract class AbstractItemBankImpl<B extends Bank<?>, T extends IItem> extends AbstractItemBank<T>
 {

@@ -12,7 +12,7 @@ import de.mossgrabers.framework.observer.IValueObserver;
  *
  * @param <T> The type of the settings value
  *
- * @author J&uuml;rgen Mo&szlig;graber
+ * @author Jürgen Moßgraber
  */
 public interface IValueSetting<T> extends ISetting
 {

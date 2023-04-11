@@ -29,7 +29,7 @@ import de.mossgrabers.framework.utils.ButtonEvent;
 /**
  * Simulates the missing buttons (in contrast to Fire Pro) on the grid.
  *
- * @author J&uuml;rgen Mo&szlig;graber
+ * @author Jürgen Moßgraber
  */
 public class ShiftView extends AbstractView<FireControlSurface, FireConfiguration> implements IFireView
 {

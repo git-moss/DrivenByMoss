@@ -11,7 +11,7 @@ import de.mossgrabers.framework.daw.data.bank.ISendBank;
 /**
  * Default data for an empty send bank.
  *
- * @author J&uuml;rgen Mo&szlig;graber
+ * @author Jürgen Moßgraber
  */
 public class EmptySendBank extends EmptyBank<ISend> implements ISendBank
 {

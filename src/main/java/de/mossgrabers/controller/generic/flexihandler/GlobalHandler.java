@@ -19,7 +19,7 @@ import de.mossgrabers.framework.utils.ButtonEvent;
 /**
  * The handler for global commands.
  *
- * @author J&uuml;rgen Mo&szlig;graber
+ * @author Jürgen Moßgraber
  */
 public class GlobalHandler extends AbstractHandler
 {

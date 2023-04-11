@@ -12,7 +12,7 @@ import de.mossgrabers.controller.generic.flexihandler.utils.MidiValue;
 /**
  * Interface for handlers of flexi commands.
  *
- * @author J&uuml;rgen Mo&szlig;graber
+ * @author Jürgen Moßgraber
  */
 public interface IFlexiCommandHandler
 {

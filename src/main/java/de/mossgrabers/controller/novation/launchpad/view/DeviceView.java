@@ -18,7 +18,7 @@ import de.mossgrabers.framework.utils.ButtonEvent;
 /**
  * Edit remote parameters.
  *
- * @author J&uuml;rgen Mo&szlig;graber
+ * @author Jürgen Moßgraber
  */
 public class DeviceView extends AbstractFaderView
 {

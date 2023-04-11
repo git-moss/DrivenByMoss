@@ -54,7 +54,7 @@ import de.mossgrabers.framework.view.Views;
 /**
  * Support for the Novation SLMkII Pro and SLMkII MkII controllers.
  *
- * @author J&uuml;rgen Mo&szlig;graber
+ * @author Jürgen Moßgraber
  */
 public class SLControllerSetup extends AbstractControllerSetup<SLControlSurface, SLConfiguration>
 {

@@ -40,7 +40,7 @@ import java.util.Optional;
 /**
  * A control surface which supports the Electra.One controller.
  *
- * @author J&uuml;rgen Mo&szlig;graber
+ * @author Jürgen Moßgraber
  */
 public class ElectraOneControlSurface extends AbstractControlSurface<ElectraOneConfiguration>
 {
@@ -103,7 +103,7 @@ public class ElectraOneControlSurface extends AbstractControlSurface<ElectraOneC
     };
 
     // @formatter:off
-    
+
     private static final byte []         SYSEX_INFO_DEVICE                 = { 0x02, 0x7F };
     private static final byte []         SYSEX_INFO_PRESET_LIST            = { 0x02, 0x04 };
     private static final byte []         SYSEX_RUNTIME_EXECUTE_LUA         = { 0x08, 0x0D };
@@ -164,7 +164,7 @@ public class ElectraOneControlSurface extends AbstractControlSurface<ElectraOneC
     private int                        bankIndex       = -1;
     private int                        presetIndex     = -1;
     private boolean                    isOnline        = false;
-    private int []                     knobStates      = new int [12];
+    private final int []                     knobStates      = new int [12];
     private boolean                    isShiftPressed;
     private Modes                      activeMode      = null;
 
@@ -593,7 +593,7 @@ public class ElectraOneControlSurface extends AbstractControlSurface<ElectraOneC
 
         // Check if there is a preset with the name of the cursor device, if none is found selected
         // the device mode
-        if (this.modeManager.getActive () instanceof AbstractElectraOneMode electraMode)
+        if (this.modeManager.getActive () instanceof final AbstractElectraOneMode electraMode)
         {
             final Optional<String> deviceNameOpt = electraMode.getActiveDeviceName ();
             if (deviceNameOpt.isPresent ())

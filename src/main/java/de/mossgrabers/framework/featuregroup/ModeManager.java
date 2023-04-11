@@ -10,7 +10,7 @@ import de.mossgrabers.framework.mode.Modes;
 /**
  * Manages all modes.
  *
- * @author J&uuml;rgen Mo&szlig;graber
+ * @author Jürgen Moßgraber
  */
 public class ModeManager extends FeatureGroupManager<Modes, IMode>
 {

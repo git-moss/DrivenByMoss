@@ -14,7 +14,7 @@ import de.mossgrabers.framework.featuregroup.AbstractView;
  * There are no real views in the ACVS protocol which can be controlled. Therefore, everything is in
  * one view.
  *
- * @author J&uuml;rgen Mo&szlig;graber
+ * @author Jürgen Moßgraber
  */
 public class ControlView extends AbstractView<ACVSControlSurface, ACVSConfiguration>
 {

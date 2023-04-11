@@ -30,7 +30,7 @@ import java.text.DecimalFormat;
 /**
  * Encapsulates the Transport instance.
  *
- * @author J&uuml;rgen Mo&szlig;graber
+ * @author Jürgen Moßgraber
  */
 public class TransportImpl implements ITransport
 {

@@ -32,7 +32,7 @@ import java.util.List;
 /**
  * Mode for displaying clips or scenes.
  *
- * @author J&uuml;rgen Mo&szlig;graber
+ * @author Jürgen Moßgraber
  */
 public class SessionMode extends AbstractTrackMode
 {

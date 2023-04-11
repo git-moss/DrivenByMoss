@@ -15,7 +15,7 @@ import de.mossgrabers.framework.utils.ButtonEvent;
 /**
  * Command for navigating to the next mode page. Toggles loop on shift.
  *
- * @author J&uuml;rgen Mo&szlig;graber
+ * @author Jürgen Moßgraber
  */
 public class MaschineJamPageRightCommand extends ModeCursorCommand<MaschineJamControlSurface, MaschineJamConfiguration>
 {

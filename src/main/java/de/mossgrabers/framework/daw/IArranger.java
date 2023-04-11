@@ -10,7 +10,7 @@ import de.mossgrabers.framework.observer.IObserverManagement;
 /**
  * Interface to the Arranger.
  *
- * @author J&uuml;rgen Mo&szlig;graber
+ * @author Jürgen Moßgraber
  */
 public interface IArranger extends IObserverManagement
 {

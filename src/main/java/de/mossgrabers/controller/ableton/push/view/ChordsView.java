@@ -22,7 +22,7 @@ import de.mossgrabers.framework.view.Views;
 /**
  * The chord view.
  *
- * @author J&uuml;rgen Mo&szlig;graber
+ * @author Jürgen Moßgraber
  */
 public class ChordsView extends AbstractChordView<PushControlSurface, PushConfiguration>
 {
@@ -59,33 +59,22 @@ public class ChordsView extends AbstractChordView<PushControlSurface, PushConfig
     @Override
     public void onButton (final ButtonID buttonID, final ButtonEvent event, final int velocity)
     {
-        if (!ButtonID.isSceneButton (buttonID) || event != ButtonEvent.DOWN)
-            return;
+        if (ButtonID.isSceneButton (buttonID))
+            this.onSceneButton (buttonID, event);
+    }
 
-        final int index = buttonID.ordinal () - ButtonID.SCENE1.ordinal ();
 
+    /** {@inheritDoc} */
+    @Override
+    protected boolean handleSceneButtonCombinations (final int index, final IScene scene)
+    {
         if (this.surface.isPressed (ButtonID.REPEAT))
         {
             NoteRepeatSceneHelper.handleNoteRepeatSelection (this.surface, 7 - index);
-            return;
+            return true;
         }
 
-        final IScene scene = this.model.getCurrentTrackBank ().getSceneBank ().getItem (index);
-
-        if (this.isButtonCombination (ButtonID.DELETE))
-        {
-            scene.remove ();
-            return;
-        }
-
-        if (this.isButtonCombination (ButtonID.DUPLICATE))
-        {
-            scene.duplicate ();
-            return;
-        }
-
-        scene.select ();
-        scene.launch ();
+        return super.handleSceneButtonCombinations (index, scene);
     }
 
 

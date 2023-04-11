@@ -7,15 +7,16 @@ package de.mossgrabers.framework.graphics.canvas.utils;
 /**
  * Wraps some send info.
  *
- * @author J&uuml;rgen Mo&szlig;graber
+ * @author Jürgen Moßgraber
  *
+ * @param enabled Is the send enabled?
  * @param name The name of the send
  * @param text The description text
  * @param value The value
  * @param modulatedValue The modulated value
  * @param edited Is selected for editing
  */
-public record SendData (String name, String text, int value, int modulatedValue, boolean edited)
+public record SendData (boolean enabled, String name, String text, int value, int modulatedValue, boolean edited)
 {
     // Intentionally empty
 }

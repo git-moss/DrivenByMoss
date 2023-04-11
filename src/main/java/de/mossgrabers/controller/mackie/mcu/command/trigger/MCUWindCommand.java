@@ -15,7 +15,7 @@ import de.mossgrabers.framework.utils.ButtonEvent;
 /**
  * Command handle the rewind and fast forward buttons.
  *
- * @author J&uuml;rgen Mo&szlig;graber
+ * @author Jürgen Moßgraber
  */
 public class MCUWindCommand extends WindCommand<MCUControlSurface, MCUConfiguration>
 {

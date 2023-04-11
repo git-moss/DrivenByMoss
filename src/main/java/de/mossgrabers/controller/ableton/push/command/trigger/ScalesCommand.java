@@ -16,7 +16,7 @@ import de.mossgrabers.framework.utils.ButtonEvent;
 /**
  * Command to trigger the Scales.
  *
- * @author J&uuml;rgen Mo&szlig;graber
+ * @author Jürgen Moßgraber
  */
 public class ScalesCommand extends AbstractTriggerCommand<PushControlSurface, PushConfiguration>
 {

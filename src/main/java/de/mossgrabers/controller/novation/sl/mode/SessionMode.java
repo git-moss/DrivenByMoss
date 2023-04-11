@@ -18,7 +18,7 @@ import de.mossgrabers.framework.utils.StringUtils;
 /**
  * Session mode.
  *
- * @author J&uuml;rgen Mo&szlig;graber
+ * @author Jürgen Moßgraber
  */
 public class SessionMode extends AbstractParameterMode<SLControlSurface, SLConfiguration, IItem>
 {
@@ -43,8 +43,14 @@ public class SessionMode extends AbstractParameterMode<SLControlSurface, SLConfi
         for (int i = 0; i < 8; i++)
         {
             final IScene scene = sceneBank.getItem (i);
-            final String name = StringUtils.fixASCII (scene.getName ());
-            d.setCell (1, i, name.isEmpty () ? "Scene " + (i + 1) : name);
+            String sceneTitle = "";
+            if (scene.doesExist ())
+            {
+                sceneTitle = scene.getName ();
+                if (sceneTitle.isBlank ())
+                    sceneTitle = "Scene " + (i + 1);
+            }
+            d.setCell (1, i, StringUtils.shortenAndFixASCII (sceneTitle, 7));
         }
         d.done (0).done (1);
     }

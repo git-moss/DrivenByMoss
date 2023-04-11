@@ -16,7 +16,7 @@ import com.bitwig.extension.controller.api.SettableColorValue;
 /**
  * Encapsulates the data of a send.
  *
- * @author J&uuml;rgen Mo&szlig;graber
+ * @author Jürgen Moßgraber
  */
 public class SendImpl extends ParameterImpl implements ISend
 {
@@ -41,6 +41,7 @@ public class SendImpl extends ParameterImpl implements ISend
         this.send = send;
 
         this.send.sendChannelColor ().markInterested ();
+        this.send.isEnabled ().markInterested ();
     }
 
 
@@ -51,6 +52,7 @@ public class SendImpl extends ParameterImpl implements ISend
         super.enableObservers (enable);
 
         Util.setIsSubscribed (this.send.sendChannelColor (), enable);
+        Util.setIsSubscribed (this.send.isEnabled (), enable);
     }
 
 
@@ -76,5 +78,21 @@ public class SendImpl extends ParameterImpl implements ISend
     {
         final SettableColorValue color = this.send.sendChannelColor ();
         return new ColorEx (color.red (), color.green (), color.blue ());
+    }
+
+
+    /** {@inheritDoc} */
+    @Override
+    public boolean isEnabled ()
+    {
+        return this.send.isEnabled ().get ();
+    }
+
+
+    /** {@inheritDoc} */
+    @Override
+    public void toggleEnabled ()
+    {
+        this.send.isEnabled ().toggle ();
     }
 }

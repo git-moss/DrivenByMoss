@@ -7,7 +7,7 @@ package de.mossgrabers.framework.controller;
 /**
  * IDs for common buttons.
  *
- * @author J&uuml;rgen Mo&szlig;graber
+ * @author Jürgen Moßgraber
  */
 public enum ButtonID
 {

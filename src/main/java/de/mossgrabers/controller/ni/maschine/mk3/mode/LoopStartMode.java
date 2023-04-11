@@ -13,7 +13,7 @@ import de.mossgrabers.framework.daw.ITransport;
 /**
  * The Arranger Loop Start mode.
  *
- * @author J&uuml;rgen Mo&szlig;graber
+ * @author Jürgen Moßgraber
  */
 public class LoopStartMode extends BaseMode
 {

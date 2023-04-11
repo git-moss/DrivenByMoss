@@ -16,6 +16,7 @@ import de.mossgrabers.framework.daw.data.IChannel;
 import de.mossgrabers.framework.daw.data.ICursorDevice;
 import de.mossgrabers.framework.daw.data.IItem;
 import de.mossgrabers.framework.daw.data.IMasterTrack;
+import de.mossgrabers.framework.daw.data.ISend;
 import de.mossgrabers.framework.daw.data.ITrack;
 import de.mossgrabers.framework.daw.data.bank.IBank;
 import de.mossgrabers.framework.daw.data.bank.IChannelBank;
@@ -37,7 +38,7 @@ import java.util.Optional;
  *
  * @param <B> The type of the item bank
  *
- * @author J&uuml;rgen Mo&szlig;graber
+ * @author Jürgen Moßgraber
  */
 public abstract class BaseMode<B extends IItem> extends AbstractParameterMode<MCUControlSurface, MCUConfiguration, B>
 {
@@ -242,6 +243,11 @@ public abstract class BaseMode<B extends IItem> extends AbstractParameterMode<MC
             parameter.setNormalizedValue (0.5);
         else if (this.surface.isPressed (ButtonID.ALT))
             parameter.setNormalizedValue (1);
+        else if (this.surface.isSelectPressed ())
+        {
+            if (parameter instanceof final ISend send)
+                send.toggleEnabled ();
+        }
         else
             parameter.resetValue ();
     }

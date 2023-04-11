@@ -15,7 +15,7 @@ import de.mossgrabers.framework.daw.IModel;
 /**
  * Different commands to execute with the jog wheel depending on used combination keys.
  *
- * @author J&uuml;rgen Mo&szlig;graber
+ * @author Jürgen Moßgraber
  */
 public class JogWheelCommand extends PlayPositionCommand<MCUControlSurface, MCUConfiguration>
 {

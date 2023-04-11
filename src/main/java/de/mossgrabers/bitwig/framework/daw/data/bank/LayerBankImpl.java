@@ -22,7 +22,7 @@ import java.util.Optional;
 /**
  * Encapsulates the data of a layer bank.
  *
- * @author J&uuml;rgen Mo&szlig;graber
+ * @author Jürgen Moßgraber
  */
 public class LayerBankImpl extends AbstractChannelBankImpl<DeviceLayerBank, ILayer> implements ILayerBank
 {

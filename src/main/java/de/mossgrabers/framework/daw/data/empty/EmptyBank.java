@@ -13,7 +13,7 @@ import de.mossgrabers.framework.daw.data.bank.AbstractItemBank;
  *
  * @param <T> The specific item type of the bank item
  *
- * @author J&uuml;rgen Mo&szlig;graber
+ * @author Jürgen Moßgraber
  */
 public class EmptyBank<T extends IItem> extends AbstractItemBank<T>
 {

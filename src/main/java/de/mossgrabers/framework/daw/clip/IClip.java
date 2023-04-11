@@ -11,7 +11,7 @@ import de.mossgrabers.framework.observer.IObserverManagement;
 /**
  * Interface to a generic clip.
  *
- * @author J&uuml;rgen Mo&szlig;graber
+ * @author Jürgen Moßgraber
  */
 public interface IClip extends IObserverManagement
 {

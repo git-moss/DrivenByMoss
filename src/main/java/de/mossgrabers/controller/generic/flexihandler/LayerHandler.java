@@ -25,7 +25,7 @@ import java.util.Optional;
 /**
  * The handler for layer commands.
  *
- * @author J&uuml;rgen Mo&szlig;graber
+ * @author Jürgen Moßgraber
  */
 public class LayerHandler extends AbstractHandler
 {

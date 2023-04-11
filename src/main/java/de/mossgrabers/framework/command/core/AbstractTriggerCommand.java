@@ -20,7 +20,7 @@ import de.mossgrabers.framework.view.Views;
  * @param <S> The type of the control surface
  * @param <C> The type of the configuration
  *
- * @author J&uuml;rgen Mo&szlig;graber
+ * @author Jürgen Moßgraber
  */
 public abstract class AbstractTriggerCommand<S extends IControlSurface<C>, C extends Configuration> implements TriggerCommand
 {

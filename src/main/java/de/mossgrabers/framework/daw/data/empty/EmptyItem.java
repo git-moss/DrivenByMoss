@@ -10,7 +10,7 @@ import de.mossgrabers.framework.daw.data.AbstractItemImpl;
 /**
  * Default data for an empty item.
  *
- * @author J&uuml;rgen Mo&szlig;graber
+ * @author Jürgen Moßgraber
  */
 public class EmptyItem extends AbstractItemImpl
 {

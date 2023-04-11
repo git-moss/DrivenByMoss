@@ -11,12 +11,13 @@ import de.mossgrabers.framework.controller.grid.IPadGrid;
 import de.mossgrabers.framework.daw.IModel;
 import de.mossgrabers.framework.daw.clip.IClip;
 import de.mossgrabers.framework.daw.clip.INoteClip;
+import de.mossgrabers.framework.utils.ButtonEvent;
 
 
 /**
  * The Shift view.
  *
- * @author J&uuml;rgen Mo&szlig;graber
+ * @author Jürgen Moßgraber
  */
 public class ShiftView extends BaseView
 {
@@ -34,8 +35,11 @@ public class ShiftView extends BaseView
 
     /** {@inheritDoc} */
     @Override
-    public void executeFunction (final int padIndex)
+    public void executeFunction (final int padIndex, final ButtonEvent buttonEvent)
     {
+        if (buttonEvent != ButtonEvent.DOWN)
+            return;
+
         final IDisplay display = this.surface.getDisplay ();
         final IClip clip = this.model.getCursorClip ();
 

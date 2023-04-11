@@ -22,7 +22,7 @@ import java.util.List;
 /**
  * The Komplete Kontrol MkII control surface.
  *
- * @author J&uuml;rgen Mo&szlig;graber
+ * @author Jürgen Moßgraber
  */
 public class KontrolProtocolControlSurface extends AbstractControlSurface<KontrolProtocolConfiguration>
 {

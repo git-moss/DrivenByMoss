@@ -12,7 +12,7 @@ import java.util.UUID;
 /**
  * Interface for describing several devices, which support a specific version of the NIHIA protocol.
  *
- * @author J&uuml;rgen Mo&szlig;graber
+ * @author Jürgen Moßgraber
  */
 public interface IKontrolProtocolDeviceDescriptor
 {

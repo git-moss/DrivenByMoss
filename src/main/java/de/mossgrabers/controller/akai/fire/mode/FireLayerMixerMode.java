@@ -22,7 +22,7 @@ import java.util.Optional;
 /**
  * The layer mixer mode. Identical to the layer mode but with a visualization of all 16 layers.
  *
- * @author J&uuml;rgen Mo&szlig;graber
+ * @author Jürgen Moßgraber
  */
 public class FireLayerMixerMode extends FireLayerMode
 {

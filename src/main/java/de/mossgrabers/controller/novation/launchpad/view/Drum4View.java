@@ -16,7 +16,7 @@ import de.mossgrabers.framework.view.sequencer.AbstractDrum4View;
 /**
  * The 4 lane drum sequencer.
  *
- * @author J&uuml;rgen Mo&szlig;graber
+ * @author Jürgen Moßgraber
  */
 public class Drum4View extends AbstractDrum4View<LaunchpadControlSurface, LaunchpadConfiguration>
 {

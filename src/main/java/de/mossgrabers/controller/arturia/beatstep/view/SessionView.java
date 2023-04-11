@@ -16,7 +16,7 @@ import de.mossgrabers.framework.featuregroup.AbstractView;
 /**
  * The Session view.
  *
- * @author J&uuml;rgen Mo&szlig;graber
+ * @author Jürgen Moßgraber
  */
 public class SessionView extends AbstractView<BeatstepControlSurface, BeatstepConfiguration> implements BeatstepView
 {
@@ -50,40 +50,27 @@ public class SessionView extends AbstractView<BeatstepControlSurface, BeatstepCo
     @Override
     public void onGridNote (final int note, final int velocity)
     {
-        if (velocity == 0)
-            return;
-
         final ISceneBank sceneBank = this.model.getCurrentTrackBank ().getSceneBank ();
 
         final int index = note - 36;
         switch (index)
         {
-            case 0:
-            case 1:
-            case 2:
-            case 3:
-            case 4:
-            case 5:
+            case 0, 1, 2, 3, 4, 5:
                 // Not used
                 break;
 
             case 6:
-                sceneBank.selectPreviousPage ();
+                if (velocity > 0)
+                    sceneBank.selectPreviousPage ();
                 break;
 
             case 7:
-                sceneBank.selectNextPage ();
+                if (velocity > 0)
+                    sceneBank.selectNextPage ();
                 break;
 
-            case 8:
-            case 9:
-            case 10:
-            case 11:
-            case 12:
-            case 13:
-            case 14:
-            case 15:
-                sceneBank.getItem (index - 8).launch ();
+            case 8, 9, 10, 11, 12, 13, 14, 15:
+                sceneBank.getItem (index - 8).launch (velocity > 0, false);
                 break;
 
             default:

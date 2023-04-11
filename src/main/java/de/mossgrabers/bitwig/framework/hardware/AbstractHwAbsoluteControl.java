@@ -26,7 +26,7 @@ import com.bitwig.extension.controller.api.HardwareBindable;
  *
  * @param <T> The type of the absolute hardware control
  *
- * @author J&uuml;rgen Mo&szlig;graber
+ * @author Jürgen Moßgraber
  */
 public abstract class AbstractHwAbsoluteControl<T extends AbsoluteHardwareControl> extends AbstractHwContinuousControl implements IHwAbsoluteControl
 {

@@ -22,7 +22,7 @@ import java.util.List;
 /**
  * Interface to a graphics display.
  *
- * @author J&uuml;rgen Mo&szlig;graber
+ * @author Jürgen Moßgraber
  */
 public interface IGraphicDisplay extends IDisplay
 {

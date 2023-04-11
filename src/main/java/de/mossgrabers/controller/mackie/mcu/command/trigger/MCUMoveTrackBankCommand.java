@@ -24,7 +24,7 @@ import java.util.Optional;
 /**
  * Command to move the window of the track bank by 1 or 8.
  *
- * @author J&uuml;rgen Mo&szlig;graber
+ * @author Jürgen Moßgraber
  */
 public class MCUMoveTrackBankCommand extends AbstractTriggerCommand<MCUControlSurface, MCUConfiguration>
 {

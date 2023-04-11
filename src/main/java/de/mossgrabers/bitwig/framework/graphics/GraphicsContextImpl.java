@@ -19,7 +19,7 @@ import com.bitwig.extension.api.graphics.Image;
 /**
  * Implementation for the graphics context.
  *
- * @author J&uuml;rgen Mo&szlig;graber
+ * @author Jürgen Moßgraber
  */
 public class GraphicsContextImpl implements IGraphicsContext
 {

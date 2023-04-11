@@ -14,7 +14,7 @@ import de.mossgrabers.framework.utils.ButtonEvent;
 /**
  * Mode to select different transport commands.
  *
- * @author J&uuml;rgen Mo&szlig;graber
+ * @author Jürgen Moßgraber
  */
 public class XLTransportMode extends XLTemporaryButtonMode
 {

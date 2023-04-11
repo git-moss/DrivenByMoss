@@ -68,7 +68,7 @@ import java.util.function.IntSupplier;
 /**
  * Setup for the Komplete Kontrol NIHIA protocol.
  *
- * @author J&uuml;rgen Mo&szlig;graber
+ * @author Jürgen Moßgraber
  */
 public class KontrolProtocolControllerSetup extends AbstractControllerSetup<KontrolProtocolControlSurface, KontrolProtocolConfiguration>
 {

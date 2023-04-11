@@ -24,7 +24,7 @@ import de.mossgrabers.framework.view.Views;
 /**
  * The chord view.
  *
- * @author J&uuml;rgen Mo&szlig;graber
+ * @author Jürgen Moßgraber
  */
 public class ChordsView extends AbstractChordView<LaunchpadControlSurface, LaunchpadConfiguration>
 {

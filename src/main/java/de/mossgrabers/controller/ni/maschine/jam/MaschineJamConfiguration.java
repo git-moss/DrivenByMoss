@@ -18,7 +18,7 @@ import java.util.List;
 /**
  * The configuration settings for Maschine Jam.
  *
- * @author J&uuml;rgen Mo&szlig;graber
+ * @author Jürgen Moßgraber
  */
 public class MaschineJamConfiguration extends AbstractConfiguration
 {

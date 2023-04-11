@@ -23,7 +23,7 @@ import java.util.Optional;
  * @param <S> The type of the control surface
  * @param <C> The type of the configuration
  *
- * @author J&uuml;rgen Mo&szlig;graber
+ * @author Jürgen Moßgraber
  */
 public class DuplicateCommand<S extends IControlSurface<C>, C extends Configuration> extends AbstractTriggerCommand<S, C>
 {
@@ -85,7 +85,7 @@ public class DuplicateCommand<S extends IControlSurface<C>, C extends Configurat
             final Optional<ISlot> slotNew = slotBank.getSelectedItem ();
             if (slotNew.isPresent ())
             {
-                slotNew.get ().launch ();
+                slotNew.get ().launch (true, false);
                 return;
             }
 
@@ -94,7 +94,7 @@ public class DuplicateCommand<S extends IControlSurface<C>, C extends Configurat
             this.model.getHost ().scheduleTask ( () -> {
                 final Optional<ISlot> slotNew2 = slotBank.getSelectedItem ();
                 if (slotNew2.isPresent ())
-                    slotNew2.get ().launch ();
+                    slotNew2.get ().launch (true, false);
             }, 200);
         }, 200);
     }

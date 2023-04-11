@@ -14,7 +14,7 @@ import de.mossgrabers.framework.utils.StringUtils;
 /**
  * The display of Kontrol 1.
  *
- * @author J&uuml;rgen Mo&szlig;graber
+ * @author Jürgen Moßgraber
  */
 public class Kontrol1Display extends AbstractTextDisplay
 {

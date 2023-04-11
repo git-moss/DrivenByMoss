@@ -17,7 +17,7 @@ import de.mossgrabers.framework.utils.ButtonEvent;
 /**
  * Command to change the tempo and scroll through lists in browser mode.
  *
- * @author J&uuml;rgen Mo&szlig;graber
+ * @author Jürgen Moßgraber
  */
 public class RasteredKnobCommand extends TempoCommand<PushControlSurface, PushConfiguration>
 {

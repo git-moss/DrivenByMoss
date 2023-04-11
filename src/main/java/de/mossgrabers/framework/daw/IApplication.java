@@ -11,7 +11,7 @@ import de.mossgrabers.framework.parameter.IParameter;
 /**
  * Interface to the application.
  *
- * @author J&uuml;rgen Mo&szlig;graber
+ * @author Jürgen Moßgraber
  */
 public interface IApplication extends IObserverManagement
 {

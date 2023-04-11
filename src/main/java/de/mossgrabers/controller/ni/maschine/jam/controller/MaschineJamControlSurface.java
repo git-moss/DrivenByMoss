@@ -17,7 +17,7 @@ import de.mossgrabers.framework.daw.midi.IMidiOutput;
 /**
  * The NI Maschine Jam control surface.
  *
- * @author J&uuml;rgen Mo&szlig;graber
+ * @author Jürgen Moßgraber
  */
 @SuppressWarnings("javadoc")
 public class MaschineJamControlSurface extends AbstractMaschineControlSurface<MaschineJamConfiguration>

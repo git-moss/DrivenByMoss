@@ -150,7 +150,7 @@ import java.util.Optional;
 /**
  * Support for the Ableton Push 1 and Push 2 controllers.
  *
- * @author J&uuml;rgen Mo&szlig;graber
+ * @author Jürgen Moßgraber
  */
 public class PushControllerSetup extends AbstractControllerSetup<PushControlSurface, PushConfiguration>
 {

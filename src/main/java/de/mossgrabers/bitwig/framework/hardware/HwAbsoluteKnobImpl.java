@@ -16,7 +16,7 @@ import com.bitwig.extension.controller.api.AbsoluteHardwareKnob;
 /**
  * Implementation of a proxy to an absolute knob on a hardware controller.
  *
- * @author J&uuml;rgen Mo&szlig;graber
+ * @author Jürgen Moßgraber
  */
 public class HwAbsoluteKnobImpl extends AbstractHwAbsoluteControl<AbsoluteHardwareKnob> implements IHwAbsoluteKnob
 {

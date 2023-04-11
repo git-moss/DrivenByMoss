@@ -10,7 +10,7 @@ import de.mossgrabers.controller.ni.maschine.jam.controller.FaderConfig;
 /**
  * Additional methods for Maschine Jam modes.
  *
- * @author J&uuml;rgen Mo&szlig;graber
+ * @author Jürgen Moßgraber
  */
 public interface IMaschineJamMode
 {

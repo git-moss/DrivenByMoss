@@ -20,7 +20,7 @@ import com.bitwig.extension.controller.api.ControllerHost;
 /**
  * Definition class for the Generic Flexi controller.
  *
- * @author J&uuml;rgen Mo&szlig;graber
+ * @author Jürgen Moßgraber
  */
 public class GenericFlexiControllerExtensionDefinition extends AbstractControllerExtensionDefinition<GenericFlexiControlSurface, GenericFlexiConfiguration>
 {

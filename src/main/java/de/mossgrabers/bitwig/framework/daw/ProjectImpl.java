@@ -18,7 +18,7 @@ import com.bitwig.extension.controller.api.Project;
 /**
  * Encapsulates the Project instance.
  *
- * @author J&uuml;rgen Mo&szlig;graber
+ * @author Jürgen Moßgraber
  */
 public class ProjectImpl implements IProject
 {
@@ -44,6 +44,7 @@ public class ProjectImpl implements IProject
 
         this.project.hasSoloedTracks ().markInterested ();
         this.project.hasMutedTracks ().markInterested ();
+        this.project.isModified ().markInterested ();
 
         this.cueVolumeParameter = new ParameterImpl (valueChanger, this.project.cueVolume (), 0);
         this.cueMixParameter = new ParameterImpl (valueChanger, this.project.cueMix (), 0);
@@ -58,6 +59,7 @@ public class ProjectImpl implements IProject
 
         Util.setIsSubscribed (this.project.hasSoloedTracks (), enable);
         Util.setIsSubscribed (this.project.hasMutedTracks (), enable);
+        Util.setIsSubscribed (this.project.isModified (), enable);
 
         this.cueVolumeParameter.enableObservers (enable);
         this.cueMixParameter.enableObservers (enable);
@@ -108,8 +110,7 @@ public class ProjectImpl implements IProject
     @Override
     public boolean isDirty ()
     {
-        // Info not available in Bitwig
-        return true;
+        return this.project.isModified ().get ();
     }
 
 

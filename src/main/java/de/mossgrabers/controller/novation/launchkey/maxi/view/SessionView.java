@@ -29,7 +29,7 @@ import java.util.List;
 /**
  * The Session view.
  *
- * @author J&uuml;rgen Mo&szlig;graber
+ * @author Jürgen Moßgraber
  */
 public class SessionView extends AbstractSessionView<LaunchkeyMk3ControlSurface, LaunchkeyMk3Configuration>
 {
@@ -204,7 +204,7 @@ public class SessionView extends AbstractSessionView<LaunchkeyMk3ControlSurface,
         {
             final IScene scene = sceneBank.getItem (index);
             scene.select ();
-            scene.launch ();
+            scene.launch (true, false);
         }
     }
 

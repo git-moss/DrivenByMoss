@@ -15,7 +15,7 @@ import de.mossgrabers.framework.featuregroup.AbstractParameterMode;
 /**
  * Mode for executing several functions.
  *
- * @author J&uuml;rgen Mo&szlig;graber
+ * @author Jürgen Moßgraber
  */
 public class FunctionMode extends AbstractParameterMode<SLControlSurface, SLConfiguration, IItem>
 {

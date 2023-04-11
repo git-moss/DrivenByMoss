@@ -13,6 +13,7 @@ import de.mossgrabers.framework.daw.IModel;
 import de.mossgrabers.framework.daw.constants.Capability;
 import de.mossgrabers.framework.daw.constants.Resolution;
 import de.mossgrabers.framework.daw.midi.ArpeggiatorMode;
+import de.mossgrabers.framework.utils.ButtonEvent;
 
 import java.util.List;
 
@@ -20,7 +21,7 @@ import java.util.List;
 /**
  * View to select the note repeat settings.
  *
- * @author J&uuml;rgen Mo&szlig;graber
+ * @author Jürgen Moßgraber
  */
 public class NoteRepeatView extends BaseView
 {
@@ -38,8 +39,11 @@ public class NoteRepeatView extends BaseView
 
     /** {@inheritDoc} */
     @Override
-    protected void executeFunction (final int padIndex)
+    protected void executeFunction (final int padIndex, final ButtonEvent buttonEvent)
     {
+        if (buttonEvent != ButtonEvent.DOWN)
+            return;
+
         final IHost host = this.model.getHost ();
         final MaschineConfiguration configuration = this.surface.getConfiguration ();
 

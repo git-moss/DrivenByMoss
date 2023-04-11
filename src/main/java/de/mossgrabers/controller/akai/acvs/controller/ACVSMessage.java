@@ -10,7 +10,7 @@ import de.mossgrabers.controller.akai.acvs.ACVSDevice;
 /**
  * A system exclusive message received from an ACVS device.
  *
- * @author J&uuml;rgen Mo&szlig;graber
+ * @author Jürgen Moßgraber
  */
 public class ACVSMessage
 {

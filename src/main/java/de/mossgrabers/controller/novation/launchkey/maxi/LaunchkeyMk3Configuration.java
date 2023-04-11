@@ -16,7 +16,7 @@ import java.util.List;
 /**
  * The configuration settings for Launchkey Mk3.
  *
- * @author J&uuml;rgen Mo&szlig;graber
+ * @author Jürgen Moßgraber
  */
 public class LaunchkeyMk3Configuration extends AbstractConfiguration
 {

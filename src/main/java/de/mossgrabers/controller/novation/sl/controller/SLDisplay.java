@@ -17,7 +17,7 @@ import de.mossgrabers.framework.utils.StringUtils;
  * MkI. The content is displayed in the display 1 depending if a mode button is active on the left
  * or the right.
  *
- * @author J&uuml;rgen Mo&szlig;graber
+ * @author Jürgen Moßgraber
  */
 public class SLDisplay extends AbstractTextDisplay
 {

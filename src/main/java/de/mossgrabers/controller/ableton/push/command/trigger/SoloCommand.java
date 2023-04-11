@@ -20,7 +20,7 @@ import java.util.Optional;
 /**
  * Command to handle the Solo button.
  *
- * @author J&uuml;rgen Mo&szlig;graber
+ * @author Jürgen Moßgraber
  */
 public class SoloCommand extends AbstractTriggerCommand<PushControlSurface, PushConfiguration>
 {

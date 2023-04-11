@@ -7,7 +7,7 @@ package de.mossgrabers.controller.akai.acvs.controller;
 /**
  * IDs for items on the touch screen to send them text and colors.
  *
- * @author J&uuml;rgen Mo&szlig;graber
+ * @author Jürgen Moßgraber
  */
 @SuppressWarnings("javadoc")
 public enum ScreenItem

@@ -7,7 +7,7 @@ package de.mossgrabers.framework.daw.data;
 /**
  * Interface to the Cursor Track.
  *
- * @author J&uuml;rgen Mo&szlig;graber
+ * @author Jürgen Moßgraber
  */
 public interface ICursorTrack extends ITrack, ICursor
 {

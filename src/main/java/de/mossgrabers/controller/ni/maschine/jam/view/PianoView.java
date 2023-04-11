@@ -15,7 +15,7 @@ import de.mossgrabers.framework.view.Views;
 /**
  * The Piano view.
  *
- * @author J&uuml;rgen Mo&szlig;graber
+ * @author Jürgen Moßgraber
  */
 public class PianoView extends PlayView
 {

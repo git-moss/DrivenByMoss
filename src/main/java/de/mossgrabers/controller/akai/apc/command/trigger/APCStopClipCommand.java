@@ -19,7 +19,7 @@ import de.mossgrabers.framework.view.sequencer.AbstractSequencerView;
  * Stop the playing clip on the given track. Return to arrangement if shifted. If a sequencer view
  * is active, selects the resolution.
  *
- * @author J&uuml;rgen Mo&szlig;graber
+ * @author Jürgen Moßgraber
  */
 public class APCStopClipCommand extends StopClipCommand<APCControlSurface, APCConfiguration>
 {

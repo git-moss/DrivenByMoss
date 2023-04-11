@@ -15,7 +15,7 @@ import de.mossgrabers.framework.featuregroup.IView;
 /**
  * Command to delegate the moves of a knob to a view.
  *
- * @author J&uuml;rgen Mo&szlig;graber
+ * @author Jürgen Moßgraber
  */
 public class KnobRowViewCommand extends AbstractContinuousCommand<BeatstepControlSurface, BeatstepConfiguration>
 {

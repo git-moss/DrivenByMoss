@@ -21,7 +21,7 @@ import de.mossgrabers.framework.utils.ButtonEvent;
 /**
  * Move the track bank page left/right or switch through bank device bank.
  *
- * @author J&uuml;rgen Mo&szlig;graber
+ * @author Jürgen Moßgraber
  */
 public class PageCommand extends AbstractTriggerCommand<MaschineControlSurface, MaschineConfiguration>
 {

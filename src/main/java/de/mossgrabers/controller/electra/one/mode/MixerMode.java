@@ -29,7 +29,7 @@ import java.util.Optional;
  * The mixer mode. The knobs control the volumes and panorama of the tracks on the current track
  * page.
  *
- * @author J&uuml;rgen Mo&szlig;graber
+ * @author Jürgen Moßgraber
  */
 public class MixerMode extends AbstractElectraOneMode
 {

@@ -19,7 +19,7 @@ import de.mossgrabers.framework.view.Views;
 /**
  * Command to display a selection for the play modes.
  *
- * @author J&uuml;rgen Mo&szlig;graber
+ * @author Jürgen Moßgraber
  */
 public class SelectPlayViewCommand extends AbstractTriggerCommand<PushControlSurface, PushConfiguration>
 {

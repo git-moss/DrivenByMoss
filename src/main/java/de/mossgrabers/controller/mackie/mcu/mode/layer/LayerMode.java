@@ -26,7 +26,7 @@ import java.util.Optional;
 /**
  * Mode for editing a layer parameters.
  *
- * @author J&uuml;rgen Mo&szlig;graber
+ * @author Jürgen Moßgraber
  */
 public class LayerMode extends AbstractLayerMode
 {

@@ -11,7 +11,7 @@ import java.util.Set;
 /**
  * Static mode IDs and some helper functions.
  *
- * @author J&uuml;rgen Mo&szlig;graber
+ * @author Jürgen Moßgraber
  */
 public enum Modes
 {

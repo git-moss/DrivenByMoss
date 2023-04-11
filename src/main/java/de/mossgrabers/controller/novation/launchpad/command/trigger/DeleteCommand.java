@@ -14,7 +14,7 @@ import de.mossgrabers.framework.utils.ButtonEvent;
 /**
  * Toggle the loop.
  *
- * @author J&uuml;rgen Mo&szlig;graber
+ * @author Jürgen Moßgraber
  */
 public class DeleteCommand extends AbstractTriggerCommand<LaunchpadControlSurface, LaunchpadConfiguration>
 {

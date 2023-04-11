@@ -74,16 +74,20 @@ import de.mossgrabers.framework.scale.Scales;
 import de.mossgrabers.framework.utils.ButtonEvent;
 import de.mossgrabers.framework.view.Views;
 
+import java.util.Arrays;
 import java.util.Optional;
 
 
 /**
  * Support for Akai devices which support the ACVS protocol.
  *
- * @author J&uuml;rgen Mo&szlig;graber
+ * @author Jürgen Moßgraber
  */
 public class ACVSControllerSetup extends AbstractControllerSetup<ACVSControlSurface, ACVSConfiguration>
 {
+    private final boolean [] noteBlocker = new boolean [64];
+
+
     /**
      * Constructor.
      *
@@ -95,6 +99,8 @@ public class ACVSControllerSetup extends AbstractControllerSetup<ACVSControlSurf
     public ACVSControllerSetup (final IHost host, final ISetupFactory factory, final ISettingsUI globalSettings, final ISettingsUI documentSettings)
     {
         super (factory, host, globalSettings, documentSettings);
+
+        Arrays.fill (this.noteBlocker, false);
 
         this.colorManager = new ACVSColorManager ();
         this.valueChanger = new TwosComplementValueChanger (128, 1);
@@ -210,18 +216,14 @@ public class ACVSControllerSetup extends AbstractControllerSetup<ACVSControlSurf
                 label = "Pad " + (pos + 1);
                 final int slotIndex = j;
                 final int midiControl = ACVSControlSurface.NOTE_CLIP1_LAUNCH + pos;
-                this.addReceiveButton (padID, label, () -> {
-                    final ISlot slot = tb.getItem (index).getSlotBank ().getItem (slotIndex);
-                    if (slot.doesExist ())
-                        this.handleClip (surface, slot);
-                }, 0, midiControl);
+                this.addReceiveButton (padID, label, (event, velocity) -> this.handleClip (surface, index, slotIndex, event), 0, midiControl);
             }
 
             // Scene launch
             final ButtonID sceneID = ButtonID.get (ButtonID.SCENE1, i);
             label = "Scene " + (i + 1);
             final ISceneBank sceneBank = this.model.getSceneBank ();
-            this.addReceiveButton (sceneID, label, () -> this.handleScene (surface, sceneBank.getItem (index)), 0, ACVSControlSurface.NOTE_SCENE1 + i);
+            this.addReceiveButton (sceneID, label, (event, velocity) -> this.handleScene (surface, sceneBank.getItem (index), event), 0, ACVSControlSurface.NOTE_SCENE1 + i);
 
             // Track solo
             final ButtonID soloID = ButtonID.get (ButtonID.ROW2_1, i);
@@ -278,22 +280,40 @@ public class ACVSControllerSetup extends AbstractControllerSetup<ACVSControlSurf
      * Select, start, delete or duplicate a clip.
      *
      * @param surface The surface
-     * @param slot The slot containing the clip
+     * @param trackIndex The index of the track
+     * @param slotIndex The index of the slot
+     * @param event The button event
      */
-    protected void handleClip (final ACVSControlSurface surface, final ISlot slot)
+    protected void handleClip (final ACVSControlSurface surface, final int trackIndex, final int slotIndex, final ButtonEvent event)
     {
-        slot.select ();
-        if (surface.isShiftPressed () || surface.isSelectPressed ())
+        if (event == ButtonEvent.LONG)
             return;
-        if (surface.isPressed (ButtonID.F2))
-            slot.remove ();
-        else if (surface.isPressed (ButtonID.DUPLICATE))
+
+        final ISlot slot = this.model.getTrackBank ().getItem (trackIndex).getSlotBank ().getItem (slotIndex);
+        if (!slot.doesExist ())
+            return;
+
+        if (event == ButtonEvent.DOWN)
         {
-            surface.setTriggerConsumed (ButtonID.DUPLICATE);
-            slot.duplicate ();
+            slot.select ();
+            if (surface.isSelectPressed ())
+                return;
+
+            if (surface.isPressed (ButtonID.F2))
+            {
+                slot.remove ();
+                return;
+            }
+
+            if (surface.isPressed (ButtonID.DUPLICATE))
+            {
+                surface.setTriggerConsumed (ButtonID.DUPLICATE);
+                slot.duplicate ();
+                return;
+            }
         }
-        else
-            slot.launch ();
+
+        slot.launch (event == ButtonEvent.DOWN, surface.isShiftPressed ());
     }
 
 
@@ -302,21 +322,35 @@ public class ACVSControllerSetup extends AbstractControllerSetup<ACVSControlSurf
      *
      * @param surface The surface
      * @param scene The scene
+     * @param event The button event
      */
-    protected void handleScene (final ACVSControlSurface surface, final IScene scene)
+    protected void handleScene (final ACVSControlSurface surface, final IScene scene, final ButtonEvent event)
     {
-        scene.select ();
-        if (surface.isShiftPressed () || surface.isSelectPressed ())
+        if (event == ButtonEvent.LONG)
             return;
-        if (surface.isPressed (ButtonID.F2))
-            scene.remove ();
-        else if (surface.isPressed (ButtonID.DUPLICATE))
+
+        final boolean isPressed = event == ButtonEvent.DOWN;
+        if (isPressed)
         {
-            surface.setTriggerConsumed (ButtonID.DUPLICATE);
-            scene.duplicate ();
+            if (surface.isPressed (ButtonID.F2))
+            {
+                scene.remove ();
+                return;
+            }
+
+            if (surface.isPressed (ButtonID.DUPLICATE))
+            {
+                surface.setTriggerConsumed (ButtonID.DUPLICATE);
+                scene.duplicate ();
+                return;
+            }
+
+            scene.select ();
+            if (surface.isShiftPressed ())
+                return;
         }
-        else
-            scene.launch ();
+
+        scene.launch (isPressed, surface.isSelectPressed ());
     }
 
 
@@ -488,23 +522,30 @@ public class ACVSControllerSetup extends AbstractControllerSetup<ACVSControlSurf
             final int trackIndex = i % 8;
             final int clipIndex = i / 8;
 
+            final int noteIndex = i;
+
             this.addButton (surface, ButtonID.get (ButtonID.MORE_PADS1, i), "PAD " + (i + 1), (event, velocity) -> {
 
-                if (event != ButtonEvent.UP)
-                    return;
+                // The MPC seems to send notes until the pad is released (looks like a bug to me)
+                // Quick & dirty workaround to block them...
+                if (event == ButtonEvent.DOWN)
+                {
+                    if (this.noteBlocker[noteIndex])
+                        return;
+                    this.noteBlocker[noteIndex] = true;
+                }
+                if (event == ButtonEvent.UP)
+                    this.noteBlocker[noteIndex] = false;
 
                 if (this.configuration.isLaunchClips ())
                 {
-                    final ISlot slot = tb.getItem (trackIndex).getSlotBank ().getItem (clipIndex);
-                    this.handleClip (surface, slot);
+                    this.handleClip (surface, trackIndex, clipIndex, event);
+                    return;
                 }
-                else
+                if (clipIndex < 2)
                 {
-                    if (clipIndex < 2)
-                    {
-                        final IScene scene = this.model.getSceneBank ().getItem (clipIndex * 4 + trackIndex);
-                        this.handleScene (surface, scene);
-                    }
+                    final IScene scene = this.model.getSceneBank ().getItem (clipIndex * 4 + trackIndex);
+                    this.handleScene (surface, scene, event);
                 }
 
             }, 0x0C, ACVSControlSurface.NOTE_MPC_LAUNCH_CLIP_OR_SCENE1 + i, -1, false, null);
@@ -603,23 +644,30 @@ public class ACVSControllerSetup extends AbstractControllerSetup<ACVSControlSurf
             final int trackIndex = i % 8;
             final int clipIndex = i / 8;
 
+            final int noteIndex = i;
+
             this.addButton (surface, ButtonID.get (ButtonID.MORE_PADS1, i), "PAD " + (i + 1), (event, velocity) -> {
 
-                if (event != ButtonEvent.UP)
-                    return;
+                // The MPC seems to send notes until the pad is released (looks like a bug to me)
+                // Quick & dirty workaround to block them...
+                if (event == ButtonEvent.DOWN)
+                {
+                    if (this.noteBlocker[noteIndex])
+                        return;
+                    this.noteBlocker[noteIndex] = true;
+                }
+                if (event == ButtonEvent.UP)
+                    this.noteBlocker[noteIndex] = false;
 
                 if (this.configuration.isLaunchClips ())
                 {
-                    final ISlot slot = tb.getItem (trackIndex).getSlotBank ().getItem (clipIndex);
-                    this.handleClip (surface, slot);
+                    this.handleClip (surface, trackIndex, clipIndex, event);
+                    return;
                 }
-                else
+                if (clipIndex < 2)
                 {
-                    if (clipIndex < 2)
-                    {
-                        final IScene scene = this.model.getSceneBank ().getItem (clipIndex * 4 + trackIndex);
-                        this.handleScene (surface, scene);
-                    }
+                    final IScene scene = this.model.getSceneBank ().getItem (clipIndex * 4 + trackIndex);
+                    this.handleScene (surface, scene, event);
                 }
 
             }, 0x0C, ACVSControlSurface.NOTE_FORCE_LAUNCH_CLIP_OR_SCENE1 + i, -1, false, null);
@@ -629,10 +677,7 @@ public class ACVSControllerSetup extends AbstractControllerSetup<ACVSControlSurf
         for (int i = 0; i < 8; i++)
         {
             final int index = i;
-            this.addButton (surface, ButtonID.get (ButtonID.ROW6_1, i), "SCENE " + (i + 1), (event, velocity) -> {
-                if (event == ButtonEvent.DOWN)
-                    this.handleScene (surface, sceneBank.getItem (index));
-            }, 0x0C, ACVSControlSurface.NOTE_FORCE_LAUNCH_SCENE1 + i, -1, false, null);
+            this.addButton (surface, ButtonID.get (ButtonID.ROW6_1, i), "SCENE " + (i + 1), (event, velocity) -> this.handleScene (surface, sceneBank.getItem (index), event), 0x0C, ACVSControlSurface.NOTE_FORCE_LAUNCH_SCENE1 + i, -1, false, null);
         }
 
         this.addButton (ButtonID.MASTERTRACK, "MASTER", new ACVSMasterCommand<> (this.model, surface), 0x0C, ACVSControlSurface.NOTE_FORCE_MASTER, () -> this.model.getMasterTrack ().isSelected ());

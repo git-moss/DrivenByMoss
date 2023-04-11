@@ -16,7 +16,7 @@ import de.mossgrabers.framework.utils.ButtonEvent;
 /**
  * Command to open/close the fixed length settings.
  *
- * @author J&uuml;rgen Mo&szlig;graber
+ * @author Jürgen Moßgraber
  */
 public class FixedLengthCommand extends AbstractTriggerCommand<PushControlSurface, PushConfiguration>
 {

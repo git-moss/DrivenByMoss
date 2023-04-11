@@ -22,7 +22,7 @@ import java.util.Optional;
  * @param <S> The type of the control surface
  * @param <C> The type of the configuration
  *
- * @author J&uuml;rgen Mo&szlig;graber
+ * @author Jürgen Moßgraber
  */
 public class StartSceneCommand<S extends IControlSurface<C>, C extends Configuration> extends AbstractTriggerCommand<S, C>
 {
@@ -60,28 +60,31 @@ public class StartSceneCommand<S extends IControlSurface<C>, C extends Configura
     @Override
     public void executeNormal (final ButtonEvent event)
     {
-        if (event != ButtonEvent.DOWN)
+        if (event == ButtonEvent.LONG)
             return;
 
         final IScene scene = this.getScene ();
         if (!scene.doesExist ())
             return;
 
-        // Delete the scene
-        if (this.surface.isDeletePressed ())
+        final boolean isDown = event == ButtonEvent.DOWN;
+        if (isDown)
         {
-            scene.remove ();
-            return;
+            // Delete the scene
+            if (this.surface.isDeletePressed ())
+            {
+                scene.remove ();
+                return;
+            }
+
+            if (this.surface.getConfiguration ().isSelectClipOnLaunch ())
+            {
+                scene.select ();
+                this.mvHelper.delayDisplay (scene::getName);
+            }
         }
 
-        // Launch or select the scene
-        final boolean selectPressed = this.surface.isSelectPressed ();
-        if (selectPressed)
-            this.mvHelper.delayDisplay (scene::getName);
-        else
-            scene.launch ();
-        if (selectPressed || this.surface.getConfiguration ().isSelectClipOnLaunch ())
-            scene.select ();
+        scene.launch (isDown, this.surface.isSelectPressed ());
     }
 
 

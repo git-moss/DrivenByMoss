@@ -11,7 +11,7 @@ import java.util.Map;
 /**
  * The configuration option for the ribbon touch strip.
  *
- * @author J&uuml;rgen Mo&szlig;graber
+ * @author Jürgen Moßgraber
  */
 public enum RibbonMode
 {

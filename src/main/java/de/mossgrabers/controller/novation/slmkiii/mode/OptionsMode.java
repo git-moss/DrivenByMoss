@@ -20,7 +20,7 @@ import de.mossgrabers.framework.utils.StringUtils;
 /**
  * Mode for global parameters.
  *
- * @author J&uuml;rgen Mo&szlig;graber
+ * @author Jürgen Moßgraber
  */
 public class OptionsMode extends BaseMode<IItem>
 {

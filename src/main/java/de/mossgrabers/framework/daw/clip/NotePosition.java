@@ -8,7 +8,7 @@ package de.mossgrabers.framework.daw.clip;
  * A position of a note in a clip. The position is described by its' MIDI channel, the index of the
  * sequencer step and the MIDI note (= the row in the clip).
  *
- * @author J&uuml;rgen Mo&szlig;graber
+ * @author Jürgen Moßgraber
  */
 public final class NotePosition
 {

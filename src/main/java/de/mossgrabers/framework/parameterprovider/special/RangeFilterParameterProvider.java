@@ -14,7 +14,7 @@ import java.util.Optional;
 /**
  * Uses a sub-range of the parameters from the given parameter provider.
  *
- * @author J&uuml;rgen Mo&szlig;graber
+ * @author Jürgen Moßgraber
  */
 public class RangeFilterParameterProvider extends AbstractWrapperProvider
 {

@@ -22,7 +22,7 @@ import de.mossgrabers.framework.view.Views;
 /**
  * Command to handle pitch-bend.
  *
- * @author J&uuml;rgen Mo&szlig;graber
+ * @author Jürgen Moßgraber
  */
 public class TouchstripCommand extends AbstractPitchbendCommand<PushControlSurface, PushConfiguration>
 {

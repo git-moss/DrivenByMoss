@@ -15,7 +15,7 @@ import de.mossgrabers.framework.featuregroup.IView;
 /**
  * Command to delegate the moves of a fader row to the active fader view.
  *
- * @author J&uuml;rgen Mo&szlig;graber
+ * @author Jürgen Moßgraber
  */
 public class FaderCommand extends AbstractContinuousCommand<LaunchpadControlSurface, LaunchpadConfiguration>
 {

@@ -6,6 +6,7 @@ package de.mossgrabers.framework.command.trigger.view;
 
 import de.mossgrabers.framework.command.core.AbstractTriggerCommand;
 import de.mossgrabers.framework.configuration.Configuration;
+import de.mossgrabers.framework.controller.ButtonID;
 import de.mossgrabers.framework.controller.IControlSurface;
 import de.mossgrabers.framework.daw.IModel;
 import de.mossgrabers.framework.featuregroup.ViewManager;
@@ -19,7 +20,7 @@ import de.mossgrabers.framework.view.Views;
  * @param <S> The type of the control surface
  * @param <C> The type of the configuration
  *
- * @author J&uuml;rgen Mo&szlig;graber
+ * @author Jürgen Moßgraber
  */
 public class ToggleShiftViewCommand<S extends IControlSurface<C>, C extends Configuration> extends AbstractTriggerCommand<S, C>
 {
@@ -52,7 +53,11 @@ public class ToggleShiftViewCommand<S extends IControlSurface<C>, C extends Conf
                 if (this.viewManager.isActive (Views.SHIFT))
                     this.viewManager.restore ();
                 else
-                    this.viewManager.setTemporary (Views.SHIFT);
+                {
+                    // Do not activate when ALT is already pressed
+                    if (!this.surface.isPressed (ButtonID.ALT))
+                        this.viewManager.setTemporary (Views.SHIFT);
+                }
                 break;
 
             case LONG:

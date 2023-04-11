@@ -10,7 +10,7 @@ import de.mossgrabers.framework.daw.data.bank.IDeviceBank;
 /**
  * Interface to the Cursor device.
  *
- * @author J&uuml;rgen Mo&szlig;graber
+ * @author Jürgen Moßgraber
  */
 public interface ICursorDevice extends ISpecificDevice, ICursor
 {

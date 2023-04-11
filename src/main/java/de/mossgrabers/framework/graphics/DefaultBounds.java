@@ -7,7 +7,7 @@ package de.mossgrabers.framework.graphics;
 /**
  * Default implementation for boundaries.
  *
- * @author J&uuml;rgen Mo&szlig;graber
+ * @author Jürgen Moßgraber
  *
  * @param left The left bound of the drawing area
  * @param top The top bound of the drawing area

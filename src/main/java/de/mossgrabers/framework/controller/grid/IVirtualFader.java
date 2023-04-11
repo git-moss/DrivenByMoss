@@ -7,7 +7,7 @@ package de.mossgrabers.framework.controller.grid;
 /**
  * Interface to a virtual fader. A virtual fader consists of a number of pads on a grid.
  *
- * @author J&uuml;rgen Mo&szlig;graber
+ * @author Jürgen Moßgraber
  */
 public interface IVirtualFader
 {

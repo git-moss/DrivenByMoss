@@ -20,7 +20,7 @@ import de.mossgrabers.framework.parameter.IParameter;
 /**
  * The handler for device commands.
  *
- * @author J&uuml;rgen Mo&szlig;graber
+ * @author Jürgen Moßgraber
  */
 public class DeviceHandler extends AbstractHandler
 {

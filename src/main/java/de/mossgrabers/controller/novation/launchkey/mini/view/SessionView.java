@@ -28,7 +28,7 @@ import java.util.List;
 /**
  * The Session view.
  *
- * @author J&uuml;rgen Mo&szlig;graber
+ * @author Jürgen Moßgraber
  */
 public class SessionView extends AbstractSessionView<LaunchkeyMiniMk3ControlSurface, LaunchkeyMiniMk3Configuration>
 {
@@ -165,14 +165,11 @@ public class SessionView extends AbstractSessionView<LaunchkeyMiniMk3ControlSurf
     @Override
     public void onGridNote (final int note, final int velocity)
     {
-        if (velocity != 0)
-            return;
-
         final Pair<Integer, Integer> padPos = this.getPad (note);
         final int row = padPos.getValue ().intValue ();
         if (row == 0 || this.padMode == null)
             super.onGridNote (note, velocity);
-        else
+        else if (velocity != 0)
             this.handleFirstRowModes (padPos.getKey ().intValue ());
     }
 
@@ -231,7 +228,7 @@ public class SessionView extends AbstractSessionView<LaunchkeyMiniMk3ControlSurf
         {
             final IScene scene = sceneBank.getItem (index);
             scene.select ();
-            scene.launch ();
+            scene.launch (true, false);
         }
     }
 

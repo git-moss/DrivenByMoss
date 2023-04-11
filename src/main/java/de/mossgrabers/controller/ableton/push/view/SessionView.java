@@ -22,7 +22,7 @@ import de.mossgrabers.framework.view.TransposeView;
 /**
  * The Session view.
  *
- * @author J&uuml;rgen Mo&szlig;graber
+ * @author Jürgen Moßgraber
  */
 public class SessionView extends AbstractSessionView<PushControlSurface, PushConfiguration> implements TransposeView
 {
@@ -52,7 +52,7 @@ public class SessionView extends AbstractSessionView<PushControlSurface, PushCon
         final LightInfo recArmed = new LightInfo (redLo, -1, false);
         this.setColors (isRecording, isRecordingQueued, isPlaying, isPlayingQueued, hasContent, noContent, recArmed);
 
-        this.birdColorHasContent = hasContent;
+        this.birdColorHasContent = new LightInfo (amber, -1, false);
         this.birdColorSelected = isPlaying;
     }
 

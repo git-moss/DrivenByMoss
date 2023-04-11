@@ -17,7 +17,7 @@ import de.mossgrabers.framework.featuregroup.AbstractView;
 /**
  * The Browser view.
  *
- * @author J&uuml;rgen Mo&szlig;graber
+ * @author Jürgen Moßgraber
  */
 public class BrowserView extends AbstractView<BeatstepControlSurface, BeatstepConfiguration> implements BeatstepView
 {

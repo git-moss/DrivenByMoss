@@ -13,7 +13,7 @@ import de.mossgrabers.framework.utils.ButtonEvent;
 /**
  * Track solo command.
  *
- * @author J&uuml;rgen Mo&szlig;graber
+ * @author Jürgen Moßgraber
  */
 public class SoloCommand extends AbstractTrackCommand
 {

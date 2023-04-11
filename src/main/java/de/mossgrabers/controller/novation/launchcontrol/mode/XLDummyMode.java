@@ -12,7 +12,7 @@ import java.util.List;
 /**
  * Mode that does nothing. Additionally, turns off the knob LEDs.
  *
- * @author J&uuml;rgen Mo&szlig;graber
+ * @author Jürgen Moßgraber
  */
 public class XLDummyMode extends DummyMode<LaunchControlXLControlSurface, LaunchControlXLConfiguration> implements IXLMode
 {

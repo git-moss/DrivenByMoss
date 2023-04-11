@@ -11,7 +11,7 @@ import de.mossgrabers.framework.daw.data.ISend;
 /**
  * Default data for an empty send.
  *
- * @author J&uuml;rgen Mo&szlig;graber
+ * @author Jürgen Moßgraber
  */
 public class EmptySend extends EmptyParameter implements ISend
 {
@@ -34,5 +34,21 @@ public class EmptySend extends EmptyParameter implements ISend
     public ColorEx getColor ()
     {
         return ColorEx.BLACK;
+    }
+
+
+    /** {@inheritDoc} */
+    @Override
+    public boolean isEnabled ()
+    {
+        return false;
+    }
+
+
+    /** {@inheritDoc} */
+    @Override
+    public void toggleEnabled ()
+    {
+        // Intentionally empty
     }
 }

@@ -18,7 +18,7 @@ import de.mossgrabers.framework.utils.StringUtils;
 /**
  * Volume mode.
  *
- * @author J&uuml;rgen Mo&szlig;graber
+ * @author Jürgen Moßgraber
  */
 public class SLVolumeMode extends de.mossgrabers.framework.mode.track.TrackVolumeMode<SLControlSurface, SLConfiguration>
 {

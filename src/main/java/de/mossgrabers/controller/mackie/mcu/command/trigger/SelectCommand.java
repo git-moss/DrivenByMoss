@@ -28,7 +28,7 @@ import java.util.Map;
 /**
  * A select track command.
  *
- * @author J&uuml;rgen Mo&szlig;graber
+ * @author Jürgen Moßgraber
  */
 public class SelectCommand extends AbstractTriggerCommand<MCUControlSurface, MCUConfiguration>
 {

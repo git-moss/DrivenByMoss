@@ -13,7 +13,7 @@ import com.bitwig.extension.controller.api.Parameter;
 /**
  * Encapsulates the data of a parameter.
  *
- * @author J&uuml;rgen Mo&szlig;graber
+ * @author Jürgen Moßgraber
  */
 public class ParameterImpl extends RangedValueImpl
 {

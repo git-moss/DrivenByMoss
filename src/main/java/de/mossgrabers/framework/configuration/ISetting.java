@@ -7,7 +7,7 @@ package de.mossgrabers.framework.configuration;
 /**
  * An interface to a setting.
  *
- * @author J&uuml;rgen Mo&szlig;graber
+ * @author Jürgen Moßgraber
  */
 public interface ISetting
 {

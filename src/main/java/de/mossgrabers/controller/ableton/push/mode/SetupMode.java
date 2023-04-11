@@ -21,7 +21,7 @@ import de.mossgrabers.framework.utils.ButtonEvent;
 /**
  * Configuration settings for Push 2.
  *
- * @author J&uuml;rgen Mo&szlig;graber
+ * @author Jürgen Moßgraber
  */
 public class SetupMode extends BaseMode<IItem>
 {

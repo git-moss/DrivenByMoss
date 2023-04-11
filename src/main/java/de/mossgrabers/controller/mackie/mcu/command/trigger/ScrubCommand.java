@@ -14,7 +14,7 @@ import de.mossgrabers.framework.utils.ButtonEvent;
 /**
  * Command to toggles between Track and Device editing mode.
  *
- * @author J&uuml;rgen Mo&szlig;graber
+ * @author Jürgen Moßgraber
  */
 public class ScrubCommand extends AbstractTriggerCommand<MCUControlSurface, MCUConfiguration>
 {

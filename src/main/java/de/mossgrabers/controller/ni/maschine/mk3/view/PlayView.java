@@ -41,7 +41,7 @@ import java.util.function.IntUnaryOperator;
 /**
  * The Play view.
  *
- * @author J&uuml;rgen Mo&szlig;graber
+ * @author Jürgen Moßgraber
  */
 public class PlayView extends AbstractPlayView<MaschineControlSurface, MaschineConfiguration>
 {

@@ -33,7 +33,7 @@ import java.util.Map;
 /**
  * The edit note mode.
  *
- * @author J&uuml;rgen Mo&szlig;graber
+ * @author Jürgen Moßgraber
  */
 public class EditNoteMode extends BaseMode implements INoteMode
 {

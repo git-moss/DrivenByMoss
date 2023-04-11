@@ -18,7 +18,7 @@ import de.mossgrabers.framework.view.Views;
 /**
  * View to select a note view.
  *
- * @author J&uuml;rgen Mo&szlig;graber
+ * @author Jürgen Moßgraber
  */
 public class NoteViewSelectView extends AbstractView<LaunchpadControlSurface, LaunchpadConfiguration>
 {

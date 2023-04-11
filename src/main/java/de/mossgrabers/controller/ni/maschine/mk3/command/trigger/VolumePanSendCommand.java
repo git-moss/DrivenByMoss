@@ -20,7 +20,7 @@ import de.mossgrabers.framework.view.Views;
 /**
  * Command to edit the Volume, Pan and Sends of tracks.
  *
- * @author J&uuml;rgen Mo&szlig;graber
+ * @author Jürgen Moßgraber
  */
 public class VolumePanSendCommand extends ModeMultiSelectCommand<MaschineControlSurface, MaschineConfiguration>
 {

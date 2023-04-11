@@ -16,7 +16,7 @@ import de.mossgrabers.framework.parameterprovider.track.VolumeParameterProvider;
 /**
  * Mode for editing the panorama of all layers.
  *
- * @author J&uuml;rgen Mo&szlig;graber
+ * @author Jürgen Moßgraber
  */
 public class LayerPanMode extends AbstractLayerMode
 {

@@ -19,7 +19,7 @@ import de.mossgrabers.framework.utils.ButtonEvent;
 /**
  * The Device configuration view.
  *
- * @author J&uuml;rgen Mo&szlig;graber
+ * @author Jürgen Moßgraber
  */
 public class DeviceConfigView extends AbstractView<LaunchkeyMk3ControlSurface, LaunchkeyMk3Configuration>
 {

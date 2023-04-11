@@ -18,7 +18,7 @@ import java.util.concurrent.TimeUnit;
 /**
  * The display of Push 2.
  *
- * @author J&uuml;rgen Mo&szlig;graber
+ * @author Jürgen Moßgraber
  */
 public class Push2Display extends AbstractGraphicDisplay
 {

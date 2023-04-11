@@ -12,7 +12,7 @@ import de.mossgrabers.framework.utils.StringUtils;
 /**
  * Abstract implementation for a parameter.
  *
- * @author J&uuml;rgen Mo&szlig;graber
+ * @author Jürgen Moßgraber
  */
 public abstract class AbstractParameterImpl extends AbstractItemImpl implements IParameter
 {

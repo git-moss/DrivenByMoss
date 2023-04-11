@@ -24,7 +24,7 @@ import java.util.Optional;
  * Get a number of parameters. This implementation provides the selected tracks' volume, panorama
  * and send parameters.
  *
- * @author J&uuml;rgen Mo&szlig;graber
+ * @author Jürgen Moßgraber
  */
 public class SelectedTrackParameterProvider extends AbstractTrackParameterProvider implements IItemSelectionObserver
 {

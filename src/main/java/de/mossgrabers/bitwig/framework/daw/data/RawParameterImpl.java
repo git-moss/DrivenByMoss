@@ -12,7 +12,7 @@ import com.bitwig.extension.controller.api.Parameter;
 /**
  * Encapsulates the data of a parameter but uses the raw setters/getters.
  *
- * @author J&uuml;rgen Mo&szlig;graber
+ * @author Jürgen Moßgraber
  */
 public class RawParameterImpl extends ParameterImpl
 {

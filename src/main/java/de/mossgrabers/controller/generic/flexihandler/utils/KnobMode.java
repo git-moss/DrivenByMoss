@@ -10,7 +10,7 @@ import java.util.Map;
 /**
  * All knob mode value encodings.
  *
- * @author J&uuml;rgen Mo&szlig;graber
+ * @author Jürgen Moßgraber
  */
 public enum KnobMode
 {

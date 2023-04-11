@@ -7,7 +7,7 @@ package de.mossgrabers.framework.utils;
 /**
  * A button press event.
  *
- * @author J&uuml;rgen Mo&szlig;graber
+ * @author Jürgen Moßgraber
  */
 public enum ButtonEvent
 {

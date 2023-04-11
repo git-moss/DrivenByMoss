@@ -14,7 +14,7 @@ import de.mossgrabers.framework.utils.ButtonEvent;
 /**
  * Command to handle the play button. Shift + Play toggles Arranger automation.
  *
- * @author J&uuml;rgen Mo&szlig;graber
+ * @author Jürgen Moßgraber
  */
 public class SLMkIIIPlayCommand extends PlayCommand<SLMkIIIControlSurface, SLMkIIIConfiguration>
 {

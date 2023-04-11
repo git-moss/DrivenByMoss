@@ -20,7 +20,7 @@ import de.mossgrabers.framework.view.Views;
 /**
  * Command to start the currently selected scene.
  *
- * @author J&uuml;rgen Mo&szlig;graber
+ * @author Jürgen Moßgraber
  */
 public class MaschineJamStartSceneCommand extends StartSceneCommand<MaschineJamControlSurface, MaschineJamConfiguration>
 {

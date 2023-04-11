@@ -12,7 +12,7 @@ import com.bitwig.extension.controller.api.Setting;
 /**
  * Abstract base class for all Bitwig settings.
  *
- * @author J&uuml;rgen Mo&szlig;graber
+ * @author Jürgen Moßgraber
  */
 public abstract class AbstractSetting implements ISetting
 {

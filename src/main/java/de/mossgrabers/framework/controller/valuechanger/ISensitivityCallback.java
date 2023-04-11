@@ -7,7 +7,7 @@ package de.mossgrabers.framework.controller.valuechanger;
 /**
  * Callback interface for getting notified about the relative knob sensitivity.
  *
- * @author J&uuml;rgen Mo&szlig;graber
+ * @author Jürgen Moßgraber
  */
 @FunctionalInterface
 public interface ISensitivityCallback

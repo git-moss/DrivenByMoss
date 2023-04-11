@@ -16,7 +16,7 @@ import java.util.Optional;
  * device parameter). Items are organized in pages. The number of items on a page should be
  * identical to the number of knobs and buttons of a row.
  *
- * @author J&uuml;rgen Mo&szlig;graber
+ * @author Jürgen Moßgraber
  */
 public interface IMode extends IFeatureGroup
 {

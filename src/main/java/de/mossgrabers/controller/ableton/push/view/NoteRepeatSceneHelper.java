@@ -14,7 +14,7 @@ import de.mossgrabers.framework.daw.midi.INoteRepeat;
 /**
  * Helper for selecting note repeat settings with scene buttons.
  *
- * @author J&uuml;rgen Mo&szlig;graber
+ * @author Jürgen Moßgraber
  */
 public class NoteRepeatSceneHelper
 {

@@ -18,7 +18,7 @@ import de.mossgrabers.framework.utils.ButtonEvent;
 /**
  * 8 send faders.
  *
- * @author J&uuml;rgen Mo&szlig;graber
+ * @author Jürgen Moßgraber
  */
 public class SendsView extends AbstractFaderView
 {

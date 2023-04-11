@@ -17,7 +17,7 @@ import de.mossgrabers.framework.featuregroup.IMode;
  * @param <S> The type of the control surface
  * @param <C> The type of the configuration
  *
- * @author J&uuml;rgen Mo&szlig;graber
+ * @author Jürgen Moßgraber
  */
 public class FaderRowModeCommand<S extends IControlSurface<C>, C extends Configuration> extends AbstractPitchbendCommand<S, C>
 {

@@ -11,7 +11,7 @@ import de.mossgrabers.framework.parameter.IParameter;
  * Get a number of null parameters. This can be used to clear a previous parameter provider to
  * activate a command based binding.
  *
- * @author J&uuml;rgen Mo&szlig;graber
+ * @author Jürgen Moßgraber
  */
 public class NullParameterProvider extends FixedParameterProvider
 {

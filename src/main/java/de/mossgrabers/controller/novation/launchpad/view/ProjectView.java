@@ -18,7 +18,7 @@ import de.mossgrabers.framework.utils.ButtonEvent;
 /**
  * Project related settings like project navigation, layout and panes.
  *
- * @author J&uuml;rgen Mo&szlig;graber
+ * @author Jürgen Moßgraber
  */
 public class ProjectView extends AbstractView<LaunchpadControlSurface, LaunchpadConfiguration>
 {

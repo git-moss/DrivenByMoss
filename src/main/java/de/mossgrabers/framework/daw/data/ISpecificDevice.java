@@ -14,7 +14,7 @@ import de.mossgrabers.framework.observer.IValueObserver;
 /**
  * Interface to a specific device.
  *
- * @author J&uuml;rgen Mo&szlig;graber
+ * @author Jürgen Moßgraber
  */
 public interface ISpecificDevice extends IDevice
 {

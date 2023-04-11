@@ -17,7 +17,7 @@ import de.mossgrabers.framework.parameter.IParameter;
  * @param <S> The type of the control surface
  * @param <C> The type of the configuration
  *
- * @author J&uuml;rgen Mo&szlig;graber
+ * @author Jürgen Moßgraber
  */
 public class TrackCrossfadeAMode<S extends IControlSurface<C>, C extends Configuration> extends DefaultTrackMode<S, C>
 {

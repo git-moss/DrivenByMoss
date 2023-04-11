@@ -17,7 +17,7 @@ import java.util.List;
 /**
  * Base class for all Maschine modes.
  *
- * @author J&uuml;rgen Mo&szlig;graber
+ * @author Jürgen Moßgraber
  */
 public abstract class BaseMode extends AbstractParameterMode<MaschineControlSurface, MaschineConfiguration, IItem>
 {

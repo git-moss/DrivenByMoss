@@ -15,7 +15,7 @@ import de.mossgrabers.framework.view.Views;
 /**
  * Track stop clip command.
  *
- * @author J&uuml;rgen Mo&szlig;graber
+ * @author Jürgen Moßgraber
  */
 public class StopClipCommand extends AbstractTrackCommand
 {

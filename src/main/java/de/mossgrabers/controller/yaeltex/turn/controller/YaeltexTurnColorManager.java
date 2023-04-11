@@ -23,7 +23,7 @@ import java.util.Map;
 /**
  * Different colors to use for the pads and buttons of the Yaeltex Turn.
  *
- * @author J&uuml;rgen Mo&szlig;graber
+ * @author Jürgen Moßgraber
  */
 @SuppressWarnings("javadoc")
 public class YaeltexTurnColorManager extends ColorManager

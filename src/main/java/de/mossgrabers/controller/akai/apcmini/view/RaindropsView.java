@@ -16,7 +16,7 @@ import de.mossgrabers.framework.view.sequencer.AbstractRaindropsView;
 /**
  * Raindrops view.
  *
- * @author J&uuml;rgen Mo&szlig;graber
+ * @author Jürgen Moßgraber
  */
 public class RaindropsView extends AbstractRaindropsView<APCminiControlSurface, APCminiConfiguration> implements APCminiView
 {

@@ -17,7 +17,7 @@ import de.mossgrabers.framework.view.sequencer.AbstractRaindropsView;
 /**
  * The Raindrops Sequencer view.
  *
- * @author J&uuml;rgen Mo&szlig;graber
+ * @author Jürgen Moßgraber
  */
 public class RaindropsView extends AbstractRaindropsView<MaschineJamControlSurface, MaschineJamConfiguration> implements IViewNavigation
 {

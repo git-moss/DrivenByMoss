@@ -34,7 +34,7 @@ import java.util.concurrent.CopyOnWriteArraySet;
 /**
  * The data of a track.
  *
- * @author J&uuml;rgen Mo&szlig;graber
+ * @author Jürgen Moßgraber
  */
 public class TrackImpl extends ChannelImpl implements ITrack
 {
@@ -387,14 +387,6 @@ public class TrackImpl extends ChannelImpl implements ITrack
     public boolean hasDrumDevice ()
     {
         return this.drumMachineDevice.exists ().get ();
-    }
-
-
-    /** {@inheritDoc} */
-    @Override
-    public void launchLastClipImmediately ()
-    {
-        this.track.launchLastClipWithOptions ("none", "continue_immediately");
     }
 
 

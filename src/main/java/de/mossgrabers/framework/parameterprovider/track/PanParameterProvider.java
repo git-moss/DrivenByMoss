@@ -13,7 +13,7 @@ import de.mossgrabers.framework.parameter.IParameter;
  * Get a number of parameters. This implementation provides all panorama parameters of the tracks of
  * the current channel bank.
  *
- * @author J&uuml;rgen Mo&szlig;graber
+ * @author Jürgen Moßgraber
  */
 public class PanParameterProvider extends AbstractTrackParameterProvider
 {

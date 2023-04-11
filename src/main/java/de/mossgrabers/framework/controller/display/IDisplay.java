@@ -7,7 +7,7 @@ package de.mossgrabers.framework.controller.display;
 /**
  * Interface to a display.
  *
- * @author J&uuml;rgen Mo&szlig;graber
+ * @author Jürgen Moßgraber
  */
 public interface IDisplay
 {

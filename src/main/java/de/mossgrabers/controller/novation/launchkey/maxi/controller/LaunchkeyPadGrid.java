@@ -16,7 +16,7 @@ import java.util.Map;
 /**
  * Implementation of the Launchkey grid of pads.
  *
- * @author J&uuml;rgen Mo&szlig;graber
+ * @author Jürgen Moßgraber
  */
 public class LaunchkeyPadGrid extends PadGridImpl
 {

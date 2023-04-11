@@ -16,7 +16,7 @@ import de.mossgrabers.framework.utils.ButtonEvent;
 /**
  * Mode to set the clips' loop length.
  *
- * @author J&uuml;rgen Mo&szlig;graber
+ * @author Jürgen Moßgraber
  */
 public class XLLoopLengthMode extends AbstractMode<LaunchControlXLControlSurface, LaunchControlXLConfiguration>
 {

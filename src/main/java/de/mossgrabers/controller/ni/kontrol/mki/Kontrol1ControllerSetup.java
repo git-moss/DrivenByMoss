@@ -58,7 +58,7 @@ import purejavahidapi.PureJavaHidApi;
 /**
  * Setup to support the Native Instruments Komplete Kontrol 1 Sxx controllers.
  *
- * @author J&uuml;rgen Mo&szlig;graber
+ * @author Jürgen Moßgraber
  */
 public class Kontrol1ControllerSetup extends AbstractControllerSetup<Kontrol1ControlSurface, Kontrol1Configuration>
 {

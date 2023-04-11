@@ -14,7 +14,7 @@ import de.mossgrabers.framework.utils.ButtonEvent;
 /**
  * Command for flipping the faders from controlling volume to controlling parameters.
  *
- * @author J&uuml;rgen Mo&szlig;graber
+ * @author Jürgen Moßgraber
  */
 public class MCUFlipCommand extends ToggleTrackBanksCommand<MCUControlSurface, MCUConfiguration>
 {

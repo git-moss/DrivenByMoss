@@ -17,7 +17,7 @@ import de.mossgrabers.framework.daw.data.IItem;
 /**
  * Editing of accent parameters.
  *
- * @author J&uuml;rgen Mo&szlig;graber
+ * @author Jürgen Moßgraber
  */
 public class AccentMode extends BaseMode<IItem>
 {

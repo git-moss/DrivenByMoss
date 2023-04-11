@@ -17,7 +17,7 @@ import java.util.List;
 /**
  * The configuration settings for Kontrol 1.
  *
- * @author J&uuml;rgen Mo&szlig;graber
+ * @author Jürgen Moßgraber
  */
 public class Kontrol1Configuration extends AbstractConfiguration
 {

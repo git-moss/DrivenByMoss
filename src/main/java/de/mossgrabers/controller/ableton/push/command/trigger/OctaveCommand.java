@@ -16,7 +16,7 @@ import de.mossgrabers.framework.view.TransposeView;
 /**
  * Command for the octave up/down keys.
  *
- * @author J&uuml;rgen Mo&szlig;graber
+ * @author Jürgen Moßgraber
  */
 public class OctaveCommand extends AbstractTriggerCommand<PushControlSurface, PushConfiguration>
 {

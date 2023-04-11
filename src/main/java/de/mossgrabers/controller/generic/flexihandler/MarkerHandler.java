@@ -18,7 +18,7 @@ import de.mossgrabers.framework.daw.data.bank.IMarkerBank;
 /**
  * The handler for marker commands.
  *
- * @author J&uuml;rgen Mo&szlig;graber
+ * @author Jürgen Moßgraber
  */
 public class MarkerHandler extends AbstractHandler
 {

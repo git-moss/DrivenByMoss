@@ -16,7 +16,7 @@ import com.bitwig.extension.controller.api.IntegerValue;
 /**
  * Encapsulates the data of a browser column entry.
  *
- * @author J&uuml;rgen Mo&szlig;graber
+ * @author Jürgen Moßgraber
  */
 public class BrowserColumnItemImpl extends AbstractItemImpl implements IBrowserColumnItem
 {

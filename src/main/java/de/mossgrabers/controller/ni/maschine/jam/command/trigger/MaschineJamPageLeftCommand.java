@@ -15,7 +15,7 @@ import de.mossgrabers.framework.utils.ButtonEvent;
 /**
  * Command for navigating to the previous mode page. Toggles metronome on shift.
  *
- * @author J&uuml;rgen Mo&szlig;graber
+ * @author Jürgen Moßgraber
  */
 public class MaschineJamPageLeftCommand extends ModeCursorCommand<MaschineJamControlSurface, MaschineJamConfiguration>
 {

@@ -17,7 +17,7 @@ import de.mossgrabers.framework.view.Views;
 /**
  * Command handle the stop button.
  *
- * @author J&uuml;rgen Mo&szlig;graber
+ * @author Jürgen Moßgraber
  */
 public class MaschineStopCommand extends StopCommand<MaschineControlSurface, MaschineConfiguration>
 {

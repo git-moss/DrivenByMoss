@@ -10,7 +10,7 @@ import de.mossgrabers.framework.daw.constants.Resolution;
 /**
  * Default implementation for the data about a note in a sequencer step.
  *
- * @author J&uuml;rgen Mo&szlig;graber
+ * @author Jürgen Moßgraber
  */
 public class DefaultStepInfo implements IStepInfo
 {

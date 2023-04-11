@@ -22,7 +22,7 @@ import java.util.Optional;
 /**
  * The handler for clip commands.
  *
- * @author J&uuml;rgen Mo&szlig;graber
+ * @author Jürgen Moßgraber
  */
 public class ClipHandler extends AbstractHandler
 {
@@ -58,6 +58,7 @@ public class ClipHandler extends AbstractHandler
             FlexiCommand.CLIP_NEXT,
             FlexiCommand.CLIP_SCROLL,
             FlexiCommand.CLIP_PLAY,
+            FlexiCommand.CLIP_PLAY_ALT,
             FlexiCommand.CLIP_STOP,
             FlexiCommand.CLIP_RECORD,
             FlexiCommand.CLIP_NEW,
@@ -76,7 +77,7 @@ public class ClipHandler extends AbstractHandler
             case CLIP_TOGGLE_PIN:
                 return this.model.getCursorClip ().isPinned () ? 127 : 0;
 
-            case CLIP_PLAY:
+            case CLIP_PLAY, CLIP_PLAY_ALT:
                 return selectedSlot.isPresent () && selectedSlot.get ().isPlaying () ? 127 : 0;
 
             case CLIP_STOP:
@@ -118,13 +119,10 @@ public class ClipHandler extends AbstractHandler
                 this.scrollClips (knobMode, value);
                 break;
 
-            case CLIP_PLAY:
-                if (isButtonPressed)
-                {
-                    final Optional<ISlot> selectedSlot = this.model.getSelectedSlot ();
-                    if (selectedSlot.isPresent ())
-                        selectedSlot.get ().launch ();
-                }
+            case CLIP_PLAY, CLIP_PLAY_ALT:
+                final Optional<ISlot> selectedSlot = this.model.getSelectedSlot ();
+                if (selectedSlot.isPresent ())
+                    selectedSlot.get ().launch (isButtonPressed, command == FlexiCommand.CLIP_PLAY_ALT);
                 break;
 
             case CLIP_STOP:
@@ -135,9 +133,9 @@ public class ClipHandler extends AbstractHandler
             case CLIP_RECORD:
                 if (isButtonPressed)
                 {
-                    final Optional<ISlot> selectedSlot = this.model.getSelectedSlot ();
-                    if (selectedSlot.isPresent ())
-                        selectedSlot.get ().startRecording ();
+                    final Optional<ISlot> selectedSlot2 = this.model.getSelectedSlot ();
+                    if (selectedSlot2.isPresent ())
+                        selectedSlot2.get ().startRecording ();
                 }
                 break;
 

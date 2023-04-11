@@ -14,6 +14,7 @@ import de.mossgrabers.framework.daw.data.IScene;
 import de.mossgrabers.framework.daw.data.bank.ISceneBank;
 import de.mossgrabers.framework.featuregroup.AbstractFeatureGroup;
 import de.mossgrabers.framework.featuregroup.AbstractView;
+import de.mossgrabers.framework.utils.ButtonEvent;
 import de.mossgrabers.framework.view.sequencer.AbstractSequencerView;
 
 
@@ -23,7 +24,7 @@ import de.mossgrabers.framework.view.sequencer.AbstractSequencerView;
  * @param <S> The type of the control surface
  * @param <C> The type of the configuration
  *
- * @author J&uuml;rgen Mo&szlig;graber
+ * @author Jürgen Moßgraber
  */
 public class ScenePlayView<S extends IControlSurface<C>, C extends Configuration> extends AbstractView<S, C>
 {
@@ -77,44 +78,7 @@ public class ScenePlayView<S extends IControlSurface<C>, C extends Configuration
     @Override
     public void onGridNote (final int note, final int velocity)
     {
-        if (velocity == 0)
-            return;
-
-        final int sceneIndex = note - 36;
-        final IScene scene = this.sceneBank.getItem (sceneIndex);
-
-        if (this.handleButtonCombinations (scene))
-            return;
-
-        scene.launch ();
-        scene.select ();
-    }
-
-
-    /**
-     * Handle buttons combinations on the grid, e.g. delete, duplicate.
-     *
-     * @param scene The scene which was pressed
-     * @return True if handled
-     */
-    protected boolean handleButtonCombinations (final IScene scene)
-    {
-        if (!scene.doesExist ())
-            return true;
-
-        if (this.isButtonCombination (ButtonID.DUPLICATE))
-        {
-            scene.duplicate ();
-            return true;
-        }
-
-        if (this.isButtonCombination (ButtonID.DELETE))
-        {
-            scene.remove ();
-            return true;
-        }
-
-        return false;
+        this.onSceneButton (ButtonID.get (ButtonID.SCENE1, note - 36), velocity > 0 ? ButtonEvent.DOWN : ButtonEvent.UP);
     }
 
 

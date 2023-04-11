@@ -18,7 +18,7 @@ import java.util.Optional;
 /**
  * The browse mode.
  *
- * @author J&uuml;rgen Mo&szlig;graber
+ * @author Jürgen Moßgraber
  */
 public class BrowseMode extends BaseMode
 {

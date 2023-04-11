@@ -21,7 +21,7 @@ import java.util.Optional;
 /**
  * Selects the previous/next send mode.
  *
- * @author J&uuml;rgen Mo&szlig;graber
+ * @author Jürgen Moßgraber
  */
 public class MaschineSendSelectCommand extends ModeMultiSelectCommand<MaschineControlSurface, MaschineConfiguration>
 {

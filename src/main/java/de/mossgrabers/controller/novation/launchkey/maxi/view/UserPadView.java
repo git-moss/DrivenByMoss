@@ -15,7 +15,7 @@ import de.mossgrabers.framework.featuregroup.AbstractView;
 /**
  * The pad mode user view.
  *
- * @author J&uuml;rgen Mo&szlig;graber
+ * @author Jürgen Moßgraber
  */
 public class UserPadView extends AbstractView<LaunchkeyMk3ControlSurface, LaunchkeyMk3Configuration>
 {

@@ -13,7 +13,7 @@ import com.bitwig.extension.controller.api.MidiOut;
 /**
  * A MIDI output
  *
- * @author J&uuml;rgen Mo&szlig;graber
+ * @author Jürgen Moßgraber
  */
 class MidiOutputImpl extends AbstractMidiOutput
 {

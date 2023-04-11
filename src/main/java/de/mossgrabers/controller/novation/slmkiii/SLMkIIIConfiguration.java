@@ -17,7 +17,7 @@ import java.util.List;
 /**
  * The configuration settings for the Novation SL MkIII.
  *
- * @author J&uuml;rgen Mo&szlig;graber
+ * @author Jürgen Moßgraber
  */
 public class SLMkIIIConfiguration extends AbstractConfiguration
 {

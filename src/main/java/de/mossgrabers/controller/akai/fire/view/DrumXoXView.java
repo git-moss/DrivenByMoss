@@ -43,7 +43,7 @@ import java.util.Optional;
 /**
  * The Drum view.
  *
- * @author J&uuml;rgen Mo&szlig;graber
+ * @author Jürgen Moßgraber
  */
 public class DrumXoXView extends AbstractDrumView<FireControlSurface, FireConfiguration> implements IFireView
 {
@@ -237,72 +237,35 @@ public class DrumXoXView extends AbstractDrumView<FireControlSurface, FireConfig
     }
 
 
-    /** {@inheritDoc} */
-    @Override
-    public void onGridNoteLongPress (final int note)
-    {
-        if (this.surface.isShiftPressed () || this.surface.isSelectPressed ())
-            return;
-
-        final int index = note - DRUM_START_KEY;
-        final int y = index / this.numColumns;
-        if (y < 3)
-            return;
-
-        final int clipIndex = index % this.numColumns;
-        final ISlot slot = this.slotBank.getItem (clipIndex);
-
-        slot.select ();
-        if (slot.hasContent ())
-        {
-            final String slotName = slot.getName ();
-            if (!slotName.isBlank ())
-                this.surface.getDisplay ().notify (slotName);
-        }
-
-        this.surface.getButton (ButtonID.get (ButtonID.PAD1, index)).setConsumed ();
-    }
-
-
     private void handleClipRow (final int clipIndex, final int velocity)
     {
         final ISlot slot = this.slotBank.getItem (clipIndex);
         final ITrack track = this.model.getCursorTrack ();
 
-        if (this.surface.isSelectPressed () && velocity != 0)
+        final boolean isPressed = velocity != 0;
+        if (isPressed)
         {
-            this.surface.setTriggerConsumed (ButtonID.SELECT);
-            slot.launchImmediately ();
-            return;
+            if (this.handleClipRowButtonCombinations (track, slot))
+                return;
+            if (this.configuration.isSelectClipOnLaunch ())
+                slot.select ();
         }
-
-        // Trigger on pad release to intercept long presses
-        if (velocity != 0 || this.handleClipRowButtonCombinations (track, slot))
-            return;
-
-        if (this.surface.getConfiguration ().isSelectClipOnLaunch ())
-            slot.select ();
 
         if (!track.isRecArm () || slot.hasContent ())
         {
-            // Needs to be called here to always reset the state!
-            final boolean wasLaunchedImmediately = slot.testAndClearLaunchedImmediately ();
-            if (this.surface.isSelectPressed ())
-                track.launchLastClipImmediately ();
-            else if (!wasLaunchedImmediately)
-                slot.launch ();
+            if (!this.surface.isShiftPressed ())
+                slot.launch (isPressed, this.surface.isPressed (ButtonID.ALT));
             return;
         }
 
-        final FireConfiguration configuration = this.surface.getConfiguration ();
-        switch (configuration.getActionForRecArmedPad ())
+        switch (this.configuration.getActionForRecArmedPad ())
         {
             case 0:
                 this.model.recordNoteClip (track, slot);
                 break;
 
             case 1:
-                final int lengthInBeats = configuration.getNewClipLenghthInBeats (this.model.getTransport ().getQuartersPerMeasure ());
+                final int lengthInBeats = this.configuration.getNewClipLenghthInBeats (this.model.getTransport ().getQuartersPerMeasure ());
                 this.model.createNoteClip (track, slot, lengthInBeats, true);
                 break;
 
@@ -588,13 +551,6 @@ public class DrumXoXView extends AbstractDrumView<FireControlSurface, FireConfig
         if (this.isButtonCombination (ButtonID.BROWSE))
         {
             this.model.getBrowser ().replace (slot);
-            return true;
-        }
-
-        // Select the clip (without playback)
-        if (this.isButtonCombination (ButtonID.ALT))
-        {
-            slot.select ();
             return true;
         }
 

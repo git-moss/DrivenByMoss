@@ -10,7 +10,7 @@ import de.mossgrabers.framework.controller.color.ColorEx;
 /**
  * Interface to a slot.
  *
- * @author J&uuml;rgen Mo&szlig;graber
+ * @author Jürgen Moßgraber
  */
 public interface ISlot extends IItem
 {
@@ -80,22 +80,11 @@ public interface ISlot extends IItem
 
     /**
      * Launch a clip.
-     */
-    void launch ();
-
-
-    /**
-     * Launch the clip immediately without any quantization.
-     */
-    void launchImmediately ();
-
-
-    /**
-     * Check if the slot was launched with immediately option and resets that state.
      *
-     * @return True if it was launched with immediately option
+     * @param isPressed If false, the release action is triggered as configured in the DAW.
+     * @param isAlternative If true, launch the alternative launch option as configured in the DAW.
      */
-    boolean testAndClearLaunchedImmediately ();
+    void launch (boolean isPressed, boolean isAlternative);
 
 
     /**

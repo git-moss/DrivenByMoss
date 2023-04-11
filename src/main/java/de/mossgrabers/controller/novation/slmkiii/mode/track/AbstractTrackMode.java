@@ -32,7 +32,7 @@ import java.util.Optional;
 /**
  * Abstract base mode for all track modes.
  *
- * @author J&uuml;rgen Mo&szlig;graber
+ * @author Jürgen Moßgraber
  */
 public abstract class AbstractTrackMode extends BaseMode<ITrack>
 {

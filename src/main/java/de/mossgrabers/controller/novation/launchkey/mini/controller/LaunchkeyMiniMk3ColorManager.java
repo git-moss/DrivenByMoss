@@ -19,7 +19,7 @@ import de.mossgrabers.framework.view.sequencer.AbstractSequencerView;
 /**
  * Different colors to use for the pads and buttons of Launchkey Mini Mk3.
  *
- * @author J&uuml;rgen Mo&szlig;graber
+ * @author Jürgen Moßgraber
  */
 @SuppressWarnings("javadoc")
 public class LaunchkeyMiniMk3ColorManager extends ColorManager

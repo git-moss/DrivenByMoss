@@ -11,7 +11,7 @@ import de.mossgrabers.framework.parameter.IParameter;
 /**
  * Interface to a send.
  *
- * @author J&uuml;rgen Mo&szlig;graber
+ * @author Jürgen Moßgraber
  */
 public interface ISend extends IParameter
 {
@@ -21,4 +21,18 @@ public interface ISend extends IParameter
      * @return The color in RGB
      */
     ColorEx getColor ();
+
+
+    /**
+     * Returns true if the send is enabled.
+     *
+     * @return True if enabled
+     */
+    boolean isEnabled ();
+
+
+    /**
+     * Toggle the enabled state of the send.
+     */
+    void toggleEnabled ();
 }

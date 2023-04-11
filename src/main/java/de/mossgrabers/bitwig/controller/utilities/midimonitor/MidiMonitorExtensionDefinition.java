@@ -20,7 +20,7 @@ import com.bitwig.extension.controller.api.ControllerHost;
 /**
  * Definition class for the MIDI Monitor.
  *
- * @author J&uuml;rgen Mo&szlig;graber
+ * @author Jürgen Moßgraber
  */
 public class MidiMonitorExtensionDefinition extends AbstractControllerExtensionDefinition<IControlSurface<MidiMonitorConfiguration>, MidiMonitorConfiguration>
 {

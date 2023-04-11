@@ -15,7 +15,7 @@ import java.util.UUID;
 /**
  * Interface for the description of a hardware control surface.
  *
- * @author J&uuml;rgen Mo&szlig;graber
+ * @author Jürgen Moßgraber
  */
 public interface IControllerDefinition
 {

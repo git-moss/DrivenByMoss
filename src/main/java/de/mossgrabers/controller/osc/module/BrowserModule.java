@@ -20,7 +20,7 @@ import java.util.LinkedList;
 /**
  * All browser related commands.
  *
- * @author J&uuml;rgen Mo&szlig;graber
+ * @author Jürgen Moßgraber
  */
 public class BrowserModule extends AbstractModule
 {

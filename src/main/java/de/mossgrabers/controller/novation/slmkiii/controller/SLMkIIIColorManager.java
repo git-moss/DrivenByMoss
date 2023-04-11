@@ -21,7 +21,7 @@ import de.mossgrabers.framework.view.sequencer.AbstractSequencerView;
 /**
  * Different colors to use for the pads and buttons of Novation SL MkIII.
  *
- * @author J&uuml;rgen Mo&szlig;graber
+ * @author Jürgen Moßgraber
  */
 @SuppressWarnings("javadoc")
 public class SLMkIIIColorManager extends ColorManager

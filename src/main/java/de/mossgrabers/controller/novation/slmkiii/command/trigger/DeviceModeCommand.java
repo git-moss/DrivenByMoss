@@ -19,7 +19,7 @@ import de.mossgrabers.framework.utils.ButtonEvent;
 /**
  * Command to trigger the Track modes.
  *
- * @author J&uuml;rgen Mo&szlig;graber
+ * @author Jürgen Moßgraber
  */
 public class DeviceModeCommand extends AbstractTriggerCommand<SLMkIIIControlSurface, SLMkIIIConfiguration>
 {

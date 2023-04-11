@@ -18,7 +18,7 @@ import java.util.Optional;
 /**
  * Extends volume layer or drum pad parameter provider with the specific layout of Push 2.
  *
- * @author J&uuml;rgen Mo&szlig;graber
+ * @author Jürgen Moßgraber
  */
 public class PushVolumeLayerOrDrumPadParameterProvider extends VolumeLayerOrDrumPadParameterProvider implements IItemSelectionObserver
 {

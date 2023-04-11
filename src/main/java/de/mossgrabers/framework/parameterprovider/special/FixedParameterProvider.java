@@ -18,7 +18,7 @@ import java.util.Set;
 /**
  * Get a number of parameters. This implementation provides a fixed number of parameters.
  *
- * @author J&uuml;rgen Mo&szlig;graber
+ * @author Jürgen Moßgraber
  */
 public class FixedParameterProvider implements IParameterProvider
 {

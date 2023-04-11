@@ -19,7 +19,7 @@ import java.util.function.Supplier;
 /**
  * Implementation of a proxy to a light / LED on a hardware controller.
  *
- * @author J&uuml;rgen Mo&szlig;graber
+ * @author Jürgen Moßgraber
  */
 public class HwLightImpl extends AbstractHwControl implements IHwLight
 {

@@ -30,7 +30,7 @@ import java.util.TreeMap;
 /**
  * The Bitwig implementation to create user interface widgets for settings.
  *
- * @author J&uuml;rgen Mo&szlig;graber
+ * @author Jürgen Moßgraber
  */
 public class SettingsUIImpl implements ISettingsUI
 {

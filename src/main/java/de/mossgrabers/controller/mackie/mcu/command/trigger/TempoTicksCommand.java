@@ -14,7 +14,7 @@ import de.mossgrabers.framework.utils.ButtonEvent;
 /**
  * Command to toggle the segment display between ticks and tempo.
  *
- * @author J&uuml;rgen Mo&szlig;graber
+ * @author Jürgen Moßgraber
  */
 public class TempoTicksCommand extends AbstractTriggerCommand<MCUControlSurface, MCUConfiguration>
 {

@@ -8,7 +8,7 @@ package de.mossgrabers.framework.scale;
  * Creates a scale matrix which has the same notes of the scale in each row. This can be used as a
  * basis for chords.
  *
- * @author J&uuml;rgen Mo&szlig;graber
+ * @author Jürgen Moßgraber
  */
 class ChordGrid
 {

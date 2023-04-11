@@ -23,7 +23,7 @@ import java.util.Map;
 /**
  * Mode for editing the cross-fade setting of all tracks.
  *
- * @author J&uuml;rgen Mo&szlig;graber
+ * @author Jürgen Moßgraber
  */
 public class CrossfadeMode extends AbstractTrackMode
 {

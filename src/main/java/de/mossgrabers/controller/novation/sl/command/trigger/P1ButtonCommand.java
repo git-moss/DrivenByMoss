@@ -15,7 +15,7 @@ import de.mossgrabers.framework.utils.ButtonEvent;
 /**
  * Command to handle the P1 buttons.
  *
- * @author J&uuml;rgen Mo&szlig;graber
+ * @author Jürgen Moßgraber
  */
 public class P1ButtonCommand extends AbstractTriggerCommand<SLControlSurface, SLConfiguration>
 {

@@ -17,7 +17,7 @@ import de.mossgrabers.framework.utils.ButtonEvent;
 /**
  * APC command for cursor arrow keys.
  *
- * @author J&uuml;rgen Mo&szlig;graber
+ * @author Jürgen Moßgraber
  */
 public class APCCursorCommand extends CursorCommand<APCControlSurface, APCConfiguration>
 {

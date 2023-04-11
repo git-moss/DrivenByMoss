@@ -13,7 +13,7 @@ import de.mossgrabers.framework.daw.IModel;
 /**
  * Dedicated Tap Tempo and Tempo Input Knob on MKI.
  *
- * @author J&uuml;rgen Mo&szlig;graber
+ * @author Jürgen Moßgraber
  */
 public class TapTempoInitMkICommand extends AbstractContinuousCommand<SLControlSurface, SLConfiguration>
 {

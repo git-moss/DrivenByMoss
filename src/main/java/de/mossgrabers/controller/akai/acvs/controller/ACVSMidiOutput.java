@@ -16,7 +16,7 @@ import java.util.Optional;
 /**
  * Wraps the MIDI output and adds helper methods for the ACVS system exclusive commands.
  *
- * @author J&uuml;rgen Mo&szlig;graber
+ * @author Jürgen Moßgraber
  */
 public class ACVSMidiOutput implements IMidiOutput
 {

@@ -10,7 +10,7 @@ import de.mossgrabers.framework.utils.ButtonEvent;
 /**
  * The No Operation command. Does nothing.
  *
- * @author J&uuml;rgen Mo&szlig;graber
+ * @author Jürgen Moßgraber
  */
 public class NopCommand implements TriggerCommand, ContinuousCommand
 {

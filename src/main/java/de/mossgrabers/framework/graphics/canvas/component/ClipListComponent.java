@@ -21,7 +21,7 @@ import java.util.List;
 /**
  * A component which contains several text items, which represent a clip. Each item can be selected.
  *
- * @author J&uuml;rgen Mo&szlig;graber
+ * @author Jürgen Moßgraber
  */
 public class ClipListComponent implements IComponent
 {

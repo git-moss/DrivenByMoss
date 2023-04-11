@@ -10,7 +10,7 @@ import de.mossgrabers.controller.generic.controller.FlexiCommand;
 /**
  * Exception for unsupported flexi commands.
  *
- * @author J&uuml;rgen Mo&szlig;graber
+ * @author Jürgen Moßgraber
  */
 public class FlexiHandlerException extends RuntimeException
 {

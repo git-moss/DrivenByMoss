@@ -15,7 +15,7 @@ import de.mossgrabers.framework.view.sequencer.AbstractSequencerView;
 /**
  * Different colors to use for the pads and buttons of LauchControl XL.
  *
- * @author J&uuml;rgen Mo&szlig;graber
+ * @author Jürgen Moßgraber
  */
 @SuppressWarnings("javadoc")
 public class LaunchControlXLColorManager extends ColorManager

@@ -9,7 +9,7 @@ package de.mossgrabers.framework.featuregroup;
  *
  * @param <E> The specific type of the ID enumeration
  *
- * @author J&uuml;rgen Mo&szlig;graber
+ * @author Jürgen Moßgraber
  */
 @FunctionalInterface
 public interface FeatureGroupChangeListener<E extends Enum<E>>

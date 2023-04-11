@@ -23,7 +23,7 @@ import java.util.Optional;
 /**
  * Mode for editing the volume of all device layers.
  *
- * @author J&uuml;rgen Mo&szlig;graber
+ * @author Jürgen Moßgraber
  */
 public class DeviceLayerVolumeMode extends DeviceLayerMode
 {

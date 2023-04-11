@@ -15,7 +15,7 @@ import de.mossgrabers.framework.utils.ButtonEvent;
 /**
  * The control button command.
  *
- * @author J&uuml;rgen Mo&szlig;graber
+ * @author Jürgen Moßgraber
  */
 public class MaschineJamControlCommand extends ModeMultiSelectCommand<MaschineJamControlSurface, MaschineJamConfiguration>
 {

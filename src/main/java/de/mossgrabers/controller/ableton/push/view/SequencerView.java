@@ -17,7 +17,7 @@ import de.mossgrabers.framework.view.sequencer.AbstractNoteSequencerView;
 /**
  * The Sequencer view.
  *
- * @author J&uuml;rgen Mo&szlig;graber
+ * @author Jürgen Moßgraber
  */
 public class SequencerView extends AbstractNoteSequencerView<PushControlSurface, PushConfiguration>
 {

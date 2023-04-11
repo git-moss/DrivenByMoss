@@ -119,7 +119,7 @@ import java.util.function.BooleanSupplier;
 /**
  * Support for the NI Maschine controller series.
  *
- * @author J&uuml;rgen Mo&szlig;graber
+ * @author Jürgen Moßgraber
  */
 public class MaschineControllerSetup extends AbstractControllerSetup<MaschineControlSurface, MaschineConfiguration>
 {
@@ -611,10 +611,7 @@ public class MaschineControllerSetup extends AbstractControllerSetup<MaschineCon
 
     private TriggerCommand createShiftViewFunction (final MaschineControlSurface surface, final int padIndex, final int shiftPadIndex)
     {
-        return (event, velocity) -> {
-            if (event == ButtonEvent.UP)
-                this.shiftView.executeFunction (surface.isShiftPressed () ? shiftPadIndex : padIndex);
-        };
+        return (event, velocity) -> this.shiftView.executeFunction (surface.isShiftPressed () ? shiftPadIndex : padIndex, event);
     }
 
 

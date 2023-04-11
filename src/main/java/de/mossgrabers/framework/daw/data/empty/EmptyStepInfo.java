@@ -12,7 +12,7 @@ import de.mossgrabers.framework.daw.clip.StepState;
 /**
  * Default data for an empty step info.
  *
- * @author J&uuml;rgen Mo&szlig;graber
+ * @author Jürgen Moßgraber
  */
 public class EmptyStepInfo implements IStepInfo
 {

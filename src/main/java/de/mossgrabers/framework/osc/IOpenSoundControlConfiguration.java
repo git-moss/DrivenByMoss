@@ -7,7 +7,7 @@ package de.mossgrabers.framework.osc;
 /**
  * The configuration interface for OSC settings.
  *
- * @author J&uuml;rgen Mo&szlig;graber
+ * @author Jürgen Moßgraber
  */
 public interface IOpenSoundControlConfiguration
 {

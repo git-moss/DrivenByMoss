@@ -17,7 +17,7 @@ import java.util.List;
 /**
  * The configuration settings for Electra.One.
  *
- * @author J&uuml;rgen Mo&szlig;graber
+ * @author Jürgen Moßgraber
  */
 public class ElectraOneConfiguration extends AbstractConfiguration
 {

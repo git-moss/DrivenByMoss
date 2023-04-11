@@ -13,7 +13,7 @@ import com.bitwig.extension.controller.api.Mixer;
 /**
  * Interface to the Mixer.
  *
- * @author J&uuml;rgen Mo&szlig;graber
+ * @author Jürgen Moßgraber
  */
 public class MixerImpl implements IMixer
 {

@@ -7,7 +7,7 @@ package de.mossgrabers.framework.controller;
 /**
  * IDs for output controls (display, etc.).
  *
- * @author J&uuml;rgen Mo&szlig;graber
+ * @author Jürgen Moßgraber
  */
 public enum OutputID
 {

@@ -29,7 +29,7 @@ import java.util.Optional;
 /**
  * The handler for track commands.
  *
- * @author J&uuml;rgen Mo&szlig;graber
+ * @author Jürgen Moßgraber
  */
 public class TrackHandler extends AbstractHandler
 {

@@ -20,7 +20,7 @@ import de.mossgrabers.framework.utils.ButtonEvent;
 /**
  * Selection of the automation mode.
  *
- * @author J&uuml;rgen Mo&szlig;graber
+ * @author Jürgen Moßgraber
  */
 public class AutomationSelectionMode extends BaseMode<IItem>
 {

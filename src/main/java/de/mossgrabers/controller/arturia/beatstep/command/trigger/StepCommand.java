@@ -15,7 +15,7 @@ import de.mossgrabers.framework.view.Views;
 /**
  * Use the steps buttons of the Beatstep Pro for better navigation of the views.
  *
- * @author J&uuml;rgen Mo&szlig;graber
+ * @author Jürgen Moßgraber
  */
 public class StepCommand extends AbstractTriggerCommand<BeatstepControlSurface, BeatstepConfiguration>
 {

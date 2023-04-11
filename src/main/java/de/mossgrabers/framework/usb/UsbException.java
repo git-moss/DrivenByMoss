@@ -7,7 +7,7 @@ package de.mossgrabers.framework.usb;
 /**
  * An exception caused by using USB.
  *
- * @author J&uuml;rgen Mo&szlig;graber
+ * @author Jürgen Moßgraber
  */
 public class UsbException extends Exception
 {

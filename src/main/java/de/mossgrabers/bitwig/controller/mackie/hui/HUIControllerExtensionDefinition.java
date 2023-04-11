@@ -20,7 +20,7 @@ import com.bitwig.extension.controller.api.ControllerHost;
 /**
  * Definition class for the Mackie MCU protocol.
  *
- * @author J&uuml;rgen Mo&szlig;graber
+ * @author Jürgen Moßgraber
  */
 public class HUIControllerExtensionDefinition extends AbstractControllerExtensionDefinition<HUIControlSurface, HUIConfiguration>
 {

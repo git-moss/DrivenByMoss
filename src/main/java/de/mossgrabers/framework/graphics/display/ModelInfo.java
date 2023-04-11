@@ -13,7 +13,7 @@ import java.util.List;
 /**
  * Wrapper class for drawing data.
  *
- * @author J&uuml;rgen Mo&szlig;graber
+ * @author Jürgen Moßgraber
  */
 public class ModelInfo
 {

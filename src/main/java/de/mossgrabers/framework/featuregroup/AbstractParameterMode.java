@@ -34,7 +34,7 @@ import java.util.function.BooleanSupplier;
  * @param <C> The type of the configuration
  * @param <B> The type of the item bank
  *
- * @author J&uuml;rgen Mo&szlig;graber
+ * @author Jürgen Moßgraber
  */
 public abstract class AbstractParameterMode<S extends IControlSurface<C>, C extends Configuration, B extends IItem> extends AbstractMode<S, C> implements IParametersAdjustObserver
 {

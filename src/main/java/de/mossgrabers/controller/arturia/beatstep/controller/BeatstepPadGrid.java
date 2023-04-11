@@ -13,7 +13,7 @@ import de.mossgrabers.framework.utils.StringUtils;
 /**
  * The pad grid of the Beatstep.
  *
- * @author J&uuml;rgen Mo&szlig;graber
+ * @author Jürgen Moßgraber
  */
 public class BeatstepPadGrid extends PadGridImpl
 {

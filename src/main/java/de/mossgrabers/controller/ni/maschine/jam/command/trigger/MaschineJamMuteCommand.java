@@ -15,7 +15,7 @@ import de.mossgrabers.framework.utils.ButtonEvent;
 /**
  * Command for the Maschine Jam Mute button.
  *
- * @author J&uuml;rgen Mo&szlig;graber
+ * @author Jürgen Moßgraber
  */
 public class MaschineJamMuteCommand extends AbstractTriggerCommand<MaschineJamControlSurface, MaschineJamConfiguration>
 {

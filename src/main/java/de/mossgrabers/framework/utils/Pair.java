@@ -10,7 +10,7 @@ package de.mossgrabers.framework.utils;
  * @param <T1> The type of the first value
  * @param <T2> The type of the second value
  *
- * @author J&uuml;rgen Mo&szlig;graber
+ * @author Jürgen Moßgraber
  */
 public class Pair<T1, T2>
 {

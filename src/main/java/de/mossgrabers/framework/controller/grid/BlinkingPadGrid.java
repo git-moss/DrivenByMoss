@@ -16,7 +16,7 @@ import java.util.TreeMap;
 /**
  * Implementation of a grid of pads with software simulated blinking pads.
  *
- * @author J&uuml;rgen Mo&szlig;graber
+ * @author Jürgen Moßgraber
  */
 public abstract class BlinkingPadGrid extends PadGridImpl
 {

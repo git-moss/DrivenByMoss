@@ -30,7 +30,7 @@ import de.mossgrabers.framework.utils.StringUtils;
 /**
  * The session mode. Provides 5 scenes and 5x5 clips.
  *
- * @author J&uuml;rgen Mo&szlig;graber
+ * @author Jürgen Moßgraber
  */
 public class SessionMode extends AbstractElectraOneMode
 {
@@ -122,11 +122,13 @@ public class SessionMode extends AbstractElectraOneMode
     @Override
     public void onButton (final int row, final int index, final ButtonEvent event)
     {
-        if (event != ButtonEvent.DOWN)
+        if (event == ButtonEvent.LONG)
             return;
 
         if (index == 5)
         {
+            if (event != ButtonEvent.DOWN)
+                return;
             switch (row)
             {
                 case 2:
@@ -160,20 +162,24 @@ public class SessionMode extends AbstractElectraOneMode
             switch (this.sessionUI)
             {
                 case NORMAL:
-                    sceneBank.getItem (index).launch ();
+                    sceneBank.getItem (index).launch (event == ButtonEvent.DOWN, false);
                     break;
                 case FUNCTIONS:
-                    this.clipFunction = index;
+                    if (event == ButtonEvent.DOWN)
+                        this.clipFunction = index;
                     break;
                 case NAVIGATION:
-                    if (index == 0)
-                        tb.selectPreviousPage ();
-                    else if (index == 1)
-                        tb.selectNextPage ();
-                    else if (index == 3)
-                        sceneBank.selectPreviousPage ();
-                    else if (index == 4)
-                        sceneBank.selectNextPage ();
+                    if (event == ButtonEvent.DOWN)
+                    {
+                        if (index == 0)
+                            tb.selectPreviousPage ();
+                        else if (index == 1)
+                            tb.selectNextPage ();
+                        else if (index == 3)
+                            sceneBank.selectPreviousPage ();
+                        else if (index == 4)
+                            sceneBank.selectNextPage ();
+                    }
                     break;
             }
             return;
@@ -188,10 +194,12 @@ public class SessionMode extends AbstractElectraOneMode
         {
             case NORMAL:
                 if (slot.doesExist () && slot.hasContent ())
-                    slot.launch ();
+                    slot.launch (event == ButtonEvent.DOWN, false);
                 break;
 
             case FUNCTIONS:
+                if (event != ButtonEvent.DOWN)
+                    return;
                 switch (this.clipFunction)
                 {
                     // New
@@ -226,6 +234,8 @@ public class SessionMode extends AbstractElectraOneMode
                 break;
 
             case NAVIGATION:
+                if (event != ButtonEvent.DOWN)
+                    return;
                 // Calculate page offsets
                 final int numTracks = tb.getPageSize ();
                 final int numScenes = sceneBank.getPageSize ();

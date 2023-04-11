@@ -7,7 +7,7 @@ package de.mossgrabers.framework.graphics;
 /**
  * All necessary data for drawing a component in a graphics context.
  *
- * @author J&uuml;rgen Mo&szlig;graber
+ * @author Jürgen Moßgraber
  */
 public interface IGraphicsInfo
 {

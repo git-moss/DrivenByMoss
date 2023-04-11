@@ -21,7 +21,7 @@ import de.mossgrabers.framework.utils.StringUtils;
 /**
  * Editing of accent parameters.
  *
- * @author J&uuml;rgen Mo&szlig;graber
+ * @author Jürgen Moßgraber
  */
 public class MarkerMode extends BaseMode<IMarker>
 {

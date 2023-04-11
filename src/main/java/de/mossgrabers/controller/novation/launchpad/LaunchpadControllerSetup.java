@@ -108,7 +108,7 @@ import java.util.Set;
 /**
  * Support for several Novation Launchpad controllers.
  *
- * @author J&uuml;rgen Mo&szlig;graber
+ * @author Jürgen Moßgraber
  */
 public class LaunchpadControllerSetup extends AbstractControllerSetup<LaunchpadControlSurface, LaunchpadConfiguration>
 {

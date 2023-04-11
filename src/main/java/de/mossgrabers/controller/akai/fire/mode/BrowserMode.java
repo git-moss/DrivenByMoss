@@ -24,7 +24,7 @@ import java.util.Locale;
 /**
  * Mode for navigating the browser.
  *
- * @author J&uuml;rgen Mo&szlig;graber
+ * @author Jürgen Moßgraber
  */
 public class BrowserMode extends AbstractParameterMode<FireControlSurface, FireConfiguration, IItem>
 {

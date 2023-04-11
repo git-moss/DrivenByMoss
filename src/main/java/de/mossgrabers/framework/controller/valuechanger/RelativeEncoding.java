@@ -7,7 +7,7 @@ package de.mossgrabers.framework.controller.valuechanger;
 /**
  * Different encoding types for relative knob values.
  *
- * @author J&uuml;rgen Mo&szlig;graber
+ * @author Jürgen Moßgraber
  */
 public enum RelativeEncoding
 {

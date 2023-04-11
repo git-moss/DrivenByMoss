@@ -13,7 +13,7 @@ import java.util.List;
 /**
  * All configuration parameters for the model.
  *
- * @author J&uuml;rgen Mo&szlig;graber
+ * @author Jürgen Moßgraber
  */
 public class ModelSetup
 {

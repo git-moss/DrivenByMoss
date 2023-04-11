@@ -15,7 +15,7 @@ import de.mossgrabers.framework.featuregroup.AbstractParameterMode;
 /**
  * Mode for modifying several play/sequence options.
  *
- * @author J&uuml;rgen Mo&szlig;graber
+ * @author Jürgen Moßgraber
  */
 public class PlayOptionsMode extends AbstractParameterMode<SLControlSurface, SLConfiguration, IItem>
 {

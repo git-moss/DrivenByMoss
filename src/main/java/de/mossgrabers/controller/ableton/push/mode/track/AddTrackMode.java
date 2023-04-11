@@ -28,7 +28,7 @@ import java.util.Optional;
 /**
  * Menu for adding tracks.
  *
- * @author J&uuml;rgen Mo&szlig;graber
+ * @author Jürgen Moßgraber
  */
 public class AddTrackMode extends BaseMode<IItem>
 {

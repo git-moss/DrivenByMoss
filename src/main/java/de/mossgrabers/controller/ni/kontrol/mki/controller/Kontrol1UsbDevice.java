@@ -20,7 +20,7 @@ import java.util.Optional;
 /**
  * USB connection for display and UI controls of Kontrol 1.
  *
- * @author J&uuml;rgen Mo&szlig;graber
+ * @author Jürgen Moßgraber
  */
 public class Kontrol1UsbDevice
 {

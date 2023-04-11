@@ -42,7 +42,7 @@ import java.util.function.Supplier;
  *
  * @param <C> The type of the configuration
  *
- * @author J&uuml;rgen Mo&szlig;graber
+ * @author Jürgen Moßgraber
  */
 public interface IControlSurface<C extends Configuration>
 {

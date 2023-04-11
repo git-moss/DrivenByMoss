@@ -3,7 +3,7 @@ package de.mossgrabers.controller.novation.launchcontrol.mode;
 /**
  * Additional methods for XL modes.
  *
- * @author J&uuml;rgen Mo&szlig;graber
+ * @author Jürgen Moßgraber
  */
 public interface IXLMode
 {

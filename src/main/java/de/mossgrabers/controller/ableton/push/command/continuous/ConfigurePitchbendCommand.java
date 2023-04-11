@@ -20,7 +20,7 @@ import de.mossgrabers.framework.utils.ButtonEvent;
 /**
  * Command to trigger the configuration for pitchbend.
  *
- * @author J&uuml;rgen Mo&szlig;graber
+ * @author Jürgen Moßgraber
  */
 public class ConfigurePitchbendCommand extends AbstractTriggerCommand<PushControlSurface, PushConfiguration>
 {

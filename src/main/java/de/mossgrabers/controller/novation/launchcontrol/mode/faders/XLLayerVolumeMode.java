@@ -21,7 +21,7 @@ import java.util.List;
 /**
  * Mode for editing a volume parameter of all layers.
  *
- * @author J&uuml;rgen Mo&szlig;graber
+ * @author Jürgen Moßgraber
  */
 public class XLLayerVolumeMode extends AbstractParameterMode<LaunchControlXLControlSurface, LaunchControlXLConfiguration, ILayer>
 {

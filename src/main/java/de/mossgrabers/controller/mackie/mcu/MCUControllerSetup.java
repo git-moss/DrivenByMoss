@@ -114,7 +114,7 @@ import java.util.Set;
 /**
  * Support for the Mackie MCU protocol.
  *
- * @author J&uuml;rgen Mo&szlig;graber
+ * @author Jürgen Moßgraber
  */
 public class MCUControllerSetup extends AbstractControllerSetup<MCUControlSurface, MCUConfiguration>
 {

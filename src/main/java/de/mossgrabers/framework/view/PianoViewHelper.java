@@ -17,7 +17,7 @@ import de.mossgrabers.framework.utils.KeyManager;
  * Piano view helper methods. Since the piano view is sub-classed from the PlayView it cannot be
  * sub-classed from an abstract piano view. To not repeat the code here are the helper functions.
  *
- * @author J&uuml;rgen Mo&szlig;graber
+ * @author Jürgen Moßgraber
  */
 public class PianoViewHelper
 {

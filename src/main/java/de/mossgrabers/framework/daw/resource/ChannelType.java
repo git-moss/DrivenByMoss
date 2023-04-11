@@ -11,7 +11,7 @@ import java.util.Map;
 /**
  * The different types of channels.
  *
- * @author J&uuml;rgen Mo&szlig;graber
+ * @author Jürgen Moßgraber
  */
 public enum ChannelType
 {

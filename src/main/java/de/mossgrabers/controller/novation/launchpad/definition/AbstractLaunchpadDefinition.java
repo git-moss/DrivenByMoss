@@ -22,7 +22,7 @@ import java.util.UUID;
 /**
  * Abstract base class for non-pro Launchpads.
  *
- * @author J&uuml;rgen Mo&szlig;graber
+ * @author Jürgen Moßgraber
  */
 public abstract class AbstractLaunchpadDefinition extends DefaultControllerDefinition implements ILaunchpadControllerDefinition
 {

@@ -29,7 +29,7 @@ import java.util.Optional;
 /**
  * The interface to all data and access to the DAW.
  *
- * @author J&uuml;rgen Mo&szlig;graber
+ * @author Jürgen Moßgraber
  */
 public interface IModel
 {

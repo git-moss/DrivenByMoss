@@ -20,7 +20,7 @@ import de.mossgrabers.framework.daw.midi.IMidiOutput;
 /**
  * The NI Maschine control surface.
  *
- * @author J&uuml;rgen Mo&szlig;graber
+ * @author Jürgen Moßgraber
  */
 @SuppressWarnings("javadoc")
 public class MaschineControlSurface extends AbstractMaschineControlSurface<MaschineConfiguration>

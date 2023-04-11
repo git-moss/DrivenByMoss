@@ -14,7 +14,7 @@ import de.mossgrabers.framework.utils.KeyManager;
  * Interface to a view. A view contains a grid of pads and a number of buttons to which commands can
  * be assigned.
  *
- * @author J&uuml;rgen Mo&szlig;graber
+ * @author Jürgen Moßgraber
  */
 public interface IView extends IFeatureGroup
 {

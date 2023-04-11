@@ -12,7 +12,7 @@ import de.mossgrabers.framework.daw.ITransport;
 /**
  * A parameter implementation for changing the loop start position.
  *
- * @author J&uuml;rgen Mo&szlig;graber
+ * @author Jürgen Moßgraber
  */
 public class LoopStartParameter extends AbstractParameterImpl
 {

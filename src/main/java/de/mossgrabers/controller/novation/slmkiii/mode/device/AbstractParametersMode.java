@@ -21,7 +21,7 @@ import de.mossgrabers.framework.mode.Modes;
  *
  * @param <B> The type of the item bank
  *
- * @author J&uuml;rgen Mo&szlig;graber
+ * @author Jürgen Moßgraber
  */
 public abstract class AbstractParametersMode<B extends IItem> extends BaseMode<B>
 {

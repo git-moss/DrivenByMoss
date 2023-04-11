@@ -7,7 +7,7 @@ package de.mossgrabers.controller.generic.controller;
 /**
  * All categories for commands.
  *
- * @author J&uuml;rgen Mo&szlig;graber
+ * @author Jürgen Moßgraber
  */
 @SuppressWarnings("javadoc")
 public enum CommandCategory

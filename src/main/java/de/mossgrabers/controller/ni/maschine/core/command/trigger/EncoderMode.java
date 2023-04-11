@@ -7,7 +7,7 @@ package de.mossgrabers.controller.ni.maschine.core.command.trigger;
 /**
  * The mode of the encoder knob.
  *
- * @author J&uuml;rgen Mo&szlig;graber
+ * @author Jürgen Moßgraber
  */
 public enum EncoderMode
 {

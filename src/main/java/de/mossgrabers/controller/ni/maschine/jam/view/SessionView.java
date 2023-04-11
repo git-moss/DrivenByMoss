@@ -24,7 +24,7 @@ import de.mossgrabers.framework.view.AbstractSessionView;
 /**
  * The Session view.
  *
- * @author J&uuml;rgen Mo&szlig;graber
+ * @author Jürgen Moßgraber
  */
 public class SessionView extends AbstractSessionView<MaschineJamControlSurface, MaschineJamConfiguration> implements IViewNavigation
 {
@@ -83,8 +83,7 @@ public class SessionView extends AbstractSessionView<MaschineJamControlSurface, 
 
         switch (buttonID)
         {
-            case ARROW_LEFT:
-            case ARROW_RIGHT:
+            case ARROW_LEFT, ARROW_RIGHT:
                 if (isDown)
                 {
                     if (flipSession)
@@ -94,8 +93,7 @@ public class SessionView extends AbstractSessionView<MaschineJamControlSurface, 
                 }
                 break;
 
-            case ARROW_UP:
-            case ARROW_DOWN:
+            case ARROW_UP, ARROW_DOWN:
                 if (isDown)
                 {
                     if (flipSession)
@@ -170,13 +168,11 @@ public class SessionView extends AbstractSessionView<MaschineJamControlSurface, 
 
         switch (direction)
         {
-            case LEFT:
-            case RIGHT:
+            case LEFT, RIGHT:
                 if (flipSession)
                     return direction == Direction.LEFT ? trackBank.getSceneBank ().canScrollPageBackwards () : trackBank.getSceneBank ().canScrollPageForwards ();
                 return direction == Direction.LEFT ? trackBank.canScrollPageBackwards () : trackBank.canScrollPageForwards ();
-            case UP:
-            case DOWN:
+            case UP, DOWN:
                 if (flipSession)
                     return direction == Direction.UP ? trackBank.canScrollPageBackwards () : trackBank.canScrollPageForwards ();
                 return direction == Direction.UP ? trackBank.getSceneBank ().canScrollPageBackwards () : trackBank.getSceneBank ().canScrollPageForwards ();

@@ -13,7 +13,7 @@ import de.mossgrabers.framework.daw.IModel;
 /**
  * Abstract base class for views with 8 faders.
  *
- * @author J&uuml;rgen Mo&szlig;graber
+ * @author Jürgen Moßgraber
  */
 public abstract class AbstractFaderView extends SessionView
 {

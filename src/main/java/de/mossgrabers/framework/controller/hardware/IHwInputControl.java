@@ -10,7 +10,7 @@ import de.mossgrabers.framework.daw.midi.IMidiInput;
 /**
  * A input control on a controller surface.
  *
- * @author J&uuml;rgen Mo&szlig;graber
+ * @author Jürgen Moßgraber
  */
 public interface IHwInputControl extends IHwControl
 {

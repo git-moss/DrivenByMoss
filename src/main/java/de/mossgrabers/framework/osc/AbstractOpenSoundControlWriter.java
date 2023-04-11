@@ -19,7 +19,7 @@ import java.util.Map;
 /**
  * Base class for sending OSC messages to an OSC server.
  *
- * @author J&uuml;rgen Mo&szlig;graber
+ * @author Jürgen Moßgraber
  */
 public abstract class AbstractOpenSoundControlWriter implements IOpenSoundControlWriter
 {

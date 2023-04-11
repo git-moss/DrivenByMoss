@@ -15,7 +15,7 @@ import java.util.UUID;
 /**
  * Definition class for the Akai APCmini controller extension.
  *
- * @author J&uuml;rgen Mo&szlig;graber
+ * @author Jürgen Moßgraber
  */
 public class APCminiControllerDefinition extends DefaultControllerDefinition
 {

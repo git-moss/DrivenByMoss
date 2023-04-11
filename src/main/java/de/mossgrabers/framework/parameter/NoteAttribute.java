@@ -7,7 +7,7 @@ package de.mossgrabers.framework.parameter;
 /**
  * Enumeration of all attributes of a note which can be edited.
  *
- * @author J&uuml;rgen Mo&szlig;graber
+ * @author Jürgen Moßgraber
  */
 public enum NoteAttribute
 {

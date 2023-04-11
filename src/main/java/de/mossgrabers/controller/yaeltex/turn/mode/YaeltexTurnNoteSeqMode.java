@@ -34,7 +34,7 @@ import java.util.Map;
 /**
  * Track mix mode with note sequencer editing for the Yaeltex Turn.
  *
- * @author J&uuml;rgen Mo&szlig;graber
+ * @author Jürgen Moßgraber
  */
 public class YaeltexTurnNoteSeqMode extends YaeltexTurnTrackMixMode implements INoteMode
 {

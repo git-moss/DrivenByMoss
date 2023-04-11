@@ -15,7 +15,7 @@ import de.mossgrabers.framework.utils.ButtonEvent;
 /**
  * Command to handle the P2 buttons.
  *
- * @author J&uuml;rgen Mo&szlig;graber
+ * @author Jürgen Moßgraber
  */
 public class P2ButtonCommand extends AbstractTriggerCommand<SLControlSurface, SLConfiguration>
 {

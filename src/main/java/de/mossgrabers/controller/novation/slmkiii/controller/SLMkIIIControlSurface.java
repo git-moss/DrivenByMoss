@@ -18,7 +18,7 @@ import de.mossgrabers.framework.utils.StringUtils;
 /**
  * The Novation SLmkIII control surface.
  *
- * @author J&uuml;rgen Mo&szlig;graber
+ * @author Jürgen Moßgraber
  */
 @SuppressWarnings("javadoc")
 public class SLMkIIIControlSurface extends AbstractControlSurface<SLMkIIIConfiguration>

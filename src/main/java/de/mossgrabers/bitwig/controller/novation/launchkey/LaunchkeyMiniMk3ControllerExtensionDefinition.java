@@ -20,7 +20,7 @@ import com.bitwig.extension.controller.api.ControllerHost;
 /**
  * Definition class for the Launchkey Mini Mk3 controller extension.
  *
- * @author J&uuml;rgen Mo&szlig;graber
+ * @author Jürgen Moßgraber
  */
 public class LaunchkeyMiniMk3ControllerExtensionDefinition extends AbstractControllerExtensionDefinition<LaunchkeyMiniMk3ControlSurface, LaunchkeyMiniMk3Configuration>
 {

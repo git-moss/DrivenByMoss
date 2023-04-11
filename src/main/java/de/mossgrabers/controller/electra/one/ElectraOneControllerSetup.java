@@ -38,7 +38,7 @@ import de.mossgrabers.framework.view.Views;
 /**
  * Support for the Electra.One controller.
  *
- * @author J&uuml;rgen Mo&szlig;graber
+ * @author Jürgen Moßgraber
  */
 public class ElectraOneControllerSetup extends AbstractControllerSetup<ElectraOneControlSurface, ElectraOneConfiguration>
 {

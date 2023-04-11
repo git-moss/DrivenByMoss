@@ -17,7 +17,7 @@ import de.mossgrabers.framework.utils.ButtonEvent;
 /**
  * Command to edit the Pan and Sends of tracks.
  *
- * @author J&uuml;rgen Mo&szlig;graber
+ * @author Jürgen Moßgraber
  */
 public class PanSendCommand extends AbstractTriggerCommand<PushControlSurface, PushConfiguration>
 {

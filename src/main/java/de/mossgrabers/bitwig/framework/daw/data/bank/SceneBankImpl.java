@@ -19,7 +19,7 @@ import com.bitwig.extension.controller.api.SceneBank;
  * Encapsulates the data of a scene bank. Note: Navigating Scenes does not update the cursor track's
  * clips page, this needs to be kept in sync manually.
  *
- * @author J&uuml;rgen Mo&szlig;graber
+ * @author Jürgen Moßgraber
  */
 public class SceneBankImpl extends AbstractItemBankImpl<SceneBank, IScene> implements ISceneBank
 {

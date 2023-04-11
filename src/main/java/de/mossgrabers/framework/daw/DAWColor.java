@@ -12,7 +12,7 @@ import java.util.List;
 /**
  * Support for handling the colors used in the DAW.
  *
- * @author J&uuml;rgen Mo&szlig;graber
+ * @author Jürgen Moßgraber
  */
 public enum DAWColor
 {

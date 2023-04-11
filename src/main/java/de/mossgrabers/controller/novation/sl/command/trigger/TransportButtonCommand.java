@@ -16,7 +16,7 @@ import de.mossgrabers.framework.utils.ButtonEvent;
 /**
  * Command to handle the Transport button.
  *
- * @author J&uuml;rgen Mo&szlig;graber
+ * @author Jürgen Moßgraber
  */
 public class TransportButtonCommand extends AbstractTriggerCommand<SLControlSurface, SLConfiguration>
 {

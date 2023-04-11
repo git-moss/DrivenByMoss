@@ -25,7 +25,7 @@ import java.util.UUID;
 /**
  * Encapsulates the data of a Bitwig equalizer EQ+ device.
  *
- * @author J&uuml;rgen Mo&szlig;graber
+ * @author Jürgen Moßgraber
  */
 public class EqualizerDeviceImpl extends SpecificDeviceImpl implements IEqualizerDevice
 {

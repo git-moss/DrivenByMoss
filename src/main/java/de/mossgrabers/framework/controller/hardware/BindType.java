@@ -7,7 +7,7 @@ package de.mossgrabers.framework.controller.hardware;
 /**
  * Types of MIDI data which can be bound to a hardware element.
  *
- * @author J&uuml;rgen Mo&szlig;graber
+ * @author Jürgen Moßgraber
  */
 public enum BindType
 {

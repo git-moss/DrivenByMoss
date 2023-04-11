@@ -21,7 +21,7 @@ import java.util.Optional;
 /**
  * The Device view.
  *
- * @author J&uuml;rgen Mo&szlig;graber
+ * @author Jürgen Moßgraber
  */
 public class DeviceView extends AbstractView<BeatstepControlSurface, BeatstepConfiguration> implements BeatstepView
 {

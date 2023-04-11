@@ -21,7 +21,7 @@ import java.util.Optional;
 /**
  * Volume mode.
  *
- * @author J&uuml;rgen Mo&szlig;graber
+ * @author Jürgen Moßgraber
  */
 public class VolumeMode extends AbstractKontrol1Mode<ITrack>
 {

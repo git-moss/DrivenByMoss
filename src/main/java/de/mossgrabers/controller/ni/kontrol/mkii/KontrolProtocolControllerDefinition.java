@@ -15,7 +15,7 @@ import java.util.List;
 /**
  * Definition class for the Kontrol MkII extension using the NI MIDI host protocol.
  *
- * @author J&uuml;rgen Mo&szlig;graber
+ * @author Jürgen Moßgraber
  */
 public class KontrolProtocolControllerDefinition extends DefaultControllerDefinition
 {

@@ -16,7 +16,7 @@ import de.mossgrabers.framework.utils.ButtonEvent;
 /**
  * Command for navigating mode pages and items. Scrolls the play cursor when used with Shift.
  *
- * @author J&uuml;rgen Mo&szlig;graber
+ * @author Jürgen Moßgraber
  */
 public class YaeltexTurnModeCursorCommand extends ModeCursorCommand<YaeltexTurnControlSurface, YaeltexTurnConfiguration>
 {

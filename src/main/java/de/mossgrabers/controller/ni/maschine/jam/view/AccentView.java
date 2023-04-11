@@ -20,7 +20,7 @@ import de.mossgrabers.framework.view.Views;
 /**
  * View to select the velocity for new notes.
  *
- * @author J&uuml;rgen Mo&szlig;graber
+ * @author Jürgen Moßgraber
  */
 public class AccentView extends AbstractView<MaschineJamControlSurface, MaschineJamConfiguration> implements IMaschineView
 {

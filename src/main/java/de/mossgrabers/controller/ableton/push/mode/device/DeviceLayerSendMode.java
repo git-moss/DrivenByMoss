@@ -26,7 +26,7 @@ import java.util.Optional;
 /**
  * Mode for editing a all sends of a device layer.
  *
- * @author J&uuml;rgen Mo&szlig;graber
+ * @author Jürgen Moßgraber
  */
 public class DeviceLayerSendMode extends DeviceLayerMode
 {
@@ -70,6 +70,10 @@ public class DeviceLayerSendMode extends DeviceLayerMode
 
         layer.getSendBank ().getItem (this.sendIndex).touchValue (isTouched);
         this.checkStopAutomationOnKnobRelease (isTouched);
+
+        // Toggle send enablement
+        if (isTouched && this.surface.isShiftPressed () && this.surface.isSelectPressed () && this.getParameterProvider ().get (index) instanceof final ISend send)
+            send.toggleEnabled ();
     }
 
 
@@ -125,7 +129,7 @@ public class DeviceLayerSendMode extends DeviceLayerMode
             {
                 final ISend send = sendBank.getItem (j);
                 final boolean exists = send.doesExist ();
-                sendData[j] = new SendData (send.getName (), exists && this.sendIndex == j && this.isKnobTouched (i) ? send.getDisplayedValue () : "", exists ? send.getValue () : 0, exists ? send.getModulatedValue () : 0, this.sendIndex == j);
+                sendData[j] = new SendData (send.isEnabled (), send.getName (), exists && this.sendIndex == j && this.isKnobTouched (i) ? send.getDisplayedValue () : "", exists ? send.getValue () : 0, exists ? send.getModulatedValue () : 0, this.sendIndex == j);
             }
 
             display.addSendsElement (topMenu, isTopMenuOn, layer.doesExist () ? layer.getName () : "", ChannelType.LAYER, this.bank.getItem (offset + i).getColor (), layer.isSelected (), sendData, false, layer.isActivated (), layer.isActivated ());

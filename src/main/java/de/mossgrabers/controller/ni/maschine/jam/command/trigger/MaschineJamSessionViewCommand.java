@@ -21,7 +21,7 @@ import de.mossgrabers.framework.view.Views;
 /**
  * Command to select the session view.
  *
- * @author J&uuml;rgen Mo&szlig;graber
+ * @author Jürgen Moßgraber
  */
 public class MaschineJamSessionViewCommand extends AbstractTriggerCommand<MaschineJamControlSurface, MaschineJamConfiguration>
 {

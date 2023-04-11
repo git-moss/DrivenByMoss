@@ -13,7 +13,7 @@ import de.mossgrabers.framework.scale.Scales;
 /**
  * Different colors to use for the pads and buttons of Beatstep.
  *
- * @author J&uuml;rgen Mo&szlig;graber
+ * @author Jürgen Moßgraber
  */
 @SuppressWarnings("javadoc")
 public class BeatstepColorManager extends ColorManager

@@ -7,7 +7,7 @@ package de.mossgrabers.framework.usb;
 /**
  * Interface for a callback when an asynchronous transmission has finished.
  *
- * @author J&uuml;rgen Mo&szlig;graber
+ * @author Jürgen Moßgraber
  */
 public interface IUsbCallback
 {

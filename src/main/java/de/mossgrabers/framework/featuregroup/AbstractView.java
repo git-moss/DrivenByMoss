@@ -12,6 +12,7 @@ import de.mossgrabers.framework.controller.IControlSurface;
 import de.mossgrabers.framework.controller.hardware.IHwButton;
 import de.mossgrabers.framework.daw.DAWColor;
 import de.mossgrabers.framework.daw.IModel;
+import de.mossgrabers.framework.daw.data.IScene;
 import de.mossgrabers.framework.daw.data.ITrack;
 import de.mossgrabers.framework.scale.Scales;
 import de.mossgrabers.framework.utils.ButtonEvent;
@@ -24,7 +25,7 @@ import de.mossgrabers.framework.utils.KeyManager;
  * @param <S> The type of the control surface
  * @param <C> The type of the configuration
  *
- * @author J&uuml;rgen Mo&szlig;graber
+ * @author Jürgen Moßgraber
  */
 public abstract class AbstractView<S extends IControlSurface<C>, C extends Configuration> extends AbstractFeatureGroup<S, C> implements IView
 {
@@ -226,5 +227,82 @@ public abstract class AbstractView<S extends IControlSurface<C>, C extends Confi
         final AbstractTriggerCommand<?, ?> triggerCommand = (AbstractTriggerCommand<?, ?>) button.getCommand ();
         triggerCommand.executeShifted (ButtonEvent.DOWN);
         triggerCommand.executeShifted (ButtonEvent.UP);
+    }
+
+
+    /**
+     * Handle presses on a scene button.
+     *
+     * @param buttonID The ID of the scene button
+     * @param event The button event
+     */
+    protected void onSceneButton (final ButtonID buttonID, final ButtonEvent event)
+    {
+        if (!ButtonID.isSceneButton (buttonID) || event == ButtonEvent.LONG)
+            return;
+
+        final int index = buttonID.ordinal () - ButtonID.SCENE1.ordinal ();
+        final IScene scene = this.model.getCurrentTrackBank ().getSceneBank ().getItem (index);
+
+        final boolean isPressed = event == ButtonEvent.DOWN;
+        if (isPressed)
+        {
+            if (this.handleSceneButtonCombinations (index, scene))
+                return;
+            scene.select ();
+            this.surface.getDisplay ().notify (scene.getName ());
+            // Only select the scene
+            if (this.isSceneSelectAction ())
+                return;
+        }
+
+        scene.launch (isPressed, this.isSceneLaunchAlternateAction ());
+    }
+
+
+    /**
+     * Should the alternative action of the scene launch be executed?
+     *
+     * @return True to execute the alternative action
+     */
+    protected boolean isSceneLaunchAlternateAction ()
+    {
+        return this.surface.isSelectPressed ();
+    }
+
+
+    /**
+     * Should the scene only be selected and not launched?
+     *
+     * @return True to only select
+     */
+    protected boolean isSceneSelectAction ()
+    {
+        return this.surface.isShiftPressed ();
+    }
+
+
+    /**
+     * Handle buttons combinations with scene buttons.
+     *
+     * @param index The index of the scene button
+     * @param scene The scene
+     * @return True if handled by this method
+     */
+    protected boolean handleSceneButtonCombinations (final int index, final IScene scene)
+    {
+        if (this.isButtonCombination (ButtonID.DELETE))
+        {
+            scene.remove ();
+            return true;
+        }
+
+        if (this.isButtonCombination (ButtonID.DUPLICATE))
+        {
+            scene.duplicate ();
+            return true;
+        }
+
+        return false;
     }
 }

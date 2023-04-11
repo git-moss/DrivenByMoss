@@ -14,7 +14,7 @@ import de.mossgrabers.framework.utils.ButtonEvent;
 /**
  * Command handle the session button (only MkII).
  *
- * @author J&uuml;rgen Mo&szlig;graber
+ * @author Jürgen Moßgraber
  */
 public class SessionRecordCommand extends AbstractTriggerCommand<APCControlSurface, APCConfiguration>
 {

@@ -16,7 +16,7 @@ import de.mossgrabers.framework.utils.StringUtils;
 /**
  * The Midi Monitor control surface.
  *
- * @author J&uuml;rgen Mo&szlig;graber
+ * @author Jürgen Moßgraber
  */
 public class MidiMonitorControlSurface extends AbstractControlSurface<MidiMonitorConfiguration>
 {

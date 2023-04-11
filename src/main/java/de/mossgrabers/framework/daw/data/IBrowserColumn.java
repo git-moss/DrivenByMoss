@@ -7,7 +7,7 @@ package de.mossgrabers.framework.daw.data;
 /**
  * Interface to a browser column.
  *
- * @author J&uuml;rgen Mo&szlig;graber
+ * @author Jürgen Moßgraber
  */
 public interface IBrowserColumn extends IItem
 {

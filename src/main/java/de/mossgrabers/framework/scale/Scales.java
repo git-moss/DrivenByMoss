@@ -18,7 +18,7 @@ import java.util.Map;
  * available including transpositions by octaves. Furthermore, specific matrices are supported for a
  * drum, a piano and a sequencer layout.
  *
- * @author J&uuml;rgen Mo&szlig;graber
+ * @author Jürgen Moßgraber
  */
 public class Scales
 {

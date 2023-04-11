@@ -23,7 +23,7 @@ import java.util.List;
 /**
  * Color states to use for the Maschine buttons.
  *
- * @author J&uuml;rgen Mo&szlig;graber
+ * @author Jürgen Moßgraber
  */
 @SuppressWarnings("javadoc")
 public class MaschineColorManager extends ColorManager

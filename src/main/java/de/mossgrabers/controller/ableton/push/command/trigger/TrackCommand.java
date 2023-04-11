@@ -20,7 +20,7 @@ import java.util.Optional;
 /**
  * Command to edit track parameters.
  *
- * @author J&uuml;rgen Mo&szlig;graber
+ * @author Jürgen Moßgraber
  */
 public class TrackCommand extends AbstractTriggerCommand<PushControlSurface, PushConfiguration>
 {

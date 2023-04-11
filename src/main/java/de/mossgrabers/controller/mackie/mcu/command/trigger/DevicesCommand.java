@@ -16,7 +16,7 @@ import de.mossgrabers.framework.utils.ButtonEvent;
 /**
  * Command to show/hide the devices pane.
  *
- * @author J&uuml;rgen Mo&szlig;graber
+ * @author Jürgen Moßgraber
  */
 public class DevicesCommand extends ModeMultiSelectCommand<MCUControlSurface, MCUConfiguration>
 {

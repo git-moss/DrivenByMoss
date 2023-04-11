@@ -19,7 +19,7 @@ import java.util.List;
 /**
  * The configuration settings for Launchpad.
  *
- * @author J&uuml;rgen Mo&szlig;graber
+ * @author Jürgen Moßgraber
  */
 public class LaunchpadConfiguration extends AbstractConfiguration
 {

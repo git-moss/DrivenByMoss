@@ -14,7 +14,7 @@ import de.mossgrabers.framework.utils.ButtonEvent;
 /**
  * Command for toggling the fixed velocity.
  *
- * @author J&uuml;rgen Mo&szlig;graber
+ * @author Jürgen Moßgraber
  */
 public class ToggleFixedVelCommand extends AbstractTriggerCommand<MaschineControlSurface, MaschineConfiguration>
 {

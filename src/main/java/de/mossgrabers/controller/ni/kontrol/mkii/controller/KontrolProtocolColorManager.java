@@ -14,7 +14,7 @@ import de.mossgrabers.framework.featuregroup.AbstractMode;
 /**
  * Different colors to use for the buttons of Komplete Kontrol MkII.
  *
- * @author J&uuml;rgen Mo&szlig;graber
+ * @author Jürgen Moßgraber
  */
 public class KontrolProtocolColorManager extends ColorManager
 {

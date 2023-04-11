@@ -19,7 +19,7 @@ import de.mossgrabers.framework.utils.ButtonEvent;
 /**
  * Command to trigger the 16 buttons for solo/mute and monitor/rec arm.
  *
- * @author J&uuml;rgen Mo&szlig;graber
+ * @author Jürgen Moßgraber
  */
 public class ButtonAreaCommand extends AbstractTriggerCommand<SLMkIIIControlSurface, SLMkIIIConfiguration>
 {

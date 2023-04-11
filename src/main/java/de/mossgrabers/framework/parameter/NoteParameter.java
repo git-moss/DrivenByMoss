@@ -27,7 +27,7 @@ import java.util.function.Supplier;
 /**
  * A parameter implementation for editing a parameter of a note.
  *
- * @author J&uuml;rgen Mo&szlig;graber
+ * @author Jürgen Moßgraber
  */
 public class NoteParameter extends AbstractParameterImpl
 {

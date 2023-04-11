@@ -18,7 +18,7 @@ import de.mossgrabers.framework.utils.ButtonEvent;
 /**
  * The Program Change view.
  *
- * @author J&uuml;rgen Mo&szlig;graber
+ * @author Jürgen Moßgraber
  */
 public class PrgChangeView extends AbstractView<PushControlSurface, PushConfiguration>
 {

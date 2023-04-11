@@ -22,7 +22,7 @@ import java.util.Set;
 /**
  * Command to select a view (play, (drum-) sequencers and clip views).
  *
- * @author J&uuml;rgen Mo&szlig;graber
+ * @author Jürgen Moßgraber
  */
 public class SelectMainViewCommand extends AbstractTriggerCommand<LaunchpadControlSurface, LaunchpadConfiguration>
 {

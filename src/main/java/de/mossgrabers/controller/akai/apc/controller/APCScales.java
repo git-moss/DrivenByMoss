@@ -11,7 +11,7 @@ import de.mossgrabers.framework.scale.Scales;
 /**
  * Changes matrices to different grid note mapping of the APC40.
  *
- * @author J&uuml;rgen Mo&szlig;graber
+ * @author Jürgen Moßgraber
  */
 public class APCScales extends Scales
 {

@@ -7,7 +7,7 @@ package de.mossgrabers.framework.controller.grid;
 /**
  * Interface to a grid of pads.
  *
- * @author J&uuml;rgen Mo&szlig;graber
+ * @author Jürgen Moßgraber
  */
 public interface IPadGrid extends ILightGuide
 {

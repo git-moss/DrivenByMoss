@@ -7,7 +7,7 @@ package de.mossgrabers.framework.observer;
 /**
  * Callback interface for observing notes.
  *
- * @author J&uuml;rgen Mo&szlig;graber
+ * @author Jürgen Moßgraber
  */
 @FunctionalInterface
 public interface INoteObserver

@@ -12,7 +12,7 @@ import de.mossgrabers.framework.utils.StringUtils;
 /**
  * Encapsulates a parameter and calls its' reset method in changeValue and setValue.
  *
- * @author J&uuml;rgen Mo&szlig;graber
+ * @author Jürgen Moßgraber
  */
 public class ResetParameter implements IParameter
 {

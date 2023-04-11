@@ -10,7 +10,7 @@ import de.mossgrabers.framework.parameter.IParameter;
 /**
  * A temporary mode.
  *
- * @author J&uuml;rgen Mo&szlig;graber
+ * @author Jürgen Moßgraber
  */
 public class XLTemporaryButtonMode extends AbstractParameterMode<LaunchControlXLControlSurface, LaunchControlXLConfiguration, IParameter>
 {

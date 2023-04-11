@@ -15,7 +15,7 @@ import de.mossgrabers.framework.utils.ButtonEvent;
  * Command to duplicate an object (clip, track, ...) depending on the context. Using shift toggles
  * Repeat.
  *
- * @author J&uuml;rgen Mo&szlig;graber
+ * @author Jürgen Moßgraber
  */
 public class LaunchpadDuplicateCommand extends DuplicateCommand<LaunchpadControlSurface, LaunchpadConfiguration>
 {

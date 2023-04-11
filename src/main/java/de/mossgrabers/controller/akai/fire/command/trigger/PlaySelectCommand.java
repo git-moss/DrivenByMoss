@@ -19,7 +19,7 @@ import de.mossgrabers.framework.view.Views;
 /**
  * Command to toggle between Play and Piano.
  *
- * @author J&uuml;rgen Mo&szlig;graber
+ * @author Jürgen Moßgraber
  */
 public class PlaySelectCommand extends ViewMultiSelectCommand<FireControlSurface, FireConfiguration>
 {

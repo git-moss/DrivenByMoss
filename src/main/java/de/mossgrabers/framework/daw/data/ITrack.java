@@ -14,7 +14,7 @@ import java.util.Arrays;
 /**
  * Interface to a track.
  *
- * @author J&uuml;rgen Mo&szlig;graber
+ * @author Jürgen Moßgraber
  */
 public interface ITrack extends IChannel
 {
@@ -265,10 +265,4 @@ public interface ITrack extends IChannel
      * @return True if it contains a drum device
      */
     boolean hasDrumDevice ();
-
-
-    /**
-     * Switch to the previous playing clip of the track and immediately start it.
-     */
-    void launchLastClipImmediately ();
 }

@@ -15,7 +15,7 @@ import de.mossgrabers.framework.view.BrowserView;
 /**
  * The Browser view.
  *
- * @author J&uuml;rgen Mo&szlig;graber
+ * @author Jürgen Moßgraber
  */
 public class APCMiniBrowserView extends BrowserView<APCminiControlSurface, APCminiConfiguration> implements APCminiView
 {

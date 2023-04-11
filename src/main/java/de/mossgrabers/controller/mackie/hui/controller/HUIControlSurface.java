@@ -32,7 +32,7 @@ import java.util.Map;
 /**
  * A control surface which supports the HUI protocol.
  *
- * @author J&uuml;rgen Mo&szlig;graber
+ * @author Jürgen Moßgraber
  */
 @SuppressWarnings("javadoc")
 public class HUIControlSurface extends AbstractControlSurface<HUIConfiguration>

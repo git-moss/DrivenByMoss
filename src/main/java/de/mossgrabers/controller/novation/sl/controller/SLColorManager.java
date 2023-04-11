@@ -13,7 +13,7 @@ import de.mossgrabers.framework.controller.grid.IPadGrid;
 /**
  * Color states to use for the Maschine Mikro Mk3 buttons.
  *
- * @author J&uuml;rgen Mo&szlig;graber
+ * @author Jürgen Moßgraber
  */
 public class SLColorManager extends ColorManager
 {

@@ -16,7 +16,7 @@ import de.mossgrabers.framework.featuregroup.AbstractParameterMode;
 /**
  * Mode for selecting the length of new clips.
  *
- * @author J&uuml;rgen Mo&szlig;graber
+ * @author Jürgen Moßgraber
  */
 public class FixedMode extends AbstractParameterMode<SLControlSurface, SLConfiguration, IItem>
 {

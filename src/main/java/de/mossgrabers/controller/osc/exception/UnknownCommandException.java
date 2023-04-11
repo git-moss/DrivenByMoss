@@ -7,7 +7,7 @@ package de.mossgrabers.controller.osc.exception;
 /**
  * Exception for an unknown OSC command.
  *
- * @author J&uuml;rgen Mo&szlig;graber
+ * @author Jürgen Moßgraber
  */
 public class UnknownCommandException extends Exception
 {

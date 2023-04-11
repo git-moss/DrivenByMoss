@@ -24,7 +24,7 @@ import de.mossgrabers.framework.utils.Timeout;
 /**
  * The Select button.
  *
- * @author J&uuml;rgen Mo&szlig;graber
+ * @author Jürgen Moßgraber
  */
 public class SelectKnobCommand extends AbstractContinuousCommand<FireControlSurface, FireConfiguration>
 {

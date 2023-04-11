@@ -13,7 +13,7 @@ import java.util.List;
 /**
  * Interface to a note editing mode.
  *
- * @author J&uuml;rgen Mo&szlig;graber
+ * @author Jürgen Moßgraber
  */
 public interface INoteMode
 {

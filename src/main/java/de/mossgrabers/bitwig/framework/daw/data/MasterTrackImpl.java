@@ -22,7 +22,7 @@ import java.util.List;
 /**
  * The master track.
  *
- * @author J&uuml;rgen Mo&szlig;graber
+ * @author Jürgen Moßgraber
  */
 public class MasterTrackImpl extends TrackImpl implements IMasterTrack
 {

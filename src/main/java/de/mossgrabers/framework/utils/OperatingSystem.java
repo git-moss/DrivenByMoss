@@ -10,7 +10,7 @@ import java.util.Locale;
 /**
  * Enumerations for different operating systems.
  *
- * @author J&uuml;rgen Mo&szlig;graber
+ * @author Jürgen Moßgraber
  */
 public enum OperatingSystem
 {

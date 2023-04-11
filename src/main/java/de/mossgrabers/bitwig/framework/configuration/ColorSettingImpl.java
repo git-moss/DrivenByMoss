@@ -16,7 +16,7 @@ import com.bitwig.extension.controller.api.Setting;
 /**
  * Bitwig implementation of a color setting.
  *
- * @author J&uuml;rgen Mo&szlig;graber
+ * @author Jürgen Moßgraber
  */
 public class ColorSettingImpl extends AbstractSetting implements IColorSetting
 {

@@ -17,7 +17,7 @@ import de.mossgrabers.framework.view.sequencer.AbstractPolySequencerView;
 /**
  * The Poly Sequencer view.
  *
- * @author J&uuml;rgen Mo&szlig;graber
+ * @author Jürgen Moßgraber
  */
 public class PolySequencerView extends AbstractPolySequencerView<MaschineJamControlSurface, MaschineJamConfiguration> implements IViewNavigation
 {

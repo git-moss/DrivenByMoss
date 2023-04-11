@@ -14,7 +14,7 @@ import de.mossgrabers.framework.view.AbstractDrum64View;
 /**
  * The Drum 64 view.
  *
- * @author J&uuml;rgen Mo&szlig;graber
+ * @author Jürgen Moßgraber
  */
 public class DrumView64 extends AbstractDrum64View<FireControlSurface, FireConfiguration> implements IFireView
 {

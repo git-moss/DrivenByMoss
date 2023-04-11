@@ -19,7 +19,7 @@ import com.bitwig.extension.controller.api.UsbTransferDirection;
 /**
  * Implementation for an USB end-point.
  *
- * @author J&uuml;rgen Mo&szlig;graber
+ * @author Jürgen Moßgraber
  */
 public class UsbEndpointImpl implements IUsbEndpoint
 {

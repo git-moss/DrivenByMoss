@@ -7,7 +7,7 @@ package de.mossgrabers.framework.command.core;
 /**
  * An aftertouch command.
  *
- * @author J&uuml;rgen Mo&szlig;graber
+ * @author Jürgen Moßgraber
  */
 public interface AftertouchCommand
 {

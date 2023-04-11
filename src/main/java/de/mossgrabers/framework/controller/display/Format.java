@@ -7,7 +7,7 @@ package de.mossgrabers.framework.controller.display;
 /**
  * Different options how to format values.
  *
- * @author J&uuml;rgen Mo&szlig;graber
+ * @author Jürgen Moßgraber
  */
 public enum Format
 {

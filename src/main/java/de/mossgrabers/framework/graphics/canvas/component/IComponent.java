@@ -10,7 +10,7 @@ import de.mossgrabers.framework.graphics.IGraphicsInfo;
 /**
  * A component/element which can be drawn on the canvas. It can draw itself on the canvas.
  *
- * @author J&uuml;rgen Mo&szlig;graber
+ * @author Jürgen Moßgraber
  */
 public interface IComponent
 {

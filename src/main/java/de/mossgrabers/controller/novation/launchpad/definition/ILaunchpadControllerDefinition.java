@@ -16,7 +16,7 @@ import java.util.Optional;
 /**
  * Additional configuration options for the different Launchpad models.
  *
- * @author J&uuml;rgen Mo&szlig;graber
+ * @author Jürgen Moßgraber
  */
 public interface ILaunchpadControllerDefinition
 {

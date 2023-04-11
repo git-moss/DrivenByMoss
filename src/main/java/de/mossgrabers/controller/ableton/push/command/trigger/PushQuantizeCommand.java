@@ -17,7 +17,7 @@ import de.mossgrabers.framework.utils.ButtonEvent;
 /**
  * Command to quantize the currently selected clip.
  *
- * @author J&uuml;rgen Mo&szlig;graber
+ * @author Jürgen Moßgraber
  */
 public class PushQuantizeCommand extends QuantizeCommand<PushControlSurface, PushConfiguration>
 {

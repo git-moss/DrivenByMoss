@@ -13,7 +13,7 @@ import com.bitwig.extension.controller.api.HardwareTextDisplay;
 /**
  * Implementation of a proxy to a text display on a hardware controller.
  *
- * @author J&uuml;rgen Mo&szlig;graber
+ * @author Jürgen Moßgraber
  */
 public class HwTextDisplayImpl extends AbstractHwControl implements IHwTextDisplay
 {

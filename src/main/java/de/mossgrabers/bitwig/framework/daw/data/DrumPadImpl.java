@@ -15,7 +15,7 @@ import com.bitwig.extension.controller.api.DrumPad;
 /**
  * The data of a channel.
  *
- * @author J&uuml;rgen Mo&szlig;graber
+ * @author Jürgen Moßgraber
  */
 public class DrumPadImpl extends LayerImpl implements IDrumPad
 {

@@ -15,7 +15,7 @@ import java.util.UUID;
 /**
  * Definition class for the NI Maschine Mikro Mk3 controller extension.
  *
- * @author J&uuml;rgen Mo&szlig;graber
+ * @author Jürgen Moßgraber
  */
 public class MaschineMikroMk3ControllerDefinition extends DefaultControllerDefinition
 {

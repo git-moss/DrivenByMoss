@@ -15,7 +15,7 @@ import java.util.Optional;
 /**
  * Mode for editing the panorama of all tracks.
  *
- * @author J&uuml;rgen Mo&szlig;graber
+ * @author Jürgen Moßgraber
  */
 public class PanMode extends AbstractTrackMode
 {

@@ -12,7 +12,7 @@ package de.mossgrabers.framework.controller.valuechanger;
  * @see <a href=
  *      "https://en.wikipedia.org/wiki/Two%27s_complement">https://en.wikipedia.org/wiki/Two%27s_complement</a>
  *
- * @author J&uuml;rgen Mo&szlig;graber
+ * @author Jürgen Moßgraber
  */
 public class TwosComplementValueChanger implements IValueChanger
 {

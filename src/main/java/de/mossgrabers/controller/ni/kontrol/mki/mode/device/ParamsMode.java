@@ -25,7 +25,7 @@ import java.util.Set;
 /**
  * Edit parameters mode.
  *
- * @author J&uuml;rgen Mo&szlig;graber
+ * @author Jürgen Moßgraber
  */
 public class ParamsMode extends AbstractKontrol1Mode<IParameter>
 {

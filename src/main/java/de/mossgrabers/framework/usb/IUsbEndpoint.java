@@ -10,7 +10,7 @@ import de.mossgrabers.framework.daw.IMemoryBlock;
 /**
  * Interface to an USB end-point.
  *
- * @author J&uuml;rgen Mo&szlig;graber
+ * @author Jürgen Moßgraber
  */
 public interface IUsbEndpoint
 {

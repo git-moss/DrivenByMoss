@@ -22,7 +22,7 @@ import java.util.List;
 /**
  * The volume mode. The knobs control the volumes of the tracks on the current track page.
  *
- * @author J&uuml;rgen Mo&szlig;graber
+ * @author Jürgen Moßgraber
  */
 public class LaunchkeyMk3VolumeMode extends TrackVolumeMode<LaunchkeyMk3ControlSurface, LaunchkeyMk3Configuration>
 {

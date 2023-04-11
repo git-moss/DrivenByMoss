@@ -15,7 +15,7 @@ import de.mossgrabers.framework.mode.Modes;
 /**
  * Command to change the volumes of the current track bank.
  *
- * @author J&uuml;rgen Mo&szlig;graber
+ * @author Jürgen Moßgraber
  */
 public class FaderCommand extends AbstractContinuousCommand<SLControlSurface, SLConfiguration>
 {

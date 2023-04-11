@@ -14,7 +14,7 @@ import java.util.List;
 /**
  * Helper class for managing notes which are edited.
  *
- * @author J&uuml;rgen Mo&szlig;graber
+ * @author Jürgen Moßgraber
  */
 public class NoteEditor implements INoteMode
 {

@@ -20,7 +20,7 @@ import java.util.List;
 /**
  * The 8 faders control the 8 gains of the EQ bands.
  *
- * @author J&uuml;rgen Mo&szlig;graber
+ * @author Jürgen Moßgraber
  */
 public class XLEqGainMode extends AbstractParameterMode<LaunchControlXLControlSurface, LaunchControlXLConfiguration, IParameter>
 {

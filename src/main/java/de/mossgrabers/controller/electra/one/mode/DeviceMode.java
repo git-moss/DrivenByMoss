@@ -31,7 +31,7 @@ import de.mossgrabers.framework.utils.StringUtils;
 /**
  * The device mode. The knobs control 8 parameters of the current page.
  *
- * @author J&uuml;rgen Mo&szlig;graber
+ * @author Jürgen Moßgraber
  */
 public class DeviceMode extends AbstractElectraOneMode
 {

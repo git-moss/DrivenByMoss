@@ -46,7 +46,7 @@ import java.util.Optional;
  * There are no real modes in the ACVS protocol which can be controlled. Therefore, everything is in
  * one mode.
  *
- * @author J&uuml;rgen Mo&szlig;graber
+ * @author Jürgen Moßgraber
  */
 public class ControlMode extends AbstractParameterMode<ACVSControlSurface, ACVSConfiguration, IChannel>
 {

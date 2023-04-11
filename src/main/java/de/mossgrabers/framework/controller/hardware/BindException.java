@@ -7,7 +7,7 @@ package de.mossgrabers.framework.controller.hardware;
 /**
  * Exception for a not supported MIDI binding.
  *
- * @author J&uuml;rgen Mo&szlig;graber
+ * @author Jürgen Moßgraber
  */
 public class BindException extends RuntimeException
 {

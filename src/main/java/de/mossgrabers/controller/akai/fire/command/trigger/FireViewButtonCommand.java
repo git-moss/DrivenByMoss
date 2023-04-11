@@ -17,7 +17,7 @@ import de.mossgrabers.framework.utils.ButtonEvent;
 /**
  * Command to relay a command to the active view. Special handling if browser mode is active.
  *
- * @author J&uuml;rgen Mo&szlig;graber
+ * @author Jürgen Moßgraber
  */
 public class FireViewButtonCommand extends ViewButtonCommand<FireControlSurface, FireConfiguration>
 {

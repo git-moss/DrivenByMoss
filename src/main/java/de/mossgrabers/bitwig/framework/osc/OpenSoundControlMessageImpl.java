@@ -14,7 +14,7 @@ import java.util.List;
 /**
  * Data class for storing the values of an OSC message.
  *
- * @author J&uuml;rgen Mo&szlig;graber
+ * @author Jürgen Moßgraber
  */
 public class OpenSoundControlMessageImpl implements IOpenSoundControlMessage
 {

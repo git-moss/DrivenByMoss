@@ -15,6 +15,7 @@ import de.mossgrabers.framework.featuregroup.AbstractFeatureGroup;
 import de.mossgrabers.framework.mode.Modes;
 import de.mossgrabers.framework.mode.device.SelectedDeviceMode;
 import de.mossgrabers.framework.parameter.IParameter;
+import de.mossgrabers.framework.utils.ButtonEvent;
 
 import java.util.Optional;
 
@@ -22,7 +23,7 @@ import java.util.Optional;
 /**
  * The Parameter view.
  *
- * @author J&uuml;rgen Mo&szlig;graber
+ * @author Jürgen Moßgraber
  */
 public class ParameterView extends BaseView
 {
@@ -40,8 +41,11 @@ public class ParameterView extends BaseView
 
     /** {@inheritDoc} */
     @Override
-    protected void executeFunction (final int padIndex)
+    protected void executeFunction (final int padIndex, final ButtonEvent buttonEvent)
     {
+        if (buttonEvent != ButtonEvent.DOWN)
+            return;
+
         final ICursorDevice cursorDevice = this.model.getCursorDevice ();
         final IHost host = this.model.getHost ();
         if (!cursorDevice.doesExist ())

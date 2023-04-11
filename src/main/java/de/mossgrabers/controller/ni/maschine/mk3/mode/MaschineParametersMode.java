@@ -21,7 +21,7 @@ import de.mossgrabers.framework.utils.StringUtils;
 /**
  * Mode for editing the parameters of the selected device.
  *
- * @author J&uuml;rgen Mo&szlig;graber
+ * @author Jürgen Moßgraber
  */
 public class MaschineParametersMode extends SelectedDeviceMode<MaschineControlSurface, MaschineConfiguration>
 {

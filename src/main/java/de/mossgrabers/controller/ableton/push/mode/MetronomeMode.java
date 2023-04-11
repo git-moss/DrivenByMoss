@@ -20,7 +20,7 @@ import de.mossgrabers.framework.utils.ButtonEvent;
 /**
  * Editing of transport parameters.
  *
- * @author J&uuml;rgen Mo&szlig;graber
+ * @author Jürgen Moßgraber
  */
 public class MetronomeMode extends BaseMode<IItem>
 {

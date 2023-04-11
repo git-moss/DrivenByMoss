@@ -8,7 +8,7 @@ package de.mossgrabers.framework.controller.valuechanger;
  * Implementation for relative values encoded in Offset Binary (e.g. used by Beatstep).<br/>
  * [0..127] = [-64..63] speed.
  *
- * @author J&uuml;rgen Mo&szlig;graber
+ * @author Jürgen Moßgraber
  */
 public class OffsetBinaryRelativeValueChanger extends TwosComplementValueChanger
 {

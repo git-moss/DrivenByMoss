@@ -22,7 +22,7 @@ import java.util.Optional;
 /**
  * The Sequencer view.
  *
- * @author J&uuml;rgen Mo&szlig;graber
+ * @author Jürgen Moßgraber
  */
 public class SequencerView extends BaseSequencerView
 {

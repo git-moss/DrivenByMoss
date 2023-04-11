@@ -25,7 +25,7 @@ import de.mossgrabers.framework.utils.ButtonEvent;
 /**
  * Mode for editing the recording options.
  *
- * @author J&uuml;rgen Mo&szlig;graber
+ * @author Jürgen Moßgraber
  */
 public class QuantizeMode extends BaseMode<IItem>
 {

@@ -15,7 +15,7 @@ import java.util.EnumMap;
 /**
  * Extends the default parameter handling for extended handling of value reset.
  *
- * @author J&uuml;rgen Mo&szlig;graber
+ * @author Jürgen Moßgraber
  */
 public class EqTypeParameter extends ParameterImpl
 {

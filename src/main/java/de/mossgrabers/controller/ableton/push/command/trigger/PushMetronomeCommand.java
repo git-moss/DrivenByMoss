@@ -18,7 +18,7 @@ import de.mossgrabers.framework.utils.ButtonEvent;
  * Command to disable/enable the metronome. Also toggles metronome ticks when Shift is pressed. Long
  * pressing activates the metronome mode.
  *
- * @author J&uuml;rgen Mo&szlig;graber
+ * @author Jürgen Moßgraber
  */
 public class PushMetronomeCommand extends MetronomeCommand<PushControlSurface, PushConfiguration>
 {

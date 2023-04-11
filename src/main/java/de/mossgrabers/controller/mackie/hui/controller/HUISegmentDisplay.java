@@ -16,7 +16,7 @@ import java.util.Locale;
 /**
  * The HUI segment display.
  *
- * @author J&uuml;rgen Mo&szlig;graber
+ * @author Jürgen Moßgraber
  */
 public class HUISegmentDisplay extends AbstractTextDisplay
 {

@@ -7,7 +7,7 @@ package de.mossgrabers.framework.usb;
 /**
  * Interface for a callback when data from a HID device is received.
  *
- * @author J&uuml;rgen Mo&szlig;graber
+ * @author Jürgen Moßgraber
  */
 public interface IHidCallback
 {

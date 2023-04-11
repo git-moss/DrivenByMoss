@@ -22,7 +22,7 @@ import java.util.Optional;
 /**
  * The track mode.
  *
- * @author J&uuml;rgen Mo&szlig;graber
+ * @author Jürgen Moßgraber
  */
 public class MaschineJamTrackMode extends TrackMode<MaschineJamControlSurface, MaschineJamConfiguration> implements IMaschineJamMode
 {

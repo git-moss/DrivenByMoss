@@ -16,7 +16,7 @@ import com.bitwig.extension.controller.api.SettableColorValue;
 /**
  * Encapsulates the data of a scene.
  *
- * @author J&uuml;rgen Mo&szlig;graber
+ * @author Jürgen Moßgraber
  */
 public class SceneImpl extends AbstractItemImpl implements IScene
 {
@@ -137,8 +137,20 @@ public class SceneImpl extends AbstractItemImpl implements IScene
 
     /** {@inheritDoc} */
     @Override
-    public void launch ()
+    public void launch (final boolean isPressed, final boolean isAlternative)
     {
-        this.scene.launch ();
+        if (isPressed)
+        {
+            if (isAlternative)
+                this.scene.launchAlt ();
+            else
+                this.scene.launch ();
+            return;
+        }
+
+        if (isAlternative)
+            this.scene.launchReleaseAlt ();
+        else
+            this.scene.launchRelease ();
     }
 }

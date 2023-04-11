@@ -11,7 +11,7 @@ import de.mossgrabers.framework.daw.IHost;
  * Helper class to optimize a timeout interval depending on the computer/OS for using it with the
  * IHost.scheduleTask method.
  *
- * @author J&uuml;rgen Mo&szlig;graber
+ * @author Jürgen Moßgraber
  */
 public class TimeoutOptimizer
 {

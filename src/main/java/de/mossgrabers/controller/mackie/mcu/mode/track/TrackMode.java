@@ -24,7 +24,7 @@ import java.util.Optional;
 /**
  * Mode for editing a track parameters.
  *
- * @author J&uuml;rgen Mo&szlig;graber
+ * @author Jürgen Moßgraber
  */
 public class TrackMode extends AbstractTrackMode
 {

@@ -19,7 +19,7 @@ import de.mossgrabers.framework.view.Views;
 /**
  * The Drum sequencer configuration view.
  *
- * @author J&uuml;rgen Mo&szlig;graber
+ * @author Jürgen Moßgraber
  */
 public class DrumConfigView extends AbstractView<LaunchkeyMk3ControlSurface, LaunchkeyMk3Configuration>
 {

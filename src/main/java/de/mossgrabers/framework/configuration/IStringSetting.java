@@ -7,7 +7,7 @@ package de.mossgrabers.framework.configuration;
 /**
  * A string setting.
  *
- * @author J&uuml;rgen Mo&szlig;graber
+ * @author Jürgen Moßgraber
  */
 public interface IStringSetting extends IValueSetting<String>
 {

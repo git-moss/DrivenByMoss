@@ -12,7 +12,7 @@ import de.mossgrabers.framework.controller.grid.LightGuideImpl;
 /**
  * Control the key colors (light guide) of the Kontrol 1.
  *
- * @author J&uuml;rgen Mo&szlig;graber
+ * @author Jürgen Moßgraber
  */
 public class Kontrol1LightGuide extends LightGuideImpl
 {

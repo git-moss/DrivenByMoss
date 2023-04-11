@@ -16,7 +16,7 @@ import java.util.UUID;
 /**
  * Definition class for the NI Maschine Mk2 controller extension.
  *
- * @author J&uuml;rgen Mo&szlig;graber
+ * @author Jürgen Moßgraber
  */
 public class MaschineMk2ControllerDefinition extends DefaultControllerDefinition
 {

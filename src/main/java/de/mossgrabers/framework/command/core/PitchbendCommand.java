@@ -7,7 +7,7 @@ package de.mossgrabers.framework.command.core;
 /**
  * An pitchbend command.
  *
- * @author J&uuml;rgen Mo&szlig;graber
+ * @author Jürgen Moßgraber
  */
 public interface PitchbendCommand
 {

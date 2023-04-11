@@ -12,7 +12,7 @@ import java.util.Map;
 /**
  * Stores information about the device types.
  *
- * @author J&uuml;rgen Mo&szlig;graber
+ * @author Jürgen Moßgraber
  */
 public class DeviceTypes
 {

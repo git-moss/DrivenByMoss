@@ -14,7 +14,7 @@ import com.bitwig.extension.controller.api.InternalHardwareLightState;
 /**
  * Creates visual states from raw colors.
  *
- * @author J&uuml;rgen Mo&szlig;graber
+ * @author Jürgen Moßgraber
  */
 public class RawColorLightState extends InternalHardwareLightState
 {

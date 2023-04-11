@@ -13,7 +13,7 @@ import de.mossgrabers.framework.utils.ButtonEvent;
 /**
  * Track mute command.
  *
- * @author J&uuml;rgen Mo&szlig;graber
+ * @author Jürgen Moßgraber
  */
 public class MuteCommand extends AbstractTrackCommand
 {

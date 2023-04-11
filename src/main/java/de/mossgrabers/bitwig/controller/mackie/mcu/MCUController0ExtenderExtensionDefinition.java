@@ -7,7 +7,7 @@ package de.mossgrabers.bitwig.controller.mackie.mcu;
 /**
  * Definition class for the Mackie MCU protocol.
  *
- * @author J&uuml;rgen Mo&szlig;graber
+ * @author Jürgen Moßgraber
  */
 public class MCUController0ExtenderExtensionDefinition extends MCUControllerExtensionDefinition
 {

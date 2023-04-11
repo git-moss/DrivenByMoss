@@ -7,7 +7,7 @@ package de.mossgrabers.framework.controller.grid;
 /**
  * Callback for a virtual fader.
  *
- * @author J&uuml;rgen Mo&szlig;graber
+ * @author Jürgen Moßgraber
  */
 public interface IVirtualFaderCallback
 {

@@ -20,7 +20,7 @@ import java.util.Optional;
 /**
  * Command to handle the Mute button.
  *
- * @author J&uuml;rgen Mo&szlig;graber
+ * @author Jürgen Moßgraber
  */
 public class MuteCommand extends AbstractTriggerCommand<PushControlSurface, PushConfiguration>
 {

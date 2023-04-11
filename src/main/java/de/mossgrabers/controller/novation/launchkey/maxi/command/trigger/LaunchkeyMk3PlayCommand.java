@@ -14,7 +14,7 @@ import de.mossgrabers.framework.utils.ButtonEvent;
 /**
  * Command to handle the play button.
  *
- * @author J&uuml;rgen Mo&szlig;graber
+ * @author Jürgen Moßgraber
  */
 public class LaunchkeyMk3PlayCommand extends PlayCommand<LaunchkeyMk3ControlSurface, LaunchkeyMk3Configuration>
 {

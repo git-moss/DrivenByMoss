@@ -16,7 +16,7 @@ import de.mossgrabers.framework.view.Views;
 /**
  * Command for the layout button (only Push 2).
  *
- * @author J&uuml;rgen Mo&szlig;graber
+ * @author Jürgen Moßgraber
  */
 public class LayoutCommand extends AbstractTriggerCommand<PushControlSurface, PushConfiguration>
 {

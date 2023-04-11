@@ -16,7 +16,7 @@ import de.mossgrabers.framework.daw.IModel;
  * @param <S> The type of the control surface
  * @param <C> The type of the configuration
  *
- * @author J&uuml;rgen Mo&szlig;graber
+ * @author Jürgen Moßgraber
  */
 public abstract class AbstractContinuousCommand<S extends IControlSurface<C>, C extends Configuration> implements ContinuousCommand
 {

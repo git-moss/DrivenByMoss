@@ -14,7 +14,7 @@ import com.bitwig.extension.controller.api.Setting;
 /**
  * Bitwig implementation of a double setting.
  *
- * @author J&uuml;rgen Mo&szlig;graber
+ * @author Jürgen Moßgraber
  */
 public class DoubleSettingImpl extends AbstractSetting implements IDoubleSetting
 {

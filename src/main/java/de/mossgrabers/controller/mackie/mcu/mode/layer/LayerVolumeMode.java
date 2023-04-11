@@ -16,7 +16,7 @@ import de.mossgrabers.framework.parameterprovider.track.VolumeParameterProvider;
 /**
  * Mode for editing a volume parameter of all layers.
  *
- * @author J&uuml;rgen Mo&szlig;graber
+ * @author Jürgen Moßgraber
  */
 public class LayerVolumeMode extends AbstractLayerMode
 {

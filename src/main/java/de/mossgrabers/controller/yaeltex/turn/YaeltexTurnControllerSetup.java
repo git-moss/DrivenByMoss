@@ -61,7 +61,7 @@ import java.util.function.IntSupplier;
 /**
  * Support for the Yaeltex Turn controller.
  *
- * @author J&uuml;rgen Mo&szlig;graber
+ * @author Jürgen Moßgraber
  */
 public class YaeltexTurnControllerSetup extends AbstractControllerSetup<YaeltexTurnControlSurface, YaeltexTurnConfiguration>
 {
@@ -211,7 +211,6 @@ public class YaeltexTurnControllerSetup extends AbstractControllerSetup<YaeltexT
 
         this.addButton (ButtonID.CLIP, "clips", (event, velocity) -> this.toggleSequencer (event), channel, YaeltexTurnControlSurface.BUTTON_CLIPS, clipIntensity);
         this.addButton (ButtonID.SESSION, "session", (event, velocity) -> this.toggleSession (event), channel, YaeltexTurnControlSurface.BUTTON_SESSION, sessionIntensity);
-        // TODO
         this.addButton (ButtonID.USER, "usr", new ModeSelectCommand<> (this.model, surface, Modes.DEVICE_LAYER), channel, YaeltexTurnControlSurface.BUTTON_USR);
         this.addButton (ButtonID.TRACK, "trk", (event, velocity) -> this.toggleTrackAndLayer (event), channel, YaeltexTurnControlSurface.BUTTON_TRK, () -> modeManager.isActive (Modes.TRACK, Modes.NOTE_SEQUENCER) ? 1 : 0, YaeltexTurnColorManager.BUTTON_STATE_TRACK, YaeltexTurnColorManager.BUTTON_STATE_LAYER);
 

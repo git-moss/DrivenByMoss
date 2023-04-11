@@ -7,7 +7,7 @@ package de.mossgrabers.framework.daw.data;
 /**
  * Enumeration for equalizer band types.
  *
- * @author J&uuml;rgen Mo&szlig;graber
+ * @author Jürgen Moßgraber
  */
 public enum EqualizerBandType
 {

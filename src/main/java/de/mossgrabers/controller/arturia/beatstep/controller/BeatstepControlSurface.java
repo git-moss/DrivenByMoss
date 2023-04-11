@@ -17,7 +17,7 @@ import de.mossgrabers.framework.utils.ButtonEvent;
 /**
  * The Beatstep 1 and Beatstep 2 control surface.
  *
- * @author J&uuml;rgen Mo&szlig;graber
+ * @author Jürgen Moßgraber
  */
 @SuppressWarnings("javadoc")
 public class BeatstepControlSurface extends AbstractControlSurface<BeatstepConfiguration>

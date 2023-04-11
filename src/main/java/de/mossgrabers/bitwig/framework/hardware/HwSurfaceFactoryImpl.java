@@ -40,7 +40,7 @@ import java.util.function.Supplier;
 /**
  * Factory for creating hardware elements proxies of a hardware controller device.
  *
- * @author J&uuml;rgen Mo&szlig;graber
+ * @author Jürgen Moßgraber
  */
 public class HwSurfaceFactoryImpl implements IHwSurfaceFactory
 {

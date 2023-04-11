@@ -29,7 +29,7 @@ import java.util.Optional;
 /**
  * Mode for navigating the browser.
  *
- * @author J&uuml;rgen Mo&szlig;graber
+ * @author Jürgen Moßgraber
  */
 public class DeviceBrowserMode extends BaseMode<IItem>
 {

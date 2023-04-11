@@ -66,7 +66,7 @@ import java.util.function.IntSupplier;
 /**
  * Support for the Novation LauchControl XL controller.
  *
- * @author J&uuml;rgen Mo&szlig;graber
+ * @author Jürgen Moßgraber
  */
 public class LaunchControlXLControllerSetup extends AbstractControllerSetup<LaunchControlXLControlSurface, LaunchControlXLConfiguration>
 {

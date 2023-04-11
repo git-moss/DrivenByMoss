@@ -10,7 +10,7 @@ import com.bitwig.extension.controller.api.Subscribable;
 /**
  * Helper functions for Bitwig API.
  *
- * @author J&uuml;rgen Mo&szlig;graber
+ * @author Jürgen Moßgraber
  */
 public final class Util
 {

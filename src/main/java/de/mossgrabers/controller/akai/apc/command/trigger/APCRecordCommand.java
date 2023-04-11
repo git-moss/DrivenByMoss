@@ -15,7 +15,7 @@ import de.mossgrabers.framework.utils.ButtonEvent;
  * Command handle the record button. RStart arranger record if pressed. Execute New command if
  * shifted.
  *
- * @author J&uuml;rgen Mo&szlig;graber
+ * @author Jürgen Moßgraber
  */
 public class APCRecordCommand extends NewCommand<APCControlSurface, APCConfiguration>
 {

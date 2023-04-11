@@ -19,7 +19,7 @@ import java.util.Map;
 /**
  * The configuration settings for the Auto Color implementation.
  *
- * @author J&uuml;rgen Mo&szlig;graber
+ * @author Jürgen Moßgraber
  */
 public class AutoColorConfiguration extends AbstractConfiguration
 {

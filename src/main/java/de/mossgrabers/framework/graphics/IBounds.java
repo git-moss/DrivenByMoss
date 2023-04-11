@@ -7,7 +7,7 @@ package de.mossgrabers.framework.graphics;
 /**
  * Boundaries to draw in.
  *
- * @author J&uuml;rgen Mo&szlig;graber
+ * @author Jürgen Moßgraber
  */
 public interface IBounds
 {

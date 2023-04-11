@@ -32,7 +32,7 @@ import java.util.List;
 /**
  * Proxy to the Bitwig Cursor clip.
  *
- * @author J&uuml;rgen Mo&szlig;graber
+ * @author Jürgen Moßgraber
  */
 public class CursorClipImpl implements INoteClip
 {

@@ -27,7 +27,7 @@ import de.mossgrabers.framework.utils.ButtonEvent;
 /**
  * Editing of groove parameters.
  *
- * @author J&uuml;rgen Mo&szlig;graber
+ * @author Jürgen Moßgraber
  */
 public class GrooveMode extends BaseMode<IItem>
 {

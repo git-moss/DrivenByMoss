@@ -18,7 +18,7 @@ import de.mossgrabers.framework.daw.IModel;
  * knob is deactivated and the parameter mode where the knob is active and the LED strips display
  * the value of the selected parameter.
  *
- * @author J&uuml;rgen Mo&szlig;graber
+ * @author Jürgen Moßgraber
  */
 public class StudioEncoderModeManager extends EncoderModeManager<MaschineControlSurface, MaschineConfiguration>
 {

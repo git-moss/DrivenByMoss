@@ -13,7 +13,7 @@ import java.util.Set;
 /**
  * Several scales and their intervals.
  *
- * @author J&uuml;rgen Mo&szlig;graber
+ * @author Jürgen Moßgraber
  */
 public enum Scale
 {

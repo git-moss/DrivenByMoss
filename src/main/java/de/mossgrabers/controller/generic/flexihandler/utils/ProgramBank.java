@@ -16,7 +16,7 @@ import java.util.regex.Pattern;
 /**
  * A bank with programs which can be addressed by program change commands.
  *
- * @author J&uuml;rgen Mo&szlig;graber
+ * @author Jürgen Moßgraber
  */
 public class ProgramBank
 {

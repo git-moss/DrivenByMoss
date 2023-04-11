@@ -7,7 +7,7 @@ package de.mossgrabers.framework.utils;
 /**
  * A runtime exception appeared inside of the framework.
  *
- * @author J&uuml;rgen Mo&szlig;graber
+ * @author Jürgen Moßgraber
  */
 public class FrameworkException extends RuntimeException
 {

@@ -12,7 +12,7 @@ import de.mossgrabers.framework.daw.ITransport;
 /**
  * A parameter implementation for changing the play position.
  *
- * @author J&uuml;rgen Mo&szlig;graber
+ * @author Jürgen Moßgraber
  */
 public class PlayPositionParameter extends AbstractParameterImpl
 {

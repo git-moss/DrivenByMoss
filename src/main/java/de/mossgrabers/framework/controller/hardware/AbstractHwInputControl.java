@@ -11,7 +11,7 @@ import de.mossgrabers.framework.daw.midi.IMidiInput;
 /**
  * A control on a hardware controller.
  *
- * @author J&uuml;rgen Mo&szlig;graber
+ * @author Jürgen Moßgraber
  */
 public abstract class AbstractHwInputControl extends AbstractHwControl implements IHwInputControl
 {

@@ -28,7 +28,7 @@ import java.util.Optional;
 /**
  * Mode for editing a track parameters.
  *
- * @author J&uuml;rgen Mo&szlig;graber
+ * @author Jürgen Moßgraber
  */
 public class TrackMode extends AbstractTrackMode
 {
@@ -43,6 +43,17 @@ public class TrackMode extends AbstractTrackMode
         super ("Track", surface, model);
 
         this.setParameterProvider (new PushTrackParameterProvider (model, surface.getConfiguration ()));
+    }
+
+
+    /** {@inheritDoc} */
+    @Override
+    public void onKnobTouch (final int index, final boolean isTouched)
+    {
+        super.onKnobTouch (index, isTouched);
+
+        if (isTouched && this.surface.isShiftPressed () && this.surface.isSelectPressed () && this.getParameterProvider ().get (index) instanceof final ISend send)
+            send.toggleEnabled ();
     }
 
 
@@ -133,11 +144,11 @@ public class TrackMode extends AbstractTrackMode
                         if (send != null)
                         {
                             final boolean exists = send.doesExist ();
-                            sendData[j] = new SendData (send.getName (), exists && this.isKnobTouched (4 + j) ? send.getDisplayedValue (8) : "", valueChanger.toDisplayValue (exists ? send.getValue () : 0), valueChanger.toDisplayValue (exists ? send.getModulatedValue () : 0), true);
+                            sendData[j] = new SendData (send.isEnabled (), send.getName (), exists && this.isKnobTouched (4 + j) ? send.getDisplayedValue (8) : "", valueChanger.toDisplayValue (exists ? send.getValue () : 0), valueChanger.toDisplayValue (exists ? send.getModulatedValue () : 0), true);
                             continue;
                         }
                     }
-                    sendData[j] = new SendData ("", "", 0, 0, true);
+                    sendData[j] = new SendData (false, "", "", 0, 0, true);
                 }
                 display.addSendsElement (topMenu, topMenuSelected, bottomMenu, this.updateType (t), bottomMenuColor, isBottomMenuOn, sendData, true, selTrack == null || selTrack.isActivated (), t.isActivated ());
             }

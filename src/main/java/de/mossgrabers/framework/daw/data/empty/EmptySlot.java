@@ -11,7 +11,7 @@ import de.mossgrabers.framework.daw.data.ISlot;
 /**
  * Default data for an empty slot.
  *
- * @author J&uuml;rgen Mo&szlig;graber
+ * @author Jürgen Moßgraber
  */
 public class EmptySlot extends EmptyItem implements ISlot
 {
@@ -94,26 +94,9 @@ public class EmptySlot extends EmptyItem implements ISlot
 
     /** {@inheritDoc} */
     @Override
-    public void launch ()
+    public void launch (final boolean isPressed, final boolean isAlternative)
     {
         // Intentionally empty
-    }
-
-
-    /** {@inheritDoc} */
-    @Override
-    public void launchImmediately ()
-    {
-        // Intentionally empty
-    }
-
-
-    /** {@inheritDoc} */
-    @Override
-    public boolean testAndClearLaunchedImmediately ()
-    {
-        // Intentionally empty
-        return false;
     }
 
 

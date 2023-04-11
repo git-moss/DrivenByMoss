@@ -20,7 +20,7 @@ import java.util.concurrent.TimeUnit;
 /**
  * Connects to the display of the Push 2 via USB.
  *
- * @author J&uuml;rgen Mo&szlig;graber
+ * @author Jürgen Moßgraber
  */
 public class PushUsbDisplay
 {

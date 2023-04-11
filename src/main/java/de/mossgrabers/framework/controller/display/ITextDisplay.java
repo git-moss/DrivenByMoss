@@ -10,7 +10,7 @@ import de.mossgrabers.framework.controller.hardware.IHwTextDisplay;
 /**
  * Interface to a text only display.
  *
- * @author J&uuml;rgen Mo&szlig;graber
+ * @author Jürgen Moßgraber
  */
 public interface ITextDisplay extends IDisplay
 {

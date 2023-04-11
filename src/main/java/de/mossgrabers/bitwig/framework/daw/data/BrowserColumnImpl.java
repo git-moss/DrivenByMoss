@@ -18,7 +18,7 @@ import com.bitwig.extension.controller.api.CursorBrowserItem;
 /**
  * Encapsulates the data of a browser column.
  *
- * @author J&uuml;rgen Mo&szlig;graber
+ * @author Jürgen Moßgraber
  */
 public class BrowserColumnImpl extends AbstractItemImpl implements IBrowserColumn
 {

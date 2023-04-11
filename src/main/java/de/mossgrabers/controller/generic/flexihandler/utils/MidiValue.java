@@ -11,7 +11,7 @@ import java.util.Map;
 /**
  * A MIDI value in low (7-bit) or high resolution (14-bit).
  *
- * @author J&uuml;rgen Mo&szlig;graber
+ * @author Jürgen Moßgraber
  */
 public class MidiValue
 {

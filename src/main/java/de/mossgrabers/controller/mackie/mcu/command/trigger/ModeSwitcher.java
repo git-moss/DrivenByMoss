@@ -15,7 +15,7 @@ import java.util.Map;
 /**
  * Helper class for cycling through modes.
  *
- * @author J&uuml;rgen Mo&szlig;graber
+ * @author Jürgen Moßgraber
  */
 public class ModeSwitcher
 {

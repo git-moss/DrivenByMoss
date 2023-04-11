@@ -29,7 +29,7 @@ import java.util.Optional;
 /**
  * The equalizer mode.
  *
- * @author J&uuml;rgen Mo&szlig;graber
+ * @author Jürgen Moßgraber
  */
 public class EqualizerMode extends AbstractElectraOneMode
 {
@@ -122,9 +122,9 @@ public class EqualizerMode extends AbstractElectraOneMode
         for (int row = 0; row < 6; row++)
         {
             final EqualizerBandType typeID = this.eqDevice.getTypeID (row);
-            final Boolean exists = Boolean.valueOf (typeID != EqualizerBandType.OFF);
+            final boolean exists = typeID != EqualizerBandType.OFF;
 
-            this.pageCache.updateColor (row, 0, exists.booleanValue () ? ElectraOneColorManager.BAND_ON : ElectraOneColorManager.BAND_OFF);
+            this.pageCache.updateColor (row, 0, exists ? ElectraOneColorManager.BAND_ON : ElectraOneColorManager.BAND_OFF);
 
             final IParameter typeParameter = this.eqDevice.getTypeParameter (row);
             final IParameter frequencyParameter = this.eqDevice.getFrequencyParameter (row);

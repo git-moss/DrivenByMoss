@@ -14,7 +14,7 @@ import de.mossgrabers.framework.utils.ButtonEvent;
 /**
  * Pin the device with device lock button.
  *
- * @author J&uuml;rgen Mo&szlig;graber
+ * @author Jürgen Moßgraber
  */
 public class DeviceLockCommand extends AbstractTriggerCommand<LaunchkeyMk3ControlSurface, LaunchkeyMk3Configuration>
 {

@@ -91,7 +91,7 @@ import java.util.Optional;
 /**
  * Support for the Akai APC40 mkI and APC40 mkII controllers.
  *
- * @author J&uuml;rgen Mo&szlig;graber
+ * @author Jürgen Moßgraber
  */
 public class APCControllerSetup extends AbstractControllerSetup<APCControlSurface, APCConfiguration>
 {

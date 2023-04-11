@@ -18,7 +18,7 @@ import de.mossgrabers.framework.parameter.IParameter;
 /**
  * The user parameter mode.
  *
- * @author J&uuml;rgen Mo&szlig;graber
+ * @author Jürgen Moßgraber
  */
 public class FireUserMode extends UserMode<FireControlSurface, FireConfiguration>
 {

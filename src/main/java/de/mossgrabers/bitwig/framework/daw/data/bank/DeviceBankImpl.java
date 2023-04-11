@@ -19,7 +19,7 @@ import java.util.Optional;
 /**
  * Encapsulates the data of a device bank.
  *
- * @author J&uuml;rgen Mo&szlig;graber
+ * @author Jürgen Moßgraber
  */
 public class DeviceBankImpl extends AbstractItemBankImpl<DeviceBank, IDevice> implements IDeviceBank
 {

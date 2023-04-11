@@ -22,7 +22,7 @@ import de.mossgrabers.framework.utils.ButtonEvent;
 /**
  * Editing the default length of new clips.
  *
- * @author J&uuml;rgen Mo&szlig;graber
+ * @author Jürgen Moßgraber
  */
 public class FixedMode extends BaseMode<IItem>
 {

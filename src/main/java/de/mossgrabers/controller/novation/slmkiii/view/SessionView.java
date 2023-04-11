@@ -21,7 +21,7 @@ import de.mossgrabers.framework.view.AbstractSessionView;
 /**
  * The Session view.
  *
- * @author J&uuml;rgen Mo&szlig;graber
+ * @author Jürgen Moßgraber
  */
 public class SessionView extends AbstractSessionView<SLMkIIIControlSurface, SLMkIIIConfiguration>
 {

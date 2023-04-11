@@ -15,7 +15,7 @@ import de.mossgrabers.framework.utils.StringUtils;
 /**
  * Configuration settings for Push 1.
  *
- * @author J&uuml;rgen Mo&szlig;graber
+ * @author Jürgen Moßgraber
  */
 public class ConfigurationMode extends BaseMode<IItem>
 {

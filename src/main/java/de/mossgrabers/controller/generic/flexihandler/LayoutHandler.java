@@ -18,7 +18,7 @@ import de.mossgrabers.framework.daw.IModel;
 /**
  * The handler for layout commands.
  *
- * @author J&uuml;rgen Mo&szlig;graber
+ * @author Jürgen Moßgraber
  */
 public class LayoutHandler extends AbstractHandler
 {

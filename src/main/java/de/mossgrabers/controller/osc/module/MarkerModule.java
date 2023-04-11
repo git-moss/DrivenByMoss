@@ -20,7 +20,7 @@ import java.util.LinkedList;
 /**
  * All marker related commands.
  *
- * @author J&uuml;rgen Mo&szlig;graber
+ * @author Jürgen Moßgraber
  */
 public class MarkerModule extends AbstractModule
 {

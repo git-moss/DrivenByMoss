@@ -20,7 +20,7 @@ import java.util.Set;
 /**
  * Combines several parameter providers into one.
  *
- * @author J&uuml;rgen Mo&szlig;graber
+ * @author Jürgen Moßgraber
  */
 public class CombinedParameterProvider implements IParameterProvider
 {

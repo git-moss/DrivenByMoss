@@ -13,7 +13,7 @@ import de.mossgrabers.framework.daw.IModel;
 /**
  * The browser command.
  *
- * @author J&uuml;rgen Mo&szlig;graber
+ * @author Jürgen Moßgraber
  */
 public class APCBrowserCommand extends BrowserCommand<APCControlSurface, APCConfiguration>
 {

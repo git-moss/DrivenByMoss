@@ -11,7 +11,7 @@ import de.mossgrabers.framework.daw.data.IItem;
 /**
  * Interface to a parameter.
  *
- * @author J&uuml;rgen Mo&szlig;graber
+ * @author Jürgen Moßgraber
  */
 public interface IParameter extends IItem
 {

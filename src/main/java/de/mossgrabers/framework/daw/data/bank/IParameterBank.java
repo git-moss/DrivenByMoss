@@ -10,7 +10,7 @@ import de.mossgrabers.framework.parameter.IParameter;
 /**
  * Interface to a parameter bank.
  *
- * @author J&uuml;rgen Mo&szlig;graber
+ * @author Jürgen Moßgraber
  */
 public interface IParameterBank extends IBank<IParameter>
 {

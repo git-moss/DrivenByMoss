@@ -15,7 +15,7 @@ import de.mossgrabers.framework.controller.valuechanger.RelativeEncoding;
 /**
  * Interface to a MIDI input.
  *
- * @author J&uuml;rgen Mo&szlig;graber
+ * @author Jürgen Moßgraber
  */
 public interface IMidiInput
 {

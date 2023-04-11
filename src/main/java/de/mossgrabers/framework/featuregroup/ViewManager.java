@@ -13,7 +13,7 @@ import java.util.Map;
 /**
  * Manages all views and assigned commands.
  *
- * @author J&uuml;rgen Mo&szlig;graber
+ * @author Jürgen Moßgraber
  */
 public class ViewManager extends FeatureGroupManager<Views, IView>
 {

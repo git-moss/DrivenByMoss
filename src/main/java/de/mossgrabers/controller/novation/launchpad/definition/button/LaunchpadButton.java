@@ -10,7 +10,7 @@ import java.util.List;
 /**
  * Enumeration for all non-grid buttons.
  *
- * @author J&uuml;rgen Mo&szlig;graber
+ * @author Jürgen Moßgraber
  */
 public enum LaunchpadButton
 {

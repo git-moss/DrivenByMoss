@@ -14,7 +14,7 @@ import com.bitwig.extension.controller.api.Setting;
 /**
  * Bitwig implementation of an enumeration setting.
  *
- * @author J&uuml;rgen Mo&szlig;graber
+ * @author Jürgen Moßgraber
  */
 public class EnumSettingImpl extends AbstractSetting implements IEnumSetting
 {

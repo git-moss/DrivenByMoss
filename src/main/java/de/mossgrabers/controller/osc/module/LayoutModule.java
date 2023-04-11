@@ -21,7 +21,7 @@ import java.util.Locale;
 /**
  * All layout related commands.
  *
- * @author J&uuml;rgen Mo&szlig;graber
+ * @author Jürgen Moßgraber
  */
 public class LayoutModule extends AbstractModule
 {

@@ -19,7 +19,7 @@ import de.mossgrabers.framework.utils.StringUtils;
 /**
  * Mode for editing user parameters.
  *
- * @author J&uuml;rgen Mo&szlig;graber
+ * @author Jürgen Moßgraber
  */
 public class UserMode extends BaseMode<IParameter>
 {

@@ -7,7 +7,7 @@ package de.mossgrabers.framework.utils;
 /**
  * All information about a continuous controller like a knob or fader.
  *
- * @author J&uuml;rgen Mo&szlig;graber
+ * @author Jürgen Moßgraber
  */
 public class ContinuousInfo
 {

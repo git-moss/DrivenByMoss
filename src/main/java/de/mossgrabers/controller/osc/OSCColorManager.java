@@ -13,7 +13,7 @@ import de.mossgrabers.framework.scale.Scales;
 /**
  * Different colors to use with OSC.
  *
- * @author J&uuml;rgen Mo&szlig;graber
+ * @author Jürgen Moßgraber
  */
 public class OSCColorManager extends ColorManager
 {

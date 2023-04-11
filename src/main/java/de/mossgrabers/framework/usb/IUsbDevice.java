@@ -10,7 +10,7 @@ import java.util.Optional;
 /**
  * Interface to an USB device.
  *
- * @author J&uuml;rgen Mo&szlig;graber
+ * @author Jürgen Moßgraber
  */
 public interface IUsbDevice
 {

@@ -7,7 +7,7 @@ package de.mossgrabers.framework.daw.constants;
 /**
  * Capabilities of the hosts API.
  *
- * @author J&uuml;rgen Mo&szlig;graber
+ * @author Jürgen Moßgraber
  */
 public enum Capability
 {

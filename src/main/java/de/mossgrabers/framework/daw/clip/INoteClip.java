@@ -12,7 +12,7 @@ import java.util.List;
 /**
  * Interface to a clip, which contains note data.
  *
- * @author J&uuml;rgen Mo&szlig;graber
+ * @author Jürgen Moßgraber
  */
 public interface INoteClip extends IClip, IPinnable
 {

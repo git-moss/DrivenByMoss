@@ -17,7 +17,7 @@ import java.util.Arrays;
 /**
  * The APC 1 and APC 2 control surface.
  *
- * @author J&uuml;rgen Mo&szlig;graber
+ * @author Jürgen Moßgraber
  */
 @SuppressWarnings("javadoc")
 public class APCControlSurface extends AbstractControlSurface<APCConfiguration>

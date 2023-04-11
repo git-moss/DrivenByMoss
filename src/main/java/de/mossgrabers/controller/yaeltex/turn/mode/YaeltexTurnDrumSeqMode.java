@@ -32,7 +32,7 @@ import java.util.Map;
 /**
  * Drum Machine mix mode with drum sequencer editing for the Yaeltex Turn.
  *
- * @author J&uuml;rgen Mo&szlig;graber
+ * @author Jürgen Moßgraber
  */
 public class YaeltexTurnDrumSeqMode extends YaeltexTurnDrumMixMode implements INoteMode
 {

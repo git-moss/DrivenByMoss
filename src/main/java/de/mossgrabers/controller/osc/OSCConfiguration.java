@@ -21,7 +21,7 @@ import java.util.List;
 /**
  * The configuration settings for the OSC implementation.
  *
- * @author J&uuml;rgen Mo&szlig;graber
+ * @author Jürgen Moßgraber
  */
 public class OSCConfiguration extends AbstractOpenSoundControlConfiguration
 {

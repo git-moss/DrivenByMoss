@@ -16,7 +16,7 @@ import java.util.List;
 /**
  * Abstract implementation of a proxy to a button on a hardware controller.
  *
- * @author J&uuml;rgen Mo&szlig;graber
+ * @author Jürgen Moßgraber
  */
 public abstract class AbstractHwButton extends AbstractHwInputControl implements IHwButton
 {

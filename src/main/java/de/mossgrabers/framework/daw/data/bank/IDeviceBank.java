@@ -10,7 +10,7 @@ import de.mossgrabers.framework.daw.data.IDevice;
 /**
  * Interface to a device bank.
  *
- * @author J&uuml;rgen Mo&szlig;graber
+ * @author Jürgen Moßgraber
  */
 public interface IDeviceBank extends IBank<IDevice>
 {

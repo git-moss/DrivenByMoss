@@ -23,7 +23,7 @@ import java.util.List;
 /**
  * Different colors to use for the pads and buttons of Launchpad.
  *
- * @author J&uuml;rgen Mo&szlig;graber
+ * @author Jürgen Moßgraber
  */
 @SuppressWarnings("javadoc")
 public class LaunchpadColorManager extends ColorManager

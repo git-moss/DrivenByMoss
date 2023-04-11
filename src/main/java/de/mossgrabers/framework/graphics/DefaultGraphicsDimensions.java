@@ -7,7 +7,7 @@ package de.mossgrabers.framework.graphics;
 /**
  * Default implementation of pre-calculated grid dimensions.
  *
- * @author J&uuml;rgen Mo&szlig;graber
+ * @author Jürgen Moßgraber
  */
 public class DefaultGraphicsDimensions implements IGraphicsDimensions
 {

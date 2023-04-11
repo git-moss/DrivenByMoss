@@ -34,7 +34,7 @@ import java.util.List;
  * <li>Pressure
  * </ol>
  *
- * @author J&uuml;rgen Mo&szlig;graber
+ * @author Jürgen Moßgraber
  */
 public class NoteEditView extends AbstractFaderView implements INoteMode
 {

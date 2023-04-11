@@ -9,7 +9,7 @@ import de.mossgrabers.framework.daw.midi.IMidiInput;
 /**
  * A dummy surface implementation for OSC.
  *
- * @author J&uuml;rgen Mo&szlig;graber
+ * @author Jürgen Moßgraber
  */
 public class OSCControlSurface extends AbstractControlSurface<OSCConfiguration>
 {

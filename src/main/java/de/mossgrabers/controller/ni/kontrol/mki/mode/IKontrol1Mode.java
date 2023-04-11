@@ -7,7 +7,7 @@ package de.mossgrabers.controller.ni.kontrol.mki.mode;
 /**
  * Interface for specific knob and button interactions for modes.
  *
- * @author J&uuml;rgen Mo&szlig;graber
+ * @author Jürgen Moßgraber
  */
 public interface IKontrol1Mode
 {

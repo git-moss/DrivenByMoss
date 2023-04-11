@@ -7,7 +7,7 @@ package de.mossgrabers.framework.daw.clip;
 /**
  * The different types of note occurrences.
  *
- * @author J&uuml;rgen Mo&szlig;graber
+ * @author Jürgen Moßgraber
  */
 public enum NoteOccurrenceType
 {

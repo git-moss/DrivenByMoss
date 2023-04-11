@@ -21,7 +21,7 @@ import de.mossgrabers.framework.utils.ButtonEvent;
 /**
  * Editing of the scale layout.
  *
- * @author J&uuml;rgen Mo&szlig;graber
+ * @author Jürgen Moßgraber
  */
 public class ScaleLayoutMode extends BaseMode<IItem>
 {

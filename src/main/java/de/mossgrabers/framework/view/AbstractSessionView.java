@@ -12,7 +12,6 @@ import de.mossgrabers.framework.controller.grid.IPadGrid;
 import de.mossgrabers.framework.controller.grid.LightInfo;
 import de.mossgrabers.framework.daw.DAWColor;
 import de.mossgrabers.framework.daw.IModel;
-import de.mossgrabers.framework.daw.data.IScene;
 import de.mossgrabers.framework.daw.data.ISlot;
 import de.mossgrabers.framework.daw.data.ITrack;
 import de.mossgrabers.framework.daw.data.bank.ISceneBank;
@@ -30,7 +29,7 @@ import de.mossgrabers.framework.utils.Pair;
  * @param <S> The type of the control surface
  * @param <C> The type of the configuration
  *
- * @author J&uuml;rgen Mo&szlig;graber
+ * @author Jürgen Moßgraber
  */
 public abstract class AbstractSessionView<S extends IControlSurface<C>, C extends Configuration> extends AbstractView<S, C>
 {
@@ -85,46 +84,8 @@ public abstract class AbstractSessionView<S extends IControlSurface<C>, C extend
     @Override
     public void onButton (final ButtonID buttonID, final ButtonEvent event, final int velocity)
     {
-        if (!ButtonID.isSceneButton (buttonID) || event != ButtonEvent.DOWN)
-            return;
-
-        final int sceneIndex = buttonID.ordinal () - ButtonID.SCENE1.ordinal ();
-        this.handleSceneButtonCombinations (this.model.getCurrentTrackBank ().getSceneBank ().getItem (sceneIndex));
-    }
-
-
-    /**
-     * Handle a scene command depending on button combinations.
-     *
-     * @param scene The scene
-     */
-    protected void handleSceneButtonCombinations (final IScene scene)
-    {
-        if (this.isButtonCombination (ButtonID.DELETE))
-        {
-            scene.remove ();
-            return;
-        }
-
-        if (this.isButtonCombination (ButtonID.DUPLICATE))
-        {
-            scene.duplicate ();
-            return;
-        }
-
-        this.launchScene (scene);
-    }
-
-
-    /**
-     * Select and launch a scene.
-     *
-     * @param scene The scene to launch
-     */
-    protected void launchScene (final IScene scene)
-    {
-        scene.select ();
-        scene.launch ();
+        if (ButtonID.isSceneButton (buttonID))
+            this.onSceneButton (buttonID, event);
     }
 
 
@@ -136,31 +97,45 @@ public abstract class AbstractSessionView<S extends IControlSurface<C>, C extend
         final ITrack track = this.model.getCurrentTrackBank ().getItem (padPos.getKey ().intValue ());
         final ISlot slot = track.getSlotBank ().getItem (padPos.getValue ().intValue ());
 
-        // Trigger on pad release to intercept long presses
-        if (velocity != 0)
+        final boolean isPressed = velocity != 0;
+        if (isPressed)
         {
-            if (this.isButtonCombination (ButtonID.SELECT))
-                slot.launchImmediately ();
-            return;
+            if (this.handleButtonCombinations (track, slot))
+                return;
+            if (this.doSelectClipOnLaunch ())
+                slot.select ();
         }
-
-        if (this.handleButtonCombinations (track, slot))
-            return;
-
-        if (this.doSelectClipOnLaunch ())
-            slot.select ();
 
         if (!track.isRecArm () || slot.hasContent ())
         {
-            // Needs to be called here to always reset the state!
-            final boolean wasLaunchedImmediately = slot.testAndClearLaunchedImmediately ();
-            if (this.surface.isSelectPressed ())
-                track.launchLastClipImmediately ();
-            else if (!wasLaunchedImmediately)
-                slot.launch ();
+            slot.launch (isPressed, this.isAlternateFunction ());
             return;
         }
 
+        this.handleRecording (track, slot);
+    }
+
+
+    /**
+     * Check if the alternate launch function should be executed. The default implementation checks
+     * for the SELECT button.
+     *
+     * @return True if alternate function should be executed
+     */
+    protected boolean isAlternateFunction ()
+    {
+        return this.surface.isSelectPressed ();
+    }
+
+
+    /**
+     * Handles the recording of a slot depending on the configuration settings.
+     *
+     * @param track The track on which to record
+     * @param slot The slot on the track into which to record
+     */
+    protected void handleRecording (final ITrack track, final ISlot slot)
+    {
         final C configuration = this.surface.getConfiguration ();
         switch (configuration.getActionForRecArmedPad ())
         {
@@ -178,29 +153,6 @@ public abstract class AbstractSessionView<S extends IControlSurface<C>, C extend
                 // Do nothing
                 break;
         }
-    }
-
-
-    /** {@inheritDoc} */
-    @Override
-    public void onGridNoteLongPress (final int note)
-    {
-        if (this.surface.isShiftPressed () || this.surface.isSelectPressed ())
-            return;
-
-        final Pair<Integer, Integer> padPos = this.getPad (note);
-        final ITrack track = this.model.getCurrentTrackBank ().getItem (padPos.getKey ().intValue ());
-        final ISlot slot = track.getSlotBank ().getItem (padPos.getValue ().intValue ());
-        slot.select ();
-        if (slot.hasContent ())
-        {
-            final String slotName = slot.getName ();
-            if (!slotName.isBlank ())
-                this.surface.getDisplay ().notify (slotName);
-        }
-
-        final int index = note - 36;
-        this.surface.getButton (ButtonID.get (ButtonID.PAD1, index)).setConsumed ();
     }
 
 

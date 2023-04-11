@@ -15,6 +15,7 @@ import de.mossgrabers.framework.daw.data.ISlot;
 import de.mossgrabers.framework.daw.data.ITrack;
 import de.mossgrabers.framework.daw.data.bank.ISlotBank;
 import de.mossgrabers.framework.featuregroup.AbstractFeatureGroup;
+import de.mossgrabers.framework.utils.ButtonEvent;
 
 import java.util.Optional;
 
@@ -22,7 +23,7 @@ import java.util.Optional;
 /**
  * The Clip (session) view.
  *
- * @author J&uuml;rgen Mo&szlig;graber
+ * @author Jürgen Moßgraber
  */
 public class ClipView extends BaseView
 {
@@ -40,74 +41,75 @@ public class ClipView extends BaseView
 
     /** {@inheritDoc} */
     @Override
-    protected void executeFunction (final int padIndex)
+    protected void executeFunction (final int padIndex, final ButtonEvent buttonEvent)
     {
+        final boolean isDown = buttonEvent == ButtonEvent.DOWN;
+
         final Optional<ITrack> track = this.model.getCurrentTrackBank ().getSelectedItem ();
         if (track.isEmpty ())
             return;
         final ISlot slot = track.get ().getSlotBank ().getItem (padIndex);
-
         final MaschineConfiguration configuration = this.surface.getConfiguration ();
-        if (this.isButtonCombination (ButtonID.DUPLICATE))
-        {
-            if (track.get ().doesExist ())
-                slot.duplicate ();
-            return;
-        }
 
-        // Stop clip
-        if (this.isButtonCombination (ButtonID.CLIP))
+        if (isDown)
         {
-            track.get ().stop ();
-            return;
-        }
+            if (this.isButtonCombination (ButtonID.DUPLICATE))
+            {
+                if (track.get ().doesExist ())
+                    slot.duplicate ();
+                return;
+            }
 
-        // Browse for clips
-        if (this.isButtonCombination (ButtonID.BROWSE))
-        {
-            if (track.get ().doesExist ())
-                this.model.getBrowser ().replace (slot);
-            return;
-        }
+            // Stop clip
+            if (this.isButtonCombination (ButtonID.CLIP))
+            {
+                track.get ().stop ();
+                return;
+            }
 
-        // Delete selected clip
-        if (this.isButtonCombination (ButtonID.DELETE))
-        {
-            slot.remove ();
-            return;
-        }
+            // Browse for clips
+            if (this.isButtonCombination (ButtonID.BROWSE))
+            {
+                if (track.get ().doesExist ())
+                    this.model.getBrowser ().replace (slot);
+                return;
+            }
 
-        // Select clip
-        if (this.isButtonCombination (ButtonID.SELECT))
-        {
-            slot.select ();
-            return;
-        }
+            // Delete selected clip
+            if (this.isButtonCombination (ButtonID.DELETE))
+            {
+                slot.remove ();
+                return;
+            }
 
-        if (configuration.isSelectClipOnLaunch ())
-            slot.select ();
+            if (configuration.isSelectClipOnLaunch ())
+                slot.select ();
+        }
 
         if (!track.get ().isRecArm () || slot.hasContent ())
         {
-            slot.launch ();
+            slot.launch (isDown, this.surface.isSelectPressed ());
             return;
         }
 
-        switch (configuration.getActionForRecArmedPad ())
+        if (isDown)
         {
-            case 0:
-                this.model.recordNoteClip (track.get (), slot);
-                break;
+            switch (configuration.getActionForRecArmedPad ())
+            {
+                case 0:
+                    this.model.recordNoteClip (track.get (), slot);
+                    break;
 
-            case 1:
-                final int lengthInBeats = configuration.getNewClipLenghthInBeats (this.model.getTransport ().getQuartersPerMeasure ());
-                this.model.createNoteClip (track.get (), slot, lengthInBeats, true);
-                break;
+                case 1:
+                    final int lengthInBeats = configuration.getNewClipLenghthInBeats (this.model.getTransport ().getQuartersPerMeasure ());
+                    this.model.createNoteClip (track.get (), slot, lengthInBeats, true);
+                    break;
 
-            case 2:
-            default:
-                // Do nothing
-                break;
+                case 2:
+                default:
+                    // Do nothing
+                    break;
+            }
         }
     }
 

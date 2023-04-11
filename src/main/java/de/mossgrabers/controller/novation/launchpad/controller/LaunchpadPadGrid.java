@@ -18,7 +18,7 @@ import java.util.TreeMap;
 /**
  * Implementation of the Launchpad grid of pads.
  *
- * @author J&uuml;rgen Mo&szlig;graber
+ * @author Jürgen Moßgraber
  */
 public class LaunchpadPadGrid extends PadGridImpl
 {

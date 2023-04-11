@@ -52,7 +52,7 @@ import java.util.function.Supplier;
  *
  * @param <C> The type of the configuration
  *
- * @author J&uuml;rgen Mo&szlig;graber
+ * @author Jürgen Moßgraber
  */
 public abstract class AbstractControlSurface<C extends Configuration> implements IControlSurface<C>
 {

@@ -21,7 +21,7 @@ import java.util.List;
 /**
  * The display of Push 1.
  *
- * @author J&uuml;rgen Mo&szlig;graber
+ * @author Jürgen Moßgraber
  */
 public class Push1Display extends AbstractTextDisplay
 {

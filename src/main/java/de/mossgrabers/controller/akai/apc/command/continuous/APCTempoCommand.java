@@ -16,7 +16,7 @@ import de.mossgrabers.framework.view.Views;
 /**
  * Additionally, display BPM on the grid.
  *
- * @author J&uuml;rgen Mo&szlig;graber
+ * @author Jürgen Moßgraber
  */
 public class APCTempoCommand extends TempoCommand<APCControlSurface, APCConfiguration>
 {

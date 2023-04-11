@@ -20,7 +20,7 @@ import java.util.concurrent.TimeUnit;
  * supports umlauts) but since emulations do not support it this implementation sticks to basic
  * ASCII.
  *
- * @author J&uuml;rgen Mo&szlig;graber
+ * @author Jürgen Moßgraber
  */
 public class HUIDisplay extends AbstractTextDisplay
 {

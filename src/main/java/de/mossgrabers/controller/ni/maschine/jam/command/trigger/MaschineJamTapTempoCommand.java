@@ -17,7 +17,7 @@ import de.mossgrabers.framework.view.Views;
 /**
  * Command to tap the tempo.
  *
- * @author J&uuml;rgen Mo&szlig;graber
+ * @author Jürgen Moßgraber
  */
 public class MaschineJamTapTempoCommand extends TapTempoCommand<MaschineJamControlSurface, MaschineJamConfiguration>
 {

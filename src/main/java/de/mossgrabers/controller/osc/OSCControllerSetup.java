@@ -45,7 +45,7 @@ import java.util.List;
 /**
  * Support for the Open Sound Control (OSC) protocol.
  *
- * @author J&uuml;rgen Mo&szlig;graber
+ * @author Jürgen Moßgraber
  */
 public class OSCControllerSetup extends AbstractControllerSetup<IControlSurface<OSCConfiguration>, OSCConfiguration>
 {

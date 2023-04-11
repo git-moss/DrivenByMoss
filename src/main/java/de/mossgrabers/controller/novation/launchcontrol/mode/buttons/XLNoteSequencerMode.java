@@ -22,7 +22,7 @@ import de.mossgrabers.framework.view.sequencer.AbstractSequencerView;
 /**
  * The note sequencer with 8 steps.
  *
- * @author J&uuml;rgen Mo&szlig;graber
+ * @author Jürgen Moßgraber
  */
 public class XLNoteSequencerMode extends AbstractSequencerMode<LaunchControlXLControlSurface, LaunchControlXLConfiguration>
 {

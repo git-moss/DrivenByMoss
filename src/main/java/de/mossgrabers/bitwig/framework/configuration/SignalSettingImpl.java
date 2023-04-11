@@ -14,7 +14,7 @@ import com.bitwig.extension.controller.api.Signal;
 /**
  * Bitwig implementation of a signal setting.
  *
- * @author J&uuml;rgen Mo&szlig;graber
+ * @author Jürgen Moßgraber
  */
 public class SignalSettingImpl extends AbstractSetting implements ISignalSetting
 {

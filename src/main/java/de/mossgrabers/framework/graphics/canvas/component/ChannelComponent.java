@@ -18,7 +18,7 @@ import de.mossgrabers.framework.graphics.IImage;
 /**
  * An element in the grid which contains the channel settings: Volume, VU, Pan, Mute, Solo and Arm.
  *
- * @author J&uuml;rgen Mo&szlig;graber
+ * @author Jürgen Moßgraber
  */
 public class ChannelComponent extends ChannelSelectComponent
 {

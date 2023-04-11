@@ -24,7 +24,7 @@ import java.util.Optional;
  * Selects a track. Sets the new clip length if shifted. If "Send A" button is pressed selects a
  * send.
  *
- * @author J&uuml;rgen Mo&szlig;graber
+ * @author Jürgen Moßgraber
  */
 public class SelectTrackSendOrClipLengthCommand extends AbstractTriggerCommand<APCControlSurface, APCConfiguration>
 {

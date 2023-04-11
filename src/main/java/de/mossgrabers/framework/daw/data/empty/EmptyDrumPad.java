@@ -10,7 +10,7 @@ import de.mossgrabers.framework.daw.data.IDrumPad;
 /**
  * Default data for an empty drum pad.
  *
- * @author J&uuml;rgen Mo&szlig;graber
+ * @author Jürgen Moßgraber
  */
 public class EmptyDrumPad extends EmptyChannel implements IDrumPad
 {

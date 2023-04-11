@@ -16,7 +16,7 @@ import de.mossgrabers.framework.utils.ButtonEvent;
 /**
  * Command to enable automation and edit its settings.
  *
- * @author J&uuml;rgen Mo&szlig;graber
+ * @author Jürgen Moßgraber
  */
 public class PushAutomationCommand extends AbstractTriggerCommand<PushControlSurface, PushConfiguration>
 {

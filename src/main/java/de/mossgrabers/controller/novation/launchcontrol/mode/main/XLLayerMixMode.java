@@ -24,7 +24,7 @@ import java.util.List;
 /**
  * Mix mode for the LauchControl XL to control 2 sends and panorama of layers.
  *
- * @author J&uuml;rgen Mo&szlig;graber
+ * @author Jürgen Moßgraber
  */
 public class XLLayerMixMode extends XLAbstractMainMode<ILayer>
 {

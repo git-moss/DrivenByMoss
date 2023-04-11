@@ -7,7 +7,7 @@ package de.mossgrabers.framework.controller.hardware;
 /**
  * Interface for a proxy to a knob on a hardware controller.
  *
- * @author J&uuml;rgen Mo&szlig;graber
+ * @author Jürgen Moßgraber
  */
 public interface IHwRelativeKnob extends IHwContinuousControl
 {

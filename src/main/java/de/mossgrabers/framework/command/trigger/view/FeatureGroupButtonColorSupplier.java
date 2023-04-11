@@ -16,7 +16,7 @@ import java.util.function.IntSupplier;
  * {@link IFeatureGroup#getButtonColor(ButtonID)} method. Use e.g. in combination with a
  * {@link ViewButtonCommand}.
  *
- * @author J&uuml;rgen Mo&szlig;graber
+ * @author Jürgen Moßgraber
  */
 public class FeatureGroupButtonColorSupplier implements IntSupplier
 {

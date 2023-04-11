@@ -21,7 +21,7 @@ import com.bitwig.extension.controller.api.ControllerHost;
  * Definition class for the Akai devices supporting the ACVS protocol. Currently, the MPC Live I,
  * II, One, X and Force.
  *
- * @author J&uuml;rgen Mo&szlig;graber
+ * @author Jürgen Moßgraber
  */
 public class ACVSLiveControllerExtensionDefinition extends AbstractControllerExtensionDefinition<ACVSControlSurface, ACVSConfiguration>
 {

@@ -12,7 +12,7 @@ import de.mossgrabers.framework.parameter.IParameter;
  * Get a number of parameters. This implementation provides all crossfade parameters of the tracks
  * of the current track bank.
  *
- * @author J&uuml;rgen Mo&szlig;graber
+ * @author Jürgen Moßgraber
  */
 public class CrossfadeParameterProvider extends AbstractTrackParameterProvider
 {

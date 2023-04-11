@@ -23,7 +23,7 @@ import de.mossgrabers.framework.view.Views;
  * Command to toggle between Drum 4 and Drum Sequencer. Additional, tap tempo when used with Shift
  * button.
  *
- * @author J&uuml;rgen Mo&szlig;graber
+ * @author Jürgen Moßgraber
  */
 public class DrumSequencerSelectCommand extends ViewMultiSelectCommand<FireControlSurface, FireConfiguration>
 {

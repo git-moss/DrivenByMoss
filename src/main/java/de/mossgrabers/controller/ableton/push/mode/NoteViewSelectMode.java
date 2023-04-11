@@ -23,7 +23,7 @@ import de.mossgrabers.framework.view.Views;
 /**
  * Mode to select a view.
  *
- * @author J&uuml;rgen Mo&szlig;graber
+ * @author Jürgen Moßgraber
  */
 public class NoteViewSelectMode extends BaseMode<IItem>
 {

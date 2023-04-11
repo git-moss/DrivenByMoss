@@ -16,7 +16,7 @@ import java.util.Map;
 /**
  * Bitwig implementation of an action setting.
  *
- * @author J&uuml;rgen Mo&szlig;graber
+ * @author Jürgen Moßgraber
  */
 public class ActionSettingImpl implements IActionSetting
 {

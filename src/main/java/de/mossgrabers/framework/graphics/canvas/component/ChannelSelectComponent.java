@@ -13,7 +13,7 @@ import java.util.EnumMap;
 /**
  * An element in the grid which contains a channel name and color but no settings.
  *
- * @author J&uuml;rgen Mo&szlig;graber
+ * @author Jürgen Moßgraber
  */
 public class ChannelSelectComponent extends MenuComponent
 {

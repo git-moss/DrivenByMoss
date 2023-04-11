@@ -14,7 +14,7 @@ import de.mossgrabers.framework.daw.IModel;
 /**
  * Command to open and close the browser.
  *
- * @author J&uuml;rgen Mo&szlig;graber
+ * @author Jürgen Moßgraber
  */
 public class FireBrowserCommand extends BrowserCommand<FireControlSurface, FireConfiguration>
 {

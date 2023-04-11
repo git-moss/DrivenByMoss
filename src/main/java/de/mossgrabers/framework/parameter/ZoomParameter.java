@@ -11,7 +11,7 @@ import de.mossgrabers.framework.daw.IApplication;
 /**
  * A parameter implementation for zooming in the arranger.
  *
- * @author J&uuml;rgen Mo&szlig;graber
+ * @author Jürgen Moßgraber
  */
 public class ZoomParameter extends AbstractParameterImpl
 {

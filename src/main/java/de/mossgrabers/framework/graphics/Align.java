@@ -7,7 +7,7 @@ package de.mossgrabers.framework.graphics;
 /**
  * Alignment constants.
  *
- * @author J&uuml;rgen Mo&szlig;graber
+ * @author Jürgen Moßgraber
  */
 public enum Align
 {

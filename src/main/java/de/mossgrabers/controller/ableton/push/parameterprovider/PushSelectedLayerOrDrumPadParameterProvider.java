@@ -16,7 +16,7 @@ import de.mossgrabers.framework.parameterprovider.device.SelectedLayerOrDrumPadP
 /**
  * Extends channel parameter provider with the specific layout of Push 2.
  *
- * @author J&uuml;rgen Mo&szlig;graber
+ * @author Jürgen Moßgraber
  */
 public class PushSelectedLayerOrDrumPadParameterProvider extends SelectedLayerOrDrumPadParameterProvider implements ISettingObserver
 {

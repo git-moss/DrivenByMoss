@@ -20,7 +20,7 @@ import de.mossgrabers.framework.view.Views;
 /**
  * The Drum Configuration mode.
  *
- * @author J&uuml;rgen Mo&szlig;graber
+ * @author Jürgen Moßgraber
  */
 public class DrumConfigurationMode extends BaseMode
 {

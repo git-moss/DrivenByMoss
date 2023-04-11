@@ -11,7 +11,7 @@ import de.mossgrabers.framework.daw.IHost;
 /**
  * Only supports notification messages via a notification dialog.
  *
- * @author J&uuml;rgen Mo&szlig;graber
+ * @author Jürgen Moßgraber
  */
 public class DummyDisplay implements ITextDisplay
 {

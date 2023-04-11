@@ -20,7 +20,7 @@ import de.mossgrabers.framework.utils.ButtonEvent;
 /**
  * Command to handle touchstrip movement and touch as well as the LED updates.
  *
- * @author J&uuml;rgen Mo&szlig;graber
+ * @author Jürgen Moßgraber
  */
 public class TouchstripCommand extends AbstractContinuousCommand<MaschineControlSurface, MaschineConfiguration> implements TriggerCommand
 {

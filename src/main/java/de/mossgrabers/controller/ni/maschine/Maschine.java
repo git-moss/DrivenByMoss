@@ -7,7 +7,7 @@ package de.mossgrabers.controller.ni.maschine;
 /**
  * The supported Maschine models.
  *
- * @author J&uuml;rgen Mo&szlig;graber
+ * @author Jürgen Moßgraber
  */
 public enum Maschine
 {

@@ -16,7 +16,7 @@ import java.util.List;
 /**
  * Mix mode for the LauchControl XL to control 2 sends and panorama.
  *
- * @author J&uuml;rgen Mo&szlig;graber
+ * @author Jürgen Moßgraber
  */
 public class XLTrackMixMode extends XLAbstractTrackMode
 {

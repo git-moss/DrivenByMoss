@@ -15,7 +15,7 @@ import java.util.Optional;
 /**
  * Plugable extension to edit track parameters.
  *
- * @author J&uuml;rgen Mo&szlig;graber
+ * @author Jürgen Moßgraber
  */
 public class TrackEditing
 {

@@ -7,7 +7,7 @@ package de.mossgrabers.framework.graphics;
 /**
  * An interface to a bitmap, which can also be displayed in a window.
  *
- * @author J&uuml;rgen Mo&szlig;graber
+ * @author Jürgen Moßgraber
  */
 public interface IBitmap
 {

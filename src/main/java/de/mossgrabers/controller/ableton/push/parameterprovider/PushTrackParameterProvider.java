@@ -17,7 +17,7 @@ import de.mossgrabers.framework.parameterprovider.track.SelectedTrackParameterPr
 /**
  * Extends channel parameter provider with the specific layout of Push 2.
  *
- * @author J&uuml;rgen Mo&szlig;graber
+ * @author Jürgen Moßgraber
  */
 public class PushTrackParameterProvider extends SelectedTrackParameterProvider implements ISettingObserver
 {

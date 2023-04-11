@@ -7,7 +7,7 @@ package de.mossgrabers.controller.mackie.mcu.controller;
 /**
  * The type of MCU device.
  *
- * @author J&uuml;rgen Mo&szlig;graber
+ * @author Jürgen Moßgraber
  */
 public enum MCUDeviceType
 {

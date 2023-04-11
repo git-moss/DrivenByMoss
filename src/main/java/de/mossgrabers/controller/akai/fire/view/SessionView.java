@@ -23,7 +23,7 @@ import de.mossgrabers.framework.view.TransposeView;
 /**
  * The Session view.
  *
- * @author J&uuml;rgen Mo&szlig;graber
+ * @author Jürgen Moßgraber
  */
 public class SessionView extends AbstractSessionView<FireControlSurface, FireConfiguration> implements TransposeView, IFireView
 {
@@ -77,6 +77,14 @@ public class SessionView extends AbstractSessionView<FireControlSurface, FireCon
 
     /** {@inheritDoc} */
     @Override
+    protected boolean isAlternateFunction ()
+    {
+        return !this.surface.isShiftPressed () && this.surface.isPressed (ButtonID.ALT);
+    }
+
+
+    /** {@inheritDoc} */
+    @Override
     public int getSoloButtonColor (final int index)
     {
         final ISceneBank sceneBank = this.model.getSceneBank ();
@@ -115,7 +123,7 @@ public class SessionView extends AbstractSessionView<FireControlSurface, FireCon
     {
         final ITrackBank trackBank = this.model.getCurrentTrackBank ();
 
-        if (ButtonID.isSceneButton (buttonID) && this.surface.isPressed (ButtonID.ALT))
+        if (ButtonID.isSceneButton (buttonID) && this.surface.isShiftPressed () && this.surface.isPressed (ButtonID.ALT))
         {
             trackBank.stop ();
             return;
@@ -142,6 +150,22 @@ public class SessionView extends AbstractSessionView<FireControlSurface, FireCon
 
     /** {@inheritDoc} */
     @Override
+    protected boolean isSceneLaunchAlternateAction ()
+    {
+        return !this.surface.isShiftPressed () && this.surface.isPressed (ButtonID.ALT);
+    }
+
+
+    /** {@inheritDoc} */
+    @Override
+    protected boolean isSceneSelectAction ()
+    {
+        return false;
+    }
+
+
+    /** {@inheritDoc} */
+    @Override
     protected boolean handleButtonCombinations (final ITrack track, final ISlot slot)
     {
         final boolean result = super.handleButtonCombinations (track, slot);
@@ -149,7 +173,7 @@ public class SessionView extends AbstractSessionView<FireControlSurface, FireCon
             return true;
 
         // Select the clip (without playback)
-        if (this.isButtonCombination (ButtonID.ALT))
+        if (this.surface.isShiftPressed () && this.isButtonCombination (ButtonID.ALT))
         {
             slot.select ();
             return true;
@@ -282,21 +306,5 @@ public class SessionView extends AbstractSessionView<FireControlSurface, FireCon
         }
 
         sceneBank.scrollBackwards ();
-    }
-
-
-    /** {@inheritDoc} */
-    @Override
-    protected void launchScene (final IScene scene)
-    {
-        if (!scene.doesExist ())
-            return;
-
-        scene.select ();
-
-        if (!this.surface.isPressed (ButtonID.SHIFT))
-            scene.launch ();
-
-        this.surface.getDisplay ().notify (scene.getName ());
     }
 }

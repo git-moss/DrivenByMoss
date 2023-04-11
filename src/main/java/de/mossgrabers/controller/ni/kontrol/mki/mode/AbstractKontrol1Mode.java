@@ -24,7 +24,7 @@ import java.util.Optional;
  *
  * @param <B> The type of the item bank
  *
- * @author J&uuml;rgen Mo&szlig;graber
+ * @author Jürgen Moßgraber
  */
 public abstract class AbstractKontrol1Mode<B extends IItem> extends AbstractParameterMode<Kontrol1ControlSurface, Kontrol1Configuration, B> implements IKontrol1Mode
 {

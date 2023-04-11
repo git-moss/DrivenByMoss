@@ -18,7 +18,7 @@ import com.studiohartman.jamepad.ControllerManager;
 /**
  * The Gamepad.
  *
- * @author J&uuml;rgen Mo&szlig;graber
+ * @author Jürgen Moßgraber
  */
 public class GamepadControlSurface extends AbstractControlSurface<GamepadConfiguration>
 {

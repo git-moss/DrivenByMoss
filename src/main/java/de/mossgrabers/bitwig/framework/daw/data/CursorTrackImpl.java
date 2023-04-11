@@ -21,7 +21,7 @@ import com.bitwig.extension.controller.api.TrackBank;
 /**
  * The cursor track.
  *
- * @author J&uuml;rgen Mo&szlig;graber
+ * @author Jürgen Moßgraber
  */
 public class CursorTrackImpl extends TrackImpl implements ICursorTrack
 {

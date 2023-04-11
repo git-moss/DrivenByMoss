@@ -17,7 +17,7 @@ import java.util.Set;
  * Get a number of parameters. This implementation provides the selected layers volume, panorama and
  * send parameters.
  *
- * @author J&uuml;rgen Mo&szlig;graber
+ * @author Jürgen Moßgraber
  */
 public class SelectedLayerOrDrumPadParameterProvider extends AbstractSelectedChannelParameterProvider<IChannelBank<ILayer>, ILayer> implements IValueObserver<Boolean>
 {

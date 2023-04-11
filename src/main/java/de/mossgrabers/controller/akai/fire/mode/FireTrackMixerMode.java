@@ -21,7 +21,7 @@ import java.util.Optional;
 /**
  * The track mixer mode. Identical to the track mode but with a visualization of all 16 tracks.
  *
- * @author J&uuml;rgen Mo&szlig;graber
+ * @author Jürgen Moßgraber
  */
 public class FireTrackMixerMode extends FireTrackMode
 {

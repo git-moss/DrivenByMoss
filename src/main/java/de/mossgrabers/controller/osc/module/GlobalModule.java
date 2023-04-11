@@ -17,7 +17,7 @@ import java.util.LinkedList;
 /**
  * All global related commands.
  *
- * @author J&uuml;rgen Mo&szlig;graber
+ * @author Jürgen Moßgraber
  */
 public class GlobalModule extends AbstractModule
 {

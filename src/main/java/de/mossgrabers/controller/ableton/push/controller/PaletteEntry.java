@@ -7,7 +7,7 @@ package de.mossgrabers.controller.ableton.push.controller;
 /**
  * A color palette entry of the Push 2.
  *
- * @author J&uuml;rgen Mo&szlig;graber
+ * @author Jürgen Moßgraber
  */
 public class PaletteEntry
 {

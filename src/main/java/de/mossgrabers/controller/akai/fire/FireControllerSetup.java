@@ -77,7 +77,7 @@ import de.mossgrabers.framework.view.Views;
 /**
  * Support for the Akai Fire controller.
  *
- * @author J&uuml;rgen Mo&szlig;graber
+ * @author Jürgen Moßgraber
  */
 public class FireControllerSetup extends AbstractControllerSetup<FireControlSurface, FireConfiguration>
 {

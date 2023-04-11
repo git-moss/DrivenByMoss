@@ -36,7 +36,7 @@ import java.util.UUID;
  * @param <C> The type of the configuration
  * @param <S> The type of the control surface
  *
- * @author J&uuml;rgen Mo&szlig;graber
+ * @author Jürgen Moßgraber
  */
 public abstract class AbstractControllerExtensionDefinition<S extends IControlSurface<C>, C extends Configuration> extends ControllerExtensionDefinition
 {
@@ -116,7 +116,7 @@ public abstract class AbstractControllerExtensionDefinition<S extends IControlSu
     @Override
     public int getRequiredAPIVersion ()
     {
-        return 17;
+        return 18;
     }
 
 

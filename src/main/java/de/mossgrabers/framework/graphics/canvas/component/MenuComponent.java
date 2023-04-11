@@ -12,7 +12,7 @@ import de.mossgrabers.framework.graphics.canvas.component.LabelComponent.LabelLa
 /**
  * A component which contains a menu and a channels' icon, name and color.
  *
- * @author J&uuml;rgen Mo&szlig;graber
+ * @author Jürgen Moßgraber
  */
 public class MenuComponent implements IComponent
 {

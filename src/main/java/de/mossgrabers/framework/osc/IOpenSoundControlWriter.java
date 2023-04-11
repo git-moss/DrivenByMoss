@@ -7,7 +7,7 @@ package de.mossgrabers.framework.osc;
 /**
  * Interface for sending OSC messages.
  *
- * @author J&uuml;rgen Mo&szlig;graber
+ * @author Jürgen Moßgraber
  */
 public interface IOpenSoundControlWriter
 {

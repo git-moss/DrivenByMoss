@@ -25,7 +25,7 @@ import java.util.List;
 /**
  * Note edit knob mode.
  *
- * @author J&uuml;rgen Mo&szlig;graber
+ * @author Jürgen Moßgraber
  */
 public class NoteMode extends BaseMode<IItem> implements INoteMode
 {

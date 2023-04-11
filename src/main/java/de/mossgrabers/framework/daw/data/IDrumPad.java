@@ -7,7 +7,7 @@ package de.mossgrabers.framework.daw.data;
 /**
  * The interface to a drum pad channel.
  *
- * @author J&uuml;rgen Mo&szlig;graber
+ * @author Jürgen Moßgraber
  */
 public interface IDrumPad extends ILayer
 {

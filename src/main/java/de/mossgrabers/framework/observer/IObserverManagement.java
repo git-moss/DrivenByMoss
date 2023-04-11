@@ -7,7 +7,7 @@ package de.mossgrabers.framework.observer;
 /**
  * Interface for disable/enabling observers.
  *
- * @author J&uuml;rgen Mo&szlig;graber
+ * @author Jürgen Moßgraber
  */
 public interface IObserverManagement
 {

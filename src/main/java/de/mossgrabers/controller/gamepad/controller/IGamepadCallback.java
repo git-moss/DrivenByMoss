@@ -13,7 +13,7 @@ import com.studiohartman.jamepad.ControllerButton;
 /**
  * Interface for a callback when data from a Gamepad controller is received.
  *
- * @author J&uuml;rgen Mo&szlig;graber
+ * @author Jürgen Moßgraber
  */
 public interface IGamepadCallback
 {

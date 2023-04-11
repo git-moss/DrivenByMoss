@@ -16,7 +16,7 @@ import de.mossgrabers.framework.daw.IModel;
 /**
  * Abstract implementation for flexi handlers.
  *
- * @author J&uuml;rgen Mo&szlig;graber
+ * @author Jürgen Moßgraber
  */
 public abstract class AbstractHandler implements IFlexiCommandHandler
 {

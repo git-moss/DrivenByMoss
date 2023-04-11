@@ -12,7 +12,7 @@ import de.mossgrabers.framework.mode.layer.LayerMuteMode;
 /**
  * The layer mute mode. Adds specific button coloring.
  *
- * @author J&uuml;rgen Mo&szlig;graber
+ * @author Jürgen Moßgraber
  */
 public class XLLayerMuteMode extends LayerMuteMode<LaunchControlXLControlSurface, LaunchControlXLConfiguration>
 {

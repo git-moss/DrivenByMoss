@@ -22,7 +22,7 @@ import de.mossgrabers.framework.view.AbstractSessionView;
 /**
  * Session view.
  *
- * @author J&uuml;rgen Mo&szlig;graber
+ * @author Jürgen Moßgraber
  */
 public class SessionView extends AbstractSessionView<APCControlSurface, APCConfiguration>
 {

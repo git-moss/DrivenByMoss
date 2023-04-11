@@ -16,7 +16,7 @@ import de.mossgrabers.framework.utils.ButtonEvent;
 /**
  * Command for the Select button.
  *
- * @author J&uuml;rgen Mo&szlig;graber
+ * @author Jürgen Moßgraber
  */
 public class MaschineSelectButtonCommand extends AbstractTriggerCommand<MaschineControlSurface, MaschineConfiguration>
 {

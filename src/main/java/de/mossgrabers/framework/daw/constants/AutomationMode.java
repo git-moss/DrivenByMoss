@@ -10,7 +10,7 @@ import java.util.Locale;
 /**
  * Possible values for automation modes.
  *
- * @author J&uuml;rgen Mo&szlig;graber
+ * @author Jürgen Moßgraber
  */
 public enum AutomationMode
 {

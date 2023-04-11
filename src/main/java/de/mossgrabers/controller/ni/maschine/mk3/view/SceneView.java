@@ -13,12 +13,13 @@ import de.mossgrabers.framework.daw.IModel;
 import de.mossgrabers.framework.daw.data.IScene;
 import de.mossgrabers.framework.daw.data.bank.ISceneBank;
 import de.mossgrabers.framework.featuregroup.AbstractFeatureGroup;
+import de.mossgrabers.framework.utils.ButtonEvent;
 
 
 /**
  * The Scene view.
  *
- * @author J&uuml;rgen Mo&szlig;graber
+ * @author Jürgen Moßgraber
  */
 public class SceneView extends BaseView
 {
@@ -36,31 +37,37 @@ public class SceneView extends BaseView
 
     /** {@inheritDoc} */
     @Override
-    protected void executeFunction (final int padIndex)
+    protected void executeFunction (final int padIndex, final ButtonEvent buttonEvent)
     {
+        final boolean isDown = buttonEvent == ButtonEvent.DOWN;
+
         final IScene scene = this.model.getSceneBank ().getItem (padIndex);
 
-        if (this.isButtonCombination (ButtonID.DUPLICATE))
+        if (isDown)
         {
-            scene.duplicate ();
-            return;
+            if (this.isButtonCombination (ButtonID.DUPLICATE))
+            {
+                scene.duplicate ();
+                return;
+            }
+
+            if (this.isButtonCombination (ButtonID.DELETE))
+            {
+                scene.remove ();
+                return;
+            }
+
+            if (this.isButtonCombination (ButtonID.SELECT))
+            {
+                scene.select ();
+                return;
+            }
+
+            if (this.surface.getConfiguration ().isSelectClipOnLaunch ())
+                scene.select ();
         }
 
-        if (this.isButtonCombination (ButtonID.DELETE))
-        {
-            scene.remove ();
-            return;
-        }
-
-        if (this.isButtonCombination (ButtonID.SELECT))
-        {
-            scene.select ();
-            return;
-        }
-
-        if (this.surface.getConfiguration ().isSelectClipOnLaunch ())
-            scene.select ();
-        scene.launch ();
+        scene.launch (isDown, this.surface.isSelectPressed ());
     }
 
 

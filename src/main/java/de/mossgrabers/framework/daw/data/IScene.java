@@ -10,7 +10,7 @@ import de.mossgrabers.framework.controller.color.ColorEx;
 /**
  * Interface to a scene.
  *
- * @author J&uuml;rgen Mo&szlig;graber
+ * @author Jürgen Moßgraber
  */
 public interface IScene extends IItem
 {
@@ -31,9 +31,12 @@ public interface IScene extends IItem
 
 
     /**
-     * Launches the scene.
+     * Launch a scene.
+     *
+     * @param isPressed If false, the release action is triggered as configured in the DAW.
+     * @param isAlternative If true, launch the alternative launch option as configured in the DAW.
      */
-    void launch ();
+    void launch (boolean isPressed, boolean isAlternative);
 
 
     /**

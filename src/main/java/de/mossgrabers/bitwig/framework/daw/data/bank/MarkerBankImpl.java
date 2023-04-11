@@ -21,7 +21,7 @@ import com.bitwig.extension.controller.api.CueMarkerBank;
 /**
  * A marker bank.
  *
- * @author J&uuml;rgen Mo&szlig;graber
+ * @author Jürgen Moßgraber
  */
 public class MarkerBankImpl extends AbstractItemBankImpl<CueMarkerBank, IMarker> implements IMarkerBank
 {

@@ -20,7 +20,7 @@ import com.bitwig.extension.controller.api.ControllerHost;
 /**
  * Definition class for the Novation SLmkII controller extension.
  *
- * @author J&uuml;rgen Mo&szlig;graber
+ * @author Jürgen Moßgraber
  */
 public class SLMkIIControllerExtensionDefinition extends AbstractControllerExtensionDefinition<SLControlSurface, SLConfiguration>
 {

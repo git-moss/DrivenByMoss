@@ -13,7 +13,7 @@ import com.bitwig.extension.controller.api.Arranger;
 /**
  * Encapsulates the Arranger instance.
  *
- * @author J&uuml;rgen Mo&szlig;graber
+ * @author Jürgen Moßgraber
  */
 public class ArrangerImpl implements IArranger
 {

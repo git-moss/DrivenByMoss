@@ -10,7 +10,7 @@ import de.mossgrabers.controller.ni.maschine.core.command.trigger.EncoderMode;
 /**
  * Additional methods for views.
  *
- * @author J&uuml;rgen Mo&szlig;graber
+ * @author Jürgen Moßgraber
  */
 public interface IMaschineView
 {

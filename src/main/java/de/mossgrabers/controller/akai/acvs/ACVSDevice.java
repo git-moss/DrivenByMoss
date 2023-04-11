@@ -7,7 +7,7 @@ package de.mossgrabers.controller.akai.acvs;
 /**
  * The supported Akai devices which supported the ACVS protocol.
  *
- * @author J&uuml;rgen Mo&szlig;graber
+ * @author Jürgen Moßgraber
  */
 public enum ACVSDevice
 {

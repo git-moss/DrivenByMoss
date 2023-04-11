@@ -21,7 +21,7 @@ import de.mossgrabers.framework.view.sequencer.AbstractSequencerView;
 /**
  * Different colors to use for the pads and buttons of APC40 mkI and mkII.
  *
- * @author J&uuml;rgen Mo&szlig;graber
+ * @author Jürgen Moßgraber
  */
 @SuppressWarnings("javadoc")
 public class APCColorManager extends ColorManager

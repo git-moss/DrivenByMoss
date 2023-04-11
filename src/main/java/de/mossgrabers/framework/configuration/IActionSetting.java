@@ -7,7 +7,7 @@ package de.mossgrabers.framework.configuration;
 /**
  * An action setting.
  *
- * @author J&uuml;rgen Mo&szlig;graber
+ * @author Jürgen Moßgraber
  */
 public interface IActionSetting extends IStringSetting
 {

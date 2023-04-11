@@ -25,7 +25,7 @@ import java.util.List;
  * Mode for editing Send volumes. The knobs control the volumes of the given send of the tracks on
  * the selected track page.
  *
- * @author J&uuml;rgen Mo&szlig;graber
+ * @author Jürgen Moßgraber
  */
 public class LaunchkeyMk3SendMode extends TrackSendMode<LaunchkeyMk3ControlSurface, LaunchkeyMk3Configuration>
 {

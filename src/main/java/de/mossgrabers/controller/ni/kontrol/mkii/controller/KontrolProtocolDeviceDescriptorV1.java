@@ -12,7 +12,7 @@ import java.util.UUID;
 /**
  * Device descriptor for device which support version 1 of the NIHIA protocol.
  *
- * @author J&uuml;rgen Mo&szlig;graber
+ * @author Jürgen Moßgraber
  */
 public class KontrolProtocolDeviceDescriptorV1 implements IKontrolProtocolDeviceDescriptor
 {

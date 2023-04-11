@@ -7,7 +7,7 @@ package de.mossgrabers.framework.controller.hardware;
 /**
  * A control on a controller surface.
  *
- * @author J&uuml;rgen Mo&szlig;graber
+ * @author Jürgen Moßgraber
  */
 public interface IHwControl
 {

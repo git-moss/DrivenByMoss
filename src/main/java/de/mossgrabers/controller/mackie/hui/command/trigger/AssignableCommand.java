@@ -13,7 +13,7 @@ import de.mossgrabers.framework.daw.IModel;
 /**
  * Command for assignable functions.
  *
- * @author J&uuml;rgen Mo&szlig;graber
+ * @author Jürgen Moßgraber
  */
 public class AssignableCommand extends FootswitchCommand<HUIControlSurface, HUIConfiguration>
 {

@@ -22,7 +22,7 @@ import de.mossgrabers.framework.graphics.canvas.component.LabelComponent.LabelLa
 /**
  * The Akai Fire control surface.
  *
- * @author J&uuml;rgen Mo&szlig;graber
+ * @author Jürgen Moßgraber
  */
 public class FireControlSurface extends AbstractControlSurface<FireConfiguration>
 {

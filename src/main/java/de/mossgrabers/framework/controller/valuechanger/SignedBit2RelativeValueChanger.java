@@ -10,7 +10,7 @@ package de.mossgrabers.framework.controller.valuechanger;
  * [64] = [0]<br/>
  * [65..127] = [1..63]
  *
- * @author J&uuml;rgen Mo&szlig;graber
+ * @author Jürgen Moßgraber
  */
 public class SignedBit2RelativeValueChanger extends TwosComplementValueChanger
 {

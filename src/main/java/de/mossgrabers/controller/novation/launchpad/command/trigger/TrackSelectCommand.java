@@ -13,7 +13,7 @@ import de.mossgrabers.framework.utils.ButtonEvent;
 /**
  * Track select command.
  *
- * @author J&uuml;rgen Mo&szlig;graber
+ * @author Jürgen Moßgraber
  */
 public class TrackSelectCommand extends AbstractTrackCommand
 {

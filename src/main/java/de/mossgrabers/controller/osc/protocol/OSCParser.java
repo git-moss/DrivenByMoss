@@ -28,7 +28,7 @@ import java.util.Map;
 /**
  * Parser for OSC messages.
  *
- * @author J&uuml;rgen Mo&szlig;graber
+ * @author Jürgen Moßgraber
  */
 public class OSCParser extends AbstractOpenSoundControlParser
 {

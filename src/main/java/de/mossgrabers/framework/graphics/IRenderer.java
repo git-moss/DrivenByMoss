@@ -7,7 +7,7 @@ package de.mossgrabers.framework.graphics;
 /**
  * An interface to a renderer.
  *
- * @author J&uuml;rgen Mo&szlig;graber
+ * @author Jürgen Moßgraber
  */
 public interface IRenderer
 {

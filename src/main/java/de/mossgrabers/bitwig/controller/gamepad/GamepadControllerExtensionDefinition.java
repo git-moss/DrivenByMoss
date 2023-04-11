@@ -20,7 +20,7 @@ import com.bitwig.extension.controller.api.ControllerHost;
 /**
  * Definition class for the Gamepad controller.
  *
- * @author J&uuml;rgen Mo&szlig;graber
+ * @author Jürgen Moßgraber
  */
 public class GamepadControllerExtensionDefinition extends AbstractControllerExtensionDefinition<GamepadControlSurface, GamepadConfiguration>
 {

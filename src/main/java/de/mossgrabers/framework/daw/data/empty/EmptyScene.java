@@ -11,7 +11,7 @@ import de.mossgrabers.framework.daw.data.IScene;
 /**
  * Default data for an empty scene.
  *
- * @author J&uuml;rgen Mo&szlig;graber
+ * @author Jürgen Moßgraber
  */
 public class EmptyScene extends EmptyItem implements IScene
 {
@@ -46,7 +46,7 @@ public class EmptyScene extends EmptyItem implements IScene
 
     /** {@inheritDoc} */
     @Override
-    public void launch ()
+    public void launch (final boolean isPressed, final boolean isAlternative)
     {
         // Intentionally empty
     }

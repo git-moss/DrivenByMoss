@@ -7,7 +7,7 @@ package de.mossgrabers.controller.akai.acvs.controller;
 /**
  * Callback for text encoded values received via system exclusive messages.
  *
- * @author J&uuml;rgen Mo&szlig;graber
+ * @author Jürgen Moßgraber
  */
 @FunctionalInterface
 public interface ITextMessageHandler

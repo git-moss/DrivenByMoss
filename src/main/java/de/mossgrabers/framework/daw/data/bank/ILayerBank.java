@@ -10,7 +10,7 @@ import de.mossgrabers.framework.daw.data.ILayer;
 /**
  * Interface to a layer bank.
  *
- * @author J&uuml;rgen Mo&szlig;graber
+ * @author Jürgen Moßgraber
  */
 public interface ILayerBank extends IChannelBank<ILayer>
 {

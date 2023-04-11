@@ -32,7 +32,7 @@ import de.mossgrabers.framework.view.Views;
 /**
  * Session view.
  *
- * @author J&uuml;rgen Mo&szlig;graber
+ * @author Jürgen Moßgraber
  */
 public class SessionView extends AbstractSessionView<LaunchpadControlSurface, LaunchpadConfiguration>
 {
@@ -102,25 +102,6 @@ public class SessionView extends AbstractSessionView<LaunchpadControlSurface, La
         }
 
         super.onGridNote (note, velocity);
-    }
-
-
-    /** {@inheritDoc} */
-    @Override
-    public void onGridNoteLongPress (final int note)
-    {
-        final int modeIndex = this.getControlModeIndex (note);
-        if (modeIndex >= 0)
-            return;
-
-        // Cannot call the super method here since the setConsumed would store the wrong button
-        final Pair<Integer, Integer> padPos = this.getPad (note);
-        final ITrack track = this.model.getCurrentTrackBank ().getItem (padPos.getKey ().intValue ());
-        final ISlot slot = track.getSlotBank ().getItem (padPos.getValue ().intValue ());
-        slot.select ();
-
-        final int index = note - 36;
-        this.surface.getButton (ButtonID.get (ButtonID.PAD1, index)).setConsumed ();
     }
 
 

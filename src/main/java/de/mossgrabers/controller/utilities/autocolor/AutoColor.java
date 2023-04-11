@@ -21,7 +21,7 @@ import java.util.regex.Pattern;
  * 'Bass' in their name will automatically be colored in red. For multiple search strings use a
  * comma, e.g. I put 'Drum,BD,Snare,HiHat,Crash' after blue.
  *
- * @author J&uuml;rgen Mo&szlig;graber
+ * @author Jürgen Moßgraber
  */
 public class AutoColor
 {

@@ -16,7 +16,7 @@ import de.mossgrabers.framework.utils.ButtonEvent;
 /**
  * Command to quantize the currently selected clip. Toggle pinning if shifted.
  *
- * @author J&uuml;rgen Mo&szlig;graber
+ * @author Jürgen Moßgraber
  */
 public class APCQuantizeCommand extends QuantizeCommand<APCControlSurface, APCConfiguration>
 {

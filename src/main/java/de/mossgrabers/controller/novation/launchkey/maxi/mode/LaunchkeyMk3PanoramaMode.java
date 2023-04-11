@@ -21,7 +21,7 @@ import java.util.List;
 /**
  * The panorama mode. The knobs control the panorama of the tracks on the current track page.
  *
- * @author J&uuml;rgen Mo&szlig;graber
+ * @author Jürgen Moßgraber
  */
 public class LaunchkeyMk3PanoramaMode extends TrackPanMode<LaunchkeyMk3ControlSurface, LaunchkeyMk3Configuration>
 {

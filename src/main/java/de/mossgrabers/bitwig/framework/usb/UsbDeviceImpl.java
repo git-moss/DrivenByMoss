@@ -20,7 +20,7 @@ import java.util.regex.Pattern;
 /**
  * Implementation for an USB device.
  *
- * @author J&uuml;rgen Mo&szlig;graber
+ * @author Jürgen Moßgraber
  */
 public class UsbDeviceImpl implements IUsbDevice
 {

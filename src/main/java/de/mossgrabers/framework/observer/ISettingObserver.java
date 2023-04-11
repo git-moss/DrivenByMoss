@@ -7,7 +7,7 @@ package de.mossgrabers.framework.observer;
 /**
  * An observer interface for settings.
  *
- * @author J&uuml;rgen Mo&szlig;graber
+ * @author Jürgen Moßgraber
  */
 @FunctionalInterface
 public interface ISettingObserver

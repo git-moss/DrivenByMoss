@@ -11,7 +11,7 @@ import de.mossgrabers.framework.parameter.IParameter;
 /**
  * Interface to a DAW project.
  *
- * @author J&uuml;rgen Mo&szlig;graber
+ * @author Jürgen Moßgraber
  */
 public interface IProject extends IObserverManagement
 {

@@ -22,7 +22,7 @@ import de.mossgrabers.framework.parameter.IParameter;
 /**
  * The handler for equalizer commands.
  *
- * @author J&uuml;rgen Mo&szlig;graber
+ * @author Jürgen Moßgraber
  */
 public class EqHandler extends AbstractHandler
 {

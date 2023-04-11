@@ -21,7 +21,7 @@ import java.util.Optional;
  * Get a number of parameters. This implementation provides all send parameters of the channels of
  * the current channel bank.
  *
- * @author J&uuml;rgen Mo&szlig;graber
+ * @author Jürgen Moßgraber
  */
 public class SendParameterProvider extends AbstractTrackParameterProvider implements IItemSelectionObserver
 {

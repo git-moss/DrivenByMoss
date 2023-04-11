@@ -7,7 +7,7 @@ package de.mossgrabers.framework.observer;
 /**
  * An observer for indexed value change.
  *
- * @author J&uuml;rgen Mo&szlig;graber
+ * @author Jürgen Moßgraber
  *
  * @param <V> The type of the value
  */

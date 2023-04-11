@@ -12,7 +12,7 @@ import de.mossgrabers.framework.featuregroup.AbstractFeatureGroup;
 /**
  * Different colors to use for the Electra.One.
  *
- * @author J&uuml;rgen Mo&szlig;graber
+ * @author Jürgen Moßgraber
  */
 public class ElectraOneColorManager extends ColorManager
 {

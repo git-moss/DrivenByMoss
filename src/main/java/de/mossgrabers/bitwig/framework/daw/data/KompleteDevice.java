@@ -15,7 +15,7 @@ import com.bitwig.extension.controller.api.SpecificPluginDevice;
 /**
  * Komplete Kontrol device.
  *
- * @author J&uuml;rgen Mo&szlig;graber
+ * @author Jürgen Moßgraber
  */
 public class KompleteDevice extends SpecificDeviceImpl
 {

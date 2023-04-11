@@ -23,7 +23,7 @@ import java.util.Map;
 /**
  * The Browser view.
  *
- * @author J&uuml;rgen Mo&szlig;graber
+ * @author Jürgen Moßgraber
  */
 public class BrowserView extends AbstractView<LaunchkeyMk3ControlSurface, LaunchkeyMk3Configuration>
 {

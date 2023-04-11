@@ -10,7 +10,7 @@ import de.mossgrabers.framework.daw.data.ILayer;
 /**
  * Default data for an empty layer.
  *
- * @author J&uuml;rgen Mo&szlig;graber
+ * @author Jürgen Moßgraber
  */
 public class EmptyLayer extends EmptyChannel implements ILayer
 {

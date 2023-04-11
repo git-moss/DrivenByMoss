@@ -10,7 +10,7 @@ import de.mossgrabers.framework.utils.ButtonEvent;
 /**
  * Additional interface for APCmini views.
  *
- * @author J&uuml;rgen Mo&szlig;graber
+ * @author Jürgen Moßgraber
  */
 public interface APCminiView
 {

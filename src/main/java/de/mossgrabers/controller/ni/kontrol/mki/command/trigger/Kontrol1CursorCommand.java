@@ -14,7 +14,7 @@ import de.mossgrabers.framework.featuregroup.IMode;
 /**
  * Command for cursor arrow keys.
  *
- * @author J&uuml;rgen Mo&szlig;graber
+ * @author Jürgen Moßgraber
  */
 public class Kontrol1CursorCommand extends de.mossgrabers.framework.command.trigger.mode.CursorCommand<Kontrol1ControlSurface, Kontrol1Configuration>
 {

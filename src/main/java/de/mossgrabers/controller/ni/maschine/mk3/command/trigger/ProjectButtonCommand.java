@@ -16,7 +16,7 @@ import de.mossgrabers.framework.utils.ButtonEvent;
  * Command to trigger the Add track. If the browser is open this command cancels and discards the
  * browsing.
  *
- * @author J&uuml;rgen Mo&szlig;graber
+ * @author Jürgen Moßgraber
  */
 public class ProjectButtonCommand extends AddTrackCommand<MaschineControlSurface, MaschineConfiguration>
 {

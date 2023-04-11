@@ -7,7 +7,7 @@ package de.mossgrabers.framework.utils;
 /**
  * Interface for signaling the start and end of the tests.
  *
- * @author J&uuml;rgen Mo&szlig;graber
+ * @author Jürgen Moßgraber
  */
 public interface TestCallback
 {

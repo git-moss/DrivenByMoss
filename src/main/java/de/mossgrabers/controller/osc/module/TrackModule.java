@@ -30,7 +30,7 @@ import java.util.Optional;
 /**
  * All track related commands.
  *
- * @author J&uuml;rgen Mo&szlig;graber
+ * @author Jürgen Moßgraber
  */
 public class TrackModule extends AbstractModule
 {
@@ -122,7 +122,7 @@ public class TrackModule extends AbstractModule
         writer.sendOSC (trackAddress + TAG_EXISTS, track.doesExist (), dump);
         final ChannelType type = track.getType ();
         writer.sendOSC (trackAddress + "type", type == null ? null : type.name ().toLowerCase (Locale.US), dump);
-        writer.sendOSC (trackAddress + "activated", track.isActivated (), dump);
+        writer.sendOSC (trackAddress + TAG_ACTIVATED, track.isActivated (), dump);
         writer.sendOSC (trackAddress + TAG_SELECTED, track.isSelected (), dump);
         writer.sendOSC (trackAddress + "isGroup", track.isGroup (), dump);
         writer.sendOSC (trackAddress + TAG_NAME, track.getName (), dump);
@@ -302,8 +302,7 @@ public class TrackModule extends AbstractModule
                 tb.selectParent ();
                 break;
 
-            case TAG_SELECT:
-            case TAG_SELECTED:
+            case TAG_SELECT, TAG_SELECTED:
                 final ITrack cursorTrack = this.model.getCursorTrack ();
                 if (cursorTrack.doesExist ())
                     this.parseTrackValue (cursorTrack, path, value);
@@ -325,7 +324,7 @@ public class TrackModule extends AbstractModule
                     track.setName (value.toString ());
                 break;
 
-            case "activated":
+            case TAG_ACTIVATED:
                 track.setIsActivated (isTrigger (value));
                 break;
 
@@ -344,8 +343,7 @@ public class TrackModule extends AbstractModule
                 }
                 break;
 
-            case TAG_SELECT:
-            case TAG_SELECTED:
+            case TAG_SELECT, TAG_SELECTED:
                 if (isTrigger (value))
                     track.selectOrExpandGroup ();
                 break;
@@ -461,13 +459,15 @@ public class TrackModule extends AbstractModule
             final ISlot slot = track.getSlotBank ().getItem (clipNo);
             switch (clipCommand)
             {
-                case TAG_SELECT:
-                case TAG_SELECTED:
+                case TAG_SELECT, TAG_SELECTED:
                     slot.select ();
                     break;
                 case "launch":
-                    slot.launch ();
+                    slot.launch (toInteger (value) > 0, false);
                     break;
+                case "launchAlt":
+                    slot.launch (toInteger (value) > 0, true);
+                    return;
                 case "record":
                     this.model.recordNoteClip (track, slot);
                     break;
@@ -517,10 +517,25 @@ public class TrackModule extends AbstractModule
             return;
 
         if (path.isEmpty ())
+        {
             send.setValue (toInteger (value));
-        else if (TAG_INDICATE.equals (path.get (0)))
-            send.setIndication (isTrigger (value));
-        else if (TAG_TOUCHED.equals (path.get (0)))
-            send.touchValue (isTrigger (value));
+            return;
+        }
+
+        switch (path.get (0))
+        {
+            case TAG_ACTIVATED:
+                if (isTrigger (value))
+                    send.toggleEnabled ();
+                break;
+            case TAG_INDICATE:
+                send.setIndication (isTrigger (value));
+                break;
+            case TAG_TOUCHED:
+                send.touchValue (isTrigger (value));
+                break;
+            default:
+                throw new UnknownCommandException (command);
+        }
     }
 }

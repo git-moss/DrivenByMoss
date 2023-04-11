@@ -21,7 +21,7 @@ package de.mossgrabers.framework.daw.midi;
  * Note that if the manufacturers id code (mm) begins with 00H then the above message is extended by
  * two bytes to handle the additional manufacturers id code.
  *
- * @author J&uuml;rgen Mo&szlig;graber
+ * @author Jürgen Moßgraber
  */
 public class DeviceInquiry
 {

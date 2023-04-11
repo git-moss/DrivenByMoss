@@ -21,7 +21,7 @@ import de.mossgrabers.framework.utils.ButtonEvent;
 /**
  * Mode for selecting the device slot chains.
  *
- * @author J&uuml;rgen Mo&szlig;graber
+ * @author Jürgen Moßgraber
  */
 public class DeviceChainsMode extends DeviceParamsMode
 {

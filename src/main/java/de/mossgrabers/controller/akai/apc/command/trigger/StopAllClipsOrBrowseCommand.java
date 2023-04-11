@@ -14,7 +14,7 @@ import de.mossgrabers.framework.utils.ButtonEvent;
 /**
  * Stop all playing clips. Activate the browser if shifted.
  *
- * @author J&uuml;rgen Mo&szlig;graber
+ * @author Jürgen Moßgraber
  */
 public class StopAllClipsOrBrowseCommand extends AbstractTriggerCommand<APCControlSurface, APCConfiguration>
 {

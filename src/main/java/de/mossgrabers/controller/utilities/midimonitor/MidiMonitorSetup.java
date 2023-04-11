@@ -17,7 +17,7 @@ import de.mossgrabers.framework.daw.midi.IMidiInput;
 /**
  * A simple MIDI Monitor, which logs to the console.
  *
- * @author J&uuml;rgen Mo&szlig;graber
+ * @author Jürgen Moßgraber
  */
 public class MidiMonitorSetup extends AbstractControllerSetup<IControlSurface<MidiMonitorConfiguration>, MidiMonitorConfiguration>
 {

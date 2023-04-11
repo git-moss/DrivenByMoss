@@ -19,7 +19,7 @@ import de.mossgrabers.framework.view.sequencer.AbstractDrum8View;
 /**
  * The 8 lane drum sequencer.
  *
- * @author J&uuml;rgen Mo&szlig;graber
+ * @author Jürgen Moßgraber
  */
 public class Drum8View extends AbstractDrum8View<MaschineJamControlSurface, MaschineJamConfiguration> implements IMaschineView
 {

@@ -11,7 +11,7 @@ import de.mossgrabers.framework.daw.midi.IMidiOutput;
 /**
  * Implementation of a grid of pads.
  *
- * @author J&uuml;rgen Mo&szlig;graber
+ * @author Jürgen Moßgraber
  */
 public class PadGridImpl implements IPadGrid
 {

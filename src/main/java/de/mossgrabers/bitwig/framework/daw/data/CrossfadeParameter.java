@@ -13,7 +13,7 @@ import com.bitwig.extension.controller.api.Track;
 /**
  * A parameter encapsulating the tracks cross-fade setting.
  *
- * @author J&uuml;rgen Mo&szlig;graber
+ * @author Jürgen Moßgraber
  */
 public class CrossfadeParameter extends AbstractParameterImpl
 {

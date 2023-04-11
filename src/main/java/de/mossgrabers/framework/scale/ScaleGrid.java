@@ -7,7 +7,7 @@ package de.mossgrabers.framework.scale;
 /**
  * A scale applied to a grid.
  *
- * @author J&uuml;rgen Mo&szlig;graber
+ * @author Jürgen Moßgraber
  */
 class ScaleGrid
 {

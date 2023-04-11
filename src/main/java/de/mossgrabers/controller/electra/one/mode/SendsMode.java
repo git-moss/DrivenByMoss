@@ -29,7 +29,7 @@ import java.util.Optional;
 /**
  * The sends mode. The knobs control the sends 1-6 of the tracks on the current track page.
  *
- * @author J&uuml;rgen Mo&szlig;graber
+ * @author Jürgen Moßgraber
  */
 public class SendsMode extends AbstractElectraOneMode
 {

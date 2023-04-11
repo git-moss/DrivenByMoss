@@ -26,7 +26,7 @@ import java.util.Optional;
 /**
  * The send mode.
  *
- * @author J&uuml;rgen Mo&szlig;graber
+ * @author Jürgen Moßgraber
  */
 public class SendMode extends DefaultTrackMode<KontrolProtocolControlSurface, KontrolProtocolConfiguration>
 {

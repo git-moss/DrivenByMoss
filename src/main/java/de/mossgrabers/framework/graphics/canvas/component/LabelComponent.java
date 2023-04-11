@@ -18,7 +18,7 @@ import de.mossgrabers.framework.graphics.IImage;
 /**
  * A component which draws a label. A label is a text and an optional icon.
  *
- * @author J&uuml;rgen Mo&szlig;graber
+ * @author Jürgen Moßgraber
  */
 public class LabelComponent implements IComponent
 {

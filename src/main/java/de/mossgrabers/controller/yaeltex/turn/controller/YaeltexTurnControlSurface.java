@@ -18,7 +18,7 @@ import java.util.Arrays;
 /**
  * The Yaeltex Turn control surface.
  *
- * @author J&uuml;rgen Mo&szlig;graber
+ * @author Jürgen Moßgraber
  */
 @SuppressWarnings("javadoc")
 public class YaeltexTurnControlSurface extends AbstractControlSurface<YaeltexTurnConfiguration>

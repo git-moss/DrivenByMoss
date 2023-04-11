@@ -15,7 +15,7 @@ import de.mossgrabers.framework.observer.IValueObserver;
 /**
  * Provides access to the device, preset, sample, ... browser.
  *
- * @author J&uuml;rgen Mo&szlig;graber
+ * @author Jürgen Moßgraber
  */
 public interface IBrowser extends IObserverManagement
 {

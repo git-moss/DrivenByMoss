@@ -10,7 +10,7 @@ import java.nio.ByteBuffer;
 /**
  * Wrapper to a block of memory in Bitwig API.
  *
- * @author J&uuml;rgen Mo&szlig;graber
+ * @author Jürgen Moßgraber
  *
  * @param memoryBlock The memory block to wrap
  */

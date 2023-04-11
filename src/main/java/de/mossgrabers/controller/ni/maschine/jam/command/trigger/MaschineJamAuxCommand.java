@@ -16,7 +16,7 @@ import de.mossgrabers.framework.utils.ButtonEvent;
 /**
  * Command for the Maschine Jam Aux button.
  *
- * @author J&uuml;rgen Mo&szlig;graber
+ * @author Jürgen Moßgraber
  */
 public class MaschineJamAuxCommand extends ModeMultiSelectCommand<MaschineJamControlSurface, MaschineJamConfiguration>
 {

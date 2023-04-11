@@ -18,7 +18,7 @@ import de.mossgrabers.framework.utils.ButtonEvent;
 /**
  * Command for touching the master track.
  *
- * @author J&uuml;rgen Mo&szlig;graber
+ * @author Jürgen Moßgraber
  */
 public class MastertrackTouchCommand extends AbstractTriggerCommand<PushControlSurface, PushConfiguration>
 {

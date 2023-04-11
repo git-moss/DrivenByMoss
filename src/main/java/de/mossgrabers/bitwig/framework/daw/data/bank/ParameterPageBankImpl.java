@@ -22,7 +22,7 @@ import java.util.Optional;
  * Encapsulates the data of parameter pages. Bitwig pages have no banking, we need to do it
  * ourselves.
  *
- * @author J&uuml;rgen Mo&szlig;graber
+ * @author Jürgen Moßgraber
  */
 public class ParameterPageBankImpl extends AbstractBank<String> implements IParameterPageBank
 {

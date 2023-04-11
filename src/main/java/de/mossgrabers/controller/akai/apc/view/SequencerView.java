@@ -22,7 +22,7 @@ import de.mossgrabers.framework.view.sequencer.AbstractNoteSequencerView;
 /**
  * The sequencer view.
  *
- * @author J&uuml;rgen Mo&szlig;graber
+ * @author Jürgen Moßgraber
  */
 public class SequencerView extends AbstractNoteSequencerView<APCControlSurface, APCConfiguration>
 {

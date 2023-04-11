@@ -21,7 +21,7 @@ import java.util.List;
 /**
  * The configuration settings for MCU.
  *
- * @author J&uuml;rgen Mo&szlig;graber
+ * @author Jürgen Moßgraber
  */
 public class MCUConfiguration extends AbstractConfiguration
 {

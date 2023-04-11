@@ -25,7 +25,7 @@ import java.util.Map;
 /**
  * The Kontrol 1 surface.
  *
- * @author J&uuml;rgen Mo&szlig;graber
+ * @author Jürgen Moßgraber
  */
 public class Kontrol1ControlSurface extends AbstractControlSurface<Kontrol1Configuration> implements UIChangeCallback
 {

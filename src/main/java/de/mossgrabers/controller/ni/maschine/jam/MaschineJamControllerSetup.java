@@ -98,7 +98,7 @@ import java.util.function.BooleanSupplier;
 /**
  * Support for the NI Maschine controller series.
  *
- * @author J&uuml;rgen Mo&szlig;graber
+ * @author Jürgen Moßgraber
  */
 public class MaschineJamControllerSetup extends AbstractControllerSetup<MaschineJamControlSurface, MaschineJamConfiguration>
 {

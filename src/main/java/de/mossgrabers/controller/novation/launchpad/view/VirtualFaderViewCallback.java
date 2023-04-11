@@ -12,7 +12,7 @@ import de.mossgrabers.framework.featuregroup.ViewManager;
 /**
  * Links a virtual fader to a fader view.
  *
- * @author J&uuml;rgen Mo&szlig;graber
+ * @author Jürgen Moßgraber
  */
 public class VirtualFaderViewCallback implements IVirtualFaderCallback
 {

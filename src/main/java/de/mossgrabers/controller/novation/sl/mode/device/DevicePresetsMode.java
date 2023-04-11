@@ -22,7 +22,7 @@ import de.mossgrabers.framework.utils.StringUtils;
 /**
  * Browser mode.
  *
- * @author J&uuml;rgen Mo&szlig;graber
+ * @author Jürgen Moßgraber
  */
 public class DevicePresetsMode extends AbstractParameterMode<SLControlSurface, SLConfiguration, IItem>
 {

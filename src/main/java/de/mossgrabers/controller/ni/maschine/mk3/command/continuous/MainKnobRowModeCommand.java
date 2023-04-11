@@ -15,7 +15,7 @@ import java.util.Optional;
  * Command to delegate the moves of a knob/fader row to the active mode. Special handling for button
  * combinations of Scene, Pattern, Select, ...
  *
- * @author J&uuml;rgen Mo&szlig;graber
+ * @author Jürgen Moßgraber
  */
 public class MainKnobRowModeCommand extends KnobRowModeCommand<MaschineControlSurface, MaschineConfiguration>
 {

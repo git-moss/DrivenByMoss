@@ -17,7 +17,7 @@ import de.mossgrabers.framework.utils.StringUtils;
 /**
  * Mode for editing the user parameters.
  *
- * @author J&uuml;rgen Mo&szlig;graber
+ * @author Jürgen Moßgraber
  */
 public class MaschineUserMode extends AbstractParameterMode<MaschineControlSurface, MaschineConfiguration, IParameter>
 {

@@ -20,7 +20,7 @@ import java.util.Set;
 /**
  * Writes the changed DAW status as OSC messages.
  *
- * @author J&uuml;rgen Mo&szlig;graber
+ * @author Jürgen Moßgraber
  */
 public class OSCWriter extends AbstractOpenSoundControlWriter
 {

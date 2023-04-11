@@ -35,7 +35,7 @@ import java.util.Optional;
 /**
  * The view for playing and sequencing.
  *
- * @author J&uuml;rgen Mo&szlig;graber
+ * @author Jürgen Moßgraber
  */
 public class PlayView extends AbstractSequencerView<SLControlSurface, SLConfiguration> implements SLView
 {
@@ -77,31 +77,34 @@ public class PlayView extends AbstractSequencerView<SLControlSurface, SLConfigur
     @Override
     public void onButtonRow1 (final int index, final ButtonEvent event)
     {
-        if (event != ButtonEvent.DOWN)
+        if (event == ButtonEvent.LONG)
             return;
 
-        final ModeManager modeManager = this.surface.getModeManager ();
-        final Modes activeModeId = modeManager.getActiveID ();
-        if (Modes.VIEW_SELECT == activeModeId)
+        if (event == ButtonEvent.DOWN)
         {
-            if (index == 0)
+            final ModeManager modeManager = this.surface.getModeManager ();
+            final Modes activeModeId = modeManager.getActiveID ();
+            if (Modes.VIEW_SELECT == activeModeId)
             {
-                this.surface.getViewManager ().setActive (Views.CONTROL);
-                if (Modes.VOLUME.equals (modeManager.getPreviousID ()))
-                    modeManager.restore ();
+                if (index == 0)
+                {
+                    this.surface.getViewManager ().setActive (Views.CONTROL);
+                    if (Modes.VOLUME.equals (modeManager.getPreviousID ()))
+                        modeManager.restore ();
+                    else
+                        modeManager.setActive (Modes.TRACK);
+                }
                 else
-                    modeManager.setActive (Modes.TRACK);
+                    modeManager.restore ();
+                this.surface.turnOffTransport ();
+                return;
             }
-            else
-                modeManager.restore ();
-            this.surface.turnOffTransport ();
-            return;
+
+            if (!Modes.SESSION.equals (activeModeId))
+                modeManager.setActive (Modes.SESSION);
         }
 
-        if (!Modes.SESSION.equals (activeModeId))
-            modeManager.setActive (Modes.SESSION);
-
-        this.model.getSceneBank ().getItem (index).launch ();
+        this.model.getSceneBank ().getItem (index).launch (event == ButtonEvent.DOWN, false);
     }
 
 
@@ -289,8 +292,7 @@ public class PlayView extends AbstractSequencerView<SLControlSurface, SLConfigur
                 return SLControlSurface.MKII_BUTTON_STATE_OFF;
             case ROW_SELECT_6:
                 return isVolume ? SLControlSurface.MKII_BUTTON_STATE_ON : SLControlSurface.MKII_BUTTON_STATE_OFF;
-            case ROW_SELECT_7:
-            case ROW_SELECT_8:
+            case ROW_SELECT_7, ROW_SELECT_8:
                 return SLControlSurface.MKII_BUTTON_STATE_OFF;
 
             default:

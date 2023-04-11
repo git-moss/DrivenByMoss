@@ -26,7 +26,7 @@ import java.util.Optional;
 /**
  * The parameters mode.
  *
- * @author J&uuml;rgen Mo&szlig;graber
+ * @author Jürgen Moßgraber
  */
 public class ParamsMode extends ParameterMode<KontrolProtocolControlSurface, KontrolProtocolConfiguration>
 {

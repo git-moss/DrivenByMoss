@@ -14,7 +14,7 @@ import com.bitwig.extension.controller.api.Setting;
 /**
  * Bitwig implementation of a boolean setting.
  *
- * @author J&uuml;rgen Mo&szlig;graber
+ * @author Jürgen Moßgraber
  */
 public class BooleanSettingImpl extends AbstractSetting implements IBooleanSetting
 {

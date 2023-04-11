@@ -22,7 +22,7 @@ import java.util.Optional;
 /**
  * The handler for effect track commands.
  *
- * @author J&uuml;rgen Mo&szlig;graber
+ * @author Jürgen Moßgraber
  */
 public class FxTrackHandler extends AbstractHandler
 {

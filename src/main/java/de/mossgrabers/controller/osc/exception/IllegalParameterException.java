@@ -7,7 +7,7 @@ package de.mossgrabers.controller.osc.exception;
 /**
  * Exception for an OSC command with a missing or wrong parameter.
  *
- * @author J&uuml;rgen Mo&szlig;graber
+ * @author Jürgen Moßgraber
  */
 public class IllegalParameterException extends Exception
 {

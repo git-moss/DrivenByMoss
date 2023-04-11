@@ -21,7 +21,7 @@ import java.util.function.Supplier;
 /**
  * Interface for a factory to create hardware elements proxies of a hardware controller device.
  *
- * @author J&uuml;rgen Mo&szlig;graber
+ * @author Jürgen Moßgraber
  */
 public interface IHwSurfaceFactory
 {

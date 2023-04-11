@@ -7,7 +7,7 @@ package de.mossgrabers.framework.utils;
 /**
  * Runtime exception to block use of wrong execution methods.
  *
- * @author J&uuml;rgen Mo&szlig;graber
+ * @author Jürgen Moßgraber
  */
 public class LatestTaskException extends RuntimeException
 {

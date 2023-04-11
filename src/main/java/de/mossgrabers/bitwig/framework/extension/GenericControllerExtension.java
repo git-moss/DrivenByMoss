@@ -14,7 +14,7 @@ import com.bitwig.extension.controller.api.ControllerHost;
 /**
  * A generic controller extension implementation, which delegates to a setup instance.
  *
- * @author J&uuml;rgen Mo&szlig;graber
+ * @author Jürgen Moßgraber
  */
 public class GenericControllerExtension extends ControllerExtension
 {

@@ -20,7 +20,7 @@ import java.util.Map;
 /**
  * Encapsulates the Groove instance.
  *
- * @author J&uuml;rgen Mo&szlig;graber
+ * @author Jürgen Moßgraber
  */
 public class GrooveImpl implements IGroove
 {

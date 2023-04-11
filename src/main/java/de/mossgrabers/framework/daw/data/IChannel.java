@@ -14,7 +14,7 @@ import de.mossgrabers.framework.parameter.IParameter;
 /**
  * The interface to a channel.
  *
- * @author J&uuml;rgen Mo&szlig;graber
+ * @author Jürgen Moßgraber
  */
 public interface IChannel extends IItem
 {

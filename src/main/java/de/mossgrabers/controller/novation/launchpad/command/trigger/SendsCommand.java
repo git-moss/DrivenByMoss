@@ -13,7 +13,7 @@ import de.mossgrabers.framework.view.Views;
 /**
  * Track panorama command.
  *
- * @author J&uuml;rgen Mo&szlig;graber
+ * @author Jürgen Moßgraber
  */
 public class SendsCommand extends AbstractTrackCommand
 {

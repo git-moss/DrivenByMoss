@@ -18,7 +18,7 @@ import java.util.Set;
 /**
  * Get a number of empty parameters.
  *
- * @author J&uuml;rgen Mo&szlig;graber
+ * @author Jürgen Moßgraber
  *
  * @param size The number of parameters
  */

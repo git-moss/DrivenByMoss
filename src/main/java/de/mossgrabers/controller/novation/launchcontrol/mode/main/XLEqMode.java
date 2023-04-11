@@ -21,7 +21,7 @@ import java.util.Optional;
 /**
  * Equalizer mode for the LauchControl XL to control 8 EQ bands.
  *
- * @author J&uuml;rgen Mo&szlig;graber
+ * @author Jürgen Moßgraber
  */
 public class XLEqMode extends XLAbstractTrackMode
 {

@@ -10,7 +10,7 @@ import de.mossgrabers.framework.daw.IMemoryBlock;
 /**
  * Interface to a HID device.
  *
- * @author J&uuml;rgen Mo&szlig;graber
+ * @author Jürgen Moßgraber
  */
 public interface IHidDevice
 {

@@ -21,7 +21,7 @@ import de.mossgrabers.framework.utils.StringUtils;
 /**
  * Abstract base mode for all layer modes.
  *
- * @author J&uuml;rgen Mo&szlig;graber
+ * @author Jürgen Moßgraber
  */
 public abstract class AbstractLayerMode extends BaseMode<ILayer>
 {

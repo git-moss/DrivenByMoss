@@ -16,7 +16,7 @@ import java.util.UUID;
  * Abstract definition class for all Akai controllers which support the ACVS (Ableton Live MIDI
  * Communications Specification) protocol.
  *
- * @author J&uuml;rgen Mo&szlig;graber
+ * @author Jürgen Moßgraber
  */
 public class ACVSControllerDefinition extends DefaultControllerDefinition
 {

@@ -17,7 +17,7 @@ import java.util.List;
 /**
  * Interface to a track bank.
  *
- * @author J&uuml;rgen Mo&szlig;graber
+ * @author Jürgen Moßgraber
  */
 public interface ITrackBank extends IChannelBank<ITrack>
 {

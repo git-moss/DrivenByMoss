@@ -12,7 +12,7 @@ import de.mossgrabers.framework.utils.ButtonEvent;
 /**
  * Mode to select device parameter pages.
  *
- * @author J&uuml;rgen Mo&szlig;graber
+ * @author Jürgen Moßgraber
  */
 public class XLSelectDeviceParamsPageMode extends XLTemporaryButtonMode
 {

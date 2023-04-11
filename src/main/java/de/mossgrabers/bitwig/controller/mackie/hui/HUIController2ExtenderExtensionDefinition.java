@@ -7,7 +7,7 @@ package de.mossgrabers.bitwig.controller.mackie.hui;
 /**
  * Definition class for the Mackie HUI protocol with 2 extender devices.
  *
- * @author J&uuml;rgen Mo&szlig;graber
+ * @author Jürgen Moßgraber
  */
 public class HUIController2ExtenderExtensionDefinition extends HUIControllerExtensionDefinition
 {

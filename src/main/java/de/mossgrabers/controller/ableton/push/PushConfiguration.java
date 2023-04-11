@@ -27,7 +27,7 @@ import java.util.Set;
 /**
  * The configuration settings for Push.
  *
- * @author J&uuml;rgen Mo&szlig;graber
+ * @author Jürgen Moßgraber
  */
 public class PushConfiguration extends AbstractConfiguration implements IGraphicsConfiguration
 {

@@ -23,7 +23,7 @@ import java.util.Optional;
 /**
  * Edit track parameters mode.
  *
- * @author J&uuml;rgen Mo&szlig;graber
+ * @author Jürgen Moßgraber
  */
 public class TrackMode extends AbstractKontrol1Mode<ITrack>
 {

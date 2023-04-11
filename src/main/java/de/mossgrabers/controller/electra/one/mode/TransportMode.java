@@ -30,7 +30,7 @@ import java.util.Optional;
 /**
  * The transport mode.
  *
- * @author J&uuml;rgen Mo&szlig;graber
+ * @author Jürgen Moßgraber
  */
 public class TransportMode extends AbstractElectraOneMode
 {
@@ -117,7 +117,7 @@ public class TransportMode extends AbstractElectraOneMode
                         final ISlot s = slot.get ();
                         if (!s.isRecording ())
                             s.startRecording ();
-                        s.launch ();
+                        s.launch (true, false);
                         break;
                     case 1:
                         this.transport.toggleLauncherOverdub ();

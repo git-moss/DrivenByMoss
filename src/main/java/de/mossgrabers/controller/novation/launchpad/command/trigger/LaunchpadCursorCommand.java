@@ -41,7 +41,7 @@ import java.util.Optional;
 /**
  * Command for cursor arrow keys.
  *
- * @author J&uuml;rgen Mo&szlig;graber
+ * @author Jürgen Moßgraber
  */
 public class LaunchpadCursorCommand extends CursorCommand<LaunchpadControlSurface, LaunchpadConfiguration>
 {

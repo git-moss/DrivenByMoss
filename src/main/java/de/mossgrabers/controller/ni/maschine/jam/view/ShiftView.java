@@ -20,7 +20,7 @@ import de.mossgrabers.framework.utils.ButtonEvent;
 /**
  * Simulates the missing buttons (in contrast to MaschineJam Pro) on the grid.
  *
- * @author J&uuml;rgen Mo&szlig;graber
+ * @author Jürgen Moßgraber
  */
 public class ShiftView extends AbstractView<MaschineJamControlSurface, MaschineJamConfiguration>
 {

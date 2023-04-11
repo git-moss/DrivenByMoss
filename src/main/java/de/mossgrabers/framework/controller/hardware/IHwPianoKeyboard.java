@@ -10,7 +10,7 @@ import de.mossgrabers.framework.daw.midi.IMidiInput;
 /**
  * Interface for a proxy to a piano keyboard on a hardware controller.
  *
- * @author J&uuml;rgen Mo&szlig;graber
+ * @author Jürgen Moßgraber
  */
 public interface IHwPianoKeyboard extends IHwControl
 {

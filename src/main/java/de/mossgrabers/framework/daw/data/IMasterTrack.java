@@ -10,7 +10,7 @@ import de.mossgrabers.framework.observer.IItemSelectionObserver;
 /**
  * Interface to the master track.
  *
- * @author J&uuml;rgen Mo&szlig;graber
+ * @author Jürgen Moßgraber
  */
 public interface IMasterTrack extends ITrack
 {

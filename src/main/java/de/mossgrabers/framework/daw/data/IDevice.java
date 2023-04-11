@@ -7,7 +7,7 @@ package de.mossgrabers.framework.daw.data;
 /**
  * Interface to a device.
  *
- * @author J&uuml;rgen Mo&szlig;graber
+ * @author Jürgen Moßgraber
  */
 public interface IDevice extends IItem
 {

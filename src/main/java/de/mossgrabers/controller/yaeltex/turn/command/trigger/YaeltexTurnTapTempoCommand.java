@@ -14,7 +14,7 @@ import de.mossgrabers.framework.utils.ButtonEvent;
 /**
  * Command to tap the tempo. Additionally, execute clip quantize with Select button.
  *
- * @author J&uuml;rgen Mo&szlig;graber
+ * @author Jürgen Moßgraber
  */
 public class YaeltexTurnTapTempoCommand extends TapTempoCommand<YaeltexTurnControlSurface, YaeltexTurnConfiguration>
 {

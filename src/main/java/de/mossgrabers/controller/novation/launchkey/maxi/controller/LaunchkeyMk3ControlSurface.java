@@ -23,7 +23,7 @@ import de.mossgrabers.framework.view.Views;
 /**
  * The Launchkey Mk3 control surface.
  *
- * @author J&uuml;rgen Mo&szlig;graber
+ * @author Jürgen Moßgraber
  */
 @SuppressWarnings("javadoc")
 public class LaunchkeyMk3ControlSurface extends AbstractControlSurface<LaunchkeyMk3Configuration>

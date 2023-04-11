@@ -14,7 +14,7 @@ import de.mossgrabers.framework.view.sequencer.AbstractSequencerView;
 /**
  * Base class for Beatstep sequencers.
  *
- * @author J&uuml;rgen Mo&szlig;graber
+ * @author Jürgen Moßgraber
  */
 public abstract class BaseSequencerView extends AbstractSequencerView<BeatstepControlSurface, BeatstepConfiguration> implements BeatstepView
 {

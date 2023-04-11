@@ -34,7 +34,7 @@ import java.util.Optional;
 /**
  * Track mix mode for the Yaeltex Turn.
  *
- * @author J&uuml;rgen Mo&szlig;graber
+ * @author Jürgen Moßgraber
  */
 public class YaeltexTurnTrackMixMode extends AbstractParameterMode<YaeltexTurnControlSurface, YaeltexTurnConfiguration, ITrack>
 {

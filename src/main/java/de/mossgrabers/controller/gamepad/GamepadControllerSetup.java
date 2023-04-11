@@ -20,7 +20,7 @@ import com.studiohartman.jamepad.ControllerManager;
 /**
  * Support for Gamepad controllers.
  *
- * @author J&uuml;rgen Mo&szlig;graber
+ * @author Jürgen Moßgraber
  */
 public class GamepadControllerSetup extends AbstractControllerSetup<GamepadControlSurface, GamepadConfiguration>
 {

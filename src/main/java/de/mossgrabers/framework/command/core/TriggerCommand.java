@@ -10,7 +10,7 @@ import de.mossgrabers.framework.utils.ButtonEvent;
 /**
  * A trigger command is initiated by a button event.
  *
- * @author J&uuml;rgen Mo&szlig;graber
+ * @author Jürgen Moßgraber
  */
 @FunctionalInterface
 public interface TriggerCommand

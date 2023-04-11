@@ -47,7 +47,7 @@ import java.util.concurrent.atomic.AtomicReference;
 /**
  * A display which uses graphics rather than fixed characters.
  *
- * @author J&uuml;rgen Mo&szlig;graber
+ * @author Jürgen Moßgraber
  */
 public abstract class AbstractGraphicDisplay implements IGraphicDisplay
 {

@@ -7,7 +7,7 @@ package de.mossgrabers.framework.observer;
 /**
  * Callback interface for observing the adjustment of the current bank page.
  *
- * @author J&uuml;rgen Mo&szlig;graber
+ * @author Jürgen Moßgraber
  */
 @FunctionalInterface
 public interface IBankPageObserver

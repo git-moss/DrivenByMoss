@@ -12,7 +12,7 @@ import de.mossgrabers.framework.daw.data.IChannel;
  *
  * @param <T> The specific item type of the bank
  *
- * @author J&uuml;rgen Mo&szlig;graber
+ * @author Jürgen Moßgraber
  */
 public interface IChannelBank<T extends IChannel> extends IBank<T>
 {

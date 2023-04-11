@@ -30,7 +30,7 @@ import java.util.Optional;
 /**
  * Mode for editing details of a track.
  *
- * @author J&uuml;rgen Mo&szlig;graber
+ * @author Jürgen Moßgraber
  */
 public class TrackDetailsMode extends BaseMode<ITrack>
 {

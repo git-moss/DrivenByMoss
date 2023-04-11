@@ -23,7 +23,7 @@ import de.mossgrabers.framework.utils.ButtonEvent;
 /**
  * The handler for transport commands.
  *
- * @author J&uuml;rgen Mo&szlig;graber
+ * @author Jürgen Moßgraber
  */
 public class TransportHandler extends AbstractHandler
 {

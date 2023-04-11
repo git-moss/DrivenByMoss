@@ -20,7 +20,7 @@ import java.util.Optional;
 /**
  * Select a send mode.
  *
- * @author J&uuml;rgen Mo&szlig;graber
+ * @author Jürgen Moßgraber
  */
 public class SendModeCommand extends AbstractTriggerCommand<APCControlSurface, APCConfiguration>
 {

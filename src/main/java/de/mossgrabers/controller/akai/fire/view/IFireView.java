@@ -7,7 +7,7 @@ package de.mossgrabers.controller.akai.fire.view;
 /**
  * Extension to all fire views e.g. the select knob.
  *
- * @author J&uuml;rgen Mo&szlig;graber
+ * @author Jürgen Moßgraber
  */
 public interface IFireView
 {

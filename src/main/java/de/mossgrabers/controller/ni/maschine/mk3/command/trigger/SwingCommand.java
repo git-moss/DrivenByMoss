@@ -19,7 +19,7 @@ import de.mossgrabers.framework.view.Views;
 /**
  * Command to edit the play position. Switch between Panorama and Duration in note edit mode.
  *
- * @author J&uuml;rgen Mo&szlig;graber
+ * @author Jürgen Moßgraber
  */
 public class SwingCommand extends ModeMultiSelectCommand<MaschineControlSurface, MaschineConfiguration>
 {

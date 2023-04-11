@@ -7,7 +7,7 @@ package de.mossgrabers.framework.utils;
 /**
  * An callback interface for a timer.
  *
- * @author J&uuml;rgen Mo&szlig;graber
+ * @author Jürgen Moßgraber
  */
 @FunctionalInterface
 public interface TimerCallback

@@ -18,7 +18,7 @@ import java.util.LinkedList;
 /**
  * All action related commands.
  *
- * @author J&uuml;rgen Mo&szlig;graber
+ * @author Jürgen Moßgraber
  */
 public class ActionModule extends AbstractModule
 {

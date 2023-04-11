@@ -27,7 +27,7 @@ import java.util.Locale;
 /**
  * All transport related commands.
  *
- * @author J&uuml;rgen Mo&szlig;graber
+ * @author Jürgen Moßgraber
  */
 public class TransportModule extends AbstractModule
 {

@@ -17,7 +17,7 @@ import de.mossgrabers.framework.view.AbstractDrum64View;
 /**
  * The Drum 64 view.
  *
- * @author J&uuml;rgen Mo&szlig;graber
+ * @author Jürgen Moßgraber
  */
 public class Drum64View extends AbstractDrum64View<MaschineJamControlSurface, MaschineJamConfiguration> implements IViewNavigation
 {

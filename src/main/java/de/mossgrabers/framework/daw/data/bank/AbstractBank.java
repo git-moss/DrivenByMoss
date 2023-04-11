@@ -19,7 +19,7 @@ import java.util.concurrent.CopyOnWriteArraySet;
  *
  * @param <T> The specific item type of the bank content
  *
- * @author J&uuml;rgen Mo&szlig;graber
+ * @author Jürgen Moßgraber
  */
 public abstract class AbstractBank<T> implements IBank<T>
 {

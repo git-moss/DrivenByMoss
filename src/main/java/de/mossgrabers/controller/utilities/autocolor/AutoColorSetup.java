@@ -21,7 +21,7 @@ import de.mossgrabers.framework.scale.Scales;
 /**
  * Auto coloring of tracks.
  *
- * @author J&uuml;rgen Mo&szlig;graber
+ * @author Jürgen Moßgraber
  */
 public class AutoColorSetup extends AbstractControllerSetup<IControlSurface<AutoColorConfiguration>, AutoColorConfiguration>
 {

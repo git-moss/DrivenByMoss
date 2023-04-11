@@ -19,7 +19,7 @@ import de.mossgrabers.framework.utils.StringUtils;
 /**
  * Mode for browsing.
  *
- * @author J&uuml;rgen Mo&szlig;graber
+ * @author Jürgen Moßgraber
  */
 public class BrowserMode extends BaseMode<IItem>
 {

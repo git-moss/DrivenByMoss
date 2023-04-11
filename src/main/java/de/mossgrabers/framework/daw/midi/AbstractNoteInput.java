@@ -7,7 +7,7 @@ package de.mossgrabers.framework.daw.midi;
 /**
  * Abstract note input implementation.
  *
- * @author J&uuml;rgen Mo&szlig;graber
+ * @author Jürgen Moßgraber
  */
 public abstract class AbstractNoteInput implements INoteInput
 {

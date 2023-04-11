@@ -15,7 +15,7 @@ import de.mossgrabers.framework.utils.ButtonEvent;
 /**
  * Command to trigger the Accent.
  *
- * @author J&uuml;rgen Mo&szlig;graber
+ * @author Jürgen Moßgraber
  */
 public class AccentCommand extends AbstractTriggerCommand<PushControlSurface, PushConfiguration>
 {

@@ -18,7 +18,7 @@ import com.bitwig.extension.controller.api.DeviceBank;
 /**
  * The data of a layer.
  *
- * @author J&uuml;rgen Mo&szlig;graber
+ * @author Jürgen Moßgraber
  */
 public class LayerImpl extends ChannelImpl implements ILayer
 {
