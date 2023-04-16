@@ -320,9 +320,12 @@ public class TrackImpl extends ChannelImpl implements ITrack
 
     /** {@inheritDoc} */
     @Override
-    public void stop ()
+    public void stop (final boolean isAlternative)
     {
-        this.track.stop ();
+        if (isAlternative)
+            this.track.stopAlt ();
+        else
+            this.track.stop ();
     }
 
 

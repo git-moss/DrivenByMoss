@@ -39,7 +39,7 @@ public class NoteRepeatView extends BaseView
 
     /** {@inheritDoc} */
     @Override
-    protected void executeFunction (final int padIndex, final ButtonEvent buttonEvent)
+    public void executeFunction (final int padIndex, final ButtonEvent buttonEvent)
     {
         if (buttonEvent != ButtonEvent.DOWN)
             return;
@@ -49,8 +49,7 @@ public class NoteRepeatView extends BaseView
 
         switch (padIndex)
         {
-            case 6:
-            case 7:
+            case 6, 7:
                 if (host.supports (Capability.NOTE_REPEAT_MODE))
                 {
                     final ArpeggiatorMode arpMode = configuration.getNoteRepeatMode ();
@@ -63,8 +62,7 @@ public class NoteRepeatView extends BaseView
                 }
                 break;
 
-            case 8:
-            case 9:
+            case 8, 9:
                 if (host.supports (Capability.NOTE_REPEAT_LENGTH))
                 {
                     final int sel2 = Resolution.change (Resolution.getMatch (configuration.getNoteRepeatLength ().getValue ()), padIndex == 9);
@@ -73,15 +71,13 @@ public class NoteRepeatView extends BaseView
                 }
                 break;
 
-            case 12:
-            case 13:
+            case 12, 13:
                 final int sel = Resolution.change (Resolution.getMatch (configuration.getNoteRepeatPeriod ().getValue ()), padIndex == 13);
                 configuration.setNoteRepeatPeriod (Resolution.values ()[sel]);
                 this.mvHelper.delayDisplay ( () -> "Period: " + Resolution.getNameAt (sel));
                 break;
 
-            case 14:
-            case 15:
+            case 14, 15:
                 if (host.supports (Capability.NOTE_REPEAT_OCTAVES))
                 {
                     configuration.setNoteRepeatOctave (configuration.getNoteRepeatOctave () + (padIndex == 15 ? 1 : -1));

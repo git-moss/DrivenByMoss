@@ -55,15 +55,13 @@ public class SessionView extends AbstractSessionView<FireControlSurface, FireCon
     @Override
     public void onGridNote (final int note, final int velocity)
     {
-        final int n = note;
-
         // Birds-eye-view navigation
         if (this.isBirdsEyeActive ())
         {
             if (velocity == 0)
                 return;
 
-            final int index = n - 36;
+            final int index = note - 36;
             final int x = index % this.columns;
             final int y = this.rows - 1 - index / this.columns;
 
@@ -71,15 +69,7 @@ public class SessionView extends AbstractSessionView<FireControlSurface, FireCon
             return;
         }
 
-        super.onGridNote (n, velocity);
-    }
-
-
-    /** {@inheritDoc} */
-    @Override
-    protected boolean isAlternateFunction ()
-    {
-        return !this.surface.isShiftPressed () && this.surface.isPressed (ButtonID.ALT);
+        super.onGridNote (note, velocity);
     }
 
 
@@ -111,22 +101,19 @@ public class SessionView extends AbstractSessionView<FireControlSurface, FireCon
 
     /** {@inheritDoc} */
     @Override
-    public boolean isBirdsEyeActive ()
-    {
-        return this.isBirdsEyeActive;
-    }
-
-
-    /** {@inheritDoc} */
-    @Override
     public void onButton (final ButtonID buttonID, final ButtonEvent event, final int velocity)
     {
         final ITrackBank trackBank = this.model.getCurrentTrackBank ();
 
-        if (ButtonID.isSceneButton (buttonID) && this.surface.isShiftPressed () && this.surface.isPressed (ButtonID.ALT))
+        if (ButtonID.isSceneButton (buttonID) && event == ButtonEvent.UP && this.surface.isShiftPressed ())
         {
-            trackBank.stop ();
-            return;
+            this.setAlternateInteractionUsed (true);
+
+            if (this.surface.isPressed (ButtonID.ALT))
+            {
+                trackBank.stop (false);
+                return;
+            }
         }
 
         switch (buttonID)
@@ -150,17 +137,9 @@ public class SessionView extends AbstractSessionView<FireControlSurface, FireCon
 
     /** {@inheritDoc} */
     @Override
-    protected boolean isSceneLaunchAlternateAction ()
-    {
-        return !this.surface.isShiftPressed () && this.surface.isPressed (ButtonID.ALT);
-    }
-
-
-    /** {@inheritDoc} */
-    @Override
     protected boolean isSceneSelectAction ()
     {
-        return false;
+        return this.surface.isPressed (ButtonID.ALT);
     }
 
 
@@ -173,7 +152,7 @@ public class SessionView extends AbstractSessionView<FireControlSurface, FireCon
             return true;
 
         // Select the clip (without playback)
-        if (this.surface.isShiftPressed () && this.isButtonCombination (ButtonID.ALT))
+        if (this.isButtonCombination (ButtonID.ALT))
         {
             slot.select ();
             return true;
@@ -182,7 +161,7 @@ public class SessionView extends AbstractSessionView<FireControlSurface, FireCon
         // Stop clip with normal stop button
         if (this.isButtonCombination (ButtonID.STOP))
         {
-            track.stop ();
+            track.stop (false);
             return true;
         }
 

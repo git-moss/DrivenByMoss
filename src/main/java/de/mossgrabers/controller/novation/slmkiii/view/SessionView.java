@@ -88,7 +88,7 @@ public class SessionView extends AbstractSessionView<SLMkIIIControlSurface, SLMk
         // Stop clip with normal stop button
         if (this.isButtonCombination (ButtonID.STOP))
         {
-            track.stop ();
+            track.stop (false);
             return;
         }
 

@@ -5,6 +5,7 @@
 package de.mossgrabers.controller.ni.maschine.core.view;
 
 import de.mossgrabers.controller.ni.maschine.core.command.trigger.EncoderMode;
+import de.mossgrabers.framework.daw.clip.ISessionAlternative;
 
 
 /**
@@ -12,7 +13,7 @@ import de.mossgrabers.controller.ni.maschine.core.command.trigger.EncoderMode;
  *
  * @author Jürgen Moßgraber
  */
-public interface IMaschineView
+public interface IMaschineView extends ISessionAlternative
 {
     /**
      * Change an option of the view.

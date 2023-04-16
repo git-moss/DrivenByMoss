@@ -13,16 +13,16 @@ import de.mossgrabers.framework.daw.IModel;
 import de.mossgrabers.framework.daw.clip.INoteClip;
 import de.mossgrabers.framework.daw.data.bank.ISceneBank;
 import de.mossgrabers.framework.daw.data.bank.ITrackBank;
-import de.mossgrabers.framework.featuregroup.AbstractView;
 import de.mossgrabers.framework.utils.ButtonEvent;
+import de.mossgrabers.framework.view.AbstractShiftView;
 
 
 /**
- * Simulates the missing buttons (in contrast to MaschineJam Pro) on the grid.
+ * Provides additional functions.
  *
  * @author Jürgen Moßgraber
  */
-public class ShiftView extends AbstractView<MaschineJamControlSurface, MaschineJamConfiguration>
+public class ShiftView extends AbstractShiftView<MaschineJamControlSurface, MaschineJamConfiguration>
 {
     /**
      * Constructor.
@@ -63,6 +63,8 @@ public class ShiftView extends AbstractView<MaschineJamControlSurface, MaschineJ
     {
         if (velocity == 0)
             return;
+
+        this.setWasUsed ();
 
         final INoteClip cursorClip = this.model.getCursorClip ();
         switch (note)
@@ -116,8 +118,7 @@ public class ShiftView extends AbstractView<MaschineJamControlSurface, MaschineJ
 
         switch (buttonID)
         {
-            case ARROW_LEFT:
-            case ARROW_RIGHT:
+            case ARROW_LEFT, ARROW_RIGHT:
                 if (isDown)
                 {
                     if (flipSession)
@@ -127,8 +128,7 @@ public class ShiftView extends AbstractView<MaschineJamControlSurface, MaschineJ
                 }
                 break;
 
-            case ARROW_UP:
-            case ARROW_DOWN:
+            case ARROW_UP, ARROW_DOWN:
                 if (isDown)
                 {
                     if (flipSession)

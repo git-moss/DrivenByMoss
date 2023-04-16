@@ -12,7 +12,7 @@ import de.mossgrabers.framework.utils.ButtonEvent;
 
 
 /**
- * Command to stop all clips. Also sets a flag to use in combination with pads.
+ * Command to stop all clips.
  *
  * @param <S> The type of the control surface
  * @param <C> The type of the configuration
@@ -21,9 +21,6 @@ import de.mossgrabers.framework.utils.ButtonEvent;
  */
 public class StopAllClipsCommand<S extends IControlSurface<C>, C extends Configuration> extends AbstractTriggerCommand<S, C>
 {
-    private boolean stopPressed = false;
-
-
     /**
      * Constructor.
      *
@@ -40,23 +37,7 @@ public class StopAllClipsCommand<S extends IControlSurface<C>, C extends Configu
     @Override
     public void execute (final ButtonEvent event, final int velocity)
     {
-        if (this.surface.isShiftPressed ())
-        {
-            // Stop all clips
-            this.model.getCurrentTrackBank ().stop ();
-            return;
-        }
-        this.stopPressed = event != ButtonEvent.UP;
-    }
-
-
-    /**
-     * Is the stop clip button pressed?
-     *
-     * @return True if the stop clip button is pressed
-     */
-    public boolean isStopPressed ()
-    {
-        return this.stopPressed;
+        if (velocity == 0)
+            this.model.getCurrentTrackBank ().stop (this.surface.isShiftPressed ());
     }
 }

@@ -113,7 +113,7 @@ public class PolySequencerView extends AbstractPolySequencerView<FireControlSurf
                 break;
 
             case SCENE1:
-                cursorTrack.stop ();
+                cursorTrack.stop (false);
                 break;
 
             case SCENE2:

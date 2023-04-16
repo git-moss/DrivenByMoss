@@ -20,12 +20,12 @@ import de.mossgrabers.framework.daw.data.ICursorDevice;
 import de.mossgrabers.framework.daw.data.bank.IParameterBank;
 import de.mossgrabers.framework.daw.data.bank.ISceneBank;
 import de.mossgrabers.framework.daw.data.bank.ITrackBank;
-import de.mossgrabers.framework.featuregroup.AbstractView;
 import de.mossgrabers.framework.featuregroup.ModeManager;
 import de.mossgrabers.framework.featuregroup.ViewManager;
 import de.mossgrabers.framework.mode.Modes;
 import de.mossgrabers.framework.scale.Scales;
 import de.mossgrabers.framework.utils.ButtonEvent;
+import de.mossgrabers.framework.view.AbstractShiftView;
 import de.mossgrabers.framework.view.Views;
 
 
@@ -34,7 +34,7 @@ import de.mossgrabers.framework.view.Views;
  *
  * @author Jürgen Moßgraber
  */
-public class ShiftView extends AbstractView<APCminiControlSurface, APCminiConfiguration> implements APCminiView
+public class ShiftView extends AbstractShiftView<APCminiControlSurface, APCminiConfiguration> implements APCminiView
 {
     private static final int []                                    TRANSLATE =
     {
@@ -138,6 +138,8 @@ public class ShiftView extends AbstractView<APCminiControlSurface, APCminiConfig
     {
         if (velocity != 0)
             return;
+
+        this.setWasUsed ();
 
         final ICursorDevice cursorDevice = this.model.getCursorDevice ();
         final APCminiConfiguration configuration = this.surface.getConfiguration ();
@@ -357,7 +359,7 @@ public class ShiftView extends AbstractView<APCminiControlSurface, APCminiConfig
                 this.model.getCursorDevice ().toggleWindowOpen ();
                 break;
             case SCENE8:
-                this.model.getCurrentTrackBank ().stop ();
+                this.model.getCurrentTrackBank ().stop (false);
                 break;
             default:
                 final int index = buttonID.ordinal () - ButtonID.SCENE1.ordinal ();

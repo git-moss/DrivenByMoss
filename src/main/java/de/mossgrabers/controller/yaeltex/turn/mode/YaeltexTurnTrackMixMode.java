@@ -156,7 +156,7 @@ public class YaeltexTurnTrackMixMode extends AbstractParameterMode<YaeltexTurnCo
                 if (this.surface.isSelectPressed ())
                     track.returnToArrangement ();
                 else
-                    track.stop ();
+                    track.stop (this.surface.isShiftPressed ());
                 break;
 
             case 2:

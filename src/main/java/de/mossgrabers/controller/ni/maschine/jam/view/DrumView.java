@@ -134,4 +134,21 @@ public class DrumView extends AbstractDrumView<MaschineJamControlSurface, Maschi
 
         return super.handleSequencerAreaButtonCombinations (clip, notePosition, velocity);
     }
+
+
+    /** {@inheritDoc} */
+    @Override
+    public boolean wasAlternateInteractionUsed ()
+    {
+        // Only used as marker interface
+        return false;
+    }
+
+
+    /** {@inheritDoc} */
+    @Override
+    public void setAlternateInteractionUsed (final boolean wasUsed)
+    {
+        // Only used as marker interface
+    }
 }

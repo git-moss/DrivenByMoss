@@ -50,12 +50,22 @@ public class SceneBankImpl extends AbstractItemBankImpl<SceneBank, IScene> imple
     }
 
 
-    /** {@inheritDoc} */
-    @Override
-    public void stop ()
+    /**
+     * Stop all playing clips. Alternative function to stop the playback of all clips, e.g. not
+     * quantized, if true.
+     *
+     * @param isAlternative True, to execute the alternative function
+     */
+    public void stop (final boolean isAlternative)
     {
-        if (this.bank.isPresent ())
-            this.bank.get ().stop ();
+        if (this.bank.isEmpty ())
+            return;
+
+        final SceneBank sceneBank = this.bank.get ();
+        if (isAlternative)
+            sceneBank.stopAlt ();
+        else
+            sceneBank.stop ();
     }
 
 

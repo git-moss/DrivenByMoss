@@ -176,7 +176,7 @@ public class EmptyTrack extends EmptyChannel implements ITrack
 
     /** {@inheritDoc} */
     @Override
-    public void stop ()
+    public void stop (final boolean isAlternative)
     {
         // Intentionally empty
     }

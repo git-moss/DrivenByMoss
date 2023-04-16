@@ -87,6 +87,15 @@ public abstract class AbstractTrackBankImpl extends AbstractChannelBankImpl<Trac
 
     /** {@inheritDoc} */
     @Override
+    public void stop (final boolean isAlternative)
+    {
+        if (this.sceneBank != null)
+            this.sceneBank.stop (isAlternative);
+    }
+
+
+    /** {@inheritDoc} */
+    @Override
     public void setIndication (final boolean enable)
     {
         if (this.bank.isEmpty ())

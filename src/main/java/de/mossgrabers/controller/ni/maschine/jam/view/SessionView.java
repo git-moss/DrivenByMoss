@@ -128,14 +128,6 @@ public class SessionView extends AbstractSessionView<MaschineJamControlSurface, 
 
     /** {@inheritDoc} */
     @Override
-    public boolean isBirdsEyeActive ()
-    {
-        return this.isBirdsEyeActive;
-    }
-
-
-    /** {@inheritDoc} */
-    @Override
     protected boolean handleButtonCombinations (final ITrack track, final ISlot slot)
     {
         if (!track.doesExist ())
@@ -144,7 +136,14 @@ public class SessionView extends AbstractSessionView<MaschineJamControlSurface, 
         // Stop clip
         if (this.isButtonCombination (ButtonID.MUTE))
         {
-            track.stop ();
+            track.stop (this.surface.isSelectPressed ());
+            return true;
+        }
+
+        // Select the clip (without playback)
+        if (this.isButtonCombination (ButtonID.SELECT))
+        {
+            slot.select ();
             return true;
         }
 
@@ -176,6 +175,9 @@ public class SessionView extends AbstractSessionView<MaschineJamControlSurface, 
                 if (flipSession)
                     return direction == Direction.UP ? trackBank.canScrollPageBackwards () : trackBank.canScrollPageForwards ();
                 return direction == Direction.UP ? trackBank.getSceneBank ().canScrollPageBackwards () : trackBank.getSceneBank ().canScrollPageForwards ();
+            default:
+                // No more directions
+                break;
         }
         return false;
     }

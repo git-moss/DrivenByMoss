@@ -8,12 +8,14 @@ import de.mossgrabers.controller.akai.apcmini.APCminiConfiguration;
 import de.mossgrabers.controller.akai.apcmini.controller.APCminiColorManager;
 import de.mossgrabers.controller.akai.apcmini.controller.APCminiControlSurface;
 import de.mossgrabers.framework.controller.ButtonID;
-import de.mossgrabers.framework.controller.color.ColorManager;
 import de.mossgrabers.framework.daw.IModel;
+import de.mossgrabers.framework.daw.data.IScene;
 import de.mossgrabers.framework.daw.data.ISlot;
 import de.mossgrabers.framework.daw.data.ITrack;
+import de.mossgrabers.framework.daw.data.bank.ISceneBank;
 import de.mossgrabers.framework.daw.data.bank.ISlotBank;
 import de.mossgrabers.framework.daw.data.bank.ITrackBank;
+import de.mossgrabers.framework.featuregroup.AbstractFeatureGroup;
 import de.mossgrabers.framework.utils.ButtonEvent;
 import de.mossgrabers.framework.view.AbstractSessionView;
 
@@ -88,9 +90,28 @@ public class SessionView extends AbstractSessionView<APCminiControlSurface, APCm
 
     /** {@inheritDoc} */
     @Override
+    public void onButton (final ButtonID buttonID, final ButtonEvent event, final int velocity)
+    {
+        super.onButton (buttonID, event, velocity);
+
+        if (ButtonID.isSceneButton (buttonID) && event == ButtonEvent.UP && this.surface.isShiftPressed ())
+            this.setAlternateInteractionUsed (true);
+    }
+
+
+    /** {@inheritDoc} */
+    @Override
     public String getButtonColorID (final ButtonID buttonID)
     {
-        return this.surface.getButton (buttonID).isPressed () ? ColorManager.BUTTON_STATE_ON : ColorManager.BUTTON_STATE_OFF;
+        final int scene = buttonID.ordinal () - ButtonID.SCENE1.ordinal ();
+        if (scene < 0 || scene >= 8)
+            return AbstractFeatureGroup.BUTTON_COLOR_OFF;
+
+        final ISceneBank sceneBank = this.model.getSceneBank ();
+        final IScene s = sceneBank.getItem (scene);
+        if (s.doesExist ())
+            return s.isSelected () ? AbstractSessionView.COLOR_SELECTED_SCENE : AbstractSessionView.COLOR_SCENE;
+        return AbstractSessionView.COLOR_SCENE_OFF;
     }
 
 

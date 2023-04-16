@@ -25,12 +25,6 @@ public interface IChannelBank<T extends IChannel> extends IBank<T>
 
 
     /**
-     * Stop all playing clips.
-     */
-    void stop ();
-
-
-    /**
      * Get the scene bank.
      *
      * @return The scene bank.

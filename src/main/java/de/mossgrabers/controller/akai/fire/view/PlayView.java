@@ -77,7 +77,7 @@ public class PlayView extends AbstractPlayView<FireControlSurface, FireConfigura
 
             case SCENE1:
                 if (cursorTrack.doesExist ())
-                    cursorTrack.stop ();
+                    cursorTrack.stop (false);
                 break;
 
             case SCENE2:

@@ -79,7 +79,7 @@ public class FootswitchCommand<S extends IControlSurface<C>, C extends Configura
         {
             case AbstractConfiguration.FOOTSWITCH_STOP_ALL_CLIPS:
                 if (isDown)
-                    this.model.getCurrentTrackBank ().stop ();
+                    this.model.getCurrentTrackBank ().stop (false);
                 break;
 
             case AbstractConfiguration.FOOTSWITCH_TOGGLE_CLIP_OVERDUB:

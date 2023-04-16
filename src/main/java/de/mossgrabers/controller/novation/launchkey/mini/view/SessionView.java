@@ -289,7 +289,7 @@ public class SessionView extends AbstractSessionView<LaunchkeyMiniMk3ControlSurf
                 track.toggleSolo ();
                 break;
             case STOP_CLIP:
-                track.stop ();
+                track.stop (false);
                 break;
             default:
                 // Unused

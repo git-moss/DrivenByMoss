@@ -267,7 +267,7 @@ public abstract class AbstractView<S extends IControlSurface<C>, C extends Confi
      */
     protected boolean isSceneLaunchAlternateAction ()
     {
-        return this.surface.isSelectPressed ();
+        return this.surface.isShiftPressed ();
     }
 
 
@@ -278,7 +278,7 @@ public abstract class AbstractView<S extends IControlSurface<C>, C extends Confi
      */
     protected boolean isSceneSelectAction ()
     {
-        return this.surface.isShiftPressed ();
+        return this.surface.isSelectPressed ();
     }
 
 

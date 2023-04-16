@@ -8,6 +8,7 @@ import de.mossgrabers.controller.akai.fire.FireConfiguration;
 import de.mossgrabers.controller.akai.fire.controller.FireControlSurface;
 import de.mossgrabers.controller.akai.fire.view.SessionView;
 import de.mossgrabers.framework.command.core.AbstractTriggerCommand;
+import de.mossgrabers.framework.controller.ButtonID;
 import de.mossgrabers.framework.daw.IModel;
 import de.mossgrabers.framework.featuregroup.IView;
 import de.mossgrabers.framework.featuregroup.ViewManager;
@@ -61,7 +62,7 @@ public class SessionSelectCommand extends AbstractTriggerCommand<FireControlSurf
     @Override
     public void executeShifted (final ButtonEvent event)
     {
-        if (event != ButtonEvent.DOWN)
+        if (event != ButtonEvent.UP)
             return;
 
         final ViewManager viewManager = this.surface.getViewManager ();
@@ -69,9 +70,10 @@ public class SessionSelectCommand extends AbstractTriggerCommand<FireControlSurf
         if (view instanceof final SessionView sessionView)
         {
             sessionView.toggleBirdsEyeView ();
+            this.surface.getDisplay ().notify (sessionView.isBirdsEyeActive () ? "Birds Eye" : "Clips");
             if (viewManager.isActive (Views.SHIFT))
                 viewManager.restore ();
-            this.surface.getDisplay ().notify (sessionView.isBirdsEyeActive () ? "Birds Eye" : "Clips");
+            this.surface.setTriggerConsumed (ButtonID.SHIFT);
         }
     }
 }

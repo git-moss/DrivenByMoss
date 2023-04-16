@@ -84,7 +84,7 @@ public class StartSceneCommand<S extends IControlSurface<C>, C extends Configura
             }
         }
 
-        scene.launch (isDown, this.surface.isSelectPressed ());
+        scene.launch (isDown, false);
     }
 
 

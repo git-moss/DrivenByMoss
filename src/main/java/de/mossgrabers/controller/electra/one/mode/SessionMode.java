@@ -228,7 +228,7 @@ public class SessionMode extends AbstractElectraOneMode
                     // Stop
                     default:
                     case 4:
-                        track.stop ();
+                        track.stop (false);
                         break;
                 }
                 break;

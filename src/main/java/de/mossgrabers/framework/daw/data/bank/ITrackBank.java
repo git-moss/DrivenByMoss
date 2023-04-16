@@ -22,6 +22,15 @@ import java.util.List;
 public interface ITrackBank extends IChannelBank<ITrack>
 {
     /**
+     * Stop all playing clips. Alternative function to stop the playback of all clips, e.g. not
+     * quantized, if true.
+     *
+     * @param isAlternative True, to execute the alternative function
+     */
+    void stop (boolean isAlternative);
+
+
+    /**
      * Selects the parent track if any (track must be inside a group).
      */
     void selectParent ();

@@ -254,7 +254,7 @@ public class DrumXoXView extends AbstractDrumView<FireControlSurface, FireConfig
         if (!track.isRecArm () || slot.hasContent ())
         {
             if (!this.surface.isShiftPressed ())
-                slot.launch (isPressed, this.surface.isPressed (ButtonID.ALT));
+                slot.launch (isPressed, false);
             return;
         }
 
@@ -543,7 +543,7 @@ public class DrumXoXView extends AbstractDrumView<FireControlSurface, FireConfig
         // Stop clip
         if (this.isButtonCombination (ButtonID.STOP))
         {
-            track.stop ();
+            track.stop (false);
             return true;
         }
 

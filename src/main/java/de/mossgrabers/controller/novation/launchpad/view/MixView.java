@@ -159,7 +159,7 @@ public class MixView extends AbstractView<LaunchpadControlSurface, LaunchpadConf
                 break;
 
             case 3:
-                track.stop ();
+                track.stop (false);
                 display.notify ("Stop clip");
                 break;
 

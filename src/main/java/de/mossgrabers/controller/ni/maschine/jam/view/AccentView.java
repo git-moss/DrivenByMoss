@@ -102,4 +102,21 @@ public class AccentView extends AbstractView<MaschineJamControlSurface, Maschine
         if (view instanceof final IMaschineView maschineView)
             maschineView.changeOption (temporaryEncoderMode, control);
     }
+
+
+    /** {@inheritDoc} */
+    @Override
+    public boolean wasAlternateInteractionUsed ()
+    {
+        // Only used as marker interface
+        return false;
+    }
+
+
+    /** {@inheritDoc} */
+    @Override
+    public void setAlternateInteractionUsed (final boolean wasUsed)
+    {
+        // Only used as marker interface
+    }
 }

@@ -133,4 +133,21 @@ public class Drum4View extends AbstractDrum4View<MaschineJamControlSurface, Masc
 
         return super.handleSequencerAreaButtonCombinations (clip, notePosition, row, velocity, accentVelocity);
     }
+
+
+    /** {@inheritDoc} */
+    @Override
+    public boolean wasAlternateInteractionUsed ()
+    {
+        // Only used as marker interface
+        return false;
+    }
+
+
+    /** {@inheritDoc} */
+    @Override
+    public void setAlternateInteractionUsed (final boolean wasUsed)
+    {
+        // Only used as marker interface
+    }
 }

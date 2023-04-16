@@ -186,9 +186,12 @@ public interface ITrack extends IChannel
 
 
     /**
-     * Stop playback on the track.
+     * Stop playback on the track. Alternative function to stop playback on the track, e.g. not
+     * quantized, if true.
+     *
+     * @param isAlternative True, to execute the alternative function
      */
-    void stop ();
+    void stop (boolean isAlternative);
 
 
     /**

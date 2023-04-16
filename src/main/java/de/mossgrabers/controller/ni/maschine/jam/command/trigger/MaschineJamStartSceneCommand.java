@@ -71,6 +71,14 @@ public class MaschineJamStartSceneCommand extends StartSceneCommand<MaschineJamC
 
         final ViewManager viewManager = this.surface.getViewManager ();
 
+        if (this.surface.isSelectPressed ())
+        {
+            final IScene scene = this.getScene ();
+            if (scene.doesExist ())
+                scene.select ();
+            return;
+        }
+
         if (this.surface.isPressed (ButtonID.SEQUENCER))
         {
             this.surface.setTriggerConsumed (ButtonID.SEQUENCER);
@@ -94,6 +102,22 @@ public class MaschineJamStartSceneCommand extends StartSceneCommand<MaschineJamC
         }
 
         super.executeNormal (event);
+    }
+
+
+    /** {@inheritDoc} */
+    @Override
+    public void executeShifted (final ButtonEvent event)
+    {
+        if (event == ButtonEvent.LONG)
+            return;
+
+        final IScene scene = this.getScene ();
+        if (scene.doesExist ())
+            scene.launch (event == ButtonEvent.DOWN, true);
+
+        if (event == ButtonEvent.DOWN)
+            this.surface.setTriggerConsumed (ButtonID.SHIFT);
     }
 
 

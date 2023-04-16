@@ -7,7 +7,6 @@ package de.mossgrabers.controller.novation.launchpad;
 import de.mossgrabers.controller.novation.launchpad.command.trigger.DeleteCommand;
 import de.mossgrabers.controller.novation.launchpad.command.trigger.LaunchpadCursorCommand;
 import de.mossgrabers.controller.novation.launchpad.command.trigger.LaunchpadDuplicateCommand;
-import de.mossgrabers.controller.novation.launchpad.command.trigger.LaunchpadToggleShiftViewCommand;
 import de.mossgrabers.controller.novation.launchpad.command.trigger.MuteCommand;
 import de.mossgrabers.controller.novation.launchpad.command.trigger.PanCommand;
 import de.mossgrabers.controller.novation.launchpad.command.trigger.PlayAndNewCommand;
@@ -58,6 +57,7 @@ import de.mossgrabers.framework.command.trigger.clip.QuantizeCommand;
 import de.mossgrabers.framework.command.trigger.transport.ConfiguredRecordCommand;
 import de.mossgrabers.framework.command.trigger.transport.MetronomeCommand;
 import de.mossgrabers.framework.command.trigger.view.SelectPlayViewCommand;
+import de.mossgrabers.framework.command.trigger.view.ToggleShiftViewCommand;
 import de.mossgrabers.framework.command.trigger.view.ViewButtonCommand;
 import de.mossgrabers.framework.command.trigger.view.ViewMultiSelectCommand;
 import de.mossgrabers.framework.configuration.ISettingsUI;
@@ -298,7 +298,7 @@ public class LaunchpadControllerSetup extends AbstractControllerSetup<LaunchpadC
 
         final ButtonSetup buttonSetup = this.definition.getButtonSetup ();
 
-        this.addButton (ButtonID.SHIFT, "Shift", new LaunchpadToggleShiftViewCommand (this.model, surface), buttonSetup.get (LaunchpadButton.SHIFT).getControl (), () -> viewManager.isActive (Views.SHIFT) || surface.isShiftPressed () ? LaunchpadColorManager.LAUNCHPAD_COLOR_WHITE : LaunchpadColorManager.LAUNCHPAD_COLOR_GREY_LO);
+        this.addButton (ButtonID.SHIFT, "Shift", new ToggleShiftViewCommand<> (this.model, surface), buttonSetup.get (LaunchpadButton.SHIFT).getControl (), () -> viewManager.isActive (Views.SHIFT) || surface.isShiftPressed () ? LaunchpadColorManager.LAUNCHPAD_COLOR_WHITE : LaunchpadColorManager.LAUNCHPAD_COLOR_GREY_LO);
 
         final LaunchpadCursorCommand commandUp = new LaunchpadCursorCommand (Direction.UP, this.model, surface);
         final LaunchpadCursorCommand commandDown = new LaunchpadCursorCommand (Direction.DOWN, this.model, surface);

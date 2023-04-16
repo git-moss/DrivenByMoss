@@ -17,7 +17,7 @@ import de.mossgrabers.framework.featuregroup.AbstractView;
 
 
 /**
- * Simulates the missing buttons (in contrast to MaschineJam Pro) on the grid.
+ * View to configure the note repeat settings.
  *
  * @author Jürgen Moßgraber
  */

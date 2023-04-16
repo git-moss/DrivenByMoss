@@ -14,8 +14,5 @@ import de.mossgrabers.framework.daw.data.IScene;
  */
 public interface ISceneBank extends IBank<IScene>
 {
-    /**
-     * Stop all playing clips.
-     */
-    void stop ();
+    // Intentionally empty
 }

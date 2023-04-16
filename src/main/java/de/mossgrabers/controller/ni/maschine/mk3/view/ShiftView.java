@@ -5,13 +5,16 @@
 package de.mossgrabers.controller.ni.maschine.mk3.view;
 
 import de.mossgrabers.controller.ni.maschine.core.MaschineColorManager;
+import de.mossgrabers.controller.ni.maschine.mk3.MaschineConfiguration;
 import de.mossgrabers.controller.ni.maschine.mk3.controller.MaschineControlSurface;
 import de.mossgrabers.framework.controller.display.IDisplay;
 import de.mossgrabers.framework.controller.grid.IPadGrid;
+import de.mossgrabers.framework.daw.IApplication;
 import de.mossgrabers.framework.daw.IModel;
 import de.mossgrabers.framework.daw.clip.IClip;
 import de.mossgrabers.framework.daw.clip.INoteClip;
 import de.mossgrabers.framework.utils.ButtonEvent;
+import de.mossgrabers.framework.view.AbstractShiftView;
 
 
 /**
@@ -19,7 +22,7 @@ import de.mossgrabers.framework.utils.ButtonEvent;
  *
  * @author Jürgen Moßgraber
  */
-public class ShiftView extends BaseView
+public class ShiftView extends AbstractShiftView<MaschineControlSurface, MaschineConfiguration> implements IExecuteFunction
 {
     /**
      * Constructor.
@@ -35,6 +38,17 @@ public class ShiftView extends BaseView
 
     /** {@inheritDoc} */
     @Override
+    public void onGridNote (final int note, final int velocity)
+    {
+        if (velocity == 0)
+            return;
+        this.setWasUsed ();
+        this.executeFunction (note - 36, ButtonEvent.DOWN);
+    }
+
+
+    /** {@inheritDoc} */
+    @Override
     public void executeFunction (final int padIndex, final ButtonEvent buttonEvent)
     {
         if (buttonEvent != ButtonEvent.DOWN)
@@ -45,105 +59,70 @@ public class ShiftView extends BaseView
 
         this.surface.setStopConsumed ();
 
-        switch (padIndex)
+        if (padIndex == 0 || padIndex == 1)
         {
-            case 0:
-                this.model.getApplication ().undo ();
+            final IApplication application = this.model.getApplication ();
+            if (padIndex == 0)
+            {
+                application.undo ();
                 display.notify ("Undo");
-                break;
-
-            case 1:
-                this.model.getApplication ().redo ();
+            }
+            else
+            {
+                application.redo ();
                 display.notify ("Redo");
-                break;
+            }
+        }
 
-            case 2:
-                // Step Undo - not used
-                break;
-
-            case 3:
-                // Step Redo - not used
-                break;
-
-            case 4:
-                if (clip.doesExist ())
-                {
+        if (clip.doesExist () && clip instanceof final INoteClip noteClip)
+        {
+            switch (padIndex)
+            {
+                case 4:
                     clip.quantize (1);
                     display.notify ("Quantize: 100%");
-                }
-                break;
+                    break;
 
-            case 5:
-                if (clip.doesExist ())
-                {
+                case 5:
                     clip.quantize (0.5);
                     display.notify ("Quantize: 50%");
-                }
-                break;
+                    break;
 
-            case 6:
-                // Nudge left - not used
-                break;
-
-            case 7:
-                // Nudge right - not used
-                break;
-
-            case 8:
-                if (clip.doesExist () && clip instanceof final INoteClip noteClip)
-                {
+                case 8:
                     noteClip.clearAll ();
                     display.notify ("Clear all notes");
-                }
-                break;
+                    break;
 
-            case 9:
-                // Clear Automation - not used
-                break;
-
-            case 10:
-                // Copy - not used
-                break;
-
-            case 11:
-                // Paste - not used
-                break;
-
-            case 12:
-                if (clip.doesExist () && clip instanceof final INoteClip noteClip)
-                {
+                case 12:
                     noteClip.transpose (-1);
                     display.notify ("Transpose: -1");
-                }
-                break;
+                    break;
 
-            case 13:
-                if (clip.doesExist () && clip instanceof final INoteClip noteClip)
-                {
+                case 13:
                     noteClip.transpose (1);
                     display.notify ("Transpose: 1");
-                }
-                break;
+                    break;
 
-            case 14:
-                if (clip.doesExist () && clip instanceof final INoteClip noteClip)
-                {
+                case 14:
                     noteClip.transpose (-12);
                     display.notify ("Transpose: -12");
-                }
-                break;
+                    break;
 
-            case 15:
-                if (clip.doesExist () && clip instanceof final INoteClip noteClip)
-                {
+                case 15:
                     noteClip.transpose (12);
                     display.notify ("Transpose: 12");
-                }
-                break;
+                    break;
 
-            default:
-                // Do nothing
-                break;
+                default:
+                    // 2: Step Undo - not used
+                    // 3: Step Redo - not used
+                    // 6: Nudge left - not used
+                    // 7: Nudge right - not used
+                    // 9: Clear Automation - not used
+                    // 10: Copy - not used
+                    // 11: Paste - not used
+                    break;
+            }
         }
     }
 
@@ -152,11 +131,10 @@ public class ShiftView extends BaseView
     @Override
     public void drawGrid ()
     {
-        final IPadGrid padGrid = this.surface.getPadGrid ();
-
         final IClip clip = this.model.getCursorClip ();
         final boolean exists = clip.doesExist () && clip instanceof INoteClip;
 
+        final IPadGrid padGrid = this.surface.getPadGrid ();
         padGrid.lightEx (0, 0, exists ? MaschineColorManager.COLOR_TURQUOISE : MaschineColorManager.COLOR_BLACK);
         padGrid.lightEx (1, 0, exists ? MaschineColorManager.COLOR_TURQUOISE : MaschineColorManager.COLOR_BLACK);
         padGrid.lightEx (2, 0, exists ? MaschineColorManager.COLOR_TURQUOISE : MaschineColorManager.COLOR_BLACK);

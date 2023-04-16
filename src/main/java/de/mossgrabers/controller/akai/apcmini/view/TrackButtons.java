@@ -86,7 +86,7 @@ public class TrackButtons
         switch (trackState)
         {
             case APCminiControlSurface.TRACK_STATE_CLIP_STOP:
-                track.stop ();
+                track.stop (false);
                 break;
             case APCminiControlSurface.TRACK_STATE_SOLO:
                 track.toggleSolo ();

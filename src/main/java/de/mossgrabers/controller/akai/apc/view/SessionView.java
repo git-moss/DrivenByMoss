@@ -16,6 +16,7 @@ import de.mossgrabers.framework.daw.data.ISlot;
 import de.mossgrabers.framework.daw.data.ITrack;
 import de.mossgrabers.framework.daw.data.bank.ISceneBank;
 import de.mossgrabers.framework.featuregroup.AbstractFeatureGroup;
+import de.mossgrabers.framework.utils.ButtonEvent;
 import de.mossgrabers.framework.view.AbstractSessionView;
 
 
@@ -83,14 +84,6 @@ public class SessionView extends AbstractSessionView<APCControlSurface, APCConfi
 
     /** {@inheritDoc} */
     @Override
-    public boolean isBirdsEyeActive ()
-    {
-        return this.isBirdsEyeActive;
-    }
-
-
-    /** {@inheritDoc} */
-    @Override
     public void onGridNote (final int note, final int velocity)
     {
         // Birds-eye-view navigation
@@ -108,6 +101,26 @@ public class SessionView extends AbstractSessionView<APCControlSurface, APCConfi
         }
 
         super.onGridNote (note, velocity);
+    }
+
+
+    /** {@inheritDoc} */
+    @Override
+    public void onButton (final ButtonID buttonID, final ButtonEvent event, final int velocity)
+    {
+        super.onButton (buttonID, event, velocity);
+
+        if (ButtonID.isSceneButton (buttonID) && event == ButtonEvent.UP && this.surface.isShiftPressed ())
+            this.setAlternateInteractionUsed (true);
+    }
+
+
+    /** {@inheritDoc} */
+    @Override
+    protected boolean isSceneSelectAction ()
+    {
+        // Sadly, no additional button available
+        return false;
     }
 
 

@@ -94,7 +94,7 @@ public class SceneHandler extends AbstractHandler
                 }
                 break;
 
-            // Scene 1-8: Launch Scene
+            // Scene 1-8: Launch Scene Alternative
             case SCENE_1_LAUNCH_ALT_SCENE, SCENE_2_LAUNCH_ALT_SCENE, SCENE_3_LAUNCH_ALT_SCENE, SCENE_4_LAUNCH_ALT_SCENE, SCENE_5_LAUNCH_ALT_SCENE, SCENE_6_LAUNCH_ALT_SCENE, SCENE_7_LAUNCH_ALT_SCENE, SCENE_8_LAUNCH_ALT_SCENE:
                 if (isButtonPressed)
                 {

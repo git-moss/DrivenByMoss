@@ -60,9 +60,10 @@ public class ClipModule extends AbstractModule
 
         final String subCommand = getSubCommand (path);
 
-        if ("stopall".equals (subCommand))
+        final boolean isStopallAlt = "stopallAlt".equals (subCommand);
+        if (isStopallAlt || "stopall".equals (subCommand))
         {
-            this.model.getTrackBank ().stop ();
+            this.model.getTrackBank ().stop (isStopallAlt);
             return;
         }
 
@@ -94,9 +95,10 @@ public class ClipModule extends AbstractModule
         if (!cursorTrack.doesExist ())
             return;
 
-        if ("stop".equals (subCommand))
+        final boolean isAlternative = "stopAlt".equals (subCommand);
+        if (isAlternative || "stop".equals (subCommand))
         {
-            cursorTrack.stop ();
+            cursorTrack.stop (isAlternative);
             return;
         }
 

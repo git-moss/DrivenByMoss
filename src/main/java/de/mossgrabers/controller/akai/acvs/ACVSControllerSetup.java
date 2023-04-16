@@ -207,7 +207,7 @@ public class ACVSControllerSetup extends AbstractControllerSetup<ACVSControlSurf
 
             final ButtonID stopID = ButtonID.get (ButtonID.ROW1_1, i);
             label = "Track Stop " + (i + 1);
-            this.addReceiveButton (stopID, label, () -> tb.getItem (index).stop (), 0, ACVSControlSurface.NOTE_TRACK1_STOP + i);
+            this.addReceiveButton (stopID, label, () -> tb.getItem (index).stop (surface.isShiftPressed ()), 0, ACVSControlSurface.NOTE_TRACK1_STOP + i);
 
             for (int j = 0; j < 8; j++)
             {
@@ -346,11 +346,11 @@ public class ACVSControllerSetup extends AbstractControllerSetup<ACVSControlSurf
             }
 
             scene.select ();
-            if (surface.isShiftPressed ())
+            if (surface.isSelectPressed ())
                 return;
         }
 
-        scene.launch (isPressed, surface.isSelectPressed ());
+        scene.launch (isPressed, surface.isShiftPressed ());
     }
 
 
@@ -429,7 +429,7 @@ public class ACVSControllerSetup extends AbstractControllerSetup<ACVSControlSurf
         // NOTE_MPC_NEW - from where is this triggered?
         // NOTE_MPC_BACK_TO_ARRANGEMENT - from where is this triggered?
 
-        this.addReceiveButton (ButtonID.STOP_ALL_CLIPS, "Stop all clips", tb::stop, 0x0A, ACVSControlSurface.NOTE_STOP_ALL_CLIPS);
+        this.addReceiveButton (ButtonID.STOP_ALL_CLIPS, "Stop all clips", () -> tb.stop (surface.isShiftPressed ()), 0x0A, ACVSControlSurface.NOTE_STOP_ALL_CLIPS);
         this.addReceiveButton (ButtonID.INSERT_SCENE, "Insert scene", this.model.getProject ()::createScene, 0x0A, ACVSControlSurface.NOTE_INSERT_SCENE);
         final NewCommand<ACVSControlSurface, ACVSConfiguration> newCommand = new NewCommand<> (this.model, surface);
         this.addReceiveButton (ButtonID.NEW, "REC (New)", newCommand::execute, 0x0A, ACVSControlSurface.NOTE_ARRANGE_RECORD, false);
@@ -684,7 +684,7 @@ public class ACVSControllerSetup extends AbstractControllerSetup<ACVSControlSurf
 
         this.addButton (ButtonID.F5, "STOP ALL CLIPS", (event, velocity) -> {
             if (event == ButtonEvent.DOWN)
-                this.model.getTrackBank ().stop ();
+                trackBank.stop (surface.isShiftPressed ());
         }, 0x0C, ACVSControlSurface.NOTE_FORCE_STOP_ALL_CLIPS);
 
         // The following 3 buttons do currently nothing but could be used...

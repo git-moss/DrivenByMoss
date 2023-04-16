@@ -36,6 +36,6 @@ public class TrackStopClipMode<S extends IControlSurface<C>, C extends Configura
     @Override
     protected void executeMethod (final ITrack track)
     {
-        track.stop ();
+        track.stop (this.surface.isShiftPressed ());
     }
 }

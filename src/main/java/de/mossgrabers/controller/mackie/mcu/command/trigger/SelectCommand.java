@@ -184,7 +184,7 @@ public class SelectCommand extends AbstractTriggerCommand<MCUControlSurface, MCU
         if (this.surface.isSelectPressed ())
         {
             if (event == ButtonEvent.DOWN)
-                this.getTrackBank ().getItem (this.channel).stop ();
+                this.getTrackBank ().getItem (this.channel).stop (false);
             return true;
         }
 

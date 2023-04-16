@@ -117,8 +117,7 @@ public class PlayView extends AbstractPlayView<MaschineJamControlSurface, Maschi
     {
         switch (buttonID)
         {
-            case ARROW_LEFT:
-            case ARROW_RIGHT:
+            case ARROW_LEFT, ARROW_RIGHT:
                 if (buttonID == ButtonID.ARROW_LEFT)
                     this.scales.prevScaleLayout ();
                 else
@@ -157,5 +156,22 @@ public class PlayView extends AbstractPlayView<MaschineJamControlSurface, Maschi
                 return this.isOctaveDownButtonOn ();
         }
         return false;
+    }
+
+
+    /** {@inheritDoc} */
+    @Override
+    public boolean wasAlternateInteractionUsed ()
+    {
+        // Only used as marker interface
+        return false;
+    }
+
+
+    /** {@inheritDoc} */
+    @Override
+    public void setAlternateInteractionUsed (final boolean wasUsed)
+    {
+        // Only used as marker interface
     }
 }

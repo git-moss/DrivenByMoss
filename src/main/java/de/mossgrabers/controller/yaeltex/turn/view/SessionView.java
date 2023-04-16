@@ -52,15 +52,6 @@ public class SessionView extends AbstractSessionView<YaeltexTurnControlSurface, 
 
     /** {@inheritDoc} */
     @Override
-    public boolean isBirdsEyeActive ()
-    {
-        // No support for birds eye view
-        return false;
-    }
-
-
-    /** {@inheritDoc} */
-    @Override
     protected boolean handleButtonCombinations (final ITrack track, final ISlot slot)
     {
         if (super.handleButtonCombinations (track, slot))
@@ -69,6 +60,12 @@ public class SessionView extends AbstractSessionView<YaeltexTurnControlSurface, 
         final int index = track.getIndex ();
         if (index < 0)
             return true;
+
+        if (this.surface.isSelectPressed ())
+        {
+            slot.select ();
+            return true;
+        }
 
         // Duplicate the slot with Select button
         if (this.isButtonCombination (ButtonID.get (ButtonID.ROW1_1, index)))

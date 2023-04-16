@@ -158,4 +158,21 @@ public class SequencerView extends AbstractNoteSequencerView<MaschineJamControlS
 
         this.updateNoteMapping ();
     }
+
+
+    /** {@inheritDoc} */
+    @Override
+    public boolean wasAlternateInteractionUsed ()
+    {
+        // Only used as marker interface
+        return false;
+    }
+
+
+    /** {@inheritDoc} */
+    @Override
+    public void setAlternateInteractionUsed (final boolean wasUsed)
+    {
+        // Only used as marker interface
+    }
 }

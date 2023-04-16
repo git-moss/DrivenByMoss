@@ -107,12 +107,44 @@ public class SessionView extends AbstractSessionView<LaunchpadControlSurface, La
 
     /** {@inheritDoc} */
     @Override
+    protected boolean isAlternateFunction ()
+    {
+        // Trigger alternate clip launch on shift button
+        return this.surface.isShiftPressed ();
+    }
+
+
+    /** {@inheritDoc} */
+    @Override
     public void onButton (final ButtonID buttonID, final ButtonEvent event, final int velocity)
     {
         super.onButton (buttonID, event, velocity);
 
         if (ButtonID.isSceneButton (buttonID) && event == ButtonEvent.UP)
+        {
             ((SelectSessionViewCommand) this.surface.getButton (ButtonID.SESSION).getCommand ()).setTemporary ();
+
+            if (this.surface.isShiftPressed ())
+                this.setAlternateInteractionUsed (true);
+        }
+    }
+
+
+    /** {@inheritDoc} */
+    @Override
+    protected boolean isSceneLaunchAlternateAction ()
+    {
+        // Trigger alternate scene launch on shift button
+        return this.surface.isShiftPressed ();
+    }
+
+
+    /** {@inheritDoc} */
+    @Override
+    protected boolean isSceneSelectAction ()
+    {
+        // Sadly, no additional button available
+        return false;
     }
 
 
@@ -219,14 +251,6 @@ public class SessionView extends AbstractSessionView<LaunchpadControlSurface, La
 
     /** {@inheritDoc} */
     @Override
-    public boolean isBirdsEyeActive ()
-    {
-        return this.isBirdsEyeActive;
-    }
-
-
-    /** {@inheritDoc} */
-    @Override
     protected boolean handleButtonCombinations (final ITrack track, final ISlot slot)
     {
         final boolean result = super.handleButtonCombinations (track, slot);
@@ -301,7 +325,10 @@ public class SessionView extends AbstractSessionView<LaunchpadControlSurface, La
         else if (modeManager.isActive (Modes.SOLO))
             track.toggleSolo ();
         else if (modeManager.isActive (Modes.STOP_CLIP))
-            track.stop ();
+        {
+            this.surface.setTriggerConsumed (ButtonID.SHIFT);
+            track.stop (this.surface.isShiftPressed ());
+        }
     }
 
 

@@ -37,7 +37,7 @@ public class SoloView extends BaseView
 
     /** {@inheritDoc} */
     @Override
-    protected void executeFunction (final int padIndex, final ButtonEvent buttonEvent)
+    public void executeFunction (final int padIndex, final ButtonEvent buttonEvent)
     {
         if (buttonEvent != ButtonEvent.DOWN)
             return;

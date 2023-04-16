@@ -29,7 +29,7 @@ public class RecArmCommand<S extends IControlSurface<C>, C extends Configuration
 
 
     /**
-     * Constructor. Toggles the rec arm of the currently selected track, if any.
+     * Constructor.
      *
      * @param model The model
      * @param surface The surface
@@ -41,8 +41,8 @@ public class RecArmCommand<S extends IControlSurface<C>, C extends Configuration
 
 
     /**
-     * Constructor. Toggles the rec arm of the track at the given index in the page of the current
-     * track bank.
+     * Constructor. Toggles arming the track at the given index in the page of the current track
+     * bank for recording.
      *
      * @param index The channel index
      * @param model The model

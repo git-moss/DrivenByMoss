@@ -63,7 +63,7 @@ public class StopClipCommand<S extends IControlSurface<C>, C extends Configurati
         final ITrackBank currentTrackBank = this.model.getCurrentTrackBank ();
         final Optional<ITrack> track = this.index == -1 ? currentTrackBank.getSelectedItem () : Optional.of (currentTrackBank.getItem (this.index));
         if (track.isPresent ())
-            track.get ().stop ();
+            track.get ().stop (false);
     }
 
 

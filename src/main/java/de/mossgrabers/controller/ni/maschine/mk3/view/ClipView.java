@@ -11,6 +11,7 @@ import de.mossgrabers.framework.controller.ButtonID;
 import de.mossgrabers.framework.controller.grid.IPadGrid;
 import de.mossgrabers.framework.daw.DAWColor;
 import de.mossgrabers.framework.daw.IModel;
+import de.mossgrabers.framework.daw.clip.ISessionAlternative;
 import de.mossgrabers.framework.daw.data.ISlot;
 import de.mossgrabers.framework.daw.data.ITrack;
 import de.mossgrabers.framework.daw.data.bank.ISlotBank;
@@ -25,8 +26,11 @@ import java.util.Optional;
  *
  * @author Jürgen Moßgraber
  */
-public class ClipView extends BaseView
+public class ClipView extends BaseView implements ISessionAlternative
 {
+    private boolean wasAlternateInteractionUsed = false;
+
+
     /**
      * Constructor.
      *
@@ -41,7 +45,18 @@ public class ClipView extends BaseView
 
     /** {@inheritDoc} */
     @Override
-    protected void executeFunction (final int padIndex, final ButtonEvent buttonEvent)
+    public void onGridNote (final int note, final int velocity)
+    {
+        super.onGridNote (note, velocity);
+
+        if (this.surface.isShiftPressed ())
+            this.wasAlternateInteractionUsed = true;
+    }
+
+
+    /** {@inheritDoc} */
+    @Override
+    public void executeFunction (final int padIndex, final ButtonEvent buttonEvent)
     {
         final boolean isDown = buttonEvent == ButtonEvent.DOWN;
 
@@ -63,7 +78,7 @@ public class ClipView extends BaseView
             // Stop clip
             if (this.isButtonCombination (ButtonID.CLIP))
             {
-                track.get ().stop ();
+                track.get ().stop (this.surface.isShiftPressed ());
                 return;
             }
 
@@ -82,13 +97,19 @@ public class ClipView extends BaseView
                 return;
             }
 
+            if (this.isButtonCombination (ButtonID.SELECT))
+            {
+                slot.select ();
+                return;
+            }
+
             if (configuration.isSelectClipOnLaunch ())
                 slot.select ();
         }
 
         if (!track.get ().isRecArm () || slot.hasContent ())
         {
-            slot.launch (isDown, this.surface.isSelectPressed ());
+            slot.launch (isDown, this.surface.isShiftPressed ());
             return;
         }
 
@@ -147,5 +168,21 @@ public class ClipView extends BaseView
             else
                 padGrid.lightEx (x, y, AbstractFeatureGroup.BUTTON_COLOR_OFF);
         }
+    }
+
+
+    /** {@inheritDoc} */
+    @Override
+    public boolean wasAlternateInteractionUsed ()
+    {
+        return this.wasAlternateInteractionUsed;
+    }
+
+
+    /** {@inheritDoc} */
+    @Override
+    public void setAlternateInteractionUsed (final boolean wasUsed)
+    {
+        this.wasAlternateInteractionUsed = wasUsed;
     }
 }

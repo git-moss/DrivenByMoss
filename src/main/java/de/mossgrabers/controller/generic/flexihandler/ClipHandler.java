@@ -60,6 +60,9 @@ public class ClipHandler extends AbstractHandler
             FlexiCommand.CLIP_PLAY,
             FlexiCommand.CLIP_PLAY_ALT,
             FlexiCommand.CLIP_STOP,
+            FlexiCommand.CLIP_STOP_ALT,
+            FlexiCommand.CLIP_STOP_ALL,
+            FlexiCommand.CLIP_STOP_ALL_ALT,
             FlexiCommand.CLIP_RECORD,
             FlexiCommand.CLIP_NEW,
             FlexiCommand.CLIP_QUANTIZE
@@ -80,8 +83,11 @@ public class ClipHandler extends AbstractHandler
             case CLIP_PLAY, CLIP_PLAY_ALT:
                 return selectedSlot.isPresent () && selectedSlot.get ().isPlaying () ? 127 : 0;
 
-            case CLIP_STOP:
+            case CLIP_STOP, CLIP_STOP_ALT:
                 return selectedSlot.isPresent () && selectedSlot.get ().isPlaying () ? 0 : 127;
+
+            case CLIP_STOP_ALL, CLIP_STOP_ALL_ALT:
+                return 127;
 
             case CLIP_RECORD:
                 return selectedSlot.isPresent () && selectedSlot.get ().isRecording () ? 127 : 0;
@@ -125,9 +131,14 @@ public class ClipHandler extends AbstractHandler
                     selectedSlot.get ().launch (isButtonPressed, command == FlexiCommand.CLIP_PLAY_ALT);
                 break;
 
-            case CLIP_STOP:
+            case CLIP_STOP, CLIP_STOP_ALT:
                 if (isButtonPressed)
-                    this.model.getCursorTrack ().stop ();
+                    this.model.getCursorTrack ().stop (command == FlexiCommand.CLIP_STOP_ALT);
+                break;
+
+            case CLIP_STOP_ALL, CLIP_STOP_ALL_ALT:
+                if (isButtonPressed)
+                    this.model.getTrackBank ().stop (command == FlexiCommand.CLIP_STOP_ALL_ALT);
                 break;
 
             case CLIP_RECORD:

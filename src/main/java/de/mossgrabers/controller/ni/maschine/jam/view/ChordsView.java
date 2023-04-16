@@ -90,8 +90,7 @@ public class ChordsView extends AbstractChordView<MaschineJamControlSurface, Mas
     {
         switch (buttonID)
         {
-            case ARROW_LEFT:
-            case ARROW_RIGHT:
+            case ARROW_LEFT, ARROW_RIGHT:
                 // Not used
                 break;
 
@@ -115,8 +114,7 @@ public class ChordsView extends AbstractChordView<MaschineJamControlSurface, Mas
     {
         switch (direction)
         {
-            case LEFT:
-            case RIGHT:
+            case LEFT, RIGHT:
                 return false;
             case UP:
                 return this.isOctaveUpButtonOn ();
@@ -124,5 +122,22 @@ public class ChordsView extends AbstractChordView<MaschineJamControlSurface, Mas
                 return this.isOctaveDownButtonOn ();
         }
         return false;
+    }
+
+
+    /** {@inheritDoc} */
+    @Override
+    public boolean wasAlternateInteractionUsed ()
+    {
+        // Only used as marker interface
+        return false;
+    }
+
+
+    /** {@inheritDoc} */
+    @Override
+    public void setAlternateInteractionUsed (final boolean wasUsed)
+    {
+        // Only used as marker interface
     }
 }

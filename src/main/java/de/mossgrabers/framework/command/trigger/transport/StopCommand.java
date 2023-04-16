@@ -66,7 +66,7 @@ public class StopCommand<S extends IControlSurface<C>, C extends Configuration> 
     public void executeShifted (final ButtonEvent event)
     {
         if (event == ButtonEvent.UP)
-            this.model.getTrackBank ().stop ();
+            this.model.getTrackBank ().stop (false);
     }
 
 

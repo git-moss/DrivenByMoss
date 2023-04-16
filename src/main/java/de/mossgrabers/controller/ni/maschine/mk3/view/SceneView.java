@@ -10,6 +10,7 @@ import de.mossgrabers.framework.controller.ButtonID;
 import de.mossgrabers.framework.controller.grid.IPadGrid;
 import de.mossgrabers.framework.daw.DAWColor;
 import de.mossgrabers.framework.daw.IModel;
+import de.mossgrabers.framework.daw.clip.ISessionAlternative;
 import de.mossgrabers.framework.daw.data.IScene;
 import de.mossgrabers.framework.daw.data.bank.ISceneBank;
 import de.mossgrabers.framework.featuregroup.AbstractFeatureGroup;
@@ -21,8 +22,11 @@ import de.mossgrabers.framework.utils.ButtonEvent;
  *
  * @author Jürgen Moßgraber
  */
-public class SceneView extends BaseView
+public class SceneView extends BaseView implements ISessionAlternative
 {
+    private boolean wasAlternateInteractionUsed = false;
+
+
     /**
      * Constructor.
      *
@@ -37,7 +41,18 @@ public class SceneView extends BaseView
 
     /** {@inheritDoc} */
     @Override
-    protected void executeFunction (final int padIndex, final ButtonEvent buttonEvent)
+    public void onGridNote (final int note, final int velocity)
+    {
+        super.onGridNote (note, velocity);
+
+        if (this.surface.isShiftPressed ())
+            this.wasAlternateInteractionUsed = true;
+    }
+
+
+    /** {@inheritDoc} */
+    @Override
+    public void executeFunction (final int padIndex, final ButtonEvent buttonEvent)
     {
         final boolean isDown = buttonEvent == ButtonEvent.DOWN;
 
@@ -45,6 +60,13 @@ public class SceneView extends BaseView
 
         if (isDown)
         {
+            // Stop all clips
+            if (this.isButtonCombination (ButtonID.SCENE1))
+            {
+                this.model.getTrackBank ().stop (this.surface.isShiftPressed ());
+                return;
+            }
+
             if (this.isButtonCombination (ButtonID.DUPLICATE))
             {
                 scene.duplicate ();
@@ -67,7 +89,7 @@ public class SceneView extends BaseView
                 scene.select ();
         }
 
-        scene.launch (isDown, this.surface.isSelectPressed ());
+        scene.launch (isDown, this.surface.isShiftPressed ());
     }
 
 
@@ -93,5 +115,21 @@ public class SceneView extends BaseView
             else
                 padGrid.lightEx (x, y, AbstractFeatureGroup.BUTTON_COLOR_OFF);
         }
+    }
+
+
+    /** {@inheritDoc} */
+    @Override
+    public boolean wasAlternateInteractionUsed ()
+    {
+        return this.wasAlternateInteractionUsed;
+    }
+
+
+    /** {@inheritDoc} */
+    @Override
+    public void setAlternateInteractionUsed (final boolean wasUsed)
+    {
+        this.wasAlternateInteractionUsed = wasUsed;
     }
 }

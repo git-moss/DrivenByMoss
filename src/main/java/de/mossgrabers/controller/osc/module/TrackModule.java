@@ -268,8 +268,8 @@ public class TrackModule extends AbstractModule
                 }
                 break;
 
-            case "stop":
-                this.model.getCurrentTrackBank ().stop ();
+            case "stop", "stopAlt":
+                this.model.getCurrentTrackBank ().stop ("stopAlt".equals (command));
                 break;
 
             case "vu":
@@ -494,7 +494,7 @@ public class TrackModule extends AbstractModule
             switch (command)
             {
                 case "stop":
-                    track.stop ();
+                    track.stop (false);
                     break;
                 case "returntoarrangement":
                     track.returnToArrangement ();

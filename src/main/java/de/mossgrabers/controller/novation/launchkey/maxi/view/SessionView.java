@@ -123,7 +123,7 @@ public class SessionView extends AbstractSessionView<LaunchkeyMk3ControlSurface,
             // Stop clip with normal stop button
             if (this.isButtonCombination (ButtonID.STOP))
             {
-                track.stop ();
+                track.stop (false);
                 return;
             }
 
@@ -307,7 +307,7 @@ public class SessionView extends AbstractSessionView<LaunchkeyMk3ControlSurface,
                 track.toggleSolo ();
                 break;
             case STOP_CLIP:
-                track.stop ();
+                track.stop (false);
                 break;
             default:
                 // Unused

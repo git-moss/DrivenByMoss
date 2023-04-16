@@ -26,10 +26,10 @@ import java.util.Optional;
  */
 public abstract class AbstractChannelBankImpl<B extends Bank<?>, T extends IChannel> extends AbstractItemBankImpl<B, T> implements IChannelBank<T>
 {
-    protected final int  numScenes;
-    protected final int  numSends;
+    protected final int     numScenes;
+    protected final int     numSends;
 
-    protected ISceneBank sceneBank;
+    protected SceneBankImpl sceneBank;
 
 
     /**
@@ -59,15 +59,6 @@ public abstract class AbstractChannelBankImpl<B extends Bank<?>, T extends IChan
         if (sel.isEmpty ())
             return DAWColor.COLOR_OFF.name ();
         return DAWColor.getColorID (sel.get ().getColor ());
-    }
-
-
-    /** {@inheritDoc} */
-    @Override
-    public void stop ()
-    {
-        if (this.sceneBank != null)
-            this.sceneBank.stop ();
     }
 
 

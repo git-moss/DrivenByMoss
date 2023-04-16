@@ -14,10 +14,10 @@ import de.mossgrabers.framework.controller.grid.IPadGrid;
 import de.mossgrabers.framework.daw.IModel;
 import de.mossgrabers.framework.daw.data.ITrack;
 import de.mossgrabers.framework.daw.resource.ChannelType;
-import de.mossgrabers.framework.featuregroup.AbstractView;
 import de.mossgrabers.framework.featuregroup.ViewManager;
 import de.mossgrabers.framework.scale.Scales;
 import de.mossgrabers.framework.utils.ButtonEvent;
+import de.mossgrabers.framework.view.AbstractShiftView;
 import de.mossgrabers.framework.view.Views;
 
 
@@ -26,7 +26,7 @@ import de.mossgrabers.framework.view.Views;
  *
  * @author Jürgen Moßgraber
  */
-public class ShiftView extends AbstractView<APCControlSurface, APCConfiguration>
+public class ShiftView extends AbstractShiftView<APCControlSurface, APCConfiguration>
 {
     private static final Views []   VIEW_IDS  =
     {
@@ -115,6 +115,8 @@ public class ShiftView extends AbstractView<APCControlSurface, APCConfiguration>
         if (velocity == 0)
             return;
 
+        this.setWasUsed ();
+
         final int index = note - 36;
         if (index > 15)
         {
@@ -129,8 +131,7 @@ public class ShiftView extends AbstractView<APCControlSurface, APCConfiguration>
                 case 34:
                     this.model.getApplication ().addEffectTrack ();
                     break;
-                case 35:
-                case 36:
+                case 35, 36:
                     this.browserCommand.startBrowser (true, index == 35);
                     break;
                 case 38:

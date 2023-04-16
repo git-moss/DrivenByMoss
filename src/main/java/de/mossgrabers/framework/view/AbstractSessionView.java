@@ -12,6 +12,7 @@ import de.mossgrabers.framework.controller.grid.IPadGrid;
 import de.mossgrabers.framework.controller.grid.LightInfo;
 import de.mossgrabers.framework.daw.DAWColor;
 import de.mossgrabers.framework.daw.IModel;
+import de.mossgrabers.framework.daw.clip.ISessionAlternative;
 import de.mossgrabers.framework.daw.data.ISlot;
 import de.mossgrabers.framework.daw.data.ITrack;
 import de.mossgrabers.framework.daw.data.bank.ISceneBank;
@@ -31,32 +32,34 @@ import de.mossgrabers.framework.utils.Pair;
  *
  * @author Jürgen Moßgraber
  */
-public abstract class AbstractSessionView<S extends IControlSurface<C>, C extends Configuration> extends AbstractView<S, C>
+public abstract class AbstractSessionView<S extends IControlSurface<C>, C extends Configuration> extends AbstractView<S, C> implements ISessionAlternative
 {
     /** The color for a scene. */
-    public static final String COLOR_SCENE                = "COLOR_SCENE";
+    public static final String COLOR_SCENE                 = "COLOR_SCENE";
     /** The color for a selected scene. */
-    public static final String COLOR_SELECTED_SCENE       = "COLOR_SELECTED_SCENE";
+    public static final String COLOR_SELECTED_SCENE        = "COLOR_SELECTED_SCENE";
     /** The color for no scene. */
-    public static final String COLOR_SCENE_OFF            = "COLOR_SELECTED_OFF";
+    public static final String COLOR_SCENE_OFF             = "COLOR_SELECTED_OFF";
 
     // Needs to be overwritten with device specific colors
-    protected LightInfo        clipColorIsRecording       = new LightInfo (0, -1, false);
-    protected LightInfo        clipColorIsRecordingQueued = new LightInfo (1, -1, false);
-    protected LightInfo        clipColorIsPlaying         = new LightInfo (2, -1, false);
-    protected LightInfo        clipColorIsPlayingQueued   = new LightInfo (3, -1, false);
-    protected LightInfo        clipColorHasContent        = new LightInfo (4, -1, false);
-    protected LightInfo        clipColorHasNoContent      = new LightInfo (5, -1, false);
-    protected LightInfo        clipColorIsRecArmed        = new LightInfo (6, -1, false);
+    protected LightInfo        clipColorIsRecording        = new LightInfo (0, -1, false);
+    protected LightInfo        clipColorIsRecordingQueued  = new LightInfo (1, -1, false);
+    protected LightInfo        clipColorIsPlaying          = new LightInfo (2, -1, false);
+    protected LightInfo        clipColorIsPlayingQueued    = new LightInfo (3, -1, false);
+    protected LightInfo        clipColorHasContent         = new LightInfo (4, -1, false);
+    protected LightInfo        clipColorHasNoContent       = new LightInfo (5, -1, false);
+    protected LightInfo        clipColorIsRecArmed         = new LightInfo (6, -1, false);
 
-    protected LightInfo        birdColorHasContent        = new LightInfo (4, -1, false);
-    protected LightInfo        birdColorSelected          = new LightInfo (2, -1, false);
+    protected LightInfo        birdColorHasContent         = new LightInfo (4, -1, false);
+    protected LightInfo        birdColorSelected           = new LightInfo (2, -1, false);
 
     protected int              rows;
     protected int              columns;
     protected boolean          useClipColor;
     protected ISlot            sourceSlot;
-    protected boolean          isBirdsEyeActive           = false;
+    protected boolean          isBirdsEyeActive            = false;
+
+    private boolean            wasAlternateInteractionUsed = false;
 
 
     /**
@@ -93,6 +96,9 @@ public abstract class AbstractSessionView<S extends IControlSurface<C>, C extend
     @Override
     public void onGridNote (final int note, final int velocity)
     {
+        if (this.surface.isShiftPressed ())
+            this.wasAlternateInteractionUsed = true;
+
         final Pair<Integer, Integer> padPos = this.getPad (note);
         final ITrack track = this.model.getCurrentTrackBank ().getItem (padPos.getKey ().intValue ());
         final ISlot slot = track.getSlotBank ().getItem (padPos.getValue ().intValue ());
@@ -117,14 +123,14 @@ public abstract class AbstractSessionView<S extends IControlSurface<C>, C extend
 
 
     /**
-     * Check if the alternate launch function should be executed. The default implementation checks
-     * for the SELECT button.
+     * Check if the alternate launch/stop function should be executed, e.g. when a SHIFT button is
+     * pressed.
      *
      * @return True if alternate function should be executed
      */
     protected boolean isAlternateFunction ()
     {
-        return this.surface.isSelectPressed ();
+        return this.surface.isShiftPressed ();
     }
 
 
@@ -189,7 +195,7 @@ public abstract class AbstractSessionView<S extends IControlSurface<C>, C extend
         // Stop clip
         if (this.isButtonCombination (ButtonID.STOP_CLIP))
         {
-            track.stop ();
+            track.stop (this.isAlternateFunction ());
             return true;
         }
 
@@ -265,14 +271,29 @@ public abstract class AbstractSessionView<S extends IControlSurface<C>, C extend
 
 
     /**
-     * Is the birds eye view active? Default implementation checks for Shift button. Override for
-     * different behavior.
+     * Is the birds eye view active?
      *
-     * @return True if birds eye view should be active
+     * @return True if birds eye view is active
      */
     public boolean isBirdsEyeActive ()
     {
-        return this.surface.isShiftPressed ();
+        return this.isBirdsEyeActive;
+    }
+
+
+    /** {@inheritDoc} */
+    @Override
+    public boolean wasAlternateInteractionUsed ()
+    {
+        return this.wasAlternateInteractionUsed;
+    }
+
+
+    /** {@inheritDoc} */
+    @Override
+    public void setAlternateInteractionUsed (final boolean wasUsed)
+    {
+        this.wasAlternateInteractionUsed = wasUsed;
     }
 
 

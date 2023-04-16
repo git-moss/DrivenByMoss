@@ -9,6 +9,7 @@ import de.mossgrabers.framework.controller.color.ColorManager;
 import de.mossgrabers.framework.controller.grid.IPadGrid;
 import de.mossgrabers.framework.scale.Scales;
 import de.mossgrabers.framework.view.AbstractPlayView;
+import de.mossgrabers.framework.view.AbstractSessionView;
 import de.mossgrabers.framework.view.BrowserView;
 import de.mossgrabers.framework.view.sequencer.AbstractDrumView;
 import de.mossgrabers.framework.view.sequencer.AbstractSequencerView;
@@ -50,6 +51,10 @@ public class APCminiColorManager extends ColorManager
         this.registerColorIndex (ColorManager.BUTTON_STATE_OFF, APC_COLOR_BLACK);
         this.registerColorIndex (ColorManager.BUTTON_STATE_ON, APC_COLOR_GREEN);
         this.registerColorIndex (ColorManager.BUTTON_STATE_HI, APC_COLOR_GREEN_BLINK);
+
+        this.registerColorIndex (AbstractSessionView.COLOR_SCENE, APC_COLOR_GREEN);
+        this.registerColorIndex (AbstractSessionView.COLOR_SELECTED_SCENE, APC_COLOR_GREEN_BLINK);
+        this.registerColorIndex (AbstractSessionView.COLOR_SCENE_OFF, APC_COLOR_BLACK);
 
         this.registerColorIndex (AbstractSequencerView.COLOR_STEP_HILITE_NO_CONTENT, APC_COLOR_GREEN);
         this.registerColorIndex (AbstractSequencerView.COLOR_STEP_HILITE_CONTENT, APC_COLOR_GREEN);

@@ -108,7 +108,7 @@ public abstract class AbstractTrackMode extends BaseMode<ITrack>
             if (this.surface.isPressed (ButtonID.STOP_CLIP))
             {
                 this.surface.setTriggerConsumed (ButtonID.STOP_CLIP);
-                track.stop ();
+                track.stop (true);
                 return;
             }
 
@@ -159,7 +159,8 @@ public abstract class AbstractTrackMode extends BaseMode<ITrack>
         final ITrack track = tb.getItem (index);
         if (this.surface.isPressed (ButtonID.STOP_CLIP))
         {
-            track.stop ();
+            this.surface.setTriggerConsumed (ButtonID.STOP_CLIP);
+            track.stop (false);
             return;
         }
 

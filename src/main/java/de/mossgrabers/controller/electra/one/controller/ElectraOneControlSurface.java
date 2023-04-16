@@ -164,7 +164,7 @@ public class ElectraOneControlSurface extends AbstractControlSurface<ElectraOneC
     private int                        bankIndex       = -1;
     private int                        presetIndex     = -1;
     private boolean                    isOnline        = false;
-    private final int []                     knobStates      = new int [12];
+    private final int []               knobStates      = new int [12];
     private boolean                    isShiftPressed;
     private Modes                      activeMode      = null;
 

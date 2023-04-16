@@ -8,6 +8,7 @@ import de.mossgrabers.controller.akai.apc.command.continuous.APCPlayPositionComm
 import de.mossgrabers.controller.akai.apc.command.continuous.APCTempoCommand;
 import de.mossgrabers.controller.akai.apc.command.trigger.APCBrowserCommand;
 import de.mossgrabers.controller.akai.apc.command.trigger.APCCursorCommand;
+import de.mossgrabers.controller.akai.apc.command.trigger.APCDeviceOnOffCommand;
 import de.mossgrabers.controller.akai.apc.command.trigger.APCQuantizeCommand;
 import de.mossgrabers.controller.akai.apc.command.trigger.APCRecordCommand;
 import de.mossgrabers.controller.akai.apc.command.trigger.APCStopClipCommand;
@@ -15,7 +16,6 @@ import de.mossgrabers.controller.akai.apc.command.trigger.APCTapTempoCommand;
 import de.mossgrabers.controller.akai.apc.command.trigger.SelectTrackSendOrClipLengthCommand;
 import de.mossgrabers.controller.akai.apc.command.trigger.SendModeCommand;
 import de.mossgrabers.controller.akai.apc.command.trigger.SessionRecordCommand;
-import de.mossgrabers.controller.akai.apc.command.trigger.StopAllClipsOrBrowseCommand;
 import de.mossgrabers.controller.akai.apc.controller.APCColorManager;
 import de.mossgrabers.controller.akai.apc.controller.APCControlSurface;
 import de.mossgrabers.controller.akai.apc.controller.APCScales;
@@ -38,9 +38,9 @@ import de.mossgrabers.framework.command.trigger.application.PaneCommand.Panels;
 import de.mossgrabers.framework.command.trigger.application.PanelLayoutCommand;
 import de.mossgrabers.framework.command.trigger.application.RedoCommand;
 import de.mossgrabers.framework.command.trigger.application.UndoCommand;
+import de.mossgrabers.framework.command.trigger.clip.StopAllClipsCommand;
 import de.mossgrabers.framework.command.trigger.device.DeviceLayerLeftCommand;
 import de.mossgrabers.framework.command.trigger.device.DeviceLayerRightCommand;
-import de.mossgrabers.framework.command.trigger.device.DeviceOnOffCommand;
 import de.mossgrabers.framework.command.trigger.device.SelectNextDeviceOrParamPageCommand;
 import de.mossgrabers.framework.command.trigger.device.SelectPreviousDeviceOrParamPageCommand;
 import de.mossgrabers.framework.command.trigger.mode.ModeMultiSelectCommand;
@@ -81,6 +81,7 @@ import de.mossgrabers.framework.mode.Modes;
 import de.mossgrabers.framework.mode.device.ParameterMode;
 import de.mossgrabers.framework.mode.track.TrackVolumeMode;
 import de.mossgrabers.framework.parameter.IParameter;
+import de.mossgrabers.framework.utils.ButtonEvent;
 import de.mossgrabers.framework.utils.Timeout;
 import de.mossgrabers.framework.view.TempoView;
 import de.mossgrabers.framework.view.Views;
@@ -215,11 +216,11 @@ public class APCControllerSetup extends AbstractControllerSetup<APCControlSurfac
         this.addButton (ButtonID.SHIFT, "SHIFT", new ToggleShiftViewCommand<> (this.model, surface), APCControlSurface.APC_BUTTON_SHIFT);
         this.addButton (ButtonID.PLAY, "PLAY", new PlayCommand<> (this.model, surface), APCControlSurface.APC_BUTTON_PLAY, t::isPlaying, ColorManager.BUTTON_STATE_OFF, ColorManager.BUTTON_STATE_ON);
         this.addButton (ButtonID.RECORD, "RECORD", new APCRecordCommand (this.model, surface), APCControlSurface.APC_BUTTON_RECORD, t::isRecording, ColorManager.BUTTON_STATE_OFF, ColorManager.BUTTON_STATE_ON);
-        this.addButton (ButtonID.TAP_TEMPO, "Tempo", new APCTapTempoCommand (this.model, surface), APCControlSurface.APC_BUTTON_TAP_TEMPO);
+        this.addButton (ButtonID.TAP_TEMPO, "TEMPO", new APCTapTempoCommand (this.model, surface), APCControlSurface.APC_BUTTON_TAP_TEMPO);
         this.addButton (ButtonID.QUANTIZE, this.isMkII ? "DEV.LOCK" : "REC QUANTIZATION", new APCQuantizeCommand (this.model, surface), APCControlSurface.APC_BUTTON_REC_QUANT, () -> surface.isPressed (ButtonID.QUANTIZE) ? 1 : 0, ColorManager.BUTTON_STATE_OFF, ColorManager.BUTTON_STATE_ON);
-        this.addButton (ButtonID.MASTERTRACK, "Master", new MasterCommand<> (this.model, surface), APCControlSurface.APC_BUTTON_MASTER, this.model.getMasterTrack ()::isSelected, ColorManager.BUTTON_STATE_OFF, ColorManager.BUTTON_STATE_ON);
+        this.addButton (ButtonID.MASTERTRACK, "MASTER", new MasterCommand<> (this.model, surface), APCControlSurface.APC_BUTTON_MASTER, this.model.getMasterTrack ()::isSelected, ColorManager.BUTTON_STATE_OFF, ColorManager.BUTTON_STATE_ON);
         // Note: the stop-all-clips button has no LED
-        this.addButton (ButtonID.STOP_ALL_CLIPS, "STOP CLIPS", new StopAllClipsOrBrowseCommand (this.model, surface), APCControlSurface.APC_BUTTON_STOP_ALL_CLIPS, () -> surface.isPressed (ButtonID.STOP_ALL_CLIPS) ? 1 : 0, ColorManager.BUTTON_STATE_OFF, ColorManager.BUTTON_STATE_ON);
+        this.addButton (ButtonID.STOP_ALL_CLIPS, "STOP CLIPS", new StopAllClipsCommand<> (this.model, surface), APCControlSurface.APC_BUTTON_STOP_ALL_CLIPS, () -> surface.isPressed (ButtonID.STOP_ALL_CLIPS) ? 1 : 0, ColorManager.BUTTON_STATE_OFF, ColorManager.BUTTON_STATE_ON);
         this.addButton (ButtonID.PAN_SEND, "PAN", new ModeSelectCommand<> (this.model, surface, Modes.PAN), APCControlSurface.APC_BUTTON_PAN, () -> modeManager.isActive (Modes.PAN), ColorManager.BUTTON_STATE_OFF, ColorManager.BUTTON_STATE_ON);
 
         if (this.isMkII)
@@ -236,8 +237,8 @@ public class APCControllerSetup extends AbstractControllerSetup<APCControlSurfac
         }
         else
         {
-            this.addButton (ButtonID.SEND1, "Send A", new SendModeCommand (0, this.model, surface), APCControlSurface.APC_BUTTON_SEND_A, () -> modeManager.isActive (Modes.SEND1, Modes.SEND4, Modes.SEND7), ColorManager.BUTTON_STATE_OFF, ColorManager.BUTTON_STATE_ON);
-            this.addButton (ButtonID.SEND2, "Send B", new SendModeCommand (1, this.model, surface), APCControlSurface.APC_BUTTON_SEND_B, () -> modeManager.isActive (Modes.SEND2, Modes.SEND5, Modes.SEND8), ColorManager.BUTTON_STATE_OFF, ColorManager.BUTTON_STATE_ON);
+            this.addButton (ButtonID.SEND1, "SEND A", new SendModeCommand (0, this.model, surface), APCControlSurface.APC_BUTTON_SEND_A, () -> modeManager.isActive (Modes.SEND1, Modes.SEND4, Modes.SEND7), ColorManager.BUTTON_STATE_OFF, ColorManager.BUTTON_STATE_ON);
+            this.addButton (ButtonID.SEND2, "SEND B", new SendModeCommand (1, this.model, surface), APCControlSurface.APC_BUTTON_SEND_B, () -> modeManager.isActive (Modes.SEND2, Modes.SEND5, Modes.SEND8), ColorManager.BUTTON_STATE_OFF, ColorManager.BUTTON_STATE_ON);
             this.addButton (ButtonID.SEND3, "SEND C", new SendModeCommand (2, this.model, surface), APCControlSurface.APC_BUTTON_SEND_C, () -> modeManager.isActive (Modes.SEND3, Modes.SEND6), ColorManager.BUTTON_STATE_OFF, ColorManager.BUTTON_STATE_ON);
         }
 
@@ -245,13 +246,24 @@ public class APCControllerSetup extends AbstractControllerSetup<APCControlSurfac
         {
             final int index = i;
 
+            final CrossfadeModeCommand<APCControlSurface, APCConfiguration> crossfadeModeCommand = new CrossfadeModeCommand<> (i, this.model, surface);
+
             this.addButton (ButtonID.get (ButtonID.ROW1_1, i), "Select " + (i + 1), new SelectTrackSendOrClipLengthCommand (i, this.model, surface), i, APCControlSurface.APC_BUTTON_TRACK_SELECTION, () -> this.getButtonState (index, APCControlSurface.APC_BUTTON_TRACK_SELECTION) ? 1 : 0, ColorManager.BUTTON_STATE_OFF, ColorManager.BUTTON_STATE_ON);
             this.addButton (ButtonID.get (ButtonID.ROW2_1, i), "Solo " + (i + 1), new SoloCommand<> (i, this.model, surface), i, APCControlSurface.APC_BUTTON_SOLO, () -> this.getButtonState (index, APCControlSurface.APC_BUTTON_SOLO) ? 1 : 0, ColorManager.BUTTON_STATE_OFF, ColorManager.BUTTON_STATE_ON);
             this.addButton (ButtonID.get (ButtonID.ROW3_1, i), (this.isMkII ? "Mute " : "Activator ") + (i + 1), new MuteCommand<> (i, this.model, surface), i, APCControlSurface.APC_BUTTON_ACTIVATOR, () -> this.getButtonState (index, APCControlSurface.APC_BUTTON_ACTIVATOR) ? 1 : 0, ColorManager.BUTTON_STATE_OFF, ColorManager.BUTTON_STATE_ON);
-            this.addButton (ButtonID.get (ButtonID.ROW4_1, i), "Arm " + (i + 1), new RecArmCommand<> (i, this.model, surface), i, APCControlSurface.APC_BUTTON_RECORD_ARM, () -> this.getButtonState (index, APCControlSurface.APC_BUTTON_RECORD_ARM) ? 1 : 0, ColorManager.BUTTON_STATE_OFF, ColorManager.BUTTON_STATE_ON);
+            this.addButton (ButtonID.get (ButtonID.ROW4_1, i), "Arm " + (i + 1), new RecArmCommand<> (i, this.model, surface)
+            {
+                /** {@inheritDoc} */
+                @Override
+                public void executeShifted (final ButtonEvent event)
+                {
+                    if (!APCControllerSetup.this.isMkII)
+                        crossfadeModeCommand.executeNormal (event);
+                }
+            }, i, APCControlSurface.APC_BUTTON_RECORD_ARM, () -> this.getButtonState (index, APCControlSurface.APC_BUTTON_RECORD_ARM) ? 1 : 0, ColorManager.BUTTON_STATE_OFF, ColorManager.BUTTON_STATE_ON);
 
             if (this.isMkII)
-                this.addButton (ButtonID.get (ButtonID.ROW5_1, i), "X-fade " + (i + 1), new CrossfadeModeCommand<> (i, this.model, surface), i, APCControlSurface.APC_BUTTON_A_B, () -> this.getCrossfadeButtonColor (index), ColorManager.BUTTON_STATE_OFF, ColorManager.BUTTON_STATE_ON, APCColorManager.BUTTON_STATE_BLINK);
+                this.addButton (ButtonID.get (ButtonID.ROW5_1, i), "X-fade " + (i + 1), crossfadeModeCommand, i, APCControlSurface.APC_BUTTON_A_B, () -> this.getCrossfadeButtonColor (index), ColorManager.BUTTON_STATE_OFF, ColorManager.BUTTON_STATE_ON, APCColorManager.BUTTON_STATE_BLINK);
 
             final ButtonID stopButtonID = ButtonID.get (ButtonID.ROW6_1, i);
             final APCStopClipCommand apcStopClipCommand = new APCStopClipCommand (i, this.model, surface);
@@ -275,7 +287,7 @@ public class APCControllerSetup extends AbstractControllerSetup<APCControlSurfac
         this.addButton (ButtonID.METRONOME, "METRONOME", new MetronomeCommand<> (this.model, surface, false), this.isMkII ? APCControlSurface.APC_BUTTON_SEND_C : APCControlSurface.APC_BUTTON_METRONOME, t::isMetronomeOn, ColorManager.BUTTON_STATE_OFF, ColorManager.BUTTON_STATE_ON);
         this.addButton (ButtonID.NUDGE_PLUS, "NUDGE+", new RedoCommand<> (this.model, surface), this.isMkII ? APCControlSurface.APC_BUTTON_NUDGE_MINUS : APCControlSurface.APC_BUTTON_NUDGE_PLUS);
         this.addButton (ButtonID.NUDGE_MINUS, "NUDGE-", new UndoCommand<> (this.model, surface), this.isMkII ? APCControlSurface.APC_BUTTON_NUDGE_PLUS : APCControlSurface.APC_BUTTON_NUDGE_MINUS);
-        this.addButton (ButtonID.DEVICE_ON_OFF, "DEV. ON/OFF", new DeviceOnOffCommand<> (this.model, surface), this.isMkII ? APCControlSurface.APC_BUTTON_DETAIL_VIEW : APCControlSurface.APC_BUTTON_DEVICE_ON_OFF, this.model.getCursorDevice ()::isEnabled, ColorManager.BUTTON_STATE_OFF, ColorManager.BUTTON_STATE_ON);
+        this.addButton (ButtonID.DEVICE_ON_OFF, "DEV. ON/OFF", new APCDeviceOnOffCommand (this.model, surface), this.isMkII ? APCControlSurface.APC_BUTTON_DETAIL_VIEW : APCControlSurface.APC_BUTTON_DEVICE_ON_OFF, this.model.getCursorDevice ()::isEnabled, ColorManager.BUTTON_STATE_OFF, ColorManager.BUTTON_STATE_ON);
         this.addButton (ButtonID.TOGGLE_DEVICES_PANE, this.isMkII ? "CLIP/DEV.VIEW" : "CLIP/TRACK", new PaneCommand<> (Panels.DEVICE, this.model, surface), this.isMkII ? APCControlSurface.APC_BUTTON_MIDI_OVERDUB : APCControlSurface.APC_BUTTON_CLIP_TRACK, () -> surface.isPressed (ButtonID.TOGGLE_DEVICES_PANE) ? 1 : 0, ColorManager.BUTTON_STATE_OFF, ColorManager.BUTTON_STATE_ON);
         this.addButton (ButtonID.LAYOUT, "DETAIL VIEW", new PanelLayoutCommand<> (this.model, surface), this.isMkII ? APCControlSurface.APC_BUTTON_METRONOME : APCControlSurface.APC_BUTTON_DETAIL_VIEW, () -> !surface.isShiftPressed () && this.model.getCursorDevice ().isWindowOpen () ? 1 : 0, ColorManager.BUTTON_STATE_OFF, ColorManager.BUTTON_STATE_ON);
 

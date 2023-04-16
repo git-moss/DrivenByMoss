@@ -12,6 +12,8 @@ import de.mossgrabers.framework.controller.ButtonID;
 import de.mossgrabers.framework.controller.grid.LightInfo;
 import de.mossgrabers.framework.daw.IModel;
 import de.mossgrabers.framework.daw.data.IScene;
+import de.mossgrabers.framework.daw.data.ISlot;
+import de.mossgrabers.framework.daw.data.ITrack;
 import de.mossgrabers.framework.daw.data.bank.ISceneBank;
 import de.mossgrabers.framework.featuregroup.AbstractFeatureGroup;
 import de.mossgrabers.framework.utils.ButtonEvent;
@@ -79,6 +81,29 @@ public class SessionView extends AbstractSessionView<PushControlSurface, PushCon
         }
 
         super.onGridNote (note, velocity);
+    }
+
+
+    /** {@inheritDoc} */
+    @Override
+    protected boolean handleButtonCombinations (final ITrack track, final ISlot slot)
+    {
+        if (this.isButtonCombination (ButtonID.SELECT))
+        {
+            if (slot.doesExist ())
+                slot.select ();
+            return true;
+        }
+
+        return super.handleButtonCombinations (track, slot);
+    }
+
+
+    /** {@inheritDoc} */
+    @Override
+    public boolean isBirdsEyeActive ()
+    {
+        return this.surface.isShiftPressed () && this.surface.isSelectPressed ();
     }
 
 

@@ -20,18 +20,18 @@ import de.mossgrabers.framework.daw.constants.Resolution;
 import de.mossgrabers.framework.daw.midi.ArpeggiatorMode;
 import de.mossgrabers.framework.daw.midi.INoteRepeat;
 import de.mossgrabers.framework.daw.resource.ChannelType;
-import de.mossgrabers.framework.featuregroup.AbstractView;
 import de.mossgrabers.framework.featuregroup.IView;
 import de.mossgrabers.framework.featuregroup.ViewManager;
 import de.mossgrabers.framework.utils.ButtonEvent;
+import de.mossgrabers.framework.view.AbstractShiftView;
 
 
 /**
- * Simulates the missing buttons (in contrast to Fire Pro) on the grid.
+ * Provides several additional functions and settings.
  *
  * @author Jürgen Moßgraber
  */
-public class ShiftView extends AbstractView<FireControlSurface, FireConfiguration> implements IFireView
+public class ShiftView extends AbstractShiftView<FireControlSurface, FireConfiguration> implements IFireView
 {
     /**
      * Constructor.
@@ -179,21 +179,17 @@ public class ShiftView extends AbstractView<FireControlSurface, FireConfiguratio
         if (velocity == 0)
             return;
 
+        this.setWasUsed ();
+
         final FireConfiguration configuration = this.surface.getConfiguration ();
         final IHost host = this.model.getHost ();
 
         switch (note)
         {
-            case 36:
-            case 37:
-            case 38:
-            case 39:
+            case 36, 37, 38, 39:
                 this.setNoteRepeatOctave (note - 36);
                 break;
-            case 52:
-            case 53:
-            case 54:
-            case 55:
+            case 52, 53, 54, 55:
                 this.setNoteRepeatOctave (note - 48);
                 break;
             case 68:
@@ -272,14 +268,7 @@ public class ShiftView extends AbstractView<FireControlSurface, FireConfiguratio
                 this.setNoteLength (7);
                 break;
 
-            case 44:
-            case 45:
-            case 46:
-            case 47:
-            case 48:
-            case 49:
-            case 50:
-            case 51:
+            case 44, 45, 46, 47, 48, 49, 50, 51:
                 final int newClipLength = note - 44;
                 configuration.setNewClipLength (newClipLength);
                 this.surface.getDisplay ().notify ("Clip len: " + AbstractConfiguration.getNewClipLengthValue (newClipLength));
