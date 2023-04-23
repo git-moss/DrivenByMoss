@@ -195,7 +195,7 @@ public class MidiModule extends AbstractModule
                         if (isTrigger (value))
                         {
                             scales.incDrumOctave ();
-                            this.surface.getDisplay ().notify (scales.getDrumRangeText ());
+                            this.adjustDrumDevice ();
                         }
                         break;
 
@@ -203,7 +203,7 @@ public class MidiModule extends AbstractModule
                         if (isTrigger (value))
                         {
                             scales.decDrumOctave ();
-                            this.surface.getDisplay ().notify (scales.getDrumRangeText ());
+                            this.adjustDrumDevice ();
                         }
                         break;
 
@@ -247,6 +247,14 @@ public class MidiModule extends AbstractModule
             default:
                 throw new UnknownCommandException (command);
         }
+    }
+
+
+    private void adjustDrumDevice ()
+    {
+        final Scales scales = this.model.getScales ();
+        this.model.getDrumDevice ().getDrumPadBank ().scrollTo (scales.getDrumOffset (), false);
+        this.host.showNotification (scales.getDrumRangeText ());
     }
 
 

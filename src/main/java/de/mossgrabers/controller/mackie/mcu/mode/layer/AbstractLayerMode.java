@@ -10,9 +10,10 @@ import de.mossgrabers.controller.mackie.mcu.mode.BaseMode;
 import de.mossgrabers.framework.controller.ButtonID;
 import de.mossgrabers.framework.controller.display.ITextDisplay;
 import de.mossgrabers.framework.daw.IModel;
+import de.mossgrabers.framework.daw.constants.DeviceID;
 import de.mossgrabers.framework.daw.data.IChannel;
-import de.mossgrabers.framework.daw.data.ICursorDevice;
 import de.mossgrabers.framework.daw.data.ILayer;
+import de.mossgrabers.framework.daw.data.ISpecificDevice;
 import de.mossgrabers.framework.daw.data.bank.IChannelBank;
 import de.mossgrabers.framework.utils.ButtonEvent;
 import de.mossgrabers.framework.utils.StringUtils;
@@ -34,7 +35,7 @@ public abstract class AbstractLayerMode extends BaseMode<ILayer>
      */
     protected AbstractLayerMode (final String name, final MCUControlSurface surface, final IModel model)
     {
-        super (name, surface, model, model.getCursorDevice ().getLayerBank ());
+        super (name, surface, model, getDevice (model).getLayerBank ());
     }
 
 
@@ -42,7 +43,7 @@ public abstract class AbstractLayerMode extends BaseMode<ILayer>
     @Override
     protected void drawTrackNameHeader ()
     {
-        final ICursorDevice cursorDevice = this.model.getCursorDevice ();
+        final ISpecificDevice cursorDevice = getDevice (this.model);
         final IChannelBank<? extends IChannel> layerBank = cursorDevice.hasDrumPads () ? cursorDevice.getDrumPadBank () : cursorDevice.getLayerBank ();
 
         final int extenderOffset = this.getExtenderOffset ();
@@ -81,7 +82,7 @@ public abstract class AbstractLayerMode extends BaseMode<ILayer>
             return;
         }
 
-        final ICursorDevice cursorDevice = this.model.getCursorDevice ();
+        final ISpecificDevice cursorDevice = getDevice (this.model);
         final IChannelBank<? extends IChannel> layerBank = cursorDevice.hasDrumPads () ? cursorDevice.getDrumPadBank () : cursorDevice.getLayerBank ();
         final IChannel channel = layerBank.getItem (this.getExtenderOffset () + index);
         if (row == 2)
@@ -108,7 +109,7 @@ public abstract class AbstractLayerMode extends BaseMode<ILayer>
         if (this.pinFXtoLastDevice)
             return super.getButtonColor (buttonID);
 
-        final ICursorDevice cursorDevice = this.model.getCursorDevice ();
+        final ISpecificDevice cursorDevice = getDevice (this.model);
         final IChannelBank<? extends IChannel> layerBank = cursorDevice.hasDrumPads () ? cursorDevice.getDrumPadBank () : cursorDevice.getLayerBank ();
 
         final int extenderOffset = this.getExtenderOffset ();
@@ -128,5 +129,11 @@ public abstract class AbstractLayerMode extends BaseMode<ILayer>
         }
 
         return MCUControllerSetup.MCU_BUTTON_STATE_OFF;
+    }
+
+
+    protected static final ISpecificDevice getDevice (final IModel model)
+    {
+        return model.getSpecificDevice (DeviceID.FIRST_INSTRUMENT);
     }
 }

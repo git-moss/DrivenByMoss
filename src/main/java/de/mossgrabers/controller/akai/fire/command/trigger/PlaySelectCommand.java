@@ -4,9 +4,7 @@
 
 package de.mossgrabers.controller.akai.fire.command.trigger;
 
-import de.mossgrabers.controller.akai.fire.FireConfiguration;
 import de.mossgrabers.controller.akai.fire.controller.FireControlSurface;
-import de.mossgrabers.framework.command.trigger.view.ViewMultiSelectCommand;
 import de.mossgrabers.framework.controller.ButtonID;
 import de.mossgrabers.framework.daw.IModel;
 import de.mossgrabers.framework.daw.constants.RecordQuantization;
@@ -21,7 +19,7 @@ import de.mossgrabers.framework.view.Views;
  *
  * @author Jürgen Moßgraber
  */
-public class PlaySelectCommand extends ViewMultiSelectCommand<FireControlSurface, FireConfiguration>
+public class PlaySelectCommand extends AbstractFireViewMultiSelectCommand
 {
     /**
      * Constructor.
@@ -31,7 +29,7 @@ public class PlaySelectCommand extends ViewMultiSelectCommand<FireControlSurface
      */
     public PlaySelectCommand (final IModel model, final FireControlSurface surface)
     {
-        super (model, surface, true, ButtonEvent.UP, Views.PLAY, Views.PIANO);
+        super (model, surface, Views.PLAY, Views.PIANO);
     }
 
 

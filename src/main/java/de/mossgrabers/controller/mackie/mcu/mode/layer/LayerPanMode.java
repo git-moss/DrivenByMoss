@@ -36,7 +36,7 @@ public class LayerPanMode extends AbstractLayerMode
         else
         {
             final int surfaceID = surface.getSurfaceID ();
-            parameterProvider = new RangeFilterParameterProvider (new PanLayerOrDrumPadParameterProvider (model.getCursorDevice ()), surfaceID * 8, 8);
+            parameterProvider = new RangeFilterParameterProvider (new PanLayerOrDrumPadParameterProvider (getDevice (model)), surfaceID * 8, 8);
         }
         this.setParameterProvider (parameterProvider);
     }

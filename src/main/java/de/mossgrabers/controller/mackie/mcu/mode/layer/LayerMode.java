@@ -8,7 +8,7 @@ import de.mossgrabers.controller.mackie.mcu.controller.MCUControlSurface;
 import de.mossgrabers.framework.controller.display.ITextDisplay;
 import de.mossgrabers.framework.daw.IModel;
 import de.mossgrabers.framework.daw.data.IChannel;
-import de.mossgrabers.framework.daw.data.ICursorDevice;
+import de.mossgrabers.framework.daw.data.ISpecificDevice;
 import de.mossgrabers.framework.daw.data.bank.IChannelBank;
 import de.mossgrabers.framework.mode.Modes;
 import de.mossgrabers.framework.parameterprovider.IParameterProvider;
@@ -47,9 +47,9 @@ public class LayerMode extends AbstractLayerMode
         {
             final int surfaceID = surface.getSurfaceID ();
             if (surfaceID == 0)
-                parameterProvider = new RangeFilterParameterProvider (new SelectedLayerOrDrumPadParameterProvider (model.getCursorDevice ()), 0, 8);
+                parameterProvider = new RangeFilterParameterProvider (new SelectedLayerOrDrumPadParameterProvider (getDevice (model)), 0, 8);
             else if (surfaceID == 1)
-                parameterProvider = new RangeFilterParameterProvider (new SendLayerOrDrumPadParameterProvider (model.getCursorDevice (), 6), 0, 8);
+                parameterProvider = new RangeFilterParameterProvider (new SendLayerOrDrumPadParameterProvider (getDevice (model), 6), 0, 8);
             else
                 parameterProvider = new EmptyParameterProvider (8);
         }
@@ -88,7 +88,7 @@ public class LayerMode extends AbstractLayerMode
         // Overwrite the label of the first cell
         if (this.surface.getExtenderOffset () == 0 && this.configuration.isDisplayTrackNames ())
         {
-            final ICursorDevice cursorDevice = this.model.getCursorDevice ();
+            final ISpecificDevice cursorDevice = getDevice (this.model);
             final IChannelBank<? extends IChannel> layerBank = cursorDevice.hasDrumPads () ? cursorDevice.getDrumPadBank () : cursorDevice.getLayerBank ();
             final Optional<? extends IChannel> selectedLayer = layerBank.getSelectedItem ();
             if (selectedLayer.isEmpty ())

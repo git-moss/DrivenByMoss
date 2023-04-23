@@ -6,7 +6,6 @@ package de.mossgrabers.controller.akai.fire.command.trigger;
 
 import de.mossgrabers.controller.akai.fire.FireConfiguration;
 import de.mossgrabers.controller.akai.fire.controller.FireControlSurface;
-import de.mossgrabers.framework.command.trigger.view.ViewMultiSelectCommand;
 import de.mossgrabers.framework.controller.ButtonID;
 import de.mossgrabers.framework.daw.IModel;
 import de.mossgrabers.framework.daw.data.ITrack;
@@ -24,7 +23,7 @@ import de.mossgrabers.framework.view.Views;
  *
  * @author Jürgen Moßgraber
  */
-public class StepSequencerSelectCommand extends ViewMultiSelectCommand<FireControlSurface, FireConfiguration>
+public class StepSequencerSelectCommand extends AbstractFireViewMultiSelectCommand
 {
     /**
      * Constructor.
@@ -34,7 +33,7 @@ public class StepSequencerSelectCommand extends ViewMultiSelectCommand<FireContr
      */
     public StepSequencerSelectCommand (final IModel model, final FireControlSurface surface)
     {
-        super (model, surface, true, ButtonEvent.UP, Views.SEQUENCER, Views.POLY_SEQUENCER);
+        super (model, surface, Views.SEQUENCER, Views.POLY_SEQUENCER);
     }
 
 

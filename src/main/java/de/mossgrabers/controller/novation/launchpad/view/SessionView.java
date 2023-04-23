@@ -21,12 +21,10 @@ import de.mossgrabers.framework.daw.data.bank.ISceneBank;
 import de.mossgrabers.framework.daw.data.bank.ITrackBank;
 import de.mossgrabers.framework.featuregroup.AbstractFeatureGroup;
 import de.mossgrabers.framework.featuregroup.ModeManager;
-import de.mossgrabers.framework.featuregroup.ViewManager;
 import de.mossgrabers.framework.mode.Modes;
 import de.mossgrabers.framework.utils.ButtonEvent;
 import de.mossgrabers.framework.utils.Pair;
 import de.mossgrabers.framework.view.AbstractSessionView;
-import de.mossgrabers.framework.view.Views;
 
 
 /**
@@ -233,13 +231,7 @@ public class SessionView extends AbstractSessionView<LaunchpadControlSurface, La
                 if (!this.isShowTemporarily)
                     return;
                 this.isShowTemporarily = false;
-
-                final ViewManager viewManager = this.surface.getViewManager ();
-                final ITrack cursorTrack = this.model.getCursorTrack ();
-                if (!cursorTrack.doesExist ())
-                    return;
-                final Views viewId = viewManager.getPreferredView (cursorTrack.getPosition ());
-                viewManager.setActive (viewId == null ? Views.PLAY : viewId);
+                this.surface.recallPreferredView (this.model.getCursorTrack ());
                 break;
 
             default:

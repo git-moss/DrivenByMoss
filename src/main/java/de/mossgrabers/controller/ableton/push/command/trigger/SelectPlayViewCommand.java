@@ -8,7 +8,6 @@ import de.mossgrabers.controller.ableton.push.PushConfiguration;
 import de.mossgrabers.controller.ableton.push.controller.PushControlSurface;
 import de.mossgrabers.framework.command.core.AbstractTriggerCommand;
 import de.mossgrabers.framework.daw.IModel;
-import de.mossgrabers.framework.daw.data.ITrack;
 import de.mossgrabers.framework.featuregroup.ModeManager;
 import de.mossgrabers.framework.featuregroup.ViewManager;
 import de.mossgrabers.framework.mode.Modes;
@@ -46,15 +45,7 @@ public class SelectPlayViewCommand extends AbstractTriggerCommand<PushControlSur
         final ViewManager viewManager = this.surface.getViewManager ();
         if (Views.isSessionView (viewManager.getActiveID ()))
         {
-            final ITrack cursorTrack = this.model.getCursorTrack ();
-            if (!cursorTrack.doesExist ())
-            {
-                this.surface.getDisplay ().notify ("Please select a track first.");
-                return;
-            }
-
-            final Views preferredView = viewManager.getPreferredView (cursorTrack.getPosition ());
-            viewManager.setActive (preferredView == null ? Views.PLAY : preferredView);
+            this.surface.recallPreferredView (this.model.getCursorTrack ());
 
             if (modeManager.isActive (Modes.SESSION) || modeManager.isTemporary ())
                 modeManager.restore ();

@@ -36,7 +36,7 @@ public class LayerVolumeMode extends AbstractLayerMode
         else
         {
             final int surfaceID = surface.getSurfaceID ();
-            parameterProvider = new RangeFilterParameterProvider (new VolumeLayerOrDrumPadParameterProvider (model.getCursorDevice ()), surfaceID * 8, 8);
+            parameterProvider = new RangeFilterParameterProvider (new VolumeLayerOrDrumPadParameterProvider (getDevice (model)), surfaceID * 8, 8);
         }
         this.setParameterProvider (parameterProvider);
     }

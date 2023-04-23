@@ -36,9 +36,10 @@ public class SLMkIIIDisplay extends AbstractTextDisplay
     private static final Integer PROPERTY_COLOR                   = Integer.valueOf (2);
     private static final Integer PROPERTY_VALUE                   = Integer.valueOf (3);
 
-    private final String []      ledCache                         = new String [8];
     private final int [] []      displayColorCache                = new int [9] [4];
     private final int [] []      displayValueCache                = new int [9] [4];
+
+    private int                  selectedLayout                   = -1;
 
 
     /**
@@ -51,8 +52,6 @@ public class SLMkIIIDisplay extends AbstractTextDisplay
     {
         super (host, output, 4 /* No of rows */, 9 /* No of cells */, 9 * 9 /* No of characters */);
 
-        for (int i = 0; i < 8; i++)
-            this.ledCache[i] = "";
         this.clearDisplayCache ();
     }
 
@@ -77,6 +76,10 @@ public class SLMkIIIDisplay extends AbstractTextDisplay
      */
     public void setDisplayLayout (final Integer layout)
     {
+        if (this.selectedLayout == layout.intValue ())
+            return;
+        this.selectedLayout = layout.intValue ();
+
         this.output.sendSysex (String.format (MKIII_SYSEX_LAYOUT_COMMAND, layout));
         this.clearDisplayCache ();
         this.forceFlush ();
@@ -130,8 +133,8 @@ public class SLMkIIIDisplay extends AbstractTextDisplay
      * Set a text property.
      *
      * @param hPosition The horizontal position (0-8)
-     * @param vPosition The vertical position (0-5), 0 (Parametername),1 (Parametertextvalue), 5
-     *            (Trackname)
+     * @param vPosition The vertical position (0-5), 0 (Parameter name),1 (Parameter text value), 5
+     *            (Track name)
      * @param text The text
      */
     private void setPropertyText (final int hPosition, final int vPosition, final String text)

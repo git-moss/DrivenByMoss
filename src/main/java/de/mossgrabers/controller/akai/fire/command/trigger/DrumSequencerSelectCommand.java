@@ -4,9 +4,7 @@
 
 package de.mossgrabers.controller.akai.fire.command.trigger;
 
-import de.mossgrabers.controller.akai.fire.FireConfiguration;
 import de.mossgrabers.controller.akai.fire.controller.FireControlSurface;
-import de.mossgrabers.framework.command.trigger.view.ViewMultiSelectCommand;
 import de.mossgrabers.framework.controller.ButtonID;
 import de.mossgrabers.framework.daw.IModel;
 import de.mossgrabers.framework.daw.ITransport;
@@ -25,7 +23,7 @@ import de.mossgrabers.framework.view.Views;
  *
  * @author Jürgen Moßgraber
  */
-public class DrumSequencerSelectCommand extends ViewMultiSelectCommand<FireControlSurface, FireConfiguration>
+public class DrumSequencerSelectCommand extends AbstractFireViewMultiSelectCommand
 {
     /**
      * Constructor.
@@ -35,7 +33,7 @@ public class DrumSequencerSelectCommand extends ViewMultiSelectCommand<FireContr
      */
     public DrumSequencerSelectCommand (final IModel model, final FireControlSurface surface)
     {
-        super (model, surface, true, ButtonEvent.UP, Views.DRUM, Views.DRUM4, Views.DRUM64);
+        super (model, surface, Views.DRUM, Views.DRUM4, Views.DRUM64);
     }
 
 

@@ -22,7 +22,6 @@ import de.mossgrabers.framework.controller.valuechanger.RelativeEncoding;
 import de.mossgrabers.framework.daw.IHost;
 import de.mossgrabers.framework.daw.IModel;
 import de.mossgrabers.framework.daw.constants.Capability;
-import de.mossgrabers.framework.daw.data.ITrack;
 import de.mossgrabers.framework.daw.midi.IMidiInput;
 import de.mossgrabers.framework.daw.midi.INoteInput;
 import de.mossgrabers.framework.daw.midi.INoteRepeat;
@@ -1409,23 +1408,13 @@ public abstract class AbstractControllerSetup<S extends IControlSurface<C>, C ex
 
 
     /**
-     * Recall last used view (if we are not in session mode).
+     * Recall last used view (if we are not in session or mix mode).
      */
     protected void recallLastView ()
     {
-        final ViewManager viewManager = this.getSurface ().getViewManager ();
-        if (viewManager.isActive (Views.SESSION, Views.MIX))
-            return;
-
-        final ITrack cursorTrack = this.model.getCursorTrack ();
-        if (cursorTrack.doesExist ())
-        {
-            Views preferredView = viewManager.getPreferredView (cursorTrack.getPosition ());
-            if (preferredView == null)
-                preferredView = cursorTrack.canHoldNotes () ? this.configuration.getPreferredNoteView () : this.configuration.getPreferredAudioView ();
-            if (viewManager.get (preferredView) != null)
-                viewManager.setActive (preferredView);
-        }
+        final S surface = this.getSurface ();
+        if (!surface.getViewManager ().isActive (Views.SESSION, Views.MIX))
+            surface.recallPreferredView (this.model.getCursorTrack ());
     }
 
 

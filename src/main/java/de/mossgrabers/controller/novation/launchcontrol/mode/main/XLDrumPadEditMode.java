@@ -88,7 +88,7 @@ public class XLDrumPadEditMode extends XLBaseNoteEditMode
     public void selectPreviousItem ()
     {
         this.scales.decDrumOctave ();
-        this.host.showNotification (this.scales.getDrumRangeText ());
+        this.adjustDrumDevice ();
     }
 
 
@@ -97,6 +97,13 @@ public class XLDrumPadEditMode extends XLBaseNoteEditMode
     public void selectNextItem ()
     {
         this.scales.incDrumOctave ();
+        this.adjustDrumDevice ();
+    }
+
+
+    private void adjustDrumDevice ()
+    {
+        this.model.getDrumDevice ().getDrumPadBank ().scrollTo (this.scales.getDrumOffset (), false);
         this.host.showNotification (this.scales.getDrumRangeText ());
     }
 

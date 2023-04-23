@@ -76,10 +76,6 @@ public class SelectMainViewCommand extends AbstractTriggerCommand<LaunchpadContr
             return;
         }
 
-        Views viewID = viewManager.getPreferredView (cursorTrack.getPosition ());
-        if (viewID == null)
-            viewID = Views.PLAY;
-        viewManager.setActive (viewID);
-        display.notify (viewManager.get (viewID).getName ());
+        this.surface.recallPreferredView (this.model.getCursorTrack ());
     }
 }

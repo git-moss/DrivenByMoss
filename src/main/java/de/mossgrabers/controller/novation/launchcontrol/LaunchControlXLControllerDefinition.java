@@ -19,7 +19,8 @@ import java.util.UUID;
  */
 public class LaunchControlXLControllerDefinition extends DefaultControllerDefinition
 {
-    private static final UUID EXTENSION_ID = UUID.fromString ("5AFA5045-FF92-4737-A091-5B371CD5E529");
+    private static final UUID   EXTENSION_ID      = UUID.fromString ("5AFA5045-FF92-4737-A091-5B371CD5E529");
+    private static final String LAUNCH_CONTROL_XL = "Launch Control XL";
 
 
     /**
@@ -27,7 +28,7 @@ public class LaunchControlXLControllerDefinition extends DefaultControllerDefini
      */
     public LaunchControlXLControllerDefinition ()
     {
-        super (EXTENSION_ID, "Launch Control XL", "Novation", 1, 1);
+        super (EXTENSION_ID, LAUNCH_CONTROL_XL, "Novation", 1, 1);
     }
 
 
@@ -40,16 +41,17 @@ public class LaunchControlXLControllerDefinition extends DefaultControllerDefini
         {
             default:
             case WINDOWS:
-                midiDiscoveryPairs.addAll (this.createWindowsDeviceDiscoveryPairs ("%sLaunch Control XL", "%sLaunch Control XL"));
+                final String pattern = "%s" + LAUNCH_CONTROL_XL;
+                midiDiscoveryPairs.addAll (this.createWindowsDeviceDiscoveryPairs (pattern, pattern));
                 break;
 
             case MAC:
-                midiDiscoveryPairs.add (this.addDeviceDiscoveryPair ("Launch Control XL"));
+                midiDiscoveryPairs.add (this.addDeviceDiscoveryPair (LAUNCH_CONTROL_XL));
                 break;
 
             case LINUX:
-                midiDiscoveryPairs.add (this.addDeviceDiscoveryPair ("Launch Control XL"));
-                midiDiscoveryPairs.add (this.addDeviceDiscoveryPair ("Launch Control XL Launch Contro"));
+                midiDiscoveryPairs.add (this.addDeviceDiscoveryPair (LAUNCH_CONTROL_XL));
+                midiDiscoveryPairs.add (this.addDeviceDiscoveryPair (LAUNCH_CONTROL_XL + " Launch Contro"));
                 break;
         }
         return midiDiscoveryPairs;

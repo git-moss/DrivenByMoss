@@ -22,6 +22,7 @@ import de.mossgrabers.framework.controller.hardware.IHwRelativeKnob;
 import de.mossgrabers.framework.controller.hardware.IHwSurfaceFactory;
 import de.mossgrabers.framework.controller.valuechanger.ISensitivityCallback;
 import de.mossgrabers.framework.controller.valuechanger.RelativeEncoding;
+import de.mossgrabers.framework.daw.data.ITrack;
 import de.mossgrabers.framework.daw.midi.IMidiInput;
 import de.mossgrabers.framework.daw.midi.IMidiOutput;
 import de.mossgrabers.framework.featuregroup.ModeManager;
@@ -60,6 +61,14 @@ public interface IControlSurface<C extends Configuration>
      * @return The view manager
      */
     ViewManager getViewManager ();
+
+
+    /**
+     * Sets the preferred view for the given track.
+     *
+     * @param track The track for which to recall the track
+     */
+    void recallPreferredView (ITrack track);
 
 
     /**

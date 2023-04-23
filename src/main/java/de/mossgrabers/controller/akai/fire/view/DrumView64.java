@@ -54,8 +54,7 @@ public class DrumView64 extends AbstractDrum64View<FireControlSurface, FireConfi
             case SCENE4:
                 return this.surface.isPressed (ButtonID.SCENE4) ? 2 : 1;
 
-            case SCENE1:
-            case SCENE2:
+            case SCENE1, SCENE2:
             default:
                 return 0;
         }
@@ -74,8 +73,7 @@ public class DrumView64 extends AbstractDrum64View<FireControlSurface, FireConfi
             case 3:
                 return 1;
 
-            case 0:
-            case 1:
+            case 0, 1:
             default:
                 return 0;
         }
@@ -90,6 +88,7 @@ public class DrumView64 extends AbstractDrum64View<FireControlSurface, FireConfi
             this.scales.incDrumOctave ();
         else
             this.scales.decDrumOctave ();
+        this.model.getDrumDevice ().getDrumPadBank ().scrollTo (this.scales.getDrumOffset (), false);
         this.updateNoteMapping ();
     }
 }

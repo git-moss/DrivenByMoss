@@ -258,9 +258,7 @@ public class ParametersMode extends AbstractParametersMode<IItem>
                 return cd.isWindowOpen () ? SLMkIIIColorManager.SLMKIII_RED : SLMkIIIColorManager.SLMKIII_RED_HALF;
             case ROW1_5:
                 return cd.isPinned () ? SLMkIIIColorManager.SLMKIII_RED : SLMkIIIColorManager.SLMKIII_RED_HALF;
-            case ROW1_6:
-            case ROW1_7:
-            case ROW1_8:
+            case ROW1_6, ROW1_7, ROW1_8:
             default:
                 return SLMkIIIColorManager.SLMKIII_RED_HALF;
         }

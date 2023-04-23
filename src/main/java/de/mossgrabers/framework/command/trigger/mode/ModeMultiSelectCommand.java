@@ -23,6 +23,7 @@ import java.util.Optional;
 
 /**
  * Selects the next mode from a list. If the last element is reached it wraps around to the first.
+ * Contains specific handling of Send modes which are checked for existance.
  *
  * @param <S> The type of the control surface
  * @param <C> The type of the configuration
@@ -34,6 +35,7 @@ public class ModeMultiSelectCommand<S extends IControlSurface<C>, C extends Conf
     private final ModeManager modeManager;
     private final List<Modes> modeIds = new ArrayList<> ();
     private Modes             currentModeID;
+    private int               numModeIds;
 
 
     /**
@@ -50,35 +52,7 @@ public class ModeMultiSelectCommand<S extends IControlSurface<C>, C extends Conf
         this.modeManager = this.surface.getModeManager ();
         this.modeIds.addAll (Arrays.asList (modeIds));
         this.currentModeID = this.modeIds.get (0);
-    }
-
-
-    /** {@inheritDoc} */
-    @Override
-    public void executeShifted (final ButtonEvent event)
-    {
-        if (event != ButtonEvent.UP)
-            return;
-
-        final Modes activeModeId = this.modeManager.getActiveID ();
-        Modes newMode = this.currentModeID;
-
-        // If coming from a mode not on the list, activate the last one
-        if (this.currentModeID.equals (activeModeId))
-        {
-            final ITrackBank trackBank = this.model.getTrackBank ();
-            int index = this.modeIds.indexOf (activeModeId);
-            // If a send mode is selected check if the according send exists
-            do
-            {
-                index--;
-                if (index < 0 || index >= this.modeIds.size ())
-                    index = this.modeIds.size () - 1;
-                newMode = this.modeIds.get (index);
-            } while (Modes.isSendMode (newMode) && !trackBank.canEditSend (newMode.ordinal () - Modes.SEND1.ordinal ()));
-        }
-
-        this.activateMode (newMode);
+        this.numModeIds = this.modeIds.size ();
     }
 
 
@@ -86,6 +60,20 @@ public class ModeMultiSelectCommand<S extends IControlSurface<C>, C extends Conf
     @Override
     public void executeNormal (final ButtonEvent event)
     {
+        this.switchMode (true, event);
+    }
+
+
+    /** {@inheritDoc} */
+    @Override
+    public void executeShifted (final ButtonEvent event)
+    {
+        this.switchMode (false, event);
+    }
+
+
+    private void switchMode (final boolean selectNext, final ButtonEvent event)
+    {
         if (event != ButtonEvent.UP)
             return;
 
@@ -95,19 +83,47 @@ public class ModeMultiSelectCommand<S extends IControlSurface<C>, C extends Conf
         // If coming from a mode not on the list, activate the last one
         if (this.currentModeID.equals (activeModeId))
         {
-            final ITrackBank trackBank = this.model.getTrackBank ();
             int index = this.modeIds.indexOf (activeModeId);
-            // If a send mode is selected check if the according send exists
+            final int startIndex = index;
+            // Select the previous/next mode. Skips send modes for which no send exists.
+            // Sticks with the active send mode if there is no other one with an existing send.
             do
             {
-                index++;
-                if (index < 0 || index >= this.modeIds.size ())
-                    index = 0;
+                index = this.changeIndex (selectNext, index);
                 newMode = this.modeIds.get (index);
-            } while (Modes.isSendMode (newMode) && !trackBank.canEditSend (newMode.ordinal () - Modes.SEND1.ordinal ()));
+            } while (this.sendDoesNotExist (newMode) && index != startIndex);
         }
 
         this.activateMode (newMode);
+    }
+
+
+    private boolean sendDoesNotExist (final Modes mode)
+    {
+        if (Modes.isSendMode (mode))
+            return !this.model.getTrackBank ().canEditSend (mode.ordinal () - Modes.SEND1.ordinal ());
+        if (Modes.isLayerSendMode (mode))
+            return !this.model.getTrackBank ().canEditSend (mode.ordinal () - Modes.DEVICE_LAYER_SEND1.ordinal ());
+        return false;
+    }
+
+
+    /**
+     * Select the previous or next index. Wraps if necessary.
+     *
+     * @param selectNext Select the next index if true otherwise the previous one
+     * @param index The current index
+     * @return The previous/next index
+     */
+    private int changeIndex (final boolean selectNext, final int index)
+    {
+        if (selectNext)
+        {
+            final int next = index + 1;
+            return next < 0 || next >= this.numModeIds ? 0 : next;
+        }
+        final int prev = index - 1;
+        return prev < 0 || prev >= this.numModeIds ? this.numModeIds - 1 : prev;
     }
 
 

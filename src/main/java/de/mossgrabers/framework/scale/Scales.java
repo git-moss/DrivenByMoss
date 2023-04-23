@@ -544,7 +544,7 @@ public class Scales
      */
     public void incDrumOctave ()
     {
-        this.drumOffset = Math.min (DRUM_NOTE_UPPER, this.drumOffset + this.drumDefaultOffset);
+        this.incDrumOffset (this.drumDefaultOffset);
     }
 
 
@@ -553,7 +553,7 @@ public class Scales
      */
     public void decDrumOctave ()
     {
-        this.drumOffset = Math.max (DRUM_NOTE_LOWER, this.drumOffset - this.drumDefaultOffset);
+        this.decDrumOffset (this.drumDefaultOffset);
     }
 
 
@@ -564,7 +564,7 @@ public class Scales
      */
     public void incDrumOffset (final int offset)
     {
-        this.drumOffset = Math.min (100, this.drumOffset + offset);
+        this.drumOffset = Math.min (DRUM_NOTE_UPPER, this.drumOffset + offset);
     }
 
 
@@ -575,7 +575,7 @@ public class Scales
      */
     public void decDrumOffset (final int offset)
     {
-        this.drumOffset = Math.max (4, this.drumOffset - offset);
+        this.drumOffset = Math.max (DRUM_NOTE_LOWER, this.drumOffset - offset);
     }
 
 

@@ -37,7 +37,7 @@ public class LayerSendMode extends AbstractLayerMode
         else
         {
             final int surfaceID = surface.getSurfaceID ();
-            parameterProvider = new RangeFilterParameterProvider (new SendLayerOrDrumPadParameterProvider (model.getCursorDevice (), sendIndex), surfaceID * 8, 8);
+            parameterProvider = new RangeFilterParameterProvider (new SendLayerOrDrumPadParameterProvider (getDevice (model), sendIndex), surfaceID * 8, 8);
         }
         this.setParameterProvider (parameterProvider);
     }
