@@ -6,7 +6,7 @@
 	<artifactId>DrivenByMoss</artifactId>
 	<packaging>jar</packaging>
 	<name>DrivenByMoss</name>
-	<version>20.1.0</version>
+	<version>20.2.0</version>
 	<properties>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 	</properties>
@@ -65,13 +65,13 @@
 		<dependency>
 			<groupId>com.fasterxml.jackson.core</groupId>
 			<artifactId>jackson-databind</artifactId>
-			<version>2.14.2</version>
+			<version>2.15.0</version>
 		</dependency>
 		<!-- Gamepad support. -->
 		<dependency>
 			<groupId>com.badlogicgames.jamepad</groupId>
 			<artifactId>jamepad</artifactId>
-			<version>2.0.20.0</version>
+			<version>2.26.4.0</version>
 		</dependency>
 	</dependencies>
 

@@ -203,10 +203,28 @@ public enum ButtonID
     DEVICE_LEFT,
     /** The button to select the next device. */
     DEVICE_RIGHT,
+    /** The button to toggle the device window. */
+    TOGGLE_DEVICE_WINDOW,
     /** The button to select the previous parameter page. */
     BANK_LEFT,
     /** The button to select the next parameter page. */
     BANK_RIGHT,
+    /** The button to select the first parameter page. */
+    PARAM_PAGE1,
+    /** The button to select the second parameter page. */
+    PARAM_PAGE2,
+    /** The button to select the third parameter page. */
+    PARAM_PAGE3,
+    /** The button to select the fourth parameter page. */
+    PARAM_PAGE4,
+    /** The button to select the fifth parameter page. */
+    PARAM_PAGE5,
+    /** The button to select the sixth parameter page. */
+    PARAM_PAGE6,
+    /** The button to select the seventh parameter page. */
+    PARAM_PAGE7,
+    /** The button to select the eighth parameter page. */
+    PARAM_PAGE8,
 
     /** The button to switch to the Arrange view. */
     LAYOUT_ARRANGE,

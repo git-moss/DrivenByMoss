@@ -8,6 +8,7 @@ import de.mossgrabers.framework.command.core.AbstractTriggerCommand;
 import de.mossgrabers.framework.configuration.Configuration;
 import de.mossgrabers.framework.controller.IControlSurface;
 import de.mossgrabers.framework.daw.IModel;
+import de.mossgrabers.framework.daw.data.ICursorDevice;
 import de.mossgrabers.framework.utils.ButtonEvent;
 
 
@@ -21,6 +22,9 @@ import de.mossgrabers.framework.utils.ButtonEvent;
  */
 public class SelectNextDeviceOrParamPageCommand<S extends IControlSurface<C>, C extends Configuration> extends AbstractTriggerCommand<S, C>
 {
+    private final ICursorDevice cursorDevice;
+
+
     /**
      * Constructor.
      *
@@ -30,6 +34,8 @@ public class SelectNextDeviceOrParamPageCommand<S extends IControlSurface<C>, C 
     public SelectNextDeviceOrParamPageCommand (final IModel model, final S surface)
     {
         super (model, surface);
+
+        this.cursorDevice = this.model.getCursorDevice ();
     }
 
 
@@ -38,7 +44,7 @@ public class SelectNextDeviceOrParamPageCommand<S extends IControlSurface<C>, C 
     public void executeNormal (final ButtonEvent event)
     {
         if (event == ButtonEvent.DOWN)
-            this.model.getCursorDevice ().getParameterBank ().scrollForwards ();
+            this.cursorDevice.getParameterBank ().scrollForwards ();
     }
 
 
@@ -47,7 +53,7 @@ public class SelectNextDeviceOrParamPageCommand<S extends IControlSurface<C>, C 
     public void executeShifted (final ButtonEvent event)
     {
         if (event == ButtonEvent.DOWN)
-            this.model.getCursorDevice ().selectNext ();
+            this.cursorDevice.selectNext ();
     }
 
 
@@ -59,8 +65,7 @@ public class SelectNextDeviceOrParamPageCommand<S extends IControlSurface<C>, C 
     public boolean canExecute ()
     {
         if (this.surface.isShiftPressed ())
-            return this.model.getCursorDevice ().canSelectNext ();
-
-        return this.model.getCursorDevice ().getParameterBank ().canScrollForwards ();
+            return this.cursorDevice.canSelectNext ();
+        return this.cursorDevice.getParameterBank ().canScrollForwards ();
     }
 }

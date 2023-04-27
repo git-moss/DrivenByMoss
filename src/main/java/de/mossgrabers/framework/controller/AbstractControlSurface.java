@@ -679,6 +679,8 @@ public abstract class AbstractControlSurface<C extends Configuration> implements
     @Override
     public void setTrigger (final BindType bindType, final int channel, final int cc, final int value)
     {
+        if (this.output == null)
+            return;
         if (bindType == BindType.NOTE)
             this.output.sendNoteEx (channel, cc, value);
         else
