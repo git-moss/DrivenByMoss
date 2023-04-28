@@ -652,6 +652,8 @@ public class MCUControllerSetup extends AbstractControllerSetup<MCUControlSurfac
                 surface.getButton (ButtonID.PAN_SEND).setBounds (777.75, 225.25, 65.0, 39.75);
                 surface.getButton (ButtonID.SENDS).setBounds (849.25, 225.25, 65.0, 39.75);
                 surface.getButton (ButtonID.DEVICE).setBounds (921.5, 225.25, 65.0, 39.75);
+                surface.getButton (ButtonID.PAGE_LEFT).setBounds (632.5, 367.5, 65.0, 39.75);
+                surface.getButton (ButtonID.PAGE_RIGHT).setBounds (632.5, 416.0, 65.0, 39.75);
                 surface.getButton (ButtonID.MOVE_TRACK_LEFT).setBounds (847.75, 542.0, 65.0, 39.75);
                 surface.getButton (ButtonID.MOVE_TRACK_RIGHT).setBounds (921.0, 542.0, 65.0, 39.75);
                 surface.getButton (ButtonID.AUTOMATION_READ).setBounds (632.5, 272.25, 65.0, 39.75);
