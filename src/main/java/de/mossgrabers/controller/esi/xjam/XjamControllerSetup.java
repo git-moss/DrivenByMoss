@@ -102,8 +102,8 @@ public class XjamControllerSetup extends AbstractControllerSetup<XjamControlSurf
         ms.setNumSends (3);
         ms.setNumParams (8);
         ms.setNumParamPages (7);
-        ms.setNumUserPageSize (6);
-        ms.setNumUserPages (1);
+        ms.setNumUserPageSize (0);
+        ms.setNumUserPages (0);
 
         this.model = this.factory.createModel (this.configuration, this.colorManager, this.valueChanger, this.scales, ms);
     }
@@ -187,7 +187,7 @@ public class XjamControllerSetup extends AbstractControllerSetup<XjamControlSurf
     {
         // There are no modes, therefore everything is hard wired...
 
-        final IParameterBank userParameterBank = this.model.getUserParameterBank ();
+        final IParameterBank projectParameterBank = this.model.getProject ().getParameterBank ();
 
         final IHwAbsoluteKnob [] knobBank1 = new IHwAbsoluteKnob [6];
         this.knobBank2 = new IHwAbsoluteKnob [6];
@@ -205,7 +205,7 @@ public class XjamControllerSetup extends AbstractControllerSetup<XjamControlSurf
             final ContinuousID continuousID3 = ContinuousID.get (ContinuousID.PARAM_KNOB1, i);
             final IHwAbsoluteKnob bank3Knob = this.addAbsoluteKnob (continuousID3, "Bank 3 - Knob " + (i + 1), null, BindType.CC, MIDI_CHANNEL, XjamControlSurface.BANK3_ENCODER_1 + i);
             bank3Knob.setIndexInGroup (i);
-            bank3Knob.bind (userParameterBank.getItem (i));
+            bank3Knob.bind (projectParameterBank.getItem (i));
         }
 
         final ICursorTrack cursorTrack = this.model.getCursorTrack ();
