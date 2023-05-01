@@ -7,14 +7,12 @@ package de.mossgrabers.bitwig.framework.daw.data;
 import de.mossgrabers.bitwig.framework.daw.data.bank.DrumPadBankImpl;
 import de.mossgrabers.bitwig.framework.daw.data.bank.LayerBankImpl;
 import de.mossgrabers.bitwig.framework.daw.data.bank.ParameterBankImpl;
-import de.mossgrabers.bitwig.framework.daw.data.bank.ParameterPageBankImpl;
 import de.mossgrabers.framework.controller.valuechanger.IValueChanger;
 import de.mossgrabers.framework.daw.IHost;
 import de.mossgrabers.framework.daw.data.ISpecificDevice;
 import de.mossgrabers.framework.daw.data.bank.IDrumPadBank;
 import de.mossgrabers.framework.daw.data.bank.ILayerBank;
 import de.mossgrabers.framework.daw.data.bank.IParameterBank;
-import de.mossgrabers.framework.daw.data.bank.IParameterPageBank;
 import de.mossgrabers.framework.observer.IValueObserver;
 
 import com.bitwig.extension.controller.api.CursorRemoteControlsPage;
@@ -31,7 +29,6 @@ import java.util.List;
  */
 public class SpecificDeviceImpl extends DeviceImpl implements ISpecificDevice
 {
-    private final IParameterPageBank            parameterPageBank;
     private final IParameterBank                parameterBank;
     private final ILayerBank                    layerBank;
     private final IDrumPadBank                  drumPadBank;
@@ -74,14 +71,10 @@ public class SpecificDeviceImpl extends DeviceImpl implements ISpecificDevice
         if (checkedNumParams > 0)
         {
             final CursorRemoteControlsPage remoteControlsPage = this.device.createCursorRemoteControlsPage (checkedNumParams);
-            this.parameterPageBank = new ParameterPageBankImpl (remoteControlsPage, checkedNumParamPages);
-            this.parameterBank = new ParameterBankImpl (host, valueChanger, this.parameterPageBank, remoteControlsPage, checkedNumParams);
+            this.parameterBank = new ParameterBankImpl (host, valueChanger, remoteControlsPage, checkedNumParamPages, checkedNumParams);
         }
         else
-        {
-            this.parameterPageBank = null;
             this.parameterBank = null;
-        }
 
         // Monitor the layers of a container device (if any)
         this.layerBank = new LayerBankImpl (host, valueChanger, checkedNumDeviceLayers > 0 ? this.device.createLayerBank (checkedNumDeviceLayers) : null, this.device.createCursorLayer (), checkedNumDeviceLayers, numSends, checkedNumDevices);
@@ -111,10 +104,7 @@ public class SpecificDeviceImpl extends DeviceImpl implements ISpecificDevice
         Util.setIsSubscribed (this.device.slotNames (), enable);
 
         if (this.parameterBank != null)
-        {
             this.parameterBank.enableObservers (enable);
-            this.parameterPageBank.enableObservers (enable);
-        }
         this.layerBank.enableObservers (enable);
         this.drumPadBank.enableObservers (enable);
     }
@@ -229,14 +219,6 @@ public class SpecificDeviceImpl extends DeviceImpl implements ISpecificDevice
     public boolean hasSlots ()
     {
         return this.device.hasSlots ().get ();
-    }
-
-
-    /** {@inheritDoc} */
-    @Override
-    public IParameterPageBank getParameterPageBank ()
-    {
-        return this.parameterPageBank;
     }
 
 

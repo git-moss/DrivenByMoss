@@ -211,7 +211,7 @@ public class YaeltexTurnTrackMixMode extends AbstractParameterMode<YaeltexTurnCo
         if (row == 2 || row == 3)
         {
             final int paramPageIndex = 2 * index + row - 2;
-            this.model.getCursorDevice ().getParameterPageBank ().selectPage (paramPageIndex);
+            this.model.getCursorDevice ().getParameterBank ().getPageBank ().selectPage (paramPageIndex);
             this.mvHelper.notifySelectedDeviceAndParameterPage ();
             return;
         }
@@ -314,7 +314,7 @@ public class YaeltexTurnTrackMixMode extends AbstractParameterMode<YaeltexTurnCo
         }
         if (paramPageIndex != -1)
         {
-            final IParameterPageBank parameterPageBank = cursorDevice.getParameterPageBank ();
+            final IParameterPageBank parameterPageBank = cursorDevice.getParameterBank ().getPageBank ();
             final String paramPage = parameterPageBank.getItem (paramPageIndex);
             if (paramPage == null || paramPage.isBlank ())
                 return 0;

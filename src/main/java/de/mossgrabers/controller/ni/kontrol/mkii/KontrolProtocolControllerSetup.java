@@ -41,6 +41,8 @@ import de.mossgrabers.framework.daw.IHost;
 import de.mossgrabers.framework.daw.ITransport;
 import de.mossgrabers.framework.daw.ModelSetup;
 import de.mossgrabers.framework.daw.constants.DeviceID;
+import de.mossgrabers.framework.daw.data.ICursorTrack;
+import de.mossgrabers.framework.daw.data.ISlot;
 import de.mossgrabers.framework.daw.data.ISpecificDevice;
 import de.mossgrabers.framework.daw.data.ITrack;
 import de.mossgrabers.framework.daw.data.bank.ISceneBank;
@@ -56,6 +58,7 @@ import de.mossgrabers.framework.mode.Modes;
 import de.mossgrabers.framework.scale.Scales;
 import de.mossgrabers.framework.utils.ButtonEvent;
 import de.mossgrabers.framework.utils.FrameworkException;
+import de.mossgrabers.framework.utils.LatestTaskExecutor;
 import de.mossgrabers.framework.utils.OperatingSystem;
 import de.mossgrabers.framework.view.Views;
 
@@ -72,8 +75,11 @@ import java.util.function.IntSupplier;
  */
 public class KontrolProtocolControllerSetup extends AbstractControllerSetup<KontrolProtocolControlSurface, KontrolProtocolConfiguration>
 {
-    private final int version;
-    private String    kompleteInstance = "";
+    private final int          version;
+    private String             kompleteInstance   = "";
+    private Object             navigateLock       = new Object ();
+    private LatestTaskExecutor slotScrollExecutor = new LatestTaskExecutor ();
+    private long               lastEdit;
 
 
     /**
@@ -505,16 +511,59 @@ public class KontrolProtocolControllerSetup extends AbstractControllerSetup<Kont
 
 
     /**
-     * Navigate to the previous or next track (if any).
+     * Navigate to the previous or next track (if any). Contains complex workaround to make sure
+     * that the same slot is selected a newly selected track as well.
      *
      * @param isLeft Select the previous track if true
      */
     private void navigateTracks (final boolean isLeft)
     {
+        final ICursorTrack cursorTrack = this.model.getCursorTrack ();
+        if (!cursorTrack.doesExist ())
+        {
+            this.model.getTrackBank ().getItem (0).select ();
+            return;
+        }
+
+        final Optional<ISlot> selectedSlot = cursorTrack.getSlotBank ().getSelectedItem ();
+        final int slotIndex = selectedSlot.isPresent () ? selectedSlot.get ().getIndex () : -1;
+
         if (isLeft)
-            this.model.getTrackBank ().selectPreviousItem ();
+            cursorTrack.selectPrevious ();
         else
-            this.model.getTrackBank ().selectNextItem ();
+            cursorTrack.selectNext ();
+
+        synchronized (this.navigateLock)
+        {
+            this.lastEdit = System.currentTimeMillis ();
+        }
+
+        this.slotScrollExecutor.execute ( () -> selectSlot (slotIndex));
+    }
+
+
+    private void selectSlot (final int slotIndex)
+    {
+        if (slotIndex < 0)
+            return;
+
+        try
+        {
+            Thread.sleep (50);
+        }
+        catch (final InterruptedException ex)
+        {
+            Thread.currentThread ().interrupt ();
+            return;
+        }
+
+        synchronized (this.navigateLock)
+        {
+            if (System.currentTimeMillis () - this.lastEdit > 200)
+                this.model.getCursorTrack ().getSlotBank ().getItem (slotIndex).select ();
+            else
+                this.slotScrollExecutor.execute ( () -> selectSlot (slotIndex));
+        }
     }
 
 
@@ -606,5 +655,15 @@ public class KontrolProtocolControllerSetup extends AbstractControllerSetup<Kont
     {
         final IMode mode = this.getSurface ().getModeManager ().getActive ();
         return mode == null ? 0 : Math.max (0, mode.getKnobValue (continuousMidiControl));
+    }
+
+
+    /** {@inheritDoc} */
+    @Override
+    public void exit ()
+    {
+        this.slotScrollExecutor.shutdown ();
+
+        super.exit ();
     }
 }

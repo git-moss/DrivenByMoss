@@ -118,7 +118,8 @@ public class ControlMode extends AbstractParameterMode<ACVSControlSurface, ACVSC
 
         // Set device data
         final boolean exists = device.doesExist ();
-        final Optional<String> selectedPage = device.getParameterPageBank ().getSelectedItem ();
+        final IParameterBank parameterBank = device.getParameterBank ();
+        final Optional<String> selectedPage = parameterBank.getPageBank ().getSelectedItem ();
         d.setRow (ACVSDisplay.ITEM_ID_DEVICE_BANK_NAME, exists ? selectedPage.orElse ("") : "");
         d.setRow (ACVSDisplay.ITEM_ID_DEVICE_NAME, exists ? device.getName () : "");
         d.setScreenItem (ScreenItem.DEVICE_COUNT, device.doesExist () ? device.getDeviceBank ().getItemCount () : 0);
@@ -126,7 +127,6 @@ public class ControlMode extends AbstractParameterMode<ACVSControlSurface, ACVSC
         d.setScreenItem (ScreenItem.CURRENT_DEVICE_INDEX, devicePosition >= 0 ? devicePosition : 0);
         d.setScreenItem (ScreenItem.CURRENT_DEVICE_ACTIVE, device.isEnabled () ? 127 : 0);
 
-        final IParameterBank parameterBank = device.getParameterBank ();
         for (int i = 0; i < 8; i++)
         {
             final IParameter param = parameterBank.getItem (i);

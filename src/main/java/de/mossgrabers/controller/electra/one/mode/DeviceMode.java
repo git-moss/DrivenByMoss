@@ -85,10 +85,10 @@ public class DeviceMode extends AbstractElectraOneMode
                         cursorDevice.toggleWindowOpen ();
                         break;
                     case 2:
-                        cursorDevice.getParameterPageBank ().selectNextPage ();
+                        cursorDevice.getParameterBank ().getPageBank ().selectNextPage ();
                         break;
                     case 3:
-                        cursorDevice.getParameterPageBank ().selectPreviousPage ();
+                        cursorDevice.getParameterBank ().getPageBank ().selectPreviousPage ();
                         break;
                     case 4:
                         cursorDevice.getDeviceBank ().selectNextPage ();
@@ -132,7 +132,7 @@ public class DeviceMode extends AbstractElectraOneMode
                 if (row < 2)
                     return;
                 if (row == 2 || row == 3)
-                    cursorDevice.getParameterPageBank ().selectPage ((row - 2) * 4 + column - 1);
+                    cursorDevice.getParameterBank ().getPageBank ().selectPage ((row - 2) * 4 + column - 1);
                 else
                     cursorDevice.getDeviceBank ().getItem ((row - 4) * 4 + column - 1).select ();
                 break;
@@ -146,7 +146,7 @@ public class DeviceMode extends AbstractElectraOneMode
     {
         final ICursorDevice cursorDevice = this.model.getCursorDevice ();
         final IParameterBank parameterBank = cursorDevice.getParameterBank ();
-        final IParameterPageBank parameterPageBank = cursorDevice.getParameterPageBank ();
+        final IParameterPageBank parameterPageBank = parameterBank.getPageBank ();
         final IDeviceBank siblingBank = cursorDevice.getDeviceBank ();
 
         for (int i = 0; i < 8; i++)

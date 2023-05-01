@@ -83,13 +83,16 @@ public class ModelImpl extends AbstractModel
 
         this.controllerHost = controllerHost;
 
+        final int numParamPages = this.modelSetup.getNumParamPages ();
+        final int numParams = this.modelSetup.getNumParams ();
+
         final Application bwApplication = controllerHost.createApplication ();
         final Arranger bwArranger = controllerHost.createArranger ();
 
         this.application = new ApplicationImpl (bwApplication, bwArranger, this.valueChanger);
         final Project proj = controllerHost.getProject ();
         this.rootTrackGroup = proj.getRootTrackGroup ();
-        this.project = new ProjectImpl (this.valueChanger, proj, bwApplication);
+        this.project = new ProjectImpl (this.host, this.valueChanger, proj, bwApplication, numParamPages, numParams);
 
         this.transport = new TransportImpl (controllerHost, this.application, this.valueChanger);
         this.arranger = new ArrangerImpl (bwArranger);
@@ -135,8 +138,6 @@ public class ModelImpl extends AbstractModel
         // Create devices
 
         final int numDevicesInBank = this.modelSetup.getNumDevicesInBank ();
-        final int numParamPages = this.modelSetup.getNumParamPages ();
-        final int numParams = this.modelSetup.getNumParams ();
         final int numDeviceLayers = this.modelSetup.getNumDeviceLayers ();
         final int numDrumPadLayers = this.modelSetup.getNumDrumPadLayers ();
 

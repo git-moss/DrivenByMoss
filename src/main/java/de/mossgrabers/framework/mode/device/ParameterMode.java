@@ -174,7 +174,7 @@ public class ParameterMode<S extends IControlSurface<C>, C extends Configuration
     {
         if (!this.cursorDevice.doesExist ())
             return Optional.empty ();
-        final IParameterPageBank parameterPageBank = this.cursorDevice.getParameterPageBank ();
+        final IParameterPageBank parameterPageBank = this.cursorDevice.getParameterBank ().getPageBank ();
         final Optional<String> selectedItem = parameterPageBank.getSelectedItem ();
         String value = this.cursorDevice.getName ();
         if (selectedItem.isPresent ())
@@ -225,7 +225,7 @@ public class ParameterMode<S extends IControlSurface<C>, C extends Configuration
     @Override
     public void selectItem (final int index)
     {
-        this.cursorDevice.getParameterPageBank ().selectPage (index);
+        this.cursorDevice.getParameterBank ().getPageBank ().selectPage (index);
     }
 
 

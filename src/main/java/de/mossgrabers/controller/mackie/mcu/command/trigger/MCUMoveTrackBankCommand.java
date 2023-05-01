@@ -178,7 +178,7 @@ public class MCUMoveTrackBankCommand extends AbstractTriggerCommand<MCUControlSu
 
             String text = StringUtils.pad (StringUtils.shortenAndFixASCII (cursorDevice.getName (), 27) + " ", 28);
 
-            final Optional<String> selectedItem = cursorDevice.getParameterPageBank ().getSelectedItem ();
+            final Optional<String> selectedItem = cursorDevice.getParameterBank ().getPageBank ().getSelectedItem ();
             if (selectedItem.isPresent ())
             {
                 String pageName = selectedItem.get ();

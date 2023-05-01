@@ -296,7 +296,7 @@ public class YaeltexTurnDrumMixMode extends AbstractParameterMode<YaeltexTurnCon
         if (row == 2 || row == 3)
         {
             final int paramPageIndex = 2 * index + row - 2;
-            this.drumDevice.getParameterPageBank ().selectPage (paramPageIndex);
+            this.drumDevice.getParameterBank ().getPageBank ().selectPage (paramPageIndex);
             this.mvHelper.notifyFirstDeviceAndParameterPage ();
             return;
         }
@@ -474,7 +474,7 @@ public class YaeltexTurnDrumMixMode extends AbstractParameterMode<YaeltexTurnCon
         }
         if (paramPageIndex != -1)
         {
-            final IParameterPageBank parameterPageBank = this.drumDevice.getParameterPageBank ();
+            final IParameterPageBank parameterPageBank = this.drumDevice.getParameterBank ().getPageBank ();
             final String paramPage = parameterPageBank.getItem (paramPageIndex);
             if (paramPage == null || paramPage.isBlank ())
                 return 0;

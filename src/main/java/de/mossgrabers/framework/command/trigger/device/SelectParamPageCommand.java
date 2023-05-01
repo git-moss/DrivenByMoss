@@ -46,7 +46,7 @@ public class SelectParamPageCommand<S extends IControlSurface<C>, C extends Conf
     {
         if (event != ButtonEvent.DOWN)
             return;
-        final IParameterPageBank parameterBank = this.model.getCursorDevice ().getParameterPageBank ();
+        final IParameterPageBank parameterBank = this.model.getCursorDevice ().getParameterBank ().getPageBank ();
         parameterBank.selectPage (this.index);
         this.mvHelper.notifySelectedDeviceAndParameterPage ();
     }

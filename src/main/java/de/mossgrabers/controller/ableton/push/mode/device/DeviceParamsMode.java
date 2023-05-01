@@ -136,7 +136,7 @@ public class DeviceParamsMode extends BaseMode<IParameter>
             // Select parameter bank if parameter banks are visible
             if (!this.showDevices)
             {
-                cd.getParameterPageBank ().selectPage (index);
+                cd.getParameterBank ().getPageBank ().selectPage (index);
                 return;
             }
 
@@ -265,7 +265,7 @@ public class DeviceParamsMode extends BaseMode<IParameter>
                     return offColor;
                 return index == cd.getIndex () ? selectedColor : existsColor;
             }
-            final IParameterPageBank bank = cd.getParameterPageBank ();
+            final IParameterPageBank bank = cd.getParameterBank ().getPageBank ();
             final int selectedItemIndex = bank.getSelectedItemIndex ();
             if (bank.getItem (index).isEmpty ())
                 return offColor;
@@ -407,7 +407,7 @@ public class DeviceParamsMode extends BaseMode<IParameter>
             }
             return;
         }
-        final IParameterPageBank bank = cd.getParameterPageBank ();
+        final IParameterPageBank bank = parameterBank.getPageBank ();
         final int selectedItemIndex = bank.getSelectedItemIndex ();
         for (int i = 0; i < bank.getPageSize (); i++)
         {
@@ -432,7 +432,7 @@ public class DeviceParamsMode extends BaseMode<IParameter>
 
         final IDeviceBank deviceBank = cd.getDeviceBank ();
         final IParameterBank parameterBank = cd.getParameterBank ();
-        final IParameterPageBank parameterPageBank = cd.getParameterPageBank ();
+        final IParameterPageBank parameterPageBank = parameterBank.getPageBank ();
         final int selectedPage = parameterPageBank.getSelectedItemIndex ();
         final boolean hasPinning = this.model.getHost ().supports (Capability.HAS_PINNING);
         final IValueChanger valueChanger = this.model.getValueChanger ();

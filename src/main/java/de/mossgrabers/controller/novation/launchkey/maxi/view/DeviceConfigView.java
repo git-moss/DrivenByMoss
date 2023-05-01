@@ -47,7 +47,7 @@ public class DeviceConfigView extends AbstractView<LaunchkeyMk3ControlSurface, L
 
         final ICursorDevice cursorDevice = this.model.getCursorDevice ();
         if (cursorDevice.doesExist ())
-            cursorDevice.getParameterPageBank ().selectPage (page);
+            cursorDevice.getParameterBank ().getPageBank ().selectPage (page);
     }
 
 
@@ -64,7 +64,7 @@ public class DeviceConfigView extends AbstractView<LaunchkeyMk3ControlSurface, L
                 padGrid.light (36 + i, LaunchkeyMk3ColorManager.LAUNCHKEY_COLOR_BLACK);
         }
 
-        final IParameterPageBank parameterPageBank = cursorDevice.getParameterPageBank ();
+        final IParameterPageBank parameterPageBank = cursorDevice.getParameterBank ().getPageBank ();
         final int sel = parameterPageBank.getSelectedItemIndex ();
         final int lastPage = Math.min (16, parameterPageBank.getItemCount ());
         for (int i = 0; i < lastPage; i++)

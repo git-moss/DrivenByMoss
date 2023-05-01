@@ -7,7 +7,6 @@ package de.mossgrabers.framework.daw.data;
 import de.mossgrabers.framework.daw.data.bank.IDrumPadBank;
 import de.mossgrabers.framework.daw.data.bank.ILayerBank;
 import de.mossgrabers.framework.daw.data.bank.IParameterBank;
-import de.mossgrabers.framework.daw.data.bank.IParameterPageBank;
 import de.mossgrabers.framework.observer.IValueObserver;
 
 
@@ -122,14 +121,6 @@ public interface ISpecificDevice extends IDevice
      * @return True if the device has slots
      */
     boolean hasSlots ();
-
-
-    /**
-     * Get the parameter page bank.
-     *
-     * @return The bank
-     */
-    IParameterPageBank getParameterPageBank ();
 
 
     /**

@@ -84,14 +84,15 @@ public class ParameterView extends BaseView
         ((SelectedDeviceMode<?, ?>) this.surface.getModeManager ().get (Modes.DEVICE_PARAMS)).selectParameter (selectedParameter);
         this.model.getHost ().scheduleTask ( () -> {
 
+            final IParameterBank parameterBank = cursorDevice.getParameterBank ();
             final StringBuilder message = new StringBuilder ();
-            final Optional<String> selectedPage = cursorDevice.getParameterPageBank ().getSelectedItem ();
+            final Optional<String> selectedPage = parameterBank.getPageBank ().getSelectedItem ();
             if (selectedPage.isEmpty ())
                 message.append ("No parameters available.");
             else
             {
                 message.append (selectedPage.get ()).append (": ");
-                final IParameter item = cursorDevice.getParameterBank ().getItem (selectedParameter);
+                final IParameter item = parameterBank.getItem (selectedParameter);
                 if (item.doesExist ())
                     message.append (item.getName ());
                 else

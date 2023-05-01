@@ -136,7 +136,7 @@ public class UserModule extends AbstractModule
     private void selectPage (final IParameterBank parameterBank, final int index)
     {
         parameterBank.scrollTo (index * parameterBank.getPageSize ());
-        // We need to do a maniual flush since the manual paging does not
+        // We need to do a manual flush since the manual paging does not
         // trigger a flush
         this.flush (false);
         this.writer.flush (false);

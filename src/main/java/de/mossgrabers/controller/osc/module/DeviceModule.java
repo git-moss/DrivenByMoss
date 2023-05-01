@@ -178,7 +178,7 @@ public class DeviceModule extends AbstractModule
             this.flushParameterData (writer, deviceAddress + "param/" + oneplus + "/", parameterBank.getItem (i), dump);
         }
 
-        final IParameterPageBank parameterPageBank = device.getParameterPageBank ();
+        final IParameterPageBank parameterPageBank = device.getParameterBank ().getPageBank ();
         final int selectedParameterPage = parameterPageBank.getSelectedItemIndex ();
         for (int i = 0; i < parameterPageBank.getPageSize (); i++)
         {
@@ -296,7 +296,7 @@ public class DeviceModule extends AbstractModule
 
     private void parseDeviceValue (final ISpecificDevice device, final LinkedList<String> path, final Object value) throws UnknownCommandException, MissingCommandException, IllegalParameterException
     {
-        final IParameterPageBank parameterPageBank = device.getParameterPageBank ();
+        final IParameterPageBank parameterPageBank = device.getParameterBank ().getPageBank ();
 
         final String command = getSubCommand (path);
         switch (command)

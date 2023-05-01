@@ -4,6 +4,7 @@
 
 package de.mossgrabers.framework.daw;
 
+import de.mossgrabers.framework.daw.data.bank.IParameterBank;
 import de.mossgrabers.framework.observer.IObserverManagement;
 import de.mossgrabers.framework.parameter.IParameter;
 
@@ -222,4 +223,12 @@ public interface IProject extends IObserverManagement
      * Deactivate all mute states of all tracks.
      */
     void clearMute ();
+
+
+    /**
+     * Get the project wide parameter bank.
+     *
+     * @return The bank
+     */
+    IParameterBank getParameterBank ();
 }

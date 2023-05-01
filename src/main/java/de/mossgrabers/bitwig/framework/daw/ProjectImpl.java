@@ -6,13 +6,18 @@ package de.mossgrabers.bitwig.framework.daw;
 
 import de.mossgrabers.bitwig.framework.daw.data.ParameterImpl;
 import de.mossgrabers.bitwig.framework.daw.data.Util;
+import de.mossgrabers.bitwig.framework.daw.data.bank.ParameterBankImpl;
 import de.mossgrabers.framework.controller.valuechanger.IValueChanger;
+import de.mossgrabers.framework.daw.IHost;
 import de.mossgrabers.framework.daw.IProject;
+import de.mossgrabers.framework.daw.data.bank.IParameterBank;
 import de.mossgrabers.framework.parameter.IParameter;
 
 import com.bitwig.extension.controller.api.Action;
 import com.bitwig.extension.controller.api.Application;
+import com.bitwig.extension.controller.api.CursorRemoteControlsPage;
 import com.bitwig.extension.controller.api.Project;
+import com.bitwig.extension.controller.api.Track;
 
 
 /**
@@ -22,20 +27,24 @@ import com.bitwig.extension.controller.api.Project;
  */
 public class ProjectImpl implements IProject
 {
-    private final Project     project;
-    private final Application application;
-    private final IParameter  cueVolumeParameter;
-    private final IParameter  cueMixParameter;
+    private final Project        project;
+    private final Application    application;
+    private final IParameter     cueVolumeParameter;
+    private final IParameter     cueMixParameter;
+    private final IParameterBank parameterBank;
 
 
     /**
      * Constructor.
      *
+     * @param host The DAW host
      * @param valueChanger The value changer
      * @param project The project
      * @param application The application
+     * @param numParamPages The number of project parameter pages
+     * @param numParams The number of project parameters
      */
-    public ProjectImpl (final IValueChanger valueChanger, final Project project, final Application application)
+    public ProjectImpl (final IHost host, final IValueChanger valueChanger, final Project project, final Application application, final int numParamPages, final int numParams)
     {
         this.project = project;
         this.application = application;
@@ -48,6 +57,17 @@ public class ProjectImpl implements IProject
 
         this.cueVolumeParameter = new ParameterImpl (valueChanger, this.project.cueVolume (), 0);
         this.cueMixParameter = new ParameterImpl (valueChanger, this.project.cueMix (), 0);
+
+        final int checkedNumParamPages = numParamPages >= 0 ? numParamPages : 8;
+        final int checkedNumParams = numParams >= 0 ? numParams : 8;
+        if (checkedNumParams > 0)
+        {
+            final Track rootTrackGroup = this.project.getRootTrackGroup ();
+            final CursorRemoteControlsPage remoteControlsPage = rootTrackGroup.createCursorRemoteControlsPage (checkedNumParams);
+            this.parameterBank = new ParameterBankImpl (host, valueChanger, remoteControlsPage, checkedNumParamPages, checkedNumParams);
+        }
+        else
+            this.parameterBank = null;
     }
 
 
@@ -291,5 +311,13 @@ public class ProjectImpl implements IProject
     public void clearMute ()
     {
         this.project.unmuteAll ();
+    }
+
+
+    /** {@inheritDoc} */
+    @Override
+    public IParameterBank getParameterBank ()
+    {
+        return this.parameterBank;
     }
 }

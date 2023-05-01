@@ -195,7 +195,7 @@ public class DeviceHandler extends AbstractHandler
             case DEVICE_SELECT_PARAMETER_PAGE_1, DEVICE_SELECT_PARAMETER_PAGE_2, DEVICE_SELECT_PARAMETER_PAGE_3, DEVICE_SELECT_PARAMETER_PAGE_4, DEVICE_SELECT_PARAMETER_PAGE_5, DEVICE_SELECT_PARAMETER_PAGE_6, DEVICE_SELECT_PARAMETER_PAGE_7, DEVICE_SELECT_PARAMETER_PAGE_8:
                 if (isButtonPressed)
                 {
-                    cursorDevice.getParameterPageBank ().selectPage (command.ordinal () - FlexiCommand.DEVICE_SELECT_PARAMETER_PAGE_1.ordinal ());
+                    cursorDevice.getParameterBank ().getPageBank ().selectPage (command.ordinal () - FlexiCommand.DEVICE_SELECT_PARAMETER_PAGE_1.ordinal ());
                     this.mvHelper.notifySelectedDeviceAndParameterPage ();
                 }
                 break;

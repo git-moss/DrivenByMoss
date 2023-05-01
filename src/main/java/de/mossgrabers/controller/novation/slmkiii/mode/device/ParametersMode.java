@@ -114,7 +114,7 @@ public class ParametersMode extends AbstractParametersMode<IItem>
         // Normal behavior - parameters
         if (!this.showDevices)
         {
-            final IParameterPageBank parameterPageBank = cd.getParameterPageBank ();
+            final IParameterPageBank parameterPageBank = cd.getParameterBank ().getPageBank ();
             if (parameterPageBank.getSelectedItemIndex () == index)
                 this.setShowDevices (!this.isShowDevices ());
             else
@@ -222,7 +222,7 @@ public class ParametersMode extends AbstractParametersMode<IItem>
             return index == cd.getIndex () ? SLMkIIIColorManager.SLMKIII_MINT : SLMkIIIColorManager.SLMKIII_MINT_HALF;
         }
 
-        final IParameterPageBank bank = cd.getParameterPageBank ();
+        final IParameterPageBank bank = cd.getParameterBank ().getPageBank ();
         final int selectedItemIndex = bank.getSelectedItemIndex ();
         if (bank.getItem (index).isEmpty ())
             return SLMkIIIColorManager.SLMKIII_BLACK;
@@ -285,17 +285,16 @@ public class ParametersMode extends AbstractParametersMode<IItem>
         }
         else
         {
-            final IParameterPageBank parameterPageBank = cd.getParameterPageBank ();
+            final IParameterBank parameterBank = cd.getParameterBank ();
+            final IParameterPageBank parameterPageBank = parameterBank.getPageBank ();
             final Optional<String> selectedPage = parameterPageBank.getSelectedItem ();
             d.setCell (0, 8, cd.getName (9)).setCell (1, 8, selectedPage.isPresent () ? selectedPage.get () : "");
 
             // Row 1 & 2
             for (int i = 0; i < 8; i++)
             {
-                final IParameterBank parameterBank = cd.getParameterBank ();
                 final IParameter param = parameterBank.getItem (i);
                 d.setCell (0, i, param.doesExist () ? StringUtils.fixASCII (param.getName (9)) : "").setCell (1, i, param.getDisplayedValue (9));
-
                 final int color = param.doesExist () ? SLMkIIIColorManager.SLMKIII_PURPLE : SLMkIIIColorManager.SLMKIII_BLACK;
                 d.setPropertyColor (i, 0, color);
                 d.setPropertyColor (i, 1, color);

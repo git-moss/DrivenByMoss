@@ -43,7 +43,7 @@ public class XLSelectDeviceParamsPageMode extends XLTemporaryButtonMode
 
         this.setHasBeenUsed ();
 
-        final IParameterPageBank parameterPageBank = this.device.getParameterPageBank ();
+        final IParameterPageBank parameterPageBank = this.device.getParameterBank ().getPageBank ();
         if (index < parameterPageBank.getItemCount ())
         {
             parameterPageBank.selectPage (index);
@@ -60,7 +60,7 @@ public class XLSelectDeviceParamsPageMode extends XLTemporaryButtonMode
         if (index < 0 || index >= 8)
             return LaunchControlXLColorManager.LAUNCHCONTROL_COLOR_BLACK;
 
-        final IParameterPageBank parameterPageBank = this.device.getParameterPageBank ();
+        final IParameterPageBank parameterPageBank = this.device.getParameterBank ().getPageBank ();
         if (index >= parameterPageBank.getItemCount ())
             return LaunchControlXLColorManager.LAUNCHCONTROL_COLOR_BLACK;
 

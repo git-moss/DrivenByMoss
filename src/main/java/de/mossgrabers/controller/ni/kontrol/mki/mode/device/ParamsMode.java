@@ -58,7 +58,7 @@ public class ParamsMode extends AbstractKontrol1Mode<IParameter>
             final ICursorDevice cursorDevice = this.model.getCursorDevice ();
             d.setCell (0, 0, cursorDevice.getName (8).toUpperCase (Locale.US));
 
-            final Optional<String> selectedItem = cursorDevice.getParameterPageBank ().getSelectedItem ();
+            final Optional<String> selectedItem = cursorDevice.getParameterBank ().getPageBank ().getSelectedItem ();
             if (selectedItem.isPresent ())
                 d.setCell (1, 0, selectedItem.get ().toUpperCase (Locale.US));
 
@@ -103,7 +103,7 @@ public class ParamsMode extends AbstractKontrol1Mode<IParameter>
     public void selectPreviousItem ()
     {
         if (this.surface.isShiftPressed ())
-            this.model.getCursorDevice ().getParameterPageBank ().scrollBackwards ();
+            this.model.getCursorDevice ().getParameterBank ().getPageBank ().scrollBackwards ();
         else
             this.bank.scrollBackwards ();
     }
@@ -114,7 +114,7 @@ public class ParamsMode extends AbstractKontrol1Mode<IParameter>
     public void selectNextItem ()
     {
         if (this.surface.isShiftPressed ())
-            this.model.getCursorDevice ().getParameterPageBank ().scrollForwards ();
+            this.model.getCursorDevice ().getParameterBank ().getPageBank ().scrollForwards ();
         else
             this.bank.scrollForwards ();
     }

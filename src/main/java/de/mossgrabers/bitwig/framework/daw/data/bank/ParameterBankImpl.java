@@ -35,14 +35,15 @@ public class ParameterBankImpl extends AbstractItemBank<IParameter> implements I
      *
      * @param host The DAW host
      * @param valueChanger The value changer
-     * @param pageBank The page bank
      * @param remoteControlsPage The remote controls bank
+     * @param numParamPages The number of parameter pages
      * @param numParams The number of parameters in the page of the bank
      */
-    public ParameterBankImpl (final IHost host, final IValueChanger valueChanger, final IParameterPageBank pageBank, final CursorRemoteControlsPage remoteControlsPage, final int numParams)
+    public ParameterBankImpl (final IHost host, final IValueChanger valueChanger, final CursorRemoteControlsPage remoteControlsPage, final int numParamPages, final int numParams)
     {
         super (host, numParams);
-        this.pageBank = pageBank;
+
+        this.pageBank = numParams > 0 ? new ParameterPageBankImpl (remoteControlsPage, numParams) : null;
 
         this.valueChanger = valueChanger;
         this.remoteControls = remoteControlsPage;
@@ -63,6 +64,9 @@ public class ParameterBankImpl extends AbstractItemBank<IParameter> implements I
     {
         for (final IItem item: this.items)
             item.enableObservers (enable);
+
+        if (this.pageBank != null)
+            this.pageBank.enableObservers (enable);
 
         Util.setIsSubscribed (this.remoteControls.hasPrevious (), enable);
         Util.setIsSubscribed (this.remoteControls.hasNext (), enable);
@@ -164,5 +168,13 @@ public class ParameterBankImpl extends AbstractItemBank<IParameter> implements I
     public void scrollTo (final int position, final boolean adjustPage)
     {
         // Not supported
+    }
+
+
+    /** {@inheritDoc} */
+    @Override
+    public IParameterPageBank getPageBank ()
+    {
+        return this.pageBank;
     }
 }

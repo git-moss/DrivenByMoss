@@ -9,6 +9,7 @@ import de.mossgrabers.framework.controller.valuechanger.IValueChanger;
 import de.mossgrabers.framework.daw.IHost;
 import de.mossgrabers.framework.daw.data.bank.AbstractBank;
 import de.mossgrabers.framework.daw.data.bank.IParameterBank;
+import de.mossgrabers.framework.daw.data.bank.IParameterPageBank;
 import de.mossgrabers.framework.observer.IItemSelectionObserver;
 import de.mossgrabers.framework.parameter.IParameter;
 
@@ -219,5 +220,14 @@ public class UserParameterBankImpl extends AbstractBank<IParameter> implements I
     public void selectPreviousPage ()
     {
         this.scrollBackwards ();
+    }
+
+
+    /** {@inheritDoc} */
+    @Override
+    public IParameterPageBank getPageBank ()
+    {
+        // Not use. User parameters will be removed anyway
+        return null;
     }
 }

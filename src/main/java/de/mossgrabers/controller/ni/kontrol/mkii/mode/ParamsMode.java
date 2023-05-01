@@ -93,7 +93,7 @@ public class ParamsMode extends ParameterMode<KontrolProtocolControlSurface, Kon
     {
         final IValueChanger valueChanger = this.model.getValueChanger ();
 
-        final IParameterPageBank parameterPageBank = this.cursorDevice.getParameterPageBank ();
+        final IParameterPageBank parameterPageBank = this.cursorDevice.getParameterBank ().getPageBank ();
         final Optional<String> selectedItem = parameterPageBank.getSelectedItem ();
         final String selectedPage = selectedItem.isPresent () ? StringUtils.optimizeName (selectedItem.get (), 8) : "";
 

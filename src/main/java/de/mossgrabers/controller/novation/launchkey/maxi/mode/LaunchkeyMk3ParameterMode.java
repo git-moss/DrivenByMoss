@@ -56,7 +56,7 @@ public class LaunchkeyMk3ParameterMode extends ParameterMode<LaunchkeyMk3Control
             // Display device and current parameter page
             final StringBuilder sb = new StringBuilder ();
             if (this.cursorDevice.doesExist ())
-                sb.append (this.cursorDevice.getName (8)).append (' ').append (this.cursorDevice.getParameterPageBank ().getSelectedItem ());
+                sb.append (this.cursorDevice.getName (8)).append (' ').append (this.cursorDevice.getParameterBank ().getPageBank ().getSelectedItem ());
             else
                 sb.append ("No device");
             d.setCell (LaunchkeyMk3Display.SCREEN_ROW_BASE, 0, sb.toString ());

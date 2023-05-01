@@ -139,18 +139,18 @@ public class DeviceView extends AbstractView<BeatstepControlSurface, BeatstepCon
                 // Intentionally empty
                 break;
 
-            // Param bank down
+            // Parameter bank down
             case 6:
                 cd.getParameterBank ().scrollBackwards ();
                 break;
 
-            // Param bank page up
+            // Parameter bank page up
             case 7:
                 cd.getParameterBank ().scrollForwards ();
                 break;
 
             default:
-                cd.getParameterPageBank ().selectPage (note - 36 - 8);
+                cd.getParameterBank ().getPageBank ().selectPage (note - 36 - 8);
                 break;
         }
     }
@@ -161,7 +161,7 @@ public class DeviceView extends AbstractView<BeatstepControlSurface, BeatstepCon
     public void drawGrid ()
     {
         final ICursorDevice cd = this.model.getCursorDevice ();
-        final IParameterPageBank parameterPageBank = cd.getParameterPageBank ();
+        final IParameterPageBank parameterPageBank = cd.getParameterBank ().getPageBank ();
         final int selectedItemIndex = parameterPageBank.getSelectedItemIndex ();
         final IPadGrid padGrid = this.surface.getPadGrid ();
         for (int i = 0; i < parameterPageBank.getPageSize (); i++)

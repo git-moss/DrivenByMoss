@@ -14,5 +14,10 @@ import de.mossgrabers.framework.parameter.IParameter;
  */
 public interface IParameterBank extends IBank<IParameter>
 {
-    // Intentionally empty
+    /**
+     * Get the parameter page bank.
+     *
+     * @return The bank
+     */
+    IParameterPageBank getPageBank ();
 }

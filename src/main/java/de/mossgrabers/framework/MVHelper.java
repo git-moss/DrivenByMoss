@@ -198,7 +198,7 @@ public class MVHelper<S extends IControlSurface<C>, C extends Configuration>
 
             String text = cursorDevice.getName ();
 
-            final Optional<String> selectedItem = cursorDevice.getParameterPageBank ().getSelectedItem ();
+            final Optional<String> selectedItem = cursorDevice.getParameterBank ().getPageBank ().getSelectedItem ();
             if (selectedItem.isPresent ())
             {
                 String pageName = selectedItem.get ();
@@ -222,7 +222,7 @@ public class MVHelper<S extends IControlSurface<C>, C extends Configuration>
             final ISpecificDevice cursorDevice = this.model.getSpecificDevice (DeviceID.FIRST_INSTRUMENT);
             if (cursorDevice.doesExist ())
             {
-                final Optional<String> selectedItem = cursorDevice.getParameterPageBank ().getSelectedItem ();
+                final Optional<String> selectedItem = cursorDevice.getParameterBank ().getPageBank ().getSelectedItem ();
                 if (selectedItem.isPresent ())
                     return cursorDevice.getName () + " - " + selectedItem.get ();
             }
@@ -243,7 +243,7 @@ public class MVHelper<S extends IControlSurface<C>, C extends Configuration>
             final ICursorDevice cursorDevice = this.model.getCursorDevice ();
             if (cursorDevice.doesExist ())
             {
-                final Optional<String> selectedItem = cursorDevice.getParameterPageBank ().getSelectedItem ();
+                final Optional<String> selectedItem = cursorDevice.getParameterBank ().getPageBank ().getSelectedItem ();
                 if (selectedItem.isPresent ())
                     return "Page: " + selectedItem.get ();
             }
