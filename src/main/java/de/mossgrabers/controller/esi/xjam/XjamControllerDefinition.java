@@ -39,10 +39,6 @@ public class XjamControllerDefinition extends DefaultControllerDefinition
         {
             default:
             case WINDOWS:
-                midiDiscoveryPairs.add (this.addDeviceDiscoveryPair ("Xjam", "Xjam"));
-                break;
-
-            // TODO Test
             case MAC:
                 midiDiscoveryPairs.add (this.addDeviceDiscoveryPair ("Xjam", "Xjam"));
                 break;
