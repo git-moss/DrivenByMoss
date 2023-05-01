@@ -29,7 +29,6 @@ public abstract class DefaultControllerDefinition implements IControllerDefiniti
     private final int    numMidiInPorts;
     private final int    numMidiOutPorts;
 
-
     /**
      * Constructor.
      *
@@ -203,7 +202,10 @@ public abstract class DefaultControllerDefinition implements IControllerDefiniti
         final List<Pair<String [], String []>> results = new ArrayList<> ();
         results.add (this.addDeviceDiscoveryPair (inputName, outputName));
         for (int i = 1; i < 20; i++)
+        {
             results.add (this.addDeviceDiscoveryPair (String.format ("%s [hw:%d,0,%d]", inputName, Integer.valueOf (i), Integer.valueOf (port)), String.format ("%s [hw:%d,0,%d]", outputName, Integer.valueOf (i), Integer.valueOf (port))));
+            results.add (this.addDeviceDiscoveryPair (String.format ("%s MIDI %d", inputName, Integer.valueOf (i)), String.format ("%s MIDI %d", outputName, Integer.valueOf (i))));
+        }
         return results;
     }
 
