@@ -45,6 +45,7 @@ public class XjamConfiguration extends AbstractConfiguration
         ///////////////////////////
         // Workflow
 
+        this.activateNewClipLengthSetting (globalSettings);
         this.activateExcludeDeactivatedItemsSetting (globalSettings);
         this.activateFootswitchSetting (globalSettings, 0, "Footswitch");
     }

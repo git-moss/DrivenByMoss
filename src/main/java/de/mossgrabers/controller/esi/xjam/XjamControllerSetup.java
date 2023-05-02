@@ -171,6 +171,7 @@ public class XjamControllerSetup extends AbstractControllerSetup<XjamControlSurf
             if (event == ButtonEvent.DOWN)
             {
                 this.bindOneToFour = !this.bindOneToFour;
+                this.host.showNotification (this.bindOneToFour ? "Params 1-4" : "Params 5-8");
                 this.bindParameters ();
             }
 
