@@ -162,7 +162,7 @@ public class MCUControllerSetup extends AbstractControllerSetup<MCUControlSurfac
         MODE_ACRONYMS.put (Modes.USER, "US");
     }
 
-    private static final Set<Modes> VALUE_MODES      = EnumSet.of (Modes.VOLUME, Modes.PAN, Modes.TRACK, Modes.SEND1, Modes.SEND2, Modes.SEND3, Modes.SEND4, Modes.SEND5, Modes.SEND6, Modes.SEND7, Modes.SEND8, Modes.DEVICE_PARAMS);
+    private static final Set<Modes> VALUE_MODES      = EnumSet.of (Modes.VOLUME, Modes.PAN, Modes.TRACK, Modes.SEND1, Modes.SEND2, Modes.SEND3, Modes.SEND4, Modes.SEND5, Modes.SEND6, Modes.SEND7, Modes.SEND8, Modes.DEVICE_PARAMS, Modes.EQ_DEVICE_PARAMS, Modes.INSTRUMENT_DEVICE_PARAMS, Modes.USER);
 
     private final int []            masterVuValues   = new int [2];
     private int                     masterFaderValue = -1;
