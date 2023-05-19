@@ -82,7 +82,7 @@ public class NoteInputHandler extends AbstractHandler
         switch (command)
         {
             case NOTE_INPUT_REPEAT_ACTIVE:
-                return noteRepeat.isActive () ? 127 : 0;
+                return toMidiValue (noteRepeat.isActive ());
 
             case NOTE_INPUT_REPEAT_PERIOD:
                 return Resolution.getMatch (noteRepeat.getPeriod ());
@@ -98,8 +98,7 @@ public class NoteInputHandler extends AbstractHandler
             case NOTE_INPUT_REPEAT_OCTAVE:
                 return noteRepeat.getOctaves ();
 
-            case NOTE_INPUT_TRANSPOSE_OCTAVE_UP:
-            case NOTE_INPUT_TRANSPOSE_OCTAVE_DOWN:
+            case NOTE_INPUT_TRANSPOSE_OCTAVE_UP, NOTE_INPUT_TRANSPOSE_OCTAVE_DOWN:
                 return this.model.getScales ().getOctave ();
 
             default:

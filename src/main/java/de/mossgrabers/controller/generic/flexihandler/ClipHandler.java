@@ -78,19 +78,19 @@ public class ClipHandler extends AbstractHandler
         switch (command)
         {
             case CLIP_TOGGLE_PIN:
-                return this.model.getCursorClip ().isPinned () ? 127 : 0;
+                return toMidiValue (this.model.getCursorClip ().isPinned ());
 
             case CLIP_PLAY, CLIP_PLAY_ALT:
-                return selectedSlot.isPresent () && selectedSlot.get ().isPlaying () ? 127 : 0;
+                return toMidiValue (selectedSlot.isPresent () && selectedSlot.get ().isPlaying ());
 
             case CLIP_STOP, CLIP_STOP_ALT:
-                return selectedSlot.isPresent () && selectedSlot.get ().isPlaying () ? 0 : 127;
+                return toMidiValue (selectedSlot.isPresent () && selectedSlot.get ().isPlaying ());
 
             case CLIP_STOP_ALL, CLIP_STOP_ALL_ALT:
-                return 127;
+                return toMidiValue (true);
 
             case CLIP_RECORD:
-                return selectedSlot.isPresent () && selectedSlot.get ().isRecording () ? 127 : 0;
+                return toMidiValue (selectedSlot.isPresent () && selectedSlot.get ().isRecording ());
 
             default:
                 return -1;

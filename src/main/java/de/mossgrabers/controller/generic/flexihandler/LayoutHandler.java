@@ -81,49 +81,49 @@ public class LayoutHandler extends AbstractHandler
                 return 0;
 
             case LAYOUT_SET_ARRANGE_LAYOUT:
-                return this.model.getApplication ().isArrangeLayout () ? 127 : 0;
+                return toMidiValue (this.model.getApplication ().isArrangeLayout ());
 
             case LAYOUT_SET_MIX_LAYOUT:
-                return this.model.getApplication ().isMixerLayout () ? 127 : 0;
+                return toMidiValue (this.model.getApplication ().isMixerLayout ());
 
             case LAYOUT_SET_EDIT_LAYOUT:
-                return this.model.getApplication ().isEditLayout () ? 127 : 0;
+                return toMidiValue (this.model.getApplication ().isEditLayout ());
 
             case LAYOUT_TOGGLE_ARRANGER_CUE_MARKERS:
-                return this.model.getArranger ().areCueMarkersVisible () ? 127 : 0;
+                return toMidiValue (this.model.getArranger ().areCueMarkersVisible ());
 
             case LAYOUT_TOGGLE_ARRANGER_PLAYBACK_FOLLOW:
-                return this.model.getArranger ().isPlaybackFollowEnabled () ? 127 : 0;
+                return toMidiValue (this.model.getArranger ().isPlaybackFollowEnabled ());
 
             case LAYOUT_TOGGLE_ARRANGER_CLIP_LAUNCHER_SECTION:
-                return this.model.getArranger ().isClipLauncherVisible () ? 127 : 0;
+                return toMidiValue (this.model.getArranger ().isClipLauncherVisible ());
 
             case LAYOUT_TOGGLE_ARRANGER_TIME_LINE:
-                return this.model.getArranger ().isTimelineVisible () ? 127 : 0;
+                return toMidiValue (this.model.getArranger ().isTimelineVisible ());
 
             case LAYOUT_TOGGLE_ARRANGER_IO_SECTION:
-                return this.model.getArranger ().isIoSectionVisible () ? 127 : 0;
+                return toMidiValue (this.model.getArranger ().isIoSectionVisible ());
 
             case LAYOUT_TOGGLE_ARRANGER_EFFECT_TRACKS:
-                return this.model.getArranger ().areEffectTracksVisible () ? 127 : 0;
+                return toMidiValue (this.model.getArranger ().areEffectTracksVisible ());
 
             case LAYOUT_TOGGLE_MIXER_CLIP_LAUNCHER_SECTION:
-                return this.model.getMixer ().isClipLauncherSectionVisible () ? 127 : 0;
+                return toMidiValue (this.model.getMixer ().isClipLauncherSectionVisible ());
 
             case LAYOUT_TOGGLE_MIXER_CROSS_FADE_SECTION:
-                return this.model.getMixer ().isCrossFadeSectionVisible () ? 127 : 0;
+                return toMidiValue (this.model.getMixer ().isCrossFadeSectionVisible ());
 
             case LAYOUT_TOGGLE_MIXER_DEVICE_SECTION:
-                return this.model.getMixer ().isDeviceSectionVisible () ? 127 : 0;
+                return toMidiValue (this.model.getMixer ().isDeviceSectionVisible ());
 
             case LAYOUT_TOGGLE_MIXER_SENDSSECTION:
-                return this.model.getMixer ().isSendSectionVisible () ? 127 : 0;
+                return toMidiValue (this.model.getMixer ().isSendSectionVisible ());
 
             case LAYOUT_TOGGLE_MIXER_IO_SECTION:
-                return this.model.getMixer ().isIoSectionVisible () ? 127 : 0;
+                return toMidiValue (this.model.getMixer ().isIoSectionVisible ());
 
             case LAYOUT_TOGGLE_MIXER_METER_SECTION:
-                return this.model.getMixer ().isMeterSectionVisible () ? 127 : 0;
+                return toMidiValue (this.model.getMixer ().isMeterSectionVisible ());
 
             default:
                 return -1;

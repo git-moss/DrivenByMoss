@@ -67,10 +67,10 @@ public class GlobalHandler extends AbstractHandler
         switch (command)
         {
             case GLOBAL_TOGGLE_AUDIO_ENGINE:
-                return this.model.getApplication ().isEngineActive () ? 127 : 0;
+                return toMidiValue (this.model.getApplication ().isEngineActive ());
 
             case GLOBAL_SHIFT_BUTTON:
-                return this.surface.isShiftPressed () ? 127 : 0;
+                return toMidiValue (this.surface.isShiftPressed ());
 
             default:
                 return -1;

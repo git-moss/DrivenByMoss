@@ -224,14 +224,14 @@ public class LayerHandler extends AbstractHandler
         switch (command)
         {
             case LAYER_1_SELECT, LAYER_2_SELECT, LAYER_3_SELECT, LAYER_4_SELECT, LAYER_5_SELECT, LAYER_6_SELECT, LAYER_7_SELECT, LAYER_8_SELECT:
-                return layerBank.getItem (command.ordinal () - FlexiCommand.LAYER_1_SELECT.ordinal ()).isSelected () ? 127 : 0;
+                return toMidiValue (layerBank.getItem (command.ordinal () - FlexiCommand.LAYER_1_SELECT.ordinal ()).isSelected ());
 
             case LAYER_1_TOGGLE_ACTIVE, LAYER_2_TOGGLE_ACTIVE, LAYER_3_TOGGLE_ACTIVE, LAYER_4_TOGGLE_ACTIVE, LAYER_5_TOGGLE_ACTIVE, LAYER_6_TOGGLE_ACTIVE, LAYER_7_TOGGLE_ACTIVE, LAYER_8_TOGGLE_ACTIVE:
-                return layerBank.getItem (command.ordinal () - FlexiCommand.LAYER_1_TOGGLE_ACTIVE.ordinal ()).isActivated () ? 127 : 0;
+                return toMidiValue (layerBank.getItem (command.ordinal () - FlexiCommand.LAYER_1_TOGGLE_ACTIVE.ordinal ()).isActivated ());
             case LAYER_1_SET_ACTIVE, LAYER_2_SET_ACTIVE, LAYER_3_SET_ACTIVE, LAYER_4_SET_ACTIVE, LAYER_5_SET_ACTIVE, LAYER_6_SET_ACTIVE, LAYER_7_SET_ACTIVE, LAYER_8_SET_ACTIVE:
-                return layerBank.getItem (command.ordinal () - FlexiCommand.LAYER_1_SET_ACTIVE.ordinal ()).isActivated () ? 127 : 0;
+                return toMidiValue (layerBank.getItem (command.ordinal () - FlexiCommand.LAYER_1_SET_ACTIVE.ordinal ()).isActivated ());
             case LAYER_SELECTED_TOGGLE_ACTIVE, LAYER_SELECTED_SET_ACTIVE:
-                return selectedLayer.isPresent () && selectedLayer.get ().isActivated () ? 127 : 0;
+                return toMidiValue (selectedLayer.isPresent () && selectedLayer.get ().isActivated ());
 
             case LAYER_1_SET_VOLUME, LAYER_2_SET_VOLUME, LAYER_3_SET_VOLUME, LAYER_4_SET_VOLUME, LAYER_5_SET_VOLUME, LAYER_6_SET_VOLUME, LAYER_7_SET_VOLUME, LAYER_8_SET_VOLUME:
                 return layerBank.getItem (command.ordinal () - FlexiCommand.LAYER_1_SET_VOLUME.ordinal ()).getVolume ();
@@ -244,18 +244,18 @@ public class LayerHandler extends AbstractHandler
                 return selectedLayer.isPresent () ? selectedLayer.get ().getPan () : 0;
 
             case LAYER_1_TOGGLE_MUTE, LAYER_2_TOGGLE_MUTE, LAYER_3_TOGGLE_MUTE, LAYER_4_TOGGLE_MUTE, LAYER_5_TOGGLE_MUTE, LAYER_6_TOGGLE_MUTE, LAYER_7_TOGGLE_MUTE, LAYER_8_TOGGLE_MUTE:
-                return layerBank.getItem (command.ordinal () - FlexiCommand.LAYER_1_TOGGLE_MUTE.ordinal ()).isMute () ? 127 : 0;
+                return toMidiValue (layerBank.getItem (command.ordinal () - FlexiCommand.LAYER_1_TOGGLE_MUTE.ordinal ()).isMute ());
             case LAYER_1_SET_MUTE, LAYER_2_SET_MUTE, LAYER_3_SET_MUTE, LAYER_4_SET_MUTE, LAYER_5_SET_MUTE, LAYER_6_SET_MUTE, LAYER_7_SET_MUTE, LAYER_8_SET_MUTE:
-                return layerBank.getItem (command.ordinal () - FlexiCommand.LAYER_1_SET_MUTE.ordinal ()).isMute () ? 127 : 0;
+                return toMidiValue (layerBank.getItem (command.ordinal () - FlexiCommand.LAYER_1_SET_MUTE.ordinal ()).isMute ());
             case LAYER_SELECTED_TOGGLE_MUTE, LAYER_SELECTED_SET_MUTE:
-                return selectedLayer.isPresent () && selectedLayer.get ().isMute () ? 127 : 0;
+                return toMidiValue (selectedLayer.isPresent () && selectedLayer.get ().isMute ());
 
             case LAYER_1_TOGGLE_SOLO, LAYER_2_TOGGLE_SOLO, LAYER_3_TOGGLE_SOLO, LAYER_4_TOGGLE_SOLO, LAYER_5_TOGGLE_SOLO, LAYER_6_TOGGLE_SOLO, LAYER_7_TOGGLE_SOLO, LAYER_8_TOGGLE_SOLO:
-                return layerBank.getItem (command.ordinal () - FlexiCommand.LAYER_1_TOGGLE_SOLO.ordinal ()).isSolo () ? 127 : 0;
+                return toMidiValue (layerBank.getItem (command.ordinal () - FlexiCommand.LAYER_1_TOGGLE_SOLO.ordinal ()).isSolo ());
             case LAYER_1_SET_SOLO, LAYER_2_SET_SOLO, LAYER_3_SET_SOLO, LAYER_4_SET_SOLO, LAYER_5_SET_SOLO, LAYER_6_SET_SOLO, LAYER_7_SET_SOLO, LAYER_8_SET_SOLO:
-                return layerBank.getItem (command.ordinal () - FlexiCommand.LAYER_1_SET_SOLO.ordinal ()).isSolo () ? 127 : 0;
+                return toMidiValue (layerBank.getItem (command.ordinal () - FlexiCommand.LAYER_1_SET_SOLO.ordinal ()).isSolo ());
             case LAYER_SELECTED_TOGGLE_SOLO, LAYER_SELECTED_SET_SOLO:
-                return selectedLayer.isPresent () && selectedLayer.get ().isSolo () ? 127 : 0;
+                return toMidiValue (selectedLayer.isPresent () && selectedLayer.get ().isSolo ());
 
             case LAYER_1_SET_SEND_1, LAYER_2_SET_SEND_1, LAYER_3_SET_SEND_1, LAYER_4_SET_SEND_1, LAYER_5_SET_SEND_1, LAYER_6_SET_SEND_1, LAYER_7_SET_SEND_1, LAYER_8_SET_SEND_1:
                 return this.getSendValue (command.ordinal () - FlexiCommand.LAYER_1_SET_SEND_1.ordinal (), 0);

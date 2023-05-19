@@ -90,7 +90,7 @@ public class UserHandler extends AbstractHandler
 
             case USER_TOGGLE_PARAMETER_1, USER_TOGGLE_PARAMETER_2, USER_TOGGLE_PARAMETER_3, USER_TOGGLE_PARAMETER_4, USER_TOGGLE_PARAMETER_5, USER_TOGGLE_PARAMETER_6, USER_TOGGLE_PARAMETER_7, USER_TOGGLE_PARAMETER_8:
                 final int value = userParameterBank.getItem (command.ordinal () - FlexiCommand.USER_TOGGLE_PARAMETER_1.ordinal ()).getValue ();
-                return value > 0 ? 127 : 0;
+                return toMidiValue (value > 0);
 
             default:
                 return -1;

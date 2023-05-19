@@ -121,4 +121,10 @@ public abstract class AbstractHandler implements IFlexiCommandHandler
         this.movementCounter = 0;
         return true;
     }
+
+
+    protected static int toMidiValue (final boolean state)
+    {
+        return state ? 16383 : 0;
+    }
 }

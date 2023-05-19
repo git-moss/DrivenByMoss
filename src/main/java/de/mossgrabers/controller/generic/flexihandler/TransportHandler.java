@@ -93,43 +93,43 @@ public class TransportHandler extends AbstractHandler
         switch (command)
         {
             case TRANSPORT_PLAY:
-                return transport.isPlaying () ? 127 : 0;
+                return toMidiValue (transport.isPlaying ());
 
             case TRANSPORT_STOP:
-                return transport.isPlaying () ? 0 : 127;
+                return toMidiValue (!transport.isPlaying ());
 
             case TRANSPORT_TOGGLE_REPEAT:
-                return transport.isLoop () ? 127 : 0;
+                return toMidiValue (transport.isLoop ());
 
             case TRANSPORT_TOGGLE_METRONOME:
-                return transport.isMetronomeOn () ? 127 : 0;
+                return toMidiValue (transport.isMetronomeOn ());
 
             case TRANSPORT_SET_METRONOME_VOLUME:
                 return transport.getMetronomeVolume ();
 
             case TRANSPORT_TOGGLE_METRONOME_IN_PREROLL:
-                return transport.isPrerollMetronomeEnabled () ? 127 : 0;
+                return toMidiValue (transport.isPrerollMetronomeEnabled ());
 
             case TRANSPORT_TOGGLE_PUNCH_IN:
-                return transport.isPunchInEnabled () ? 127 : 0;
+                return toMidiValue (transport.isPunchInEnabled ());
 
             case TRANSPORT_TOGGLE_PUNCH_OUT:
-                return transport.isPunchOutEnabled () ? 127 : 0;
+                return toMidiValue (transport.isPunchOutEnabled ());
 
             case TRANSPORT_TOGGLE_RECORD:
-                return transport.isRecording () ? 127 : 0;
+                return toMidiValue (transport.isRecording ());
 
             case TRANSPORT_TOGGLE_ARRANGER_OVERDUB:
-                return transport.isArrangerOverdub () ? 127 : 0;
+                return toMidiValue (transport.isArrangerOverdub ());
 
             case TRANSPORT_TOGGLE_CLIP_OVERDUB:
-                return transport.isLauncherOverdub () ? 127 : 0;
+                return toMidiValue (transport.isLauncherOverdub ());
 
             case TRANSPORT_TOGGLE_ARRANGER_AUTOMATION_WRITE:
-                return transport.isWritingArrangerAutomation () ? 127 : 0;
+                return toMidiValue (transport.isWritingArrangerAutomation ());
 
             case TRANSPORT_TOGGLE_CLIP_AUTOMATION_WRITE:
-                return transport.isWritingClipLauncherAutomation () ? 127 : 0;
+                return toMidiValue (transport.isWritingClipLauncherAutomation ());
 
             default:
                 return -1;

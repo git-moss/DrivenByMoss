@@ -294,16 +294,16 @@ public class TrackHandler extends AbstractHandler
         switch (command)
         {
             case TRACK_1_SELECT, TRACK_2_SELECT, TRACK_3_SELECT, TRACK_4_SELECT, TRACK_5_SELECT, TRACK_6_SELECT, TRACK_7_SELECT, TRACK_8_SELECT:
-                return trackBank.getItem (command.ordinal () - FlexiCommand.TRACK_1_SELECT.ordinal ()).isSelected () ? 127 : 0;
+                return toMidiValue (trackBank.getItem (command.ordinal () - FlexiCommand.TRACK_1_SELECT.ordinal ()).isSelected ());
 
             case TRACK_1_TOGGLE_ACTIVE, TRACK_2_TOGGLE_ACTIVE, TRACK_3_TOGGLE_ACTIVE, TRACK_4_TOGGLE_ACTIVE, TRACK_5_TOGGLE_ACTIVE, TRACK_6_TOGGLE_ACTIVE, TRACK_7_TOGGLE_ACTIVE, TRACK_8_TOGGLE_ACTIVE:
-                return trackBank.getItem (command.ordinal () - FlexiCommand.TRACK_1_TOGGLE_ACTIVE.ordinal ()).isActivated () ? 127 : 0;
+                return toMidiValue (trackBank.getItem (command.ordinal () - FlexiCommand.TRACK_1_TOGGLE_ACTIVE.ordinal ()).isActivated ());
 
             case TRACK_1_SET_ACTIVE, TRACK_2_SET_ACTIVE, TRACK_3_SET_ACTIVE, TRACK_4_SET_ACTIVE, TRACK_5_SET_ACTIVE, TRACK_6_SET_ACTIVE, TRACK_7_SET_ACTIVE, TRACK_8_SET_ACTIVE:
-                return trackBank.getItem (command.ordinal () - FlexiCommand.TRACK_1_SET_ACTIVE.ordinal ()).isActivated () ? 127 : 0;
+                return toMidiValue (trackBank.getItem (command.ordinal () - FlexiCommand.TRACK_1_SET_ACTIVE.ordinal ()).isActivated ());
 
             case TRACK_SELECTED_TOGGLE_ACTIVE, TRACK_SELECTED_SET_ACTIVE:
-                return cursorTrack.doesExist () && cursorTrack.isActivated () ? 127 : 0;
+                return toMidiValue (cursorTrack.doesExist () && cursorTrack.isActivated ());
 
             case TRACK_1_SET_VOLUME, TRACK_2_SET_VOLUME, TRACK_3_SET_VOLUME, TRACK_4_SET_VOLUME, TRACK_5_SET_VOLUME, TRACK_6_SET_VOLUME, TRACK_7_SET_VOLUME, TRACK_8_SET_VOLUME:
                 return trackBank.getItem (command.ordinal () - FlexiCommand.TRACK_1_SET_VOLUME.ordinal ()).getVolume ();
@@ -318,42 +318,42 @@ public class TrackHandler extends AbstractHandler
                 return cursorTrack.doesExist () ? cursorTrack.getPan () : 0;
 
             case TRACK_1_TOGGLE_MUTE, TRACK_2_TOGGLE_MUTE, TRACK_3_TOGGLE_MUTE, TRACK_4_TOGGLE_MUTE, TRACK_5_TOGGLE_MUTE, TRACK_6_TOGGLE_MUTE, TRACK_7_TOGGLE_MUTE, TRACK_8_TOGGLE_MUTE:
-                return trackBank.getItem (command.ordinal () - FlexiCommand.TRACK_1_TOGGLE_MUTE.ordinal ()).isMute () ? 127 : 0;
+                return toMidiValue (trackBank.getItem (command.ordinal () - FlexiCommand.TRACK_1_TOGGLE_MUTE.ordinal ()).isMute ());
             case TRACK_1_SET_MUTE, TRACK_2_SET_MUTE, TRACK_3_SET_MUTE, TRACK_4_SET_MUTE, TRACK_5_SET_MUTE, TRACK_6_SET_MUTE, TRACK_7_SET_MUTE, TRACK_8_SET_MUTE:
-                return trackBank.getItem (command.ordinal () - FlexiCommand.TRACK_1_SET_MUTE.ordinal ()).isMute () ? 127 : 0;
+                return toMidiValue (trackBank.getItem (command.ordinal () - FlexiCommand.TRACK_1_SET_MUTE.ordinal ()).isMute ());
             case TRACK_SELECTED_TOGGLE_MUTE, TRACK_SELECTED_SET_MUTE:
-                return cursorTrack.doesExist () && cursorTrack.isMute () ? 127 : 0;
+                return toMidiValue (cursorTrack.doesExist () && cursorTrack.isMute ());
 
             case TRACK_1_TOGGLE_SOLO, TRACK_2_TOGGLE_SOLO, TRACK_3_TOGGLE_SOLO, TRACK_4_TOGGLE_SOLO, TRACK_5_TOGGLE_SOLO, TRACK_6_TOGGLE_SOLO, TRACK_7_TOGGLE_SOLO, TRACK_8_TOGGLE_SOLO:
-                return trackBank.getItem (command.ordinal () - FlexiCommand.TRACK_1_TOGGLE_SOLO.ordinal ()).isSolo () ? 127 : 0;
+                return toMidiValue (trackBank.getItem (command.ordinal () - FlexiCommand.TRACK_1_TOGGLE_SOLO.ordinal ()).isSolo ());
             case TRACK_1_SET_SOLO, TRACK_2_SET_SOLO, TRACK_3_SET_SOLO, TRACK_4_SET_SOLO, TRACK_5_SET_SOLO, TRACK_6_SET_SOLO, TRACK_7_SET_SOLO, TRACK_8_SET_SOLO:
-                return trackBank.getItem (command.ordinal () - FlexiCommand.TRACK_1_SET_SOLO.ordinal ()).isSolo () ? 127 : 0;
+                return toMidiValue (trackBank.getItem (command.ordinal () - FlexiCommand.TRACK_1_SET_SOLO.ordinal ()).isSolo ());
             case TRACK_SELECTED_TOGGLE_SOLO, TRACK_SELECTED_SET_SOLO:
-                return cursorTrack.doesExist () && cursorTrack.isSolo () ? 127 : 0;
+                return toMidiValue (cursorTrack.doesExist () && cursorTrack.isSolo ());
 
             case TRACK_1_TOGGLE_ARM, TRACK_2_TOGGLE_ARM, TRACK_3_TOGGLE_ARM, TRACK_4_TOGGLE_ARM, TRACK_5_TOGGLE_ARM, TRACK_6_TOGGLE_ARM, TRACK_7_TOGGLE_ARM, TRACK_8_TOGGLE_ARM:
-                return trackBank.getItem (command.ordinal () - FlexiCommand.TRACK_1_TOGGLE_ARM.ordinal ()).isRecArm () ? 127 : 0;
+                return toMidiValue (trackBank.getItem (command.ordinal () - FlexiCommand.TRACK_1_TOGGLE_ARM.ordinal ()).isRecArm ());
             case TRACK_1_SET_ARM, TRACK_2_SET_ARM, TRACK_3_SET_ARM, TRACK_4_SET_ARM, TRACK_5_SET_ARM, TRACK_6_SET_ARM, TRACK_7_SET_ARM, TRACK_8_SET_ARM:
-                return trackBank.getItem (command.ordinal () - FlexiCommand.TRACK_1_SET_ARM.ordinal ()).isRecArm () ? 127 : 0;
+                return toMidiValue (trackBank.getItem (command.ordinal () - FlexiCommand.TRACK_1_SET_ARM.ordinal ()).isRecArm ());
             case TRACK_SELECTED_TOGGLE_ARM, TRACK_SELECTED_SET_ARM:
-                return cursorTrack.doesExist () && cursorTrack.isRecArm () ? 127 : 0;
+                return toMidiValue (cursorTrack.doesExist () && cursorTrack.isRecArm ());
 
             case TRACK_1_TOGGLE_MONITOR, TRACK_2_TOGGLE_MONITOR, TRACK_3_TOGGLE_MONITOR, TRACK_4_TOGGLE_MONITOR, TRACK_5_TOGGLE_MONITOR, TRACK_6_TOGGLE_MONITOR, TRACK_7_TOGGLE_MONITOR, TRACK_8_TOGGLE_MONITOR:
-                return trackBank.getItem (command.ordinal () - FlexiCommand.TRACK_1_TOGGLE_MONITOR.ordinal ()).isMonitor () ? 127 : 0;
+                return toMidiValue (trackBank.getItem (command.ordinal () - FlexiCommand.TRACK_1_TOGGLE_MONITOR.ordinal ()).isMonitor ());
             case TRACK_1_SET_MONITOR, TRACK_2_SET_MONITOR, TRACK_3_SET_MONITOR, TRACK_4_SET_MONITOR, TRACK_5_SET_MONITOR, TRACK_6_SET_MONITOR, TRACK_7_SET_MONITOR, TRACK_8_SET_MONITOR:
-                return trackBank.getItem (command.ordinal () - FlexiCommand.TRACK_1_SET_MONITOR.ordinal ()).isMonitor () ? 127 : 0;
+                return toMidiValue (trackBank.getItem (command.ordinal () - FlexiCommand.TRACK_1_SET_MONITOR.ordinal ()).isMonitor ());
             case TRACK_SELECTED_TOGGLE_MONITOR, TRACK_SELECTED_SET_MONITOR:
-                return cursorTrack.doesExist () && cursorTrack.isMonitor () ? 127 : 0;
+                return toMidiValue (cursorTrack.doesExist () && cursorTrack.isMonitor ());
 
             case TRACK_1_TOGGLE_AUTO_MONITOR, TRACK_2_TOGGLE_AUTO_MONITOR, TRACK_3_TOGGLE_AUTO_MONITOR, TRACK_4_TOGGLE_AUTO_MONITOR, TRACK_5_TOGGLE_AUTO_MONITOR, TRACK_6_TOGGLE_AUTO_MONITOR, TRACK_7_TOGGLE_AUTO_MONITOR, TRACK_8_TOGGLE_AUTO_MONITOR:
-                return trackBank.getItem (command.ordinal () - FlexiCommand.TRACK_1_TOGGLE_AUTO_MONITOR.ordinal ()).isAutoMonitor () ? 127 : 0;
+                return toMidiValue (trackBank.getItem (command.ordinal () - FlexiCommand.TRACK_1_TOGGLE_AUTO_MONITOR.ordinal ()).isAutoMonitor ());
             case TRACK_1_SET_AUTO_MONITOR, TRACK_2_SET_AUTO_MONITOR, TRACK_3_SET_AUTO_MONITOR, TRACK_4_SET_AUTO_MONITOR, TRACK_5_SET_AUTO_MONITOR, TRACK_6_SET_AUTO_MONITOR, TRACK_7_SET_AUTO_MONITOR, TRACK_8_SET_AUTO_MONITOR:
-                return trackBank.getItem (command.ordinal () - FlexiCommand.TRACK_1_SET_AUTO_MONITOR.ordinal ()).isAutoMonitor () ? 127 : 0;
+                return toMidiValue (trackBank.getItem (command.ordinal () - FlexiCommand.TRACK_1_SET_AUTO_MONITOR.ordinal ()).isAutoMonitor ());
             case TRACK_SELECTED_TOGGLE_AUTO_MONITOR, TRACK_SELECTED_SET_AUTO_MONITOR:
-                return cursorTrack.doesExist () && cursorTrack.isAutoMonitor () ? 127 : 0;
+                return toMidiValue (cursorTrack.doesExist () && cursorTrack.isAutoMonitor ());
 
             case TRACK_SELECTED_TOGGLE_PIN, TRACK_SELECTED_SET_PIN:
-                return cursorTrack.doesExist () && cursorTrack.isPinned () ? 127 : 0;
+                return toMidiValue (cursorTrack.doesExist () && cursorTrack.isPinned ());
 
             case TRACK_1_SET_SEND_1, TRACK_2_SET_SEND_1, TRACK_3_SET_SEND_1, TRACK_4_SET_SEND_1, TRACK_5_SET_SEND_1, TRACK_6_SET_SEND_1, TRACK_7_SET_SEND_1, TRACK_8_SET_SEND_1:
                 return this.getSendValue (command.ordinal () - FlexiCommand.TRACK_1_SET_SEND_1.ordinal (), 0);

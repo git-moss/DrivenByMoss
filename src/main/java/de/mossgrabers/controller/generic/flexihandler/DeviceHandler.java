@@ -104,26 +104,26 @@ public class DeviceHandler extends AbstractHandler
         switch (command)
         {
             case DEVICE_TOGGLE_WINDOW:
-                return cursorDevice.isWindowOpen () ? 127 : 0;
+                return toMidiValue (cursorDevice.isWindowOpen ());
 
             case DEVICE_TOGGLE_BYPASS:
-                return cursorDevice.isEnabled () ? 0 : 127;
+                return toMidiValue (!cursorDevice.isEnabled ());
 
             case DEVICE_TOGGLE_PIN:
-                return cursorDevice.isPinned () ? 127 : 0;
+                return toMidiValue (cursorDevice.isPinned ());
 
             case DEVICE_TOGGLE_EXPAND:
-                return cursorDevice.isExpanded () ? 127 : 0;
+                return toMidiValue (cursorDevice.isExpanded ());
 
             case DEVICE_TOGGLE_PARAMETERS:
-                return cursorDevice.isParameterPageSectionVisible () ? 127 : 0;
+                return toMidiValue (cursorDevice.isParameterPageSectionVisible ());
 
             case DEVICE_SET_PARAMETER_1, DEVICE_SET_PARAMETER_2, DEVICE_SET_PARAMETER_3, DEVICE_SET_PARAMETER_4, DEVICE_SET_PARAMETER_5, DEVICE_SET_PARAMETER_6, DEVICE_SET_PARAMETER_7, DEVICE_SET_PARAMETER_8:
                 return cursorDevice.getParameterBank ().getItem (command.ordinal () - FlexiCommand.DEVICE_SET_PARAMETER_1.ordinal ()).getValue ();
 
             case DEVICE_TOGGLE_PARAMETER_1, DEVICE_TOGGLE_PARAMETER_2, DEVICE_TOGGLE_PARAMETER_3, DEVICE_TOGGLE_PARAMETER_4, DEVICE_TOGGLE_PARAMETER_5, DEVICE_TOGGLE_PARAMETER_6, DEVICE_TOGGLE_PARAMETER_7, DEVICE_TOGGLE_PARAMETER_8:
                 final int value = cursorDevice.getParameterBank ().getItem (command.ordinal () - FlexiCommand.DEVICE_TOGGLE_PARAMETER_1.ordinal ()).getValue ();
-                return value > 0 ? 127 : 0;
+                return toMidiValue (value > 0);
 
             case DEVICE_SELECT_PARAMETER_PAGE_1, DEVICE_SELECT_PARAMETER_PAGE_2, DEVICE_SELECT_PARAMETER_PAGE_3, DEVICE_SELECT_PARAMETER_PAGE_4, DEVICE_SELECT_PARAMETER_PAGE_5, DEVICE_SELECT_PARAMETER_PAGE_6, DEVICE_SELECT_PARAMETER_PAGE_7, DEVICE_SELECT_PARAMETER_PAGE_8:
                 return cursorDevice.getParameterBank ().getItem (command.ordinal () - FlexiCommand.DEVICE_SELECT_PARAMETER_PAGE_1.ordinal ()).isSelected () ? 127 : 0;

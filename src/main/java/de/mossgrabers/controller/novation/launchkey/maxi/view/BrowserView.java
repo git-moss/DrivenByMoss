@@ -185,7 +185,7 @@ public class BrowserView extends AbstractView<LaunchkeyMk3ControlSurface, Launch
             // Browse (...) button does not send an 'up' event
             this.surface.getButton (ButtonID.BROWSE).clearState ();
 
-            final Views previousID = viewManager.getPreviousID ();
+            final Views previousID = viewManager.getActiveIDIgnoreTemporary ();
             final Integer id = VIEW_COMMANDS.get (previousID);
             final int viewCommand = id == null || previousID == Views.BROWSER ? LaunchkeyMk3ControlSurface.PAD_MODE_SESSION : id.intValue ();
             this.surface.getMidiOutput ().sendCCEx (15, LaunchkeyMk3ControlSurface.LAUNCHKEY_VIEW_SELECT, viewCommand);

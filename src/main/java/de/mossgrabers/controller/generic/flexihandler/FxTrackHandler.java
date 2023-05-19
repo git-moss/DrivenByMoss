@@ -195,7 +195,7 @@ public class FxTrackHandler extends AbstractHandler
             case FX_TRACK_6_SELECT:
             case FX_TRACK_7_SELECT:
             case FX_TRACK_8_SELECT:
-                return effectTrackBank.getItem (command.ordinal () - FlexiCommand.FX_TRACK_1_SELECT.ordinal ()).isSelected () ? 127 : 0;
+                return toMidiValue (effectTrackBank.getItem (command.ordinal () - FlexiCommand.FX_TRACK_1_SELECT.ordinal ()).isSelected ());
 
             case FX_TRACK_1_TOGGLE_ACTIVE:
             case FX_TRACK_2_TOGGLE_ACTIVE:
@@ -205,7 +205,7 @@ public class FxTrackHandler extends AbstractHandler
             case FX_TRACK_6_TOGGLE_ACTIVE:
             case FX_TRACK_7_TOGGLE_ACTIVE:
             case FX_TRACK_8_TOGGLE_ACTIVE:
-                return effectTrackBank.getItem (command.ordinal () - FlexiCommand.FX_TRACK_1_TOGGLE_ACTIVE.ordinal ()).isActivated () ? 127 : 0;
+                return toMidiValue (effectTrackBank.getItem (command.ordinal () - FlexiCommand.FX_TRACK_1_TOGGLE_ACTIVE.ordinal ()).isActivated ());
             case FX_TRACK_1_SET_ACTIVE:
             case FX_TRACK_2_SET_ACTIVE:
             case FX_TRACK_3_SET_ACTIVE:
@@ -214,7 +214,7 @@ public class FxTrackHandler extends AbstractHandler
             case FX_TRACK_6_SET_ACTIVE:
             case FX_TRACK_7_SET_ACTIVE:
             case FX_TRACK_8_SET_ACTIVE:
-                return effectTrackBank.getItem (command.ordinal () - FlexiCommand.FX_TRACK_1_SET_ACTIVE.ordinal ()).isActivated () ? 127 : 0;
+                return toMidiValue (effectTrackBank.getItem (command.ordinal () - FlexiCommand.FX_TRACK_1_SET_ACTIVE.ordinal ()).isActivated ());
 
             case FX_TRACK_1_SET_VOLUME:
             case FX_TRACK_2_SET_VOLUME:
@@ -244,7 +244,7 @@ public class FxTrackHandler extends AbstractHandler
             case FX_TRACK_6_TOGGLE_MUTE:
             case FX_TRACK_7_TOGGLE_MUTE:
             case FX_TRACK_8_TOGGLE_MUTE:
-                return effectTrackBank.getItem (command.ordinal () - FlexiCommand.FX_TRACK_1_TOGGLE_MUTE.ordinal ()).isMute () ? 127 : 0;
+                return toMidiValue (effectTrackBank.getItem (command.ordinal () - FlexiCommand.FX_TRACK_1_TOGGLE_MUTE.ordinal ()).isMute ());
             case FX_TRACK_1_SET_MUTE:
             case FX_TRACK_2_SET_MUTE:
             case FX_TRACK_3_SET_MUTE:
@@ -253,7 +253,7 @@ public class FxTrackHandler extends AbstractHandler
             case FX_TRACK_6_SET_MUTE:
             case FX_TRACK_7_SET_MUTE:
             case FX_TRACK_8_SET_MUTE:
-                return effectTrackBank.getItem (command.ordinal () - FlexiCommand.FX_TRACK_1_SET_MUTE.ordinal ()).isMute () ? 127 : 0;
+                return toMidiValue (effectTrackBank.getItem (command.ordinal () - FlexiCommand.FX_TRACK_1_SET_MUTE.ordinal ()).isMute ());
 
             case FX_TRACK_1_TOGGLE_SOLO:
             case FX_TRACK_2_TOGGLE_SOLO:
@@ -263,7 +263,7 @@ public class FxTrackHandler extends AbstractHandler
             case FX_TRACK_6_TOGGLE_SOLO:
             case FX_TRACK_7_TOGGLE_SOLO:
             case FX_TRACK_8_TOGGLE_SOLO:
-                return effectTrackBank.getItem (command.ordinal () - FlexiCommand.FX_TRACK_1_TOGGLE_SOLO.ordinal ()).isSolo () ? 127 : 0;
+                return toMidiValue (effectTrackBank.getItem (command.ordinal () - FlexiCommand.FX_TRACK_1_TOGGLE_SOLO.ordinal ()).isSolo ());
             case FX_TRACK_1_SET_SOLO:
             case FX_TRACK_2_SET_SOLO:
             case FX_TRACK_3_SET_SOLO:
@@ -272,7 +272,7 @@ public class FxTrackHandler extends AbstractHandler
             case FX_TRACK_6_SET_SOLO:
             case FX_TRACK_7_SET_SOLO:
             case FX_TRACK_8_SET_SOLO:
-                return effectTrackBank.getItem (command.ordinal () - FlexiCommand.FX_TRACK_1_SET_SOLO.ordinal ()).isSolo () ? 127 : 0;
+                return toMidiValue (effectTrackBank.getItem (command.ordinal () - FlexiCommand.FX_TRACK_1_SET_SOLO.ordinal ()).isSolo ());
 
             case FX_TRACK_1_TOGGLE_ARM:
             case FX_TRACK_2_TOGGLE_ARM:
@@ -282,7 +282,7 @@ public class FxTrackHandler extends AbstractHandler
             case FX_TRACK_6_TOGGLE_ARM:
             case FX_TRACK_7_TOGGLE_ARM:
             case FX_TRACK_8_TOGGLE_ARM:
-                return effectTrackBank.getItem (command.ordinal () - FlexiCommand.FX_TRACK_1_TOGGLE_ARM.ordinal ()).isRecArm () ? 127 : 0;
+                return toMidiValue (effectTrackBank.getItem (command.ordinal () - FlexiCommand.FX_TRACK_1_TOGGLE_ARM.ordinal ()).isRecArm ());
             case FX_TRACK_1_SET_ARM:
             case FX_TRACK_2_SET_ARM:
             case FX_TRACK_3_SET_ARM:
@@ -291,7 +291,7 @@ public class FxTrackHandler extends AbstractHandler
             case FX_TRACK_6_SET_ARM:
             case FX_TRACK_7_SET_ARM:
             case FX_TRACK_8_SET_ARM:
-                return effectTrackBank.getItem (command.ordinal () - FlexiCommand.FX_TRACK_1_SET_ARM.ordinal ()).isRecArm () ? 127 : 0;
+                return toMidiValue (effectTrackBank.getItem (command.ordinal () - FlexiCommand.FX_TRACK_1_SET_ARM.ordinal ()).isRecArm ());
 
             case FX_TRACK_1_TOGGLE_MONITOR:
             case FX_TRACK_2_TOGGLE_MONITOR:
@@ -301,7 +301,7 @@ public class FxTrackHandler extends AbstractHandler
             case FX_TRACK_6_TOGGLE_MONITOR:
             case FX_TRACK_7_TOGGLE_MONITOR:
             case FX_TRACK_8_TOGGLE_MONITOR:
-                return effectTrackBank.getItem (command.ordinal () - FlexiCommand.FX_TRACK_1_TOGGLE_MONITOR.ordinal ()).isMonitor () ? 127 : 0;
+                return toMidiValue (effectTrackBank.getItem (command.ordinal () - FlexiCommand.FX_TRACK_1_TOGGLE_MONITOR.ordinal ()).isMonitor ());
             case FX_TRACK_1_SET_MONITOR:
             case FX_TRACK_2_SET_MONITOR:
             case FX_TRACK_3_SET_MONITOR:
@@ -310,7 +310,7 @@ public class FxTrackHandler extends AbstractHandler
             case FX_TRACK_6_SET_MONITOR:
             case FX_TRACK_7_SET_MONITOR:
             case FX_TRACK_8_SET_MONITOR:
-                return effectTrackBank.getItem (command.ordinal () - FlexiCommand.FX_TRACK_1_SET_MONITOR.ordinal ()).isMonitor () ? 127 : 0;
+                return toMidiValue (effectTrackBank.getItem (command.ordinal () - FlexiCommand.FX_TRACK_1_SET_MONITOR.ordinal ()).isMonitor ());
 
             case FX_TRACK_1_TOGGLE_AUTO_MONITOR:
             case FX_TRACK_2_TOGGLE_AUTO_MONITOR:
@@ -320,7 +320,7 @@ public class FxTrackHandler extends AbstractHandler
             case FX_TRACK_6_TOGGLE_AUTO_MONITOR:
             case FX_TRACK_7_TOGGLE_AUTO_MONITOR:
             case FX_TRACK_8_TOGGLE_AUTO_MONITOR:
-                return effectTrackBank.getItem (command.ordinal () - FlexiCommand.FX_TRACK_1_TOGGLE_AUTO_MONITOR.ordinal ()).isAutoMonitor () ? 127 : 0;
+                return toMidiValue (effectTrackBank.getItem (command.ordinal () - FlexiCommand.FX_TRACK_1_TOGGLE_AUTO_MONITOR.ordinal ()).isAutoMonitor ());
             case FX_TRACK_1_SET_AUTO_MONITOR:
             case FX_TRACK_2_SET_AUTO_MONITOR:
             case FX_TRACK_3_SET_AUTO_MONITOR:
@@ -329,7 +329,7 @@ public class FxTrackHandler extends AbstractHandler
             case FX_TRACK_6_SET_AUTO_MONITOR:
             case FX_TRACK_7_SET_AUTO_MONITOR:
             case FX_TRACK_8_SET_AUTO_MONITOR:
-                return effectTrackBank.getItem (command.ordinal () - FlexiCommand.FX_TRACK_1_SET_AUTO_MONITOR.ordinal ()).isAutoMonitor () ? 127 : 0;
+                return toMidiValue (effectTrackBank.getItem (command.ordinal () - FlexiCommand.FX_TRACK_1_SET_AUTO_MONITOR.ordinal ()).isAutoMonitor ());
 
             default:
                 return -1;

@@ -76,19 +76,19 @@ public class MasterHandler extends AbstractHandler
                 return masterTrack.getPan ();
 
             case MASTER_TOGGLE_MUTE, MASTER_SET_MUTE:
-                return masterTrack.isMute () ? 127 : 0;
+                return toMidiValue (masterTrack.isMute ());
 
             case MASTER_TOGGLE_SOLO, MASTER_SET_SOLO:
-                return masterTrack.isSolo () ? 127 : 0;
+                return toMidiValue (masterTrack.isSolo ());
 
             case MASTER_TOGGLE_ARM, MASTER_SET_ARM:
-                return masterTrack.isRecArm () ? 127 : 0;
+                return toMidiValue (masterTrack.isRecArm ());
 
             case MASTER_CROSSFADER:
                 return this.model.getTransport ().getCrossfade ();
 
             case MASTER_SELECT:
-                return masterTrack.isSelected () ? 127 : 0;
+                return toMidiValue (masterTrack.isSelected ());
 
             default:
                 return -1;

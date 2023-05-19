@@ -118,10 +118,14 @@ public class GenericFlexiControlSurface extends AbstractControlSurface<GenericFl
             return;
 
         final int value = this.getCommandValue (command);
-        if (this.valueCache[index] == value)
-            return;
 
-        this.valueCache[index] = value;
+        synchronized (this.valueCache)
+        {
+            if (this.valueCache[index] == value)
+                return;
+            this.valueCache[index] = value;
+        }
+
         this.reflectValue (slot, value);
     }
 
@@ -465,10 +469,7 @@ public class GenericFlexiControlSurface extends AbstractControlSurface<GenericFl
         this.isUpdatingValue = true;
         this.handlers.get (command).handle (command, commandSlot.getKnobMode (), value);
 
-        this.host.scheduleTask ( () -> {
-            this.valueCache[slotIndex] = this.getCommandValue (command);
-            this.isUpdatingValue = false;
-        }, 400);
+        this.host.scheduleTask ( () -> this.isUpdatingValue = false, 400);
     }
 
 
