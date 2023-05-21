@@ -19,6 +19,7 @@ import de.mossgrabers.framework.featuregroup.IMode;
 import de.mossgrabers.framework.featuregroup.ModeManager;
 import de.mossgrabers.framework.mode.Modes;
 import de.mossgrabers.framework.utils.ButtonEvent;
+import de.mossgrabers.framework.utils.StringUtils;
 import de.mossgrabers.framework.view.sequencer.AbstractDrum4View;
 
 import java.util.Optional;
@@ -268,9 +269,13 @@ public class Drum4View extends AbstractDrum4View<FireControlSurface, FireConfigu
 
     private void selectDrumPad (final int index)
     {
-        this.primary.getDrumPadBank ().getItem (index).select ();
+        final IDrumPad item = this.primary.getDrumPadBank ().getItem (index);
+        item.select ();
         final IMode activeMode = this.surface.getModeManager ().getActive ();
         if (activeMode instanceof final FireLayerMode fireLayerMode)
             fireLayerMode.parametersAdjusted ();
+
+        if (item.doesExist ())
+            this.surface.getDisplay ().notify (StringUtils.limit (item.getName (), 14));
     }
 }

@@ -242,6 +242,21 @@ public class StringUtils
 
 
     /**
+     * Limits a text to the given length.
+     *
+     * @param text The text to limit
+     * @param length The length to limit to
+     * @return The limited text
+     */
+    public static String limit (final String text, final int length)
+    {
+        if (text == null)
+            return "";
+        return text.length () <= length ? text : text.substring (0, length);
+    }
+
+
+    /**
      * Convert the bytes to a hex string.
      *
      * @param data The data to convert
