@@ -14,7 +14,6 @@ import de.mossgrabers.framework.daw.data.IScene;
 import de.mossgrabers.framework.daw.data.bank.ISceneBank;
 import de.mossgrabers.framework.featuregroup.AbstractFeatureGroup;
 import de.mossgrabers.framework.featuregroup.AbstractView;
-import de.mossgrabers.framework.utils.ButtonEvent;
 import de.mossgrabers.framework.view.sequencer.AbstractSequencerView;
 
 
@@ -78,7 +77,21 @@ public class ScenePlayView<S extends IControlSurface<C>, C extends Configuration
     @Override
     public void onGridNote (final int note, final int velocity)
     {
-        this.onSceneButton (ButtonID.get (ButtonID.SCENE1, note - 36), velocity > 0 ? ButtonEvent.DOWN : ButtonEvent.UP);
+        final int sceneIndex = note - 36;
+        final IScene scene = this.sceneBank.getItem (sceneIndex);
+        final boolean isPressed = velocity > 0;
+        if (isPressed)
+        {
+            if (this.handleSceneButtonCombinations (sceneIndex, scene))
+                return;
+            scene.select ();
+            this.surface.getDisplay ().notify (scene.getName ());
+            // Only select the scene
+            if (this.isSceneSelectAction ())
+                return;
+        }
+
+        scene.launch (isPressed, this.isSceneLaunchAlternateAction ());
     }
 
 
