@@ -51,7 +51,7 @@ public class SoloCommand extends AbstractTriggerCommand<PushControlSurface, Push
         }
 
         final PushConfiguration config = this.surface.getConfiguration ();
-        if (!config.isPush2 ())
+        if (!config.isPushModern ())
         {
             config.setTrackState (TrackState.SOLO);
             return;

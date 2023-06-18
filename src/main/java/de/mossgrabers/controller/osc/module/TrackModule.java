@@ -299,7 +299,8 @@ public class TrackModule extends AbstractModule
                 break;
 
             case "parent":
-                tb.selectParent ();
+                if (!this.configuration.isTrackNavigationFlat ())
+                    tb.selectParent ();
                 break;
 
             case TAG_SELECT, TAG_SELECTED:
@@ -423,7 +424,16 @@ public class TrackModule extends AbstractModule
                 break;
 
             case "enter":
-                track.enter ();
+                if (isTrigger (value) && track.isGroup ())
+                {
+                    if (this.configuration.isTrackNavigationFlat ())
+                        track.toggleGroupExpanded ();
+                    else
+                    {
+                        track.setGroupExpanded (true);
+                        track.enter ();
+                    }
+                }
                 break;
 
             case TAG_COLOR:
@@ -508,21 +518,12 @@ public class TrackModule extends AbstractModule
 
     private static void parseSendValue (final ITrack track, final int sendIndex, final LinkedList<String> path, final Object value) throws UnknownCommandException, MissingCommandException, IllegalParameterException
     {
-        final String command = getSubCommand (path);
-        if (!TAG_VOLUME.equals (command))
-            throw new UnknownCommandException (command);
-
         final ISend send = track.getSendBank ().getItem (sendIndex);
         if (send == null)
             return;
 
-        if (path.isEmpty ())
-        {
-            send.setValue (toInteger (value));
-            return;
-        }
-
-        switch (path.get (0))
+        final String command = getSubCommand (path);
+        switch (command)
         {
             case TAG_ACTIVATED:
                 if (isTrigger (value))
@@ -533,6 +534,9 @@ public class TrackModule extends AbstractModule
                 break;
             case TAG_TOUCHED:
                 send.touchValue (isTrigger (value));
+                break;
+            case TAG_VOLUME:
+                send.setValue (toInteger (value));
                 break;
             default:
                 throw new UnknownCommandException (command);

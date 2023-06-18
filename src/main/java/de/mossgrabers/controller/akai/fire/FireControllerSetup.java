@@ -121,8 +121,6 @@ public class FireControllerSetup extends AbstractControllerSetup<FireControlSurf
         ms.setNumSends (6);
         ms.setNumDrumPadLayers (4);
         ms.setNumDeviceLayers (4);
-        ms.setNumUserPages (8);
-        ms.setNumUserPageSize (4);
         ms.setNumFilterColumnEntries (3);
         ms.setNumResults (3);
         ms.setHasFullFlatTrackList (true);

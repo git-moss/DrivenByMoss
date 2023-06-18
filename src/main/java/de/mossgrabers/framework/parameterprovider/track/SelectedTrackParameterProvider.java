@@ -156,12 +156,9 @@ public class SelectedTrackParameterProvider extends AbstractTrackParameterProvid
      */
     protected ISend getSend (final int sendIndex, final IChannel selectedChannel)
     {
-        final ISendBank sendBank = selectedChannel.getSendBank ();
-        if (this.model != null && this.model.isEffectTrackBankActive ())
-            return EmptySend.INSTANCE;
         try
         {
-            return this.getSend (sendIndex, sendBank);
+            return this.getSend (sendIndex, selectedChannel.getSendBank ());
         }
         catch (final IndexOutOfBoundsException ex)
         {

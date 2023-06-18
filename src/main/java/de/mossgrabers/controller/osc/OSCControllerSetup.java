@@ -101,12 +101,12 @@ public class OSCControllerSetup extends AbstractControllerSetup<IControlSurface<
         ms.setHasFlatTrackList (false);
         ms.setNumTracks (bankPageSize);
         ms.setNumScenes (bankPageSize);
+        ms.setHasFlatTrackList (this.configuration.isTrackNavigationFlat ());
         ms.setNumSends (bankPageSize);
         ms.setNumDevicesInBank (bankPageSize);
         ms.setNumDeviceLayers (bankPageSize);
         ms.setNumParamPages (bankPageSize);
         ms.setNumParams (bankPageSize);
-        ms.setNumUserPageSize (bankPageSize);
         ms.setNumMarkers (bankPageSize);
 
         this.model = this.factory.createModel (this.configuration, this.colorManager, this.valueChanger, this.scales, ms);

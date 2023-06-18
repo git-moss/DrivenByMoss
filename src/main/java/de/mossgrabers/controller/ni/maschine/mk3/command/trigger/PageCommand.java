@@ -65,12 +65,12 @@ public class PageCommand extends AbstractTriggerCommand<MaschineControlSurface, 
                 break;
 
             case USER:
-                final IParameterBank userBank = this.model.getUserParameterBank ();
+                final IParameterBank userBank = this.model.getProject ().getParameterBank ();
                 if (this.direction == Direction.LEFT)
                     userBank.selectPreviousPage ();
                 else
                     userBank.selectNextPage ();
-                this.mvHelper.notifySelectedUserPage ();
+                this.mvHelper.notifySelectedProjectParameterPage ();
                 break;
 
             case BROWSER:

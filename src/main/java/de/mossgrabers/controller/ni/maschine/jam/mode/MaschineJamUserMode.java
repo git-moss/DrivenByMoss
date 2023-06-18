@@ -10,7 +10,7 @@ import de.mossgrabers.controller.ni.maschine.jam.controller.FaderConfig;
 import de.mossgrabers.controller.ni.maschine.jam.controller.MaschineJamControlSurface;
 import de.mossgrabers.framework.controller.ContinuousID;
 import de.mossgrabers.framework.daw.IModel;
-import de.mossgrabers.framework.mode.device.UserMode;
+import de.mossgrabers.framework.mode.device.ProjectParamsMode;
 import de.mossgrabers.framework.parameter.IParameter;
 
 
@@ -19,7 +19,7 @@ import de.mossgrabers.framework.parameter.IParameter;
  *
  * @author Jürgen Moßgraber
  */
-public class MaschineJamUserMode extends UserMode<MaschineJamControlSurface, MaschineJamConfiguration> implements IMaschineJamMode
+public class MaschineJamUserMode extends ProjectParamsMode<MaschineJamControlSurface, MaschineJamConfiguration> implements IMaschineJamMode
 {
     private static final FaderConfig FADER_OFF = new FaderConfig (FaderConfig.TYPE_SINGLE, 0, 0);
 
@@ -56,7 +56,7 @@ public class MaschineJamUserMode extends UserMode<MaschineJamControlSurface, Mas
     @Override
     public FaderConfig setupFader (final int index)
     {
-        final IParameter parameter = this.model.getUserParameterBank ().getItem (index);
+        final IParameter parameter = this.model.getProject ().getParameterBank ().getItem (index);
         if (!parameter.doesExist ())
             return FADER_OFF;
 

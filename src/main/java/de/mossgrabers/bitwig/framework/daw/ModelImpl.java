@@ -15,7 +15,6 @@ import de.mossgrabers.bitwig.framework.daw.data.bank.EffectTrackBankImpl;
 import de.mossgrabers.bitwig.framework.daw.data.bank.MarkerBankImpl;
 import de.mossgrabers.bitwig.framework.daw.data.bank.SlotBankImpl;
 import de.mossgrabers.bitwig.framework.daw.data.bank.TrackBankImpl;
-import de.mossgrabers.bitwig.framework.daw.data.bank.UserParameterBankImpl;
 import de.mossgrabers.framework.daw.AbstractModel;
 import de.mossgrabers.framework.daw.DataSetup;
 import de.mossgrabers.framework.daw.ModelSetup;
@@ -44,7 +43,6 @@ import com.bitwig.extension.controller.api.PinnableCursorDevice;
 import com.bitwig.extension.controller.api.Project;
 import com.bitwig.extension.controller.api.Track;
 import com.bitwig.extension.controller.api.TrackBank;
-import com.bitwig.extension.controller.api.UserControlBank;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -110,7 +108,7 @@ public class ModelImpl extends AbstractModel
         // Create track banks
 
         this.bwCursorTrack = controllerHost.createCursorTrack ("MyCursorTrackID", "The Cursor Track", numSends, numScenes, true);
-        this.cursorTrack = new CursorTrackImpl (this, this.host, this.valueChanger, this.bwCursorTrack, this.rootTrackGroup, (ApplicationImpl) this.application, numSends, numScenes);
+        this.cursorTrack = new CursorTrackImpl (this, this.host, this.valueChanger, this.bwCursorTrack, this.rootTrackGroup, (ApplicationImpl) this.application, numSends, numScenes, numParamPages, numParams);
 
         final MasterTrack master = controllerHost.createMasterTrack (0);
         this.masterTrack = new MasterTrackImpl (this.host, this.valueChanger, master, this.bwCursorTrack, this.rootTrackGroup, (ApplicationImpl) this.application);
@@ -132,7 +130,7 @@ public class ModelImpl extends AbstractModel
 
         final int numFxTracks = this.modelSetup.getNumFxTracks ();
         final TrackBank effectTrackBank = controllerHost.createEffectTrackBank (numFxTracks, numSends, numScenes);
-        this.effectTrackBank = new EffectTrackBankImpl (this.host, this.valueChanger, effectTrackBank, (CursorTrackImpl) this.cursorTrack, this.rootTrackGroup, (ApplicationImpl) this.application, numFxTracks, numScenes, numSends, this.trackBank);
+        this.effectTrackBank = new EffectTrackBankImpl (this.host, this.valueChanger, effectTrackBank, (CursorTrackImpl) this.cursorTrack, this.rootTrackGroup, (ApplicationImpl) this.application, numFxTracks, numScenes, numSends, numParamPages, numParams, this.trackBank);
 
         //////////////////////////////////////////////////////////////////////////////
         // Create devices
@@ -191,16 +189,6 @@ public class ModelImpl extends AbstractModel
             }
 
             this.specificDevices.put (deviceID, specificDevice);
-        }
-
-        // User bank
-        final int numUserPages = modelSetup.getNumUserPages ();
-        final int numUserPageSize = modelSetup.getNumUserPageSize ();
-        final int numUserControls = numUserPages * numUserPageSize;
-        if (numUserControls > 0)
-        {
-            final UserControlBank userControls = this.controllerHost.createUserControls (numUserControls);
-            this.userParameterBank = new UserParameterBankImpl (this.host, this.valueChanger, userControls, numUserPages, numUserPageSize);
         }
 
         final int numResults = this.modelSetup.getNumResults ();
@@ -270,7 +258,7 @@ public class ModelImpl extends AbstractModel
         return this.slotBanks.computeIfAbsent (Integer.valueOf (numSlots), key -> {
 
             final CursorTrack ct = this.controllerHost.createCursorTrack ("CursorTrackID" + numSlots, "Cursor Track for " + numSlots + "Slots", 0, numSlots, true);
-            final ICursorTrack cursorTrack = new CursorTrackImpl (this, this.host, this.valueChanger, ct, this.rootTrackGroup, (ApplicationImpl) this.application, 0, numSlots);
+            final ICursorTrack cursorTrack = new CursorTrackImpl (this, this.host, this.valueChanger, ct, this.rootTrackGroup, (ApplicationImpl) this.application, 0, numSlots, 0, 0);
             return new SlotBankImpl (this.host, this.valueChanger, cursorTrack, ct.clipLauncherSlotBank (), numSlots);
 
         });

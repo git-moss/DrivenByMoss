@@ -5,6 +5,7 @@
 package de.mossgrabers.controller.ableton.push.command.trigger;
 
 import de.mossgrabers.controller.ableton.push.PushConfiguration;
+import de.mossgrabers.controller.ableton.push.PushVersion;
 import de.mossgrabers.controller.ableton.push.controller.PushControlSurface;
 import de.mossgrabers.framework.command.core.AbstractTriggerCommand;
 import de.mossgrabers.framework.daw.IModel;
@@ -20,21 +21,21 @@ import de.mossgrabers.framework.utils.ButtonEvent;
  */
 public class SetupCommand extends AbstractTriggerCommand<PushControlSurface, PushConfiguration>
 {
-    private final boolean isPush2;
+    private final PushVersion pushVersion;
 
 
     /**
      * Constructor.
      *
-     * @param isPush2 Whether to edit Push 1 or Push 2 hardware settings
+     * @param pushVersion The version of Push
      * @param model The model
      * @param surface The surface
      */
-    public SetupCommand (final boolean isPush2, final IModel model, final PushControlSurface surface)
+    public SetupCommand (final PushVersion pushVersion, final IModel model, final PushControlSurface surface)
     {
         super (model, surface);
 
-        this.isPush2 = isPush2;
+        this.pushVersion = pushVersion;
     }
 
 
@@ -57,7 +58,7 @@ public class SetupCommand extends AbstractTriggerCommand<PushControlSurface, Pus
 
     private Modes getMode ()
     {
-        if (this.isPush2)
+        if (this.pushVersion != PushVersion.VERSION_1)
             return Modes.SETUP;
 
         if (this.surface.isShiftPressed ())

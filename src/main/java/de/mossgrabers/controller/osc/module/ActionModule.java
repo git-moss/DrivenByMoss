@@ -62,7 +62,7 @@ public class ActionModule extends AbstractModule
         final String subCommand = getSubCommand (path);
         try
         {
-            final int actionNo = Math.min (7, Math.max (0, Integer.parseInt (subCommand) - 1));
+            final int actionNo = Math.min (OSCConfiguration.NUM_ASSIGNABLE_ACTIONS - 1, Math.max (0, Integer.parseInt (subCommand) - 1));
             final String assignableActionID = this.configuration.getAssignableAction (actionNo);
             if (assignableActionID != null)
                 this.model.getApplication ().invokeAction (assignableActionID);

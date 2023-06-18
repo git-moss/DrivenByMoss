@@ -33,8 +33,8 @@ public abstract class AbstractParametersMode<B extends IItem> extends BaseMode<B
         "",
         "",
         "",
-        "",
-        "User Prms"
+        "Projct FX",
+        "Track FX"
     };
 
 
@@ -67,8 +67,12 @@ public abstract class AbstractParametersMode<B extends IItem> extends BaseMode<B
                 ((ParametersMode) modeManager.get (Modes.DEVICE_PARAMS)).setShowDevices (false);
                 break;
 
-            case 7:
+            case 6:
                 this.surface.getModeManager ().setActive (Modes.USER);
+                break;
+
+            case 7:
+                this.surface.getModeManager ().setActive (Modes.TRACK_DETAILS);
                 break;
 
             default:
@@ -96,8 +100,11 @@ public abstract class AbstractParametersMode<B extends IItem> extends BaseMode<B
                     return SLMkIIIColorManager.SLMKIII_PURPLE;
                 return SLMkIIIColorManager.SLMKIII_PURPLE_HALF;
 
-            case ROW1_8:
+            case ROW1_7:
                 return modeManager.isActive (Modes.USER) ? SLMkIIIColorManager.SLMKIII_WHITE : SLMkIIIColorManager.SLMKIII_WHITE_HALF;
+
+            case ROW1_8:
+                return modeManager.isActive (Modes.TRACK_DETAILS) ? SLMkIIIColorManager.SLMKIII_ORANGE : SLMkIIIColorManager.SLMKIII_ORANGE_HALF;
 
             default:
                 return SLMkIIIColorManager.SLMKIII_BLACK;
@@ -135,9 +142,14 @@ public abstract class AbstractParametersMode<B extends IItem> extends BaseMode<B
                     color = SLMkIIIColorManager.SLMKIII_PURPLE;
                     break;
 
-                case 7:
+                case 6:
                     isActive = modeManager.isActive (Modes.USER);
                     color = SLMkIIIColorManager.SLMKIII_WHITE;
+                    break;
+
+                case 7:
+                    isActive = modeManager.isActive (Modes.TRACK_DETAILS);
+                    color = SLMkIIIColorManager.SLMKIII_ORANGE;
                     break;
 
                 default:

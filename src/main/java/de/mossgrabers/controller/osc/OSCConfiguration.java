@@ -25,12 +25,15 @@ import java.util.List;
  */
 public class OSCConfiguration extends AbstractOpenSoundControlConfiguration
 {
-    private static final String CATEGORY_SETUP   = "Setup";
+    private static final String CATEGORY_SETUP         = "Setup";
 
     /** ID for receive port setting. */
-    public static final Integer RECEIVE_PORT     = Integer.valueOf (50);
+    public static final Integer RECEIVE_PORT           = Integer.valueOf (50);
     /** ID for value resolution setting. */
-    public static final Integer VALUE_RESOLUTION = Integer.valueOf (51);
+    public static final Integer VALUE_RESOLUTION       = Integer.valueOf (51);
+
+    /** The number of assignable actions. */
+    public static final int     NUM_ASSIGNABLE_ACTIONS = 20;
 
 
     /** The resolution for values. */
@@ -59,7 +62,7 @@ public class OSCConfiguration extends AbstractOpenSoundControlConfiguration
     private int                    sendPort                  = 9000;
     private ValueResolution        valueResolution           = ValueResolution.LOW;
     private int                    bankPageSize              = 8;
-    private final String []        assignableFunctionActions = new String [8];
+    private final String []        assignableFunctionActions = new String [NUM_ASSIGNABLE_ACTIONS];
 
 
     /**
@@ -127,6 +130,7 @@ public class OSCConfiguration extends AbstractOpenSoundControlConfiguration
         ///////////////////////////
         // Play and Sequence
 
+        this.activateTrackNavigationSetting (globalSettings, null);
         this.activateAccentActiveSetting (globalSettings);
         this.activateAccentValueSetting (globalSettings);
 

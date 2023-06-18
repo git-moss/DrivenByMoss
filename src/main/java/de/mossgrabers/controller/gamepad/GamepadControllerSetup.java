@@ -73,8 +73,6 @@ public class GamepadControllerSetup extends AbstractControllerSetup<GamepadContr
         ms.setNumDrumPadLayers (0);
         ms.setNumFilterColumnEntries (0);
         ms.setNumResults (0);
-        ms.setNumUserPageSize (0);
-        ms.setNumUserPages (0);
 
         this.model = this.factory.createModel (this.configuration, this.colorManager, this.valueChanger, this.scales, ms);
     }

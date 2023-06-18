@@ -16,7 +16,6 @@ import de.mossgrabers.framework.daw.data.ISlot;
 import de.mossgrabers.framework.daw.data.ISpecificDevice;
 import de.mossgrabers.framework.daw.data.ITrack;
 import de.mossgrabers.framework.daw.data.bank.IMarkerBank;
-import de.mossgrabers.framework.daw.data.bank.IParameterBank;
 import de.mossgrabers.framework.daw.data.bank.ISceneBank;
 import de.mossgrabers.framework.daw.data.bank.ITrackBank;
 import de.mossgrabers.framework.observer.IValueObserver;
@@ -62,7 +61,6 @@ public abstract class AbstractModel implements IModel
     protected ICursorDevice                         cursorDevice;
     protected IDrumDevice                           drumDevice;
     protected Map<Integer, IDrumDevice>             additionalDrumDevices = new HashMap<> ();
-    protected IParameterBank                        userParameterBank;
     protected Map<String, INoteClip>                cursorClips           = new HashMap<> ();
     protected final Map<DeviceID, ISpecificDevice>  specificDevices       = new EnumMap<> (DeviceID.class);
 
@@ -214,14 +212,6 @@ public abstract class AbstractModel implements IModel
         if (additionalDrumDevice == null)
             throw new FrameworkException ("Additional drum device of size " + pageSize + " was not configured!");
         return additionalDrumDevice;
-    }
-
-
-    /** {@inheritDoc} */
-    @Override
-    public IParameterBank getUserParameterBank ()
-    {
-        return this.userParameterBank;
     }
 
 

@@ -140,11 +140,8 @@ public abstract class AbstractTrackMode extends BaseMode<ITrack>
         }
 
         // LONG press, go out of group
-        if (!this.model.isEffectTrackBankActive ())
-        {
-            this.model.getTrackBank ().selectParent ();
-            this.surface.setTriggerConsumed (ButtonID.get (ButtonID.ROW1_1, index));
-        }
+        this.model.getTrackBank ().selectParent ();
+        this.surface.setTriggerConsumed (ButtonID.get (ButtonID.ROW1_1, index));
     }
 
 
@@ -222,13 +219,10 @@ public abstract class AbstractTrackMode extends BaseMode<ITrack>
                 break;
 
             case 7:
-                if (!this.model.isEffectTrackBankActive ())
-                {
-                    if (this.lastSendIsAccessible ())
-                        this.handleSendEffect (3);
-                    else
-                        this.model.getTrackBank ().selectParent ();
-                }
+                if (this.lastSendIsAccessible ())
+                    this.handleSendEffect (3);
+                else
+                    this.model.getTrackBank ().selectParent ();
                 break;
 
             default:
@@ -482,14 +476,6 @@ public abstract class AbstractTrackMode extends BaseMode<ITrack>
         this.menu.get (0).set ("Volume", Boolean.valueOf (selectedMenu - 1 == 0));
         this.menu.get (1).set ("Pan", Boolean.valueOf (selectedMenu - 1 == 1));
         this.menu.get (2).set (this.model.getHost ().supports (Capability.HAS_CROSSFADER) ? "Crossfader" : " ", Boolean.valueOf (selectedMenu - 1 == 2));
-
-        if (this.model.isEffectTrackBankActive ())
-        {
-            // No sends for FX tracks
-            for (int i = 3; i < 7; i++)
-                this.menu.get (i).set (" ", Boolean.FALSE);
-            return;
-        }
 
         final ITrackBank currentTrackBank = this.model.getCurrentTrackBank ();
         final Optional<ITrack> selectedItem = currentTrackBank.getSelectedItem ();

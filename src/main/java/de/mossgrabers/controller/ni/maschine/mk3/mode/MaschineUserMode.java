@@ -32,7 +32,7 @@ public class MaschineUserMode extends AbstractParameterMode<MaschineControlSurfa
      */
     public MaschineUserMode (final MaschineControlSurface surface, final IModel model)
     {
-        super ("User", surface, model, false, model.getUserParameterBank (), DEFAULT_KNOB_IDS);
+        super ("User", surface, model, false, model.getProject ().getParameterBank (), DEFAULT_KNOB_IDS);
 
         this.setParameterProvider (new BankParameterProvider (this.bank));
     }
@@ -115,7 +115,7 @@ public class MaschineUserMode extends AbstractParameterMode<MaschineControlSurfa
     public void selectPreviousItemPage ()
     {
         super.selectPreviousItem ();
-        this.mvHelper.notifySelectedUserPage ();
+        this.mvHelper.notifySelectedProjectParameterPage ();
     }
 
 
@@ -124,7 +124,7 @@ public class MaschineUserMode extends AbstractParameterMode<MaschineControlSurfa
     public void selectNextItemPage ()
     {
         super.selectNextItem ();
-        this.mvHelper.notifySelectedUserPage ();
+        this.mvHelper.notifySelectedProjectParameterPage ();
     }
 
 

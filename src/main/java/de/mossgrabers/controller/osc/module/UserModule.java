@@ -64,7 +64,7 @@ public class UserModule extends AbstractModule
     {
         final String userAddress = "/user/";
 
-        final IParameterBank parameterBank = this.model.getUserParameterBank ();
+        final IParameterBank parameterBank = this.model.getProject ().getParameterBank ();
         for (int i = 0; i < parameterBank.getPageSize (); i++)
         {
             final int oneplus = i + 1;
@@ -85,7 +85,7 @@ public class UserModule extends AbstractModule
 
     private void parseUserValue (final LinkedList<String> path, final Object value) throws UnknownCommandException, MissingCommandException, IllegalParameterException
     {
-        final IParameterBank parameterBank = this.model.getUserParameterBank ();
+        final IParameterBank parameterBank = this.model.getProject ().getParameterBank ();
         final String subCommand = getSubCommand (path);
         try
         {

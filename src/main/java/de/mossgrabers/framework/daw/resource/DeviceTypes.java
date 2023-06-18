@@ -28,7 +28,9 @@ public class DeviceTypes
         ICON_ANALYSIS,
         ICON_GENERIC,
         ICON_PLUGIN,
-        ICON_USER
+        ICON_USER,
+        ICON_PROJECT,
+        ICON_TRACK
     }
 
 
@@ -135,6 +137,8 @@ public class DeviceTypes
         DEVICES.put ("XY Effect", TypeIcon.ICON_FOLDER);
         DEVICES.put ("XY Instrument", TypeIcon.ICON_FOLDER);
         DEVICES.put ("USER", TypeIcon.ICON_USER);
+        DEVICES.put ("PROJECT", TypeIcon.ICON_PROJECT);
+        DEVICES.put ("TRACK", TypeIcon.ICON_TRACK);
 
         DEVICE_ICONS.put (TypeIcon.ICON_ANALYSIS, "device/device_analysis.svg");
         DEVICE_ICONS.put (TypeIcon.ICON_WAVE, "device/device_audio.svg");
@@ -147,6 +151,8 @@ public class DeviceTypes
         DEVICE_ICONS.put (TypeIcon.ICON_NOTE, "device/device_note.svg");
         DEVICE_ICONS.put (TypeIcon.ICON_PLUGIN, "device/device_plugin.svg");
         DEVICE_ICONS.put (TypeIcon.ICON_USER, "user.svg");
+        DEVICE_ICONS.put (TypeIcon.ICON_PROJECT, "track/master_track.svg");
+        DEVICE_ICONS.put (TypeIcon.ICON_TRACK, "device/device_plugin.svg");
     }
 
 

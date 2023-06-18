@@ -35,7 +35,7 @@ public class ModeMultiSelectCommand<S extends IControlSurface<C>, C extends Conf
     private final ModeManager modeManager;
     private final List<Modes> modeIds = new ArrayList<> ();
     private Modes             currentModeID;
-    private int               numModeIds;
+    private final int         numModeIds;
 
 
     /**

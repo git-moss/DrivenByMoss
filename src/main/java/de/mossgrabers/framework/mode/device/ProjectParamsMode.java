@@ -18,14 +18,14 @@ import java.util.function.BooleanSupplier;
 
 
 /**
- * Mode for editing user control parameters.
+ * Mode for editing project remote control parameters.
  *
  * @param <S> The type of the control surface
  * @param <C> The type of the configuration
  *
  * @author Jürgen Moßgraber
  */
-public class UserMode<S extends IControlSurface<C>, C extends Configuration> extends AbstractParameterMode<S, C, IParameter>
+public class ProjectParamsMode<S extends IControlSurface<C>, C extends Configuration> extends AbstractParameterMode<S, C, IParameter>
 {
     /**
      * Constructor.
@@ -36,7 +36,7 @@ public class UserMode<S extends IControlSurface<C>, C extends Configuration> ext
      *            change method is used
      * @param knobs The IDs of the knob to control this mode
      */
-    public UserMode (final S surface, final IModel model, final boolean isAbsolute, final List<ContinuousID> knobs)
+    public ProjectParamsMode (final S surface, final IModel model, final boolean isAbsolute, final List<ContinuousID> knobs)
     {
         this (surface, model, isAbsolute, knobs, surface::isShiftPressed);
     }
@@ -53,11 +53,11 @@ public class UserMode<S extends IControlSurface<C>, C extends Configuration> ext
      * @param isAlternativeFunction Callback function to execute the secondary function, e.g. a
      *            shift button
      */
-    public UserMode (final S surface, final IModel model, final boolean isAbsolute, final List<ContinuousID> knobs, final BooleanSupplier isAlternativeFunction)
+    public ProjectParamsMode (final S surface, final IModel model, final boolean isAbsolute, final List<ContinuousID> knobs, final BooleanSupplier isAlternativeFunction)
     {
-        super ("User Controls", surface, model, isAbsolute, model.getUserParameterBank (), knobs, isAlternativeFunction);
+        super ("Project Parameters", surface, model, isAbsolute, model.getProject ().getParameterBank (), knobs, isAlternativeFunction);
 
-        this.setParameterProvider (new BankParameterProvider (model.getUserParameterBank ()));
+        this.setParameterProvider (new BankParameterProvider (model.getProject ().getParameterBank ()));
     }
 
 
@@ -67,7 +67,7 @@ public class UserMode<S extends IControlSurface<C>, C extends Configuration> ext
     {
         this.setTouchedKnob (index, isTouched);
 
-        final IParameter param = this.model.getUserParameterBank ().getItem (index);
+        final IParameter param = this.model.getProject ().getParameterBank ().getItem (index);
         if (!param.doesExist ())
             return;
 
@@ -86,7 +86,7 @@ public class UserMode<S extends IControlSurface<C>, C extends Configuration> ext
     {
         super.selectPreviousItem ();
 
-        this.mvHelper.notifySelectedUserPage ();
+        this.mvHelper.notifySelectedProjectParameterPage ();
     }
 
 
@@ -96,6 +96,6 @@ public class UserMode<S extends IControlSurface<C>, C extends Configuration> ext
     {
         super.selectNextItem ();
 
-        this.mvHelper.notifySelectedUserPage ();
+        this.mvHelper.notifySelectedProjectParameterPage ();
     }
 }

@@ -79,7 +79,7 @@ public class UserHandler extends AbstractHandler
     @Override
     public int getCommandValue (final FlexiCommand command)
     {
-        final IParameterBank userParameterBank = this.model.getUserParameterBank ();
+        final IParameterBank userParameterBank = this.model.getProject ().getParameterBank ();
         if (userParameterBank == null)
             return -1;
 
@@ -102,7 +102,7 @@ public class UserHandler extends AbstractHandler
     @Override
     public void handle (final FlexiCommand command, final KnobMode knobMode, final MidiValue value)
     {
-        final IParameterBank userParameterBank = this.model.getUserParameterBank ();
+        final IParameterBank userParameterBank = this.model.getProject ().getParameterBank ();
         if (userParameterBank == null)
             return;
 

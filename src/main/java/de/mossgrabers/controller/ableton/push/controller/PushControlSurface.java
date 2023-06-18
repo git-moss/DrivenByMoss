@@ -533,7 +533,7 @@ public class PushControlSurface extends AbstractControlSurface<PushConfiguration
         if (this.ribbonMode == mode)
             return;
         this.ribbonMode = mode;
-        if (this.configuration.isPush2 ())
+        if (this.configuration.isPushModern ())
         {
             // See section 2.10.1 in Push 2 programmer manual for status codes
             int status = 0;
@@ -595,7 +595,7 @@ public class PushControlSurface extends AbstractControlSurface<PushConfiguration
      */
     public void sendPressureMode (final boolean isPolyPressure)
     {
-        if (this.configuration.isPush2 ())
+        if (this.configuration.isPushModern ())
             this.output.sendSysex ("F0 00 21 1D 01 01 1E 0" + (isPolyPressure ? "1" : "0") + " F7");
         else
             this.output.sendSysex ("F0 47 7F 15 5C 00 01 0" + (isPolyPressure ? "0" : "1") + " F7");
@@ -813,7 +813,7 @@ public class PushControlSurface extends AbstractControlSurface<PushConfiguration
         }
 
         // Color palette entry message?
-        if (this.configuration.isPush2 () && isPush2Data (byteData) && PaletteEntry.isValid (byteData))
+        if (this.configuration.isPushModern () && isPush2Data (byteData) && PaletteEntry.isValid (byteData))
             this.handleColorPaletteMessage (byteData);
     }
 
@@ -840,7 +840,7 @@ public class PushControlSurface extends AbstractControlSurface<PushConfiguration
      */
     private void handleDeviceInquiryResponse (final DeviceInquiry deviceInquiry)
     {
-        if (this.configuration.isPush2 ())
+        if (this.configuration.isPushModern ())
         {
             final int [] unspecifiedData = deviceInquiry.getUnspecifiedData ();
             if (unspecifiedData.length != 10)

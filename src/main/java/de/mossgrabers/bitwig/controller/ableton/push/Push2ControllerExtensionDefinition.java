@@ -8,9 +8,10 @@ import de.mossgrabers.bitwig.framework.BitwigSetupFactory;
 import de.mossgrabers.bitwig.framework.configuration.SettingsUIImpl;
 import de.mossgrabers.bitwig.framework.daw.HostImpl;
 import de.mossgrabers.bitwig.framework.extension.AbstractControllerExtensionDefinition;
+import de.mossgrabers.controller.ableton.push.Push2ControllerDefinition;
 import de.mossgrabers.controller.ableton.push.PushConfiguration;
-import de.mossgrabers.controller.ableton.push.PushControllerDefinition;
 import de.mossgrabers.controller.ableton.push.PushControllerSetup;
+import de.mossgrabers.controller.ableton.push.PushVersion;
 import de.mossgrabers.controller.ableton.push.controller.PushControlSurface;
 import de.mossgrabers.framework.controller.IControllerSetup;
 
@@ -29,7 +30,7 @@ public class Push2ControllerExtensionDefinition extends AbstractControllerExtens
      */
     public Push2ControllerExtensionDefinition ()
     {
-        super (new PushControllerDefinition (true));
+        super (new Push2ControllerDefinition ());
     }
 
 
@@ -37,7 +38,7 @@ public class Push2ControllerExtensionDefinition extends AbstractControllerExtens
     @Override
     protected IControllerSetup<PushControlSurface, PushConfiguration> getControllerSetup (final ControllerHost host)
     {
-        return new PushControllerSetup (new HostImpl (host), new BitwigSetupFactory (host), new SettingsUIImpl (host, host.getPreferences ()), new SettingsUIImpl (host, host.getDocumentState ()), true);
+        return new PushControllerSetup (new HostImpl (host), new BitwigSetupFactory (host), new SettingsUIImpl (host, host.getPreferences ()), new SettingsUIImpl (host, host.getDocumentState ()), PushVersion.VERSION_2);
     }
 
 

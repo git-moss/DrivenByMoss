@@ -219,71 +219,71 @@ public class PushConfiguration extends AbstractConfiguration implements IGraphic
         DEBUG_MODES.add (Modes.REPEAT_NOTE);
     }
 
-    private boolean         isSoloLongPressed           = false;
-    private boolean         isMuteLongPressed           = false;
-    private boolean         isMuteSoloLocked            = false;
+    private boolean           isSoloLongPressed           = false;
+    private boolean           isMuteLongPressed           = false;
+    private boolean           isMuteSoloLocked            = false;
 
-    private boolean         displayScenesClips;
-    private boolean         isScenesClipView;
+    private boolean           displayScenesClips;
+    private boolean           isScenesClipView;
 
     /** What does the ribbon send? **/
-    private int             ribbonMode                  = RIBBON_MODE_PITCH;
-    private int             ribbonModeCCVal             = 1;
-    private int             ribbonModeNoteRepeat        = NOTE_REPEAT_PERIOD;
+    private int               ribbonMode                  = RIBBON_MODE_PITCH;
+    private int               ribbonModeCCVal             = 1;
+    private int               ribbonModeNoteRepeat        = NOTE_REPEAT_PERIOD;
 
-    private boolean         stopAutomationOnKnobRelease = false;
-    private TrackState      trackState                  = TrackState.MUTE;
-    private Modes           debugMode                   = Modes.TRACK;
-    private Modes           layerMode                   = null;
+    private boolean           stopAutomationOnKnobRelease = false;
+    private TrackState        trackState                  = TrackState.MUTE;
+    private Modes             debugMode                   = Modes.TRACK;
+    private Modes             layerMode                   = null;
 
     // Only Push 1
-    private int             velocityCurve               = 1;
-    private int             padThreshold                = 20;
+    private int               velocityCurve               = 1;
+    private int               padThreshold                = 20;
 
     // Only Push 2
-    private int             displayBrightness           = 255;
-    private int             ledBrightness               = 127;
-    private int             padSensitivity              = 5;
-    private int             padGain                     = 5;
-    private int             padDynamics                 = 5;
-    private ColorEx         colorBackground             = DEFAULT_COLOR_BACKGROUND;
-    private ColorEx         colorBorder                 = DEFAULT_COLOR_BORDER;
-    private ColorEx         colorText                   = DEFAULT_COLOR_TEXT;
-    private ColorEx         colorFader                  = DEFAULT_COLOR_FADER;
-    private ColorEx         colorVU                     = DEFAULT_COLOR_VU;
-    private ColorEx         colorEdit                   = DEFAULT_COLOR_EDIT;
-    private ColorEx         colorRecord                 = DEFAULT_COLOR_RECORD;
-    private ColorEx         colorSolo                   = DEFAULT_COLOR_SOLO;
-    private ColorEx         colorMute                   = DEFAULT_COLOR_MUTE;
-    private ColorEx         colorBackgroundDarker       = DEFAULT_COLOR_BACKGROUND_DARKER;
-    private ColorEx         colorBackgroundLighter      = DEFAULT_COLOR_BACKGROUND_LIGHTER;
+    private int               displayBrightness           = 255;
+    private int               ledBrightness               = 127;
+    private int               padSensitivity              = 5;
+    private int               padGain                     = 5;
+    private int               padDynamics                 = 5;
+    private ColorEx           colorBackground             = DEFAULT_COLOR_BACKGROUND;
+    private ColorEx           colorBorder                 = DEFAULT_COLOR_BORDER;
+    private ColorEx           colorText                   = DEFAULT_COLOR_TEXT;
+    private ColorEx           colorFader                  = DEFAULT_COLOR_FADER;
+    private ColorEx           colorVU                     = DEFAULT_COLOR_VU;
+    private ColorEx           colorEdit                   = DEFAULT_COLOR_EDIT;
+    private ColorEx           colorRecord                 = DEFAULT_COLOR_RECORD;
+    private ColorEx           colorSolo                   = DEFAULT_COLOR_SOLO;
+    private ColorEx           colorMute                   = DEFAULT_COLOR_MUTE;
+    private ColorEx           colorBackgroundDarker       = DEFAULT_COLOR_BACKGROUND_DARKER;
+    private ColorEx           colorBackgroundLighter      = DEFAULT_COLOR_BACKGROUND_LIGHTER;
 
-    private final boolean   isPush2;
+    private final PushVersion pushVersion;
 
-    private IIntegerSetting displayBrightnessSetting;
-    private IIntegerSetting ledBrightnessSetting;
-    private IEnumSetting    ribbonModeSetting;
-    private IIntegerSetting ribbonModeCCSetting;
-    private IEnumSetting    ribbonModeNoteRepeatSetting;
-    private IIntegerSetting padSensitivitySetting;
-    private IIntegerSetting padGainSetting;
-    private IIntegerSetting padDynamicsSetting;
-    private IEnumSetting    velocityCurveSetting;
-    private IEnumSetting    padThresholdSetting;
-    private IEnumSetting    debugModeSetting;
-    private IColorSetting   colorBackgroundSetting;
-    private IColorSetting   colorBackgroundDarkerSetting;
-    private IColorSetting   colorBackgroundLighterSetting;
-    private IColorSetting   colorBorderSetting;
-    private IColorSetting   colorTextSetting;
-    private IColorSetting   colorFaderSetting;
-    private IColorSetting   colorVUSetting;
-    private IColorSetting   colorEditSetting;
-    private IColorSetting   colorRecordSetting;
-    private IColorSetting   colorSoloSetting;
-    private IColorSetting   colorMuteSetting;
-    private IEnumSetting    sessionViewSetting;
-    private IEnumSetting    displayScenesClipsSetting;
+    private IIntegerSetting   displayBrightnessSetting;
+    private IIntegerSetting   ledBrightnessSetting;
+    private IEnumSetting      ribbonModeSetting;
+    private IIntegerSetting   ribbonModeCCSetting;
+    private IEnumSetting      ribbonModeNoteRepeatSetting;
+    private IIntegerSetting   padSensitivitySetting;
+    private IIntegerSetting   padGainSetting;
+    private IIntegerSetting   padDynamicsSetting;
+    private IEnumSetting      velocityCurveSetting;
+    private IEnumSetting      padThresholdSetting;
+    private IEnumSetting      debugModeSetting;
+    private IColorSetting     colorBackgroundSetting;
+    private IColorSetting     colorBackgroundDarkerSetting;
+    private IColorSetting     colorBackgroundLighterSetting;
+    private IColorSetting     colorBorderSetting;
+    private IColorSetting     colorTextSetting;
+    private IColorSetting     colorFaderSetting;
+    private IColorSetting     colorVUSetting;
+    private IColorSetting     colorEditSetting;
+    private IColorSetting     colorRecordSetting;
+    private IColorSetting     colorSoloSetting;
+    private IColorSetting     colorMuteSetting;
+    private IEnumSetting      sessionViewSetting;
+    private IEnumSetting      displayScenesClipsSetting;
 
 
     /**
@@ -292,13 +292,13 @@ public class PushConfiguration extends AbstractConfiguration implements IGraphic
      * @param host The DAW host
      * @param valueChanger The value changer
      * @param arpeggiatorModes The available arpeggiator modes
-     * @param isPush2 Use Push 1 or Push 2 controller?
+     * @param pushVersion The version of Push
      */
-    public PushConfiguration (final IHost host, final IValueChanger valueChanger, final List<ArpeggiatorMode> arpeggiatorModes, final boolean isPush2)
+    public PushConfiguration (final IHost host, final IValueChanger valueChanger, final List<ArpeggiatorMode> arpeggiatorModes, final PushVersion pushVersion)
     {
         super (host, valueChanger, arpeggiatorModes);
 
-        this.isPush2 = isPush2;
+        this.pushVersion = pushVersion;
         this.preferredAudioView = Views.CLIP_LENGTH;
 
         this.dontNotifyAll.add (DEBUG_WINDOW);
@@ -364,7 +364,6 @@ public class PushConfiguration extends AbstractConfiguration implements IGraphic
         this.activateStopAutomationOnKnobReleaseSetting (globalSettings);
         this.activateNewClipLengthSetting (globalSettings);
         this.activateKnobSpeedSetting (globalSettings);
-        this.activateUserPageNamesSetting (documentSettings);
 
         ///////////////////////////
         // Add Track - Device Favorites
@@ -379,10 +378,10 @@ public class PushConfiguration extends AbstractConfiguration implements IGraphic
         ///////////////////////////
         // Pad Sensitivity
 
-        if (this.isPush2)
-            this.activatePush2PadSettings (globalSettings);
-        else
+        if (this.pushVersion == PushVersion.VERSION_1)
             this.activatePush1PadSettings (globalSettings);
+        else
+            this.activatePush2PadSettings (globalSettings);
 
         this.activateConvertAftertouchSetting (globalSettings);
 
@@ -554,13 +553,13 @@ public class PushConfiguration extends AbstractConfiguration implements IGraphic
 
 
     /**
-     * Is this Push 1 or 2?
+     * Is this a modern Push version (2 or 3)?
      *
-     * @return True if Push 2
+     * @return True if Push 2 or 3
      */
-    public boolean isPush2 ()
+    public boolean isPushModern ()
     {
-        return this.isPush2;
+        return this.pushVersion != PushVersion.VERSION_1;
     }
 
 
@@ -861,7 +860,7 @@ public class PushConfiguration extends AbstractConfiguration implements IGraphic
             return this.layerMode;
 
         final Modes currentMixMode = this.getCurrentMixMode ();
-        if (!this.isPush2 || currentMixMode == null)
+        if (!this.isPushModern () || currentMixMode == null)
             this.layerMode = Modes.DEVICE_LAYER;
         else
         {
@@ -1106,7 +1105,7 @@ public class PushConfiguration extends AbstractConfiguration implements IGraphic
      */
     private void activatePush2HardwareSettings (final ISettingsUI settingsUI)
     {
-        if (!this.isPush2)
+        if (this.pushVersion == PushVersion.VERSION_1)
             return;
 
         this.displayBrightnessSetting = settingsUI.getRangeSetting ("Display Brightness", CATEGORY_HARDWARE_SETUP, 0, 100, 1, "%", 100);
@@ -1219,7 +1218,7 @@ public class PushConfiguration extends AbstractConfiguration implements IGraphic
      */
     private void activatePush2DisplayColorsSettings (final ISettingsUI settingsUI)
     {
-        if (!this.isPush2)
+        if (this.pushVersion == PushVersion.VERSION_1)
             return;
 
         settingsUI.getSignalSetting ("Reset colors to default", CATEGORY_COLORS, "Reset").addSignalObserver (value -> {
@@ -1332,7 +1331,7 @@ public class PushConfiguration extends AbstractConfiguration implements IGraphic
             this.notifyObservers (DEBUG_MODE);
         });
 
-        if (!this.isPush2)
+        if (this.pushVersion == PushVersion.VERSION_1)
             return;
 
         settingsUI.getSignalSetting (" ", CATEGORY_DEBUG, "Display window").addSignalObserver (value -> this.notifyObservers (DEBUG_WINDOW));

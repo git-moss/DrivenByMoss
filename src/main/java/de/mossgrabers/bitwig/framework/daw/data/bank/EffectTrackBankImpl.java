@@ -39,12 +39,12 @@ public class EffectTrackBankImpl extends AbstractTrackBankImpl
      * @param numScenes The number of scenes of a bank page
      * @param numSends The number of sends in a bank page
      * @param audioInstrumentTrackBank The track bank which monitors the audio and instrument tracks
+     * @param numParamPages The number of project parameter pages
+     * @param numParams The number of project parameters
      */
-    public EffectTrackBankImpl (final IHost host, final IValueChanger valueChanger, final TrackBank effectTrackBank, final CursorTrackImpl cursorTrack, final Track rootGroup, final ApplicationImpl application, final int numFxTracks, final int numScenes, final int numSends, final ITrackBank audioInstrumentTrackBank)
+    public EffectTrackBankImpl (final IHost host, final IValueChanger valueChanger, final TrackBank effectTrackBank, final CursorTrackImpl cursorTrack, final Track rootGroup, final ApplicationImpl application, final int numFxTracks, final int numScenes, final int numSends, final int numParamPages, final int numParams, final ITrackBank audioInstrumentTrackBank)
     {
-        // TODO API extension required - https://github.com/teotigraphix/Framework4Bitwig/issues/290
-        // Set last parameter to numSends when implemented
-        super (host, valueChanger, effectTrackBank, cursorTrack, rootGroup, application, numFxTracks, numScenes, 0);
+        super (host, valueChanger, effectTrackBank, cursorTrack, rootGroup, application, numFxTracks, numScenes, numSends);
 
         if (this.bank.isPresent ())
             this.bank.get ().followCursorTrack ((CursorTrack) cursorTrack.getTrack ());
@@ -58,24 +58,6 @@ public class EffectTrackBankImpl extends AbstractTrackBankImpl
     public void scrollTo (final int position)
     {
         super.scrollTo (position - this.audioInstrumentTrackBank.getItemCount ());
-    }
-
-
-    /** {@inheritDoc} */
-    @Override
-    public boolean canEditSend (final int sendIndex)
-    {
-        // TODO API extension required - https://github.com/teotigraphix/Framework4Bitwig/issues/290
-        return false;
-    }
-
-
-    /** {@inheritDoc} */
-    @Override
-    public String getEditSendName (final int sendIndex)
-    {
-        // TODO API extension required - https://github.com/teotigraphix/Framework4Bitwig/issues/290
-        return "";
     }
 
 

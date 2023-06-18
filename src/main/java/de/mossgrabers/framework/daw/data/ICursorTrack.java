@@ -4,6 +4,9 @@
 
 package de.mossgrabers.framework.daw.data;
 
+import de.mossgrabers.framework.daw.data.bank.IParameterBank;
+
+
 /**
  * Interface to the Cursor Track.
  *
@@ -11,5 +14,10 @@ package de.mossgrabers.framework.daw.data;
  */
 public interface ICursorTrack extends ITrack, ICursor
 {
-    // Intentionally empty
+    /**
+     * Get the track wide parameter bank.
+     *
+     * @return The bank
+     */
+    IParameterBank getParameterBank ();
 }

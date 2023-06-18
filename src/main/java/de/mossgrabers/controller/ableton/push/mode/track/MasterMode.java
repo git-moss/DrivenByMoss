@@ -239,7 +239,7 @@ public class MasterMode extends BaseMode<ITrack>
         {
             final ColorManager colorManager = this.model.getColorManager ();
 
-            final boolean isPush2 = this.surface.getConfiguration ().isPush2 ();
+            final boolean isPush2 = this.surface.getConfiguration ().isPushModern ();
             if (index == 0)
                 return this.getTrackButtonColor ();
             if (index < 4 || index == 5)

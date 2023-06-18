@@ -102,7 +102,7 @@ public class OSCParser extends AbstractOpenSoundControlParser
 
 
     /**
-     * Parses the OSC message into seprate parts.
+     * Parses the OSC message into separate parts.
      *
      * @param message The message
      * @return The split parts

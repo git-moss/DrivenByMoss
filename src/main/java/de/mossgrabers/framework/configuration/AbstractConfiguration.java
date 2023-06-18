@@ -446,8 +446,6 @@ public abstract class AbstractConfiguration implements Configuration
     private boolean                                   excludeDeactivatedItems             = false;
     private boolean                                   isTrackNavigationFlat               = true;
 
-    private final String []                           userPageNames                       = new String [8];
-
     private boolean                                   isDeleteActive                      = false;
     private boolean                                   isDuplicateActive                   = false;
 
@@ -472,9 +470,6 @@ public abstract class AbstractConfiguration implements Configuration
         this.valueChanger = valueChanger;
         this.arpeggiatorModes = arpeggiatorModes;
         this.noteRepeatMode = arpeggiatorModes == null || arpeggiatorModes.isEmpty () ? null : arpeggiatorModes.get (0);
-
-        for (int i = 0; i < this.userPageNames.length; i++)
-            this.userPageNames[i] = "Page " + (i + 1);
 
         for (int i = 0; i < this.footswitch.length; i++)
             this.footswitch[i] = FOOTSWITCH_NEW_BUTTON;
@@ -1524,21 +1519,6 @@ public abstract class AbstractConfiguration implements Configuration
 
 
     /**
-     * Activate the settings for naming the user pages.
-     *
-     * @param settingsUI The settings
-     */
-    protected void activateUserPageNamesSetting (final ISettingsUI settingsUI)
-    {
-        for (int i = 0; i < 8; i++)
-        {
-            final int index = i;
-            settingsUI.getStringSetting ("User Page " + (i + 1), CATEGORY_WORKFLOW, 10, "Page " + (i + 1)).addValueObserver (value -> this.userPageNames[index] = value);
-        }
-    }
-
-
-    /**
      * Activate the settings for the record button.
      *
      * @param settingsUI The settings
@@ -1841,17 +1821,6 @@ public abstract class AbstractConfiguration implements Configuration
     public boolean areDeactivatedItemsExcluded ()
     {
         return this.excludeDeactivatedItems;
-    }
-
-
-    /**
-     * Get the user page names.
-     *
-     * @return The user page names
-     */
-    public String [] getUserPageNames ()
-    {
-        return this.userPageNames;
     }
 
 

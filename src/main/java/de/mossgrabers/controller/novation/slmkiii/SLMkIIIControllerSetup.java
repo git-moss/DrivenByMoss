@@ -20,7 +20,8 @@ import de.mossgrabers.controller.novation.slmkiii.mode.NoteMode;
 import de.mossgrabers.controller.novation.slmkiii.mode.OptionsMode;
 import de.mossgrabers.controller.novation.slmkiii.mode.SequencerResolutionMode;
 import de.mossgrabers.controller.novation.slmkiii.mode.device.ParametersMode;
-import de.mossgrabers.controller.novation.slmkiii.mode.device.UserMode;
+import de.mossgrabers.controller.novation.slmkiii.mode.device.SLMkIIIProjectParamsMode;
+import de.mossgrabers.controller.novation.slmkiii.mode.device.SLMkIIITrackParamsMode;
 import de.mossgrabers.controller.novation.slmkiii.mode.track.SLMkIIIPanMode;
 import de.mossgrabers.controller.novation.slmkiii.mode.track.SLMkIIISendMode;
 import de.mossgrabers.controller.novation.slmkiii.mode.track.SLMkIIITrackMode;
@@ -174,7 +175,8 @@ public class SLMkIIIControllerSetup extends AbstractControllerSetup<SLMkIIIContr
             modeManager.register (Modes.get (Modes.SEND1, i), new SLMkIIISendMode (i, surface, this.model));
         modeManager.register (Modes.DEVICE_PARAMS, new ParametersMode (surface, this.model));
         modeManager.register (Modes.BROWSER, new BrowserMode (surface, this.model));
-        modeManager.register (Modes.USER, new UserMode (surface, this.model));
+        modeManager.register (Modes.USER, new SLMkIIIProjectParamsMode (surface, this.model));
+        modeManager.register (Modes.TRACK_DETAILS, new SLMkIIITrackParamsMode (surface, this.model));
 
         modeManager.register (Modes.FUNCTIONS, new OptionsMode (surface, this.model));
         modeManager.register (Modes.GROOVE, new SequencerResolutionMode (surface, this.model));

@@ -16,7 +16,6 @@ import de.mossgrabers.framework.daw.data.ISlot;
 import de.mossgrabers.framework.daw.data.ISpecificDevice;
 import de.mossgrabers.framework.daw.data.ITrack;
 import de.mossgrabers.framework.daw.data.bank.IMarkerBank;
-import de.mossgrabers.framework.daw.data.bank.IParameterBank;
 import de.mossgrabers.framework.daw.data.bank.ISceneBank;
 import de.mossgrabers.framework.daw.data.bank.ISlotBank;
 import de.mossgrabers.framework.daw.data.bank.ITrackBank;
@@ -169,14 +168,6 @@ public interface IModel
      * @return The device
      */
     IDrumDevice getDrumDevice (int pageSize);
-
-
-    /**
-     * Get the user parameter bank if any.
-     *
-     * @return The user parameter bank or null if none exists
-     */
-    IParameterBank getUserParameterBank ();
 
 
     /**

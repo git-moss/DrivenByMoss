@@ -4,6 +4,7 @@
 
 package de.mossgrabers.controller.ableton.push.controller;
 
+import de.mossgrabers.controller.ableton.push.PushVersion;
 import de.mossgrabers.framework.controller.ButtonID;
 import de.mossgrabers.framework.controller.color.ColorEx;
 import de.mossgrabers.framework.controller.color.ColorIndexException;
@@ -455,136 +456,138 @@ public class PushColorManager extends ColorManager
     public static final String       PUSH_GREY_LO_2                         = "PUSH_GREY_LO_2";
     public static final String       PUSH_GREEN_2                           = "PUSH_GREEN_2";
 
-    private final boolean            isPush2;
+    private final PushVersion        pushVersion;
 
 
     /**
      * Private due to utility class.
      *
-     * @param isPush2 True if Push 2
+     * @param pushVersion The version of Push
      */
-    public PushColorManager (final boolean isPush2)
+    public PushColorManager (final PushVersion pushVersion)
     {
-        this.isPush2 = isPush2;
+        this.pushVersion = pushVersion;
 
-        this.registerColorIndex (PUSH_BLACK, this.isPush2 ? PUSH2_COLOR_BLACK : PUSH1_COLOR_BLACK);
-        this.registerColorIndex (PUSH_RED, this.isPush2 ? PUSH2_COLOR_RED_HI : PUSH1_COLOR_RED_HI);
-        this.registerColorIndex (PUSH_RED_LO, this.isPush2 ? PUSH2_COLOR_RED_LO : PUSH1_COLOR_RED_LO);
-        this.registerColorIndex (PUSH_RED_HI, this.isPush2 ? PUSH2_COLOR_RED_HI : PUSH1_COLOR_RED_HI);
-        this.registerColorIndex (PUSH_ORANGE_LO, this.isPush2 ? PUSH2_COLOR_ORANGE_LO : PUSH1_COLOR_ORANGE_LO);
-        this.registerColorIndex (PUSH_ORANGE_HI, this.isPush2 ? PUSH2_COLOR_ORANGE_HI : PUSH1_COLOR_ORANGE_HI);
-        this.registerColorIndex (PUSH_YELLOW_LO, this.isPush2 ? PUSH2_COLOR_YELLOW_LO : PUSH1_COLOR_YELLOW_LO);
-        this.registerColorIndex (PUSH_YELLOW_MD, this.isPush2 ? PUSH2_COLOR_YELLOW_MD : PUSH1_COLOR_YELLOW_MD);
-        this.registerColorIndex (PUSH_GREEN_LO, this.isPush2 ? PUSH2_COLOR_GREEN_LO : PUSH1_COLOR_GREEN_LO);
-        this.registerColorIndex (PUSH_GREEN_HI, this.isPush2 ? PUSH2_COLOR_GREEN_HI : PUSH1_COLOR_GREEN_HI);
+        final boolean isModern = this.pushVersion != PushVersion.VERSION_1;
 
-        this.registerColorIndex (PUSH_BLACK_2, this.isPush2 ? PUSH2_COLOR2_BLACK : PUSH1_COLOR2_BLACK);
-        this.registerColorIndex (PUSH_WHITE_2, this.isPush2 ? PUSH2_COLOR2_WHITE : PUSH1_COLOR2_WHITE);
-        this.registerColorIndex (PUSH_GREY_LO_2, this.isPush2 ? PUSH2_COLOR2_GREY_LO : PUSH1_COLOR2_GREY_LO);
-        this.registerColorIndex (PUSH_GREEN_2, this.isPush2 ? PUSH2_COLOR2_GREEN : PUSH1_COLOR2_GREEN);
+        this.registerColorIndex (PUSH_BLACK, isModern ? PUSH2_COLOR_BLACK : PUSH1_COLOR_BLACK);
+        this.registerColorIndex (PUSH_RED, isModern ? PUSH2_COLOR_RED_HI : PUSH1_COLOR_RED_HI);
+        this.registerColorIndex (PUSH_RED_LO, isModern ? PUSH2_COLOR_RED_LO : PUSH1_COLOR_RED_LO);
+        this.registerColorIndex (PUSH_RED_HI, isModern ? PUSH2_COLOR_RED_HI : PUSH1_COLOR_RED_HI);
+        this.registerColorIndex (PUSH_ORANGE_LO, isModern ? PUSH2_COLOR_ORANGE_LO : PUSH1_COLOR_ORANGE_LO);
+        this.registerColorIndex (PUSH_ORANGE_HI, isModern ? PUSH2_COLOR_ORANGE_HI : PUSH1_COLOR_ORANGE_HI);
+        this.registerColorIndex (PUSH_YELLOW_LO, isModern ? PUSH2_COLOR_YELLOW_LO : PUSH1_COLOR_YELLOW_LO);
+        this.registerColorIndex (PUSH_YELLOW_MD, isModern ? PUSH2_COLOR_YELLOW_MD : PUSH1_COLOR_YELLOW_MD);
+        this.registerColorIndex (PUSH_GREEN_LO, isModern ? PUSH2_COLOR_GREEN_LO : PUSH1_COLOR_GREEN_LO);
+        this.registerColorIndex (PUSH_GREEN_HI, isModern ? PUSH2_COLOR_GREEN_HI : PUSH1_COLOR_GREEN_HI);
 
-        this.registerColorIndex (Scales.SCALE_COLOR_OFF, isPush2 ? PUSH2_COLOR2_BLACK : PUSH1_COLOR2_BLACK);
-        this.registerColorIndex (Scales.SCALE_COLOR_OCTAVE, isPush2 ? PUSH2_COLOR2_OCEAN_HI : PUSH1_COLOR2_OCEAN_HI);
-        this.registerColorIndex (Scales.SCALE_COLOR_NOTE, isPush2 ? PUSH2_COLOR2_WHITE : PUSH1_COLOR2_WHITE);
-        this.registerColorIndex (Scales.SCALE_COLOR_OUT_OF_SCALE, isPush2 ? PUSH2_COLOR_BLACK : PUSH1_COLOR_BLACK);
+        this.registerColorIndex (PUSH_BLACK_2, isModern ? PUSH2_COLOR2_BLACK : PUSH1_COLOR2_BLACK);
+        this.registerColorIndex (PUSH_WHITE_2, isModern ? PUSH2_COLOR2_WHITE : PUSH1_COLOR2_WHITE);
+        this.registerColorIndex (PUSH_GREY_LO_2, isModern ? PUSH2_COLOR2_GREY_LO : PUSH1_COLOR2_GREY_LO);
+        this.registerColorIndex (PUSH_GREEN_2, isModern ? PUSH2_COLOR2_GREEN : PUSH1_COLOR2_GREEN);
 
-        this.registerColorIndex (AbstractFeatureGroup.BUTTON_COLOR_OFF, isPush2 ? PUSH2_COLOR_BLACK : PUSH1_COLOR_BLACK);
-        this.registerColorIndex (AbstractFeatureGroup.BUTTON_COLOR_ON, isPush2 ? PUSH2_COLOR2_GREY_LO : PUSH1_COLOR_GREEN_LO);
-        this.registerColorIndex (AbstractMode.BUTTON_COLOR_HI, isPush2 ? PUSH2_COLOR2_WHITE : PUSH1_COLOR_YELLOW_MD);
-        this.registerColorIndex (AbstractMode.BUTTON_COLOR2_ON, isPush2 ? PUSH2_COLOR2_GREY_LO : PUSH1_COLOR2_GREEN_LO);
-        this.registerColorIndex (AbstractMode.BUTTON_COLOR2_HI, isPush2 ? PUSH2_COLOR2_WHITE : PUSH1_COLOR2_YELLOW_HI);
+        this.registerColorIndex (Scales.SCALE_COLOR_OFF, isModern ? PUSH2_COLOR2_BLACK : PUSH1_COLOR2_BLACK);
+        this.registerColorIndex (Scales.SCALE_COLOR_OCTAVE, isModern ? PUSH2_COLOR2_OCEAN_HI : PUSH1_COLOR2_OCEAN_HI);
+        this.registerColorIndex (Scales.SCALE_COLOR_NOTE, isModern ? PUSH2_COLOR2_WHITE : PUSH1_COLOR2_WHITE);
+        this.registerColorIndex (Scales.SCALE_COLOR_OUT_OF_SCALE, isModern ? PUSH2_COLOR_BLACK : PUSH1_COLOR_BLACK);
 
-        this.registerColorIndex (AbstractSequencerView.COLOR_NO_CONTENT, isPush2 ? PUSH2_COLOR2_BLACK : PUSH1_COLOR2_BLACK);
-        this.registerColorIndex (AbstractSequencerView.COLOR_NO_CONTENT_4, isPush2 ? PUSH2_COLOR2_BLACK : PUSH1_COLOR2_BLACK);
-        this.registerColorIndex (AbstractSequencerView.COLOR_CONTENT, isPush2 ? PUSH2_COLOR2_BLUE_HI : PUSH1_COLOR2_BLUE_HI);
-        this.registerColorIndex (AbstractSequencerView.COLOR_CONTENT_CONT, isPush2 ? PUSH2_COLOR2_BLUE_LO : PUSH1_COLOR2_BLUE_LO);
-        this.registerColorIndex (AbstractSequencerView.COLOR_STEP_HILITE_NO_CONTENT, isPush2 ? PUSH2_COLOR2_GREEN_LO : PUSH1_COLOR2_GREEN_LO);
-        this.registerColorIndex (AbstractSequencerView.COLOR_STEP_HILITE_CONTENT, isPush2 ? PUSH2_COLOR2_GREEN_HI : PUSH1_COLOR2_GREEN_HI);
-        this.registerColorIndex (AbstractSequencerView.COLOR_STEP_MUTED, isPush2 ? PUSH2_COLOR2_GREY_MD : PUSH1_COLOR2_GREY_MD);
-        this.registerColorIndex (AbstractSequencerView.COLOR_STEP_MUTED_CONT, isPush2 ? PUSH2_COLOR2_GREY_LO : PUSH1_COLOR2_GREY_LO);
-        this.registerColorIndex (AbstractSequencerView.COLOR_STEP_SELECTED, isPush2 ? PUSH2_COLOR2_YELLOW_HI : PUSH1_COLOR2_YELLOW_HI);
-        this.registerColorIndex (AbstractSequencerView.COLOR_PAGE, isPush2 ? PUSH2_COLOR2_WHITE : PUSH1_COLOR2_WHITE);
-        this.registerColorIndex (AbstractSequencerView.COLOR_ACTIVE_PAGE, isPush2 ? PUSH2_COLOR2_GREEN : PUSH1_COLOR2_GREEN);
-        this.registerColorIndex (AbstractSequencerView.COLOR_SELECTED_PAGE, isPush2 ? PUSH2_COLOR2_OCEAN_HI : PUSH1_COLOR2_OCEAN_HI);
-        this.registerColorIndex (AbstractSequencerView.COLOR_RESOLUTION, isPush2 ? PUSH2_COLOR_SCENE_ORANGE : PUSH1_COLOR_SCENE_ORANGE);
-        this.registerColorIndex (AbstractSequencerView.COLOR_RESOLUTION_SELECTED, isPush2 ? PUSH2_COLOR_SCENE_ORANGE_HI : PUSH1_COLOR_SCENE_ORANGE_HI);
-        this.registerColorIndex (AbstractSequencerView.COLOR_RESOLUTION_OFF, isPush2 ? PUSH2_COLOR2_BLACK : PUSH1_COLOR2_BLACK);
-        this.registerColorIndex (AbstractSequencerView.COLOR_TRANSPOSE, isPush2 ? PUSH2_COLOR_SCENE_WHITE : PUSH1_COLOR_SCENE_YELLOW);
-        this.registerColorIndex (AbstractSequencerView.COLOR_TRANSPOSE_SELECTED, isPush2 ? PUSH2_COLOR_SCENE_YELLOW_HI : PUSH1_COLOR_SCENE_YELLOW_HI);
+        this.registerColorIndex (AbstractFeatureGroup.BUTTON_COLOR_OFF, isModern ? PUSH2_COLOR_BLACK : PUSH1_COLOR_BLACK);
+        this.registerColorIndex (AbstractFeatureGroup.BUTTON_COLOR_ON, isModern ? PUSH2_COLOR2_GREY_LO : PUSH1_COLOR_GREEN_LO);
+        this.registerColorIndex (AbstractMode.BUTTON_COLOR_HI, isModern ? PUSH2_COLOR2_WHITE : PUSH1_COLOR_YELLOW_MD);
+        this.registerColorIndex (AbstractMode.BUTTON_COLOR2_ON, isModern ? PUSH2_COLOR2_GREY_LO : PUSH1_COLOR2_GREEN_LO);
+        this.registerColorIndex (AbstractMode.BUTTON_COLOR2_HI, isModern ? PUSH2_COLOR2_WHITE : PUSH1_COLOR2_YELLOW_HI);
 
-        this.registerColorIndex (AbstractDrumView.COLOR_PAD_OFF, isPush2 ? PUSH2_COLOR_BLACK : PUSH1_COLOR_BLACK);
-        this.registerColorIndex (AbstractDrumView.COLOR_PAD_RECORD, isPush2 ? PUSH2_COLOR2_RED_HI : PUSH1_COLOR2_RED_HI);
-        this.registerColorIndex (AbstractDrumView.COLOR_PAD_PLAY, isPush2 ? PUSH2_COLOR2_GREEN_HI : PUSH1_COLOR2_GREEN_HI);
-        this.registerColorIndex (AbstractDrumView.COLOR_PAD_SELECTED, isPush2 ? PUSH2_COLOR2_BLUE_HI : PUSH1_COLOR2_BLUE_HI);
-        this.registerColorIndex (AbstractDrumView.COLOR_PAD_MUTED, isPush2 ? PUSH2_COLOR2_AMBER_LO : PUSH1_COLOR2_AMBER_LO);
-        this.registerColorIndex (AbstractDrumView.COLOR_PAD_HAS_CONTENT, isPush2 ? PUSH2_COLOR2_YELLOW_HI : PUSH1_COLOR2_YELLOW_HI);
-        this.registerColorIndex (AbstractDrumView.COLOR_PAD_NO_CONTENT, isPush2 ? PUSH2_COLOR2_YELLOW_LO : PUSH1_COLOR2_YELLOW_LO);
+        this.registerColorIndex (AbstractSequencerView.COLOR_NO_CONTENT, isModern ? PUSH2_COLOR2_BLACK : PUSH1_COLOR2_BLACK);
+        this.registerColorIndex (AbstractSequencerView.COLOR_NO_CONTENT_4, isModern ? PUSH2_COLOR2_BLACK : PUSH1_COLOR2_BLACK);
+        this.registerColorIndex (AbstractSequencerView.COLOR_CONTENT, isModern ? PUSH2_COLOR2_BLUE_HI : PUSH1_COLOR2_BLUE_HI);
+        this.registerColorIndex (AbstractSequencerView.COLOR_CONTENT_CONT, isModern ? PUSH2_COLOR2_BLUE_LO : PUSH1_COLOR2_BLUE_LO);
+        this.registerColorIndex (AbstractSequencerView.COLOR_STEP_HILITE_NO_CONTENT, isModern ? PUSH2_COLOR2_GREEN_LO : PUSH1_COLOR2_GREEN_LO);
+        this.registerColorIndex (AbstractSequencerView.COLOR_STEP_HILITE_CONTENT, isModern ? PUSH2_COLOR2_GREEN_HI : PUSH1_COLOR2_GREEN_HI);
+        this.registerColorIndex (AbstractSequencerView.COLOR_STEP_MUTED, isModern ? PUSH2_COLOR2_GREY_MD : PUSH1_COLOR2_GREY_MD);
+        this.registerColorIndex (AbstractSequencerView.COLOR_STEP_MUTED_CONT, isModern ? PUSH2_COLOR2_GREY_LO : PUSH1_COLOR2_GREY_LO);
+        this.registerColorIndex (AbstractSequencerView.COLOR_STEP_SELECTED, isModern ? PUSH2_COLOR2_YELLOW_HI : PUSH1_COLOR2_YELLOW_HI);
+        this.registerColorIndex (AbstractSequencerView.COLOR_PAGE, isModern ? PUSH2_COLOR2_WHITE : PUSH1_COLOR2_WHITE);
+        this.registerColorIndex (AbstractSequencerView.COLOR_ACTIVE_PAGE, isModern ? PUSH2_COLOR2_GREEN : PUSH1_COLOR2_GREEN);
+        this.registerColorIndex (AbstractSequencerView.COLOR_SELECTED_PAGE, isModern ? PUSH2_COLOR2_OCEAN_HI : PUSH1_COLOR2_OCEAN_HI);
+        this.registerColorIndex (AbstractSequencerView.COLOR_RESOLUTION, isModern ? PUSH2_COLOR_SCENE_ORANGE : PUSH1_COLOR_SCENE_ORANGE);
+        this.registerColorIndex (AbstractSequencerView.COLOR_RESOLUTION_SELECTED, isModern ? PUSH2_COLOR_SCENE_ORANGE_HI : PUSH1_COLOR_SCENE_ORANGE_HI);
+        this.registerColorIndex (AbstractSequencerView.COLOR_RESOLUTION_OFF, isModern ? PUSH2_COLOR2_BLACK : PUSH1_COLOR2_BLACK);
+        this.registerColorIndex (AbstractSequencerView.COLOR_TRANSPOSE, isModern ? PUSH2_COLOR_SCENE_WHITE : PUSH1_COLOR_SCENE_YELLOW);
+        this.registerColorIndex (AbstractSequencerView.COLOR_TRANSPOSE_SELECTED, isModern ? PUSH2_COLOR_SCENE_YELLOW_HI : PUSH1_COLOR_SCENE_YELLOW_HI);
 
-        this.registerColorIndex (AbstractPlayView.COLOR_PLAY, isPush2 ? PUSH2_COLOR2_GREEN_HI : PUSH1_COLOR2_GREEN_HI);
-        this.registerColorIndex (AbstractPlayView.COLOR_RECORD, isPush2 ? PUSH2_COLOR2_RED_HI : PUSH1_COLOR2_RED_HI);
-        this.registerColorIndex (AbstractPlayView.COLOR_OFF, isPush2 ? PUSH2_COLOR2_BLACK : PUSH1_COLOR2_BLACK);
+        this.registerColorIndex (AbstractDrumView.COLOR_PAD_OFF, isModern ? PUSH2_COLOR_BLACK : PUSH1_COLOR_BLACK);
+        this.registerColorIndex (AbstractDrumView.COLOR_PAD_RECORD, isModern ? PUSH2_COLOR2_RED_HI : PUSH1_COLOR2_RED_HI);
+        this.registerColorIndex (AbstractDrumView.COLOR_PAD_PLAY, isModern ? PUSH2_COLOR2_GREEN_HI : PUSH1_COLOR2_GREEN_HI);
+        this.registerColorIndex (AbstractDrumView.COLOR_PAD_SELECTED, isModern ? PUSH2_COLOR2_BLUE_HI : PUSH1_COLOR2_BLUE_HI);
+        this.registerColorIndex (AbstractDrumView.COLOR_PAD_MUTED, isModern ? PUSH2_COLOR2_AMBER_LO : PUSH1_COLOR2_AMBER_LO);
+        this.registerColorIndex (AbstractDrumView.COLOR_PAD_HAS_CONTENT, isModern ? PUSH2_COLOR2_YELLOW_HI : PUSH1_COLOR2_YELLOW_HI);
+        this.registerColorIndex (AbstractDrumView.COLOR_PAD_NO_CONTENT, isModern ? PUSH2_COLOR2_YELLOW_LO : PUSH1_COLOR2_YELLOW_LO);
 
-        this.registerColorIndex (ClipLengthView.COLOR_OUTSIDE, isPush2 ? PUSH2_COLOR_BLACK : PUSH1_COLOR_BLACK);
-        this.registerColorIndex (ClipLengthView.COLOR_PART, isPush2 ? PUSH2_COLOR2_OCEAN_HI : PUSH1_COLOR2_OCEAN_HI);
+        this.registerColorIndex (AbstractPlayView.COLOR_PLAY, isModern ? PUSH2_COLOR2_GREEN_HI : PUSH1_COLOR2_GREEN_HI);
+        this.registerColorIndex (AbstractPlayView.COLOR_RECORD, isModern ? PUSH2_COLOR2_RED_HI : PUSH1_COLOR2_RED_HI);
+        this.registerColorIndex (AbstractPlayView.COLOR_OFF, isModern ? PUSH2_COLOR2_BLACK : PUSH1_COLOR2_BLACK);
 
-        this.registerColorIndex (AbstractSessionView.COLOR_SCENE, isPush2 ? PUSH2_COLOR_SCENE_GREEN : PUSH1_COLOR_SCENE_GREEN);
-        this.registerColorIndex (AbstractSessionView.COLOR_SELECTED_SCENE, isPush2 ? PUSH2_COLOR_SCENE_GREEN_HI : PUSH1_COLOR_SCENE_GREEN_HI);
-        this.registerColorIndex (AbstractSessionView.COLOR_SCENE_OFF, isPush2 ? PUSH2_COLOR2_BLACK : PUSH1_COLOR2_BLACK);
+        this.registerColorIndex (ClipLengthView.COLOR_OUTSIDE, isModern ? PUSH2_COLOR_BLACK : PUSH1_COLOR_BLACK);
+        this.registerColorIndex (ClipLengthView.COLOR_PART, isModern ? PUSH2_COLOR2_OCEAN_HI : PUSH1_COLOR2_OCEAN_HI);
 
-        this.registerColorIndex (ScenePlayView.COLOR_SELECTED_PLAY_SCENE, isPush2 ? PUSH2_COLOR2_WHITE : PUSH1_COLOR2_WHITE);
+        this.registerColorIndex (AbstractSessionView.COLOR_SCENE, isModern ? PUSH2_COLOR_SCENE_GREEN : PUSH1_COLOR_SCENE_GREEN);
+        this.registerColorIndex (AbstractSessionView.COLOR_SELECTED_SCENE, isModern ? PUSH2_COLOR_SCENE_GREEN_HI : PUSH1_COLOR_SCENE_GREEN_HI);
+        this.registerColorIndex (AbstractSessionView.COLOR_SCENE_OFF, isModern ? PUSH2_COLOR2_BLACK : PUSH1_COLOR2_BLACK);
 
-        this.registerColorIndex (IPadGrid.GRID_OFF, isPush2 ? PUSH2_COLOR2_BLACK : PUSH1_COLOR2_BLACK);
+        this.registerColorIndex (ScenePlayView.COLOR_SELECTED_PLAY_SCENE, isModern ? PUSH2_COLOR2_WHITE : PUSH1_COLOR2_WHITE);
 
-        this.registerColorIndex (NOTE_REPEAT_PERIOD_OFF, isPush2 ? PUSH2_COLOR_SCENE_YELLOW : PUSH1_COLOR_SCENE_YELLOW);
-        this.registerColorIndex (NOTE_REPEAT_PERIOD_HI, isPush2 ? PUSH2_COLOR_SCENE_YELLOW_HI : PUSH1_COLOR_SCENE_YELLOW_HI);
-        this.registerColorIndex (NOTE_REPEAT_LENGTH_OFF, isPush2 ? PUSH2_COLOR_SCENE_RED : PUSH1_COLOR_SCENE_RED);
-        this.registerColorIndex (NOTE_REPEAT_LENGTH_HI, isPush2 ? PUSH2_COLOR_SCENE_RED_HI : PUSH1_COLOR_SCENE_RED_HI);
+        this.registerColorIndex (IPadGrid.GRID_OFF, isModern ? PUSH2_COLOR2_BLACK : PUSH1_COLOR2_BLACK);
+
+        this.registerColorIndex (NOTE_REPEAT_PERIOD_OFF, isModern ? PUSH2_COLOR_SCENE_YELLOW : PUSH1_COLOR_SCENE_YELLOW);
+        this.registerColorIndex (NOTE_REPEAT_PERIOD_HI, isModern ? PUSH2_COLOR_SCENE_YELLOW_HI : PUSH1_COLOR_SCENE_YELLOW_HI);
+        this.registerColorIndex (NOTE_REPEAT_LENGTH_OFF, isModern ? PUSH2_COLOR_SCENE_RED : PUSH1_COLOR_SCENE_RED);
+        this.registerColorIndex (NOTE_REPEAT_LENGTH_HI, isModern ? PUSH2_COLOR_SCENE_RED_HI : PUSH1_COLOR_SCENE_RED_HI);
 
         // Push 2 DAW colors are set in the color palette from indices 70 to 96
-        this.registerColorIndex (DAWColor.COLOR_OFF, isPush2 ? PUSH2_COLOR2_BLACK : PUSH1_COLOR2_BLACK);
-        this.registerColorIndex (DAWColor.DAW_COLOR_GRAY_HALF, isPush2 ? 70 : PUSH1_COLOR2_GREY_MD);
-        this.registerColorIndex (DAWColor.DAW_COLOR_DARK_GRAY, isPush2 ? 71 : 1);
-        this.registerColorIndex (DAWColor.DAW_COLOR_GRAY, isPush2 ? 72 : PUSH1_COLOR2_GREY_MD);
-        this.registerColorIndex (DAWColor.DAW_COLOR_LIGHT_GRAY, isPush2 ? 73 : PUSH1_COLOR2_GREY_LT);
-        this.registerColorIndex (DAWColor.DAW_COLOR_SILVER, isPush2 ? 74 : 40);
-        this.registerColorIndex (DAWColor.DAW_COLOR_DARK_BROWN, isPush2 ? 75 : 11);
-        this.registerColorIndex (DAWColor.DAW_COLOR_BROWN, isPush2 ? 76 : 12);
-        this.registerColorIndex (DAWColor.DAW_COLOR_DARK_BLUE, isPush2 ? 77 : 42);
-        this.registerColorIndex (DAWColor.DAW_COLOR_PURPLE_BLUE, isPush2 ? 78 : 44);
-        this.registerColorIndex (DAWColor.DAW_COLOR_PURPLE, isPush2 ? 79 : 81);
-        this.registerColorIndex (DAWColor.DAW_COLOR_PINK, isPush2 ? 80 : 57);
-        this.registerColorIndex (DAWColor.DAW_COLOR_RED, isPush2 ? 81 : 6);
-        this.registerColorIndex (DAWColor.DAW_COLOR_ORANGE, isPush2 ? 82 : 60);
-        this.registerColorIndex (DAWColor.DAW_COLOR_LIGHT_ORANGE, isPush2 ? 83 : 62);
-        this.registerColorIndex (DAWColor.DAW_COLOR_MOSS_GREEN, isPush2 ? 84 : 19);
-        this.registerColorIndex (DAWColor.DAW_COLOR_GREEN, isPush2 ? 85 : 26);
-        this.registerColorIndex (DAWColor.DAW_COLOR_COLD_GREEN, isPush2 ? 86 : 30);
-        this.registerColorIndex (DAWColor.DAW_COLOR_BLUE, isPush2 ? 87 : 37);
-        this.registerColorIndex (DAWColor.DAW_COLOR_LIGHT_PURPLE, isPush2 ? 88 : 48);
-        this.registerColorIndex (DAWColor.DAW_COLOR_LIGHT_PINK, isPush2 ? 89 : 56);
-        this.registerColorIndex (DAWColor.DAW_COLOR_ROSE, isPush2 ? 90 : 4);
-        this.registerColorIndex (DAWColor.DAW_COLOR_REDDISH_BROWN, isPush2 ? 91 : 10);
-        this.registerColorIndex (DAWColor.DAW_COLOR_LIGHT_BROWN, isPush2 ? 92 : 61);
-        this.registerColorIndex (DAWColor.DAW_COLOR_LIGHT_GREEN, isPush2 ? 93 : 18);
-        this.registerColorIndex (DAWColor.DAW_COLOR_BLUISH_GREEN, isPush2 ? 94 : 25);
-        this.registerColorIndex (DAWColor.DAW_COLOR_GREEN_BLUE, isPush2 ? 95 : 32);
-        this.registerColorIndex (DAWColor.DAW_COLOR_LIGHT_BLUE, isPush2 ? 96 : 41);
+        this.registerColorIndex (DAWColor.COLOR_OFF, isModern ? PUSH2_COLOR2_BLACK : PUSH1_COLOR2_BLACK);
+        this.registerColorIndex (DAWColor.DAW_COLOR_GRAY_HALF, isModern ? 70 : PUSH1_COLOR2_GREY_MD);
+        this.registerColorIndex (DAWColor.DAW_COLOR_DARK_GRAY, isModern ? 71 : 1);
+        this.registerColorIndex (DAWColor.DAW_COLOR_GRAY, isModern ? 72 : PUSH1_COLOR2_GREY_MD);
+        this.registerColorIndex (DAWColor.DAW_COLOR_LIGHT_GRAY, isModern ? 73 : PUSH1_COLOR2_GREY_LT);
+        this.registerColorIndex (DAWColor.DAW_COLOR_SILVER, isModern ? 74 : 40);
+        this.registerColorIndex (DAWColor.DAW_COLOR_DARK_BROWN, isModern ? 75 : 11);
+        this.registerColorIndex (DAWColor.DAW_COLOR_BROWN, isModern ? 76 : 12);
+        this.registerColorIndex (DAWColor.DAW_COLOR_DARK_BLUE, isModern ? 77 : 42);
+        this.registerColorIndex (DAWColor.DAW_COLOR_PURPLE_BLUE, isModern ? 78 : 44);
+        this.registerColorIndex (DAWColor.DAW_COLOR_PURPLE, isModern ? 79 : 81);
+        this.registerColorIndex (DAWColor.DAW_COLOR_PINK, isModern ? 80 : 57);
+        this.registerColorIndex (DAWColor.DAW_COLOR_RED, isModern ? 81 : 6);
+        this.registerColorIndex (DAWColor.DAW_COLOR_ORANGE, isModern ? 82 : 60);
+        this.registerColorIndex (DAWColor.DAW_COLOR_LIGHT_ORANGE, isModern ? 83 : 62);
+        this.registerColorIndex (DAWColor.DAW_COLOR_MOSS_GREEN, isModern ? 84 : 19);
+        this.registerColorIndex (DAWColor.DAW_COLOR_GREEN, isModern ? 85 : 26);
+        this.registerColorIndex (DAWColor.DAW_COLOR_COLD_GREEN, isModern ? 86 : 30);
+        this.registerColorIndex (DAWColor.DAW_COLOR_BLUE, isModern ? 87 : 37);
+        this.registerColorIndex (DAWColor.DAW_COLOR_LIGHT_PURPLE, isModern ? 88 : 48);
+        this.registerColorIndex (DAWColor.DAW_COLOR_LIGHT_PINK, isModern ? 89 : 56);
+        this.registerColorIndex (DAWColor.DAW_COLOR_ROSE, isModern ? 90 : 4);
+        this.registerColorIndex (DAWColor.DAW_COLOR_REDDISH_BROWN, isModern ? 91 : 10);
+        this.registerColorIndex (DAWColor.DAW_COLOR_LIGHT_BROWN, isModern ? 92 : 61);
+        this.registerColorIndex (DAWColor.DAW_COLOR_LIGHT_GREEN, isModern ? 93 : 18);
+        this.registerColorIndex (DAWColor.DAW_COLOR_BLUISH_GREEN, isModern ? 94 : 25);
+        this.registerColorIndex (DAWColor.DAW_COLOR_GREEN_BLUE, isModern ? 95 : 32);
+        this.registerColorIndex (DAWColor.DAW_COLOR_LIGHT_BLUE, isModern ? 96 : 41);
 
         this.registerColorIndex (ColorManager.BUTTON_STATE_OFF, 0);
-        this.registerColorIndex (ColorManager.BUTTON_STATE_ON, isPush2 ? 8 : 1);
-        this.registerColorIndex (ColorManager.BUTTON_STATE_HI, isPush2 ? 127 : 4);
-        this.registerColorIndex (PUSH_BUTTON_STATE_REC_ON, isPush2 ? PUSH2_COLOR2_GREY_LO : 1);
-        this.registerColorIndex (PUSH_BUTTON_STATE_REC_HI, isPush2 ? PUSH2_COLOR2_RED_HI : 4);
-        this.registerColorIndex (PUSH_BUTTON_STATE_OVR_ON, isPush2 ? PUSH2_COLOR2_GREY_LO : 1);
-        this.registerColorIndex (PUSH_BUTTON_STATE_OVR_HI, isPush2 ? PUSH2_COLOR2_AMBER : 2);
-        this.registerColorIndex (PUSH_BUTTON_STATE_PLAY_ON, isPush2 ? PUSH2_COLOR2_GREY_LO : 1);
-        this.registerColorIndex (PUSH_BUTTON_STATE_PLAY_HI, isPush2 ? PUSH2_COLOR2_GREEN_HI : 4);
-        this.registerColorIndex (PUSH_BUTTON_STATE_MUTE_ON, isPush2 ? PUSH2_COLOR2_GREY_LO : 1);
-        this.registerColorIndex (PUSH_BUTTON_STATE_MUTE_HI, isPush2 ? PUSH2_COLOR2_AMBER_LO : 4);
-        this.registerColorIndex (PUSH_BUTTON_STATE_SOLO_ON, isPush2 ? PUSH2_COLOR2_GREY_LO : 1);
-        this.registerColorIndex (PUSH_BUTTON_STATE_SOLO_HI, isPush2 ? PUSH2_COLOR2_YELLOW : 4);
-        this.registerColorIndex (PUSH_BUTTON_STATE_STOP_ON, isPush2 ? PUSH2_COLOR2_RED_LO : 1);
-        this.registerColorIndex (PUSH_BUTTON_STATE_STOP_HI, isPush2 ? PUSH2_COLOR2_RED_HI : 4);
+        this.registerColorIndex (ColorManager.BUTTON_STATE_ON, isModern ? 8 : 1);
+        this.registerColorIndex (ColorManager.BUTTON_STATE_HI, isModern ? 127 : 4);
+        this.registerColorIndex (PUSH_BUTTON_STATE_REC_ON, isModern ? PUSH2_COLOR2_GREY_LO : 1);
+        this.registerColorIndex (PUSH_BUTTON_STATE_REC_HI, isModern ? PUSH2_COLOR2_RED_HI : 4);
+        this.registerColorIndex (PUSH_BUTTON_STATE_OVR_ON, isModern ? PUSH2_COLOR2_GREY_LO : 1);
+        this.registerColorIndex (PUSH_BUTTON_STATE_OVR_HI, isModern ? PUSH2_COLOR2_AMBER : 2);
+        this.registerColorIndex (PUSH_BUTTON_STATE_PLAY_ON, isModern ? PUSH2_COLOR2_GREY_LO : 1);
+        this.registerColorIndex (PUSH_BUTTON_STATE_PLAY_HI, isModern ? PUSH2_COLOR2_GREEN_HI : 4);
+        this.registerColorIndex (PUSH_BUTTON_STATE_MUTE_ON, isModern ? PUSH2_COLOR2_GREY_LO : 1);
+        this.registerColorIndex (PUSH_BUTTON_STATE_MUTE_HI, isModern ? PUSH2_COLOR2_AMBER_LO : 4);
+        this.registerColorIndex (PUSH_BUTTON_STATE_SOLO_ON, isModern ? PUSH2_COLOR2_GREY_LO : 1);
+        this.registerColorIndex (PUSH_BUTTON_STATE_SOLO_HI, isModern ? PUSH2_COLOR2_YELLOW : 4);
+        this.registerColorIndex (PUSH_BUTTON_STATE_STOP_ON, isModern ? PUSH2_COLOR2_RED_LO : 1);
+        this.registerColorIndex (PUSH_BUTTON_STATE_STOP_HI, isModern ? PUSH2_COLOR2_RED_HI : 4);
 
         for (int i = 0; i < 128; i++)
             this.registerColor (i, getPaletteColor (i));
@@ -626,7 +629,7 @@ public class PushColorManager extends ColorManager
         if (colorIndex < 0)
             return ColorEx.BLACK;
 
-        if (this.isPush2)
+        if (this.pushVersion != PushVersion.VERSION_1)
         {
             switch (buttonID)
             {

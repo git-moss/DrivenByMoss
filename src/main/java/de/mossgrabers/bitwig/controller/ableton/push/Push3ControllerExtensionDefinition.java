@@ -8,7 +8,7 @@ import de.mossgrabers.bitwig.framework.BitwigSetupFactory;
 import de.mossgrabers.bitwig.framework.configuration.SettingsUIImpl;
 import de.mossgrabers.bitwig.framework.daw.HostImpl;
 import de.mossgrabers.bitwig.framework.extension.AbstractControllerExtensionDefinition;
-import de.mossgrabers.controller.ableton.push.Push1ControllerDefinition;
+import de.mossgrabers.controller.ableton.push.Push3ControllerDefinition;
 import de.mossgrabers.controller.ableton.push.PushConfiguration;
 import de.mossgrabers.controller.ableton.push.PushControllerSetup;
 import de.mossgrabers.controller.ableton.push.PushVersion;
@@ -19,18 +19,18 @@ import com.bitwig.extension.controller.api.ControllerHost;
 
 
 /**
- * Definition class for the Push 1 extension.
+ * Definition class for the Push 3 controller extension.
  *
  * @author Jürgen Moßgraber
  */
-public class Push1ControllerExtensionDefinition extends AbstractControllerExtensionDefinition<PushControlSurface, PushConfiguration>
+public class Push3ControllerExtensionDefinition extends AbstractControllerExtensionDefinition<PushControlSurface, PushConfiguration>
 {
     /**
      * Constructor.
      */
-    public Push1ControllerExtensionDefinition ()
+    public Push3ControllerExtensionDefinition ()
     {
-        super (new Push1ControllerDefinition ());
+        super (new Push3ControllerDefinition ());
     }
 
 
@@ -38,6 +38,14 @@ public class Push1ControllerExtensionDefinition extends AbstractControllerExtens
     @Override
     protected IControllerSetup<PushControlSurface, PushConfiguration> getControllerSetup (final ControllerHost host)
     {
-        return new PushControllerSetup (new HostImpl (host), new BitwigSetupFactory (host), new SettingsUIImpl (host, host.getPreferences ()), new SettingsUIImpl (host, host.getDocumentState ()), PushVersion.VERSION_1);
+        return new PushControllerSetup (new HostImpl (host), new BitwigSetupFactory (host), new SettingsUIImpl (host, host.getPreferences ()), new SettingsUIImpl (host, host.getDocumentState ()), PushVersion.VERSION_3);
+    }
+
+
+    /** {@inheritDoc} */
+    @Override
+    public boolean isUsingBetaAPI ()
+    {
+        return true;
     }
 }

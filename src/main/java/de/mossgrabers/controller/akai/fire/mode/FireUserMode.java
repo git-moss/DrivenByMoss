@@ -11,7 +11,7 @@ import de.mossgrabers.framework.controller.ContinuousID;
 import de.mossgrabers.framework.controller.display.IGraphicDisplay;
 import de.mossgrabers.framework.daw.IModel;
 import de.mossgrabers.framework.daw.data.bank.IParameterBank;
-import de.mossgrabers.framework.mode.device.UserMode;
+import de.mossgrabers.framework.mode.device.ProjectParamsMode;
 import de.mossgrabers.framework.parameter.IParameter;
 
 
@@ -20,7 +20,7 @@ import de.mossgrabers.framework.parameter.IParameter;
  *
  * @author Jürgen Moßgraber
  */
-public class FireUserMode extends UserMode<FireControlSurface, FireConfiguration>
+public class FireUserMode extends ProjectParamsMode<FireControlSurface, FireConfiguration>
 {
     /**
      * Constructor.
@@ -40,7 +40,7 @@ public class FireUserMode extends UserMode<FireControlSurface, FireConfiguration
     {
         final IGraphicDisplay display = this.surface.getGraphicsDisplay ();
 
-        final IParameterBank userBank = this.model.getUserParameterBank ();
+        final IParameterBank userBank = this.model.getProject ().getParameterBank ();
 
         final int page = userBank.getScrollPosition () / userBank.getPageSize ();
         final String desc = "User Page: " + (page + 1);

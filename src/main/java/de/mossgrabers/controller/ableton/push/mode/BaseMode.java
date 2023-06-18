@@ -56,7 +56,7 @@ public abstract class BaseMode<B extends IItem> extends AbstractParameterMode<Pu
     {
         super (name, surface, model, true, bank, DEFAULT_KNOB_IDS);
 
-        this.isPush2 = this.surface.getConfiguration ().isPush2 ();
+        this.isPush2 = this.surface.getConfiguration ().isPushModern ();
     }
 
 
@@ -64,7 +64,7 @@ public abstract class BaseMode<B extends IItem> extends AbstractParameterMode<Pu
     @Override
     public void updateDisplay ()
     {
-        if (this.surface.getConfiguration ().isPush2 ())
+        if (this.surface.getConfiguration ().isPushModern ())
         {
             final IGraphicDisplay display = this.surface.getGraphicsDisplay ();
             this.updateDisplay2 (display);

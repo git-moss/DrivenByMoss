@@ -238,16 +238,44 @@ public class MVHelper<S extends IControlSurface<C>, C extends Configuration>
      */
     public void notifySelectedParameterPage ()
     {
+        final ICursorDevice cursorDevice = this.model.getCursorDevice ();
+        if (cursorDevice.doesExist ())
+            this.notifySelectedParameterPage (cursorDevice.getParameterBank (), "");
+    }
+
+
+    /**
+     * Display the name of the selected project parameter page.
+     */
+    public void notifySelectedProjectParameterPage ()
+    {
+        this.notifySelectedParameterPage (this.model.getProject ().getParameterBank (), "Project ");
+    }
+
+
+    /**
+     * Display the name of the selected track parameter page.
+     */
+    public void notifySelectedTrackParameterPage ()
+    {
+        this.notifySelectedParameterPage (this.model.getCursorTrack ().getParameterBank (), "Track ");
+    }
+
+
+    /**
+     * Display the name of the selected project parameter page.
+     * 
+     * @param bank The parameter bank from which to get the selected page
+     * @param prefix A text prefix to add
+     */
+    private void notifySelectedParameterPage (final IParameterBank bank, final String prefix)
+    {
         this.delayDisplay ( () -> {
 
-            final ICursorDevice cursorDevice = this.model.getCursorDevice ();
-            if (cursorDevice.doesExist ())
-            {
-                final Optional<String> selectedItem = cursorDevice.getParameterBank ().getPageBank ().getSelectedItem ();
-                if (selectedItem.isPresent ())
-                    return "Page: " + selectedItem.get ();
-            }
-            return "Page: " + NONE;
+            final Optional<String> selectedItem = bank.getPageBank ().getSelectedItem ();
+            if (selectedItem.isPresent ())
+                return prefix + "Page: " + selectedItem.get ();
+            return prefix + "Page: " + NONE;
 
         });
     }
@@ -262,21 +290,6 @@ public class MVHelper<S extends IControlSurface<C>, C extends Configuration>
     {
         if (parameter.doesExist ())
             this.delayDisplay ( () -> parameter.getName () + ": " + parameter.getDisplayedValue ());
-    }
-
-
-    /**
-     * Display the name of the selected user parameter page.
-     */
-    public void notifySelectedUserPage ()
-    {
-        this.delayDisplay ( () -> {
-
-            final IParameterBank userBank = this.model.getUserParameterBank ();
-            final int page = userBank.getScrollPosition () / userBank.getPageSize ();
-            return "User Page: " + (page + 1);
-
-        });
     }
 
 

@@ -84,8 +84,7 @@ public class SelectTrackSendOrClipLengthCommand extends AbstractTriggerCommand<A
 
         if (this.surface.isMkII () && this.surface.isPressed (ButtonID.SEND2))
         {
-            modeManager.setActive (Modes.USER);
-            this.surface.setTriggerConsumed (ButtonID.USER);
+            this.surface.setTriggerConsumed (ButtonID.SEND2);
             modeManager.get (Modes.USER).selectItemPage (this.index);
             return;
         }

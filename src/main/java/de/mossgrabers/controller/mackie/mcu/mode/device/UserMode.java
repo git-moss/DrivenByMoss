@@ -31,10 +31,10 @@ public class UserMode extends BaseMode<IParameter>
      */
     public UserMode (final MCUControlSurface surface, final IModel model)
     {
-        super ("User Parameters", surface, model, model.getUserParameterBank ());
+        super ("User Parameters", surface, model, model.getProject ().getParameterBank ());
 
         final int surfaceID = surface.getSurfaceID ();
-        this.setParameterProvider (new RangeFilterParameterProvider (new BankParameterProvider (model.getUserParameterBank ()), surfaceID * 8, 8));
+        this.setParameterProvider (new RangeFilterParameterProvider (new BankParameterProvider (model.getProject ().getParameterBank ()), surfaceID * 8, 8));
     }
 
 
@@ -43,7 +43,7 @@ public class UserMode extends BaseMode<IParameter>
     public void onKnobValue (final int index, final int value)
     {
         final int extenderOffset = this.surface.getExtenderOffset ();
-        this.model.getUserParameterBank ().getItem (extenderOffset + index).changeValue (value);
+        this.model.getProject ().getParameterBank ().getItem (extenderOffset + index).changeValue (value);
     }
 
 
@@ -53,7 +53,7 @@ public class UserMode extends BaseMode<IParameter>
     {
         this.setTouchedKnob (index, isTouched);
 
-        final IParameter param = this.model.getUserParameterBank ().getItem (index);
+        final IParameter param = this.model.getProject ().getParameterBank ().getItem (index);
         if (param.doesExist ())
             param.touchValue (isTouched);
     }
@@ -71,7 +71,7 @@ public class UserMode extends BaseMode<IParameter>
 
         // Row 1 & 2
         final int extenderOffset = this.surface.getExtenderOffset ();
-        final IParameterBank parameterBank = this.model.getUserParameterBank ();
+        final IParameterBank parameterBank = this.model.getProject ().getParameterBank ();
         final int textLength = this.getTextLength ();
         for (int i = 0; i < 8; i++)
         {
@@ -92,7 +92,7 @@ public class UserMode extends BaseMode<IParameter>
     {
         final int upperBound = this.model.getValueChanger ().getUpperBound ();
         final int extenderOffset = this.surface.getExtenderOffset ();
-        final IParameterBank parameterBank = this.model.getUserParameterBank ();
+        final IParameterBank parameterBank = this.model.getProject ().getParameterBank ();
         for (int i = 0; i < 8; i++)
         {
             final IParameter param = parameterBank.getItem (extenderOffset + i);
@@ -106,6 +106,6 @@ public class UserMode extends BaseMode<IParameter>
     protected void resetParameter (final int index)
     {
         final int extenderOffset = this.surface.getExtenderOffset ();
-        this.resetParameter (this.model.getUserParameterBank ().getItem (extenderOffset + index));
+        this.resetParameter (this.model.getProject ().getParameterBank ().getItem (extenderOffset + index));
     }
 }

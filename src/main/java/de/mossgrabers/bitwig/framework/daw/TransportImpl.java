@@ -415,10 +415,12 @@ public class TransportImpl implements ITransport
         {
             case TRIM_READ, READ:
                 this.transport.isArrangerAutomationWriteEnabled ().set (false);
+                this.transport.isClipLauncherAutomationWriteEnabled ().set (false);
                 break;
 
             case WRITE, TOUCH, LATCH, LATCH_PREVIEW:
                 this.transport.isArrangerAutomationWriteEnabled ().set (true);
+                this.transport.isClipLauncherAutomationWriteEnabled ().set (true);
                 final String identifier = mode == AutomationMode.LATCH_PREVIEW ? AutomationMode.LATCH.getIdentifier () : mode.getIdentifier ();
                 this.transport.automationWriteMode ().set (identifier);
                 break;

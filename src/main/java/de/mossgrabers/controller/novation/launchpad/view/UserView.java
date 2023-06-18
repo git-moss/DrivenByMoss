@@ -35,7 +35,7 @@ public class UserView extends AbstractFaderView
     {
         super ("User", surface, model);
 
-        this.userParameterBank = this.model.getUserParameterBank ();
+        this.userParameterBank = this.model.getProject ().getParameterBank ();
     }
 
 

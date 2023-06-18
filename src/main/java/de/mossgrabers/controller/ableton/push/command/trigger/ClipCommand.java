@@ -43,7 +43,7 @@ public class ClipCommand extends AbstractTriggerCommand<PushControlSurface, Push
         final ModeManager modeManager = this.surface.getModeManager ();
         if (modeManager.isActive (Modes.CLIP))
         {
-            if (this.surface.getConfiguration ().isPush2 ())
+            if (this.surface.getConfiguration ().isPushModern ())
                 ((ClipMode) modeManager.get (Modes.CLIP)).togglePianoRoll ();
             else
                 modeManager.restore ();

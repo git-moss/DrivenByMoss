@@ -77,8 +77,6 @@ public class SLMkIIIConfiguration extends AbstractConfiguration
         });
         this.isSettingActive.add (ENABLE_LIGHTGUIDE);
 
-        this.activateUserPageNamesSetting (globalSettings);
-
         ///////////////////////////
         // Session
 

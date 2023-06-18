@@ -221,8 +221,7 @@ public abstract class AbstractTrackBankImpl extends AbstractChannelBankImpl<Trac
     {
         switch (type)
         {
-            case HYBRID:
-            case INSTRUMENT:
+            case HYBRID, INSTRUMENT:
                 this.application.addInstrumentTrack ();
                 break;
 
@@ -235,5 +234,21 @@ public abstract class AbstractTrackBankImpl extends AbstractChannelBankImpl<Trac
                 this.application.addAudioTrack ();
                 break;
         }
+    }
+
+
+    /** {@inheritDoc} */
+    @Override
+    public boolean canEditSend (final int sendIndex)
+    {
+        return this.getItem (0).getSendBank ().getItem (sendIndex).doesExist ();
+    }
+
+
+    /** {@inheritDoc} */
+    @Override
+    public String getEditSendName (final int sendIndex)
+    {
+        return this.getItem (0).getSendBank ().getItem (sendIndex).getName ();
     }
 }

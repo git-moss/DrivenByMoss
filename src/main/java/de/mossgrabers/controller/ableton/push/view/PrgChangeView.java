@@ -39,7 +39,7 @@ public class PrgChangeView extends AbstractView<PushControlSurface, PushConfigur
     {
         super ("PrgChnge", surface, model);
 
-        final boolean isPush2 = surface.getConfiguration ().isPush2 ();
+        final boolean isPush2 = surface.getConfiguration ().isPushModern ();
 
         final int greenHi = isPush2 ? PushColorManager.PUSH2_COLOR2_GREEN_HI : PushColorManager.PUSH1_COLOR2_GREEN_HI;
         final int green = isPush2 ? PushColorManager.PUSH2_COLOR2_GREEN : PushColorManager.PUSH1_COLOR2_GREEN;
@@ -101,7 +101,7 @@ public class PrgChangeView extends AbstractView<PushControlSurface, PushConfigur
     @Override
     public int getButtonColor (final ButtonID buttonID)
     {
-        final boolean isPush2 = this.surface.getConfiguration ().isPush2 ();
+        final boolean isPush2 = this.surface.getConfiguration ().isPushModern ();
         final int black = isPush2 ? PushColorManager.PUSH2_COLOR_BLACK : PushColorManager.PUSH1_COLOR_BLACK;
 
         final int scene = buttonID.ordinal () - ButtonID.SCENE1.ordinal ();
@@ -125,7 +125,7 @@ public class PrgChangeView extends AbstractView<PushControlSurface, PushConfigur
         else
             selPad = this.programNumber < 64 ? this.programNumber : -1;
         final IPadGrid gridPad = this.surface.getPadGrid ();
-        final boolean isPush2 = this.surface.getConfiguration ().isPush2 ();
+        final boolean isPush2 = this.surface.getConfiguration ().isPushModern ();
         final int red = isPush2 ? PushColorManager.PUSH2_COLOR2_RED : PushColorManager.PUSH1_COLOR2_RED;
         for (int i = 36; i < 100; i++)
         {

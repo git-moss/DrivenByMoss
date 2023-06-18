@@ -21,6 +21,7 @@ public class XjamControllerDefinition extends DefaultControllerDefinition
 {
     private static final UUID EXTENSION_ID = UUID.fromString ("3883D79D-141C-4AD6-912C-1E74FFBE6CD7");
 
+
     /**
      * Constructor.
      */

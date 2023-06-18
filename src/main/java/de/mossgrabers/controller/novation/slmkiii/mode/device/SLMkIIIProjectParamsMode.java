@@ -9,6 +9,8 @@ import de.mossgrabers.controller.novation.slmkiii.controller.SLMkIIIControlSurfa
 import de.mossgrabers.controller.novation.slmkiii.controller.SLMkIIIDisplay;
 import de.mossgrabers.framework.controller.ButtonID;
 import de.mossgrabers.framework.daw.IModel;
+import de.mossgrabers.framework.daw.data.bank.IParameterBank;
+import de.mossgrabers.framework.daw.data.bank.IParameterPageBank;
 import de.mossgrabers.framework.parameter.IParameter;
 import de.mossgrabers.framework.parameterprovider.device.BankParameterProvider;
 import de.mossgrabers.framework.utils.ButtonEvent;
@@ -16,11 +18,11 @@ import de.mossgrabers.framework.utils.StringUtils;
 
 
 /**
- * Mode for editing user parameters.
+ * Mode for editing project remote parameters.
  *
  * @author Jürgen Moßgraber
  */
-public class UserMode extends AbstractParametersMode<IParameter>
+public class SLMkIIIProjectParamsMode extends AbstractParametersMode<IParameter>
 {
     /**
      * Constructor.
@@ -28,9 +30,9 @@ public class UserMode extends AbstractParametersMode<IParameter>
      * @param surface The control surface
      * @param model The model
      */
-    public UserMode (final SLMkIIIControlSurface surface, final IModel model)
+    public SLMkIIIProjectParamsMode (final SLMkIIIControlSurface surface, final IModel model)
     {
-        super ("User Parameters", surface, model, model.getUserParameterBank ());
+        super ("Project Parameters", surface, model, model.getProject ().getParameterBank ());
 
         this.setParameterProvider (new BankParameterProvider (this.bank));
     }
@@ -64,7 +66,8 @@ public class UserMode extends AbstractParametersMode<IParameter>
             return this.getButtonColorArrowUp (buttonID);
 
         final int index = this.isButtonRow (0, buttonID);
-        final int selectedPage = this.bank.getScrollPosition () / this.bank.getPageSize ();
+        final IParameterPageBank parameterPageBank = ((IParameterBank) this.bank).getPageBank ();
+        final int selectedPage = parameterPageBank.getSelectedItemIndex ();
         return index == selectedPage ? SLMkIIIColorManager.SLMKIII_WHITE : SLMkIIIColorManager.SLMKIII_WHITE_HALF;
     }
 
@@ -76,14 +79,10 @@ public class UserMode extends AbstractParametersMode<IParameter>
         final SLMkIIIDisplay d = this.surface.getDisplay ();
         d.clear ();
 
-        final String [] userPageNames = this.surface.getConfiguration ().getUserPageNames ();
-
-        final int pageSize = this.bank.getPageSize ();
-        final int selectedPage = this.bank.getScrollPosition () / pageSize;
-        d.setCell (0, 8, "User Prms").setCell (1, 8, userPageNames[selectedPage]);
+        d.setCell (0, 8, "Projct FX").setCell (1, 8, "Page");
 
         // Row 1 & 2
-        for (int i = 0; i < 8; i++)
+        for (int i = 0; i < this.bank.getPageSize (); i++)
         {
             final IParameter param = this.bank.getItem (i);
             d.setCell (0, i, param.doesExist () ? StringUtils.fixASCII (param.getName (9)) : "").setCell (1, i, param.getDisplayedValue (9));
@@ -109,14 +108,14 @@ public class UserMode extends AbstractParametersMode<IParameter>
             return;
         }
 
-        final String [] userPageNames = this.surface.getConfiguration ().getUserPageNames ();
-        final int pageSize = this.bank.getPageSize ();
-        final int selectedPage = this.bank.getScrollPosition () / pageSize;
-        for (int i = 0; i < 8; i++)
-        {
-            d.setCell (3, i, userPageNames[i]);
+        final IParameterPageBank parameterPageBank = ((IParameterBank) this.bank).getPageBank ();
+        final int selectedPage = parameterPageBank.getSelectedItemIndex ();
 
-            d.setPropertyColor (i, 2, userPageNames[i].isBlank () ? SLMkIIIColorManager.SLMKIII_BLACK : SLMkIIIColorManager.SLMKIII_WHITE);
+        for (int i = 0; i < this.bank.getPageSize (); i++)
+        {
+            final String pageName = StringUtils.limit (parameterPageBank.getItem (i), 9);
+            d.setCell (3, i, pageName);
+            d.setPropertyColor (i, 2, pageName.isBlank () ? SLMkIIIColorManager.SLMKIII_BLACK : SLMkIIIColorManager.SLMKIII_WHITE);
             d.setPropertyValue (i, 1, selectedPage == i ? 1 : 0);
         }
     }

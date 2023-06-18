@@ -13,6 +13,7 @@ import de.mossgrabers.controller.akai.apc.command.trigger.APCQuantizeCommand;
 import de.mossgrabers.controller.akai.apc.command.trigger.APCRecordCommand;
 import de.mossgrabers.controller.akai.apc.command.trigger.APCStopClipCommand;
 import de.mossgrabers.controller.akai.apc.command.trigger.APCTapTempoCommand;
+import de.mossgrabers.controller.akai.apc.command.trigger.APCUserModeCommand;
 import de.mossgrabers.controller.akai.apc.command.trigger.SelectTrackSendOrClipLengthCommand;
 import de.mossgrabers.controller.akai.apc.command.trigger.SendModeCommand;
 import de.mossgrabers.controller.akai.apc.command.trigger.SessionRecordCommand;
@@ -226,14 +227,7 @@ public class APCControllerSetup extends AbstractControllerSetup<APCControlSurfac
         if (this.isMkII)
         {
             this.addButton (ButtonID.SEND1, "SENDS", new ModeMultiSelectCommand<> (this.model, surface, Modes.SEND1, Modes.SEND2, Modes.SEND3, Modes.SEND4, Modes.SEND5, Modes.SEND6, Modes.SEND7, Modes.SEND8), APCControlSurface.APC_BUTTON_SEND_A, () -> Modes.isSendMode (modeManager.getActiveID ()), ColorManager.BUTTON_STATE_OFF, ColorManager.BUTTON_STATE_ON);
-            this.addButton (ButtonID.SEND2, "USER", new ModeSelectCommand<> (this.model, surface, Modes.USER)
-            {
-                @Override
-                protected void displayMode ()
-                {
-                    ((UserMode) this.modeManager.get (Modes.USER)).displayPageName ();
-                }
-            }, APCControlSurface.APC_BUTTON_SEND_B, () -> modeManager.isActive (Modes.USER), ColorManager.BUTTON_STATE_OFF, ColorManager.BUTTON_STATE_ON);
+            this.addButton (ButtonID.SEND2, "USER", new APCUserModeCommand (this.model, surface), APCControlSurface.APC_BUTTON_SEND_B, () -> modeManager.isActive (Modes.USER), ColorManager.BUTTON_STATE_OFF, ColorManager.BUTTON_STATE_ON);
         }
         else
         {
@@ -761,12 +755,7 @@ public class APCControllerSetup extends AbstractControllerSetup<APCControlSurfac
 
                 // Handle user mode selection
                 if (surface.isMkII () && surface.isPressed (ButtonID.SEND2))
-                {
-                    final IParameterBank userParameterBank = this.model.getUserParameterBank ();
-                    final int pageSize = userParameterBank.getPageSize ();
-                    final int selectedPage = userParameterBank.getScrollPosition () / pageSize;
-                    return selectedPage == index;
-                }
+                    return ((UserMode) modeManager.get (Modes.USER)).isPageSelected (index);
 
                 // Handle send mode selection
                 return surface.isPressed (ButtonID.SEND1) ? modeManager.isActive (Modes.get (Modes.SEND1, index)) : index == selIndex;

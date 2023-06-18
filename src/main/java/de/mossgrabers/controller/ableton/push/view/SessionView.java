@@ -38,7 +38,7 @@ public class SessionView extends AbstractSessionView<PushControlSurface, PushCon
     {
         super ("Session", surface, model, 8, 8, true);
 
-        final boolean isPush2 = this.surface.getConfiguration ().isPush2 ();
+        final boolean isPush2 = this.surface.getConfiguration ().isPushModern ();
         final int redLo = isPush2 ? PushColorManager.PUSH2_COLOR2_RED_LO : PushColorManager.PUSH1_COLOR2_RED_LO;
         final int redHi = isPush2 ? PushColorManager.PUSH2_COLOR2_RED_HI : PushColorManager.PUSH1_COLOR2_RED_HI;
         final int black = isPush2 ? PushColorManager.PUSH2_COLOR2_BLACK : PushColorManager.PUSH1_COLOR2_BLACK;

@@ -456,10 +456,7 @@ public class DeviceParamsMode extends BaseMode<IParameter>
             else
             {
                 bottomMenuIcon = cd.getName ();
-                bottomMenu = parameterPageBank.getItem (i);
-
-                if (bottomMenu.length () > 12)
-                    bottomMenu = bottomMenu.substring (0, 12);
+                bottomMenu = StringUtils.limit (parameterPageBank.getItem (i), 12);
                 isBottomMenuOn = i == selectedPage;
             }
 

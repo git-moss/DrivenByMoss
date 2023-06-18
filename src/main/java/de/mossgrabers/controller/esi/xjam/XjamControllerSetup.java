@@ -102,8 +102,6 @@ public class XjamControllerSetup extends AbstractControllerSetup<XjamControlSurf
         ms.setNumSends (3);
         ms.setNumParams (8);
         ms.setNumParamPages (7);
-        ms.setNumUserPageSize (0);
-        ms.setNumUserPages (0);
 
         this.model = this.factory.createModel (this.configuration, this.colorManager, this.valueChanger, this.scales, ms);
     }

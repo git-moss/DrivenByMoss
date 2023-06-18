@@ -42,7 +42,7 @@ public class PushTrackParameterProvider extends SelectedTrackParameterProvider i
     @Override
     protected IParameter getInternal (final int index, final IChannel selectedChannel)
     {
-        if (index < 2 || !this.configuration.isPush2 ())
+        if (index < 2 || !this.configuration.isPushModern ())
             return super.getInternal (index, selectedChannel);
 
         switch (index)

@@ -7,11 +7,14 @@ package de.mossgrabers.bitwig.framework.daw.data;
 import de.mossgrabers.bitwig.framework.daw.ApplicationImpl;
 import de.mossgrabers.bitwig.framework.daw.HostImpl;
 import de.mossgrabers.bitwig.framework.daw.ModelImpl;
+import de.mossgrabers.bitwig.framework.daw.data.bank.ParameterBankImpl;
 import de.mossgrabers.framework.controller.valuechanger.IValueChanger;
 import de.mossgrabers.framework.daw.IHost;
 import de.mossgrabers.framework.daw.data.ICursorTrack;
+import de.mossgrabers.framework.daw.data.bank.IParameterBank;
 import de.mossgrabers.framework.daw.data.bank.ITrackBank;
 
+import com.bitwig.extension.controller.api.CursorRemoteControlsPage;
 import com.bitwig.extension.controller.api.CursorTrack;
 import com.bitwig.extension.controller.api.SettableBooleanValue;
 import com.bitwig.extension.controller.api.Track;
@@ -30,6 +33,7 @@ public class CursorTrackImpl extends TrackImpl implements ICursorTrack
     private final ModelImpl            model;
     private final SettableBooleanValue isPinnedAttr;
     private final TrackBank            largeTrackBank;
+    private final IParameterBank       parameterBank;
 
 
     /**
@@ -43,8 +47,10 @@ public class CursorTrackImpl extends TrackImpl implements ICursorTrack
      * @param rootGroup The root track
      * @param numSends The number of sends of a bank
      * @param numScenes The number of scenes of a bank
+     * @param numParamPages The number of project parameter pages
+     * @param numParams The number of project parameters
      */
-    public CursorTrackImpl (final ModelImpl model, final IHost host, final IValueChanger valueChanger, final CursorTrack cursorTrack, final Track rootGroup, final ApplicationImpl application, final int numSends, final int numScenes)
+    public CursorTrackImpl (final ModelImpl model, final IHost host, final IValueChanger valueChanger, final CursorTrack cursorTrack, final Track rootGroup, final ApplicationImpl application, final int numSends, final int numScenes, final int numParamPages, final int numParams)
     {
         super (host, valueChanger, application, cursorTrack, rootGroup, cursorTrack, -1, numSends, numScenes);
 
@@ -54,6 +60,16 @@ public class CursorTrackImpl extends TrackImpl implements ICursorTrack
 
         this.isPinnedAttr = cursorTrack.isPinned ();
         this.isPinnedAttr.markInterested ();
+
+        final int checkedNumParamPages = numParamPages >= 0 ? numParamPages : 8;
+        final int checkedNumParams = numParams >= 0 ? numParams : 8;
+        if (checkedNumParams > 0)
+        {
+            final CursorRemoteControlsPage remoteControlsPage = cursorTrack.createCursorRemoteControlsPage (checkedNumParams);
+            this.parameterBank = new ParameterBankImpl (host, valueChanger, remoteControlsPage, checkedNumParamPages, checkedNumParams);
+        }
+        else
+            this.parameterBank = null;
     }
 
 
@@ -162,5 +178,13 @@ public class CursorTrackImpl extends TrackImpl implements ICursorTrack
     public void setPinned (final boolean isPinned)
     {
         this.isPinnedAttr.set (isPinned);
+    }
+
+
+    /** {@inheritDoc} */
+    @Override
+    public IParameterBank getParameterBank ()
+    {
+        return this.parameterBank;
     }
 }

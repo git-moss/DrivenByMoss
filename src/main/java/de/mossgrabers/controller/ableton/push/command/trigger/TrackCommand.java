@@ -56,7 +56,7 @@ public class TrackCommand extends AbstractTriggerCommand<PushControlSurface, Pus
 
         if (currentMode != null)
         {
-            if (config.isPush2 ())
+            if (config.isPushModern ())
             {
                 if (Modes.TRACK.equals (currentMode) || Modes.VOLUME.equals (currentMode) || Modes.CROSSFADER.equals (currentMode) || Modes.PAN.equals (currentMode))
                 {

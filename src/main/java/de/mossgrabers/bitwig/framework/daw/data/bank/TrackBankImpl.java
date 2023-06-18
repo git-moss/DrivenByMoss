@@ -60,22 +60,6 @@ public class TrackBankImpl extends AbstractTrackBankImpl
 
     /** {@inheritDoc} */
     @Override
-    public boolean canEditSend (final int sendIndex)
-    {
-        return this.getItem (0).getSendBank ().getItem (sendIndex).doesExist ();
-    }
-
-
-    /** {@inheritDoc} */
-    @Override
-    public String getEditSendName (final int sendIndex)
-    {
-        return this.getItem (0).getSendBank ().getItem (sendIndex).getName ();
-    }
-
-
-    /** {@inheritDoc} */
-    @Override
     public void addNoteObserver (final INoteObserver observer)
     {
         for (int i = 0; i < this.getPageSize (); i++)

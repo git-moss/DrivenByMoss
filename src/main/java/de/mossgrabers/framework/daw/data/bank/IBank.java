@@ -14,7 +14,7 @@ import java.util.Optional;
 
 /**
  * Interface to a bank. A bank provides a view to a number of items split into pages. A page
- * contains a given numbner of items.
+ * contains a given number of items.
  *
  * @param <T> The type of the items present in the bank
  *

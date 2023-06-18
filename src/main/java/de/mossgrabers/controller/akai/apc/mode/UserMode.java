@@ -6,6 +6,7 @@ package de.mossgrabers.controller.akai.apc.mode;
 
 import de.mossgrabers.controller.akai.apc.controller.APCControlSurface;
 import de.mossgrabers.framework.daw.IModel;
+import de.mossgrabers.framework.daw.data.bank.IParameterBank;
 import de.mossgrabers.framework.parameter.IParameter;
 import de.mossgrabers.framework.parameterprovider.device.BankParameterProvider;
 
@@ -17,6 +18,11 @@ import de.mossgrabers.framework.parameterprovider.device.BankParameterProvider;
  */
 public class UserMode extends BaseMode<IParameter>
 {
+    private final BankParameterProvider projectParameterProvider;
+    private final BankParameterProvider trackParameterProvider;
+    private boolean                     isProjectMode = true;
+
+
     /**
      * Constructor.
      *
@@ -25,9 +31,11 @@ public class UserMode extends BaseMode<IParameter>
      */
     public UserMode (final APCControlSurface surface, final IModel model)
     {
-        super ("User", surface, model, APCControlSurface.LED_MODE_VOLUME, model.getUserParameterBank ());
+        super ("User", surface, model, APCControlSurface.LED_MODE_VOLUME, model.getProject ().getParameterBank ());
 
-        this.setParameterProvider (new BankParameterProvider (model.getUserParameterBank ()));
+        this.projectParameterProvider = new BankParameterProvider (model.getProject ().getParameterBank ());
+        this.trackParameterProvider = new BankParameterProvider (model.getCursorTrack ().getParameterBank ());
+        this.setParameterProvider (this.projectParameterProvider);
     }
 
 
@@ -73,14 +81,40 @@ public class UserMode extends BaseMode<IParameter>
 
 
     /**
+     * Test if the given parameter page is currently selected.
+     *
+     * @param pageIndex The index of the page
+     * @return True if selected
+     */
+    public boolean isPageSelected (final int pageIndex)
+    {
+        final IParameterBank userParameterBank = this.isProjectMode ? this.model.getProject ().getParameterBank () : this.model.getCursorTrack ().getParameterBank ();
+        return userParameterBank.getPageBank ().getSelectedItemIndex () == pageIndex;
+    }
+
+
+    /**
      * Display the page name.
      */
     public void displayPageName ()
     {
-        this.surface.scheduleTask ( () -> {
-            final int pageSize = this.bank.getPageSize ();
-            final int selectedPage = this.bank.getScrollPosition () / pageSize;
-            this.model.getHost ().showNotification ("User: Page " + (selectedPage + 1));
-        }, 200);
+        if (this.isProjectMode)
+            this.mvHelper.notifySelectedProjectParameterPage ();
+        else
+            this.mvHelper.notifySelectedTrackParameterPage ();
+    }
+
+
+    /**
+     * Toggle between the project and track parameters.
+     */
+    public void toggleMode ()
+    {
+        this.isProjectMode = !this.isProjectMode;
+        this.switchBanks (this.isProjectMode ? this.model.getProject ().getParameterBank () : this.model.getCursorTrack ().getParameterBank ());
+        this.setParameterProvider (this.isProjectMode ? this.projectParameterProvider : this.trackParameterProvider);
+        this.bindControls ();
+
+        this.displayPageName ();
     }
 }
