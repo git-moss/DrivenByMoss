@@ -17,9 +17,12 @@ import de.mossgrabers.framework.daw.DAWColor;
 import de.mossgrabers.framework.daw.IModel;
 import de.mossgrabers.framework.daw.data.ISend;
 import de.mossgrabers.framework.daw.data.ITrack;
+import de.mossgrabers.framework.daw.data.bank.ISceneBank;
 import de.mossgrabers.framework.daw.data.bank.ITrackBank;
 import de.mossgrabers.framework.featuregroup.AbstractView;
+import de.mossgrabers.framework.featuregroup.IScrollableView;
 import de.mossgrabers.framework.utils.ButtonEvent;
+import de.mossgrabers.framework.utils.ScrollStates;
 
 import java.util.Optional;
 
@@ -29,7 +32,7 @@ import java.util.Optional;
  *
  * @author Jürgen Moßgraber
  */
-public class MixView extends AbstractView<LaunchpadControlSurface, LaunchpadConfiguration> implements IVirtualFaderCallback
+public class MixView extends AbstractView<LaunchpadControlSurface, LaunchpadConfiguration> implements IVirtualFaderCallback, IScrollableView
 {
     private final IVirtualFader fader;
 
@@ -294,6 +297,21 @@ public class MixView extends AbstractView<LaunchpadControlSurface, LaunchpadConf
                     send2.setValueImmediatly (value);
                 break;
         }
+    }
+
+
+    /** {@inheritDoc} */
+    @Override
+    public void updateScrollStates (final ScrollStates scrollStates)
+    {
+        final ITrackBank tb = this.model.getCurrentTrackBank ();
+        final Optional<ITrack> sel = tb.getSelectedItem ();
+        final int selIndex = sel.isPresent () ? sel.get ().getIndex () : -1;
+        final ISceneBank sceneBank = tb.getSceneBank ();
+        scrollStates.setCanScrollLeft (selIndex > 0 || tb.canScrollPageBackwards ());
+        scrollStates.setCanScrollRight (selIndex >= 0 && selIndex < 7 && tb.getItem (selIndex + 1).doesExist () || tb.canScrollPageForwards ());
+        scrollStates.setCanScrollUp (sceneBank.canScrollPageBackwards ());
+        scrollStates.setCanScrollDown (sceneBank.canScrollPageForwards ());
     }
 
 

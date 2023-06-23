@@ -25,10 +25,11 @@ public enum CommandCategory
     MIDI_CC("MIDI CC"),
     MODES("Modes"),
     NOTE_INPUT("Note Input"),
+    PROJECT_REMOTES("Project Remotes"),
     SCENE("Scene"),
     TRACK("Track"),
+    TRACK_REMOTES("Track Remotes"),
     TRANSPORT("Transport"),
-    USER("User"),
     ACTION("Action");
 
 

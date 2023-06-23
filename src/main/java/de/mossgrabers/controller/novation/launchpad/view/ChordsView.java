@@ -15,8 +15,11 @@ import de.mossgrabers.framework.controller.grid.IPadGrid;
 import de.mossgrabers.framework.daw.IModel;
 import de.mossgrabers.framework.daw.midi.IMidiInput;
 import de.mossgrabers.framework.daw.midi.MidiConstants;
+import de.mossgrabers.framework.featuregroup.IScrollableView;
+import de.mossgrabers.framework.scale.Scale;
 import de.mossgrabers.framework.scale.Scales;
 import de.mossgrabers.framework.utils.ButtonEvent;
+import de.mossgrabers.framework.utils.ScrollStates;
 import de.mossgrabers.framework.view.AbstractChordView;
 import de.mossgrabers.framework.view.Views;
 
@@ -26,7 +29,7 @@ import de.mossgrabers.framework.view.Views;
  *
  * @author Jürgen Moßgraber
  */
-public class ChordsView extends AbstractChordView<LaunchpadControlSurface, LaunchpadConfiguration>
+public class ChordsView extends AbstractChordView<LaunchpadControlSurface, LaunchpadConfiguration> implements IScrollableView
 {
     private static final int [] MODULATION_INTENSITIES =
     {
@@ -217,5 +220,18 @@ public class ChordsView extends AbstractChordView<LaunchpadControlSurface, Launc
         }
 
         super.onGridNote (key, velocity);
+    }
+
+
+    /** {@inheritDoc} */
+    @Override
+    public void updateScrollStates (final ScrollStates scrollStates)
+    {
+        final int octave = this.scales.getOctave ();
+        final int scale = this.scales.getScale ().ordinal ();
+        scrollStates.setCanScrollLeft (scale > 0);
+        scrollStates.setCanScrollRight (scale < Scale.values ().length - 1);
+        scrollStates.setCanScrollUp (octave < 3);
+        scrollStates.setCanScrollDown (octave > -3);
     }
 }

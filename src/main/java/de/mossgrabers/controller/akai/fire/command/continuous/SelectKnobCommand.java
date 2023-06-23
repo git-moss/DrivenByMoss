@@ -6,6 +6,7 @@ package de.mossgrabers.controller.akai.fire.command.continuous;
 
 import de.mossgrabers.controller.akai.fire.FireConfiguration;
 import de.mossgrabers.controller.akai.fire.controller.FireControlSurface;
+import de.mossgrabers.controller.akai.fire.mode.FireUserMode;
 import de.mossgrabers.controller.akai.fire.view.IFireView;
 import de.mossgrabers.framework.command.core.AbstractContinuousCommand;
 import de.mossgrabers.framework.controller.ButtonID;
@@ -139,11 +140,21 @@ public class SelectKnobCommand extends AbstractContinuousCommand<FireControlSurf
 
     private void handleUserPageSelection (final boolean isInc)
     {
-        final IMode userMode = this.surface.getModeManager ().get (Modes.USER);
+        final FireUserMode userMode = (FireUserMode) this.surface.getModeManager ().get (Modes.USER);
         if (isInc)
-            userMode.selectNextItem ();
+        {
+            if (this.surface.isShiftPressed ())
+                userMode.selectNextItem ();
+            else
+                userMode.setMode (false);
+        }
         else
-            userMode.selectPreviousItem ();
+        {
+            if (this.surface.isShiftPressed ())
+                userMode.selectPreviousItem ();
+            else
+                userMode.setMode (true);
+        }
     }
 
 

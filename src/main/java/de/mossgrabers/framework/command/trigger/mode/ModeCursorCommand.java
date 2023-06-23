@@ -11,6 +11,7 @@ import de.mossgrabers.framework.controller.IControlSurface;
 import de.mossgrabers.framework.daw.IModel;
 import de.mossgrabers.framework.featuregroup.IMode;
 import de.mossgrabers.framework.utils.ButtonEvent;
+import de.mossgrabers.framework.utils.ScrollStates;
 
 import java.util.function.BooleanSupplier;
 
@@ -26,10 +27,7 @@ import java.util.function.BooleanSupplier;
 public class ModeCursorCommand<S extends IControlSurface<C>, C extends Configuration> extends AbstractTriggerCommand<S, C>
 {
     protected Direction             direction;
-    protected boolean               canScrollLeft;
-    protected boolean               canScrollRight;
-    protected boolean               canScrollUp;
-    protected boolean               canScrollDown;
+    protected final ScrollStates    scrollStates = new ScrollStates ();
     protected final boolean         notifySelection;
     protected final BooleanSupplier alternateMode;
     protected ButtonEvent           triggerEvent = ButtonEvent.DOWN;
@@ -128,20 +126,7 @@ public class ModeCursorCommand<S extends IControlSurface<C>, C extends Configura
     public boolean canScroll ()
     {
         this.updateArrowStates ();
-
-        switch (this.direction)
-        {
-            case LEFT:
-                return this.canScrollLeft;
-            case RIGHT:
-                return this.canScrollRight;
-            case UP:
-                return this.canScrollUp;
-            case DOWN:
-                return this.canScrollDown;
-            default:
-                return false;
-        }
+        return this.scrollStates.canScroll (this.direction);
     }
 
 
@@ -151,10 +136,10 @@ public class ModeCursorCommand<S extends IControlSurface<C>, C extends Configura
     protected void updateArrowStates ()
     {
         final IMode mode = this.surface.getModeManager ().getActive ();
-        this.canScrollLeft = mode != null && mode.hasPreviousItem ();
-        this.canScrollRight = mode != null && mode.hasNextItem ();
-        this.canScrollUp = mode != null && mode.hasNextItemPage ();
-        this.canScrollDown = mode != null && mode.hasPreviousItemPage ();
+        this.scrollStates.setCanScrollLeft (mode != null && mode.hasPreviousItem ());
+        this.scrollStates.setCanScrollRight (mode != null && mode.hasNextItem ());
+        this.scrollStates.setCanScrollUp (mode != null && mode.hasNextItemPage ());
+        this.scrollStates.setCanScrollDown (mode != null && mode.hasPreviousItemPage ());
     }
 
 

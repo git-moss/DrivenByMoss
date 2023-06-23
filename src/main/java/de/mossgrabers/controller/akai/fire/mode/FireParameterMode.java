@@ -60,7 +60,7 @@ public class FireParameterMode extends ParameterMode<FireControlSurface, FireCon
             desc = pageName.isPresent () ? pageName.get () : "None";
 
             int touchedKnob = this.getTouchedKnob ();
-            touchedKnob = this.surface.isPressed (ButtonID.ALT) ? 4 + touchedKnob : touchedKnob;
+            touchedKnob = this.surface.isPressed (ButtonID.ALT) && touchedKnob > -1 ? 4 + touchedKnob : touchedKnob;
             if (touchedKnob > -1)
             {
                 final IParameter p = this.bank.getItem (touchedKnob);

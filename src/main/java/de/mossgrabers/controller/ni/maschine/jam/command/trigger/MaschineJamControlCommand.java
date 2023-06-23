@@ -6,7 +6,9 @@ package de.mossgrabers.controller.ni.maschine.jam.command.trigger;
 
 import de.mossgrabers.controller.ni.maschine.jam.MaschineJamConfiguration;
 import de.mossgrabers.controller.ni.maschine.jam.controller.MaschineJamControlSurface;
+import de.mossgrabers.controller.ni.maschine.jam.mode.MaschineJamUserMode;
 import de.mossgrabers.framework.command.trigger.mode.ModeMultiSelectCommand;
+import de.mossgrabers.framework.controller.ButtonID;
 import de.mossgrabers.framework.daw.IModel;
 import de.mossgrabers.framework.mode.Modes;
 import de.mossgrabers.framework.utils.ButtonEvent;
@@ -28,6 +30,23 @@ public class MaschineJamControlCommand extends ModeMultiSelectCommand<MaschineJa
     public MaschineJamControlCommand (final IModel model, final MaschineJamControlSurface surface)
     {
         super (model, surface, Modes.DEVICE_PARAMS, Modes.USER);
+    }
+
+
+    /** {@inheritDoc} */
+    @Override
+    public void execute (final ButtonEvent event, final int velocity)
+    {
+        if (event != ButtonEvent.UP)
+            return;
+
+        if (this.surface.isPressed (ButtonID.SELECT))
+        {
+            ((MaschineJamUserMode) this.surface.getModeManager ().get (Modes.USER)).toggleMode ();
+            return;
+        }
+
+        super.execute (event, velocity);
     }
 
 

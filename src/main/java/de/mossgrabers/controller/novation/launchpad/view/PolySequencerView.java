@@ -11,7 +11,12 @@ import de.mossgrabers.framework.daw.IModel;
 import de.mossgrabers.framework.daw.clip.INoteClip;
 import de.mossgrabers.framework.daw.clip.NotePosition;
 import de.mossgrabers.framework.daw.clip.StepState;
+import de.mossgrabers.framework.featuregroup.IScrollableView;
+import de.mossgrabers.framework.featuregroup.ViewManager;
+import de.mossgrabers.framework.scale.Scales;
+import de.mossgrabers.framework.utils.ScrollStates;
 import de.mossgrabers.framework.view.sequencer.AbstractPolySequencerView;
+import de.mossgrabers.framework.view.sequencer.AbstractSequencerView;
 
 
 /**
@@ -19,7 +24,7 @@ import de.mossgrabers.framework.view.sequencer.AbstractPolySequencerView;
  *
  * @author Jürgen Moßgraber
  */
-public class PolySequencerView extends AbstractPolySequencerView<LaunchpadControlSurface, LaunchpadConfiguration>
+public class PolySequencerView extends AbstractPolySequencerView<LaunchpadControlSurface, LaunchpadConfiguration> implements IScrollableView
 {
     private NotePosition noteEditPosition;
 
@@ -106,5 +111,19 @@ public class PolySequencerView extends AbstractPolySequencerView<LaunchpadContro
 
         final int step = this.numColumns * (this.numRows - 1 - y) + x;
         this.noteEditPosition = new NotePosition (this.configuration.getMidiEditChannel (), step, 0);
+    }
+
+
+    /** {@inheritDoc} */
+    @Override
+    public void updateScrollStates (final ScrollStates scrollStates)
+    {
+        final ViewManager viewManager = this.surface.getViewManager ();
+        final INoteClip clip = AbstractSequencerView.class.cast (viewManager.getActive ()).getClip ();
+        final int seqOctave = this.scales.getOctave ();
+        scrollStates.setCanScrollLeft (clip.canScrollStepsBackwards ());
+        scrollStates.setCanScrollRight (clip.canScrollStepsForwards ());
+        scrollStates.setCanScrollUp (seqOctave < Scales.OCTAVE_RANGE);
+        scrollStates.setCanScrollDown (seqOctave > -Scales.OCTAVE_RANGE);
     }
 }

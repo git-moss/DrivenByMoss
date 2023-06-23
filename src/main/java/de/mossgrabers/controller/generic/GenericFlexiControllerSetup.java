@@ -20,10 +20,11 @@ import de.mossgrabers.controller.generic.flexihandler.MasterHandler;
 import de.mossgrabers.controller.generic.flexihandler.MidiCCHandler;
 import de.mossgrabers.controller.generic.flexihandler.ModesHandler;
 import de.mossgrabers.controller.generic.flexihandler.NoteInputHandler;
+import de.mossgrabers.controller.generic.flexihandler.ProjectRemotesHandler;
 import de.mossgrabers.controller.generic.flexihandler.SceneHandler;
 import de.mossgrabers.controller.generic.flexihandler.TrackHandler;
+import de.mossgrabers.controller.generic.flexihandler.TrackRemotesHandler;
 import de.mossgrabers.controller.generic.flexihandler.TransportHandler;
-import de.mossgrabers.controller.generic.flexihandler.UserHandler;
 import de.mossgrabers.controller.generic.flexihandler.utils.ProgramBank;
 import de.mossgrabers.framework.configuration.IEnumSetting;
 import de.mossgrabers.framework.configuration.ISettingsUI;
@@ -326,7 +327,8 @@ public class GenericFlexiControllerSetup extends AbstractControllerSetup<Generic
         surface.registerHandler (new ModesHandler (this.model, surface, this.configuration, this.absoluteLowResValueChanger, this.signedBitRelativeValueChanger, this.offsetBinaryRelativeValueChanger, this.host));
         surface.registerHandler (new MidiCCHandler (this.model, surface, this.configuration, this.absoluteLowResValueChanger, this.signedBitRelativeValueChanger, this.offsetBinaryRelativeValueChanger));
         surface.registerHandler (new NoteInputHandler (this.model, surface, this.configuration, this.absoluteLowResValueChanger, this.signedBitRelativeValueChanger, this.offsetBinaryRelativeValueChanger));
-        surface.registerHandler (new UserHandler (this.model, surface, this.configuration, this.absoluteLowResValueChanger, this.signedBitRelativeValueChanger, this.offsetBinaryRelativeValueChanger));
+        surface.registerHandler (new ProjectRemotesHandler (this.model, surface, this.configuration, this.absoluteLowResValueChanger, this.signedBitRelativeValueChanger, this.offsetBinaryRelativeValueChanger));
+        surface.registerHandler (new TrackRemotesHandler (this.model, surface, this.configuration, this.absoluteLowResValueChanger, this.signedBitRelativeValueChanger, this.offsetBinaryRelativeValueChanger));
         surface.registerHandler (new ActionHandler (this.model, surface, this.configuration, this.absoluteLowResValueChanger, this.signedBitRelativeValueChanger, this.offsetBinaryRelativeValueChanger));
     }
 

@@ -12,7 +12,9 @@ import de.mossgrabers.framework.controller.grid.IPadGrid;
 import de.mossgrabers.framework.daw.IApplication;
 import de.mossgrabers.framework.daw.IModel;
 import de.mossgrabers.framework.featuregroup.AbstractView;
+import de.mossgrabers.framework.featuregroup.IScrollableView;
 import de.mossgrabers.framework.utils.ButtonEvent;
+import de.mossgrabers.framework.utils.ScrollStates;
 
 
 /**
@@ -20,7 +22,7 @@ import de.mossgrabers.framework.utils.ButtonEvent;
  *
  * @author Jürgen Moßgraber
  */
-public class ProjectView extends AbstractView<LaunchpadControlSurface, LaunchpadConfiguration>
+public class ProjectView extends AbstractView<LaunchpadControlSurface, LaunchpadConfiguration> implements IScrollableView
 {
     /**
      * Constructor.
@@ -215,5 +217,13 @@ public class ProjectView extends AbstractView<LaunchpadControlSurface, Launchpad
     public void onButton (final ButtonID buttonID, final ButtonEvent event, final int velocity)
     {
         // Intentionally empty
+    }
+
+
+    /** {@inheritDoc} */
+    @Override
+    public void updateScrollStates (final ScrollStates scrollStates)
+    {
+        scrollStates.setAll (true);
     }
 }

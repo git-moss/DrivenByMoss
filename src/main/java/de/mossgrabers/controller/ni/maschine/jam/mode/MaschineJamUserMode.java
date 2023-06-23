@@ -41,6 +41,10 @@ public class MaschineJamUserMode extends ProjectParamsMode<MaschineJamControlSur
     public void selectPreviousItemPage ()
     {
         super.selectPreviousItem ();
+        if (this.isProjectMode)
+            this.mvHelper.notifySelectedProjectParameterPage ();
+        else
+            this.mvHelper.notifySelectedTrackParameterPage ();
     }
 
 
@@ -49,6 +53,10 @@ public class MaschineJamUserMode extends ProjectParamsMode<MaschineJamControlSur
     public void selectNextItemPage ()
     {
         super.selectNextItem ();
+        if (this.isProjectMode)
+            this.mvHelper.notifySelectedProjectParameterPage ();
+        else
+            this.mvHelper.notifySelectedTrackParameterPage ();
     }
 
 
@@ -56,11 +64,11 @@ public class MaschineJamUserMode extends ProjectParamsMode<MaschineJamControlSur
     @Override
     public FaderConfig setupFader (final int index)
     {
-        final IParameter parameter = this.model.getProject ().getParameterBank ().getItem (index);
+        final IParameter parameter = this.bank.getItem (index);
         if (!parameter.doesExist ())
             return FADER_OFF;
 
         final int value = this.model.getValueChanger ().toMidiValue (parameter.getValue ());
-        return new FaderConfig (FaderConfig.TYPE_SINGLE, MaschineColorManager.COLOR_WHITE, value);
+        return new FaderConfig (FaderConfig.TYPE_SINGLE, this.isProjectMode ? MaschineColorManager.COLOR_WHITE : MaschineColorManager.COLOR_AMBER, value);
     }
 }

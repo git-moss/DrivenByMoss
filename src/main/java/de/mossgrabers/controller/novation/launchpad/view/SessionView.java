@@ -20,11 +20,15 @@ import de.mossgrabers.framework.daw.data.ITrack;
 import de.mossgrabers.framework.daw.data.bank.ISceneBank;
 import de.mossgrabers.framework.daw.data.bank.ITrackBank;
 import de.mossgrabers.framework.featuregroup.AbstractFeatureGroup;
+import de.mossgrabers.framework.featuregroup.IScrollableView;
 import de.mossgrabers.framework.featuregroup.ModeManager;
 import de.mossgrabers.framework.mode.Modes;
 import de.mossgrabers.framework.utils.ButtonEvent;
 import de.mossgrabers.framework.utils.Pair;
+import de.mossgrabers.framework.utils.ScrollStates;
 import de.mossgrabers.framework.view.AbstractSessionView;
+
+import java.util.Optional;
 
 
 /**
@@ -32,7 +36,7 @@ import de.mossgrabers.framework.view.AbstractSessionView;
  *
  * @author Jürgen Moßgraber
  */
-public class SessionView extends AbstractSessionView<LaunchpadControlSurface, LaunchpadConfiguration>
+public class SessionView extends AbstractSessionView<LaunchpadControlSurface, LaunchpadConfiguration> implements IScrollableView
 {
     protected boolean                    isShowTemporarily;
     private final LaunchpadConfiguration configuration;
@@ -407,5 +411,20 @@ public class SessionView extends AbstractSessionView<LaunchpadControlSurface, La
         final int x = index % 8;
         final int y = 7 - index / 8;
         return this.configuration.isFlipSession () ? new Pair<> (Integer.valueOf (y), Integer.valueOf (x)) : new Pair<> (Integer.valueOf (x), Integer.valueOf (y));
+    }
+
+
+    /** {@inheritDoc} */
+    @Override
+    public void updateScrollStates (final ScrollStates scrollStates)
+    {
+        final ITrackBank tb = this.model.getCurrentTrackBank ();
+        final Optional<ITrack> sel = tb.getSelectedItem ();
+        final int selIndex = sel.isPresent () ? sel.get ().getIndex () : -1;
+        final ISceneBank sceneBank = tb.getSceneBank ();
+        scrollStates.setCanScrollLeft (selIndex > 0 || tb.canScrollPageBackwards ());
+        scrollStates.setCanScrollRight (selIndex >= 0 && selIndex < 7 && tb.getItem (selIndex + 1).doesExist () || tb.canScrollPageForwards ());
+        scrollStates.setCanScrollUp (sceneBank.canScrollPageBackwards ());
+        scrollStates.setCanScrollDown (sceneBank.canScrollPageForwards ());
     }
 }

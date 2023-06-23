@@ -33,6 +33,7 @@ import de.mossgrabers.controller.novation.launchpad.view.Drum4View;
 import de.mossgrabers.controller.novation.launchpad.view.Drum64View;
 import de.mossgrabers.controller.novation.launchpad.view.Drum8View;
 import de.mossgrabers.controller.novation.launchpad.view.DrumView;
+import de.mossgrabers.controller.novation.launchpad.view.LaunchpadBrowserView;
 import de.mossgrabers.controller.novation.launchpad.view.LaunchpadShuffleView;
 import de.mossgrabers.controller.novation.launchpad.view.MixView;
 import de.mossgrabers.controller.novation.launchpad.view.NoteEditView;
@@ -95,7 +96,6 @@ import de.mossgrabers.framework.mode.track.TrackSoloMode;
 import de.mossgrabers.framework.mode.track.TrackStopClipMode;
 import de.mossgrabers.framework.mode.track.TrackVolumeMode;
 import de.mossgrabers.framework.utils.ButtonEvent;
-import de.mossgrabers.framework.view.BrowserView;
 import de.mossgrabers.framework.view.TempoView;
 import de.mossgrabers.framework.view.Views;
 import de.mossgrabers.framework.view.sequencer.ClipLengthView;
@@ -245,7 +245,7 @@ public class LaunchpadControllerSetup extends AbstractControllerSetup<LaunchpadC
         viewManager.register (Views.DRUM64, new Drum64View (surface, this.model));
         viewManager.register (Views.DEVICE, new DeviceView (surface, this.model));
         viewManager.register (Views.USER, new UserView (surface, this.model));
-        viewManager.register (Views.BROWSER, new BrowserView<> (surface, this.model));
+        viewManager.register (Views.BROWSER, new LaunchpadBrowserView (surface, this.model));
         viewManager.register (Views.TRACK_PAN, new PanView (surface, this.model));
         viewManager.register (Views.TRACK_VOLUME, new VolumeView (surface, this.model));
         viewManager.register (Views.TRACK_SENDS, new SendsView (surface, this.model));
@@ -860,6 +860,9 @@ public class LaunchpadControllerSetup extends AbstractControllerSetup<LaunchpadC
 
             case SHUFFLE:
                 return LaunchpadColorManager.COLOR_VIEW_SHUFFLE;
+
+            case USER:
+                return LaunchpadColorManager.COLOR_VIEW_USER;
 
             default:
                 return LaunchpadColorManager.COLOR_VIEW_OFF;

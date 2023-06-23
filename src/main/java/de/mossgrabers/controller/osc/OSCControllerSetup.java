@@ -17,7 +17,6 @@ import de.mossgrabers.controller.osc.module.ProjectModule;
 import de.mossgrabers.controller.osc.module.SceneModule;
 import de.mossgrabers.controller.osc.module.TrackModule;
 import de.mossgrabers.controller.osc.module.TransportModule;
-import de.mossgrabers.controller.osc.module.UserModule;
 import de.mossgrabers.controller.osc.protocol.OSCParser;
 import de.mossgrabers.controller.osc.protocol.OSCWriter;
 import de.mossgrabers.framework.configuration.ISettingsUI;
@@ -199,7 +198,6 @@ public class OSCControllerSetup extends AbstractControllerSetup<IControlSurface<
         modules.add (new DeviceModule (this.host, this.model, this.writer, this.configuration));
         modules.add (new BrowserModule (this.host, this.model, this.writer));
         modules.add (new MidiModule (this.host, this.model, surface, this.writer, this.keyManager));
-        modules.add (new UserModule (this.host, this.model, this.writer));
         modules.add (new ActionModule (this.host, this.model, this.writer, this.configuration));
         modules.add (new ClipModule (this.host, this.model, this.writer));
 

@@ -9,6 +9,7 @@ import de.mossgrabers.controller.novation.launchpad.controller.LaunchpadControlS
 import de.mossgrabers.framework.controller.ButtonID;
 import de.mossgrabers.framework.daw.IModel;
 import de.mossgrabers.framework.utils.ButtonEvent;
+import de.mossgrabers.framework.utils.ScrollStates;
 import de.mossgrabers.framework.view.PianoViewHelper;
 import de.mossgrabers.framework.view.Views;
 
@@ -87,5 +88,17 @@ public class PianoView extends PlayView
     public int getButtonColor (final ButtonID buttonID)
     {
         return LaunchpadColorManager.LAUNCHPAD_COLOR_BLACK;
+    }
+
+
+    /** {@inheritDoc} */
+    @Override
+    public void updateScrollStates (final ScrollStates scrollStates)
+    {
+        final int pianoOctave = this.scales.getPianoOctave ();
+        scrollStates.setCanScrollLeft (false);
+        scrollStates.setCanScrollRight (false);
+        scrollStates.setCanScrollUp (pianoOctave < 3);
+        scrollStates.setCanScrollDown (pianoOctave > -3);
     }
 }

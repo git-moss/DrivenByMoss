@@ -13,6 +13,7 @@ import de.mossgrabers.framework.daw.constants.Capability;
 import de.mossgrabers.framework.daw.data.ICursorDevice;
 import de.mossgrabers.framework.daw.data.bank.IParameterBank;
 import de.mossgrabers.framework.utils.ButtonEvent;
+import de.mossgrabers.framework.utils.ScrollStates;
 
 
 /**
@@ -162,5 +163,17 @@ public class DeviceView extends AbstractFaderView
                 // Not used
                 return LaunchpadColorManager.LAUNCHPAD_COLOR_BLACK;
         }
+    }
+
+
+    /** {@inheritDoc} */
+    @Override
+    public void updateScrollStates (final ScrollStates scrollStates)
+    {
+        final IParameterBank parameterBank = this.cursorDevice.getParameterBank ();
+        scrollStates.setCanScrollLeft (parameterBank.canScrollPageBackwards ());
+        scrollStates.setCanScrollRight (parameterBank.canScrollPageForwards ());
+        scrollStates.setCanScrollUp (this.cursorDevice.canSelectPrevious ());
+        scrollStates.setCanScrollDown (this.cursorDevice.canSelectNext ());
     }
 }

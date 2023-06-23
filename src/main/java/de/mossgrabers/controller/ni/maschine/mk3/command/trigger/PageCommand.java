@@ -6,12 +6,12 @@ package de.mossgrabers.controller.ni.maschine.mk3.command.trigger;
 
 import de.mossgrabers.controller.ni.maschine.mk3.MaschineConfiguration;
 import de.mossgrabers.controller.ni.maschine.mk3.controller.MaschineControlSurface;
+import de.mossgrabers.controller.ni.maschine.mk3.mode.MaschineUserMode;
 import de.mossgrabers.framework.command.core.AbstractTriggerCommand;
 import de.mossgrabers.framework.command.trigger.Direction;
 import de.mossgrabers.framework.daw.IModel;
 import de.mossgrabers.framework.daw.data.ICursorDevice;
 import de.mossgrabers.framework.daw.data.ITrack;
-import de.mossgrabers.framework.daw.data.bank.IParameterBank;
 import de.mossgrabers.framework.daw.data.bank.ISlotBank;
 import de.mossgrabers.framework.featuregroup.ModeManager;
 import de.mossgrabers.framework.mode.Modes;
@@ -65,12 +65,10 @@ public class PageCommand extends AbstractTriggerCommand<MaschineControlSurface, 
                 break;
 
             case USER:
-                final IParameterBank userBank = this.model.getProject ().getParameterBank ();
-                if (this.direction == Direction.LEFT)
-                    userBank.selectPreviousPage ();
-                else
-                    userBank.selectNextPage ();
-                this.mvHelper.notifySelectedProjectParameterPage ();
+                if (modeManager.get (Modes.USER) instanceof MaschineUserMode userMode)
+                {
+                    userMode.setMode (this.direction == Direction.LEFT);
+                }
                 break;
 
             case BROWSER:

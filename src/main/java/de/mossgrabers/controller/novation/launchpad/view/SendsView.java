@@ -11,8 +11,12 @@ import de.mossgrabers.framework.daw.DAWColor;
 import de.mossgrabers.framework.daw.IModel;
 import de.mossgrabers.framework.daw.data.ISend;
 import de.mossgrabers.framework.daw.data.ITrack;
+import de.mossgrabers.framework.daw.data.bank.ISceneBank;
 import de.mossgrabers.framework.daw.data.bank.ITrackBank;
 import de.mossgrabers.framework.utils.ButtonEvent;
+import de.mossgrabers.framework.utils.ScrollStates;
+
+import java.util.Optional;
 
 
 /**
@@ -123,5 +127,20 @@ public class SendsView extends AbstractFaderView
 
         final ISend send = track.getSendBank ().getItem (this.selectedSend);
         this.surface.setFaderValue (index, send.getValue ());
+    }
+
+
+    /** {@inheritDoc} */
+    @Override
+    public void updateScrollStates (final ScrollStates scrollStates)
+    {
+        final ITrackBank tb = this.model.getCurrentTrackBank ();
+        final Optional<ITrack> sel = tb.getSelectedItem ();
+        final int selIndex = sel.isPresent () ? sel.get ().getIndex () : -1;
+        final ISceneBank sceneBank = tb.getSceneBank ();
+        scrollStates.setCanScrollLeft (selIndex > 0 || tb.canScrollPageBackwards ());
+        scrollStates.setCanScrollRight (selIndex >= 0 && selIndex < 7 && tb.getItem (selIndex + 1).doesExist () || tb.canScrollPageForwards ());
+        scrollStates.setCanScrollUp (sceneBank.canScrollPageBackwards ());
+        scrollStates.setCanScrollDown (sceneBank.canScrollPageForwards ());
     }
 }

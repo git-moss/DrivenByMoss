@@ -185,7 +185,7 @@ public class DeviceModule extends AbstractModule
             final int oneplus = i + 1;
             final String pageName = parameterPageBank.getItem (i);
             final String pageAddress = deviceAddress + "page/" + oneplus + "/";
-            writer.sendOSC (pageAddress, pageName, dump);
+            writer.sendOSC (pageAddress + TAG_NAME, pageName, dump);
             writer.sendOSC (pageAddress + TAG_EXISTS, !pageName.isBlank (), dump);
             writer.sendOSC (pageAddress + TAG_NAME, pageName, dump);
             writer.sendOSC (pageAddress + TAG_SELECTED, selectedParameterPage == i, dump);
@@ -296,7 +296,8 @@ public class DeviceModule extends AbstractModule
 
     private void parseDeviceValue (final ISpecificDevice device, final LinkedList<String> path, final Object value) throws UnknownCommandException, MissingCommandException, IllegalParameterException
     {
-        final IParameterPageBank parameterPageBank = device.getParameterBank ().getPageBank ();
+        final IParameterBank parameterBank = device.getParameterBank ();
+        final IParameterPageBank parameterPageBank = parameterBank.getPageBank ();
 
         final String command = getSubCommand (path);
         switch (command)
@@ -351,7 +352,6 @@ public class DeviceModule extends AbstractModule
                 final String subCommand4 = getSubCommand (path);
                 if (TAG_PARAM.equals (subCommand4))
                 {
-                    final IParameterBank parameterBank = device.getParameterBank ();
                     for (int i = 0; i < parameterBank.getPageSize (); i++)
                         parameterBank.getItem (i).setIndication (isTrigger (value));
                 }
@@ -364,7 +364,7 @@ public class DeviceModule extends AbstractModule
                 try
                 {
                     final int paramNo = Integer.parseInt (subCommand5) - 1;
-                    parseFXParamValue (device, paramNo, path, value);
+                    parseFXParamValue (parameterBank.getItem (paramNo), path, value);
                 }
                 catch (final NumberFormatException ex)
                 {
@@ -634,10 +634,9 @@ public class DeviceModule extends AbstractModule
     }
 
 
-    private static void parseFXParamValue (final ISpecificDevice cursorDevice, final int fxparamIndex, final LinkedList<String> path, final Object value) throws MissingCommandException, IllegalParameterException, UnknownCommandException
+    private static void parseFXParamValue (final IParameter param, final LinkedList<String> path, final Object value) throws MissingCommandException, IllegalParameterException, UnknownCommandException
     {
         final String command = getSubCommand (path);
-        final IParameter param = cursorDevice.getParameterBank ().getItem (fxparamIndex);
         switch (command)
         {
             case "value":

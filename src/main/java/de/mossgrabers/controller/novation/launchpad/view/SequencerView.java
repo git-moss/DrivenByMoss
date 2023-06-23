@@ -11,7 +11,12 @@ import de.mossgrabers.framework.controller.ButtonID;
 import de.mossgrabers.framework.daw.IModel;
 import de.mossgrabers.framework.daw.clip.INoteClip;
 import de.mossgrabers.framework.daw.clip.NotePosition;
+import de.mossgrabers.framework.featuregroup.IScrollableView;
+import de.mossgrabers.framework.featuregroup.ViewManager;
+import de.mossgrabers.framework.scale.Scales;
+import de.mossgrabers.framework.utils.ScrollStates;
 import de.mossgrabers.framework.view.sequencer.AbstractNoteSequencerView;
+import de.mossgrabers.framework.view.sequencer.AbstractSequencerView;
 
 
 /**
@@ -19,7 +24,7 @@ import de.mossgrabers.framework.view.sequencer.AbstractNoteSequencerView;
  *
  * @author Jürgen Moßgraber
  */
-public class SequencerView extends AbstractNoteSequencerView<LaunchpadControlSurface, LaunchpadConfiguration>
+public class SequencerView extends AbstractNoteSequencerView<LaunchpadControlSurface, LaunchpadConfiguration> implements IScrollableView
 {
     private NotePosition noteEditPosition;
 
@@ -104,5 +109,19 @@ public class SequencerView extends AbstractNoteSequencerView<LaunchpadControlSur
         // Remember the long pressed note to use it either for editing or for changing the length of
         // the note on pad release
         this.noteEditPosition = new NotePosition (this.configuration.getMidiEditChannel (), index % 8, this.keyManager.map (y));
+    }
+
+
+    /** {@inheritDoc} */
+    @Override
+    public void updateScrollStates (final ScrollStates scrollStates)
+    {
+        final ViewManager viewManager = this.surface.getViewManager ();
+        final INoteClip clip = AbstractSequencerView.class.cast (viewManager.getActive ()).getClip ();
+        final int seqOctave = this.scales.getOctave ();
+        scrollStates.setCanScrollLeft (clip.canScrollStepsBackwards ());
+        scrollStates.setCanScrollRight (clip.canScrollStepsForwards ());
+        scrollStates.setCanScrollUp (seqOctave < Scales.OCTAVE_RANGE);
+        scrollStates.setCanScrollDown (seqOctave > -Scales.OCTAVE_RANGE);
     }
 }

@@ -9,7 +9,13 @@ import de.mossgrabers.controller.novation.launchpad.controller.LaunchpadColorMan
 import de.mossgrabers.controller.novation.launchpad.controller.LaunchpadControlSurface;
 import de.mossgrabers.framework.controller.ButtonID;
 import de.mossgrabers.framework.daw.IModel;
+import de.mossgrabers.framework.daw.clip.INoteClip;
+import de.mossgrabers.framework.featuregroup.IScrollableView;
+import de.mossgrabers.framework.featuregroup.ViewManager;
+import de.mossgrabers.framework.scale.Scales;
+import de.mossgrabers.framework.utils.ScrollStates;
 import de.mossgrabers.framework.view.sequencer.AbstractRaindropsView;
+import de.mossgrabers.framework.view.sequencer.AbstractSequencerView;
 
 
 /**
@@ -17,7 +23,7 @@ import de.mossgrabers.framework.view.sequencer.AbstractRaindropsView;
  *
  * @author Jürgen Moßgraber
  */
-public class RaindropsView extends AbstractRaindropsView<LaunchpadControlSurface, LaunchpadConfiguration>
+public class RaindropsView extends AbstractRaindropsView<LaunchpadControlSurface, LaunchpadConfiguration> implements IScrollableView
 {
     /**
      * Constructor.
@@ -44,5 +50,19 @@ public class RaindropsView extends AbstractRaindropsView<LaunchpadControlSurface
 
         final int scene = buttonID.ordinal () - ButtonID.SCENE1.ordinal ();
         return scene == 7 - this.getResolutionIndex () ? LaunchpadColorManager.LAUNCHPAD_COLOR_YELLOW : LaunchpadColorManager.LAUNCHPAD_COLOR_GREEN;
+    }
+
+
+    /** {@inheritDoc} */
+    @Override
+    public void updateScrollStates (final ScrollStates scrollStates)
+    {
+        final ViewManager viewManager = this.surface.getViewManager ();
+        final INoteClip clip = AbstractSequencerView.class.cast (viewManager.getActive ()).getClip ();
+        final int seqOctave = this.scales.getOctave ();
+        scrollStates.setCanScrollLeft (clip.canScrollStepsBackwards ());
+        scrollStates.setCanScrollRight (clip.canScrollStepsForwards ());
+        scrollStates.setCanScrollUp (seqOctave < Scales.OCTAVE_RANGE);
+        scrollStates.setCanScrollDown (seqOctave > -Scales.OCTAVE_RANGE);
     }
 }

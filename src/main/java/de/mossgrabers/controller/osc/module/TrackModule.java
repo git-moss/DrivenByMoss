@@ -195,8 +195,6 @@ public class TrackModule extends AbstractModule
                             tb.getItem (i).setPanIndication (isTrue);
                         break;
                     case "send":
-                        if (this.model.isEffectTrackBankActive ())
-                            return;
                         final int sendIndex = Integer.parseInt (path.get (0)) - 1;
                         for (int i = 0; i < tb.getPageSize (); i++)
                             tb.getItem (i).getSendBank ().getItem (sendIndex).setIndication (isTrue);

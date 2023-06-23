@@ -8,9 +8,8 @@ import de.mossgrabers.controller.ni.maschine.mk3.MaschineConfiguration;
 import de.mossgrabers.controller.ni.maschine.mk3.controller.MaschineControlSurface;
 import de.mossgrabers.framework.controller.display.ITextDisplay;
 import de.mossgrabers.framework.daw.IModel;
-import de.mossgrabers.framework.featuregroup.AbstractParameterMode;
+import de.mossgrabers.framework.mode.device.ProjectParamsMode;
 import de.mossgrabers.framework.parameter.IParameter;
-import de.mossgrabers.framework.parameterprovider.device.BankParameterProvider;
 import de.mossgrabers.framework.utils.StringUtils;
 
 
@@ -19,7 +18,7 @@ import de.mossgrabers.framework.utils.StringUtils;
  *
  * @author Jürgen Moßgraber
  */
-public class MaschineUserMode extends AbstractParameterMode<MaschineControlSurface, MaschineConfiguration, IParameter>
+public class MaschineUserMode extends ProjectParamsMode<MaschineControlSurface, MaschineConfiguration>
 {
     private int selParam = 0;
 
@@ -32,9 +31,9 @@ public class MaschineUserMode extends AbstractParameterMode<MaschineControlSurfa
      */
     public MaschineUserMode (final MaschineControlSurface surface, final IModel model)
     {
-        super ("User", surface, model, false, model.getProject ().getParameterBank (), DEFAULT_KNOB_IDS);
+        super (surface, model, false, DEFAULT_KNOB_IDS);
 
-        this.setParameterProvider (new BankParameterProvider (this.bank));
+        this.initTouchedStates (9);
     }
 
 
@@ -55,6 +54,27 @@ public class MaschineUserMode extends AbstractParameterMode<MaschineControlSurfa
         }
 
         d.allDone ();
+    }
+
+
+    /** {@inheritDoc} */
+    @Override
+    public void onKnobValue (final int index, final int value)
+    {
+        final IParameter param = this.bank.getItem (index < 0 ? this.selParam : index);
+        if (param.doesExist ())
+            param.changeValue (value);
+    }
+
+
+    /** {@inheritDoc} */
+    @Override
+    public void onKnobTouch (final int index, final boolean isTouched)
+    {
+        this.setTouchedKnob (index, isTouched);
+
+        if (index < 8)
+            super.onKnobTouch (index == 8 ? -1 : index, isTouched);
     }
 
 
@@ -115,7 +135,10 @@ public class MaschineUserMode extends AbstractParameterMode<MaschineControlSurfa
     public void selectPreviousItemPage ()
     {
         super.selectPreviousItem ();
-        this.mvHelper.notifySelectedProjectParameterPage ();
+        if (this.isProjectMode)
+            this.mvHelper.notifySelectedProjectParameterPage ();
+        else
+            this.mvHelper.notifySelectedTrackParameterPage ();
     }
 
 
@@ -124,7 +147,10 @@ public class MaschineUserMode extends AbstractParameterMode<MaschineControlSurfa
     public void selectNextItemPage ()
     {
         super.selectNextItem ();
-        this.mvHelper.notifySelectedProjectParameterPage ();
+        if (this.isProjectMode)
+            this.mvHelper.notifySelectedProjectParameterPage ();
+        else
+            this.mvHelper.notifySelectedTrackParameterPage ();
     }
 
 
@@ -157,5 +183,17 @@ public class MaschineUserMode extends AbstractParameterMode<MaschineControlSurfa
     public boolean hasNextItemPage ()
     {
         return super.hasNextItem ();
+    }
+
+
+    /** {@inheritDoc} */
+    @Override
+    public void setMode (final boolean isProjectMode)
+    {
+        super.setMode (isProjectMode);
+        if (isProjectMode)
+            this.mvHelper.notifySelectedProjectParameterPage ();
+        else
+            this.mvHelper.notifySelectedTrackParameterPage ();
     }
 }

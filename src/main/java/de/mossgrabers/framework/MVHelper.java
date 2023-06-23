@@ -264,7 +264,7 @@ public class MVHelper<S extends IControlSurface<C>, C extends Configuration>
 
     /**
      * Display the name of the selected project parameter page.
-     * 
+     *
      * @param bank The parameter bank from which to get the selected page
      * @param prefix A text prefix to add
      */

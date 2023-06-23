@@ -6,36 +6,28 @@ package de.mossgrabers.controller.novation.launchpad.command.trigger;
 
 import de.mossgrabers.controller.novation.launchpad.LaunchpadConfiguration;
 import de.mossgrabers.controller.novation.launchpad.controller.LaunchpadControlSurface;
-import de.mossgrabers.controller.novation.launchpad.view.Drum64View;
 import de.mossgrabers.controller.novation.launchpad.view.SessionView;
+import de.mossgrabers.controller.novation.launchpad.view.UserView;
 import de.mossgrabers.framework.command.trigger.Direction;
 import de.mossgrabers.framework.command.trigger.mode.CursorCommand;
 import de.mossgrabers.framework.controller.ButtonID;
 import de.mossgrabers.framework.daw.GrooveParameterID;
-import de.mossgrabers.framework.daw.IBrowser;
+import de.mossgrabers.framework.daw.IApplication;
 import de.mossgrabers.framework.daw.IModel;
 import de.mossgrabers.framework.daw.ITransport;
-import de.mossgrabers.framework.daw.clip.INoteClip;
 import de.mossgrabers.framework.daw.data.ICursorDevice;
-import de.mossgrabers.framework.daw.data.ITrack;
-import de.mossgrabers.framework.daw.data.bank.IParameterBank;
-import de.mossgrabers.framework.daw.data.bank.ISceneBank;
-import de.mossgrabers.framework.daw.data.bank.ITrackBank;
 import de.mossgrabers.framework.featuregroup.IMode;
+import de.mossgrabers.framework.featuregroup.IScrollableView;
 import de.mossgrabers.framework.featuregroup.IView;
 import de.mossgrabers.framework.featuregroup.ViewManager;
 import de.mossgrabers.framework.mode.Modes;
 import de.mossgrabers.framework.parameter.IParameter;
-import de.mossgrabers.framework.scale.Scale;
 import de.mossgrabers.framework.scale.Scales;
 import de.mossgrabers.framework.utils.ButtonEvent;
 import de.mossgrabers.framework.utils.FrameworkException;
 import de.mossgrabers.framework.view.TransposeView;
 import de.mossgrabers.framework.view.Views;
-import de.mossgrabers.framework.view.sequencer.AbstractDrumView;
 import de.mossgrabers.framework.view.sequencer.AbstractSequencerView;
-
-import java.util.Optional;
 
 
 /**
@@ -71,114 +63,10 @@ public class LaunchpadCursorCommand extends CursorCommand<LaunchpadControlSurfac
     @Override
     protected void updateArrowStates ()
     {
-        final ITrackBank tb = this.model.getCurrentTrackBank ();
-        final ViewManager viewManager = this.surface.getViewManager ();
-        final Views activeViewId = viewManager.getActiveID ();
-        if (activeViewId == null)
-            return;
-        switch (activeViewId)
-        {
-            case CONTROL, USER:
-                this.canScrollUp = false;
-                this.canScrollDown = false;
-                this.canScrollLeft = false;
-                this.canScrollRight = false;
-                break;
-
-            case SHIFT:
-                this.canScrollUp = true;
-                this.canScrollDown = true;
-                this.canScrollLeft = true;
-                this.canScrollRight = true;
-                break;
-
-            case PLAY, CHORDS:
-                final int octave = this.scales.getOctave ();
-                this.canScrollUp = octave < 3;
-                this.canScrollDown = octave > -3;
-                final int scale = this.scales.getScale ().ordinal ();
-                this.canScrollLeft = scale > 0;
-                this.canScrollRight = scale < Scale.values ().length - 1;
-                break;
-
-            case PIANO:
-                final int pianoOctave = this.scales.getOctave ();
-                this.canScrollUp = pianoOctave < 3;
-                this.canScrollDown = pianoOctave > -3;
-                this.canScrollLeft = false;
-                this.canScrollRight = false;
-                break;
-
-            case DRUM64:
-                final Drum64View drumView64 = (Drum64View) viewManager.get (Views.DRUM64);
-                final int drumOctave = drumView64.getDrumOctave ();
-                this.canScrollUp = drumOctave < 1;
-                this.canScrollDown = drumOctave > -2;
-                this.canScrollLeft = false;
-                this.canScrollRight = false;
-                break;
-
-            case SEQUENCER, RAINDROPS, POLY_SEQUENCER:
-                final INoteClip clip = AbstractSequencerView.class.cast (viewManager.getActive ()).getClip ();
-                final int seqOctave = this.scales.getOctave ();
-                this.canScrollUp = seqOctave < Scales.OCTAVE_RANGE;
-                this.canScrollDown = seqOctave > -Scales.OCTAVE_RANGE;
-                this.canScrollLeft = clip.canScrollStepsBackwards ();
-                this.canScrollRight = clip.canScrollStepsForwards ();
-                break;
-
-            case DRUM, DRUM4, DRUM8:
-                final INoteClip drumClip = AbstractDrumView.class.cast (viewManager.get (activeViewId)).getClip ();
-                this.canScrollUp = this.scales.canScrollDrumOctaveUp ();
-                this.canScrollDown = this.scales.canScrollDrumOctaveDown ();
-                this.canScrollLeft = drumClip.canScrollStepsBackwards ();
-                this.canScrollRight = drumClip.canScrollStepsForwards ();
-                break;
-
-            case DEVICE:
-                final ICursorDevice cursorDevice = this.model.getCursorDevice ();
-                this.canScrollUp = cursorDevice.canSelectPrevious ();
-                this.canScrollDown = cursorDevice.canSelectNext ();
-                final IParameterBank parameterBank = cursorDevice.getParameterBank ();
-                this.canScrollLeft = parameterBank.canScrollPageBackwards ();
-                this.canScrollRight = parameterBank.canScrollPageForwards ();
-                break;
-
-            case BROWSER:
-                final IBrowser browser = this.model.getBrowser ();
-                this.canScrollUp = true;
-                this.canScrollDown = true;
-                this.canScrollLeft = browser.hasPreviousContentType ();
-                this.canScrollRight = browser.hasNextContentType ();
-                break;
-
-            case SESSION, TRACK_VOLUME, TRACK_PAN, TRACK_SENDS, MIX:
-                final Optional<ITrack> sel = tb.getSelectedItem ();
-                final int selIndex = sel.isPresent () ? sel.get ().getIndex () : -1;
-                this.canScrollLeft = selIndex > 0 || tb.canScrollPageBackwards ();
-                this.canScrollRight = selIndex >= 0 && selIndex < 7 && tb.getItem (selIndex + 1).doesExist () || tb.canScrollPageForwards ();
-                final ISceneBank sceneBank = tb.getSceneBank ();
-                this.canScrollUp = sceneBank.canScrollPageBackwards ();
-                this.canScrollDown = sceneBank.canScrollPageForwards ();
-                break;
-
-            case SHUFFLE, TEMPO, PROJECT:
-                this.canScrollLeft = true;
-                this.canScrollRight = true;
-                this.canScrollUp = true;
-                this.canScrollDown = true;
-                break;
-
-            case NOTE_EDIT_VIEW, CLIP_LENGTH:
-                this.canScrollLeft = false;
-                this.canScrollRight = false;
-                this.canScrollUp = false;
-                this.canScrollDown = false;
-                break;
-
-            default:
-                throw new FrameworkException ("Missing cursor key state handling for view.");
-        }
+        if (this.surface.getViewManager ().getActive () instanceof final IScrollableView view)
+            view.updateScrollStates (this.scrollStates);
+        else
+            this.scrollStates.setAll (false);
     }
 
 
@@ -189,8 +77,13 @@ public class LaunchpadCursorCommand extends CursorCommand<LaunchpadControlSurfac
         final ViewManager viewManager = this.surface.getViewManager ();
         switch (viewManager.getActiveID ())
         {
-            case USER, CONTROL:
+            case CONTROL:
                 // Not used
+                break;
+
+            case USER:
+                if (viewManager.get (Views.USER) instanceof UserView userView)
+                    userView.selectPreviousPage ();
                 break;
 
             case SHIFT:
@@ -276,8 +169,13 @@ public class LaunchpadCursorCommand extends CursorCommand<LaunchpadControlSurfac
         final ViewManager viewManager = this.surface.getViewManager ();
         switch (viewManager.getActiveID ())
         {
-            case USER, CONTROL:
+            case CONTROL:
                 // Not used
+                break;
+
+            case USER:
+                if (viewManager.get (Views.USER) instanceof UserView userView)
+                    userView.selectNextPage ();
                 break;
 
             case SHIFT:
@@ -363,8 +261,13 @@ public class LaunchpadCursorCommand extends CursorCommand<LaunchpadControlSurfac
         final ViewManager viewManager = this.surface.getViewManager ();
         switch (viewManager.getActiveID ())
         {
-            case USER, CONTROL:
-                // Not Used
+            case CONTROL:
+                // Not used
+                break;
+
+            case USER:
+                if (viewManager.get (Views.USER) instanceof UserView userView)
+                    userView.setMode (true);
                 break;
 
             case SHIFT:
@@ -429,8 +332,13 @@ public class LaunchpadCursorCommand extends CursorCommand<LaunchpadControlSurfac
         final ViewManager viewManager = this.surface.getViewManager ();
         switch (viewManager.getActiveID ())
         {
-            case USER, CONTROL:
-                // Not Used
+            case CONTROL:
+                // Not used
+                break;
+
+            case USER:
+                if (viewManager.get (Views.USER) instanceof UserView userView)
+                    userView.setMode (false);
                 break;
 
             case SHIFT:
@@ -517,10 +425,11 @@ public class LaunchpadCursorCommand extends CursorCommand<LaunchpadControlSurfac
         if (!this.surface.isPressed (in ? ButtonID.RIGHT : ButtonID.LEFT))
             return;
 
+        final IApplication application = this.model.getApplication ();
         if (in)
-            this.model.getApplication ().zoomIn ();
+            application.zoomIn ();
         else
-            this.model.getApplication ().zoomOut ();
+            application.zoomOut ();
 
         this.surface.scheduleTask ( () -> this.triggerChangeZoom1 (in), REPEAT_SPEED);
     }

@@ -7,12 +7,17 @@ package de.mossgrabers.controller.akai.fire.mode;
 import de.mossgrabers.controller.akai.fire.FireConfiguration;
 import de.mossgrabers.controller.akai.fire.controller.FireControlSurface;
 import de.mossgrabers.controller.akai.fire.graphics.canvas.component.TitleValueComponent;
+import de.mossgrabers.framework.controller.ButtonID;
 import de.mossgrabers.framework.controller.ContinuousID;
 import de.mossgrabers.framework.controller.display.IGraphicDisplay;
 import de.mossgrabers.framework.daw.IModel;
 import de.mossgrabers.framework.daw.data.bank.IParameterBank;
+import de.mossgrabers.framework.daw.data.bank.IParameterPageBank;
 import de.mossgrabers.framework.mode.device.ProjectParamsMode;
 import de.mossgrabers.framework.parameter.IParameter;
+import de.mossgrabers.framework.parameterprovider.device.BankParameterProvider;
+
+import java.util.Optional;
 
 
 /**
@@ -30,7 +35,13 @@ public class FireUserMode extends ProjectParamsMode<FireControlSurface, FireConf
      */
     public FireUserMode (final FireControlSurface surface, final IModel model)
     {
-        super (surface, model, false, ContinuousID.createSequentialList (ContinuousID.KNOB1, 4));
+        super (surface, model, false, ContinuousID.createSequentialList (ContinuousID.KNOB1, 4), surface::isShiftPressed, false);
+
+        this.notifyPageChange = false;
+
+        this.projectParameterProvider = new Fire4KnobProvider (surface, new BankParameterProvider (model.getProject ().getParameterBank ()));
+        this.trackParameterProvider = new Fire4KnobProvider (surface, new BankParameterProvider (model.getCursorTrack ().getParameterBank ()));
+        this.setParameterProvider (this.projectParameterProvider);
     }
 
 
@@ -40,17 +51,18 @@ public class FireUserMode extends ProjectParamsMode<FireControlSurface, FireConf
     {
         final IGraphicDisplay display = this.surface.getGraphicsDisplay ();
 
-        final IParameterBank userBank = this.model.getProject ().getParameterBank ();
+        final IParameterPageBank pageBank = ((IParameterBank) this.bank).getPageBank ();
+        final Optional<String> selectedPage = pageBank.getSelectedItem ();
 
-        final int page = userBank.getScrollPosition () / userBank.getPageSize ();
-        final String desc = "User Page: " + (page + 1);
+        final String desc = selectedPage.isPresent () ? selectedPage.get () : "None";
         String paramLine = "";
         int value = -1;
 
-        final int touchedKnob = this.getTouchedKnob ();
+        int touchedKnob = this.getTouchedKnob ();
+        touchedKnob = this.surface.isPressed (ButtonID.ALT) && touchedKnob > -1 ? 4 + touchedKnob : touchedKnob;
         if (touchedKnob > -1)
         {
-            final IParameter p = userBank.getItem (touchedKnob);
+            final IParameter p = ((IParameterBank) this.bank).getItem (touchedKnob);
             paramLine = p.getName (5);
             if (paramLine.isEmpty ())
                 paramLine = "Not mapped";
@@ -60,6 +72,8 @@ public class FireUserMode extends ProjectParamsMode<FireControlSurface, FireConf
                 paramLine += ": " + p.getDisplayedValue (6);
             }
         }
+        else
+            paramLine = this.isProjectMode ? "Project" : "Track";
 
         display.addElement (new TitleValueComponent (desc, paramLine, value, false));
         display.send ();

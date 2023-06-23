@@ -9,7 +9,11 @@ import de.mossgrabers.controller.novation.launchpad.controller.LaunchpadControlS
 import de.mossgrabers.framework.controller.ButtonID;
 import de.mossgrabers.framework.controller.color.ColorManager;
 import de.mossgrabers.framework.daw.IModel;
+import de.mossgrabers.framework.featuregroup.IScrollableView;
+import de.mossgrabers.framework.featuregroup.ViewManager;
+import de.mossgrabers.framework.utils.ScrollStates;
 import de.mossgrabers.framework.view.AbstractDrum64View;
+import de.mossgrabers.framework.view.Views;
 
 
 /**
@@ -17,7 +21,7 @@ import de.mossgrabers.framework.view.AbstractDrum64View;
  *
  * @author Jürgen Moßgraber
  */
-public class Drum64View extends AbstractDrum64View<LaunchpadControlSurface, LaunchpadConfiguration>
+public class Drum64View extends AbstractDrum64View<LaunchpadControlSurface, LaunchpadConfiguration> implements IScrollableView
 {
     /**
      * Constructor.
@@ -46,5 +50,19 @@ public class Drum64View extends AbstractDrum64View<LaunchpadControlSurface, Laun
     public String getButtonColorID (final ButtonID buttonID)
     {
         return ColorManager.BUTTON_STATE_OFF;
+    }
+
+
+    /** {@inheritDoc} */
+    @Override
+    public void updateScrollStates (final ScrollStates scrollStates)
+    {
+        final ViewManager viewManager = this.surface.getViewManager ();
+        final Drum64View drumView64 = (Drum64View) viewManager.get (Views.DRUM64);
+        final int drumOctave = drumView64.getDrumOctave ();
+        scrollStates.setCanScrollLeft (false);
+        scrollStates.setCanScrollRight (false);
+        scrollStates.setCanScrollUp (drumOctave < 1);
+        scrollStates.setCanScrollDown (drumOctave > -2);
     }
 }

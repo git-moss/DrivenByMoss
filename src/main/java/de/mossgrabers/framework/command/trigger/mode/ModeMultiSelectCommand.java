@@ -23,7 +23,7 @@ import java.util.Optional;
 
 /**
  * Selects the next mode from a list. If the last element is reached it wraps around to the first.
- * Contains specific handling of Send modes which are checked for existance.
+ * Contains specific handling of Send modes which are checked for existence.
  *
  * @param <S> The type of the control surface
  * @param <C> The type of the configuration

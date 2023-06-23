@@ -385,4 +385,15 @@ public class FeatureGroupManager<E extends Enum<E>, F extends IFeatureGroup>
     {
         this.changeListeners.forEach (l -> l.call (oldFeatureGroup, newFeatureGroup));
     }
+
+
+    /**
+     * Get all connected managers.
+     * 
+     * @return The connectedManagers
+     */
+    public List<FeatureGroupManager<E, F>> getConnectedManagers ()
+    {
+        return this.connectedManagers;
+    }
 }

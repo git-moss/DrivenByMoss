@@ -13,16 +13,19 @@ import de.mossgrabers.framework.daw.IModel;
 import de.mossgrabers.framework.daw.data.bank.IParameterBank;
 import de.mossgrabers.framework.parameter.IParameter;
 import de.mossgrabers.framework.utils.ButtonEvent;
+import de.mossgrabers.framework.utils.ScrollStates;
 
 
 /**
- * Edit user parameters.
+ * Edit project or track parameters.
  *
  * @author Jürgen Moßgraber
  */
 public class UserView extends AbstractFaderView
 {
-    private final IParameterBank userParameterBank;
+    protected IParameterBank projectParameterBank;
+    protected IParameterBank trackParameterBank;
+    protected boolean        isProjectMode = true;
 
 
     /**
@@ -33,9 +36,10 @@ public class UserView extends AbstractFaderView
      */
     public UserView (final LaunchpadControlSurface surface, final IModel model)
     {
-        super ("User", surface, model);
+        super ("Project/Track Parameters", surface, model);
 
-        this.userParameterBank = this.model.getProject ().getParameterBank ();
+        this.projectParameterBank = model.getProject ().getParameterBank ();
+        this.trackParameterBank = model.getCursorTrack ().getParameterBank ();
     }
 
 
@@ -51,7 +55,7 @@ public class UserView extends AbstractFaderView
     @Override
     public void onValueKnob (final int index, final int value)
     {
-        this.userParameterBank.getItem (index).setValueImmediatly (value);
+        this.getBank ().getItem (index).setValueImmediatly (value);
     }
 
 
@@ -59,7 +63,7 @@ public class UserView extends AbstractFaderView
     @Override
     protected int getFaderValue (final int index)
     {
-        return this.userParameterBank.getItem (index).getValue ();
+        return this.getBank ().getItem (index).getValue ();
     }
 
 
@@ -68,7 +72,7 @@ public class UserView extends AbstractFaderView
     public void drawGrid ()
     {
         for (int i = 0; i < 8; i++)
-            this.surface.setFaderValue (i, this.userParameterBank.getItem (i).getValue ());
+            this.surface.setFaderValue (i, this.getBank ().getItem (i).getValue ());
     }
 
 
@@ -79,7 +83,7 @@ public class UserView extends AbstractFaderView
         if (!ButtonID.isSceneButton (buttonID))
             return;
         final int index = buttonID.ordinal () - ButtonID.SCENE1.ordinal ();
-        this.userParameterBank.scrollTo (index * this.userParameterBank.getPageSize ());
+        this.getBank ().scrollTo (index * this.getBank ().getPageSize ());
         this.bindCurrentPage ();
     }
 
@@ -88,23 +92,8 @@ public class UserView extends AbstractFaderView
     @Override
     public int getButtonColor (final ButtonID buttonID)
     {
-        final int scene = buttonID.ordinal () - ButtonID.SCENE1.ordinal ();
-        final int page = this.userParameterBank.getScrollPosition () / this.userParameterBank.getPageSize ();
-        return page == scene ? LaunchpadColorManager.LAUNCHPAD_COLOR_MAGENTA : LaunchpadColorManager.LAUNCHPAD_COLOR_BLACK;
-    }
-
-
-    /** {@inheritDoc} */
-    @Override
-    public void onActivate ()
-    {
-        super.onActivate ();
-
-        // Workaround to prevent MIDI notes mapped to user parameter
-        // MIDI notes are handled in handleMidi
-        this.surface.unbindGrid ();
-
-        this.bindCurrentPage ();
+        // Scene buttons not used
+        return LaunchpadColorManager.LAUNCHPAD_COLOR_BLACK;
     }
 
 
@@ -126,6 +115,18 @@ public class UserView extends AbstractFaderView
     }
 
 
+    /** {@inheritDoc} */
+    @Override
+    public void updateScrollStates (final ScrollStates scrollStates)
+    {
+        final IParameterBank parameterBank = this.getBank ();
+        scrollStates.setCanScrollLeft (parameterBank.canScrollPageBackwards ());
+        scrollStates.setCanScrollRight (parameterBank.canScrollPageForwards ());
+        scrollStates.setCanScrollUp (!this.isProjectMode);
+        scrollStates.setCanScrollDown (this.isProjectMode);
+    }
+
+
     /**
      * Update the binding to the current page.
      */
@@ -136,7 +137,55 @@ public class UserView extends AbstractFaderView
             final ContinuousID faderID = ContinuousID.get (ContinuousID.FADER1, i);
             final IHwContinuousControl continuous = this.surface.getContinuous (faderID);
             if (continuous != null)
-                continuous.bind (this.userParameterBank.getItem (i));
+                continuous.bind (this.getBank ().getItem (i));
         }
+    }
+
+
+    /**
+     * Set the project or track parameters mode.
+     *
+     * @param isProjectMode
+     */
+    public void setMode (final boolean isProjectMode)
+    {
+        this.isProjectMode = isProjectMode;
+        this.bindCurrentPage ();
+        this.notifyPage ();
+    }
+
+
+    /**
+     * Select the previous page.
+     */
+    public void selectPreviousPage ()
+    {
+        this.getBank ().selectPreviousPage ();
+        this.notifyPage ();
+    }
+
+
+    /**
+     * Select the next page.
+     */
+    public void selectNextPage ()
+    {
+        this.getBank ().selectNextPage ();
+        this.notifyPage ();
+    }
+
+
+    private void notifyPage ()
+    {
+        if (this.isProjectMode)
+            this.mvHelper.notifySelectedProjectParameterPage ();
+        else
+            this.mvHelper.notifySelectedTrackParameterPage ();
+    }
+
+
+    private IParameterBank getBank ()
+    {
+        return this.isProjectMode ? this.projectParameterBank : this.trackParameterBank;
     }
 }

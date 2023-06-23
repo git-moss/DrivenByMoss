@@ -16,7 +16,9 @@ import de.mossgrabers.framework.daw.ITransport;
 import de.mossgrabers.framework.daw.constants.Resolution;
 import de.mossgrabers.framework.daw.midi.INoteRepeat;
 import de.mossgrabers.framework.daw.resource.ChannelType;
+import de.mossgrabers.framework.featuregroup.IScrollableView;
 import de.mossgrabers.framework.utils.ButtonEvent;
+import de.mossgrabers.framework.utils.ScrollStates;
 import de.mossgrabers.framework.view.AbstractShiftView;
 
 import java.util.EnumMap;
@@ -28,7 +30,7 @@ import java.util.Map;
  *
  * @author Jürgen Moßgraber
  */
-public class ShiftView extends AbstractShiftView<LaunchpadControlSurface, LaunchpadConfiguration>
+public class ShiftView extends AbstractShiftView<LaunchpadControlSurface, LaunchpadConfiguration> implements IScrollableView
 {
     private static final String                  TAG_ACTIVE    = "Active";
     private static final Map<ButtonID, ButtonID> CONTROL_MODES = new EnumMap<> (ButtonID.class);
@@ -421,6 +423,17 @@ public class ShiftView extends AbstractShiftView<LaunchpadControlSurface, Launch
         final ButtonID modeButton = CONTROL_MODES.get (buttonID);
         if (modeButton != null)
             this.handleControlModes (modeButton);
+    }
+
+
+    /** {@inheritDoc} */
+    @Override
+    public void updateScrollStates (final ScrollStates scrollStates)
+    {
+        scrollStates.setCanScrollLeft (true);
+        scrollStates.setCanScrollRight (true);
+        scrollStates.setCanScrollUp (true);
+        scrollStates.setCanScrollDown (true);
     }
 
 

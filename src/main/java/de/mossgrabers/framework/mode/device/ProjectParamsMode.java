@@ -11,6 +11,7 @@ import de.mossgrabers.framework.controller.IControlSurface;
 import de.mossgrabers.framework.daw.IModel;
 import de.mossgrabers.framework.featuregroup.AbstractParameterMode;
 import de.mossgrabers.framework.parameter.IParameter;
+import de.mossgrabers.framework.parameterprovider.IParameterProvider;
 import de.mossgrabers.framework.parameterprovider.device.BankParameterProvider;
 
 import java.util.List;
@@ -27,6 +28,12 @@ import java.util.function.BooleanSupplier;
  */
 public class ProjectParamsMode<S extends IControlSurface<C>, C extends Configuration> extends AbstractParameterMode<S, C, IParameter>
 {
+    protected IParameterProvider projectParameterProvider;
+    protected IParameterProvider trackParameterProvider;
+    protected boolean            isProjectMode    = true;
+    protected boolean            notifyPageChange = true;
+
+
     /**
      * Constructor.
      *
@@ -55,9 +62,32 @@ public class ProjectParamsMode<S extends IControlSurface<C>, C extends Configura
      */
     public ProjectParamsMode (final S surface, final IModel model, final boolean isAbsolute, final List<ContinuousID> knobs, final BooleanSupplier isAlternativeFunction)
     {
+        this (surface, model, isAbsolute, knobs, isAlternativeFunction, true);
+    }
+
+
+    /**
+     * Constructor.
+     *
+     * @param surface The control surface
+     * @param model The model
+     * @param isAbsolute If true the value change is happening with a setter otherwise relative
+     *            change method is used
+     * @param knobs The IDs of the knob to control this mode
+     * @param isAlternativeFunction Callback function to execute the secondary function, e.g. a
+     *            shift button
+     * @param addParameterProvider True to add the default parameter provider
+     */
+    protected ProjectParamsMode (final S surface, final IModel model, final boolean isAbsolute, final List<ContinuousID> knobs, final BooleanSupplier isAlternativeFunction, final boolean addParameterProvider)
+    {
         super ("Project Parameters", surface, model, isAbsolute, model.getProject ().getParameterBank (), knobs, isAlternativeFunction);
 
-        this.setParameterProvider (new BankParameterProvider (model.getProject ().getParameterBank ()));
+        if (addParameterProvider)
+        {
+            this.projectParameterProvider = new BankParameterProvider (model.getProject ().getParameterBank ());
+            this.trackParameterProvider = new BankParameterProvider (model.getCursorTrack ().getParameterBank ());
+            this.setParameterProvider (this.projectParameterProvider);
+        }
     }
 
 
@@ -67,7 +97,7 @@ public class ProjectParamsMode<S extends IControlSurface<C>, C extends Configura
     {
         this.setTouchedKnob (index, isTouched);
 
-        final IParameter param = this.model.getProject ().getParameterBank ().getItem (index);
+        final IParameter param = this.bank.getItem (index);
         if (!param.doesExist ())
             return;
 
@@ -86,7 +116,8 @@ public class ProjectParamsMode<S extends IControlSurface<C>, C extends Configura
     {
         super.selectPreviousItem ();
 
-        this.mvHelper.notifySelectedProjectParameterPage ();
+        if (this.notifyPageChange)
+            this.mvHelper.notifySelectedProjectParameterPage ();
     }
 
 
@@ -96,6 +127,30 @@ public class ProjectParamsMode<S extends IControlSurface<C>, C extends Configura
     {
         super.selectNextItem ();
 
-        this.mvHelper.notifySelectedProjectParameterPage ();
+        if (this.notifyPageChange)
+            this.mvHelper.notifySelectedProjectParameterPage ();
+    }
+
+
+    /**
+     * Toggle the project and track parameters mode.
+     */
+    public void toggleMode ()
+    {
+        this.setMode (!this.isProjectMode);
+    }
+
+
+    /**
+     * Set the project or track parameters mode.
+     *
+     * @param isProjectMode
+     */
+    public void setMode (final boolean isProjectMode)
+    {
+        this.isProjectMode = isProjectMode;
+        this.switchBanks (this.isProjectMode ? this.model.getProject ().getParameterBank () : this.model.getCursorTrack ().getParameterBank ());
+        this.setParameterProvider (this.isProjectMode ? this.projectParameterProvider : this.trackParameterProvider);
+        this.bindControls ();
     }
 }

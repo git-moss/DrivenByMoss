@@ -1,3 +1,7 @@
+// Written by Jürgen Moßgraber - mossgrabers.de
+// (c) 2017-2023
+// Licensed under LGPLv3 - http://www.gnu.org/licenses/lgpl-3.0.txt
+
 package de.mossgrabers.controller.novation.launchpad.view;
 
 import de.mossgrabers.controller.novation.launchpad.LaunchpadConfiguration;
@@ -6,7 +10,9 @@ import de.mossgrabers.controller.novation.launchpad.controller.LaunchpadControlS
 import de.mossgrabers.framework.daw.GrooveParameterID;
 import de.mossgrabers.framework.daw.IGroove;
 import de.mossgrabers.framework.daw.IModel;
+import de.mossgrabers.framework.featuregroup.IScrollableView;
 import de.mossgrabers.framework.parameter.IParameter;
+import de.mossgrabers.framework.utils.ScrollStates;
 import de.mossgrabers.framework.view.ShuffleView;
 
 
@@ -15,7 +21,7 @@ import de.mossgrabers.framework.view.ShuffleView;
  *
  * @author Jürgen Moßgraber
  */
-public class LaunchpadShuffleView extends ShuffleView<LaunchpadControlSurface, LaunchpadConfiguration>
+public class LaunchpadShuffleView extends ShuffleView<LaunchpadControlSurface, LaunchpadConfiguration> implements IScrollableView
 {
     /**
      * Constructor.
@@ -86,5 +92,13 @@ public class LaunchpadShuffleView extends ShuffleView<LaunchpadControlSurface, L
         final boolean isEight = rateParameter.getValue () == 0;
         this.padGrid.lightEx (2, 7, isEight ? LaunchpadColorManager.LAUNCHPAD_COLOR_BLUE_HI : LaunchpadColorManager.LAUNCHPAD_COLOR_GREY_HI);
         this.padGrid.lightEx (3, 7, !isEight ? LaunchpadColorManager.LAUNCHPAD_COLOR_BLUE_HI : LaunchpadColorManager.LAUNCHPAD_COLOR_GREY_HI);
+    }
+
+
+    /** {@inheritDoc} */
+    @Override
+    public void updateScrollStates (final ScrollStates scrollStates)
+    {
+        scrollStates.setAll (true);
     }
 }

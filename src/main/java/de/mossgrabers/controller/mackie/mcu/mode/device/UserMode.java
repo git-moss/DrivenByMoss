@@ -9,8 +9,9 @@ import de.mossgrabers.controller.mackie.mcu.mode.BaseMode;
 import de.mossgrabers.framework.controller.color.ColorEx;
 import de.mossgrabers.framework.controller.display.ITextDisplay;
 import de.mossgrabers.framework.daw.IModel;
-import de.mossgrabers.framework.daw.data.bank.IParameterBank;
+import de.mossgrabers.framework.daw.data.bank.IBank;
 import de.mossgrabers.framework.parameter.IParameter;
+import de.mossgrabers.framework.parameterprovider.IParameterProvider;
 import de.mossgrabers.framework.parameterprovider.device.BankParameterProvider;
 import de.mossgrabers.framework.parameterprovider.special.RangeFilterParameterProvider;
 import de.mossgrabers.framework.utils.StringUtils;
@@ -23,6 +24,11 @@ import de.mossgrabers.framework.utils.StringUtils;
  */
 public class UserMode extends BaseMode<IParameter>
 {
+    protected IParameterProvider projectParameterProvider;
+    protected IParameterProvider trackParameterProvider;
+    protected boolean            isProjectMode = true;
+
+
     /**
      * Constructor.
      *
@@ -34,7 +40,9 @@ public class UserMode extends BaseMode<IParameter>
         super ("User Parameters", surface, model, model.getProject ().getParameterBank ());
 
         final int surfaceID = surface.getSurfaceID ();
-        this.setParameterProvider (new RangeFilterParameterProvider (new BankParameterProvider (model.getProject ().getParameterBank ()), surfaceID * 8, 8));
+        this.projectParameterProvider = new RangeFilterParameterProvider (new BankParameterProvider (model.getProject ().getParameterBank ()), surfaceID * 8, 8);
+        this.trackParameterProvider = new RangeFilterParameterProvider (new BankParameterProvider (model.getCursorTrack ().getParameterBank ()), surfaceID * 8, 8);
+        this.setParameterProvider (this.projectParameterProvider);
     }
 
 
@@ -43,7 +51,7 @@ public class UserMode extends BaseMode<IParameter>
     public void onKnobValue (final int index, final int value)
     {
         final int extenderOffset = this.surface.getExtenderOffset ();
-        this.model.getProject ().getParameterBank ().getItem (extenderOffset + index).changeValue (value);
+        this.bank.getItem (extenderOffset + index).changeValue (value);
     }
 
 
@@ -53,7 +61,7 @@ public class UserMode extends BaseMode<IParameter>
     {
         this.setTouchedKnob (index, isTouched);
 
-        final IParameter param = this.model.getProject ().getParameterBank ().getItem (index);
+        final IParameter param = this.bank.getItem (index);
         if (param.doesExist ())
             param.touchValue (isTouched);
     }
@@ -71,11 +79,10 @@ public class UserMode extends BaseMode<IParameter>
 
         // Row 1 & 2
         final int extenderOffset = this.surface.getExtenderOffset ();
-        final IParameterBank parameterBank = this.model.getProject ().getParameterBank ();
         final int textLength = this.getTextLength ();
         for (int i = 0; i < 8; i++)
         {
-            final IParameter param = parameterBank.getItem (extenderOffset + i);
+            final IParameter param = this.bank.getItem (extenderOffset + i);
             d.setCell (0, i, param.doesExist () ? StringUtils.shortenAndFixASCII (param.getName (textLength), textLength) : "").setCell (1, i, StringUtils.shortenAndFixASCII (param.getDisplayedValue (textLength), textLength));
             colors[i] = param.doesExist () ? ColorEx.WHITE : ColorEx.BLACK;
         }
@@ -92,10 +99,9 @@ public class UserMode extends BaseMode<IParameter>
     {
         final int upperBound = this.model.getValueChanger ().getUpperBound ();
         final int extenderOffset = this.surface.getExtenderOffset ();
-        final IParameterBank parameterBank = this.model.getProject ().getParameterBank ();
         for (int i = 0; i < 8; i++)
         {
-            final IParameter param = parameterBank.getItem (extenderOffset + i);
+            final IParameter param = this.bank.getItem (extenderOffset + i);
             this.surface.setKnobLED (i, MCUControlSurface.KNOB_LED_MODE_SINGLE_DOT, param.doesExist () ? Math.max (1, param.getValue ()) : 0, upperBound);
         }
     }
@@ -106,6 +112,42 @@ public class UserMode extends BaseMode<IParameter>
     protected void resetParameter (final int index)
     {
         final int extenderOffset = this.surface.getExtenderOffset ();
-        this.resetParameter (this.model.getProject ().getParameterBank ().getItem (extenderOffset + index));
+        this.resetParameter (this.bank.getItem (extenderOffset + index));
+    }
+
+
+    /**
+     * Set the project or track parameters mode.
+     *
+     * @param isProjectMode
+     */
+    public void setMode (final boolean isProjectMode)
+    {
+        this.isProjectMode = isProjectMode;
+        this.switchBanks (this.isProjectMode ? this.model.getProject ().getParameterBank () : this.model.getCursorTrack ().getParameterBank ());
+        this.setParameterProvider (this.isProjectMode ? this.projectParameterProvider : this.trackParameterProvider);
+        this.bindControls ();
+    }
+
+
+    /**
+     * Get the currently selected bank.
+     *
+     * @return The bank
+     */
+    public IBank<?> getParameterBank ()
+    {
+        return this.bank;
+    }
+
+
+    /**
+     * Is project mode active?
+     * 
+     * @return True if project mode active
+     */
+    public boolean isProjectMode ()
+    {
+        return this.isProjectMode;
     }
 }

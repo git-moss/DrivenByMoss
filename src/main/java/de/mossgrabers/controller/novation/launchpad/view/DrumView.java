@@ -13,8 +13,12 @@ import de.mossgrabers.framework.daw.clip.INoteClip;
 import de.mossgrabers.framework.daw.clip.NotePosition;
 import de.mossgrabers.framework.daw.constants.Resolution;
 import de.mossgrabers.framework.daw.midi.INoteRepeat;
+import de.mossgrabers.framework.featuregroup.IScrollableView;
+import de.mossgrabers.framework.featuregroup.ViewManager;
 import de.mossgrabers.framework.utils.ButtonEvent;
+import de.mossgrabers.framework.utils.ScrollStates;
 import de.mossgrabers.framework.view.sequencer.AbstractDrumExView;
+import de.mossgrabers.framework.view.sequencer.AbstractDrumView;
 
 
 /**
@@ -22,7 +26,7 @@ import de.mossgrabers.framework.view.sequencer.AbstractDrumExView;
  *
  * @author Jürgen Moßgraber
  */
-public class DrumView extends AbstractDrumExView<LaunchpadControlSurface, LaunchpadConfiguration>
+public class DrumView extends AbstractDrumExView<LaunchpadControlSurface, LaunchpadConfiguration> implements IScrollableView
 {
     private NotePosition noteEditPosition;
 
@@ -170,6 +174,19 @@ public class DrumView extends AbstractDrumExView<LaunchpadControlSurface, Launch
         }
 
         return super.handleSequencerAreaButtonCombinations (clip, notePosition, velocity);
+    }
+
+
+    /** {@inheritDoc} */
+    @Override
+    public void updateScrollStates (final ScrollStates scrollStates)
+    {
+        final ViewManager viewManager = this.surface.getViewManager ();
+        final INoteClip drumClip = AbstractDrumView.class.cast (viewManager.getActive ()).getClip ();
+        scrollStates.setCanScrollLeft (drumClip.canScrollStepsBackwards ());
+        scrollStates.setCanScrollRight (drumClip.canScrollStepsForwards ());
+        scrollStates.setCanScrollUp (this.scales.canScrollDrumOctaveUp ());
+        scrollStates.setCanScrollDown (this.scales.canScrollDrumOctaveDown ());
     }
 
 
