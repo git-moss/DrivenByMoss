@@ -141,20 +141,17 @@ public class GroupButtonCommand<S extends IControlSurface<C>, C extends Configur
         // Send selection
         if (this.surface.isPressed (ButtonID.SENDS))
         {
-            if (!this.model.isEffectTrackBankActive ())
+            Optional<ITrack> selectedTrack = trackBank.getSelectedItem ();
+            if (selectedTrack.isEmpty ())
             {
-                Optional<ITrack> selectedTrack = trackBank.getSelectedItem ();
-                if (selectedTrack.isEmpty ())
-                {
-                    final ITrack item = trackBank.getItem (0);
-                    selectedTrack = item.doesExist () ? Optional.of (item) : Optional.empty ();
-                }
-                if (selectedTrack.isPresent ())
-                {
-                    final ISend send = selectedTrack.get ().getSendBank ().getItem (this.index);
-                    if (send.doesExist ())
-                        return MaschineColorManager.COLOR_WHITE;
-                }
+                final ITrack item = trackBank.getItem (0);
+                selectedTrack = item.doesExist () ? Optional.of (item) : Optional.empty ();
+            }
+            if (selectedTrack.isPresent ())
+            {
+                final ISend send = selectedTrack.get ().getSendBank ().getItem (this.index);
+                if (send.doesExist ())
+                    return MaschineColorManager.COLOR_WHITE;
             }
 
             return MaschineColorManager.COLOR_BLACK;

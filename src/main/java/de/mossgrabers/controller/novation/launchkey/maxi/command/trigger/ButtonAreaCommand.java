@@ -50,7 +50,10 @@ public class ButtonAreaCommand extends AbstractTriggerCommand<LaunchkeyMk3Contro
     public void execute (final ButtonEvent event, final int velocity)
     {
         if (isSelect)
-            this.getColumnTrack ().selectOrExpandGroup ();
+        {
+            if (event == ButtonEvent.DOWN)
+                this.getColumnTrack ().selectOrExpandGroup ();
+        }
         else
             this.recArmCommand.execute (event, velocity);
     }

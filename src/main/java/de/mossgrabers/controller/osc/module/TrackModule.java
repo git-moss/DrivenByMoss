@@ -16,11 +16,14 @@ import de.mossgrabers.framework.daw.data.ICursorTrack;
 import de.mossgrabers.framework.daw.data.ISend;
 import de.mossgrabers.framework.daw.data.ISlot;
 import de.mossgrabers.framework.daw.data.ITrack;
+import de.mossgrabers.framework.daw.data.bank.IParameterBank;
+import de.mossgrabers.framework.daw.data.bank.IParameterPageBank;
 import de.mossgrabers.framework.daw.data.bank.ISendBank;
 import de.mossgrabers.framework.daw.data.bank.ISlotBank;
 import de.mossgrabers.framework.daw.data.bank.ITrackBank;
 import de.mossgrabers.framework.daw.resource.ChannelType;
 import de.mossgrabers.framework.osc.IOpenSoundControlWriter;
+import de.mossgrabers.framework.parameter.IParameter;
 
 import java.util.LinkedList;
 import java.util.Locale;
@@ -106,6 +109,30 @@ public class TrackModule extends AbstractModule
         this.flushTrack (this.writer, "/track/selected/", cursorTrack, dump);
         this.writer.sendOSC ("/track/toggleBank", this.model.isEffectTrackBankActive () ? 1 : 0, dump);
         this.writer.sendOSC ("/track/hasParent", trackBank.hasParent (), dump);
+
+        // Flush track parameters
+        final String paramAddress = "/track/param/";
+        final IParameterBank parameterBank = this.model.getCursorTrack ().getParameterBank ();
+        for (int i = 0; i < parameterBank.getPageSize (); i++)
+        {
+            final int oneplus = i + 1;
+            this.flushParameterData (this.writer, paramAddress + oneplus + "/", parameterBank.getItem (i), dump);
+        }
+
+        final IParameterPageBank parameterPageBank = parameterBank.getPageBank ();
+        final int selectedParameterPage = parameterPageBank.getSelectedItemIndex ();
+        for (int i = 0; i < parameterPageBank.getPageSize (); i++)
+        {
+            final int oneplus = i + 1;
+            final String pageName = parameterPageBank.getItem (i);
+            final String pageAddress = "/track/page/" + oneplus + "/";
+            this.writer.sendOSC (pageAddress + TAG_EXISTS, !pageName.isBlank (), dump);
+            this.writer.sendOSC (pageAddress, pageName, dump);
+            this.writer.sendOSC (pageAddress + TAG_NAME, pageName, dump);
+            this.writer.sendOSC (pageAddress + TAG_SELECTED, selectedParameterPage == i, dump);
+        }
+        final Optional<String> selectedItem = parameterPageBank.getSelectedItem ();
+        this.writer.sendOSC ("/track/page/selected/" + TAG_NAME, selectedItem.isPresent () ? selectedItem.get () : "", dump);
     }
 
 
@@ -305,6 +332,14 @@ public class TrackModule extends AbstractModule
                 final ITrack cursorTrack = this.model.getCursorTrack ();
                 if (cursorTrack.doesExist ())
                     this.parseTrackValue (cursorTrack, path, value);
+                break;
+
+            case "param":
+                this.parseParamValue (path, value);
+                break;
+
+            case "page":
+                this.parsePageValue (path, value);
                 break;
 
             default:
@@ -536,6 +571,87 @@ public class TrackModule extends AbstractModule
             case TAG_VOLUME:
                 send.setValue (toInteger (value));
                 break;
+            default:
+                throw new UnknownCommandException (command);
+        }
+    }
+
+
+    private void parseParamValue (final LinkedList<String> path, final Object value) throws UnknownCommandException, MissingCommandException, IllegalParameterException
+    {
+        final IParameterBank parameterBank = this.model.getProject ().getParameterBank ();
+        final String subCommand = getSubCommand (path);
+        try
+        {
+            final int paramNo = Integer.parseInt (subCommand) - 1;
+            parseFXParamValue (parameterBank.getItem (paramNo), path, value);
+        }
+        catch (final NumberFormatException ex)
+        {
+            switch (subCommand)
+            {
+                case "+":
+                    if (isTrigger (value))
+                        parameterBank.selectNextPage ();
+                    break;
+
+                case "-":
+                    if (isTrigger (value))
+                        parameterBank.selectPreviousPage ();
+                    break;
+
+                default:
+                    throw new UnknownCommandException (subCommand);
+            }
+        }
+    }
+
+
+    private void parsePageValue (final LinkedList<String> path, final Object value) throws UnknownCommandException, MissingCommandException, IllegalParameterException
+    {
+        final IParameterBank parameterBank = this.model.getProject ().getParameterBank ();
+        final IParameterPageBank parameterPageBank = parameterBank.getPageBank ();
+        final String subCommand = getSubCommand (path);
+        if ("select".equals (subCommand) || "selected".equals (subCommand))
+        {
+            parameterPageBank.selectPage (toInteger (value) - 1);
+        }
+        else
+        {
+            try
+            {
+                final int index = Integer.parseInt (subCommand) - 1;
+                parameterPageBank.selectPage (index);
+            }
+            catch (final NumberFormatException ex2)
+            {
+                throw new UnknownCommandException (subCommand);
+            }
+        }
+    }
+
+
+    private static void parseFXParamValue (final IParameter param, final LinkedList<String> path, final Object value) throws MissingCommandException, IllegalParameterException, UnknownCommandException
+    {
+        final String command = getSubCommand (path);
+        switch (command)
+        {
+            case "value":
+                param.setValue (toInteger (value));
+                break;
+
+            case TAG_INDICATE:
+                param.setIndication (isTrigger (value));
+                break;
+
+            case "reset":
+                param.resetValue ();
+                break;
+
+            case TAG_TOUCHED:
+                param.touchValue (isTrigger (value));
+                break;
+
             default:
                 throw new UnknownCommandException (command);
         }

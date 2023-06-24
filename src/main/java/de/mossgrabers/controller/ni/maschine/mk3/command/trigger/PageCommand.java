@@ -65,7 +65,7 @@ public class PageCommand extends AbstractTriggerCommand<MaschineControlSurface, 
                 break;
 
             case USER:
-                if (modeManager.get (Modes.USER) instanceof MaschineUserMode userMode)
+                if (modeManager.get (Modes.USER) instanceof final MaschineUserMode userMode)
                 {
                     userMode.setMode (this.direction == Direction.LEFT);
                 }

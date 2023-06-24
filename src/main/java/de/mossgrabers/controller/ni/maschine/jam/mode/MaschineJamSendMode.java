@@ -44,9 +44,6 @@ public class MaschineJamSendMode extends TrackSendMode<MaschineJamControlSurface
     @Override
     public FaderConfig setupFader (final int index)
     {
-        if (this.model.isEffectTrackBankActive ())
-            return FADER_OFF;
-
         final Optional<ITrack> optionalTrack = this.getTrack (index);
         if (optionalTrack.isEmpty ())
             return FADER_OFF;

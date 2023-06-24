@@ -86,6 +86,10 @@ public class ProjectModule extends AbstractModule
                 this.parseParamValue (path, value);
                 break;
 
+            case "page":
+                this.parsePageValue (path, value);
+                break;
+
             default:
                 throw new UnknownCommandException (subCommand);
         }
@@ -115,28 +119,32 @@ public class ProjectModule extends AbstractModule
                         parameterBank.selectPreviousPage ();
                     break;
 
-                case "page":
-                    final String pageCommand = getSubCommand (path);
-                    if ("select".equals (pageCommand) || "selected".equals (pageCommand))
-                    {
-                        // TODO this.selectPage (parameterBank, toInteger (value) - 1);
-                    }
-                    else
-                    {
-                        try
-                        {
-                            final int index = Integer.parseInt (pageCommand) - 1;
-                            // TODO this.selectPage (parameterBank, index);
-                        }
-                        catch (final NumberFormatException ex2)
-                        {
-                            throw new UnknownCommandException (pageCommand);
-                        }
-                    }
-                    break;
-
                 default:
                     throw new UnknownCommandException (subCommand);
+            }
+        }
+    }
+
+
+    private void parsePageValue (final LinkedList<String> path, final Object value) throws UnknownCommandException, MissingCommandException, IllegalParameterException
+    {
+        final IParameterBank parameterBank = this.model.getProject ().getParameterBank ();
+        final IParameterPageBank parameterPageBank = parameterBank.getPageBank ();
+        final String subCommand = getSubCommand (path);
+        if ("select".equals (subCommand) || "selected".equals (subCommand))
+        {
+            parameterPageBank.selectPage (toInteger (value) - 1);
+        }
+        else
+        {
+            try
+            {
+                final int index = Integer.parseInt (subCommand) - 1;
+                parameterPageBank.selectPage (index);
+            }
+            catch (final NumberFormatException ex2)
+            {
+                throw new UnknownCommandException (subCommand);
             }
         }
     }
@@ -190,13 +198,13 @@ public class ProjectModule extends AbstractModule
         {
             final int oneplus = i + 1;
             final String pageName = parameterPageBank.getItem (i);
-            final String pageAddress = paramAddress + "/page/" + oneplus + "/";
-            this.writer.sendOSC (pageAddress + TAG_NAME, pageName, dump);
+            final String pageAddress = "/project/page/" + oneplus + "/";
             this.writer.sendOSC (pageAddress + TAG_EXISTS, !pageName.isBlank (), dump);
+            this.writer.sendOSC (pageAddress, pageName, dump);
             this.writer.sendOSC (pageAddress + TAG_NAME, pageName, dump);
             this.writer.sendOSC (pageAddress + TAG_SELECTED, selectedParameterPage == i, dump);
         }
         final Optional<String> selectedItem = parameterPageBank.getSelectedItem ();
-        this.writer.sendOSC (paramAddress + "page/selected/" + TAG_NAME, selectedItem.isPresent () ? selectedItem.get () : "", dump);
+        this.writer.sendOSC ("/project/page/selected/" + TAG_NAME, selectedItem.isPresent () ? selectedItem.get () : "", dump);
     }
 }

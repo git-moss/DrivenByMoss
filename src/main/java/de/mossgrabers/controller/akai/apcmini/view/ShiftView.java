@@ -301,14 +301,15 @@ public class ShiftView extends AbstractShiftView<APCminiControlSurface, APCminiC
                 break;
 
             case 6:
-                if (this.model.isEffectTrackBankActive ())
-                    return;
                 Modes mode = Modes.get (modeManager.getActiveID (), 1);
                 // Wrap
-                if (!Modes.isSendMode (mode))
-                    mode = Modes.SEND1;
                 // Check if Send channel exists
-                if (Modes.isSendMode (mode) && tb.canEditSend (mode.ordinal () - Modes.SEND1.ordinal ()))
+                if (Modes.isSendMode (mode))
+                {
+                    if (!tb.canEditSend (mode.ordinal () - Modes.SEND1.ordinal ()))
+                        mode = Modes.SEND1;
+                }
+                else
                     mode = Modes.SEND1;
                 modeManager.setActive (mode);
                 final String name = "Send " + (mode.ordinal () - Modes.SEND1.ordinal () + 1);
@@ -345,15 +346,7 @@ public class ShiftView extends AbstractShiftView<APCminiControlSurface, APCminiC
         {
             case SCENE6:
                 this.model.toggleCurrentTrackBank ();
-                final boolean isEffectTrackBank = this.model.isEffectTrackBankActive ();
-                if (isEffectTrackBank)
-                {
-                    // No Sends on effect tracks
-                    final ModeManager modeManager = this.surface.getModeManager ();
-                    if (Modes.isSendMode (modeManager.getActiveID ()))
-                        modeManager.setActive (Modes.VOLUME);
-                }
-                this.surface.getDisplay ().notify (isEffectTrackBank ? "Effect Tracks" : "Instrument/Audio Tracks");
+                this.surface.getDisplay ().notify (this.model.isEffectTrackBankActive () ? "Effect Tracks" : "Instrument/Audio Tracks");
                 break;
             case SCENE7:
                 this.model.getCursorDevice ().toggleWindowOpen ();

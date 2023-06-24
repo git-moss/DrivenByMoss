@@ -143,7 +143,7 @@ public class UserMode extends BaseMode<IParameter>
 
     /**
      * Is project mode active?
-     * 
+     *
      * @return True if project mode active
      */
     public boolean isProjectMode ()

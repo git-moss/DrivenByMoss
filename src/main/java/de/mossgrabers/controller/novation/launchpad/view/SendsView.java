@@ -45,8 +45,7 @@ public class SendsView extends AbstractFaderView
     @Override
     public void onValueKnob (final int index, final int value)
     {
-        if (!this.model.isEffectTrackBankActive ())
-            this.model.getTrackBank ().getItem (index).getSendBank ().getItem (this.selectedSend).setValue (value);
+        this.model.getTrackBank ().getItem (index).getSendBank ().getItem (this.selectedSend).setValue (value);
     }
 
 
@@ -54,8 +53,6 @@ public class SendsView extends AbstractFaderView
     @Override
     protected int getFaderValue (final int index)
     {
-        if (this.model.isEffectTrackBankActive ())
-            return 0;
         return this.model.getTrackBank ().getItem (index).getSendBank ().getItem (this.selectedSend).getValue ();
     }
 

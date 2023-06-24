@@ -389,7 +389,7 @@ public class FeatureGroupManager<E extends Enum<E>, F extends IFeatureGroup>
 
     /**
      * Get all connected managers.
-     * 
+     *
      * @return The connectedManagers
      */
     public List<FeatureGroupManager<E, F>> getConnectedManagers ()

@@ -82,7 +82,7 @@ public class LaunchpadCursorCommand extends CursorCommand<LaunchpadControlSurfac
                 break;
 
             case USER:
-                if (viewManager.get (Views.USER) instanceof UserView userView)
+                if (viewManager.get (Views.USER) instanceof final UserView userView)
                     userView.selectPreviousPage ();
                 break;
 
@@ -174,7 +174,7 @@ public class LaunchpadCursorCommand extends CursorCommand<LaunchpadControlSurfac
                 break;
 
             case USER:
-                if (viewManager.get (Views.USER) instanceof UserView userView)
+                if (viewManager.get (Views.USER) instanceof final UserView userView)
                     userView.selectNextPage ();
                 break;
 
@@ -266,7 +266,7 @@ public class LaunchpadCursorCommand extends CursorCommand<LaunchpadControlSurfac
                 break;
 
             case USER:
-                if (viewManager.get (Views.USER) instanceof UserView userView)
+                if (viewManager.get (Views.USER) instanceof final UserView userView)
                     userView.setMode (true);
                 break;
 
@@ -337,7 +337,7 @@ public class LaunchpadCursorCommand extends CursorCommand<LaunchpadControlSurfac
                 break;
 
             case USER:
-                if (viewManager.get (Views.USER) instanceof UserView userView)
+                if (viewManager.get (Views.USER) instanceof final UserView userView)
                     userView.setMode (false);
                 break;
 

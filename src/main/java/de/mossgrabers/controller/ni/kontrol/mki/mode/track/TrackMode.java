@@ -68,16 +68,13 @@ public class TrackMode extends AbstractKontrol1Mode<ITrack>
         d.setBar (1, this.surface.getContinuous (ContinuousID.KNOB1).isTouched (), track.getVolume ());
         d.setPanBar (2, this.surface.getContinuous (ContinuousID.KNOB2).isTouched (), track.getPan ());
 
-        if (!isEffectTrackBankActive)
+        final ISendBank sendBank = track.getSendBank ();
+        for (int i = 0; i < 6; i++)
         {
-            final ISendBank sendBank = track.getSendBank ();
-            for (int i = 0; i < 6; i++)
-            {
-                final int pos = 3 + i;
-                final ISend sendData = sendBank.getItem (i);
-                d.setCell (0, pos, StringUtils.shortenAndFixASCII (sendData.getName (8), 8).toUpperCase (Locale.US)).setCell (1, pos, sendData.getDisplayedValue (8));
-                d.setBar (pos, this.surface.getContinuous (ContinuousID.get (ContinuousID.KNOB3, i)).isTouched () && sendData.doesExist (), sendData.getValue ());
-            }
+            final int pos = 3 + i;
+            final ISend sendData = sendBank.getItem (i);
+            d.setCell (0, pos, StringUtils.shortenAndFixASCII (sendData.getName (8), 8).toUpperCase (Locale.US)).setCell (1, pos, sendData.getDisplayedValue (8));
+            d.setBar (pos, this.surface.getContinuous (ContinuousID.get (ContinuousID.KNOB3, i)).isTouched () && sendData.doesExist (), sendData.getValue ());
         }
         d.allDone ();
     }
