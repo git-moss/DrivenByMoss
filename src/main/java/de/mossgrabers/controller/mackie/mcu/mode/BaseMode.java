@@ -393,7 +393,7 @@ public abstract class BaseMode<B extends IItem> extends AbstractParameterMode<MC
             else
             {
                 final Optional<ITrack> selectedItem = tb.getSelectedItem ();
-                selectedTrack = selectedItem.isPresent () ? selectedItem.get () : EmptyTrack.INSTANCE;
+                selectedTrack = selectedItem.isPresent () ? selectedItem.get () : EmptyTrack.getInstance (tb.getItem (0).getSendBank ().getPageSize ());
             }
             d2.setBlock (1, 0, "Sel. track:").setBlock (1, 1, selectedTrack == null ? "None" : StringUtils.shortenAndFixASCII (selectedTrack.getName (), 11));
             d2.setBlock (1, 2, "Sel. devce:").setBlock (1, 3, cursorDevice.doesExist () ? StringUtils.shortenAndFixASCII (cursorDevice.getName (), 11) : "None");

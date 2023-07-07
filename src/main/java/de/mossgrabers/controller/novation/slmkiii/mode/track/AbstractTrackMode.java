@@ -254,7 +254,7 @@ public abstract class AbstractTrackMode extends BaseMode<ITrack>
 
         if (this.surface.isShiftPressed ())
         {
-            this.drawRow4Shifted (d, selectedTrack.isPresent () ? selectedTrack.get () : EmptyTrack.INSTANCE);
+            this.drawRow4Shifted (d, selectedTrack.isPresent () ? selectedTrack.get () : EmptyTrack.getInstance (tb.getItem (0).getSendBank ().getPageSize ()));
             return;
         }
 

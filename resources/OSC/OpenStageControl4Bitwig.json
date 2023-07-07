@@ -1,5 +1,5 @@
 {
-  "version": "1.25.1",
+  "version": "1.25.2",
   "type": "session",
   "createdWith": "Open Stage Control",
   "content": {
@@ -17642,7 +17642,7 @@
                         "ignoreDefaults": false,
                         "lineWidth": "auto",
                         "knobSize": "auto",
-                        "onValue": "\nif (touch !== undefined) {\n // generated automatically\n // from touchAddress\n var address = \"/user/@{parent.variables.n}/touched\"\n send(address, touch)\n}",
+                        "onValue": "\nif (touch !== undefined) {\n // generated automatically\n // from touchAddress\n var address = \"/project/param/@{parent.variables.n}/touched\"\n send(address, touch)\n}",
                         "lock": false,
                         "comments": "",
                         "borderRadius": "auto",

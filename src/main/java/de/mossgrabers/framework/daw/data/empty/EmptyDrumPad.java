@@ -6,6 +6,9 @@ package de.mossgrabers.framework.daw.data.empty;
 
 import de.mossgrabers.framework.daw.data.IDrumPad;
 
+import java.util.HashMap;
+import java.util.Map;
+
 
 /**
  * Default data for an empty drum pad.
@@ -14,16 +17,29 @@ import de.mossgrabers.framework.daw.data.IDrumPad;
  */
 public class EmptyDrumPad extends EmptyChannel implements IDrumPad
 {
-    /** The singleton. */
-    public static final IDrumPad INSTANCE = new EmptyDrumPad ();
+    private static final Map<Integer, EmptyDrumPad> INSTANCES = new HashMap<> ();
+
+
+    /**
+     * Get an instance of an EmptyDrumPad for the given page size. Instances are cached.
+     *
+     * @param pageSize The page size for which to get an empty bank
+     * @return The bank
+     */
+    public static EmptyDrumPad getInstance (final int pageSize)
+    {
+        return INSTANCES.computeIfAbsent (Integer.valueOf (pageSize), EmptyDrumPad::new);
+    }
 
 
     /**
      * Constructor.
+     *
+     * @param sendPageSize The size of the sends pages
      */
-    private EmptyDrumPad ()
+    public EmptyDrumPad (final int sendPageSize)
     {
-        // Intentionally empty
+        super (sendPageSize);
     }
 
 

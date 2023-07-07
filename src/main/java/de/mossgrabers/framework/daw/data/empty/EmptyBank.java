@@ -19,10 +19,12 @@ public class EmptyBank<T extends IItem> extends AbstractItemBank<T>
 {
     /**
      * Constructor.
+     * 
+     * @param pageSize The number of elements in a page of the bank
      */
-    public EmptyBank ()
+    public EmptyBank (final int pageSize)
     {
-        super (null, 0);
+        super (null, pageSize);
     }
 
 

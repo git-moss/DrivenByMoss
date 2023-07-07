@@ -1152,6 +1152,7 @@ public class MaschineControllerSetup extends AbstractControllerSetup<MaschineCon
             final IMidiOutput midiOutput = surface.getMidiOutput ();
 
             final int value;
+            final ITrackBank trackBank = this.model.getTrackBank ();
             if (this.encoderManager.isParameterMode ())
             {
                 final EncoderMode activeEncoderMode = this.encoderManager.getActiveEncoderMode ();
@@ -1165,11 +1166,11 @@ public class MaschineControllerSetup extends AbstractControllerSetup<MaschineCon
                         break;
                     case SELECTED_TRACK_VOLUME, SELECTED_TRACK_PANORAMA:
                         final ITrack track;
-                        final Optional<ITrack> trackOptional = this.model.getTrackBank ().getSelectedItem ();
+                        final Optional<ITrack> trackOptional = trackBank.getSelectedItem ();
                         if (trackOptional.isPresent ())
                             track = trackOptional.get ();
                         else
-                            track = EmptyTrack.INSTANCE;
+                            track = EmptyTrack.getInstance (trackBank.getItem (0).getSendBank ().getPageSize ());
                         value = this.valueChanger.toMidiValue (activeEncoderMode == EncoderMode.SELECTED_TRACK_VOLUME ? track.getVolume () : track.getPan ());
                         break;
                     case CUE_VOLUME:
@@ -1191,11 +1192,11 @@ public class MaschineControllerSetup extends AbstractControllerSetup<MaschineCon
                 final ITrack track;
                 if (this.encoderManager.isActiveEncoderMode (EncoderMode.SELECTED_TRACK_VOLUME))
                 {
-                    final Optional<ITrack> trackOptional = this.model.getTrackBank ().getSelectedItem ();
+                    final Optional<ITrack> trackOptional = trackBank.getSelectedItem ();
                     if (trackOptional.isPresent ())
                         track = trackOptional.get ();
                     else
-                        track = EmptyTrack.INSTANCE;
+                        track = EmptyTrack.getInstance (trackBank.getItem (0).getSendBank ().getPageSize ());
                 }
                 else
                     track = this.model.getMasterTrack ();

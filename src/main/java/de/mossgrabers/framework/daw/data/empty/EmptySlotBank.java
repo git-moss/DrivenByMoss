@@ -7,6 +7,8 @@ package de.mossgrabers.framework.daw.data.empty;
 import de.mossgrabers.framework.daw.data.ISlot;
 import de.mossgrabers.framework.daw.data.bank.ISlotBank;
 
+import java.util.HashMap;
+import java.util.Map;
 import java.util.Optional;
 
 
@@ -17,16 +19,29 @@ import java.util.Optional;
  */
 public class EmptySlotBank extends EmptyBank<ISlot> implements ISlotBank
 {
-    /** The singleton. */
-    public static final ISlotBank INSTANCE = new EmptySlotBank ();
+    private static final Map<Integer, EmptySlotBank> INSTANCES = new HashMap<> ();
+
+
+    /**
+     * Get an instance of an EmptySlotBank for the given page size. Instances are cached.
+     *
+     * @param pageSize The page size for which to get an empty bank
+     * @return The bank
+     */
+    public static EmptySlotBank getInstance (final int pageSize)
+    {
+        return INSTANCES.computeIfAbsent (Integer.valueOf (pageSize), EmptySlotBank::new);
+    }
 
 
     /**
      * Constructor.
+     *
+     * @param pageSize The size of the pages
      */
-    private EmptySlotBank ()
+    public EmptySlotBank (final int pageSize)
     {
-        // Intentionally empty
+        super (pageSize);
     }
 
 

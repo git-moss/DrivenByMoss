@@ -4,7 +4,7 @@
   <groupId>de.mossgrabers</groupId>
   <artifactId>DrivenByMoss</artifactId>
   <name>DrivenByMoss</name>
-  <version>20.3.0</version>
+  <version>20.3.1</version>
   <licenses>
     <license>
       <name>LGPL-2.1-or-later</name>
@@ -146,6 +146,7 @@
         <artifactId>versions-maven-plugin</artifactId>
         <version>2.15.0</version>
         <configuration>
+          <ignoredVersions>.*-M.*,.*-alpha.*,.*-ea.*</ignoredVersions>
           <generateBackupPoms>false</generateBackupPoms>
         </configuration>
       </plugin>

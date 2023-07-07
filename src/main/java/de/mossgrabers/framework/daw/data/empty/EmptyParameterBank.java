@@ -8,6 +8,9 @@ import de.mossgrabers.framework.daw.data.bank.IParameterBank;
 import de.mossgrabers.framework.daw.data.bank.IParameterPageBank;
 import de.mossgrabers.framework.parameter.IParameter;
 
+import java.util.HashMap;
+import java.util.Map;
+
 
 /**
  * Default data for an empty parameter bank.
@@ -16,16 +19,29 @@ import de.mossgrabers.framework.parameter.IParameter;
  */
 public class EmptyParameterBank extends EmptyBank<IParameter> implements IParameterBank
 {
-    /** The singleton. */
-    public static final IParameterBank INSTANCE = new EmptyParameterBank ();
+    private static final Map<Integer, EmptyParameterBank> INSTANCES = new HashMap<> ();
+
+
+    /**
+     * Get an instance of an EmptyParameterBank for the given page size. Instances are cached.
+     *
+     * @param pageSize The page size for which to get an empty bank
+     * @return The bank
+     */
+    public static EmptyParameterBank getInstance (final int pageSize)
+    {
+        return INSTANCES.computeIfAbsent (Integer.valueOf (pageSize), EmptyParameterBank::new);
+    }
 
 
     /**
      * Constructor.
+     * 
+     * @param pageSize The number of elements in a page of the bank
      */
-    private EmptyParameterBank ()
+    private EmptyParameterBank (final int pageSize)
     {
-        // Intentionally empty
+        super (pageSize);
     }
 
 

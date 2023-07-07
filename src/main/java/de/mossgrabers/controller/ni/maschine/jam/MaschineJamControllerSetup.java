@@ -558,11 +558,12 @@ public class MaschineJamControllerSetup extends AbstractControllerSetup<Maschine
         final ITrack track;
         if (this.encoderManager.isActiveEncoderMode (EncoderMode.SELECTED_TRACK_VOLUME))
         {
-            final Optional<ITrack> trackOptional = this.model.getTrackBank ().getSelectedItem ();
+            final ITrackBank trackBank = this.model.getTrackBank ();
+            final Optional<ITrack> trackOptional = trackBank.getSelectedItem ();
             if (trackOptional.isPresent ())
                 track = trackOptional.get ();
             else
-                track = EmptyTrack.INSTANCE;
+                track = EmptyTrack.getInstance (trackBank.getItem (0).getSendBank ().getPageSize ());
         }
         else
             track = this.model.getMasterTrack ();

@@ -117,7 +117,7 @@ public class DeviceModule extends AbstractModule
         for (int i = 0; i < layerBank.getPageSize (); i++)
             this.flushDeviceLayer (this.writer, "/device/layer/" + (i + 1) + "/", layerBank.getItem (i), dump);
         final Optional<ILayer> selectedLayer = layerBank.getSelectedItem ();
-        this.flushDeviceLayer (this.writer, "/device/layer/selected/", selectedLayer.isEmpty () ? EmptyLayer.INSTANCE : selectedLayer.get (), dump);
+        this.flushDeviceLayer (this.writer, "/device/layer/selected/", selectedLayer.isEmpty () ? EmptyLayer.getInstance (layerBank.getPageSize ()) : selectedLayer.get (), dump);
 
         this.flushDevice (this.writer, "/primary/", this.model.getSpecificDevice (DeviceID.FIRST_INSTRUMENT), dump);
         this.flushDevice (this.writer, "/eq/", this.model.getSpecificDevice (DeviceID.EQ), dump);

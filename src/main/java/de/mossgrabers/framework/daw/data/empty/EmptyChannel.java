@@ -20,6 +20,20 @@ import de.mossgrabers.framework.parameter.IParameter;
  */
 public class EmptyChannel extends EmptyItem implements IChannel
 {
+    private final int sendPageSize;
+
+
+    /**
+     * Constructor.
+     *
+     * @param sendPageSize The size of the sends pages
+     */
+    public EmptyChannel (final int sendPageSize)
+    {
+        this.sendPageSize = sendPageSize;
+    }
+
+
     /** {@inheritDoc} */
     @Override
     public ChannelType getType ()
@@ -368,7 +382,7 @@ public class EmptyChannel extends EmptyItem implements IChannel
     @Override
     public ISendBank getSendBank ()
     {
-        return EmptySendBank.INSTANCE;
+        return EmptySendBank.getInstance (this.sendPageSize);
     }
 
 

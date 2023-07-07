@@ -117,11 +117,12 @@ public class KontrolProtocolControllerSetup extends AbstractControllerSetup<Kont
     @Override
     public void flush ()
     {
+        final KontrolProtocolControlSurface surface = this.getSurface ();
+
         // Do not flush until handshake has finished
-        if (!this.getSurface ().isConnectedToNIHIA ())
+        if (!surface.isConnectedToNIHIA ())
             return;
 
-        final KontrolProtocolControlSurface surface = this.getSurface ();
         final String kompleteInstanceNew = this.getKompleteInstance ();
         if (!this.kompleteInstance.equals (kompleteInstanceNew))
         {
@@ -560,7 +561,10 @@ public class KontrolProtocolControllerSetup extends AbstractControllerSetup<Kont
         synchronized (this.navigateLock)
         {
             if (System.currentTimeMillis () - this.lastEdit > 200)
-                this.model.getCursorTrack ().getSlotBank ().getItem (slotIndex).select ();
+            {
+                final ICursorTrack cursorTrack = this.model.getCursorTrack ();
+                cursorTrack.getSlotBank ().getItem (slotIndex).select ();
+            }
             else
                 this.slotScrollExecutor.execute ( () -> this.selectSlot (slotIndex));
         }

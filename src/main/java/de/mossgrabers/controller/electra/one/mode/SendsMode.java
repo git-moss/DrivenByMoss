@@ -108,7 +108,7 @@ public class SendsMode extends AbstractElectraOneMode
         for (int column = 0; column < 5; column++)
         {
             final Optional<ITrack> trackOpt = this.getTrack (column);
-            final ITrack track = trackOpt.isPresent () ? trackOpt.get () : EmptyTrack.INSTANCE;
+            final ITrack track = trackOpt.isPresent () ? trackOpt.get () : EmptyTrack.getInstance (this.model.getTrackBank ().getItem (0).getSendBank ().getPageSize ());
             final ColorEx color = track.getColor ();
 
             this.pageCache.updateGroupLabel (FIRST_TRACK_GROUP + column, track.doesExist () ? track.getPosition () + 1 + ": " + track.getName () : "");

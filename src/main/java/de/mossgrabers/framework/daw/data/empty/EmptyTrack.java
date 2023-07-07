@@ -9,6 +9,9 @@ import de.mossgrabers.framework.daw.data.ITrack;
 import de.mossgrabers.framework.daw.data.bank.ISlotBank;
 import de.mossgrabers.framework.parameter.IParameter;
 
+import java.util.HashMap;
+import java.util.Map;
+
 
 /**
  * Default data for an empty track.
@@ -17,16 +20,29 @@ import de.mossgrabers.framework.parameter.IParameter;
  */
 public class EmptyTrack extends EmptyChannel implements ITrack
 {
-    /** The singleton. */
-    public static final ITrack INSTANCE = new EmptyTrack ();
+    private static final Map<Integer, EmptyTrack> INSTANCES = new HashMap<> ();
+
+
+    /**
+     * Get an instance of an EmptyTrack for the given page size. Instances are cached.
+     *
+     * @param sendPageSize The page size for which to get an empty bank
+     * @return The bank
+     */
+    public static EmptyTrack getInstance (final int sendPageSize)
+    {
+        return INSTANCES.computeIfAbsent (Integer.valueOf (sendPageSize), EmptyTrack::new);
+    }
 
 
     /**
      * Constructor.
+     *
+     * @param sendPageSize The size of the sends pages
      */
-    private EmptyTrack ()
+    public EmptyTrack (final int sendPageSize)
     {
-        // Intentionally empty
+        super (sendPageSize);
     }
 
 
@@ -194,7 +210,7 @@ public class EmptyTrack extends EmptyChannel implements ITrack
     @Override
     public ISlotBank getSlotBank ()
     {
-        return EmptySlotBank.INSTANCE;
+        return EmptySlotBank.getInstance (0);
     }
 
 

@@ -74,7 +74,7 @@ public class ChannelImpl extends AbstractDeviceChainImpl<Channel> implements ICh
         {
             this.volumeParameter = EmptyParameter.INSTANCE;
             this.panParameter = EmptyParameter.INSTANCE;
-            this.sendBank = EmptySendBank.INSTANCE;
+            this.sendBank = EmptySendBank.getInstance (numSends);
             return;
         }
 
