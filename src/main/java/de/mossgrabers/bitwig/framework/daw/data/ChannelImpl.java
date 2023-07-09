@@ -367,7 +367,7 @@ public class ChannelImpl extends AbstractDeviceChainImpl<Channel> implements ICh
     @Override
     public void toggleSolo ()
     {
-        this.deviceChain.solo ().toggle ();
+        this.deviceChain.solo ().toggleUsingPreferences (false);
     }
 
 

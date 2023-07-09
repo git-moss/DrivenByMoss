@@ -34,51 +34,59 @@ import java.util.Map;
 public class GamepadConfiguration extends AbstractConfiguration
 {
     /** The index of Off (no function selected). */
-    public static final int                             FUNCTION_OFF                 = 0;
+    public static final int                             FUNCTION_OFF                  = 0;
     /** The index of the first note (MIDI note = 0). */
-    public static final int                             FUNCTION_NOTE_0              = 1;
+    public static final int                             FUNCTION_NOTE_0               = 1;
     /** The index of the last note (MIDI note = 127). */
-    public static final int                             FUNCTION_NOTE_127            = 128;
+    public static final int                             FUNCTION_NOTE_127             = 128;
     /** The index of the first CC. */
-    public static final int                             FUNCTION_CC_0                = 129;
+    public static final int                             FUNCTION_CC_0                 = 129;
     /** The index of the last CC. */
-    public static final int                             FUNCTION_CC_127              = 256;
+    public static final int                             FUNCTION_CC_127               = 256;
     /** The index of pitchbend. */
-    public static final int                             FUNCTION_PITCHBEND           = 257;
+    public static final int                             FUNCTION_PITCHBEND            = 257;
     /** The index of note repeat on/off. */
-    public static final int                             FUNCTION_NOTE_REPEAT_ENABLE  = 258;
+    public static final int                             FUNCTION_NOTE_REPEAT_ENABLE   = 258;
     /** The index of note repeat period. */
-    public static final int                             FUNCTION_NOTE_REPEAT_PERIOD  = 259;
+    public static final int                             FUNCTION_NOTE_REPEAT_PERIOD   = 259;
     /** The index of note repeat length. */
-    public static final int                             FUNCTION_NOTE_REPEAT_LENGTH  = 260;
+    public static final int                             FUNCTION_NOTE_REPEAT_LENGTH   = 260;
     /** The index of select the previous track. */
-    public static final int                             FUNCTION_TRACK_PREVIOUS      = 261;
+    public static final int                             FUNCTION_TRACK_PREVIOUS       = 261;
     /** The index of select the next track. */
-    public static final int                             FUNCTION_TRACK_NEXT          = 262;
+    public static final int                             FUNCTION_TRACK_NEXT           = 262;
     /** The index of select the previous clip. */
-    public static final int                             FUNCTION_CLIP_PREVIOUS       = 263;
+    public static final int                             FUNCTION_CLIP_PREVIOUS        = 263;
     /** The index of select the next clip. */
-    public static final int                             FUNCTION_CLIP_NEXT           = 264;
+    public static final int                             FUNCTION_CLIP_NEXT            = 264;
     /** The index of create new clip. */
-    public static final int                             FUNCTION_NEW_CLIP            = 265;
+    public static final int                             FUNCTION_NEW_CLIP             = 265;
     /** The index of play a clip. */
-    public static final int                             FUNCTION_PLAY_CLIP           = 266;
+    public static final int                             FUNCTION_PLAY_CLIP            = 266;
     /** The index of transport play/stop. */
-    public static final int                             FUNCTION_TRANSPORT_PLAY      = 267;
+    public static final int                             FUNCTION_TRANSPORT_PLAY       = 267;
     /** The index of transport metronome. */
-    public static final int                             FUNCTION_TRANSPORT_METRONOME = 268;
+    public static final int                             FUNCTION_TRANSPORT_METRONOME  = 268;
+
+    /** The range is 0-127 on both sides. */
+    public static final int                             FUNCTION_RANGE_127            = 0;
+    /** The range is 0-64 to the left/top and 64-127 on the right/bottom. */
+    public static final int                             FUNCTION_RANGE_CENTER_64      = 1;
+    /** Like previous but flipped. */
+    public static final int                             FUNCTION_RANGE_CENTER_64_FLIP = 2;
 
     /** A different gamepad was selected. */
-    public static final Integer                         SELECTED_GAMEPAD             = Integer.valueOf (50);
+    public static final Integer                         SELECTED_GAMEPAD              = Integer.valueOf (50);
 
-    private static final String                         NOT_AVAILABLE                = "<Not available>";
-    private static final String                         CATEGORY_GAMEPAD             = "Gamepad";
+    private static final String                         NOT_AVAILABLE                 = "<Not available>";
+    private static final String                         CATEGORY_GAMEPAD              = "Gamepad";
 
-    private static final List<String>                   FUNCTIONS                    = new ArrayList<> ();
-    private static final Map<ControllerButton, String>  BUTTON_NAMES                 = new EnumMap<> (ControllerButton.class);
-    private static final Map<ControllerAxis, String>    AXIS_NAMES                   = new EnumMap<> (ControllerAxis.class);
-    private static final Map<ControllerButton, Integer> BUTTON_DEFAULTS              = new EnumMap<> (ControllerButton.class);
-    private static final Map<ControllerAxis, Integer>   AXIS_DEFAULTS                = new EnumMap<> (ControllerAxis.class);
+    private static final List<String>                   FUNCTIONS                     = new ArrayList<> ();
+    private static final List<String>                   FUNCTION_RANGES               = new ArrayList<> ();
+    private static final Map<ControllerButton, String>  BUTTON_NAMES                  = new EnumMap<> (ControllerButton.class);
+    private static final Map<ControllerAxis, String>    AXIS_NAMES                    = new EnumMap<> (ControllerAxis.class);
+    private static final Map<ControllerButton, Integer> BUTTON_DEFAULTS               = new EnumMap<> (ControllerButton.class);
+    private static final Map<ControllerAxis, Integer>   AXIS_DEFAULTS                 = new EnumMap<> (ControllerAxis.class);
 
     static
     {
@@ -100,6 +108,10 @@ public class GamepadConfiguration extends AbstractConfiguration
         FUNCTIONS.add ("Clip: Play (only for buttons)");
         FUNCTIONS.add ("Transport: Play/Stop (only for buttons)");
         FUNCTIONS.add ("Transport: Metronome (only for buttons)");
+
+        FUNCTION_RANGES.add ("127 - 0  :  0 - 127");
+        FUNCTION_RANGES.add ("0   - 64 : 64 - 127");
+        FUNCTION_RANGES.add ("127 - 64 : 64 - 0");
 
         BUTTON_NAMES.put (ControllerButton.A, "A");
         BUTTON_NAMES.put (ControllerButton.B, "B");
@@ -161,12 +173,14 @@ public class GamepadConfiguration extends AbstractConfiguration
     }
 
     private final ControllerManager              gamepadManager;
-    private final List<String>                   gamepadNames    = new ArrayList<> ();
-    private final IEnumSetting []                buttonSettings  = new IEnumSetting [ControllerButton.values ().length];
-    private final IEnumSetting []                axisSettings    = new IEnumSetting [ControllerAxis.values ().length];
-    private int                                  selectedGamepad = -1;
-    private final Map<ControllerButton, Integer> buttonFunctions = new EnumMap<> (ControllerButton.class);
-    private final Map<ControllerAxis, Integer>   axisFunctions   = new EnumMap<> (ControllerAxis.class);
+    private final List<String>                   gamepadNames      = new ArrayList<> ();
+    private final IEnumSetting []                buttonSettings    = new IEnumSetting [ControllerButton.values ().length];
+    private final IEnumSetting []                axisSettings      = new IEnumSetting [ControllerAxis.values ().length];
+    private final IEnumSetting []                axisRangeSettings = new IEnumSetting [ControllerAxis.values ().length];
+    private int                                  selectedGamepad   = -1;
+    private final Map<ControllerButton, Integer> buttonFunctions   = new EnumMap<> (ControllerButton.class);
+    private final Map<ControllerAxis, Integer>   axisFunctions     = new EnumMap<> (ControllerAxis.class);
+    private final Map<ControllerAxis, Integer>   axisRanges        = new EnumMap<> (ControllerAxis.class);
 
 
     /**
@@ -206,11 +220,7 @@ public class GamepadConfiguration extends AbstractConfiguration
 
             final String initialValue = FUNCTIONS.get (BUTTON_DEFAULTS.get (buttons[i]).intValue ());
             this.buttonSettings[i] = globalSettings.getEnumSetting (BUTTON_NAMES.get (buttons[i]), buttonCategory, FUNCTIONS, initialValue);
-            this.buttonSettings[i].addValueObserver (value -> {
-
-                this.buttonFunctions.put (buttons[pos], Integer.valueOf (FUNCTIONS.indexOf (value)));
-
-            });
+            this.buttonSettings[i].addValueObserver (value -> this.buttonFunctions.put (buttons[pos], Integer.valueOf (FUNCTIONS.indexOf (value))));
         }
 
         final ControllerAxis [] axes = ControllerAxis.values ();
@@ -220,12 +230,12 @@ public class GamepadConfiguration extends AbstractConfiguration
             final int pos = i;
 
             final String initialValue = FUNCTIONS.get (AXIS_DEFAULTS.get (axes[i]).intValue ());
-            this.axisSettings[i] = globalSettings.getEnumSetting (AXIS_NAMES.get (axes[i]), axisCategory, FUNCTIONS, initialValue);
-            this.axisSettings[i].addValueObserver (value -> {
+            final String label = AXIS_NAMES.get (axes[i]);
+            this.axisSettings[i] = globalSettings.getEnumSetting (label, axisCategory, FUNCTIONS, initialValue);
+            this.axisSettings[i].addValueObserver (value -> this.axisFunctions.put (axes[pos], Integer.valueOf (FUNCTIONS.indexOf (value))));
 
-                this.axisFunctions.put (axes[pos], Integer.valueOf (FUNCTIONS.indexOf (value)));
-
-            });
+            this.axisRangeSettings[i] = globalSettings.getEnumSetting (label + " Range (CC only)", axisCategory, FUNCTION_RANGES, FUNCTION_RANGES.get (0));
+            this.axisRangeSettings[i].addValueObserver (value -> this.axisRanges.put (axes[pos], Integer.valueOf (FUNCTION_RANGES.indexOf (value))));
         }
 
         // Do not trigger before all function enumeration settings are created
@@ -277,11 +287,12 @@ public class GamepadConfiguration extends AbstractConfiguration
      * Get the selected function to execute for a gamepad button.
      *
      * @param button The button
-     * @return The selected function
+     * @return The selected functions' index. -1 if not set
      */
-    public Integer getFunction (final ControllerButton button)
+    public int getFunction (final ControllerButton button)
     {
-        return this.buttonFunctions.get (button);
+        final Integer f = this.buttonFunctions.get (button);
+        return f == null ? -1 : f.intValue ();
     }
 
 
@@ -289,11 +300,25 @@ public class GamepadConfiguration extends AbstractConfiguration
      * Get the selected function to execute for a gamepad axis (continuous control).
      *
      * @param axis The axis
-     * @return The selected function
+     * @return The selected function' index. -1 if not set
      */
-    public Integer getFunction (final ControllerAxis axis)
+    public int getFunction (final ControllerAxis axis)
     {
-        return this.axisFunctions.get (axis);
+        final Integer f = this.axisFunctions.get (axis);
+        return f == null ? -1 : f.intValue ();
+    }
+
+
+    /**
+     * Get the selected functions' range to execute for a gamepad axis (continuous control).
+     *
+     * @param axis The axis
+     * @return The selected functions' range index. -1 if not set
+     */
+    public int getFunctionRange (final ControllerAxis axis)
+    {
+        final Integer r = this.axisRanges.get (axis);
+        return r == null ? -1 : r.intValue ();
     }
 
 

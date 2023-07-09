@@ -61,27 +61,24 @@ public class GamepadFunctionHandler implements IGamepadCallback
     @Override
     public void process (final ControllerButton button, final ButtonEvent event)
     {
-        final Integer function = this.configuration.getFunction (button);
-        if (function == null)
+        final int function = this.configuration.getFunction (button);
+        if (function <= GamepadConfiguration.FUNCTION_OFF)
             return;
 
-        final int index = function.intValue ();
-        if (index <= GamepadConfiguration.FUNCTION_OFF)
-            return;
-
-        if (index <= GamepadConfiguration.FUNCTION_NOTE_127)
+        if (function <= GamepadConfiguration.FUNCTION_NOTE_127)
         {
-            this.handleMidiNote (index, event == ButtonEvent.DOWN ? 1 : 0);
+            this.handleMidiNote (function, event == ButtonEvent.DOWN ? 1 : 0);
             return;
         }
 
-        if (index <= GamepadConfiguration.FUNCTION_CC_127)
+        if (function <= GamepadConfiguration.FUNCTION_CC_127)
         {
-            this.handleMidiCC (index, event == ButtonEvent.DOWN ? 1 : 0);
+            final double v = event == ButtonEvent.DOWN ? 1 : 0;
+            this.handleMidiCC (function, GamepadConfiguration.FUNCTION_RANGE_127, v, v);
             return;
         }
 
-        switch (index)
+        switch (function)
         {
             case GamepadConfiguration.FUNCTION_PITCHBEND:
                 this.handleMidiPitchbend (event == ButtonEvent.DOWN ? 1 : 0);
@@ -144,29 +141,26 @@ public class GamepadFunctionHandler implements IGamepadCallback
     @Override
     public void process (final ControllerAxis axis, final float value)
     {
-        final Integer function = this.configuration.getFunction (axis);
-        if (function == null)
-            return;
-
-        final int index = function.intValue ();
-        if (index <= GamepadConfiguration.FUNCTION_OFF)
+        final int function = this.configuration.getFunction (axis);
+        if (function <= GamepadConfiguration.FUNCTION_OFF)
             return;
 
         final double positive = Math.abs (value);
 
-        if (index <= GamepadConfiguration.FUNCTION_NOTE_127)
+        if (function <= GamepadConfiguration.FUNCTION_NOTE_127)
         {
-            this.handleMidiNote (index, positive);
+            this.handleMidiNote (function, positive);
             return;
         }
 
-        if (index <= GamepadConfiguration.FUNCTION_CC_127)
+        if (function <= GamepadConfiguration.FUNCTION_CC_127)
         {
-            this.handleMidiCC (index, positive);
+            final int functionRange = this.configuration.getFunctionRange (axis);
+            this.handleMidiCC (function, functionRange, value, positive);
             return;
         }
 
-        switch (index)
+        switch (function)
         {
             case GamepadConfiguration.FUNCTION_PITCHBEND:
                 this.handleMidiPitchbend (value);
@@ -186,10 +180,7 @@ public class GamepadFunctionHandler implements IGamepadCallback
                 this.noteRepeat.setNoteLength (values2[values2.length - 1 - resolutionIndex2].getValue ());
                 break;
 
-            case GamepadConfiguration.FUNCTION_PLAY_CLIP:
-            case GamepadConfiguration.FUNCTION_NEW_CLIP:
-            case GamepadConfiguration.FUNCTION_TRANSPORT_PLAY:
-            case GamepadConfiguration.FUNCTION_TRANSPORT_METRONOME:
+            case GamepadConfiguration.FUNCTION_PLAY_CLIP, GamepadConfiguration.FUNCTION_NEW_CLIP, GamepadConfiguration.FUNCTION_TRANSPORT_PLAY, GamepadConfiguration.FUNCTION_TRANSPORT_METRONOME:
                 // Not supported
                 break;
 
@@ -217,10 +208,41 @@ public class GamepadFunctionHandler implements IGamepadCallback
     }
 
 
-    private void handleMidiCC (final int index, final double value)
+    private void handleMidiCC (final int function, final int functionRange, final double value, final double positive)
     {
-        final int midiValue = value < 0.09 ? 0 : (int) Math.min (127, Math.max (0, Math.round (value * 127)));
-        this.input.sendRawMidiEvent (MidiConstants.CMD_CC, index - GamepadConfiguration.FUNCTION_CC_0, midiValue);
+        final int midiValue;
+
+        switch (functionRange)
+        {
+            case GamepadConfiguration.FUNCTION_RANGE_127:
+                midiValue = positive < 0.09 ? 0 : (int) Math.min (127, Math.max (0, Math.round (positive * 127)));
+                break;
+            case GamepadConfiguration.FUNCTION_RANGE_CENTER_64:
+                if (positive < 0.09)
+                    midiValue = 64;
+                else
+                {
+                    final int v = (int) Math.min (63, Math.max (0, Math.round (positive * 63)));
+                    midiValue = value < 0 ? 63 - v : 64 + v;
+                }
+                break;
+            case GamepadConfiguration.FUNCTION_RANGE_CENTER_64_FLIP:
+                if (positive < 0.09)
+                    midiValue = 64;
+                else
+                {
+                    final int v = (int) Math.min (63, Math.max (0, Math.round (positive * 63)));
+                    midiValue = value < 0 ? 64 + v : 63 - v;
+                }
+                break;
+            default:
+                // No more
+                return;
+        }
+
+        this.model.getHost ().println ("" + midiValue);
+
+        this.input.sendRawMidiEvent (MidiConstants.CMD_CC, function - GamepadConfiguration.FUNCTION_CC_0, midiValue);
     }
 
 
