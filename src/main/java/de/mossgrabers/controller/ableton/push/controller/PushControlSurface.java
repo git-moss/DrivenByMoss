@@ -470,6 +470,8 @@ public class PushControlSurface extends AbstractControlSurface<PushConfiguration
     public PushControlSurface (final IHost host, final ColorManager colorManager, final PushConfiguration configuration, final IMidiOutput output, final IMidiInput input)
     {
         super (host, configuration, colorManager, output, input, new PadGridImpl (colorManager, output), 200, 156);
+        
+        this.notifyViewChange = false;
 
         for (int i = 0; i < this.colorPalette.length; i++)
             this.colorPalette[i] = new PaletteEntry (PushColorManager.getPaletteColorRGB (i));

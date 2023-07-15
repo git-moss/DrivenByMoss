@@ -69,8 +69,6 @@ public class GenericFlexiConfiguration extends AbstractConfiguration
     private static final String                      CATEGORY_KEYBOARD            = "Keyboard / Pads (requires restart)";
     private static final String                      CATEGORY_OPTIONS             = "Options";
 
-    private static final String []                   NAMES                        = FlexiCommand.getNames ();
-
     /** The types. */
     public static final List<String>                 OPTIONS_TYPE                 = List.of ("Off", "CC", "Note", "Program Change", "Pitchbend", "MMC");
 
@@ -295,6 +293,7 @@ public class GenericFlexiConfiguration extends AbstractConfiguration
 
     private String                                   selectedMode                 = MODES.get (0);
 
+    private String                                   keyboardInputName            = "Generic Flexi";
     private boolean                                  isMPEEnabled                 = false;
     private int                                      mpePitchBendRange            = 48;
     private int                                      keyboardChannel              = 0;
@@ -401,7 +400,7 @@ public class GenericFlexiConfiguration extends AbstractConfiguration
         final CommandCategory [] values = CommandCategory.values ();
         for (final CommandCategory value: values)
         {
-            final IEnumSetting fs = createFunctionSetting (value.getName (), category, globalSettings);
+            final IEnumSetting fs = createFunctionSetting (value, category, globalSettings);
             this.functionSettings.add (fs);
             this.functionSettingsMap.put (value, fs);
             fs.addValueObserver (this::handleFunctionChange);
@@ -480,6 +479,9 @@ public class GenericFlexiConfiguration extends AbstractConfiguration
 
         ///////////////////////////////////////////////
         // Keyboard / Pads
+
+        final IStringSetting keyboardInputNameSetting = globalSettings.getStringSetting ("Input Name", CATEGORY_KEYBOARD, 100, "Generic Flexi");
+        this.keyboardInputName = keyboardInputNameSetting.get ();
 
         final IEnumSetting enableMPESetting = globalSettings.getEnumSetting ("MIDI Polyphonic Expression (MPE)", CATEGORY_KEYBOARD, ON_OFF_OPTIONS, ON_OFF_OPTIONS[0]);
         this.isMPEEnabled = ON_OFF_OPTIONS[1].equals (enableMPESetting.get ());
@@ -736,6 +738,17 @@ public class GenericFlexiConfiguration extends AbstractConfiguration
                 commands.add (cmd);
         }
         return commands;
+    }
+
+
+    /**
+     * Get the name to use for the MIDI keyboard input.
+     * 
+     * @return The name
+     */
+    public String getKeyboardInputName ()
+    {
+        return this.keyboardInputName;
     }
 
 
@@ -1136,17 +1149,17 @@ public class GenericFlexiConfiguration extends AbstractConfiguration
     }
 
 
-    private static IEnumSetting createFunctionSetting (final String functionCategory, final String settingCategory, final ISettingsUI settingsUI)
+    private static IEnumSetting createFunctionSetting (final CommandCategory commandCategory, final String settingCategory, final ISettingsUI settingsUI)
     {
         final List<String> functionsNames = new ArrayList<> ();
         functionsNames.add (FlexiCommand.OFF.getName ());
-        for (final String name: NAMES)
+        for (final FlexiCommand command: FlexiCommand.values ())
         {
-            if (name.startsWith (functionCategory))
-                functionsNames.add (name);
+            if (command.getCategory () == commandCategory)
+                functionsNames.add (command.getName ());
         }
         final String [] array = functionsNames.toArray (new String [functionsNames.size ()]);
-        return settingsUI.getEnumSetting (functionCategory + ":", settingCategory, array, array[0]);
+        return settingsUI.getEnumSetting (commandCategory.getName () + ":", settingCategory, array, array[0]);
     }
 
 

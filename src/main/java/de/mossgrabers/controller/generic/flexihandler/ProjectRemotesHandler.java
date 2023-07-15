@@ -55,6 +55,18 @@ public class ProjectRemotesHandler extends AbstractHandler
             FlexiCommand.PROJECT_SET_PARAMETER_8,
             FlexiCommand.PROJECT_SELECT_PREVIOUS_PAGE,
             FlexiCommand.PROJECT_SELECT_NEXT_PAGE,
+            FlexiCommand.PROJECT_SELECT_PARAMETER_PAGE_1,
+            FlexiCommand.PROJECT_SELECT_PARAMETER_PAGE_2,
+            FlexiCommand.PROJECT_SELECT_PARAMETER_PAGE_3,
+            FlexiCommand.PROJECT_SELECT_PARAMETER_PAGE_4,
+            FlexiCommand.PROJECT_SELECT_PARAMETER_PAGE_5,
+            FlexiCommand.PROJECT_SELECT_PARAMETER_PAGE_6,
+            FlexiCommand.PROJECT_SELECT_PARAMETER_PAGE_7,
+            FlexiCommand.PROJECT_SELECT_PARAMETER_PAGE_8,
+            FlexiCommand.PROJECT_SCROLL_PARAMETER_PAGES,
+            FlexiCommand.PROJECT_SELECT_PREVIOUS_PARAMETER_BANK,
+            FlexiCommand.PROJECT_SELECT_NEXT_PARAMETER_BANK,
+            FlexiCommand.PROJECT_SCROLL_PARAMETER_BANKS,
             FlexiCommand.PROJECT_TOGGLE_PARAMETER_1,
             FlexiCommand.PROJECT_TOGGLE_PARAMETER_2,
             FlexiCommand.PROJECT_TOGGLE_PARAMETER_3,
@@ -91,6 +103,9 @@ public class ProjectRemotesHandler extends AbstractHandler
             case PROJECT_TOGGLE_PARAMETER_1, PROJECT_TOGGLE_PARAMETER_2, PROJECT_TOGGLE_PARAMETER_3, PROJECT_TOGGLE_PARAMETER_4, PROJECT_TOGGLE_PARAMETER_5, PROJECT_TOGGLE_PARAMETER_6, PROJECT_TOGGLE_PARAMETER_7, PROJECT_TOGGLE_PARAMETER_8:
                 final int value = projectParameterBank.getItem (command.ordinal () - FlexiCommand.PROJECT_TOGGLE_PARAMETER_1.ordinal ()).getValue ();
                 return toMidiValue (value > 0);
+
+            case PROJECT_SELECT_PARAMETER_PAGE_1, PROJECT_SELECT_PARAMETER_PAGE_2, PROJECT_SELECT_PARAMETER_PAGE_3, PROJECT_SELECT_PARAMETER_PAGE_4, PROJECT_SELECT_PARAMETER_PAGE_5, PROJECT_SELECT_PARAMETER_PAGE_6, PROJECT_SELECT_PARAMETER_PAGE_7, PROJECT_SELECT_PARAMETER_PAGE_8:
+                return projectParameterBank.getItem (command.ordinal () - FlexiCommand.PROJECT_SELECT_PARAMETER_PAGE_1.ordinal ()).isSelected () ? 127 : 0;
 
             default:
                 return -1;
@@ -141,8 +156,63 @@ public class ProjectRemotesHandler extends AbstractHandler
                 this.mvHelper.notifySelectedProjectParameterPage ();
                 break;
 
+            case PROJECT_SELECT_PARAMETER_PAGE_1, PROJECT_SELECT_PARAMETER_PAGE_2, PROJECT_SELECT_PARAMETER_PAGE_3, PROJECT_SELECT_PARAMETER_PAGE_4, PROJECT_SELECT_PARAMETER_PAGE_5, PROJECT_SELECT_PARAMETER_PAGE_6, PROJECT_SELECT_PARAMETER_PAGE_7, PROJECT_SELECT_PARAMETER_PAGE_8:
+                if (this.isButtonPressed (knobMode, value))
+                {
+                    projectParameterBank.getPageBank ().selectPage (command.ordinal () - FlexiCommand.PROJECT_SELECT_PARAMETER_PAGE_1.ordinal ());
+                    this.mvHelper.notifySelectedDeviceAndParameterPage ();
+                }
+                break;
+
+            case PROJECT_SCROLL_PARAMETER_PAGES:
+                this.scrollParameterPage (knobMode, value);
+                break;
+
+            // Device: Select Previous Parameter Bank
+            case PROJECT_SELECT_PREVIOUS_PARAMETER_BANK:
+                if (this.isButtonPressed (knobMode, value))
+                    projectParameterBank.selectPreviousPage ();
+                break;
+            // Device: Select Next Parameter Bank
+            case PROJECT_SELECT_NEXT_PARAMETER_BANK:
+                if (this.isButtonPressed (knobMode, value))
+                    projectParameterBank.selectNextPage ();
+                break;
+
+            case PROJECT_SCROLL_PARAMETER_BANKS:
+                this.scrollParameterBank (knobMode, value);
+                break;
+
             default:
                 throw new FlexiHandlerException (command);
         }
+    }
+
+
+    private void scrollParameterPage (final KnobMode knobMode, final MidiValue value)
+    {
+        if (isAbsolute (knobMode) || !this.increaseKnobMovement ())
+            return;
+
+        final IParameterBank projectParameterBank = this.model.getProject ().getParameterBank ();
+        if (this.isIncrease (knobMode, value))
+            projectParameterBank.scrollForwards ();
+        else
+            projectParameterBank.scrollBackwards ();
+        this.mvHelper.notifySelectedParameterPage ();
+    }
+
+
+    private void scrollParameterBank (final KnobMode knobMode, final MidiValue value)
+    {
+        if (isAbsolute (knobMode) || !this.increaseKnobMovement ())
+            return;
+
+        final IParameterBank projectParameterBank = this.model.getProject ().getParameterBank ();
+        if (this.isIncrease (knobMode, value))
+            projectParameterBank.selectNextPage ();
+        else
+            projectParameterBank.selectPreviousPage ();
+        this.mvHelper.notifySelectedParameterPage ();
     }
 }

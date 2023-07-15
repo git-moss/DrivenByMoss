@@ -55,6 +55,18 @@ public class TrackRemotesHandler extends AbstractHandler
             FlexiCommand.TRACK_SET_PARAMETER_8,
             FlexiCommand.TRACK_SELECT_PREVIOUS_PAGE,
             FlexiCommand.TRACK_SELECT_NEXT_PAGE,
+            FlexiCommand.TRACK_SELECT_PARAMETER_PAGE_1,
+            FlexiCommand.TRACK_SELECT_PARAMETER_PAGE_2,
+            FlexiCommand.TRACK_SELECT_PARAMETER_PAGE_3,
+            FlexiCommand.TRACK_SELECT_PARAMETER_PAGE_4,
+            FlexiCommand.TRACK_SELECT_PARAMETER_PAGE_5,
+            FlexiCommand.TRACK_SELECT_PARAMETER_PAGE_6,
+            FlexiCommand.TRACK_SELECT_PARAMETER_PAGE_7,
+            FlexiCommand.TRACK_SELECT_PARAMETER_PAGE_8,
+            FlexiCommand.TRACK_SCROLL_PARAMETER_PAGES,
+            FlexiCommand.TRACK_SELECT_PREVIOUS_PARAMETER_BANK,
+            FlexiCommand.TRACK_SELECT_NEXT_PARAMETER_BANK,
+            FlexiCommand.TRACK_SCROLL_PARAMETER_BANKS,
             FlexiCommand.TRACK_TOGGLE_PARAMETER_1,
             FlexiCommand.TRACK_TOGGLE_PARAMETER_2,
             FlexiCommand.TRACK_TOGGLE_PARAMETER_3,
@@ -91,6 +103,9 @@ public class TrackRemotesHandler extends AbstractHandler
             case TRACK_TOGGLE_PARAMETER_1, TRACK_TOGGLE_PARAMETER_2, TRACK_TOGGLE_PARAMETER_3, TRACK_TOGGLE_PARAMETER_4, TRACK_TOGGLE_PARAMETER_5, TRACK_TOGGLE_PARAMETER_6, TRACK_TOGGLE_PARAMETER_7, TRACK_TOGGLE_PARAMETER_8:
                 final int value = trackParameterBank.getItem (command.ordinal () - FlexiCommand.TRACK_TOGGLE_PARAMETER_1.ordinal ()).getValue ();
                 return toMidiValue (value > 0);
+
+            case TRACK_SELECT_PARAMETER_PAGE_1, TRACK_SELECT_PARAMETER_PAGE_2, TRACK_SELECT_PARAMETER_PAGE_3, TRACK_SELECT_PARAMETER_PAGE_4, TRACK_SELECT_PARAMETER_PAGE_5, TRACK_SELECT_PARAMETER_PAGE_6, TRACK_SELECT_PARAMETER_PAGE_7, TRACK_SELECT_PARAMETER_PAGE_8:
+                return trackParameterBank.getItem (command.ordinal () - FlexiCommand.TRACK_SELECT_PARAMETER_PAGE_1.ordinal ()).isSelected () ? 127 : 0;
 
             default:
                 return -1;
@@ -141,8 +156,63 @@ public class TrackRemotesHandler extends AbstractHandler
                 this.mvHelper.notifySelectedTrackParameterPage ();
                 break;
 
+            case TRACK_SELECT_PARAMETER_PAGE_1, TRACK_SELECT_PARAMETER_PAGE_2, TRACK_SELECT_PARAMETER_PAGE_3, TRACK_SELECT_PARAMETER_PAGE_4, TRACK_SELECT_PARAMETER_PAGE_5, TRACK_SELECT_PARAMETER_PAGE_6, TRACK_SELECT_PARAMETER_PAGE_7, TRACK_SELECT_PARAMETER_PAGE_8:
+                if (this.isButtonPressed (knobMode, value))
+                {
+                    trackParameterBank.getPageBank ().selectPage (command.ordinal () - FlexiCommand.TRACK_SELECT_PARAMETER_PAGE_1.ordinal ());
+                    this.mvHelper.notifySelectedDeviceAndParameterPage ();
+                }
+                break;
+
+            case TRACK_SCROLL_PARAMETER_PAGES:
+                this.scrollParameterPage (knobMode, value);
+                break;
+
+            // Device: Select Previous Parameter Bank
+            case TRACK_SELECT_PREVIOUS_PARAMETER_BANK:
+                if (this.isButtonPressed (knobMode, value))
+                    trackParameterBank.selectPreviousPage ();
+                break;
+            // Device: Select Next Parameter Bank
+            case TRACK_SELECT_NEXT_PARAMETER_BANK:
+                if (this.isButtonPressed (knobMode, value))
+                    trackParameterBank.selectNextPage ();
+                break;
+
+            case TRACK_SCROLL_PARAMETER_BANKS:
+                this.scrollParameterBank (knobMode, value);
+                break;
+
             default:
                 throw new FlexiHandlerException (command);
         }
+    }
+
+
+    private void scrollParameterPage (final KnobMode knobMode, final MidiValue value)
+    {
+        if (isAbsolute (knobMode) || !this.increaseKnobMovement ())
+            return;
+
+        final IParameterBank trackParameterBank = this.model.getCursorTrack ().getParameterBank ();
+        if (this.isIncrease (knobMode, value))
+            trackParameterBank.scrollForwards ();
+        else
+            trackParameterBank.scrollBackwards ();
+        this.mvHelper.notifySelectedParameterPage ();
+    }
+
+
+    private void scrollParameterBank (final KnobMode knobMode, final MidiValue value)
+    {
+        if (isAbsolute (knobMode) || !this.increaseKnobMovement ())
+            return;
+
+        final IParameterBank trackParameterBank = this.model.getCursorTrack ().getParameterBank ();
+        if (this.isIncrease (knobMode, value))
+            trackParameterBank.selectNextPage ();
+        else
+            trackParameterBank.selectPreviousPage ();
+        this.mvHelper.notifySelectedParameterPage ();
     }
 }

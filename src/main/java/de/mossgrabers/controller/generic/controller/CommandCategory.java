@@ -15,6 +15,7 @@ public enum CommandCategory
     BROWSER("Browser"),
     CLIP("Clip"),
     DEVICE("Device"),
+    INSTRUMENT_DEVICE("1st Instrument Device"),
     EQ("EQ"),
     FX_TRACK("FX Track"),
     GLOBAL("Global"),

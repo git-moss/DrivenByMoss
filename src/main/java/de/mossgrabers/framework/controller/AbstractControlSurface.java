@@ -86,6 +86,7 @@ public abstract class AbstractControlSurface<C extends Configuration> implements
 
     protected final IPadGrid                              padGrid;
     protected ILightGuide                                 lightGuide;
+    protected boolean                                     notifyViewChange               = true;
 
     private int []                                        keyTranslationTable;
 
@@ -272,7 +273,8 @@ public abstract class AbstractControlSurface<C extends Configuration> implements
         if (view == null)
             return;
         this.viewManager.setActive (preferredView);
-        this.getDisplay ().notify (view.getName ());
+        if (this.notifyViewChange)
+            this.getDisplay ().notify (view.getName ());
     }
 
 
