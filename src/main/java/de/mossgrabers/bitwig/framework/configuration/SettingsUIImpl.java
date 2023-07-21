@@ -128,7 +128,8 @@ public class SettingsUIImpl implements ISettingsUI
         for (final String categoryName: this.categoryNames)
         {
             final String [] actionNames = this.categoriesActionIDs.get (categoryName);
-            categoryActionsSettings.put (categoryName, this.preferences.getEnumSetting (label + ": " + categoryName + " Actions", cat, actionNames, actionNames[0]));
+            if (actionNames.length > 1)
+                categoryActionsSettings.put (categoryName, this.preferences.getEnumSetting (label + ": " + categoryName + " Actions", cat, actionNames, actionNames[0]));
         }
 
         return new ActionSettingImpl (categorySetting, categoryActionsSettings, this.actionIDsNames, this.actionCategories);
@@ -155,8 +156,9 @@ public class SettingsUIImpl implements ISettingsUI
             for (int j = 0; j < actions.length; j++)
             {
                 actionNames[j] = actions[j].getName ();
-                this.actionIDsNames.put (actions[j].getId (), actionNames[j]);
-                this.actionCategories.put (actions[j].getId (), categoryName);
+                final String id = actions[j].getId ();
+                this.actionIDsNames.put (id, actionNames[j]);
+                this.actionCategories.put (id, categoryName);
             }
 
             this.categoriesActionIDs.put (categoryName, actionNames);

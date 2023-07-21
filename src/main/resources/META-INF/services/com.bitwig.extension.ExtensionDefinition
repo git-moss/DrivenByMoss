@@ -1,6 +1,6 @@
 de.mossgrabers.bitwig.controller.ableton.push.Push1ControllerExtensionDefinition
 de.mossgrabers.bitwig.controller.ableton.push.Push2ControllerExtensionDefinition
-de.mossgrabers.bitwig.controller.ableton.push.Push3ControllerExtensionDefinition
+#de.mossgrabers.bitwig.controller.ableton.push.Push3ControllerExtensionDefinition
 de.mossgrabers.bitwig.controller.akai.apc.APCmkIControllerExtensionDefinition
 de.mossgrabers.bitwig.controller.akai.apc.APCmkIIControllerExtensionDefinition
 de.mossgrabers.bitwig.controller.akai.apcmini.APCminiControllerExtensionDefinition

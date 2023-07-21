@@ -70,7 +70,7 @@ public class ActionHandler extends AbstractHandler
             return;
 
         final String assignableActionID = this.configuration.getAssignableAction (command.ordinal () - FlexiCommand.ACTION_1.ordinal ());
-        if (assignableActionID != null)
+        if (assignableActionID != null && !assignableActionID.isBlank ())
             this.model.getApplication ().invokeAction (assignableActionID);
     }
 }

@@ -262,7 +262,8 @@ public class GenericFlexiControllerSetup extends AbstractControllerSetup<Generic
 
             final INoteInput input = surface.getMidiInput ().getDefaultNoteInput ();
             final IMidiOutput output = surface.getMidiOutput ();
-
+            if (input == null || output == null)
+                return;
             final boolean mpeEnabled = this.configuration.isMPEEndabled ();
             input.enableMPE (mpeEnabled);
             // Enable MPE zone 1 with all 15 channels
@@ -273,11 +274,15 @@ public class GenericFlexiControllerSetup extends AbstractControllerSetup<Generic
         }, 2000));
 
         this.configuration.addSettingObserver (GenericFlexiConfiguration.MPE_PITCHBEND_RANGE, () -> surface.scheduleTask ( () -> {
+
             final INoteInput input = surface.getMidiInput ().getDefaultNoteInput ();
             final IMidiOutput output = surface.getMidiOutput ();
+            if (input == null || output == null)
+                return;
             final int mpePitchBendRange = this.configuration.getMPEPitchBendRange ();
             input.setMPEPitchBendSensitivity (mpePitchBendRange);
             output.sendMPEPitchbendRange (AbstractMidiOutput.ZONE_1, mpePitchBendRange);
+
         }, 2000));
 
         this.activateBrowserObserver (Modes.BROWSER);
