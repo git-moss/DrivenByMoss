@@ -87,8 +87,8 @@ public class DeviceChainsMode extends DeviceParamsMode
         if (index >= 0)
             return super.getButtonColor (buttonID);
 
-        final int existsColor = this.isPush2 ? PushColorManager.PUSH2_COLOR_YELLOW_LO : PushColorManager.PUSH1_COLOR_YELLOW_LO;
-        final int offColor = this.isPush2 ? PushColorManager.PUSH2_COLOR_BLACK : PushColorManager.PUSH1_COLOR_BLACK;
+        final int existsColor = this.isPushModern ? PushColorManager.PUSH2_COLOR_YELLOW_LO : PushColorManager.PUSH1_COLOR_YELLOW_LO;
+        final int offColor = this.isPushModern ? PushColorManager.PUSH2_COLOR_BLACK : PushColorManager.PUSH1_COLOR_BLACK;
         final String [] slotChains = this.model.getCursorDevice ().getSlotChains ();
         return index < slotChains.length ? existsColor : offColor;
     }

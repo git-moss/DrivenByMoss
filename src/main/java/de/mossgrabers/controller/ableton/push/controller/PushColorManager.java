@@ -669,6 +669,11 @@ public class PushColorManager extends ColorManager
                 case MASTERTRACK:
                 case SETUP:
                 case LAYOUT:
+                case LOAD:
+                case SAVE:
+                case INSERT_SCENE:
+                case LOCK_MODE:
+                case HELP:
                     int color = PUSH2_COLOR2_WHITE;
                     if (colorIndex == 0)
                         color = PUSH2_COLOR2_BLACK;

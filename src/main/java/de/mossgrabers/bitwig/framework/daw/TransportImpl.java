@@ -47,6 +47,7 @@ public class TransportImpl implements ITransport
 
     private static final AutomationMode [] AUTOMATION_MODES        = new AutomationMode []
     {
+        AutomationMode.READ,
         AutomationMode.LATCH,
         AutomationMode.TOUCH,
         AutomationMode.WRITE
@@ -403,7 +404,9 @@ public class TransportImpl implements ITransport
     @Override
     public AutomationMode getAutomationWriteMode ()
     {
-        return AutomationMode.lookup (this.transport.automationWriteMode ().get ());
+        if (this.isWritingArrangerAutomation () || this.isWritingClipLauncherAutomation ())
+            return AutomationMode.lookup (this.transport.automationWriteMode ().get ());
+        return AutomationMode.READ;
     }
 
 

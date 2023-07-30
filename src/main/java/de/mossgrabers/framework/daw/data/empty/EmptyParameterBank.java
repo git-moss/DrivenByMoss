@@ -36,7 +36,7 @@ public class EmptyParameterBank extends EmptyBank<IParameter> implements IParame
 
     /**
      * Constructor.
-     * 
+     *
      * @param pageSize The number of elements in a page of the bank
      */
     private EmptyParameterBank (final int pageSize)

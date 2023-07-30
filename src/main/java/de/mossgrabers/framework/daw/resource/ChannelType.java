@@ -32,7 +32,9 @@ public enum ChannelType
     /** The master track. */
     MASTER,
     /** A device layer. */
-    LAYER;
+    LAYER,
+    /** A cue channel. */
+    CUE;
 
 
     private static final Map<ChannelType, String> LABELS = new EnumMap<> (ChannelType.class);
@@ -47,6 +49,7 @@ public enum ChannelType
         LABELS.put (EFFECT, "Effect");
         LABELS.put (MASTER, "Master");
         LABELS.put (LAYER, "Layer");
+        LABELS.put (CUE, "Cue");
     }
 
 

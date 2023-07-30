@@ -487,4 +487,14 @@ public class ApplicationImpl implements IApplication
     {
         return this.application.getActionCategory (id);
     }
+
+
+    /** {@inheritDoc} */
+    @Override
+    public void showHelp ()
+    {
+        final Action action = this.getAction ("show_online_learning");
+        if (action != null)
+            action.invoke ();
+    }
 }

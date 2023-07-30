@@ -207,6 +207,25 @@ public class FeatureGroupManager<E extends Enum<E>, F extends IFeatureGroup>
 
 
     /**
+     * Check if one of the feature group IDs is the active feature group.
+     *
+     * @param featureGroupIDs Several feature group IDs
+     * @return True if active
+     */
+    @SafeVarargs
+    public final boolean isActiveIgnoreTemporary (final E... featureGroupIDs)
+    {
+        final E id = this.getActiveIDIgnoreTemporary ();
+        for (final E featureGroupID: featureGroupIDs)
+        {
+            if (id == featureGroupID)
+                return true;
+        }
+        return false;
+    }
+
+
+    /**
      * Get the active or temporary feature group ID.
      *
      * @return The ID of the active feature group

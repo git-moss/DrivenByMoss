@@ -22,6 +22,12 @@ import java.util.List;
 public interface ITrackBank extends IChannelBank<ITrack>
 {
     /**
+     * Toggles record arm on all tracks of the current bank page.
+     */
+    void toggleRecArm ();
+
+
+    /**
      * Stop all playing clips. Alternative function to stop the playback of all clips, e.g. not
      * quantized, if true.
      *

@@ -169,7 +169,7 @@ public class DeviceLayerDetailsMode extends BaseMode<ILayer>
         {
             if (index >= 6)
                 return this.colorManager.getColorIndex (this.bank instanceof IDrumPadBank ? AbstractMode.BUTTON_COLOR2_ON : AbstractFeatureGroup.BUTTON_COLOR_OFF);
-            return this.isPush2 ? PushColorManager.PUSH2_COLOR_BLACK : PushColorManager.PUSH1_COLOR_BLACK;
+            return this.isPushModern ? PushColorManager.PUSH2_COLOR_BLACK : PushColorManager.PUSH1_COLOR_BLACK;
         }
 
         return super.getButtonColor (buttonID);

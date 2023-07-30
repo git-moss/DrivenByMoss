@@ -31,15 +31,17 @@ import java.util.Set;
  */
 public class PushConfiguration extends AbstractConfiguration implements IGraphicsConfiguration
 {
-    /** Settings for different Mute and Solo behavior. */
-    public enum TrackState
+    /** A lock state for the mode buttons. */
+    public enum LockState
     {
-        /** Use Mute, Solo for muting/soloing the current track. */
-        NONE,
-        /** Use all mode buttons for muting. */
+        /** No lock state. */
+        OFF,
+        /** Locked to mute. */
         MUTE,
-        /** Use all mode buttons for soloing. */
-        SOLO
+        /** Locked to solo. */
+        SOLO,
+        /** Locked to clip stop. */
+        CLIP_STOP,
     }
 
 
@@ -219,9 +221,7 @@ public class PushConfiguration extends AbstractConfiguration implements IGraphic
         DEBUG_MODES.add (Modes.REPEAT_NOTE);
     }
 
-    private boolean           isSoloLongPressed           = false;
-    private boolean           isMuteLongPressed           = false;
-    private boolean           isMuteSoloLocked            = false;
+    private LockState         lockState                   = LockState.OFF;
 
     private boolean           displayScenesClips;
     private boolean           isScenesClipView;
@@ -232,7 +232,6 @@ public class PushConfiguration extends AbstractConfiguration implements IGraphic
     private int               ribbonModeNoteRepeat        = NOTE_REPEAT_PERIOD;
 
     private boolean           stopAutomationOnKnobRelease = false;
-    private TrackState        trackState                  = TrackState.MUTE;
     private Modes             debugMode                   = Modes.TRACK;
     private Modes             layerMode                   = null;
 
@@ -663,68 +662,61 @@ public class PushConfiguration extends AbstractConfiguration implements IGraphic
 
 
     /**
-     * Is mute long pressed?
-     *
-     * @return True if mute is long pressed
-     */
-    public boolean isMuteLongPressed ()
-    {
-        return this.isMuteLongPressed;
-    }
-
-
-    /**
-     * Set if mute is long pressed.
-     *
-     * @param isMuteLongPressed True if mute is long pressed
-     */
-    public void setIsMuteLongPressed (final boolean isMuteLongPressed)
-    {
-        this.isMuteLongPressed = isMuteLongPressed;
-    }
-
-
-    /**
-     * Is solo long pressed?
-     *
-     * @return True if solo is long pressed
-     */
-    public boolean isSoloLongPressed ()
-    {
-        return this.isSoloLongPressed;
-    }
-
-
-    /**
-     * Set if solo is long pressed.
+     * Returns true if it is either a Push 1, solo button is long pressed or solo mode is locked.
      *
      * @param isSoloLongPressed True if solo is long pressed
+     * @return As explained above
      */
-    public void setIsSoloLongPressed (final boolean isSoloLongPressed)
+    public boolean isSoloState (final boolean isSoloLongPressed)
     {
-        this.isSoloLongPressed = isSoloLongPressed;
+        return isSoloLongPressed || this.lockState == LockState.SOLO;
     }
 
 
     /**
-     * Is mute and solo locked (all mode buttons are used for solo or mute).
+     * Returns true if it is either a Push 1, mute button is long pressed or mute mode is locked.
      *
-     * @return True if locked
+     * @param isMuteLongPressed True if mute is long pressed
+     * @return As explained above
      */
-    public boolean isMuteSoloLocked ()
+    public boolean isMuteState (final boolean isMuteLongPressed)
     {
-        return this.isMuteSoloLocked;
+        return isMuteLongPressed || this.lockState == LockState.MUTE;
     }
 
 
     /**
-     * Set if mute and solo is locked (all mode buttons are used for solo or mute).
+     * Returns true if it is either a Push 1, clip stop button is long pressed or clip stop mode is
+     * locked.
      *
-     * @param isMuteSoloLocked True if locked
+     * @param isClipStopLongPressed True if clip stop is long pressed
+     * @return As explained above
      */
-    public void setMuteSoloLocked (final boolean isMuteSoloLocked)
+    public boolean isClipStopState (final boolean isClipStopLongPressed)
     {
-        this.isMuteSoloLocked = isMuteSoloLocked;
+        return isClipStopLongPressed || this.lockState == LockState.CLIP_STOP;
+    }
+
+
+    /**
+     * Is mute, solo or clip state locked (all mode buttons are used for solo or mute)?
+     *
+     * @return The state
+     */
+    public LockState getLockState ()
+    {
+        return this.lockState;
+    }
+
+
+    /**
+     * Set if mute, solo or clip stop is locked (all mode buttons are used for solo or mute).
+     *
+     * @param lockState The new lock state
+     */
+    public void setLockState (final LockState lockState)
+    {
+        this.lockState = lockState;
     }
 
 
@@ -791,39 +783,6 @@ public class PushConfiguration extends AbstractConfiguration implements IGraphic
     public void setPadDynamics (final int padDynamics)
     {
         this.padDynamicsSetting.set (padDynamics);
-    }
-
-
-    /**
-     * Use the 2nd row buttons for mute?
-     *
-     * @return True if used for mute
-     */
-    public boolean isMuteState ()
-    {
-        return this.trackState == TrackState.MUTE;
-    }
-
-
-    /**
-     * Use the 2nd row buttons for solo?
-     *
-     * @return True if used for solo
-     */
-    public boolean isSoloState ()
-    {
-        return this.trackState == TrackState.SOLO;
-    }
-
-
-    /**
-     * Set the track state.
-     *
-     * @param state The new track state
-     */
-    public void setTrackState (final TrackState state)
-    {
-        this.trackState = state;
     }
 
 

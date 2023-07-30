@@ -154,20 +154,24 @@ public abstract class AbstractTrackMode extends BaseMode<ITrack>
 
         final ITrackBank tb = this.model.getCurrentTrackBank ();
         final ITrack track = tb.getItem (index);
-        if (this.surface.isPressed (ButtonID.STOP_CLIP))
-        {
-            this.surface.setTriggerConsumed (ButtonID.STOP_CLIP);
-            track.stop (false);
-            return;
-        }
 
         final PushConfiguration config = this.surface.getConfiguration ();
-        if (!this.isPush2 || config.isMuteLongPressed () || config.isSoloLongPressed () || config.isMuteSoloLocked ())
+        if (config.isMuteState (this.surface.isLongPressed (ButtonID.MUTE)))
         {
-            if (config.isMuteState ())
-                track.toggleMute ();
-            else
-                track.toggleSolo ();
+            this.surface.setTriggerConsumed (ButtonID.MUTE);
+            track.toggleMute ();
+            return;
+        }
+        if (config.isSoloState (this.surface.isLongPressed (ButtonID.SOLO)))
+        {
+            this.surface.setTriggerConsumed (ButtonID.SOLO);
+            track.toggleSolo ();
+            return;
+        }
+        if (config.isClipStopState (this.surface.isLongPressed (ButtonID.STOP_CLIP)))
+        {
+            this.surface.setTriggerConsumed (ButtonID.STOP_CLIP);
+            track.stop (this.surface.isShiftPressed ());
             return;
         }
 
@@ -303,16 +307,14 @@ public abstract class AbstractTrackMode extends BaseMode<ITrack>
         {
             final ITrack track = tb.getItem (index);
 
-            if (this.isPush2)
+            if (this.isPushModern)
             {
-                if (this.surface.isPressed (ButtonID.STOP_CLIP))
+                if (config.isSoloState (this.surface.isLongPressed (ButtonID.SOLO)))
+                    return track.doesExist () && track.isSolo () ? PushColorManager.PUSH2_COLOR2_YELLOW_HI : PushColorManager.PUSH2_COLOR_BLACK;
+                if (config.isMuteState (this.surface.isLongPressed (ButtonID.MUTE)))
+                    return track.doesExist () && track.isMute () ? PushColorManager.PUSH2_COLOR2_AMBER_LO : PushColorManager.PUSH2_COLOR_BLACK;
+                if (config.isClipStopState (this.surface.isLongPressed (ButtonID.STOP_CLIP)))
                     return track.doesExist () && track.isPlaying () ? PushColorManager.PUSH2_COLOR_RED_HI : PushColorManager.PUSH2_COLOR_BLACK;
-
-                if (config.isMuteLongPressed () || config.isSoloLongPressed () || config.isMuteSoloLocked ())
-                {
-                    final boolean muteState = config.isMuteState ();
-                    return this.getTrackStateColor (muteState, track);
-                }
 
                 final ModeManager modeManager = this.surface.getModeManager ();
                 switch (index)
@@ -345,33 +347,24 @@ public abstract class AbstractTrackMode extends BaseMode<ITrack>
                 }
             }
 
-            final boolean muteState = config.isMuteState ();
             if (!track.doesExist ())
                 return PushColorManager.PUSH1_COLOR_BLACK;
 
-            if (muteState)
-                return track.isMute () ? PushColorManager.PUSH1_COLOR_BLACK : PushColorManager.PUSH1_COLOR2_YELLOW_HI;
-            return track.isSolo () ? PushColorManager.PUSH1_COLOR2_BLUE_HI : PushColorManager.PUSH1_COLOR2_GREY_LO;
+            switch (config.getLockState ())
+            {
+                case MUTE:
+                    return track.isMute () ? PushColorManager.PUSH1_COLOR_BLACK : PushColorManager.PUSH1_COLOR2_YELLOW_HI;
+                case SOLO:
+                    return track.isSolo () ? PushColorManager.PUSH1_COLOR2_BLUE_HI : PushColorManager.PUSH1_COLOR2_GREY_LO;
+                case CLIP_STOP:
+                    return PushColorManager.PUSH1_COLOR2_ROSE;
+                default:
+                    // Fall through
+                    break;
+            }
         }
 
         return super.getButtonColor (buttonID);
-    }
-
-
-    protected int getTrackStateColor (final boolean muteState, final ITrack t)
-    {
-        if (!t.doesExist ())
-            return PushColorManager.PUSH2_COLOR_BLACK;
-
-        if (muteState)
-        {
-            if (t.isMute ())
-                return PushColorManager.PUSH2_COLOR2_AMBER_LO;
-        }
-        else if (t.isSolo ())
-            return PushColorManager.PUSH2_COLOR2_YELLOW_HI;
-
-        return PushColorManager.PUSH2_COLOR_BLACK;
     }
 
 
@@ -423,16 +416,13 @@ public abstract class AbstractTrackMode extends BaseMode<ITrack>
 
     protected void updateMenuItems (final int selectedMenu)
     {
-        if (this.surface.isPressed (ButtonID.STOP_CLIP))
-        {
-            this.updateStopMenu ();
-            return;
-        }
         final PushConfiguration config = this.surface.getConfiguration ();
-        if (config.isMuteLongPressed () || config.isMuteSoloLocked () && config.isMuteState ())
+        if (config.isMuteState (this.surface.isLongPressed (ButtonID.MUTE)))
             this.updateMuteMenu ();
-        else if (config.isSoloLongPressed () || config.isMuteSoloLocked () && config.isSoloState ())
+        else if (config.isSoloState (this.surface.isLongPressed (ButtonID.SOLO)))
             this.updateSoloMenu ();
+        else if (config.isClipStopState (this.surface.isLongPressed (ButtonID.STOP_CLIP)))
+            this.updateStopMenu ();
         else
             this.updateTrackMenu (selectedMenu);
     }

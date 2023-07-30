@@ -147,13 +147,19 @@ public class TrackRemotesHandler extends AbstractHandler
                 break;
 
             case TRACK_SELECT_PREVIOUS_PAGE:
-                trackParameterBank.scrollBackwards ();
-                this.mvHelper.notifySelectedTrackParameterPage ();
+                if (this.isButtonPressed (knobMode, value))
+                {
+                    trackParameterBank.scrollBackwards ();
+                    this.mvHelper.notifySelectedTrackParameterPage ();
+                }
                 break;
 
             case TRACK_SELECT_NEXT_PAGE:
-                trackParameterBank.scrollForwards ();
-                this.mvHelper.notifySelectedTrackParameterPage ();
+                if (this.isButtonPressed (knobMode, value))
+                {
+                    trackParameterBank.scrollForwards ();
+                    this.mvHelper.notifySelectedTrackParameterPage ();
+                }
                 break;
 
             case TRACK_SELECT_PARAMETER_PAGE_1, TRACK_SELECT_PARAMETER_PAGE_2, TRACK_SELECT_PARAMETER_PAGE_3, TRACK_SELECT_PARAMETER_PAGE_4, TRACK_SELECT_PARAMETER_PAGE_5, TRACK_SELECT_PARAMETER_PAGE_6, TRACK_SELECT_PARAMETER_PAGE_7, TRACK_SELECT_PARAMETER_PAGE_8:

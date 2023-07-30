@@ -60,7 +60,7 @@ public class SessionMode extends AbstractTrackMode
 
         this.sceneBank = model.getSceneBank (64);
 
-        this.rowDisplayMode = this.isPush2 ? RowDisplayMode.ALL : RowDisplayMode.UPPER;
+        this.rowDisplayMode = this.isPushModern ? RowDisplayMode.ALL : RowDisplayMode.UPPER;
     }
 
 
@@ -87,7 +87,7 @@ public class SessionMode extends AbstractTrackMode
         if (event != ButtonEvent.DOWN)
             return;
 
-        if (this.isPush2)
+        if (this.isPushModern)
         {
             if (index == 0)
             {

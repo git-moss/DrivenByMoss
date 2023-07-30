@@ -27,7 +27,7 @@ public abstract class BaseMode<B extends IItem> extends AbstractParameterMode<Pu
 {
     protected static final int SCROLL_RATE     = 8;
 
-    protected final boolean    isPush2;
+    protected final boolean    isPushModern;
     private int                movementCounter = 0;
 
 
@@ -56,7 +56,7 @@ public abstract class BaseMode<B extends IItem> extends AbstractParameterMode<Pu
     {
         super (name, surface, model, true, bank, DEFAULT_KNOB_IDS);
 
-        this.isPush2 = this.surface.getConfiguration ().isPushModern ();
+        this.isPushModern = this.surface.getConfiguration ().isPushModern ();
     }
 
 

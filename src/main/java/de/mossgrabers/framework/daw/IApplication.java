@@ -307,4 +307,10 @@ public interface IApplication extends IObserverManagement
      * @param id the action identifier string, must not be `null`
      */
     void invokeAction (String id);
+
+
+    /**
+     * Shows help, e.g. the manual.
+     */
+    void showHelp ();
 }

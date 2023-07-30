@@ -4,6 +4,8 @@
 
 package de.mossgrabers.controller.ableton.push.mode.track;
 
+import de.mossgrabers.controller.ableton.push.PushConfiguration.LockState;
+import de.mossgrabers.controller.ableton.push.controller.Push1Display;
 import de.mossgrabers.controller.ableton.push.controller.PushColorManager;
 import de.mossgrabers.controller.ableton.push.controller.PushControlSurface;
 import de.mossgrabers.controller.ableton.push.mode.BaseMode;
@@ -134,6 +136,7 @@ public class MasterMode extends BaseMode<ITrack>
         final IMasterTrack master = this.model.getMasterTrack ();
         final IProject project = this.model.getProject ();
         final boolean canEditCueVolume = this.model.getHost ().supports (Capability.CUE_VOLUME);
+        final int upperBound = this.model.getValueChanger ().getUpperBound ();
 
         display.setCell (0, 0, TAG_VOLUME).setCell (0, 1, "Pan");
         if (canEditCueVolume)
@@ -143,7 +146,7 @@ public class MasterMode extends BaseMode<ITrack>
         if (canEditCueVolume)
             display.setCell (1, 2, project.getCueVolumeStr (8)).setCell (1, 3, project.getCueMixStr (8));
         display.setBlock (1, 2, "Audio Engine").setBlock (1, 3, this.model.getProject ().getName ());
-        display.setCell (2, 0, this.surface.getConfiguration ().isEnableVUMeters () ? master.getVu () : master.getVolume (), Format.FORMAT_VALUE);
+        display.setCell (2, 0, this.surface.getConfiguration ().isEnableVUMeters () ? Push1Display.formatValue (master.getVolume (), master.getVu (), upperBound) : Push1Display.formatValue (master.getVolume (), upperBound));
         display.setCell (2, 1, master.getPan (), Format.FORMAT_PAN);
         if (canEditCueVolume)
         {
@@ -175,7 +178,7 @@ public class MasterMode extends BaseMode<ITrack>
 
         if (this.model.getHost ().supports (Capability.CUE_VOLUME))
         {
-            display.addChannelElement ("Cue Volume", false, "Cue", ChannelType.MASTER, ColorEx.GRAY, false, valueChanger.toDisplayValue (project.getCueVolume ()), -1, this.isKnobTouched (2) ? project.getCueVolumeStr (8) : "", valueChanger.toDisplayValue (project.getCueMix ()), -1, this.isKnobTouched (3) ? project.getCueMixStr (8) : "", 0, 0, false, false, false, true, 0, false);
+            display.addChannelElement ("Cue Volume", false, "Cue", ChannelType.CUE, ColorEx.GRAY, false, valueChanger.toDisplayValue (project.getCueVolume ()), -1, this.isKnobTouched (2) ? project.getCueVolumeStr (8) : "", valueChanger.toDisplayValue (project.getCueMix ()), -1, this.isKnobTouched (3) ? project.getCueMixStr (8) : "", 0, 0, false, false, false, true, 0, false);
             display.addChannelSelectorElement ("Cue Mix", false, "", null, ColorEx.BLACK, false, true);
         }
         else
@@ -254,12 +257,11 @@ public class MasterMode extends BaseMode<ITrack>
         index = this.isButtonRow (1, buttonID);
         if (index >= 0)
         {
-            final int off = this.isPush2 ? PushColorManager.PUSH2_COLOR_BLACK : PushColorManager.PUSH1_COLOR_BLACK;
-
-            if (this.isPush2 || index > 0)
+            final int off = this.isPushModern ? PushColorManager.PUSH2_COLOR_BLACK : PushColorManager.PUSH1_COLOR_BLACK;
+            if (this.isPushModern || index > 0)
                 return off;
 
-            final boolean muteState = this.surface.getConfiguration ().isMuteState ();
+            final boolean muteState = this.surface.getConfiguration ().getLockState () == LockState.MUTE;
             final IMasterTrack master = this.model.getMasterTrack ();
             if (muteState)
                 return master.isMute () ? off : PushColorManager.PUSH1_COLOR2_YELLOW_HI;
@@ -267,7 +269,6 @@ public class MasterMode extends BaseMode<ITrack>
         }
 
         return super.getButtonColor (buttonID);
-
     }
 
 
@@ -275,11 +276,11 @@ public class MasterMode extends BaseMode<ITrack>
     @Override
     public void onSecondRow (final int index, final ButtonEvent event)
     {
-        if (event != ButtonEvent.DOWN || this.isPush2 || index > 0)
+        if (this.isPushModern || event != ButtonEvent.DOWN || index > 0)
             return;
 
         final IMasterTrack master = this.model.getMasterTrack ();
-        if (this.surface.getConfiguration ().isMuteState ())
+        if (this.surface.getConfiguration ().getLockState () == LockState.MUTE)
             master.toggleMute ();
         else
             master.toggleSolo ();
@@ -290,10 +291,10 @@ public class MasterMode extends BaseMode<ITrack>
     {
         final IMasterTrack track = this.model.getMasterTrack ();
         if (!track.isActivated ())
-            return this.isPush2 ? PushColorManager.PUSH2_COLOR_BLACK : PushColorManager.PUSH1_COLOR_BLACK;
+            return this.isPushModern ? PushColorManager.PUSH2_COLOR_BLACK : PushColorManager.PUSH1_COLOR_BLACK;
         if (track.isRecArm ())
-            return this.isPush2 ? PushColorManager.PUSH2_COLOR_RED_HI : PushColorManager.PUSH1_COLOR_RED_HI;
-        return this.isPush2 ? PushColorManager.PUSH2_COLOR_ORANGE_HI : PushColorManager.PUSH1_COLOR_ORANGE_HI;
+            return this.isPushModern ? PushColorManager.PUSH2_COLOR_RED_HI : PushColorManager.PUSH1_COLOR_RED_HI;
+        return this.isPushModern ? PushColorManager.PUSH2_COLOR_ORANGE_HI : PushColorManager.PUSH1_COLOR_ORANGE_HI;
     }
 
 

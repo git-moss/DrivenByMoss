@@ -187,11 +187,11 @@ public class TrackDetailsMode extends BaseMode<ITrack>
                     return this.colorManager.getColorIndex (cursorTrack.isAutoMonitor () ? PushColorManager.PUSH_GREEN_HI : PushColorManager.PUSH_GREEN_LO);
                 case 6:
                     if (!this.hasPinning)
-                        return this.isPush2 ? PushColorManager.PUSH2_COLOR_BLACK : PushColorManager.PUSH1_COLOR_BLACK;
+                        return this.isPushModern ? PushColorManager.PUSH2_COLOR_BLACK : PushColorManager.PUSH1_COLOR_BLACK;
                     return this.colorManager.getColorIndex (cursorTrack.isPinned () ? PushColorManager.PUSH_GREEN_HI : PushColorManager.PUSH_GREEN_LO);
                 default:
                 case 7:
-                    return this.isPush2 ? PushColorManager.PUSH2_COLOR_GREEN_HI : PushColorManager.PUSH1_COLOR_GREEN_HI;
+                    return this.isPushModern ? PushColorManager.PUSH2_COLOR_GREEN_HI : PushColorManager.PUSH1_COLOR_GREEN_HI;
             }
         }
 

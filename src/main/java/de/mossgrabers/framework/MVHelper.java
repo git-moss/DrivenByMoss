@@ -7,6 +7,7 @@ package de.mossgrabers.framework;
 import de.mossgrabers.framework.configuration.Configuration;
 import de.mossgrabers.framework.controller.IControlSurface;
 import de.mossgrabers.framework.controller.display.IDisplay;
+import de.mossgrabers.framework.daw.GrooveParameterID;
 import de.mossgrabers.framework.daw.IModel;
 import de.mossgrabers.framework.daw.ITransport;
 import de.mossgrabers.framework.daw.clip.INoteClip;
@@ -347,6 +348,15 @@ public class MVHelper<S extends IControlSurface<C>, C extends Configuration>
     public void notifyTempo ()
     {
         this.delayDisplay ( () -> "Tempo: " + this.transport.formatTempo (this.transport.getTempo ()));
+    }
+
+
+    /**
+     * Display the current shuffle amount.
+     */
+    public void notifyShuffle ()
+    {
+        this.delayDisplay ( () -> "Shuffle: " + this.model.getGroove ().getParameter (GrooveParameterID.SHUFFLE_AMOUNT).getDisplayedValue ());
     }
 
 

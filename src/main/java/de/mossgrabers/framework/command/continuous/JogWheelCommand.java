@@ -2,12 +2,11 @@
 // (c) 2017-2023
 // Licensed under LGPLv3 - http://www.gnu.org/licenses/lgpl-3.0.txt
 
-package de.mossgrabers.controller.mackie.mcu.command.continuous;
+package de.mossgrabers.framework.command.continuous;
 
-import de.mossgrabers.controller.mackie.mcu.MCUConfiguration;
-import de.mossgrabers.controller.mackie.mcu.controller.MCUControlSurface;
-import de.mossgrabers.framework.command.continuous.PlayPositionCommand;
+import de.mossgrabers.framework.configuration.Configuration;
 import de.mossgrabers.framework.controller.ButtonID;
+import de.mossgrabers.framework.controller.IControlSurface;
 import de.mossgrabers.framework.daw.IBrowser;
 import de.mossgrabers.framework.daw.IModel;
 
@@ -15,9 +14,12 @@ import de.mossgrabers.framework.daw.IModel;
 /**
  * Different commands to execute with the jog wheel depending on used combination keys.
  *
+ * @param <S> The type of the control surface
+ * @param <C> The type of the configuration
+ *
  * @author Jürgen Moßgraber
  */
-public class JogWheelCommand extends PlayPositionCommand<MCUControlSurface, MCUConfiguration>
+public class JogWheelCommand<S extends IControlSurface<C>, C extends Configuration> extends PlayPositionCommand<S, C>
 {
     /**
      * Constructor.
@@ -25,7 +27,7 @@ public class JogWheelCommand extends PlayPositionCommand<MCUControlSurface, MCUC
      * @param model The model
      * @param surface The surface
      */
-    public JogWheelCommand (final IModel model, final MCUControlSurface surface)
+    public JogWheelCommand (final IModel model, final S surface)
     {
         super (model, surface);
     }

@@ -5,12 +5,14 @@
 package de.mossgrabers.controller.ableton.push.command.trigger;
 
 import de.mossgrabers.controller.ableton.push.PushConfiguration;
-import de.mossgrabers.controller.ableton.push.PushConfiguration.TrackState;
+import de.mossgrabers.controller.ableton.push.PushConfiguration.LockState;
 import de.mossgrabers.controller.ableton.push.controller.PushControlSurface;
 import de.mossgrabers.framework.command.core.AbstractTriggerCommand;
+import de.mossgrabers.framework.controller.ButtonID;
 import de.mossgrabers.framework.daw.IModel;
 import de.mossgrabers.framework.daw.data.ICursorDevice;
 import de.mossgrabers.framework.daw.data.ILayer;
+import de.mossgrabers.framework.featuregroup.ModeManager;
 import de.mossgrabers.framework.mode.Modes;
 import de.mossgrabers.framework.utils.ButtonEvent;
 
@@ -53,62 +55,39 @@ public class SoloCommand extends AbstractTriggerCommand<PushControlSurface, Push
         final PushConfiguration config = this.surface.getConfiguration ();
         if (!config.isPushModern ())
         {
-            config.setTrackState (TrackState.SOLO);
+            if (event == ButtonEvent.DOWN)
+                config.setLockState (LockState.SOLO);
             return;
         }
+
+        if (event != ButtonEvent.UP)
+            return;
 
         // Toggle solo lock mode
-        if (this.surface.isShiftPressed ())
+        if (this.surface.isShiftPressed () || this.surface.isPressed (ButtonID.LOCK_MODE))
         {
-            if (event == ButtonEvent.UP)
-            {
-                if (config.isMuteSoloLocked () && config.isSoloState ())
-                    config.setMuteSoloLocked (false);
-                else
-                {
-                    config.setMuteSoloLocked (true);
-                    config.setTrackState (TrackState.SOLO);
-                }
-            }
+            config.setLockState (config.getLockState () == LockState.SOLO ? LockState.OFF : LockState.SOLO);
             return;
         }
 
-        // Behaviour like Push 1
-        if (config.isMuteSoloLocked ())
+        final ModeManager modeManager = this.surface.getModeManager ();
+        if (modeManager.isActive (Modes.MASTER))
         {
-            config.setTrackState (TrackState.SOLO);
+            this.model.getMasterTrack ().toggleSolo ();
             return;
         }
 
-        if (event == ButtonEvent.DOWN)
-        {
-            config.setIsSoloLongPressed (false);
+        // Behavior like Push 1
+        if (config.getLockState () == LockState.SOLO)
             return;
-        }
 
-        if (event == ButtonEvent.LONG)
-        {
-            config.setIsSoloLongPressed (true);
-            config.setTrackState (TrackState.SOLO);
-            return;
-        }
-
-        if (config.isSoloLongPressed ())
-        {
-            config.setIsSoloLongPressed (false);
-            return;
-        }
-
-        final Modes activeModeId = this.surface.getModeManager ().getActiveID ();
-        if (Modes.isLayerMode (activeModeId))
+        if (Modes.isLayerMode (modeManager.getActiveID ()))
         {
             final ICursorDevice cd = this.model.getCursorDevice ();
             final Optional<?> layer = cd.getLayerBank ().getSelectedItem ();
             if (layer.isPresent ())
                 ((ILayer) layer.get ()).toggleSolo ();
         }
-        else if (Modes.MASTER.equals (activeModeId))
-            this.model.getMasterTrack ().toggleSolo ();
         else
             this.model.getCursorTrack ().toggleSolo ();
     }

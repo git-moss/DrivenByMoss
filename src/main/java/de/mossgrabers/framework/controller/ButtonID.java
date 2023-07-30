@@ -47,7 +47,7 @@ public enum ButtonID
     SWING,
     /** The Metronome button. */
     METRONOME,
-    /** Toggle scrubbing. */
+    /** Toggle scrub. */
     SCRUB,
     /** Move cursor to start of arranger. */
     RETURN_TO_ZERO,
@@ -99,6 +99,8 @@ public enum ButtonID
     TRACK,
     /** The master track button. */
     MASTERTRACK,
+    /** The toggle master and cue volume button. */
+    TOGGLE_MASTER_CUE,
     /** The Volume button. */
     VOLUME,
     /** The Pan and Send button. */
@@ -119,6 +121,8 @@ public enum ButtonID
     TOGGLE_VU,
     /** The zoom state button. */
     ZOOM,
+    /** Toggle the display of clips in the display. */
+    TOGGLE_CLIP_VIEW,
 
     /** The Shift button. */
     SHIFT,
@@ -153,6 +157,10 @@ public enum ButtonID
     SOLO,
     /** The button for arming record. */
     REC_ARM,
+    /** The button for arming record on all tracks. */
+    REC_ARM_ALL,
+    /** Button to lock a mode. */
+    LOCK_MODE,
 
     /** The button to copy something. */
     COPY,
@@ -475,6 +483,9 @@ public enum ButtonID
     TEMPO_TOUCH,
     /** Play cursor button touched. */
     PLAYCURSOR_TOUCH,
+
+    /** Displays help. */
+    HELP,
 
     /** Configure pitchbend touched. */
     CONFIGURE_PITCHBEND,

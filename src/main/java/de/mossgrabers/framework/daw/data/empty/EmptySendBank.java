@@ -35,7 +35,7 @@ public class EmptySendBank extends EmptyBank<ISend> implements ISendBank
 
     /**
      * Constructor.
-     * 
+     *
      * @param pageSize The number of elements in a page of the bank
      */
     private EmptySendBank (final int pageSize)

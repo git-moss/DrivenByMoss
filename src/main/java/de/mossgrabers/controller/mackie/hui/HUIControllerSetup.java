@@ -17,11 +17,12 @@ import de.mossgrabers.controller.mackie.hui.mode.track.AbstractTrackMode;
 import de.mossgrabers.controller.mackie.hui.mode.track.PanMode;
 import de.mossgrabers.controller.mackie.hui.mode.track.SendMode;
 import de.mossgrabers.controller.mackie.hui.mode.track.VolumeMode;
+import de.mossgrabers.framework.command.continuous.JogWheelCommand;
 import de.mossgrabers.framework.command.continuous.KnobRowModeCommand;
-import de.mossgrabers.framework.command.continuous.PlayPositionCommand;
 import de.mossgrabers.framework.command.core.NopCommand;
 import de.mossgrabers.framework.command.core.TriggerCommand;
 import de.mossgrabers.framework.command.trigger.Direction;
+import de.mossgrabers.framework.command.trigger.ShiftCommand;
 import de.mossgrabers.framework.command.trigger.application.PaneCommand;
 import de.mossgrabers.framework.command.trigger.application.PanelLayoutCommand;
 import de.mossgrabers.framework.command.trigger.application.SaveCommand;
@@ -31,6 +32,7 @@ import de.mossgrabers.framework.command.trigger.mode.ButtonRowModeCommand;
 import de.mossgrabers.framework.command.trigger.mode.ModeCursorCommand;
 import de.mossgrabers.framework.command.trigger.mode.ModeSelectCommand;
 import de.mossgrabers.framework.command.trigger.track.MuteCommand;
+import de.mossgrabers.framework.command.trigger.track.RecArmAllCommand;
 import de.mossgrabers.framework.command.trigger.track.RecArmCommand;
 import de.mossgrabers.framework.command.trigger.track.SelectCommand;
 import de.mossgrabers.framework.command.trigger.track.SoloCommand;
@@ -151,6 +153,8 @@ public class HUIControllerSetup extends AbstractControllerSetup<HUIControlSurfac
         ms.setNumResults (8);
         ms.setNumDeviceLayers (0);
         ms.setNumDrumPadLayers (0);
+        // This is required to make the new clip function work!
+        ms.setNumScenes (8);
         ms.setNumMarkers (8 * this.numHUIDevices);
         this.model = this.factory.createModel (this.configuration, this.colorManager, this.valueChanger, this.scales, ms);
 
@@ -277,7 +281,7 @@ public class HUIControllerSetup extends AbstractControllerSetup<HUIControlSurfac
 
             // Key commands
             this.addButtonHUI (surface, ButtonID.CONTROL, "Control", NopCommand.INSTANCE, HUIControlSurface.HUI_KEY_CTRL_CLT);
-            this.addButtonHUI (surface, ButtonID.SHIFT, "Shift", NopCommand.INSTANCE, HUIControlSurface.HUI_KEY_SHIFT_AD);
+            this.addButtonHUI (surface, ButtonID.SHIFT, "Shift", new ShiftCommand<> (this.model, surface), HUIControlSurface.HUI_KEY_SHIFT_AD);
             // HUI_KEY_EDITMODE, not supported
             this.addButtonHUI (surface, ButtonID.UNDO, "Undo", new UndoCommand<> (this.model, surface), HUIControlSurface.HUI_KEY_UNDO);
             this.addButtonHUI (surface, ButtonID.ALT, "Alt", NopCommand.INSTANCE, HUIControlSurface.HUI_KEY_ALT_FINE);
@@ -316,7 +320,9 @@ public class HUIControllerSetup extends AbstractControllerSetup<HUIControlSurfac
             // HUI_ASSIGN2_SHIFT, not supported
             // HUI_ASSIGN2_MUTE, not supported
             // HUI_ASSIGN2_BYPASS, not supported
-            // HUI_ASSIGN2_RECRDYAL, not supported
+
+            // HUI_ASSIGN2_RECRDYAL
+            this.addButtonHUI (surface, ButtonID.REC_ARM_ALL, "RecRdyAll", new RecArmAllCommand<> (this.model, surface), HUIControlSurface.HUI_ASSIGN2_RECRDYAL);
 
             // Cursor arrows
             this.addButtonHUI (surface, ButtonID.ARROW_DOWN, "Down", new ZoomAndKeysCursorCommand (Direction.DOWN, this.model, surface), HUIControlSurface.HUI_CURSOR_DOWN);
@@ -397,12 +403,12 @@ public class HUIControllerSetup extends AbstractControllerSetup<HUIControlSurfac
             // HUI_AUTO_ENABLE_MUTE, not supported
 
             // Automation modes
-            this.addButtonHUI (surface, ButtonID.AUTOMATION_OFF, "Off", new AutomationModeCommand<> (AutomationMode.TRIM_READ, this.model, surface), HUIControlSurface.HUI_AUTO_MODE_OFF, () -> !t.isWritingArrangerAutomation () && t.getAutomationWriteMode () != AutomationMode.TRIM_READ);
-            this.addButtonHUI (surface, ButtonID.AUTOMATION_TRIM, "Trim", new AutomationModeCommand<> (AutomationMode.TRIM_READ, this.model, surface), HUIControlSurface.HUI_AUTO_MODE_TRIM, () -> t.isWritingClipLauncherAutomation () && t.getAutomationWriteMode () == AutomationMode.TRIM_READ);
-            this.addButtonHUI (surface, ButtonID.AUTOMATION_LATCH, "Latch", new AutomationModeCommand<> (AutomationMode.LATCH, this.model, surface), HUIControlSurface.HUI_AUTO_MODE_LATCH, () -> t.isWritingArrangerAutomation () && t.getAutomationWriteMode () == AutomationMode.LATCH);
-            this.addButtonHUI (surface, ButtonID.AUTOMATION_READ, "Read", new AutomationModeCommand<> (AutomationMode.READ, this.model, surface), HUIControlSurface.HUI_AUTO_MODE_READ, () -> !t.isWritingArrangerAutomation () && t.getAutomationWriteMode () == AutomationMode.READ);
-            this.addButtonHUI (surface, ButtonID.AUTOMATION_WRITE, "Write", new AutomationModeCommand<> (AutomationMode.WRITE, this.model, surface), HUIControlSurface.HUI_AUTO_MODE_WRITE, () -> t.isWritingArrangerAutomation () && t.getAutomationWriteMode () == AutomationMode.WRITE);
-            this.addButtonHUI (surface, ButtonID.AUTOMATION_TOUCH, "Touch", new AutomationModeCommand<> (AutomationMode.TOUCH, this.model, surface), HUIControlSurface.HUI_AUTO_MODE_TOUCH, () -> t.isWritingArrangerAutomation () && t.getAutomationWriteMode () == AutomationMode.TOUCH);
+            this.addButtonHUI (surface, ButtonID.AUTOMATION_OFF, "Off", new AutomationModeCommand<> (AutomationMode.TRIM_READ, this.model, surface), HUIControlSurface.HUI_AUTO_MODE_OFF, () -> false);
+            this.addButtonHUI (surface, ButtonID.AUTOMATION_TRIM, "Trim", new AutomationModeCommand<> (AutomationMode.TRIM_READ, this.model, surface), HUIControlSurface.HUI_AUTO_MODE_TRIM, () -> t.getAutomationWriteMode () == AutomationMode.TRIM_READ);
+            this.addButtonHUI (surface, ButtonID.AUTOMATION_READ, "Read", new AutomationModeCommand<> (AutomationMode.READ, this.model, surface), HUIControlSurface.HUI_AUTO_MODE_READ, () -> t.getAutomationWriteMode () == AutomationMode.READ);
+            this.addButtonHUI (surface, ButtonID.AUTOMATION_LATCH, "Latch", new AutomationModeCommand<> (AutomationMode.LATCH, this.model, surface), HUIControlSurface.HUI_AUTO_MODE_LATCH, () -> t.getAutomationWriteMode () == AutomationMode.LATCH);
+            this.addButtonHUI (surface, ButtonID.AUTOMATION_WRITE, "Write", new AutomationModeCommand<> (AutomationMode.WRITE, this.model, surface), HUIControlSurface.HUI_AUTO_MODE_WRITE, () -> t.getAutomationWriteMode () == AutomationMode.WRITE);
+            this.addButtonHUI (surface, ButtonID.AUTOMATION_TOUCH, "Touch", new AutomationModeCommand<> (AutomationMode.TOUCH, this.model, surface), HUIControlSurface.HUI_AUTO_MODE_TOUCH, () -> t.getAutomationWriteMode () == AutomationMode.TOUCH);
 
             // Status
             // HUI_STATUS_PHASE, not supported
@@ -499,8 +505,7 @@ public class HUIControllerSetup extends AbstractControllerSetup<HUIControlSurfac
             }
             fader.bind (new WorkaroundMasterFader (this.model, surface));
 
-            final IHwRelativeKnob jogKnob = surface.createRelativeKnob (ContinuousID.PLAY_POSITION, "Jog");
-            jogKnob.bind (new PlayPositionCommand<> (this.model, surface));
+            surface.createRelativeKnob (ContinuousID.PLAY_POSITION, "Jog").bind (new JogWheelCommand<> (this.model, surface));
         }
     }
 
@@ -607,12 +612,13 @@ public class HUIControllerSetup extends AbstractControllerSetup<HUIControlSurfac
             surface.getButton (ButtonID.PUNCH_IN).setBounds (776.5, 590.25, 65.0, 39.75);
             surface.getButton (ButtonID.PUNCH_OUT).setBounds (847.75, 590.25, 65.0, 39.75);
             surface.getButton (ButtonID.TAP_TEMPO).setBounds (481.25, 942.0, 65.0, 39.75);
-            surface.getButton (ButtonID.AUTOMATION_TRIM).setBounds (777.75, 272.25, 65.0, 39.75);
-            surface.getButton (ButtonID.AUTOMATION_LATCH).setBounds (921.5, 272.25, 65.0, 39.75);
-            surface.getButton (ButtonID.AUTOMATION_READ).setBounds (667.25, 272.25, 30.25, 39.75);
             surface.getButton (ButtonID.AUTOMATION_OFF).setBounds (632.5, 272.25, 30.25, 39.75);
+            surface.getButton (ButtonID.AUTOMATION_TRIM).setBounds (777.75, 272.25, 65.0, 39.75);
+            surface.getButton (ButtonID.AUTOMATION_READ).setBounds (667.25, 272.25, 30.25, 39.75);
+            surface.getButton (ButtonID.AUTOMATION_LATCH).setBounds (921.5, 272.25, 65.0, 39.75);
             surface.getButton (ButtonID.AUTOMATION_WRITE).setBounds (705.0, 272.25, 65.0, 39.75);
             surface.getButton (ButtonID.AUTOMATION_TOUCH).setBounds (849.25, 272.25, 65.0, 39.75);
+            surface.getButton (ButtonID.REC_ARM_ALL).setBounds (632.5, 225.5, 65.0, 39.75);
             surface.getButton (ButtonID.F1).setBounds (632.5, 178.25, 65.0, 39.75);
             surface.getButton (ButtonID.F2).setBounds (705.0, 178.25, 65.0, 39.75);
             surface.getButton (ButtonID.F3).setBounds (777.75, 178.25, 65.0, 39.75);

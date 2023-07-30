@@ -156,7 +156,7 @@ public class DeviceBrowserMode extends BaseMode<IItem>
             return;
         }
 
-        if (this.isPush2)
+        if (this.isPushModern)
             this.selectNext (index, 1);
         else
             this.selectPrevious (index, 1);
@@ -169,7 +169,7 @@ public class DeviceBrowserMode extends BaseMode<IItem>
     {
         if (event != ButtonEvent.DOWN)
             return;
-        if (this.isPush2)
+        if (this.isPushModern)
             this.selectPrevious (index, 1);
         else
             this.selectNext (index, 1);

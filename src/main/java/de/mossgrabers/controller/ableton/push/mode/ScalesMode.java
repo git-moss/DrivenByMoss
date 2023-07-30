@@ -65,7 +65,7 @@ public class ScalesMode extends BaseMode<IItem>
             return;
         if (index == 0)
         {
-            if (this.isPush2)
+            if (this.isPushModern)
                 this.scales.nextScale ();
             else
                 this.scales.prevScale ();
@@ -95,7 +95,7 @@ public class ScalesMode extends BaseMode<IItem>
         if (index >= 0)
         {
             if (index == 0 || index == 7)
-                return this.isPush2 ? PushColorManager.PUSH2_COLOR2_AMBER : PushColorManager.PUSH1_COLOR2_AMBER;
+                return this.isPushModern ? PushColorManager.PUSH2_COLOR2_AMBER : PushColorManager.PUSH1_COLOR2_AMBER;
             final int offset = this.scales.getScaleOffsetIndex ();
             return this.colorManager.getColorIndex (offset == index - 1 + 6 ? AbstractMode.BUTTON_COLOR2_HI : AbstractMode.BUTTON_COLOR2_ON);
         }
@@ -112,7 +112,7 @@ public class ScalesMode extends BaseMode<IItem>
             return;
         if (index == 0)
         {
-            if (this.isPush2)
+            if (this.isPushModern)
                 this.scales.prevScale ();
             else
                 this.scales.nextScale ();

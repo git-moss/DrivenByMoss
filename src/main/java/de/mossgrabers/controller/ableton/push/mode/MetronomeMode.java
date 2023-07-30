@@ -7,13 +7,18 @@ package de.mossgrabers.controller.ableton.push.mode;
 import de.mossgrabers.controller.ableton.push.controller.Push1Display;
 import de.mossgrabers.controller.ableton.push.controller.PushControlSurface;
 import de.mossgrabers.framework.controller.ButtonID;
+import de.mossgrabers.framework.controller.display.Format;
 import de.mossgrabers.framework.controller.display.IGraphicDisplay;
 import de.mossgrabers.framework.controller.display.ITextDisplay;
 import de.mossgrabers.framework.daw.IModel;
 import de.mossgrabers.framework.daw.ITransport;
 import de.mossgrabers.framework.daw.data.IItem;
+import de.mossgrabers.framework.daw.resource.ChannelType;
 import de.mossgrabers.framework.featuregroup.AbstractFeatureGroup;
 import de.mossgrabers.framework.featuregroup.AbstractMode;
+import de.mossgrabers.framework.parameterprovider.special.CombinedParameterProvider;
+import de.mossgrabers.framework.parameterprovider.special.EmptyParameterProvider;
+import de.mossgrabers.framework.parameterprovider.special.FixedParameterProvider;
 import de.mossgrabers.framework.utils.ButtonEvent;
 
 
@@ -54,6 +59,8 @@ public class MetronomeMode extends BaseMode<IItem>
         super ("Transport", surface, model);
 
         this.transport = this.model.getTransport ();
+
+        this.setParameterProvider (new CombinedParameterProvider (new EmptyParameterProvider (7), new FixedParameterProvider (this.model.getTransport ().getMetronomeVolumeParameter ())));
     }
 
 
@@ -66,7 +73,7 @@ public class MetronomeMode extends BaseMode<IItem>
 
         if (index < PREROLL_MEASURE.length)
             this.transport.setPrerollMeasures (PREROLL_MEASURE[index]);
-        else if (index == 7)
+        else if (index == 5)
             this.transport.togglePrerollMetronome ();
     }
 
@@ -81,7 +88,7 @@ public class MetronomeMode extends BaseMode<IItem>
             final int prerollMeasures = this.transport.getPrerollMeasures ();
             if (index < PREROLL_MEASURE.length)
                 return PREROLL_MEASURE[index] == prerollMeasures ? AbstractMode.BUTTON_COLOR_HI : AbstractFeatureGroup.BUTTON_COLOR_ON;
-            if (index == 7)
+            if (index == 5)
                 return this.transport.isPrerollMetronomeEnabled () ? AbstractMode.BUTTON_COLOR2_HI : AbstractFeatureGroup.BUTTON_COLOR_ON;
         }
 
@@ -99,8 +106,12 @@ public class MetronomeMode extends BaseMode<IItem>
         for (int i = 0; i < PREROLL_MEASURE.length; i++)
             display.setCell (3, i, (PREROLL_MEASURE[i] == prerollMeasures ? Push1Display.SELECT_ARROW : "") + PREROLL_NAMES[i]);
 
-        display.setBlock (2, 2, "   Play Metronome").setBlock (2, 3, "during Pre-roll?");
-        display.setCell (3, 7, this.transport.isPrerollMetronomeEnabled () ? "  Yes" : "  No");
+        display.setCell (0, 7, "Volume");
+        display.setCell (1, 7, this.transport.getMetronomeVolumeStr ());
+        display.setCell (2, 7, this.transport.getMetronomeVolume (), Format.FORMAT_VALUE);
+
+        display.setBlock (1, 2, "Play Metronome").setBlock (2, 2, "during Pre-roll?");
+        display.setCell (3, 5, this.transport.isPrerollMetronomeEnabled () ? "  Yes" : "  No");
     }
 
 
@@ -113,8 +124,9 @@ public class MetronomeMode extends BaseMode<IItem>
             display.addOptionElement ("", "", false, i == 0 ? "Pre-roll" : "", PREROLL_NAMES[i], PREROLL_MEASURE[i] == prerollMeasures, false);
 
         display.addEmptyElement ();
-        display.addOptionElement ("", "", false, "Play Metronome during Pre-Roll?", "", false, false);
+        display.addOptionElement ("Play Metronome", "", false, "during Pre-Roll?", this.transport.isPrerollMetronomeEnabled () ? "Yes" : "No", this.transport.isPrerollMetronomeEnabled (), false);
         display.addEmptyElement ();
-        display.addOptionElement ("", "", false, "", this.transport.isPrerollMetronomeEnabled () ? "Yes" : "No", this.transport.isPrerollMetronomeEnabled (), false);
+        final int metronomeVolume = this.transport.getMetronomeVolume ();
+        display.addParameterElement ("", false, "", ChannelType.AUDIO, null, false, "Volume", metronomeVolume, this.transport.getMetronomeVolumeStr (), false, metronomeVolume);
     }
 }

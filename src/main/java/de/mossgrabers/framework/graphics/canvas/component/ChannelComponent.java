@@ -169,7 +169,7 @@ public class ChannelComponent extends ChannelSelectComponent
 
         // Crossfader A|B
         final double leftColumn = left + inset - 1;
-        if (this.type != ChannelType.MASTER && this.type != ChannelType.LAYER && this.crossfadeMode != -1)
+        if (this.type != ChannelType.MASTER && this.type != ChannelType.CUE && this.type != ChannelType.LAYER && this.crossfadeMode != -1)
         {
             final ColorEx selColor = this.editType == EDIT_TYPE_CROSSFADER || this.editType == EDIT_TYPE_ALL ? editColor : ColorEx.ORANGE;
             final double crossOptWidth = controlWidth / 3.0;
@@ -259,19 +259,22 @@ public class ChannelComponent extends ChannelSelectComponent
 
         double buttonTop = faderTop;
 
-        if (this.type != ChannelType.LAYER)
+        if (this.type != ChannelType.CUE)
         {
-            // Record Arm
-            this.drawButton (gc, leftColumn, buttonTop, controlWidth, buttonHeight - 1, backgroundColor, this.modifyIfOff (configuration.getColorRecord ()), textColor, this.isArm, "channel/record_arm.svg", configuration);
+            if (this.type != ChannelType.LAYER)
+            {
+                // Record Arm
+                this.drawButton (gc, leftColumn, buttonTop, controlWidth, buttonHeight - 1, backgroundColor, this.modifyIfOff (configuration.getColorRecord ()), textColor, this.isArm, "channel/record_arm.svg", configuration);
+            }
+
+            // Solo
+            buttonTop += buttonHeight + 2 * separatorSize;
+            this.drawButton (gc, leftColumn, buttonTop, controlWidth, buttonHeight - 1, backgroundColor, this.modifyIfOff (configuration.getColorSolo ()), textColor, this.isSolo, "channel/solo.svg", configuration);
+
+            // Mute
+            buttonTop += buttonHeight + 2 * separatorSize;
+            this.drawButton (gc, leftColumn, buttonTop, controlWidth, buttonHeight - 1, backgroundColor, this.modifyIfOff (configuration.getColorMute ()), textColor, this.isMute, "channel/mute.svg", configuration);
         }
-
-        // Solo
-        buttonTop += buttonHeight + 2 * separatorSize;
-        this.drawButton (gc, leftColumn, buttonTop, controlWidth, buttonHeight - 1, backgroundColor, this.modifyIfOff (configuration.getColorSolo ()), textColor, this.isSolo, "channel/solo.svg", configuration);
-
-        // Mute
-        buttonTop += buttonHeight + 2 * separatorSize;
-        this.drawButton (gc, leftColumn, buttonTop, controlWidth, buttonHeight - 1, backgroundColor, this.modifyIfOff (configuration.getColorMute ()), textColor, this.isMute, "channel/mute.svg", configuration);
 
         // Draw panorama text on top if set
         if (isPanTouched)

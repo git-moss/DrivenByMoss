@@ -31,10 +31,14 @@ public class PushUsbDisplay
 
     private static final byte []           DISPLAY_HEADER   =
     {
-        (byte) 0xef,
-        (byte) 0xcd,
-        (byte) 0xab,
-        (byte) 0x89,
+        // (byte) 0xef,
+        // (byte) 0xcd,
+        // (byte) 0xab,
+        // (byte) 0x89,
+        (byte) 0xFF,
+        (byte) 0xCC,
+        (byte) 0xAA,
+        (byte) 0x88,
         0,
         0,
         0,
@@ -127,6 +131,8 @@ public class PushUsbDisplay
                     }
                 }
 
+                this.signalShaping ();
+
                 imageBuffer.rewind ();
             });
         }
@@ -135,6 +141,27 @@ public class PushUsbDisplay
         {
             if (!this.sendExecutor.isShutdown ())
                 this.sendExecutor.submit (this::sendData);
+        }
+    }
+
+
+    /**
+     * Before sending a line buffer, it must be XORED with the 32 bit signal shaping pattern
+     * 0xFFE7F3E7 (i.e. the pixel data bits at positions which are 1 in the pattern must be
+     * inverted).
+     *
+     * @see <a href=
+     *      "https://github.com/Ableton/push-interface/blob/master/doc/AbletonPush2MIDIDisplayInterface.asc#324-xoring-pixel-data">XORing
+     *      Pixel Data</a>
+     */
+    private void signalShaping ()
+    {
+        for (int pos = 0; pos < this.byteStore.length; pos += 4)
+        {
+            this.byteStore[pos] ^= 0xE7;
+            this.byteStore[pos + 1] ^= 0xF3;
+            this.byteStore[pos + 2] ^= 0xE7;
+            this.byteStore[pos + 3] ^= 0xFF;
         }
     }
 

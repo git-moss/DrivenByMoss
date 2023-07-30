@@ -8,6 +8,7 @@ import de.mossgrabers.controller.ableton.push.PushConfiguration;
 import de.mossgrabers.controller.ableton.push.controller.PushControlSurface;
 import de.mossgrabers.controller.ableton.push.mode.device.DeviceBrowserMode;
 import de.mossgrabers.framework.command.TempoCommand;
+import de.mossgrabers.framework.daw.GrooveParameterID;
 import de.mossgrabers.framework.daw.IModel;
 import de.mossgrabers.framework.featuregroup.ModeManager;
 import de.mossgrabers.framework.mode.Modes;
@@ -21,6 +22,9 @@ import de.mossgrabers.framework.utils.ButtonEvent;
  */
 public class RasteredKnobCommand extends TempoCommand<PushControlSurface, PushConfiguration>
 {
+    private boolean isTempoMode = true;
+
+
     /**
      * Constructor.
      *
@@ -37,6 +41,8 @@ public class RasteredKnobCommand extends TempoCommand<PushControlSurface, PushCo
     @Override
     public void execute (final int value)
     {
+        // Executed from knob turn
+
         final ModeManager modeManager = this.surface.getModeManager ();
         if (modeManager.isActive (Modes.BROWSER))
         {
@@ -51,8 +57,16 @@ public class RasteredKnobCommand extends TempoCommand<PushControlSurface, PushCo
             return;
         }
 
-        super.execute (value);
-        this.mvHelper.notifyTempo ();
+        if (this.isTempoMode)
+        {
+            super.execute (value);
+            this.mvHelper.notifyTempo ();
+        }
+        else
+        {
+            this.model.getGroove ().getParameter (GrooveParameterID.SHUFFLE_AMOUNT).changeValue (value);
+            this.mvHelper.notifyShuffle ();
+        }
     }
 
 
@@ -60,6 +74,8 @@ public class RasteredKnobCommand extends TempoCommand<PushControlSurface, PushCo
     @Override
     public void execute (final ButtonEvent event, final int velocity)
     {
+        // Executed from knob touch
+
         final boolean activate = event != ButtonEvent.UP;
 
         if (this.surface.isSelectPressed ())
@@ -69,8 +85,37 @@ public class RasteredKnobCommand extends TempoCommand<PushControlSurface, PushCo
             return;
         }
 
-        this.transport.setTempoIndication (activate);
-        if (activate)
+        if (this.isTempoMode)
+        {
+            this.transport.setTempoIndication (activate);
+            if (activate)
+                this.mvHelper.notifyTempo ();
+        }
+        else
+        {
+            if (activate)
+                this.mvHelper.notifyShuffle ();
+        }
+    }
+
+
+    /**
+     * Display the mode and value.
+     */
+    public void notifyMode ()
+    {
+        if (this.isTempoMode)
             this.mvHelper.notifyTempo ();
+        else
+            this.mvHelper.notifyShuffle ();
+    }
+
+
+    /**
+     * Toggle mode between tempo and swing change.
+     */
+    public void toggleMode ()
+    {
+        this.isTempoMode = !this.isTempoMode;
     }
 }

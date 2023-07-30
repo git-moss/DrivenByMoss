@@ -100,13 +100,13 @@ public class UserMode extends BaseMode<IParameter>
     @Override
     public int getButtonColor (final ButtonID buttonID)
     {
-        final int offColor = this.isPush2 ? PushColorManager.PUSH2_COLOR_BLACK : PushColorManager.PUSH1_COLOR_BLACK;
+        final int offColor = this.isPushModern ? PushColorManager.PUSH2_COLOR_BLACK : PushColorManager.PUSH1_COLOR_BLACK;
 
         int index = this.isButtonRow (0, buttonID);
         if (index >= 0)
         {
-            final int selectedColor = this.isPush2 ? PushColorManager.PUSH2_COLOR_ORANGE_HI : PushColorManager.PUSH1_COLOR_ORANGE_HI;
-            final int existsColor = this.isPush2 ? PushColorManager.PUSH2_COLOR_YELLOW_LO : PushColorManager.PUSH1_COLOR_YELLOW_LO;
+            final int selectedColor = this.isPushModern ? PushColorManager.PUSH2_COLOR_ORANGE_HI : PushColorManager.PUSH1_COLOR_ORANGE_HI;
+            final int existsColor = this.isPushModern ? PushColorManager.PUSH2_COLOR_YELLOW_LO : PushColorManager.PUSH1_COLOR_YELLOW_LO;
 
             final IParameterPageBank parameterPageBank = ((IParameterBank) this.bank).getPageBank ();
             if (parameterPageBank.getItem (index).isBlank ())
@@ -122,8 +122,8 @@ public class UserMode extends BaseMode<IParameter>
             if (index > 1)
                 return offColor;
 
-            final int selectedColor = this.isPush2 ? PushColorManager.PUSH2_COLOR2_WHITE : PushColorManager.PUSH1_COLOR2_WHITE;
-            final int existsColor = this.isPush2 ? PushColorManager.PUSH2_COLOR2_GREY_LO : PushColorManager.PUSH1_COLOR2_GREY_LO;
+            final int selectedColor = this.isPushModern ? PushColorManager.PUSH2_COLOR2_WHITE : PushColorManager.PUSH1_COLOR2_WHITE;
+            final int existsColor = this.isPushModern ? PushColorManager.PUSH2_COLOR2_GREY_LO : PushColorManager.PUSH1_COLOR2_GREY_LO;
             return index == 0 && this.isProjectMode || index == 1 && !this.isProjectMode ? selectedColor : existsColor;
         }
 

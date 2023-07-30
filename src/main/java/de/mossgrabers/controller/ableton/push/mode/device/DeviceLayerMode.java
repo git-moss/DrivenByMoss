@@ -5,6 +5,7 @@
 package de.mossgrabers.controller.ableton.push.mode.device;
 
 import de.mossgrabers.controller.ableton.push.PushConfiguration;
+import de.mossgrabers.controller.ableton.push.PushConfiguration.LockState;
 import de.mossgrabers.controller.ableton.push.controller.Push1Display;
 import de.mossgrabers.controller.ableton.push.controller.PushColorManager;
 import de.mossgrabers.controller.ableton.push.controller.PushControlSurface;
@@ -108,7 +109,7 @@ public class DeviceLayerMode extends BaseMode<ILayer>
                     channel.resetPan ();
                     break;
                 default:
-                    if (!this.isPush2 || index >= 4)
+                    if (!this.isPushModern || index >= 4)
                         sendBank.getItem (this.getSendIndex (index)).resetValue ();
                     break;
             }
@@ -124,7 +125,7 @@ public class DeviceLayerMode extends BaseMode<ILayer>
                 channel.touchPan (isTouched);
                 break;
             default:
-                if (!this.isPush2 || index >= 4)
+                if (!this.isPushModern || index >= 4)
                     sendBank.getItem (this.getSendIndex (index)).touchValue (isTouched);
                 break;
         }
@@ -139,7 +140,7 @@ public class DeviceLayerMode extends BaseMode<ILayer>
 
     private int getSendIndex (final int index)
     {
-        return this.isPush2 ? index - 4 : index - 2;
+        return this.isPushModern ? index - 4 : index - 2;
     }
 
 
@@ -209,14 +210,15 @@ public class DeviceLayerMode extends BaseMode<ILayer>
     {
         if (event != ButtonEvent.DOWN)
             return;
-        if (!this.isPush2 || this.configuration.isMuteLongPressed () || this.configuration.isSoloLongPressed () || this.configuration.isMuteSoloLocked ())
+
+        if (this.configuration.isMuteState (this.surface.isLongPressed (ButtonID.MUTE)))
         {
-            final int offset = this.getDrumPadIndex ();
-            final ILayer layer = this.bank.getItem (offset + index);
-            if (this.configuration.isMuteState ())
-                layer.toggleMute ();
-            else
-                layer.toggleSolo ();
+            this.bank.getItem (this.getDrumPadIndex () + index).toggleMute ();
+            return;
+        }
+        if (this.configuration.isSoloState (this.surface.isLongPressed (ButtonID.SOLO)))
+        {
+            this.bank.getItem (this.getDrumPadIndex () + index).toggleSolo ();
             return;
         }
 
@@ -473,9 +475,9 @@ public class DeviceLayerMode extends BaseMode<ILayer>
 
     protected void updateMenuItems (final int selectedMenu)
     {
-        if (this.configuration.isMuteLongPressed () || this.configuration.isMuteSoloLocked () && this.configuration.isMuteState ())
+        if (this.configuration.isMuteState (this.surface.isLongPressed (ButtonID.MUTE)))
             this.updateMuteMenu ();
-        else if (this.configuration.isSoloLongPressed () || this.configuration.isMuteSoloLocked () && this.configuration.isSoloState ())
+        else if (this.configuration.isSoloState (this.surface.isLongPressed (ButtonID.SOLO)))
             this.updateSoloMenu ();
         else
             this.updateLayerMenu (selectedMenu);
@@ -541,8 +543,8 @@ public class DeviceLayerMode extends BaseMode<ILayer>
             if (dl.doesExist () && dl.isActivated ())
             {
                 if (dl.isSelected ())
-                    return this.isPush2 ? PushColorManager.PUSH2_COLOR_ORANGE_HI : PushColorManager.PUSH1_COLOR_ORANGE_HI;
-                return this.isPush2 ? PushColorManager.PUSH2_COLOR_YELLOW_LO : PushColorManager.PUSH1_COLOR_YELLOW_LO;
+                    return this.isPushModern ? PushColorManager.PUSH2_COLOR_ORANGE_HI : PushColorManager.PUSH1_COLOR_ORANGE_HI;
+                return this.isPushModern ? PushColorManager.PUSH2_COLOR_YELLOW_LO : PushColorManager.PUSH1_COLOR_YELLOW_LO;
             }
             return super.getButtonColor (buttonID);
         }
@@ -550,15 +552,15 @@ public class DeviceLayerMode extends BaseMode<ILayer>
         index = this.isButtonRow (1, buttonID);
         if (index >= 0)
         {
-            final boolean muteState = this.configuration.isMuteState ();
             final IChannel layer = this.bank.getItem (offset + index);
-            if (this.isPush2)
+            if (this.isPushModern)
             {
-                if (this.configuration.isMuteLongPressed () || this.configuration.isSoloLongPressed () || this.configuration.isMuteSoloLocked ())
+                final boolean isMuteState = this.configuration.isMuteState (this.surface.isLongPressed (ButtonID.MUTE));
+                if (isMuteState || this.configuration.isSoloState (this.surface.isLongPressed (ButtonID.SOLO)))
                 {
                     if (layer.doesExist ())
                     {
-                        if (muteState)
+                        if (isMuteState)
                         {
                             if (layer.isMute ())
                                 return PushColorManager.PUSH2_COLOR2_AMBER_LO;
@@ -588,7 +590,7 @@ public class DeviceLayerMode extends BaseMode<ILayer>
 
             if (layer.doesExist ())
             {
-                if (muteState)
+                if (this.configuration.getLockState () == LockState.MUTE)
                     return layer.isMute () ? PushColorManager.PUSH1_COLOR_BLACK : PushColorManager.PUSH1_COLOR2_YELLOW_HI;
                 return layer.isSolo () ? PushColorManager.PUSH1_COLOR2_BLUE_HI : PushColorManager.PUSH1_COLOR2_GREY_LO;
             }

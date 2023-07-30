@@ -743,7 +743,7 @@ public class GenericFlexiConfiguration extends AbstractConfiguration
 
     /**
      * Get the name to use for the MIDI keyboard input.
-     * 
+     *
      * @return The name
      */
     public String getKeyboardInputName ()

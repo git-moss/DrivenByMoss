@@ -251,4 +251,17 @@ public abstract class AbstractTrackBankImpl extends AbstractChannelBankImpl<Trac
     {
         return this.getItem (0).getSendBank ().getItem (sendIndex).getName ();
     }
+
+
+    /** {@inheritDoc} */
+    @Override
+    public void toggleRecArm ()
+    {
+        if (this.items.isEmpty ())
+            return;
+
+        final boolean state = !this.items.get (0).isRecArm ();
+        for (final ITrack track: this.items)
+            track.setRecArm (state);
+    }
 }

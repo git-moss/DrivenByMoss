@@ -170,7 +170,12 @@ public abstract class BaseMode<B extends IItem> extends AbstractParameterMode<MC
         final ITrackBank tb = this.getTrackBank ();
         final ITrack track = tb.getItem (this.getExtenderOffset () + index);
         if (row == 1)
-            track.toggleRecArm ();
+        {
+            if (this.surface.isShiftPressed ())
+                tb.toggleRecArm ();
+            else
+                track.toggleRecArm ();
+        }
         else if (row == 2)
         {
             if (this.surface.isShiftPressed ())

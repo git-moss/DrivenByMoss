@@ -5,12 +5,14 @@
 package de.mossgrabers.controller.ableton.push.command.trigger;
 
 import de.mossgrabers.controller.ableton.push.PushConfiguration;
-import de.mossgrabers.controller.ableton.push.PushConfiguration.TrackState;
+import de.mossgrabers.controller.ableton.push.PushConfiguration.LockState;
 import de.mossgrabers.controller.ableton.push.controller.PushControlSurface;
 import de.mossgrabers.framework.command.core.AbstractTriggerCommand;
+import de.mossgrabers.framework.controller.ButtonID;
 import de.mossgrabers.framework.daw.IModel;
 import de.mossgrabers.framework.daw.data.ICursorDevice;
 import de.mossgrabers.framework.daw.data.ILayer;
+import de.mossgrabers.framework.featuregroup.ModeManager;
 import de.mossgrabers.framework.mode.Modes;
 import de.mossgrabers.framework.utils.ButtonEvent;
 
@@ -53,62 +55,39 @@ public class MuteCommand extends AbstractTriggerCommand<PushControlSurface, Push
         final PushConfiguration config = this.surface.getConfiguration ();
         if (!config.isPushModern ())
         {
-            config.setTrackState (TrackState.MUTE);
+            if (event == ButtonEvent.DOWN)
+                config.setLockState (LockState.MUTE);
             return;
         }
+
+        if (event != ButtonEvent.UP)
+            return;
 
         // Toggle mute lock mode
-        if (this.surface.isShiftPressed ())
+        if (this.surface.isShiftPressed () || this.surface.isPressed (ButtonID.LOCK_MODE))
         {
-            if (event == ButtonEvent.UP)
-            {
-                if (config.isMuteSoloLocked () && config.isMuteState ())
-                    config.setMuteSoloLocked (false);
-                else
-                {
-                    config.setMuteSoloLocked (true);
-                    config.setTrackState (TrackState.MUTE);
-                }
-            }
+            config.setLockState (config.getLockState () == LockState.MUTE ? LockState.OFF : LockState.MUTE);
             return;
         }
 
-        // Behaviour like Push 1
-        if (config.isMuteSoloLocked ())
+        final ModeManager modeManager = this.surface.getModeManager ();
+        if (modeManager.isActive (Modes.MASTER))
         {
-            config.setTrackState (TrackState.MUTE);
+            this.model.getMasterTrack ().toggleMute ();
             return;
         }
 
-        if (event == ButtonEvent.DOWN)
-        {
-            config.setIsMuteLongPressed (false);
+        // Behavior like Push 1
+        if (config.getLockState () == LockState.MUTE)
             return;
-        }
 
-        if (event == ButtonEvent.LONG)
-        {
-            config.setIsMuteLongPressed (true);
-            config.setTrackState (TrackState.MUTE);
-            return;
-        }
-
-        if (config.isMuteLongPressed ())
-        {
-            config.setIsMuteLongPressed (false);
-            return;
-        }
-
-        final Modes activeModeId = this.surface.getModeManager ().getActiveID ();
-        if (Modes.isLayerMode (activeModeId))
+        if (Modes.isLayerMode (modeManager.getActiveID ()))
         {
             final ICursorDevice cd = this.model.getCursorDevice ();
             final Optional<?> layer = cd.getLayerBank ().getSelectedItem ();
             if (layer.isPresent ())
                 ((ILayer) layer.get ()).toggleMute ();
         }
-        else if (Modes.MASTER.equals (activeModeId))
-            this.model.getMasterTrack ().toggleMute ();
         else
             this.model.getCursorTrack ().toggleMute ();
     }

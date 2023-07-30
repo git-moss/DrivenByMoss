@@ -579,7 +579,7 @@ public class TrackModule extends AbstractModule
 
     private void parseParamValue (final LinkedList<String> path, final Object value) throws UnknownCommandException, MissingCommandException, IllegalParameterException
     {
-        final IParameterBank parameterBank = this.model.getProject ().getParameterBank ();
+        final IParameterBank parameterBank = this.model.getCursorTrack ().getParameterBank ();
         final String subCommand = getSubCommand (path);
         try
         {
@@ -609,7 +609,7 @@ public class TrackModule extends AbstractModule
 
     private void parsePageValue (final LinkedList<String> path, final Object value) throws UnknownCommandException, MissingCommandException, IllegalParameterException
     {
-        final IParameterBank parameterBank = this.model.getProject ().getParameterBank ();
+        final IParameterBank parameterBank = this.model.getCursorTrack ().getParameterBank ();
         final IParameterPageBank parameterPageBank = parameterBank.getPageBank ();
         final String subCommand = getSubCommand (path);
         if ("select".equals (subCommand) || "selected".equals (subCommand))

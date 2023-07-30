@@ -202,7 +202,7 @@ public class RibbonMode extends BaseMode<IItem>
             if (index == 0)
                 return AbstractFeatureGroup.BUTTON_COLOR_OFF;
             if (index < 5)
-                return this.isPush2 ? AbstractFeatureGroup.BUTTON_COLOR_ON : AbstractMode.BUTTON_COLOR2_ON;
+                return this.isPushModern ? AbstractFeatureGroup.BUTTON_COLOR_ON : AbstractMode.BUTTON_COLOR2_ON;
             return this.configuration.getRibbonNoteRepeat () == index - 5 ? AbstractMode.BUTTON_COLOR_HI : AbstractFeatureGroup.BUTTON_COLOR_ON;
         }
 

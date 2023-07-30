@@ -147,13 +147,19 @@ public class ProjectRemotesHandler extends AbstractHandler
                 break;
 
             case PROJECT_SELECT_PREVIOUS_PAGE:
-                projectParameterBank.scrollBackwards ();
-                this.mvHelper.notifySelectedProjectParameterPage ();
+                if (this.isButtonPressed (knobMode, value))
+                {
+                    projectParameterBank.scrollBackwards ();
+                    this.mvHelper.notifySelectedProjectParameterPage ();
+                }
                 break;
 
             case PROJECT_SELECT_NEXT_PAGE:
-                projectParameterBank.scrollForwards ();
-                this.mvHelper.notifySelectedProjectParameterPage ();
+                if (this.isButtonPressed (knobMode, value))
+                {
+                    projectParameterBank.scrollForwards ();
+                    this.mvHelper.notifySelectedProjectParameterPage ();
+                }
                 break;
 
             case PROJECT_SELECT_PARAMETER_PAGE_1, PROJECT_SELECT_PARAMETER_PAGE_2, PROJECT_SELECT_PARAMETER_PAGE_3, PROJECT_SELECT_PARAMETER_PAGE_4, PROJECT_SELECT_PARAMETER_PAGE_5, PROJECT_SELECT_PARAMETER_PAGE_6, PROJECT_SELECT_PARAMETER_PAGE_7, PROJECT_SELECT_PARAMETER_PAGE_8:
