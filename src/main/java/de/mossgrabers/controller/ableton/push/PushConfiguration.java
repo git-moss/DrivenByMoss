@@ -457,7 +457,10 @@ public class PushConfiguration extends AbstractConfiguration implements IGraphic
             this.activatePush2PadSettings (globalSettings);
 
         if (this.pushVersion == PushVersion.VERSION_3)
+        {
             this.activatePush3MPESettings (globalSettings);
+            this.convertAftertouch = AbstractConfiguration.AFTERTOUCH_CONVERT_OFF;
+        }
         else
             this.activateConvertAftertouchSetting (globalSettings);
 

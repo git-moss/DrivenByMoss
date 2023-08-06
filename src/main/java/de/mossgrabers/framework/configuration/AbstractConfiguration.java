@@ -419,8 +419,8 @@ public abstract class AbstractConfiguration implements Configuration
     private TransportBehavior                         behaviorOnPause                     = TransportBehavior.PAUSE;
     protected boolean                                 flipSession                         = false;
     protected boolean                                 selectClipOnLaunch                  = true;
-    private boolean                                   drawRecordStripe                    = true;
-    private int                                       convertAftertouch                   = 0;
+    protected boolean                                 drawRecordStripe                    = true;
+    protected int                                     convertAftertouch                   = 0;
     /** Accent button active. */
     private boolean                                   accentActive                        = false;
     /** Fixed velocity value for accent. */

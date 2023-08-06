@@ -183,10 +183,38 @@ public class PushControllerSetup extends AbstractControllerSetup<PushControlSurf
         "8?????",
         // Note on - all channels
         "9?????",
-        // Polyphonic Aftertouch (MPE) - all channels
-        "A?????",
-        // Pitchbend (MPE) - all channels
-        "E?????",
+        // Channel Aftertouch (MPE) - channel 1-15
+        "D1????",
+        "D2????",
+        "D3????",
+        "D4????",
+        "D5????",
+        "D6????",
+        "D7????",
+        "D8????",
+        "D9????",
+        "DA????",
+        "DB????",
+        "DC????",
+        "DD????",
+        "DE????",
+        "DF????",
+        // Pitchbend (MPE) - channel 1-15
+        "E1????",
+        "E2????",
+        "E3????",
+        "E4????",
+        "E5????",
+        "E6????",
+        "E7????",
+        "E8????",
+        "E9????",
+        "EA????",
+        "EB????",
+        "EC????",
+        "ED????",
+        "EE????",
+        "EF????",
         // Brightness (MPE) - channel 1-15
         "B14A??",
         "B24A??",
@@ -474,8 +502,6 @@ public class PushControllerSetup extends AbstractControllerSetup<PushControlSurf
                     return;
                 final boolean mpeEnabled = this.configuration.isMPEEnabled ();
                 input.enableMPE (mpeEnabled);
-
-                surface.sendPressureMode (true);
                 surface.enableMPE (mpeEnabled);
 
             }, 2000));
