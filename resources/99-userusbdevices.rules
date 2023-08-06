@@ -1,4 +1,5 @@
 SUBSYSTEM=="usb",ATTR{idVendor}=="2982",ATTR{idProduct}=="1967",MODE="0660",GROUP="audio"
+SUBSYSTEM=="usb",ATTR{idVendor}=="2982",ATTR{idProduct}=="1969",MODE="0660",GROUP="audio"
 SUBSYSTEMS=="usb",ATTRS{idVendor}=="17cc",ATTRS{idProduct}=="1340",MODE="0660",GROUP="audio"
 SUBSYSTEMS=="usb",ATTRS{idVendor}=="17cc",ATTRS{idProduct}=="1350",MODE="0660",GROUP="audio"
 SUBSYSTEMS=="usb",ATTRS{idVendor}=="17cc",ATTRS{idProduct}=="1360",MODE="0660",GROUP="audio"
