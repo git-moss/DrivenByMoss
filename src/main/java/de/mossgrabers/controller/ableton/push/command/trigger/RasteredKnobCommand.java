@@ -85,6 +85,9 @@ public class RasteredKnobCommand extends TempoCommand<PushControlSurface, PushCo
             return;
         }
 
+        if (this.surface.getModeManager ().isActive (Modes.BROWSER))
+            return;
+
         if (this.isTempoMode)
         {
             this.transport.setTempoIndication (activate);
@@ -104,6 +107,9 @@ public class RasteredKnobCommand extends TempoCommand<PushControlSurface, PushCo
      */
     public void notifyMode ()
     {
+        if (this.surface.getModeManager ().isActive (Modes.BROWSER))
+            return;
+
         if (this.isTempoMode)
             this.mvHelper.notifyTempo ();
         else

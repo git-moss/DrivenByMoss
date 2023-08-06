@@ -8,6 +8,7 @@ import de.mossgrabers.controller.ableton.push.PushConfiguration;
 import de.mossgrabers.controller.ableton.push.controller.PushColorManager;
 import de.mossgrabers.controller.ableton.push.controller.PushControlSurface;
 import de.mossgrabers.controller.ableton.push.mode.BaseMode;
+import de.mossgrabers.framework.command.trigger.BrowserCommand;
 import de.mossgrabers.framework.controller.ButtonID;
 import de.mossgrabers.framework.controller.color.ColorEx;
 import de.mossgrabers.framework.controller.display.IGraphicDisplay;
@@ -20,8 +21,9 @@ import de.mossgrabers.framework.featuregroup.AbstractFeatureGroup;
 import de.mossgrabers.framework.utils.ButtonEvent;
 import de.mossgrabers.framework.utils.StringUtils;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.Optional;
 
 
@@ -32,7 +34,37 @@ import java.util.Optional;
  */
 public class AddTrackMode extends BaseMode<IItem>
 {
-    private static final String STR_EMPTY = "Empty";
+    private static final AddMode []                                     TOP_MENU             =
+    {
+        AddMode.INSTRUMENT,
+        AddMode.AUDIO,
+        AddMode.EFFECT,
+        null,
+        AddMode.DEVICE,
+        null,
+        null,
+        null
+    };
+
+    private static final String []                                      SUB_MENU             =
+    {
+        "Add Track",
+        "",
+        "",
+        "",
+        "Add Device",
+        "",
+        "",
+        ""
+    };
+
+    private final Map<ColorEx, Integer>                                 buttonColorsHiFirst  = new HashMap<> ();
+    private final Map<ColorEx, Integer>                                 buttonColorsLoFirst  = new HashMap<> ();
+    private final Map<ColorEx, Integer>                                 buttonColorsHiSecond = new HashMap<> ();
+    private final Map<ColorEx, Integer>                                 buttonColorsLoSecond = new HashMap<> ();
+
+    private AddMode                                                     addMode              = AddMode.INSTRUMENT;
+    private final BrowserCommand<PushControlSurface, PushConfiguration> browserCommand;
 
 
     /**
@@ -44,6 +76,32 @@ public class AddTrackMode extends BaseMode<IItem>
     public AddTrackMode (final PushControlSurface surface, final IModel model)
     {
         super ("Add Track", surface, model);
+
+        this.browserCommand = new BrowserCommand<> (model, surface);
+
+        this.buttonColorsHiFirst.put (ColorEx.YELLOW, Integer.valueOf (this.isPushModern ? PushColorManager.PUSH2_COLOR2_YELLOW_HI : PushColorManager.PUSH1_COLOR_YELLOW_MD));
+        this.buttonColorsHiFirst.put (ColorEx.GREEN, Integer.valueOf (this.isPushModern ? PushColorManager.PUSH2_COLOR2_GREEN_HI : PushColorManager.PUSH1_COLOR_GREEN_HI));
+        this.buttonColorsHiFirst.put (ColorEx.BLUE, Integer.valueOf (this.isPushModern ? PushColorManager.PUSH2_COLOR2_BLUE_HI : PushColorManager.PUSH1_COLOR_RED_HI));
+        this.buttonColorsHiFirst.put (ColorEx.ORANGE, Integer.valueOf (this.isPushModern ? PushColorManager.PUSH2_COLOR2_AMBER_HI : PushColorManager.PUSH1_COLOR_ORANGE_HI));
+        this.buttonColorsHiFirst.put (ColorEx.DARK_ORANGE, Integer.valueOf (this.isPushModern ? PushColorManager.PUSH2_COLOR2_AMBER_HI : PushColorManager.PUSH1_COLOR_ORANGE_HI));
+
+        this.buttonColorsLoFirst.put (ColorEx.YELLOW, Integer.valueOf (this.isPushModern ? PushColorManager.PUSH2_COLOR2_YELLOW_LO : PushColorManager.PUSH1_COLOR_YELLOW_LO));
+        this.buttonColorsLoFirst.put (ColorEx.GREEN, Integer.valueOf (this.isPushModern ? PushColorManager.PUSH2_COLOR2_GREEN_LO : PushColorManager.PUSH1_COLOR_GREEN_LO));
+        this.buttonColorsLoFirst.put (ColorEx.BLUE, Integer.valueOf (this.isPushModern ? PushColorManager.PUSH2_COLOR2_BLUE_LO : PushColorManager.PUSH1_COLOR_RED_LO));
+        this.buttonColorsLoFirst.put (ColorEx.ORANGE, Integer.valueOf (this.isPushModern ? PushColorManager.PUSH2_COLOR2_AMBER_LO : PushColorManager.PUSH1_COLOR_ORANGE_LO));
+        this.buttonColorsLoFirst.put (ColorEx.DARK_ORANGE, Integer.valueOf (this.isPushModern ? PushColorManager.PUSH2_COLOR2_AMBER_LO : PushColorManager.PUSH1_COLOR_ORANGE_LO));
+
+        this.buttonColorsHiSecond.put (ColorEx.YELLOW, Integer.valueOf (this.isPushModern ? PushColorManager.PUSH2_COLOR2_YELLOW_HI : PushColorManager.PUSH1_COLOR2_YELLOW_HI));
+        this.buttonColorsHiSecond.put (ColorEx.GREEN, Integer.valueOf (this.isPushModern ? PushColorManager.PUSH2_COLOR2_GREEN_HI : PushColorManager.PUSH1_COLOR2_GREEN_HI));
+        this.buttonColorsHiSecond.put (ColorEx.BLUE, Integer.valueOf (this.isPushModern ? PushColorManager.PUSH2_COLOR2_BLUE_HI : PushColorManager.PUSH1_COLOR2_RED_HI));
+        this.buttonColorsHiSecond.put (ColorEx.ORANGE, Integer.valueOf (this.isPushModern ? PushColorManager.PUSH2_COLOR2_AMBER_HI : PushColorManager.PUSH1_COLOR2_AMBER_HI));
+        this.buttonColorsHiSecond.put (ColorEx.DARK_ORANGE, Integer.valueOf (this.isPushModern ? PushColorManager.PUSH2_COLOR2_AMBER_HI : PushColorManager.PUSH1_COLOR2_AMBER_HI));
+
+        this.buttonColorsLoSecond.put (ColorEx.YELLOW, Integer.valueOf (this.isPushModern ? PushColorManager.PUSH2_COLOR2_YELLOW_LO : PushColorManager.PUSH1_COLOR2_YELLOW_LO));
+        this.buttonColorsLoSecond.put (ColorEx.GREEN, Integer.valueOf (this.isPushModern ? PushColorManager.PUSH2_COLOR2_GREEN_LO : PushColorManager.PUSH1_COLOR2_GREEN_LO));
+        this.buttonColorsLoSecond.put (ColorEx.BLUE, Integer.valueOf (this.isPushModern ? PushColorManager.PUSH2_COLOR2_BLUE_LO : PushColorManager.PUSH1_COLOR2_RED_LO));
+        this.buttonColorsLoSecond.put (ColorEx.ORANGE, Integer.valueOf (this.isPushModern ? PushColorManager.PUSH2_COLOR2_AMBER_LO : PushColorManager.PUSH1_COLOR2_AMBER_LO));
+        this.buttonColorsLoSecond.put (ColorEx.DARK_ORANGE, Integer.valueOf (this.isPushModern ? PushColorManager.PUSH2_COLOR2_AMBER_LO : PushColorManager.PUSH1_COLOR2_AMBER_LO));
     }
 
 
@@ -54,43 +112,56 @@ public class AddTrackMode extends BaseMode<IItem>
         if (event != ButtonEvent.UP)
             return;
 
-        final PushConfiguration conf = this.surface.getConfiguration ();
-        final List<IDeviceMetadata> devices = new ArrayList<> ();
-        final ChannelType channelType;
-        String channelName = null;
+        this.surface.getModeManager ().restore ();
 
-        if (index < 4)
+        final ChannelType channelType = this.addMode.getChannelType ();
+        final Optional<IDeviceMetadata> favorite;
+        if (index == 0)
         {
-            channelType = ChannelType.AUDIO;
-            if (index > 0)
+            if (this.addMode == AddMode.DEVICE)
             {
-                final Optional<IDeviceMetadata> audioFavorite = conf.getAudioFavorite (index - 1);
-                if (audioFavorite.isPresent ())
-                {
-                    final IDeviceMetadata deviceMetadata = audioFavorite.get ();
-                    devices.add (deviceMetadata);
-                    channelName = deviceMetadata.name ();
-                }
+                this.browserCommand.startBrowser (true, false);
+                return;
             }
+            favorite = Optional.empty ();
         }
         else
         {
-            channelType = ChannelType.EFFECT;
-            if (index > 4)
+            final PushConfiguration conf = this.surface.getConfiguration ();
+            switch (this.addMode)
             {
-                final Optional<IDeviceMetadata> effectFavorite = conf.getEffectFavorite (index - 5);
-                if (effectFavorite.isPresent ())
-                {
-                    final IDeviceMetadata deviceMetadata = effectFavorite.get ();
-                    devices.add (deviceMetadata);
-                    channelName = deviceMetadata.name ();
-                }
+                case INSTRUMENT:
+                    favorite = conf.getInstrumentFavorite (index - 1);
+                    break;
+                case AUDIO:
+                    favorite = conf.getAudioFavorite (index - 1);
+                    break;
+                case EFFECT:
+                    favorite = conf.getEffectFavorite (index - 1);
+                    break;
+                case DEVICE:
+                    favorite = conf.getDeviceFavorite (index - 1);
+                    break;
+                default:
+                    return;
             }
         }
 
-        this.model.getTrackBank ().addChannel (channelType, channelName, devices);
+        String channelName = null;
+        IDeviceMetadata deviceMetadata = null;
+        if (favorite.isPresent ())
+        {
+            deviceMetadata = favorite.get ();
+            channelName = deviceMetadata.name ();
+        }
 
-        this.surface.getModeManager ().restore ();
+        if (channelType == ChannelType.UNKNOWN)
+        {
+            if (deviceMetadata != null)
+                this.model.getCursorTrack ().addDevice (deviceMetadata);
+        }
+        else
+            this.model.getTrackBank ().addChannel (channelType, channelName, deviceMetadata == null ? Collections.emptyList () : Collections.singletonList (deviceMetadata));
     }
 
 
@@ -98,25 +169,8 @@ public class AddTrackMode extends BaseMode<IItem>
     @Override
     public void onSecondRow (final int index, final ButtonEvent event)
     {
-        if (event != ButtonEvent.UP)
-            return;
-
-        String channelName = null;
-        final List<IDeviceMetadata> devices = new ArrayList<> ();
-        if (index > 0)
-        {
-            final PushConfiguration conf = this.surface.getConfiguration ();
-            final Optional<IDeviceMetadata> instrumentFavorite = conf.getInstrumentFavorite (index - 1);
-            if (instrumentFavorite.isPresent ())
-            {
-                final IDeviceMetadata deviceMetadata = instrumentFavorite.get ();
-                devices.add (deviceMetadata);
-                channelName = deviceMetadata.name ();
-            }
-        }
-
-        this.model.getTrackBank ().addChannel (ChannelType.INSTRUMENT, channelName, devices);
-        this.surface.getModeManager ().restore ();
+        if (event == ButtonEvent.UP && TOP_MENU[index] != null)
+            this.addMode = TOP_MENU[index];
     }
 
 
@@ -127,21 +181,17 @@ public class AddTrackMode extends BaseMode<IItem>
         int index = this.isButtonRow (0, buttonID);
         if (index >= 0)
         {
-            if (index == 0)
-                return this.isPushModern ? PushColorManager.PUSH2_COLOR2_GREEN_HI : PushColorManager.PUSH1_COLOR_GREEN_HI;
-            if (index < 4)
-                return this.isPushModern ? PushColorManager.PUSH2_COLOR2_GREEN_LO : PushColorManager.PUSH1_COLOR_GREEN_LO;
-            if (index == 4)
-                return this.isPushModern ? PushColorManager.PUSH2_COLOR2_BLUE_HI : PushColorManager.PUSH1_COLOR_RED_HI;
-            return this.isPushModern ? PushColorManager.PUSH2_COLOR2_BLUE_LO : PushColorManager.PUSH1_COLOR_RED_LO;
+            final ColorEx color = this.addMode.getColor ();
+            return index == 0 ? this.buttonColorsHiFirst.get (color).intValue () : this.buttonColorsLoFirst.get (color).intValue ();
         }
 
         index = this.isButtonRow (1, buttonID);
         if (index >= 0)
         {
-            if (index == 0)
-                return this.isPushModern ? PushColorManager.PUSH2_COLOR2_YELLOW_HI : PushColorManager.PUSH1_COLOR2_YELLOW_HI;
-            return this.isPushModern ? PushColorManager.PUSH2_COLOR2_YELLOW_LO : PushColorManager.PUSH1_COLOR2_YELLOW_LO;
+            if (TOP_MENU[index] == null)
+                return this.colorManager.getColorIndex (AbstractFeatureGroup.BUTTON_COLOR_OFF);
+            final ColorEx color = TOP_MENU[index].getColor ();
+            return TOP_MENU[index] == this.addMode ? this.buttonColorsHiSecond.get (color).intValue () : this.buttonColorsLoSecond.get (color).intValue ();
         }
 
         return this.colorManager.getColorIndex (AbstractFeatureGroup.BUTTON_COLOR_OFF);
@@ -152,26 +202,22 @@ public class AddTrackMode extends BaseMode<IItem>
     @Override
     public void updateDisplay1 (final ITextDisplay display)
     {
-        final PushConfiguration conf = this.surface.getConfiguration ();
+        display.setBlock (1, 0, SUB_MENU[0]);
+        display.setBlock (1, 2, SUB_MENU[4]);
 
-        display.setCell (0, 0, STR_EMPTY);
-        for (int i = 0; i < 7; i++)
+        for (int i = 0; i < 8; i++)
         {
-            final Optional<IDeviceMetadata> instrumentFavorite = conf.getInstrumentFavorite (i);
-            display.setCell (0, i + 1, instrumentFavorite.isPresent () ? StringUtils.shortenAndFixASCII (instrumentFavorite.get ().name (), 8) : "");
-        }
-
-        display.setBlock (1, 0, "INSTRUMENT");
-        display.setBlock (2, 0, "AUDIO").setBlock (2, 2, "EFFECT");
-
-        display.setCell (3, 0, STR_EMPTY);
-        display.setCell (3, 4, STR_EMPTY);
-        for (int i = 0; i < 3; i++)
-        {
-            final Optional<IDeviceMetadata> audioFavorite = conf.getAudioFavorite (i);
-            final Optional<IDeviceMetadata> effectFavorite = conf.getEffectFavorite (i);
-            display.setCell (3, 1 + i, audioFavorite.isPresent () ? StringUtils.shortenAndFixASCII (audioFavorite.get ().name (), 8) : "");
-            display.setCell (3, 5 + i, effectFavorite.isPresent () ? StringUtils.shortenAndFixASCII (effectFavorite.get ().name (), 8) : "");
+            final String lowerMenu;
+            if (i == 0)
+                lowerMenu = this.addMode == AddMode.DEVICE ? "Browse" : "Empty";
+            else
+            {
+                final Optional<IDeviceMetadata> favorite = this.getFavorite (i - 1);
+                lowerMenu = favorite.isEmpty () ? "" : StringUtils.limit (favorite.get ().name (), 13);
+            }
+            display.setCell (0, i, TOP_MENU[i] == null ? "" : TOP_MENU[i].getLabel ());
+            display.setCell (2, i, i == 0 ? this.addMode.getLabel () : "");
+            display.setCell (3, i, lowerMenu);
         }
     }
 
@@ -180,31 +226,50 @@ public class AddTrackMode extends BaseMode<IItem>
     @Override
     public void updateDisplay2 (final IGraphicDisplay display)
     {
+        for (int i = 0; i < 8; i++)
+        {
+            final String lowerMenu;
+            String lowerLabel = "";
+            ColorEx lowerMenuColor = null;
+            if (i == 0)
+            {
+                lowerMenu = this.addMode == AddMode.DEVICE ? "Browse" : "Empty";
+                lowerLabel = this.addMode.getLabel ();
+                lowerMenuColor = this.addMode.getColor ();
+            }
+            else
+            {
+                final Optional<IDeviceMetadata> favorite = this.getFavorite (i - 1);
+                lowerMenu = favorite.isEmpty () ? "" : StringUtils.limit (favorite.get ().name (), 13);
+            }
+            final String topLabel = TOP_MENU[i] == null ? "" : TOP_MENU[i].getLabel ();
+            final ColorEx topColor = TOP_MENU[i] == null ? null : TOP_MENU[i].getColor ();
+            display.addOptionElement (SUB_MENU[i], topLabel, false, topColor, lowerLabel, lowerMenu, false, lowerMenuColor, false, false);
+        }
+    }
+
+
+    /**
+     * Get the selected favorite depending on the current add mode.
+     *
+     * @param index The index of the favorite
+     * @return The metadata of the favorite, if one is configured
+     */
+    private Optional<IDeviceMetadata> getFavorite (final int index)
+    {
         final PushConfiguration conf = this.surface.getConfiguration ();
-
-        display.addOptionElement ("Instrument", STR_EMPTY, false, ColorEx.YELLOW, "Audio", STR_EMPTY, false, ColorEx.GREEN, false, false);
-
-        Optional<IDeviceMetadata> instrFav = conf.getInstrumentFavorite (0);
-        Optional<IDeviceMetadata> audioFav = conf.getAudioFavorite (0);
-        display.addOptionElement ("", instrFav.isEmpty () ? "" : instrFav.get ().name (), false, "", audioFav.isEmpty () ? "" : audioFav.get ().name (), false, false);
-        instrFav = conf.getInstrumentFavorite (1);
-        audioFav = conf.getAudioFavorite (1);
-        display.addOptionElement ("", instrFav.isEmpty () ? "" : instrFav.get ().name (), false, "", audioFav.isEmpty () ? "" : audioFav.get ().name (), false, false);
-        instrFav = conf.getInstrumentFavorite (2);
-        audioFav = conf.getAudioFavorite (2);
-        display.addOptionElement ("", instrFav.isEmpty () ? "" : instrFav.get ().name (), false, "", audioFav.isEmpty () ? "" : audioFav.get ().name (), false, false);
-
-        instrFav = conf.getInstrumentFavorite (3);
-        display.addOptionElement ("", instrFav.isEmpty () ? "" : instrFav.get ().name (), false, null, "Effect", STR_EMPTY, false, ColorEx.BLUE, false, false);
-
-        instrFav = conf.getInstrumentFavorite (4);
-        Optional<IDeviceMetadata> effectFavorite = conf.getEffectFavorite (0);
-        display.addOptionElement ("", instrFav.isEmpty () ? "" : instrFav.get ().name (), false, "", effectFavorite.isEmpty () ? "" : effectFavorite.get ().name (), false, false);
-        instrFav = conf.getInstrumentFavorite (5);
-        effectFavorite = conf.getEffectFavorite (1);
-        display.addOptionElement ("", instrFav.isEmpty () ? "" : instrFav.get ().name (), false, "", effectFavorite.isEmpty () ? "" : effectFavorite.get ().name (), false, false);
-        instrFav = conf.getInstrumentFavorite (6);
-        effectFavorite = conf.getEffectFavorite (2);
-        display.addOptionElement ("", instrFav.isEmpty () ? "" : instrFav.get ().name (), false, "", effectFavorite.isEmpty () ? "" : effectFavorite.get ().name (), false, false);
+        switch (this.addMode)
+        {
+            case INSTRUMENT:
+                return conf.getInstrumentFavorite (index);
+            case AUDIO:
+                return conf.getAudioFavorite (index);
+            case EFFECT:
+                return conf.getEffectFavorite (index);
+            case DEVICE:
+                return conf.getDeviceFavorite (index);
+            default:
+                return Optional.empty ();
+        }
     }
 }

@@ -64,6 +64,23 @@ public class PushColorManager extends ColorManager
     /** ID for the color to use for note repeat length selected. */
     public static final String       NOTE_REPEAT_LENGTH_HI                  = "NOTE_REPEAT_LENGTH_HI";
 
+    /** ID for color when button signals a lock state. */
+    public static final String       PUSH_BUTTON_STATE_MASTER_ON            = "PUSH_BUTTON_STATE_MASTER_ON";
+    /** ID for color when button signals an activated lock state. */
+    public static final String       PUSH_BUTTON_STATE_MASTER_HI            = "PUSH_BUTTON_STATE_MASTER_HI";
+
+    ///////////////////////////////////////////////////////////////////////////////////////
+    // Only Push 3
+
+    /** ID for color when button signals a lock state. */
+    public static final String       PUSH_BUTTON_STATE_LOCK_ON              = "PUSH_BUTTON_STATE_LOCK_ON";
+    /** ID for color when button signals an activated lock state. */
+    public static final String       PUSH_BUTTON_STATE_LOCK_HI              = "PUSH_BUTTON_STATE_LOCK_HI";
+    /** ID for color when button signals a insert scene state. */
+    public static final String       PUSH_BUTTON_STATE_INSERT_SCENE_ON      = "PUSH_BUTTON_STATE_INSERT_SCENE_ON";
+    /** ID for color when button signals an activated insert scene state. */
+    public static final String       PUSH_BUTTON_STATE_INSERT_SCENE_HI      = "PUSH_BUTTON_STATE_INSERT_SCENE_HI";
+
     // @formatter:off
     /** The default color palette (like fixed on Push 1) */
     protected static final int [] [] DEFAULT_PALETTE                        =
@@ -469,6 +486,7 @@ public class PushColorManager extends ColorManager
         this.pushVersion = pushVersion;
 
         final boolean isModern = this.pushVersion != PushVersion.VERSION_1;
+        final boolean isPush3 = this.pushVersion == PushVersion.VERSION_3;
 
         this.registerColorIndex (PUSH_BLACK, isModern ? PUSH2_COLOR_BLACK : PUSH1_COLOR_BLACK);
         this.registerColorIndex (PUSH_RED, isModern ? PUSH2_COLOR_RED_HI : PUSH1_COLOR_RED_HI);
@@ -574,7 +592,7 @@ public class PushColorManager extends ColorManager
         this.registerColorIndex (DAWColor.DAW_COLOR_LIGHT_BLUE, isModern ? 96 : 41);
 
         this.registerColorIndex (ColorManager.BUTTON_STATE_OFF, 0);
-        this.registerColorIndex (ColorManager.BUTTON_STATE_ON, isModern ? 8 : 1);
+        this.registerColorIndex (ColorManager.BUTTON_STATE_ON, isModern ? 30 : 1);
         this.registerColorIndex (ColorManager.BUTTON_STATE_HI, isModern ? 127 : 4);
         this.registerColorIndex (PUSH_BUTTON_STATE_REC_ON, isModern ? PUSH2_COLOR2_GREY_LO : 1);
         this.registerColorIndex (PUSH_BUTTON_STATE_REC_HI, isModern ? PUSH2_COLOR2_RED_HI : 4);
@@ -588,6 +606,15 @@ public class PushColorManager extends ColorManager
         this.registerColorIndex (PUSH_BUTTON_STATE_SOLO_HI, isModern ? PUSH2_COLOR2_YELLOW : 4);
         this.registerColorIndex (PUSH_BUTTON_STATE_STOP_ON, isModern ? PUSH2_COLOR2_RED_LO : 1);
         this.registerColorIndex (PUSH_BUTTON_STATE_STOP_HI, isModern ? PUSH2_COLOR2_RED_HI : 4);
+
+        this.registerColorIndex (PUSH_BUTTON_STATE_MASTER_ON, isPush3 ? PUSH2_COLOR2_GREY_LO : 30);
+        this.registerColorIndex (PUSH_BUTTON_STATE_MASTER_HI, isPush3 ? PUSH2_COLOR2_WHITE : 127);
+
+        // Only Push 3
+        this.registerColorIndex (PUSH_BUTTON_STATE_LOCK_ON, PUSH2_COLOR2_GREY_LO);
+        this.registerColorIndex (PUSH_BUTTON_STATE_LOCK_HI, PUSH2_COLOR2_RED_LO);
+        this.registerColorIndex (PUSH_BUTTON_STATE_INSERT_SCENE_ON, PUSH2_COLOR2_GREY_LO);
+        this.registerColorIndex (PUSH_BUTTON_STATE_INSERT_SCENE_HI, PUSH2_COLOR2_WHITE);
 
         for (int i = 0; i < 128; i++)
             this.registerColor (i, getPaletteColor (i));

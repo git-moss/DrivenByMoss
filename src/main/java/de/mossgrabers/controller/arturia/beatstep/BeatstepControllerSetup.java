@@ -103,7 +103,9 @@ public class BeatstepControllerSetup extends AbstractControllerSetup<BeatstepCon
     {
         final ModelSetup ms = new ModelSetup ();
         this.model = this.factory.createModel (this.configuration, this.colorManager, this.valueChanger, this.scales, ms);
-        this.model.getTrackBank ().addSelectionObserver ( (index, value) -> this.handleTrackChange (value));
+        final ITrackBank trackBank = this.model.getTrackBank ();
+        trackBank.addSelectionObserver ( (index, value) -> this.handleTrackChange (value));
+        trackBank.setIndication (true);
     }
 
 
@@ -298,7 +300,6 @@ public class BeatstepControllerSetup extends AbstractControllerSetup<BeatstepCon
         final ViewManager viewManager = surface.getViewManager ();
         final boolean isTrack = viewManager.isActive (Views.TRACK);
         final boolean isDevice = viewManager.isActive (Views.DEVICE);
-        final boolean isSession = viewManager.isActive (Views.SESSION);
 
         final IMasterTrack mt = this.model.getMasterTrack ();
         mt.setVolumeIndication (!isDevice);
@@ -308,10 +309,6 @@ public class BeatstepControllerSetup extends AbstractControllerSetup<BeatstepCon
         final ITrackBank tbe = this.model.getEffectTrackBank ();
         final ICursorDevice cursorDevice = this.model.getCursorDevice ();
         final boolean isEffect = this.model.isEffectTrackBankActive ();
-
-        tb.setIndication (!isEffect && isSession);
-        if (tbe != null)
-            tbe.setIndication (isEffect && isSession);
 
         final IParameterBank parameterBank = cursorDevice.getParameterBank ();
         for (int i = 0; i < 8; i++)

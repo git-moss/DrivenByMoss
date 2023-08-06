@@ -41,6 +41,7 @@ import com.bitwig.extension.controller.api.DeviceMatcher;
 import com.bitwig.extension.controller.api.MasterTrack;
 import com.bitwig.extension.controller.api.PinnableCursorDevice;
 import com.bitwig.extension.controller.api.Project;
+import com.bitwig.extension.controller.api.SceneBank;
 import com.bitwig.extension.controller.api.Track;
 import com.bitwig.extension.controller.api.TrackBank;
 
@@ -65,6 +66,7 @@ public class ModelImpl extends AbstractModel
     private final BooleanValue             masterTrackEqualsValue;
     private final Map<Integer, ISceneBank> sceneBanks              = new HashMap<> (1);
     private final Map<Integer, ISlotBank>  slotBanks               = new HashMap<> (1);
+    private final SceneBank                sceneBank;
 
 
     /**
@@ -107,13 +109,8 @@ public class ModelImpl extends AbstractModel
         //////////////////////////////////////////////////////////////////////////////
         // Create track banks
 
-        this.bwCursorTrack = controllerHost.createCursorTrack ("MyCursorTrackID", "The Cursor Track", numSends, numScenes, true);
-        this.cursorTrack = new CursorTrackImpl (this, this.host, this.valueChanger, this.bwCursorTrack, this.rootTrackGroup, (ApplicationImpl) this.application, numSends, numScenes, numParamPages, numParams);
-
-        final MasterTrack master = controllerHost.createMasterTrack (0);
-        this.masterTrack = new MasterTrackImpl (this.host, this.valueChanger, master, this.bwCursorTrack, this.rootTrackGroup, (ApplicationImpl) this.application);
-
         final TrackBank tb;
+        this.bwCursorTrack = controllerHost.createCursorTrack ("MyCursorTrackID", "The Cursor Track", numSends, numScenes, true);
         final int numTracks = this.modelSetup.getNumTracks ();
         if (this.modelSetup.hasFlatTrackList ())
         {
@@ -125,6 +122,13 @@ public class ModelImpl extends AbstractModel
         }
         else
             tb = this.bwCursorTrack.createSiblingsTrackBank (numTracks, numSends, numScenes, false, false);
+
+        this.sceneBank = tb.sceneBank ();
+
+        this.cursorTrack = new CursorTrackImpl (this, this.host, this.valueChanger, this.bwCursorTrack, this.rootTrackGroup, this.sceneBank, (ApplicationImpl) this.application, numSends, numScenes, numParamPages, numParams);
+
+        final MasterTrack master = controllerHost.createMasterTrack (0);
+        this.masterTrack = new MasterTrackImpl (this.host, this.valueChanger, master, this.bwCursorTrack, this.rootTrackGroup, (ApplicationImpl) this.application, this.sceneBank);
 
         this.trackBank = new TrackBankImpl (this.host, (ApplicationImpl) this.application, this.valueChanger, tb, (CursorTrackImpl) this.cursorTrack, this.rootTrackGroup, numTracks, numScenes, numSends);
 
@@ -258,8 +262,8 @@ public class ModelImpl extends AbstractModel
         return this.slotBanks.computeIfAbsent (Integer.valueOf (numSlots), key -> {
 
             final CursorTrack ct = this.controllerHost.createCursorTrack ("CursorTrackID" + numSlots, "Cursor Track for " + numSlots + "Slots", 0, numSlots, true);
-            final ICursorTrack cursorTrack = new CursorTrackImpl (this, this.host, this.valueChanger, ct, this.rootTrackGroup, (ApplicationImpl) this.application, 0, numSlots, 0, 0);
-            return new SlotBankImpl (this.host, this.valueChanger, cursorTrack, ct.clipLauncherSlotBank (), numSlots);
+            final ICursorTrack cursorTrack = new CursorTrackImpl (this, this.host, this.valueChanger, ct, this.rootTrackGroup, this.sceneBank, (ApplicationImpl) this.application, 0, numSlots, 0, 0);
+            return new SlotBankImpl (this.host, this.valueChanger, cursorTrack, this.sceneBank, ct.clipLauncherSlotBank (), numSlots);
 
         });
     }

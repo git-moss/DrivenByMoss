@@ -307,11 +307,19 @@ public interface ITransport extends IObserverManagement
 
 
     /**
-     * Sets the transport playback position to the given beat time value.
+     * Set the transport playback position to the given beat time value.
      *
      * @param beats The new playback position in beats
      */
     void setPosition (double beats);
+
+
+    /**
+     * Get the transport playback position.
+     *
+     * @return The playback position in beats
+     */
+    double getPosition ();
 
 
     /**
@@ -350,6 +358,22 @@ public interface ITransport extends IObserverManagement
      * Set the play position to the start of the arranger loop, if a loop is set.
      */
     void selectLoopStart ();
+
+
+    /**
+     * Get the loop start position.
+     *
+     * @return The loop start position in beats
+     */
+    double getLoopStart ();
+
+
+    /**
+     * Get the loop end position.
+     *
+     * @return The loop end position in beats
+     */
+    double getLoopEnd ();
 
 
     /**

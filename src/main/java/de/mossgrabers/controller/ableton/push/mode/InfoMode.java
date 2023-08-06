@@ -43,6 +43,8 @@ public class InfoMode extends BaseMode<IItem>
             return;
         if (index == 0)
             this.surface.getModeManager ().setTemporary (Modes.SETUP);
+        else if (index == 1)
+            this.surface.getModeManager ().setTemporary (Modes.CONFIGURATION);
     }
 
 
@@ -53,9 +55,9 @@ public class InfoMode extends BaseMode<IItem>
         final int index = this.isButtonRow (1, buttonID);
         if (index >= 0)
         {
-            if (index == 0)
+            if (index < 2)
                 return AbstractFeatureGroup.BUTTON_COLOR_ON;
-            if (index == 1)
+            if (index == 2)
                 return AbstractMode.BUTTON_COLOR_HI;
         }
         return AbstractFeatureGroup.BUTTON_COLOR_OFF;
@@ -75,8 +77,8 @@ public class InfoMode extends BaseMode<IItem>
     public void updateDisplay2 (final IGraphicDisplay display)
     {
         display.addOptionElement ("  Firmware: " + this.surface.getMajorVersion () + "." + this.surface.getMinorVersion () + " Build " + this.surface.getBuildNumber (), "Setup", false, "", "", false, true);
+        display.addOptionElement ("", "MPE", false, "", "", false, true);
         display.addOptionElement ("", "Info", true, "", "", false, true);
-        display.addEmptyElement (true);
         display.addOptionElement ("Board Revision: " + this.surface.getBoardRevision (), " ", false, "", "", false, true);
         display.addEmptyElement (true);
         display.addOptionElement ("        Serial Number: " + this.surface.getSerialNumber (), " ", false, "", "", false, true);

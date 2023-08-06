@@ -19,6 +19,9 @@ import java.util.List;
  */
 public abstract class AbstractBrowser implements IBrowser
 {
+    protected static final String               INSERT_DEVICE_BEFORE = "Insert device before: ";
+    protected static final String               INSERT_DEVICE_AFTER  = "Insert device after: ";
+
     protected final int                         numResults;
     protected final int                         numFilterColumnEntries;
     protected IBrowserColumnItem []             resultData;

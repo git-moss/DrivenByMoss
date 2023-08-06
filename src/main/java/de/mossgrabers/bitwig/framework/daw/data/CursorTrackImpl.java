@@ -16,6 +16,7 @@ import de.mossgrabers.framework.daw.data.bank.ITrackBank;
 
 import com.bitwig.extension.controller.api.CursorRemoteControlsPage;
 import com.bitwig.extension.controller.api.CursorTrack;
+import com.bitwig.extension.controller.api.SceneBank;
 import com.bitwig.extension.controller.api.SettableBooleanValue;
 import com.bitwig.extension.controller.api.Track;
 import com.bitwig.extension.controller.api.TrackBank;
@@ -44,15 +45,16 @@ public class CursorTrackImpl extends TrackImpl implements ICursorTrack
      * @param valueChanger The valueChanger
      * @param application The application
      * @param cursorTrack The cursor track
+     * @param sceneBank The scene bank to work around clip launcher grid movement
      * @param rootGroup The root track
      * @param numSends The number of sends of a bank
      * @param numScenes The number of scenes of a bank
      * @param numParamPages The number of project parameter pages
      * @param numParams The number of project parameters
      */
-    public CursorTrackImpl (final ModelImpl model, final IHost host, final IValueChanger valueChanger, final CursorTrack cursorTrack, final Track rootGroup, final ApplicationImpl application, final int numSends, final int numScenes, final int numParamPages, final int numParams)
+    public CursorTrackImpl (final ModelImpl model, final IHost host, final IValueChanger valueChanger, final CursorTrack cursorTrack, final Track rootGroup, final SceneBank sceneBank, final ApplicationImpl application, final int numSends, final int numScenes, final int numParamPages, final int numParams)
     {
-        super (host, valueChanger, application, cursorTrack, rootGroup, cursorTrack, -1, numSends, numScenes);
+        super (host, valueChanger, application, cursorTrack, sceneBank, rootGroup, cursorTrack, -1, numSends, numScenes);
 
         this.model = model;
 

@@ -49,8 +49,7 @@ public class Push3ControllerDefinition extends DefaultControllerDefinition
         switch (os)
         {
             case WINDOWS:
-                // TODO update MIDI port name
-                midiDiscoveryPairs.addAll (this.createDeviceDiscoveryPairs ("Ableton Push 3"));
+                midiDiscoveryPairs.addAll (this.createDeviceDiscoveryPairs ("Ableton Push 3 MIDI"));
                 break;
 
             case MAC:

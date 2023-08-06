@@ -4,10 +4,15 @@
 
 package de.mossgrabers.controller.ableton.push.mode;
 
+import de.mossgrabers.controller.ableton.push.PushConfiguration;
+import de.mossgrabers.controller.ableton.push.command.continuous.IPush3Encoder;
 import de.mossgrabers.controller.ableton.push.controller.Push1Display;
 import de.mossgrabers.controller.ableton.push.controller.PushColorManager;
 import de.mossgrabers.controller.ableton.push.controller.PushControlSurface;
 import de.mossgrabers.controller.ableton.push.mode.track.AbstractTrackMode;
+import de.mossgrabers.framework.ClipLauncherNavigator;
+import de.mossgrabers.framework.command.trigger.clip.StartClipCommand;
+import de.mossgrabers.framework.command.trigger.clip.StartSceneCommand;
 import de.mossgrabers.framework.controller.ButtonID;
 import de.mossgrabers.framework.controller.color.ColorEx;
 import de.mossgrabers.framework.controller.display.IGraphicDisplay;
@@ -27,6 +32,7 @@ import de.mossgrabers.framework.view.Views;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 
 /**
@@ -34,7 +40,7 @@ import java.util.List;
  *
  * @author Jürgen Moßgraber
  */
-public class SessionMode extends AbstractTrackMode
+public class SessionMode extends AbstractTrackMode implements IPush3Encoder
 {
     private enum RowDisplayMode
     {
@@ -44,21 +50,28 @@ public class SessionMode extends AbstractTrackMode
     }
 
 
-    private RowDisplayMode   rowDisplayMode;
-    private final ISceneBank sceneBank;
+    private RowDisplayMode                                                 rowDisplayMode;
+    private final ISceneBank                                               sceneBank;
+    private final ClipLauncherNavigator                                    clipLauncherNavigator;
+    private final StartClipCommand<PushControlSurface, PushConfiguration>  startClipCommand;
+    private final StartSceneCommand<PushControlSurface, PushConfiguration> startSceneCommand;
 
 
     /**
      * Constructor.
-     *
+     * 
+     * @param clipLauncherNavigator Access to helper functions to navigate the clip launcher
      * @param surface The control surface
      * @param model The model
      */
-    public SessionMode (final PushControlSurface surface, final IModel model)
+    public SessionMode (final ClipLauncherNavigator clipLauncherNavigator, final PushControlSurface surface, final IModel model)
     {
         super ("Session", surface, model);
 
+        this.clipLauncherNavigator = clipLauncherNavigator;
         this.sceneBank = model.getSceneBank (64);
+        this.startClipCommand = new StartClipCommand<> (model, surface);
+        this.startSceneCommand = new StartSceneCommand<> (model, surface);
 
         this.rowDisplayMode = this.isPushModern ? RowDisplayMode.ALL : RowDisplayMode.UPPER;
     }
@@ -157,6 +170,79 @@ public class SessionMode extends AbstractTrackMode
             this.updateDisplay2Clips (display);
         else
             this.updateDisplay2Scenes (display);
+    }
+
+
+    /** {@inheritDoc} */
+    @Override
+    public void encoderTurn (final int value)
+    {
+        final boolean isLeft = !this.model.getValueChanger ().isIncrease (value);
+
+        if (!this.surface.getViewManager ().isActive (Views.SESSION))
+        {
+            this.clipLauncherNavigator.navigateScenes (isLeft);
+            return;
+        }
+
+        if (this.surface.getConfiguration ().isFlipSession ())
+            this.clipLauncherNavigator.navigateTracks (isLeft);
+        else
+            this.clipLauncherNavigator.navigateClips (isLeft);
+    }
+
+
+    /** {@inheritDoc} */
+    @Override
+    public void encoderPress (final ButtonEvent event)
+    {
+        if (event != ButtonEvent.DOWN)
+            return;
+
+        if (this.surface.getViewManager ().isActive (Views.SESSION))
+            this.startClipCommand.execute (event, 0);
+        else
+            this.startSceneCommand.execute (event, 0);
+    }
+
+
+    /** {@inheritDoc} */
+    @Override
+    public void encoderLeft (final ButtonEvent event)
+    {
+        if (event != ButtonEvent.DOWN)
+            return;
+
+        if (!this.surface.getViewManager ().isActive (Views.SESSION))
+        {
+            this.clipLauncherNavigator.navigateScenes (true);
+            return;
+        }
+
+        if (this.surface.getConfiguration ().isFlipSession ())
+            this.clipLauncherNavigator.navigateClips (true);
+        else
+            this.clipLauncherNavigator.navigateTracks (true);
+    }
+
+
+    /** {@inheritDoc} */
+    @Override
+    public void encoderRight (final ButtonEvent event)
+    {
+        if (event != ButtonEvent.DOWN)
+            return;
+
+        if (!this.surface.getViewManager ().isActive (Views.SESSION))
+        {
+            this.clipLauncherNavigator.navigateScenes (false);
+            return;
+        }
+
+        if (this.surface.getConfiguration ().isFlipSession ())
+            this.clipLauncherNavigator.navigateClips (false);
+        else
+            this.clipLauncherNavigator.navigateTracks (false);
     }
 
 
@@ -307,5 +393,17 @@ public class SessionMode extends AbstractTrackMode
             }
             display.addSlotListElement (slots);
         }
+    }
+
+
+    /** {@inheritDoc} */
+    @Override
+    public void arrowCenter (ButtonEvent event)
+    {
+        // Same as default
+
+        final Optional<IScene> selectedScene = this.model.getSceneBank ().getSelectedItem ();
+        if (selectedScene.isPresent ())
+            selectedScene.get ().launch (event == ButtonEvent.DOWN, true);
     }
 }

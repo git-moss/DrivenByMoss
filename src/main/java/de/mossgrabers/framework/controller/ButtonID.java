@@ -88,10 +88,14 @@ public enum ButtonID
     ARROW_LEFT,
     /** The button for cursor arrow right. */
     ARROW_RIGHT,
+    /** The button in the center of 4 arrows. */
+    ARROW_CENTER,
     /** The Page left button. */
     PAGE_LEFT,
     /** The Page right button. */
     PAGE_RIGHT,
+    /** An encoder which can be pressed as a button. */
+    ENCODER_PUSH,
 
     /** The Device button. */
     DEVICE,

@@ -71,7 +71,8 @@ public class BrowserImpl extends AbstractBrowser
 
         this.filterColumns = new BrowserFilterColumn []
         {
-            this.browser.smartCollectionColumn (),
+            // TODO Remove this for the time being until the browser API gets adapted to Bitwig 5
+            // this.browser.smartCollectionColumn (),
             this.browser.locationColumn (),
             this.browser.fileTypeColumn (),
             this.browser.categoryColumn (),
@@ -147,7 +148,9 @@ public class BrowserImpl extends AbstractBrowser
     @Override
     public String getSelectedContentType ()
     {
-        return this.browser.selectedContentTypeName ().get ();
+        return "Result";
+        // TODO Currently not working in Bitwig 5, requires adaption to the new browser
+        // return this.browser.selectedContentTypeName ().get ();
     }
 
 
@@ -218,7 +221,7 @@ public class BrowserImpl extends AbstractBrowser
     @Override
     public void insertBeforeCursorDevice ()
     {
-        this.infoText = "Insert device before: " + this.cursorDevice.name ().get ();
+        this.infoText = INSERT_DEVICE_BEFORE + this.cursorDevice.name ().get ();
 
         this.browse (this.cursorDevice.exists ().get () ? this.cursorDevice.beforeDeviceInsertionPoint () : this.cursorTrack.startOfDeviceChainInsertionPoint ());
     }
@@ -228,9 +231,20 @@ public class BrowserImpl extends AbstractBrowser
     @Override
     public void insertAfterCursorDevice ()
     {
-        this.infoText = "Insert device after: " + this.cursorDevice.name ().get ();
+        this.infoText = INSERT_DEVICE_AFTER + this.cursorDevice.name ().get ();
 
         this.browse (this.cursorDevice.exists ().get () ? this.cursorDevice.afterDeviceInsertionPoint () : this.cursorTrack.endOfDeviceChainInsertionPoint ());
+    }
+
+
+    /** {@inheritDoc} */
+    @Override
+    public void toggleInsertionPoint ()
+    {
+        if (this.infoText.startsWith (INSERT_DEVICE_BEFORE))
+            this.insertAfterCursorDevice ();
+        else
+            this.insertBeforeCursorDevice ();
     }
 
 

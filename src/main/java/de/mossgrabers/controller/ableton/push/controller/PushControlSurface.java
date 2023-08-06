@@ -414,7 +414,36 @@ public class PushControlSurface extends AbstractControlSurface<PushConfiguration
         -90
     };
 
-    private static final int []      SYSEX_HEADER                         =
+    private static final int []      TUNE_WIDTH_VALUES                    =
+    {
+        0x00,                                                                                                                                                                                                                                                                                                                                         // 0mm
+        0x04,                                                                                                                                                                                                                                                                                                                                         // 1mm
+        0x08,                                                                                                                                                                                                                                                                                                                                         // 2mm
+        0x0C,                                                                                                                                                                                                                                                                                                                                         // 2.5mm
+        0x10,                                                                                                                                                                                                                                                                                                                                         // 3mm
+        0x14,                                                                                                                                                                                                                                                                                                                                         // 4mm
+        0x18,                                                                                                                                                                                                                                                                                                                                         // 5mm
+        0x1C,                                                                                                                                                                                                                                                                                                                                         // 6mm
+        0x20,                                                                                                                                                                                                                                                                                                                                         // 7mm
+        0x30,                                                                                                                                                                                                                                                                                                                                         // 10mm
+        0x40,                                                                                                                                                                                                                                                                                                                                         // 13mm
+        0x60                                                                                                                                                                                                                                                                                                                                          // 20mm
+    };
+
+    private static final int []      SLIDE_HEIGHT_VALUES                  =
+    {
+        0x13,                                                                                                                                                                                                                                                                                                                                         // 16mm
+        0x19,                                                                                                                                                                                                                                                                                                                                         // 15mm
+        0x20,                                                                                                                                                                                                                                                                                                                                         // 14mm
+        0x27,                                                                                                                                                                                                                                                                                                                                         // 13mm
+        0x2D,                                                                                                                                                                                                                                                                                                                                         // 12mm
+        0x34,                                                                                                                                                                                                                                                                                                                                         // 11mm
+        0x3B                                                                                                                                                                                                                                                                                                                                          // 10mm
+    };
+
+    private static final String      SYSEX_HEADER_TEXT_PUSH1              = "F0 47 7F 15 ";
+    private static final String      SYSEX_HEADER_TEXT                    = "F0 00 21 1D 01 01 ";
+    private static final int []      SYSEX_HEADER_BYTES                   =
     {
         0xF0,
         0x00,
@@ -538,14 +567,14 @@ public class PushControlSurface extends AbstractControlSurface<PushConfiguration
                 default:
                     break;
             }
-            this.sendPush2SysEx (new int []
+            this.sendSysEx (new int []
             {
                 23,
                 status
             });
         }
         else
-            this.output.sendSysex ("F0 47 7F 15 63 00 01 0" + mode + " F7");
+            this.sendSysExPush1 ("63 00 01 0" + mode);
     }
 
 
@@ -568,7 +597,7 @@ public class PushControlSurface extends AbstractControlSurface<PushConfiguration
      */
     public void sendPadSensitivity ()
     {
-        this.output.sendSysex ("F0 47 7F 15 5D 00 20 " + PUSH_PAD_THRESHOLDS_DATA[this.configuration.getPadThreshold ()] + " " + PUSH_PAD_CURVES_DATA[this.configuration.getVelocityCurve ()] + " F7");
+        this.sendSysExPush1 ("5D 00 20 " + PUSH_PAD_THRESHOLDS_DATA[this.configuration.getPadThreshold ()] + " " + PUSH_PAD_CURVES_DATA[this.configuration.getVelocityCurve ()]);
     }
 
 
@@ -580,9 +609,9 @@ public class PushControlSurface extends AbstractControlSurface<PushConfiguration
     public void sendPressureMode (final boolean isPolyPressure)
     {
         if (this.configuration.isPushModern ())
-            this.output.sendSysex ("F0 00 21 1D 01 01 1E 0" + (isPolyPressure ? "1" : "0") + " F7");
+            this.sendSysEx ("1E 0" + (isPolyPressure ? "1" : "0"));
         else
-            this.output.sendSysex ("F0 47 7F 15 5C 00 01 0" + (isPolyPressure ? "0" : "1") + " F7");
+            this.sendSysExPush1 ("5C 00 01 0" + (isPolyPressure ? "0" : "1"));
     }
 
 
@@ -599,7 +628,7 @@ public class PushControlSurface extends AbstractControlSurface<PushConfiguration
             args[1] = index;
             for (int i = 0; i < PAD_VELOCITY_CURVE_CHUNK_SIZE; i++)
                 args[i + 2] = velocities[index + i];
-            this.sendPush2SysEx (args);
+            this.sendSysEx (args);
         }
     }
 
@@ -715,7 +744,7 @@ public class PushControlSurface extends AbstractControlSurface<PushConfiguration
         final int padSensitivity = this.configuration.getPadSensitivity ();
         add7L5M (args, 5, PUSH2_CPMIN[padSensitivity]); // cpmin
         add7L5M (args, 7, PUSH2_CPMAX[padSensitivity]); // cpmax
-        this.sendPush2SysEx (args);
+        this.sendSysEx (args);
     }
 
 
@@ -732,7 +761,7 @@ public class PushControlSurface extends AbstractControlSurface<PushConfiguration
     public void sendDisplayBrightness ()
     {
         final int brightness = this.configuration.getDisplayBrightness () * 255 / 100;
-        this.sendPush2SysEx (new int []
+        this.sendSysEx (new int []
         {
             8,
             brightness & 127,
@@ -747,7 +776,7 @@ public class PushControlSurface extends AbstractControlSurface<PushConfiguration
     public void sendLEDBrightness ()
     {
         final int brightness = this.configuration.getLedBrightness () * 127 / 100;
-        this.sendPush2SysEx (new int []
+        this.sendSysEx (new int []
         {
             6,
             brightness
@@ -756,28 +785,91 @@ public class PushControlSurface extends AbstractControlSurface<PushConfiguration
 
 
     /**
-     * Send the aftertouch mode.
+     * Turn MPE on/off.
      *
-     * @param mode Push 2 : 0 = Channel Aftertouch, 1 = Poly Aftertouch
+     * @param enable True to enable MPE
      */
-    public void sendAftertouchMode (final int mode)
+    public void enableMPE (final boolean enable)
     {
-        this.sendPush2SysEx (new int []
-        {
-            30,
-            mode
-        });
+        // Same command as sendPressureMode
+        this.sendSysEx (enable ? "1E 02" : "1E 01");
     }
 
 
     /**
-     * Send SysEx to the Push 2.
+     * Turn per-pad pitchbend on/off.
+     *
+     * @param enable True to enable
+     */
+    public void enablePerPadPitchbend (final boolean enable)
+    {
+        this.sendSysEx ("26 07 08 0" + (enable ? "2" : "0") + " 00");
+    }
+
+
+    /**
+     * Set 'In tune' location to Finger (1) or Pad (0).
+     *
+     * @param inTuneLocation The in-tune location
+     */
+    public void setInTuneLocation (final int inTuneLocation)
+    {
+        this.sendSysEx ("26 07 0E 0" + inTuneLocation + " 00");
+    }
+
+
+    /**
+     * Set 'In tune' width.
+     *
+     * @param inTuneWidthIndex The index of the in-tune width option
+     */
+    public void setInTuneWidth (final int inTuneWidthIndex)
+    {
+        this.sendSysEx ("26 07 14 " + StringUtils.toHexStr (TUNE_WIDTH_VALUES[inTuneWidthIndex]) + " 00");
+    }
+
+
+    /**
+     * Set slide height.
+     *
+     * @param slideHeightIndex The index of the slide height option
+     */
+    public void setSlideHeight (final int slideHeightIndex)
+    {
+        this.sendSysEx ("26 07 24 " + StringUtils.toHexStr (SLIDE_HEIGHT_VALUES[slideHeightIndex]) + " 00");
+    }
+
+
+    /**
+     * Send SysEx to the Push 2/3.
      *
      * @param parameters The parameters to send
      */
-    public void sendPush2SysEx (final int [] parameters)
+    public void sendSysEx (final int [] parameters)
     {
-        this.output.sendSysex ("F0 00 21 1D 01 01 " + StringUtils.toHexStr (parameters) + "F7");
+        this.output.sendSysex (SYSEX_HEADER_TEXT + StringUtils.toHexStr (parameters) + "F7");
+    }
+
+
+    /**
+     * Send SysEx to the Push 2/3.
+     *
+     * @param parameters The parameters to send
+     */
+    public void sendSysEx (final String parameters)
+    {
+        this.output.sendSysex (SYSEX_HEADER_TEXT + parameters + " F7");
+    }
+
+
+    /**
+     * Send SysEx to the Push 1.
+     *
+     * @param parameters The parameters to send
+     */
+    public void sendSysExPush1 (final String parameters)
+    {
+        this.output.sendSysex (SYSEX_HEADER_TEXT_PUSH1 + parameters + " F7");
     }
 
 
@@ -804,12 +896,12 @@ public class PushControlSurface extends AbstractControlSurface<PushConfiguration
 
     private static boolean isPush2Data (final int [] data)
     {
-        if (data.length + 1 < SYSEX_HEADER.length)
+        if (data.length + 1 < SYSEX_HEADER_BYTES.length)
             return false;
 
-        for (int i = 0; i < SYSEX_HEADER.length; i++)
+        for (int i = 0; i < SYSEX_HEADER_BYTES.length; i++)
         {
-            if (SYSEX_HEADER[i] != data[i])
+            if (SYSEX_HEADER_BYTES[i] != data[i])
                 return false;
         }
 
@@ -827,7 +919,7 @@ public class PushControlSurface extends AbstractControlSurface<PushConfiguration
         if (this.configuration.isPushModern ())
         {
             final int [] unspecifiedData = deviceInquiry.getUnspecifiedData ();
-            if (unspecifiedData.length != 10)
+            if (unspecifiedData.length < 10)
                 return;
 
             this.majorVersion = unspecifiedData[0];
@@ -962,7 +1054,7 @@ public class PushControlSurface extends AbstractControlSurface<PushConfiguration
                 }
 
                 this.colorPalette[index].incWriteRetries ();
-                this.sendPush2SysEx (this.colorPalette[index].createUpdateMessage (index));
+                this.sendSysEx (this.colorPalette[index].createUpdateMessage (index));
             }
             else
             {
@@ -983,7 +1075,7 @@ public class PushControlSurface extends AbstractControlSurface<PushConfiguration
         // Re-apply the color palette, if necessary
         if (this.colorPaletteHasUpdate)
         {
-            this.host.scheduleTask ( () -> this.output.sendSysex ("F0 00 21 1D 01 01 05 F7"), 1000);
+            this.host.scheduleTask ( () -> this.output.sendSysex (SYSEX_HEADER_TEXT + "05 F7"), 1000);
 
             // Request all values again to confirm it was written
             this.sendColorPaletteRequest (0);
@@ -1000,7 +1092,7 @@ public class PushControlSurface extends AbstractControlSurface<PushConfiguration
     {
         synchronized (this.colorPalette)
         {
-            this.sendPush2SysEx (new int []
+            this.sendSysEx (new int []
             {
                 0x04,
                 paletteEntry

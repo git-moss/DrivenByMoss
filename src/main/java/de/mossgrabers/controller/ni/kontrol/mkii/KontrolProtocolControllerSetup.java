@@ -11,6 +11,7 @@ import de.mossgrabers.controller.ni.kontrol.mkii.mode.MixerMode;
 import de.mossgrabers.controller.ni.kontrol.mkii.mode.ParamsMode;
 import de.mossgrabers.controller.ni.kontrol.mkii.mode.SendMode;
 import de.mossgrabers.controller.ni.kontrol.mkii.view.ControlView;
+import de.mossgrabers.framework.ClipLauncherNavigator;
 import de.mossgrabers.framework.command.core.NopCommand;
 import de.mossgrabers.framework.command.core.TriggerCommand;
 import de.mossgrabers.framework.command.trigger.application.RedoCommand;
@@ -41,12 +42,8 @@ import de.mossgrabers.framework.daw.IHost;
 import de.mossgrabers.framework.daw.ITransport;
 import de.mossgrabers.framework.daw.ModelSetup;
 import de.mossgrabers.framework.daw.constants.DeviceID;
-import de.mossgrabers.framework.daw.data.ICursorTrack;
-import de.mossgrabers.framework.daw.data.ISlot;
 import de.mossgrabers.framework.daw.data.ISpecificDevice;
 import de.mossgrabers.framework.daw.data.ITrack;
-import de.mossgrabers.framework.daw.data.bank.ISceneBank;
-import de.mossgrabers.framework.daw.data.bank.ISlotBank;
 import de.mossgrabers.framework.daw.data.bank.ITrackBank;
 import de.mossgrabers.framework.daw.midi.IMidiAccess;
 import de.mossgrabers.framework.daw.midi.IMidiInput;
@@ -58,7 +55,6 @@ import de.mossgrabers.framework.mode.Modes;
 import de.mossgrabers.framework.scale.Scales;
 import de.mossgrabers.framework.utils.ButtonEvent;
 import de.mossgrabers.framework.utils.FrameworkException;
-import de.mossgrabers.framework.utils.LatestTaskExecutor;
 import de.mossgrabers.framework.utils.OperatingSystem;
 import de.mossgrabers.framework.view.Views;
 
@@ -75,11 +71,9 @@ import java.util.function.IntSupplier;
  */
 public class KontrolProtocolControllerSetup extends AbstractControllerSetup<KontrolProtocolControlSurface, KontrolProtocolConfiguration>
 {
-    private final int                version;
-    private String                   kompleteInstance   = "";
-    private final Object             navigateLock       = new Object ();
-    private final LatestTaskExecutor slotScrollExecutor = new LatestTaskExecutor ();
-    private long                     lastEdit;
+    private final int             version;
+    private String                kompleteInstance = "";
+    private ClipLauncherNavigator clipLauncherNavigator;
 
 
     /**
@@ -189,6 +183,9 @@ public class KontrolProtocolControllerSetup extends AbstractControllerSetup<Kont
         ms.setNumDrumPadLayers (0);
         ms.setNumMarkers (0);
         this.model = this.factory.createModel (this.configuration, this.colorManager, this.valueChanger, this.scales, ms);
+        this.clipLauncherNavigator = new ClipLauncherNavigator (this.model);
+
+        this.model.getTrackBank ().setIndication (true);
     }
 
 
@@ -476,98 +473,60 @@ public class KontrolProtocolControllerSetup extends AbstractControllerSetup<Kont
     }
 
 
-    /**
-     * Navigate to the previous or next scene (if any).
-     *
-     * @param isLeft Select the previous scene if true
-     */
-    private void navigateScenes (final boolean isLeft)
+    // This is encoder left/right
+    private void moveTrack (final ButtonEvent event, final boolean isLeft)
     {
-        final ISceneBank sceneBank = this.model.getSceneBank ();
-        if (sceneBank == null)
-            return;
-        if (isLeft)
-            sceneBank.selectPreviousItem ();
-        else
-            sceneBank.selectNextItem ();
-    }
-
-
-    /**
-     * Navigate to the previous or next clip of the selected track (if any).
-     *
-     * @param isLeft Select the previous clip if true
-     */
-    private void navigateClips (final boolean isLeft)
-    {
-        final ITrack cursorTrack = this.model.getCursorTrack ();
-        if (!cursorTrack.doesExist ())
-            return;
-        final ISlotBank slotBank = cursorTrack.getSlotBank ();
-        if (isLeft)
-            slotBank.selectPreviousItem ();
-        else
-            slotBank.selectNextItem ();
-    }
-
-
-    /**
-     * Navigate to the previous or next track (if any). Contains complex workaround to make sure
-     * that the same slot is selected a newly selected track as well.
-     *
-     * @param isLeft Select the previous track if true
-     */
-    private void navigateTracks (final boolean isLeft)
-    {
-        final ICursorTrack cursorTrack = this.model.getCursorTrack ();
-        if (!cursorTrack.doesExist ())
-        {
-            this.model.getTrackBank ().getItem (0).select ();
-            return;
-        }
-
-        final Optional<ISlot> selectedSlot = cursorTrack.getSlotBank ().getSelectedItem ();
-        final int slotIndex = selectedSlot.isPresent () ? selectedSlot.get ().getIndex () : -1;
-
-        if (isLeft)
-            cursorTrack.selectPrevious ();
-        else
-            cursorTrack.selectNext ();
-
-        synchronized (this.navigateLock)
-        {
-            this.lastEdit = System.currentTimeMillis ();
-        }
-
-        this.slotScrollExecutor.execute ( () -> this.selectSlot (slotIndex));
-    }
-
-
-    private void selectSlot (final int slotIndex)
-    {
-        if (slotIndex < 0)
+        if (event != ButtonEvent.DOWN)
             return;
 
-        try
+        final KontrolProtocolControlSurface surface = this.getSurface ();
+        if (surface.getModeManager ().isActive (Modes.VOLUME))
         {
-            Thread.sleep (50);
-        }
-        catch (final InterruptedException ex)
-        {
-            Thread.currentThread ().interrupt ();
-            return;
-        }
-
-        synchronized (this.navigateLock)
-        {
-            if (System.currentTimeMillis () - this.lastEdit > 200)
+            if (this.configuration.isFlipTrackClipNavigation ())
             {
-                final ICursorTrack cursorTrack = this.model.getCursorTrack ();
-                cursorTrack.getSlotBank ().getItem (slotIndex).select ();
+                if (this.configuration.isFlipClipSceneNavigation ())
+                    this.clipLauncherNavigator.navigateScenes (isLeft);
+                else
+                    this.clipLauncherNavigator.navigateClips (isLeft);
             }
             else
-                this.slotScrollExecutor.execute ( () -> this.selectSlot (slotIndex));
+                this.clipLauncherNavigator.navigateTracks (isLeft);
+            return;
         }
+
+        final IMode activeMode = surface.getModeManager ().getActive ();
+        if (activeMode == null)
+            return;
+        if (isLeft)
+            activeMode.selectPreviousItem ();
+        else
+            activeMode.selectNextItem ();
+    }
+
+
+    // This is encoder up/down
+    private void moveClips (final ButtonEvent event, final boolean isLeft)
+    {
+        if (event != ButtonEvent.DOWN)
+            return;
+
+        final KontrolProtocolControlSurface surface = this.getSurface ();
+        if (surface.getModeManager ().isActive (Modes.VOLUME))
+        {
+            if (this.configuration.isFlipTrackClipNavigation ())
+            {
+                this.clipLauncherNavigator.navigateTracks (isLeft);
+                return;
+            }
+
+            if (this.configuration.isFlipClipSceneNavigation ())
+                this.clipLauncherNavigator.navigateScenes (isLeft);
+            else
+                this.clipLauncherNavigator.navigateClips (isLeft);
+            return;
+        }
+
+        this.moveTrackBank (event, isLeft);
     }
 
 
@@ -600,61 +559,6 @@ public class KontrolProtocolControllerSetup extends AbstractControllerSetup<Kont
     }
 
 
-    // This is encoder left/right
-    private void moveTrack (final ButtonEvent event, final boolean isLeft)
-    {
-        if (event != ButtonEvent.DOWN)
-            return;
-
-        if (this.getSurface ().getModeManager ().isActive (Modes.VOLUME))
-        {
-            if (this.configuration.isFlipTrackClipNavigation ())
-            {
-                if (this.configuration.isFlipClipSceneNavigation ())
-                    this.navigateScenes (isLeft);
-                else
-                    this.navigateClips (isLeft);
-            }
-            else
-                this.navigateTracks (isLeft);
-            return;
-        }
-
-        final IMode activeMode = this.getSurface ().getModeManager ().getActive ();
-        if (activeMode == null)
-            return;
-        if (isLeft)
-            activeMode.selectPreviousItem ();
-        else
-            activeMode.selectNextItem ();
-    }
-
-
-    // This is encoder up/down
-    private void moveClips (final ButtonEvent event, final boolean isLeft)
-    {
-        if (event != ButtonEvent.DOWN)
-            return;
-
-        if (this.getSurface ().getModeManager ().isActive (Modes.VOLUME))
-        {
-            if (this.configuration.isFlipTrackClipNavigation ())
-            {
-                this.navigateTracks (isLeft);
-                return;
-            }
-
-            if (this.configuration.isFlipClipSceneNavigation ())
-                this.navigateScenes (isLeft);
-            else
-                this.navigateClips (isLeft);
-            return;
-        }
-
-        this.moveTrackBank (event, isLeft);
-    }
-
-
     private int getKnobValue (final int continuousMidiControl)
     {
         final IMode mode = this.getSurface ().getModeManager ().getActive ();
@@ -666,7 +570,7 @@ public class KontrolProtocolControllerSetup extends AbstractControllerSetup<Kont
     @Override
     public void exit ()
     {
-        this.slotScrollExecutor.shutdown ();
+        this.clipLauncherNavigator.shutdown ();
 
         super.exit ();
     }

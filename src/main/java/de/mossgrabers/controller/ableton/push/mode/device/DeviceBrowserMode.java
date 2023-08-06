@@ -4,6 +4,7 @@
 
 package de.mossgrabers.controller.ableton.push.mode.device;
 
+import de.mossgrabers.controller.ableton.push.command.continuous.IPush3Encoder;
 import de.mossgrabers.controller.ableton.push.controller.Push1Display;
 import de.mossgrabers.controller.ableton.push.controller.PushColorManager;
 import de.mossgrabers.controller.ableton.push.controller.PushControlSurface;
@@ -20,8 +21,11 @@ import de.mossgrabers.framework.daw.data.IBrowserColumnItem;
 import de.mossgrabers.framework.daw.data.IItem;
 import de.mossgrabers.framework.featuregroup.AbstractFeatureGroup;
 import de.mossgrabers.framework.featuregroup.AbstractMode;
+import de.mossgrabers.framework.featuregroup.ViewManager;
 import de.mossgrabers.framework.utils.ButtonEvent;
 import de.mossgrabers.framework.utils.StringUtils;
+import de.mossgrabers.framework.view.Views;
+import de.mossgrabers.framework.view.sequencer.AbstractDrumView;
 
 import java.util.Optional;
 
@@ -31,7 +35,7 @@ import java.util.Optional;
  *
  * @author Jürgen Moßgraber
  */
-public class DeviceBrowserMode extends BaseMode<IItem>
+public class DeviceBrowserMode extends BaseMode<IItem> implements IPush3Encoder
 {
     private static final int SELECTION_OFF    = 0;
     private static final int SELECTION_PRESET = 1;
@@ -63,6 +67,8 @@ public class DeviceBrowserMode extends BaseMode<IItem>
         super.onDeactivate ();
 
         this.model.getBrowser ().stopBrowsing (true);
+        this.selectionMode = SELECTION_OFF;
+        this.filterColumn = -1;
     }
 
 
@@ -516,5 +522,85 @@ public class DeviceBrowserMode extends BaseMode<IItem>
             return "";
         final IBrowserColumn browserColumn = column.get ();
         return browserColumn.getCursorName ().equals (browserColumn.getWildcard ()) ? " " : browserColumn.getCursorName (12);
+    }
+
+
+    /** {@inheritDoc} */
+    @Override
+    public void encoderTurn (final int value)
+    {
+        this.changeSelectedColumnValue (value);
+    }
+
+
+    /** {@inheritDoc} */
+    @Override
+    public void encoderPress (final ButtonEvent event)
+    {
+        if (event != ButtonEvent.DOWN)
+            return;
+
+        final boolean commit = !this.surface.isShiftPressed ();
+
+        this.model.getBrowser ().stopBrowsing (commit);
+
+        if (!commit)
+            return;
+
+        // Workaround for drum page scroll bug
+        final ViewManager viewManager = this.surface.getViewManager ();
+        if (viewManager.isActive (Views.DRUM))
+            AbstractDrumView.class.cast (viewManager.get (Views.DRUM)).repositionBankPage ();
+    }
+
+
+    /** {@inheritDoc} */
+    @Override
+    public void encoderLeft (final ButtonEvent event)
+    {
+        if (event != ButtonEvent.DOWN)
+            return;
+
+        if (this.filterColumn == 0)
+            return;
+
+        final IBrowser browser = this.model.getBrowser ();
+        if (this.filterColumn == -1)
+            this.filterColumn = browser.getFilterColumnCount () - 1;
+        else
+            this.filterColumn--;
+        while (this.filterColumn > 0 && !browser.getFilterColumn (this.filterColumn).doesExist ())
+            this.filterColumn--;
+    }
+
+
+    /** {@inheritDoc} */
+    @Override
+    public void encoderRight (final ButtonEvent event)
+    {
+        if (event != ButtonEvent.DOWN)
+            return;
+
+        final IBrowser browser = this.model.getBrowser ();
+        final int max = browser.getFilterColumnCount () - 1;
+
+        do
+        {
+            if (this.filterColumn >= max)
+            {
+                this.filterColumn = -1;
+                break;
+            }
+            this.filterColumn++;
+        } while (this.filterColumn >= max || !browser.getFilterColumn (this.filterColumn).doesExist ());
+    }
+
+
+    /** {@inheritDoc} */
+    @Override
+    public void arrowCenter (final ButtonEvent event)
+    {
+        if (event == ButtonEvent.DOWN)
+            this.model.getBrowser ().toggleInsertionPoint ();
     }
 }

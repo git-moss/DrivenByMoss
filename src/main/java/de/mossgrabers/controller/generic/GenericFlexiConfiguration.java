@@ -12,7 +12,6 @@ import de.mossgrabers.controller.generic.flexihandler.utils.KnobMode;
 import de.mossgrabers.framework.configuration.AbstractConfiguration;
 import de.mossgrabers.framework.configuration.IActionSetting;
 import de.mossgrabers.framework.configuration.IEnumSetting;
-import de.mossgrabers.framework.configuration.IIntegerSetting;
 import de.mossgrabers.framework.configuration.ISettingsUI;
 import de.mossgrabers.framework.configuration.IStringSetting;
 import de.mossgrabers.framework.controller.valuechanger.IValueChanger;
@@ -249,10 +248,6 @@ public class GenericFlexiConfiguration extends AbstractConfiguration
 
     /** A setting of a slot has changed. */
     static final Integer                             SLOT_CHANGE                  = Integer.valueOf (1000);
-    /** The MPE on/off setting has changed. */
-    static final Integer                             ENABLED_MPE_ZONES            = Integer.valueOf (1001);
-    /** The MPE pitch bend sensitivity setting has changed. */
-    static final Integer                             MPE_PITCHBEND_RANGE          = Integer.valueOf (1002);
 
     /** The number of command slots. */
     public static final int                          NUM_SLOTS                    = 300;
@@ -294,8 +289,6 @@ public class GenericFlexiConfiguration extends AbstractConfiguration
     private String                                   selectedMode                 = MODES.get (0);
 
     private String                                   keyboardInputName            = "Generic Flexi";
-    private boolean                                  isMPEEnabled                 = false;
-    private int                                      mpePitchBendRange            = 48;
     private int                                      keyboardChannel              = 0;
     private boolean                                  keyboardRouteTimbre          = false;
     private boolean                                  keyboardRouteModulation      = true;
@@ -483,11 +476,7 @@ public class GenericFlexiConfiguration extends AbstractConfiguration
         final IStringSetting keyboardInputNameSetting = globalSettings.getStringSetting ("Input Name", CATEGORY_KEYBOARD, 100, "Generic Flexi");
         this.keyboardInputName = keyboardInputNameSetting.get ();
 
-        final IEnumSetting enableMPESetting = globalSettings.getEnumSetting ("MIDI Polyphonic Expression (MPE)", CATEGORY_KEYBOARD, ON_OFF_OPTIONS, ON_OFF_OPTIONS[0]);
-        this.isMPEEnabled = ON_OFF_OPTIONS[1].equals (enableMPESetting.get ());
-
-        final IIntegerSetting pitchBendRangeSetting = globalSettings.getRangeSetting ("MPE Pitch Bend Sensitivity", CATEGORY_KEYBOARD, 1, 96, 1, "", 48);
-        this.mpePitchBendRange = pitchBendRangeSetting.get ().intValue ();
+        this.activateMPESetting (globalSettings, CATEGORY_KEYBOARD, false);
 
         final IEnumSetting keyboardMidiChannelSetting = globalSettings.getEnumSetting ("Midi Channel", CATEGORY_KEYBOARD, KEYBOARD_CHANNELS, KEYBOARD_CHANNELS.get (1));
         this.keyboardChannel = AbstractConfiguration.lookupIndex (KEYBOARD_CHANNELS, keyboardMidiChannelSetting.get ()) - 1;
@@ -507,18 +496,10 @@ public class GenericFlexiConfiguration extends AbstractConfiguration
         final IEnumSetting routePitchbendSetting = globalSettings.getEnumSetting ("Route Pitchbend", CATEGORY_KEYBOARD, AbstractConfiguration.ON_OFF_OPTIONS, AbstractConfiguration.ON_OFF_OPTIONS[1]);
         this.keyboardRoutePitchbend = "On".equals (routePitchbendSetting.get ());
 
-        enableMPESetting.addValueObserver (value -> {
-            this.isMPEEnabled = ON_OFF_OPTIONS[1].equals (value);
-            this.notifyObservers (ENABLED_MPE_ZONES);
-
-            pitchBendRangeSetting.setEnabled (this.isMPEEnabled);
-            keyboardMidiChannelSetting.setEnabled (!this.isMPEEnabled);
-            routePitchbendSetting.setEnabled (!this.isMPEEnabled);
-        });
-
-        pitchBendRangeSetting.addValueObserver (value -> {
-            this.mpePitchBendRange = value.intValue ();
-            this.notifyObservers (MPE_PITCHBEND_RANGE);
+        this.addSettingObserver (ENABLED_MPE_ZONES, () -> {
+            final boolean isMPEEnabled = this.isMPEEnabled ();
+            keyboardMidiChannelSetting.setEnabled (!isMPEEnabled);
+            routePitchbendSetting.setEnabled (!isMPEEnabled);
         });
 
         ///////////////////////////////////////////////
@@ -749,28 +730,6 @@ public class GenericFlexiConfiguration extends AbstractConfiguration
     public String getKeyboardInputName ()
     {
         return this.keyboardInputName;
-    }
-
-
-    /**
-     * Get the MPE state.
-     *
-     * @return True if MPE is enabled for the keyboard
-     */
-    public boolean isMPEEndabled ()
-    {
-        return this.isMPEEnabled;
-    }
-
-
-    /**
-     * Get the MPE pitch bend range.
-     *
-     * @return The MPE Pitch bend range (1-96)
-     */
-    public int getMPEPitchBendRange ()
-    {
-        return this.mpePitchBendRange;
     }
 
 

@@ -23,6 +23,7 @@ import com.bitwig.extension.controller.api.Device;
 import com.bitwig.extension.controller.api.DeviceBank;
 import com.bitwig.extension.controller.api.DeviceMatcher;
 import com.bitwig.extension.controller.api.PlayingNote;
+import com.bitwig.extension.controller.api.SceneBank;
 import com.bitwig.extension.controller.api.Track;
 
 import java.util.Arrays;
@@ -67,13 +68,14 @@ public class TrackImpl extends ChannelImpl implements ITrack
      * @param application The application
      * @param cursorTrack The cursor track of the bank to which this track belongs, required for
      *            group navigation
+     * @param sceneBank The scene bank to work around clip launcher grid movement
      * @param rootGroup The root track
      * @param track The track
      * @param index The index of the track in the page
      * @param numSends The number of sends of a bank
      * @param numScenes The number of scenes of a bank
      */
-    public TrackImpl (final IHost host, final IValueChanger valueChanger, final ApplicationImpl application, final CursorTrack cursorTrack, final Track rootGroup, final Track track, final int index, final int numSends, final int numScenes)
+    public TrackImpl (final IHost host, final IValueChanger valueChanger, final ApplicationImpl application, final CursorTrack cursorTrack, final SceneBank sceneBank, final Track rootGroup, final Track track, final int index, final int numSends, final int numScenes)
     {
         super (null, host, valueChanger, track, index, numSends);
 
@@ -99,7 +101,7 @@ public class TrackImpl extends ChannelImpl implements ITrack
         this.isTopGroup.markInterested ();
 
         this.crossfadeParameter = new CrossfadeParameter (valueChanger, track, index);
-        this.slotBank = new SlotBankImpl (host, valueChanger, this, track.clipLauncherSlotBank (), numScenes);
+        this.slotBank = new SlotBankImpl (host, valueChanger, this, sceneBank, track.clipLauncherSlotBank (), numScenes);
 
         final DeviceMatcher drumMachineDeviceMatcher = ((HostImpl) host).getControllerHost ().createBitwigDeviceMatcher (ModelImpl.INSTRUMENT_DRUM_MACHINE);
         final DeviceBank drumDeviceBank = track.createDeviceBank (1);

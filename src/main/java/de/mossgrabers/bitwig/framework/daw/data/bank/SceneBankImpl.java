@@ -89,6 +89,24 @@ public class SceneBankImpl extends AbstractItemBankImpl<SceneBank, IScene> imple
 
     /** {@inheritDoc} */
     @Override
+    public void scrollPageBackwards ()
+    {
+        this.slotBank.selectPreviousPage ();
+        super.scrollPageBackwards ();
+    }
+
+
+    /** {@inheritDoc} */
+    @Override
+    public void scrollPageForwards ()
+    {
+        this.slotBank.selectNextPage ();
+        super.scrollPageForwards ();
+    }
+
+
+    /** {@inheritDoc} */
+    @Override
     public void scrollTo (final int position, final boolean adjustPage)
     {
         this.slotBank.scrollTo (position, adjustPage);

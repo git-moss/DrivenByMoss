@@ -138,6 +138,12 @@ public interface IBrowser extends IObserverManagement
 
 
     /**
+     * Toggle between inserting a device before or after the cursor device.
+     */
+    void toggleInsertionPoint ();
+
+
+    /**
      * Stop browsing.
      *
      * @param commitSelection Commits the selection if true otherwise it is discarded.

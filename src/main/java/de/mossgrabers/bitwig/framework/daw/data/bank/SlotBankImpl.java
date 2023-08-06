@@ -12,6 +12,7 @@ import de.mossgrabers.framework.daw.data.ITrack;
 import de.mossgrabers.framework.daw.data.bank.ISlotBank;
 
 import com.bitwig.extension.controller.api.ClipLauncherSlotBank;
+import com.bitwig.extension.controller.api.SceneBank;
 
 import java.util.Optional;
 
@@ -23,7 +24,8 @@ import java.util.Optional;
  */
 public class SlotBankImpl extends AbstractItemBankImpl<ClipLauncherSlotBank, ISlot> implements ISlotBank
 {
-    private final ITrack track;
+    private final ITrack    track;
+    private final SceneBank sceneBank;
 
 
     /**
@@ -32,14 +34,16 @@ public class SlotBankImpl extends AbstractItemBankImpl<ClipLauncherSlotBank, ISl
      * @param host The DAW host
      * @param valueChanger The value changer
      * @param track The track, which contains the slot bank
+     * @param sceneBank The scene bank to work around clip launcher grid movement
      * @param clipLauncherSlotBank The slot bank
      * @param numSlots The number of slots in the page of the bank
      */
-    public SlotBankImpl (final IHost host, final IValueChanger valueChanger, final ITrack track, final ClipLauncherSlotBank clipLauncherSlotBank, final int numSlots)
+    public SlotBankImpl (final IHost host, final IValueChanger valueChanger, final ITrack track, final SceneBank sceneBank, final ClipLauncherSlotBank clipLauncherSlotBank, final int numSlots)
     {
         super (host, valueChanger, clipLauncherSlotBank, numSlots);
 
         this.track = track;
+        this.sceneBank = sceneBank;
 
         if (this.bank.isEmpty ())
             return;
@@ -63,5 +67,41 @@ public class SlotBankImpl extends AbstractItemBankImpl<ClipLauncherSlotBank, ISl
                 return Optional.of (item);
         }
         return Optional.empty ();
+    }
+
+
+    /** {@inheritDoc} */
+    @Override
+    public void selectNextItem ()
+    {
+        // Copy of parent method but with workaround to move the clip launcher grid!
+
+        final Optional<ISlot> sel = this.getSelectedItem ();
+        final int index = sel.isEmpty () ? 0 : sel.get ().getIndex () + 1;
+        if (index == this.getPageSize ())
+        {
+            this.sceneBank.scrollPageForwards ();
+            this.selectNextPage ();
+        }
+        else
+            this.getItem (index).select ();
+    }
+
+
+    /** {@inheritDoc} */
+    @Override
+    public void selectPreviousItem ()
+    {
+        // Copy of parent method but with workaround to move the clip launcher grid!
+
+        final Optional<ISlot> sel = this.getSelectedItem ();
+        final int index = sel.isEmpty () ? 0 : sel.get ().getIndex () - 1;
+        if (index == -1)
+        {
+            this.sceneBank.scrollPageBackwards ();
+            this.selectPreviousPage ();
+        }
+        else
+            this.getItem (index).select ();
     }
 }

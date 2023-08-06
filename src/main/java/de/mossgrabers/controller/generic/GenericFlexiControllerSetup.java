@@ -27,6 +27,7 @@ import de.mossgrabers.controller.generic.flexihandler.TrackHandler;
 import de.mossgrabers.controller.generic.flexihandler.TrackRemotesHandler;
 import de.mossgrabers.controller.generic.flexihandler.TransportHandler;
 import de.mossgrabers.controller.generic.flexihandler.utils.ProgramBank;
+import de.mossgrabers.framework.configuration.AbstractConfiguration;
 import de.mossgrabers.framework.configuration.IEnumSetting;
 import de.mossgrabers.framework.configuration.ISettingsUI;
 import de.mossgrabers.framework.controller.AbstractControllerSetup;
@@ -203,7 +204,7 @@ public class GenericFlexiControllerSetup extends AbstractControllerSetup<Generic
         final String portName = keyboardInputName.isBlank () ? "Generic Flexi" : keyboardInputName;
 
         final String inputName;
-        if (this.configuration.isMPEEndabled ())
+        if (this.configuration.isMPEEnabled ())
             inputName = portName + " (MPE)";
         else
             inputName = this.configuration.getKeyboardChannel () < 0 ? null : portName;
@@ -258,13 +259,13 @@ public class GenericFlexiControllerSetup extends AbstractControllerSetup<Generic
         // Handle configuration changes
         this.createNoteRepeatObservers (this.configuration, surface);
         this.configuration.registerDeactivatedItemsHandler (this.model);
-        this.configuration.addSettingObserver (GenericFlexiConfiguration.ENABLED_MPE_ZONES, () -> surface.scheduleTask ( () -> {
+        this.configuration.addSettingObserver (AbstractConfiguration.ENABLED_MPE_ZONES, () -> surface.scheduleTask ( () -> {
 
             final INoteInput input = surface.getMidiInput ().getDefaultNoteInput ();
             final IMidiOutput output = surface.getMidiOutput ();
             if (input == null || output == null)
                 return;
-            final boolean mpeEnabled = this.configuration.isMPEEndabled ();
+            final boolean mpeEnabled = this.configuration.isMPEEnabled ();
             input.enableMPE (mpeEnabled);
             // Enable MPE zone 1 with all 15 channels
             output.configureMPE (AbstractMidiOutput.ZONE_1, mpeEnabled ? 15 : 0);
@@ -273,7 +274,7 @@ public class GenericFlexiControllerSetup extends AbstractControllerSetup<Generic
 
         }, 2000));
 
-        this.configuration.addSettingObserver (GenericFlexiConfiguration.MPE_PITCHBEND_RANGE, () -> surface.scheduleTask ( () -> {
+        this.configuration.addSettingObserver (AbstractConfiguration.MPE_PITCHBEND_RANGE, () -> surface.scheduleTask ( () -> {
 
             final INoteInput input = surface.getMidiInput ().getDefaultNoteInput ();
             final IMidiOutput output = surface.getMidiOutput ();
@@ -362,7 +363,7 @@ public class GenericFlexiControllerSetup extends AbstractControllerSetup<Generic
 
     private List<String> getMidiFilters ()
     {
-        final boolean isMPEEndabled = this.configuration.isMPEEndabled ();
+        final boolean isMPEEndabled = this.configuration.isMPEEnabled ();
         final int keyboardChannel = this.configuration.getKeyboardChannel ();
 
         // Keyboard is off?

@@ -111,7 +111,7 @@ public class SetupMode extends BaseMode<IItem>
         {
             if (index == 0)
                 return AbstractMode.BUTTON_COLOR_HI;
-            if (index == 1)
+            if (index <= 2)
                 return AbstractFeatureGroup.BUTTON_COLOR_ON;
         }
 
@@ -126,6 +126,8 @@ public class SetupMode extends BaseMode<IItem>
         if (event != ButtonEvent.UP)
             return;
         if (index == 1)
+            this.surface.getModeManager ().setTemporary (Modes.CONFIGURATION);
+        else if (index == 2)
             this.surface.getModeManager ().setTemporary (Modes.INFO);
     }
 
@@ -150,8 +152,8 @@ public class SetupMode extends BaseMode<IItem>
         final int padDynamics = config.getPadDynamics ();
 
         display.addOptionElement ("", "Setup", true, "", "", false, true);
-        display.addOptionElement ("Brightness", "Info", false, "", "", false, true);
-        display.addParameterElement (" ", false, "", (ChannelType) null, null, false, "Display", displayBrightness * 1023 / 100, displayBrightness + "%", this.isKnobTouched (2), -1);
+        display.addOptionElement ("Brightness", "MPE", false, "", "", false, true);
+        display.addParameterElement ("Info", false, "", (ChannelType) null, null, false, "Display", displayBrightness * 1023 / 100, displayBrightness + "%", this.isKnobTouched (2), -1);
         display.addParameterElement (" ", false, "", (ChannelType) null, null, false, "LEDs", ledBrightness * 1023 / 100, ledBrightness + "%", this.isKnobTouched (3), -1);
         display.addOptionElement ("        Pads", " ", false, "", "", false, true);
         display.addParameterElement (" ", false, "", (ChannelType) null, null, false, "Sensitivity", padSensitivity * 1023 / 10, Integer.toString (padSensitivity), this.isKnobTouched (5), -1);

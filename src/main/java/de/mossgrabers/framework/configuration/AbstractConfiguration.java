@@ -132,6 +132,10 @@ public abstract class AbstractConfiguration implements Configuration
     public static final Integer      PREFERRED_NOTE_VIEW             = Integer.valueOf (44);
     /** Start with session view if active. */
     public static final Integer      START_WITH_SESSION_VIEW         = Integer.valueOf (45);
+    /** The MPE on/off setting has changed. */
+    public static final Integer      ENABLED_MPE_ZONES               = Integer.valueOf (46);
+    /** The MPE pitch bend sensitivity setting has changed. */
+    public static final Integer      MPE_PITCHBEND_RANGE             = Integer.valueOf (47);
 
     // Implementation IDs start at 50
 
@@ -386,12 +390,20 @@ public abstract class AbstractConfiguration implements Configuration
     private IEnumSetting                              noteRepeatModeSetting;
     private IEnumSetting                              noteRepeatOctaveSetting;
     private IEnumSetting                              midiEditChannelSetting;
+    private IIntegerSetting                           pitchBendRangeSetting;
+    private IEnumSetting                              enableMPESetting;
+
     private final List<IEnumSetting>                  instrumentSettings                  = new ArrayList<> (7);
     private final List<IEnumSetting>                  audioSettings                       = new ArrayList<> (3);
     private final List<IEnumSetting>                  effectSettings                      = new ArrayList<> (3);
+    private final List<IEnumSetting>                  deviceSettings                      = new ArrayList<> (3);
 
-    private String []                                 effectNames;
+    private List<IDeviceMetadata>                     instrumentMetadata;
+    private List<IDeviceMetadata>                     effectMetadata;
+    private List<IDeviceMetadata>                     deviceMetadata;
     private String []                                 instrumentNames;
+    private String []                                 effectNames;
+    private String []                                 deviceNames;
 
     private final Map<Integer, Set<ISettingObserver>> observers                           = new ConcurrentHashMap<> ();
     protected final Set<Integer>                      dontNotifyAll                       = new HashSet<> ();
@@ -455,6 +467,9 @@ public abstract class AbstractConfiguration implements Configuration
     protected Views                                   preferredAudioView                  = Views.PLAY;
     private boolean                                   startWithSessionView                = false;
     private boolean                                   useCombinationButtonToSoundDrumPads = false;
+
+    private boolean                                   isMPEEnabled                        = false;
+    private int                                       mpePitchBendRange                   = 48;
 
 
     /**
@@ -1561,32 +1576,47 @@ public abstract class AbstractConfiguration implements Configuration
 
 
     /**
-     * Activate the add track device favorites.
+     * Activate the add (track) device favorites.
      *
      * @param settingsUI The settings
      * @param numFavInstruments The number of favorite instrument track devices
      * @param numFavAudio The number of favorite audio tracks devices
      * @param numFavEffects The number of favorite effect tracks devices
+     * @param numFavDevices The number of favorite devices
      */
-    protected void activateDeviceFavorites (final ISettingsUI settingsUI, final int numFavInstruments, final int numFavAudio, final int numFavEffects)
+    protected void activateDeviceFavorites (final ISettingsUI settingsUI, final int numFavInstruments, final int numFavAudio, final int numFavEffects, final int numFavDevices)
     {
-        this.instrumentNames = getDeviceNames (this.host.getInstrumentMetadata ());
+        this.instrumentMetadata = this.host.getInstrumentMetadata ();
+        this.effectMetadata = this.host.getAudioEffectMetadata ();
+        this.deviceMetadata = new ArrayList<> ();
+        this.deviceMetadata.addAll (this.instrumentMetadata);
+        this.deviceMetadata.addAll (this.effectMetadata);
+        this.instrumentNames = getDeviceNames (this.instrumentMetadata);
+        this.effectNames = getDeviceNames (this.effectMetadata);
+        this.deviceNames = getDeviceNames (this.deviceMetadata);
+
         for (int i = 0; i < numFavInstruments; i++)
         {
             final IEnumSetting favSetting = settingsUI.getEnumSetting ("Instrument " + (i + 1), CATEGORY_FAV_DEVICES, this.instrumentNames, this.instrumentNames[Math.min (this.instrumentNames.length - 1, i)]);
             this.instrumentSettings.add (favSetting);
         }
 
-        this.effectNames = getDeviceNames (this.host.getAudioEffectMetadata ());
         for (int i = 0; i < numFavAudio; i++)
         {
             final IEnumSetting favSetting = settingsUI.getEnumSetting ("Audio " + (i + 1), CATEGORY_FAV_DEVICES, this.effectNames, this.effectNames[Math.min (this.effectNames.length - 1, i)]);
             this.audioSettings.add (favSetting);
         }
+
         for (int i = 0; i < numFavEffects; i++)
         {
             final IEnumSetting favSetting = settingsUI.getEnumSetting ("Effect " + (i + 1), CATEGORY_FAV_DEVICES, this.effectNames, this.effectNames[Math.min (this.effectNames.length - 1, i)]);
             this.effectSettings.add (favSetting);
+        }
+
+        for (int i = 0; i < numFavDevices; i++)
+        {
+            final IEnumSetting favSetting = settingsUI.getEnumSetting ("Device " + (i + 1), CATEGORY_FAV_DEVICES, this.deviceNames, this.deviceNames[Math.min (this.deviceNames.length - 1, i)]);
+            this.deviceSettings.add (favSetting);
         }
     }
 
@@ -1627,6 +1657,34 @@ public abstract class AbstractConfiguration implements Configuration
         });
 
         this.isSettingActive.add (START_WITH_SESSION_VIEW);
+    }
+
+
+    /**
+     * Activate the MPE settings.
+     *
+     * @param settingsUI The settings
+     * @param category The category to use
+     * @param enableMPE True to enable MPE as default
+     */
+    protected void activateMPESetting (final ISettingsUI settingsUI, final String category, final boolean enableMPE)
+    {
+        this.enableMPESetting = settingsUI.getEnumSetting ("MIDI Polyphonic Expression (MPE)", category, ON_OFF_OPTIONS, ON_OFF_OPTIONS[enableMPE ? 1 : 0]);
+        this.isMPEEnabled = ON_OFF_OPTIONS[1].equals (this.enableMPESetting.get ());
+
+        this.pitchBendRangeSetting = settingsUI.getRangeSetting ("MPE Pitch Bend Sensitivity", category, 1, 96, 1, "", 48);
+        this.mpePitchBendRange = this.pitchBendRangeSetting.get ().intValue ();
+
+        this.enableMPESetting.addValueObserver (value -> {
+            this.isMPEEnabled = ON_OFF_OPTIONS[1].equals (value);
+            this.notifyObservers (ENABLED_MPE_ZONES);
+            this.pitchBendRangeSetting.setEnabled (this.isMPEEnabled);
+        });
+
+        this.pitchBendRangeSetting.addValueObserver (value -> {
+            this.mpePitchBendRange = value.intValue ();
+            this.notifyObservers (MPE_PITCHBEND_RANGE);
+        });
     }
 
 
@@ -1880,6 +1938,74 @@ public abstract class AbstractConfiguration implements Configuration
 
 
     /**
+     * Get the MPE state.
+     *
+     * @return True if MPE is enabled for the keyboard
+     */
+    public boolean isMPEEnabled ()
+    {
+        return this.isMPEEnabled;
+    }
+
+
+    /**
+     * Change the MPE enabled setting.
+     *
+     * @param control The control value
+     */
+    public void changeMPEEnabled (final int control)
+    {
+        if (this.enableMPESetting != null)
+            this.enableMPESetting.set (ON_OFF_OPTIONS[this.valueChanger.isIncrease (control) ? 1 : 0]);
+    }
+
+
+    /**
+     * Set the MPE enabled setting.
+     *
+     * @param enable True to enable
+     */
+    public void setMPEEnabled (final boolean enable)
+    {
+        if (this.enableMPESetting != null)
+            this.enableMPESetting.set (ON_OFF_OPTIONS[enable ? 1 : 0]);
+    }
+
+
+    /**
+     * Get the MPE pitch bend range.
+     *
+     * @return The MPE Pitch bend range (1-96)
+     */
+    public int getMPEPitchBendRange ()
+    {
+        return this.mpePitchBendRange;
+    }
+
+
+    /**
+     * Change the MPE pitch bend range setting.
+     *
+     * @param control The control value
+     */
+    public void changeMPEPitchbendRange (final int control)
+    {
+        this.pitchBendRangeSetting.set (this.valueChanger.changeValue (control, this.mpePitchBendRange, -100, 97));
+    }
+
+
+    /**
+     * Set the MPE pitch bend range setting.
+     *
+     * @param value The value in the range of [1..96]
+     */
+    public void setMPEPitchbendRange (final int value)
+    {
+        this.pitchBendRangeSetting.set (Math.min (96, Math.max (1, value)));
+    }
+
+
+    /**
      * Get one of the favorite instrument devices.
      *
      * @param index The index
@@ -1891,8 +2017,7 @@ public abstract class AbstractConfiguration implements Configuration
             return Optional.empty ();
         final String sel = this.instrumentSettings.get (index).get ();
         final int lookupIndex = lookupIndex (this.instrumentNames, sel);
-        final List<IDeviceMetadata> instrumentMetadata = this.host.getInstrumentMetadata ();
-        return Optional.ofNullable (lookupIndex >= instrumentMetadata.size () ? null : instrumentMetadata.get (lookupIndex));
+        return Optional.ofNullable (lookupIndex >= this.instrumentMetadata.size () ? null : this.instrumentMetadata.get (lookupIndex));
     }
 
 
@@ -1908,8 +2033,7 @@ public abstract class AbstractConfiguration implements Configuration
             return Optional.empty ();
         final String sel = this.audioSettings.get (index).get ();
         final int lookupIndex = lookupIndex (this.effectNames, sel);
-        final List<IDeviceMetadata> effectMetadata = this.host.getAudioEffectMetadata ();
-        return Optional.ofNullable (lookupIndex >= effectMetadata.size () ? null : effectMetadata.get (lookupIndex));
+        return Optional.ofNullable (lookupIndex >= this.effectMetadata.size () ? null : this.effectMetadata.get (lookupIndex));
     }
 
 
@@ -1925,8 +2049,23 @@ public abstract class AbstractConfiguration implements Configuration
             return Optional.empty ();
         final String sel = this.effectSettings.get (index).get ();
         final int lookupIndex = lookupIndex (this.effectNames, sel);
-        final List<IDeviceMetadata> effectMetadata = this.host.getAudioEffectMetadata ();
-        return Optional.ofNullable (lookupIndex >= effectMetadata.size () ? null : effectMetadata.get (lookupIndex));
+        return Optional.ofNullable (lookupIndex >= this.effectMetadata.size () ? null : this.effectMetadata.get (lookupIndex));
+    }
+
+
+    /**
+     * Get one of the favorite devices.
+     *
+     * @param index The index
+     * @return The devices' metadata or null if none existing
+     */
+    public Optional<IDeviceMetadata> getDeviceFavorite (final int index)
+    {
+        if (index >= this.deviceSettings.size ())
+            return Optional.empty ();
+        final String sel = this.deviceSettings.get (index).get ();
+        final int lookupIndex = lookupIndex (this.deviceNames, sel);
+        return Optional.ofNullable (lookupIndex >= this.deviceMetadata.size () ? null : this.deviceMetadata.get (lookupIndex));
     }
 
 

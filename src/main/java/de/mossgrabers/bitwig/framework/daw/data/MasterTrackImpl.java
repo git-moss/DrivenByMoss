@@ -13,6 +13,7 @@ import de.mossgrabers.framework.observer.IItemSelectionObserver;
 
 import com.bitwig.extension.controller.api.CursorTrack;
 import com.bitwig.extension.controller.api.MasterTrack;
+import com.bitwig.extension.controller.api.SceneBank;
 import com.bitwig.extension.controller.api.Track;
 
 import java.util.ArrayList;
@@ -34,14 +35,15 @@ public class MasterTrackImpl extends TrackImpl implements IMasterTrack
      *
      * @param host The DAW host
      * @param valueChanger The valueChanger
-     * @param application The application
      * @param master The master track
      * @param cursorTrack The cursor track
      * @param rootGroup The root track
+     * @param application The application
+     * @param sceneBank The scene bank to work around clip launcher grid movement
      */
-    public MasterTrackImpl (final IHost host, final IValueChanger valueChanger, final MasterTrack master, final CursorTrack cursorTrack, final Track rootGroup, final ApplicationImpl application)
+    public MasterTrackImpl (final IHost host, final IValueChanger valueChanger, final MasterTrack master, final CursorTrack cursorTrack, final Track rootGroup, final ApplicationImpl application, final SceneBank sceneBank)
     {
-        super (host, valueChanger, application, cursorTrack, rootGroup, master, -1, 0, 0);
+        super (host, valueChanger, application, cursorTrack, sceneBank, rootGroup, master, -1, 0, 0);
 
         this.track.addIsSelectedInEditorObserver (this::handleIsSelected);
     }
