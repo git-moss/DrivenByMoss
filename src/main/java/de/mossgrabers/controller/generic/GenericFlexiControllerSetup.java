@@ -345,6 +345,7 @@ public class GenericFlexiControllerSetup extends AbstractControllerSetup<Generic
     }
 
 
+    /** {@inheritDoc} */
     @Override
     protected void handleTrackChange (final boolean isSelected)
     {

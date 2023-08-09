@@ -494,7 +494,7 @@ public class PushControllerSetup extends AbstractControllerSetup<PushControlSurf
 
         if (this.pushVersion == PushVersion.VERSION_3)
         {
-            this.configuration.addSettingObserver (AbstractConfiguration.ENABLED_MPE_ZONES, () -> surface.scheduleTask ( () -> {
+            this.configuration.addSettingObserver (AbstractConfiguration.ENABLED_MPE_ZONES, () -> {
 
                 final INoteInput input = surface.getMidiInput ().getDefaultNoteInput ();
                 final IMidiOutput output = surface.getMidiOutput ();
@@ -504,9 +504,9 @@ public class PushControllerSetup extends AbstractControllerSetup<PushControlSurf
                 input.enableMPE (mpeEnabled);
                 surface.enableMPE (mpeEnabled);
 
-            }, 2000));
+            });
 
-            this.configuration.addSettingObserver (AbstractConfiguration.MPE_PITCHBEND_RANGE, () -> surface.scheduleTask ( () -> {
+            this.configuration.addSettingObserver (AbstractConfiguration.MPE_PITCHBEND_RANGE, () -> {
 
                 final INoteInput input = surface.getMidiInput ().getDefaultNoteInput ();
                 final IMidiOutput output = surface.getMidiOutput ();
@@ -516,31 +516,31 @@ public class PushControllerSetup extends AbstractControllerSetup<PushControlSurf
                 input.setMPEPitchBendSensitivity (mpePitchBendRange);
                 output.sendMPEPitchbendRange (AbstractMidiOutput.ZONE_1, mpePitchBendRange);
 
-            }, 2000));
+            });
 
-            this.configuration.addSettingObserver (PushConfiguration.PER_PAD_PITCHBEND, () -> surface.scheduleTask ( () -> {
+            this.configuration.addSettingObserver (PushConfiguration.PER_PAD_PITCHBEND, () -> {
 
                 surface.enablePerPadPitchbend (this.configuration.isPerPadPitchbend ());
 
-            }, 2000));
+            });
 
-            this.configuration.addSettingObserver (PushConfiguration.IN_TUNE_LOCATION, () -> surface.scheduleTask ( () -> {
+            this.configuration.addSettingObserver (PushConfiguration.IN_TUNE_LOCATION, () -> {
 
                 surface.setInTuneLocation (this.configuration.getInTuneLocation ());
 
-            }, 2000));
+            });
 
-            this.configuration.addSettingObserver (PushConfiguration.IN_TUNE_WIDTH, () -> surface.scheduleTask ( () -> {
+            this.configuration.addSettingObserver (PushConfiguration.IN_TUNE_WIDTH, () -> {
 
                 surface.setInTuneWidth (this.configuration.getInTuneWidth ());
 
-            }, 2000));
+            });
 
-            this.configuration.addSettingObserver (PushConfiguration.IN_TUNE_SLIDE_HEIGHT, () -> surface.scheduleTask ( () -> {
+            this.configuration.addSettingObserver (PushConfiguration.IN_TUNE_SLIDE_HEIGHT, () -> {
 
                 surface.setSlideHeight (this.configuration.getInTuneSlideHeight ());
 
-            }, 2000));
+            });
         }
 
         this.createScaleObservers (this.configuration);
