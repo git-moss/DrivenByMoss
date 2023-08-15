@@ -177,10 +177,12 @@ public class PadGridImpl implements IPadGrid
         final LightInfo state = note < this.padStates.length ? this.padStates[note] : new LightInfo ();
         final int [] translated = this.translateToController (note);
         final int color = state.getColor ();
-        this.sendNoteState (translated[0], translated[1], color < 0 ? 0 : color);
+        // MPE?
+        final int channel = translated[0] < 0 ? 0 : translated[0];
+        this.sendNoteState (channel, translated[1], color < 0 ? 0 : color);
         final int blinkColor = state.getBlinkColor ();
         if (blinkColor > 0 && blinkColor < 128)
-            this.sendBlinkState (translated[0], translated[1], blinkColor, state.isFast ());
+            this.sendBlinkState (channel, translated[1], blinkColor, state.isFast ());
     }
 
 

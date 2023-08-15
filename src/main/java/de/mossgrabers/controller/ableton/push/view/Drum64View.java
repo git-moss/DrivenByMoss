@@ -15,6 +15,7 @@ import de.mossgrabers.framework.daw.data.IScene;
 import de.mossgrabers.framework.daw.data.bank.IDrumPadBank;
 import de.mossgrabers.framework.daw.data.bank.ISceneBank;
 import de.mossgrabers.framework.featuregroup.AbstractFeatureGroup;
+import de.mossgrabers.framework.featuregroup.IExpressionView;
 import de.mossgrabers.framework.featuregroup.ModeManager;
 import de.mossgrabers.framework.mode.Modes;
 import de.mossgrabers.framework.utils.ButtonEvent;
@@ -27,7 +28,7 @@ import de.mossgrabers.framework.view.AbstractSessionView;
  *
  * @author Jürgen Moßgraber
  */
-public class Drum64View extends AbstractDrum64View<PushControlSurface, PushConfiguration>
+public class Drum64View extends AbstractDrum64View<PushControlSurface, PushConfiguration> implements IExpressionView
 {
     /**
      * Constructor.

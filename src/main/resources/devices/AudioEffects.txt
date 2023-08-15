@@ -66,6 +66,8 @@ BITWIG$Vocoder$a0cb2ec0-2464-461c-8165-296f98905539
 BITWIG$XY FX$51169152-c144-4a38-95ba-1390fb579a1f
 CLAP$DISTRHO Cardinal FX$studio.kx.distrho.cardinal#fx
 CLAP$u-he MFM2$com.u-he.MFM2
+CLAP$u-he Filterscape$com.u-he.Filterscape
+CLAP$u-he FilterscapeQ6$com.u-he.FilterscapeQ6
 VST2$FabFilter Saturn 2$1179857505
 VST2$GVST GTune$1735999860
 VST2$HoRNet VU Meter MK4$1448430900

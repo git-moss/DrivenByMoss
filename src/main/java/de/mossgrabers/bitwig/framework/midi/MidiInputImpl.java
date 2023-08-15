@@ -122,8 +122,20 @@ public class MidiInputImpl implements IMidiInput
                 break;
 
             case NOTE:
-                pressedMatcher = this.port.createNoteOnVelocityValueMatcher (channel, control);
-                releasedMatcher = this.port.createNoteOffActionMatcher (channel, control);
+                // Handle MPE channels 1-15
+                if (channel == -1)
+                {
+                    final String v = Integer.toString (control);
+                    final String pressedExpression = "status > 0x90 && status <= 0x9F && data1 == " + v + " && data2 > 0";
+                    final String releasedExpression = "data1 == " + v + " && ((status > 0x90 && status <= 0x9F && data2 == 0) || (status > 0x80 && status <= 0x8F))";
+                    pressedMatcher = this.port.createAbsoluteValueMatcher (pressedExpression, "data2", 7);
+                    releasedMatcher = this.port.createActionMatcher (releasedExpression);
+                }
+                else
+                {
+                    pressedMatcher = this.port.createNoteOnVelocityValueMatcher (channel, control);
+                    releasedMatcher = this.port.createNoteOffActionMatcher (channel, control);
+                }
                 break;
 
             default:

@@ -13,6 +13,7 @@ import de.mossgrabers.framework.daw.IModel;
 import de.mossgrabers.framework.daw.data.IScene;
 import de.mossgrabers.framework.daw.data.bank.ISceneBank;
 import de.mossgrabers.framework.featuregroup.AbstractFeatureGroup;
+import de.mossgrabers.framework.featuregroup.IExpressionView;
 import de.mossgrabers.framework.utils.ButtonEvent;
 import de.mossgrabers.framework.view.AbstractPlayView;
 import de.mossgrabers.framework.view.AbstractSessionView;
@@ -24,7 +25,7 @@ import de.mossgrabers.framework.view.Views;
  *
  * @author Jürgen Moßgraber
  */
-public class PlayView extends AbstractPlayView<PushControlSurface, PushConfiguration>
+public class PlayView extends AbstractPlayView<PushControlSurface, PushConfiguration> implements IExpressionView
 {
     /**
      * Constructor.

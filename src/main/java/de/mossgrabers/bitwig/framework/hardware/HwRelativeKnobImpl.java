@@ -140,7 +140,7 @@ public class HwRelativeKnobImpl extends AbstractHwContinuousControl implements I
         this.channel = channel;
         this.control = control;
 
-        input.bind (this, type, channel, control, this.encoding);
+        this.rebind ();
     }
 
 

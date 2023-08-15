@@ -119,6 +119,7 @@ public class ParameterBankImpl extends AbstractItemBank<IParameter> implements I
     @Override
     public void selectPreviousPage ()
     {
+        // Note: This moves 8 pages!
         int pos = this.remoteControls.selectedPageIndex ().get ();
         pos = Math.max (0, pos - this.getPageSize ());
         if (pos >= 0)
@@ -130,6 +131,7 @@ public class ParameterBankImpl extends AbstractItemBank<IParameter> implements I
     @Override
     public void selectNextPage ()
     {
+        // Note: This moves 8 pages!
         final int maxPages = this.remoteControls.pageCount ().get ();
         int pos = this.remoteControls.selectedPageIndex ().get ();
         pos = Math.min (maxPages - 1, pos + this.getPageSize ());

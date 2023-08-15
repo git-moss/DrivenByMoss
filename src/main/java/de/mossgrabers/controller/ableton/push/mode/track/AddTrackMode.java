@@ -105,6 +105,17 @@ public class AddTrackMode extends BaseMode<IItem>
     }
 
 
+    /**
+     * Set the add mode.
+     *
+     * @param addMode The mode to activate
+     */
+    public void setAddMode (final AddMode addMode)
+    {
+        this.addMode = addMode;
+    }
+
+
     /** {@inheritDoc} */
     @Override
     public void onFirstRow (final int index, final ButtonEvent event)

@@ -26,6 +26,7 @@ public class ClipLauncherNavigator
     private final Object             navigateLock       = new Object ();
     private final LatestTaskExecutor slotScrollExecutor = new LatestTaskExecutor ();
     private long                     lastEdit;
+    private int                      targetSlot         = -1;
 
 
     /**
@@ -94,31 +95,95 @@ public class ClipLauncherNavigator
         final ICursorTrack cursorTrack = this.model.getCursorTrack ();
         if (!cursorTrack.doesExist ())
         {
-            this.model.getTrackBank ().getItem (0).select ();
-            return;
+            final ITrack track = this.model.getTrackBank ().getItem (0);
+            if (!track.doesExist ())
+                return;
+            track.select ();
         }
 
-        final Optional<ISlot> selectedSlot = cursorTrack.getSlotBank ().getSelectedItem ();
-        final int slotIndex = selectedSlot.isPresent () ? selectedSlot.get ().getIndex () : -1;
-
-        if (isLeft)
-            cursorTrack.selectPrevious ();
-        else
-            cursorTrack.selectNext ();
-
+        // Move the selected slot as well
         synchronized (this.navigateLock)
         {
-            this.lastEdit = System.currentTimeMillis ();
-        }
+            final ISlotBank slotBank = cursorTrack.getSlotBank ();
+            final Optional<ISlot> selectedSlot = slotBank.getSelectedItem ();
 
-        this.slotScrollExecutor.execute ( () -> this.selectSlot (slotIndex));
+            // Are we already moving?
+            if (this.targetSlot == -1)
+            {
+                if (selectedSlot.isPresent ())
+                    this.targetSlot = selectedSlot.get ().getIndex ();
+                else
+                    this.targetSlot = slotBank.getItemCount () > 0 && slotBank.getItem (0).doesExist () ? 0 : -1;
+            }
+
+            if (isLeft)
+                cursorTrack.selectPrevious ();
+            else
+                cursorTrack.selectNext ();
+
+            this.lastEdit = System.currentTimeMillis ();
+            this.slotScrollExecutor.execute (this::selectSlot);
+        }
     }
 
 
-    private void selectSlot (final int slotIndex)
+    /**
+     * Select a track in the current track bank page. Contains complex workaround to make sure that
+     * the same slot is selected a newly selected track as well.
+     * 
+     * @param index The index of the track
+     */
+    public void selectTrack (final int index)
     {
-        if (slotIndex < 0)
+        final ITrack track = this.model.getTrackBank ().getItem (index);
+        if (!track.doesExist ())
             return;
+
+        if (track.isSelected ())
+        {
+            if (track.isGroup ())
+                track.toggleGroupExpanded ();
+            return;
+        }
+
+        // Move the selected slot as well
+        synchronized (this.navigateLock)
+        {
+            final ICursorTrack cursorTrack = this.model.getCursorTrack ();
+            final boolean doesExist = cursorTrack.doesExist ();
+            if (doesExist)
+            {
+                final ISlotBank slotBank = cursorTrack.getSlotBank ();
+                final Optional<ISlot> selectedSlot = slotBank.getSelectedItem ();
+
+                // Are we already moving?
+                if (this.targetSlot == -1)
+                {
+                    if (selectedSlot.isPresent ())
+                        this.targetSlot = selectedSlot.get ().getIndex ();
+                    else
+                        this.targetSlot = slotBank.getItemCount () > 0 && slotBank.getItem (0).doesExist () ? 0 : -1;
+                }
+            }
+
+            track.select ();
+
+            if (doesExist)
+            {
+                this.lastEdit = System.currentTimeMillis ();
+                this.slotScrollExecutor.execute (this::selectSlot);
+            }
+        }
+    }
+
+
+    private void selectSlot ()
+    {
+        synchronized (this.navigateLock)
+        {
+            if (this.targetSlot < 0)
+                return;
+        }
 
         try
         {
@@ -132,13 +197,23 @@ public class ClipLauncherNavigator
 
         synchronized (this.navigateLock)
         {
-            if (System.currentTimeMillis () - this.lastEdit > 200)
+            final long diff = System.currentTimeMillis () - this.lastEdit;
+
+            // Finally done
+            if (diff > 2000)
+            {
+                this.targetSlot = -1;
+                return;
+            }
+
+            // Update the selection but do not yet clear it!
+            if (diff > 200)
             {
                 final ICursorTrack cursorTrack = this.model.getCursorTrack ();
-                cursorTrack.getSlotBank ().getItem (slotIndex).select ();
+                cursorTrack.getSlotBank ().getItem (this.targetSlot).select ();
             }
-            else
-                this.slotScrollExecutor.execute ( () -> this.selectSlot (slotIndex));
+
+            this.slotScrollExecutor.execute (this::selectSlot);
         }
     }
 }

@@ -53,12 +53,14 @@ public class SessionView extends AbstractSessionView<LaunchpadControlSurface, La
     {
         super (name, surface, model, 8, 8, true);
 
+        this.ignoreClipColorForPlayAndRecord = true;
+
         this.configuration = this.surface.getConfiguration ();
 
         final LightInfo isRecording = new LightInfo (LaunchpadColorManager.LAUNCHPAD_COLOR_RED_HI, LaunchpadColorManager.LAUNCHPAD_COLOR_RED_HI, false);
-        final LightInfo isRecordingQueued = new LightInfo (LaunchpadColorManager.LAUNCHPAD_COLOR_RED_HI, LaunchpadColorManager.LAUNCHPAD_COLOR_BLACK, true);
+        final LightInfo isRecordingQueued = new LightInfo (LaunchpadColorManager.LAUNCHPAD_COLOR_RED_HI, LaunchpadColorManager.LAUNCHPAD_COLOR_RED_LO, true);
         final LightInfo isPlaying = new LightInfo (LaunchpadColorManager.LAUNCHPAD_COLOR_GREEN, LaunchpadColorManager.LAUNCHPAD_COLOR_GREEN, false);
-        final LightInfo isPlayingQueued = new LightInfo (LaunchpadColorManager.LAUNCHPAD_COLOR_GREEN, LaunchpadColorManager.LAUNCHPAD_COLOR_GREEN, true);
+        final LightInfo isPlayingQueued = new LightInfo (LaunchpadColorManager.LAUNCHPAD_COLOR_GREEN, LaunchpadColorManager.LAUNCHPAD_COLOR_GREEN_LO, true);
         final LightInfo hasContent = new LightInfo (LaunchpadColorManager.LAUNCHPAD_COLOR_AMBER, -1, false);
         final LightInfo noContent = new LightInfo (LaunchpadColorManager.LAUNCHPAD_COLOR_BLACK, -1, false);
         final LightInfo recArmed = new LightInfo (LaunchpadColorManager.LAUNCHPAD_COLOR_RED_LO, -1, false);

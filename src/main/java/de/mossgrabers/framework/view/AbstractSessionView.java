@@ -35,31 +35,32 @@ import de.mossgrabers.framework.utils.Pair;
 public abstract class AbstractSessionView<S extends IControlSurface<C>, C extends Configuration> extends AbstractView<S, C> implements ISessionAlternative
 {
     /** The color for a scene. */
-    public static final String COLOR_SCENE                 = "COLOR_SCENE";
+    public static final String COLOR_SCENE                     = "COLOR_SCENE";
     /** The color for a selected scene. */
-    public static final String COLOR_SELECTED_SCENE        = "COLOR_SELECTED_SCENE";
+    public static final String COLOR_SELECTED_SCENE            = "COLOR_SELECTED_SCENE";
     /** The color for no scene. */
-    public static final String COLOR_SCENE_OFF             = "COLOR_SELECTED_OFF";
+    public static final String COLOR_SCENE_OFF                 = "COLOR_SELECTED_OFF";
 
     // Needs to be overwritten with device specific colors
-    protected LightInfo        clipColorIsRecording        = new LightInfo (0, -1, false);
-    protected LightInfo        clipColorIsRecordingQueued  = new LightInfo (1, -1, false);
-    protected LightInfo        clipColorIsPlaying          = new LightInfo (2, -1, false);
-    protected LightInfo        clipColorIsPlayingQueued    = new LightInfo (3, -1, false);
-    protected LightInfo        clipColorHasContent         = new LightInfo (4, -1, false);
-    protected LightInfo        clipColorHasNoContent       = new LightInfo (5, -1, false);
-    protected LightInfo        clipColorIsRecArmed         = new LightInfo (6, -1, false);
+    protected LightInfo        clipColorIsRecording            = new LightInfo (0, -1, false);
+    protected LightInfo        clipColorIsRecordingQueued      = new LightInfo (1, -1, false);
+    protected LightInfo        clipColorIsPlaying              = new LightInfo (2, -1, false);
+    protected LightInfo        clipColorIsPlayingQueued        = new LightInfo (3, -1, false);
+    protected LightInfo        clipColorHasContent             = new LightInfo (4, -1, false);
+    protected LightInfo        clipColorHasNoContent           = new LightInfo (5, -1, false);
+    protected LightInfo        clipColorIsRecArmed             = new LightInfo (6, -1, false);
 
-    protected LightInfo        birdColorHasContent         = new LightInfo (4, -1, false);
-    protected LightInfo        birdColorSelected           = new LightInfo (2, -1, false);
+    protected LightInfo        birdColorHasContent             = new LightInfo (4, -1, false);
+    protected LightInfo        birdColorSelected               = new LightInfo (2, -1, false);
 
     protected int              rows;
     protected int              columns;
     protected boolean          useClipColor;
+    protected boolean          ignoreClipColorForPlayAndRecord = false;
     protected ISlot            sourceSlot;
-    protected boolean          isBirdsEyeActive            = false;
+    protected boolean          isBirdsEyeActive                = false;
 
-    private boolean            wasAlternateInteractionUsed = false;
+    private boolean            wasAlternateInteractionUsed     = false;
 
 
     /**
@@ -467,7 +468,7 @@ public abstract class AbstractSessionView<S extends IControlSurface<C>, C extend
      */
     private LightInfo insertClipColor (final ColorManager colorManager, final String colorID, final LightInfo lightInfo)
     {
-        if (this.useClipColor && colorID != null)
+        if (this.useClipColor && !this.ignoreClipColorForPlayAndRecord && colorID != null)
         {
             final int blinkColor = lightInfo.getBlinkColor ();
             if (blinkColor > 0)

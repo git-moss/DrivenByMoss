@@ -57,7 +57,10 @@ public class SelectPlayViewCommand<S extends IControlSurface<C>, C extends Confi
         // Restore the previous play view if coming from one not on the list
         final ViewManager viewManager = this.surface.getViewManager ();
         if (!this.allViewIds.contains (viewManager.getActiveID ()))
+        {
             this.surface.recallPreferredView (this.model.getCursorTrack ());
+            return;
+        }
 
         super.executeNormal (event);
 

@@ -141,7 +141,7 @@ public abstract class AbstractHwAbsoluteControl<T extends AbsoluteHardwareContro
         this.channel = channel;
         this.control = control;
 
-        input.bind (this, type, channel, control);
+        this.rebind ();
     }
 
 

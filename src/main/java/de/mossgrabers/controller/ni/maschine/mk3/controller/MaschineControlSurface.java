@@ -153,6 +153,10 @@ public class MaschineControlSurface extends AbstractMaschineControlSurface<Masch
     public MaschineControlSurface (final IHost host, final ColorManager colorManager, final Maschine maschine, final MaschineConfiguration configuration, final IMidiOutput output, final IMidiInput input)
     {
         super (host, configuration, colorManager, maschine, output, input, new MaschinePadGrid (colorManager, output), maschine.getWidth (), maschine.getHeight ());
+
+        // Do not notify on display!
+        if (maschine.hasMCUDisplay ())
+            this.notifyViewChange = false;
     }
 
 

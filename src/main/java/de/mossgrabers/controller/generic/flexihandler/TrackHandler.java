@@ -10,6 +10,7 @@ import de.mossgrabers.controller.generic.controller.GenericFlexiControlSurface;
 import de.mossgrabers.controller.generic.flexihandler.utils.FlexiHandlerException;
 import de.mossgrabers.controller.generic.flexihandler.utils.KnobMode;
 import de.mossgrabers.controller.generic.flexihandler.utils.MidiValue;
+import de.mossgrabers.framework.ClipLauncherNavigator;
 import de.mossgrabers.framework.command.core.TriggerCommand;
 import de.mossgrabers.framework.command.trigger.track.ToggleTrackBanksCommand;
 import de.mossgrabers.framework.controller.valuechanger.IValueChanger;
@@ -33,7 +34,8 @@ import java.util.Optional;
  */
 public class TrackHandler extends AbstractHandler
 {
-    private final TriggerCommand toggleTrackBankCommand;
+    private final TriggerCommand        toggleTrackBankCommand;
+    private final ClipLauncherNavigator clipLauncherNavigator;
 
 
     /**
@@ -45,11 +47,13 @@ public class TrackHandler extends AbstractHandler
      * @param absoluteLowResValueChanger The default absolute value changer in low res mode
      * @param signedBitRelativeValueChanger The signed bit relative value changer
      * @param offsetBinaryRelativeValueChanger The offset binary relative value changer
+     * @param clipLauncherNavigator Access to helper functions to navigate the clip launcher
      */
-    public TrackHandler (final IModel model, final GenericFlexiControlSurface surface, final GenericFlexiConfiguration configuration, final IValueChanger absoluteLowResValueChanger, final IValueChanger signedBitRelativeValueChanger, final IValueChanger offsetBinaryRelativeValueChanger)
+    public TrackHandler (final IModel model, final GenericFlexiControlSurface surface, final GenericFlexiConfiguration configuration, final IValueChanger absoluteLowResValueChanger, final IValueChanger signedBitRelativeValueChanger, final IValueChanger offsetBinaryRelativeValueChanger, final ClipLauncherNavigator clipLauncherNavigator)
     {
         super (model, surface, configuration, absoluteLowResValueChanger, signedBitRelativeValueChanger, offsetBinaryRelativeValueChanger);
 
+        this.clipLauncherNavigator = clipLauncherNavigator;
         this.toggleTrackBankCommand = new ToggleTrackBanksCommand<> (model, surface);
     }
 
@@ -416,22 +420,22 @@ public class TrackHandler extends AbstractHandler
             // Track: Select Previous Bank Page
             case TRACK_SELECT_PREVIOUS_BANK_PAGE:
                 if (isButtonPressed)
-                    this.scrollTrackLeft (true);
+                    this.model.getCurrentTrackBank ().selectPreviousPage ();
                 break;
             // Track: Select Next Bank Page
             case TRACK_SELECT_NEXT_BANK_PAGE:
                 if (isButtonPressed)
-                    this.scrollTrackRight (true);
+                    this.model.getCurrentTrackBank ().selectNextPage ();
                 break;
             // Track: Select Previous Track
             case TRACK_SELECT_PREVIOUS_TRACK:
                 if (isButtonPressed)
-                    this.scrollTrackLeft (false);
+                    this.clipLauncherNavigator.navigateTracks (true);
                 break;
             // Track: Select Next Track
             case TRACK_SELECT_NEXT_TRACK:
                 if (isButtonPressed)
-                    this.scrollTrackRight (false);
+                    this.clipLauncherNavigator.navigateTracks (false);
                 break;
 
             case TRACK_SCROLL_TRACKS:
@@ -442,7 +446,7 @@ public class TrackHandler extends AbstractHandler
             case TRACK_1_SELECT, TRACK_2_SELECT, TRACK_3_SELECT, TRACK_4_SELECT, TRACK_5_SELECT, TRACK_6_SELECT, TRACK_7_SELECT, TRACK_8_SELECT:
                 if (isButtonPressed)
                 {
-                    trackBank.getItem (command.ordinal () - FlexiCommand.TRACK_1_SELECT.ordinal ()).selectOrExpandGroup ();
+                    this.clipLauncherNavigator.selectTrack (command.ordinal () - FlexiCommand.TRACK_1_SELECT.ordinal ());
                     this.mvHelper.notifySelectedTrack ();
                 }
                 break;
@@ -725,40 +729,7 @@ public class TrackHandler extends AbstractHandler
 
     private void scrollTrack (final KnobMode knobMode, final MidiValue value)
     {
-        if (isAbsolute (knobMode) || !this.increaseKnobMovement ())
-            return;
-
-        if (this.isIncrease (knobMode, value))
-            this.scrollTrackRight (false);
-        else
-            this.scrollTrackLeft (false);
-    }
-
-
-    private void scrollTrackLeft (final boolean switchBank)
-    {
-        final ITrackBank tb = this.model.getCurrentTrackBank ();
-        final Optional<ITrack> sel = tb.getSelectedItem ();
-        final int index = sel.isEmpty () ? 0 : sel.get ().getIndex () - 1;
-        if (index == -1 || switchBank)
-        {
-            tb.selectPreviousPage ();
-            return;
-        }
-        tb.getItem (index).select ();
-    }
-
-
-    private void scrollTrackRight (final boolean switchBank)
-    {
-        final ITrackBank tb = this.model.getCurrentTrackBank ();
-        final Optional<ITrack> sel = tb.getSelectedItem ();
-        final int index = sel.isEmpty () ? 0 : sel.get ().getIndex () + 1;
-        if (index == 8 || switchBank)
-        {
-            tb.selectNextPage ();
-            return;
-        }
-        tb.getItem (index).select ();
+        if (!isAbsolute (knobMode) && this.increaseKnobMovement ())
+            this.clipLauncherNavigator.navigateTracks (!this.isIncrease (knobMode, value));
     }
 }

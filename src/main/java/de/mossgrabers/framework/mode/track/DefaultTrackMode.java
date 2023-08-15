@@ -4,6 +4,7 @@
 
 package de.mossgrabers.framework.mode.track;
 
+import de.mossgrabers.framework.ClipLauncherNavigator;
 import de.mossgrabers.framework.command.trigger.clip.TemporaryNewCommand;
 import de.mossgrabers.framework.configuration.Configuration;
 import de.mossgrabers.framework.controller.ButtonID;
@@ -30,6 +31,9 @@ import java.util.function.BooleanSupplier;
  */
 public abstract class DefaultTrackMode<S extends IControlSurface<C>, C extends Configuration> extends AbstractParameterMode<S, C, ITrack>
 {
+    protected ClipLauncherNavigator clipLauncherNavigator = null;
+
+
     /**
      * Constructor.
      *
@@ -160,5 +164,54 @@ public abstract class DefaultTrackMode<S extends IControlSurface<C>, C extends C
     protected void executeMethod (final ITrack track)
     {
         track.selectOrExpandGroup ();
+    }
+
+
+    /** {@inheritDoc} */
+    @Override
+    public void selectItem (final int index)
+    {
+        if (this.clipLauncherNavigator == null)
+        {
+            super.selectItem (index);
+            return;
+        }
+
+        this.clipLauncherNavigator.selectTrack (index);
+        this.mvHelper.notifySelectedTrack ();
+    }
+
+
+    /** {@inheritDoc} */
+    @Override
+    public void selectPreviousItem ()
+    {
+        if (this.clipLauncherNavigator == null)
+        {
+            super.selectPreviousItem ();
+            return;
+        }
+
+        if (this.isAlternativeFunction.getAsBoolean ())
+            super.selectPreviousItem ();
+        else
+            this.clipLauncherNavigator.navigateTracks (true);
+    }
+
+
+    /** {@inheritDoc} */
+    @Override
+    public void selectNextItem ()
+    {
+        if (this.clipLauncherNavigator == null)
+        {
+            super.selectNextItem ();
+            return;
+        }
+
+        if (this.isAlternativeFunction.getAsBoolean ())
+            super.selectNextItem ();
+        else
+            this.clipLauncherNavigator.navigateTracks (false);
     }
 }

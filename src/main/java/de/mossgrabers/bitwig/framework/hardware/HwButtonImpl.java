@@ -74,10 +74,7 @@ public class HwButtonImpl extends AbstractHwButton
         this.control = control;
         this.value = value;
 
-        if (this.value < 0)
-            input.bind (this, type, channel, control);
-        else
-            input.bind (this, type, channel, control, value);
+        this.rebind ();
     }
 
 

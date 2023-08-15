@@ -4,6 +4,7 @@
 
 package de.mossgrabers.framework.mode.track;
 
+import de.mossgrabers.framework.ClipLauncherNavigator;
 import de.mossgrabers.framework.configuration.Configuration;
 import de.mossgrabers.framework.controller.ContinuousID;
 import de.mossgrabers.framework.controller.IControlSurface;
@@ -37,7 +38,24 @@ public class TrackMode<S extends IControlSurface<C>, C extends Configuration> ex
      */
     public TrackMode (final S surface, final IModel model, final boolean isAbsolute)
     {
-        this (surface, model, isAbsolute, null);
+        this (surface, model, isAbsolute, (List<ContinuousID>) null);
+    }
+
+
+    /**
+     * Constructor.
+     *
+     * @param surface The control surface
+     * @param model The model
+     * @param isAbsolute If true the value change is happening with a setter otherwise relative
+     *            change method is used
+     * @param clipLauncherNavigator Access to helper functions to navigate the clip launcher
+     */
+    public TrackMode (final S surface, final IModel model, final boolean isAbsolute, final ClipLauncherNavigator clipLauncherNavigator)
+    {
+        this (surface, model, isAbsolute, (List<ContinuousID>) null);
+
+        this.clipLauncherNavigator = clipLauncherNavigator;
     }
 
 

@@ -92,7 +92,7 @@ public class UserMode extends BaseMode<IParameter>
 
         final IParameterPageBank parameterPageBank = ((IParameterBank) this.bank).getPageBank ();
         if (!parameterPageBank.getItem (index).isBlank ())
-            this.selectItemPage (index);
+            parameterPageBank.selectPage (index);
     }
 
 

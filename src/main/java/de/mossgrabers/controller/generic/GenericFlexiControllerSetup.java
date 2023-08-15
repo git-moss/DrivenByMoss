@@ -27,6 +27,7 @@ import de.mossgrabers.controller.generic.flexihandler.TrackHandler;
 import de.mossgrabers.controller.generic.flexihandler.TrackRemotesHandler;
 import de.mossgrabers.controller.generic.flexihandler.TransportHandler;
 import de.mossgrabers.controller.generic.flexihandler.utils.ProgramBank;
+import de.mossgrabers.framework.ClipLauncherNavigator;
 import de.mossgrabers.framework.configuration.AbstractConfiguration;
 import de.mossgrabers.framework.configuration.IEnumSetting;
 import de.mossgrabers.framework.configuration.ISettingsUI;
@@ -86,6 +87,7 @@ public class GenericFlexiControllerSetup extends AbstractControllerSetup<Generic
     private final IValueChanger     offsetBinaryRelativeValueChanger = new OffsetBinaryRelativeValueChanger (16384, 100);
 
     private final List<ProgramBank> banks                            = new ArrayList<> ();
+    private ClipLauncherNavigator   clipLauncherNavigator;
 
 
     /**
@@ -190,6 +192,8 @@ public class GenericFlexiControllerSetup extends AbstractControllerSetup<Generic
         this.model = this.factory.createModel (this.configuration, this.colorManager, this.valueChanger, this.scales, ms);
 
         this.model.getTrackBank ().setIndication (true);
+
+        this.clipLauncherNavigator = new ClipLauncherNavigator (this.model);
     }
 
 
@@ -226,11 +230,11 @@ public class GenericFlexiControllerSetup extends AbstractControllerSetup<Generic
     {
         final GenericFlexiControlSurface surface = this.getSurface ();
         final ModeManager modeManager = surface.getModeManager ();
-        modeManager.register (Modes.TRACK, new TrackMode<> (surface, this.model, true));
-        modeManager.register (Modes.VOLUME, new TrackVolumeMode<> (surface, this.model, true));
-        modeManager.register (Modes.PAN, new TrackPanMode<> (surface, this.model, true));
+        modeManager.register (Modes.TRACK, new TrackMode<> (surface, this.model, true, this.clipLauncherNavigator));
+        modeManager.register (Modes.VOLUME, new TrackVolumeMode<> (surface, this.model, true, this.clipLauncherNavigator));
+        modeManager.register (Modes.PAN, new TrackPanMode<> (surface, this.model, true, this.clipLauncherNavigator));
         for (int i = 0; i < 8; i++)
-            modeManager.register (Modes.get (Modes.SEND1, i), new TrackSendMode<> (i, surface, this.model, true));
+            modeManager.register (Modes.get (Modes.SEND1, i), new TrackSendMode<> (i, surface, this.model, true, this.clipLauncherNavigator));
         modeManager.register (Modes.DEVICE_PARAMS, new ParameterMode<> ("Device", surface, this.model, true, null, surface::isShiftPressed));
         modeManager.register (Modes.BROWSER, new BrowserMode<> (surface, this.model));
 
@@ -325,7 +329,7 @@ public class GenericFlexiControllerSetup extends AbstractControllerSetup<Generic
         surface.registerHandler (new GlobalHandler (this.model, surface, this.configuration, this.absoluteLowResValueChanger, this.signedBitRelativeValueChanger, this.offsetBinaryRelativeValueChanger));
         surface.registerHandler (new TransportHandler (this.model, surface, this.configuration, this.absoluteLowResValueChanger, this.signedBitRelativeValueChanger, this.offsetBinaryRelativeValueChanger));
         surface.registerHandler (new LayoutHandler (this.model, surface, this.configuration, this.absoluteLowResValueChanger, this.signedBitRelativeValueChanger, this.offsetBinaryRelativeValueChanger));
-        surface.registerHandler (new TrackHandler (this.model, surface, this.configuration, this.absoluteLowResValueChanger, this.signedBitRelativeValueChanger, this.offsetBinaryRelativeValueChanger));
+        surface.registerHandler (new TrackHandler (this.model, surface, this.configuration, this.absoluteLowResValueChanger, this.signedBitRelativeValueChanger, this.offsetBinaryRelativeValueChanger, this.clipLauncherNavigator));
         surface.registerHandler (new FxTrackHandler (this.model, surface, this.configuration, this.absoluteLowResValueChanger, this.signedBitRelativeValueChanger, this.offsetBinaryRelativeValueChanger));
         surface.registerHandler (new MasterHandler (this.model, surface, this.configuration, this.absoluteLowResValueChanger, this.signedBitRelativeValueChanger, this.offsetBinaryRelativeValueChanger));
         surface.registerHandler (new DeviceHandler (this.model, surface, this.configuration, this.absoluteLowResValueChanger, this.signedBitRelativeValueChanger, this.offsetBinaryRelativeValueChanger));

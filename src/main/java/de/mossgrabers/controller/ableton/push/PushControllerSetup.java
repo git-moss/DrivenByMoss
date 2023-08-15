@@ -24,6 +24,7 @@ import de.mossgrabers.controller.ableton.push.command.trigger.PageLeftCommand;
 import de.mossgrabers.controller.ableton.push.command.trigger.PageRightCommand;
 import de.mossgrabers.controller.ableton.push.command.trigger.PanSendCommand;
 import de.mossgrabers.controller.ableton.push.command.trigger.PlayPositionKnobCommand;
+import de.mossgrabers.controller.ableton.push.command.trigger.PushAddEffectCommand;
 import de.mossgrabers.controller.ableton.push.command.trigger.PushAutomationCommand;
 import de.mossgrabers.controller.ableton.push.command.trigger.PushCursorCommand;
 import de.mossgrabers.controller.ableton.push.command.trigger.PushMetronomeCommand;
@@ -110,7 +111,6 @@ import de.mossgrabers.framework.command.trigger.clip.CreateSceneCommand;
 import de.mossgrabers.framework.command.trigger.clip.DoubleCommand;
 import de.mossgrabers.framework.command.trigger.clip.FillModeNoteRepeatCommand;
 import de.mossgrabers.framework.command.trigger.clip.NewCommand;
-import de.mossgrabers.framework.command.trigger.device.AddEffectCommand;
 import de.mossgrabers.framework.command.trigger.mode.ButtonRowModeCommand;
 import de.mossgrabers.framework.command.trigger.mode.KnobRowTouchModeCommand;
 import de.mossgrabers.framework.command.trigger.mode.ModeSelectCommand;
@@ -137,12 +137,10 @@ import de.mossgrabers.framework.daw.data.ICursorDevice;
 import de.mossgrabers.framework.daw.data.ILayer;
 import de.mossgrabers.framework.daw.data.ITrack;
 import de.mossgrabers.framework.daw.data.bank.ITrackBank;
-import de.mossgrabers.framework.daw.midi.AbstractMidiOutput;
 import de.mossgrabers.framework.daw.midi.DeviceInquiry;
 import de.mossgrabers.framework.daw.midi.IMidiAccess;
 import de.mossgrabers.framework.daw.midi.IMidiInput;
 import de.mossgrabers.framework.daw.midi.IMidiOutput;
-import de.mossgrabers.framework.daw.midi.INoteInput;
 import de.mossgrabers.framework.featuregroup.IMode;
 import de.mossgrabers.framework.featuregroup.IView;
 import de.mossgrabers.framework.featuregroup.ModeManager;
@@ -494,53 +492,12 @@ public class PushControllerSetup extends AbstractControllerSetup<PushControlSurf
 
         if (this.pushVersion == PushVersion.VERSION_3)
         {
-            this.configuration.addSettingObserver (AbstractConfiguration.ENABLED_MPE_ZONES, () -> {
-
-                final INoteInput input = surface.getMidiInput ().getDefaultNoteInput ();
-                final IMidiOutput output = surface.getMidiOutput ();
-                if (input == null || output == null)
-                    return;
-                final boolean mpeEnabled = this.configuration.isMPEEnabled ();
-                input.enableMPE (mpeEnabled);
-                surface.enableMPE (mpeEnabled);
-
-            });
-
-            this.configuration.addSettingObserver (AbstractConfiguration.MPE_PITCHBEND_RANGE, () -> {
-
-                final INoteInput input = surface.getMidiInput ().getDefaultNoteInput ();
-                final IMidiOutput output = surface.getMidiOutput ();
-                if (input == null || output == null)
-                    return;
-                final int mpePitchBendRange = this.configuration.getMPEPitchBendRange ();
-                input.setMPEPitchBendSensitivity (mpePitchBendRange);
-                output.sendMPEPitchbendRange (AbstractMidiOutput.ZONE_1, mpePitchBendRange);
-
-            });
-
-            this.configuration.addSettingObserver (PushConfiguration.PER_PAD_PITCHBEND, () -> {
-
-                surface.enablePerPadPitchbend (this.configuration.isPerPadPitchbend ());
-
-            });
-
-            this.configuration.addSettingObserver (PushConfiguration.IN_TUNE_LOCATION, () -> {
-
-                surface.setInTuneLocation (this.configuration.getInTuneLocation ());
-
-            });
-
-            this.configuration.addSettingObserver (PushConfiguration.IN_TUNE_WIDTH, () -> {
-
-                surface.setInTuneWidth (this.configuration.getInTuneWidth ());
-
-            });
-
-            this.configuration.addSettingObserver (PushConfiguration.IN_TUNE_SLIDE_HEIGHT, () -> {
-
-                surface.setSlideHeight (this.configuration.getInTuneSlideHeight ());
-
-            });
+            this.configuration.addSettingObserver (AbstractConfiguration.ENABLED_MPE_ZONES, surface::updateMPE);
+            this.configuration.addSettingObserver (AbstractConfiguration.MPE_PITCHBEND_RANGE, surface::updateMPEPitchbendRange);
+            this.configuration.addSettingObserver (PushConfiguration.PER_PAD_PITCHBEND, () -> surface.enablePerPadPitchbend (this.configuration.isPerPadPitchbend ()));
+            this.configuration.addSettingObserver (PushConfiguration.IN_TUNE_LOCATION, () -> surface.setInTuneLocation (this.configuration.getInTuneLocation ()));
+            this.configuration.addSettingObserver (PushConfiguration.IN_TUNE_WIDTH, () -> surface.setInTuneWidth (this.configuration.getInTuneWidth ()));
+            this.configuration.addSettingObserver (PushConfiguration.IN_TUNE_SLIDE_HEIGHT, () -> surface.setSlideHeight (this.configuration.getInTuneSlideHeight ()));
         }
 
         this.createScaleObservers (this.configuration);
@@ -686,7 +643,7 @@ public class PushControllerSetup extends AbstractControllerSetup<PushControlSurf
         this.addButton (ButtonID.SOLO, "Solo", new SoloCommand (this.model, surface), PushControlSurface.PUSH_BUTTON_SOLO, this::getSoloState, PushColorManager.PUSH_BUTTON_STATE_SOLO_ON, PushColorManager.PUSH_BUTTON_STATE_SOLO_HI);
         this.addButton (ButtonID.SCALES, "Scale", new ScalesCommand (this.model, surface), PushControlSurface.PUSH_BUTTON_SCALES, () -> modeManager.isActive (Modes.SCALES));
         this.addButton (ButtonID.ACCENT, "Accent", new AccentCommand (this.model, surface), PushControlSurface.PUSH_BUTTON_ACCENT, this.configuration::isAccentActive);
-        this.addButton (ButtonID.ADD_EFFECT, "Add Device", new AddEffectCommand<> (this.model, surface, ButtonID.SHIFT, null), PushControlSurface.PUSH_BUTTON_ADD_EFFECT);
+        this.addButton (ButtonID.ADD_EFFECT, "Add Device", new PushAddEffectCommand (this.model, surface), PushControlSurface.PUSH_BUTTON_ADD_EFFECT);
         this.addButton (ButtonID.ADD_TRACK, "Add Track", new ModeSelectCommand<> (this.model, surface, Modes.ADD_TRACK), isPush3 ? PushControlSurface.PUSH_BUTTON_ADD : PushControlSurface.PUSH_BUTTON_ADD_TRACK);
         this.addButton (ButtonID.NOTE, "Note", new SelectPlayViewCommand (this.model, surface), PushControlSurface.PUSH_BUTTON_NOTE, () -> !Views.isSessionView (viewManager.getActiveID ()));
 
@@ -1134,7 +1091,8 @@ public class PushControllerSetup extends AbstractControllerSetup<PushControlSurf
         else
             this.updateRibbonMode ();
 
-        this.getSurface ().getDisplay ().cancelNotification ();
+        surface.updateMPE ();
+        surface.getDisplay ().cancelNotification ();
     }
 
 
