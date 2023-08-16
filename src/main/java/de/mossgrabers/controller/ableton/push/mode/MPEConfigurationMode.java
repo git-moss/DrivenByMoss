@@ -11,6 +11,7 @@ import de.mossgrabers.framework.controller.ButtonID;
 import de.mossgrabers.framework.controller.display.IGraphicDisplay;
 import de.mossgrabers.framework.controller.display.ITextDisplay;
 import de.mossgrabers.framework.daw.IModel;
+import de.mossgrabers.framework.daw.constants.Capability;
 import de.mossgrabers.framework.daw.data.IItem;
 import de.mossgrabers.framework.daw.resource.ChannelType;
 import de.mossgrabers.framework.featuregroup.AbstractFeatureGroup;
@@ -174,7 +175,10 @@ public class MPEConfigurationMode extends BaseMode<IItem>
         final int slideHeight = config.getInTuneSlideHeight ();
 
         display.addParameterElement ("MPE", true, "", (ChannelType) null, null, false, "MPE", isMPEEnabled ? 1023 : 0, isMPEEnabled ? "On" : "Off", this.isKnobTouched (1), -1);
-        display.addParameterElement ("Info", false, "", (ChannelType) null, null, false, "PB Range", mpePitchBendRange * 1023 / 96, Integer.toString (mpePitchBendRange), this.isKnobTouched (2), -1);
+        if (this.surface.getHost ().supports (Capability.MPE_PITCH_RANGE))
+            display.addParameterElement ("Info", false, "", (ChannelType) null, null, false, "PB Range", mpePitchBendRange * 1023 / 96, Integer.toString (mpePitchBendRange), this.isKnobTouched (2), -1);
+        else
+            display.addOptionElement ("", "Info", false, "", "", false, true);
         display.addParameterElement (" ", false, "", (ChannelType) null, null, false, "Per-Pad PB", isPerPadPitchbendEnabled ? 1023 : 0, isPerPadPitchbendEnabled ? "On" : "Off", this.isKnobTouched (3), -1);
         display.addParameterElement (" ", false, "", (ChannelType) null, null, false, "Location", inTuneLocation == 0 ? 0 : 1023, PushConfiguration.IN_TUNE_LOCATION_OPTIONS[inTuneLocation], this.isKnobTouched (4), -1);
         display.addParameterElement (" ", false, "", (ChannelType) null, null, false, "Width (mm)", inTuneWidth * 1023 / (PushConfiguration.IN_TUNE_WIDTH_OPTIONS.length - 1), PushConfiguration.IN_TUNE_WIDTH_OPTIONS[inTuneWidth], this.isKnobTouched (5), -1);

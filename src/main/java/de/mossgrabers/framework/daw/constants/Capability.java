@@ -47,5 +47,8 @@ public enum Capability
     /** The host has a dedicated send bank. */
     HAS_EFFECT_BANK,
     /** The host supports browser preview. */
-    HAS_BROWSER_PREVIEW
+    HAS_BROWSER_PREVIEW,
+
+    /** MPE supports pitch range. */
+    MPE_PITCH_RANGE
 }

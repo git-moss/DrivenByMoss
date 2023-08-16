@@ -15,6 +15,7 @@ import de.mossgrabers.framework.daw.midi.DeviceInquiry;
 import de.mossgrabers.framework.daw.midi.IMidiInput;
 import de.mossgrabers.framework.daw.midi.IMidiOutput;
 import de.mossgrabers.framework.daw.midi.INoteInput;
+import de.mossgrabers.framework.daw.midi.MidiConstants;
 import de.mossgrabers.framework.featuregroup.IExpressionView;
 import de.mossgrabers.framework.utils.StringUtils;
 
@@ -538,6 +539,25 @@ public class PushControlSurface extends AbstractControlSurface<PushConfiguration
         // Ignore active sensing, which seems to be sent from some Push devices
         if (status == 254)
             return;
+
+        if (this.configuration.getPushVersion () == PushVersion.VERSION_3)
+        {
+            final int code = status & 0xF0;
+            final int channel = status & 0xF;
+
+            // Ignore all MIDI notes off on startup
+            if (channel == 0 && code == MidiConstants.CMD_CC && data1 == 123)
+                return;
+
+            // Ignore MPE messages
+            if (channel > 0)
+            {
+                if (code == MidiConstants.CMD_CC && data1 == 74)
+                    return;
+                if (code == MidiConstants.CMD_PITCHBEND)
+                    return;
+            }
+        }
 
         super.handleMidi (status, data1, data2);
     }
