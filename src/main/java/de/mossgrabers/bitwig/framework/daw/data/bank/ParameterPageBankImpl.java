@@ -205,7 +205,8 @@ public class ParameterPageBankImpl extends AbstractBank<String> implements IPara
     public int getScrollPosition ()
     {
         final int selectedItemPosition = this.getSelectedItemPosition ();
-        return selectedItemPosition / this.getPageSize () * this.getPageSize ();
+        final int ps = this.getPageSize ();
+        return selectedItemPosition / ps * ps;
     }
 
 

@@ -136,6 +136,8 @@ public enum Modes
     SETUP,
     /** Info mode. */
     INFO,
+    /** Audio configuration mode. */
+    AUDIO,
     /** Select of session views. */
     SESSION_VIEW_SELECT,
     /** Session mode. */

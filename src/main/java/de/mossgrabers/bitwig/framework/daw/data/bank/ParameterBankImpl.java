@@ -43,7 +43,7 @@ public class ParameterBankImpl extends AbstractItemBank<IParameter> implements I
     {
         super (host, numParams);
 
-        this.pageBank = numParams > 0 ? new ParameterPageBankImpl (remoteControlsPage, numParams) : null;
+        this.pageBank = numParams > 0 ? new ParameterPageBankImpl (remoteControlsPage, numParamPages) : null;
 
         this.valueChanger = valueChanger;
         this.remoteControls = remoteControlsPage;

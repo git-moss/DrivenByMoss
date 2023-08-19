@@ -2,28 +2,22 @@
 // (c) 2017-2023
 // Licensed under LGPLv3 - http://www.gnu.org/licenses/lgpl-3.0.txt
 
-package de.mossgrabers.controller.ableton.push.mode;
+package de.mossgrabers.controller.ableton.push.mode.configuration;
 
 import de.mossgrabers.controller.ableton.push.PushConfiguration;
 import de.mossgrabers.controller.ableton.push.controller.PushControlSurface;
 import de.mossgrabers.framework.controller.ButtonID;
 import de.mossgrabers.framework.controller.display.IGraphicDisplay;
-import de.mossgrabers.framework.controller.display.ITextDisplay;
 import de.mossgrabers.framework.daw.IModel;
-import de.mossgrabers.framework.daw.data.IItem;
 import de.mossgrabers.framework.daw.resource.ChannelType;
-import de.mossgrabers.framework.featuregroup.AbstractFeatureGroup;
-import de.mossgrabers.framework.featuregroup.AbstractMode;
-import de.mossgrabers.framework.mode.Modes;
-import de.mossgrabers.framework.utils.ButtonEvent;
 
 
 /**
- * Configuration settings for Push 2.
+ * Configuration settings for Push 2/3.
  *
  * @author Jürgen Moßgraber
  */
-public class SetupMode extends BaseMode<IItem>
+public class SetupMode extends AbstractConfigurationMode
 {
     /**
      * Constructor.
@@ -33,7 +27,7 @@ public class SetupMode extends BaseMode<IItem>
      */
     public SetupMode (final PushControlSurface surface, final IModel model)
     {
-        super ("Setup", surface, model);
+        super (1, "Setup", surface, model);
     }
 
 
@@ -104,44 +98,6 @@ public class SetupMode extends BaseMode<IItem>
 
     /** {@inheritDoc} */
     @Override
-    public String getButtonColorID (final ButtonID buttonID)
-    {
-        final int index = this.isButtonRow (1, buttonID);
-        if (index >= 0)
-        {
-            if (index == 0)
-                return AbstractMode.BUTTON_COLOR_HI;
-            if (index <= 2)
-                return AbstractFeatureGroup.BUTTON_COLOR_ON;
-        }
-
-        return AbstractFeatureGroup.BUTTON_COLOR_OFF;
-    }
-
-
-    /** {@inheritDoc} */
-    @Override
-    public void onSecondRow (final int index, final ButtonEvent event)
-    {
-        if (event != ButtonEvent.UP)
-            return;
-        if (index == 1)
-            this.surface.getModeManager ().setTemporary (Modes.CONFIGURATION);
-        else if (index == 2)
-            this.surface.getModeManager ().setTemporary (Modes.INFO);
-    }
-
-
-    /** {@inheritDoc} */
-    @Override
-    public void updateDisplay1 (final ITextDisplay display)
-    {
-        // Intentionally empty - mode is only for Push 2
-    }
-
-
-    /** {@inheritDoc} */
-    @Override
     public void updateDisplay2 (final IGraphicDisplay display)
     {
         final PushConfiguration config = this.surface.getConfiguration ();
@@ -151,10 +107,10 @@ public class SetupMode extends BaseMode<IItem>
         final int padGain = config.getPadGain ();
         final int padDynamics = config.getPadDynamics ();
 
-        display.addOptionElement ("", "Setup", true, "", "", false, true);
-        display.addOptionElement ("Brightness", "MPE", false, "", "", false, true);
-        display.addParameterElement ("Info", false, "", (ChannelType) null, null, false, "Display", displayBrightness * 1023 / 100, displayBrightness + "%", this.isKnobTouched (2), -1);
-        display.addParameterElement (" ", false, "", (ChannelType) null, null, false, "LEDs", ledBrightness * 1023 / 100, ledBrightness + "%", this.isKnobTouched (3), -1);
+        display.addOptionElement ("", this.menu[0], false, "", "", false, true);
+        display.addOptionElement ("Brightness", this.menu[1], true, "", "", false, true);
+        display.addParameterElement (this.menu[2], false, "", (ChannelType) null, null, false, "Display", displayBrightness * 1023 / 100, displayBrightness + "%", this.isKnobTouched (2), -1);
+        display.addParameterElement (this.menu[3], false, "", (ChannelType) null, null, false, "LEDs", ledBrightness * 1023 / 100, ledBrightness + "%", this.isKnobTouched (3), -1);
         display.addOptionElement ("        Pads", " ", false, "", "", false, true);
         display.addParameterElement (" ", false, "", (ChannelType) null, null, false, "Sensitivity", padSensitivity * 1023 / 10, Integer.toString (padSensitivity), this.isKnobTouched (5), -1);
         display.addParameterElement (" ", false, "", (ChannelType) null, null, false, "Gain", padGain * 1023 / 10, Integer.toString (padGain), this.isKnobTouched (6), -1);

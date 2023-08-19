@@ -108,7 +108,10 @@ public abstract class AbstractSessionView<S extends IControlSurface<C>, C extend
         if (isPressed)
         {
             if (this.handleButtonCombinations (track, slot))
+            {
+                this.surface.consumePads ();
                 return;
+            }
             if (this.doSelectClipOnLaunch ())
                 slot.select ();
         }

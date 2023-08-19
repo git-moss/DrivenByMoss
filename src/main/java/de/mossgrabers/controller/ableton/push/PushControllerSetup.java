@@ -45,12 +45,9 @@ import de.mossgrabers.controller.ableton.push.controller.PushColorManager;
 import de.mossgrabers.controller.ableton.push.controller.PushControlSurface;
 import de.mossgrabers.controller.ableton.push.mode.AccentMode;
 import de.mossgrabers.controller.ableton.push.mode.AutomationSelectionMode;
-import de.mossgrabers.controller.ableton.push.mode.ConfigurationMode;
 import de.mossgrabers.controller.ableton.push.mode.FixedMode;
 import de.mossgrabers.controller.ableton.push.mode.FrameMode;
 import de.mossgrabers.controller.ableton.push.mode.GrooveMode;
-import de.mossgrabers.controller.ableton.push.mode.InfoMode;
-import de.mossgrabers.controller.ableton.push.mode.MPEConfigurationMode;
 import de.mossgrabers.controller.ableton.push.mode.MarkerMode;
 import de.mossgrabers.controller.ableton.push.mode.MetronomeMode;
 import de.mossgrabers.controller.ableton.push.mode.NoteMode;
@@ -62,7 +59,11 @@ import de.mossgrabers.controller.ableton.push.mode.ScaleLayoutMode;
 import de.mossgrabers.controller.ableton.push.mode.ScalesMode;
 import de.mossgrabers.controller.ableton.push.mode.SessionMode;
 import de.mossgrabers.controller.ableton.push.mode.SessionViewSelectMode;
-import de.mossgrabers.controller.ableton.push.mode.SetupMode;
+import de.mossgrabers.controller.ableton.push.mode.configuration.AudioConfigurationMode;
+import de.mossgrabers.controller.ableton.push.mode.configuration.ConfigurationMode;
+import de.mossgrabers.controller.ableton.push.mode.configuration.InfoMode;
+import de.mossgrabers.controller.ableton.push.mode.configuration.MPEConfigurationMode;
+import de.mossgrabers.controller.ableton.push.mode.configuration.SetupMode;
 import de.mossgrabers.controller.ableton.push.mode.device.DeviceBrowserMode;
 import de.mossgrabers.controller.ableton.push.mode.device.DeviceChainsMode;
 import de.mossgrabers.controller.ableton.push.mode.device.DeviceLayerDetailsMode;
@@ -383,9 +384,10 @@ public class PushControllerSetup extends AbstractControllerSetup<PushControlSurf
             modeManager.register (Modes.CONFIGURATION, new ConfigurationMode (surface, this.model));
         else
         {
+            modeManager.register (Modes.INFO, new InfoMode (surface, this.model));
             modeManager.register (Modes.SETUP, new SetupMode (surface, this.model));
             modeManager.register (Modes.CONFIGURATION, new MPEConfigurationMode (surface, this.model));
-            modeManager.register (Modes.INFO, new InfoMode (surface, this.model));
+            modeManager.register (Modes.AUDIO, new AudioConfigurationMode (surface, this.model));
         }
 
         modeManager.register (Modes.SESSION, new SessionMode (this.clipLauncherNavigator, surface, this.model));
@@ -494,10 +496,18 @@ public class PushControllerSetup extends AbstractControllerSetup<PushControlSurf
         {
             this.configuration.addSettingObserver (AbstractConfiguration.ENABLED_MPE_ZONES, surface::updateMPE);
             this.configuration.addSettingObserver (AbstractConfiguration.MPE_PITCHBEND_RANGE, surface::updateMPEPitchbendRange);
-            this.configuration.addSettingObserver (PushConfiguration.PER_PAD_PITCHBEND, () -> surface.enablePerPadPitchbend (this.configuration.isPerPadPitchbend ()));
-            this.configuration.addSettingObserver (PushConfiguration.IN_TUNE_LOCATION, () -> surface.setInTuneLocation (this.configuration.getInTuneLocation ()));
-            this.configuration.addSettingObserver (PushConfiguration.IN_TUNE_WIDTH, () -> surface.setInTuneWidth (this.configuration.getInTuneWidth ()));
-            this.configuration.addSettingObserver (PushConfiguration.IN_TUNE_SLIDE_HEIGHT, () -> surface.setSlideHeight (this.configuration.getInTuneSlideHeight ()));
+            this.configuration.addSettingObserver (PushConfiguration.PER_PAD_PITCHBEND, () -> surface.sendPerPadPitchbendActive (this.configuration.isPerPadPitchbend ()));
+            this.configuration.addSettingObserver (PushConfiguration.IN_TUNE_LOCATION, () -> surface.sendInTuneLocation (this.configuration.getInTuneLocation ()));
+            this.configuration.addSettingObserver (PushConfiguration.IN_TUNE_WIDTH, () -> surface.sendInTuneWidth (this.configuration.getInTuneWidth ()));
+            this.configuration.addSettingObserver (PushConfiguration.IN_TUNE_SLIDE_HEIGHT, () -> surface.sendSlideHeight (this.configuration.getInTuneSlideHeight ()));
+
+            this.configuration.addSettingObserver (PushConfiguration.PEDAL_1, surface::sendPedals);
+            this.configuration.addSettingObserver (PushConfiguration.PEDAL_2, surface::sendPedals);
+            this.configuration.addSettingObserver (PushConfiguration.PREAMP_TYPE_1, surface::sendPreamp1Type);
+            this.configuration.addSettingObserver (PushConfiguration.PREAMP_TYPE_2, surface::sendPreamp2Type);
+            this.configuration.addSettingObserver (PushConfiguration.PREAMP_GAIN_1, surface::sendPreamp1Gain);
+            this.configuration.addSettingObserver (PushConfiguration.PREAMP_GAIN_2, surface::sendPreamp2Gain);
+            this.configuration.addSettingObserver (PushConfiguration.AUDIO_OUTPUTS, surface::sendOutputConfiguration);
         }
 
         this.createScaleObservers (this.configuration);
@@ -679,7 +689,7 @@ public class PushControllerSetup extends AbstractControllerSetup<PushControlSurf
         else
         {
             this.addButton (ButtonID.LAYOUT, "Layout", new LayoutCommand (this.model, surface), PushControlSurface.PUSH_BUTTON_LAYOUT);
-            this.addButton (ButtonID.SETUP, "Setup", new SetupCommand (this.pushVersion, this.model, surface), PushControlSurface.PUSH_BUTTON_SETUP, () -> modeManager.isActive (Modes.SETUP, Modes.CONFIGURATION, Modes.INFO));
+            this.addButton (ButtonID.SETUP, "Setup", new SetupCommand (this.pushVersion, this.model, surface), PushControlSurface.PUSH_BUTTON_SETUP, () -> modeManager.isActive (Modes.SETUP, Modes.CONFIGURATION, Modes.INFO, Modes.AUDIO));
             this.addButton (ButtonID.CONVERT, "Convert", new ConvertCommand<> (this.model, surface), PushControlSurface.PUSH_BUTTON_CONVERT, () -> {
                 if (!this.model.canConvertClip ())
                     return 0;

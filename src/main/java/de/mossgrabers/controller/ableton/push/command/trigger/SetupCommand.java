@@ -15,7 +15,7 @@ import de.mossgrabers.framework.utils.ButtonEvent;
 
 
 /**
- * Command to Setup the hardware of Push 2.
+ * Command to Setup the hardware of Push 2/3.
  *
  * @author Jürgen Moßgraber
  */

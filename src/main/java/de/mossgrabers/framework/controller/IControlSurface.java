@@ -577,4 +577,10 @@ public interface IControlSurface<C extends Configuration>
      * @param observer The observer to register
      */
     void addKnobSensitivityObserver (ISensitivityCallback observer);
+
+
+    /**
+     * Consume all pad up events.
+     */
+    void consumePads ();
 }

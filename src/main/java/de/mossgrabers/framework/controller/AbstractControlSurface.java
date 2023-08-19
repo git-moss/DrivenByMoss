@@ -199,6 +199,16 @@ public abstract class AbstractControlSurface<C extends Configuration> implements
     }
 
 
+    /** {@inheritDoc} */
+    @Override
+    public void consumePads ()
+    {
+        final int size = this.padGrid.getRows () * this.padGrid.getCols ();
+        for (int i = 0; i < size; i++)
+            this.getButton (ButtonID.get (ButtonID.PAD1, i)).setConsumed ();
+    }
+
+
     /**
      * Create all lights for the light guide.
      */

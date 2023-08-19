@@ -457,6 +457,7 @@ public class PushControlSurface extends AbstractControlSurface<PushConfiguration
         0x01,
         0x01
     };
+    private static final String      SYSEX_ZERO_PADDING                   = " 00 00 00 00 00 00 00 00 00 00 00 00 00";
 
     private static final int         PAD_VELOCITY_CURVE_CHUNK_SIZE        = 16;
     private static final int         NUM_VELOCITY_CURVE_ENTRIES           = 128;
@@ -643,6 +644,22 @@ public class PushControlSurface extends AbstractControlSurface<PushConfiguration
 
 
     /**
+     * Send the pad threshold.
+     */
+    public void sendPadThreshold ()
+    {
+        final int [] args = new int [9];
+        args[0] = 27;
+        add7L5M (args, 1, 33); // threshold0
+        add7L5M (args, 3, 31); // threshold1
+        final int padSensitivity = this.configuration.getPadSensitivity ();
+        add7L5M (args, 5, PUSH2_CPMIN[padSensitivity]); // cpmin
+        add7L5M (args, 7, PUSH2_CPMAX[padSensitivity]); // cpmax
+        this.sendSysEx (args);
+    }
+
+
+    /**
      * Set the pad velocity of Push 2.
      */
     public void sendPadVelocityCurve ()
@@ -657,6 +674,198 @@ public class PushControlSurface extends AbstractControlSurface<PushConfiguration
                 args[i + 2] = velocities[index + i];
             this.sendSysEx (args);
         }
+    }
+
+
+    /**
+     * Send the display brightness.
+     */
+    public void sendDisplayBrightness ()
+    {
+        final int brightness = this.configuration.getDisplayBrightness () * 255 / 100;
+        this.sendSysEx (new int []
+        {
+            8,
+            brightness & 127,
+            brightness >> 7 & 1
+        });
+    }
+
+
+    /**
+     * Send the LED brightness.
+     */
+    public void sendLEDBrightness ()
+    {
+        final int brightness = this.configuration.getLedBrightness () * 127 / 100;
+        this.sendSysEx (new int []
+        {
+            6,
+            brightness
+        });
+    }
+
+
+    /**
+     * Turn MPE on/off (only Push 3).
+     *
+     * @param enable True to enable MPE
+     */
+    public void sendMPEActive (final boolean enable)
+    {
+        // Same command as sendPressureMode
+        this.sendSysEx (enable ? "1E 02" : "1E 01");
+    }
+
+
+    /**
+     * Turn per-pad pitchbend on/off (only Push 3).
+     *
+     * @param enable True to enable
+     */
+    public void sendPerPadPitchbendActive (final boolean enable)
+    {
+        this.sendSysEx ("26 07 08 0" + (enable ? "2" : "0") + " 00");
+    }
+
+
+    /**
+     * Set 'In tune' location to Finger (1) or Pad (0) (only Push 3).
+     *
+     * @param inTuneLocation The in-tune location
+     */
+    public void sendInTuneLocation (final int inTuneLocation)
+    {
+        this.sendSysEx ("26 07 0E 0" + inTuneLocation + " 00");
+    }
+
+
+    /**
+     * Set 'In tune' width (only Push 3).
+     *
+     * @param inTuneWidthIndex The index of the in-tune width option
+     */
+    public void sendInTuneWidth (final int inTuneWidthIndex)
+    {
+        this.sendSysEx ("26 07 14 " + StringUtils.toHexStr (TUNE_WIDTH_VALUES[inTuneWidthIndex]) + " 00");
+    }
+
+
+    /**
+     * Set slide height (only Push 3).
+     *
+     * @param slideHeightIndex The index of the slide height option
+     */
+    public void sendSlideHeight (final int slideHeightIndex)
+    {
+        this.sendSysEx ("26 07 24 " + StringUtils.toHexStr (SLIDE_HEIGHT_VALUES[slideHeightIndex]) + " 00");
+    }
+
+
+    /**
+     * Send pedal updates to either foot switch or as a CV output (only Push 3). Read from the
+     * configuration.
+     */
+    public void sendPedals ()
+    {
+        final boolean useCV1 = this.configuration.getPedal1 () > 0;
+        final boolean useCV2 = this.configuration.getPedal2 () > 0;
+        final int value;
+        if (useCV1)
+            value = useCV2 ? 0x0F : 0x43;
+        else
+            value = useCV2 ? 0x1C : 0x50;
+        this.sendSysEx ("37 26 " + StringUtils.toHexStr (value) + SYSEX_ZERO_PADDING);
+    }
+
+
+    /**
+     * Set the pre-amp 1 type (only Push 3).
+     */
+    public void sendPreamp1Type ()
+    {
+        // 0 = Line, 1 = Instrument, 2 = High
+        final int preampType = this.configuration.getPreamp1Type ();
+        this.sendSysEx ("37 1A " + StringUtils.toHexStr (preampType) + SYSEX_ZERO_PADDING);
+    }
+
+
+    /**
+     * Set the pre-amp 2 type (only Push 3).
+     */
+    public void sendPreamp2Type ()
+    {
+        // 0 = Line, 1 = Instrument, 2 = High
+        final int preampType = this.configuration.getPreamp2Type ();
+        this.sendSysEx ("37 1B " + StringUtils.toHexStr (preampType) + SYSEX_ZERO_PADDING);
+    }
+
+
+    /**
+     * Set the (digital) pre-amp 1 gain (only Push 3).
+     */
+    public void sendPreamp1Gain ()
+    {
+        // The gain in steps of two (1dB = 2) in the range of 0x00 (20dB) to 0x28 (no gain)
+        final int preampGain = (PushConfiguration.PREAMP_GAIN_OPTIONS.length - 1 - this.configuration.getPreamp1Gain ()) * 2;
+        this.sendSysEx ("37 02 " + StringUtils.toHexStr (preampGain) + SYSEX_ZERO_PADDING);
+    }
+
+
+    /**
+     * Set the (digital) pre-amp 2 gain (only Push 3).
+     */
+    public void sendPreamp2Gain ()
+    {
+        // The gain in steps of two (1dB = 2) in the range of 0x00 (20dB) to 0x28 (no gain)
+        final int preampGain = (PushConfiguration.PREAMP_GAIN_OPTIONS.length - 1 - this.configuration.getPreamp2Gain ()) * 2;
+        this.sendSysEx ("37 03 " + StringUtils.toHexStr (preampGain) + SYSEX_ZERO_PADDING);
+    }
+
+
+    /**
+     * Set the output configuration (only Push 3).
+     */
+    public void sendOutputConfiguration ()
+    {
+        // 0 = Headphones 1/2 - Speaker 1/2, 1 = Headphones 3/4 - Speaker 1/2, 2 = Headphones 1/2 -
+        // Speaker 3/4
+        final int audioOutputs = this.configuration.getAudioOutputs ();
+        final int value = audioOutputs == 0 ? 0 : audioOutputs + 1;
+        this.sendSysEx ("37 11 " + StringUtils.toHexStr (value) + SYSEX_ZERO_PADDING);
+    }
+
+
+    /**
+     * Send SysEx to the Push 2/3.
+     *
+     * @param parameters The parameters to send
+     */
+    public void sendSysEx (final int [] parameters)
+    {
+        this.output.sendSysex (SYSEX_HEADER_TEXT + StringUtils.toHexStr (parameters) + "F7");
+    }
+
+
+    /**
+     * Send SysEx to the Push 2/3.
+     *
+     * @param parameters The parameters to send
+     */
+    public void sendSysEx (final String parameters)
+    {
+        this.output.sendSysex (SYSEX_HEADER_TEXT + parameters + " F7");
+    }
+
+
+    /**
+     * Send SysEx to the Push 1.
+     *
+     * @param parameters The parameters to send
+     */
+    public void sendSysExPush1 (final String parameters)
+    {
+        this.output.sendSysex (SYSEX_HEADER_TEXT_PUSH1 + parameters + " F7");
     }
 
 
@@ -759,144 +968,10 @@ public class PushControlSurface extends AbstractControlSurface<PushConfiguration
     }
 
 
-    /**
-     * Send the pad threshold.
-     */
-    public void sendPadThreshold ()
-    {
-        final int [] args = new int [9];
-        args[0] = 27;
-        add7L5M (args, 1, 33); // threshold0
-        add7L5M (args, 3, 31); // threshold1
-        final int padSensitivity = this.configuration.getPadSensitivity ();
-        add7L5M (args, 5, PUSH2_CPMIN[padSensitivity]); // cpmin
-        add7L5M (args, 7, PUSH2_CPMAX[padSensitivity]); // cpmax
-        this.sendSysEx (args);
-    }
-
-
     private static void add7L5M (final int [] array, final int index, final int value)
     {
         array[index] = value & 127;
         array[index + 1] = value >> 7 & 31;
-    }
-
-
-    /**
-     * Send the display brightness.
-     */
-    public void sendDisplayBrightness ()
-    {
-        final int brightness = this.configuration.getDisplayBrightness () * 255 / 100;
-        this.sendSysEx (new int []
-        {
-            8,
-            brightness & 127,
-            brightness >> 7 & 1
-        });
-    }
-
-
-    /**
-     * Send the LED brightness.
-     */
-    public void sendLEDBrightness ()
-    {
-        final int brightness = this.configuration.getLedBrightness () * 127 / 100;
-        this.sendSysEx (new int []
-        {
-            6,
-            brightness
-        });
-    }
-
-
-    /**
-     * Turn MPE on/off.
-     *
-     * @param enable True to enable MPE
-     */
-    public void enableMPE (final boolean enable)
-    {
-        // Same command as sendPressureMode
-        this.sendSysEx (enable ? "1E 02" : "1E 01");
-    }
-
-
-    /**
-     * Turn per-pad pitchbend on/off.
-     *
-     * @param enable True to enable
-     */
-    public void enablePerPadPitchbend (final boolean enable)
-    {
-        this.sendSysEx ("26 07 08 0" + (enable ? "2" : "0") + " 00");
-    }
-
-
-    /**
-     * Set 'In tune' location to Finger (1) or Pad (0).
-     *
-     * @param inTuneLocation The in-tune location
-     */
-    public void setInTuneLocation (final int inTuneLocation)
-    {
-        this.sendSysEx ("26 07 0E 0" + inTuneLocation + " 00");
-    }
-
-
-    /**
-     * Set 'In tune' width.
-     *
-     * @param inTuneWidthIndex The index of the in-tune width option
-     */
-    public void setInTuneWidth (final int inTuneWidthIndex)
-    {
-        this.sendSysEx ("26 07 14 " + StringUtils.toHexStr (TUNE_WIDTH_VALUES[inTuneWidthIndex]) + " 00");
-    }
-
-
-    /**
-     * Set slide height.
-     *
-     * @param slideHeightIndex The index of the slide height option
-     */
-    public void setSlideHeight (final int slideHeightIndex)
-    {
-        this.sendSysEx ("26 07 24 " + StringUtils.toHexStr (SLIDE_HEIGHT_VALUES[slideHeightIndex]) + " 00");
-    }
-
-
-    /**
-     * Send SysEx to the Push 2/3.
-     *
-     * @param parameters The parameters to send
-     */
-    public void sendSysEx (final int [] parameters)
-    {
-        this.output.sendSysex (SYSEX_HEADER_TEXT + StringUtils.toHexStr (parameters) + "F7");
-    }
-
-
-    /**
-     * Send SysEx to the Push 2/3.
-     *
-     * @param parameters The parameters to send
-     */
-    public void sendSysEx (final String parameters)
-    {
-        this.output.sendSysex (SYSEX_HEADER_TEXT + parameters + " F7");
-    }
-
-
-    /**
-     * Send SysEx to the Push 1.
-     *
-     * @param parameters The parameters to send
-     */
-    public void sendSysExPush1 (final String parameters)
-    {
-        this.output.sendSysex (SYSEX_HEADER_TEXT_PUSH1 + parameters + " F7");
     }
 
 
@@ -1150,20 +1225,20 @@ public class PushControlSurface extends AbstractControlSurface<PushConfiguration
 
 
     /**
-     * Update MPE on/off state depending on selected view and MPE setting.
+     * Update MPE on/off state depending on selected view and MPE setting (only Push 3).
      */
     public void updateMPE ()
     {
         final boolean mpeEnabled = this.getViewManager ().getActive () instanceof IExpressionView && this.configuration.isMPEEnabled ();
         final INoteInput input = this.input.getDefaultNoteInput ();
         input.enableMPE (mpeEnabled);
-        this.enableMPE (mpeEnabled);
+        this.sendMPEActive (mpeEnabled);
         this.rebindGrid ();
     }
 
 
     /**
-     * Update the MPE pitchbend range.
+     * Update the MPE pitchbend range (only Push 3).
      */
     public void updateMPEPitchbendRange ()
     {
