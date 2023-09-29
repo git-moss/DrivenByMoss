@@ -97,7 +97,8 @@ public abstract class AbstractSessionView<S extends IControlSurface<C>, C extend
     @Override
     public void onGridNote (final int note, final int velocity)
     {
-        if (this.surface.isShiftPressed ())
+        final boolean isAlternateFunction = this.isAlternateFunction ();
+        if (isAlternateFunction)
             this.wasAlternateInteractionUsed = true;
 
         final Pair<Integer, Integer> padPos = this.getPad (note);
@@ -118,7 +119,7 @@ public abstract class AbstractSessionView<S extends IControlSurface<C>, C extend
 
         if (!track.isRecArm () || slot.hasContent ())
         {
-            slot.launch (isPressed, this.isAlternateFunction ());
+            slot.launch (isPressed, isAlternateFunction);
             return;
         }
 

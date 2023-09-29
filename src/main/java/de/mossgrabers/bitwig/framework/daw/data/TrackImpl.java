@@ -351,7 +351,9 @@ public class TrackImpl extends ChannelImpl implements ITrack
     @Override
     public void createClip (final int slotIndex, final int lengthInBeats)
     {
-        this.track.createNewLauncherClip (slotIndex, lengthInBeats);
+        // createNewLauncherClip requires an absolute position and is not paged!
+        final int offset = this.slotBank.getScrollPosition ();
+        this.track.createNewLauncherClip (offset + slotIndex, lengthInBeats);
     }
 
 

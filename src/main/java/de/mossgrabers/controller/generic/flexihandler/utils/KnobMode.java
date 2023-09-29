@@ -16,11 +16,13 @@ public enum KnobMode
 {
     /** Absolute values: 0. */
     ABSOLUTE("Absolute (push button: Button down > 0, button up = 0)"),
-    /** Relative values encoded as twos complement: 1. */
+    /** Relative values encoded as twos complement. */
     RELATIVE_TWOS_COMPLEMENT("Relative: Twos Complement (1-64 increment, 127-65 decrement)"),
-    /** Relative values encoded as signed bit: 2. */
-    RELATIVE_SIGNED_BIT("Relative: Signed Bit (1-63 increment, 65-127 decrement)"),
-    /** Relative values encoded as offset binary: 3. */
+    /** Relative values encoded as signed bit. */
+    RELATIVE_SIGNED_BIT("Relative: Signed Bit (65-127 increment, 1-63 decrement)"),
+    /** Relative values encoded as signed bit 2. */
+    RELATIVE_SIGNED_BIT_2("Relative: Signed Bit 2 (1-63 increment, 65-127 decrement)"),
+    /** Relative values encoded as offset binary. */
     RELATIVE_OFFSET_BINARY("Relative: Offset Binary (65-127 increment, 63-0 decrement)"),
     /** Absolute values for toggle buttons: 4. */
     ABSOLUTE_TOGGLE("Absolute (toggle button: 1st press > 0, 2nd press = 0)");

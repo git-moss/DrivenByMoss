@@ -24,6 +24,7 @@ public abstract class AbstractHandler implements IFlexiCommandHandler
 
     protected final IValueChanger                                                   absoluteLowResValueChanger;
     protected final IValueChanger                                                   signedBitRelativeValueChanger;
+    protected final IValueChanger                                                   signedBit2RelativeValueChanger;
     protected final IValueChanger                                                   offsetBinaryRelativeValueChanger;
 
     protected final IModel                                                          model;
@@ -42,9 +43,10 @@ public abstract class AbstractHandler implements IFlexiCommandHandler
      * @param configuration The configuration
      * @param absoluteLowResValueChanger The default absolute value changer in low res mode
      * @param signedBitRelativeValueChanger The signed bit relative value changer
+     * @param signedBit2RelativeValueChanger The signed bit relative value changer
      * @param offsetBinaryRelativeValueChanger The offset binary relative value changer
      */
-    protected AbstractHandler (final IModel model, final GenericFlexiControlSurface surface, final GenericFlexiConfiguration configuration, final IValueChanger absoluteLowResValueChanger, final IValueChanger signedBitRelativeValueChanger, final IValueChanger offsetBinaryRelativeValueChanger)
+    protected AbstractHandler (final IModel model, final GenericFlexiControlSurface surface, final GenericFlexiConfiguration configuration, final IValueChanger absoluteLowResValueChanger, final IValueChanger signedBitRelativeValueChanger, final IValueChanger signedBit2RelativeValueChanger, final IValueChanger offsetBinaryRelativeValueChanger)
     {
         this.model = model;
         this.surface = surface;
@@ -52,6 +54,7 @@ public abstract class AbstractHandler implements IFlexiCommandHandler
         this.mvHelper = new MVHelper<> (model, surface);
         this.absoluteLowResValueChanger = absoluteLowResValueChanger;
         this.signedBitRelativeValueChanger = signedBitRelativeValueChanger;
+        this.signedBit2RelativeValueChanger = signedBit2RelativeValueChanger;
         this.offsetBinaryRelativeValueChanger = offsetBinaryRelativeValueChanger;
     }
 
@@ -71,6 +74,8 @@ public abstract class AbstractHandler implements IFlexiCommandHandler
                 return this.model.getValueChanger ();
             case RELATIVE_SIGNED_BIT:
                 return this.signedBitRelativeValueChanger;
+            case RELATIVE_SIGNED_BIT_2:
+                return this.signedBit2RelativeValueChanger;
             case RELATIVE_OFFSET_BINARY:
                 return this.offsetBinaryRelativeValueChanger;
         }

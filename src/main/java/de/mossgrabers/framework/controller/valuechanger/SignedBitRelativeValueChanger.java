@@ -5,8 +5,9 @@
 package de.mossgrabers.framework.controller.valuechanger;
 
 /**
- * E.g. used by the MCU jug wheel (@see RelativeEncoding.SIGNED_BIT).<br/>
- * [0..127] = [0..63,0,-1..-63] speed.
+ * Relative Signed Bit. If the most sign bit is set, Then the offset is positive. The lower 6
+ * significant bits are the offset. The offset value is formed as 0svvvvvv. Where s is the sign or
+ * direction and vvvvvv is the number of ticks turned. E.g. used by Mackie HUI.
  *
  * @author Jürgen Moßgraber
  */
@@ -28,7 +29,9 @@ public class SignedBitRelativeValueChanger extends TwosComplementValueChanger
     @Override
     public int decode (final int control)
     {
-        return control < 64 ? control : 64 - control;
+        if (control == 64)
+            return 0;
+        return control > 64 ? control - 64 : -control;
     }
 
 
@@ -36,6 +39,6 @@ public class SignedBitRelativeValueChanger extends TwosComplementValueChanger
     @Override
     public int encode (final int speed)
     {
-        return speed <= 0 ? 64 + Math.abs (speed) : speed;
+        return speed < 0 ? -speed : speed + 64;
     }
 }

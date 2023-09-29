@@ -96,7 +96,7 @@ public class TrackSendMode<S extends IControlSurface<C>, C extends Configuration
      */
     public TrackSendMode (final int sendIndex, final S surface, final IModel model, final boolean isAbsolute, final List<ContinuousID> controls, final BooleanSupplier isAlternativeFunction)
     {
-        super ("Send", surface, model, isAbsolute, controls, isAlternativeFunction);
+        super ("Send " + (sendIndex + 1), surface, model, isAbsolute, controls, isAlternativeFunction);
 
         this.sendIndex = sendIndex;
 

@@ -46,12 +46,13 @@ public class TrackHandler extends AbstractHandler
      * @param configuration The configuration
      * @param absoluteLowResValueChanger The default absolute value changer in low res mode
      * @param signedBitRelativeValueChanger The signed bit relative value changer
+     * @param signedBit2RelativeValueChanger The signed bit relative value changer
      * @param offsetBinaryRelativeValueChanger The offset binary relative value changer
      * @param clipLauncherNavigator Access to helper functions to navigate the clip launcher
      */
-    public TrackHandler (final IModel model, final GenericFlexiControlSurface surface, final GenericFlexiConfiguration configuration, final IValueChanger absoluteLowResValueChanger, final IValueChanger signedBitRelativeValueChanger, final IValueChanger offsetBinaryRelativeValueChanger, final ClipLauncherNavigator clipLauncherNavigator)
+    public TrackHandler (final IModel model, final GenericFlexiControlSurface surface, final GenericFlexiConfiguration configuration, final IValueChanger absoluteLowResValueChanger, final IValueChanger signedBitRelativeValueChanger, final IValueChanger signedBit2RelativeValueChanger, final IValueChanger offsetBinaryRelativeValueChanger, final ClipLauncherNavigator clipLauncherNavigator)
     {
-        super (model, surface, configuration, absoluteLowResValueChanger, signedBitRelativeValueChanger, offsetBinaryRelativeValueChanger);
+        super (model, surface, configuration, absoluteLowResValueChanger, signedBitRelativeValueChanger, signedBit2RelativeValueChanger, offsetBinaryRelativeValueChanger);
 
         this.clipLauncherNavigator = clipLauncherNavigator;
         this.toggleTrackBankCommand = new ToggleTrackBanksCommand<> (model, surface);

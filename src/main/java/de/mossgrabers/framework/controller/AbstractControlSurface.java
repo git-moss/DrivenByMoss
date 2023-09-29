@@ -755,12 +755,7 @@ public abstract class AbstractControlSurface<C extends Configuration> implements
         // an interval
         this.textDisplays.forEach (ITextDisplay::forceFlush);
 
-        // Refresh all button LEDs, includes pad grid
-        this.buttons.forEach ( (id, button) -> {
-            final IHwLight light = button.getLight ();
-            if (light != null)
-                light.forceFlush ();
-        });
+        this.flushButtonLEDs ();
 
         // Refresh all knob/fader LEDs
         this.continuous.forEach ( (id, control) -> control.forceFlush ());
@@ -770,6 +765,18 @@ public abstract class AbstractControlSurface<C extends Configuration> implements
 
         if (this.lightGuide != null)
             this.lightGuide.forceFlush ();
+    }
+
+
+    /** {@inheritDoc} */
+    @Override
+    public void flushButtonLEDs ()
+    {
+        this.buttons.forEach ( (id, button) -> {
+            final IHwLight light = button.getLight ();
+            if (light != null)
+                light.forceFlush ();
+        });
     }
 
 

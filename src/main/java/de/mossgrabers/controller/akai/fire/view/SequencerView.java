@@ -169,6 +169,9 @@ public class SequencerView extends AbstractNoteSequencerView<FireControlSurface,
             this.onOctaveUp (ButtonEvent.DOWN);
         else
             this.onOctaveDown (ButtonEvent.DOWN);
+
+        if (this.surface.isSelectPressed ())
+            this.surface.setTriggerConsumed (ButtonID.SELECT);
     }
 
 

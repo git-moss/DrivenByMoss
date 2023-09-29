@@ -512,6 +512,12 @@ public interface IControlSurface<C extends Configuration>
 
 
     /**
+     * Refresh all button LEDs, includes pad grid.
+     */
+    void flushButtonLEDs ();
+
+
+    /**
      * Clear all hardware output caches.
      */
     void clearCache ();

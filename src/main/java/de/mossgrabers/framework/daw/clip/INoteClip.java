@@ -613,4 +613,12 @@ public interface INoteClip extends IClip, IPinnable
      * @return True if it can be scrolled
      */
     boolean canScrollStepsForwards ();
+
+
+    /**
+     * Get the range of the transpose attribute.
+     * 
+     * @return The range of the transpose attribute e.g. 96.0 for [-96,96]
+     */
+    double getStepTransposeRange ();
 }

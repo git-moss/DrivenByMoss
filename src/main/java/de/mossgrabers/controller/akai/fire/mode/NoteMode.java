@@ -9,7 +9,6 @@ import de.mossgrabers.controller.akai.fire.controller.FireControlSurface;
 import de.mossgrabers.controller.akai.fire.graphics.canvas.component.TitleValueComponent;
 import de.mossgrabers.framework.controller.ButtonID;
 import de.mossgrabers.framework.controller.ContinuousID;
-import de.mossgrabers.framework.controller.display.IDisplay;
 import de.mossgrabers.framework.controller.display.IGraphicDisplay;
 import de.mossgrabers.framework.controller.valuechanger.IValueChanger;
 import de.mossgrabers.framework.daw.IModel;
@@ -57,9 +56,8 @@ public class NoteMode extends AbstractNoteParameterMode<FireControlSurface, Fire
         super ("Note Edit", surface, model, false, null, KNOB_IDS);
 
         final IValueChanger valueChanger = model.getValueChanger ();
-        final IDisplay display = surface.getDisplay ();
 
-        this.transposeParameter = new NoteParameter (NoteAttribute.TRANSPOSE, display, model, this, valueChanger);
+        this.transposeParameter = new NoteParameter (NoteAttribute.TRANSPOSE, null, model, this, valueChanger);
 
         this.provider = new FixedParameterProvider (
                 // Gain
@@ -83,7 +81,7 @@ public class NoteMode extends AbstractNoteParameterMode<FireControlSurface, Fire
                 // Velocity Spread
                 new NoteParameter (NoteAttribute.VELOCITY_SPREAD, null, model, this, valueChanger),
                 // Repeat Count
-                new NoteParameter (NoteAttribute.REPEAT, display, model, this, valueChanger));
+                new NoteParameter (NoteAttribute.REPEAT, null, model, this, valueChanger));
 
         this.setParameterProvider (this.provider);
         this.setParameterProvider (ButtonID.ALT, this.altProvider);

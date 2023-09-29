@@ -352,7 +352,7 @@ public abstract class AbstractConfiguration implements Configuration
         TOGGLE_ARRANGER_OVERDUB,
         /** Toggle clip overdub. */
         TOGGLE_CLIP_OVERDUB,
-        /** Toggle clip overdub. */
+        /** Toggle record arm. */
         TOGGLE_REC_ARM
     }
 

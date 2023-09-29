@@ -36,6 +36,9 @@ import java.util.List;
  */
 public class CursorClipImpl implements INoteClip
 {
+    /** The range of the transpose attribute. */
+    private static final double      TRANSPOSE_RANGE = 96.0;
+
     private final IHost              host;
     private final IValueChanger      valueChanger;
     private final int                numSteps;
@@ -43,9 +46,9 @@ public class CursorClipImpl implements INoteClip
 
     private final IStepInfo [] [] [] launcherData;
     private final PinnableCursorClip launcherClip;
-    private int                      editPage  = 0;
+    private int                      editPage        = 0;
     private double                   stepLength;
-    private final List<NotePosition> editSteps = new ArrayList<> ();
+    private final List<NotePosition> editSteps       = new ArrayList<> ();
 
 
     /**
@@ -321,7 +324,7 @@ public class CursorClipImpl implements INoteClip
     @Override
     public String getFormattedAccent ()
     {
-        return Math.round (this.getAccent () * 200 - 100) + "%";
+        return Math.round (this.getAccent ()) + "%";
     }
 
 
@@ -329,7 +332,7 @@ public class CursorClipImpl implements INoteClip
     @Override
     public double getAccent ()
     {
-        return this.getClip ().getAccent ().get ();
+        return this.getClip ().getAccent ().get () * 200 - 100;
     }
 
 
@@ -345,9 +348,9 @@ public class CursorClipImpl implements INoteClip
     @Override
     public void changeAccent (final int control, final boolean slow)
     {
-        final boolean increase = this.valueChanger.isIncrease (control);
-        final double frac = slow ? TransportConstants.INC_FRACTION_ACCENT_SLOW : TransportConstants.INC_FRACTION_ACCENT;
-        this.getClip ().getAccent ().inc (increase ? frac : -frac);
+        final double offset = slow ? 1 : 10;
+        final double value = this.valueChanger.isIncrease (control) ? this.getAccent () + offset : this.getAccent () - offset;
+        this.getClip ().getAccent ().set (Math.max (0, Math.min (1, (value + 100) / 200)));
     }
 
 
@@ -650,7 +653,11 @@ public class CursorClipImpl implements INoteClip
     public void changeStepTranspose (final NotePosition notePosition, final int control)
     {
         final IStepInfo info = this.getStep (notePosition);
-        final double transpose = info.getTranspose () + this.valueChanger.calcSteppedKnobChange (control) / 10.0;
+        final double c = this.valueChanger.calcKnobChange (control) / this.valueChanger.getStepSize ();
+        double v = c > -1.0 && c < 1.0 ? 0.1 : 1.0;
+        if (!this.valueChanger.isIncrease (control))
+            v = -v;
+        final double transpose = info.getTranspose () + v;
         this.updateStepTranspose (notePosition, transpose);
     }
 
@@ -659,11 +666,19 @@ public class CursorClipImpl implements INoteClip
     @Override
     public void updateStepTranspose (final NotePosition notePosition, final double transpose)
     {
-        final double t = Math.min (24.0, Math.max (-24.0, transpose));
+        final double t = Math.min (TRANSPOSE_RANGE, Math.max (-TRANSPOSE_RANGE, transpose));
         final StepInfoImpl stepInfo = this.getUpdateableStep (notePosition);
         stepInfo.setTranspose (t);
         if (this.editSteps.isEmpty ())
             this.getNoteStep (notePosition).setTranspose (t);
+    }
+
+
+    /** {@inheritDoc} */
+    @Override
+    public double getStepTransposeRange ()
+    {
+        return TRANSPOSE_RANGE;
     }
 
 

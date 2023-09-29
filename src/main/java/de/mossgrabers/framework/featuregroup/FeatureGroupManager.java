@@ -78,8 +78,10 @@ public class FeatureGroupManager<E extends Enum<E>, F extends IFeatureGroup>
     public E get (final String featureGroupName)
     {
         for (final Entry<E, F> entry: this.featureGroups.entrySet ())
+        {
             if (featureGroupName.equals (entry.getValue ().getName ()))
                 return entry.getKey ();
+        }
         return null;
     }
 

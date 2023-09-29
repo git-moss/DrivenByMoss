@@ -191,12 +191,13 @@ public class MidiInputImpl implements IMidiInput
                 valueMatcher = this.port.createRelativeBinOffsetCCValueMatcher (channel, control, 127);
                 break;
 
+            // It seems the Bitwig implementations are flipped!
             case SIGNED_BIT:
-                valueMatcher = this.port.createRelativeSignedBitCCValueMatcher (channel, control, 127);
+                valueMatcher = this.port.createRelativeSignedBit2CCValueMatcher (channel, control, 127);
                 break;
 
             case SIGNED_BIT2:
-                valueMatcher = this.port.createRelativeSignedBit2CCValueMatcher (channel, control, 127);
+                valueMatcher = this.port.createRelativeSignedBitCCValueMatcher (channel, control, 127);
                 break;
 
             default:

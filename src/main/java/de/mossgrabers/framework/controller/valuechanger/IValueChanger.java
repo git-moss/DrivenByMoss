@@ -37,6 +37,14 @@ public interface IValueChanger
 
 
     /**
+     * Get the value for de-/increasing the value by '1' without any scaling.
+     *
+     * @return The step size
+     */
+    int getStepSize ();
+
+
+    /**
      * Set the sensitivity of the relative knob.
      *
      * @param sensitivity The sensitivity in the range [-100..100], 0 is the default, negative
@@ -69,7 +77,7 @@ public interface IValueChanger
 
     /**
      * Calculate the amount by which to change a value from the control value, depending on the step
-     * size and the given sensitivity. The result is rounded to integer and never 0.
+     * size. The result is rounded to integer and never 0.
      *
      * @param control The control value, depending on the specific encoding
      * @return The amount to change the value

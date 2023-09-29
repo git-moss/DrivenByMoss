@@ -14,7 +14,7 @@ import de.mossgrabers.framework.controller.ContinuousID;
 import de.mossgrabers.framework.controller.color.ColorManager;
 import de.mossgrabers.framework.controller.hardware.BindType;
 import de.mossgrabers.framework.controller.hardware.IHwButton;
-import de.mossgrabers.framework.controller.valuechanger.SignedBit2RelativeValueChanger;
+import de.mossgrabers.framework.controller.valuechanger.SignedBitRelativeValueChanger;
 import de.mossgrabers.framework.controller.valuechanger.TwosComplementValueChanger;
 import de.mossgrabers.framework.daw.IHost;
 import de.mossgrabers.framework.daw.IModel;
@@ -270,29 +270,29 @@ public class HUIControlSurface extends AbstractControlSurface<HUIConfiguration>
         Arrays.fill (HUI_BUTTON_UPDATE, false);
     }
 
-    public static final int                             KNOB_LED_MODE_OFF        = -1;
-    public static final int                             KNOB_LED_MODE_SINGLE_DOT = 0;
-    public static final int                             KNOB_LED_MODE_BOOST_CUT  = 1;
-    public static final int                             KNOB_LED_MODE_WRAP       = 2;
-    public static final int                             KNOB_LED_MODE_SPREAD     = 3;
+    public static final int                            KNOB_LED_MODE_OFF        = -1;
+    public static final int                            KNOB_LED_MODE_SINGLE_DOT = 0;
+    public static final int                            KNOB_LED_MODE_BOOST_CUT  = 1;
+    public static final int                            KNOB_LED_MODE_WRAP       = 2;
+    public static final int                            KNOB_LED_MODE_SPREAD     = 3;
 
     // Note: Parameters do not matter, only used relative
-    private static final TwosComplementValueChanger     ENCODER                  = new TwosComplementValueChanger (128, 1);
-    private static final SignedBit2RelativeValueChanger DECODER                  = new SignedBit2RelativeValueChanger (128, 1);
+    private static final TwosComplementValueChanger    ENCODER                  = new TwosComplementValueChanger (128, 1);
+    private static final SignedBitRelativeValueChanger DECODER                  = new SignedBitRelativeValueChanger (128, 1);
 
-    private final List<HUIControlSurface>               surfaces;
-    private final int                                   extenderOffset;
+    private final List<HUIControlSurface>              surfaces;
+    private final int                                  extenderOffset;
 
-    private final int []                                knobValues               = new int [8];
-    private final int []                                vuValuesL                = new int [8];
-    private final int []                                vuValuesR                = new int [8];
-    private final int []                                faderValues              = new int [9];
+    private final int []                               knobValues               = new int [8];
+    private final int []                               vuValuesL                = new int [8];
+    private final int []                               vuValuesR                = new int [8];
+    private final int []                               faderValues              = new int [9];
 
     // The currently selected zone (area of a group of buttons)
-    private int                                         zone;
+    private int                                        zone;
 
-    private final int []                                faderHiValues            = new int [9];
-    private final Map<Integer, IHwButton>               huiButtons               = new HashMap<> ();
+    private final int []                               faderHiValues            = new int [9];
+    private final Map<Integer, IHwButton>              huiButtons               = new HashMap<> ();
 
 
     /**

@@ -111,15 +111,6 @@ public class SessionView extends AbstractSessionView<LaunchpadControlSurface, La
 
     /** {@inheritDoc} */
     @Override
-    protected boolean isAlternateFunction ()
-    {
-        // Trigger alternate clip launch on shift button
-        return this.surface.isShiftPressed ();
-    }
-
-
-    /** {@inheritDoc} */
-    @Override
     public void onButton (final ButtonID buttonID, final ButtonEvent event, final int velocity)
     {
         super.onButton (buttonID, event, velocity);

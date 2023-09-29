@@ -5,10 +5,10 @@
 package de.mossgrabers.framework.controller.valuechanger;
 
 /**
- * E.g. used by HUI.<br/>
- * [1..63] = [-1..-63]<br/>
- * [64] = [0]<br/>
- * [65..127] = [1..63]
+ * Relative Signed Bit 2. If the most sign bit is not set, Then the offset is positive. The lower 6
+ * significant bits are the offset. This is the same as 'Relative Signed Bit' but with the direction
+ * of turn reversed. This is the method the Mackie Control Protocol uses. The offset value is formed
+ * as 0svvvvvv. Where s is the sign or direction and vvvvvv is the number of ticks turned.
  *
  * @author Jürgen Moßgraber
  */
@@ -30,9 +30,7 @@ public class SignedBit2RelativeValueChanger extends TwosComplementValueChanger
     @Override
     public int decode (final int control)
     {
-        if (control == 64)
-            return 0;
-        return control > 64 ? control - 64 : -control;
+        return control < 64 ? control : 64 - control;
     }
 
 
@@ -40,6 +38,6 @@ public class SignedBit2RelativeValueChanger extends TwosComplementValueChanger
     @Override
     public int encode (final int speed)
     {
-        return speed < 0 ? -speed : speed + 64;
+        return speed <= 0 ? 64 + Math.abs (speed) : speed;
     }
 }

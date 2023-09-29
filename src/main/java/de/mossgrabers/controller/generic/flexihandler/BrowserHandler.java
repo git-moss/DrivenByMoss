@@ -30,11 +30,12 @@ public class BrowserHandler extends AbstractHandler
      * @param configuration The configuration
      * @param absoluteLowResValueChanger The default absolute value changer in low res mode
      * @param signedBitRelativeValueChanger The signed bit relative value changer
+     * @param signedBit2RelativeValueChanger The signed bit relative value changer
      * @param offsetBinaryRelativeValueChanger The offset binary relative value changer
      */
-    public BrowserHandler (final IModel model, final GenericFlexiControlSurface surface, final GenericFlexiConfiguration configuration, final IValueChanger absoluteLowResValueChanger, final IValueChanger signedBitRelativeValueChanger, final IValueChanger offsetBinaryRelativeValueChanger)
+    public BrowserHandler (final IModel model, final GenericFlexiControlSurface surface, final GenericFlexiConfiguration configuration, final IValueChanger absoluteLowResValueChanger, final IValueChanger signedBitRelativeValueChanger, final IValueChanger signedBit2RelativeValueChanger, final IValueChanger offsetBinaryRelativeValueChanger)
     {
-        super (model, surface, configuration, absoluteLowResValueChanger, signedBitRelativeValueChanger, offsetBinaryRelativeValueChanger);
+        super (model, surface, configuration, absoluteLowResValueChanger, signedBitRelativeValueChanger, signedBit2RelativeValueChanger, offsetBinaryRelativeValueChanger);
     }
 
 

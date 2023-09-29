@@ -8,6 +8,7 @@ import de.mossgrabers.framework.controller.color.ColorEx;
 import de.mossgrabers.framework.daw.data.ISlot;
 import de.mossgrabers.framework.daw.data.ITrack;
 import de.mossgrabers.framework.graphics.Align;
+import de.mossgrabers.framework.graphics.IBounds;
 import de.mossgrabers.framework.graphics.IGraphicsConfiguration;
 import de.mossgrabers.framework.graphics.IGraphicsContext;
 import de.mossgrabers.framework.graphics.IGraphicsDimensions;
@@ -46,17 +47,18 @@ public class ClipListComponent implements IComponent
         final IGraphicsContext gc = info.getContext ();
         final IGraphicsDimensions dimensions = info.getDimensions ();
         final IGraphicsConfiguration configuration = info.getConfiguration ();
-        final double left = info.getBounds ().left ();
-        final double width = info.getBounds ().width ();
-        final double height = info.getBounds ().height ();
+        final IBounds bounds = info.getBounds ();
+        final double left = bounds.left ();
+        final double width = bounds.width ();
+        final double height = bounds.height ();
 
-        final double separatorSize = dimensions.getSeparatorSize ();
+        final double separatorSize = dimensions.getSeparatorSize () / 2;
         final double inset = dimensions.getInset ();
 
         final int size = this.items.size ();
         final double itemLeft = left + separatorSize;
         final double itemWidth = width - separatorSize;
-        final double itemHeight = height / size;
+        final double itemHeight = height / (size + 1);
         final double fontHeight = itemHeight > 30 ? itemHeight / 2 : itemHeight * 2 / 3;
         final double boxLeft = itemLeft + inset;
         final double boxWidth = fontHeight - 2 * separatorSize;

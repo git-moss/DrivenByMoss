@@ -162,7 +162,8 @@ public class NoteParameter extends AbstractParameterImpl
                 break;
 
             case TRANSPOSE:
-                normalizedValue = (stepInfo.getTranspose () + 24.0) / 48.0;
+                final double transposeRange = clip.getStepTransposeRange ();
+                normalizedValue = (stepInfo.getTranspose () + transposeRange) / (2 * transposeRange);
                 break;
 
             case CHANCE:
@@ -288,7 +289,8 @@ public class NoteParameter extends AbstractParameterImpl
                     break;
 
                 case TRANSPOSE:
-                    final double v = normalizedValue * 48.0 - 24.0;
+                    final double transposeRange = clip.getStepTransposeRange ();
+                    final double v = normalizedValue * 2 * transposeRange - transposeRange;
                     clip.updateStepTranspose (notePosition, v);
                     this.delayedNotify ("Pitch: %s", () -> String.format ("%.1f", Double.valueOf (v)));
                     break;

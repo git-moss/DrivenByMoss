@@ -343,7 +343,8 @@ public class NoteMode extends BaseMode<IItem> implements INoteMode
         }
 
         final NotePosition notePosition = notes.get (0);
-        final IStepInfo stepInfo = this.noteEditor.getClip ().getStep (notePosition);
+        final INoteClip clip = this.noteEditor.getClip ();
+        final IStepInfo stepInfo = clip.getStep (notePosition);
 
         if (this.page != Page.RECCURRENCE_PATTERN)
         {
@@ -433,7 +434,8 @@ public class NoteMode extends BaseMode<IItem> implements INoteMode
                     display.setCell (0, 4, "Pan").setCell (1, 4, StringUtils.formatPercentage (notePan)).setCell (2, 4, parameterPanValue, Format.FORMAT_PAN);
 
                     final double noteTranspose = stepInfo.getTranspose ();
-                    final int parameterTransposeValue = valueChanger.fromNormalizedValue ((noteTranspose + 24.0) / 48.0);
+                    final double transposeRange = clip.getStepTransposeRange ();
+                    final int parameterTransposeValue = valueChanger.fromNormalizedValue ((noteTranspose + transposeRange) / (2 * transposeRange));
                     display.setCell (0, 5, "Pitch").setCell (1, 5, String.format ("%.1f", Double.valueOf (noteTranspose))).setCell (2, 5, parameterTransposeValue, Format.FORMAT_PAN);
 
                     final double noteTimbre = stepInfo.getTimbre ();
@@ -525,7 +527,8 @@ public class NoteMode extends BaseMode<IItem> implements INoteMode
         }
 
         final NotePosition notePosition = notes.get (0);
-        final IStepInfo stepInfo = this.noteEditor.getClip ().getStep (notePosition);
+        final INoteClip clip = this.noteEditor.getClip ();
+        final IStepInfo stepInfo = clip.getStep (notePosition);
         final IValueChanger valueChanger = this.model.getValueChanger ();
 
         if (this.page != Page.RECCURRENCE_PATTERN)
@@ -615,7 +618,8 @@ public class NoteMode extends BaseMode<IItem> implements INoteMode
                 display.addParameterElementWithPlainMenu (MENU[4], false, null, null, false, "Pan", parameterPanValue, StringUtils.formatPercentage (notePan), this.isKnobTouched (4), parameterPanValue);
 
                 final double noteTranspose = stepInfo.getTranspose ();
-                final int parameterTransposeValue = valueChanger.fromNormalizedValue ((noteTranspose + 24.0) / 48.0);
+                final double transposeRange = clip.getStepTransposeRange ();
+                final int parameterTransposeValue = valueChanger.fromNormalizedValue ((noteTranspose + transposeRange) / (2 * transposeRange));
                 display.addParameterElementWithPlainMenu (MENU[5], false, null, null, false, "Pitch", parameterTransposeValue, String.format ("%.1f", Double.valueOf (noteTranspose)), this.isKnobTouched (5), parameterTransposeValue);
 
                 final double noteTimbre = stepInfo.getTimbre ();

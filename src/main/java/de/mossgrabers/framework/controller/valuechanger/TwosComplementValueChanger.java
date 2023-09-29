@@ -44,6 +44,14 @@ public class TwosComplementValueChanger implements IValueChanger
 
     /** {@inheritDoc} */
     @Override
+    public int getStepSize ()
+    {
+        return this.stepSize;
+    }
+
+
+    /** {@inheritDoc} */
+    @Override
     public void setSensitivity (final double sensitivity)
     {
         this.sensitivity = sensitivity;

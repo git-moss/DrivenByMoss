@@ -59,12 +59,13 @@ public class ModesHandler extends AbstractHandler
      * @param configuration The configuration
      * @param absoluteLowResValueChanger The default absolute value changer in low res mode
      * @param signedBitRelativeValueChanger The signed bit relative value changer
+     * @param signedBit2RelativeValueChanger The signed bit relative value changer
      * @param offsetBinaryRelativeValueChanger The offset binary relative value changer
      * @param host The host
      */
-    public ModesHandler (final IModel model, final GenericFlexiControlSurface surface, final GenericFlexiConfiguration configuration, final IValueChanger absoluteLowResValueChanger, final IValueChanger signedBitRelativeValueChanger, final IValueChanger offsetBinaryRelativeValueChanger, final IHost host)
+    public ModesHandler (final IModel model, final GenericFlexiControlSurface surface, final GenericFlexiConfiguration configuration, final IValueChanger absoluteLowResValueChanger, final IValueChanger signedBitRelativeValueChanger, final IValueChanger signedBit2RelativeValueChanger, final IValueChanger offsetBinaryRelativeValueChanger, final IHost host)
     {
-        super (model, surface, configuration, absoluteLowResValueChanger, signedBitRelativeValueChanger, offsetBinaryRelativeValueChanger);
+        super (model, surface, configuration, absoluteLowResValueChanger, signedBitRelativeValueChanger, signedBit2RelativeValueChanger, offsetBinaryRelativeValueChanger);
 
         this.host = host;
         this.modeManager = this.surface.getModeManager ();

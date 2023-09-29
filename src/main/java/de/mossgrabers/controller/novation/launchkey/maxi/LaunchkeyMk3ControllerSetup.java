@@ -97,6 +97,8 @@ public class LaunchkeyMk3ControllerSetup extends AbstractControllerSetup<Launchk
     };
     // @formatter:on
 
+    private boolean                         isReady           = false;
+
 
     /**
      * Constructor.
@@ -563,7 +565,7 @@ public class LaunchkeyMk3ControllerSetup extends AbstractControllerSetup<Launchk
             surface.setLaunchpadToDAW (true);
             this.waitForConnection ();
 
-        }, 1000);
+        }, 200);
     }
 
 
@@ -575,7 +577,13 @@ public class LaunchkeyMk3ControllerSetup extends AbstractControllerSetup<Launchk
         final LaunchkeyMk3ControlSurface surface = this.getSurface ();
         if (surface.isDAWConnected ())
         {
-            this.startup2 ();
+            // Sync modes to device
+            final IMidiOutput midiOutput = surface.getMidiOutput ();
+            midiOutput.sendCCEx (15, LaunchkeyMk3ControlSurface.LAUNCHKEY_MODE_SELECT, LaunchkeyMk3ControlSurface.KNOB_MODE_PAN);
+            midiOutput.sendCCEx (15, LaunchkeyMk3ControlSurface.LAUNCHKEY_FADER_SELECT, LaunchkeyMk3ControlSurface.FADER_MODE_VOLUME);
+            midiOutput.sendCCEx (15, LaunchkeyMk3ControlSurface.LAUNCHKEY_VIEW_SELECT, LaunchkeyMk3ControlSurface.PAD_MODE_SESSION);
+
+            this.host.scheduleTask ( () -> this.isReady = true, 200);
             return;
         }
 
@@ -583,19 +591,11 @@ public class LaunchkeyMk3ControllerSetup extends AbstractControllerSetup<Launchk
     }
 
 
-    /**
-     * DAW mode is ready. Update all states on the device.
-     */
-    private void startup2 ()
+    /** {@inheritDoc} */
+    @Override
+    public void flush ()
     {
-        final LaunchkeyMk3ControlSurface surface = this.getSurface ();
-
-        // Sync modes to device
-        final IMidiOutput midiOutput = surface.getMidiOutput ();
-        midiOutput.sendCCEx (15, LaunchkeyMk3ControlSurface.LAUNCHKEY_MODE_SELECT, LaunchkeyMk3ControlSurface.KNOB_MODE_PAN);
-        midiOutput.sendCCEx (15, LaunchkeyMk3ControlSurface.LAUNCHKEY_FADER_SELECT, LaunchkeyMk3ControlSurface.FADER_MODE_VOLUME);
-
-        // Flush display and LEDs
-        surface.forceFlush ();
+        if (this.isReady && this.getSurface ().isDAWConnected ())
+            super.flush ();
     }
 }
