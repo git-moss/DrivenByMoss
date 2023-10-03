@@ -123,7 +123,7 @@ public class ModelImpl extends AbstractModel
         else
             tb = this.bwCursorTrack.createSiblingsTrackBank (numTracks, numSends, numScenes, false, false);
 
-        this.sceneBank = tb.sceneBank ();
+        this.sceneBank = numScenes > 0 ? tb.sceneBank () : null;
 
         this.cursorTrack = new CursorTrackImpl (this, this.host, this.valueChanger, this.bwCursorTrack, this.rootTrackGroup, this.sceneBank, (ApplicationImpl) this.application, numSends, numScenes, numParamPages, numParams);
 
@@ -135,6 +135,9 @@ public class ModelImpl extends AbstractModel
         final int numFxTracks = this.modelSetup.getNumFxTracks ();
         final TrackBank effectTrackBank = controllerHost.createEffectTrackBank (numFxTracks, numSends, numScenes);
         this.effectTrackBank = new EffectTrackBankImpl (this.host, this.valueChanger, effectTrackBank, (CursorTrackImpl) this.cursorTrack, this.rootTrackGroup, (ApplicationImpl) this.application, numFxTracks, numScenes, numSends, numParamPages, numParams, this.trackBank);
+
+        if (modelSetup.wantsClipLauncherNavigator ())
+            this.clipLauncherNavigator = new ClipLauncherNavigatorImpl (controllerHost, this);
 
         //////////////////////////////////////////////////////////////////////////////
         // Create devices
@@ -314,5 +317,13 @@ public class ModelImpl extends AbstractModel
     public void ensureClip ()
     {
         this.getNoteClip (0, 0);
+    }
+
+
+    /** {@inheritDoc} */
+    @Override
+    public void cleanup ()
+    {
+        // Nothing to do
     }
 }

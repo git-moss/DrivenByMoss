@@ -4,12 +4,12 @@
 
 package de.mossgrabers.framework.mode.track;
 
-import de.mossgrabers.framework.ClipLauncherNavigator;
 import de.mossgrabers.framework.command.trigger.clip.TemporaryNewCommand;
 import de.mossgrabers.framework.configuration.Configuration;
 import de.mossgrabers.framework.controller.ButtonID;
 import de.mossgrabers.framework.controller.ContinuousID;
 import de.mossgrabers.framework.controller.IControlSurface;
+import de.mossgrabers.framework.daw.IClipLauncherNavigator;
 import de.mossgrabers.framework.daw.IModel;
 import de.mossgrabers.framework.daw.data.ITrack;
 import de.mossgrabers.framework.daw.data.bank.ITrackBank;
@@ -31,7 +31,7 @@ import java.util.function.BooleanSupplier;
  */
 public abstract class DefaultTrackMode<S extends IControlSurface<C>, C extends Configuration> extends AbstractParameterMode<S, C, ITrack>
 {
-    protected ClipLauncherNavigator clipLauncherNavigator = null;
+    protected final IClipLauncherNavigator clipLauncherNavigator;
 
 
     /**
@@ -80,6 +80,8 @@ public abstract class DefaultTrackMode<S extends IControlSurface<C>, C extends C
     protected DefaultTrackMode (final String name, final S surface, final IModel model, final boolean isAbsolute, final List<ContinuousID> controls, final BooleanSupplier isAlternativeFunction)
     {
         super (name, surface, model, isAbsolute, model.getCurrentTrackBank (), controls, isAlternativeFunction);
+
+        this.clipLauncherNavigator = this.model.getClipLauncherNavigator ();
 
         model.addTrackBankObserver (this::switchBanks);
     }

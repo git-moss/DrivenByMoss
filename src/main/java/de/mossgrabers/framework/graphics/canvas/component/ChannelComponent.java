@@ -109,7 +109,6 @@ public class ChannelComponent extends ChannelSelectComponent
         final double left = info.getBounds ().left ();
         final double width = info.getBounds ().width ();
         final double height = info.getBounds ().height ();
-
         final double halfWidth = width / 2;
 
         final double separatorSize = dimensions.getSeparatorSize ();
@@ -119,8 +118,8 @@ public class ChannelComponent extends ChannelSelectComponent
         final double controlsTop = dimensions.getControlsTop ();
         final double inset = dimensions.getInset ();
 
-        final int trackRowHeight = (int) (1.6 * unit);
-        final double trackRowTop = height - trackRowHeight - unit - separatorSize;
+        final double trackRowHeight = 1.2 * unit + 1;
+        final double trackRowTop = height - trackRowHeight - separatorSize;
 
         final double controlWidth = halfWidth - halfUnit - halfUnit / 2;
         final double controlStart = left + halfWidth + halfUnit - halfUnit / 2;
@@ -141,8 +140,6 @@ public class ChannelComponent extends ChannelSelectComponent
         final double volumeTextWidth = 1.4 * controlWidth;
         final double volumeTextLeft = faderLeft - volumeTextWidth - 2;
 
-        final double buttonHeight = (faderHeight - 4 * separatorSize) / 3;
-
         //
         // Drawing
         //
@@ -157,7 +154,7 @@ public class ChannelComponent extends ChannelSelectComponent
         final ColorEx backgroundColor = this.modifyIfOff (configuration.getColorBackground ());
 
         // Draw the background
-        gc.fillRectangle (left, menuHeight + 1, width, trackRowTop - (menuHeight + 1), this.footer.isSelected () ? this.modifyIfOff (configuration.getColorBackgroundLighter ()) : backgroundColor);
+        gc.fillRectangle (left, menuHeight + 1, width, trackRowTop - (menuHeight - 1), this.footer.isSelected () ? this.modifyIfOff (configuration.getColorBackgroundLighter ()) : backgroundColor);
 
         // Background of pan and slider area
         final ColorEx borderColor = this.modifyIfOff (configuration.getColorBorder ());
@@ -171,7 +168,7 @@ public class ChannelComponent extends ChannelSelectComponent
         final double leftColumn = left + inset - 1;
         if (this.type != ChannelType.MASTER && this.type != ChannelType.CUE && this.type != ChannelType.LAYER && this.crossfadeMode != -1)
         {
-            final ColorEx selColor = this.editType == EDIT_TYPE_CROSSFADER || this.editType == EDIT_TYPE_ALL ? editColor : ColorEx.ORANGE;
+            final ColorEx selColor = this.editType == EDIT_TYPE_CROSSFADER || this.editType == EDIT_TYPE_ALL ? editColor : ColorEx.darker (editColor);
             final double crossOptWidth = controlWidth / 3.0;
             this.drawButton (gc, leftColumn, controlsTop, crossOptWidth, panHeight + 2, backgroundColor, this.modifyIfOff (selColor), textColor, this.crossfadeMode == 0, "track/crossfade_a.svg", configuration, 0);
             this.drawButton (gc, leftColumn + crossOptWidth, controlsTop, crossOptWidth, panHeight + 2, backgroundColor, this.modifyIfOff (selColor), textColor, this.crossfadeMode == 1, "track/crossfade_ab.svg", configuration, 0);
@@ -257,10 +254,13 @@ public class ChannelComponent extends ChannelSelectComponent
         gc.fillRectangle (vuX, faderTop + separatorSize + vuOffsetLeft, vuWidth / 2, vuHeightLeft, colorVu);
         gc.fillRectangle (vuX + vuWidth / 2, faderTop + separatorSize + vuOffsetRight, vuWidth / 2, vuHeightRight, colorVu);
 
-        double buttonTop = faderTop;
-
+        // Draw record arm, solo and mute
         if (this.type != ChannelType.CUE)
         {
+            final double buttonOffset = 2 * unit;
+            double buttonTop = faderTop + buttonOffset;
+            final double buttonHeight = (faderHeight - buttonOffset - 4 * separatorSize) / 3;
+
             if (this.type != ChannelType.LAYER)
             {
                 // Record Arm

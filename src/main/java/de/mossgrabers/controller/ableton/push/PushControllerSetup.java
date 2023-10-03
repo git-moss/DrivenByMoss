@@ -94,7 +94,6 @@ import de.mossgrabers.controller.ableton.push.view.PrgChangeView;
 import de.mossgrabers.controller.ableton.push.view.RaindropsView;
 import de.mossgrabers.controller.ableton.push.view.SequencerView;
 import de.mossgrabers.controller.ableton.push.view.SessionView;
-import de.mossgrabers.framework.ClipLauncherNavigator;
 import de.mossgrabers.framework.command.aftertouch.AftertouchViewCommand;
 import de.mossgrabers.framework.command.continuous.KnobRowModeCommand;
 import de.mossgrabers.framework.command.core.NopCommand;
@@ -237,7 +236,6 @@ public class PushControllerSetup extends AbstractControllerSetup<PushControlSurf
     private final PushVersion       pushVersion;
     private RasteredKnobCommand     tempoShuffleCommand;
     private PushMasterVolumeCommand masterVolumeCommand;
-    private ClipLauncherNavigator   clipLauncherNavigator;
 
 
     /**
@@ -288,6 +286,7 @@ public class PushControllerSetup extends AbstractControllerSetup<PushControlSurf
         }
         ms.setNumMarkers (8);
         ms.setHasFlatTrackList (false);
+        ms.setWantsClipLauncherNavigator (true);
         this.model = this.factory.createModel (this.configuration, this.colorManager, this.valueChanger, this.scales, ms);
         this.model.getSceneBank (64);
 
@@ -305,8 +304,6 @@ public class PushControllerSetup extends AbstractControllerSetup<PushControlSurf
             else if (modeManager.isActive (Modes.MASTER))
                 modeManager.restore ();
         });
-
-        this.clipLauncherNavigator = new ClipLauncherNavigator (this.model);
     }
 
 
@@ -390,7 +387,7 @@ public class PushControllerSetup extends AbstractControllerSetup<PushControlSurf
             modeManager.register (Modes.AUDIO, new AudioConfigurationMode (surface, this.model));
         }
 
-        modeManager.register (Modes.SESSION, new SessionMode (this.clipLauncherNavigator, surface, this.model));
+        modeManager.register (Modes.SESSION, new SessionMode (surface, this.model));
         modeManager.register (Modes.SESSION_VIEW_SELECT, new SessionViewSelectMode (surface, this.model));
 
         modeManager.register (Modes.REPEAT_NOTE, new NoteRepeatMode (surface, this.model));
@@ -1075,16 +1072,6 @@ public class PushControllerSetup extends AbstractControllerSetup<PushControlSurf
 
         if (this.pushVersion != PushVersion.VERSION_1)
             surface.updateColorPalette ();
-    }
-
-
-    /** {@inheritDoc} */
-    @Override
-    public void exit ()
-    {
-        this.clipLauncherNavigator.shutdown ();
-
-        super.exit ();
     }
 
 

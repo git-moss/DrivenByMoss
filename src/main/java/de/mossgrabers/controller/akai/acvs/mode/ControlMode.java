@@ -153,7 +153,7 @@ public class ControlMode extends AbstractParameterMode<ACVSControlSurface, ACVSC
 
         // Set transport data
         final ITransport transport = this.model.getTransport ();
-        d.setRow (ACVSDisplay.ITEM_ID_TEMPO, transport.getTempoParameter ().getDisplayedValue ());
+        d.setRow (ACVSDisplay.ITEM_ID_TEMPO, transport.formatTempo (transport.getTempo ()));
         d.setRow (ACVSDisplay.ITEM_ID_ARRANGEMENT_POSITION, transport.getBeatText ().split (":")[0].replace ('.', ':'));
         d.setRow (ACVSDisplay.ITEM_ID_LOOP_START, transport.getLoopStartBeatText ().split (":")[0].replace ('.', ':'));
         d.setRow (ACVSDisplay.ITEM_ID_LOOP_LENGTH, transport.getLoopLengthBeatText ().split (":")[0].replace ('.', ':'));

@@ -11,7 +11,6 @@ import de.mossgrabers.controller.ni.kontrol.mkii.mode.MixerMode;
 import de.mossgrabers.controller.ni.kontrol.mkii.mode.ParamsMode;
 import de.mossgrabers.controller.ni.kontrol.mkii.mode.SendMode;
 import de.mossgrabers.controller.ni.kontrol.mkii.view.ControlView;
-import de.mossgrabers.framework.ClipLauncherNavigator;
 import de.mossgrabers.framework.command.core.NopCommand;
 import de.mossgrabers.framework.command.core.TriggerCommand;
 import de.mossgrabers.framework.command.trigger.application.RedoCommand;
@@ -38,6 +37,7 @@ import de.mossgrabers.framework.controller.ISetupFactory;
 import de.mossgrabers.framework.controller.hardware.BindType;
 import de.mossgrabers.framework.controller.hardware.IHwRelativeKnob;
 import de.mossgrabers.framework.controller.valuechanger.TwosComplementValueChanger;
+import de.mossgrabers.framework.daw.IClipLauncherNavigator;
 import de.mossgrabers.framework.daw.IHost;
 import de.mossgrabers.framework.daw.ITransport;
 import de.mossgrabers.framework.daw.ModelSetup;
@@ -71,9 +71,8 @@ import java.util.function.IntSupplier;
  */
 public class KontrolProtocolControllerSetup extends AbstractControllerSetup<KontrolProtocolControlSurface, KontrolProtocolConfiguration>
 {
-    private final int             version;
-    private String                kompleteInstance = "";
-    private ClipLauncherNavigator clipLauncherNavigator;
+    private final int version;
+    private String    kompleteInstance = "";
 
 
     /**
@@ -182,8 +181,8 @@ public class KontrolProtocolControllerSetup extends AbstractControllerSetup<Kont
         ms.setNumDeviceLayers (0);
         ms.setNumDrumPadLayers (0);
         ms.setNumMarkers (0);
+        ms.setWantsClipLauncherNavigator (true);
         this.model = this.factory.createModel (this.configuration, this.colorManager, this.valueChanger, this.scales, ms);
-        this.clipLauncherNavigator = new ClipLauncherNavigator (this.model);
 
         this.model.getTrackBank ().setIndication (true);
     }
@@ -482,15 +481,16 @@ public class KontrolProtocolControllerSetup extends AbstractControllerSetup<Kont
         final KontrolProtocolControlSurface surface = this.getSurface ();
         if (surface.getModeManager ().isActive (Modes.VOLUME))
         {
+            final IClipLauncherNavigator clipLauncherNavigator = this.model.getClipLauncherNavigator ();
             if (this.configuration.isFlipTrackClipNavigation ())
             {
                 if (this.configuration.isFlipClipSceneNavigation ())
-                    this.clipLauncherNavigator.navigateScenes (isLeft);
+                    clipLauncherNavigator.navigateScenes (isLeft);
                 else
-                    this.clipLauncherNavigator.navigateClips (isLeft);
+                    clipLauncherNavigator.navigateClips (isLeft);
             }
             else
-                this.clipLauncherNavigator.navigateTracks (isLeft);
+                clipLauncherNavigator.navigateTracks (isLeft);
             return;
         }
 
@@ -513,16 +513,17 @@ public class KontrolProtocolControllerSetup extends AbstractControllerSetup<Kont
         final KontrolProtocolControlSurface surface = this.getSurface ();
         if (surface.getModeManager ().isActive (Modes.VOLUME))
         {
+            final IClipLauncherNavigator clipLauncherNavigator = this.model.getClipLauncherNavigator ();
             if (this.configuration.isFlipTrackClipNavigation ())
             {
-                this.clipLauncherNavigator.navigateTracks (isLeft);
+                clipLauncherNavigator.navigateTracks (isLeft);
                 return;
             }
 
             if (this.configuration.isFlipClipSceneNavigation ())
-                this.clipLauncherNavigator.navigateScenes (isLeft);
+                clipLauncherNavigator.navigateScenes (isLeft);
             else
-                this.clipLauncherNavigator.navigateClips (isLeft);
+                clipLauncherNavigator.navigateClips (isLeft);
             return;
         }
 
@@ -563,15 +564,5 @@ public class KontrolProtocolControllerSetup extends AbstractControllerSetup<Kont
     {
         final IMode mode = this.getSurface ().getModeManager ().getActive ();
         return mode == null ? 0 : Math.max (0, mode.getKnobValue (continuousMidiControl));
-    }
-
-
-    /** {@inheritDoc} */
-    @Override
-    public void exit ()
-    {
-        this.clipLauncherNavigator.shutdown ();
-
-        super.exit ();
     }
 }

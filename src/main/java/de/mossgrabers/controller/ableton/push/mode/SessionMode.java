@@ -10,14 +10,15 @@ import de.mossgrabers.controller.ableton.push.controller.Push1Display;
 import de.mossgrabers.controller.ableton.push.controller.PushColorManager;
 import de.mossgrabers.controller.ableton.push.controller.PushControlSurface;
 import de.mossgrabers.controller.ableton.push.mode.track.AbstractTrackMode;
-import de.mossgrabers.framework.ClipLauncherNavigator;
 import de.mossgrabers.framework.command.trigger.clip.StartClipCommand;
 import de.mossgrabers.framework.command.trigger.clip.StartSceneCommand;
 import de.mossgrabers.framework.controller.ButtonID;
 import de.mossgrabers.framework.controller.color.ColorEx;
 import de.mossgrabers.framework.controller.display.IGraphicDisplay;
 import de.mossgrabers.framework.controller.display.ITextDisplay;
+import de.mossgrabers.framework.daw.IClipLauncherNavigator;
 import de.mossgrabers.framework.daw.IModel;
+import de.mossgrabers.framework.daw.data.ICursorTrack;
 import de.mossgrabers.framework.daw.data.IScene;
 import de.mossgrabers.framework.daw.data.ISlot;
 import de.mossgrabers.framework.daw.data.ITrack;
@@ -52,7 +53,7 @@ public class SessionMode extends AbstractTrackMode implements IPush3Encoder
 
     private RowDisplayMode                                                 rowDisplayMode;
     private final ISceneBank                                               sceneBank;
-    private final ClipLauncherNavigator                                    clipLauncherNavigator;
+    private final IClipLauncherNavigator                                   clipLauncherNavigator;
     private final StartClipCommand<PushControlSurface, PushConfiguration>  startClipCommand;
     private final StartSceneCommand<PushControlSurface, PushConfiguration> startSceneCommand;
 
@@ -60,15 +61,14 @@ public class SessionMode extends AbstractTrackMode implements IPush3Encoder
     /**
      * Constructor.
      * 
-     * @param clipLauncherNavigator Access to helper functions to navigate the clip launcher
      * @param surface The control surface
      * @param model The model
      */
-    public SessionMode (final ClipLauncherNavigator clipLauncherNavigator, final PushControlSurface surface, final IModel model)
+    public SessionMode (final PushControlSurface surface, final IModel model)
     {
         super ("Session", surface, model);
 
-        this.clipLauncherNavigator = clipLauncherNavigator;
+        this.clipLauncherNavigator = model.getClipLauncherNavigator ();
         this.sceneBank = model.getSceneBank (64);
         this.startClipCommand = new StartClipCommand<> (model, surface);
         this.startSceneCommand = new StartSceneCommand<> (model, surface);
@@ -345,6 +345,8 @@ public class SessionMode extends AbstractTrackMode implements IPush3Encoder
         final int maxCols = 8;
         final int maxRows = this.rowDisplayMode == RowDisplayMode.ALL ? 8 : 4;
 
+        final ITrackBank tb = this.model.getCurrentTrackBank ();
+        final ICursorTrack cursorTrack = this.model.getCursorTrack ();
         for (int col = 0; col < maxCols; col++)
         {
             final List<IScene> scenes = new ArrayList<> (maxRows);
@@ -355,7 +357,9 @@ public class SessionMode extends AbstractTrackMode implements IPush3Encoder
                     sceneIndex += 32;
                 scenes.add (this.sceneBank.getItem (sceneIndex));
             }
-            display.addSceneListElement (scenes);
+
+            final ITrack track = tb.getItem (col);
+            display.addSceneListElement (scenes, track.getType (), track.getName (), track.getColor (), track.isSelected (), track.isActivated (), cursorTrack.isPinned ());
         }
     }
 
@@ -372,6 +376,7 @@ public class SessionMode extends AbstractTrackMode implements IPush3Encoder
         if (this.rowDisplayMode != RowDisplayMode.ALL)
             maxRows = maxRows / 2;
 
+        final ICursorTrack cursorTrack = this.model.getCursorTrack ();
         for (int col = 0; col < maxCols; col++)
         {
             final List<Pair<ITrack, ISlot>> slots = new ArrayList<> (maxRows);
@@ -391,7 +396,8 @@ public class SessionMode extends AbstractTrackMode implements IPush3Encoder
                 final ITrack track = tb.getItem (x);
                 slots.add (new Pair<> (track, track.getSlotBank ().getItem (y)));
             }
-            display.addSlotListElement (slots);
+            final ITrack track = tb.getItem (col);
+            display.addSlotListElement (slots, track.getType (), track.getName (), track.getColor (), track.isSelected (), track.isActivated (), cursorTrack.isPinned ());
         }
     }
 

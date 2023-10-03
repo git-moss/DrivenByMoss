@@ -444,14 +444,6 @@ public interface ITransport extends IObserverManagement
 
 
     /**
-     * Get the tempo parameter.
-     *
-     * @return The tempo parameter
-     */
-    IParameter getTempoParameter ();
-
-
-    /**
      * Tap the tempo.
      */
     void tapTempo ();

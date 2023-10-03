@@ -552,11 +552,6 @@ public class PushConfiguration extends AbstractConfiguration implements IGraphic
             this.activateConvertAftertouchSetting (globalSettings);
 
         ///////////////////////////
-        // Browser
-
-        this.activateBrowserSettings (globalSettings);
-
-        ///////////////////////////
         // Push 2 Hardware
 
         this.activatePush2HardwareSettings (globalSettings);

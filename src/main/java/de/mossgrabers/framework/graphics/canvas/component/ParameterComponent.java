@@ -68,7 +68,7 @@ public class ParameterComponent extends MenuComponent
      */
     public ParameterComponent (final String menuName, final boolean isMenuSelected, final String name, final String deviceName, final ColorEx color, final boolean isSelected, final String paramName, final int paramValue, final int modulatedParamValue, final String paramValueText, final boolean isTouched)
     {
-        this (menuName, isMenuSelected, name, deviceName, color, isSelected, paramName, paramValue, modulatedParamValue, paramValueText, isTouched, LabelLayout.SEPARATE_COLOR);
+        this (menuName, isMenuSelected, name, deviceName, color, isSelected, paramName, paramValue, modulatedParamValue, paramValueText, isTouched, LabelLayout.COLORED);
     }
 
 

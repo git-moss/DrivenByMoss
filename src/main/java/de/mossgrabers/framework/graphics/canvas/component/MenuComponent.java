@@ -33,7 +33,7 @@ public class MenuComponent implements IComponent
      */
     public MenuComponent (final String menuName, final boolean isMenuSelected, final String name, final String icon, final ColorEx color, final boolean isSelected, final boolean isActive)
     {
-        this (menuName, isMenuSelected, name, icon, color, isSelected, isActive, LabelLayout.SEPARATE_COLOR);
+        this (menuName, isMenuSelected, name, icon, color, isSelected, isActive, LabelLayout.COLORED);
     }
 
 

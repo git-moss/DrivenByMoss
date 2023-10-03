@@ -60,6 +60,7 @@ public abstract class AbstractModel implements IModel
     protected IMasterTrack                          masterTrack;
     protected ICursorDevice                         cursorDevice;
     protected IDrumDevice                           drumDevice;
+    protected IClipLauncherNavigator                clipLauncherNavigator;
     protected Map<Integer, IDrumDevice>             additionalDrumDevices = new HashMap<> ();
     protected Map<String, INoteClip>                cursorClips           = new HashMap<> ();
     protected final Map<DeviceID, ISpecificDevice>  specificDevices       = new EnumMap<> (DeviceID.class);
@@ -354,5 +355,13 @@ public abstract class AbstractModel implements IModel
                 return true;
         }
         return false;
+    }
+
+
+    /** {@inheritDoc} */
+    @Override
+    public IClipLauncherNavigator getClipLauncherNavigator ()
+    {
+        return this.clipLauncherNavigator;
     }
 }

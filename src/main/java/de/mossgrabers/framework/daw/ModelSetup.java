@@ -17,30 +17,31 @@ import java.util.List;
  */
 public class ModelSetup
 {
-    private boolean              hasFlatTrackList       = true;
-    private boolean              hasFullFlatTrackList   = false;
+    private boolean              hasFlatTrackList           = true;
+    private boolean              hasFullFlatTrackList       = false;
 
-    private int                  numTracks              = 8;
-    private int                  numFxTracks            = -1;
-    private int                  numScenes              = 8;
-    private int                  numSends               = 8;
+    private int                  numTracks                  = 8;
+    private int                  numFxTracks                = -1;
+    private int                  numScenes                  = 8;
+    private int                  numSends                   = 8;
+    private boolean              wantsClipLauncherNavigator = false;
 
-    private boolean              wantsDrumDevice        = true;
-    private int []               additionalDrumDevices  = {};
+    private boolean              wantsDrumDevice            = true;
+    private int []               additionalDrumDevices      = {};
 
-    private int                  numDevicesInBank       = 8;
-    private int                  numDeviceLayers        = 8;
+    private int                  numDevicesInBank           = 8;
+    private int                  numDeviceLayers            = 8;
 
-    private int                  numParamPages          = 8;
-    private int                  numParams              = 8;
-    private int                  numDrumPadLayers       = 16;
+    private int                  numParamPages              = 8;
+    private int                  numParams                  = 8;
+    private int                  numDrumPadLayers           = 16;
 
-    private int                  numFilterColumnEntries = 16;
-    private int                  numResults             = 16;
+    private int                  numFilterColumnEntries     = 16;
+    private int                  numResults                 = 16;
 
-    private int                  numMarkers             = 0;
+    private int                  numMarkers                 = 0;
 
-    private final List<DeviceID> deviceIDs              = new ArrayList<> ();
+    private final List<DeviceID> deviceIDs                  = new ArrayList<> ();
 
 
     /**
@@ -438,5 +439,27 @@ public class ModelSetup
     public List<DeviceID> getDeviceIDs ()
     {
         return new ArrayList<> (this.deviceIDs);
+    }
+
+
+    /**
+     * Should a ClipLauncherNavigator be created?
+     * 
+     * @return True if one should be created
+     */
+    public boolean wantsClipLauncherNavigator ()
+    {
+        return this.wantsClipLauncherNavigator;
+    }
+
+
+    /**
+     * Set if a ClipLauncherNavigator should be created.
+     * 
+     * @param wantsClipLauncherNavigator True if one should be created
+     */
+    public void setWantsClipLauncherNavigator (final boolean wantsClipLauncherNavigator)
+    {
+        this.wantsClipLauncherNavigator = wantsClipLauncherNavigator;
     }
 }

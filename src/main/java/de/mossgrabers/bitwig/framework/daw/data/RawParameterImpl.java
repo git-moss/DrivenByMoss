@@ -27,15 +27,15 @@ public class RawParameterImpl extends ParameterImpl
      *
      * @param valueChanger The value changer
      * @param parameter The parameter
-     * @param min The minimum allowed value
-     * @param max The maximum allowed value
+     * @param minimum The minimum allowed value
+     * @param maximum The maximum allowed value
      */
-    public RawParameterImpl (final IValueChanger valueChanger, final Parameter parameter, final int min, final int max)
+    public RawParameterImpl (final IValueChanger valueChanger, final Parameter parameter, final int minimum, final int maximum)
     {
         super (valueChanger, parameter);
 
-        this.min = min;
-        this.max = max;
+        this.min = minimum;
+        this.max = maximum;
 
         parameter.value ().addRawValueObserver (this::handleRawValue);
     }

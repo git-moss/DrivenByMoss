@@ -1,0 +1,115 @@
+// Written by Jürgen Moßgraber - mossgrabers.de
+// (c) 2017-2023
+// Licensed under LGPLv3 - http://www.gnu.org/licenses/lgpl-3.0.txt
+
+package de.mossgrabers.bitwig.framework.daw;
+
+import de.mossgrabers.framework.daw.IClipLauncherNavigator;
+import de.mossgrabers.framework.daw.IModel;
+import de.mossgrabers.framework.daw.data.ITrack;
+import de.mossgrabers.framework.daw.data.bank.ISceneBank;
+
+import com.bitwig.extension.controller.api.ClipLauncherSlot;
+import com.bitwig.extension.controller.api.ClipLauncherSlotBank;
+import com.bitwig.extension.controller.api.ControllerHost;
+import com.bitwig.extension.controller.api.CursorTrack;
+import com.bitwig.extension.controller.api.SceneBank;
+import com.bitwig.extension.controller.api.Track;
+import com.bitwig.extension.controller.api.TrackBank;
+
+
+/**
+ * Implementation for a clip launcher navigator.
+ *
+ * @author Jürgen Moßgraber
+ */
+public class ClipLauncherNavigatorImpl implements IClipLauncherNavigator
+{
+    private final IModel           model;
+    private final CursorTrack      cursorTrack;
+    private final ClipLauncherSlot theClip;
+    private final Track            theTrack;
+    protected TrackBank            singleTrackBank;
+    protected SceneBank            sceneBank;
+
+
+    /**
+     * Constructor.
+     *
+     * @param host The controller host
+     * @param model The model
+     */
+    ClipLauncherNavigatorImpl (final ControllerHost host, final IModel model)
+    {
+        this.model = model;
+
+        this.singleTrackBank = host.createTrackBank (1, 0, 1);
+        this.singleTrackBank.scrollPosition ().markInterested ();
+        this.cursorTrack = host.createCursorTrack (1, 1);
+        this.singleTrackBank.followCursorTrack (this.cursorTrack);
+        this.theTrack = this.singleTrackBank.getItemAt (0);
+
+        final ClipLauncherSlotBank slotBank = this.theTrack.clipLauncherSlotBank ();
+        this.singleTrackBank.setShouldShowClipLauncherFeedback (true);
+        this.theClip = slotBank.getItemAt (0);
+
+        this.theClip.sceneIndex ().addValueObserver (position -> {
+            final ISceneBank isceneBank = this.model.getSceneBank ();
+            final int pageSize = isceneBank.getPageSize ();
+            final int scrollPosition = isceneBank.getScrollPosition ();
+            final int newPosition = (position / pageSize) * pageSize;
+            if (scrollPosition != newPosition)
+                isceneBank.scrollTo (newPosition);
+        });
+
+        this.sceneBank = this.singleTrackBank.sceneBank ();
+        this.sceneBank.cursorIndex ().markInterested ();
+        this.sceneBank.setIndication (false);
+    }
+
+
+    /** {@inheritDoc} */
+    @Override
+    public void navigateScenes (final boolean isLeft)
+    {
+        if (isLeft)
+            this.sceneBank.scrollBackwards ();
+        else
+            this.sceneBank.scrollForwards ();
+        this.theClip.select ();
+        this.theClip.showInEditor ();
+    }
+
+
+    /** {@inheritDoc} */
+    @Override
+    public void navigateClips (final boolean isLeft)
+    {
+        this.navigateScenes (isLeft);
+    }
+
+
+    /** {@inheritDoc} */
+    @Override
+    public void navigateTracks (final boolean isLeft)
+    {
+        this.singleTrackBank.scrollBy (isLeft ? -1 : 1);
+        this.theClip.select ();
+        this.theClip.showInEditor ();
+
+        this.theTrack.selectInEditor ();
+        this.theTrack.selectInMixer ();
+        this.theTrack.makeVisibleInArranger ();
+        this.theTrack.makeVisibleInMixer ();
+    }
+
+
+    /** {@inheritDoc} */
+    @Override
+    public void selectTrack (final int index)
+    {
+        final ITrack track = this.model.getTrackBank ().getItem (0);
+        if (track.doesExist ())
+            this.singleTrackBank.scrollPosition ().set (track.getPosition () + index);
+    }
+}

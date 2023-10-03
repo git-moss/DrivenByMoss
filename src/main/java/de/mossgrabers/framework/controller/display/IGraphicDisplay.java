@@ -300,16 +300,28 @@ public interface IGraphicDisplay extends IDisplay
      * Add a list of scene elements to the message.
      *
      * @param scenes The scenes
+     * @param type The type of the track
+     * @param name The of the grid element (track name, parameter name, etc.)
+     * @param color The color to use for the header, may be null
+     * @param isSelected True if the grid element is selected
+     * @param isActive True if channel is activated
+     * @param isPinned True if the channel is pinned
      */
-    void addSceneListElement (List<IScene> scenes);
+    void addSceneListElement (List<IScene> scenes, final ChannelType type, final String name, final ColorEx color, final boolean isSelected, final boolean isActive, final boolean isPinned);
 
 
     /**
      * Add a list of box elements to the message.
      *
      * @param slots Must contain X number of slot items
+     * @param type The type of the track
+     * @param name The of the grid element (track name, parameter name, etc.)
+     * @param color The color to use for the header, may be null
+     * @param isSelected True if the grid element is selected
+     * @param isActive True if channel is activated
+     * @param isPinned True if the channel is pinned
      */
-    void addSlotListElement (List<Pair<ITrack, ISlot>> slots);
+    void addSlotListElement (List<Pair<ITrack, ISlot>> slots, ChannelType type, String name, ColorEx color, boolean isSelected, boolean isActive, boolean isPinned);
 
 
     /**

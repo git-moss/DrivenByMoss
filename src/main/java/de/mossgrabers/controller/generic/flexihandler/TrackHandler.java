@@ -10,10 +10,10 @@ import de.mossgrabers.controller.generic.controller.GenericFlexiControlSurface;
 import de.mossgrabers.controller.generic.flexihandler.utils.FlexiHandlerException;
 import de.mossgrabers.controller.generic.flexihandler.utils.KnobMode;
 import de.mossgrabers.controller.generic.flexihandler.utils.MidiValue;
-import de.mossgrabers.framework.ClipLauncherNavigator;
 import de.mossgrabers.framework.command.core.TriggerCommand;
 import de.mossgrabers.framework.command.trigger.track.ToggleTrackBanksCommand;
 import de.mossgrabers.framework.controller.valuechanger.IValueChanger;
+import de.mossgrabers.framework.daw.IClipLauncherNavigator;
 import de.mossgrabers.framework.daw.IModel;
 import de.mossgrabers.framework.daw.data.ICursorTrack;
 import de.mossgrabers.framework.daw.data.ISend;
@@ -34,8 +34,8 @@ import java.util.Optional;
  */
 public class TrackHandler extends AbstractHandler
 {
-    private final TriggerCommand        toggleTrackBankCommand;
-    private final ClipLauncherNavigator clipLauncherNavigator;
+    private final TriggerCommand         toggleTrackBankCommand;
+    private final IClipLauncherNavigator clipLauncherNavigator;
 
 
     /**
@@ -48,13 +48,12 @@ public class TrackHandler extends AbstractHandler
      * @param signedBitRelativeValueChanger The signed bit relative value changer
      * @param signedBit2RelativeValueChanger The signed bit relative value changer
      * @param offsetBinaryRelativeValueChanger The offset binary relative value changer
-     * @param clipLauncherNavigator Access to helper functions to navigate the clip launcher
      */
-    public TrackHandler (final IModel model, final GenericFlexiControlSurface surface, final GenericFlexiConfiguration configuration, final IValueChanger absoluteLowResValueChanger, final IValueChanger signedBitRelativeValueChanger, final IValueChanger signedBit2RelativeValueChanger, final IValueChanger offsetBinaryRelativeValueChanger, final ClipLauncherNavigator clipLauncherNavigator)
+    public TrackHandler (final IModel model, final GenericFlexiControlSurface surface, final GenericFlexiConfiguration configuration, final IValueChanger absoluteLowResValueChanger, final IValueChanger signedBitRelativeValueChanger, final IValueChanger signedBit2RelativeValueChanger, final IValueChanger offsetBinaryRelativeValueChanger)
     {
         super (model, surface, configuration, absoluteLowResValueChanger, signedBitRelativeValueChanger, signedBit2RelativeValueChanger, offsetBinaryRelativeValueChanger);
 
-        this.clipLauncherNavigator = clipLauncherNavigator;
+        this.clipLauncherNavigator = this.model.getClipLauncherNavigator ();
         this.toggleTrackBankCommand = new ToggleTrackBanksCommand<> (model, surface);
     }
 

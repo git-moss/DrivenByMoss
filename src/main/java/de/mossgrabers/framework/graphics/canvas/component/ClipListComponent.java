@@ -7,6 +7,7 @@ package de.mossgrabers.framework.graphics.canvas.component;
 import de.mossgrabers.framework.controller.color.ColorEx;
 import de.mossgrabers.framework.daw.data.ISlot;
 import de.mossgrabers.framework.daw.data.ITrack;
+import de.mossgrabers.framework.daw.resource.ChannelType;
 import de.mossgrabers.framework.graphics.Align;
 import de.mossgrabers.framework.graphics.IBounds;
 import de.mossgrabers.framework.graphics.IGraphicsConfiguration;
@@ -24,7 +25,7 @@ import java.util.List;
  *
  * @author Jürgen Moßgraber
  */
-public class ClipListComponent implements IComponent
+public class ClipListComponent extends ChannelSelectComponent
 {
     private final List<Pair<ITrack, ISlot>> items;
 
@@ -33,9 +34,17 @@ public class ClipListComponent implements IComponent
      * Constructor.
      *
      * @param slots The list items
+     * @param type The type of the track
+     * @param name The of the grid element (track name, parameter name, etc.)
+     * @param color The color to use for the header, may be null
+     * @param isSelected True if the grid element is selected
+     * @param isActive True if channel is activated
+     * @param isPinned True if the channel is pinned
      */
-    public ClipListComponent (final List<Pair<ITrack, ISlot>> slots)
+    public ClipListComponent (final List<Pair<ITrack, ISlot>> slots, final ChannelType type, final String name, final ColorEx color, final boolean isSelected, final boolean isActive, final boolean isPinned)
     {
+        super (type, null, false, name, color, isSelected, isActive, isPinned);
+
         this.items = new ArrayList<> (slots);
     }
 
@@ -44,6 +53,8 @@ public class ClipListComponent implements IComponent
     @Override
     public void draw (final IGraphicsInfo info)
     {
+        super.draw (info);
+
         final IGraphicsContext gc = info.getContext ();
         final IGraphicsDimensions dimensions = info.getDimensions ();
         final IGraphicsConfiguration configuration = info.getConfiguration ();
@@ -56,8 +67,8 @@ public class ClipListComponent implements IComponent
         final double inset = dimensions.getInset ();
 
         final int size = this.items.size ();
-        final double itemLeft = left + separatorSize;
-        final double itemWidth = width - separatorSize;
+        final double itemLeft = left;
+        final double itemWidth = width;
         final double itemHeight = height / (size + 1);
         final double fontHeight = itemHeight > 30 ? itemHeight / 2 : itemHeight * 2 / 3;
         final double boxLeft = itemLeft + inset;
@@ -65,13 +76,15 @@ public class ClipListComponent implements IComponent
         final double radius = boxWidth / 2;
 
         final ColorEx textColor = configuration.getColorText ();
-        final ColorEx borderColor = configuration.getColorBackgroundLighter ();
 
         for (int i = 0; i < size; i++)
         {
             final Pair<ITrack, ISlot> pair = this.items.get (i);
-            final ISlot slot = pair.getValue ();
             final ITrack track = pair.getKey ();
+            if (!track.doesExist ())
+                continue;
+
+            final ISlot slot = pair.getValue ();
 
             final double itemTop = i * itemHeight;
 
@@ -122,16 +135,13 @@ public class ClipListComponent implements IComponent
                 }
 
                 // Draw the text
-                gc.drawTextInBounds (name, itemLeft + 2 * inset + fontHeight, itemTop - 1, itemWidth - 2 * inset, itemHeight, Align.LEFT, ColorEx.BLACK, fontHeight);
+                final double padLeft = 2 * inset + fontHeight;
+                gc.drawTextInBounds (name, itemLeft + padLeft, itemTop - 1, itemWidth - padLeft - separatorSize - inset, itemHeight, Align.LEFT, slot.isSelected () ? ColorEx.calcContrastColor (textColor) : textColor, fontHeight);
             }
 
-            // Draw the border
-            ColorEx color = borderColor;
+            // Draw the border if selected
             if (slot.isSelected ())
-                color = textColor;
-            else if (track.isSelected ())
-                color = ColorEx.darker (ColorEx.YELLOW);
-            gc.strokeRectangle (itemLeft, itemTop + separatorSize, itemWidth, itemHeight - 2 * separatorSize, color, slot.isSelected () ? 2 : 1);
+                gc.strokeRectangle (itemLeft, itemTop + separatorSize, itemWidth, itemHeight - 2 * separatorSize, ColorEx.calcContrastColor (textColor), slot.isSelected () ? 2 : 1);
         }
     }
 

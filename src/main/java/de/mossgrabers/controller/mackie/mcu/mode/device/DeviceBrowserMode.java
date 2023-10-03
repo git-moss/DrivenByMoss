@@ -190,15 +190,11 @@ public class DeviceBrowserMode extends BaseMode<IItem>
     {
         final IBrowser browser = this.model.getBrowser ();
         int column = -1;
-        final boolean [] browserDisplayFilter = this.surface.getConfiguration ().getBrowserDisplayFilter ();
         for (int i = 0; i < browser.getFilterColumnCount (); i++)
         {
-            if (browserDisplayFilter[i])
-            {
-                column++;
-                if (column == index)
-                    return Optional.of (browser.getFilterColumn (i));
-            }
+            column++;
+            if (column == index)
+                return Optional.of (browser.getFilterColumn (i));
         }
         return Optional.empty ();
     }

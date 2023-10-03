@@ -68,7 +68,7 @@ public abstract class AbstractTrackBankImpl extends AbstractChannelBankImpl<Trac
         this.sceneBank = new SceneBankImpl (host, valueChanger, this.numScenes == 0 ? null : trackBank.sceneBank (), this.numScenes, cursorTrack);
 
         for (int i = 0; i < this.getPageSize (); i++)
-            this.items.add (new TrackImpl (host, valueChanger, application, (CursorTrack) cursorTrack.getTrack (), bank.sceneBank (), rootGroup, trackBank.getItemAt (i), i, this.numSends, this.numScenes));
+            this.items.add (new TrackImpl (host, valueChanger, application, (CursorTrack) cursorTrack.getTrack (), numScenes > 0 ? bank.sceneBank () : null, rootGroup, trackBank.getItemAt (i), i, this.numSends, this.numScenes));
 
         // Note: cursorIndex is defined for all banks but currently only works for track banks
         trackBank.cursorIndex ().addValueObserver (this::handleBankSelection);

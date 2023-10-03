@@ -6,7 +6,6 @@ package de.mossgrabers.bitwig.framework.daw;
 
 import de.mossgrabers.bitwig.framework.daw.data.ParameterImpl;
 import de.mossgrabers.bitwig.framework.daw.data.RangedValueImpl;
-import de.mossgrabers.bitwig.framework.daw.data.RawParameterImpl;
 import de.mossgrabers.bitwig.framework.daw.data.Util;
 import de.mossgrabers.framework.controller.valuechanger.IValueChanger;
 import de.mossgrabers.framework.daw.IApplication;
@@ -61,7 +60,6 @@ public class TransportImpl implements ITransport
     private final IValueChanger            valueChanger;
     private final Transport                transport;
 
-    private final RawParameterImpl         tempoParameter;
     private final IParameter               crossfadeParameter;
     private final IParameter               metronomeVolumeParameter;
 
@@ -105,7 +103,7 @@ public class TransportImpl implements ITransport
 
         this.crossfadeParameter = new ParameterImpl (valueChanger, this.transport.crossfade ());
         this.metronomeVolumeParameter = new RangedValueImpl ("Metronome Volume", valueChanger, this.transport.metronomeVolume ());
-        this.tempoParameter = new RawParameterImpl (valueChanger, this.transport.tempo (), TransportConstants.MIN_TEMPO, TransportConstants.MAX_TEMPO);
+        this.transport.tempo ().markInterested ();
 
         final TimeSignatureValue ts = this.transport.timeSignature ();
         ts.numerator ().markInterested ();
@@ -142,7 +140,7 @@ public class TransportImpl implements ITransport
 
         this.crossfadeParameter.enableObservers (enable);
         this.metronomeVolumeParameter.enableObservers (enable);
-        this.tempoParameter.enableObservers (enable);
+        Util.setIsSubscribed (this.transport.tempo (), enable);
 
         final TimeSignatureValue ts = this.transport.timeSignature ();
         Util.setIsSubscribed (ts.numerator (), enable);
@@ -645,14 +643,6 @@ public class TransportImpl implements ITransport
 
     /** {@inheritDoc} */
     @Override
-    public IParameter getTempoParameter ()
-    {
-        return this.tempoParameter;
-    }
-
-
-    /** {@inheritDoc} */
-    @Override
     public void tapTempo ()
     {
         this.transport.tapTempo ();
@@ -664,7 +654,7 @@ public class TransportImpl implements ITransport
     public void changeTempo (final boolean increase, final boolean slow)
     {
         final double offset = slow ? 0.01 : 1;
-        this.tempoParameter.incRawValue (increase ? offset : -offset);
+        this.transport.tempo ().incRaw (increase ? offset : -offset);
     }
 
 
@@ -672,7 +662,7 @@ public class TransportImpl implements ITransport
     @Override
     public void setTempo (final double tempo)
     {
-        this.tempoParameter.setRawValue (tempo);
+        this.transport.tempo ().setRaw (tempo);
     }
 
 
@@ -680,7 +670,7 @@ public class TransportImpl implements ITransport
     @Override
     public double getTempo ()
     {
-        return this.tempoParameter.getRawValue ();
+        return this.transport.tempo ().getRaw ();
     }
 
 
@@ -713,7 +703,7 @@ public class TransportImpl implements ITransport
     @Override
     public void setTempoIndication (final boolean isTouched)
     {
-        this.tempoParameter.setIndication (isTouched);
+        this.transport.tempo ().setIndication (isTouched);
     }
 
 

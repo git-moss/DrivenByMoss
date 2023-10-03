@@ -205,7 +205,7 @@ public abstract class AbstractConfiguration implements Configuration
 
     protected static final ColorEx DEFAULT_COLOR_BACKGROUND         = ColorEx.fromRGB (83, 83, 83);
     protected static final ColorEx DEFAULT_COLOR_BORDER             = ColorEx.BLACK;
-    protected static final ColorEx DEFAULT_COLOR_TEXT               = ColorEx.WHITE;
+    protected static final ColorEx DEFAULT_COLOR_TEXT               = ColorEx.BLACK;
     protected static final ColorEx DEFAULT_COLOR_FADER              = ColorEx.fromRGB (69, 44, 19);
     protected static final ColorEx DEFAULT_COLOR_VU                 = ColorEx.GREEN;
     protected static final ColorEx DEFAULT_COLOR_EDIT               = ColorEx.fromRGB (240, 127, 17);
@@ -213,7 +213,7 @@ public abstract class AbstractConfiguration implements Configuration
     protected static final ColorEx DEFAULT_COLOR_SOLO               = ColorEx.YELLOW;
     protected static final ColorEx DEFAULT_COLOR_MUTE               = ColorEx.fromRGB (245, 129, 17);
     protected static final ColorEx DEFAULT_COLOR_BACKGROUND_DARKER  = ColorEx.fromRGB (39, 39, 39);
-    protected static final ColorEx DEFAULT_COLOR_BACKGROUND_LIGHTER = ColorEx.fromRGB (118, 118, 118);
+    protected static final ColorEx DEFAULT_COLOR_BACKGROUND_LIGHTER = ColorEx.fromRGB (200, 200, 200);
 
 
     /** The behavior when the stop button is pressed. */
@@ -246,7 +246,7 @@ public abstract class AbstractConfiguration implements Configuration
     }
 
     /** The names for clip lengths. */
-    protected static final String [] NEW_CLIP_LENGTH_VALUES      =
+    protected static final String [] NEW_CLIP_LENGTH_VALUES     =
     {
         "1 Beat",
         "2 Beat",
@@ -258,21 +258,21 @@ public abstract class AbstractConfiguration implements Configuration
         "32 Bars"
     };
 
-    private static final String []   TRANSPORT_BEHAVIOUR_VALUES  =
+    private static final String []   TRANSPORT_BEHAVIOUR_VALUES =
     {
         "Stop",
         "Return to Zero",
         "Pause"
     };
 
-    private static final String []   ACTIONS_REC_ARMED_PADS      =
+    private static final String []   ACTIONS_REC_ARMED_PADS     =
     {
         "Start recording",
         "Create new clip",
         "Do nothing"
     };
 
-    protected static final String [] FOOTSWITCH_VALUES           =
+    protected static final String [] FOOTSWITCH_VALUES          =
     {
         "Toggle Play",
         "Toggle Record",
@@ -292,7 +292,7 @@ public abstract class AbstractConfiguration implements Configuration
         "Sustain Pedal"
     };
 
-    private static final int []      FOOTSWITCH_DEFAULTS         =
+    private static final int []      FOOTSWITCH_DEFAULTS        =
     {
         15,
         6,
@@ -300,33 +300,15 @@ public abstract class AbstractConfiguration implements Configuration
         14
     };
 
-    private static final String []   BROWSER_FILTER_COLUMN_NAMES =
-    {
-        "Collection",
-        "Location",
-        "File Type",
-        "Category",
-        "Tags",
-        "Creator",
-        "Device Type",
-        "Device"
-    };
-
-    private static final String []   COLUMN_VALUES               =
-    {
-        "Hide",
-        "Show"
-    };
-
     /** The Off/On option. */
-    protected static final String [] ON_OFF_OPTIONS              =
+    protected static final String [] ON_OFF_OPTIONS             =
     {
         "Off",
         "On"
     };
 
     /** The Flat/Hierarchical tracks option. */
-    protected static final String [] TRACK_NAVIGATION_OPTIONS    =
+    protected static final String [] TRACK_NAVIGATION_OPTIONS   =
     {
         "Flat",
         "Hierarchical"
@@ -432,17 +414,6 @@ public abstract class AbstractConfiguration implements Configuration
     private boolean                                   turnOffEmptyDrumPads                = false;
     private int                                       actionForRecArmedPad                = 0;
     private final int []                              footswitch                          = new int [NUMBER_OF_FOOTSWITCHES];
-    private final boolean []                          browserDisplayFilter                =
-    {
-        true,
-        true,
-        true,
-        true,
-        true,
-        true,
-        true,
-        true
-    };
     private int                                       knobSpeedDefault                    = 0;
     private int                                       knobSpeedSlow                       = -40;
 
@@ -823,17 +794,6 @@ public abstract class AbstractConfiguration implements Configuration
     public int getFootswitch (final int index)
     {
         return this.footswitch[index];
-    }
-
-
-    /**
-     * Get the browser display filter.
-     *
-     * @return The array with states if a filter column should be displayed
-     */
-    public boolean [] getBrowserDisplayFilter ()
-    {
-        return this.browserDisplayFilter;
     }
 
 
@@ -1410,27 +1370,6 @@ public abstract class AbstractConfiguration implements Configuration
         });
 
         this.isSettingActive.add (id);
-    }
-
-
-    /**
-     * Activate the browser settings.
-     *
-     * @param settingsUI The settings
-     */
-    protected void activateBrowserSettings (final ISettingsUI settingsUI)
-    {
-        for (int i = 0; i < BROWSER_FILTER_COLUMN_NAMES.length; i++)
-        {
-            final IEnumSetting browserDisplayFilterSetting = settingsUI.getEnumSetting (BROWSER_FILTER_COLUMN_NAMES[i], "Browser", COLUMN_VALUES, COLUMN_VALUES[1]);
-            final int index = i;
-            final Integer browserDisplayFilterIndex = Integer.valueOf (BROWSER_DISPLAY_FILTER1.intValue () + index);
-            browserDisplayFilterSetting.addValueObserver (value -> {
-                this.browserDisplayFilter[index] = COLUMN_VALUES[1].equals (value);
-                this.notifyObservers (browserDisplayFilterIndex);
-            });
-            this.isSettingActive.add (browserDisplayFilterIndex);
-        }
     }
 
 

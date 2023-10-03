@@ -18,6 +18,7 @@ import de.mossgrabers.framework.daw.data.IMasterTrack;
 import de.mossgrabers.framework.daw.data.ISlot;
 import de.mossgrabers.framework.daw.data.bank.IMarkerBank;
 import de.mossgrabers.framework.parameter.PlayPositionParameter;
+import de.mossgrabers.framework.parameter.TempoParameter;
 import de.mossgrabers.framework.parameterprovider.special.CombinedParameterProvider;
 import de.mossgrabers.framework.parameterprovider.special.EmptyParameterProvider;
 import de.mossgrabers.framework.parameterprovider.special.FixedParameterProvider;
@@ -64,7 +65,7 @@ public class TransportMode extends AbstractElectraOneMode
                 // Row 2
                 new EmptyParameterProvider (5), new FixedParameterProvider (new PlayPositionParameter (model.getValueChanger (), this.transport, surface)),
                 // Row 3
-                new EmptyParameterProvider (5), new FixedParameterProvider (this.transport.getTempoParameter ()),
+                new EmptyParameterProvider (5), new FixedParameterProvider (new TempoParameter (model.getValueChanger (), this.transport, surface)),
                 // Row 4
                 new EmptyParameterProvider (6),
                 // Row 5
@@ -222,7 +223,7 @@ public class TransportMode extends AbstractElectraOneMode
         this.pageCache.updateColor (1, 4, automationWriteMode == AutomationMode.TOUCH ? ElectraOneColorManager.AUTO_MODE_ON : ElectraOneColorManager.AUTO_MODE_OFF);
 
         // Row 3 / 4
-        this.pageCache.updateValue (2, 5, 0, this.transport.getTempoParameter ().getDisplayedValue ());
+        this.pageCache.updateValue (2, 5, 0, this.transport.formatTempo (this.transport.getTempo ()));
 
         final IMarkerBank markerBank = this.model.getMarkerBank ();
         for (int i = 0; i < 4; i++)

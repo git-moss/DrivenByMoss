@@ -6,6 +6,7 @@ package de.mossgrabers.framework.graphics.canvas.component;
 
 import de.mossgrabers.framework.controller.color.ColorEx;
 import de.mossgrabers.framework.daw.data.IScene;
+import de.mossgrabers.framework.daw.resource.ChannelType;
 import de.mossgrabers.framework.graphics.Align;
 import de.mossgrabers.framework.graphics.IGraphicsConfiguration;
 import de.mossgrabers.framework.graphics.IGraphicsContext;
@@ -21,7 +22,7 @@ import java.util.List;
  *
  * @author Jürgen Moßgraber
  */
-public class SceneListGridElement implements IComponent
+public class SceneListGridElement extends ChannelSelectComponent
 {
     private final ColorEx [] colors;
     private final String []  names;
@@ -33,9 +34,17 @@ public class SceneListGridElement implements IComponent
      * Constructor.
      *
      * @param scenes The scenes
+     * @param type The type of the track
+     * @param name The of the grid element (track name, parameter name, etc.)
+     * @param color The color to use for the header, may be null
+     * @param isSelected True if the grid element is selected
+     * @param isActive True if channel is activated
+     * @param isPinned True if the channel is pinned
      */
-    public SceneListGridElement (final List<IScene> scenes)
+    public SceneListGridElement (final List<IScene> scenes, final ChannelType type, final String name, final ColorEx color, final boolean isSelected, final boolean isActive, final boolean isPinned)
     {
+        super (type, null, false, name, color, isSelected, isActive, isPinned);
+
         final int size = scenes.size ();
 
         this.colors = new ColorEx [size];
@@ -58,6 +67,8 @@ public class SceneListGridElement implements IComponent
     @Override
     public void draw (final IGraphicsInfo info)
     {
+        super.draw (info);
+
         final IGraphicsContext gc = info.getContext ();
         final IGraphicsDimensions dimensions = info.getDimensions ();
         final IGraphicsConfiguration configuration = info.getConfiguration ();
@@ -71,10 +82,11 @@ public class SceneListGridElement implements IComponent
         final int size = this.colors.length;
         final double itemLeft = left + separatorSize;
         final double itemWidth = width - separatorSize;
-        final double itemHeight = height / size;
+        final double itemHeight = height / (size + 1);
 
         final ColorEx textColor = configuration.getColorText ();
         final ColorEx borderColor = configuration.getColorBackgroundLighter ();
+        final double fontHeight = itemHeight > 30 ? itemHeight / 2 : itemHeight * 2 / 3;
 
         for (int i = 0; i < size; i++)
         {
@@ -83,7 +95,7 @@ public class SceneListGridElement implements IComponent
             final ColorEx backgroundColor = this.colors[i];
             gc.fillRectangle (itemLeft, itemTop + separatorSize, itemWidth, itemHeight - 2 * separatorSize, backgroundColor);
             if (this.exists[i])
-                gc.drawTextInBounds (this.names[i], itemLeft + inset, itemTop - 1, itemWidth - 2 * inset, itemHeight, Align.LEFT, ColorEx.calcContrastColor (backgroundColor), itemHeight / 2);
+                gc.drawTextInBounds (this.names[i], itemLeft + inset, itemTop - 1, itemWidth - 2 * inset, itemHeight, Align.LEFT, ColorEx.calcContrastColor (backgroundColor), fontHeight);
             gc.strokeRectangle (itemLeft, itemTop + separatorSize, itemWidth, itemHeight - 2 * separatorSize, this.isSelecteds[i] ? textColor : borderColor, this.isSelecteds[i] ? 2 : 1);
         }
     }

@@ -381,17 +381,17 @@ public abstract class AbstractGraphicDisplay implements IGraphicDisplay
 
     /** {@inheritDoc} */
     @Override
-    public void addSceneListElement (final List<IScene> scenes)
+    public void addSceneListElement (final List<IScene> scenes, final ChannelType type, final String name, final ColorEx color, final boolean isSelected, final boolean isActive, final boolean isPinned)
     {
-        this.addElement (new SceneListGridElement (scenes));
+        this.addElement (new SceneListGridElement (scenes, type, name, color, isSelected, isActive, isPinned));
     }
 
 
     /** {@inheritDoc} */
     @Override
-    public void addSlotListElement (final List<Pair<ITrack, ISlot>> slots)
+    public void addSlotListElement (final List<Pair<ITrack, ISlot>> slots, final ChannelType type, final String name, final ColorEx color, final boolean isSelected, final boolean isActive, final boolean isPinned)
     {
-        this.addElement (new ClipListComponent (slots));
+        this.addElement (new ClipListComponent (slots, type, name, color, isSelected, isActive, isPinned));
     }
 
 
@@ -459,7 +459,7 @@ public abstract class AbstractGraphicDisplay implements IGraphicDisplay
                 return;
 
             final ColorEx colorText = this.configuration.getColorText ();
-            gc.drawTextInBounds (notification, 0, 0, width, height, Align.CENTER, colorText, colorBorder, height / 4.0);
+            gc.drawTextInBounds (notification, 0, 0, width, height, Align.CENTER, colorText, ColorEx.calcContrastColor (colorText), height / 4.0);
         });
     }
 
