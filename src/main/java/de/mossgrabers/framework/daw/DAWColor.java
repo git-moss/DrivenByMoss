@@ -77,8 +77,8 @@ public enum DAWColor
     private static final List<DAWColor> NEW_TRACK_COLORS = List.of (DAW_COLOR_PURPLE, DAW_COLOR_PINK, DAW_COLOR_RED, DAW_COLOR_ORANGE, DAW_COLOR_LIGHT_ORANGE, DAW_COLOR_MOSS_GREEN, DAW_COLOR_GREEN, DAW_COLOR_COLD_GREEN, DAW_COLOR_BLUE);
     private static DAWColor             newTrackColor    = DAW_COLOR_DARK_BLUE;
 
-    private String                      name;
-    private ColorEx                     color;
+    private final String                      name;
+    private final ColorEx                     color;
 
 
     /**

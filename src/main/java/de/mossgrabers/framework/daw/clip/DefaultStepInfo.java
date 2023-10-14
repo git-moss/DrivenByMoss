@@ -37,6 +37,7 @@ public class DefaultStepInfo implements IStepInfo
     protected double             repeatVelocityCurve;
     protected double             repeatVelocityEnd;
     protected boolean            isMuted;
+    protected boolean            isSelected;
 
 
     /**
@@ -78,6 +79,7 @@ public class DefaultStepInfo implements IStepInfo
         this.repeatVelocityCurve = sourceInfo.repeatVelocityCurve;
         this.repeatVelocityEnd = sourceInfo.repeatVelocityEnd;
         this.isMuted = sourceInfo.isMuted;
+        this.isSelected = sourceInfo.isSelected;
     }
 
 
@@ -86,6 +88,14 @@ public class DefaultStepInfo implements IStepInfo
     public StepState getState ()
     {
         return this.state;
+    }
+
+
+    /** {@inheritDoc} */
+    @Override
+    public boolean isSelected ()
+    {
+        return this.isSelected;
     }
 
 
@@ -295,6 +305,17 @@ public class DefaultStepInfo implements IStepInfo
     public void setState (final StepState state)
     {
         this.state = state;
+    }
+
+
+    /**
+     * Set the selected state.
+     *
+     * @param isSelected True to set selected
+     */
+    public void setSelected (final boolean isSelected)
+    {
+        this.isSelected = isSelected;
     }
 
 

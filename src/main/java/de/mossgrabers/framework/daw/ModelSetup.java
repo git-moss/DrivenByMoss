@@ -444,7 +444,7 @@ public class ModelSetup
 
     /**
      * Should a ClipLauncherNavigator be created?
-     * 
+     *
      * @return True if one should be created
      */
     public boolean wantsClipLauncherNavigator ()
@@ -455,7 +455,7 @@ public class ModelSetup
 
     /**
      * Set if a ClipLauncherNavigator should be created.
-     * 
+     *
      * @param wantsClipLauncherNavigator True if one should be created
      */
     public void setWantsClipLauncherNavigator (final boolean wantsClipLauncherNavigator)

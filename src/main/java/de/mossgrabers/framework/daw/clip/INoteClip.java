@@ -617,7 +617,7 @@ public interface INoteClip extends IClip, IPinnable
 
     /**
      * Get the range of the transpose attribute.
-     * 
+     *
      * @return The range of the transpose attribute e.g. 96.0 for [-96,96]
      */
     double getStepTransposeRange ();

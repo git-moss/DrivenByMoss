@@ -20,6 +20,14 @@ public interface IStepInfo
 
 
     /**
+     * Is the note selected?
+     *
+     * @return If true the note is selected
+     */
+    boolean isSelected ();
+
+
+    /**
      * Is the note muted?
      *
      * @return If true the note is muted

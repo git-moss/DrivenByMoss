@@ -1261,7 +1261,7 @@ public class CursorClipImpl implements INoteClip
      *
      * @return The clip
      */
-    private Clip getClip ()
+    public Clip getClip ()
     {
         return this.launcherClip;
     }

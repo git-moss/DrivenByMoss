@@ -490,7 +490,7 @@ public class PushControlSurface extends AbstractControlSurface<PushConfiguration
 
         this.notifyViewChange = false;
 
-        if (this.padGrid instanceof PushPadGrid pushPadGrid)
+        if (this.padGrid instanceof final PushPadGrid pushPadGrid)
             pushPadGrid.setSurface (this);
 
         for (int i = 0; i < this.colorPalette.length; i++)
@@ -553,9 +553,7 @@ public class PushControlSurface extends AbstractControlSurface<PushConfiguration
             // Ignore MPE messages
             if (channel > 0)
             {
-                if (code == MidiConstants.CMD_CC && data1 == 74)
-                    return;
-                if (code == MidiConstants.CMD_PITCHBEND)
+                if ((code == MidiConstants.CMD_CC && data1 == 74) || (code == MidiConstants.CMD_PITCHBEND))
                     return;
             }
         }

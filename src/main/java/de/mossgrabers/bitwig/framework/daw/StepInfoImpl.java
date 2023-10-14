@@ -60,6 +60,7 @@ public class StepInfoImpl extends DefaultStepInfo
                 break;
         }
 
+        this.isSelected = stepInfo.isIsSelected ();
         this.isMuted = stepInfo.isMuted ();
         this.duration = stepInfo.duration ();
         this.velocity = stepInfo.velocity ();

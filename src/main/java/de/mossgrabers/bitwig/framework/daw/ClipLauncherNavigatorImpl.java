@@ -25,6 +25,7 @@ import com.bitwig.extension.controller.api.TrackBank;
  */
 public class ClipLauncherNavigatorImpl implements IClipLauncherNavigator
 {
+    private final ControllerHost   host;
     private final IModel           model;
     private final CursorTrack      cursorTrack;
     private final ClipLauncherSlot theClip;
@@ -41,6 +42,7 @@ public class ClipLauncherNavigatorImpl implements IClipLauncherNavigator
      */
     ClipLauncherNavigatorImpl (final ControllerHost host, final IModel model)
     {
+        this.host = host;
         this.model = model;
 
         this.singleTrackBank = host.createTrackBank (1, 0, 1);
@@ -57,9 +59,10 @@ public class ClipLauncherNavigatorImpl implements IClipLauncherNavigator
             final ISceneBank isceneBank = this.model.getSceneBank ();
             final int pageSize = isceneBank.getPageSize ();
             final int scrollPosition = isceneBank.getScrollPosition ();
-            final int newPosition = (position / pageSize) * pageSize;
+            final int newPosition = position / pageSize * pageSize;
             if (scrollPosition != newPosition)
                 isceneBank.scrollTo (newPosition);
+            isceneBank.getItem (position % pageSize).select ();
         });
 
         this.sceneBank = this.singleTrackBank.sceneBank ();
@@ -72,12 +75,8 @@ public class ClipLauncherNavigatorImpl implements IClipLauncherNavigator
     @Override
     public void navigateScenes (final boolean isLeft)
     {
-        if (isLeft)
-            this.sceneBank.scrollBackwards ();
-        else
-            this.sceneBank.scrollForwards ();
-        this.theClip.select ();
-        this.theClip.showInEditor ();
+        this.navigateClips (isLeft);
+        this.host.scheduleTask ( () -> this.sceneBank.getItemAt (0).selectInEditor (), 100);
     }
 
 
@@ -85,7 +84,12 @@ public class ClipLauncherNavigatorImpl implements IClipLauncherNavigator
     @Override
     public void navigateClips (final boolean isLeft)
     {
-        this.navigateScenes (isLeft);
+        if (isLeft)
+            this.sceneBank.scrollBackwards ();
+        else
+            this.sceneBank.scrollForwards ();
+        this.theClip.select ();
+        this.theClip.showInEditor ();
     }
 
 

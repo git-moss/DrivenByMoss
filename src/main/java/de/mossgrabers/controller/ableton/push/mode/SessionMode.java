@@ -51,6 +51,7 @@ public class SessionMode extends AbstractTrackMode implements IPush3Encoder
     }
 
 
+    private final PushConfiguration                                        configuration;
     private RowDisplayMode                                                 rowDisplayMode;
     private final ISceneBank                                               sceneBank;
     private final IClipLauncherNavigator                                   clipLauncherNavigator;
@@ -60,7 +61,7 @@ public class SessionMode extends AbstractTrackMode implements IPush3Encoder
 
     /**
      * Constructor.
-     * 
+     *
      * @param surface The control surface
      * @param model The model
      */
@@ -68,10 +69,12 @@ public class SessionMode extends AbstractTrackMode implements IPush3Encoder
     {
         super ("Session", surface, model);
 
+        this.configuration = this.surface.getConfiguration ();
+
         this.clipLauncherNavigator = model.getClipLauncherNavigator ();
         this.sceneBank = model.getSceneBank (64);
         this.startClipCommand = new StartClipCommand<> (model, surface);
-        this.startSceneCommand = new StartSceneCommand<> (model, surface);
+        this.startSceneCommand = new StartSceneCommand<> (model, surface, -1, this.sceneBank);
 
         this.rowDisplayMode = this.isPushModern ? RowDisplayMode.ALL : RowDisplayMode.UPPER;
     }
@@ -185,7 +188,7 @@ public class SessionMode extends AbstractTrackMode implements IPush3Encoder
             return;
         }
 
-        if (this.surface.getConfiguration ().isFlipSession ())
+        if (this.configuration.isFlipSession ())
             this.clipLauncherNavigator.navigateTracks (isLeft);
         else
             this.clipLauncherNavigator.navigateClips (isLeft);
@@ -219,7 +222,7 @@ public class SessionMode extends AbstractTrackMode implements IPush3Encoder
             return;
         }
 
-        if (this.surface.getConfiguration ().isFlipSession ())
+        if (this.configuration.isFlipSession ())
             this.clipLauncherNavigator.navigateClips (true);
         else
             this.clipLauncherNavigator.navigateTracks (true);
@@ -239,7 +242,7 @@ public class SessionMode extends AbstractTrackMode implements IPush3Encoder
             return;
         }
 
-        if (this.surface.getConfiguration ().isFlipSession ())
+        if (this.configuration.isFlipSession ())
             this.clipLauncherNavigator.navigateClips (false);
         else
             this.clipLauncherNavigator.navigateTracks (false);
@@ -276,7 +279,7 @@ public class SessionMode extends AbstractTrackMode implements IPush3Encoder
         final int numTracks = tb.getPageSize ();
         final int numScenes = tb.getSceneBank ().getPageSize ();
 
-        final boolean flipSession = this.surface.getConfiguration ().isFlipSession ();
+        final boolean flipSession = this.configuration.isFlipSession ();
         final int maxCols = flipSession ? numScenes : numTracks;
         int maxRows = flipSession ? numTracks : numScenes;
         if (this.rowDisplayMode != RowDisplayMode.ALL)
@@ -370,7 +373,7 @@ public class SessionMode extends AbstractTrackMode implements IPush3Encoder
         final int numTracks = tb.getPageSize ();
         final int numScenes = tb.getSceneBank ().getPageSize ();
 
-        final boolean flipSession = this.surface.getConfiguration ().isFlipSession ();
+        final boolean flipSession = this.configuration.isFlipSession ();
         final int maxCols = flipSession ? numScenes : numTracks;
         int maxRows = flipSession ? numTracks : numScenes;
         if (this.rowDisplayMode != RowDisplayMode.ALL)
@@ -404,7 +407,7 @@ public class SessionMode extends AbstractTrackMode implements IPush3Encoder
 
     /** {@inheritDoc} */
     @Override
-    public void arrowCenter (ButtonEvent event)
+    public void arrowCenter (final ButtonEvent event)
     {
         // Same as default
 

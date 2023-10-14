@@ -25,8 +25,8 @@ public class OptionsComponent implements IComponent
     private final LabelComponent header;
     private final LabelComponent footer;
 
-    private final String         headerBottom;
     private final String         headerTop;
+    private final String         headerBottom;
     private final boolean        isBottomHeaderSelected;
 
 
@@ -81,7 +81,12 @@ public class OptionsComponent implements IComponent
             return;
 
         final double headerHeight = (height - 2 * menuHeight) / 2;
-        final ColorEx textColor = configuration.getColorText ();
+
+        ColorEx textColor = configuration.getColorText ();
+        final ColorEx borderColor = configuration.getColorBorder ();
+        if (textColor.equals (borderColor))
+            textColor = ColorEx.calcContrastColor (textColor);
+
         if (hasTopHeader)
             gc.drawTextInHeight (this.headerTop, left, menuHeight, headerHeight, textColor, headerHeight / 2.0);
         if (hasBottomHeader)

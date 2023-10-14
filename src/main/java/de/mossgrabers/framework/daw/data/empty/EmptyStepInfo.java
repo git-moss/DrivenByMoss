@@ -39,6 +39,14 @@ public class EmptyStepInfo implements IStepInfo
 
     /** {@inheritDoc} */
     @Override
+    public boolean isSelected ()
+    {
+        return false;
+    }
+
+
+    /** {@inheritDoc} */
+    @Override
     public boolean isMuted ()
     {
         return false;

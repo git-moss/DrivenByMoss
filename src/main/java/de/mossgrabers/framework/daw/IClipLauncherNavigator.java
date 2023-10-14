@@ -39,7 +39,7 @@ public interface IClipLauncherNavigator
     /**
      * Select a track in the current track bank page. Contains complex workaround to make sure that
      * the same slot is selected a newly selected track as well.
-     * 
+     *
      * @param index The index of the track
      */
     void selectTrack (int index);

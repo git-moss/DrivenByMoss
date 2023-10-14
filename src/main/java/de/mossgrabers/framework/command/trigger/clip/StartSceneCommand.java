@@ -27,6 +27,7 @@ import java.util.Optional;
 public class StartSceneCommand<S extends IControlSurface<C>, C extends Configuration> extends AbstractTriggerCommand<S, C>
 {
     protected final int index;
+    private ISceneBank  sceneBank;
 
 
     /**
@@ -50,9 +51,24 @@ public class StartSceneCommand<S extends IControlSurface<C>, C extends Configura
      */
     public StartSceneCommand (final IModel model, final S surface, final int index)
     {
+        this (model, surface, index, null);
+    }
+
+
+    /**
+     * Constructor.
+     *
+     * @param model The model
+     * @param surface The surface
+     * @param index The index of the scene in the page
+     * @param sceneBank The scene bank to use
+     */
+    public StartSceneCommand (final IModel model, final S surface, final int index, final ISceneBank sceneBank)
+    {
         super (model, surface);
 
         this.index = index;
+        this.sceneBank = sceneBank == null ? this.model.getSceneBank () : sceneBank;
     }
 
 
@@ -104,10 +120,9 @@ public class StartSceneCommand<S extends IControlSurface<C>, C extends Configura
      */
     public IScene getScene ()
     {
-        final ISceneBank sceneBank = this.model.getSceneBank ();
         if (this.index >= 0)
-            return sceneBank.getItem (this.index);
-        final Optional<IScene> sceneOptional = sceneBank.getSelectedItem ();
+            return this.sceneBank.getItem (this.index);
+        final Optional<IScene> sceneOptional = this.sceneBank.getSelectedItem ();
         return sceneOptional.isEmpty () ? EmptyScene.INSTANCE : sceneOptional.get ();
     }
 }

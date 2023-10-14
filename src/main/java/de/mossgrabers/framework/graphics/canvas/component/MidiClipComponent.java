@@ -52,6 +52,7 @@ public class MidiClipComponent implements IComponent
 
         final ColorEx dividersColor = configuration.getColorBackgroundDarker ();
 
+        final ColorEx clipColor = this.clip.getColor ();
         final ColorEx noteColor = this.clip.getColor ();
         final ColorEx noteMutedColor = ColorEx.DARK_GRAY;
         final ColorEx noteGridLoopColor = configuration.getColorBackground ();
@@ -88,7 +89,7 @@ public class MidiClipComponent implements IComponent
                 final double x = width * start / pageLength;
                 final double w = width * end / pageLength - x;
                 // The header loop
-                gc.fillRectangle (x + 1, 0, w, len, noteColor);
+                gc.fillRectangle (x + 1, 0, w, len, clipColor);
 
                 // Background in note area
                 gc.fillRectangle (x + 1, top, w, noteAreaHeight, noteGridLoopColor);
@@ -100,8 +101,8 @@ public class MidiClipComponent implements IComponent
         {
             final double start = playStart - startPos;
             final double x = width * start / pageLength;
-            gc.fillTriangle (x + 1, 0, x + 1 + len, len / 2.0, x + 1, len, noteColor);
-            gc.strokeTriangle (x + 1, 0, x + 1 + len, len / 2.0, x + 1, len, ColorEx.evenDarker (noteColor));
+            gc.fillTriangle (x + 1, 0, x + 1 + len, len / 2.0, x + 1, len, clipColor);
+            gc.strokeTriangle (x + 1, 0, x + 1 + len, len / 2.0, x + 1, len, ColorEx.evenDarker (clipColor));
         }
         // Draw play end in header
         final double playEnd = this.clip.getPlayEnd ();
@@ -109,8 +110,8 @@ public class MidiClipComponent implements IComponent
         {
             final double end = playEnd - startPos;
             final double x = width * end / pageLength;
-            gc.fillTriangle (x + 1, 0, x + 1, len, x + 1 - top, len / 2.0, noteColor);
-            gc.strokeTriangle (x + 1, 0, x + 1, len, x + 1 - top, len / 2.0, ColorEx.evenDarker (noteColor));
+            gc.fillTriangle (x + 1, 0, x + 1, len, x + 1 - top, len / 2.0, clipColor);
+            gc.strokeTriangle (x + 1, 0, x + 1, len, x + 1 - top, len / 2.0, ColorEx.evenDarker (clipColor));
         }
 
         // Draw dividers
@@ -170,8 +171,12 @@ public class MidiClipComponent implements IComponent
                         w -= 2;
                     }
 
+                    ColorEx stepNoteBackgroundColor = stepInfo.isSelected () ? ColorEx.evenDarker (noteColor) : noteColor;
+                    if (stepInfo.isMuted ())
+                        stepNoteBackgroundColor = noteMutedColor;
+
                     gc.strokeRectangle (x, top + (range - row - 1) * stepHeight + 2, w, stepHeight - 2, noteBorderColor);
-                    gc.fillRectangle (x + (isStart ? 0 : -2), top + (range - row - 1) * stepHeight + 2, w - 1 + (isStart ? 0 : 2), stepHeight - 3, stepInfo.isMuted () ? noteMutedColor : noteColor);
+                    gc.fillRectangle (x + (isStart ? 0 : -2), top + (range - row - 1) * stepHeight + 2, w - 1 + (isStart ? 0 : 2), stepHeight - 3, stepNoteBackgroundColor);
 
                     if (isStart && fontSize > 0)
                     {

@@ -188,7 +188,7 @@ public class SLMkIIIControlSurface extends AbstractControlSurface<SLMkIIIConfigu
 
 
     /**
-     * Toggle if mute/solo or monitor/racarm is active.
+     * Toggle if mute/solo or monitor/rec-arm is active.
      */
     public void toggleMuteSolo ()
     {

@@ -589,7 +589,7 @@ public class TransportImpl implements ITransport
     @Override
     public double getLoopEnd ()
     {
-        return getLoopStart () + this.transport.arrangerLoopDuration ().get ();
+        return this.getLoopStart () + this.transport.arrangerLoopDuration ().get ();
     }
 
 

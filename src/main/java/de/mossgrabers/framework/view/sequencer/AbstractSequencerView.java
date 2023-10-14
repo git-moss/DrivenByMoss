@@ -455,7 +455,11 @@ public abstract class AbstractSequencerView<S extends IControlSurface<C>, C exte
     protected String getStepColor (final IStepInfo stepInfo, final boolean highlight, final int channel, final int step, final int pad, final int note, final List<NotePosition> editNotes)
     {
         if (stepInfo == null || stepInfo.getState () == StepState.OFF)
+        {
+            if (highlight)
+                return COLOR_STEP_HILITE_NO_CONTENT;
             return this.getPadColor (pad, this.useDawColors ? this.model.getCursorTrack () : null);
+        }
 
         return this.getStepColor (stepInfo, highlight, Optional.empty (), channel, step, note, editNotes);
     }

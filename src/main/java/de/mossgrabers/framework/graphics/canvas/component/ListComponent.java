@@ -56,8 +56,10 @@ public class ListComponent implements IComponent
         final double itemWidth = width - separatorSize;
         final double itemHeight = height / size;
 
-        final ColorEx textColor = configuration.getColorText ();
+        ColorEx textColor = configuration.getColorText ();
         final ColorEx borderColor = configuration.getColorBorder ();
+        if (textColor.equals (borderColor))
+            textColor = ColorEx.calcContrastColor (textColor);
 
         for (int i = 0; i < size; i++)
         {

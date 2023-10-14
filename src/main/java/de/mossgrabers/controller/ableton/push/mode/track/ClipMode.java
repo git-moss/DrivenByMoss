@@ -4,6 +4,7 @@
 
 package de.mossgrabers.controller.ableton.push.mode.track;
 
+import de.mossgrabers.controller.ableton.push.command.continuous.IPush3Encoder;
 import de.mossgrabers.controller.ableton.push.controller.PushColorManager;
 import de.mossgrabers.controller.ableton.push.controller.PushControlSurface;
 import de.mossgrabers.framework.controller.ButtonID;
@@ -30,7 +31,7 @@ import de.mossgrabers.framework.view.sequencer.AbstractSequencerView;
  *
  * @author Jürgen Moßgraber
  */
-public class ClipMode extends AbstractTrackMode
+public class ClipMode extends AbstractTrackMode implements IPush3Encoder
 {
     private static final String PLEASE_SELECT_A_CLIP_PUSH1 = "      Pleaseselect a clip.";
     private static final String PLEASE_SELECT_A_CLIP_PUSH2 = "Please select a clip.";
@@ -252,5 +253,53 @@ public class ClipMode extends AbstractTrackMode
     private String formatMeasures (final double time, final int startOffset)
     {
         return StringUtils.formatMeasures (this.model.getTransport ().getQuartersPerMeasure (), time, startOffset, false);
+    }
+
+
+    /** {@inheritDoc} */
+    @Override
+    public void encoderTurn (final int value)
+    {
+        // TODO Move note
+        // TODO SHIFT + Turn: change note length
+
+    }
+
+
+    /** {@inheritDoc} */
+    @Override
+    public void encoderLeft (final ButtonEvent event)
+    {
+        // TODO Select previous/next note
+        // 1) Find all notes on page
+        // 2) Find first/last selected note -> search up/down then left/right
+        // 3) Select previous/next note
+
+    }
+
+
+    /** {@inheritDoc} */
+    @Override
+    public void encoderRight (final ButtonEvent event)
+    {
+        // TODO Auto-generated method stub
+
+    }
+
+
+    /** {@inheritDoc} */
+    @Override
+    public void encoderPress (final ButtonEvent event)
+    {
+        // TODO Edit note
+
+    }
+
+
+    /** {@inheritDoc} */
+    @Override
+    public void arrowCenter (final ButtonEvent event)
+    {
+        // Not used
     }
 }

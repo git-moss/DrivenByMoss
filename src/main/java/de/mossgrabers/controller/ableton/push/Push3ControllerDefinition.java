@@ -31,6 +31,7 @@ public class Push3ControllerDefinition extends DefaultControllerDefinition
     /** Push 3 USB display endpoint. */
     private static final byte  ENDPOINT_ADDRESS = (byte) 0x01;
 
+
     /**
      * Constructor.
      */

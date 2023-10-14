@@ -46,7 +46,7 @@ public enum ScaleLayout
             scaleLayoutNames[i] = values[i].name;
     }
 
-    private String name;
+    private final String name;
 
 
     /**

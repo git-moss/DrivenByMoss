@@ -53,7 +53,7 @@ public abstract class AbstractConfigurationMode extends BaseMode<IItem>
 
     /**
      * Constructor.
-     * 
+     *
      * @param page The page of the configuration
      * @param name The name of the mode
      * @param surface The control surface
