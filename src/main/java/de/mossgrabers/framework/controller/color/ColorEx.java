@@ -43,6 +43,8 @@ public class ColorEx
     public static final ColorEx DARK_ORANGE = ColorEx.fromRGB (128, 65, 0);
     /** Color pink. */
     public static final ColorEx PINK        = ColorEx.fromRGB (255, 0, 220);
+    /** Color dark pink. */
+    public static final ColorEx DARK_PINK   = ColorEx.evenDarker (PINK);
     /** Color skin. */
     public static final ColorEx ROSE        = ColorEx.fromRGB (255, 127, 127);
     /** Color brown. */
@@ -51,6 +53,8 @@ public class ColorEx
     public static final ColorEx DARK_BROWN  = ColorEx.fromRGB (127, 0, 0);
     /** Color mint. */
     public static final ColorEx MINT        = ColorEx.fromRGB (170, 240, 209);
+    /** Color dark mint. */
+    public static final ColorEx DARK_MINT   = ColorEx.evenDarker (MINT);
     /** Color olive. */
     public static final ColorEx OLIVE       = ColorEx.fromRGB (128, 128, 0);
     /** Color sky blue. */

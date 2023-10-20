@@ -123,6 +123,7 @@ public class ElectraOneControlSurface extends AbstractControlSurface<ElectraOneC
     private static final int []          TOUCH_PATTERN_EQ            = new int [] { 0, 0, 0, 1, 1, 1, 0, 0, 0, 0, 0, 0 };
     private static final int []          TOUCH_PATTERN_TRANSPORT     = new int [] { 0, 0, 0, 0, 0, 0, 1, 1, 1, 0, 0, 0 };
     private static final int []          TOUCH_PATTERN_SESSION       = new int [] { 0, 0, 0, 0, 0, 0, 0, 1, 1, 1, 0, 0 };
+    private static final int []          TOUCH_PATTERN_PROJECT       = new int [] { 0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 1, 0 };
     private static final int []          TOUCH_PATTERN_NATIVE_DEVICE = new int [] { 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 1 };
 
     // @formatter:on
@@ -150,7 +151,7 @@ public class ElectraOneControlSurface extends AbstractControlSurface<ElectraOneC
     private static final List<Modes>     MODES                             = new ArrayList<> ();
     static
     {
-        Collections.addAll (MODES, Modes.VOLUME, Modes.SEND, Modes.DEVICE_PARAMS, Modes.EQ_DEVICE_PARAMS, Modes.TRANSPORT, Modes.SESSION);
+        Collections.addAll (MODES, Modes.VOLUME, Modes.SEND, Modes.DEVICE_PARAMS, Modes.EQ_DEVICE_PARAMS, Modes.TRANSPORT, Modes.SESSION, Modes.PROJECT);
     }
 
     private static final String        SET_GROUP_TITLE = "sgt(%s,\"%s\")";
@@ -569,6 +570,8 @@ public class ElectraOneControlSurface extends AbstractControlSurface<ElectraOneC
             this.selectPage (4);
         else if (Arrays.equals (this.knobStates, TOUCH_PATTERN_SESSION))
             this.selectPage (5);
+        else if (Arrays.equals (this.knobStates, TOUCH_PATTERN_PROJECT))
+            this.selectPage (6);
         else if (Arrays.equals (this.knobStates, TOUCH_PATTERN_NATIVE_DEVICE))
             this.switchToSpecificDevicePreset ();
         else
@@ -687,10 +690,10 @@ public class ElectraOneControlSurface extends AbstractControlSurface<ElectraOneC
     {
         final int version = root.get ("versionSeq").asInt ();
         final String versionText = root.get ("versionText").asText ();
-        if (version < 300000000)
-            throw new FrameworkException ("Firmware must be at least 3.0 but is " + versionText);
-
-        this.host.println ("Firmware: " + versionText);
+        if (version < 300400300)
+            this.host.error ("Firmware must be at least 3.4.2 but is " + versionText);
+        else
+            this.host.println ("Firmware: " + versionText);
     }
 
 

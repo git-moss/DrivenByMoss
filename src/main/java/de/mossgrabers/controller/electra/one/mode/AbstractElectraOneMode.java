@@ -35,7 +35,7 @@ public abstract class AbstractElectraOneMode extends DefaultTrackMode<ElectraOne
      */
     protected AbstractElectraOneMode (final int pageIndex, final String name, final ElectraOneControlSurface surface, final IModel model)
     {
-        super (name, surface, model, true, ElectraOneControlSurface.KNOB_IDS);
+        super (name, surface, model, false, ElectraOneControlSurface.KNOB_IDS);
 
         this.pageCache = new PageCache (pageIndex, surface);
     }
@@ -64,7 +64,6 @@ public abstract class AbstractElectraOneMode extends DefaultTrackMode<ElectraOne
     public void onKnobTouch (final int index, final boolean isTouched)
     {
         this.setTouchedKnob (index, isTouched);
-        this.pageCache.setCtrlEditing (index, isTouched);
         this.getParameterProvider ().get (index).touchValue (isTouched);
     }
 

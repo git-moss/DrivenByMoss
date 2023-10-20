@@ -136,6 +136,8 @@ public enum Modes
     SETUP,
     /** Info mode. */
     INFO,
+    /** Project mode. */
+    PROJECT,
     /** Audio configuration mode. */
     AUDIO,
     /** Select of session views. */

@@ -9,6 +9,7 @@ import de.mossgrabers.controller.electra.one.controller.ElectraOneControlSurface
 import de.mossgrabers.controller.electra.one.mode.DeviceMode;
 import de.mossgrabers.controller.electra.one.mode.EqualizerMode;
 import de.mossgrabers.controller.electra.one.mode.MixerMode;
+import de.mossgrabers.controller.electra.one.mode.ProjectTrackMode;
 import de.mossgrabers.controller.electra.one.mode.SendsMode;
 import de.mossgrabers.controller.electra.one.mode.SessionMode;
 import de.mossgrabers.controller.electra.one.mode.TransportMode;
@@ -129,6 +130,7 @@ public class ElectraOneControllerSetup extends AbstractControllerSetup<ElectraOn
         modeManager.register (Modes.EQ_DEVICE_PARAMS, new EqualizerMode (surface, this.model));
         modeManager.register (Modes.TRANSPORT, new TransportMode (surface, this.model));
         modeManager.register (Modes.SESSION, new SessionMode (surface, this.model));
+        modeManager.register (Modes.PROJECT, new ProjectTrackMode (surface, this.model));
         modeManager.register (Modes.DUMMY, new DummyMode<> (surface, this.model, ElectraOneControlSurface.KNOB_IDS));
     }
 
@@ -191,11 +193,7 @@ public class ElectraOneControllerSetup extends AbstractControllerSetup<ElectraOn
                 final ContinuousID ctrlID = ElectraOneControlSurface.getContinuousID (row, col);
                 final int colLabel = col + 1;
                 final int cc = ElectraOneControlSurface.ELECTRA_CTRL_1 + 10 * row + col;
-                final IHwContinuousControl ctrl;
-                if (row > 0 && col == 5)
-                    ctrl = this.addRelativeKnob (ctrlID, "Ctrl " + rowLabel + "-" + colLabel, null, BindType.CC, 15, cc);
-                else
-                    ctrl = this.addAbsoluteKnob (ctrlID, "Ctrl " + rowLabel + "-" + colLabel, null, BindType.CC, 15, cc);
+                final IHwContinuousControl ctrl = this.addRelativeKnob (ctrlID, "Ctrl " + rowLabel + "-" + colLabel, null, BindType.CC, 15, cc);
                 // Can sadly only be set at startup
                 if (col < 6)
                     ctrl.setIndexInGroup (row * 6 + col);

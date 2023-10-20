@@ -22,8 +22,6 @@ class PageCache
     private static final int               NUM_GROUPS                 = 500;
     private static final int               GROUP_OFFSET               = 500;
 
-    private final boolean [] []            ctrlEditing                = new boolean [NUM_ROWS] [NUM_COLS];
-
     private final int [] []                ctrlValueCache             = new int [NUM_ROWS] [NUM_COLS];
     private final String [] []             ctrlValueLabelCache        = new String [NUM_ROWS] [NUM_COLS];
     private final String [] []             ctrlLabelCache             = new String [NUM_ROWS] [NUM_COLS];
@@ -54,20 +52,6 @@ class PageCache
     {
         this.page = page;
         this.surface = surface;
-    }
-
-
-    /**
-     * Set the control to be edited.
-     *
-     * @param index The index of the control on the page
-     * @param isEditing True if user is currently editing the value
-     */
-    public void setCtrlEditing (final int index, final boolean isEditing)
-    {
-        final int row = index / 6;
-        final int column = index % 6;
-        this.ctrlEditing[row][column] = isEditing;
     }
 
 
@@ -186,7 +170,7 @@ class PageCache
                 for (int column = 0; column < NUM_COLS; column++)
                 {
                     // Only update values if value is not currently edited
-                    if (this.ctrlValueCache[row][column] != this.currentCtrlValueCache[row][column] && !this.ctrlEditing[row][column])
+                    if (this.ctrlValueCache[row][column] != this.currentCtrlValueCache[row][column])
                     {
                         this.currentCtrlValueCache[row][column] = this.ctrlValueCache[row][column];
                         final int midiCC = ElectraOneControlSurface.ELECTRA_CTRL_1 + 10 * row + column;
@@ -289,8 +273,6 @@ class PageCache
     {
         synchronized (this.dataLock)
         {
-            for (final boolean [] row: this.ctrlEditing)
-                Arrays.fill (row, false);
             for (final int [] row: this.currentCtrlValueCache)
                 Arrays.fill (row, -1);
             for (final String [] row: this.currentCtrlLabelCache)

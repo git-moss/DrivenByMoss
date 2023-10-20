@@ -59,19 +59,21 @@ public class TransportMode extends AbstractElectraOneMode
         this.masterTrack = this.model.getMasterTrack ();
         this.project = this.model.getProject ();
 
+        final EmptyParameterProvider emptyParameterProvider5 = new EmptyParameterProvider (5);
+        final EmptyParameterProvider emptyParameterProvider6 = new EmptyParameterProvider (6);
         this.setParameterProvider (new CombinedParameterProvider (
                 // Row 1
-                new EmptyParameterProvider (5), new FixedParameterProvider (this.masterTrack.getVolumeParameter ()),
+                emptyParameterProvider5, new FixedParameterProvider (this.masterTrack.getVolumeParameter ()),
                 // Row 2
-                new EmptyParameterProvider (5), new FixedParameterProvider (new PlayPositionParameter (model.getValueChanger (), this.transport, surface)),
+                emptyParameterProvider5, new FixedParameterProvider (new PlayPositionParameter (model.getValueChanger (), this.transport, surface)),
                 // Row 3
-                new EmptyParameterProvider (5), new FixedParameterProvider (new TempoParameter (model.getValueChanger (), this.transport, surface)),
+                emptyParameterProvider5, new FixedParameterProvider (new TempoParameter (model.getValueChanger (), this.transport, surface)),
                 // Row 4
-                new EmptyParameterProvider (6),
+                emptyParameterProvider6,
                 // Row 5
                 new EmptyParameterProvider (1), new FixedParameterProvider (this.transport.getMetronomeVolumeParameter ()), new FixedParameterProvider (this.project.getCueVolumeParameter ()), new EmptyParameterProvider (3),
                 // Row 6
-                new EmptyParameterProvider (6)));
+                emptyParameterProvider6));
     }
 
 

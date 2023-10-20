@@ -49,31 +49,34 @@ public class ElectraOneControllerDefinition extends DefaultControllerDefinition
                     "Electra Controller",
                     "MIDIOUT3 (Electra Controller)"
                 }));
+                for (int i = 2; i < 10; i++)
+                {
+                    final String [] portNames = new String []
+                    {
+                        "Electra Controller #" + i,
+                        "MIDIIN" + (3 * i) + " (Electra Controller)"
+                    };
+                    pairs.add (this.addDeviceDiscoveryPair (portNames, portNames));
+                }
                 break;
 
             case MAC:
-                pairs.add (this.addDeviceDiscoveryPair (new String []
+                final String [] portNamesMac = new String []
                 {
                     "Electra Controller Electra Port 1",
                     ELECTRA_CONTROLLER_ELECTRA_CTRL
-                }, new String []
-                {
-                    "Electra Controller Electra Port 1",
-                    ELECTRA_CONTROLLER_ELECTRA_CTRL
-                }));
+                };
+                pairs.add (this.addDeviceDiscoveryPair (portNamesMac, portNamesMac));
                 break;
 
             default:
             case LINUX:
-                pairs.add (this.addDeviceDiscoveryPair (new String []
+                final String [] portNamesLinux = new String []
                 {
                     "Electra Controller Electra Port",
                     ELECTRA_CONTROLLER_ELECTRA_CTRL
-                }, new String []
-                {
-                    "Electra Controller Electra Port",
-                    ELECTRA_CONTROLLER_ELECTRA_CTRL
-                }));
+                };
+                pairs.add (this.addDeviceDiscoveryPair (portNamesLinux, portNamesLinux));
                 break;
         }
 
