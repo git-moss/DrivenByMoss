@@ -185,6 +185,8 @@ public class GenericFlexiControllerSetup extends AbstractControllerSetup<Generic
     protected void createModel ()
     {
         final ModelSetup ms = new ModelSetup ();
+        ms.setNumResults (1);
+        ms.setNumFilterColumnEntries (1);
         ms.enableMainDrumDevice (false);
         ms.setNumMarkers (8);
         ms.enableDevice (DeviceID.EQ);

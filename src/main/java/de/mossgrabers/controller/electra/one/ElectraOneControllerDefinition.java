@@ -51,12 +51,17 @@ public class ElectraOneControllerDefinition extends DefaultControllerDefinition
                 }));
                 for (int i = 2; i < 10; i++)
                 {
-                    final String [] portNames = new String []
+                    final String [] portInNames = new String []
                     {
                         "Electra Controller #" + i,
                         "MIDIIN" + (3 * i) + " (Electra Controller)"
                     };
-                    pairs.add (this.addDeviceDiscoveryPair (portNames, portNames));
+                    final String [] portOutNames = new String []
+                    {
+                        "Electra Controller #" + i,
+                        "MIDIOUT" + (3 * i) + " (Electra Controller)"
+                    };
+                    pairs.add (this.addDeviceDiscoveryPair (portInNames, portOutNames));
                 }
                 break;
 

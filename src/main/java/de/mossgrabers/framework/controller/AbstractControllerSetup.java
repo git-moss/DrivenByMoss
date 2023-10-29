@@ -19,6 +19,7 @@ import de.mossgrabers.framework.controller.hardware.IHwFader;
 import de.mossgrabers.framework.controller.hardware.IHwRelativeKnob;
 import de.mossgrabers.framework.controller.valuechanger.IValueChanger;
 import de.mossgrabers.framework.controller.valuechanger.RelativeEncoding;
+import de.mossgrabers.framework.daw.IBrowser;
 import de.mossgrabers.framework.daw.IHost;
 import de.mossgrabers.framework.daw.IModel;
 import de.mossgrabers.framework.daw.constants.Capability;
@@ -259,7 +260,10 @@ public abstract class AbstractControllerSetup<S extends IControlSurface<C>, C ex
      */
     protected void activateBrowserObserver (final Modes browserMode)
     {
-        this.model.getBrowser ().addActiveObserver (isActive -> {
+        final IBrowser browser = this.model.getBrowser ();
+        if (browser == null)
+            return;
+        browser.addActiveObserver (isActive -> {
 
             final ModeManager modeManager = this.getSurface ().getModeManager ();
             if (isActive.booleanValue ())
