@@ -37,7 +37,7 @@ import de.mossgrabers.framework.view.Views;
 
 
 /**
- * Support for the Electra.One controller.
+ * Support for the Electra One controller.
  *
  * @author Jürgen Moßgraber
  */

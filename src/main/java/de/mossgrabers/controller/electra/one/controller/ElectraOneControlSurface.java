@@ -38,7 +38,7 @@ import java.util.Optional;
 
 
 /**
- * A control surface which supports the Electra.One controller.
+ * A control surface which supports the Electra One controller.
  *
  * @author Jürgen Moßgraber
  */
@@ -297,7 +297,7 @@ public class ElectraOneControlSurface extends AbstractControlSurface<ElectraOneC
 
 
     /**
-     * Send the current logging setting to the device.
+     * Request information about the device.
      */
     public void requestDeviceInfo ()
     {

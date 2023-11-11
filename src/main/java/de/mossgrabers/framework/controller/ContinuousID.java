@@ -60,6 +60,22 @@ public enum ContinuousID
     KNOB7,
     /** Knob 8. */
     KNOB8,
+    /** Knob 9. */
+    KNOB9,
+    /** Knob 10. */
+    KNOB10,
+    /** Knob 11. */
+    KNOB11,
+    /** Knob 12. */
+    KNOB12,
+    /** Knob 13. */
+    KNOB13,
+    /** Knob 14. */
+    KNOB14,
+    /** Knob 15. */
+    KNOB15,
+    /** Knob 16. */
+    KNOB16,
 
     /** Volume Knob 1. */
     VOLUME_KNOB1,

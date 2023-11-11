@@ -85,7 +85,7 @@ public class SLMkIIITrackParamsMode extends AbstractParametersMode<IParameter>
         for (int i = 0; i < this.bank.getPageSize (); i++)
         {
             final IParameter param = this.bank.getItem (i);
-            d.setCell (0, i, param.doesExist () ? StringUtils.fixASCII (param.getName (9)) : "").setCell (1, i, param.getDisplayedValue (9));
+            d.setCell (0, i, param.doesExist () ? StringUtils.fixASCII (param.getName (9)) : "").setCell (1, i, StringUtils.fixASCII (param.getDisplayedValue (9)));
 
             final int color = param.doesExist () ? SLMkIIIColorManager.SLMKIII_ORANGE : SLMkIIIColorManager.SLMKIII_BLACK;
             d.setPropertyColor (i, 0, color);

@@ -68,14 +68,11 @@ public class DrumView extends AbstractDrumView<LaunchkeyMiniMk3ControlSurface, L
             // Mark selected note
             this.keyManager.setKeyPressed (offsetY + this.getSelectedPad (), velocity);
         }
-        else
+        else if (this.isActive ())
         {
-            if (this.isActive ())
-            {
-                final int x = index % this.numColumns;
-                final int y = index / this.numColumns;
-                this.handleSequencerArea (index, x, y, offsetY, velocity);
-            }
+            final int x = index % this.numColumns;
+            final int y = index / this.numColumns;
+            this.handleSequencerArea (index, x, y, offsetY, velocity);
         }
     }
 

@@ -13,7 +13,7 @@ import java.util.UUID;
 
 
 /**
- * Definition class for the Electra.One controller extension.
+ * Definition class for the Electra One controller extension.
  *
  * @author Jürgen Moßgraber
  */
@@ -27,7 +27,7 @@ public class ElectraOneControllerDefinition extends DefaultControllerDefinition
      */
     public ElectraOneControllerDefinition ()
     {
-        super (UUID.fromString ("24342204-B891-4F62-BC43-8ABA1DE1D690"), "Electra.One", "Electra", 2, 2);
+        super (UUID.fromString ("24342204-B891-4F62-BC43-8ABA1DE1D690"), "Electra One", "Electra", 2, 2);
     }
 
 

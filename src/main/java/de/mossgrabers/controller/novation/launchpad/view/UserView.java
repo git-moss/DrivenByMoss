@@ -160,7 +160,7 @@ public class UserView extends AbstractFaderView
      */
     public void selectPreviousPage ()
     {
-        this.getBank ().selectPreviousPage ();
+        this.getBank ().scrollBackwards ();
         this.notifyPage ();
     }
 
@@ -170,7 +170,7 @@ public class UserView extends AbstractFaderView
      */
     public void selectNextPage ()
     {
-        this.getBank ().selectNextPage ();
+        this.getBank ().scrollForwards ();
         this.notifyPage ();
     }
 

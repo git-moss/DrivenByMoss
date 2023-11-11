@@ -15,7 +15,7 @@ import java.util.List;
 
 
 /**
- * The configuration settings for Electra.One.
+ * The configuration settings for Electra One.
  *
  * @author Jürgen Moßgraber
  */

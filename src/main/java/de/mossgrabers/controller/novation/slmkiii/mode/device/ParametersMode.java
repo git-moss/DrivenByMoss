@@ -294,7 +294,7 @@ public class ParametersMode extends AbstractParametersMode<IItem>
             for (int i = 0; i < 8; i++)
             {
                 final IParameter param = parameterBank.getItem (i);
-                d.setCell (0, i, param.doesExist () ? StringUtils.fixASCII (param.getName (9)) : "").setCell (1, i, param.getDisplayedValue (9));
+                d.setCell (0, i, param.doesExist () ? StringUtils.fixASCII (param.getName (9)) : "").setCell (1, i, StringUtils.fixASCII (param.getDisplayedValue (9)));
                 final int color = param.doesExist () ? SLMkIIIColorManager.SLMKIII_PURPLE : SLMkIIIColorManager.SLMKIII_BLACK;
                 d.setPropertyColor (i, 0, color);
                 d.setPropertyColor (i, 1, color);
