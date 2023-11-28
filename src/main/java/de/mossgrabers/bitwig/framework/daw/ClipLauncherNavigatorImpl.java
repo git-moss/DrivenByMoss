@@ -8,6 +8,7 @@ import de.mossgrabers.framework.daw.IClipLauncherNavigator;
 import de.mossgrabers.framework.daw.IModel;
 import de.mossgrabers.framework.daw.data.ITrack;
 import de.mossgrabers.framework.daw.data.bank.ISceneBank;
+import de.mossgrabers.framework.daw.data.bank.ITrackBank;
 
 import com.bitwig.extension.controller.api.ClipLauncherSlot;
 import com.bitwig.extension.controller.api.ClipLauncherSlotBank;
@@ -112,8 +113,11 @@ public class ClipLauncherNavigatorImpl implements IClipLauncherNavigator
     @Override
     public void selectTrack (final int index)
     {
-        final ITrack track = this.model.getTrackBank ().getItem (0);
-        if (track.doesExist ())
-            this.singleTrackBank.scrollPosition ().set (track.getPosition () + index);
+        final ITrackBank trackBank = this.model.getTrackBank ();
+        final ITrack track = trackBank.getItem (0);
+        if (!track.doesExist ())
+            return;
+        this.singleTrackBank.scrollPosition ().set (track.getPosition () + index);
+        trackBank.getItem (index).select ();
     }
 }

@@ -4,6 +4,9 @@
 
 package de.mossgrabers.controller.ni.kontrol.mkii.mode;
 
+import java.util.List;
+import java.util.Optional;
+
 import de.mossgrabers.controller.ni.kontrol.mkii.KontrolProtocolConfiguration;
 import de.mossgrabers.controller.ni.kontrol.mkii.TrackType;
 import de.mossgrabers.controller.ni.kontrol.mkii.controller.KontrolProtocol;
@@ -18,9 +21,6 @@ import de.mossgrabers.framework.daw.data.empty.EmptySend;
 import de.mossgrabers.framework.mode.track.DefaultTrackMode;
 import de.mossgrabers.framework.parameterprovider.special.CombinedParameterProvider;
 import de.mossgrabers.framework.parameterprovider.track.SendParameterProvider;
-
-import java.util.List;
-import java.util.Optional;
 
 
 /**
@@ -42,6 +42,7 @@ public class SendMode extends DefaultTrackMode<KontrolProtocolControlSurface, Ko
         super ("Send", surface, model, false);
 
         this.setControls (controls);
+        // TODO das ist doch Quatsch, oder?
         final SendParameterProvider pp = new SendParameterProvider (model, -1, 0);
         this.setParameterProvider (new CombinedParameterProvider (pp, pp));
 

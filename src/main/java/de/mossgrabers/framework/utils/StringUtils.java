@@ -4,12 +4,12 @@
 
 package de.mossgrabers.framework.utils;
 
-import de.mossgrabers.framework.controller.color.ColorEx;
-
 import java.nio.ByteBuffer;
 import java.text.DecimalFormat;
 import java.text.DecimalFormatSymbols;
 import java.util.Locale;
+
+import de.mossgrabers.framework.controller.color.ColorEx;
 
 
 /**
@@ -368,6 +368,21 @@ public class StringUtils
             result[i] = Integer.parseInt (data.substring (pos, pos + 2), 16);
         }
         return result;
+    }
+
+
+    /**
+     * Convert the given integer array into a byte array.
+     * 
+     * @param data The integer array
+     * @return The byte array
+     */
+    public static byte [] asBytes (final int [] data)
+    {
+        final byte [] bytes = new byte [data.length];
+        for (int i = 0; i < data.length; i++)
+            bytes[i] = (byte) data[i];
+        return bytes;
     }
 
 
