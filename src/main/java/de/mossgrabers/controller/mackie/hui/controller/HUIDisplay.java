@@ -4,15 +4,15 @@
 
 package de.mossgrabers.controller.mackie.hui.controller;
 
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+import java.util.concurrent.TimeUnit;
+
 import de.mossgrabers.framework.controller.display.AbstractTextDisplay;
 import de.mossgrabers.framework.daw.IHost;
 import de.mossgrabers.framework.daw.midi.IMidiOutput;
 import de.mossgrabers.framework.utils.LatestTaskExecutor;
 import de.mossgrabers.framework.utils.StringUtils;
-
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
-import java.util.concurrent.TimeUnit;
 
 
 /**
@@ -44,7 +44,7 @@ public class HUIDisplay extends AbstractTextDisplay
 
     /** {@inheritDoc} */
     @Override
-    public void writeLine (final int row, final String text)
+    public void writeLine (final int row, final String text, final String previousText)
     {
         if (this.executor.isShutdown ())
             return;

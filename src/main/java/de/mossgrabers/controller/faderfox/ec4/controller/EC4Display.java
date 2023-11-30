@@ -6,6 +6,8 @@ package de.mossgrabers.controller.faderfox.ec4.controller;
 
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
+import java.util.Map;
+import java.util.TreeMap;
 
 import de.mossgrabers.framework.controller.display.AbstractTextDisplay;
 import de.mossgrabers.framework.daw.IHost;
@@ -19,7 +21,12 @@ import de.mossgrabers.framework.daw.midi.IMidiOutput;
  */
 public class EC4Display extends AbstractTextDisplay
 {
-    private static final byte [] SYSEX_HEADER =
+    /** The display page which shows the controller names. */
+    public static final int      DISPLAY_CONTROLS = 0;
+    /** The display page with the total view. */
+    public static final int      DISPLAY_TOTAL    = 3;
+
+    private static final byte [] SYSEX_HEADER     =
     {
         (byte) 0xF0,
         0x00,
@@ -30,63 +37,57 @@ public class EC4Display extends AbstractTextDisplay
         0x1B
     };
 
+    private final int            display;
+
 
     /**
      * Constructor. 4 rows (0-1) with 4 blocks (0-3). Each block consists of 4 characters.
      *
      * @param host The host
      * @param output The MIDI output which addresses the display
+     * @param display The display index 0-3
      */
-    public EC4Display (final IHost host, final IMidiOutput output)
+    public EC4Display (final IHost host, final IMidiOutput output, final int display)
     {
         super (host, output, 4 /* No of rows */, 4 /* No of cells */, 16);
+
+        this.display = display;
     }
 
 
     /** {@inheritDoc} */
     @Override
-    public void writeLine (final int row, final String text)
+    public void writeLine (final int row, final String text, final String previousText)
     {
-        // TODO split in 4 parts, cache again
+        final Map<Integer, String> diff = calculateDiff (text, previousText);
+        if (diff.isEmpty ())
+            return;
 
-        // final int length = text.length ();
-        // final int [] array = new int [length];
-        // for (int i = 0; i < length; i++)
-        // array[i] = text.charAt (i);
-
-        // TODO
-        int display = 0;
         int rowOffset = 16 * row;
-
         try (final ByteArrayOutputStream out = new ByteArrayOutputStream ())
         {
             out.write (SYSEX_HEADER);
 
-            // Display 0-3
             out.write (0x4E);
             out.write (0x22);
-            out.write ((byte) (0x10 + display));
+            out.write ((byte) (0x10 + this.display));
 
-            out.write (0x4A);
-            out.write (0x20 + rowOffset / 16);
-            out.write (0x10 + rowOffset % 16);
-
-            // TODO do we need to convert to ASCII or is that already done?
-
-            for (int i = 0; i < text.length (); i++)
+            for (final Map.Entry<Integer, String> e: diff.entrySet ())
             {
-                final byte ascii = (byte) text.charAt (i);
-                out.write (0x4D);
-                out.write (0x20 + ascii / 16);
-                out.write (0x10 + ascii % 16);
-            }
+                final int offset = rowOffset + e.getKey ().intValue ();
 
-            // 4A 2a 1a 4D 2d 1d F7
-            //
-            // 4A 23 1C 4D 25 12 4D 26 15 4D 27 13 4D 26 1F F7
-            // ^^^^^^^^ ^^^^^^^^ ^^^^^^^^ ^^^^^^^^ ^^^^^^^^
-            // address data data data data
-            // a=60 d='R' d='e' d='s' d='o'
+                out.write (0x4A);
+                out.write (0x20 + offset / 16);
+                out.write (0x10 + offset % 16);
+
+                for (int i = 0; i < text.length (); i++)
+                {
+                    final byte ascii = (byte) text.charAt (i);
+                    out.write (0x4D);
+                    out.write (0x20 + ascii / 16);
+                    out.write (0x10 + ascii % 16);
+                }
+            }
 
             out.write ((byte) 0xF7);
             this.output.sendSysex (out.toByteArray ());
@@ -98,11 +99,79 @@ public class EC4Display extends AbstractTextDisplay
     }
 
 
+    private static Map<Integer, String> calculateDiff (final String text, final String previousText)
+    {
+        final Map<Integer, String> result = new TreeMap<> ();
+        if (previousText == null || previousText.length () != text.length ())
+        {
+            result.put (Integer.valueOf (0), text);
+            return result;
+        }
+
+        int position = 0;
+        final StringBuilder sb = new StringBuilder ();
+        for (int i = 0; i < text.length (); i++)
+        {
+            final char character = text.charAt (i);
+            if (character == previousText.charAt (i))
+            {
+                if (sb.length () > 0)
+                {
+                    result.put (Integer.valueOf (position), sb.toString ());
+                    sb.setLength (0);
+                }
+                position = i + 1;
+            }
+            else
+                sb.append (character);
+        }
+        if (sb.length () > 0)
+            result.put (Integer.valueOf (position), sb.toString ());
+        return result;
+    }
+
+
     /** {@inheritDoc} */
     @Override
     public void shutdown ()
     {
-        // TODO show on total display
-        this.notify ("Please start " + this.host.getName () + " to play...");
+        // Nothing to do...
+    }
+
+
+    /**
+     * Show or hide the total display. This is an overlay display with 4 rows of text.
+     * 
+     * @param isVisible True to display
+     */
+    public void setTotalDisplayVisible (final boolean isVisible)
+    {
+        this.sendSysex (new byte []
+        {
+            0x4E,
+            0x22,
+            (byte) (isVisible ? 0x14 : 0x15)
+        });
+    }
+
+
+    /**
+     * Send a byte array to the device.
+     *
+     * @param content The content bytes
+     */
+    private void sendSysex (final byte [] content)
+    {
+        try (final ByteArrayOutputStream out = new ByteArrayOutputStream ())
+        {
+            out.write (SYSEX_HEADER);
+            out.write (content);
+            out.write ((byte) 0xF7);
+            this.output.sendSysex (out.toByteArray ());
+        }
+        catch (final IOException ex)
+        {
+            this.host.error ("Could not send sysex command.", ex);
+        }
     }
 }

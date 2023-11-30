@@ -4,6 +4,10 @@
 
 package de.mossgrabers.controller.ableton.push.controller;
 
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
+
 import de.mossgrabers.controller.ableton.push.PushConfiguration;
 import de.mossgrabers.framework.controller.display.AbstractTextDisplay;
 import de.mossgrabers.framework.controller.display.Format;
@@ -12,10 +16,6 @@ import de.mossgrabers.framework.daw.IHost;
 import de.mossgrabers.framework.daw.midi.IMidiOutput;
 import de.mossgrabers.framework.utils.Pair;
 import de.mossgrabers.framework.utils.StringUtils;
-
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
 
 
 /**
@@ -151,7 +151,7 @@ public class Push1Display extends AbstractTextDisplay
 
     /** {@inheritDoc} */
     @Override
-    public void writeLine (final int row, final String text)
+    public void writeLine (final int row, final String text, final String previousText)
     {
         this.output.sendSysex (Push1Display.SYSEX_MESSAGE[row] + StringUtils.asciiToHex (text) + "F7");
     }

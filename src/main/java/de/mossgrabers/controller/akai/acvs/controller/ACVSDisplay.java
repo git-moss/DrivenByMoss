@@ -4,14 +4,14 @@
 
 package de.mossgrabers.controller.akai.acvs.controller;
 
+import java.util.EnumMap;
+import java.util.Map;
+
 import de.mossgrabers.framework.controller.color.ColorEx;
 import de.mossgrabers.framework.controller.display.AbstractTextDisplay;
 import de.mossgrabers.framework.controller.display.ITextDisplay;
 import de.mossgrabers.framework.daw.IHost;
 import de.mossgrabers.framework.utils.StringUtils;
-
-import java.util.EnumMap;
-import java.util.Map;
 
 
 /**
@@ -90,7 +90,7 @@ public class ACVSDisplay extends AbstractTextDisplay
 
     /** {@inheritDoc} */
     @Override
-    public void writeLine (final int row, final String text)
+    public void writeLine (final int row, final String text, final String previousText)
     {
         if (text != null)
             ((ACVSMidiOutput) this.output).sendText (row, StringUtils.fixASCII (text));

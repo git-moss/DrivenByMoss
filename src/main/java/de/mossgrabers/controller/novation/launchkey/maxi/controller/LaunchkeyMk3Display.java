@@ -4,14 +4,14 @@
 
 package de.mossgrabers.controller.novation.launchkey.maxi.controller;
 
+import java.nio.charset.Charset;
+import java.nio.charset.CharsetEncoder;
+import java.nio.charset.UnsupportedCharsetException;
+
 import de.mossgrabers.framework.controller.display.AbstractTextDisplay;
 import de.mossgrabers.framework.daw.IHost;
 import de.mossgrabers.framework.daw.midi.IMidiOutput;
 import de.mossgrabers.framework.utils.StringUtils;
-
-import java.nio.charset.Charset;
-import java.nio.charset.CharsetEncoder;
-import java.nio.charset.UnsupportedCharsetException;
 
 
 /**
@@ -64,7 +64,7 @@ public class LaunchkeyMk3Display extends AbstractTextDisplay
 
     /** {@inheritDoc} */
     @Override
-    public void writeLine (final int row, final String text)
+    public void writeLine (final int row, final String text, final String previousText)
     {
         final StringBuilder sb = new StringBuilder ();
 

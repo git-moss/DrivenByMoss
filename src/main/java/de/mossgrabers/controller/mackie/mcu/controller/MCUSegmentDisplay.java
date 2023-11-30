@@ -33,7 +33,7 @@ public class MCUSegmentDisplay extends AbstractTextDisplay
 
     /** {@inheritDoc} */
     @Override
-    public void writeLine (final int row, final String text)
+    public void writeLine (final int row, final String text, final String previousText)
     {
         // Sets the position string. Must only contain numbers and ':'.
         boolean addDot = false;

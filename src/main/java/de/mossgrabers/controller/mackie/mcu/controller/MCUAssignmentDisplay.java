@@ -33,7 +33,7 @@ public class MCUAssignmentDisplay extends AbstractTextDisplay
 
     /** {@inheritDoc} */
     @Override
-    public void writeLine (final int row, final String text)
+    public void writeLine (final int row, final String text, final String previousText)
     {
         // Sets the assignment (mode) string. Must only contain 2 upper case letters
         for (int i = 0; i < 2; i++)
@@ -53,6 +53,6 @@ public class MCUAssignmentDisplay extends AbstractTextDisplay
     @Override
     public void shutdown ()
     {
-        this.writeLine (0, "  ");
+        this.writeLine (0, "  ", "");
     }
 }

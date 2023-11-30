@@ -4,16 +4,16 @@
 
 package de.mossgrabers.controller.mackie.mcu.controller;
 
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+import java.util.concurrent.TimeUnit;
+
 import de.mossgrabers.framework.controller.display.AbstractTextDisplay;
 import de.mossgrabers.framework.controller.display.ITextDisplay;
 import de.mossgrabers.framework.daw.IHost;
 import de.mossgrabers.framework.daw.midi.IMidiOutput;
 import de.mossgrabers.framework.utils.LatestTaskExecutor;
 import de.mossgrabers.framework.utils.StringUtils;
-
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
-import java.util.concurrent.TimeUnit;
 
 
 /**
@@ -95,7 +95,7 @@ public class MCUDisplay extends AbstractTextDisplay
 
     /** {@inheritDoc} */
     @Override
-    protected void updateLine (final int row, final String text)
+    protected void updateLine (final int row, final String text, final String previousText)
     {
         String t = text;
         if (!this.isFirstDisplay && this.hasMaster)
@@ -105,13 +105,13 @@ public class MCUDisplay extends AbstractTextDisplay
             t = "  " + t;
         }
 
-        super.updateLine (row, t);
+        super.updateLine (row, t, previousText);
     }
 
 
     /** {@inheritDoc} */
     @Override
-    public void writeLine (final int row, final String text)
+    public void writeLine (final int row, final String text, final String previousText)
     {
         if (this.isShutdown)
             return;

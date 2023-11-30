@@ -56,7 +56,7 @@ public class SLDisplay extends AbstractTextDisplay
 
     /** {@inheritDoc} */
     @Override
-    protected void updateLine (final int row, final String text)
+    protected void updateLine (final int row, final String text, final String previousText)
     {
         if (row == 0)
             this.hwTextDisplay1.setLine (0, this.convertCharacterset (text));
@@ -67,7 +67,7 @@ public class SLDisplay extends AbstractTextDisplay
         else if (row == 3)
             this.hwTextDisplay2.setLine (1, this.convertCharacterset (text));
 
-        this.writeLine (row, text);
+        this.writeLine (row, text, previousText);
     }
 
 
@@ -117,7 +117,7 @@ public class SLDisplay extends AbstractTextDisplay
 
     /** {@inheritDoc} */
     @Override
-    public void writeLine (final int row, final String text)
+    public void writeLine (final int row, final String text, final String previousText)
     {
         final int length = text.length ();
         final int [] array = new int [length];

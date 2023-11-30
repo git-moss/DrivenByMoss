@@ -111,7 +111,8 @@ public class EC4ControllerSetup extends AbstractControllerSetup<EC4ControlSurfac
 
         final EC4ControlSurface surface = new EC4ControlSurface (this.host, this.colorManager, this.configuration, output, input);
         this.surfaces.add (surface);
-        surface.addTextDisplay (new EC4Display (this.host, output));
+        surface.addTextDisplay (new EC4Display (this.host, output, EC4Display.DISPLAY_CONTROLS));
+        surface.addTextDisplay (new EC4Display (this.host, output, EC4Display.DISPLAY_TOTAL));
 
         surface.getModeManager ().setDefaultID (Modes.VOLUME);
     }
@@ -137,7 +138,7 @@ public class EC4ControllerSetup extends AbstractControllerSetup<EC4ControlSurfac
     {
         final EC4ControlSurface surface = this.getSurface ();
         final ViewManager viewManager = surface.getViewManager ();
-        viewManager.register (Views.DUMMY1, new DummyView<> ("", surface, model));
+        viewManager.register (Views.DUMMY1, new DummyView<> ("", surface, this.model));
     }
 
 

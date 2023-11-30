@@ -4,13 +4,13 @@
 
 package de.mossgrabers.controller.mackie.hui.controller;
 
+import java.util.Arrays;
+import java.util.Locale;
+
 import de.mossgrabers.framework.controller.display.AbstractTextDisplay;
 import de.mossgrabers.framework.daw.IHost;
 import de.mossgrabers.framework.daw.midi.IMidiOutput;
 import de.mossgrabers.framework.utils.StringUtils;
-
-import java.util.Arrays;
-import java.util.Locale;
 
 
 /**
@@ -42,7 +42,7 @@ public class HUISegmentDisplay extends AbstractTextDisplay
 
     /** {@inheritDoc} */
     @Override
-    public void writeLine (final int row, final String text)
+    public void writeLine (final int row, final String text, final String previousText)
     {
         // Sets the position string. Must only contain numbers and ':'
         final String lowerText = text.toLowerCase (Locale.US);

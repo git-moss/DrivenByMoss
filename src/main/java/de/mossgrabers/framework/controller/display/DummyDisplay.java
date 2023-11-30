@@ -120,7 +120,7 @@ public class DummyDisplay implements ITextDisplay
 
     /** {@inheritDoc} */
     @Override
-    public void writeLine (final int row, final String text)
+    public void writeLine (final int row, final String text, final String previousText)
     {
         // Intentionally empty
     }

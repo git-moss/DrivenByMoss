@@ -93,7 +93,7 @@ public class Kontrol1Display extends AbstractTextDisplay
 
     /** {@inheritDoc} */
     @Override
-    public void writeLine (final int row, final String text)
+    public void writeLine (final int row, final String text, final String previousText)
     {
         String t = text;
         for (int i = 0; i < t.length (); i++)

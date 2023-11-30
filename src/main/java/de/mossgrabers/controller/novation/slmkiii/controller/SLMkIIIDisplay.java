@@ -58,7 +58,7 @@ public class SLMkIIIDisplay extends AbstractTextDisplay
 
     /** {@inheritDoc} */
     @Override
-    public void writeLine (final int row, final String text)
+    public void writeLine (final int row, final String text, final String previousText)
     {
         for (int i = 0; i < this.noOfCells; i++)
         {

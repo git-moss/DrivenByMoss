@@ -287,7 +287,7 @@ public abstract class AbstractTextDisplay implements ITextDisplay
         {
             final boolean isRunning = this.notificationTimeout > 0;
             this.notificationTimeout = AbstractTextDisplay.NOTIFICATION_TIME;
-            this.flush ();
+            this.showNotification ();
             if (!isRunning)
                 this.host.scheduleTask (this::watch, 100);
         }
@@ -301,7 +301,7 @@ public abstract class AbstractTextDisplay implements ITextDisplay
             this.notificationTimeout -= 100;
 
             if (this.notificationTimeout <= 0)
-                this.forceFlush ();
+                this.removeNotification ();
             else
                 this.host.scheduleTask (this::watch, 100);
         }
@@ -316,12 +316,7 @@ public abstract class AbstractTextDisplay implements ITextDisplay
         {
             if (this.notificationTimeout > 0)
             {
-                for (int row = 0; row < this.noOfLines; row++)
-                {
-                    final int pos = row * this.noOfCharacters;
-                    final int length = this.notificationMessage.length ();
-                    this.updateLine (row, StringUtils.pad (pos < length ? this.notificationMessage.substring (pos, Math.min (length, pos + this.noOfCharacters)) : "", this.noOfCharacters));
-                }
+                this.updateNotification ();
                 return;
             }
         }
@@ -331,10 +326,44 @@ public abstract class AbstractTextDisplay implements ITextDisplay
             // Has anything changed?
             if (this.currentMessage[row] != null && this.currentMessage[row].equals (this.message[row]))
                 continue;
+            final String previousMessage = this.currentMessage[row];
             this.currentMessage[row] = this.message[row];
             if (this.currentMessage[row] != null)
-                this.updateLine (row, this.currentMessage[row]);
+                this.updateLine (row, this.currentMessage[row], previousMessage);
         }
+    }
+
+
+    /**
+     * Start the notification message display loop.
+     */
+    protected void showNotification ()
+    {
+        this.flush ();
+    }
+
+
+    /**
+     * Updates the display with the notification.
+     */
+    protected void updateNotification ()
+    {
+        for (int row = 0; row < this.noOfLines; row++)
+        {
+            final int pos = row * this.noOfCharacters;
+            final int length = this.notificationMessage.length ();
+            final String text = pos < length ? this.notificationMessage.substring (pos, Math.min (length, pos + this.noOfCharacters)) : "";
+            this.updateLine (row, StringUtils.pad (text, this.noOfCharacters), this.currentMessage[row]);
+        }
+    }
+
+
+    /**
+     * Removes the notification from the display.
+     */
+    protected void removeNotification ()
+    {
+        this.forceFlush ();
     }
 
 
@@ -343,11 +372,12 @@ public abstract class AbstractTextDisplay implements ITextDisplay
      *
      * @param row The text row
      * @param text The text
+     * @param previousText The previously set text, might be used for optimized updates
      */
-    protected void updateLine (final int row, final String text)
+    protected void updateLine (final int row, final String text, final String previousText)
     {
         this.hwDisplay.setLine (row, this.convertCharacterset (text));
-        this.writeLine (row, text);
+        this.writeLine (row, text, previousText);
     }
 
 

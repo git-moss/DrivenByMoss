@@ -4,15 +4,15 @@
 
 package de.mossgrabers.controller.faderfox.ec4.controller;
 
-import java.io.ByteArrayOutputStream;
-import java.io.IOException;
 import java.util.Arrays;
 import java.util.List;
 
 import de.mossgrabers.controller.faderfox.ec4.EC4Configuration;
 import de.mossgrabers.framework.controller.AbstractControlSurface;
+import de.mossgrabers.framework.controller.ButtonID;
 import de.mossgrabers.framework.controller.ContinuousID;
 import de.mossgrabers.framework.controller.color.ColorManager;
+import de.mossgrabers.framework.controller.display.AbstractTextDisplay;
 import de.mossgrabers.framework.controller.hardware.BindType;
 import de.mossgrabers.framework.daw.IHost;
 import de.mossgrabers.framework.daw.midi.IMidiInput;
@@ -29,14 +29,14 @@ import de.mossgrabers.framework.utils.StringUtils;
 public class EC4ControlSurface extends AbstractControlSurface<EC4Configuration>
 {
     /** The MIDI CC of the first knob. */
-    public static final int                EC4_KNOB_1      = 10;
+    public static final int                EC4_KNOB_1          = 10;
     /** The MIDI CC of the first button. */
-    public static final int                EC4_BUTTON_1    = 30;
+    public static final int                EC4_BUTTON_1        = 30;
 
     /** The IDs for the continuous elements. */
-    public static final List<ContinuousID> KNOB_IDS        = ContinuousID.createSequentialList (ContinuousID.KNOB1, 16);
+    public static final List<ContinuousID> KNOB_IDS            = ContinuousID.createSequentialList (ContinuousID.KNOB1, 16);
 
-    private static final byte []           SYSEX_HEADER    =
+    private static final byte []           SYSEX_HEADER        =
     {
         (byte) 0xF0,
         0x00,
@@ -47,19 +47,23 @@ public class EC4ControlSurface extends AbstractControlSurface<EC4Configuration>
         0x1B
     };
 
-    private static final byte              CMD_APP_FUNC    = 0x4E;
+    private static final byte              CMD_APP_FUNC        = 0x4E;
 
-    private static final byte              APP_CMD_SETUP   = 0x28;
-    private static final byte              APP_CMD_GROUP   = 0x24;
-    private static final byte              APP_CMD_EXT_KEY = 0x26;
+    private static final byte              APP_CMD_SETUP       = 0x28;
+    private static final byte              APP_CMD_GROUP       = 0x24;
+    private static final byte              APP_CMD_EXT_KEY     = 0x26;
 
-    private int                            setupSlot       = -1;
-    private int                            selectedSetup   = -1;
-    private int                            selectedGroup   = -1;
-    private boolean                        isOnline        = false;
+    private final Object                   notificationLock    = new Object ();
+    private int                            notificationTimeout = 0;
+
+    private int                            setupSlot           = -1;
+    private int                            selectedSetup       = -1;
+    private int                            selectedGroup       = -1;
+    private boolean                        isOnline            = false;
     private Modes                          activeMode;
 
-    private boolean                        isShiftPressed  = false;
+    private boolean                        isShiftPressed      = false;
+    private boolean []                     isUserKeyPressed    = new boolean [4];
 
 
     /**
@@ -76,6 +80,23 @@ public class EC4ControlSurface extends AbstractControlSurface<EC4Configuration>
         super (host, configuration, colorManager, output, input, null, 430, 930);
 
         this.input.setSysexCallback (this::handleSysEx);
+    }
+
+
+    /** {@inheritDoc} */
+    @Override
+    public boolean isPressed (final ButtonID buttonID)
+    {
+        if (buttonID == ButtonID.F1)
+            return this.isUserKeyPressed[0];
+        if (buttonID == ButtonID.F2)
+            return this.isUserKeyPressed[1];
+        if (buttonID == ButtonID.F3)
+            return this.isUserKeyPressed[2];
+        if (buttonID == ButtonID.F4)
+            return this.isUserKeyPressed[3];
+
+        return super.isPressed (buttonID);
     }
 
 
@@ -117,43 +138,6 @@ public class EC4ControlSurface extends AbstractControlSurface<EC4Configuration>
             0x10,
             (byte) 0xF7
         });
-    }
-
-
-    /**
-     * Show or hide the total display. This is an overlay display with 4 rows of text.
-     * 
-     * @param isVisible True to display
-     */
-    public void setTotalDisplayVisible (final boolean isVisible)
-    {
-        this.sendSysex (new byte []
-        {
-            0x4E,
-            0x22,
-            (byte) (isVisible ? 0x14 : 0x15)
-        });
-    }
-
-
-    /**
-     * Send a byte array to the device.
-     *
-     * @param content The content bytes
-     */
-    private void sendSysex (final byte [] content)
-    {
-        try (final ByteArrayOutputStream out = new ByteArrayOutputStream ())
-        {
-            out.write (SYSEX_HEADER);
-            out.write (content);
-            out.write ((byte) 0xF7);
-            this.output.sendSysex (out.toByteArray ());
-        }
-        catch (final IOException ex)
-        {
-            this.host.error ("Could not send sysex command.", ex);
-        }
     }
 
 
@@ -208,20 +192,7 @@ public class EC4ControlSurface extends AbstractControlSurface<EC4Configuration>
                     break;
 
                 case APP_CMD_EXT_KEY:
-                    if (value == 0x12 || value == 0x13)
-                    {
-                        this.isShiftPressed = value == 0x12;
-                        this.setKnobSensitivityIsSlow (this.isShiftPressed);
-                    }
-                    // TODO
-                    // F0 00 00 00 4E 2C 1B 4E 26 14 F7 (user key 1 press)
-                    // F0 00 00 00 4E 2C 1B 4E 26 15 F7 (user key 1 release)
-                    // F0 00 00 00 4E 2C 1B 4E 26 16 F7 (user key 2 press)
-                    // F0 00 00 00 4E 2C 1B 4E 26 17 F7 (user key 2 release)
-                    // F0 00 00 00 4E 2C 1B 4E 26 18 F7 (user key 3 press)
-                    // F0 00 00 00 4E 2C 1B 4E 26 19 F7 (user key 3 release)
-                    // F0 00 00 00 4E 2C 1B 4E 26 1A F7 (user key 4 press)
-                    // F0 00 00 00 4E 2C 1B 4E 26 1B F7 (user key 4 release)
+                    this.handleSpecialKeys (value);
                     break;
 
                 default:
@@ -229,6 +200,24 @@ public class EC4ControlSurface extends AbstractControlSurface<EC4Configuration>
                     break;
             }
         }
+    }
+
+
+    private void handleSpecialKeys (final byte value)
+    {
+        if (value == 0x12 || value == 0x13)
+        {
+            this.isShiftPressed = value == 0x12;
+            this.setKnobSensitivityIsSlow (this.isShiftPressed);
+        }
+        else if (value == 0x14 || value == 0x15)
+            this.isUserKeyPressed[0] = value == 0x14;
+        else if (value == 0x16 || value == 0x17)
+            this.isUserKeyPressed[1] = value == 0x16;
+        else if (value == 0x18 || value == 0x19)
+            this.isUserKeyPressed[2] = value == 0x18;
+        else if (value == 0x1A || value == 0x1B)
+            this.isUserKeyPressed[3] = value == 0x1A;
     }
 
 
@@ -297,5 +286,37 @@ public class EC4ControlSurface extends AbstractControlSurface<EC4Configuration>
     public boolean isShiftPressed ()
     {
         return this.isShiftPressed;
+    }
+
+
+    /**
+     * Show the total display page.
+     */
+    public void showTotalDisplay ()
+    {
+        synchronized (this.notificationLock)
+        {
+            final boolean isRunning = this.notificationTimeout > 0;
+            this.notificationTimeout = AbstractTextDisplay.NOTIFICATION_TIME;
+            if (!isRunning)
+            {
+                ((EC4Display) this.getTextDisplay ()).setTotalDisplayVisible (true);
+                this.host.scheduleTask (this::watch, 100);
+            }
+        }
+    }
+
+
+    protected void watch ()
+    {
+        synchronized (this.notificationLock)
+        {
+            this.notificationTimeout -= 100;
+
+            if (this.notificationTimeout <= 0)
+                ((EC4Display) this.getTextDisplay ()).setTotalDisplayVisible (false);
+            else
+                this.host.scheduleTask (this::watch, 100);
+        }
     }
 }

@@ -4,13 +4,20 @@
 
 package de.mossgrabers.controller.faderfox.ec4.mode;
 
+import java.util.Arrays;
+import java.util.List;
+
 import de.mossgrabers.controller.faderfox.ec4.EC4Configuration;
 import de.mossgrabers.controller.faderfox.ec4.controller.EC4ControlSurface;
 import de.mossgrabers.framework.command.trigger.transport.PlayCommand;
+import de.mossgrabers.framework.controller.display.ITextDisplay;
 import de.mossgrabers.framework.daw.IModel;
+import de.mossgrabers.framework.daw.IProject;
 import de.mossgrabers.framework.daw.ITransport;
 import de.mossgrabers.framework.daw.data.IItem;
+import de.mossgrabers.framework.daw.data.IMasterTrack;
 import de.mossgrabers.framework.daw.data.bank.IBank;
+import de.mossgrabers.framework.daw.midi.IMidiOutput;
 import de.mossgrabers.framework.featuregroup.AbstractParameterMode;
 import de.mossgrabers.framework.featuregroup.ModeManager;
 import de.mossgrabers.framework.mode.Modes;
@@ -30,9 +37,10 @@ import de.mossgrabers.framework.utils.ButtonEvent;
  */
 public abstract class AbstractEC4Mode<B extends IItem> extends AbstractParameterMode<EC4ControlSurface, EC4Configuration, B>
 {
-    protected final IParameterProvider bottomRowProvider;
+    protected final IParameterProvider                             bottomRowProvider;
 
-    private final PlayCommand          playCommand;
+    private final PlayCommand<EC4ControlSurface, EC4Configuration> playCommand;
+    protected int []                                               valueCache = new int [16];
 
 
     /**
@@ -105,5 +113,51 @@ public abstract class AbstractEC4Mode<B extends IItem> extends AbstractParameter
                     break;
             }
         }
+    }
+
+
+    protected void updateDisplayRow4 (final ITextDisplay display, final List<String> totalDisplayInfo)
+    {
+        display.setCell (3, 0, "Tmpo").setCell (3, 1, "Xfde").setCell (3, 2, "Cue ").setCell (3, 3, "Main");
+
+        final IMidiOutput output = this.surface.getMidiOutput ();
+        final ITransport transport = this.model.getTransport ();
+        final IProject project = this.model.getProject ();
+        final IMasterTrack masterTrack = this.model.getMasterTrack ();
+
+        final double tempo = transport.getTempo ();
+        final int tempoAsInt = (int) (tempo * 100.0);
+        if (this.valueCache[12] != tempoAsInt)
+        {
+            this.valueCache[12] = tempoAsInt;
+            output.sendCCEx (15, EC4ControlSurface.EC4_KNOB_1 + 12, (int) ((tempoAsInt - 2000.0) / 64600.0 * 127.0));
+            totalDisplayInfo.add ("Tempo: " + transport.formatTempo (tempo));
+        }
+
+        updateCache (13, transport.getCrossfade (), "Crossfade: " + transport.getCrossfadeParameter ().getDisplayedValue (), totalDisplayInfo);
+        updateCache (14, project.getCueVolume (), "Cue Volume: " + project.getCueVolumeStr (), totalDisplayInfo);
+        updateCache (15, masterTrack.getVolume (), "Master Volume: " + masterTrack.getVolumeStr (), totalDisplayInfo);
+    }
+
+
+    protected void updateCache (final int index, final int value, final String text, final List<String> totalDisplayInfo)
+    {
+        if (this.valueCache[index] == value)
+            return;
+
+        this.valueCache[index] = value;
+        final IMidiOutput output = this.surface.getMidiOutput ();
+        output.sendCCEx (15, EC4ControlSurface.EC4_KNOB_1 + index, value);
+        totalDisplayInfo.add (text);
+    }
+
+
+    /** {@inheritDoc} */
+    @Override
+    public void onActivate ()
+    {
+        super.onActivate ();
+
+        Arrays.fill (this.valueCache, -1);
     }
 }

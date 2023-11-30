@@ -78,10 +78,10 @@ public interface ITextDisplay extends IDisplay
      * Set a whole row.
      *
      * @param row The row to set
-     * @param str The text to set. It must match the exact number of characters of a row!
+     * @param text The text to set. It must match the exact number of characters of a row!
      * @return The instance for concatenated calls
      */
-    ITextDisplay setRow (final int row, final String str);
+    ITextDisplay setRow (final int row, final String text);
 
 
     /**
@@ -134,8 +134,9 @@ public interface ITextDisplay extends IDisplay
      *
      * @param row The row to which to send the text
      * @param text The text to send
+     * @param previousText The previously set text, might be used for optimized updates
      */
-    void writeLine (int row, String text);
+    void writeLine (int row, String text, String previousText);
 
 
     /**
