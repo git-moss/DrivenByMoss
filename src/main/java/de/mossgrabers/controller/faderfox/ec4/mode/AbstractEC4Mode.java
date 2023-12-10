@@ -16,6 +16,7 @@ import de.mossgrabers.framework.daw.IProject;
 import de.mossgrabers.framework.daw.ITransport;
 import de.mossgrabers.framework.daw.data.IItem;
 import de.mossgrabers.framework.daw.data.IMasterTrack;
+import de.mossgrabers.framework.daw.data.IScene;
 import de.mossgrabers.framework.daw.data.bank.IBank;
 import de.mossgrabers.framework.daw.midi.IMidiOutput;
 import de.mossgrabers.framework.featuregroup.AbstractParameterMode;
@@ -41,6 +42,7 @@ public abstract class AbstractEC4Mode<B extends IItem> extends AbstractParameter
 
     private final PlayCommand<EC4ControlSurface, EC4Configuration> playCommand;
     protected int []                                               valueCache = new int [16];
+    protected boolean                                              isSession  = false;
 
 
     /**
@@ -81,27 +83,31 @@ public abstract class AbstractEC4Mode<B extends IItem> extends AbstractParameter
             switch (index)
             {
                 case 0:
-                    if (event != ButtonEvent.DOWN)
-                        return;
-                    if (modeManager.isActive (Modes.SESSION))
-                        modeManager.restore ();
-                    else
-                        modeManager.setActive (Modes.SESSION);
+                    if (event == ButtonEvent.DOWN)
+                    {
+                        this.isSession = !this.isSession;
+                        this.notifyTotalDisplay ("Scene: " + (this.isSession ? "on" : "off"));
+                    }
                     break;
 
                 case 1:
-                    if (event != ButtonEvent.DOWN)
-                        return;
-                    modeManager.setActive (modeManager.isActive (Modes.TRACK) ? Modes.DEVICE_PARAMS : Modes.TRACK);
+                    if (event == ButtonEvent.DOWN)
+                        modeManager.setActive (modeManager.isActive (Modes.TRACK) ? Modes.DEVICE_PARAMS : Modes.TRACK);
                     break;
 
                 case 2:
                     if (event != ButtonEvent.DOWN)
                         return;
                     if (modeManager.isActive (Modes.TRACK_DETAILS))
-                        modeManager.restore ();
+                    {
+                        modeManager.setActive (Modes.TRACK);
+                        this.notifyTotalDisplay ("Selected Track");
+                    }
                     else
+                    {
                         modeManager.setActive (Modes.TRACK_DETAILS);
+                        this.notifyTotalDisplay ("12 Mode");
+                    }
                     break;
 
                 case 3:
@@ -113,12 +119,18 @@ public abstract class AbstractEC4Mode<B extends IItem> extends AbstractParameter
                     break;
             }
         }
+        else if (this.isSession)
+        {
+            final IScene scene = this.model.getSceneBank ().getItem (row * 4 + index);
+            if (scene.doesExist ())
+                scene.launch (event == ButtonEvent.DOWN, this.surface.isShiftPressed ());
+        }
     }
 
 
-    protected void updateDisplayRow4 (final ITextDisplay display, final List<String> totalDisplayInfo)
+    protected void updateDisplayRow4 (final ITextDisplay display, final List<String> totalDisplayInfo, final String lastItem)
     {
-        display.setCell (3, 0, "Tmpo").setCell (3, 1, "Xfde").setCell (3, 2, "Cue ").setCell (3, 3, "Main");
+        display.setCell (3, 0, "Tmpo").setCell (3, 1, "Xfde").setCell (3, 2, "Cue ").setCell (3, 3, lastItem);
 
         final IMidiOutput output = this.surface.getMidiOutput ();
         final ITransport transport = this.model.getTransport ();
@@ -135,8 +147,8 @@ public abstract class AbstractEC4Mode<B extends IItem> extends AbstractParameter
         }
 
         updateCache (13, transport.getCrossfade (), "Crossfade: " + transport.getCrossfadeParameter ().getDisplayedValue (), totalDisplayInfo);
-        updateCache (14, project.getCueVolume (), "Cue Volume: " + project.getCueVolumeStr (), totalDisplayInfo);
-        updateCache (15, masterTrack.getVolume (), "Master Volume: " + masterTrack.getVolumeStr (), totalDisplayInfo);
+        updateCache (14, project.getCueVolume (), "Cue Vol.: " + project.getCueVolumeStr (), totalDisplayInfo);
+        updateCache (15, masterTrack.getVolume (), "Master: " + masterTrack.getVolumeStr (), totalDisplayInfo);
     }
 
 
@@ -147,7 +159,7 @@ public abstract class AbstractEC4Mode<B extends IItem> extends AbstractParameter
 
         this.valueCache[index] = value;
         final IMidiOutput output = this.surface.getMidiOutput ();
-        output.sendCCEx (15, EC4ControlSurface.EC4_KNOB_1 + index, value);
+        output.sendCCEx (15, EC4ControlSurface.EC4_KNOB_1 + index, (int) (value * 127.0 / 1024.0));
         totalDisplayInfo.add (text);
     }
 
@@ -159,5 +171,14 @@ public abstract class AbstractEC4Mode<B extends IItem> extends AbstractParameter
         super.onActivate ();
 
         Arrays.fill (this.valueCache, -1);
+    }
+
+
+    protected void notifyTotalDisplay (final String message)
+    {
+        final ITextDisplay display = this.surface.getTextDisplay (1).clear ();
+        display.notify (message);
+        display.allDone ();
+        this.surface.showTotalDisplay ();
     }
 }

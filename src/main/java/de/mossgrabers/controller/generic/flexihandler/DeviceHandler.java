@@ -85,6 +85,7 @@ public class DeviceHandler extends AbstractHandler
             FlexiCommand.DEVICE_TOGGLE_PARAMETER_6,
             FlexiCommand.DEVICE_TOGGLE_PARAMETER_7,
             FlexiCommand.DEVICE_TOGGLE_PARAMETER_8,
+            FlexiCommand.DEVICE_RESET_PARAMETER_1,
             FlexiCommand.DEVICE_RESET_PARAMETER_2,
             FlexiCommand.DEVICE_RESET_PARAMETER_3,
             FlexiCommand.DEVICE_RESET_PARAMETER_4,

@@ -223,6 +223,14 @@ public interface IChannel extends IItem
 
 
     /**
+     * Get the mute parameter.
+     *
+     * @return The mute parameter
+     */
+    IParameter getMuteParameter ();
+
+
+    /**
      * True if muted.
      *
      * @return True if muted.
@@ -250,6 +258,14 @@ public interface IChannel extends IItem
      * @return True if soloed.
      */
     boolean isSolo ();
+
+
+    /**
+     * Get the solo parameter.
+     *
+     * @return The solo parameter
+     */
+    IParameter getSoloParameter ();
 
 
     /**

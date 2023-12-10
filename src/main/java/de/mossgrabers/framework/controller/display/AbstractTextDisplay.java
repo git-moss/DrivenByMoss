@@ -18,7 +18,7 @@ import de.mossgrabers.framework.utils.StringUtils;
 public abstract class AbstractTextDisplay implements ITextDisplay
 {
     /** Time to keep a notification displayed in milliseconds. */
-    public static final int  NOTIFICATION_TIME   = 1000;
+    public static final int  NOTIFICATION_TIME   = 700;
 
     protected IHost          host;
     protected IMidiOutput    output;

@@ -4,6 +4,13 @@
 
 package de.mossgrabers.controller.generic.controller;
 
+import java.io.File;
+import java.io.IOException;
+import java.util.Arrays;
+import java.util.EnumMap;
+import java.util.Map;
+import java.util.Optional;
+
 import de.mossgrabers.controller.generic.GenericFlexiConfiguration;
 import de.mossgrabers.controller.generic.flexihandler.IFlexiCommandHandler;
 import de.mossgrabers.controller.generic.flexihandler.utils.CommandSlot;
@@ -21,13 +28,6 @@ import de.mossgrabers.nativefiledialogs.FileFilter;
 import de.mossgrabers.nativefiledialogs.NativeFileDialogs;
 import de.mossgrabers.nativefiledialogs.NativeFileDialogsFactory;
 import de.mossgrabers.nativefiledialogs.PlatformNotSupported;
-
-import java.io.File;
-import java.io.IOException;
-import java.util.Arrays;
-import java.util.EnumMap;
-import java.util.Map;
-import java.util.Optional;
 
 
 /**
@@ -87,7 +87,7 @@ public class GenericFlexiControlSurface extends AbstractControlSurface<GenericFl
 
 
     /**
-     * Register a flexi command handler.
+     * Register a Flexi command handler.
      *
      * @param handler The handler to register
      */
@@ -444,7 +444,10 @@ public class GenericFlexiControlSurface extends AbstractControlSurface<GenericFl
      */
     private int getCommandValue (final FlexiCommand command)
     {
-        final int value = this.handlers.get (command).getCommandValue (command);
+        final IFlexiCommandHandler commandHandler = this.handlers.get (command);
+        if (commandHandler == null)
+            return -1;
+        final int value = commandHandler.getCommandValue (command);
         // Scale down to 7-bit
         return (int) Math.round (value * 127.0 / 16383.0);
     }
@@ -467,7 +470,13 @@ public class GenericFlexiControlSurface extends AbstractControlSurface<GenericFl
             return;
 
         this.isUpdatingValue = true;
-        this.handlers.get (command).handle (command, commandSlot.getKnobMode (), value);
+        final IFlexiCommandHandler commandHandler = this.handlers.get (command);
+        if (commandHandler == null)
+        {
+            this.host.error ("No handler registered for command: " + command);
+            return;
+        }
+        commandHandler.handle (command, commandSlot.getKnobMode (), value);
 
         this.host.scheduleTask ( () -> this.isUpdatingValue = false, 400);
     }

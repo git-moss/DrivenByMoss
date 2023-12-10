@@ -7,6 +7,7 @@ package de.mossgrabers.controller.faderfox.ec4;
 import de.mossgrabers.controller.faderfox.ec4.controller.EC4ControlSurface;
 import de.mossgrabers.controller.faderfox.ec4.controller.EC4Display;
 import de.mossgrabers.controller.faderfox.ec4.mode.EC4TrackMode;
+import de.mossgrabers.controller.faderfox.ec4.mode.EC4TwelveMode;
 import de.mossgrabers.framework.command.trigger.mode.ButtonRowModeCommand;
 import de.mossgrabers.framework.configuration.ISettingsUI;
 import de.mossgrabers.framework.controller.AbstractControllerSetup;
@@ -62,7 +63,7 @@ public class EC4ControllerSetup extends AbstractControllerSetup<EC4ControlSurfac
         this.colorManager.registerColorIndex (ColorManager.BUTTON_STATE_ON, 1);
         this.colorManager.registerColorIndex (ColorManager.BUTTON_STATE_HI, 127);
 
-        this.valueChanger = new TwosComplementValueChanger (128, 1);
+        this.valueChanger = new TwosComplementValueChanger (1024, 10);
         this.configuration = new EC4Configuration (host, this.valueChanger, factory.getArpeggiatorModes ());
     }
 
@@ -126,6 +127,7 @@ public class EC4ControllerSetup extends AbstractControllerSetup<EC4ControlSurfac
         final ModeManager modeManager = surface.getModeManager ();
 
         modeManager.register (Modes.TRACK, new EC4TrackMode (surface, this.model));
+        modeManager.register (Modes.TRACK_DETAILS, new EC4TwelveMode (surface, this.model));
         // TODO
         // modeManager.register (Modes.DEVICE_PARAMS, new DeviceMode (surface, this.model));
         modeManager.register (Modes.DUMMY, new DummyMode<> (surface, this.model, EC4ControlSurface.KNOB_IDS));

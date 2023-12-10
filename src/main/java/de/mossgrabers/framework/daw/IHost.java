@@ -80,9 +80,9 @@ public interface IHost
      * Print the exception to the console.
      *
      * @param text The description text
-     * @param ex The exception
+     * @param exception The exception
      */
-    void error (String text, Throwable ex);
+    void error (String text, Throwable exception);
 
 
     /**

@@ -4,6 +4,12 @@
 
 package de.mossgrabers.bitwig.framework.daw.data;
 
+import java.util.UUID;
+
+import com.bitwig.extension.controller.api.Channel;
+import com.bitwig.extension.controller.api.InsertionPoint;
+import com.bitwig.extension.controller.api.SettableColorValue;
+
 import de.mossgrabers.bitwig.framework.daw.DeviceMetadataImpl;
 import de.mossgrabers.bitwig.framework.daw.data.bank.AbstractChannelBankImpl;
 import de.mossgrabers.bitwig.framework.daw.data.bank.SendBankImpl;
@@ -18,12 +24,6 @@ import de.mossgrabers.framework.daw.data.empty.EmptySendBank;
 import de.mossgrabers.framework.daw.resource.ChannelType;
 import de.mossgrabers.framework.observer.IValueObserver;
 import de.mossgrabers.framework.parameter.IParameter;
-
-import com.bitwig.extension.controller.api.Channel;
-import com.bitwig.extension.controller.api.InsertionPoint;
-import com.bitwig.extension.controller.api.SettableColorValue;
-
-import java.util.UUID;
 
 
 /**
@@ -41,6 +41,8 @@ public class ChannelImpl extends AbstractDeviceChainImpl<Channel> implements ICh
     private final AbstractChannelBankImpl<?, ?> channelBankImpl;
     private final IParameter                    volumeParameter;
     private final IParameter                    panParameter;
+    private final IParameter                    muteParameter;
+    private final IParameter                    soloParameter;
     private final ISendBank                     sendBank;
 
     private int                                 vuLeft;
@@ -74,6 +76,8 @@ public class ChannelImpl extends AbstractDeviceChainImpl<Channel> implements ICh
         {
             this.volumeParameter = EmptyParameter.INSTANCE;
             this.panParameter = EmptyParameter.INSTANCE;
+            this.muteParameter = EmptyParameter.INSTANCE;
+            this.soloParameter = EmptyParameter.INSTANCE;
             this.sendBank = EmptySendBank.getInstance (numSends);
             return;
         }
@@ -81,13 +85,13 @@ public class ChannelImpl extends AbstractDeviceChainImpl<Channel> implements ICh
         channel.exists ().markInterested ();
         channel.name ().markInterested ();
         channel.isActivated ().markInterested ();
-        channel.mute ().markInterested ();
-        channel.solo ().markInterested ();
         channel.isMutedBySolo ().markInterested ();
         channel.color ().markInterested ();
 
         this.volumeParameter = new ParameterImpl (valueChanger, channel.volume (), index);
         this.panParameter = new ParameterImpl (valueChanger, channel.pan (), index);
+        this.muteParameter = new MuteParameterImpl (valueChanger, channel, index);
+        this.soloParameter = new SoloParameterImpl (valueChanger, channel, index);
 
         channel.addVuMeterObserver (MAX_RESOLUTION, 0, true, this::handleVULeftMeter);
         channel.addVuMeterObserver (MAX_RESOLUTION, 1, true, this::handleVURightMeter);
@@ -111,13 +115,13 @@ public class ChannelImpl extends AbstractDeviceChainImpl<Channel> implements ICh
         Util.setIsSubscribed (this.deviceChain.exists (), enable);
         Util.setIsSubscribed (this.deviceChain.name (), enable);
         Util.setIsSubscribed (this.deviceChain.isActivated (), enable);
-        Util.setIsSubscribed (this.deviceChain.mute (), enable);
-        Util.setIsSubscribed (this.deviceChain.solo (), enable);
         Util.setIsSubscribed (this.deviceChain.isMutedBySolo (), enable);
         Util.setIsSubscribed (this.deviceChain.color (), enable);
 
         this.volumeParameter.enableObservers (enable);
         this.panParameter.enableObservers (enable);
+        this.muteParameter.enableObservers (enable);
+        this.soloParameter.enableObservers (enable);
 
         this.sendBank.enableObservers (enable);
     }
@@ -325,6 +329,14 @@ public class ChannelImpl extends AbstractDeviceChainImpl<Channel> implements ICh
 
     /** {@inheritDoc} */
     @Override
+    public IParameter getMuteParameter ()
+    {
+        return this.muteParameter;
+    }
+
+
+    /** {@inheritDoc} */
+    @Override
     public boolean isMute ()
     {
         return this.deviceChain.mute ().get ();
@@ -344,6 +356,14 @@ public class ChannelImpl extends AbstractDeviceChainImpl<Channel> implements ICh
     public void toggleMute ()
     {
         this.deviceChain.mute ().toggle ();
+    }
+
+
+    /** {@inheritDoc} */
+    @Override
+    public IParameter getSoloParameter ()
+    {
+        return this.soloParameter;
     }
 
 

@@ -14,6 +14,7 @@ import de.mossgrabers.framework.daw.IModel;
 import de.mossgrabers.framework.daw.data.ISend;
 import de.mossgrabers.framework.daw.data.ITrack;
 import de.mossgrabers.framework.daw.data.bank.ISendBank;
+import de.mossgrabers.framework.daw.data.empty.EmptyTrack;
 import de.mossgrabers.framework.mode.Modes;
 import de.mossgrabers.framework.parameter.MuteParameter;
 import de.mossgrabers.framework.parameter.SoloParameter;
@@ -27,8 +28,7 @@ import de.mossgrabers.framework.utils.StringUtils;
 
 
 /**
- * The track mode. The knobs control the volume, panorama and panorama of the tracks on the current
- * track page.
+ * The track mode. The knobs control the volume, panorama and 8 sends of the selected track.
  *
  * @author Jürgen Moßgraber
  */
@@ -60,13 +60,15 @@ public class EC4TrackMode extends AbstractEC4Mode<ITrack>
     @Override
     public void onButton (final int row, final int column, final ButtonEvent event)
     {
-        if (row < 3)
+        if (!this.isSession && row < 3)
         {
             if (event != ButtonEvent.DOWN)
                 return;
 
             final int trackIndex = row * 4 + column;
-            this.model.getTrackBank ().getItem (trackIndex).select ();
+            final ITrack track = this.model.getTrackBank ().getItem (trackIndex);
+            track.select ();
+            this.notifyTotalDisplay ("Track " + (track.getPosition () + 1) + ": " + track.getName ());
             return;
         }
 
@@ -86,9 +88,12 @@ public class EC4TrackMode extends AbstractEC4Mode<ITrack>
         display.setCell (2, 0, "Snd5").setCell (2, 1, "Snd6").setCell (2, 2, "Snd7").setCell (2, 3, "Snd8");
 
         final Optional<ITrack> selectedTrack = this.model.getTrackBank ().getSelectedItem ();
+        String trackName = null;
+        ITrack track = EmptyTrack.getInstance (8);
         if (selectedTrack.isPresent ())
         {
-            final ITrack track = selectedTrack.get ();
+            track = selectedTrack.get ();
+            trackName = track.getName ();
             updateCache (0, track.getVolume (), "Volume: " + track.getVolumeStr (), totalDisplayInfo);
             updateCache (1, track.getPan (), "Pan: " + track.getPanStr (), totalDisplayInfo);
             updateCache (2, track.isMute () ? 127 : 0, "Mute: " + (track.isMute () ? "on" : "off"), totalDisplayInfo);
@@ -98,19 +103,19 @@ public class EC4TrackMode extends AbstractEC4Mode<ITrack>
             for (int i = 0; i < 8; i++)
             {
                 final ISend send = sendBank.getItem (i);
-                updateCache (4 + i, send.getValue (), "Send " + (i + 1) + " Volume: " + send.getDisplayedValue (), totalDisplayInfo);
+                updateCache (4 + i, send.getValue (), (i + 1) + ":" + send.getName () + ": " + send.getDisplayedValue (), totalDisplayInfo);
             }
         }
 
-        super.updateDisplayRow4 (display, totalDisplayInfo);
+        super.updateDisplayRow4 (display, totalDisplayInfo, "Main");
 
         display.allDone ();
 
         if (!totalDisplayInfo.isEmpty ())
         {
             final ITextDisplay totalDisplay = this.surface.getTextDisplay (1).clear ();
-            for (int i = 0; i < Math.min (4, totalDisplayInfo.size ()); i++)
-                totalDisplay.setRow (i, StringUtils.pad (StringUtils.fixASCII (totalDisplayInfo.get (i)), 16));
+            totalDisplay.setRow (0, StringUtils.pad (trackName == null ? "Select a track" : (track.getPosition () + 1) + ": " + StringUtils.fixASCII (trackName), 20));
+            totalDisplay.setRow (2, StringUtils.pad (StringUtils.fixASCII (totalDisplayInfo.get (0)), 20));
             totalDisplay.allDone ();
             this.surface.showTotalDisplay ();
         }

@@ -12,6 +12,7 @@ import java.util.TreeMap;
 import de.mossgrabers.framework.controller.display.AbstractTextDisplay;
 import de.mossgrabers.framework.daw.IHost;
 import de.mossgrabers.framework.daw.midi.IMidiOutput;
+import de.mossgrabers.framework.utils.StringUtils;
 
 
 /**
@@ -49,7 +50,7 @@ public class EC4Display extends AbstractTextDisplay
      */
     public EC4Display (final IHost host, final IMidiOutput output, final int display)
     {
-        super (host, output, 4 /* No of rows */, 4 /* No of cells */, 16);
+        super (host, output, 4 /* No of rows */, display == 3 ? 5 : 4 /* No of cells */, display == 3 ? 20 : 16);
 
         this.display = display;
     }
@@ -59,11 +60,14 @@ public class EC4Display extends AbstractTextDisplay
     @Override
     public void writeLine (final int row, final String text, final String previousText)
     {
+        if (text.equals (previousText))
+            return;
+
         final Map<Integer, String> diff = calculateDiff (text, previousText);
         if (diff.isEmpty ())
             return;
 
-        int rowOffset = 16 * row;
+        int rowOffset = this.noOfCharacters * row;
         try (final ByteArrayOutputStream out = new ByteArrayOutputStream ())
         {
             out.write (SYSEX_HEADER);
@@ -75,14 +79,15 @@ public class EC4Display extends AbstractTextDisplay
             for (final Map.Entry<Integer, String> e: diff.entrySet ())
             {
                 final int offset = rowOffset + e.getKey ().intValue ();
+                final String token = e.getValue ();
 
                 out.write (0x4A);
                 out.write (0x20 + offset / 16);
                 out.write (0x10 + offset % 16);
 
-                for (int i = 0; i < text.length (); i++)
+                for (int i = 0; i < token.length (); i++)
                 {
-                    final byte ascii = (byte) text.charAt (i);
+                    final byte ascii = (byte) token.charAt (i);
                     out.write (0x4D);
                     out.write (0x20 + ascii / 16);
                     out.write (0x10 + ascii % 16);
@@ -102,18 +107,22 @@ public class EC4Display extends AbstractTextDisplay
     private static Map<Integer, String> calculateDiff (final String text, final String previousText)
     {
         final Map<Integer, String> result = new TreeMap<> ();
-        if (previousText == null || previousText.length () != text.length ())
+        if (previousText == null || previousText.isBlank ())
         {
             result.put (Integer.valueOf (0), text);
             return result;
         }
 
+        final int length = Math.max (previousText.length (), text.length ());
+        final String textOld = StringUtils.pad (previousText, length);
+        final String textNew = StringUtils.pad (text, length);
+
         int position = 0;
         final StringBuilder sb = new StringBuilder ();
-        for (int i = 0; i < text.length (); i++)
+        for (int i = 0; i < length; i++)
         {
-            final char character = text.charAt (i);
-            if (character == previousText.charAt (i))
+            final char character = textNew.charAt (i);
+            if (character == textOld.charAt (i))
             {
                 if (sb.length () > 0)
                 {

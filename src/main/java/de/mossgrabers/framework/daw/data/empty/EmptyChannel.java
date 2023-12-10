@@ -148,9 +148,25 @@ public class EmptyChannel extends EmptyItem implements IChannel
 
     /** {@inheritDoc} */
     @Override
+    public IParameter getMuteParameter ()
+    {
+        return EmptyParameter.INSTANCE;
+    }
+
+
+    /** {@inheritDoc} */
+    @Override
     public boolean isMute ()
     {
         return false;
+    }
+
+
+    /** {@inheritDoc} */
+    @Override
+    public IParameter getSoloParameter ()
+    {
+        return EmptyParameter.INSTANCE;
     }
 
 

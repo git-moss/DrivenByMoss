@@ -193,8 +193,13 @@ public class SessionMode extends AbstractElectraOneMode
         switch (this.sessionUI)
         {
             case NORMAL:
-                if (slot.doesExist () && slot.hasContent ())
+                if (!slot.doesExist ())
+                    return;
+
+                if (!track.isRecArm () || slot.hasContent ())
                     slot.launch (event == ButtonEvent.DOWN, false);
+                else
+                    this.model.recordNoteClip (track, slot);
                 break;
 
             case FUNCTIONS:
