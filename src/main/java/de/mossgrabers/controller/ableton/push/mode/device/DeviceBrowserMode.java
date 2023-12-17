@@ -554,7 +554,7 @@ public class DeviceBrowserMode extends BaseMode<IItem> implements IPush3Encoder
     @Override
     public void encoderLeft (final ButtonEvent event)
     {
-        if ((event != ButtonEvent.DOWN) || (this.filterColumn == 0))
+        if (event != ButtonEvent.DOWN || this.filterColumn == 0)
             return;
 
         final IBrowser browser = this.model.getBrowser ();

@@ -4,6 +4,17 @@
 
 package de.mossgrabers.framework.controller;
 
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.EnumMap;
+import java.util.List;
+import java.util.Map;
+import java.util.function.Consumer;
+import java.util.function.IntConsumer;
+import java.util.function.IntFunction;
+import java.util.function.IntSupplier;
+import java.util.function.Supplier;
+
 import de.mossgrabers.framework.configuration.Configuration;
 import de.mossgrabers.framework.controller.color.ColorEx;
 import de.mossgrabers.framework.controller.color.ColorManager;
@@ -36,17 +47,6 @@ import de.mossgrabers.framework.featuregroup.ViewManager;
 import de.mossgrabers.framework.graphics.IBitmap;
 import de.mossgrabers.framework.utils.ButtonEvent;
 import de.mossgrabers.framework.view.Views;
-
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.EnumMap;
-import java.util.List;
-import java.util.Map;
-import java.util.function.Consumer;
-import java.util.function.IntConsumer;
-import java.util.function.IntFunction;
-import java.util.function.IntSupplier;
-import java.util.function.Supplier;
 
 
 /**
@@ -98,6 +98,8 @@ public abstract class AbstractControlSurface<C extends Configuration> implements
 
     private boolean                                       knobSensitivityIsSlow          = false;
     private final List<ISensitivityCallback>              knobSensitivityObservers       = new ArrayList<> ();
+
+    protected boolean                                     isShuttingDown                 = false;
 
 
     /**
@@ -830,6 +832,7 @@ public abstract class AbstractControlSurface<C extends Configuration> implements
     @Override
     public final synchronized void shutdown ()
     {
+        this.isShuttingDown = true;
         this.internalShutdown ();
         this.flushHardware ();
     }

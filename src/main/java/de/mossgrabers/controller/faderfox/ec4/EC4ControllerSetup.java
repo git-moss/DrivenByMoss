@@ -6,6 +6,7 @@ package de.mossgrabers.controller.faderfox.ec4;
 
 import de.mossgrabers.controller.faderfox.ec4.controller.EC4ControlSurface;
 import de.mossgrabers.controller.faderfox.ec4.controller.EC4Display;
+import de.mossgrabers.controller.faderfox.ec4.mode.EC4ParametersMode;
 import de.mossgrabers.controller.faderfox.ec4.mode.EC4TrackMode;
 import de.mossgrabers.controller.faderfox.ec4.mode.EC4TwelveMode;
 import de.mossgrabers.framework.command.trigger.mode.ButtonRowModeCommand;
@@ -30,6 +31,7 @@ import de.mossgrabers.framework.featuregroup.ModeManager;
 import de.mossgrabers.framework.featuregroup.ViewManager;
 import de.mossgrabers.framework.mode.DummyMode;
 import de.mossgrabers.framework.mode.Modes;
+import de.mossgrabers.framework.utils.ButtonEvent;
 import de.mossgrabers.framework.view.DummyView;
 import de.mossgrabers.framework.view.Views;
 
@@ -105,7 +107,6 @@ public class EC4ControllerSetup extends AbstractControllerSetup<EC4ControlSurfac
         final IMidiOutput output = midiAccess.createOutput (0);
         final IMidiInput input = midiAccess.createInput (0, null);
 
-        // TODO
         // Raw MIDI input on MIDI channels 1-15 (controls use only channel 16)
         for (int i = 0; i < 15; i++)
             input.createNoteInput ("Channel " + (i + 1), String.format ("?%X????", Integer.valueOf (i)));
@@ -128,8 +129,7 @@ public class EC4ControllerSetup extends AbstractControllerSetup<EC4ControlSurfac
 
         modeManager.register (Modes.TRACK, new EC4TrackMode (surface, this.model));
         modeManager.register (Modes.TRACK_DETAILS, new EC4TwelveMode (surface, this.model));
-        // TODO
-        // modeManager.register (Modes.DEVICE_PARAMS, new DeviceMode (surface, this.model));
+        modeManager.register (Modes.DEVICE_PARAMS, new EC4ParametersMode (surface, this.model));
         modeManager.register (Modes.DUMMY, new DummyMode<> (surface, this.model, EC4ControlSurface.KNOB_IDS));
     }
 
@@ -172,6 +172,21 @@ public class EC4ControllerSetup extends AbstractControllerSetup<EC4ControlSurfac
             final int cc = EC4ControlSurface.EC4_BUTTON_1 + i;
             final ButtonRowModeCommand<EC4ControlSurface, EC4Configuration> command = new ButtonRowModeCommand<> (i / 4, i % 4, this.model, surface);
             this.addButton (surface, buttonID, "Button " + label, command, 15, cc);
+        }
+
+        for (int i = 0; i < 4; i++)
+        {
+            final int index = i;
+            surface.createButton (ButtonID.get (ButtonID.FOOTSWITCH1, i), "Action " + (i + 1)).bind ( (event, velocity) -> {
+
+                if (event == ButtonEvent.DOWN)
+                {
+                    final String assignableActionID = this.configuration.getAssignableAction (index);
+                    if (assignableActionID != null)
+                        this.model.getApplication ().invokeAction (assignableActionID);
+                }
+
+            });
         }
     }
 

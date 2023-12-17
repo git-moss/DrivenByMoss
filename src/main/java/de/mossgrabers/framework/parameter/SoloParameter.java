@@ -18,7 +18,7 @@ import de.mossgrabers.framework.daw.data.ITrack;
  */
 public class SoloParameter extends AbstractParameterImpl
 {
-    private IModel model;
+    private final IModel model;
 
 
     /**

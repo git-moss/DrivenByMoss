@@ -24,7 +24,6 @@ import de.mossgrabers.framework.parameterprovider.special.FixedParameterProvider
 import de.mossgrabers.framework.parameterprovider.special.RangeFilterParameterProvider;
 import de.mossgrabers.framework.parameterprovider.track.SelectedTrackParameterProvider;
 import de.mossgrabers.framework.utils.ButtonEvent;
-import de.mossgrabers.framework.utils.StringUtils;
 
 
 /**
@@ -66,9 +65,41 @@ public class EC4TrackMode extends AbstractEC4Mode<ITrack>
                 return;
 
             final int trackIndex = row * 4 + column;
-            final ITrack track = this.model.getTrackBank ().getItem (trackIndex);
-            track.select ();
-            this.notifyTotalDisplay ("Track " + (track.getPosition () + 1) + ": " + track.getName ());
+            if (this.surface.isShiftPressed ())
+            {
+                final Optional<ITrack> selectedTrack = this.model.getTrackBank ().getSelectedItem ();
+                if (selectedTrack.isEmpty ())
+                    return;
+                if (row == 0)
+                {
+                    switch (column)
+                    {
+                        case 0:
+                            selectedTrack.get ().resetVolume ();
+                            break;
+                        case 1:
+                            selectedTrack.get ().resetPan ();
+                            break;
+                        case 2:
+                            selectedTrack.get ().setMute (false);
+                            break;
+                        case 3:
+                            selectedTrack.get ().setSolo (false);
+                            break;
+                    }
+                }
+                else
+                {
+                    final int sendIndex = (row - 1) * 4 + column;
+                    selectedTrack.get ().getSendBank ().getItem (sendIndex).resetValue ();
+                }
+            }
+            else
+            {
+                final ITrack track = this.model.getTrackBank ().getItem (trackIndex);
+                track.select ();
+                this.notifyTotalDisplay (track.getPosition () + 1 + ": " + track.getName ());
+            }
             return;
         }
 
@@ -80,7 +111,7 @@ public class EC4TrackMode extends AbstractEC4Mode<ITrack>
     @Override
     public void updateDisplay ()
     {
-        final List<String> totalDisplayInfo = new ArrayList<> ();
+        final List<String []> totalDisplayInfo = new ArrayList<> ();
         final ITextDisplay display = this.surface.getTextDisplay ().clear ();
 
         display.setCell (0, 0, "Vol ").setCell (0, 1, "Pan ").setCell (0, 2, "Mute").setCell (0, 3, "Solo");
@@ -88,36 +119,26 @@ public class EC4TrackMode extends AbstractEC4Mode<ITrack>
         display.setCell (2, 0, "Snd5").setCell (2, 1, "Snd6").setCell (2, 2, "Snd7").setCell (2, 3, "Snd8");
 
         final Optional<ITrack> selectedTrack = this.model.getTrackBank ().getSelectedItem ();
-        String trackName = null;
         ITrack track = EmptyTrack.getInstance (8);
         if (selectedTrack.isPresent ())
         {
             track = selectedTrack.get ();
-            trackName = track.getName ();
-            updateCache (0, track.getVolume (), "Volume: " + track.getVolumeStr (), totalDisplayInfo);
-            updateCache (1, track.getPan (), "Pan: " + track.getPanStr (), totalDisplayInfo);
-            updateCache (2, track.isMute () ? 127 : 0, "Mute: " + (track.isMute () ? "on" : "off"), totalDisplayInfo);
-            updateCache (3, track.isSolo () ? 127 : 0, "Solo: " + (track.isSolo () ? "on" : "off"), totalDisplayInfo);
+            final String trackName = track.getPosition () + 1 + ": " + track.getName ();
+            this.updateCache (0, track.getVolume (), totalDisplayInfo, trackName, "", "Volume: " + track.getVolumeStr ());
+            this.updateCache (1, track.getPan (), totalDisplayInfo, trackName, "", "Pan: " + track.getPanStr ());
+            this.updateCache (2, track.isMute () ? 127 : 0, totalDisplayInfo, trackName, "", "Mute: " + (track.isMute () ? "on" : "off"));
+            this.updateCache (3, track.isSolo () ? 127 : 0, totalDisplayInfo, trackName, "", "Solo: " + (track.isSolo () ? "on" : "off"));
 
             final ISendBank sendBank = track.getSendBank ();
             for (int i = 0; i < 8; i++)
             {
                 final ISend send = sendBank.getItem (i);
-                updateCache (4 + i, send.getValue (), (i + 1) + ":" + send.getName () + ": " + send.getDisplayedValue (), totalDisplayInfo);
+                this.updateCache (4 + i, send.getValue (), totalDisplayInfo, trackName, "", i + 1 + ": " + send.getName (7) + ": " + send.getDisplayedValue ());
             }
         }
 
         super.updateDisplayRow4 (display, totalDisplayInfo, "Main");
-
         display.allDone ();
-
-        if (!totalDisplayInfo.isEmpty ())
-        {
-            final ITextDisplay totalDisplay = this.surface.getTextDisplay (1).clear ();
-            totalDisplay.setRow (0, StringUtils.pad (trackName == null ? "Select a track" : (track.getPosition () + 1) + ": " + StringUtils.fixASCII (trackName), 20));
-            totalDisplay.setRow (2, StringUtils.pad (StringUtils.fixASCII (totalDisplayInfo.get (0)), 20));
-            totalDisplay.allDone ();
-            this.surface.showTotalDisplay ();
-        }
+        this.surface.fillTotalDisplay (totalDisplayInfo);
     }
 }

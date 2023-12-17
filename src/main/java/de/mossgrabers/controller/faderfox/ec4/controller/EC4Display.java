@@ -67,7 +67,7 @@ public class EC4Display extends AbstractTextDisplay
         if (diff.isEmpty ())
             return;
 
-        int rowOffset = this.noOfCharacters * row;
+        final int rowOffset = this.noOfCharacters * row;
         try (final ByteArrayOutputStream out = new ByteArrayOutputStream ())
         {
             out.write (SYSEX_HEADER);
@@ -150,7 +150,7 @@ public class EC4Display extends AbstractTextDisplay
 
     /**
      * Show or hide the total display. This is an overlay display with 4 rows of text.
-     * 
+     *
      * @param isVisible True to display
      */
     public void setTotalDisplayVisible (final boolean isVisible)

@@ -5,6 +5,7 @@
 package de.mossgrabers.controller.faderfox.ec4.mode;
 
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 
 import de.mossgrabers.controller.faderfox.ec4.EC4Configuration;
@@ -41,8 +42,9 @@ public abstract class AbstractEC4Mode<B extends IItem> extends AbstractParameter
     protected final IParameterProvider                             bottomRowProvider;
 
     private final PlayCommand<EC4ControlSurface, EC4Configuration> playCommand;
-    protected int []                                               valueCache = new int [16];
-    protected boolean                                              isSession  = false;
+    protected int []                                               valueCache     = new int [16];
+    protected boolean                                              isSession      = false;
+    protected boolean                                              wasSessionUsed = false;
 
 
     /**
@@ -85,19 +87,41 @@ public abstract class AbstractEC4Mode<B extends IItem> extends AbstractParameter
                 case 0:
                     if (event == ButtonEvent.DOWN)
                     {
+                        if (this.surface.isShiftPressed ())
+                        {
+                            this.model.getTransport ().setTempo (120);
+                            return;
+                        }
+                        this.wasSessionUsed = false;
                         this.isSession = !this.isSession;
-                        this.notifyTotalDisplay ("Scene: " + (this.isSession ? "on" : "off"));
+                    }
+                    else if (event == ButtonEvent.UP)
+                    {
+                        if (this.isSession && this.wasSessionUsed)
+                            this.isSession = false;
+                        else
+                            this.notifyTotalDisplay ("Scene: " + (this.isSession ? "on" : "off"));
                     }
                     break;
 
                 case 1:
                     if (event == ButtonEvent.DOWN)
-                        modeManager.setActive (modeManager.isActive (Modes.TRACK) ? Modes.DEVICE_PARAMS : Modes.TRACK);
+                    {
+                        if (this.surface.isShiftPressed ())
+                            this.model.getTransport ().getCrossfadeParameter ().resetValue ();
+                        else
+                            modeManager.setActive (modeManager.isActive (Modes.TRACK) ? Modes.DEVICE_PARAMS : Modes.TRACK);
+                    }
                     break;
 
                 case 2:
                     if (event != ButtonEvent.DOWN)
                         return;
+                    if (this.surface.isShiftPressed ())
+                    {
+                        this.model.getProject ().resetCueVolume ();
+                        return;
+                    }
                     if (modeManager.isActive (Modes.TRACK_DETAILS))
                     {
                         modeManager.setActive (Modes.TRACK);
@@ -111,7 +135,10 @@ public abstract class AbstractEC4Mode<B extends IItem> extends AbstractParameter
                     break;
 
                 case 3:
-                    this.playCommand.execute (event, event == ButtonEvent.DOWN ? 127 : 0);
+                    if (this.surface.isShiftPressed ())
+                        this.model.getMasterTrack ().resetVolume ();
+                    else
+                        this.playCommand.execute (event, event == ButtonEvent.DOWN ? 127 : 0);
                     break;
 
                 default:
@@ -121,6 +148,7 @@ public abstract class AbstractEC4Mode<B extends IItem> extends AbstractParameter
         }
         else if (this.isSession)
         {
+            this.wasSessionUsed = true;
             final IScene scene = this.model.getSceneBank ().getItem (row * 4 + index);
             if (scene.doesExist ())
                 scene.launch (event == ButtonEvent.DOWN, this.surface.isShiftPressed ());
@@ -128,7 +156,7 @@ public abstract class AbstractEC4Mode<B extends IItem> extends AbstractParameter
     }
 
 
-    protected void updateDisplayRow4 (final ITextDisplay display, final List<String> totalDisplayInfo, final String lastItem)
+    protected void updateDisplayRow4 (final ITextDisplay display, final List<String []> totalDisplayInfo, final String lastItem)
     {
         display.setCell (3, 0, "Tmpo").setCell (3, 1, "Xfde").setCell (3, 2, "Cue ").setCell (3, 3, lastItem);
 
@@ -139,20 +167,20 @@ public abstract class AbstractEC4Mode<B extends IItem> extends AbstractParameter
 
         final double tempo = transport.getTempo ();
         final int tempoAsInt = (int) (tempo * 100.0);
-        if (this.valueCache[12] != tempoAsInt)
+        if (this.valueCache[12] != tempoAsInt && tempoAsInt >= 2000)
         {
             this.valueCache[12] = tempoAsInt;
             output.sendCCEx (15, EC4ControlSurface.EC4_KNOB_1 + 12, (int) ((tempoAsInt - 2000.0) / 64600.0 * 127.0));
-            totalDisplayInfo.add ("Tempo: " + transport.formatTempo (tempo));
+            this.storeLines (totalDisplayInfo, "Tempo: " + transport.formatTempo (tempo));
         }
 
-        updateCache (13, transport.getCrossfade (), "Crossfade: " + transport.getCrossfadeParameter ().getDisplayedValue (), totalDisplayInfo);
-        updateCache (14, project.getCueVolume (), "Cue Vol.: " + project.getCueVolumeStr (), totalDisplayInfo);
-        updateCache (15, masterTrack.getVolume (), "Master: " + masterTrack.getVolumeStr (), totalDisplayInfo);
+        this.updateCache (13, transport.getCrossfade (), totalDisplayInfo, "Crossfade: " + transport.getCrossfadeParameter ().getDisplayedValue ());
+        this.updateCache (14, project.getCueVolume (), totalDisplayInfo, "Cue Vol.: " + project.getCueVolumeStr ());
+        this.updateCache (15, masterTrack.getVolume (), totalDisplayInfo, "Master: " + masterTrack.getVolumeStr ());
     }
 
 
-    protected void updateCache (final int index, final int value, final String text, final List<String> totalDisplayInfo)
+    protected void updateCache (final int index, final int value, final List<String []> totalDisplayInfo, final String... lines)
     {
         if (this.valueCache[index] == value)
             return;
@@ -160,7 +188,22 @@ public abstract class AbstractEC4Mode<B extends IItem> extends AbstractParameter
         this.valueCache[index] = value;
         final IMidiOutput output = this.surface.getMidiOutput ();
         output.sendCCEx (15, EC4ControlSurface.EC4_KNOB_1 + index, (int) (value * 127.0 / 1024.0));
-        totalDisplayInfo.add (text);
+
+        this.storeLines (totalDisplayInfo, lines);
+    }
+
+
+    protected void storeLines (final List<String []> totalDisplayInfo, final String... lines)
+    {
+        if (lines.length == 4)
+            totalDisplayInfo.add (lines);
+        else
+        {
+            final String [] linesNew = new String [4];
+            Arrays.fill (linesNew, "");
+            System.arraycopy (lines, 0, linesNew, 0, Math.min (3, lines.length));
+            totalDisplayInfo.add (lines);
+        }
     }
 
 
@@ -176,9 +219,12 @@ public abstract class AbstractEC4Mode<B extends IItem> extends AbstractParameter
 
     protected void notifyTotalDisplay (final String message)
     {
-        final ITextDisplay display = this.surface.getTextDisplay (1).clear ();
-        display.notify (message);
-        display.allDone ();
-        this.surface.showTotalDisplay ();
+        this.surface.fillTotalDisplay (Collections.singletonList (new String []
+        {
+            message,
+            "",
+            "",
+            ""
+        }));
     }
 }

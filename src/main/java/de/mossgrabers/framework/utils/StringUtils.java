@@ -373,7 +373,7 @@ public class StringUtils
 
     /**
      * Convert the given integer array into a byte array.
-     * 
+     *
      * @param data The integer array
      * @return The byte array
      */

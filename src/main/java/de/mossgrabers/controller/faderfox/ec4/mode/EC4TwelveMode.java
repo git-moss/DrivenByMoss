@@ -23,7 +23,6 @@ import de.mossgrabers.framework.parameterprovider.track.SendParameterProvider;
 import de.mossgrabers.framework.parameterprovider.track.SoloParameterProvider;
 import de.mossgrabers.framework.parameterprovider.track.VolumeParameterProvider;
 import de.mossgrabers.framework.utils.ButtonEvent;
-import de.mossgrabers.framework.utils.StringUtils;
 
 
 /**
@@ -82,6 +81,30 @@ public class EC4TwelveMode extends AbstractEC4Mode<ITrack>
         {
             if (event == ButtonEvent.DOWN)
             {
+                if (this.surface.isShiftPressed ())
+                {
+                    final ITrack track = this.model.getTrackBank ().getItem (row * 4 + column);
+                    switch (this.selectedParam)
+                    {
+                        case 0:
+                            track.resetVolume ();
+                            break;
+                        case 1:
+                            track.resetPan ();
+                            break;
+                        case 2:
+                            track.setMute (false);
+                            break;
+                        case 3:
+                            track.setSolo (false);
+                            break;
+                        default:
+                            track.getSendBank ().getItem (this.selectedParam - 4).resetValue ();
+                            break;
+                    }
+                    return;
+                }
+
                 this.selectedParam = row * 4 + column;
                 this.setParameterProvider (this.providers[this.selectedParam]);
                 this.bindControls ();
@@ -97,7 +120,7 @@ public class EC4TwelveMode extends AbstractEC4Mode<ITrack>
     @Override
     public void updateDisplay ()
     {
-        final List<String> totalDisplayInfo = new ArrayList<> ();
+        final List<String []> totalDisplayInfo = new ArrayList<> ();
         final ITextDisplay display = this.surface.getTextDisplay ().clear ();
 
         final ITrackBank trackBank = this.model.getTrackBank ();
@@ -106,6 +129,7 @@ public class EC4TwelveMode extends AbstractEC4Mode<ITrack>
         {
             final ITrack track = trackBank.getItem (i);
             final ISendBank sendBank = track.getSendBank ();
+            final String trackName = track.getPosition () + 1 + ": " + track.getName ();
 
             String text = "    ";
             if (track.doesExist ())
@@ -114,51 +138,41 @@ public class EC4TwelveMode extends AbstractEC4Mode<ITrack>
                 {
                     case 0:
                         text = track.getVolumeStr (4);
-                        updateCache (i, track.getVolume (), "Volume: " + track.getVolumeStr (), totalDisplayInfo);
+                        this.updateCache (i, track.getVolume (), totalDisplayInfo, trackName, "", "Volume: " + track.getVolumeStr ());
                         break;
                     case 1:
                         text = track.getPanStr (4);
-                        updateCache (i, track.getPan (), "Pan: " + track.getPanStr (), totalDisplayInfo);
+                        this.updateCache (i, track.getPan (), totalDisplayInfo, trackName, "", "Pan: " + track.getPanStr ());
                         break;
                     case 2:
                         text = track.isMute () ? "Mute" : "   ";
-                        updateCache (i, track.isMute () ? 127 : 0, "Mute: " + (track.isMute () ? "on" : "off"), totalDisplayInfo);
+                        this.updateCache (i, track.isMute () ? 127 : 0, totalDisplayInfo, trackName, "", "Mute: " + (track.isMute () ? "on" : "off"));
                         break;
                     case 3:
                         text = track.isSolo () ? "Solo" : "   ";
-                        updateCache (i, track.isSolo () ? 127 : 0, "Solo: " + (track.isSolo () ? "on" : "off"), totalDisplayInfo);
+                        this.updateCache (i, track.isSolo () ? 127 : 0, totalDisplayInfo, trackName, "", "Solo: " + (track.isSolo () ? "on" : "off"));
                         break;
                     default:
                         final ISend send = sendBank.getItem (this.selectedParam - 4);
                         if (send.doesExist ())
                         {
                             text = send.getDisplayedValue (4);
-                            updateCache (i, send.getValue (), (i + 1) + ":" + send.getName () + ": " + send.getDisplayedValue (), totalDisplayInfo);
+                            this.updateCache (i, send.getValue (), totalDisplayInfo, trackName, "", i + 1 + ": " + send.getName (7) + ": " + send.getDisplayedValue ());
                         }
                         break;
                 }
 
                 if (text.endsWith ("."))
                     text = text.substring (0, 3);
+                if (text.length () == 3)
+                    text = " " + text;
 
                 display.setCell (i / 4, i % 4, text);
             }
         }
 
         super.updateDisplayRow4 (display, totalDisplayInfo, SUB_MODES[this.selectedParam]);
-
         display.allDone ();
-
-        if (!totalDisplayInfo.isEmpty ())
-
-        {
-            final ITextDisplay totalDisplay = this.surface.getTextDisplay (1).clear ();
-            // TODO
-            // totalDisplay.setRow (0, StringUtils.pad (trackName == null ? "Select a track" :
-            // (track.getPosition () + 1) + ": " + StringUtils.fixASCII (trackName), 20));
-            totalDisplay.setRow (2, StringUtils.pad (StringUtils.fixASCII (totalDisplayInfo.get (0)), 20));
-            totalDisplay.allDone ();
-            this.surface.showTotalDisplay ();
-        }
+        this.surface.fillTotalDisplay (totalDisplayInfo);
     }
 }

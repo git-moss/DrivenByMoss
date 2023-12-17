@@ -116,7 +116,7 @@ public class ProjectTrackMode extends AbstractElectraOneMode
             IParameter param = projectParameterBank.getItem (i);
             boolean paramExists = param.doesExist ();
             int row = i / 4;
-            int column = 1 + i % 4;
+            final int column = 1 + i % 4;
             this.pageCache.updateElement (row, column, paramExists ? StringUtils.fixASCII (param.getName ()) : "", paramExists ? ColorEx.PINK : ColorEx.BLACK, Boolean.TRUE);
             this.pageCache.updateValue (row, column, param.getValue (), paramExists ? StringUtils.optimizeName (StringUtils.fixASCII (param.getDisplayedValue ()), 15) : " ");
 

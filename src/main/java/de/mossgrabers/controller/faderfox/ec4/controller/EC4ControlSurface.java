@@ -13,11 +13,13 @@ import de.mossgrabers.framework.controller.ButtonID;
 import de.mossgrabers.framework.controller.ContinuousID;
 import de.mossgrabers.framework.controller.color.ColorManager;
 import de.mossgrabers.framework.controller.display.AbstractTextDisplay;
+import de.mossgrabers.framework.controller.display.ITextDisplay;
 import de.mossgrabers.framework.controller.hardware.BindType;
 import de.mossgrabers.framework.daw.IHost;
 import de.mossgrabers.framework.daw.midi.IMidiInput;
 import de.mossgrabers.framework.daw.midi.IMidiOutput;
 import de.mossgrabers.framework.mode.Modes;
+import de.mossgrabers.framework.utils.ButtonEvent;
 import de.mossgrabers.framework.utils.StringUtils;
 
 
@@ -52,6 +54,8 @@ public class EC4ControlSurface extends AbstractControlSurface<EC4Configuration>
     private static final byte              APP_CMD_SETUP       = 0x28;
     private static final byte              APP_CMD_GROUP       = 0x24;
     private static final byte              APP_CMD_EXT_KEY     = 0x26;
+    private static final byte              APP_CMD_SHIFTED_KEY = 0x2A;
+    private static final byte              APP_CMD_KEY_STATE   = 0x2E;
 
     private final Object                   notificationLock    = new Object ();
     private int                            notificationTimeout = 0;
@@ -60,10 +64,10 @@ public class EC4ControlSurface extends AbstractControlSurface<EC4Configuration>
     private int                            selectedSetup       = -1;
     private int                            selectedGroup       = -1;
     private boolean                        isOnline            = false;
+    private final Object                         onlineLock          = new Object ();
     private Modes                          activeMode;
 
     private boolean                        isShiftPressed      = false;
-    private boolean []                     isUserKeyPressed    = new boolean [4];
 
 
     /**
@@ -83,23 +87,6 @@ public class EC4ControlSurface extends AbstractControlSurface<EC4Configuration>
     }
 
 
-    /** {@inheritDoc} */
-    @Override
-    public boolean isPressed (final ButtonID buttonID)
-    {
-        if (buttonID == ButtonID.F1)
-            return this.isUserKeyPressed[0];
-        if (buttonID == ButtonID.F2)
-            return this.isUserKeyPressed[1];
-        if (buttonID == ButtonID.F3)
-            return this.isUserKeyPressed[2];
-        if (buttonID == ButtonID.F4)
-            return this.isUserKeyPressed[3];
-
-        return super.isPressed (buttonID);
-    }
-
-
     /**
      * Is the DrivenByMoss preset selected?
      *
@@ -107,16 +94,19 @@ public class EC4ControlSurface extends AbstractControlSurface<EC4Configuration>
      */
     public boolean isOnline ()
     {
-        return this.isOnline;
+        synchronized (this.onlineLock)
+        {
+            return this.isOnline;
+        }
     }
 
 
     /**
      * Set the index of the setup slot which contains the DrivenByMoss template.
-     * 
+     *
      * @param setupSlot The setup slot
      */
-    public void setSetupSlot (int setupSlot)
+    public void setSetupSlot (final int setupSlot)
     {
         this.setupSlot = setupSlot;
     }
@@ -171,6 +161,9 @@ public class EC4ControlSurface extends AbstractControlSurface<EC4Configuration>
      */
     private void handleSysexCommandsController (final byte [] data)
     {
+        int specialKey = -1;
+        int shiftedKey = -1;
+
         for (int offset = 0; offset < data.length; offset += 3)
         {
             if (data[offset] != CMD_APP_FUNC)
@@ -192,7 +185,19 @@ public class EC4ControlSurface extends AbstractControlSurface<EC4Configuration>
                     break;
 
                 case APP_CMD_EXT_KEY:
-                    this.handleSpecialKeys (value);
+                    specialKey = value;
+                    break;
+
+                case APP_CMD_SHIFTED_KEY:
+                    shiftedKey = value;
+                    break;
+
+                case APP_CMD_KEY_STATE:
+                    synchronized (this.onlineLock)
+                    {
+                        if (this.isOnline)
+                            this.handleSpecialKeys (specialKey, shiftedKey, value);
+                    }
                     break;
 
                 default:
@@ -203,21 +208,26 @@ public class EC4ControlSurface extends AbstractControlSurface<EC4Configuration>
     }
 
 
-    private void handleSpecialKeys (final byte value)
+    private void handleSpecialKeys (final int specialKey, final int shiftedKey, final byte value)
     {
-        if (value == 0x12 || value == 0x13)
+        final boolean isPressed = value == 0x11;
+
+        if (shiftedKey >= 0x10 && shiftedKey <= 0x1F)
         {
-            this.isShiftPressed = value == 0x12;
-            this.setKnobSensitivityIsSlow (this.isShiftPressed);
+            final ButtonID buttonID = ButtonID.get (ButtonID.PAD1, shiftedKey - 0x10);
+            this.getButton (buttonID).getCommand ().execute (isPressed ? ButtonEvent.DOWN : ButtonEvent.UP, 127);
+            return;
         }
-        else if (value == 0x14 || value == 0x15)
-            this.isUserKeyPressed[0] = value == 0x14;
-        else if (value == 0x16 || value == 0x17)
-            this.isUserKeyPressed[1] = value == 0x16;
-        else if (value == 0x18 || value == 0x19)
-            this.isUserKeyPressed[2] = value == 0x18;
-        else if (value == 0x1A || value == 0x1B)
-            this.isUserKeyPressed[3] = value == 0x1A;
+
+        if (specialKey == 0x11)
+        {
+            this.isShiftPressed = isPressed;
+            this.setKnobSensitivityIsSlow (this.isShiftPressed);
+            return;
+        }
+
+        if (specialKey >= 0x12 && specialKey <= 0x15)
+            this.getButton (ButtonID.get (ButtonID.FOOTSWITCH1, specialKey - 0x12)).trigger (isPressed ? ButtonEvent.DOWN : ButtonEvent.UP);
     }
 
 
@@ -238,13 +248,16 @@ public class EC4ControlSurface extends AbstractControlSurface<EC4Configuration>
      */
     private void setOffline ()
     {
-        if (!this.isOnline)
-            return;
+        synchronized (this.onlineLock)
+        {
+            if (!this.isOnline)
+                return;
 
-        this.host.println ("Going offline...");
-        this.isOnline = false;
-        this.activeMode = this.modeManager.getActiveID ();
-        this.modeManager.setActive (Modes.DUMMY);
+            this.host.println ("Going offline...");
+            this.isOnline = false;
+            this.activeMode = this.modeManager.getActiveID ();
+            this.modeManager.setActive (Modes.DUMMY);
+        }
     }
 
 
@@ -253,13 +266,16 @@ public class EC4ControlSurface extends AbstractControlSurface<EC4Configuration>
      */
     private void setOnline ()
     {
-        if (this.isOnline)
-            return;
+        synchronized (this.onlineLock)
+        {
+            if (this.isOnline)
+                return;
 
-        this.host.println ("Going online...");
-        this.isOnline = true;
-        this.modeManager.setActive (this.activeMode == null ? Modes.TRACK : this.activeMode);
-        this.getTextDisplay ().forceFlush ();
+            this.host.println ("Going online...");
+            this.isOnline = true;
+            this.modeManager.setActive (this.activeMode == null ? Modes.TRACK : this.activeMode);
+            this.getTextDisplay ().forceFlush ();
+        }
     }
 
 
@@ -268,8 +284,11 @@ public class EC4ControlSurface extends AbstractControlSurface<EC4Configuration>
     public void setTrigger (final BindType bindType, final int channel, final int cc, final int value)
     {
         // Only send MIDI to the device if the DrivenByMoss template is selected
-        if (this.isOnline)
-            super.setTrigger (bindType, channel, cc, value);
+        synchronized (this.onlineLock)
+        {
+            if (this.isOnline)
+                super.setTrigger (bindType, channel, cc, value);
+        }
     }
 
 
@@ -318,5 +337,43 @@ public class EC4ControlSurface extends AbstractControlSurface<EC4Configuration>
             else
                 this.host.scheduleTask (this::watch, 100);
         }
+    }
+
+
+    /**
+     * Write the first string array (must contain 4 lines) on the total display and shows it.
+     *
+     * @param totalDisplayInfo The content to display
+     */
+    public void fillTotalDisplay (final List<String []> totalDisplayInfo)
+    {
+        if (!totalDisplayInfo.isEmpty () && !this.isShuttingDown)
+            this.fillTotalDisplay (totalDisplayInfo.get (0));
+    }
+
+
+    private void fillTotalDisplay (final String [] lines)
+    {
+        final ITextDisplay totalDisplay = this.getTextDisplay (1).clear ();
+        for (int i = 0; i < lines.length; i++)
+            totalDisplay.setRow (i, StringUtils.pad (StringUtils.fixASCII (lines[i]), 20));
+        totalDisplay.allDone ();
+        this.showTotalDisplay ();
+    }
+
+
+    /** {@inheritDoc} */
+    @Override
+    protected void internalShutdown ()
+    {
+        this.fillTotalDisplay (new String []
+        {
+            "Please start " + this.host.getName (),
+            "     to play...",
+            "",
+            ""
+        });
+
+        super.internalShutdown ();
     }
 }

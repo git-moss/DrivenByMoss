@@ -69,7 +69,7 @@ public class SoloParameterImpl extends AbstractParameterImpl
     @Override
     public String getName (final int limit)
     {
-        return StringUtils.limit (getName (), limit);
+        return StringUtils.limit (this.getName (), limit);
     }
 
 

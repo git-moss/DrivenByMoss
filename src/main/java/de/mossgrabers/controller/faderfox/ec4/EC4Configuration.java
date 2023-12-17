@@ -7,6 +7,7 @@ package de.mossgrabers.controller.faderfox.ec4;
 import java.util.List;
 
 import de.mossgrabers.framework.configuration.AbstractConfiguration;
+import de.mossgrabers.framework.configuration.IActionSetting;
 import de.mossgrabers.framework.configuration.IEnumSetting;
 import de.mossgrabers.framework.configuration.ISettingsUI;
 import de.mossgrabers.framework.controller.valuechanger.IValueChanger;
@@ -22,9 +23,9 @@ import de.mossgrabers.framework.daw.midi.ArpeggiatorMode;
 public class EC4Configuration extends AbstractConfiguration
 {
     /** Display log state. */
-    public static final Integer    SETUP_SLOT  = Integer.valueOf (50);
+    public static final Integer    SETUP_SLOT                  = Integer.valueOf (50);
 
-    private static final String [] SETUP_SLOTS = new String []
+    private static final String [] SETUP_SLOTS                 = new String []
     {
         "1",
         "2",
@@ -44,7 +45,10 @@ public class EC4Configuration extends AbstractConfiguration
         "16"
     };
 
-    private int                    setupSlot   = 0;
+    private static final String    CATEGORY_ASSIGNABLE_BUTTONS = "Functions";
+
+    private int                    setupSlot                   = 0;
+    private final String []        assignableFunctionActions   = new String [4];
 
 
     /**
@@ -72,13 +76,19 @@ public class EC4Configuration extends AbstractConfiguration
         ///////////////////////////
         // Transport
 
-        this.activateBehaviourOnStopSetting (globalSettings);
+        this.activateBehaviourOnPauseSetting (globalSettings);
+
+        ///////////////////////////
+        // Assignable user functions
+
+        this.activateAssignableSettings (globalSettings);
 
         ///////////////////////////
         // Workflow
 
         this.activateExcludeDeactivatedItemsSetting (globalSettings);
         this.activateNewClipLengthSetting (globalSettings);
+        this.activateKnobSpeedSetting (globalSettings);
     }
 
 
@@ -94,6 +104,17 @@ public class EC4Configuration extends AbstractConfiguration
     }
 
 
+    private void activateAssignableSettings (final ISettingsUI settingsUI)
+    {
+        for (int i = 0; i < this.assignableFunctionActions.length; i++)
+        {
+            final int pos = i;
+            final IActionSetting actionSetting = settingsUI.getActionSetting ("User " + (i + 1), CATEGORY_ASSIGNABLE_BUTTONS);
+            actionSetting.addValueObserver (value -> this.assignableFunctionActions[pos] = actionSetting.get ());
+        }
+    }
+
+
     /**
      * Get the index of the setup slot.
      *
@@ -102,5 +123,17 @@ public class EC4Configuration extends AbstractConfiguration
     public int getSetupSlot ()
     {
         return this.setupSlot;
+    }
+
+
+    /**
+     * Get the selected action to execute.
+     *
+     * @param index The index of the assignable, 0-3
+     * @return The ID of the action to execute
+     */
+    public String getAssignableAction (final int index)
+    {
+        return this.assignableFunctionActions[index];
     }
 }

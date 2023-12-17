@@ -553,7 +553,7 @@ public class PushControlSurface extends AbstractControlSurface<PushConfiguration
             // Ignore MPE messages
             if (channel > 0)
             {
-                if ((code == MidiConstants.CMD_CC && data1 == 74) || (code == MidiConstants.CMD_PITCHBEND))
+                if (code == MidiConstants.CMD_CC && data1 == 74 || code == MidiConstants.CMD_PITCHBEND)
                     return;
             }
         }

@@ -133,8 +133,8 @@ public enum Scale
     // @formatter:on
 
 
-    private final String                      name;
-    private final int []                      intervals;
+    private final String                name;
+    private final int []                intervals;
     private final Set<Integer>          scaleKeys    = new HashSet<> (7);
     private final Map<Integer, Integer> indexInScale = new HashMap<> (7);
 
