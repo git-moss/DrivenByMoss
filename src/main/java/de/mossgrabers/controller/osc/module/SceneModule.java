@@ -4,6 +4,9 @@
 
 package de.mossgrabers.controller.osc.module;
 
+import java.util.LinkedList;
+import java.util.Optional;
+
 import de.mossgrabers.controller.osc.exception.IllegalParameterException;
 import de.mossgrabers.controller.osc.exception.MissingCommandException;
 import de.mossgrabers.controller.osc.exception.UnknownCommandException;
@@ -13,8 +16,6 @@ import de.mossgrabers.framework.daw.IModel;
 import de.mossgrabers.framework.daw.data.IScene;
 import de.mossgrabers.framework.daw.data.bank.ISceneBank;
 import de.mossgrabers.framework.osc.IOpenSoundControlWriter;
-
-import java.util.LinkedList;
 
 
 /**
@@ -102,6 +103,11 @@ public class SceneModule extends AbstractModule
                 final String sceneCommand2 = getSubCommand (path);
                 switch (sceneCommand2)
                 {
+                    case TAG_SELECT:
+                        if (isTrigger (value))
+                            scene.select ();
+                        break;
+
                     case "launch":
                         scene.launch (isTrigger (value), false);
                         break;
@@ -116,6 +122,17 @@ public class SceneModule extends AbstractModule
 
                     case TAG_REMOVE:
                         scene.remove ();
+                        break;
+
+                    case TAG_NAME:
+                        if (value != null && scene.doesExist ())
+                            scene.setName (value.toString ());
+                        break;
+
+                    case TAG_COLOR:
+                        final Optional<ColorEx> color = matchColor (toString (value));
+                        if (color.isPresent () && scene.doesExist ())
+                            scene.setColor (color.get ());
                         break;
 
                     default:

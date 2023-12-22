@@ -4,6 +4,10 @@
 
 package de.mossgrabers.controller.osc;
 
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
+
 import de.mossgrabers.controller.osc.module.ActionModule;
 import de.mossgrabers.controller.osc.module.BrowserModule;
 import de.mossgrabers.controller.osc.module.ClipModule;
@@ -35,10 +39,6 @@ import de.mossgrabers.framework.osc.IOpenSoundControlClient;
 import de.mossgrabers.framework.osc.IOpenSoundControlServer;
 import de.mossgrabers.framework.scale.Scales;
 import de.mossgrabers.framework.utils.KeyManager;
-
-import java.io.IOException;
-import java.util.ArrayList;
-import java.util.List;
 
 
 /**
@@ -118,25 +118,7 @@ public class OSCControllerSetup extends AbstractControllerSetup<IControlSurface<
     {
         super.createObservers ();
 
-        this.configuration.addSettingObserver (OSCConfiguration.RECEIVE_PORT, () -> {
-            try
-            {
-                final int receivePort = this.configuration.getReceivePort ();
-                if (receivePort == this.configuration.getSendPort ())
-                {
-                    final String message = "Could not start OSC server. OSC send and receive port must be different! Both are: " + receivePort;
-                    this.host.showNotification (message);
-                    this.host.println (message);
-                    return;
-                }
-                this.oscServer.start (receivePort);
-                this.host.println ("Started OSC server on port " + receivePort + ".");
-            }
-            catch (final IOException ex)
-            {
-                this.host.error ("Could not start OSC server.", ex);
-            }
-        });
+        this.configuration.addSettingObserver (OSCConfiguration.RECEIVE_PORT, this::startOSCServer);
 
         final ITrackBank tb = this.model.getTrackBank ();
         tb.addSelectionObserver ( (final int index, final boolean isSelected) -> this.keyManager.clearPressedKeys ());
@@ -161,6 +143,34 @@ public class OSCControllerSetup extends AbstractControllerSetup<IControlSurface<
                     break;
             }
         });
+    }
+
+
+    /**
+     * Start the OSC server.
+     */
+    protected void startOSCServer ()
+    {
+        try
+        {
+            final int receivePort = this.configuration.getReceivePort ();
+            if (receivePort == this.configuration.getSendPort ())
+            {
+                final String message = "Could not start OSC server. OSC send and receive port must be different! Both are: " + receivePort;
+                this.host.showNotification (message);
+                this.host.println (message);
+                return;
+            }
+            if (this.oscServer.getListeningPort () != receivePort)
+            {
+                this.oscServer.start (receivePort);
+                this.host.println ("Started OSC server on port " + receivePort + ".");
+            }
+        }
+        catch (final IOException ex)
+        {
+            this.host.error ("Could not start OSC server.", ex);
+        }
     }
 
 

@@ -4,6 +4,11 @@
 
 package de.mossgrabers.controller.ni.maschine.mk3.view;
 
+import java.util.Collections;
+import java.util.List;
+import java.util.Optional;
+import java.util.function.IntUnaryOperator;
+
 import de.mossgrabers.controller.ni.maschine.core.MaschineColorManager;
 import de.mossgrabers.controller.ni.maschine.mk3.MaschineConfiguration;
 import de.mossgrabers.controller.ni.maschine.mk3.controller.MaschineControlSurface;
@@ -31,11 +36,6 @@ import de.mossgrabers.framework.scale.Scales;
 import de.mossgrabers.framework.utils.ButtonEvent;
 import de.mossgrabers.framework.view.AbstractPlayView;
 import de.mossgrabers.framework.view.sequencer.AbstractSequencerView;
-
-import java.util.Collections;
-import java.util.List;
-import java.util.Optional;
-import java.util.function.IntUnaryOperator;
 
 
 /**
@@ -322,7 +322,7 @@ public class PlayView extends AbstractPlayView<MaschineControlSurface, MaschineC
                     // Get the index of the note in the scale and calculate two thirds (chord is
                     // then scale index: 0, 2, 4)
                     final int [] thirdChord = this.scales.getThirdChord (note);
-                    if (thirdChord == null)
+                    if (thirdChord.length == 0)
                         return;
                     // Send additional chord notes to the DAW
                     final IMidiInput input = this.surface.getMidiInput ();

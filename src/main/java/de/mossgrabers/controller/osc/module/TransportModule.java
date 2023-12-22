@@ -4,6 +4,9 @@
 
 package de.mossgrabers.controller.osc.module;
 
+import java.util.LinkedList;
+import java.util.Locale;
+
 import de.mossgrabers.controller.osc.OSCConfiguration;
 import de.mossgrabers.controller.osc.OSCControlSurface;
 import de.mossgrabers.controller.osc.exception.IllegalParameterException;
@@ -19,9 +22,6 @@ import de.mossgrabers.framework.daw.constants.LaunchQuantization;
 import de.mossgrabers.framework.daw.constants.PostRecordingAction;
 import de.mossgrabers.framework.osc.IOpenSoundControlWriter;
 import de.mossgrabers.framework.utils.ButtonEvent;
-
-import java.util.LinkedList;
-import java.util.Locale;
 
 
 /**
@@ -239,7 +239,10 @@ public class TransportModule extends AbstractModule
                 break;
 
             case "crossfade":
-                this.transport.setCrossfade (toInteger (value));
+                if (path.isEmpty ())
+                    this.transport.setCrossfade (toInteger (value));
+                else if ("reset".equals (path.get (0)))
+                    this.transport.getCrossfadeParameter ().resetValue ();
                 break;
 
             case "autowrite":

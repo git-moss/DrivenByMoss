@@ -4,13 +4,13 @@
 
 package de.mossgrabers.bitwig.framework.daw.data;
 
+import com.bitwig.extension.controller.api.Scene;
+import com.bitwig.extension.controller.api.SettableColorValue;
+
 import de.mossgrabers.framework.controller.color.ColorEx;
 import de.mossgrabers.framework.daw.data.AbstractItemImpl;
 import de.mossgrabers.framework.daw.data.IScene;
 import de.mossgrabers.framework.observer.IValueObserver;
-
-import com.bitwig.extension.controller.api.Scene;
-import com.bitwig.extension.controller.api.SettableColorValue;
 
 
 /**
@@ -83,6 +83,14 @@ public class SceneImpl extends AbstractItemImpl implements IScene
     public void addNameObserver (final IValueObserver<String> observer)
     {
         this.scene.name ().addValueObserver (observer::update);
+    }
+
+
+    /** {@inheritDoc} */
+    @Override
+    public void setName (final String name)
+    {
+        this.scene.name ().set (name);
     }
 
 

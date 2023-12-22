@@ -4,14 +4,14 @@
 
 package de.mossgrabers.controller.ni.kontrol.mkii;
 
+import java.util.List;
+
 import de.mossgrabers.framework.configuration.AbstractConfiguration;
 import de.mossgrabers.framework.configuration.IEnumSetting;
 import de.mossgrabers.framework.configuration.ISettingsUI;
 import de.mossgrabers.framework.controller.valuechanger.IValueChanger;
 import de.mossgrabers.framework.daw.IHost;
 import de.mossgrabers.framework.daw.midi.ArpeggiatorMode;
-
-import java.util.List;
 
 
 /**
@@ -77,7 +77,7 @@ public class KontrolProtocolConfiguration extends AbstractConfiguration
 
         this.activateExcludeDeactivatedItemsSetting (globalSettings);
         this.activateNewClipLengthSetting (globalSettings);
-        this.activateKnobSpeedSetting (globalSettings);
+        this.activateKnobSpeedSetting (globalSettings, 0, 20);
     }
 
 

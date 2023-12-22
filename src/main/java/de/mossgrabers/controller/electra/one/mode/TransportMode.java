@@ -4,6 +4,8 @@
 
 package de.mossgrabers.controller.electra.one.mode;
 
+import java.util.Optional;
+
 import de.mossgrabers.controller.electra.one.ElectraOneConfiguration;
 import de.mossgrabers.controller.electra.one.controller.ElectraOneColorManager;
 import de.mossgrabers.controller.electra.one.controller.ElectraOneControlSurface;
@@ -24,8 +26,6 @@ import de.mossgrabers.framework.parameterprovider.special.EmptyParameterProvider
 import de.mossgrabers.framework.parameterprovider.special.FixedParameterProvider;
 import de.mossgrabers.framework.utils.ButtonEvent;
 import de.mossgrabers.framework.utils.StringUtils;
-
-import java.util.Optional;
 
 
 /**
@@ -142,7 +142,7 @@ public class TransportMode extends AbstractElectraOneMode
 
             case 2:
                 if (column == 0)
-                    this.model.getMarkerBank ().selectPreviousPage ();
+                    this.model.getMarkerBank ().selectNextPage ();
                 else if (column < 5)
                     this.handleMarker (column - 1);
                 break;
@@ -151,7 +151,7 @@ public class TransportMode extends AbstractElectraOneMode
                 switch (column)
                 {
                     case 0:
-                        this.model.getMarkerBank ().selectNextPage ();
+                        this.model.getMarkerBank ().selectPreviousPage ();
                         break;
                     case 5:
                         this.transport.tapTempo ();

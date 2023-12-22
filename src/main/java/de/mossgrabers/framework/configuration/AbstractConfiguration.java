@@ -4,6 +4,16 @@
 
 package de.mossgrabers.framework.configuration;
 
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Map;
+import java.util.Map.Entry;
+import java.util.Optional;
+import java.util.Set;
+import java.util.concurrent.ConcurrentHashMap;
+
 import de.mossgrabers.framework.controller.color.ColorEx;
 import de.mossgrabers.framework.controller.valuechanger.IValueChanger;
 import de.mossgrabers.framework.daw.IHost;
@@ -21,16 +31,6 @@ import de.mossgrabers.framework.scale.Scale;
 import de.mossgrabers.framework.scale.ScaleLayout;
 import de.mossgrabers.framework.scale.Scales;
 import de.mossgrabers.framework.view.Views;
-
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Map;
-import java.util.Map.Entry;
-import java.util.Optional;
-import java.util.Set;
-import java.util.concurrent.ConcurrentHashMap;
 
 
 /**
@@ -1380,12 +1380,25 @@ public abstract class AbstractConfiguration implements Configuration
      */
     protected void activateKnobSpeedSetting (final ISettingsUI settingsUI)
     {
-        final IEnumSetting knobSpeedNormalSetting = settingsUI.getEnumSetting ("Knob Sensitivity Default", CATEGORY_WORKFLOW, KNOB_SENSITIVITY, KNOB_SENSITIVITY[100]);
+        this.activateKnobSpeedSetting (settingsUI, 100, 60);
+    }
+
+
+    /**
+     * Activate the knob speed settings.
+     *
+     * @param settingsUI The settings
+     * @param sensitivity The index of the sensitivity, 0-200
+     * @param slowSensitivity The index of the slow sensitivity, 0-200
+     */
+    protected void activateKnobSpeedSetting (final ISettingsUI settingsUI, final int sensitivity, final int slowSensitivity)
+    {
+        final IEnumSetting knobSpeedNormalSetting = settingsUI.getEnumSetting ("Knob Sensitivity Default", CATEGORY_WORKFLOW, KNOB_SENSITIVITY, KNOB_SENSITIVITY[sensitivity]);
         knobSpeedNormalSetting.addValueObserver (value -> {
             this.knobSpeedDefault = lookupIndex (KNOB_SENSITIVITY, value) - 100;
             this.notifyObservers (KNOB_SENSITIVITY_DEFAULT);
         });
-        final IEnumSetting knobSpeedSlowSetting = settingsUI.getEnumSetting ("Knob Sensitivity Slow", CATEGORY_WORKFLOW, KNOB_SENSITIVITY, KNOB_SENSITIVITY[60]);
+        final IEnumSetting knobSpeedSlowSetting = settingsUI.getEnumSetting ("Knob Sensitivity Slow", CATEGORY_WORKFLOW, KNOB_SENSITIVITY, KNOB_SENSITIVITY[slowSensitivity]);
         knobSpeedSlowSetting.addValueObserver (value -> {
             this.knobSpeedSlow = lookupIndex (KNOB_SENSITIVITY, value) - 100;
             this.notifyObservers (KNOB_SENSITIVITY_SLOW);

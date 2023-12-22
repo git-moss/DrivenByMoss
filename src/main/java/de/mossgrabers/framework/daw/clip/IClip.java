@@ -24,6 +24,14 @@ public interface IClip extends IObserverManagement
 
 
     /**
+     * Set the name of the clip.
+     *
+     * @param name The new name
+     */
+    void setName (String name);
+
+
+    /**
      * Get the color of the clip.
      *
      * @return The color

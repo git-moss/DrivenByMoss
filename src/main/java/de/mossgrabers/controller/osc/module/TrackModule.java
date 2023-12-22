@@ -4,6 +4,10 @@
 
 package de.mossgrabers.controller.osc.module;
 
+import java.util.LinkedList;
+import java.util.Locale;
+import java.util.Optional;
+
 import de.mossgrabers.controller.osc.OSCConfiguration;
 import de.mossgrabers.controller.osc.exception.IllegalParameterException;
 import de.mossgrabers.controller.osc.exception.MissingCommandException;
@@ -12,6 +16,7 @@ import de.mossgrabers.framework.controller.color.ColorEx;
 import de.mossgrabers.framework.daw.IApplication;
 import de.mossgrabers.framework.daw.IHost;
 import de.mossgrabers.framework.daw.IModel;
+import de.mossgrabers.framework.daw.constants.RecordQuantization;
 import de.mossgrabers.framework.daw.data.ICursorTrack;
 import de.mossgrabers.framework.daw.data.ISend;
 import de.mossgrabers.framework.daw.data.ISlot;
@@ -24,10 +29,6 @@ import de.mossgrabers.framework.daw.data.bank.ITrackBank;
 import de.mossgrabers.framework.daw.resource.ChannelType;
 import de.mossgrabers.framework.osc.IOpenSoundControlWriter;
 import de.mossgrabers.framework.parameter.IParameter;
-
-import java.util.LinkedList;
-import java.util.Locale;
-import java.util.Optional;
 
 
 /**
@@ -198,6 +199,8 @@ public class TrackModule extends AbstractModule
         writer.sendOSC (trackAddress + "crossfadeMode/A", "A".equals (crossfadeMode), dump);
         writer.sendOSC (trackAddress + "crossfadeMode/B", "B".equals (crossfadeMode), dump);
         writer.sendOSC (trackAddress + "crossfadeMode/AB", "AB".equals (crossfadeMode), dump);
+
+        writer.sendOSC (trackAddress + "recordQuantization", track.getRecordQuantizationGrid ().getValue (), dump);
 
         writer.sendOSC (trackAddress + "vu", this.configuration.isEnableVUMeters () ? track.getVu () : 0, dump);
     }
@@ -375,6 +378,10 @@ public class TrackModule extends AbstractModule
                         track.getCrossfadeParameter ().setNormalizedValue (0.5);
                         break;
                 }
+                break;
+
+            case "recordQuantization":
+                track.setRecordQuantizationGrid (RecordQuantization.lookup (value.toString ()));
                 break;
 
             case TAG_SELECT, TAG_SELECTED:
@@ -598,6 +605,21 @@ public class TrackModule extends AbstractModule
                 case "-":
                     if (isTrigger (value))
                         parameterBank.selectPreviousPage ();
+                    break;
+
+                case "bank":
+                    final String subCommand2 = getSubCommand (path);
+                    if (TAG_PAGE.equals (subCommand2))
+                    {
+                        final IParameterPageBank pageBank = parameterBank.getPageBank ();
+                        final String directionCommand = getSubCommand (path);
+                        if ("+".equals (directionCommand))
+                            pageBank.selectNextPage ();
+                        else // "-"
+                            pageBank.selectPreviousPage ();
+                    }
+                    else
+                        throw new UnknownCommandException (subCommand2);
                     break;
 
                 default:

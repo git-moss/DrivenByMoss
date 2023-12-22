@@ -4,6 +4,9 @@
 
 package de.mossgrabers.controller.osc.module;
 
+import java.util.LinkedList;
+import java.util.Optional;
+
 import de.mossgrabers.controller.osc.exception.IllegalParameterException;
 import de.mossgrabers.controller.osc.exception.MissingCommandException;
 import de.mossgrabers.controller.osc.exception.UnknownCommandException;
@@ -15,9 +18,6 @@ import de.mossgrabers.framework.daw.data.ICursorTrack;
 import de.mossgrabers.framework.daw.data.ISlot;
 import de.mossgrabers.framework.daw.data.bank.ISlotBank;
 import de.mossgrabers.framework.osc.IOpenSoundControlWriter;
-
-import java.util.LinkedList;
-import java.util.Optional;
 
 
 /**
@@ -83,6 +83,17 @@ public class ClipModule extends AbstractModule
                 if (cursorClip.doesExist ())
                     cursorClip.quantize (1);
                 return;
+
+            case TAG_NAME:
+                if (value != null && cursorClip.doesExist ())
+                    cursorClip.setName (value.toString ());
+                break;
+
+            case TAG_COLOR:
+                final Optional<ColorEx> color = matchColor (toString (value));
+                if (color.isPresent () && cursorClip.doesExist ())
+                    cursorClip.setColor (color.get ());
+                break;
 
             default:
                 // Fall through

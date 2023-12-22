@@ -4,6 +4,17 @@
 
 package de.mossgrabers.bitwig.framework.daw;
 
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
+
+import com.bitwig.extension.controller.api.Clip;
+import com.bitwig.extension.controller.api.CursorTrack;
+import com.bitwig.extension.controller.api.NoteOccurrence;
+import com.bitwig.extension.controller.api.NoteStep;
+import com.bitwig.extension.controller.api.PinnableCursorClip;
+import com.bitwig.extension.controller.api.SettableColorValue;
+
 import de.mossgrabers.bitwig.framework.daw.data.Util;
 import de.mossgrabers.framework.controller.color.ColorEx;
 import de.mossgrabers.framework.controller.valuechanger.IValueChanger;
@@ -16,17 +27,6 @@ import de.mossgrabers.framework.daw.clip.StepState;
 import de.mossgrabers.framework.daw.constants.Resolution;
 import de.mossgrabers.framework.daw.constants.TransportConstants;
 import de.mossgrabers.framework.daw.data.empty.EmptyStepInfo;
-
-import com.bitwig.extension.controller.api.Clip;
-import com.bitwig.extension.controller.api.CursorTrack;
-import com.bitwig.extension.controller.api.NoteOccurrence;
-import com.bitwig.extension.controller.api.NoteStep;
-import com.bitwig.extension.controller.api.PinnableCursorClip;
-import com.bitwig.extension.controller.api.SettableColorValue;
-
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
 
 
 /**
@@ -111,7 +111,6 @@ public class CursorClipImpl implements INoteClip
         Util.setIsSubscribed (this.launcherClip.canScrollStepsForwards (), enable);
         Util.setIsSubscribed (this.launcherClip.color (), enable);
         Util.setIsSubscribed (this.launcherClip.isPinned (), enable);
-
         Util.setIsSubscribed (this.launcherClip.getTrack ().canHoldNoteData (), enable);
     }
 
@@ -121,6 +120,14 @@ public class CursorClipImpl implements INoteClip
     public boolean doesExist ()
     {
         return this.getClip ().exists ().get ();
+    }
+
+
+    /** {@inheritDoc} */
+    @Override
+    public void setName (final String name)
+    {
+        this.getClip ().setName (name);
     }
 
 

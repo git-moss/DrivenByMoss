@@ -21,4 +21,12 @@ public interface IOpenSoundControlServer
      * @throws IOException Could not start the server
      */
     void start (int port) throws IOException;
+
+
+    /**
+     * Returns the port on which the OSC server is listening.
+     * 
+     * @return The port or -1 if the server has not been started
+     */
+    int getListeningPort ();
 }

@@ -4,6 +4,12 @@
 
 package de.mossgrabers.bitwig.framework.hardware;
 
+import com.bitwig.extension.controller.api.ControllerHost;
+import com.bitwig.extension.controller.api.HardwareBindable;
+import com.bitwig.extension.controller.api.RelativeHardwarControlBindable;
+import com.bitwig.extension.controller.api.RelativeHardwareControlBinding;
+import com.bitwig.extension.controller.api.RelativeHardwareKnob;
+
 import de.mossgrabers.bitwig.framework.daw.HostImpl;
 import de.mossgrabers.bitwig.framework.daw.data.ParameterImpl;
 import de.mossgrabers.framework.command.core.ContinuousCommand;
@@ -12,15 +18,10 @@ import de.mossgrabers.framework.controller.hardware.AbstractHwContinuousControl;
 import de.mossgrabers.framework.controller.hardware.BindType;
 import de.mossgrabers.framework.controller.hardware.IHwRelativeKnob;
 import de.mossgrabers.framework.controller.valuechanger.RelativeEncoding;
+import de.mossgrabers.framework.controller.valuechanger.RelativeValueChangers;
 import de.mossgrabers.framework.controller.valuechanger.TwosComplementValueChanger;
 import de.mossgrabers.framework.daw.midi.IMidiInput;
 import de.mossgrabers.framework.parameter.IParameter;
-
-import com.bitwig.extension.controller.api.ControllerHost;
-import com.bitwig.extension.controller.api.HardwareBindable;
-import com.bitwig.extension.controller.api.RelativeHardwarControlBindable;
-import com.bitwig.extension.controller.api.RelativeHardwareControlBinding;
-import com.bitwig.extension.controller.api.RelativeHardwareKnob;
 
 
 /**
@@ -184,9 +185,10 @@ public class HwRelativeKnobImpl extends AbstractHwContinuousControl implements I
 
         // Convert the value back from the default 2s relative matcher, because we do the conversion
         // our own way
-        final double a = value * 61.0;
+        final double a = value * 63.0;
         final int v = (int) (a > 0 ? Math.ceil (a) : Math.floor (a));
-        this.command.execute (v < 0 ? v + 128 : v);
+        final int encodedSpeed = RelativeValueChangers.get (this.encoding).encode (v);
+        this.command.execute (encodedSpeed);
     }
 
 

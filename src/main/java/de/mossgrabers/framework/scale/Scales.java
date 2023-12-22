@@ -4,13 +4,13 @@
 
 package de.mossgrabers.framework.scale;
 
-import de.mossgrabers.framework.controller.valuechanger.IValueChanger;
-import de.mossgrabers.framework.scale.ScaleGrid.Orientation;
-
 import java.util.Arrays;
 import java.util.EnumMap;
 import java.util.List;
 import java.util.Map;
+
+import de.mossgrabers.framework.controller.valuechanger.IValueChanger;
+import de.mossgrabers.framework.scale.ScaleGrid.Orientation;
 
 
 /**
@@ -786,7 +786,7 @@ public class Scales
      * scale base.
      *
      * @param baseNote The base note of the chord
-     * @return The additional 2 thirds
+     * @return The additional 2 thirds or an empty array if the baseNote is out of the scale
      */
     public int [] getThirdChord (final int baseNote)
     {
@@ -800,7 +800,8 @@ public class Scales
      *
      * @param baseNote The MIDI base note
      * @param addedIntervals The note intervals to add
-     * @return The additional notes, excluding the base note
+     * @return The additional notes, excluding the base note or an empty array if the baseNote is
+     *         out of the scale
      */
     public int [] getChord (final int baseNote, final int... addedIntervals)
     {

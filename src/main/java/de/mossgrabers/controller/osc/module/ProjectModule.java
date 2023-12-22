@@ -4,6 +4,9 @@
 
 package de.mossgrabers.controller.osc.module;
 
+import java.util.LinkedList;
+import java.util.Optional;
+
 import de.mossgrabers.controller.osc.exception.IllegalParameterException;
 import de.mossgrabers.controller.osc.exception.MissingCommandException;
 import de.mossgrabers.controller.osc.exception.UnknownCommandException;
@@ -15,9 +18,6 @@ import de.mossgrabers.framework.daw.data.bank.IParameterBank;
 import de.mossgrabers.framework.daw.data.bank.IParameterPageBank;
 import de.mossgrabers.framework.osc.IOpenSoundControlWriter;
 import de.mossgrabers.framework.parameter.IParameter;
-
-import java.util.LinkedList;
-import java.util.Optional;
 
 
 /**
@@ -117,6 +117,21 @@ public class ProjectModule extends AbstractModule
                 case "-":
                     if (isTrigger (value))
                         parameterBank.selectPreviousPage ();
+                    break;
+
+                case "bank":
+                    final String subCommand2 = getSubCommand (path);
+                    if (TAG_PAGE.equals (subCommand2))
+                    {
+                        final IParameterPageBank pageBank = parameterBank.getPageBank ();
+                        final String directionCommand = getSubCommand (path);
+                        if ("+".equals (directionCommand))
+                            pageBank.selectNextPage ();
+                        else // "-"
+                            pageBank.selectPreviousPage ();
+                    }
+                    else
+                        throw new UnknownCommandException (subCommand2);
                     break;
 
                 default:
