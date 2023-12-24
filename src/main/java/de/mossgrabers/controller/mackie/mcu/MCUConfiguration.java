@@ -4,6 +4,9 @@
 
 package de.mossgrabers.controller.mackie.mcu;
 
+import java.util.Arrays;
+import java.util.List;
+
 import de.mossgrabers.controller.mackie.mcu.controller.MCUDeviceType;
 import de.mossgrabers.framework.configuration.AbstractConfiguration;
 import de.mossgrabers.framework.configuration.IActionSetting;
@@ -13,9 +16,6 @@ import de.mossgrabers.framework.controller.valuechanger.IValueChanger;
 import de.mossgrabers.framework.daw.IHost;
 import de.mossgrabers.framework.daw.constants.Capability;
 import de.mossgrabers.framework.daw.midi.ArpeggiatorMode;
-
-import java.util.Arrays;
-import java.util.List;
 
 
 /**
@@ -74,8 +74,14 @@ public class MCUConfiguration extends AbstractConfiguration
     public static final int           FOOTSWITCH_USE_FADERS_LIKE_EDIT_KNOBS = 18;
     /** Use a Function button to toggle motor faders on/off. */
     public static final int           FOOTSWITCH_TOGGLE_MOTOR_FADERS_ON_OFF = 19;
+    /** Use a Function button to toggle punch in on/off. */
+    public static final int           FOOTSWITCH_PUNCH_IN                   = 20;
+    /** Use a Function button to toggle punch out on/off. */
+    public static final int           FOOTSWITCH_PUNCH_OUT                  = 21;
+    /** Use a Function button to toggle the selected device on/off. */
+    public static final int           FOOTSWITCH_DEVICE_ON_OFF              = 22;
     /** Use a Function button to execute an action. */
-    public static final int           FOOTSWITCH_ACTION                     = 20;
+    public static final int           FOOTSWITCH_ACTION                     = 23;
 
     private static final String       CATEGORY_EXTENDER_SETUP               = "Extender Setup (requires restart)";
     private static final String       CATEGORY_SEGMENT_DISPLAY              = "Segment Display";
@@ -123,7 +129,24 @@ public class MCUConfiguration extends AbstractConfiguration
         "Marker mode",
         "Toggle use faders like editing knobs",
         "Toggle motor faders on/off",
+        "Punch In",
+        "Punch Out",
+        "Device on/off",
         "Action"
+    };
+
+    private static final int []       ASSIGNABLE_BUTTON_DEFAULTS            =
+    {
+        0,
+        1,
+        11,
+        12,
+        13,
+        6,
+        14,
+        20,
+        21,
+        22
     };
 
     private static final String []    ASSIGNABLE_BUTTON_NAMES               =
@@ -134,7 +157,10 @@ public class MCUConfiguration extends AbstractConfiguration
         "F2",
         "F3",
         "F4",
-        "F5"
+        "F5",
+        "F6",
+        "F7",
+        "F8"
     };
 
     private static final String []    TIME_OR_BEATS_OPTIONS                 =
@@ -202,8 +228,8 @@ public class MCUConfiguration extends AbstractConfiguration
     private boolean                   use7Characters;
     private boolean                   touchSelectsChannel;
     private boolean                   touchChannelVolumeMode;
-    private final int []              assignableFunctions                   = new int [7];
-    private final String []           assignableFunctionActions             = new String [7];
+    private final int []              assignableFunctions                   = new int [10];
+    private final String []           assignableFunctionActions             = new String [10];
     private final MCUDeviceType []    deviceTyes;
     private boolean                   includeFXTracksInTrackBank;
     private boolean                   pinFXTracksToLastController;
@@ -534,7 +560,7 @@ public class MCUConfiguration extends AbstractConfiguration
         for (int i = 0; i < this.assignableFunctions.length; i++)
         {
             final int pos = i;
-            final IEnumSetting assignableSetting = settingsUI.getEnumSetting (ASSIGNABLE_BUTTON_NAMES[i], CATEGORY_ASSIGNABLE_BUTTONS, ASSIGNABLE_VALUES, ASSIGNABLE_VALUES[6]);
+            final IEnumSetting assignableSetting = settingsUI.getEnumSetting (ASSIGNABLE_BUTTON_NAMES[i], CATEGORY_ASSIGNABLE_BUTTONS, ASSIGNABLE_VALUES, ASSIGNABLE_VALUES[ASSIGNABLE_BUTTON_DEFAULTS[i]]);
             assignableSetting.addValueObserver (value -> this.assignableFunctions[pos] = lookupIndex (ASSIGNABLE_VALUES, value));
 
             final IActionSetting actionSetting = settingsUI.getActionSetting (ASSIGNABLE_BUTTON_NAMES[i] + " - Action", CATEGORY_ASSIGNABLE_BUTTONS);

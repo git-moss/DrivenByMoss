@@ -37,7 +37,7 @@ public class ToggleLoopCommand<S extends IControlSurface<C>, C extends Configura
     @Override
     public void executeNormal (final ButtonEvent event)
     {
-        if (event == ButtonEvent.DOWN)
+        if (event == ButtonEvent.UP)
             this.model.getTransport ().toggleLoop ();
     }
 }

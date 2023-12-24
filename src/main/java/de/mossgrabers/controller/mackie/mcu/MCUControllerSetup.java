@@ -4,6 +4,12 @@
 
 package de.mossgrabers.controller.mackie.mcu;
 
+import java.util.Arrays;
+import java.util.EnumMap;
+import java.util.EnumSet;
+import java.util.Map;
+import java.util.Set;
+
 import de.mossgrabers.controller.mackie.mcu.command.trigger.AssignableCommand;
 import de.mossgrabers.controller.mackie.mcu.command.trigger.DevicesCommand;
 import de.mossgrabers.controller.mackie.mcu.command.trigger.FaderTouchCommand;
@@ -55,15 +61,12 @@ import de.mossgrabers.framework.command.trigger.application.PanelLayoutCommand;
 import de.mossgrabers.framework.command.trigger.application.SaveCommand;
 import de.mossgrabers.framework.command.trigger.application.UndoCommand;
 import de.mossgrabers.framework.command.trigger.clip.NewCommand;
-import de.mossgrabers.framework.command.trigger.device.DeviceOnOffCommand;
 import de.mossgrabers.framework.command.trigger.mode.ButtonRowModeCommand;
 import de.mossgrabers.framework.command.trigger.mode.ModeSelectCommand;
 import de.mossgrabers.framework.command.trigger.track.ToggleVUCommand;
 import de.mossgrabers.framework.command.trigger.transport.AutomationModeCommand;
 import de.mossgrabers.framework.command.trigger.transport.MetronomeCommand;
 import de.mossgrabers.framework.command.trigger.transport.PlayCommand;
-import de.mossgrabers.framework.command.trigger.transport.PunchInCommand;
-import de.mossgrabers.framework.command.trigger.transport.PunchOutCommand;
 import de.mossgrabers.framework.command.trigger.transport.RecordCommand;
 import de.mossgrabers.framework.command.trigger.transport.StopCommand;
 import de.mossgrabers.framework.command.trigger.transport.TapTempoCommand;
@@ -103,12 +106,6 @@ import de.mossgrabers.framework.mode.Modes;
 import de.mossgrabers.framework.utils.ButtonEvent;
 import de.mossgrabers.framework.view.ControlOnlyView;
 import de.mossgrabers.framework.view.Views;
-
-import java.util.Arrays;
-import java.util.EnumMap;
-import java.util.EnumSet;
-import java.util.Map;
-import java.util.Set;
 
 
 /**
@@ -439,10 +436,8 @@ public class MCUControllerSetup extends AbstractControllerSetup<MCUControlSurfac
                 // Functions
                 this.addButton (surface, ButtonID.SHIFT, "Shift", new ShiftCommand<> (this.model, surface), 0, MCUControlSurface.MCU_SHIFT);
                 this.addButton (surface, ButtonID.SELECT, "Option", NopCommand.INSTANCE, 0, MCUControlSurface.MCU_OPTION);
-                this.addButton (surface, ButtonID.PUNCH_IN, "Punch In", new PunchInCommand<> (this.model, surface), 0, MCUControlSurface.MCU_F6, t::isPunchInEnabled);
-                this.addButton (surface, ButtonID.PUNCH_OUT, "Punch Out", new PunchOutCommand<> (this.model, surface), 0, MCUControlSurface.MCU_F7, t::isPunchOutEnabled);
 
-                for (int i = 0; i < 5; i++)
+                for (int i = 0; i < 8; i++)
                 {
                     final AssignableCommand command = new AssignableCommand (2 + i, this.model, surface);
                     this.addButton (surface, ButtonID.get (ButtonID.F1, i), "F" + (i + 1), command, 0, MCUControlSurface.MCU_F1 + i, command::isActive);
@@ -498,8 +493,6 @@ public class MCUControllerSetup extends AbstractControllerSetup<MCUControlSurfac
                     if (event == ButtonEvent.DOWN)
                         this.model.getCursorTrack ().duplicate ();
                 }, 0, MCUControlSurface.MCU_DROP);
-
-                this.addButton (surface, ButtonID.DEVICE_ON_OFF, "Device On/Off", new DeviceOnOffCommand<> (this.model, surface), MCUControlSurface.MCU_F8);
 
                 // Currently not used but prevent error in console
                 this.addButton (surface, ButtonID.CONTROL, "Control", NopCommand.INSTANCE, MCUControlSurface.MCU_CONTROL);
@@ -641,13 +634,14 @@ public class MCUControllerSetup extends AbstractControllerSetup<MCUControlSurfac
                 surface.getButton (ButtonID.TEMPO_TICKS).setBounds (879.0, 92.5, 77.75, 39.75);
                 surface.getButton (ButtonID.SHIFT).setBounds (776.5, 637.5, 65.0, 39.75);
                 surface.getButton (ButtonID.SELECT).setBounds (703.75, 637.5, 65.0, 39.75);
-                surface.getButton (ButtonID.PUNCH_IN).setBounds (705.0, 320.25, 65.0, 39.75);
-                surface.getButton (ButtonID.PUNCH_OUT).setBounds (777.75, 320.25, 65.0, 39.75);
                 surface.getButton (ButtonID.F1).setBounds (632.5, 178.25, 65.0, 39.75);
                 surface.getButton (ButtonID.F2).setBounds (705.0, 178.25, 65.0, 39.75);
                 surface.getButton (ButtonID.F3).setBounds (777.75, 178.25, 65.0, 39.75);
                 surface.getButton (ButtonID.F4).setBounds (849.25, 178.25, 65.0, 39.75);
                 surface.getButton (ButtonID.F5).setBounds (921.5, 178.25, 65.0, 39.75);
+                surface.getButton (ButtonID.F6).setBounds (705.0, 320.25, 65.0, 39.75);
+                surface.getButton (ButtonID.F7).setBounds (777.75, 320.25, 65.0, 39.75);
+                surface.getButton (ButtonID.F8).setBounds (921.0, 590.0, 65.0, 39.75);
                 surface.getButton (ButtonID.TRACK).setBounds (705.0, 225.25, 65.0, 39.75);
                 surface.getButton (ButtonID.PAN_SEND).setBounds (777.75, 225.25, 65.0, 39.75);
                 surface.getButton (ButtonID.SENDS).setBounds (849.25, 225.25, 65.0, 39.75);
@@ -676,7 +670,6 @@ public class MCUControllerSetup extends AbstractControllerSetup<MCUControlSurfac
                 surface.getButton (ButtonID.OVERDUB).setBounds (921.5, 416.75, 65.0, 39.75);
                 surface.getButton (ButtonID.TAP_TEMPO).setBounds (481.25, 942.0, 65.0, 39.75);
                 surface.getButton (ButtonID.DUPLICATE).setBounds (776.5, 492.75, 65.0, 39.75);
-                surface.getButton (ButtonID.DEVICE_ON_OFF).setBounds (921.0, 590.0, 65.0, 39.75);
                 surface.getButton (ButtonID.CONTROL).setBounds (921.0, 637.5, 65.0, 39.75);
                 surface.getButton (ButtonID.ALT).setBounds (847.75, 637.5, 65.0, 39.75);
                 surface.getButton (ButtonID.FLIP).setBounds (703.75, 492.75, 65.0, 39.75);

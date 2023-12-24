@@ -4,6 +4,23 @@
 
 package de.mossgrabers.controller.generic;
 
+import java.io.File;
+import java.io.FileReader;
+import java.io.FileWriter;
+import java.io.IOException;
+import java.io.Reader;
+import java.io.Writer;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.EnumMap;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Map;
+import java.util.Optional;
+import java.util.Properties;
+import java.util.Set;
+import java.util.concurrent.atomic.AtomicBoolean;
+
 import de.mossgrabers.controller.generic.controller.CommandCategory;
 import de.mossgrabers.controller.generic.controller.FlexiCommand;
 import de.mossgrabers.controller.generic.flexihandler.AbstractHandler;
@@ -21,23 +38,6 @@ import de.mossgrabers.framework.observer.IValueObserver;
 import de.mossgrabers.framework.scale.Scales;
 import de.mossgrabers.framework.utils.FileEx;
 import de.mossgrabers.framework.utils.Pair;
-
-import java.io.File;
-import java.io.FileReader;
-import java.io.FileWriter;
-import java.io.IOException;
-import java.io.Reader;
-import java.io.Writer;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.EnumMap;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Map;
-import java.util.Optional;
-import java.util.Properties;
-import java.util.Set;
-import java.util.concurrent.atomic.AtomicBoolean;
 
 
 /**
@@ -294,6 +294,7 @@ public class GenericFlexiConfiguration extends AbstractConfiguration
     private boolean                                  keyboardRouteModulation      = true;
     private boolean                                  keyboardRouteExpression      = false;
     private boolean                                  keyboardRouteSustain         = true;
+    private boolean                                  keyboardRouteProgramChange   = false;
     private boolean                                  keyboardRoutePitchbend       = true;
 
 
@@ -492,6 +493,9 @@ public class GenericFlexiConfiguration extends AbstractConfiguration
 
         final IEnumSetting routeSustainSetting = globalSettings.getEnumSetting ("Route Sustain (CC64)", CATEGORY_KEYBOARD, AbstractConfiguration.ON_OFF_OPTIONS, AbstractConfiguration.ON_OFF_OPTIONS[1]);
         this.keyboardRouteSustain = "On".equals (routeSustainSetting.get ());
+
+        final IEnumSetting routeProgramChangeSetting = globalSettings.getEnumSetting ("Route Program Changes", CATEGORY_KEYBOARD, AbstractConfiguration.ON_OFF_OPTIONS, AbstractConfiguration.ON_OFF_OPTIONS[0]);
+        this.keyboardRouteProgramChange = "On".equals (routeProgramChangeSetting.get ());
 
         final IEnumSetting routePitchbendSetting = globalSettings.getEnumSetting ("Route Pitchbend", CATEGORY_KEYBOARD, AbstractConfiguration.ON_OFF_OPTIONS, AbstractConfiguration.ON_OFF_OPTIONS[1]);
         this.keyboardRoutePitchbend = "On".equals (routePitchbendSetting.get ());
@@ -745,7 +749,7 @@ public class GenericFlexiConfiguration extends AbstractConfiguration
 
 
     /**
-     * Should CC timbre directly routed to the DAW?
+     * Should CC timbre be routed directly to the DAW?
      *
      * @return True to route
      */
@@ -756,7 +760,7 @@ public class GenericFlexiConfiguration extends AbstractConfiguration
 
 
     /**
-     * Should CC modulation directly routed to the DAW?
+     * Should CC modulation be routed directly to the DAW?
      *
      * @return True to route
      */
@@ -767,7 +771,7 @@ public class GenericFlexiConfiguration extends AbstractConfiguration
 
 
     /**
-     * Should CC expression directly routed to the DAW?
+     * Should CC expression be routed directly to the DAW?
      *
      * @return True to route
      */
@@ -778,13 +782,24 @@ public class GenericFlexiConfiguration extends AbstractConfiguration
 
 
     /**
-     * Should CC sustain directly routed to the DAW?
+     * Should CC sustain be routed directly to the DAW?
      *
      * @return True to route
      */
     public boolean isKeyboardRouteSustain ()
     {
         return this.keyboardRouteSustain;
+    }
+
+
+    /**
+     * Should program changes be routed directly to the DAW?
+     *
+     * @return True to route
+     */
+    public boolean isKeyboardRouteProgramChange ()
+    {
+        return this.keyboardRouteProgramChange;
     }
 
 

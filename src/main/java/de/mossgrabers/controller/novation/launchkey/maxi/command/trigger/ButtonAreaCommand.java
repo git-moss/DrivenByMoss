@@ -10,6 +10,7 @@ import de.mossgrabers.controller.novation.launchkey.maxi.controller.LaunchkeyMk3
 import de.mossgrabers.framework.command.core.AbstractTriggerCommand;
 import de.mossgrabers.framework.command.core.TriggerCommand;
 import de.mossgrabers.framework.command.trigger.track.RecArmCommand;
+import de.mossgrabers.framework.controller.ButtonID;
 import de.mossgrabers.framework.daw.DAWColor;
 import de.mossgrabers.framework.daw.IModel;
 import de.mossgrabers.framework.daw.data.ITrack;
@@ -49,6 +50,16 @@ public class ButtonAreaCommand extends AbstractTriggerCommand<LaunchkeyMk3Contro
     @Override
     public void execute (final ButtonEvent event, final int velocity)
     {
+        if (this.surface.isPressed (ButtonID.UNDO))
+        {
+            if (event == ButtonEvent.DOWN)
+            {
+                this.getColumnTrack ().remove ();
+                this.surface.setTriggerConsumed (ButtonID.UNDO);
+            }
+            return;
+        }
+
         if (isSelect)
         {
             if (event == ButtonEvent.DOWN)

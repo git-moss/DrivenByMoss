@@ -4,6 +4,9 @@
 
 package de.mossgrabers.controller.novation.launchkey.maxi.view;
 
+import java.util.List;
+import java.util.Optional;
+
 import de.mossgrabers.controller.novation.launchkey.maxi.LaunchkeyMk3Configuration;
 import de.mossgrabers.controller.novation.launchkey.maxi.controller.LaunchkeyMk3ColorManager;
 import de.mossgrabers.controller.novation.launchkey.maxi.controller.LaunchkeyMk3ControlSurface;
@@ -19,9 +22,6 @@ import de.mossgrabers.framework.daw.data.bank.IDrumPadBank;
 import de.mossgrabers.framework.utils.ButtonEvent;
 import de.mossgrabers.framework.view.Views;
 import de.mossgrabers.framework.view.sequencer.AbstractDrumView;
-
-import java.util.List;
-import java.util.Optional;
 
 
 /**
@@ -68,14 +68,11 @@ public class DrumView extends AbstractDrumView<LaunchkeyMk3ControlSurface, Launc
             // Mark selected note
             this.keyManager.setKeyPressed (offsetY + this.getSelectedPad (), velocity);
         }
-        else
+        else if (this.isActive ())
         {
-            if (this.isActive ())
-            {
-                final int x = index % this.numColumns;
-                final int y = index / this.numColumns;
-                this.handleSequencerArea (index, x, y, offsetY, velocity);
-            }
+            final int x = index % this.numColumns;
+            final int y = index / this.numColumns;
+            this.handleSequencerArea (index, x, y, offsetY, velocity);
         }
     }
 

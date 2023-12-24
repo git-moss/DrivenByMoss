@@ -4,6 +4,15 @@
 
 package de.mossgrabers.controller.generic;
 
+import java.io.IOException;
+import java.text.ParseException;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
+import java.util.Locale;
+import java.util.Optional;
+import java.util.Set;
+
 import de.mossgrabers.controller.generic.controller.FlexiCommand;
 import de.mossgrabers.controller.generic.controller.GenericFlexiControlSurface;
 import de.mossgrabers.controller.generic.flexihandler.ActionHandler;
@@ -62,15 +71,6 @@ import de.mossgrabers.framework.mode.track.TrackVolumeMode;
 import de.mossgrabers.framework.observer.IValueObserver;
 import de.mossgrabers.framework.scale.Scales;
 import de.mossgrabers.framework.utils.FileEx;
-
-import java.io.IOException;
-import java.text.ParseException;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
-import java.util.Locale;
-import java.util.Optional;
-import java.util.Set;
 
 
 /**
@@ -390,6 +390,8 @@ public class GenericFlexiControllerSetup extends AbstractControllerSetup<Generic
             filters.add ("B" + midiChannel + "40??");
         if (this.configuration.isKeyboardRouteTimbre ())
             filters.add ("B" + midiChannel + "4A??");
+        if (this.configuration.isKeyboardRouteProgramChange ())
+            filters.add ("C" + midiChannel + "????");
         if (this.configuration.isKeyboardRoutePitchbend () || isMPEEndabled)
             filters.add ("E" + midiChannel + "????");
 

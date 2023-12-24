@@ -4,6 +4,8 @@
 
 package de.mossgrabers.controller.novation.launchkey.maxi.view;
 
+import java.util.List;
+
 import de.mossgrabers.controller.novation.launchkey.maxi.LaunchkeyMk3Configuration;
 import de.mossgrabers.controller.novation.launchkey.maxi.controller.LaunchkeyMk3ColorManager;
 import de.mossgrabers.controller.novation.launchkey.maxi.controller.LaunchkeyMk3ControlSurface;
@@ -22,8 +24,6 @@ import de.mossgrabers.framework.utils.ButtonEvent;
 import de.mossgrabers.framework.utils.Pair;
 import de.mossgrabers.framework.view.AbstractSessionView;
 import de.mossgrabers.framework.view.Views;
-
-import java.util.List;
 
 
 /**
@@ -321,5 +321,16 @@ public class SessionView extends AbstractSessionView<LaunchkeyMk3ControlSurface,
         if (scene.doesExist ())
             return scene.isSelected () ? AbstractSessionView.COLOR_SELECTED_SCENE : AbstractSessionView.COLOR_SCENE;
         return AbstractSessionView.COLOR_SCENE_OFF;
+    }
+
+
+    /** {@inheritDoc} */
+    @Override
+    protected boolean isAlternateFunction ()
+    {
+        final boolean isPressed = this.surface.isPressed (ButtonID.REPEAT);
+        if (isPressed)
+            this.surface.setTriggerConsumed (ButtonID.REPEAT);
+        return isPressed;
     }
 }

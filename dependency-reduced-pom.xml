@@ -36,6 +36,18 @@
       <plugin>
         <artifactId>maven-compiler-plugin</artifactId>
         <version>3.12.0</version>
+        <executions>
+          <execution>
+            <id>default-testCompile</id>
+            <phase>test-compile</phase>
+            <goals>
+              <goal>testCompile</goal>
+            </goals>
+            <configuration>
+              <skip>true</skip>
+            </configuration>
+          </execution>
+        </executions>
         <configuration>
           <fork>true</fork>
           <source>17</source>

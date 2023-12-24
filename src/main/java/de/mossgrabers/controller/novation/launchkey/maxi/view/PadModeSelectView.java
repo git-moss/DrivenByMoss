@@ -7,8 +7,11 @@ package de.mossgrabers.controller.novation.launchkey.maxi.view;
 import de.mossgrabers.controller.novation.launchkey.maxi.LaunchkeyMk3Configuration;
 import de.mossgrabers.controller.novation.launchkey.maxi.controller.LaunchkeyMk3ColorManager;
 import de.mossgrabers.controller.novation.launchkey.maxi.controller.LaunchkeyMk3ControlSurface;
+import de.mossgrabers.framework.configuration.AbstractConfiguration;
 import de.mossgrabers.framework.controller.ButtonID;
+import de.mossgrabers.framework.controller.display.IDisplay;
 import de.mossgrabers.framework.controller.grid.IPadGrid;
+import de.mossgrabers.framework.daw.DAWColor;
 import de.mossgrabers.framework.daw.IModel;
 import de.mossgrabers.framework.daw.data.IScene;
 import de.mossgrabers.framework.daw.data.bank.ISceneBank;
@@ -55,8 +58,11 @@ public class PadModeSelectView extends AbstractView<LaunchkeyMk3ControlSurface, 
     public void drawGrid ()
     {
         final IPadGrid pads = this.surface.getPadGrid ();
+
+        final LaunchkeyMk3Configuration configuration = this.surface.getConfiguration ();
+        final int clipLengthIndex = configuration.getNewClipLength ();
         for (int x = 0; x < 8; x++)
-            pads.lightEx (x, 0, LaunchkeyMk3ColorManager.LAUNCHKEY_COLOR_BLACK);
+            pads.lightEx (x, 0, DAWColor.getColorID ((x == clipLengthIndex ? DAWColor.DAW_COLOR_RED : DAWColor.DAW_COLOR_LIGHT_ORANGE).getColor ()));
 
         final SessionView view = (SessionView) this.surface.getViewManager ().get (Views.SESSION);
         final Modes padMode = view.getPadMode ();
@@ -80,12 +86,22 @@ public class PadModeSelectView extends AbstractView<LaunchkeyMk3ControlSurface, 
             return;
 
         final int index = note - 36;
-        if (index > 5)
+        if (index > 5 && index < 8)
             return;
 
-        final SessionView view = (SessionView) this.surface.getViewManager ().get (Views.SESSION);
-        view.setPadMode (index == 0 ? null : SessionView.PAD_MODES.get (index - 1));
-        this.surface.getDisplay ().notify (PAD_MODE_NAMES[index]);
+        final IDisplay display = this.surface.getDisplay ();
+        if (index <= 5)
+        {
+            final SessionView view = (SessionView) this.surface.getViewManager ().get (Views.SESSION);
+            view.setPadMode (index == 0 ? null : SessionView.PAD_MODES.get (index - 1));
+            display.notify (PAD_MODE_NAMES[index]);
+        }
+        else
+        {
+            final int newClipLength = index - 8;
+            this.surface.getConfiguration ().setNewClipLength (newClipLength);
+            display.notify ("New Clip Length:" + AbstractConfiguration.getNewClipLengthValue (newClipLength));
+        }
 
         this.isConsumed = true;
     }

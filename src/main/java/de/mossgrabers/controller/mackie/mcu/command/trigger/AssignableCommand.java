@@ -85,6 +85,21 @@ public class AssignableCommand extends FootswitchCommand<MCUControlSurface, MCUC
                 this.mvHelper.delayDisplay ( () -> "Motor Faders: " + (configuration.hasMotorFaders () ? "On" : "Off"));
                 break;
 
+            case MCUConfiguration.FOOTSWITCH_PUNCH_IN:
+                if (event == ButtonEvent.DOWN)
+                    this.model.getTransport ().togglePunchIn ();
+                break;
+
+            case MCUConfiguration.FOOTSWITCH_PUNCH_OUT:
+                if (event == ButtonEvent.DOWN)
+                    this.model.getTransport ().togglePunchOut ();
+                break;
+
+            case MCUConfiguration.FOOTSWITCH_DEVICE_ON_OFF:
+                if (event == ButtonEvent.DOWN)
+                    this.model.getCursorDevice ().toggleEnabledState ();
+                break;
+
             case MCUConfiguration.FOOTSWITCH_ACTION:
                 if (event != ButtonEvent.DOWN)
                     return;
@@ -143,6 +158,15 @@ public class AssignableCommand extends FootswitchCommand<MCUControlSurface, MCUC
 
             case MCUConfiguration.FOOTSWITCH_TOGGLE_MOTOR_FADERS_ON_OFF:
                 return this.surface.getConfiguration ().hasMotorFaders ();
+
+            case MCUConfiguration.FOOTSWITCH_PUNCH_IN:
+                return this.model.getTransport ().isPunchInEnabled ();
+
+            case MCUConfiguration.FOOTSWITCH_PUNCH_OUT:
+                return this.model.getTransport ().isPunchOutEnabled ();
+
+            case MCUConfiguration.FOOTSWITCH_DEVICE_ON_OFF:
+                return this.model.getCursorDevice ().isEnabled ();
 
             case AbstractConfiguration.FOOTSWITCH_UNDO:
             case AbstractConfiguration.FOOTSWITCH_TAP_TEMPO:
