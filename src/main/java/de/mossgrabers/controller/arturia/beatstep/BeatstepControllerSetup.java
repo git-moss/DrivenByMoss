@@ -4,6 +4,8 @@
 
 package de.mossgrabers.controller.arturia.beatstep;
 
+import java.util.Optional;
+
 import de.mossgrabers.controller.arturia.beatstep.command.continuous.KnobRowViewCommand;
 import de.mossgrabers.controller.arturia.beatstep.controller.BeatstepColorManager;
 import de.mossgrabers.controller.arturia.beatstep.controller.BeatstepControlSurface;
@@ -25,8 +27,8 @@ import de.mossgrabers.framework.controller.ContinuousID;
 import de.mossgrabers.framework.controller.ISetupFactory;
 import de.mossgrabers.framework.controller.grid.LightInfo;
 import de.mossgrabers.framework.controller.hardware.BindType;
+import de.mossgrabers.framework.controller.valuechanger.OffsetBinaryRelativeValueChanger;
 import de.mossgrabers.framework.controller.valuechanger.RelativeEncoding;
-import de.mossgrabers.framework.controller.valuechanger.TwosComplementValueChanger;
 import de.mossgrabers.framework.daw.IHost;
 import de.mossgrabers.framework.daw.ModelSetup;
 import de.mossgrabers.framework.daw.data.ICursorDevice;
@@ -43,8 +45,6 @@ import de.mossgrabers.framework.featuregroup.ViewManager;
 import de.mossgrabers.framework.scale.Scales;
 import de.mossgrabers.framework.utils.ButtonEvent;
 import de.mossgrabers.framework.view.Views;
-
-import java.util.Optional;
 
 
 /**
@@ -82,7 +82,7 @@ public class BeatstepControllerSetup extends AbstractControllerSetup<BeatstepCon
         super (factory, host, globalSettings, documentSettings);
 
         this.colorManager = new BeatstepColorManager ();
-        this.valueChanger = new TwosComplementValueChanger (128, 1);
+        this.valueChanger = new OffsetBinaryRelativeValueChanger (128, 1);
         this.configuration = new BeatstepConfiguration (host, this.valueChanger, factory.getArpeggiatorModes ());
     }
 

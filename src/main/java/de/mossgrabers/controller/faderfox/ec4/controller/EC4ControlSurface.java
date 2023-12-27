@@ -64,7 +64,7 @@ public class EC4ControlSurface extends AbstractControlSurface<EC4Configuration>
     private int                            selectedSetup       = -1;
     private int                            selectedGroup       = -1;
     private boolean                        isOnline            = false;
-    private final Object                         onlineLock          = new Object ();
+    private final Object                   onlineLock          = new Object ();
     private Modes                          activeMode;
 
     private boolean                        isShiftPressed      = false;

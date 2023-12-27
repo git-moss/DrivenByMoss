@@ -4,6 +4,8 @@
 
 package de.mossgrabers.controller.arturia.beatstep.view;
 
+import java.util.Optional;
+
 import de.mossgrabers.controller.arturia.beatstep.controller.BeatstepColorManager;
 import de.mossgrabers.controller.arturia.beatstep.controller.BeatstepControlSurface;
 import de.mossgrabers.framework.controller.grid.IPadGrid;
@@ -15,8 +17,6 @@ import de.mossgrabers.framework.daw.constants.Resolution;
 import de.mossgrabers.framework.daw.data.ITrack;
 import de.mossgrabers.framework.daw.data.bank.ITrackBank;
 import de.mossgrabers.framework.scale.Scales;
-
-import java.util.Optional;
 
 
 /**
@@ -52,12 +52,13 @@ public class SequencerView extends BaseSequencerView
 
     /** {@inheritDoc} */
     @Override
-    public void onKnob (final int index, final int value, final boolean isTurnedRight)
+    public void onKnob (final int index, final int value)
     {
+        final boolean isIncrease = this.model.getValueChanger ().isIncrease (value);
         switch (index)
         {
             case 12:
-                this.changeScrollPosition (isTurnedRight);
+                this.changeScrollPosition (isIncrease);
                 break;
 
             case 13:
@@ -68,7 +69,7 @@ public class SequencerView extends BaseSequencerView
             // Up/Down
             case 14:
                 this.keyManager.clearPressedKeys ();
-                if (isTurnedRight)
+                if (isIncrease)
                     this.scales.incOctave ();
                 else
                     this.scales.decOctave ();
@@ -78,14 +79,14 @@ public class SequencerView extends BaseSequencerView
 
             // Toggle play / sequencer
             case 15:
-                this.isPlayMode = !isTurnedRight;
+                this.isPlayMode = !isIncrease;
                 this.surface.getDisplay ().notify (this.isPlayMode ? "Play/Select" : "Sequence");
                 this.updateNoteMapping ();
                 break;
 
             // 0-11
             default:
-                this.extensions.onTrackKnob (index, value, isTurnedRight);
+                this.extensions.onTrackKnob (index, value);
                 break;
         }
     }

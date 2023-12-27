@@ -15,12 +15,11 @@ import java.util.Map;
  */
 public class RelativeValueChangers
 {
-    private static final Map<RelativeEncoding, IValueChanger> VALUE_CHANGERS        = new EnumMap<> (RelativeEncoding.class);
-    private static final TwosComplementValueChanger           DEFAULT_VALUE_CHANGER = new TwosComplementValueChanger (127, 1);
+    private static final Map<RelativeEncoding, IValueChanger> VALUE_CHANGERS = new EnumMap<> (RelativeEncoding.class);
 
     static
     {
-        VALUE_CHANGERS.put (RelativeEncoding.TWOS_COMPLEMENT, DEFAULT_VALUE_CHANGER);
+        VALUE_CHANGERS.put (RelativeEncoding.TWOS_COMPLEMENT, new TwosComplementValueChanger (127, 1));
         VALUE_CHANGERS.put (RelativeEncoding.OFFSET_BINARY, new OffsetBinaryRelativeValueChanger (127, 1));
         VALUE_CHANGERS.put (RelativeEncoding.SIGNED_BIT, new SignedBitRelativeValueChanger (127, 1));
         VALUE_CHANGERS.put (RelativeEncoding.SIGNED_BIT2, new SignedBit2RelativeValueChanger (127, 1));
@@ -36,17 +35,6 @@ public class RelativeValueChangers
     public static IValueChanger get (final RelativeEncoding encoding)
     {
         return VALUE_CHANGERS.get (encoding);
-    }
-
-
-    /**
-     * Get the default value changer.
-     *
-     * @return The value changer
-     */
-    public static IValueChanger getDefault ()
-    {
-        return DEFAULT_VALUE_CHANGER;
     }
 
 

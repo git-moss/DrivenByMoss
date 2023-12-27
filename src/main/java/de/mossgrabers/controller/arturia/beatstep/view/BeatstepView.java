@@ -16,7 +16,6 @@ public interface BeatstepView
      *
      * @param index The index of the knob
      * @param value The knobs value
-     * @param isTurnedRight The knob is turned to the right (positive value change)
      */
-    void onKnob (int index, int value, boolean isTurnedRight);
+    void onKnob (int index, int value);
 }

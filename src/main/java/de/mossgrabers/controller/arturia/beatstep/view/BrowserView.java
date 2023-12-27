@@ -8,6 +8,7 @@ import de.mossgrabers.controller.arturia.beatstep.BeatstepConfiguration;
 import de.mossgrabers.controller.arturia.beatstep.controller.BeatstepColorManager;
 import de.mossgrabers.controller.arturia.beatstep.controller.BeatstepControlSurface;
 import de.mossgrabers.framework.controller.grid.IPadGrid;
+import de.mossgrabers.framework.controller.valuechanger.IValueChanger;
 import de.mossgrabers.framework.daw.IBrowser;
 import de.mossgrabers.framework.daw.IModel;
 import de.mossgrabers.framework.daw.midi.MidiConstants;
@@ -35,13 +36,15 @@ public class BrowserView extends AbstractView<BeatstepControlSurface, BeatstepCo
 
     /** {@inheritDoc} */
     @Override
-    public void onKnob (final int index, final int value, final boolean isTurnedRight)
+    public void onKnob (final int index, final int value)
     {
         final IBrowser browser = this.model.getBrowser ();
         if (!browser.isActive ())
             return;
 
-        final int steps = Math.abs (this.model.getValueChanger ().calcSteppedKnobChange (value));
+        final IValueChanger valueChanger = this.model.getValueChanger ();
+        final int steps = Math.abs (valueChanger.calcSteppedKnobChange (value));
+        final boolean isIncrease = valueChanger.isIncrease (value);
 
         int column;
         switch (index)
@@ -54,7 +57,7 @@ public class BrowserView extends AbstractView<BeatstepControlSurface, BeatstepCo
             case 13:
             case 14:
                 column = index - 8;
-                if (isTurnedRight)
+                if (isIncrease)
                 {
                     for (int i = 0; i < steps; i++)
                         browser.selectNextFilterItem (column);
@@ -67,7 +70,7 @@ public class BrowserView extends AbstractView<BeatstepControlSurface, BeatstepCo
                 break;
 
             case 15:
-                if (isTurnedRight)
+                if (isIncrease)
                 {
                     for (int i = 0; i < steps; i++)
                         browser.selectNextResult ();

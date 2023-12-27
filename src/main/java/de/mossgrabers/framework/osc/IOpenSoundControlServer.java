@@ -25,7 +25,7 @@ public interface IOpenSoundControlServer
 
     /**
      * Returns the port on which the OSC server is listening.
-     * 
+     *
      * @return The port or -1 if the server has not been started
      */
     int getListeningPort ();

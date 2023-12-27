@@ -4,6 +4,8 @@
 
 package de.mossgrabers.controller.arturia.beatstep.view;
 
+import java.util.Optional;
+
 import de.mossgrabers.controller.arturia.beatstep.BeatstepConfiguration;
 import de.mossgrabers.controller.arturia.beatstep.controller.BeatstepColorManager;
 import de.mossgrabers.controller.arturia.beatstep.controller.BeatstepControlSurface;
@@ -14,8 +16,6 @@ import de.mossgrabers.framework.daw.data.ILayer;
 import de.mossgrabers.framework.daw.data.bank.IChannelBank;
 import de.mossgrabers.framework.daw.data.bank.IParameterPageBank;
 import de.mossgrabers.framework.featuregroup.AbstractView;
-
-import java.util.Optional;
 
 
 /**
@@ -45,12 +45,12 @@ public class DeviceView extends AbstractView<BeatstepControlSurface, BeatstepCon
 
     /** {@inheritDoc} */
     @Override
-    public void onKnob (final int index, final int value, final boolean isTurnedRight)
+    public void onKnob (final int index, final int value)
     {
         final ICursorDevice cd = this.model.getCursorDevice ();
         if (index < 8)
         {
-            this.extensions.onTrackKnob (index, value, isTurnedRight);
+            this.extensions.onTrackKnob (index, value);
             return;
         }
 

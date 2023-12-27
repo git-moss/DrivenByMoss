@@ -151,7 +151,7 @@ public class ShiftView extends AbstractView<BeatstepControlSurface, BeatstepConf
 
     /** {@inheritDoc} */
     @Override
-    public void onKnob (final int index, final int value, final boolean isTurnedRight)
+    public void onKnob (final int index, final int value)
     {
         // Knobs not used in Shift view
     }

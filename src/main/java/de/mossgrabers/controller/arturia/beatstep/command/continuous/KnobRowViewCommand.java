@@ -43,8 +43,13 @@ public class KnobRowViewCommand extends AbstractContinuousCommand<BeatstepContro
         final IView v = this.surface.getViewManager ().getActive ();
         if (v == null)
             return;
-        // Ignore centered messages of Beatstep Pro, which are sent before each real knob movement
-        if (value != 64)
-            ((BeatstepView) v).onKnob (this.index, value, value < 64);
+
+        double knobChange = this.model.getValueChanger ().calcKnobChange (value);
+        if (knobChange == 0)
+            return;
+
+        // Try to tame the weird jumps of the knobs
+        knobChange = Math.min (10, Math.max (-10, knobChange));
+        ((BeatstepView) v).onKnob (this.index, (int) knobChange + 64);
     }
 }

@@ -4,12 +4,12 @@
 
 package de.mossgrabers.controller.arturia.beatstep.view;
 
+import java.util.Optional;
+
 import de.mossgrabers.controller.arturia.beatstep.controller.BeatstepControlSurface;
 import de.mossgrabers.framework.daw.IModel;
 import de.mossgrabers.framework.daw.data.ITrack;
 import de.mossgrabers.framework.daw.data.bank.ITrackBank;
-
-import java.util.Optional;
 
 
 /**
@@ -41,14 +41,15 @@ public class TrackEditing
      *
      * @param index The index of the knob
      * @param value The knobs value
-     * @param isTurnedRight The knob is turned to the right (positive value change)
      */
-    public void onTrackKnob (final int index, final int value, final boolean isTurnedRight)
+    public void onTrackKnob (final int index, final int value)
     {
         final ITrackBank tb = this.model.getCurrentTrackBank ();
         final Optional<ITrack> selectedTrack = tb.getSelectedItem ();
         if (selectedTrack.isEmpty ())
             return;
+
+        final boolean isIncrease = this.model.getValueChanger ().isIncrease (value);
 
         switch (index)
         {
@@ -60,11 +61,11 @@ public class TrackEditing
                 break;
 
             case 2:
-                selectedTrack.get ().setMute (isTurnedRight);
+                selectedTrack.get ().setMute (isIncrease);
                 break;
 
             case 3:
-                selectedTrack.get ().setSolo (isTurnedRight);
+                selectedTrack.get ().setSolo (isIncrease);
                 break;
 
             case 4:
@@ -72,11 +73,11 @@ public class TrackEditing
                 break;
 
             case 5:
-                this.model.getTransport ().changeTempo (isTurnedRight, this.surface.isShiftPressed ());
+                this.model.getTransport ().changeTempo (isIncrease, this.surface.isShiftPressed ());
                 break;
 
             case 6:
-                this.model.getTransport ().changePosition (isTurnedRight, this.surface.isShiftPressed ());
+                this.model.getTransport ().changePosition (isIncrease, this.surface.isShiftPressed ());
                 break;
 
             case 7:

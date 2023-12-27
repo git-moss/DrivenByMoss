@@ -40,20 +40,21 @@ public class PlayView extends AbstractPlayView<BeatstepControlSurface, BeatstepC
 
     /** {@inheritDoc} */
     @Override
-    public void onKnob (final int index, final int value, final boolean isTurnedRight)
+    public void onKnob (final int index, final int value)
     {
+        final boolean isIncrease = this.model.getValueChanger ().isIncrease (value);
         switch (index)
         {
             // Chromatic
             case 12:
-                this.scales.setChromatic (!isTurnedRight);
-                this.surface.getConfiguration ().setScaleInKey (isTurnedRight);
-                this.surface.getDisplay ().notify (isTurnedRight ? "In Key" : "Chromatic");
+                this.scales.setChromatic (!isIncrease);
+                this.surface.getConfiguration ().setScaleInKey (isIncrease);
+                this.surface.getDisplay ().notify (isIncrease ? "In Key" : "Chromatic");
                 break;
 
             // Base Note
             case 13:
-                if (isTurnedRight)
+                if (isIncrease)
                     this.scales.nextScaleOffset ();
                 else
                     this.scales.prevScaleOffset ();
@@ -64,7 +65,7 @@ public class PlayView extends AbstractPlayView<BeatstepControlSurface, BeatstepC
 
             // Scale
             case 14:
-                if (isTurnedRight)
+                if (isIncrease)
                     this.scales.nextScale ();
                 else
                     this.scales.prevScale ();
@@ -76,7 +77,7 @@ public class PlayView extends AbstractPlayView<BeatstepControlSurface, BeatstepC
             // Octave
             case 15:
                 this.keyManager.clearPressedKeys ();
-                if (isTurnedRight)
+                if (isIncrease)
                     this.scales.incOctave ();
                 else
                     this.scales.decOctave ();
@@ -85,7 +86,7 @@ public class PlayView extends AbstractPlayView<BeatstepControlSurface, BeatstepC
 
             // 0-11
             default:
-                this.extensions.onTrackKnob (index, value, isTurnedRight);
+                this.extensions.onTrackKnob (index, value);
                 break;
         }
 
