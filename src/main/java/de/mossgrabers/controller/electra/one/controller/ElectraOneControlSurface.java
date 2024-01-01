@@ -4,7 +4,24 @@
 
 package de.mossgrabers.controller.electra.one.controller;
 
+import java.io.ByteArrayOutputStream;
+import java.io.IOException;
+import java.io.StringWriter;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Optional;
+
+import com.fasterxml.jackson.core.JsonGenerator;
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.ObjectMapper;
+
 import de.mossgrabers.controller.electra.one.ElectraOneConfiguration;
+import de.mossgrabers.controller.electra.one.command.trigger.TouchCombinationCommand;
 import de.mossgrabers.controller.electra.one.mode.AbstractElectraOneMode;
 import de.mossgrabers.framework.controller.AbstractControlSurface;
 import de.mossgrabers.framework.controller.ButtonID;
@@ -17,24 +34,9 @@ import de.mossgrabers.framework.daw.midi.IMidiInput;
 import de.mossgrabers.framework.daw.midi.IMidiOutput;
 import de.mossgrabers.framework.featuregroup.IMode;
 import de.mossgrabers.framework.mode.Modes;
+import de.mossgrabers.framework.utils.ButtonEvent;
 import de.mossgrabers.framework.utils.FrameworkException;
 import de.mossgrabers.framework.utils.StringUtils;
-
-import com.fasterxml.jackson.core.JsonGenerator;
-import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.JsonNode;
-import com.fasterxml.jackson.databind.ObjectMapper;
-
-import java.io.ByteArrayOutputStream;
-import java.io.IOException;
-import java.io.StringWriter;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Optional;
 
 
 /**
@@ -64,7 +66,7 @@ public class ElectraOneControlSurface extends AbstractControlSurface<ElectraOneC
         KNOB_IDS.addAll (ContinuousID.createSequentialList (ContinuousID.DEVICE_KNOB1, 6));
     }
 
-    private static final ButtonID []     BUTTON_ROW_IDS                    =
+    private static final ButtonID []     BUTTON_ROW_IDS                     =
     {
         ButtonID.ROW1_1,
         ButtonID.ROW2_1,
@@ -74,7 +76,7 @@ public class ElectraOneControlSurface extends AbstractControlSurface<ElectraOneC
         ButtonID.ROW6_1
     };
 
-    private static final ContinuousID [] CTRL_ROW_IDS                      =
+    private static final ContinuousID [] CTRL_ROW_IDS                       =
     {
         ContinuousID.VOLUME_KNOB1,
         ContinuousID.PAN_KNOB1,
@@ -86,7 +88,7 @@ public class ElectraOneControlSurface extends AbstractControlSurface<ElectraOneC
 
     // Sysex
 
-    private static final byte []         SYSEX_HDR_BYTE                    =
+    private static final byte []         SYSEX_HDR_BYTE                     =
     {
         (byte) 0xF0,
         0x00,
@@ -94,7 +96,7 @@ public class ElectraOneControlSurface extends AbstractControlSurface<ElectraOneC
         0x45
     };
 
-    private static final int []          SYSEX_HDR_INT                     =
+    private static final int []          SYSEX_HDR_INT                      =
     {
         0xF0,
         0x00,
@@ -115,59 +117,133 @@ public class ElectraOneControlSurface extends AbstractControlSurface<ElectraOneC
     private static final byte []         SYSEX_RUNTIME_SET_REPAINT_ENABLED = { 0x7F, 0x7A };
     private static final byte []         SYSEX_RUNTIME_ENABLE_LOGGER       = { 0x7F, 0x7D };
 
-    // 0 = not touched, 1 = touched, 2 = ignore
-    private static final int []          TOUCH_PATTERN_SHIFT         = new int [] { 1, 1, 2, 2, 2, 2, 1, 2, 2, 2, 2, 2 };
-    private static final int []          TOUCH_PATTERN_MIXER         = new int [] { 1, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0 };
-    private static final int []          TOUCH_PATTERN_SENDS         = new int [] { 0, 1, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0 };
-    private static final int []          TOUCH_PATTERN_DEVICES       = new int [] { 0, 0, 1, 1, 1, 0, 0, 0, 0, 0, 0, 0 };
-    private static final int []          TOUCH_PATTERN_EQ            = new int [] { 0, 0, 0, 1, 1, 1, 0, 0, 0, 0, 0, 0 };
-    private static final int []          TOUCH_PATTERN_TRANSPORT     = new int [] { 0, 0, 0, 0, 0, 0, 1, 1, 1, 0, 0, 0 };
-    private static final int []          TOUCH_PATTERN_SESSION       = new int [] { 0, 0, 0, 0, 0, 0, 0, 1, 1, 1, 0, 0 };
-    private static final int []          TOUCH_PATTERN_PROJECT       = new int [] { 0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 1, 0 };
-    private static final int []          TOUCH_PATTERN_NATIVE_DEVICE = new int [] { 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 1 };
-
+    // 0 = not touched, 1 = touched
+    private static final int [] TOUCH_PATTERN_LINEAR_1__3          = new int [] { 1, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0 };
+    private static final int [] TOUCH_PATTERN_LINEAR_2__4          = new int [] { 0, 1, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0 };
+    private static final int [] TOUCH_PATTERN_LINEAR_3__5          = new int [] { 0, 0, 1, 1, 1, 0, 0, 0, 0, 0, 0, 0 };
+    private static final int [] TOUCH_PATTERN_LINEAR_4__6          = new int [] { 0, 0, 0, 1, 1, 1, 0, 0, 0, 0, 0, 0 };
+    private static final int [] TOUCH_PATTERN_LINEAR_7__9          = new int [] { 0, 0, 0, 0, 0, 0, 1, 1, 1, 0, 0, 0 };
+    private static final int [] TOUCH_PATTERN_LINEAR_8__10         = new int [] { 0, 0, 0, 0, 0, 0, 0, 1, 1, 1, 0, 0 };
+    private static final int [] TOUCH_PATTERN_LINEAR_9__11         = new int [] { 0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 1, 0 };
+    private static final int [] TOUCH_PATTERN_LINEAR_10__12        = new int [] { 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 1 };
+    private static final int [] TOUCH_PATTERN_LINEAR_LEFT_1_2_4    = new int [] { 1, 1, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0 };
+    private static final int [] TOUCH_PATTERN_LINEAR_LEFT_2_3_5    = new int [] { 0, 1, 1, 0, 1, 0, 0, 0, 0, 0, 0, 0 };
+    private static final int [] TOUCH_PATTERN_LINEAR_LEFT_3_4_6    = new int [] { 0, 0, 1, 1, 0, 1, 0, 0, 0, 0, 0, 0 };
+    private static final int [] TOUCH_PATTERN_LINEAR_LEFT_7_8_10   = new int [] { 0, 0, 0, 0, 0, 0, 1, 1, 0, 1, 0, 0 };
+    private static final int [] TOUCH_PATTERN_LINEAR_LEFT_8_9_11   = new int [] { 0, 0, 0, 0, 0, 0, 0, 1, 1, 0, 1, 0 };
+    private static final int [] TOUCH_PATTERN_LINEAR_LEFT_9_10_12  = new int [] { 0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 0, 1 };
+    private static final int [] TOUCH_PATTERN_LINEAR_RIGHT_1_3_4   = new int [] { 1, 0, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0 };
+    private static final int [] TOUCH_PATTERN_LINEAR_RIGHT_2_4_5   = new int [] { 0, 1, 0, 1, 1, 0, 0, 0, 0, 0, 0, 0 };
+    private static final int [] TOUCH_PATTERN_LINEAR_RIGHT_3_5_6   = new int [] { 0, 0, 1, 0, 1, 1, 0, 0, 0, 0, 0, 0 };
+    private static final int [] TOUCH_PATTERN_LINEAR_RIGHT_7_9_10  = new int [] { 0, 0, 0, 0, 0, 0, 1, 0, 1, 1, 0, 0 };
+    private static final int [] TOUCH_PATTERN_LINEAR_RIGHT_8_10_11 = new int [] { 0, 0, 0, 0, 0, 0, 0, 1, 0, 1, 1, 0 };
+    private static final int [] TOUCH_PATTERN_LINEAR_RIGHT_9_11_12 = new int [] { 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 1, 1 };
+    private static final int [] TOUCH_PATTERN_LINEAR_BROAD_1_3_5   = new int [] { 1, 0, 1, 0, 1, 0, 0, 0, 0, 0, 0, 0 };
+    private static final int [] TOUCH_PATTERN_LINEAR_BROAD_2_4_6   = new int [] { 0, 1, 0, 1, 0, 1, 0, 0, 0, 0, 0, 0 };
+    private static final int [] TOUCH_PATTERN_LINEAR_BROAD_7_9_11  = new int [] { 0, 0, 0, 0, 0, 0, 1, 0, 1, 0, 1, 0 };
+    private static final int [] TOUCH_PATTERN_LINEAR_BROAD_8_10_12 = new int [] { 0, 0, 0, 0, 0, 0, 0, 1, 0, 1, 0, 1 };
+    private static final int [] TOUCH_PATTERN_CORNER_LEFT_1_2_7    = new int [] { 1, 1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0 };
+    private static final int [] TOUCH_PATTERN_CORNER_LEFT_2_3_8    = new int [] { 0, 1, 1, 0, 0, 0, 0, 1, 0, 0, 0, 0 };
+    private static final int [] TOUCH_PATTERN_CORNER_LEFT_3_4_9    = new int [] { 0, 0, 1, 1, 0, 0, 0, 0, 1, 0, 0, 0 };
+    private static final int [] TOUCH_PATTERN_CORNER_LEFT_4_5_10   = new int [] { 0, 0, 0, 1, 1, 0, 0, 0, 0, 1, 0, 0 };
+    private static final int [] TOUCH_PATTERN_CORNER_LEFT_5_6_11   = new int [] { 0, 0, 0, 0, 1, 1, 0, 0, 0, 0, 1, 0 };
+    private static final int [] TOUCH_PATTERN_CORNER_RIGHT_1_2_8   = new int [] { 1, 1, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0 };
+    private static final int [] TOUCH_PATTERN_CORNER_RIGHT_2_3_9   = new int [] { 0, 1, 1, 0, 0, 0, 0, 0, 1, 0, 0, 0 };
+    private static final int [] TOUCH_PATTERN_CORNER_RIGHT_3_4_10  = new int [] { 0, 0, 1, 1, 0, 0, 0, 0, 0, 1, 0, 0 };
+    private static final int [] TOUCH_PATTERN_CORNER_RIGHT_4_5_11  = new int [] { 0, 0, 0, 1, 1, 0, 0, 0, 0, 0, 1, 0 };
+    private static final int [] TOUCH_PATTERN_CORNER_RIGHT_5_6_12  = new int [] { 0, 0, 0, 0, 1, 1, 0, 0, 0, 0, 0, 1 };
+    private static final int [] TOUCH_PATTERN_TRIANGLE_2_7_9       = new int [] { 0, 1, 0, 0, 0, 0, 1, 0, 1, 0, 0, 0 };
+    private static final int [] TOUCH_PATTERN_TRIANGLE_3_8_10      = new int [] { 0, 0, 1, 0, 0, 0, 0, 1, 0, 1, 0, 0 };
+    private static final int [] TOUCH_PATTERN_TRIANGLE_4_9_11      = new int [] { 0, 0, 0, 1, 0, 0, 0, 0, 1, 0, 1, 0 };
+    private static final int [] TOUCH_PATTERN_TRIANGLE_5_10_12     = new int [] { 0, 0, 0, 0, 1, 0, 0, 0, 0, 1, 0, 1 };
     // @formatter:on
 
-    private static final int             CMD_START_POS                     = SYSEX_HDR_INT.length;
-    private static final int             SUB_CMD_START_POS                 = SYSEX_HDR_INT.length + 1;
+    private static final int [] []       TOUCH_PATTERNS                     =
+    {
+        TOUCH_PATTERN_LINEAR_1__3,
+        TOUCH_PATTERN_LINEAR_2__4,
+        TOUCH_PATTERN_LINEAR_3__5,
+        TOUCH_PATTERN_LINEAR_4__6,
+        TOUCH_PATTERN_LINEAR_7__9,
+        TOUCH_PATTERN_LINEAR_8__10,
+        TOUCH_PATTERN_LINEAR_9__11,
+        TOUCH_PATTERN_LINEAR_10__12,
+        TOUCH_PATTERN_LINEAR_LEFT_1_2_4,
+        TOUCH_PATTERN_LINEAR_LEFT_2_3_5,
+        TOUCH_PATTERN_LINEAR_LEFT_3_4_6,
+        TOUCH_PATTERN_LINEAR_LEFT_7_8_10,
+        TOUCH_PATTERN_LINEAR_LEFT_8_9_11,
+        TOUCH_PATTERN_LINEAR_LEFT_9_10_12,
+        TOUCH_PATTERN_LINEAR_RIGHT_1_3_4,
+        TOUCH_PATTERN_LINEAR_RIGHT_2_4_5,
+        TOUCH_PATTERN_LINEAR_RIGHT_3_5_6,
+        TOUCH_PATTERN_LINEAR_RIGHT_7_9_10,
+        TOUCH_PATTERN_LINEAR_RIGHT_8_10_11,
+        TOUCH_PATTERN_LINEAR_RIGHT_9_11_12,
+        TOUCH_PATTERN_LINEAR_BROAD_1_3_5,
+        TOUCH_PATTERN_LINEAR_BROAD_2_4_6,
+        TOUCH_PATTERN_LINEAR_BROAD_7_9_11,
+        TOUCH_PATTERN_LINEAR_BROAD_8_10_12,
+        TOUCH_PATTERN_CORNER_LEFT_1_2_7,
+        TOUCH_PATTERN_CORNER_LEFT_2_3_8,
+        TOUCH_PATTERN_CORNER_LEFT_3_4_9,
+        TOUCH_PATTERN_CORNER_LEFT_4_5_10,
+        TOUCH_PATTERN_CORNER_LEFT_5_6_11,
+        TOUCH_PATTERN_CORNER_RIGHT_1_2_8,
+        TOUCH_PATTERN_CORNER_RIGHT_2_3_9,
+        TOUCH_PATTERN_CORNER_RIGHT_3_4_10,
+        TOUCH_PATTERN_CORNER_RIGHT_4_5_11,
+        TOUCH_PATTERN_CORNER_RIGHT_5_6_12,
+        TOUCH_PATTERN_TRIANGLE_2_7_9,
+        TOUCH_PATTERN_TRIANGLE_3_8_10,
+        TOUCH_PATTERN_TRIANGLE_4_9_11,
+        TOUCH_PATTERN_TRIANGLE_5_10_12
+    };
+
+    private static final int             CMD_START_POS                      = SYSEX_HDR_INT.length;
+    private static final int             SUB_CMD_START_POS                  = SYSEX_HDR_INT.length + 1;
 
     // Command categories
-    private static final int             CMD_INFO                          = 0x01;
-    private static final int             CMD_CONTROLLER                    = 0x7E;
-    private static final int             CMD_SYSTEM_CALL                   = 0x7F;
+    private static final int             CMD_INFO                           = 0x01;
+    private static final int             CMD_CONTROLLER                     = 0x7E;
+    private static final int             CMD_SYSTEM_CALL                    = 0x7F;
 
     // IDs for runtime commands
-    private static final int             EVENT_PRESET_SWITCH               = 0x02;
-    private static final int             EVENT_PAGE_SWITCH                 = 0x06;
-    private static final int             EVENT_POT_TOUCH                   = 0x0A;
+    private static final int             EVENT_PRESET_SWITCH                = 0x02;
+    private static final int             EVENT_PAGE_SWITCH                  = 0x06;
+    private static final int             EVENT_POT_TOUCH                    = 0x0A;
 
     // IDs for system commands
-    private static final int             SYSTEM_CALL_LOGGING               = 0x00;
+    private static final int             SYSTEM_CALL_LOGGING                = 0x00;
 
     // IDs for information commands
-    private static final int             INFO_PRESET_LIST                  = 0x04;
-    private static final int             INFO_DEVICE                       = 0x7F;
+    private static final int             INFO_PRESET_LIST                   = 0x04;
+    private static final int             INFO_DEVICE                        = 0x7F;
 
-    private static final List<Modes>     MODES                             = new ArrayList<> ();
+    private static final List<Modes>     MODES                              = new ArrayList<> ();
     static
     {
         Collections.addAll (MODES, Modes.VOLUME, Modes.SEND, Modes.DEVICE_PARAMS, Modes.EQ_DEVICE_PARAMS, Modes.TRANSPORT, Modes.SESSION, Modes.PROJECT);
     }
 
-    private static final String        SET_GROUP_TITLE = "sgt(%s,\"%s\")";
+    private static final String                  SET_GROUP_TITLE              = "sgt(%s,\"%s\")";
 
-    private final List<int []>         sysexChunks     = new ArrayList<> ();
-    private final IMidiInput           ctrlInput;
-    private final IMidiOutput          ctrlOutput;
-    private final ObjectMapper         mapper          = new ObjectMapper ();
-    private final Map<String, Integer> presetBanks     = new HashMap<> ();
-    private final Map<String, Integer> presetIndices   = new HashMap<> ();
-    private int                        bankIndex       = -1;
-    private int                        presetIndex     = -1;
-    private boolean                    isOnline        = false;
-    private final int []               knobStates      = new int [12];
-    private boolean                    isShiftPressed;
-    private Modes                      activeMode      = null;
+    private final List<int []>                   sysexChunks                  = new ArrayList<> ();
+    private final IMidiInput                     ctrlInput;
+    private final IMidiOutput                    ctrlOutput;
+    private final ObjectMapper                   mapper                       = new ObjectMapper ();
+    private final Map<String, Integer>           presetBanks                  = new HashMap<> ();
+    private final Map<String, Integer>           presetIndices                = new HashMap<> ();
+    private int                                  bankIndex                    = -1;
+    private int                                  presetIndex                  = -1;
+    private boolean                              isOnline                     = false;
+    private final int []                         knobStates                   = new int [12];
+    private boolean                              isShiftPressed;
+    private Modes                                activeMode                   = null;
+    private TouchCombinationCommand []           touchCombinationCommands     = null;
+    private Object                               touchCombinationCommandsLock = new Object ();
+    private List<int []>                         shiftPatterns                = new ArrayList<> ();
+    private Map<int [], TouchCombinationCommand> commandPatterns              = new HashMap<> ();
 
 
     /**
@@ -189,6 +265,68 @@ public class ElectraOneControlSurface extends AbstractControlSurface<ElectraOneC
         this.ctrlOutput = ctrlOutput;
 
         this.ctrlInput.setSysexCallback (this::handleSysEx);
+    }
+
+
+    /**
+     * Get the number of supported knob touch patterns.
+     * 
+     * @return The number
+     */
+    public static int getTouchPatternSize ()
+    {
+        return TOUCH_PATTERNS.length;
+    }
+
+
+    /**
+     * Set the commands to execute on detected knob touch combinations.
+     * 
+     * @param touchCombinationCommands The commands to set; must match the number of touch patterns
+     */
+    public void setTouchCombinationCommands (final TouchCombinationCommand [] touchCombinationCommands)
+    {
+        if (touchCombinationCommands.length != TOUCH_PATTERNS.length)
+            throw new FrameworkException ("The number of touch commands must match the number of available touch patterns.");
+
+        this.touchCombinationCommands = touchCombinationCommands;
+    }
+
+
+    /**
+     * Update the cache for the active knob touch combinations.
+     */
+    public void updateTouchCombinationCommandsCache ()
+    {
+        synchronized (this.touchCombinationCommandsLock)
+        {
+            if (this.touchCombinationCommands == null)
+                return;
+
+            this.shiftPatterns.clear ();
+            this.commandPatterns.clear ();
+
+            for (int i = 0; i < this.touchCombinationCommands.length; i++)
+            {
+                final TouchCombinationCommand command = this.touchCombinationCommands[i];
+
+                final int setting = this.configuration.getAssignable (i);
+                if (setting != ElectraOneConfiguration.ELECTRA_ONE_FUNC_OFF)
+                {
+                    if (setting == ElectraOneConfiguration.ELECTRA_ONE_FUNC_SHIFT_BUTTON)
+                    {
+                        // Create specific shift patterns which ignore all other touched knobs
+                        // (state = 2)
+                        final int [] shiftPattern = new int [TOUCH_PATTERNS[i].length];
+                        for (int pos = 0; pos < shiftPattern.length; pos++)
+                            shiftPattern[pos] = TOUCH_PATTERNS[i][pos] == 1 ? 1 : 2;
+                        this.shiftPatterns.add (shiftPattern);
+                    }
+                    else
+                        this.commandPatterns.put (TOUCH_PATTERNS[i], command);
+                }
+            }
+        }
     }
 
 
@@ -353,7 +491,7 @@ public class ElectraOneControlSurface extends AbstractControlSurface<ElectraOneC
      *
      * @param page The index of the preset page (0-11)
      */
-    private void selectPage (final int page)
+    public void selectPage (final int page)
     {
         this.host.println (String.format ("Selecting page: %d", Integer.valueOf (page)));
         this.sendSysex (SYSEX_RUNTIME_SWITCH_PAGE, new byte []
@@ -552,29 +690,33 @@ public class ElectraOneControlSurface extends AbstractControlSurface<ElectraOneC
 
     private void matchStates ()
     {
-        if (compareWithIgnore (this.knobStates, TOUCH_PATTERN_SHIFT))
+        boolean handled = false;
+
+        synchronized (this.touchCombinationCommandsLock)
         {
-            this.updateShift (true);
-            return;
+            for (final int [] pattern: this.shiftPatterns)
+            {
+                if (compareWithIgnore (this.knobStates, pattern))
+                {
+                    this.updateShift (true);
+                    return;
+                }
+            }
+
+            for (final Map.Entry<int [], TouchCombinationCommand> e: this.commandPatterns.entrySet ())
+            {
+                if (Arrays.equals (this.knobStates, e.getKey ()))
+                {
+                    final TouchCombinationCommand cmd = e.getValue ();
+                    cmd.execute (ButtonEvent.DOWN, 127);
+                    cmd.execute (ButtonEvent.UP, 0);
+                    handled = true;
+                    break;
+                }
+            }
         }
 
-        if (Arrays.equals (this.knobStates, TOUCH_PATTERN_MIXER))
-            this.selectPage (0);
-        else if (Arrays.equals (this.knobStates, TOUCH_PATTERN_SENDS))
-            this.selectPage (1);
-        else if (Arrays.equals (this.knobStates, TOUCH_PATTERN_DEVICES))
-            this.selectPage (2);
-        else if (Arrays.equals (this.knobStates, TOUCH_PATTERN_EQ))
-            this.selectPage (3);
-        else if (Arrays.equals (this.knobStates, TOUCH_PATTERN_TRANSPORT))
-            this.selectPage (4);
-        else if (Arrays.equals (this.knobStates, TOUCH_PATTERN_SESSION))
-            this.selectPage (5);
-        else if (Arrays.equals (this.knobStates, TOUCH_PATTERN_PROJECT))
-            this.selectPage (6);
-        else if (Arrays.equals (this.knobStates, TOUCH_PATTERN_NATIVE_DEVICE))
-            this.switchToSpecificDevicePreset ();
-        else
+        if (!handled)
         {
             this.updateShift (false);
             return;
@@ -585,7 +727,11 @@ public class ElectraOneControlSurface extends AbstractControlSurface<ElectraOneC
     }
 
 
-    private void switchToSpecificDevicePreset ()
+    /**
+     * Check if there is a preset with the name of the cursor device, if none is found selected the
+     * device mode. If the DrivenByMoss preset is not selected, jump back to it.
+     */
+    public void switchToSpecificDevicePreset ()
     {
         // If the DrivenByMoss preset is not selected, jump back to it
         if (!this.isOnline)
@@ -594,8 +740,6 @@ public class ElectraOneControlSurface extends AbstractControlSurface<ElectraOneC
             return;
         }
 
-        // Check if there is a preset with the name of the cursor device, if none is found selected
-        // the device mode
         if (this.modeManager.getActive () instanceof final AbstractElectraOneMode electraMode)
         {
             final Optional<String> deviceNameOpt = electraMode.getActiveDeviceName ();
@@ -622,7 +766,12 @@ public class ElectraOneControlSurface extends AbstractControlSurface<ElectraOneC
     }
 
 
-    private void updateShift (final boolean isShift)
+    /**
+     * Update the emulated shift button state.
+     * 
+     * @param isShift True if pressed
+     */
+    public void updateShift (final boolean isShift)
     {
         this.isShiftPressed = isShift;
         this.setKnobSensitivityIsSlow (this.isShiftPressed);

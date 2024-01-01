@@ -15,6 +15,19 @@ import de.mossgrabers.framework.scale.Scales;
  */
 public class APCScales extends Scales
 {
+    // @formatter:off
+    /** The drum grid matrix. */
+    private static final int []         APC40_DRUM_MATRIX              =
+    {
+         0,  1,  2,  3, -1, -1, -1, -1,
+         4,  5,  6,  7, -1, -1, -1, -1,
+         8,  9, 10, 11, -1, -1, -1, -1,
+        -1, -1, -1, -1, -1, -1, -1, -1,
+        -1, -1, -1, -1, -1, -1, -1, -1
+    };
+    // @formatter:on
+
+
     /**
      * Constructor.
      *
@@ -25,6 +38,7 @@ public class APCScales extends Scales
         super (valueChanger, 36, 76, 8, 5);
 
         this.setDrumNoteEnd (76);
+        this.setDrumMatrix (APC40_DRUM_MATRIX);
     }
 
 

@@ -4,6 +4,7 @@
 
 package de.mossgrabers.controller.electra.one;
 
+import de.mossgrabers.controller.electra.one.command.trigger.TouchCombinationCommand;
 import de.mossgrabers.controller.electra.one.controller.ElectraOneColorManager;
 import de.mossgrabers.controller.electra.one.controller.ElectraOneControlSurface;
 import de.mossgrabers.controller.electra.one.mode.DeviceMode;
@@ -113,6 +114,11 @@ public class ElectraOneControllerSetup extends AbstractControllerSetup<ElectraOn
         final ElectraOneControlSurface surface = new ElectraOneControlSurface (this.host, this.colorManager, this.configuration, output, input, ctrlInput, ctrlOutput);
         this.surfaces.add (surface);
 
+        final TouchCombinationCommand [] touchCombinationCommands = new TouchCombinationCommand [ElectraOneControlSurface.getTouchPatternSize ()];
+        for (int i = 0; i < touchCombinationCommands.length; i++)
+            touchCombinationCommands[i] = new TouchCombinationCommand (i, this.model, surface);
+        surface.setTouchCombinationCommands (touchCombinationCommands);
+
         surface.getModeManager ().setDefaultID (Modes.VOLUME);
     }
 
@@ -151,9 +157,9 @@ public class ElectraOneControllerSetup extends AbstractControllerSetup<ElectraOn
     {
         super.createObservers ();
 
-        this.configuration.registerDeactivatedItemsHandler (this.model);
-
         final ElectraOneControlSurface surface = this.getSurface ();
+        this.configuration.registerDeactivatedItemsHandler (this.model);
+        this.configuration.addSettingObserver (ElectraOneConfiguration.KNOB_TOUCH_COMBINATION_COMMANDS, this.getSurface ()::updateTouchCombinationCommandsCache);
         this.configuration.addSettingObserver (ElectraOneConfiguration.LOG_TO_CONSOLE, surface::setLoggingEnabled);
     }
 

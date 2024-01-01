@@ -23,7 +23,7 @@ public class PadGridImpl implements IPadGrid
     protected LightInfo []       padStates;
 
     protected int                rows;
-    protected int                cols;
+    protected int                columns;
     protected int                startNote;
     protected int                endNote;
 
@@ -46,17 +46,17 @@ public class PadGridImpl implements IPadGrid
      * @param colorManager The color manager for accessing specific colors to use
      * @param output The MIDI output which can address the pad states
      * @param rows The number of rows of the grid
-     * @param cols The number of columns of the grid
+     * @param columns The number of columns of the grid
      * @param startNote The start note of the grid
      */
-    public PadGridImpl (final ColorManager colorManager, final IMidiOutput output, final int rows, final int cols, final int startNote)
+    public PadGridImpl (final ColorManager colorManager, final IMidiOutput output, final int rows, final int columns, final int startNote)
     {
         this.colorManager = colorManager;
         this.output = output;
         this.rows = rows;
-        this.cols = cols;
+        this.columns = columns;
         this.startNote = startNote;
-        this.endNote = this.startNote + this.rows * this.cols - 1;
+        this.endNote = this.startNote + this.rows * this.columns - 1;
 
         // Note: Even if the grid contains less than 128 pads it is more efficient to use
         // the 128 note values the pads understand
@@ -94,8 +94,8 @@ public class PadGridImpl implements IPadGrid
     @Override
     public void lightEx (final int x, final int y, final int color, final int blinkColor, final boolean fast)
     {
-        final int off = (this.rows - 1) * this.cols + this.startNote;
-        this.setLight (off + x - this.cols * y, color, blinkColor, fast);
+        final int off = (this.rows - 1) * this.columns + this.startNote;
+        this.setLight (off + x - this.columns * y, color, blinkColor, fast);
     }
 
 
@@ -258,7 +258,7 @@ public class PadGridImpl implements IPadGrid
     @Override
     public int getCols ()
     {
-        return this.cols;
+        return this.columns;
     }
 
 

@@ -15,7 +15,7 @@ import de.mossgrabers.framework.utils.ButtonEvent;
 
 
 /**
- * The Beatstep 1 and Beatstep 2 control surface.
+ * The Beatstep control surface.
  *
  * @author Jürgen Moßgraber
  */

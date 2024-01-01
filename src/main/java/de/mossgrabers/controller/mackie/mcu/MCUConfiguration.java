@@ -135,20 +135,6 @@ public class MCUConfiguration extends AbstractConfiguration
         "Action"
     };
 
-    private static final int []       ASSIGNABLE_BUTTON_DEFAULTS            =
-    {
-        0,
-        1,
-        11,
-        12,
-        13,
-        6,
-        14,
-        20,
-        21,
-        22
-    };
-
     private static final String []    ASSIGNABLE_BUTTON_NAMES               =
     {
         "Footswitch 1",
@@ -161,6 +147,20 @@ public class MCUConfiguration extends AbstractConfiguration
         "F6",
         "F7",
         "F8"
+    };
+
+    private static final int []       ASSIGNABLE_BUTTON_DEFAULTS            =
+    {
+        0,
+        1,
+        11,
+        12,
+        13,
+        6,
+        14,
+        20,
+        21,
+        22
     };
 
     private static final String []    TIME_OR_BEATS_OPTIONS                 =
@@ -228,8 +228,8 @@ public class MCUConfiguration extends AbstractConfiguration
     private boolean                   use7Characters;
     private boolean                   touchSelectsChannel;
     private boolean                   touchChannelVolumeMode;
-    private final int []              assignableFunctions                   = new int [10];
-    private final String []           assignableFunctionActions             = new String [10];
+    private final int []              assignableFunctions                   = new int [ASSIGNABLE_BUTTON_NAMES.length];
+    private final String []           assignableFunctionActions             = new String [ASSIGNABLE_BUTTON_NAMES.length];
     private final MCUDeviceType []    deviceTyes;
     private boolean                   includeFXTracksInTrackBank;
     private boolean                   pinFXTracksToLastController;
