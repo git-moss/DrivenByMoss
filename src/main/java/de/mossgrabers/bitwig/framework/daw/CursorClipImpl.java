@@ -1140,6 +1140,58 @@ public class CursorClipImpl implements INoteClip
     }
 
 
+    /** {@inheritDoc} */
+    @Override
+    public NotePosition getNextNote (final NotePosition activeNotePosition, final boolean ignoreChannel)
+    {
+        final IStepInfo [] [] [] data = this.getStepInfos ();
+        final NotePosition pos = activeNotePosition == null ? new NotePosition (0, 0, 128) : activeNotePosition;
+        final int channel = pos.getChannel ();
+        final int channelStart = ignoreChannel ? 0 : channel;
+        final int channelEnd = ignoreChannel ? 16 : channel + 1;
+
+        for (int step = pos.getStep (); step < this.numSteps; step++)
+        {
+            final int startNote = step == pos.getStep () ? pos.getNote () - 1 : 127;
+            for (int row = startNote; row >= 0; row--)
+            {
+                for (int chn = channelStart; chn < channelEnd; chn++)
+                {
+                    if (data[chn] != null && data[chn][step] != null && data[chn][step][row] != null && data[chn][step][row].getState () == StepState.START)
+                        return new NotePosition (channel, step, row);
+                }
+            }
+        }
+        return null;
+    }
+
+
+    /** {@inheritDoc} */
+    @Override
+    public NotePosition getPreviousNote (final NotePosition activeNotePosition, final boolean ignoreChannel)
+    {
+        final IStepInfo [] [] [] data = this.getStepInfos ();
+        final NotePosition pos = activeNotePosition == null ? new NotePosition (0, this.numSteps - 1, -1) : activeNotePosition;
+        final int channel = pos.getChannel ();
+        final int channelStart = ignoreChannel ? 0 : channel;
+        final int channelEnd = ignoreChannel ? 16 : channel + 1;
+
+        for (int step = pos.getStep (); step >= 0; step--)
+        {
+            final int startNote = step == pos.getStep () ? pos.getNote () + 1 : 0;
+            for (int row = startNote; row < 128; row++)
+            {
+                for (int chn = channelStart; chn < channelEnd; chn++)
+                {
+                    if (data[chn] != null && data[chn][step] != null && data[chn][step][row] != null && data[chn][step][row].getState () == StepState.START)
+                        return new NotePosition (channel, step, row);
+                }
+            }
+        }
+        return null;
+    }
+
+
     private void delayedUpdate (final NotePosition editStep)
     {
         if (this.editSteps.isEmpty ())

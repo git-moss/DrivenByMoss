@@ -9,8 +9,6 @@ import de.mossgrabers.framework.controller.ContinuousID;
 import de.mossgrabers.framework.controller.IControlSurface;
 import de.mossgrabers.framework.daw.IHost;
 import de.mossgrabers.framework.daw.IModel;
-import de.mossgrabers.framework.daw.clip.INoteClip;
-import de.mossgrabers.framework.daw.clip.NotePosition;
 import de.mossgrabers.framework.daw.data.IItem;
 import de.mossgrabers.framework.daw.data.bank.IBank;
 import de.mossgrabers.framework.featuregroup.AbstractParameterMode;
@@ -27,10 +25,10 @@ import java.util.List;
  *
  * @author Jürgen Moßgraber
  */
-public abstract class AbstractNoteParameterMode<S extends IControlSurface<C>, C extends Configuration, B extends IItem> extends AbstractParameterMode<S, C, B> implements INoteMode
+public abstract class AbstractNoteParameterMode<S extends IControlSurface<C>, C extends Configuration, B extends IItem> extends AbstractParameterMode<S, C, B> implements INoteEditorMode
 {
-    protected final IHost    host;
-    private final NoteEditor noteEditor;
+    protected final IHost      host;
+    protected final NoteEditor noteEditor;
 
 
     /**
@@ -55,48 +53,8 @@ public abstract class AbstractNoteParameterMode<S extends IControlSurface<C>, C 
 
     /** {@inheritDoc} */
     @Override
-    public INoteClip getClip ()
+    public INoteEditor getNoteEditor ()
     {
-        return this.noteEditor.getClip ();
-    }
-
-
-    /** {@inheritDoc} */
-    @Override
-    public void clearNotes ()
-    {
-        this.noteEditor.clearNotes ();
-    }
-
-
-    /** {@inheritDoc} */
-    @Override
-    public void setNote (final INoteClip clip, final NotePosition notePosition)
-    {
-        this.noteEditor.setNote (clip, notePosition);
-    }
-
-
-    /** {@inheritDoc} */
-    @Override
-    public void addNote (final INoteClip clip, final NotePosition notePosition)
-    {
-        this.noteEditor.addNote (clip, notePosition);
-    }
-
-
-    /** {@inheritDoc} */
-    @Override
-    public List<NotePosition> getNotes ()
-    {
-        return this.noteEditor.getNotes ();
-    }
-
-
-    /** {@inheritDoc} */
-    @Override
-    public List<NotePosition> getNotePosition (final int parameterIndex)
-    {
-        return this.noteEditor.getNotePosition (parameterIndex);
+        return this.noteEditor;
     }
 }

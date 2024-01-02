@@ -10,7 +10,8 @@ import de.mossgrabers.framework.controller.ButtonID;
 import de.mossgrabers.framework.controller.display.ITextDisplay;
 import de.mossgrabers.framework.daw.IModel;
 import de.mossgrabers.framework.featuregroup.ViewManager;
-import de.mossgrabers.framework.mode.INoteMode;
+import de.mossgrabers.framework.mode.INoteEditor;
+import de.mossgrabers.framework.mode.INoteEditorMode;
 import de.mossgrabers.framework.mode.Modes;
 import de.mossgrabers.framework.scale.Scales;
 import de.mossgrabers.framework.utils.ButtonEvent;
@@ -57,13 +58,19 @@ public class DrumConfigurationMode extends BaseMode
             case 7:
                 ((DrumView) viewManager.get (Views.DRUM)).changeOctave (ButtonEvent.DOWN, inc, scales.getDrumDefaultOffset (), true, false);
                 viewManager.get (Views.DRUM).updateNoteMapping ();
-                ((INoteMode) this.surface.getModeManager ().get (Modes.NOTE)).clearNotes ();
+                this.getNoteEditor ().clearNotes ();
                 break;
 
             default:
                 // Not used
                 break;
         }
+    }
+
+
+    private INoteEditor getNoteEditor ()
+    {
+        return ((INoteEditorMode) this.surface.getModeManager ().get (Modes.NOTE)).getNoteEditor ();
     }
 
 
@@ -76,18 +83,11 @@ public class DrumConfigurationMode extends BaseMode
             this.surface.setTriggerConsumed (ButtonID.DELETE);
 
             final int idx = index < 0 ? this.selectedParam : index;
-            switch (idx)
+            if (idx == 6 || idx == 7)
             {
-                case 6:
-                case 7:
-                    ((DrumView) this.surface.getViewManager ().get (Views.DRUM)).resetOctave ();
-                    this.surface.getViewManager ().get (Views.DRUM).updateNoteMapping ();
-                    ((INoteMode) this.surface.getModeManager ().get (Modes.NOTE)).clearNotes ();
-                    break;
-
-                default:
-                    // Not used
-                    break;
+                ((DrumView) this.surface.getViewManager ().get (Views.DRUM)).resetOctave ();
+                this.surface.getViewManager ().get (Views.DRUM).updateNoteMapping ();
+                this.getNoteEditor ().clearNotes ();
             }
         }
     }

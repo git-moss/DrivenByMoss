@@ -12,14 +12,13 @@ import de.mossgrabers.framework.daw.clip.INoteClip;
 import de.mossgrabers.framework.daw.clip.NotePosition;
 import de.mossgrabers.framework.daw.data.IItem;
 import de.mossgrabers.framework.featuregroup.IView;
-import de.mossgrabers.framework.mode.INoteMode;
+import de.mossgrabers.framework.mode.INoteEditor;
+import de.mossgrabers.framework.mode.INoteEditorMode;
 import de.mossgrabers.framework.mode.NoteEditor;
 import de.mossgrabers.framework.parameter.NoteAttribute;
 import de.mossgrabers.framework.parameter.NoteParameter;
 import de.mossgrabers.framework.parameterprovider.special.FixedParameterProvider;
 import de.mossgrabers.framework.view.sequencer.AbstractSequencerView;
-
-import java.util.List;
 
 
 /**
@@ -27,7 +26,7 @@ import java.util.List;
  *
  * @author Jürgen Moßgraber
  */
-public class NoteMode extends BaseMode<IItem> implements INoteMode
+public class NoteMode extends BaseMode<IItem> implements INoteEditorMode
 {
     private final NoteEditor             noteEditor;
     private final FixedParameterProvider fixedParameterProvider;
@@ -50,21 +49,21 @@ public class NoteMode extends BaseMode<IItem> implements INoteMode
 
         this.fixedParameterProvider = new FixedParameterProvider (
                 // Duration
-                new NoteParameter (NoteAttribute.DURATION, display, model, this, valueChanger),
+                new NoteParameter (NoteAttribute.DURATION, display, model, this.noteEditor, valueChanger),
                 // Velocity
-                new NoteParameter (NoteAttribute.VELOCITY, display, model, this, valueChanger),
+                new NoteParameter (NoteAttribute.VELOCITY, display, model, this.noteEditor, valueChanger),
                 // Velocity Spread
-                new NoteParameter (NoteAttribute.VELOCITY_SPREAD, display, model, this, valueChanger),
+                new NoteParameter (NoteAttribute.VELOCITY_SPREAD, display, model, this.noteEditor, valueChanger),
                 // Gain
-                new NoteParameter (NoteAttribute.GAIN, display, model, this, valueChanger),
+                new NoteParameter (NoteAttribute.GAIN, display, model, this.noteEditor, valueChanger),
                 // Panorama
-                new NoteParameter (NoteAttribute.PANORAMA, display, model, this, valueChanger),
+                new NoteParameter (NoteAttribute.PANORAMA, display, model, this.noteEditor, valueChanger),
                 // Chance
-                new NoteParameter (NoteAttribute.CHANCE, display, model, this, valueChanger),
+                new NoteParameter (NoteAttribute.CHANCE, display, model, this.noteEditor, valueChanger),
                 // Timbre
-                new NoteParameter (NoteAttribute.TIMBRE, display, model, this, valueChanger),
+                new NoteParameter (NoteAttribute.TIMBRE, display, model, this.noteEditor, valueChanger),
                 // Pressure
-                new NoteParameter (NoteAttribute.PRESSURE, display, model, this, valueChanger));
+                new NoteParameter (NoteAttribute.PRESSURE, display, model, this.noteEditor, valueChanger));
     }
 
 
@@ -104,48 +103,8 @@ public class NoteMode extends BaseMode<IItem> implements INoteMode
 
     /** {@inheritDoc} */
     @Override
-    public INoteClip getClip ()
+    public INoteEditor getNoteEditor ()
     {
-        return this.noteEditor.getClip ();
-    }
-
-
-    /** {@inheritDoc} */
-    @Override
-    public void clearNotes ()
-    {
-        this.noteEditor.clearNotes ();
-    }
-
-
-    /** {@inheritDoc} */
-    @Override
-    public void setNote (final INoteClip clip, final NotePosition notePosition)
-    {
-        this.noteEditor.setNote (clip, notePosition);
-    }
-
-
-    /** {@inheritDoc} */
-    @Override
-    public void addNote (final INoteClip clip, final NotePosition notePosition)
-    {
-        this.noteEditor.addNote (clip, notePosition);
-    }
-
-
-    /** {@inheritDoc} */
-    @Override
-    public List<NotePosition> getNotes ()
-    {
-        return this.noteEditor.getNotes ();
-    }
-
-
-    /** {@inheritDoc} */
-    @Override
-    public List<NotePosition> getNotePosition (final int parameterIndex)
-    {
-        return this.noteEditor.getNotePosition (parameterIndex);
+        return this.noteEditor;
     }
 }

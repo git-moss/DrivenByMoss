@@ -10,7 +10,8 @@ import de.mossgrabers.controller.ni.maschine.mk3.view.PlayView;
 import de.mossgrabers.framework.controller.ButtonID;
 import de.mossgrabers.framework.controller.display.ITextDisplay;
 import de.mossgrabers.framework.daw.IModel;
-import de.mossgrabers.framework.mode.INoteMode;
+import de.mossgrabers.framework.mode.INoteEditor;
+import de.mossgrabers.framework.mode.INoteEditorMode;
 import de.mossgrabers.framework.mode.Modes;
 import de.mossgrabers.framework.scale.Scale;
 import de.mossgrabers.framework.scale.ScaleLayout;
@@ -90,7 +91,7 @@ public class PlayConfigurationMode extends BaseMode
                     playView.onOctaveUp (ButtonEvent.DOWN);
                 else
                     playView.onOctaveDown (ButtonEvent.DOWN);
-                ((INoteMode) this.surface.getModeManager ().get (Modes.NOTE)).clearNotes ();
+                this.getNoteEditor ().clearNotes ();
                 break;
 
             default:
@@ -99,6 +100,12 @@ public class PlayConfigurationMode extends BaseMode
         }
 
         this.update ();
+    }
+
+
+    private INoteEditor getNoteEditor ()
+    {
+        return ((INoteEditorMode) this.surface.getModeManager ().get (Modes.NOTE)).getNoteEditor ();
     }
 
 

@@ -30,7 +30,8 @@ import de.mossgrabers.framework.daw.midi.IMidiInput;
 import de.mossgrabers.framework.daw.midi.MidiConstants;
 import de.mossgrabers.framework.featuregroup.IMode;
 import de.mossgrabers.framework.featuregroup.ModeManager;
-import de.mossgrabers.framework.mode.INoteMode;
+import de.mossgrabers.framework.mode.INoteEditor;
+import de.mossgrabers.framework.mode.INoteEditorMode;
 import de.mossgrabers.framework.mode.Modes;
 import de.mossgrabers.framework.scale.Scales;
 import de.mossgrabers.framework.utils.ButtonEvent;
@@ -502,8 +503,8 @@ public class PlayView extends AbstractPlayView<MaschineControlSurface, MaschineC
     {
         final ModeManager modeManager = this.surface.getModeManager ();
         final IMode mode = modeManager.get (Modes.NOTE);
-        if (mode instanceof final INoteMode noteMode)
-            return noteMode.getNotes ();
+        if (mode instanceof final INoteEditorMode noteMode)
+            return noteMode.getNoteEditor ().getNotes ();
         return Collections.emptyList ();
     }
 
@@ -535,12 +536,13 @@ public class PlayView extends AbstractPlayView<MaschineControlSurface, MaschineC
 
         final ModeManager modeManager = this.surface.getModeManager ();
         final IMode mode = modeManager.get (Modes.NOTE);
-        if (mode instanceof final INoteMode noteMode)
+        if (mode instanceof final INoteEditorMode noteMode)
         {
+            final INoteEditor noteEditor = noteMode.getNoteEditor ();
             if (addNote)
-                noteMode.addNote (clip, notePosition);
+                noteEditor.addNote (clip, notePosition);
             else
-                noteMode.setNote (clip, notePosition);
+                noteEditor.setNote (clip, notePosition);
             modeManager.setActive (Modes.NOTE);
         }
     }

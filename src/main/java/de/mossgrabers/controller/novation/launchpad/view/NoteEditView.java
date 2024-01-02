@@ -10,15 +10,12 @@ import de.mossgrabers.framework.controller.ButtonID;
 import de.mossgrabers.framework.controller.valuechanger.IValueChanger;
 import de.mossgrabers.framework.daw.IHost;
 import de.mossgrabers.framework.daw.IModel;
-import de.mossgrabers.framework.daw.clip.INoteClip;
-import de.mossgrabers.framework.daw.clip.NotePosition;
-import de.mossgrabers.framework.mode.INoteMode;
+import de.mossgrabers.framework.mode.INoteEditor;
+import de.mossgrabers.framework.mode.INoteEditorMode;
 import de.mossgrabers.framework.mode.NoteEditor;
 import de.mossgrabers.framework.parameter.NoteAttribute;
 import de.mossgrabers.framework.parameter.NoteParameter;
 import de.mossgrabers.framework.utils.ButtonEvent;
-
-import java.util.List;
 
 
 /**
@@ -36,7 +33,7 @@ import java.util.List;
  *
  * @author Jürgen Moßgraber
  */
-public class NoteEditView extends AbstractFaderView implements INoteMode
+public class NoteEditView extends AbstractFaderView implements INoteEditorMode
 {
     private static final int []    COLUMN_COLORS =
     {
@@ -69,17 +66,17 @@ public class NoteEditView extends AbstractFaderView implements INoteMode
 
         final IValueChanger valueChanger = model.getValueChanger ();
 
-        this.muteParameter = new NoteParameter (NoteAttribute.MUTE, null, model, this, valueChanger);
+        this.muteParameter = new NoteParameter (NoteAttribute.MUTE, null, model, this.noteEditor, valueChanger);
         this.parameters = new NoteParameter []
         {
-            new NoteParameter (NoteAttribute.VELOCITY, null, model, this, valueChanger),
-            new NoteParameter (NoteAttribute.VELOCITY_SPREAD, null, model, this, valueChanger),
-            new NoteParameter (NoteAttribute.CHANCE, null, model, this, valueChanger),
-            new NoteParameter (NoteAttribute.GAIN, null, model, this, valueChanger),
-            new NoteParameter (NoteAttribute.PANORAMA, null, model, this, valueChanger),
-            new NoteParameter (NoteAttribute.TRANSPOSE, null, model, this, valueChanger),
-            new NoteParameter (NoteAttribute.TIMBRE, null, model, this, valueChanger),
-            new NoteParameter (NoteAttribute.PRESSURE, null, model, this, valueChanger)
+            new NoteParameter (NoteAttribute.VELOCITY, null, model, this.noteEditor, valueChanger),
+            new NoteParameter (NoteAttribute.VELOCITY_SPREAD, null, model, this.noteEditor, valueChanger),
+            new NoteParameter (NoteAttribute.CHANCE, null, model, this.noteEditor, valueChanger),
+            new NoteParameter (NoteAttribute.GAIN, null, model, this.noteEditor, valueChanger),
+            new NoteParameter (NoteAttribute.PANORAMA, null, model, this.noteEditor, valueChanger),
+            new NoteParameter (NoteAttribute.TRANSPOSE, null, model, this.noteEditor, valueChanger),
+            new NoteParameter (NoteAttribute.TIMBRE, null, model, this.noteEditor, valueChanger),
+            new NoteParameter (NoteAttribute.PRESSURE, null, model, this.noteEditor, valueChanger)
         };
 
         final IHost host = model.getHost ();
@@ -95,6 +92,17 @@ public class NoteEditView extends AbstractFaderView implements INoteMode
             host.supports (NoteAttribute.TIMBRE),
             false
         };
+    }
+
+
+    /** {@inheritDoc} */
+    @Override
+    public void onDeactivate ()
+    {
+        super.onDeactivate ();
+
+        // Clear the edited note
+        this.noteEditor.clearNotes ();
     }
 
 
@@ -157,48 +165,8 @@ public class NoteEditView extends AbstractFaderView implements INoteMode
 
     /** {@inheritDoc} */
     @Override
-    public INoteClip getClip ()
+    public INoteEditor getNoteEditor ()
     {
-        return this.noteEditor.getClip ();
-    }
-
-
-    /** {@inheritDoc} */
-    @Override
-    public void setNote (final INoteClip clip, final NotePosition notePosition)
-    {
-        this.noteEditor.setNote (clip, notePosition);
-    }
-
-
-    /** {@inheritDoc} */
-    @Override
-    public void addNote (final INoteClip clip, final NotePosition notePosition)
-    {
-        this.noteEditor.addNote (clip, notePosition);
-    }
-
-
-    /** {@inheritDoc} */
-    @Override
-    public void clearNotes ()
-    {
-        this.noteEditor.clearNotes ();
-    }
-
-
-    /** {@inheritDoc} */
-    @Override
-    public List<NotePosition> getNotes ()
-    {
-        return this.noteEditor.getNotes ();
-    }
-
-
-    /** {@inheritDoc} */
-    @Override
-    public List<NotePosition> getNotePosition (final int parameterIndex)
-    {
-        return this.noteEditor.getNotePosition (parameterIndex);
+        return this.noteEditor;
     }
 }

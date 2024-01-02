@@ -20,7 +20,8 @@ import de.mossgrabers.framework.daw.clip.NoteOccurrenceType;
 import de.mossgrabers.framework.daw.clip.NotePosition;
 import de.mossgrabers.framework.daw.data.IItem;
 import de.mossgrabers.framework.daw.data.empty.EmptyParameter;
-import de.mossgrabers.framework.mode.INoteMode;
+import de.mossgrabers.framework.mode.INoteEditor;
+import de.mossgrabers.framework.mode.INoteEditorMode;
 import de.mossgrabers.framework.mode.NoteEditor;
 import de.mossgrabers.framework.parameter.NoteAttribute;
 import de.mossgrabers.framework.parameter.NoteParameter;
@@ -40,7 +41,7 @@ import java.util.Map;
  *
  * @author Jürgen Moßgraber
  */
-public class NoteMode extends BaseMode<IItem> implements INoteMode
+public class NoteMode extends BaseMode<IItem> implements INoteEditorMode
 {
     private static final String    OFF                = "  Off";
     private static final String    ON                 = "   On";
@@ -99,8 +100,8 @@ public class NoteMode extends BaseMode<IItem> implements INoteMode
 
         final IValueChanger valueChanger = model.getValueChanger ();
 
-        final NoteParameter durationParameter = new NoteParameter (NoteAttribute.DURATION, null, model, this, valueChanger);
-        final NoteParameter muteParameter = new NoteParameter (NoteAttribute.MUTE, null, model, this, valueChanger);
+        final NoteParameter durationParameter = new NoteParameter (NoteAttribute.DURATION, null, model, this.noteEditor, valueChanger);
+        final NoteParameter muteParameter = new NoteParameter (NoteAttribute.MUTE, null, model, this.noteEditor, valueChanger);
 
         this.pageParamProviders.put (Page.NOTE, new FixedParameterProvider (
                 // Duration
@@ -108,17 +109,17 @@ public class NoteMode extends BaseMode<IItem> implements INoteMode
                 // Mute
                 muteParameter,
                 // Velocity
-                new NoteParameter (NoteAttribute.VELOCITY, null, model, this, valueChanger),
+                new NoteParameter (NoteAttribute.VELOCITY, null, model, this.noteEditor, valueChanger),
                 // Velocity Spread
-                new NoteParameter (NoteAttribute.VELOCITY_SPREAD, null, model, this, valueChanger),
+                new NoteParameter (NoteAttribute.VELOCITY_SPREAD, null, model, this.noteEditor, valueChanger),
                 // Release Velocity
-                new NoteParameter (NoteAttribute.RELEASE_VELOCITY, null, model, this, valueChanger),
+                new NoteParameter (NoteAttribute.RELEASE_VELOCITY, null, model, this.noteEditor, valueChanger),
                 // Chance
-                new NoteParameter (NoteAttribute.CHANCE, null, model, this, valueChanger),
+                new NoteParameter (NoteAttribute.CHANCE, null, model, this.noteEditor, valueChanger),
                 // Occurrence
-                new NoteParameter (NoteAttribute.OCCURRENCE, null, model, this, valueChanger),
+                new NoteParameter (NoteAttribute.OCCURRENCE, null, model, this.noteEditor, valueChanger),
                 // Recurrence
-                new NoteParameter (NoteAttribute.RECURRENCE_LENGTH, null, model, this, valueChanger)));
+                new NoteParameter (NoteAttribute.RECURRENCE_LENGTH, null, model, this.noteEditor, valueChanger)));
 
         this.pageParamProviders.put (Page.EXPRESSIONS, new FixedParameterProvider (
                 // Duration
@@ -128,15 +129,15 @@ public class NoteMode extends BaseMode<IItem> implements INoteMode
                 // -
                 EmptyParameter.INSTANCE,
                 // Gain
-                new NoteParameter (NoteAttribute.GAIN, null, model, this, valueChanger),
+                new NoteParameter (NoteAttribute.GAIN, null, model, this.noteEditor, valueChanger),
                 // Panorama
-                new NoteParameter (NoteAttribute.PANORAMA, null, model, this, valueChanger),
+                new NoteParameter (NoteAttribute.PANORAMA, null, model, this.noteEditor, valueChanger),
                 // Transpose
-                new NoteParameter (NoteAttribute.TRANSPOSE, null, model, this, valueChanger),
+                new NoteParameter (NoteAttribute.TRANSPOSE, null, model, this.noteEditor, valueChanger),
                 // Timbre
-                new NoteParameter (NoteAttribute.TIMBRE, null, model, this, valueChanger),
+                new NoteParameter (NoteAttribute.TIMBRE, null, model, this.noteEditor, valueChanger),
                 // Pressure
-                new NoteParameter (NoteAttribute.PRESSURE, null, model, this, valueChanger)));
+                new NoteParameter (NoteAttribute.PRESSURE, null, model, this.noteEditor, valueChanger)));
 
         this.pageParamProviders.put (Page.REPEAT, new FixedParameterProvider (
                 // Duration
@@ -146,13 +147,13 @@ public class NoteMode extends BaseMode<IItem> implements INoteMode
                 // -
                 EmptyParameter.INSTANCE,
                 // Repeat
-                new NoteParameter (NoteAttribute.REPEAT, null, model, this, valueChanger),
+                new NoteParameter (NoteAttribute.REPEAT, null, model, this.noteEditor, valueChanger),
                 // Repeat Curve
-                new NoteParameter (NoteAttribute.REPEAT_CURVE, null, model, this, valueChanger),
+                new NoteParameter (NoteAttribute.REPEAT_CURVE, null, model, this.noteEditor, valueChanger),
                 // Repeat Velocity Curve
-                new NoteParameter (NoteAttribute.REPEAT_VELOCITY_CURVE, null, model, this, valueChanger),
+                new NoteParameter (NoteAttribute.REPEAT_VELOCITY_CURVE, null, model, this.noteEditor, valueChanger),
                 // Repeat Velocity End
-                new NoteParameter (NoteAttribute.REPEAT_VELOCITY_END, null, model, this, valueChanger),
+                new NoteParameter (NoteAttribute.REPEAT_VELOCITY_END, null, model, this.noteEditor, valueChanger),
                 // -
                 EmptyParameter.INSTANCE));
 
@@ -172,7 +173,7 @@ public class NoteMode extends BaseMode<IItem> implements INoteMode
                 // -
                 EmptyParameter.INSTANCE,
                 // Recurrence Length
-                new NoteParameter (NoteAttribute.RECURRENCE_LENGTH, null, model, this, valueChanger)));
+                new NoteParameter (NoteAttribute.RECURRENCE_LENGTH, null, model, this.noteEditor, valueChanger)));
 
         this.rebind ();
     }
@@ -796,49 +797,9 @@ public class NoteMode extends BaseMode<IItem> implements INoteMode
 
     /** {@inheritDoc} */
     @Override
-    public INoteClip getClip ()
+    public INoteEditor getNoteEditor ()
     {
-        return this.noteEditor.getClip ();
-    }
-
-
-    /** {@inheritDoc} */
-    @Override
-    public void clearNotes ()
-    {
-        this.noteEditor.clearNotes ();
-    }
-
-
-    /** {@inheritDoc} */
-    @Override
-    public void setNote (final INoteClip clip, final NotePosition notePosition)
-    {
-        this.noteEditor.setNote (clip, notePosition);
-    }
-
-
-    /** {@inheritDoc} */
-    @Override
-    public void addNote (final INoteClip clip, final NotePosition notePosition)
-    {
-        this.noteEditor.addNote (clip, notePosition);
-    }
-
-
-    /** {@inheritDoc} */
-    @Override
-    public List<NotePosition> getNotes ()
-    {
-        return this.noteEditor.getNotes ();
-    }
-
-
-    /** {@inheritDoc} */
-    @Override
-    public List<NotePosition> getNotePosition (final int parameterIndex)
-    {
-        return this.noteEditor.getNotePosition (parameterIndex);
+        return this.noteEditor;
     }
 
 

@@ -4,6 +4,10 @@
 
 package de.mossgrabers.framework.view.sequencer;
 
+import java.util.Collections;
+import java.util.List;
+import java.util.Optional;
+
 import de.mossgrabers.framework.configuration.Configuration;
 import de.mossgrabers.framework.controller.ButtonID;
 import de.mossgrabers.framework.controller.IControlSurface;
@@ -21,14 +25,11 @@ import de.mossgrabers.framework.featuregroup.IMode;
 import de.mossgrabers.framework.featuregroup.IView;
 import de.mossgrabers.framework.featuregroup.ModeManager;
 import de.mossgrabers.framework.featuregroup.ViewManager;
-import de.mossgrabers.framework.mode.INoteMode;
+import de.mossgrabers.framework.mode.INoteEditor;
+import de.mossgrabers.framework.mode.INoteEditorMode;
 import de.mossgrabers.framework.mode.Modes;
 import de.mossgrabers.framework.utils.ButtonEvent;
 import de.mossgrabers.framework.view.Views;
-
-import java.util.Collections;
-import java.util.List;
-import java.util.Optional;
 
 
 /**
@@ -347,7 +348,22 @@ public abstract class AbstractSequencerView<S extends IControlSurface<C>, C exte
 
 
     /**
-     * Show edit mode and set or add note.
+     * Set or add a note to the active/related note edit mode. Removes the node if already edited.
+     * Activates the editor mode.
+     *
+     * @param notePosition The position of the note
+     * @param addNote Add the note to the edited notes otherwise clear the already selected and add
+     *            only the new one
+     */
+    public void editNote (final NotePosition notePosition, final boolean addNote)
+    {
+        this.editNote (this.getClip (), notePosition, addNote);
+    }
+
+
+    /**
+     * Set or add a note to the active/related note edit mode. Removes the node if already edited.
+     * Activates the editor mode.
      *
      * @param clip The MIDI clip
      * @param notePosition The position of the note
@@ -360,33 +376,56 @@ public abstract class AbstractSequencerView<S extends IControlSurface<C>, C exte
         if (state != StepState.START)
             return;
 
-        final INoteMode noteMode = this.getNoteEditor ();
-        if (noteMode == null)
+        final Optional<INoteEditor> noteEditorOpt = this.getNoteEditor ();
+        if (noteEditorOpt.isEmpty ())
             return;
+
+        final INoteEditor noteEditor = noteEditorOpt.get ();
+        if (noteEditor.isNoteEdited (clip, notePosition))
+        {
+            noteEditor.removeNote (clip, notePosition);
+            if (noteEditor.getNotes ().isEmpty ())
+                this.surface.getModeManager ().restore ();
+            return;
+        }
+
         if (addNote)
-            noteMode.addNote (clip, notePosition);
+            noteEditor.addNote (clip, notePosition);
         else
-            noteMode.setNote (clip, notePosition);
+            noteEditor.setNote (clip, notePosition);
     }
 
 
-    private INoteMode getNoteEditor ()
+    /**
+     * Get the related note editor.
+     *
+     * @return The related note editor or null if none is registered
+     */
+    protected Optional<INoteEditor> getNoteEditor ()
     {
         final ModeManager modeManager = this.surface.getModeManager ();
         final IMode mode = modeManager.get (Modes.NOTE);
-        if (mode instanceof final INoteMode noteMode)
+        if (mode instanceof final INoteEditorMode noteMode)
         {
-            modeManager.setActive (Modes.NOTE);
-            return noteMode;
+            if (!modeManager.isActive (Modes.NOTE))
+                modeManager.setActive (Modes.NOTE);
+            return Optional.ofNullable (noteMode.getNoteEditor ());
         }
         final ViewManager viewManager = this.surface.getViewManager ();
         final IView view = viewManager.get (Views.NOTE_EDIT_VIEW);
-        if (view instanceof final INoteMode noteMode)
+        if (view instanceof final INoteEditorMode noteMode)
         {
-            viewManager.setTemporary (Views.NOTE_EDIT_VIEW);
-            return noteMode;
+            if (!viewManager.isActive (Views.NOTE_EDIT_VIEW))
+                viewManager.setTemporary (Views.NOTE_EDIT_VIEW);
+            return Optional.ofNullable (noteMode.getNoteEditor ());
         }
-        return null;
+        if (view instanceof final INoteEditor noteEditor)
+        {
+            if (!viewManager.isActive (Views.NOTE_EDIT_VIEW))
+                viewManager.setTemporary (Views.NOTE_EDIT_VIEW);
+            return Optional.of (noteEditor);
+        }
+        return Optional.empty ();
     }
 
 
@@ -395,11 +434,17 @@ public abstract class AbstractSequencerView<S extends IControlSurface<C>, C exte
      */
     protected void clearEditNotes ()
     {
-        INoteMode noteMode = null;
-        if (this.surface.getModeManager ().get (Modes.NOTE) instanceof final INoteMode noteMode1)
-            noteMode = noteMode1;
-        else if (this.surface.getViewManager ().get (Views.NOTE_EDIT_VIEW) instanceof final INoteMode noteMode2)
-            noteMode = noteMode2;
+        INoteEditor noteMode = null;
+        if (this.surface.getModeManager ().get (Modes.NOTE) instanceof final INoteEditorMode noteMode1)
+            noteMode = noteMode1.getNoteEditor ();
+        else
+        {
+            final IView view = this.surface.getViewManager ().get (Views.NOTE_EDIT_VIEW);
+            if (view instanceof final INoteEditorMode noteMode2)
+                noteMode = noteMode2.getNoteEditor ();
+            else if (view instanceof final INoteEditor noteEditor)
+                noteMode = noteEditor;
+        }
         if (noteMode != null)
             noteMode.clearNotes ();
     }
@@ -414,8 +459,13 @@ public abstract class AbstractSequencerView<S extends IControlSurface<C>, C exte
     {
         final ModeManager modeManager = this.surface.getModeManager ();
         final IMode mode = modeManager.get (Modes.NOTE);
-        if (mode instanceof final INoteMode noteMode)
-            return noteMode.getNotes ();
+        if (mode instanceof final INoteEditorMode noteMode)
+            return noteMode.getNoteEditor ().getNotes ();
+        final IView view = this.surface.getViewManager ().get (Views.NOTE_EDIT_VIEW);
+        if (view instanceof final INoteEditorMode noteMode2)
+            return noteMode2.getNoteEditor ().getNotes ();
+        if (view instanceof final INoteEditor noteEditor)
+            return noteEditor.getNotes ();
         return Collections.emptyList ();
     }
 

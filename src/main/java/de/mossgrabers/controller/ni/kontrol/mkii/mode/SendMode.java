@@ -42,7 +42,6 @@ public class SendMode extends DefaultTrackMode<KontrolProtocolControlSurface, Ko
         super ("Send", surface, model, false);
 
         this.setControls (controls);
-        // TODO das ist doch Quatsch, oder?
         final SendParameterProvider pp = new SendParameterProvider (model, -1, 0);
         this.setParameterProvider (new CombinedParameterProvider (pp, pp));
 

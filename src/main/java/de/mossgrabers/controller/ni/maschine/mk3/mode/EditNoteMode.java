@@ -15,7 +15,8 @@ import de.mossgrabers.framework.daw.clip.INoteClip;
 import de.mossgrabers.framework.daw.clip.IStepInfo;
 import de.mossgrabers.framework.daw.clip.NotePosition;
 import de.mossgrabers.framework.daw.data.empty.EmptyParameter;
-import de.mossgrabers.framework.mode.INoteMode;
+import de.mossgrabers.framework.mode.INoteEditor;
+import de.mossgrabers.framework.mode.INoteEditorMode;
 import de.mossgrabers.framework.mode.NoteEditor;
 import de.mossgrabers.framework.parameter.IParameter;
 import de.mossgrabers.framework.parameter.NoteAttribute;
@@ -35,7 +36,7 @@ import java.util.Map;
  *
  * @author Jürgen Moßgraber
  */
-public class EditNoteMode extends BaseMode implements INoteMode
+public class EditNoteMode extends BaseMode implements INoteEditorMode
 {
     private enum Page
     {
@@ -74,12 +75,12 @@ public class EditNoteMode extends BaseMode implements INoteMode
         final IValueChanger valueChanger = model.getValueChanger ();
         final IDisplay display = surface.getMaschine ().hasMCUDisplay () ? null : surface.getDisplay ();
 
-        final NoteParameter durationParameter = new NoteParameter (NoteAttribute.DURATION, display, model, this, valueChanger);
-        final NoteParameter velocityParameter = new NoteParameter (NoteAttribute.VELOCITY, display, model, this, valueChanger);
-        final NoteParameter gainParameter = new NoteParameter (NoteAttribute.GAIN, display, model, this, valueChanger);
-        final NoteParameter panParameter = new NoteParameter (NoteAttribute.PANORAMA, display, model, this, valueChanger);
-        final NoteParameter transposeParameter = new NoteParameter (NoteAttribute.TRANSPOSE, display, model, this, valueChanger);
-        final NoteParameter pressureParameter = new NoteParameter (NoteAttribute.PRESSURE, display, model, this, valueChanger);
+        final NoteParameter durationParameter = new NoteParameter (NoteAttribute.DURATION, display, model, this.noteEditor, valueChanger);
+        final NoteParameter velocityParameter = new NoteParameter (NoteAttribute.VELOCITY, display, model, this.noteEditor, valueChanger);
+        final NoteParameter gainParameter = new NoteParameter (NoteAttribute.GAIN, display, model, this.noteEditor, valueChanger);
+        final NoteParameter panParameter = new NoteParameter (NoteAttribute.PANORAMA, display, model, this.noteEditor, valueChanger);
+        final NoteParameter transposeParameter = new NoteParameter (NoteAttribute.TRANSPOSE, display, model, this.noteEditor, valueChanger);
+        final NoteParameter pressureParameter = new NoteParameter (NoteAttribute.PRESSURE, display, model, this.noteEditor, valueChanger);
 
         this.notePartameters.put (NoteAttribute.DURATION, durationParameter);
         this.notePartameters.put (NoteAttribute.VELOCITY, velocityParameter);
@@ -98,13 +99,13 @@ public class EditNoteMode extends BaseMode implements INoteMode
                 // Velocity
                 velocityParameter,
                 // Velocity Spread
-                new NoteParameter (NoteAttribute.VELOCITY_SPREAD, null, model, this, valueChanger),
+                new NoteParameter (NoteAttribute.VELOCITY_SPREAD, null, model, this.noteEditor, valueChanger),
                 // Release Velocity
-                new NoteParameter (NoteAttribute.RELEASE_VELOCITY, null, model, this, valueChanger),
+                new NoteParameter (NoteAttribute.RELEASE_VELOCITY, null, model, this.noteEditor, valueChanger),
                 // Chance
-                new NoteParameter (NoteAttribute.CHANCE, null, model, this, valueChanger),
+                new NoteParameter (NoteAttribute.CHANCE, null, model, this.noteEditor, valueChanger),
                 // Occurrence
-                new NoteParameter (NoteAttribute.OCCURRENCE, null, model, this, valueChanger)));
+                new NoteParameter (NoteAttribute.OCCURRENCE, null, model, this.noteEditor, valueChanger)));
 
         this.pageParamProviders.put (Page.EXPRESSIONS, new FixedParameterProvider (
                 // -
@@ -120,7 +121,7 @@ public class EditNoteMode extends BaseMode implements INoteMode
                 // Transpose
                 transposeParameter,
                 // Timbre
-                new NoteParameter (NoteAttribute.TIMBRE, null, model, this, valueChanger),
+                new NoteParameter (NoteAttribute.TIMBRE, null, model, this.noteEditor, valueChanger),
                 // Pressure
                 pressureParameter));
 
@@ -134,13 +135,13 @@ public class EditNoteMode extends BaseMode implements INoteMode
                 // Velocity
                 velocityParameter,
                 // Repeat
-                new NoteParameter (NoteAttribute.REPEAT, null, model, this, valueChanger),
+                new NoteParameter (NoteAttribute.REPEAT, null, model, this.noteEditor, valueChanger),
                 // Repeat Curve
-                new NoteParameter (NoteAttribute.REPEAT_CURVE, null, model, this, valueChanger),
+                new NoteParameter (NoteAttribute.REPEAT_CURVE, null, model, this.noteEditor, valueChanger),
                 // Repeat Velocity Curve
-                new NoteParameter (NoteAttribute.REPEAT_VELOCITY_CURVE, null, model, this, valueChanger),
+                new NoteParameter (NoteAttribute.REPEAT_VELOCITY_CURVE, null, model, this.noteEditor, valueChanger),
                 // Repeat Velocity End
-                new NoteParameter (NoteAttribute.REPEAT_VELOCITY_END, null, model, this, valueChanger)));
+                new NoteParameter (NoteAttribute.REPEAT_VELOCITY_END, null, model, this.noteEditor, valueChanger)));
 
         this.rebind ();
     }
@@ -177,7 +178,7 @@ public class EditNoteMode extends BaseMode implements INoteMode
             return;
         }
 
-        final INoteClip clip = this.getClip ();
+        final INoteClip clip = this.noteEditor.getClip ();
         if (isTouched)
             clip.startEdit (notes);
         else
@@ -202,7 +203,7 @@ public class EditNoteMode extends BaseMode implements INoteMode
 
         final NotePosition notePosition = notes.get (0);
 
-        final IStepInfo stepInfo = this.getClip ().getStep (notePosition);
+        final IStepInfo stepInfo = this.noteEditor.getClip ().getStep (notePosition);
         d.setCell (0, 0, "Note");
 
         if (notes.size () > 1)
@@ -377,49 +378,9 @@ public class EditNoteMode extends BaseMode implements INoteMode
 
     /** {@inheritDoc} */
     @Override
-    public INoteClip getClip ()
+    public INoteEditor getNoteEditor ()
     {
-        return this.noteEditor.getClip ();
-    }
-
-
-    /** {@inheritDoc} */
-    @Override
-    public void clearNotes ()
-    {
-        this.noteEditor.clearNotes ();
-    }
-
-
-    /** {@inheritDoc} */
-    @Override
-    public void setNote (final INoteClip clip, final NotePosition notePosition)
-    {
-        this.noteEditor.setNote (clip, notePosition);
-    }
-
-
-    /** {@inheritDoc} */
-    @Override
-    public void addNote (final INoteClip clip, final NotePosition notePosition)
-    {
-        this.noteEditor.addNote (clip, notePosition);
-    }
-
-
-    /** {@inheritDoc} */
-    @Override
-    public List<NotePosition> getNotes ()
-    {
-        return this.noteEditor.getNotes ();
-    }
-
-
-    /** {@inheritDoc} */
-    @Override
-    public List<NotePosition> getNotePosition (final int parameterIndex)
-    {
-        return this.noteEditor.getNotePosition (parameterIndex);
+        return this.noteEditor;
     }
 
 

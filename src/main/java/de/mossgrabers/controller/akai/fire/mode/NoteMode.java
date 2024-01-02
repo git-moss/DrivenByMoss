@@ -57,31 +57,31 @@ public class NoteMode extends AbstractNoteParameterMode<FireControlSurface, Fire
 
         final IValueChanger valueChanger = model.getValueChanger ();
 
-        this.transposeParameter = new NoteParameter (NoteAttribute.TRANSPOSE, null, model, this, valueChanger);
+        this.transposeParameter = new NoteParameter (NoteAttribute.TRANSPOSE, null, model, this.noteEditor, valueChanger);
 
         this.provider = new FixedParameterProvider (
                 // Gain
-                new NoteParameter (NoteAttribute.GAIN, null, model, this, valueChanger),
+                new NoteParameter (NoteAttribute.GAIN, null, model, this.noteEditor, valueChanger),
                 // Panorama
-                new NoteParameter (NoteAttribute.PANORAMA, null, model, this, valueChanger),
+                new NoteParameter (NoteAttribute.PANORAMA, null, model, this.noteEditor, valueChanger),
                 // Duration
-                new NoteParameter (NoteAttribute.DURATION, null, model, this, valueChanger),
+                new NoteParameter (NoteAttribute.DURATION, null, model, this.noteEditor, valueChanger),
                 // Velocity
-                new NoteParameter (NoteAttribute.VELOCITY, null, model, this, valueChanger),
+                new NoteParameter (NoteAttribute.VELOCITY, null, model, this.noteEditor, valueChanger),
                 // Transpose
                 this.transposeParameter);
 
         this.altProvider = new FixedParameterProvider (
                 // Pressure
-                new NoteParameter (NoteAttribute.PRESSURE, null, model, this, valueChanger),
+                new NoteParameter (NoteAttribute.PRESSURE, null, model, this.noteEditor, valueChanger),
                 // Timbre
-                new NoteParameter (NoteAttribute.TIMBRE, null, model, this, valueChanger),
+                new NoteParameter (NoteAttribute.TIMBRE, null, model, this.noteEditor, valueChanger),
                 // Chance
-                new NoteParameter (NoteAttribute.CHANCE, null, model, this, valueChanger),
+                new NoteParameter (NoteAttribute.CHANCE, null, model, this.noteEditor, valueChanger),
                 // Velocity Spread
-                new NoteParameter (NoteAttribute.VELOCITY_SPREAD, null, model, this, valueChanger),
+                new NoteParameter (NoteAttribute.VELOCITY_SPREAD, null, model, this.noteEditor, valueChanger),
                 // Repeat Count
-                new NoteParameter (NoteAttribute.REPEAT, null, model, this, valueChanger));
+                new NoteParameter (NoteAttribute.REPEAT, null, model, this.noteEditor, valueChanger));
 
         this.setParameterProvider (this.provider);
         this.setParameterProvider (ButtonID.ALT, this.altProvider);
@@ -92,7 +92,7 @@ public class NoteMode extends AbstractNoteParameterMode<FireControlSurface, Fire
     @Override
     public void onKnobTouch (final int index, final boolean isTouched)
     {
-        final INoteClip clip = this.getClip ();
+        final INoteClip clip = this.noteEditor.getClip ();
 
         if (clip == null || this.isKnobTouched (index) == isTouched)
             return;
@@ -100,7 +100,7 @@ public class NoteMode extends AbstractNoteParameterMode<FireControlSurface, Fire
         this.setTouchedKnob (index, isTouched);
         if (isTouched)
         {
-            clip.startEdit (this.getNotes ());
+            clip.startEdit (this.noteEditor.getNotes ());
             this.preventNoteDeletion ();
         }
         else
@@ -124,7 +124,7 @@ public class NoteMode extends AbstractNoteParameterMode<FireControlSurface, Fire
     public void updateDisplay ()
     {
         final String desc;
-        final List<NotePosition> notes = this.getNotes ();
+        final List<NotePosition> notes = this.noteEditor.getNotes ();
         if (notes.isEmpty ())
             desc = "Select a note";
         else if (notes.size () > 1)

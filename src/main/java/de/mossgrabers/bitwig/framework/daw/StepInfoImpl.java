@@ -4,13 +4,13 @@
 
 package de.mossgrabers.bitwig.framework.daw;
 
+import com.bitwig.extension.controller.api.NoteOccurrence;
+import com.bitwig.extension.controller.api.NoteStep;
+
 import de.mossgrabers.framework.daw.clip.DefaultStepInfo;
 import de.mossgrabers.framework.daw.clip.IStepInfo;
 import de.mossgrabers.framework.daw.clip.NoteOccurrenceType;
 import de.mossgrabers.framework.daw.clip.StepState;
-
-import com.bitwig.extension.controller.api.NoteOccurrence;
-import com.bitwig.extension.controller.api.NoteStep;
 
 
 /**
@@ -69,7 +69,7 @@ public class StepInfoImpl extends DefaultStepInfo
         this.timbre = stepInfo.timbre ();
         this.pan = stepInfo.pan ();
         this.transpose = stepInfo.transpose ();
-        this.gain = stepInfo.gain ();
+        this.gain = stepInfo.gain () / 2.0;
 
         this.isChanceEnabled = stepInfo.isChanceEnabled ();
         this.chance = stepInfo.chance ();

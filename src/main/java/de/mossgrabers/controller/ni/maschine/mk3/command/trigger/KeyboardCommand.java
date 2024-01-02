@@ -12,7 +12,7 @@ import de.mossgrabers.framework.daw.IModel;
 import de.mossgrabers.framework.daw.data.ITrack;
 import de.mossgrabers.framework.featuregroup.ModeManager;
 import de.mossgrabers.framework.featuregroup.ViewManager;
-import de.mossgrabers.framework.mode.INoteMode;
+import de.mossgrabers.framework.mode.INoteEditorMode;
 import de.mossgrabers.framework.mode.Modes;
 import de.mossgrabers.framework.utils.ButtonEvent;
 import de.mossgrabers.framework.view.Views;
@@ -60,7 +60,7 @@ public class KeyboardCommand extends AbstractTriggerCommand<MaschineControlSurfa
         else
         {
             viewManager.setActive (Views.PLAY);
-            ((INoteMode) this.surface.getModeManager ().get (Modes.NOTE)).clearNotes ();
+            ((INoteEditorMode) this.surface.getModeManager ().get (Modes.NOTE)).getNoteEditor ().clearNotes ();
 
             // Store the newly selected view for the current track
             final ITrack cursorTrack = this.model.getCursorTrack ();

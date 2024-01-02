@@ -12,7 +12,8 @@ import de.mossgrabers.framework.daw.IModel;
 import de.mossgrabers.framework.daw.clip.INoteClip;
 import de.mossgrabers.framework.daw.clip.NotePosition;
 import de.mossgrabers.framework.daw.constants.Resolution;
-import de.mossgrabers.framework.mode.INoteMode;
+import de.mossgrabers.framework.mode.INoteEditor;
+import de.mossgrabers.framework.mode.INoteEditorMode;
 import de.mossgrabers.framework.parameter.IParameter;
 import de.mossgrabers.framework.parameter.NoteAttribute;
 import de.mossgrabers.framework.parameter.NoteParameter;
@@ -34,7 +35,7 @@ import java.util.Map;
  *
  * @author Jürgen Moßgraber
  */
-public class YaeltexTurnDrumSeqMode extends YaeltexTurnDrumMixMode implements INoteMode
+public class YaeltexTurnDrumSeqMode extends YaeltexTurnDrumMixMode implements INoteEditorMode, INoteEditor
 {
     private static final NoteAttribute []                NOTE_ATTRIBUTES   =
     {
@@ -188,9 +189,30 @@ public class YaeltexTurnDrumSeqMode extends YaeltexTurnDrumMixMode implements IN
 
     /** {@inheritDoc} */
     @Override
+    public INoteEditor getNoteEditor ()
+    {
+        return this;
+    }
+
+
+    /** {@inheritDoc} */
+    @Override
     public INoteClip getClip ()
     {
         return ((MonophonicSequencerView) this.surface.getViewManager ().get (Views.SEQUENCER)).getClip ();
+    }
+
+
+    /** {@inheritDoc} */
+    @Override
+    public List<NotePosition> getNotePosition (final int parameterIndex)
+    {
+        final int channel = this.configuration.getMidiEditChannel ();
+        final int noteRow = this.scales.getDrumOffset () + this.getDrumView ().getSelectedPad ();
+
+        if (noteRow == -1)
+            return Collections.emptyList ();
+        return Collections.singletonList (new NotePosition (channel, parameterIndex, noteRow));
     }
 
 
@@ -220,7 +242,7 @@ public class YaeltexTurnDrumSeqMode extends YaeltexTurnDrumMixMode implements IN
 
     /** {@inheritDoc} */
     @Override
-    public List<NotePosition> getNotes ()
+    public void removeNote (final INoteClip clip, final NotePosition notePosition)
     {
         throw new UnsupportedOperationException ();
     }
@@ -228,14 +250,17 @@ public class YaeltexTurnDrumSeqMode extends YaeltexTurnDrumMixMode implements IN
 
     /** {@inheritDoc} */
     @Override
-    public List<NotePosition> getNotePosition (final int parameterIndex)
+    public boolean isNoteEdited (final INoteClip clip, final NotePosition notePosition)
     {
-        final int channel = this.configuration.getMidiEditChannel ();
-        final int noteRow = this.scales.getDrumOffset () + this.getDrumView ().getSelectedPad ();
+        throw new UnsupportedOperationException ();
+    }
 
-        if (noteRow == -1)
-            return Collections.emptyList ();
-        return Collections.singletonList (new NotePosition (channel, parameterIndex, noteRow));
+
+    /** {@inheritDoc} */
+    @Override
+    public List<NotePosition> getNotes ()
+    {
+        throw new UnsupportedOperationException ();
     }
 
 

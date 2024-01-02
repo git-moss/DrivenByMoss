@@ -17,7 +17,8 @@ import de.mossgrabers.framework.daw.constants.DeviceID;
 import de.mossgrabers.framework.daw.data.IItem;
 import de.mossgrabers.framework.daw.data.ISpecificDevice;
 import de.mossgrabers.framework.featuregroup.ModeManager;
-import de.mossgrabers.framework.mode.INoteMode;
+import de.mossgrabers.framework.mode.INoteEditor;
+import de.mossgrabers.framework.mode.INoteEditorMode;
 import de.mossgrabers.framework.mode.Modes;
 import de.mossgrabers.framework.parameter.IParameter;
 import de.mossgrabers.framework.parameter.NoteAttribute;
@@ -39,7 +40,7 @@ import java.util.List;
  *
  * @author Jürgen Moßgraber
  */
-public abstract class XLBaseNoteEditMode extends XLAbstractMainMode<IItem> implements INoteMode
+public abstract class XLBaseNoteEditMode extends XLAbstractMainMode<IItem> implements INoteEditorMode, INoteEditor
 {
     protected final int                    clipRows;
     protected final int                    clipCols;
@@ -370,6 +371,14 @@ public abstract class XLBaseNoteEditMode extends XLAbstractMainMode<IItem> imple
 
     /** {@inheritDoc} */
     @Override
+    public INoteEditor getNoteEditor ()
+    {
+        return this;
+    }
+
+
+    /** {@inheritDoc} */
+    @Override
     public List<NotePosition> getNotePosition (final int parameterIndex)
     {
         final int column = parameterIndex % 8;
@@ -390,6 +399,22 @@ public abstract class XLBaseNoteEditMode extends XLAbstractMainMode<IItem> imple
     /** {@inheritDoc} */
     @Override
     public void addNote (final INoteClip clip, final NotePosition notePosition)
+    {
+        throw new UnsupportedOperationException ();
+    }
+
+
+    /** {@inheritDoc} */
+    @Override
+    public void removeNote (final INoteClip clip, final NotePosition notePosition)
+    {
+        throw new UnsupportedOperationException ();
+    }
+
+
+    /** {@inheritDoc} */
+    @Override
+    public boolean isNoteEdited (final INoteClip clip, final NotePosition notePosition)
     {
         throw new UnsupportedOperationException ();
     }

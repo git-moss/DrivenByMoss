@@ -4,9 +4,9 @@
 
 package de.mossgrabers.framework.daw.clip;
 
-import de.mossgrabers.framework.daw.data.IPinnable;
-
 import java.util.List;
+
+import de.mossgrabers.framework.daw.data.IPinnable;
 
 
 /**
@@ -621,4 +621,26 @@ public interface INoteClip extends IClip, IPinnable
      * @return The range of the transpose attribute e.g. 96.0 for [-96,96]
      */
     double getStepTransposeRange ();
+
+
+    /**
+     * Get the next note from the given position. It starts with searching the rows of the current
+     * column downwards (lower notes) and then advancing to the next column.
+     *
+     * @param activeNotePosition Where to start the search for the next note
+     * @param ignoreChannel Ignores the MIDI channel if true
+     * @return The position of the next note or null if none is found
+     */
+    NotePosition getNextNote (NotePosition activeNotePosition, boolean ignoreChannel);
+
+
+    /**
+     * Get the previous note from the given position. It starts with searching the rows of the
+     * current column upwards (higher notes) and then advancing to the previous column.
+     *
+     * @param activeNotePosition Where to start the search for the previous note
+     * @param ignoreChannel Ignores the MIDI channel if true
+     * @return The position of the next note or null if none is found
+     */
+    NotePosition getPreviousNote (NotePosition activeNotePosition, boolean ignoreChannel);
 }

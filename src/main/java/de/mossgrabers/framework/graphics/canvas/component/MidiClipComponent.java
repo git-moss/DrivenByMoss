@@ -10,6 +10,7 @@ import de.mossgrabers.framework.daw.clip.IStepInfo;
 import de.mossgrabers.framework.daw.clip.NotePosition;
 import de.mossgrabers.framework.daw.clip.StepState;
 import de.mossgrabers.framework.graphics.Align;
+import de.mossgrabers.framework.graphics.IBounds;
 import de.mossgrabers.framework.graphics.IGraphicsConfiguration;
 import de.mossgrabers.framework.graphics.IGraphicsContext;
 import de.mossgrabers.framework.graphics.IGraphicsInfo;
@@ -24,8 +25,9 @@ import de.mossgrabers.framework.utils.StringUtils;
  */
 public class MidiClipComponent implements IComponent
 {
-    private final INoteClip clip;
-    private final int       quartersPerMeasure;
+    private final INoteClip    clip;
+    private final int          quartersPerMeasure;
+    private final NotePosition activePosition;
 
 
     /**
@@ -33,11 +35,13 @@ public class MidiClipComponent implements IComponent
      *
      * @param clip The clip to display
      * @param quartersPerMeasure The quarters of a measure
+     * @param activePosition The position of a note which should be marked as active
      */
-    public MidiClipComponent (final INoteClip clip, final int quartersPerMeasure)
+    public MidiClipComponent (final INoteClip clip, final int quartersPerMeasure, final NotePosition activePosition)
     {
         this.clip = clip;
         this.quartersPerMeasure = quartersPerMeasure;
+        this.activePosition = activePosition;
     }
 
 
@@ -54,14 +58,16 @@ public class MidiClipComponent implements IComponent
 
         final ColorEx clipColor = this.clip.getColor ();
         final ColorEx noteColor = this.clip.getColor ();
+        final ColorEx noteActiveColor = ColorEx.WHITE;
         final ColorEx noteMutedColor = ColorEx.DARK_GRAY;
         final ColorEx noteGridLoopColor = configuration.getColorBackground ();
         final ColorEx noteBorderColor = ColorEx.BLACK;
 
         final IGraphicsContext gc = info.getContext ();
-        final double left = info.getBounds ().left ();
-        final double width = info.getBounds ().width ();
-        final double height = info.getBounds ().height ();
+        final IBounds bounds = info.getBounds ();
+        final double left = bounds.left ();
+        final double width = bounds.width ();
+        final double height = bounds.height ();
 
         final int top = 14;
         final double noteAreaHeight = height - top;
@@ -172,7 +178,9 @@ public class MidiClipComponent implements IComponent
                     }
 
                     ColorEx stepNoteBackgroundColor = stepInfo.isSelected () ? ColorEx.evenDarker (noteColor) : noteColor;
-                    if (stepInfo.isMuted ())
+                    if (this.activePosition != null && this.activePosition.equals (notePosition))
+                        stepNoteBackgroundColor = noteActiveColor;
+                    else if (stepInfo.isMuted ())
                         stepNoteBackgroundColor = noteMutedColor;
 
                     gc.strokeRectangle (x, top + (range - row - 1) * stepHeight + 2, w, stepHeight - 2, noteBorderColor);

@@ -17,7 +17,7 @@ import de.mossgrabers.framework.utils.StringUtils;
  */
 public class BeatstepPadGrid extends PadGridImpl
 {
-    private Object sysexLock = new Object ();
+    private final Object sysexLock = new Object ();
 
 
     /**

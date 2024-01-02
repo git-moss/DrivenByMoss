@@ -4,9 +4,12 @@
 
 package de.mossgrabers.framework.controller.display;
 
+import java.util.List;
+
 import de.mossgrabers.framework.controller.color.ColorEx;
 import de.mossgrabers.framework.controller.hardware.IHwGraphicsDisplay;
 import de.mossgrabers.framework.daw.clip.INoteClip;
+import de.mossgrabers.framework.daw.clip.NotePosition;
 import de.mossgrabers.framework.daw.data.IScene;
 import de.mossgrabers.framework.daw.data.ISlot;
 import de.mossgrabers.framework.daw.data.ITrack;
@@ -15,8 +18,6 @@ import de.mossgrabers.framework.graphics.IBitmap;
 import de.mossgrabers.framework.graphics.canvas.component.IComponent;
 import de.mossgrabers.framework.graphics.canvas.utils.SendData;
 import de.mossgrabers.framework.utils.Pair;
-
-import java.util.List;
 
 
 /**
@@ -51,8 +52,9 @@ public interface IGraphicDisplay extends IDisplay
      *
      * @param clip The clip to display
      * @param quartersPerMeasure The quarters of a measure
+     * @param activePosition The position of a note which should be marked as active
      */
-    void setMidiClipElement (INoteClip clip, int quartersPerMeasure);
+    void setMidiClipElement (INoteClip clip, int quartersPerMeasure, NotePosition activePosition);
 
 
     /**

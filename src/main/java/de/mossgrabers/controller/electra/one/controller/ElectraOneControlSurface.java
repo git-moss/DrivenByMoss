@@ -226,24 +226,24 @@ public class ElectraOneControlSurface extends AbstractControlSurface<ElectraOneC
         Collections.addAll (MODES, Modes.VOLUME, Modes.SEND, Modes.DEVICE_PARAMS, Modes.EQ_DEVICE_PARAMS, Modes.TRANSPORT, Modes.SESSION, Modes.PROJECT);
     }
 
-    private static final String                  SET_GROUP_TITLE              = "sgt(%s,\"%s\")";
+    private static final String                        SET_GROUP_TITLE              = "sgt(%s,\"%s\")";
 
-    private final List<int []>                   sysexChunks                  = new ArrayList<> ();
-    private final IMidiInput                     ctrlInput;
-    private final IMidiOutput                    ctrlOutput;
-    private final ObjectMapper                   mapper                       = new ObjectMapper ();
-    private final Map<String, Integer>           presetBanks                  = new HashMap<> ();
-    private final Map<String, Integer>           presetIndices                = new HashMap<> ();
-    private int                                  bankIndex                    = -1;
-    private int                                  presetIndex                  = -1;
-    private boolean                              isOnline                     = false;
-    private final int []                         knobStates                   = new int [12];
-    private boolean                              isShiftPressed;
-    private Modes                                activeMode                   = null;
-    private TouchCombinationCommand []           touchCombinationCommands     = null;
-    private Object                               touchCombinationCommandsLock = new Object ();
-    private List<int []>                         shiftPatterns                = new ArrayList<> ();
-    private Map<int [], TouchCombinationCommand> commandPatterns              = new HashMap<> ();
+    private final List<int []>                         sysexChunks                  = new ArrayList<> ();
+    private final IMidiInput                           ctrlInput;
+    private final IMidiOutput                          ctrlOutput;
+    private final ObjectMapper                         mapper                       = new ObjectMapper ();
+    private final Map<String, Integer>                 presetBanks                  = new HashMap<> ();
+    private final Map<String, Integer>                 presetIndices                = new HashMap<> ();
+    private int                                        bankIndex                    = -1;
+    private int                                        presetIndex                  = -1;
+    private boolean                                    isOnline                     = false;
+    private final int []                               knobStates                   = new int [12];
+    private boolean                                    isShiftPressed;
+    private Modes                                      activeMode                   = null;
+    private TouchCombinationCommand []                 touchCombinationCommands     = null;
+    private final Object                               touchCombinationCommandsLock = new Object ();
+    private final List<int []>                         shiftPatterns                = new ArrayList<> ();
+    private final Map<int [], TouchCombinationCommand> commandPatterns              = new HashMap<> ();
 
 
     /**
@@ -270,7 +270,7 @@ public class ElectraOneControlSurface extends AbstractControlSurface<ElectraOneC
 
     /**
      * Get the number of supported knob touch patterns.
-     * 
+     *
      * @return The number
      */
     public static int getTouchPatternSize ()
@@ -281,7 +281,7 @@ public class ElectraOneControlSurface extends AbstractControlSurface<ElectraOneC
 
     /**
      * Set the commands to execute on detected knob touch combinations.
-     * 
+     *
      * @param touchCombinationCommands The commands to set; must match the number of touch patterns
      */
     public void setTouchCombinationCommands (final TouchCombinationCommand [] touchCombinationCommands)
@@ -768,7 +768,7 @@ public class ElectraOneControlSurface extends AbstractControlSurface<ElectraOneC
 
     /**
      * Update the emulated shift button state.
-     * 
+     *
      * @param isShift True if pressed
      */
     public void updateShift (final boolean isShift)

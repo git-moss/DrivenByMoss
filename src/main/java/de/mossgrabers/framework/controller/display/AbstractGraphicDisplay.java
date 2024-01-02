@@ -4,10 +4,20 @@
 
 package de.mossgrabers.framework.controller.display;
 
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
+import java.util.concurrent.Executors;
+import java.util.concurrent.ScheduledExecutorService;
+import java.util.concurrent.TimeUnit;
+import java.util.concurrent.atomic.AtomicInteger;
+import java.util.concurrent.atomic.AtomicReference;
+
 import de.mossgrabers.framework.controller.color.ColorEx;
 import de.mossgrabers.framework.controller.hardware.IHwGraphicsDisplay;
 import de.mossgrabers.framework.daw.IHost;
 import de.mossgrabers.framework.daw.clip.INoteClip;
+import de.mossgrabers.framework.daw.clip.NotePosition;
 import de.mossgrabers.framework.daw.data.IScene;
 import de.mossgrabers.framework.daw.data.ISlot;
 import de.mossgrabers.framework.daw.data.ITrack;
@@ -33,15 +43,6 @@ import de.mossgrabers.framework.graphics.canvas.component.SendsComponent;
 import de.mossgrabers.framework.graphics.canvas.utils.SendData;
 import de.mossgrabers.framework.graphics.display.ModelInfo;
 import de.mossgrabers.framework.utils.Pair;
-
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
-import java.util.concurrent.Executors;
-import java.util.concurrent.ScheduledExecutorService;
-import java.util.concurrent.TimeUnit;
-import java.util.concurrent.atomic.AtomicInteger;
-import java.util.concurrent.atomic.AtomicReference;
 
 
 /**
@@ -216,9 +217,9 @@ public abstract class AbstractGraphicDisplay implements IGraphicDisplay
 
     /** {@inheritDoc} */
     @Override
-    public void setMidiClipElement (final INoteClip clip, final int quartersPerMeasure)
+    public void setMidiClipElement (final INoteClip clip, final int quartersPerMeasure, final NotePosition activePosition)
     {
-        this.addElement (new MidiClipComponent (clip, quartersPerMeasure));
+        this.addElement (new MidiClipComponent (clip, quartersPerMeasure, activePosition));
     }
 
 

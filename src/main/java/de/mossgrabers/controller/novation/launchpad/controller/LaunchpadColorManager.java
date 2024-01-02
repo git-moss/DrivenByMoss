@@ -4,6 +4,8 @@
 
 package de.mossgrabers.controller.novation.launchpad.controller;
 
+import java.util.List;
+
 import de.mossgrabers.framework.controller.color.ColorEx;
 import de.mossgrabers.framework.controller.color.ColorManager;
 import de.mossgrabers.framework.controller.grid.IPadGrid;
@@ -16,8 +18,6 @@ import de.mossgrabers.framework.view.sequencer.AbstractDrumExView;
 import de.mossgrabers.framework.view.sequencer.AbstractDrumView;
 import de.mossgrabers.framework.view.sequencer.AbstractSequencerView;
 import de.mossgrabers.framework.view.sequencer.ClipLengthView;
-
-import java.util.List;
 
 
 /**
@@ -125,7 +125,7 @@ public class LaunchpadColorManager extends ColorManager
         this.registerColorIndex (AbstractSequencerView.COLOR_STEP_HILITE_CONTENT, LAUNCHPAD_COLOR_GREEN_HI);
         this.registerColorIndex (AbstractSequencerView.COLOR_STEP_MUTED, LAUNCHPAD_COLOR_GREY_MD);
         this.registerColorIndex (AbstractSequencerView.COLOR_STEP_MUTED_CONT, LAUNCHPAD_COLOR_GREY_LO);
-        this.registerColorIndex (AbstractSequencerView.COLOR_STEP_SELECTED, LAUNCHPAD_COLOR_WHITE);
+        this.registerColorIndex (AbstractSequencerView.COLOR_STEP_SELECTED, LAUNCHPAD_COLOR_YELLOW);
         this.registerColorIndex (AbstractSequencerView.COLOR_NO_CONTENT, LAUNCHPAD_COLOR_BLACK);
         this.registerColorIndex (AbstractSequencerView.COLOR_NO_CONTENT_4, LAUNCHPAD_COLOR_BLACK);
         this.registerColorIndex (AbstractSequencerView.COLOR_CONTENT, LAUNCHPAD_COLOR_BLUE_HI);

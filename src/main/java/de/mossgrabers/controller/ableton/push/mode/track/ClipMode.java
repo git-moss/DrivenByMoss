@@ -11,8 +11,10 @@ import de.mossgrabers.framework.controller.ButtonID;
 import de.mossgrabers.framework.controller.display.IGraphicDisplay;
 import de.mossgrabers.framework.controller.display.ITextDisplay;
 import de.mossgrabers.framework.daw.IModel;
+import de.mossgrabers.framework.daw.ITransport;
 import de.mossgrabers.framework.daw.clip.IClip;
 import de.mossgrabers.framework.daw.clip.INoteClip;
+import de.mossgrabers.framework.daw.clip.NotePosition;
 import de.mossgrabers.framework.daw.constants.Capability;
 import de.mossgrabers.framework.daw.data.ITrack;
 import de.mossgrabers.framework.daw.data.bank.ITrackBank;
@@ -37,6 +39,8 @@ public class ClipMode extends AbstractTrackMode implements IPush3Encoder
     private static final String PLEASE_SELECT_A_CLIP_PUSH2 = "Please select a clip.";
 
     private boolean             displayMidiNotes           = false;
+    private NotePosition        activeNotePosition         = null;
+    private final ITransport    transport;
 
 
     /**
@@ -48,6 +52,8 @@ public class ClipMode extends AbstractTrackMode implements IPush3Encoder
     public ClipMode (final PushControlSurface surface, final IModel model)
     {
         super ("Clip", surface, model);
+
+        this.transport = this.model.getTransport ();
     }
 
 
@@ -60,7 +66,7 @@ public class ClipMode extends AbstractTrackMode implements IPush3Encoder
         if (index == 7 && isTouched && this.surface.isDeletePressed ())
         {
             this.surface.setTriggerConsumed (ButtonID.DELETE);
-            final IClip clip = this.model.getCursorClip ();
+            final IClip clip = this.getMidiClip ();
             if (clip.doesExist ())
                 clip.resetAccent ();
         }
@@ -74,7 +80,7 @@ public class ClipMode extends AbstractTrackMode implements IPush3Encoder
         if (!this.increaseKnobMovement ())
             return;
 
-        final IClip clip = this.model.getCursorClip ();
+        final IClip clip = this.getMidiClip ();
         if (!clip.doesExist ())
             return;
 
@@ -114,7 +120,7 @@ public class ClipMode extends AbstractTrackMode implements IPush3Encoder
     @Override
     public void updateDisplay1 (final ITextDisplay display)
     {
-        final IClip clip = this.model.getCursorClip ();
+        final IClip clip = this.getMidiClip ();
         if (!clip.doesExist ())
         {
             display.notify (PLEASE_SELECT_A_CLIP_PUSH1);
@@ -136,30 +142,17 @@ public class ClipMode extends AbstractTrackMode implements IPush3Encoder
     @Override
     public void updateDisplay2 (final IGraphicDisplay display)
     {
-        if (this.displayMidiNotes)
-        {
-            final IView activeView = this.surface.getViewManager ().getActive ();
-            INoteClip clip;
-            if (activeView instanceof final AbstractSequencerView<?, ?> sequencerView)
-                clip = sequencerView.getClip ();
-            else
-                clip = this.model.getNoteClip (8, 128);
-            if (!clip.doesExist ())
-            {
-                display.addEmptyElement ();
-                display.notify (PLEASE_SELECT_A_CLIP_PUSH2);
-                return;
-            }
-
-            display.setMidiClipElement (clip, this.model.getTransport ().getQuartersPerMeasure ());
-            return;
-        }
-
-        final IClip clip = this.model.getCursorClip ();
+        final IClip clip = this.getMidiClip ();
         if (!clip.doesExist ())
         {
             display.addEmptyElement ();
             display.notify (PLEASE_SELECT_A_CLIP_PUSH2);
+            return;
+        }
+
+        if (this.displayMidiNotes)
+        {
+            display.setMidiClipElement ((INoteClip) clip, this.transport.getQuartersPerMeasure (), this.activeNotePosition);
             return;
         }
 
@@ -202,7 +195,7 @@ public class ClipMode extends AbstractTrackMode implements IPush3Encoder
 
         if (index == 0)
         {
-            final IClip clip = this.model.getCursorClip ();
+            final IClip clip = this.getMidiClip ();
             if (clip instanceof final INoteClip noteClip)
                 noteClip.togglePinned ();
             return;
@@ -228,7 +221,7 @@ public class ClipMode extends AbstractTrackMode implements IPush3Encoder
             {
                 if (!this.model.getHost ().supports (Capability.HAS_PINNING))
                     return PushColorManager.PUSH2_COLOR2_BLACK;
-                final IClip clip = this.model.getCursorClip ();
+                final IClip clip = this.getMidiClip ();
                 final boolean isPinned = clip instanceof final INoteClip noteClip && noteClip.isPinned ();
                 return isPinned ? PushColorManager.PUSH2_COLOR2_GREEN : PushColorManager.PUSH2_COLOR2_WHITE;
             }
@@ -252,7 +245,7 @@ public class ClipMode extends AbstractTrackMode implements IPush3Encoder
 
     private String formatMeasures (final double time, final int startOffset)
     {
-        return StringUtils.formatMeasures (this.model.getTransport ().getQuartersPerMeasure (), time, startOffset, false);
+        return StringUtils.formatMeasures (this.transport.getQuartersPerMeasure (), time, startOffset, false);
     }
 
 
@@ -260,9 +253,15 @@ public class ClipMode extends AbstractTrackMode implements IPush3Encoder
     @Override
     public void encoderTurn (final int value)
     {
-        // TODO Move note
-        // TODO SHIFT + Turn: change note length
-
+        // Set the next/previous note active
+        final IClip clip = this.getMidiClip ();
+        if (clip instanceof final INoteClip noteClip)
+        {
+            if (this.model.getValueChanger ().isIncrease (value))
+                this.activeNotePosition = noteClip.getNextNote (this.activeNotePosition, true);
+            else
+                this.activeNotePosition = noteClip.getPreviousNote (this.activeNotePosition, true);
+        }
     }
 
 
@@ -270,11 +269,12 @@ public class ClipMode extends AbstractTrackMode implements IPush3Encoder
     @Override
     public void encoderLeft (final ButtonEvent event)
     {
-        // TODO Select previous/next note
-        // 1) Find all notes on page
-        // 2) Find first/last selected note -> search up/down then left/right
-        // 3) Select previous/next note
-
+        final ViewManager viewManager = this.surface.getViewManager ();
+        if (viewManager.getActive () instanceof final AbstractSequencerView<?, ?> sequencerView)
+        {
+            sequencerView.onLeft (event);
+            this.activeNotePosition = null;
+        }
     }
 
 
@@ -282,8 +282,12 @@ public class ClipMode extends AbstractTrackMode implements IPush3Encoder
     @Override
     public void encoderRight (final ButtonEvent event)
     {
-        // TODO Auto-generated method stub
-
+        final ViewManager viewManager = this.surface.getViewManager ();
+        if (viewManager.getActive () instanceof final AbstractSequencerView<?, ?> sequencerView)
+        {
+            sequencerView.onRight (event);
+            this.activeNotePosition = null;
+        }
     }
 
 
@@ -291,8 +295,11 @@ public class ClipMode extends AbstractTrackMode implements IPush3Encoder
     @Override
     public void encoderPress (final ButtonEvent event)
     {
-        // TODO Edit note
+        if (event != ButtonEvent.UP)
+            return;
 
+        if (this.activeNotePosition != null && this.surface.getViewManager ().getActive () instanceof final AbstractSequencerView<?, ?> sequencerView)
+            sequencerView.editNote (this.activeNotePosition, false);
     }
 
 
@@ -301,5 +308,19 @@ public class ClipMode extends AbstractTrackMode implements IPush3Encoder
     public void arrowCenter (final ButtonEvent event)
     {
         // Not used
+    }
+
+
+    private IClip getMidiClip ()
+    {
+        if (this.displayMidiNotes)
+        {
+            final IView activeView = this.surface.getViewManager ().getActive ();
+            if (activeView instanceof final AbstractSequencerView<?, ?> sequencerView)
+                return sequencerView.getClip ();
+            return this.model.getNoteClip (8, 128);
+        }
+
+        return this.model.getCursorClip ();
     }
 }

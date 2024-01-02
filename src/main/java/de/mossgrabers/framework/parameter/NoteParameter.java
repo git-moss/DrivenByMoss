@@ -14,7 +14,7 @@ import de.mossgrabers.framework.daw.clip.IStepInfo;
 import de.mossgrabers.framework.daw.clip.NoteOccurrenceType;
 import de.mossgrabers.framework.daw.clip.NotePosition;
 import de.mossgrabers.framework.daw.clip.StepState;
-import de.mossgrabers.framework.mode.INoteMode;
+import de.mossgrabers.framework.mode.INoteEditor;
 import de.mossgrabers.framework.scale.Scales;
 import de.mossgrabers.framework.utils.StringUtils;
 
@@ -33,7 +33,7 @@ public class NoteParameter extends AbstractParameterImpl
 {
     private final IHost                             host;
     private final ITransport                        transport;
-    private final INoteMode                         callback;
+    private final INoteEditor                       callback;
     private final IDisplay                          display;
     private final Scales                            scales;
     private final NoteAttribute                     noteAttribute;
@@ -72,7 +72,7 @@ public class NoteParameter extends AbstractParameterImpl
      * @param callback Callback to get further information about the note to edit
      * @param valueChanger The value changer
      */
-    public NoteParameter (final NoteAttribute noteAttribute, final IDisplay display, final IModel model, final INoteMode callback, final IValueChanger valueChanger)
+    public NoteParameter (final NoteAttribute noteAttribute, final IDisplay display, final IModel model, final INoteEditor callback, final IValueChanger valueChanger)
     {
         this (-1, noteAttribute, display, model, callback, valueChanger);
     }
@@ -88,7 +88,7 @@ public class NoteParameter extends AbstractParameterImpl
      * @param callback Callback to get further information about the note to edit
      * @param valueChanger The value changer
      */
-    public NoteParameter (final int parameterIndex, final NoteAttribute noteAttribute, final IDisplay display, final IModel model, final INoteMode callback, final IValueChanger valueChanger)
+    public NoteParameter (final int parameterIndex, final NoteAttribute noteAttribute, final IDisplay display, final IModel model, final INoteEditor callback, final IValueChanger valueChanger)
     {
         super (valueChanger, 0);
 
