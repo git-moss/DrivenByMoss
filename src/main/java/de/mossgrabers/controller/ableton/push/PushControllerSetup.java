@@ -4,8 +4,10 @@
 
 package de.mossgrabers.controller.ableton.push;
 
+import java.util.Optional;
+import java.util.function.IntSupplier;
+
 import de.mossgrabers.controller.ableton.push.PushConfiguration.LockState;
-import de.mossgrabers.controller.ableton.push.PushConfiguration.SessionDisplayMode;
 import de.mossgrabers.controller.ableton.push.command.continuous.ConfigurePitchbendCommand;
 import de.mossgrabers.controller.ableton.push.command.continuous.MastertrackTouchCommand;
 import de.mossgrabers.controller.ableton.push.command.continuous.Push3EncoderCommand;
@@ -87,6 +89,7 @@ import de.mossgrabers.controller.ableton.push.view.Drum4View;
 import de.mossgrabers.controller.ableton.push.view.Drum64View;
 import de.mossgrabers.controller.ableton.push.view.Drum8View;
 import de.mossgrabers.controller.ableton.push.view.DrumView;
+import de.mossgrabers.controller.ableton.push.view.DrumXoXView;
 import de.mossgrabers.controller.ableton.push.view.PianoView;
 import de.mossgrabers.controller.ableton.push.view.PlayView;
 import de.mossgrabers.controller.ableton.push.view.PolySequencerView;
@@ -154,12 +157,9 @@ import de.mossgrabers.framework.view.Views;
 import de.mossgrabers.framework.view.sequencer.AbstractSequencerView;
 import de.mossgrabers.framework.view.sequencer.ClipLengthView;
 
-import java.util.Optional;
-import java.util.function.IntSupplier;
-
 
 /**
- * Support for the Ableton Push 1 and Push 2 controllers.
+ * Support for the Ableton Push 1, 2 and 3 controllers.
  *
  * @author Jürgen Moßgraber
  */
@@ -285,7 +285,8 @@ public class PushControllerSetup extends AbstractControllerSetup<PushControlSurf
             ms.setNumSends (4);
         }
         ms.setNumMarkers (8);
-        ms.setHasFlatTrackList (false);
+        ms.setHasFlatTrackList (this.configuration.isTrackNavigationFlat ());
+        ms.setHasFullFlatTrackList (this.configuration.areMasterTracksIncluded ());
         ms.setWantsClipLauncherNavigator (true);
         this.model = this.factory.createModel (this.configuration, this.colorManager, this.valueChanger, this.scales, ms);
         this.model.getSceneBank (64);
@@ -443,25 +444,6 @@ public class PushControllerSetup extends AbstractControllerSetup<PushControlSurf
         if (this.pushVersion != PushVersion.VERSION_1)
             this.configuration.addSettingObserver (PushConfiguration.DEBUG_WINDOW, this.getSurface ().getGraphicsDisplay ()::showDebugWindow);
 
-        this.configuration.addSettingObserver (PushConfiguration.DISPLAY_SCENES_CLIPS, () -> {
-            if (Views.isSessionView (this.getSurface ().getViewManager ().getActiveID ()))
-            {
-                final ModeManager modeManager = this.getSurface ().getModeManager ();
-                switch (this.configuration.getSessionDisplayContent ())
-                {
-                    case SCENES_CLIPS:
-                        modeManager.setActive (Modes.SESSION);
-                        break;
-                    case MARKERS:
-                        modeManager.setActive (Modes.MARKERS);
-                        break;
-                    default:
-                        modeManager.setActive (this.configuration.getMixerMode ());
-                        break;
-                }
-            }
-        });
-
         this.configuration.addSettingObserver (PushConfiguration.SESSION_VIEW, () -> {
             final ViewManager viewManager = this.getSurface ().getViewManager ();
             if (!Views.isSessionView (viewManager.getActiveID ()))
@@ -547,6 +529,7 @@ public class PushControllerSetup extends AbstractControllerSetup<PushControlSurf
         viewManager.register (Views.SEQUENCER, new SequencerView (surface, this.model));
         viewManager.register (Views.POLY_SEQUENCER, new PolySequencerView (surface, this.model, true));
         viewManager.register (Views.DRUM, new DrumView (surface, this.model));
+        viewManager.register (Views.DRUM_XOX, new DrumXoXView (surface, this.model));
         viewManager.register (Views.DRUM4, new Drum4View (surface, this.model));
         viewManager.register (Views.DRUM8, new Drum8View (surface, this.model));
         viewManager.register (Views.RAINDROPS, new RaindropsView (surface, this.model));
@@ -726,10 +709,7 @@ public class PushControllerSetup extends AbstractControllerSetup<PushControlSurf
 
             this.addButton (ButtonID.TOGGLE_CLIP_VIEW, "Toggle Scene View", (event, value) -> {
                 if (event == ButtonEvent.DOWN)
-                {
-                    final boolean isSession = this.configuration.getSessionDisplayContent () == SessionDisplayMode.SCENES_CLIPS;
-                    this.configuration.setSessionDisplayContent (isSession ? SessionDisplayMode.MIXER : SessionDisplayMode.SCENES_CLIPS);
-                }
+                    modeManager.setActive (modeManager.isActive (Modes.SESSION) ? Modes.MARKERS : Modes.SESSION);
             }, PushControlSurface.PUSH_BUTTON_SESSION_DISPLAY, () -> this.configuration.isScenesClipViewSelected ());
         }
 

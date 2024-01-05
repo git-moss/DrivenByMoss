@@ -49,7 +49,7 @@ public class NoteViewSelectMode extends BaseMode<IItem>
         Views.DRUM,
         Views.DRUM4,
         Views.DRUM8,
-        null,
+        Views.DRUM_XOX,
         null
     };
 

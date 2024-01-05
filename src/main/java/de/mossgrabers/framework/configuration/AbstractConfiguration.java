@@ -1238,10 +1238,11 @@ public abstract class AbstractConfiguration implements Configuration
      *
      * @param settingsUI The settings
      * @param category The category to add the setting to or null to use default
+     * @param flatIsDefault The default is set to flat if true
      */
-    protected void activateTrackNavigationSetting (final ISettingsUI settingsUI, final String category)
+    protected void activateTrackNavigationSetting (final ISettingsUI settingsUI, final String category, final boolean flatIsDefault)
     {
-        final IEnumSetting trackNavigationSetting = settingsUI.getEnumSetting ("Track Navigation (requires restart)", category == null ? CATEGORY_WORKFLOW : category, TRACK_NAVIGATION_OPTIONS, TRACK_NAVIGATION_OPTIONS[0]);
+        final IEnumSetting trackNavigationSetting = settingsUI.getEnumSetting ("Track Navigation (requires restart)", category == null ? CATEGORY_WORKFLOW : category, TRACK_NAVIGATION_OPTIONS, TRACK_NAVIGATION_OPTIONS[flatIsDefault ? 0 : 1]);
         this.isTrackNavigationFlat = TRACK_NAVIGATION_OPTIONS[0].equals (trackNavigationSetting.get ());
     }
 

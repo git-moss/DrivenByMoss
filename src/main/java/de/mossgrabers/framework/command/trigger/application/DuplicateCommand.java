@@ -4,16 +4,17 @@
 
 package de.mossgrabers.framework.command.trigger.application;
 
+import java.util.Optional;
+
 import de.mossgrabers.framework.command.core.AbstractTriggerCommand;
 import de.mossgrabers.framework.configuration.Configuration;
+import de.mossgrabers.framework.controller.ButtonID;
 import de.mossgrabers.framework.controller.IControlSurface;
 import de.mossgrabers.framework.daw.IModel;
 import de.mossgrabers.framework.daw.data.ISlot;
 import de.mossgrabers.framework.daw.data.ITrack;
 import de.mossgrabers.framework.daw.data.bank.ISlotBank;
 import de.mossgrabers.framework.utils.ButtonEvent;
-
-import java.util.Optional;
 
 
 /**
@@ -45,6 +46,7 @@ public class DuplicateCommand<S extends IControlSurface<C>, C extends Configurat
     {
         if (this.surface.isSelectPressed ())
         {
+            this.surface.setTriggerConsumed (ButtonID.SELECT);
             if (event == ButtonEvent.UP)
                 this.model.getProject ().createScene ();
             return;

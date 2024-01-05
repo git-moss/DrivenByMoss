@@ -4,6 +4,8 @@
 
 package de.mossgrabers.controller.ableton.push.mode.device;
 
+import java.util.Optional;
+
 import de.mossgrabers.controller.ableton.push.controller.PushControlSurface;
 import de.mossgrabers.controller.ableton.push.parameterprovider.PushSendLayerOrDrumPadParameterProvider;
 import de.mossgrabers.framework.controller.ButtonID;
@@ -19,8 +21,6 @@ import de.mossgrabers.framework.daw.resource.ChannelType;
 import de.mossgrabers.framework.graphics.canvas.utils.SendData;
 import de.mossgrabers.framework.mode.Modes;
 import de.mossgrabers.framework.utils.Pair;
-
-import java.util.Optional;
 
 
 /**
@@ -73,7 +73,10 @@ public class DeviceLayerSendMode extends DeviceLayerMode
 
         // Toggle send enablement
         if (isTouched && this.surface.isShiftPressed () && this.surface.isSelectPressed () && this.getParameterProvider ().get (index) instanceof final ISend send)
+        {
+            this.surface.setTriggerConsumed (ButtonID.SELECT);
             send.toggleEnabled ();
+        }
     }
 
 

@@ -4,6 +4,10 @@
 
 package de.mossgrabers.controller.ableton.push;
 
+import java.util.EnumSet;
+import java.util.List;
+import java.util.Set;
+
 import de.mossgrabers.controller.ableton.push.controller.PushControlSurface;
 import de.mossgrabers.framework.configuration.AbstractConfiguration;
 import de.mossgrabers.framework.configuration.IColorSetting;
@@ -18,10 +22,6 @@ import de.mossgrabers.framework.daw.midi.ArpeggiatorMode;
 import de.mossgrabers.framework.graphics.IGraphicsConfiguration;
 import de.mossgrabers.framework.mode.Modes;
 import de.mossgrabers.framework.view.Views;
-
-import java.util.EnumSet;
-import java.util.List;
-import java.util.Set;
 
 
 /**
@@ -42,18 +42,6 @@ public class PushConfiguration extends AbstractConfiguration implements IGraphic
         SOLO,
         /** Locked to clip stop. */
         CLIP_STOP,
-    }
-
-
-    /** What to show in the display when Session view is active. */
-    public enum SessionDisplayMode
-    {
-        /** Display scenes or clips (depending on session view). */
-        SCENES_CLIPS,
-        /** Display markers. */
-        MARKERS,
-        /** Display mixer. */
-        MIXER
     }
 
 
@@ -184,13 +172,6 @@ public class PushConfiguration extends AbstractConfiguration implements IGraphic
         "Clips",
         "Flipped",
         "Scenes"
-    };
-
-    private static final String []  SESSION_DISPLAY_OPTIONS         =
-    {
-        "Scenes/Clips",
-        "Markers",
-        "Mixer"
     };
 
     private static final Views []   PREFERRED_NOTE_VIEWS            =
@@ -359,7 +340,6 @@ public class PushConfiguration extends AbstractConfiguration implements IGraphic
 
     private LockState             lockState                   = LockState.OFF;
 
-    private SessionDisplayMode    sessionDisplayContent;
     private boolean               isScenesClipView;
 
     /** What does the ribbon send? **/
@@ -431,7 +411,6 @@ public class PushConfiguration extends AbstractConfiguration implements IGraphic
     private IColorSetting         colorSoloSetting;
     private IColorSetting         colorMuteSetting;
     private IEnumSetting          sessionViewSetting;
-    private IEnumSetting          sessionDisplayContentSetting;
     private IEnumSetting          perPadPitchbendSetting;
     private IEnumSetting          inTuneLocationSetting;
     private IEnumSetting          inTuneWidthSetting;
@@ -517,6 +496,8 @@ public class PushConfiguration extends AbstractConfiguration implements IGraphic
         ///////////////////////////
         // Workflow
 
+        this.activateTrackNavigationSetting (globalSettings, CATEGORY_WORKFLOW, false);
+        this.activateIncludeMasterSetting (globalSettings);
         this.activateExcludeDeactivatedItemsSetting (globalSettings);
         this.activateEnableVUMetersSetting (globalSettings);
         this.activateFootswitchSetting (globalSettings, 0, "Footswitch 2");
@@ -1546,12 +1527,6 @@ public class PushConfiguration extends AbstractConfiguration implements IGraphic
             this.notifyObservers (AbstractConfiguration.FLIP_SESSION);
             this.notifyObservers (PushConfiguration.SESSION_VIEW);
         });
-
-        this.sessionDisplayContentSetting = settingsUI.getEnumSetting ("Display", CATEGORY_SESSION, SESSION_DISPLAY_OPTIONS, SESSION_DISPLAY_OPTIONS[2]);
-        this.sessionDisplayContentSetting.addValueObserver (value -> {
-            this.sessionDisplayContent = SessionDisplayMode.values ()[lookupIndex (SESSION_DISPLAY_OPTIONS, value)];
-            this.notifyObservers (PushConfiguration.DISPLAY_SCENES_CLIPS);
-        });
     }
 
 
@@ -1569,42 +1544,6 @@ public class PushConfiguration extends AbstractConfiguration implements IGraphic
     public void setSceneView ()
     {
         this.sessionViewSetting.set (SESSION_VIEW_OPTIONS[2]);
-    }
-
-
-    /**
-     * What should be shown in the display when the session view is active?
-     *
-     * @return The mode to activate
-     */
-    public SessionDisplayMode getSessionDisplayContent ()
-    {
-        return this.sessionDisplayContent;
-    }
-
-
-    /**
-     * Toggles the mode display for scenes/clips in session view.
-     *
-     * @param mode The mode to set
-     */
-    public void setSessionDisplayContent (final SessionDisplayMode mode)
-    {
-        final int index;
-        switch (mode)
-        {
-            case MARKERS:
-                index = 1;
-                break;
-            case SCENES_CLIPS:
-                index = 0;
-                break;
-            case MIXER:
-            default:
-                index = 2;
-                break;
-        }
-        this.sessionDisplayContentSetting.set (SESSION_DISPLAY_OPTIONS[index]);
     }
 
 

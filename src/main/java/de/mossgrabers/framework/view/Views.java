@@ -37,6 +37,8 @@ public enum Views
     PRG_CHANGE,
     /** View for editing the clip length. */
     CLIP_LENGTH,
+    /** View for XoX drum sequencing. */
+    DRUM_XOX,
     /** View for drum sequencing with 4 sounds. */
     DRUM4,
     /** View for drum sequencing with 8 sounds. */
@@ -111,6 +113,8 @@ public enum Views
     public static final String              NAME_PIANO          = "Piano";
     /** The name of the drum view. */
     public static final String              NAME_DRUM           = "Drum";
+    /** The name of the XoX drum view. */
+    public static final String              NAME_DRUM_XOX       = "Drum XoX";
     /** The name of the drum4 view. */
     public static final String              NAME_DRUM4          = "Drum 4";
     /** The name of the drum 8 view. */

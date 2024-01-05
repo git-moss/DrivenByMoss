@@ -4,6 +4,10 @@
 
 package de.mossgrabers.controller.ableton.push.mode.device;
 
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Optional;
+
 import de.mossgrabers.controller.ableton.push.PushConfiguration;
 import de.mossgrabers.controller.ableton.push.PushConfiguration.LockState;
 import de.mossgrabers.controller.ableton.push.controller.Push1Display;
@@ -31,10 +35,6 @@ import de.mossgrabers.framework.mode.Modes;
 import de.mossgrabers.framework.utils.ButtonEvent;
 import de.mossgrabers.framework.utils.Pair;
 import de.mossgrabers.framework.utils.StringUtils;
-
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Optional;
 
 
 /**
@@ -134,7 +134,10 @@ public class DeviceLayerMode extends BaseMode<ILayer>
 
         // Toggle send enablement
         if (isTouched && this.surface.isShiftPressed () && this.surface.isSelectPressed () && this.getParameterProvider ().get (index) instanceof final ISend send)
+        {
+            this.surface.setTriggerConsumed (ButtonID.SELECT);
             send.toggleEnabled ();
+        }
     }
 
 

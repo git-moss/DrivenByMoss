@@ -4,17 +4,18 @@
 
 package de.mossgrabers.controller.ableton.push.command.trigger;
 
+import java.util.Optional;
+
 import de.mossgrabers.controller.ableton.push.PushConfiguration;
 import de.mossgrabers.controller.ableton.push.controller.PushControlSurface;
 import de.mossgrabers.framework.command.core.AbstractTriggerCommand;
+import de.mossgrabers.framework.controller.ButtonID;
 import de.mossgrabers.framework.daw.IModel;
 import de.mossgrabers.framework.daw.data.ITrack;
 import de.mossgrabers.framework.daw.data.bank.ITrackBank;
 import de.mossgrabers.framework.featuregroup.ModeManager;
 import de.mossgrabers.framework.mode.Modes;
 import de.mossgrabers.framework.utils.ButtonEvent;
-
-import java.util.Optional;
 
 
 /**
@@ -75,6 +76,7 @@ public class TrackCommand extends AbstractTriggerCommand<PushControlSurface, Pus
                 // Layer mode selection for Push 1
                 if (this.surface.isSelectPressed () && Modes.isLayerMode (currentMode))
                 {
+                    this.surface.setTriggerConsumed (ButtonID.SELECT);
                     modeManager.setActive (Modes.DEVICE_LAYER);
                     return;
                 }

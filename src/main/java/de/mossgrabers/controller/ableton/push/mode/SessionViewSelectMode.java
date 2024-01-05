@@ -5,7 +5,6 @@
 package de.mossgrabers.controller.ableton.push.mode;
 
 import de.mossgrabers.controller.ableton.push.PushConfiguration;
-import de.mossgrabers.controller.ableton.push.PushConfiguration.SessionDisplayMode;
 import de.mossgrabers.controller.ableton.push.controller.Push1Display;
 import de.mossgrabers.controller.ableton.push.controller.PushControlSurface;
 import de.mossgrabers.framework.controller.ButtonID;
@@ -85,17 +84,14 @@ public class SessionViewSelectMode extends BaseMode<IItem>
                 break;
 
             case 5:
-                configuration.setSessionDisplayContent (SessionDisplayMode.SCENES_CLIPS);
                 modeManager.setActive (Modes.SESSION);
                 break;
 
             case 6:
-                configuration.setSessionDisplayContent (SessionDisplayMode.MARKERS);
                 modeManager.setActive (Modes.MARKERS);
                 break;
 
             case 7:
-                configuration.setSessionDisplayContent (SessionDisplayMode.MIXER);
                 modeManager.setActive (configuration.getMixerMode ());
                 break;
 
@@ -120,12 +116,12 @@ public class SessionViewSelectMode extends BaseMode<IItem>
                 display.setCell (3, i, (this.isSelected (viewManager, i) ? Push1Display.SELECT_ARROW : "") + VIEW_NAMES[i]);
         }
 
-        final SessionDisplayMode scenesClipViewSelected = this.surface.getConfiguration ().getSessionDisplayContent ();
+        final ModeManager modeManager = this.surface.getModeManager ();
         display.setCell (2, 5, " Display");
         display.setCell (2, 6, "shows:");
-        display.setCell (3, 5, " " + (scenesClipViewSelected == SessionDisplayMode.SCENES_CLIPS ? Push1Display.SELECT_ARROW : "") + "Clips");
-        display.setCell (3, 6, (scenesClipViewSelected == SessionDisplayMode.MARKERS ? Push1Display.SELECT_ARROW : "") + "Markers");
-        display.setCell (3, 7, (scenesClipViewSelected == SessionDisplayMode.MIXER ? Push1Display.SELECT_ARROW : "") + "Mixer");
+        display.setCell (3, 5, " " + (modeManager.isActiveIgnoreTemporary (Modes.SESSION) ? Push1Display.SELECT_ARROW : "") + "Clips");
+        display.setCell (3, 6, (modeManager.isActiveIgnoreTemporary (Modes.MARKERS) ? Push1Display.SELECT_ARROW : "") + "Markers");
+        display.setCell (3, 7, (!modeManager.isActiveIgnoreTemporary (Modes.SESSION, Modes.MARKERS) ? Push1Display.SELECT_ARROW : "") + "Off");
     }
 
 
@@ -139,10 +135,11 @@ public class SessionViewSelectMode extends BaseMode<IItem>
             final boolean isMenuBottomSelected = VIEWS[i] != null && this.isSelected (viewManager, i);
             display.addOptionElement (i == 0 ? "Session configuration" : "", "", false, i == 0 ? "Pads are" : "", VIEW_NAMES[i], isMenuBottomSelected, false);
         }
-        final SessionDisplayMode scenesClipViewSelected = this.surface.getConfiguration ().getSessionDisplayContent ();
-        display.addOptionElement ("", "", false, "Display shows", "Scenes/Clips", scenesClipViewSelected == SessionDisplayMode.SCENES_CLIPS, false);
-        display.addOptionElement ("", "", false, "", "Markers", scenesClipViewSelected == SessionDisplayMode.MARKERS, false);
-        display.addOptionElement ("", "", false, "", "Mixer", scenesClipViewSelected == SessionDisplayMode.MIXER, false);
+
+        final ModeManager modeManager = this.surface.getModeManager ();
+        display.addOptionElement ("", "", false, "Display shows", "Scenes/Clips", modeManager.isActiveIgnoreTemporary (Modes.SESSION), false);
+        display.addOptionElement ("", "", false, "", "Markers", modeManager.isActiveIgnoreTemporary (Modes.MARKERS), false);
+        display.addOptionElement ("", "", false, "", "Off", !modeManager.isActiveIgnoreTemporary (Modes.SESSION, Modes.MARKERS), false);
     }
 
 
@@ -161,13 +158,13 @@ public class SessionViewSelectMode extends BaseMode<IItem>
                 return this.isSelected (viewManager, index) ? AbstractMode.BUTTON_COLOR_HI : AbstractFeatureGroup.BUTTON_COLOR_ON;
             }
 
-            final SessionDisplayMode scenesClipViewSelected = this.surface.getConfiguration ().getSessionDisplayContent ();
+            final ModeManager modeManager = this.surface.getModeManager ();
             if (index == 5)
-                return scenesClipViewSelected == SessionDisplayMode.SCENES_CLIPS ? AbstractMode.BUTTON_COLOR_HI : AbstractFeatureGroup.BUTTON_COLOR_ON;
+                return modeManager.isActiveIgnoreTemporary (Modes.SESSION) ? AbstractMode.BUTTON_COLOR_HI : AbstractFeatureGroup.BUTTON_COLOR_ON;
             if (index == 6)
-                return scenesClipViewSelected == SessionDisplayMode.MARKERS ? AbstractMode.BUTTON_COLOR_HI : AbstractFeatureGroup.BUTTON_COLOR_ON;
+                return modeManager.isActiveIgnoreTemporary (Modes.MARKERS) ? AbstractMode.BUTTON_COLOR_HI : AbstractFeatureGroup.BUTTON_COLOR_ON;
             if (index == 7)
-                return scenesClipViewSelected == SessionDisplayMode.MIXER ? AbstractMode.BUTTON_COLOR_HI : AbstractFeatureGroup.BUTTON_COLOR_ON;
+                return !modeManager.isActiveIgnoreTemporary (Modes.SESSION, Modes.MARKERS) ? AbstractMode.BUTTON_COLOR_HI : AbstractFeatureGroup.BUTTON_COLOR_ON;
             return AbstractFeatureGroup.BUTTON_COLOR_OFF;
         }
 

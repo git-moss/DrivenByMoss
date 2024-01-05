@@ -4,6 +4,8 @@
 
 package de.mossgrabers.controller.ableton.push.command.trigger;
 
+import java.util.Optional;
+
 import de.mossgrabers.controller.ableton.push.PushConfiguration;
 import de.mossgrabers.controller.ableton.push.PushConfiguration.LockState;
 import de.mossgrabers.controller.ableton.push.controller.PushControlSurface;
@@ -15,8 +17,6 @@ import de.mossgrabers.framework.daw.data.ILayer;
 import de.mossgrabers.framework.featuregroup.ModeManager;
 import de.mossgrabers.framework.mode.Modes;
 import de.mossgrabers.framework.utils.ButtonEvent;
-
-import java.util.Optional;
 
 
 /**
@@ -47,6 +47,7 @@ public class MuteCommand extends AbstractTriggerCommand<PushControlSurface, Push
 
         if (this.surface.isSelectPressed ())
         {
+            this.surface.setTriggerConsumed (ButtonID.SELECT);
             if (event == ButtonEvent.UP)
                 this.model.getProject ().clearMute ();
             return;

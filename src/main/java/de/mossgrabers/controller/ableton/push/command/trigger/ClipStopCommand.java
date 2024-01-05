@@ -42,7 +42,10 @@ public class ClipStopCommand extends AbstractTriggerCommand<PushControlSurface, 
         if (this.surface.isSelectPressed ())
         {
             if (event == ButtonEvent.UP)
+            {
+                this.surface.setTriggerConsumed (ButtonID.SELECT);
                 this.model.getCurrentTrackBank ().stop (this.surface.isShiftPressed ());
+            }
             return;
         }
 

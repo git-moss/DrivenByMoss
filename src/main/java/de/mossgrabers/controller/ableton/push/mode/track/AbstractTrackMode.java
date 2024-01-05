@@ -4,6 +4,10 @@
 
 package de.mossgrabers.controller.ableton.push.mode.track;
 
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Optional;
+
 import de.mossgrabers.controller.ableton.push.PushConfiguration;
 import de.mossgrabers.controller.ableton.push.controller.Push1Display;
 import de.mossgrabers.controller.ableton.push.controller.PushColorManager;
@@ -26,10 +30,6 @@ import de.mossgrabers.framework.parameter.IParameter;
 import de.mossgrabers.framework.utils.ButtonEvent;
 import de.mossgrabers.framework.utils.Pair;
 import de.mossgrabers.framework.utils.StringUtils;
-
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Optional;
 
 
 /**
@@ -119,7 +119,13 @@ public abstract class AbstractTrackMode extends BaseMode<ITrack>
                 return;
             }
 
-            if (!track.isSelected ())
+            if (this.surface.isSelectPressed ())
+            {
+                this.surface.setTriggerConsumed (ButtonID.SELECT);
+                track.toggleMultiSelect ();
+                return;
+            }
+            else if (!track.isSelected ())
             {
                 track.select ();
                 return;
@@ -129,10 +135,13 @@ public abstract class AbstractTrackMode extends BaseMode<ITrack>
             // mode
             if (track.isGroup ())
             {
-                if (this.surface.isShiftPressed ())
+                if (this.surface.isShiftPressed () || this.surface.getConfiguration ().isTrackNavigationFlat ())
                     track.toggleGroupExpanded ();
                 else
+                {
+                    track.setGroupExpanded (true);
                     track.enter ();
+                }
             }
             else
                 this.surface.getButton (ButtonID.DEVICE).trigger (ButtonEvent.DOWN);

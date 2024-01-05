@@ -54,6 +54,7 @@ public class SelectSessionViewCommand extends AbstractTriggerCommand<PushControl
         {
             this.isTemporary = false;
 
+            // Switch to the preferred session view and display scene/clip mode if enabled
             final ViewManager viewManager = this.surface.getViewManager ();
             final ModeManager modeManager = this.surface.getModeManager ();
             if (Views.isSessionView (viewManager.getActiveID ()))
@@ -65,21 +66,8 @@ public class SelectSessionViewCommand extends AbstractTriggerCommand<PushControl
                 return;
             }
 
-            // Switch to the preferred session view and display scene/clip mode if enabled
             final PushConfiguration configuration = this.surface.getConfiguration ();
             viewManager.setActive (configuration.isScenesClipViewSelected () ? Views.SCENE_PLAY : Views.SESSION);
-            switch (configuration.getSessionDisplayContent ())
-            {
-                case SCENES_CLIPS:
-                    modeManager.setActive (Modes.SESSION);
-                    break;
-                case MARKERS:
-                    modeManager.setActive (Modes.MARKERS);
-                    break;
-                default:
-                    // Stay in mixer mode
-                    break;
-            }
             return;
         }
 

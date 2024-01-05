@@ -4,6 +4,9 @@
 
 package de.mossgrabers.controller.osc;
 
+import java.util.Arrays;
+import java.util.List;
+
 import de.mossgrabers.framework.configuration.IActionSetting;
 import de.mossgrabers.framework.configuration.IEnumSetting;
 import de.mossgrabers.framework.configuration.IIntegerSetting;
@@ -13,9 +16,6 @@ import de.mossgrabers.framework.controller.valuechanger.IValueChanger;
 import de.mossgrabers.framework.daw.IHost;
 import de.mossgrabers.framework.daw.midi.ArpeggiatorMode;
 import de.mossgrabers.framework.osc.AbstractOpenSoundControlConfiguration;
-
-import java.util.Arrays;
-import java.util.List;
 
 
 /**
@@ -130,7 +130,7 @@ public class OSCConfiguration extends AbstractOpenSoundControlConfiguration
         ///////////////////////////
         // Play and Sequence
 
-        this.activateTrackNavigationSetting (globalSettings, null);
+        this.activateTrackNavigationSetting (globalSettings, null, true);
         this.activateAccentActiveSetting (globalSettings);
         this.activateAccentValueSetting (globalSettings);
 

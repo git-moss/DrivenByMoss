@@ -257,6 +257,7 @@ public class DrumView extends AbstractDrumView<MaschineControlSurface, MaschineC
         final boolean isSelectPressed = this.surface.isSelectPressed ();
         if (isSelectPressed)
         {
+            this.surface.setTriggerConsumed (ButtonID.SELECT);
             if (velocity > 0)
                 this.handleSequencerAreaRepeatOperator (clip, notePosition, velocity, isSelectPressed);
             return true;

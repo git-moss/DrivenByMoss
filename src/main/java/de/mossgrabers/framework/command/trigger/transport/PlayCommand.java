@@ -100,6 +100,7 @@ public class PlayCommand<S extends IControlSurface<C>, C extends Configuration> 
     {
         if (this.surface.isPressed (this.selectButtonID))
         {
+            this.surface.setTriggerConsumed (this.selectButtonID);
             this.transport.togglePunchIn ();
             return true;
         }
@@ -114,7 +115,10 @@ public class PlayCommand<S extends IControlSurface<C>, C extends Configuration> 
         if (event != ButtonEvent.DOWN)
             return;
         if (this.surface.isPressed (this.selectButtonID))
+        {
+            this.surface.setTriggerConsumed (this.selectButtonID);
             this.transport.togglePunchOut ();
+        }
         else
             this.executeShifted ();
     }
