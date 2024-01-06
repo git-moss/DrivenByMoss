@@ -36,7 +36,7 @@ public class FixedLengthCommand extends AbstractTriggerCommand<PushControlSurfac
     @Override
     public void execute (final ButtonEvent event, final int velocity)
     {
-        if (event != ButtonEvent.DOWN)
+        if (event != ButtonEvent.UP)
             return;
 
         final ModeManager modeManager = this.surface.getModeManager ();

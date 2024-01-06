@@ -18,17 +18,14 @@ import de.mossgrabers.framework.controller.grid.IPadGrid;
 import de.mossgrabers.framework.controller.grid.LightInfo;
 import de.mossgrabers.framework.daw.IModel;
 import de.mossgrabers.framework.daw.clip.INoteClip;
+import de.mossgrabers.framework.daw.clip.ISessionAlternative;
 import de.mossgrabers.framework.daw.clip.IStepInfo;
 import de.mossgrabers.framework.daw.clip.NotePosition;
-import de.mossgrabers.framework.daw.clip.StepState;
 import de.mossgrabers.framework.daw.constants.Resolution;
-import de.mossgrabers.framework.daw.data.IDrumPad;
 import de.mossgrabers.framework.daw.data.ISlot;
 import de.mossgrabers.framework.daw.data.ITrack;
 import de.mossgrabers.framework.daw.data.bank.IDrumPadBank;
 import de.mossgrabers.framework.daw.data.bank.ISlotBank;
-import de.mossgrabers.framework.featuregroup.ModeManager;
-import de.mossgrabers.framework.mode.Modes;
 import de.mossgrabers.framework.scale.Scales;
 import de.mossgrabers.framework.utils.ButtonEvent;
 import de.mossgrabers.framework.view.AbstractSessionView;
@@ -43,7 +40,7 @@ import de.mossgrabers.framework.view.Views;
  *
  * @author Jürgen Moßgraber
  */
-public abstract class AbstractDrumXoXView<S extends IControlSurface<C>, C extends Configuration> extends AbstractDrumView<S, C>
+public abstract class AbstractDrumXoXView<S extends IControlSurface<C>, C extends Configuration> extends AbstractDrumView<S, C> implements ISessionAlternative
 {
     // @formatter:off
     protected static final int [] DRUM_MATRIX =
@@ -79,21 +76,26 @@ public abstract class AbstractDrumXoXView<S extends IControlSurface<C>, C extend
         NEXT_RESOLUTION.put (Resolution.RES_1_32T, Resolution.RES_1_32);
     }
 
-    protected static final int      NUM_CLIPS       = 16;
+    protected static final int      NUM_CLIPS                   = 16;
+
+    protected ButtonID              deleteButton                = ButtonID.DELETE;
+    protected ButtonID              stopButton                  = ButtonID.STOP;
+    protected ButtonID              browseButton                = ButtonID.BROWSE;
 
     protected final ISlotBank       slotBank;
-    protected ISlot                 sourceSlot      = null;
-    protected final List<IStepInfo> sourceNotes     = new ArrayList<> ();
-    protected boolean               blockSelectKnob = false;
-    protected boolean               isCopy          = true;
-    protected boolean               isSolo          = true;
-    protected boolean               editLoopRange   = false;
+    protected ISlot                 sourceSlot                  = null;
+    protected final List<IStepInfo> sourceNotes                 = new ArrayList<> ();
+    protected boolean               blockSelectKnob             = false;
 
     protected int                   numStepRows;
     protected int                   numDrumPadRows;
     protected int                   numClipsRows;
     protected int                   sequencerOffset;
     protected int                   clipsOffset;
+
+    protected ButtonID              editLoopTriggerButton       = ButtonID.FIXED_LENGTH;
+
+    private boolean                 wasAlternateInteractionUsed = false;
 
 
     /**
@@ -111,6 +113,7 @@ public abstract class AbstractDrumXoXView<S extends IControlSurface<C>, C extend
         this.playColumns = 16;
         this.allRows = this.sequencerLines;
 
+        // Pre-calculation for grid drawing
         this.numClipsRows = NUM_CLIPS / this.numColumns;
         this.numDrumPadRows = this.playColumns / this.numColumns;
         this.numStepRows = this.clipCols / this.numColumns;
@@ -146,7 +149,7 @@ public abstract class AbstractDrumXoXView<S extends IControlSurface<C>, C extend
         final IDrumPadBank drumPadBank2 = this.getDrumDevice ().getDrumPadBank ();
         final boolean isRecording = this.model.hasRecordingState ();
         for (int x = 0; x < this.playColumns; x++)
-            padGrid.lightEx (x % this.numColumns, this.numClipsRows + this.numDrumPadRows - 1 - (x / this.numColumns), this.getDrumPadColor (x, drumPadBank2, isRecording));
+            padGrid.lightEx (x % this.numColumns, this.numClipsRows + this.numDrumPadRows - 1 - x / this.numColumns, this.getDrumPadColor (x, drumPadBank2, isRecording));
     }
 
 
@@ -201,75 +204,61 @@ public abstract class AbstractDrumXoXView<S extends IControlSurface<C>, C extend
         // Drum Pad row(s)
         if (y >= this.numStepRows && y < this.clipsOffset)
         {
-            if (this.isCopy && this.isButtonCombination (ButtonID.SCENE1))
-            {
-                if (velocity > 0)
-                    return;
-
-                this.sourceSlot = null;
-                final INoteClip clip = this.getClip ();
-                if (!clip.doesExist ())
-                    return;
-
-                // TODO Test / fix
-
-                final int drumPad = this.scales.getDrumOffset () + this.selectedPad;
-                if (drumPad != -1)
-                {
-                    final NotePosition notePosition = new NotePosition (this.configuration.getMidiEditChannel (), 0, drumPad);
-                    if (this.sourceNotes.isEmpty ())
-                    {
-                        for (int step = 0; step < this.sequencerSteps; step++)
-                        {
-                            notePosition.setStep (step);
-                            this.sourceNotes.add (clip.getStep (notePosition).createCopy ());
-                        }
-                    }
-                    else
-                    {
-                        for (int step = 0; step < this.sourceNotes.size (); step++)
-                        {
-                            notePosition.setStep (step);
-                            final IStepInfo noteStep = this.sourceNotes.get (step);
-                            if (noteStep.getVelocity () == 0)
-                                clip.clearStep (notePosition);
-                            else
-                                clip.setStep (notePosition, noteStep);
-                        }
-                        this.sourceNotes.clear ();
-                    }
-                }
-                return;
-            }
-
             this.handleNoteArea ((y - this.numStepRows) * this.numColumns + x, 0, offsetY, velocity);
             return;
         }
 
         // Clips area
         final int row = this.surface.getPadGrid ().getRows () - y - 1;
-        this.handleClipRow (row * this.numColumns + x, velocity);
+        this.handleClipRow (index, row * this.numColumns + x, velocity != 0);
     }
 
 
-    protected void handleClipRow (final int clipIndex, final int velocity)
+    /** {@inheritDoc} */
+    @Override
+    protected void handleNoteAreaButtonCombinations (final int playedPad)
     {
+        if (this.isDuplicateTrigger ())
+        {
+            this.duplicateSteps ();
+            return;
+        }
+
+        super.handleNoteAreaButtonCombinations (playedPad);
+    }
+
+
+    /**
+     * Handle the clip row(s).
+     *
+     * @param padIndex The index of the pressed pad
+     * @param clipIndex The index of the clip
+     * @param isPressed If the pad was pressed
+     */
+    protected void handleClipRow (final int padIndex, final int clipIndex, final boolean isPressed)
+    {
+        final boolean isAlternateFunction = this.isAlternateFunction ();
+        if (isAlternateFunction)
+            this.setAlternateInteractionUsed (true);
+
         final ISlot slot = this.slotBank.getItem (clipIndex);
         final ITrack track = this.model.getCursorTrack ();
 
-        final boolean isPressed = velocity != 0;
         if (isPressed)
         {
             if (this.handleClipRowButtonCombinations (track, slot))
+            {
+                // Do not trigger on pad up if already handled
+                this.surface.setTriggerConsumed (ButtonID.get (ButtonID.PAD1, padIndex));
                 return;
+            }
             if (this.configuration.isSelectClipOnLaunch ())
                 slot.select ();
         }
 
         if (!track.isRecArm () || slot.hasContent ())
         {
-            if (!this.surface.isShiftPressed ())
-                slot.launch (isPressed, false);
+            this.handleClipLaunch (slot, isPressed);
             return;
         }
 
@@ -292,136 +281,18 @@ public abstract class AbstractDrumXoXView<S extends IControlSurface<C>, C extend
     }
 
 
-    /** {@inheritDoc} */
-    @Override
-    public void onButton (final ButtonID buttonID, final ButtonEvent event, final int velocity)
-    {
-        if (event != ButtonEvent.UP || !this.isActive () || this.handleGridNavigation (buttonID) || !ButtonID.isSceneButton (buttonID))
-            return;
-
-        // TODO Test / fix
-
-        final IDrumPadBank drumPadBank2 = this.getDrumDevice ().getDrumPadBank ();
-        final int index = buttonID.ordinal () - ButtonID.SCENE1.ordinal ();
-        switch (index)
-        {
-            case 0:
-                this.isCopy = !this.isCopy;
-                break;
-
-            case 1:
-                if (this.isButtonCombination (ButtonID.ALT))
-                {
-                    for (int i = 0; i < drumPadBank2.getPageSize (); i++)
-                    {
-                        final IDrumPad item = drumPadBank2.getItem (i);
-                        if (this.isSolo)
-                            item.setSolo (false);
-                        else
-                            item.setMute (false);
-                    }
-                    return;
-                }
-                this.isSolo = !this.isSolo;
-                break;
-
-            case 2:
-                this.editLoopRange = !this.editLoopRange;
-                break;
-
-            case 3:
-            default:
-                this.configuration.toggleNoteRepeatActive ();
-                this.mvHelper.delayDisplay ( () -> "Note Repeat: " + (this.configuration.isNoteRepeatActive () ? "On" : "Off"));
-                break;
-        }
-    }
-
-
     /**
-     * Handle the grid left/right buttons.
+     * Launch the clip.
      *
-     * @param buttonID The button ID
-     * @return True if handled
+     * @param slot The slot with the clip to start
+     * @param isPressed Was the pad pressed or released?
      */
-    protected boolean handleGridNavigation (final ButtonID buttonID)
+    protected void handleClipLaunch (final ISlot slot, final boolean isPressed)
     {
-        // TODO Test / fix
-
-        final INoteClip clip = this.getClip ();
-        if (buttonID == ButtonID.ARROW_LEFT)
-        {
-            if (this.surface.isPressed (ButtonID.SHIFT))
-            {
-                final int drumPad = this.scales.getDrumOffset () + this.selectedPad;
-                if (drumPad != -1)
-                {
-                    final NotePosition notePosition = new NotePosition (this.configuration.getMidiEditChannel (), 0, drumPad);
-                    final IStepInfo firstStep = clip.getStep (notePosition).createCopy ();
-                    for (int step = 1; step < this.sequencerSteps; step++)
-                    {
-                        notePosition.setStep (step);
-                        final IStepInfo noteStep = clip.getStep (notePosition);
-                        notePosition.setStep (step - 1);
-                        if (noteStep.getVelocity () == 0)
-                            clip.clearStep (notePosition);
-                        else
-                            clip.setStep (notePosition, noteStep);
-                    }
-                    notePosition.setStep (this.sequencerSteps - 1);
-                    if (firstStep.getVelocity () == 0)
-                        clip.clearStep (notePosition);
-                    else
-                        clip.setStep (notePosition, firstStep);
-                }
-            }
-            else if (this.surface.isPressed (ButtonID.ALT))
-                this.setResolutionIndex (this.getResolutionIndex () - 1);
-            else
-            {
-                clip.scrollStepsPageBackwards ();
-                this.mvHelper.notifyEditPage (clip);
-            }
-            return true;
-        }
-
-        if (buttonID == ButtonID.ARROW_RIGHT)
-        {
-            if (this.surface.isPressed (ButtonID.SHIFT))
-            {
-                final int drumPad = this.scales.getDrumOffset () + this.selectedPad;
-                if (drumPad != -1)
-                {
-                    final NotePosition notePosition = new NotePosition (this.configuration.getMidiEditChannel (), this.sequencerSteps - 1, drumPad);
-                    final IStepInfo lastStep = clip.getStep (notePosition).createCopy ();
-                    for (int step = 0; step < this.sequencerSteps - 1; step++)
-                    {
-                        notePosition.setStep (step);
-                        final IStepInfo noteStep = clip.getStep (notePosition);
-                        notePosition.setStep (step + 1);
-                        if (noteStep.getVelocity () == 0)
-                            clip.clearStep (notePosition);
-                        else
-                            clip.setStep (notePosition, noteStep);
-                    }
-                    notePosition.setStep (0);
-                    if (lastStep.getVelocity () == 0)
-                        clip.clearStep (notePosition);
-                    else
-                        clip.setStep (notePosition, lastStep);
-                }
-            }
-            else if (this.surface.isPressed (ButtonID.ALT))
-                this.setResolutionIndex (this.getResolutionIndex () + 1);
-            else
-            {
-                clip.scrollStepsPageForward ();
-                this.mvHelper.notifyEditPage (clip);
-            }
-            return true;
-        }
-
-        return false;
+        if (this.surface.isPressed (this.buttonSelect))
+            slot.select ();
+        else
+            slot.launch (isPressed, this.isAlternateFunction ());
     }
 
 
@@ -429,89 +300,85 @@ public abstract class AbstractDrumXoXView<S extends IControlSurface<C>, C extend
     @Override
     protected void handleSequencerArea (final int index, final int x, final int y, final int offsetY, final int velocity)
     {
-        // TODO Test / fix
-
         if (this.isEditLoopRange ())
         {
             if (velocity > 0)
                 return;
 
-            if (this.surface.isPressed (ButtonID.SCENE3))
-                this.surface.setTriggerConsumed (ButtonID.SCENE3);
+            this.surface.setTriggerConsumed (this.editLoopTriggerButton);
 
-            int steps = (1 - y) * this.numColumns + x + 1;
+            int steps = (this.numStepRows - 1 - y) * this.numColumns + x + 1;
             final INoteClip clip = this.getClip ();
             steps += clip.getEditPage () * this.sequencerSteps;
             clip.setLoopLength (steps * Resolution.getValueAt (this.getResolutionIndex ()));
             return;
         }
 
-        // TODO Test / fix
-
-        // Handle note editor mode
-        final ModeManager modeManager = this.surface.getModeManager ();
-        if (velocity > 0)
-        {
-            if (modeManager.isActive (Modes.NOTE))
-            {
-                // Store existing note for editing
-                final int sound = offsetY + this.selectedPad;
-                final int step = this.numColumns * (this.allRows - 1 - y) + x;
-                final NotePosition notePosition = new NotePosition (this.configuration.getMidiEditChannel (), step, sound);
-                final INoteClip clip = this.getClip ();
-                final StepState state = clip.getStep (notePosition).getState ();
-                if (state == StepState.START)
-                    this.editNote (clip, notePosition, true);
-                return;
-            }
-        }
-        else
-        {
-            if (this.isNoteEdited)
-                this.isNoteEdited = false;
-            if (modeManager.isActive (Modes.NOTE))
-                return;
-        }
+        this.handleNoteEditorMode (x, y, offsetY, velocity);
 
         super.handleSequencerArea (index, x, y, offsetY, velocity);
     }
 
 
+    /**
+     * Plug-ability for handling note editor mode.
+     *
+     * @param x The x position of the pad in the sequencer grid
+     * @param y The y position of the pad in the sequencer grid
+     * @param offsetY The drum offset
+     * @param velocity The velocity
+     * @return If handled
+     */
+    protected boolean handleNoteEditorMode (final int x, final int y, final int offsetY, final int velocity)
+    {
+        return false;
+    }
+
+
+    /**
+     * Handle the button combinations on the clip row(s).
+     *
+     * @param track The track of the slot
+     * @param slot The pressed slot
+     * @return True if handled
+     */
     protected boolean handleClipRowButtonCombinations (final ITrack track, final ISlot slot)
     {
         if (!track.doesExist ())
             return true;
 
-        // TODO Test / fix
-
         // Delete selected clip
-        if (this.isButtonCombination (ButtonID.SCENE1))
+        if (this.isDeleteTrigger ())
         {
-            if (this.isCopy)
-            {
-                if (this.sourceSlot != null)
-                {
-                    slot.paste (this.sourceSlot);
-                    this.sourceSlot = null;
-                }
-                else if (slot.doesExist () && slot.hasContent ())
-                    this.sourceSlot = slot;
-                this.sourceNotes.clear ();
-            }
-            else if (slot.doesExist ())
+            if (slot.doesExist ())
                 slot.remove ();
             return true;
         }
 
+        // Duplicate selected clip
+        if (this.isDuplicateTrigger ())
+        {
+            if (this.sourceSlot != null)
+            {
+                slot.paste (this.sourceSlot);
+                this.sourceSlot = null;
+            }
+            else if (slot.doesExist () && slot.hasContent ())
+                this.sourceSlot = slot;
+            this.sourceNotes.clear ();
+            return true;
+        }
+
         // Stop clip
-        if (this.isButtonCombination (ButtonID.STOP))
+        if (this.isButtonCombination (this.stopButton))
+
         {
             track.stop (false);
             return true;
         }
 
         // Browse for clips
-        if (this.isButtonCombination (ButtonID.BROWSE))
+        if (this.isButtonCombination (this.browseButton))
         {
             this.model.getBrowser ().replace (slot);
             return true;
@@ -521,33 +388,55 @@ public abstract class AbstractDrumXoXView<S extends IControlSurface<C>, C extend
     }
 
 
-    /** {@inheritDoc} */
-    @Override
-    protected boolean isSoloTrigger ()
+    /**
+     * Stores the active steps of the selected drum pad, if there are no saved steps. Otherwise,
+     * writes the active steps of the (newly) selected drum pad and clears them afterwards.
+     */
+    protected void duplicateSteps ()
     {
-        // TODO Test / fix
+        this.sourceSlot = null;
+        final INoteClip clip = this.getClip ();
+        if (!clip.doesExist ())
+            return;
 
-        return this.isSolo && this.isButtonCombination (ButtonID.SCENE2);
+        final int drumPad = this.scales.getDrumOffset () + this.selectedPad;
+        if (drumPad == -1)
+            return;
+
+        // Stores the active steps of the selected drum pad, if there are no saved steps
+        final NotePosition notePosition = new NotePosition (this.configuration.getMidiEditChannel (), 0, drumPad);
+        if (this.sourceNotes.isEmpty ())
+        {
+            for (int step = 0; step < this.sequencerSteps; step++)
+            {
+                notePosition.setStep (step);
+                this.sourceNotes.add (clip.getStep (notePosition).createCopy ());
+            }
+            return;
+        }
+
+        // Writes the active steps of the (newly) selected drum pad and clears them afterwards
+        for (int step = 0; step < this.sourceNotes.size (); step++)
+        {
+            notePosition.setStep (step);
+            final IStepInfo noteStep = this.sourceNotes.get (step);
+            if (noteStep.getVelocity () == 0)
+                clip.clearStep (notePosition);
+            else
+                clip.setStep (notePosition, noteStep);
+        }
+        this.sourceNotes.clear ();
     }
 
 
-    /** {@inheritDoc} */
-    @Override
-    protected boolean isMuteTrigger ()
+    /**
+     * Test for the duplicate trigger.
+     *
+     * @return True if duplicate trigger is active
+     */
+    protected boolean isDuplicateTrigger ()
     {
-        // TODO Test / fix
-
-        return !this.isSolo && this.isButtonCombination (ButtonID.SCENE2);
-    }
-
-
-    /** {@inheritDoc} */
-    @Override
-    protected boolean isDeleteTrigger ()
-    {
-        // TODO Test / fix
-
-        return !this.isCopy && this.isButtonCombination (ButtonID.SCENE1);
+        return this.isButtonCombination (ButtonID.DUPLICATE);
     }
 
 
@@ -566,25 +455,6 @@ public abstract class AbstractDrumXoXView<S extends IControlSurface<C>, C extend
             noteMap[note] = n < 0 || n > 127 ? -1 : n;
         }
         return noteMap;
-    }
-
-
-    /** {@inheritDoc} */
-    @Override
-    protected boolean handleSequencerAreaButtonCombinations (final INoteClip clip, final NotePosition notePosition, final int velocity)
-    {
-        // TODO Test / fix
-
-        final boolean isUpPressed = this.surface.isPressed (ButtonID.ARROW_UP);
-        if (isUpPressed || this.surface.isPressed (ButtonID.ARROW_DOWN))
-        {
-            this.surface.setTriggerConsumed (isUpPressed ? ButtonID.ARROW_UP : ButtonID.ARROW_DOWN);
-            if (velocity > 0)
-                this.handleSequencerAreaRepeatOperator (clip, notePosition, velocity, isUpPressed);
-            return true;
-        }
-
-        return super.handleSequencerAreaButtonCombinations (clip, notePosition, velocity);
     }
 
 
@@ -607,8 +477,96 @@ public abstract class AbstractDrumXoXView<S extends IControlSurface<C>, C extend
 
     protected boolean isEditLoopRange ()
     {
-        // TODO Test / fix
+        return this.surface.isPressed (this.editLoopTriggerButton);
+    }
 
-        return this.surface.isPressed (ButtonID.SCENE3) || this.editLoopRange;
+
+    /** {@inheritDoc} */
+    @Override
+    public boolean wasAlternateInteractionUsed ()
+    {
+        return this.wasAlternateInteractionUsed;
+    }
+
+
+    /** {@inheritDoc} */
+    @Override
+    public void setAlternateInteractionUsed (final boolean wasUsed)
+    {
+        this.wasAlternateInteractionUsed = wasUsed;
+    }
+
+
+    /**
+     * Check if the alternate launch/stop function should be executed, e.g. when a SHIFT button is
+     * pressed.
+     *
+     * @return True if alternate function should be executed
+     */
+    protected boolean isAlternateFunction ()
+    {
+        return this.surface.isShiftPressed ();
+    }
+
+
+    /**
+     * Rotates the steps of the selected drum pad to the left.
+     *
+     * @param clip The clip which contains the notes
+     */
+    protected void rotateStepsLeft (final INoteClip clip)
+    {
+        final int drumPad = this.scales.getDrumOffset () + this.selectedPad;
+        if (drumPad == -1)
+            return;
+
+        final NotePosition notePosition = new NotePosition (this.configuration.getMidiEditChannel (), 0, drumPad);
+        final IStepInfo firstStep = clip.getStep (notePosition).createCopy ();
+        for (int step = 1; step < this.sequencerSteps; step++)
+        {
+            notePosition.setStep (step);
+            final IStepInfo noteStep = clip.getStep (notePosition);
+            notePosition.setStep (step - 1);
+            if (noteStep.getVelocity () == 0)
+                clip.clearStep (notePosition);
+            else
+                clip.setStep (notePosition, noteStep);
+        }
+        notePosition.setStep (this.sequencerSteps - 1);
+        if (firstStep.getVelocity () == 0)
+            clip.clearStep (notePosition);
+        else
+            clip.setStep (notePosition, firstStep);
+    }
+
+
+    /**
+     * Rotates the steps of the selected drum pad to the right.
+     *
+     * @param clip The clip which contains the notes
+     */
+    protected void rotateStepsRight (final INoteClip clip)
+    {
+        final int drumPad = this.scales.getDrumOffset () + this.selectedPad;
+        if (drumPad == -1)
+            return;
+
+        final NotePosition notePosition = new NotePosition (this.configuration.getMidiEditChannel (), this.sequencerSteps - 1, drumPad);
+        final IStepInfo lastStep = clip.getStep (notePosition).createCopy ();
+        for (int step = 0; step < this.sequencerSteps - 1; step++)
+        {
+            notePosition.setStep (step);
+            final IStepInfo noteStep = clip.getStep (notePosition);
+            notePosition.setStep (step + 1);
+            if (noteStep.getVelocity () == 0)
+                clip.clearStep (notePosition);
+            else
+                clip.setStep (notePosition, noteStep);
+        }
+        notePosition.setStep (0);
+        if (lastStep.getVelocity () == 0)
+            clip.clearStep (notePosition);
+        else
+            clip.setStep (notePosition, lastStep);
     }
 }

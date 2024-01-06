@@ -29,9 +29,8 @@ import de.mossgrabers.framework.view.Views;
  */
 public class ToggleShiftViewCommand<S extends IControlSurface<C>, C extends Configuration> extends AbstractTriggerCommand<S, C>
 {
-    protected final ViewManager         viewManager;
-    protected final ISessionAlternative sessionAlternative;
-    protected final IView               shiftView;
+    protected final ViewManager viewManager;
+    protected final IView       shiftView;
 
 
     /**
@@ -45,7 +44,6 @@ public class ToggleShiftViewCommand<S extends IControlSurface<C>, C extends Conf
         super (model, surface);
 
         this.viewManager = this.surface.getViewManager ();
-        this.sessionAlternative = (ISessionAlternative) this.viewManager.get (Views.SESSION);
         this.shiftView = this.viewManager.get (Views.SHIFT);
     }
 
@@ -114,7 +112,8 @@ public class ToggleShiftViewCommand<S extends IControlSurface<C>, C extends Conf
      */
     protected void clearAlternateInteractionUsed ()
     {
-        this.sessionAlternative.setAlternateInteractionUsed (false);
+        if (this.viewManager.getActive () instanceof final ISessionAlternative sessionAlternative)
+            sessionAlternative.setAlternateInteractionUsed (false);
     }
 
 
@@ -125,7 +124,7 @@ public class ToggleShiftViewCommand<S extends IControlSurface<C>, C extends Conf
      */
     protected boolean wasAlternateInteractionUsed ()
     {
-        return this.sessionAlternative.wasAlternateInteractionUsed ();
+        return this.viewManager.getActive () instanceof final ISessionAlternative sessionAlternative && sessionAlternative.wasAlternateInteractionUsed ();
     }
 
 

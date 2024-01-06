@@ -46,11 +46,11 @@ public class NoteViewSelectMode extends BaseMode<IItem>
         Views.SEQUENCER,
         Views.POLY_SEQUENCER,
         Views.RAINDROPS,
+        null,
         Views.DRUM,
         Views.DRUM4,
         Views.DRUM8,
-        Views.DRUM_XOX,
-        null
+        Views.DRUM_XOX
     };
 
 
