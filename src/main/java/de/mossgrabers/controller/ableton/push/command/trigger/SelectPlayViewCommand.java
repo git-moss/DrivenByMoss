@@ -41,18 +41,14 @@ public class SelectPlayViewCommand extends AbstractTriggerCommand<PushControlSur
         if (event != ButtonEvent.DOWN)
             return;
 
-        final ModeManager modeManager = this.surface.getModeManager ();
         final ViewManager viewManager = this.surface.getViewManager ();
         if (Views.isSessionView (viewManager.getActiveID ()))
         {
             this.surface.recallPreferredView (this.model.getCursorTrack ());
-
-            if (modeManager.isActive (Modes.SESSION, Modes.MARKERS) || modeManager.isTemporary ())
-                modeManager.setActive (this.surface.getConfiguration ().getMixerMode ());
-
             return;
         }
 
+        final ModeManager modeManager = this.surface.getModeManager ();
         if (modeManager.isActive (Modes.VIEW_SELECT))
             modeManager.restore ();
         else

@@ -98,6 +98,7 @@ public class Drum4View extends AbstractDrum4View<PushControlSurface, PushConfigu
 
         if (isSelectPressed)
         {
+            this.surface.setTriggerConsumed (ButtonID.SELECT);
             if (velocity > 0)
                 this.editNote (clip, notePosition, true);
             return true;

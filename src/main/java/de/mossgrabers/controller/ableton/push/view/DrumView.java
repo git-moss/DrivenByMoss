@@ -163,6 +163,7 @@ public class DrumView extends AbstractDrumView<PushControlSurface, PushConfigura
 
         if (isSelectPressed)
         {
+            this.surface.setTriggerConsumed (ButtonID.SELECT);
             this.editNote (clip, notePosition, true);
             return true;
         }

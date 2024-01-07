@@ -35,6 +35,29 @@ public class DrumXoXView extends AbstractDrumXoXView<PushControlSurface, PushCon
 
     /** {@inheritDoc} */
     @Override
+    public void onGridNoteLongPress (final int note)
+    {
+        if (!this.isActive ())
+            return;
+
+        final int index = note - DRUM_START_KEY;
+        final int x = index % this.numColumns;
+        final int y = index / this.numColumns;
+
+        // Sequencer steps
+        if (y < this.numStepRows)
+        {
+            this.surface.getButton (ButtonID.get (ButtonID.PAD1, index)).setConsumed ();
+
+            final int offsetY = this.scales.getDrumOffset ();
+            final NotePosition notePosition = new NotePosition (this.configuration.getMidiEditChannel (), (this.numStepRows - 1 - y) * this.numColumns + x, offsetY + this.selectedPad);
+            this.editNote (this.getClip (), notePosition, false);
+        }
+    }
+
+
+    /** {@inheritDoc} */
+    @Override
     protected boolean handleSequencerAreaButtonCombinations (final INoteClip clip, final NotePosition notePosition, final int velocity)
     {
         final boolean isSelectPressed = this.surface.isSelectPressed ();

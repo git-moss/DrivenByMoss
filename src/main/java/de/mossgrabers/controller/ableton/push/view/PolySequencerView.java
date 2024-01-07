@@ -86,6 +86,7 @@ public class PolySequencerView extends AbstractPolySequencerView<PushControlSurf
         // Add note to edit notes with SELECT
         if (isSelectPressed)
         {
+            this.surface.setTriggerConsumed (ButtonID.SELECT);
             for (int row = 0; row < 128; row++)
             {
                 notePosition.setNote (row);

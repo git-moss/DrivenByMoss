@@ -50,12 +50,13 @@ public class SelectSessionViewCommand extends AbstractTriggerCommand<PushControl
     @Override
     public void execute (final ButtonEvent event, final int velocity)
     {
+        final ViewManager viewManager = this.surface.getViewManager ();
+
         if (event == ButtonEvent.DOWN)
         {
             this.isTemporary = false;
 
-            // Switch to the preferred session view and display scene/clip mode if enabled
-            final ViewManager viewManager = this.surface.getViewManager ();
+            // Switch to the preferred session view
             final ModeManager modeManager = this.surface.getModeManager ();
             if (Views.isSessionView (viewManager.getActiveID ()))
             {
@@ -72,6 +73,6 @@ public class SelectSessionViewCommand extends AbstractTriggerCommand<PushControl
         }
 
         if (event == ButtonEvent.UP && this.isTemporary)
-            this.surface.getViewManager ().restore ();
+            viewManager.restore ();
     }
 }
