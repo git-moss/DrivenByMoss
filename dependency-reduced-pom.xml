@@ -130,7 +130,7 @@
             </goals>
             <configuration>
               <sourceFile>${project.build.directory}/${project.build.finalName}.jar</sourceFile>
-              <destinationFile>${bitwig.extension.directory}/DrivenByMoss.bwextension</destinationFile>
+              <destinationFile>/Users/mkramer/Documents/Bitwig Studio/Extensions/DriverByMoss_mkr.bwextension</destinationFile>
             </configuration>
           </execution>
         </executions>
