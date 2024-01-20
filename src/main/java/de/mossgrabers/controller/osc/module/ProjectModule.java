@@ -111,12 +111,12 @@ public class ProjectModule extends AbstractModule
             {
                 case "+":
                     if (isTrigger (value))
-                        parameterBank.selectNextPage ();
+                        parameterBank.selectNextItem ();
                     break;
 
                 case "-":
                     if (isTrigger (value))
-                        parameterBank.selectPreviousPage ();
+                        parameterBank.selectPreviousItem ();
                     break;
 
                 case "bank":

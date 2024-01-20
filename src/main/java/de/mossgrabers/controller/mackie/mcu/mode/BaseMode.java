@@ -4,6 +4,8 @@
 
 package de.mossgrabers.controller.mackie.mcu.mode;
 
+import java.util.Optional;
+
 import de.mossgrabers.controller.mackie.mcu.MCUConfiguration;
 import de.mossgrabers.controller.mackie.mcu.MCUControllerSetup;
 import de.mossgrabers.controller.mackie.mcu.controller.MCUControlSurface;
@@ -29,8 +31,6 @@ import de.mossgrabers.framework.parameter.IParameter;
 import de.mossgrabers.framework.parameterprovider.IParameterProvider;
 import de.mossgrabers.framework.utils.ButtonEvent;
 import de.mossgrabers.framework.utils.StringUtils;
-
-import java.util.Optional;
 
 
 /**
@@ -135,8 +135,11 @@ public abstract class BaseMode<B extends IItem> extends AbstractParameterMode<MC
             final boolean isLayerMode = Modes.isLayerMode (this.surface.getModeManager ().getActiveID ());
             parameterProvider = ((AbstractParameterMode<?, ?, ?>) modeManager.get (isLayerMode ? Modes.DEVICE_LAYER_VOLUME : Modes.VOLUME)).getParameterProvider ();
         }
-        for (int i = 0; i < this.controls.size (); i++)
-            this.surface.getContinuous (ContinuousID.get (ContinuousID.FADER1, i)).bind (parameterProvider.get (i));
+        if (parameterProvider != null)
+        {
+            for (int i = 0; i < this.controls.size (); i++)
+                this.surface.getContinuous (ContinuousID.get (ContinuousID.FADER1, i)).bind (parameterProvider.get (i));
+        }
     }
 
 
@@ -146,9 +149,13 @@ public abstract class BaseMode<B extends IItem> extends AbstractParameterMode<MC
     {
         this.setTouchedKnob (index, isTouched);
 
-        final IParameter parameter = this.getParameterProvider ().get (index);
-        if (parameter.doesExist ())
-            parameter.touchValue (isTouched);
+        final IParameterProvider parameterProvider = this.getParameterProvider ();
+        if (parameterProvider != null)
+        {
+            final IParameter parameter = parameterProvider.get (index);
+            if (parameter.doesExist ())
+                parameter.touchValue (isTouched);
+        }
     }
 
 
@@ -229,7 +236,9 @@ public abstract class BaseMode<B extends IItem> extends AbstractParameterMode<MC
      */
     protected void resetParameter (final int index)
     {
-        this.resetParameter (this.getParameterProvider ().get (index));
+        final IParameterProvider parameterProvider = this.getParameterProvider ();
+        if (parameterProvider != null)
+            this.resetParameter (parameterProvider.get (index));
     }
 
 
@@ -275,6 +284,8 @@ public abstract class BaseMode<B extends IItem> extends AbstractParameterMode<MC
     protected void updateKnobLEDs (final int [] knobLedModes)
     {
         final IParameterProvider parameterProvider = this.getParameterProvider ();
+        if (parameterProvider == null)
+            return;
         final int upperBound = this.model.getValueChanger ().getUpperBound ();
         for (int i = 0; i < 8; i++)
         {
@@ -301,6 +312,8 @@ public abstract class BaseMode<B extends IItem> extends AbstractParameterMode<MC
     protected void drawParameterHeader ()
     {
         final IParameterProvider parameterProvider = this.getParameterProvider ();
+        if (parameterProvider == null)
+            return;
         final ITextDisplay d = this.surface.getTextDisplay ().clear ();
         final int textLength = this.getTextLength ();
         for (int i = 0; i < 8; i++)
@@ -329,6 +342,8 @@ public abstract class BaseMode<B extends IItem> extends AbstractParameterMode<MC
 
         final ITextDisplay d = this.surface.getTextDisplay ();
         final IParameterProvider parameterProvider = this.getParameterProvider ();
+        if (parameterProvider == null)
+            return;
 
         final ColorEx [] colors = new ColorEx [8];
         final int textLength = this.getTextLength ();

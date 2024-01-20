@@ -4,6 +4,8 @@
 
 package de.mossgrabers.controller.generic.flexihandler;
 
+import java.util.Optional;
+
 import de.mossgrabers.controller.generic.GenericFlexiConfiguration;
 import de.mossgrabers.controller.generic.controller.FlexiCommand;
 import de.mossgrabers.controller.generic.controller.GenericFlexiControlSurface;
@@ -23,8 +25,6 @@ import de.mossgrabers.framework.daw.data.bank.ITrackBank;
 import de.mossgrabers.framework.daw.resource.ChannelType;
 import de.mossgrabers.framework.parameter.IParameter;
 import de.mossgrabers.framework.utils.ButtonEvent;
-
-import java.util.Optional;
 
 
 /**
@@ -729,7 +729,7 @@ public class TrackHandler extends AbstractHandler
 
     private void scrollTrack (final KnobMode knobMode, final MidiValue value)
     {
-        if (!isAbsolute (knobMode) && this.increaseKnobMovement ())
+        if (!isAbsolute (knobMode))
             this.clipLauncherNavigator.navigateTracks (!this.isIncrease (knobMode, value));
     }
 }

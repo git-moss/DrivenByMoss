@@ -1,5 +1,7 @@
 package de.mossgrabers.controller.novation.launchcontrol.mode.main;
 
+import java.util.List;
+
 import de.mossgrabers.controller.novation.launchcontrol.LaunchControlXLConfiguration;
 import de.mossgrabers.controller.novation.launchcontrol.controller.LaunchControlXLColorManager;
 import de.mossgrabers.controller.novation.launchcontrol.controller.LaunchControlXLControlSurface;
@@ -19,8 +21,6 @@ import de.mossgrabers.framework.mode.Modes;
 import de.mossgrabers.framework.parameterprovider.IParameterProvider;
 import de.mossgrabers.framework.utils.ButtonEvent;
 import de.mossgrabers.framework.utils.FrameworkException;
-
-import java.util.List;
 
 
 /**
@@ -241,13 +241,25 @@ public abstract class XLAbstractMainMode<B extends IItem> extends AbstractParame
                 this.tempoUp.execute (event, event == ButtonEvent.DOWN ? 127 : 0);
                 break;
 
+            // Undo
+            case 4:
+                if (event == ButtonEvent.DOWN)
+                    this.model.getApplication ().undo ();
+                break;
+
+            // Redo
+            case 5:
+                if (event == ButtonEvent.DOWN)
+                    this.model.getApplication ().redo ();
+                break;
+
             // Toggle Clip Automation Write
             case 6:
                 if (event == ButtonEvent.DOWN)
                     transport.toggleWriteClipLauncherAutomation ();
                 break;
 
-            // Toggle plugin window
+            // Toggle plug-in window
             case 7:
                 if (event == ButtonEvent.DOWN)
                     this.model.getCursorDevice ().toggleWindowOpen ();
@@ -276,6 +288,13 @@ public abstract class XLAbstractMainMode<B extends IItem> extends AbstractParame
             // Tempo
             case 2, 3:
                 return LaunchControlXLColorManager.LAUNCHCONTROL_COLOR_GREEN_LO;
+
+            // Undo
+            case 4:
+                return this.model.getApplication ().canUndo () ? LaunchControlXLColorManager.LAUNCHCONTROL_COLOR_YELLOW_LO : LaunchControlXLColorManager.LAUNCHCONTROL_COLOR_BLACK;
+            // Redo
+            case 5:
+                return this.model.getApplication ().canRedo () ? LaunchControlXLColorManager.LAUNCHCONTROL_COLOR_YELLOW_LO : LaunchControlXLColorManager.LAUNCHCONTROL_COLOR_BLACK;
 
             // Toggle Clip Automation Write
             case 6:

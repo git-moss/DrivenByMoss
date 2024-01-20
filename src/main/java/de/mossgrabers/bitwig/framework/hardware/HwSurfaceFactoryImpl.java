@@ -4,6 +4,19 @@
 
 package de.mossgrabers.bitwig.framework.hardware;
 
+import java.util.function.Consumer;
+import java.util.function.IntConsumer;
+import java.util.function.IntFunction;
+import java.util.function.IntSupplier;
+import java.util.function.Supplier;
+
+import com.bitwig.extension.api.Color;
+import com.bitwig.extension.controller.api.HardwareButton;
+import com.bitwig.extension.controller.api.HardwareLightVisualState;
+import com.bitwig.extension.controller.api.HardwareSurface;
+import com.bitwig.extension.controller.api.InternalHardwareLightState;
+import com.bitwig.extension.controller.api.MultiStateHardwareLight;
+
 import de.mossgrabers.bitwig.framework.daw.HostImpl;
 import de.mossgrabers.bitwig.framework.graphics.BitmapImpl;
 import de.mossgrabers.framework.controller.ButtonID;
@@ -22,19 +35,6 @@ import de.mossgrabers.framework.controller.hardware.IHwTextDisplay;
 import de.mossgrabers.framework.controller.valuechanger.RelativeEncoding;
 import de.mossgrabers.framework.graphics.IBitmap;
 import de.mossgrabers.framework.utils.OperatingSystem;
-
-import com.bitwig.extension.api.Color;
-import com.bitwig.extension.controller.api.HardwareButton;
-import com.bitwig.extension.controller.api.HardwareLightVisualState;
-import com.bitwig.extension.controller.api.HardwareSurface;
-import com.bitwig.extension.controller.api.InternalHardwareLightState;
-import com.bitwig.extension.controller.api.MultiStateHardwareLight;
-
-import java.util.function.Consumer;
-import java.util.function.IntConsumer;
-import java.util.function.IntFunction;
-import java.util.function.IntSupplier;
-import java.util.function.Supplier;
 
 
 /**
@@ -81,17 +81,13 @@ public class HwSurfaceFactoryImpl implements IHwSurfaceFactory
     @Override
     public IHwLight createLight (final int surfaceID, final OutputID outputID, final Supplier<ColorEx> supplier, final Consumer<ColorEx> sendValueConsumer)
     {
-        this.lightCounter++;
-        final String id = createID (surfaceID, outputID == null ? "LIGHT" + this.lightCounter : outputID.name ());
-
-        final MultiStateHardwareLight hardwareLight = this.hardwareSurface.createMultiStateHardwareLight (id);
         final Supplier<InternalHardwareLightState> valueSupplier = () -> new RawColorLightState (supplier.get ());
         final Consumer<InternalHardwareLightState> hardwareUpdater = state -> {
             final HardwareLightVisualState visualState = state == null ? null : state.getVisualState ();
             final Color c = visualState == null ? Color.blackColor () : visualState.getColor ();
             sendValueConsumer.accept (new ColorEx (c.getRed (), c.getGreen (), c.getBlue ()));
         };
-        return new HwLightImpl (this.host, hardwareLight, valueSupplier, hardwareUpdater);
+        return this.createMultiStateHardwareLight (surfaceID, outputID, valueSupplier, hardwareUpdater);
     }
 
 
@@ -99,22 +95,25 @@ public class HwSurfaceFactoryImpl implements IHwSurfaceFactory
     @Override
     public IHwLight createLight (final int surfaceID, final OutputID outputID, final IntSupplier supplier, final IntConsumer sendValueConsumer, final IntFunction<ColorEx> stateToColorFunction, final IHwButton button)
     {
-        this.lightCounter++;
-        final String id = createID (surfaceID, outputID == null ? "LIGHT" + this.lightCounter : outputID.name ());
-
-        final MultiStateHardwareLight hardwareLight = this.hardwareSurface.createMultiStateHardwareLight (id);
-
         final Supplier<InternalHardwareLightState> valueSupplier = () -> new EncodedColorLightState (supplier.getAsInt (), stateToColorFunction);
         final Consumer<InternalHardwareLightState> hardwareUpdater = state -> {
             final HardwareLightVisualState visualState = state == null ? null : state.getVisualState ();
             final int encodedColorState = visualState == null ? 0 : supplier.getAsInt ();
             sendValueConsumer.accept (encodedColorState);
         };
-
-        final HwLightImpl lightImpl = new HwLightImpl (this.host, hardwareLight, valueSupplier, hardwareUpdater);
+        final HwLightImpl lightImpl = this.createMultiStateHardwareLight (surfaceID, outputID, valueSupplier, hardwareUpdater);
         if (button != null)
             button.addLight (lightImpl);
         return lightImpl;
+    }
+
+
+    private HwLightImpl createMultiStateHardwareLight (final int surfaceID, final OutputID outputID, final Supplier<InternalHardwareLightState> valueSupplier, final Consumer<InternalHardwareLightState> hardwareUpdater)
+    {
+        this.lightCounter++;
+        final String id = createID (surfaceID, outputID == null ? "LIGHT" + this.lightCounter : outputID.name ());
+        final MultiStateHardwareLight hardwareLight = this.hardwareSurface.createMultiStateHardwareLight (id);
+        return new HwLightImpl (this.host, hardwareLight, valueSupplier, hardwareUpdater);
     }
 
 

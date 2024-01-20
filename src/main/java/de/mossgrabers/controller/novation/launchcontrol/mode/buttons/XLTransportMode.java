@@ -7,6 +7,7 @@ import de.mossgrabers.framework.command.trigger.transport.PlayCommand;
 import de.mossgrabers.framework.command.trigger.transport.WindCommand;
 import de.mossgrabers.framework.controller.ButtonID;
 import de.mossgrabers.framework.daw.IModel;
+import de.mossgrabers.framework.daw.IProject;
 import de.mossgrabers.framework.daw.ITransport;
 import de.mossgrabers.framework.utils.ButtonEvent;
 
@@ -80,8 +81,9 @@ public class XLTransportMode extends XLTemporaryButtonMode
             case 7:
                 if (event == ButtonEvent.DOWN)
                 {
-                    this.model.getProject ().clearMute ();
-                    this.model.getProject ().clearSolo ();
+                    final IProject project = this.model.getProject ();
+                    project.clearMute ();
+                    project.clearSolo ();
                 }
                 break;
             default:

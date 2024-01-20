@@ -4,17 +4,17 @@
 
 package de.mossgrabers.bitwig.framework.daw;
 
+import com.bitwig.extension.controller.api.Action;
+import com.bitwig.extension.controller.api.ActionCategory;
+import com.bitwig.extension.controller.api.Application;
+import com.bitwig.extension.controller.api.Arranger;
+
 import de.mossgrabers.bitwig.framework.daw.data.Util;
 import de.mossgrabers.framework.controller.valuechanger.IValueChanger;
 import de.mossgrabers.framework.daw.IApplication;
 import de.mossgrabers.framework.daw.constants.RecordQuantization;
 import de.mossgrabers.framework.parameter.IParameter;
 import de.mossgrabers.framework.parameter.ZoomParameter;
-
-import com.bitwig.extension.controller.api.Action;
-import com.bitwig.extension.controller.api.ActionCategory;
-import com.bitwig.extension.controller.api.Application;
-import com.bitwig.extension.controller.api.Arranger;
 
 
 /**

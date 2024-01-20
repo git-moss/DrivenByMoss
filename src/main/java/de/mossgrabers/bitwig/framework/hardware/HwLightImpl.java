@@ -4,16 +4,16 @@
 
 package de.mossgrabers.bitwig.framework.hardware;
 
-import de.mossgrabers.framework.controller.hardware.AbstractHwControl;
-import de.mossgrabers.framework.controller.hardware.IHwLight;
-import de.mossgrabers.framework.daw.IHost;
+import java.util.function.Consumer;
+import java.util.function.Supplier;
 
 import com.bitwig.extension.controller.api.InternalHardwareLightState;
 import com.bitwig.extension.controller.api.MultiStateHardwareLight;
 import com.bitwig.extension.controller.api.ObjectHardwareProperty;
 
-import java.util.function.Consumer;
-import java.util.function.Supplier;
+import de.mossgrabers.framework.controller.hardware.AbstractHwControl;
+import de.mossgrabers.framework.controller.hardware.IHwLight;
+import de.mossgrabers.framework.daw.IHost;
 
 
 /**
@@ -45,6 +45,13 @@ public class HwLightImpl extends AbstractHwControl implements IHwLight
         final ObjectHardwareProperty<InternalHardwareLightState> state = hardwareLight.state ();
         state.setValueSupplier (valueSupplier);
         state.onUpdateHardware (hardwareUpdater);
+
+        // TODO Test with next BW Update
+        // hardwareLight.setColorToStateFunction (color -> {
+        //
+        // return new EncodedColorLightState (-1, null);
+        //
+        // });
     }
 
 
