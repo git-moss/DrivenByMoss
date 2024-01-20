@@ -4,12 +4,12 @@
 
 package de.mossgrabers.controller.akai.apc;
 
+import java.util.List;
+import java.util.UUID;
+
 import de.mossgrabers.framework.controller.DefaultControllerDefinition;
 import de.mossgrabers.framework.utils.OperatingSystem;
 import de.mossgrabers.framework.utils.Pair;
-
-import java.util.List;
-import java.util.UUID;
 
 
 /**
@@ -19,7 +19,7 @@ import java.util.UUID;
  */
 public class APCControllerDefinition extends DefaultControllerDefinition
 {
-    private static final UUID EXTENSION_ID_MK_I  = UUID.fromString ("35E958A0-345F-11E4-8C21-0800200C9A66");
+    private static final UUID EXTENSION_ID_MK_I  = UUID.fromString ("C367C519-A403-4D36-B238-990A08AFD4CD");
     private static final UUID EXTENSION_ID_MK_II = UUID.fromString ("14787D10-35DE-11E4-8C21-0800200C9A66");
 
     private final boolean     isMkII;
@@ -32,7 +32,7 @@ public class APCControllerDefinition extends DefaultControllerDefinition
      */
     public APCControllerDefinition (final boolean isMkII)
     {
-        super (isMkII ? EXTENSION_ID_MK_II : EXTENSION_ID_MK_I, isMkII ? "APC40 mkII" : "APC40", "Akai", 1, 1);
+        super (isMkII ? EXTENSION_ID_MK_II : EXTENSION_ID_MK_I, isMkII ? "APC40 mkII" : "APC40 Haszari", "Akai", 1, 1);
         this.isMkII = isMkII;
     }
 
