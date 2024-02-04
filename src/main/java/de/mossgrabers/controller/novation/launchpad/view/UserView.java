@@ -1,5 +1,5 @@
 // Written by Jürgen Moßgraber - mossgrabers.de
-// (c) 2017-2023
+// (c) 2017-2024
 // Licensed under LGPLv3 - http://www.gnu.org/licenses/lgpl-3.0.txt
 
 package de.mossgrabers.controller.novation.launchpad.view;
@@ -11,6 +11,7 @@ import de.mossgrabers.framework.controller.ContinuousID;
 import de.mossgrabers.framework.controller.hardware.IHwContinuousControl;
 import de.mossgrabers.framework.daw.IModel;
 import de.mossgrabers.framework.daw.data.bank.IParameterBank;
+import de.mossgrabers.framework.daw.data.bank.IParameterPageBank;
 import de.mossgrabers.framework.parameter.IParameter;
 import de.mossgrabers.framework.utils.ButtonEvent;
 import de.mossgrabers.framework.utils.ScrollStates;
@@ -83,7 +84,8 @@ public class UserView extends AbstractFaderView
         if (!ButtonID.isSceneButton (buttonID))
             return;
         final int index = buttonID.ordinal () - ButtonID.SCENE1.ordinal ();
-        this.getBank ().scrollTo (index * this.getBank ().getPageSize ());
+        final IParameterBank bank = this.getBank ();
+        bank.scrollTo (index * bank.getPageSize ());
         this.bindCurrentPage ();
     }
 
@@ -92,8 +94,22 @@ public class UserView extends AbstractFaderView
     @Override
     public int getButtonColor (final ButtonID buttonID)
     {
-        // Scene buttons not used
-        return LaunchpadColorManager.LAUNCHPAD_COLOR_BLACK;
+        if (!ButtonID.isSceneButton (buttonID))
+            return LaunchpadColorManager.LAUNCHPAD_COLOR_BLACK;
+
+        final int index = buttonID.ordinal () - ButtonID.SCENE1.ordinal ();
+        final IParameterPageBank pageBank = this.getBank ().getPageBank ();
+
+        final int pageSize = pageBank.getPageSize ();
+        final int lastPage = pageBank.getItemCount () / pageSize;
+        if (index > lastPage || lastPage <= 0)
+            return LaunchpadColorManager.LAUNCHPAD_COLOR_BLACK;
+
+        final int selected = pageBank.getScrollPosition () / pageSize;
+        if (index == selected)
+            return LaunchpadColorManager.LAUNCHPAD_COLOR_ORCHID_HI;
+
+        return LaunchpadColorManager.LAUNCHPAD_COLOR_ORCHID_LO;
     }
 
 

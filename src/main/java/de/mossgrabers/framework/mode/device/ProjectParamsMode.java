@@ -1,8 +1,11 @@
 // Written by Jürgen Moßgraber - mossgrabers.de
-// (c) 2017-2023
+// (c) 2017-2024
 // Licensed under LGPLv3 - http://www.gnu.org/licenses/lgpl-3.0.txt
 
 package de.mossgrabers.framework.mode.device;
+
+import java.util.List;
+import java.util.function.BooleanSupplier;
 
 import de.mossgrabers.framework.configuration.Configuration;
 import de.mossgrabers.framework.controller.ButtonID;
@@ -14,12 +17,9 @@ import de.mossgrabers.framework.parameter.IParameter;
 import de.mossgrabers.framework.parameterprovider.IParameterProvider;
 import de.mossgrabers.framework.parameterprovider.device.BankParameterProvider;
 
-import java.util.List;
-import java.util.function.BooleanSupplier;
-
 
 /**
- * Mode for editing project remote control parameters.
+ * Mode for editing project or track remote control parameters.
  *
  * @param <S> The type of the control surface
  * @param <C> The type of the configuration
@@ -88,6 +88,14 @@ public class ProjectParamsMode<S extends IControlSurface<C>, C extends Configura
             this.trackParameterProvider = new BankParameterProvider (model.getCursorTrack ().getParameterBank ());
             this.setParameterProvider (this.projectParameterProvider);
         }
+    }
+
+
+    /** {@inheritDoc} */
+    @Override
+    public String getName ()
+    {
+        return this.isProjectMode ? "Project Parameters" : "Track Parameters";
     }
 
 

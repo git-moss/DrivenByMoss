@@ -1,8 +1,11 @@
 // Written by Jürgen Moßgraber - mossgrabers.de
-// (c) 2017-2023
+// (c) 2017-2024
 // Licensed under LGPLv3 - http://www.gnu.org/licenses/lgpl-3.0.txt
 
 package de.mossgrabers.framework;
+
+import java.util.Optional;
+import java.util.function.Supplier;
 
 import de.mossgrabers.framework.configuration.Configuration;
 import de.mossgrabers.framework.controller.IControlSurface;
@@ -26,9 +29,6 @@ import de.mossgrabers.framework.daw.data.bank.ITrackBank;
 import de.mossgrabers.framework.featuregroup.IMode;
 import de.mossgrabers.framework.parameter.IParameter;
 import de.mossgrabers.framework.scale.Scales;
-
-import java.util.Optional;
-import java.util.function.Supplier;
 
 
 /**
@@ -204,7 +204,7 @@ public class MVHelper<S extends IControlSurface<C>, C extends Configuration>
             {
                 String pageName = selectedItem.get ();
                 if (pageName == null || pageName.isBlank ())
-                    pageName = "None";
+                    pageName = NONE;
                 text += " - " + pageName;
             }
 
