@@ -4,6 +4,11 @@
 
 package de.mossgrabers.controller.osc.module;
 
+import java.util.LinkedList;
+import java.util.Optional;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
+
 import de.mossgrabers.controller.osc.exception.IllegalParameterException;
 import de.mossgrabers.controller.osc.exception.MissingCommandException;
 import de.mossgrabers.framework.controller.color.ColorEx;
@@ -13,11 +18,6 @@ import de.mossgrabers.framework.daw.clip.IClip;
 import de.mossgrabers.framework.daw.data.ISend;
 import de.mossgrabers.framework.osc.IOpenSoundControlWriter;
 import de.mossgrabers.framework.parameter.IParameter;
-
-import java.util.LinkedList;
-import java.util.Optional;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 
 
 /**
@@ -45,6 +45,7 @@ public abstract class AbstractModule implements IModule
     protected static final String     TAG_PARAM         = "param";
     protected static final String     TAG_MIXER         = "mixer";
     protected static final String     TAG_PREROLL       = "preroll";
+    protected static final String     TAG_RESET         = "reset";
 
     protected final IHost             host;
     protected final IModel            model;

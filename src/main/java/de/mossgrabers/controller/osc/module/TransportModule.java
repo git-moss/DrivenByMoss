@@ -241,7 +241,7 @@ public class TransportModule extends AbstractModule
             case "crossfade":
                 if (path.isEmpty ())
                     this.transport.setCrossfade (toInteger (value));
-                else if ("reset".equals (path.get (0)))
+                else if (TAG_RESET.equals (path.get (0)))
                     this.transport.getCrossfadeParameter ().resetValue ();
                 break;
 

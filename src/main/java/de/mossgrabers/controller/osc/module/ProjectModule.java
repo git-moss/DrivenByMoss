@@ -178,7 +178,7 @@ public class ProjectModule extends AbstractModule
                 param.setIndication (isTrigger (value));
                 break;
 
-            case "reset":
+            case TAG_RESET:
                 param.resetValue ();
                 break;
 
