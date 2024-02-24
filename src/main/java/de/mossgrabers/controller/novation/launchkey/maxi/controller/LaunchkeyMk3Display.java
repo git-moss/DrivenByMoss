@@ -22,21 +22,21 @@ import de.mossgrabers.framework.utils.StringUtils;
  */
 public class LaunchkeyMk3Display extends AbstractTextDisplay
 {
-    private static final String SYSEX_DISPLAY_HEADER_BASE        = "F0 00 20 29 02 0F 04 ";
-    private static final String SYSEX_DISPLAY_HEADER_PARAM_NAME  = "F0 00 20 29 02 0F 07 ";
-    private static final String SYSEX_DISPLAY_HEADER_PARAM_VALUE = "F0 00 20 29 02 0F 08 ";
+    private String           sysexDisplayHeaderBase       = "F0 00 20 29 02 0F 04 ";
+    private String           sysexDisplayHeaderParamName  = "F0 00 20 29 02 0F 07 ";
+    private String           sysexDisplayHeaderParamValue = "F0 00 20 29 02 0F 08 ";
 
     /** The first row of the base screen. */
-    public static final int     SCREEN_ROW_BASE                  = 0;
+    public static final int  SCREEN_ROW_BASE              = 0;
     /** The first row of the pot screens. */
-    public static final int     SCREEN_ROW_POTS                  = 2;
+    public static final int  SCREEN_ROW_POTS              = 2;
     /** The first row of the fader screens. */
-    public static final int     SCREEN_ROW_FADERS                = 18;
+    public static final int  SCREEN_ROW_FADERS            = 18;
 
-    private static final int    SCREEN_ID_POT1                   = 56;
-    private static final int    SCREEN_ID_FADER1                 = 80;
+    private static final int SCREEN_ID_POT1               = 56;
+    private static final int SCREEN_ID_FADER1             = 80;
 
-    private CharsetEncoder      isoEncoder;
+    private CharsetEncoder   isoEncoder;
 
 
     /**
@@ -71,11 +71,11 @@ public class LaunchkeyMk3Display extends AbstractTextDisplay
         if (row < SCREEN_ROW_POTS)
         {
             // Base screen
-            sb.append (SYSEX_DISPLAY_HEADER_BASE).append (StringUtils.toHexStr (row)).append (' ');
+            sb.append (this.sysexDisplayHeaderBase).append (StringUtils.toHexStr (row)).append (' ');
         }
         else
         {
-            sb.append (row % 2 == 0 ? SYSEX_DISPLAY_HEADER_PARAM_NAME : SYSEX_DISPLAY_HEADER_PARAM_VALUE);
+            sb.append (row % 2 == 0 ? this.sysexDisplayHeaderParamName : this.sysexDisplayHeaderParamValue);
 
             if (row < SCREEN_ROW_FADERS)
             {
@@ -121,5 +121,22 @@ public class LaunchkeyMk3Display extends AbstractTextDisplay
     public void shutdown ()
     {
         // Intentionally empty
+    }
+
+
+    /**
+     * Sets the model. The 88 key version uses a different system exclusive string!
+     * 
+     * @param is88KeyVersion
+     */
+    public void setModel (final boolean is88KeyVersion)
+    {
+        if (is88KeyVersion)
+        {
+            this.sysexDisplayHeaderBase = "F0 00 20 29 02 12 04 ";
+            this.sysexDisplayHeaderParamName = "F0 00 20 29 02 12 07 ";
+            this.sysexDisplayHeaderParamValue = "F0 00 20 29 02 12 08 ";
+            this.forceFlush ();
+        }
     }
 }

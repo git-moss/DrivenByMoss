@@ -4,6 +4,9 @@
 
 package de.mossgrabers.controller.novation.launchkey.maxi.controller;
 
+import java.util.HashMap;
+import java.util.Map;
+
 import de.mossgrabers.controller.novation.launchkey.maxi.LaunchkeyMk3Configuration;
 import de.mossgrabers.framework.controller.AbstractControlSurface;
 import de.mossgrabers.framework.controller.ButtonID;
@@ -29,13 +32,26 @@ import de.mossgrabers.framework.view.Views;
 public class LaunchkeyMk3ControlSurface extends AbstractControlSurface<LaunchkeyMk3Configuration>
 {
     /** Device family code of Launchkey 25 model. */
-    public static final int   LAUNCHKEY_25            = 52;
+    public static final int                  LAUNCHKEY_25          = 52;
     /** Device family code of Launchkey 37 model. */
-    public static final int   LAUNCHKEY_37            = 53;
+    public static final int                  LAUNCHKEY_37          = 53;
     /** Device family code of Launchkey 49 model. */
-    public static final int   LAUNCHKEY_49            = 54;
+    public static final int                  LAUNCHKEY_49          = 54;
     /** Device family code of Launchkey 61 model. */
-    public static final int   LAUNCHKEY_61            = 55;
+    public static final int                  LAUNCHKEY_61          = 55;
+    /** Device family code of Launchkey 88 model. */
+    public static final int                  LAUNCHKEY_88          = 64;
+
+    public static final Map<Integer, String> LAUNCHKEY_MODEL_NAMES = new HashMap<> (5);
+
+    static
+    {
+        LAUNCHKEY_MODEL_NAMES.put (Integer.valueOf (LAUNCHKEY_25), "Launchkey 25");
+        LAUNCHKEY_MODEL_NAMES.put (Integer.valueOf (LAUNCHKEY_37), "Launchkey 37");
+        LAUNCHKEY_MODEL_NAMES.put (Integer.valueOf (LAUNCHKEY_49), "Launchkey 49");
+        LAUNCHKEY_MODEL_NAMES.put (Integer.valueOf (LAUNCHKEY_61), "Launchkey 61");
+        LAUNCHKEY_MODEL_NAMES.put (Integer.valueOf (LAUNCHKEY_88), "Launchkey 88");
+    }
 
     // Buttons & Knobs
 
@@ -314,9 +330,13 @@ public class LaunchkeyMk3ControlSurface extends AbstractControlSurface<Launchkey
     {
         final int [] revisionLevel = deviceInquiry.getRevisionLevel ();
         final String firmwareVersion = String.format ("%d%d%d%d", Integer.valueOf (revisionLevel[0]), Integer.valueOf (revisionLevel[1]), Integer.valueOf (revisionLevel[2]), Integer.valueOf (revisionLevel[3]));
-        this.host.println ("Firmware version: " + (firmwareVersion.charAt (0) == '0' ? firmwareVersion.substring (1) : firmwareVersion));
 
-        final int [] deviceFamilyCode = deviceInquiry.getDeviceFamilyCode ();
-        this.hasFaders = deviceFamilyCode[0] == LAUNCHKEY_49 || deviceFamilyCode[0] == LAUNCHKEY_61;
+        final int deviceFamilyCode = deviceInquiry.getDeviceFamilyCode ()[0];
+        this.hasFaders = deviceFamilyCode >= LAUNCHKEY_49;
+
+        if (this.getDisplay () instanceof LaunchkeyMk3Display launchkeyDisplay)
+            launchkeyDisplay.setModel (deviceFamilyCode == LAUNCHKEY_88);
+
+        this.host.println ("Detected " + LAUNCHKEY_MODEL_NAMES.get (Integer.valueOf (deviceFamilyCode)) + " (Firmware version: " + (firmwareVersion.charAt (0) == '0' ? firmwareVersion.substring (1) : firmwareVersion) + ")");
     }
 }
