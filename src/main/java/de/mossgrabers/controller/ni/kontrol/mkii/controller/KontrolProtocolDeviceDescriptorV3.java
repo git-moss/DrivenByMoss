@@ -4,12 +4,12 @@
 
 package de.mossgrabers.controller.ni.kontrol.mkii.controller;
 
+import de.mossgrabers.framework.utils.OperatingSystem;
+import de.mossgrabers.framework.utils.Pair;
+
 import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
-
-import de.mossgrabers.framework.utils.OperatingSystem;
-import de.mossgrabers.framework.utils.Pair;
 
 
 /**
@@ -61,31 +61,18 @@ public class KontrolProtocolDeviceDescriptorV3 implements IKontrolProtocolDevice
     private static final String [] []    PORTS_MACOS   =
     {
         {
-            "KOMPLETE KONTROL S49 MK3 Port 2",
-            "KOMPLETE KONTROL S49 MK3 Port 1"
+            "KONTROL S49 MK3 DAW",
+            "KONTROL S49 MK3 Main"
         },
         {
-            "KOMPLETE KONTROL S49 MK3 Anschluss 2",
-            "KOMPLETE KONTROL S49 MK3 Anschluss 1"
+            "KONTROL S61 MK3 DAW",
+            "KONTROL S61 MK3 Main"
         },
         {
-            "KOMPLETE KONTROL S61 MK3 Port 2",
-            "KOMPLETE KONTROL S61 MK3 Port 1"
-        },
-        {
-            "KOMPLETE KONTROL S61 MK3 Anschluss 2",
-            "KOMPLETE KONTROL S61 MK3 Anschluss 1"
-        },
-        {
-            "KOMPLETE KONTROL S88 MK3 Port 2",
-            "KOMPLETE KONTROL S88 MK3 Port 1"
-        },
-        {
-            "KOMPLETE KONTROL S88 MK3 Anschluss 2",
-            "KOMPLETE KONTROL S88 MK3 Anschluss 1"
+            "KONTROL S88 MK3 DAW",
+            "KONTROL S88 MK3 Main"
         }
     };
-
 
     /** {@inheritDoc} */
     @Override
