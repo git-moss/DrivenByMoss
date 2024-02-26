@@ -4,12 +4,12 @@
 
 package de.mossgrabers.controller.ni.kontrol.mkii;
 
+import java.util.List;
+
 import de.mossgrabers.controller.ni.kontrol.mkii.controller.IKontrolProtocolDeviceDescriptor;
 import de.mossgrabers.framework.controller.DefaultControllerDefinition;
 import de.mossgrabers.framework.utils.OperatingSystem;
 import de.mossgrabers.framework.utils.Pair;
-
-import java.util.List;
 
 
 /**
@@ -19,14 +19,6 @@ import java.util.List;
  */
 public class KontrolProtocolControllerDefinition extends DefaultControllerDefinition
 {
-    private static final String []                 WINDOWS_STARTS =
-    {
-        "",
-        "2- ",
-        "3- ",
-        "4- "
-    };
-
     private final IKontrolProtocolDeviceDescriptor deviceDescriptor;
 
 
@@ -47,34 +39,6 @@ public class KontrolProtocolControllerDefinition extends DefaultControllerDefini
     @Override
     public List<Pair<String [], String []>> getMidiDiscoveryPairs (final OperatingSystem os)
     {
-        final List<Pair<String [], String []>> midiDiscoveryPairs = super.getMidiDiscoveryPairs (os);
-        switch (os)
-        {
-            case MAC:
-                for (final String [] ports: this.deviceDescriptor.getMidiDiscoveryPairs (os))
-                    midiDiscoveryPairs.add (this.addDeviceDiscoveryPair (ports, ports));
-                break;
-
-            case WINDOWS:
-                for (final String start: WINDOWS_STARTS)
-                {
-                    for (final String [] ports: this.deviceDescriptor.getMidiDiscoveryPairs (os))
-                    {
-                        final String [] ps =
-                        {
-                            ports[0],
-                            start + ports[1]
-                        };
-                        midiDiscoveryPairs.add (this.addDeviceDiscoveryPair (ps, ps));
-                    }
-                }
-                break;
-
-            case LINUX:
-            default:
-                // Not supported
-                break;
-        }
-        return midiDiscoveryPairs;
+        return this.deviceDescriptor.getMidiDiscoveryPairs (os);
     }
 }

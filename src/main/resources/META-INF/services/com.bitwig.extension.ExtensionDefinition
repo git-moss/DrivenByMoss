@@ -37,6 +37,7 @@ de.mossgrabers.bitwig.controller.ni.kontrol.mki.Kontrol1S61ExtensionDefinition
 de.mossgrabers.bitwig.controller.ni.kontrol.mki.Kontrol1S88ExtensionDefinition
 de.mossgrabers.bitwig.controller.ni.kontrol.mkii.KontrolProtocolV1ExtensionDefinition
 de.mossgrabers.bitwig.controller.ni.kontrol.mkii.KontrolProtocolV2ExtensionDefinition
+de.mossgrabers.bitwig.controller.ni.kontrol.mkii.KontrolProtocolV3ExtensionDefinition
 de.mossgrabers.bitwig.controller.ni.maschine.jam.MaschineJamExtensionDefinition
 de.mossgrabers.bitwig.controller.ni.maschine.mk3.MaschineMk2ExtensionDefinition
 de.mossgrabers.bitwig.controller.ni.maschine.mk3.MaschineMk3ExtensionDefinition

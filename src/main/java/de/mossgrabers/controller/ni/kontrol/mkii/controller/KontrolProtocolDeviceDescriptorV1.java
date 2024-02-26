@@ -4,9 +4,12 @@
 
 package de.mossgrabers.controller.ni.kontrol.mkii.controller;
 
-import de.mossgrabers.framework.utils.OperatingSystem;
-
+import java.util.ArrayList;
+import java.util.List;
 import java.util.UUID;
+
+import de.mossgrabers.framework.utils.OperatingSystem;
+import de.mossgrabers.framework.utils.Pair;
 
 
 /**
@@ -17,7 +20,6 @@ import java.util.UUID;
 public class KontrolProtocolDeviceDescriptorV1 implements IKontrolProtocolDeviceDescriptor
 {
     private static final String       KOMPLETE_KONTROL_A_DAW = "Komplete Kontrol A DAW";
-
     private static final UUID         EXTENSION_ID           = UUID.fromString ("4EA6215E-C7EB-4184-AEA4-67D03D8EF7A8");
     private static final String       DEVICE_NAME            = "Komplete Kontrol A-series / M32";
 
@@ -80,20 +82,30 @@ public class KontrolProtocolDeviceDescriptorV1 implements IKontrolProtocolDevice
 
     /** {@inheritDoc} */
     @Override
-    public String [] [] getMidiDiscoveryPairs (final OperatingSystem os)
+    public List<Pair<String [], String []>> getMidiDiscoveryPairs (final OperatingSystem os)
     {
+        final List<Pair<String [], String []>> midiDiscoveryPairs = new ArrayList<> ();
+        String [] [] portNames;
         switch (os)
         {
             case MAC:
-                return PORTS_MACOS;
+                portNames = PORTS_MACOS;
+                break;
 
             case WINDOWS:
-                return PORTS_WINDOWS;
+                portNames = PORTS_WINDOWS;
+                break;
 
             // Not supported
             case LINUX:
             default:
-                return new String [0] [0];
+                portNames = new String [0] [0];
+                break;
         }
+
+        for (final String [] ports: portNames)
+            midiDiscoveryPairs.add (new Pair<> (ports, ports));
+
+        return midiDiscoveryPairs;
     }
 }
