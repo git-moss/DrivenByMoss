@@ -5,6 +5,7 @@
 package de.mossgrabers.controller.ni.kontrol.mkii;
 
 import de.mossgrabers.controller.ni.kontrol.mkii.command.trigger.StartClipOrSceneCommand;
+import de.mossgrabers.controller.ni.kontrol.mkii.controller.KontrolProtocol;
 import de.mossgrabers.controller.ni.kontrol.mkii.controller.KontrolProtocolColorManager;
 import de.mossgrabers.controller.ni.kontrol.mkii.controller.KontrolProtocolControlSurface;
 import de.mossgrabers.controller.ni.kontrol.mkii.mode.MixerMode;
@@ -74,7 +75,6 @@ public class KontrolProtocolControllerSetup extends AbstractControllerSetup<Kont
     private final int version;
     private String    kompleteInstance = "";
 
-
     /**
      * Constructor.
      *
@@ -99,7 +99,8 @@ public class KontrolProtocolControllerSetup extends AbstractControllerSetup<Kont
     @Override
     public void init ()
     {
-        if (OperatingSystem.get () == OperatingSystem.LINUX)
+        // Only Mk3 does work on Linux
+        if (OperatingSystem.get () == OperatingSystem.LINUX && this.version < KontrolProtocol.VERSION_3)
             throw new FrameworkException ("Komplete Kontrol MkII is not supported on Linux since there is no Native Instruments DAW Integration Host.");
 
         super.init ();

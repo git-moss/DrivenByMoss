@@ -74,6 +74,22 @@ public class KontrolProtocolDeviceDescriptorV3 implements IKontrolProtocolDevice
         }
     };
 
+    private static final String [] []    PORTS_LINUX   =
+    {
+        {
+            "KONTROL S49 MK3 KONTROL S49 MK3 #2",
+            "KONTROL S49 MK3 KONTROL S49 MK3",
+        },
+        {
+            "KONTROL S61 MK3 KONTROL S61 MK3 #2",
+            "KONTROL S61 MK3 KONTROL S61 MK3",
+        },
+        {
+            "KONTROL S88 MK3 KONTROL S88 MK3 #2",
+            "KONTROL S88 MK3 KONTROL S88 MK3",
+        }
+    };
+
     /** {@inheritDoc} */
     @Override
     public UUID getID ()
@@ -108,8 +124,12 @@ public class KontrolProtocolDeviceDescriptorV3 implements IKontrolProtocolDevice
                 break;
 
             case LINUX:
+                for (final String [] ports: PORTS_LINUX)
+                    midiDiscoveryPairs.add (new Pair<> (ports, ports));
+                break;
+
             default:
-                // Not supported
+                // Others are not supported
                 break;
         }
 
