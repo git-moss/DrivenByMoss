@@ -269,13 +269,17 @@ public class MVHelper<S extends IControlSurface<C>, C extends Configuration>
      * @param bank The parameter bank from which to get the selected page
      * @param prefix A text prefix to add
      */
-    private void notifySelectedParameterPage (final IParameterBank bank, final String prefix)
+    public void notifySelectedParameterPage (final IParameterBank bank, final String prefix)
     {
         this.delayDisplay ( () -> {
 
             final Optional<String> selectedItem = bank.getPageBank ().getSelectedItem ();
             if (selectedItem.isPresent ())
-                return prefix + "Page: " + selectedItem.get ();
+            {
+                final String name = selectedItem.get ();
+                if (!name.isBlank ())
+                    return prefix + "Page: " + name;
+            }
             return prefix + "Page: " + NONE;
 
         });

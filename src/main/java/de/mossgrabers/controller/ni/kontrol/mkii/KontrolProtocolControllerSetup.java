@@ -4,6 +4,12 @@
 
 package de.mossgrabers.controller.ni.kontrol.mkii;
 
+import java.util.List;
+import java.util.Optional;
+import java.util.function.BooleanSupplier;
+import java.util.function.IntSupplier;
+
+import de.mossgrabers.controller.ni.kontrol.mkii.command.trigger.ModeSwitcherCommand;
 import de.mossgrabers.controller.ni.kontrol.mkii.command.trigger.StartClipOrSceneCommand;
 import de.mossgrabers.controller.ni.kontrol.mkii.controller.KontrolProtocol;
 import de.mossgrabers.controller.ni.kontrol.mkii.controller.KontrolProtocolColorManager;
@@ -59,11 +65,6 @@ import de.mossgrabers.framework.utils.FrameworkException;
 import de.mossgrabers.framework.utils.OperatingSystem;
 import de.mossgrabers.framework.view.Views;
 
-import java.util.List;
-import java.util.Optional;
-import java.util.function.BooleanSupplier;
-import java.util.function.IntSupplier;
-
 
 /**
  * Setup for the Komplete Kontrol NIHIA protocol.
@@ -74,6 +75,7 @@ public class KontrolProtocolControllerSetup extends AbstractControllerSetup<Kont
 {
     private final int version;
     private String    kompleteInstance = "";
+
 
     /**
      * Constructor.
@@ -91,7 +93,7 @@ public class KontrolProtocolControllerSetup extends AbstractControllerSetup<Kont
         this.version = version;
         this.colorManager = new KontrolProtocolColorManager ();
         this.valueChanger = new TwosComplementValueChanger (1024, 4);
-        this.configuration = new KontrolProtocolConfiguration (host, this.valueChanger, factory.getArpeggiatorModes ());
+        this.configuration = new KontrolProtocolConfiguration (host, this.valueChanger, factory.getArpeggiatorModes (), version);
     }
 
 
@@ -232,26 +234,36 @@ public class KontrolProtocolControllerSetup extends AbstractControllerSetup<Kont
         final KontrolProtocolControlSurface surface = this.getSurface ();
         final ITransport t = this.model.getTransport ();
 
+        final ModeMultiSelectCommand<KontrolProtocolControlSurface, KontrolProtocolConfiguration> modeSwitchCommand = new ModeMultiSelectCommand<> (this.model, surface, Modes.VOLUME, Modes.SEND, Modes.DEVICE_PARAMS);
+
+        final TriggerCommand restartCommand = new ModeSwitcherCommand (new NewCommand<> (this.model, surface), modeSwitchCommand, KontrolProtocolConfiguration.SwitchButton.RESTART, this.configuration);
+        final TriggerCommand redoCommand = new ModeSwitcherCommand (new RedoCommand<> (this.model, surface), modeSwitchCommand, KontrolProtocolConfiguration.SwitchButton.REDO, this.configuration);
+        final TriggerCommand quantizeCommand = new ModeSwitcherCommand (new QuantizeCommand<> (this.model, surface), modeSwitchCommand, KontrolProtocolConfiguration.SwitchButton.QUANTIZE, this.configuration);
+        final TriggerCommand loopCommand = new ModeSwitcherCommand (new ToggleLoopCommand<> (this.model, surface), modeSwitchCommand, KontrolProtocolConfiguration.SwitchButton.LOOP, this.configuration);
+        final TriggerCommand stopCommand = new ModeSwitcherCommand (new StopCommand<> (this.model, surface), modeSwitchCommand, KontrolProtocolConfiguration.SwitchButton.STOP, this.configuration);
+        final TriggerCommand autoCommand = new ModeSwitcherCommand (new WriteArrangerAutomationCommand<> (this.model, surface), modeSwitchCommand, KontrolProtocolConfiguration.SwitchButton.AUTO, this.configuration);
+        final TriggerCommand tempoCommand = new ModeSwitcherCommand (new TapTempoCommand<> (this.model, surface), modeSwitchCommand, KontrolProtocolConfiguration.SwitchButton.TEMPO, this.configuration);
+
         this.addButton (ButtonID.PLAY, "Play", new PlayCommand<> (this.model, surface), 15, KontrolProtocolControlSurface.KONTROL_PLAY, t::isPlaying);
-        this.addButton (ButtonID.NEW, "Shift+\nPlay", new NewCommand<> (this.model, surface), 15, KontrolProtocolControlSurface.KONTROL_RESTART);
+        this.addButton (ButtonID.NEW, "Restart", restartCommand, 15, KontrolProtocolControlSurface.KONTROL_RESTART);
         final ConfiguredRecordCommand<KontrolProtocolControlSurface, KontrolProtocolConfiguration> recordCommand = new ConfiguredRecordCommand<> (false, this.model, surface);
         this.addButton (ButtonID.RECORD, "Record", recordCommand, 15, KontrolProtocolControlSurface.KONTROL_RECORD, (BooleanSupplier) recordCommand::isLit);
         final ConfiguredRecordCommand<KontrolProtocolControlSurface, KontrolProtocolConfiguration> shiftedRecordCommand = new ConfiguredRecordCommand<> (true, this.model, surface);
         this.addButton (ButtonID.REC_ARM, "Shift+\nRecord", shiftedRecordCommand, 15, KontrolProtocolControlSurface.KONTROL_COUNT_IN, (BooleanSupplier) shiftedRecordCommand::isLit);
-        this.addButton (ButtonID.STOP, "Stop", new StopCommand<> (this.model, surface), 15, KontrolProtocolControlSurface.KONTROL_STOP, () -> !t.isPlaying ());
+        this.addButton (ButtonID.STOP, "Stop", stopCommand, 15, KontrolProtocolControlSurface.KONTROL_STOP, () -> !t.isPlaying ());
 
-        this.addButton (ButtonID.LOOP, "Loop", new ToggleLoopCommand<> (this.model, surface), 15, KontrolProtocolControlSurface.KONTROL_LOOP, t::isLoop);
+        this.addButton (ButtonID.LOOP, "Loop", loopCommand, 15, KontrolProtocolControlSurface.KONTROL_LOOP, t::isLoop);
         this.addButton (ButtonID.METRONOME, "Metronome", new MetronomeCommand<> (this.model, surface, false), 15, KontrolProtocolControlSurface.KONTROL_METRO, t::isMetronomeOn);
-        this.addButton (ButtonID.TAP_TEMPO, "Tempo", new TapTempoCommand<> (this.model, surface), 15, KontrolProtocolControlSurface.KONTROL_TAP_TEMPO);
+        this.addButton (ButtonID.TAP_TEMPO, "Tempo", tempoCommand, 15, KontrolProtocolControlSurface.KONTROL_TAP_TEMPO);
 
         // Note: Since there is no pressed-state with this device, in the simulator-GUI the
         // following buttons are always on
         this.addButton (ButtonID.UNDO, "Undo", new UndoCommand<> (this.model, surface), 15, KontrolProtocolControlSurface.KONTROL_UNDO, () -> this.model.getApplication ().canUndo ());
-        this.addButton (ButtonID.REDO, "Redo", new RedoCommand<> (this.model, surface), 15, KontrolProtocolControlSurface.KONTROL_REDO, () -> this.model.getApplication ().canRedo ());
-        this.addButton (ButtonID.QUANTIZE, "Quantize", new QuantizeCommand<> (this.model, surface), 15, KontrolProtocolControlSurface.KONTROL_QUANTIZE, () -> true);
-        this.addButton (ButtonID.AUTOMATION, "Automation", new WriteArrangerAutomationCommand<> (this.model, surface), 15, KontrolProtocolControlSurface.KONTROL_AUTOMATION, t::isWritingArrangerAutomation);
+        this.addButton (ButtonID.REDO, "Redo", redoCommand, 15, KontrolProtocolControlSurface.KONTROL_REDO, () -> this.model.getApplication ().canRedo ());
+        this.addButton (ButtonID.QUANTIZE, "Quantize", quantizeCommand, 15, KontrolProtocolControlSurface.KONTROL_QUANTIZE, () -> true);
+        this.addButton (ButtonID.AUTOMATION, "Automation", autoCommand, 15, KontrolProtocolControlSurface.KONTROL_AUTOMATION, t::isWritingArrangerAutomation);
 
-        this.addButton (ButtonID.DELETE, "Modes", new ModeMultiSelectCommand<> (this.model, surface, Modes.VOLUME, Modes.SEND, Modes.DEVICE_PARAMS), 15, KontrolProtocolControlSurface.KONTROL_CLEAR, () -> true);
+        this.addButton (ButtonID.DELETE, "Modes", modeSwitchCommand, 15, KontrolProtocolControlSurface.KONTROL_CLEAR, () -> true);
 
         this.addButton (ButtonID.CLIP, "Start Clip", new StartClipOrSceneCommand (this.model, surface), 15, KontrolProtocolControlSurface.KONTROL_PLAY_SELECTED_CLIP);
         this.addButton (ButtonID.STOP_CLIP, "Stop Clip", new StopClipCommand<> (this.model, surface), 15, KontrolProtocolControlSurface.KONTROL_STOP_CLIP);
@@ -512,23 +524,32 @@ public class KontrolProtocolControllerSetup extends AbstractControllerSetup<Kont
             return;
 
         final KontrolProtocolControlSurface surface = this.getSurface ();
-        if (surface.getModeManager ().isActive (Modes.VOLUME))
+        final ModeManager modeManager = surface.getModeManager ();
+        switch (modeManager.getActiveID ())
         {
-            final IClipLauncherNavigator clipLauncherNavigator = this.model.getClipLauncherNavigator ();
-            if (this.configuration.isFlipTrackClipNavigation ())
-            {
-                clipLauncherNavigator.navigateTracks (isLeft);
-                return;
-            }
+            case VOLUME:
+                final IClipLauncherNavigator clipLauncherNavigator = this.model.getClipLauncherNavigator ();
+                if (this.configuration.isFlipTrackClipNavigation ())
+                {
+                    clipLauncherNavigator.navigateTracks (isLeft);
+                    return;
+                }
 
-            if (this.configuration.isFlipClipSceneNavigation ())
-                clipLauncherNavigator.navigateScenes (isLeft);
-            else
-                clipLauncherNavigator.navigateClips (isLeft);
-            return;
+                if (this.configuration.isFlipClipSceneNavigation ())
+                    clipLauncherNavigator.navigateScenes (isLeft);
+                else
+                    clipLauncherNavigator.navigateClips (isLeft);
+                break;
+
+            case DEVICE_PARAMS:
+                if (modeManager.getActive () instanceof ParamsMode paramMode)
+                    paramMode.switchProvider (isLeft);
+                break;
+
+            default:
+                this.moveTrackBank (event, isLeft);
+                break;
         }
-
-        this.moveTrackBank (event, isLeft);
     }
 
 

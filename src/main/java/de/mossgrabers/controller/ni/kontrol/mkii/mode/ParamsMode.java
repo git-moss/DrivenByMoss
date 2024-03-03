@@ -4,6 +4,9 @@
 
 package de.mossgrabers.controller.ni.kontrol.mkii.mode;
 
+import java.util.List;
+import java.util.Optional;
+
 import de.mossgrabers.controller.ni.kontrol.mkii.KontrolProtocolConfiguration;
 import de.mossgrabers.controller.ni.kontrol.mkii.TrackType;
 import de.mossgrabers.controller.ni.kontrol.mkii.controller.KontrolProtocol;
@@ -11,16 +14,16 @@ import de.mossgrabers.controller.ni.kontrol.mkii.controller.KontrolProtocolContr
 import de.mossgrabers.framework.controller.ContinuousID;
 import de.mossgrabers.framework.controller.valuechanger.IValueChanger;
 import de.mossgrabers.framework.daw.IModel;
+import de.mossgrabers.framework.daw.data.ICursorDevice;
 import de.mossgrabers.framework.daw.data.bank.IDeviceBank;
+import de.mossgrabers.framework.daw.data.bank.IParameterBank;
 import de.mossgrabers.framework.daw.data.bank.IParameterPageBank;
-import de.mossgrabers.framework.mode.device.ParameterMode;
+import de.mossgrabers.framework.featuregroup.AbstractParameterMode;
 import de.mossgrabers.framework.parameter.IParameter;
+import de.mossgrabers.framework.parameterprovider.IParameterProvider;
 import de.mossgrabers.framework.parameterprovider.device.BankParameterProvider;
 import de.mossgrabers.framework.parameterprovider.special.CombinedParameterProvider;
 import de.mossgrabers.framework.utils.StringUtils;
-
-import java.util.List;
-import java.util.Optional;
 
 
 /**
@@ -28,8 +31,20 @@ import java.util.Optional;
  *
  * @author Jürgen Moßgraber
  */
-public class ParamsMode extends ParameterMode<KontrolProtocolControlSurface, KontrolProtocolConfiguration>
+public class ParamsMode extends AbstractParameterMode<KontrolProtocolControlSurface, KontrolProtocolConfiguration, IParameter>
 {
+    private static final String []      BANK_NAMES          =
+    {
+        "Cursor Device ",
+        "Track ",
+        "Project "
+    };
+
+    private final IParameterBank []     banks;
+    private final IParameterProvider [] providers           = new IParameterProvider [3];
+    private int                         activeProviderIndex = 0;
+
+
     /**
      * Constructor.
      *
@@ -39,11 +54,24 @@ public class ParamsMode extends ParameterMode<KontrolProtocolControlSurface, Kon
      */
     public ParamsMode (final KontrolProtocolControlSurface surface, final IModel model, final List<ContinuousID> controls)
     {
-        super (surface, model, false);
+        super ("Parameters", surface, model, false);
 
         this.setControls (controls);
-        final BankParameterProvider pp = new BankParameterProvider (this.cursorDevice.getParameterBank ());
-        this.setParameterProvider (new CombinedParameterProvider (pp, pp));
+
+        this.banks = new IParameterBank []
+        {
+            model.getCursorDevice ().getParameterBank (),
+            model.getCursorTrack ().getParameterBank (),
+            model.getProject ().getParameterBank ()
+        };
+
+        for (int i = 0; i < this.banks.length; i++)
+        {
+            final IParameterProvider cursorDeviceProvider = new BankParameterProvider (this.banks[i]);
+            this.providers[i] = new CombinedParameterProvider (cursorDeviceProvider, cursorDeviceProvider);
+        }
+
+        this.selectProvider (0);
     }
 
 
@@ -67,20 +95,17 @@ public class ParamsMode extends ParameterMode<KontrolProtocolControlSurface, Kon
             return valueChanger.toMidiValue (parameter.getValue ());
         }
 
-        final int scrollTracksState = (this.bank.canScrollBackwards () ? 1 : 0) + (this.bank.canScrollForwards () ? 2 : 0);
+        final ICursorDevice cursorDevice = this.model.getCursorDevice ();
+        final IDeviceBank deviceBank = cursorDevice.getDeviceBank ();
 
-        final IDeviceBank deviceBank = this.cursorDevice.getDeviceBank ();
-        final int scrollScenesState = (deviceBank.canScrollBackwards () ? 1 : 0) + (deviceBank.canScrollForwards () ? 2 : 0);
-
-        final KontrolProtocolConfiguration configuration = this.surface.getConfiguration ();
         switch (index)
         {
             case KontrolProtocolControlSurface.KONTROL_NAVIGATE_BANKS:
-                return (this.cursorDevice.canSelectPrevious () ? 1 : 0) + (this.cursorDevice.canSelectNext () ? 2 : 0);
+                return (this.bank.canScrollBackwards () ? 1 : 0) + (this.bank.canScrollForwards () ? 2 : 0);
             case KontrolProtocolControlSurface.KONTROL_NAVIGATE_TRACKS:
-                return configuration.isFlipTrackClipNavigation () ? scrollScenesState : scrollTracksState;
+                return (deviceBank.canScrollBackwards () ? 1 : 0) + (deviceBank.canScrollForwards () ? 2 : 0);
             case KontrolProtocolControlSurface.KONTROL_NAVIGATE_CLIPS:
-                return configuration.isFlipTrackClipNavigation () ? scrollTracksState : scrollScenesState;
+                return (this.activeProviderIndex > 0 ? 1 : 0) + (this.activeProviderIndex < 2 ? 2 : 0);
             default:
                 return 0;
         }
@@ -93,7 +118,7 @@ public class ParamsMode extends ParameterMode<KontrolProtocolControlSurface, Kon
     {
         final IValueChanger valueChanger = this.model.getValueChanger ();
 
-        final IParameterPageBank parameterPageBank = this.cursorDevice.getParameterBank ().getPageBank ();
+        final IParameterPageBank parameterPageBank = this.banks[this.activeProviderIndex].getPageBank ();
         final Optional<String> selectedItem = parameterPageBank.getSelectedItem ();
         final String selectedPage = selectedItem.isPresent () ? StringUtils.optimizeName (selectedItem.get (), 8) : "";
 
@@ -124,7 +149,7 @@ public class ParamsMode extends ParameterMode<KontrolProtocolControlSurface, Kon
     @Override
     public void selectPreviousItem ()
     {
-        this.cursorDevice.getParameterBank ().scrollBackwards ();
+        this.model.getCursorDevice ().selectPrevious ();
     }
 
 
@@ -132,7 +157,7 @@ public class ParamsMode extends ParameterMode<KontrolProtocolControlSurface, Kon
     @Override
     public void selectNextItem ()
     {
-        this.cursorDevice.getParameterBank ().scrollForwards ();
+        this.model.getCursorDevice ().selectNext ();
     }
 
 
@@ -140,7 +165,7 @@ public class ParamsMode extends ParameterMode<KontrolProtocolControlSurface, Kon
     @Override
     public void selectPreviousItemPage ()
     {
-        this.cursorDevice.selectPrevious ();
+        this.bank.scrollBackwards ();
     }
 
 
@@ -148,7 +173,7 @@ public class ParamsMode extends ParameterMode<KontrolProtocolControlSurface, Kon
     @Override
     public void selectNextItemPage ()
     {
-        this.cursorDevice.selectNext ();
+        this.bank.scrollForwards ();
     }
 
 
@@ -159,6 +184,43 @@ public class ParamsMode extends ParameterMode<KontrolProtocolControlSurface, Kon
         if (this.surface.getProtocolVersion () == KontrolProtocol.VERSION_1)
             return n;
 
-        return this.cursorDevice.getName (8) + "\n" + selectedPage + "\n" + n;
+        final String deviceName;
+        switch (this.activeProviderIndex)
+        {
+            default:
+            case 0:
+                deviceName = this.model.getCursorDevice ().getName (8);
+                break;
+            case 1:
+                deviceName = "Track";
+                break;
+            case 2:
+                deviceName = "Project";
+                break;
+        }
+        return deviceName + "\n" + selectedPage + "\n" + n;
+    }
+
+
+    /**
+     * Switch to the previous or next provider.
+     * 
+     * @param isLeft Select the previous if true
+     */
+    public void switchProvider (final boolean isLeft)
+    {
+        this.selectProvider (isLeft ? this.activeProviderIndex - 1 : this.activeProviderIndex + 1);
+    }
+
+
+    private void selectProvider (final int index)
+    {
+        this.activeProviderIndex = Math.max (0, Math.min (2, index));
+
+        this.switchBanks (this.banks[this.activeProviderIndex]);
+        this.setParameterProvider (this.providers[this.activeProviderIndex]);
+        this.bindControls ();
+
+        this.mvHelper.notifySelectedParameterPage (this.banks[this.activeProviderIndex], BANK_NAMES[this.activeProviderIndex]);
     }
 }

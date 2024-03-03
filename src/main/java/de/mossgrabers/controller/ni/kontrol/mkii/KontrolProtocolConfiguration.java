@@ -21,13 +21,50 @@ import de.mossgrabers.framework.daw.midi.ArpeggiatorMode;
  */
 public class KontrolProtocolConfiguration extends AbstractConfiguration
 {
-    private static final Integer FLIP_TRACK_CLIP_NAVIGATION = Integer.valueOf (52);
-    private static final Integer FLIP_CLIP_SCENE_NAVIGATION = Integer.valueOf (53);
+    private static final Integer   FLIP_TRACK_CLIP_NAVIGATION = Integer.valueOf (52);
+    private static final Integer   FLIP_CLIP_SCENE_NAVIGATION = Integer.valueOf (53);
+    private static final Integer   MODE_SWITCH_BUTTON         = Integer.valueOf (54);
 
-    private static final String  CATEGORY_NAVIGATION        = "Navigation";
+    private static final String    CATEGORY_NAVIGATION        = "Navigation";
+    private static final String [] MODE_SWITCH_BUTTONS        = new String []
+    {
+        "Off",
+        "Auto",
+        "Loop",
+        "Quantize",
+        "Redo",
+        "Restart",
+        "Stop",
+        "Tempo"
+    };
 
-    private boolean              flipTrackClipNavigation    = false;
-    private boolean              flipClipSceneNavigation    = false;
+
+    /** The button to switch modes. */
+    public enum SwitchButton
+    {
+        /** None. */
+        OFF,
+        /** The Auto button. */
+        AUTO,
+        /** The Loop button. */
+        LOOP,
+        /** The Quantize button. */
+        QUANTIZE,
+        /** The Redo button. */
+        REDO,
+        /** The Restart button. */
+        RESTART,
+        /** The Stop button. */
+        STOP,
+        /** The Tempo button. */
+        TEMPO
+    }
+
+
+    private final int    version;
+    private boolean      flipTrackClipNavigation = false;
+    private boolean      flipClipSceneNavigation = false;
+    private SwitchButton modeSwitchButton        = SwitchButton.OFF;
 
 
     /**
@@ -36,10 +73,13 @@ public class KontrolProtocolConfiguration extends AbstractConfiguration
      * @param host The DAW host
      * @param valueChanger The value changer
      * @param arpeggiatorModes The available arpeggiator modes
+     * @param version The version number of the NIHIA protocol to support
      */
-    public KontrolProtocolConfiguration (final IHost host, final IValueChanger valueChanger, final List<ArpeggiatorMode> arpeggiatorModes)
+    public KontrolProtocolConfiguration (final IHost host, final IValueChanger valueChanger, final List<ArpeggiatorMode> arpeggiatorModes, final int version)
     {
         super (host, valueChanger, arpeggiatorModes);
+
+        this.version = version;
     }
 
 
@@ -47,6 +87,13 @@ public class KontrolProtocolConfiguration extends AbstractConfiguration
     @Override
     public void init (final ISettingsUI globalSettings, final ISettingsUI documentSettings)
     {
+        final IEnumSetting modeSwitchButtonSetting = globalSettings.getEnumSetting ("Switch modes with", CATEGORY_HARDWARE_SETUP, MODE_SWITCH_BUTTONS, MODE_SWITCH_BUTTONS[this.version >= 3 ? 6 : 0]);
+        modeSwitchButtonSetting.addValueObserver (value -> {
+            this.modeSwitchButton = SwitchButton.values ()[lookupIndex (MODE_SWITCH_BUTTONS, value)];
+            this.notifyObservers (MODE_SWITCH_BUTTON);
+        });
+        this.isSettingActive.add (MODE_SWITCH_BUTTON);
+
         ///////////////////////////
         // Transport
 
@@ -100,5 +147,16 @@ public class KontrolProtocolConfiguration extends AbstractConfiguration
     public boolean isFlipClipSceneNavigation ()
     {
         return this.flipClipSceneNavigation;
+    }
+
+
+    /**
+     * Get the button to use as the mode switcher.
+     * 
+     * @return The mode switch button
+     */
+    public SwitchButton getModeSwitchButton ()
+    {
+        return this.modeSwitchButton;
     }
 }
