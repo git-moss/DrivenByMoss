@@ -4,6 +4,26 @@
 
 package de.mossgrabers.bitwig.framework.daw;
 
+import java.util.HashMap;
+import java.util.Map;
+import java.util.UUID;
+
+import com.bitwig.extension.controller.api.Application;
+import com.bitwig.extension.controller.api.Arranger;
+import com.bitwig.extension.controller.api.BooleanValue;
+import com.bitwig.extension.controller.api.ControllerHost;
+import com.bitwig.extension.controller.api.CursorDeviceFollowMode;
+import com.bitwig.extension.controller.api.CursorTrack;
+import com.bitwig.extension.controller.api.Device;
+import com.bitwig.extension.controller.api.DeviceBank;
+import com.bitwig.extension.controller.api.DeviceMatcher;
+import com.bitwig.extension.controller.api.MasterTrack;
+import com.bitwig.extension.controller.api.PinnableCursorDevice;
+import com.bitwig.extension.controller.api.Project;
+import com.bitwig.extension.controller.api.SceneBank;
+import com.bitwig.extension.controller.api.Track;
+import com.bitwig.extension.controller.api.TrackBank;
+
 import de.mossgrabers.bitwig.framework.daw.data.CursorDeviceImpl;
 import de.mossgrabers.bitwig.framework.daw.data.CursorTrackImpl;
 import de.mossgrabers.bitwig.framework.daw.data.DrumDeviceImpl;
@@ -28,26 +48,6 @@ import de.mossgrabers.framework.daw.data.bank.ISceneBank;
 import de.mossgrabers.framework.daw.data.bank.ISlotBank;
 import de.mossgrabers.framework.scale.Scales;
 import de.mossgrabers.framework.utils.FrameworkException;
-
-import com.bitwig.extension.controller.api.Application;
-import com.bitwig.extension.controller.api.Arranger;
-import com.bitwig.extension.controller.api.BooleanValue;
-import com.bitwig.extension.controller.api.ControllerHost;
-import com.bitwig.extension.controller.api.CursorDeviceFollowMode;
-import com.bitwig.extension.controller.api.CursorTrack;
-import com.bitwig.extension.controller.api.Device;
-import com.bitwig.extension.controller.api.DeviceBank;
-import com.bitwig.extension.controller.api.DeviceMatcher;
-import com.bitwig.extension.controller.api.MasterTrack;
-import com.bitwig.extension.controller.api.PinnableCursorDevice;
-import com.bitwig.extension.controller.api.Project;
-import com.bitwig.extension.controller.api.SceneBank;
-import com.bitwig.extension.controller.api.Track;
-import com.bitwig.extension.controller.api.TrackBank;
-
-import java.util.HashMap;
-import java.util.Map;
-import java.util.UUID;
 
 
 /**
@@ -186,7 +186,8 @@ public class ModelImpl extends AbstractModel
                 case NI_KOMPLETE:
                     final DeviceMatcher vst2DeviceMatcher = controllerHost.createVST2DeviceMatcher (KompleteDevice.VST2_KOMPLETE_ID);
                     final DeviceMatcher vst3DeviceMatcher = controllerHost.createVST3DeviceMatcher (KompleteDevice.VST3_KOMPLETE_ID);
-                    final Device kompleteDevice = this.createDevice (controllerHost.createOrDeviceMatcher (vst2DeviceMatcher, vst3DeviceMatcher));
+                    final DeviceMatcher vst3Kontakt7DeviceMatcher = controllerHost.createVST3DeviceMatcher (KompleteDevice.VST3_KONTAKT_7_ID);
+                    final Device kompleteDevice = this.createDevice (controllerHost.createOrDeviceMatcher (vst2DeviceMatcher, vst3DeviceMatcher, vst3Kontakt7DeviceMatcher));
                     specificDevice = new KompleteDevice (this.host, this.valueChanger, kompleteDevice);
                     break;
 
