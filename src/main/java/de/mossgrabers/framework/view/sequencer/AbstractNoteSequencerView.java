@@ -18,8 +18,10 @@ import de.mossgrabers.framework.daw.constants.Resolution;
 import de.mossgrabers.framework.scale.Scale;
 import de.mossgrabers.framework.scale.Scales;
 import de.mossgrabers.framework.utils.ButtonEvent;
+import de.mossgrabers.framework.utils.Pair;
 import de.mossgrabers.framework.view.TransposeView;
 
+import java.util.ArrayList;
 import java.util.List;
 
 
@@ -41,6 +43,7 @@ public abstract class AbstractNoteSequencerView<S extends IControlSurface<C>, C 
     protected int            loopPadPressed = -1;
     protected int            offsetY;
     protected IStepInfo      copyNote;
+    protected List<Pair<IStepInfo, NotePosition>> copySection;
 
 
     /**
@@ -241,20 +244,49 @@ public abstract class AbstractNoteSequencerView<S extends IControlSurface<C>, C 
         {
             // Only single pad pressed -> page selection
             clip.scrollToPage (pad);
+            handleLoopDuplicate();
         }
         else
         {
-            // Set a new loop between the 2 selected pads
-            final int start = this.loopPadPressed < pad ? this.loopPadPressed : pad;
-            final int end = (this.loopPadPressed < pad ? pad : this.loopPadPressed) + 1;
-            final int lengthOfOnePad = this.getLengthOfOnePage (this.numDisplayCols);
-            final double newStart = (double) start * lengthOfOnePad;
-            clip.setLoopStart (newStart);
-            clip.setLoopLength ((end - start) * lengthOfOnePad);
-            clip.setPlayRange (newStart, (double) end * lengthOfOnePad);
+            if (!handleLoopDuplicate()) {
+                // Set a new loop between the 2 selected pads
+                final int start = this.loopPadPressed < pad ? this.loopPadPressed : pad;
+                final int end = (this.loopPadPressed < pad ? pad : this.loopPadPressed) + 1;
+                final int lengthOfOnePad = this.getLengthOfOnePage (this.numDisplayCols);
+                final double newStart = (double) start * lengthOfOnePad;
+                clip.setLoopStart (newStart);
+                clip.setLoopLength ((end - start) * lengthOfOnePad);
+                clip.setPlayRange (newStart, (double) end * lengthOfOnePad);
+            }
         }
 
         this.loopPadPressed = -1;
+    }
+
+    protected boolean handleLoopDuplicate() {
+        var clip = this.getClip();
+        if (this.isButtonCombination(ButtonID.NEW) && this.isButtonCombination(ButtonID.DUPLICATE))
+        {
+            for (var note : copySection) {
+                clip.setStep(note.getValue(), note.getKey());
+            }
+            return true;
+        }
+        else if (this.isButtonCombination(ButtonID.DUPLICATE))
+        {
+            var list = new ArrayList<Pair<IStepInfo, NotePosition>>();
+            var page = clip.getEditPage();
+            var currNote = clip.getNextNote(new NotePosition(0, page, 128), true);
+            while (currNote != null) {
+                var step = clip.getStep(currNote).createCopy();
+                var stepInfo = new Pair(step, currNote);
+                list.add(stepInfo);
+                currNote = clip.getNextNote(currNote, true);
+            }
+            this.copySection = list;
+            return true;
+        }
+        return false;
     }
 
 
