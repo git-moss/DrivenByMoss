@@ -4,9 +4,10 @@
 
 package de.mossgrabers.controller.ni.maschine.core.command.trigger;
 
+import java.util.Optional;
+
 import de.mossgrabers.controller.ni.maschine.core.MaschineColorManager;
 import de.mossgrabers.framework.command.core.AbstractTriggerCommand;
-import de.mossgrabers.framework.command.trigger.mode.ModeMultiSelectCommand;
 import de.mossgrabers.framework.configuration.Configuration;
 import de.mossgrabers.framework.controller.ButtonID;
 import de.mossgrabers.framework.controller.IControlSurface;
@@ -15,12 +16,9 @@ import de.mossgrabers.framework.daw.data.ISend;
 import de.mossgrabers.framework.daw.data.ITrack;
 import de.mossgrabers.framework.daw.data.bank.ITrackBank;
 import de.mossgrabers.framework.featuregroup.IView;
-import de.mossgrabers.framework.featuregroup.ModeManager;
 import de.mossgrabers.framework.mode.Modes;
 import de.mossgrabers.framework.utils.ButtonEvent;
 import de.mossgrabers.framework.view.sequencer.AbstractSequencerView;
-
-import java.util.Optional;
 
 
 /**
@@ -62,11 +60,8 @@ public class GroupButtonCommand<S extends IControlSurface<C>, C extends Configur
         if (this.surface.isPressed (ButtonID.SENDS))
         {
             this.surface.setTriggerConsumed (ButtonID.SENDS);
-            final Modes modeID = Modes.get (Modes.SEND1, this.index);
-            final ModeManager modeManager = this.surface.getModeManager ();
-            modeManager.setActive (modeID);
-            final String notification = ModeMultiSelectCommand.getSendModeNotification (modeID, modeManager.getActive ().getName (), this.model.getTrackBank ());
-            this.model.getHost ().showNotification (notification);
+            this.surface.getModeManager ().setActive (Modes.get (Modes.SEND1, this.index));
+            this.mvHelper.notifySelectedSend (this.index);
             return;
         }
 

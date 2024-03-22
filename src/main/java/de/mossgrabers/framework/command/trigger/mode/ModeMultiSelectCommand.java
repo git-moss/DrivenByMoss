@@ -4,21 +4,17 @@
 
 package de.mossgrabers.framework.command.trigger.mode;
 
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
+
 import de.mossgrabers.framework.command.core.AbstractTriggerCommand;
 import de.mossgrabers.framework.configuration.Configuration;
 import de.mossgrabers.framework.controller.IControlSurface;
 import de.mossgrabers.framework.daw.IModel;
-import de.mossgrabers.framework.daw.data.ISend;
-import de.mossgrabers.framework.daw.data.ITrack;
-import de.mossgrabers.framework.daw.data.bank.ITrackBank;
 import de.mossgrabers.framework.featuregroup.ModeManager;
 import de.mossgrabers.framework.mode.Modes;
 import de.mossgrabers.framework.utils.ButtonEvent;
-
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
-import java.util.Optional;
 
 
 /**
@@ -137,38 +133,12 @@ public class ModeMultiSelectCommand<S extends IControlSurface<C>, C extends Conf
         this.currentModeID = modeID;
         this.modeManager.setActive (modeID);
 
-        String modeName = this.modeManager.get (modeID).getName ();
         if (Modes.isSendMode (modeID))
-            modeName = getSendModeNotification (modeID, modeName, this.model.getTrackBank ());
-
-        this.model.getHost ().showNotification (modeName);
-    }
-
-
-    /**
-     * Build the information text for a send channel.
-     *
-     * @param modeID The ID of the send mode
-     * @param modeName The name of the mode
-     * @param trackBank The track bank from which to get more effect info
-     * @return The text
-     */
-    public static String getSendModeNotification (final Modes modeID, final String modeName, final ITrackBank trackBank)
-    {
-        final int sendIndex = modeID.ordinal () - Modes.SEND1.ordinal ();
-        String sendModeName = modeName + " " + (sendIndex + 1);
-        Optional<ITrack> selectedTrack = trackBank.getSelectedItem ();
-        if (selectedTrack.isEmpty ())
         {
-            final ITrack item = trackBank.getItem (0);
-            selectedTrack = item.doesExist () ? Optional.of (item) : Optional.empty ();
+            final int sendIndex = modeID.ordinal () - Modes.SEND1.ordinal ();
+            this.mvHelper.notifySelectedSend (sendIndex);
         }
-        if (selectedTrack.isPresent ())
-        {
-            sendModeName += ": ";
-            final ISend send = selectedTrack.get ().getSendBank ().getItem (sendIndex);
-            sendModeName += send.doesExist () ? send.getName () : "-";
-        }
-        return sendModeName;
+        else
+            this.surface.getDisplay ().notify (this.modeManager.get (modeID).getName ());
     }
 }

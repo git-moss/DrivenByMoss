@@ -4,7 +4,11 @@
 
 package de.mossgrabers.controller.mackie.mcu.controller;
 
+import java.util.Arrays;
+import java.util.List;
+
 import de.mossgrabers.controller.mackie.mcu.MCUConfiguration;
+import de.mossgrabers.controller.mackie.mcu.MCUConfiguration.DisplayColors;
 import de.mossgrabers.framework.controller.AbstractControlSurface;
 import de.mossgrabers.framework.controller.ButtonID;
 import de.mossgrabers.framework.controller.color.ColorEx;
@@ -12,9 +16,6 @@ import de.mossgrabers.framework.controller.color.ColorManager;
 import de.mossgrabers.framework.daw.IHost;
 import de.mossgrabers.framework.daw.midi.IMidiInput;
 import de.mossgrabers.framework.daw.midi.IMidiOutput;
-
-import java.util.Arrays;
-import java.util.List;
 
 
 /**
@@ -189,7 +190,7 @@ public class MCUControlSurface extends AbstractControlSurface<MCUConfiguration>
 
     private int                           activeVuMode             = VUMODE_LED;
     private final int []                  knobValues               = new int [8];
-    private byte []                       currentDisplayColors     = new byte [8];
+    private byte []                       currentColors            = new byte [8];
 
     private final List<MCUControlSurface> surfaces;
     private final int                     extenderOffset;
@@ -217,7 +218,7 @@ public class MCUControlSurface extends AbstractControlSurface<MCUConfiguration>
         this.isMainDevice = isMainDevice;
 
         Arrays.fill (this.knobValues, -1);
-        Arrays.fill (this.currentDisplayColors, (byte) -1);
+        Arrays.fill (this.currentColors, (byte) -1);
     }
 
 
@@ -358,35 +359,64 @@ public class MCUControlSurface extends AbstractControlSurface<MCUConfiguration>
      */
     public void sendDisplayColor (final ColorEx [] colors)
     {
-        if (!this.configuration.hasDisplayColors ())
+        final DisplayColors hasDisplayColors = this.configuration.hasDisplayColors ();
+        if (hasDisplayColors == DisplayColors.OFF)
             return;
 
-        ColorEx [] cs = colors;
-        if (this.isMainDevice && this.getTextDisplay ().isNotificationActive ())
+        final byte [] sysexMessage;
+        if (hasDisplayColors == DisplayColors.BEHRINGER)
         {
-            cs = new ColorEx [8];
-            Arrays.fill (cs, ColorEx.WHITE);
+            ColorEx [] cs = colors;
+            if (this.isMainDevice && this.getTextDisplay ().isNotificationActive ())
+            {
+                cs = new ColorEx [8];
+                Arrays.fill (cs, ColorEx.WHITE);
+            }
+
+            final byte [] displayColors = new byte [8];
+            for (int i = 0; i < 8; i++)
+                displayColors[i] = toIndex (cs[i] == null ? ColorEx.BLACK : cs[i]);
+
+            if (Arrays.compare (displayColors, this.currentColors) == 0)
+                return;
+
+            this.currentColors = displayColors;
+
+            sysexMessage = new byte [15];
+            sysexMessage[0] = (byte) 0xF0;
+            sysexMessage[1] = 0x00;
+            sysexMessage[2] = 0x00;
+            sysexMessage[3] = 0x66;
+            sysexMessage[4] = this.isMainDevice ? (byte) 0x14 : (byte) 0x15;
+            sysexMessage[5] = 0x72;
+            for (int i = 0; i < 8; i++)
+                sysexMessage[6 + i] = displayColors[i];
+            sysexMessage[14] = (byte) 0xF7;
+        }
+        else
+        {
+            // iCON style
+            sysexMessage = new byte [31];
+            sysexMessage[0] = (byte) 0xF0;
+            sysexMessage[1] = 0x00;
+            sysexMessage[2] = 0x02;
+            sysexMessage[3] = 0x4E;
+            sysexMessage[4] = 0x16;
+            sysexMessage[5] = 0x14;
+            for (int i = 0; i < 8; i++)
+            {
+                final int [] rgb = colors[i].toIntRGB127 ();
+                sysexMessage[6 + 3 * i + 0] = (byte) rgb[0];
+                sysexMessage[6 + 3 * i + 1] = (byte) rgb[1];
+                sysexMessage[6 + 3 * i + 2] = (byte) rgb[2];
+            }
+            sysexMessage[30] = (byte) 0xF7;
+
+            if (Arrays.compare (sysexMessage, this.currentColors) == 0)
+                return;
+            this.currentColors = sysexMessage;
         }
 
-        final byte [] displayColors = new byte [8];
-        for (int i = 0; i < 8; i++)
-            displayColors[i] = toIndex (cs[i] == null ? ColorEx.BLACK : cs[i]);
-
-        if (Arrays.compare (displayColors, this.currentDisplayColors) == 0)
-            return;
-
-        this.currentDisplayColors = displayColors;
-
-        final byte [] sysexMessage = new byte [15];
-        sysexMessage[0] = (byte) 0xF0;
-        sysexMessage[1] = 0x00;
-        sysexMessage[2] = 0x00;
-        sysexMessage[3] = 0x66;
-        sysexMessage[4] = this.isMainDevice ? (byte) 0x14 : (byte) 0x15;
-        sysexMessage[5] = 0x72;
-        for (int i = 0; i < 8; i++)
-            sysexMessage[6 + i] = displayColors[i];
-        sysexMessage[14] = (byte) 0xF7;
         this.getMidiOutput ().sendSysex (sysexMessage);
     }
 

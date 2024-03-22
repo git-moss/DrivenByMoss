@@ -18,6 +18,7 @@ import de.mossgrabers.framework.daw.constants.DeviceID;
 import de.mossgrabers.framework.daw.data.ICursorDevice;
 import de.mossgrabers.framework.daw.data.ILayer;
 import de.mossgrabers.framework.daw.data.IScene;
+import de.mossgrabers.framework.daw.data.ISend;
 import de.mossgrabers.framework.daw.data.ISpecificDevice;
 import de.mossgrabers.framework.daw.data.ITrack;
 import de.mossgrabers.framework.daw.data.bank.IDrumPadBank;
@@ -149,6 +150,36 @@ public class MVHelper<S extends IControlSurface<C>, C extends Configuration>
 
             final int scrollPosition = sendBank.getScrollPosition () + 1;
             return "Sends: " + scrollPosition + "-" + (scrollPosition + 1);
+
+        });
+    }
+
+
+    /**
+     * Display the name of the nth send of the selected track.
+     * 
+     * @param sendIndex The index of the send to notify
+     */
+    public void notifySelectedSend (final int sendIndex)
+    {
+        this.delayDisplay ( () -> {
+
+            final ITrackBank trackBank = this.model.getTrackBank ();
+            Optional<ITrack> selectedTrack = trackBank.getSelectedItem ();
+            if (selectedTrack.isEmpty ())
+            {
+                final ITrack item = trackBank.getItem (0);
+                selectedTrack = item.doesExist () ? Optional.of (item) : Optional.empty ();
+            }
+            String sendModeName = "Send " + (sendIndex + 1) + ": ";
+            if (selectedTrack.isPresent ())
+            {
+                final ISend send = selectedTrack.get ().getSendBank ().getItem (sendIndex);
+                sendModeName += send.doesExist () ? send.getName () : "-";
+            }
+            else
+                sendModeName += "-";
+            return sendModeName;
 
         });
     }

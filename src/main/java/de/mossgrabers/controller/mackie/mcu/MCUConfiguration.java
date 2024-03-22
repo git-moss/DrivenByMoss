@@ -25,6 +25,30 @@ import de.mossgrabers.framework.daw.midi.ArpeggiatorMode;
  */
 public class MCUConfiguration extends AbstractConfiguration
 {
+    /** Can the displays show colors? */
+    public enum DisplayColors
+    {
+        /** Colors are off. */
+        OFF,
+        /** Colors can be displayed with Behringer commands. */
+        BEHRINGER,
+        /** Colors can be displayed with iCON commands. */
+        ICON
+    }
+
+
+    /** Is a 2nd iCON display present? */
+    public enum SecondDisplay
+    {
+        /** No second display. */
+        OFF,
+        /** QCon Pro-X length including master. */
+        QCON,
+        /** V1-M length. */
+        V1M
+    }
+
+
     private static final String       MCU_DEVICE_1_LEFT                     = "MCU Device 1 - left";
 
     /** Zoom state. */
@@ -56,7 +80,7 @@ public class MCUConfiguration extends AbstractConfiguration
     /** Activate volume mode when touching a volume fader. */
     public static final Integer       TOUCH_CHANNEL_VOLUME_MODE             = Integer.valueOf (63);
     /** iCON specific Master VU meter. */
-    public static final Integer       MASTER_VU_METER                       = Integer.valueOf (64);
+    public static final Integer       ICON_VU_METER                         = Integer.valueOf (64);
     /** Pin FX tracks to last controller. */
     public static final Integer       PIN_FXTRACKS_TO_LAST_CONTROLLER       = Integer.valueOf (65);
     /** Support X-Touch display back-light colors. */
@@ -91,8 +115,9 @@ public class MCUConfiguration extends AbstractConfiguration
     private static final String       DEVICE_SELECT                         = "<Select a profile>";
     private static final String       DEVICE_BEHRINGER_X_TOUCH              = "Behringer X-Touch";
     private static final String       DEVICE_BEHRINGER_X_TOUCH_ONE          = "Behringer X-Touch One";
-    private static final String       DEVICE_ICON_PLATFORM_M                = "icon Platform M / M+";
-    private static final String       DEVICE_ICON_QCON_PRO_X                = "icon QConPro X";
+    private static final String       DEVICE_ICON_PLATFORM_M                = "iCON Platform M / M+";
+    private static final String       DEVICE_ICON_QCON_PRO_X                = "iCON QConPro X";
+    private static final String       DEVICE_ICON_QCON_V1M                  = "iCON V1-M";
     private static final String       DEVICE_MACKIE_MCU_PRO                 = "Mackie MCU Pro";
     private static final String       DEVICE_ZOOM_R16                       = "Zoom R16";
 
@@ -103,6 +128,7 @@ public class MCUConfiguration extends AbstractConfiguration
         DEVICE_BEHRINGER_X_TOUCH_ONE,
         DEVICE_ICON_PLATFORM_M,
         DEVICE_ICON_QCON_PRO_X,
+        DEVICE_ICON_QCON_V1M,
         DEVICE_MACKIE_MCU_PRO,
         DEVICE_ZOOM_R16
     };
@@ -204,6 +230,20 @@ public class MCUConfiguration extends AbstractConfiguration
         }
     };
 
+    private static final String []    DISPLAY_COLORS_OPTIONS                =
+    {
+        "Off",
+        "Behringer",
+        "iCON"
+    };
+
+    private static final String []    SECOND_DISPLAY_OPTIONS                =
+    {
+        "Off",
+        "iCON QCon Pro-X",
+        "iCON V1-M"
+    };
+
     private IEnumSetting              zoomStateSetting;
     private IEnumSetting              displayTimeSetting;
     private IEnumSetting              tempoOrTicksSetting;
@@ -215,7 +255,7 @@ public class MCUConfiguration extends AbstractConfiguration
     private boolean                   displayTime;
     private boolean                   displayTicks;
     private boolean                   hasDisplay1;
-    private boolean                   hasDisplay2;
+    private SecondDisplay             hasDisplay2;
     private boolean                   hasSegmentDisplay;
     private boolean                   hasAssignmentDisplay;
     private boolean                   hasMotorFaders;
@@ -223,8 +263,8 @@ public class MCUConfiguration extends AbstractConfiguration
     private boolean                   displayTrackNames;
     private boolean                   useVertZoomForModes;
     private boolean                   useFadersAsKnobs;
-    private boolean                   masterVuMeter;
-    private boolean                   displayColors;
+    private boolean                   iconVuMeters;
+    private DisplayColors             displayColors;
     private boolean                   use7Characters;
     private boolean                   touchSelectsChannel;
     private boolean                   touchChannelVolumeMode;
@@ -313,9 +353,14 @@ public class MCUConfiguration extends AbstractConfiguration
         });
         this.isSettingActive.add (HAS_DISPLAY1);
 
-        final IEnumSetting hasDisplay2Setting = settingsUI.getEnumSetting ("Has a second display", CATEGORY_HARDWARE_SETUP, ON_OFF_OPTIONS, ON_OFF_OPTIONS[1]);
+        final IEnumSetting hasDisplay2Setting = settingsUI.getEnumSetting ("Has a second display", CATEGORY_HARDWARE_SETUP, SECOND_DISPLAY_OPTIONS, SECOND_DISPLAY_OPTIONS[1]);
         hasDisplay2Setting.addValueObserver (value -> {
-            this.hasDisplay2 = "On".equals (value);
+            if (SECOND_DISPLAY_OPTIONS[1].equals (value))
+                this.hasDisplay2 = SecondDisplay.QCON;
+            else if (SECOND_DISPLAY_OPTIONS[2].equals (value))
+                this.hasDisplay2 = SecondDisplay.V1M;
+            else
+                this.hasDisplay2 = SecondDisplay.OFF;
             this.notifyObservers (HAS_DISPLAY2);
         });
         this.isSettingActive.add (HAS_DISPLAY2);
@@ -371,16 +416,21 @@ public class MCUConfiguration extends AbstractConfiguration
 
         this.activateEnableVUMetersSetting (settingsUI, CATEGORY_HARDWARE_SETUP);
 
-        final IEnumSetting masterVuMeterSetting = settingsUI.getEnumSetting ("Master VU Meter (iCON extension)", CATEGORY_HARDWARE_SETUP, ON_OFF_OPTIONS, ON_OFF_OPTIONS[0]);
-        masterVuMeterSetting.addValueObserver (value -> {
-            this.masterVuMeter = "On".equals (value);
-            this.notifyObservers (MASTER_VU_METER);
+        final IEnumSetting iconVuMeterSetting = settingsUI.getEnumSetting ("iCON VU Meters", CATEGORY_HARDWARE_SETUP, ON_OFF_OPTIONS, ON_OFF_OPTIONS[0]);
+        iconVuMeterSetting.addValueObserver (value -> {
+            this.iconVuMeters = "On".equals (value);
+            this.notifyObservers (ICON_VU_METER);
         });
-        this.isSettingActive.add (MASTER_VU_METER);
+        this.isSettingActive.add (ICON_VU_METER);
 
-        final IEnumSetting displayColorsSetting = settingsUI.getEnumSetting ("Display colors (Behringer X-Touch)", CATEGORY_HARDWARE_SETUP, ON_OFF_OPTIONS, ON_OFF_OPTIONS[0]);
+        final IEnumSetting displayColorsSetting = settingsUI.getEnumSetting ("Display colors", CATEGORY_HARDWARE_SETUP, DISPLAY_COLORS_OPTIONS, DISPLAY_COLORS_OPTIONS[0]);
         displayColorsSetting.addValueObserver (value -> {
-            this.displayColors = "On".equals (value);
+            if (DISPLAY_COLORS_OPTIONS[1].equals (value))
+                this.displayColors = DisplayColors.BEHRINGER;
+            else if (DISPLAY_COLORS_OPTIONS[2].equals (value))
+                this.displayColors = DisplayColors.ICON;
+            else
+                this.displayColors = DisplayColors.OFF;
             this.notifyObservers (X_TOUCH_DISPLAY_COLORS);
         });
         this.isSettingActive.add (X_TOUCH_DISPLAY_COLORS);
@@ -394,102 +444,120 @@ public class MCUConfiguration extends AbstractConfiguration
 
         // Activate at the end, so all settings are created
         profileSetting.addValueObserver (value -> {
+            final String on = ON_OFF_OPTIONS[1];
+            final String off = ON_OFF_OPTIONS[0];
             switch (value)
             {
                 case DEVICE_MACKIE_MCU_PRO:
-                    hasDisplay1Setting.set (ON_OFF_OPTIONS[1]);
-                    hasDisplay2Setting.set (ON_OFF_OPTIONS[0]);
-                    hasSegmentDisplaySetting.set (ON_OFF_OPTIONS[1]);
-                    hasAssignmentDisplaySetting.set (ON_OFF_OPTIONS[1]);
-                    this.hasMotorFadersSetting.set (ON_OFF_OPTIONS[1]);
-                    hasOnly1FaderSetting.set (ON_OFF_OPTIONS[0]);
-                    this.displayTrackNamesSetting.set (ON_OFF_OPTIONS[1]);
-                    useVertZoomForModesSetting.set (ON_OFF_OPTIONS[0]);
-                    this.useFadersAsKnobsSetting.set (ON_OFF_OPTIONS[0]);
+                    hasDisplay1Setting.set (on);
+                    hasDisplay2Setting.set (SECOND_DISPLAY_OPTIONS[0]);
+                    hasSegmentDisplaySetting.set (on);
+                    hasAssignmentDisplaySetting.set (on);
+                    this.hasMotorFadersSetting.set (on);
+                    hasOnly1FaderSetting.set (off);
+                    this.displayTrackNamesSetting.set (on);
+                    useVertZoomForModesSetting.set (off);
+                    this.useFadersAsKnobsSetting.set (off);
                     this.setVUMetersEnabled (true);
-                    masterVuMeterSetting.set (ON_OFF_OPTIONS[0]);
-                    displayColorsSetting.set (ON_OFF_OPTIONS[0]);
-                    use7CharactersSetting.set (ON_OFF_OPTIONS[0]);
+                    iconVuMeterSetting.set (off);
+                    displayColorsSetting.set (DISPLAY_COLORS_OPTIONS[0]);
+                    use7CharactersSetting.set (off);
                     break;
 
                 case DEVICE_BEHRINGER_X_TOUCH:
-                    hasDisplay1Setting.set (ON_OFF_OPTIONS[1]);
-                    hasDisplay2Setting.set (ON_OFF_OPTIONS[0]);
-                    hasSegmentDisplaySetting.set (ON_OFF_OPTIONS[1]);
-                    hasAssignmentDisplaySetting.set (ON_OFF_OPTIONS[1]);
-                    this.hasMotorFadersSetting.set (ON_OFF_OPTIONS[1]);
-                    hasOnly1FaderSetting.set (ON_OFF_OPTIONS[0]);
-                    this.displayTrackNamesSetting.set (ON_OFF_OPTIONS[1]);
-                    useVertZoomForModesSetting.set (ON_OFF_OPTIONS[0]);
-                    this.useFadersAsKnobsSetting.set (ON_OFF_OPTIONS[0]);
+                    hasDisplay1Setting.set (on);
+                    hasDisplay2Setting.set (SECOND_DISPLAY_OPTIONS[0]);
+                    hasSegmentDisplaySetting.set (on);
+                    hasAssignmentDisplaySetting.set (on);
+                    this.hasMotorFadersSetting.set (on);
+                    hasOnly1FaderSetting.set (off);
+                    this.displayTrackNamesSetting.set (on);
+                    useVertZoomForModesSetting.set (off);
+                    this.useFadersAsKnobsSetting.set (off);
                     this.setVUMetersEnabled (true);
-                    masterVuMeterSetting.set (ON_OFF_OPTIONS[0]);
-                    displayColorsSetting.set (ON_OFF_OPTIONS[1]);
-                    use7CharactersSetting.set (ON_OFF_OPTIONS[1]);
+                    iconVuMeterSetting.set (off);
+                    displayColorsSetting.set (DISPLAY_COLORS_OPTIONS[1]);
+                    use7CharactersSetting.set (on);
                     break;
 
                 case DEVICE_BEHRINGER_X_TOUCH_ONE:
-                    hasDisplay1Setting.set (ON_OFF_OPTIONS[1]);
-                    hasDisplay2Setting.set (ON_OFF_OPTIONS[0]);
-                    hasSegmentDisplaySetting.set (ON_OFF_OPTIONS[1]);
-                    hasAssignmentDisplaySetting.set (ON_OFF_OPTIONS[1]);
-                    this.hasMotorFadersSetting.set (ON_OFF_OPTIONS[1]);
-                    hasOnly1FaderSetting.set (ON_OFF_OPTIONS[1]);
-                    this.displayTrackNamesSetting.set (ON_OFF_OPTIONS[1]);
-                    useVertZoomForModesSetting.set (ON_OFF_OPTIONS[0]);
-                    this.useFadersAsKnobsSetting.set (ON_OFF_OPTIONS[0]);
+                    hasDisplay1Setting.set (on);
+                    hasDisplay2Setting.set (SECOND_DISPLAY_OPTIONS[0]);
+                    hasSegmentDisplaySetting.set (on);
+                    hasAssignmentDisplaySetting.set (on);
+                    this.hasMotorFadersSetting.set (on);
+                    hasOnly1FaderSetting.set (on);
+                    this.displayTrackNamesSetting.set (on);
+                    useVertZoomForModesSetting.set (off);
+                    this.useFadersAsKnobsSetting.set (off);
                     this.setVUMetersEnabled (true);
-                    masterVuMeterSetting.set (ON_OFF_OPTIONS[0]);
-                    displayColorsSetting.set (ON_OFF_OPTIONS[0]);
-                    use7CharactersSetting.set (ON_OFF_OPTIONS[1]);
+                    iconVuMeterSetting.set (off);
+                    displayColorsSetting.set (DISPLAY_COLORS_OPTIONS[0]);
+                    use7CharactersSetting.set (on);
                     break;
 
                 case DEVICE_ICON_PLATFORM_M:
-                    hasDisplay1Setting.set (ON_OFF_OPTIONS[0]);
-                    hasDisplay2Setting.set (ON_OFF_OPTIONS[0]);
-                    hasSegmentDisplaySetting.set (ON_OFF_OPTIONS[0]);
-                    hasAssignmentDisplaySetting.set (ON_OFF_OPTIONS[0]);
-                    this.hasMotorFadersSetting.set (ON_OFF_OPTIONS[1]);
-                    hasOnly1FaderSetting.set (ON_OFF_OPTIONS[0]);
-                    this.displayTrackNamesSetting.set (ON_OFF_OPTIONS[0]);
-                    useVertZoomForModesSetting.set (ON_OFF_OPTIONS[1]);
-                    this.useFadersAsKnobsSetting.set (ON_OFF_OPTIONS[0]);
+                    hasDisplay1Setting.set (off);
+                    hasDisplay2Setting.set (SECOND_DISPLAY_OPTIONS[0]);
+                    hasSegmentDisplaySetting.set (off);
+                    hasAssignmentDisplaySetting.set (off);
+                    this.hasMotorFadersSetting.set (on);
+                    hasOnly1FaderSetting.set (off);
+                    this.displayTrackNamesSetting.set (off);
+                    useVertZoomForModesSetting.set (on);
+                    this.useFadersAsKnobsSetting.set (off);
                     this.setVUMetersEnabled (false);
-                    masterVuMeterSetting.set (ON_OFF_OPTIONS[0]);
-                    displayColorsSetting.set (ON_OFF_OPTIONS[0]);
-                    use7CharactersSetting.set (ON_OFF_OPTIONS[0]);
+                    iconVuMeterSetting.set (off);
+                    displayColorsSetting.set (DISPLAY_COLORS_OPTIONS[0]);
+                    use7CharactersSetting.set (off);
                     break;
 
                 case DEVICE_ICON_QCON_PRO_X:
-                    hasDisplay1Setting.set (ON_OFF_OPTIONS[1]);
-                    hasDisplay2Setting.set (ON_OFF_OPTIONS[1]);
-                    hasSegmentDisplaySetting.set (ON_OFF_OPTIONS[1]);
-                    hasAssignmentDisplaySetting.set (ON_OFF_OPTIONS[0]);
-                    this.hasMotorFadersSetting.set (ON_OFF_OPTIONS[1]);
-                    hasOnly1FaderSetting.set (ON_OFF_OPTIONS[0]);
-                    this.displayTrackNamesSetting.set (ON_OFF_OPTIONS[0]);
-                    useVertZoomForModesSetting.set (ON_OFF_OPTIONS[0]);
-                    this.useFadersAsKnobsSetting.set (ON_OFF_OPTIONS[0]);
+                    hasDisplay1Setting.set (on);
+                    hasDisplay2Setting.set (SECOND_DISPLAY_OPTIONS[1]);
+                    hasSegmentDisplaySetting.set (on);
+                    hasAssignmentDisplaySetting.set (off);
+                    this.hasMotorFadersSetting.set (on);
+                    hasOnly1FaderSetting.set (off);
+                    this.displayTrackNamesSetting.set (off);
+                    useVertZoomForModesSetting.set (off);
+                    this.useFadersAsKnobsSetting.set (off);
                     this.setVUMetersEnabled (true);
-                    masterVuMeterSetting.set (ON_OFF_OPTIONS[1]);
-                    displayColorsSetting.set (ON_OFF_OPTIONS[0]);
-                    use7CharactersSetting.set (ON_OFF_OPTIONS[0]);
+                    iconVuMeterSetting.set (on);
+                    displayColorsSetting.set (DISPLAY_COLORS_OPTIONS[0]);
+                    use7CharactersSetting.set (off);
+                    break;
+
+                case DEVICE_ICON_QCON_V1M:
+                    hasDisplay1Setting.set (on);
+                    hasDisplay2Setting.set (SECOND_DISPLAY_OPTIONS[2]);
+                    hasSegmentDisplaySetting.set (on);
+                    hasAssignmentDisplaySetting.set (off);
+                    this.hasMotorFadersSetting.set (on);
+                    hasOnly1FaderSetting.set (off);
+                    this.displayTrackNamesSetting.set (off);
+                    useVertZoomForModesSetting.set (off);
+                    this.useFadersAsKnobsSetting.set (off);
+                    this.setVUMetersEnabled (true);
+                    iconVuMeterSetting.set (on);
+                    displayColorsSetting.set (DISPLAY_COLORS_OPTIONS[2]);
+                    use7CharactersSetting.set (on);
                     break;
 
                 case DEVICE_ZOOM_R16:
-                    hasDisplay1Setting.set (ON_OFF_OPTIONS[0]);
-                    hasDisplay2Setting.set (ON_OFF_OPTIONS[0]);
-                    hasSegmentDisplaySetting.set (ON_OFF_OPTIONS[0]);
-                    hasAssignmentDisplaySetting.set (ON_OFF_OPTIONS[0]);
-                    this.hasMotorFadersSetting.set (ON_OFF_OPTIONS[0]);
-                    hasOnly1FaderSetting.set (ON_OFF_OPTIONS[0]);
-                    this.displayTrackNamesSetting.set (ON_OFF_OPTIONS[0]);
-                    useVertZoomForModesSetting.set (ON_OFF_OPTIONS[0]);
-                    this.useFadersAsKnobsSetting.set (ON_OFF_OPTIONS[1]);
+                    hasDisplay1Setting.set (off);
+                    hasDisplay2Setting.set (SECOND_DISPLAY_OPTIONS[0]);
+                    hasSegmentDisplaySetting.set (off);
+                    hasAssignmentDisplaySetting.set (off);
+                    this.hasMotorFadersSetting.set (off);
+                    hasOnly1FaderSetting.set (off);
+                    this.displayTrackNamesSetting.set (off);
+                    useVertZoomForModesSetting.set (off);
+                    this.useFadersAsKnobsSetting.set (on);
                     this.setVUMetersEnabled (false);
-                    masterVuMeterSetting.set (ON_OFF_OPTIONS[0]);
-                    displayColorsSetting.set (ON_OFF_OPTIONS[0]);
-                    use7CharactersSetting.set (ON_OFF_OPTIONS[0]);
+                    iconVuMeterSetting.set (off);
+                    displayColorsSetting.set (DISPLAY_COLORS_OPTIONS[0]);
+                    use7CharactersSetting.set (off);
                     break;
 
                 default:
@@ -680,11 +748,11 @@ public class MCUConfiguration extends AbstractConfiguration
 
 
     /**
-     * Returns true if it has a secondary display.
+     * Returns if it has a secondary display.
      *
-     * @return True if it has a secondary display
+     * @return The type of the 2nd display
      */
-    public boolean hasDisplay2 ()
+    public SecondDisplay hasDisplay2 ()
     {
         return this.hasDisplay2;
     }
@@ -775,22 +843,22 @@ public class MCUConfiguration extends AbstractConfiguration
 
 
     /**
-     * Returns true if master VU (icon QCon Pro X) should be enabled.
+     * Returns true if VUs in iCON mode (QCon Pro X, G2, V1-M, ...) should be enabled.
      *
      * @return True if master VU should be enabled
      */
-    public boolean hasMasterVU ()
+    public boolean hasIconVUs ()
     {
-        return this.masterVuMeter;
+        return this.iconVuMeters;
     }
 
 
     /**
-     * Returns true if display back-light colors (X-Touch) should be enabled.
+     * Returns if colors are available on the displays and how to set them.
      *
      * @return True if display back-light colors should be enabled
      */
-    public boolean hasDisplayColors ()
+    public DisplayColors hasDisplayColors ()
     {
         return this.displayColors;
     }

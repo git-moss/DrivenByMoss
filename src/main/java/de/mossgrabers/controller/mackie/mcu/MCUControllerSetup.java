@@ -161,10 +161,10 @@ public class MCUControllerSetup extends AbstractControllerSetup<MCUControlSurfac
 
     private static final Set<Modes> VALUE_MODES      = EnumSet.of (Modes.VOLUME, Modes.PAN, Modes.TRACK, Modes.SEND1, Modes.SEND2, Modes.SEND3, Modes.SEND4, Modes.SEND5, Modes.SEND6, Modes.SEND7, Modes.SEND8, Modes.DEVICE_PARAMS, Modes.EQ_DEVICE_PARAMS, Modes.INSTRUMENT_DEVICE_PARAMS, Modes.USER);
 
+    private final int []            vuValues         = new int [32];
     private final int []            masterVuValues   = new int [2];
+    private final int []            faderValues      = new int [32];
     private int                     masterFaderValue = -1;
-    private final int []            vuValues         = new int [36];
-    private final int []            faderValues      = new int [36];
     private final int               numMCUDevices;
 
 
@@ -278,8 +278,8 @@ public class MCUControllerSetup extends AbstractControllerSetup<MCUControlSurfac
             final IMidiInput input = midiAccess.createInput (i, null);
             final MCUControlSurface surface = new MCUControlSurface (this.surfaces, this.host, this.colorManager, this.configuration, output, input, 8 * i, isMainDevice);
             this.surfaces.add (surface);
-            surface.addTextDisplay (new MCUDisplay (this.host, output, true, deviceType == MCUDeviceType.MACKIE_EXTENDER, false));
-            surface.addTextDisplay (new MCUDisplay (this.host, output, false, false, isMainDevice));
+            surface.addTextDisplay (new MCUDisplay (this.host, output, true, deviceType == MCUDeviceType.MACKIE_EXTENDER, false, this.configuration));
+            surface.addTextDisplay (new MCUDisplay (this.host, output, false, false, isMainDevice, this.configuration));
             surface.addTextDisplay (new MCUSegmentDisplay (this.host, output));
             surface.addTextDisplay (new MCUAssignmentDisplay (this.host, output));
             surface.getModeManager ().setDefaultID (Modes.VOLUME);
@@ -385,6 +385,13 @@ public class MCUControllerSetup extends AbstractControllerSetup<MCUControlSurfac
             }
         });
 
+        this.configuration.addSettingObserver (MCUConfiguration.HAS_DISPLAY2, () -> {
+            for (int index = 0; index < this.numMCUDevices; index++)
+            {
+                final MCUControlSurface surface = this.getSurface (index);
+                ((MCUDisplay) surface.getTextDisplay (1)).updateShortSecondDisplay ();
+            }
+        });
         this.configuration.registerDeactivatedItemsHandler (this.model);
 
         this.activateBrowserObserver (Modes.BROWSER);
@@ -827,34 +834,55 @@ public class MCUControllerSetup extends AbstractControllerSetup<MCUControlSurfac
                 final IChannel track = channelBank.getItem (channel);
 
                 final int vu = track.getVu ();
-                this.vuValues[channel] = vu;
-                this.sendVUValue (output, i, vu, false);
+                final int scaledVu = this.scaleVU (vu);
+                if (this.vuValues[channel] != scaledVu)
+                {
+                    this.vuValues[channel] = scaledVu;
+                    this.sendVUValue (output, i, vu, scaledVu, false);
+                }
             }
 
-            // Stereo VU of master channel
-            if (this.configuration.getDeviceType (index) == MCUDeviceType.MAIN && this.configuration.hasMasterVU ())
+            // Stereo VUs of master channel
+            if (this.configuration.getDeviceType (index) == MCUDeviceType.MAIN && this.configuration.hasIconVUs ())
             {
                 final IMasterTrack masterTrack = this.model.getMasterTrack ();
 
                 int vu = masterTrack.getVuLeft ();
-                this.masterVuValues[0] = vu;
-                this.sendVUValue (output, 0, vu, true);
+                int scaledVu = this.scaleVU (vu);
+                if (this.masterVuValues[0] != scaledVu)
+                {
+                    this.masterVuValues[0] = scaledVu;
+                    this.sendVUValue (output, 0, vu, scaledVu, true);
+                }
 
                 vu = masterTrack.getVuRight ();
-                this.masterVuValues[1] = vu;
-                this.sendVUValue (output, 1, vu, true);
+                scaledVu = this.scaleVU (vu);
+                if (this.masterVuValues[1] != scaledVu)
+                {
+                    this.masterVuValues[1] = scaledVu;
+                    this.sendVUValue (output, 1, vu, scaledVu, true);
+                }
             }
         }
     }
 
 
-    private void sendVUValue (final IMidiOutput output, final int track, final int vu, final boolean isMaster)
+    private int scaleVU (final int vu)
     {
-        final int scaledValue = (int) Math.round (this.valueChanger.toNormalizedValue (vu) * 13);
-        output.sendChannelAftertouch (isMaster ? 1 : 0, 0x10 * track + scaledValue, 0);
+        return (int) Math.round (this.valueChanger.toNormalizedValue (vu) * 13);
+    }
 
-        final boolean doesClip = vu > 16240;
-        output.sendChannelAftertouch (isMaster ? 1 : 0, 0x10 * track + (doesClip ? 0x0E : 0x0F), 0);
+
+    private void sendVUValue (final IMidiOutput output, final int track, final int vu, final int scaledVu, final boolean isMaster)
+    {
+        output.sendChannelAftertouch (isMaster ? 1 : 0, 0x10 * track + scaledVu, 0);
+
+        // iCON devices do not support the clip state!
+        if (!this.configuration.hasIconVUs ())
+        {
+            final boolean doesClip = vu > 16240;
+            output.sendChannelAftertouch (isMaster ? 1 : 0, 0x10 * track + (doesClip ? 0x0E : 0x0F), 0);
+        }
     }
 
 

@@ -4,6 +4,13 @@
 
 package de.mossgrabers.controller.ni.maschine.mk3;
 
+import java.util.Arrays;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Optional;
+import java.util.Set;
+import java.util.function.BooleanSupplier;
+
 import de.mossgrabers.controller.mackie.mcu.controller.MCUDisplay;
 import de.mossgrabers.controller.ni.maschine.Maschine;
 import de.mossgrabers.controller.ni.maschine.core.MaschineColorManager;
@@ -108,13 +115,6 @@ import de.mossgrabers.framework.utils.FrameworkException;
 import de.mossgrabers.framework.utils.OperatingSystem;
 import de.mossgrabers.framework.view.Views;
 
-import java.util.Arrays;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Optional;
-import java.util.Set;
-import java.util.function.BooleanSupplier;
-
 
 /**
  * Support for the NI Maschine controller series.
@@ -218,7 +218,7 @@ public class MaschineControllerSetup extends AbstractControllerSetup<MaschineCon
 
         if (this.maschine.hasMCUDisplay ())
         {
-            final MCUDisplay display = new MCUDisplay (this.host, output, true, false, false);
+            final MCUDisplay display = new MCUDisplay (this.host, output, true, false, false, this.configuration);
             display.setCenterNotification (false);
             surface.addTextDisplay (display);
         }

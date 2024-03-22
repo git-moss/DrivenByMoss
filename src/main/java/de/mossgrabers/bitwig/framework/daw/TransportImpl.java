@@ -4,6 +4,14 @@
 
 package de.mossgrabers.bitwig.framework.daw;
 
+import java.text.DecimalFormat;
+
+import com.bitwig.extension.controller.api.BeatTimeFormatter;
+import com.bitwig.extension.controller.api.ControllerHost;
+import com.bitwig.extension.controller.api.SettableEnumValue;
+import com.bitwig.extension.controller.api.TimeSignatureValue;
+import com.bitwig.extension.controller.api.Transport;
+
 import de.mossgrabers.bitwig.framework.daw.data.ParameterImpl;
 import de.mossgrabers.bitwig.framework.daw.data.RangedValueImpl;
 import de.mossgrabers.bitwig.framework.daw.data.Util;
@@ -16,14 +24,6 @@ import de.mossgrabers.framework.daw.constants.PostRecordingAction;
 import de.mossgrabers.framework.daw.constants.TransportConstants;
 import de.mossgrabers.framework.parameter.IParameter;
 import de.mossgrabers.framework.utils.StringUtils;
-
-import com.bitwig.extension.controller.api.BeatTimeFormatter;
-import com.bitwig.extension.controller.api.ControllerHost;
-import com.bitwig.extension.controller.api.SettableEnumValue;
-import com.bitwig.extension.controller.api.TimeSignatureValue;
-import com.bitwig.extension.controller.api.Transport;
-
-import java.text.DecimalFormat;
 
 
 /**
@@ -511,7 +511,7 @@ public class TransportImpl implements ITransport
     @Override
     public void changePosition (final boolean increase, final boolean slow)
     {
-        final double frac = slow ? TransportConstants.INC_FRACTION_TIME_SLOW : TransportConstants.INC_FRACTION_TIME;
+        final double frac = getTimeFraction (slow);
         final double position = this.transport.playStartPosition ().get ();
         double newPos = Math.max (0, position + (increase ? frac : -frac));
 
@@ -520,6 +520,18 @@ public class TransportImpl implements ITransport
         newPos = intPosition * frac;
 
         this.setPosition (newPos);
+    }
+
+
+    /**
+     * Get the fraction to use for time changes.
+     * 
+     * @param slow Slow change if true otherwise fast
+     * @return The fraction to change
+     */
+    private static double getTimeFraction (final boolean slow)
+    {
+        return slow ? TransportConstants.INC_FRACTION_TIME_SLOW : TransportConstants.INC_FRACTION_TIME;
     }
 
 
@@ -535,7 +547,7 @@ public class TransportImpl implements ITransport
     @Override
     public void changeLoopStart (final boolean increase, final boolean slow)
     {
-        final double frac = slow ? TransportConstants.INC_FRACTION_TIME_SLOW : TransportConstants.INC_FRACTION_TIME;
+        final double frac = getTimeFraction (slow);
         this.transport.arrangerLoopStart ().inc (increase ? frac : -frac);
     }
 
@@ -580,7 +592,7 @@ public class TransportImpl implements ITransport
     @Override
     public void changeLoopLength (final boolean increase, final boolean slow)
     {
-        final double frac = slow ? TransportConstants.INC_FRACTION_TIME_SLOW : TransportConstants.INC_FRACTION_TIME;
+        final double frac = getTimeFraction (slow);
         this.transport.arrangerLoopDuration ().inc (increase ? frac : -frac);
     }
 

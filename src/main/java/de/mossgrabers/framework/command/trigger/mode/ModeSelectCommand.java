@@ -113,6 +113,6 @@ public class ModeSelectCommand<S extends IControlSurface<C>, C extends Configura
      */
     protected void displayMode ()
     {
-        this.model.getHost ().showNotification (this.modeManager.getActive ().getName ());
+        this.surface.getDisplay ().notify (this.modeManager.getActive ().getName ());
     }
 }

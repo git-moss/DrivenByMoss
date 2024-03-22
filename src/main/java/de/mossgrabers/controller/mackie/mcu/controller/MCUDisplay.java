@@ -8,6 +8,9 @@ import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.TimeUnit;
 
+import de.mossgrabers.controller.mackie.mcu.MCUConfiguration;
+import de.mossgrabers.controller.mackie.mcu.MCUConfiguration.SecondDisplay;
+import de.mossgrabers.framework.configuration.Configuration;
 import de.mossgrabers.framework.controller.display.AbstractTextDisplay;
 import de.mossgrabers.framework.controller.display.ITextDisplay;
 import de.mossgrabers.framework.daw.IHost;
@@ -29,7 +32,8 @@ public class MCUDisplay extends AbstractTextDisplay
 
     private final boolean               isFirstDisplay;
     private final boolean               isExtender;
-    private final boolean               hasMaster;
+    private final boolean               isMainDevice;
+    private final Configuration         configuration;
 
     private final LatestTaskExecutor [] executors                      = new LatestTaskExecutor [4];
     private boolean                     isShutdown                     = false;
@@ -44,20 +48,32 @@ public class MCUDisplay extends AbstractTextDisplay
      * @param output The MIDI output which addresses the display
      * @param isFirst True if it is the first display, otherwise the second
      * @param isMCUExtender True if it is an original Mackie extender
-     * @param hasMaster True if a 9th master cell should be added
+     * @param isMainDevice True if this is the main device
+     * @param configuration The configuration
      */
-    public MCUDisplay (final IHost host, final IMidiOutput output, final boolean isFirst, final boolean isMCUExtender, final boolean hasMaster)
+    public MCUDisplay (final IHost host, final IMidiOutput output, final boolean isFirst, final boolean isMCUExtender, final boolean isMainDevice, final Configuration configuration)
     {
-        super (host, output, 2 /* No of rows */, !isFirst && hasMaster ? 9 : 8 /* No of cells */, 56);
+        super (host, output, 2 /* No of rows */, !isFirst && isMainDevice ? 9 : 8 /* No of cells */, 56);
 
         this.isFirstDisplay = isFirst;
-        this.hasMaster = hasMaster;
+        this.isMainDevice = isMainDevice;
         this.isExtender = isMCUExtender;
+        this.configuration = configuration;
 
         this.centerNotification = false;
 
         for (int i = 0; i < this.executors.length; i++)
             this.executors[i] = new LatestTaskExecutor ();
+    }
+
+
+    /**
+     * Update to use the 'short' or 'long' (including 'Master').
+     */
+    public void updateShortSecondDisplay ()
+    {
+        if (!this.isFirstDisplay && this.isMainDevice && this.configuration instanceof MCUConfiguration conf)
+            this.setNumberOfCells (this.noOfLines, conf.hasDisplay2 () == SecondDisplay.QCON ? 9 : 8, this.noOfCharacters);
     }
 
 
@@ -98,8 +114,9 @@ public class MCUDisplay extends AbstractTextDisplay
     protected void updateLine (final int row, final String text, final String previousText)
     {
         String t = text;
-        if (!this.isFirstDisplay && this.hasMaster)
+        if (!this.isFirstDisplay && this.isMainDevice && this.configuration instanceof MCUConfiguration conf && conf.hasDisplay2 () == SecondDisplay.QCON)
         {
+            // If a 9th master cell should be added
             if (row == 0)
                 t = t.substring (0, t.length () - 1) + 'r';
             t = "  " + t;

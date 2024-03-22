@@ -7,6 +7,7 @@ package de.mossgrabers.controller.mackie.mcu.mode;
 import java.util.Optional;
 
 import de.mossgrabers.controller.mackie.mcu.MCUConfiguration;
+import de.mossgrabers.controller.mackie.mcu.MCUConfiguration.SecondDisplay;
 import de.mossgrabers.controller.mackie.mcu.MCUControllerSetup;
 import de.mossgrabers.controller.mackie.mcu.controller.MCUControlSurface;
 import de.mossgrabers.framework.controller.ButtonID;
@@ -367,16 +368,16 @@ public abstract class BaseMode<B extends IItem> extends AbstractParameterMode<MC
      */
     protected void drawDisplay2 ()
     {
-        if (!this.configuration.hasDisplay2 ())
+        final SecondDisplay hasDisplay2 = this.configuration.hasDisplay2 ();
+        if (hasDisplay2 == SecondDisplay.OFF)
             return;
 
+        final boolean isDisplayAligned = hasDisplay2 == SecondDisplay.V1M;
+        final boolean isMainDevice = this.surface.isMainDevice ();
+        final boolean isShort = isMainDevice && !isDisplayAligned;
         final ITrackBank tb = this.getTrackBank ();
-
         final ITextDisplay d2 = this.surface.getTextDisplay (1);
         final int extenderOffset = this.getExtenderOffset ();
-
-        final boolean isMainDevice = this.surface.isMainDevice ();
-
         final boolean isLayerMode = Modes.isLayerMode (this.surface.getModeManager ().getActiveID ());
         if (isLayerMode)
         {
@@ -385,7 +386,7 @@ public abstract class BaseMode<B extends IItem> extends AbstractParameterMode<MC
             for (int i = 0; i < 8; i++)
             {
                 final IChannel c = layerBank.getItem (extenderOffset + i);
-                d2.setCell (0, i, StringUtils.shortenAndFixASCII (c.getName (), isMainDevice ? 6 : 7));
+                d2.setCell (0, i, StringUtils.shortenAndFixASCII (c.getName (), isShort ? 6 : 7));
             }
         }
         else
@@ -393,11 +394,11 @@ public abstract class BaseMode<B extends IItem> extends AbstractParameterMode<MC
             for (int i = 0; i < 8; i++)
             {
                 final ITrack t = tb.getItem (extenderOffset + i);
-                d2.setCell (0, i, StringUtils.shortenAndFixASCII (t.getName (), isMainDevice ? 6 : 7));
+                d2.setCell (0, i, StringUtils.shortenAndFixASCII (t.getName (), isShort ? 6 : 7));
             }
         }
 
-        if (isMainDevice)
+        if (isShort)
             d2.setCell (0, 8, "Maste");
 
         d2.done (0);
@@ -415,8 +416,8 @@ public abstract class BaseMode<B extends IItem> extends AbstractParameterMode<MC
                 final Optional<ITrack> selectedItem = tb.getSelectedItem ();
                 selectedTrack = selectedItem.isPresent () ? selectedItem.get () : EmptyTrack.getInstance (tb.getItem (0).getSendBank ().getPageSize ());
             }
-            d2.setBlock (1, 0, "Sel. track:").setBlock (1, 1, selectedTrack == null ? "None" : StringUtils.shortenAndFixASCII (selectedTrack.getName (), 11));
-            d2.setBlock (1, 2, "Sel. devce:").setBlock (1, 3, cursorDevice.doesExist () ? StringUtils.shortenAndFixASCII (cursorDevice.getName (), 11) : "None");
+            d2.setBlock (1, 0, "  Sel. track:").setBlock (1, 1, selectedTrack == null ? "None" : StringUtils.shortenAndFixASCII (selectedTrack.getName (), 11));
+            d2.setBlock (1, 2, "  Sel. devce:").setBlock (1, 3, cursorDevice.doesExist () ? StringUtils.shortenAndFixASCII (cursorDevice.getName (), 11) : "None");
         }
 
         d2.done (1);

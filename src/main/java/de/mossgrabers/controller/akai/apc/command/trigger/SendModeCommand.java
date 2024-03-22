@@ -8,13 +8,9 @@ import de.mossgrabers.controller.akai.apc.APCConfiguration;
 import de.mossgrabers.controller.akai.apc.controller.APCControlSurface;
 import de.mossgrabers.framework.command.core.AbstractTriggerCommand;
 import de.mossgrabers.framework.daw.IModel;
-import de.mossgrabers.framework.daw.data.ITrack;
-import de.mossgrabers.framework.daw.data.bank.ITrackBank;
 import de.mossgrabers.framework.featuregroup.ModeManager;
 import de.mossgrabers.framework.mode.Modes;
 import de.mossgrabers.framework.utils.ButtonEvent;
-
-import java.util.Optional;
 
 
 /**
@@ -57,28 +53,14 @@ public class SendModeCommand extends AbstractTriggerCommand<APCControlSurface, A
     }
 
 
-    private void handleExecute (final ButtonEvent event, final int index)
+    private void handleExecute (final ButtonEvent event, final int sendIndex)
     {
         // No Sends on FX tracks
         if (event != ButtonEvent.DOWN || this.model.isEffectTrackBankActive ())
             return;
 
         final ModeManager modeManager = this.surface.getModeManager ();
-        modeManager.setActive (Modes.get (Modes.SEND1, index));
-
-        String modeName = "Send " + (index + 1) + ": ";
-        final ITrackBank trackBank = this.model.getTrackBank ();
-        Optional<ITrack> selectedTrack = trackBank.getSelectedItem ();
-        if (selectedTrack.isEmpty ())
-        {
-            final ITrack item = trackBank.getItem (0);
-            selectedTrack = item.doesExist () ? Optional.of (item) : Optional.empty ();
-        }
-        if (selectedTrack.isPresent ())
-            modeName += selectedTrack.get ().getSendBank ().getItem (index).getName ();
-        else
-            modeName += "-";
-
-        this.model.getHost ().showNotification (modeName);
+        modeManager.setActive (Modes.get (Modes.SEND1, sendIndex));
+        this.mvHelper.notifySelectedSend (sendIndex);
     }
 }
