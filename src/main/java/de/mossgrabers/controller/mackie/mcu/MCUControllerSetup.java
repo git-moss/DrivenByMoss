@@ -819,7 +819,7 @@ public class MCUControllerSetup extends AbstractControllerSetup<MCUControlSurfac
             currentChannelBank = this.model.getCurrentTrackBank ();
 
         final boolean shouldPinFXTracksToLastController = this.configuration.shouldPinFXTracksToLastController ();
-
+        final boolean alwaysSendVuMeters = this.configuration.alwaysSendVuMeters ();
         for (int index = 0; index < this.numMCUDevices; index++)
         {
             final MCUControlSurface surface = this.getSurface (index);
@@ -835,7 +835,7 @@ public class MCUControllerSetup extends AbstractControllerSetup<MCUControlSurfac
 
                 final int vu = track.getVu ();
                 final int scaledVu = this.scaleVU (vu);
-                if (this.vuValues[channel] != scaledVu)
+                if (this.vuValues[channel] != scaledVu || alwaysSendVuMeters)
                 {
                     this.vuValues[channel] = scaledVu;
                     this.sendVUValue (output, i, vu, scaledVu, false);

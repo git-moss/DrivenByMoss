@@ -79,14 +79,16 @@ public class MCUConfiguration extends AbstractConfiguration
     public static final Integer       TOUCH_SELECTS_CHANNEL                 = Integer.valueOf (62);
     /** Activate volume mode when touching a volume fader. */
     public static final Integer       TOUCH_CHANNEL_VOLUME_MODE             = Integer.valueOf (63);
+    /** Always send VU meters even if values haven't changed. */
+    public static final Integer       ALWAYS_SEND_VU_METERS                 = Integer.valueOf (64);
     /** iCON specific Master VU meter. */
-    public static final Integer       ICON_VU_METER                         = Integer.valueOf (64);
+    public static final Integer       ICON_VU_METER                         = Integer.valueOf (65);
     /** Pin FX tracks to last controller. */
-    public static final Integer       PIN_FXTRACKS_TO_LAST_CONTROLLER       = Integer.valueOf (65);
+    public static final Integer       PIN_FXTRACKS_TO_LAST_CONTROLLER       = Integer.valueOf (66);
     /** Support X-Touch display back-light colors. */
-    public static final Integer       X_TOUCH_DISPLAY_COLORS                = Integer.valueOf (66);
+    public static final Integer       X_TOUCH_DISPLAY_COLORS                = Integer.valueOf (67);
     /** Use 7 characters instead of 6 and a space character. */
-    public static final Integer       USE_7_CHARACTERS                      = Integer.valueOf (67);
+    public static final Integer       USE_7_CHARACTERS                      = Integer.valueOf (68);
 
     /** Use a Function button to switch to previous mode. */
     public static final int           FOOTSWITCH_PREV_MODE                  = 15;
@@ -263,6 +265,7 @@ public class MCUConfiguration extends AbstractConfiguration
     private boolean                   displayTrackNames;
     private boolean                   useVertZoomForModes;
     private boolean                   useFadersAsKnobs;
+    private boolean                   alwaysSendVuMeters;
     private boolean                   iconVuMeters;
     private DisplayColors             displayColors;
     private boolean                   use7Characters;
@@ -416,6 +419,13 @@ public class MCUConfiguration extends AbstractConfiguration
 
         this.activateEnableVUMetersSetting (settingsUI, CATEGORY_HARDWARE_SETUP);
 
+        final IEnumSetting alwaysSendVuMetersSetting = settingsUI.getEnumSetting ("Always send VU Meters", CATEGORY_HARDWARE_SETUP, ON_OFF_OPTIONS, ON_OFF_OPTIONS[0]);
+        alwaysSendVuMetersSetting.addValueObserver (value -> {
+            this.alwaysSendVuMeters = "On".equals (value);
+            this.notifyObservers (ALWAYS_SEND_VU_METERS);
+        });
+        this.isSettingActive.add (ALWAYS_SEND_VU_METERS);
+
         final IEnumSetting iconVuMeterSetting = settingsUI.getEnumSetting ("iCON VU Meters", CATEGORY_HARDWARE_SETUP, ON_OFF_OPTIONS, ON_OFF_OPTIONS[0]);
         iconVuMeterSetting.addValueObserver (value -> {
             this.iconVuMeters = "On".equals (value);
@@ -459,6 +469,7 @@ public class MCUConfiguration extends AbstractConfiguration
                     useVertZoomForModesSetting.set (off);
                     this.useFadersAsKnobsSetting.set (off);
                     this.setVUMetersEnabled (true);
+                    alwaysSendVuMetersSetting.set (off);
                     iconVuMeterSetting.set (off);
                     displayColorsSetting.set (DISPLAY_COLORS_OPTIONS[0]);
                     use7CharactersSetting.set (off);
@@ -475,6 +486,7 @@ public class MCUConfiguration extends AbstractConfiguration
                     useVertZoomForModesSetting.set (off);
                     this.useFadersAsKnobsSetting.set (off);
                     this.setVUMetersEnabled (true);
+                    alwaysSendVuMetersSetting.set (off);
                     iconVuMeterSetting.set (off);
                     displayColorsSetting.set (DISPLAY_COLORS_OPTIONS[1]);
                     use7CharactersSetting.set (on);
@@ -491,6 +503,7 @@ public class MCUConfiguration extends AbstractConfiguration
                     useVertZoomForModesSetting.set (off);
                     this.useFadersAsKnobsSetting.set (off);
                     this.setVUMetersEnabled (true);
+                    alwaysSendVuMetersSetting.set (off);
                     iconVuMeterSetting.set (off);
                     displayColorsSetting.set (DISPLAY_COLORS_OPTIONS[0]);
                     use7CharactersSetting.set (on);
@@ -507,6 +520,7 @@ public class MCUConfiguration extends AbstractConfiguration
                     useVertZoomForModesSetting.set (on);
                     this.useFadersAsKnobsSetting.set (off);
                     this.setVUMetersEnabled (false);
+                    alwaysSendVuMetersSetting.set (off);
                     iconVuMeterSetting.set (off);
                     displayColorsSetting.set (DISPLAY_COLORS_OPTIONS[0]);
                     use7CharactersSetting.set (off);
@@ -523,6 +537,7 @@ public class MCUConfiguration extends AbstractConfiguration
                     useVertZoomForModesSetting.set (off);
                     this.useFadersAsKnobsSetting.set (off);
                     this.setVUMetersEnabled (true);
+                    alwaysSendVuMetersSetting.set (off);
                     iconVuMeterSetting.set (on);
                     displayColorsSetting.set (DISPLAY_COLORS_OPTIONS[0]);
                     use7CharactersSetting.set (off);
@@ -539,6 +554,7 @@ public class MCUConfiguration extends AbstractConfiguration
                     useVertZoomForModesSetting.set (off);
                     this.useFadersAsKnobsSetting.set (off);
                     this.setVUMetersEnabled (true);
+                    alwaysSendVuMetersSetting.set (off);
                     iconVuMeterSetting.set (on);
                     displayColorsSetting.set (DISPLAY_COLORS_OPTIONS[2]);
                     use7CharactersSetting.set (on);
@@ -555,6 +571,7 @@ public class MCUConfiguration extends AbstractConfiguration
                     useVertZoomForModesSetting.set (off);
                     this.useFadersAsKnobsSetting.set (on);
                     this.setVUMetersEnabled (false);
+                    alwaysSendVuMetersSetting.set (off);
                     iconVuMeterSetting.set (off);
                     displayColorsSetting.set (DISPLAY_COLORS_OPTIONS[0]);
                     use7CharactersSetting.set (off);
@@ -839,6 +856,17 @@ public class MCUConfiguration extends AbstractConfiguration
     public boolean useVertZoomForModes ()
     {
         return this.useVertZoomForModes;
+    }
+
+
+    /**
+     * Returns true if VU value updates should always be send even if the value hasn't changed.
+     *
+     * @return True if VU values should be always send
+     */
+    public boolean alwaysSendVuMeters ()
+    {
+        return this.alwaysSendVuMeters;
     }
 
 
