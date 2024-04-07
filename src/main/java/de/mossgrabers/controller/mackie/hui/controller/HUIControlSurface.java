@@ -4,6 +4,11 @@
 
 package de.mossgrabers.controller.mackie.hui.controller;
 
+import java.util.Arrays;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
 import de.mossgrabers.controller.mackie.hui.HUIConfiguration;
 import de.mossgrabers.controller.mackie.hui.command.trigger.WorkaroundFader;
 import de.mossgrabers.controller.mackie.hui.command.trigger.WorkaroundMasterFader;
@@ -22,11 +27,6 @@ import de.mossgrabers.framework.daw.midi.IMidiInput;
 import de.mossgrabers.framework.daw.midi.IMidiOutput;
 import de.mossgrabers.framework.daw.midi.MidiConstants;
 import de.mossgrabers.framework.utils.ButtonEvent;
-
-import java.util.Arrays;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
 
 
 /**
@@ -522,7 +522,7 @@ public class HUIControlSurface extends AbstractControlSurface<HUIConfiguration>
         {
             this.vuValuesR[channel] = vuRight;
             final int scaledValue = (int) Math.floor (vuRight * 12.0 / upperBound);
-            this.output.sendPolyphonicAftertouch (0x10 + channel, scaledValue);
+            this.output.sendPolyphonicAftertouch (channel, 0x10 + scaledValue);
         }
     }
 

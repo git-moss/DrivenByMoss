@@ -4,15 +4,17 @@
 
 package de.mossgrabers.controller.utilities.autocolor;
 
-import de.mossgrabers.framework.daw.DAWColor;
-import de.mossgrabers.framework.daw.data.ITrack;
-import de.mossgrabers.framework.daw.data.bank.ITrackBank;
-
 import java.util.ArrayList;
 import java.util.EnumMap;
 import java.util.List;
 import java.util.Map.Entry;
 import java.util.regex.Pattern;
+
+import de.mossgrabers.framework.controller.color.ColorEx;
+import de.mossgrabers.framework.daw.DAWColor;
+import de.mossgrabers.framework.daw.IHost;
+import de.mossgrabers.framework.daw.data.ITrack;
+import de.mossgrabers.framework.daw.data.bank.ITrackBank;
 
 
 /**
@@ -28,16 +30,19 @@ public class AutoColor
     private final EnumMap<DAWColor, List<Pattern>> colorRegex = new EnumMap<> (DAWColor.class);
     private final AutoColorConfiguration           configuration;
     private ITrackBank                             trackBank;
+    private final IHost                            host;
 
 
     /**
      * Constructor.
      *
      * @param configuration The configuration
+     * @param host The host
      */
-    protected AutoColor (final AutoColorConfiguration configuration)
+    protected AutoColor (final AutoColorConfiguration configuration, final IHost host)
     {
         this.configuration = configuration;
+        this.host = host;
     }
 
 
@@ -100,7 +105,7 @@ public class AutoColor
      * Tests a track against all color patterns.
      *
      * @param track The track to test
-     * @param trackName The name of the track (the track name of the track might not yet beend
+     * @param trackName The name of the track (the track name of the track might not yet been
      *            updated)
      */
     private void matchColorsToTrack (final ITrack track, final String trackName)
@@ -118,18 +123,27 @@ public class AutoColor
      * patterns.
      *
      * @param track The track to test
-     * @param trackName The name of the track (the track name of the track might not yet beend
+     * @param trackName The name of the track (the track name of the track might not yet been
      *            updated)
      * @param color The color to apply
      * @param patterns The pattern to test against
      */
-    private static void matchColorToTrack (final ITrack track, final String trackName, final DAWColor color, final List<Pattern> patterns)
+    private void matchColorToTrack (final ITrack track, final String trackName, final DAWColor color, final List<Pattern> patterns)
     {
         for (final Pattern pattern: patterns)
         {
             if (pattern.matcher (trackName).matches ())
             {
-                track.setColor (color.getColor ());
+                final ColorEx currentColor = track.getColor ();
+                final ColorEx newColor = color.getColor ();
+                if (!currentColor.equals (newColor))
+                {
+                    // Delay the color change and check the name again to allow Undo
+                    this.host.scheduleTask ( () -> {
+                        if (trackName.equals (track.getName ()))
+                            track.setColor (newColor);
+                    }, 500);
+                }
                 break;
             }
         }
